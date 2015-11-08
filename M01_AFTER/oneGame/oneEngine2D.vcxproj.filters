@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{a6480acc-f101-4302-acc7-69fc2d3c3a49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine2D">
+      <UniqueIdentifier>{39ef1788-50fd-4f92-85e9-fe848e29a2b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine2D\Entities">
+      <UniqueIdentifier>{bc662cac-ea9b-4cd0-9f03-a089e31a11e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine2D\Entities\Map">
+      <UniqueIdentifier>{c3291573-75e9-470b-8de2-665aa1c2d4bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine2D\Types">
+      <UniqueIdentifier>{6e73331a-5015-46df-9477-337a0dd1abf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine2D\Interface">
+      <UniqueIdentifier>{c710c24b-e24f-4ae2-8f0a-3f5d26140cb6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\engine2d\types\MapTile.h">
+      <Filter>SOURCE\Engine2D\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine2d\entities\map\TileMap.h">
+      <Filter>SOURCE\Engine2D\Entities\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine2d\interface\Tileset.h">
+      <Filter>SOURCE\Engine2D\Interface</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\engine2d\entities\map\TileMap.cpp">
+      <Filter>SOURCE\Engine2D\Entities\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine2d\interface\Tileset.cpp">
+      <Filter>SOURCE\Engine2D\Interface</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

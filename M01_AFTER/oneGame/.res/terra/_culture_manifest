@@ -1,0 +1,63 @@
+#definition
+european	0
+asian		1
+arcana		2	// more fantasy architecture
+greco		3	// kind of like arabian. merchant cities. wow this game is quietly racist/stereotypical
+islander	4	// above ground, thatched roof
+colonial	5	// similar to european, but prettier
+spitefire	6	//temp
+cratglow	7	//temp
+
+//define walls, roofs, floors
+// What the town generator does is make a list of all the target objects in the target culture, and chooses one.
+#european
+wallheight	5
+overhang	1
+wall		"ew00"	// first wall must always be the most solid wall that would be used for corners.
+wall		"ew01"
+//wall		"ew02"
+roof		"er00"
+//roof		"er01"
+floor		"ef00"
+floor		"ef01"
+doorway		"ew04" // doorways must be one block higher than normal walls. This is for the floor at the doorway
+//doorway		"ew05"
+window		"ew06"
+//window		"ew07"
+//support		"europ00"
+//support		"europ01"
+
+#asian
+wallheight	5
+overhang	3
+wall		"aw00"
+//wall		"aw01"
+//wall		"aw02"
+//wall		"aw03"
+//wall		"aw04"
+roof		"ar00"
+floor		"af00"
+//floor		"af01"
+doorway		"aw05"
+//doorway		"aw06"
+window		"aw06"
+//window		"aw07"
+//support		"azip00"
+//support		"azip01"
+
+#arcana
+wallheight	6
+overhang	1
+wall		"cw00"
+//wall		"cw01"
+//wall		"cw02"
+doorway		"cd00"
+//doorway		"cd01"
+roof		"cr00"
+floor		"cf00"
+//floor		"cf01"
+//floor		"cf02"
+//window	"cw03"
+//support		"canap00"
+//support		"canap01"
+//support		"canap02"

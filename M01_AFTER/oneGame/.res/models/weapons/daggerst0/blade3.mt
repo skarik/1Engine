@@ -1,0 +1,1 @@
+default items/daggers/set0_blades

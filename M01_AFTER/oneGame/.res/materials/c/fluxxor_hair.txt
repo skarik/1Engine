@@ -1,0 +1,17 @@
+main
+{
+	texture 	textures\white.jpg
+	ftexture	textures\c\fluxxbubble.png
+	diffuse		1 1 1
+	emissive	0 0 0
+
+	alphamode	alphatest 0.4
+	
+	shader		fur_single_pass
+	shadername	shaders/d/fur_sp_fluxxor.glsl
+}
+
+deferred
+{
+	diffuse		hair
+}

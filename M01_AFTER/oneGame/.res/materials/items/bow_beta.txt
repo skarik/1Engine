@@ -1,0 +1,8 @@
+main
+{
+	texture 	materials\items\bow_beta.png
+	diffuse		1 1 1
+	emissive	0 0 0
+
+	shader		default
+}
