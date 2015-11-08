@@ -1,0 +1,14 @@
+main
+{
+	texture 		textures/c/cat_ear.png
+	fur_colormask	textures/c/cat_ear_color.png
+	diffuse		1 1 1
+	emissive	0 0 0
+
+	shader		fur_single_pass
+}
+
+deferred
+{
+	diffuse		hair
+}

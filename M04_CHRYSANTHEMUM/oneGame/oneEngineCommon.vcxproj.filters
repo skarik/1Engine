@@ -1,0 +1,429 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{a6480acc-f101-4302-acc7-69fc2d3c3a49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common">
+      <UniqueIdentifier>{6a1ce931-e3a3-4a8a-b9b4-30535844091d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Lua">
+      <UniqueIdentifier>{8006cce2-4adf-477f-99c2-d9904e875674}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Scenes">
+      <UniqueIdentifier>{19983f3e-41b7-4afb-8b38-5171937246b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Entities">
+      <UniqueIdentifier>{73e9a16b-281c-4fcd-a9ae-5b3cace6a102}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Entities\Point-based %28Filter only%29">
+      <UniqueIdentifier>{daa8ac78-4f3e-4681-8a38-8078fcc4fef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Entities\Item">
+      <UniqueIdentifier>{91595143-04f1-47ac-869d-f52f1cf06883}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Entities\Physics">
+      <UniqueIdentifier>{e6dba5df-23e9-460f-a34f-f48455b99ae2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Entities\Physics\Wind">
+      <UniqueIdentifier>{4adfff20-7d5f-45b8-822b-53a0d9a2c6b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Entities\Effects">
+      <UniqueIdentifier>{1856cf93-2374-4eb4-90dc-750dcffcc92a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Types">
+      <UniqueIdentifier>{1cf55108-731b-4643-a229-d91daf044155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Dusk %28GUI System%29">
+      <UniqueIdentifier>{219a1c46-cfa5-4081-a830-12eba579dadf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Dusk %28GUI System%29\Controls">
+      <UniqueIdentifier>{59f5d122-9195-4372-96e6-f3dc7a7d89c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogues">
+      <UniqueIdentifier>{82b4a67e-569c-476f-aede-0ecbd3f02a11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Debug">
+      <UniqueIdentifier>{1cee1b33-10cc-4313-accc-d25ae35d50e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Physics">
+      <UniqueIdentifier>{de27e291-d062-45cb-8519-753ce706883b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Physics\Wind">
+      <UniqueIdentifier>{6ceef539-9061-4eb8-996a-58e9ad33b7e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Physics\Water">
+      <UniqueIdentifier>{9ce453e4-670e-4a08-b1cc-0415c14a2727}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Physics\Motion">
+      <UniqueIdentifier>{ec281c6d-1706-4a97-878f-4cc082563103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Utils">
+      <UniqueIdentifier>{a00dafb8-0085-442a-82a5-9864a249523d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Network">
+      <UniqueIdentifier>{4a347a1e-9896-4f00-ad79-3eee9193ec86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Lua\Bridge">
+      <UniqueIdentifier>{9a6763f8-9784-4430-aefd-b1e364e2d925}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Engine-Common\Dawn %28GUI System for consoles%29">
+      <UniqueIdentifier>{f90a40f5-cf63-4cda-ab64-132e7bd5993f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\engine-common\engine-common.h">
+      <Filter>SOURCE\Engine-Common</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\lua\CLuaActor.h">
+      <Filter>SOURCE\Engine-Common\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\lua\CLuaBehavior.h">
+      <Filter>SOURCE\Engine-Common\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\lua\CLuaObject.h">
+      <Filter>SOURCE\Engine-Common\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\lua\LuaSys.h">
+      <Filter>SOURCE\Engine-Common\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\scenes\gmsceneFromFile.h">
+      <Filter>SOURCE\Engine-Common\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\scenes\gmsceneSystemLoader.h">
+      <Filter>SOURCE\Engine-Common\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\CActor.h">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\CParticleSystem.h">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\CPlayer.h">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\CProjectile.h">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\CRendererHolder.h">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\CPointBase.h">
+      <Filter>SOURCE\Engine-Common\Entities\Point-based %28Filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\CPointSpawn.h">
+      <Filter>SOURCE\Engine-Common\Entities\Point-based %28Filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\CWaypoint.h">
+      <Filter>SOURCE\Engine-Common\Entities\Point-based %28Filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\item\CItemBase.h">
+      <Filter>SOURCE\Engine-Common\Entities\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\physics\CPhysExplosion.h">
+      <Filter>SOURCE\Engine-Common\Entities\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\physics\wind\CPhysicsWindManager.h">
+      <Filter>SOURCE\Engine-Common\Entities\Physics\Wind</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\effects\CFXExplosion.h">
+      <Filter>SOURCE\Engine-Common\Entities\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\effects\CFXMaterialHit.h">
+      <Filter>SOURCE\Engine-Common\Entities\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\types\ActorAnimation.h">
+      <Filter>SOURCE\Engine-Common\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\types\Damage.h">
+      <Filter>SOURCE\Engine-Common\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\CDuskGUI.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\CDuskGUIHandle.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\dialogues\DGUI_DialogueFileSelector.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogues</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\debug\AllTools.h">
+      <Filter>SOURCE\Engine-Common\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\debug\CTimeProfilerUI.h">
+      <Filter>SOURCE\Engine-Common\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dawn\DawnGUI.h">
+      <Filter>SOURCE\Engine-Common\Dawn %28GUI System for consoles%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\physics\wind\physExplosion.h">
+      <Filter>SOURCE\Engine-Common\Physics\Wind</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\physics\motion\CRagdollCollision.h">
+      <Filter>SOURCE\Engine-Common\Physics\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\utils\CDeveloperConsoleUI.h">
+      <Filter>SOURCE\Engine-Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\physics\water\MinimalWaterTester.h">
+      <Filter>SOURCE\Engine-Common\Physics\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\physics\wind\MinimalWindTester.h">
+      <Filter>SOURCE\Engine-Common\Physics\Wind</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIButton.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUICheckbox.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIColorpicker.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDialogue.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDialogue_Text.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDialogue_YN.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDraggablePanel.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDropdownList.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_GO.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_RO.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIElement.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUILabel.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIListview.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIMaterialField.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIMaterialPicker.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIPanel.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIParagraph.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIPropertyview.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUISlider.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUITabview.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUITextfield.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIVector2dPicker.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\network\playerlist.h">
+      <Filter>SOURCE\Engine-Common\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\types\ItemProperties.h">
+      <Filter>SOURCE\Engine-Common\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\utils\AnimationMixing.h">
+      <Filter>SOURCE\Engine-Common\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\lua\Lua_GameState.h">
+      <Filter>SOURCE\Engine-Common\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\lua\CLuaController.h">
+      <Filter>SOURCE\Engine-Common\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\lua\Lua_Console.h">
+      <Filter>SOURCE\Engine-Common\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\engine-common-console.h">
+      <Filter>SOURCE\Engine-Common</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\lua\bridge\luabridge_class.h">
+      <Filter>SOURCE\Engine-Common\Lua\Bridge</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\engine-common-scenes.h">
+      <Filter>SOURCE\Engine-Common</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\scenes\gmsceneSystemBuilder.h">
+      <Filter>SOURCE\Engine-Common\Scenes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
+      <Filter>SOURCE\Engine-Common\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\lua\Lua_GameState.cpp">
+      <Filter>SOURCE\Engine-Common\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\lua\Lua_Renderer.cpp">
+      <Filter>SOURCE\Engine-Common\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\scenes\gmsceneSystemLoader.cpp">
+      <Filter>SOURCE\Engine-Common\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\CParticleSystem.cpp">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\CPlayer.cpp">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\CPlayer_Camera.cpp">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\CPlayer_Movement.cpp">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\CPlayer_Transforms.cpp">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\CProjectile.cpp">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\CRendererHolder.cpp">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\CWaypoint.cpp">
+      <Filter>SOURCE\Engine-Common\Entities\Point-based %28Filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\item\CItemBase.cpp">
+      <Filter>SOURCE\Engine-Common\Entities\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\physics\CPhysExplosion.cpp">
+      <Filter>SOURCE\Engine-Common\Entities\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\physics\wind\CPhysicsWindManager.cpp">
+      <Filter>SOURCE\Engine-Common\Entities\Physics\Wind</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\effects\CFXMaterialHit.cpp">
+      <Filter>SOURCE\Engine-Common\Entities\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\CDuskGUI.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\CDuskGUIHandle.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\CDuskGUI_Drawer.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\dialogues\DGUI_DialogueFileSelector.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogues</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\debug\CTimeProfilerUI.cpp">
+      <Filter>SOURCE\Engine-Common\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\physics\wind\physExplosion.cpp">
+      <Filter>SOURCE\Engine-Common\Physics\Wind</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\physics\motion\CRagdollCollision.cpp">
+      <Filter>SOURCE\Engine-Common\Physics\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\utils\CDeveloperConsoleUI.cpp">
+      <Filter>SOURCE\Engine-Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIButton.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUICheckbox.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIColorpicker.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDialogue.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDialogue_YN.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDraggablePanel.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDropdownList.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_GO.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIElement.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUILabel.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIListview.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIMaterialField.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIPanel.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIParagraph.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIPropertyview.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUISlider.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUITextfield.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\utils\AnimationMixing.cpp">
+      <Filter>SOURCE\Engine-Common\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\engine-common.cpp">
+      <Filter>SOURCE\Engine-Common</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\lua\CLuaController.cpp">
+      <Filter>SOURCE\Engine-Common\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\lua\Lua_Console.cpp">
+      <Filter>SOURCE\Engine-Common\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\engine-common-console.cpp">
+      <Filter>SOURCE\Engine-Common</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\network\playerlist.cpp">
+      <Filter>SOURCE\Engine-Common\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\scenes\gmsceneSystemBuilder.cpp">
+      <Filter>SOURCE\Engine-Common\Scenes</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,10 @@
+main
+{
+	texture 	materials\items\pickaxe_su_sh_diffuse.png
+##	glowmap		materials\items\pickaxe_glow.png
+	specmap		materials\items\pickaxe_su_sh_specular.png
+	diffuse		1 1 1
+	emissive	0 0 0
+	
+	shader		default
+}

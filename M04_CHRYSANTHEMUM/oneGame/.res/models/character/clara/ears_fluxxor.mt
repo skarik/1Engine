@@ -1,0 +1,1 @@
+default c\fluxxor_skin

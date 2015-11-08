@@ -1,0 +1,8 @@
+
+## Fallback for eyes
+main
+{
+	texture		materials\fauna\komodo_eye.png
+
+	shader		default
+}
