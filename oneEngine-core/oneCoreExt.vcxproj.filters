@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{8fb1249d-e833-457a-8016-7e9ff36d001e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core">
+      <UniqueIdentifier>{7bf2f3da-62c1-473e-92ef-bf003fe42642}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Settings">
+      <UniqueIdentifier>{8f941b98-e37c-44a1-8824-56fc7e04e8db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext">
+      <UniqueIdentifier>{798cf2e5-34bf-4a67-87f9-ab0c87d8cc46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Threads">
+      <UniqueIdentifier>{1b844c76-1229-459f-8c6f-c802b24fb144}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Time">
+      <UniqueIdentifier>{7986e073-0465-428c-bae2-28f6f4618d83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Input">
+      <UniqueIdentifier>{a2708f8b-87c9-4f77-80a6-b57c6bfe9839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Input">
+      <UniqueIdentifier>{8cdcd674-7cde-4078-95c3-5b82bee45a07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Input\Emulated">
+      <UniqueIdentifier>{fd3859d2-84e1-46cc-9369-b1829539a64f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Debug">
+      <UniqueIdentifier>{18246685-e225-4232-9cd2-298c56ca9b0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\System">
+      <UniqueIdentifier>{cd9fb5e8-f76f-41a1-961d-9fe6cdc65fb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\System\IO">
+      <UniqueIdentifier>{2d3cb790-832b-438e-a589-905f5f8eb96c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\System">
+      <UniqueIdentifier>{9b433442-5bfb-40ee-8018-a92c7c7d0980}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\System\IO">
+      <UniqueIdentifier>{eb68bf6a-0140-4d7a-af71-30637da1d7ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Transform">
+      <UniqueIdentifier>{f3025d52-19ef-40b9-b506-f574164d357e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Animation">
+      <UniqueIdentifier>{799ffc93-3b70-4bb0-9947-2d426cc96ec7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Profiler">
+      <UniqueIdentifier>{82255775-1107-4a10-b0e1-520e1d0e2037}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\core\settings\CGameSettings.cpp">
+      <Filter>SOURCE\Core\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\settings\CGameSettingsDirs.cpp">
+      <Filter>SOURCE\Core\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\threads\Jobs.cpp">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\time\CTime.cpp">
+      <Filter>SOURCE\Core\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\time\CTimeOsmac.cpp">
+      <Filter>SOURCE\Core\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\time\CTimeWin32.cpp">
+      <Filter>SOURCE\Core\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\input\CInput.cpp">
+      <Filter>SOURCE\Core\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\input\CInputTable.cpp">
+      <Filter>SOURCE\Core\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\input\CXboxController.cpp">
+      <Filter>SOURCE\Core\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\input\CInputControl.cpp">
+      <Filter>SOURCE\Core-ext\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\debug\CDebugConsole.cpp">
+      <Filter>SOURCE\Core\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\system\Screen.cpp">
+      <Filter>SOURCE\Core\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\resources.cpp">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\transform\CTransform.cpp">
+      <Filter>SOURCE\Core-ext\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\animation\CAnimation.cpp">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\profiler\CTimeProfiler.cpp">
+      <Filter>SOURCE\Core-ext\Profiler</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\core\settings\CGameSettings.h">
+      <Filter>SOURCE\Core\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\threads\Jobs.h">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\time\CTimeOsmac.h">
+      <Filter>SOURCE\Core\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\time\CTimeWin32.h">
+      <Filter>SOURCE\Core\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\time\Time.h">
+      <Filter>SOURCE\Core\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\input\CInput.h">
+      <Filter>SOURCE\Core\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\input\CXboxController.h">
+      <Filter>SOURCE\Core\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\input\CInputControl.h">
+      <Filter>SOURCE\Core-ext\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\input\emulated\CEmulatedInputControl.h">
+      <Filter>SOURCE\Core-ext\Input\Emulated</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\debug\CDebugConsole.h">
+      <Filter>SOURCE\Core\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\debug\console.h">
+      <Filter>SOURCE\Core\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\system\Screen.h">
+      <Filter>SOURCE\Core\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\resources.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\transform\CTransform.h">
+      <Filter>SOURCE\Core-ext\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\CAnimation.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\CAnimationCommon.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\profiler\CTimeProfiler.h">
+      <Filter>SOURCE\Core-ext\Profiler</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
