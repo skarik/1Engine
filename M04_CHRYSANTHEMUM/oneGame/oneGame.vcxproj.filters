@@ -1,0 +1,2004 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{e9ddf854-1414-40ad-869a-b3629cda3807}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER">
+      <UniqueIdentifier>{4b6b3a40-5e4f-4e5a-8aec-8045cbd95977}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Scenes">
+      <UniqueIdentifier>{90a42987-efa1-4b9b-82f4-25ed8438df2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Scenes\Developer %28filter only%29">
+      <UniqueIdentifier>{26de8758-63b7-4495-99d1-38f5bdb3e0dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities">
+      <UniqueIdentifier>{c1b9537d-8854-4dda-88d9-dca4188940e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Character">
+      <UniqueIdentifier>{eb048e1b-2d58-4205-8690-486118617d7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Types">
+      <UniqueIdentifier>{4bf50bb8-3309-4de7-be64-4aaeda13ea3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States">
+      <UniqueIdentifier>{35b52f5c-a8a1-42ff-a4a0-450edf861599}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States\Debuffs">
+      <UniqueIdentifier>{b003814c-27fd-428d-8a51-3cd341671c78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States\Debuffs\Standard">
+      <UniqueIdentifier>{585ea17f-d1b0-4f4d-b1c4-224a7996a20e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States\Debuffs\Racial">
+      <UniqueIdentifier>{b76cdee6-d1c9-4e38-b96f-08db8711f8d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Interfaces">
+      <UniqueIdentifier>{4c84b94c-8dbf-429e-bd31-fe62ac77f032}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Types\Character">
+      <UniqueIdentifier>{9109b269-9e48-4f8f-9c0c-0ee0946fe81f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item">
+      <UniqueIdentifier>{d4f26a10-0837-448e-a5fa-b80c3470e689}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\System">
+      <UniqueIdentifier>{7a18b19e-6dea-4a54-bd99-2956dfe42320}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Skill">
+      <UniqueIdentifier>{33cb23d5-6004-4006-af69-42e020a96c14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Ammo">
+      <UniqueIdentifier>{5011c57c-5b01-41df-b443-19ef75248d3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Projectile">
+      <UniqueIdentifier>{69736e5f-6d94-4e86-a5c0-5d8ce427a373}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States\Projectile Effect">
+      <UniqueIdentifier>{4b2b45bb-4924-4fb9-9606-57bb4df1d740}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Projectile\Projectile">
+      <UniqueIdentifier>{d6e2f234-d0db-4eba-9683-ec162677ff71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Projectile\Magical">
+      <UniqueIdentifier>{8ebe673d-2a4d-46ff-b5d7-ceefc207b3ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States\Projectile Effect\Effects">
+      <UniqueIdentifier>{9fb6b7fb-de2a-4adb-846e-1872c51edda3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Effects">
+      <UniqueIdentifier>{e0768987-79cd-49b9-86a1-ad8bbbf96245}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Physics">
+      <UniqueIdentifier>{58a4ffc6-ba65-413f-a5fc-1349bbb34a90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Physics\Water">
+      <UniqueIdentifier>{95ae5375-5a93-473e-9f15-372768e16ba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Props">
+      <UniqueIdentifier>{ef7fb729-5d97-4f3b-9b84-3927bc6a8114}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Foliage">
+      <UniqueIdentifier>{d8af012b-9d59-493b-8528-54f6fe7a951b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Renderer">
+      <UniqueIdentifier>{6933ad0b-3d6d-4916-8c8a-74f7a6f46a00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Renderer\Objects">
+      <UniqueIdentifier>{92f495f5-2580-472d-882c-74ac21b95345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Renderer\Objects\Grass">
+      <UniqueIdentifier>{adc55668-c968-4f40-8ce5-b9b5441f03cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Types\Terrain">
+      <UniqueIdentifier>{f79559ad-bea8-4131-872f-44ba04afe91f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Foliage\Trees">
+      <UniqueIdentifier>{9697be72-3468-44b5-bd57-d6277cbb6eba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Foliage\Not Trees">
+      <UniqueIdentifier>{03c34d21-6a42-4eaf-b98e-82db3fab93a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Renderer\Objects\Tree">
+      <UniqueIdentifier>{d8432ebc-5bf0-44ff-8315-75d862c1d5b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Test">
+      <UniqueIdentifier>{fed64c8f-2641-4dc7-9724-d6a1fe6b1367}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Beta">
+      <UniqueIdentifier>{9047b3bd-3a72-4842-928a-afa9cb0a92b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Wearable">
+      <UniqueIdentifier>{8ad1059e-4de4-497c-95b7-e0b38e611a6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Wearable\Armor">
+      <UniqueIdentifier>{1f4ffdb4-3358-4986-8170-c163c0c815ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Wearable\Vanity">
+      <UniqueIdentifier>{02f7729a-e0ce-4a0a-9213-b4d3bddad820}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Weapon">
+      <UniqueIdentifier>{a40bf2f3-298b-46bd-9513-80d24cfa9d8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Weapon\Melee">
+      <UniqueIdentifier>{9e877c86-0fc2-43d5-b019-96acb07ee057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Weapon\Bow">
+      <UniqueIdentifier>{543a838c-b5f7-4e35-9216-ac215ee77959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Weapon\Tool">
+      <UniqueIdentifier>{f22d429f-25b9-48fa-9966-5d8f5eba200c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Weapon\Tossable">
+      <UniqueIdentifier>{dfa794d2-4c17-45e9-b189-d36e74a141cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Junk">
+      <UniqueIdentifier>{9c05280f-98ff-4bd2-9b53-a0bf8810b5bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Props">
+      <UniqueIdentifier>{b812b4cc-66cc-4e73-93cc-0f7740d59abb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Props\Flora">
+      <UniqueIdentifier>{990f7d72-a2d7-4d38-ba6c-f185b537c2ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Material">
+      <UniqueIdentifier>{f32ef68a-a3fa-4e62-8ef5-cc6b9a380188}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Skill\Passive">
+      <UniqueIdentifier>{cf84f259-dc61-42dc-a728-4f2071e7344c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Skill\Skills">
+      <UniqueIdentifier>{fa6a323d-1285-44b5-8397-1aec6d859e9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Skill\Skills\Defensive">
+      <UniqueIdentifier>{5480852e-f006-4179-89eb-29f8f13e8ff3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Skill\Skills\Mobility">
+      <UniqueIdentifier>{1c12ff06-344e-4061-bcd4-306486baf622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Skill\Skills\Modifier">
+      <UniqueIdentifier>{995b3fa5-ec9b-4135-a5f2-385f1c33174c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Item\Skill\Skills\Offensive">
+      <UniqueIdentifier>{96e14d53-ca2c-4f8a-8d0b-fe9fff1b581c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Character\Model %28filter only%29">
+      <UniqueIdentifier>{ea916456-92a2-4a74-9708-c4cc6f637b6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States\Model">
+      <UniqueIdentifier>{1552e6f0-de19-4cc7-ab57-028d05d53189}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Props\Props">
+      <UniqueIdentifier>{22b9e155-adf4-4727-8398-f5a6acbbc60d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Props\Flora">
+      <UniqueIdentifier>{8098083c-57bf-4d47-8e1f-62a67c3da953}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States\Weapon Effect">
+      <UniqueIdentifier>{f0dbe1b3-4840-43c4-a49a-decfeea7586c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States\Player">
+      <UniqueIdentifier>{770455a9-2a50-4246-bd65-53b32b08be84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Renderer\Objects\HUD">
+      <UniqueIdentifier>{15802ba4-f229-4de2-af67-6569b4be1a0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\World">
+      <UniqueIdentifier>{a48c8bef-c501-49b8-adcc-01098fbd0a35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\World\Environment">
+      <UniqueIdentifier>{ec29052e-68d5-4ec6-8a87-32616d799239}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\World\Environment\Weather">
+      <UniqueIdentifier>{0fb708df-63bf-4a9b-a4df-20fc1882a8ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\World\Events">
+      <UniqueIdentifier>{88a06892-96bf-4318-8190-7850d7c36d49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Gametype">
+      <UniqueIdentifier>{0549f074-a6da-4d25-a8de-1f11756cdbcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States\Inventory">
+      <UniqueIdentifier>{714e3cc1-6d9d-446a-8121-7b9f556e45e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\World\Client">
+      <UniqueIdentifier>{777363c9-e5c5-49be-a8ab-047fc6a36a66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Character\NPC">
+      <UniqueIdentifier>{cd4b14d7-aee8-4dcc-be1a-68e0bfa025b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Character\NPC\Zoned">
+      <UniqueIdentifier>{139d3bc8-181c-4ca9-ad09-91ab11b9865b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Character\NPC\Zoned\Fauna">
+      <UniqueIdentifier>{2fab4c65-0a55-496c-bcb5-35cd8af7f479}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Character\NPC\Zoned\Automaton">
+      <UniqueIdentifier>{cd9b7974-62f9-4009-958a-1df99f86bb12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States\AI">
+      <UniqueIdentifier>{672dbc16-23b2-46ef-9cdf-be4d44ed7f1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Developer">
+      <UniqueIdentifier>{676328d3-c4aa-49dc-84c0-4cc9a09d00ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Developer\Editor">
+      <UniqueIdentifier>{b445baa3-6c62-41eb-805f-d626671dc96b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Interfaces\World">
+      <UniqueIdentifier>{8dbc84e9-a08e-427f-8a00-32f066464ac6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Interfaces\IO">
+      <UniqueIdentifier>{32235138-2299-4fea-8cea-330bbbaeda52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States\World">
+      <UniqueIdentifier>{063cf66e-b702-42b8-a8b0-b14c16eb640b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Cutscene">
+      <UniqueIdentifier>{514e41be-0caf-4d4f-9816-2d5b58260736}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Menu">
+      <UniqueIdentifier>{ae67828a-9881-4a68-8c96-349b87e7be71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Menu\Front">
+      <UniqueIdentifier>{537c6066-15fb-4d5e-b562-2e4f46bcaf01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\Menu\Splash">
+      <UniqueIdentifier>{11dcba16-4c21-49eb-9d33-559c11cb4688}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Utils">
+      <UniqueIdentifier>{9e6abf34-7338-46bf-a3fd-c16210258619}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain">
+      <UniqueIdentifier>{332c782d-0b46-44d7-88b1-1e8c58a734ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Modifiers">
+      <UniqueIdentifier>{e5290b61-23f4-483f-8036-c56821bd651a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Physics\Wind">
+      <UniqueIdentifier>{a303e33e-ef11-4ab7-ac68-16b787f9c0f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Types\World">
+      <UniqueIdentifier>{6f086242-61dc-46f6-a3ff-df601c7ebf4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Edit">
+      <UniqueIdentifier>{6f470795-e1d9-48f8-835b-720db408ed18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Edit\CSG">
+      <UniqueIdentifier>{52ea10d8-97cf-4a25-8139-d9e9052b33e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Generation">
+      <UniqueIdentifier>{1618125b-eb75-4255-961b-b996b2488d4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Generation\Biomes">
+      <UniqueIdentifier>{6f824b23-f849-40cc-baba-7db2f8007a91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Generation\Dungeons">
+      <UniqueIdentifier>{3ceb5d3e-f264-422b-8387-a8f84b0d852c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Generation\Patterns">
+      <UniqueIdentifier>{90ff6287-8f54-43eb-a112-a96aaea57edf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Generation\Regions">
+      <UniqueIdentifier>{3dc3a8d3-530a-4965-a192-9cb42fb236e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Generation\Terrain">
+      <UniqueIdentifier>{cf842f7d-b308-4e71-92c2-4542d1d99850}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Generation\Patterns\Ruins">
+      <UniqueIdentifier>{c4389b5d-be51-49de-82f9-7123e1705ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Generation\Patterns\Towns">
+      <UniqueIdentifier>{f32eeaf5-d552-4667-9cda-181504865d8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\HUD">
+      <UniqueIdentifier>{bf787161-edc0-47c8-81bc-39c0d1dc551d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Entities\HUD\Player">
+      <UniqueIdentifier>{5de7918b-6235-48d0-9d62-82b9dd935f37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\States\Skill Tree">
+      <UniqueIdentifier>{8776d2bd-eafb-4267-b5a0-a9fb95fa8c9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Animation">
+      <UniqueIdentifier>{77e1cda9-e5c7-44d0-98e8-1faf753e47ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Data">
+      <UniqueIdentifier>{e4ce0633-9d2a-47c7-910b-b77268973842}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\Utils">
+      <UniqueIdentifier>{c0c9adec-7b7c-44e3-85ed-a9010e0a0565}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Lua">
+      <UniqueIdentifier>{301ec3ee-11c6-42fb-b02b-1b1a37db3a23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\IO">
+      <UniqueIdentifier>{1b409cb1-8b68-49ba-95b3-617bce9731b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER\Terrain\System">
+      <UniqueIdentifier>{001ed287-91e8-4123-bad5-cab49c92d4e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER-Editor">
+      <UniqueIdentifier>{75fef5be-3f06-47cc-9738-e39da4a628db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER-Editor\Scenes">
+      <UniqueIdentifier>{6cb8f9b2-bdfd-4efc-b48c-4ff050506232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\AFTER-Editor\Standalone">
+      <UniqueIdentifier>{a93ac015-8f7e-48da-a6a8-1445385f48a7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\after\scenes\gmsceneGame_5.h">
+      <Filter>SOURCE\AFTER\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\scenes\gmsceneMainGame.h">
+      <Filter>SOURCE\AFTER\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\scenes\gmsceneMenu.h">
+      <Filter>SOURCE\AFTER\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\scenes\gmsceneSplashScreens.h">
+      <Filter>SOURCE\AFTER\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\scenes\gmsceneCharacterViewer.h">
+      <Filter>SOURCE\AFTER\Scenes\Developer %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\character\CCharacter.h">
+      <Filter>SOURCE\AFTER\Entities\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\Experience.h">
+      <Filter>SOURCE\AFTER\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\Disciplines.h">
+      <Filter>SOURCE\AFTER\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\CharHealth.h">
+      <Filter>SOURCE\AFTER\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\DebuffChance.h">
+      <Filter>SOURCE\AFTER\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\CharacterStats.h">
+      <Filter>SOURCE\AFTER\States</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\NPC_CombatState.h">
+      <Filter>SOURCE\AFTER\States</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\debuffs\Debuffs.h">
+      <Filter>SOURCE\AFTER\States\Debuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\debuffs\DebuffList.h">
+      <Filter>SOURCE\AFTER\States\Debuffs</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\debuffs\standard\DebuffBurningFlametoss.h">
+      <Filter>SOURCE\AFTER\States\Debuffs\Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\debuffs\standard\DebuffDisable.h">
+      <Filter>SOURCE\AFTER\States\Debuffs\Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\debuffs\standard\DebuffDPS.h">
+      <Filter>SOURCE\AFTER\States\Debuffs\Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\debuffs\standard\DebuffRooted.h">
+      <Filter>SOURCE\AFTER\States\Debuffs\Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\debuffs\standard\DebuffSlow.h">
+      <Filter>SOURCE\AFTER\States\Debuffs\Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\debuffs\standard\DebuffSlowBurnFrostball.h">
+      <Filter>SOURCE\AFTER\States\Debuffs\Standard</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\debuffs\racial\BuffFluxxorManablood.h">
+      <Filter>SOURCE\AFTER\States\Debuffs\Racial</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\debuffs\racial\BuffRacialDarkElf.h">
+      <Filter>SOURCE\AFTER\States\Debuffs\Racial</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\debuffs\racial\BuffRacialKitten.h">
+      <Filter>SOURCE\AFTER\States\Debuffs\Racial</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\character\CAfterPlayer.h">
+      <Filter>SOURCE\AFTER\Entities\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\interfaces\CAfterCharacterAnimator.h">
+      <Filter>SOURCE\AFTER\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\character\Attributes.h">
+      <Filter>SOURCE\AFTER\Types\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\character\Dialogue.h">
+      <Filter>SOURCE\AFTER\Types\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\character\MovementEnum.h">
+      <Filter>SOURCE\AFTER\Types\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\character\AggroEnum.h">
+      <Filter>SOURCE\AFTER\Types\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\character\Animation.h">
+      <Filter>SOURCE\AFTER\Types\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\projectile\AfterBaseProjectile.h">
+      <Filter>SOURCE\AFTER\Entities\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\projectileeffect\ProjectileEffects.h">
+      <Filter>SOURCE\AFTER\States\Projectile Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\projectile\projectile\ProjectileArrow.h">
+      <Filter>SOURCE\AFTER\Entities\Projectile\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\projectile\projectile\ProjectileCBolt.h">
+      <Filter>SOURCE\AFTER\Entities\Projectile\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\projectile\projectile\ProjectilePebble.h">
+      <Filter>SOURCE\AFTER\Entities\Projectile\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\projectile\ProjectileMagicalBase.h">
+      <Filter>SOURCE\AFTER\Entities\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\projectile\magical\ProjectileFiretoss.h">
+      <Filter>SOURCE\AFTER\Entities\Projectile\Magical</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\projectile\magical\ProjectileFrostball.h">
+      <Filter>SOURCE\AFTER\Entities\Projectile\Magical</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\projectile\magical\ProjectileMagicBolt.h">
+      <Filter>SOURCE\AFTER\Entities\Projectile\Magical</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\projectileeffect\effects\PEffectBurnOnHit.h">
+      <Filter>SOURCE\AFTER\States\Projectile Effect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\projectileeffect\effects\PEffectBouncing.h">
+      <Filter>SOURCE\AFTER\States\Projectile Effect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\effects\CFXNotice.h">
+      <Filter>SOURCE\AFTER\Entities\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\WorldVector.h">
+      <Filter>SOURCE\AFTER\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\physics\water\Water.h">
+      <Filter>SOURCE\AFTER\Physics\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\renderer\objects\grass\CTerraGrass.h">
+      <Filter>SOURCE\AFTER\Renderer\Objects\Grass</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\IndexInformation.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\Grass.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\renderer\objects\tree\CTreeLeafRenderer.h">
+      <Filter>SOURCE\AFTER\Renderer\Objects\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\renderer\objects\tree\CTreeRenderer.h">
+      <Filter>SOURCE\AFTER\Renderer\Objects\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\foliage\CFoliage.h">
+      <Filter>SOURCE\AFTER\Entities\Foliage</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\foliage\CFoliageTree.h">
+      <Filter>SOURCE\AFTER\Entities\Foliage</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\foliage\CTerraFoliageFactory.h">
+      <Filter>SOURCE\AFTER\Entities\Foliage</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\foliage\CTreeBase.h">
+      <Filter>SOURCE\AFTER\Entities\Foliage</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\foliage\trees\FoliageTreePine.h">
+      <Filter>SOURCE\AFTER\Entities\Foliage\Trees</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\foliage\trees\FoliageTreeWarped.h">
+      <Filter>SOURCE\AFTER\Entities\Foliage\Trees</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\foliage\nottrees\FoliageBushGreen.h">
+      <Filter>SOURCE\AFTER\Entities\Foliage\Not Trees</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\foliage\nottrees\FoliageCactusDefault.h">
+      <Filter>SOURCE\AFTER\Entities\Foliage\Not Trees</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\test\CTestPhysicsFloor.h">
+      <Filter>SOURCE\AFTER\Entities\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\test\CTestPhysicsCrate.h">
+      <Filter>SOURCE\AFTER\Entities\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\test\CTestPhysicsFlare.h">
+      <Filter>SOURCE\AFTER\Entities\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\CRecipeLibrary.h">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\CWeaponItemComponents.h">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\CWeaponItemComponents.hpp">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\CWeaponItemFactory.h">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\ItemForging.h">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\ammo\AmmoArrow.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\ammo\AmmoCrossbowBolt.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\ammo\CAmmoBase.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\ammo\ItemPebble.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Ammo</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\beta\Flare.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Beta</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\wearable\CWearableItem.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Wearable</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\wearable\armor\ArmorLeatherBoots.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Wearable\Armor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\wearable\armor\ArmorLeatherPants.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Wearable\Armor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\CBaseRandomBow.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\CBaseRandomGun.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\CBaseRandomItem.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\CBaseRandomMelee.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\CBaseRandomTossable.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\ItemAdditives.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\bow\CRWBowShitty.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Bow</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\tool\CRWDrillBasic.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\tossable\CRIDynamite.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Tossable</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWDagger.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWHoe.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWPickaxeSuShitty.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWShovelSuShitty.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\CWeaponItemGenerator.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\CSkillReference.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\CSkill.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\ItemRandomizer.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\system\ItemBlockPuncher.h">
+      <Filter>SOURCE\AFTER\Entities\Item\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\system\ItemTerraBlok.h">
+      <Filter>SOURCE\AFTER\Entities\Item\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\system\ItemMeleeCombat.h">
+      <Filter>SOURCE\AFTER\Entities\Item\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\junk\CItemJunkBase.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Junk</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWSwordShortShitty.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWSpear.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWSword.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\props\flora\ItemFloraLifedrop.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Props\Flora</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\props\flora\ItemFloraSnowLily.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Props\Flora</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\props\ItemElectricSource.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\props\ItemCampfire.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\props\ItemCrateWooden.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\props\ItemElectricLamp.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\junk\ItemComponentBottle.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Junk</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\props\ItemTorch.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\props\ItemLantern.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\ItemCrafting.h">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\material\ItemTreeBranch.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\material\ItemTreeResin.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\material\ItemTreeTrunk.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\material\ItemTreeTwig.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\beta\WeaponCrossbow.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Beta</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\wearable\vanity\WearElvenpunk02_goggles.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Wearable\Vanity</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\wearable\vanity\WearElvenpunk02_set.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Wearable\Vanity</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\wearable\vanity\WearElvenpunk02_skirt.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Wearable\Vanity</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\SkillList.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\skills\mobility\SkillBlink.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Mobility</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\skills\modifier\SkillFireArrow.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\skills\offensive\SkillFiretoss.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Offensive</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\skills\offensive\SkillFrostBall.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Offensive</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\skills\modifier\SkillHailOfArrows.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\skills\offensive\SkillMagicBolt.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Offensive</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\passive\racial\PassiveRaceMagiDodge1.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Passive</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\skills\offensive\SkillMagikinesis.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Offensive</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\junk\ItemJunkSkull.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Junk</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\skills\defensive\SkillShield.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Defensive</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\skills\defensive\SkillPressureBlast.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Defensive</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\skills\modifier\SkillReflectshot.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\skill\skills\modifier\SkillSplitshot.h">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Modifier</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\character\CMccCharacterModel.h">
+      <Filter>SOURCE\AFTER\Entities\Character\Model %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\character\CRfCharacterModel.h">
+      <Filter>SOURCE\AFTER\Entities\Character\Model %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\model\CLipsyncSequence.h">
+      <Filter>SOURCE\AFTER\States\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\model\CTattooRenderer.h">
+      <Filter>SOURCE\AFTER\States\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\CRacialStats.h">
+      <Filter>SOURCE\AFTER\States</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\CTerrainProp.h">
+      <Filter>SOURCE\AFTER\Entities\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\CTerrainPropFactory.h">
+      <Filter>SOURCE\AFTER\Entities\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\flora\PropFloraSnowLily.h">
+      <Filter>SOURCE\AFTER\Entities\Props\Flora</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\flora\PropFloraLifedrop.h">
+      <Filter>SOURCE\AFTER\Entities\Props\Flora</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\props\PropTorch.h">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\props\ElectricLampComponent.h">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\props\ElectricSourceComponent.h">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\props\PropCampfire.h">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\props\PropChestBase.h">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\props\PropContainerBase.h">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\props\PropCrateWooden.h">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\props\PropDoorBase.h">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\props\props\PropLantern.h">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\after-common.h">
+      <Filter>SOURCE\AFTER</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\weaponeffect\WeaponEffects.h">
+      <Filter>SOURCE\AFTER\States\Weapon Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\player\CPlayerStats.h">
+      <Filter>SOURCE\AFTER\States\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\renderer\objects\hud\CBlockCursor.h">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\renderer\objects\hud\Plhud3d_Hurt01.h">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\renderer\objects\hud\Ploverlay_Icing.h">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\renderer\objects\hud\Ploverlay_Goggles01.h">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\renderer\objects\hud\Ploverlay_Hurt01.h">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\renderer\objects\hud\Plhud_AreaNotifier.h">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\renderer\objects\hud\Plhud_TextNotifier.h">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\environment\weather\CCloudMaster.h">
+      <Filter>SOURCE\AFTER\Entities\World\Environment\Weather</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\environment\weather\CWeatherCloud.h">
+      <Filter>SOURCE\AFTER\Entities\World\Environment\Weather</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\environment\weather\CWeatherSimulator.h">
+      <Filter>SOURCE\AFTER\Entities\World\Environment\Weather</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\environment\CEnvironmentEffects.h">
+      <Filter>SOURCE\AFTER\Entities\World\Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\environment\CloudSphere.h">
+      <Filter>SOURCE\AFTER\Entities\World\Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\environment\DayAndNightCycle.h">
+      <Filter>SOURCE\AFTER\Entities\World\Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\environment\EnvHeavyWeather.h">
+      <Filter>SOURCE\AFTER\Entities\World\Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\environment\EnvSunlight.h">
+      <Filter>SOURCE\AFTER\Entities\World\Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\events\EventAutomatonDesert.h">
+      <Filter>SOURCE\AFTER\Entities\World\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\events\EventBanditSpawnSmall.h">
+      <Filter>SOURCE\AFTER\Entities\World\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\events\EventDesertStorm.h">
+      <Filter>SOURCE\AFTER\Entities\World\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\CGameEventGenerator.h">
+      <Filter>SOURCE\AFTER\Entities\World</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\gametype\gametypeMenu.h">
+      <Filter>SOURCE\AFTER\Entities\Gametype</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\gametype\gametypeNotDying.h">
+      <Filter>SOURCE\AFTER\Entities\Gametype</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\gametype\gametypeGodMode.h">
+      <Filter>SOURCE\AFTER\Entities\Gametype</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\gametype\gametypeCharview.h">
+      <Filter>SOURCE\AFTER\Entities\Gametype</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\gametype\CGameType.h">
+      <Filter>SOURCE\AFTER\Entities\Gametype</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\interfaces\CCharacterMotion.h">
+      <Filter>SOURCE\AFTER\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\interfaces\CSpeechTrie.h">
+      <Filter>SOURCE\AFTER\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\inventory\CInventory.h">
+      <Filter>SOURCE\AFTER\States\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\inventory\CPlayerInventory.h">
+      <Filter>SOURCE\AFTER\States\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\inventory\CCrafting.h">
+      <Filter>SOURCE\AFTER\States\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\player\StatsProgressFlags.h">
+      <Filter>SOURCE\AFTER\States\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\client\CQuestSystem.h">
+      <Filter>SOURCE\AFTER\Entities\World\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\CNpcSpawner.h">
+      <Filter>SOURCE\AFTER\Entities\World</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\character\npc\CCharTest.h">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\character\npc\CNpcBase.h">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\character\npc\zoned\CZonedCharacter.h">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC\Zoned</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\character\npc\zoned\CZonedCharacterController.h">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC\Zoned</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\character\npc\zoned\fauna\FaunaDesertBird.h">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC\Zoned\Fauna</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\character\npc\zoned\fauna\FaunaKomodo.h">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC\Zoned\Fauna</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\character\npc\zoned\automaton\RobotAutomaton.h">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC\Zoned\Automaton</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\ai\NPC_AIState.h">
+      <Filter>SOURCE\AFTER\States\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\CWorldState.h">
+      <Filter>SOURCE\AFTER\States</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\character\NPC_WorldState.h">
+      <Filter>SOURCE\AFTER\Types\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\developer\editor\CTattooTester.h">
+      <Filter>SOURCE\AFTER\Developer\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\developer\editor\CTerrainSamplerEditor.h">
+      <Filter>SOURCE\AFTER\Developer\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\developer\editor\CVoxelFileEditor.h">
+      <Filter>SOURCE\AFTER\Developer\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\developer\CAiTester.h">
+      <Filter>SOURCE\AFTER\Developer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\developer\CRegionMapTester.h">
+      <Filter>SOURCE\AFTER\Developer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\interfaces\io\CZonedCharacterIO.h">
+      <Filter>SOURCE\AFTER\Interfaces\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\interfaces\world\CWorldCartographer.h">
+      <Filter>SOURCE\AFTER\Interfaces\World</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\world\CMCCRealm.h">
+      <Filter>SOURCE\AFTER\States\World</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\world\CMCCPlanet.h">
+      <Filter>SOURCE\AFTER\States\World</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\cutscene\CDialogueLoader.h">
+      <Filter>SOURCE\AFTER\Entities\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\cutscene\CDialogueGUI.h">
+      <Filter>SOURCE\AFTER\Entities\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\cutscene\CCutscene.h">
+      <Filter>SOURCE\AFTER\Entities\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\menu\front\C_RCharacterCreator.h">
+      <Filter>SOURCE\AFTER\Entities\Menu\Front</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\menu\front\C_RMainMenu.h">
+      <Filter>SOURCE\AFTER\Entities\Menu\Front</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\menu\front\C_RMainMenuTitle.h">
+      <Filter>SOURCE\AFTER\Entities\Menu\Front</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\menu\splash\CSplashScreens.h">
+      <Filter>SOURCE\AFTER\Entities\Menu\Splash</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\menu\splash\CStudioSplash.h">
+      <Filter>SOURCE\AFTER\Entities\Menu\Splash</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\menu\COctreePauseloader.h">
+      <Filter>SOURCE\AFTER\Entities\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\menu\CTerrainLoadscreen.h">
+      <Filter>SOURCE\AFTER\Entities\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\utils\NamingUtils.h">
+      <Filter>SOURCE\AFTER\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\modifiers\CTerraExplosion.h">
+      <Filter>SOURCE\AFTER\Terrain\Modifiers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\Zones.h">
+      <Filter>SOURCE\AFTER\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\physics\wind\WindMotion.h">
+      <Filter>SOURCE\AFTER\Physics\Wind</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\world\Cultures.h">
+      <Filter>SOURCE\AFTER\Types\World</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\world\Towns.h">
+      <Filter>SOURCE\AFTER\Types\World</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\world\Resources.h">
+      <Filter>SOURCE\AFTER\Types\World</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\DirectionFlags.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\TerrainTypes.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\BlockData.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\BlockType.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\IOPropData.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\BlockTracker.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\edit\csg\SidebufferVolumeEditor.h">
+      <Filter>SOURCE\AFTER\Terrain\Edit\CSG</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\CWorldGen_Terran.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\CWorldGen_Terran_Architecture.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\CWorldGen_Terran_Biome.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\CWorldGen_Terran_Landmasses.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\CWorldGenerator.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\patterns\CPatternController.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\patterns\IPatternGeneration.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\patterns\ruins\PatternDesertRuins.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Patterns\Ruins</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\dungeons\DungeonCaveSystem.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Dungeons</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\dungeons\DungeonFactory.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Dungeons</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\dungeons\DungeonLua.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Dungeons</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\dungeons\DungeonBase.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Dungeons</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\WeatherTypes.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\BiomeTypes.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\GrassTypes.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\InstanceTypes.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\terrain\PatternTypes.h">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\CWeaponItem.h">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\item\CWeaponItemTypes.h">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\CCharacterModel.h">
+      <Filter>SOURCE\AFTER\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\hud\player\CCharacterScreen.h">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\hud\player\CInventoryGUI.h">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\hud\player\CPlayerHud.h">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\hud\player\CPlayerHudStatus.h">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\hud\player\CPlayerInventoryGUI.h">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\hud\player\CPlayerLogbook.h">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\hud\player\CPlayerMenu.h">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\hud\player\CSkillTreeGUI.h">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\hud\player\Plhud_RadialMenu.h">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\skilltree\CSkillTree.h">
+      <Filter>SOURCE\AFTER\States\Skill Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\animation\Sequence.h">
+      <Filter>SOURCE\AFTER\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\character\TypeEnum.h">
+      <Filter>SOURCE\AFTER\Types\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\version.h">
+      <Filter>SOURCE\AFTER\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\utils\indexing.h">
+      <Filter>SOURCE\AFTER\Terrain\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\character\NPC_AIFocus.h">
+      <Filter>SOURCE\AFTER\Types\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\data\Node.h">
+      <Filter>SOURCE\AFTER\Terrain\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\data\GamePayload.h">
+      <Filter>SOURCE\AFTER\Terrain\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\lua\CLuaSkill.h">
+      <Filter>SOURCE\AFTER\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\lua\CLuaWeaponItem.h">
+      <Filter>SOURCE\AFTER\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\edit\CTerrainAccessor.h">
+      <Filter>SOURCE\AFTER\Terrain\Edit</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\physics\Caster.h">
+      <Filter>SOURCE\AFTER\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\VoxelTerrain.h">
+      <Filter>SOURCE\AFTER\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\data\GameState.h">
+      <Filter>SOURCE\AFTER\Terrain\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\system\CVoxelMesher.h">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\edit\SidebufferAccessor.h">
+      <Filter>SOURCE\AFTER\Terrain\Edit</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\system\MemoryManager.h">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\physics\CMeshedStaticProp.h">
+      <Filter>SOURCE\AFTER\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\world\Regions.h">
+      <Filter>SOURCE\AFTER\Types\World</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\types\world\Provinces.h">
+      <Filter>SOURCE\AFTER\Types\World</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\states\world\ProvinceManager.h">
+      <Filter>SOURCE\AFTER\States\World</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\generation\regions\CRegionGenerator.h">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Regions</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\io\COctreeIO.h">
+      <Filter>SOURCE\AFTER\Terrain\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\entities\world\events\CEventBase.h">
+      <Filter>SOURCE\AFTER\Entities\World\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\lua\Lua.h">
+      <Filter>SOURCE\AFTER\Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\data\IOHeader.h">
+      <Filter>SOURCE\AFTER\Terrain\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after-editor\standalone\CLipsyncEditor.h">
+      <Filter>SOURCE\AFTER-Editor\Standalone</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after-editor\standalone\CParticleEditor.h">
+      <Filter>SOURCE\AFTER-Editor\Standalone</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after-editor\standalone\CSkyColorEditor.h">
+      <Filter>SOURCE\AFTER-Editor\Standalone</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after-editor\scenes\gmsceneLipsyncEditor.h">
+      <Filter>SOURCE\AFTER-Editor\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after-editor\scenes\gmsceneParticleEditor.h">
+      <Filter>SOURCE\AFTER-Editor\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after-editor\scenes\gmsceneSkyColorEditor.h">
+      <Filter>SOURCE\AFTER-Editor\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after-editor\scenes\gmsceneTattooTester.h">
+      <Filter>SOURCE\AFTER-Editor\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after-editor\scenes\gmsceneVoxelEditor.h">
+      <Filter>SOURCE\AFTER-Editor\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\system\DataSampler.h">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\system\TerrainRenderer.h">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\data\MeshState.h">
+      <Filter>SOURCE\AFTER\Terrain\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="source\after\terrain\system\JobHandler.h">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\after\scenes\gmsceneGame_5.cpp">
+      <Filter>SOURCE\AFTER\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\scenes\gmsceneMainGame.cpp">
+      <Filter>SOURCE\AFTER\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\scenes\gmsceneMenu.cpp">
+      <Filter>SOURCE\AFTER\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\scenes\gmsceneSplashScreens.cpp">
+      <Filter>SOURCE\AFTER\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\scenes\gmsceneCharacterViewer.cpp">
+      <Filter>SOURCE\AFTER\Scenes\Developer %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\CCharacter.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\CharacterStats.cpp">
+      <Filter>SOURCE\AFTER\States</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\NPC_CombatState.cpp">
+      <Filter>SOURCE\AFTER\States</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\debuffs\Debuffs.cpp">
+      <Filter>SOURCE\AFTER\States\Debuffs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\debuffs\DebuffList.cpp">
+      <Filter>SOURCE\AFTER\States\Debuffs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\debuffs\standard\DebuffDisable.cpp">
+      <Filter>SOURCE\AFTER\States\Debuffs\Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\debuffs\standard\DebuffDPS.cpp">
+      <Filter>SOURCE\AFTER\States\Debuffs\Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\debuffs\standard\DebuffRooted.cpp">
+      <Filter>SOURCE\AFTER\States\Debuffs\Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\debuffs\standard\DebuffSlow.cpp">
+      <Filter>SOURCE\AFTER\States\Debuffs\Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\debuffs\standard\DebuffSlowBurnFrostball.cpp">
+      <Filter>SOURCE\AFTER\States\Debuffs\Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\debuffs\standard\DebuffBurningFlametoss.cpp">
+      <Filter>SOURCE\AFTER\States\Debuffs\Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\debuffs\racial\BuffRacialDarkElf.cpp">
+      <Filter>SOURCE\AFTER\States\Debuffs\Racial</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\debuffs\racial\BuffRacialKitten.cpp">
+      <Filter>SOURCE\AFTER\States\Debuffs\Racial</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\debuffs\racial\BuffFluxxorManablood.cpp">
+      <Filter>SOURCE\AFTER\States\Debuffs\Racial</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\CAfterPlayer.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\CAfterPlayer_Animation.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\CAfterPlayer_Camera.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\CAfterPlayer_Movetypes.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\CAfterPlayer_Transforms.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\interfaces\CAfterCharacterAnimator.cpp">
+      <Filter>SOURCE\AFTER\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\interfaces\CAfterCharacterAnimator_Speech.cpp">
+      <Filter>SOURCE\AFTER\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\projectile\AfterBaseProjectile.cpp">
+      <Filter>SOURCE\AFTER\Entities\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\projectileeffect\ProjectileEffects.cpp">
+      <Filter>SOURCE\AFTER\States\Projectile Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\projectile\projectile\ProjectileArrow.cpp">
+      <Filter>SOURCE\AFTER\Entities\Projectile\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\projectile\projectile\ProjectileCBolt.cpp">
+      <Filter>SOURCE\AFTER\Entities\Projectile\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\projectile\projectile\ProjectilePebble.cpp">
+      <Filter>SOURCE\AFTER\Entities\Projectile\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\projectile\magical\ProjectileFiretoss.cpp">
+      <Filter>SOURCE\AFTER\Entities\Projectile\Magical</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\projectile\magical\ProjectileFrostball.cpp">
+      <Filter>SOURCE\AFTER\Entities\Projectile\Magical</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\projectile\magical\ProjectileMagicBolt.cpp">
+      <Filter>SOURCE\AFTER\Entities\Projectile\Magical</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\projectileeffect\effects\PEffectBouncing.cpp">
+      <Filter>SOURCE\AFTER\States\Projectile Effect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\projectileeffect\effects\PEffectBurnOnHit.cpp">
+      <Filter>SOURCE\AFTER\States\Projectile Effect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\effects\CFXNotice.cpp">
+      <Filter>SOURCE\AFTER\Entities\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\physics\water\Water.cpp">
+      <Filter>SOURCE\AFTER\Physics\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\renderer\objects\grass\CTerraGrass.cpp">
+      <Filter>SOURCE\AFTER\Renderer\Objects\Grass</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\renderer\objects\tree\CTreeRenderer.cpp">
+      <Filter>SOURCE\AFTER\Renderer\Objects\Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\renderer\objects\tree\CTreeLeafRenderer.cpp">
+      <Filter>SOURCE\AFTER\Renderer\Objects\Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\foliage\CFoliage.cpp">
+      <Filter>SOURCE\AFTER\Entities\Foliage</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\foliage\CFoliageTree.cpp">
+      <Filter>SOURCE\AFTER\Entities\Foliage</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\foliage\CTerraFoliageFactory.cpp">
+      <Filter>SOURCE\AFTER\Entities\Foliage</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\foliage\CTreeBase.cpp">
+      <Filter>SOURCE\AFTER\Entities\Foliage</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\foliage\trees\FoliageTreePine.cpp">
+      <Filter>SOURCE\AFTER\Entities\Foliage\Trees</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\foliage\trees\FoliageTreeWarped.cpp">
+      <Filter>SOURCE\AFTER\Entities\Foliage\Trees</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\foliage\nottrees\FoliageBushGreen.cpp">
+      <Filter>SOURCE\AFTER\Entities\Foliage\Not Trees</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\foliage\nottrees\FoliageCactusDefault.cpp">
+      <Filter>SOURCE\AFTER\Entities\Foliage\Not Trees</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\test\CTestPhysicsCrate.cpp">
+      <Filter>SOURCE\AFTER\Entities\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\test\CTestPhysicsFloor.cpp">
+      <Filter>SOURCE\AFTER\Entities\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\CRecipeLibrary.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\CRecipeLibrary_Forging.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\CWeaponItemFactory.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\ammo\AmmoArrow.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Ammo</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\ammo\AmmoCrossbowBolt.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Ammo</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\ammo\CAmmoBase.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Ammo</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\wearable\CWearableItem.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Wearable</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\CBaseRandomBow.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\CBaseRandomItem.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\CBaseRandomMelee.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\CBaseRandomTossable.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\ItemAdditives.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\bow\CRWBowShitty.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Bow</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\tool\CRWDrillBasic.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\tossable\CRIDynamite.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Tossable</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWDagger.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWHoe.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWPickaxeSuShitty.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWShovelSuShitty.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\CWeaponItemGenerator.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\CSkill.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\CSkillReference.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\ItemRandomizer.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\system\ItemBlockPuncher.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\system\ItemTerraBlok.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\system\ItemMeleeCombat.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\junk\CItemJunkBase.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Junk</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWSpear.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWSword.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWSwordShortShitty.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Weapon\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\props\flora\ItemFloraLifedrop.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Props\Flora</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\props\flora\ItemFloraSnowLily.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Props\Flora</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\props\ItemCampfire.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\props\ItemCrateWooden.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\props\ItemElectricLamp.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\props\ItemElectricSource.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\props\ItemLantern.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\props\ItemTorch.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\material\ItemTreeBranch.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\material\ItemTreeTrunk.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\material\ItemTreeTwig.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\beta\WeaponCrossbow.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Beta</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\SkillList.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\skills\mobility\SkillBlink.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Mobility</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\skills\modifier\SkillFireArrow.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Modifier</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\skills\offensive\SkillFiretoss.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Offensive</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\skills\offensive\SkillFrostball.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Offensive</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\skills\modifier\SkillHailOfArrows.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Modifier</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\skills\offensive\SkillMagicBolt.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Offensive</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\skills\offensive\SkillMagikinesis.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Offensive</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\skills\defensive\SkillShield.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Defensive</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\skills\defensive\SkillPressureBlast.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Defensive</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\skills\modifier\SkillReflectshot.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Modifier</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\skill\skills\modifier\SkillSplitshot.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item\Skill\Skills\Modifier</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\CMccCharacterModel.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character\Model %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\CRfCharacterModel.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character\Model %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\model\CLipsyncSequence.cpp">
+      <Filter>SOURCE\AFTER\States\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\model\CTattooRenderer.cpp">
+      <Filter>SOURCE\AFTER\States\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\CRacialStats.cpp">
+      <Filter>SOURCE\AFTER\States</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\props\CTerrainProp.cpp">
+      <Filter>SOURCE\AFTER\Entities\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\props\CTerrainPropFactory.cpp">
+      <Filter>SOURCE\AFTER\Entities\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\props\flora\PropFloraLifedrop.cpp">
+      <Filter>SOURCE\AFTER\Entities\Props\Flora</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\props\flora\PropFloraSnowLily.cpp">
+      <Filter>SOURCE\AFTER\Entities\Props\Flora</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\props\props\ElectricLampComponent.cpp">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\props\props\ElectricSourceComponent.cpp">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\props\props\PropCampfire.cpp">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\props\props\PropChestBase.cpp">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\props\props\PropCrateWooden.cpp">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\props\props\PropDoorBase.cpp">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\props\props\PropLantern.cpp">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\props\props\PropTorch.cpp">
+      <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\weaponeffect\WeaponEffects.cpp">
+      <Filter>SOURCE\AFTER\States\Weapon Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\player\CPlayerStats_RaceDesc.cpp">
+      <Filter>SOURCE\AFTER\States\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\player\CPlayerStats.cpp">
+      <Filter>SOURCE\AFTER\States\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\player\CPlayerStats_Lua.cpp">
+      <Filter>SOURCE\AFTER\States\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\renderer\objects\hud\CBlockCursor.cpp">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\renderer\objects\hud\Plhud3d_Hurt01.cpp">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\renderer\objects\hud\Ploverlay_Goggles01.cpp">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\renderer\objects\hud\Ploverlay_Hurt01.cpp">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\renderer\objects\hud\Ploverlay_Icing.cpp">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\renderer\objects\hud\Plhud_AreaNotifier.cpp">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\renderer\objects\hud\Plhud_TextNotifier.cpp">
+      <Filter>SOURCE\AFTER\Renderer\Objects\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\environment\weather\CWeatherCloud.cpp">
+      <Filter>SOURCE\AFTER\Entities\World\Environment\Weather</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\environment\weather\CWeatherSimulator.cpp">
+      <Filter>SOURCE\AFTER\Entities\World\Environment\Weather</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\environment\weather\CCloudMaster.cpp">
+      <Filter>SOURCE\AFTER\Entities\World\Environment\Weather</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\environment\CEnvironmentEffects.cpp">
+      <Filter>SOURCE\AFTER\Entities\World\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\environment\CloudSphere.cpp">
+      <Filter>SOURCE\AFTER\Entities\World\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\environment\DayAndNightCycle.cpp">
+      <Filter>SOURCE\AFTER\Entities\World\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\environment\EnvHeavyWeather.cpp">
+      <Filter>SOURCE\AFTER\Entities\World\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\environment\EnvSunlight.cpp">
+      <Filter>SOURCE\AFTER\Entities\World\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\events\EventBanditSpawnSmall.cpp">
+      <Filter>SOURCE\AFTER\Entities\World\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\events\EventDesertStorm.cpp">
+      <Filter>SOURCE\AFTER\Entities\World\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\events\EventAutomatonDesert.cpp">
+      <Filter>SOURCE\AFTER\Entities\World\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\CGameEventGenerator.cpp">
+      <Filter>SOURCE\AFTER\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\CGameEventList.cpp">
+      <Filter>SOURCE\AFTER\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\gametype\gametypeNotDying.cpp">
+      <Filter>SOURCE\AFTER\Entities\Gametype</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\gametype\gametypeMenu.cpp">
+      <Filter>SOURCE\AFTER\Entities\Gametype</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\gametype\gametypeCharview.cpp">
+      <Filter>SOURCE\AFTER\Entities\Gametype</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\interfaces\CCharacterMotion.cpp">
+      <Filter>SOURCE\AFTER\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\interfaces\CCharacterMotion_States.cpp">
+      <Filter>SOURCE\AFTER\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\interfaces\CSpeechTrie.cpp">
+      <Filter>SOURCE\AFTER\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\inventory\CInventory.cpp">
+      <Filter>SOURCE\AFTER\States\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\inventory\CPlayerInventory.cpp">
+      <Filter>SOURCE\AFTER\States\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\inventory\CCrafting.cpp">
+      <Filter>SOURCE\AFTER\States\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\client\CQuestSystem.cpp">
+      <Filter>SOURCE\AFTER\Entities\World\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\world\CNpcSpawner.cpp">
+      <Filter>SOURCE\AFTER\Entities\World</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\npc\CCharTest.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\npc\CNpcBase.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\npc\zoned\CZonedCharacter.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC\Zoned</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\npc\zoned\CZonedCharacterController.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC\Zoned</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\npc\zoned\fauna\FaunaKomodo.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC\Zoned\Fauna</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\npc\zoned\fauna\FaunaDesertBird.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC\Zoned\Fauna</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\character\npc\zoned\automaton\RobotAutomaton.cpp">
+      <Filter>SOURCE\AFTER\Entities\Character\NPC\Zoned\Automaton</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\ai\NPC_AIKill.cpp">
+      <Filter>SOURCE\AFTER\States\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\ai\NPC_AILookAt.cpp">
+      <Filter>SOURCE\AFTER\States\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\ai\NPC_AIPathfinding.cpp">
+      <Filter>SOURCE\AFTER\States\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\ai\NPC_AIState.cpp">
+      <Filter>SOURCE\AFTER\States\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\ai\NPC_AIThink.cpp">
+      <Filter>SOURCE\AFTER\States\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\ai\NPC_AIFocus.cpp">
+      <Filter>SOURCE\AFTER\States\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\CWorldState.cpp">
+      <Filter>SOURCE\AFTER\States</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\developer\editor\CTerrainSamplerEditor.cpp">
+      <Filter>SOURCE\AFTER\Developer\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\developer\editor\CVoxelFileEditor.cpp">
+      <Filter>SOURCE\AFTER\Developer\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\developer\editor\CTattooTester.cpp">
+      <Filter>SOURCE\AFTER\Developer\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\developer\CAiTester.cpp">
+      <Filter>SOURCE\AFTER\Developer</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\developer\CRegionMapTester.cpp">
+      <Filter>SOURCE\AFTER\Developer</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\interfaces\io\CZonedCharacterIO.cpp">
+      <Filter>SOURCE\AFTER\Interfaces\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\interfaces\world\CWorldCartographer.cpp">
+      <Filter>SOURCE\AFTER\Interfaces\World</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\world\CMCCPlanet.cpp">
+      <Filter>SOURCE\AFTER\States\World</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\world\CMCCRealm.cpp">
+      <Filter>SOURCE\AFTER\States\World</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\cutscene\CDialogueGUI.cpp">
+      <Filter>SOURCE\AFTER\Entities\Cutscene</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\cutscene\CDialogueLoader.cpp">
+      <Filter>SOURCE\AFTER\Entities\Cutscene</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\cutscene\CCutscenes.cpp">
+      <Filter>SOURCE\AFTER\Entities\Cutscene</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\menu\front\C_RMainMenu.cpp">
+      <Filter>SOURCE\AFTER\Entities\Menu\Front</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\menu\front\C_RMainMenuTitle.cpp">
+      <Filter>SOURCE\AFTER\Entities\Menu\Front</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\menu\front\C_RCharacterCreator.cpp">
+      <Filter>SOURCE\AFTER\Entities\Menu\Front</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\menu\splash\CStudioSplash.cpp">
+      <Filter>SOURCE\AFTER\Entities\Menu\Splash</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\menu\splash\CSplashScreens.cpp">
+      <Filter>SOURCE\AFTER\Entities\Menu\Splash</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\menu\COctreePauseloader.cpp">
+      <Filter>SOURCE\AFTER\Entities\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\menu\CTerrainLoadscreen.cpp">
+      <Filter>SOURCE\AFTER\Entities\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\utils\NamingUtil_Town.cpp">
+      <Filter>SOURCE\AFTER\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\modifiers\CTerraExplosion.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Modifiers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\ZoneChecker.cpp">
+      <Filter>SOURCE\AFTER\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\Zones.cpp">
+      <Filter>SOURCE\AFTER\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\physics\wind\WindMotion.cpp">
+      <Filter>SOURCE\AFTER\Physics\Wind</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\types\terrain\BlockType.cpp">
+      <Filter>SOURCE\AFTER\Types\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\edit\csg\SidebufferVolumeEditor.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Edit\CSG</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran_Architecture.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran_Biome.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran_Caves.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran_Landmasses.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran_Patterns.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran_Terrain.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\CWorldGenerator.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\patterns\CPatternController.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\patterns\CPatternController_Excavation.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\patterns\CPatternController_IO.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Patterns</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\patterns\ruins\PatternDesertRuins.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Patterns\Ruins</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\dungeons\DungeonCaveSystem.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Dungeons</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\dungeons\DungeonFactory.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Dungeons</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\dungeons\DungeonBase.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Dungeons</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\CWeaponItem.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\CWeaponItemRendering.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\item\CWeaponItemTypes.cpp">
+      <Filter>SOURCE\AFTER\Entities\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\CCharacterModel.cpp">
+      <Filter>SOURCE\AFTER\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\CCharacterModel_Animation.cpp">
+      <Filter>SOURCE\AFTER\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\hud\player\CCharacterScreen.cpp">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\hud\player\CCraftingGUI.cpp">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\hud\player\CInventoryGUI.cpp">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\hud\player\CPlayerHud.cpp">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\hud\player\CPlayerHudStatus.cpp">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\hud\player\CPlayerInventoryGUI.cpp">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\hud\player\CPlayerLogbook.cpp">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\hud\player\CPlayerMenu.cpp">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\hud\player\CSkillTreeGUI.cpp">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\entities\hud\player\Plhud_RadialMenu.cpp">
+      <Filter>SOURCE\AFTER\Entities\HUD\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\skilltree\CSkillTree.cpp">
+      <Filter>SOURCE\AFTER\States\Skill Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\animation\Sequence.cpp">
+      <Filter>SOURCE\AFTER\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\after-common.cpp">
+      <Filter>SOURCE\AFTER</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\lua\CLuaSkill.cpp">
+      <Filter>SOURCE\AFTER\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\lua\CLuaWeaponItem.cpp">
+      <Filter>SOURCE\AFTER\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\lua\Lua_GameObjects.cpp">
+      <Filter>SOURCE\AFTER\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\lua\Lua_QuestSystem.cpp">
+      <Filter>SOURCE\AFTER\Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\edit\CTerrainAccessor.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\physics\Caster.cpp">
+      <Filter>SOURCE\AFTER\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\VoxelTerrain.cpp">
+      <Filter>SOURCE\AFTER\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\system\CVoxelMesher.cpp">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\system\CVoxelMesherTVMC.cpp">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\edit\SidebufferAccessor.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\system\CVoxelMesherMC.cpp">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\system\CVoxelMesherDC.cpp">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\system\MemoryManager.cpp">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\physics\CMeshedStaticProp.cpp">
+      <Filter>SOURCE\AFTER\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\states\world\ProvinceManager.cpp">
+      <Filter>SOURCE\AFTER\States\World</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\types\world\Cultures.cpp">
+      <Filter>SOURCE\AFTER\Types\World</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\regions\CRegionGenerator.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Regions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\generation\regions\CRegionGenerator_IO.cpp">
+      <Filter>SOURCE\AFTER\Terrain\Generation\Regions</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\io\COctreeIO_BTree.cpp">
+      <Filter>SOURCE\AFTER\Terrain\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\io\COctreeIO_Compression.cpp">
+      <Filter>SOURCE\AFTER\Terrain\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\io\COctreeIO_GameData.cpp">
+      <Filter>SOURCE\AFTER\Terrain\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\io\COctreeIO_LUT.cpp">
+      <Filter>SOURCE\AFTER\Terrain\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\io\COctreeIO.cpp">
+      <Filter>SOURCE\AFTER\Terrain\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after-editor\standalone\CParticleEditor.cpp">
+      <Filter>SOURCE\AFTER-Editor\Standalone</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after-editor\standalone\CSkyColorEditor.cpp">
+      <Filter>SOURCE\AFTER-Editor\Standalone</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after-editor\standalone\CLipsyncEditor.cpp">
+      <Filter>SOURCE\AFTER-Editor\Standalone</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after-editor\scenes\gmsceneParticleEditor.cpp">
+      <Filter>SOURCE\AFTER-Editor\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after-editor\scenes\gmsceneSkyColorEditor.cpp">
+      <Filter>SOURCE\AFTER-Editor\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after-editor\scenes\gmsceneTattooTester.cpp">
+      <Filter>SOURCE\AFTER-Editor\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after-editor\scenes\gmsceneVoxelEditor.cpp">
+      <Filter>SOURCE\AFTER-Editor\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after-editor\scenes\gmsceneLipsyncEditor.cpp">
+      <Filter>SOURCE\AFTER-Editor\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\system\DataSampler.cpp">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\system\JobHandler.cpp">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\terrain\system\TerrainRenderer.cpp">
+      <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

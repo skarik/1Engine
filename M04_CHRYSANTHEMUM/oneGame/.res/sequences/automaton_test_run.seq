@@ -1,0 +1,30 @@
+0:animation
+{
+	run2
+	blend 0.25s
+}
+
+3:lua
+{
+	--math.random() w/o arguments renturns a number between 0 and 1
+	if ( math.random() < 0.5 ) then
+		m_time = 0;
+	else
+		m_time = 4;
+	end
+}
+4:animation
+{
+	run2_02
+	blend 0.25s
+}
+7:lua
+{
+	--math.random() w/o arguments renturns a number between 0 and 1
+	if ( math.random() < 0.5 ) then
+		m_time = 0;
+	else
+		m_time = 4;
+	end
+}
+8:end

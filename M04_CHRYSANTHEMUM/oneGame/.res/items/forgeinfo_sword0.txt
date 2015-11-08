@@ -1,0 +1,14 @@
+// basic sword recipies
+
+basic_wooden_sword
+{
+	result_type Sword
+
+	// Take parts unremarkable
+	blade "unremarkable.basic"
+	hilt "unremarkable"
+	
+	base "wood"
+	// Three wood for a basic wooden sword
+	additives "wood;wood"
+}

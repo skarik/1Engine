@@ -1,0 +1,1 @@
+default items/swords/set1_hilts

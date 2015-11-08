@@ -1,0 +1,217 @@
+#begin
+    
+	lua
+    (!{
+        local targetChar = _npc_get_participant(1);
+        local playerChar = _npc_get_participant(0);
+        local companionChar = _npc_get_byID(1);
+        
+        local targetPos = _go_get_position(companionChar);
+        targetChar.FaceAt( targetPos.x, targetPos.y, targetPos.z );
+    }!)
+	
+	lines character1
+	{
+		audio
+		1 It was a dull and boring night in your apartment.
+		action
+		2 You find yourself wishing you had more friends to hang out with.
+		audio
+		action
+		3 What do you do?
+		audio
+		action
+	}
+	choice character0
+	{
+		timer 10.0
+		default 2
+		1 Call your friends and hope they're in the same boat as you.	
+		{
+			goto CallFriends
+		}
+		2 Realize that you have work in the morning and go to bed early. 
+		3 Say "Fuck it" out loud and summon a demon.
+		{
+			goto SummonBitch
+		}
+	}
+	
+	lines character1
+	{
+		1 You go to bed.
+		audio
+		action
+		2 Well, isn't that interesting.
+		audio voice/MF_WellIsntThatInteresting.mp3
+		action MF_WellIsntThatInteresting.mph
+		3 GAME OVER
+		audio
+		action
+	}
+	
+	lines character0
+	{
+		1 Now I'm testing the robustness of my system!
+		audio
+		action
+		2 Let's see if it breaks!
+		audio
+		action
+		3 Well, isn't that interesting.
+		audio voice/MF_WellIsntThatInteresting.mp3
+		action MF_WellIsntThatInteresting.mph
+	}
+#ended
+
+#CallFriends
+
+	lines character1
+	{
+		1 You don't have any friends.
+		audio
+		action
+		2 Well, none that are free, anyway.
+		audio
+		action
+		3 What do you do?
+		audio
+		action
+	}
+	choice character0
+	{
+		1 Stay up late playing Dota 2.
+		{
+			goto PlayDota
+		}
+		2 Stay up late playing LoL.
+		{
+			goto PlayTrash
+		}
+		3 Stay up late playing HoN.
+		{
+			goto PlayMasochism
+		}
+
+	}
+
+#PlayDota
+
+	lines character1
+	{
+		1 You hop onto Dota 2.
+		audio
+		action
+		2 You see that one of your friends is online
+		audio
+		action
+		3 What do you do?
+		audio
+		action
+	}
+	choice character0
+	{
+		1 Invite him to join you.
+		{
+			goto SendInvite
+		}
+		2 Just solo queue. You think he's masturbating anyway.
+		{
+			goto SoloQueue
+		}
+		3 Start a bot match.
+		{
+			goto BotMatch
+		}
+	}
+
+#SendInvite
+
+	lines character1
+	{
+		1 You send him a party invite.
+		audio
+		action
+		2 He tells you to wait a moment and then he'll join you.
+		audio
+		action
+		3 You have a decent game but wish he would stop playing Crystal Feeden.
+		audio
+		action
+		4 GAME OVER
+		audio
+		action
+	}
+#ended
+
+#SoloQueue
+
+	lines character1
+	{
+		1 You're pretty sure he's just masturbating.
+		audio
+		action
+		2 You find a game by yourself and your teammates suck.
+		audio
+		action
+		3 What do you do?
+		audio
+		action
+	}
+	choice character0
+	{
+
+		1 Complain in all chat
+		{
+			goto Complain
+		}
+		2 Realize that the pain will soon pass
+		{
+			goto CalmMeditation
+		}
+		3 Embrace your Brazilian teammates and feed with them
+		{
+			goto Brazilians
+		}
+	}
+#ended
+
+#PlayTrash
+#PlayMasochism
+
+#ended
+
+#SummonBitch
+
+	lines character1
+	{
+		1 Well. Interesting choice.
+		audio
+		action
+		2 You summon a succubus.
+		audio
+		action
+		3 What do you do?
+		audio
+		action
+	}
+	choice character0
+	{
+		1 Greet her.
+		{
+			goto SayHi
+		}
+		2 Hug her.
+		{
+			goto Hug
+		}
+		3 Exorcise her.
+		{
+			goto Exorcise
+		}
+	}
+#SayHi
+#Hug
+#Exorcise
+
+#ended

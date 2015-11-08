@@ -1,0 +1,16 @@
+title: Dirt Block
+hidden:
+ showblock:	EB_DIRT
+ showbook:	Blocked_1
+default:
+ It's dirt, you place it.
+research1:
+ You can throw it for like,
+ no damage.
+event1:
+ You can make mud
+ blocks
+ with dirt
+ and nearby water
+research2:
+ You can sprinkle it on a cake.
