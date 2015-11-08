@@ -17,7 +17,8 @@ namespace Core
 	{
 		if ( m_paths.empty() )
 		{
-			m_paths.push_back( "./.res/" );
+			m_paths.push_back( "./.res-0/" );
+			m_paths.push_back( "./.res-1/" );
 
 			// Now enumerate all folders under the "./addons/" directory
 			fs::path	targetDir ( "./addons/" ); 
