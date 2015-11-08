@@ -1,2 +1,0 @@
-considering the game as a document.
-under GPL, the document does not have to be open source.

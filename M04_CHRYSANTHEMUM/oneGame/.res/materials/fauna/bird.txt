@@ -1,6 +1,0 @@
-main
-{
-	texture 	textures\black.jpg
-	diffuse		1 1 1
-	emissive	0 0 0
-}
