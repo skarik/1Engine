@@ -1,2 +1,0 @@
-clara.pad contains the animations
-the directory clara actually contains all the parts used

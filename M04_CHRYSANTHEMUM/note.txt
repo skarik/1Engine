@@ -1,4 +1,0 @@
-If any of you guys declare your NPCs or characters with a custom BaseClass("") macro, I will fucking find you and strangle you in your sleep.
-
-
-ALSO PLEASE COMMENT YOUR CODE
