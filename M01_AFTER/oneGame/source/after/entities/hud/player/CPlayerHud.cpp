@@ -96,8 +96,8 @@ CPlayerHud::CPlayerHud ( CAfterPlayer* p_player, CInventory* p_inventory )
 	matDrawHud->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
 	matDrawHud->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
 
-	//texReticle = new CTexture( ".res\\textures\\hud\\crosshair.tga" );
-	//texReticle = new CTexture( ".res/textures/black.jpg" );
+	//texReticle = new CTexture( "textures/hud/crosshair.tga" );
+	//texReticle = new CTexture( "textures/black.jpg" );
 
 	matDrawReticle = new glMaterial;
 	matDrawReticle->setTexture( 0, new CTexture( ".res/textures/hud/crosshairs.png" ) );

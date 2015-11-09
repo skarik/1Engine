@@ -20,7 +20,7 @@ class ItemPebble : public CAmmoBase
 public:
 	ItemPebble ( void ) : CAmmoBase( ItemData() )
 	{
-		pModel = new CModel( string(".res/models/world/pebble.FBX") );
+		pModel = new CModel( "models/world/pebble.FBX" );
 	}
 
 	bool	Use ( int x )

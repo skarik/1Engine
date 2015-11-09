@@ -28,7 +28,7 @@ public:
 
 public:
 	static string GetName ( void ) { return "Fire Arrow"; }
-	static string GetIconFilename ( void ) { return ".res/textures/icons/skill_firearrow.png"; }
+	static string GetIconFilename ( void ) { return "textures/icons/skill_firearrow.png"; }
 protected:
 	SKILL_DATA_DEFINE {
 		SKILLDATA_DEFAULTS;

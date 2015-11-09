@@ -25,7 +25,7 @@ public:
 
 public:
 	static string GetName ( void ) { return "Magikinesis"; }
-	static string GetIconFilename ( void ) { return ".res/textures/icons/skill_magikinesis.png"; }
+	static string GetIconFilename ( void ) { return "textures/icons/skill_magikinesis.png"; }
 protected:
 	SKILL_DATA_DEFINE {
 		SKILLDATA_DEFAULTS;

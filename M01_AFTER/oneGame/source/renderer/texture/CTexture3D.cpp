@@ -6,6 +6,7 @@
 #include "CTextureMaster.h"
 
 #include "core/system/io/FileUtils.h"
+#include "core-ext/system/io/Resources.h"
 
 // === Constructor ===
 CTexture3D::CTexture3D ( string sInFilename,
@@ -28,11 +29,13 @@ CTexture3D::CTexture3D ( string sInFilename,
 	}
 	// Look for null texture request (just a fast white sampler)
 	if ( sFilename == "null" || sFilename == "Null" || sFilename == "NULL" ) {
-		sFilename = ".res/textures/null.jpg";
+		sFilename = "textures/null.jpg";
 	}
 	// Standardize the filename
 	sFilename = IO::FilenameStandardize( sFilename );
-	
+	// Look for the valid resource to load
+	sFilename = Core::Resources::PathTo( sFilename );
+
 	// Set the information structure to prepare for reading in
 	info.type			= textureType;
 	info.internalFormat	= format;

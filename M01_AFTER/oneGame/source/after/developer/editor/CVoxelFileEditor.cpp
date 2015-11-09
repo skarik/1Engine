@@ -6,6 +6,7 @@
 #include "core/system/System.h"
 
 #include "core-ext/system/io/mccvxg.h"
+#include "core-ext/system/io/Resources.h"
 
 #include "physical/physics/CPhysics.h"
 #include "engine/physics/raycast/Raycaster.h"
@@ -508,12 +509,12 @@ void CVoxelFileEditor::Load ( void )
 	System::sFileDialogueEntry entry;
 	strcpy( entry.extension, "*.mcc.VXG" );
 	strcpy( entry.filetype, "MCC Variant aligned voxel graphic" );
-/*	m_gui->DialogueOpenFilename( &entry, 1, ".res/terra/", "Open voxel file" );
+/*	m_gui->DialogueOpenFilename( &entry, 1, "terra/", "Open voxel file" );
 }
 void CVoxelFileEditor::DoLoad ( void )
 {*/
 	char str_result [1024];
-	if ( System::GetOpenFilename( str_result, &entry, 1, ".res/terra/", "Open voxel file" ) )
+	if ( System::GetOpenFilename( str_result, &entry, 1, (Core::Resources::GetPrimaryResourcePath() + "terra/").c_str(), "Open voxel file" ) )
 	//if ( m_gui->GetOpenFilename( str_result ) )
 	{
 		std::cout << "Opening: " << str_result << std::endl;
@@ -573,13 +574,13 @@ void CVoxelFileEditor::Save ( void )
 	System::sFileDialogueEntry entry;
 	strcpy( entry.extension, "*.mcc.VXG" );
 	strcpy( entry.filetype, "MCC Variant aligned voxel graphic" );
-/*	m_gui->DialogueSaveFilename( &entry, 1, ".res/terra/", "Save voxel file" );
+/*	m_gui->DialogueSaveFilename( &entry, 1, "terra/", "Save voxel file" );
 }
 void CVoxelFileEditor::DoSave ( void )
 {*/
 	char str_result [1024];
 
-	if ( System::GetSaveFilename( str_result, &entry, 1, ".res/terra/", "Save voxel file" ) )
+	if ( System::GetSaveFilename( str_result, &entry, 1, (Core::Resources::GetPrimaryResourcePath() + "terra/").c_str(), "Save voxel file" ) )
 	//if ( m_gui->GetSaveFilename( str_result ) )
 	{
 		string resultFile = str_result;

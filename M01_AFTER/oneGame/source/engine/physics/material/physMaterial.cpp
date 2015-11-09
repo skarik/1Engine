@@ -54,13 +54,13 @@ namespace PhysMats
 		Default.name = "Default";
 		Default.index = 1;
 		Default.snd_step = "Char.Footstep";
-		Default.pt_step = ".res/particlesystems/dusttest01.pcf";
+		Default.pt_step = "particlesystems/dusttest01.pcf";
 
 		Dirt.name = "Dirt";
 		Dirt.index = 2;
-		Dirt.pt_collide = ".res/particlesystems/collide/dirt_collide.pcf";
-		Dirt.pt_hit = ".res/particlesystems/collide/dirt_hit.pcf";
-		Dirt.pt_step = ".res/particlesystems/collide/dirt_hit.pcf";
+		Dirt.pt_collide = "particlesystems/collide/dirt_collide.pcf";
+		Dirt.pt_hit = "particlesystems/collide/dirt_hit.pcf";
+		Dirt.pt_step = "particlesystems/collide/dirt_hit.pcf";
 		Dirt.snd_step = "Char.Footstep";
 
 		Grass.name = "Grass";
@@ -71,7 +71,7 @@ namespace PhysMats
 
 		Rock.name = "Rock";
 		Rock.index = 4;
-		Rock.pt_hit = ".res/particlesystems/collide/stone_hit.pcf";
+		Rock.pt_hit = "particlesystems/collide/stone_hit.pcf";
 		Rock.snd_step = "Char.Footstep";
 
 		Mud.name = "Mud";
@@ -85,9 +85,9 @@ namespace PhysMats
 
 		Sand.name = "Sand";
 		Sand.index = 7;
-		Sand.pt_hit = ".res/particlesystems/collide/sand_collide.pcf";
-		Sand.pt_collide = ".res/particlesystems/collide/sand_collide.pcf";
-		Sand.pt_step = ".res/particlesystems/collide/sand_collide.pcf";
+		Sand.pt_hit = "particlesystems/collide/sand_collide.pcf";
+		Sand.pt_collide = "particlesystems/collide/sand_collide.pcf";
+		Sand.pt_step = "particlesystems/collide/sand_collide.pcf";
 		Sand.snd_step = "Char.FootstepSand";
 		Sand.phys_friction = 0.8f;
 		
@@ -110,19 +110,19 @@ namespace PhysMats
 
 		Snow.name = "Snow";
 		Snow.index = 12;
-		Snow.pt_hit = ".res/particlesystems/collide/dust_collide.pcf";
-		Snow.pt_collide = ".res/particlesystems/collide/dust_collide.pcf";
-		Snow.pt_step = ".res/particlesystems/collide/dust_step2.pcf";
+		Snow.pt_hit = "particlesystems/collide/dust_collide.pcf";
+		Snow.pt_collide = "particlesystems/collide/dust_collide.pcf";
+		Snow.pt_step = "particlesystems/collide/dust_step2.pcf";
 		Snow.snd_step = "Char.FootstepSand";
 		Snow.phys_friction = 0.86f;
 
 		Blood.name = "Blood";
 		Blood.index = 13;
-		Blood.pt_hit = ".res/particlesystems/blood.pcf";
+		Blood.pt_hit = "particlesystems/blood.pcf";
 
 		Metal.name = "Metal";
 		Metal.index = 14;
-		Metal.pt_hit = ".res/particlesystems/collide/dust_step2.pcf";
+		Metal.pt_hit = "particlesystems/collide/dust_step2.pcf";
 		Metal.phys_friction = 0.94f;
 
 		return 0;

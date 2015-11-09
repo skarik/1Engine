@@ -1,6 +1,7 @@
 
 #include "core/debug/console.h"
 #include "core/utils/StringUtils.h"
+#include "core-ext/system/io/Resources.h"
 // Include class and structure definition
 #include "CBitmapFont.h"
 // Include Window definition to get the needed device for font generation
@@ -168,7 +169,7 @@ void CBitmapFont::LoadFontAsTexture ( void )
 	memset( grayBitmap,0, max_width*max_width );
 
 	// Create the font face
-	error = FT_New_Face( library, (string(".res/fonts/") + fontInfo.name).c_str(), 0, &face );
+	error = FT_New_Face( library, Core::Resources::PathTo(string("fonts/") + fontInfo.name).c_str(), 0, &face );
 	if ( error == FT_Err_Unknown_File_Format ) {
 		Debug::Console->PrintError( "the font file could be opened and read, but it appears that its font format is unsupported\n" );
 		Debug::Console->PrintWarning( "loading font from system\n" );

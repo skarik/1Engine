@@ -1216,19 +1216,19 @@ void glMaterial::shader_bind_lights	 ( glShader* shader )
 		else
 		{
 			/*m_sampler_reflection = new CTextureCube( "__m_reflectCubemap",
-				".res/textures/sky/sky3side.jpg",".res/textures/sky/sky3side.jpg",
-				".res/textures/sky/sky3side.jpg",".res/textures/sky/sky3side.jpg",
-				".res/textures/sky/sky3top.jpg",".res/textures/sky/sky3bottom.jpg"
+				"textures/sky/sky3side.jpg","textures/sky/sky3side.jpg",
+				"textures/sky/sky3side.jpg","textures/sky/sky3side.jpg",
+				"textures/sky/sky3top.jpg","textures/sky/sky3bottom.jpg"
 				);*/
 			/*m_sampler_reflection = new CTextureCube( "__m_reflectCubemap",
-				".res/textures/sky/sky2side0.jpg",".res/textures/sky/sky2side1.jpg",
-				".res/textures/sky/sky2side0.jpg",".res/textures/sky/sky2side1.jpg",
-				".res/textures/sky/sky2top.jpg",".res/textures/sky/sky2bottom.jpg"
+				"textures/sky/sky2side0.jpg","textures/sky/sky2side1.jpg",
+				"textures/sky/sky2side0.jpg","textures/sky/sky2side1.jpg",
+				"textures/sky/sky2top.jpg","textures/sky/sky2bottom.jpg"
 				);*/
 			m_sampler_reflection = new CTextureCube( "__m_reflectCubemap",
-				".res/textures/sky/sky2top.jpg",".res/textures/sky/sky2top.jpg",
-				".res/textures/sky/sky2top.jpg",".res/textures/sky/sky2top.jpg",
-				".res/textures/sky/sky2top.jpg",".res/textures/sky/sky2top.jpg"
+				"textures/sky/sky2top.jpg","textures/sky/sky2top.jpg",
+				"textures/sky/sky2top.jpg","textures/sky/sky2top.jpg",
+				"textures/sky/sky2top.jpg","textures/sky/sky2top.jpg"
 				);
 		}
 	}

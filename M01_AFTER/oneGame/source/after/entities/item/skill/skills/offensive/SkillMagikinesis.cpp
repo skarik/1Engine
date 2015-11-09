@@ -26,7 +26,7 @@ SkillMagikinesis::SkillMagikinesis ( void ) : CSkill( ItemData() )
 
 	cast_state	= 0;
 
-	ps_magikinesis_active = new CParticleSystem ( ".res/particlesystems/spells/blink_target.pcf", "particle_blink" );
+	ps_magikinesis_active = new CParticleSystem ( "particlesystems/spells/blink_target.pcf", "particle_blink" );
 
 	currentAmmo = NULL;
 }

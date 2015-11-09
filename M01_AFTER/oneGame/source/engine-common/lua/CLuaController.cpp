@@ -1,5 +1,6 @@
 
 #include "CLuaController.h"
+#include "core-ext/system/io/Resources.h"
 
 //CLuaController* CLuaController::active	= NULL;
 Lua::CLuaController*	Lua::Controller = NULL;
@@ -68,13 +69,16 @@ lua_State*	CLuaController::GetState ( void )
 // Runs the given file.
 void	CLuaController::RunLuaFile ( const string& filename, const string& env )
 {
+	string luaFile = Core::Resources::PathTo("lua/"+filename);
+	string workingDir = luaFile.substr( 0, luaFile.find_last_of('/')+1 );
+
 	// Get top of stack
 	int top = lua_gettop( luaVM );
 	if ( top < 0 ) {
 		throw top;
 	}
 	int s; // s for status
-	s = luaL_loadfile( luaVM, (".res/lua/"+filename).c_str());		// s:c
+	s = luaL_loadfile( luaVM, luaFile.c_str());		// s:c
 	ReportErrors(luaVM, s);
 	if ( s == 0 ) // If s == 0, then no error
 	{
@@ -82,6 +86,10 @@ void	CLuaController::RunLuaFile ( const string& filename, const string& env )
 			SetEnvironment( env ); // Pushes environment onto stack
 			lua_setupvalue( luaVM, -2, 1 ); // pops environment off of stack
 		}
+		// Push working directory of the file too
+		lua_pushstring( luaVM, workingDir.c_str() );
+		lua_setglobal( luaVM, "path" );
+
 		s = lua_pcall( luaVM, 0, LUA_MULTRET, 0 );
 		ReportErrors(luaVM, s);
 

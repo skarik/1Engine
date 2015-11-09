@@ -28,8 +28,8 @@ CDebugRTInspector::CDebugRTInspector ( void )
 	defaultMat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	defaultMat->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 	defaultMat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	defaultMat->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
-	defaultMat->setTexture( 0, new CTexture( ".res/textures/white.jpg" ) );
+	defaultMat->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
+	defaultMat->setTexture( 0, new CTexture( "textures/white.jpg" ) );
 	defaultMat->removeReference();
 	SetMaterial( defaultMat );
 }

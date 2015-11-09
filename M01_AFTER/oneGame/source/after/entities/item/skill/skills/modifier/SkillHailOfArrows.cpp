@@ -26,12 +26,12 @@ SkillHailOfArrows::SkillHailOfArrows ( void ) : CSkill( ItemData() )
 	// Create AoE model
 	mAoeModel = new CRenderPlane( 20.0f, 20.0f );
 	glMaterial* aoemat = new glMaterial;
-	aoemat->setTexture( 0, new CTexture( ".res/textures/areas/skillzone_default.png" ) );
+	aoemat->setTexture( 0, new CTexture( "textures/areas/skillzone_default.png" ) );
 	aoemat->m_emissive = Color( 0, 0, 0 );
 	aoemat->m_emissive = Color( 0.85f, 0.9f, 1.2f );
 	aoemat->passinfo.push_back( glPass() );
 	aoemat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	aoemat->passinfo[0].shader = new glShader( ".res/shaders/particles/colorBlendedSoftAdd.glsl" );
+	aoemat->passinfo[0].shader = new glShader( "shaders/particles/colorBlendedSoftAdd.glsl" );
 	aoemat->removeReference();
 	mAoeModel->SetMaterial( aoemat );
 

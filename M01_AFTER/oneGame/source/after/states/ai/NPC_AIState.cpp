@@ -6,6 +6,7 @@
 
 #include "core/math/random/Random.h"
 #include "core/system/io/FileUtils.h"
+#include "core-ext/system/io/Resources.h"
 
 #include "physical/physics/CPhysics.h"
 
@@ -189,9 +190,9 @@ void NPC::AIState::Initialize ( void )
 
 		sprintf( environment, "AIR_%s", routine_alert.c_str() );
 		sprintf( routine_alert_environment, "AIR_%s_%x", routine_alert.c_str(), this );
-		sprintf( file, ".res/lua/ai/attack/%s.lua", routine_alert.c_str() );
+		sprintf( file, "lua/ai/attack/%s.lua", routine_alert.c_str() );
 		///printf( "%s %s %s %s", routine_alert.c_str(), file.c_str(), routine_alert_environment.c_str(), environment.c_str() );
-
+		file = Core::Resources::PathTo( file ).c_str();
 		if ( !IO::FileExists(file) ) {
 			throw "No AI file of given alert type exists!";
 		}
@@ -212,8 +213,9 @@ void NPC::AIState::Initialize ( void )
 
 		sprintf( environment, "AIR_%s", routine_angry.c_str() );
 		sprintf( routine_angry_environment, "AIR_%s_%x", routine_angry.c_str(), this );
-		sprintf( file, ".res/lua/ai/attack/%s.lua", routine_angry.c_str() );
+		sprintf( file, "lua/ai/attack/%s.lua", routine_angry.c_str() );
 
+		file = Core::Resources::PathTo( file ).c_str();
 		if ( !IO::FileExists(file) ) {
 			throw "No AI file of given angry type exists!";
 		}

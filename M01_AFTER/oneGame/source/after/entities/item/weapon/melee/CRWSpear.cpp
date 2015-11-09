@@ -29,7 +29,7 @@ void CRWSpear::Generate ( void )
 	CBaseRandomMelee::Generate();
 
 
-	string spearModel = ".res/models/weapons/spearst0/basic.FBX";
+	string spearModel = "models/weapons/spearst0/basic.FBX";
 	pModel = new CModel( spearModel );
 
 	base_weapon_stats.damagetype	= DamageType::Slash;

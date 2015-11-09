@@ -27,9 +27,9 @@ CDebugDrawer::CDebugDrawer ( void )
 	// Set the default white material
 	defaultMat = new glMaterial;
 	defaultMat->m_diffuse = Color( 1,1,1,1 );
-	defaultMat->setTexture( 0, new CTexture( ".res/textures/white.jpg" ) );
+	defaultMat->setTexture( 0, new CTexture( "textures/white.jpg" ) );
 	defaultMat->passinfo.push_back( glPass() );
-	defaultMat->passinfo[0].shader = new glShader( ".res/shaders/sys/fullbright.glsl" );
+	defaultMat->passinfo[0].shader = new glShader( "shaders/sys/fullbright.glsl" );
 	defaultMat->removeReference();
 	//defaultMat->releaseOwnership();
 	//vMaterials.push_back( defaultMat );

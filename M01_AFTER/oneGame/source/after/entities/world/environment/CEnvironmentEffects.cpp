@@ -344,7 +344,7 @@ void CEnvironmentEffects::InitializeParticleEffects ( void )
 	pBiomeParticles = new CExtendableGameObject ();
 	{
 		CParticleEmitter* biome_emitter = new CParticleEmitter ( );
-		biome_emitter->LoadFromFile( ".res\\particlesystems\\env\\b_grassland.pcf" );
+		biome_emitter->LoadFromFile( "particlesystems/env/b_grassland.pcf" );
 		biome_emitter->vEmitterSize = Vector3d( 16.0f,16.0f,8.0f );
 		biome_emitter->transform.SetParent( &(pBiomeParticles->transform) );
 		//biome_emitter->RemoveReference();
@@ -361,9 +361,9 @@ void CEnvironmentEffects::InitializeParticleEffects ( void )
 		mat_defglow->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 		mat_defglow->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 		mat_defglow->m_diffuse = Color( 1.0f,1,1 );
-		mat_defglow->setTexture( 0, new CTexture(".res/textures/particles/pollen.png") );
+		mat_defglow->setTexture( 0, new CTexture("textures/particles/pollen.png") );
 		mat_defglow->passinfo[0].m_blend_mode = Renderer::BM_ADD;
-		mat_defglow->passinfo[0].shader = new glShader( ".res/shaders/particles/colorBlended.glsl" );
+		mat_defglow->passinfo[0].shader = new glShader( "shaders/particles/colorBlended.glsl" );
 		biome_renderer->SetMaterial( mat_defglow );
 
 		pBiomeParticles->AddComponent( biome_emitter );
@@ -374,7 +374,7 @@ void CEnvironmentEffects::InitializeParticleEffects ( void )
 	pUnderwaterParticles = new CExtendableGameObject ();
 	{
 		CParticleEmitter* underwater_emitter = new CParticleEmitter ();
-		underwater_emitter->LoadFromFile( ".res\\particlesystems\\env\\underwater.pcf" );
+		underwater_emitter->LoadFromFile( "particlesystems/env/underwater.pcf" );
 		underwater_emitter->vEmitterSize = Vector3d( 8.0f,8.0f,6.0f );
 		underwater_emitter->transform.SetParent( &(pUnderwaterParticles->transform) );
 		//underwater_emitter->RemoveReference();
@@ -389,8 +389,8 @@ void CEnvironmentEffects::InitializeParticleEffects ( void )
 		mat_defmuck->passinfo.push_back( glPass() );
 		mat_defmuck->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
 		mat_defmuck->m_diffuse = Color( 1.0f,1,1 );
-		mat_defmuck->setTexture( 0, new CTexture(".res/textures/particles/fluxflame1.png") );
-		mat_defmuck->passinfo[0].shader = new glShader( ".res/shaders/particles/colorBlended.glsl" );
+		mat_defmuck->setTexture( 0, new CTexture("textures/particles/fluxflame1.png") );
+		mat_defmuck->passinfo[0].shader = new glShader( "shaders/particles/colorBlended.glsl" );
 		//mat_defmuck->iBlendMode = glMaterial::BM_ADD;
 		underwater_renderer->SetMaterial( mat_defmuck );
 		pUnderwaterRenderer = underwater_renderer;
@@ -402,11 +402,11 @@ void CEnvironmentEffects::InitializeParticleEffects ( void )
 	pUnderwaterEmitter->SetActive( false );
 
 	//pDustParticles = new CExtendableGameObject ();
-	pDustParticles = new CParticleSystem( ".res/particlesystems/env/a_desert.pcf" );
+	pDustParticles = new CParticleSystem( "particlesystems/env/a_desert.pcf" );
 	{
 		pDustEmitter = ((CParticleSystem*)(pDustParticles))->GetEmitter();
 		/*CParticleEmitter* dust_emitter = new CParticleEmitter ();
-		dust_emitter->LoadFromFile( ".res\\particlesystems\\env\\a_desert.pcf" );
+		dust_emitter->LoadFromFile( "particlesystems\\env\\a_desert.pcf" );
 		dust_emitter->vEmitterSize = Vector3d( 2.0f, 2.0f, 2.0f );
 		dust_emitter->transform.SetParent( &(pDustParticles->transform) );
 		dust_emitter->RemoveReference();
@@ -423,7 +423,7 @@ void CEnvironmentEffects::InitializeParticleEffects ( void )
 		mat_dust->useAlphaTest = false;
 		mat_dust->useDepthMask = false;
 		mat_dust->diffuse = Color( 1.0f,1,1 );
-		mat_dust->loadTexture( ".res\\textures\\particles\\dust01.png" );
+		mat_dust->loadTexture( "textures\\particles\\dust01.png" );
 		dust_renderer->SetMaterial( mat_dust );
 		
 		pDustParticles->AddComponent( dust_emitter );
@@ -438,7 +438,7 @@ void CEnvironmentEffects::InitializeParticleEffects ( void )
 	pWeatherParticles = new CExtendableGameObject ();
 	{
 		CParticleEmitter* weather_emitter = new CParticleEmitter ();
-		weather_emitter->LoadFromFile( ".res/particlesystems/env/w_rain.pcf" );
+		weather_emitter->LoadFromFile( "particlesystems/env/w_rain.pcf" );
 		weather_emitter->vEmitterSize = Vector3d( 19.0f,19.0f,4.0f );
 		weather_emitter->transform.SetParent( &(pWeatherParticles->transform) );
 		//weather_emitter->RemoveReference();
@@ -455,9 +455,9 @@ void CEnvironmentEffects::InitializeParticleEffects ( void )
 		mat_defweather->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 		mat_defweather->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 		mat_defweather->m_diffuse = Color( 1.0f,1,1 );
-		mat_defweather->setTexture( 0, new CTexture(".res/textures/particles/pollen.png") );
+		mat_defweather->setTexture( 0, new CTexture("textures/particles/pollen.png") );
 		mat_defweather->passinfo[0].m_blend_mode = Renderer::BM_NORMAL;
-		mat_defweather->passinfo[0].shader = new glShader( ".res/shaders/particles/colorBlended.glsl" );
+		mat_defweather->passinfo[0].shader = new glShader( "shaders/particles/colorBlended.glsl" );
 		weather_renderer->SetMaterial( mat_defweather );
 		weather_renderer->iRenderMethod = CParticleRenderer::P_STRETCHED_BILLBOARD;
 		weather_renderer->fR_SpeedScale = 0.027f;
@@ -477,13 +477,13 @@ void CEnvironmentEffects::UpdateParticleEffects ( void )
 		if ((( nextBiome == Terrain::BIO_SAVANNA )||( nextBiome == Terrain::BIO_GRASSLAND ))
 			&&(( iBiomeType != Terrain::BIO_SAVANNA )&&( iBiomeType != Terrain::BIO_GRASSLAND )))
 		{
-			pBiomeEmitter->LoadFromFile( ".res\\particlesystems\\env\\b_grassland.pcf" );
+			pBiomeEmitter->LoadFromFile( "particlesystems/env/b_grassland.pcf" );
 			pBiomeEmitter->SetActive( true );
 		}
 		else if ((( nextBiome == Terrain::BIO_SWAMP )||( nextBiome == Terrain::BIO_RAINFOREST )||( nextBiome == Terrain::BIO_OUTLANDS )||( nextBiome == Terrain::BIO_WET_OUTLANDS ))
 			&&(( iBiomeType != Terrain::BIO_SWAMP )&&( iBiomeType != Terrain::BIO_RAINFOREST )&&( iBiomeType != Terrain::BIO_OUTLANDS )&&( iBiomeType != Terrain::BIO_WET_OUTLANDS )))
 		{
-			pBiomeEmitter->LoadFromFile( ".res\\particlesystems\\env\\b_jungle.pcf" );
+			pBiomeEmitter->LoadFromFile( "particlesystems/env/b_jungle.pcf" );
 			pBiomeEmitter->SetActive( true );
 		}
 		else
@@ -553,19 +553,19 @@ void CEnvironmentEffects::UpdateParticleEffects ( void )
 			if ((( nextWeather == Terrain::WTH_LIGHT_RAIN )||( nextWeather == Terrain::WTH_HEAVY_RAIN ))
 				&&(( iWeatherType != Terrain::WTH_LIGHT_RAIN )&&( iWeatherType != Terrain::WTH_HEAVY_RAIN )))
 			{
-				pWeatherEmitter->LoadFromFile( ".res/particlesystems/env/w_rain.pcf" );
+				pWeatherEmitter->LoadFromFile( "particlesystems/env/w_rain.pcf" );
 				pWeatherEmitter->SetActive( true );
 			}
 			else if ((( nextWeather == Terrain::WTH_LIGHT_RAIN_THUNDER )||( nextWeather == Terrain::WTH_HEAVY_RAIN_THUNDER ))
 				&&(( iWeatherType != Terrain::WTH_LIGHT_RAIN_THUNDER )&&( iWeatherType != Terrain::WTH_HEAVY_RAIN_THUNDER )))
 			{
-				pWeatherEmitter->LoadFromFile( ".res/particlesystems/env/w_rain.pcf" );
+				pWeatherEmitter->LoadFromFile( "particlesystems/env/w_rain.pcf" );
 				pWeatherEmitter->SetActive( true );
 			}
 			else if ((( nextWeather == Terrain::WTH_LIGHT_SNOW )||( nextWeather == Terrain::WTH_HEAVY_SNOW )||( nextWeather == Terrain::WTH_STORM_SNOW ))
 				&&(( iWeatherType != Terrain::WTH_LIGHT_SNOW )&&( iWeatherType != Terrain::WTH_HEAVY_SNOW )&&( iWeatherType != Terrain::WTH_STORM_SNOW )))
 			{
-				pWeatherEmitter->LoadFromFile( ".res/particlesystems/env/w_snow.pcf" );
+				pWeatherEmitter->LoadFromFile( "particlesystems/env/w_snow.pcf" );
 				pWeatherEmitter->SetActive( true );
 			}
 			else if (( nextWeather == Terrain::WTH_NONE )&&( iWeatherType != Terrain::WTH_NONE ))

@@ -9,7 +9,7 @@ WeaponCrossbow::WeaponCrossbow ( void )
 	holdType = Item::DefaultRanged;
 
 	if ( pModel == NULL )
-		pModel = new CModel( string(".res\\models\\weapons\\crossbow_beta.FBX") );
+		pModel = new CModel( string("models\\weapons\\crossbow_beta.FBX") );
 }
 
 bool WeaponCrossbow::Use ( int x )

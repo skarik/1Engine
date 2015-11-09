@@ -21,7 +21,7 @@ public:
 
 public:
 	static string GetName ( void ) { return "Shield"; }
-	static string GetIconFilename ( void ) { return ".res/textures/icons/skill_magishield.png"; }
+	static string GetIconFilename ( void ) { return "textures/icons/skill_magishield.png"; }
 protected:
 	SKILL_DATA_DEFINE {
 		SKILLDATA_DEFAULTS;

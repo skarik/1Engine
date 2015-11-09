@@ -36,7 +36,7 @@ void ItemElectricLamp::InitializeCommon ( void )
 	transform.scale = Vector3d( 0.2f, 0.2f, 0.2f );
 
 	if ( pModel == NULL )
-		pModel = new CModel( string(".res\\models\\geosphere.FBX") );
+		pModel = new CModel( string("models\\geosphere.FBX") );
 	//pModel->transform.scale = Vector3d( 0.01f,0.01f,0.01f );
 }
 // Destructor

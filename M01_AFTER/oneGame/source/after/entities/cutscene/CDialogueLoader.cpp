@@ -1,6 +1,7 @@
 
 #include "CDialogueLoader.h"
 #include "core/debug/CDebugConsole.h"
+#include "core-ext/system/io/Resources.h"
 #include <iostream>
 
 //using namespace std;
@@ -35,7 +36,8 @@ CDialogueLoader::CDialogueLoader (const char* filename, std::vector<CCharacter*>
 
 void CDialogueLoader::Construct ( const char* filename, std::vector<CCharacter*> characters )
 {
-	pFile = fopen (filename, "rb");
+	//pFile = fopen (filename, "rb");
+	pFile = Core::Resources::Open (filename, "rb");
 	lCurrentDialogue = new COSF_Loader (pFile);
 
 	sIndex = "0";

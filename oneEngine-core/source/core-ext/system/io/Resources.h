@@ -5,6 +5,9 @@
 // Resources stores the all the plugin directories for additional loading
 //===============================================================================================//
 
+#ifndef _CORE_RESOURCE_SEARCHER_
+#define _CORE_RESOURCE_SEARCHER_
+
 #include <string>
 #include <vector>
 #include "stdio.h"
@@ -33,7 +36,11 @@ namespace Core
 
 		//	GetAllPaths( )
 		// Returns all search paths for files
-		CORE_API const std::vector<std::string>& GetAllPaths ( void );
+		CORE_API static const std::vector<std::string>& GetAllPaths ( void );
+
+		//	GetPrimaryResourcePath( )
+		// Returns the system "vanilla" search path
+		CORE_API static const std::string GetPrimaryResourcePath ( void );
 
 		//	Open( filename, openmode )
 		// Find file in the current paths and open. Uses fopen() internally.
@@ -43,7 +50,7 @@ namespace Core
 		
 		//	PathTo( filename )
 		// Finds file and returns string that represents path to the file. Uses fopen() internally.
-		// Will return empty string if cannot find the file.
+		// Will return the input filename if cannot find the file.
 		CORE_API static std::string PathTo ( const std::string& n_filename );
 		CORE_API static std::string PathTo ( const char* n_filename );
 
@@ -53,3 +60,5 @@ namespace Core
 
 	};
 }
+
+#endif//_CORE_RESOURCE_SEARCHER_

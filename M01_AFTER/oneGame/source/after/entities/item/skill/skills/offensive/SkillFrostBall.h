@@ -29,7 +29,7 @@ public:
 
 public:
 	static string GetName ( void ) { return "Frostball"; }
-	static string GetIconFilename ( void ) { return ".res/textures/icons/skill_iceball.png"; }
+	static string GetIconFilename ( void ) { return "textures/icons/skill_iceball.png"; }
 protected:
 	SKILL_DATA_DEFINE {
 		SKILLDATA_DEFAULTS;

@@ -99,7 +99,7 @@ public:
 	static void GetNextLevelCost ( int level, Real& o_health, Real& o_stamina, Real& o_mana ) { o_health=0; o_stamina=0; o_mana=10; };
 	// GetIconFilename
 	//  Returns the filename of the icon
-	static string GetIconFilename ( void ) { return ".res/textures/icons/skill_default.png"; }
+	static string GetIconFilename ( void ) { return "textures/icons/skill_default.png"; }
 
 	// GetIsPassive
 	//  Returns if skill is passive. Static skills cannot be grabbed from the skill tree.

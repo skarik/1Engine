@@ -17,7 +17,7 @@
 ItemLantern::ItemLantern ( void )
 	: CWeaponItem( ItemData() )
 {
-	pModel = new CModel ( string(".res\\models\\props\\lantern.FBX") );
+	pModel = new CModel ( string("models\\props\\lantern.FBX") );
 	//pModel->transform.scale = Vector3d( 1.3f,1.3f,1.3f );
 
 	//pCollider = new CCapsuleCollider( 1.2f,0.2f, true );

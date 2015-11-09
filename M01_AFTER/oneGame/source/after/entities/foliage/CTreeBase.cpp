@@ -96,9 +96,9 @@ void CTreeBase::LoadTreeMaterials ( void )
 	/*if ( pTreeBarkMaterial == NULL )
 	{
 		pTreeBarkMaterial =  new glMaterial();
-		//pTreeBarkMaterial->loadTexture( ".res\\textures\\tree bark.jpg" );
+		//pTreeBarkMaterial->loadTexture( "textures\\tree bark.jpg" );
 		pTreeBarkMaterial->setTexture( 0, new CTexture3D( ".res/textures/treeTexture.jpg", Texture3D, RGBA8, 2, 1 ) );
-		//pTreeBarkMaterial->setShader( new glShader( ".res\\shaders\\defaultDiffuse.glsl" ) );
+		//pTreeBarkMaterial->setShader( new glShader( "shaders\\defaultDiffuse.glsl" ) );
 		pTreeBarkMaterial->passinfo.push_back( glPass() );
 		pTreeBarkMaterial->passinfo[0].shader = new glShader( ".res/shaders/world/treeDefault.glsl" );
 	}
@@ -115,29 +115,29 @@ void CTreeBase::LoadTreeMaterials ( void )
 	{
 		pTreeBarkMaterial =  new glMaterial();
 
-		pTreeBarkMaterial->setTexture( 0, new CTexture( ".res/textures/leaves.tga" ) );
-		pTreeBarkMaterial->setTexture( 1, new CTexture3D( ".res/textures/treeTexture.jpg", Texture3D, RGBA8, 2, 1 ) );
+		pTreeBarkMaterial->setTexture( 0, new CTexture( "textures/leaves.tga" ) );
+		pTreeBarkMaterial->setTexture( 1, new CTexture3D( "textures/treeTexture.jpg", Texture3D, RGBA8, 2, 1 ) );
 
 		pTreeBarkMaterial->passinfo.push_back( glPass() );
-		pTreeBarkMaterial->passinfo[0].shader = new glShader( ".res/shaders/world/treeDefault.glsl" );
+		pTreeBarkMaterial->passinfo[0].shader = new glShader( "shaders/world/treeDefault.glsl" );
 		pTreeBarkMaterial->passinfo.push_back( glPass() );
-		pTreeBarkMaterial->passinfo[1].shader = new glShader( ".res/shaders/world/leavesDefault.glsl" );
+		pTreeBarkMaterial->passinfo[1].shader = new glShader( "shaders/world/leavesDefault.glsl" );
 		pTreeBarkMaterial->passinfo[1].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
 
 		pTreeBarkMaterial->passinfo.push_back( glPass() );
-		pTreeBarkMaterial->passinfo[2].shader = new glShader( ".res/shaders/world/treeDefault.glsl" );
+		pTreeBarkMaterial->passinfo[2].shader = new glShader( "shaders/world/treeDefault.glsl" );
 		pTreeBarkMaterial->passinfo[2].m_hint = RL_SHADOW_COLOR;
 		pTreeBarkMaterial->passinfo.push_back( glPass() );
 		pTreeBarkMaterial->passinfo[3].m_hint = RL_SHADOW_COLOR;
-		pTreeBarkMaterial->passinfo[3].shader = new glShader( ".res/shaders/world/leavesDefault.glsl" );
+		pTreeBarkMaterial->passinfo[3].shader = new glShader( "shaders/world/leavesDefault.glsl" );
 		pTreeBarkMaterial->passinfo[3].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
 
 		pTreeBarkMaterial->passinfo.push_back( glPass() );
-		pTreeBarkMaterial->passinfo[4].shader = new glShader( ".res/shaders/world/treeDefault.glsl" );
+		pTreeBarkMaterial->passinfo[4].shader = new glShader( "shaders/world/treeDefault.glsl" );
 		pTreeBarkMaterial->passinfo[4].m_hint = RL_SKYGLOW;
 		pTreeBarkMaterial->passinfo.push_back( glPass() );
 		pTreeBarkMaterial->passinfo[5].m_hint = RL_SKYGLOW;
-		pTreeBarkMaterial->passinfo[5].shader = new glShader( ".res/shaders/world/leavesDefault.glsl" );
+		pTreeBarkMaterial->passinfo[5].shader = new glShader( "shaders/world/leavesDefault.glsl" );
 		pTreeBarkMaterial->passinfo[5].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
 
 		pTreeBarkMaterial->deferredinfo.push_back( glPass_Deferred() );

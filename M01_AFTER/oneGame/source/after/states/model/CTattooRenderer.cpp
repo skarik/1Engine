@@ -53,7 +53,7 @@ void CTattooRenderer::UpdateTattoos ( void )
 		tempMat.passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 		tempMat.passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 		tempMat.passinfo[0].m_blend_mode = Renderer::BM_NORMAL;
-		tempMat.passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+		tempMat.passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	}
 	tempMat.removeReference();
 
@@ -72,7 +72,7 @@ void CTattooRenderer::UpdateTattoos ( void )
 		// Draw tattoo list
 		for ( uint i = 0; i < model->mstats->tattooList.size(); ++i )
 		{
-			CTexture* tempTexture = new CTexture( ".res/textures/tats/"+string(model->mstats->tattooList[i].pattern.c_str())+".png" );
+			CTexture* tempTexture = new CTexture( "textures/tats/"+string(model->mstats->tattooList[i].pattern.c_str())+".png" );
 			tempMat.setTexture( 0, tempTexture );
 			tempMat.m_diffuse = model->mstats->tattooList[i].color;
 			tempMat.bindPassForward(0);
@@ -83,7 +83,7 @@ void CTattooRenderer::UpdateTattoos ( void )
 		if ( model->mstats->iRace == CRACE_FLUXXOR )
 		{
 			arstring<256> tGlowname;
-			sprintf( tGlowname, ".res/textures/tats/body_flux_glow%d.png", model->mstats->iMiscType%10 );
+			sprintf( tGlowname, "textures/tats/body_flux_glow%d.png", model->mstats->iMiscType%10 );
 			CTexture* tempTexture = new CTexture( tGlowname.c_str() );
 			tempMat.setTexture( 0, tempTexture );
 			tempMat.m_diffuse = Color(0.55,0.55,0.55)+(skinColor*0.5);
@@ -104,7 +104,7 @@ void CTattooRenderer::UpdateTattoos ( void )
 		// Draw cuts
 		for ( uint i = 0; i < model->tats_cuts.size(); ++i )
 		{
-			CTexture* tempTexture = new CTexture( ".res/textures/tats2/"+string(model->tats_cuts[i].pattern.c_str())+".png" );
+			CTexture* tempTexture = new CTexture( "textures/tats2/"+string(model->tats_cuts[i].pattern.c_str())+".png" );
 			tempMat.setTexture( 0, tempTexture );
 			tempMat.m_diffuse = model->tats_cuts[i].color;
 			tempMat.m_diffuse.alpha = 1;
@@ -155,7 +155,7 @@ void CTattooRenderer::UpdateTattoos ( void )
 			tempMat.m_diffuse = tempMat.m_diffuse * 0.5f;
 			tempMat.m_diffuse.alpha = 1.0f;
 
-			/*tMapname = ".res/textures/tats3/cl1_head_nose0.png";
+			/*tMapname = "textures/tats3/cl1_head_nose0.png";
 			tempTexture = new CTexture( tMapname.c_str() );
 			tempMat.setTexture( 0, tempTexture );
 			tempMat.bindPassForward(0);
@@ -171,7 +171,7 @@ void CTattooRenderer::UpdateTattoos ( void )
 				GLd.EndPrimitive();
 			delete tempTexture;*/
 
-			/*tMapname = ".res/textures/tats3/cl1_head_cheeks0.png";
+			/*tMapname = "textures/tats3/cl1_head_cheeks0.png";
 			tempTexture = new CTexture( tMapname.c_str() );
 			tempMat.setTexture( 0, tempTexture );
 			tempMat.bindPassForward(0);
@@ -190,7 +190,7 @@ void CTattooRenderer::UpdateTattoos ( void )
 			// Draw wierd makeup
 			/*tempMat.m_diffuse = Color(0.11,0.04,0.32) * 0.5;
 			tempMat.m_diffuse.alpha = 0.8f;
-			tMapname = ".res/textures/tats3/cl1_head_eyeshadow_0.png";
+			tMapname = "textures/tats3/cl1_head_eyeshadow_0.png";
 			tempTexture = new CTexture( tMapname.c_str() );
 			tempMat.setTexture( 0, tempTexture );
 			tempMat.bindPassForward(0);
@@ -205,7 +205,7 @@ void CTattooRenderer::UpdateTattoos ( void )
 				GLd.P_AddVertex( 1*1024, 1*512 );
 				GLd.EndPrimitive();
 			delete tempTexture;
-			tMapname = ".res/textures/tats3/cl1_head_lips0.png";
+			tMapname = "textures/tats3/cl1_head_lips0.png";
 			tempTexture = new CTexture( tMapname.c_str() );
 			tempMat.setTexture( 0, tempTexture );
 			tempMat.bindPassForward(0);
@@ -225,7 +225,7 @@ void CTattooRenderer::UpdateTattoos ( void )
 		// Draw tattoo list
 		for ( uint i = 0; i < model->mstats->tattooList.size(); ++i )
 		{
-			CTexture* tempTexture = new CTexture( ".res/textures/tats/"+string(model->mstats->tattooList[i].pattern.c_str())+".png" );
+			CTexture* tempTexture = new CTexture( "textures/tats/"+string(model->mstats->tattooList[i].pattern.c_str())+".png" );
 			tempMat.setTexture( 0, tempTexture );
 			tempMat.m_diffuse = model->mstats->tattooList[i].color;
 			tempMat.bindPassForward(0);
@@ -236,7 +236,7 @@ void CTattooRenderer::UpdateTattoos ( void )
 		if ( model->mstats->iRace == CRACE_FLUXXOR )
 		{
 			arstring<256> tGlowname;
-			sprintf( tGlowname, ".res/textures/tats/head_fluxx_glow%d.png", model->mstats->iMiscType%10 );
+			sprintf( tGlowname, "textures/tats/head_fluxx_glow%d.png", model->mstats->iMiscType%10 );
 			CTexture* tempTexture = new CTexture( tGlowname.c_str() );
 			tempMat.setTexture( 0, tempTexture );
 			tempMat.m_diffuse = Color(0.55,0.55,0.55)+(skinColor*0.5);

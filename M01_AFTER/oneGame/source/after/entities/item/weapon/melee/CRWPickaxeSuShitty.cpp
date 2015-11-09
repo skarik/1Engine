@@ -37,10 +37,10 @@ void CRWPickaxeSuShitty::Generate ( void )
 {
 	CBaseRandomItem::Generate();
 
-	string pickModel = ".res\\models\\items\\pickaxe_su_shitty.FBX";
+	string pickModel = "models/items/pickaxe_su_shitty.FBX";
 
 	//if ( iBladeType == 0 )
-	//	pickModel = ".res\\models\\items\\pickaxe_su_shitty.FBX";
+	//	pickModel = "models\\items\\pickaxe_su_shitty.FBX";
 
 	pModel = new CModel( pickModel );
 	//pModel->transform.scale.y = weapon_stats.reach / 2.5f;

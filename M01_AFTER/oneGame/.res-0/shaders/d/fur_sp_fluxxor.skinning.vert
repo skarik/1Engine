@@ -1,4 +1,4 @@
-#version 140
+#version 330
 
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;

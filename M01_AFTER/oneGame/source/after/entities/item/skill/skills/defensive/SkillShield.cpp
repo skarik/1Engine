@@ -36,12 +36,12 @@ SkillShield::~SkillShield ( void )
 void SkillShield::ShieldEffectUpdate ( void )
 {
 	if ( !m_model ) {
-		m_model = new CModel( ".res/models/geosphere.FBX" );
+		m_model = new CModel( "models/geosphere.FBX" );
 		glMaterial* copyMaterial = m_model->GetMesh(uint(0))->GetMaterial()->copy();
 		copyMaterial->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 		copyMaterial->passinfo[0].m_blend_mode = Renderer::BM_ADD;
 		copyMaterial->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
-		copyMaterial->setTexture( 0, new CTexture( ".res/textures/caustics.png" ) );
+		copyMaterial->setTexture( 0, new CTexture( "textures/caustics.png" ) );
 		copyMaterial->m_diffuse = Color( 0.1,0.1,0.1,1.0 );
 		m_model->GetMesh(uint(0))->SetMaterial( copyMaterial );
 	}

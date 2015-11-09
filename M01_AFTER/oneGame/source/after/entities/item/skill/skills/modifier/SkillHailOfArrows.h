@@ -24,7 +24,7 @@ public:
 
 public:
 	static string GetName ( void ) { return "Hail of Arrows"; }
-	static string GetIconFilename ( void ) { return ".res/textures/icons/skill_hailofarrows.png"; }
+	static string GetIconFilename ( void ) { return "textures/icons/skill_hailofarrows.png"; }
 protected:
 	SKILL_DATA_DEFINE {
 		SKILLDATA_DEFAULTS;

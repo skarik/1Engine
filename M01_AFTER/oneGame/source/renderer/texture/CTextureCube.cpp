@@ -5,6 +5,7 @@
 #include "CTextureCube.h"
 #include "CTextureMaster.h"
 #include "renderer/system/glMainSystem.h"
+#include "core-ext/system/io/Resources.h"
 
 // === Constructor ===
 CTextureCube::CTextureCube ( const string &sInIdentifier,
@@ -30,7 +31,7 @@ CTextureCube::CTextureCube ( const string &sInIdentifier,
 	}
 	// Look for null texture request (just a fast white sampler)
 	if ( sFilename == "null" || sFilename == "Null" || sFilename == "NULL" ) {
-		sFilename = ".res/textures/null.jpg";
+		sFilename = "textures/null.jpg";
 	}
 	// Standardize the filename
 	sFilename = IO::FilenameStandardize( sFilename );
@@ -58,37 +59,37 @@ CTextureCube::CTextureCube ( const string &sInIdentifier,
 		glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
 		// Copy the data to the texture object
-		sFilename = sInFilenameXPos;
+		sFilename = Core::Resources::PathTo( sInFilenameXPos );
 		LoadImageInfo();
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 		delete [] pData;
 		pData = NULL;
 
-		sFilename = sInFilenameXNeg;
+		sFilename = Core::Resources::PathTo( sInFilenameXNeg );
 		LoadImageInfo();
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 		delete [] pData;
 		pData = NULL;
 
-		sFilename = sInFilenameYPos;
+		sFilename = Core::Resources::PathTo( sInFilenameYPos );
 		LoadImageInfo();
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 		delete [] pData;
 		pData = NULL;
 
-		sFilename = sInFilenameYNeg;
+		sFilename = Core::Resources::PathTo( sInFilenameYNeg );
 		LoadImageInfo();
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 		delete [] pData;
 		pData = NULL;
 
-		sFilename = sInFilenameZPos;
+		sFilename = Core::Resources::PathTo( sInFilenameZPos );
 		LoadImageInfo();
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 		delete [] pData;
 		pData = NULL;
 
-		sFilename = sInFilenameZNeg;
+		sFilename = Core::Resources::PathTo( sInFilenameZNeg );
 		LoadImageInfo();
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 		delete [] pData;

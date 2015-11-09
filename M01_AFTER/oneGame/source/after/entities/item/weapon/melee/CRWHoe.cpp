@@ -19,7 +19,7 @@ void CRWHoe::Generate ( void )
 	CBaseRandomMelee::Generate();
 
 	
-	string pickModel = ".res/models/items/pickaxe_su_shitty.FBX";
+	string pickModel = "models/items/pickaxe_su_shitty.FBX";
 	pModel = new CModel( pickModel );
 
 

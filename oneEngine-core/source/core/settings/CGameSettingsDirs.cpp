@@ -22,6 +22,10 @@
 #endif
 
 // == Make Directory ==
+void CGameSettings::MakeDirectory ( const string& directory )
+{
+	return MakeDirectory( directory );
+}
 void CGameSettings::MakeDirectory ( const char *directory )
 {
 #ifdef _WIN32

@@ -6,6 +6,7 @@
 #include "core/system/io/CBinaryFile.h"
 #include "core/debug/CDebugConsole.h"
 #include "core-ext/system/io/mccosf.h"
+#include "core-ext/system/io/Resources.h"
 
 #include "after/entities/item/CWeaponItem.h"
 
@@ -158,7 +159,8 @@ void CRecipeLibrary::MatchToPartlist ( const char* matchName, uchar partType, We
 	while ( true )
 	{
 		arstring<256> tPartlistFilename;
-		sprintf( tPartlistFilename, ".res/items/sword%d.txt", tifilecount );
+		sprintf( tPartlistFilename, "items/sword%d.txt", tifilecount );
+		tPartlistFilename = Core::Resources::PathTo( tPartlistFilename ).c_str();
 		if ( !IO::FileExists( tPartlistFilename ) ) {
 			break;
 		}

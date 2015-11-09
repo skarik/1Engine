@@ -30,8 +30,8 @@ CIsosphere::CIsosphere ( void )
 	radius = -1.0f;
 
 	/*myMat = new glMaterial;
-	//myMat->loadTexture( ".res\\textures\\test1.tga" );
-	myMat->loadTexture( ".res\\textures\\starmap.jpg" );
+	//myMat->loadTexture( "textures\\test1.tga" );
+	myMat->loadTexture( "textures\\starmap.jpg" );
 	//myMat->useTexture = true;
 	myMat->useLighting = false;*/
 

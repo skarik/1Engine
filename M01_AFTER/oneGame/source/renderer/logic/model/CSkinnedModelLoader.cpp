@@ -16,6 +16,7 @@
 #include "core/utils/StringUtils.h"
 #include "core/system/io/CSegmentedFile.h"
 #include "core/debug/CDebugConsole.h"
+#include "core-ext/system/io/Resources.h"
 
 #include "renderer/resource/CModelMaster.h"
 #include "renderer/object/mesh/system/glSkinnedMesh.h"
@@ -29,7 +30,7 @@ using namespace std;
 void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 {
 	// First check for needed file conversion!
-	string sTargetFilename = sFilename;
+	string sTargetFilename = Core::Resources::PathTo( sFilename );
 	string sFileExtention = StringUtils::ToLower( StringUtils::GetFileExtension( sTargetFilename ) );
 	//cout << sFileExtention << endl;
 	if ( sFileExtention == "fbx" )
@@ -1146,7 +1147,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 	else
 	{
 		cout << "Warning: Could not open model " << sTargetFilename << endl;
-		LoadSkinnedModel( ".res/models/missing.FBX" );
+		LoadSkinnedModel( "models/missing.FBX" );
 	}
 
 	delete inputFile;

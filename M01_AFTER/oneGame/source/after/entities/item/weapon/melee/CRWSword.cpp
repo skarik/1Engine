@@ -23,6 +23,7 @@ using namespace WeaponItem;
 #include "core/system/io/CBinaryFile.h"
 #include "core/utils/StringUtils.h"
 #include "core-ext/system/io/mccosf.h"
+#include "core-ext/system/io/Resources.h"
 #include "renderer/logic/model/CModel.h"
 #include "renderer/material/glMaterial.h"
 
@@ -49,7 +50,8 @@ void CRWSword::Generate ( void )
 	while ( true )
 	{
 		arstring<256> tPartlistFilename;
-		sprintf( tPartlistFilename, ".res/items/sword%d.txt", tifilecount );
+		sprintf( tPartlistFilename, "items/sword%d.txt", tifilecount );
+		tPartlistFilename = Core::Resources::PathTo( tPartlistFilename ).c_str();
 		if ( !IO::FileExists( tPartlistFilename ) ) {
 			break;
 		}
@@ -202,7 +204,8 @@ void CRWSword::Generate ( void )
 	while ( true )
 	{
 		arstring<256> tPartlistFilename;
-		sprintf( tPartlistFilename, ".res/items/sword%d.txt", tifilecount );
+		sprintf( tPartlistFilename, "items/sword%d.txt", tifilecount );
+		tPartlistFilename = Core::Resources::PathTo( tPartlistFilename ).c_str();
 		if ( !IO::FileExists( tPartlistFilename ) ) {
 			break;
 		}

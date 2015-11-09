@@ -1,4 +1,4 @@
-#version 140
+#version 330
 
 // Inputs from vertex shader
 varying vec4 v2f_normals;

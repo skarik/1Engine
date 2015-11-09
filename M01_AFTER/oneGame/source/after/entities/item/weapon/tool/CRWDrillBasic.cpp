@@ -49,7 +49,7 @@ void CRWDrillBasic::Generate ( void )
 {
 	CBaseRandomItem::Generate();
 
-	string drillModel = ".res\\models\\items\\drill_base.FBX";
+	string drillModel = "models/items/drill_base.FBX";
 	pModel = new CModel( drillModel );
 }
 

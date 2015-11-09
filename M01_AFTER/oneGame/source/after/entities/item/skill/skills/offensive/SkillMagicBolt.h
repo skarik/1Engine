@@ -29,7 +29,7 @@ public:
 
 public:
 	static string GetName ( void ) { return "Magic Bolt"; }
-	static string GetIconFilename ( void ) { return ".res/textures/icons/skill_magicbolt.png"; }
+	static string GetIconFilename ( void ) { return "textures/icons/skill_magicbolt.png"; }
 protected:
 	SKILL_DATA_DEFINE {
 		SKILLDATA_DEFAULTS;

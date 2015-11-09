@@ -37,7 +37,7 @@ CLipsyncEditor::CLipsyncEditor ( void )
 	matui = new glMaterial();
 	matui->setTexture( 0, new CTexture("null") );
 	matui->passinfo.push_back( glPass() );
-	matui->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matui->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	matui->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	matui->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	SetMaterial( matui );
@@ -49,12 +49,12 @@ CLipsyncEditor::CLipsyncEditor ( void )
 	matfnt->passinfo.push_back( glPass() );
 	matfnt->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	matfnt->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	matfnt->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matfnt->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 
 	m_clickmode = CLICK_NONE;
 	
 	m_loaded = false;
-	m_target_sound = ".res/sounds/voice/MF_WellIsntThatInteresting.mp3";
+	m_target_sound = "sounds/voice/MF_WellIsntThatInteresting.mp3";
 	m_syncsound = Audio.PlayWaveFile( m_target_sound );
 	m_syncsound->Stop();
 	m_target_sound = "-nothing loaded-";

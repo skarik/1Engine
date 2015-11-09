@@ -25,7 +25,7 @@ public:
 		flareMaterial->releaseOwnership();
 
 		//pCollider = new CBoxCollider ( Vector3d( 1,1,1 ) );
-		//pCollider = new CConvexCollider( string(".res\\models\\flare01.FBX") );
+		//pCollider = new CConvexCollider( string("models\\flare01.FBX") );
 		pCollider = new CCapsuleCollider( 1.2f,0.2f, true );
 
 		pRigidbody = new CRigidBody ( pCollider, this );

@@ -33,7 +33,7 @@ CDialogueGUI::CDialogueGUI (void) : CGameBehavior(), CRenderableObject()
 	matFntDebug->m_diffuse = Color( 0.0f,0,0 );
 	matFntDebug->passinfo.push_back( glPass() );
 	matFntDebug->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	matFntDebug->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matFntDebug->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	matFntDebug->passinfo[0].b_depthmask = false;
 
 	//Initialize the other drawing stuff
@@ -42,7 +42,7 @@ CDialogueGUI::CDialogueGUI (void) : CGameBehavior(), CRenderableObject()
 	matDrawDebug->passinfo.push_back( glPass() );
 	matDrawDebug->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	matDrawDebug->setTexture( 0, new CTexture("null") );
-	matDrawDebug->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matDrawDebug->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	matDrawDebug->passinfo[0].b_depthmask = false;
 
 	SetMaterial( matDrawDebug );

@@ -25,7 +25,7 @@ void ItemElectricSource::InitializeCommon ( void )
 	newMat->m_diffuse = Color( 0.6f,0.3f,0.3f );
 	newMat->removeReference();
 
-	pModel = new CModel( string(".res\\models\\geosphere.FBX") );
+	pModel = new CModel( string("models\\geosphere.FBX") );
 }
 // Destructor
 ItemElectricSource::~ItemElectricSource ( void )

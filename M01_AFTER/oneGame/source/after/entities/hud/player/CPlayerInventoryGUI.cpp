@@ -31,17 +31,17 @@ CPlayerInventoryGUI::CPlayerInventoryGUI (CAfterPlayer* p_player, CInventory** p
 	matFntDebug->passinfo.push_back( glPass() );
 	matFntDebug->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
 	matFntDebug->passinfo[0].m_transparency_mode= Renderer::ALPHAMODE_TRANSLUCENT;
-	matFntDebug->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matFntDebug->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	matFntDebug->passinfo[0].b_depthmask = false;
 
 	//Initialize the other drawing stuff
 	matDrawDebug = new glMaterial;
 	matDrawDebug->m_diffuse = Color( 0.0f,0,0 );
-	matDrawDebug->setTexture( 0, new CTexture( ".res/textures/white.jpg" ) );
+	matDrawDebug->setTexture( 0, new CTexture( "textures/white.jpg" ) );
 	matDrawDebug->passinfo.push_back( glPass() );
 	matDrawDebug->passinfo[0].m_lighting_mode		= Renderer::LI_NONE;
 	matDrawDebug->passinfo[0].m_transparency_mode	= Renderer::ALPHAMODE_TRANSLUCENT;
-	matDrawDebug->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matDrawDebug->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	matDrawDebug->passinfo[0].b_depthmask = false;
 	
 	renderSettings.renderHints = RL_WORLD;

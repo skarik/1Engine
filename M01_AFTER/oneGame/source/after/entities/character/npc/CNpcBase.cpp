@@ -218,7 +218,7 @@ void CNpcBase::OnTalkTo ( CCharacter* talkingCharacter )
 	CAfterPlayer* player = (CAfterPlayer*)(talkingCharacter); // todo: cast this safely. not always going to be the player that is talking
 	std::vector<CCharacter*> temp;
 	temp.push_back ((CCharacter*)(this));
-	player->StartConversation(".res/dialogue/test2_2.txt", temp); //please don't name variables that make the code hard to read. "Awkward_Guy" is a fucking dumb name.
+	player->StartConversation("dialogue/test2_2.txt", temp); //please don't name variables that make the code hard to read. "Awkward_Guy" is a fucking dumb name.
 
 	//SetPartyHost( 1024 );
 	//m_worldstate.partyHost = 1024; // Join player's party (1024 is companion, but companion is companion, so 1024 is player party)
@@ -230,6 +230,7 @@ void CNpcBase::OnTalkTo ( CCharacter* talkingCharacter )
 #include "engine/audio/CAudioInterface.h"
 #include "audio/CAudioSource.h"
 #include "engine/audio/CSoundBehavior.h"
+#include "core-ext/system/io/Resources.h"
 void CNpcBase::SpeakDialogue ( const string& soundFile )
 {
 	Real length;
@@ -247,7 +248,7 @@ void CNpcBase::SpeakDialogue ( const string& soundFile )
 	}
 	else
 	{	// Load in the raw sound.
-		playedFile = ".res/sounds/" + soundFile;
+		playedFile = Core::Resources::PathTo( "sounds/" + soundFile );
 		CAudioSource* t_source = Audio.PlayWaveFile( playedFile );
 		if ( !t_source ) throw std::exception("Could not find file");
 		length = (Real) t_source->GetSoundLength();

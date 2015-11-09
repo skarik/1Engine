@@ -12,6 +12,7 @@
 
 // Include OSF IO
 #include "core-ext/system/io/mccosf.h"
+#include "core-ext/system/io/Resources.h"
 
 void gmsceneSystemBuilder::LoadScene ( void )
 {
@@ -33,7 +34,7 @@ int EngineCommon::BuildToTarget ( const std::string& n_cmd )
 {
 	// Using the OSF system, load up /system/buildtargets.txt
 	// Need to locate the matching object
-	FILE* fp_loader = fopen( ".res/system/buildtargets.txt", "rb" );
+	FILE* fp_loader = fopen( Core::Resources::PathTo("system/buildtargets.txt").c_str(), "rb" );
 	COSF_Loader osf_loader ( fp_loader );
 
 	// Read in entries until we hit the end or until we hit a match

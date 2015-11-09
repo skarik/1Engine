@@ -6,7 +6,7 @@
 AmmoCrossbowBolt::AmmoCrossbowBolt ( void )
 	: CAmmoBase( ItemData() )
 {
-	pModel = new CModel( string(".res\\models\\weapons\\cb_bolt_beta.FBX") );
+	pModel = new CModel( "models/weapons/cb_bolt_beta.FBX" );
 }
 
 bool AmmoCrossbowBolt::Use ( int x )

@@ -2,6 +2,7 @@
 // Includes
 #include "core/system/io/FileUtils.h"
 #include "core/utils/StringUtils.h"
+#include "core-ext/system/io/Resources.h"
 
 #include "renderer/state/CRenderState.h"
 #include "renderer/resource/CResourceManager.h"
@@ -35,10 +36,12 @@ CTexture::CTexture ( string sInFilename,
 	}
 	// Look for null texture request (just a fast white sampler)
 	if ( sFilename == "null" || sFilename == "Null" || sFilename == "NULL" ) {
-		sFilename = ".res/textures/null.jpg";
+		sFilename = "textures/null.jpg";
 	}
 	// Standardize the filename
 	sFilename = IO::FilenameStandardize( sFilename );
+	// Look for the valid resource to load
+	sFilename = Core::Resources::PathTo( sFilename );
 	
 	// Null out data
 	pData = NULL;

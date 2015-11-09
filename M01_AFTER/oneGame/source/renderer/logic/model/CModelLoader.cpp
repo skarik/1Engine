@@ -5,6 +5,7 @@
 #include "core/utils/StringUtils.h"
 #include "core/system/io/CSegmentedFile.h"
 #include "core/debug/CDebugConsole.h"
+#include "core-ext/system/io/Resources.h"
 
 #include "physical/physics/shapes/physMesh.h"
 
@@ -25,7 +26,7 @@ using namespace std;
 void CModel::LoadModel ( const string& sFilename )
 {
 	// First check for needed file conversion!
-	string sTargetFilename = sFilename;
+	string sTargetFilename = Core::Resources::PathTo( sFilename );
 	string sFileExtention = StringUtils::ToLower( StringUtils::GetFileExtension( sTargetFilename ) );
 	//cout << sFileExtention << endl;
 	if ( sFileExtention == "fbx" )
@@ -434,7 +435,7 @@ void CModel::LoadModel ( const string& sFilename )
 	else
 	{
 		cout << "Warning: Could not open model \"" << sTargetFilename << "\"" << endl;
-		LoadModel( ".res/models/missing.FBX" );
+		LoadModel( "models/missing.FBX" );
 	}
 
 

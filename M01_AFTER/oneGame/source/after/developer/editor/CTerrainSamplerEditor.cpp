@@ -4,6 +4,7 @@
 
 #include "core/input/CInput.h"
 #include "core/settings/CGameSettings.h"
+#include "core-ext/system/io/Resources.h"
 
 #include "engine-common/entities/CPlayer.h"
 
@@ -28,7 +29,7 @@ CTerrainSamplerEditor::CTerrainSamplerEditor ( void )
 	: CGameBehavior(), CRenderableObject()
 {
 	// Set target file
-	sTargetFile = ".res/terra/biomeSampler.pgm";
+	sTargetFile = Core::Resources::PathTo( "terra/biomeSampler.pgm" );
 	eCurrentEditor = EM_TerrainType;
 
 	// Create sampler
@@ -47,8 +48,8 @@ CTerrainSamplerEditor::CTerrainSamplerEditor ( void )
 	myMaterial->m_diffuse = Color( 1.0f,1,1 );
 	myMaterial->passinfo.push_back( glPass() );
 	myMaterial->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
-	myMaterial->setTexture( 0, new CTexture( ".res/textures/white.jpg" ) );
-	myMaterial->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	myMaterial->setTexture( 0, new CTexture( "textures/white.jpg" ) );
+	myMaterial->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	SetMaterial( myMaterial );
 
 	// Set to top layer drawing
@@ -183,7 +184,7 @@ void CTerrainSamplerEditor::GenerateDefault_Biome ( void )
 void CTerrainSamplerEditor::SaveToPPM ( void )
 {
 	string sOutputFile ( sTargetFile );
-	CGameSettings::Active()->MakeDirectory( ".res/system" );
+	CGameSettings::Active()->MakeDirectory( Core::Resources::GetPrimaryResourcePath() + "system" );
 
 	ofstream fileOutput ( sOutputFile.c_str(), iostream::binary );
 	fileOutput << "P5" << endl;

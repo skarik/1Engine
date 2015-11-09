@@ -1,6 +1,8 @@
 ﻿
 #include "CResourceManager.h"
 
+#include "core-ext/system/io/Resources.h"
+
 #include "renderer/logic/model/CModel.h"
 #include "renderer/texture/CTexture.h"
 #include "renderer/texture/CRenderTexture.h"
@@ -681,7 +683,7 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 		}
 	}*/
 	// First convert the file to a BPD
-	string t_bpdFilename = n_texture->sFilename;
+	string t_bpdFilename = Core::Resources::PathTo( n_texture->sFilename );
 	t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
 
 	// Convert it to BPD

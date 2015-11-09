@@ -9,6 +9,7 @@
 #include "after/entities/item/system/ItemTerraBlok.h"
 
 #include "core/system/io/FileUtils.h"
+#include "core-ext/system/io/Resources.h"
 #include <fstream>
 #include "yaml-cpp/yaml.h"
 
@@ -133,7 +134,7 @@ void CPlayerLogbook::LoadFullLogbook ( void )
 	sLogbookGroup*	currentGroup	= &root_logbook;
 
 	// First, go into the system logbook area
-	fs::path	targetDir ( ".res\\logbook\\entries" ); 
+	fs::path	targetDir ( Core::Resources::GetPrimaryResourcePath() + "logbook/entries" ); 
 
 	// Loop through every file in there
 	fs::directory_iterator end_itr;
@@ -473,7 +474,7 @@ void CPlayerLogbook::UpdateDisplayedEntry ( const int entryIndex )
 		string		currentEntry;
 		string		currentSubentry;
 		// Go into the system logbook area
-		fs::path	targetDir ( ".res/logbook/entries" ); 
+		fs::path	targetDir ( Core::Resources::GetPrimaryResourcePath() + "logbook/entries" ); 
 
 		// Loop through every file in there
 		fs::directory_iterator end_itr;
@@ -524,7 +525,7 @@ void CPlayerLogbook::UpdateDisplayedEntry ( const int entryIndex )
 	// Load entry
 	{
 		char filename [512];
-		sprintf( filename, ".res/logbook/entries/%s.yml", lb_current_entry.filename.substr(1).c_str() );
+		sprintf( filename, (Core::Resources::GetPrimaryResourcePath() + "logbook/entries/%s.yml").c_str(), lb_current_entry.filename.substr(1).c_str() );
 		if ( IO::FileExists( filename ) )
 		{
 			using std::ifstream;

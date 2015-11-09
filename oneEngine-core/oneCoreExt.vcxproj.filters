@@ -102,6 +102,9 @@
     <ClCompile Include="source\core-ext\profiler\CTimeProfiler.cpp">
       <Filter>SOURCE\Core-ext\Profiler</Filter>
     </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\FileUtils.cpp">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -154,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\profiler\CTimeProfiler.h">
       <Filter>SOURCE\Core-ext\Profiler</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\FileUtils.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

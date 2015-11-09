@@ -19,7 +19,7 @@ SkillBlink::SkillBlink ( void ) : CSkill( ItemData() )
 
 	cast_state	= 0;
 
-	ps_blink_target = new CParticleSystem ( ".res/particlesystems/spells/blink_target.pcf", "particle_blink" );
+	ps_blink_target = new CParticleSystem ( "particlesystems/spells/blink_target.pcf", "particle_blink" );
 }
 
 SkillBlink::~SkillBlink ( void )
@@ -124,7 +124,7 @@ void SkillBlink::Update ( void )
 
 		// Create blink effects
 		CParticleSystem* ps_blink_effect;
-		ps_blink_effect = new CParticleSystem ( ".res/particlesystems/spells/blink_poof.pcf", "particle_blink" );
+		ps_blink_effect = new CParticleSystem ( "particlesystems/spells/blink_poof.pcf", "particle_blink" );
 		ps_blink_effect->transform.position = blink_start + Vector3d( 0,0,3.0f );
 		ps_blink_effect->GetEmitter()->rvVelocity.mMinVal += (blink_position-blink_start)*0.6f;
 		ps_blink_effect->GetEmitter()->rvVelocity.mMaxVal += (blink_position-blink_start);
@@ -132,7 +132,7 @@ void SkillBlink::Update ( void )
 		ps_blink_effect->GetRenderable(0)->GetMaterial()->m_diffuse = GetFocusColor();
 		ps_blink_effect->GetRenderable(1)->GetMaterial()->m_diffuse = GetFocusColor();
 		ps_blink_effect->RemoveReference();
-		ps_blink_effect = new CParticleSystem ( ".res/particlesystems/spells/blink_poof.pcf", "particle_blink" );
+		ps_blink_effect = new CParticleSystem ( "particlesystems/spells/blink_poof.pcf", "particle_blink" );
 		ps_blink_effect->transform.position = blink_position + Vector3d( 0,0,3.0f );
 		ps_blink_effect->GetEmitter()->rvVelocity.mMinVal += (blink_position-blink_start)*0.6f;
 		ps_blink_effect->GetEmitter()->rvVelocity.mMaxVal += (blink_position-blink_start);

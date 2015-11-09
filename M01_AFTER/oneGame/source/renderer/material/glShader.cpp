@@ -3,6 +3,7 @@
 #include "glShaderManager.h"
 #include "core/settings/CGameSettings.h"
 #include "core/debug/CDebugConsole.h"
+#include "core-ext/system/io/Resources.h"
 
 #include "renderer/system/glMainSystem.h"
 
@@ -337,6 +338,7 @@ void glShader::open_shader ( void )
 		else if ( stTag == GLE::SHADER_TAG_SKINNING )
 		{
 			string tsVertFilename = sVertFilename + "skinning.vert";
+			tsVertFilename = Core::Resources::PathTo( tsVertFilename );
 			if (!IO::FileExists( tsVertFilename )) {
 				Debug::Console->PrintWarning( "WARNING: COULD NOT FIND SKINNING TARGET FOR SHADER '" + sVertFilename + "'\n" );
 				sVertFilename = sVertFilename + "vert";
@@ -351,20 +353,14 @@ void glShader::open_shader ( void )
 		}
 
 		// Look for both files
+		sVertFilename = Core::Resources::PathTo( sVertFilename );
 		if (!IO::FileExists( sVertFilename )) {
 			fail = true;
 		}
-		/*inFile.open( sVertFilename.c_str() );
-		if ( !inFile.is_open() )
-			fail = true;
-		inFile.close();*/
+		sFragFilename = Core::Resources::PathTo( sFragFilename );
 		if (!IO::FileExists( sFragFilename )) {
 			fail = true;
 		}
-		/*inFile.open( sFragFilename.c_str() );
-		if ( !inFile.is_open() )
-			fail = true;
-		inFile.close();*/
 		
 		if ( fail )
 		{

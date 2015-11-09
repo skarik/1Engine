@@ -2,6 +2,7 @@
 #include "CParticleEmitter.h"
 #include "core/time/time.h"
 #include "core/system/io/CSegmentedFile.h"
+#include "core-ext/system/io/Resources.h"
 #include <sstream>
 
 using namespace std;
@@ -171,7 +172,7 @@ bool CParticleEmitter::HasEmitted ( void ) {
 void CParticleEmitter::LoadFromFile ( const string & filename )
 {
 	// Input
-	CSegmentedFile inFile ( filename );
+	CSegmentedFile inFile ( Core::Resources::PathTo( filename ) );
 	inFile.ReadData();
 
 	// First check header

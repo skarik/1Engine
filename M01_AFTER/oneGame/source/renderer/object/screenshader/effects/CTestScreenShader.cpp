@@ -8,7 +8,7 @@
 CTestScreenShader::CTestScreenShader ( void )
 	: CScreenShader()
 {
-	/*vMaterials[0]->setShader( new glShader( ".res\\shaders\\sstest.glsl" ) );
+	/*vMaterials[0]->setShader( new glShader( "shaders\\sstest.glsl" ) );
 	vMaterials[0]->isScreenShader = false;
 	vMaterials[0]->isTransparent = true;*/
 	renderSettings.renderHints = RL_WORLD;

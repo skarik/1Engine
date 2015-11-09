@@ -10,8 +10,6 @@ namespace IO
 	bool FileExists ( const char* n_filename );
 	bool FileExists ( const std::string& n_filename );
 
-	bool ModelExists ( const std::string& n_filename );
-
 	// Name edit
 	std::string FilenameStandardize ( const std::string& n_filename );
 

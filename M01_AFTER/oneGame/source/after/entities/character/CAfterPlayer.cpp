@@ -489,26 +489,26 @@ void CAfterPlayer::OnReceiveSignal ( const uint64_t n_signal )
 {
 	if ( n_signal == Game::MSG_GAME_SKILLTREE_RELOAD )
 	{
-		m_skilltree->ManagedLoad( ".res/system/v_skilltree_skills.txt" );
+		m_skilltree->ManagedLoad( "system/v_skilltree_skills.txt" );
 		switch ( pl_race_stats->iRace )
 		{
 		case CRACE_HUMAN:
-			m_skilltree_race->ManagedLoad( ".res/system/v_skilltree_human.txt" );
+			m_skilltree_race->ManagedLoad( "system/v_skilltree_human.txt" );
 			break;
 		case CRACE_ELF:
-			m_skilltree_race->ManagedLoad( ".res/system/v_skilltree_elf.txt" );
+			m_skilltree_race->ManagedLoad( "system/v_skilltree_elf.txt" );
 			break;
 		case CRACE_FLUXXOR:
-			m_skilltree_race->ManagedLoad( ".res/system/v_skilltree_fluxxor.txt" );
+			m_skilltree_race->ManagedLoad( "system/v_skilltree_fluxxor.txt" );
 			break;
 		case CRACE_DWARF:
-			m_skilltree_race->ManagedLoad( ".res/system/v_skilltree_dwarf.txt" );
+			m_skilltree_race->ManagedLoad( "system/v_skilltree_dwarf.txt" );
 			break;
 		case CRACE_KITTEN:
-			m_skilltree_race->ManagedLoad( ".res/system/v_skilltree_mayang.txt" );
+			m_skilltree_race->ManagedLoad( "system/v_skilltree_mayang.txt" );
 			break;
 		case CRACE_MERCHANT:
-			m_skilltree_race->ManagedLoad( ".res/system/v_skilltree_bani.txt" );
+			m_skilltree_race->ManagedLoad( "system/v_skilltree_bani.txt" );
 			break;
 		}
 

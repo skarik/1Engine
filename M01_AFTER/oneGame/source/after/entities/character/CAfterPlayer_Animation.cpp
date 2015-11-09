@@ -100,7 +100,7 @@ void CAfterPlayer::OnAnimationEvent ( const Animation::eAnimSystemEvent eventTyp
 	case Animation::Event_Slide:
 		{
 			if ( !t_slideSystem ) {
-				t_slideSystem = new CParticleSystem( ".res/particlesystems/slidepoof.pcf" );
+				t_slideSystem = new CParticleSystem( "particlesystems/slidepoof.pcf" );
 			}
 
 			// Cast downward from the feet

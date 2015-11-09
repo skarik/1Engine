@@ -85,6 +85,7 @@ void CAfterCharacterAnimator::DoSpeech ( const NPC::eGeneralSpeechType& speechTy
 }
 
 // SpeakDialogue makes this character speak dialogue. It takes either a raw path or a sound file
+#include "core-ext/system/io/Resources.h"
 #include "after/states/model/CLipsyncSequence.h"
 #include "engine/audio/CAudioInterface.h"
 #include "audio/CAudioSource.h"
@@ -108,7 +109,7 @@ void CAfterCharacterAnimator::SpeakDialogue ( const string& soundFile )
 	}
 	else
 	{	// Load in the raw sound.
-		playedFile = ".res/sounds/" + soundFile;
+		playedFile = Core::Resources::PathTo( "sounds/" + soundFile );
 		CAudioSource* t_source = Audio.PlayWaveFile( playedFile );
 		if ( !t_source ) throw std::exception("Could not find file");
 		length = (Real)t_source->GetSoundLength();

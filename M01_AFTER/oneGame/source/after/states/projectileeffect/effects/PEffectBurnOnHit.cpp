@@ -7,7 +7,7 @@
 
 void PEffectBurnOnHit::Initialize ( void )
 {
-	ps_trail_effect = new CParticleSystem( ".res/particlesystems/spells/firetoss_projectile.pcf" );
+	ps_trail_effect = new CParticleSystem( "particlesystems/spells/firetoss_projectile.pcf" );
 	ps_trail_effect->transform.position = pTarget->transform.position;
 	ps_trail_effect->transform.SetParent( &pTarget->transform );
 }

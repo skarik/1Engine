@@ -3,6 +3,7 @@
 #include "core/math/Math.h"
 #include "core/system/io/FileUtils.h"
 #include "core/system/io/CBinaryFile.h"
+#include "core-ext/system/io/Resources.h"
 
 #include "after/terrain/Zones.h"
 #include "after/entities/world/environment/EnvSunlight.h"
@@ -13,6 +14,7 @@
 #include "renderer/logic/model/CModel.h"
 #include "renderer/object/shapes/CRenderPlane.h"
 #include "renderer/state/Settings.h"
+
 
 // Public listing of dominant day cycle
 Daycycle* Daycycle::DominantCycle = NULL;
@@ -64,17 +66,17 @@ Daycycle::Daycycle ( )
 
 	// Starsphere
 	pStarMat = new glMaterial();
-	pStarMat->setTexture( 0, new CTexture( ".res/textures/starmap.jpg" ) );
-	pStarMat->setTexture( 1, new CTexture( ".res/textures/cloudmap_hf.png" ) );
+	pStarMat->setTexture( 0, new CTexture( "textures/starmap.jpg" ) );
+	pStarMat->setTexture( 1, new CTexture( "textures/cloudmap_hf.png" ) );
 	pStarMat->passinfo.push_back( glPass() );
 	pStarMat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	pStarMat->passinfo[0].b_depthmask = false;
 	pStarMat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	pStarMat->passinfo[0].m_blend_mode = Renderer::BM_ADD;
-	pStarMat->passinfo[0].shader = new glShader ( ".res/shaders/sky/starfields.glsl" );
+	pStarMat->passinfo[0].shader = new glShader ( "shaders/sky/starfields.glsl" );
 	pStarMat->removeReference();
 
-	starModel = new CModel ( string(".res/models/geosphere.FBX") );
+	starModel = new CModel ( string("models/geosphere.FBX") );
 	starModel->SetMaterial( pStarMat );
 	starModel->SetRenderType( Renderer::Background );
 	starModel->transform.scale = Vector3d( 940,940,-940 );
@@ -85,7 +87,7 @@ Daycycle::Daycycle ( )
 	pHorizonMat->setTexture( 0, new CTexture( "null" ) );
 	pHorizonMat->passinfo.push_back( glPass() );
 	pHorizonMat->passinfo[0].m_lighting_mode = Renderer::LI_NORMAL;
-	pHorizonMat->passinfo[0].shader = new glShader ( ".res/shaders/sky/horizon.glsl" );
+	pHorizonMat->passinfo[0].shader = new glShader ( "shaders/sky/horizon.glsl" );
 	//pHorizonMat->passinfo[0].shader = new glShader ( ".res/shaders/particles/colorBlended.glsl" );
 	pHorizonMat->removeReference();
 
@@ -133,9 +135,10 @@ Daycycle::Daycycle ( )
 		DominantCycle = this;
 	}
 
-	if ( IO::FileExists( ".res/terra/sun_terra0" ) ) {
+	string sunfile = Core::Resources::PathTo( "terra/sun_terra0" );
+	if ( IO::FileExists( sunfile ) ) {
 		CBinaryFile io;
-		io.Open( ".res/terra/sun_terra0", io.IO_READ );
+		io.Open( sunfile.c_str(), io.IO_READ );
 		io.ReadData( (char*)&clearColors[0], sizeof(Color)*6 );
 		io.ReadData( (char*)&sunColors[0], sizeof(Color)*6 );
 		io.ReadData( (char*)&skyColors[0], sizeof(Color)*6 );

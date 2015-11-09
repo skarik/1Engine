@@ -27,7 +27,7 @@ SkillFiretoss::SkillFiretoss ( void ) : CSkill( ItemData() )
 
 	cast_state	= 0;
 
-	ps_firetoss_active = new CParticleSystem ( ".res/particlesystems/flame03_b.pcf", "particle_fluuxflame" );
+	ps_firetoss_active = new CParticleSystem ( "particlesystems/flame03_b.pcf", "particle_fluuxflame" );
 	ps_firetoss_active->enabled = false;
 
 	mMagicLight = new CLight();
@@ -36,7 +36,7 @@ SkillFiretoss::SkillFiretoss ( void ) : CSkill( ItemData() )
 	mMagicLight->transform.Get( transform );
 	mMagicLight->transform.SetParent( &transform );
 
-	mMagicModel = new CModel( ".res/models/effects/magic_ball.fbx" );
+	mMagicModel = new CModel( "models/effects/magic_ball.fbx" );
 	glMaterial* newMat = new glMaterial;
 	newMat->loadFromFile( "effects/spell_fireball" );
 	mMagicModel->SetMaterial( newMat );

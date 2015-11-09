@@ -1,3 +1,5 @@
+#version 330
+
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;
 in vec4 mdl_Color;
@@ -31,7 +33,7 @@ void main ( void )
 	v2f_normals		= sys_ModelRotationMatrix*vec4( mdl_Normal, 1.0 );
 	v2f_colors		= mdl_Color;
 	v2f_position	= sys_ModelMatrix*v_localPos;
-	v2f_texcoord0	= mdl_TexCoord.xy*(1+0.15) - (vec2(1,-1)*0.5*0.15);
+	v2f_texcoord0	= mdl_TexCoord.xy*(1.0+0.15) - (vec2(1.0,-1.0)*0.5*0.15);
 	v2f_fogdensity  = max( 0.0, (sys_FogEnd - v_screenPos.z) * sys_FogScale );
 
 	gl_Position = v_screenPos;

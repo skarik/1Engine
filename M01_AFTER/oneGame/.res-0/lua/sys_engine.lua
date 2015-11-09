@@ -1,9 +1,9 @@
 -- Gamestate System
-dofile( ".res/lua/system/gamebehavior.lua" );
-dofile( ".res/lua/system/gameobject.lua" );
-dofile( ".res/lua/system/gamestate.lua" );
+dofile( path.."system/gamebehavior.lua" );
+dofile( path.."system/gameobject.lua" );
+dofile( path.."system/gamestate.lua" );
 
-dofile( ".res/lua/system/character.lua" );
-dofile( ".res/lua/system/zonedcharacter.lua" );
+dofile( path.."system/character.lua" );
+dofile( path.."system/zonedcharacter.lua" );
 
-dofile( ".res/lua/system/raytracer.lua" );
+dofile( path.."system/raytracer.lua" );

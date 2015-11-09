@@ -1,3 +1,5 @@
+#version 330
+
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;
 in vec4 mdl_Color;
@@ -37,7 +39,7 @@ void main ( void )
 	offset.z += sys_SinTime.z*0.2;
 	offset.z += cos( sys_Time.z*0.4+v_localPos.x*14.2+v_localPos.y*13.2 )*0.8;
 	
-	v_localPos.xyz += offset*(1-v2f_colors.g)*0.09;
+	v_localPos.xyz += offset*(1.0-v2f_colors.g)*0.09;
 	
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
 

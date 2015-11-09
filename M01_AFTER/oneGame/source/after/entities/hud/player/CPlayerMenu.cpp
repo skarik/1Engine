@@ -50,7 +50,7 @@ CPlayerMenu::CPlayerMenu( CAfterPlayer*		p_player,
 	matfntMenu->passinfo.push_back( glPass() );
 	matfntMenu->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
 	matfntMenu->passinfo[0].m_transparency_mode	= Renderer::ALPHAMODE_TRANSLUCENT;
-	matfntMenu->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matfntMenu->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	SetMaterial( matfntMenu );
 
 	matMenu = new glMaterial;
@@ -59,7 +59,7 @@ CPlayerMenu::CPlayerMenu( CAfterPlayer*		p_player,
 	matMenu->passinfo.push_back( glPass() );
 	matMenu->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
 	matMenu->passinfo[0].m_transparency_mode= Renderer::ALPHAMODE_TRANSLUCENT;
-	matMenu->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matMenu->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 
 	visible = false;
 

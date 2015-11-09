@@ -82,6 +82,7 @@ public:
 	//=========================================//
 
 	// Make a directory
+	CORE_API void MakeDirectory ( const string& );
 	CORE_API void MakeDirectory ( const char * );
 
 	//=========================================//

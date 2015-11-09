@@ -51,7 +51,7 @@ void CRIDynamite::Generate ( void )
 {
 	CBaseRandomItem::Generate();
 
-	pModel = new CModel( ".res\\models\\items\\dynamite.FBX" );
+	pModel = new CModel( "models\\items\\dynamite.FBX" );
 }
 
 bool CRIDynamite::Use ( int x )

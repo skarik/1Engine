@@ -22,8 +22,8 @@ C_RMainMenuTitle::C_RMainMenuTitle ( void )
 	matText->passinfo.push_back( glPass() );
 	matText->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
 	matText->setTexture( 0, fntTitle );
-	//matText->setShader( new glShader( ".res/shaders/v2d/outline.glsl" ) );
-	matText->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	//matText->setShader( new glShader( "shaders/v2d/outline.glsl" ) );
+	matText->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 
 	SetMaterial( matText );
 }

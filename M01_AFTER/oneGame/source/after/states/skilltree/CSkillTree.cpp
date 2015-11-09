@@ -2,9 +2,11 @@
 #include "CSkillTree.h"
 #include "core/system/io/FileUtils.h"
 #include "core/system/io/CBinaryFile.h"
+#include "core-ext/system/io/Resources.h"
 #include "after/entities/item/skill/SkillList.h"
 
 // Include XML loader
+#include "core-ext/system/io/Resources.h"
 #include "rapidxml/rapidxml.hpp"
 #include "rapidxml/rapidxml_utils.hpp"
 
@@ -52,7 +54,7 @@ void CSkillTree::LoadSkillTree ( const char* skillTree )
 	m_skilltreefile = skillTree;
 
 	// Open base skill tree
-	rapidxml::file<> xmlFile( skillTree ); // Default template is char
+	rapidxml::file<> xmlFile( Core::Resources::PathTo( skillTree ).c_str() ); // Default template is char
     rapidxml::xml_document<> doc;
     doc.parse<0>( xmlFile.data() );
 
@@ -115,7 +117,8 @@ void CSkillTree::LoadSkillTree ( const char* skillTree )
 
 						// Now we check for the lua bit
 						string skillName = attr->value();
-						string luaFile = string(".res/lua/") + "skills/" + skillName + ".lua";
+						string luaFile = string("lua/") + "skills/" + skillName + ".lua";
+						luaFile = Core::Resources::PathTo( luaFile ).c_str();
 						if ( IO::FileExists( luaFile ) )
 						{
 							// Skill exists.

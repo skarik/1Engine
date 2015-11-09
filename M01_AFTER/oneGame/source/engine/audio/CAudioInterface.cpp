@@ -1,4 +1,5 @@
 
+#include "core-ext/system/io/Resources.h"
 #include "CAudioInterface.h"
 #include "audio/CAudioMaster.h"
 #include "audio/CAudioListener.h"
@@ -169,7 +170,7 @@ CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
 		// Play sound
 		if ( chosen_sound_index >= 0 ) {
 			// Create the sound
-			string soundfilename = string(".res/sounds/") + scriptResult->second.sounds[chosen_sound_index].c_str();
+			string soundfilename =  Core::Resources::PathTo( string("sounds/") + scriptResult->second.sounds[chosen_sound_index].c_str() );
 			CAudioSound* newSound = CSoundManager::GetActive()->GetSound( soundfilename );
 
 			// If sound driver is FUBAR, don't crash. Just warn about it.
@@ -219,11 +220,11 @@ void CAudioInterface::BuildIndexMap ( void )
 		// Open proper file
 		switch ( i )
 		{
-			case 0:		fp = fopen( ".res/sounds/_def_standard.txt", "rb" ); break;
-			case 1:		fp = fopen( ".res/sounds/_def_environment.txt", "rb" ); break;
-			case 2:		fp = fopen( ".res/sounds/_def_music.txt", "rb" ); break;
-			case 3:		fp = fopen( ".res/sounds/_def_voice.txt", "rb" ); break;
-			default:	fp = fopen( ".res/sounds/level_list.txt", "rb" ); break;
+			case 0:		fp = Core::Resources::Open( "sounds/_def_standard.txt", "rb" ); break;
+			case 1:		fp = Core::Resources::Open( "sounds/_def_environment.txt", "rb" ); break;
+			case 2:		fp = Core::Resources::Open( "sounds/_def_music.txt", "rb" ); break;
+			case 3:		fp = Core::Resources::Open( "sounds/_def_voice.txt", "rb" ); break;
+			default:	fp = Core::Resources::Open( "sounds/level_list.txt", "rb" ); break;
 		}
 
 		if ( fp ) {
@@ -309,6 +310,9 @@ void CAudioInterface::BuildIndexMap ( void )
 			} // End while loop
 			fclose( fp );
 		}
+		else {
+			throw Core::NullReferenceException();
+		}
 	}
 }
 void CAudioInterface::LoadEntry ( const char* soundName, const soundIndex_t& indexInfo )
@@ -353,11 +357,11 @@ void CAudioInterface::LoadEntry ( const char* soundName, const soundIndex_t& ind
 	// Open proper file
 	switch ( indexInfo.set )
 	{
-		case 0:		fp = fopen( ".res/sounds/_def_standard.txt", "rb" ); break;
-		case 1:		fp = fopen( ".res/sounds/_def_environment.txt", "rb" ); break;
-		case 2:		fp = fopen( ".res/sounds/_def_music.txt", "rb" ); break;
-		case 3:		fp = fopen( ".res/sounds/_def_voice.txt", "rb" ); break;
-		default:	fp = fopen( ".res/sounds/level_list.txt", "rb" ); break;
+		case 0:		fp = Core::Resources::Open( "sounds/_def_standard.txt", "rb" ); break;
+		case 1:		fp = Core::Resources::Open( "sounds/_def_environment.txt", "rb" ); break;
+		case 2:		fp = Core::Resources::Open( "sounds/_def_music.txt", "rb" ); break;
+		case 3:		fp = Core::Resources::Open( "sounds/_def_voice.txt", "rb" ); break;
+		default:	fp = Core::Resources::Open( "sounds/level_list.txt", "rb" ); break;
 	}
 	// Go to pos in file
 	fseek( fp, indexInfo.pos + 1, SEEK_SET );

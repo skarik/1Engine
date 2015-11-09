@@ -18,7 +18,7 @@ SkillFrostBall::SkillFrostBall ( void ) : CSkill( ItemData() )
 	//cooldown	= 0.3f;
 	passive		= false;
 
-	ps_firetoss_active = new CParticleSystem ( ".res/particlesystems/flame03.pcf", "particle_fluuxflame" );
+	ps_firetoss_active = new CParticleSystem ( "particlesystems/flame03.pcf", "particle_fluuxflame" );
 	//ps_firetoss_active = new CParticleSystem( ".res/particlesystems/spells/magicbolt_projectile.pcf" );
 	ps_firetoss_active->enabled = false;
 

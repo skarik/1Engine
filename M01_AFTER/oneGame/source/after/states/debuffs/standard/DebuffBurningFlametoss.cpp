@@ -31,7 +31,7 @@ void DebuffBurningFlametoss::Initialize ( void )
 
 	if ( !m_system && this->pTarget )
 	{
-		m_system = new CParticleSystem( ".res/particlesystems/flame01_ff.pcf", true );
+		m_system = new CParticleSystem( "particlesystems/flame01_ff.pcf", true );
 		CParticleEmitterSkeleton* t_emitter = (CParticleEmitterSkeleton*) m_system->GetEmitter();
 		// give that emitter some bones to emit on
 		if ( t_emitter )

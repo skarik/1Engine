@@ -22,8 +22,8 @@ CSkillTreeGUI::CSkillTreeGUI(CAfterPlayer* p_Player, CSkillTree* p_SkillTree, CS
 	pInventory = p_inventoryGUI;
 
 	texNull = new CTexture( "null" );
-	texSkillblob = new CTexture( ".res/textures/hud/skillblob_circlet.png" );
-	texSkillline = new CTexture( ".res/textures/hud/skillblob_line.png" );
+	texSkillblob = new CTexture( "textures/hud/skillblob_circlet.png" );
+	texSkillline = new CTexture( "textures/hud/skillblob_line.png" );
 
 	testMat = new glMaterial;
 	testMat->m_diffuse = Color(0.0f,0,0);
@@ -31,7 +31,7 @@ CSkillTreeGUI::CSkillTreeGUI(CAfterPlayer* p_Player, CSkillTree* p_SkillTree, CS
 	testMat->passinfo.push_back( glPass() );
 	testMat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	testMat->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
-	testMat->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	testMat->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 
 	testFnt = new glMaterial;
 	testFnt->m_diffuse= Color(0.0f,0,0);
@@ -39,7 +39,7 @@ CSkillTreeGUI::CSkillTreeGUI(CAfterPlayer* p_Player, CSkillTree* p_SkillTree, CS
 	testFnt->passinfo.push_back( glPass() );
 	testFnt->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	testFnt->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
-	testFnt->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	testFnt->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 
 	fntSkilltitle	= new CBitmapFont( "HVD_Comic_Serif_Pro.otf", 33 );
 	fntSkillnames	= new CBitmapFont( "HVD_Comic_Serif_Pro.otf", 17 );

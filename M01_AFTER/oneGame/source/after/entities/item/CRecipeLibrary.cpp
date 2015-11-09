@@ -2,6 +2,7 @@
 #include "core/system/io/FileUtils.h"
 #include "core/debug/CDebugConsole.h"
 #include "core-ext/system/io/mccosf.h"
+#include "core-ext/system/io/Resources.h"
 #include "after/types/terrain/BlockType.h"
 #include "CRecipeLibrary.h"
 
@@ -14,7 +15,8 @@ CRecipeLibrary::CRecipeLibrary (void)
 		int filecount = 0;
 		while ( load ) {
 			arstring<256> libraryFile;
-			sprintf( libraryFile, ".res/items/recipelibrary%d.txt", filecount );
+			sprintf( libraryFile, "items/recipelibrary%d.txt", filecount );
+			libraryFile = Core::Resources::PathTo( libraryFile ).c_str();
 			if ( IO::FileExists( libraryFile ) ) {
 				LoadLibrarySet( libraryFile );
 				filecount += 1;

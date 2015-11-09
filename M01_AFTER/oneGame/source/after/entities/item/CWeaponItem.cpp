@@ -190,7 +190,7 @@ void GetRots ( void )
 {
 	if ( Input::Keydown( Keys.F8 ) )
 	{
-		std::ifstream file ( ".res/system/weaponitem_rots.txt" );
+		std::ifstream file ( ".res-0/system/weaponitem_rots.txt" );
 		file >> defrotx;
 		file >> defroty;
 		file >> defrotz;

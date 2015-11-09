@@ -125,6 +125,7 @@ void Animation::Sequence::Play ( void )
 
 #include "core/system/io/FileUtils.h"
 #include "core/system/io/CBinaryFile.h"
+#include "core-ext/system/io/Resources.h"
 
 bool Animation::Sequence::LoadFromFile ( const char* filename )
 {
@@ -132,7 +133,8 @@ bool Animation::Sequence::LoadFromFile ( const char* filename )
 	char*	t_token;
 	SequenceAction	tc_action;
 
-	FILE*	t_file = fopen( filename, "rb" );
+	//FILE*	t_file = fopen( filename, "rb" );
+	FILE*	t_file = Core::Resources::Open( filename, "rb" );
 	if ( !t_file ) return false;
 	CBinaryFile tu_file (t_file); // used to automatically close the file when exit scope
 

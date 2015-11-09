@@ -33,7 +33,7 @@ public:
 	// GetNextLevelCosts
 	//  Sets the input values to the costs of the skill for this level
 	static void GetNextLevelCost ( Real& o_health, Real& o_stamina, Real& o_mana ) { o_health=0; o_stamina=0; o_mana=10; };*/
-	static string GetIconFilename ( void ) { return ".res/textures/icons/skill_blink.png"; }
+	static string GetIconFilename ( void ) { return "textures/icons/skill_blink.png"; }
 
 protected:
 	SKILL_DATA_DEFINE {

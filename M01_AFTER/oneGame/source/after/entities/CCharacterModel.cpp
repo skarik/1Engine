@@ -131,7 +131,7 @@ bool CCharacterModel::LoadBase( const string& character_name )
 	pProp2	= NULL;
 
 
-	string file = ".res/models/character/" + character_name + ".fbx";
+	string file = "models/character/" + character_name + ".fbx";
 
 	charModel = new CSkinnedModel ( file );
 	charTargetModel = charModel;
@@ -168,7 +168,7 @@ bool CCharacterModel::LoadModel ( const string& model_filename )
 {
 	basename = "";
 
-	string file = ".res/models/" + model_filename + ".fbx";
+	string file = "models/" + model_filename + ".fbx";
 
 	charModel = new CSkinnedModel ( file );
 	charTargetModel = charModel;

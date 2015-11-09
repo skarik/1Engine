@@ -62,4 +62,4 @@ function inheritsFrom( baseClass )
     return new_class
 end
 
-dofile( ".res/lua/system/vector3d.lua" );
+dofile( path.."system/vector3d.lua" );

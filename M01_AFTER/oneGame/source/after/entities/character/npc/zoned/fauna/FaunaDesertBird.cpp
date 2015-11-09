@@ -15,7 +15,7 @@ REGISTER_ZCC(FaunaDesertBird);
 
 FaunaDesertBird::CONSTRUCTOR_ZCC_V2(FaunaDesertBird)
 {	ZCC_AddInstance();
-	pModel = new CModel ( ".res\\models\\fauna\\bird_beta.FBX" );
+	pModel = new CModel ( "models/fauna/bird_beta.FBX" );
 }
 
 FaunaDesertBird::~FaunaDesertBird ( void )

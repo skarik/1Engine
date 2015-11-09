@@ -103,7 +103,7 @@ void gmsceneMainGame::LoadScene ( void )
 
 		// Create cloud particle system
 		/*CParticleEmitter* cloud_emitter = new CParticleEmitterCloud ( );
-		cloud_emitter->LoadFromFile( ".res\\particlesystems\\smoketest02.pcf" );
+		cloud_emitter->LoadFromFile( "particlesystems\\smoketest02.pcf" );
 		cloud_emitter->rfParticlesSpawned = RangeValue<ftype> ( 25.0f,25.0f );
 		cloud_emitter->fMaxParticles = 250.0f;
 		cloud_emitter->rfStartSize = RangeValue<ftype> ( 30.0f, 40.0f );
@@ -125,10 +125,10 @@ void gmsceneMainGame::LoadScene ( void )
 		mat_clouds->useAlphaTest = false;
 		mat_clouds->useDepthMask = false;
 		mat_clouds->diffuse = Color( 1.0f,1,1, 0.9f );
-		mat_clouds->loadTexture( ".res\\textures\\particles\\smoke1.png" );
+		mat_clouds->loadTexture( "textures\\particles\\smoke1.png" );
 		mat_clouds->iBlendMode = glMaterial::BM_NORMAL;
 		mat_clouds->iFaceMode = glMaterial::FM_FRONTANDBACK;
-		mat_clouds->setShader( new glShader( ".res\\shaders\\particles\\cloudDiffuse.glsl" ) );
+		mat_clouds->setShader( new glShader( "shaders\\particles\\cloudDiffuse.glsl" ) );
 		cloud_renderer->SetMaterial( mat_clouds );
 		cloud_renderer->iRenderMethod = CParticleRenderer::P_SHADED_BILLBOARD;*/
 	}
@@ -237,7 +237,7 @@ void gmsceneMainGame::LoadScene ( void )
 		newMat->useLighting = false;
 		newMat->diffuse = Color( 1.0f,1,1 );
 		newMat->iBlendMode = glMaterial::BM_ADD;
-		newMat->loadTexture( ".res\\textures\\sun.jpg" );
+		newMat->loadTexture( "textures\\sun.jpg" );
 		newMat->releaseOwnership();
 
 		CParticleEmitter* emitter = new CParticleEmitter();
@@ -262,8 +262,8 @@ void gmsceneMainGame::LoadScene ( void )
 		newMat->useDepthMask = false;
 		newMat->useColors = true;
 		//newMat->iBlendMode = glMaterial::BM_ADD;
-		//newMat->loadTexture( ".res\\textures\\sun.jpg" );
-		newMat->loadTexture( ".res\\textures\\particles\\fluxflame1.png" );
+		//newMat->loadTexture( "textures\\sun.jpg" );
+		newMat->loadTexture( "textures\\particles\\fluxflame1.png" );
 		newMat->releaseOwnership();
 
 		CParticleEmitter* emitter = new CParticleEmitter();
@@ -299,9 +299,9 @@ void gmsceneMainGame::LoadScene ( void )
 	/*{
 		for ( int i = 0; i < 1; i += 1 )
 		{
-			//CModel* aModel = new CModel ( string(".res\\models\\test_acorn.pad") );
-			//CModel* aModel = new CModel ( string(".res\\models\\eggcorn.FBX") );
-			CModel* aModel = new CModel ( string(".res\\models\\flare01.FBX") );
+			//CModel* aModel = new CModel ( string("models\\test_acorn.pad") );
+			//CModel* aModel = new CModel ( string("models\\eggcorn.FBX") );
+			CModel* aModel = new CModel ( string("models\\flare01.FBX") );
 			aModel->transform.position = Vector3d( 0,-i,i*2 ) + Vector3d( 14,20,11 );
 			//aModel->transform.scale = Vector3d( 0.1f, 0.1f, 0.1f ) * 0.2f;
 			aModel->transform.scale = Vector3d( 2.1f, 2.1f, 2.1f ) ;
@@ -310,15 +310,15 @@ void gmsceneMainGame::LoadScene ( void )
 			//flareMaterial->diffuse = Color( 0.7f,0.4f,0.2f ) * 0.6f;
 			//flareMaterial->diffuse.alpha = 1.0f;
 			//flareMaterial->emissive = Color( 0,0,0.0f );
-			//flareMaterial->loadTexture( ".res\\textures\\flare01.tga" );
+			//flareMaterial->loadTexture( "textures\\flare01.tga" );
 
 			//flareMaterial->emissive = Color( 0,0,0.0f );
 			//flareMaterial->diffuse = Color( 1,1,1.0f );
 
 			flareMaterial->diffuse = Color( 1,1,1.0f );
 			flareMaterial->emissive = Color( 0.1,0.1,0.1f );
-			flareMaterial->loadTexture( ".res\\textures\\flare01.tga" );
-			flareMaterial->setShader( new glShader( ".res\\shaders\\test.glsl" ) );
+			flareMaterial->loadTexture( "textures\\flare01.tga" );
+			flareMaterial->setShader( new glShader( "shaders\\test.glsl" ) );
 
 			aModel->SetMaterial( flareMaterial );
 			flareMaterial->releaseOwnership();
@@ -327,9 +327,9 @@ void gmsceneMainGame::LoadScene ( void )
 
 		for ( int i = 0; i < 1; i += 1 )
 		{
-			//CModel* aModel = new CModel ( string(".res\\models\\test_acorn.pad") );
-			//CModel* aModel = new CModel ( string(".res\\models\\eggcorn.FBX") );
-			CModel* aModel = new CModel ( string(".res\\models\\flare01.FBX") );
+			//CModel* aModel = new CModel ( string("models\\test_acorn.pad") );
+			//CModel* aModel = new CModel ( string("models\\eggcorn.FBX") );
+			CModel* aModel = new CModel ( string("models\\flare01.FBX") );
 			aModel->transform.position = Vector3d( 0,-i,i*2 ) + Vector3d( 14,18,11 );
 			//aModel->transform.scale = Vector3d( 0.1f, 0.1f, 0.1f ) * 0.2f;
 			aModel->transform.scale = Vector3d( 2.1f, 2.1f, 2.1f ) ;
@@ -338,14 +338,14 @@ void gmsceneMainGame::LoadScene ( void )
 			//flareMaterial->diffuse = Color( 0.7f,0.4f,0.2f ) * 0.6f;
 			//flareMaterial->diffuse.alpha = 1.0f;
 			//flareMaterial->emissive = Color( 0,0,0.0f );
-			//flareMaterial->loadTexture( ".res\\textures\\flare01.tga" );
+			//flareMaterial->loadTexture( "textures\\flare01.tga" );
 
 			flareMaterial->emissive = Color( 0,0,0.0f );
 			flareMaterial->diffuse = Color( 1,1,1.0f );
 
 			//flareMaterial->diffuse = Color( 0,0,0.0f );
 			//flareMaterial->emissive = Color( 1,1,1.0f );
-			//flareMaterial->loadTexture( ".res\\textures\\flare01.tga" );
+			//flareMaterial->loadTexture( "textures\\flare01.tga" );
 
 			aModel->SetMaterial( flareMaterial );
 			flareMaterial->releaseOwnership();
@@ -359,39 +359,39 @@ void gmsceneMainGame::LoadScene ( void )
 	
 	// Natsca Test Model
 	/*{
-		CModel* aModel = new CSkinnedModel ( string(".res\\models\\natsca2012.pad") );
+		CModel* aModel = new CSkinnedModel ( string("models\\natsca2012.pad") );
 		//aModel->transform.position = Vector3d( 14,18,11 );
 		aModel->transform.position = Vector3d( 14,18,29 );
 
 		glMaterial* bodyMat = new glMaterial();
-		bodyMat->loadTexture( ".res\\textures\\characters\\natsca\\maintexsm2.jpg" );
-		bodyMat->setShader( new glShader( ".res\\shaders\\defaultDiffuse.glsl" ) );
+		bodyMat->loadTexture( "textures\\characters\\natsca\\maintexsm2.jpg" );
+		bodyMat->setShader( new glShader( "shaders\\defaultDiffuse.glsl" ) );
 		//bodyMat->useSkinning = true;
 		aModel->SetMaterial( bodyMat );
 
 		glMaterial* bandageMat = new glMaterial();
-		bandageMat->loadTexture( ".res\\textures\\null.jpg" );
+		bandageMat->loadTexture( "textures\\null.jpg" );
 		bandageMat->diffuse = Color( 0.9f,0.8f,0.8f );
-		bandageMat->setShader( new glShader( ".res\\shaders\\defaultDiffuse.glsl" ) );
+		bandageMat->setShader( new glShader( "shaders\\defaultDiffuse.glsl" ) );
 		//bandageMat->useSkinning = true;
 		aModel->SetMeshMaterial( bandageMat, 1, 3 );
 
 		glMaterial* faceMat = new glMaterial();
-		faceMat->loadTexture( ".res\\textures\\characters\\natsca\\facetexsm.jpg" );
-		faceMat->setShader( new glShader( ".res\\shaders\\defaultDiffuse.glsl" ) );
+		faceMat->loadTexture( "textures\\characters\\natsca\\facetexsm.jpg" );
+		faceMat->setShader( new glShader( "shaders\\defaultDiffuse.glsl" ) );
 		//faceMat->useSkinning = true;
 		aModel->SetMeshMaterial( faceMat, 1, 4 );
 
 		glMaterial* clothMat = new glMaterial();
-		clothMat->loadTexture( ".res\\textures\\null.jpg" );
+		clothMat->loadTexture( "textures\\null.jpg" );
 		clothMat->diffuse = Color( 0.4f,0.3f,0.2f );
-		clothMat->setShader( new glShader( ".res\\shaders\\defaultDiffuse.glsl" ) );
+		clothMat->setShader( new glShader( "shaders\\defaultDiffuse.glsl" ) );
 		//clothMat->useSkinning = true;
 		aModel->SetMeshMaterial( clothMat, 1, 5 );
 
 		glMaterial* eyeMat = new glMaterial();
-		eyeMat->loadTexture( ".res\\textures\\characters\\natsca\\eye_texture.jpg" );
-		eyeMat->setShader( new glShader( ".res\\shaders\\defaultDiffuse.glsl" ) );
+		eyeMat->loadTexture( "textures\\characters\\natsca\\eye_texture.jpg" );
+		eyeMat->setShader( new glShader( "shaders\\defaultDiffuse.glsl" ) );
 		aModel->SetMeshMaterial( eyeMat, 1, 1 );
 		aModel->SetMeshMaterial( eyeMat, 1, 2 );
 
@@ -404,7 +404,7 @@ void gmsceneMainGame::LoadScene ( void )
 
 	// Clara Test Model
 	{
-		CModel* aModel = new CSkinnedModel ( string(".res\\models\\character\\clara.pad") );
+		CModel* aModel = new CSkinnedModel ( string("models\\character\\clara.pad") );
 
 		aModel->transform.position = Vector3d( 18,14,29 );
 
@@ -414,39 +414,39 @@ void gmsceneMainGame::LoadScene ( void )
 
 	// Natsca Test Model
 	/*{
-		CModel* aModel = new CSkinnedModel ( string(".res\\models\\natsca.pad") );
+		CModel* aModel = new CSkinnedModel ( string("models\\natsca.pad") );
 		//aModel->transform.position = Vector3d( 14,18,11 );
 		aModel->transform.position = Vector3d( 4,18,29 );
 
 		glMaterial* bodyMat = new glMaterial();
-		bodyMat->loadTexture( ".res\\textures\\characters\\natsca\\maintexsm2.jpg" );
-		bodyMat->setShader( new glShader( ".res\\shaders\\defaultDiffuse.glsl" ) );
+		bodyMat->loadTexture( "textures\\characters\\natsca\\maintexsm2.jpg" );
+		bodyMat->setShader( new glShader( "shaders\\defaultDiffuse.glsl" ) );
 		//bodyMat->useSkinning = true;
 		aModel->SetMaterial( bodyMat );
 
 		glMaterial* bandageMat = new glMaterial();
-		bandageMat->loadTexture( ".res\\textures\\null.jpg" );
+		bandageMat->loadTexture( "textures\\null.jpg" );
 		bandageMat->diffuse = Color( 0.9f,0.8f,0.8f );
-		bandageMat->setShader( new glShader( ".res\\shaders\\defaultDiffuse.glsl" ) );
+		bandageMat->setShader( new glShader( "shaders\\defaultDiffuse.glsl" ) );
 		//bandageMat->useSkinning = true;
 		aModel->SetMeshMaterial( bandageMat, 1, 3 );
 
 		glMaterial* faceMat = new glMaterial();
-		faceMat->loadTexture( ".res\\textures\\characters\\natsca\\facetexsm.jpg" );
-		faceMat->setShader( new glShader( ".res\\shaders\\defaultDiffuse.glsl" ) );
+		faceMat->loadTexture( "textures\\characters\\natsca\\facetexsm.jpg" );
+		faceMat->setShader( new glShader( "shaders\\defaultDiffuse.glsl" ) );
 		//faceMat->useSkinning = true;
 		aModel->SetMeshMaterial( faceMat, 1, 4 );
 
 		glMaterial* clothMat = new glMaterial();
-		clothMat->loadTexture( ".res\\textures\\null.jpg" );
+		clothMat->loadTexture( "textures\\null.jpg" );
 		clothMat->diffuse = Color( 0.4f,0.3f,0.2f );
-		clothMat->setShader( new glShader( ".res\\shaders\\defaultDiffuse.glsl" ) );
+		clothMat->setShader( new glShader( "shaders\\defaultDiffuse.glsl" ) );
 		//clothMat->useSkinning = true;
 		aModel->SetMeshMaterial( clothMat, 1, 5 );
 
 		glMaterial* eyeMat = new glMaterial();
-		eyeMat->loadTexture( ".res\\textures\\characters\\natsca\\eye_texture.jpg" );
-		eyeMat->setShader( new glShader( ".res\\shaders\\defaultDiffuse.glsl" ) );
+		eyeMat->loadTexture( "textures\\characters\\natsca\\eye_texture.jpg" );
+		eyeMat->setShader( new glShader( "shaders\\defaultDiffuse.glsl" ) );
 		aModel->SetMeshMaterial( eyeMat, 1, 1 );
 		aModel->SetMeshMaterial( eyeMat, 1, 2 );
 
@@ -463,16 +463,16 @@ void gmsceneMainGame::LoadScene ( void )
 		testPhysicsObject->transform.position = Vector3d( 14,18,11 );
 		testPhysicsObject->transform.SetDirty();
 
-		CCollider* testCollider = testPhysicsObject->AddComponent( new CConvexCollider( string(".res\\models\\flare01.FBX") ) );
+		CCollider* testCollider = testPhysicsObject->AddComponent( new CConvexCollider( string("models\\flare01.FBX") ) );
 		testPhysicsObject->AddComponent( new CRigidBody( testCollider, testPhysicsObject ) );
 
-		CModel* aModel = (CModel*)testPhysicsObject->AddComponent( new CModel ( string(".res\\models\\flare01.FBX") ) );
+		CModel* aModel = (CModel*)testPhysicsObject->AddComponent( new CModel ( string("models\\flare01.FBX") ) );
 		aModel->transform.SetParent( &(testPhysicsObject->transform) );
 
 		glMaterial* flareMaterial = new glMaterial;
 		flareMaterial->emissive = Color( 0,0,0.0f );
 		flareMaterial->diffuse = Color( 1,1,1.0f );
-		flareMaterial->loadTexture( ".res\\textures\\flare01.tga" );
+		flareMaterial->loadTexture( "textures\\flare01.tga" );
 		aModel->SetMaterial( flareMaterial );
 		flareMaterial->releaseOwnership();
 	}*/

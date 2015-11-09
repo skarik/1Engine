@@ -1,5 +1,6 @@
 
-#include "resources.h"
+#include "core/debug/CDebugConsole.h"
+#include "Resources.h"
 #include <filesystem>
 namespace fs = std::tr2::sys;
 
@@ -46,6 +47,12 @@ namespace Core
 		FindAllPaths();
 		return m_paths;
 	}
+	//	GetPrimaryResourcePath( )
+	// Returns the system "vanilla" search path
+	const std::string Resources::GetPrimaryResourcePath ( void )
+	{
+		return m_paths[m_paths.size()-2];
+	}
 
 	//	Open( filename, openmode ) : Find file in the current paths and open.
 	FILE* Resources::Open ( const std::string& n_filename, const char* n_openmode )
@@ -57,11 +64,21 @@ namespace Core
 		// Load up the paths first
 		FindAllPaths();
 
+		// Convert to string
+		std::string filename = n_filename;
+
+		// Check the input for ".res" and remove if needed
+		if ( std::string(filename).find(".res/") != std::string::npos )
+		{
+			filename = filename.replace( 0, 5, "" );
+			Debug::Console->PrintWarning( filename + " was opened using old method!\n" );
+		}
+
 		// Loop through the paths and return the first result
 		for ( auto itr_path = m_paths.begin(); itr_path != m_paths.end(); ++itr_path )
 		{
-			std::string currentFilename = *itr_path + n_filename;
-			FILE* file = fopen( currentFilename.c_str(), "r" );
+			std::string currentFilename = *itr_path + filename;
+			FILE* file = fopen( currentFilename.c_str(), n_openmode );
 			if ( file ) {
 				return file;
 			}
@@ -80,17 +97,27 @@ namespace Core
 		// Load up the paths first
 		FindAllPaths();
 
+		// Convert to string
+		std::string filename = n_filename;
+
+		// Check the input for ".res" and remove if needed
+		if ( std::string(filename).find(".res/") != std::string::npos )
+		{
+			filename = filename.replace( 0, 5, "" );
+			Debug::Console->PrintWarning( filename + " was opened using old method!\n" );
+		}
+
 		// Loop through the paths and return the first result
 		for ( auto itr_path = m_paths.begin(); itr_path != m_paths.end(); ++itr_path )
 		{
-			std::string currentFilename = *itr_path + n_filename;
+			std::string currentFilename = *itr_path + filename;
 			FILE* file = fopen( currentFilename.c_str(), "r" );
 			if ( file ) {
 				fclose( file ); // Close file beforehand
 				return currentFilename;
 			}
 		}
-		return "";
+		return n_filename;
 	}
 
 	//	Reset( ) : Clears out the stored paths so they have to be rebuilt

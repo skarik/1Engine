@@ -20,8 +20,10 @@ namespace Engine2D
 
 		//		RebuildMeshs( layer list )
 		// Given the list of layers, build a mesh for each layer
+		//	layer					- layer to build
+		//	start_offset			- beginning index of the tile
+		//	predictive_tile_count	- when to watch out for the end of the mesh. Used to allocate triangles
 		//void			RebuildMeshs ( int * layers, int layer_count );
-
 		void			RebuildMesh ( int layer, int start_offset = 0, int predictive_tile_count = 0 );
 
 

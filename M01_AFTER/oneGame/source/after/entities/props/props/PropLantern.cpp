@@ -16,7 +16,7 @@ PropLantern::PropLantern ( BlockTrackInfo const& inInfo )
 	m_model = new CModel( string(".res/models/props/lantern.FBX") );
 	m_model->transform.scale = Vector3d( 1.3f,1.3f,1.3f );
 
-	pFireSystem = new CParticleSystem ( ".res\\particlesystems\\flame03.pcf" );
+	pFireSystem = new CParticleSystem ( "particlesystems\\flame03.pcf" );
 	glMaterial* mat = new glMaterial();
 	mat->passinfo.push_back( glPass() );
 	mat->passinfo[0].m_blend_mode = Renderer::BM_ADD;

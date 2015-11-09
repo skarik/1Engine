@@ -4,6 +4,7 @@
 #include "core/system/io/CBinaryFile.h"
 #include "core/system/io/CSegmentedFile.h"
 #include "core-ext/system/io/serializer/ISerialBinary.h"
+#include "core-ext/system/io/Resources.h"
 
 #include "renderer/material/glMaterial.h"
 
@@ -64,10 +65,11 @@ CParticleSystem::~CParticleSystem ( void )
 
 void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverride )
 {
+	string sActualSystemFile = Core::Resources::PathTo( sSystemFile );
 	uint32_t iVersion = 0;
 	{
 		// Input
-		CSegmentedFile inFile ( sSystemFile );
+		CSegmentedFile inFile ( sActualSystemFile );
 		inFile.ReadData();
 
 		// Check header for version number
@@ -94,7 +96,7 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 			else {
 				emitter = new CParticleEmitterSkeleton();
 			}
-			emitter->LoadFromFile( sSystemFile );
+			emitter->LoadFromFile( sActualSystemFile );
 			CParticleUpdater* updater = new CParticleUpdater( emitter );
 			CParticleRenderer* renderer = new CParticleRenderer( emitter );
 
@@ -110,7 +112,7 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 		// Create a version 2 particle system attached to this object
 		{
 			CBinaryFile inFile;
-			inFile.Open( sSystemFile.c_str(), CBinaryFile::IO_READ );
+			inFile.Open( sActualSystemFile.c_str(), CBinaryFile::IO_READ );
 			// First read in past the ascii header
 			{
 				string gaurdSearch = "";

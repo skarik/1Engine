@@ -23,6 +23,7 @@
 
 //#include "StringUtils.h"
 #include "core/utils/StringUtils.h"
+#include "core-ext/system/io/Resources.h"
 #include <fstream>
 
 #include "core/debug/console.h"
@@ -32,7 +33,7 @@ CTattooTester::CTattooTester ( void ) : CGameBehavior()
 	CreateGUI();
 	model = NULL;
 
-	texTattoo = new CTexture( ".res/textures/tats/laak.png" );
+	texTattoo = new CTexture( "textures/tats/laak.png" );
 	texTattooTarget = new CRenderTexture( RGBA8, 1024,512, Repeat, Repeat );
 
 	//tattoo0.valid = false;
@@ -144,7 +145,7 @@ void CTattooTester::UpdateTarget ( void )
 	tempMat.passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	tempMat.passinfo[0].m_blend_mode = Renderer::BM_NORMAL;
 	tempMat.passinfo[0].m_face_mode = Renderer::FM_BACK;
-	tempMat.passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	tempMat.passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	tempMat.removeReference();
 	GLd.DrawSet2DMode( GLd.D2D_FLAT );
 	/*for ( uint i = 0; i < PART_MAX_COUNT; ++i )
@@ -171,7 +172,7 @@ void CTattooTester::UpdateTarget ( void )
 		tempMat.unbind();*/
 	/*for ( uint i = 0; i < tattoos.size(); ++i )
 	{
-		CTexture* tempTexture = new CTexture( ".res/textures/tats/"+string(tattoos[i].pattern.c_str())+".png" );
+		CTexture* tempTexture = new CTexture( "textures/tats/"+string(tattoos[i].pattern.c_str())+".png" );
 		tempMat.setTexture( tempTexture );
 		tempMat.bind();
 		glColor4fv( tattoos[i].color.start_point() );
@@ -854,8 +855,8 @@ void CTattooTester::TattooGUIGenerateDropdown ( int typeList )
 		target_section = "fluxxglows";
 	}
 
-	// Open .res/system/tattoo_manifest.txt and find target section
-	std::ifstream tattoo_manifest ( ".res/system/tattoo_manifest.txt" );
+	// Open system/tattoo_manifest.txt and find target section
+	std::ifstream tattoo_manifest ( Core::Resources::PathTo( "system/tattoo_manifest.txt" ) );
 	if ( !tattoo_manifest.is_open() ) {
 		Debug::Console->PrintError( "Could not read manifest!\n" );
 	}
@@ -912,7 +913,7 @@ void CTattooTester::TattooGUIGenerateDropdown ( int typeList )
 			++i;
 		}
 
-		// Now, open the .res/textures/tats/ folder and find files with matching name
+		// Now, open the textures/tats/ folder and find files with matching name
 		// Or, you know, add it to a list. Because that's easier.
 		if ( sFn.length() > 0 ) {
 			gui->AddDropdownOption( tCharMarks.ddl_tattoo_index, sName, tCharMarks.vTattooNames.size() );

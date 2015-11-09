@@ -153,7 +153,7 @@ void CLight::PreStepSynchronus ( void )
 			glMaterial* newMat = new glMaterial;
 			newMat->removeReference();
 			newMat->passinfo.push_back( glPass() );
-			newMat->passinfo[0].shader = new glShader( ".res/shaders/d/light_halo.glsl" );
+			newMat->passinfo[0].shader = new glShader( "shaders/d/light_halo.glsl" );
 			newMat->passinfo[0].m_blend_mode = Renderer::BM_SOFT_ADD;
 			newMat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 			mHalo->SetMaterial( newMat );

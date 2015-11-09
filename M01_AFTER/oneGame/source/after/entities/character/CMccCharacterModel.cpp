@@ -3,11 +3,14 @@
 
 #include "core/math/Math.h"
 #include "core/math/Color.h"
-#include "core/system/io/FileUtils.h"
 #include "core/math/random/Random.h"
 
 #include "core-ext/animation/CAnimIK.h"
 #include "core-ext/animation/CAnimation.h"
+
+#include "core/system/io/FileUtils.h"
+#include "core-ext/system/io/FileUtils.h"
+#include "core-ext/system/io/Resources.h"
 
 #include "engine-common/entities/CParticleSystem.h"
 #include "engine-common/physics/motion/CRagdollCollision.h"
@@ -132,10 +135,10 @@ void CMccCharacterModel::Update ( void )
 	// Do particle effects
 	if ( mstats && (mstats->iRace == CRACE_FLUXXOR) ) {
 		if ( mFingerParticles == NULL ) {
-			//mFingerParticles = new CParticleSystem( ".res/particlesystems/fluxtrail.pcf" ) [2];
+			//mFingerParticles = new CParticleSystem( "particlesystems/fluxtrail.pcf" ) [2];
 			mFingerParticles = new CParticleSystem* [4];
 			for ( uint i = 0; i < 4; ++i ) {
-				mFingerParticles[i] = new CParticleSystem( ".res/particlesystems/fluxtrail.pcf" );
+				mFingerParticles[i] = new CParticleSystem( "particlesystems/fluxtrail.pcf" );
 				mFingerParticles[i]->GetEmitter()->vcColors.clear();
 				mFingerParticles[i]->GetEmitter()->vcColors.push_back( Color(1,1,1,1) );
 				mFingerParticles[i]->GetRenderable()->GetMaterial()->m_diffuse = mstats->cSkinColor;
@@ -291,7 +294,7 @@ void CMccCharacterModel::SetVisualsFromStats( CRacialStats* refstats )
 			LoadBase( "clara" );
 		}
 	}*/
-	string file = ".res/models/character/" + GetBasename();
+	string file = "models/character/" + GetBasename();
 	GetPartFilename( file );
 	if ( charModel->GetFilename() != file )
 	{
@@ -354,10 +357,10 @@ void CMccCharacterModel::SetVisualsFromStats( CRacialStats* refstats )
 // Loading
 void CMccCharacterModel::Load ( void )
 {
-	string baseName = ".res/models/character/" + GetBasename() + "/";
+	string baseName = "models/character/" + GetBasename() + "/";
 
 	// Load base textures
-	string baseTexName = ".res/textures/c/" + GetBasename() + "/";
+	string baseTexName = "textures/c/" + GetBasename() + "/";
 	texParts[PART_HEAD]		= new CTexture( baseTexName + "lhead.png" );
 	texParts[PART_HIPS]		= new CTexture( baseTexName + "lhips.png" );
 	texParts[PART_LEGS]		= new CTexture( baseTexName + "llegs.png" );
@@ -391,10 +394,10 @@ void CMccCharacterModel::Load ( void )
 void CMccCharacterModel::SetHair ( const int hairType )
 {
 	char modelName [512];
-	sprintf( modelName, ".res/models/character/%s/hair%02d", GetBasename().c_str(), hairType );
+	sprintf( modelName, "models/character/%s/hair%02d", GetBasename().c_str(), hairType );
 	GetPartFilename( modelName );
 	if ( !IO::ModelExists( modelName ) ) {
-		sprintf( modelName, ".res/models/character/%s/hair00.FBX", GetBasename().c_str() );
+		sprintf( modelName, "models/character/%s/hair00.FBX", GetBasename().c_str() );
 	}
 
 	if ( mdlHair != NULL ) {
@@ -418,7 +421,7 @@ void CMccCharacterModel::SetRace ( const eCharacterRace race )
 	string modelName;
 
 	// Set the body model
-	modelName = ".res/models/character/" + GetBasename() + "/body";
+	modelName = "models/character/" + GetBasename() + "/body";
 	GetPartFilename( modelName );
 	if ( mdlBody != NULL ) {
 		if ( mdlBody->GetFilename() == modelName ) {
@@ -439,7 +442,7 @@ void CMccCharacterModel::SetRace ( const eCharacterRace race )
 	charTargetModel = mdlBody;
 
 	// Set the head model
-	modelName = ".res/models/character/" + GetBasename() + "/head";
+	modelName = "models/character/" + GetBasename() + "/head";
 	GetPartFilename( modelName );
 	if ( mdlHead != NULL ) {
 		if ( mdlHead->GetFilename() == modelName ) {
@@ -459,7 +462,7 @@ void CMccCharacterModel::SetRace ( const eCharacterRace race )
 	}
 
 	// Set the ears
-	modelName = ".res/models/character/" + GetBasename() + "/";
+	modelName = "models/character/" + GetBasename() + "/";
 	if ( race == CRACE_HUMAN ) {
 		modelName += "ears_human.FBX";
 	}
@@ -619,7 +622,7 @@ void CMccCharacterModel::GetPartFilename ( char* modelName )
 	if ( !success ) {
 		sprintf( modelName, "%s.FBX", tempString );
 		if ( !IO::FileExists( modelName ) ) {
-			sprintf( modelName, ".res/models/character/%s/hair%02d", GetBasename().c_str(), 0 );
+			sprintf( modelName, "models/character/%s/hair%02d", GetBasename().c_str(), 0 );
 		}
 	}
 }*/
@@ -631,7 +634,7 @@ void CMccCharacterModel::SetPartModel ( const string & partName, CSkinnedModel**
 		*pMdlTarget = NULL;
 		return;
 	}
-	string modelName = ".res/models/character/" + GetBasename() + "/" + partName;
+	string modelName = "models/character/" + GetBasename() + "/" + partName;
 	GetPartFilename( modelName );
 	if ( *pMdlTarget != NULL ) {
 		if ( (*pMdlTarget)->GetFilename() == modelName ) {
@@ -786,7 +789,7 @@ void CMccCharacterModel::UpdatePartMask ( void )
 	tempMat.passinfo.push_back( glPass() );
 	tempMat.passinfo[0].m_blend_mode = Renderer::BM_ADD;
 	tempMat.passinfo[0].m_face_mode = Renderer::FM_BACK;
-	tempMat.passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	tempMat.passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	tempMat.removeReference();
 	GLd.DrawSet2DMode( GLd.D2D_FLAT );
 	for ( uint i = 0; i < PART_MAX_COUNT; ++i )

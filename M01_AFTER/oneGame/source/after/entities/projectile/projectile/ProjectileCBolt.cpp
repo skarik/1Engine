@@ -6,7 +6,7 @@
 ProjectileCBolt::ProjectileCBolt ( const Ray & rnInRay, ftype fnInSpeed )
 	: AfterBaseProjectile( rnInRay, fnInSpeed )
 {
-	pModel = new CModel( string(".res\\models\\weapons\\cb_bolt_beta.FBX") );
+	pModel = new CModel( string("models\\weapons\\cb_bolt_beta.FBX") );
 	//transform.scale = Vector3d( 2.0f,2.0f,2.0f );
 }
 

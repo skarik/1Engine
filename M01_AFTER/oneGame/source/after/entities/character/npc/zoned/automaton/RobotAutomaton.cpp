@@ -47,9 +47,9 @@ RobotAutomaton::CONSTRUCTOR_ZCC_V2(RobotAutomaton)
 	pCharModel->LoadModel( "robot/automaton" );
 	pCharModel->CreateHitboxCollision();
 	// add IDLE sequence
-	pCharModel->AddSequence( ".res/sequences/automaton_test.seq", "idle", 0, true );
-	pCharModel->AddSequence( ".res/sequences/automaton_test_walk.seq", "walk", 0, true );
-	pCharModel->AddSequence( ".res/sequences/automaton_test_run.seq", "run", 0, true );
+	pCharModel->AddSequence( "sequences/automaton_test.seq", "idle", 0, true );
+	pCharModel->AddSequence( "sequences/automaton_test_walk.seq", "walk", 0, true );
+	pCharModel->AddSequence( "sequences/automaton_test_run.seq", "run", 0, true );
 	model = pCharModel;
 	
 	// Setup AI

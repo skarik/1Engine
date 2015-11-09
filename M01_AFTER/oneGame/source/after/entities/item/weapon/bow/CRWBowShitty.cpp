@@ -27,7 +27,7 @@ void CRWBowShitty::Generate ( void )
 {
 	CBaseRandomItem::Generate();
 
-	string bowModel = ".res/models/weapons/bow_beta.FBX";
+	string bowModel = "models/weapons/bow_beta.FBX";
 
 	//pModel = new CSkinnedModel( bowModel );
 	pModel = new CModel( bowModel );

@@ -21,7 +21,7 @@ bool CRfCharacterModel::LoadModel ( const string& model_filename )
 {
 	CCharacterModel::LoadModel( model_filename );
 
-	string file = ".res/models/" + model_filename + "/ref.fbx";
+	string file = "models/" + model_filename + "/ref.fbx";
 	refModel = new CSkinnedModel ( file );
 	refModel->SetReferencedBoneMode( charModel );
 

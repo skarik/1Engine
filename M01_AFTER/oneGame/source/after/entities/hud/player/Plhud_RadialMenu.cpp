@@ -34,8 +34,8 @@ Plhud_RadialMenu::Plhud_RadialMenu ( CAfterPlayer* nTargetPlayer )
 		matRadialDraw->m_diffuse = Color( 1.0f,1,1 );
 		matRadialDraw->passinfo.push_back( glPass() );
 		matRadialDraw->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-		matRadialDraw->setTexture( 0, new CTexture( ".res/textures/white.jpg" ) );
-		matRadialDraw->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+		matRadialDraw->setTexture( 0, new CTexture( "textures/white.jpg" ) );
+		matRadialDraw->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	}
 	this->SetMaterial( matRadialDraw );
 
