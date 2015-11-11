@@ -26,7 +26,7 @@ public:
 	explicit ArmorLeatherBoots ( void ) : CWearableItem(ItemData())
 	{
 		sPlayerModel = "leatherset01/leatherset01_boots";
-		sWorldModel = ".res/models/items/tree_resin.FBX";
+		sWorldModel = "models/items/tree_resin.FBX";
 		bHideBody = true;
 	}
 	~ArmorLeatherBoots (void)

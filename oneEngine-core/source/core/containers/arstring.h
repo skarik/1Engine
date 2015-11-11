@@ -68,16 +68,19 @@ public:
 		return strcmp( data, str.data )!=0;
 	}
 
-	arstring<Ln> & operator+ ( const char* str ) {
+	arstring<Ln> operator+ ( const char* str ) {
 		if ( str ) {
-			strcat( data, str );
+			arstring<Ln> resultant ( *this );
+			strcat( resultant.data, str );
+			return resultant;
 		}
 		return *this;
 	}
 	template <unsigned short Lm>
-	arstring<Ln> & operator+ ( const arstring<Lm> & str ) {
-		strcat( data, str.data );
-		return *this;
+	arstring<Ln> operator+ ( const arstring<Lm> & str ) {
+		arstring<Ln> resultant ( *this );
+		strcat( resultant.data, str.data );
+		return resultant;
 	}
 	void operator+= ( const char* str ) {
 		if ( str ) {

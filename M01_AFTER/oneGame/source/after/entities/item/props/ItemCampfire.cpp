@@ -16,7 +16,7 @@ ItemCampfire::ItemCampfire ( void )
 	transform.scale = Vector3d( 0.1f, 0.1f, 0.1f );
 
 	if ( pModel == NULL ) {
-		pModel = new CModel( string(".res/models/props/campfire.FBX") );
+		pModel = new CModel( string("models/props/campfire.FBX") );
 		pModel->transform.scale = Vector3d( 0.1f, 0.1f, 0.1f );
 	}
 }

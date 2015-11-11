@@ -10,7 +10,7 @@
 Plhud3d_Hurt01::Plhud3d_Hurt01 ( const Real n_hurtValue, const Rotator n_rotation )
 	: CGameBehavior(), m_hurtValue( n_hurtValue )
 {
-	m_model = new CModel ( ".res/models/hud/hurt_ring.FBX" );
+	m_model = new CModel ( "models/hud/hurt_ring.FBX" );
 	m_model->transform.rotation = n_rotation;
 	m_model->SetRenderType( Renderer::Foreground );
 	m_model->transform.scale.z = 0.8f;

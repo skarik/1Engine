@@ -26,7 +26,7 @@ public:
 	explicit WearElvenpunk02_goggles ( void ) : CWearableItem(ItemData())
 	{
 		sPlayerModel = "elvenpunk02/goggles";
-		sWorldModel = ".res/models/items/tree_resin.FBX";
+		sWorldModel = "models/items/tree_resin.FBX";
 		bHideBody = false;
 	}
 	~WearElvenpunk02_goggles (void)

@@ -370,7 +370,6 @@ void main ( void )
 	//FragColor.rgb = pixelGlow.rgb * pixelLightProperty.r;//luminColor.rgb*0.5;//vec3(1,1,1) * pixelGlow.a;
 	//+ dot( n_cameraDir, pixelNormal.xyz );
 	
-	
 	// 4X Debug Output
 	/*if ( v2f_texcoord0.x < 0.5 && v2f_texcoord0.y < 0.5 ) {
 		FragColor = texture( textureSampler0, v2f_texcoord0*2 );
@@ -385,4 +384,5 @@ void main ( void )
 		FragColor = texture( textureSampler3, v2f_texcoord0*2 - vec2(1,1) );
 	}
 	FragColor.a = clamp( FragColor.a , 0.0 , 1.0 );*/
+	
 }

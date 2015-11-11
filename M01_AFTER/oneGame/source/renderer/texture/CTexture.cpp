@@ -42,7 +42,10 @@ CTexture::CTexture ( string sInFilename,
 	sFilename = IO::FilenameStandardize( sFilename );
 	// Look for the valid resource to load
 	sFilename = Core::Resources::PathTo( sFilename );
-	
+#ifndef _ENGINE_DEBUG
+	throw Core::NotYetImplementedException();
+#endif
+
 	// Null out data
 	pData = NULL;
 	// Set the information structure to prepare for reading in
@@ -65,10 +68,10 @@ CTexture::CTexture ( string sInFilename,
 	{
 		// Debug output name of loading texture
 		if ( sFilename != sInFilename ) {
-			cout << "Loading texture " << sFilename << "(" << sInFilename << ")" << endl;
+			cout << "New texture: " << sFilename << " (" << sInFilename << ")" << endl;
 		}
 		else {
-			cout << "Loading texture " << sInFilename << endl;
+			cout << "New texture: " << sInFilename << endl;
 		}
 
 		// Load the image

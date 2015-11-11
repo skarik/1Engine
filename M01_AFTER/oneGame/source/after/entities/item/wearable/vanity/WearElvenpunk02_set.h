@@ -26,7 +26,7 @@ public:
 	explicit WearElvenpunk02_shirt ( void ) : CWearableItem(ItemData())
 	{
 		sPlayerModel = "elvenpunk02/shirt";
-		sWorldModel = ".res/models/items/tree_resin.FBX";
+		sWorldModel = "models/items/tree_resin.FBX";
 		bHideBody = false;
 	}
 	~WearElvenpunk02_shirt (void)
@@ -57,7 +57,7 @@ public:
 	explicit WearElvenpunk02_cloak ( void ) : CWearableItem(ItemData())
 	{
 		sPlayerModel = "elvenpunk02/cloak";
-		sWorldModel = ".res/models/items/tree_resin.FBX";
+		sWorldModel = "models/items/tree_resin.FBX";
 		bHideBody = false;
 		bHideHair = true;
 	}
@@ -90,7 +90,7 @@ public:
 	explicit WearElvenpunk02_boots ( void ) : CWearableItem(ItemData())
 	{
 		sPlayerModel = "elvenpunk02/boots";
-		sWorldModel = ".res/models/items/tree_resin.FBX";
+		sWorldModel = "models/items/tree_resin.FBX";
 		bHideBody = true;
 	}
 	~WearElvenpunk02_boots (void)

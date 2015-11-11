@@ -13,7 +13,7 @@ PropTorch::PropTorch ( BlockTrackInfo const& inInfo )
 {
 	pLight = new CLight();
 
-	m_model = new CModel( string(".res/models/items/torch_1.FBX") );
+	m_model = new CModel( string("models/items/torch_1.FBX") );
 	m_model->transform.scale = Vector3d( 1.3f,1.3f,1.3f );
 
 	pFireSystem = new CParticleSystem ( ".res/particlesystems/flame01.pcf" );

@@ -22,7 +22,7 @@ protected:
 public:
 	ItemJunkSkull ( void ) : CItemJunkBase( tJunkStats(true,true,false), ItemData() )
 	{
-		pModel = new CModel( ".res/models/props/skull.FBX" );
+		pModel = new CModel( "models/props/skull.FBX" );
 	}
 		 
 };

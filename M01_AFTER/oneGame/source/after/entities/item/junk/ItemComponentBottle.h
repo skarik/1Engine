@@ -23,7 +23,7 @@ protected:
 public:
 	ItemComponentBottle ( void ) : CItemJunkBase( tJunkStats(true,false,false), ItemData() )
 	{
-		pModel = new CModel( ".res/models/items/bottle.FBX" );
+		pModel = new CModel( "models/items/bottle.FBX" );
 	}
 		 
 };

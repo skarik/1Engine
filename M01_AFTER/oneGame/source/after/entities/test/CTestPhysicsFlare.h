@@ -15,7 +15,7 @@ class CTestPhysicsFlare : public CGameObject
 public:
 	CTestPhysicsFlare() : CGameObject()
 	{	
-		pMyModel = new CModel ( string(".res/models/flare01.FBX") );
+		pMyModel = new CModel ( string("models/flare01.FBX") );
 		pMyModel->transform.SetParent( &transform );
 		glMaterial* flareMaterial = new glMaterial;
 		flareMaterial->emissive = Color( 0,0,0.0f );

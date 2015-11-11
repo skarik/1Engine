@@ -14,7 +14,7 @@ using std::endl;
 PropCrateWooden::PropCrateWooden ( BlockTrackInfo const& inInfo )
 	: CTerrainProp( inInfo )
 {
-	m_model = new CModel( string(".res/models/props/crate0.FBX") );
+	m_model = new CModel( string("models/props/crate0.FBX") );
 	//pModel->GetAnimation()->Stop("open");
 
 	mCollidesWithPlayer = true;

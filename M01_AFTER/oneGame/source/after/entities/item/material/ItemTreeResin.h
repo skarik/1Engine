@@ -24,7 +24,7 @@ public:
 	ItemTreeResin::ItemTreeResin ( void )
 		: CWeaponItem( ItemData() )
 	{
-		pModel = new CModel( string(".res/models/items/tree_resin.FBX") );
+		pModel = new CModel( string("models/items/tree_resin.FBX") );
 		pModel->transform.scale = Vector3d( 0.7f,0.7f,0.7f );
 		glMaterial* sapMaterial;
 		sapMaterial = new glMaterial;

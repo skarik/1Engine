@@ -17,7 +17,7 @@ CWorldGen_Terran::CWorldGen_Terran ( const int continentCount )
 	m_worldSize = Vector2d_d( 0,0 );
 	m_worldDepth = 0;
 
-	m_model = new CModel( ".res/models/test/boxes.FBX" );
+	m_model = new CModel( "models/test/boxes.FBX" );
 	((CModel*)m_model)->SetVisibility(false);
 }	
 	

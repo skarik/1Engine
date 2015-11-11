@@ -1,6 +1,9 @@
 ﻿
 #include "CResourceManager.h"
 
+#include "core/debug/CDebugConsole.h"
+
+#include "core-ext/system/io/FileUtils.h"
 #include "core-ext/system/io/Resources.h"
 
 #include "renderer/logic/model/CModel.h"
@@ -14,6 +17,8 @@
 #include "renderer/texture/CTextureMaster.h"
 
 #include "renderer/system/glMainSystem.h"
+
+#include "renderer/exceptions/exceptions.h"
 
 #include "zlib/zlib.h"
 
@@ -446,15 +451,15 @@ void CResourceManager::StreamUpdate_Texture ( const char* n_targetFile )
 				case Z_OK:
 					break;
 				case Z_MEM_ERROR:
-					printf("CResourceManager::StreamUpdate_Texture >> out of memory\n");
+					Debug::Console->PrintError("CResourceManager::StreamUpdate_Texture >> out of memory\n");
 					throw Core::OutOfMemoryException();
 					break;
 				case Z_BUF_ERROR:
-					printf("CResourceManager::StreamUpdate_Texture >> output buffer wasn't large enough!\n");
+					Debug::Console->PrintError("CResourceManager::StreamUpdate_Texture >> output buffer wasn't large enough!\n");
 					throw std::out_of_range("Out of space");
 					break;
 				case Z_DATA_ERROR:
-					printf("CResourceManager::StreamUpdate_Texture >> corrupted data!\n");
+					Debug::Console->PrintError("CResourceManager::StreamUpdate_Texture >> corrupted data!\n");
 					throw Core::CorruptedDataException();
 					break;
 				}
@@ -465,6 +470,12 @@ void CResourceManager::StreamUpdate_Texture ( const char* n_targetFile )
 			t_memoryOffset += t_width*t_height*4;
 
 		}
+	}
+	else
+	{
+		// No file? Impossible. There's always a BPD, no matter what.
+		//throw Renderer::InvalidOperationException();
+		Debug::Console->PrintError( "CResourceManager::StreamUpdate_Texture >> could not open file!\n" );
 	}
 
 	// Mark stream operation as done
@@ -618,15 +629,15 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 						case Z_OK:
 							break;
 						case Z_MEM_ERROR:
-							printf("CResourceManager::ForceLoadResource >> out of memory\n");
+							Debug::Console->PrintError("CResourceManager::ForceLoadResource >> out of memory\n");
 							//throw Engine::OutOfMemoryException();
 							break;
 						case Z_BUF_ERROR:
-							printf("CResourceManager::ForceLoadResource >> output buffer wasn't large enough!\n");
+							Debug::Console->PrintError("CResourceManager::ForceLoadResource >> output buffer wasn't large enough!\n");
 							//throw std::out_of_range("Out of space");
 							break;
 						case Z_DATA_ERROR:
-							printf("CResourceManager::ForceLoadResource >> corrupted data!\n");
+							Debug::Console->PrintError("CResourceManager::ForceLoadResource >> corrupted data!\n");
 							//throw Engine::CorruptedDataException();
 							break;
 						}
@@ -649,6 +660,11 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 
 				// Close the file
 				fclose( t_bpdFile );
+			}
+			else
+			{
+				// Print error if things go terribly wrong!
+				Debug::Console->PrintError("CResourceManager::ForceLoadResource >> could not open file!\n");
 			}
 
 			n_texture->state.level_base = 0;
@@ -727,6 +743,11 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 		glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum(n_texture->info.internalFormat), 16, 16, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, lowQuality );
 
 		glBindTexture( GL_TEXTURE_2D, 0 );
+	}
+	else
+	{
+		// Print error if things go terribly wrong!
+		Debug::Console->PrintError("CResourceManager::FinishAddResource >> could not open file!\n");
 	}
 	delete [] lowQuality;
 }

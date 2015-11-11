@@ -25,7 +25,7 @@ SkillMagicBolt::SkillMagicBolt ( void ) : CSkill( ItemData() )
 	//ps_firetoss_active = new CParticleSystem( ".res/particlesystems/spells/magicbolt_projectile.pcf" );
 	ps_firetoss_active->enabled = false;
 
-	/*mMagicModel = new CModel( ".res/models/effects/magic_ball.fbx" );
+	/*mMagicModel = new CModel( "models/effects/magic_ball.fbx" );
 	glMaterial* newMat = new glMaterial;
 	newMat->loadFromFile( "effects/spell_fireball" );
 	mMagicModel->SetMaterial( newMat );

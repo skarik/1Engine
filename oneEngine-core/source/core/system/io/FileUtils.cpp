@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include "FileUtils.h"
+#include "core/exceptions.h"
 
 bool IO::FileExists ( const std::string& n_filename )
 {

@@ -9,7 +9,7 @@
 ItemFloraSnowLily::ItemFloraSnowLily ( void )
 	: CWeaponItem( ItemData() )
 {
-	pModel = new CModel ( string(".res/models/flora/snowdrop_lily.FBX") );
+	pModel = new CModel ( string("models/flora/snowdrop_lily.FBX") );
 	pModel->transform.scale = Vector3d( 1.3f,1.3f,1.3f );
 	
 	holdType = Item::Default;

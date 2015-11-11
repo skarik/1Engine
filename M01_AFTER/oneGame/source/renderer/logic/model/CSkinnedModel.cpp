@@ -5,6 +5,9 @@
 #include "core/settings/CGameSettings.h"
 #include "core/math/Math.h"
 
+#include "core-ext/system/io/FileUtils.h"
+#include "core-ext/system/io/Resources.h"
+
 #include "core-ext/profiler/CTimeProfiler.h"
 
 #include "core-ext/animation/CAnimation.h"
@@ -27,6 +30,15 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	: CModel()
 {
 	std::cout << "Loading mesh " << sFilename << std::endl;
+	// Set model name to input filename
+	myModelFilename = sFilename;
+	// Standardize the filename
+	myModelFilename = IO::FilenameStandardize( myModelFilename );
+	// Look for the valid resource to load
+	myModelFilename = Core::Resources::PathTo( myModelFilename );
+#ifndef _ENGINE_DEBUG
+	throw Core::NotYetImplementedException();
+#endif
 
 	// Clear out the material list
 	//vMaterials.clear();
@@ -34,7 +46,7 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	bUseFrustumCulling = true;
 	//bCelShadingEnabled = false;
 	//bUseSeparateMaterialBatches = false;
-	bDrawSkeleton = false;
+	bDrawSkeleton = true;
 
 	// Set animation properties
 	pReferencedAnimation = NULL;
@@ -52,11 +64,11 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	bPerfectReference = false;
 
 	// First look for the model in the model master
-	const std::vector<glMesh*> * pMeshSetReference = ModelMaster.GetReference( sFilename );
+	const std::vector<glMesh*> * pMeshSetReference = ModelMaster.GetReference( myModelFilename );
 	// If there's no reference, then load it
 	if ( pMeshSetReference == NULL )
 	{
-		LoadSkinnedModel( sFilename );
+		LoadSkinnedModel( myModelFilename );
 		// Copy the skeleton list and leave it alone. We don't want to use the mesh's skeleton.
 		std::vector<skeletonBone_t*>* skellyList = new std::vector<skeletonBone_t*>;
 		(*skellyList) = vSkeleton;
@@ -74,34 +86,31 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 		pvOriginalMeshSet = new std::vector<glMesh*>;
 		*pvOriginalMeshSet = *pMeshSetReference;	// Point original set over
 
-		vHitboxes = *ModelMaster.GetHitboxReference( sFilename );
+		vHitboxes = *ModelMaster.GetHitboxReference( myModelFilename );
 	}
 
 	// Duplicate the mesh streams
 	CopyMeshStreams( &m_glMeshlist );
 
 	// Add to the reference of the model
-	ModelMaster.AddReference( sFilename, *pvOriginalMeshSet, vHitboxes );	// Add reference to original mesh set
-	ModelMaster.AddReference( sFilename, m_physMeshlist );
-
-	// Set model name to input filename
-	myModelFilename = sFilename;
+	ModelMaster.AddReference( myModelFilename, *pvOriginalMeshSet, vHitboxes );	// Add reference to original mesh set
+	ModelMaster.AddReference( myModelFilename, m_physMeshlist );
 
 	// Grab a copy of the skeleton
 	GrabSkeletonCopy( ((glSkinnedMesh*)m_glMeshlist[0])->GetSkeleton() );
 	// Create a new animation, which will look for the reference and copy it
-	CAnimation* pFoundReference = ModelMaster.GetAnimationReference( sFilename );
+	CAnimation* pFoundReference = ModelMaster.GetAnimationReference( myModelFilename );
 	if ( pFoundReference == NULL ) {
 		throw Core::InvalidCallException();
 	}
 	else {
-		ModelMaster.AddReference( sFilename, pFoundReference );
+		ModelMaster.AddReference( myModelFilename, pFoundReference );
 	}
 	if ( !CAnimation::useHavok ) {
-		pMyAnimation = new CAnimation( sFilename, pFoundReference );
+		pMyAnimation = new CAnimation( myModelFilename, pFoundReference );
 	}
 	else {
-		pMyAnimation = new CHKAnimation( sFilename, pFoundReference );
+		pMyAnimation = new CHKAnimation( myModelFilename, pFoundReference );
 	}
 	pMyAnimation->SetOwner( this );
 	// Send the animation our references as well
@@ -118,14 +127,15 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	}
 
 	// Search for a morph to use
-	CMorpher* possibleMorpher = ModelMaster.GetMorpherReference( sFilename );
+	CMorpher* possibleMorpher = ModelMaster.GetMorpherReference( myModelFilename );
 	if ( possibleMorpher ) {
 		// If there is a morpher, then load it up
 		bDoMorphing = true;
 		iMorphTarget = possibleMorpher->GetMorpherSet()->iMorphTarget;
 		// Create a new morpher, which will look for the reference and copy it
-		pMorpher = new CMorpher( sFilename, possibleMorpher );
-		ModelMaster.AddReference( sFilename, pMorpher );
+		pMorpher = new CMorpher( myModelFilename, possibleMorpher );
+		ModelMaster.AddReference( myModelFilename, pMorpher );
+		std::cout << " +Has morphs" << std::endl;
 	}
 
 	// Create mesh list
@@ -150,7 +160,7 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	// Check errors
 	GL_ACCESS GL.CheckError();
 
-	std::cout << "-Loaded mesh." << std::endl;
+	std::cout << " +Loaded mesh" << std::endl;
 }
 
 // Destructor

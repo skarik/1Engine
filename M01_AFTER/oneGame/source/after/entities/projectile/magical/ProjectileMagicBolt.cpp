@@ -15,9 +15,9 @@
 ProjectileMagicBolt::ProjectileMagicBolt ( const Ray & rnInRay, ftype fnInSpeed )
 	: ProjectileMagicalBase( rnInRay, fnInSpeed, 0.8f )
 {
-	//pModel = new CModel( string(".res/models/world/pebble.FBX") );
+	//pModel = new CModel( string("models/world/pebble.FBX") );
 	//transform.scale = Vector3d( 2.0f,2.0f,2.0f );
-	pModel = new CModel( ".res/models/effects/magic_ball.fbx" );
+	pModel = new CModel( "models/effects/magic_ball.fbx" );
 	{
 		glMaterial* newMat = new glMaterial;
 		newMat->loadFromFile( "effects/spell_fireball" );

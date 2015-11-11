@@ -46,20 +46,20 @@ void gmsceneGame_5::LoadScene ( void )
 	// Precache animation models
 	{
 		CSkinnedModel* precache;
-		precache = new CSkinnedModel( ".res/models/character/clara.FBX" );
+		precache = new CSkinnedModel( "models/character/clara.FBX" );
 		delete precache;
 		loadscreen->StepScreen();
-		precache = new CSkinnedModel( ".res/models/character/clara_fluxxor.FBX" );
+		precache = new CSkinnedModel( "models/character/clara_fluxxor.FBX" );
 		delete precache;
 		loadscreen->StepScreen();
 
-		precache = new CSkinnedModel( ".res/models/character/clara/body.FBX" );
+		precache = new CSkinnedModel( "models/character/clara/body.FBX" );
 		delete precache;
 		loadscreen->StepScreen();
-		precache = new CSkinnedModel( ".res/models/character/clara/body_m.FBX" );
+		precache = new CSkinnedModel( "models/character/clara/body_m.FBX" );
 		delete precache;
 		loadscreen->StepScreen();
-		precache = new CSkinnedModel( ".res/models/character/clara/body_fluxxor.FBX" );
+		precache = new CSkinnedModel( "models/character/clara/body_fluxxor.FBX" );
 		delete precache;
 		loadscreen->StepScreen();
 	}

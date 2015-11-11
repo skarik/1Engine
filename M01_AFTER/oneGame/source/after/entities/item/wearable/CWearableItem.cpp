@@ -14,7 +14,7 @@ CWearableItem::CWearableItem (const WItemData & wData): CWeaponItem (wData)
 	bHideBody = false;
 	bHideHair = false;
 	sPlayerModel = "";
-	sWorldModel = ".res/models/items/tree_resin.FBX";
+	sWorldModel = "models/items/tree_resin.FBX";
 }
 
 CWearableItem::~CWearableItem (void)

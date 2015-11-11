@@ -26,13 +26,13 @@ using namespace std;
 void CModel::LoadModel ( const string& sFilename )
 {
 	// First check for needed file conversion!
-	string sTargetFilename = Core::Resources::PathTo( sFilename );
+	string sTargetFilename = sFilename;//Core::Resources::PathTo( sFilename );
 	string sFileExtention = StringUtils::ToLower( StringUtils::GetFileExtension( sTargetFilename ) );
 	//cout << sFileExtention << endl;
 	if ( sFileExtention == "fbx" )
 	{
 		// Get the vanilla filename
-		sTargetFilename = sTargetFilename.substr( 0, sTargetFilename.length()-4 );
+		sTargetFilename = sTargetFilename.substr( 0, sTargetFilename.length()-(sFileExtention.length()+1) );
 		
 		// Run the converter program
 #ifdef _WIN32
@@ -40,7 +40,7 @@ void CModel::LoadModel ( const string& sFilename )
 		sArgument = sTargetFilename + ".FBX " + sTargetFilename + ".PAD";
 
 		LPTSTR lpCommandLine = new CHAR [1024];
-		strcpy( lpCommandLine, (string("_devtools\\FBXtoPAD.exe ") + sArgument).c_str() );
+		strcpy( lpCommandLine, (string("_devtools/FBXtoPAD.exe ") + sArgument).c_str() );
 		STARTUPINFO startupInfo;
 		ZeroMemory( &startupInfo, sizeof( STARTUPINFO ) );
 		startupInfo.cb = sizeof( STARTUPINFO );

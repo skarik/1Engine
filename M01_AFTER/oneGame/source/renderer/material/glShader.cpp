@@ -331,9 +331,11 @@ void glShader::open_shader ( void )
 		// Generate the shader filenames
 		string sVertFilename = sShaderFilename.substr( 0,sShaderFilename.length()-sExtension.length() );
 		string sFragFilename = sVertFilename + "frag";
+		// Vertex shader filname may need a skinning variant
 		if ( stTag == GLE::SHADER_TAG_DEFAULT )
 		{
 			sVertFilename = sVertFilename + "vert";
+			sVertFilename = Core::Resources::PathTo( sVertFilename );
 		}
 		else if ( stTag == GLE::SHADER_TAG_SKINNING )
 		{

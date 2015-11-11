@@ -9,7 +9,7 @@
 
 EnvHeavyWeather::EnvHeavyWeather ( void )
 {
-	model = new CModel( ".res/models/effects/heavy_weather.fbx" );
+	model = new CModel( "models/effects/heavy_weather.fbx" );
 
 	mTargetWeather	= Terrain::WTH_NONE;
 	mCurrentWeather	= Terrain::WTH_NONE;

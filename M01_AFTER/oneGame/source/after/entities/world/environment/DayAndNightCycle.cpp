@@ -58,7 +58,7 @@ Daycycle::Daycycle ( )
 
 	pSkyMat->removeReference();
 
-	skyModel = new CModel ( string(".res/models/geosphere.FBX") );
+	skyModel = new CModel ( string("models/geosphere.FBX") );
 	skyModel->SetMaterial( pSkyMat );
 	skyModel->SetRenderType( Renderer::Background );
 	skyModel->transform.scale = Vector3d( 1000,1000,-1000 );
@@ -288,7 +288,7 @@ Mooncycle::Mooncycle ( void )
 	pMoonMat->diffuse = Color( 0.8f, 0.8f, 0.8f, 1.0f );*/
 	pMoonMat->loadFromFile( "sky/moon_terra" );
 
-	moonModel = new CModel ( string(".res/models/geosphere.FBX") );
+	moonModel = new CModel ( string("models/geosphere.FBX") );
 	moonModel->SetMaterial( pMoonMat );
 	moonModel->SetRenderType( Renderer::Background );
 	moonModel->transform.scale = Vector3d( 28,28,28 );

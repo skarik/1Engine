@@ -26,7 +26,7 @@ public:
 	explicit WearElvenpunk02_skirt ( void ) : CWearableItem(ItemData())
 	{
 		sPlayerModel = "elvenpunk02/skirt";
-		sWorldModel = ".res/models/items/tree_resin.FBX";
+		sWorldModel = "models/items/tree_resin.FBX";
 		bHideBody = false;
 	}
 	~WearElvenpunk02_skirt (void)

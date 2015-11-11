@@ -50,7 +50,7 @@ CParticleEditor::CParticleEditor ( bool ingame )
 	mLight = NULL;
 	mBgSphere = NULL;
 	/*{
-		mBgSphere = new CModel( ".res/models/geosphere.FBX" );
+		mBgSphere = new CModel( "models/geosphere.FBX" );
 		mBgSphere->transform.scale = Vector3d(1,1,-1) * 8;
 		mBgSphere->SetRenderType( Renderer::Background );
 

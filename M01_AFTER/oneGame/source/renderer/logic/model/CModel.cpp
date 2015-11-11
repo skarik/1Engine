@@ -3,6 +3,10 @@
 
 #include "core/time/time.h"
 #include "core-ext/animation/CAnimation.h"
+
+#include "core-ext/system/io/FileUtils.h"
+#include "core-ext/system/io/Resources.h"
+
 #include "renderer/material/glMaterial.h"
 #include "renderer/object/mesh/CMesh.h"
 #include "renderer/resource/CModelMaster.h"
@@ -13,6 +17,16 @@ using namespace std;
 CModel::CModel ( const string& sFilename )
 	: CLogicObject()
 {
+	// Create filename
+	myModelFilename = sFilename;
+	// Standardize the filename
+	myModelFilename = IO::FilenameStandardize( myModelFilename );
+	// Look for the valid resource to load
+	myModelFilename = Core::Resources::PathTo( myModelFilename );
+#ifndef _ENGINE_DEBUG
+	throw Core::NotYetImplementedException();
+#endif
+
 	// Clear out uniform lists
 	uniformMapFloat = NULL;
 	uniformMapVect2d = NULL;
@@ -36,36 +50,35 @@ CModel::CModel ( const string& sFilename )
 	eRefMode = ANIM_REF_NONE;
 
 	// First look for the model in the model master
-	const vector<glMesh*> * pMeshSetReference = ModelMaster.GetReference( sFilename );
+	const vector<glMesh*> * pMeshSetReference = ModelMaster.GetReference( myModelFilename );
 	// If there's no reference, then load it
 	if ( pMeshSetReference == NULL )
 	{
-		LoadModel( sFilename );
+		LoadModel( myModelFilename );
 		// We don't want to use the animation reference we just created, so we make another
 		// Look for the reference and copy it
-		CAnimation* pFoundReference = ModelMaster.GetAnimationReference( sFilename );
+		CAnimation* pFoundReference = ModelMaster.GetAnimationReference( myModelFilename );
 		if ( pFoundReference != NULL && pFoundReference->IsValid() ) {
-			pMyAnimation = new CAnimation( sFilename, pFoundReference );
+			pMyAnimation = new CAnimation( myModelFilename, pFoundReference );
 			pMyAnimation->SetOwner( this );	// Set this as the owner
-			ModelMaster.AddReference( sFilename, pMyAnimation );
+			ModelMaster.AddReference( myModelFilename, pMyAnimation );
 		}
 	}
 	else // If there is a reference, copy the data
 	{
 		m_glMeshlist = *pMeshSetReference;
-		vHitboxes = *ModelMaster.GetHitboxReference( sFilename );
+		vHitboxes = *ModelMaster.GetHitboxReference( myModelFilename );
 		// Also create a new animation, with a reference that we found ourself
-		CAnimation* pFoundReference = ModelMaster.GetAnimationReference( sFilename );
+		CAnimation* pFoundReference = ModelMaster.GetAnimationReference( myModelFilename );
 		if ( pFoundReference != NULL && pFoundReference->IsValid() ) {
-			pMyAnimation = new CAnimation( sFilename, pFoundReference );
+			pMyAnimation = new CAnimation( myModelFilename, pFoundReference );
 			pMyAnimation->SetOwner( this ); // Set this model as the owner
-			ModelMaster.AddReference( sFilename, pMyAnimation );
+			ModelMaster.AddReference( myModelFilename, pMyAnimation );
 		}
 	}
 	// Add to the reference of the model
-	ModelMaster.AddReference( sFilename, m_glMeshlist, vHitboxes );
-	ModelMaster.AddReference( sFilename, m_physMeshlist );
-	myModelFilename = sFilename;
+	ModelMaster.AddReference( myModelFilename, m_glMeshlist, vHitboxes );
+	ModelMaster.AddReference( myModelFilename, m_physMeshlist );
 	
 	// Create mesh list
 	for ( uint i = 0; i < m_glMeshlist.size(); ++i ) 
@@ -107,6 +120,9 @@ CModel::CModel ( const string& sFilename )
 CModel::CModel ( CModelData& mdInModelData, string& sModelName )
 	: CLogicObject()
 {
+	// Start out setting the model name
+	myModelFilename = sModelName;
+
 	// Clear out uniform lists
 	uniformMapFloat = NULL;
 	uniformMapVect2d = NULL;
@@ -163,7 +179,6 @@ CModel::CModel ( CModelData& mdInModelData, string& sModelName )
 	// Add to the reference of the model
 	ModelMaster.AddReference( sModelName, m_glMeshlist, vHitboxes );
 	ModelMaster.AddReference( sModelName, m_physMeshlist );
-	myModelFilename = sModelName;
 
 	// Add animation reference
 	CAnimation* pAnimSetReference = ModelMaster.GetAnimationReference( sModelName );

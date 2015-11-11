@@ -52,13 +52,13 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		// The default material must be a single pass in both modes.
 		// This to provide compatibility with the default system implementation. (A lot of early engine code is implemented lazily)
 		glMaterial::Default = new glMaterial;
-		glMaterial::Default->setTexture( 0, new CTexture( ".res/textures/white.jpg" ) );			// Diffuse
-		glMaterial::Default->setTexture( 1, new CTexture( ".res/textures/black.jpg" ) );			// Glow
-		glMaterial::Default->setTexture( 2, new CTexture( ".res/textures/default_specular.jpg" ) );	// Specular
-		glMaterial::Default->setTexture( 3, new CTexture( ".res/textures/default_normals.jpg" ) );	// Normals
+		glMaterial::Default->setTexture( 0, new CTexture( "textures/white.jpg" ) );			// Diffuse
+		glMaterial::Default->setTexture( 1, new CTexture( "textures/black.jpg" ) );			// Glow
+		glMaterial::Default->setTexture( 2, new CTexture( "textures/default_specular.jpg" ) );	// Specular
+		glMaterial::Default->setTexture( 3, new CTexture( "textures/default_normals.jpg" ) );	// Normals
 		// Setup forward pass
 		glMaterial::Default->passinfo.push_back( glPass() );
-		glMaterial::Default->passinfo[0].shader = new glShader( ".res/shaders/d/diffuse.glsl" );
+		glMaterial::Default->passinfo[0].shader = new glShader( "shaders/d/diffuse.glsl" );
 		// Setup deferred pass
 		glMaterial::Default->deferredinfo.push_back( glPass_Deferred() );
 	}
@@ -67,7 +67,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		glMaterial::Copy = new glMaterial;
 		// Setup forward pass
 		glMaterial::Copy->passinfo.push_back( glPass() );
-		glMaterial::Copy->passinfo[0].shader = new glShader( ".res/shaders/sys/copy_buffer.glsl" );
+		glMaterial::Copy->passinfo[0].shader = new glShader( "shaders/sys/copy_buffer.glsl" );
 		glMaterial::Copy->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 		// Setup deferred pass
 		// Hilariously, this one doesn't use a deferred pass.
@@ -78,7 +78,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		glMaterial::Fallback = new glMaterial;
 		// Setup forward pass
 		glMaterial::Fallback->passinfo.push_back( glPass() );
-		glMaterial::Fallback->passinfo[0].shader = new glShader( ".res/shaders/sys/fullbright.glsl" );
+		glMaterial::Fallback->passinfo[0].shader = new glShader( "shaders/sys/fullbright.glsl" );
 		// Setup deferred pass
 		glMaterial::Fallback->deferredinfo.push_back( glPass_Deferred() );
 	}

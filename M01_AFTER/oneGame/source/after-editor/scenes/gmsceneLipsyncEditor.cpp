@@ -66,20 +66,20 @@ void gmsceneLipsyncEditor::LoadScene ( void )
 	// Precache animation models
 	{
 		CSkinnedModel* precache;
-		precache = new CSkinnedModel( ".res/models/character/clara.FBX" );
+		precache = new CSkinnedModel( "models/character/clara.FBX" );
 		delete precache;
 		loadscreen->StepScreen();
-		precache = new CSkinnedModel( ".res/models/character/clara_fluxxor.FBX" );
+		precache = new CSkinnedModel( "models/character/clara_fluxxor.FBX" );
 		delete precache;
 		loadscreen->StepScreen();
 
-		precache = new CSkinnedModel( ".res/models/character/clara/body.FBX" );
+		precache = new CSkinnedModel( "models/character/clara/body.FBX" );
 		delete precache;
 		loadscreen->StepScreen();
-		precache = new CSkinnedModel( ".res/models/character/clara/body_m.FBX" );
+		precache = new CSkinnedModel( "models/character/clara/body_m.FBX" );
 		delete precache;
 		loadscreen->StepScreen();
-		precache = new CSkinnedModel( ".res/models/character/clara/body_fluxxor.FBX" );
+		precache = new CSkinnedModel( "models/character/clara/body_fluxxor.FBX" );
 		delete precache;
 		loadscreen->StepScreen();
 	}
@@ -173,11 +173,11 @@ void gmsceneLipsyncEditor::LoadScene ( void )
 
 	// Create a test model
 	/*{
-		CSkinnedModel* modelTest = new CSkinnedModel( ".res/models/robot/automaton.FBX" );
+		CSkinnedModel* modelTest = new CSkinnedModel( "models/robot/automaton.FBX" );
 		modelTest->transform.position = Vector3d( -8,8,5 );
 	}*/
 	/*{
-		CSkinnedModel* modelTest = new CSkinnedModel( ".res/models/fauna/drakes/komodo_lesser_drake.FBX" );
+		CSkinnedModel* modelTest = new CSkinnedModel( "models/fauna/drakes/komodo_lesser_drake.FBX" );
 		modelTest->transform.position = Vector3d( -8,20,5 );
 	}*/
 

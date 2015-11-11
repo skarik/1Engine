@@ -9,7 +9,7 @@
 ProjectilePebble::ProjectilePebble ( const Ray & rnInRay, ftype fnInSpeed )
 	: CProjectile( rnInRay, fnInSpeed, 0.3f )
 {
-	pModel = new CModel( string(".res/models/world/pebble.FBX") );
+	pModel = new CModel( string("models/world/pebble.FBX") );
 	//transform.scale = Vector3d( 2.0f,2.0f,2.0f );
 
 	//CParticleSystem

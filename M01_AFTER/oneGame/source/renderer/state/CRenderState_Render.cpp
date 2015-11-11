@@ -642,7 +642,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					LightingPass = new glMaterial();
 					// Setup forward pass
 					LightingPass->passinfo.push_back( glPass() );
-					LightingPass->passinfo[0].shader = new glShader( ".res/shaders/def_screen/pass_lighting.glsl" );
+					LightingPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting.glsl" );
 					LightingPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 				}
 				static glMaterial* EchoPass = NULL;
@@ -650,7 +650,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					EchoPass = new glMaterial();
 					// Setup forward pass
 					EchoPass->passinfo.push_back( glPass() );
-					EchoPass->passinfo[0].shader = new glShader( ".res/shaders/def_screen/pass_lighting_echo.glsl" );
+					EchoPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting_echo.glsl" );
 					EchoPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 				}
 				static glMaterial* ShaftPass = NULL;
@@ -658,10 +658,10 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					ShaftPass = new glMaterial();
 					// Setup forward pass
 					ShaftPass->passinfo.push_back( glPass() );
-					ShaftPass->passinfo[0].shader = new glShader( ".res/shaders/def_screen/pass_lighting_shaft.glsl" );
+					ShaftPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting_shaft.glsl" );
 					ShaftPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 					// Set effect textures
-					ShaftPass->setTexture( 5, new CTexture( ".res/textures/ditherdots.jpg" ) );
+					ShaftPass->setTexture( 5, new CTexture( "textures/ditherdots.jpg" ) );
 				}
 
 				// Bind main screen in order to render the deferred result to it
@@ -747,11 +747,9 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			{
 				rendered = false;
 				// Copy over the depth to use when drawing in forward mode
-				//GL.GetMainScreenBuffer()->BindBuffer();
 				GL.GetMainScreenBuffer()->BindBuffer();
 				GL.setupViewport(0,0,GL.GetMainScreenBuffer()->GetWidth(),GL.GetMainScreenBuffer()->GetHeight());
 				glBindFramebuffer( GL_READ_FRAMEBUFFER, currentCamera->GetRenderTexture()->GetRTInfo().findex );
-				//glBindFramebuffer( GL_DRAW_FRAMEBUFFER, GL.GetMainScreenBuffer()->GetRTInfo().findex );
 				glBindFramebuffer( GL_DRAW_FRAMEBUFFER, GL.GetMainScreenBuffer()->GetRTInfo().findex );
 				glBlitFramebuffer(
 					0,0,Screen::Info.width,Screen::Info.height,

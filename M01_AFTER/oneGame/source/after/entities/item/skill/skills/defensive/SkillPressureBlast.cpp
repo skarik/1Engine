@@ -26,7 +26,7 @@ SkillPressureBlast::SkillPressureBlast ( void ) : CSkill( ItemData() )
 	ps_waterblast_active->enabled = false;
 	ps_waterblast_active->bAutoDestroy = false;
 
-	/*mMagicModel = new CModel( ".res/models/effects/magic_ball.fbx" );
+	/*mMagicModel = new CModel( "models/effects/magic_ball.fbx" );
 	glMaterial* newMat = new glMaterial;
 	newMat->loadFromFile( "effects/spell_fireball" );
 	mMagicModel->SetMaterial( newMat );
