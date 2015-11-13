@@ -1,0 +1,3 @@
+{'addIncludePath': ['Source'],
+ 'setPchFile': ['ContentTools/Common/Filters/FilterTutorial/hctFilterTutorial.h'],
+ 'setPrefix': ['hct']}
