@@ -1,0 +1,6 @@
+$properties
+	$softbody "Bip001 R Ear" 
+	$softbody "Bip001 L Ear" 
+	
+#$actions
+#	"ref" 0 1 0
