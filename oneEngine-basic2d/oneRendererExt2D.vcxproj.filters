@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{be73f98c-681c-4588-98c1-4196e0a65aba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Render2D">
+      <UniqueIdentifier>{6dff6b7a-d407-426c-bcb3-f885afc2a0bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Render2D\Object">
+      <UniqueIdentifier>{e4454ad2-8441-44ff-b577-772febddddc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Render2D\Preprocess">
+      <UniqueIdentifier>{b85057d0-0f91-4bd3-9004-3667fde1efc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Render2D\Camera">
+      <UniqueIdentifier>{1eecf4ed-d83f-4107-ba53-9038af4d56ba}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\render2d\object\CRenderable2D.cpp">
+      <Filter>SOURCE\Render2D\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="source\render2d\camera\COrthoCamera.cpp">
+      <Filter>SOURCE\Render2D\Camera</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\render2d\object\CRenderable2D.h">
+      <Filter>SOURCE\Render2D\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\preprocess\PaletteToLUT.h">
+      <Filter>SOURCE\Render2D\Preprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\camera\COrthoCamera.h">
+      <Filter>SOURCE\Render2D\Camera</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
