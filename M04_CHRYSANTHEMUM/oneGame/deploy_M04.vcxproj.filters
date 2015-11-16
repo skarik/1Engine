@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\deploy\deploy\AFTER.cpp">
+    <ClCompile Include="source\deploy\deploy\M04.cpp">
       <Filter>SOURCE\deploy\deploy</Filter>
     </ClCompile>
   </ItemGroup>
@@ -30,7 +30,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon1.ico">
+    <Image Include="icon2.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

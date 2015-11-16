@@ -126,7 +126,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;OpenAL32.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;libyaml-cppmd.lib;fmodex_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;libs\core;libs\basic;libs\render;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='2D_Debug|Win32'">
@@ -152,7 +152,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;OpenAL32.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;libyaml-cppmd.lib;fmodex_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;libs\core;libs\basic;libs\render;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
@@ -177,7 +177,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;OpenAL32.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;libyaml-cppmd.lib;fmodex_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;libs\core;libs\basic;libs\render;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

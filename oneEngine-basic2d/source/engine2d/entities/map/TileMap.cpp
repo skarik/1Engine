@@ -36,7 +36,7 @@ void TileMap::Rebuild ( void )
 		if ( current_depth != m_tiles[i].depth )
 		{	// Since we're at a new layer, we should build the previous layer
 			// Start the thread for building that layer
-			layer_build_threads.push_back( std::thread( RebuildMesh, current_depth, current_depth_start_tile, i-current_depth_start_tile+1 ) );
+			layer_build_threads.push_back( std::thread( &TileMap::RebuildMesh, this, current_depth, current_depth_start_tile, i-current_depth_start_tile+1 ) );
 			// And set the options for the next layer to build
 			current_depth_start_tile = i; // Next layer starts at the current tile
 			current_depth = m_tiles[i].depth; // Layer depth is as given

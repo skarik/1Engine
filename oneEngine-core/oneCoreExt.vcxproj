@@ -122,7 +122,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;Lua.5.2-debug.lib;libyaml-cppmd.lib;steam_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;libs\core;libs\basic;libs\render;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
@@ -147,7 +147,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;Lua.5.2-release.lib;libyaml-cppmd.lib;steam_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;libs\core;libs\basic;libs\render;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

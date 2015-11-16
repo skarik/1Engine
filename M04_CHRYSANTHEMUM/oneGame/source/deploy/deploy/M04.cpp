@@ -1,3 +1,5 @@
+// If the environment is destroyed, add the following to the PATH variable in the runtime options:
+// PATH=%PATH%;$(ProjectDir)
 
 #ifdef _WIN32
 

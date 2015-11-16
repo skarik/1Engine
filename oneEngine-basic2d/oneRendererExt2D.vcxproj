@@ -104,7 +104,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST_D.lib;libyaml-cppmd.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;libs\core;libs\basic;libs\render;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
@@ -129,7 +129,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST.lib;OpenGL32.lib;GLu32.lib;libyaml-cppmd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;libs\core;libs\basic;libs\render;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
