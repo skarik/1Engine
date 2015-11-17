@@ -328,6 +328,12 @@
     <Filter Include="SOURCE\AFTER-Editor\Standalone">
       <UniqueIdentifier>{a93ac015-8f7e-48da-a6a8-1445385f48a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04">
+      <UniqueIdentifier>{486526cd-d5ce-43e7-832f-cd14c9e43ccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\M04-Editor">
+      <UniqueIdentifier>{7e86391b-ab1b-4ce0-aad8-f70e954ff87b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\after\scenes\gmsceneGame_5.h">
@@ -771,9 +777,6 @@
     <ClInclude Include="source\after\entities\props\props\PropLantern.h">
       <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
     </ClInclude>
-    <ClInclude Include="source\after\after-common.h">
-      <Filter>SOURCE\AFTER</Filter>
-    </ClInclude>
     <ClInclude Include="source\after\states\weaponeffect\WeaponEffects.h">
       <Filter>SOURCE\AFTER\States\Weapon Effect</Filter>
     </ClInclude>
@@ -1205,6 +1208,9 @@
     </ClInclude>
     <ClInclude Include="source\after\terrain\system\JobHandler.h">
       <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04\m04-common.h">
+      <Filter>SOURCE\M04</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1895,9 +1901,6 @@
     <ClCompile Include="source\after\animation\Sequence.cpp">
       <Filter>SOURCE\AFTER\Animation</Filter>
     </ClCompile>
-    <ClCompile Include="source\after\after-common.cpp">
-      <Filter>SOURCE\AFTER</Filter>
-    </ClCompile>
     <ClCompile Include="source\after\lua\CLuaSkill.cpp">
       <Filter>SOURCE\AFTER\Lua</Filter>
     </ClCompile>
@@ -1999,6 +2002,9 @@
     </ClCompile>
     <ClCompile Include="source\after\terrain\system\TerrainRenderer.cpp">
       <Filter>SOURCE\AFTER\Terrain\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\m04-common.cpp">
+      <Filter>SOURCE\M04</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -4,6 +4,8 @@
 #include "core/containers/arstring.h"
 #include "core/utils/StringUtils.h"
 #include "core/exceptions/exceptions.h"
+#include "core-ext/system/io/mccosf.h"
+#include "core-ext/system/io/Resources.h"
 
 #include <fstream>
 using std::fstream;
@@ -129,88 +131,7 @@ void CGameSettings::LoadSettings ( void )
 
 	// read in file line by line
 	ifstream infile ( ".game/gameoptions.cfg" );
-	/*if ( infile.is_open() )
-	{
-		char cmd [256];
-		while ( !infile.eof() )
-		{
-			infile.getline( cmd, 256 );
-			stringstream ss;
-			ss.str( string( cmd ) );
-
-			string sCommand;
-			ss >> sCommand;
-			sCommand = StringUtils::ToLower( sCommand );
-			if ( sCommand == "ro_enableshaders" ) {
-				ss >> b_ro_EnableShaders;
-			}
-			else if ( sCommand == "ro_resolutionx" ) {
-				ss >> i_ro_TargetResX;
-			}
-			else if ( sCommand == "ro_resolutiony" ) {
-				ss >> i_ro_TargetResY;
-			}
-			else if ( sCommand == "ro_shadowresolution" ) {
-				ss >> i_ro_ShadowMapResolution;
-			}
-			else if ( sCommand == "ro_enableshadows" ) {
-				ss >> b_ro_EnableShadows;
-			}
-			else if ( sCommand == "ro_grasssubdivisions" ) {
-				ss >> i_ro_GrassSubdivisions;
-			}
-			else if ( sCommand == "ro_usebuffermodel" ) {
-				b_ro_UseBufferModel = true;
-				//ss >> b_ro_UseBufferModel;
-				//b_ro_UseBufferModel = ( b_ro_UseBufferModel && GL.FBOsAvailable ); // only enable screen-buffers if fbos are available
-			}
-			else if ( sCommand == "ro_usehighrange" ) {
-				ss >> b_ro_UseHighRange;
-			}
-			else if ( sCommand == "ro_renderer_mode" ) {
-				ss >> i_ro_RendererMode;
-			}
-			else if ( sCommand == "cl_faststart" ) {
-				ss >> b_cl_FastStart;
-			}
-			else if ( sCommand == "cl_defaultseed" ) {
-				ss >> i_cl_DefaultSeed;
-			}
-			else if ( sCommand == "cl_minimal_terrain_threads" ) {
-				ss >> b_cl_MinimizeTerrainThreads;
-			}
-			else if ( sCommand == "cl_keyboardstyle" ) {
-				ss >> i_cl_KeyboardStyle;
-			}
-			else if ( sCommand == "cl_ter_range" ) {
-				ss >> i_cl_ter_Range;
-			}
-			else if ( sCommand == "cl_ter_shadowofthecollussusrenderstyle" ) {
-				ss >> b_cl_ter_ShadowOfTheCollussusRenderStyle;
-			}
-			else if ( sCommand == "cl_ter_farlodrangecount" ) {
-				ss >> i_cl_ter_FarLODRangeCount;
-			}
-			else if ( sCommand == "cl_mouse_sensitivity" ) {
-				ss >> f_cl_MouseSensitivity;
-			}
-			else if ( sCommand == "dbg_ro_showmissinglinks" ) {
-				ss >> b_dbg_ro_ShowMissingLinks;
-			}
-			else if ( sCommand == "ro_enable30blit" ) {
-				ss >> b_ro_Enable30Blit;
-			}
-			else if ( sCommand == "ro_enable30steroscopic" ) {
-				ss >> b_ro_Enable30Steroscopic;
-			}
-			else if ( sCommand == "ro_camerarangedefault" ) {
-				ss >> f_ro_DefaultCameraRange;
-			}
-			else if ( sCommand == "cl_reticlescale" ) {
-				ss >> f_cl_ReticleScale;
-			}
-		}
-	}*/
+	
 	if ( infile.is_open() )
 	{
 		char cmd [256];
@@ -266,6 +187,36 @@ void CGameSettings::LoadSettings ( void )
 
 	// save current settings
 	SaveSettings();
+
+
+	// Load up the properties file
+	sysprop_developerstring = "Development Build 05";
+
+	FILE* fp_file = Core::Resources::Open("system/properties.txt","rb");
+	if ( fp_file != NULL )
+	{
+		COSF_Loader loader ( fp_file );
+		mccOSF_entry_info_t entry;
+		
+		// Loop through all the entries
+		do
+		{
+			// Get next entry
+			loader.GetNext( entry );
+			if ( entry.type == MCCOSF_ENTRY_NORMAL || entry.type == MCCOSF_ENTRY_END )
+			{
+				// Check the key
+				if ( strcmp( entry.name, "developerstring" ) == 0 )
+				{
+					sysprop_developerstring = entry.value;
+				}
+			}
+		}
+		while ( entry.type != MCCOSF_ENTRY_EOF );
+
+		// Close the file
+		fclose( fp_file );
+	}
 }
 
 // == Save Settings ==

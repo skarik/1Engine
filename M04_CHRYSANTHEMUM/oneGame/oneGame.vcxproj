@@ -247,7 +247,6 @@
     <ClInclude Include="source\after-editor\standalone\CLipsyncEditor.h" />
     <ClInclude Include="source\after-editor\standalone\CParticleEditor.h" />
     <ClInclude Include="source\after-editor\standalone\CSkyColorEditor.h" />
-    <ClInclude Include="source\after\after-common.h" />
     <ClInclude Include="source\after\animation\Sequence.h" />
     <ClInclude Include="source\after\developer\CAiTester.h" />
     <ClInclude Include="source\after\developer\CRegionMapTester.h" />
@@ -531,6 +530,7 @@
     <ClInclude Include="source\after\types\world\Resources.h" />
     <ClInclude Include="source\after\types\world\Towns.h" />
     <ClInclude Include="source\after\utils\NamingUtils.h" />
+    <ClInclude Include="source\m04\m04-common.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\after-editor\scenes\gmsceneLipsyncEditor.cpp" />
@@ -541,7 +541,6 @@
     <ClCompile Include="source\after-editor\standalone\CLipsyncEditor.cpp" />
     <ClCompile Include="source\after-editor\standalone\CParticleEditor.cpp" />
     <ClCompile Include="source\after-editor\standalone\CSkyColorEditor.cpp" />
-    <ClCompile Include="source\after\after-common.cpp" />
     <ClCompile Include="source\after\animation\Sequence.cpp" />
     <ClCompile Include="source\after\developer\CAiTester.cpp" />
     <ClCompile Include="source\after\developer\CRegionMapTester.cpp" />
@@ -797,6 +796,7 @@
     <ClCompile Include="source\after\types\terrain\BlockType.cpp" />
     <ClCompile Include="source\after\types\world\Cultures.cpp" />
     <ClCompile Include="source\after\utils\NamingUtil_Town.cpp" />
+    <ClCompile Include="source\m04\m04-common.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="oneAudio.vcxproj">

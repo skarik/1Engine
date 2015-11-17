@@ -167,6 +167,12 @@ public: // Members that are edited by outside objects often are put here, as a g
 
 	string	s_cmd;	// command line options
 
+	//=========================================//
+	// System Properties
+	//=========================================//
+
+	string	sysprop_developerstring;
+
 private:
 	//=========================================//
 	// Private data

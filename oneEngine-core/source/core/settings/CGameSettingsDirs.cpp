@@ -24,7 +24,7 @@
 // == Make Directory ==
 void CGameSettings::MakeDirectory ( const string& directory )
 {
-	return MakeDirectory( directory );
+	return MakeDirectory( directory.c_str() );
 }
 void CGameSettings::MakeDirectory ( const char *directory )
 {

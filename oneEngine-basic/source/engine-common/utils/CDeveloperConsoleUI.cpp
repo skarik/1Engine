@@ -2,6 +2,7 @@
 #include "engine/utils/CDeveloperConsole.h"
 #include "CDeveloperConsoleUI.h"
 #include "core/input/CInput.h"
+#include "core/settings/CGameSettings.h"
 #include "renderer/texture/CBitmapFont.h"
 #include "renderer/material/glMaterial.h"
 #include "renderer/system/glMainSystem.h"
@@ -77,7 +78,7 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 
 	matfntMenu->m_diffuse = Color( 1.0f,1.0f,1.0f,0.5f );
 	matfntMenu->bindPass(0);
-		GLd.DrawAutoText( 0.005f, 0.023f, "Development Build 05" );
+	GLd.DrawAutoText( 0.005f, 0.023f, CGameSettings::Active()->sysprop_developerstring.c_str() );
 
 	GL.endOrtho();
 
