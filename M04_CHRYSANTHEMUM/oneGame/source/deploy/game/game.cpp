@@ -111,9 +111,6 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	//EngineCommon::LoadScene("default");
 
 	// Sync up instances
-	/*ModulePhysical::Sync( CGameSettings::Active(), CPhysics::Active() );
-	ModuleEngine::Sync( CGameSettings::Active(), CPhysics::Active() );
-	ModuleRenderer::Sync( CGameSettings::Active(), CPhysics::Active() );*/
 	//CCamera* cam = new CCamera;
 
 	// Start off the clock timer
