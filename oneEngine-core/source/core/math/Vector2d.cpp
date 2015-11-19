@@ -32,3 +32,9 @@ Vector2d Vector2d::rvrMultMatx ( Matrix2x2 const& right ) const
 		right.pData[2]*x+right.pData[3]*y
 		);
 }
+
+// Component multiplication
+Vector2d Vector2d::mulComponents ( Vector2d const& right ) const
+{
+	return Vector2d( x*right.x, y*right.y );
+}

@@ -4,6 +4,7 @@
 #define HK_DEBUG_MULTI_THREADING
 
 // Game System Includes
+#include "core/types/types.h"
 #include "core/types/ModelData.h"
 #include "core-ext/transform/CTransform.h"
 #include "core/debug/CDebugConsole.h"
@@ -14,7 +15,7 @@
 #include "physical/physics/shapes/physShape.h"
 
 // Havok Common Includes
-#include <Common/Base/hkBase.h>
+/*#include <Common/Base/hkBase.h>
 #include <Common/Base/Container/Array/hkArray.h> 
 #include <Common/Base/Memory/System/Util/hkMemoryInitUtil.h>
 #include <Common/Base/Memory/Allocator/Malloc/hkMallocAllocator.h>
@@ -103,13 +104,15 @@
 #include <Animation/Animation/Mapper/hkaSkeletonMapperData.h> 
 #include <Animation/Animation/Mapper/hkaSkeletonMapperUtils.h> 
 
-
 #define _HAVOK_VISUAL_DEBUGGER_	// Change this to a #define to gain access to the Havok Visual debugger.
 #ifdef _HAVOK_VISUAL_DEBUGGER_
 // Havok Debugger Includes
 #include <Common/Visualize/hkVisualDebugger.h>
 #include <Physics/Utilities/VisualDebugger/hkpPhysicsContext.h>
 #endif
+*/
+
+#include "Box2D/Box2D.h"
 
 #undef _PHYSICS_MULTITHREADED_ // Don't use multithreading (comment out to use multithreading)
 
@@ -168,9 +171,55 @@ static void __cdecl errorReport( const char* msg, void* userContext )
 	float maxLinearVelocity;
 	float maxAngularVelocity;
 };*/
-typedef hkpRigidBodyCinfo			physRigidBodyInfo;
+
+/*typedef hkpRigidBodyCinfo			physRigidBodyInfo;
 typedef hkpMotion::MotionType		physMotionType;
 typedef hkpMotion					physMotion;
-typedef hkpCollidableQualityType	physMotionQualityType;
+typedef hkpCollidableQualityType	physMotionQualityType;*/
+
+//===============================================================================================//
+// Box2D - Havok compatibility
+//===============================================================================================//
+
+// Types
+//typedef int							physRigidBodyInfo;
+typedef int							physMotionType;
+typedef b2Fixture					physMotion;
+typedef int							physMotionQualityType;
+
+typedef Real						physReal;
+
+// Classes
+class physWind {};
+class physWindRegion {};
+class physAabbPhantom {};
+class physPhantomCallbackShape {};
+
+class physWorldRayCastInput {};
+class physRayHitCollector {};
+
+class physCollidable {};
+class physLinearCastInput {};
+class physCdPointCollector {};
+class physCollisionInput {};
+
+class physEntity {};
+class physConstraintInstance {};
+class physPhantom {};
+class physWorldPostSimulationListener {};
+
+//class physWorld {};
+typedef b2World physWorld;
+
+// Class wrapping
+#include "physical/wrapper/wrapper_common.h"
+#include "physical/wrapper/physVector4.h"
+#include "physical/wrapper/physAabb.h"
+
+// Defines
+//#define HK_DECLARE_CLASS_ALLOCATOR
+//#define HK_MEMORY_CLASS_BASE
+#define PHYS_CLASS_ALLOCATOR
+#define HK_NULL NULL
 
 #endif

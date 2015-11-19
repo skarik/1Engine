@@ -39,15 +39,18 @@ public:
 //===============================================================================================//
 
 // Havok-side implementation of hkpWind interface
-class physWindManager : public hkpWind
+class physWindManager : public physWind //public hkpWind
 {
 public:
-	HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_BASE);
+	//HK_DECLARE_CLASS_ALLOCATOR(HK_MEMORY_CLASS_BASE);
+	PHYS_CLASS_ALLOCATOR;
 	PHYS_API			physWindManager();
 	PHYS_API virtual	~physWindManager();
 
-	PHYS_API void update ( hkReal delta );
-	PHYS_API virtual void getWindVector ( const hkVector4& pos, hkVector4& windOut ) const;
+	//PHYS_API void update ( hkReal delta );
+	PHYS_API void update ( physReal delta );
+	//PHYS_API virtual void getWindVector ( const hkVector4& pos, hkVector4& windOut ) const;
+	PHYS_API virtual void getWindVector ( const physVector4& pos, physVector4& windOut ) const;
 
 	//void addExplosion( const hkVector4& center, const ExplosionInfo& info );
 	//void addWind ( CPhysWindBase* newWind );
@@ -58,7 +61,8 @@ private:
 
 public:
 	PHYS_API static physWindManager*	Instantiate ( void );
-	PHYS_API static hkpWindRegion*		InstantiateWindRegion( hkpAabbPhantom* phantom, const hkpWind* wind, hkReal resistanceFactor, hkReal obbFactor = 0.0f );
+	//PHYS_API static hkpWindRegion*		InstantiateWindRegion( hkpAabbPhantom* phantom, const hkpWind* wind, hkReal resistanceFactor, hkReal obbFactor = 0.0f );
+	PHYS_API static physWindRegion*		InstantiateWindRegion( physAabbPhantom* phantom, const physWind* wind, physReal resistanceFactor, physReal obbFactor = 0.0f );
 };
 
 #endif

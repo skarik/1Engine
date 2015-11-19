@@ -58,6 +58,8 @@ public:
 	Vector3d rvrMultMatx ( Matrix4x4 const& right ) const;
 	Vector3d rvrMultMatx ( Matrix3x3 const& right ) const;
 
+	Vector3d mulComponents ( Vector3d const& right ) const;
+
 	bool operator== (Vector3d const& right) const;			//Equal comparison overload
 	bool operator!= (Vector3d const& right) const;			//Not equal comparison overload
 

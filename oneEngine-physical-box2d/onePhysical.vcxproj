@@ -24,6 +24,53 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source-lib\Box2D\Box2D.h" />
+    <ClInclude Include="source-lib\Box2D\Collision\b2BroadPhase.h" />
+    <ClInclude Include="source-lib\Box2D\Collision\b2Collision.h" />
+    <ClInclude Include="source-lib\Box2D\Collision\b2Distance.h" />
+    <ClInclude Include="source-lib\Box2D\Collision\b2DynamicTree.h" />
+    <ClInclude Include="source-lib\Box2D\Collision\b2TimeOfImpact.h" />
+    <ClInclude Include="source-lib\Box2D\Collision\Shapes\b2ChainShape.h" />
+    <ClInclude Include="source-lib\Box2D\Collision\Shapes\b2CircleShape.h" />
+    <ClInclude Include="source-lib\Box2D\Collision\Shapes\b2EdgeShape.h" />
+    <ClInclude Include="source-lib\Box2D\Collision\Shapes\b2PolygonShape.h" />
+    <ClInclude Include="source-lib\Box2D\Collision\Shapes\b2Shape.h" />
+    <ClInclude Include="source-lib\Box2D\Common\b2BlockAllocator.h" />
+    <ClInclude Include="source-lib\Box2D\Common\b2Draw.h" />
+    <ClInclude Include="source-lib\Box2D\Common\b2GrowableStack.h" />
+    <ClInclude Include="source-lib\Box2D\Common\b2Math.h" />
+    <ClInclude Include="source-lib\Box2D\Common\b2Settings.h" />
+    <ClInclude Include="source-lib\Box2D\Common\b2StackAllocator.h" />
+    <ClInclude Include="source-lib\Box2D\Common\b2Timer.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\b2Body.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\b2ContactManager.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\b2Fixture.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\b2Island.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\b2TimeStep.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\b2World.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\b2WorldCallbacks.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Contacts\b2ChainAndCircleContact.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Contacts\b2ChainAndPolygonContact.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Contacts\b2CircleContact.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Contacts\b2Contact.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Contacts\b2ContactSolver.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Contacts\b2EdgeAndCircleContact.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Contacts\b2EdgeAndPolygonContact.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Contacts\b2PolygonAndCircleContact.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Contacts\b2PolygonContact.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Joints\b2DistanceJoint.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Joints\b2FrictionJoint.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Joints\b2GearJoint.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Joints\b2Joint.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Joints\b2MotorJoint.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Joints\b2MouseJoint.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Joints\b2PrismaticJoint.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Joints\b2PulleyJoint.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Joints\b2RevoluteJoint.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Joints\b2RopeJoint.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Joints\b2WeldJoint.h" />
+    <ClInclude Include="source-lib\Box2D\Dynamics\Joints\b2WheelJoint.h" />
+    <ClInclude Include="source-lib\Box2D\Rope\b2Rope.h" />
     <ClInclude Include="source\physical\animation\CHKAnimation.h" />
     <ClInclude Include="source\physical\animation\curve\CHKAnimationCurve.h" />
     <ClInclude Include="source\physical\animation\set\CHKAnimationSet.h" />
@@ -45,8 +92,57 @@
     <ClInclude Include="source\physical\physics\wind\Wind.h" />
     <ClInclude Include="source\physical\skeleton\skeletonBone.h" />
     <ClInclude Include="source\physical\system\Layers.h" />
+    <ClInclude Include="source\physical\wrapper\physAabb.h" />
+    <ClInclude Include="source\physical\wrapper\physVector4.h" />
+    <ClInclude Include="source\physical\wrapper\wrapper_common.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source-lib\Box2D\Collision\b2BroadPhase.cpp" />
+    <ClCompile Include="source-lib\Box2D\Collision\b2CollideCircle.cpp" />
+    <ClCompile Include="source-lib\Box2D\Collision\b2CollideEdge.cpp" />
+    <ClCompile Include="source-lib\Box2D\Collision\b2CollidePolygon.cpp" />
+    <ClCompile Include="source-lib\Box2D\Collision\b2Collision.cpp" />
+    <ClCompile Include="source-lib\Box2D\Collision\b2Distance.cpp" />
+    <ClCompile Include="source-lib\Box2D\Collision\b2DynamicTree.cpp" />
+    <ClCompile Include="source-lib\Box2D\Collision\b2TimeOfImpact.cpp" />
+    <ClCompile Include="source-lib\Box2D\Collision\Shapes\b2ChainShape.cpp" />
+    <ClCompile Include="source-lib\Box2D\Collision\Shapes\b2CircleShape.cpp" />
+    <ClCompile Include="source-lib\Box2D\Collision\Shapes\b2EdgeShape.cpp" />
+    <ClCompile Include="source-lib\Box2D\Collision\Shapes\b2PolygonShape.cpp" />
+    <ClCompile Include="source-lib\Box2D\Common\b2BlockAllocator.cpp" />
+    <ClCompile Include="source-lib\Box2D\Common\b2Draw.cpp" />
+    <ClCompile Include="source-lib\Box2D\Common\b2Math.cpp" />
+    <ClCompile Include="source-lib\Box2D\Common\b2Settings.cpp" />
+    <ClCompile Include="source-lib\Box2D\Common\b2StackAllocator.cpp" />
+    <ClCompile Include="source-lib\Box2D\Common\b2Timer.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\b2Body.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\b2ContactManager.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\b2Fixture.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\b2Island.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\b2World.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\b2WorldCallbacks.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Contacts\b2ChainAndCircleContact.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Contacts\b2ChainAndPolygonContact.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Contacts\b2CircleContact.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Contacts\b2Contact.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Contacts\b2ContactSolver.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Contacts\b2EdgeAndCircleContact.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Contacts\b2EdgeAndPolygonContact.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Contacts\b2PolygonAndCircleContact.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Contacts\b2PolygonContact.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Joints\b2DistanceJoint.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Joints\b2FrictionJoint.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Joints\b2GearJoint.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Joints\b2Joint.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Joints\b2MotorJoint.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Joints\b2MouseJoint.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Joints\b2PrismaticJoint.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Joints\b2PulleyJoint.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Joints\b2RevoluteJoint.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Joints\b2RopeJoint.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Joints\b2WeldJoint.cpp" />
+    <ClCompile Include="source-lib\Box2D\Dynamics\Joints\b2WheelJoint.cpp" />
+    <ClCompile Include="source-lib\Box2D\Rope\b2Rope.cpp" />
     <ClCompile Include="source\physical\animation\CHKAnimation.cpp" />
     <ClCompile Include="source\physical\animation\set\CHKAnimationSet.cpp" />
     <ClCompile Include="source\physical\module_physical.cpp" />
@@ -106,7 +202,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/havok;source-lib/boost_1_55;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/fmod;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/fmod;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_ENGINE_PHYSICAL;_ENGINE_DEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -124,7 +220,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST_D.lib;Lua.5.2-debug.lib;libyaml-cppmd.lib;steam_api.lib;hkBase.lib;hkSerialize.lib;hkSceneData.lib;hkInternal.lib;hkGeometryUtilities.lib;hkVisualize.lib;hkCompat.lib;hkcdInternal.lib;hkcdCollide.lib;hkpCollide.lib;hkpConstraintSolver.lib;hkpDynamics.lib;hkpInternal.lib;hkpUtilities.lib;hkpVehicle.lib;hkaAnimation.lib;hkaInternal.lib;hkaRagdoll.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
@@ -134,7 +230,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/havok;source-lib/boost_1_55;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/fmod;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/fmod;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_ENGINE_PHYSICAL;_ENGINE_RELEASE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -149,7 +245,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST.lib;Lua.5.2-release.lib;libyaml-cppmd.lib;steam_api.lib;hkBase.lib;hkSerialize.lib;hkSceneData.lib;hkInternal.lib;hkGeometryUtilities.lib;hkVisualize.lib;hkCompat.lib;hkcdInternal.lib;hkcdCollide.lib;hkpCollide.lib;hkpConstraintSolver.lib;hkpDynamics.lib;hkpInternal.lib;hkpUtilities.lib;hkpVehicle.lib;hkaAnimation.lib;hkaInternal.lib;hkaRagdoll.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -7,15 +7,15 @@
 class hkArCallbackDistributor
 {
 public:
-	virtual void phantomEnterEvent ( const hkpCollidable *phantomColl, const hkpCollidable *otherColl, const hkpCollisionInput &env ) =0;
-	virtual void phantomLeaveEvent ( const hkpCollidable *phantomColl, const hkpCollidable *otherColl ) =0;
+	virtual void phantomEnterEvent ( const physCollidable *phantomColl, const physCollidable *otherColl, const physCollisionInput &env ) =0;
+	virtual void phantomLeaveEvent ( const physCollidable *phantomColl, const physCollidable *otherColl ) =0;
 };
 
-class hkArPhantomCallbackShape : public hkpPhantomCallbackShape
+class hkArPhantomCallbackShape : public physPhantomCallbackShape
 {
 public:
-	void phantomEnterEvent ( const hkpCollidable *phantomColl, const hkpCollidable *otherColl, const hkpCollisionInput &env );
-	void phantomLeaveEvent ( const hkpCollidable *phantomColl, const hkpCollidable *otherColl );
+	void phantomEnterEvent ( const physCollidable *phantomColl, const physCollidable *otherColl, const physCollisionInput &env );
+	void phantomLeaveEvent ( const physCollidable *phantomColl, const physCollidable *otherColl );
 
 	hkArCallbackDistributor*	distributor;
 };

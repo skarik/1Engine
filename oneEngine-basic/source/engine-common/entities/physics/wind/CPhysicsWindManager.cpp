@@ -11,9 +11,9 @@ CPhysicsWindManager* CPhysicsWindManager::GetActive ( void ) {
 
 bool				CPhysicsWindManager::bReady	= false;
 physWindManager *	CPhysicsWindManager::m_physWindManager	= NULL;
-hkpWindRegion *		CPhysicsWindManager::m_region			= NULL;
-hkpAabbPhantom*		CPhysicsWindManager::m_phantom			= NULL;
-hkAabb				CPhysicsWindManager::m_aabb;
+physWindRegion *	CPhysicsWindManager::m_region			= NULL;
+physAabbPhantom*	CPhysicsWindManager::m_phantom			= NULL;
+physAabb			CPhysicsWindManager::m_aabb;
 
 
 CPhysicsWindManager::CPhysicsWindManager ( void )
@@ -28,7 +28,7 @@ CPhysicsWindManager::CPhysicsWindManager ( void )
 		m_aabb.m_min.set( -90,-90,-90 );
 		m_aabb.m_max.set( +90,+90,+90 );
 		//m_phantom = new hkpAabbPhantom ( m_aabb );
-		m_phantom = (hkpAabbPhantom*)Physics::CreateAABBPhantom( &m_aabb, this->GetId() );
+		m_phantom = (physAabbPhantom*)Physics::CreateAABBPhantom( &m_aabb, this->GetId() );
 		//Physics::AddPhantom( m_phantom );
 		// Create wind manager
 		//m_physWindManager = new physWindManager ();

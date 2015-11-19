@@ -68,6 +68,8 @@ public:
 
 	// Matrix modify
 	Vector2d rvrMultMatx ( Matrix2x2 const& right ) const;
+	// Component multiply
+	Vector2d mulComponents ( Vector2d const& right ) const;
 
 	//Equal comparison
 	FORCE_INLINE bool operator== (Vector2d const& right) const;

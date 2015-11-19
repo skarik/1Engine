@@ -236,18 +236,18 @@ void Physics::SetActive ( CPhysics* inst )
 	Instance = inst;
 }
 
-hkpWorld* Physics::World ( void )
+physWorld* Physics::World ( void )
 {
 	return Instance->pWorld;
 }
-hkJobQueue* Physics::JobQueue ( void )
+/*hkJobQueue* Physics::JobQueue ( void )
 {
 	return Instance->jobQueue;
 }
 hkJobThreadPool* Physics::ThreadPool ( void )
 {
 	return Instance->threadPool;
-}
+}*/
 
 #ifdef _HAVOK_VISUAL_DEBUGGER_
 hkVisualDebugger* Physics::VDB ( void )

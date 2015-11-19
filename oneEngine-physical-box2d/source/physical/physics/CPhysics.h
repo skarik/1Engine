@@ -75,22 +75,22 @@ public:
 	// Rigidbodies
 	//=========================================//
 	// Creation of rigidbodies
-	FORCE_INLINE PHYS_API static hkpRigidBody* CreateRigidBody ( physRigidBodyInfo* pBodyInfo, bool bIsDynamic=true );
+	FORCE_INLINE PHYS_API static physRigidBody* CreateRigidBody ( physRigidBodyInfo* pBodyInfo, bool bIsDynamic=true );
 	// Destruction of rigidbodies
-	FORCE_INLINE PHYS_API static void FreeRigidBody ( hkpRigidBody* pRigidBody );
+	FORCE_INLINE PHYS_API static void FreeRigidBody ( physRigidBody* pRigidBody );
 	// Checking for rigidbody collisions
-	FORCE_INLINE PHYS_API static void CheckRigidBodyContacts ( hkpRigidBody* pRigidBody );
+	FORCE_INLINE PHYS_API static void CheckRigidBodyContacts ( physRigidBody* pRigidBody );
 	// Setting their info
-	FORCE_INLINE PHYS_API static void SetRigidBodyTransform ( hkpRigidBody* pRigidBody, CTransform* pSourceTransform );
+	FORCE_INLINE PHYS_API static void SetRigidBodyTransform ( physRigidBody* pRigidBody, CTransform* pSourceTransform );
 	// Grabbing their info
-	FORCE_INLINE PHYS_API static void GetRigidBodyTransform ( hkpRigidBody* pRigidBody, CTransform* pTargetTransform );
-	FORCE_INLINE PHYS_API static void GetRigidBodyTranslation( hkpRigidBody* pRigidBody, CTransform* pTargetTransform );
+	FORCE_INLINE PHYS_API static void GetRigidBodyTransform ( physRigidBody* pRigidBody, CTransform* pTargetTransform );
+	FORCE_INLINE PHYS_API static void GetRigidBodyTranslation( physRigidBody* pRigidBody, CTransform* pTargetTransform );
 
 	//=========================================//
 	// Phantoms
 	//=========================================//
 	// Creation of phantoms
-	FORCE_INLINE PHYS_API static physCollisionVolume* CreateAABBPhantom ( hkAabb* pInfo, unsigned int iOwnerID );
+	FORCE_INLINE PHYS_API static physCollisionVolume* CreateAABBPhantom ( physAabb* pInfo, unsigned int iOwnerID );
 	FORCE_INLINE PHYS_API static physCollisionVolume* CreateShapePhantom ( physShape* pShape, CTransform* pSourceTransform, unsigned int iOwnerID );
 	// Destruction of phantoms
 	FORCE_INLINE PHYS_API static void FreePhantom ( physCollisionVolume* pCollisionVolume );
@@ -98,17 +98,17 @@ public:
 	FORCE_INLINE PHYS_API static void CheckPhantomContacts ( physCollisionVolume* pCollisionVolume );
 	//==Trigger Phantoms==
 	// Creation of a trigger phantom
-	FORCE_INLINE PHYS_API static hkpRigidBody* CreateTriggerVolume ( physRigidBodyInfo* pBodyInfo, physShape* pShape, hkpPhantomCallbackShape* pCbPhantom );
+	FORCE_INLINE PHYS_API static physRigidBody* CreateTriggerVolume ( physRigidBodyInfo* pBodyInfo, physShape* pShape, physPhantomCallbackShape* pCbPhantom );
 
 	//=========================================//
 	// Tracing Collision Queries
 	//=========================================//
 	// Cast a ray
 	//PHYS_API static void Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * outHitInfo, uint32_t collisionFilter = 0, void* mismatch=NULL );
-	FORCE_INLINE PHYS_API static void Raycast( const hkpWorldRayCastInput& input, hkpRayHitCollector& collector );
+	FORCE_INLINE PHYS_API static void Raycast( const physWorldRayCastInput& input, physRayHitCollector& collector );
 	// Cast a shape
 	//PHYS_API static void Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, uint32_t collisionFilter = 0, void* mismatch=NULL );
-	FORCE_INLINE PHYS_API static void Linearcast( const hkpCollidable* collA, const hkpLinearCastInput& input, hkpCdPointCollector& castCollector, hkpCdPointCollector* startCollector = HK_NULL );
+	FORCE_INLINE PHYS_API static void Linearcast( const physCollidable* collA, const physLinearCastInput& input, physCdPointCollector& castCollector, physCdPointCollector* startCollector = HK_NULL );
 
 	//=========================================//
 	// Collision
@@ -117,21 +117,21 @@ public:
 	FORCE_INLINE PHYS_API static uint32_t GetCollisionFilter ( int layer, int subsystem = -1, int nocollidewith = -1 );
 
 	// Get a collision collector
-	FORCE_INLINE PHYS_API static hkpCollisionInput* GetCollisionCollector ( void );
+	FORCE_INLINE PHYS_API static physCollisionInput* GetCollisionCollector ( void );
 
 	// Get closest points to a collider
-	FORCE_INLINE PHYS_API static void GetClosestPoints ( const hkpCollidable* collA, const hkpCollisionInput& input, hkpCdPointCollector& collector );
+	FORCE_INLINE PHYS_API static void GetClosestPoints ( const physCollidable* collA, const physCollisionInput& input, physCdPointCollector& collector );
 
 	//=========================================//
 	// Object handling
 	//=========================================//
-	FORCE_INLINE PHYS_API static void AddEntity ( hkpEntity* entity );
-	FORCE_INLINE PHYS_API static void ForceEntityUpdate ( hkpEntity* entity );
+	FORCE_INLINE PHYS_API static void AddEntity ( physEntity* entity );
+	FORCE_INLINE PHYS_API static void ForceEntityUpdate ( physEntity* entity );
 
-	FORCE_INLINE PHYS_API static void AddConstraint ( hkpConstraintInstance* constraint );
+	FORCE_INLINE PHYS_API static void AddConstraint ( physConstraintInstance* constraint );
 
-	FORCE_INLINE PHYS_API static void AddPhantom ( hkpPhantom* phantom );
-	FORCE_INLINE PHYS_API static void AddListener ( hkpWorldPostSimulationListener* listener );
+	FORCE_INLINE PHYS_API static void AddPhantom ( physPhantom* phantom );
+	FORCE_INLINE PHYS_API static void AddListener ( physWorldPostSimulationListener* listener );
 
 	//=========================================//
 	// Threading
@@ -145,18 +145,18 @@ private:
 	//=========================================//
 	// System Query
 	//=========================================//
-	PHYS_API static hkpWorld* World ( void );
-
+	PHYS_API static physWorld* World ( void );
+/*
 	PHYS_API static hkJobQueue* JobQueue ( void );
 	PHYS_API static hkJobThreadPool* ThreadPool ( void );
 
 #ifdef _HAVOK_VISUAL_DEBUGGER_
 	PHYS_API static hkVisualDebugger* VDB ( void );
 #endif
-
+	*/
 private:
 	// System
-	hkMallocAllocator	baseMalloc;
+	/*hkMallocAllocator	baseMalloc;
 	hkMemoryRouter*		memoryRouter;
 	// Physics
 	hkpWorldCinfo		worldInfo;
@@ -166,16 +166,24 @@ private:
 	hkJobThreadPool*	threadPool;
 	hkJobQueue*			jobQueue;
 	int					totalNumThreadsUsed;
+	*/
+	b2World*			pWorld;
 
 	// World Properties
 	Vector3d			vWorldCenter;
 
+
+	Vector3d			worldScaling;
+
+	Real				targetTime;
+	Real				worldTime;
+	/*
 #ifdef _HAVOK_VISUAL_DEBUGGER_
 	// Debugger
 	hkpPhysicsContext*	physicsContext;
 	hkVisualDebugger*	vdb;
 #endif
-
+	*/
 	// Collision filtering
 	int*		systemGroups;
 };

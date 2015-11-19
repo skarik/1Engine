@@ -251,3 +251,9 @@ bool Vector3d::operator!= (Vector3d const& right) const
 {
 	return !((*this) == right);
 }
+
+// Component multiplication
+Vector3d Vector3d::mulComponents ( Vector3d const& right ) const
+{
+	return Vector3d( x*right.x, y*right.y, z*right.z );
+}
