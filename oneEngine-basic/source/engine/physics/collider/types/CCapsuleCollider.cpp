@@ -2,6 +2,8 @@
 #include "engine/physics/motion/CRigidbody.h"
 #include "CCapsuleCollider.h"
 
+#include "physical/physics/shapes/physCapsuleShape.h"
+
 
 CCapsuleCollider::CCapsuleCollider ( ftype height, ftype radius, bool centered )
 	: fFootOffset(0)
@@ -10,9 +12,11 @@ CCapsuleCollider::CCapsuleCollider ( ftype height, ftype radius, bool centered )
 	fRadius = radius;
 
 	if ( !centered )
-		pCollisionShape = Physics::CreateCapsuleShape( Vector3d( 0,0,fRadius ), Vector3d( 0,0,height-fRadius ), radius );
+		pCollisionShape = new physCapsuleShape ( Vector3d( 0,0,fRadius ), Vector3d( 0,0,height-fRadius ), radius );
+		//pCollisionShape = Physics::CreateCapsuleShape( Vector3d( 0,0,fRadius ), Vector3d( 0,0,height-fRadius ), radius );
 	else
-		pCollisionShape = Physics::CreateCapsuleShape( Vector3d( 0,0,-((height/2)-fRadius) ), Vector3d( 0,0,((height/2)-fRadius) ), radius );
+		pCollisionShape = new physCapsuleShape ( Vector3d( 0,0,-((height/2)-fRadius) ), Vector3d( 0,0,((height/2)-fRadius) ), radius );
+		//pCollisionShape = Physics::CreateCapsuleShape( Vector3d( 0,0,-((height/2)-fRadius) ), Vector3d( 0,0,((height/2)-fRadius) ), radius );
 }
 CCapsuleCollider::~CCapsuleCollider ( void )
 {
@@ -29,17 +33,17 @@ void CCapsuleCollider::SetSize ( ftype height, ftype radius )
 
 	// Get the Havok object and set the size of it.
 	//((hkpCapsuleShape*)pCollisionShape)->setHalfExtents( hkVector4( vExtents.x*0.5f, vExtents.y*0.5f, vExtents.z*0.5f ) );
-	((hkpCapsuleShape*)pCollisionShape)->setVertex( 0, hkVector4( 0,0,radius ) );
-	((hkpCapsuleShape*)pCollisionShape)->setVertex( 1, hkVector4( 0,0,height-radius ) );
-	((hkpCapsuleShape*)pCollisionShape)->setRadius( radius );
+	((physCapsuleShape*)pCollisionShape)->setVertex( 0, Vector3d( 0,0,radius ) );
+	((physCapsuleShape*)pCollisionShape)->setVertex( 1, Vector3d( 0,0,height-radius ) );
+	((physCapsuleShape*)pCollisionShape)->setRadius( radius );
 	// Change the rigid body's current shape to the new collider object
 	pRigidBody->SetShape( pCollisionShape );
 
 }
 void CCapsuleCollider::SetHeight ( ftype height )
 {
-	((hkpCapsuleShape*)pCollisionShape)->setVertex( 0, hkVector4( 0,0,fFootOffset+fRadius ) );
-	((hkpCapsuleShape*)pCollisionShape)->setVertex( 1, hkVector4( 0,0,fFootOffset+height-fRadius ) );
+	((physCapsuleShape*)pCollisionShape)->setVertex( 0, Vector3d( 0,0,fFootOffset+fRadius ) );
+	((physCapsuleShape*)pCollisionShape)->setVertex( 1, Vector3d( 0,0,fFootOffset+height-fRadius ) );
 	// Change the rigid body's current shape to the new collider object
 	pRigidBody->SetShape( pCollisionShape );
 }

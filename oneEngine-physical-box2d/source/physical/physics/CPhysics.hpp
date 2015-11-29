@@ -1,5 +1,10 @@
 
 //==Physics Worlds==
+FORCE_INLINE PHYS_API Vector3d Physics::WorldScaling ( void )
+{
+	return Active()->worldScaling;
+}
+
 FORCE_INLINE PHYS_API void Physics::ShiftWorld ( Vector3d vShift )
 {
 	/*hkVector4 effectiveShift;
@@ -70,9 +75,11 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents
 	//hkpSphereShape* boxShape = new hkpSphereShape( vHalfExtents.x ); // creates a sphere shape with a radius of 2
 	return boxShape;*/
 
-	b2PolygonShape* boxShape = new b2PolygonShape;
+	/*b2PolygonShape* boxShape = new b2PolygonShape;
 	boxShape->SetAsBox( vHalfExtents.x,vHalfExtents.y );
-	return boxShape;
+	return boxShape;*/
+
+	throw Core::DeprecatedCallException();
 }
 FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents, Vector3d vCenterOffset )
 {
@@ -86,9 +93,12 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents
 	hkpConvexTranslateShape* translatedBoxShape = new hkpConvexTranslateShape( boxShape, translation );
 
 	return translatedBoxShape;*/
-	b2PolygonShape* boxShape = new b2PolygonShape;
+	
+	/*b2PolygonShape* boxShape = new b2PolygonShape;
 	boxShape->SetAsBox( vHalfExtents.x,vHalfExtents.y, b2Vec2(vCenterOffset.x,vCenterOffset.y), 0 );
-	return boxShape;
+	return boxShape;*/
+
+	throw Core::DeprecatedCallException();
 }
 // Create a capsule shape
 FORCE_INLINE PHYS_API physShape* Physics::CreateCapsuleShape ( Vector3d vStart, Vector3d vEnd, float fRadius )
@@ -104,9 +114,10 @@ FORCE_INLINE PHYS_API physShape* Physics::CreateSphereShape ( float fRadius )
 {
 	/*hkpSphereShape* sphereShape = new hkpSphereShape( fRadius );
 	return sphereShape;*/
-	b2CircleShape* circleShape = new b2CircleShape;
+	/*b2CircleShape* circleShape = new b2CircleShape;
 	circleShape->m_radius = fRadius;
-	return circleShape;
+	return circleShape;*/
+	throw Core::DeprecatedCallException();
 }
 // Create a cylinder shape
 FORCE_INLINE PHYS_API physShape* Physics::CreateCylinderShape ( Vector3d vStart, Vector3d vEnd, float fRadius, float fConvexRadius )
@@ -302,9 +313,9 @@ FORCE_INLINE PHYS_API void Physics::FreeShape ( physShape* pShape )
 
 //==Rigidbodies==
 // Creation of rigidbodies
-FORCE_INLINE PHYS_API physRigidBody*	Physics::CreateRigidBody ( physRigidBodyInfo* pBodyInfo, bool bIsDynamic )
+FORCE_INLINE PHYS_API b2Body*	Physics::CreateRigidBody ( physRigidBodyInfo* pBodyInfo, bool bIsDynamic )
 {
-	World()->markForWrite();
+	/*World()->markForWrite();
 	//pWorld->markForRead();
 
 	//threadPool->waitForCompletion();
@@ -328,94 +339,107 @@ FORCE_INLINE PHYS_API physRigidBody*	Physics::CreateRigidBody ( physRigidBodyInf
 	World()->unmarkForWrite();
 	//pWorld->unmarkForRead();
 
-	return pRigidBody;
+	return pRigidBody;*/
+	b2BodyDef actualBodyInfo;
+	if ( bIsDynamic )
+		actualBodyInfo.type = b2_dynamicBody;
+	else
+		actualBodyInfo.type = b2_kinematicBody;
+	b2Body* rigidbody = World()->CreateBody( &actualBodyInfo );
+
+	return rigidbody;
 }	
 // Destruction of rigidbodies
-FORCE_INLINE PHYS_API void Physics::FreeRigidBody ( physRigidBody* pRigidBody )
+FORCE_INLINE PHYS_API void Physics::FreeRigidBody ( b2Body* pRigidBody )
 {
-	pRigidBody->removeReference();
-	World()->removeEntity( pRigidBody );
+	/*pRigidBody->removeReference();
+	World()->removeEntity( pRigidBody );*/
 	// TODO: remove reference?
 	//pRigidBody->removeReference();
 	//delete pRigidBody;
+	World()->DestroyBody( pRigidBody );
 }
 // Setting their info
-FORCE_INLINE PHYS_API void Physics::SetRigidBodyTransform ( physRigidBody* pRigidBody, CTransform* pSourceTransform )
-{
-	hkTransform tempTransform ( pRigidBody->getTransform() );
-
-	Quaternion m_tempQuat = pSourceTransform->rotation.getQuaternion();
-	hkQuaternion tempQuat ( m_tempQuat.x, m_tempQuat.y, m_tempQuat.z, m_tempQuat.w );
-	tempTransform.setRotation( tempQuat );
-
-	hkVector4 tempVect ( pSourceTransform->position.x, pSourceTransform->position.y, pSourceTransform->position.z );
-	tempTransform.setTranslation( tempVect );
-
-	pRigidBody->setTransform( tempTransform );
-}
-// Grabbing their info
-FORCE_INLINE PHYS_API void Physics::GetRigidBodyTransform ( physRigidBody* pRigidBody, CTransform* pTargetTransform )
-{
-	if ( !pRigidBody->isActive() )
-		return;
-
-	// rotation
-	Matrix4x4 tempMatrix;
-	pRigidBody->getTransform().get4x4ColumnMajor( tempMatrix.pData );
-	//tempMatrix = tempMatrix.transpose();
-	//pTargetTransform->rotation = tempMatrix.getEulerAngles();
-	//hkVector4 tempQuat = pRigidBody->getRotation().m_vec;
-	//pTargetTransform->rotation.setRotation( Quaternion( tempQuat.m_quad.v[0], tempQuat.m_quad.v[1], tempQuat.m_quad.v[2], tempQuat.m_quad.v[3] ) );
-	
-	//pTargetTransform->rotation.setRotation( -tempMatrix.getEulerAngles() ); //works
-	pTargetTransform->rotation.setRotation( (!tempMatrix).getEulerAngles() );
-	//pTargetTransform->rotation.SwitchBasis();
-
-	// translation
-	hkVector4 tempVect = pRigidBody->getTransform().getTranslation();
-	//pTargetTransform->position = Vector3d( tempVect, tempVect.y, tempVect.z );
-	tempVect.store3( &(pTargetTransform->position.x) );
-
-	// now, get offset of the object by the center of mass
-	Vector3d temp3Vect;
-	pRigidBody->getCenterOfMassLocal().store3( &(temp3Vect.x) );
-	tempMatrix = Matrix4x4();
-	tempMatrix.setRotation( pTargetTransform->rotation );
-	//tempMatrix.setRotation( pTargetTransform->
-	temp3Vect = tempMatrix*temp3Vect;
-	
-	// offset the object
-	pTargetTransform->position += temp3Vect;
-
-}
-// Grabbing their info (position only)
-FORCE_INLINE PHYS_API void Physics::GetRigidBodyTranslation( physRigidBody* pRigidBody, CTransform* pTargetTransform )
-{
-	if ( !pRigidBody->isActive() )
-		return;
-	// translation
-	hkVector4 tempVect = pRigidBody->getTransform().getTranslation();
-	tempVect.store3( &(pTargetTransform->position.x) );
-}
+//FORCE_INLINE PHYS_API void Physics::SetRigidBodyTransform ( physRigidBody* pRigidBody, CTransform* pSourceTransform )
+//{
+//	/*hkTransform tempTransform ( pRigidBody->getTransform() );
+//
+//	Quaternion m_tempQuat = pSourceTransform->rotation.getQuaternion();
+//	hkQuaternion tempQuat ( m_tempQuat.x, m_tempQuat.y, m_tempQuat.z, m_tempQuat.w );
+//	tempTransform.setRotation( tempQuat );
+//
+//	hkVector4 tempVect ( pSourceTransform->position.x, pSourceTransform->position.y, pSourceTransform->position.z );
+//	tempTransform.setTranslation( tempVect );
+//
+//	pRigidBody->setTransform( tempTransform );*/
+//	throw Core::NotYetImplementedException();
+//}
+//// Grabbing their info
+//FORCE_INLINE PHYS_API void Physics::GetRigidBodyTransform ( physRigidBody* pRigidBody, CTransform* pTargetTransform )
+//{
+//	/*if ( !pRigidBody->isActive() )
+//		return;
+//
+//	// rotation
+//	Matrix4x4 tempMatrix;
+//	pRigidBody->getTransform().get4x4ColumnMajor( tempMatrix.pData );
+//	//tempMatrix = tempMatrix.transpose();
+//	//pTargetTransform->rotation = tempMatrix.getEulerAngles();
+//	//hkVector4 tempQuat = pRigidBody->getRotation().m_vec;
+//	//pTargetTransform->rotation.setRotation( Quaternion( tempQuat.m_quad.v[0], tempQuat.m_quad.v[1], tempQuat.m_quad.v[2], tempQuat.m_quad.v[3] ) );
+//	
+//	//pTargetTransform->rotation.setRotation( -tempMatrix.getEulerAngles() ); //works
+//	pTargetTransform->rotation.setRotation( (!tempMatrix).getEulerAngles() );
+//	//pTargetTransform->rotation.SwitchBasis();
+//
+//	// translation
+//	hkVector4 tempVect = pRigidBody->getTransform().getTranslation();
+//	//pTargetTransform->position = Vector3d( tempVect, tempVect.y, tempVect.z );
+//	tempVect.store3( &(pTargetTransform->position.x) );
+//
+//	// now, get offset of the object by the center of mass
+//	Vector3d temp3Vect;
+//	pRigidBody->getCenterOfMassLocal().store3( &(temp3Vect.x) );
+//	tempMatrix = Matrix4x4();
+//	tempMatrix.setRotation( pTargetTransform->rotation );
+//	//tempMatrix.setRotation( pTargetTransform->
+//	temp3Vect = tempMatrix*temp3Vect;
+//	
+//	// offset the object
+//	pTargetTransform->position += temp3Vect;*/
+//
+//	throw Core::NotYetImplementedException();
+//}
+//// Grabbing their info (position only)
+//FORCE_INLINE PHYS_API void Physics::GetRigidBodyTranslation( physRigidBody* pRigidBody, CTransform* pTargetTransform )
+//{
+//	/*if ( !pRigidBody->isActive() )
+//		return;
+//	// translation
+//	hkVector4 tempVect = pRigidBody->getTransform().getTranslation();
+//	tempVect.store3( &(pTargetTransform->position.x) );*/
+//	throw Core::NotYetImplementedException();
+//}
 
 //==Phantoms==
 // Create a phantom using a collider
 FORCE_INLINE PHYS_API physCollisionVolume* Physics::CreateAABBPhantom ( physAabb* pInfo, unsigned int iOwnerID )
 {
 	// Create the new phantom
-	physAabbPhantom* pPhantom = new physAabbPhantom ( *pInfo );
+	/*physAabbPhantom* pPhantom = new physAabbPhantom ( *pInfo );
 	pPhantom->setUserData( iOwnerID ); // Set the phantom's owner object.
 	// Add the phantom to the world
 	World()->addPhantom( pPhantom );
 
 	// Return the new object
-	return pPhantom;
+	return pPhantom;*/
+	throw Core::NotYetImplementedException();
 }
 // Create a phantom using a collider
 FORCE_INLINE PHYS_API physCollisionVolume* Physics::CreateShapePhantom ( physShape* pShape, CTransform* pSourceTransform, unsigned int iOwnerID )
 {
 	// Get the transform
-	hkTransform tempTransform ( hkRotation(),
+	/*hkTransform tempTransform ( hkRotation(),
 		hkVector4(pSourceTransform->position.x,pSourceTransform->position.y,pSourceTransform->position.z)
 		);
 	// Create the new phantom
@@ -425,28 +449,31 @@ FORCE_INLINE PHYS_API physCollisionVolume* Physics::CreateShapePhantom ( physSha
 	World()->addPhantom( pPhantom );
 
 	// Return the new object
-	return pPhantom;
+	return pPhantom;*/
+	throw Core::NotYetImplementedException();
 }
 // Remove phantom
 FORCE_INLINE PHYS_API void Physics::FreePhantom ( physCollisionVolume* pCollisionVolume )
 {
-	World()->removePhantom( pCollisionVolume );
+	/*World()->removePhantom( pCollisionVolume );*/
 	// TODO: remove reference?
+	throw Core::NotYetImplementedException();
 }
 // Checking for phantom collisions contacts
 FORCE_INLINE PHYS_API void Physics::CheckPhantomContacts ( physCollisionVolume* pCollisionVolume )
 {
-	hkpFlagCdBodyPairCollector collisionAccumulation;
+	/*hkpFlagCdBodyPairCollector collisionAccumulation;
 
-	((hkpShapePhantom*)pCollisionVolume)->getPenetrations( collisionAccumulation );
+	((hkpShapePhantom*)pCollisionVolume)->getPenetrations( collisionAccumulation );*/
+	throw Core::NotYetImplementedException();
 }
 // Creation of a trigger phantom
-FORCE_INLINE PHYS_API hkpRigidBody* Physics::CreateTriggerVolume ( physRigidBodyInfo* pBodyInfo, physShape* pShape, physPhantomCallbackShape* pCbPhantom )
+FORCE_INLINE PHYS_API physRigidBody* Physics::CreateTriggerVolume ( physRigidBodyInfo* pBodyInfo, physShape* pShape, physPhantomCallbackShape* pCbPhantom )
 {
 	// Create a new callback shape
 	//hkArPhantomCallbackShape* myPhantomShape = new hkArPhantomCallbackShape();
 	// Create a compound shape with the designated shape
-	hkpBvShape* bvShape = new hkpBvShape( pShape, pCbPhantom );
+	/*hkpBvShape* bvShape = new hkpBvShape( pShape, pCbPhantom );
 	pCbPhantom->removeReference();
 
 	pBodyInfo->m_shape = bvShape;
@@ -457,7 +484,8 @@ FORCE_INLINE PHYS_API hkpRigidBody* Physics::CreateTriggerVolume ( physRigidBody
 
 	bvShape->removeReference();
 
-	return pRigidBody;
+	return pRigidBody;*/
+	throw Core::NotYetImplementedException();
 }
 
 //=========================================//
@@ -467,23 +495,25 @@ FORCE_INLINE PHYS_API hkpRigidBody* Physics::CreateTriggerVolume ( physRigidBody
 //PHYS_API static void Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * outHitInfo, uint32_t collisionFilter = 0, void* mismatch=NULL );
 FORCE_INLINE PHYS_API void Physics::Raycast( const physWorldRayCastInput& input, physRayHitCollector& collector )
 {
-	Physics::World()->castRay ( input, collector );
+	//Physics::World()->castRay ( input, collector );
+	throw Core::NotYetImplementedException();
 }
 // Cast a shape
 //PHYS_API static void Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, uint32_t collisionFilter = 0, void* mismatch=NULL );
 FORCE_INLINE PHYS_API void Physics::Linearcast( const physCollidable* collA, const physLinearCastInput& input, physCdPointCollector& castCollector, physCdPointCollector* startCollector )
 {
-	Physics::World()->linearCast( collA, input, castCollector, startCollector );
+	//Physics::World()->linearCast( collA, input, castCollector, startCollector );
+	throw Core::NotYetImplementedException();
 }
 
 //==Collision==
 #include "physical/system/Layers.h"
 
 // Get collision filter
-FORCE_INLINE PHYS_API uint32_t Physics::GetCollisionFilter ( int layer, int subsystem, int nocollidewith )
+FORCE_INLINE PHYS_API physCollisionFilter Physics::GetCollisionFilter ( int layer, int subsystem, int nocollidewith )
 {
 	// Get the world's filter
-	physGroupFilter* groupFilter = (physGroupFilter*)World()->getCollisionFilter();
+	//physGroupFilter* groupFilter = (physGroupFilter*)World()->getCollisionFilter();
 
 	if ( layer == Layers::PHYS_BULLET_TRACE )
 	{
@@ -493,7 +523,12 @@ FORCE_INLINE PHYS_API uint32_t Physics::GetCollisionFilter ( int layer, int subs
 		if ( subsystem == -1 ) {
 			subsystem = 0;
 		}
-		return groupFilter->calcFilterInfo( layer, Active()->systemGroups[Layers::PHYS_CHARACTER], subsystem, nocollidewith );
+		//return groupFilter->calcFilterInfo( layer, Active()->systemGroups[Layers::PHYS_CHARACTER], subsystem, nocollidewith );
+		b2Filter filter;
+		filter.categoryBits = ( 1 << layer );
+		filter.maskBits = Active()->collisionMasks[layer];
+		filter.groupIndex = -nocollidewith;
+		return filter;
 	}
 	else
 	{
@@ -505,25 +540,32 @@ FORCE_INLINE PHYS_API uint32_t Physics::GetCollisionFilter ( int layer, int subs
 				nocollidewith = 30;
 			}
 		}
-		int targetGroup = Active()->systemGroups[layer];
+		/*int targetGroup = Active()->systemGroups[layer];
 		if ( subsystem == -1 ) {
 			subsystem = 0;
 			targetGroup = 0;
 		}
-		return groupFilter->calcFilterInfo( layer, targetGroup, subsystem, nocollidewith );
+		return groupFilter->calcFilterInfo( layer, targetGroup, subsystem, nocollidewith );*/
+		b2Filter filter;
+		filter.categoryBits = ( 1 << layer );
+		filter.maskBits = Active()->collisionMasks[layer];
+		filter.groupIndex = -nocollidewith;
+		return filter;
 	}
 }
 
 // Get a collision collector
 FORCE_INLINE PHYS_API physCollisionInput* Physics::GetCollisionCollector ( void )
 {
-	return (physCollisionInput*)World()->getCollisionInput();
+	//return (physCollisionInput*)World()->getCollisionInput();
+	throw Core::NotYetImplementedException();
 }
 
 // Get closest points to a collider
 FORCE_INLINE PHYS_API void Physics::GetClosestPoints ( const physCollidable* collA, const physCollisionInput& input, physCdPointCollector& collector )
 {
-	World()->getClosestPoints( collA, input, collector );
+	//World()->getClosestPoints( collA, input, collector );
+	throw Core::NotYetImplementedException();
 }
 
 //=========================================//
@@ -531,25 +573,30 @@ FORCE_INLINE PHYS_API void Physics::GetClosestPoints ( const physCollidable* col
 //=========================================//
 FORCE_INLINE PHYS_API void Physics::AddEntity ( physEntity* entity )
 {
-	Physics::World()->addEntity(entity);
+	//Physics::World()->addEntity(entity);
+	throw Core::NotYetImplementedException();
 }
 FORCE_INLINE PHYS_API void Physics::ForceEntityUpdate ( physEntity* entity )
 {
-	Physics::World()->updateCollisionFilterOnEntity( entity, HK_UPDATE_FILTER_ON_ENTITY_FULL_CHECK, HK_UPDATE_COLLECTION_FILTER_PROCESS_SHAPE_COLLECTIONS ); //todo
+	//Physics::World()->updateCollisionFilterOnEntity( entity, HK_UPDATE_FILTER_ON_ENTITY_FULL_CHECK, HK_UPDATE_COLLECTION_FILTER_PROCESS_SHAPE_COLLECTIONS ); //todo
+	throw Core::NotYetImplementedException();
 }
 
 FORCE_INLINE PHYS_API void Physics::AddConstraint ( physConstraintInstance* constraint )
 {
-	Physics::World()->addConstraint( constraint );
+	//Physics::World()->addConstraint( constraint );
+	throw Core::NotYetImplementedException();
 }
 
 FORCE_INLINE PHYS_API void Physics::AddPhantom ( physPhantom* phantom )
 {
-	Physics::World()->addPhantom( phantom );
+	//Physics::World()->addPhantom( phantom );
+	throw Core::NotYetImplementedException();
 }
 FORCE_INLINE PHYS_API void Physics::AddListener ( physWorldPostSimulationListener* listener )
 {
-	Physics::World()->addWorldPostSimulationListener( listener );
+	//Physics::World()->addWorldPostSimulationListener( listener );
+	throw Core::NotYetImplementedException();
 }
 
 //=========================================//
@@ -557,17 +604,23 @@ FORCE_INLINE PHYS_API void Physics::AddListener ( physWorldPostSimulationListene
 //=========================================//
 FORCE_INLINE PHYS_API void Physics::ThreadLock ( void )
 {
-	Physics::World()->markForWrite();
+	//Physics::World()->markForWrite();
+	Active()->mutexRead.lock();
+	Active()->mutexWrite.lock();
 }
 FORCE_INLINE PHYS_API void Physics::ThreadUnlock ( void )
 {
-	Physics::World()->unmarkForWrite();
+	//Physics::World()->unmarkForWrite();
+	Active()->mutexWrite.unlock();
+	Active()->mutexRead.unlock();
 }
 FORCE_INLINE PHYS_API void Physics::ReadLock ( void )
 {
-	Physics::World()->markForRead();
+	//Physics::World()->markForRead();
+	Active()->mutexRead.lock();
 }
 FORCE_INLINE PHYS_API void Physics::ReadUnlock ( void )
 {
-	Physics::World()->unmarkForRead();
+	//Physics::World()->unmarkForRead();
+	Active()->mutexRead.unlock();
 }

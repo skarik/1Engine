@@ -349,7 +349,7 @@ void CPlayerHud::UpdateBlockCursor ( void )
 		RaycastHit		result;
 		BlockTrackInfo	block;
 		//pPlayer->fMaxUseDistance
-		if ( Raycaster.Raycast( aimDir, 7.0f, &result, 1|2|4 ) )
+		if ( Raycaster.Raycast( aimDir, 7.0f, &result, physCollisionFilter::create(1|2|4) ) )
 		{
 			TerrainAccess.GetBlockAtPosition( result, block );
 			if ( result.pHitBehavior == CVoxelTerrain::GetActive() )

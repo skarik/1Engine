@@ -55,6 +55,7 @@ public:
 	Vector4d rvrMultMatx ( Matrix4x4 const& right ) const;
 	// Component multiply
 	Vector4d mulComponents ( Vector4d const& right ) const;
+	Vector4d divComponents ( Vector4d const& right ) const;
 
 	bool operator== (Vector4d const& right) const;			//Equal comparison overload
 	bool operator!= (Vector4d const& right) const;			//Not equal comparison overload

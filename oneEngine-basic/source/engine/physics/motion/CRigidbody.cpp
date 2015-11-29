@@ -16,7 +16,7 @@
 class CRagdollCollision;
 
 //==Collision Listener==
-class CRigidBody::mCollisionListener : public hkpContactListener
+class CRigidBody::mCollisionListener : public physContactListener
 {
 public:
 	CRigidBody*	m_rb;
@@ -27,11 +27,11 @@ public:
 		;
 	}
 
-	void contactPointCallback( const hkpContactPointEvent& m_event ) override
+	void contactPointCallback( const physContactPointEvent& m_event ) override
 	{
 		sCollision n_collision;
-		hkVector4 t_hitPos = m_event.m_contactPoint->getPosition();
-		hkVector4 t_hitNorm = m_event.m_contactPoint->getNormal();
+		physVector4 t_hitPos = m_event.m_contactPoint->getPosition();
+		physVector4 t_hitNorm = m_event.m_contactPoint->getNormal();
 		n_collision.m_hit.pos = Vector3d( t_hitPos.getComponent<0>(),t_hitPos.getComponent<1>(),t_hitPos.getComponent<2>() );
 		n_collision.m_hit.dir = Vector3d( t_hitNorm.getComponent<0>(),t_hitNorm.getComponent<1>(),t_hitNorm.getComponent<2>() );
 
@@ -40,12 +40,12 @@ public:
 		n_collision.m_collider_This		= NULL;
 		n_collision.m_hit_This			= NULL;
 
-		unsigned int t_hitUserdata = 0;
+		uint64_t t_hitUserdata = 0;
 		CGameBehavior* behavior = NULL;
 
 		// Grab collision of object 0
 		t_hitUserdata = m_event.getBody(0)->getUserData();
-		behavior = CGameState::Active()->GetBehavior( t_hitUserdata );
+		behavior = CGameState::Active()->GetBehavior( (gameid_t)t_hitUserdata );
 		if ( behavior && behavior->GetTypeName() == "CRagdollCollision" ) {
 			//n_collision.m_hit_This = (CGameBehavior*) (((CRagdollCollision*)behavior)->GetActor());
 			n_collision.m_hit_This = (CGameBehavior*)(CRagdollCollision*)behavior;
@@ -58,7 +58,7 @@ public:
 
 		// Grab collision of object 1
 		t_hitUserdata = m_event.getBody(1)->getUserData();
-		behavior = CGameState::Active()->GetBehavior( t_hitUserdata );
+		behavior = CGameState::Active()->GetBehavior( (gameid_t)t_hitUserdata );
 		if ( behavior && behavior->GetTypeName() == "CRagdollCollision" ) {
 			//n_collision.m_hit_Other = (CGameBehavior*) (((CRagdollCollision*)behavior)->GetActor());
 			n_collision.m_hit_Other = (CGameBehavior*)(CRagdollCollision*)behavior;
@@ -119,7 +119,7 @@ CRigidBody::CRigidBody ( CCollider* pTargetCollider, CGameObject * pOwnerGameObj
 	info.m_mass	= fabs(fMass);							// Set the body's mass
 	info.m_shape = pCollider->GetCollisionShape();		// Set the collision shape to the collider's
 	vCenterOfMass = pCollider->GetCenter();				// Get the collision shape's center of mass
-	info.m_centerOfMass = hkVector4( vCenterOfMass.x, vCenterOfMass.y, vCenterOfMass.z );	
+	info.m_centerOfMass = physVector4( vCenterOfMass.x, vCenterOfMass.y, vCenterOfMass.z );	
 	info.m_friction	= 0.5f;								// Set the default friction value
 	info.m_collisionFilterInfo = Physics::GetCollisionFilter( Layers::PHYS_DYNAMIC );
 	// If mass is negative, change the motion
@@ -395,8 +395,8 @@ void CRigidBody::Wake ( void )
 void CRigidBody::SetShape ( physShape* pNewShape )
 {
 	// Get the Read/Write copy of the rigidbody's collision info, and set the collision's new shape.
-	pBody->getCollidableRw()->setShape( pNewShape );
-
+	//pBody->getCollidableRw()->setShape( pNewShape );
+	pBody->setShape( pNewShape ); // Code is moved into physRigidbody
 }
 
 // Set new minimum penetration depth.

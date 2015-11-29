@@ -1,7 +1,7 @@
 #ifndef _C_PHYSICS_COMMON_
 #define _C_PHYSICS_COMMON_
 
-#define HK_DEBUG_MULTI_THREADING
+#include "physical/mode.h"
 
 // Game System Includes
 #include "core/types/types.h"
@@ -177,22 +177,37 @@ typedef hkpMotion::MotionType		physMotionType;
 typedef hkpMotion					physMotion;
 typedef hkpCollidableQualityType	physMotionQualityType;*/
 
+//
+// typdef hkpContactPointEvent physContactPointEvent;
+
 //===============================================================================================//
 // Box2D - Havok compatibility
 //===============================================================================================//
 
 // Types
 //typedef int							physRigidBodyInfo;
-typedef int							physMotionType;
-typedef b2Fixture					physMotion;
-typedef int							physMotionQualityType;
+//typedef int							physMotionType;
+//typedef b2Fixture					physMotion;
+//typedef int							physMotionQualityType;
 
 typedef Real						physReal;
 
+class physAabb;
+
+// Havok interim
+class hkaAnimation {};
+class hkaSkeleton {};
+class hkaAnimatedSkeleton {};
+class hkaMirroredSkeleton {};
+class hkaAnimationBinding {};
+class hkReferencedObject {};
+
+class hkpCharacterRigidBodyCinfo {};
+
 // Classes
 class physWind {};
-class physWindRegion {};
-class physAabbPhantom {};
+class physWindRegion;
+class physAabbPhantom { public: void setAabb(physAabb&){;} };
 class physPhantomCallbackShape {};
 
 class physWorldRayCastInput {};
@@ -208,13 +223,32 @@ class physConstraintInstance {};
 class physPhantom {};
 class physWorldPostSimulationListener {};
 
+class physContactPointEvent;
+class physContactListener;
+
+class physMotion;
+typedef physMotion hkpMotion;
+
+class hkpMalleableConstraintData {
+public:
+	physReal m_strength;
+	void removeReference ( void ) {;}
+};
+class hkpConstraintInstance {};
+
 //class physWorld {};
 typedef b2World physWorld;
+//typedef b2Filter physCollisionFilter;
+#include "physical/physics/motion/physCollisionFilter.h"
 
 // Class wrapping
 #include "physical/wrapper/wrapper_common.h"
 #include "physical/wrapper/physVector4.h"
 #include "physical/wrapper/physAabb.h"
+#include "physical/wrapper/physRigidBodyInfo.h"
+#include "physical/wrapper/physMotion.h"
+#include "physical/wrapper/physWindRegion.h"
+#include "physical/wrapper/physContactEvents.h"
 
 // Defines
 //#define HK_DECLARE_CLASS_ALLOCATOR

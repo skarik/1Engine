@@ -14,7 +14,7 @@ public:
 	_FORCE_INLINE_ PHYS_API void			setLinearVelocity ( const Vector3d& newVel, const Real_32 timestep );
 	_FORCE_INLINE_ PHYS_API Vector3d		getLinearVelocity ( void );
 protected:
-	hkpCharacterRigidBody* controller;
+	//hkpCharacterRigidBody* controller;
 };
 
 

@@ -7,8 +7,8 @@
 class hkArDefaultDistributor : public hkArCallbackDistributor
 {
 public:
-	void phantomEnterEvent ( const hkpCollidable *phantomColl, const hkpCollidable *otherColl, const hkpCollisionInput &env ) override;
-	void phantomLeaveEvent ( const hkpCollidable *phantomColl, const hkpCollidable *otherColl ) override;
+	void phantomEnterEvent ( const physCollidable *phantomColl, const physCollidable *otherColl, const physCollisionInput &env ) override;
+	void phantomLeaveEvent ( const physCollidable *phantomColl, const physCollidable *otherColl ) override;
 };
 
 #endif//_HK_AR_DEFAULT_DISTRIBUTOR_CALLBACKS_H_

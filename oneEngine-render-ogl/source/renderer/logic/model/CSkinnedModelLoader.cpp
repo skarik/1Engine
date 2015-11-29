@@ -184,14 +184,13 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 		//===============================
 		//==Prepare animations==
 		CAnimationSet*	newAnimSet;
-		if ( !CAnimation::useHavok )
-		{
-			newAnimSet = new CAnimationSet();
-		}
-		else
-		{
-			newAnimSet = new CHKAnimationSet( iBoneNum, iFrameNum );
-		}
+#ifdef PHYSICS_USING_BOX2D
+		newAnimSet = new CAnimationSet();
+#elif defined(PHYSICS_USING_HAVOK)
+		newAnimSet = new CHKAnimationSet( iBoneNum, iFrameNum );
+#else
+#	error Invalid physics engine selected
+#endif
 		//===============================
 
 

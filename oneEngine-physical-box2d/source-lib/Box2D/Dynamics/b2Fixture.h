@@ -49,6 +49,20 @@ struct b2Filter
 	/// or always collide (positive). Zero means no collision group. Non-zero group
 	/// filtering always wins against the mask bits.
 	int16 groupIndex;
+
+	//=========================================//
+	// Modification to allow casting to an integer
+	operator uint32 () const
+	{
+		return maskBits;// | (categoryBits << 16);
+	}
+	// Modification to all creation of collision information on the fly
+	static b2Filter create ( uint32 mask )
+	{
+		b2Filter result;	
+		result.maskBits = mask;
+		return result;
+	}
 };
 
 /// A fixture definition is used to create a fixture. This class defines an

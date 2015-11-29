@@ -96,7 +96,7 @@ Item::HitType Caster::GetHitType (
 Item::HitType Caster::Raycast (
 		const Ray& ray, const ftype& range,
 		RaycastHit* outHitResult, CGameBehavior** outHitBehavior, ftype* outDamageMultiplier,
-		const uint32_t collisionFilter, void* mismatch
+		const physCollisionFilter& collisionFilter, void* mismatch
 		)
 {
 	BlockTrackInfo dirty;
@@ -105,10 +105,10 @@ Item::HitType Caster::Raycast (
 Item::HitType Caster::Raycast (
 		const Ray& ray, const ftype& range,
 		RaycastHit* outHitResult, BlockTrackInfo* outBlockInfo, CGameBehavior** outHitBehavior, ftype* outDamageMultiplier,
-		const uint32_t collisionFilter, void* mismatch
+		const physCollisionFilter& collisionFilter, void* mismatch
 		)
 {
-	uint32_t targetFilter = collisionFilter;
+	physCollisionFilter targetFilter = collisionFilter;
 	if ( targetFilter == 0 ) {
 		targetFilter = Physics::GetCollisionFilter(Layers::PHYS_BULLET_TRACE,0,31);
 	}
@@ -202,7 +202,7 @@ Item::HitType Caster::Raycast (
 Item::HitType Caster::Linecast (
 		const Ray& ray, const ftype& range, physShape* pShape,
 		RaycastHit* outHitResult, CGameBehavior** outHitBehavior, ftype* outDamageMultiplier,
-		const uint32_t collisionFilter, void* mismatch
+		const physCollisionFilter& collisionFilter, void* mismatch
 		)
 {
 	uint32_t targetFilter = collisionFilter;

@@ -102,8 +102,9 @@ void PhysicsEngine::UpdateThreaded ( float frameDeltaTime, float fixedDeltaTime,
 #include "engine/physics/motion/CMotion.h"
 //#include "engine/physics/motion/CRagdollCollision.h"
 
-void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * outHitInfo, uint32_t collisionFilter, void* mismatch )
+void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * outHitInfo, const physCollisionFilter& collisionFilter, void* mismatch )
 {
+#ifdef PHYSICS_USING_HAVOK
 	// Check for proper input
 	if ( outHitInfo == NULL ) {
 		throw Core::InvalidArgumentException();
@@ -115,10 +116,10 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 	// Create the raycast information.
 	hkpWorldRayCastInput hkInputCastRay;
 	// Set the start position of the ray
-	hkInputCastRay.m_from = hkVector4( rDir.pos.x, rDir.pos.y, rDir.pos.z, 0 );
+	hkInputCastRay.m_from = physVector4( rDir.pos.x, rDir.pos.y, rDir.pos.z, 0 );
 	// Set the end position of the ray
 	hkInputCastRay.m_to = hkInputCastRay.m_from;
-	hkInputCastRay.m_to.add( hkVector4( rDir.dir.x*fCastDist, rDir.dir.y*fCastDist, rDir.dir.z*fCastDist, 0 ) );
+	hkInputCastRay.m_to.add( physVector4( rDir.dir.x*fCastDist, rDir.dir.y*fCastDist, rDir.dir.z*fCastDist, 0 ) );
 	// Set the ray's collision mask
 	hkInputCastRay.m_filterInfo = collisionFilter;
 
@@ -152,16 +153,6 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 				CGameBehavior* behavior = CGameState::Active()->GetBehavior( uint32_t(userData) );
 				if ( behavior )
 				{
-					/*if ( behavior->GetTypeName() == "CRagdollCollision" ) {
-						if ( ((CRagdollCollision*)behavior)->GetActor() == mismatch ) {
-							hasValidHit = false;
-						}
-					}
-					else if ( behavior->GetTypeName() == "CRigidbody" ) {
-						if ( ((CRigidBody*)behavior)->GetOwner() == mismatch ) {
-							hasValidHit = false;
-						}
-					}*/
 					if ( behavior->GetTypeName() == "CRigidbody" || behavior->GetTypeName() == "CRagdollCollision" ) {
 						if ( ((CMotion*)behavior)->GetOwner() == mismatch ) {
 							hasValidHit = false;
@@ -254,12 +245,20 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 	}
 
 	Physics::ReadUnlock();
+
+	return;
+#endif//PHYSICS_USING_HAVOK
+#ifdef PHYSICS_USING_BOX2D
+	throw Core::NotYetImplementedException();
+#endif
+	
 }
 
 
 // Cast a shape
-void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, uint32_t collisionFilter, void* mismatch )
+void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, const physCollisionFilter& collisionFilter, void* mismatch )
 {
+#ifdef PHYSICS_USING_HAVOK
 	Physics::ReadLock();
 
 	//hkMotionState* ms = new hkMotionState;
@@ -267,7 +266,7 @@ void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pS
 	hkTransform* ms = new hkTransform;
 	// Set the start position of the collidable
 	ms->setIdentity();
-	ms->setTranslation( hkVector4( rDir.pos.x, rDir.pos.y, rDir.pos.z, 0 ) );
+	ms->setTranslation( physVector4( rDir.pos.x, rDir.pos.y, rDir.pos.z, 0 ) );
 
 	hkpCollidable* collidable = new hkpCollidable( pShape, ms );
 	// Set the collidable's collision mask
@@ -276,8 +275,8 @@ void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pS
 	// Create the linearcast information
 	hkpLinearCastInput hkInputCastRay;
 	// Set the end position of the ray
-	hkInputCastRay.m_to = hkVector4( rDir.pos.x, rDir.pos.y, rDir.pos.z, 0 );
-	hkInputCastRay.m_to.add( hkVector4( rDir.dir.x*fCastDist, rDir.dir.y*fCastDist, rDir.dir.z*fCastDist, 0 ) );
+	hkInputCastRay.m_to = physVector4( rDir.pos.x, rDir.pos.y, rDir.pos.z, 0 );
+	hkInputCastRay.m_to.add( physVector4( rDir.dir.x*fCastDist, rDir.dir.y*fCastDist, rDir.dir.z*fCastDist, 0 ) );
 	// Set max pentration depth before reported hit
 	hkInputCastRay.m_maxExtraPenetration = 0.06f;
 
@@ -307,16 +306,6 @@ void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pS
 			hasValidHit = true;
 			CGameBehavior* behavior = CGameState::Active()->GetBehavior( (gameid_t)((hkpRigidBody*)(hkLineHitOutput.m_rootCollidableB->getOwner()))->getUserData() );
 			if ( mismatch ) {
-				/*if ( behavior->GetTypeName() == "CRagdollCollision" ) {
-					if ( ((CRagdollCollision*)behavior)->GetActor() == mismatch ) {
-						hasValidHit = false;
-					}
-				}
-				else if ( behavior->GetTypeName() == "CRigidbody" ) {
-					if ( ((CRigidBody*)behavior)->GetOwner() == mismatch ) {
-						hasValidHit = false;
-					}
-				}*/
 				if ( behavior->GetTypeName() == "CRigidbody" || behavior->GetTypeName() == "CRagdollCollision" ) {
 					if ( ((CMotion*)behavior)->GetOwner() == mismatch ) {
 						hasValidHit = false;
@@ -357,6 +346,10 @@ void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pS
 	delete ms;
 
 	Physics::ReadUnlock();
+#endif//PHYSICS_USING_HAVOK
+#ifdef PHYSICS_USING_BOX2D
+	throw Core::NotYetImplementedException();
+#endif
 }
 
 

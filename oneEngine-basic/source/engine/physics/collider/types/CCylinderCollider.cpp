@@ -2,6 +2,8 @@
 #include "engine/physics/motion/CRigidbody.h"
 #include "CCylinderCollider.h"
 
+#include "physical/physics/shapes/physCylinderShape.h"
+
 
 CCylinderCollider::CCylinderCollider ( ftype height, ftype radius, bool centered )
 {
@@ -9,9 +11,11 @@ CCylinderCollider::CCylinderCollider ( ftype height, ftype radius, bool centered
 	fRadius = radius;
 
 	if ( !centered )
-		pCollisionShape = Physics::CreateCylinderShape( Vector3d( 0,0,0 ), Vector3d( 0,0,height ), radius );
+		pCollisionShape = new physCylinderShape( Vector3d( 0,0,0 ), Vector3d( 0,0,height ), radius );
+		//pCollisionShape = Physics::CreateCylinderShape( Vector3d( 0,0,0 ), Vector3d( 0,0,height ), radius );
 	else
-		pCollisionShape = Physics::CreateCylinderShape( Vector3d( 0,0,-height/2 ), Vector3d( 0,0,height/2 ), radius );
+		pCollisionShape = new physCylinderShape( Vector3d( 0,0,-height/2 ), Vector3d( 0,0,height/2 ), radius );
+		//pCollisionShape = Physics::CreateCylinderShape( Vector3d( 0,0,-height/2 ), Vector3d( 0,0,height/2 ), radius );
 }
 CCylinderCollider::~CCylinderCollider ( void )
 {
@@ -28,17 +32,17 @@ void CCylinderCollider::SetSize ( ftype height, ftype radius )
 
 	// Get the Havok object and set the size of it.
 	//((hkpCapsuleShape*)pCollisionShape)->setHalfExtents( hkVector4( vExtents.x*0.5f, vExtents.y*0.5f, vExtents.z*0.5f ) );
-	((hkpCylinderShape*)pCollisionShape)->setVertex( 0, hkVector4( 0,0,0 ) );
-	((hkpCylinderShape*)pCollisionShape)->setVertex( 1, hkVector4( 0,0,height ) );
-	((hkpCylinderShape*)pCollisionShape)->setRadius( radius );
+	((physCylinderShape*)pCollisionShape)->setVertex( 0, Vector3d( 0,0,0 ) );
+	((physCylinderShape*)pCollisionShape)->setVertex( 1, Vector3d( 0,0,height ) );
+	((physCylinderShape*)pCollisionShape)->setRadius( radius );
 	// Change the rigid body's current shape to the new collider object
 	pRigidBody->SetShape( pCollisionShape );
 
 }
 void CCylinderCollider::SetHeight ( ftype height )
 {
-	((hkpCylinderShape*)pCollisionShape)->setVertex( 0, hkVector4( 0,0,0 ) );
-	((hkpCylinderShape*)pCollisionShape)->setVertex( 1, hkVector4( 0,0,height ) );
+	((physCylinderShape*)pCollisionShape)->setVertex( 0, Vector3d( 0,0,0 ) );
+	((physCylinderShape*)pCollisionShape)->setVertex( 1, Vector3d( 0,0,height ) );
 	// Change the rigid body's current shape to the new collider object
 	pRigidBody->SetShape( pCollisionShape );
 }

@@ -47,7 +47,7 @@ physWindManager::~physWindManager ( void )
 	m_winds.pushBack( newWind );
 }*/
 
-void physWindManager::update ( hkReal delta )
+void physWindManager::update ( physReal delta )
 {
 	int i = 0;
 	auto m_winds = CPhysWindBase::Listing();
@@ -68,7 +68,7 @@ void physWindManager::update ( hkReal delta )
 		}
 	}
 }
-void physWindManager::getWindVector ( const hkVector4& pos, hkVector4& windOut ) const
+void physWindManager::getWindVector ( const physVector4& pos, physVector4& windOut ) const
 {
 	windOut.setZero4(); // Reset wind
 
@@ -87,7 +87,7 @@ void physWindManager::getWindVector ( const hkVector4& pos, hkVector4& windOut )
 	windOut.set( vWindOut.x, vWindOut.y, vWindOut.z );
 }
 
-hkpWindRegion* physWindManager::InstantiateWindRegion( hkpAabbPhantom* phantom, const hkpWind* wind, hkReal resistanceFactor, hkReal obbFactor )
+physWindRegion* physWindManager::InstantiateWindRegion( physAabbPhantom* phantom, const physWind* wind, physReal resistanceFactor, physReal obbFactor )
 {
-	return new hkpWindRegion( phantom, wind, resistanceFactor, obbFactor );
+	return new physWindRegion( phantom, wind, resistanceFactor, obbFactor );
 }

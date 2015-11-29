@@ -5,7 +5,7 @@
 // Need the CGameState class to query CBehavior information and set raycast information.
 #include "engine/state/CGameState.h"
 
-void hkArDefaultDistributor::phantomEnterEvent ( const hkpCollidable *phantomColl, const hkpCollidable *otherColl, const hkpCollisionInput &env )
+void hkArDefaultDistributor::phantomEnterEvent ( const physCollidable *phantomColl, const physCollidable *otherColl, const physCollisionInput &env )
 {
 	/*sCollision result;
 	//result.pOther = phantomColl->getOwner())
@@ -15,7 +15,7 @@ void hkArDefaultDistributor::phantomEnterEvent ( const hkpCollidable *phantomCol
 	throw Core::NotYetImplementedException();
 }
 
-void hkArDefaultDistributor::phantomLeaveEvent ( const hkpCollidable *phantomColl, const hkpCollidable *otherColl )
+void hkArDefaultDistributor::phantomLeaveEvent ( const physCollidable *phantomColl, const physCollidable *otherColl )
 {
 	/*sCollision result;
 	CGameState::Active()->GetBehavior( ((hkpRigidBody*)(phantomColl->getOwner()))->getUserData() )->OnCollisionLeave(result);

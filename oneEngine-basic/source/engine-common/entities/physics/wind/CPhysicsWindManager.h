@@ -50,9 +50,9 @@ public:
 private:
 	static bool	bReady;
 	static physWindManager *	m_physWindManager;
-	static hkpWindRegion *		m_region;
-	static hkpAabbPhantom*		m_phantom;
-	static hkAabb				m_aabb;
+	static physWindRegion *		m_region;
+	static physAabbPhantom*		m_phantom;
+	static physAabb				m_aabb;
 };
 
 #endif

@@ -16,16 +16,16 @@ public:
 	_FORCE_INLINE_ PHYS_API explicit		physRigidBody ( physRigidBodyInfo* info, bool isDynamic=true );
 	_FORCE_INLINE_ PHYS_API virtual		~physRigidBody ( void );
 
-	_FORCE_INLINE_ PHYS_API hkpCollidable*	getCollidableRw ( void );
+	_FORCE_INLINE_ PHYS_API physCollidable*	getCollidableRw ( void );
 
 	_FORCE_INLINE_ PHYS_API void			setUserData ( const uint64_t );
 	_FORCE_INLINE_ PHYS_API uint64_t		getUserData ( void ) const;
-	_FORCE_INLINE_ PHYS_API void			setCollisionFilterInfo ( const uint32_t );
+	_FORCE_INLINE_ PHYS_API void			setCollisionFilterInfo ( const b2Filter& );
 	_FORCE_INLINE_ PHYS_API void			setMotionType ( const hkpMotion::MotionType );
 	_FORCE_INLINE_ PHYS_API hkpMotion::MotionType getMotionType ( void ) const;
 	_FORCE_INLINE_ PHYS_API void			setQualityType ( const hkpCollidableQualityType );
 	_FORCE_INLINE_ PHYS_API void			setAllowedPenetrationDepth ( const Real_32 );
-	_FORCE_INLINE_ PHYS_API void			setShape ( const hkpShape* shape );
+	_FORCE_INLINE_ PHYS_API void			setShape ( const physShape* shape );
 
 	_FORCE_INLINE_ PHYS_API void			setMass ( const Real_32 );
 	_FORCE_INLINE_ PHYS_API Real_32		getMass ( void ) const;
@@ -54,15 +54,17 @@ public:
 	_FORCE_INLINE_ PHYS_API void			setAngularVelocity ( const Vector4d& );
 	_FORCE_INLINE_ PHYS_API const Vector4d getAngularVelocity ( void ) const;
 
-	_FORCE_INLINE_ PHYS_API void			addContactListener ( hkpContactListener* );
-	_FORCE_INLINE_ PHYS_API void			removeContactListener ( hkpContactListener* );
+	_FORCE_INLINE_ PHYS_API void			addContactListener ( physContactListener* );
+	_FORCE_INLINE_ PHYS_API void			removeContactListener ( physContactListener* );
 
 	_FORCE_INLINE_ PHYS_API void			SetTransform ( CTransform* );
 	_FORCE_INLINE_ PHYS_API void			GetTransform ( CTransform* );
 	_FORCE_INLINE_ PHYS_API void			GetTranslation ( CTransform* );
 	_FORCE_INLINE_ PHYS_API void			ForcePropertyUpdate ( void );
 protected:
-	hkpRigidBody*	body;
+	b2Body* body;
+	//b2Fixture*	body;
+	b2Fixture* fixture;
 };
 
 

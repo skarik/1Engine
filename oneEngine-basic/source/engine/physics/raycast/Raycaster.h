@@ -6,6 +6,7 @@
 // Includes
 #include "core/math/Ray.h"
 #include "core/math/Cubic.h"
+#include "physical/physics/motion/physCollisionFilter.h"
 #include "physical/physics/raycast/RaycastHit.h"
 //#include "CVoxelTerrain.h"
 //#include "CBoob.h"
@@ -32,10 +33,10 @@ private:
 	//static BlockTrackInfo m_blockInfo;
 	//static physMaterial*	m_lastHitMaterial;
 public:
-	ENGINE_API static bool	Raycast	( const Ray & ray, ftype max_dist, RaycastHit * pOutHitInfo, r_bitmask collisionFilter, void* mismatch=NULL );
+	ENGINE_API static bool	Raycast	( const Ray & ray, ftype max_dist, RaycastHit * pOutHitInfo, physCollisionFilter collisionFilter, void* mismatch=NULL );
 	//static bool	Raycast	( const Ray & ray, ftype max_dist, RaycastHit * pOutHitInfo, BlockTrackInfo * pOutBlockInfo, r_bitmask collisionFilter, void* mismatch=NULL );
 
-	ENGINE_API static bool Linecast ( const Ray & ray, ftype max_dist, physShape* pShape, RaycastHit* pOutHitInfo, const int hitInfoArrayCount, r_bitmask collisionFilter, void* mismatch=NULL );
+	ENGINE_API static bool Linecast ( const Ray & ray, ftype max_dist, physShape* pShape, RaycastHit* pOutHitInfo, const int hitInfoArrayCount, physCollisionFilter collisionFilter, void* mismatch=NULL );
 
 	//static bool	BoxCollides	( Maths::Cubic const&, r_bitmask );
 

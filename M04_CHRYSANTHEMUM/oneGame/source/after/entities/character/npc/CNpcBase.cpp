@@ -1597,7 +1597,7 @@ void CNpcBase::MvtPerform ( void )
 			Ray ray;
 			ray.pos = transform.position + Vector3d( 0,0,0.08f );
 			ray.dir = testCase.normal();
-			if ( Raycaster.Raycast( ray, 3.0f, &hitResult, 1|2|4 ) && ( fabs( hitResult.hitNormal.z ) < 0.2f ) 
+			if ( Raycaster.Raycast( ray, 3.0f, &hitResult, physCollisionFilter::create(1|2|4) ) && ( fabs( hitResult.hitNormal.z ) < 0.2f ) 
 				&& ( hitResult.hitNormal.dot(ray.dir) < -0.5f ) ) // Also check the normal of this wall face
 			{
 				ray.pos.z += 2; // Increase trace height for trace that looks for upper wall
@@ -1606,8 +1606,8 @@ void CNpcBase::MvtPerform ( void )
 				Ray nextRay ( hitResult.hitPos-hitResult.hitNormal, Vector3d(0,0,1) );
 				nextRay.pos.z += 2;
 				// Check for first open block
-				bool blockOpen = !Raycaster.Raycast( ray, hitResult.distance + 1.3f, &hitResult, 1|2|4 ); // Check horizontal
-				if ( blockOpen && !Raycaster.Raycast( nextRay, std::max<ftype>( 0.5f, fCurrentHeight-1.9f ), &hitResult, 1|2|4 ) ) // Check upwards
+				bool blockOpen = !Raycaster.Raycast( ray, hitResult.distance + 1.3f, &hitResult, physCollisionFilter::create(1|2|4) ); // Check horizontal
+				if ( blockOpen && !Raycaster.Raycast( nextRay, std::max<ftype>( 0.5f, fCurrentHeight-1.9f ), &hitResult, physCollisionFilter::create(1|2|4) ) ) // Check upwards
 				{
 					// Jump if far enough
 					if ( distanceToStep > ai.hull.radius+0.4f )

@@ -15,7 +15,7 @@ physMaterial* CRaycaster::m_lastHitMaterial = NULL;
 
 //#include "CDebugDrawer.h"
 // Raytracer
-bool	CRaycaster::Raycast	( const Ray & ray, ftype max_dist, RaycastHit * pOutHitInfo, /*BlockTrackInfo * pOutBlockInfo,*/ r_bitmask collisionFilter, void* mismatch )
+bool	CRaycaster::Raycast	( const Ray & ray, ftype max_dist, RaycastHit * pOutHitInfo, /*BlockTrackInfo * pOutBlockInfo,*/ physCollisionFilter collisionFilter, void* mismatch )
 {
 	//bool hit = false;
 
@@ -63,7 +63,7 @@ bool	CRaycaster::Raycast	( const Ray & ray, ftype max_dist, RaycastHit * pOutHit
 	return Raycast( ray,max_dist,pOutHitInfo,&m_blockInfo,collisionFilter,mismatch );
 }*/
 
-bool CRaycaster::Linecast ( const Ray & ray, ftype max_dist, physShape* pShape, RaycastHit* pOutHitInfo, const int hitInfoArrayCount, r_bitmask collisionFilter, void* mismatch )
+bool CRaycaster::Linecast ( const Ray & ray, ftype max_dist, physShape* pShape, RaycastHit* pOutHitInfo, const int hitInfoArrayCount, physCollisionFilter collisionFilter, void* mismatch )
 {
 	if ( (collisionFilter == (1|2|4)) || (collisionFilter == 0x00) )
 	{

@@ -9,7 +9,7 @@
 class physTriggerVolume : public physRigidBody
 {
 public:
-	_FORCE_INLINE_ PHYS_API explicit		physTriggerVolume ( physRigidBodyInfo*, physShape*, hkpPhantomCallbackShape* );
+	_FORCE_INLINE_ PHYS_API explicit		physTriggerVolume ( physRigidBodyInfo*, physShape*, physPhantomCallbackShape* );
 
 };
 

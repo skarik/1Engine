@@ -4,7 +4,7 @@
 // Need the CGameState class to query CBehavior information and set raycast information.
 #include "engine/state/CGameState.h"
 
-void hkArPhantomCallbackShape::phantomEnterEvent ( const hkpCollidable *phantomColl, const hkpCollidable *otherColl, const hkpCollisionInput &env )
+void hkArPhantomCallbackShape::phantomEnterEvent ( const physCollidable *phantomColl, const physCollidable *otherColl, const physCollisionInput &env )
 {
 	distributor->phantomEnterEvent( phantomColl, otherColl, env );
 
@@ -15,7 +15,7 @@ void hkArPhantomCallbackShape::phantomEnterEvent ( const hkpCollidable *phantomC
 	CGameState::Active()->GetBehavior( ((hkpRigidBody*)(otherColl->getOwner()))->getUserData() )->OnCollisionEnter(result);*/
 }
 
-void hkArPhantomCallbackShape::phantomLeaveEvent ( const hkpCollidable *phantomColl, const hkpCollidable *otherColl )
+void hkArPhantomCallbackShape::phantomLeaveEvent ( const physCollidable *phantomColl, const physCollidable *otherColl )
 {
 	distributor->phantomLeaveEvent( phantomColl, otherColl );
 

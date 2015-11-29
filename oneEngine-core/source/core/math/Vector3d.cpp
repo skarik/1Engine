@@ -257,3 +257,7 @@ Vector3d Vector3d::mulComponents ( Vector3d const& right ) const
 {
 	return Vector3d( x*right.x, y*right.y, z*right.z );
 }
+Vector3d Vector3d::divComponents ( Vector3d const& right ) const
+{
+	return Vector3d( x/right.x, y/right.y, z/right.z );
+}

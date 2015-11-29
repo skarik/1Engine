@@ -1,13 +1,16 @@
+#ifdef PHYSICS_USING_HAVOK
 
-#include "CRigidbodyCharacter.h"
+#include <stdio.h>
 
 #include "core/debug/CDebugConsole.h"
-#include <stdio.h>
 #include "core/time/time.h"
+
+#include "physical/physics/motion/physCharacter.h"
 
 #include "engine/behavior/CGameObject.h"
 
-#include "physical/physics/motion/physCharacter.h"
+#include "CRigidbodyCharacter.h"
+
 
 class CRigidBodyCharacter::mContactModifier : public hkpContactListener
 {
@@ -264,3 +267,5 @@ Vector3d	CRigidBodyCharacter::GetVelocity ( void )
 	}
 	return CRigidBody::GetVelocity();
 }
+
+#endif

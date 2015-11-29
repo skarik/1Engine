@@ -1,7 +1,10 @@
 
+#include "physical/mode.h"
+
 //===============================================================================================//
 // HAVOK LICENSING AND PLATFORM SETUP
 //===============================================================================================//
+#ifdef PHYSICS_USING_HAVOK
 
 // Platform specific initialization
 //#include <Common/Base/System/Init/PlatformInit.cxx>
@@ -34,6 +37,7 @@
 // and the excluded features.
 #include <Common/Base/Config/hkProductFeatures.cxx>
 
+#endif
 //===============================================================================================//
 // END HAVOK LICENSING AND PLATFORM SETUP
 //===============================================================================================//

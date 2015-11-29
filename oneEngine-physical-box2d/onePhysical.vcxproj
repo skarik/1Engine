@@ -74,6 +74,7 @@
     <ClInclude Include="source\physical\animation\CHKAnimation.h" />
     <ClInclude Include="source\physical\animation\curve\CHKAnimationCurve.h" />
     <ClInclude Include="source\physical\animation\set\CHKAnimationSet.h" />
+    <ClInclude Include="source\physical\mode.h" />
     <ClInclude Include="source\physical\module_physical.h" />
     <ClInclude Include="source\physical\physical.h" />
     <ClInclude Include="source\physical\physics.h" />
@@ -81,19 +82,29 @@
     <ClInclude Include="source\physical\physics\CPhysics.hpp" />
     <ClInclude Include="source\physical\physics\CPhysicsCommon.h" />
     <ClInclude Include="source\physical\physics\motion\physCharacter.h" />
+    <ClInclude Include="source\physical\physics\motion\physCollisionFilter.h" />
     <ClInclude Include="source\physical\physics\motion\physRigidbody.h" />
     <ClInclude Include="source\physical\physics\motion\physTriggerVolume.h" />
     <ClInclude Include="source\physical\physics\phantom\hkArPhantomCallbackShape.h" />
     <ClInclude Include="source\physical\physics\raycast\RaycastHit.h" />
+    <ClInclude Include="source\physical\physics\shapes\physBoxShape.h" />
+    <ClInclude Include="source\physical\physics\shapes\physCapsuleShape.h" />
+    <ClInclude Include="source\physical\physics\shapes\physCylinderShape.h" />
     <ClInclude Include="source\physical\physics\shapes\physMesh.h" />
     <ClInclude Include="source\physical\physics\shapes\physShape.h" />
+    <ClInclude Include="source\physical\physics\shapes\physSphereShape.h" />
     <ClInclude Include="source\physical\physics\water\Water.h" />
     <ClInclude Include="source\physical\physics\wind\CPhysWindBase.h" />
     <ClInclude Include="source\physical\physics\wind\Wind.h" />
     <ClInclude Include="source\physical\skeleton\skeletonBone.h" />
     <ClInclude Include="source\physical\system\Layers.h" />
     <ClInclude Include="source\physical\wrapper\physAabb.h" />
+    <ClInclude Include="source\physical\wrapper\physContactEvents.h" />
+    <ClInclude Include="source\physical\wrapper\physMotion.h" />
+    <ClInclude Include="source\physical\wrapper\physQuaternion.h" />
+    <ClInclude Include="source\physical\wrapper\physRigidBodyInfo.h" />
     <ClInclude Include="source\physical\wrapper\physVector4.h" />
+    <ClInclude Include="source\physical\wrapper\physWindRegion.h" />
     <ClInclude Include="source\physical\wrapper\wrapper_common.h" />
   </ItemGroup>
   <ItemGroup>
@@ -152,10 +163,12 @@
     <ClCompile Include="source\physical\physics\motion\physRigidbody.cpp" />
     <ClCompile Include="source\physical\physics\motion\physTriggerVolume.cpp" />
     <ClCompile Include="source\physical\physics\phantom\hkArPhantomCallbackShape.cpp" />
+    <ClCompile Include="source\physical\physics\shapes\physBoxShape.cpp" />
     <ClCompile Include="source\physical\physics\shapes\physMesh.cpp" />
     <ClCompile Include="source\physical\physics\water\Water.cpp" />
     <ClCompile Include="source\physical\physics\wind\CPhysWindBase.cpp" />
     <ClCompile Include="source\physical\physics\wind\Wind.cpp" />
+    <ClCompile Include="source\physical\wrapper\physContactEvents.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4FDB8ACD-7078-4806-B6B0-04C5351F3F87}</ProjectGuid>
@@ -218,9 +231,9 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST_D.lib;Lua.5.2-debug.lib;libyaml-cppmd.lib;steam_api.lib;hkBase.lib;hkSerialize.lib;hkSceneData.lib;hkInternal.lib;hkGeometryUtilities.lib;hkVisualize.lib;hkCompat.lib;hkcdInternal.lib;hkcdCollide.lib;hkpCollide.lib;hkpConstraintSolver.lib;hkpDynamics.lib;hkpInternal.lib;hkpUtilities.lib;hkpVehicle.lib;hkaAnimation.lib;hkaInternal.lib;hkaRagdoll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>libs\core;libs\basic;libs\render;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
@@ -243,9 +256,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST.lib;Lua.5.2-release.lib;libyaml-cppmd.lib;steam_api.lib;hkBase.lib;hkSerialize.lib;hkSceneData.lib;hkInternal.lib;hkGeometryUtilities.lib;hkVisualize.lib;hkCompat.lib;hkcdInternal.lib;hkcdCollide.lib;hkpCollide.lib;hkpConstraintSolver.lib;hkpDynamics.lib;hkpInternal.lib;hkpUtilities.lib;hkpVehicle.lib;hkaAnimation.lib;hkaInternal.lib;hkaRagdoll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>libs\core;libs\basic;libs\render;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

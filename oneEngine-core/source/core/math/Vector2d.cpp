@@ -38,3 +38,8 @@ Vector2d Vector2d::mulComponents ( Vector2d const& right ) const
 {
 	return Vector2d( x*right.x, y*right.y );
 }
+// Component multiplication
+Vector2d Vector2d::divComponents ( Vector2d const& right ) const
+{
+	return Vector2d( x/right.x, y/right.y );
+}

@@ -288,6 +288,39 @@
     <ClInclude Include="source\physical\wrapper\physAabb.h">
       <Filter>SOURCE\Physical\Wrapper</Filter>
     </ClInclude>
+    <ClInclude Include="source\physical\mode.h">
+      <Filter>SOURCE\Physical</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\wrapper\physRigidBodyInfo.h">
+      <Filter>SOURCE\Physical\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\wrapper\physMotion.h">
+      <Filter>SOURCE\Physical\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\wrapper\physWindRegion.h">
+      <Filter>SOURCE\Physical\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\shapes\physCylinderShape.h">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\shapes\physSphereShape.h">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\shapes\physBoxShape.h">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\shapes\physCapsuleShape.h">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\wrapper\physContactEvents.h">
+      <Filter>SOURCE\Physical\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\motion\physCollisionFilter.h">
+      <Filter>SOURCE\Physical\Physics\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\wrapper\physQuaternion.h">
+      <Filter>SOURCE\Physical\Wrapper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\physical\physics\CPhysics.cpp">
@@ -466,6 +499,12 @@
     </ClCompile>
     <ClCompile Include="source-lib\Box2D\Rope\b2Rope.cpp">
       <Filter>SOURCE-LIB\Box2D\Rope</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\physics\shapes\physBoxShape.cpp">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\wrapper\physContactEvents.cpp">
+      <Filter>SOURCE\Physical\Wrapper</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

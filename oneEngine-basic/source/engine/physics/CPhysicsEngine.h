@@ -20,9 +20,9 @@ public:
 
 	//==Tracing Collision Queries==
 	// Cast a ray
-	ENGINE_API static void Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * outHitInfo, uint32_t collisionFilter = 0, void* mismatch=NULL );
+	ENGINE_API static void Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * outHitInfo, const physCollisionFilter& collisionFilter, void* mismatch=NULL );
 	// Cast a shape
-	ENGINE_API static void Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, uint32_t collisionFilter = 0, void* mismatch=NULL );
+	ENGINE_API static void Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, const physCollisionFilter& collisionFilter, void* mismatch=NULL );
 
 };
 

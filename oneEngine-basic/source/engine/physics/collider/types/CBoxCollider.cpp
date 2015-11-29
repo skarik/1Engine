@@ -2,13 +2,15 @@
 #include "engine/physics/motion/CRigidbody.h"
 #include "CBoxCollider.h"
 
+#include "physical/physics/shapes/physBoxShape.h"
 
 CBoxCollider::CBoxCollider ( Vector3d const& size )
 {
 	vExtents = size;
 	vCenterOfMass = Vector3d( 0,0,0 );
 
-	pCollisionShape = Physics::CreateBoxShape( vExtents * 0.5f );
+	//pCollisionShape = Physics::CreateBoxShape( vExtents * 0.5f );
+	pCollisionShape = new physBoxShape( vExtents * 0.5f );
 }
 CBoxCollider::CBoxCollider ( BoundingBox const& bbox, Vector3d const& pos )
 {
@@ -31,7 +33,7 @@ void CBoxCollider::SetSize ( Vector3d const& size )
 	vExtents = size;
 
 	// Get the Havok object and set the size of it.
-	((hkpBoxShape*)pCollisionShape)->setHalfExtents( hkVector4( vExtents.x*0.5f, vExtents.y*0.5f, vExtents.z*0.5f ) );
+	((physBoxShape*)pCollisionShape)->setHalfExtents( Vector3d( vExtents.x*0.5f, vExtents.y*0.5f, vExtents.z*0.5f ) );
 	// Change the rigid body's current shape to the new collider object
 	if ( pRigidBody )
 		pRigidBody->SetShape( pCollisionShape );
@@ -43,7 +45,7 @@ void CBoxCollider::Set ( BoundingBox const& bbox, Vector3d const& pos )
 	vCenterOfMass = bbox.GetCenterPoint() - pos;
 
 	// Get the Havok object and set the size of it.
-	((hkpBoxShape*)pCollisionShape)->setHalfExtents( hkVector4( vExtents.x*0.5f, vExtents.y*0.5f, vExtents.z*0.5f ) );
+	((physBoxShape*)pCollisionShape)->setHalfExtents( Vector3d( vExtents.x*0.5f, vExtents.y*0.5f, vExtents.z*0.5f ) );
 	// Change the rigid body's current shape to the new collider object
 	if ( pRigidBody )
 		pRigidBody->SetShape( pCollisionShape );

@@ -54,21 +54,6 @@ void CHKAnimationSet::OrderizeValues ( void )
 
 void CHKAnimationSet::Initialize ( void )
 {
-	// Take the array, (should be aligned at 10 bytes), and send it to Havok
-	/*mAnimation = new hkaInterleavedUncompressedAnimation();
-
-	mAnimation->m_transforms.setSize( iBoneNum*iFrameCount );
-	for ( unsigned int i = 0; i < iBoneNum*iFrameCount; ++i )
-	{
-		mAnimation->m_transforms[i].setTranslation( hkVector4( mAnimTransform[i].position.x,mAnimTransform[i].position.y,mAnimTransform[i].position.z ) );
-		mAnimation->m_transforms[i].setScale( hkVector4( mAnimTransform[i].scale.x,mAnimTransform[i].scale.y,mAnimTransform[i].scale.z ) );
-		mAnimation->m_transforms[i].setRotation( hkQuaternion( mAnimTransform[i].rotation.X(),mAnimTransform[i].rotation.Y(),mAnimTransform[i].rotation.Z(),mAnimTransform[i].rotation.W() ) );
-	}
-	mAnimation->m_duration = iFrameCount / 30.0f;
-
-	mAnimation->m_numberOfTransformTracks = iBoneNum;
-	*/
-
 	// If no animations, add default one
 	if ( mAnimations.size() == 0 )
 	{
@@ -78,7 +63,8 @@ void CHKAnimationSet::Initialize ( void )
 	// Loop through all actions and build up the sets
 	for ( unsigned int i = 0; i < mAnimations.size(); ++i )
 	{
-		hkaInterleavedUncompressedAnimation* anim = new hkaInterleavedUncompressedAnimation();
+		throw Core::NotYetImplementedException();
+		/*hkaInterleavedUncompressedAnimation* anim = new hkaInterleavedUncompressedAnimation();
 
 		// Set anim length
 		int frameCount = 2;
@@ -121,7 +107,7 @@ void CHKAnimationSet::Initialize ( void )
 		anim->m_numberOfTransformTracks = iBoneNum;
 
 		// Set anim to final list
-		mAnimations[i] = anim;
+		mAnimations[i] = anim;*/
 	}
 
 	// And now we can delete the old data since it's now stored in Havok.

@@ -3,7 +3,15 @@
 
 _FORCE_INLINE_ PHYS_API physRigidBody::physRigidBody ( physRigidBodyInfo* info, bool isDynamic )
 {
+	//body = Physics::CreateRigidBody( info, isDynamic );
 	body = Physics::CreateRigidBody( info, isDynamic );
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = info->m_shape->getShape();
+	fixtureDef.friction = info->m_friction;
+	fixtureDef.restitution = info->m_restitution;
+	//fixtureDef.density = info->m_density;
+	//fixtureDef.
+	fixture = body->CreateFixture( &fixtureDef );
 }
 _FORCE_INLINE_ PHYS_API physRigidBody::~physRigidBody ( void )
 {
@@ -11,128 +19,157 @@ _FORCE_INLINE_ PHYS_API physRigidBody::~physRigidBody ( void )
 }
 
 
-_FORCE_INLINE_ PHYS_API hkpCollidable* physRigidBody::getCollidableRw ( void )
+_FORCE_INLINE_ PHYS_API physCollidable* physRigidBody::getCollidableRw ( void )
 {
-	return body->getCollidableRw();
+	//return body->getCollidableRw();
+	//fixture->GetBody();
+	//return fixture;
+	throw Core::InvalidCallException();
 }
 
 
 _FORCE_INLINE_ PHYS_API void physRigidBody::setUserData ( const uint64_t userdata )
 {
-	body->setUserData( (hkUlong)userdata );
+	//body->setUserData( (hkUlong)userdata );
+	fixture->SetUserData( (void*)userdata );
 }
 _FORCE_INLINE_ PHYS_API uint64_t physRigidBody::getUserData ( void ) const
 {
-	return body->getUserData();
+	//return body->getUserData();
+	return (uint64_t)body->GetUserData();
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setCollisionFilterInfo ( const uint32_t bitmask )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setCollisionFilterInfo ( const b2Filter& bitmask )
 {
-	body->setCollisionFilterInfo( bitmask );
+	//body->setCollisionFilterInfo( bitmask );
+	//b2Filter newfilter = fixture->GetFilterData();
+	//newfilter.maskBits = bitmask;
+	//fixture->SetFilterData( newfilter );
+	fixture->SetFilterData( bitmask );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setMotionType ( const hkpMotion::MotionType motion )
 {
-	body->setMotionType( motion );
+	//body->setMotionType( motion );
+	throw Core::InvalidCallException();
 }
 _FORCE_INLINE_ PHYS_API hkpMotion::MotionType physRigidBody::getMotionType ( void ) const
 {
-	return body->getMotionType();
+	//return body->getMotionType();
+	throw Core::InvalidCallException();
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setQualityType ( const hkpCollidableQualityType type )
 {
-	body->setQualityType( type );
+	//body->setQualityType( type );
+	throw Core::InvalidCallException();
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setAllowedPenetrationDepth ( const Real_32 penetration )
 {
-	body->setAllowedPenetrationDepth( penetration );
+	//body->setAllowedPenetrationDepth( penetration );
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setShape ( const hkpShape* shape )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setShape ( const physShape* shape )
 {
-	body->setShape(shape);
+	//body->setShape(shape);
+	throw Core::InvalidCallException();
 }
 
 
 _FORCE_INLINE_ PHYS_API void physRigidBody::setMass ( const Real_32 mass )
 {
-	body->setMass( mass );
+	//body->setMass( mass );
+	b2MassData newmassdata;
+	body->GetMassData( &newmassdata );
+	newmassdata.mass = mass;
+	body->SetMassData( &newmassdata );
 }
 _FORCE_INLINE_ PHYS_API Real_32 physRigidBody::getMass ( void ) const
 {
-	return body->getMass();
+	return body->GetMass();
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setGravityFactor ( const Real_32 factor )
 {
-	body->setGravityFactor( factor );
+	body->SetGravityScale( factor );
 }
 _FORCE_INLINE_ PHYS_API Real_32 physRigidBody::getGravityFactor ( void ) const
 {
-	return body->getGravityFactor();
+	return body->GetGravityScale();
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setRestitution ( const Real_32 restitution )
 {
-	body->setRestitution( restitution );
+	fixture->SetRestitution( restitution );
 }
 _FORCE_INLINE_ PHYS_API Real_32 physRigidBody::getRestitution ( void ) const
 {
-	return body->getRestitution();
+	return fixture->GetRestitution();
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setFriction ( const Real_32 friction )
 {
-	body->setFriction( friction );
+	fixture->SetFriction( friction );
 }
 _FORCE_INLINE_ PHYS_API Real_32 physRigidBody::getFriction ( void ) const
 {
-	return body->getFriction();
+	return fixture->GetFriction();
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setLinearDamping ( const Real_32 damping )
 {
-	body->setLinearDamping( damping );
+	body->SetLinearDamping( damping );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setAngularDamping ( const Real_32 damping )
 {
-	body->setAngularDamping( damping );
+	body->SetAngularDamping( damping );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setMaxAngularVelocity ( Real_32 maxVel )
 {
-	body->setMaxAngularVelocity( maxVel );
+	//body->setMaxAngularVelocity( maxVel );
+	throw Core::NotYetImplementedException();
 }
 _FORCE_INLINE_ PHYS_API Real_32 physRigidBody::getMaxAngularVelocity ( void ) const
 {
-	return body->getMaxAngularVelocity();
+	//return body->getMaxAngularVelocity();
+	throw Core::NotYetImplementedException();
 }
 
 
 _FORCE_INLINE_ PHYS_API void physRigidBody::activate ( void )
 {
-	body->activate();
+	//body->activate();
+	body->SetAwake(true);
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::applyForce ( const Real_32 delta, const Vector3d& vect )
 {
-	body->applyForce( delta, hkVector4( vect.x,vect.y,vect.z ) );
+	//body->applyForce( delta, hkVector4( vect.x,vect.y,vect.z ) );
+	Vector3d force = vect.mulComponents( Physics::WorldScaling() );
+	body->ApplyForceToCenter( b2Vec2(force.x,force.y), true );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setIdentityRotation ( void )
 {
-	body->setRotation( hkQuaternion::getIdentity() );
+	//body->setRotation( hkQuaternion::getIdentity() );
+	body->SetTransform( body->GetPosition(), 0 );
 }
 
 _FORCE_INLINE_ PHYS_API void physRigidBody::setPosition ( const Vector3d& newPosition )
 {
-	body->setPosition( hkVector4( newPosition.x, newPosition.y, newPosition.z ) );
+	//body->setPosition( hkVector4( newPosition.x, newPosition.y, newPosition.z ) );
+	Vector3d position = newPosition.mulComponents( Physics::WorldScaling() );
+	body->SetTransform( b2Vec2(position.x,position.y), body->GetAngle() );
 }
 _FORCE_INLINE_ PHYS_API const Vector3d physRigidBody::getPosition ( void ) const
 {
-	Vector3d result;
-	body->getPosition().store3( &(result.x) );
-	return result;
+	//Vector3d result;
+	//body->getPosition().store3( &(result.x) );
+	b2Vec2 pos = body->GetPosition();
+	return Vector2d( pos.x, pos.y ).divComponents( Physics::WorldScaling() );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setRotation ( const Quaternion& newRotation )
 {
-	body->setRotation( hkQuaternion( newRotation.x, newRotation.y, newRotation.z, newRotation.w ) );
+	//body->setRotation( hkQuaternion( newRotation.x, newRotation.y, newRotation.z, newRotation.w ) );
+	//body->SetTransform( body->GetPosition(), newRotation.GetEulerAngles().z );
+	throw Core::NotYetImplementedException();
 }
 _FORCE_INLINE_ PHYS_API const Quaternion physRigidBody::getRotation ( void ) const
 {
-	Quaternion result;
+	/*Quaternion result;
 	body->getRotation().m_vec.store4( &(result.x) );
-	return result;
+	return result;*/
+	throw Core::NotYetImplementedException();
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setPositionAndRotation ( const Vector3d& position, const Quaternion& rotation )
 {
@@ -141,49 +178,62 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setPositionAndRotation ( const Vecto
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setLinearVelocity ( const Vector3d& newVelocity )
 {
-	body->setLinearVelocity( hkVector4( newVelocity.x, newVelocity.y, newVelocity.z ) );
+	//body->setLinearVelocity( hkVector4( newVelocity.x, newVelocity.y, newVelocity.z ) );
+	Vector3d velocity = newVelocity.mulComponents( Physics::WorldScaling() );
+	body->SetLinearVelocity( b2Vec2( velocity.x, velocity.y ) );
 }
 _FORCE_INLINE_ PHYS_API const Vector3d physRigidBody::getLinearVelocity ( void ) const
 {
-	Vector3d result;
-	body->getLinearVelocity().store3( &(result.x) );
-	return result;
+	//Vector3d result;
+	//body->getLinearVelocity().store3( &(result.x) );
+	b2Vec2 velocity = body->GetLinearVelocity();
+	return Vector2d( velocity.x, velocity.y ).divComponents( Physics::WorldScaling() );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setAngularVelocity ( const Vector4d& newVelocity )
 {
-	body->setAngularVelocity( hkVector4( newVelocity.x,newVelocity.y,newVelocity.z,newVelocity.w ) );
+	//body->setAngularVelocity( hkVector4( newVelocity.x,newVelocity.y,newVelocity.z,newVelocity.w ) );
 }
 _FORCE_INLINE_ PHYS_API const Vector4d physRigidBody::getAngularVelocity ( void ) const
 {
-	Vector4d result;
+	/*Vector4d result;
 	body->getAngularVelocity().store4( &(result.x) );
-	return result;
+	return result;*/
+	throw Core::NotYetImplementedException();
 }
 
 
-_FORCE_INLINE_ PHYS_API void physRigidBody::addContactListener ( hkpContactListener* listener )
+_FORCE_INLINE_ PHYS_API void physRigidBody::addContactListener ( physContactListener* listener )
 {
-	body->addContactListener( listener );
+	//body->addContactListener( listener );
+	throw Core::NotYetImplementedException();
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::removeContactListener ( hkpContactListener* listener )
+_FORCE_INLINE_ PHYS_API void physRigidBody::removeContactListener ( physContactListener* listener )
 {
-	body->removeContactListener( listener );
+	//body->removeContactListener( listener );
+	throw Core::NotYetImplementedException();
 }
 
 
 _FORCE_INLINE_ PHYS_API void physRigidBody::SetTransform ( CTransform* transform )
 {
-	Physics::SetRigidBodyTransform( body, transform );
+	//Physics::SetRigidBodyTransform( body, transform );
+	Vector2d position = transform->position.mulComponents( Physics::WorldScaling() );
+	Real_32 rotation = transform->rotation.getEulerAngles().z;
+	body->SetTransform( b2Vec2(position.x,position.y), rotation );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::GetTransform ( CTransform* transform )
 {
-	Physics::GetRigidBodyTransform( body, transform );
+	//Physics::GetRigidBodyTransform( body, transform );
+	GetTranslation(transform);
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::GetTranslation ( CTransform* transform )
 {
-	Physics::GetRigidBodyTranslation( body, transform );
+	//Physics::GetRigidBodyTranslation( body, transform );
+	b2Vec2 position = body->GetPosition();
+	transform->position = Vector2d( position.x, position.y ).divComponents( Physics::WorldScaling() );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::ForcePropertyUpdate ( void )
 {
-	CPhysics::ForceEntityUpdate( body );
+	//CPhysics::ForceEntityUpdate( body );
+	throw Core::NotYetImplementedException();
 }

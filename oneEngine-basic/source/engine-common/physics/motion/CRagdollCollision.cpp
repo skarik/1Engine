@@ -34,20 +34,20 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 		physRigidBodyInfo tInfo;
 		tInfo.m_mass = 3.0f;
 		tInfo.m_shape = tCollider;
-		tInfo.m_centerOfMass = hkVector4( 0,0,0 );
+		tInfo.m_centerOfMass = physVector4( 0,0,0 );
 		tInfo.m_friction = 0.5f;
 		tInfo.m_motionType = physMotion::MOTION_DYNAMIC;
 		Vector3d targetPosition = targetBone->xRagdollPoseModel.position;//targetBone->transform.position;
-		tInfo.m_position = hkVector4( targetPosition.x, targetPosition.y, targetPosition.z );
+		tInfo.m_position = physVector4( targetPosition.x, targetPosition.y, targetPosition.z );
 		Quaternion targetRotation = targetBone->xRagdollPoseModel.rotation;//targetBone->transform.rotation.getQuaternion();
-		tInfo.m_rotation = hkQuaternion( targetRotation.x, targetRotation.y, targetRotation.z, targetRotation.w );
+		tInfo.m_rotation = physQuaternion( targetRotation.x, targetRotation.y, targetRotation.z, targetRotation.w );
 		tInfo.m_linearDamping = 0.1f;
 		tInfo.m_angularDamping = 0.2f;
 
 		tInfo.m_collisionFilterInfo = CPhysics::GetCollisionFilter( Layers::PhysicsTypes::PHYS_HITBOX );
 			
 		hitboxEntry thb;
-		thb.rigidbody = new physRigidBody( &tInfo );//Physics::CreateRigidBody( &tInfo );
+		thb.rigidbody = new physRigidBody( &tInfo );
 		thb.rigidbody->setUserData( GetId() ); // Give the rigidbody this ragoll's ID.
 
 		thb.impulse = Vector3d(0,0,0);
@@ -70,21 +70,21 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 		physRigidBodyInfo tInfo;
 		tInfo.m_mass = 3.0f;
 		tInfo.m_shape = tCollider;
-		tInfo.m_centerOfMass = hkVector4( 0,0,0 );
+		tInfo.m_centerOfMass = physVector4( 0,0,0 );
 		tInfo.m_friction = 0.5f;
 		tInfo.m_motionType = physMotion::MOTION_DYNAMIC;
 		Vector3d targetPosition = targetBone->xRagdollPoseModel.position;//targetBone->transform.position;
-		tInfo.m_position = hkVector4( targetPosition.x, targetPosition.y, targetPosition.z );
+		tInfo.m_position = physVector4( targetPosition.x, targetPosition.y, targetPosition.z );
 		Quaternion targetRotation = targetBone->xRagdollPoseModel.rotation;// targetBone->transform.rotation.getQuaternion();
-		tInfo.m_rotation = hkQuaternion( targetRotation.x, targetRotation.y, targetRotation.z, targetRotation.w );
+		tInfo.m_rotation = physQuaternion( targetRotation.x, targetRotation.y, targetRotation.z, targetRotation.w );
 		tInfo.m_linearDamping = 0.1f;
 		tInfo.m_angularDamping = 0.3f;
 
 		tInfo.m_collisionFilterInfo = CPhysics::GetCollisionFilter( Layers::PhysicsTypes::PHYS_HITBOX );
 
 		hitboxEntry thb;
-		thb.rigidbody = new physRigidBody( &tInfo );//Physics::CreateRigidBody( &tInfo );
-		thb.rigidbody->setUserData( hkLong(GetId()) ); // Give the rigidbody this ragoll's ID.
+		thb.rigidbody = new physRigidBody( &tInfo );
+		thb.rigidbody->setUserData( GetId() ); // Give the rigidbody this ragoll's ID.
 
 		thb.impulse = Vector3d(0,0,0);
 		thb.boneIndex = mdl_hitboxes->at(i).indexLink;

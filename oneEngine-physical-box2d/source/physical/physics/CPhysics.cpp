@@ -23,6 +23,7 @@ PHYS_API hkpPhysicsContext*	Physics::physicsContext;
 PHYS_API hkVisualDebugger*	Physics::vdb;
 #endif
 */
+/*
 // Platform specific initialization
 #include <Common/Base/System/Init/PlatformInit.cxx>
 
@@ -41,9 +42,6 @@ PHYS_API hkVisualDebugger*	Physics::vdb;
 // Also we're not using any serialization/versioning so we don't need any of these.
 #define HK_EXCLUDE_FEATURE_SerializeDeprecatedPre700
 #define HK_EXCLUDE_FEATURE_RegisterVersionPatches
-/*#ifndef _HAVOK_VISUAL_DEBUGGER_
-#define HK_EXCLUDE_FEATURE_RegisterReflectedClasses //NEEDED FOR DEBUGGER
-#endif*/
 #define HK_EXCLUDE_FEATURE_MemoryTracker
 
 // Serialization config
@@ -53,7 +51,7 @@ PHYS_API hkVisualDebugger*	Physics::vdb;
 // This include generates an initialization function based on the products
 // and the excluded features.
 #include <Common/Base/Config/hkProductFeatures.cxx>
-
+*/
 //===Function Definitions===
 void Physics::Init ( void )
 {
@@ -67,31 +65,20 @@ void Physics::Init ( void )
 void Physics::_Init ( void )
 {
 	// Perfrom platform specific initialization for this demo - you should already have something similar in your own code.
-	PlatformInit();
+	//PlatformInit();
 
 	// Need to have memory allocated for the solver. Allocate 32mb for it. // NOTE: NOW .5 GB ALLOCATED
-	//memoryRouter = hkMemoryInitUtil::initDefault( &baseMalloc, hkMemorySystem::FrameInfo(1024 * 1024 * 512) ); //Allocates the amount of Bytes.
-	//memoryRouter = hkMemoryInitUtil::initDefault( &baseMalloc, hkMemorySystem::FrameInfo(1024 * 1024 * 1024) ); //1 GB allocated
-	memoryRouter = hkMemoryInitUtil::initDefault( &baseMalloc, hkMemorySystem::FrameInfo(1024 * 1024 * 200) ); //200 MB allocated
-	hkBaseSystem::init( memoryRouter, errorReport );
-	/*{
-		HK_WARN_ALWAYS(0x417ffd72, "\n\
-------------------------------------------------------------------\n\
- Havok - Build (20120119)\n\
- Version 2011.3.0-r1\n\
- Base system initialized.\n\
-------------------------------------------------------------------\n");
-	}*/
-	std::cout << "Havok 2011 base systems started!" << std::endl;
+	//memoryRouter = hkMemoryInitUtil::initDefault( &baseMalloc, hkMemorySystem::FrameInfo(1024 * 1024 * 200) ); //200 MB allocated
+	//hkBaseSystem::init( memoryRouter, errorReport );
 
-#ifdef _PHYSICS_MULTITHREADED_
-	// Initialize the multithreading classes
-	InitMultithreading();
-#endif
+
+	pWorld = new b2World ( b2Vec2(0,0) );
+	std::cout << "Box2D base systems started!" << std::endl;
+	std::cout << "\t+version " << b2_version.major << "." << b2_version.minor << "." << b2_version.revision << std::endl;
 
 	// Set the physics world properties
 	//worldInfo.m_gravity.set( 0,0, -9.81f );
-	worldInfo.m_gravity.set( 0,0, -9.81f*2.717f );
+	/*worldInfo.m_gravity.set( 0,0, -9.81f*2.717f );
 	//worldInfo.setBroadPhaseWorldSize( 1000.0f );
 	worldInfo.setupSolverInfo( hkpWorldCinfo::SOLVER_TYPE_4ITERS_MEDIUM );
 	// Set the simulation type
@@ -107,14 +94,14 @@ void Physics::_Init ( void )
 		HK_WARN_ALWAYS(0x417ffd72, " Havok physics world created.\n");
 		pWorld->markForWrite();
 	}
-
+	
 	// Register all collision agents
 	// It's important to register collision agents before adding any entities to the world.
 	hkpAgentRegisterUtil::registerAllAgents( pWorld->getCollisionDispatcher() );
-
+	*/
 	// Initialize the collision layers used
 	InitLayers();
-
+	/*
 #ifdef _PHYSICS_MULTITHREADED_
 	// Register physics job handling functions with job queue
     pWorld->registerWithJobQueue( jobQueue );
@@ -135,6 +122,7 @@ void Physics::_Init ( void )
 #endif
 
 	pWorld->unmarkForWrite();
+	*/
 }
 /*
 void Physics::TestFunc ( float time )
@@ -145,6 +133,7 @@ void Physics::TestFunc ( float time )
 */
 void Physics::InitMultithreading ( void )
 {
+	/*
 	const int streamCollectionSize = 200000; //200 kb
 	//hkJobThreadPool* threadPool;
 
@@ -200,6 +189,7 @@ void Physics::InitMultithreading ( void )
 
 	// Monitors have been enabled for thread pool threads already (see above comment).
 	hkMonitorStream::getInstance().resize(streamCollectionSize);
+	*/
 }
 
 void Physics::Free ( void )
@@ -218,11 +208,12 @@ void Physics::_Free ( void )
 	physicsContext->removeReference();
 #endif
 	// Havok
-	{
+	/*{
 		HK_WARN_ALWAYS(0x417ffd72, "Quitting Havok.\n");
 	}
 	hkBaseSystem::quit();
-	hkMemoryInitUtil::quit();
+	hkMemoryInitUtil::quit();*/
+	delete pWorld; pWorld = NULL;
 	EXCEPTION_CATCH_END
 }
 

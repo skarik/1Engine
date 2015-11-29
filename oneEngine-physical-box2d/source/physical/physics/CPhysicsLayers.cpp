@@ -9,35 +9,31 @@
 //===Function Definitions===
 void CPhysics::InitLayers ( void )
 {
-	// Get the world's filter
-	//hkpGroupFilter* groupFilter = (hkpGroupFilter*)pWorld->getCollisionFilter();
-	{
-		/*hkpGroupFilter* filter = new hkpGroupFilter();
-		pWorld->setCollisionFilter( filter );
-		filter->removeReference();*/
-	}
-	//hkpGroupFilter* groupFilter = (hkpGroupFilter*)pWorld->getCollisionFilter();
-	hkpGroupFilter* groupFilter = new hkpGroupFilter();
-
-	/*sg_landscape	= groupFilter.getNewSystemGroup();
-	sg_debris		= groupFilter.getNewSystemGroup();
-	sg_ragdoll		= groupFilter.getNewSystemGroup();
-	sg_ragdoll_es	= groupFilter.getNewSystemGroup();
-	sg_characters	= groupFilter.getNewSystemGroup();
-	sg_items		= groupFilter.getNewSystemGroup();
-	sg_dynamic		= groupFilter.getNewSystemGroup();*/
-	systemGroups = new int [Layers::MAX_PHYS_LAYER];
+	collisionMasks = new uint16_t [Layers::MAX_PHYS_LAYER];
+	// Start off with entirely disabled collisions
 	for ( int i = 0; i < Layers::MAX_PHYS_LAYER; ++i )
 	{
-		systemGroups[i] = groupFilter->getNewSystemGroup();
+		collisionMasks[i] = 0;
 	}
 
-	// Start off with disabled collisions w/ all
-	uint32_t t_allBits = 0;
-	for ( int i = 0; i < Layers::MAX_PHYS_LAYER; ++i ) {
-			t_allBits |= 1 << i;
-	}
-	groupFilter->disableCollisionsUsingBitfield( t_allBits, t_allBits );
+	// Use a small interface to make it identical to the Havok code (makes it easy to sync)
+	// The bitmasks will be symmetrical when mapped out on a graph. There can be no one-way collisions.
+	struct filterAssistance_t
+	{
+		void enableCollisionsBetween ( uint layerA, uint layerB )
+		{
+			// Enable the corresponding bits to enable collision
+			Physics::Active()->collisionMasks[layerA] |= ( 1 << layerB );
+			Physics::Active()->collisionMasks[layerB] |= ( 1 << layerA );
+		}
+		void disableCollisionsBetween ( uint layerA, uint layerB )
+		{
+			// Disable the corresponding bits to disable collision
+			Physics::Active()->collisionMasks[layerA] &= ~( 1 << layerB );
+			Physics::Active()->collisionMasks[layerB] &= ~( 1 << layerA );
+		}
+	} filter_assistance;
+	filterAssistance_t* groupFilter = &filter_assistance;
 
 	// Enable Landscape collisions with all groups
 	groupFilter->enableCollisionsBetween( Layers::PHYS_LANDSCAPE, Layers::PHYS_DEBRIS );
@@ -152,8 +148,8 @@ void CPhysics::InitLayers ( void )
 	groupFilter->disableCollisionsBetween( Layers::PHYS_HITBOX, Layers::PHYS_HITBOX );
 
 	// Apply filter to the world now
-	{
+	/*{
 		pWorld->setCollisionFilter( groupFilter );
 		groupFilter->removeReference();
-	}
+	}*/
 }

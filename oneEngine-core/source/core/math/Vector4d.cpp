@@ -238,3 +238,7 @@ Vector4d Vector4d::mulComponents ( Vector4d const& right ) const
 {
 	return Vector4d( x*right.x, y*right.y, z*right.z, w*right.w );
 }
+Vector4d Vector4d::divComponents ( Vector4d const& right ) const
+{
+	return Vector4d( x/right.x, y/right.y, z/right.z, w/right.w );
+}

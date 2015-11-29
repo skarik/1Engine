@@ -6,6 +6,7 @@
 #define _C_PHYSICS_H_
 
 #include "CPhysicsCommon.h"
+#include <mutex>
 
 //===============================================================================================//
 // Physics Class Wrapper Definition 
@@ -37,6 +38,8 @@ public:
 	//=========================================//
 	// Modifying the Physics World
 	//=========================================//
+	FORCE_INLINE PHYS_API static Vector3d WorldScaling ( void );
+
 	FORCE_INLINE PHYS_API static void ShiftWorld ( Vector3d vShift );
 	FORCE_INLINE PHYS_API static void GetWorldCenter ( Vector3d& vWorldPosition );
 
@@ -75,16 +78,16 @@ public:
 	// Rigidbodies
 	//=========================================//
 	// Creation of rigidbodies
-	FORCE_INLINE PHYS_API static physRigidBody* CreateRigidBody ( physRigidBodyInfo* pBodyInfo, bool bIsDynamic=true );
+	FORCE_INLINE PHYS_API static b2Body* CreateRigidBody ( physRigidBodyInfo* pBodyInfo, bool bIsDynamic=true );
 	// Destruction of rigidbodies
-	FORCE_INLINE PHYS_API static void FreeRigidBody ( physRigidBody* pRigidBody );
+	FORCE_INLINE PHYS_API static void FreeRigidBody ( b2Body* pRigidBody );
 	// Checking for rigidbody collisions
 	FORCE_INLINE PHYS_API static void CheckRigidBodyContacts ( physRigidBody* pRigidBody );
 	// Setting their info
-	FORCE_INLINE PHYS_API static void SetRigidBodyTransform ( physRigidBody* pRigidBody, CTransform* pSourceTransform );
+	//FORCE_INLINE PHYS_API static void SetRigidBodyTransform ( physRigidBody* pRigidBody, CTransform* pSourceTransform );
 	// Grabbing their info
-	FORCE_INLINE PHYS_API static void GetRigidBodyTransform ( physRigidBody* pRigidBody, CTransform* pTargetTransform );
-	FORCE_INLINE PHYS_API static void GetRigidBodyTranslation( physRigidBody* pRigidBody, CTransform* pTargetTransform );
+	//FORCE_INLINE PHYS_API static void GetRigidBodyTransform ( physRigidBody* pRigidBody, CTransform* pTargetTransform );
+	//FORCE_INLINE PHYS_API static void GetRigidBodyTranslation( physRigidBody* pRigidBody, CTransform* pTargetTransform );
 
 	//=========================================//
 	// Phantoms
@@ -114,7 +117,8 @@ public:
 	// Collision
 	//=========================================//
 	// Get collision filter
-	FORCE_INLINE PHYS_API static uint32_t GetCollisionFilter ( int layer, int subsystem = -1, int nocollidewith = -1 );
+	//FORCE_INLINE PHYS_API static uint32_t GetCollisionFilter ( int layer, int subsystem = -1, int nocollidewith = -1 );
+	FORCE_INLINE PHYS_API static physCollisionFilter GetCollisionFilter ( int layer, int subsystem = -1, int nocollidewith = -1 );
 
 	// Get a collision collector
 	FORCE_INLINE PHYS_API static physCollisionInput* GetCollisionCollector ( void );
@@ -177,6 +181,9 @@ private:
 
 	Real				targetTime;
 	Real				worldTime;
+
+	std::mutex			mutexRead;
+	std::mutex			mutexWrite;
 	/*
 #ifdef _HAVOK_VISUAL_DEBUGGER_
 	// Debugger
@@ -185,7 +192,8 @@ private:
 #endif
 	*/
 	// Collision filtering
-	int*		systemGroups;
+	//int*		systemGroups;
+	uint16_t*	collisionMasks;
 };
 
 typedef CPhysics Physics;
