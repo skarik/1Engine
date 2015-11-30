@@ -1,6 +1,3 @@
-
-#ifdef _WIN32
-
 //#include "physical/liscensing.cxx" // Include liscense info
 
 #include "deploy/game/game.h"
@@ -180,5 +177,3 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 
 	return 0;
 }
-
-#endif

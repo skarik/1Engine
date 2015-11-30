@@ -15,6 +15,8 @@
 #include "after/physics/water/Water.h"
 #include "after/physics/wind/WindMotion.h"
 */
+#include "m04/scenes/sceneTilesetTest.h"
+
 //===============================================================================================//
 //	GameInitialize
 //
@@ -28,7 +30,7 @@ int GameInitialize ( void )
 	EngineCommonInitialize();
 
 	// Scene registration
-	//EngineCommon::RegisterScene<gmsceneCharacterViewer>( "test" );
+	EngineCommon::RegisterScene<sceneTilesetTest>( "test0" );
 	//EngineCommon::RegisterScene<gmsceneParticleEditor>( "pce" );
 	//EngineCommon::RegisterScene<gmsceneLipsyncEditor>( "lse" );
 

@@ -240,9 +240,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h" />
+    <ClInclude Include="source\m04\scenes\sceneTilesetTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp" />
+    <ClCompile Include="source\m04\scenes\sceneTilesetTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="oneAudio.vcxproj">
@@ -262,6 +264,9 @@
     <ProjectReference Include="oneEngine.vcxproj">
       <Project>{5cc6093b-cb43-4cdc-817a-002246731bc9}</Project>
     </ProjectReference>
+    <ProjectReference Include="oneEngine2D.vcxproj">
+      <Project>{28a5770a-6c98-4ca8-b812-3596c58e621f}</Project>
+    </ProjectReference>
     <ProjectReference Include="oneEngineCommon.vcxproj">
       <Project>{32bc2667-0024-48a2-a1c4-f7f995e5ef9b}</Project>
     </ProjectReference>
@@ -270,6 +275,9 @@
     </ProjectReference>
     <ProjectReference Include="oneRenderer.vcxproj">
       <Project>{c1bc5440-9ce1-4a7e-89dd-dcd57005426a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="oneRendererExt2D.vcxproj">
+      <Project>{38f71bd7-ca57-4e5d-87c7-6299b0e218ea}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

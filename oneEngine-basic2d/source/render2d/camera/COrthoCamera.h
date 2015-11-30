@@ -38,7 +38,7 @@ public:
 
 public:
 	// Construct orthographic camera
-	RENDER2D_API		COrthoCamera ( void );
+	RENDER2D_API explicit		COrthoCamera ( void );
 
 	// Camera position setup
 	RENDER2D_API void UpdateMatrix ( void ) override;

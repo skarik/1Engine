@@ -30,7 +30,7 @@ void TileMap::Rebuild ( void )
 	int current_depth_start_tile = 0;
 	int current_depth = m_tiles[current_depth_start_tile].depth;
 	// Loop through all the tiles
-	for ( int i = 0; i < m_tiles.size(); ++i )
+	for ( uint i = 0; i < m_tiles.size(); ++i )
 	{
 		// Check if there's a new layer
 		if ( current_depth != m_tiles[i].depth )
@@ -44,7 +44,7 @@ void TileMap::Rebuild ( void )
 	}
 
 	// Wait for all the threads to finish
-	for ( int i = 0; i < layer_build_threads.size(); ++i )
+	for ( uint i = 0; i < layer_build_threads.size(); ++i )
 	{
 		// Tell the program to stop until the thread has finished
 		layer_build_threads[i].join();
@@ -70,7 +70,7 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 	const Vector2d tile_size_reference = Vector2d( (Real)m_tileset->tilesize_x, (Real)m_tileset->tilesize_y );
 
 	// Loop through the tiles
-	for ( int i = start_offset; i < m_tiles.size(); ++i )
+	for ( uint i = start_offset; i < m_tiles.size(); ++i )
 	{
 		// Hit the end of the layer yet?
 		if ( m_tiles[i].depth != layer ) {

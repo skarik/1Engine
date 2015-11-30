@@ -10,15 +10,24 @@
     <Filter Include="SOURCE\M04-Editor">
       <UniqueIdentifier>{7e86391b-ab1b-4ce0-aad8-f70e954ff87b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04\Scenes">
+      <UniqueIdentifier>{d2bb32ed-066f-4cd7-88c9-6d7bc7d24029}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
       <Filter>SOURCE\M04</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04\scenes\sceneTilesetTest.h">
+      <Filter>SOURCE\M04\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
       <Filter>SOURCE\M04</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\scenes\sceneTilesetTest.cpp">
+      <Filter>SOURCE\M04\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

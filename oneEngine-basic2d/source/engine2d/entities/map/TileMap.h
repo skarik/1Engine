@@ -11,12 +11,16 @@ namespace Engine2D
 	class TileMap : public CGameBehavior
 	{
 	public:
-		explicit		TileMap ( void );
-						~TileMap ( void );
+		ENGINE2D_API explicit		TileMap ( void );
+		ENGINE2D_API 				~TileMap ( void );
 
 		//=========================================//
 
-		void			Rebuild ( void );
+		ENGINE2D_API void			Update ( void );
+
+		//=========================================//
+
+		ENGINE2D_API void			Rebuild ( void );
 
 		//		RebuildMeshs( layer list )
 		// Given the list of layers, build a mesh for each layer
@@ -24,7 +28,7 @@ namespace Engine2D
 		//	start_offset			- beginning index of the tile
 		//	predictive_tile_count	- when to watch out for the end of the mesh. Used to allocate triangles
 		//void			RebuildMeshs ( int * layers, int layer_count );
-		void			RebuildMesh ( int layer, int start_offset = 0, int predictive_tile_count = 0 );
+		ENGINE2D_API void			RebuildMesh ( int layer, int start_offset = 0, int predictive_tile_count = 0 );
 
 
 	public:

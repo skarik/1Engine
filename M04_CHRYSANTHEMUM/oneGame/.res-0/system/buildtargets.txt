@@ -1,0 +1,12 @@
+// Classic bottle
+bottle "D:/Project/EHS/M04-Builds/Bottle"
+{
+	mode copy
+	rebuild images
+	rebuild models
+}
+// by recommendation of piano
+butthole
+{
+	mode curse
+}
