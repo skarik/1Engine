@@ -15,6 +15,8 @@
 #include "after/physics/water/Water.h"
 #include "after/physics/wind/WindMotion.h"
 */
+#include "renderer/state/Options.h"
+
 #include "m04/scenes/sceneTilesetTest.h"
 
 //===============================================================================================//
@@ -41,6 +43,7 @@ int GameInitialize ( void )
 	// create testers
 	//new CAfterWaterTester();
 	//new CWindMotion();
+	Renderer::Options::TextureStreaming( false );
 
 	return 0;
 }

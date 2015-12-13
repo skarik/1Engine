@@ -363,6 +363,9 @@
     <ClCompile Include="source\renderer\texture\TextureConverter.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\state\Options.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\window\COglWindow.h">
@@ -634,6 +637,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\renderer-console.h">
       <Filter>SOURCE\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\Options.h">
+      <Filter>SOURCE\Renderer\State</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

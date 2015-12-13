@@ -36,6 +36,9 @@ public:
 	// starting/target viewport of the screen
 	Rect		viewport_target;
 
+	// roll of the screen
+	Real		view_roll;
+
 public:
 	// Construct orthographic camera
 	RENDER2D_API explicit		COrthoCamera ( void );

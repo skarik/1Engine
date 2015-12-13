@@ -12,6 +12,7 @@ COrthoCamera::COrthoCamera ( void )
 	pixel_scale_factor		= 1.0f;
 	viewport_target.pos		= Vector2d( 0,0 );
 	viewport_target.size	= Vector2d( (Real)Screen::Info.width, (Real)Screen::Info.height );
+	view_roll = 0;
 }
 
 	// Camera position setup
@@ -19,6 +20,12 @@ void COrthoCamera::UpdateMatrix ( void )
 {
 	// Override to be orthographic
 	orthographic = true;
+
+	// Override certain camera aspects to get the right projection
+	transform.rotation = Rotator( view_roll,90,-90 );
+	transform.position.z = -500;
+	zNear = 1;
+	zFar = 1000;
 
 	// Setup orthographic view
 	switch ( pixel_scale_mode )

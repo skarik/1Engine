@@ -35,10 +35,12 @@
   <ItemGroup>
     <ClCompile Include="source\render2d\camera\COrthoCamera.cpp" />
     <ClCompile Include="source\render2d\object\CRenderable2D.cpp" />
+    <ClCompile Include="source\render2d\object\TileMapLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\render2d\camera\COrthoCamera.h" />
     <ClInclude Include="source\render2d\object\CRenderable2D.h" />
+    <ClInclude Include="source\render2d\object\TileMapLayer.h" />
     <ClInclude Include="source\render2d\preprocess\PaletteToLUT.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

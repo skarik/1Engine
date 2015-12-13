@@ -24,6 +24,9 @@
     <ClCompile Include="source\render2d\camera\COrthoCamera.cpp">
       <Filter>SOURCE\Render2D\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="source\render2d\object\TileMapLayer.cpp">
+      <Filter>SOURCE\Render2D\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\render2d\object\CRenderable2D.h">
@@ -34,6 +37,9 @@
     </ClInclude>
     <ClInclude Include="source\render2d\camera\COrthoCamera.h">
       <Filter>SOURCE\Render2D\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\object\TileMapLayer.h">
+      <Filter>SOURCE\Render2D\Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

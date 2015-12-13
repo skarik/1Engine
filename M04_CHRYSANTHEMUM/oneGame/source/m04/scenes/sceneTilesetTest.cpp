@@ -23,13 +23,44 @@ void sceneTilesetTest::LoadScene ( void )
 		COrthoCamera* cam = new COrthoCamera();
 		// Set camera options
 		cam->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
+		cam->viewport_target.size = Vector2d( 1280,720 ) * 0.5f;
 		cam->SetActive(); // Mark it as the main camera to use IMMEDIATELY
 	}
+
+	// Create normal orthographic camera
+	/*{
+		CCamera* cam = new CCamera();
+		cam->orthographic = true;
+		cam->transform.rotation = Rotator( 0,45,45 );
+
+		cam->ortho_size = Vector2d( 1000,1000 );
+		cam->SetActive(); // Mark it as the main camera to use IMMEDIATELY
+	}*/
 
 	// Create the tileset tester
 	{
 		Engine2D::TileMap* tilemap = new Engine2D::TileMap();
 		tilemap->RemoveReference(); // So it can be destroyed when the game quits
+
+		// Set the tileset sprite
+		tilemap->SetSpriteFile( "textures/ruins.png" );
+		// Set the tileset information
+		Engine2D::Tileset* tileset = new Engine2D::Tileset ();
+		tileset->atlassize_x = 256;
+		tileset->atlassize_y = 256;
+		tileset->tilecount_x = 8;
+		tileset->tilecount_y = 8;
+		tileset->tilesize_x = 32;
+		tileset->tilesize_y = 32;
+		tilemap->SetTileset( tileset );
+
+		// Set map data
+		tilemap->SetDebugTileMap(
+			40,40			// size of map in tiles
+		);
+
+		// Rebuild the map visuals
+		tilemap->Rebuild();
 	}
 
 	// Print a prompt
