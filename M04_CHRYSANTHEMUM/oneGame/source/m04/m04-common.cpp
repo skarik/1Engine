@@ -18,6 +18,7 @@
 #include "renderer/state/Options.h"
 
 #include "m04/scenes/sceneTilesetTest.h"
+#include "m04-editor/scenes/sceneEditorMain.h"
 
 //===============================================================================================//
 //	GameInitialize
@@ -33,6 +34,7 @@ int GameInitialize ( void )
 
 	// Scene registration
 	EngineCommon::RegisterScene<sceneTilesetTest>( "test0" );
+	EngineCommon::RegisterScene<sceneEditorMain>( "test1" );
 	//EngineCommon::RegisterScene<gmsceneParticleEditor>( "pce" );
 	//EngineCommon::RegisterScene<gmsceneLipsyncEditor>( "lse" );
 

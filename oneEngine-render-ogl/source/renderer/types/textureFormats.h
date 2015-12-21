@@ -105,5 +105,11 @@ enum eTextureClass
 	TextureClassRenderTarget_Cube,
 	TextureClassRenderTarget_MRT,
 };
+// Enumeration for texture sampling
+enum eSamplingFilter
+{
+	SamplingPoint = 0,
+	SamplingLinear,
+};
 
 #endif//_RENDERER_TEXTURE_FORMATS_H_

@@ -93,6 +93,7 @@ struct tTextureInfo
 	eTextureType	type;
 	eInternalFormat internalFormat;
 	eMipmapGenerationStyle	mipmapStyle;
+	eSamplingFilter	filter;
 
 	unsigned int width;
 	unsigned int height;
@@ -109,6 +110,12 @@ struct tTextureInfo
 
 	unsigned int userdata;
 	void*		userpdata;
+
+	tTextureInfo ( void )
+		: index(0)
+	{
+		;
+	}
 };
 // Texture state struct
 struct tTextureState
@@ -135,7 +142,8 @@ public:
 		unsigned int	maxTextureHeight= 1024,
 		eWrappingType	repeatX			= Repeat,
 		eWrappingType	repeatY			= Repeat,
-		eMipmapGenerationStyle	mipmapGeneration = MipmapNormal
+		eMipmapGenerationStyle	mipmapGeneration = MipmapNormal,
+		eSamplingFilter	filter			= SamplingLinear
 		);
 	RENDER_API ~CTexture ( void );
 

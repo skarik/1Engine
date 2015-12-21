@@ -239,10 +239,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="source\m04-editor\scenes\sceneEditorMain.h" />
+    <ClInclude Include="source\m04-editor\standalone\MapEditor.h" />
+    <ClInclude Include="source\m04-editor\standalone\mapeditor\TileSelector.h" />
+    <ClInclude Include="source\m04-editor\standalone\mapeditor\TileSelectorUI.h" />
+    <ClInclude Include="source\m04-editor\utilties\PaletteConverter.h" />
     <ClInclude Include="source\m04\m04-common.h" />
     <ClInclude Include="source\m04\scenes\sceneTilesetTest.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\m04-editor\scenes\sceneEditorMain.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\MapEditor.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\mapeditor\TileSelector.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\mapeditor\TileSelectorUI.cpp" />
     <ClCompile Include="source\m04\m04-common.cpp" />
     <ClCompile Include="source\m04\scenes\sceneTilesetTest.cpp" />
   </ItemGroup>

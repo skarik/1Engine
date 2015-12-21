@@ -119,3 +119,12 @@ glEnum glMainSystem::Enum ( const eWrappingType fmt )
 	throw Core::InvalidArgumentException();
 	return 0x0;
 }
+glEnum glMainSystem::Enum ( const eSamplingFilter fmt )
+{
+	switch ( fmt ) {
+	case SamplingLinear:	return GL_LINEAR;
+	case SamplingPoint:		return GL_NEAREST;
+	}
+	throw Core::InvalidArgumentException();
+	return 0x0;
+}

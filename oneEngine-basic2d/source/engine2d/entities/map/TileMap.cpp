@@ -54,13 +54,20 @@ void TileMap::SetDebugTileMap ( const uint n_map_w, const uint n_map_h )
 	{
 		tilesetEntry_t tiletype;
 
-		tiletype.type = TILE_DEFAULT;
-		tiletype.atlas_x = 0;
-		tiletype.atlas_y = 2;
-		tiletype.atlas_w = 1;
-		tiletype.atlas_h = 1;
+		// Make a tile type out of every tile available
+		for ( int iy = 0; iy < m_tileset->tilecount_y; ++iy )
+		{
+			for ( int ix = 0; ix < m_tileset->tilecount_x; ++ix )
+			{
+				tiletype.type = TILE_DEFAULT;
+				tiletype.atlas_x = ix;
+				tiletype.atlas_y = iy;
+				tiletype.atlas_w = 1;
+				tiletype.atlas_h = 1;
 
-		m_tileset->tiles.push_back( tiletype );
+				m_tileset->tiles.push_back( tiletype );
+			}
+		}
 	}
 
 	// Build map
@@ -69,7 +76,7 @@ void TileMap::SetDebugTileMap ( const uint n_map_w, const uint n_map_h )
 		for ( uint iy = 0; iy < n_map_h; ++iy )
 		{
 			mapTile_t tile;
-			tile.type = 0;
+			tile.type = rand() % ( m_tileset->tilecount_x * m_tileset->tilecount_y );
 			tile.x = ix * m_tileset->tilesize_x;
 			tile.y = iy * m_tileset->tilesize_y;
 			tile.depth = 0;

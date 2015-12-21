@@ -23,7 +23,8 @@ CTexture::CTexture ( string sInFilename,
 		unsigned int	maxTextureHeight,
 		eWrappingType	repeatX,
 		eWrappingType	repeatY,
-		eMipmapGenerationStyle	mipmapGeneration
+		eMipmapGenerationStyle	mipmapGeneration,
+		eSamplingFilter	filter
 		)
 {
 	GL_ACCESS; // Using the glMainSystem accessor
@@ -57,6 +58,7 @@ CTexture::CTexture ( string sInFilename,
 	info.repeatX		= repeatX;
 	info.repeatY		= repeatY;
 	info.mipmapStyle	= mipmapGeneration;
+	info.filter			= filter;
 	// And prepare the state information
 	state.level_base	= 0;
 	state.level_max		= 0;
@@ -239,6 +241,7 @@ void CTexture::Unbind ( char a )
 	glBindTexture( GL_TEXTURE_BUFFER, 0 );
 }
 
+//=========================================//
 // === Reloading ===
 void CTexture::Reload ( void )
 {
@@ -257,8 +260,8 @@ void CTexture::Reload ( void )
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL.Enum(info.repeatX) );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL.Enum(info.repeatY) );
 	// Change the filtering
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(info.filter) );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL.Enum(info.filter) );
 	// Copy the data to the texture object
 	glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 	// Generate the mipmaps
@@ -271,6 +274,7 @@ void CTexture::Reload ( void )
 	pData = NULL;
 }
 
+//=========================================//
 // === Mipmap Generation ===
 void CTexture::GenerateMipmap ( eMipmapGenerationStyle generationStyle )
 {
@@ -330,6 +334,7 @@ void CTexture::GenerateMipmap ( eMipmapGenerationStyle generationStyle )
 	}
 }
 
+//=========================================//
 // === Loader ===
 void CTexture::LoadImageInfo ( void )
 {

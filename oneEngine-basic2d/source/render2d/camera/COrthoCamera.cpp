@@ -1,5 +1,6 @@
 
 #include "core/system/Screen.h"
+#include "renderer/texture/CRenderTexture.h"
 
 #include "COrthoCamera.h"
 
@@ -40,6 +41,14 @@ void COrthoCamera::UpdateMatrix ( void )
 		break;
 	case ORTHOSCALE_MODE_TOUCH_INSIDE:
 		throw Core::NotYetImplementedException();
+		/*
+		Real targetdim_view  = 
+
+		// Use those two values to set the ortho_size based on a new pixel scale factor
+		Real targetdim_scalar = targetdim_view / targetdim_screen;
+		ortho_size.x = (Real)Screen::Info.width * targetdim_scalar;
+		ortho_size.y = (Real)Screen::Info.height * targetdim_scalar;
+		*/
 		break;
 	case ORTHOSCALE_MODE_TOUCH_OUTSIDE:
 		throw Core::NotYetImplementedException();

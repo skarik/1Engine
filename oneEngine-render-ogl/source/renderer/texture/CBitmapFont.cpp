@@ -1,6 +1,7 @@
 
 #include "core/debug/console.h"
 #include "core/utils/StringUtils.h"
+#include "core/system/io/FileUtils.h"
 #include "core-ext/system/io/Resources.h"
 // Include class and structure definition
 #include "CBitmapFont.h"
@@ -436,7 +437,11 @@ void CBitmapFont::LoadFont ( void )
 // == Load a font by conversion to texture ==
 void CBitmapFont::LoadFontAsTexture_System ( void )
 {
-	throw Core::InvalidCallException();
+	string filepath = Core::Resources::PathTo( string("fonts/") + fontInfo.name );
+	if ( IO::FileExists( filepath ) )
+		throw Core::InvalidCallException();
+	else
+		Debug::Console->PrintError( "Font file does not exist" );
 	/*
 #ifdef _WIN32
 	HFONT	font;
@@ -659,7 +664,11 @@ void CBitmapFont::LoadFontAsTexture_System ( void )
 // Takes a loaded font file and draws them to a bitmap, then proceeds to 
 void CBitmapFont::ConvertFontToBitmap ( void )
 {
-	throw Core::InvalidCallException();
+	string filepath = Core::Resources::PathTo( string("fonts/") + fontInfo.name );
+	if ( IO::FileExists( filepath ) )
+		throw Core::InvalidCallException();
+	else
+		Debug::Console->PrintError( "Font file does not exist" );
 	// Don't convert the font if it's already a bitmap
 	/*if ( fontInfo.isTexture )
 	{

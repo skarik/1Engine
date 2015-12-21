@@ -109,7 +109,7 @@ void CDuskGUI::InitializeDefaultMaterials ( void )
 
 	matDefFont		= new glMaterial ();
 	//fntDefDefault	= new CBitmapFont ( "Calibri", 16, FW_NORMAL );
-	fntDefDefault	= new CBitmapFont ( "HVD_Comic_Serif_Pro.otf", 16, FW_NORMAL );
+	fntDefDefault	= new CBitmapFont ( "ComicNeue-Bold.ttf", 16, FW_NORMAL );
 	//fntDefDefault	= new CBitmapFont ( "monofonto.ttf", 16, FW_NORMAL );
 
 	// Set default colors and mat settings

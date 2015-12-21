@@ -45,7 +45,15 @@ CRenderable2D::~CRenderable2D ()
 void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 {
 	// TODO: Convert the texture. For now, set the material based on the input file.
-	m_material->setTexture( 0, new CTexture( n_sprite_filename ) );
+	m_material->setTexture(
+		0,
+		new CTexture (
+			n_sprite_filename, 
+			Texture2D, RGBA8,
+			1024,1024, Clamp,Clamp,
+			MipmapNone,SamplingPoint
+		)
+	);
 }
 
 //		PushModelData()

@@ -128,8 +128,8 @@ void CResourceManager::RenderUpdate ( void )
 						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL.Enum(streamTarget->info.repeatX) );
 						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL.Enum(streamTarget->info.repeatY) );
 						// Change the filtering
-						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(streamTarget->info.filter) );
+						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL.Enum(streamTarget->info.filter) );
 						// Change the lod bias
 						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.5f );
 					}
@@ -491,12 +491,22 @@ void CResourceManager::AddResource ( CTexture* n_texture )
 			return;
 		}
 	}
+
 	resourceInfo_t newTexture;
 	newTexture.m_resource = n_texture;
-	newTexture.m_resourceType = resourceInfo_t::RESOURCE_TEXTURE;
 	newTexture.m_needReload = false;
 	newTexture.m_needStream = true;
-	newTexture.m_streamState = S_NEED_STREAM;
+	newTexture.m_resourceType = resourceInfo_t::RESOURCE_TEXTURE;
+	if ( n_texture->info.index == 0 )
+	{
+		newTexture.m_streamState = S_NEED_STREAM;
+	}
+	else
+	{
+		newTexture.m_needStream = false;
+		newTexture.m_streamState = S_DONE;
+		Debug::Console->PrintWarning( " + Texture already set on dupe.\n" );
+	}
 	mResourceList.push_back( newTexture );
 }
 
@@ -671,8 +681,8 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 			n_texture->state.level_max = 0;
 
 			// Disable mipmapping
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(n_texture->info.filter) );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL.Enum(n_texture->info.filter) );
 
 			//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
 			//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0 );

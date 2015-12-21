@@ -533,6 +533,8 @@ COglWindowWin32::eReturnStatus COglWindowWin32::CreateGLWindow(char* title, int 
 		printf( "BAD HID REGISTRATION.\n" );
 		throw std::exception("BAD HID REGISTRATION");
 	}
+	// init touch input
+	RegisterTouchWindow( hWnd, 0 );
 
 	// If not fullscreen, start the window in the center of the screen (or where it was last set to)
 	if ( !fullscreen )
@@ -908,6 +910,16 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 			return 0;
 		}
 
+		case WM_TOUCH:
+		{
+			Debug::Console->PrintWarning( "Touch message\n" );
+			return 0;
+		}
+		case WM_GESTURE:
+		{
+			Debug::Console->PrintWarning( "Gesture message\n" );
+			return 0;
+		}
 
 		case WM_SIZE:								// Resize The OpenGL Window
 		{

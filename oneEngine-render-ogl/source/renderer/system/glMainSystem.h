@@ -197,6 +197,7 @@ public:
 	RENDER_API glEnum		Enum ( const eDepthFormat );
 	RENDER_API glEnum		Enum ( const eStencilFormat );
 	RENDER_API glEnum		Enum ( const eWrappingType );
+	RENDER_API glEnum		Enum ( const eSamplingFilter );
 
 	//==============================================================================================//
 	// TEXTURES
