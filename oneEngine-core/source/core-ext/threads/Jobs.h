@@ -6,13 +6,17 @@
 
 #include <thread>
 #include <functional>
+#include <mutex>
 #include <atomic>
+#include <condition_variable>
 #include <list>
 #include <vector>
 #include <utility>
 
 // Uncomment this if in a C++11 compiler that supports Variadic templates.
 //#define _USING_VARIADIC_TEMPLATES_
+// This controls whether spin-locking or cv-signals are used for the worker loop.
+#define _USING_JOB_SIGNALING_SYSTEM_
 
 namespace Jobs
 {
@@ -51,12 +55,14 @@ namespace Jobs
 	class jobState_t
 	{
 	public:
+		std::condition_variable		signal;
+		std::mutex				signal_mtx;
 		std::atomic<bool>		perform;
 		std::function<void()>	function;
 
 	public:
 		jobState_t(void)
-			: perform(false)
+			: perform(false), signal()
 		{
 			;
 		}
@@ -257,11 +263,19 @@ namespace Jobs
 	private:
 		// Is the system enabled for adding jobs?
 		std::atomic<bool>	m_systemEnabled;
+		// Locked by the thread doing the main work
+		std::mutex			m_systemMainLock;
 		// Thread that sends out jobs
 		std::thread			m_managerThread;
 		// Threads that perform jobs
 		std::vector<std::thread>	m_jobThreads;
 		std::vector<jobState_t>		m_jobStates;
+
+#ifdef _USING_JOB_SIGNALING_SYSTEM_
+		// Used to prevent the CPU usage from spin locking, instead executing update when a job is requested or finished.
+		std::condition_variable		m_jobsignal;
+		std::mutex					m_jobsignal_mtx;
+#endif
 
 		// Flag to mask the highest priority jobs
 		std::atomic<uint8_t>	m_highPriorityFlag;

@@ -30,12 +30,22 @@ namespace M04
 		// Get the tileset tile type the mouse is currently over.
 		// Returns negative value when below 
 		int			UIMouseoverTiletype ( void );
+
+		//		UISetSelection ( selection )
+		// Overrides the selection to actually use when rendering.
+		void		UISetSelection ( int );
 	public:
 		Engine2D::Tileset*	m_tileset;
 
 	protected:
+		glMaterial*			ui_material;
+
+		int					ui_columns;
+		int					ui_spacing;
 		Vector2d			ui_scale;
-		Vector2d			ui_offset;
+		Vector2d			ui_base_offset;
+
+		int					ui_mouseover;
 	};
 };
 

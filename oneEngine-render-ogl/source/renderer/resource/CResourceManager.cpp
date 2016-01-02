@@ -566,14 +566,27 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 
 			// Get the BPD filename
 			string t_bpdFilename = n_texture->sFilename;
+			t_bpdFilename = Core::Resources::PathTo( t_bpdFilename );
 			t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
-			// Convert it to BPD
-			try {
-				Textures::ConvertFile( n_texture->sFilename, t_bpdFilename );
+			if ( !IO::FileExists( t_bpdFilename ) )
+			{
+				// May be in release mode. Go directly to the BPD file
+				t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
+				t_bpdFilename = Core::Resources::PathTo( t_bpdFilename );
 			}
-			catch ( std::exception& e ) {
-				printf( "Exception: %s\n", e.what() );
+			else
+			{
+				// Work in development mode
+				t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
+				// Convert it to BPD
+				try {
+					Textures::ConvertFile( n_texture->sFilename, t_bpdFilename );
+				}
+				catch ( std::exception& e ) {
+					printf( "Exception: %s\n", e.what() );
+				}
 			}
+
 			// Open the BPD
 			FILE* t_bpdFile = fopen( t_bpdFilename.c_str(), "rb" );
 			if ( t_bpdFile )
@@ -675,6 +688,7 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 			{
 				// Print error if things go terribly wrong!
 				Debug::Console->PrintError("CResourceManager::ForceLoadResource >> could not open file!\n");
+				printf( " + file: \"%s\"\n", t_bpdFilename.c_str() );
 			}
 
 			n_texture->state.level_base = 0;
@@ -710,14 +724,23 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 	}*/
 	// First convert the file to a BPD
 	string t_bpdFilename = Core::Resources::PathTo( n_texture->sFilename );
-	t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
-
-	// Convert it to BPD
-	try {
-		Textures::ConvertFile( n_texture->sFilename, t_bpdFilename );
+	if ( !IO::FileExists( t_bpdFilename ) )
+	{
+		// May be in release mode. Go directly to the BPD file
+		t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
+		t_bpdFilename = Core::Resources::PathTo( t_bpdFilename );
 	}
-	catch ( std::exception& e ) {
-		printf( "Exception: %s\n", e.what() );
+	else
+	{
+		// Work in development mode
+		t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
+		// Convert it to BPD
+		try {
+			Textures::ConvertFile( n_texture->sFilename, t_bpdFilename );
+		}
+		catch ( std::exception& e ) {
+			printf( "Exception: %s\n", e.what() );
+		}
 	}
 
 	// Now, read in some LQ pixels to start us off
@@ -758,6 +781,7 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 	{
 		// Print error if things go terribly wrong!
 		Debug::Console->PrintError("CResourceManager::FinishAddResource >> could not open file!\n");
+		printf( " + file: \"%s\"\n", t_bpdFilename.c_str() );
 	}
 	delete [] lowQuality;
 }

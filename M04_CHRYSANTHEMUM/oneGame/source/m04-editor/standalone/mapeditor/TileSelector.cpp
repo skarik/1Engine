@@ -2,47 +2,58 @@
 #include "TileSelector.h"
 #include "TileSelectorUI.h"
 
+#include "core/input/CInput.h"
+
 #include "engine2d/entities/map/TileMap.h"
 
 using namespace M04;
 
 TileSelector::TileSelector ( void )
 {
+	m_tileselection = 0;
 	ui = new TileSelectorUI();
-
-	{
-		Engine2D::TileMap* tilemap = new Engine2D::TileMap();
-		tilemap->RemoveReference(); // So it can be destroyed when the game quits
-
-		// Set the tileset sprite
-		tilemap->SetSpriteFile( "textures/ruins.png" );
-		// Set the tileset information
-		Engine2D::Tileset* tileset = new Engine2D::Tileset ();
-		tileset->atlassize_x = 256;
-		tileset->atlassize_y = 256;
-		tileset->tilecount_x = 8;
-		tileset->tilecount_y = 8;
-		tileset->tilesize_x = 32;
-		tileset->tilesize_y = 32;
-		tilemap->SetTileset( tileset );
-
-		// Set map data
-		tilemap->SetDebugTileMap(
-			40,40			// size of map in tiles
-		);
-
-		// Rebuild the map visuals
-		tilemap->Rebuild();
-
-		ui->SetTileMap( tilemap );
-	}
 }
 TileSelector::~TileSelector ( void )
 {
 	delete_safe(ui);
 }
 
-void TileSelector::Update ( void )
+bool TileSelector::Update ( void )
 {
-	// Nothing at this point
+	// Update mouseover for the tile select
+	int nextTileSelect = ui->UIMouseoverTiletype();
+	ui->UISetSelection( m_tileselection );
+
+	if ( nextTileSelect >= 0 )
+	{
+		if ( Input::MouseDown( Input::MBLeft ) )
+		{
+			m_tileselection = nextTileSelect;
+			ui->UISetSelection( m_tileselection );
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+//		SetTileMap ( )
+// Sets the tilemap containing the tileset data that need to pull from
+void TileSelector::SetTileMap ( Engine2D::TileMap* target )
+{
+	ui->SetTileMap( target );
+}
+
+// return the tile selection currently used for the selector
+int	TileSelector::GetTileSelection ( void ) const
+{
+	return m_tileselection;
+}
+
+// sets if the UI is visible or not
+void TileSelector::SetVisible ( const bool visibility )
+{
+	ui->SetVisible( visibility );
 }

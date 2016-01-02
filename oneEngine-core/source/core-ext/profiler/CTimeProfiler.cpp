@@ -19,7 +19,7 @@ CTimeProfiler::CTimeProfiler ( void )
 	QueryPerformanceFrequency( &freq );
 }
 
-void CTimeProfiler::ZeroTimeProfile ( string const& sName )
+void CTimeProfiler::ZeroTimeProfile ( const char* sName )
 {
 	std::lock_guard<std::mutex> lock( io_lock );
 
@@ -36,7 +36,7 @@ void CTimeProfiler::ZeroTimeProfile ( string const& sName )
 	}
 }
 
-void CTimeProfiler::BeginTimeProfile ( string const& sName )
+void CTimeProfiler::BeginTimeProfile ( const char* sName )
 {
 	std::lock_guard<std::mutex> lock( io_lock );
 
@@ -54,7 +54,7 @@ void CTimeProfiler::BeginTimeProfile ( string const& sName )
 }
 
 
-double CTimeProfiler::EndTimeProfile ( string const& sName )
+double CTimeProfiler::EndTimeProfile ( const char* sName )
 {
 	std::lock_guard<std::mutex> lock( io_lock );
 
@@ -75,7 +75,7 @@ double CTimeProfiler::EndTimeProfile ( string const& sName )
 	return currentProfile.delta;
 }
 
-double CTimeProfiler::EndMaxTimeProfile ( string const& sName )
+double CTimeProfiler::EndMaxTimeProfile ( const char* sName )
 {
 	std::lock_guard<std::mutex> lock( io_lock );
 
@@ -94,7 +94,7 @@ double CTimeProfiler::EndMaxTimeProfile ( string const& sName )
 	return time;
 }
 
-double CTimeProfiler::EndAddTimeProfile ( string const& sName )
+double CTimeProfiler::EndAddTimeProfile ( const char* sName )
 {
 	std::lock_guard<std::mutex> lock( io_lock );
 
@@ -109,7 +109,7 @@ double CTimeProfiler::EndAddTimeProfile ( string const& sName )
 	return currentProfile.aggregate;
 }
 
-double CTimeProfiler::EndPrintTimeProfile ( string const& sName )
+double CTimeProfiler::EndPrintTimeProfile ( const char* sName )
 {
 	std::lock_guard<std::mutex> lock( io_lock );
 

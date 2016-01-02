@@ -25,6 +25,18 @@
     <Filter Include="SOURCE\M04-Editor\Standalone\Mapeditor">
       <UniqueIdentifier>{81bbdcbd-2163-4247-98ec-e397d6ca1d45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04\Interfaces">
+      <UniqueIdentifier>{8932863d-d732-4b3b-92be-efc068ab3f0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\M04\States">
+      <UniqueIdentifier>{4a077fc5-3d5e-41b1-ac6d-77d1696f8601}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\M04-Editor\Renderer">
+      <UniqueIdentifier>{03f50bce-86b8-4055-b8c1-feba8a41e8be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\M04-Editor\Renderer\Object">
+      <UniqueIdentifier>{4afc5d5f-a9c5-42f2-ae43-e2f8550716f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -48,6 +60,21 @@
     <ClInclude Include="source\m04-editor\standalone\mapeditor\TileSelectorUI.h">
       <Filter>SOURCE\M04-Editor\Standalone\Mapeditor</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04\interfaces\MapIO.h">
+      <Filter>SOURCE\M04\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04\states\MapInformation.h">
+      <Filter>SOURCE\M04\States</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\scenes\sceneDeveloperMenu.h">
+      <Filter>SOURCE\M04-Editor\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\DeveloperMenu.h">
+      <Filter>SOURCE\M04-Editor\Standalone</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\renderer\object\AreaRenderer.h">
+      <Filter>SOURCE\M04-Editor\Renderer\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -67,6 +94,18 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\mapeditor\TileSelector.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\Mapeditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\interfaces\MapIO.cpp">
+      <Filter>SOURCE\M04\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\scenes\sceneDeveloperMenu.cpp">
+      <Filter>SOURCE\M04-Editor\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\DeveloperMenu.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\renderer\object\AreaRenderer.cpp">
+      <Filter>SOURCE\M04-Editor\Renderer\Object</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

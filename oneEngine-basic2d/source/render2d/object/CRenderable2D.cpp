@@ -16,7 +16,7 @@ CRenderable2D::CRenderable2D ( void )
 	m_material->passinfo.push_back( glPass() );
 	m_material->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
 	m_material->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	m_material->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
+	m_material->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
 	m_material->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 
 	// Start with empty buffers

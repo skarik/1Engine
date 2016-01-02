@@ -48,9 +48,9 @@ CDuskGUI::CDuskGUI ( void )
 	SetMaterial( matDefault );
 
 	// Set default colors and mat settings
-	m_basecolor			= Color( 0.4f,0.4f,0.5f, 0.6f );
-	m_basecolor_hover	= Color( 0.5f,0.5f,0.6f, 0.6f );
-	m_basecolor_down	= Color( 0.2f,0.2f,0.4f, 0.7f );
+	m_basecolor			= Color( 0.25f,0.25f,0.35f, 0.7f );
+	m_basecolor_hover	= Color( 0.50f,0.50f,0.60f, 0.7f );
+	m_basecolor_down	= Color( 0.05f,0.05f,0.15f, 0.8f );
 
 	// Handle init
 	hCurrentElement = -1;
@@ -118,10 +118,10 @@ void CDuskGUI::InitializeDefaultMaterials ( void )
 	m_basecolor_down	= Color( 0.2f,0.2f,0.4f, 0.7f );
 
 	matDefDefault->m_diffuse = Color( 1,1,1,1 );
-	//matDefDefault->setTexture( 0, new CTexture(".res/textures/hud/dusk_element.png") );
+	//matDefDefault->setTexture( 0, new CTexture("textures/hud/dusk_element.png") );
 	matDefDefault->setTexture( 0, new CTexture("null") );
 	matDefDefault->passinfo.push_back( glPass() );
-	matDefDefault->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matDefDefault->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	matDefDefault->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	matDefDefault->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	matDefDefault->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
@@ -129,7 +129,7 @@ void CDuskGUI::InitializeDefaultMaterials ( void )
 	matDefFont->m_diffuse = Color( 1,1,1,1 );
 	matDefFont->setTexture( 0, fntDefDefault );
 	matDefFont->passinfo.push_back( glPass() );
-	matDefFont->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matDefFont->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	matDefFont->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	matDefFont->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	matDefFont->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
@@ -138,6 +138,9 @@ void CDuskGUI::InitializeDefaultMaterials ( void )
 // Updating
 void CDuskGUI::Update ( void )
 {
+	// Skip if there's nothing to do
+	if ( vElements.empty() ) return;
+
 	// Set pixel + screen parameters + current GUI
 	Screen::_screen_info_t prevInfo = Screen::Info;
 	if ( !bInPixelMode ) {
@@ -145,9 +148,9 @@ void CDuskGUI::Update ( void )
 	}
 	else {
 		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX(), CInput::MouseY() );
-		Screen::Info.width = 1;
+		/*Screen::Info.width = 1;
 		Screen::Info.height = 1;
-		Screen::Info.scale = 1;
+		Screen::Info.scale = 1;*/
 	}
 	CDuskGUIElement::activeGUI = this;
 
@@ -171,12 +174,18 @@ void CDuskGUI::Update ( void )
 	
 	if ( hCurrentDialogue == -1 )
 	{
+		// Reset offset
+		parenting_offset = Vector2d(0,0);
+		offsetList.resize( vElements.size(), Vector2d(0,0) );
+
 		// Iterate through all the components
 		for ( unsigned int i = 0; i < vElements.size(); ++i )
 		{
 			if ( vElements[i] != NULL ) {
-				hCurrentElement = Handle(i);
+				// Save offset
+				parenting_offset = offsetList[i] - vElements[i]->rect.pos;
 				// Update them
+				hCurrentElement = Handle(i);
 				vElements[i]->Update();
 			}
 		}
@@ -224,6 +233,9 @@ void CDuskGUI::Update ( void )
 	}
 	else
 	{
+		// Reset offset
+		parenting_offset = Vector2d(0,0);
+		// Fix the focus
 		hCurrentElement = hCurrentDialogue;
 		hCurrentFocus = hCurrentDialogue;
 		// Reset focuses
@@ -259,9 +271,9 @@ bool CDuskGUI::Render ( const char pass )
 	}
 	else {
 		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX(), CInput::MouseY() );
-		Screen::Info.width = 1;
+		/*Screen::Info.width = 1;
 		Screen::Info.height = 1;
-		Screen::Info.scale = 1;
+		Screen::Info.scale = 1;*/
 	}
 	CDuskGUIElement::activeGUI = this;
 
@@ -280,6 +292,11 @@ bool CDuskGUI::Render ( const char pass )
 	// List for the 'recursive' drawing
 	std::list<Handle> drawList;
 	drawList.push_back( currentElement );
+
+	// Reset offset
+	parenting_offset = Vector2d(0,0);
+	offsetList.resize( vElements.size(), Vector2d(0,0) );
+	offsetList.assign( vElements.size(), Vector2d(0,0) );
 
 	// Iterate through all the components
 	for ( unsigned int i = 0; i < vElements.size(); ++i ) {
@@ -322,11 +339,16 @@ bool CDuskGUI::Render ( const char pass )
 					{
 						if ( pbElementDrawn[currentElement] == false ) // Make sure we were not made to skip
 						{
+							// Save offsets
+							offsetList[currentElement] += vElements[currentElement]->parent->rect.pos;
+							parenting_offset = offsetList[currentElement];
 							// Draw the element
 							pbElementDrawn[currentElement] = true;
 							setSubdrawDefault();
 							vElements[currentElement]->Render();
 							vElements[currentElement]->drawn = true;
+							// Save offsets
+							offsetList[currentElement] += vElements[currentElement]->rect.pos;
 						}
 					}
 				}
@@ -334,11 +356,15 @@ bool CDuskGUI::Render ( const char pass )
 				{
 					if ( pbElementDrawn[currentElement] == false )
 					{
+						// Save offsets
+						parenting_offset = offsetList[currentElement];
 						// Draw the element
 						pbElementDrawn[currentElement] = true;
 						setSubdrawDefault();
 						vElements[currentElement]->Render();
 						vElements[currentElement]->drawn = true;
+						// Save offsets
+						offsetList[currentElement] += vElements[currentElement]->rect.pos;
 					}
 				}
 			}
@@ -377,6 +403,7 @@ bool CDuskGUI::Render ( const char pass )
 	// Draw the dialogue that's active
 	if ( hCurrentDialogue >= 0 ) {
 		if ( vElements[hCurrentDialogue] != NULL ) {
+			parenting_offset = Vector2d(0,0);
 			setSubdrawDefault();
 			vElements[hCurrentDialogue]->Render();
 			vElements[hCurrentDialogue]->drawn = true;
@@ -573,6 +600,14 @@ int CDuskGUI::GetDialogueResponse ( const Handle& handle )
 	((CDuskGUIDialogue*)(vElements[int(handle)]))->dialogueReturn = -1;
 	return value;
 }
+// Is a dialogue active
+bool CDuskGUI::HasOpenDialogue ( void )
+{
+	if ( hCurrentDialogue != -1 )
+		return true;
+	else
+		return false;
+}
 
 // == Creating new elements ==
 // Panel used for the backdrop of other elements
@@ -670,6 +705,12 @@ void CDuskGUI::UpdateTextfield ( const Handle & handle, string & inOutTextVal )
 		inOutTextVal = tf->textValue;
 	}
 }
+void CDuskGUI::GetTextfieldData ( const Handle& handle, string & outTextVal )
+{
+	CDuskGUITextfield* tf = (CDuskGUITextfield*)vElements[int(handle)];
+	outTextVal = tf->textValue;
+}
+
 void CDuskGUI::UpdateColorPicker ( const Handle & handle, Color & inOutColorVal )
 {
 	CDuskGUIColorpicker* cp = (CDuskGUIColorpicker*)vElements[int(handle)];
@@ -792,5 +833,16 @@ void CDuskGUI::UpdateCurrentMouseover ( void )
 
 	if ( mouseoverList.size() > 0 ) {
 		hCurrentMouseover = mouseoverListFinal[0];
+	}
+}
+
+// Return the rect of the screen that is being used for drawing
+Rect CDuskGUI::GetScreenRect ( void )
+{
+	if ( !bInPixelMode ) {
+		return Rect( 0.0F, 0.0F, 1.0F, 1.0F );
+	}
+	else {
+		return Rect( 0.0F, 0.0F, (Real)Screen::Info.width, (Real)Screen::Info.height );
 	}
 }

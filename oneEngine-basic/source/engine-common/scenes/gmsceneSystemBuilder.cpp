@@ -10,6 +10,8 @@
 #include "engine-common/utils/CDeveloperConsoleUI.h"
 // Include camera for rendering
 #include "renderer/Camera/CCamera.h"
+// Include some tools
+#include "core/utils/StringUtils.h"
 
 // Include OSF IO
 #include "core-ext/system/io/mccosf.h"
@@ -127,7 +129,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 	fs::path build_path ( n_build_directory );
 	fs::remove_all( build_path );
 	// Wait for the filesystem to update
-	while ( fs::exists( build_path ) );
+	while ( fs::exists( build_path ) ) fs::remove_all( build_path );
 	Debug::Console->PrintWarning( "Waiting 500ms for the filesystem.\n" );
 	std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
 	// Now, create the directory again
@@ -135,6 +137,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 
 	// Copy over the DLLs and the EXE first
 	fs::directory_iterator dirend;
+	fs::recursive_directory_iterator direndr;
 #ifdef _WIN32
 	// Use GetModuleFileName() to get the Visual Studio build directory
 	char m_exe_path [MAX_PATH]; 
@@ -194,6 +197,58 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 			if ( filename.rfind(".res-") != string::npos )
 			{
 				printf( "found resource directory: %s\n", filename.c_str() );
+				// Create the folder
+				fs::path base_resource_path ( build_path.string() + "/" + filename );
+				fs::create_directories( base_resource_path );
+				// Begin a recursive build or copy of all folders and files
+				for ( fs::recursive_directory_iterator rpath( path->path() ); rpath != direndr; ++rpath )
+				{
+					// If it's a folder, make the folder
+					if ( fs::is_directory( rpath->status() ) )
+					{
+						// Make sure it's a valid folder name
+						if ( rpath->path().string().find(".svn") == string::npos )
+						{
+							printf( "found buildable folder: %s\n", rpath->path().filename().c_str() );
+							//printf( "found buildable folder: %s\n", rpath->path().string().c_str() );
+							fs::path new_resource_path ( build_path.string() + "/" + rpath->path().string() );
+							fs::create_directories( new_resource_path );
+						}
+					}
+					// If it's a file, check if should copy it over
+					else if ( fs::is_regular_file( rpath->status() ) )
+					{
+						// Make sure it's a valid file
+						if ( rpath->path().string().find(".svn") == string::npos )
+						{
+							//printf( "found file: %s\n", rpath->path().string().c_str() );
+							string resource_name = rpath->path().filename();
+							printf( "found file: %s\n", resource_name.c_str() );
+
+							// Check the file extension
+							string resource_extension = StringUtils::ToLower( StringUtils::GetFileExtension( resource_name ) );
+							if (   resource_extension == "bpd" || resource_extension == "pad" || resource_extension == "pcf"
+								                               || resource_extension == "seq"
+															   || resource_extension == "pgm" || resource_extension == "vxg"
+															   || resource_extension == "ico"
+															   || resource_extension == "mcc"
+								|| resource_extension == "m01" || resource_extension == "m04"
+								|| resource_extension == "txt" || resource_extension == "yml" || resource_extension == "xml"
+								|| resource_extension == "lua"
+								|| resource_extension == "ttf" || resource_extension == "otf"
+								|| resource_extension == "vert" || resource_extension == "frag"
+								|| resource_extension == "" )
+							{
+								// File needs to be copied over (the folder will already exist)
+								printf( "copying file: %s\n", resource_name.c_str() );
+								std::ifstream  src( "./" + rpath->path().string(),							std::ios::binary);
+								std::ofstream  dst( build_path.string() + "/" + rpath->path().string(),		std::ios::binary);
+								if ( !src.is_open() ) throw Core::NullReferenceException();
+								dst << src.rdbuf();
+							}
+						}
+					}
+				}
 			}
 		}
 	}

@@ -273,6 +273,9 @@
     <ClInclude Include="source\engine-common\scenes\gmsceneSystemBuilder.h">
       <Filter>SOURCE\Engine-Common\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIEdgePanel.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -424,6 +427,9 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\scenes\gmsceneSystemBuilder.cpp">
       <Filter>SOURCE\Engine-Common\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIEdgePanel.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

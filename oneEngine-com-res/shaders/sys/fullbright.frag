@@ -15,7 +15,7 @@ uniform vec4 sys_DiffuseColor;
 
 void main ( void )  
 {
-	vec4 diffuseColor = texture2D( textureSampler0, v2f_texcoord0 );
+	vec4 diffuseColor = texture( textureSampler0, v2f_texcoord0 );
 	
 	gl_FragColor = diffuseColor * v2f_colors;
 	gl_FragColor.a = diffuseColor.a * v2f_colors.a;

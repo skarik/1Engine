@@ -629,3 +629,32 @@ Vector3d CCamera::ScreenToWorldDir ( const Vector2d & screenPos ) const
 
 	return (Vector3d( screen.x,screen.y,screen.z ) - transform.position).normal();
 }
+
+// Converts screen coordinates to the point on the screen the mouse is over.
+Vector3d CCamera::ScreenToWorldPos ( const Vector2d & screenPos ) const
+{
+	// TODO: Test if this still works.
+
+	// last, rotate vector by current camera rotation
+	/*Vector4d screen = Vector4d( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
+	//screen = ( screen * viewTransform.inverse() ) * projTransform.inverse();
+	//screen = viewTransform.inverse() * ( projTransform.inverse() * screen );
+	screen = (!viewTransform).inverse() * ( (!projTransform).inverse() * screen );
+	//screen = !viewTransform * ( !projTransform * screen );
+	//screen /= screen.w;
+
+	return Vector3d( screen.x,screen.y,screen.z );*/
+
+	/*Vector4d screen = Vector4d( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
+	//Vector4d worldPos = screen.rvrMultMatx( (viewTransform * projTransform).inverse() );
+	Vector4d worldPos = (viewTransform * projTransform).inverse() * screen;
+
+	return Vector3d( worldPos.x,worldPos.y,worldPos.z );*/
+
+	Vector4d screen = Vector4d( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
+
+	Vector3d world ( screen.x * ortho_size.x * 0.5F, -screen.y * ortho_size.y * 0.5F, 0.0F );
+
+	return world + transform.position;
+}
+

@@ -191,10 +191,10 @@ void CRenderState::Render ( void )
 		GL.pushModelMatrix( Matrix4x4() );
 
 		//glMaterial::Copy->setTexture( 0, GL.GetMainScreenBuffer() );
-		//static CTexture* dbgTexture = new CTexture(".res/textures/caustics.png");
+		//static CTexture* dbgTexture = new CTexture("textures/caustics.png");
 		/*static CTexture* dbgTexture = NULL;
 		if ( dbgTexture == NULL ) {
-			dbgTexture = new CTexture(".res/textures/system/cursor.png");
+			dbgTexture = new CTexture("textures/system/cursor.png");
 		}*/
 		glMaterial::Copy->setTexture( 0, GL.GetMainScreenBuffer() );
 		//glMaterial::Copy->setTexture( 0, dbgTexture );

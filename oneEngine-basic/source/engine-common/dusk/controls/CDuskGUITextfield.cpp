@@ -14,6 +14,13 @@ void CDuskGUITextfield::Update ( void )
 	{
 		GetStringValue();
 	}
+	else
+	{	// Bugfix for when changing value without focus
+		if ( textValue != label )
+		{
+			textValue = label;
+		}
+	}
 }
 void CDuskGUITextfield::Render ( void )
 {
@@ -35,13 +42,15 @@ void CDuskGUITextfield::Render ( void )
 	drawRectWire( rect );
 	drawRect( rect );
 
+	Rect screen = activeGUI->GetScreenRect();
+
 	// Now draw text
-	drawText( rect.pos.x + rect.size.x*0.01f + 0.01f, rect.pos.y + rect.size.y*0.01f + 0.03f, label.c_str() );
-	ftype cursor_x = rect.pos.x + rect.size.x*0.01f + 0.012f + (GLd.GetAutoTextWidth( label.c_str() )/Screen::Info.width);
+	drawText( rect.pos.x + rect.size.x*0.01f, rect.pos.y + rect.size.y*0.01f + 0.03f*screen.size.y, label.c_str() );
+	ftype cursor_x = rect.pos.x + rect.size.x*0.01f + 0.002f*screen.size.x + (GLd.GetAutoTextWidth( label.c_str() )/Screen::Info.width)*screen.size.x;
 
 	if ( hasFocus ) {
 		setSubdrawPulse();
-		drawLine( cursor_x, rect.pos.y + rect.size.y*0.08f + 0.005f, cursor_x, rect.pos.y + rect.size.y*0.82f );
+		drawLine( cursor_x, rect.pos.y + rect.size.y*0.08f + 0.005f*screen.size.y, cursor_x, rect.pos.y + rect.size.y*0.82f );
 	}
 }
 
@@ -69,5 +78,5 @@ void CDuskGUITextfield::GetStringValue ( void )
 		}
 	}
 
-	textValue = label.c_str();
+	textValue = label;
 }

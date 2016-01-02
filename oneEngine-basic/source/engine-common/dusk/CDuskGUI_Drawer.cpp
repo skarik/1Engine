@@ -161,7 +161,10 @@ void CDuskGUI::drawRect ( const Rect& rect )
 	{
 		GL.prepareDraw();
 
-		GL.beginOrtho( 0,0, 1,1, -45,45 );
+		if ( !bInPixelMode )
+			GL.beginOrtho( 0,0, 1,1, -45,45 );
+		else
+			GL.beginOrtho();
 		GLd.DrawSet2DScaleMode();
 
 		matDefault->bindPass(0);
@@ -171,7 +174,7 @@ void CDuskGUI::drawRect ( const Rect& rect )
 		for ( uint i = 0; i < modelSolidMeshList.size(); ++i )
 		{
 			GLd.P_PushColor( modelSolidMeshList[i].r, modelSolidMeshList[i].g, modelSolidMeshList[i].b, modelSolidMeshList[i].a );
-			GLd.P_AddVertex( modelSolidMeshList[i].x, modelSolidMeshList[i].y );
+			GLd.P_AddVertex( modelSolidMeshList[i].x + parenting_offset.x, modelSolidMeshList[i].y + parenting_offset.y );
 		}
 		GLd.EndPrimitive();
 		modelSolidMeshList.clear();
@@ -235,7 +238,10 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 	{
 		GL.prepareDraw();
 
-		GL.beginOrtho( 0,0, 1,1, -45,45 );
+		if ( !bInPixelMode )
+			GL.beginOrtho( 0,0, 1,1, -45,45 );
+		else
+			GL.beginOrtho();
 		GLd.DrawSet2DScaleMode();
 
 		matDefault->bindPass(0);
@@ -244,7 +250,7 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 		for ( uint i = 0; i < modelLineMeshList.size(); ++i )
 		{
 			GLd.P_PushColor( modelLineMeshList[i].r, modelLineMeshList[i].g, modelLineMeshList[i].b, modelLineMeshList[i].a );
-			GLd.P_AddVertex( modelLineMeshList[i].x, modelLineMeshList[i].y );
+			GLd.P_AddVertex( modelLineMeshList[i].x + parenting_offset.x, modelLineMeshList[i].y + parenting_offset.y );
 		}
 		GLd.EndPrimitive();
 		modelLineMeshList.clear();
@@ -277,7 +283,10 @@ void CDuskGUI::drawLine ( const ftype x1, const ftype y1, const ftype x2, const 
 	{
 		GL.prepareDraw();
 
-		GL.beginOrtho( 0,0, 1,1, -45,45 );
+		if ( !bInPixelMode )
+			GL.beginOrtho( 0,0, 1,1, -45,45 );
+		else
+			GL.beginOrtho();
 		GLd.DrawSet2DScaleMode();
 
 		matDefault->bindPass(0);
@@ -286,7 +295,7 @@ void CDuskGUI::drawLine ( const ftype x1, const ftype y1, const ftype x2, const 
 		for ( uint i = 0; i < modelLineMeshList.size(); ++i )
 		{
 			GLd.P_PushColor( modelLineMeshList[i].r, modelLineMeshList[i].g, modelLineMeshList[i].b, modelLineMeshList[i].a );
-			GLd.P_AddVertex( modelLineMeshList[i].x, modelLineMeshList[i].y );
+			GLd.P_AddVertex( modelLineMeshList[i].x + parenting_offset.x, modelLineMeshList[i].y + parenting_offset.y );
 		}
 		GLd.EndPrimitive();
 		modelLineMeshList.clear();
@@ -302,14 +311,20 @@ void CDuskGUI::drawText ( const ftype x, const ftype y, const char* str )
 
 	textRequest_t req;
 	req.text = str;
-	req.position.x = x;
-	req.position.y = y;
+	req.position.x = x + parenting_offset.x;
+	req.position.y = y + parenting_offset.y;
 	req.mode = 0;
+	if ( bInPixelMode )
+	{
+		req.position.x /= Screen::Info.width;
+		req.position.y /= Screen::Info.height;
+	}
 	modelTextRequestList.push_back( req );
 
 	{
 		GL.prepareDraw();
 		GL.beginOrtho();
+		GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
 
 		// Draw the text
 		matFont->setTexture( 0, fntDefault );
@@ -341,15 +356,21 @@ void CDuskGUI::drawTextWidth ( const ftype x, const ftype y, const ftype w, cons
 
 	textRequest_t req;
 	req.text = str;
-	req.position.x = x;
-	req.position.y = y;
+	req.position.x = x + parenting_offset.x;
+	req.position.y = y + parenting_offset.y;
 	req.mode = 2;
 	req.width = w;
+	if ( bInPixelMode )
+	{
+		req.position.x /= Screen::Info.width;
+		req.position.y /= Screen::Info.height;
+	}
 	modelTextRequestList.push_back( req );
 
 	{
 		GL.prepareDraw();
 		GL.beginOrtho();
+		GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
 
 		// Draw the text
 		matFont->setTexture( 0, fntDefault );
@@ -381,14 +402,20 @@ void CDuskGUI::drawTextCentered ( const ftype x, const ftype y, const char* str 
 
 	textRequest_t req;
 	req.text = str;
-	req.position.x = x;
-	req.position.y = y;
+	req.position.x = x + parenting_offset.x;
+	req.position.y = y + parenting_offset.y;
 	req.mode = 1;
+	if ( bInPixelMode )
+	{
+		req.position.x /= Screen::Info.width;
+		req.position.y /= Screen::Info.height;
+	}
 	modelTextRequestList.push_back( req );
 
 	{
 		GL.prepareDraw();
 		GL.beginOrtho();
+		GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
 
 		// Draw the text
 		matFont->setTexture( 0, fntDefault );

@@ -53,11 +53,11 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 
 	screenMaterial = new glMaterial();
 	screenMaterial->m_diffuse = Color(0,0,0);
-	screenMaterial->setTexture( 0, new CTexture( ".res/textures/white.jpg" ) );
+	screenMaterial->setTexture( 0, new CTexture( "textures/white.jpg" ) );
 	screenMaterial->passinfo.push_back( glPass() );
 	screenMaterial->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	screenMaterial->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
-	screenMaterial->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	screenMaterial->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 
 	SetMaterial( screenMaterial );
 
@@ -68,7 +68,7 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 	matNotifierDrawer->setTexture( 0, fntNotifier );
 	matNotifierDrawer->passinfo.push_back( glPass() );
 	matNotifierDrawer->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
-	matNotifierDrawer->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matNotifierDrawer->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 }
 
 CLoadScreenInjector::~CLoadScreenInjector ( void )

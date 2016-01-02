@@ -21,22 +21,22 @@ namespace Debug
 		CORE_API explicit CTimeProfiler ( void );
 
 		// Zeros profile with given name
-		CORE_API void ZeroTimeProfile ( string const& );
+		CORE_API void ZeroTimeProfile ( const char* );
 
 		// Begins profile with given name
-		CORE_API void BeginTimeProfile ( string const& );
+		CORE_API void BeginTimeProfile ( const char* );
 
 		// Returns time taken in seconds
-		CORE_API double EndTimeProfile ( string const& );
+		CORE_API double EndTimeProfile ( const char* );
 
 		// Returns time taken in seconds, but only edits if returned time is larger
-		CORE_API double EndMaxTimeProfile ( string const& );
+		CORE_API double EndMaxTimeProfile ( const char* );
 
 		// Returns current aggregate time taken in seconds
-		CORE_API double EndAddTimeProfile ( string const& );
+		CORE_API double EndAddTimeProfile ( const char* );
 
 		// Prints and returns time
-		CORE_API double EndPrintTimeProfile ( string const& );
+		CORE_API double EndPrintTimeProfile ( const char* );
 
 		std::mutex	delta_lock;
 	private:

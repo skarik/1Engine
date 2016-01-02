@@ -195,10 +195,6 @@ ftype	glDrawing::GetAutoTextWidth ( const char* fmt, ... )
 void	glDrawing::DrawAutoText ( float dx, float dy, const char* fmt, ... )
 {
 	GL_ACCESS GLd_ACCESS
-	if ( iPrim2DRoundMode == RND_ROUND ) {
-		dx = (float)((int)dx);
-		dy = (float)((int)dy);
-	}
 
 	va_list		ap;	// Argument list
 	static char	text[1024];
@@ -240,6 +236,11 @@ void	glDrawing::DrawAutoText ( float dx, float dy, const char* fmt, ... )
 			translation = Vector2d( dx*Screen::Info.width, dy*Screen::Info.width );
 		else if ( iPrim2DScalMode == SCALE_HEIGHT )
 			translation = Vector2d( dx*Screen::Info.height, dy*Screen::Info.height );
+		// Round position
+		if ( iPrim2DRoundMode == RND_ROUND ) {
+			translation.x = (float)((int)translation.x);
+			translation.y = (float)((int)translation.y);
+		}
 
 		// Scale the text by the screen scale value
 		//glScalef( Screen::Info.scale, Screen::Info.scale, Screen::Info.scale );
@@ -278,6 +279,11 @@ void	glDrawing::DrawAutoText ( float dx, float dy, const char* fmt, ... )
 		Vector2d uvSize = (fontInfo.fontSizes[curChar]) / baseScale;
 
 		Vector2d drawPos = pen - fontInfo.fontOrigins[curChar];
+		// Round position
+		if ( iPrim2DRoundMode == RND_ROUND ) {
+			drawPos.x = (float)((int)drawPos.x);
+			drawPos.y = (float)((int)drawPos.y);
+		}
 
 		// 0
 			P_PushTexcoord( uvPos.x,uvPos.y );
@@ -360,6 +366,11 @@ void	glDrawing::DrawAutoTextCentered ( float dx, float dy, const char* fmt, ... 
 			translation = Vector2d( dx*Screen::Info.width - fHalfStringWidth, dy*Screen::Info.width );
 		else if ( iPrim2DScalMode == SCALE_HEIGHT )
 			translation = Vector2d( dx*Screen::Info.height - fHalfStringWidth, dy*Screen::Info.height );
+		// Round position
+		if ( iPrim2DRoundMode == RND_ROUND ) {
+			translation.x = (float)((int)translation.x);
+			translation.y = (float)((int)translation.y);
+		}
 
 		// Scale the text by the screen scale value
 		//glScalef( Screen::Info.scale, Screen::Info.scale, Screen::Info.scale );
@@ -398,6 +409,11 @@ void	glDrawing::DrawAutoTextCentered ( float dx, float dy, const char* fmt, ... 
 		Vector2d uvSize = (fontInfo.fontSizes[curChar]) / baseScale;
 
 		Vector2d drawPos = pen - fontInfo.fontOrigins[curChar];
+		// Round position
+		if ( iPrim2DRoundMode == RND_ROUND ) {
+			drawPos.x = (float)((int)drawPos.x);
+			drawPos.y = (float)((int)drawPos.y);
+		}
 
 		// 0
 			P_PushTexcoord( uvPos.x,uvPos.y );
@@ -491,6 +507,11 @@ void		glDrawing::DrawAutoTextWrapped ( float dx, float dy, float dw, const char*
 			translation = Vector2d( dx*Screen::Info.width, dy*Screen::Info.width );
 		else if ( iPrim2DScalMode == SCALE_HEIGHT )
 			translation = Vector2d( dx*Screen::Info.height, dy*Screen::Info.height );
+		// Round position
+		if ( iPrim2DRoundMode == RND_ROUND ) {
+			translation.x = (float)((int)translation.x);
+			translation.y = (float)((int)translation.y);
+		}
 
 		// Scale the text by the screen scale value
 		//glScalef( Screen::Info.scale, Screen::Info.scale, Screen::Info.scale );
@@ -554,6 +575,11 @@ void		glDrawing::DrawAutoTextWrapped ( float dx, float dy, float dw, const char*
 				Vector2d uvSize = (fontInfo.fontSizes[curChar]) / baseScale;
 
 				Vector2d drawPos = pen - fontInfo.fontOrigins[curChar];
+				// Round position
+				if ( iPrim2DRoundMode == RND_ROUND ) {
+					drawPos.x = (float)((int)drawPos.x);
+					drawPos.y = (float)((int)drawPos.y);
+				}
 
 				// 0
 					P_PushTexcoord( uvPos.x,uvPos.y );

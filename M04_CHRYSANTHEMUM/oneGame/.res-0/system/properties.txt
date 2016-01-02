@@ -1,1 +1,2 @@
 developerstring "Chrysanthenum Development Build"
+defaultcmd "scene m04devmenu"

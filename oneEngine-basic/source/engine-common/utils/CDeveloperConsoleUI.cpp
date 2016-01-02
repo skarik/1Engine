@@ -95,14 +95,14 @@ CDeveloperCursor::CDeveloperCursor ( void )
 
 	renderType = Renderer::V2D;
 
-	texCursor = new CTexture( ".res/textures/system/cursor.png" );
+	texCursor = new CTexture( "textures/system/cursor.png" );
 	matCursor = new glMaterial;
 	matCursor->m_diffuse = Color( 1.0f,1,1 );
 	matCursor->setTexture( 0, texCursor );
 	matCursor->passinfo.push_back( glPass() );
 	matCursor->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	matCursor->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
-	matCursor->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matCursor->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	//matCursor->passinfo[0].shader = new glShader( ".res/shaders/sys/copy_buffer.glsl" );
 	matCursor->removeReference();
 	SetMaterial( matCursor );

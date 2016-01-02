@@ -60,6 +60,7 @@ class CDuskGUIDropdownList_GO;
 class CDuskGUIMaterialField;
 class CDuskGUIMaterialPicker;
 class CDuskGUISlider;
+class CDuskGUIEdgePanel;
 namespace Dusk
 {
 	class DialogueFileSelector;
@@ -100,6 +101,7 @@ private:
 	friend CDuskGUIMaterialField;
 	friend CDuskGUIMaterialPicker;
 	friend CDuskGUISlider;
+	friend CDuskGUIEdgePanel;
 	friend Dusk::DialogueFileSelector;
 public:
 	// Constructor+Destructor
@@ -148,6 +150,8 @@ public:
 	ENGCOM_API Handle CreatePanel	( const Handle& =-1 );
 	// Draggable panel for element backdrop
 	ENGCOM_API Handle CreateDraggablePanel ( const Handle& =-1 );
+	// Edge panel for bar menu backdrop
+	ENGCOM_API Handle CreateEdgePanel ( const Handle& =-1 );
 	// Button used for clicking and stuff
 	ENGCOM_API Handle CreateButton	( const Handle& =-1 );
 	// A text-only control
@@ -178,6 +182,7 @@ public:
 	ENGCOM_API Handle CreateTextfield ( const Handle& =-1, const string& =string("") );
 		// Textfield updating
 		ENGCOM_API void UpdateTextfield ( const Handle&, string & inOutTextVal );
+		ENGCOM_API void GetTextfieldData ( const Handle&, string & outTextVal );
 	// A material textfield
 	ENGCOM_API Handle CreateMaterialfield ( const Handle& =-1, const string& =string(""), glMaterial* =NULL );
 		ENGCOM_API void SetMaterialfieldTarget ( const Handle&, glMaterial* );
@@ -234,6 +239,8 @@ public:
 	ENGCOM_API void ShowYesNoDialogue ( const Handle& );
 	// Hide dialogue
 	ENGCOM_API void HideDialogue ( const Handle& );
+	// Is a dialogue active
+	ENGCOM_API bool HasOpenDialogue ( void );
 
 	// IO Dialogues
 	ENGCOM_API Handle DialogueOpenFilename ( System::sFileDialogueEntry* nFiletypes, int nFiletypeCount, const char* nInitialDir="", const char* nDialogueTitle="Open File" );
@@ -274,14 +281,23 @@ private:
 
 private:
 	// == Private Routines ==
+
+	//		UpdateCurrentMouseover ( )
 	// Updates the hCurrentMouseover variable
+	// useful for sub-dialogues that need instant updates
 	void UpdateCurrentMouseover ( void );
 
+	//		GetPositionIn ( rectangle )
 	// Checks if a position is in a rectangle
 	bool GetPositionIn ( const Rect& );
 	
+	//		InitializeDefaultMaterials ( )
 	// Initialize the default static materials
 	void InitializeDefaultMaterials ( void );
+
+	//		GetScreenRect ( )
+	// Return the rect of the screen that is being used for drawing
+	Rect GetScreenRect ( void );
 
 public:
 	// Drawing functions
@@ -335,6 +351,9 @@ private:
 		ftype		width;
 		char		mode;
 	};
+
+	Vector2d parenting_offset;
+	std::vector<Vector2d> offsetList;
 
 	// Drawing queue
 	std::vector<CModelVertex>	modelSolidMeshList;

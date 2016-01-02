@@ -915,9 +915,24 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 			Debug::Console->PrintWarning( "Touch message\n" );
 			return 0;
 		}
+		case WM_GESTURENOTIFY:
+		{
+			Debug::Console->PrintWarning( "Gesture notify message\n" );
+			return 0;
+		}
 		case WM_GESTURE:
 		{
 			Debug::Console->PrintWarning( "Gesture message\n" );
+			return 0;
+		}
+		case WM_HSCROLL:
+		{
+			Debug::Console->PrintWarning( "HScroll message\n" );
+			return 0;
+		}
+		case WM_VSCROLL:
+		{
+			Debug::Console->PrintWarning( "VScroll message\n" );
 			return 0;
 		}
 

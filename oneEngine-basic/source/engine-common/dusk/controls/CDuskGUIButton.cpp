@@ -75,6 +75,6 @@ void CDuskGUIButton::Render ( void )
 		drawRect( rect );
 
 	// Now draw text
-		drawText( rect.pos.x + rect.size.x*0.1f, rect.pos.y + rect.size.y*0.1f  + 0.02f, label.c_str() );
+		drawText( rect.pos.x + rect.size.x*0.1f, rect.pos.y + rect.size.y*0.1f  + 0.02f*activeGUI->GetScreenRect().size.y, label.c_str() );
 
 }

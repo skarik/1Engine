@@ -190,7 +190,8 @@ void CGameSettings::LoadSettings ( void )
 
 
 	// Load up the properties file
-	sysprop_developerstring = "Development Build 05";
+	sysprop_developerstring	= "Development Build 05";
+	sysprop_default_cmd		= "";
 
 	FILE* fp_file = Core::Resources::Open("system/properties.txt","rb");
 	if ( fp_file != NULL )
@@ -209,6 +210,10 @@ void CGameSettings::LoadSettings ( void )
 				if ( strcmp( entry.name, "developerstring" ) == 0 )
 				{
 					sysprop_developerstring = entry.value;
+				}
+				else if ( strcmp( entry.name, "defaultcmd" ) == 0 )
+				{
+					sysprop_default_cmd = entry.value;
 				}
 			}
 		}

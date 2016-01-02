@@ -41,7 +41,7 @@ int CDuskGUI::GetListviewSelection ( const Handle & handle )
 		return -1;
 	}
 	if ( ddl->optionList.size() > 0 ) {
-		if ( ddl->selection < ddl->optionList.size() ) {
+		if ( (uint)ddl->selection < ddl->optionList.size() ) {
 			return ddl->optionList[ddl->selection].value;
 		}
 		else {
@@ -61,7 +61,7 @@ int CDuskGUI::GetListviewIndex ( const Handle & handle )
 		return -1;
 	}
 	if ( ddl->optionList.size() > 0 ) {
-		if ( ddl->selection < ddl->optionList.size() ) {
+		if ( (uint)ddl->selection < ddl->optionList.size() ) {
 			return ddl->selection;
 		}
 		else {

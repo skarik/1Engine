@@ -29,11 +29,11 @@ CScreenFade::CScreenFade ( bool inbFadeIn, float infFadeTime, float infFadeDelay
 
 	screenMaterial = new glMaterial();
 	screenMaterial->m_diffuse = cFadeColor;
-	screenMaterial->setTexture( 0, new CTexture(".res/textures/white.jpg") );
+	screenMaterial->setTexture( 0, new CTexture("textures/white.jpg") );
 	screenMaterial->passinfo.push_back( glPass() );
 	screenMaterial->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	screenMaterial->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
-	screenMaterial->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	screenMaterial->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 }
 CScreenFade::~CScreenFade ( void )
 {

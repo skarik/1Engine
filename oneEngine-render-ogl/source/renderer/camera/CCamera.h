@@ -94,6 +94,7 @@ public:
 	// == Coordinate Queries ==
 	RENDER_API Vector3d	WorldToScreenPos ( const Vector3d & ) const;
 	RENDER_API Vector3d	ScreenToWorldDir ( const Vector2d & ) const;
+	RENDER_API Vector3d	ScreenToWorldPos ( const Vector2d & ) const;
 
 	// == Public Getters
 	RENDER_API CRenderTexture* GetRenderTexture ( void ) { return m_renderTexture; }

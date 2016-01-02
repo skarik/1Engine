@@ -58,6 +58,12 @@ void gmsceneSystemLoader::LoadScene ( void )
 		}
 		Engine::Console->RunCommand( currentcmd ); // Run the last command as well.
 	}
+	// Check the final command line option
+	{
+		if ( !CGameSettings::Active()->sysprop_default_cmd.empty() ) {
+			Engine::Console->RunCommand( CGameSettings::Active()->sysprop_default_cmd );
+		}
+	}
 
 	// Check that they don't want to stay in the console
 	if ( !CGameSettings::Active()->s_cmd.empty() && CGameSettings::Active()->s_cmd.find( "-console" ) == string::npos )

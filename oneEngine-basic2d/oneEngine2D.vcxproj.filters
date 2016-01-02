@@ -30,6 +30,12 @@
     <ClInclude Include="source\engine2d\interface\Tileset.h">
       <Filter>SOURCE\Engine2D\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine2d\entities\Area2DBase.h">
+      <Filter>SOURCE\Engine2D\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine2d\entities\AreaTeleport.h">
+      <Filter>SOURCE\Engine2D\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine2d\entities\map\TileMap.cpp">
@@ -37,6 +43,9 @@
     </ClCompile>
     <ClCompile Include="source\engine2d\interface\Tileset.cpp">
       <Filter>SOURCE\Engine2D\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine2d\entities\Area2DBase.cpp">
+      <Filter>SOURCE\Engine2D\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -12,12 +12,15 @@ struct mapTile_t
 	int32_t		x;
 	int32_t		y;
 };
+static_assert( sizeof(mapTile_t) == sizeof(uint32_t)*4, "mapTile_t: Invalid bit sizing!" );
 
 enum tilesetTiletype_t
 {
 	TILE_AUTOTILE,
 	TILE_DEFAULT,
-	TILE_PROP
+	TILE_PROP,
+	TILE_AUTOWALL,
+	TILE_RANDOMIZED
 };
 struct tilesetEntry_t
 {
@@ -26,6 +29,9 @@ struct tilesetEntry_t
 	uint16_t			atlas_w;
 	uint16_t			atlas_y;
 	uint16_t			atlas_h;
+
+	uint8_t		autotile_0 [16];
+	uint8_t		autotile_1 [16];
 };
 
 // autotile looks around but for now, let's focus on tile editing

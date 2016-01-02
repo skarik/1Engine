@@ -24,10 +24,10 @@ Dusk::Handle CDuskGUI::DialogueOpenFilename ( System::sFileDialogueEntry* nFilet
 			selector->m_fileTypes.push_back( nFiletypes[i] );
 		}
 		selector->m_currentPath = nInitialDir;
-		if ( selector->m_currentPath.length() <= 1 ) {
-			//selector->m_currentPath = System:
-		}
 
+		// Set the current dialogue
+		hCurrentDialogue = handle;
+		// Save the handle
 		return handle;
 	}
 	return -1;
@@ -62,12 +62,18 @@ bool CDuskGUI::GetOpenFilename ( char* nOutFilename, const Handle& handleOverrid
 {
 	if ( hCurrentDialogue >= 0 && hCurrentDialogue->m_type == 40 )
 	{
-		if ( hCurrentDialogue != handleOverride ) {
+		if ( ((int)handleOverride != -1) && hCurrentDialogue != handleOverride ) {
 			return false;
 		}
 		Dusk::DialogueFileSelector* selector = (Dusk::DialogueFileSelector*)*hCurrentDialogue;
 		if ( selector->io_mode != 0 ) {
 			return false;
+		}
+		if ( selector->hasSelection ) {
+			strcpy( nOutFilename, (selector->m_currentPath + "/" + selector->m_namebox_value).c_str() );
+			DeleteElement( hCurrentDialogue );
+			hCurrentDialogue = -1;
+			return true;
 		}
 	}
 	return false;
@@ -103,6 +109,19 @@ bool CDuskGUI::OpenDialogueHasSelection ( const Handle& handleOverride )
 		Dusk::DialogueFileSelector* selector = (Dusk::DialogueFileSelector*)*hCurrentDialogue;
 		if ( selector->io_mode != 0 ) {
 			return false;
+		}
+		if ( selector->endMe ) {
+			DeleteElement( hCurrentDialogue );
+			hCurrentDialogue = -1;
+			return false;
+		}
+		return selector->hasSelection;
+	}
+	else if ( hCurrentDialogue == -1 ) {
+		Handle handle ( handleOverride );
+		Dusk::DialogueFileSelector* selector = (Dusk::DialogueFileSelector*)*handle;
+		if ( selector && selector->m_type == 40 && selector->endMe ) {
+			DeleteElement( handle );
 		}
 	}
 	return false;
@@ -149,6 +168,10 @@ Dusk::DialogueFileSelector::DialogueFileSelector ( const int moverride )
 // Overridable update
 void Dusk::DialogueFileSelector::Update ( void )
 {
+	// Set proper cursor position for the situation
+	Vector2d old_cursor_pos = cursor_pos;
+	cursor_pos = Vector2d( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
+
 	// Set the constant Rect size (40% of the screen)
 	const Real margin = 0.015f;
 	rect = Rect( margin,margin, 0.4f-margin, 1-margin*2 );
@@ -346,9 +369,18 @@ void Dusk::DialogueFileSelector::Update ( void )
 			m_context_showsave = true;
 		}
 	}
+
+	// Restore old stuff
+	cursor_pos = old_cursor_pos;
 }
 void Dusk::DialogueFileSelector::Render ( void )
 {
+	bool pixelMode = activeGUI->bInPixelMode;
+	Screen::_screen_info_t oldinfo = Screen::Info;
+	//Screen::Info.width = 1.0F;
+	//Screen::Info.height = 1.0F;
+	activeGUI->bInPixelMode = false;
+
 	// Render the background
 	setDrawDefault();
 	setSubdrawDefault();
@@ -447,4 +479,7 @@ void Dusk::DialogueFileSelector::Render ( void )
 		drawRectWire( Rect( rect.pos.x + 0.13f, rect.pos.y + 0.85f, 0.09f, 0.035f ) );
 		drawText( rect.pos.x + 0.134f, rect.pos.y + 0.874f, (io_mode==1)?"Save":"Open" );
 	}
+
+	Screen::Info = oldinfo;
+	activeGUI->bInPixelMode = pixelMode;
 }

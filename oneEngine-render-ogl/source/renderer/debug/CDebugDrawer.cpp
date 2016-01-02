@@ -20,7 +20,7 @@ CDebugDrawer* CDebugDrawer::mActive = NULL;
 CDebugDrawer::CDebugDrawer ( void )
 	: CRenderableObject ()
 {
-	renderType = Renderer::World;
+	renderType = Renderer::Secondary;
 	mActive = this;
 	Debug::Drawer = this;
 
@@ -30,9 +30,10 @@ CDebugDrawer::CDebugDrawer ( void )
 	defaultMat->setTexture( 0, new CTexture( "textures/white.jpg" ) );
 	defaultMat->passinfo.push_back( glPass() );
 	defaultMat->passinfo[0].shader = new glShader( "shaders/sys/fullbright.glsl" );
+	defaultMat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
+	defaultMat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
+	defaultMat->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 	defaultMat->removeReference();
-	//defaultMat->releaseOwnership();
-	//vMaterials.push_back( defaultMat );
 	SetMaterial( defaultMat );
 }
 // Destructor
@@ -69,6 +70,8 @@ bool CDebugDrawer::Render ( const char pass )
 	GLd.BeginPrimitive( GL_LINES );
 	//glMaterialfv( GL_FRONT_AND_BACK, GL_EMISSION, Color( 1,1,1,1 ).start_point() );
 	//for ( index = avLineList.begin(); index != avLineList.end(); index++ )
+	GLd.P_PushTexcoord( 0,0 );
+	GLd.P_PushNormal( 0,0,0 );
 	for ( uint i = 0; i < avLineList.size(); ++i )
 	{
 		GLd.P_PushColor( avColorList[i] );
