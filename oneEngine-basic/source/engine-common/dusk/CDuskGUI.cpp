@@ -252,6 +252,7 @@ void CDuskGUI::Update ( void )
 			vElements[int(hCurrentFocus)]->hasFocus = true;
 		}
 		// Update only the dialogue box
+		parenting_offset = offsetList[hCurrentDialogue] - vElements[hCurrentDialogue]->rect.pos;
 		vElements[int(hCurrentDialogue)]->Update();
 	}
 	
@@ -403,7 +404,7 @@ bool CDuskGUI::Render ( const char pass )
 	// Draw the dialogue that's active
 	if ( hCurrentDialogue >= 0 ) {
 		if ( vElements[hCurrentDialogue] != NULL ) {
-			parenting_offset = Vector2d(0,0);
+			parenting_offset = offsetList[hCurrentDialogue] - vElements[hCurrentDialogue]->rect.pos;
 			setSubdrawDefault();
 			vElements[hCurrentDialogue]->Render();
 			vElements[hCurrentDialogue]->drawn = true;
@@ -607,6 +608,10 @@ bool CDuskGUI::HasOpenDialogue ( void )
 		return true;
 	else
 		return false;
+}
+CDuskGUI::Handle CDuskGUI::GetOpenDialogue ( void )
+{
+	return hCurrentDialogue;
 }
 
 // == Creating new elements ==

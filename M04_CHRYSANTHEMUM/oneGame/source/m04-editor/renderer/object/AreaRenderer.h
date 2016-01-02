@@ -4,6 +4,11 @@
 
 #include "renderer/object/CRenderableObject.h"
 
+namespace Engine2D
+{
+	class Area2DBase;
+}
+
 namespace M04
 {
 	class AreaRenderer : public CRenderableObject
@@ -13,6 +18,11 @@ namespace M04
 		~AreaRenderer( void );
 
 		bool Render ( const char pass ) override;
+
+	public:
+		Engine2D::Area2DBase*	m_target_glow;
+		Engine2D::Area2DBase*	m_target_selection;
+		int					m_target_corner;
 	};
 }
 

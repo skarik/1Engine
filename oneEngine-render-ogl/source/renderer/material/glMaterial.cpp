@@ -1153,7 +1153,7 @@ void glMaterial::shader_bind_lights	 ( glShader* shader )
 			if ( (*lightList)[i]->generateShadows )
 			{
 				uniformname_sh3[13] = '0' + i;
-				uniformLocation = shader->get_uniform_location( string(uniformname_sh3) );
+				uniformLocation = shader->get_uniform_location( uniformname_sh3 );
 				if ( uniformLocation >= 0 )
 				{
 					glUniform1i( uniformLocation, current_sampler_slot );

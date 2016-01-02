@@ -241,6 +241,7 @@ public:
 	ENGCOM_API void HideDialogue ( const Handle& );
 	// Is a dialogue active
 	ENGCOM_API bool HasOpenDialogue ( void );
+	ENGCOM_API Handle GetOpenDialogue ( void );
 
 	// IO Dialogues
 	ENGCOM_API Handle DialogueOpenFilename ( System::sFileDialogueEntry* nFiletypes, int nFiletypeCount, const char* nInitialDir="", const char* nDialogueTitle="Open File" );

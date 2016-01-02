@@ -271,7 +271,7 @@ void	glDrawing::DrawAutoText ( float dx, float dy, const char* fmt, ... )
 	{
 		int curChar = text[c] - fontInfo.startCharacter;
 		// Check that character is in set
-		if ( curChar < 0 || curChar >= fontInfo.setLength ) {
+		if ( curChar < 0 || curChar >= (int)fontInfo.setLength ) {
 			continue;
 		}
 
@@ -401,7 +401,7 @@ void	glDrawing::DrawAutoTextCentered ( float dx, float dy, const char* fmt, ... 
 	{
 		int curChar = text[c] - fontInfo.startCharacter;
 		// Check that character is in set
-		if ( curChar < 0 || curChar >= fontInfo.setLength ) {
+		if ( curChar < 0 || curChar >= (int)fontInfo.setLength ) {
 			continue;
 		}
 
@@ -567,7 +567,7 @@ void		glDrawing::DrawAutoTextWrapped ( float dx, float dy, float dw, const char*
 				// Draw the string to this point
 				int curChar = text[lastspot+c] - fontInfo.startCharacter;
 				// Check that character is in set
-				if ( curChar < 0 || curChar >= fontInfo.setLength ) {
+				if ( curChar < 0 || curChar >= (int)fontInfo.setLength ) {
 					continue;
 				}
 

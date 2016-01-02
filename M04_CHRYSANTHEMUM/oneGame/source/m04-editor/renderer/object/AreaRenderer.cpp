@@ -43,6 +43,10 @@ bool AreaRenderer::Render ( const char pass )
 	GLd.P_PushTexcoord( 0,0 );
 	GLd.P_PushNormal( 0,0,0 );
 
+	const Color m_defaultColor	(0.2F,0.3F,0.6F,0.5F);
+	const Color m_glowColor		(0.4F,0.6F,0.9F,0.5F);
+	const Color m_selectColor	(0.6F,0.7F,1.0F,0.8F);
+
 	// Do a render of all areas
 	for ( auto area = Engine2D::Area2D::Areas().begin(); area != Engine2D::Area2D::Areas().end(); ++area )
 	{
@@ -53,7 +57,12 @@ bool AreaRenderer::Render ( const char pass )
 		points[1] = Vector3d( points[2].x, points[0].y, points[0].z );
 		points[3] = Vector3d( points[0].x, points[2].y, points[0].z );
 
-		GLd.P_PushColor( Color(0.4F,0.6F,0.9F,0.5F) );
+		if ( *area == m_target_selection )
+			GLd.P_PushColor( m_selectColor );
+		else if ( *area == m_target_glow )
+			GLd.P_PushColor( m_glowColor );
+		else
+			GLd.P_PushColor( m_defaultColor );
 
 		// Delare the lambda to streamline the mesh creation
 		Vector3d meshpoints [4];
@@ -98,10 +107,17 @@ bool AreaRenderer::Render ( const char pass )
 		};
 		for ( int i = 0; i < 4; ++i )
 		{
+			// Build the corner quad
 			for ( int n = 0; n < 4; ++n )
 			{
 				meshpoints[n] = points[i] + offsets[n] * 4.0F;
 			}
+			// If mouse over a corner, highlight the corner
+			if ( (*area == m_target_selection || *area == m_target_glow) && i == m_target_corner ) 
+				GLd.P_PushColor( m_selectColor );
+			else 
+				GLd.P_PushColor( m_defaultColor );
+			// Push the quad
 			PushQuad();
 		}
 	}

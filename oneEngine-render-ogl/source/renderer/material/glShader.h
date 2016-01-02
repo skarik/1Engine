@@ -30,6 +30,7 @@ needs to check at the top to see what kind of shader it is
 //#include "Quaternion.h"
 //#include "CMatrix.h"
 #include "core/types/types.h"
+#include "core/containers/arstring.h"
 
 //#include <fstream>
 //using std::ifstream;
@@ -96,11 +97,11 @@ public:
 			return pParentShader->get_program();
 	}
 	// Get Uniform location
-	int	get_uniform_location ( const string & name );
+	int	get_uniform_location ( const char* name );
 	// Get Uniform Block location
-	int get_uniform_block_location ( const string & name );
+	int get_uniform_block_location ( const char* name );
 	// Get Vertex Attribute location
-	int get_attrib_location ( const string & name );
+	int get_attrib_location ( const char* name );
 
 	// Memory management functions
 	//void AddReference ( void );
@@ -155,7 +156,7 @@ protected:
 
 	// Uniform map
 	//map<string,int> mUniformMap;
-	std::unordered_map<string,int> mUniformMap;
+	std::unordered_map<arstring<128>,int> mUniformMap;
 
 protected:
 	// This loads the shader from the file and into the sRawShader string

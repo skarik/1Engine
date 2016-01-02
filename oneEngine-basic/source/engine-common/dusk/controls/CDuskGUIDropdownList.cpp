@@ -90,11 +90,13 @@ void CDuskGUIDropdownList::Update ( void )
 	{
 		// Selection picking state
 		activeGUI->hCurrentDialogue = activeGUI->hCurrentElement;
+		// Grab screen actually using
+		Rect screen = activeGUI->GetScreenRect();
 		
 		if ( mouseIn )
 		{
 			// find selection
-			int nselection = (int)floor((cursor_pos.y - rect.pos.y - homeRect.size.y)/(homeRect.size.y * 0.95f));
+			int nselection = (int)floor((cursor_pos.y - rect.pos.y - activeGUI->parenting_offset.y - homeRect.size.y)/(homeRect.size.y * 0.95f));
 			if ( nselection > (int)optionList.size() ) {
 				nselection = optionList.size()-1;
 			}
@@ -159,10 +161,12 @@ void CDuskGUIDropdownList::Render ( void )
 		setDrawDefault();
 	}
 
-	// Begin draw/ material
+	// Grab screen actually using
+	Rect screen = activeGUI->GetScreenRect();
 
+	//	Draw boxes:
+	// Selection box
 	drawRectWire( rect );
-
 	if ( !inDialogueMode ) {
 		setSubdrawDefault();
 	}
@@ -170,20 +174,28 @@ void CDuskGUIDropdownList::Render ( void )
 		setSubdrawOpaque();
 	}
 	drawRect( rect );
-
-	if ( inDialogueMode ) {
+	// Dropdown box
+	if ( inDialogueMode )
+	{
 		setSubdrawDarkSelection();
 		setSubdrawOpaque();
-		drawRect( Rect( rect.pos.x, homeRect.pos.y + homeRect.size.y*(1+0.95f*selection), rect.size.x, homeRect.size.y*0.95f ) );
+		drawRect( Rect(
+			rect.pos.x,
+			(homeRect.pos.y + homeRect.size.y*(1+0.95f*selection)),
+			rect.size.x,
+			homeRect.size.y*0.95f )
+			);
 	}
 
-	// Now draw text
-	drawText( rect.pos.x + rect.size.x*0.06f, rect.pos.y + homeRect.size.y*0.1f + 0.02f, label.c_str() );
+	//	Draw text:
+	// Draw the selection
+	drawText( rect.pos.x + rect.size.x*0.06f, rect.pos.y + homeRect.size.y*0.1f + 0.02f*screen.size.y, label.c_str() );
+	// Draw the choices
 	if ( inDialogueMode )
 	{
 		for ( unsigned int i = 0; i < optionList.size(); ++i )
 		{
-			drawText( rect.pos.x + rect.size.x*0.06f, rect.pos.y + homeRect.size.y*1.1f + homeRect.size.y*0.95f*i + 0.02f, optionList[i].str.c_str() );
+			drawText( rect.pos.x + rect.size.x*0.06f, rect.pos.y + homeRect.size.y*1.1f + homeRect.size.y*0.95f*i + 0.022F*screen.size.y, optionList[i].str.c_str() );
 		}
 	}
 }

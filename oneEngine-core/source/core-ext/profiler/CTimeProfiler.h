@@ -4,6 +4,7 @@
 #define _C_TIME_PROFILER_H_
 
 #include "core/time/time.h"
+#include "core/containers/arstring.h"
 
 #include <string>
 using std::string;
@@ -53,7 +54,7 @@ namespace Debug
 		};
 		LARGE_INTEGER freq;
 
-		typedef std::map<string,sTimeProfile> TimeProfileMap;
+		typedef std::map<arstring<128>,sTimeProfile> TimeProfileMap;
 		TimeProfileMap mTimeProfiles;
 	};
 }

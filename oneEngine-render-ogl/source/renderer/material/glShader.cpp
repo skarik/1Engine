@@ -87,7 +87,7 @@ glShader::~glShader ( void )
 }
 
 // == Uniform Grabbing ==
-int	glShader::get_uniform_location ( const string & name )
+int	glShader::get_uniform_location ( const char* name )
 {
 	if ( !bIsReference )
 	{
@@ -96,15 +96,16 @@ int	glShader::get_uniform_location ( const string & name )
 			return mUniformMap[name];
 		}
 		else*/
-		unordered_map<string,int>::iterator result = mUniformMap.find( name );
+		arstring<128> cname ( name );
+		unordered_map<arstring<128>,int>::iterator result = mUniformMap.find( cname );
 		if ( result != mUniformMap.end() )
 		{
 			return result->second;
 		}
 		else
 		{
-			int uniformLocation = glGetUniformLocation( iProgramID, name.c_str() );
-			mUniformMap[name] = uniformLocation;
+			int uniformLocation = glGetUniformLocation( iProgramID, name );
+			mUniformMap[cname] = uniformLocation;
 			if ( uniformLocation < 0 && CGameSettings::Active()->b_dbg_ro_ShowMissingLinks )
 			{
 #ifdef _ENGINE_DEBUG
@@ -120,19 +121,20 @@ int	glShader::get_uniform_location ( const string & name )
 	}
 }
 // Get Uniform Block location
-int glShader::get_uniform_block_location ( const string & name )
+int glShader::get_uniform_block_location ( const char* name )
 {
 	if ( !bIsReference )
 	{
-		unordered_map<string,int>::iterator result = mUniformMap.find( name );
+		arstring<128> cname ( name );
+		unordered_map<arstring<128>,int>::iterator result = mUniformMap.find( cname );
 		if ( result != mUniformMap.end() )
 		{
 			return result->second;
 		}
 		else
 		{
-			int uniformLocation = glGetUniformBlockIndex( iProgramID, name.c_str() );
-			mUniformMap[name] = uniformLocation;
+			int uniformLocation = glGetUniformBlockIndex( iProgramID, name );
+			mUniformMap[cname] = uniformLocation;
 			if ( uniformLocation < 0 && CGameSettings::Active()->b_dbg_ro_ShowMissingLinks )
 			{
 #ifdef _ENGINE_DEBUG
@@ -148,19 +150,20 @@ int glShader::get_uniform_block_location ( const string & name )
 	}
 }
 // Vertex Attribute grabbing
-int	glShader::get_attrib_location ( const string & name )
+int	glShader::get_attrib_location ( const char* name )
 {
 	if ( !bIsReference )
 	{
-		unordered_map<string,int>::iterator result = mUniformMap.find( name );
+		arstring<128> cname ( name );
+		unordered_map<arstring<128>,int>::iterator result = mUniformMap.find( cname );
 		if ( result != mUniformMap.end() )
 		{
 			return result->second;
 		}
 		else
 		{
-			int uniformLocation = glGetAttribLocation( iProgramID, name.c_str() );
-			mUniformMap[name] = uniformLocation;
+			int uniformLocation = glGetAttribLocation( iProgramID, name );
+			mUniformMap[cname] = uniformLocation;
 			if ( uniformLocation < 0 && CGameSettings::Active()->b_dbg_ro_ShowMissingLinks )
 			{
 #ifdef _ENGINE_DEBUG

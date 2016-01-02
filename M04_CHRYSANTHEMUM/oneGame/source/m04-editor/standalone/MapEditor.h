@@ -4,6 +4,10 @@
 #include "engine/behavior/CGameBehavior.h"
 #include "engine-common/dusk/CDuskGUIHandle.h"
 
+//=========================================//
+// Prototypes
+//=========================================//
+
 class CCamera;
 class CDuskGUI;
 namespace Engine2D
@@ -15,12 +19,16 @@ namespace Engine2D
 namespace M04
 {
 	class MapInformation;
+	class AreaRenderer;
+	class TileSelector;
 }
+
+//=========================================//
+// Class definition
+//=========================================//
 
 namespace M04
 {
-	class TileSelector;
-
 	class MapEditor : public CGameBehavior
 	{
 	public:
@@ -71,6 +79,13 @@ namespace M04
 		//		doIOSaving () : saving
 		// save the map to the file in m_current_savetarget
 		void		doIOSaving ( void );
+		//		diIOLoading () : loading
+		// load the map from the file in m_current_savetarget
+		// uses doNewMap() to clear out the data first
+		void		doIOLoading ( void );
+		//		doNewMap () : delete all items in map, clear out tilemap
+		// clears out all information for the map
+		void		doNewMap ( void );
 
 	public:
 		enum class Mode : uint32_t
@@ -96,6 +111,7 @@ namespace M04
 
 		CDuskGUI*	dusk;
 		TileSelector*	m_tile_selector;
+		AreaRenderer*	m_area_renderer;
 
 		int			m_area_corner_selection;
 		Engine2D::Area2DBase*	m_area_target;
@@ -129,6 +145,9 @@ namespace M04
 		Dusk::Handle	ui_fld_map_size_y;
 		Dusk::Handle	ui_lbl_map_area;
 		Dusk::Handle	ui_lbl_map_size;
+
+		Dusk::Handle	ui_panel_area;
+		Dusk::Handle	ui_fld_area_type;
 	};
 }
 

@@ -75,9 +75,8 @@ MapEditor::MapEditor ( void )
 	}
 	// Create area renderer
 	{
-		CRenderableObject* area = new M04::AreaRenderer();
-		area->transform.position.z = -100;
-		(new CRendererHolder (area))->RemoveReference();
+		m_area_renderer = new M04::AreaRenderer();
+		m_area_renderer->transform.position.z = -100;
 	}
 	// Build Dusk Gui
 	{
@@ -104,6 +103,7 @@ MapEditor::~MapEditor ( void )
 	delete_safe(m_target_camera);
 	delete_safe_decrement(dusk);
 	delete_safe(m_tile_selector);
+	delete_safe(m_area_renderer);
 }
 
 //===============================================================================================//
@@ -114,11 +114,15 @@ void MapEditor::Update ( void )
 {
 	if ( dusk->HasOpenDialogue() )
 	{
-		// Close all modes for the dialogue system
-		m_current_mode = Mode::None;
-
-		// Update the UI for the dialogues
-		uiStepDialogues();
+		Dusk::Handle openDialogue = dusk->GetOpenDialogue();
+		if ( openDialogue != ui_fld_area_type )
+		{
+			// Close all modes for the dialogue system
+			m_current_mode = Mode::None;
+	
+			// Update the UI for the dialogues
+			uiStepDialogues();
+		}
 	}
 	else
 	{
@@ -164,6 +168,7 @@ void MapEditor::Update ( void )
 	// Update visibilty of elements based on the modes
 	m_tile_selector->SetVisible ( m_current_mode == Mode::TileEdit );
 	ui_panel_shit->visible = m_current_mode == Mode::Properties;
+	ui_panel_area->visible = m_current_mode == Mode::AreaEdit;
 }
 
 //===============================================================================================//
@@ -304,10 +309,52 @@ void MapEditor::doAreaEditing ( void )
 		// Grab mouse position in the world
 		Vector3d worldpos = m_target_camera->ScreenToWorldPos( Vector2d( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
 
+		Engine2D::Area2D* t_area_selection = NULL;
+		int t_corner_selection = -1;
+		// Grab area list
+		std::vector<Engine2D::Area2D*> t_area_listing = Engine2D::Area2D::Areas();
+		// If there's a selection, put that at the front of the list
+		if ( m_area_target != NULL ) t_area_listing.insert( t_area_listing.begin(), m_area_target );
+		// Check all areas to find the best match
+		for ( auto area = t_area_listing.begin(); area != t_area_listing.end(); ++area )
+		{
+			Rect rect = (*area)->m_rect;
+			rect.pos -= Vector2d(1,1);
+			rect.size += Vector2d(1,1)*2;
+			if ( rect.Contains( worldpos ) )
+			{
+				// Mouse is in, use this
+				t_area_selection = *area;
+				// Check the corners for shit
+				if ( worldpos.x < rect.pos.x + 6 ) {
+					if ( worldpos.y < rect.pos.y + 6 ) {
+						t_corner_selection = 0;
+					}
+					else if ( worldpos.y > rect.pos.y + rect.size.y - 6 ) {
+						t_corner_selection = 3;
+					}
+				}
+				else if ( worldpos.x > rect.pos.x + rect.size.x - 6 ) {
+					if ( worldpos.y < rect.pos.y + 6 ) {
+						t_corner_selection = 1;
+					}
+					else if ( worldpos.y > rect.pos.y + rect.size.y - 6 ) {
+						t_corner_selection = 2;
+					}
+				}
+				// We're going with the first match
+				break;
+			}
+		}
+		// Set tips for the area renderer
+		m_area_renderer->m_target_glow = t_area_selection;
+		m_area_renderer->m_target_corner = t_corner_selection;
+
 		if ( Input::MouseDown( Input::MBLeft ) )
 		{
 			if ( Input::Key( Keys.Shift ) )
 			{
+				// Create a new area
 				Engine2D::Area2D* area = new Engine2D::Area2D();
 				area->m_rect.pos = worldpos;
 				area->m_rect.size = Vector2d( 32,32 );
@@ -318,15 +365,32 @@ void MapEditor::doAreaEditing ( void )
 			}
 			else
 			{
-				// Check all areas to find the best match
+				// Set target to what the mouse is hovering over
+				m_area_target = t_area_selection;
+				m_area_corner_selection = t_corner_selection;
+				// Set tips for the area renderer
+				m_area_renderer->m_target_selection = m_area_target;
+				// If clicked a corner, do some dragging.
+				if ( m_area_target != NULL && m_area_corner_selection != -1 ) {
+					m_current_submode = SubMode::Dragging;
+				}
 			}
 		}
-
+		// Mouse released. Round the position, reset the mode.
 		if ( !Input::Mouse( Input::MBLeft ) )
 		{
+			if ( m_area_target != NULL )
+			{
+				// Round the rect size
+				m_area_target->m_rect.size.x = (Real)Math.Round(m_area_target->m_rect.size.x);
+				m_area_target->m_rect.size.y = (Real)Math.Round(m_area_target->m_rect.size.y);
+				// Round the rect position
+				m_area_target->m_rect.pos.x = (Real)Math.Round(m_area_target->m_rect.pos.x);
+				m_area_target->m_rect.pos.y = (Real)Math.Round(m_area_target->m_rect.pos.y);
+			}
 			m_current_submode = SubMode::None;
 		}
-
+		// Are we dragging a corner to edit the area?
 		if ( m_current_submode == SubMode::Dragging && m_area_target != NULL && m_area_corner_selection >= 0 )
 		{
 			// Move the x coordinate of the rect
@@ -548,6 +612,39 @@ void MapEditor::uiCreate ( void )
 		button.SetText("Cancel");
 		button.SetRect(Rect(80,640,45,30));
 		ui_btn_cancel_shit = button;
+	}
+
+	// Area panel
+	{
+		Dusk::Handle panel;
+		Dusk::Handle button, label, field;
+
+		// Create the panel
+		panel = dusk->CreatePanel();
+		panel.SetRect( Rect(0,40,200,680) );
+		ui_panel_area = panel;
+
+		// Create labels
+		label = dusk->CreateText( panel, "AREAS" );
+		label.SetRect(Rect(11,1,0,0));
+		label = dusk->CreateText( panel, "for triggers and effects" );
+		label.SetRect(Rect(11,21,0,0));
+
+		// Create help info
+		label = dusk->CreateText( panel, "SHIFT+LMB to create area" );
+		label.SetRect(Rect(20,50,0,0));
+		label = dusk->CreateText( panel, "SHIFT+RMB to delete area" );
+		label.SetRect(Rect(20,70,0,0));
+
+		// Create dropdown list type
+		label = dusk->CreateText( panel, "Area Type" );
+		label.SetRect(Rect(20,125,0,0));
+		field = dusk->CreateDropdownList( panel );
+		field.SetRect(Rect(20,150,160,30));
+		dusk->AddDropdownOption( field, "Area2DBase", 0 );
+		dusk->AddDropdownOption( field, "AreaTeleport", 1 );
+		dusk->AddDropdownOption( field, "AreaTrigger", 2 );
+		ui_fld_area_type = field;
 	}
 }
 

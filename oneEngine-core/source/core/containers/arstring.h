@@ -23,6 +23,9 @@ public:
 	explicit		arstring ( void ) {
 		strcpy( data, "" );
 	}
+	explicit		arstring ( arstring<Ln>&& other ) {
+		strncpy( data, other.data, Ln );
+	}
 
 	operator char* ( void ) {
 		return (char*)data;
@@ -105,6 +108,41 @@ private:
 		return strcmp( data,str )==0;
 	};
 };
+
+// Inject hash-table (std::unordered_map) functionality for arstring into the STD namespace
+#include <functional>
+namespace std
+{
+	template <>
+	struct hash<arstring<128>>
+	{
+		size_t operator()(const arstring<128>& str) const
+		{	// http://www.cse.yorku.ca/~oz/hash.html
+			char* s = (char*)str.c_str();
+			size_t h = 5381;
+			int c;
+			while ((c = *s++))
+				h = ((h << 5) + h) + c;
+			return h;
+		}
+	};
+	template <>
+	struct equal_to<arstring<128>>
+	{
+		bool operator()(const arstring<128> &lhs, const arstring<128> &rhs) const 
+		{
+			return lhs.compare(rhs);
+		}
+	};
+	template <>
+	struct less<arstring<128>>
+	{
+		bool operator()(const arstring<128> &lhs, const arstring<128> &rhs) const 
+		{
+			return strcmp(lhs.data,rhs.data) < 0;
+		}
+	};
+}
 
 
 #endif//_C_AR_STRING_H_

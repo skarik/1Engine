@@ -23,12 +23,13 @@ void CTimeProfiler::ZeroTimeProfile ( const char* sName )
 {
 	std::lock_guard<std::mutex> lock( io_lock );
 
-	auto profile = mTimeProfiles.find(sName);
+	arstring<128> cname (sName);
+	auto profile = mTimeProfiles.find(cname);
 	if ( profile == mTimeProfiles.end() ) {
 		sTimeProfile newProfile;
 		newProfile.aggregate = 0;
 		newProfile.delta = 0;
-		mTimeProfiles[sName] = newProfile;
+		mTimeProfiles[cname] = newProfile;
 	}
 	else {
 		profile->second.delta = profile->second.aggregate;
@@ -40,13 +41,14 @@ void CTimeProfiler::BeginTimeProfile ( const char* sName )
 {
 	std::lock_guard<std::mutex> lock( io_lock );
 
-	auto profile = mTimeProfiles.find(sName);
+	arstring<128> cname (sName);
+	auto profile = mTimeProfiles.find(cname);
 	if ( profile == mTimeProfiles.end() ) {
 		sTimeProfile newProfile;
 		newProfile.aggregate = 0;
 		newProfile.delta = 0;
 		QueryPerformanceCounter( &(newProfile.tick1) );
-		mTimeProfiles[sName] = newProfile;
+		mTimeProfiles[cname] = newProfile;
 	}
 	else {
 		QueryPerformanceCounter( &(profile->second.tick1) );
@@ -58,7 +60,8 @@ double CTimeProfiler::EndTimeProfile ( const char* sName )
 {
 	std::lock_guard<std::mutex> lock( io_lock );
 
-	sTimeProfile& currentProfile = mTimeProfiles[sName];
+	arstring<128> cname (sName);
+	sTimeProfile& currentProfile = mTimeProfiles[cname];
 	QueryPerformanceCounter( &(currentProfile.tick2) );
 
 	{
@@ -79,7 +82,8 @@ double CTimeProfiler::EndMaxTimeProfile ( const char* sName )
 {
 	std::lock_guard<std::mutex> lock( io_lock );
 
-	sTimeProfile& currentProfile = mTimeProfiles[sName];
+	arstring<128> cname (sName);
+	sTimeProfile& currentProfile = mTimeProfiles[cname];
 	QueryPerformanceCounter( &(currentProfile.tick2) );
 
 	double time;
@@ -98,7 +102,8 @@ double CTimeProfiler::EndAddTimeProfile ( const char* sName )
 {
 	std::lock_guard<std::mutex> lock( io_lock );
 
-	sTimeProfile& currentProfile = mTimeProfiles[sName];
+	arstring<128> cname (sName);
+	sTimeProfile& currentProfile = mTimeProfiles[cname];
 	QueryPerformanceCounter( &(currentProfile.tick2) );
 
 	{
