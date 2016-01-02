@@ -57,6 +57,9 @@ namespace M04
 		//		uiDoShitRefresh () : S.H.I.T. panel reinit
 		// resets all input in the shit panel with the current values
 		void		uiDoShitRefresh ( void );
+		//		uiStepAreaPanel () : area panel update
+		// handles input and updates to the area panel
+		void		uiStepAreaPanel ( void );
 
 		//		doViewNavigationDrag () : view navigation
 		// move the map around when middle button pressed
@@ -100,6 +103,7 @@ namespace M04
 		{
 			None = 0,
 			Dragging,
+			Dropdown,
 		};
 
 	protected:

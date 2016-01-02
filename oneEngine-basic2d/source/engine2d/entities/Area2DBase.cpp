@@ -6,7 +6,7 @@ using namespace Engine2D;
 std::vector<Area2DBase*>	Area2DBase::m_areas;
 
 Area2DBase::Area2DBase ( void )
-	: CGameBehavior()
+	: CGameBehavior(), m_name("")
 {
 	layer |= Layers::Points;
 	// Add this area to the list

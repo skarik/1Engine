@@ -8,11 +8,11 @@
 
 namespace Engine2D
 {
-	enum class eTeleportType
+	enum class eTeleportType : uint8_t
 	{
-		EdgeOrNormal,
-		Boring,
-		Glitch
+		EdgeOrNormal		= 0,
+		Boring				= 1,
+		Glitch				= 2
 	};
 
 	class AreaTeleport : public Area2DBase
@@ -21,6 +21,8 @@ namespace Engine2D
 	public:
 		eTeleportType	type;
 		Color			fade_color;
+		arstring<128>	target_room;
+		arstring<128>	target_area;
 	};
 };
 

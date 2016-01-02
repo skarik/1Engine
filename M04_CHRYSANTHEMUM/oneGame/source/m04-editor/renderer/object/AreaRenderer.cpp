@@ -43,9 +43,10 @@ bool AreaRenderer::Render ( const char pass )
 	GLd.P_PushTexcoord( 0,0 );
 	GLd.P_PushNormal( 0,0,0 );
 
-	const Color m_defaultColor	(0.2F,0.3F,0.6F,0.5F);
-	const Color m_glowColor		(0.4F,0.6F,0.9F,0.5F);
-	const Color m_selectColor	(0.6F,0.7F,1.0F,0.8F);
+	const Color m_defaultColor	(0.6F,0.6F,0.6F,0.5F);
+	const Color m_glowColor		(0.9F,0.9F,0.9F,0.5F);
+	const Color m_selectColor	(1.0F,1.0F,1.0F,0.8F);
+	Color m_typeColor;
 
 	// Do a render of all areas
 	for ( auto area = Engine2D::Area2D::Areas().begin(); area != Engine2D::Area2D::Areas().end(); ++area )
@@ -57,12 +58,22 @@ bool AreaRenderer::Render ( const char pass )
 		points[1] = Vector3d( points[2].x, points[0].y, points[0].z );
 		points[3] = Vector3d( points[0].x, points[2].y, points[0].z );
 
+		string type = (*area)->GetTypeName();
+		if ( type == "Area2DBase" )
+			m_typeColor = Color( 0.6F,0.7F,1.0F, 1.0F );
+		else if ( type == "AreaTeleport" )
+			m_typeColor = Color( 0.9F,1.0F,0.6F, 1.0F );
+		else if ( type == "AreaTrigger" )
+			m_typeColor = Color( 0.8F,0.4F,0.4F, 1.0F );
+		else // Error type
+			m_typeColor = Color( 1.0F,0.0F,1.0F, 1.0F );
+
 		if ( *area == m_target_selection )
-			GLd.P_PushColor( m_selectColor );
+			GLd.P_PushColor( m_selectColor * m_typeColor );
 		else if ( *area == m_target_glow )
-			GLd.P_PushColor( m_glowColor );
+			GLd.P_PushColor( m_glowColor * m_typeColor );
 		else
-			GLd.P_PushColor( m_defaultColor );
+			GLd.P_PushColor( m_defaultColor * m_typeColor );
 
 		// Delare the lambda to streamline the mesh creation
 		Vector3d meshpoints [4];
@@ -116,7 +127,7 @@ bool AreaRenderer::Render ( const char pass )
 			if ( (*area == m_target_selection || *area == m_target_glow) && i == m_target_corner ) 
 				GLd.P_PushColor( m_selectColor );
 			else 
-				GLd.P_PushColor( m_defaultColor );
+				GLd.P_PushColor( m_defaultColor * m_typeColor );
 			// Push the quad
 			PushQuad();
 		}

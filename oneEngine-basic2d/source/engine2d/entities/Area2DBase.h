@@ -6,6 +6,7 @@
 
 #include "core/math/Vector3d.h"
 #include "core/math/Rect.h"
+#include "core/containers/arstring.h"
 #include "engine/behavior/CGameBehavior.h"
 
 namespace Engine2D
@@ -25,7 +26,8 @@ namespace Engine2D
 
 	public:
 		// rect that this area covers
-		Rect	m_rect;
+		arstring<128>	m_name;
+		Rect			m_rect;
 		
 	public:
 		//=========================================//

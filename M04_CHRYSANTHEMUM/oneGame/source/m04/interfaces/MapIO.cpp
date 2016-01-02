@@ -4,6 +4,9 @@
 #include "core/debug/CDebugConsole.h"
 
 #include "engine2d/entities/map/TileMap.h"
+#include "engine2d/entities/Area2DBase.h"
+#include "engine2d/entities/AreaTeleport.h"
+#include "engine2d/entities/AreaTrigger.h"
 
 #include "m04/states/MapInformation.h"
 
@@ -56,6 +59,43 @@ void M04::MapIO::Save ( void )
 		}
 
 		Debug::Console->PrintMessage( "\t+Wrote Engine2D::TileMap.\n" );
+	}
+
+	// Write area information
+	if ( m_io_areas )
+	{
+		for ( auto area : Engine2D::Area2D::Areas() )
+		{
+			// Write the topper
+			string type = area->GetTypeName();
+
+			mapio_section_start_t topper;
+			strcpy( topper.name, type.c_str() );
+
+			topper.size = sizeof(Rect) + 128;
+			if ( type == "AreaTeleport" )
+				topper.size += 257 + sizeof(Color);
+			else if ( type == "AreaTrigger" )
+				topper.size += 256;
+
+			fwrite( &topper, sizeof(mapio_section_start_t), 1, m_file );
+
+			// Write out the information
+			fwrite( &area->m_rect, sizeof(Rect), 1, m_file ); // Write out the rect
+			fwrite( area->m_name.c_str(), 128, 1, m_file ); // Write the area's name id
+			if ( type == "AreaTeleport" )
+			{
+				fwrite( ((Engine2D::AreaTeleport*)area)->target_area, 128, 1, m_file );
+				fwrite( ((Engine2D::AreaTeleport*)area)->target_room, 128, 1, m_file );
+				fwrite( &((Engine2D::AreaTeleport*)area)->type, 1, 1, m_file );
+				fwrite( &((Engine2D::AreaTeleport*)area)->fade_color, sizeof(Color), 1, m_file );
+			}
+			else if ( type == "AreaTrigger" )
+			{
+				fwrite( ((Engine2D::AreaTrigger*)area)->m_target_actor_type, 128, 1, m_file );
+				fwrite( ((Engine2D::AreaTrigger*)area)->m_target_actor_name, 128, 1, m_file );
+			}
+		}
 	}
 }
 		
@@ -145,6 +185,50 @@ void M04::MapIO::Load ( void )
 					// Add the new loaded tile to the list
 					m_tilemap->m_tiles.push_back(tile);
 				}
+			}
+		}
+		// Check for area structures
+		if ( strcmp( topper.name, "Area2DBase" ) == 0 )
+		{
+			if ( m_io_areas )
+			{
+				Engine2D::Area2DBase* area = new Engine2D::Area2DBase;
+				area->RemoveReference();
+
+				memcpy( &area->m_rect, buffer, sizeof(Rect) );
+				memcpy( (char*)area->m_name.c_str(), buffer+sizeof(Rect), 128 );
+			}
+		}
+		if ( strcmp( topper.name, "AreaTeleport" ) == 0 )
+		{
+			if ( m_io_areas )
+			{
+				Engine2D::AreaTeleport* area = new Engine2D::AreaTeleport;
+				area->RemoveReference();
+
+				memcpy( &area->m_rect, buffer, sizeof(Rect) );
+				memcpy( (char*)area->m_name.c_str(), buffer+sizeof(Rect), 128 );
+
+				size_t offset = 128 + sizeof(Rect);
+				memcpy( &((Engine2D::AreaTeleport*)area)->target_area, buffer+offset, 128 ); offset += 128;
+				memcpy( &((Engine2D::AreaTeleport*)area)->target_room, buffer+offset, 128 ); offset += 128;
+				memcpy( &((Engine2D::AreaTeleport*)area)->type, buffer+offset, 1 ); offset += 1;
+				memcpy( &((Engine2D::AreaTeleport*)area)->fade_color, buffer+offset, sizeof(Color) );
+			}
+		}
+		if ( strcmp( topper.name, "AreaTrigger" ) == 0 )
+		{
+			if ( m_io_areas )
+			{
+				Engine2D::AreaTrigger* area = new Engine2D::AreaTrigger;
+				area->RemoveReference();
+
+				memcpy( &area->m_rect, buffer, sizeof(Rect) );
+				memcpy( (char*)area->m_name.c_str(), buffer+sizeof(Rect), 128 );
+
+				size_t offset = 128 + sizeof(Rect);
+				memcpy( &((Engine2D::AreaTrigger*)area)->m_target_actor_type, buffer+offset, 128 ); offset += 128;
+				memcpy( &((Engine2D::AreaTrigger*)area)->m_target_actor_name, buffer+offset, 128 );
 			}
 		}
 

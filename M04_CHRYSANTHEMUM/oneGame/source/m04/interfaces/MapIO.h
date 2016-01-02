@@ -64,6 +64,7 @@ namespace M04
 		
 		Engine2D::TileMap*		m_tilemap;
 		M04::MapInformation*	m_mapinfo;
+		bool					m_io_areas;
 
 	public:
 
@@ -77,7 +78,7 @@ namespace M04
 
 	public:
 		MapIO ( void )
-			: m_file(NULL), m_tilemap(NULL)
+			: m_file(NULL), m_tilemap(NULL), m_io_areas(false)
 		{
 			;
 		}

@@ -4,6 +4,7 @@
 #include "core/input/CInput.h"
 #include "core/math/Math.h"
 
+#include <map>
 
 #include "engine-common/dusk/CDuskGUI.h"
 #include "engine-common/entities/CRendererHolder.h"
@@ -18,6 +19,8 @@
 
 #include "engine2d/entities/map/TileMap.h"
 #include "engine2d/entities/Area2DBase.h"
+#include "engine2d/entities/AreaTeleport.h"
+#include "engine2d/entities/AreaTrigger.h"
 
 #include "m04/states/MapInformation.h"
 #include "m04/interfaces/MapIO.h"
@@ -112,17 +115,14 @@ MapEditor::~MapEditor ( void )
 
 void MapEditor::Update ( void )
 {
-	if ( dusk->HasOpenDialogue() )
+	Dusk::Handle openDialogue = dusk->GetOpenDialogue();
+	if ( dusk->HasOpenDialogue() && openDialogue != ui_fld_area_type )
 	{
-		Dusk::Handle openDialogue = dusk->GetOpenDialogue();
-		if ( openDialogue != ui_fld_area_type )
-		{
-			// Close all modes for the dialogue system
-			m_current_mode = Mode::None;
+		// Close all modes for the dialogue system
+		m_current_mode = Mode::None;
 	
-			// Update the UI for the dialogues
-			uiStepDialogues();
-		}
+		// Update the UI for the dialogues
+		uiStepDialogues();
 	}
 	else
 	{
@@ -160,6 +160,7 @@ void MapEditor::Update ( void )
 
 		// Update portions of the UI if can be updated
 		if ( m_current_mode == Mode::Properties ) uiStepShitPanel();
+		if ( m_current_mode == Mode::AreaEdit ) uiStepAreaPanel();
 
 		// Do shortcut checking
 		uiStepKeyboardShortcuts();
@@ -362,6 +363,8 @@ void MapEditor::doAreaEditing ( void )
 				m_current_submode = SubMode::Dragging;
 				m_area_target = area;
 				m_area_corner_selection = 2;
+				// Set tips for the area renderer
+				m_area_renderer->m_target_selection = m_area_target;
 			}
 			else
 			{
@@ -389,6 +392,19 @@ void MapEditor::doAreaEditing ( void )
 				m_area_target->m_rect.pos.y = (Real)Math.Round(m_area_target->m_rect.pos.y);
 			}
 			m_current_submode = SubMode::None;
+			
+			// Deselect areas on right click
+			if ( Input::MouseDown( Input::MBRight ) )
+			{
+				m_area_target = NULL;
+				// Delete tiles with shift right click
+				if ( Input::Key( Keys.Shift ) )
+				{
+					if ( t_area_selection != NULL ) {
+						delete t_area_selection;
+					}
+				}
+			}
 		}
 		// Are we dragging a corner to edit the area?
 		if ( m_current_submode == SubMode::Dragging && m_area_target != NULL && m_area_corner_selection >= 0 )
@@ -486,6 +502,7 @@ void MapEditor::doIOSaving ( void )
 	io.m_file = fp;
 	io.m_mapinfo = m_mapinfo;
 	io.m_tilemap = m_tilemap;
+	io.m_io_areas = true;
 
 	// save
 	io.Save();
@@ -494,9 +511,51 @@ void MapEditor::doIOSaving ( void )
 	fclose( fp );
 }
 
+//		doIOLoading () : loading
+// load the map from the file in m_current_savetarget
+// uses doNewMap() to clear out the data first
+void MapEditor::doIOLoading ( void )
+{
+	// Reset map
+	doNewMap();
+
+	// Open the file
+	FILE* fp = fopen( m_current_savetarget.c_str(), "rb" );
+	if ( fp == NULL )
+		throw Core::NullReferenceException();
+
+	// Create mapio, set options
+	M04::MapIO io;
+	io.m_file = fp;
+	io.m_mapinfo = m_mapinfo;
+	io.m_tilemap = m_tilemap;
+	io.m_io_areas = true;
+
+	// load
+	io.Load();
+
+	// Close file
+	fclose( fp );
+}
+
+//		doNewMap () : delete all items in map, clear out tilemap
+// clears out all information for the map
+void MapEditor::doNewMap ( void )
+{
+	// Delete all areas
+	while ( !Engine2D::Area2D::Areas().empty() )
+	{
+		delete *Engine2D::Area2D::Areas().begin();
+	}
+	// Delete all tiles
+	m_tilemap->m_tiles.clear();
+}
+
 //===============================================================================================//
 // UI Specific
 //===============================================================================================//
+
+std::map<string,int> lcl_areatype_map;
 
 //		uiCreate () : create the dusk UI
 // create entirety of the dusk gui shit
@@ -641,9 +700,14 @@ void MapEditor::uiCreate ( void )
 		label.SetRect(Rect(20,125,0,0));
 		field = dusk->CreateDropdownList( panel );
 		field.SetRect(Rect(20,150,160,30));
-		dusk->AddDropdownOption( field, "Area2DBase", 0 );
-		dusk->AddDropdownOption( field, "AreaTeleport", 1 );
-		dusk->AddDropdownOption( field, "AreaTrigger", 2 );
+		if ( lcl_areatype_map.empty() ) {
+			lcl_areatype_map["<no selection>"] = -1;
+			lcl_areatype_map["Area2DBase"] = 0;
+			lcl_areatype_map["AreaTeleport"] = 1;
+			lcl_areatype_map["AreaTrigger"] = 2;
+		}
+		for ( auto pair = lcl_areatype_map.begin(); pair != lcl_areatype_map.end(); ++pair )
+			dusk->AddDropdownOption( field, pair->first, pair->second );
 		ui_fld_area_type = field;
 	}
 }
@@ -674,6 +738,16 @@ void MapEditor::uiStepKeyboardShortcuts ( void )
 // handle inputs to the buttons on the top edge
 void MapEditor::uiStepTopEdge ( void )
 {
+	if ( ui_file_new.GetButtonClicked() )
+	{
+		doNewMap();
+		try {
+			m_tilemap->Rebuild();
+		}
+		catch ( Core::InvalidCallException& ) {
+			printf( "No tiles on new map. This is normal.\n" );
+		}
+	}
 	if ( ui_file_save.GetButtonClicked() )
 	{
 		System::sFileDialogueEntry filetypes [1];
@@ -737,24 +811,9 @@ void MapEditor::uiStepDialogues ( void )
 		}
 		// Set save target
 		m_current_savetarget = file;
-
-		// Open the file
-		FILE* fp = fopen( file.c_str(), "rb" );
-		if ( fp == NULL )
-			throw Core::NullReferenceException();
-
-		// Create mapio, set options
-		M04::MapIO io;
-		io.m_file = fp;
-		io.m_mapinfo = m_mapinfo;
-		io.m_tilemap = m_tilemap;
-
-		// load
-		io.Load();
-
-		// Close file
-		fclose( fp );
-
+		// Perform loading
+		doNewMap();
+		doIOLoading();
 		// Reset UI states
 		uiDoShitRefresh();
 	}
@@ -817,6 +876,63 @@ void MapEditor::uiDoShitRefresh ( void )
 	ui_fld_map_area.SetText( string( m_mapinfo->area_name ) );
 	ui_fld_map_size_x.SetText( std::to_string( m_mapinfo->tilesize_x ) );
 	ui_fld_map_size_y.SetText( std::to_string( m_mapinfo->tilesize_y ) );
+}
+
+//		uiStepAreaPanel () : area panel update
+// handles input and updates to the area panel
+void MapEditor::uiStepAreaPanel ( void )
+{
+	if ( dusk->GetOpenDialogue() == ui_fld_area_type )
+	{
+		// Mark as possible change made
+		m_current_submode = SubMode::Dropdown;
+	}
+	else
+	{
+		// If was in the dropdown
+		if ( m_current_submode == SubMode::Dropdown && m_area_target != NULL )
+		{
+			// Check for any changes
+			string areaStringId = m_area_target->GetTypeName();
+			int areaIntID = lcl_areatype_map[areaStringId];
+			// Grab target
+			int targetIntID = dusk->GetDropdownOption(ui_fld_area_type);
+			string targetStringId = "Area2DBase";
+			for ( auto pair = lcl_areatype_map.begin(); pair != lcl_areatype_map.end(); ++pair )
+				if ( targetIntID == pair->second ) { targetStringId = pair->first; break; }
+			if ( areaIntID != targetIntID )
+			{
+				// Create new area if needed
+				Engine2D::Area2DBase* area;
+				if ( targetStringId == "Area2DBase" )
+					area = new Engine2D::Area2DBase;
+				else if ( targetStringId == "AreaTeleport" )
+					area = new Engine2D::AreaTeleport;
+				else if ( targetStringId == "AreaTrigger" )
+					area = new Engine2D::AreaTrigger;
+				else 
+					area = new Engine2D::Area2DBase;
+				area->RemoveReference();
+				// Have it grab the rect of the old area
+				area->m_rect = m_area_target->m_rect;
+				// Delete old area
+				delete m_area_target;
+				// Set new area as the target
+				m_area_target = area;
+				// Set tips for the area renderer
+				m_area_renderer->m_target_selection = m_area_target;
+			}
+			// Go back to normal mode
+			m_current_submode = SubMode::None;
+		}
+		// If no selection, empty out the target type
+		if ( m_area_target == NULL ) {
+			dusk->SetDropdownValue( ui_fld_area_type, -1 );
+		}
+		else {
+			dusk->SetDropdownValue( ui_fld_area_type, lcl_areatype_map[m_area_target->GetTypeName()] );
+		}
+	}
 }
 
 //===============================================================================================//
