@@ -15,15 +15,15 @@ namespace Engine2D
 
 
 	public:
-		// Size of the smallest individual tiles
+		// Size of the smallest individual tiles in pixels
 		int tilesize_x;
 		int tilesize_y;
 
-		// Size of the tileset source image
+		// Size of the tileset source image in pixels
 		int tilecount_x;
 		int tilecount_y;
 
-		// Actual size of the tileset source image
+		// Actual size of the tileset source image in tiles
 		uint32_t atlassize_x;
 		uint32_t atlassize_y;
 

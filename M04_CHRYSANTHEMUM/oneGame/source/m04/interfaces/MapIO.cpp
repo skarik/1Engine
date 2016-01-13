@@ -7,6 +7,7 @@
 #include "engine2d/entities/Area2DBase.h"
 #include "engine2d/entities/AreaTeleport.h"
 #include "engine2d/entities/AreaTrigger.h"
+#include "engine2d/entities/AreaPlayerSpawn.h"
 
 #include "m04/states/MapInformation.h"
 
@@ -90,7 +91,7 @@ void M04::MapIO::Save ( void )
 				fwrite( &((Engine2D::AreaTeleport*)area)->type, 1, 1, m_file );
 				fwrite( &((Engine2D::AreaTeleport*)area)->fade_color, sizeof(Color), 1, m_file );
 			}
-			else if ( type == "AreaTrigger" )
+			else if ( type == "AreaTrigger" || type == "AreaPlayerSpawn" )
 			{
 				fwrite( ((Engine2D::AreaTrigger*)area)->m_target_actor_type, 128, 1, m_file );
 				fwrite( ((Engine2D::AreaTrigger*)area)->m_target_actor_name, 128, 1, m_file );
@@ -216,11 +217,14 @@ void M04::MapIO::Load ( void )
 				memcpy( &((Engine2D::AreaTeleport*)area)->fade_color, buffer+offset, sizeof(Color) );
 			}
 		}
-		if ( strcmp( topper.name, "AreaTrigger" ) == 0 )
+		if ( strcmp( topper.name, "AreaTrigger" ) == 0 || strcmp( topper.name, "AreaPlayerSpawn" ) == 0 )
 		{
 			if ( m_io_areas )
 			{
-				Engine2D::AreaTrigger* area = new Engine2D::AreaTrigger;
+				Engine2D::AreaTrigger* area = NULL;
+					 if ( strcmp( topper.name, "AreaTrigger" ) == 0 )		area = new Engine2D::AreaTrigger;
+				else if ( strcmp( topper.name, "AreaPlayerSpawn" ) == 0 )	area = new Engine2D::AreaPlayerSpawn;
+				else throw Core::InvalidInstantiationException();
 				area->RemoveReference();
 
 				memcpy( &area->m_rect, buffer, sizeof(Rect) );

@@ -21,6 +21,7 @@
 #include "engine2d/entities/Area2DBase.h"
 #include "engine2d/entities/AreaTeleport.h"
 #include "engine2d/entities/AreaTrigger.h"
+#include "engine2d/entities/AreaPlayerSpawn.h"
 
 #include "m04/states/MapInformation.h"
 #include "m04/interfaces/MapIO.h"
@@ -161,6 +162,9 @@ void MapEditor::Update ( void )
 		// Update portions of the UI if can be updated
 		if ( m_current_mode == Mode::Properties ) uiStepShitPanel();
 		if ( m_current_mode == Mode::AreaEdit ) uiStepAreaPanel();
+
+		// Update the lower status UI
+		uiStepBottomEdge();
 
 		// Do shortcut checking
 		uiStepKeyboardShortcuts();
@@ -409,6 +413,13 @@ void MapEditor::doAreaEditing ( void )
 		// Are we dragging a corner to edit the area?
 		if ( m_current_submode == SubMode::Dragging && m_area_target != NULL && m_area_corner_selection >= 0 )
 		{
+			// Snap to half tile
+			if ( Input::Key( Keys.Alt ) )
+			{
+				worldpos.x = (Real) Math.Round( worldpos.x * 2 / m_tilemap->m_tileset->tilesize_x ) * m_tilemap->m_tileset->tilesize_x * 0.5F;
+				worldpos.y = (Real) Math.Round( worldpos.y * 2 / m_tilemap->m_tileset->tilesize_y ) * m_tilemap->m_tileset->tilesize_y * 0.5F;
+			}
+
 			// Move the x coordinate of the rect
 			if ( m_area_corner_selection == 1 || m_area_corner_selection == 2 )
 				m_area_target->m_rect.size.x = worldpos.x - m_area_target->m_rect.pos.x;
@@ -577,6 +588,9 @@ void MapEditor::uiCreate ( void )
 		label = dusk->CreateText( panel, "EDIT MODE" );
 		label.SetRect(Rect(240,1,0,0));
 
+		label = dusk->CreateText( panel, "TOOLBOX" );
+		label.SetRect(Rect(640,1,0,0));
+
 		// Create file buttons
 		button = dusk->CreateButton( panel );
 		button.SetText("New");
@@ -613,6 +627,44 @@ void MapEditor::uiCreate ( void )
 		button.SetText("Actors");
 		button.SetRect(Rect(450,5,45,30));
 		ui_mode_actors = button;
+
+		button = dusk->CreateButton( panel );
+		button.SetText("Script");
+		button.SetRect(Rect(500,5,45,30));
+		ui_mode_script = button;
+
+		button = dusk->CreateButton( panel );
+		button.SetText("Cutscene Editor");
+		button.SetRect(Rect(700,5,95,30));
+		ui_toolbox_cutscene = button;
+
+		button = dusk->CreateButton( panel );
+		button.SetText("Global Settings");
+		button.SetRect(Rect(800,5,95,30));
+		ui_toolbox_global = button;
+	}
+
+	// Bottom bar
+	{
+		Dusk::Handle panel;
+		Dusk::Handle button, label;
+
+		// Create the panel
+		panel = dusk->CreateEdgePanel();
+		panel.SetRect( Rect(0,690,1280,30) );
+
+		// Create labels
+		label = dusk->CreateText( panel, "???" );
+		label.SetRect(Rect(10,1,0,0));
+		ui_lbl_mode = label;
+
+		// Create labels
+		label = dusk->CreateText( panel, "X: ???" );
+		label.SetRect(Rect(200,1,0,0));
+		ui_lbl_mousex = label;
+		label = dusk->CreateText( panel, "Y: ???" );
+		label.SetRect(Rect(300,1,0,0));
+		ui_lbl_mousey = label;
 	}
 
 	// Shit panel
@@ -622,7 +674,7 @@ void MapEditor::uiCreate ( void )
 
 		// Create the panel
 		panel = dusk->CreatePanel();
-		panel.SetRect( Rect(0,40,200,680) );
+		panel.SetRect( Rect(0,40,200,650) );
 		ui_panel_shit = panel;
 
 		// Create labels
@@ -664,12 +716,12 @@ void MapEditor::uiCreate ( void )
 		// Create button
 		button = dusk->CreateButton( panel );
 		button.SetText("Apply");
-		button.SetRect(Rect(20,640,45,30));
+		button.SetRect(Rect(20,610,45,30));
 		ui_btn_apply_shit = button;
 
 		button = dusk->CreateButton( panel );
 		button.SetText("Cancel");
-		button.SetRect(Rect(80,640,45,30));
+		button.SetRect(Rect(80,610,45,30));
 		ui_btn_cancel_shit = button;
 	}
 
@@ -680,7 +732,7 @@ void MapEditor::uiCreate ( void )
 
 		// Create the panel
 		panel = dusk->CreatePanel();
-		panel.SetRect( Rect(0,40,200,680) );
+		panel.SetRect( Rect(0,40,200,650) );
 		ui_panel_area = panel;
 
 		// Create labels
@@ -694,6 +746,8 @@ void MapEditor::uiCreate ( void )
 		label.SetRect(Rect(20,50,0,0));
 		label = dusk->CreateText( panel, "SHIFT+RMB to delete area" );
 		label.SetRect(Rect(20,70,0,0));
+		label = dusk->CreateText( panel, "ALT to snap to half-tile" );
+		label.SetRect(Rect(20,90,0,0));
 
 		// Create dropdown list type
 		label = dusk->CreateText( panel, "Area Type" );
@@ -705,6 +759,7 @@ void MapEditor::uiCreate ( void )
 			lcl_areatype_map["Area2DBase"] = 0;
 			lcl_areatype_map["AreaTeleport"] = 1;
 			lcl_areatype_map["AreaTrigger"] = 2;
+			lcl_areatype_map["AreaPlayerSpawn"] = 3;
 		}
 		for ( auto pair = lcl_areatype_map.begin(); pair != lcl_areatype_map.end(); ++pair )
 			dusk->AddDropdownOption( field, pair->first, pair->second );
@@ -778,6 +833,19 @@ void MapEditor::uiStepTopEdge ( void )
 	if ( ui_mode_actors.GetButtonClicked() )
 	{
 		m_current_mode = Mode::ActorsEdit;
+	}
+	if ( ui_mode_script.GetButtonClicked() )
+	{
+		m_current_mode = Mode::ScriptEdit;
+	}
+
+	if ( ui_toolbox_cutscene.GetButtonClicked() )
+	{
+		m_current_mode = Mode::Toolbox;
+	}
+	if ( ui_toolbox_global.GetButtonClicked() )
+	{
+		m_current_mode = Mode::Toolbox;
 	}
 }
 //		uiStepDialogues () : dialogue polling
@@ -910,6 +978,8 @@ void MapEditor::uiStepAreaPanel ( void )
 					area = new Engine2D::AreaTeleport;
 				else if ( targetStringId == "AreaTrigger" )
 					area = new Engine2D::AreaTrigger;
+				else if ( targetStringId == "AreaPlayerSpawn" )
+					area = new Engine2D::AreaPlayerSpawn;
 				else 
 					area = new Engine2D::Area2DBase;
 				area->RemoveReference();
@@ -931,6 +1001,49 @@ void MapEditor::uiStepAreaPanel ( void )
 		}
 		else {
 			dusk->SetDropdownValue( ui_fld_area_type, lcl_areatype_map[m_area_target->GetTypeName()] );
+		}
+	}
+}
+//		uiStepBottomEdge () : status panel update
+// updates display of the current editor state
+void MapEditor::uiStepBottomEdge ( void )
+{
+	// Update the status on the bottom
+	if ( m_navigation_busy )
+		ui_lbl_mode.SetText("Moving view");
+	else switch ( m_current_mode )
+	{
+	case Mode::None:		ui_lbl_mode.SetText("Ready.");
+		break;
+	case Mode::Properties:	ui_lbl_mode.SetText("S.H.I.T.");
+		break;
+	case Mode::TileEdit:	ui_lbl_mode.SetText("Map Editing");
+		break;
+	case Mode::AreaEdit:	ui_lbl_mode.SetText("Area Editing");
+		break;
+	case Mode::ActorsEdit:	ui_lbl_mode.SetText("Actor Editing");
+		break;
+	case Mode::ScriptEdit:	ui_lbl_mode.SetText("Script Editing");
+		break;
+	case Mode::Toolbox:		ui_lbl_mode.SetText("In Toolbox");
+		break;
+	}
+	
+	if ( !dusk->GetMouseInGUI() )
+	{
+		// Update mouse position on the GUI
+		Vector3d worldpos = m_target_camera->ScreenToWorldPos( Vector2d( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+
+		// Round the position to half-tile if ALT is held down
+		if ( !Input::Key( Keys.Alt ) )
+		{
+			ui_lbl_mousex.SetText( "X: " + std::to_string(Math.Round(worldpos.x)) );
+			ui_lbl_mousey.SetText( "Y: " + std::to_string(Math.Round(worldpos.y)) );
+		}
+		else
+		{
+			ui_lbl_mousex.SetText( "X: " + std::to_string((int)(Math.Round(worldpos.x*2.0F/m_tilemap->m_tileset->tilesize_x) * m_tilemap->m_tileset->tilesize_x * 0.5F)) );
+			ui_lbl_mousey.SetText( "Y: " + std::to_string((int)(Math.Round(worldpos.y*2.0F/m_tilemap->m_tileset->tilesize_y) * m_tilemap->m_tileset->tilesize_y * 0.5F)) );
 		}
 	}
 }

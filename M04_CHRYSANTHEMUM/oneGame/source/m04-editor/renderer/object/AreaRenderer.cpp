@@ -65,6 +65,8 @@ bool AreaRenderer::Render ( const char pass )
 			m_typeColor = Color( 0.9F,1.0F,0.6F, 1.0F );
 		else if ( type == "AreaTrigger" )
 			m_typeColor = Color( 0.8F,0.4F,0.4F, 1.0F );
+		else if ( type == "AreaPlayerSpawn" )
+			m_typeColor = Color( 0.5F,1.0F,0.3F, 1.0F );
 		else // Error type
 			m_typeColor = Color( 1.0F,0.0F,1.0F, 1.0F );
 

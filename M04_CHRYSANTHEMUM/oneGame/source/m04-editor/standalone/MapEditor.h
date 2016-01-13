@@ -60,6 +60,9 @@ namespace M04
 		//		uiStepAreaPanel () : area panel update
 		// handles input and updates to the area panel
 		void		uiStepAreaPanel ( void );
+		//		uiStepBottomEdge () : status panel update
+		// updates display of the current editor state
+		void		uiStepBottomEdge ( void );
 
 		//		doViewNavigationDrag () : view navigation
 		// move the map around when middle button pressed
@@ -98,6 +101,8 @@ namespace M04
 			TileEdit,
 			AreaEdit,
 			ActorsEdit,
+			ScriptEdit,
+			Toolbox,
 		};
 		enum class SubMode : uint32_t
 		{
@@ -136,6 +141,13 @@ namespace M04
 		Dusk::Handle	ui_mode_map;
 		Dusk::Handle	ui_mode_area;
 		Dusk::Handle	ui_mode_actors;
+		Dusk::Handle	ui_mode_script;
+		Dusk::Handle	ui_toolbox_cutscene;
+		Dusk::Handle	ui_toolbox_global;
+
+		Dusk::Handle	ui_lbl_mode;
+		Dusk::Handle	ui_lbl_mousex;
+		Dusk::Handle	ui_lbl_mousey;
 
 		Dusk::Handle	ui_dg_save;
 		Dusk::Handle	ui_dg_load;
