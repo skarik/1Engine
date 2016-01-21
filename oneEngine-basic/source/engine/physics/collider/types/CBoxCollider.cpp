@@ -19,7 +19,8 @@ CBoxCollider::CBoxCollider ( BoundingBox const& bbox, Vector3d const& pos )
 	vCenterOfMass = pos;
 
 	//pCollisionShape = Physics::CreateBoxShape( vExtents * 0.5f );
-	pCollisionShape = Physics::CreateBoxShape( vExtents * 0.5f, bbox.GetCenterPoint() );
+	//pCollisionShape = Physics::CreateBoxShape( vExtents * 0.5f, bbox.GetCenterPoint() );
+	pCollisionShape = new physBoxShape( vExtents * 0.5f, bbox.GetCenterPoint() );
 }
 CBoxCollider::~CBoxCollider ( void )
 {

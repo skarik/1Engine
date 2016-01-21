@@ -29,11 +29,12 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 		glBone* targetBone = m_skinnedmodel->GetSkeletonList()->at(0);
 
 		physShape* tCollider;
-		tCollider = Physics::CreateBoxShape( Vector3d(0.17f,0.17f,0.17f) );
+		//tCollider = Physics::CreateBoxShape( Vector3d(0.17f,0.17f,0.17f) );
+		tCollider = new physBoxShape( Vector3d(0.17f,0.17f,0.17f) );
 
 		physRigidBodyInfo tInfo;
 		tInfo.m_mass = 3.0f;
-		tInfo.m_shape = tCollider;
+		tInfo.m_shape = tCollider->getShape();
 		tInfo.m_centerOfMass = physVector4( 0,0,0 );
 		tInfo.m_friction = 0.5f;
 		tInfo.m_motionType = physMotion::MOTION_DYNAMIC;
@@ -65,11 +66,12 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 		glBone* targetBone = m_skinnedmodel->GetSkeletonList()->at(mdl_hitboxes->at(i).indexLink);
 
 		physShape* tCollider;
-		tCollider = Physics::CreateBoxShape( mdl_hitboxes->at(i).extents*1.3f, mdl_hitboxes->at(i).center );
+		//tCollider = Physics::CreateBoxShape( mdl_hitboxes->at(i).extents*1.3f, mdl_hitboxes->at(i).center );
+		tCollider = new physBoxShape( mdl_hitboxes->at(i).extents*1.3f, mdl_hitboxes->at(i).center );
 
 		physRigidBodyInfo tInfo;
 		tInfo.m_mass = 3.0f;
-		tInfo.m_shape = tCollider;
+		tInfo.m_shape = tCollider->getShape();
 		tInfo.m_centerOfMass = physVector4( 0,0,0 );
 		tInfo.m_friction = 0.5f;
 		tInfo.m_motionType = physMotion::MOTION_DYNAMIC;

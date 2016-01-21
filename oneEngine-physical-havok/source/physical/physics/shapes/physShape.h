@@ -2,8 +2,9 @@
 #ifndef _ENGINE_PHYSICS_SHAPES_PHYSSHAPE_H_
 #define _ENGINE_PHYSICS_SHAPES_PHYSSHAPE_H_
 
-#define _USING_HAVOK_
-#ifdef _USING_HAVOK_
+#include "physical/mode.h"
+
+#ifdef PHYSICS_USING_HAVOK
 	// Havok specific
 	class hkpRigidBodyCinfo;
 	class hkpRigidBody;
@@ -13,11 +14,50 @@
 	// Physics Typedefs
 	typedef hkpRigidBodyCinfo	physRigidBodyInfo;
 	//typedef hkpRigidBody		physRigidBody;
-	typedef hkpShape			physShape;		// Collision Shape
+	//typedef hkpShape			physShape;		// Collision Shape
 	typedef hkpPhantom			physCollisionVolume;
 
 	// Physics Interface
 	class physRigidBody;
+
+	//
+	// Shape container class
+	//
+	// Required for additional buffer between Havok and Engine
+	class physShape
+	{
+	public:
+		// Explicit shape get
+		hkpShape*	getShape ( void )
+		{
+			return m_shape;
+		}
+		//
+		operator const hkpShape* ()
+		{
+			return m_shape;
+		}
+	protected:
+		hkpShape*	m_shape;
+	};
+#elif defined(PHYSICS_USING_BOX2D)
+	class b2Shape;
+
+	class physRigidBodyInfo;
+	class physRigidBody;
+	//typedef b2Shape physShape;
+	class physCollisionVolume;
+
+	class physShape
+	{
+	public:
+		b2Shape*	getShape ( void )
+		{
+			return m_shape;
+		}
+	protected:
+		b2Shape*	m_shape;
+	};
 #else
 	// Physics Interface
 	class physRigidBodyInfo;
