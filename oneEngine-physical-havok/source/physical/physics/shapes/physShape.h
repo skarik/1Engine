@@ -3,6 +3,9 @@
 #define _ENGINE_PHYSICS_SHAPES_PHYSSHAPE_H_
 
 #include "physical/mode.h"
+#include "core/types/types.h"
+
+class CPhysics;
 
 #ifdef PHYSICS_USING_HAVOK
 	// Havok specific
@@ -12,7 +15,8 @@
 	class hkpPhantom;
 
 	// Physics Typedefs
-	typedef hkpRigidBodyCinfo	physRigidBodyInfo;
+	//typedef hkpRigidBodyCinfo	physRigidBodyInfo;
+	class physRigidBodyInfo;
 	//typedef hkpRigidBody		physRigidBody;
 	//typedef hkpShape			physShape;		// Collision Shape
 	typedef hkpPhantom			physCollisionVolume;
@@ -27,18 +31,19 @@
 	class physShape
 	{
 	public:
+		PHYS_API physShape () : m_shape(NULL) {;}
+		FORCE_INLINE PHYS_API virtual ~physShape ();
 		// Explicit shape get
-		hkpShape*	getShape ( void )
-		{
-			return m_shape;
-		}
-		//
-		operator const hkpShape* ()
-		{
-			return m_shape;
-		}
+		PHYS_API hkpShape*	getShape ( void );
+		PHYS_API const hkpShape*	getShape ( void ) const;
+		// Non-explicit shape get
+		PHYS_API operator const hkpShape* ();
 	protected:
 		hkpShape*	m_shape;
+	private:
+		friend CPhysics;
+		// Internal hack push
+		physShape (hkpShape* shape) : m_shape(shape) {;}
 	};
 #elif defined(PHYSICS_USING_BOX2D)
 	class b2Shape;

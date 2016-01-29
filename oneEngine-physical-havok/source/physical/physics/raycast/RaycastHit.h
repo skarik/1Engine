@@ -26,4 +26,12 @@ struct RaycastHit
 	}
 };
 
+struct ContactPoint
+{
+	Vector3d	position;
+	Real		w;
+	Vector3d	normal;
+	Real		distance;
+};
+
 #endif

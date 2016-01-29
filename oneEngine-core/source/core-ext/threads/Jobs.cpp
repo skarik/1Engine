@@ -40,17 +40,19 @@ Jobs::System::System ( const uint8_t threadCount )
 // Waits for all jobs to finish and then ends the job handler thread.
 Jobs::System::~System ( void )
 {
-	// Notify there's been a job change
-	m_jobsignal.notify_one();
 	// Disable adding new jobs
 	m_systemEnabled = false;
+	// Notify there's been a job change
+	for ( uint i = 0; i < m_jobThreads.size(); ++i ) {
+		m_jobsignal.notify();
+	}
 	// Finish up all jobs
 	_internal_WaitForJobs( JOBTYPE_ALL );
 	// Join the worker thread to stop any dangling execution
 	m_managerThread.join();
 	for ( uint i = 0; i < m_jobThreads.size(); ++i ) {
 		m_jobStates[i].function = []()->void{;};
-		m_jobStates[i].signal.notify_one();
+		m_jobStates[i].signal.notify();
 		m_jobThreads[i].join();
 	}
 }
@@ -65,7 +67,7 @@ void Jobs::System::_internal_AddJob ( const jobRequest_t& jobToAdd )
 		m_jobRequests.push_back( jobToAdd );
 		m_jobRequestLock.clear(); // Clear write lock on the list
 		// Notify a job has been added
-		m_jobsignal.notify_one();
+		m_jobsignal.notify();
 	}
 }
 //	_internal_WaitForJobs
@@ -127,10 +129,6 @@ void Jobs::System::_internal_WaitForJobs ( const jobType_t jobType )
 // Continues while m_systemEnabled is true and the current job list is not empty.
 void Jobs::System::_internal_JobCycle ( void )
 {
-#	ifdef _USING_JOB_SIGNALING_SYSTEM_
-		std::unique_lock<std::mutex> lk(m_jobsignal_mtx);
-#	endif
-
 	// Lock the main system to here
 	m_systemMainLock.lock();
 	// Spin-lock while system running
@@ -198,7 +196,7 @@ void Jobs::System::_internal_JobCycle ( void )
 					// Mark the task as runnable
 					m_jobStates[i].perform = true;
 					// Notify the thread to start moving
-					m_jobStates[i].signal.notify_one();
+					m_jobStates[i].signal.notify();
 
 					// If we have no more requests, break out of the check loop
 					if ( !haveRequests ) {
@@ -213,7 +211,7 @@ void Jobs::System::_internal_JobCycle ( void )
 
 #		ifdef _USING_JOB_SIGNALING_SYSTEM_
 			// Sleep until a job has been requested
-			m_jobsignal.wait(lk);
+			m_jobsignal.wait();
 #		endif
 	}
 	// Main system is done here
@@ -226,9 +224,6 @@ void Jobs::System::_internal_JobCycle ( void )
 // When not working, state.perform is set to false.
 void Jobs::System::_internal_WorkerCycle ( Jobs::jobState_t* state )
 {
-	// Wait until main() sends data
-    std::unique_lock<std::mutex> lk(state->signal_mtx);
-
 	// Reset state to start with
 	state->perform = false;
 
@@ -236,13 +231,13 @@ void Jobs::System::_internal_WorkerCycle ( Jobs::jobState_t* state )
 	while ( m_systemEnabled )
 	{
 		// Sleep until the signal is unlocked
-		state->signal.wait(lk);
+		state->signal.wait();
 		// Perform the job
 		state->function();
 		// Set job as done
 		state->perform = false;
 		// Notify that a job has been finished
-		m_jobsignal.notify_one();
+		m_jobsignal.notify();
 		// Give focus to other threads
 		std::this_thread::yield();
 	}

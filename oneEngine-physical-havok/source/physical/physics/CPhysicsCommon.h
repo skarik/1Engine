@@ -168,9 +168,25 @@ static void __cdecl errorReport( const char* msg, void* userContext )
 	float maxLinearVelocity;
 	float maxAngularVelocity;
 };*/
-typedef hkpRigidBodyCinfo			physRigidBodyInfo;
+//typedef hkpRigidBodyCinfo			physRigidBodyInfo;
+class physRigidBodyInfo;
 typedef hkpMotion::MotionType		physMotionType;
 typedef hkpMotion					physMotion;
 typedef hkpCollidableQualityType	physMotionQualityType;
+
+typedef hkVector4					physVector4;
+typedef hkQuaternion				physQuaternion;
+#include "physical/physics/motion/physCollisionFilter.h"
+
+typedef hkpCollidable				physCollidable;
+typedef hkpCollisionInput			physCollisionInput;
+typedef hkpContactListener			physContactListener;
+typedef	hkpContactPointEvent		physContactPointEvent;
+
+typedef hkpWindRegion physWindRegion;
+typedef hkpAabbPhantom physAabbPhantom;
+typedef hkAabb physAabb;
+
+#include "physical/physics/motion/physRigidBodyInfo.h"
 
 #endif

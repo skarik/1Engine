@@ -9,6 +9,7 @@
 #include "renderer/logic/model/CSkinnedModel.h"
 
 #include "physical/physics/motion/physRigidbody.h"
+#include "physical/physics/shapes/physBoxShape.h"
 
 #include <list>
 using std::list;
@@ -34,7 +35,7 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 
 		physRigidBodyInfo tInfo;
 		tInfo.m_mass = 3.0f;
-		tInfo.m_shape = tCollider->getShape();
+		tInfo.m_shape = tCollider;
 		tInfo.m_centerOfMass = physVector4( 0,0,0 );
 		tInfo.m_friction = 0.5f;
 		tInfo.m_motionType = physMotion::MOTION_DYNAMIC;
@@ -58,7 +59,7 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 		thb.constraint = NULL;
 
 		m_hitboxList.push_back( thb );
-		Physics::FreeShape( tCollider );
+		delete_safe(tCollider);
 	}
 	// Loop through model hitboxes
 	for ( uint i = 0; i < mdl_hitboxes->size(); ++i ) 
@@ -71,7 +72,7 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 
 		physRigidBodyInfo tInfo;
 		tInfo.m_mass = 3.0f;
-		tInfo.m_shape = tCollider->getShape();
+		tInfo.m_shape = tCollider;
 		tInfo.m_centerOfMass = physVector4( 0,0,0 );
 		tInfo.m_friction = 0.5f;
 		tInfo.m_motionType = physMotion::MOTION_DYNAMIC;
@@ -95,7 +96,7 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 		thb.constraint = NULL;
 
 		m_hitboxList.push_back( thb );
-		Physics::FreeShape( tCollider );
+		delete_safe(tCollider);
 	}
 
 	CreateJoints();
@@ -384,7 +385,8 @@ CRagdollCollision::~CRagdollCollision ( void )
 		//Physics::FreeRigidBody( hb->rigidbody );
 		delete_safe( hb->rigidbody );
 		if ( hb->constraint ) {
-			hb->constraint->removeReference();
+			Physics::RemoveReference(hb->constraint);
+			hb->constraint = NULL;
 		}
 	}
 	m_hitboxList.clear();

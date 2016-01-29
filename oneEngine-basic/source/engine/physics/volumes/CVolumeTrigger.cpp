@@ -4,6 +4,7 @@
 #include "engine/behavior/CGameObject.h"
 
 #include "physical/physics/motion/physTriggerVolume.h"
+#include "physical/physics/motion/physRigidBodyInfo.h"
 
 //==Constructor==
 CVolumeTrigger::CVolumeTrigger ( CCollider* pTargetCollider, CGameObject * pOwnerGameObject )

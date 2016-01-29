@@ -58,9 +58,9 @@ protected:
 	//=========================================//
 	// Privated Helpers
 
-	//	UpdateColliderCommon ( geometry )
+	//	UpdateColliderCommon ( physShape )
 	// Actually performs the rigidbody creation/updating using the given geometry.
-	void UpdateColliderCommon ( hkGeometry& n_geometryToUse );
+	void UpdateColliderCommon ( physShape* n_shapeToUse );
 
 	//	DeleteRigidbody ()
 	// Not much to say. Deletes the rigidbody.

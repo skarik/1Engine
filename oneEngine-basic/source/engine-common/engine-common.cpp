@@ -1,5 +1,5 @@
 
-#include "physical/liscensing.cxx" // Include liscense info
+//#include "physical/liscensing.cxx" // Include liscense info
 
 #include "engine/utils/CDeveloperConsole.h"
 #include "renderer/renderer-console.h"

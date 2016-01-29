@@ -292,6 +292,7 @@ void ItemMeleeCombat::Update ( void )
 #include "engine/physics/raycast/Raycaster.h"
 #include "renderer/debug/CDebugDrawer.h"
 #include "engine-common/entities/effects/CFXMaterialHit.h"
+#include "physical/physics/shapes/physBoxShape.h"
 
 // Attack function
 void ItemMeleeCombat::Attack ( XTransform& n_attackTransform )
@@ -304,10 +305,11 @@ void ItemMeleeCombat::Attack ( XTransform& n_attackTransform )
 	//Raytracer.Raycast( 
 
 	//hkp
-	hkpShape* t_shape = Physics::CreateBoxShape( Vector3d(1,1,1), Vector3d::zero );
+	//hkpShape* t_shape = Physics::CreateBoxShape( Vector3d(1,1,1), Vector3d::zero );
+	/*physShape* t_shape = new physBoxShape( Vector3d(1,1,1), Vector3d::zero );
 	hkTransform t_transform;
 	t_transform.setIdentity();
-	hkpCollidable* t_collidable = new hkpCollidable( t_shape, &t_transform );
+	hkpCollidable* t_collidable = new hkpCollidable( t_shape->getShape(), &t_transform );
 
 	Vector3d t_targetPosition = n_attackTransform.position;//((CCharacter*)pOwner)->GetHoldTransform(0).position;
 	t_transform.setTranslation( hkVector4( t_targetPosition.x, t_targetPosition.y, t_targetPosition.z ) );
@@ -339,6 +341,30 @@ void ItemMeleeCombat::Attack ( XTransform& n_attackTransform )
 		RaycastHit rhLastHit;
 		rhLastHit.hitPos = t_hitPos;
 		rhLastHit.hitNormal = t_hitNorm;
+		// Do material effects
+		CFXMaterialHit* newHitEffect = new CFXMaterialHit(
+			//Terrain::MaterialOf( Raycaster.HitBlock().block.block ),
+			Terrain::MaterialOf( TerrainAccess.GetBlockAtPosition( rhLastHit ).block ),
+			rhLastHit, CFXMaterialHit::HT_STEP );
+		newHitEffect->RemoveReference();
+	}*/
+	physShape* t_shape = new physBoxShape( Vector3d(1,1,1), Vector3d::zero );
+	std::vector<std::pair<ContactPoint,uint32_t>> hitlist;
+
+	Physics::GetClosestPoints( 0, t_shape, n_attackTransform.position, hitlist );
+
+	// show them hits
+	// iterate over each individual hit
+	for ( uint j = 0; j < hitlist.size(); j++ )
+	{
+		Vector3d t_hitPos = hitlist[j].first.position;
+		Vector3d t_hitNorm = hitlist[j].first.normal;
+		Debug::Drawer->DrawLine( t_hitPos, t_hitPos+t_hitNorm*2.0f, Color(1,0,0) );
+
+		RaycastHit rhLastHit;
+		rhLastHit.hitPos = t_hitPos;
+		rhLastHit.hitNormal = t_hitNorm;
+
 		// Do material effects
 		CFXMaterialHit* newHitEffect = new CFXMaterialHit(
 			//Terrain::MaterialOf( Raycaster.HitBlock().block.block ),

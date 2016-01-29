@@ -1,18 +1,18 @@
-#ifdef PHYSICS_USING_HAVOK
-
 #include <stdio.h>
 
 #include "core/debug/CDebugConsole.h"
 #include "core/time/time.h"
 
 #include "physical/physics/motion/physCharacter.h"
+#include "physical/physics/motion/physCharacterRigidBodyInfo.h"
 
 #include "engine/behavior/CGameObject.h"
 
 #include "CRigidbodyCharacter.h"
 
+#ifdef PHYSICS_USING_HAVOK
 
-class CRigidBodyCharacter::mContactModifier : public hkpContactListener
+/*class CRigidBodyCharacter::mContactModifier : public hkpContactListener
 {
 public:
 	CRigidBodyCharacter*	m_rb;
@@ -40,17 +40,6 @@ public:
 		else {
 			m_contacts.pushBack( *m_event.m_contactPoint );
 		}
-/*
-		hkpRigidBody* tbody = m_rb->pBody;
-
-		//if ( m_event.m_contactPoint->
-		hkVector4 normalPoint = m_event.m_contactPoint->getNormal();
-		hkSimdReal movementMagnitude = tbody->getLinearVelocity().dot3( normalPoint );
-		movementMagnitude.mul(2);
-		normalPoint.mul(movementMagnitude);
-		normalPoint.add(tbody->getLinearVelocity());
-		tbody->setLinearVelocity( normalPoint );
-		*/
 	}
 
 	void drawContactPoints ( void )
@@ -62,11 +51,11 @@ public:
 		//hkDebugDisplay::getInstance().
 	}
 
-};
+};*/
 
 //==Constructor==
 CRigidBodyCharacter::CRigidBodyCharacter ( CCollider* pTargetCollider, CGameObject * pOwnerGameObject, float fMass )
-	: CRigidBody(), mContactListener(NULL), mCharController(NULL)
+	: CRigidBody(), /*mContactListener(NULL),*/ mCharController(NULL)
 {
 	// todo: move to CRigidBody constructor
 	bGravityEnabled = true;
@@ -88,7 +77,7 @@ CRigidBodyCharacter::CRigidBodyCharacter ( CCollider* pTargetCollider, CGameObje
 	pCollider->SetRigidBody( this );
 
 	
-	hkpCharacterRigidBodyCinfo info;
+	physCharacterRigidBodyInfo info;
 	info.m_up = hkVector4(0,0,1);
 	info.m_maxSlope = 2.0944f; //60 degree slope
 	info.m_supportDistance = 0.083f; // 1 inch above ground for support
@@ -138,15 +127,16 @@ CRigidBodyCharacter::CRigidBodyCharacter ( CCollider* pTargetCollider, CGameObje
 
 CRigidBodyCharacter::~CRigidBodyCharacter ( void )
 {
-	pBody = NULL;
+	//pBody = NULL;
+	delete_safe(pBody);
 	// todo (delete mContactListener)
 }
 
 void CRigidBodyCharacter::Update ( void )
 {
-	if ( mContactListener ) {
+	/*if ( mContactListener ) {
 		mContactListener->drawContactPoints();
-	}
+	}*/
 }
 
 // Accessors

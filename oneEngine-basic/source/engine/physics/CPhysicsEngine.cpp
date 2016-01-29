@@ -1,11 +1,16 @@
 
-#include "physical/liscensing.cxx" // Include liscense info
+//#include "physical/liscensing.cxx" // Include liscense info
 
 #include "physical/physics/CPhysics.h"
 #include "physical/physics/motion/physRigidbody.h"
 #include "engine/physics/CPhysicsEngine.h"
 #include "engine/state/CGameState.h"
 #include "engine/physics/motion/CRigidbody.h"
+
+// Need the CGameState class to query CBehavior information and set raycast information.
+#include "engine/state/CGameState.h"
+// Need the CCollider class to set collider callbacks 
+//#include "engine/physics/collider/CCollider.h"
 
 void PhysicsEngine::Update ( float deltaTime, CGameState* pGameState, void (CGameState::*pt2FixedUpdate)(void), void(CGameState::*pt2RigidbodyUpdate)(void) )
 {
@@ -112,7 +117,7 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 
 	// Set physics lock state
 	Physics::ReadLock();
-
+	/*
 	// Create the raycast information.
 	hkpWorldRayCastInput hkInputCastRay;
 	// Set the start position of the ray
@@ -122,35 +127,37 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 	hkInputCastRay.m_to.add( physVector4( rDir.dir.x*fCastDist, rDir.dir.y*fCastDist, rDir.dir.z*fCastDist, 0 ) );
 	// Set the ray's collision mask
 	hkInputCastRay.m_filterInfo = collisionFilter;
+	*/
+	std::vector<std::pair<ContactPoint,gameid_t>> hitCollection;
+	Ray castRay = rDir;
+	castRay.dir = castRay.dir.normal() * fCastDist;
 
 	if ( mismatch )
 	{
 	// Create a ray hit accumulation object
-		hkpAllRayHitCollector hkRayHitCollection;
+		//hkpAllRayHitCollector hkRayHitCollection;
 
 		// Cast a ray into the lovely world
 		//Physics::World()->castRay ( hkInputCastRay, hkRayHitCollection );
-		Physics::Raycast ( hkInputCastRay, hkRayHitCollection );
+		//Physics::Raycast ( hkInputCastRay, hkRayHitCollection );
+		Physics::Raycast ( collisionFilter, castRay, Physics::CASTRESULT_MULTIPLE, hitCollection );
 
 		// If the collection has a hit recorded, then we want to grab the hit info.
 		// Otherwise, we want to set the outHitInfo to report no hit.
 		//if ( hkRayHitCollection.hasHit() )
+		ContactPoint* targetHit = NULL;
+		CGameBehavior* targetBehavior = NULL;
 		bool hasValidHit = false;
-		hkpWorldRayCastOutput hkRayHitOutput;
-		if ( !hkRayHitCollection.getHits().isEmpty() )
+		//hkpWorldRayCastOutput hkRayHitOutput;
+		//if ( !hkRayHitCollection.getHits().isEmpty() )
+		if ( !hitCollection.empty() )
 		{
 			// Grab the hit info
-			//hkpWorldRayCastOutput hkRayHitOutput = hkRayHitCollection.getHit();
-			hkRayHitCollection.sortHits();
-			for ( int i = 0; i < hkRayHitCollection.getHits().getSize(); ++i )
+			for ( uint i = 0; i < hitCollection.size(); ++i )
 			{
-				// Get the hit
-				hkRayHitOutput = hkRayHitCollection.getHits()[i];
-
 				// Check for the owner of the Rigidbody
 				hasValidHit = true;
-				uint64_t userData = ((hkpRigidBody*)(hkRayHitOutput.m_rootCollidable->getOwner()))->getUserData();
-				CGameBehavior* behavior = CGameState::Active()->GetBehavior( uint32_t(userData) );
+				CGameBehavior* behavior = CGameState::Active()->GetBehavior( (gameid_t)hitCollection[i].second );
 				if ( behavior )
 				{
 					if ( behavior->GetTypeName() == "CRigidbody" || behavior->GetTypeName() == "CRagdollCollision" ) {
@@ -160,11 +167,13 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 					}
 					// If found valid hit, then stop
 					if ( hasValidHit ) {
+						targetHit = &hitCollection[i].first;
+						targetBehavior = behavior;
 						break;
 					}
 				}
 				else {
-					if ( userData == 0 ) {
+					if ( hitCollection[i].second == 0 ) {
 						// Has a general collision.
 						throw std::exception( "Bad collision hit. All collisions must have an attached gamebehavior!" );
 					}
@@ -180,21 +189,26 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 			// Mark the raytrace as a hit
 			outHitInfo->hit = true;
 			// Save the hit information
-			outHitInfo->distance = hkRayHitOutput.m_hitFraction * fCastDist;
+			outHitInfo->distance = targetHit->distance * fCastDist;
 			outHitInfo->hitPos = rDir.pos + rDir.dir * outHitInfo->distance;
-			hkRayHitOutput.m_normal.store3( &(outHitInfo->hitNormal.x) );
+			outHitInfo->hitNormal = targetHit->normal;
 
-			gameid_t targetBehaviorId = (gameid_t)((hkpRigidBody*)(hkRayHitOutput.m_rootCollidable->getOwner()))->getUserData();
-			outHitInfo->pHitBehavior = CGameState::Active()->GetBehavior( targetBehaviorId );
-			if ( targetBehaviorId != 0 && outHitInfo->pHitBehavior != NULL )
-#ifdef _ENGINE_DEBUG
+			//gameid_t targetBehaviorId = (gameid_t)((hkpRigidBody*)(hkRayHitOutput.m_rootCollidable->getOwner()))->getUserData();
+			//outHitInfo->pHitBehavior = CGameState::Active()->GetBehavior( targetBehaviorId );
+			outHitInfo->pHitBehavior = targetBehavior;
+
+#		ifdef _ENGINE_DEBUG
+			if ( outHitInfo->pHitBehavior != NULL ) {
 				outHitInfo->pHitBody = (dynamic_cast<CMotion*>(outHitInfo->pHitBehavior))->GetBody();
-			if ( targetBehaviorId == 0 ) {
+			}
+			else {
 				std::cout << "Hit an invalid physics object. " << __FILE__ << " at " << __LINE__ << std::endl;
 			}
-#else
+#		else
+			if ( targetBehaviorId != 0 && outHitInfo->pHitBehavior != NULL ) {
 				outHitInfo->pHitBody = ((CRigidBody*)outHitInfo->pHitBehavior)->GetBody(); //(hkpRigidBody*) hkRayHitOutput.m_rootCollidable->getOwner();
-#endif
+			}
+#		endif
 		}
 		else
 		{
@@ -204,38 +218,36 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 	}
 	else
 	{
-		// Create a ray hit accumulation object
-		hkpClosestRayHitCollector hkRayHitCollection;
-
 		// Cast a ray into the lovely world
 		//Physics::World()->castRay ( hkInputCastRay, hkRayHitCollection );
-		Physics::Raycast ( hkInputCastRay, hkRayHitCollection );
+		//Physics::Raycast ( hkInputCastRay, hkRayHitCollection );
+		Physics::Raycast ( collisionFilter, castRay, Physics::CASTRESULT_SINGLE, hitCollection );
 
 		// If the collection has a hit recorded, then we want to grab the hit info.
         // Otherwise, we want to set the outHitInfo to report no hit.
-        if ( hkRayHitCollection.hasHit() )
+        //if ( hkRayHitCollection.hasHit() )
+		if ( !hitCollection.empty() )
         {
-			// Grab the hit info
-			hkpWorldRayCastOutput hkRayHitOutput = hkRayHitCollection.getHit();
- 
 			// Mark the raytrace as a hit
 			outHitInfo->hit = true;
 			// Save the hit information
-			outHitInfo->distance = hkRayHitOutput.m_hitFraction * fCastDist;
+			outHitInfo->distance = hitCollection[0].first.distance * fCastDist;
 			outHitInfo->hitPos = rDir.pos + rDir.dir * outHitInfo->distance;
-			hkRayHitOutput.m_normal.store3( &(outHitInfo->hitNormal.x) );
+			outHitInfo->hitNormal = hitCollection[0].first.normal;
 
-			gameid_t targetBehaviorId = (gameid_t)((hkpRigidBody*)(hkRayHitOutput.m_rootCollidable->getOwner()))->getUserData();
-			outHitInfo->pHitBehavior = CGameState::Active()->GetBehavior( targetBehaviorId );
-			if ( targetBehaviorId != 0 && outHitInfo->pHitBehavior != NULL )
-#ifdef _ENGINE_DEBUG
+			outHitInfo->pHitBehavior = CGameState::Active()->GetBehavior( (gameid_t)hitCollection[0].second );
+#		ifdef _ENGINE_DEBUG
+			if ( outHitInfo->pHitBehavior != NULL ) {
 				outHitInfo->pHitBody = (dynamic_cast<CMotion*>(outHitInfo->pHitBehavior))->GetBody();
-			if ( targetBehaviorId == 0 ) {
+			}
+			else {
 				std::cout << "Hit an invalid physics object. " << __FILE__ << " at " << __LINE__ << std::endl;
 			}
-#else
+#		else
+			if ( outHitInfo->pHitBehavior != NULL ) {
 				outHitInfo->pHitBody = ((CRigidBody*)outHitInfo->pHitBehavior)->GetBody(); //(hkpRigidBody*) hkRayHitOutput.m_rootCollidable->getOwner();
-#endif
+			}
+#		endif
         }
         else
         {
@@ -243,9 +255,9 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 			outHitInfo->distance = -1.0f;
         }
 	}
-
+	
 	Physics::ReadUnlock();
-
+	
 	return;
 #endif//PHYSICS_USING_HAVOK
 #ifdef PHYSICS_USING_BOX2D
@@ -263,33 +275,75 @@ void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pS
 
 	//hkMotionState* ms = new hkMotionState;
 	// Create a new transform
-	hkTransform* ms = new hkTransform;
+	/*hkTransform* ms = new hkTransform;
 	// Set the start position of the collidable
 	ms->setIdentity();
-	ms->setTranslation( physVector4( rDir.pos.x, rDir.pos.y, rDir.pos.z, 0 ) );
+	ms->setTranslation( physVector4( rDir.pos.x, rDir.pos.y, rDir.pos.z, 0 ) );*/
 
-	hkpCollidable* collidable = new hkpCollidable( pShape, ms );
+	/*hkpCollidable* collidable = new hkpCollidable( pShape->getShape(), ms );
 	// Set the collidable's collision mask
 	collidable->setCollisionFilterInfo( collisionFilter );
 
 	// Create the linearcast information
-	hkpLinearCastInput hkInputCastRay;
+	hkpLinearCastInput hkInputCastRay; // FUCK THIS LINE IN PARTICULAR
 	// Set the end position of the ray
 	hkInputCastRay.m_to = physVector4( rDir.pos.x, rDir.pos.y, rDir.pos.z, 0 );
 	hkInputCastRay.m_to.add( physVector4( rDir.dir.x*fCastDist, rDir.dir.y*fCastDist, rDir.dir.z*fCastDist, 0 ) );
 	// Set max pentration depth before reported hit
-	hkInputCastRay.m_maxExtraPenetration = 0.06f;
+	hkInputCastRay.m_maxExtraPenetration = 0.06f;*/
 
 	// Create the linecast accumulation object
-	hkpAllCdPointCollector hkLineHitCollection;
+	//hkpAllCdPointCollector hkLineHitCollection;
 
 	// Cast the shape into the world
 	//Physics::World()->linearCast( collidable, hkInputCastRay, hkLineHitCollection );
-	Physics::Linearcast( collidable, hkInputCastRay, hkLineHitCollection );
+	//Physics::Linearcast( collidable, hkInputCastRay, hkLineHitCollection );
+
+	std::vector<std::pair<ContactPoint,gameid_t>> hitCollection;
+	Ray castRay = rDir;
+	castRay.dir = castRay.dir.normal() * fCastDist;
+	Physics::Linearcast( collisionFilter, pShape, castRay, hitCollection );
+	//Physics::Linearcast( collisionFilter, pShape, castRay, hkLineHitCollection );
+
 
 	// If the collection has hits recorded, we want to grab them.
 	// We will return the first 'hitInfoArrayCount' results, sorted by distance.
 	int currentHitInfo = 0;
+	bool hasValidHit;
+	for ( uint i = 0; i < hitCollection.size() && (currentHitInfo < hitInfoArrayCount); ++i )
+	{
+		// Check the hit's owner for invalid by checking the owner of the hit object
+		hasValidHit = true;
+		CGameBehavior* behavior = CGameState::Active()->GetBehavior( (gameid_t)hitCollection[i].second );
+		if ( mismatch )
+		{
+			if ( behavior->GetTypeName() == "CRigidbody" || behavior->GetTypeName() == "CRagdollCollision" ) 
+			{
+				if ( ((CMotion*)behavior)->GetOwner() == mismatch ) 
+				{
+					hasValidHit = false;
+				}
+			}
+		}
+
+		// If it's a valid hit, add it to the list
+		if ( hasValidHit )
+		{
+			outHitInfo[currentHitInfo].hit = true;
+			outHitInfo[currentHitInfo].distance = hitCollection[i].first.distance * fCastDist;
+			//outHitInfo[currentHitInfo].hitPos = hkLineHitOutput.m_contact.getPosition();
+			outHitInfo[currentHitInfo].hitPos = hitCollection[i].first.position;
+			//outHitInfo[currentHitInfo].hitPos = hkLineHitOutput.m_contact.getPosition();
+			outHitInfo[currentHitInfo].hitNormal = hitCollection[i].first.normal;
+
+			outHitInfo[currentHitInfo].pHitBehavior = behavior;
+			outHitInfo[currentHitInfo].pHitBody = ((CRigidBody*)behavior)->GetBody();//(hkpRigidBody*) hkLineHitOutput.m_rootCollidableB->getOwner();
+
+			// Increment hitinfo index
+			currentHitInfo += 1;
+		}
+	}
+	/*
 	if ( hkLineHitCollection.hasHit() )
 	{
 		// Grab the hits
@@ -331,7 +385,7 @@ void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pS
 			}
 		}
 	}
-
+	*/
 	// Report no hits or end of list
 	if ( currentHitInfo == 0 ) {
 		outHitInfo->hit = false; // Still on hit zero, no hit
@@ -341,10 +395,7 @@ void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pS
 			outHitInfo[currentHitInfo].hit = false;
 		}
 	}
-
-	delete collidable;
-	delete ms;
-
+	
 	Physics::ReadUnlock();
 #endif//PHYSICS_USING_HAVOK
 #ifdef PHYSICS_USING_BOX2D

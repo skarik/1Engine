@@ -1,10 +1,13 @@
 
 #include "physCharacter.h"
+#include "physCharacterRigidBodyInfo.h"
 
-_FORCE_INLINE_ PHYS_API physCharacter::physCharacter( hkpCharacterRigidBodyCinfo* info )
+_FORCE_INLINE_ PHYS_API physCharacter::physCharacter( physCharacterRigidBodyInfo* info )
 	: physRigidBody()
 {
-	controller = new hkpCharacterRigidBody( *info );
+	hkpCharacterRigidBodyCinfo hkinfo;
+	info->saveToHk(hkinfo);
+	controller = new hkpCharacterRigidBody( hkinfo );
 	Physics::AddEntity( controller->getRigidBody() );
 	body = controller->m_character;
 }

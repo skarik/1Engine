@@ -63,7 +63,8 @@ void CPhysicsWindManager::FixedUpdate ( void )
 	//m_aabb = hkAabb ( hkVector4( vCenter.x-90,vCenter.y-90,vCenter.z-90 ), hkVector4( vCenter.x+90,vCenter.y+90,vCenter.z+90 ) );
 	m_aabb.m_min.set( vCenter.x-90,vCenter.y-90,vCenter.z-90 );
 	m_aabb.m_max.set( vCenter.x+90,vCenter.y+90,vCenter.z+90 );
-	m_phantom->setAabb( m_aabb );
+	//m_phantom->setAabb( m_aabb );
+	Physics::SetPhantomAABB( m_phantom, &m_aabb );
 
 	m_physWindManager->update( Time::deltaTime );
 }

@@ -11,6 +11,7 @@
 #include "engine/behavior/CGameObject.h"
 
 #include "physical/physics/motion/physRigidbody.h"
+#include "physical/physics/motion/physRigidBodyInfo.h"
 
 //#include "CRagdollCollision.h"
 class CRagdollCollision;
@@ -396,7 +397,7 @@ void CRigidBody::SetShape ( physShape* pNewShape )
 {
 	// Get the Read/Write copy of the rigidbody's collision info, and set the collision's new shape.
 	//pBody->getCollidableRw()->setShape( pNewShape );
-	pBody->setShape( pNewShape ); // Code is moved into physRigidbody
+	pBody->setShape( pNewShape->getShape() ); // Code is moved into physRigidbody
 }
 
 // Set new minimum penetration depth.

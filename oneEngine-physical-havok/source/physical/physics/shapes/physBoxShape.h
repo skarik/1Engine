@@ -15,6 +15,7 @@ class physBoxShape : public physShape
 {
 public:
 	PHYS_API explicit physBoxShape ( const Vector3d& halfExtents, const Vector3d& centerOffset=Vector3d::zero );
+
 	PHYS_API void setHalfExtents ( const Vector3d& halfExtents );
 };
 

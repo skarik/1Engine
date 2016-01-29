@@ -1,7 +1,7 @@
 // Need the CGameState class to query CBehavior information and set raycast information.
-#include "engine/state/CGameState.h"
+//#include "engine/state/CGameState.h"
 // Need the CCollider class to set collider callbacks 
-#include "engine/physics/collider/CCollider.h"
+//#include "engine/physics/collider/CCollider.h"
 // Need the Phantom implementation
 //#include "engine/physics/phantom/hkArPhantomCallbackShape.h"
 

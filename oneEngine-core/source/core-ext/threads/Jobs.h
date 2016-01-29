@@ -3,6 +3,7 @@
 #define _JOBS_H_
 
 #include "core/types/types.h"
+#include "core-ext/threads/semaphore.h"
 
 #include <thread>
 #include <functional>
@@ -55,8 +56,9 @@ namespace Jobs
 	class jobState_t
 	{
 	public:
-		std::condition_variable		signal;
-		std::mutex				signal_mtx;
+		//std::condition_variable		signal;
+		//std::mutex				signal_mtx;
+		Threads::semaphore			signal;
 		std::atomic<bool>		perform;
 		std::function<void()>	function;
 
@@ -67,12 +69,12 @@ namespace Jobs
 			;
 		}
 		jobState_t(const jobState_t& that)
-			: perform(false)
+			: perform(false), signal()
 		{
 			function = that.function;
 		}
 		jobState_t(const jobState_t&& that)
-			: perform(false)
+			: perform(false), signal()
 		{
 			function = that.function;
 		}
@@ -273,8 +275,9 @@ namespace Jobs
 
 #ifdef _USING_JOB_SIGNALING_SYSTEM_
 		// Used to prevent the CPU usage from spin locking, instead executing update when a job is requested or finished.
-		std::condition_variable		m_jobsignal;
-		std::mutex					m_jobsignal_mtx;
+		Threads::semaphore			m_jobsignal;
+		//std::condition_variable		m_jobsignal;
+		//std::mutex					m_jobsignal_mtx;
 #endif
 
 		// Flag to mask the highest priority jobs

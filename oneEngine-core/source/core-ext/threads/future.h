@@ -2,7 +2,8 @@
 #ifndef _THREADS_FUTURE_VALUE_H_
 #define _THREADS_FUTURE_VALUE_H_
 
-#include "boost/thread.hpp"
+#include <thread>
+#include <mutex>
 
 namespace Threads
 {
@@ -10,7 +11,7 @@ namespace Threads
 	class future
 	{
 	private:
-		boost::mutex	m_lock;
+		std::mutex		m_lock;
 		Type			m_value;
 		bool			m_hasValue;
 
@@ -61,7 +62,7 @@ namespace Threads
 		// get if has value read
 		bool hasValue ( void )
 		{
-			boost::mutex::scoped_lock readlock( m_lock );
+			std::lock_guard<std::mutex> readlock( m_lock );
 			return m_hasValue;
 		}
 	};

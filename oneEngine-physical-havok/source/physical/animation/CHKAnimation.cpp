@@ -43,7 +43,8 @@ public:
 
 			// Cast a ray into the lovely world
 			//CPhysics::World()->castRay ( hkInputCastRay, hkRayHitCollection );
-			CPhysics::Raycast ( hkInputCastRay, hkRayHitCollection );
+			//CPhysics::Raycast ( hkInputCastRay, hkRayHitCollection );
+			Physics::INTERNAL_Raycast( hkInputCastRay, hkRayHitCollection );
 
 			// If the collection has a hit recorded, then we want to grab the hit info.
 			// Otherwise, we want to set the outHitInfo to report no hit.

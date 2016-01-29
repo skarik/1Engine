@@ -51,15 +51,16 @@ FORCE_INLINE PHYS_API bool Physics::SimulationAtSubstep ( void )
 FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents )
 {
 	//hkVector4 halfExtent( vHalfExtents.x, vHalfExtents.y, vHalfExtents.z );
-	hkVector4 halfExtent;
+	/*hkVector4 halfExtent;
 	halfExtent.set( vHalfExtents.x, vHalfExtents.y, vHalfExtents.z );
 	hkpBoxShape* boxShape = new hkpBoxShape( halfExtent, 0.01f );
 	//hkpSphereShape* boxShape = new hkpSphereShape( vHalfExtents.x ); // creates a sphere shape with a radius of 2
-	return boxShape;
+	return boxShape;*/
+	throw Core::DeprecatedCallException();
 }
 FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents, Vector3d vCenterOffset )
 {
-	hkVector4 halfExtent;
+	/*hkVector4 halfExtent;
 	halfExtent.set( vHalfExtents.x, vHalfExtents.y, vHalfExtents.z );
 	hkpBoxShape* boxShape = new hkpBoxShape( halfExtent, 0.01f );
 
@@ -68,30 +69,34 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents
 	translation.set( vCenterOffset.x, vCenterOffset.y, vCenterOffset.z );
 	hkpConvexTranslateShape* translatedBoxShape = new hkpConvexTranslateShape( boxShape, translation );
 
-	return translatedBoxShape;
+	return translatedBoxShape;*/
+	throw Core::DeprecatedCallException();
 }
 // Create a capsule shape
 FORCE_INLINE PHYS_API physShape* Physics::CreateCapsuleShape ( Vector3d vStart, Vector3d vEnd, float fRadius )
 {
-	hkVector4 start( vStart.x, vStart.y, vStart.z );
+	/*hkVector4 start( vStart.x, vStart.y, vStart.z );
 	hkVector4 end  ( vEnd.x, vEnd.y, vEnd.z );
 	hkpCapsuleShape* capsuleShape = new hkpCapsuleShape( start, end, fRadius ); // creates a capsule with a axis between "start" and "end", and the specified "radius"
 	
-	return capsuleShape;
+	return capsuleShape;*/
+	throw Core::DeprecatedCallException();
 }
 FORCE_INLINE PHYS_API physShape* Physics::CreateSphereShape ( float fRadius )
 {
-	hkpSphereShape* sphereShape = new hkpSphereShape( fRadius );
-	return sphereShape;
+	/*hkpSphereShape* sphereShape = new hkpSphereShape( fRadius );
+	return sphereShape;*/
+	throw Core::DeprecatedCallException();
 }
 // Create a cylinder shape
 FORCE_INLINE PHYS_API physShape* Physics::CreateCylinderShape ( Vector3d vStart, Vector3d vEnd, float fRadius, float fConvexRadius )
 {
-	hkVector4 start( vStart.x, vStart.y, vStart.z );
+	/*hkVector4 start( vStart.x, vStart.y, vStart.z );
 	hkVector4 end  ( vEnd.x, vEnd.y, vEnd.z );
 	hkpCylinderShape* cylinderShape = new hkpCylinderShape( start, end, fRadius, fConvexRadius ); // creates a cylinder with a axis between "start" and "end", and the specified "radius"
 	
-	return cylinderShape;
+	return cylinderShape;*/
+	throw Core::DeprecatedCallException();
 }
 // Creates a mesh shape using a set of physics vertices.
 FORCE_INLINE PHYS_API physShape*	Physics::CreateConvMeshShape ( CPhysicsData* pMesh )
@@ -239,7 +244,9 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( CModelData const* pM
 	meshShape = new hkpBvCompressedMeshShape ( cInfo );
 
 	// Return the new shape
-	return ((physShape*)meshShape);
+	physShape* newshape = new physShape( meshShape );
+	return newshape;
+	//return ((physShape*)meshShape);
 }
 // Creates a faster, but RAM eating mesh shape from the given data. Should be used for larger objects that change often
 FORCE_INLINE PHYS_API physShape* Physics::CreateFastMeshShape ( Vector3d* pVertices, CModelTriangle* pTris, unsigned short vertexCount, unsigned short faceCount )
@@ -323,7 +330,8 @@ FORCE_INLINE PHYS_API physShape* Physics::CreateFastMeshShape ( Vector3d* pVerti
 // Freeing shapes
 FORCE_INLINE PHYS_API void Physics::FreeShape ( physShape* pShape )
 {
-	pShape->removeReference();
+	throw Core::DeprecatedCallException();
+	//pShape->removeReference();
 	//delete pShape;
 }
 
@@ -331,23 +339,26 @@ FORCE_INLINE PHYS_API void Physics::FreeShape ( physShape* pShape )
 // Creation of rigidbodies
 FORCE_INLINE PHYS_API hkpRigidBody*	Physics::CreateRigidBody ( physRigidBodyInfo* pBodyInfo, bool bIsDynamic )
 {
+	if ( pBodyInfo == NULL ) {
+		throw Core::NullReferenceException();
+	}
+
 	World()->markForWrite();
 	//pWorld->markForRead();
 
 	//threadPool->waitForCompletion();
-
+	hkpRigidBodyCinfo info;
+	pBodyInfo->saveToHk(info);
 	hkpMassProperties massProperties;
-	if ( pBodyInfo == NULL )
-		exit( 0 );
 	if ( bIsDynamic )
 	{
-		if ( pBodyInfo->m_motionType != hkpMotion::MOTION_FIXED )
-			hkpInertiaTensorComputer::computeShapeVolumeMassProperties( pBodyInfo->m_shape, pBodyInfo->m_mass, massProperties );
+		if ( info.m_motionType != hkpMotion::MOTION_FIXED )
+			hkpInertiaTensorComputer::computeShapeVolumeMassProperties( info.m_shape, info.m_mass, massProperties );
 		
-		pBodyInfo->setMassProperties( massProperties );
+		info.setMassProperties( massProperties );
 	}
 
-	hkpRigidBody* pRigidBody = new hkpRigidBody( *pBodyInfo );
+	hkpRigidBody* pRigidBody = new hkpRigidBody( info );
 	World()->addEntity( pRigidBody );
 	// World now owns the pointer to the rigid body
 	//pRigidBody->removeReference();
@@ -439,14 +450,14 @@ FORCE_INLINE PHYS_API physCollisionVolume* Physics::CreateAABBPhantom ( hkAabb* 
 	return pPhantom;
 }
 // Create a phantom using a collider
-FORCE_INLINE PHYS_API physCollisionVolume* Physics::CreateShapePhantom ( physShape* pShape, CTransform* pSourceTransform, unsigned int iOwnerID )
+FORCE_INLINE PHYS_API physCollisionVolume* Physics::CreateShapePhantom ( const physShape* pShape, CTransform* pSourceTransform, unsigned int iOwnerID )
 {
 	// Get the transform
 	hkTransform tempTransform ( hkRotation(),
 		hkVector4(pSourceTransform->position.x,pSourceTransform->position.y,pSourceTransform->position.z)
 		);
 	// Create the new phantom
-	hkpSimpleShapePhantom* pPhantom = new hkpSimpleShapePhantom ( pShape,tempTransform );
+	hkpSimpleShapePhantom* pPhantom = new hkpSimpleShapePhantom ( pShape->getShape(),tempTransform );
 	pPhantom->setUserData( iOwnerID ); // Set the phantom's owner object.
 	// Add the phantom to the world
 	World()->addPhantom( pPhantom );
@@ -468,17 +479,19 @@ FORCE_INLINE PHYS_API void Physics::CheckPhantomContacts ( physCollisionVolume* 
 	((hkpShapePhantom*)pCollisionVolume)->getPenetrations( collisionAccumulation );
 }
 // Creation of a trigger phantom
-FORCE_INLINE PHYS_API hkpRigidBody* Physics::CreateTriggerVolume ( physRigidBodyInfo* pBodyInfo, physShape* pShape, hkpPhantomCallbackShape* pCbPhantom )
+FORCE_INLINE PHYS_API hkpRigidBody* Physics::CreateTriggerVolume ( physRigidBodyInfo* pBodyInfo, const physShape* pShape, hkpPhantomCallbackShape* pCbPhantom )
 {
 	// Create a new callback shape
 	//hkArPhantomCallbackShape* myPhantomShape = new hkArPhantomCallbackShape();
 	// Create a compound shape with the designated shape
-	hkpBvShape* bvShape = new hkpBvShape( pShape, pCbPhantom );
+	hkpBvShape* bvShape = new hkpBvShape( pShape->getShape(), pCbPhantom );
 	pCbPhantom->removeReference();
 
-	pBodyInfo->m_shape = bvShape;
+	hkpRigidBodyCinfo info;
+	pBodyInfo->saveToHk(info);
+	info.m_shape = bvShape;
 
-	hkpRigidBody* pRigidBody = new hkpRigidBody( *pBodyInfo );
+	hkpRigidBody* pRigidBody = new hkpRigidBody( info );
 	//Physics::World()->addEntity( pRigidBody );
 	Physics::AddEntity( pRigidBody );
 
@@ -486,22 +499,208 @@ FORCE_INLINE PHYS_API hkpRigidBody* Physics::CreateTriggerVolume ( physRigidBody
 
 	return pRigidBody;
 }
+// Modifying phantoms
+FORCE_INLINE PHYS_API void Physics::SetPhantomAABB ( hkpAabbPhantom* phantom, hkAabb* aabb )
+{
+	phantom->setAabb(*aabb);
+}
 
 //=========================================//
 // Tracing Collision Queries
 //=========================================//
 // Cast a ray
 //PHYS_API static void Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * outHitInfo, uint32_t collisionFilter = 0, void* mismatch=NULL );
-FORCE_INLINE PHYS_API void Physics::Raycast( const hkpWorldRayCastInput& input, hkpRayHitCollector& collector )
+//FORCE_INLINE PHYS_API void Physics::Raycast( const hkpWorldRayCastInput& input, hkpRayHitCollector& collector )
+FORCE_INLINE PHYS_API void Physics::INTERNAL_Raycast ( const hkpWorldRayCastInput& input, hkpRayHitCollector& collector )
 {
-	Physics::World()->castRay ( input, collector );
+	CPhysics::World()->castRay( input, collector );
+}
+FORCE_INLINE PHYS_API void Physics::Raycast ( const physCollisionFilter& filter, const Ray& ray, const eCastType_t type, std::vector<std::pair<ContactPoint,uint32_t>>& pointCollection )
+{
+	// Create the raycast information.
+	hkpWorldRayCastInput hkInputCastRay;
+	// Set the start position of the ray
+	hkInputCastRay.m_from = physVector4( ray.pos.x, ray.pos.y, ray.pos.z, 0 );
+	// Set the end position of the ray
+	hkInputCastRay.m_to = physVector4( ray.pos.x, ray.pos.y, ray.pos.z, 0 );
+	hkInputCastRay.m_to.add( physVector4( ray.dir.x, ray.dir.y, ray.dir.z, 0 ) );
+	// Set the ray's collision mask
+	hkInputCastRay.m_filterInfo = filter;
+
+	if ( type == CASTRESULT_MULTIPLE )
+	{
+		// Create a ray hit accumulation object
+		hkpAllRayHitCollector hkRayHitCollection;
+
+		// Perform the raycast
+		Physics::World()->castRay ( hkInputCastRay, hkRayHitCollection );
+
+		hkpWorldRayCastOutput hkRayHitOutput;
+		if ( !hkRayHitCollection.getHits().isEmpty() )
+		{
+			// Grab the hit info
+			//hkpWorldRayCastOutput hkRayHitOutput = hkRayHitCollection.getHit();
+			hkRayHitCollection.sortHits();
+			for ( int i = 0; i < hkRayHitCollection.getHits().getSize(); ++i )
+			{
+				// Get the hit
+				hkRayHitOutput = hkRayHitCollection.getHits()[i];
+
+				// Save hit information
+				ContactPoint hit;
+				hit.distance = hkRayHitOutput.m_hitFraction;
+				hkRayHitOutput.m_normal.store3( &hit.normal.x );
+
+				// Push back hit info and userdata to the hit list
+				pointCollection.push_back( std::pair<ContactPoint,uint32_t>(
+						hit,
+						(uint32_t)((hkpRigidBody*)(hkRayHitOutput.m_rootCollidable->getOwner()))->getUserData()
+						)
+					);
+
+				// Next hit in list, please
+			}
+		}
+	}
+	else if ( type == CASTRESULT_SINGLE )
+	{
+		// Create the single ray hit acculmulation object
+		hkpClosestRayHitCollector hkRayHitCollection;
+
+		// Perform the raycast
+		Physics::World()->castRay ( hkInputCastRay, hkRayHitCollection );
+
+		hkpWorldRayCastOutput hkRayHitOutput;
+		if ( hkRayHitCollection.hasHit() )
+		{
+			// Get the hit
+			hkRayHitOutput = hkRayHitCollection.getHit();
+
+			// Save hit information
+			ContactPoint hit;
+			hit.distance = hkRayHitOutput.m_hitFraction;
+			hkRayHitOutput.m_normal.store3( &hit.normal.x );
+
+			// Push back hit info and userdata to the hit list
+			pointCollection.push_back( std::pair<ContactPoint,uint32_t>(
+					hit,
+					(uint32_t)((hkpRigidBody*)(hkRayHitOutput.m_rootCollidable->getOwner()))->getUserData()
+					)
+				);
+
+			// And now we're done!
+		}
+	}
 }
 // Cast a shape
 //PHYS_API static void Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, uint32_t collisionFilter = 0, void* mismatch=NULL );
-FORCE_INLINE PHYS_API void Physics::Linearcast( const hkpCollidable* collA, const hkpLinearCastInput& input, hkpCdPointCollector& castCollector, hkpCdPointCollector* startCollector )
+//FORCE_INLINE PHYS_API void Physics::Linearcast( const hkpCollidable* collA, const hkpLinearCastInput& input, hkpCdPointCollector& castCollector, hkpCdPointCollector* startCollector )
+//FORCE_INLINE PHYS_API void Physics::Linearcast( const hkpCollidable* collA, const hkpLinearCastInput& input, hkpCdPointCollector& castCollector, hkpCdPointCollector* startCollector )
+//FORCE_INLINE PHYS_API void Physics::Linearcast( const physCollisionFilter& filter, const physShape* shape, const Ray& ray, hkpCdPointCollector& castCollector, hkpCdPointCollector* startCollector )
+FORCE_INLINE PHYS_API void Physics::Linearcast( const physCollisionFilter& filter, const physShape* shape, const Ray& ray, std::vector<std::pair<ContactPoint,uint32_t>>& pointCollection )
 {
-	Physics::World()->linearCast( collA, input, castCollector, startCollector );
+	//Physics::World()->linearCast( collA, input, castCollector, startCollector );
+
+	// Create a new transform
+	hkTransform* ms = new hkTransform;
+	// Set the start position of the collidable
+	ms->setIdentity();
+	ms->setTranslation( physVector4( ray.pos.x, ray.pos.y, ray.pos.z, 0 ) );
+
+	// Create the collidable used for the cast
+	hkpCollidable* collidable = new hkpCollidable( shape->getShape(), ms );
+	// Set the collidable's collision mask
+	collidable->setCollisionFilterInfo( filter );
+
+	// Create the linearcast information
+	hkpLinearCastInput hkInputCastRay;
+	// Set the end position of the ray
+	hkInputCastRay.m_to = physVector4( ray.pos.x, ray.pos.y, ray.pos.z, 0 );
+	hkInputCastRay.m_to.add( physVector4( ray.dir.x, ray.dir.y, ray.dir.z, 0 ) );
+	// Set max pentration depth before reported hit
+	hkInputCastRay.m_maxExtraPenetration = 0.06f;
+
+	// Create the linecast accumulation object
+	hkpAllCdPointCollector hkLineHitCollection;
+	// Set the start collector argument
+	hkpCdPointCollector* startCollector = NULL;
+
+	// Perform the line cast
+	Physics::World()->linearCast( collidable, hkInputCastRay, hkLineHitCollection, startCollector );
+
+	// Pull all the information from the cast result
+	if ( hkLineHitCollection.hasHit() )
+	{
+		// Grab the hits
+		hkLineHitCollection.sortHits();
+
+		hkpRootCdPoint hkLineHitOutput;
+		for ( int i = 0; i < hkLineHitCollection.getNumHits(); ++i )
+		{
+			// Get the hit
+			hkLineHitOutput = hkLineHitCollection.getHits()[i];
+
+			// Save hit information
+			ContactPoint hit;
+			hit.distance = hkLineHitOutput.m_contact.getDistance();
+			hkLineHitOutput.m_contact.getPosition().store3( &hit.position.x );
+			hkLineHitOutput.m_contact.getNormal().store3( &hit.normal.x );
+
+			// Push back hit info and userdata to the hit list
+			pointCollection.push_back( std::pair<ContactPoint,uint32_t>(
+					hit,
+					(uint32_t)((hkpRigidBody*)(hkLineHitOutput.m_rootCollidableB->getOwner()))->getUserData()
+					)
+				);
+
+			// Next hit in list, please
+		}
+	}
+
+	delete collidable;
+	delete ms;
 }
+
+
+// Get closest points to a collider
+//FORCE_INLINE PHYS_API void Physics::GetClosestPoints ( const hkpCollidable* collA, const hkpCollisionInput& input, hkpCdPointCollector& collector )
+FORCE_INLINE PHYS_API void Physics::GetClosestPoints ( const physCollisionFilter& filter, const physShape* shape, const Vector3d& input, std::vector<std::pair<ContactPoint,uint32_t>>& pointCollection )
+{
+	//World()->getClosestPoints( collA, input, collector );
+	hkTransform t_transform; t_transform.setIdentity();
+	hkpCollidable* t_collidable = new hkpCollidable( shape->getShape(), &t_transform );
+
+	Vector3d t_targetPosition = input;
+	t_transform.setTranslation( hkVector4( t_targetPosition.x, t_targetPosition.y, t_targetPosition.z ) );
+
+	hkpAllCdPointCollector t_collector;
+	t_collector.reset();
+	hkpCollisionInput procinput = *Physics::GetCollisionCollector();
+	
+	World()->getClosestPoints( t_collidable, procinput, t_collector );
+
+	// show them hits
+	// iterate over each individual hit
+	for (int j = 0; j < t_collector.getHits().getSize(); j++ )
+	{
+		// Get the hit
+		hkpRootCdPoint hkLineHitOutput = t_collector.getHits()[j];
+
+		// Save hit information
+		ContactPoint hit;
+		hit.distance = -1.0F;
+		hkLineHitOutput.m_contact.getPosition().store3( &hit.position.x );
+		hkLineHitOutput.m_contact.getNormal().store3( &hit.normal.x );
+
+		// Push back hit info and userdata to the hit list
+		pointCollection.push_back( std::pair<ContactPoint,uint32_t>(
+				hit,
+				(uint32_t)((hkpRigidBody*)(hkLineHitOutput.m_rootCollidableB->getOwner()))->getUserData()
+				)
+			);
+	}
+}
+
 
 //==Collision==
 #include "physical/system/Layers.h"
@@ -547,12 +746,6 @@ FORCE_INLINE PHYS_API hkpCollisionInput* Physics::GetCollisionCollector ( void )
 	return (hkpCollisionInput*)World()->getCollisionInput();
 }
 
-// Get closest points to a collider
-FORCE_INLINE PHYS_API void Physics::GetClosestPoints ( const hkpCollidable* collA, const hkpCollisionInput& input, hkpCdPointCollector& collector )
-{
-	World()->getClosestPoints( collA, input, collector );
-}
-
 //=========================================//
 // Object handling
 //=========================================//
@@ -577,6 +770,11 @@ FORCE_INLINE PHYS_API void Physics::AddPhantom ( hkpPhantom* phantom )
 FORCE_INLINE PHYS_API void Physics::AddListener ( hkpWorldPostSimulationListener* listener )
 {
 	Physics::World()->addWorldPostSimulationListener( listener );
+}
+
+FORCE_INLINE PHYS_API void Physics::RemoveReference ( hkReferencedObject* object )
+{
+	object->removeReference();
 }
 
 //=========================================//

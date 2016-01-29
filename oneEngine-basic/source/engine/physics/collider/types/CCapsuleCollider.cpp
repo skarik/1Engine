@@ -20,7 +20,7 @@ CCapsuleCollider::CCapsuleCollider ( ftype height, ftype radius, bool centered )
 }
 CCapsuleCollider::~CCapsuleCollider ( void )
 {
-	Physics::FreeShape( pCollisionShape );
+	delete_safe(pCollisionShape);
 }
 
 // Setters

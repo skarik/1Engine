@@ -62,7 +62,7 @@ void glMainSystem::GetExtensions ( void )
 		setupPair(&FBOsAvailable,	"GL_EXT_framebuffer_object")
 	};
 	// Start with no features available
-	for ( int i = 0; i < setupTable.size(); ++i )
+	for ( uint i = 0; i < setupTable.size(); ++i )
 	{
 #	ifdef _ENGINE_DEBUG
 		*setupTable[i].first = true;
@@ -80,7 +80,7 @@ void glMainSystem::GetExtensions ( void )
 		//ShadersARBAvailable	= (strstr((const char *)str, "GL_ARB_shader_objects") != NULL);
 		ShadersAvailable	= (strstr((const char *)str, "GL_ARB_shader_objects") != NULL);
 		FBOsAvailable	= (strstr((const char *)str, "GL_EXT_framebuffer_object") != NULL);*/
-		for ( int i = 0; i < setupTable.size(); ++i )
+		for ( uint i = 0; i < setupTable.size(); ++i )
 		{	// Search the entire string
 			if ( strstr( str, setupTable[i].second.c_str() ) != NULL ) {
 				*setupTable[i].first = *setupTable[i].first || true;
@@ -99,7 +99,7 @@ void glMainSystem::GetExtensions ( void )
 			if ( str != NULL )
 			{
 				// And loop through the table
-				for ( int i = 0; i < setupTable.size(); ++i )
+				for ( uint i = 0; i < setupTable.size(); ++i )
 				{	// And set up the feature table
 					if ( strstr( str, setupTable[i].second.c_str() ) != NULL ) {
 						*setupTable[i].first = *setupTable[i].first || true;

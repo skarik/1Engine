@@ -7,6 +7,7 @@
 //#include "engine-common/entities/item/CWeaponItem.h"
 #include "physical/physics/water/Water.h"
 #include "physical/physics/CPhysics.h"
+#include "physical/physics/shapes/physSphereShape.h"
 
 #include "engine/physics/raycast/Raycaster.h"
 

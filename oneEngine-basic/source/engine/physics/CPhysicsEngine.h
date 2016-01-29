@@ -3,7 +3,9 @@
 #define _C_PHYSICS_ENGINE_H_
 
 #include "engine/state/CGameState.h"
-#include "physical/physics/shapes/physShape.h"
+//#include "physical/physics/shapes/physShape.h"
+
+class physShape;
 
 //===Physics Class Wrapper Definition===
 // Engine-level wrapper functions

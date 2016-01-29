@@ -24,7 +24,7 @@ SkillBlink::SkillBlink ( void ) : CSkill( ItemData() )
 
 SkillBlink::~SkillBlink ( void )
 {
-	delete_safe(ps_blink_target);
+	delete_safe_decrement(ps_blink_target);
 }
 
 bool SkillBlink::Use ( int use )

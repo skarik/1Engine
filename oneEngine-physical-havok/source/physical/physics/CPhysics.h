@@ -13,6 +13,13 @@
 class CPhysics
 {
 public:
+	enum eCastType_t
+	{
+		CASTRESULT_SINGLE,
+		CASTRESULT_MULTIPLE
+	};
+
+public:
 	PHYS_API CPhysics ( void ) {};
 	PHYS_API CPhysics ( const CPhysics& ) {};
 private:
@@ -91,24 +98,35 @@ public:
 	//=========================================//
 	// Creation of phantoms
 	FORCE_INLINE PHYS_API static physCollisionVolume* CreateAABBPhantom ( hkAabb* pInfo, unsigned int iOwnerID );
-	FORCE_INLINE PHYS_API static physCollisionVolume* CreateShapePhantom ( physShape* pShape, CTransform* pSourceTransform, unsigned int iOwnerID );
+	FORCE_INLINE PHYS_API static physCollisionVolume* CreateShapePhantom ( const physShape* pShape, CTransform* pSourceTransform, unsigned int iOwnerID );
 	// Destruction of phantoms
 	FORCE_INLINE PHYS_API static void FreePhantom ( physCollisionVolume* pCollisionVolume );
 	// Checking for phantom collisions contacts
 	FORCE_INLINE PHYS_API static void CheckPhantomContacts ( physCollisionVolume* pCollisionVolume );
 	//==Trigger Phantoms==
 	// Creation of a trigger phantom
-	FORCE_INLINE PHYS_API static hkpRigidBody* CreateTriggerVolume ( physRigidBodyInfo* pBodyInfo, physShape* pShape, hkpPhantomCallbackShape* pCbPhantom );
+	FORCE_INLINE PHYS_API static hkpRigidBody* CreateTriggerVolume ( physRigidBodyInfo* pBodyInfo, const physShape* pShape, hkpPhantomCallbackShape* pCbPhantom );
+	// Modifying phantoms
+	FORCE_INLINE PHYS_API static void SetPhantomAABB ( hkpAabbPhantom* phantom, hkAabb* aabb );
 
 	//=========================================//
 	// Tracing Collision Queries
 	//=========================================//
 	// Cast a ray
 	//PHYS_API static void Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * outHitInfo, uint32_t collisionFilter = 0, void* mismatch=NULL );
-	FORCE_INLINE PHYS_API static void Raycast( const hkpWorldRayCastInput& input, hkpRayHitCollector& collector );
+	//FORCE_INLINE PHYS_API static void Raycast( const hkpWorldRayCastInput& input, hkpRayHitCollector& collector );
+	FORCE_INLINE PHYS_API static void Raycast ( const physCollisionFilter& filter, const Ray& ray, const eCastType_t type, std::vector<std::pair<ContactPoint,uint32_t>>& pointCollection );
+	FORCE_INLINE PHYS_API static void INTERNAL_Raycast ( const hkpWorldRayCastInput& input, hkpRayHitCollector& collector );
 	// Cast a shape
 	//PHYS_API static void Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, uint32_t collisionFilter = 0, void* mismatch=NULL );
-	FORCE_INLINE PHYS_API static void Linearcast( const hkpCollidable* collA, const hkpLinearCastInput& input, hkpCdPointCollector& castCollector, hkpCdPointCollector* startCollector = HK_NULL );
+	//FORCE_INLINE PHYS_API static void Linearcast( const hkpCollidable* collA, const hkpLinearCastInput& input, hkpCdPointCollector& castCollector, hkpCdPointCollector* startCollector = HK_NULL );
+	FORCE_INLINE PHYS_API static void Linearcast( const physCollisionFilter& filter, const physShape* shape, const Ray& ray, std::vector<std::pair<ContactPoint,uint32_t>>& pointCollection );
+	//FORCE_INLINE PHYS_API static void Linearcast( const physCollisionFilter& filter, const physShape* shape, const Ray& ray, hkpCdPointCollector& castCollector, hkpCdPointCollector* startCollector = HK_NULL );
+
+	// Get closest points to a collider
+	//FORCE_INLINE PHYS_API static void GetClosestPoints ( const hkpCollidable* collA, const hkpCollisionInput& input, hkpCdPointCollector& collector );
+	FORCE_INLINE PHYS_API static void GetClosestPoints ( const physCollisionFilter& filter, const physShape* shape, const Vector3d& input, std::vector<std::pair<ContactPoint,uint32_t>>& pointCollection );
+
 
 	//=========================================//
 	// Collision
@@ -118,9 +136,6 @@ public:
 
 	// Get a collision collector
 	FORCE_INLINE PHYS_API static hkpCollisionInput* GetCollisionCollector ( void );
-
-	// Get closest points to a collider
-	FORCE_INLINE PHYS_API static void GetClosestPoints ( const hkpCollidable* collA, const hkpCollisionInput& input, hkpCdPointCollector& collector );
 
 	//=========================================//
 	// Object handling
@@ -132,6 +147,8 @@ public:
 
 	FORCE_INLINE PHYS_API static void AddPhantom ( hkpPhantom* phantom );
 	FORCE_INLINE PHYS_API static void AddListener ( hkpWorldPostSimulationListener* listener );
+
+	FORCE_INLINE PHYS_API static void RemoveReference ( hkReferencedObject* object );
 
 	//=========================================//
 	// Threading

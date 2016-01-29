@@ -29,11 +29,11 @@ public:
 	// Accessors
 	ENGINE_API physRigidBody* GetBody ( void ) override;
 
-	class mContactModifier;
+	//class mContactModifier;
 protected:
 	//hkpCharacterRigidBody* mCharController;
 	physCharacter*		mCharController;
-	mContactModifier*	mContactListener;
+	//mContactModifier*	mContactListener;
 };
 
 #endif//_C_RIGIDBODY_CHARACTER_H_

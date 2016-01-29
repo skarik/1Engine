@@ -4,6 +4,7 @@
 #include "physical/physics.h"
 #include "physical/physics/CPhysics.h"
 #include "physical/physics/motion/physRigidbody.h"
+#include "physical/physics/shapes/physStaticCompressedMesh.h"
 
 CMeshedStaticProp::CMeshedStaticProp ( void )
 	: m_rigidbody(NULL), m_scale( 1.0f )
@@ -23,74 +24,56 @@ void CMeshedStaticProp::UpdateScale ( const float n_newScale )
 // UpdateCollider (TerrainVertex) : Creates Havok geometry from terrain model
 void CMeshedStaticProp::UpdateCollider ( CTerrainVertex* vertices, CModelTriangle* triangles, uint vertex_count, uint triangle_count )
 {
-	hkGeometry geometry; 
-	geometry.m_triangles.clear();
-	geometry.m_vertices.clear();
-
-	geometry.m_vertices.setSize( vertex_count );
-	geometry.m_triangles.setSize( triangle_count );
-
-	for ( uint vert = 0; vert < vertex_count; ++vert )
+	if ( vertex_count > 0 )
 	{
-		geometry.m_vertices[vert].setComponent<0>( vertices[vert].x*m_scale );
-		geometry.m_vertices[vert].setComponent<1>( vertices[vert].y*m_scale );
-		geometry.m_vertices[vert].setComponent<2>( vertices[vert].z*m_scale );
+		physStaticCompressedMesh* currentShape = new physStaticCompressedMesh();
+		currentShape->Initialize( vertices, triangles, vertex_count, triangle_count, m_scale );
+		UpdateColliderCommon( currentShape );
+		delete_safe(currentShape);
 	}
-	for ( uint tri = 0; tri < triangle_count; ++tri )
+	else 
 	{
-		geometry.m_triangles[tri].m_a = triangles[tri].vert[0];
-		geometry.m_triangles[tri].m_b = triangles[tri].vert[1];
-		geometry.m_triangles[tri].m_c = triangles[tri].vert[2];
+		UpdateColliderCommon( NULL );
 	}
-
-	UpdateColliderCommon( geometry );
 }
 // UpdateCollider (ModelVertex) : Creates Havok geometry from normal model
 void CMeshedStaticProp::UpdateCollider ( CModelVertex* vertices, CModelTriangle* triangles, uint vertex_count, uint triangle_count )
 {
-	hkGeometry geometry; 
-	geometry.m_triangles.clear();
-	geometry.m_vertices.clear();
-
-	geometry.m_vertices.setSize( vertex_count );
-	geometry.m_triangles.setSize( triangle_count );
-
-	for ( uint vert = 0; vert < vertex_count; ++vert )
+	if ( vertex_count > 0 )
 	{
-		geometry.m_vertices[vert].setComponent<0>( vertices[vert].x*m_scale );
-		geometry.m_vertices[vert].setComponent<1>( vertices[vert].y*m_scale );
-		geometry.m_vertices[vert].setComponent<2>( vertices[vert].z*m_scale );
+		physStaticCompressedMesh* currentShape = new physStaticCompressedMesh();
+		currentShape->Initialize( vertices, triangles, vertex_count, triangle_count, m_scale );
+		UpdateColliderCommon( currentShape );
+		delete_safe(currentShape);
 	}
-	for ( uint tri = 0; tri < triangle_count; ++tri )
+	else 
 	{
-		geometry.m_triangles[tri].m_a = triangles[tri].vert[0];
-		geometry.m_triangles[tri].m_b = triangles[tri].vert[1];
-		geometry.m_triangles[tri].m_c = triangles[tri].vert[2];
+		UpdateColliderCommon( NULL );
 	}
-
-	UpdateColliderCommon( geometry );
 }
 // UpdateColliderCommon () : Creates/Updates the rigidbody
-void CMeshedStaticProp::UpdateColliderCommon ( hkGeometry& n_geometryToUse )
+void CMeshedStaticProp::UpdateColliderCommon ( physShape* n_shapeToUse )
 {
-	if ( n_geometryToUse.m_vertices.getSize() > 0 )
+	if ( n_shapeToUse != NULL )
 	{
 		// Geometry has been created
-		hkpDefaultBvCompressedMeshShapeCinfo cInfo( &n_geometryToUse );
-		physShape* currentShape = new hkpBvCompressedMeshShape( cInfo );
+		//hkpDefaultBvCompressedMeshShapeCinfo cInfo( &n_geometryToUse );
+		//physShape* currentShape = new hkpBvCompressedMeshShape( cInfo );
+		//physStaticCompressedMesh* currentShape = new physStaticCompressedMesh();
+		//currentShape->Initialize(&n_geometryToUse);
 
 		if ( m_rigidbody != NULL )
 		{
 			// Set to movable mode
 			m_rigidbody->setMotionType( physMotion::MOTION_KEYFRAMED );
-			m_rigidbody->setShape( currentShape );
+			m_rigidbody->setShape( n_shapeToUse->getShape() );
 			// Set to fixed mode
 			m_rigidbody->setMotionType( physMotion::MOTION_FIXED );
 		}
 		else
 		{
 			physRigidBodyInfo info;
-			info.m_shape = currentShape;							// Set the collision shape to the collider's
+			info.m_shape = n_shapeToUse;							// Set the collision shape to the collider's
 			info.m_motionType = physMotion::MOTION_KEYFRAMED;		// Set the motion to static
 			// Create a rigidbody and assign it to the body variable.
 			m_rigidbody = new physRigidBody(&info,false);//Physics::CreateRigidBody( &info, false );
@@ -98,7 +81,6 @@ void CMeshedStaticProp::UpdateColliderCommon ( hkGeometry& n_geometryToUse )
 			// Set body as fixed
 			m_rigidbody->setMotionType( physMotion::MOTION_FIXED );
 		}
-		Physics::FreeShape(currentShape);
 	}
 	else
 	{

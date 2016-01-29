@@ -4,6 +4,7 @@
 #include "Raycaster.h"
 //#include "CVoxelTerrain.h"
 //#include "COctreeTerrain.h"
+#include "physical/physics/CPhysics.h"
 #include "engine/physics/CPhysicsEngine.h"
 
 // Global instance
