@@ -25,7 +25,7 @@ public:
 		m_maxSpeedForSimplexSolver = 10.0f;
 		m_collisionFilterInfo = 0;
 		m_position.setZero4();
-		//m_rotation.setIdentity(); // FUCKIN ERROR
+		m_rotation = physQuaternion( 0,0,0,1 );
 		m_supportDistance = 0.1f;
 		m_hardSupportDistance = 0.0f;
 		m_shape = NULL;

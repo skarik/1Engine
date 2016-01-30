@@ -142,7 +142,8 @@ void CDeveloperConsole::PostUpdate ( void )
 		}
 	}
 	
-	if ( bAcceptingCommands ) {
+	if ( bAcceptingCommands )
+	{
 		// Get input
 		unsigned char input = Input::GetTypeChar();
 		if ( input ) {
@@ -158,11 +159,19 @@ void CDeveloperConsole::PostUpdate ( void )
 			// Subtract a character
 			sLastCommand = sLastCommand.substr(0,sLastCommand.length()-1);
 		}
+		if ( Input::Keydown( Keys.Tab ) ) {
+			if ( iPreviousCommandSelection == -1 ) {
+				// Autocomplete
+				if ( !matchingCommands.empty() ) {
+					sLastCommand = matchingCommands[0] + " ";
+				}
+			}
+		}
 		// Check for press up to go through previous commands
 		if ( Input::Keydown( Keys.Up ) ) {
-			iPreviousCommandSelection += 1;
-			if ( iPreviousCommandSelection >= (int)previousCommands.size() ) {
-				iPreviousCommandSelection = -1;
+			iPreviousCommandSelection -= 1;
+			if ( iPreviousCommandSelection < -1 ) {
+				iPreviousCommandSelection = ((int)previousCommands.size())-1;
 			}
 			if ( iPreviousCommandSelection == -1 ) {
 				sLastCommand = "";

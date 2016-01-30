@@ -17,9 +17,16 @@ public:
 		m_mass = 1.0f;
 		m_friction = 0.2f;
 		m_restitution = 0.0f;
-		m_shape = NULL;
+		m_linearDamping = 0.0f;
+		m_angularDamping = 0.0f;
 
+		m_shape = NULL;
+		m_collisionFilterInfo = 0;
 		m_centerOfMass = physVector4(0,0,0);
+		m_motionType = physMotionType::MOTION_DYNAMIC;
+
+		m_position = physVector4(0,0,0);
+		m_rotation = physQuaternion(0,0,0,1);
 	}
 
 	Real_32		m_mass;

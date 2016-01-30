@@ -4,6 +4,9 @@
 _FORCE_INLINE_ PHYS_API physRigidBody::physRigidBody ( physRigidBodyInfo* info, bool isDynamic )
 {
 	body = Physics::CreateRigidBody( info, isDynamic );
+	if ( !body->isAddedToWorld() ) {
+		throw Core::InvalidInstantiationException();
+	}
 }
 _FORCE_INLINE_ PHYS_API physRigidBody::~physRigidBody ( void )
 {

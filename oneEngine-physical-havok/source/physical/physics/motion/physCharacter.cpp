@@ -22,7 +22,7 @@ _FORCE_INLINE_ PHYS_API void physCharacter::setLinearVelocity ( const Vector3d& 
 		physRigidBody::setLinearVelocity( newVel );
 	}
 }
-_FORCE_INLINE_ PHYS_API Vector3d physCharacter::getLinearVelocity ( void )
+_FORCE_INLINE_ PHYS_API const Vector3d physCharacter::getLinearVelocity ( void ) const
 {
 	if ( controller ) {
 		Vector3d result;
@@ -32,3 +32,19 @@ _FORCE_INLINE_ PHYS_API Vector3d physCharacter::getLinearVelocity ( void )
 	return physRigidBody::getLinearVelocity();
 }
 
+_FORCE_INLINE_ PHYS_API void physCharacter::setPosition ( const Vector3d& newPosition )
+{
+	/*if ( controller ) {
+		controller->setPosition( hkVector4( newPosition.x, newPosition.y, newPosition.z ) );
+	}*/
+	physRigidBody::setPosition( newPosition );
+}
+_FORCE_INLINE_ PHYS_API const Vector3d physCharacter::getPosition ( void ) const
+{
+	if ( controller ) {
+		Vector3d result;
+		controller->getPosition().store3( &(result.x) );
+		return result;
+	}
+	return physRigidBody::getPosition();
+}

@@ -95,6 +95,7 @@ CRigidBodyCharacter::CRigidBodyCharacter ( CCollider* pTargetCollider, CGameObje
 	// set body
 	pBody = mCharController->m_character;*/
 	mCharController = new physCharacter( &info );
+	mCharController->setUserData( GetId() );
 	pBody = (physRigidBody*)mCharController;
 	
 	// Create the body info
@@ -221,9 +222,11 @@ void CRigidBodyCharacter::RigidbodyUpdate ( void )
 
 void CRigidBodyCharacter::FixedUpdate ( void )
 {
-	if ( mCharController ) {
+	if ( mCharController )
+	{
 		// Addd gravviityyy :D
-		if ( bGravityEnabled ) {
+		if ( bGravityEnabled )
+		{
 			/*hkVector4 preVelocity = mCharController->getLinearVelocity();
 			//hkVector4 gravity = Physics::World()->getGravity();
 			Vector3d vgravity = Physics::GetWorldGravity();

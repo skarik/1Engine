@@ -359,6 +359,7 @@ FORCE_INLINE PHYS_API hkpRigidBody*	Physics::CreateRigidBody ( physRigidBodyInfo
 	}
 
 	hkpRigidBody* pRigidBody = new hkpRigidBody( info );
+	pRigidBody->setUserData(uint32_t(-1));
 	World()->addEntity( pRigidBody );
 	// World now owns the pointer to the rigid body
 	//pRigidBody->removeReference();
@@ -493,6 +494,7 @@ FORCE_INLINE PHYS_API hkpRigidBody* Physics::CreateTriggerVolume ( physRigidBody
 
 	hkpRigidBody* pRigidBody = new hkpRigidBody( info );
 	//Physics::World()->addEntity( pRigidBody );
+	pRigidBody->setUserData(uint32_t(-1));
 	Physics::AddEntity( pRigidBody );
 
 	bvShape->removeReference();
@@ -552,11 +554,10 @@ FORCE_INLINE PHYS_API void Physics::Raycast ( const physCollisionFilter& filter,
 				hkRayHitOutput.m_normal.store3( &hit.normal.x );
 
 				// Push back hit info and userdata to the hit list
-				pointCollection.push_back( std::pair<ContactPoint,uint32_t>(
-						hit,
-						(uint32_t)((hkpRigidBody*)(hkRayHitOutput.m_rootCollidable->getOwner()))->getUserData()
-						)
-					);
+				uint32_t userData = (uint32_t)((hkpRigidBody*)(hkRayHitOutput.m_rootCollidable->getOwner()))->getUserData();
+				if ( userData != 0 ) {
+					pointCollection.push_back( std::pair<ContactPoint,uint32_t>(hit, userData) );
+				}
 
 				// Next hit in list, please
 			}
@@ -582,11 +583,10 @@ FORCE_INLINE PHYS_API void Physics::Raycast ( const physCollisionFilter& filter,
 			hkRayHitOutput.m_normal.store3( &hit.normal.x );
 
 			// Push back hit info and userdata to the hit list
-			pointCollection.push_back( std::pair<ContactPoint,uint32_t>(
-					hit,
-					(uint32_t)((hkpRigidBody*)(hkRayHitOutput.m_rootCollidable->getOwner()))->getUserData()
-					)
-				);
+			uint32_t userData = (uint32_t)((hkpRigidBody*)(hkRayHitOutput.m_rootCollidable->getOwner()))->getUserData();
+			if ( userData != 0 ) {
+				pointCollection.push_back( std::pair<ContactPoint,uint32_t>(hit, userData) );
+			}
 
 			// And now we're done!
 		}
@@ -647,11 +647,10 @@ FORCE_INLINE PHYS_API void Physics::Linearcast( const physCollisionFilter& filte
 			hkLineHitOutput.m_contact.getNormal().store3( &hit.normal.x );
 
 			// Push back hit info and userdata to the hit list
-			pointCollection.push_back( std::pair<ContactPoint,uint32_t>(
-					hit,
-					(uint32_t)((hkpRigidBody*)(hkLineHitOutput.m_rootCollidableB->getOwner()))->getUserData()
-					)
-				);
+			uint32_t userData = (uint32_t)((hkpRigidBody*)(hkLineHitOutput.m_rootCollidableB->getOwner()))->getUserData();
+			if ( userData != 0 ) {
+				pointCollection.push_back( std::pair<ContactPoint,uint32_t>(hit, userData) );
+			}
 
 			// Next hit in list, please
 		}
@@ -693,11 +692,10 @@ FORCE_INLINE PHYS_API void Physics::GetClosestPoints ( const physCollisionFilter
 		hkLineHitOutput.m_contact.getNormal().store3( &hit.normal.x );
 
 		// Push back hit info and userdata to the hit list
-		pointCollection.push_back( std::pair<ContactPoint,uint32_t>(
-				hit,
-				(uint32_t)((hkpRigidBody*)(hkLineHitOutput.m_rootCollidableB->getOwner()))->getUserData()
-				)
-			);
+		uint32_t userData = (uint32_t)((hkpRigidBody*)(hkLineHitOutput.m_rootCollidableB->getOwner()))->getUserData();
+		if ( userData != 0 ) {
+			pointCollection.push_back( std::pair<ContactPoint,uint32_t>(hit, userData) );
+		}
 	}
 }
 
