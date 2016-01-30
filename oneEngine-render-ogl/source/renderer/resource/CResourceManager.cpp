@@ -497,7 +497,7 @@ void CResourceManager::AddResource ( CTexture* n_texture )
 	newTexture.m_needReload = false;
 	newTexture.m_needStream = true;
 	newTexture.m_resourceType = resourceInfo_t::RESOURCE_TEXTURE;
-	if ( n_texture->info.index == 0 )
+	if ( n_texture->info.index != 0 ) // Is a new texture
 	{
 		newTexture.m_streamState = S_NEED_STREAM;
 	}
@@ -722,7 +722,7 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 
 		}
 	}*/
-	// First convert the file to a BPD
+	// Find the filename
 	string t_bpdFilename = Core::Resources::PathTo( n_texture->sFilename );
 	if ( !IO::FileExists( t_bpdFilename ) )
 	{
@@ -734,7 +734,7 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 	{
 		// Work in development mode
 		t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
-		// Convert it to BPD
+		// Convert it to BPD if cannot find the file
 		try {
 			Textures::ConvertFile( n_texture->sFilename, t_bpdFilename );
 		}
