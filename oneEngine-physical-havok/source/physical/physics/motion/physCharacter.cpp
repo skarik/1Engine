@@ -1,6 +1,7 @@
 
 #include "physCharacter.h"
 #include "physCharacterRigidBodyInfo.h"
+#include "core/time.h"
 
 _FORCE_INLINE_ PHYS_API physCharacter::physCharacter( physCharacterRigidBodyInfo* info )
 	: physRigidBody()
@@ -47,4 +48,27 @@ _FORCE_INLINE_ PHYS_API const Vector3d physCharacter::getPosition ( void ) const
 		return result;
 	}
 	return physRigidBody::getPosition();
+}
+
+// Checks support state. Returns 0 for no support, 1 for unsteady support, and 2 for steady support.
+_FORCE_INLINE_ PHYS_API const int physCharacter::getSupportState ( void )
+{
+	if ( controller )
+	{
+		hkStepInfo stepInfo;
+		stepInfo.m_deltaTime = Time::deltaTime;
+		stepInfo.m_invDeltaTime = 1.0f/Time::deltaTime;
+
+		hkpSurfaceInfo surfaceinfo;
+		controller->checkSupport( stepInfo, surfaceinfo );
+
+		// Check the state
+		switch ( surfaceinfo.m_supportedState )
+		{
+		case hkpSurfaceInfo::UNSUPPORTED:	return 0; break;
+		case hkpSurfaceInfo::SLIDING:		return 1; break;
+		case hkpSurfaceInfo::SUPPORTED:		return 2; break;
+		}
+	}
+	return 0;
 }

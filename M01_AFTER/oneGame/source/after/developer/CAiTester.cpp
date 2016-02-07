@@ -21,8 +21,6 @@
 #include "after/interfaces/io/CZonedCharacterIO.h"
 #include "after/entities/test/CTestPhysicsCrate.h"
 
-//Josh fix your shit
-
 CAiTester::CAiTester ( void )
 	: CGameBehavior()
 {
@@ -43,9 +41,9 @@ void CAiTester::Update ( void )
 	}
 
 	//if ( playerList[0].actor->GetCombatState() != NULL ) {
-	if ( playerList[0].actor->ActorType() == ACTOR_TYPE_PLAYER ) {
+	/*if ( playerList[0].actor->ActorType() == ACTOR_TYPE_PLAYER ) {
 		return;
-	}
+	}*/
 
 	// Swap vision modes
 	if ( CInput::Keydown( 'V' ) ) {

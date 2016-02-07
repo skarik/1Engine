@@ -62,6 +62,9 @@
 
 #include "renderer/material/glMaterial.h"
 
+#include "engine-common/network/playerlist.h"
+
+
 void gmsceneCharacterViewer::LoadScene ( void )
 {
 	Debug::Console->PrintMessage( "Loading scene. (instance of gmsceneCharacterViewer)\n" );
@@ -216,9 +219,9 @@ void gmsceneCharacterViewer::LoadScene ( void )
 			collider = new CStaticMeshCollider( model->GetModelData(0) );
 			go->AddComponent( collider );
 			body = new CRigidBody ( collider, NULL );
-			body->SetMotionType( physMotion::MOTION_FIXED );
-			body->SetCollisionLayer( Layers::PHYS_LANDSCAPE );
 			body->SetPosition( model->transform.position );
+			body->SetCollisionLayer( Layers::PHYS_LANDSCAPE );
+			body->SetMotionType( physMotion::MOTION_FIXED );
 			go->AddComponent( body );
 		}
 
@@ -280,6 +283,8 @@ void gmsceneCharacterViewer::LoadScene ( void )
 		observer->transform.position = Vector3d( -4,-4,6 );
 		observer->transform.SetDirty();
 		observer->RemoveReference();
+		// Quick hack for adding player to the player list
+		Network::AddPlayerActor(observer,-1);
 	}
 	loadscreen->StepScreen();
 
@@ -382,11 +387,11 @@ void gmsceneCharacterViewer::LoadScene ( void )
 	loadscreen->StepScreen();*/
 
 	// Create the tester
-	/*{
+	{
 		CAiTester* tester = new CAiTester();
 		tester->RemoveReference();
 	}
-	loadscreen->StepScreen();*/
+	loadscreen->StepScreen();
 
 	// Free the stats
 	if ( pl_stats != NULL )

@@ -4,10 +4,10 @@
 
 FORCE_INLINE Matrix2x2::Matrix2x2 ( void )
 {
-	pData[0] = 1.0f;
-	pData[1] = 0.0f;
-	pData[2] = 0.0f;
-	pData[3] = 1.0f;
+	pData[0] = 1.0F;
+	pData[1] = 0.0F;
+	pData[2] = 0.0F;
+	pData[3] = 1.0F;
 }
 FORCE_INLINE Matrix2x2::Matrix2x2 ( const Matrix2x2& nSrc )
 {

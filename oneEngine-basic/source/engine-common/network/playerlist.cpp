@@ -11,3 +11,15 @@ ENGCOM_API const std::vector<Network::netplayeractor_t>& Network::GetPlayerActor
 	// return empty list for now
 	return m_playerList;
 }
+
+
+//		AddPlayerActor()
+// Adds an actor to the list of player actors, using the netlist to link up the netid with the player.
+ENGCOM_API void Network::AddPlayerActor ( CActor* actor, const uint16_t playerid )
+{
+	netplayeractor_t newActor;
+	newActor.actor = actor;
+	newActor.netid = -1; // TODO
+	newActor.player = playerid;
+	m_playerList.push_back(newActor);
+}

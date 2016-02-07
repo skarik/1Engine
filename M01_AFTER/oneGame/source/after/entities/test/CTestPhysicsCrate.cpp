@@ -5,6 +5,7 @@
 #include "renderer/object/shapes/CCubeRenderablePrimitive.h"
 
 CTestPhysicsCrate::CTestPhysicsCrate ( void )
+	: CGameObject()
 {
 	pCollider = new CBoxCollider ( Vector3d( 1,1,1 ) );
 	pRigidbody = new CRigidBody ( pCollider, this );

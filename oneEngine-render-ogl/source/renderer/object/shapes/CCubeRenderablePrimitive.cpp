@@ -105,7 +105,7 @@ bool CCubeRenderPrim::Render ( const char pass )
 	m_material->setShaderConstants(this);
 
 	GLd.BeginPrimitive( GL_QUADS );
-		GLd.P_PushTexcoord( 0,0,0 );
+		GLd.P_PushTexcoord( 0.5F,0.5F,0.5F );
 		// Bottom
 		GLd.P_PushColor(1.0f,1.0f,1.0f);
 		GLd.P_PushNormal( 0,0,-1.0f );

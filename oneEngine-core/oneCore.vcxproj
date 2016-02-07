@@ -165,6 +165,7 @@
     <ClInclude Include="source\core-ext\system\io\serializer\ISerialBinary.h" />
     <ClInclude Include="source\core-ext\system\io\serializer\OSerialBinary.h" />
     <ClInclude Include="source\core-ext\threads\future.h" />
+    <ClInclude Include="source\core-ext\threads\semaphore.h" />
     <ClInclude Include="source\core-ext\threads\shared_variable.h" />
     <ClInclude Include="source\core-ext\types\dirtval.h" />
     <ClInclude Include="source\core-ext\types\sHitbox.h" />

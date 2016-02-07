@@ -11,7 +11,7 @@ CLogicObject::CLogicObject ( void )
 {
 	transform.owner = this;
 	transform.ownerType = Transform::TYPE_RENDERER_LOGIC;
-	transform.name = "Transform(Renderable)";
+	transform.name = "Transform(RenderLogic)";
 	//transform.name = this->name; // TODO: ADD NAME
 
 	id = CRenderState::Active->AddLO( this );

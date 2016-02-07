@@ -4,11 +4,15 @@
 
 FORCE_INLINE Matrix4x4::Matrix4x4 ( void )
 {
-	memset( pData, 0, 16*sizeof(ftype) );
-	pData[0] = 1.0f;
-	pData[5] = 1.0f;
-	pData[10] = 1.0f;
-	pData[15] = 1.0f;
+	pData[0] = 1.0F;
+	pData[5] = 1.0F;
+	pData[10] = 1.0F;
+	pData[15] = 1.0F;
+
+	pData[1] = 0.0F; pData[2] = 0.0F; pData[3] = 0.0F;
+	pData[4] = 0.0F; pData[6] = 0.0F; pData[7] = 0.0F;
+	pData[8] = 0.0F; pData[9] = 0.0F; pData[11] = 0.0F;
+	pData[12] = 0.0F; pData[13] = 0.0F; pData[14] = 0.0F;
 }
 FORCE_INLINE Matrix4x4::Matrix4x4 ( const Matrix4x4& nSrc )
 {

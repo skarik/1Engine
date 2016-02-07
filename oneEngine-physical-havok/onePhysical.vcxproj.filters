@@ -108,6 +108,33 @@
     <ClInclude Include="source\physical\physics\phantom\hkArPhantomCallbackShape.h">
       <Filter>SOURCE\Physical\Physics\Phantom</Filter>
     </ClInclude>
+    <ClInclude Include="source\physical\physics\shapes\physCapsuleShape.h">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\mode.h">
+      <Filter>SOURCE\Physical</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\shapes\physBoxShape.h">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\shapes\physCylinderShape.h">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\shapes\physSphereShape.h">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\motion\physCollisionFilter.h">
+      <Filter>SOURCE\Physical\Physics\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\shapes\physStaticCompressedMesh.h">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\motion\physRigidBodyInfo.h">
+      <Filter>SOURCE\Physical\Physics\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\motion\physCharacterRigidBodyInfo.h">
+      <Filter>SOURCE\Physical\Physics\Motion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\physical\physics\CPhysics.cpp">
@@ -148,6 +175,24 @@
     </ClCompile>
     <ClCompile Include="source\physical\physics\motion\physCharacter.cpp">
       <Filter>SOURCE\Physical\Physics\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\physics\shapes\physBoxShape.cpp">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\physics\shapes\physCapsuleShape.cpp">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\physics\shapes\physShape.cpp">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\physics\shapes\physSphereShape.cpp">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\physics\shapes\physCylinderShape.cpp">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\physics\shapes\physStaticCompressedMesh.cpp">
+      <Filter>SOURCE\Physical\Physics\Shapes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

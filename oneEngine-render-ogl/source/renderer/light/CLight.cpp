@@ -254,24 +254,27 @@ void CLight::UpdateLightList ( void )
 // Update Lights
 void CLight::UpdateLight ( void )
 {
+	// Push the light positions to the 4-component structure
+	vLightPos.red	= transform.position.x;
+	vLightPos.green = transform.position.y;
+	vLightPos.blue	= transform.position.z;
+
 	if ( (int)lightIndex < (Renderer::Settings.maxLights-1) )
 	{
 		//glLoadIdentity();
 
 		//int i_glLightIndex = GL_LIGHT1+(int)lightIndex;
-		vLightPos.red	= transform.position.x;
-		vLightPos.green = transform.position.y;
-		vLightPos.blue	= transform.position.z;
-		
-		if (!CGameSettings::Active()->b_ro_EnableShaders)
+#		ifdef GL_2_1
+		if ( CGameSettings::Active()->b_ro_EnableShaders == false )
 		{
-			/*glLightfv( i_glLightIndex, GL_DIFFUSE, diffuseColor.start_point() );	
+			glLightfv( i_glLightIndex, GL_DIFFUSE, diffuseColor.start_point() );	
 			glLightfv( i_glLightIndex, GL_POSITION, vLightPos.start_point() );
 			glLightf( i_glLightIndex, GL_CONSTANT_ATTENUATION, attenuation.blue );
 			glLightf( i_glLightIndex, GL_LINEAR_ATTENUATION, attenuation.green );
 			glLightf( i_glLightIndex, GL_QUADRATIC_ATTENUATION, attenuation.red );
-			glEnable( i_glLightIndex );*/
+			glEnable( i_glLightIndex );
 		}
+#		endif
 	}
 }
 

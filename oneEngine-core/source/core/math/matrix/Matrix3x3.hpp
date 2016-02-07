@@ -4,10 +4,13 @@
 
 FORCE_INLINE Matrix3x3::Matrix3x3 ( void )
 {
-	memset( pData, 0, 9*sizeof(ftype) );
-	pData[0] = 1.0f;
-	pData[4] = 1.0f;
-	pData[8] = 1.0f;
+	pData[0] = 1.0F;
+	pData[4] = 1.0F;
+	pData[8] = 1.0F;
+
+	pData[1] = 0.0F; pData[2] = 0.0F;
+	pData[3] = 0.0F; pData[5] = 0.0F;
+	pData[6] = 0.0F; pData[7] = 0.0F;
 }
 FORCE_INLINE Matrix3x3::Matrix3x3 ( const Matrix3x3& nSrc )
 {

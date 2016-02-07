@@ -79,8 +79,10 @@ CRigidBodyCharacter::CRigidBodyCharacter ( CCollider* pTargetCollider, CGameObje
 	
 	physCharacterRigidBodyInfo info;
 	info.m_up = hkVector4(0,0,1);
-	info.m_maxSlope = 2.0944f; //60 degree slope
-	info.m_supportDistance = 0.083f; // 1 inch above ground for support
+	//info.m_maxSlope = 2.0944f; //60 degree slope
+	info.m_maxSlope = 1.0472f; //60 degree slope
+	info.m_hardSupportDistance = 0.083f; // 1 inch above ground for floating support
+	info.m_supportDistance = info.m_hardSupportDistance + 0.083f; // 2 inch above ground for support
 
 	info.m_mass = fabs(fMass);
 	info.m_shape = pCollider->GetCollisionShape();
@@ -225,7 +227,7 @@ void CRigidBodyCharacter::FixedUpdate ( void )
 	if ( mCharController )
 	{
 		// Addd gravviityyy :D
-		if ( bGravityEnabled )
+		if ( bGravityEnabled && mCharController->getSupportState() == 0 )
 		{
 			/*hkVector4 preVelocity = mCharController->getLinearVelocity();
 			//hkVector4 gravity = Physics::World()->getGravity();

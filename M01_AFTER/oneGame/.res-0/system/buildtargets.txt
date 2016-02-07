@@ -1,5 +1,5 @@
 // Classic bottle
-bottle "D:\Project\MCC SVN\MCC\Bottle\AFTER"
+bottle "D:/Project/MCC SVN/MCC/Bottle/AFTER"
 {
 	mode copy
 	rebuild images
@@ -7,7 +7,7 @@ bottle "D:\Project\MCC SVN\MCC\Bottle\AFTER"
 }
 // Not-so-classic release. Before the bottle was the final RC
 // For here, only copy over what is needed
-steam "D:\Downloads\Game Dev\Steam\steamworks_sdk_130\sdk\tools\ContentBuilder\content\windows_bottle"
+steam "D:/Downloads/Game Dev/Steam/steamworks_sdk_130/sdk/tools/ContentBuilder/content/windows_bottle"
 {
 	// "mode copy" is just copy
 	// "mode bottle" is "delete shit"

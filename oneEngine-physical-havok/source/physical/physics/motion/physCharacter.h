@@ -18,6 +18,9 @@ public:
 
 	_FORCE_INLINE_ PHYS_API void			setPosition ( const Vector3d& ) override;
 	_FORCE_INLINE_ PHYS_API const Vector3d	getPosition ( void ) const override;
+
+	// Checks support state. Returns 0 for no support, 1 for unsteady support, and 2 for steady support.
+	_FORCE_INLINE_ PHYS_API const int		getSupportState ( void );
 protected:
 	hkpCharacterRigidBody* controller;
 };

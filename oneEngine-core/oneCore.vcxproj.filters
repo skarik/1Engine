@@ -355,6 +355,9 @@
     <ClInclude Include="source\core-ext\containers\KDTree.h">
       <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="source\core-ext\threads\semaphore.h">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">
