@@ -11,6 +11,7 @@
 #include "engine/utils/CDeveloperConsole.h"
 
 // Include camera for rendering
+#include "engine-common/entities/CRendererHolder.h"
 #include "renderer/Camera/CCamera.h"
 
 // Include different scenes
@@ -80,6 +81,8 @@ void gmsceneSystemLoader::LoadScene ( void )
 	{
 		// If they want to stay in the console, a camera needs to be added so the output can be rendered
 		CCamera* aCamera = new CCamera;
+		CRenderCameraHolder* holder = new CRenderCameraHolder( aCamera );
+		holder->RemoveReference();
 		//aCamera->RemoveReference();
 
 #ifdef _ENGINE_DEBUG

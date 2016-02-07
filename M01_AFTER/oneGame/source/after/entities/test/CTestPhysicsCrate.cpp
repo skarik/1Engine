@@ -22,6 +22,6 @@ CTestPhysicsCrate::~CTestPhysicsCrate ( void )
 
 void CTestPhysicsCrate::FixedUpdate ( void )
 {
-	// Keeps the crates alives.
-	pRigidbody->ApplyForce( Vector3d( 0.01f, 0,0 ) );
+	// Keeps the crates alive.
+	//pRigidbody->ApplyForce( Vector3d( 0.01f, 0,0 ) );
 }

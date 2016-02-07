@@ -806,7 +806,7 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 				CInput::_addRawMouseY( raw->data.mouse.lLastY );
 
 				//return 0;
-				//return DefWindowProc(hWnd,uMsg,wParam,lParam);
+				return DefWindowProc(hWnd,uMsg,wParam,lParam);
 			} 
 			else if ((raw->header.dwType == RIM_TYPEKEYBOARD) && ( COglWindowWin32::pActive->focused ))
 			{

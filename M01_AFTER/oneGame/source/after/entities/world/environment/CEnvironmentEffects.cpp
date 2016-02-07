@@ -84,11 +84,11 @@ CEnvironmentEffects::CEnvironmentEffects ( void )
 
 CEnvironmentEffects::~CEnvironmentEffects ( void )
 {
-	delete pWorldDaycycle;
-	delete pWorldMooncycle;
-	delete pWorldCloudsphere;
+	delete_safe_decrement( pWorldDaycycle );
+	delete_safe_decrement( pWorldMooncycle );
+	delete_safe_decrement( pWorldCloudsphere );
 
-	delete pHeavyWeatherEffect;
+	delete_safe_decrement( pHeavyWeatherEffect );
 
 	FreeParticleEffects();
 	FreeSoundEffects();

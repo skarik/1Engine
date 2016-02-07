@@ -198,8 +198,6 @@ NPC::eMovementEnumeration CCharacterMotion::GetMovementMode ( void ) const
 // ------
 void*	CCharacterMotion::mvt_OnGround ( void )
 {
-	//bWantsProne = false;
-	//bWantsCrouch = false;
 	MvtCommonCrouching();
 	CamSetFOVTarget( 0 );
 	CamSetRollTarget( 0 );

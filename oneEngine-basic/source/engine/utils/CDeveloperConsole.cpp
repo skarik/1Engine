@@ -47,6 +47,8 @@ CDeveloperConsole::CDeveloperConsole ( void )
 
 		// Set up input control
 		mControl = new CInputControl( this );
+
+		SetPersistence(true);
 	}
 }
 

@@ -82,7 +82,7 @@ void CGameState::CleanWorld ( void )
 	//  Delete if valid
 	for ( unsigned int i = 0; i < iCurrentIndex; i += 1 )
 	{
-		if ( pBehaviors[i] != NULL )
+		if ( pBehaviors[i] != NULL && !pBehaviors[i]->persistent )
 		{
 			//if ( pBehaviors[i]->noReference )
 			if ( !pBehaviors[i]->HasReference() )
@@ -103,6 +103,9 @@ void CGameState::CleanWorld ( void )
 			else
 			{	// Print out unable to delete
 				//cout << "Could not delete o[" << i << "] (" << pBehaviors[i]->GetTypeName() << ") - dangling reference" << endl;
+				// Force it to throw an error
+				delete (pBehaviors[i]);
+				throw Core::NullReferenceException();
 			}
 		}
 

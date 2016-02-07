@@ -276,6 +276,12 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIEdgePanel.h">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\entities\CRenderLogicHolder.h">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\entities\CRenderCameraHolder.h">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -430,6 +436,12 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIEdgePanel.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\CRenderCameraHolder.cpp">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\entities\CRenderLogicHolder.cpp">
+      <Filter>SOURCE\Engine-Common\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

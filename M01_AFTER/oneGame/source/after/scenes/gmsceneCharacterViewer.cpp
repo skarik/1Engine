@@ -166,6 +166,12 @@ void gmsceneCharacterViewer::LoadScene ( void )
 		aGametype->m_worldstate->fTimeSpeed = 0;
 		aGametype->m_worldstate->fCurrentTime = 60*60*3;
 
+		aGametype->RemoveReference();
+		// Gametype doesn't take ownership of the pointers, so release them to the world
+		aGametype->m_worldeffects->RemoveReference();
+		aGametype->m_charactercontroller->RemoveReference();
+		aGametype->m_characterspawner->RemoveReference();
+
 		// Create the menu, giving it the gametype (it will create a new gametype)
 		//C_RMainMenu* aMenu = new C_RMainMenu( aGametype );
 		//aMenu->RemoveReference();

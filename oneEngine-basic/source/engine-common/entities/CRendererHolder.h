@@ -3,6 +3,8 @@
 #define _C_RENDERER_HOLDER_H_
 
 #include "engine/behavior/CGameBehavior.h"
+#include "CRenderLogicHolder.h"
+#include "CRenderCameraHolder.h"
 
 class CRenderableObject;
 

@@ -76,7 +76,9 @@
     <ClInclude Include="source\engine-common\entities\CPointBase.h" />
     <ClInclude Include="source\engine-common\entities\CPointSpawn.h" />
     <ClInclude Include="source\engine-common\entities\CProjectile.h" />
+    <ClInclude Include="source\engine-common\entities\CRenderCameraHolder.h" />
     <ClInclude Include="source\engine-common\entities\CRendererHolder.h" />
+    <ClInclude Include="source\engine-common\entities\CRenderLogicHolder.h" />
     <ClInclude Include="source\engine-common\entities\CWaypoint.h" />
     <ClInclude Include="source\engine-common\entities\effects\CFXExplosion.h" />
     <ClInclude Include="source\engine-common\entities\effects\CFXMaterialHit.h" />
@@ -139,7 +141,9 @@
     <ClCompile Include="source\engine-common\entities\CPlayer_Movement.cpp" />
     <ClCompile Include="source\engine-common\entities\CPlayer_Transforms.cpp" />
     <ClCompile Include="source\engine-common\entities\CProjectile.cpp" />
+    <ClCompile Include="source\engine-common\entities\CRenderCameraHolder.cpp" />
     <ClCompile Include="source\engine-common\entities\CRendererHolder.cpp" />
+    <ClCompile Include="source\engine-common\entities\CRenderLogicHolder.cpp" />
     <ClCompile Include="source\engine-common\entities\CWaypoint.cpp" />
     <ClCompile Include="source\engine-common\entities\effects\CFXMaterialHit.cpp" />
     <ClCompile Include="source\engine-common\entities\item\CItemBase.cpp" />

@@ -98,6 +98,7 @@ void CAiTester::Update ( void )
 			newCrate->transform.position = hitInfo.hitPos + hitInfo.hitNormal*5;
 			newCrate->transform.rotation = Vector3d( Random.Range(-180,180), Random.Range(-180,180), Random.Range(-180,180) );
 			newCrate->transform.SetDirty();
+			newCrate->RemoveReference();
 
 			CLight* newLight = new CLight;
 			//newLight->transform.position = newCrate->transform.position;

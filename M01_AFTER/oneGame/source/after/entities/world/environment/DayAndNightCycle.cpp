@@ -149,7 +149,7 @@ Daycycle::Daycycle ( )
 
 Daycycle::~Daycycle(void)
 {
-	delete skyObject;
+	delete_safe_decrement( skyObject );
 	delete starModel;
 	delete skyModel;
 	delete horizonPlane;
@@ -287,6 +287,7 @@ Mooncycle::Mooncycle ( void )
 	pMoonMat->loadTexture( ".res/textures/null.jpg" );
 	pMoonMat->diffuse = Color( 0.8f, 0.8f, 0.8f, 1.0f );*/
 	pMoonMat->loadFromFile( "sky/moon_terra" );
+	pMoonMat->removeReference();
 
 	moonModel = new CModel ( string("models/geosphere.FBX") );
 	moonModel->SetMaterial( pMoonMat );

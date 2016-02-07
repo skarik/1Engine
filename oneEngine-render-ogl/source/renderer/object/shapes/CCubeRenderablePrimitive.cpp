@@ -25,7 +25,6 @@ CCubeRenderPrim::CCubeRenderablePrimitive ( ftype width, ftype depth, ftype heig
 	fHeight = height;
 
 	GenerateVertices();
-
 }
 
 // GenerateVertices
@@ -94,7 +93,7 @@ bool CCubeRenderPrim::Render ( const char pass )
 	GL_ACCESS GLd_ACCESS
 	//glLoadIdentity();	
 	//glTranslatef( transform.position.x, transform.position.y, transform.position.z );
-	GL.Transform( &transform );
+	//GL.Transform( &transform );
 
 	//GLdefaultMaterial.bind();
 	//glMaterial aMat;

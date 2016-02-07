@@ -152,6 +152,11 @@ public:
 	// All events are still handled
 	ENGINE_API static void DeleteObjectDelayed ( CGameBehavior* pObjectToDelete, float fDeleteTime );
 
+	//	SetPersistence
+	// Sets the persistent state of the object.
+	// If persistence is enabled, then the object will not be considered for deletion on a world cleaning event.
+	ENGINE_API void SetPersistence ( bool nPersistence );
+
 	//===============================================================================================//
 	// Public properties
 	//===============================================================================================//
@@ -192,6 +197,9 @@ private:
 	//	referenceCount
 	// used for reference counting
 	uint16_t	referenceCount;
+	//	persistent
+	// used to check if this object is persistent thru scene ending or not
+	bool		persistent;
 
 	// Give storage class access to SetId
 	friend CGameState;

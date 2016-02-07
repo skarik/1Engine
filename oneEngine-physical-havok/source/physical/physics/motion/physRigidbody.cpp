@@ -50,7 +50,7 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setAllowedPenetrationDepth ( const R
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setShape ( const hkpShape* shape )
 {
-	body->setShape(shape);
+	//body->setShape(shape);
 	// Get the Read/Write copy of the rigidbody's collision info, and set the collision's new shape.
 	getCollidableRw()->setShape(shape);
 }

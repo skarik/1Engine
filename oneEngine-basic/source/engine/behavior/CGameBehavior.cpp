@@ -11,6 +11,7 @@
 CGameBehavior::CGameBehavior ( void )
 {
 	referenceCount = 1;
+	persistent = false;
 	layer = Layers::None;
 	name = "Game Behavior";
 
@@ -62,4 +63,10 @@ void CGameBehavior::DeleteObjectDelayed ( CGameBehavior* pObjectToDelete, float 
 CGameHandle	CGameBehavior::GetHandle ( void )
 {
 	return CGameHandle( this );
+}
+
+//	SetPersistence
+void CGameBehavior::SetPersistence ( bool nPersistence )
+{
+	persistent = nPersistence;
 }

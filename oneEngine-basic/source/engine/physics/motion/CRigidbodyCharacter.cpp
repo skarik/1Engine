@@ -81,8 +81,9 @@ CRigidBodyCharacter::CRigidBodyCharacter ( CCollider* pTargetCollider, CGameObje
 	info.m_up = hkVector4(0,0,1);
 	//info.m_maxSlope = 2.0944f; //60 degree slope
 	info.m_maxSlope = 1.0472f; //60 degree slope
-	info.m_hardSupportDistance = 0.083f; // 1 inch above ground for floating support
-	info.m_supportDistance = info.m_hardSupportDistance + 0.083f; // 2 inch above ground for support
+	//info.m_supportDistance = 0.083f; // 1 inch above ground for floating support
+	info.m_hardSupportDistance = 0.083f * 0.5F; // 0.5 inch above ground for floating support
+	info.m_supportDistance = info.m_hardSupportDistance + 0.083f*0.5F; // 1.0 inch above ground for support
 
 	info.m_mass = fabs(fMass);
 	info.m_shape = pCollider->GetCollisionShape();
