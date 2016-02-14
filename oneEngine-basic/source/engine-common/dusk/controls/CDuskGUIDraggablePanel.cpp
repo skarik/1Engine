@@ -18,7 +18,7 @@ void CDuskGUIDraggablePanel::Update ( void )
 	Rect screen = activeGUI->GetScreenRect();
 	// Add margins
 	screen.pos += screen.size * 0.01F;
-	screen.size *= 0.01F;
+	screen.size *= 1.0F - 0.01F;
 
 	if ( hasFocus && Input::Mouse(Input::MBLeft) )
 	{
@@ -29,10 +29,12 @@ void CDuskGUIDraggablePanel::Update ( void )
 		}
 		// Drag around
 		//Vector2d vTargetPoint = Vector2d( Input::mouseX/(ftype)Screen::Info.width, Input::mouseY/(ftype)Screen::Info.height );
-		Vector2d vDeltaPoint = Vector2d( Input::DeltaMouseX()/(ftype)Screen::Info.width, Input::DeltaMouseY()/(ftype)Screen::Info.height );
+		Vector2d vDeltaPoint = Vector2d( Input::DeltaMouseX(), Input::DeltaMouseY() );
+		if ( !activeGUI->bInPixelMode ) {
+			vDeltaPoint.divComponents( Vector2d( (Real)Screen::Info.width, (Real)Screen::Info.height ) );
+		}
 
 		// Limit position
-		// TODO: fix this. Currently snaps to and then gets stuck in a corner
 		if ( rect.pos.x + rect.size.x < screen.pos.x ) {
 			vDeltaPoint.x = screen.pos.x - ( rect.pos.x + rect.size.x );
 			vDeltaPoint.x += screen.size.x * 0.001F;
@@ -102,5 +104,8 @@ void CDuskGUIDraggablePanel::Render ( void )
 		drawRect( rect );
 
 	// Now draw text
-	drawText( rect.pos.x + rect.size.x*0.01f  + 0.01f, rect.pos.y + rect.size.y*0.01f + 0.03f, label.c_str() );
+	if ( !activeGUI->bInPixelMode )
+		drawText( rect.pos.x + rect.size.x*0.01f  + 0.01f, rect.pos.y + rect.size.y*0.01f + 0.03f, label.c_str() );
+	else
+		drawText( rect.pos.x + 10, rect.pos.y + 20, label.c_str() );
 }

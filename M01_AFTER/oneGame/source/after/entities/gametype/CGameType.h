@@ -32,10 +32,7 @@ public:
 			delete n_gametype;
 		}
 	}
-	~CGameType ( void )
-	{
-		;
-	}
+	~CGameType();
 
 	void Update ( void )
 	{

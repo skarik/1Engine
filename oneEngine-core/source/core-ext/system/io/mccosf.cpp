@@ -152,7 +152,8 @@ bool COSF_Loader::GetNext ( mccOSF_entry_info_t& nextEntry, char* output_value )
 			line_length = strlen( m_linebuffer );
 			if ( line_length <= 0 ) continue;
 			// Check the line for a '{'
-			for ( i = 0; i < line_length; ++i ) {
+			for ( i = 0; i < line_length; ++i )
+			{
 				if ( m_linebuffer[i] == '{' ) {
 					nextEntry.type = MCCOSF_ENTRY_OBJECT; // Found it, return that it's an object
 					nextEntry.level = m_level;
@@ -171,7 +172,7 @@ bool COSF_Loader::GetNext ( mccOSF_entry_info_t& nextEntry, char* output_value )
 					//return nextEntry; // Return object entry
 					return true;
 				}
-				else if ( i+2 < line_length && m_linebuffer[i] == '(' && m_linebuffer[i+1] == '!' && m_linebuffer[i+2] == '{' )
+				else if ( i+2 < line_length && m_linebuffer[i] == '(' && m_linebuffer[i+1] == '!' && m_linebuffer[i+2] == '{' ) // use strncmp
 				{
 					if ( output_value == NULL ) {
 						//throw std::exception(); // You didn't pass in anything for the second argument.

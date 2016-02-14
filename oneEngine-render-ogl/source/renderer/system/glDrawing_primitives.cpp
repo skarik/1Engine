@@ -70,6 +70,7 @@ void glDrawing::EndPrimitive ( void )
 
 		// Now, send the material attributes
 		glMaterial::current->bindPassAtrribs(glMaterial::current_pass);
+		glMaterial::current->setShaderConstants( NULL, false );
 		// Mark the enabled attributes
 		for ( uchar i = 0; i < 16; ++i ) {
 			prim_list[prim_count].enabledAttributes[i] = glPass::enabled_attributes[i];

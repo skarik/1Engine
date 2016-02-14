@@ -168,9 +168,9 @@ void gmsceneCharacterViewer::LoadScene ( void )
 
 		aGametype->RemoveReference();
 		// Gametype doesn't take ownership of the pointers, so release them to the world
-		aGametype->m_worldeffects->RemoveReference();
-		aGametype->m_charactercontroller->RemoveReference();
-		aGametype->m_characterspawner->RemoveReference();
+		//aGametype->m_worldeffects->RemoveReference();
+		//aGametype->m_charactercontroller->RemoveReference();
+		//aGametype->m_characterspawner->RemoveReference();
 
 		// Create the menu, giving it the gametype (it will create a new gametype)
 		//C_RMainMenu* aMenu = new C_RMainMenu( aGametype );

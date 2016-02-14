@@ -577,6 +577,7 @@
     <ClCompile Include="source\after\entities\foliage\nottrees\FoliageCactusDefault.cpp" />
     <ClCompile Include="source\after\entities\foliage\trees\FoliageTreePine.cpp" />
     <ClCompile Include="source\after\entities\foliage\trees\FoliageTreeWarped.cpp" />
+    <ClCompile Include="source\after\entities\gametype\CGameType.cpp" />
     <ClCompile Include="source\after\entities\gametype\gametypeCharview.cpp" />
     <ClCompile Include="source\after\entities\gametype\gametypeMenu.cpp" />
     <ClCompile Include="source\after\entities\gametype\gametypeNotDying.cpp" />

@@ -88,8 +88,9 @@ void CDuskGUIListview::Update ( void )
 	if ( !mouseIn || !drawn ) {
 		currentmouseover = -1;
 	}
-	else {
-		int nselection = (int)floor( (cursor_pos.y - rect.pos.y)/field_height );
+	else
+	{
+		int nselection = (int)floor( (cursor_pos.y - rect.pos.y - activeGUI->parenting_offset.y)/field_height );
 		if ( nselection < 0 ) {
 			nselection = -1;
 		}
@@ -113,31 +114,44 @@ void CDuskGUIListview::Update ( void )
 
 void CDuskGUIListview::Render ( void )
 {
+	Rect screen = activeGUI->GetScreenRect();
 	CDuskGUIPanel::Render();
 
 	setDrawDefault();
-
+	
 	// Draw the boxes around options
 	for ( unsigned int i = 0; i < optionList.size(); ++i )
 	{
-		drawRectWire( Rect( rect.pos.x + rect.size.x*0.025f, rect.pos.y + field_height*i + 0.005f, rect.size.x*0.95f, field_height - 0.01f ) );
+		if ( activeGUI->bInPixelMode )
+			drawRectWire( Rect( rect.pos.x + 2, rect.pos.y + field_height*i + 1, rect.size.x - 4, field_height - 2 ) );
+		else
+			drawRectWire( Rect( rect.pos.x + rect.size.x*0.025f, rect.pos.y + field_height*i + 0.005f, rect.size.x*0.95f, field_height - 0.01f ) );
 	}
 
 	// Draw hover and selection
 	if ( currentmouseover != -1 ) {
 		setDrawHover();
-		drawRect( Rect( rect.pos.x + rect.size.x*0.025f, rect.pos.y + field_height*currentmouseover + 0.005f, rect.size.x*0.95f, field_height - 0.01f ) );
+		if ( activeGUI->bInPixelMode )
+			drawRect( Rect( rect.pos.x + 2, rect.pos.y + field_height*currentmouseover + 1, rect.size.x - 4, field_height - 2 ) );
+		else
+			drawRect( Rect( rect.pos.x + rect.size.x*0.025f, rect.pos.y + field_height*currentmouseover + 0.005f, rect.size.x*0.95f, field_height - 0.01f ) );
 	}
 
 	if ( selection != -1 ) {
 		setDrawDown();
-		drawRect( Rect( rect.pos.x + rect.size.x*0.025f, rect.pos.y + field_height*selection + 0.005f, rect.size.x*0.95f, field_height - 0.01f ) );
+		if ( activeGUI->bInPixelMode )
+			drawRect( Rect( rect.pos.x + 2, rect.pos.y + field_height*selection + 1, rect.size.x - 4, field_height - 2 ) );
+		else
+			drawRect( Rect( rect.pos.x + rect.size.x*0.025f, rect.pos.y + field_height*selection + 0.005f, rect.size.x*0.95f, field_height - 0.01f ) );
 	}
 
 	// Now draw text
 	for ( unsigned int i = 0; i < optionList.size(); ++i )
 	{
-		drawText( rect.pos.x + rect.size.x*0.1f, rect.pos.y + field_height*(i+0.2f) + 0.02f, optionList[i].str.c_str() );
+		if ( activeGUI->bInPixelMode )
+			drawText( rect.pos.x + 10, rect.pos.y + field_height*i + 20, optionList[i].str.c_str() );
+		else
+			drawText( rect.pos.x + rect.size.x*0.1f, rect.pos.y + field_height*(i+0.2f) + 0.02f, optionList[i].str.c_str() );
 	}
 
 }

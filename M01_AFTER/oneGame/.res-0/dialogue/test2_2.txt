@@ -30,6 +30,11 @@
 		_waypoint_ChangeType (testpoint, 0);
 	}!)
 	
+	js
+	JSBEGIN
+	
+	JSEND
+	
 	lines character1
 	{
 		1 A $race0?

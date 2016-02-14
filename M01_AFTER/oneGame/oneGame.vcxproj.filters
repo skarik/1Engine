@@ -2000,5 +2000,8 @@
     <ClCompile Include="source\after\terrain\system\TerrainRenderer.cpp">
       <Filter>SOURCE\AFTER\Terrain\System</Filter>
     </ClCompile>
+    <ClCompile Include="source\after\entities\gametype\CGameType.cpp">
+      <Filter>SOURCE\AFTER\Entities\Gametype</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

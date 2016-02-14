@@ -108,9 +108,9 @@ CVoxelFileEditor::CVoxelFileEditor ( void )
 
 CVoxelFileEditor::~CVoxelFileEditor ( void )
 {
-	delete_safe( m_daycycle );
+	delete_safe_decrement( m_daycycle );
 	delete_safe( m_camera );
-	delete_safe( m_gui );
+	delete_safe_decrement( m_gui );
 	delete_safe( m_cursor );
 	delete_safe( m_boob );
 	delete [] m_data;
@@ -128,14 +128,16 @@ void CVoxelFileEditor::CreateGUI ( void )
 	Dusk::Handle prntHandle;
 	Dusk::Handle tempHandle;
 
-	m_gui->SetDefaultFont( new CBitmapFont( "YanoneKaffeesatz-R.otf", 13 ) );
+	m_gui->SetPixelMode( true );
+	m_gui->SetDefaultFont( new CBitmapFont( "YanoneKaffeesatz-R.otf", 14 ) );
 
 	prntHandle = m_gui->CreateDraggablePanel();
-	prntHandle.SetRect( Rect( 0.03f, 0.04f, 0.27f, 0.68f ) );
+	prntHandle.SetRect( Rect( 40, 40, 350, 550 ) );
 	prntHandle.SetText( "Blocks" );
 	{
 		m_guiparts.block_selection = m_gui->CreateListview( prntHandle );
-		m_guiparts.block_selection.SetRect( Rect( 0.05f, 0.10f, 0.23f, 0.60f ) );
+		m_guiparts.block_selection.SetRect( Rect( 25, 50, 300, 400) );
+		m_gui->SetListviewFieldHeight( m_guiparts.block_selection, 30 );
 		m_gui->AddListviewOption( m_guiparts.block_selection, "Dirt",			Terrain::EB_DIRT );
 		m_gui->AddListviewOption( m_guiparts.block_selection, "Stone",			Terrain::EB_STONE );
 		m_gui->AddListviewOption( m_guiparts.block_selection, "Stone Brick",	Terrain::EB_STONEBRICK );
@@ -145,35 +147,35 @@ void CVoxelFileEditor::CreateGUI ( void )
 		m_gui->AddListviewOption( m_guiparts.block_selection, "Sandstone",		Terrain::EB_SANDSTONE );
 	}
 
-	prntHandle = m_gui->CreateDraggablePanel();
-	prntHandle.SetRect( Rect( 0.25f,0.02f,0.50f,0.06f ) );
+	prntHandle = m_gui->CreateEdgePanel();
+	prntHandle.SetRect( Rect( 0,0, 1280,40 ) );
 	{
 		m_guiparts.btn_center = m_gui->CreateButton( prntHandle );
-		m_guiparts.btn_center.SetRect( Rect( 0.26f,0.03f,0.105f,0.03f ) );
+		m_guiparts.btn_center.SetRect( Rect( 100,5,45,30 ) );
 		m_guiparts.btn_center.SetText( "Center" );
 	
 		m_guiparts.btn_save = m_gui->CreateButton( prntHandle );
-		m_guiparts.btn_save.SetRect( Rect( 0.385f,0.03f,0.105f,0.03f ) );
+		m_guiparts.btn_save.SetRect( Rect( 150,5,45,30 ) );
 		m_guiparts.btn_save.SetText( "Save" );
 
 		m_guiparts.btn_load = m_gui->CreateButton( prntHandle );
-		m_guiparts.btn_load.SetRect( Rect( 0.51f,0.03f,0.105f,0.03f ) );
+		m_guiparts.btn_load.SetRect( Rect( 200,5,45,30 ) );
 		m_guiparts.btn_load.SetText( "Open" );
 
 		m_guiparts.btn_clear = m_gui->CreateButton( prntHandle );
-		m_guiparts.btn_clear.SetRect( Rect( 0.635f,0.03f,0.105f,0.03f ) );
+		m_guiparts.btn_clear.SetRect( Rect( 250,5,45,30 ) );
 		m_guiparts.btn_clear.SetText( "Clear" );
 	}
 
 	prntHandle = m_gui->CreateDraggablePanel();
-	prntHandle.SetRect( Rect( 0.75f,0.10f,0.22f,0.22f ) );
+	prntHandle.SetRect( Rect( 960,80,280,180 ) );
 	prntHandle.SetText( "Cursor position" );
 	{
 		m_guiparts.cursor_info = m_gui->CreateText( prntHandle, "ff" );
-		m_guiparts.cursor_info.SetRect( Rect( 0.76f,0.14f,0.18f,0.03f ) );
+		m_guiparts.cursor_info.SetRect( Rect( 10,20,260,30 ) );
 
 		m_guiparts.block_info = m_gui->CreateText( prntHandle, "None" );
-		m_guiparts.block_info.SetRect( Rect( 0.76f,0.18f,0.18f,0.03f ) );
+		m_guiparts.block_info.SetRect( Rect( 10,60,260,30 ) );
 	}
 }
 
