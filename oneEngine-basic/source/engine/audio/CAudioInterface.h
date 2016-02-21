@@ -3,7 +3,7 @@
 #define _C_AUDIO_INTERFACE_H_
 
 #include <string>
-using std::string;
+#include "core/containers/arstring.h"
 
 // Class prototypes
 class CAudioListener;
@@ -30,8 +30,8 @@ class CAudioInterface
 public:
 	ENGINE_API CAudioListener* CreateListener ( void );
 
-	ENGINE_API CAudioSource* PlayWaveFile ( const string& );
-	ENGINE_API CAudioSource* LoopMusicFile ( const string& );
+	ENGINE_API CAudioSource* PlayWaveFile ( const char* );
+	ENGINE_API CAudioSource* LoopMusicFile ( const char* );
 
 	ENGINE_API CSoundBehavior* playSound ( const char* soundName );
 
@@ -43,13 +43,13 @@ private:
 	typedef AudioStructs::soundScript_aialert soundScript_aialert;
 	typedef AudioStructs::soundScript_channel soundScript_channel;
 
-	unordered_map<string, soundScript_t> scriptList;
-	unordered_map<string, soundIndex_t>  scriptFileIndex;
+	unordered_map<arstring<128>, soundScript_t> scriptList;
+	unordered_map<arstring<128>, soundIndex_t>  scriptFileIndex;
 
 private:
 	void BuildIndexMap ( void );
 	void LoadEntry ( const char* soundName, const soundIndex_t& indexInfo );
-	void EditSoundScript ( soundScript_t & script, const string& key, const string& value );
+	void EditSoundScript ( soundScript_t & script, const std::string& key, const std::string& value );
 };
 
 ENGINE_API extern CAudioInterface Audio;

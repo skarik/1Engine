@@ -905,6 +905,12 @@ void CAfterPlayer::LateUpdate ( void )
 
 	GrabInput();
 	(this->*m_cameraUpdateType)();
+
+	// Update listener position
+	pListener->velocity = pCamera->transform.position - pListener->position;
+	pListener->position = pCamera->transform.position;
+	pListener->orient_forward = pCamera->transform.Forward();
+	pListener->orient_up = pCamera->transform.Up();
 }
 
 

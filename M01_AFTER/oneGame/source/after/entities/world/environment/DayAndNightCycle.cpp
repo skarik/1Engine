@@ -300,7 +300,6 @@ Mooncycle::Mooncycle ( void )
 Mooncycle::~Mooncycle ( void )
 {
 	delete moonModel;
-	delete pMoonMat;
 }
 
 void Mooncycle::Update ( void )

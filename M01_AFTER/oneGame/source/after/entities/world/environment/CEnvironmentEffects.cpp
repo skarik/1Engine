@@ -603,10 +603,10 @@ void CEnvironmentEffects::UpdateParticleEffects ( void )
 // Free the particle effects
 void CEnvironmentEffects::FreeParticleEffects ( void )
 {
-	delete pBiomeParticles;
-	delete pUnderwaterParticles;
-	delete pDustParticles;
-	delete pWeatherParticles;
+	delete_safe_decrement( pBiomeParticles );
+	delete_safe_decrement( pUnderwaterParticles );
+	delete_safe_decrement( pDustParticles );
+	delete_safe_decrement( pWeatherParticles );
 }
 
 // Initialize the sound effects
@@ -693,9 +693,9 @@ void CEnvironmentEffects::UpdateSoundEffects ( void )
 // Free the sound effects
 void CEnvironmentEffects::FreeSoundEffects ( void )
 {
-	delete sndBeach;
-	delete sndWind;
-	delete sndRain;
+	delete_safe_decrement( sndBeach );
+	delete_safe_decrement( sndWind );
+	delete_safe_decrement( sndRain );
 }
 
 

@@ -110,7 +110,7 @@ void CAfterCharacterAnimator::SpeakDialogue ( const string& soundFile )
 	else
 	{	// Load in the raw sound.
 		playedFile = Core::Resources::PathTo( "sounds/" + soundFile );
-		CAudioSource* t_source = Audio.PlayWaveFile( playedFile );
+		CAudioSource* t_source = Audio.PlayWaveFile( playedFile.c_str() );
 		if ( !t_source ) throw std::exception("Could not find file");
 		length = (Real)t_source->GetSoundLength();
 		CSoundBehavior* behavior = new CSoundBehavior;

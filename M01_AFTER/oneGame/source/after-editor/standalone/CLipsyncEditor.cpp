@@ -55,7 +55,7 @@ CLipsyncEditor::CLipsyncEditor ( void )
 	
 	m_loaded = false;
 	m_target_sound = "sounds/voice/MF_WellIsntThatInteresting.mp3";
-	m_syncsound = Audio.PlayWaveFile( m_target_sound );
+	m_syncsound = Audio.PlayWaveFile( m_target_sound.c_str() );
 	m_syncsound->Stop();
 	m_target_sound = "-nothing loaded-";
 
@@ -126,7 +126,7 @@ void CLipsyncEditor::Update ( void )
 				
 				delete m_syncsound;
 				m_target_sound = str_result;
-				m_syncsound = Audio.PlayWaveFile( m_target_sound );
+				m_syncsound = Audio.PlayWaveFile( m_target_sound.c_str() );
 				m_syncsound->Stop();
 
 				m_loaded = true;
@@ -243,7 +243,7 @@ void CLipsyncEditor::Update ( void )
 			m_syncsound->Play();
 			if ( !m_syncsound->IsPlaying() ) { // error or sound freed itself
 				delete m_syncsound;
-				m_syncsound = Audio.PlayWaveFile( m_target_sound );
+				m_syncsound = Audio.PlayWaveFile( m_target_sound.c_str() );
 				m_syncsound->SetPlaybackTime( m_startposition );
 				m_syncsound->Play();
 			}

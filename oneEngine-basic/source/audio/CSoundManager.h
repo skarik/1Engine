@@ -5,6 +5,7 @@
 class CAudioMaster;
 class CAudioSound;
 #include "core/types/types.h"
+#include "core/containers/arstring.h"
 #include <string>
 #include <map>
 
@@ -17,15 +18,15 @@ public:
 
 	// Finds the given sound. If it isn't loaded, it'll load the sound.
 	// The pointer to the given sound is then returned.
-	AUDIO_API CAudioSound*	GetSound ( std::string const&, const int n_positional=-1 );
+	AUDIO_API CAudioSound*	GetSound ( const char*, const int n_positional=-1 );
 
 	// Loads the given sound if not already loaded.
-	AUDIO_API void	PrecacheSound ( std::string const& sndfn, const int n_positional=-1 ) { GetSound( sndfn, n_positional ); }
+	AUDIO_API void	PrecacheSound ( const char* sndfn, const int n_positional=-1 ) { GetSound( sndfn, n_positional ); }
 private:
 	friend CAudioMaster; // Give AudioMaster access.
 
 	// Map for the sound reference
-	std::map<std::string,CAudioSound*> soundmap;
+	std::map<arstring<128>,CAudioSound*> soundmap;
 
 	// Global instance
 	static CSoundManager* Active;

@@ -22,7 +22,7 @@ CAudioListener* CAudioInterface::CreateListener ( void )
 	return new CAudioListener();
 }
 
-CAudioSource* CAudioInterface::PlayWaveFile ( const string& wavname )
+CAudioSource* CAudioInterface::PlayWaveFile ( const char* wavname )
 {
 	// First create the sound
 	CAudioSound* newSound = CSoundManager::GetActive()->GetSound( wavname );
@@ -37,7 +37,7 @@ CAudioSource* CAudioInterface::PlayWaveFile ( const string& wavname )
 	return newSource;
 }
 
-CAudioSource* CAudioInterface::LoopMusicFile ( const string& fukebane )
+CAudioSource* CAudioInterface::LoopMusicFile ( const char* fukebane )
 {
 	// Create the sound
 	CAudioSound* newSound = CSoundManager::GetActive()->GetSound( fukebane );
@@ -63,8 +63,10 @@ CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
 		BuildIndexMap();
 	} // End building index map
 
+	arstring<128> ar_soundName ( soundName );
+
 	// Find entry
-	unordered_map<string, soundIndex_t>::iterator findResult = scriptFileIndex.find( string(soundName) );
+	unordered_map<arstring<128>, soundIndex_t>::iterator findResult = scriptFileIndex.find( ar_soundName );
 
 	if ( findResult == scriptFileIndex.end() ) { 
 		cout << "Could not find sound entry \"" << soundName << "\"" << endl;
@@ -72,12 +74,12 @@ CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
 	else {
 		//cout << "Found sound entry \"" << soundName << "\"" << endl;
 
-		unordered_map<string, soundScript_t>::iterator scriptResult = scriptList.find( string(soundName) );
+		unordered_map<arstring<128>, soundScript_t>::iterator scriptResult = scriptList.find( ar_soundName );
 		if ( scriptResult == scriptList.end() ) {
 			LoadEntry( soundName, findResult->second );
 		}
 
-		scriptResult = scriptList.find( string(soundName) );
+		scriptResult = scriptList.find( ar_soundName );
 		//cout << "Found entry." << endl;
 
 		// print entry properties
@@ -171,7 +173,7 @@ CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
 		if ( chosen_sound_index >= 0 ) {
 			// Create the sound
 			string soundfilename =  Core::Resources::PathTo( string("sounds/") + scriptResult->second.sounds[chosen_sound_index].c_str() );
-			CAudioSound* newSound = CSoundManager::GetActive()->GetSound( soundfilename );
+			CAudioSound* newSound = CSoundManager::GetActive()->GetSound( soundfilename.c_str() );
 
 			// If sound driver is FUBAR, don't crash. Just warn about it.
 			if ( newSound == NULL ) {
@@ -274,7 +276,7 @@ void CAudioInterface::BuildIndexMap ( void )
 							soundIndex_t index;
 							index.pos = ftell( fp ) - buffer_size + buffer_pos;
 							index.set = i;
-							scriptFileIndex[s_cur_read] = index;
+							scriptFileIndex[arstring<128>(s_cur_read.c_str())] = index;
 
 							// Go to next read mode
 							read_mode = 2;
@@ -466,7 +468,7 @@ void CAudioInterface::LoadEntry ( const char* soundName, const soundIndex_t& ind
 	fclose( fp );
 
 	// Add to map
-	scriptList[string(soundName)] = newScript;
+	scriptList[arstring<128>(soundName)] = newScript;
 }
 
 void CAudioInterface::EditSoundScript ( soundScript_t & script, const string& key, const string& value )

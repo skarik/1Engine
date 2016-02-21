@@ -17,15 +17,16 @@ CSoundManager* CSoundManager::GetActive ( void )
 	return Active;
 }
 
-CAudioSound*	CSoundManager::GetSound ( string const& soundName, const int n_positional )
+CAudioSound*	CSoundManager::GetSound ( const char* soundName, const int n_positional )
 {
 	if ( !CAudioMaster::Active() )
 		return NULL;	// Do not load buffers if the device has failed
 
 	// First look for it
-	map<string,CAudioSound*>::iterator it;
+	map<arstring<128>,CAudioSound*>::iterator it;
+	arstring<128> ar_soundName (soundName);
 
-	it = soundmap.find( soundName );
+	it = soundmap.find( ar_soundName );
 	// It's not here
 	if ( it == soundmap.end() )
 	{
@@ -38,22 +39,22 @@ CAudioSound*	CSoundManager::GetSound ( string const& soundName, const int n_posi
 		string sFileExtension = StringUtils::ToLower( StringUtils::GetFileExtension( soundName ) );
 		if ( sFileExtension == "ogg" || sFileExtension == "mp3" || sFileExtension == "mp2" ) {
 			if ( n_positional == -1 ) {
-				soundmap[soundName] = new CAudioSoundStreamed( soundName, false );
+				soundmap[ar_soundName] = new CAudioSoundStreamed( soundName, false );
 			}
 			else {
-				soundmap[soundName] = new CAudioSoundStreamed( soundName, n_positional );
+				soundmap[ar_soundName] = new CAudioSoundStreamed( soundName, n_positional );
 			}
 		}
 		else {
 			if ( n_positional == -1 ) {
-				soundmap[soundName] = new CAudioSound( soundName, true );
+				soundmap[ar_soundName] = new CAudioSound( soundName, true );
 			}
 			else {
-				soundmap[soundName] = new CAudioSound( soundName, n_positional );
+				soundmap[ar_soundName] = new CAudioSound( soundName, n_positional );
 			}
 		}
 
-		return soundmap[soundName];
+		return soundmap[ar_soundName];
 		/*}
 		catch (...)
 		{
