@@ -467,6 +467,7 @@ void glShader::parse_shader ( void )
 // This compiles the shaders and adds them to a program object
 void glShader::compile_shader ( void )
 {
+	GL_ACCESS;
 	int compiled = 0;
 	int blen = 0;	
 	int slen = 0;
@@ -601,7 +602,7 @@ void glShader::compile_shader ( void )
 			glAttachShader( iProgramID, iPixelShaderID );
 
 		glLinkProgram( iProgramID );
-		GL_ACCESS GL.CheckError();
+		GL.CheckError();
 
 		int linked = 0;
 		glGetProgramiv( iProgramID, GL_LINK_STATUS, &linked );

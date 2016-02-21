@@ -171,7 +171,9 @@ void glMainSystem::CheckError ( void )
 			hasError = true;
 		}
 
-		switch (error) {
+		switch (error)
+		{
+		case GL_NO_ERROR: break;
 		case GL_INVALID_ENUM:
 			Debug::Console->PrintError( "gl: GL_INVALID_ENUM\n" );
 			//"An unacceptable value is specified for an enumerated argument. The offending function is ignored, having no side effect other than to set the error flag." 

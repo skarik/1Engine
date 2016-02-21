@@ -264,6 +264,7 @@ int COglWindowWin32::InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);					// Want nice fog, but don't really care
 	//glHint(GL_FOG_HINT, GL_DONT_CARE);					// Want nice fog, but don't really care
 	glEnable(GL_CULL_FACE);								// Enabled backface culling
+
 	return TRUE;										// Initialization Went OK
 }
 
@@ -616,6 +617,9 @@ COglWindowWin32::eReturnStatus	COglWindowWin32::CreateGLContext ( void )
 	catch ( Core::NullReferenceException ) {
 		Debug::Console->PrintError( "Could not create OpenGL 3.3+ device." );
 	}
+
+	// Clear out errors now
+	while ( glGetError() != 0 ) { ; }
 
 	//Or better yet, use the GL3 way to get the version number
 	int OpenGLVersion[2] = {0,0};

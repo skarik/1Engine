@@ -12,6 +12,8 @@
 #include "after/types/WorldVector.h"
 #include "after/terrain/data/Node.h"
 
+#include "renderer/utils/glTMeshContainer.h"
+
 class CCamera;
 class CDuskGUI;
 class CBlockCursor;
@@ -34,7 +36,7 @@ private:
 						// Regernates mesh
 	void				BuildBoobMesh ( void );
 						// Converts position to index for data access
-	bool				PositionToBoobIndex ( const Vector3d& nPosition, uchar& i, uchar& j, short& k );
+	bool				PositionToBoobIndex ( const Vector3d& nPosition, short& k );
 						
 	void				Save ( void );
 	void				DoSave ( void );
@@ -82,6 +84,8 @@ private:
 
 	CTerrainVertex*		m_vertex_buffer;
 	CModelTriangle*		m_triangle_buffer;
+
+	Renderer::glTMeshContainer	m_drawmesh;
 
 	bool			bUpdateBoob;
 };

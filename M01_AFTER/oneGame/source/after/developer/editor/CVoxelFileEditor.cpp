@@ -33,7 +33,11 @@
 #include "after/terrain/system/CVoxelMesher.h"
 
 #include "after/physics/CMeshedStaticProp.h"
+
+#include "renderer/system/glMainSystem.h"
 //#include "unused/CVoxelTerrain.h"
+#include "after/terrain/edit/SidebufferAccessor.h"
+#include "after/terrain/edit/csg/SidebufferVolumeEditor.h"
 
 CVoxelFileEditor::CVoxelFileEditor ( void )
 {
@@ -99,11 +103,15 @@ CVoxelFileEditor::CVoxelFileEditor ( void )
 
 	// Load a texture
 	{
-		glMaterial* mNewMat;
+		/*glMaterial* mNewMat;
 		mNewMat = new glMaterial;
 		mNewMat->loadFromFile( "nature_terra" );
-		this->SetMaterial( mNewMat );
+		this->SetMaterial( mNewMat );*/
+		this->SetMaterial( glMaterial::Default );
 	}
+
+	transform.position = Vector3d(-32,-32,0);
+	transform.scale = Vector3d(1,1,1) * 2.0F;
 }
 
 CVoxelFileEditor::~CVoxelFileEditor ( void )
@@ -132,11 +140,11 @@ void CVoxelFileEditor::CreateGUI ( void )
 	m_gui->SetDefaultFont( new CBitmapFont( "YanoneKaffeesatz-R.otf", 14 ) );
 
 	prntHandle = m_gui->CreateDraggablePanel();
-	prntHandle.SetRect( Rect( 40, 40, 350, 550 ) );
+	prntHandle.SetRect( Rect( 0, 40, 150, 550 ) );
 	prntHandle.SetText( "Blocks" );
 	{
 		m_guiparts.block_selection = m_gui->CreateListview( prntHandle );
-		m_guiparts.block_selection.SetRect( Rect( 25, 50, 300, 400) );
+		m_guiparts.block_selection.SetRect( Rect( 25, 50, 100, 400) );
 		m_gui->SetListviewFieldHeight( m_guiparts.block_selection, 30 );
 		m_gui->AddListviewOption( m_guiparts.block_selection, "Dirt",			Terrain::EB_DIRT );
 		m_gui->AddListviewOption( m_guiparts.block_selection, "Stone",			Terrain::EB_STONE );
@@ -168,14 +176,14 @@ void CVoxelFileEditor::CreateGUI ( void )
 	}
 
 	prntHandle = m_gui->CreateDraggablePanel();
-	prntHandle.SetRect( Rect( 960,80,280,180 ) );
+	prntHandle.SetRect( Rect( 1000,80,180,180 ) );
 	prntHandle.SetText( "Cursor position" );
 	{
 		m_guiparts.cursor_info = m_gui->CreateText( prntHandle, "ff" );
-		m_guiparts.cursor_info.SetRect( Rect( 10,20,260,30 ) );
+		m_guiparts.cursor_info.SetRect( Rect( 10,20,160,30 ) );
 
 		m_guiparts.block_info = m_gui->CreateText( prntHandle, "None" );
-		m_guiparts.block_info.SetRect( Rect( 10,60,260,30 ) );
+		m_guiparts.block_info.SetRect( Rect( 10,60,160,30 ) );
 	}
 }
 
@@ -265,11 +273,63 @@ void CVoxelFileEditor::BuildBoobMesh ( void )
 	CModelTriangle* t_triangle_buffer = m_triangle_buffer;
 	mesher.CreateMesh( t_vertex_buffer, t_triangle_buffer, t_vertex_count,t_triangle_count );
 
+	if ( t_vertex_count > 0 ) {
+		printf( "Built a mesh with counts: Verts: %d, Tris: %d\n", t_vertex_count,t_triangle_count );
+	}
+
 	// Give the collision that mesh
-	m_boob_collision->UpdateScale( 2.0f );
+	m_boob_collision->UpdateScale( 1.0f );
 	m_boob_collision->UpdateCollider( t_vertex_buffer, t_triangle_buffer, t_vertex_count,t_triangle_count );
 
 	// Give the terrain renderer object that mesh
+	m_drawmesh.UploadVerts( t_vertex_buffer, t_vertex_count );
+	m_drawmesh.UploadFaces( t_triangle_buffer, t_triangle_count );
+}
+
+bool CVoxelFileEditor::Render ( const char pass )
+{
+	/*glMaterial* drawMat = vMaterials[0];
+
+	drawMat->bind();
+	drawMat->setShaderConstants( this );
+	if ( ActiveGameWorld ) {
+		drawMat->setUniform( "terra_BaseAmbient", ActiveGameWorld->cBaseAmbient );
+	}
+	else {
+		drawMat->setUniform( "terra_BaseAmbient", Color(0.5f,0.5f,0.5f,1) );
+	}
+
+	// Disable face culling in shadow mode
+	if ( CCamera::activeCamera->shadowCamera )
+		glDisable( GL_CULL_FACE );
+
+	// Re-enable culling
+	if ( CCamera::activeCamera->shadowCamera )
+		glEnable( GL_CULL_FACE );
+		*/
+	if ( m_drawmesh.GetElementCount() > 0 )
+	{
+		GL_ACCESS;
+
+		GL.Transform( &transform );
+
+		m_material->bindPass(pass);
+		m_material->setShaderConstants( this );
+
+		if ( BindVAO( pass, m_drawmesh.GetVBOverts(), m_drawmesh.GetVBOfaces(), true ) )
+		{
+			m_material->bindAttribute( "mdl_Vertex",	3, GL_FLOAT, false, sizeof(CTerrainVertex), ((char*)0) + (sizeof(float)*0) );
+			m_material->bindAttribute( "mdl_TexCoord",	3, GL_FLOAT, false, sizeof(CTerrainVertex), ((char*)0) + (sizeof(float)*3) );
+			m_material->bindAttribute( "mdl_Color",		4, GL_FLOAT, false, sizeof(CTerrainVertex), ((char*)0) + (sizeof(float)*12) );
+			m_material->bindAttribute( "mdl_Normal",	3, GL_FLOAT, false, sizeof(CTerrainVertex), ((char*)0) + (sizeof(float)*6) );
+			m_material->bindAttribute( "mdl_Tangents",	3, GL_FLOAT, false, sizeof(CTerrainVertex), ((char*)0) + (sizeof(float)*9) );
+		}
+
+		GL.DrawElements( GL_TRIANGLES, m_drawmesh.GetElementCount(), GL_UNSIGNED_INT, 0 );
+		GL.CheckError();
+	}
+
+	return true;
 }
 
 
@@ -292,12 +352,14 @@ void CVoxelFileEditor::Update ( void )
 		Matrix4x4 rotMatx;
 		rotMatx.setRotation( m_camera->transform.rotation );
 
-		if ( (CInput::Mouse(CInput::MBLeft) && CInput::Mouse(CInput::MBRight))||(CInput::Mouse(CInput::MBMiddle))||(CInput::Mouse(CInput::MBRight)&&CInput::Key(Keys.Alt)) ) {
+		if ( (CInput::Mouse(CInput::MBLeft) && CInput::Mouse(CInput::MBRight))||(CInput::Mouse(CInput::MBMiddle))||(CInput::Mouse(CInput::MBRight)&&CInput::Key(Keys.Alt)) )
+		{
 			//rotMatx.setRotation( myCamera->transform.rotation );
 			//vCameraCenter += rotMatx * Vector3d( 0, (ftype)CInput::deltaMouseX, (ftype)CInput::deltaMouseY ) * ( 1.2f + sqrt(cameraDistance) ) * 0.02f;
 			m_camera->transform.position -= rotMatx * Vector3d( CInput::DeltaMouseY(), CInput::DeltaMouseX(), 0 ) * 0.2f;
 		}
-		else if ( CInput::Mouse( CInput::MBLeft ) ) {
+		else if ( CInput::Mouse( CInput::MBLeft ) )
+		{
 			//vCameraAngles += Vector3d( 0, (ftype)CInput::deltaMouseY*0.7f, -(ftype)CInput::deltaMouseX*0.7f );
 			//m_camera->transform.rotation = Rotator( Vector3d( 0, (ftype)CInput::deltaMouseY*0.7f, -(ftype)CInput::deltaMouseX*0.7f ) ) * m_camera->transform.rotation;
 			Vector3d targetAngles = m_camera->transform.rotation.getEulerAngles()-Vector3d( 0, CInput::DeltaMouseY()*0.7f, -CInput::DeltaMouseX()*0.7f );
@@ -310,7 +372,8 @@ void CVoxelFileEditor::Update ( void )
 			m_camera->transform.rotation.Euler( targetAngles );
 			
 		}
-		else if ( CInput::Mouse( CInput::MBRight ) ) {
+		else if ( CInput::Mouse( CInput::MBRight ) )
+		{
 			/*cameraDistance += (ftype)CInput::deltaMouseY * ( 1.2f + sqrt(cameraDistance) ) * 0.02f;
 			if ( cameraDistance < 0 ) {
 				cameraDistance = 0;
@@ -323,10 +386,12 @@ void CVoxelFileEditor::Update ( void )
 		{
 			Vector2d cursor_pos = Vector2d( Input::MouseX() / (Real)Screen::Info.width, Input::MouseY() / (Real)Screen::Info.height );
 			Ray tracedir ( m_camera->transform.position, m_camera->ScreenToWorldDir( cursor_pos ) );
-			if ( Raycaster.Raycast( tracedir, 500.0f, &m_cursorState.hitResult, Physics::GetCollisionFilter(Layers::PHYS_BULLET_TRACE,0,31) ) ) {
+			/*if ( Raycaster.Raycast( tracedir, 500.0f, &m_cursorState.hitResult, Physics::GetCollisionFilter(Layers::PHYS_BULLET_TRACE,0,31) ) )
+			{
 				m_cursorState.cursorPosition = m_cursorState.hitResult.hitPos;
 			}
-			else {
+			else*/
+			{
 				// Cast it to the water if it's going that way.
 				m_cursorState.hitResult.hit = false;
 				if ( (tracedir.pos.z * tracedir.dir.z) < 0 ) {
@@ -341,9 +406,6 @@ void CVoxelFileEditor::Update ( void )
 			m_cursor->transform.position.x = floorf( m_cursor->transform.position.x * 0.5f ) * 2.0f;
 			m_cursor->transform.position.y = floorf( m_cursor->transform.position.y * 0.5f ) * 2.0f;
 			m_cursor->transform.position.z = floorf( m_cursor->transform.position.z * 0.5f ) * 2.0f;
-			/*m_cursor->transform.position.x -= fmod( m_cursor->transform.position.x, 2.0f );
-			m_cursor->transform.position.y -= fmod( m_cursor->transform.position.y, 2.0f );
-			m_cursor->transform.position.z -= fmod( m_cursor->transform.position.z, 2.0f );*/
 			m_cursor->transform.position += Vector3d( 1.0f,1.0f,1.0f );
 
 			// Set mouseover text
@@ -353,11 +415,13 @@ void CVoxelFileEditor::Update ( void )
 				sprintf( str_temp, "X: %.1lf Y: %.1lf Z: %.1lf", m_cursorState.cursorPosition.x, m_cursorState.cursorPosition.y, m_cursorState.cursorPosition.z );
 				m_guiparts.cursor_info.SetText( string(str_temp) );
 				// Print cursor block type
-				if ( m_cursorState.hitResult.hit ) {
+				if ( m_cursorState.hitResult.hit )
+				{
 					Vector3d target = m_cursorState.cursorPosition + Vector3d(32,32,0);
 					target -= m_cursorState.hitResult.hitNormal;
-					uchar i,j; short k;
-					if ( PositionToBoobIndex( target,i,j,k ) ) {
+					short k;
+					if ( PositionToBoobIndex( target,k ) )
+					{
 						sprintf( str_temp, "Block: %s", Terrain::blockName[m_boob->data[k].block] );	
 						m_guiparts.block_info.SetText( string(str_temp) );
 					}
@@ -370,34 +434,46 @@ void CVoxelFileEditor::Update ( void )
 		}
 
 		// Place or delete a block
-		if ( Input::Keydown('X') ) {
+		if ( Input::Keydown('X') )
+		{
 			// Get the block index
 			Vector3d target = m_cursorState.cursorPosition + Vector3d(32,32,0);
 			if ( m_cursorState.hitResult.hit ) {
 				target -= m_cursorState.hitResult.hitNormal;
 			}
-			uchar i,j;
 			short k;
-			if ( PositionToBoobIndex( target,i,j,k ) ) {
+			if ( PositionToBoobIndex( target,k ) )
+			{
 				// Delete block at position
-				m_boob->data[k].block = Terrain::EB_NONE;
+				//m_boob->data[k].block = Terrain::EB_NONE;
+				//m_boob->data[k].block = blockType;
+				Terrain::SidebufferAccessor accessor ( NULL, (Terrain::terra_b*) m_data, WorldVector( 32,32,32 ) );
+				Terrain::SidebufferVolumeEditor editor ( &accessor, Vector3d_d(0,0,0) );
+				//editor.Add_Box( Vector3d_d(target.x,target.y,target.z+3), Vector3d_d(1,1,1), blockType );
+				editor.Sub_Sphere( Vector3d_d(target.x,target.y,target.z+5), 2 );
 			}
 			// Regenernate mesh
 			bUpdateBoob = true;
 		}
-		else if ( Input::Keydown(Keys.Space) ) {
+		else if ( Input::Keydown(Keys.Space) )
+		{
 			// Get the block index
 			Vector3d target = m_cursorState.cursorPosition + Vector3d(32,32,0);
 			if ( m_cursorState.hitResult.hit ) {
 				target += m_cursorState.hitResult.hitNormal;
 			}
-			uchar i,j;
 			short k;
-			if ( PositionToBoobIndex( target,i,j,k ) ) {
+			if ( PositionToBoobIndex( target,k ) )
+			{
 				// Add block at position
 				short blockType = m_gui->GetListviewSelection( m_guiparts.block_selection );
-				if ( blockType != -1 ) {
-					m_boob->data[k].block = blockType;
+				if ( blockType != -1 )
+				{
+					//m_boob->data[k].block = blockType;
+					Terrain::SidebufferAccessor accessor ( NULL, (Terrain::terra_b*) m_data, WorldVector( 32,32,32 ) );
+					Terrain::SidebufferVolumeEditor editor ( &accessor, Vector3d_d(0,0,0) );
+					//editor.Add_Box( Vector3d_d(target.x,target.y,target.z+3), Vector3d_d(1,1,1), blockType );
+					editor.Add_Sphere( Vector3d_d(target.x,target.y,target.z+5), 2, blockType );
 				}
 			}
 			// Regenernate mesh
@@ -416,6 +492,7 @@ void CVoxelFileEditor::Update ( void )
 	}*/
 	if ( !m_daycycle ) { 
 		m_daycycle = new Daycycle;
+		m_daycycle->SetTimeOfDay( 60*60*4 );
 	}
 	//RenderSettings.clearColor = Color( 0.4f,0.4f,0.4f );
 	// Draw grid
@@ -425,7 +502,7 @@ void CVoxelFileEditor::Update ( void )
 	}
 }
 
-bool CVoxelFileEditor::PositionToBoobIndex ( const Vector3d& nPosition, uchar& i, uchar& j, short& k )
+bool CVoxelFileEditor::PositionToBoobIndex ( const Vector3d& nPosition, short& k )
 {
 	Vector3d target = nPosition;
 	target *= 0.5f;
@@ -433,77 +510,18 @@ bool CVoxelFileEditor::PositionToBoobIndex ( const Vector3d& nPosition, uchar& i
 	x = (int)target.x;
 	y = (int)target.y;
 	z = (int)target.z;
-	if ( x < 0 || x >= 32 || y < 0 || y >= 32 || z < 0 || z >= 32 ) {
+	if ( x < 0 || x >= 32 || y < 0 || y >= 32 || z < 0 || z >= 32 )
+	{
 		return false;
 	}
-	else {
+	else
+	{
 		// Convert position into index
-		//LinearIndexToOctreeIndex( x,y,z, i,j,k );
-		/*i = x/16 + (y/16)*2 + (z/16)*4;
-		j = ((x/8)%2) + ((y/8)%2)*2 + ((z/8)%2)*4;
-		k = (x%8) + (y%8)*8 + (z%8)*64;*/
 		k = Terrain::Indexing::XyzToLinear( x,y,z );
-
 		return true;
 	}
 }
 
-
-bool CVoxelFileEditor::Render ( const char pass )
-{
-	/*glMaterial* drawMat = vMaterials[0];
-
-	drawMat->bind();
-	drawMat->setShaderConstants( this );
-	if ( ActiveGameWorld ) {
-		drawMat->setUniform( "terra_BaseAmbient", ActiveGameWorld->cBaseAmbient );
-	}
-	else {
-		drawMat->setUniform( "terra_BaseAmbient", Color(0.5f,0.5f,0.5f,1) );
-	}
-
-	// Disable face culling in shadow mode
-	if ( CCamera::activeCamera->shadowCamera )
-		glDisable( GL_CULL_FACE );
-
-	// do same as vertex array except pointer
-	glEnableClientState(GL_VERTEX_ARRAY);             // activate vertex coords array
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-
-	// If visible...
-	if ( ( m_boob->pMesh->faceCount > 0 )&&(m_boob->pMesh->iVBOverts && m_boob->pMesh->iVBOfaces) )
-	{
-		// Draw current boob
-		glBindBuffer(GL_ARRAY_BUFFER, m_boob->pMesh->iVBOverts);         // for vertex coordinates
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_boob->pMesh->iVBOfaces); // for face vertex indexes
-
-		// Tell where the vertex coordinates are in the array
-		glVertexPointer( 3, GL_FLOAT, sizeof(CTerrainVertex), 0 ); 
-		glNormalPointer( GL_FLOAT, sizeof(CTerrainVertex), ((char*)0) + (sizeof(float)*6) );
-		glTexCoordPointer( 3, GL_FLOAT, sizeof(CTerrainVertex), ((char*)0) + (sizeof(float)*3) );
-		glColorPointer( 4, GL_FLOAT, sizeof(CTerrainVertex), ((char*)0) + (sizeof(float)*12) );
-
-		// Draw the sutff
-		glDrawElements( GL_QUADS, m_boob->pMesh->faceCount*4, GL_UNSIGNED_SHORT, 0 );
-	}
-
-	glDisableClientState(GL_VERTEX_ARRAY);            // deactivate vertex array
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-
-	// bind with 0, so, switch back to normal pointer operation
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	// Re-enable culling
-	if ( CCamera::activeCamera->shadowCamera )
-		glEnable( GL_CULL_FACE );
-		*/
-	return true;
-}
 
 void CVoxelFileEditor::DoLoad ( void ){}
 void CVoxelFileEditor::Load ( void )

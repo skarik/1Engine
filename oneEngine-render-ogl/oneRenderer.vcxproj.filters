@@ -366,6 +366,9 @@
     <ClCompile Include="source\renderer\state\Options.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\window\COglWindow.h">
@@ -640,6 +643,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\state\Options.h">
       <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\utils\glTMeshContainer.h">
+      <Filter>SOURCE\Renderer\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

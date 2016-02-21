@@ -118,6 +118,7 @@
     <ClCompile Include="source\renderer\texture\CTextureMaster.cpp" />
     <ClCompile Include="source\renderer\types\ObjectSettings.cpp" />
     <ClCompile Include="source\renderer\utils\glScreenshot.cpp" />
+    <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp" />
     <ClCompile Include="source\renderer\window\COglWindowWin32.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +209,7 @@
     <ClInclude Include="source\renderer\types\textureFormats.h" />
     <ClInclude Include="source\renderer\types\types.h" />
     <ClInclude Include="source\renderer\utils\glScreenshot.h" />
+    <ClInclude Include="source\renderer\utils\glTMeshContainer.h" />
     <ClInclude Include="source\renderer\window\COglWindow.h" />
     <ClInclude Include="source\renderer\window\COglWindowLinux.h" />
     <ClInclude Include="source\renderer\window\COglWindowOsmac.h" />
