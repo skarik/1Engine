@@ -1,4 +1,12 @@
-
+//===============================================================================================//
+// onengine/core-ext
+//
+//	CDebugConsole
+//		shitty print debugging class that's lasted since first started with C++
+//		(it has pretty colors)
+//
+//	Author: Joshua Boren
+//===============================================================================================//
 
 #ifndef _C_DEBUG_CONSOLE_
 #define _C_DEBUG_CONSOLE_

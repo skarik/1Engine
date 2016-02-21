@@ -172,7 +172,7 @@ bool COSF_Loader::GetNext ( mccOSF_entry_info_t& nextEntry, char* output_value )
 					//return nextEntry; // Return object entry
 					return true;
 				}
-				else if ( i+2 < line_length && m_linebuffer[i] == '(' && m_linebuffer[i+1] == '!' && m_linebuffer[i+2] == '{' ) // use strncmp
+				else if ( i+2 < line_length && strncmp( "(!{", m_linebuffer+i, 3 ) == 0 )
 				{
 					if ( output_value == NULL ) {
 						//throw std::exception(); // You didn't pass in anything for the second argument.
@@ -184,16 +184,52 @@ bool COSF_Loader::GetNext ( mccOSF_entry_info_t& nextEntry, char* output_value )
 					// Read in until the "}!)" information stop
 					do
 					{
-						inputBuffer[2] = inputBuffer[1];
-						inputBuffer[1] = inputBuffer[0];
-						inputBuffer[0] = fgetc( m_file );
+						inputBuffer[0] = inputBuffer[1];
+						inputBuffer[1] = inputBuffer[2];
+						inputBuffer[2] = fgetc( m_file );
 
 						// Read int 
-						if ( inputBuffer[2] == '}' && inputBuffer[1] == '!' && inputBuffer[0] == ')' ) {
+						if ( strncmp( "}!)", inputBuffer, 3 ) == 0 ) {
 							continueRead = false;
 						}
-						if ( inputBuffer[2] && continueRead && output_value ) {
-							output_value[os_length] = inputBuffer[2];
+						if ( inputBuffer[0] && continueRead && output_value ) {
+							output_value[os_length] = inputBuffer[0];
+							os_length += 1;
+						}
+					}
+					while ( continueRead );
+					// Set last character as null character
+					if ( output_value ) {
+						output_value[os_length] = 0;
+					}
+					// Set value to NULL
+					nextEntry.value[0] = 0;
+					return true;
+				}
+				else if ( i+6 < line_length && strncmp( "JSBEGIN", m_linebuffer+i, 7 ) == 0 )
+				{
+					if ( output_value == NULL ) {
+						//throw std::exception(); // You didn't pass in anything for the second argument.
+					}
+					// It's a massive data object.
+					int os_length = 0;
+					bool continueRead = true;
+					char inputBuffer [5] = {0,0,0,0,0};
+					// Read in until the "}!)" information stop
+					do
+					{
+						inputBuffer[0] = inputBuffer[1];
+						inputBuffer[1] = inputBuffer[2];
+						inputBuffer[2] = inputBuffer[3];
+						inputBuffer[3] = inputBuffer[4];
+						inputBuffer[4] = fgetc( m_file );
+
+						// Read int 
+						if ( strncmp( "JSEND", inputBuffer, 5 ) == 0 ) {
+							continueRead = false;
+						}
+						if ( inputBuffer[0] && continueRead && output_value ) {
+							output_value[os_length] = inputBuffer[0];
 							os_length += 1;
 						}
 					}
