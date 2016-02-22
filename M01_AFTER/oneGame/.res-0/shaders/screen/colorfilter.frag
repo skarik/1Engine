@@ -1,4 +1,4 @@
-#version 120
+#version 330
 
 // Inputs from vertex shader
 varying vec4 v2f_colors;

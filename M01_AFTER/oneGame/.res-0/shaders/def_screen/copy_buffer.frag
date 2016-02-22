@@ -1,3 +1,4 @@
+#version 140
 // If you muck with this shader, you might as well release the cross-platform yandere phone virus.
 
 // Inputs from vertex shader

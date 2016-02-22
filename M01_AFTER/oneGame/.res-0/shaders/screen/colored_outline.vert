@@ -1,11 +1,13 @@
+#version 330
+
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;
 //in vec4 mdl_Color;
 
 // Outputs to fragment shader
-varying vec4 v2f_colors;
-varying vec4 v2f_position;
-varying vec2 v2f_texcoord0;
+out vec4 v2f_colors;
+out vec4 v2f_position;
+out vec2 v2f_texcoord0;
 
 // System inputs
 //uniform mat4 sys_ModelViewProjectionMatrix;

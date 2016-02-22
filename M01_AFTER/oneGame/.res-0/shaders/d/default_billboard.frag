@@ -1,3 +1,5 @@
+#version 330
+
 // Inputs from vertex shader
 varying vec4 v2f_position;
 varying vec4 v2f_colors;

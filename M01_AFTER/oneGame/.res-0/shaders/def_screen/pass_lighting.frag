@@ -4,8 +4,8 @@
 layout(location = 0) out vec4 FragColor;
 
 // Inputs from vertex shader
-varying vec4 v2f_position;
-varying vec2 v2f_texcoord0;
+in vec4 v2f_position;
+in vec2 v2f_texcoord0;
 
 // Samplers
 uniform sampler2D textureSampler0;	// Diffuse

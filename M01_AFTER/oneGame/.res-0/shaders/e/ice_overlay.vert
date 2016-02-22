@@ -1,3 +1,5 @@
+#version 140
+
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;
 in vec4 mdl_Color;

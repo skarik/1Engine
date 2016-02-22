@@ -1,3 +1,4 @@
+#version 330
 
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;
@@ -5,7 +6,6 @@ in vec3 mdl_TexCoord;
 // Outputs to fragment shader
 varying vec4 v2f_position;
 varying vec2 v2f_texcoord0;
-
 
 void main ( void )
 {

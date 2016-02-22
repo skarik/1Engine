@@ -1,3 +1,4 @@
+#version 140
 // If you muck with this shader, you might as well summon something from the tentacle realm.
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;

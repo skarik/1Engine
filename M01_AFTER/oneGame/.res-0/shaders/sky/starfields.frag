@@ -1,3 +1,5 @@
+#version 330
+
 varying vec3 v2f_normals;
 varying vec3 v2f_directional;
 varying vec2 v2f_texcoord0;

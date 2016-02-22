@@ -1,11 +1,11 @@
-#version 120
+#version 330
 
 // Inputs from vertex shader
-varying vec4 v2f_normals;
+in vec4 v2f_normals;
 //varying vec4 v2f_colors;
-varying vec4 v2f_position;
-varying vec2 v2f_texcoord0;
-varying float v2f_fogdensity;
+in vec4 v2f_position;
+in vec2 v2f_texcoord0;
+in float v2f_fogdensity;
 
 // Depth vals
 uniform float zNear;

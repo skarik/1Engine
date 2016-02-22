@@ -1,6 +1,7 @@
+#version 140
+
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;
-
 
 // Outputs to fragment shader
 varying vec4 v2f_colors;

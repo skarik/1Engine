@@ -1,3 +1,5 @@
+#version 140
+
 // Inputs from vertex shader
 varying vec4 v2f_normals;
 varying vec4 v2f_colors;
@@ -16,6 +18,14 @@ uniform sampler2D textureSampler1; // bubbllesss
 
 // Constants
 uniform float sys_AlphaCutoff;
+
+// Fog
+layout(std140) uniform sys_Fog
+{
+	vec4	sys_FogColor;
+	float 	sys_FogEnd;
+	float 	sys_FogScale;
+};
 
 void main ( void )  
 {
@@ -36,7 +46,7 @@ void main ( void )
 	
 	if ( alpha < sys_AlphaCutoff ) discard;
 
-	gl_FragColor.rgb = mix( gl_Fog.color.rgb, diffuseColor.rgb * (v2f_colors.rgb+v2f_emissive), v2f_fogdensity ) * alpha;
+	gl_FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb * (v2f_colors.rgb+v2f_emissive), v2f_fogdensity ) * alpha;
 	gl_FragColor.a = alpha;
 	
 }
