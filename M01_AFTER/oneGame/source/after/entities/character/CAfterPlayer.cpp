@@ -898,6 +898,8 @@ void CAfterPlayer::Update ( void )
 			previousTarget = target;
 		}
 	}
+	
+	DoPlayerActions();
 }
 void CAfterPlayer::LateUpdate ( void )
 {
@@ -905,7 +907,7 @@ void CAfterPlayer::LateUpdate ( void )
 
 	GrabInput();
 	(this->*m_cameraUpdateType)();
-
+	
 	// Update listener position
 	pListener->velocity = pCamera->transform.position - pListener->position;
 	pListener->position = pCamera->transform.position;
@@ -1364,6 +1366,7 @@ void CAfterPlayer::DoUseCommand ( void )
 			if ( (pHitObject->layer & Layers::Actor) != 0 ) // Looking at an actor
 			{
 				// Work on the actor
+				std::cout << "I think this is what I'm looking for?" << std::endl; //DTAKEOUT
 				((CActor*)pHitObject)->OnInteract( this );
 			}
 			else if ( (pHitObject->layer & Layers::WeaponItem) != 0 ) // Looking at a weaponItem

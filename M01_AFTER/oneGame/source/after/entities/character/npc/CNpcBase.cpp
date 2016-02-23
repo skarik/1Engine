@@ -195,6 +195,7 @@ void CNpcBase::OnInteract ( CActor* interactingActor )
 	{
 		if ( interactingActor->GetTypeName() == "CPlayer" )
 		{
+			std::cout << "OnInteract" << std::endl; //DTAKEOUT
 			ai.RequestActorInteract( (CCharacter*)interactingActor, true );
 		}
 		else if ( interactingActor->IsCharacter() && false )
@@ -214,7 +215,8 @@ void CNpcBase::OnInteract ( CActor* interactingActor )
 void CNpcBase::OnTalkTo ( CCharacter* talkingCharacter )
 {
 	// TODO: Don't talk if angry at target or busy as fuck.
-	// Put talker code here
+	// Put talker code here 
+	std::cout << "WE TALKING NOW BOYS" << std::endl; //DTAKEOUT
 	CAfterPlayer* player = (CAfterPlayer*)(talkingCharacter); // todo: cast this safely. not always going to be the player that is talking
 	std::vector<CCharacter*> temp;
 	temp.push_back ((CCharacter*)(this));

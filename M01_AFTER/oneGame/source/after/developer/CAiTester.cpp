@@ -55,7 +55,7 @@ void CAiTester::Update ( void )
 		}
 	}
 
-	// Add a player
+	// Add a player. 
 	if ( CInput::Keydown( 'P' ) ) {
 		Vector3d spawn_position = playerList[0].actor->transform.position + Vector3d( 0,0,2 );
 		DeleteObject( playerList[0].actor );
@@ -94,7 +94,7 @@ void CAiTester::Update ( void )
 
 		if ( hitInfo.hit )
 		{
-			CTestPhysicsCrate* newCrate = new CTestPhysicsCrate();
+			/*CTestPhysicsCrate* newCrate = new CTestPhysicsCrate(); //COMMENTED this code out because I don't need to test click inputs.
 			newCrate->transform.position = hitInfo.hitPos + hitInfo.hitNormal*5;
 			newCrate->transform.rotation = Vector3d( Random.Range(-180,180), Random.Range(-180,180), Random.Range(-180,180) );
 			newCrate->transform.SetDirty();
@@ -107,7 +107,7 @@ void CAiTester::Update ( void )
 			newLight->diffuseColor = Color( Random.Range(0.2f,1.2f),Random.Range(0.2f,1.2f),Random.Range(0.2f,1.2f) );
 			newLight->range = 12;
 
-			/*NPC::npcid_t banditId = NPC::Manager->RequestNPC( NPC::npcid_UNIQUE );
+			NPC::npcid_t banditId = NPC::Manager->RequestNPC( NPC::npcid_UNIQUE );
 			{
 				NPC::characterFile_t characterFile;
 

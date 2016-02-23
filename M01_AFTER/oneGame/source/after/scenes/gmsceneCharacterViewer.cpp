@@ -296,7 +296,7 @@ void gmsceneCharacterViewer::LoadScene ( void )
 
 	// Create stats for the character
 	CPlayerStats* pl_stats = NULL;
-	/*{
+	{
 		pl_stats = new CPlayerStats();
 		CRacialStats* rstats = pl_stats->race_stats;
 		rstats->SetDefaults();
@@ -332,10 +332,10 @@ void gmsceneCharacterViewer::LoadScene ( void )
 		//rstats->tattooList.push_back( tattoo );
 		rstats->iTattooCount = rstats->tattooList.size();
 	}
-	loadscreen->StepScreen();*/
+	loadscreen->StepScreen();
 
 	// Create a character
-	/*NPC::CNpcBase* m_playercharacter;
+	NPC::CNpcBase* m_playercharacter;
 	{
 		for ( uint i = 0; i < 1; ++i )
 		{
@@ -366,7 +366,7 @@ void gmsceneCharacterViewer::LoadScene ( void )
 			m_playercharacter = (NPC::CNpcBase*) NPC::Manager->SpawnNPC(player_id);
 		}
 	}
-	loadscreen->StepScreen();*/
+	loadscreen->StepScreen();
 
 	// Create a door to test the collision
 	/*{
