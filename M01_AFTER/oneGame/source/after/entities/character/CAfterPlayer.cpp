@@ -645,8 +645,8 @@ void CAfterPlayer::Update ( void )
 	{
 		static bool blending = false;
 		static Real blendTime = 0;
-		if ( input->axes.tglEyewear.pressed() ) {
-		
+		if ( input->axes.tglEyewear.pressed() )
+		{
 			if ( glMaterial::special_mode == Renderer::SP_MODE_NORMAL ) {
 				glMaterial::special_mode = Renderer::SP_MODE_ECHO;
 			}

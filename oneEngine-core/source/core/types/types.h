@@ -7,12 +7,15 @@
 #ifndef _C_STANDARD_TYPES_H_
 #define _C_STANDARD_TYPES_H_
 
-// Treat unused destructors as error
-#pragma warning (error: 4150)
+// Visual Studio specific options
+#ifdef _MSC_VER
+	// Treat unused destructors as error
+#	pragma warning (error: 4150)
 
-// Treat float truncation as an error
-//#pragma warning (error: 4244)
-//#pragma warning (error: 4305)
+	// Treat float truncation as an error
+//#	pragma warning (error: 4244)
+//#	pragma warning (error: 4305)
+#endif
 
 // Include NULL defines (with C++12)
 #ifdef _WIN32

@@ -932,7 +932,8 @@ void*	CCharacterMotion::mvt_Falling ( void )
 	// Wall sliding
 	else if ( CheckWallSliding() )
 	{
-		if ( fSlideCounter > 0.01f ) {
+		if ( fSlideCounter > 0.01f )
+		{
 			fSlideCounter -= Time::deltaTime;
 		}
 		else
@@ -2410,6 +2411,11 @@ bool	CCharacterMotion::CheckWallSliding ( void )
 	// todo: want to check the distance to the ground as well (from ledge to ground, as that may make it ungrabbable)
 	vHangingWall = Vector3d(0,0,0);
 
+	float t_max_cast_distance = m_stats->fPlayerRadius+0.4f;
+	{
+		t_max_cast_distance = std::max<Real>( t_max_cast_distance, MvtGetEffectiveHullRadius() + 0.3f );
+	}
+
 	Ray c_trace;
 	RaycastHit c_trace_result;
 	RaycastHit c_first_ledgetrace_result;
@@ -2420,7 +2426,7 @@ bool	CCharacterMotion::CheckWallSliding ( void )
 		// raytrace towards a wall
 		c_trace.pos = m_character->transform.position + Vector3d( 0,0,v_distance );
 
-		Raycaster.Raycast( c_trace, m_stats->fPlayerRadius+0.4f, &c_trace_result, 0x00, m_character );
+		Raycaster.Raycast( c_trace, t_max_cast_distance, &c_trace_result, 0x00, m_character );
 		if ( c_trace_result.hit ) {
 			// Save the wall's normal
 			vHangingWall += c_trace_result.hitNormal;
@@ -2458,21 +2464,48 @@ bool	CCharacterMotion::CheckWallSliding ( void )
 }
 void*	CCharacterMotion::mvt_WallSlide ( void )
 {
-	// Turn first
-	//vCharRotation.z += min<ftype>( vTurnInput.x*0.1f, 45.0f * Time::deltaTime ); //but at a slower rate
-	ftype turnAmount = std::min<ftype>( fabs(vTurnInput.x), 360.0f * Time::deltaTime ) * Math.sgn<ftype>(vTurnInput.x);
-	fWallSlideTurnThreshold += turnAmount * 0.1f; //but at a slower rate
-	if ( fabs(fWallSlideTurnThreshold) > 15.0f ) {
-		fWallSlideTurnSum += 180 * Math.sgn<ftype>(fWallSlideTurnThreshold);
-		fWallSlideTurnThreshold = 0;
-		bWallSlideTurned = !bWallSlideTurned;
-
-		fSlideCounter -= 0.2f;
+	// Angle the head
+	Real turnAmount;
+	{
+		// Horizontal turn
+		turnAmount = std::min<Real>( fabs(vTurnInput.x), 720.0f * Time::deltaTime ) * Math.sgn<Real>(vTurnInput.x);
+		vHeadRotation.z += turnAmount;
+		vTurnInput.x -= turnAmount;
+		// Vertical turn
+		turnAmount = std::min<Real>( fabs(vTurnInput.y), 720.0f * Time::deltaTime ) * Math.sgn<Real>(vTurnInput.y);
+		vHeadRotation.y -= turnAmount;
+		vTurnInput.y -= turnAmount;
 	}
-	vTurnInput.x -= turnAmount;
+	if ( !bWallSlideTurned && fabs(vHeadRotation.z) > 30.0F )
+	{
+		bWallSlideTurned = true;
+	}
+	// Limit head rotation
+	if ( fabs( vHeadRotation.y ) > 80 ) {
+		vHeadRotation.y = 80.0f * Math.sgn<ftype>( vHeadRotation.y );
+	}
+	//turnAmount = -60 - 30*rollDirection;
+	turnAmount = -60;
+	if ( vHeadRotation.z < turnAmount ) {
+		vHeadRotation.z = turnAmount;
+	}
+	//turnAmount = +60 - 30*rollDirection;
+	turnAmount = +60;
+	if ( vHeadRotation.z > turnAmount ) {
+		vHeadRotation.z = turnAmount;
+	}
 
-	vCharRotation.z += fWallSlideTurnSum * Time::TrainerFactor( 0.11f );
-	fWallSlideTurnSum -= fWallSlideTurnSum * Time::TrainerFactor( 0.11f );
+	// First, make the player angle stick to the wall
+	{
+		// Based on wallTravelDirection, get a target value for vCharRotation.z.
+		Quaternion currentRot;
+		currentRot.SetEulerAngles( Vector3d(0,0,Math.Wrap(-vCharRotation.z,-180,180)) );
+		Quaternion targetRot = Quaternion::CreateRotationTo( Vector3d(1,0,0), bWallSlideTurned ? vHangingWall : -vHangingWall );
+		currentRot = currentRot.Slerp( targetRot, 0.1f );
+		Real nextRotationZ = currentRot.GetEulerAngles().z;
+		vHeadRotation.z -= Math.Wrap(nextRotationZ - vCharRotation.z,-180,180);
+		vCharRotation.z = nextRotationZ;
+	}
 
 	// Set player to full height
 	MvtSetPlayerHeightStick( m_stats->fStandingHeight );
@@ -2482,11 +2515,16 @@ void*	CCharacterMotion::mvt_WallSlide ( void )
 	// If at end of the slide time
 	if ( fSlideCounter >= fWallSlideTime ) {
 		fSlideCounter *= 0.5f; // Decrease cooldown
+		StopMotion(); // Reset fall damage
+		// End slide effect
+		m_character->OnAnimationEvent( Animation::Event_SlideEnd, Animation::EventTag_NoTag );
 		return quickReturn( mvt_Falling );
 	}
 	// In Water
 	if ( WaterTester::Get()->PositionInside( m_character->transform.position+Vector3d( 0,0,2.5f ) ) ) {
 		fSlideCounter = 0.15f; // Set cooldown
+		// End slide effect
+		m_character->OnAnimationEvent( Animation::Event_SlideEnd, Animation::EventTag_NoTag );
 		return quickReturn( mvt_Swimming );
 	}
 	// Check if on ground
@@ -2497,9 +2535,14 @@ void*	CCharacterMotion::mvt_WallSlide ( void )
 	}
 
 	// Step away from wall if press backwards
-	if ( !bWallSlideTurned ) {
-		if ( m_input->vDirInput.x < -0.5f ) {
+	if ( !bWallSlideTurned )
+	{
+		if ( m_input->vDirInput.x < -0.5f ) 
+		{
 			fSlideCounter *= 0.33f; // Decrease cooldown
+			StopMotion(); // Reset fall damage
+			// End slide effect
+			m_character->OnAnimationEvent( Animation::Event_SlideEnd, Animation::EventTag_NoTag );
 			return quickReturn( mvt_Falling );
 		}
 	}
@@ -2519,6 +2562,18 @@ void*	CCharacterMotion::mvt_WallSlide ( void )
 	vMoveVelocity.z *= Time::SqrtTrainerFactor( 0.5f );
 	vMoveVelocity.z += -0.13f * Time::deltaTime;
 
+	// If hit crouch, then move down (with some sliding particles)
+	if ( m_input->axes.crouch.pressed() ) {
+		m_character->OnAnimationEvent( Animation::Event_SlideStart, Animation::EventTag_NoTag );
+	}
+	if ( m_input->axes.crouch ) {
+		vMoveVelocity.z += -10.0F;
+		m_character->OnAnimationEvent( Animation::Event_Slide, Animation::EventTag_NoTag );
+	}
+	else {
+		m_character->OnAnimationEvent( Animation::Event_SlideEnd, Animation::EventTag_NoTag );
+	}
+
 	// Reset fall damage
 	vFallingVelocity = vMoveVelocity;
 
@@ -2526,8 +2581,15 @@ void*	CCharacterMotion::mvt_WallSlide ( void )
 	if ( m_input->axes.jump.pressed() && (fSlideCounter > 0.4f) )
 	{
 		m_input->axes.jump.Skip();
-		if ( bWallSlideTurned ) {
-			vMoveVelocity = Vector3d(vHangingWall.x,vHangingWall.y,vHangingWall.z+1.3f).normal()*m_stats->fJumpVelocity*1.6f;
+		// If turned around, then jump off to where the player is looking
+		if ( bWallSlideTurned )
+		{
+			Vector3d jumpDirection = Vector3d(vHangingWall.x,vHangingWall.y,vHangingWall.z+1.3f);
+			if ( m_character != NULL ) {
+				jumpDirection += m_character->GetEyeRay().dir * 5.0f;
+				jumpDirection += Vector3d( 0,0,4 );
+			}
+			vMoveVelocity = jumpDirection.normal()*m_stats->fJumpVelocity*1.6f;
 			m_rigidbody->SetVelocity( vMoveVelocity );
 
 			// Subtract stamina
@@ -2546,13 +2608,19 @@ void*	CCharacterMotion::mvt_WallSlide ( void )
 			// Reset fall damage counter
 			EndFalling();
 
+			// End slide effect
+			m_character->OnAnimationEvent( Animation::Event_SlideEnd, Animation::EventTag_NoTag );
 			return quickReturn( mvt_Falling );
 		}
-		else {
+		// If not turned around, then turn around.
+		else
+		{
 			vHeadRotation.y -= 10;
 			fWallSlideTurnSum += 180;
 			fWallSlideTurnThreshold = 0;
 			bWallSlideTurned = true;
+
+			printf("Wall slide now turned around...");
 
 			fSlideCounter -= 0.2f;
 		}

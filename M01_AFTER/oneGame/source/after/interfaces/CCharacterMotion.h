@@ -31,7 +31,10 @@ class CCharacterMotion
 public:
 	typedef void* (CCharacterMotion::*motion_t)(void);
 
-	// == Motion Settings ==
+	//=========================================//
+	// Motion Settings
+	//=========================================//
+
 	// Is motion disabled?
 	bool	m_disableMotion;
 
@@ -63,7 +66,10 @@ public:
 	~CCharacterMotion( void );
 
 public:
-	// == Internal Motion State ==
+	//=========================================//
+	// Internal Motion State
+	//=========================================//
+
 	motion_t				m_moveType;
 	motion_t				m_moveTypePrevious;
 	motion_t				m_moveTypeQueued;	// Move type to take on next frame
@@ -212,6 +218,9 @@ private:
 	void MvtSetPlayerHeight ( float fnPlayerHeight );
 	void MvtSetPlayerHeightStick ( float fnPlayerHeight );
 
+	// Get effective hull size
+	Real MvtGetEffectiveHullRadius ( void );
+
 	// Camera sets
 	FORCE_INLINE void CamSetFOVTarget ( const float nOffsetTarget );
 	FORCE_INLINE void CamSetRollTarget ( const float nOffsetTarget );
@@ -260,43 +269,58 @@ private:
 
 
 private:
-	// =Move States=
+	//=========================================//
+	// Move States
+	//=========================================//
+
 	void*	mvt_OnGround ( void );
 	void*	mvt_Falling ( void );
 	void*	mvt_Swimming ( void );
+
 	// Sliding and rolling
 	void*	mvt_CombatSlide ( void );
 	void*	mvt_CombatRoll ( void );
+
 	// Terrain sliding
 	void*	mvt_TerraSlide ( void );
+
 	// Ledge grabbing
 	void*	mvt_ClimbStart ( void );
 	void*	mvt_ClimbHang ( void );
 	void*	mvt_ClimbUp ( void );
+
 	// Climbing trees/ladders
 	void*	mvt_Climbing ( void );
+
 	// Vaulting objects
 	void*	mvt_VaultStart ( void );
 	void*	mvt_VaultHop ( void );
 	void*	mvt_VaultClimb ( void );
+
 	// In vehicle
 	void*	mvt_InVehicle ( void );
+
 	// Death
 	void*	mvt_Saviorize ( void );
 	void*	mvt_Dead ( void );
 	void*	mvt_DeadRecover ( void );
+
 	// Stunned
 	void*	mvt_Stunned ( void );
+
 	// Fallen
 	void*	mvt_FellOnBackStart ( void );
 	void*	mvt_FellOnBack ( void );
 	void*	mvt_FellOnBackUp ( void );
+
 	// Mobility
 	void*	mvt_WallClimb ( void ); // run up wall
 	void*	mvt_WallSlide ( void ); // starts when hit wall in mvt_Falling. uses roll + slide timer
 	void*	mvt_WallRun ( void );	// run across wall
+
 	// Skills
 	void*	mvt_Minidash ( void ); // minidash
+
 	// Combat
 	void*	mvt_AtkGround ( void );
 	void*	mvt_AtkAir ( void );

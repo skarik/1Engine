@@ -238,28 +238,16 @@ void CCharacterModel::LateUpdate ( void )
 		charModel->GetAnimation()->GetEvents( animEventList, animEventCount );
 		if ( animEventCount > 0 )
 		{
-			/*for ( unsigned int i = 0; i < animEventCount; ++i )
+			while ( !animEventList.empty() )
 			{
-				if ( character ) {
-					//cout << "Signalling event: " << animEventList[i] << endl;
-					character->OnAnimationEvent( animEventList[i] ); // Send event to the character
-				}
-				// Check if there was a change in the event list
-				if ( animEventList.size() != animEventCount ) {
-					i += animEventCount - animEventList.size();
-					animEventCount = animEventList.size();
-				}
-			}*/
-			//
-			while ( !animEventList.empty() ) {
-				if ( actor ) {
+				if ( actor )
+				{
 					Animation::ActionEvent currentEvent = animEventList[0];
-					std::cout << "EVENT: " << currentEvent.type << " DATA: " << currentEvent.data << std::endl; // DEBUG OUTPUT INFO
+					//std::cout << "EVENT: " << currentEvent.type << " DATA: " << currentEvent.data << std::endl; // DEBUG OUTPUT INFO
 					actor->OnAnimationEvent( currentEvent.type, currentEvent.data );
 					animEventList.erase( animEventList.begin() );
 				}
 			}
-			//
 		}
 	}
 

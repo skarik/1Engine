@@ -406,6 +406,20 @@ void	CCharacterMotion::MvtSetPlayerHeightStick ( float fnPlayerHeight )
 	m_collider->SetHeight( fPlayerHeight );
 }
 
+// Get effective hull size
+Real CCharacterMotion::MvtGetEffectiveHullRadius ( void )
+{
+	CCharacterModel* model = m_character->model;
+	if ( model != NULL )
+	{
+		XTransform lookatPos;
+		model->GetEyecamTransform( lookatPos );
+		Vector2d cameraOffset = Vector2d( model->transform.position - lookatPos.position );
+		return cameraOffset.magnitude();
+	}
+	return 0.0F;
+}
+
 
 void CCharacterMotion::FixedUpdate ( Vector3d* io_turnInput, Vector3d* io_charRotation, Vector3d* io_headRotation )
 {
@@ -497,7 +511,8 @@ void CCharacterMotion::Update ( void )
 // Stops motion and resets the falling damage counter
 void CCharacterMotion::StopMotion ( void )
 {
-	if ( m_rigidbody ) {
+	if ( m_rigidbody )
+	{
 		m_rigidbody->SetVelocity( Vector3d(0,0,0) );
 		vFallingVelocity = Vector3d(0,0,0);
 	}

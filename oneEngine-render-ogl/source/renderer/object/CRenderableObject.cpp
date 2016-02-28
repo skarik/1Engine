@@ -271,10 +271,11 @@ bool CRenderableObject::BindVAO ( const uchar pass, const uint vbo, const uint e
 	if ( t_targetPass >= m_vao_maxcount ) {
 		throw Renderer::InvalidPassException();
 	}
-	if ( m_vao_info[t_targetPass] == 0 ) {
-#ifdef _ENGINE_DEBUG
-		std::cout << "generating VAO for " << this << " on pass " << ((int)pass) << std::endl;
-#endif//_ENGINE_DEBUG
+	if ( m_vao_info[t_targetPass] == 0 )
+	{
+//#ifdef _ENGINE_DEBUG
+//		std::cout << "generating VAO for " << this << " on pass " << ((int)pass) << std::endl;
+//#endif//_ENGINE_DEBUG
 		// If there's no VAO, generate it
 		glGenVertexArrays( 1, &(m_vao_info[t_targetPass]) );
 		glBindVertexArray( m_vao_info[t_targetPass] );
@@ -287,7 +288,8 @@ bool CRenderableObject::BindVAO ( const uchar pass, const uint vbo, const uint e
 		GL_ACCESS GL.CheckError();
 		return true;
 	}
-	else {
+	else
+	{
 		// If there is a VAO, bind it
 		glBindVertexArray( m_vao_info[t_targetPass] );
 		GL_ACCESS GL.CheckError();

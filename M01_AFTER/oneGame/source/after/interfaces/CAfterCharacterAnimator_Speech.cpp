@@ -31,7 +31,7 @@ void CAfterCharacterAnimator::DoSpeech ( const NPC::eGeneralSpeechType& speechTy
 
 		speechTrie->SetKey( NPC::SpeechType_Jump,			CGEND_FEMALE,	CRACE_HUMAN,	"Speech.Mayang.Av.JumpF" );
 		speechTrie->SetKey( NPC::SpeechType_JumpLand,		CGEND_FEMALE,	CRACE_HUMAN,	"Speech.Mayang.Av.Land" );
-		speechTrie->SetKey( NPC::SpeechType_JumpLandHard,	CGEND_FEMALE,	CRACE_HUMAN,	"Speech.Mayang.Av.LandHard" );
+		//speechTrie->SetKey( NPC::SpeechType_JumpLandHard,	CGEND_FEMALE,	CRACE_HUMAN,	"Speech.Mayang.Av.LandHard" );
 		speechTrie->SetKey( NPC::SpeechType_Hurt,			CGEND_FEMALE,	CRACE_HUMAN,	"Speech.Mayang.Av.Hurt" );
 		speechTrie->SetKey( NPC::SpeechType_OutOfBreath,	CGEND_FEMALE,	CRACE_HUMAN,	"Speech.Mayang.Av.Huff" );
 		speechTrie->SetKey( NPC::SpeechType_Kiai,			CGEND_FEMALE,	CRACE_HUMAN,	"Speech.Mayang.Av.Kiai" );
