@@ -13,16 +13,6 @@
 	lua
 	(!{
 		local i = 0;
-		while ( i < 30 ) do
-			print( i );
-			coroutine.yield();
-			i = i + 1;
-		end
-	}!)
-	
-	lua
-	(!{
-		local i = 0;
 		print (i);
 		testpoint = _waypoint_Create();
 		print (testpoint);

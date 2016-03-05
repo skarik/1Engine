@@ -1696,6 +1696,10 @@ std::vector<CSkill*>	CAfterPlayer::GetCastingSkills ( void )
 	for ( short i = 0; i < handCount; ++i ) 
 	{
 		CWeaponItem* t_itemInHand = pMyInventory->GetCurrentEquipped(i);
+		
+		//If the hand is empty, don't do anything
+		if (t_itemInHand == NULL)
+			continue;
 		// Check if equipped is a skill
 		if ( t_itemInHand->GetIsSkill() ) {
 			skills.push_back( (CSkill*)t_itemInHand );

@@ -1170,6 +1170,7 @@ void CPlayerInventory::CheckCurrentItems ( void )
 		//cout << i << ": " << wHotbar[i] << endl;
 		if ( (wHotbar[i]) != NULL )
 		{
+			std::cout << "Checking wHotbar[" << i << "]: " << wHotbar[i]->GetOwner() << std::endl;
 			bool removeRef = false;
 			if ( wHotbar[i]->GetOwner() == NULL) {
 				// Remove reference
