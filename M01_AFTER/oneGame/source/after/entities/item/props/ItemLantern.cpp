@@ -35,12 +35,8 @@ ItemLantern::ItemLantern ( void )
 
 ItemLantern::~ItemLantern ( void )
 {
-	if ( pLight )
-		delete pLight;
-	pLight = NULL;
-	if ( pFireSystem )
-		delete pFireSystem;
-	pFireSystem = NULL;
+	delete_safe(pLight);
+	delete_safe_decrement(pFireSystem);
 }
 
 

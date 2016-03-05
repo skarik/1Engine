@@ -1224,7 +1224,7 @@ void*	CCharacterMotion::mvt_CombatSlide ( void )
 		m_rigidbody->SetVelocity( vMoveVelocity );
 
 		// Check for if we hit a wall in front of us
-		// Todo: move to a separate function
+		// TODO: move to a separate function
 		const uint32_t hitFilter = Physics::GetCollisionFilter(Layers::PHYS_SWEPTCOLLISION,0,31);
 		bool hitWall = false;
 		Ray ray;
@@ -2759,9 +2759,12 @@ void* CCharacterMotion::mvt_WallRun ( void )
 
 		// Reset slide timer
 		bWallRunReady = false;
-		fSlideCounter = -1;//fWallSlideTime*0.125f;
+		//fSlideCounter = -1;//fWallSlideTime*0.125f;
+		fSlideCounter = fWallSlideTime;
+		fWallrunCooldown = fWallSlideTime;
 		
 		// Start falling
+		Debug::Console->PrintWarning("Disengaging from wall.\n");
 		return quickReturn( mvt_Falling );
 	}
 
@@ -2835,14 +2838,14 @@ void* CCharacterMotion::mvt_WallRun ( void )
 		vMoveVelocity = m_rigidbody->GetVelocity();
 
 		// Add a small amount of gravity
-		if ( vMoveVelocity.z > 6.0f ) { 
-			vMoveVelocity.z = 6.0f;
+		if ( vMoveVelocity.z > 5.5f ) { 
+			vMoveVelocity.z = 5.5f;
 		}
-		else if ( vMoveVelocity.z < -2.0f ) {
-			vMoveVelocity.z = -2.0f;
+		else if ( vMoveVelocity.z < -1.5f ) {
+			vMoveVelocity.z = -1.5f;
 		}
-		vMoveVelocity.z -= Time::deltaTime * 9.0f;
-		//vMoveVelocity.z = 0;
+		vMoveVelocity.z -= Time::deltaTime * 7.0f;
+
 		// Slow down movement over time
 		Real t_speed = std::min<Real>( 1.0f, 1.5f - ((fWallClimbCounter + fWallClimbStepTime*iWallRunStepCount) / (fWallClimbStepTime*m_stats->iWallRunStepCount*3))*0.5f );
 		vMoveVelocity.x = wallTravelDirection.x * m_stats->fSprintSpeed * t_speed;
@@ -2869,6 +2872,9 @@ void* CCharacterMotion::mvt_WallRun ( void )
 	// If input is jump, do a jump off the wall
 	if ( m_input->axes.jump.pressed() && ((fWallClimbCounter + fWallClimbStepTime*iWallRunStepCount) > 0.25f) )
 	{
+		Debug::Console->PrintWarning("Jumping off wall...\n");
+
+		// Skip next frame input
 		m_input->axes.jump.Skip();
 
 		Matrix4x4 rotLookMatrix;
@@ -2904,7 +2910,39 @@ void* CCharacterMotion::mvt_WallRun ( void )
 		vCharRotation.z += vHeadRotation.z * 0.9f;
 		vHeadRotation.z *= 0.1f;
 
+		Debug::Console->PrintWarning("Disengaging from wall.\n");
 		return quickReturn( mvt_Falling );
+	}
+
+	// Check for if we hit a wall in front of us
+	{
+		// TODO: move to a separate function
+		const uint32_t hitFilter = Physics::GetCollisionFilter(Layers::PHYS_SWEPTCOLLISION,0,31);
+		bool hitWall = false;
+		Ray ray;
+		ray.dir = vMoveVelocity.normal();
+		ray.pos = m_character->transform.position + Vector3d( 0,0,1 );
+		RaycastHit result;
+		for ( int i = 0; i < 2; ++i )
+		{
+			ray.pos = m_character->transform.position + Vector3d( 0,0,1.0F+i*2.0F );
+			if ( Raycaster.Raycast( ray, 4.0f, &result, hitFilter ) )
+			{
+				if ( result.distance < 2.0f )
+				{
+					hitWall = true;
+					break;
+				}
+			}
+		}
+		if ( hitWall )
+		{
+			// Allow for walljump again
+			bWallRunReady = true;
+
+			Debug::Console->PrintWarning("Disengaging from wall.\n");
+			return quickReturn( mvt_Falling );
+		}
 	}
 
 	// Set camera effects

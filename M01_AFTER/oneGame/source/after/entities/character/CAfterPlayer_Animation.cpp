@@ -99,8 +99,10 @@ void CAfterPlayer::OnAnimationEvent ( const Animation::eAnimSystemEvent eventTyp
 		break;
 	case Animation::Event_Slide:
 		{
-			if ( !t_slideSystem ) {
+			if ( !t_slideSystem )
+			{
 				t_slideSystem = new CParticleSystem( "particlesystems/slidepoof.pcf" );
+				t_slideSystem->RemoveReference();
 			}
 
 			// Cast downward from the feet
@@ -130,7 +132,8 @@ void CAfterPlayer::OnAnimationEvent ( const Animation::eAnimSystemEvent eventTyp
 			}
 			else
 			{
-				t_slideSystem->enabled = false;
+				//t_slideSystem->enabled = false;
+				t_slideSystem->enabled = true;
 				t_slideSystem->transform.position = transform.position;
 			}
 		}

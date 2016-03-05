@@ -180,12 +180,12 @@ void CMccCharacterModel::Update ( void )
 			}
 		}
 	}
-	else {
+	else
+	{
 		if ( mFingerParticles )
 		{
 			for ( uint i = 0; i < 4; ++i ) {
-				delete mFingerParticles[i];
-				mFingerParticles[i] = NULL;
+				delete_safe_decrement( mFingerParticles[i] );
 			}
 			delete [] mFingerParticles;
 			mFingerParticles = NULL;
