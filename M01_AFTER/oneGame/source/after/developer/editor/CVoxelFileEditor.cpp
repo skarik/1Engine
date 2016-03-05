@@ -52,10 +52,41 @@ CVoxelFileEditor::CVoxelFileEditor ( void )
 	m_cursor	= new CBlockCursor();
 
 	m_data		= new uint64_t [BLOCK_COUNT];
-	memset( m_data, 0, sizeof(uint64_t)*BLOCK_COUNT );
 
 	m_boob		= new Terrain::Payload();
 	m_boob->data	= (Terrain::terra_b*)m_data;
+	// Reset all data to meaningful nothingness
+	for ( int i = 0; i < BLOCK_COUNT; ++i )
+	{
+		Terrain::terra_b block;
+
+		// Reset block
+		block.raw = 0;
+
+		// Set the normals
+		int normal_x, normal_y, normal_z;
+		normal_x = Terrain::_normal_unbias( 0.0F );
+		normal_y = Terrain::_normal_unbias( 0.0F );
+		normal_z = Terrain::_normal_unbias( 1.0F );
+		block.normal_y_x = normal_x;
+		block.normal_z_x = normal_x;
+		block.normal_x_y = normal_y;
+		block.normal_z_y = normal_y;
+		block.normal_x_z = normal_z;
+		block.normal_y_z = normal_z;
+		// Set block offset
+		block.normal_x_w = Terrain::_depth_unbias( 1.0f );
+		block.normal_y_w = Terrain::_depth_unbias( 1.0f );
+		block.normal_z_w = Terrain::_depth_unbias( 1.0f );
+
+		// Set block lighting
+		block.light_r = 0xF;
+		block.light_g = 0xF;
+		block.light_b = 0xF;
+
+		// Set data
+		m_boob->data[i] = block;
+	}
 
 	m_boob_collision= new CMeshedStaticProp;
 	m_boob_collision->SetOwner( NULL );
@@ -107,7 +138,10 @@ CVoxelFileEditor::CVoxelFileEditor ( void )
 		mNewMat = new glMaterial;
 		mNewMat->loadFromFile( "nature_terra" );
 		this->SetMaterial( mNewMat );*/
-		this->SetMaterial( glMaterial::Default );
+		glMaterial* mNewMat = glMaterial::Default->copy();
+		mNewMat->loadFromFile( "nature_terra" );
+		//mNewMat->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+		this->SetMaterial( mNewMat );
 	}
 
 	transform.position = Vector3d(-32,-32,0);
@@ -472,8 +506,9 @@ void CVoxelFileEditor::Update ( void )
 					//m_boob->data[k].block = blockType;
 					Terrain::SidebufferAccessor accessor ( NULL, (Terrain::terra_b*) m_data, WorldVector( 32,32,32 ) );
 					Terrain::SidebufferVolumeEditor editor ( &accessor, Vector3d_d(0,0,0) );
-					//editor.Add_Box( Vector3d_d(target.x,target.y,target.z+3), Vector3d_d(1,1,1), blockType );
-					editor.Add_Sphere( Vector3d_d(target.x,target.y,target.z+5), 2, blockType );
+					float random_value = random_range( 0.0F, 4.0F );
+					editor.Add_Box( Vector3d_d(target.x,target.y,target.z+3+random_value), Vector3d_d(1,1,1), blockType );
+					//editor.Add_Sphere( Vector3d_d(target.x,target.y,target.z+5+random_value), 2, blockType );
 				}
 			}
 			// Regenernate mesh

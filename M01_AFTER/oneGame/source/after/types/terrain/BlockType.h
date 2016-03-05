@@ -81,14 +81,14 @@ namespace Terrain
 	public:
 		FORCE_INLINE static bool BlocktypeOpaque ( const ushort blockType )
 		{
-			if ( blockType != EB_NONE && blockType != EB_WATER ) {
+			if ( blockType == EB_NONE || blockType == EB_WATER ) {
 				return false;
 			}
 			return true;
 		}
 		FORCE_INLINE static bool BlocktypeTransparent ( const ushort blockType )
 		{
-			if ( blockType == EB_NONE || blockType == EB_WATER ) {
+			if ( blockType != EB_NONE && blockType != EB_WATER ) {
 				return false;
 			}
 			return true;

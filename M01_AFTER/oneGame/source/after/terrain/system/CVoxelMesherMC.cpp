@@ -61,10 +61,10 @@ void CVoxelMesher::Triangulate_MC( uint x, uint y, uint z )
 		WorldVector( 1,0,0 ),
 		WorldVector( 1,1,0 ),
 		WorldVector( 0,1,0 ),
-		WorldVector( 0,0,0 ),
-		WorldVector( 1,0,0 ),
-		WorldVector( 1,1,0 ),
-		WorldVector( 0,1,0 )
+		WorldVector( 0,0,1 ),
+		WorldVector( 1,0,1 ),
+		WorldVector( 1,1,1 ),
+		WorldVector( 0,1,1 )
 	};
 
 	// Sample the terrain information
@@ -74,9 +74,11 @@ void CVoxelMesher::Triangulate_MC( uint x, uint y, uint z )
 	}
 	bool t_blockBinaryDensity [8];
 	Real t_blockFloatDensity [8];
-	for ( int i = 0; i < 8; ++i ) {
+	for ( int i = 0; i < 8; ++i )
+	{
 		t_blockBinaryDensity[i] = Terrain::Checker::BlocktypeOpaque( t_blockSamples[i].block );
-		if ( t_blockBinaryDensity[i] ) {
+		if ( t_blockBinaryDensity[i] )
+		{
 			t_blockFloatDensity[i] = (t_blockSamples[i].normal_x_w * (1/15.0f))*0.5f + 0.5f;
 			// Grab texturing
 			if ( block < 2 ) {
@@ -111,7 +113,8 @@ void CVoxelMesher::Triangulate_MC( uint x, uint y, uint z )
 	// Create edge vertices
 	for ( char i = 0; i < 12; ++i )
 	{
-		if ( edgeTable[cubeindex] & (1 << i) ) {
+		if ( edgeTable[cubeindex] & (1 << i) )
+		{
 			/*vertlist[i] = VertexInterp( 0.5f,
 				t_vectorGrid[intersections[i][0]], t_vectorGrid[intersections[i][1]],
 				t_blockFloatDensity[intersections[i][0]], t_blockFloatDensity[intersections[i][1]] );*/
@@ -158,7 +161,8 @@ void CVoxelMesher::Triangulate_MC( uint x, uint y, uint z )
 		vertices[vertexCount+2].ny = normlist[triTable[cubeindex][i+2]].y;
 		vertices[vertexCount+2].nz = normlist[triTable[cubeindex][i+2]].z;
 
-		for ( int a = 0; a < 3; ++a ) {
+		for ( int a = 0; a < 3; ++a )
+		{
 			vertices[vertexCount+a].u = 0.25f;
 			vertices[vertexCount+a].v = BlockGetTexW(t_blockSamples[mainblocks[0]].block);
 			if ( block >= 1 )

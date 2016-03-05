@@ -51,19 +51,19 @@ void CVoxelMesher::CreateMesh ( CTerrainVertex* io_vertices, CModelTriangle* io_
 		indexer.sizey = size.y;
 		indexer.sizez = size.z;
 
-		for ( uint z = 0; z < size.z-1; ++z )
+		for ( int z = 0; z < size.z-1; ++z )
 		{
-			for ( uint y = 0; y < size.y-1; ++y )
+			for ( int y = 0; y < size.y-1; ++y )
 			{
-				for ( uint x = 0; x < size.x-1; ++x )
+				for ( int x = 0; x < size.x-1; ++x )
 				{
 					m_pushdown = false;
 
-					indexer.position = Vector3d( x,y,z );
+					indexer.position = Vector3d( (Real)x,(Real)y,(Real)z );
 					indexer.x = x;
 					indexer.y = y;
 					indexer.z = z;
-					indexer.index = x + y*size.x + x*size.x*size.y;
+					indexer.index = x + y*size.x + z*size.x*size.y;
 					Vertex_DC( indexer );
 				}
 			}
@@ -83,15 +83,17 @@ void CVoxelMesher::CreateMesh ( CTerrainVertex* io_vertices, CModelTriangle* io_
 				}
 			}
 		}
+
+		delete [] cubes;
 	}
 	// Generate the mesh using Transvoxel Marching Cubes (Terathon Technology)
 	else
 	{
-		for ( uint z = 0; z < size.z-1; ++z )
+		for ( int z = 0; z < size.z-1; ++z )
 		{
-			for ( uint y = 0; y < size.y-1; ++y )
+			for ( int y = 0; y < size.y-1; ++y )
 			{
-				for ( uint x = 0; x < size.x-1; ++x )
+				for ( int x = 0; x < size.x-1; ++x )
 				{
 					Triangulate_TVMC( x,y,z );
 #					ifdef _ENGINE_DEBUG
@@ -315,6 +317,8 @@ Real CVoxelMesher::BlockGetHue ( const ushort block )
 	using namespace Terrain;
 	switch ( block&0xFF )
 	{
+	case EB_NONE:
+		return 0;
 	//case EB_GRASS:
 	//	return -0.22f;
 	default:

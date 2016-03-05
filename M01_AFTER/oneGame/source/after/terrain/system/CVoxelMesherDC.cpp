@@ -42,8 +42,8 @@ void CVoxelMesher::Cube_DC ( Real x, Real y, Real z )
 */
 void CVoxelMesher::Vertex_DC ( const CubeIndexer& index )
 {
-	//Cube *cube = &(cubes[index.index]);
-	Cube* cube = &(cubes[(index.x)+(index.y)*index.sizex+(index.z)*index.sizex*index.sizey]);
+	Cube *cube = &(cubes[index.index]);
+	//Cube* cube = &(cubes[(index.x)+(index.y)*index.sizex+(index.z)*index.sizex*index.sizey]);
 	Real x = index.position.x;
 	Real y = index.position.y;
 	Real z = index.position.z;
@@ -67,10 +67,10 @@ void CVoxelMesher::Vertex_DC ( const CubeIndexer& index )
 		WorldVector( 1,0,0 ),
 		WorldVector( 1,1,0 ),
 		WorldVector( 0,1,0 ),
-		WorldVector( 0,0,0 ),
-		WorldVector( 1,0,0 ),
-		WorldVector( 1,1,0 ),
-		WorldVector( 0,1,0 )
+		WorldVector( 0,0,1 ),
+		WorldVector( 1,0,1 ),
+		WorldVector( 1,1,1 ),
+		WorldVector( 0,1,1 )
 	};
 
 
@@ -78,7 +78,8 @@ void CVoxelMesher::Vertex_DC ( const CubeIndexer& index )
 	// Sample the terrain information
 	for ( int i = 0; i < 8; ++i ) {
 		//m_terrain->SampleBlock( t_vectorGrid[i], t_blockSamples[i].raw );
-		m_buffer->GetData( t_blockSamples[i].raw, WorldVector(x,y,z)+t_offsetGrid[i] );
+		//m_buffer->GetData( t_blockSamples[i].raw, WorldVector(x,y,z)+t_offsetGrid[i] );
+		m_buffer->GetData( t_blockSamples[i].raw, WorldVector(index.x,index.y,index.z)+t_offsetGrid[i] );
 	}
 	// Grab binary density to generate edges
 	bool t_blockBinaryDensity [8];
@@ -131,7 +132,7 @@ void CVoxelMesher::Vertex_DC ( const CubeIndexer& index )
 						blk_type[t]	 = t_blockSamples[i].block;
 						blk_flags[t].nutrients = t_blockSamples[i].nutrients;
 						blk_flags[t].fluid_type = t_blockSamples[i].fluid_type;
-						blk_ambient[t] = t_blockSamples[i].light_r / 15.0;
+						blk_ambient[t] = t_blockSamples[i].light_r / 15.0F;
 						blk_weight[t] += 1;
 						break;
 					}
@@ -249,8 +250,8 @@ void CVoxelMesher::Vertex_DC ( const CubeIndexer& index )
 			++numIntersections;
 		}
 	}
-	massPoint /= numIntersections;
-	blendNormal /= numIntersections;
+	massPoint /= (Real)numIntersections;
+	blendNormal /= (Real)numIntersections;
 	blendNormal.normalize();
 
 	// 2: Compute QEF minimizing point
@@ -270,7 +271,7 @@ void CVoxelMesher::Vertex_DC ( const CubeIndexer& index )
 			if ( edgeTable[cubeindex] & (1 << i) )
 			{
 				Vector3d normal = normlist[i];
-				const ftype t_ref = 0.86;
+				const ftype t_ref = 0.86F;
 				normal = normal.lerp( blendNormal, (((normal.dot(blendNormal)-t_ref)/(1-t_ref))*2) + avg_amount );
 
 				matrix[rows][0] = normal.x;
@@ -290,9 +291,9 @@ void CVoxelMesher::Vertex_DC ( const CubeIndexer& index )
 	}
 	while ( ( avg_amount < 1.1f ) && ( newPoint.sqrMagnitude() > 3.0f ) );
 	// Point is out of range even after blend. Bring it back.
-	/*if ( newPoint.sqrMagnitude() > sqr(m_step)*3.0f ) {
-		newPoint = newPoint.normal() * sqrt(sqr(m_step)*3.0f);
-	}*/
+	if ( newPoint.sqrMagnitude() > 3.0f ) {
+		newPoint = newPoint.normal() * 3.0f;
+	}
 	cube->position = newPoint + massPoint;
 	cube->normal = newNormal.normal();
 	cube->blk_smooth = smoothCount;
