@@ -75,7 +75,8 @@ CSkillTreeGUI::CSkillTreeGUI(CAfterPlayer* p_Player, CSkillTree* p_SkillTree, CS
 
 CSkillTreeGUI::~CSkillTreeGUI()
 {
-	//delete testMat; // is set as main material
+	//delete testMat; // is set as main material, so no need to delete
+	testFnt->removeReference();
 	delete testFnt;
 	delete fntSkillnames;
 	delete fntSkilldesc;

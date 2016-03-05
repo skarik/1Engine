@@ -155,7 +155,10 @@ namespace NPC
 				}
 			}
 			cout << "Warning: unable to remove character from active list." << endl;*/
-			Manager->RemoveCharacter( this );
+			if ( Manager )
+			{
+				Manager->RemoveCharacter( this );
+			}
 		}
 		//static vector<characterinfo_t> vCharacterList;
 		virtual const string & ZCC_GetCharacterId ( void )=0;

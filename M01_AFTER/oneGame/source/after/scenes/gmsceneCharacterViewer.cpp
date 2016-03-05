@@ -210,13 +210,10 @@ void gmsceneCharacterViewer::LoadScene ( void )
 	{
 		glMaterial* material = new glMaterial;
 		material->loadFromFile( "debug_terra" );
-
 		CExtendableGameObject* go = new CExtendableGameObject();
-
 		CModel* model;
 		CCollider* collider;
 		CRigidBody* body;
-
 		{
 			model = new CModel( "models/debug/parkourtest01.FBX" );
 			model->transform.position = Vector3d( 0,0,-8.0f );
@@ -230,7 +227,7 @@ void gmsceneCharacterViewer::LoadScene ( void )
 			body->SetMotionType( physMotion::MOTION_FIXED );
 			go->AddComponent( body );
 		}
-
+		go->RemoveReference();
 		material->removeReference();
 	}
 	loadscreen->StepScreen();

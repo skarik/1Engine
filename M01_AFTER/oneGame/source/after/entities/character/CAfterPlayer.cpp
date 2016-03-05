@@ -315,8 +315,7 @@ CAfterPlayer::~CAfterPlayer ( void )
 
 	// Remove movement
 	m_motion->FreeMovement();
-	delete m_motion;
-	m_motion = NULL;
+	delete_safe(m_motion);
 	
 	// Move items in crafting to the inventory
 	//pMyCrafting->
@@ -334,34 +333,26 @@ CAfterPlayer::~CAfterPlayer ( void )
 
 	pl_stats->SaveToFile();
 
+	pMyQuests->saveQuests();
+	delete_safe_decrement(pMyQuests);
+
 	// Free child objects
-	pMyHud->RemoveReference();
-	delete pMyHud;
-	pMyHud = NULL;
+	delete_safe_decrement(pMyHud);
 
-	//pMyInventory->RemoveReference();
-	delete pMyInventory;
-	pMyInventory = NULL;
+	delete_safe( pMyInventory );
+	delete_safe( pMyCrafting );
 
-	//pMyCrafting->RemoveReference();
-	delete pMyCrafting;
-	pMyCrafting = NULL;
+	delete_safe_decrement(pl_hud);
+	delete_safe_decrement(pl_logbookGUI);
+	delete_safe_decrement(pl_gui_menu);
+	delete_safe_decrement(pl_chestGUI);
+	delete_safe_decrement(pl_inventoryGUI);
+	delete_safe_decrement(pl_characterGUI);
+	delete_safe_decrement(pl_skilltreeGUI);
+	delete_safe_decrement(pl_questGUI);
+	delete_safe_decrement(pl_dialogueGUI);
 
-	pl_hud->RemoveReference();
-	delete pl_hud;
-	pl_gui_menu->RemoveReference();
-	delete pl_gui_menu;
-	pl_inventoryGUI->RemoveReference();
-	delete pl_inventoryGUI;
-	pl_logbookGUI->RemoveReference();
-	delete pl_logbookGUI;
-	pl_characterGUI->RemoveReference();
-	delete pl_characterGUI;
-	pl_dialogueGUI->RemoveReference();
-	delete pl_dialogueGUI;
-
-	model->RemoveReference();
-	delete model;
+	delete_safe_decrement(model);
 
 	pBloomTarget = NULL; // Not ownership
 	delete_safe_decrement( pScreenIcing );

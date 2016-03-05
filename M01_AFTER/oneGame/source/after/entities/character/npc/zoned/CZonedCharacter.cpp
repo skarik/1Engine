@@ -3,11 +3,9 @@
 #include "CZonedCharacter.h"
 
 #include "core/time/time.h"
-
+#include "core/debug/CDebugConsole.h"
 #include "engine/state/CGameState.h"
-
 #include "engine-common/entities/CPlayer.h"
-
 #include "after/entities/CCharacterModel.h"
 
 using namespace std;
@@ -47,27 +45,29 @@ CZonedCharacter::~CZonedCharacter ( void )
 		// Save the character
 		NPC::Manager->SaveNPCOnDestroy ( this );
 	}*/
-	if ( bSaveOnUnload ) {
-		if ( characterId >= 1024 ) {
+	if ( bSaveOnUnload )
+	{
+		if ( characterId >= 1024 )
+		{
 			cout << "  **saving character...";
 			// Save the character
-			NPC::Manager->SaveCharacterOnUnload ( this );
-			bSaveOnUnload = false;
-			cout << "done" << endl;
+			if ( NPC::Manager )
+			{
+				NPC::Manager->SaveCharacterOnUnload ( this );
+				bSaveOnUnload = false;
+				cout << "done" << endl;
+			}
+			else
+			{
+				Debug::Console->PrintError( "Could not find the NPC::Manager instance!\n" );
+			}
 		}
 		bSaveOnUnload = false;
 	}
 	ZCC_RemoveInstance();
-	/*if ( NPC::Manager ) {
-		NPC::Manager->RemoveCharacter( this );
-	}*/
 
-	if ( pModel )
-		delete pModel;
-	if ( pCharModel )
-		delete pCharModel;
-	pModel = NULL;
-	pCharModel = NULL;
+	delete_safe( pModel );
+	delete_safe( pCharModel );
 }
 
 // == Update ==
