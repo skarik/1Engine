@@ -47,6 +47,9 @@ namespace Engine
 		// Add console variable
 		ENGINE_API void		AddConsoleVariable ( string const&, int* );
 		ENGINE_API void		AddConsoleVariable ( string const&, Real* );
+
+		// Add a manual match
+		ENGINE_API void		AddConsoleMatch ( string const& );
 	private:
 		//CDeveloperConsoleUI*	mUI;
 		//CDeveloperCursor*		mCursor;
@@ -80,6 +83,7 @@ namespace Engine
 		};
 		std::map<string,consoleFnc_t>	functionList;
 		std::map<string,consoleVar_t>	variableList;
+		std::list<string>				manualMatchList;
 
 		// Regenerates the matching command list
 		void			MatchCommands ( void );

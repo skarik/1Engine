@@ -1,15 +1,17 @@
 
 #include "SkillBlink.h"
+
 #include "core/time/time.h"
+#include "core/math/Math.h"
 
 #include "engine/physics/raycast/Raycaster.h"
+#include "engine-common/entities/CParticleSystem.h"
 
 #include "renderer/logic/particle/CParticleEmitter.h"
 #include "renderer/material/glMaterial.h"
 
-#include "engine-common/entities/CParticleSystem.h"
-
 #include "after/entities/character/CCharacter.h"
+
 
 SkillBlink::SkillBlink ( void ) : CSkill( ItemData() )
 {
@@ -17,7 +19,7 @@ SkillBlink::SkillBlink ( void ) : CSkill( ItemData() )
 	cooldown	= 3.0f;
 	passive		= false;
 
-	cast_state	= 0;
+	cast_state	= CAST_STATE_NONE;
 
 	ps_blink_target = new CParticleSystem ( "particlesystems/spells/blink_target.pcf", "particle_blink" );
 }
@@ -36,7 +38,7 @@ bool SkillBlink::Use ( int use )
 		case 0: // Ready to cast
 			if ( CanUse(0) && CanCast() ) {
 				release_timer = 0;
-				cast_state = 1;
+				cast_state = CAST_STATE_AIMING;
 			}
 			break;
 		case 1: // Channelling for target
@@ -44,7 +46,7 @@ bool SkillBlink::Use ( int use )
 				release_timer = 0; // Wait for release before cast
 			}
 			else {
-				cast_state = 0; // Go back to waiting if can't cast anymore
+				cast_state = CAST_STATE_NONE; // Go back to waiting if can't cast anymore
 			}
 			break;
 		case -1:
@@ -55,7 +57,7 @@ bool SkillBlink::Use ( int use )
 	else if ( use == Item::USecondary || use == Item::USecondarySprint )
 	{
 		if ( cast_state == 1 ) {
-			cast_state = -1;	// Go to wait release state
+			cast_state = CAST_STATE_COOLDOWN;	// Go to wait release state
 			release_timer = 0;
 		}
 	}
@@ -67,18 +69,18 @@ void SkillBlink::Update ( void )
 	CSkill::Update();
 
 	ps_blink_target->enabled = false;
-	if ( cast_state == -1 )
+	if ( cast_state == CAST_STATE_COOLDOWN )
 	{
 		// Work off the release casts
 		if ( release_timer > 0.1f ) {
-			cast_state = 0;
+			cast_state = CAST_STATE_NONE;
 			SetCooldown( 0,0.2f );
 		}
 		release_timer += Time::deltaTime;
 
 		((CCharacter*)pOwner)->PlayItemAnimation( NPC::ItemAnim::Holster, iAnimationSubset, mHand, 0 );
 	}
-	else if ( cast_state == 1 )
+	else if ( cast_state == CAST_STATE_AIMING )
 	{
 		((CCharacter*)pOwner)->PlayItemAnimation( NPC::ItemAnim::Precast, iAnimationSubset, mHand, 0 );
 
@@ -104,13 +106,13 @@ void SkillBlink::Update ( void )
 
 		// Work off the release casts
 		if ( release_timer > 0.1f ) {
-			cast_state = 2;
+			cast_state = CAST_STATE_PERFORM;
 			SetCooldown( 0,cooldown );
 			CastMana();
 		}
 		release_timer += Time::deltaTime;
 	}
-	else if ( cast_state == 2 )
+	else if ( cast_state == CAST_STATE_PERFORM )
 	{
 		// Reset cast state
 		/*cast_state = 0;
@@ -141,26 +143,39 @@ void SkillBlink::Update ( void )
 		ps_blink_effect->GetRenderable(1)->GetMaterial()->m_diffuse = GetFocusColor();
 		ps_blink_effect->RemoveReference();
 
-		// Go to move state
+		// Go to move anticipation state
 		blink_timer = 0;
-		cast_state = 3;
+		cast_state = CAST_STATE_PREMOVE;
 	}
-	else if ( cast_state == 3 )
+	else if ( cast_state == CAST_STATE_PREMOVE )
 	{
 		ftype dist = (blink_start-blink_position).magnitude();
-		blink_timer += Time::deltaTime / ( 0.12f * (dist/24.0f) * 3.0f );
+		blink_timer += 2.0F * Time::deltaTime / ( 0.12f * (dist/24.0f) * 3.0f );
+
+		SetViewAngleOffset( 55.0F*sqrt(blink_timer) );
+		if ( blink_timer > 1 )
+		{
+			// Go to move state
+			blink_timer = 0;
+			cast_state = CAST_STATE_MOVING;
+		}
+	}
+	else if ( cast_state == CAST_STATE_MOVING )
+	{
+		ftype dist = (blink_start-blink_position).magnitude();
+		blink_timer += 1.5F * Time::deltaTime / ( 0.12f * (dist/24.0f) * 3.0f );
 
 		pOwner->transform.position = blink_start.lerp( blink_position, sqrt(blink_timer) );
 		pOwner->transform.SetDirty();
 
-		SetViewAngleOffset( 50*(1-blink_timer) );
+		SetViewAngleOffset( 55.0F*Math.Smoothlerp(1.0F-blink_timer) );
 
 		if ( blink_timer > 1 )
 		{
 			pOwner->transform.position = blink_position;
 			SetViewAngleOffset( 0 );
 			// Reset cast state
-			cast_state = 0;
+			cast_state = CAST_STATE_NONE;
 		}
 
 		((CCharacter*)pOwner)->PlayItemAnimation( NPC::ItemAnim::Holster, iAnimationSubset, mHand, 0 );

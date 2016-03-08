@@ -36,24 +36,7 @@ CCharacterModel::CCharacterModel ( CCharacter* owner )
 	iIdleType = LockNone;
 	bSplitFacing = false;
 	
-	pEyeL	= NULL;
-	pEyeR	= NULL;
-	pHead	= NULL;
-	pNeck	= NULL;
-	pSpine0 = NULL;
-	pSpine1	= NULL;
-	pSpine2 = NULL;
-	pSpine3 = NULL;
-	pUpperArmL = NULL;
-	pUpperArmR = NULL;
-	pProp1	= NULL;
-	pProp2	= NULL;
-	pProp3	= NULL;
-	pProp4	= NULL;
-	pFootL0	= NULL;
-	pFootL1	= NULL;
-	pFootR0	= NULL;
-	pFootR1	= NULL;
+	ResetTransformTrackers();
 
 	// face at and lookats
 	faceatRotation = Rotator();
@@ -110,13 +93,9 @@ CCharacterModel::~CCharacterModel ( void )
 	delete_safe_decrement( charRagdoll );
 }
 
-bool CCharacterModel::LoadBase( const string& character_name )
+// Resets all the transform trackers back to NULL. They are looked up again when queried.
+void CCharacterModel::ResetTransformTrackers ( void )
 {
-	basename = character_name;
-
-	//string target_filetempname = basename;
-	//SetBaseModel( target_filetempname );
-
 	pEyeL	= NULL;
 	pEyeR	= NULL;
 	pHead	= NULL;
@@ -129,7 +108,25 @@ bool CCharacterModel::LoadBase( const string& character_name )
 	pUpperArmR = NULL;
 	pProp1	= NULL;
 	pProp2	= NULL;
+	pProp3	= NULL;
+	pProp4	= NULL;
 
+	pFootL0	= NULL;
+	pFootL1	= NULL;
+	pFootR0	= NULL;
+	pFootR1	= NULL;
+}
+
+bool CCharacterModel::LoadBase( const string& character_name )
+{
+	Debug::Console->PrintMessage( "CCharacterModel::LoadBase : Loading base model." ); 
+
+	basename = character_name;
+
+	//string target_filetempname = basename;
+	//SetBaseModel( target_filetempname );
+
+	ResetTransformTrackers();
 
 	string file = "models/character/" + character_name + ".fbx";
 
@@ -144,19 +141,9 @@ bool CCharacterModel::LoadBase( const string& character_name )
 }
 void CCharacterModel::ConfigureBase ( CSkinnedModel* target_model )
 {
-	pEyeL	= NULL;
-	pEyeR	= NULL;
-	pHead	= NULL;
-	pNeck	= NULL;
-	pSpine0 = NULL;
-	pSpine1	= NULL;
-	pSpine2 = NULL;
-	pSpine3 = NULL;
-	pUpperArmL = NULL;
-	pUpperArmR = NULL;
-	pProp1	= NULL;
-	pProp2	= NULL;
+	Debug::Console->PrintMessage( "CCharacterModel::ConfigureBase : Setting model." ); 
 
+	ResetTransformTrackers();
 
 	charModel = target_model;
 	charTargetModel = charModel;
@@ -166,6 +153,8 @@ void CCharacterModel::ConfigureBase ( CSkinnedModel* target_model )
 
 bool CCharacterModel::LoadModel ( const string& model_filename )
 {
+	Debug::Console->PrintMessage( "CCharacterModel::LoadModel : Loading model." ); 
+
 	basename = "";
 
 	string file = "models/" + model_filename + ".fbx";
@@ -206,6 +195,35 @@ void CCharacterModel::Update ( void )
 	//charModel->visible = bShowModel;
 	//charModel->visible = false;
 	charModel->SetVisibility( bShowModel );
+
+	// Pull back the model when too far forward
+	{
+		// Raytrace from center origin to eyes
+		XTransform eyeTransform;
+		GetEyecamTransform( eyeTransform );
+		Vector3d eyePos = eyeTransform.position;
+		
+		Ray rEyeCheck;
+		rEyeCheck.pos = Vector3d( transform.position.x, transform.position.y, eyePos.z );
+		rEyeCheck.dir = ( eyePos - rEyeCheck.pos );
+		ftype fEyeCheckDist = rEyeCheck.dir.magnitude() + 0.3f;
+		rEyeCheck.dir.normalize();
+		RaycastHit rhHitResult;
+
+		// If trace hits the environment, then pull back the character model so that it's not in the environment
+		if ( Raycaster.Raycast( rEyeCheck, fEyeCheckDist, &rhHitResult, Physics::GetCollisionFilter(Layers::PHYS_WORLD_TRACE), actor ) )
+		{
+			Vector3d offset = rEyeCheck.dir * ( fEyeCheckDist - rhHitResult.distance );
+			charModel->transform.position -= offset;
+			//actor->transform.position -= offset;
+			//actor->transform.SetDirty();
+
+			//charModel->GetSkeletonRoot()->position += Quaternion::CreateRotationTo(rEyeCheck.dir,Vector3d(0,1,0)) * offset;
+			//transform.position -= rEyeCheck.dir * ( fEyeCheckDist - rhHitResult.distance );
+			
+			//charModel->UpdateSkeleton();
+		}
+	}
 }
 
 void CCharacterModel::CreateHitboxCollision ( void )
@@ -248,32 +266,6 @@ void CCharacterModel::LateUpdate ( void )
 					animEventList.erase( animEventList.begin() );
 				}
 			}
-		}
-	}
-
-	{
-		// Raytrace from center origin to eyes
-		XTransform eyeTransform;
-		GetEyecamTransform( eyeTransform );
-		Vector3d eyePos = eyeTransform.position;
-		
-		Ray rEyeCheck;
-		rEyeCheck.pos = Vector3d( transform.position.x, transform.position.y, eyePos.z );
-		rEyeCheck.dir = ( eyePos - rEyeCheck.pos );
-		ftype fEyeCheckDist = rEyeCheck.dir.magnitude() + 0.3f;
-		rEyeCheck.dir.normalize();
-		RaycastHit rhHitResult;
-
-		// If trace hits the environment, then pull back the character model so that it's not in the environment
-		if ( Raycaster.Raycast( rEyeCheck, fEyeCheckDist, &rhHitResult, Physics::GetCollisionFilter(Layers::PHYS_WORLD_TRACE), actor ) )
-		{
-			Vector3d offset = rEyeCheck.dir * ( fEyeCheckDist - rhHitResult.distance );
-			charModel->transform.position -= offset;
-			//charModel->GetSkeletonRoot()->position += Quaternion::CreateRotationTo(rEyeCheck.dir,Vector3d(0,1,0)) * offset;
-			//transform.position -= rEyeCheck.dir * ( fEyeCheckDist - rhHitResult.distance );
-			actor->transform.position -= offset;
-			actor->transform.SetDirty();
-			//charModel->UpdateSkeleton();
 		}
 	}
 

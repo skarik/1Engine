@@ -73,8 +73,8 @@ void CPlayerStats::Randomize ( void )
 		race_stats->iMovestyle = Random.Next()%CMOVES_MAX;
 	} while ( race_stats->iMovestyle == CMOVES_LARGE_HAM );
 
-	//race_stats->iRace = CRACE_FLUXXOR;
-	race_stats->iRace = CRACE_HUMAN;
+	race_stats->iRace = CRACE_FLUXXOR;
+	//race_stats->iRace = CRACE_HUMAN;
 	race_stats->iGender = CGEND_FEMALE;
 
 	//race_stats->iRace = CRACE_KITTEN;

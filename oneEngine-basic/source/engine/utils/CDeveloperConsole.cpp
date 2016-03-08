@@ -193,56 +193,62 @@ void CDeveloperConsole::PostUpdate ( void )
 }
 void CDeveloperConsole::MatchCommands ( void )
 {
-	std::map<string,consoleVar_t>::iterator varListIterator = variableList.begin();
-	std::map<string,consoleFnc_t>::iterator fncListIterator = functionList.begin();
+	auto varListIterator = variableList.begin();
+	auto fncListIterator = functionList.begin();
+	auto strListIterator = manualMatchList.begin();
 	bool addVar = false;
 	bool addFnc = false;
+	bool addStr = false;
+
+	// List of strs that we can add
+	std::list<std::pair<string,int>> strs_to_add;
 
 	matchingCommands.clear();
-	while ( (varListIterator != variableList.end() || fncListIterator != functionList.end()) && (matchingCommands.size() < 13) )
+	while ( (varListIterator != variableList.end() || fncListIterator != functionList.end() || strListIterator != manualMatchList.end()) && (matchingCommands.size() < 13) )
 	{
-		// Get the next matching item from the variable list and function list.
-		while ( varListIterator != variableList.end() && !addVar ) {
+		// Get the next matching item from each list.
+		while ( !addVar && varListIterator != variableList.end() ) {
 			if ( varListIterator->first.find( sLastCommand ) != string::npos ) {
 				addVar = true;
+				strs_to_add.push_back( std::pair<string,int>(varListIterator->first,0) );
 			}
 			else {
 				++varListIterator;
 			}
 		}
-		while ( fncListIterator != functionList.end() && !addFnc ) {
+		while ( !addFnc && fncListIterator != functionList.end() ) {
 			if ( fncListIterator->first.find( sLastCommand ) != string::npos ) {
 				addFnc = true;
+				strs_to_add.push_back( std::pair<string,int>(fncListIterator->first,1) );
 			}
 			else {
 				++fncListIterator;
 			}
 		}
-		if ( addFnc && addVar )
-		{
-			// Figure out which to add based on comparison
-			if ( varListIterator->first < fncListIterator->first ) {
-				matchingCommands.push_back( varListIterator->first );
-				addVar = false;
-				++varListIterator;
+		while ( !addStr && strListIterator != manualMatchList.end() ) {
+			if ( strListIterator->find( sLastCommand ) != string::npos ) {
+				addStr = true;
+				strs_to_add.push_back( std::pair<string,int>(*strListIterator,2) );
 			}
 			else {
-				matchingCommands.push_back( fncListIterator->first );
-				addFnc = false;
-				++fncListIterator;
+				++strListIterator;
 			}
 		}
-		else if ( addVar )
+
+		// Based on a quick priority check, perform the add
+		if ( !strs_to_add.empty() )
 		{
-			matchingCommands.push_back( varListIterator->first );
-			addVar = false;
-			++varListIterator;
-		}
-		else if ( addFnc )
-		{
-			matchingCommands.push_back( fncListIterator->first );
-			addFnc = false;
-			++fncListIterator;
+			strs_to_add.sort();
+
+			matchingCommands.push_back(strs_to_add.back().first);
+			// Reset that 
+			switch ( strs_to_add.back().second )
+			{
+			case 0: addVar = false; if ( varListIterator != variableList.end() ) ++varListIterator; break;
+			case 1: addFnc = false; if ( fncListIterator != functionList.end() ) ++fncListIterator; break;
+			case 2: addStr = false; if ( strListIterator != manualMatchList.end() ) ++strListIterator; break;
+			}
+			strs_to_add.pop_back();
 		}
 	}
 	// End add loop
@@ -271,6 +277,11 @@ void CDeveloperConsole::AddConsoleVariable( string const& name, ftype* var )
 	newVr.var	= (void*)var;
 	newVr.type	= 1;
 	variableList[name] = newVr;
+}
+// Add manual match
+void CDeveloperConsole::AddConsoleMatch( string const& name )
+{
+	manualMatchList.push_back(name);
 }
 
 // Parse the command and actually run it

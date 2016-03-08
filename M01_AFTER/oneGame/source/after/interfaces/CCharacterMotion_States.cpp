@@ -2578,8 +2578,10 @@ void*	CCharacterMotion::mvt_WallSlide ( void )
 	vFallingVelocity = vMoveVelocity;
 
 	// If jump, then jump off the wall
-	if ( m_input->axes.jump.pressed() && (fSlideCounter > 0.4f) )
+	if ( m_input->axes.jump.pressed() && (fSlideCounter > 0.10F) )
 	{
+		// Skip next frame's input
+
 		m_input->axes.jump.Skip();
 		// If turned around, then jump off to where the player is looking
 		if ( bWallSlideTurned )

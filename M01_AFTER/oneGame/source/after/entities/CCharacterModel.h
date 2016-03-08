@@ -55,11 +55,13 @@ public:
 	void			PostFixedUpdate ( void ) override;
 
 	// = Toggle visiblity of the model =
+
 	bool			GetVisibility ( void ) { return bShowModel; };
 	void			SetVisibility ( const bool show=true ) { bShowModel = show; };
 	void			SetModelAlpha ( const ftype alpha ) { fModelAlpha = alpha; };
 
 	// = Interface to grab the positions of attachments =
+
 	void			GetProp01Transform ( XTransform & );
 	void			GetProp02Transform ( XTransform & );
 
@@ -72,6 +74,7 @@ public:
 	void			GetBoneTransform ( const int index, XTransform & );
 
 	// = Interface to set the rotations and transforms of certain bones =
+
 	void			SetLookAtPosition ( const Vector3d & );
 	void			SetFaceAtPosition ( Vector3d const& );
 	void			SetFaceAtRotation ( const Rotator & );
@@ -87,9 +90,11 @@ public:
 	void			SetSplitFacing ( const bool );
 
 	// = General offset (Not used anymore. Motion extrapolation now used.) =
+
 	void			SetVerticalOffset ( const ftype );
 
 	// = Interface to control the animation =
+
 	// Play a scripted animation
 	bool			PlayScriptedAnimation ( const string &sAnimName, const float fFramesPerSecond= 30.0f );
 	// Play an animation - general use. Will interrupt layer 0 sequences (except from when called from sequence manager).
@@ -133,16 +138,19 @@ public:
 	void			BlendToAnimation ( ftype time );
 
 	// = Get Model State =
+
 	const CSkinnedModel*	GetModelLowLevel ( void );
 	CAnimation*		GetAnimationState ( void );
 	Transform*		GetSkeletonRoot ( void );
 	const Rotator&	GetModelRotation ( void );
 
 	// = Edit Model State =
+
 	// Create the hitbox collision. This is not needed to be called for Referenced models (MCC or RF).
 	void			CreateHitboxCollision ( void );
 
 	// = Edit events =
+
 	void			RemoveAnimationEvent ( const Animation::eAnimSystemEvent& nTypeToDelete );
 
 protected:
@@ -159,16 +167,19 @@ protected:
 	virtual void	SetBaseModel ( string& str ) {;};
 
 	// Character and model that derived classes have access to
-	CCharacter*		actor;
-	CSkinnedModel*	charModel;
+	CCharacter*			actor;
+	CSkinnedModel*		charModel;
 	// Target model, the model used to grabbing transforms, is also visible to derived classes.
-	CSkinnedModel*	charTargetModel;
+	CSkinnedModel*		charTargetModel;
 	// Ragdoll/Hitbox collision. Used for both hitboxes and ragdoll animation
 	CRagdollCollision*	charRagdoll;
 	
 	// Also the hiding aspect needs to be accessed
 	bool			bShowModel;
 	ftype			fModelAlpha;
+
+	// Resets all the transform trackers back to NULL. They are looked up again when queried.
+	void	ResetTransformTrackers ( void );
 
 	// These are identifiers keeping track of the transforms.
 	Transform* pEyeL;

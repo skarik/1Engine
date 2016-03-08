@@ -42,7 +42,17 @@ protected:
 		return data;
 	}
 protected:
-	int			cast_state;
+	enum CastState_t {
+		CAST_STATE_NONE,
+
+		CAST_STATE_AIMING,
+		CAST_STATE_PERFORM,
+		CAST_STATE_PREMOVE,	// Anticipation of motion
+		CAST_STATE_MOVING,	// Actual motion
+
+		CAST_STATE_COOLDOWN,
+	};
+	CastState_t	cast_state;
 	ftype		release_timer;
 	Vector3d	blink_start;
 	Vector3d	blink_position;

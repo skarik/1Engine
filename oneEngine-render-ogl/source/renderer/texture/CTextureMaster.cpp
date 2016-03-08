@@ -29,7 +29,7 @@ glTexture* CTextureMaster::AddReference ( CTexture* ptex )
 	if ( it == textureMap.end() )
 	{
 #ifdef _ENGINE_DEBUG
-		std::cout << "New texture reference: " << ptex->sFilename << std::endl; //todo: comment out
+		//std::cout << "New texture reference: " << ptex->sFilename << std::endl;
 #endif
 		// So create a new reference
 		TexmapSetReference newRef;
@@ -73,7 +73,7 @@ glTexture* CTextureMaster::AddReference ( string texMapSId, CTexture* ptex )
 	if ( it == textureMap.end() )
 	{
 #ifdef _ENGINE_DEBUG
-		std::cout << "New texture reference: " << texMapSId << std::endl; //todo: comment out
+		//std::cout << "New texture reference: " << texMapSId << std::endl;
 #endif
 		// So create a new reference
 		TexmapSetReference newRef;

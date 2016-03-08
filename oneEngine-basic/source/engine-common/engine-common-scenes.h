@@ -4,6 +4,7 @@
 
 #include "core/types/types.h"
 #include "engine/server.h"
+#include "engine/utils/CDeveloperConsole.h"
 
 //===============================================================================================//
 // Engine-common-scenes
@@ -44,6 +45,7 @@ namespace EngineCommon
 				}
 			)
 		);
+		Engine::Console->AddConsoleMatch( "scene "+sceneName );
 	}
 
 };
