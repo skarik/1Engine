@@ -13,6 +13,8 @@ std::vector<CCamera*>	CCamera::vCameraList;
 
 CCamera::CCamera ( void )
 {
+	active = true;
+
 	// Set up camera renderer
 	transform.name = "Camera Transform";
 	transform.owner = this;
