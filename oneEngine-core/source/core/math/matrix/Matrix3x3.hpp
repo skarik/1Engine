@@ -329,7 +329,7 @@ FORCE_INLINE ftype Matrix3x3::det ( void ) const
 FORCE_INLINE Matrix2x2 Matrix3x3::submatrix ( int ex_x, int ex_y ) const
 {
 	ftype newData [4];
-	static int di, dj, si, sj;
+	int di, dj, si, sj;
 	for( di = 0; di < 2; ++di )
 	{
 		for( dj = 0; dj < 2; ++dj )

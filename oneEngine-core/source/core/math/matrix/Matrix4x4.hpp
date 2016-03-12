@@ -411,7 +411,7 @@ FORCE_INLINE ftype Matrix4x4::det ( void ) const
 FORCE_INLINE Matrix3x3 Matrix4x4::submatrix ( int ex_x, int ex_y ) const
 {
 	ftype newData [9];
-	static int di, dj, si, sj;
+	int di, dj, si, sj;
 	for( di = 0; di < 3; ++di )
 	{
 		for( dj = 0; dj < 3; ++dj )

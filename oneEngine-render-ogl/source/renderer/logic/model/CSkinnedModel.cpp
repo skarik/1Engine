@@ -323,6 +323,7 @@ void CSkinnedModel::PreStep ( void )
 				//vSkeleton[i]->transform.SetLocalTransform( vSkeleton[i]->xBindPose );
 				vSkeleton[i]->transform.SetLocalTransform( vSkeleton[i]->animTransform );
 			}*/
+
 			for ( auto boneRef = mBoneMismatchList.begin(); boneRef != mBoneMismatchList.end(); ++boneRef )
 			{
 				(*boneRef)->transform.SetLocalTransform( (*boneRef)->animTransform );
@@ -336,6 +337,8 @@ void CSkinnedModel::PreStep ( void )
 			//refSet->first->transform.Get( refSet->second->transform ); // Copy the transform over
 			if ( refSet->first && refSet->second ) {
 				refSet->first->transform.Get( refSet->second->transform ); // Copy the transform over
+				//refSet->first->transform.rotation = refSet->second->transform.rotation; // Copy the transform over
+				//refSet->first->transform.localRotation = refSet->second->transform.localRotation; // Copy the transform over
 			}
 		}
 		UpdateSkeleton( false );
@@ -370,7 +373,7 @@ void CSkinnedModel::PreStep ( void )
 	}
 
 	// Update the jigglebones
-	//UpdateJigglebones();
+	UpdateJigglebones();
 }
 
 void CSkinnedModel::PreStepSynchronus ( void )
