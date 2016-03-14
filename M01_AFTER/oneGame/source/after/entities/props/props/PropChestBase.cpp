@@ -33,7 +33,7 @@ PropChestBase::~PropChestBase ( void )
 	if ( mInventoryId != uint32_t(-1) )
 	{
 		arstring<256> inventoryFile;
-		sprintf( inventoryFile.data, "%s.loot/%d", CGameSettings::Active()->GetTerrainSaveDir().c_str(), mInventoryId );
+		sprintf( inventoryFile.data, "%s.loot/%d", CGameSettings::Active()->MakeWorldSaveDirectory().c_str(), mInventoryId );
 		mInventory->SaveInventory( inventoryFile );
 	}
 	delete mInventory;
@@ -85,7 +85,7 @@ void PropChestBase::SetUserdata ( const uint64_t& userdata )
 	{
 		mInventoryId = inputInventory;
 		arstring<256> inventoryFile;
-		sprintf( inventoryFile.data, "%s.loot/%d", CGameSettings::Active()->GetTerrainSaveDir().c_str(), mInventoryId );
+		sprintf( inventoryFile.data, "%s.loot/%d", CGameSettings::Active()->MakeWorldSaveDirectory().c_str(), mInventoryId );
 		mInventory->LoadInventory( inventoryFile );
 	}
 }

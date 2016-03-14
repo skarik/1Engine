@@ -2,6 +2,7 @@
 #include "core/settings/CGameSettings.h"
 #include "CZonedCharacterIO.h"
 
+#include "core/exceptions.h"
 #include "core/system/io/FileUtils.h"
 #include "core/system/io/CBinaryFile.h"
 #include "core-ext/system/io/serializer/ISerialBinary.h"
@@ -17,7 +18,7 @@ void CZonedCharacterIO::CreateCharacterFile ( uint64_t nid, characterFile_t n_ch
 	FILE*			filep;
 	CBinaryFile		charfile;
 
-	sprintf( s_charfile_fn, "%s/chars/%lld.entry", CGameSettings::Active()->GetWorldSaveDir().c_str(), nid );
+	sprintf( s_charfile_fn, "%s/chars/%lld.entry", CGameSettings::Active()->MakeRealmSaveDirectory().c_str(), nid );
 
 	if ( IO::FileExists( s_charfile_fn ) )
 	{
@@ -50,11 +51,12 @@ int CZonedCharacterIO::LoadCharacterFile ( uint64_t nid, characterFile_t n_chari
 	CBinaryFile		charfile;
 
 	// Load file
-	sprintf( s_charfile_fn, "%s/chars/%lld.entry", CGameSettings::Active()->GetWorldSaveDir().c_str(), nid );
+	sprintf( s_charfile_fn, "%s/chars/%lld.entry", CGameSettings::Active()->MakeRealmSaveDirectory().c_str(), nid );
 	charfile.Open( s_charfile_fn, CBinaryFile::IO_READ );
 	filep = charfile.GetFILE();
 
-	if ( filep && charfile.IsOpen() ) {
+	if ( filep && charfile.IsOpen() )
+	{
 		// Now, write char info where valid
 		if ( n_charinfo.worldstate ) {		// sWorldState
 			fseek( filep, 0, SEEK_SET );
@@ -90,7 +92,7 @@ void CZonedCharacterIO::SaveCharacterFile ( uint64_t nid, characterFile_t n_char
 	CBinaryFile		charfile;
 
 	// Load file
-	sprintf( s_charfile_fn, "%s/chars/%lld.entry", CGameSettings::Active()->GetWorldSaveDir().c_str(), nid );
+	sprintf( s_charfile_fn, "%s/chars/%lld.entry", CGameSettings::Active()->MakeRealmSaveDirectory().c_str(), nid );
 	charfile.Open( s_charfile_fn, CBinaryFile::IO_WRITE|CBinaryFile::IO_READ );
 	filep = charfile.GetFILE();
 
@@ -130,7 +132,7 @@ int CZonedCharacterIO::SectorAddNPC ( const RangeVector& nli_pos, const uint64_t
 	uint64_t		s_readbuffer [128];
 
 	// Load file
-	sprintf( s_sectorfile_fn, "%s/chars/%d_%d_%d_terra", CGameSettings::Active()->GetWorldSaveDir().c_str(), nli_pos.x, nli_pos.y, nli_pos.z );
+	sprintf( s_sectorfile_fn, "%s/chars/%d_%d_%d_terra", CGameSettings::Active()->MakeRealmSaveDirectory().c_str(), nli_pos.x, nli_pos.y, nli_pos.z );
 	sectorfile.Open( s_sectorfile_fn, CBinaryFile::IO_WRITE|CBinaryFile::IO_READ );
 	filep = sectorfile.GetFILE();
 
@@ -163,7 +165,7 @@ int CZonedCharacterIO::SectorRemoveNPC ( const RangeVector& nli_pos, const uint6
 	std::vector<uint64_t>	npcList;
 
 	// Load file
-	sprintf( s_sectorfile_fn, "%s/chars/%d_%d_%d_terra", CGameSettings::Active()->GetWorldSaveDir().c_str(), nli_pos.x, nli_pos.y, nli_pos.z );
+	sprintf( s_sectorfile_fn, "%s/chars/%d_%d_%d_terra", CGameSettings::Active()->MakeRealmSaveDirectory().c_str(), nli_pos.x, nli_pos.y, nli_pos.z );
 	sectorfile.Open( s_sectorfile_fn, CBinaryFile::IO_READ );
 	if ( sectorfile.IsOpen() )
 	{
@@ -206,15 +208,17 @@ int CZonedCharacterIO::SectorGetNPCList ( const RangeVector& nli_pos, std::vecto
 	FILE*			filep;
 
 	// Load file
-	sprintf( s_sectorfile_fn, "%s/chars/%d_%d_%d_terra", CGameSettings::Active()->GetWorldSaveDir().c_str(), nli_pos.x, nli_pos.y, nli_pos.z );
+	sprintf( s_sectorfile_fn, "%s/chars/%d_%d_%d_terra", CGameSettings::Active()->MakeRealmSaveDirectory().c_str(), nli_pos.x, nli_pos.y, nli_pos.z );
 	sectorfile.Open( s_sectorfile_fn, CBinaryFile::IO_READ );
-	if ( sectorfile.IsOpen() ) {
+	if ( sectorfile.IsOpen() )
+	{
 		filep = sectorfile.GetFILE();
 		// Get list
 		GetList( nvect, filep );
 		return 0;
 	}
-	else {
+	else
+	{
 		return -1;
 	}
 }

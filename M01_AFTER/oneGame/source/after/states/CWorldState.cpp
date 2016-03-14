@@ -27,7 +27,7 @@ void CWorldState::Save ( void )
 	CBinaryFile file;
 	stringstream tempStream;
 	string sFilename;
-	tempStream << CGameSettings::Active()->GetTerrainSaveDir() << ".state";
+	tempStream << CGameSettings::Active()->MakeWorldSaveDirectory() << ".state";
 	sFilename = tempStream.str();
 	
 	// Open file for writing
@@ -47,7 +47,7 @@ void CWorldState::Load ( void )
 	CBinaryFile file;
 	stringstream tempStream;
 	string sFilename;
-	tempStream << CGameSettings::Active()->GetTerrainSaveDir() << ".state";
+	tempStream << CGameSettings::Active()->MakeWorldSaveDirectory() << ".state";
 	sFilename = tempStream.str();
 	if ( file.Exists( sFilename.c_str() ) )
 	{

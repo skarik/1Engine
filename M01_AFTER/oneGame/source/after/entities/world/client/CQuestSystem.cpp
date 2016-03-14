@@ -72,7 +72,7 @@ CQuestSystem::~CQuestSystem(void)
 void CQuestSystem::setAsActive(void)
 {
 	//TODO?: Make a check for if it should be active or not.
-	for(int questnum = 0; questnum < questList.size(); questnum++)
+	for(uint questnum = 0; questnum < questList.size(); questnum++)
 	{
 		if(questList[questnum].Status == INPROG)
 			questList[questnum].isActive = true;
@@ -203,7 +203,7 @@ void CQuestSystem::saveQuests(void)
 	CBinaryFile questFile;
 
 	
-	sprintf(sSaveLocation, "%s/quests", CGameSettings::Active()->GetPlayerSaveDir().c_str());
+	sprintf(sSaveLocation, "%s/quests", CGameSettings::Active()->MakePlayerSaveDirectory().c_str());
 	questFile.Open(sSaveLocation.c_str(), CBinaryFile::IO_WRITE);
 
 	questFile.WriteInt32(questCount());
@@ -284,7 +284,7 @@ void CQuestSystem::loadQuests(void)
 	int questNum, classXPCount, objCount, statCount;
 
 	
-	sprintf(sSaveLocation, "%s/quests", CGameSettings::Active()->GetPlayerSaveDir().c_str());
+	sprintf(sSaveLocation, "%s/quests", CGameSettings::Active()->MakePlayerSaveDirectory().c_str());
 	questFile.Open(sSaveLocation.c_str(), CBinaryFile::IO_READ);
 
 	/*

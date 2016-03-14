@@ -18,7 +18,7 @@ CMCCRealm::CMCCRealm ( const char* targetRealm )
 	// Now perform loading info
 	CheckActiveRealm();
 	if ( m_targetRealm.length() == 0 ) {
-		m_targetRealm = CGameSettings::Active()->GetWorldSaveFile().c_str();
+		m_targetRealm = CGameSettings::Active()->GetRealmTargetName().c_str();
 		b_activeRealm = true;
 	}
 	Load();
@@ -32,7 +32,7 @@ CMCCRealm::~CMCCRealm ( void )
 
 void CMCCRealm::CheckActiveRealm ( void )
 {
-	m_currentRealm = CGameSettings::Active()->GetWorldSaveFile().c_str();
+	m_currentRealm = CGameSettings::Active()->GetRealmTargetName().c_str();
 	if ( m_currentRealm == m_targetRealm ) {
 		b_activeRealm = true;
 	}
@@ -130,27 +130,27 @@ void CMCCRealm::UploadSettings ( void )
 // Saves the realm settings
 void CMCCRealm::Save ( void )
 {
-	CGameSettings::Active()->SetWorldSaveFile( m_targetRealm.c_str() );
+	CGameSettings::Active()->SetRealmSaveTarget( m_targetRealm.c_str() );
 
 	// Save file, creating if possible
 	CBinaryFile savefile;
-	savefile.Open( (CGameSettings::Active()->GetWorldSaveDir()+"/settings").c_str(), CBinaryFile::IO_WRITE );
+	savefile.Open( (CGameSettings::Active()->MakeRealmSaveDirectory()+"/settings").c_str(), CBinaryFile::IO_WRITE );
 	if ( savefile.IsOpen() )
 	{
 		FILE* fp = savefile.GetFILE();
 		fwrite( (char*)&settings, sizeof( realmSettings_t ), 1, fp );
 	}
 
-	CGameSettings::Active()->SetWorldSaveFile( m_currentRealm.c_str() );
+	CGameSettings::Active()->SetRealmSaveTarget( m_currentRealm.c_str() );
 }
 // Loads realm settings from file without saving
 void CMCCRealm::Load ( void )
 {
-	CGameSettings::Active()->SetWorldSaveFile( m_targetRealm.c_str() );
+	CGameSettings::Active()->SetRealmSaveTarget( m_targetRealm.c_str() );
 
 	// Load file, creating if possible
 	CBinaryFile loadfile;
-	loadfile.Open( (CGameSettings::Active()->GetWorldSaveDir()+"/settings").c_str(), CBinaryFile::IO_READ );
+	loadfile.Open( (CGameSettings::Active()->MakeRealmSaveDirectory()+"/settings").c_str(), CBinaryFile::IO_READ );
 	if ( loadfile.IsOpen() )
 	{
 		FILE* fp = loadfile.GetFILE();
@@ -160,5 +160,5 @@ void CMCCRealm::Load ( void )
 		}
 	}
 
-	CGameSettings::Active()->SetWorldSaveFile( m_currentRealm.c_str() );
+	CGameSettings::Active()->SetRealmSaveTarget( m_currentRealm.c_str() );
 }

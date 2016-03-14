@@ -36,7 +36,7 @@ namespace Terrain
 		// following are only valid if lod is 0
 		GamePayload		*gamedata_0;
 		// following is valid regardless of the lod
-		GamePayload		*gamedata_f;
+		GamePayload		*gamedata_far;
 	};
 	typedef CTtPayload Payload;
 
@@ -46,8 +46,8 @@ namespace Terrain
 	{
 		payload.lod = 0;
 		payload.data	= NULL;
-		payload.gamedata_0	= NULL;
-		payload.gamedata_f	= NULL;
+		payload.gamedata_0		= NULL;
+		payload.gamedata_far	= NULL;
 	}
 
 	//=========================================//

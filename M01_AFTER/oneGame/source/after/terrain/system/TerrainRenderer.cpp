@@ -64,5 +64,5 @@ Terrain::AreaMeshState* Terrain::TerrainRenderer::GetAreaMeshstate ( const Vecto
 // Render step
 bool Terrain::TerrainRenderer::Render ( const char pass )
 {
-	return false;
+	return true;
 }

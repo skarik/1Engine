@@ -5,6 +5,8 @@
 #include "core/system/io/CMappedBinaryFile.h"
 #include "core/system/io/CBufferIO.h"
 
+#include "core/settings/CGameSettings.h"
+
 #include "after/types/terrain/BlockType.h"
 #include "after/terrain/VoxelTerrain.h"
 
@@ -16,21 +18,29 @@ Terrain::COctreeIO::COctreeIO ( const char* n_savefile, VoxelTerrain* n_terrain 
 	: m_savefile( n_savefile ), m_terrain( n_terrain )
 {
 	// The save file given is the full world pass, minus the final /
-	;
 
-#if LOADER_MODULE==1
+	if ( n_savefile == NULL )
+	{
+		// If no save file was passed in, then use the default current savefiles which default to debug
+		CGameSettings::Active()->SetRealmSaveTarget( CGameSettings::Active()->GetRealmTargetName().c_str() );
+		CGameSettings::Active()->SetWorldSaveTarget( CGameSettings::Active()->GetWorldTargetName().c_str() );
+		m_savefile = CGameSettings::Active()->GetWorldTargetName().c_str();
+	}
+
+#	if LOADER_MODULE==1
 	FileMapInitialize();
-#elif LOADER_MODULE==2
+#	elif LOADER_MODULE==2
 
-#endif
+#	endif
 }
+
 Terrain::COctreeIO::~COctreeIO ( void )
 {
-#if LOADER_MODULE==1
+#	if LOADER_MODULE==1
 	FileMapFree();
-#elif LOADER_MODULE==2
+#	elif LOADER_MODULE==2
 
-#endif
+#	endif
 }
 
 

@@ -103,7 +103,7 @@ void Terrain::CWorldGen_Terran::TerraGen_Dungeons_Generate ( const RangeVector& 
 	else {
 		// Check if there's an associated dungeon file
 		sprintf( tempstring, "%s.dungeons/%d_%d_%d\0",
-			CGameSettings::Active()->GetTerrainSaveDir().c_str(),
+			CGameSettings::Active()->MakeWorldSaveDirectory().c_str(),
 			position.x,position.y,position.z );
 		if ( oCheckfile.Exists( tempstring ) ) { // If it exists, load it and skip again
 			//printf( "loading file %s\n", tempstring );
@@ -183,7 +183,7 @@ void Terrain::CWorldGen_Terran::TerraGen_Dungeons_Generate ( const RangeVector& 
 					{
 						// Check if there's an associated dungeon file
 						sprintf( tempstring, "%s.dungeons/%d_%d_%d\0",
-							CGameSettings::Active()->GetTerrainSaveDir().c_str(),
+							CGameSettings::Active()->MakeWorldSaveDirectory().c_str(),
 							vCheckpos.x,vCheckpos.y,vCheckpos.z );
 						if ( oCheckfile.Exists( tempstring ) ) { // If it exists, then load it to the list
 							//printf( "loading file %s\n", tempstring );
@@ -297,7 +297,7 @@ void Terrain::CWorldGen_Terran::TerraGen_Dungeons_Generate ( const RangeVector& 
 	// Save the dungeon
 	{
 		sprintf( tempstring, "%s.dungeons/%d_%d_%d\0",
-			CGameSettings::Active()->GetTerrainSaveDir().c_str(),
+			CGameSettings::Active()->MakeWorldSaveDirectory().c_str(),
 			position.x,position.y,position.z );
 		oCheckfile.Open( tempstring, CBinaryFile::IO_WRITE );
 		pTargetDungeon->save( oCheckfile );

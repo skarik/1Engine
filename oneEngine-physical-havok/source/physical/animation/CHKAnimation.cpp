@@ -680,7 +680,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 				//skeletonPose.syncLocalSpace();
 
 				// Solve for the eyes now
-				subtarget.m_quad.v[2] += offset.getComponent(0);
+				subtarget.setComponent<2>( subtarget.getComponent<2>() + offset.getComponent<0>() );
 				setup.m_fwdLS.set( 1,0,0 );
 				setup.m_eyePositionLS.set( 0,0,0 );
 				setup.m_limitAxisMS.setRotatedDir( skeletonPose.getBoneModelSpace(ikList[i].bone[0]).getRotation(), hkVector4(0,1,0) );

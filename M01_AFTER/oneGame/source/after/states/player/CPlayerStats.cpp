@@ -92,7 +92,7 @@ void CPlayerStats::LoadFromFile ( void )
 	CBinaryFile file;
 	std::stringstream tempStream;
 	string sFilename;
-	tempStream << CGameSettings::Active()->GetPlayerSaveDir() << "/stats";
+	tempStream << CGameSettings::Active()->MakePlayerSaveDirectory() << "/stats";
 	sFilename = tempStream.str();
 	if ( file.Exists( sFilename.c_str() ) )
 	{
@@ -132,7 +132,7 @@ void CPlayerStats::LoadFromFile ( void )
 			}
 
 			// Set current world spawnpoint to Vector3d::zero if cannot find it
-			string sfilename = CGameSettings::Active()->GetWorldSaveFile()+CGameSettings::Active()->GetTerrainSaveFile();
+			string sfilename = CGameSettings::Active()->GetRealmTargetName()+CGameSettings::Active()->GetWorldTargetName();
 			if ( mPlayerSpawnpointMap.find( sfilename ) == mPlayerSpawnpointMap.end() ) {
 				bHasPlayed = false;
 				vPlayerInitSpawnPoint = Vector3d(0,0,0);
@@ -164,7 +164,7 @@ void CPlayerStats::SaveToFile ( void )
 	CBinaryFile file;
 	std::stringstream tempStream;
 	string sFilename;
-	tempStream << CGameSettings::Active()->GetPlayerSaveDir() << "/stats";
+	tempStream << CGameSettings::Active()->MakePlayerSaveDirectory() << "/stats";
 	sFilename = tempStream.str();
 	
 	// Open file for writing

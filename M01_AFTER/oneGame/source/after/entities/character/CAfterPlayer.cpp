@@ -324,10 +324,10 @@ CAfterPlayer::~CAfterPlayer ( void )
 	arstring<256> sSaveLocation;
 
 	// Save inventory
-	sprintf( sSaveLocation, "%s/inventory", CGameSettings::Active()->GetPlayerSaveDir().c_str() );
+	sprintf( sSaveLocation, "%s/inventory", CGameSettings::Active()->MakePlayerSaveDirectory().c_str() );
 	pMyInventory->SaveInventory(sSaveLocation);
 	// Save skill trees
-	sprintf( sSaveLocation, "%s/skills/aggregate", CGameSettings::Active()->GetPlayerSaveDir().c_str() );
+	sprintf( sSaveLocation, "%s/skills/aggregate", CGameSettings::Active()->MakePlayerSaveDirectory().c_str() );
 	m_skilltree->Save(sSaveLocation);
 	m_skilltree_race->Save(sSaveLocation);
 
@@ -417,7 +417,7 @@ void CAfterPlayer::OnSpawn ( void )
 	// Possibly causing memory problems.
 	if ( !isLoaded ) {
 		arstring<256> sLoadLocation;
-		sprintf( sLoadLocation, "%s/inventory", CGameSettings::Active()->GetPlayerSaveDir().c_str() );
+		sprintf( sLoadLocation, "%s/inventory", CGameSettings::Active()->MakePlayerSaveDirectory().c_str() );
 		pMyInventory->LoadInventory (sLoadLocation);
 		
 		isLoaded = true;
@@ -437,10 +437,10 @@ void CAfterPlayer::OnDeath ( Damage const& dmg )
 
 	// Save all data NOW
 	arstring<256> sSaveLocation;
-	sprintf( sSaveLocation, "%s/inventory", CGameSettings::Active()->GetPlayerSaveDir().c_str() );
+	sprintf( sSaveLocation, "%s/inventory", CGameSettings::Active()->MakePlayerSaveDirectory().c_str() );
 	pMyInventory->SaveInventory(sSaveLocation);
 	// Save skill trees
-	sprintf( sSaveLocation, "%s/skills/aggregate", CGameSettings::Active()->GetPlayerSaveDir().c_str() );
+	sprintf( sSaveLocation, "%s/skills/aggregate", CGameSettings::Active()->MakePlayerSaveDirectory().c_str() );
 	m_skilltree->Save(sSaveLocation);
 	m_skilltree_race->Save(sSaveLocation);
 	// Save stats
@@ -504,7 +504,7 @@ void CAfterPlayer::OnReceiveSignal ( const uint64_t n_signal )
 		}
 
 		arstring<256> sLoadLocation;
-		sprintf( sLoadLocation, "%s/skills/aggregate", CGameSettings::Active()->GetPlayerSaveDir().c_str() );
+		sprintf( sLoadLocation, "%s/skills/aggregate", CGameSettings::Active()->MakePlayerSaveDirectory().c_str() );
 		m_skilltree->Load( sLoadLocation );
 		m_skilltree_race->Load( sLoadLocation );
 		// Sync up levels after loading (also updates the passives)

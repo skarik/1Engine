@@ -368,7 +368,7 @@ void CRenderState::RenderScene ( const uint32_t n_renderHint )
 			//glClear( GL_COLOR_BUFFER_BIT ); // use rendereing options for this
 		}
 
-		unsigned int sortedListSize = sortedRenderList.size();
+		int sortedListSize = sortedRenderList.size();
 
 		// First work on prerender
 		for ( i = 0; i < (int)sortedListSize; ++i )

@@ -96,7 +96,7 @@ void World::CGameEventGenerator::RemoveEvent ( const string& eventName )
 
 void World::CGameEventGenerator::SaveState ( void )
 {
-	string eventGeneratorFile = CGameSettings::Active()->GetTerrainSaveDir() + ".events";
+	string eventGeneratorFile = CGameSettings::Active()->MakeWorldSaveDirectory() + ".events";
 	CBinaryFile bfile;
 	if ( bfile.Open( eventGeneratorFile.c_str(), bfile.IO_WRITE ) )
 	{
@@ -110,7 +110,7 @@ void World::CGameEventGenerator::SaveState ( void )
 }
 void World::CGameEventGenerator::LoadState ( void )
 {
-	string eventGeneratorFile = CGameSettings::Active()->GetTerrainSaveDir() + ".events";
+	string eventGeneratorFile = CGameSettings::Active()->MakeWorldSaveDirectory() + ".events";
 	CBinaryFile bfile;
 	string			newName;
 	gameEventEntry	newEntry;

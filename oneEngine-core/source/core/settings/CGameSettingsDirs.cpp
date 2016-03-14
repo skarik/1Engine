@@ -48,135 +48,111 @@ void CGameSettings::MakeDirectory ( const char *directory )
 
 // == Set Save Files ==
 // These aren't actually directories, but simple strings giving the names of save files.
-void CGameSettings::SetTerrainSaveFile ( const string& sIn )
+void CGameSettings::SetWorldSaveTarget ( const char* sIn )
 {
-	if ( sSaveFileTerrain != sIn ) {
+	if ( m_target_file_world != sIn ) {
 		std::cout << "World set to " << sIn << std::endl;
 	}
-	if ( sIn.length() >= 1 ) {
-		sSaveFileTerrain = sIn;
+	if ( strnlen(sIn,1024) >= 1 ) {
+		m_target_file_world = sIn;
 	}
 	else {
-		sSaveFileTerrain = "terra";
+		m_target_file_world = "terra";
 	}
-	if ( sSaveFileWorld != "_lucra" )
-	{
-		string sCurrentDirectory;
-		sCurrentDirectory = ".game/.realms/" + sSaveFileWorld;
-		MakeDirectory( sCurrentDirectory.c_str() );
-		sCurrentDirectory = ".game/.realms/" + sSaveFileWorld + "/" + sSaveFileTerrain + ".regions";
-		MakeDirectory( sCurrentDirectory.c_str() );
-		sCurrentDirectory = ".game/.realms/" + sSaveFileWorld + "/" + sSaveFileTerrain + ".towns";
-		MakeDirectory( sCurrentDirectory.c_str() );
-		sCurrentDirectory = ".game/.realms/" + sSaveFileWorld + "/" + sSaveFileTerrain + ".dungeons";
-		MakeDirectory( sCurrentDirectory.c_str() );
-		sCurrentDirectory = ".game/.realms/" + sSaveFileWorld + "/" + sSaveFileTerrain + ".loot";
-		MakeDirectory( sCurrentDirectory.c_str() );
-		sCurrentDirectory = ".game/.realms/" + sSaveFileWorld + "/" + sSaveFileTerrain;
-		MakeDirectory( sCurrentDirectory.c_str() );
-	}
+	// Recreate realm directory
+	SetRealmSaveTarget( m_target_file_realm.c_str() );
+	// Create world directory
+	string sCurrentDirectory;
+	sCurrentDirectory = ".game/.realms/" + m_target_file_realm;
+	MakeDirectory( sCurrentDirectory.c_str() );
+	sCurrentDirectory = ".game/.realms/" + m_target_file_realm + "/" + m_target_file_world + ".regions";
+	MakeDirectory( sCurrentDirectory.c_str() );
+	sCurrentDirectory = ".game/.realms/" + m_target_file_realm + "/" + m_target_file_world + ".towns";
+	MakeDirectory( sCurrentDirectory.c_str() );
+	sCurrentDirectory = ".game/.realms/" + m_target_file_realm + "/" + m_target_file_world + ".dungeons";
+	MakeDirectory( sCurrentDirectory.c_str() );
+	sCurrentDirectory = ".game/.realms/" + m_target_file_realm + "/" + m_target_file_world + ".loot";
+	MakeDirectory( sCurrentDirectory.c_str() );
+	sCurrentDirectory = ".game/.realms/" + m_target_file_realm + "/" + m_target_file_world;
+	MakeDirectory( sCurrentDirectory.c_str() );
 }
-void CGameSettings::SetWorldSaveFile ( const string& sIn )
+void CGameSettings::SetRealmSaveTarget ( const char* sIn )
 {
-	if ( sSaveFileWorld != sIn ) {
+	if ( m_target_file_realm != sIn ) {
 		std::cout << "Realm set to " << sIn << std::endl;
 	}
-	if ( sIn.length() >= 1 ) {
-		sSaveFileWorld = sIn;
+	if ( strnlen(sIn,1024) >= 1 ) {
+		m_target_file_realm = sIn;
 	}
 	else {
-		sSaveFileWorld = "_lucra";
+		m_target_file_realm = "_lucra";
 	}
-	if ( sSaveFileWorld != "_lucra" )
-	{
-		string sCurrentDirectory;
-		sCurrentDirectory = ".game/.realms/" + sSaveFileWorld;
-		MakeDirectory( sCurrentDirectory.c_str() );
-		sCurrentDirectory = ".game/.realms/" + sSaveFileWorld + "/chars";
-		MakeDirectory( sCurrentDirectory.c_str() );
-	}
+	// Create realm directories
+	string sCurrentDirectory;
+	sCurrentDirectory = ".game/.realms/" + m_target_file_realm;
+	MakeDirectory( sCurrentDirectory.c_str() );
+	sCurrentDirectory = ".game/.realms/" + m_target_file_realm + "/chars";
+	MakeDirectory( sCurrentDirectory.c_str() );
 }
-void CGameSettings::SetPlayerSaveFile ( const string& sIn )
+void CGameSettings::SetPlayerSaveTarget ( const char* sIn )
 {
-	if ( sSaveFilePlayer != sIn ) {
+	if ( m_target_file_player != sIn ) {
 		std::cout << "Player set to " << sIn << std::endl;
 	}
-	sSaveFilePlayer = sIn;
-	if ( sSaveFilePlayer != "_default" )
-	{
-		string sCurrentDirectory;
-		sCurrentDirectory = ".game/.players/" + sSaveFilePlayer;
-		MakeDirectory( sCurrentDirectory.c_str() );
-		sCurrentDirectory = ".game/.players/" + sSaveFilePlayer + "/logbook";
-		MakeDirectory( sCurrentDirectory.c_str() );
-		sCurrentDirectory = ".game/.players/" + sSaveFilePlayer + "/skills";
-		MakeDirectory( sCurrentDirectory.c_str() );
-		sCurrentDirectory = ".game/.players/" + sSaveFilePlayer;
-	}
+	m_target_file_player = sIn;
+	// Create player directories
+	string sCurrentDirectory;
+	sCurrentDirectory = ".game/.players/" + m_target_file_player;
+	MakeDirectory( sCurrentDirectory.c_str() );
+	sCurrentDirectory = ".game/.players/" + m_target_file_player + "/logbook";
+	MakeDirectory( sCurrentDirectory.c_str() );
+	sCurrentDirectory = ".game/.players/" + m_target_file_player + "/skills";
+	MakeDirectory( sCurrentDirectory.c_str() );
+	sCurrentDirectory = ".game/.players/" + m_target_file_player;
 }
 
 // == Getters ==
 // These can return references because they're references to class data
-const string& CGameSettings::GetTerrainSaveFile ( void )
+const string& CGameSettings::GetWorldTargetName ( void )
 {
-	return sSaveFileTerrain;
+	return m_target_file_world;
 }
-const string& CGameSettings::GetWorldSaveFile ( void )
+const string& CGameSettings::GetRealmTargetName ( void )
 {
-	return sSaveFileWorld;
+	return m_target_file_realm;
 }
-const string& CGameSettings::GetPlayerSaveFile ( void )
+const string& CGameSettings::GetPlayerTargetName ( void )
 {
-	return sSaveFilePlayer;
+	return m_target_file_player;
 }
 
 // == Get Save Directories ==
 // Using the save files, we construct directories.
-string CGameSettings::GetWorldSaveDir ( void )
+string CGameSettings::MakeRealmSaveDirectory ( void )
 {
 	string sCurrentDirectory;
-	sCurrentDirectory = ".game/.realms/" + sSaveFileWorld;
-	//MakeDirectory( sCurrentDirectory.c_str() );
+	sCurrentDirectory = ".game/.realms/" + m_target_file_realm;
 	return sCurrentDirectory;
 }
-string CGameSettings::GetWorldSaveDir ( const string& realmName )
+string CGameSettings::MakeRealmSaveDirectory ( const string& realmName )
 {
 	string sCurrentDirectory;
 	sCurrentDirectory = ".game/.realms/" + realmName;
 	return sCurrentDirectory;
 }
-string CGameSettings::GetTerrainSaveDir ( void )
+string CGameSettings::MakeWorldSaveDirectory ( void )
 {
 	string sCurrentDirectory;
-	/*sCurrentDirectory = ".game\\.realms\\" + sSaveFileWorld;
-	MakeDirectory( sCurrentDirectory.c_str() );
-	sCurrentDirectory = ".game\\.realms\\" + sSaveFileWorld + "\\" + sSaveFileTerrain + ".regions";
-	MakeDirectory( sCurrentDirectory.c_str() );
-	sCurrentDirectory = ".game\\.realms\\" + sSaveFileWorld + "\\" + sSaveFileTerrain + ".towns";
-	MakeDirectory( sCurrentDirectory.c_str() );
-	sCurrentDirectory = ".game\\.realms\\" + sSaveFileWorld + "\\" + sSaveFileTerrain + ".dungeons";
-	MakeDirectory( sCurrentDirectory.c_str() );
-	sCurrentDirectory = ".game\\.realms\\" + sSaveFileWorld + "\\" + sSaveFileTerrain + ".loot";
-	MakeDirectory( sCurrentDirectory.c_str() );
-	sCurrentDirectory = ".game\\.realms\\" + sSaveFileWorld + "\\" + sSaveFileTerrain;
-	MakeDirectory( sCurrentDirectory.c_str() );*/
-	sCurrentDirectory = ".game/.realms/" + sSaveFileWorld + "/" + sSaveFileTerrain;
+	sCurrentDirectory = ".game/.realms/" + m_target_file_realm + "/" + m_target_file_world;
 	return sCurrentDirectory;
 }
-string CGameSettings::GetPlayerSaveDir ( void )
+string CGameSettings::MakePlayerSaveDirectory ( void )
 {
 	string sCurrentDirectory;
-	/*sCurrentDirectory = ".game\\.players\\" + sSaveFilePlayer;
-	MakeDirectory( sCurrentDirectory.c_str() );
-	sCurrentDirectory = ".game\\.players\\" + sSaveFilePlayer + "\\logbook";
-	MakeDirectory( sCurrentDirectory.c_str() );
-	sCurrentDirectory = ".game\\.players\\" + sSaveFilePlayer + "\\skills";
-	MakeDirectory( sCurrentDirectory.c_str() );
-	sCurrentDirectory = ".game\\.players\\" + sSaveFilePlayer;*/
-	sCurrentDirectory = ".game/.players/" + sSaveFilePlayer;
+	sCurrentDirectory = ".game/.players/" + m_target_file_player;
 	return sCurrentDirectory;
 }
-string CGameSettings::GetPlayerSaveDir ( const string& playerName )
+string CGameSettings::MakePlayerSaveDirectory ( const string& playerName )
 {
 	string sCurrentDirectory;
 	sCurrentDirectory = ".game/.players/" + playerName;

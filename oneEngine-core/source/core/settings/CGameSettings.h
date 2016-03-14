@@ -89,25 +89,34 @@ public:
 	// Setters
 	//=========================================//
 
-	CORE_API void SetTerrainSaveFile ( const string& );
-	CORE_API void SetWorldSaveFile ( const string& );
-	CORE_API void SetPlayerSaveFile ( const string& );
+	//CORE_API void SetTerrainSaveFile ( const string& );
+	//CORE_API void SetWorldSaveFile ( const string& );
+	//CORE_API void SetPlayerSaveFile ( const string& );
+	CORE_API void SetWorldSaveTarget ( const char* );
+	CORE_API void SetRealmSaveTarget ( const char* );
+	CORE_API void SetPlayerSaveTarget ( const char* );
 
 	//=========================================//
 	// Getters
 	//=========================================//
 
 	// These can return references because they're references to class data
-	CORE_API const string& GetTerrainSaveFile ( void );
-	CORE_API const string& GetWorldSaveFile ( void );
-	CORE_API const string& GetPlayerSaveFile ( void );
+	//CORE_API const string& GetTerrainSaveFile ( void );
+	//CORE_API const string& GetWorldSaveFile ( void );
+	//CORE_API const string& GetPlayerSaveFile ( void );
+	CORE_API const string& GetWorldTargetName ( void );
+	CORE_API const string& GetRealmTargetName ( void );
+	CORE_API const string& GetPlayerTargetName ( void );
 
 	// These return the actual directories to saving
-	CORE_API string GetTerrainSaveDir ( void );
-	CORE_API string GetWorldSaveDir ( void );
-	CORE_API string GetWorldSaveDir ( const string& realmName );
-	CORE_API string GetPlayerSaveDir ( void );
-	CORE_API string GetPlayerSaveDir ( const string& playerName );
+	//CORE_API string GetTerrainSaveDir ( void );
+	//CORE_API string GetWorldSaveDir ( void );
+	//CORE_API string GetWorldSaveDir ( const string& realmName );
+	CORE_API string MakeWorldSaveDirectory ( void );
+	CORE_API string MakeRealmSaveDirectory ( void );
+	CORE_API string MakeRealmSaveDirectory ( const string& realmName );
+	CORE_API string MakePlayerSaveDirectory ( void );
+	CORE_API string MakePlayerSaveDirectory ( const string& playerName );
 
 	// Populates a vector of strings with all the found player files
 	CORE_API void GetPlayerFileList ( std::vector<string>& );
@@ -180,9 +189,12 @@ private:
 	//=========================================//
 
 	// Current save targets (for game)
-	string	sSaveFilePlayer;
-	string	sSaveFileWorld;
-	string	sSaveFileTerrain;
+	//string	sSaveFilePlayer;
+	//string	sSaveFileWorld;
+	//string	sSaveFileTerrain;
+	string	m_target_file_player;
+	string	m_target_file_world;
+	string	m_target_file_realm;
 
 	// Current saved data
 	std::map<string,int*>	m_settings_pint;

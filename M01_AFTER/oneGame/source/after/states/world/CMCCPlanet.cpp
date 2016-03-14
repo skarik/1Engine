@@ -16,7 +16,7 @@ CMCCPlanet::CMCCPlanet ( const char* targetPlanet )
 {
 	CheckActivePlanet();
 	if ( m_targetPlanet.length() == 0 ) {
-		m_targetPlanet = CGameSettings::Active()->GetTerrainSaveFile().c_str();
+		m_targetPlanet = CGameSettings::Active()->GetWorldTargetName().c_str();
 		b_activePlanet = true;
 	}
 	Load();
@@ -30,7 +30,7 @@ CMCCPlanet::~CMCCPlanet ( void )
 
 void CMCCPlanet::CheckActivePlanet ( void )
 {
-	m_currentPlanet = CGameSettings::Active()->GetTerrainSaveFile().c_str();
+	m_currentPlanet = CGameSettings::Active()->GetWorldTargetName().c_str();
 	if ( m_currentPlanet == m_targetPlanet ) {
 		b_activePlanet = true;
 	}
@@ -107,14 +107,14 @@ bool CMCCPlanet::GetDataAt ( const Vector2d& n_position, World::terrainSampleQue
 		char stemp_fname [256];
 
 		// Set target planet
-		CGameSettings::Active()->SetTerrainSaveFile( m_targetPlanet.c_str() );
+		CGameSettings::Active()->SetWorldSaveTarget( m_targetPlanet.c_str() );
 
 		// Generate filename
 		targetPosition = Zones.PositionToRV( Vector3d(n_position) );
-		sprintf( stemp_fname, "%s/%d_%d_%d", CGameSettings::Active()->GetTerrainSaveDir().c_str(), targetPosition.x, targetPosition.y, targetPosition.z );
+		sprintf( stemp_fname, "%s/%d_%d_%d", CGameSettings::Active()->MakeWorldSaveDirectory().c_str(), targetPosition.x, targetPosition.y, targetPosition.z );
 		//cout << stemp_fname << endl;
 		// Set current planet
-		CGameSettings::Active()->SetTerrainSaveFile( m_currentPlanet.c_str() );
+		CGameSettings::Active()->SetWorldSaveTarget( m_currentPlanet.c_str() );
 
 		// Now, find the file
 		if ( IO::FileExists(stemp_fname) )
@@ -158,27 +158,27 @@ void CMCCPlanet::UploadSettings ( void )
 // Saves the realm settings
 void CMCCPlanet::Save ( void )
 {
-	CGameSettings::Active()->SetTerrainSaveFile( m_targetPlanet.c_str() );
+	CGameSettings::Active()->SetWorldSaveTarget( m_targetPlanet.c_str() );
 
 	// Save file, creating if possible
 	CBinaryFile savefile;
-	savefile.Open( (CGameSettings::Active()->GetWorldSaveDir()+"/"+CGameSettings::Active()->GetTerrainSaveFile()+".settings").c_str(), CBinaryFile::IO_WRITE );
+	savefile.Open( (CGameSettings::Active()->MakeRealmSaveDirectory()+"/"+CGameSettings::Active()->GetWorldTargetName()+".settings").c_str(), CBinaryFile::IO_WRITE );
 	if ( savefile.IsOpen() )
 	{
 		FILE* fp = savefile.GetFILE();
 		fwrite( (char*)&settings, sizeof( planetSettings_t ), 1, fp );
 	}
 
-	CGameSettings::Active()->SetTerrainSaveFile( m_currentPlanet.c_str() );
+	CGameSettings::Active()->SetWorldSaveTarget( m_currentPlanet.c_str() );
 }
 // Loads realm settings from file without saving
 void CMCCPlanet::Load ( void )
 {
-	CGameSettings::Active()->SetTerrainSaveFile( m_targetPlanet.c_str() );
+	CGameSettings::Active()->SetWorldSaveTarget( m_targetPlanet.c_str() );
 
 	// Load file, creating if possible
 	CBinaryFile loadfile;
-	loadfile.Open( (CGameSettings::Active()->GetWorldSaveDir()+"/"+CGameSettings::Active()->GetTerrainSaveFile()+".settings").c_str(), CBinaryFile::IO_READ );
+	loadfile.Open( (CGameSettings::Active()->MakeRealmSaveDirectory()+"/"+CGameSettings::Active()->GetWorldTargetName()+".settings").c_str(), CBinaryFile::IO_READ );
 	if ( loadfile.IsOpen() )
 	{
 		FILE* fp = loadfile.GetFILE();
@@ -188,5 +188,5 @@ void CMCCPlanet::Load ( void )
 		}
 	}
 
-	CGameSettings::Active()->SetTerrainSaveFile( m_currentPlanet.c_str() );
+	CGameSettings::Active()->SetWorldSaveTarget( m_currentPlanet.c_str() );
 }

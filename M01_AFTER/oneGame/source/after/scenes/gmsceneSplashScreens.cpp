@@ -29,9 +29,9 @@ void gmsceneSplashScreens::LoadScene ( void )
 	
 	// Set current save files (this is temporary until the menu is finished)
 	/*{
-		CGameSettings::Active()->SetPlayerSaveFile( "clara" );
-		CGameSettings::Active()->SetWorldSaveFile( "lucra" );
-		CGameSettings::Active()->SetTerrainSaveFile( "terra" );
+		CGameSettings::Active()->SetPlayerSaveTarget( "clara" );
+		CGameSettings::Active()->SetRealmSaveTarget( "lucra" );
+		CGameSettings::Active()->SetWorldSaveTarget( "terra" );
 	}*/
 
 	// Particle Editor

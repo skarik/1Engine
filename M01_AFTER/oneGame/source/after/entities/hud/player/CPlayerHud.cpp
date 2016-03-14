@@ -634,10 +634,10 @@ void CPlayerHud::DrawMemoryStats ( void )
 {
 	if ( bDrawMemoryMonitor )
 	{
-		unsigned long*	vals	= pMemMonitor->GetUsage();
-		unsigned long	valMax	= pMemMonitor->GetPeakUsage();
+		uint64_t*		vals	= pMemMonitor->GetUsage();
+		uint64_t		valMax	= pMemMonitor->GetPeakUsage();
 		unsigned int	valNum	= pMemMonitor->GetUsageSize();
-		valMax = std::max<unsigned long>( valMax, 1024 );
+		valMax = std::max<uint64_t>( valMax, 1024 );
 
 		GLd_ACCESS;
 		// Draw the memory usage

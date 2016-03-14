@@ -34,11 +34,10 @@ void CGameSettings::SetActive ( CGameSettings* instance )
 CGameSettings::CGameSettings ( void )
 {
 	pActive = this;
-	//CGameSettings::Active() = this;
 
-	sSaveFileTerrain	= "terra";
-	sSaveFileWorld		= "_lucra";
-	sSaveFilePlayer		= "_default";
+	m_target_file_world		= "terra";
+	m_target_file_realm		= "_lucra";
+	m_target_file_player	= "_default";
 
 	MakeDirectory( ".game" );
 	MakeDirectory( ".game/.realms" );

@@ -73,7 +73,7 @@ void CTattooTester::Update ( void )
 
 void CTattooTester::LoadModels ( void )
 {
-	CGameSettings::Active()->SetPlayerSaveFile( "DarkElf" );
+	CGameSettings::Active()->SetPlayerSaveTarget( "DarkElf" );
 
 	pl_stats = new CPlayerStats();
 	pl_stats->LoadFromFile();

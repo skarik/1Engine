@@ -80,9 +80,9 @@ void gmsceneCharacterViewer::LoadScene ( void )
 
 	// Go to _debugging for debugging
 	{
-		CGameSettings::Active()->SetWorldSaveFile( "_debugging" );
-		CGameSettings::Active()->SetTerrainSaveFile( "terra" );
-		CGameSettings::Active()->SetPlayerSaveFile( "clara" );
+		CGameSettings::Active()->SetRealmSaveTarget( "_debugging" );
+		CGameSettings::Active()->SetWorldSaveTarget( "terra" );
+		CGameSettings::Active()->SetPlayerSaveTarget( "clara" );
 	}
 	loadscreen->StepScreen();
 

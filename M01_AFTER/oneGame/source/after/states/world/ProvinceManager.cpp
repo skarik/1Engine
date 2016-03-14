@@ -47,7 +47,7 @@ namespace World
 		char stemp_fn [256];
 
 		if ( !regionFile.IsOpen() ) {
-			sprintf( stemp_fn, "%s.regions/map", CGameSettings::Active()->GetTerrainSaveDir().c_str() );
+			sprintf( stemp_fn, "%s.regions/map", CGameSettings::Active()->MakeWorldSaveDirectory().c_str() );
 			if ( IO::FileExists( stemp_fn ) ) {
 				regionFile.Open( stemp_fn, CBinaryFile::IO_READ|CBinaryFile::IO_WRITE );
 				regionIndex = regionFile.ReadUInt32();
@@ -135,7 +135,7 @@ namespace World
 
 	//		// Open region map
 	//		if ( !regionFile.IsOpen() ) {
-	//			sprintf( stemp_fn, "%s.regions/map", CGameSettings::Active()->GetTerrainSaveDir().c_str() );
+	//			sprintf( stemp_fn, "%s.regions/map", CGameSettings::Active()->MakeWorldSaveDirectory().c_str() );
 	//			if ( IO::FileExists( stemp_fn ) ) {
 	//				regionFile.Open( stemp_fn, CBinaryFile::IO_READ|CBinaryFile::IO_WRITE );
 	//				regionIndex = regionFile.ReadUInt32();
@@ -191,7 +191,7 @@ namespace World
 	//			{
 	//				regionFile.Close(); // This is how the region file is saved.
 	//				// And open it again
-	//				sprintf( stemp_fn, "%s.regions/map", CGameSettings::Active()->GetTerrainSaveDir().c_str() );
+	//				sprintf( stemp_fn, "%s.regions/map", CGameSettings::Active()->MakeWorldSaveDirectory().c_str() );
 	//				regionFile.Open( stemp_fn, CBinaryFile::IO_READ|CBinaryFile::IO_WRITE );
 	//			}
 	//			regionFileLock.unlock();
@@ -829,7 +829,7 @@ namespace World
 	//	char stemp_fn [256];
 	//	// Open province file map
 	//	if ( !file.IsOpen() ) {
-	//		sprintf( stemp_fn, "%s.regions/province_%d", CGameSettings::Active()->GetTerrainSaveDir().c_str(), region_id );	// Generate filename
+	//		sprintf( stemp_fn, "%s.regions/province_%d", CGameSettings::Active()->MakeWorldSaveDirectory().c_str(), region_id );	// Generate filename
 	//		if ( IO::FileExists( stemp_fn ) ) {
 	//			file.Open( stemp_fn, CBinaryFile::IO_READ|CBinaryFile::IO_WRITE );
 	//		}

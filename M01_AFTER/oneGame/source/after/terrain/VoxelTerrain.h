@@ -3,9 +3,11 @@
 #define _AFTER_VOXEL_TERRAIN_H_
 
 #include <vector>
+#include <map>
 
 #include "core/math/vect3d_template.h"
 #include "core-ext/containers/arproperty.h"
+#include "core-ext/threads/counter.h"
 
 #include "engine/behavior/CGameBehavior.h"
 
@@ -31,6 +33,9 @@ namespace Terrain
 
 	// Typical dimensions of a sector
 	const WorldVector SectorDim = WorldVector(32,32,32);
+
+	// Typedef for the structure used
+	typedef std::map<WorldVector,Terrain::Payload> MapStructure;
 }
 
 class CVoxelTerrain : public CGameBehavior
@@ -104,6 +109,36 @@ public:
 	// This includes items and NPCs in the area, as well as a reference to the grass list.
 	void					GetAreaGamestateListCopy ( std::vector<Terrain::AreaGameState>& o_gamestatelist );
 
+
+	//=========================================//
+	// Map State Query
+
+	//		GetMapCopy
+	// Locks the internal map, creates a copy, unlocks the map, and returns a copy.
+	// Values may no longer point to valid data after the copy is returned.
+	Terrain::MapStructure	GetMapCopy ( void );
+
+	//		LockReadMapReference
+	// Locks the internal map and returns it. Assumes the map will not be modified.
+	// If the map cannot be locked for read, it will wait until it has been unlocked.
+	// Must be followed up with a UnlockReadMapReference.
+	const Terrain::MapStructure&	LockReadMapReference ( void );
+
+	//		UnlockReadMapReference
+	// Releases a counted lock on the internal map.
+	void					UnlockReadMapReference ( void );
+
+	//		LockWriteMapReference
+	// Locks the internal map for write and returns it. Assumes map will have a BB modification.
+	// If the map cannot be locked for write, it will wait until it has been unlocked.
+	// Must be followed up with a UnlockWriteMapReference.
+	Terrain::MapStructure&	LockWriteMapReference ( void );
+
+	//		UnlockWriteMapReference
+	// Releases an exclusive lock on the internal map.
+	void					UnlockWriteMapReference ( void );
+
+
 public:
 	//=========================================//
 	// System State
@@ -160,7 +195,7 @@ private:
 	Terrain::MemoryManager*	m_memory;
 	Terrain::DataSampler*	m_sampler;
 	Terrain::TerrainRenderer* m_renderer;
-	Terrain::JobHandler*	m_jobs;
+	//Terrain::JobHandler*	m_jobs;
 
 	// Generation Triad
 
@@ -171,6 +206,12 @@ private:
 	// Current state
 
 	bool		m_system_active;
+
+	// Data storage
+
+	Terrain::MapStructure	m_current_map;
+	Threads::counter		m_map_read_counter;
+	std::mutex				m_map_write_lock;
 
 public:
 	// Properties

@@ -73,7 +73,7 @@ void CVoxelTerrain::_Init ( void )
 	m_memory	= new Terrain::MemoryManager();
 	m_sampler	= new Terrain::DataSampler(this);
 	m_renderer	= new Terrain::TerrainRenderer(this);
-	m_jobs		= new Terrain::JobHandler(this);
+	//m_jobs		= new Terrain::JobHandler(this);
 
 	m_genny		= NULL;
 	m_patterns	= NULL;
@@ -88,7 +88,7 @@ void CVoxelTerrain::_Free ( void )
 	delete_safe( m_memory );
 	delete_safe( m_sampler );
 	delete_safe( m_renderer );
-	delete_safe( m_jobs );
+	//delete_safe( m_jobs );
 
 	delete_safe( m_genny );
 	delete_safe( m_patterns );
@@ -174,7 +174,19 @@ void CVoxelTerrain::Update ( void )
 {
 	if ( m_system_active )
 	{
+/*
+8:26 PM skarik said: If there's loaded needed, the a load thread is started.
+8:27 PM skarik said: The load thread tries to find the data for its assigned sector. If it finds it, great, we're done.
+8:27 PM skarik said: If not, then the load thread morphs into a generation thread, and the original load is pushed to the back of the load requests.
+8:28 PM skarik said: Generation thread checks if there's a duplicate generation, and ends if there is. Otherwise, it generates the sector, saves it, and is done.
+8:28 PM skarik said: The load request comes back to the front of the stack, and this time it's loaded.
+8:29 PM skarik said: Reason for the requeue is that other sectors may already be saved, so shouldn't wait on a sector that may not be done.
+8:29 PM skarik said: What do you think?
+*/
 
+		// First load happens on startup.
+
+		// Update cannot add any load requests. That is handled by other inputs to the system.
 	}
 }
 
@@ -225,4 +237,57 @@ void CVoxelTerrain::ReleaseAreaGamestate ( Terrain::AreaGameState* n_gameData, c
 void CVoxelTerrain::GetAreaGamestateListCopy ( std::vector<Terrain::AreaGameState>& o_gamestatelist )
 {
 	throw Core::NotYetImplementedException();
+}
+
+//=========================================//
+// Map State Query
+
+//		GetMapCopy
+// Locks the internal map, creates a copy, unlocks the map, and returns a copy.
+// Values may no longer point to valid data after the copy is returned.
+Terrain::MapStructure CVoxelTerrain::GetMapCopy ( void )
+{
+	{	// Wait for writers
+		std::unique_lock<std::mutex> lock(m_map_write_lock);
+		m_map_read_counter.add();
+	}
+	Terrain::MapStructure result = m_current_map;
+	m_map_read_counter.sub();
+	return result;
+}
+//		LockReadMapReference
+// Locks the internal map and returns it. Assumes the map will not be modified.
+// If the map cannot be locked for read, it will wait until it has been unlocked.
+// Must be followed up with a UnlockReadMapReference.
+const Terrain::MapStructure& CVoxelTerrain::LockReadMapReference ( void )
+{
+	{	// Wait for writers
+		std::unique_lock<std::mutex> lock(m_map_write_lock);
+		m_map_read_counter.add();
+	}
+	return m_current_map;
+}
+//		UnlockReadMapReference
+// Releases a counted lock on the internal map.
+void CVoxelTerrain::UnlockReadMapReference ( void )
+{
+	// Notify that it's able to be read again
+	m_map_read_counter.sub();
+}
+
+//		LockWriteMapReference
+// Locks the internal map for write and returns it. Assumes map will have a BB modification.
+// If the map cannot be locked for write, it will wait until it has been unlocked.
+// Must be followed up with a UnlockWriteMapReference.
+Terrain::MapStructure& CVoxelTerrain::LockWriteMapReference ( void )
+{
+	m_map_write_lock.lock();
+	m_map_read_counter.wait_for_0();
+	return m_current_map;
+}
+//		UnlockWriteMapReference
+// Releases an exclusive lock on the internal map.
+void CVoxelTerrain::UnlockWriteMapReference ( void )
+{
+	m_map_write_lock.unlock();
 }

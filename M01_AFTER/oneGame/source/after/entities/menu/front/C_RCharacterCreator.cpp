@@ -697,7 +697,7 @@ void C_RCharacterCreator::stateMain ( void )
 				c_count -= 100; // Invalid name
 			}
 		}
-		fs::path playerdir( CGameSettings::Active()->GetPlayerSaveDir(tMainAttr.str_soulname) );
+		fs::path playerdir( CGameSettings::Active()->MakePlayerSaveDirectory(tMainAttr.str_soulname) );
 		if ( (c_count < 2)||( fs::exists( playerdir ) ) ) {
 			validCharacter = false;
 		}
@@ -746,7 +746,7 @@ void C_RCharacterCreator::stateMain ( void )
 	// Check for finishing character creation
 	else if ( gui->GetButtonClicked( tMainAttr.btncontinue ) )
 	{
-		CGameSettings::Active()->SetPlayerSaveFile( tMainAttr.str_soulname );
+		CGameSettings::Active()->SetPlayerSaveTarget( tMainAttr.str_soulname.c_str() );
 		pl_stats->SaveToFile();
 		b_done_editing = true;
 	}

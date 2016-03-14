@@ -8,6 +8,7 @@
 #include "engine-common/engine-common-scenes.h"
 #include "after-common.h"
 
+#include "after/scenes/gmsceneGame_6.h"
 #include "after/scenes/gmsceneCharacterViewer.h"
 #include "after-editor/scenes/gmsceneParticleEditor.h"
 #include "after-editor/scenes/gmsceneLipsyncEditor.h"
@@ -29,6 +30,7 @@ int GameInitialize ( void )
 	EngineCommonInitialize();
 
 	// Scene registration
+	EngineCommon::RegisterScene<gmsceneGame_6>( "game" );
 	EngineCommon::RegisterScene<gmsceneCharacterViewer>( "test" );
 	EngineCommon::RegisterScene<gmsceneParticleEditor>( "pce" );
 	EngineCommon::RegisterScene<gmsceneLipsyncEditor>( "lse" );

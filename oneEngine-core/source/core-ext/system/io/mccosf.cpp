@@ -39,9 +39,9 @@ bool COSF_Loader::GetNext ( mccOSF_entry_info_t& nextEntry, char* output_value )
 			//return nextEntry;
 			return true;
 		}
-		line_length = strlen( m_linebuffer );
+		line_length = (signed)strlen( m_linebuffer );
 		if ( line_length <= 0 ) {
-			continue; // Line is too short, skip it
+			continue; // Line is too short (or too long), skip it
 		}
 
 		// Parse the line for the first command
@@ -132,7 +132,7 @@ bool COSF_Loader::GetNext ( mccOSF_entry_info_t& nextEntry, char* output_value )
 
 			// Now copy string over to smaller buffer
 			strncpy( nextEntry.value, m_linebuffer, ( line_length-fins < 128 ? line_length-fins : 128 ) );
-			int finalLength = strlen(nextEntry.value);
+			int finalLength = (signed)strlen(nextEntry.value);
 			if ( (finalLength > 0) && (nextEntry.value[finalLength-1] == '\r') ) {
 				nextEntry.value[finalLength-1] = 0;
 			}
@@ -149,7 +149,7 @@ bool COSF_Loader::GetNext ( mccOSF_entry_info_t& nextEntry, char* output_value )
 				//return nextEntry;
 				return true;
 			}
-			line_length = strlen( m_linebuffer );
+			line_length = (signed)strlen( m_linebuffer );
 			if ( line_length <= 0 ) continue;
 			// Check the line for a '{'
 			for ( i = 0; i < line_length; ++i )

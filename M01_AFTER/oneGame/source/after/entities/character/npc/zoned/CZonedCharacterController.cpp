@@ -48,18 +48,27 @@ void CZonedCharacterController::ReadyUp ( void )
 		CBinaryFile		statefile;
 		arstring<256>	s_statefile_fn;
 
-		sprintf( s_statefile_fn, "%s/npc_freelist", CGameSettings::Active()->GetWorldSaveDir().c_str() );
+		sprintf( s_statefile_fn, "%s/npc_freelist", CGameSettings::Active()->MakeRealmSaveDirectory().c_str() );
 		statefile.Open( s_statefile_fn, CBinaryFile::IO_READ );
 		// Check if state file exists
-		if ( !statefile.IsOpen() ) {
+		if ( !statefile.IsOpen() )
+		{
 			// Doesn't exist, set default values and write a new value
 			nextFreeNPC = 2048;
 			freeIDcount = 0;
 			statefile.Open( s_statefile_fn, CBinaryFile::IO_WRITE );
-			statefile.WriteUInt64( nextFreeNPC );
-			statefile.WriteUInt64( freeIDcount );
+			if ( statefile.IsOpen() )
+			{
+				statefile.WriteUInt64( nextFreeNPC );
+				statefile.WriteUInt64( freeIDcount );
+			}
+			else
+			{
+				throw Core::NullReferenceException();
+			}
 		}
-		else {
+		else
+		{
 			// Load state file data
 			nextFreeNPC = statefile.ReadUInt64();
 			freeIDcount = statefile.ReadUInt64();
@@ -275,7 +284,7 @@ void CZonedCharacterController::PostUpdate ( void )
 void CZonedCharacterController::LoadSector ( const RangeVector& sector_index )
 {
 	/*arstring<256> s_sector_fn;	// Get sector file
-	sprintf( s_sector_fn, "%s/chars/%d_%d_%d", CGameSettings::Active()->GetWorldSaveDir().c_str(), sector_index.x, sector_index.y, sector_index.z );
+	sprintf( s_sector_fn, "%s/chars/%d_%d_%d", CGameSettings::Active()->MakeRealmSaveDirectory().c_str(), sector_index.x, sector_index.y, sector_index.z );
 
 	CBinaryFile sector;
 	sector.Open( s_sector_fn, CBinaryFile::IO_READ );
@@ -406,7 +415,7 @@ uint64_t			CZonedCharacterController::RequestNPC ( NPC::eNPC_ID_TYPE nid_type, u
 			CBinaryFile		statefile;
 			arstring<256>	s_statefile_fn;
 
-			sprintf( s_statefile_fn, "%s/npc_freelist", CGameSettings::Active()->GetWorldSaveDir().c_str() );
+			sprintf( s_statefile_fn, "%s/npc_freelist", CGameSettings::Active()->MakeRealmSaveDirectory().c_str() );
 			statefile.Open( s_statefile_fn, CBinaryFile::IO_READ|CBinaryFile::IO_WRITE );
 
 			fseek( statefile.GetFILE(), 8, SEEK_SET );
@@ -484,7 +493,7 @@ void				CZonedCharacterController::FreeNPCID ( uint64_t nid )
 		CBinaryFile		statefile;
 		arstring<256>	s_statefile_fn;
 
-		sprintf( s_statefile_fn, "%s/npc_freelist", CGameSettings::Active()->GetWorldSaveDir().c_str() );
+		sprintf( s_statefile_fn, "%s/npc_freelist", CGameSettings::Active()->MakeRealmSaveDirectory().c_str() );
 		statefile.Open( s_statefile_fn, CBinaryFile::IO_READ|CBinaryFile::IO_WRITE );
 		// Update count of free ID's
 		fseek( statefile.GetFILE(), 8, SEEK_SET );
@@ -496,7 +505,7 @@ void				CZonedCharacterController::FreeNPCID ( uint64_t nid )
 	}
 	// Delete NPC file
 	arstring<256> s_npcfile_fn;
-	sprintf( s_npcfile_fn, "%s/chars/%lld.entry", CGameSettings::Active()->GetWorldSaveDir().c_str(), nid );
+	sprintf( s_npcfile_fn, "%s/chars/%lld.entry", CGameSettings::Active()->MakeRealmSaveDirectory().c_str(), nid );
 	remove( s_npcfile_fn );
 }
 //  GetNPCList()

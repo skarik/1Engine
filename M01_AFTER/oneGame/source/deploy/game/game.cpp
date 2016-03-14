@@ -59,7 +59,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	}
 
 	// Create jobs system
-	Jobs::System jobSystem (4);
+	Jobs::System jobSystem (0);
 
 	// Initialize input
 	CInput::Initialize();

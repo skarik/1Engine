@@ -55,12 +55,18 @@ public:
 #ifndef _MSC_VER
 		return __builtin_ctz (x); // should work on ARM
 #else
+#	if _WIN64
+		DWORD result;
+		_BitScanReverse( &result, DWORD(x) );
+		return uint32_t(result);
+#	else
 		uint32_t y;
 		__asm {
 			bsr eax, x
 			mov y, eax
 		};
 		return y;
+#	endif
 #endif
 	}
 

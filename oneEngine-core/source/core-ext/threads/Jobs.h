@@ -86,7 +86,7 @@ namespace Jobs
 	public:
 		//	Constructor
 		// Initializes the job handler thread with the given amount of threads.
-		CORE_API explicit System ( const uint8_t threadCount );
+		CORE_API explicit System ( const uint8_t threadCount = 0 );
 		//	Destructor
 		// Waits for all jobs to finish and then ends the job handler thread.
 		CORE_API ~System ( void );

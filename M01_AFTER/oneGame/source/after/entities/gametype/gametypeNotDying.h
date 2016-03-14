@@ -19,7 +19,7 @@ class gametypeNotDying : public CGameType
 {
 
 public:
-	gametypeNotDying ( CGameType*, const Vector3d& );
+	gametypeNotDying ( CGameType*, const Vector3d& n_spawnpoint );
 	~gametypeNotDying ( void );
 
 	void Update ( void );

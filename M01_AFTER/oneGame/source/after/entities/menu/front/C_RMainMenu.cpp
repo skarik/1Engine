@@ -803,7 +803,7 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateRealmSelect ( void )
 			}
 		}
 
-		fs::path realmdir( CGameSettings::Active()->GetWorldSaveDir(tRealmSelect.cur_realmname) );
+		fs::path realmdir( CGameSettings::Active()->MakeRealmSaveDirectory(tRealmSelect.cur_realmname) );
 		gui->SetElementVisible( tRealmSelect.btn_confirmnew, ((c_count >= 1)&&( !fs::exists( realmdir ) )) );
 
 		if ( gui->GetButtonClicked( tRealmSelect.btn_confirmnew ) )
@@ -811,9 +811,9 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateRealmSelect ( void )
 			Audio.playSound( "Menu.Click" );
 
 			// Set file to given name
-			CGameSettings::Active()->SetWorldSaveFile( tRealmSelect.cur_realmname );
+			CGameSettings::Active()->SetRealmSaveTarget( tRealmSelect.cur_realmname.c_str() );
 			// Create player folder
-			CGameSettings::Active()->GetWorldSaveDir();
+			CGameSettings::Active()->MakeRealmSaveDirectory();
 
 			// Load the realm
 			CMCCRealm newRealm ( tRealmSelect.cur_realmname.c_str() );
@@ -849,12 +849,12 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateRealmSelect ( void )
 
 			gui->SetElementVisible( tRealmSelect.btnselectrealm, true );
 			// Update the realm EVERYTHING but only on change!
-			if ( prevselection != tRealmSelect.selection || (CGameSettings::Active()->GetWorldSaveFile() != tRealmSelect.list_realms[tRealmSelect.selection]) ) {
+			if ( prevselection != tRealmSelect.selection || (CGameSettings::Active()->GetRealmTargetName() != tRealmSelect.list_realms[tRealmSelect.selection]) ) {
 				Audio.playSound( "Menu.Click" );
 
 				// Select that realm
-				CGameSettings::Active()->SetWorldSaveFile( tRealmSelect.list_realms[tRealmSelect.selection] );
-				CGameSettings::Active()->SetTerrainSaveFile( "terra" );
+				CGameSettings::Active()->SetRealmSaveTarget( tRealmSelect.list_realms[tRealmSelect.selection].c_str() );
+				CGameSettings::Active()->SetWorldSaveTarget( "terra" );
 
 				// Load the realm
 				CMCCRealm targetRealm ( tRealmSelect.list_realms[tRealmSelect.selection].c_str() );
@@ -914,7 +914,7 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateRealmSelect ( void )
 					{
 						tCharSelect.selection = (int)(nextSelection);
 						// Set game settings
-						CGameSettings::Active()->SetPlayerSaveFile( tCharSelect.list_chars[ tCharSelect.selection ] );
+						CGameSettings::Active()->SetPlayerSaveTarget( tCharSelect.list_chars[ tCharSelect.selection ].c_str() );
 						// Load stats
 						pl_stats->LoadFromFile();
 						// Temporarily load up the current realm.
@@ -1008,8 +1008,8 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateRealmSelect ( void )
 		Audio.playSound( "Menu.Click" );
 
 		// Select that realm and go to next
-		CGameSettings::Active()->SetWorldSaveFile( tRealmSelect.list_realms[tRealmSelect.selection] );
-		CGameSettings::Active()->SetTerrainSaveFile( "terra" );
+		CGameSettings::Active()->SetRealmSaveTarget( tRealmSelect.list_realms[tRealmSelect.selection].c_str() );
+		CGameSettings::Active()->SetWorldSaveTarget( "terra" );
 		// Load and save settings
 		CMCCRealm targetRealm;
 
@@ -1044,8 +1044,8 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateRealmSelect ( void )
 		Audio.playSound( "Menu.Click" );
 
 		if ( tRealmSelect.selection >= 0 ) {
-			CGameSettings::Active()->SetWorldSaveFile( tRealmSelect.list_realms[tRealmSelect.selection] );
-			CGameSettings::Active()->SetTerrainSaveFile( "terra" );
+			CGameSettings::Active()->SetRealmSaveTarget( tRealmSelect.list_realms[tRealmSelect.selection].c_str() );
+			CGameSettings::Active()->SetWorldSaveTarget( "terra" );
 		}
 
 		gui->ShowYesNoDialogue( tRealmSelect.dlgdeleteconfirm );
@@ -1062,7 +1062,7 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateRealmSelect ( void )
 				currentTerrain->SetSystemPaused( true ); // Will block until completely paused
 			}
 			
-			string dir = CGameSettings::Active()->GetWorldSaveDir();
+			string dir = CGameSettings::Active()->MakeRealmSaveDirectory();
 			fs::path realmdir( dir );
 			fs::remove_all( realmdir );
 
@@ -1309,7 +1309,7 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateCharSelect ( void )
 		// Remove character list
 		tCharSelect.FreeCharList();
 
-		//CGameSettings::Active()->SetPlayerSaveFile( "clara" );
+		//CGameSettings::Active()->SetPlayerSaveTarget( "clara" );
 		//tCharSelect.selection = -1;
 		
 		// Hide this dialogue
@@ -1330,12 +1330,13 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateCharSelect ( void )
 
 		if ( tCharSelect.selection >= 0 ) {
 			// Set the savefile
-			CGameSettings::Active()->SetPlayerSaveFile( tCharSelect.list_chars[ tCharSelect.selection ] );
+			CGameSettings::Active()->SetPlayerSaveTarget( tCharSelect.list_chars[ tCharSelect.selection ].c_str() );
 
 			// Check if this character has been on this world before.
-			string spawnpointFile = CGameSettings::Active()->GetWorldSaveFile()+CGameSettings::Active()->GetTerrainSaveFile();
+			string spawnpointFile = CGameSettings::Active()->GetRealmTargetName()+CGameSettings::Active()->GetWorldTargetName();
 			auto worldSpawnpoint = pl_stats->mPlayerSpawnpointMap.find( spawnpointFile );
-			if ( worldSpawnpoint == pl_stats->mPlayerSpawnpointMap.end() ) {
+			if ( worldSpawnpoint == pl_stats->mPlayerSpawnpointMap.end() )
+			{
 				// Has not been on this world before, so generate spawnpoint now.
 				// Set the spawn point
 				//Vector3d_d newSpawnpoint = tRealmSelect.generator->GetSpawnPoint( 1, 0, targetRealm.GetPersonCount() );
@@ -1351,7 +1352,8 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateCharSelect ( void )
 				// Save spawnpoints to file
 				pl_stats->SaveToFile();
 			}
-			else {
+			else
+			{
 				CMCCRealm targetRealm;
 				targetRealm.SetSavedSoulname( tCharSelect.list_chars[tCharSelect.selection].c_str() );
 			}
@@ -1368,7 +1370,7 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateCharSelect ( void )
 		Audio.playSound( "Menu.Click" );
 
 		if ( tCharSelect.selection >= 0 ) {
-			CGameSettings::Active()->SetPlayerSaveFile( tCharSelect.list_chars[ tCharSelect.selection ] );
+			CGameSettings::Active()->SetPlayerSaveTarget( tCharSelect.list_chars[ tCharSelect.selection ].c_str() );
 
 			gui->ShowYesNoDialogue( tCharSelect.dlgdeleteconfirm );
 		}
@@ -1379,7 +1381,7 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateCharSelect ( void )
 		int dlgresult = gui->GetDialogueResponse( tCharSelect.dlgdeleteconfirm );
 		if ( dlgresult == 0 )
 		{
-			string dir = CGameSettings::Active()->GetPlayerSaveDir();
+			string dir = CGameSettings::Active()->MakePlayerSaveDirectory();
 			fs::path playerdir( dir );
 			fs::remove_all( playerdir );
 
@@ -1414,11 +1416,11 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateCharSelect ( void )
 				for ( uint c = 0; c < tCharSelect.list_chars.size(); ++c )
 				{
 					// Set game settings
-					CGameSettings::Active()->SetPlayerSaveFile( tCharSelect.list_chars[c] );
+					CGameSettings::Active()->SetPlayerSaveTarget( tCharSelect.list_chars[c].c_str() );
 					// Load stats
 					pl_stats->LoadFromFile();
 					// Search stats for this world
-					string spawnpointFile = CGameSettings::Active()->GetWorldSaveFile()+CGameSettings::Active()->GetTerrainSaveFile();
+					string spawnpointFile = CGameSettings::Active()->GetRealmTargetName()+CGameSettings::Active()->GetWorldTargetName();
 					auto worldSpawnpoint = pl_stats->mPlayerSpawnpointMap.find( spawnpointFile );
 					if ( worldSpawnpoint != pl_stats->mPlayerSpawnpointMap.end() ) {
 						hasMatch = true;
@@ -1441,7 +1443,7 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateCharSelect ( void )
 		if ( nextSelection != tCharSelect.selection ) // If character selection has changed, load that character.
 		{
 			// Set game settings
-			CGameSettings::Active()->SetPlayerSaveFile( tCharSelect.list_chars[ nextSelection ] );
+			CGameSettings::Active()->SetPlayerSaveTarget( tCharSelect.list_chars[ nextSelection ].c_str() );
 			// Load stats
 			pl_stats->LoadFromFile();
 
@@ -1492,7 +1494,7 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateCharSelect ( void )
 void C_RMainMenu::SetTerrainPlacementFromStats ( void )
 {
 	// Load player's last position (if even applicable)
-	auto worldSpawnpoint = pl_stats->mPlayerSpawnpointMap.find( CGameSettings::Active()->GetWorldSaveFile()+CGameSettings::Active()->GetTerrainSaveFile() );
+	auto worldSpawnpoint = pl_stats->mPlayerSpawnpointMap.find( CGameSettings::Active()->GetRealmTargetName()+CGameSettings::Active()->GetWorldTargetName() );
 	if ( worldSpawnpoint == pl_stats->mPlayerSpawnpointMap.end() ) {
 		// (Use the generator to generate a new spawnpoint, and set it. Eventually have a button to rechoose spawnpoint).
 		Vector3d_d newSpawnpoint = pl_stats->MakeSpawnpoint( tRealmSelect.generator );
@@ -1772,7 +1774,7 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateCharCreation ( void )
 		}
 		if ( tCharCreation.state == 1 ) {
 			// Remove created player
-			string dir = CGameSettings::Active()->GetPlayerSaveDir();
+			string dir = CGameSettings::Active()->MakePlayerSaveDirectory();
 			fs::path playerdir( dir );
 			if ( fs::exists( playerdir ) ) {
 				fs::remove_all( playerdir );
@@ -1819,15 +1821,15 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateCharCreation ( void )
 				c_count -= 100; // Invalid name
 			}
 		}
-		boost::filesystem::path playerdir( CGameSettings::Active()->GetPlayerSaveDir(tCharCreation.cur_soulname) );
+		boost::filesystem::path playerdir( CGameSettings::Active()->MakePlayerSaveDirectory(tCharCreation.cur_soulname) );
 		gui->SetElementVisible( tCharCreation.btn_soulnamecontinue, ((c_count >= 2)&&( !boost::filesystem::exists( playerdir ) )) );
 
 		if ( gui->GetButtonClicked( tCharCreation.btn_soulnamecontinue ) )
 		{
 			// Set file to given name
-			CGameSettings::Active()->SetPlayerSaveFile( tCharCreation.cur_soulname );
+			CGameSettings::Active()->SetPlayerSaveTarget( tCharCreation.cur_soulname );
 			// Create player folder
-			CGameSettings::Active()->GetPlayerSaveDir();
+			CGameSettings::Active()->MakePlayerSaveDirectory();
 
 			// Go to next state
 			tCharCreation.state = 1;
@@ -1894,7 +1896,7 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateCharCreation ( void )
 			}
 
 			// Check if this character has been on this world before.
-			string spawnpointFile = CGameSettings::Active()->GetWorldSaveFile()+CGameSettings::Active()->GetTerrainSaveFile();
+			string spawnpointFile = CGameSettings::Active()->GetRealmTargetName()+CGameSettings::Active()->GetWorldTargetName();
 			{
 				// Has not been on this world before, so generate spawnpoint now.
 				// Set the spawn point
@@ -1905,7 +1907,7 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateCharCreation ( void )
 				CVoxelTerrain::GetActive()->SetCenterPosition( newSpawnpoint );
 				// Increment person count.
 				CMCCRealm targetRealm;
-				targetRealm.SetSavedSoulname( CGameSettings::Active()->GetPlayerSaveFile().c_str() );
+				targetRealm.SetSavedSoulname( CGameSettings::Active()->GetPlayerTargetName().c_str() );
 				targetRealm.IncPersonCount();
 				// Save spawnpoints to file
 				pl_stats->SaveToFile();

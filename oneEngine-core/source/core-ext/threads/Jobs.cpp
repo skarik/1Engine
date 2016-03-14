@@ -9,6 +9,10 @@ Jobs::System* Jobs::System::Active = NULL;
 Jobs::System::System ( const uint8_t threadCount )
 	: m_systemEnabled( false )
 {
+	unsigned usedThreads = threadCount;
+	if ( usedThreads == 0 ) usedThreads = std::thread::hardware_concurrency();
+	if ( usedThreads == 0 ) usedThreads = 4;
+
 	// Clear lock states
 	m_jobRequestLock.clear();
 	m_jobTaskLock.clear();
@@ -25,10 +29,10 @@ Jobs::System::System ( const uint8_t threadCount )
 	m_managerThread = std::thread( &Jobs::System::_internal_JobCycle, this );
 
 	// Create the threads
-	for ( uint i = 0; i < threadCount; ++i ) {
+	for ( uint i = 0; i < usedThreads; ++i ) {
 		m_jobStates.push_back( jobState_t() );
 	}
-	for ( uint i = 0; i < threadCount; ++i ) {
+	for ( uint i = 0; i < usedThreads; ++i ) {
 		m_jobThreads.push_back( std::thread( &Jobs::System::_internal_WorkerCycle, this, &(m_jobStates[i]) ) );
 	}
 	

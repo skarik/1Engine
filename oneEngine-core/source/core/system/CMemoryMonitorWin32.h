@@ -22,6 +22,7 @@
 #endif
 
 // Includes
+#include "core/types.h"
 #include <windows.h>
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
@@ -34,8 +35,8 @@ public:
 	~CMemoryMonitorWin32 ( void );
 	
 	void Update ( void );
-	unsigned long	GetPeakUsage ( void );
-	unsigned long*	GetUsage ( void );
+	uint64_t		GetPeakUsage ( void );
+	uint64_t*		GetUsage ( void );
 	unsigned int	GetUsageSize ( void );
 
 private:
@@ -49,7 +50,7 @@ private:
 	//GETPROCESSMEMORYINFO          GetProcessMemoryInfo;
 protected:
 	unsigned int	iMaxStored;
-	unsigned long *	p_setSize;
+	uint64_t*		p_setSize;
 };
 
 #endif
