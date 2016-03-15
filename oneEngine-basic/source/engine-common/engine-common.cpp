@@ -13,6 +13,7 @@
 #include "engine-common/scenes/gmsceneFromFile.h"
 #include "engine-common/scenes/gmsceneSystemLoader.h"
 #include "engine-common/scenes/gmsceneSystemBuilder.h"
+#include "engine-common/scenes/benchmark/benchmarkSemaphores.h"
 
 //===============================================================================================//
 //	EngineCommonInitialize
@@ -26,6 +27,7 @@ int EngineCommonInitialize ( void )
 	Engine::Console->AddConsoleFunc( "scene",	EngineCommon::LoadScene );
 	EngineCommon::RegisterScene<gmsceneSystemLoader>( "default" );
 	EngineCommon::RegisterScene<gmsceneSystemBuilder>( "sysbuild" );
+	EngineCommon::RegisterScene<benchmarkSemaphores>( "benchmark_semaphore" );
 
 	// Lua
 	Engine::Console->AddConsoleFunc( "lua",	Lua::con_execLua );

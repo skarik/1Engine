@@ -358,6 +358,12 @@
     <ClInclude Include="source\core-ext\threads\semaphore.h">
       <Filter>SOURCE\Core-ext\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="source\core-ext\threads\counter.h">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\threads\compile_mode.h">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">

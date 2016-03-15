@@ -1206,6 +1206,9 @@
     <ClInclude Include="source\after\terrain\system\JobHandler.h">
       <Filter>SOURCE\AFTER\Terrain\System</Filter>
     </ClInclude>
+    <ClInclude Include="source\after\scenes\gmsceneGame_6.h">
+      <Filter>SOURCE\AFTER\Scenes\Developer %28filter only%29</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\after\scenes\gmsceneGame_5.cpp">
@@ -2002,6 +2005,9 @@
     </ClCompile>
     <ClCompile Include="source\after\entities\gametype\CGameType.cpp">
       <Filter>SOURCE\AFTER\Entities\Gametype</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\scenes\gmsceneGame_6.cpp">
+      <Filter>SOURCE\AFTER\Scenes\Developer %28filter only%29</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -11,6 +11,7 @@
 
 #include "engine/behavior/CGameBehavior.h"
 
+#include "after/terrain/data/Node.h"
 #include "after/terrain/data/GamePayload.h"
 #include "after/terrain/data/GameState.h"
 
