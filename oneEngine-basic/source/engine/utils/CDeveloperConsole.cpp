@@ -6,7 +6,9 @@
 #include "core/input/CInput.h"
 #include "core-ext/input/CInputControl.h"
 //#include "CTimeProfilerUI.h"
-
+#include <string>
+#include <algorithm>
+#include <cctype>
 //#include "CGameSettings.h"
 
 using namespace Engine;
@@ -288,6 +290,13 @@ void CDeveloperConsole::AddConsoleMatch( string const& name )
 bool CDeveloperConsole::RunLastCommand ( void )
 {
 	string cmd = sLastCommand;
+	{
+		auto suffix = cmd.find_last_not_of(' ');
+		if ( suffix != cmd.npos ) 
+		{
+			cmd.erase(suffix+1);         //surfixing spaces
+		}
+	}
 
 	// Need to get the actual command and the arguments
 	string verb = cmd;

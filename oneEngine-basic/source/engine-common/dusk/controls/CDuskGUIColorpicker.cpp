@@ -111,7 +111,7 @@ void CDuskGUIColorpicker::Update ( void )
 				// Get center pos to work from
 				dpos.x = (rect.pos.x+(rect.size.x*0.5f))*Screen::Info.width;
 				dpos.y = (rect.pos.y+(rect.size.y*0.5f))*Screen::Info.height;
-				dl = std::min( (rect.size.x*0.4f*Screen::Info.width), (rect.size.y*0.4f*Screen::Info.height) );
+				dl = std::min<float>( (rect.size.x*0.4f*Screen::Info.width), (rect.size.y*0.4f*Screen::Info.height) );
 
 				// Get delta from center and mouse
 				delta = mouse_coords - dpos;

@@ -364,6 +364,9 @@
     <ClInclude Include="source\core-ext\threads\compile_mode.h">
       <Filter>SOURCE\Core-ext\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\os.h">
+      <Filter>SOURCE\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">

@@ -7,7 +7,7 @@
 
 // Needs the OpenGL functions
 #ifdef _WIN32
-	#include <windows.h>		// Header File For Windows
+#	include "core/os.h"
 
 	//#include "gl_core_2_1.h"
 	//#include "gl_core_3_0.h"

@@ -3,7 +3,6 @@
 #include "CGameBehavior.h"
 #include "CGameHandle.h"
 #include "engine/state/CGameState.h"
-//#include <windows.h>
 
 // Constructor
 //  adds behavior to the list of GBs in CGameState

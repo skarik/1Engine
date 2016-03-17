@@ -346,6 +346,7 @@
     <ClInclude Include="source\core\math\Vector3d.h" />
     <ClInclude Include="source\core\math\Vector4d.h" />
     <ClInclude Include="source\core\math\XTransform.h" />
+    <ClInclude Include="source\core\os.h" />
     <ClInclude Include="source\core\system\CMemoryMonitor.h" />
     <ClInclude Include="source\core\system\CMemoryMonitorWin32.h" />
     <ClInclude Include="source\core\system\io\CBinaryFile.h" />

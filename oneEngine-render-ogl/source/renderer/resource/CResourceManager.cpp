@@ -399,6 +399,11 @@ void CResourceManager::StreamUpdate_Texture ( const char* n_targetFile )
 	// Get the BPD filename
 	string t_bpdFilename = n_targetFile;
 	t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
+	if ( !IO::FileExists( t_bpdFilename ) )
+	{
+		// May be in release mode. Go directly to the BPD file
+		t_bpdFilename = Core::Resources::PathTo( t_bpdFilename );
+	}
 
 	// Open the BPD
 	FILE* t_bpdFile = fopen( t_bpdFilename.c_str(), "rb" );

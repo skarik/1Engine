@@ -1,16 +1,6 @@
 
 #include "CInput.h"
-
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-#include "windows.h"
-#ifdef max
-	#undef max
-#endif
-#ifdef min
-	#undef min
-#endif
+#include "core/os.h"
 
 CKeys Keys;
 

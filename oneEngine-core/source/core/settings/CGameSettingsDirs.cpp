@@ -3,11 +3,7 @@
 #include "CGameSettings.h"
 
 #ifdef _WIN32
-	// No MFC
-	#ifndef WIN32_LEAN_AND_MEAN
-	#define WIN32_LEAN_AND_MEAN 1
-	#endif
-	#include <windows.h>
+	#include "core/os.h"
 #elif __linux
 	#include <sys/dir.h>
 	#include <sys/stat.h>

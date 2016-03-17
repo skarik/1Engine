@@ -70,7 +70,7 @@ void CharacterStats::PointStats_SetMaxPointsFromStats ( void )
 	// Calculate regens
 	fHealthRegen	= ( fTimeSinceHealthDrop < 0.3f ) ? 0.0f : (( fTimeSinceHealthDrop < 20.0f ) ? ( iStrength * 0.1f * 0.2f ) : ( iStrength * 0.5f ));
 	fStaminaRegen	= ( fTimeSinceStaminaDrop < 1.5f ) ? ( iAgility * 0.02f ) : ( iAgility * 0.4f ); // *0.5 is too high
-	fManaRegen		= ( iIntelligence / 30.0f ) * std::min( iIntelligence * 0.8f, fTimeSinceManaDrop );
+	fManaRegen		= ( iIntelligence / 30.0f ) * std::min<float>( iIntelligence * 0.8f, fTimeSinceManaDrop );
 
 	// Calculate experience
 	fExperienceMax	= (0.8f*Math.Sqr(iLevel+10)) - iLevel;

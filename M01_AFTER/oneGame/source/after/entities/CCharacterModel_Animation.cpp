@@ -633,14 +633,14 @@ bool CCharacterModel::PlayAnimation ( const string& sAnimType, const float fArg,
 			anim.PlaySmoothed( targetAnimName, 0.7f );
 		}
 		if ( iFallType != 3 ) {
-			anim[targetAnimName].frame = std::max( 0.0f, (1.0f-vMotionVelocity.z)*0.4f );
+			anim[targetAnimName].frame = std::max<float>( 0.0f, (1.0f-vMotionVelocity.z)*0.4f );
 			if ( anim[targetAnimName].frame >= anim[targetAnimName].Length()-2 ) {
 				anim[targetAnimName].frame = anim[targetAnimName].Length()-2;
 			}
 			anim[targetAnimName].framesPerSecond = 0.001f;
 		}
 		else {
-			anim[targetAnimName].framesPerSecond = std::min( 24.0f, std::max( 7.0f, -vMotionVelocity.z*1.1f - 3.7f ) );
+			anim[targetAnimName].framesPerSecond = std::min<float>( 24.0f, std::max<float>( 7.0f, -vMotionVelocity.z*1.1f - 3.7f ) );
 		}
 
 		validAnim = true;

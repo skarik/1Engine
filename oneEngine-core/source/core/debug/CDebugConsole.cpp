@@ -1,17 +1,6 @@
 
 // System specific includes
-#ifdef _WIN32
-	#ifndef WIN32_LEAN_AND_MEAN 
-	#define WIN32_LEAN_AND_MEAN 1
-	#endif
-	#include "windows.h"
-	#ifdef max
-		#undef max
-	#endif
-	#ifdef min
-		#undef min
-	#endif
-#endif
+#include "core/os.h"
 
 // Includes
 #include "CDebugConsole.h"

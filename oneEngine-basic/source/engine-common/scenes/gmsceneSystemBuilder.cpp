@@ -44,7 +44,8 @@ enum buildTargets_t
 	BUILD_TARGET_NONE = 0x00,
 	BUILD_TARGET_COMMON = 0x01,
 	BUILD_TARGET_IMAGES = 0x02,
-	BUILD_TARGET_MODELS = 0x04
+	BUILD_TARGET_MODELS = 0x04,
+	BUILD_TARGET_SOUNDS = 0x08
 };
 void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_build_mode, const uint32_t n_rebuild_mask );
 
@@ -90,6 +91,8 @@ int EngineCommon::BuildToTarget ( const std::string& n_cmd )
 						m_rebuildtargets |= BUILD_TARGET_IMAGES;
 					else if ( value.compare("models") )
 						m_rebuildtargets |= BUILD_TARGET_MODELS;
+					else if ( value.compare("sounds") )
+						m_rebuildtargets |= BUILD_TARGET_SOUNDS;
 					else
 						Debug::Console->PrintWarning( "+Unrecognized rebuild target \"" + string(value) + "\"\n" );
 				}
@@ -228,15 +231,16 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 							// Check the file extension
 							string resource_extension = StringUtils::ToLower( StringUtils::GetFileExtension( resource_name ) );
 							if (   resource_extension == "bpd" || resource_extension == "pad" || resource_extension == "pcf"
-								                               || resource_extension == "seq"
+								                               || resource_extension == "seq" || resource_extension == "mph"
 															   || resource_extension == "pgm" || resource_extension == "vxg"
 															   || resource_extension == "ico"
 															   || resource_extension == "mcc"
 								|| resource_extension == "m01" || resource_extension == "m04"
 								|| resource_extension == "txt" || resource_extension == "yml" || resource_extension == "xml"
-								|| resource_extension == "lua"
+								|| resource_extension == "lua" || resource_extension == "js"
 								|| resource_extension == "ttf" || resource_extension == "otf"
-								|| resource_extension == "vert" || resource_extension == "frag"
+								|| resource_extension == "vert"|| resource_extension == "frag"
+								|| resource_extension == "wav" || resource_extension == "mp3" || resource_extension == "ogg"
 								|| resource_extension == "" )
 							{
 								// File needs to be copied over (the folder will already exist)

@@ -2,6 +2,7 @@
 #ifndef _DEPLOY_UNIT_H_
 #define _DEPLOY_UNIT_H_
 
+#include "core/os.h"
 #include "core/types/types.h"
 
 #ifdef _WIN32

@@ -3,21 +3,8 @@
 #ifndef _COGL_WINDOW_WIN_32_
 #define _COGL_WINDOW_WIN_32_
 
-
-// Input defines
-#ifndef HID_USAGE_PAGE_GENERIC
-#define HID_USAGE_PAGE_GENERIC         ((USHORT) 0x01)
-#endif
-#ifndef HID_USAGE_GENERIC_MOUSE
-#define HID_USAGE_GENERIC_MOUSE        ((USHORT) 0x02)
-#endif
-
-// No MFC
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-
 // Includes
+#include "core/os.h"
 #include "core/types/types.h"
 #include "renderer/ogl/GLCommon.h" // includes windows headers and Win32
 

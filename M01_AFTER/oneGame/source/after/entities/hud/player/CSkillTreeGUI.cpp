@@ -89,14 +89,15 @@ CSkillTreeGUI::~CSkillTreeGUI()
 
 bool CSkillTreeGUI::Render(const char pass)
 {
-	GL_ACCESS;
-	GLd_ACCESS;
-	GL.beginOrtho();
-
-	const ftype t_zoom = 1/m_viewzoom;
-	ftype t_prev;
 	if ( bDrawSkillGUI )
 	{
+		GL_ACCESS;
+		GLd_ACCESS;
+		GL.beginOrtho();
+
+		const ftype t_zoom = 1/m_viewzoom;
+		ftype t_prev;
+
 		Vector2d cursor_position( CInput::MouseX() / (ftype)Screen::Info.height, CInput::MouseY() / (ftype)Screen::Info.height );
 		skillNode* currentNode;
 		//Creates a grey background for the inventory over the rendered world.
@@ -469,11 +470,12 @@ bool CSkillTreeGUI::Render(const char pass)
 		testFnt->setTexture(0,fntSkillnames);
 		testFnt->bindPass(0);
 			GLd.DrawAutoText( 0.46f,0.07f+0.04f, "%d skill points", this->skillPoint );
-	}
-	GL.endOrtho();
 
-	// At the end, render the hotbar
-	pInventory->Render(0);
+		GL.endOrtho();
+
+		// At the end, render the hotbar
+		pInventory->Render(0);
+	}
 
 	return true;
 }

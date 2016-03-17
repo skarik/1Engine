@@ -205,7 +205,7 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 				std::cout << "Hit an invalid physics object. " << __FILE__ << " at " << __LINE__ << std::endl;
 			}
 #		else
-			if ( targetBehaviorId != 0 && outHitInfo->pHitBehavior != NULL ) {
+			if ( outHitInfo->pHitBehavior != NULL ) {
 				outHitInfo->pHitBody = ((CRigidBody*)outHitInfo->pHitBehavior)->GetBody(); //(hkpRigidBody*) hkRayHitOutput.m_rootCollidable->getOwner();
 			}
 #		endif

@@ -6,6 +6,7 @@
 #include "core/system/io/CSegmentedFile.h"
 #include "core/debug/CDebugConsole.h"
 #include "core-ext/system/io/Resources.h"
+#include "core-ext/system/io/FileUtils.h"
 
 #include "physical/physics/shapes/physMesh.h"
 
@@ -14,66 +15,70 @@
 
 #include <sstream>
 
-#ifdef _WIN32
-#	ifndef WIN32_LEAN_AND_MEAN
-#	define WIN32_LEAN_AND_MEAN
-#	endif
-#	include <windows.h>
-#endif
+#include "core/os.h"
 
 using namespace std;
 
 void CModel::LoadModel ( const string& sFilename )
 {
+	bool haveConverter = IO::FileExists("_devtools/FBXtoPAD.exe");
+
 	// First check for needed file conversion!
 	string sTargetFilename = sFilename;//Core::Resources::PathTo( sFilename );
 	string sFileExtention = StringUtils::ToLower( StringUtils::GetFileExtension( sTargetFilename ) );
 	//cout << sFileExtention << endl;
+
 	if ( sFileExtention == "fbx" )
 	{
 		// Get the vanilla filename
 		sTargetFilename = sTargetFilename.substr( 0, sTargetFilename.length()-(sFileExtention.length()+1) );
 		
 		// Run the converter program
+		if ( haveConverter )
+		{
 #ifdef _WIN32
-		string sArgument;
-		sArgument = sTargetFilename + ".FBX " + sTargetFilename + ".PAD";
+			string sArgument;
+			sArgument = sTargetFilename + ".FBX " + sTargetFilename + ".PAD";
 
-		LPTSTR lpCommandLine = new CHAR [1024];
-		strcpy( lpCommandLine, (string("_devtools/FBXtoPAD.exe ") + sArgument).c_str() );
-		STARTUPINFO startupInfo;
-		ZeroMemory( &startupInfo, sizeof( STARTUPINFO ) );
-		startupInfo.cb = sizeof( STARTUPINFO );
-		PROCESS_INFORMATION procInfo;
-		ZeroMemory( &procInfo, sizeof(PROCESS_INFORMATION) );
+			LPTSTR lpCommandLine = new CHAR [1024];
+			strcpy( lpCommandLine, (string("_devtools/FBXtoPAD.exe ") + sArgument).c_str() );
+			STARTUPINFO startupInfo;
+			ZeroMemory( &startupInfo, sizeof( STARTUPINFO ) );
+			startupInfo.cb = sizeof( STARTUPINFO );
+			PROCESS_INFORMATION procInfo;
+			ZeroMemory( &procInfo, sizeof(PROCESS_INFORMATION) );
 
-		int result = CreateProcess( NULL, lpCommandLine, NULL, NULL, false, NORMAL_PRIORITY_CLASS, NULL, NULL, &startupInfo, &procInfo );
+			int result = CreateProcess( NULL, lpCommandLine, NULL, NULL, false, NORMAL_PRIORITY_CLASS, NULL, NULL, &startupInfo, &procInfo );
 
-		if ( !result )
-		{
-			cout << "Cannot convert model without FBX conversion devtool! (loading PAD anyways)" << endl;
-		}
-		else
-		{
-			// Wait for it to finish conversion
-			WaitForSingleObject( procInfo.hProcess, INFINITE );
+			if ( !result )
+			{
+				cout << "Cannot convert model without FBX conversion devtool! (loading PAD anyways)" << endl;
+			}
+			else
+			{
+				// Wait for it to finish conversion
+				WaitForSingleObject( procInfo.hProcess, INFINITE );
 
-			// Close process and thread handles. 
-			CloseHandle( procInfo.hProcess );
-			CloseHandle( procInfo.hThread );
-		}
-
-		// Set the fileobject
-		sTargetFilename = sTargetFilename + ".PAD";
+				// Close process and thread handles. 
+				CloseHandle( procInfo.hProcess );
+				CloseHandle( procInfo.hThread );
+			}
 
 #elif
-		cout << "Model conversion on other platforms not yet supported. (loading PAD anyways)" << endl;
+			cout << "Model conversion on other platforms not yet supported. (loading PAD anyways)" << endl;
 
-		// Get the vanilla filename
-		sTargetFilename = sTargetFilename.substr( 0, sTargetFilename.length()-4 );
+			// Get the vanilla filename
+			sTargetFilename = sTargetFilename.substr( 0, sTargetFilename.length()-4 );
+			// Set the fileobject
+			sTargetFilename = sTargetFilename + ".PAD";
+#endif
+		}
+
 		// Set the fileobject
 		sTargetFilename = sTargetFilename + ".PAD";
-#endif
+
+		// Look for the valid resource to load
+		sTargetFilename = Core::Resources::PathTo( sTargetFilename );
 	}
 	// End Conversion
 	//--------------------

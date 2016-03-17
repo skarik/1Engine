@@ -23,7 +23,7 @@
 
 // Includes
 #include "core/types.h"
-#include <windows.h>
+#include "core/os.h"
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
 

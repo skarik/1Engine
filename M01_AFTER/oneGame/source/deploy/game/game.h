@@ -2,6 +2,7 @@
 #ifndef _DEPLOY_GAME_H_
 #define _DEPLOY_GAME_H_
 
+#include "core/os.h"
 #include "core/types/types.h"
 
 #ifdef _WIN32
