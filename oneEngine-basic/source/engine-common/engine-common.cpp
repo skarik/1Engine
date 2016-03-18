@@ -14,6 +14,7 @@
 #include "engine-common/scenes/gmsceneSystemLoader.h"
 #include "engine-common/scenes/gmsceneSystemBuilder.h"
 #include "engine-common/scenes/benchmark/benchmarkSemaphores.h"
+#include "engine-common/scenes/benchmark/benchmarkMatrices.h"
 
 //===============================================================================================//
 //	EngineCommonInitialize
@@ -28,6 +29,7 @@ int EngineCommonInitialize ( void )
 	EngineCommon::RegisterScene<gmsceneSystemLoader>( "default" );
 	EngineCommon::RegisterScene<gmsceneSystemBuilder>( "sysbuild" );
 	EngineCommon::RegisterScene<benchmarkSemaphores>( "benchmark_semaphore" );
+	EngineCommon::RegisterScene<benchmarkMatrices>( "benchmark_matrices" );
 
 	// Lua
 	Engine::Console->AddConsoleFunc( "lua",	Lua::con_execLua );

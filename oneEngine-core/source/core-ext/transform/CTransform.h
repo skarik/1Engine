@@ -26,7 +26,7 @@ class CLogicObject;			// Renderer
 using std::string;
 
 // Class
-class CTransform
+ALIGNAS(16) class CTransform
 {
 private:
 	CTransform ( CTransform const& );
@@ -96,11 +96,18 @@ public:
 	CORE_API CTransform* FindChildBone ( const string& );
 	CORE_API CTransform* FindChildBoneRecursive ( const string& );
 
+private:
+	ALIGNAS(16) Matrix4x4	matx;
+	ALIGNAS(16) Matrix4x4	matxLocal;
+
+	ALIGNAS(16) Matrix4x4	matxRot;
+	ALIGNAS(16) Matrix4x4	matxLocalRot;
+
+	// Todo: move to matrix, add quaternion representations
+
 public:
 	string name;
 	bool active;
-	//CGameBehavior* pOwnerBehavior;
-	//CRenderableObject* pOwnerRenderer;
 	enum eOwnerType_t {
 		TYPE_INVALID,
 		TYPE_BEHAVIOR,
@@ -111,9 +118,6 @@ public:
 	} ownerType;
 	void*	owner;
 
-	/*dirtval<Vector3d> position;
-	dirtval<Vector3d> scale;
-	dirtval<Rotator> rotation;*/
 	Vector3d position;
 	Vector3d scale;
 	Rotator  rotation;
@@ -121,28 +125,10 @@ public:
 	Vector3d pposition;
 	Vector3d pscale;
 	Rotator  protation;
-//private:
-	//Vector3d rotation;
-//public:
 
 	Vector3d localPosition;
 	Vector3d localScale;
 	Rotator localRotation;
-//private:
-	//Vector3d localRotation;
-
-	//static bool updateRenderSide;
-private:
-	Matrix4x4	matx;
-	Matrix4x4	matxLocal;
-
-	//Matrix4x4	matxNS;
-	//Matrix4x4	matxLocalNS;
-
-	Matrix4x4	matxRot;
-	Matrix4x4	matxLocalRot;
-
-	// Todo: move to matrix, add quaternion representations
 
 public:
 	CORE_API Vector3d Forward ( void );

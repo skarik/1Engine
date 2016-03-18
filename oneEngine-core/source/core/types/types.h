@@ -55,9 +55,13 @@
 	// Only include it if it's in the current version
 #	include <stdint.h>
 	//#include <inttypes.h> //this one if it doesn't work
+#ifdef _WIN32
+#	define alignas(a) __declspec( align( a ) ) 
+#endif
 #else
-	// Define 32bit number if not defined
+
 #	ifdef _WIN32
+		// Define 32bit number if not defined
 #		if _MSC_VER > 1500
 #			include <stdint.h>
 #		else
@@ -71,6 +75,14 @@
 			typedef __int32 int32_t;
 			typedef __int64 int64_t;
 #		endif
+
+		// Define alignment if not defined
+#		if _MSC_VER > 1700
+#			define ALIGNAS(a) align( a )
+#		else
+#			define ALIGNAS(a) __declspec( align( a ) ) 
+#		endif
+
 #	endif
 #endif
 
@@ -204,18 +216,7 @@ typedef unsigned int	uint;
 // Define assertion
 #ifdef _WIN32
 #	ifdef _ENGINE_DEBUG
-//		Disable MFC
-#		ifndef WIN32_LEAN_AND_MEAN
-#		define WIN32_LEAN_AND_MEAN 1
-#		endif
-#		include "windows.h"
-//		Remove Win32 max and min macro definitions
-#		ifdef max
-#			undef max
-#		endif
-#		ifdef min
-#			undef min
-#		endif
+#		include "core/os.h"
 		// Special assert definition for engine debug
 		extern "C" {
 			_CRTIMP void __cdecl _wassert(_In_z_ const wchar_t * _Message, _In_z_ const wchar_t *_File, _In_ unsigned _Line);
@@ -226,7 +227,12 @@ typedef unsigned int	uint;
 #		define fnl_assert(_Expression)     ((void)0)
 #	endif
 #endif
+// Include SSE2 functions
+#ifdef _WIN32
+# include <xmmintrin.h>
+#endif
 
+// include default shit
 #include "float_fn.h"
 
 #endif

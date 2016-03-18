@@ -200,3 +200,5 @@ void benchmarkSemaphores::LoadScene ( void )
 		cout << "Time taken was " << diff.count() << " s" << endl;
 	}
 }
+
+#undef ITERATION_COUNT

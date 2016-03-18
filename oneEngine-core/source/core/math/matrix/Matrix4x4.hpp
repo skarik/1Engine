@@ -456,28 +456,34 @@ FORCE_INLINE Matrix4x4 Matrix4x4::LerpTo ( const Matrix4x4& right, const ftype t
 // Multiplication
 FORCE_INLINE Matrix4x4 Matrix4x4::operator* ( const Matrix4x4& right ) const
 {
+//#ifdef _WIN32
+#ifdef FUCKING_PEN0RS
 	Matrix4x4 result;
-	/*int x, y, c;
-	for ( x = 0; x < 4; x += 1 )
+	const float* A = pData;
+	const float* B = right.pData;
+	float* C = result.pData;
+	__m128 row1 = _mm_load_ps(&B[0]);
+    __m128 row2 = _mm_load_ps(&B[4]);
+    __m128 row3 = _mm_load_ps(&B[8]);
+    __m128 row4 = _mm_load_ps(&B[12]);
+    for(int i=0; i<4; i++)
 	{
-		for ( y = 0; y < 4; y += 1 )
-		{
-			result[y][x] = 0.0;
-			for ( c = 0; c < 4; c += 1 )
-			{
-				result[y][x] += ((*this)[y][c]) * (right[c][x]);
-			}
-		}
-	}
-	for ( x = 0; x < 4; x += 1 )
-	{
-		for ( y = 0; y < 4; y += 1 )
-		{
-			assert( result[y][x] == result[y][x] );
-			assert( result[y][x] <= FLT_MAX && result[y][x] >= -FLT_MAX );
-		}
-	}*/
-	//result.pData[0] = pData[0]*right.pData[0] + pData[1]*right.pData[4] + pData[2]*right.pData[8] + pData[3]*right.pData[12];
+        __m128 brod1 = _mm_set1_ps(A[4*i + 0]);
+        __m128 brod2 = _mm_set1_ps(A[4*i + 1]);
+        __m128 brod3 = _mm_set1_ps(A[4*i + 2]);
+        __m128 brod4 = _mm_set1_ps(A[4*i + 3]);
+        __m128 row = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(brod1, row1),
+                        _mm_mul_ps(brod2, row2)),
+                    _mm_add_ps(
+                        _mm_mul_ps(brod3, row3),
+                        _mm_mul_ps(brod4, row4)));
+        _mm_store_ps(&C[4*i], row);
+    }
+	return result;
+#else
+	/*Matrix4x4 result;
 	int x,y,c;
 	for ( x = 0; x < 4; ++x ) // column
 	{
@@ -489,18 +495,17 @@ FORCE_INLINE Matrix4x4 Matrix4x4::operator* ( const Matrix4x4& right ) const
 				result.pData[x+y*4] += pData[c+y*4] * right.pData[x+c*4];
 			}
 		}
-	}
+	}*/
+	Matrix4x4 result;
+	for (unsigned int i = 0; i < 16; i += 4)
+        for (unsigned int j = 0; j < 4; ++j)
+            result.pData[i + j] = (pData[i + 0] * right.pData[j +  0])
+								+ (pData[i + 1] * right.pData[j +  4])
+								+ (pData[i + 2] * right.pData[j +  8])
+								+ (pData[i + 3] * right.pData[j + 12]);
+#endif
 
 #ifdef _ENGINE_DEBUG
-	/*for ( x = 0; x < 4; x += 1 )
-	{
-		for ( y = 0; y < 4; y += 1 )
-		{
-			fnl_assert( result[y][x] == result[y][x] );
-			fnl_assert( result[y][x] <= FLT_MAX && result[y][x] >= -FLT_MAX );
-		}
-	}*/
-	//fnl_assert( result.isOk() );
 	if ( !result.isOk() ) {
 		printf( " bad matrix4\n" );
 	}

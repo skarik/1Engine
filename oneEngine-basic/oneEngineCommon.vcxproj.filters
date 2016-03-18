@@ -288,6 +288,9 @@
     <ClInclude Include="source\engine-common\scenes\benchmark\benchmarkSemaphores.h">
       <Filter>SOURCE\Engine-Common\Scenes\Benchmark</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\scenes\benchmark\benchmarkMatrices.h">
+      <Filter>SOURCE\Engine-Common\Scenes\Benchmark</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -450,6 +453,9 @@
       <Filter>SOURCE\Engine-Common\Entities</Filter>
     </ClCompile>
     <ClCompile Include="source\engine-common\scenes\benchmark\benchmarkSemaphores.cpp">
+      <Filter>SOURCE\Engine-Common\Scenes\Benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\scenes\benchmark\benchmarkMatrices.cpp">
       <Filter>SOURCE\Engine-Common\Scenes\Benchmark</Filter>
     </ClCompile>
   </ItemGroup>

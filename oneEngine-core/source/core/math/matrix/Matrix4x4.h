@@ -2,7 +2,7 @@
 #ifndef _MATRIX_4_4_H_
 #define _MATRIX_4_4_H_
 
-class Matrix4x4
+ALIGNAS(64) class Matrix4x4
 {
 public:
 	FORCE_INLINE Matrix4x4 ( void );
@@ -78,7 +78,11 @@ public:
 	FORCE_INLINE bool isOk ( void );
 
 public:
-	ftype pData[16];
+	float pData[16];
 };
+
+// Ensure it's aligned
+static_assert(sizeof(Matrix4x4)==64,"Invalid alignment for Matrix4x4");
+static_assert(std::alignment_of<Matrix4x4>::value == 64, "Alignment of MyStructure must be 64");
 
 #endif//_MATRIX_4_4_H_
