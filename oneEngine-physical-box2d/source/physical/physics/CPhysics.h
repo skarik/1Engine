@@ -99,6 +99,8 @@ public:
 	FORCE_INLINE PHYS_API static void FreePhantom ( physCollisionVolume* pCollisionVolume );
 	// Checking for phantom collisions contacts
 	FORCE_INLINE PHYS_API static void CheckPhantomContacts ( physCollisionVolume* pCollisionVolume );
+	// Modifiy shapes
+	FORCE_INLINE PHYS_API static void SetPhantomAABB( physCollisionVolume* m_phantom, physAabb* m_aabb );
 	//==Trigger Phantoms==
 	// Creation of a trigger phantom
 	FORCE_INLINE PHYS_API static physRigidBody* CreateTriggerVolume ( physRigidBodyInfo* pBodyInfo, physShape* pShape, physPhantomCallbackShape* pCbPhantom );
@@ -136,6 +138,8 @@ public:
 
 	FORCE_INLINE PHYS_API static void AddPhantom ( physPhantom* phantom );
 	FORCE_INLINE PHYS_API static void AddListener ( physWorldPostSimulationListener* listener );
+
+	FORCE_INLINE PHYS_API static void RemoveReference ( physObject* entity );
 
 	//=========================================//
 	// Threading

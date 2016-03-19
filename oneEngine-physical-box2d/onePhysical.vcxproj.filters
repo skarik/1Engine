@@ -321,6 +321,12 @@
     <ClInclude Include="source\physical\wrapper\physQuaternion.h">
       <Filter>SOURCE\Physical\Wrapper</Filter>
     </ClInclude>
+    <ClInclude Include="source\physical\physics\motion\physRigidBodyInfo.h">
+      <Filter>SOURCE\Physical\Physics\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\physics\motion\physCharacterRigidBodyInfo.h">
+      <Filter>SOURCE\Physical\Physics\Motion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\physical\physics\CPhysics.cpp">

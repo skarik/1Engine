@@ -25,7 +25,10 @@
 	class physRigidBodyInfo;
 	class physRigidBody;
 	//typedef b2Shape physShape;
-	class physCollisionVolume;
+	class physCollisionVolume
+	{
+
+	};
 
 	class physShape
 	{

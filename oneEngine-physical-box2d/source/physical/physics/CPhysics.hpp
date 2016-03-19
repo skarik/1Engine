@@ -467,6 +467,11 @@ FORCE_INLINE PHYS_API void Physics::CheckPhantomContacts ( physCollisionVolume* 
 	((hkpShapePhantom*)pCollisionVolume)->getPenetrations( collisionAccumulation );*/
 	throw Core::NotYetImplementedException();
 }
+// Modifiy shapes
+FORCE_INLINE PHYS_API void Physics::SetPhantomAABB( physCollisionVolume* m_phantom, physAabb* m_aabb )
+{
+	throw Core::NotYetImplementedException();
+}
 // Creation of a trigger phantom
 FORCE_INLINE PHYS_API physRigidBody* Physics::CreateTriggerVolume ( physRigidBodyInfo* pBodyInfo, physShape* pShape, physPhantomCallbackShape* pCbPhantom )
 {
@@ -597,6 +602,11 @@ FORCE_INLINE PHYS_API void Physics::AddListener ( physWorldPostSimulationListene
 {
 	//Physics::World()->addWorldPostSimulationListener( listener );
 	throw Core::NotYetImplementedException();
+}
+
+FORCE_INLINE PHYS_API void Physics::RemoveReference ( physObject* entity )
+{
+	delete entity;
 }
 
 //=========================================//

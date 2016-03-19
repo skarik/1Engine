@@ -13,6 +13,7 @@ class physBoxShape : public physShape
 {
 public:
 	PHYS_API explicit physBoxShape ( const Vector3d& halfExtents );
+	PHYS_API explicit physBoxShape ( const Vector3d& halfExtents, const Vector3d& center );
 
 	PHYS_API void setHalfExtents ( const Vector3d& halfExtents );
 };

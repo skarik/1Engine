@@ -190,6 +190,11 @@ typedef hkpCollidableQualityType	physMotionQualityType;*/
 //typedef b2Fixture					physMotion;
 //typedef int							physMotionQualityType;
 
+class physObject {
+public:
+	void removeReference() {;}
+};
+
 typedef Real						physReal;
 
 class physAabb;
@@ -207,7 +212,7 @@ class hkpCharacterRigidBodyCinfo {};
 // Classes
 class physWind {};
 class physWindRegion;
-class physAabbPhantom { public: void setAabb(physAabb&){;} };
+class physAabbPhantom : public physCollisionVolume { public: void setAabb(physAabb&){;} };
 class physPhantomCallbackShape {};
 
 class physWorldRayCastInput {};
@@ -218,7 +223,7 @@ class physLinearCastInput {};
 class physCdPointCollector {};
 class physCollisionInput {};
 
-class physEntity {};
+class physEntity : public physObject {};
 class physConstraintInstance {};
 class physPhantom {};
 class physWorldPostSimulationListener {};
@@ -229,10 +234,9 @@ class physContactListener;
 class physMotion;
 typedef physMotion hkpMotion;
 
-class hkpMalleableConstraintData {
+class hkpMalleableConstraintData : public physObject {
 public:
 	physReal m_strength;
-	void removeReference ( void ) {;}
 };
 class hkpConstraintInstance {};
 

@@ -193,6 +193,7 @@ void CDuskGUI::Update ( void )
 		// Now, if there's focus, and tab is hit, cycle through the elements
 		if ( CInput::Keydown( Keys.Tab ) )
 		{
+			int repeatCount = 0;
 			int nextFocus = int(hCurrentFocus);
 			if ( hCurrentFocus < 0 ) {
 				nextFocus = -1;
@@ -204,6 +205,11 @@ void CDuskGUI::Update ( void )
 				nextFocus += 1;
 				if ( (unsigned)nextFocus >= vElements.size() ) {
 					nextFocus = 0;
+					// Limit infinite loops
+					if ( repeatCount++ > 2 ) {
+						nextFocus = hCurrentFocus;
+						break;
+					}
 				}
 				if ( vElements[nextFocus] != NULL )
 				{
