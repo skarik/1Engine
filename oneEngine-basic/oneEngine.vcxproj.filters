@@ -55,6 +55,9 @@
     <Filter Include="SOURCE\Engine\MPlayer %28Filter only%29">
       <UniqueIdentifier>{6a066a59-7162-4606-a6ee-b3e2401e13f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Engine\Scripting">
+      <UniqueIdentifier>{1070774f-9d62-48fa-bcee-fd14f7d3342e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\engine\behavior\CExtendableGameObject.h">

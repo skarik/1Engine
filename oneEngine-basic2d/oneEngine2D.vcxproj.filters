@@ -39,6 +39,9 @@
     <ClInclude Include="source\engine2d\entities\AreaTrigger.h">
       <Filter>SOURCE\Engine2D\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine2d\entities\AreaPlayerSpawn.h">
+      <Filter>SOURCE\Engine2D\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine2d\entities\map\TileMap.cpp">
