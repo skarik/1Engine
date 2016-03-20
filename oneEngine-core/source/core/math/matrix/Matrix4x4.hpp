@@ -515,8 +515,8 @@ FORCE_INLINE Matrix4x4 Matrix4x4::operator* ( const Matrix4x4& right ) const
 }
 FORCE_INLINE bool Matrix4x4::isOk ( void )
 {
-	int x, y;
 	bool r = true;
+	/*int x, y;
 	for ( x = 0; x < 4; x += 1 )
 	{
 		for ( y = 0; y < 4; y += 1 )
@@ -530,6 +530,18 @@ FORCE_INLINE bool Matrix4x4::isOk ( void )
 				r = false;
 				(*this)[y][x] = (Real) ((y==x)?1:0);
 			}
+		}
+	}*/
+	for (unsigned int i = 0; i < 16; ++i)
+	{
+		if (pData[i] == pData[i] && pData[i] <= FLT_MAX && pData[i] >= -FLT_MAX)
+		{
+			// Nothing, this is correct.
+		}
+		else
+		{
+			r = false;
+			pData[0] = (Real)((i%5)?0:1);
 		}
 	}
 	return r;
