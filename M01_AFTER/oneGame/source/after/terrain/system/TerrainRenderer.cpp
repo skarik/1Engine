@@ -57,7 +57,8 @@ void Terrain::TerrainRenderer::InvalidateAreaAt ( const Vector3d& n_position )
 // This is safe without locks because all mesh and collision updates must happen in the main thread.
 Terrain::AreaMeshState* Terrain::TerrainRenderer::GetAreaMeshstate ( const Vector3d& n_approximatePosition )
 {
-	throw Core::NotYetImplementedException();
+	//throw Core::NotYetImplementedException();
+	return NULL;
 }
 
 //=========================================//

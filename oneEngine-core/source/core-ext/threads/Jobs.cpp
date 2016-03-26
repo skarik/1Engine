@@ -20,7 +20,7 @@ Jobs::System::System ( const uint8_t threadCount )
 	m_highPriorityFlag = 0x00;
 
 	// Enable the system
-	Active = this;
+	if (Active == NULL) Active = this;
 	m_systemEnabled = true;
 
 	// But prevent it from going anywhere just yet
@@ -44,12 +44,25 @@ Jobs::System::System ( const uint8_t threadCount )
 // Waits for all jobs to finish and then ends the job handler thread.
 Jobs::System::~System ( void )
 {
+	if ( this == Active ) Active = NULL;
 	// Disable adding new jobs
 	m_systemEnabled = false;
+
+	// Clear out all job requests
+	while ( m_jobRequestLock.test_and_set() ) {;} // Wait for read lock on the list
+	m_jobRequests.clear();
+	m_jobRequestLock.clear(); // Clear read lock on the list
+
 	// Notify there's been a job change
 	for ( uint i = 0; i < m_jobThreads.size(); ++i ) {
 		m_jobsignal.notify();
 	}
+
+	// Clear out the tasks
+	while ( m_jobTaskLock.test_and_set() ) {;} // Wait for read lock on the list
+	m_jobTasks.clear();
+	m_jobTaskLock.clear(); // Clear read lock on the list
+
 	// Finish up all jobs
 	_internal_WaitForJobs( JOBTYPE_ALL );
 	// Join the worker thread to stop any dangling execution

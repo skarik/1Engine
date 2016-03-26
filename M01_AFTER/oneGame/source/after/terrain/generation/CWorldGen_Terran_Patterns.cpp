@@ -32,20 +32,24 @@ void CWorldGen_Terran::Generate_Patterns ( const quickAccessData& qd, inputTerra
 	//n_terrain.regions->Generate( qd );
 	// Generate and load patterns into memory
 	//n_terrain.patterns->Generate( qd );
-
-	// Generate region for the pattern system to work
-	for ( char i = -5; i <= 5; ++i ) {
-		for ( char j = -5; j <= 5; ++j ) {
-			n_terrain.regions->Generate( RangeVector( qd.indexer.x+i,qd.indexer.y+j,qd.indexer.z ) );
+	if ( n_terrain.regions != NULL )
+	{
+		// Generate region for the pattern system to work
+		for ( char i = -5; i <= 5; ++i ) {
+			for ( char j = -5; j <= 5; ++j ) {
+				n_terrain.regions->Generate( RangeVector( qd.indexer.x+i,qd.indexer.y+j,qd.indexer.z ) );
+			}
+		}
+		// Generate and load patterns into memory
+		for ( char i = -5; i <= 5; ++i ) {
+			for ( char j = -5; j <= 5; ++j ) {
+				n_terrain.patterns->Generate( RangeVector( qd.indexer.x+i,qd.indexer.y+j,qd.indexer.z ) );
+			}
 		}
 	}
-	// Generate and load patterns into memory
-	for ( char i = -5; i <= 5; ++i ) {
-		for ( char j = -5; j <= 5; ++j ) {
-			n_terrain.patterns->Generate( RangeVector( qd.indexer.x+i,qd.indexer.y+j,qd.indexer.z ) );
-		}
+	if ( n_terrain.patterns != NULL )
+	{
+		// Excavate patterns
+		n_terrain.patterns->Excavate( qd );
 	}
-
-	// Excavate patterns
-	n_terrain.patterns->Excavate( qd );
 }

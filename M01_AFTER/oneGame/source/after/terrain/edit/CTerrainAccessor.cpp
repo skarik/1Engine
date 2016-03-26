@@ -2,6 +2,7 @@
 
 #include "after/terrain/VoxelTerrain.h"
 #include "after/terrain/system/TerrainRenderer.h"
+#include "after/terrain/system/DataSampler.h"
 
 #include "after/terrain/data/GameState.h"
 #include "after/types/terrain/BlockType.h"
@@ -27,11 +28,11 @@ CTerrainAccessor::~CTerrainAccessor ( void )
 // Block Grabbers
 //=========================================//
 
-void CTerrainAccessor::GetBlockAtPosition( Vector3d const&, BlockTrackInfo & o_blockInfo )
+void CTerrainAccessor::GetBlockAtPosition( Vector3d const& n_position, BlockTrackInfo & o_blockInfo )
 {
 	if ( m_terrain ) {
 		// use terrain->Sampler for the block grabbing
-		throw Core::NotYetImplementedException();
+		m_terrain->Sampler->BlockTrackerAt( n_position, o_blockInfo );
 	}
 	else {
 		o_blockInfo.block.raw = 0;
@@ -39,11 +40,11 @@ void CTerrainAccessor::GetBlockAtPosition( Vector3d const&, BlockTrackInfo & o_b
 		o_blockInfo.valid = false;
 	}
 }
-void CTerrainAccessor::GetBlockAtPosition( RaycastHit const&, BlockTrackInfo & o_blockInfo )
+void CTerrainAccessor::GetBlockAtPosition( RaycastHit const& n_raycastHit, BlockTrackInfo & o_blockInfo )
 {
 	if ( m_terrain ) {
 		// use terrain->Sampler for the block grabbing
-		throw Core::NotYetImplementedException();
+		m_terrain->Sampler->BlockTrackerAt( n_raycastHit.hitPos - n_raycastHit.hitNormal.normal(), o_blockInfo );
 	}
 	else {
 		o_blockInfo.block.raw = 0;
@@ -51,11 +52,13 @@ void CTerrainAccessor::GetBlockAtPosition( RaycastHit const&, BlockTrackInfo & o
 		o_blockInfo.valid = false;
 	}
 }
-Terrain::terra_b CTerrainAccessor::GetBlockAtPosition ( Vector3d const& )
+Terrain::terra_b CTerrainAccessor::GetBlockAtPosition ( Vector3d const& n_position )
 {
 	if ( m_terrain ) {
 		// use terrain->Sampler for the block grabbing
-		throw Core::NotYetImplementedException();
+		BlockTrackInfo track_info;
+		GetBlockAtPosition( n_position, track_info );
+		return track_info.block;
 	}
 	else {
 		Terrain::terra_b block;
@@ -64,11 +67,13 @@ Terrain::terra_b CTerrainAccessor::GetBlockAtPosition ( Vector3d const& )
 		return block;
 	}
 }
-Terrain::terra_b CTerrainAccessor::GetBlockAtPosition ( RaycastHit const& )
+Terrain::terra_b CTerrainAccessor::GetBlockAtPosition ( RaycastHit const& n_raycastHit )
 {
 	if ( m_terrain ) {
 		// use terrain->Sampler for the block grabbing
-		throw Core::NotYetImplementedException();
+		BlockTrackInfo track_info;
+		GetBlockAtPosition( n_raycastHit, track_info );
+		return track_info.block;
 	}
 	else {
 		Terrain::terra_b block;

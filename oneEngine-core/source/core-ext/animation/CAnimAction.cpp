@@ -22,7 +22,7 @@ CAnimAction::CAnimAction( void )
 	enableMotionExtrapolation[1] = true;
 	enableMotionExtrapolation[2] = true;
 }
-CAnimAction::CAnimAction( string name )
+CAnimAction::CAnimAction( const char* name )
 	: weight(0), isPlaying(false), end_behavior(0), reset_on_stop(true), mirrored(false), tag(TAG_NORMAL), owner(NULL)
 {
 	actionName = name;
@@ -220,7 +220,7 @@ void CAnimAction::Play ( ftype fPlaySpeed, ftype fBlendTime )
 	if ( fBlendTime < 0.01f )
 	{
 		// Go through all the other stuff
-		for ( std::map<string,CAnimAction>::iterator it = owner->mAnimations.begin(); it != owner->mAnimations.end(); it++ )
+		for ( auto it = owner->mAnimations.begin(); it != owner->mAnimations.end(); it++ )
 		{
 			if ( &(it->second) != (this) )
 			{
@@ -269,7 +269,7 @@ void CAnimAction::Play ( ftype fPlaySpeed, ftype fBlendTime )
 		ftype weightIncrement = deltaTime / fBlendTime;
 
 		// Go through all the other stuff
-		for ( std::map<string,CAnimAction>::iterator it = owner->mAnimations.begin(); it != owner->mAnimations.end(); it++ )
+		for ( auto it = owner->mAnimations.begin(); it != owner->mAnimations.end(); it++ )
 		{
 			if ( &(it->second) != (this) )
 			{

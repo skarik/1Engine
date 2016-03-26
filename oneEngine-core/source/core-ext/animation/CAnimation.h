@@ -9,8 +9,7 @@
 #include "CAnimationEvents.h"
 
 // Using string and map to reference animation
-#include <string>
-using std::string;
+#include "core/containers/arstring.h"
 #include <map>
 #include <utility>
 
@@ -43,20 +42,27 @@ public:
 		mModelTransform = n_transform;
 	}
 
-	CORE_API void Play ( string const& );
-	CORE_API void PlaySmoothed ( string const&, ftype const );
-	CORE_API void Stop ( string const& );
-	CORE_API void StopSmoothed ( string const&, ftype const );
+			 void Play ( const string& animName ) { return this->Play(animName.c_str()); }
+	CORE_API void Play ( const char* animName );
+	         void PlaySmoothed ( const string& animName, ftype const smoothTime ) { return this->PlaySmoothed(animName.c_str(),smoothTime); }
+	CORE_API void PlaySmoothed ( const char* animName, ftype const smoothTime );
+	         void Stop ( const string& animName ) { return this->Stop(animName.c_str()); }
+	CORE_API void Stop ( const char* animName );
+	         void StopSmoothed ( const string& animName, ftype const smoothTime ) { return this->StopSmoothed(animName.c_str(),smoothTime); }
+	CORE_API void StopSmoothed ( const char* animName, ftype const smoothTime );
 
 	CORE_API void Normalize ( const uchar layer );
 
-	CORE_API CAnimAction&	operator [] ( string const& );
-	CORE_API CAnimAction&	operator [] ( const int & );
-	CORE_API CAnimAction*	FindAction ( string const& );
+	CORE_API CAnimAction&	operator[] ( const int & animIndex );
 
-	CORE_API void			LoadActions ( string const& );
+	         CAnimAction&	operator[] ( const string& animName ) { return this->operator[](animName.c_str()); }
+	CORE_API CAnimAction&	operator[] ( const char* animName );
+	         CAnimAction*	FindAction ( const string& animName ) { return this->FindAction(animName.c_str()); }
+	CORE_API CAnimAction*	FindAction ( const char* animName );
+
+	CORE_API void			LoadActions ( const char* );
 	CORE_API void			AddAction ( CAnimAction );
-	const std::map<string,CAnimAction>& GetActionMap ( void ) const {
+	const std::map<arstring128,CAnimAction>& GetActionMap ( void ) const {
 		return mAnimations;
 	}
 
@@ -94,12 +100,12 @@ protected:
 	friend CModel;
 	friend CSkinnedModel;
 
-	std::map<string,CAnimAction>	mAnimations;
-	CAnimationSet*					pAnimationSet;
-	string							sFilename;
-	std::vector<void*>				animRefs;
+	std::map<arstring128,CAnimAction>	mAnimations;
+	CAnimationSet*			pAnimationSet;
+	string					sFilename;
+	std::vector<void*>		animRefs;
 
-	std::vector<ikinfo_t>		ikList;
+	std::vector<ikinfo_t>	ikList;
 	std::vector<std::pair<CAnimAction*,ftype>>	fadeOutList;
 
 	bool					bIsValid;
@@ -107,7 +113,7 @@ protected:
 	CModel*					pOwner;
 
 	CORE_API void			PushFrameEvent ( const Animation::ActionEvent & );
-	std::vector<Animation::ActionEvent>			vEvents;
+	std::vector<Animation::ActionEvent>		vEvents;
 	bool					bEventsRead;
 
 	Vector3d				vModelMotion;

@@ -3,7 +3,10 @@
 #include "gmsceneGame_6.h"
 
 #include "core/debug/CDebugConsole.h"
+#include "core/settings/CGameSettings.h"
 #include "engine/utils/CDeveloperConsole.h"
+
+#include "engine-common/entities/CPlayer.h"
 
 #include "after/entities/menu/front/C_RMainMenu.h"
 
@@ -18,16 +21,18 @@
 #include "after/terrain/VoxelTerrain.h"
 
 #include "after/entities/gametype/gametypeNotDying.h"
+#include "after/entities/gametype/gametypeCharview.h"
 #include "after/states/CWorldState.h"
 #include "after/entities/world/environment/CEnvironmentEffects.h"
 #include "after/entities/character/npc/zoned/CZonedCharacterController.h"
 #include "after/entities/world/CNpcSpawner.h"
+#include "after/terrain/VoxelTerrain.h"
+#include "after/terrain/generation/CWorldGen_Terran.h"
 
 #include "renderer/logic/model/CModel.h"
 #include "renderer/logic/model/CSkinnedModel.h"
 
 #include "renderer/object/util/CLoadScreenInjector.h"
-#include "core/settings/CGameSettings.h"
 
 
 void gmsceneGame_6::LoadScene ( void )
@@ -88,8 +93,9 @@ void gmsceneGame_6::LoadScene ( void )
 	loadscreen->StepScreen();
 	
 	// Terrain system
+	VoxelTerrain* aTerrain;
 	{
-		VoxelTerrain* aTerrain = new VoxelTerrain();
+		aTerrain = new VoxelTerrain();
 		aTerrain->SetSystemPaused( true );
 		aTerrain->RemoveReference();
 	}
@@ -97,7 +103,8 @@ void gmsceneGame_6::LoadScene ( void )
 
 	// Main menu + gametype + world
 	{
-		CGameType* aGametype = new gametypeNotDying( NULL, Vector3d(0,0,0) );
+		//CGameType* aGametype = new gametypeNotDying( NULL, Vector3d(0,0,0) );
+		CGameType* aGametype = new gametypeCharview();
 		aGametype->m_worldeffects	= new CEnvironmentEffects;
 		aGametype->m_worldstate		= new CWorldState;
 		aGametype->m_charactercontroller= new NPC::CZonedCharacterController;
@@ -123,6 +130,18 @@ void gmsceneGame_6::LoadScene ( void )
 		//aMenu->RemoveReference();
 	}
 	loadscreen->StepScreen();
+
+	// Create default player
+	{
+		CPlayer* aPlayer = new CPlayer();
+		aPlayer->RemoveReference();
+	}
+
+	// At the end, unpause the terrain
+	{
+		aTerrain->SetGenerator( new Terrain::CWorldGen_Terran(0) );
+		aTerrain->SetSystemPaused( false ); // This will start up the terrain system
+	}
 
 	delete loadscreen;
 }

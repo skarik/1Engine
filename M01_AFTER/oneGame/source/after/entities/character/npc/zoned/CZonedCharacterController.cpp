@@ -314,7 +314,7 @@ void CZonedCharacterController::LoadSector ( const RangeVector& sector_index )
 }
 
 
-int CZonedCharacterController::GetCharacterCount ( const string & charstring )
+int CZonedCharacterController::GetCharacterCount ( const char* charstring )
 {
 	int count = 0;
 	for ( auto it = characterList.begin(); it != characterList.end(); ++it )
@@ -530,11 +530,13 @@ CZonedCharacter*	CZonedCharacterController::GetNPC ( uint64_t nid )
 }
 
 // == SPAWNERS == 
-CZonedCharacter* CZonedCharacterController::SpawnCharacter ( const string & s , const Vector3d & inPosition, const uint64_t & inID, const Rotator & inRotation ) {
+CZonedCharacter* CZonedCharacterController::SpawnCharacter ( const char* s , const Vector3d & inPosition, const uint64_t & inID, const Rotator & inRotation )
+{
 	cout << "Attempting to spawn " << inID << ", type (character): " << s << endl;
 	return BaseFactory::createInstance( s, inPosition, inID, inRotation );
 }
-CZonedCharacter* CZonedCharacterController::SpawnFauna ( const string & s , const Vector3d & inPosition, const Rotator & inRotation ) {
+CZonedCharacter* CZonedCharacterController::SpawnFauna ( const char* s , const Vector3d & inPosition, const Rotator & inRotation )
+{
 	cout << "Attempting to spawn type (fauna): " << s;
 	uint64_t nextId = RequestNPC( npcid_FAUNA );
 	cout << " with fauna_id " << nextId;

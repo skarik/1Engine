@@ -79,7 +79,7 @@ CAnimation&	CAnimation::operator= ( CAnimation const& sourceAnimRef )
 	// Copy the action map
 	mAnimations = sourceAnimRef.mAnimations;
 	// Set all of the animation actions' owners to this, and reset them all
-	for ( std::map<string,CAnimAction>::iterator it = mAnimations.begin(); it != mAnimations.end(); it++ )
+	for ( auto it = mAnimations.begin(); it != mAnimations.end(); it++ )
 	{
 		it->second.Reset();
 		it->second.owner = this;
@@ -96,12 +96,10 @@ CAnimation&	CAnimation::operator= ( CAnimation const& sourceAnimRef )
 }
 
 
-void CAnimation::Play ( string const& animName )
+void CAnimation::Play ( const char* animName )
 {
 	// Find animation with name
-	std::map<string,CAnimAction>::iterator it;
-
-	it = mAnimations.find( StringUtils::ToLower( animName ) );
+	auto it = mAnimations.find( arstring128(animName) );
 	if ( it == mAnimations.end() )
 	{
 		cout << "Unable to find action name '" << animName << "' in animation " << this << endl;
@@ -111,12 +109,10 @@ void CAnimation::Play ( string const& animName )
 		it->second.Play( 1.0f );
 	}
 }
-void CAnimation::PlaySmoothed ( string const& animName, ftype const smoothTime )
+void CAnimation::PlaySmoothed ( const char* animName, ftype const smoothTime )
 {
 	// Find animation with name
-	std::map<string,CAnimAction>::iterator it;
-
-	it = mAnimations.find( StringUtils::ToLower( animName ) );
+	auto it = mAnimations.find( arstring128(animName) );
 	if ( it == mAnimations.end() )
 	{
 		cout << "Unable to find action name '" << animName << "' in animation " << this << endl;
@@ -126,12 +122,10 @@ void CAnimation::PlaySmoothed ( string const& animName, ftype const smoothTime )
 		it->second.Play( 1.0f, smoothTime );
 	}
 }
-void CAnimation::Stop ( string const& animName )
+void CAnimation::Stop ( const char* animName )
 {
 	// Find animation with name
-	std::map<string,CAnimAction>::iterator it;
-
-	it = mAnimations.find( StringUtils::ToLower( animName ) );
+	auto it = mAnimations.find( arstring128(animName) );
 	if ( it == mAnimations.end() )
 	{
 		cout << "Unable to find action name '" << animName << "' in animation " << this << endl;
@@ -141,12 +135,10 @@ void CAnimation::Stop ( string const& animName )
 		it->second.Stop();
 	}
 }
-void CAnimation::StopSmoothed ( string const& animName, ftype const smoothTime )
+void CAnimation::StopSmoothed ( const char* animName, ftype const smoothTime )
 {
 	// Find animation with name
-	std::map<string,CAnimAction>::iterator anim;
-
-	anim = mAnimations.find( StringUtils::ToLower( animName ) );
+	auto anim = mAnimations.find( arstring128(animName) );
 	if ( anim == mAnimations.end() )
 	{
 		cout << "Unable to find action name '" << animName << "' in animation " << this << endl;
@@ -190,12 +182,10 @@ void CAnimation::Normalize ( const uchar layer )
 }
 
 
-CAnimAction& CAnimation::operator [] ( string const& animName )
+CAnimAction& CAnimation::operator [] ( const char* animName )
 {
 	// Find animation with name
-	std::map<string,CAnimAction>::iterator it;
-
-	it = mAnimations.find( StringUtils::ToLower( animName ) );
+	auto it = mAnimations.find( arstring128( animName ) );
 	if ( it == mAnimations.end() ) {
 #ifdef _ENGINE_DEBUG
 		//cout << "WARNING: Could not find animation named \"" << animName << "\" in list!" << endl;
@@ -213,10 +203,7 @@ CAnimAction& CAnimation::operator [] ( string const& animName )
 }
 CAnimAction& CAnimation::operator [] ( const int & animIndex )
 {
-	std::map<string,CAnimAction>::iterator it;
-	it = mAnimations.begin();
-	/*for ( int i = 0; i < animIndex; ++i )
-		++it;*/
+	auto it = mAnimations.begin();
 	while ( it != mAnimations.end() && it->second.index != animIndex ) {
 		++it;
 	}
@@ -234,12 +221,10 @@ CAnimAction& CAnimation::operator [] ( const int & animIndex )
 	}
 	return it->second;
 }
-CAnimAction* CAnimation::FindAction ( string const& animName )
+CAnimAction* CAnimation::FindAction ( const char* animName )
 {
 	// Find animation with name
-	std::map<string,CAnimAction>::iterator it;
-
-	it = mAnimations.find( StringUtils::ToLower( animName ) );
+	auto it = mAnimations.find( arstring128( animName ) );
 	if ( it == mAnimations.end() ) {
 		//cout << "Unable to find action name '" << animName << "' in animation " << this << endl;
 		return NULL;
@@ -295,7 +280,7 @@ void CAnimation::Update ( const Real deltaTime )
 
 	for ( unsigned char layer = 0; layer < maxLayers; layer++ )
 	{
-		std::map<string,CAnimAction>::iterator it = mAnimations.begin();
+		auto it = mAnimations.begin();
 		do
 		{
 			CAnimAction& currentAction = it->second;

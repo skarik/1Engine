@@ -12,6 +12,8 @@
 #include "after/terrain/generation/patterns/CPatternController.h"
 #include "after/terrain/generation/regions/CRegionGenerator.h"
 
+#include "core-ext/threads/Jobs.h"
+
 // define the terrain list
 std::vector<CVoxelTerrain*>	CVoxelTerrain::TerrainList;
 
@@ -73,7 +75,7 @@ void CVoxelTerrain::_Init ( void )
 	m_memory	= new Terrain::MemoryManager();
 	m_sampler	= new Terrain::DataSampler(this);
 	m_renderer	= new Terrain::TerrainRenderer(this);
-	//m_jobs		= new Terrain::JobHandler(this);
+	m_jobs		= new Jobs::System( std::max( std::thread::hardware_concurrency()-3, std::thread::hardware_concurrency()/2 ) ); // Engine only needs 2 threads to run. Terrain needs them all.
 
 	m_genny		= NULL;
 	m_patterns	= NULL;
@@ -83,6 +85,7 @@ void CVoxelTerrain::_Init ( void )
 void CVoxelTerrain::_Free ( void )
 {
 	SetSystemPaused ( true );
+	delete_safe( m_jobs ); // Stop jobs first
 
 	delete_safe( m_io );
 	delete_safe( m_memory );
@@ -100,6 +103,21 @@ void CVoxelTerrain::_Free ( void )
 // When disabled, the processes of loading, saving, and simulation are all disabled.
 void CVoxelTerrain::SetSystemPaused ( const bool n_pauseSystem )
 {
+	if ( m_system_active == false && n_pauseSystem == false )
+	{
+		// Set up initial job queue
+		const int32_t range = 5;
+		for ( int32_t z = -range; z <= range; ++z )
+		{
+			for ( int32_t y = -range; y <= range; ++y )
+			{
+				for ( int32_t x = -range; x <= range; ++x )
+				{
+					m_jobs->AddJobRequest( Jobs::JOBTYPE_TERRAIN, &CVoxelTerrain::_LoadSector, this, WorldVector(x,y,z) );
+				}
+			}
+		}
+	}
 	m_system_active = !n_pauseSystem;
 
 	// TODO: need to empty out the job queue
@@ -143,12 +161,14 @@ Terrain::CRegionGenerator* CVoxelTerrain::GetRegionGenerator ( void )
 // The current WorldVector that the terrain is centered around
 WorldVector CVoxelTerrain::GetCenterSector ()
 {
-	throw Core::NotYetImplementedException();
+	//throw Core::NotYetImplementedException();
+	return WorldVector(0,0,0);
 }
 // The current Vector3d_d that the terrain is centered around, in feet (return the WorldVector*64.0F as a Vector3d_d)
 Vector3d_d CVoxelTerrain::GetCenterPosition ()
 {
-	throw Core::NotYetImplementedException(); 
+	//throw Core::NotYetImplementedException(); 
+	return Vector3d_d(0,0,0);
 }
 // Set the terrain's center position using a 3d vector in sector space
 void CVoxelTerrain::SetCenterSector ( const WorldVector& vect )
@@ -290,4 +310,93 @@ Terrain::MapStructure& CVoxelTerrain::LockWriteMapReference ( void )
 void CVoxelTerrain::UnlockWriteMapReference ( void )
 {
 	m_map_write_lock.unlock();
+}
+
+//=========================================//
+// Terrain Workers
+
+//		_LoadSector
+// Loads up a sector.
+// If it cannot be found, and there is not an area generated, it will generate a sector.
+void CVoxelTerrain::_LoadSector ( const WorldVector& n_sector_id )
+{
+	// Todo: Check if the sector is out of range
+
+	// Check if there's data already loaded. If it's already loaded, then ignore.
+	// Todo: Speed up the following
+	{
+		auto map = LockReadMapReference();
+		auto sector = map.find(n_sector_id);
+		if ( sector != map.end() && sector->second.data != NULL )
+		{
+			// No work needed to be done: the sector already exists.
+			UnlockReadMapReference();
+			return; // Exit early
+		}
+		UnlockReadMapReference();
+	}
+
+	// Allocate data for the sector
+	Terrain::Payload payload;
+	payload.lod = 0;
+	payload.data = m_memory->NewDataBlock();
+	payload.gamedata_0 = new Terrain::GamePayload;
+	payload.gamedata_far = NULL;
+
+	// Load up the information
+	if ( m_io->LoadSector( &payload, payload.gamedata_0, n_sector_id ) )
+	{
+		// Loaded information.
+	}
+	else
+	{
+		// Generate information with an immediate generation
+		_GenerateSector( n_sector_id, true, &payload, payload.gamedata_0 );
+		// Loaded information.
+	}
+
+	// The new payload now needs to be moved into the map
+	{
+		auto map = LockWriteMapReference();
+		map[n_sector_id] = payload;
+		UnlockWriteMapReference();
+	}
+
+	// TODO: Ping for a mesh update.
+}
+
+//		_GenerateSector
+// Generates a damn sector. If is not inline, will save it to disk upon finishing.
+// If is set to inline mode, o_payload and o_gamepayload must exist
+void CVoxelTerrain::_GenerateSector ( const WorldVector& n_sector_id, const bool n_inline_generation, Terrain::Payload* o_payload, Terrain::GamePayload* o_gamepayload )
+{
+	// Create input info structure
+	Terrain::inputTerrain_t input_info;
+	input_info.regions = m_regions;
+	input_info.patterns = m_patterns;
+	input_info.terrain = this;
+
+	// Set generation bounding box
+	Vector3d_d min ( n_sector_id.x * 64.0, n_sector_id.y * 64.0, n_sector_id.z * 64.0 );
+	Vector3d_d max ( (n_sector_id.x+1) * 64.0, (n_sector_id.y+1) * 64.0, (n_sector_id.z+1) * 64.0 );
+	
+	if ( n_inline_generation )
+	{
+		// Inline just generates sector to existing input
+		m_genny->GenerateSector( input_info, o_payload, o_gamepayload, min,max, n_sector_id );
+	}
+	else
+	{
+		Terrain::Payload payload;
+		Terrain::GamePayload gamepayload;
+		Terrain::PayloadConstruct(payload); // Zero out data
+		payload.data = m_memory->NewDataBlock();
+		payload.gamedata_0 = &gamepayload;
+		// Generate information
+		m_genny->GenerateSector( input_info, &payload, &gamepayload, min,max, n_sector_id );
+		// Save the data
+		m_io->SaveSector( &payload, payload.gamedata_0, n_sector_id );
+		// Clear out temporary data
+		m_memory->FreeDataBlock(payload.data);
+	}
 }

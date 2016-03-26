@@ -11,9 +11,9 @@ namespace NPC
 	//#define DEFINE_ZCC(a) explicit a ( const Vector3d & inPosition, const Rotator & inRotation=Rotator() );
 	#define DEFINE_ZCC(a) explicit a ( const Vector3d & inPosition, const uint64_t & inID, const Rotator & inRotation=Rotator() ); \
 		protected: \
-			void ZCC_SetCharacterID ( void ) { ZCC_CharacterId = string( #a ); }; \
-			const std::string & ZCC_GetCharacterId ( void ) { return ZCC_CharacterId; }; \
-			std::string ZCC_CharacterId; \
+			void ZCC_SetCharacterID ( void ) { ZCC_CharacterId = ( #a ); }; \
+			const char* const ZCC_GetCharacterId ( void ) { return ZCC_CharacterId.c_str(); }; \
+			arstring128 ZCC_CharacterId; \
 		private: \
 			static CZonedCharacterController::Registrar<a> Reg; \
 		public:
@@ -21,13 +21,7 @@ namespace NPC
 	#define END_GROUP_ZCC }
 	#define DESTRUCTOR_ZCC(a) a :: ~ ## a ( void ) { ZCC_RemoveInstance();
 	#define CONSTRUCTOR_ZCC_V2(a) a ( const Vector3d & inPosition, const uint64_t & inID, const Rotator & inRotation ) : CZonedCharacter ( inPosition, inID, inRotation )
-	//#define REGISTER_ZONED_CHARACTER(a) protected: \
-	//	void ZCC_SetCharacterID ( void ) { ZCC_CharacterId = string( #a ); /*cout<<ZCC_CharacterId<<endl;*/ }; \
-	//	const std::string & ZCC_GetCharacterId ( void ) { return ZCC_CharacterId; }; \
-	//	std::string ZCC_CharacterId; \
-	//	private: \
-	//	static CZonedCharacterController::Registrar<a> Reg;
-	#define REGISTER_ZCC(a) CZonedCharacterController::Registrar<a> a :: Reg ( string( #a ) );
+	#define REGISTER_ZCC(a) CZonedCharacterController::Registrar<a> a :: Reg ( ( #a ) );
 }
 
 // Includes
@@ -161,7 +155,7 @@ namespace NPC
 			}
 		}
 		//static vector<characterinfo_t> vCharacterList;
-		virtual const string & ZCC_GetCharacterId ( void )=0;
+		virtual const char* const ZCC_GetCharacterId ( void )=0;
 
 		// Turns off saving for on death
 		void ZCC_DisableSave ( void ) {
@@ -171,10 +165,10 @@ namespace NPC
 	private:
 		friend	CZonedCharacterController;
 
-		ftype	fOutOfRangeTime;
+		Real	fOutOfRangeTime;
 		bool	bOutOfRange;
 
-		ftype	fActiveAreaCheckTime;
+		Real	fActiveAreaCheckTime;
 		bool	bOutOfActiveArea;
 
 		bool	bSaveOnUnload;

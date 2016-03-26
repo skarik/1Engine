@@ -144,5 +144,9 @@ namespace std
 	};
 }
 
+// Ease of use defines
+typedef arstring<64>	arstring64;
+typedef arstring<128>	arstring128;
+typedef arstring<256>	arstring256;
 
 #endif//_C_AR_STRING_H_

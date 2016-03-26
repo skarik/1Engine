@@ -10,6 +10,7 @@
 #include <vector>
 #include <map>
 
+#include "core/containers/arstring.h"
 #include "engine/behavior/CGameObject.h"
 #include "after/types/WorldVector.h"
 
@@ -59,8 +60,8 @@ namespace NPC
 		void LateUpdate ( void );
 		void PostUpdate ( void );
 
-		int GetCharacterCount ( const string & );
-		#define GetCount(a) GetCharacterCount(string( #a ))
+		int GetCharacterCount ( const char* );
+		#define GetCount(a) GetCharacterCount(const char*( #a ))
 
 		// == Character System Management ==
 		//  AddCharacter()
@@ -111,24 +112,29 @@ namespace NPC
 		void				GenerateNPC ( uint64_t nid, uint32_t nregion );
 
 		// == Character Factory ==
-		CZonedCharacter* SpawnCharacter ( const string & s , const Vector3d & inPosition, const uint64_t & inID, const Rotator & inRotation=Rotator() );
-		CZonedCharacter* SpawnFauna ( const string & s , const Vector3d & inPosition, const Rotator & inRotation=Rotator() );
-		typedef std::pair<string,CZonedCharacter*(*)( const Vector3d & inPosition, const Rotator & inRotation, const uint64_t & inID )> pairtype;
+		CZonedCharacter* SpawnCharacter ( const char* s , const Vector3d & inPosition, const uint64_t & inID, const Rotator & inRotation=Rotator() );
+		CZonedCharacter* SpawnFauna ( const char* s , const Vector3d & inPosition, const Rotator & inRotation=Rotator() );
+		typedef std::pair<arstring128,CZonedCharacter*(*)( const Vector3d & inPosition, const Rotator & inRotation, const uint64_t & inID )> pairtype;
 		// Factory for creating zoned characters
-		struct BaseFactory {
-			typedef std::map<std::string, CZonedCharacter*(*)( const Vector3d & inPosition, const Rotator & inRotation, const uint64_t & inID )> map_type;
+		struct BaseFactory
+		{
+			typedef std::map<arstring128, CZonedCharacter*(*)( const Vector3d & inPosition, const Rotator & inRotation, const uint64_t & inID )> map_type;
 
-			static CZonedCharacter * createInstance(std::string const& s, const Vector3d & inPosition, const uint64_t & inID, const Rotator & inRotation=Rotator() ) {
-				map_type::iterator it = getMap()->find(s);
-				if(it == getMap()->end()) {
+			static CZonedCharacter * createInstance( const char* s, const Vector3d & inPosition, const uint64_t & inID, const Rotator & inRotation=Rotator() )
+			{
+				map_type::iterator it = getMap()->find(arstring128(s));
+				if(it == getMap()->end())
+				{
 					std::cout << "Type " << s << " is not registered!" << std::endl;
 					return 0;
 				}
 				return it->second( inPosition, inRotation, inID );
 			}
 		protected:
-			static map_type * getMap() {
-				if (!map) { map = new map_type; } 
+			static map_type * getMap()
+			{
+				if ( map == NULL )
+					map = new map_type;
 				return map; 
 			}
 		private:
@@ -136,9 +142,11 @@ namespace NPC
 		};
 		// Registration class for zoned characters
 		template<typename T>
-		struct Registrar : BaseFactory {
-			Registrar( const string & s ) {
-				getMap()->insert(pairtype (s, &_instZCC<T>));
+		struct Registrar : BaseFactory
+		{
+			Registrar( const char* s )
+			{
+				getMap()->insert(pairtype (arstring128(s), &_instZCC<T>));
 			};
 		};
 

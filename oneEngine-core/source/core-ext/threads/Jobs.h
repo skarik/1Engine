@@ -15,7 +15,7 @@
 #include <utility>
 
 // Uncomment this if in a C++11 compiler that supports Variadic templates.
-//#define _USING_VARIADIC_TEMPLATES_
+#define _USING_VARIADIC_TEMPLATES_
 // This controls whether spin-locking or cv-signals are used for the worker loop.
 #define _USING_JOB_SIGNALING_SYSTEM_
 
@@ -93,26 +93,55 @@ namespace Jobs
 
 	public:
 #ifdef _USING_VARIADIC_TEMPLATES_
+		static struct Current
+		{
+		public:
+			//	AddJobRequest ( jobType, Fn&& function, Args... args )
+			// Adds a job request with the given type to the Current system. It may begin execution before this function returns.
+			template <typename Fn, typename... Args>
+			static void AddJobRequest ( jobType_t jobType, Fn&& function, Args...args )
+			{
+				Active->AddJobRequest( jobType, function, args... );
+			}
+			//	AddJobRequest ( Fn&& function, Args... args )
+			// Adds a job request to the Current system. It may begin execution before this function returns.
+			// Defaults to a JOBTYPE_DEFAULT type.
+			template <typename Fn, typename... Args>
+			static void AddJobRequest ( Fn&& function, Args...args )
+			{
+				Active->AddJobRequest( function, args... );
+			}	
+			//	Perform ()
+			// Calls WaitForJobs( JOBTYPE_ALL ). Will stop until all jobs are done.
+			static void Perform ( void )
+			{
+				Active->Perform();
+			}
+			//	WaitForJobs ( jobType )
+			// Waits for the given jobs in the group are all finished. 
+			static void WaitForJobs ( const jobType_t jobType )
+			{
+				Active->WaitForJobs( jobType );
+			}
+		};
+
 		//	AddJobRequest ( jobType, Fn&& function, Args... args )
-		// Adds a job request to the internal list with the given type. It may begin execution before this function returns.
+		// Adds a job request with the given type to the internal list. It may begin execution before this function returns.
 		template <typename Fn, typename... Args>
-		CORE_API static void AddJobRequest ( jobType_t jobType, Fn&& function, Args...args )
+		void AddJobRequest ( jobType_t jobType, Fn&& function, Args...args )
 		{
 			jobRequest_t newJob;
 			newJob.type = jobType;
 			newJob.function = std::bind(function,args...);
-			Active->_internal_AddJob( newJob );
+			this->_internal_AddJob( newJob );
 		}
 		//	AddJobRequest ( Fn&& function, Args... args )
 		// Adds a job request to the internal list. It may begin execution before this function returns.
 		// Defaults to a JOBTYPE_DEFAULT type.
 		template <typename Fn, typename... Args>
-		CORE_API static void AddJobRequest ( Fn&& function, Args...args )
+		void AddJobRequest ( Fn&& function, Args...args )
 		{
-			jobRequest_t newJob;
-			newJob.type = JOBTYPE_DEFAULT;
-			newJob.function = std::bind(function,args...);
-			Active->_internal_AddJob( newJob );
+			this->AddJobRequest( JOBTYPE_DEFAULT, function, args... );
 		}
 #else
 		//	AddJobRequest ( jobType, Fn&& function, Args... args )
@@ -234,15 +263,15 @@ namespace Jobs
 
 		//	Perform ()
 		// Calls WaitForJobs( JOBTYPE_ALL ). Will stop until all jobs are done.
-		CORE_API static void Perform ( void )
+		CORE_API void Perform ( void )
 		{
 			WaitForJobs( JOBTYPE_ALL );
 		}
 		//	WaitForJobs ( jobType )
 		// Waits for the given jobs in the group are all finished. 
-		CORE_API static void WaitForJobs ( const jobType_t jobType )
+		CORE_API void WaitForJobs ( const jobType_t jobType )
 		{
-			Active->_internal_WaitForJobs( jobType );
+			this->_internal_WaitForJobs( jobType );
 		}
 
 	private:
@@ -251,17 +280,17 @@ namespace Jobs
 		CORE_API void _internal_AddJob ( const jobRequest_t& jobToAdd );
 		//	_internal_WaitForJobs
 		// Waits for the given job type
-		void _internal_WaitForJobs ( const jobType_t jobType );
+		CORE_API void _internal_WaitForJobs ( const jobType_t jobType );
 		
 		//	_internal_JobCycle
 		// Job distribution loop.
 		// Continues while m_systemEnabled is true and the current job list is not empty.
-		void _internal_JobCycle ( void );
+		CORE_API void _internal_JobCycle ( void );
 		//	_internal_WorkerCycle
 		// Job execution loop.
 		// Is assigned a job by _internal_JobCycle, and then executes.
 		// When not working, state.perform is set to false.
-		void _internal_WorkerCycle ( jobState_t* state );
+		CORE_API void _internal_WorkerCycle ( jobState_t* state );
 	private:
 		// Is the system enabled for adding jobs?
 		std::atomic<bool>	m_systemEnabled;

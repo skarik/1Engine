@@ -8,6 +8,7 @@
 #include "core/math/vect3d_template.h"
 #include "core-ext/containers/arproperty.h"
 #include "core-ext/threads/counter.h"
+#include "core-ext/threads/Jobs.h"
 
 #include "engine/behavior/CGameBehavior.h"
 
@@ -197,6 +198,7 @@ private:
 	Terrain::DataSampler*	m_sampler;
 	Terrain::TerrainRenderer* m_renderer;
 	//Terrain::JobHandler*	m_jobs;
+	Jobs::System*			m_jobs;
 
 	// Generation Triad
 
@@ -230,6 +232,19 @@ private:
 	//		_Free
 	// Free up terrain state
 	void					_Free ( void );
+
+	//=========================================//
+	// Terrain Workers
+
+	//		_LoadSector
+	// Loads up a sector.
+	// If it cannot be found, and there is not an area generated, it will generate a sector.
+	void					_LoadSector ( const WorldVector& n_sector_id );
+
+	//		_GenerateSector
+	// Generates a damn sector. If is not inline, will save it to disk upon finishing.
+	// If is set to inline mode, o_payload and o_gamepayload must exist
+	void					_GenerateSector ( const WorldVector& n_sector_id, const bool n_inline_generation=false, Terrain::Payload* o_payload=NULL, Terrain::GamePayload* o_gamepayload=NULL );
 
 };
 typedef CVoxelTerrain VoxelTerrain;

@@ -7,8 +7,7 @@
 #include "CMorpherSet.h"
 
 // Using string and map to reference animation
-#include <string>
-using std::string;
+#include "core/containers/arstring.h"
 #include <map>
 
 // Include morph "action"
@@ -33,9 +32,9 @@ public:
 
 	RENDER_API virtual ~CMorpher ( void );
 
-	RENDER_API CMorphAction& operator [] ( string const& );
+	RENDER_API CMorphAction& operator [] ( const char* );
 	RENDER_API CMorphAction& operator [] ( const int & );
-	RENDER_API CMorphAction* FindAction ( string const& );
+	RENDER_API CMorphAction* FindAction ( const char* );
 
 	RENDER_API void AddAction ( CMorphAction );
 
@@ -60,7 +59,7 @@ protected:
 	friend CModel;
 	friend CSkinnedModel;
 
-	std::map<string,CMorphAction>	mActions;
+	std::map<arstring<128>,CMorphAction>	mActions;
 	CMorpherSet*			pMorphSet;
 	string					sFilename;
 

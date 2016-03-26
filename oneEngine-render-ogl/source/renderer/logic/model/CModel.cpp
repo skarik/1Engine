@@ -314,28 +314,28 @@ void CModel::CalculateBoundingBox ( void )
 }
 
 // ==Shader interface==
-void CModel::SetShaderUniform ( string const& sUniformName, float const fInput )
+void CModel::SetShaderUniform ( const char* sUniformName, float const fInput )
 {
 	/*if ( !CGameSettings::Active()->b_ro_EnableShaders ) {
 		return; // TODO
 	}*/
-	if ( !uniformMapFloat ) uniformMapFloat = new unordered_map<string,float>;
-	(*uniformMapFloat)[sUniformName] = fInput;
+	if ( !uniformMapFloat ) uniformMapFloat = new unordered_map<arstring128,float>;
+	(*uniformMapFloat)[arstring128(sUniformName)] = fInput;
 }
-void CModel::SetShaderUniform ( string const& sUniformName, const Vector2d& fInput )
+void CModel::SetShaderUniform ( const char* sUniformName, const Vector2d& fInput )
 {
-	if ( !uniformMapVect2d ) uniformMapVect2d = new unordered_map<string,Vector2d>;
-	(*uniformMapVect2d)[sUniformName] = fInput;
+	if ( !uniformMapVect2d ) uniformMapVect2d = new unordered_map<arstring128,Vector2d>;
+	(*uniformMapVect2d)[arstring128(sUniformName)] = fInput;
 }
-void CModel::SetShaderUniform ( string const& sUniformName, const Vector3d& fInput )
+void CModel::SetShaderUniform ( const char* sUniformName, const Vector3d& fInput )
 {
-	if ( !uniformMapVect3d ) uniformMapVect3d = new unordered_map<string,Vector3d>;
-	(*uniformMapVect3d)[sUniformName] = fInput;
+	if ( !uniformMapVect3d ) uniformMapVect3d = new unordered_map<arstring128,Vector3d>;
+	(*uniformMapVect3d)[arstring128(sUniformName)] = fInput;
 }
-void CModel::SetShaderUniform ( string const& sUniformName, const Color& fInput )
+void CModel::SetShaderUniform ( const char* sUniformName, const Color& fInput )
 {
-	if ( !uniformMapColor ) uniformMapColor = new unordered_map<string,Color>;
-	(*uniformMapColor)[sUniformName] = fInput;
+	if ( !uniformMapColor ) uniformMapColor = new unordered_map<arstring128,Color>;
+	(*uniformMapColor)[arstring128(sUniformName)] = fInput;
 }
 
 void CModel::SendShaderUniforms ( CMesh* n_calling_mesh )

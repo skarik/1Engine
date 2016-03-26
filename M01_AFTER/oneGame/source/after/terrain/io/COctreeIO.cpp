@@ -24,7 +24,7 @@ Terrain::COctreeIO::COctreeIO ( const char* n_savefile, VoxelTerrain* n_terrain 
 		// If no save file was passed in, then use the default current savefiles which default to debug
 		CGameSettings::Active()->SetRealmSaveTarget( CGameSettings::Active()->GetRealmTargetName().c_str() );
 		CGameSettings::Active()->SetWorldSaveTarget( CGameSettings::Active()->GetWorldTargetName().c_str() );
-		m_savefile = CGameSettings::Active()->GetWorldTargetName().c_str();
+		m_savefile = CGameSettings::Active()->MakeWorldSaveDirectory().c_str();
 	}
 
 #	if LOADER_MODULE==1

@@ -2,6 +2,7 @@
 // Includes
 #include "CTransform.h"
 //#include "CGameState.h"
+#include "core-ext/threads/Jobs.h"
 #include <list>
 #include <algorithm>
 
@@ -592,8 +593,34 @@ CTransform* CTransform::FindChildRecursive ( const CTransform* sChildInfo )
 }
 
 // Propogates transforms, starting at Root.
+#ifndef DISABLE_PROPOGATE_THREADING
+void PropogateSub ( CTransform* start )
+{
+	std::list<CTransform*> transformList;
+	transformList.push_front( start );
+	// Do all the transforms
+	while ( !transformList.empty() )
+	{
+		CTransform* t_transform = transformList.front();
+		transformList.pop_front();
+		// If transform is active
+		if ( t_transform->active ) {
+			// Update the transform
+			t_transform->LateUpdate();
+			// Loop through children and push them to the front of the list
+			for ( auto t_tr = t_transform->children.begin(); t_tr != t_transform->children.end(); ++t_tr )
+			{
+				transformList.push_front( *t_tr );
+			}
+		}
+		//
+	}
+}
+#endif
+
 void CTransform::PropogateTransforms ( void )
 {
+#ifdef DISABLE_PROPOGATE_THREADING
 	std::list<CTransform*> transformList;
 	transformList.push_front( &CTransform::root );
 	// Do all the transforms
@@ -606,7 +633,6 @@ void CTransform::PropogateTransforms ( void )
 			// Update the transform
 			t_transform->LateUpdate();
 			// Loop through children and push them to the front of the list
-			//cout << t_transform->name << "'s children count: " << t_transform->children.size() << endl;
 			for ( auto t_tr = t_transform->children.begin(); t_tr != t_transform->children.end(); ++t_tr )
 			{
 				transformList.push_front( *t_tr );
@@ -614,4 +640,11 @@ void CTransform::PropogateTransforms ( void )
 		}
 		//
 	}
+#else
+	for ( auto t_tr = CTransform::root.children.begin(); t_tr != CTransform::root.children.end(); ++t_tr )
+	{
+		Jobs::System::Current::AddJobRequest( Jobs::JOBTYPE_ENGINE, PropogateSub, *t_tr );
+	}
+	Jobs::System::Current::WaitForJobs( Jobs::JOBTYPE_ENGINE );
+#endif
 }

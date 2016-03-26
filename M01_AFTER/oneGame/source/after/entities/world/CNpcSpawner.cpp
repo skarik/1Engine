@@ -99,12 +99,13 @@ void CNpcSpawner::Update ( void )
 }
 
 struct spawnChoice_t {
-	spawnChoice_t( const char* s, ftype w = 1.0f ) {
+	spawnChoice_t( const char* s, ftype w = 1.0f )
+	{
 		name = s;
 		weight = w;
 	}
-	string	name;
-	ftype	weight;
+	arstring128	name;
+	ftype		weight;
 };
 void CNpcSpawner::SpawnNpcs ( const Vector3d n_sourcePlayerPosition )
 {
@@ -112,7 +113,7 @@ void CNpcSpawner::SpawnNpcs ( const Vector3d n_sourcePlayerPosition )
 	ftype	spawnChance = Random.Range( 0.0f, 1.0f );
 	ftype	spawnChoice = Random.Range( 0.0f, 1.0f );
 	CZonedCharacter*		newNpc;
-	vector<spawnChoice_t>		choiceList;
+	vector<spawnChoice_t>	choiceList;
 
 	// ===============================================
 	// Generate spawn list
@@ -151,14 +152,14 @@ void CNpcSpawner::SpawnNpcs ( const Vector3d n_sourcePlayerPosition )
 	// ===============================================
 	// Spawn when a valid object chosen
 	if ( spawnChoiceIndex != -1 ) {
-		string typeName = choiceList[spawnChoiceIndex].name;
+		arstring128 typeName = choiceList[spawnChoiceIndex].name;
 		int currentCount = pController->GetCharacterCount( typeName );
 		/*int currentCount;
 		currentCount = pController->GetCharacterCount( typeName );
 		if ( currentCount < 1 ) {
 			//newNpc = pController->SpawnCharacter( typeName, currentPlayer->transform.position + Vector3d( 10,10,10 ) );
 		}*/
-		if ( typeName == "FaunaDesertBird" ) {
+		if ( typeName.compare("FaunaDesertBird") ) {
 			if ( currentCount < 5 ) {
 				newNpc = pController->SpawnFauna( typeName, n_sourcePlayerPosition + Vector3d( random_range(-64,64),random_range(-64,64),random_range(32,80) ) );
 			}
@@ -173,7 +174,7 @@ void CNpcSpawner::SpawnNpcs ( const Vector3d n_sourcePlayerPosition )
 				newNpc = pController->SpawnCharacter( typeName, currentPlayer->transform.position + Vector3d( 10,10,10 ) );
 			}
 		}*/
-		else if ( typeName == "FaunaKomodo" ) {
+		else if ( typeName.compare("FaunaKomodo") ) {
 			if ( currentCount < 2 ) {
 				//newNpc = pController->SpawnCharacter( typeName, currentPlayer->transform.position + Vector3d( Random.PointOnUnitCircle()*10,4 ) );
 				/*bool check;

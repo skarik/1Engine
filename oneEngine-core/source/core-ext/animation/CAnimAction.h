@@ -4,10 +4,9 @@
 
 // Includes
 #include "core/types/float.h"
+#include "core/containers/arstring.h"
 #include "core-ext/animation/CAnimationEvents.h"
 
-#include <string>
-using std::string;
 #include <vector>
 
 // Class prototype
@@ -62,7 +61,7 @@ public:
 	unsigned int	index;
 
 	// Constructor
-	CAnimAction ( string name );
+	CAnimAction ( const char* name );
 	CAnimAction ( void );
 
 	// == Setters ==
@@ -83,7 +82,8 @@ public:
 	void Update ( const Real n_deltaTime, const ftype n_frameOverride );
 
 	// == Getters ==
-	string GetName ( void ) {
+	const arstring128& GetName ( void ) const
+	{
 		return actionName;
 	};
 	/*unsigned int GetIndex ( void ) {
@@ -142,7 +142,7 @@ public:
 	}
 
 private:
-	string			actionName;
+	arstring128	actionName;
 	//vector<void*>	ignoreList;
 	//vector<int>		ignoreList;
 	std::vector<int>		mixingList;

@@ -255,7 +255,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 					sin.read( (char*)(&iOptionsFlag), sizeof( char ) );
 
 					// Create new action
-					CAnimAction newAction ( StringUtils::ToLower( sAnimName ) );
+					CAnimAction newAction ( StringUtils::ToLower( sAnimName ).c_str() );
 					newAction.SetRange( (ftype)(iStartFrame), (ftype)(iEndFrame) );
 					newAction.framesPerSecond = 30.0f;
 					newAction.index = iCurAction;
@@ -851,7 +851,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 					sMorphName = sMorphName.substr( 0, sMorphName.length()-1 );
 
 					// Add morph to list
-					CMorphAction newAction( sMorphName );
+					CMorphAction newAction( sMorphName.c_str() );
 					newAction.index = morphNum;
 					newMorpher->AddAction( newAction );
 

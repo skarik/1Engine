@@ -26,7 +26,7 @@ void CCharacterModel::ConfigureAnimations ( void )
 	struct _setupanim_upperbody_t {
 		CAnimation& anim;
 		explicit _setupanim_upperbody_t ( CAnimation& refanim ) : anim(refanim) {}
-		void operator()( const string& name, const int layer ) {
+		void operator()( const char* name, const int layer ) {
 			anim[name].layer = layer;
 			//anim[name].AddMixingTransform( "Spine1", true );
 			Animation::AddMixingTransform( anim, anim[name], "Spine1", true );
@@ -42,7 +42,7 @@ void CCharacterModel::ConfigureAnimations ( void )
 	struct _setupanim_rightarm_t {
 		CAnimation& anim;
 		explicit _setupanim_rightarm_t ( CAnimation& refanim ) : anim(refanim) {}
-		void operator()( const string& name, const int layer ) {
+		void operator()( const char* name, const int layer ) {
 			anim[name].layer = layer;
 			//anim[name].AddMixingTransform( "R UpperArm", true );
 			Animation::AddMixingTransform( anim, anim[name], "R UpperArm", true );
@@ -56,7 +56,7 @@ void CCharacterModel::ConfigureAnimations ( void )
 	struct _setupanim_leftarm_t {
 		CAnimation& anim;
 		explicit _setupanim_leftarm_t ( CAnimation& refanim ) : anim(refanim) {}
-		void operator()( const string& name, const int layer ) {
+		void operator()( const char* name, const int layer ) {
 			anim[name].layer = layer;
 			//anim[name].AddMixingTransform( "L UpperArm", true );
 			Animation::AddMixingTransform( anim, anim[name], "L UpperArm", true );

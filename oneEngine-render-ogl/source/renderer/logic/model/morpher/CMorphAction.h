@@ -10,7 +10,7 @@ class CMorphAction
 {
 public:
 	// Constructor
-	CMorphAction ( string name ) {
+	CMorphAction ( const char* name ) {
 		actionName = name;
 		weight = 0;
 		index = 0;
@@ -27,17 +27,18 @@ public:
 		target_weight = 0;
 	}
 
-	ftype	weight;
-	ftype	target_weight;
+	Real	weight;
+	Real	target_weight;
 	short	index;
 	char	auto_blend;
 
 	// == Getters ==
-	string GetName ( void ) {
+	const arstring128& GetName ( void ) const
+	{
 		return actionName;
 	};
 private:
-	string	actionName;
+	arstring128	actionName;
 };
 
 #endif//_C_MORPH_ACTION_H_

@@ -155,7 +155,6 @@ protected:
 	unsigned int iCompileResult;
 
 	// Uniform map
-	//map<string,int> mUniformMap;
 	std::unordered_map<arstring<128>,int> mUniformMap;
 
 protected:

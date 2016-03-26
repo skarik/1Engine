@@ -66,10 +66,8 @@ CMorpher&	CMorpher::operator= ( CMorpher const& sourceAnimRef )
 	// Copy the action map
 	mActions = sourceAnimRef.mActions;
 	// Set all of the animation actions' owners to this, and reset them all
-	for ( std::map<string,CMorphAction>::iterator it = mActions.begin(); it != mActions.end(); it++ )
+	for ( auto it = mActions.begin(); it != mActions.end(); it++ )
 	{
-		//it->second.Reset();
-		//it->second.owner = this;
 		std::cout << "copied action: :" << it->second.GetName() << ":" << std::endl;
 	}
 	// Set the first action to active
@@ -81,12 +79,10 @@ CMorpher&	CMorpher::operator= ( CMorpher const& sourceAnimRef )
 	return (*this);
 }
 
-CMorphAction& CMorpher::operator [] ( string const& animName )
+CMorphAction& CMorpher::operator [] ( const char* animName )
 {
 	// Find animation with name
-	std::map<string,CMorphAction>::iterator it;
-
-	it = mActions.find( animName );
+	auto it = mActions.find( arstring<128>(animName) );
 	if ( it == mActions.end() ) {
 #ifdef _ENGINE_DEBUG
 		//cout << "WARNING: Could not find animation named \"" << animName << "\" in list!" << endl;
@@ -103,15 +99,15 @@ CMorphAction& CMorpher::operator [] ( string const& animName )
 }
 CMorphAction& CMorpher::operator [] ( const int & animIndex )
 {
-	std::map<string,CMorphAction>::iterator it;
-	it = mActions.begin();
+	auto it = mActions.begin();
 	/*for ( int i = 0; i < animIndex; ++i )
 		++it;*/
 	while ( it != mActions.end() && it->second.index != animIndex ) {
 		++it;
 	}
 
-	if ( it == mActions.end() ) {
+	if ( it == mActions.end() )
+	{
 #ifdef _ENGINE_DEBUG
 		std::cout << "WARNING: Could not find index numbered \"" << animIndex << "\" in list!\n";
 		//throw std::out_of_range( "Bad animation" );
@@ -123,12 +119,10 @@ CMorphAction& CMorpher::operator [] ( const int & animIndex )
 	}
 	return it->second;
 }
-CMorphAction* CMorpher::FindAction ( string const& animName )
+CMorphAction* CMorpher::FindAction ( const char* animName )
 {
 	// Find animation with name
-	std::map<string,CMorphAction>::iterator it;
-
-	it = mActions.find( animName );
+	auto it = mActions.find( arstring<128>(animName) );
 	if ( it == mActions.end() ) {
 		//cout << "Unable to find action name '" << animName << "' in animation " << this << endl;
 		return NULL;
@@ -146,11 +140,8 @@ void	CMorpher::PerformMorph ( glSkinnedMesh* targetMesh )
 	// First, grab the stream to work on
 	CModelData* pStreamData = targetMesh->getCurrentStream();
 
-
-	std::map<string,CMorphAction>::iterator it;
-
 	// Loop through all the actions and perform auto blending
-	it = mActions.begin();
+	auto it = mActions.begin();
 	while ( it != mActions.end() )
 	{
 		if ( it->second.auto_blend ) {

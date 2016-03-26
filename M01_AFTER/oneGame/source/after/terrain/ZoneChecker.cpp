@@ -92,13 +92,13 @@ char	CZoneChecker::GetTerrainBiomeAt	( const Vector3d & vInPos )
 		checkPosition.x += vInPos.x;
 		checkPosition.y += vInPos.y;
 		checkPosition.z += vInPos.z;
-		return CVoxelTerrain::GetActive()->GetGenerator()->GetBiomeAt( checkPosition );
+		// Only check when there's a generator to pull from
+		auto generator = CVoxelTerrain::GetActive()->GetGenerator();
+		if ( generator ) {
+			return generator->GetBiomeAt( checkPosition );
+		}
 	}
-	else
-	{
-		//return BIO_DEFAULT;
-		return Terrain::BIO_DESERT;
-	}
+	return Terrain::BIO_DESERT;
 }
 
 //
@@ -115,13 +115,12 @@ char	CZoneChecker::GetTerrainTypeAt	( const Vector3d & vInPos )
 		checkPosition.x += vInPos.x;
 		checkPosition.y += vInPos.y;
 		checkPosition.z += vInPos.z;
-		return CVoxelTerrain::GetActive()->GetGenerator()->GetTerrainAt( checkPosition );
+		auto generator = CVoxelTerrain::GetActive()->GetGenerator();
+		if ( generator ) {
+			return CVoxelTerrain::GetActive()->GetGenerator()->GetTerrainAt( checkPosition );
+		}
 	}
-	else
-	{
-		//return TER_DEFAULT;
-		return Terrain::TER_DESERT;
-	}
+	return Terrain::TER_DESERT;
 }
 
 //
@@ -193,19 +192,17 @@ bool	CZoneChecker::IsCollidableArea	( const Vector3d & vInPos )
 //
 bool	 CZoneChecker::IsActiveTerrain		( const CVoxelTerrain* terra )
 {
-	if (( !CVoxelTerrain::TerrainList.empty() )&&( terra == CVoxelTerrain::TerrainList[0] )) {
-		return true;
-	}
-	return false;
+	//if (( !CVoxelTerrain::TerrainList.empty() )&&( terra == CVoxelTerrain::TerrainList[0] )) {
+	//	return true;
+	//}
+	//return false;
+	return terra == VoxelTerrain::GetActive();
 }
 // Returns:
 //		pointer - Returns pointer to active terrain or NULL.
 CVoxelTerrain* CZoneChecker::GetActiveTerrain	( void )
 {
-	if ( !CVoxelTerrain::TerrainList.empty() ) {
-		return CVoxelTerrain::TerrainList[0];
-	}
-	return NULL;
+	return VoxelTerrain::GetActive();
 }
 
 //	GetCurrentRoot ( )
@@ -218,8 +215,9 @@ Vector3d_d	CZoneChecker::GetCurrentRoot ( void )
 	{
 		return COctreeTerrain::GetActive()->GetStateWorldCenterPosition();
 	}*/
-	if ( !CVoxelTerrain::TerrainList.empty() ) {
-		return CVoxelTerrain::TerrainList[0]->GetCenterPosition();
+	auto terrain = VoxelTerrain::GetActive();
+	if ( terrain ) {
+		return terrain->GetCenterPosition();
 	}
 	return Vector3d_d( 0,0,4 );
 }
@@ -244,12 +242,11 @@ Terrain::terra_t	CZoneChecker::GetBlockAtPosition ( const Vector3d & position )
 */
 Terrain::terra_b	CZoneChecker::GetBlockAtPosition ( const Vector3d &position )
 {
-	//if ( COctreeTerrain::GetActive() && (!COctreeTerrain::GetActive()->GetSystemPaused()) ) {
-	if ( !CVoxelTerrain::TerrainList.empty() )
+	auto terrain = VoxelTerrain::GetActive();
+	if ( terrain && terrain->GetSystemPaused() == false )
 	{
 		Terrain::terra_b result;
-		//COctreeTerrain::GetActive()->SampleBlock( position, result.raw );
-		CVoxelTerrain::TerrainList[0]->Sampler->BlockAt( position, result );
+		terrain->Sampler->BlockAt( position, result );
 		return result;
 	}
 	Terrain::terra_b empty;

@@ -104,8 +104,10 @@ void CHKAnimation::SetSkeleton( skeletonBone_t* rootBone, std::vector<skeletonBo
 
 		// Search for the parent index
 		mSkelly->m_parentIndices[i] = -1;
-		for ( uint j = 0; j < vModelSkelly.size(); ++j ) {
-			if ( vModelSkelly[i]->transform.GetParent() == (&(vModelSkelly[j]->transform)) ) {
+		for ( uint j = 0; j < vModelSkelly.size(); ++j )
+		{
+			if ( vModelSkelly[i]->transform.GetParent() == (&(vModelSkelly[j]->transform)) )
+			{
 				mSkelly->m_parentIndices[i] = j;
 				j = vModelSkelly.size();
 			}
@@ -125,7 +127,7 @@ void CHKAnimation::GetRagdollPose( skeletonBone_t* rootBone, std::vector<skeleto
 	hkaAnimation* mhkAnim = ((CHKAnimationSet*)pAnimationSet)->GetHKAnimation()->at(0);
 	mhkAnim->sampleTracks( 0.0f, nextTransforms.begin(), tempReals.begin() );
 
-	// set the ragdoll pose : D
+	// Set the ragdoll pose
 	for ( int i = 0; i < nextTransforms.getSize(); ++i )
 	{
 		XTransform localTransform;
@@ -174,10 +176,12 @@ CHKAnimation::~CHKAnimation ( void )
 void CHKAnimation::Update ( const Real deltaTime )
 {
 	// Create binding
-	if ( mAnimBinding == NULL ) {
+	if ( mAnimBinding == NULL )
+	{
 		mAnimBinding = new hkaAnimationBinding();
 		mAnimBinding->m_animation = ((CHKAnimationSet*)pAnimationSet)->GetHKAnimation()->at(0);
-		for ( hkInt16 i = 0; i < mSkelly->m_bones.getSize(); ++i ) {
+		for ( hkInt16 i = 0; i < mSkelly->m_bones.getSize(); ++i )
+		{
 			mAnimBinding->m_transformTrackToBoneIndices.pushBack(i);
 			mAnimBinding->m_floatTrackToFloatSlotIndices.pushBack(i);
 		}
@@ -196,7 +200,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 	nextTransforms.setSize( mSkelly->m_bones.getSize() );
 	for ( int i = 0; i < nextTransforms.getSize(); ++i )
 	{
-		nextTransforms[i] = hkQsTransform(hkQsTransform::ZERO);
+		nextTransforms[i] = hkQsTransform(hkQsTransform::IDENTITY);
 	}
 	hkArray<hkQsTransform> tempTransforms;
 	tempTransforms.setSize( mSkelly->m_bones.getSize() );
@@ -225,7 +229,8 @@ void CHKAnimation::Update ( const Real deltaTime )
 		return;
 	}*/
 	std::vector<hkaAnimation*>* mAnim = ((CHKAnimationSet*)pAnimationSet)->GetHKAnimation();
-	if ( !mMirrorAnims.empty() ) {
+	if ( !mMirrorAnims.empty() )
+	{
 		mAnim = &mMirrorAnims;
 	}
 
@@ -295,7 +300,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 	ftype			syncFrames [5] = {0,0,0,0,0};
 	CAnimAction*	eventMaster = NULL;
 	{
-		std::map<string,CAnimAction>::iterator it = mAnimations.begin(); // Loop thru all the actions
+		auto it = mAnimations.begin(); // Loop thru all the actions
 		while ( it != mAnimations.end() )
 		{
 			CAnimAction& currentAction = it->second;
@@ -339,7 +344,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 	//{
 		for ( unsigned char layer = 0; layer < maxLayers; layer++ )
 		{
-			std::map<string,CAnimAction>::iterator it = mAnimations.begin(); // Loop thru all the actions
+			auto it = mAnimations.begin(); // Loop thru all the actions
 			do
 			{
 				CAnimAction& currentAction = it->second;
