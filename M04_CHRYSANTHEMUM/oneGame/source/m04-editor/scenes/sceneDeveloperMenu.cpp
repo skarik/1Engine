@@ -6,6 +6,9 @@
 #include "core/debug/CDebugConsole.h"
 #include "engine/utils/CDeveloperConsole.h"
 #include "engine-common/utils/CDeveloperConsoleUI.h"
+// Include camera
+#include "renderer/camera/CCamera.h"
+#include "engine-common/entities/CRenderCameraHolder.h"
 // Include developer menu
 #include "m04-editor/standalone/DeveloperMenu.h"
 
@@ -17,6 +20,12 @@ void sceneDeveloperMenu::LoadScene ( void )
 	{
 		M04::DeveloperMenu* menu = new M04::DeveloperMenu();
 		menu->RemoveReference();
+	}
+
+	// Create camera to render
+	{
+		CRenderCameraHolder* holder = new CRenderCameraHolder(new CCamera());
+		holder->RemoveReference();
 	}
 
 	// Print a prompt

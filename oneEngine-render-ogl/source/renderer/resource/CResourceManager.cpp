@@ -179,13 +179,13 @@ void CResourceManager::RenderUpdate ( void )
 
 					if ( bpdHeader.levels > 1 ) {
 						// Enable mipmapping
-						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(streamTarget->info.filter) );
 						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
 					}
 					else {
 						// Disable mipmapping
-						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(streamTarget->info.filter) );
+						glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL.Enum(streamTarget->info.filter) );
 					}
 
 					glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, streamTarget->state.level_base );
@@ -763,7 +763,9 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 		glBindTexture( GL_TEXTURE_2D, n_texture->info.index );
 
 		// Change filtering
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		/*glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );*/
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(n_texture->info.filter) );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
 		// Change mipmap number
 		//n_texture->state.level_base = bpdHeader.levels;

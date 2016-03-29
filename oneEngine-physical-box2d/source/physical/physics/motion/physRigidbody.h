@@ -25,7 +25,7 @@ public:
 	_FORCE_INLINE_ PHYS_API hkpMotion::MotionType getMotionType ( void ) const;
 	_FORCE_INLINE_ PHYS_API void			setQualityType ( const hkpCollidableQualityType );
 	_FORCE_INLINE_ PHYS_API void			setAllowedPenetrationDepth ( const Real_32 );
-	_FORCE_INLINE_ PHYS_API void			setShape ( const physShape* shape );
+	_FORCE_INLINE_ PHYS_API void			setShape ( const b2Shape* shape );
 
 	_FORCE_INLINE_ PHYS_API void			setMass ( const Real_32 );
 	_FORCE_INLINE_ PHYS_API Real_32		getMass ( void ) const;

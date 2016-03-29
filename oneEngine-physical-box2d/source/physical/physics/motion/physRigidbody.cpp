@@ -65,7 +65,7 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setAllowedPenetrationDepth ( const R
 {
 	//body->setAllowedPenetrationDepth( penetration );
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setShape ( const physShape* shape )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setShape ( const b2Shape* shape )
 {
 	//body->setShape(shape);
 	throw Core::InvalidCallException();
