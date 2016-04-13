@@ -28,6 +28,22 @@ public:
 	Vector2d pos;
 	Vector2d size;
 
+	//		Fix ()
+	// Changes the rect bounds and position so that size is positive on both components
+	FORCE_INLINE void Fix ( void )
+	{
+		if ( size.x < 0 ) {
+			pos.x += size.x;
+			size.x = -size.x;
+		}	
+		if ( size.y < 0 ) {
+			pos.y += size.y;
+			size.y = -size.y;
+		}	
+	}
+
+	//		Contains ( point )
+	// Checks if point is inside the given rect
 	FORCE_INLINE bool Contains ( const Vector2d& point )
 	{
 		return ((point.x > pos.x) && (point.y > pos.y) && (point.x < pos.x+size.x) && (point.y < pos.y+size.y));

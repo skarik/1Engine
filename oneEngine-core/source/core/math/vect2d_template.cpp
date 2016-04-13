@@ -7,23 +7,25 @@ using namespace Engine;
 
 //Default constructor
 template <typename REAL>
-vect2d_template<REAL>::vect2d_template(): x(0.0), y(0.0)
-{}
-
+vect2d_template<REAL>::vect2d_template()
+	: x(0.0), y(0.0)
+{
+	;
+}
 //Copy constructor
 template <typename REAL>
-vect2d_template<REAL>::vect2d_template (vect2d_template<REAL> const& old): x(old.x), y(old.y)
-{}
-
+vect2d_template<REAL>::vect2d_template (vect2d_template<REAL> const& old)
+	: x(old.x), y(old.y)
+{
+	;
+}
 //Conversion constructor
 template <typename REAL>
-vect2d_template<REAL>::vect2d_template (REAL const& new_x, REAL const& new_y): x(new_x), y(new_y)
+vect2d_template<REAL>::vect2d_template (REAL const& new_x, REAL const& new_y)
+	: x(new_x), y(new_y)
 {
-	/*x = new_x;
-	y = new_y;
-	z = new_z;*/
+	;
 }
-
 //Addition overload
 template <typename REAL>
 vect2d_template<REAL> vect2d_template<REAL>::operator+ (vect2d_template<REAL> const& right) const
@@ -121,12 +123,7 @@ template <typename REAL>
 vect2d_template<REAL> vect2d_template<REAL>::normal ( void ) const
 {
 	REAL invMagnitude = magnitude();
-/*#ifdef _ENGINE_DEBUG
-	if ( fabs(invMagnitude) <= 1.0e-7 ) {
-		fnl_assert(0);
-	}
-#endif*/
-	if ( fabs(invMagnitude) <= 1.0e-7 ) {
+	if ( fabs(invMagnitude) <= FTYPE_PRECISION ) {
 		return vect2d_template<REAL>(0,0);
 	}
 	invMagnitude = 1.0f / invMagnitude;
@@ -135,8 +132,13 @@ vect2d_template<REAL> vect2d_template<REAL>::normal ( void ) const
 template <typename REAL>
 void vect2d_template<REAL>::normalize ( void )
 {
-	//(*this)/(magnitude());
 	(*this) = normal();
+}
+// Integer specialization
+template <>
+vect2d_template<int32_t> vect2d_template<int32_t>::normal ( void ) const
+{
+	return vect2d_template<int32_t>( 0,0 );
 }
 
 // Note this doesn't edit the values
@@ -165,7 +167,11 @@ bool vect2d_template<REAL>::operator== (vect2d_template<REAL> const& right) cons
 		return false;
 	return true;
 }
-
+template <>
+bool vect2d_template<int32_t>::operator== ( vect2d_template<int32_t> const& right ) const
+{
+	return right.x == x && right.y == y;
+}
 //Not equal comparison overload
 template <typename REAL>
 bool vect2d_template<REAL>::operator!= (vect2d_template<REAL> const& right) const
@@ -177,3 +183,4 @@ bool vect2d_template<REAL>::operator!= (vect2d_template<REAL> const& right) cons
 // prototypes
 template class vect2d_template<float>;
 template class vect2d_template<double>;
+template class vect2d_template<int32_t>;

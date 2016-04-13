@@ -48,6 +48,9 @@
     <ClInclude Include="source\engine\behavior\gbbool.h" />
     <ClInclude Include="source\engine\client.h" />
     <ClInclude Include="source\engine\module_engine.h" />
+    <ClInclude Include="source\engine\network\BehaviorList.h" />
+    <ClInclude Include="source\engine\network\CDataTable.h" />
+    <ClInclude Include="source\engine\network\CDataVar.h" />
     <ClInclude Include="source\engine\network\CNetworkTable.h" />
     <ClInclude Include="source\engine\network\CNetworkVar.h" />
     <ClInclude Include="source\engine\network\GameNetworking.h" />
@@ -86,6 +89,7 @@
     <ClCompile Include="source\engine\behavior\gbbool.cpp" />
     <ClCompile Include="source\engine\client.cpp" />
     <ClCompile Include="source\engine\module_engine.cpp" />
+    <ClCompile Include="source\engine\network\BehaviorList.cpp" />
     <ClCompile Include="source\engine\physics\collider\CCollider.cpp" />
     <ClCompile Include="source\engine\physics\collider\types\CBoxCollider.cpp" />
     <ClCompile Include="source\engine\physics\collider\types\CCapsuleCollider.cpp" />

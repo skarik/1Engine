@@ -110,6 +110,15 @@ namespace Core
 			;
 		}
 	};
+
+	class MissingFileException : public std::runtime_error
+	{
+	public:
+		MissingFileException ( void ) : runtime_error( "File could not be found!" )
+		{
+			;
+		}
+	};
 }
 
 #endif//_CORE_EXCEPTIONS_H_

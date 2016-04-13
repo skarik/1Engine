@@ -235,4 +235,7 @@ typedef unsigned int	uint;
 // include default shit
 #include "float_fn.h"
 
+// Include string and cstring
+#include "string_extension.h"
+
 #endif

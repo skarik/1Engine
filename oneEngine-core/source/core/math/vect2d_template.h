@@ -2,6 +2,7 @@
 #ifndef _ENGINE_VECT2D_TEMPLATE_H_
 #define _ENGINE_VECT2D_TEMPLATE_H_
 
+#include "core/types/types.h"
 #include "core/types/float.h"
 #include <cmath>
 
@@ -53,5 +54,6 @@ namespace Engine
 };
 
 typedef Engine::vect2d_template<double> Vector2d_d;
+typedef Engine::vect2d_template<int32_t> Vector2i;
 
 #endif//_ENGINE_VECT2D_TEMPLATE_H_

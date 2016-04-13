@@ -26,6 +26,11 @@
 #include "m04/states/MapInformation.h"
 #include "m04/interfaces/MapIO.h"
 
+#include "m04-editor/standalone/mapeditor/ObjectEditorListing.h"
+#include "m04-editor/entities/UIDragHandle.h"
+
+#include "m04-editor/standalone/mapeditor/EditorObject.h"
+
 #include "m04-editor/renderer/object/AreaRenderer.h"
 
 using namespace M04;
@@ -33,8 +38,14 @@ using namespace M04;
 MapEditor::MapEditor ( void )
 	: CGameBehavior(),
 	m_current_mode(Mode::TileEdit), m_current_submode(SubMode::None), m_navigation_busy(false),
-	m_current_savetarget("")
+	m_current_savetarget(""),
+	m_drag_handle(NULL)
 {
+	// Load editor listing
+	{
+		m_listing = new M04::ObjectEditorListing ();
+		m_listing->LoadListing( "system/endoparasite.oel" );
+	}
 	// Create map info
 	{
 		m_mapinfo = new M04::MapInformation ();
@@ -108,6 +119,9 @@ MapEditor::~MapEditor ( void )
 	delete_safe_decrement(dusk);
 	delete_safe(m_tile_selector);
 	delete_safe(m_area_renderer);
+	
+	delete_safe(m_listing);
+	delete_safe_decrement(m_drag_handle);
 }
 
 //===============================================================================================//
@@ -117,7 +131,7 @@ MapEditor::~MapEditor ( void )
 void MapEditor::Update ( void )
 {
 	Dusk::Handle openDialogue = dusk->GetOpenDialogue();
-	if ( dusk->HasOpenDialogue() && openDialogue != ui_fld_area_type )
+	if ( dusk->HasOpenDialogue() && openDialogue != ui_fld_area_type && openDialogue != ui_fld_object_type )
 	{
 		// Close all modes for the dialogue system
 		m_current_mode = Mode::None;
@@ -133,6 +147,7 @@ void MapEditor::Update ( void )
 			switch ( m_current_mode )
 			{
 			case Mode::None:
+			case Mode::UtilityEdit:
 				doViewNavigationDrag();
 				break;
 
@@ -148,6 +163,12 @@ void MapEditor::Update ( void )
 				doViewNavigationDrag();
 				doAreaEditing();
 				break;
+
+			case Mode::ObjectEdit:
+				doViewNavigationDrag();
+				doObjectEditing();
+				break;
+
 			}
 		}
 		else
@@ -162,6 +183,12 @@ void MapEditor::Update ( void )
 		// Update portions of the UI if can be updated
 		if ( m_current_mode == Mode::Properties ) uiStepShitPanel();
 		if ( m_current_mode == Mode::AreaEdit ) uiStepAreaPanel();
+		if ( m_current_mode == Mode::ObjectEdit ) uiStepObjectPanel();
+		/*if ( m_current_mode == Mode::UtilityEdit ) {
+			if ( m_drag_handle == NULL ) {
+				m_drag_handle = new UIDragHandle();
+			}
+		}*/
 
 		// Update the lower status UI
 		uiStepBottomEdge();
@@ -174,6 +201,7 @@ void MapEditor::Update ( void )
 	m_tile_selector->SetVisible ( m_current_mode == Mode::TileEdit );
 	ui_panel_shit->visible = m_current_mode == Mode::Properties;
 	ui_panel_area->visible = m_current_mode == Mode::AreaEdit;
+	ui_panel_object->visible = m_current_mode == Mode::ObjectEdit;
 }
 
 //===============================================================================================//
@@ -297,17 +325,6 @@ void MapEditor::_doTileEditingSub ( float mousex, float mousey )
 // do area editing and such when clicking happens
 void MapEditor::doAreaEditing ( void )
 {
-	// First do a debug render of all areas
-	/*for ( auto area = Engine2D::Area2D::Areas().begin(); area != Engine2D::Area2D::Areas().end(); ++area )
-	{
-		Rect rect = (*area)->m_rect;
-		Vector3d offset = Vector3d( 0,0,-50 );
-		Debug::Drawer->DrawLine( rect.pos + offset, rect.pos + Vector2d( rect.size.x,0 ) + offset );
-		Debug::Drawer->DrawLine( rect.pos + offset, rect.pos + Vector2d( 0,rect.size.y ) + offset );
-		Debug::Drawer->DrawLine( rect.pos + Vector2d( rect.size.x,0 ) + offset, rect.pos + rect.size + offset );
-		Debug::Drawer->DrawLine( rect.pos + Vector2d( 0,rect.size.y ) + offset, rect.pos + rect.size + offset );
-	}*/
-
 	// Click to add 
 	if ( !m_navigation_busy )
 	{
@@ -471,6 +488,28 @@ void MapEditor::doAreaEditing ( void )
 	}
 }
 
+//		doObjectEditing () : actor editing
+// do actor selection, moving, deleting, and such
+void MapEditor::doObjectEditing ( void )
+{
+	// Click to add 
+	if ( !m_navigation_busy )
+	{
+		// Grab mouse position in the world
+		Vector3d worldpos = m_target_camera->ScreenToWorldPos( Vector2d( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+
+		if ( Input::MouseDown( Input::MBLeft ) )
+		{
+			if ( Input::Key( Keys.Shift ) && Input::Key( Keys.Alt ) )
+			{
+				// Create the object
+				EditorObject* object = new EditorObject( dusk->GetCurrentDropdownString( ui_fld_object_type ).c_str() );
+				object->position = worldpos;
+			}
+		}
+	}
+}
+
 //		doMapResize () : resize the map
 // using the size given in m_mapinfo structure, change the map size.
 // fills layer zero with a bunch of default tiles and destroys any tiles out of range
@@ -624,14 +663,19 @@ void MapEditor::uiCreate ( void )
 		ui_mode_area = button;
 
 		button = dusk->CreateButton( panel );
-		button.SetText("Actors");
+		button.SetText("Objects");
 		button.SetRect(Rect(450,5,45,30));
-		ui_mode_actors = button;
+		ui_mode_object = button;
 
 		button = dusk->CreateButton( panel );
 		button.SetText("Script");
 		button.SetRect(Rect(500,5,45,30));
 		ui_mode_script = button;
+
+		button = dusk->CreateButton( panel );
+		button.SetText("Utils");
+		button.SetRect(Rect(550,5,45,30));
+		ui_mode_utils = button;
 
 		button = dusk->CreateButton( panel );
 		button.SetText("Cutscene Editor");
@@ -765,6 +809,43 @@ void MapEditor::uiCreate ( void )
 			dusk->AddDropdownOption( field, pair->first, pair->second );
 		ui_fld_area_type = field;
 	}
+
+	// Object panel
+	{
+		Dusk::Handle panel;
+		Dusk::Handle button, label, field;
+
+		// Create the panel
+		panel = dusk->CreatePanel();
+		panel.SetRect( Rect(0,40,200,650) );
+		ui_panel_object = panel;
+
+		// Create labels
+		label = dusk->CreateText( panel, "OBJECTS" );
+		label.SetRect(Rect(11,1,0,0));
+		label = dusk->CreateText( panel, "entities and game objects" );
+		label.SetRect(Rect(11,21,0,0));
+
+		// Create help info
+		label = dusk->CreateText( panel, "CTRL+SHIFT+LMB to create object" );
+		label.SetRect(Rect(20,50,0,0));
+		label = dusk->CreateText( panel, "LMB to select object" );
+		label.SetRect(Rect(20,70,0,0));
+		label = dusk->CreateText( panel, "ALT to snap to half-tile" );
+		label.SetRect(Rect(20,90,0,0));
+
+		// Create dropdown list type
+		label = dusk->CreateText( panel, "New Object" );
+		label.SetRect(Rect(20,125,0,0));
+		field = dusk->CreateDropdownList( panel );
+		field.SetRect(Rect(20,150,160,30));
+		{
+			int i = 0;
+			for ( auto entry = m_listing->List().begin(); entry != m_listing->List().end(); ++entry )
+				dusk->AddDropdownOption( field, entry->name.c_str(), ++i );
+		}
+		ui_fld_object_type = field;
+	}
 }
 
 //===============================================================================================//
@@ -830,13 +911,17 @@ void MapEditor::uiStepTopEdge ( void )
 	{
 		m_current_mode = Mode::AreaEdit;
 	}
-	if ( ui_mode_actors.GetButtonClicked() )
+	if ( ui_mode_object.GetButtonClicked() )
 	{
-		m_current_mode = Mode::ActorsEdit;
+		m_current_mode = Mode::ObjectEdit;
 	}
 	if ( ui_mode_script.GetButtonClicked() )
 	{
 		m_current_mode = Mode::ScriptEdit;
+	}
+	if ( ui_mode_utils.GetButtonClicked() )
+	{
+		m_current_mode = Mode::UtilityEdit;
 	}
 
 	if ( ui_toolbox_cutscene.GetButtonClicked() )
@@ -1004,6 +1089,21 @@ void MapEditor::uiStepAreaPanel ( void )
 		}
 	}
 }
+
+//		uiStepObjectPanel () : object panel update
+// handles input and updates to the object panel
+void MapEditor::uiStepObjectPanel ( void )
+{
+	if ( dusk->GetOpenDialogue() == ui_fld_object_type )
+	{
+		// We stop doing shit
+	}
+	else
+	{
+
+	}
+}
+
 //		uiStepBottomEdge () : status panel update
 // updates display of the current editor state
 void MapEditor::uiStepBottomEdge ( void )
@@ -1013,19 +1113,20 @@ void MapEditor::uiStepBottomEdge ( void )
 		ui_lbl_mode.SetText("Moving view");
 	else switch ( m_current_mode )
 	{
-	case Mode::None:		ui_lbl_mode.SetText("Ready.");
-		break;
 	case Mode::Properties:	ui_lbl_mode.SetText("S.H.I.T.");
 		break;
 	case Mode::TileEdit:	ui_lbl_mode.SetText("Map Editing");
 		break;
 	case Mode::AreaEdit:	ui_lbl_mode.SetText("Area Editing");
 		break;
-	case Mode::ActorsEdit:	ui_lbl_mode.SetText("Actor Editing");
+	case Mode::ObjectEdit:	ui_lbl_mode.SetText("Object Editing");
 		break;
 	case Mode::ScriptEdit:	ui_lbl_mode.SetText("Script Editing");
 		break;
 	case Mode::Toolbox:		ui_lbl_mode.SetText("In Toolbox");
+		break;
+	case Mode::None:
+	default:				ui_lbl_mode.SetText("Ready.");
 		break;
 	}
 	

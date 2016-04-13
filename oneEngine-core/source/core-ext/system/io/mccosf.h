@@ -42,15 +42,27 @@ typedef mccOSF_entry_info_t* mccOSF_entry_infop;
 class COSF_Loader
 {
 public:
+	//		Constructor
+	// Initializes loader with the FILE as input. Does not take ownership.
 	explicit				COSF_Loader ( FILE* file );
+	//		Destructor
+	// NOTE: Does not close the input FILE.
 							~COSF_Loader( void );
 
 public:
+	//		GetNext () : read next entry.
+	// If output_value is not NULL, up to 8K of data may be read into the buffer. It is specifically used for code blocks.
+	// Object entries are not automatically entered. Instead, the closing brace "}" is searched for, and next entry searched from there.
+	// Returns false, with an entry type of MCCOSF_ENTRY_EOF when no entry is found.
 	bool					GetNext ( mccOSF_entry_info_t&, char* output_value=NULL );
+	//		GoInto () : enters the given entry, assuming it is an object
+	// Enters the given object. GetNext() will return an entry of type MCCOSF_ENTRY_END at the closing brace "}"
 	bool					GoInto ( const mccOSF_entry_info_t& );
+	//		GoToMarker () : returns file cursor to the given entry
+	// Will change what is read next to the entry after the marker.
 	bool					GoToMarker ( const mccOSF_entry_info_t& );
-	//	bool SearchToMarker
-	// Looks for marker with given name. Returns true when found and sets next entry to the one
+	//		SearchToMarker () : locate a marker
+	// Looks for marker (#marker) with given name. Returns true when found and sets next entry to the one
 	// after the marker.
 	bool					SearchToMarker ( const char* name );
 

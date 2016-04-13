@@ -177,6 +177,15 @@
     <ClInclude Include="source\engine\physics\phantom\hkArDefaultDistributor.h">
       <Filter>SOURCE\Engine\Physics\Phantom</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine\network\CDataTable.h">
+      <Filter>SOURCE\Engine\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine\network\CDataVar.h">
+      <Filter>SOURCE\Engine\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine\network\BehaviorList.h">
+      <Filter>SOURCE\Engine\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine\behavior\CGameBehavior.cpp">
@@ -259,6 +268,9 @@
     </ClCompile>
     <ClCompile Include="source\engine\physics\phantom\hkArDefaultDistributor.cpp">
       <Filter>SOURCE\Engine\Physics\Phantom</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine\network\BehaviorList.cpp">
+      <Filter>SOURCE\Engine\Network</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

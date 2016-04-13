@@ -367,6 +367,9 @@
     <ClInclude Include="source\core\os.h">
       <Filter>SOURCE\Core</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\types\string_extension.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">

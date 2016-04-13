@@ -29,7 +29,18 @@ void CDuskGUI::SetDropdownValue ( const Handle& handle, const int value )
 		}
 	}
 }
+
 // Get dropdown value
+std::string CDuskGUI::GetCurrentDropdownString ( const Handle& handle )
+{
+	CDuskGUIDropdownList* ddl = (CDuskGUIDropdownList*)(vElements[int(handle)]);
+	if ( ddl->optionList.size() > 0 ) {
+		return ddl->optionList[ddl->selection].str;
+	}
+	else {
+		return "";
+	}
+}
 int CDuskGUI::GetDropdownOption ( const Handle & handle )
 {
 	CDuskGUIDropdownList* ddl = (CDuskGUIDropdownList*)(vElements[int(handle)]);

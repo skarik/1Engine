@@ -21,6 +21,8 @@ namespace M04
 	class MapInformation;
 	class AreaRenderer;
 	class TileSelector;
+	class ObjectEditorListing;
+	class UIDragHandle;
 }
 
 //=========================================//
@@ -60,6 +62,9 @@ namespace M04
 		//		uiStepAreaPanel () : area panel update
 		// handles input and updates to the area panel
 		void		uiStepAreaPanel ( void );
+		//		uiStepObjectPanel () : object panel update
+		// handles input and updates to the object panel
+		void		uiStepObjectPanel ( void );
 		//		uiStepBottomEdge () : status panel update
 		// updates display of the current editor state
 		void		uiStepBottomEdge ( void );
@@ -76,6 +81,10 @@ namespace M04
 		//		doAreaEditing () : area editing
 		// do area editing and such when clicking happens
 		void		doAreaEditing ( void );
+
+		//		doObjectEditing () : actor editing
+		// do actor selection, moving, deleting, and such
+		void		doObjectEditing ( void );
 
 		//		doMapResize () : resize the map
 		// using the size given in m_mapinfo structure, change the map size.
@@ -100,8 +109,9 @@ namespace M04
 			Properties,
 			TileEdit,
 			AreaEdit,
-			ActorsEdit,
+			ObjectEdit,
 			ScriptEdit,
+			UtilityEdit,
 			Toolbox,
 		};
 		enum class SubMode : uint32_t
@@ -125,6 +135,16 @@ namespace M04
 		int			m_area_corner_selection;
 		Engine2D::Area2DBase*	m_area_target;
 
+		// M04::EditorObjectProxy*	m_actor_selection;
+		// Engine2D::ObjectProxy*	m_actor_info_selection;
+		// so it'll be a Engine2D::SpriteContainer which is an interface with only a sprite.
+		// constructor of it will be explicit, taking a Vector3d pointer, which will be draw pos
+		//										  and a float pointer, which will be angle
+		//										  and a Vector3d pointer, for scale
+
+		ObjectEditorListing*	m_listing;
+		UIDragHandle*			m_drag_handle;
+
 		M04::MapInformation*	m_mapinfo;
 		Engine2D::TileMap*		m_tilemap;
 
@@ -140,8 +160,9 @@ namespace M04
 		Dusk::Handle	ui_mode_shit;
 		Dusk::Handle	ui_mode_map;
 		Dusk::Handle	ui_mode_area;
-		Dusk::Handle	ui_mode_actors;
+		Dusk::Handle	ui_mode_object;
 		Dusk::Handle	ui_mode_script;
+		Dusk::Handle	ui_mode_utils;
 		Dusk::Handle	ui_toolbox_cutscene;
 		Dusk::Handle	ui_toolbox_global;
 
@@ -164,6 +185,9 @@ namespace M04
 
 		Dusk::Handle	ui_panel_area;
 		Dusk::Handle	ui_fld_area_type;
+
+		Dusk::Handle	ui_panel_object;
+		Dusk::Handle	ui_fld_object_type;
 	};
 }
 

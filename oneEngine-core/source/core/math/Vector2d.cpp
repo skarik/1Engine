@@ -24,7 +24,6 @@ std::ostream& operator<< (std::ostream& out, Vector2d const& current)
 }
 
 //Matrix multiplication
-//Vector2d Vector2d::operator* ( Matrix2x2 const& right ) const
 Vector2d Vector2d::rvrMultMatx ( Matrix2x2 const& right ) const
 {
 	return Vector2d(

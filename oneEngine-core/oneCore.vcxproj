@@ -366,6 +366,7 @@
     <ClInclude Include="source\core\types\float_fn.h" />
     <ClInclude Include="source\core\types\ModelData.h" />
     <ClInclude Include="source\core\types\Real.h" />
+    <ClInclude Include="source\core\types\string_extension.h" />
     <ClInclude Include="source\core\types\types.h" />
     <ClInclude Include="source\core\utils\armodule.h" />
     <ClInclude Include="source\core\utils\StringUtils.h" />

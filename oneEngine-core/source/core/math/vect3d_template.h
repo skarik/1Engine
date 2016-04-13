@@ -1,6 +1,7 @@
 #ifndef _ENGINE_VECT3D_TEMPLATE_H_
 #define _ENGINE_VECT3D_TEMPLATE_H_
 
+#include "core/types/types.h"
 #include "core/types/float.h"
 #include <cmath>
 
@@ -63,5 +64,7 @@ namespace Engine
 };
 
 typedef Engine::vect3d_template<double> Vector3d_d;
+typedef Engine::vect3d_template<int32_t> Vector3i;
+
 
 #endif//_ENGINE_VECT3D_TEMPLATE_H_

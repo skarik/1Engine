@@ -5,6 +5,9 @@
 #ifndef _C_AR_SINGLETON_H_
 #define _C_AR_SINGLETON_H_
 
+#include "core/types/types.h"
+#include "core/exceptions/exceptions.h"
+
 class arsingleton
 {
 public:
@@ -16,32 +19,26 @@ private:
 };
 
 // Singleton Header declaration
-#define ARSINGLETON_DECLARATION (T) \
+#define ARSINGLETON_H_STORAGE(T,STORAGE) \
 	private: \
-		static T* mActive; \
+		STORAGE static T * mActive; \
+		void _free ( void ) \
+		{ \
+			if ( mActive != this ) \
+				throw Core::InvalidInstantiationException(); \
+			mActive = NULL; \
+		} 
+#define ARSINGLETON_H_ACCESS(T) \
 	public: \
-		static T* Active ( void ); \
-		void _init ( void ); \
-		void _free ( void );
+		static T * Active ( void ) \
+		{ \
+			if ( mActive == NULL ) { \
+				mActive = new T(); \
+			} \
+			return mActive; \
+		} 
 
 // Singleton CPP definition
-#define ARSINGLETON_DEFINITION (T) \
-	T* T::mActive = NULL; \
-	T::_init ( void ) \
-	{ \
-		if ( mActive != NULL ) \
-			throw Core::InvalidInstantiationException(); \
-		mActive = this; \
-	} \
-	T::_free ( void ) \
-	{ \
-		if ( mActive != this ) \
-			throw Core::InvalidInstantiationException(); \
-		mActive = NULL; \
-	} \
-	T* T::Active ( void ) \
-	{ \
-		return mActive; \
-	} 
+#define ARSINGLETON_CPP_DEF(T) T* T::mActive = NULL; 
 
 #endif//_C_AR_SINGLETON_H_

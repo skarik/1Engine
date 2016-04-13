@@ -2,6 +2,11 @@
 #ifndef _C_GAME_NETWORKING_H_
 #define _C_GAME_NETWORKING_H_
 
+#include "BehaviorList.h"
+
+#include "CDataVar.h"
+#include "CDataTable.h"
+
 #include "CNetworkVar.h"
 #include "CNetworkTable.h"
 
@@ -10,4 +15,4 @@
 #include "engine/client.h"
 #include "engine/server.h"
 
-#endif
+#endif//_C_GAME_NETWORKING_H_

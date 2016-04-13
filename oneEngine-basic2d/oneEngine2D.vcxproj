@@ -54,12 +54,14 @@
     <ClInclude Include="source\engine2d\entities\AreaTeleport.h" />
     <ClInclude Include="source\engine2d\entities\AreaTrigger.h" />
     <ClInclude Include="source\engine2d\entities\map\TileMap.h" />
+    <ClInclude Include="source\engine2d\interface\SpriteContainer.h" />
     <ClInclude Include="source\engine2d\interface\Tileset.h" />
     <ClInclude Include="source\engine2d\types\MapTile.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine2d\entities\Area2DBase.cpp" />
     <ClCompile Include="source\engine2d\entities\map\TileMap.cpp" />
+    <ClCompile Include="source\engine2d\interface\SpriteContainer.cpp" />
     <ClCompile Include="source\engine2d\interface\Tileset.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

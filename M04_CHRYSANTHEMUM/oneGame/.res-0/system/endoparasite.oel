@@ -1,0 +1,10 @@
+// Object Editor Listing for Endoparasite
+
+// Use 2d editor
+editor 2d
+
+// Test entity
+entity test_entity_basic
+{
+	default
+}

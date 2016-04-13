@@ -37,6 +37,12 @@
     <Filter Include="SOURCE\M04-Editor\Renderer\Object">
       <UniqueIdentifier>{4afc5d5f-a9c5-42f2-ae43-e2f8550716f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04-Editor\Entities">
+      <UniqueIdentifier>{a60b3701-7d61-47eb-8f6a-6a2c5e4129f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\M04\Entities">
+      <UniqueIdentifier>{07427d47-d2cc-49b9-8b55-26ecd109f829}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -75,6 +81,21 @@
     <ClInclude Include="source\m04-editor\renderer\object\AreaRenderer.h">
       <Filter>SOURCE\M04-Editor\Renderer\Object</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\entities\UIDragHandle.h">
+      <Filter>SOURCE\M04-Editor\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\renderer\object\UIDragHandleRenderer.h">
+      <Filter>SOURCE\M04-Editor\Renderer\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04\entities\TestEntityBasic.h">
+      <Filter>SOURCE\M04\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\mapeditor\ObjectEditorListing.h">
+      <Filter>SOURCE\M04-Editor\Standalone\Mapeditor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\mapeditor\EditorObject.h">
+      <Filter>SOURCE\M04-Editor\Standalone\Mapeditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -106,6 +127,21 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\renderer\object\AreaRenderer.cpp">
       <Filter>SOURCE\M04-Editor\Renderer\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\entities\UIDragHandle.cpp">
+      <Filter>SOURCE\M04-Editor\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\renderer\object\UIDragHandleRenderer.cpp">
+      <Filter>SOURCE\M04-Editor\Renderer\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\entities\TestEntityBasic.cpp">
+      <Filter>SOURCE\M04\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\mapeditor\ObjectEditorListing.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\Mapeditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\mapeditor\EditorObject.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\Mapeditor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

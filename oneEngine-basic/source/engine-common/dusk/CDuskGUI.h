@@ -191,6 +191,7 @@ public:
 		ENGCOM_API void AddDropdownOption ( const Handle&, const string&, const int );
 		ENGCOM_API void SetDropdownValue ( const Handle&, const int );
 		// Get/set dropdown value
+		ENGCOM_API string GetCurrentDropdownString ( const Handle& );
 		ENGCOM_API int GetDropdownOption ( const Handle& );
 		ENGCOM_API void SetDropdownOption ( const Handle&, const int );
 		// Clear values
