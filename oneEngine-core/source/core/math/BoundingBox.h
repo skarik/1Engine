@@ -8,6 +8,7 @@
 #ifndef _BOUNDING_BOX_H_
 #define _BOUNDING_BOX_H_
 
+#include <algorithm>
 #include "core/types/float.h"
 #include "Vector2d.h"
 #include "Vector3d.h"

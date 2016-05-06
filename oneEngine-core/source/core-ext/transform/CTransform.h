@@ -26,7 +26,7 @@ class CLogicObject;			// Renderer
 using std::string;
 
 // Class
-ALIGNAS(16) class CTransform
+class ALIGNAS(16) CTransform
 {
 private:
 	CTransform ( CTransform const& );

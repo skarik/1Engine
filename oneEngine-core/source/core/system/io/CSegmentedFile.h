@@ -13,6 +13,7 @@
 #include "core/types/types.h"
 #include "core/containers/arstring.h"
 
+#include <algorithm>
 #include <vector>
 #include <string>
 using std::string;

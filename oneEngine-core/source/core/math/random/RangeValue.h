@@ -2,6 +2,7 @@
 #ifndef _RANGE_VALUE_H_
 #define _RANGE_VALUE_H_
 
+#include <algorithm>
 #include "core/math/Vector3d.h"
 
 #ifdef max

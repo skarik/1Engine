@@ -1,4 +1,5 @@
 
+#include <algorithm>
 #include "CMatrix.h"
 #include "string.h"
 

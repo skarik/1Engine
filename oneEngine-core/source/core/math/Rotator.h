@@ -1,6 +1,7 @@
 #ifndef _X_ROTATION_H_
 #define _X_ROTATION_H_
 
+#include <algorithm>
 #include "Vector3d.h"
 #include "core/types/float.h"
 #include "Quaternion.h"

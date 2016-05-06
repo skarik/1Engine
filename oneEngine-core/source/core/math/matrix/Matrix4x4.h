@@ -2,7 +2,7 @@
 #ifndef _MATRIX_4_4_H_
 #define _MATRIX_4_4_H_
 
-ALIGNAS(64) class Matrix4x4
+class ALIGNAS(64) Matrix4x4
 {
 public:
 	FORCE_INLINE Matrix4x4 ( void );

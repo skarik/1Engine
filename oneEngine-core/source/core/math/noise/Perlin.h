@@ -6,6 +6,7 @@
 
 #define PERLIN_H_
 
+#include <algorithm>
 #include <stdlib.h>
 #include "BaseNoise.h"
 #include "core/math/random/Random.h"

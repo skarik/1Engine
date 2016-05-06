@@ -4,6 +4,7 @@
 
 #include <string>
 #include <stdint.h>
+#include <algorithm>
 
 #include "renderer/types/pixelFormat.h"
 
