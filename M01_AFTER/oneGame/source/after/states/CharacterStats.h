@@ -2,6 +2,7 @@
 #ifndef _CHARACTER_STATS_H_
 #define _CHARACTER_STATS_H_
 
+#include <algorithm>
 #include <limits.h>
 #include "core/types/types.h"
 #include "core/types/float.h"

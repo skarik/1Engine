@@ -199,13 +199,13 @@ void Dusk::DialogueFileSelector::Update ( void )
 			for( std::tr2::sys::directory_iterator dir_iter( t_currentPath ) ; dir_iter != end_iter ; ++dir_iter)
 			{
 				filelist_entry_t file;
-				file.filename = dir_iter->path().leaf();
+				file.filename = dir_iter->path().filename().string();
 				if ( file.filename == ".." || file.filename == "." ) continue; // Skip on Unix
 				file.isFolder = std::tr2::sys::is_directory( dir_iter->status() ); // Set if directory
 				m_filelist.push_back( file );
 			}
 			// Add in the back directory
-			if ( t_currentPath.has_branch_path() )
+			if ( t_currentPath.has_parent_path() )
 			{
 				filelist_entry_t file;
 				file.filename = "..";
@@ -274,7 +274,7 @@ void Dusk::DialogueFileSelector::Update ( void )
 				// Go to the folder
 				if ( m_filelist[m_selected].filename == ".." ) {
 					std::tr2::sys::path t_currentPath ( m_currentPath );
-					t_currentPath = t_currentPath.branch_path();
+					t_currentPath = t_currentPath.parent_path();
 					m_currentPath = t_currentPath.string();
 				}
 				else {

@@ -160,7 +160,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 	{
 		if ( fs::is_regular_file( path->status() ) )
 		{
-			string filename = path->path().filename().c_str();
+			string filename = path->path().filename().string();
 			// Copy over all dynamic libraries or executables that we need
 			if ( filename.rfind(".exe") != string::npos || filename.rfind(".dll") != string::npos || filename.rfind(".so") != string::npos )
 			{
@@ -168,7 +168,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 				//fs::path target_path = build_path.string() + "/" + path->path().filename();
 				//fs::copy_file( fs::path(path->path().root_path().string()), target_path, fs::copy_option::overwrite_if_exists );
 				std::ifstream  src( string(m_exe_path) + "/" + filename,					std::ios::binary);
-				std::ofstream  dst( build_path.string() + "/" + path->path().filename(),	std::ios::binary);
+				std::ofstream  dst( build_path.string() + "/" + path->path().filename().string(),	std::ios::binary);
 				if ( !src.is_open() ) throw Core::NullReferenceException();
 				dst << src.rdbuf();
 			}
@@ -181,13 +181,13 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 		// Check for libraries
 		if ( fs::is_regular_file( path->status() ) )
 		{
-			string filename = path->path().filename().c_str();
+			string filename = path->path().filename().string();
 			// Copy over all dynamic libraries that we need
 			if (filename.rfind(".dll") != string::npos || filename.rfind(".so") != string::npos )
 			{
 				printf( "copying file: %s\n", filename.c_str() );
 				std::ifstream  src( "./" + path->path().string(),							std::ios::binary);
-				std::ofstream  dst( build_path.string() + "/" + path->path().filename(),	std::ios::binary);
+				std::ofstream  dst( build_path.string() + "/" + path->path().filename().string(),	std::ios::binary);
 				if ( !src.is_open() ) throw Core::NullReferenceException();
 				dst << src.rdbuf();
 			}
@@ -195,7 +195,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 		// Check for resource directories
 		else if ( fs::is_directory( path->status() ) )
 		{
-			string filename = path->path().filename().c_str();
+			string filename = path->path().filename().string();
 			// If it's a resource directory, step through that shit
 			if ( filename.rfind(".res-") != string::npos )
 			{
@@ -225,7 +225,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 						if ( rpath->path().string().find(".svn") == string::npos )
 						{
 							//printf( "found file: %s\n", rpath->path().string().c_str() );
-							string resource_name = rpath->path().filename();
+							string resource_name = rpath->path().filename().string();
 							printf( "found file: %s\n", resource_name.c_str() );
 
 							// Check the file extension

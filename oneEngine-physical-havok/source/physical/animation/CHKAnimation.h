@@ -5,6 +5,7 @@
 #include "physical/physics/CPhysicsCommon.h"
 #include "core-ext/animation/CAnimationCommon.h"
 #include "core-ext/animation/CAnimation.h"
+#include "physical/linkerfix_legacy.h"
 
 class glhkSkeleton;
 class skeletonBone_t;

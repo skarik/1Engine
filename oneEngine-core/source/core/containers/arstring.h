@@ -26,6 +26,9 @@ public:
 	explicit		arstring ( arstring<Ln>&& other ) {
 		strncpy( data, other.data, Ln );
 	}
+	arstring( const arstring<Ln>& other ) {
+		strncpy( data, other.data, Ln );
+	}
 
 	operator char* ( void ) {
 		return (char*)data;
@@ -46,6 +49,12 @@ public:
 		}
 		return *this;
 	}
+
+	arstring<Ln> & operator= ( const arstring<Ln> & str ) {
+		strncpy( data, str, Ln );
+		return *this;
+	}
+
 	template <unsigned short Lm>
 	arstring<Ln> & operator= ( const arstring<Lm> & str ) {
 		strncpy( data, str, Ln );
@@ -79,6 +88,7 @@ public:
 		}
 		return *this;
 	}
+
 	template <unsigned short Lm>
 	arstring<Ln> operator+ ( const arstring<Lm> & str ) {
 		arstring<Ln> resultant ( *this );

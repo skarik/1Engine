@@ -148,7 +148,7 @@ void CPlayerLogbook::LoadFullLogbook ( void )
 			// With the file name, strip the path and the extension
 			//currentname = currentPath.filename().string();
 			//currentname = currentname.substr( 0, currentname.size()-4 );
-			currentEntry = currentPath.stem();
+			currentEntry = currentPath.stem().string();
 
 			//cout << currentEntry << endl;
 
@@ -485,7 +485,7 @@ void CPlayerLogbook::UpdateDisplayedEntry ( const int entryIndex )
 				// For every file, take the file name
 				currentPath = dir_itr->path();
 				// With the file name, strip the path and the extension
-				currentEntry = "$" + currentPath.stem();
+				currentEntry = "$" + currentPath.stem().string();
 				// Match entry with current entry.
 				if ( currentEntry.find( lb_current_entry.filename ) != string::npos )
 				{

@@ -135,6 +135,9 @@
     <ClInclude Include="source\physical\physics\motion\physCharacterRigidBodyInfo.h">
       <Filter>SOURCE\Physical\Physics\Motion</Filter>
     </ClInclude>
+    <ClInclude Include="source\physical\linkerfix_legacy.h">
+      <Filter>SOURCE\Physical</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\physical\physics\CPhysics.cpp">

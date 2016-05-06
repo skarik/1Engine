@@ -29,7 +29,7 @@ namespace Core
 				if ( fs::is_directory( dir_itr->status() ) )
 				{
 					// For every file, take the file name
-					std::string currentName = dir_itr->path().leaf();
+					std::string currentName = dir_itr->path().filename().string();
 
 					// Add the path to the front of the list
 					m_paths.insert( m_paths.begin(), "./addons/" + currentName );
