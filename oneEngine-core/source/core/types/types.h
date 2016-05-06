@@ -78,7 +78,7 @@
 
 		// Define alignment if not defined
 #		if _MSC_VER > 1700
-#			define ALIGNAS(a) align( a )
+#			define ALIGNAS(a) alignas( a )
 #		else
 #			define ALIGNAS(a) __declspec( align( a ) ) 
 #		endif
