@@ -26,7 +26,7 @@ class CLogicObject;			// Renderer
 using std::string;
 
 // Class
-class ALIGNAS(16) CTransform
+class ALIGNAS(64) CTransform
 {
 private:
 	CTransform ( CTransform const& );
@@ -97,11 +97,11 @@ public:
 	CORE_API CTransform* FindChildBoneRecursive ( const string& );
 
 private:
-	ALIGNAS(16) Matrix4x4	matx;
-	ALIGNAS(16) Matrix4x4	matxLocal;
+	ALIGNAS(64) Matrix4x4	matx;
+	ALIGNAS(64) Matrix4x4	matxLocal;
 
-	ALIGNAS(16) Matrix4x4	matxRot;
-	ALIGNAS(16) Matrix4x4	matxLocalRot;
+	ALIGNAS(64) Matrix4x4	matxRot;
+	ALIGNAS(64) Matrix4x4	matxLocalRot;
 
 	// Todo: move to matrix, add quaternion representations
 

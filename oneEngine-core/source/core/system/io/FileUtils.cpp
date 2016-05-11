@@ -55,7 +55,7 @@ bool IO::AppendFile ( const char* n_targetfile, const char* n_sourcefile )
 	}
 
 	char buf [256];
-	unsigned short readcount;
+	size_t readcount;
 
 	do
 	{

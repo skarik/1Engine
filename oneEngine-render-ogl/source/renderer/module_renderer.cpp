@@ -1,5 +1,6 @@
 
 #include "module_renderer.h"
+#include "core/legacy/linkerfix_legacy.h"
 
 #include "core/settings/CGameSettings.h"
 #include "physical/physics/CPhysics.h"

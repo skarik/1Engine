@@ -161,7 +161,7 @@ struct WorldVector
 
 // Definition for C++11 hash function
 template<> struct std::hash <WorldVector> {
-	size_t operator() ( const WorldVector& arg ) {
+	size_t operator() ( const WorldVector& arg ) const {
 		return (size_t)(arg);
 	}
 };

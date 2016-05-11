@@ -13,7 +13,7 @@ arsingleton::arsingleton ( void )
 	}
 	mActive = this;
 }
-arsingleton::~arsingleton ( void )
+arsingleton::~arsingleton ( void ) throw(...)
 {
 	if ( mActive != this )
 	{

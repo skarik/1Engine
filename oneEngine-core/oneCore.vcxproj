@@ -312,6 +312,7 @@
     <ClInclude Include="source\core\containers\arvector.h" />
     <ClInclude Include="source\core\exceptions.h" />
     <ClInclude Include="source\core\exceptions\exceptions.h" />
+    <ClInclude Include="source\core\legacy\linkerfix_legacy.h" />
     <ClInclude Include="source\core\math\blend_vector.h" />
     <ClInclude Include="source\core\math\BoundingBox.h" />
     <ClInclude Include="source\core\math\Color.h" />

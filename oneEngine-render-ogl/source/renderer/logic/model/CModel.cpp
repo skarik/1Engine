@@ -166,7 +166,7 @@ CModel::CModel ( CModelData& mdInModelData, string& sModelName )
 		if ( sModelName == "_sys_override_" )
 		{
 			char t_newName [64];
-			sprintf( t_newName, "_sys_override_%x", (void*)this );
+			sprintf( t_newName, "_sys_override_%x", (unsigned int)this );
 			sModelName = t_newName;
 		}
 	}

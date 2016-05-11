@@ -12,7 +12,7 @@ class arsingleton
 {
 public:
 	arsingleton ( void );
-	virtual ~arsingleton ( void );
+	virtual ~arsingleton ( void ) throw(...);
 	static arsingleton* Active ( void );
 private:
 	static arsingleton*	mActive;

@@ -86,6 +86,9 @@
     <Filter Include="SOURCE\Core-ext\Containers">
       <UniqueIdentifier>{5b5d9a67-07ae-4014-a0fc-cd499a08e1c6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Core\Legacy">
+      <UniqueIdentifier>{bde0f651-209f-4201-8b24-c1632d38ee07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\callback_basics.h">
@@ -369,6 +372,9 @@
     </ClInclude>
     <ClInclude Include="source\core\types\string_extension.h">
       <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\legacy\linkerfix_legacy.h">
+      <Filter>SOURCE\Core\Legacy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

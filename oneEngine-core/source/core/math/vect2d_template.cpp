@@ -8,7 +8,7 @@ using namespace Engine;
 //Default constructor
 template <typename REAL>
 vect2d_template<REAL>::vect2d_template()
-	: x(0.0), y(0.0)
+	: x(0), y(0)
 {
 	;
 }
@@ -110,7 +110,7 @@ const REAL& vect2d_template<REAL>::operator[] ( const int a ) const			// 6/4/13
 template <typename REAL>
 REAL vect2d_template<REAL>::magnitude (void) const
 {
-	return sqrt (x*x + y*y);
+	return (REAL) sqrt (x*x + y*y);
 }
 
 template <typename REAL>

@@ -27,7 +27,7 @@ class glMaterial
 	friend CRenderState;
 public:
 	RENDER_API				glMaterial ( void );
-	RENDER_API				~glMaterial ( void );
+	RENDER_API				~glMaterial ( void ) throw(...);
 	
 	// Load material from file
 	RENDER_API void			loadFromFile ( const char* n_materialfile );

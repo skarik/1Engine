@@ -52,7 +52,7 @@ glMaterial::glMaterial ( void )
 	memset( m_sampler_targets,	 0, sizeof(glHandle) * 12 );
 }
 
-glMaterial::~glMaterial ( void )
+glMaterial::~glMaterial ( void ) throw(...)
 {
 	if ( hasReference() ) {
 		throw std::exception();
@@ -101,20 +101,20 @@ uchar glMaterial::getPassCount ( void )
 {
 	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
 	{
-		return passinfo.size();
+		return (uchar)passinfo.size();
 	}
 	else
 	{
-		return deferredinfo.size();
+		return (uchar)deferredinfo.size();
 	}
 }
 uchar glMaterial::getPassCountForward ( void )
 {
-	return passinfo.size();
+	return (uchar)passinfo.size();
 }
 uchar glMaterial::getPassCountDeferred ( void )
 {
-	return deferredinfo.size();
+	return (uchar)deferredinfo.size();
 }
 
 glHandle	glMaterial::m_ubo_foginfo = 0;

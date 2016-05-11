@@ -93,7 +93,7 @@ namespace Jobs
 
 	public:
 #ifdef _USING_VARIADIC_TEMPLATES_
-		static struct Current
+		struct Current
 		{
 		public:
 			//	AddJobRequest ( jobType, Fn&& function, Args... args )

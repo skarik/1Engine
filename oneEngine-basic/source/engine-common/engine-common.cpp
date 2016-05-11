@@ -1,6 +1,8 @@
 
 //#include "physical/liscensing.cxx" // Include liscense info
 
+#include "core/legacy/linkerfix_legacy.h"
+
 #include "engine/utils/CDeveloperConsole.h"
 #include "renderer/renderer-console.h"
 
