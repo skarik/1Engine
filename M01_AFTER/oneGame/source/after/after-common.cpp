@@ -1,5 +1,6 @@
 
 //#include "physical/liscensing.cxx" // Include liscense info
+#include "core/legacy/linkerfix_legacy.h"
 
 #include "engine/utils/CDeveloperConsole.h"
 #include "engine-common/lua/LuaSys.h"
