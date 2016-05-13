@@ -7,7 +7,7 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+#include "windows.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -32,7 +32,7 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "#include ""afxres.h""\r\n"
+    "#include ""windows.h""\r\n"
     "\0"
 END
 
@@ -71,7 +71,7 @@ BEGIN
             VALUE "FileDescription", "MegallymagiCallycraftyCraft the Adventure Fighting Terrain Exploration RPG"
             VALUE "FileVersion", "0, 0, 5, XX"
             VALUE "InternalName", "MegallymagiCallycraftyCraft"
-            VALUE "LegalCopyright", "Copyright (C) 2012-2015"
+            VALUE "LegalCopyright", "Copyright (C) 2012-2016"
             VALUE "OriginalFilename", "Minecraft.jar"
             VALUE "ProductName", "AFTER"
             VALUE "ProductVersion", "0, 0, 5, XX"
@@ -92,6 +92,7 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "icon1.ico"
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
