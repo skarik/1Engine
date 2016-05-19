@@ -11,6 +11,22 @@
 Debug::CDebugConsole*	Debug::Console							= NULL;
 bool					Debug::CDebugConsole::bOutputEnabled	= true;
 
+#ifdef _WIN32
+#	if _MSC_VER >= 1900
+// Cfile rework for output
+class outbuf : public std::streambuf {
+public:
+	outbuf() {
+		setp(0, 0);
+	}
+
+	virtual int_type overflow(int_type c = traits_type::eof()) {
+		return fputc(c, stdout) == EOF ? traits_type::eof() : c;
+	}
+};
+#	endif
+#endif
+
 // Static functions
 // Debug Console Init
 void Debug::CDebugConsole::Init ( void )
@@ -31,12 +47,17 @@ void Debug::CDebugConsole::Init ( void )
 	}
 	else
 	{
-#		ifdef _WIN32
+#	ifdef _WIN32
+
+		// Get a console for this program
+		AllocConsole();
+
+#		if _MSC_VER < 1900
+
 		int hConHandle;
 		long lStdHandle;
 		FILE *fp;
-		// Get a console for this program
-		AllocConsole();
+
 		// redirect unbuffered STDOUT to the console
 		lStdHandle = (long)GetStdHandle(STD_OUTPUT_HANDLE);
 		hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
@@ -55,16 +76,36 @@ void Debug::CDebugConsole::Init ( void )
 		fp = _fdopen( hConHandle, "w" );
 		*stderr = *fp;
 		setvbuf( stderr, NULL, _IONBF, 0 );
+
 		// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
 		// point to console as well
 		std::ios::sync_with_stdio();
+
+#		else
+
+		// Redirect STDOUT to console
+		FILE* pCout;
+		freopen_s(&pCout, "CONOUT$", "w", stdout);
+		// Redirect STDIN from console
+		FILE* pCin;
+		freopen_s(&pCin,  "CONIN$",  "r", stdin );
+		// Redirect STDERR to console
+		FILE* pCerr;
+		freopen_s(&pCerr, "CONERR$", "w", stderr);
+
+		// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog point to console as well
+		std::ios::sync_with_stdio();
+
+#		endif
+
 		// Move console to the side
 		HWND hConsole;
 		hConsole = GetConsoleWindow();
-		SetWindowPos( hConsole, 0, 0,16,0,0, SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE );
-#		elif 
+		SetWindowPos(hConsole, 0, 0, 16, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+
+#	elif 
 	/// use openpty to create a terminal window and redirect output to it
-#		endif
+#	endif
 	}
 }
 
