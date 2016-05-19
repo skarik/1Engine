@@ -571,24 +571,22 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 
 			// Get the BPD filename
 			string t_bpdFilename = n_texture->sFilename;
+			t_bpdFilename = t_bpdFilename.substr(0, t_bpdFilename.find_last_of(".")) + ".bpd";
 			t_bpdFilename = Core::Resources::PathTo( t_bpdFilename );
-			t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
-			if ( !IO::FileExists( t_bpdFilename ) )
+			// Does the BPD file exist?
+			if ( !IO::FileExists(t_bpdFilename) )
 			{
-				// May be in release mode. Go directly to the BPD file
-				t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
-				t_bpdFilename = Core::Resources::PathTo( t_bpdFilename );
-			}
-			else
-			{
-				// Work in development mode
-				t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
-				// Convert it to BPD
-				try {
-					Textures::ConvertFile( n_texture->sFilename, t_bpdFilename );
-				}
-				catch ( std::exception& e ) {
-					printf( "Exception: %s\n", e.what() );
+				// If file exists, convert it
+				if ( IO::FileExists(n_texture->sFilename) )
+				{
+					// (Place the new texture in same directory as old texture)
+					// Convert it to BPD
+					try {
+						Textures::ConvertFile(n_texture->sFilename, t_bpdFilename);
+					}
+					catch (std::exception& e) {
+						printf("Exception: %s\n", e.what());
+					}
 				}
 			}
 
