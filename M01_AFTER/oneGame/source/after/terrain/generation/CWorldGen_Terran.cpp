@@ -132,8 +132,8 @@ Vector3d_d CWorldGen_Terran::GetSpawnPoint ( const int n_continent, const int n_
 		}
 
 		// Offset the point
-		offsetAngle		+= noise->Get3D( failures*0.1f, samplePosition.x*0.0002f, samplePosition.y*0.0002f ) * 0.5;
-		distanceOffset	+= noise->Get3D( failures*0.2f, samplePosition.y*0.0001f, samplePosition.x*0.0001f ) * 1000;
+		offsetAngle		+= noise->Get3D( failures*0.1f, samplePosition.x*0.0002f, samplePosition.y*0.0002f ) * 0.5F;
+		distanceOffset	+= noise->Get3D( failures*0.2f, samplePosition.y*0.0001f, samplePosition.x*0.0001f ) * 1000.F;
 		if ( distanceOffset > 150000+130000 ) {
 			distanceOffset  = 150000+130000;
 		}

@@ -16,7 +16,7 @@
 
 ItemTorch::ItemTorch ( void ) : CWeaponItem( ItemData() )
 {
-	pModel = new CModel ( string("models/items/torch_1.FBX") );
+	pModel = new CModel ( "models/items/torch_1.FBX" );
 
 	pCollider = new CCapsuleCollider( 1.2f,0.2f, true );
 

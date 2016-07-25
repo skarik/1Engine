@@ -7,7 +7,7 @@
 PropDoorBase::PropDoorBase ( BlockTrackInfo const& inInfo )
 	: CTerrainProp( inInfo )
 {
-	m_model = new CModel( string("models/props/door0frame.FBX") );
+	m_model = new CModel( "models/props/door0frame.FBX" );
 	//pModel->GetAnimation()->Stop("open");
 
 	mCollidesWithPlayer = true;
@@ -20,7 +20,7 @@ PropDoorBase::PropDoorBase ( BlockTrackInfo const& inInfo )
 
 	//strcpy( charName, "Wooden Chest" );
 
-	doorModel = new CModel( string("models/props/door0.FBX") );
+	doorModel = new CModel( "models/props/door0.FBX" );
 	doorCollision = new CBoxCollider( doorModel->GetBoundingBox(), Vector3d(0,0,0) );
 	doorBody = new CRigidBody( doorCollision, this );
 

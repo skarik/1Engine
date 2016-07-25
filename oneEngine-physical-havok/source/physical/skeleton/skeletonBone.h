@@ -3,9 +3,10 @@
 #ifndef _PHYSICAL_SKELETON_BONE_H_
 #define _PHYSICAL_SKELETON_BONE_H_
 
+#include "core/containers/arstring.h"
 #include "core-ext/transform/CTransform.h"
-#include <string>
-using std::string;
+
+#include <vector>
 
 class skeletonBone_t
 {
@@ -60,7 +61,7 @@ public:
 
 	void SetBindPose ( void )
 	{
-		bindPose = transform.GetTransformMatrix();
+		bindPose = transform.WorldMatrix();
 		invBindPose = bindPose.inverse();
 	};
 
@@ -75,7 +76,7 @@ public:
 
 	void UpdatePose ( void )
 	{
-		currentPose = (transform.GetTransformMatrix() * invBindPose);
+		currentPose = (transform.WorldMatrix() * invBindPose);
 	}
 
 	void SendTransformation ( void )

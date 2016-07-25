@@ -8,11 +8,12 @@
 //#include "CAnimation.h"
 //#include "CMorpher.h"
 //#include "sHitbox.h"
-#include "core-ext/types/sHitbox.h"
+#include "core/types/types.h"
+#include "core/containers/arsingleton.h"
+#include "core/containers/arstring.h"
 #include <vector>
 #include <map>
 #include <string>
-using std::string;
 
 struct sHitbox;
 
@@ -22,7 +23,7 @@ class CAnimation;
 class CMorpher;
 
 // Storage Class Definition
-class MeshSetReference
+/*class MeshSetReference
 {
 public:
 	unsigned int referenceCount;
@@ -46,8 +47,8 @@ class MorphSetReference
 public:
 	unsigned int referenceCount;
 	CMorpher*	pAnimSet;
-};
-
+};*/
+/*
 // Main Class Definition
 class CModelMaster
 {
@@ -80,6 +81,49 @@ private:
 };
 
 // Global Class
-extern CModelMaster ModelMaster;
+extern CModelMaster ModelMaster;*/
+
+class RenderResources
+{
+	// Singleton definition
+	ARSINGLETON_H_STORAGE(RenderResources,RENDER_API)
+	ARSINGLETON_H_ACCESS(RenderResources)
+
+public:
+	RENDER_API void AddMeshSet ( const char* filename, std::vector<glMesh*>& meshes );
+	RENDER_API void AddMorphSet ( const char* filename, CMorpher* morphSet );
+
+	//	GetMesh ( filename )
+	// Returns the mesh set saved previously, and increments the reference count.
+	// Returns NULL if no reference is found.
+	RENDER_API const std::vector<glMesh*>*		GetMesh ( const char* filename );
+
+	//	GetMorpher ( filename )
+	// Returns the morpher saved previously, and increments the reference count.
+	// Returns NULL if no reference is found.
+	RENDER_API const CMorpher*					GetMorpher ( const char* filename );
+
+	RENDER_API void ReleaseMeshSet ( const char* filename );
+	RENDER_API void ReleaseMorphSet ( const char* filename );
+
+	//	Cleanup ()
+	// Deletes all mesh sets and morphs with no existing references
+	RENDER_API void Cleanup ( void );
+
+private:
+	struct meshset_reference_t
+	{
+		uint16_t refCount;
+		std::vector<glMesh*> set;
+	};
+	struct morphset_reference_t
+	{
+		uint16_t refCount;
+		CMorpher* set;
+	};
+
+	std::map<arstring256,meshset_reference_t>	meshSets;
+	std::map<arstring256,morphset_reference_t>	morphSets;
+};
 
 #endif

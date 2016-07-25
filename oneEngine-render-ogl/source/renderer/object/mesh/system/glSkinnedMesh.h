@@ -33,37 +33,44 @@ public:
 	// Destructor
 	virtual ~glSkinnedMesh ( void );
 
-	// Create a new VBO associated with this glMesh
+	//	Initialize ( name, data ) : sets up new mesh data
+	// Creates a new VBO associated with this glMesh
 	// Removes any old VBO data.
 	void Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames=1 ) override;
-	// Creates a new VBO and CPU-side stream for this mesh.
-	void CopyStream ( glSkinnedMesh* const psrcMesh );
-	// Frees the stream that was created with CopyStream.
-	void FreeStream ( void );
+
+	//	Copy ( ) : creates a new glSkinnedMesh with duplicated streams
+	glSkinnedMesh* Copy ( void );
+
+	////	CopyStream ( ) : prepare mesh for CPU-side skinning
+	//// Creates a new VBO and CPU-side stream for this mesh.
+	//void CopyStream ( glSkinnedMesh* const psrcMesh );
+	////	FreeStream ( ) : frees used VBOs
+	//// Frees a stream that was created with CopyStream.
+	//void FreeStream ( void );
 
 	// Render the mesh out
-	void Render ( void ) override;
+	//void Render ( void ) override;
 
 	// Render mode
-	enum ERenderMode
+	enum eRenderMode_t
 	{
 		RD_GPU = 0,
 		RD_CPU,
 		RD_GPU_FALLBACK //for modes that do not support GPU pallettes (splits up mesh, ala doom3)
 	};
-	ERenderMode		iRenderMode;
+	eRenderMode_t		iRenderMode;
 
 	// Quality Type
-	enum EQualityType
+	enum eQualityType_t
 	{
 		QD_HIGH = 0,
 		QD_MED,
 		QD_LOW
 	};
-	EQualityType	iQualityType;
+	eQualityType_t		iQualityType;
 
 	// Set skeleton pointer
-	void SetSkeleton ( std::vector<skeletonBone_t*>* pInSkeleton )
+	/*void SetSkeleton ( std::vector<skeletonBone_t*>* pInSkeleton )
 	{
 		pvSkeleton = pInSkeleton;
 		//rootBone = (*pInSkeleton)[0];
@@ -71,86 +78,90 @@ public:
 	std::vector<skeletonBone_t*>* GetSkeleton ( void )
 	{
 		return pvSkeleton;
-	};
+	};*/
+	//void SetMatrixBuffer ( std::vector<
+	void SetSkinningData ( const skinningData_t& n_skinning_data );
 
 	// Get pose matrices
-	bool	newStreamReady;
-	bool	isStreaming;
-	bool	threadIsValid;
-	void PrepareStream ( void );
-	void GetPoseMatrices ( void );
-	void DoCPUSkinning ( void );
-	void StartSkinning ( void );
+	//bool	newStreamReady;
+	//bool	isStreaming;
+	//bool	threadIsValid;
+	//void PrepareStream ( void );
+	////void GetPoseMatrices ( void );
+	//void DoCPUSkinning ( void );
+	//void StartSkinning ( void );
 
 	void UpdateVBO ( void );
 
-	struct sSkinningUpdater
-	{
-		glSkinnedMesh*	mesh;
-		void operator() ( void );
-	};
+	//struct sSkinningUpdater
+	//{
+	//	glSkinnedMesh*	mesh;
+	//	void operator() ( void );
+	//};
 
 	/*void SwitchSkeleton ( vector<skeletonBone_t*>* newSkelly )
 	{
 		pvSkeleton = newSkelly;
 	}*/
-	CModelData* getCurrentStream ( void ) {
+	/*CModelData* getCurrentStream ( void )
+	{
 		return pmStreamData;
-	}
-
-	glHandle getTextureBuffer ( void ) {
-		return m_textureBuffer;
-	}
-	/*GLuint getSoftTextureBuffer ( void ) {
-		return m_textureSoftBuffer;
 	}*/
-	glHandle getBuffer ( void ) {
-		return m_textureBufferData;
-	}
-	/*GLuint getSoftBuffer ( void ) {
-		return m_textureSoftBufferData;
-	}*/
-protected:
-	bool	isDuplicatedStream;
 
+	//glHandle getTextureBuffer ( void ) {
+	//	return m_textureBuffer;
+	//}
+	///*GLuint getSoftTextureBuffer ( void ) {
+	//	return m_textureSoftBuffer;
+	//}*/
+	//glHandle getBuffer ( void ) {
+	//	return m_textureBufferData;
+	//}
+	///*GLuint getSoftBuffer ( void ) {
+	//	return m_textureSoftBufferData;
+	//}*/
+//protected:
+//	bool	isDuplicatedStream;
+//
 protected:
 	//skeletonBone_t*	rootBone;
-	std::vector<skeletonBone_t*>*	pvSkeleton;
-	Matrix4x4*	pvPoseMatrices;
+	//std::vector<skeletonBone_t*>*	pvSkeleton;
+	//Matrix4x4*	pvPoseMatrices;
 	//Matrix4x4*	pvSoftMatrices;
 
 	glBone*		parentBone;
 	bool		useSkinning;
 
-	CModelData* pmStreamData;
+	//CModelData* pmStreamData;
 	//friend sSkinningUpdater;
 	//thread	tSkinning;
 
-	unsigned int	partNum;
-	uint*	iVBOfaces_gpu;
-	unsigned int*	partTriCount;
+	//unsigned int	partNum;
+	//uint*	iVBOfaces_gpu;
+	//unsigned int*	partTriCount;
 
 public:
-	glHandle	m_textureBuffer;
+	skinningData_t	skinning_data;
+	/*glHandle	m_textureBuffer;
 	glHandle	m_textureBufferData;
-	glHandle	m_textureBufferData_Swap;
+	glHandle	m_textureBufferData_Swap;*/
 	/*GLuint	m_textureSoftBuffer;
 	GLuint	m_textureSoftBufferData;
 	GLuint	m_textureSoftBufferData_Swap;*/
 
 private:
 	// Now for epic system stuff
-	void CreateSplitMesh ( void );
-	void RenderGPUFallback ( void );
-	void SendBoneMatrices ( int partOffset );
-	void FreeSplitMesh ( void );
+	//void CreateSplitMesh ( void );
+	//void RenderGPUFallback ( void );
+	//void SendBoneMatrices ( int partOffset );
+	//void FreeSplitMesh ( void );
 
 	// GPU based
 	//void UpdateVBO ( void );
-	void RenderCPU ( void );
-	void FreeCPUMesh ( void );
+	//void RenderCPU ( void );
+	//void FreeCPUMesh ( void );
 
-	void FreeGPUBuffer ( void );
+	//void FreeGPUBuffer ( void );
 };
 
 #endif

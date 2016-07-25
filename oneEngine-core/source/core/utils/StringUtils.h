@@ -20,6 +20,7 @@ namespace StringUtils
 
 	std::vector<string>		Split  (const string& s, const string& delim, const bool keep_empty = true );
 
+	size_t					LargestCommonSubstringLength ( const string& str1, const string& str2 );
 
 	template<class object>
 	object					ToObject ( const char* t );

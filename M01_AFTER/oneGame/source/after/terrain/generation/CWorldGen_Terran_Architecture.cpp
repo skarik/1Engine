@@ -137,7 +137,7 @@ int GeneratorUtilities::GetClosestVertex ( const CModelData* md, const Vector3d_
 	else {
 		stopflag.clear();
 	}
-	int nearest = vertProx->FindNearest(Vector3d(point.x,point.y,point.z));
+	int nearest = vertProx->FindNearest(Vector3d((Real)point.x,(Real)point.y,(Real)point.z));
 	return nearest;
 }
 
@@ -181,7 +181,7 @@ void GeneratorUtilities::GetClosestMeshInfo( const CModelData* md, const Vector3
 
 	int nearest = vertProx->FindNearest(Vector3d(point.x,point.y,point.z));*/
 	Real minSqDistance = 100000000.0f;
-	Vector3d sourcePoint = Vector3d(point.x,point.y,point.z);
+	Vector3d sourcePoint = Vector3d((Real)point.x,(Real)point.y,(Real)point.z);
 	Vector3d minPoint;
 	uint targetTri;
 	for ( uint tri = 0; tri < md->triangleNum; ++tri )
@@ -278,10 +278,10 @@ Terrain::terra_b GeneratorUtilities::SampleModelVolume ( const CModelData* md, c
 					Vector3d targetPosition = (verts[0].lerp( verts[1], ab )).lerp( verts[2], ac );
 					Vector3d targetNormal = (normals[0].lerp( normals[1], ab )).lerp( normals[2], ac );
 					// Turn targetPosition to integer index
-					targetPosition = targetPosition*modelScale + Vector3d( 16,16,16 );
-					int32_t subX = targetPosition.x;
-					int32_t subY = targetPosition.y;
-					int32_t subZ = targetPosition.z;
+					targetPosition = targetPosition*(Real)modelScale + Vector3d( 16,16,16 );
+					int32_t subX = (int32_t)targetPosition.x;
+					int32_t subY = (int32_t)targetPosition.y;
+					int32_t subZ = (int32_t)targetPosition.z;
 					if ( subX < 0 || subX >= 32 ) continue;
 					if ( subY < 0 || subY >= 32 ) continue;
 					if ( subZ < 0 || subZ >= 32 ) continue;
@@ -345,7 +345,7 @@ Terrain::terra_b GeneratorUtilities::SampleModelVolume ( const CModelData* md, c
 					//modelVolume[t_indexer].block = EB_STONEBRICK;
 
 					Vector3d_d samplePosition = Vector3d_d(x-16,y-16,z-16);
-					int closestVert;// = GetClosestVertex( md, samplePosition );
+					//int closestVert;// = GetClosestVertex( md, samplePosition );
 
 					// Do the 3X sample
 					const Real_d bias = 0.5;
@@ -370,7 +370,7 @@ Terrain::terra_b GeneratorUtilities::SampleModelVolume ( const CModelData* md, c
 						}
 						modelVolume[t_indexer].normal_x_y = Terrain::_normal_unbias( norm.y );
 						modelVolume[t_indexer].normal_x_z = Terrain::_normal_unbias( norm.z );
-						modelVolume[t_indexer].normal_x_w = Terrain::_depth_unbias( (pos.x - samplePosition.x) );
+						modelVolume[t_indexer].normal_x_w = Terrain::_depth_unbias( Real(pos.x - samplePosition.x) );
 					}
 
 					{	// Y direction
@@ -384,7 +384,7 @@ Terrain::terra_b GeneratorUtilities::SampleModelVolume ( const CModelData* md, c
 						modelVolume[t_indexer].normal_y_x = Terrain::_normal_unbias( norm.x );
 						//modelVolume[t_indexer].normal_y_y = Terrain::_normal_unbias( norm.y );
 						modelVolume[t_indexer].normal_y_z = Terrain::_normal_unbias( norm.z );
-						modelVolume[t_indexer].normal_y_w = Terrain::_depth_unbias( (pos.y - samplePosition.y) );
+						modelVolume[t_indexer].normal_y_w = Terrain::_depth_unbias( Real(pos.y - samplePosition.y) );
 					}
 
 					{	// Z direction
@@ -398,7 +398,7 @@ Terrain::terra_b GeneratorUtilities::SampleModelVolume ( const CModelData* md, c
 						modelVolume[t_indexer].normal_z_x = Terrain::_normal_unbias( norm.x );
 						modelVolume[t_indexer].normal_z_y = Terrain::_normal_unbias( norm.y );
 						//modelVolume[t_indexer].normal_z_z = Terrain::_normal_unbias( norm.z );
-						modelVolume[t_indexer].normal_z_w = Terrain::_depth_unbias( (pos.z - samplePosition.z) );
+						modelVolume[t_indexer].normal_z_w = Terrain::_depth_unbias( Real(pos.z - samplePosition.z) );
 					}
 					
 				}
@@ -498,11 +498,11 @@ Terrain::terra_b GeneratorUtilities::SampleModelVolume ( const CModelData* md, c
 
 	const Real_d scale = Terrain::BlockSize;
 
-	int sx = (point.x/scale)+16;
+	int sx = int(point.x/scale)+16;
 	if ( sx < 0 || sx >= 32 ) return result;
-	int sy = (point.y/scale)+16;
+	int sy = int(point.y/scale)+16;
 	if ( sy < 0 || sy >= 32 ) return result;
-	int sz = (point.z/scale)+16;
+	int sz = int(point.z/scale)+16;
 	if ( sz < 0 || sz >= 32 ) return result;
 
 	result = modelVolume[sx+sy*32+sz*32*32];

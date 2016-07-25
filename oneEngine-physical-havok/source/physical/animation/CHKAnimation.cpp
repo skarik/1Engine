@@ -79,39 +79,29 @@ private:
 };
 
 // Sets the active skeleton for this animation instance
-void CHKAnimation::SetSkeleton( skeletonBone_t* rootBone, std::vector<skeletonBone_t*> &vModelSkelly )
+void CHKAnimation::SkeletonToHkaSkeleton( void )
 {
 	// First, create the skeleton
 
 	mSkelly = new hkaSkeleton;
-	//mSkelly->m_referenceCount = vModelSkelly.size();
-	mSkelly->m_referencePose.setSize( vModelSkelly.size() );
-	mSkelly->m_parentIndices.setSize( vModelSkelly.size() );
-	mSkelly->m_bones.setSize( vModelSkelly.size() );
+	mSkelly->m_referencePose.setSize( skeleton.bind_xpose.size() );
+	mSkelly->m_parentIndices.setSize( skeleton.bind_xpose.size() );
+	mSkelly->m_bones.setSize( skeleton.bind_xpose.size() );
 
-	XTransform* temp;
-	for ( uint i = 0; i < vModelSkelly.size(); ++i )
+	for ( uint i = 0; i < skeleton.bind_xpose.size(); ++i )
 	{
-		temp = &(vModelSkelly[i]->xBindPose);
+		XTransform& temp = skeleton.bind_xpose[i];
 		mSkelly->m_referencePose[i] = hkQsTransform(
-			hkVector4( temp->position.x, temp->position.y, temp->position.z ),
-			hkQuaternion( temp->rotation.x, temp->rotation.y, temp->rotation.z, temp->rotation.w ),
-			hkVector4( temp->scale.x, temp->scale.y, temp->scale.z ) );
+			hkVector4( temp.position.x, temp.position.y, temp.position.z ),
+			hkQuaternion( temp.rotation.x, temp.rotation.y, temp.rotation.z, temp.rotation.w ),
+			hkVector4( temp.scale.x, temp.scale.y, temp.scale.z ) );
 
-		mSkelly->m_bones[i].m_name = vModelSkelly[i]->name.c_str();
+		mSkelly->m_bones[i].m_name = skeleton.names[i].c_str();
 		//cout << "\"" << mSkelly->m_bones[i].m_name << "\"" << endl;
 		mSkelly->m_bones[i].m_lockTranslation = false;
 
 		// Search for the parent index
-		mSkelly->m_parentIndices[i] = -1;
-		for ( uint j = 0; j < vModelSkelly.size(); ++j )
-		{
-			if ( vModelSkelly[i]->transform.GetParent() == (&(vModelSkelly[j]->transform)) )
-			{
-				mSkelly->m_parentIndices[i] = j;
-				j = vModelSkelly.size();
-			}
-		}
+		mSkelly->m_parentIndices[i] = skeleton.parent[i];
 	}
 	//mAnimSkelly = new hkaAnimatedSkeleton( mSkelly );
 }
@@ -124,7 +114,7 @@ void CHKAnimation::GetRagdollPose( skeletonBone_t* rootBone, std::vector<skeleto
 	hkArray<hkReal> tempReals;
 	tempReals.setSize( mSkelly->m_bones.getSize() );
 
-	hkaAnimation* mhkAnim = ((CHKAnimationSet*)pAnimationSet)->GetHKAnimation()->at(0);
+	hkaAnimation* mhkAnim = ((CHKAnimationSet*)sampleSource[0])->GetHKAnimation()->at(0);
 	mhkAnim->sampleTracks( 0.0f, nextTransforms.begin(), tempReals.begin() );
 
 	// Set the ragdoll pose
@@ -176,7 +166,7 @@ CHKAnimation::~CHKAnimation ( void )
 void CHKAnimation::Update ( const Real deltaTime )
 {
 	// Create binding
-	if ( mAnimBinding == NULL )
+	/*if ( mAnimBinding == NULL )
 	{
 		mAnimBinding = new hkaAnimationBinding();
 		mAnimBinding->m_animation = ((CHKAnimationSet*)pAnimationSet)->GetHKAnimation()->at(0);
@@ -185,7 +175,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 			mAnimBinding->m_transformTrackToBoneIndices.pushBack(i);
 			mAnimBinding->m_floatTrackToFloatSlotIndices.pushBack(i);
 		}
-	}
+	}*/
 	// Setup mirrored animations
 	//SetupMirrorMode(); 
 
@@ -228,43 +218,36 @@ void CHKAnimation::Update ( const Real deltaTime )
 		std::cout << "Bad animation set on hkaAnimation: " << mhkAnim << std::endl;
 		return;
 	}*/
-	std::vector<hkaAnimation*>* mAnim = ((CHKAnimationSet*)pAnimationSet)->GetHKAnimation();
+	/*std::vector<hkaAnimation*>* mAnim = ((CHKAnimationSet*)pAnimationSet)->GetHKAnimation();
 	if ( !mMirrorAnims.empty() )
 	{
 		mAnim = &mMirrorAnims;
-	}
+	}*/
 
 	// If no animations, just sample reference pose (frame0) and call it good
 	if ( mAnimations.size() <= 2 )
 	{
 		//mhkAnim->sampleTracks( 1/30.0f, nextTransforms.begin(), tempReals.begin() );
-		mAnim->at(0)->sampleTracks( 0.0f, nextTransforms.begin(), tempReals.begin() );
+		//mAnim->at(0)->sampleTracks( 0.0f, nextTransforms.begin(), tempReals.begin() );
+		CopyXTransformsToHkTransform( skeleton.reference_xpose, nextTransforms );
 
 		hkaPose skeletonPose ( hkaPose::LOCAL_SPACE, mSkelly, nextTransforms );
 		nextTransforms = skeletonPose.getSyncedPoseLocalSpace();
 
-		for ( int i = 0; i < nextTransforms.getSize(); ++i )
-		{
-			((XTransform*)animRefs[i])->position = Vector3d(
-				nextTransforms[i].m_translation.getComponent<0>(),
-				nextTransforms[i].m_translation.getComponent<1>(),
-				nextTransforms[i].m_translation.getComponent<2>() );
-			((XTransform*)animRefs[i])->rotation = Quaternion(
-				nextTransforms[i].m_rotation.m_vec.getComponent<0>(),
-				nextTransforms[i].m_rotation.m_vec.getComponent<1>(),
-				nextTransforms[i].m_rotation.m_vec.getComponent<2>(),
-				nextTransforms[i].m_rotation.m_vec.getComponent<3>() );
-			((XTransform*)animRefs[i])->scale = Vector3d(
-				nextTransforms[i].m_scale.getComponent<0>(),
-				nextTransforms[i].m_scale.getComponent<1>(),
-				nextTransforms[i].m_scale.getComponent<2>() );
-		}
+		CopyHkTransformsToXTransform( nextTransforms, skeleton.animation_xpose );
 		return;
 	}
 
+	{	// Set default values for tempReals
+		for ( int i = 0; i < tempReals.getSize(); ++i )
+			tempReals[i] = 0.0F;
+	}
+
 	{	// Set default aimrTransforms
-		mAnim->at(0)->sampleTracks( 0.0f, aimrTransforms.begin(), tempReals.begin() );
-		mAnim->at(0)->sampleTracks( 0.0f, refrTransforms.begin(), tempReals.begin() );
+		//mAnim->at(0)->sampleTracks( 0.0f, aimrTransforms.begin(), tempReals.begin() );
+		//mAnim->at(0)->sampleTracks( 0.0f, refrTransforms.begin(), tempReals.begin() );
+		CopyXTransformsToHkTransform( skeleton.reference_xpose, aimrTransforms );
+		CopyXTransformsToHkTransform( skeleton.reference_xpose, refrTransforms );
 	}
 
 	// Before sampling actions, need to check events
@@ -340,166 +323,175 @@ void CHKAnimation::Update ( const Real deltaTime )
 	}
 
 	// Loop through all the layers
-	//if ( mAnimations.size() > 0 )
-	//{
-		for ( unsigned char layer = 0; layer < maxLayers; layer++ )
+	for ( unsigned char layer = 0; layer < maxLayers; layer++ )
+	{
+		auto it = mAnimations.begin(); // Loop thru all the actions
+		do
 		{
-			auto it = mAnimations.begin(); // Loop thru all the actions
-			do
+			CAnimAction& currentAction = it->second;
+
+			// Check for a layer limit
+			if ( currentAction.layer >= maxLayers )
+				currentAction.layer = maxLayers-1;
+			// And only sample+update the animation if it's on the current layer
+			if ( currentAction.layer == layer )
 			{
-				CAnimAction& currentAction = it->second;
+				// Update the animation
+				currentAction.Update( deltaTime, syncFrames[currentAction.sync_track] );
 
-				// Check for a layer limit
-				if ( currentAction.layer >= maxLayers )
-					currentAction.layer = maxLayers-1;
-				// And only sample+update the animation if it's on the current layer
-				if ( currentAction.layer == layer )
+				// Now, check the weight for valid values
+				if ( currentAction.weight > 1 )
+					currentAction.weight = 1;
+				// And only sample if the weight is larger than zero
+				if ( currentAction.weight > 0.001f )
 				{
-					// Update the animation
-					currentAction.Update( deltaTime, syncFrames[currentAction.sync_track] );
+					CHKAnimationSet* source = static_cast<CHKAnimationSet*>( sampleSource[currentAction.SourceSet()] );
+					const Animation::BoneMapper& mapping = sampleMappingTrack[currentAction.SourceMapping()];
+					std::vector<hkaAnimation*>* source_animation = source->GetHKAnimation();
 
-					// Now, check the weight for valid values
-					if ( currentAction.weight > 1 )
-						currentAction.weight = 1;
-					// And only sample if the weight is larger than zero
-					if ( currentAction.weight > 0.001f )
+					// Create actual sampling time
+					Real currentTime;
+					//currentTime = ( currentAction.GetStart()+currentAction.frame ) * (1/30.0f);
+					currentTime = (Real)((double)(currentAction.frame) / source->Framerate());
+
+					// Increase the weight to full if this is the first animation to be sampled
+					ftype temp = currentAction.weight;
+					if ( bFirstAnim )
 					{
-						ftype currentTime;
-						//currentTime = ( currentAction.GetStart()+currentAction.frame ) * (1/30.0f);
-						currentTime = currentAction.frame * (1/30.0f);
-
-						// Increase the weight to full if this is the first animation to be sampled
-						ftype temp = currentAction.weight;
-						if ( bFirstAnim ) {
-							currentAction.weight = 1;
+						currentAction.weight = 1;
+					}
+					// Increase the aimr weight to full and copy over the pose if this is the first aimr transform to be sampled
+					if ( currentAction.tag == CAnimAction::TAG_ITEM )
+					{
+						fAimrWeight = currentAction.weight;
+						if ( !bHasAimr ) {
+							// Set weight to full
+							fAimrWeight = 1;
+							bHasAimr = true;
 						}
-						// Increase the aimr weight to full and copy over the pose if this is the first aimr transform to be sampled
-						if ( currentAction.tag == CAnimAction::TAG_ITEM ) {
-							fAimrWeight = currentAction.weight;
-							if ( !bHasAimr ) {
-								// Set weight to full
-								fAimrWeight = 1;
-								bHasAimr = true;
-							}
-						}
+					}
 
-						// Sample tracks
-						//mhkAnim->sampleTracks( currentTime, tempTransforms.begin(), tempReals.begin() );
-						mAnim->at(currentAction.index)->sampleTracks( currentTime, tempTransforms.begin(), tempReals.begin() );
-						// Sample track first frame if needed
-						if ( currentAction.extrapolateMotion[0] || currentAction.extrapolateMotion[1] || currentAction.extrapolateMotion[2] ) {
-							//mAnim->at(0)->sampleTracks( currentAction.GetStart() * (1/30.0f), tempTransformsAdditive.begin(), tempReals.begin() );
-							mAnim->at(currentAction.index)->sampleTracks( 0.0f, tempTransformsAdditive.begin(), tempReals.begin() );
-						}
+					// Sample tracks
+					//mAnim->at(currentAction.index)->sampleTracks( currentTime, tempTransforms.begin(), tempReals.begin() );
+					source_animation->at(currentAction.Index())->sampleTracks( currentTime, tempTransforms.begin(), tempReals.begin() );
+					// Sample track at first frame if needed (motion extrapolation)
+					if ( currentAction.extrapolateMotion[0] || currentAction.extrapolateMotion[1] || currentAction.extrapolateMotion[2] )
+					{
+						//mAnim->at(currentAction.index)->sampleTracks( 0.0f, tempTransformsAdditive.begin(), tempReals.begin() );
+						source_animation->at(currentAction.Index())->sampleTracks( 0.0f, tempTransformsAdditive.begin(), tempReals.begin() );
+					}
 
-						// Mix the tracks
-						std::vector<int> *pMixingList = currentAction.GetMixingList();
-						if ( pMixingList->size() == 0 )
+					// Mix the tracks
+					std::vector<int16_t>* pMixingList = currentAction.GetMixingList();
+					if ( pMixingList->size() == 0 )
+					{
+						// Mix into the entire list
+						for ( int i = 0; i < tempTransforms.getSize(); ++i )
 						{
-							// Mix into the entire list
-							for ( int i = 0; i < tempTransforms.getSize(); ++i )
+							// Aimer IK
+							if ( currentAction.tag == CAnimAction::TAG_ITEM )
 							{
-								// Aimer IK
-								if ( currentAction.tag == CAnimAction::TAG_ITEM ) {
-									aimrTransforms[i].setInterpolate4( aimrTransforms[i], tempTransforms[i], fAimrWeight );
-									fAimrBlend += fAimrWeight;
-								}
-								// Motion extrapolation
-								if ( i == 0 ) {
-									Real speed = (currentAction.framesPerSecond/30.0f) * currentAction.playSpeed * (deltaTime * 30.0f);
-									Real t_weight = currentAction.weight * speed;
-									if ( currentAction.extrapolateMotion[0] ) {
-										if ( currentAction.enableMotionExtrapolation[0] ) {
-											vModelMotion.x += t_weight * (tempTransforms[i].getTranslation().getComponent<0>() - tempTransformsAdditive[i].getTranslation().getComponent<0>());
-										}
-										tempTransforms[i].m_translation.setComponent<0>( tempTransformsAdditive[i].getTranslation().getComponent<0>() );
-									}
-									if ( currentAction.extrapolateMotion[1] ) {
-										if ( currentAction.enableMotionExtrapolation[1] ) {
-											vModelMotion.y += t_weight * (tempTransforms[i].getTranslation().getComponent<1>() - tempTransformsAdditive[i].getTranslation().getComponent<1>());
-										}
-										tempTransforms[i].m_translation.setComponent<1>( tempTransformsAdditive[i].getTranslation().getComponent<1>() );
-									}
-									if ( currentAction.extrapolateMotion[2] ) {
-										if ( currentAction.enableMotionExtrapolation[2] ) {
-											vModelMotion.z += t_weight * (tempTransforms[i].getTranslation().getComponent<2>() - tempTransformsAdditive[i].getTranslation().getComponent<2>());
-										}
-										tempTransforms[i].m_translation.setComponent<2>( tempTransformsAdditive[i].getTranslation().getComponent<2>() );
-									}
-								}
-								// Last, sample the animation
-								nextTransforms[i].setInterpolate4( nextTransforms[i], tempTransforms[i], currentAction.weight );
-							}
-						}
-						else
-						{
-							// Mix into the list specially
-							int index;
-							for ( uint32_t i = 0; i < pMixingList->size(); ++i )
-							{
-								index = (*pMixingList)[i];
-								nextTransforms[index].setInterpolate4( nextTransforms[index], tempTransforms[index], currentAction.weight );
-								// Aimer IK
-								if ( currentAction.tag == CAnimAction::TAG_ITEM ) {
-									aimrTransforms[index].setInterpolate4( aimrTransforms[index], tempTransforms[index], fAimrWeight );
-								}
-								// Motion extrapolation
-								if ( index == 0 ) {
-									if ( currentAction.extrapolateMotion[0] && currentAction.enableMotionExtrapolation[0] ) {
-										vModelMotion.x += currentAction.weight * tempTransforms[index].getTranslation().getComponent<0>();
-									}
-									if ( currentAction.extrapolateMotion[1] && currentAction.enableMotionExtrapolation[1] ) {
-										vModelMotion.y += currentAction.weight * tempTransforms[index].getTranslation().getComponent<1>();
-									}
-									if ( currentAction.extrapolateMotion[2] && currentAction.enableMotionExtrapolation[2] ) {
-										vModelMotion.z += currentAction.weight * tempTransforms[index].getTranslation().getComponent<2>();
-									}
-								}
-							}
-						}
-
-						if ( currentAction.tag == CAnimAction::TAG_ITEM && bFirstAimr ) {
-							// Mix into the entire list
-							for ( int i = 0; i < tempTransforms.getSize(); ++i )
-							{
-								//nextTransforms[i].setInterpolate4( nextTransforms[i], tempTransforms[i], currentAction.weight );
-								// Aimer IK
 								aimrTransforms[i].setInterpolate4( aimrTransforms[i], tempTransforms[i], fAimrWeight );
 								fAimrBlend += fAimrWeight;
 							}
-						}
-
-						// Perform prop weights
-						fPropWeight[0] -= currentAction.prop_override[0];
-						fPropWeight[1] -= currentAction.prop_override[1];
-						fPropWeight[2] -= currentAction.prop_override[2];
-						fPropWeight[3] -= currentAction.prop_override[3];
-
-						// Restore previous weight
-						currentAction.weight = temp;
-						bFirstAnim = false;	// No longer first animation to be sampled.
-						if ( bHasAimr ) {
-							bFirstAimr = false;
+							// Motion extrapolation
+							if ( i == 0 )
+							{
+								Real speed = (currentAction.framesPerSecond/30.0f) * currentAction.playSpeed * (deltaTime * 30.0f);
+								Real t_weight = currentAction.weight * speed;
+								if ( currentAction.extrapolateMotion[0] ) {
+									if ( currentAction.enableMotionExtrapolation[0] ) {
+										vModelMotion.x += t_weight * (tempTransforms[i].getTranslation().getComponent<0>() - tempTransformsAdditive[i].getTranslation().getComponent<0>());
+									}
+									tempTransforms[i].m_translation.setComponent<0>( tempTransformsAdditive[i].getTranslation().getComponent<0>() );
+								}
+								if ( currentAction.extrapolateMotion[1] ) {
+									if ( currentAction.enableMotionExtrapolation[1] ) {
+										vModelMotion.y += t_weight * (tempTransforms[i].getTranslation().getComponent<1>() - tempTransformsAdditive[i].getTranslation().getComponent<1>());
+									}
+									tempTransforms[i].m_translation.setComponent<1>( tempTransformsAdditive[i].getTranslation().getComponent<1>() );
+								}
+								if ( currentAction.extrapolateMotion[2] ) {
+									if ( currentAction.enableMotionExtrapolation[2] ) {
+										vModelMotion.z += t_weight * (tempTransforms[i].getTranslation().getComponent<2>() - tempTransformsAdditive[i].getTranslation().getComponent<2>());
+									}
+									tempTransforms[i].m_translation.setComponent<2>( tempTransformsAdditive[i].getTranslation().getComponent<2>() );
+								}
+							}
+							// Last, sample the animation
+							throw Core::NotYetImplementedException();
+							nextTransforms[i].setInterpolate4( nextTransforms[i], tempTransforms[i], currentAction.weight );
 						}
 					}
-				}
+					else
+					{
+						// Mix into the list specially
+						int index;
+						for ( uint32_t i = 0; i < pMixingList->size(); ++i )
+						{
+							index = (*pMixingList)[i];
+							throw Core::NotYetImplementedException();
+							nextTransforms[index].setInterpolate4( nextTransforms[index], tempTransforms[index], currentAction.weight );
+							// Aimer IK
+							if ( currentAction.tag == CAnimAction::TAG_ITEM ) {
+								aimrTransforms[index].setInterpolate4( aimrTransforms[index], tempTransforms[index], fAimrWeight );
+							}
+							// Motion extrapolation
+							if ( index == 0 )
+							{
+								if ( currentAction.extrapolateMotion[0] && currentAction.enableMotionExtrapolation[0] ) {
+									vModelMotion.x += currentAction.weight * tempTransforms[index].getTranslation().getComponent<0>();
+								}
+								if ( currentAction.extrapolateMotion[1] && currentAction.enableMotionExtrapolation[1] ) {
+									vModelMotion.y += currentAction.weight * tempTransforms[index].getTranslation().getComponent<1>();
+								}
+								if ( currentAction.extrapolateMotion[2] && currentAction.enableMotionExtrapolation[2] ) {
+									vModelMotion.z += currentAction.weight * tempTransforms[index].getTranslation().getComponent<2>();
+								}
+							}
+						}
+					}
 
-				it++;
+					if ( currentAction.tag == CAnimAction::TAG_ITEM && bFirstAimr ) {
+						// Mix into the entire list
+						for ( int i = 0; i < tempTransforms.getSize(); ++i )
+						{
+							//nextTransforms[i].setInterpolate4( nextTransforms[i], tempTransforms[i], currentAction.weight );
+							// Aimer IK
+							aimrTransforms[i].setInterpolate4( aimrTransforms[i], tempTransforms[i], fAimrWeight );
+							fAimrBlend += fAimrWeight;
+						}
+					}
+
+					// Perform prop weights
+					fPropWeight[0] -= currentAction.prop_override[0];
+					fPropWeight[1] -= currentAction.prop_override[1];
+					fPropWeight[2] -= currentAction.prop_override[2];
+					fPropWeight[3] -= currentAction.prop_override[3];
+
+					// Restore previous weight
+					currentAction.weight = temp;
+					bFirstAnim = false;	// No longer first animation to be sampled.
+					if ( bHasAimr )
+					{
+						bFirstAimr = false;
+					}
+				}
 			}
-			while ( it != mAnimations.end() );
+
+			it++;
 		}
-	//}
+		while ( it != mAnimations.end() );
+	}
 
 	// If no animations sampled, grab first frame
 	if ( bFirstAnim )
 	{
 		//mhkAnim->sampleTracks( 1/30.0f, tempTransforms.begin(), tempReals.begin() );
-		mAnim->at(0)->sampleTracks( 0.0f, tempTransforms.begin(), tempReals.begin() );
-		// Mix into the entire list
-		for ( int i = 0; i < tempTransforms.getSize(); ++i )
-		{
-			nextTransforms[i] = tempTransforms[i];
-		}
+		//mAnim->at(0)->sampleTracks( 0.0f, tempTransforms.begin(), tempReals.begin() );
+		CopyXTransformsToHkTransform( skeleton.reference_xpose, tempTransforms );
+		CopyXTransformsToHkTransform( skeleton.reference_xpose, nextTransforms );
+		// Values are now properly saved
 	}
 
 	/*if ( bHasAimr )
@@ -1212,86 +1204,129 @@ void CHKAnimation::Update ( const Real deltaTime )
 	//pAnimationSet->Export( animRefs );
 	if ( !tDontExport )
 	{
+		CopyHkTransformsToXTransform( nextTransforms, skeleton.animation_xpose );
+	}
+	/*if ( !tDontExport )
+	{
 		for ( int i = 0; i < nextTransforms.getSize(); ++i )
 		{
-			//mhkAnim->
-			/*int t = mAnimBinding->m_transformTrackToBoneIndices[i];
-			((XTransform*)animRefs[t])->position = Vector3d(
-				nextTransforms[i].m_translation.getComponent<0>(),
-				nextTransforms[i].m_translation.getComponent<1>(),
-				nextTransforms[i].m_translation.getComponent<2>() );
-			((XTransform*)animRefs[t])->rotation = Quaternion(
-				nextTransforms[i].m_rotation.m_vec.getComponent<0>(),
-				nextTransforms[i].m_rotation.m_vec.getComponent<1>(),
-				nextTransforms[i].m_rotation.m_vec.getComponent<2>(),
-				nextTransforms[i].m_rotation.m_vec.getComponent<3>() );
-			((XTransform*)animRefs[t])->scale = Vector3d(
-				nextTransforms[i].m_scale.getComponent<0>(),
-				nextTransforms[i].m_scale.getComponent<1>(),
-				nextTransforms[i].m_scale.getComponent<2>() );*/
 			int16_t t_indexer = mAnimBinding->findTrackIndexFromBoneIndex(i);
-			((XTransform*)animRefs[i])->position = Vector3d(
+			skeleton.animation_xpose[i].position = Vector3d(
 				nextTransforms[t_indexer].m_translation.getComponent<0>(),
 				nextTransforms[t_indexer].m_translation.getComponent<1>(),
 				nextTransforms[t_indexer].m_translation.getComponent<2>() );
-			((XTransform*)animRefs[i])->rotation = Quaternion(
+			skeleton.animation_xpose[i].rotation = Quaternion(
 				nextTransforms[t_indexer].m_rotation.m_vec.getComponent<0>(),
 				nextTransforms[t_indexer].m_rotation.m_vec.getComponent<1>(),
 				nextTransforms[t_indexer].m_rotation.m_vec.getComponent<2>(),
 				nextTransforms[t_indexer].m_rotation.m_vec.getComponent<3>() );
-			((XTransform*)animRefs[i])->scale = Vector3d(
+			skeleton.animation_xpose[i].scale = Vector3d(
 				nextTransforms[t_indexer].m_scale.getComponent<0>(),
 				nextTransforms[t_indexer].m_scale.getComponent<1>(),
 				nextTransforms[t_indexer].m_scale.getComponent<2>() );
 		}
-	}
+	}*/
 }
 
-
-void	CHKAnimation::SetupMirrorMode ( void )
+//	CopyHkTransformsToXTransform ( transform list, target list ) : copies transforms to XTransform listing
+// Returns true if successful, returns false or throws exception on failure.
+bool CHKAnimation::CopyHkTransformsToXTransform ( const hkArray<hkQsTransform>& transforms, std::vector<XTransform>& targets )
 {
-	std::vector<hkaAnimation*>* mAnims = ((CHKAnimationSet*)pAnimationSet)->GetHKAnimation();
-	hkaAnimation* mhkAnim = mAnims->at(0);
-	if ( mMirrorSkelly == NULL )
+	if ( targets.size() != transforms.getSize() )
 	{
-		mMirrorSkelly = new hkaMirroredSkeleton( mSkelly );
-
-		// First setup bone mapping
-		hkArray<hkStringPtr> ltags;
-		ltags.pushBack( "Bip001 L" );
-		hkArray<hkStringPtr> rtags;
-		rtags.pushBack( "Bip001 R" );
-		mMirrorSkelly->computeBonePairingFromNames(ltags,rtags);
-
-		// Second, set up mirroring axis
-		mMirrorSkelly->setAllBoneInvariantsFromReferencePose( hkQuaternion(1.0f,0,0,0), 0.01f );
-		/*hkArray<hkQsTransform> tempTransforms;
-		tempTransforms.setSize( mSkelly->m_bones.getSize() );
-		tempTransforms = mSkelly->m_referencePose;
-		hkArray<hkReal> tempReals;
-		tempReals.setSize( mSkelly->m_bones.getSize() );
-		mhkAnim->sampleTracks( 0, tempTransforms.begin(), tempReals.begin() );
-		mMirrorSkelly->setAllBoneInvariantsFromSymmetricPose( hkQuaternion(1,0,0,0), 0.01f, tempTransforms.begin() );*/
+		throw Core::InvalidArgumentException();
 	}
-	if ( mMirrorAnims.empty() )
+	for ( int i = 0; i < transforms.getSize(); ++i )
 	{
-		//mMirrorAnim = new hkaMirroredAnimation ( mhkAnim, mAnimBinding, mMirrorSkelly );
-		//mAnimBinding = mMirrorAnim->createMirroredBinding();
-		for ( uint i = 0; i < mAnims->size(); ++i )
-		{
-			hkaMirroredAnimation* t_mirrorAnim = new hkaMirroredAnimation ( mAnims->at(i), mAnimBinding, mMirrorSkelly );
-			//if ( mAnimBinding == NULL )
-			if ( i == 0 )
-			{
-				mAnimBinding = t_mirrorAnim->createMirroredBinding();
-			}
-			mMirrorAnims.push_back( t_mirrorAnim );
-		}
-
-		//for ( int i = 0; i < mSkelly->m_bones.getSize(); ++i )
-		//{
-		//	int t = mAnimBinding->m_transformTrackToBoneIndices[i];
-		//	cout << t << endl;
-		//}
+		targets[i].position = Vector3d(
+			transforms[i].m_translation.getComponent<0>(),
+			transforms[i].m_translation.getComponent<1>(),
+			transforms[i].m_translation.getComponent<2>() );
+		targets[i].rotation = Quaternion(
+			transforms[i].m_rotation.m_vec.getComponent<0>(),
+			transforms[i].m_rotation.m_vec.getComponent<1>(),
+			transforms[i].m_rotation.m_vec.getComponent<2>(),
+			transforms[i].m_rotation.m_vec.getComponent<3>() );
+		targets[i].scale = Vector3d(
+			transforms[i].m_scale.getComponent<0>(),
+			transforms[i].m_scale.getComponent<1>(),
+			transforms[i].m_scale.getComponent<2>() );
 	}
+	return true;
 }
+
+
+//	CopyXTransformsToHkTransform ( xtransform list, target list ) : copies XTransforms to hkQsTransform listing
+// Returns true if successful, returns false or throws exception on failure
+bool CHKAnimation::CopyXTransformsToHkTransform ( const std::vector<XTransform>& transforms, hkArray<hkQsTransform>& targets )
+{
+	if ( targets.getSize() != transforms.size() )
+	{
+		throw Core::InvalidArgumentException();
+	}
+	for ( size_t i = 0; i < transforms.size(); ++i )
+	{
+		targets[i].m_translation.set(
+			transforms[i].position.x,
+			transforms[i].position.y,
+			transforms[i].position.z );
+		targets[i].m_rotation.set(
+			transforms[i].rotation.x,
+			transforms[i].rotation.y,
+			transforms[i].rotation.z,
+			transforms[i].rotation.w );
+		targets[i].m_scale.set(
+			transforms[i].scale.x,
+			transforms[i].scale.y,
+			transforms[i].scale.z );
+	}
+	return true;
+}
+
+//void	CHKAnimation::SetupMirrorMode ( void )
+//{
+//	std::vector<hkaAnimation*>* mAnims = ((CHKAnimationSet*)pAnimationSet)->GetHKAnimation();
+//	hkaAnimation* mhkAnim = mAnims->at(0);
+//	if ( mMirrorSkelly == NULL )
+//	{
+//		mMirrorSkelly = new hkaMirroredSkeleton( mSkelly );
+//
+//		// First setup bone mapping
+//		hkArray<hkStringPtr> ltags;
+//		ltags.pushBack( "Bip001 L" );
+//		hkArray<hkStringPtr> rtags;
+//		rtags.pushBack( "Bip001 R" );
+//		mMirrorSkelly->computeBonePairingFromNames(ltags,rtags);
+//
+//		// Second, set up mirroring axis
+//		mMirrorSkelly->setAllBoneInvariantsFromReferencePose( hkQuaternion(1.0f,0,0,0), 0.01f );
+//		/*hkArray<hkQsTransform> tempTransforms;
+//		tempTransforms.setSize( mSkelly->m_bones.getSize() );
+//		tempTransforms = mSkelly->m_referencePose;
+//		hkArray<hkReal> tempReals;
+//		tempReals.setSize( mSkelly->m_bones.getSize() );
+//		mhkAnim->sampleTracks( 0, tempTransforms.begin(), tempReals.begin() );
+//		mMirrorSkelly->setAllBoneInvariantsFromSymmetricPose( hkQuaternion(1,0,0,0), 0.01f, tempTransforms.begin() );*/
+//	}
+//	/*if ( mMirrorAnims.empty() )
+//	{
+//		//mMirrorAnim = new hkaMirroredAnimation ( mhkAnim, mAnimBinding, mMirrorSkelly );
+//		//mAnimBinding = mMirrorAnim->createMirroredBinding();
+//		for ( uint i = 0; i < mAnims->size(); ++i )
+//		{
+//			hkaMirroredAnimation* t_mirrorAnim = new hkaMirroredAnimation ( mAnims->at(i), mAnimBinding, mMirrorSkelly );
+//			//if ( mAnimBinding == NULL )
+//			if ( i == 0 )
+//			{
+//				mAnimBinding = t_mirrorAnim->createMirroredBinding();
+//			}
+//			mMirrorAnims.push_back( t_mirrorAnim );
+//		}
+//
+//		//for ( int i = 0; i < mSkelly->m_bones.getSize(); ++i )
+//		//{
+//		//	int t = mAnimBinding->m_transformTrackToBoneIndices[i];
+//		//	cout << t << endl;
+//		//}
+//	}*/
+//}

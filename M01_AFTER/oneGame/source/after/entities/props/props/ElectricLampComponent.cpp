@@ -26,7 +26,7 @@ void ElectricLampComponent::InitializeCommon ( void )
 
 	bLightOn = false;
 
-	m_model = new CModel( string("models\\geosphere.FBX") );
+	m_model = new CModel( "models/geosphere.FBX" );
 	m_model->transform.scale = Vector3d( 0.4f,0.4f,0.4f );
 }
 // Destructor

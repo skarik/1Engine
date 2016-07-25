@@ -58,7 +58,7 @@ Daycycle::Daycycle ( )
 
 	pSkyMat->removeReference();
 
-	skyModel = new CModel ( string("models/geosphere.FBX") );
+	skyModel = new CModel ( "models/geosphere.FBX" );
 	skyModel->SetMaterial( pSkyMat );
 	skyModel->SetRenderType( Renderer::Background );
 	skyModel->transform.scale = Vector3d( 1000,1000,-1000 );
@@ -76,7 +76,7 @@ Daycycle::Daycycle ( )
 	pStarMat->passinfo[0].shader = new glShader ( "shaders/sky/starfields.glsl" );
 	pStarMat->removeReference();
 
-	starModel = new CModel ( string("models/geosphere.FBX") );
+	starModel = new CModel ( "models/geosphere.FBX" );
 	starModel->SetMaterial( pStarMat );
 	starModel->SetRenderType( Renderer::Background );
 	starModel->transform.scale = Vector3d( 940,940,-940 );
@@ -289,7 +289,7 @@ Mooncycle::Mooncycle ( void )
 	pMoonMat->loadFromFile( "sky/moon_terra" );
 	pMoonMat->removeReference();
 
-	moonModel = new CModel ( string("models/geosphere.FBX") );
+	moonModel = new CModel ( "models/geosphere.FBX" );
 	moonModel->SetMaterial( pMoonMat );
 	moonModel->SetRenderType( Renderer::Background );
 	moonModel->transform.scale = Vector3d( 28,28,28 );

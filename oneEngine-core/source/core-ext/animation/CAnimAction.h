@@ -17,24 +17,36 @@ class CAnimationSet;
 class CAnimAction
 {
 public:
-	enum eTagType {
+	enum tagType_t : uint8_t
+	{
 		TAG_NORMAL,
 		TAG_ITEM,
 		TAG_FIDGET
+	};
+	enum endType_t : uint8_t
+	{
+		// 0 is for default behavior (set weight to zero and isPlaying to false)
+		END_STOP_PLAYING		= 0,
+		// 1 is for hold end frame
+		END_HOLD_END			= 1,
+		// 2 is for hold end frame and fade out
+		END_HOLD_END_AND_FADE	= 2
 	};
 public:
 	// Is animation playing
 	bool	isPlaying;
 	// Framerate of playback
-	ftype	framesPerSecond;
+	Real	framesPerSecond;
 	// Playback timescale
-	ftype	playSpeed;
+	Real	playSpeed;
 	// Animation blending weight
-	ftype	weight;
+	Real	weight;
 	// Current frame of the animation
-	ftype	frame;
+	Real	frame;
 	// Last frame's frame of the animation
-	ftype	previousFrame;
+	Real	previousFrame;
+	// Ending automatic fade speed
+	Real	autoFadeSpeed;
 	// Animation layer
 	unsigned char	layer;
 	// Sync track
@@ -48,30 +60,25 @@ public:
 	// Reset animation to initial state when not playing. (defaults true)
 	bool	reset_on_stop;
 	// Ending behavior for when loop is false.
-	// 0 is for default behavior (set weight to zero and isPlaying to false)
-	// 1 is for hold end frame
-	// 2 is for hold end frame and fade out
-	unsigned char	end_behavior;
+	endType_t	end_behavior;
 	// Tag for identification and IK settings
-	eTagType	tag;
+	tagType_t 	tag;
 	// Motion extrapolation settings
 	bool	extrapolateMotion [3];
 	bool	enableMotionExtrapolation [3];
-	// Animation index
-	unsigned int	index;
 
 	// Constructor
 	CAnimAction ( const char* name );
 	CAnimAction ( void );
 
 	// == Setters ==
-	void SetRange ( ftype fStart, ftype fEnd );
+	void SetRange ( Real fStart, Real fEnd );
 
 	// == Modders ==
 	void Reset ( void );
-	void Play ( ftype fPlaySpeed=1.0f, ftype fBlendTime=0.0f );
+	void Play ( const Real n_deltaTime, const Real n_playSpeed=1.0F, const Real n_blendTime=0.0F );
 	void Stop ( void );
-	void Sample ( CAnimationSet*, std::vector<void*> const& );
+	//void Sample ( CAnimationSet*, std::vector<XTransform> const& );
 
 		// Vertex skinned models ONLY!
 		// Searches for the given transform in the skeleton and adds it to the mix list.
@@ -79,37 +86,41 @@ public:
 	void AddMixingTransform ( const uint32_t skippedIndex );
 	
 	// == Updater ==
-	void Update ( const Real n_deltaTime, const ftype n_frameOverride );
+	// Must be thread-safe
+	void Update ( const Real n_deltaTime, const Real n_frameOverride );
 
 	// == Getters ==
 	const arstring128& GetName ( void ) const
 	{
 		return actionName;
 	};
-	/*unsigned int GetIndex ( void ) {
-		return index;
-	}*/
-	/*vector<void*>* GetIgnoreList ( void ) {
-		return &ignoreList;
-	}*/
-	/*vector<int>* GetIgnoreList ( void ) {
-		return &ignoreList;
-	}*/
-	std::vector<int>* GetMixingList ( void ) {
+	std::vector<int16_t>* GetMixingList ( void ) {
 		return &mixingList;
 	}
 
-	inline ftype GetStart ( void ) {
+	inline Real GetStart ( void ) {
 		return start;
 	}
-	inline ftype GetEnd ( void ) {
+	inline Real GetEnd ( void ) {
 		return end;
 	}
-	inline ftype GetLength ( void ) {
+	inline Real GetLength ( void ) {
 		return length;
 	}
-	inline ftype Length ( void ) {
+	inline Real Length ( void ) {
 		return length;
+	}
+	inline Real Percent ( void ) {
+		return frame / length;
+	}
+	inline int8_t SourceSet ( void ) {
+		return sampleSource;
+	}
+	inline int8_t SourceMapping ( void ) {
+		return sampleMapping;
+	}
+	inline uint16_t Index ( void ) {
+		return index;
 	}
 
 	void AddEvent ( const Animation::ActionEvent & new_event ) {
@@ -142,14 +153,25 @@ public:
 	}
 
 private:
-	arstring128	actionName;
-	//vector<void*>	ignoreList;
-	//vector<int>		ignoreList;
-	std::vector<int>		mixingList;
-	ftype			start;
-	ftype			end;
-	ftype			length;
+	friend CAnimation;
+	friend CAnimationSet;
 
+	arstring128	actionName;
+	int8_t sampleSource;
+	int8_t sampleMapping;
+	// Animation index in the sample source
+	uint16_t		index;
+
+	CAnimation*		owner;
+
+	// First frame of the animation
+	Real			start;
+	// Last frame of the animation
+	Real			end;
+	// Length of the animation, from beginning to end
+	Real			length;
+
+	// Is this a mirrored action?
 	bool			mirrored;
 
 	// is this the master?
@@ -157,12 +179,10 @@ private:
 	// are events enabled?
 	bool			events_enabled;
 
-	friend CAnimation;
-	CAnimation*		owner;
-
+	// Event list for this action to pass up the animation chain
 	std::vector<Animation::ActionEvent>	eventList;
-
-	ftype			deltaTime;
+	// Mixing list of indices to actually sample this action into
+	std::vector<int16_t>		mixingList;
 };
 
 #endif

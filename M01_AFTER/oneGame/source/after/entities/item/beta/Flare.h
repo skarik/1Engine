@@ -29,7 +29,7 @@ public:
 	// == Constructor ==
 	Flare ( void ) : CWeaponItem( ItemData() )
 	{
-		pModel = new CModel ( string("models/flare01.FBX") );
+		pModel = new CModel ( "models/flare01.FBX" );
 		flareMaterial = new glMaterial;
 		flareMaterial->m_emissive = Color( 0,0,0.0f );
 		flareMaterial->m_emissive = Color( 1,1,1.0f );

@@ -42,6 +42,6 @@ void CRWPickaxeSuShitty::Generate ( void )
 	//if ( iBladeType == 0 )
 	//	pickModel = "models\\items\\pickaxe_su_shitty.FBX";
 
-	pModel = new CModel( pickModel );
+	pModel = new CModel( pickModel.c_str() );
 	//pModel->transform.scale.y = weapon_stats.reach / 2.5f;
 }

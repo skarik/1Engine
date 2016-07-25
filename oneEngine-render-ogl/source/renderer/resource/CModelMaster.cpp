@@ -4,10 +4,121 @@
 
 #include "core-ext/animation/CAnimation.h"
 #include "renderer/logic/model/morpher/CMorpher.h"
+#include "renderer/resource/CModelMaster.h"
 
 #include "renderer/object/mesh/system/glMesh.h"
 #include "physical/physics/shapes/physMesh.h"
 
+ARSINGLETON_CPP_DEF(RenderResources);
+
+#define HANDLE_REFERENCE_FIND(LISTING) \
+	for ( auto itr = LISTING.begin(); itr != LISTING.end(); ++itr ) \
+		if ( itr->first.compare( filename ) )
+
+#define HANDLE_REFERENCE_DECREMENT(LISTING) \
+	HANDLE_REFERENCE_FIND(LISTING) { \
+		if ( itr->second.refCount == 0 ) throw Core::NullReferenceException(); \
+		itr->second.refCount--; return; \
+	} throw Core::NullReferenceException();
+
+void RenderResources::AddMeshSet ( const char* filename, std::vector<glMesh*>& meshes )
+{
+	HANDLE_REFERENCE_FIND(meshSets) throw Core::InvalidCallException();
+	meshset_reference_t ref;
+	ref.refCount = 0;
+	ref.set = meshes;
+	meshSets[arstring256(filename)] = ref;
+}
+void RenderResources::AddMorphSet ( const char* filename, CMorpher* morphSet )
+{
+	HANDLE_REFERENCE_FIND(morphSets) throw Core::InvalidCallException();
+	morphset_reference_t ref;
+	ref.refCount = 0;
+	ref.set = morphSet;
+	morphSets[arstring256(filename)] = ref;
+}
+
+//	GetMesh ( filename )
+// Returns the mesh set saved previously, and increments the reference count.
+// Returns NULL if no reference is found.
+const std::vector<glMesh*>* RenderResources::GetMesh ( const char* filename )
+{
+	HANDLE_REFERENCE_FIND(meshSets)
+	{
+		itr->second.refCount++;
+		return &itr->second.set;
+	}
+	return NULL;
+}
+//	GetMorpher ( filename )
+// Returns the morpher saved previously, and increments the reference count.
+// Returns NULL if no reference is found.
+const CMorpher* RenderResources::GetMorpher ( const char* filename )
+{
+	HANDLE_REFERENCE_FIND(morphSets)
+	{
+		itr->second.refCount++;
+		return itr->second.set;
+	}
+	return NULL;
+}
+
+void RenderResources::ReleaseMeshSet ( const char* filename )
+{
+	HANDLE_REFERENCE_DECREMENT(meshSets)
+}
+
+void RenderResources::ReleaseMorphSet ( const char* filename )
+{
+	HANDLE_REFERENCE_DECREMENT(morphSets)
+}
+
+//	Cleanup ()
+// Deletes all mesh sets and morphs with no existing references
+void RenderResources::Cleanup ( void )
+{
+	// Clean up the meshes
+	for ( auto itr = meshSets.begin(); itr != meshSets.end(); )
+	{
+		if ( itr->second.refCount == 0 )
+		{
+			for ( size_t i = 0; i < itr->second.set.size(); ++i )
+			{
+				// Delete all the meshes in the list
+				delete itr->second.set[i];
+			}
+			// Remove this entry from the list
+			itr = meshSets.erase(itr);
+		}
+		else
+		{
+			++itr;
+		}
+	}
+
+	// Clean up the morphs
+	for ( auto itr = morphSets.begin(); itr != morphSets.end(); )
+	{
+		if ( itr->second.refCount == 0 )
+		{
+			// Delete the morph
+			delete itr->second.set;
+			// Remove this entry from the list
+			itr = morphSets.erase(itr);
+		}
+		else
+		{
+			++itr;
+		}
+	}
+
+	// Done cleaning
+}
+
+#undef HANDLE_REFERENCE_FIND
+#undef HANDLE_REFERENCE_DECREMENT
+
+/*
 #include <iostream>
 
 using namespace std;
@@ -193,10 +304,6 @@ void CModelMaster::RemoveAnimSetReference ( const string& filename )
 		if ( it->second.referenceCount == 0 )
 		{
 			// Delete all the meshes
-			/*for ( unsigned int i = 0; i < it->second.vMeshes.size(); i++ )
-			{
-				delete it->second.vMeshes[i];
-			}*/
 			delete (it->second.pAnimSet->GetAnimationSet());
 			delete (it->second.pAnimSet);
 			// Remove from map
@@ -226,10 +333,6 @@ void CModelMaster::RemoveMorpherSetReference ( const string& filename )
 		if ( it->second.referenceCount == 0 )
 		{
 			// Delete all the meshes
-			/*for ( unsigned int i = 0; i < it->second.vMeshes.size(); i++ )
-			{
-				delete it->second.vMeshes[i];
-			}*/
 			delete (it->second.pAnimSet->GetMorpherSet());
 			delete (it->second.pAnimSet);
 			// Remove from map
@@ -327,4 +430,4 @@ CMorpher*			CModelMaster::GetMorpherReference ( const string& filename )
 	{
 		return (it->second.pAnimSet);
 	}
-}
+}*/

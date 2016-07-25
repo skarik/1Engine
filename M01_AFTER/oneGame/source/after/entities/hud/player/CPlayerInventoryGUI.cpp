@@ -86,26 +86,26 @@ CPlayerInventoryGUI::CPlayerInventoryGUI (CAfterPlayer* p_player, CInventory** p
 	}
 
 	//pGearPositions = new CRect [9];
-	pGearPositions[CPlayerInventory::GEAR_HEAD]		= Rect(.11, .05, .09, .09);
-	pGearPositions[CPlayerInventory::GEAR_NECKLACE]	= Rect(.06, .15, .09, .09);
-	pGearPositions[CPlayerInventory::GEAR_SHOULDER]	= Rect(.16, .15, .09, .09);
-	pGearPositions[CPlayerInventory::GEAR_CHEST]	= Rect(.01, .25, .09, .09);
-	pGearPositions[CPlayerInventory::GEAR_RIGHTHAND]= Rect(.11, .25, .09, .09);
-	pGearPositions[CPlayerInventory::GEAR_LEFTHAND]	= Rect(.21, .25, .09, .09);
-	pGearPositions[CPlayerInventory::GEAR_LEGS]		= Rect(.11, .35, .09, .09);
-	pGearPositions[CPlayerInventory::GEAR_RIGHTFOOT]= Rect(.06, .45, .09, .09);
-	pGearPositions[CPlayerInventory::GEAR_LEFTFOOT]	= Rect(.16, .45, .09, .09);
+	pGearPositions[CPlayerInventory::GEAR_HEAD]		= Rect(.11F, .05F, .09F, .09F);
+	pGearPositions[CPlayerInventory::GEAR_NECKLACE]	= Rect(.06F, .15F, .09F, .09F);
+	pGearPositions[CPlayerInventory::GEAR_SHOULDER]	= Rect(.16F, .15F, .09F, .09F);
+	pGearPositions[CPlayerInventory::GEAR_CHEST]	= Rect(.01F, .25F, .09F, .09F);
+	pGearPositions[CPlayerInventory::GEAR_RIGHTHAND]= Rect(.11F, .25F, .09F, .09F);
+	pGearPositions[CPlayerInventory::GEAR_LEFTHAND]	= Rect(.21F, .25F, .09F, .09F);
+	pGearPositions[CPlayerInventory::GEAR_LEGS]		= Rect(.11F, .35F, .09F, .09F);
+	pGearPositions[CPlayerInventory::GEAR_RIGHTFOOT]= Rect(.06F, .45F, .09F, .09F);
+	pGearPositions[CPlayerInventory::GEAR_LEFTFOOT]	= Rect(.16F, .45F, .09F, .09F);
 
-	pForgePositions[0] = Rect( 0.025, 0.07, .09, .09 );
-	pForgePositions[1] = Rect( 0.025+0.19, 0.07, .09, .09 );
-	pForgePositions[2] = Rect( 0.025+0.16, 0.07+0.08, .09, .09 );
-	pForgePositions[3] = Rect( 0.025+0.08, 0.07+0.16, .09, .09 );
-	pForgePositions[4] = Rect( 0.025, 0.07+0.19, .09, .09 );
-	pForgePositions[5] = Rect( 0.025+0.29, 0.07+0.14, .09, .09 );
-	pForgePositions[6] = Rect( 0.025+0.21, 0.07+0.22, .09, .09 );
+	pForgePositions[0] = Rect( 0.025F, 0.07F, .09F, .09F );
+	pForgePositions[1] = Rect( 0.025F+0.19F, 0.07F, .09F, .09F );
+	pForgePositions[2] = Rect( 0.025F+0.16F, 0.07F+0.08F, .09F, .09F );
+	pForgePositions[3] = Rect( 0.025F+0.08F, 0.07F+0.16F, .09F, .09F );
+	pForgePositions[4] = Rect( 0.025F, 0.07F+0.19F, .09F, .09F );
+	pForgePositions[5] = Rect( 0.025F+0.29F, 0.07F+0.14F, .09F, .09F );
+	pForgePositions[6] = Rect( 0.025F+0.21F, 0.07F+0.22F, .09F, .09F );
 
-	transform.position.x = 0.0;
-	transform.position.y = 0.0;
+	transform.position.x = 0.0F;
+	transform.position.y = 0.0F;
 	transform.position.z = -2;
 
 	// Set window positions

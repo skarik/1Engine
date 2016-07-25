@@ -961,7 +961,7 @@ void CNpcBase::OnDeath ( Damage const&  killDamage )
 		CAnimation* anim = pCharModel->GetAnimationState();
 		CAnimAction* death;
 		if ( death = anim->FindAction( deadAnim ) ) {
-			death->end_behavior = 1;
+			death->end_behavior = CAnimAction::END_HOLD_END;
 			death->layer = 6;
 			anim->Play( deadAnim );
 		}

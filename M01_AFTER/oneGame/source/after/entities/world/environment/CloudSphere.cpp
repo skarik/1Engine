@@ -16,7 +16,7 @@ CloudSphere::CloudSphere ( void ) : CGameBehavior()
 	pCloudMat->passinfo[0].shader = new glShader ( ".res/shaders/sky/cloud_stepped.glsl" );
 	pCloudMat->removeReference();
 
-	cloudModel = new CModel ( string("models/geosphere.FBX") );
+	cloudModel = new CModel ( "models/geosphere.FBX" );
 	cloudModel->SetMaterial( pCloudMat );
 	cloudModel->SetRenderType( Renderer::Secondary );
 	cloudModel->transform.scale = Vector3d( 300.0,300.0f,-300.0f );

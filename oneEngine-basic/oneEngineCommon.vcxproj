@@ -111,6 +111,7 @@
     <ClInclude Include="source\engine-common\scenes\gmsceneFromFile.h" />
     <ClInclude Include="source\engine-common\scenes\gmsceneSystemBuilder.h" />
     <ClInclude Include="source\engine-common\scenes\gmsceneSystemLoader.h" />
+    <ClInclude Include="source\engine-common\scenes\tests\testStringOperations.h" />
     <ClInclude Include="source\engine-common\types\ActorAnimation.h" />
     <ClInclude Include="source\engine-common\types\Damage.h" />
     <ClInclude Include="source\engine-common\types\ItemProperties.h" />
@@ -171,6 +172,7 @@
     <ClCompile Include="source\engine-common\scenes\benchmark\benchmarkSemaphores.cpp" />
     <ClCompile Include="source\engine-common\scenes\gmsceneSystemBuilder.cpp" />
     <ClCompile Include="source\engine-common\scenes\gmsceneSystemLoader.cpp" />
+    <ClCompile Include="source\engine-common\scenes\tests\testStringOperations.cpp" />
     <ClCompile Include="source\engine-common\utils\AnimationMixing.cpp" />
     <ClCompile Include="source\engine-common\utils\CDeveloperConsoleUI.cpp" />
   </ItemGroup>
@@ -226,7 +228,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -235,7 +237,7 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
-    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>

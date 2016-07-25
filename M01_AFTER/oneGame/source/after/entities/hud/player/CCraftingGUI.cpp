@@ -122,9 +122,9 @@ void CPlayerInventoryGUI::DrawCraftingDefault ( void )
 	short height = pCraft->GetHeight();
 	short width = pCraft->GetWidth();
 
-	const Vector2d slot_offset ( .01, .05+.02 );
-	const Vector2d result_offset ( .16, .46+.04 );
-	const float highlight_size = 0.0025f;
+	const Vector2d slot_offset ( .01F, .05F+.02F );
+	const Vector2d result_offset ( .16F, .46F+.04F );
+	const float highlight_size = 0.0025F;
 
 	//vector<tItemRecipe*> possibleRecipies;
 	//pCraft->GetAllMatches( possibleRecipies );
@@ -264,7 +264,7 @@ void CPlayerInventoryGUI::DrawCraftingDefault ( void )
 		if (wResult->GetCanStack())
 		{
 			short stack = wResult->GetStackSize();
-			GLd.DrawAutoTextWrapped ( sCrafting.position.x + result_offset.x + .035, sCrafting.position.y + result_offset.y + 0.11 , width_spacing, "%d", stack );
+			GLd.DrawAutoTextWrapped ( sCrafting.position.x + result_offset.x + .035F, sCrafting.position.y + result_offset.y + 0.11F , width_spacing, "%d", stack );
 		}
 	}
 	// Draw info for the "more results"

@@ -43,6 +43,9 @@
     <Filter Include="SOURCE\Physical\Physics\Phantom">
       <UniqueIdentifier>{e5d15d83-c536-4953-9044-05102cfdd0ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Physical\Resource">
+      <UniqueIdentifier>{9920d30e-55d6-4d43-b084-4291cf36ea56}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\physical\physical.h">
@@ -135,6 +138,9 @@
     <ClInclude Include="source\physical\physics\motion\physCharacterRigidBodyInfo.h">
       <Filter>SOURCE\Physical\Physics\Motion</Filter>
     </ClInclude>
+    <ClInclude Include="source\physical\resource\ResourceManager.h">
+      <Filter>SOURCE\Physical\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\physical\physics\CPhysics.cpp">
@@ -193,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="source\physical\physics\shapes\physStaticCompressedMesh.cpp">
       <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\resource\ResourceManager.cpp">
+      <Filter>SOURCE\Physical\Resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

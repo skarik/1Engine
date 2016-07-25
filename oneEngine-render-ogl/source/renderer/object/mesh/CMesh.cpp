@@ -49,16 +49,17 @@ void CMesh::CalculateBoundingBox ( void )
 }
 
 // == RENDERABLE OBJECT INTERFACE ==
-// Culling check routine
+
 bool CMesh::PreRender ( const char pass )
 {
+	// Culling check routine
 	if ( bUseFrustumCulling )
 	{
 		bCanRender = false;
 
 		if ( !bUseSkinning )
 		{
-			if ( CCamera::activeCamera->SphereIsVisible( transform.GetTransformMatrix() * vCheckRenderPos, fCheckRenderDist * (transform.scale.x+transform.scale.y+transform.scale.z) * 0.4f ) )
+			if ( CCamera::activeCamera->SphereIsVisible( transform.WorldMatrix() * vCheckRenderPos, fCheckRenderDist * (transform.scale.x+transform.scale.y+transform.scale.z) * 0.4f ) )
 			{
 				bCanRender = true;
 			}
@@ -66,9 +67,9 @@ bool CMesh::PreRender ( const char pass )
 		else
 		{
 			Vector3d modelOrigin;
-			//((glSkinnedMesh*)m_glMesh)->pvSkeleton
-			modelOrigin = ((CSkinnedModel*)m_parent)->GetSkeletonList()->at(1)->transform.GetTransformMatrix() * vCheckRenderPos;
-			modelOrigin = transform.GetTransformMatrix() * modelOrigin;
+			//modelOrigin = ((CSkinnedModel*)m_parent)->GetSkeletonList()->at(1)->transform.WorldMatrix() * vCheckRenderPos;
+			modelOrigin = ((CSkinnedModel*)m_parent)->GetSkeleton()->current_transform[1].WorldMatrix() * vCheckRenderPos;
+			modelOrigin = transform.WorldMatrix() * modelOrigin;
 			//modelOrigin += transform.GetTransformMatrix() * vCheckRenderPos
 			if ( CCamera::activeCamera->SphereIsVisible( modelOrigin, fCheckRenderDist * (transform.scale.x+transform.scale.y+transform.scale.z) * 0.6f ) ) {
 				bCanRender = true;
@@ -79,6 +80,8 @@ bool CMesh::PreRender ( const char pass )
 	{
 		bCanRender = true;
 	}
+
+	// 
 	return true;
 }
 
@@ -119,8 +122,8 @@ bool CMesh::Render ( const char pass )
 			}
 			else
 			{*/
-				m_material->m_bufferSkeletonSize = ((glSkinnedMesh*)m_glMesh)->GetSkeleton()->size();
-				m_material->m_bufferMatricesSkinning = ((glSkinnedMesh*)m_glMesh)->getBuffer();
+				m_material->m_bufferSkeletonSize		= ((glSkinnedMesh*)m_glMesh)->skinning_data.bonecount;
+				m_material->m_bufferMatricesSkinning	= ((glSkinnedMesh*)m_glMesh)->skinning_data.textureBufferData;
 			//}
 		}
 		else

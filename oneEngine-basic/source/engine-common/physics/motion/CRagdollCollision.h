@@ -3,6 +3,7 @@
 #define _C_RAGDOLL_COLLISION_H_
 
 #include "core/containers/arstring.h"
+#include "core-ext/transform/TransformUtility.h"
 #include "engine/behavior/CGameBehavior.h"
 #include "physical/physics/CPhysics.h"
 #include "engine/physics/motion/CMotion.h"
@@ -25,13 +26,13 @@ public:
 	void PostUpdate ( void ) override;
 	void PostFixedUpdate ( void ) override;
 
-	ENGCOM_API void SetActor ( CActor* n_actor );
-	ENGCOM_API CActor* GetActor ( void );
+	ENGCOM_API void		SetActor ( CActor* n_actor );
+	ENGCOM_API CActor*	GetActor ( void );
 	ENGCOM_API ftype	GetMultiplier ( physRigidBody* );
 
 private:
-	void CreateJoints ( void );
-	void CreateMapping ( void );
+	void CreateJoints ( std::vector<Core::TransformLite>& pose_model );
+	void CreateMapping ( std::vector<Core::TransformLite>& pose_model );
 
 	CSkinnedModel*		m_skinnedmodel;
 	CActor*				m_owning_actor;

@@ -1,11 +1,13 @@
 
 #include "CAnimation.h"
 #include "CAnimAction.h"
-//#include "core/time/time.h"
+#include "core/time.h"
 
 // constructor
 CAnimAction::CAnimAction( void )
-	: weight(0), isPlaying(false), end_behavior(0), reset_on_stop(true), mirrored(false), tag(TAG_NORMAL), owner(NULL)
+	: weight(0), autoFadeSpeed(4.0F), isPlaying(false), end_behavior(END_STOP_PLAYING), reset_on_stop(true), mirrored(false), tag(TAG_NORMAL),
+	sampleSource(0), sampleMapping(0),
+	owner(NULL)
 {
 	actionName = "default";
 	layer = 0;
@@ -23,7 +25,9 @@ CAnimAction::CAnimAction( void )
 	enableMotionExtrapolation[2] = true;
 }
 CAnimAction::CAnimAction( const char* name )
-	: weight(0), isPlaying(false), end_behavior(0), reset_on_stop(true), mirrored(false), tag(TAG_NORMAL), owner(NULL)
+	: weight(0), autoFadeSpeed(4.0F), isPlaying(false), end_behavior(END_STOP_PLAYING), reset_on_stop(true), mirrored(false), tag(TAG_NORMAL),
+	sampleSource(0), sampleMapping(0),
+	owner(NULL)
 {
 	actionName = name;
 	layer = 0;
@@ -43,7 +47,7 @@ CAnimAction::CAnimAction( const char* name )
 
 
 // sample
-void CAnimAction::Sample ( CAnimationSet* pAnimSet, std::vector<void*> const& animRefs )
+/*void CAnimAction::Sample ( CAnimationSet* pAnimSet, std::vector<XTransform> const& animRefs )
 {
 	// Loop through all the animations, sample at the current time
 	ftype currentTime;
@@ -69,41 +73,11 @@ void CAnimAction::Sample ( CAnimationSet* pAnimSet, std::vector<void*> const& an
 			pAnimSet->animMap[mixingList[i]]->SampleAt( currentTime, weight, additive );
 		}
 	}
-
-	/*vector<CAnimationSet::sCurveReference>::it = pAnimSet->animMap.begin();
-	do
-	{
-		// Check to make sure the current ref isn't in the ignore list
-
-		it++;
-	}
-	while ( it != pAnimSet->animMap.end() );*/
-	/*for ( unsigned int i = 0; i < animRefs.size(); i++ )
-	{
-		// Check to see current ref isn't in ignore list
-		bool ignored = false;
-		for ( unsigned int j = 0; j < ignoreList.size(); j++ )
-		{
-			//if ( ignoreList[j] == animRefs[i] )
-			if ( ignoreList[j] == i )
-			{
-				ignored = true;
-				j = ignoreList.size();
-			}
-		}
-
-		// If not ignored, then sample track
-		if ( !ignored )
-		{
-			pAnimSet->animMap[i]->SampleAt( currentTime, weight, additive );
-		}
-	}*/
-}
+}*/
 
 // Update frame values
-void CAnimAction::Update ( const Real n_deltaTime, const ftype n_frameOverride )
+void CAnimAction::Update ( const Real n_deltaTime, const Real n_frameOverride )
 {
-	deltaTime = n_deltaTime;
 	if ( isPlaying )
 	{
 		previousFrame = frame;
@@ -162,10 +136,10 @@ void CAnimAction::Update ( const Real n_deltaTime, const ftype n_frameOverride )
 			{
 				isPlaying = false;
 				frame = length; // set the frame to the last frame
-				if ( end_behavior == 0 ) {
+				if ( end_behavior == END_STOP_PLAYING ) {
 					weight = 0.0f;
 				}
-				else if ( end_behavior == 1 || end_behavior == 2 ) {
+				else if ( end_behavior == END_HOLD_END || end_behavior == END_HOLD_END_AND_FADE ) {
 					//weight = 1.0f; // Do not modify weights at the end!
 				}
 			}
@@ -174,12 +148,10 @@ void CAnimAction::Update ( const Real n_deltaTime, const ftype n_frameOverride )
 	else
 	{
 		// Do end behaviors
-		if ( end_behavior == 2 )
+		if ( end_behavior == END_HOLD_END_AND_FADE )
 		{
-			if ( weight > 0 ) {
-				weight -= 4.0f * n_deltaTime;
-			}
-			else {
+			weight -= autoFadeSpeed * n_deltaTime;
+			if ( weight <= 0 ) {
 				weight = 0;
 			}
 		}
@@ -187,7 +159,7 @@ void CAnimAction::Update ( const Real n_deltaTime, const ftype n_frameOverride )
 }
 
 // Set the range
-void CAnimAction::SetRange( ftype fStart, ftype fEnd )
+void CAnimAction::SetRange( Real fStart, Real fEnd )
 {
 	if ( fStart <= fEnd )
 	{
@@ -206,18 +178,20 @@ void CAnimAction::SetRange( ftype fStart, ftype fEnd )
 	//start += 1.0f;
 	//end += 1.0f;
 	//end -= 2.0f;
-	end -= 1.0f; // This is done to prevent fp imprecision in the animations. FIx later!
+	end -= 1.0f; // This is done to prevent fp imprecision in the animations. TODO: FIx later!
 	length = (Real)((end-start) - FTYPE_PRECISION);
 }
 
 // Play the action
-void CAnimAction::Play ( ftype fPlaySpeed, ftype fBlendTime )
+void CAnimAction::Play ( const Real n_deltaTime, const Real n_playSpeed, const Real n_blendTime )
 {
-	if ( !owner ) {
+	if ( !owner )
+	{
+		throw Core::InvalidInstantiationException();
 		Debug::Console->PrintError( "Bad animation on this object (missing owner)!\n" );
-		return;
 	}
-	if ( fBlendTime < 0.01f )
+	// No blend time, so playing the animation instantly
+	if ( n_blendTime <= FTYPE_PRECISION )
 	{
 		// Go through all the other stuff
 		for ( auto it = owner->mAnimations.begin(); it != owner->mAnimations.end(); it++ )
@@ -258,22 +232,23 @@ void CAnimAction::Play ( ftype fPlaySpeed, ftype fBlendTime )
 		}
 
 		// Set the weight and the playback speed
-		playSpeed = fPlaySpeed;
+		playSpeed = n_playSpeed;
 		weight = 1.0f;
 
 		// Set now is playing
 		isPlaying = true;
 	}
-	else // Move weight in slowly
+	// Given a blend time, fade in animation over time
+	else
 	{
-		ftype weightIncrement = deltaTime / fBlendTime;
+		Real weightIncrement = n_deltaTime / n_blendTime;
 
 		// Go through all the other stuff
 		for ( auto it = owner->mAnimations.begin(); it != owner->mAnimations.end(); it++ )
 		{
 			if ( &(it->second) != (this) )
 			{
-				// Move weight to zero if on the same layer
+				// Move other animation's weight to zero if on the same layer
 				if (( it->second.layer == layer )&&( it->second.weight > 0 ))
 				{
 					it->second.weight -= weightIncrement;
@@ -294,11 +269,11 @@ void CAnimAction::Play ( ftype fPlaySpeed, ftype fBlendTime )
 		}
 
 		// Set the weight and the playback speed
-		playSpeed = fPlaySpeed;
+		playSpeed = n_playSpeed;
 		weight += weightIncrement;
-		if ( weight > 1 )
+		if ( weight > 1.0F )
 		{
-			weight = 1;
+			weight = 1.0F;
 		}
 		
 		// Set that now is playing

@@ -24,11 +24,11 @@ class CMorpher
 {
 
 public:
-	RENDER_API explicit CMorpher ( const string &, CMorpher* );
-	RENDER_API explicit CMorpher ( const string &, CMorpherSet* );
+	RENDER_API explicit CMorpher ( const string &, const CMorpher* );
+	RENDER_API explicit CMorpher ( const string &, const CMorpherSet* );
 
 	RENDER_API CMorpher&	operator= ( CMorpher const& );
-	RENDER_API CMorpher&	operator= ( CMorpher* );
+	RENDER_API CMorpher&	operator= ( const CMorpher* );
 
 	RENDER_API virtual ~CMorpher ( void );
 
@@ -38,7 +38,7 @@ public:
 
 	RENDER_API void AddAction ( CMorphAction );
 
-	CMorpherSet*	GetMorpherSet ( void ) {
+	const CMorpherSet*	GetMorpherSet ( void ) const {
 		return pMorphSet;
 	}
 	bool	IsValid ( void ) {
@@ -52,7 +52,7 @@ public:
 	static CMorphAction	deadAction;
 protected:
 	// Function for model system
-	void	PerformMorph ( glSkinnedMesh* );
+	void	PerformMorph ( glSkinnedMesh* sourceMesh, glSkinnedMesh* targetMesh );
 
 protected:
 	friend CMorphAction;
@@ -60,7 +60,7 @@ protected:
 	friend CSkinnedModel;
 
 	std::map<arstring<128>,CMorphAction>	mActions;
-	CMorpherSet*			pMorphSet;
+	const CMorpherSet*		pMorphSet;
 	string					sFilename;
 
 	bool					bIsValid;

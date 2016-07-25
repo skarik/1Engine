@@ -30,7 +30,7 @@ void CRWBowShitty::Generate ( void )
 	string bowModel = "models/weapons/bow_beta.FBX";
 
 	//pModel = new CSkinnedModel( bowModel );
-	pModel = new CModel( bowModel );
+	pModel = new CModel( bowModel.c_str() );
 	if (pModel->GetAnimation()) {
 		pModel->GetAnimation()->Play("ref");
 	}

@@ -8,7 +8,7 @@
 PropFloraSnowLily::PropFloraSnowLily ( BlockTrackInfo const& inInfo )
 	: CTerrainProp( inInfo )
 {
-	m_model = new CModel( string("models/flora/snowdrop_lily.FBX") );
+	m_model = new CModel( "models/flora/snowdrop_lily.FBX" );
 }
 
 // Destructor

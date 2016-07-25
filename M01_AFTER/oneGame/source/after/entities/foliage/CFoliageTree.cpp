@@ -7,7 +7,7 @@
 CFoliageTree::CFoliageTree ( void )
 	: CFoliage ( )
 {
-	pTreeModel = new CModel ( string("models/tree01.FBX") );
+	pTreeModel = new CModel ( "models/tree01.FBX" );
 	pTreeModel->transform.scale = Vector3d( 1,1,1 ) * 0.2f;
 
 	glMaterial* treeMaterial = new glMaterial;

@@ -605,7 +605,7 @@ bool CCharacterModel::PlayAnimation ( const string& sAnimType, const float fArg,
 	{
 		anim.Play( sAnimType );
 		anim["land"].framesPerSecond = 20.0f;
-		anim["land"].end_behavior = 1;
+		anim["land"].end_behavior = CAnimAction::END_HOLD_END;
 		validAnim = true;
 
 		iFallType = 0;
@@ -690,7 +690,7 @@ bool CCharacterModel::PlayAnimation ( const string& sAnimType, const float fArg,
 		{
 			anim["vault_4h"].framesPerSecond = fAnimSpeed;
 			anim["vault_4h"].frame = fArg;
-			anim["vault_4h"].end_behavior = 0;
+			anim["vault_4h"].end_behavior = CAnimAction::END_STOP_PLAYING;
 		}
 		m_IKFootEnable = false;
 
@@ -702,7 +702,7 @@ bool CCharacterModel::PlayAnimation ( const string& sAnimType, const float fArg,
 		if ( anim["hang_climb"].end_behavior == 2 ) {
 			anim["hang_climb"].frame = 0;
 			anim["hang_climb"].framesPerSecond = 30.0f;
-			anim["hang_climb"].end_behavior = 0;
+			anim["hang_climb"].end_behavior = CAnimAction::END_STOP_PLAYING;
 		}
 		iIdleType = LockAllButHead; // Lock all the body but the head
 		m_IKFootEnable = false;
@@ -1121,8 +1121,8 @@ bool CCharacterModel::PlayAnimation ( const string& sAnimType, const float fArg,
 				// Instant play
 				if ( action->weight < 0.5f )
 				{
-					action->end_behavior = 1;
-					action->Play();
+					action->end_behavior = CAnimAction::END_HOLD_END;
+					action->Play(Time::deltaTime);
 					// Set animation playback speed
 					if ( fAnimSpeed > FTYPE_PRECISION ) {
 						action->playSpeed = fAnimSpeed;
@@ -1140,7 +1140,7 @@ bool CCharacterModel::PlayAnimation ( const string& sAnimType, const float fArg,
 			}
 			else
 			{	// Smooth blend in
-				action->end_behavior = 1;
+				action->end_behavior = CAnimAction::END_HOLD_END;
 				action->Play( 1.0f, fNextBlendSpeed );
 				fNextBlendSpeed = 0;
 			}
@@ -1494,10 +1494,10 @@ void CCharacterModel::StopMoveAnimation ( string const& sAnimType )
 		anim.StopSmoothed("idle_relaxed_hover_02",0.4f);
 	}
 	else if ( sAnimType == "vault_4h" ) {
-		anim["vault_4h"].end_behavior = 2;
+		anim["vault_4h"].end_behavior = CAnimAction::END_HOLD_END_AND_FADE;
 	}
 	else if ( sAnimType == "hang_climb" ) {
-		anim["hang_climb"].end_behavior = 2;
+		anim["hang_climb"].end_behavior = CAnimAction::END_HOLD_END_AND_FADE;
 	}
 }
 bool CCharacterModel::SetAnimationMotion ( Vector3d const& velocity )

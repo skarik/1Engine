@@ -342,7 +342,7 @@ void ItemTreeTrunk::GenerateMesh ( void )
 	}
 
 	// Create a new model based on the new mesh data
-	pModel = new CModel( mdNewMesh, string("_sys_override_") );
+	pModel = new CModel( mdNewMesh, "_sys_override_" );
 	if ( pTreeMat ) {
 		pModel->SetMaterial( pTreeMat );
 	}

@@ -13,7 +13,7 @@ PropChestBase::PropChestBase ( BlockTrackInfo const& inInfo )
 {
 	bInteractable = true;
 
-	m_model = new CModel( string("models/props/chest_wood.FBX") );
+	m_model = new CModel( "models/props/chest_wood.FBX" );
 	//pModel->GetAnimation()->Stop("open");
 
 	mCollidesWithPlayer = true;

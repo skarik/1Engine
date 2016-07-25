@@ -2,6 +2,7 @@
 // Includes
 #include "core/time.h"
 #include "core-ext/transform/CTransform.h"
+#include "core-ext/animation/CAnimation.h"
 #include "engine/state/CGameState.h"
 
 #include "physical/physics/CPhysics.h"
@@ -372,6 +373,16 @@ void CGameState::FixedUpdate ( void )
 			EXCEPTION_CATCH_END
 		}
 	}
+
+	// Loop through all animation instances
+	//	Update them.
+	for ( i = 0; i < CAnimation::Instances().size(); ++i )
+	{
+		if ( CAnimation::Instances()[i] != NULL )
+		{
+			CAnimation::Instances()[i]->Update( Time::deltaTime );
+		}
+	}
 }
 // Called after FixedUpdate, during the physics updating
 void CGameState::PhysicsUpdate ( void )
@@ -381,7 +392,7 @@ void CGameState::PhysicsUpdate ( void )
 
 	// Loop through all instances
 	//  Update if active
-	for ( i = 0; i < iCurrentIndex; i += 1 )
+	for ( i = 0; i < iCurrentIndex; ++i )
 	{
 		pBehavior = pBehaviors[i];
 		if (( pBehavior != NULL )&&( pBehavior->active ))

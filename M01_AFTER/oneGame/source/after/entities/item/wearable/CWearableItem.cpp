@@ -57,7 +57,7 @@ void CWearableItem::Update ( void )
 	CWeaponItem::Update();
 
 	if ( pModel == NULL ) {
-		pModel = new CModel( sWorldModel );
+		pModel = new CModel( sWorldModel.c_str() );
 	}
 }
 

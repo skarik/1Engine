@@ -498,7 +498,7 @@ void CTreeBase::BreakPart ( TreePart* pInPart, bool bDropItems )
 					newItemPart = (ItemTreeTrunk*)CreatePieceItem( (*it)->size, rnInShape, rnInPShape, fnInSize, fnInPSize );
 					if ( newItemPart ) {
 						// Set new part position and rotation
-						newItemPart->transform.position = transform.GetTransformMatrix() * ((*it)->shape.pos + ((*it)->shape.dir*0.5f));
+						newItemPart->transform.position = transform.WorldMatrix() * ((*it)->shape.pos + ((*it)->shape.dir*0.5f));
 						newItemPart->transform.rotation = transform.rotation;
 					}
 
@@ -506,7 +506,7 @@ void CTreeBase::BreakPart ( TreePart* pInPart, bool bDropItems )
 					if ( random_range(0.0f,1.0f) < (*it)->size*0.4f ) {
 						CWeaponItem* newResin = CreateResinItem();
 						if ( newResin ) {
-							newResin->transform.position = transform.GetTransformMatrix() * ((*it)->shape.pos + ((*it)->shape.dir*0.5f));
+							newResin->transform.position = transform.WorldMatrix() * ((*it)->shape.pos + ((*it)->shape.dir*0.5f));
 							newResin->transform.rotation = transform.rotation;
 						}
 					}

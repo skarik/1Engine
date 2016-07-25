@@ -339,7 +339,7 @@ void CBaseRandomBow::Update ( void )
 			if ( pModel ) {
 				if ( pModel->GetAnimation() ) {
 					CAnimAction* action = pModel->GetAnimation()->FindAction( "ref" );
-					action->Play();
+					action->Play(Time::deltaTime);
 				}
 			}
 			if ( pOwner ) {

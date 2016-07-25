@@ -10,7 +10,7 @@
 ProjectileArrow::ProjectileArrow ( const Ray & rnInRay, ftype fnInSpeed )
 	: AfterBaseProjectile( rnInRay, fnInSpeed )
 {
-	pModel = new CModel( string("models/weapons/cb_arrow_beta.FBX") );
+	pModel = new CModel( "models/weapons/cb_arrow_beta.FBX" );
 	//transform.scale = Vector3d( 2.0f,2.0f,2.0f );
 
 	//CParticleSystem

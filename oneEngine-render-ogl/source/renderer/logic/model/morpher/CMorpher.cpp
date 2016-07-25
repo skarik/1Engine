@@ -10,7 +10,7 @@
 CMorphAction		CMorpher::deadAction ( "" );
 
 // Constructors
-CMorpher::CMorpher ( string const& sInFilename, CMorpher* pFoundReference )
+CMorpher::CMorpher ( string const& sInFilename, const  CMorpher* pFoundReference )
 {
 	pMorphSet = NULL;
 	sFilename = sInFilename;
@@ -32,7 +32,7 @@ CMorpher::CMorpher ( string const& sInFilename, CMorpher* pFoundReference )
 		bIsValid = false;
 	}
 }
-CMorpher::CMorpher ( string const& sInFilename, CMorpherSet* pInSet )
+CMorpher::CMorpher ( string const& sInFilename, const CMorpherSet* pInSet )
 {
 	pMorphSet = pInSet;
 	sFilename = sInFilename;
@@ -54,7 +54,7 @@ void CMorpher::AddAction ( CMorphAction newAction )
 }
 
 // Copy from existing reference (pointer)
-CMorpher& CMorpher::operator= ( CMorpher* pRight )
+CMorpher& CMorpher::operator= ( const CMorpher* pRight )
 {
 	return ((*this) = (*pRight));
 }
@@ -133,12 +133,11 @@ CMorphAction* CMorpher::FindAction ( const char* animName )
 }
 
 // Perform the morphs. Only affect positions and normals of the mesh's stream.
-void	CMorpher::PerformMorph ( glSkinnedMesh* targetMesh )
+void	CMorpher::PerformMorph ( glSkinnedMesh* sourceMesh, glSkinnedMesh* targetMesh )
 {
-	//cout << "Performing morph!" << endl;
-
 	// First, grab the stream to work on
-	CModelData* pStreamData = targetMesh->getCurrentStream();
+	CModelData* pStreamData = targetMesh->pmData;
+	memcpy( pStreamData->vertices, sourceMesh->pmData->vertices, sizeof(CModelVertex) * sourceMesh->pmData->vertexNum );
 
 	// Loop through all the actions and perform auto blending
 	auto it = mActions.begin();
@@ -163,7 +162,7 @@ void	CMorpher::PerformMorph ( glSkinnedMesh* targetMesh )
 	{
 		if ( fabs(it->second.weight) > 0.01f )
 		{
-			CModelVertex* vertOffset = pMorphSet->GetMorphData(it->second.index);
+			const CModelVertex* vertOffset = pMorphSet->GetMorphData(it->second.index);
 			if ( vertOffset )
 			{
 				// Perform the morphing

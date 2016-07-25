@@ -8,7 +8,7 @@
 PropFloraLifedrop::PropFloraLifedrop ( BlockTrackInfo const& inInfo )
 	: CTerrainProp( inInfo )
 {
-	m_model = new CModel( string("models/flora/lifedrop_fern.FBX") );
+	m_model = new CModel( "models/flora/lifedrop_fern.FBX" );
 }
 
 // Destructor

@@ -294,7 +294,7 @@ void CDialogueGUI::DrawChoices (void)
 	if (mConversation->sDialogueState == DIALOGUE_STATE_CHOICES || mConversation->sDialogueState == DIALOGUE_STATE_RESPONSE)
 	{
 		choices = mConversation->GetChoices();
-		sNumChoices = choices.size();
+		sNumChoices = (short)choices.size();
 
 		// Draw the timer behind the default selection
 		if ( mConversation->IsTimedChoice() )

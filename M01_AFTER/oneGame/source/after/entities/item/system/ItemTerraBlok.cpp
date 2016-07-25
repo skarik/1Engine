@@ -71,7 +71,7 @@ void ItemTerraBlok::GenerateModel ( void )
 		md.triangles[i+1].vert[1] = i*2+3;
 		md.triangles[i+1].vert[2] = i*2+0;
 	}
-	blokRender	= new CModel( md, string("_sys_override_") );
+	blokRender	= new CModel( md, "_sys_override_" );
 	blokRender->SetMaterial( blokMaterial );
 }
 

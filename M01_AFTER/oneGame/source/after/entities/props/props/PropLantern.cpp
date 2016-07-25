@@ -13,7 +13,7 @@ PropLantern::PropLantern ( BlockTrackInfo const& inInfo )
 {
 	pLight = new CLight();
 
-	m_model = new CModel( string("models/props/lantern.FBX") );
+	m_model = new CModel( "models/props/lantern.FBX" );
 	m_model->transform.scale = Vector3d( 1.3f,1.3f,1.3f );
 
 	pFireSystem = new CParticleSystem ( "particlesystems\\flame03.pcf" );

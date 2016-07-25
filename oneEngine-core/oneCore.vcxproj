@@ -64,7 +64,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
@@ -98,21 +98,21 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='2D_Debug|Win32'">
-    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='2D_Debug|x64'">
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
-    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">
@@ -284,7 +284,6 @@
     <ClInclude Include="source\core-ext\animation\curve\CAnimationCurve.h" />
     <ClInclude Include="source\core-ext\animation\curve\CAnimationCurveBase.h" />
     <ClInclude Include="source\core-ext\animation\curve\CArrayAnimationCurve.h" />
-    <ClInclude Include="source\core-ext\animation\set\CAnimationSet.h" />
     <ClInclude Include="source\core-ext\constants\distances.h" />
     <ClInclude Include="source\core-ext\containers\arproperty.h" />
     <ClInclude Include="source\core-ext\containers\ExtendibleMap2D.h" />
@@ -376,7 +375,6 @@
   <ItemGroup>
     <ClCompile Include="source\core-ext\animation\CAnimAction.cpp" />
     <ClCompile Include="source\core-ext\animation\CAnimActionMixing.cpp" />
-    <ClCompile Include="source\core-ext\animation\set\CAnimationSet.cpp" />
     <ClCompile Include="source\core-ext\math\MathQEF.cpp" />
     <ClCompile Include="source\core-ext\math\noise\MidpointNoiseBuffer.cpp" />
     <ClCompile Include="source\core-ext\system\io\mccosf.cpp" />

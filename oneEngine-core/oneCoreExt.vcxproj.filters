@@ -52,6 +52,12 @@
     <Filter Include="SOURCE\Core-ext\Profiler">
       <UniqueIdentifier>{82255775-1107-4a10-b0e1-520e1d0e2037}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Core-ext\System\IO\Assets">
+      <UniqueIdentifier>{6afa2b63-3fb8-4309-903c-6d26b69b6fae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Animation\Set">
+      <UniqueIdentifier>{e17f8556-9a8a-4414-b614-68d0f3aa1712}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\settings\CGameSettings.cpp">
@@ -90,9 +96,6 @@
     <ClCompile Include="source\core\system\Screen.cpp">
       <Filter>SOURCE\Core\System</Filter>
     </ClCompile>
-    <ClCompile Include="source\core-ext\system\io\resources.cpp">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
-    </ClCompile>
     <ClCompile Include="source\core-ext\transform\CTransform.cpp">
       <Filter>SOURCE\Core-ext\Transform</Filter>
     </ClCompile>
@@ -104,6 +107,24 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\system\io\FileUtils.cpp">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\Resources.cpp">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\animation\BoneMapper.cpp">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\assets\ModelLoader.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\animation\set\CAnimationSet.cpp">
+      <Filter>SOURCE\Core-ext\Animation\Set</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\transform\TransformUtility.cpp">
+      <Filter>SOURCE\Core-ext\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\animation\Skeleton.cpp">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +164,6 @@
     <ClInclude Include="source\core\system\Screen.h">
       <Filter>SOURCE\Core\System</Filter>
     </ClInclude>
-    <ClInclude Include="source\core-ext\system\io\resources.h">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\transform\CTransform.h">
       <Filter>SOURCE\Core-ext\Transform</Filter>
     </ClInclude>
@@ -160,6 +178,30 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\io\FileUtils.h">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\Resources.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\Skeleton.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\BoneMapper.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\ResourceAnimLoader.h">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\ResourceHandler.h">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\ModelLoader.h">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\set\CAnimationSet.h">
+      <Filter>SOURCE\Core-ext\Animation\Set</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\transform\TransformUtility.h">
+      <Filter>SOURCE\Core-ext\Transform</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

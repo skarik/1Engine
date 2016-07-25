@@ -12,7 +12,7 @@ CMorpherSet::~CMorpherSet ( void )
 }
 
 
-CModelVertex*	CMorpherSet::GetMorphData ( const unsigned int nMorphId )
+const CModelVertex*	CMorpherSet::GetMorphData ( const unsigned int nMorphId ) const
 {
 	if ( nMorphId >= mMorphCount ) {
 		return NULL;

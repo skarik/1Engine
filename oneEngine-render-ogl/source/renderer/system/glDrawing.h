@@ -76,18 +76,18 @@ public:
 	RENDER_API void		DrawRectangleA ( float x, float y, float w, float h );
 	RENDER_API void		DrawRectangleATex ( float x, float y, float w, float h, float tx, float ty, float tw, float th );
 	// Draw a pixel rectangle
-	RENDER_API void		DrawRectangle( int x, int y, int w, int h );
-	RENDER_API void		DrawRectangleTex( int x, int y, int w, int h, int tx, int ty, int tw, int th );
+	RENDER_API void		DrawRectangle( float x, float y, float w, float h );
+	RENDER_API void		DrawRectangleTex( float x, float y, float w, float h, float tx, float ty, float tw, float th );
 
 	// Draw an Autocircle
 	RENDER_API void		DrawCircleA ( float x, float y, float r );
 	// Draw a pixel circle
-	RENDER_API void		DrawCircle ( int x, int y, int r );
+	RENDER_API void		DrawCircle ( float x, float y, float r );
 
 	// Draw an Autoline
 	RENDER_API void		DrawLineA ( float x1, float y1, float x2, float y2 );
 	// Draw a pixel line
-	RENDER_API void		DrawLine ( int x1, int y1, int x2, int y2 );
+	RENDER_API void		DrawLine ( float x1, float y1, float x2, float y2 );
 
 	// Draw a screen quad
 	RENDER_API void		DrawScreenQuad ( void );

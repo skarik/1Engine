@@ -87,7 +87,7 @@ void CLuaWeaponItem::Initialize ( void )
 	if ( !m_luaReady )
 	{
 		// Create environment value
-		sprintf( m_environment.data, "LWEP_%x", this );
+		sprintf( m_environment.data, "LWEP_%p", this );
 		// Shiet
 		if ( m_packageName.length() > 0 ) {
 		Lua::Controller->LoadLuaFile( std::string("../../addons/") + m_packageName.c_str() + "/lua/" + m_entityName.c_str() + ".lua", m_environment.c_str(), m_environment.c_str() );

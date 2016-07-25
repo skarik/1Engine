@@ -11,7 +11,7 @@ ItemCrateWooden::ItemCrateWooden ( void )
 	transform.scale = Vector3d( 0.1f, 0.1f, 0.1f );
 
 	if ( pModel == NULL ) {
-		pModel = new CModel( string("models/props/crate0.FBX") );
+		pModel = new CModel( "models/props/crate0.FBX" );
 		pModel->transform.scale = Vector3d( 0.1f, 0.1f, 0.1f );
 	}
 }

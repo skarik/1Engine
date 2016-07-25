@@ -17,7 +17,7 @@
 PropCampfire::PropCampfire ( BlockTrackInfo const& inInfo )
 	: CTerrainProp( inInfo ), mHitValue(0), bIsLit( false )
 {
-	m_model = new CModel( string("models/props/campfire.FBX") );
+	m_model = new CModel( "models/props/campfire.FBX" );
 	transform.scale = Vector3d( 1.4f,1.4f,1.4f );
 
 	pLight = NULL;

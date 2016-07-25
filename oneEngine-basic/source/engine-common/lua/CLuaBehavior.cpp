@@ -16,7 +16,7 @@ CLuaBehavior::CLuaBehavior ( const char* entityName, const char* packageName )
 	m_entityName	= entityName;
 	m_packageName	= packageName;
 	// Create environment value
-	sprintf( m_environment.data, "LBR_%x", this );
+	sprintf( m_environment.data, "LBR_%x", (unsigned int)(this) );
 	// Create lua object
 	Initialize();
 }

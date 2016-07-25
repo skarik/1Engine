@@ -12,24 +12,27 @@ int Animation::AddMixingTransform ( CAnimation& anim, CAnimAction& action, const
 	//anim["idle_relaxed_hover_02"].AddMixingTransform( "Bip001", false ); // Old syntax
 
 	// First, need to get to the model
-	CSkinnedModel* model = (CSkinnedModel*)anim.GetOwner();
+	//CSkinnedModel* model = (CSkinnedModel*)anim.GetOwner();
 
 	// Now need base of skeleton
 	//CTransform* skellyRoot = model->GetSkeletonRoot();
-	std::vector<skeletonBone_t*>* skellyList = model->GetSkeletonList();
+	//std::vector<skeletonBone_t*>* skellyList = model->GetSkeletonList();
+	const Animation::Skeleton& skeleton = anim.GetSkeleton();
 
 	// Loop through the list to find the bone
-	for ( uint32_t i = 0; i < skellyList->size(); ++i )
+	for ( uint32_t i = 0; i < skeleton.names.size(); ++i )
 	{
-		if ( (*skellyList)[i]->name.find( boneName ) != string::npos )
+		if ( string(skeleton.names[i]).find( boneName ) != string::npos )
 		{
 			action.AddMixingTransform(i);
 			if ( recursive )
 			{
-				CTransform& target = (*skellyList)[i]->transform;
-				for ( uint32_t j = 0; j < target.children.size(); ++j )
+				for ( uint32_t j = 0; j < skeleton.parent.size(); ++j )
 				{
-					AddMixingTransform( anim, action, target.children[j]->name.c_str(), true );
+					if ( skeleton.parent[j] == i )
+					{
+						AddMixingTransform( anim, action, skeleton.names[j].c_str(), true );
+					}
 				}
 			}
 			return 1;

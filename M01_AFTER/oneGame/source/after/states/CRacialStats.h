@@ -101,7 +101,7 @@ public:
 	string	sGearLeftfoot;
 
 	// == Tattoo and Body marking info ==
-	unsigned short	iTattooCount;
+	uint16_t	iTattooCount;
 
 	struct tattoo_t {
 		uchar			type;		// type (if it glows, if it's a scar, yadayada)

@@ -15,20 +15,27 @@ class CHKAnimation : public CAnimation
 public:
 	// Constructors
 	//explicit CHKAnimation ( glhkSkeleton * );
-	PHYS_API explicit CHKAnimation ( string const& sInFilename, CAnimation* pFoundReference )
-		: CAnimation( sInFilename, pFoundReference ),
-		bHKready(false), mMirrorSkelly(NULL), /*mMirrorAnim(NULL),*/ mAnimBinding(NULL),
+	PHYS_API explicit CHKAnimation ( const Animation::Skeleton& n_skeleton )
+		: CAnimation( n_skeleton ),
+		mSkelly(NULL), mAnimSkelly(NULL), mMirrorSkelly(NULL), mMirrorAnim(NULL),
 		mSpineBlends(), mPropBlends()
 	{
-		;
+		SkeletonToHkaSkeleton();
 	}
-	PHYS_API explicit CHKAnimation ( string const& sInFilename, CAnimationSet* pInSet )
+	PHYS_API explicit CHKAnimation ( CAnimation* pFoundReference )
+		: CAnimation( pFoundReference ),
+		mSkelly(NULL), mAnimSkelly(NULL), mMirrorSkelly(NULL), mMirrorAnim(NULL),
+		mSpineBlends(), mPropBlends()
+	{
+		SkeletonToHkaSkeleton();
+	}
+	/*PHYS_API explicit CHKAnimation ( string const& sInFilename, CAnimationSet* pInSet )
 		: CAnimation( sInFilename, pInSet ),
-		bHKready(false), mMirrorSkelly(NULL), /*mMirrorAnim(NULL),*/ mAnimBinding(NULL),
+		bHKready(false), mMirrorSkelly(NULL), mAnimBinding(NULL),
 		mSpineBlends(), mPropBlends()
 	{
 		;
-	}
+	}*/
 
 	// Destructor (free pose info, possibly)
 	PHYS_API virtual ~CHKAnimation ( void );
@@ -38,7 +45,7 @@ public:
 
 	// Set skeleton
 	//void SetHKSkeleton ( glhkSkeleton* );	// This has to be called before the animation is ready
-	PHYS_API void SetSkeleton ( skeletonBone_t*, std::vector<skeletonBone_t*>& );	// This needs to be called before the animation is ready, after the skeleton is assembled.
+	//PHYS_API void SetSkeleton ( skeletonBone_t*, std::vector<skeletonBone_t*>& );	// This needs to be called before the animation is ready, after the skeleton is assembled.
 
 	PHYS_API virtual void GetRagdollPose ( skeletonBone_t*, std::vector<skeletonBone_t*>& );
 
@@ -50,16 +57,25 @@ private:
 	hkaSkeleton*			mSkelly;
 	hkaAnimatedSkeleton*	mAnimSkelly;
 
-	void	SetupMirrorMode ( void );
+	//void	SetupMirrorMode ( void );
 	hkaMirroredSkeleton*	mMirrorSkelly;
-	//hkaMirroredAnimation*	mMirrorAnim;
+	hkaMirroredAnimation*	mMirrorAnim;
 	std::vector<hkaAnimation*>	mMirrorAnims;
 
-	hkaAnimationBinding*	mAnimBinding;
-
-	bool		bHKready;	// If the CHKAnimation is ready to actually perfrom
+	// Need an animation binding for each animation set
+	//std::vector<hkaAnimationBinding*>	mAnimBindings;
+	//hkaAnimationBinding*	mAnimBinding;
 
 private:
+	//	SkeletonToHkaSkeleton ( ) : converts the skeleton currently contained into a Havok-formatted skeleton.
+	void		SkeletonToHkaSkeleton ( void );
+
+	//	CopyHkTransformsToXTransform ( transform list, target list ) : copies transforms to XTransform listing
+	// Returns true if successful, returns false or throws exception on failure.
+	static bool		CopyHkTransformsToXTransform ( const hkArray<hkQsTransform>& transforms, std::vector<XTransform>& targets );  
+	//	CopyXTransformsToHkTransform ( xtransform list, target list ) : copies XTransforms to hkQsTransform listing
+	// Returns true if successful, returns false or throws exception on failure
+	static bool		CopyXTransformsToHkTransform ( const std::vector<XTransform>& transforms, hkArray<hkQsTransform>& targets );  
 
 private:
 	std::vector<hkReferencedObject*>	mFootstepIKs;

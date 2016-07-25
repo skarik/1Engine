@@ -2,6 +2,7 @@
 #ifndef _C_ANIMATION_SET_
 #define _C_ANIMATION_SET_
 
+#include "core/containers/arstring.h"
 #include "core-ext/animation/CAnimationCommon.h"
 #include "core-ext/animation/curve/CAnimationCurveBase.h"
 #include "core-ext/animation/curve/CAnimationCurve.h"
@@ -9,15 +10,18 @@
 #include <vector>
 #include <map>
 
+class CAnimation;
+
 class CAnimationSet
 {
 public:
-	explicit CAnimationSet ( void );
-	virtual ~CAnimationSet ( void );
+	CORE_API explicit CAnimationSet ( void );
+	CORE_API virtual ~CAnimationSet ( void );
 	
 	void Add ( CAnimationCurve<Matrix4x4>* newCurve )
 	{
-		animMap.push_back( newCurve );
+		throw Core::DeprecatedCallException();
+		//animMap.push_back( newCurve );
 	}
 	void Add ( CAnimationCurve<Matrix2x2>* );
 	void Add ( CAnimationCurve<Vector3d>* );
@@ -25,10 +29,11 @@ public:
 	void Add ( CAnimationCurve<ftype>* );
 	void Add ( CAnimationCurve<XTransform>* newCurve )
 	{
-		animMap.push_back( newCurve );
+		throw Core::DeprecatedCallException();
+		//animMap.push_back( newCurve );
 	}
 
-	virtual void Export ( std::vector<void*> & );
+	CORE_API virtual void Export ( std::vector<void*> & );
 
 	/*struct sCurveReference
 	{
@@ -37,16 +42,26 @@ public:
 	};*/
 
 	//vector<sCurveReference>	animMap;
-	std::vector<CAnimationCurveBase*>	animMap;
+	//std::vector<CAnimationCurveBase*>	animMap;
+
+	//	AddActions ( target ) : [SLOW] Adds this animation set's associated actions to the given Animation object 
+	// Finds the filename for the animation, and loads in the listing of the animation.
+	// This function reads from the disk, so is fairly slow. This should be kept in mind when reading in the data.
+	// Ownership of the calling CAnimationSet is not transferred.
+	CORE_API virtual void AddActions ( CAnimation* target );
+
+	Real	Framerate ( void ) const
+	{
+		return framerate;
+	}
 
 private:
-	/*map<Matrix4x4*,CAnimationCurve<Matrix4x4>>	animMap_m4;
-	map<Matrix2x2*,CAnimationCurve<Matrix2x2>>	animMap_m2;
-	map<Vector3d*,CAnimationCurve<Vector3d>>	animMap_v3;
-	map<Vector2d*,CAnimationCurve<Vector2d>>	animMap_v2;
-	map<ftype*,CAnimationCurve<ftype>>			animMap_f;*/
 	//map<unsigned int,sCurveReference>	animMap;
-	
+
+	// Framerate of the source data
+	Real framerate;
+	// Filename of where the animation set is sourced
+	arstring256 filename;
 };
 
 

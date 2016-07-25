@@ -5,6 +5,8 @@
 #include <cstdio>
 #include <cstdlib>
 
+using std::string;
+
 // == Constructor ==
 CSegmentedFile::CSegmentedFile ( const string& sInFilename )
 {
@@ -276,30 +278,8 @@ bool CSegmentedFile::FindSegmentStart ( FILE* fp )
 }*/
 
 //==Return a section of data==
-bool CSegmentedFile::GetSectionData ( const string& sSection, string& sOutString  )
+bool CSegmentedFile::GetSectionData ( const string& sSection, string& sOutString )
 {
-	/*unsigned int iCurrentIndex = (unsigned) -1;
-	// Search for the target title
-	for ( iCurrentIndex = 0; iCurrentIndex < vpsTitleList.size(); iCurrentIndex += 1 )
-	{
-		if ( sSection.compare( *(vpsTitleList[iCurrentIndex]) ) == 0 )
-		{
-			// Found, break loop
-			break;
-		}
-	}
-
-	// If didn't find the title, return false
-	if (( iCurrentIndex == (unsigned) -1 )||( iCurrentIndex == vpsTitleList.size() ))
-	{
-		return false;
-	}
-	else
-	{
-		//pssOutStream = vpssDataList[iCurrentIndex];
-		sOutString = *(vpsDataList[iCurrentIndex]);
-		return true;
-	}*/
 	uint sectionIndex = (unsigned)-1;
 
 	// Search for the target title
@@ -311,10 +291,12 @@ bool CSegmentedFile::GetSectionData ( const string& sSection, string& sOutString
 		}
 	}
 	// If didn't find it, return failure
-	if ( sectionIndex == (unsigned)-1 ) {
+	if ( sectionIndex == (unsigned)-1 )
+	{
 		return false;
 	}
-	else {
+	else
+	{
 		uint32_t datasize;
 
 		// Open file
@@ -342,57 +324,73 @@ bool CSegmentedFile::GetSectionData ( const string& sSection, string& sOutString
 	}
 }
 
+// Moves the stream to the section, returning the section's size. Must be deleted by the user.
+// Returns 0 if the section cannot be found or section empty.
+CBufferIO CSegmentedFile::GetSectionStream ( const std::string& sSection, const size_t iMaxSize )
+{
+	uint sectionIndex = (unsigned)-1;
+
+	// Search for the target title
+	for ( uint i = 0; i < vsSectorNames.size(); ++i )
+	{
+		if ( strcmp( sSection.c_str(), vsSectorNames[i].c_str() ) == 0 ) {
+			sectionIndex = i;
+			break;
+		}
+	}
+	// If didn't find it, return failure
+	if ( sectionIndex == (unsigned)-1 )
+	{
+		return CBufferIO(NULL);
+	}
+	else
+	{
+		uint32_t datasize;
+		char* data;
+
+		// Open file
+		FILE* fp = fopen( sFilename.c_str(), "rb" );
+		if ( fp == NULL )
+		{
+			bValidFile = false;
+			return CBufferIO(NULL);
+		}
+
+		// Seek to the start position of the sector
+		fseek( fp, viSectorPositions[sectionIndex], 0 );
+
+		// Read in the size of the data block
+		fread( (char*)&datasize, sizeof(uint32_t),1, fp );
+		// Set size to actually read
+		if ( iMaxSize != 0 )
+		{
+			datasize = std::min( datasize, iMaxSize );
+		}
+
+		// Read in contents to a string
+		data = new char [datasize];
+		fread( data, sizeof(char), datasize, fp );
+
+		// Close file
+		fclose( fp );
+
+		// Return buffer read
+		CBufferIO buffer ( data, datasize );
+		buffer.ReleaseOwnership();
+		return buffer;
+	}
+}
+
 // == File Writing ==
 // Saves the file to the filename.
 bool CSegmentedFile::WriteData ( void )
 {
-	/*FILE* ofile = fopen( sFilename.c_str(), "wb" );
-	
-	if ( ofile != NULL )
+	if ( fp_output == NULL )
 	{
-		// Write new data
-		unsigned int i;
-		// For each name we have stored, write a new section.
-		for ( i = 0; i < vpsTitleList.size(); i += 1 )
-		{
-			// Write the section header
-			fwrite( "<<begin,", sizeof( char ), 8, ofile );
-
-			// Write the keys. Currently, only key is name
-			{
-				fwrite( "name<", sizeof( char ), 5, ofile );
-				fwrite( vpsTitleList[i]->c_str(), sizeof( char ), vpsTitleList[i]->length(), ofile );
-				fwrite( ">,", sizeof( char ), 2, ofile );
-			}
-
-			// Write out the data
-			{
-				// Write the size of the data as a 32 bit integer
-				uint32_t iDataSize;
-				iDataSize = vpsDataList[i]->length();
-				fwrite( &iDataSize, sizeof( uint32_t ), 1, ofile );
-				
-				// Write out the actual data
-				fwrite( vpsDataList[i]->c_str(), sizeof( char ), iDataSize, ofile );
-
-			}
-			// Write out the ending of this section
-			fwrite( "-end>>", sizeof( char ), 6, ofile );
-		}
-
-		// Close the file
-		fclose( ofile );
-	}
-
-	// Finally, check if the file exists
-	ifstream ifile( sFilename.c_str() );
-	bValidFile = (ifile.is_open());
-	return ((ofile!=NULL)&&(bValidFile));*/
-
-	if ( fp_output == NULL ) {
 		return false;
 	}
-	else {
+	else
+	{
 		// Close output file
 		fclose( fp_output );
 		fp_output = NULL;

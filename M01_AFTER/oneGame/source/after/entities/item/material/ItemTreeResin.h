@@ -2,6 +2,8 @@
 #define _ITEM_TREE_RESIN_H_
 
 #include "after/entities/item/CWeaponItem.h"
+#include "renderer/material/glMaterial.h"
+#include "renderer/texture/CTexture.h"
 #include "renderer/logic/model/CModel.h"
 
 class ItemTreeResin : public CWeaponItem
@@ -24,7 +26,7 @@ public:
 	ItemTreeResin::ItemTreeResin ( void )
 		: CWeaponItem( ItemData() )
 	{
-		pModel = new CModel( string("models/items/tree_resin.FBX") );
+		pModel = new CModel( "models/items/tree_resin.FBX" );
 		pModel->transform.scale = Vector3d( 0.7f,0.7f,0.7f );
 		glMaterial* sapMaterial;
 		sapMaterial = new glMaterial;

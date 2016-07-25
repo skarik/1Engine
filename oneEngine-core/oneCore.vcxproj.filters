@@ -65,9 +65,6 @@
     <Filter Include="SOURCE\Core-ext\Animation">
       <UniqueIdentifier>{4378ff49-114b-43ff-b3a2-1554dd1ab3f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\Core-ext\Animation\Set">
-      <UniqueIdentifier>{aa0bd791-7847-4574-9f65-efeec0535168}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SOURCE\Core-ext\Animation\Curve">
       <UniqueIdentifier>{7c1b2269-40b4-4c46-ae01-e48711948c80}</UniqueIdentifier>
     </Filter>
@@ -319,9 +316,6 @@
     <ClInclude Include="source\core-ext\animation\CAnimIK.h">
       <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClInclude>
-    <ClInclude Include="source\core-ext\animation\set\CAnimationSet.h">
-      <Filter>SOURCE\Core-ext\Animation\Set</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\animation\curve\CAnimationCurve.h">
       <Filter>SOURCE\Core-ext\Animation\Curve</Filter>
     </ClInclude>
@@ -470,9 +464,6 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\animation\CAnimActionMixing.cpp">
       <Filter>SOURCE\Core-ext\Animation</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core-ext\animation\set\CAnimationSet.cpp">
-      <Filter>SOURCE\Core-ext\Animation\Set</Filter>
     </ClCompile>
     <ClCompile Include="source\core-ext\math\MathQEF.cpp">
       <Filter>SOURCE\Core-ext\Math</Filter>

@@ -6,7 +6,7 @@
 ItemFloraLifedrop::ItemFloraLifedrop ( void )
 	: CWeaponItem( ItemData() )
 {
-	pModel = new CModel ( string("models/items/flora_lifedrop.FBX") );
+	pModel = new CModel ( "models/items/flora_lifedrop.FBX" );
 
 	holdType = Item::Default;
 }

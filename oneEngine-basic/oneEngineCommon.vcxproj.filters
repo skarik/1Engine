@@ -73,6 +73,9 @@
     <Filter Include="SOURCE\Engine-Common\Scenes\Benchmark">
       <UniqueIdentifier>{9a8dd6d6-59ef-45bb-b0d4-9112e489d151}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Engine-Common\Scenes\Tests">
+      <UniqueIdentifier>{83453048-277d-4507-a849-14a3ef756e50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\engine-common\engine-common.h">
@@ -291,6 +294,9 @@
     <ClInclude Include="source\engine-common\scenes\benchmark\benchmarkMatrices.h">
       <Filter>SOURCE\Engine-Common\Scenes\Benchmark</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\scenes\tests\testStringOperations.h">
+      <Filter>SOURCE\Engine-Common\Scenes\Tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -457,6 +463,9 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\scenes\benchmark\benchmarkMatrices.cpp">
       <Filter>SOURCE\Engine-Common\Scenes\Benchmark</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\scenes\tests\testStringOperations.cpp">
+      <Filter>SOURCE\Engine-Common\Scenes\Tests</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

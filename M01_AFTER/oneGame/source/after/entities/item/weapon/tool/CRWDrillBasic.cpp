@@ -50,7 +50,7 @@ void CRWDrillBasic::Generate ( void )
 	CBaseRandomItem::Generate();
 
 	string drillModel = "models/items/drill_base.FBX";
-	pModel = new CModel( drillModel );
+	pModel = new CModel( drillModel.c_str() );
 }
 
 bool CRWDrillBasic::Use ( int x )

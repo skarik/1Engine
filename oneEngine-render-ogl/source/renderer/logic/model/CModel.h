@@ -9,6 +9,7 @@
 #include "core-ext/types/sHitbox.h"
 
 #include "renderer/logic/CLogicObject.h"
+#include "renderer/types/ModelStructures.h"
 
 
 class CMesh;
@@ -57,9 +58,13 @@ class CModel : public CLogicObject
 {
 public:
 	// Constructor
-	RENDER_API explicit CModel ( const string& sFilename );	// Loads up model file
-	RENDER_API explicit CModel ( CModelData& mdInModelData, string& sModelName );	// Load up model data struct
-	RENDER_API explicit CModel ( void ) : CLogicObject() { // Create empty model
+
+	// Loads up model file
+	RENDER_API explicit CModel ( const char* sFilename );	
+	// Load up model data struct
+	RENDER_API explicit CModel ( CModelData& mdInModelData, const char* sModelName = "_sys_override_" );
+	// Create empty model
+	RENDER_API explicit CModel ( void ) : CLogicObject() {
 		// Clear out uniform lists
 		uniformMapFloat = NULL;
 		uniformMapVect2d = NULL;
@@ -202,7 +207,7 @@ protected:
 	//vector<glMesh*>			vMeshes;
 	//vector<physMesh*>		vPhysMeshes;
 	std::vector<CMesh*>			m_meshes;
-	std::vector<glMesh*>			m_glMeshlist;
+	std::vector<glMesh*>		m_glMeshlist;
 	std::vector<physMesh*>		m_physMeshlist;
 	// Collision data
 	std::vector<sHitbox>			vHitboxes;

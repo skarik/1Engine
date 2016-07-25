@@ -1260,7 +1260,7 @@ void glMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_f
 				modelMatrix = GL.getModelMatrix();
 			}
 			else {
-				modelMatrix = source_object->transform.GetTransformMatrix();
+				modelMatrix = source_object->transform.WorldMatrix();
 			}
 		}
 

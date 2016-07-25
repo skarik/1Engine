@@ -11,7 +11,7 @@ ElectricSourceComponent::ElectricSourceComponent ( BlockTrackInfo const& inInfo 
 	newMat->m_diffuse = Color( 0.6f,0.3f,0.3f );
 	newMat->removeReference();
 
-	m_model = new CModel( string("models\\geosphere.FBX") );
+	m_model = new CModel( "models/geosphere.FBX" );
 	m_model->transform.scale = Vector3d( 0.5f,0.5f,0.5f );
 	m_model->SetMaterial( newMat );
 }

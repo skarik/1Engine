@@ -27,7 +27,7 @@ void glScreenshot::SaveTimestampedToPNG ( void )
 		int count = 0;
 		while ( IO::FileExists( tempfilename ) ) {
 			count += 1;
-			sprintf( tempfilename.data, "%s-%d.png", filename, count );
+			sprintf( tempfilename.data, "%s-%d.png", filename.c_str(), count );
 		}
 		filename = tempfilename;
 	}

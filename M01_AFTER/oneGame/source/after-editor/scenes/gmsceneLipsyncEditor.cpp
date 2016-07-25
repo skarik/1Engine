@@ -224,7 +224,7 @@ void gmsceneLipsyncEditor::LoadScene ( void )
 		tattoo.projection_scale = Vector3d(1,1,1) * 0.83f;
 
 		rstats->tattooList.push_back( tattoo );*/
-		rstats->iTattooCount = rstats->tattooList.size();
+		rstats->iTattooCount = (uint16_t) rstats->tattooList.size();
 	}
 	loadscreen->StepScreen();
 

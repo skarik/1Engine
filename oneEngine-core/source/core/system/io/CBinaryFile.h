@@ -7,23 +7,18 @@
 
 #include <cstdio>
 #include <string>
-using std::string;
-#include "core/types/types.h"
 
 #include <vector>
-//using std::vector;
 #include <algorithm>
-//using std::find;
-
 #include <sys/stat.h>
+#include <thread>
+#include <mutex>
+
+#include "core/types/types.h"
 
 #include "core/math/Vector2d.h"
 #include "core/math/Vector3d.h"
 #include "core/math/Color.h"
-
-//#include "boost/thread.hpp"
-#include <thread>
-#include <mutex>
 
 
 class CBinaryFile
@@ -67,7 +62,7 @@ public:
 	void	WriteUInt64 ( uint64_t );
 	void	WriteFloat ( float );
 	void	WriteDouble ( double );
-	void	WriteString ( const string & );
+	void	WriteString ( const std::string & );
 	void	WriteVector2d ( const Vector2d & );
 	void	WriteVector3d ( const Vector3d & );
 	void	WriteColor ( const Color & );
@@ -86,7 +81,7 @@ public:
 	uint64_t	ReadUInt64 ( void );
 	float	ReadFloat ( void );
 	double	ReadDouble ( void );
-	string	ReadString ( int=0 );
+	std::string	ReadString ( int=0 );
 	Vector2d	ReadVector2d ( void );
 	Vector3d	ReadVector3d ( void );
 	Color	ReadColor ( void );
@@ -99,7 +94,7 @@ protected:
 	int		iOpenmode;
 	bool	bIsOpen;
 	FILE*	pFile;
-	string	sCurrentFileName;
+	std::string	sCurrentFileName;
 	bool	bLocked;
 	bool	bIsStream;
 
@@ -111,7 +106,7 @@ protected:
 		return bHitEoF;
 	}
 
-	static std::vector<string>		v_sOpenFiles;
+	static std::vector<std::string>	v_sOpenFiles;
 	static std::mutex				m_listGuard;
 };
 

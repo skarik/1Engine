@@ -8,7 +8,6 @@
 
 #include "core/math/Vector2d.h"
 #include "core/math/Math.h"
-//#include "core/time.h"
 
 #include <algorithm>
 

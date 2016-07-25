@@ -30,7 +30,7 @@ void CRWSpear::Generate ( void )
 
 
 	string spearModel = "models/weapons/spearst0/basic.FBX";
-	pModel = new CModel( spearModel );
+	pModel = new CModel( spearModel.c_str() );
 
 	base_weapon_stats.damagetype	= DamageType::Slash;
 	base_weapon_stats.reach			= 4.5f;

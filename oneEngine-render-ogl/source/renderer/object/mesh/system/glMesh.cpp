@@ -28,20 +28,20 @@ glMesh::glMesh ( void )
 glMesh::~glMesh ( void )
 {
 	// We gotta free the model
-	FreeVBOData ( );
-	// Based on the ibDataType, we should also free that
-	if ( ibDataType == USERDATA_CSTRING ) //String data
+	FreeVBOData();
+	FreeRAMData();
+	// Free up the used material reference
+	if ( pmMat != NULL )
 	{
-		delete [] ((char*)pbData);
-		pbData = NULL;
-		ibDataType = 0;
-	}
-	// Need to free the material as well
-	if (( pmMat != NULL )) {
-	//if (( pmMat != NULL )&&( pmMat != &GLdefaultMaterial )) {
 		pmMat->removeReference();
 		pmMat = NULL;
-		//delete pmMat;
+	}
+	// Based on the ibDataType, also free that
+	if ( ibDataType == USERDATA_CSTRING ) 
+	{	// String data
+		delete [] ((char*)pbData);
+		pbData = NULL;
+		ibDataType = USERDATA_NONE;
 	}
 }
 
@@ -106,89 +106,89 @@ void glMesh::RecalculateNormals ( void )
 }
 
 // Render the mesh
-void glMesh::Render ( void )
-{
-	// Draw current Mesh
-	// Bind to the buffer objects
-	glBindBuffer( GL_ARRAY_BUFFER,			iVBOverts ); // for vertex coordinates
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER,	iVBOfaces ); // for face vertex indexes
-	
-	// Tell where the vertex coordinates are in the array
-	/*glVertexPointer( 3, GL_FLOAT, sizeof(CModelVertex), 0 ); 
-	glNormalPointer( GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*6) );
-	glTexCoordPointer( 3, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );
-	glMaterial::current->setShaderAttributesDefault();
-	glColorPointer( 4, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );*/
-	// Check if material has been initialized for this fucker.
-	//if ( !glMaterial::current->hasInitializedMeshAttributes() )
-
-	/*glDisableClientState(GL_VERTEX_ARRAY);             // activate vertex coords array
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);*/
-	/*
-	if ( glMaterial::current == NULL ) {
-		throw std::exception();
-	}
-	if ( bShaderSetup == false )
-	{
-		glMaterial::current->initializeMeshAttributes();
-		GL.CheckError();
-		bShaderSetup = true;
-	}
-	else {
-		glMaterial::current->forwardMeshAttributes();
-		GL.CheckError();
-		bShaderSetup = true;
-	}*/
-	throw std::exception("BLEH");
-	/*
-	glVertexPointer( 3, GL_FLOAT, sizeof(CModelVertex), 0 ); 
-	glNormalPointer( GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*6) );
-	glTexCoordPointer( 3, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );
-	glColorPointer( 4, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );
-	*/
-	/*if ( glMaterial::current->useSkinning )
-	{
-		GLint weightLoc, boneLoc;
-		weightLoc = glGetAttribLocation( glMaterial::current->pShader->get_program(),"sys_BoneWeights" );
-		glEnableVertexAttribArray( weightLoc );
-		glVertexAttribPointer( weightLoc, 4, GL_FLOAT, false, sizeof(CModelVertex), ((char*)4) + (sizeof(float)*19) );
-		boneLoc = glGetAttribLocation( glMaterial::current->pShader->get_program(),"sys_BoneIndices" );
-		glEnableVertexAttribArray( boneLoc );
-		glVertexAttribPointer( boneLoc, 4, GL_UNSIGNED_BYTE, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*19) );
-		//cout << unsigned int( pmData[0].vertices[pmData[0].vertexNum-1].bone[3] ) << endl;
-	}*/
-
-	//glDisable(GL_CULL_FACE);
-	
-	// Draw the sutff
-	glDrawElements( GL_TRIANGLES, pmData->triangleNum*3, GL_UNSIGNED_INT, 0 );
-
-	// bind with 0, so, switch back to normal pointer operation
-	glBindBuffer( GL_ARRAY_BUFFER, 0 );
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-
-	//glEnable(GL_CULL_FACE);
-	
-	/*GLd.BeginPrimitive GL_LINES );
-		for ( int i = 0; i < pmData->vertexNum; i += 1 )
-			glVertex3fv( &(pmData->vertices[i].x) );
-	GLd.EndPrimitive();*/
-	//glDisable(GL_CULL_FACE);
-	/*glBegin ( GL_TRIANGLES );
-	for ( unsigned int i = 0; i < pmData->triangleNum; i += 1 )
-		for ( int j = 0; j < 3; j += 1 )
-		{
-			glVertex3fv( &(pmData->vertices[pmData->triangles[i].vert[j]].x) );
-			glNormal3fv( &(pmData->vertices[pmData->triangles[i].vert[j]].nx) );
-			//glTexCoord2fv( &(pmData->vertices[pmData->triangles[i].vert[j]].u) );
-			glTexCoord2fv( &(pmData->vertices[pmData->triangles[i].vert[j]].x) + 3 );
-		}
-	GLd.EndPrimitive();*/
-
-	//cout << pmData->vertices[1].x << " : ";
-}
+//void glMesh::Render ( void )
+//{
+//	// Draw current Mesh
+//	// Bind to the buffer objects
+//	glBindBuffer( GL_ARRAY_BUFFER,			iVBOverts ); // for vertex coordinates
+//	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER,	iVBOfaces ); // for face vertex indexes
+//	
+//	// Tell where the vertex coordinates are in the array
+//	/*glVertexPointer( 3, GL_FLOAT, sizeof(CModelVertex), 0 ); 
+//	glNormalPointer( GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*6) );
+//	glTexCoordPointer( 3, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );
+//	glMaterial::current->setShaderAttributesDefault();
+//	glColorPointer( 4, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );*/
+//	// Check if material has been initialized for this fucker.
+//	//if ( !glMaterial::current->hasInitializedMeshAttributes() )
+//
+//	/*glDisableClientState(GL_VERTEX_ARRAY);             // activate vertex coords array
+//	glDisableClientState(GL_NORMAL_ARRAY);
+//	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+//	glDisableClientState(GL_COLOR_ARRAY);*/
+//	/*
+//	if ( glMaterial::current == NULL ) {
+//		throw std::exception();
+//	}
+//	if ( bShaderSetup == false )
+//	{
+//		glMaterial::current->initializeMeshAttributes();
+//		GL.CheckError();
+//		bShaderSetup = true;
+//	}
+//	else {
+//		glMaterial::current->forwardMeshAttributes();
+//		GL.CheckError();
+//		bShaderSetup = true;
+//	}*/
+//	throw std::exception("BLEH");
+//	/*
+//	glVertexPointer( 3, GL_FLOAT, sizeof(CModelVertex), 0 ); 
+//	glNormalPointer( GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*6) );
+//	glTexCoordPointer( 3, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );
+//	glColorPointer( 4, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );
+//	*/
+//	/*if ( glMaterial::current->useSkinning )
+//	{
+//		GLint weightLoc, boneLoc;
+//		weightLoc = glGetAttribLocation( glMaterial::current->pShader->get_program(),"sys_BoneWeights" );
+//		glEnableVertexAttribArray( weightLoc );
+//		glVertexAttribPointer( weightLoc, 4, GL_FLOAT, false, sizeof(CModelVertex), ((char*)4) + (sizeof(float)*19) );
+//		boneLoc = glGetAttribLocation( glMaterial::current->pShader->get_program(),"sys_BoneIndices" );
+//		glEnableVertexAttribArray( boneLoc );
+//		glVertexAttribPointer( boneLoc, 4, GL_UNSIGNED_BYTE, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*19) );
+//		//cout << unsigned int( pmData[0].vertices[pmData[0].vertexNum-1].bone[3] ) << endl;
+//	}*/
+//
+//	//glDisable(GL_CULL_FACE);
+//	
+//	// Draw the sutff
+//	glDrawElements( GL_TRIANGLES, pmData->triangleNum*3, GL_UNSIGNED_INT, 0 );
+//
+//	// bind with 0, so, switch back to normal pointer operation
+//	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+//	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+//
+//	//glEnable(GL_CULL_FACE);
+//	
+//	/*GLd.BeginPrimitive GL_LINES );
+//		for ( int i = 0; i < pmData->vertexNum; i += 1 )
+//			glVertex3fv( &(pmData->vertices[i].x) );
+//	GLd.EndPrimitive();*/
+//	//glDisable(GL_CULL_FACE);
+//	/*glBegin ( GL_TRIANGLES );
+//	for ( unsigned int i = 0; i < pmData->triangleNum; i += 1 )
+//		for ( int j = 0; j < 3; j += 1 )
+//		{
+//			glVertex3fv( &(pmData->vertices[pmData->triangles[i].vert[j]].x) );
+//			glNormal3fv( &(pmData->vertices[pmData->triangles[i].vert[j]].nx) );
+//			//glTexCoord2fv( &(pmData->vertices[pmData->triangles[i].vert[j]].u) );
+//			glTexCoord2fv( &(pmData->vertices[pmData->triangles[i].vert[j]].x) + 3 );
+//		}
+//	GLd.EndPrimitive();*/
+//
+//	//cout << pmData->vertices[1].x << " : ";
+//}
 
 // == Private Routines ==
 void glMesh::FreeVBOData ( void )
@@ -205,21 +205,32 @@ void glMesh::FreeVBOData ( void )
 		if ( iVBOfaces )
 			glDeleteBuffers( 1, &iVBOfaces );
 		iVBOfaces = 0;
+	}
+	// Otherwise, do nothing really
+}
 
+void glMesh::FreeRAMData ( void )
+{
+	if ( pmData != NULL )
+	{
+		// Delete the data
 		for ( unsigned int i = 0; i < meshNum; i += 1 )
 		{
 			delete [] pmData[i].triangles;
 			delete [] pmData[i].vertices;
-
 		}
+
+		// Delete the mesh containers
 		if ( meshNum == 1 )
 			delete pmData;
 		else if ( meshNum > 1 )
 			delete [] pmData;
 
+		// Set final result
+		pmData = NULL;
 	}
-	// Otherwise, do nothing really
 }
+
 
 // Recalculate Normals
 void glMesh::RecalculateNormals ( CModelData* modelData )

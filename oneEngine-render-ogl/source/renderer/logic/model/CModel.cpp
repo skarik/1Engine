@@ -14,7 +14,7 @@
 using namespace std;
 
 // Constructor, taking model object
-CModel::CModel ( const string& sFilename )
+CModel::CModel ( const char* sFilename )
 	: CLogicObject()
 {
 	// Create filename
@@ -50,9 +50,20 @@ CModel::CModel ( const string& sFilename )
 	eRefMode = ANIM_REF_NONE;
 
 	// First look for the model in the model master
-	const vector<glMesh*> * pMeshSetReference = ModelMaster.GetReference( myModelFilename );
+	//const vector<glMesh*> * pMeshSetReference = ModelMaster.GetReference( myModelFilename );
+	auto t_meshSet = RenderResources::Active()->GetMesh( myModelFilename.c_str() );
 	// If there's no reference, then load it
-	if ( pMeshSetReference == NULL )
+	if ( t_meshSet == NULL )
+	{
+		LoadModel( myModelFilename );
+		t_meshSet = RenderResources::Active()->GetMesh( myModelFilename.c_str() );
+	}
+	if ( t_meshSet )
+	{
+		m_glMeshlist = *t_meshSet;	// Copy the meshes to local list
+		Debug::Console->PrintMessage( " +Has mesh set\n" );
+	}
+	/*if ( pMeshSetReference == NULL )
 	{
 		LoadModel( myModelFilename );
 		// We don't want to use the animation reference we just created, so we make another
@@ -78,7 +89,7 @@ CModel::CModel ( const string& sFilename )
 	}
 	// Add to the reference of the model
 	ModelMaster.AddReference( myModelFilename, m_glMeshlist, vHitboxes );
-	ModelMaster.AddReference( myModelFilename, m_physMeshlist );
+	ModelMaster.AddReference( myModelFilename, m_physMeshlist );*/
 	
 	// Create mesh list
 	for ( uint i = 0; i < m_glMeshlist.size(); ++i ) 
@@ -117,7 +128,7 @@ CModel::CModel ( const string& sFilename )
 }
 
 // Constructor, taking model info struct (nice for procedural generation)
-CModel::CModel ( CModelData& mdInModelData, string& sModelName )
+CModel::CModel ( CModelData& mdInModelData, const char* sModelName )
 	: CLogicObject()
 {
 	// Start out setting the model name
@@ -141,9 +152,10 @@ CModel::CModel ( CModelData& mdInModelData, string& sModelName )
 	//visible = false;
 
 	// First look for the model in the model master
-	const vector<glMesh*> * pMeshSetReference = ModelMaster.GetReference( sModelName );
+	//const vector<glMesh*> * pMeshSetReference = ModelMaster.GetReference( sModelName );
+	auto t_meshSet = RenderResources::Active()->GetMesh( myModelFilename.c_str() );
 	// If there's no reference, then load it
-	if (( pMeshSetReference == NULL )||( sModelName == "_sys_override_" ))
+	if ( t_meshSet == NULL || myModelFilename == "_sys_override_" )
 	{
 		CModelData* mdModelData = new CModelData();
 		(*mdModelData) = mdInModelData;
@@ -154,35 +166,31 @@ CModel::CModel ( CModelData& mdInModelData, string& sModelName )
 
 		// Put the mesh into the render list
 		m_glMeshlist.push_back( newMesh );
-
-		// Create the new mesh with the physics data
-		/*physMesh* newPhysMesh = new physMesh ();
-		newPhysMesh->Initialize( newPhysData );
-
-		// Put the mesh into the collide list
-		vPhysMeshes.push_back( newPhysMesh );*/
 		
 		// Create a new name
 		if ( sModelName == "_sys_override_" )
 		{
 			char t_newName [64];
-			sprintf( t_newName, "_sys_override_%x", (unsigned int)this );
-			sModelName = t_newName;
+			sprintf( t_newName, "_sys_override_%x", (uint32_t)(this) );
+			myModelFilename = t_newName;
 		}
+
+		Debug::Console->PrintMessage( " +Adding data for procedural mesh...\n" );
+		Debug::Console->PrintMessage( " +Has mesh set\n" );
 	}
 	else // If there is a reference, copy the data
 	{
-		m_glMeshlist = *pMeshSetReference;
+		m_glMeshlist = *t_meshSet;	// Copy the meshes to local list
+		Debug::Console->PrintMessage( " +Has mesh set\n" );
 	}
-
 	
 	// Add to the reference of the model
-	ModelMaster.AddReference( sModelName, m_glMeshlist, vHitboxes );
+	/*ModelMaster.AddReference( sModelName, m_glMeshlist, vHitboxes );
 	ModelMaster.AddReference( sModelName, m_physMeshlist );
 
 	// Add animation reference
 	CAnimation* pAnimSetReference = ModelMaster.GetAnimationReference( sModelName );
-	ModelMaster.AddReference( sModelName, pAnimSetReference );
+	ModelMaster.AddReference( sModelName, pAnimSetReference );*/
 
 	// Create mesh list
 	for ( uint i = 0; i < m_glMeshlist.size(); ++i ) 
@@ -225,12 +233,14 @@ CModel::~CModel ( void )
 	}
 	m_meshes.clear();
 
-	ModelMaster.RemoveReference( myModelFilename );
-	ModelMaster.RemovePhysReference( myModelFilename );
+	if ( !m_glMeshlist.empty() )
+		RenderResources::Active()->ReleaseMeshSet( myModelFilename.c_str() );
+	//ModelMaster.RemoveReference( myModelFilename );
+	//ModelMaster.RemovePhysReference( myModelFilename );
 	// TODO delete materials with no reference
 
 	// Free animation reference
-	ModelMaster.RemoveAnimSetReference( myModelFilename );
+	/*ModelMaster.RemoveAnimSetReference( myModelFilename );*/
 	if ( pMyAnimation != NULL )
 		delete pMyAnimation;
 	pMyAnimation = NULL;

@@ -68,13 +68,25 @@ public:
 
 	CORE_API CTransform * GetParent ( void );
 
-	CORE_API Matrix4x4 GetTransformMatrix ( void );
 	//Matrix4x4 GetTransformMatrixNoScale ( void );
-	CORE_API Matrix4x4 GetTransformMatrixRot ( void );
-
-	CORE_API Matrix4x4 GetLocalTransformMatrix ( void );
 	//Matrix4x4 GetLocalTransformMatrixNoScale ( void );
-	CORE_API Matrix4x4 GetLocalTransformMatrixRot ( void );
+
+	Matrix4x4 CTransform::WorldMatrix ( void )
+	{
+		return matx;
+	}
+	Matrix4x4 CTransform::WorldRotation ( void )
+	{
+		return matxRot;
+	}
+	Matrix4x4 CTransform::LocalMatrix ( void )
+	{
+		return matxLocal;
+	}
+	Matrix4x4 CTransform::LocalRotation ( void )
+	{
+		return matxLocalRot;
+	}
 
 public:
 	//void Update ( void ) {};
@@ -97,13 +109,14 @@ public:
 	CORE_API CTransform* FindChildBoneRecursive ( const string& );
 
 private:
+	// Transformation
 	ALIGNAS(64) Matrix4x4	matx;
 	ALIGNAS(64) Matrix4x4	matxLocal;
-
+	// Rotation
 	ALIGNAS(64) Matrix4x4	matxRot;
 	ALIGNAS(64) Matrix4x4	matxLocalRot;
 
-	// Todo: move to matrix, add quaternion representations
+	// TODO: move to matrix, add quaternion representations
 
 public:
 	string name;
@@ -122,10 +135,10 @@ public:
 	Vector3d scale;
 	Rotator  rotation;
 
-	Vector3d pposition;
-	Vector3d pscale;
-	Rotator  protation;
+private:
+	XrTransform previous;
 
+public:
 	Vector3d localPosition;
 	Vector3d localScale;
 	Rotator localRotation;

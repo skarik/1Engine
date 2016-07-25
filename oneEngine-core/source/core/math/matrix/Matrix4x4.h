@@ -83,6 +83,6 @@ public:
 
 // Ensure it's aligned
 static_assert(sizeof(Matrix4x4)==64,"Invalid alignment for Matrix4x4");
-static_assert(std::alignment_of<Matrix4x4>::value == 64, "Alignment of MyStructure must be 64");
+//static_assert(std::alignment_of<Matrix4x4>::value == 64, "Alignment of Matrix4x4 must be 64");
 
 #endif//_MATRIX_4_4_H_

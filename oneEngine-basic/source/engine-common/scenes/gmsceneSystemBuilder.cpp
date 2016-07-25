@@ -212,8 +212,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 						// Make sure it's a valid folder name
 						if ( rpath->path().string().find(".svn") == string::npos )
 						{
-							printf( "found buildable folder: %s\n", rpath->path().filename().c_str() );
-							//printf( "found buildable folder: %s\n", rpath->path().string().c_str() );
+							printf( "found buildable folder: %s\n", rpath->path().filename().u8string().c_str() );
 							fs::path new_resource_path ( build_path.string() + "/" + rpath->path().string() );
 							fs::create_directories( new_resource_path );
 						}

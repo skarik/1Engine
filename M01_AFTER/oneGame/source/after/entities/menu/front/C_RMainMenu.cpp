@@ -750,7 +750,7 @@ C_RMainMenu::eMenuState	C_RMainMenu::stateRealmSelect ( void )
 
 	// Create planetoid
 	if ( tRealmSelect.main_planetoid == NULL ) {
-		tRealmSelect.main_planetoid = new CModel ( string("models/smoothsphere.FBX") );
+		tRealmSelect.main_planetoid = new CModel ( "models/smoothsphere.FBX" );
 		tRealmSelect.main_planetoid->transform.scale = Vector3d(1,1,1) * 800;
 
 		glMaterial* skymat = new glMaterial();

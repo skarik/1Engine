@@ -8,6 +8,7 @@
 // Include vertex data
 #include "core/types/ModelData.h"
 #include "renderer/types/types.h"
+#include "renderer/types/ModelStructures.h"
 // Include the OpenGL library
 //#include "glMainSystem.h"
 
@@ -38,14 +39,16 @@ public:
 	void			SmoothNormals ( float val );
 
 	// Render the mesh out
-	virtual void	Render ( void );
+	//virtual void	Render ( void );
 
 	// Getters of R-O data
 	const string&	GetName ( void ) const;
 
 protected:
-	// Frees up the data used by the object
+	// Frees up the GPU data used by the object
 	void			FreeVBOData ( void );
+	// Frees up the RAM data used by the object
+	void			FreeRAMData ( void );
 	// Recalculates the normals per-triangle.
 	void			RecalculateNormals ( CModelData* modelData );
 	// Sets things to the VBO's again

@@ -778,7 +778,7 @@ void		glDrawing::DrawRectangleATex ( float x, float y, float w, float h, float t
 }
 
 // Draw an pixel rectangle
-void		glDrawing::DrawRectangle( int x, int y, int w, int h )
+void		glDrawing::DrawRectangle( float x, float y, float w, float h )
 {
 	GL_ACCESS GLd_ACCESS
 	if ( iPrim2DDrawMode == D2D_WIRE )
@@ -814,7 +814,7 @@ void		glDrawing::DrawRectangle( int x, int y, int w, int h )
 void		glDrawing::DrawCircleA ( float x, float y, float r )
 {
 	GL_ACCESS GLd_ACCESS
-	char segs = std::min<int>( std::max<int>( 4, (int)(r*64) + 3 ), 64 );
+	uint16_t segs = (uint16_t)std::min<float>( std::max<float>( 4, r*64 + 3 ), 64 );
 	GLd.BeginPrimitive( GL_LINE_STRIP );
 	float percent;
 	float dx, dy, dr;
@@ -829,29 +829,29 @@ void		glDrawing::DrawCircleA ( float x, float y, float r )
 	else if ( iPrim2DScalMode == SCALE_HEIGHT ) {
 		dr = r*Screen::Info.height;
 	}
-	for ( char i = 0; i <= segs; i++ )
+	for ( uint16_t i = 0; i <= segs; i++ )
 	{
 		percent = ((i/(float)(segs))*360.0f);
 		GLd.P_AddVertex(
-			GLfloat( dx + cos( degtorad( percent ) )*dr ),
-			GLfloat( dy + sin( degtorad( percent ) )*dr ) );
+			Real( dx + cos( degtorad( percent ) )*dr ),
+			Real( dy + sin( degtorad( percent ) )*dr ) );
 	}
 	GLd.EndPrimitive();
 }
 // Draw a pixel circle
-void		glDrawing::DrawCircle ( int x, int y, int r )
+void		glDrawing::DrawCircle ( float x, float y, float r )
 {
 	GL_ACCESS GLd_ACCESS
 
-	char segs = std::min<int>( std::max<int>( 4, (int)(r*2) + 3 ), 64 );
+	uint16_t segs = (uint16_t)std::min<float>( std::max<float>( 4, r*2 + 3 ), 64 );
 	GLd.BeginPrimitive( GL_LINE_STRIP );
 	float percent;
-	for ( char i = 0; i <= segs; i++ )
+	for ( uint16_t i = 0; i <= segs; i++ )
 	{
 		percent = ((i/(float)(segs))*360.0f);
 		GLd.P_AddVertex(
-			GLfloat( x + cos( degtorad( percent ) )*r ),
-			GLfloat( y + sin( degtorad( percent ) )*r ) );
+			Real( x + cos( degtorad( percent ) )*r ),
+			Real( y + sin( degtorad( percent ) )*r ) );
 	}
 	GLd.EndPrimitive();
 }
@@ -867,7 +867,7 @@ void		glDrawing::DrawLineA ( float x1, float y1, float x2, float y2 )
 	GLd.EndPrimitive();
 }
 // Draw a pixel line
-void		glDrawing::DrawLine ( int x1, int y1, int x2, int y2 )
+void		glDrawing::DrawLine ( float x1, float y1, float x2, float y2 )
 {
 	GL_ACCESS GLd_ACCESS
 	GLd.BeginPrimitive( GL_LINE_STRIP );

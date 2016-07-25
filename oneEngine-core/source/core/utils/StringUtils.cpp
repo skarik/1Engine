@@ -147,6 +147,46 @@ namespace StringUtils
 		return result;
 	}
 
+	size_t LargestCommonSubstringLength(const string& str1, const string& str2)
+	{
+		// Make sure str1 is smaller
+		string s1 = str1;
+		string s2 = str2;
+		if ( s1.length() > s2.length() )
+		{
+			std::swap( s1, s2 );
+		}
+
+		// Loop through str2
+		size_t maxsize, checksize, checklen;
+		maxsize = 0;
+		for ( size_t j = 0; j < s2.length(); ++j )
+		{
+			checksize = 0;
+			checklen = std::min( s1.length(), s2.length() - j );
+
+			if ( maxsize >= checklen )
+			{
+				return maxsize;
+			}
+
+			for ( size_t i = 0; i < checklen; ++i )
+			{
+				if ( s1[i] == s2[i+j] )
+				{
+					checksize += 1;
+				}
+				else
+				{
+					maxsize = std::max( maxsize, checksize );
+					checksize = 0;
+				}
+			}
+			maxsize = std::max( maxsize, checksize );
+		}
+		return maxsize;
+	}
+
 
 	//template<typename object>
 	//object					ToObject ( const char* t )

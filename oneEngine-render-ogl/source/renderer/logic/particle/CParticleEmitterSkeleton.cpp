@@ -51,13 +51,14 @@ void CParticleEmitterSkeleton::RemoveBone ( skeletonBone_t* n_bone, CSkinnedMode
 void CParticleEmitterSkeleton::AddSkeleton ( const CSkinnedModel* n_model )
 {
 	// Grab the model to use
-	CSkinnedModel* model = (CSkinnedModel*)n_model;
+	/*CSkinnedModel* model = (CSkinnedModel*)n_model;
 	std::vector<skeletonBone_t*>* skellyList = model->GetSkeletonList();
 	// LOop through the mesh's skeleton, and add it to the emit list
 	for ( auto it = skellyList->begin(); it != skellyList->end(); ++it )
 	{
 		AddBone( *it, model );
-	}
+	}*/
+	throw Core::NotYetImplementedException();
 }
 
 

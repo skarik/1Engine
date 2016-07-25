@@ -12,11 +12,11 @@
 // File Includes
 #include "core/types/types.h"
 #include "core/containers/arstring.h"
+#include "core/system/io/CBufferIO.h"
 
 #include <algorithm>
 #include <vector>
 #include <string>
-using std::string;
 
 // Class Definition
 class CSegmentedFile
@@ -34,31 +34,34 @@ private:
 	void CheckExists ( void );
 
 	bool FindSegmentStart ( FILE* );
-	string sCurrentData;
+	std::string sCurrentData;
 
 	//void GetSegmentData ( FILE* );
 	//bool AtSegmentEnd ( void );
 
 public:
 	// ==Data Accessors==
+	
 	// Get the desired string stream
-	//  Returns false if the section can't be found
-	bool GetSectionData ( const std::string& sSection, string& sOutString );
+	// Returns false if the section can't be found
+	bool GetSectionData ( const std::string& sSection, std::string& sOutString );
+
+	// Returns a stream to the section.
+	// Returns invalid CBufferIO object if section cannot be found.
+	CBufferIO GetSectionStream ( const std::string& sSection, const size_t iMaxSize = 0 );
 
 	// ==Data Writing==
+
 	// Writes out the current data
 	bool WriteData ( void );
 	// Writes a new sector with the target name and containing the target data
-	void WriteSector ( string& name, string& data, bool bAppend=false );
-	// 
+	void WriteSector ( std::string& name, std::string& data, bool bAppend=false );
 
 private:
-	string					sFilename;
-	bool					bValidFile;
-	FILE*					fp_output;
-	//vector<string*>			vpsTitleList;
-	//vector<stringstream*>	vpssDataList;
-	//vector<string*>			vpsDataList;
+	std::string					sFilename;
+	bool						bValidFile;
+	FILE*						fp_output;
+	
 	std::vector<arstring<256>>	vsSectorNames;
 	std::vector<int32_t>		viSectorPositions;
 };

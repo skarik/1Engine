@@ -18,7 +18,7 @@ public:
 	CModelVertex*	vertexData;
 
 public:
-	CModelVertex*	GetMorphData ( const unsigned int nMorphId );
+	const CModelVertex*	GetMorphData ( const unsigned int nMorphId ) const;
 
 	unsigned int	mVertexCount;
 	unsigned int	mMorphCount;

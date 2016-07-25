@@ -20,7 +20,7 @@ void CRWHoe::Generate ( void )
 
 	
 	string pickModel = "models/items/pickaxe_su_shitty.FBX";
-	pModel = new CModel( pickModel );
+	pModel = new CModel( pickModel.c_str() );
 
 
 	base_weapon_stats.damagetype	= DamageType::Slash;

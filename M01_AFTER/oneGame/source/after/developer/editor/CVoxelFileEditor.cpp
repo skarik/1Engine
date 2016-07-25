@@ -603,7 +603,8 @@ void CVoxelFileEditor::DoLoad ( void )
 			for ( int x = 0; x < image_size.x; ++x ) {
 				for ( int y = 0; y < image_size.y; ++y ) {
 					for ( int z = 0; z < image_size.z; ++z ) {
-						uchar i,j; short k;
+						//uchar i,j;
+						short k;
 						//LinearIndexToOctreeIndex( (char)x,(char)y,(char)z, i,j,k );
 						k = Terrain::Indexing::XyzToLinear( (char)x,(char)y,(char)z );
 						//m_boob->data[i].data[j].data[k] = linearBuffer[x + (y*image_size.x) + (z*image_size.x*image_size.y)];
@@ -670,7 +671,8 @@ void CVoxelFileEditor::DoSave ( void )
 			for ( int x = 0; x < obj_size.x; ++x ) {
 				for ( int y = 0; y < obj_size.y; ++y ) {
 					for ( int z = 0; z < obj_size.z; ++z ) {
-						uchar i,j; short k;
+						//uchar i,j;
+						short k;
 						//LinearIndexToOctreeIndex( (char)(x+obj_position.x),(char)(y+obj_position.y),(char)(z+obj_position.z), i,j,k );
 						k = Terrain::Indexing::XyzToLinear( (char)(x+obj_position.x),(char)(y+obj_position.y),(char)(z+obj_position.z) );
 						//linearBuffer[x + (y*obj_size.x) + (z*obj_size.x*obj_size.y)] = m_boob->data[i].data[j].data[k];
@@ -724,8 +726,10 @@ void CVoxelFileEditor::Center ( void )
 	uchar x,y,z;
 	uchar sx,sy,sz;
 	uchar tx,ty,tz;
-	uchar si, sj; short sk;
-	uchar ti, tj; short tk;
+	//uchar si, sj;
+	short sk;
+	//uchar ti, tj;
+	short tk;
 	for ( x = 0; x < obj_size.x; ++x ) {
 		sx = x+obj_position.x;
 		tx = sx+obj_offset.x;
@@ -757,8 +761,8 @@ void CVoxelFileEditor::Center ( void )
 // Calculates the size of the mesh
 void CVoxelFileEditor::GetSize ( RangeVector& noutSize )
 {
-	uchar i,j;
-	short k;
+	//uchar i,j;
+	//short k;
 	char x,y,z;
 
 	char minx=-1, miny=-1, minz=-1;
@@ -812,8 +816,8 @@ void CVoxelFileEditor::GetSize ( RangeVector& noutSize )
 // Gets the minimum position of the mesh
 void CVoxelFileEditor::GetPosition ( RangeVector& noutPosition )
 {
-	uchar i,j;
-	short k;
+	//uchar i,j;
+	//short k;
 	char x,y,z;
 
 	char minx=-1, miny=-1, minz=-1;

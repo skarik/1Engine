@@ -1,7 +1,5 @@
 // Includes
-//#include "core/time/time.h"
 #include "CAnimation.h"
-//#include "CModelMaster.h"
 #include "core/utils/StringUtils.h"
 
 using std::cout;
@@ -13,50 +11,48 @@ const bool			CAnimation::useHavok = true;
 
 CAnimAction			CAnimation::deadAction ( "" );
 
-// Constructors
-CAnimation::CAnimation ( string const& sInFilename, CAnimation* pFoundReference )
+// Class static listing
+std::vector<CAnimation*>	CAnimation::_AnimationInstances;
+// Exported instance list
+const std::vector<CAnimation*>& CAnimation::Instances ( void )
 {
-	pAnimationSet = NULL;
-	sFilename = sInFilename;
-	//pAnimationSet = ModelMaster.GetAnimationReference( sFilename );
-	// Grab reference
-	//CAnimation* pFoundReference = ModelMaster.GetAnimationReference( sFilename ); // this should go elsewhere!
+	return _AnimationInstances;
+}
+
+// Constructors
+CAnimation::CAnimation ( const Animation::Skeleton& n_skeleton )
+	: bIsValid(false), bEventsRead(false)
+{
+	skeleton = n_skeleton;
+	bIsValid = true;
+
+	_AnimationInstances.push_back(this);
+}
+CAnimation::CAnimation ( CAnimation* pFoundReference )
+	: bIsValid(false), bEventsRead(false)
+{
 	if ( pFoundReference != NULL )
 	{
 		// Copy the needed data
 		(*this) = pFoundReference;
 		// Is valid
 		bIsValid = true;
-
-		//ModelMaster.AddReference( sFilename, this );
 	}
 	else
 	{
-		//cout << "Warning: invalid animation reference...prepare for a clusterfuck." << endl;
-		bIsValid = false;
-
-		//throw Core::InvalidArgumentException();
+		throw Core::InvalidArgumentException();
 	}
 
-	bEventsRead = false;
-}
-CAnimation::CAnimation ( string const& sInFilename, CAnimationSet* pInSet )
-{
-	pAnimationSet = pInSet;
-	sFilename = sInFilename;
-	//ModelMaster.AddReference( sFilename, pAnimationSet );
-	//ModelMaster.AddReference( sFilename, this );
+	_AnimationInstances.push_back(this);
 }
 
 // Destructor
 CAnimation::~CAnimation ( void )
 {
-	//if ( bIsValid )
-	//	ModelMaster.RemoveAnimSetReference( sFilename );
+	_AnimationInstances.erase( std::find(_AnimationInstances.begin(), _AnimationInstances.end(), this ) );
 }
 
-// Add action
-void CAnimation::AddAction ( CAnimAction newAction )
+void CAnimation::AddAction ( CAnimAction& newAction )
 {
 	mAnimations[newAction.GetName()] = newAction;
 	//cout << "Anim: " << newAction.actionName << " S: " << newAction.start << " E: " << newAction.end << " L: " << newAction.loop << endl;
@@ -74,8 +70,11 @@ CAnimation& CAnimation::operator= ( CAnimation* pRight )
 // Copy from existing refernece
 CAnimation&	CAnimation::operator= ( CAnimation const& sourceAnimRef )
 {
+	// Copy the skeleton
+	skeleton = sourceAnimRef.skeleton;
 	// Copy the animation set
-	pAnimationSet = sourceAnimRef.pAnimationSet;
+	sampleSource = sourceAnimRef.sampleSource;
+	sampleMappingTrack = sourceAnimRef.sampleMappingTrack;
 	// Copy the action map
 	mAnimations = sourceAnimRef.mAnimations;
 	// Set all of the animation actions' owners to this, and reset them all
@@ -86,7 +85,7 @@ CAnimation&	CAnimation::operator= ( CAnimation const& sourceAnimRef )
 	}
 	// Set the first action to active
 	if ( !mAnimations.empty() ) {
-		mAnimations.begin()->second.Play();
+		mAnimations.begin()->second.Play(0.01F);
 	}
 	// Copy the IK list
 	ikList = sourceAnimRef.ikList;
@@ -248,9 +247,30 @@ ikinfo_t& CAnimation::GetIKInfo ( const string& chainName )
 
 
 // Copy reference list
-void CAnimation::AssignReferenceList ( std::vector<void*> const& newRef )
+bool CAnimation::AddOutput ( Animation::Skeleton* output )
 {
-	animRefs = newRef;
+	Animation::BoneMapper mapping;
+	Animation::BoneMapper::CreateFromNameMatching( skeleton, *output, mapping, false );
+	return AddOutput( output, mapping );
+}
+bool CAnimation::AddOutput ( Animation::Skeleton* output, Animation::BoneMapper& manual_mapping )
+{
+	// Search for existing entry
+	for ( auto output_itr = vOutputs.begin(); output_itr != vOutputs.end(); ++output_itr )
+	{
+		if ( output == output_itr->target )
+		{
+			throw Core::InvalidCallException();
+			return false;
+		}
+	}
+	// Add entry otherwise
+	output_t entry;
+	entry.mapping = manual_mapping;
+	entry.target = output;
+	vOutputs.push_back( entry );
+	// Success
+	return true;
 }
 
 // Update
@@ -301,7 +321,8 @@ void CAnimation::Update ( const Real deltaTime )
 				// And only sample if the weight is larger than zero
 				if ( currentAction.weight > 0.001f )
 				{
-					currentAction.Sample( pAnimationSet, animRefs );
+					//currentAction.Sample( pAnimationSet, skeleton.animation_xpose );
+					throw Core::NotYetImplementedException();
 				}
 			}
 
@@ -311,8 +332,8 @@ void CAnimation::Update ( const Real deltaTime )
 	}
 
 	// Now export all the animations
-	pAnimationSet->Export( animRefs );
-
+	//pAnimationSet->Export( animRefs ); // Fuck this, TODO later
+	// TODO: Make animation system more general
 }
 
 

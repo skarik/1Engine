@@ -60,6 +60,7 @@
     <ClInclude Include="source\physical\physics\water\Water.h" />
     <ClInclude Include="source\physical\physics\wind\CPhysWindBase.h" />
     <ClInclude Include="source\physical\physics\wind\Wind.h" />
+    <ClInclude Include="source\physical\resource\ResourceManager.h" />
     <ClInclude Include="source\physical\skeleton\skeletonBone.h" />
     <ClInclude Include="source\physical\system\Layers.h" />
   </ItemGroup>
@@ -83,6 +84,7 @@
     <ClCompile Include="source\physical\physics\water\Water.cpp" />
     <ClCompile Include="source\physical\physics\wind\CPhysWindBase.cpp" />
     <ClCompile Include="source\physical\physics\wind\Wind.cpp" />
+    <ClCompile Include="source\physical\resource\ResourceManager.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4FDB8ACD-7078-4806-B6B0-04C5351F3F87}</ProjectGuid>
@@ -136,7 +138,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -145,7 +147,7 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
-    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>

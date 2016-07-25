@@ -30,12 +30,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core-ext\animation\CAnimation.cpp" />
+    <ClCompile Include="source\core-ext\animation\BoneMapper.cpp" />
+    <ClCompile Include="source\core-ext\animation\set\CAnimationSet.cpp" />
+    <ClCompile Include="source\core-ext\animation\Skeleton.cpp" />
     <ClCompile Include="source\core-ext\input\CInputControl.cpp" />
     <ClCompile Include="source\core-ext\profiler\CTimeProfiler.cpp" />
+    <ClCompile Include="source\core-ext\system\io\assets\ModelLoader.cpp" />
     <ClCompile Include="source\core-ext\system\io\FileUtils.cpp" />
-    <ClCompile Include="source\core-ext\system\io\resources.cpp" />
+    <ClCompile Include="source\core-ext\system\io\Resources.cpp" />
     <ClCompile Include="source\core-ext\threads\Jobs.cpp" />
     <ClCompile Include="source\core-ext\transform\CTransform.cpp" />
+    <ClCompile Include="source\core-ext\transform\TransformUtility.cpp" />
     <ClCompile Include="source\core\debug\CDebugConsole.cpp" />
     <ClCompile Include="source\core\input\CInput.cpp" />
     <ClCompile Include="source\core\input\CInputTable.cpp" />
@@ -50,13 +55,20 @@
   <ItemGroup>
     <ClInclude Include="source\core-ext\animation\CAnimation.h" />
     <ClInclude Include="source\core-ext\animation\CAnimationCommon.h" />
+    <ClInclude Include="source\core-ext\animation\BoneMapper.h" />
+    <ClInclude Include="source\core-ext\animation\set\CAnimationSet.h" />
+    <ClInclude Include="source\core-ext\animation\Skeleton.h" />
     <ClInclude Include="source\core-ext\input\CInputControl.h" />
     <ClInclude Include="source\core-ext\input\emulated\CEmulatedInputControl.h" />
     <ClInclude Include="source\core-ext\profiler\CTimeProfiler.h" />
+    <ClInclude Include="source\core-ext\system\io\assets\ResourceAnimLoader.h" />
+    <ClInclude Include="source\core-ext\system\io\assets\ResourceHandler.h" />
+    <ClInclude Include="source\core-ext\system\io\assets\ModelLoader.h" />
     <ClInclude Include="source\core-ext\system\io\FileUtils.h" />
-    <ClInclude Include="source\core-ext\system\io\resources.h" />
+    <ClInclude Include="source\core-ext\system\io\Resources.h" />
     <ClInclude Include="source\core-ext\threads\Jobs.h" />
     <ClInclude Include="source\core-ext\transform\CTransform.h" />
+    <ClInclude Include="source\core-ext\transform\TransformUtility.h" />
     <ClInclude Include="source\core\debug\CDebugConsole.h" />
     <ClInclude Include="source\core\debug\console.h" />
     <ClInclude Include="source\core\input\CInput.h" />
@@ -91,7 +103,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
@@ -119,7 +131,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -128,7 +140,7 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
-    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>

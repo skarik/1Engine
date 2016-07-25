@@ -117,7 +117,7 @@ void RobotAutomaton::OnDeath ( Damage const& dmg )
 			anim->Play( "bite" );
 			return true;
 		}*/
-		death->end_behavior = 1;
+		death->end_behavior = CAnimAction::END_HOLD_END;
 		death->layer = 6;
 		anim->Play( "death" );
 	}
