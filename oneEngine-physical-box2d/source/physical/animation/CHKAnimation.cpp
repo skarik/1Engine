@@ -79,43 +79,6 @@ private:
 	Real delta;
 };
 
-// Sets the active skeleton for this animation instance
-void CHKAnimation::SetSkeleton( skeletonBone_t* rootBone, std::vector<skeletonBone_t*> &vModelSkelly )
-{
-	throw Core::NotYetImplementedException();
-	//// First, create the skeleton
-
-	//mSkelly = new hkaSkeleton;
-	////mSkelly->m_referenceCount = vModelSkelly.size();
-	//mSkelly->m_referencePose.setSize( vModelSkelly.size() );
-	//mSkelly->m_parentIndices.setSize( vModelSkelly.size() );
-	//mSkelly->m_bones.setSize( vModelSkelly.size() );
-
-	//XTransform* temp;
-	//for ( uint i = 0; i < vModelSkelly.size(); ++i )
-	//{
-	//	temp = &(vModelSkelly[i]->xBindPose);
-	//	mSkelly->m_referencePose[i] = hkQsTransform(
-	//		hkVector4( temp->position.x, temp->position.y, temp->position.z ),
-	//		hkQuaternion( temp->rotation.x, temp->rotation.y, temp->rotation.z, temp->rotation.w ),
-	//		hkVector4( temp->scale.x, temp->scale.y, temp->scale.z ) );
-
-	//	mSkelly->m_bones[i].m_name = vModelSkelly[i]->name.c_str();
-	//	//cout << "\"" << mSkelly->m_bones[i].m_name << "\"" << endl;
-	//	mSkelly->m_bones[i].m_lockTranslation = false;
-
-	//	// Search for the parent index
-	//	mSkelly->m_parentIndices[i] = -1;
-	//	for ( uint j = 0; j < vModelSkelly.size(); ++j ) {
-	//		if ( vModelSkelly[i]->transform.GetParent() == (&(vModelSkelly[j]->transform)) ) {
-	//			mSkelly->m_parentIndices[i] = j;
-	//			j = vModelSkelly.size();
-	//		}
-	//	}
-	//}
-	////mAnimSkelly = new hkaAnimatedSkeleton( mSkelly );
-}
-
 // Returns the ragdoll pose int vModelSkelly
 void CHKAnimation::GetRagdollPose( skeletonBone_t* rootBone, std::vector<skeletonBone_t*> &vModelSkelly )
 {
@@ -173,6 +136,11 @@ CHKAnimation::~CHKAnimation ( void )
 	//{
 	//	mMirrorAnims.at(i)->removeReference();
 	//}
+}
+
+void CHKAnimation::SkeletonToHkaSkeleton ( void )
+{
+	throw Core::NotYetImplementedException();
 }
 
 void CHKAnimation::Update ( const Real deltaTime )
@@ -1245,54 +1213,4 @@ void CHKAnimation::Update ( const Real deltaTime )
 //				nextTransforms[t_indexer].m_scale.getComponent<2>() );
 //		}
 //	}
-}
-
-
-void	CHKAnimation::SetupMirrorMode ( void )
-{
-	throw Core::NotYetImplementedException();
-	//std::vector<hkaAnimation*>* mAnims = ((CHKAnimationSet*)pAnimationSet)->GetHKAnimation();
-	//hkaAnimation* mhkAnim = mAnims->at(0);
-	//if ( mMirrorSkelly == NULL )
-	//{
-	//	mMirrorSkelly = new hkaMirroredSkeleton( mSkelly );
-
-	//	// First setup bone mapping
-	//	hkArray<hkStringPtr> ltags;
-	//	ltags.pushBack( "Bip001 L" );
-	//	hkArray<hkStringPtr> rtags;
-	//	rtags.pushBack( "Bip001 R" );
-	//	mMirrorSkelly->computeBonePairingFromNames(ltags,rtags);
-
-	//	// Second, set up mirroring axis
-	//	mMirrorSkelly->setAllBoneInvariantsFromReferencePose( hkQuaternion(1.0f,0,0,0), 0.01f );
-	//	/*hkArray<hkQsTransform> tempTransforms;
-	//	tempTransforms.setSize( mSkelly->m_bones.getSize() );
-	//	tempTransforms = mSkelly->m_referencePose;
-	//	hkArray<hkReal> tempReals;
-	//	tempReals.setSize( mSkelly->m_bones.getSize() );
-	//	mhkAnim->sampleTracks( 0, tempTransforms.begin(), tempReals.begin() );
-	//	mMirrorSkelly->setAllBoneInvariantsFromSymmetricPose( hkQuaternion(1,0,0,0), 0.01f, tempTransforms.begin() );*/
-	//}
-	//if ( mMirrorAnims.empty() )
-	//{
-	//	//mMirrorAnim = new hkaMirroredAnimation ( mhkAnim, mAnimBinding, mMirrorSkelly );
-	//	//mAnimBinding = mMirrorAnim->createMirroredBinding();
-	//	for ( uint i = 0; i < mAnims->size(); ++i )
-	//	{
-	//		hkaMirroredAnimation* t_mirrorAnim = new hkaMirroredAnimation ( mAnims->at(i), mAnimBinding, mMirrorSkelly );
-	//		//if ( mAnimBinding == NULL )
-	//		if ( i == 0 )
-	//		{
-	//			mAnimBinding = t_mirrorAnim->createMirroredBinding();
-	//		}
-	//		mMirrorAnims.push_back( t_mirrorAnim );
-	//	}
-
-	//	//for ( int i = 0; i < mSkelly->m_bones.getSize(); ++i )
-	//	//{
-	//	//	int t = mAnimBinding->m_transformTrackToBoneIndices[i];
-	//	//	cout << t << endl;
-	//	//}
-	//}
 }

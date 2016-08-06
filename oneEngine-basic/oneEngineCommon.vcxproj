@@ -111,6 +111,7 @@
     <ClInclude Include="source\engine-common\scenes\gmsceneFromFile.h" />
     <ClInclude Include="source\engine-common\scenes\gmsceneSystemBuilder.h" />
     <ClInclude Include="source\engine-common\scenes\gmsceneSystemLoader.h" />
+    <ClInclude Include="source\engine-common\scenes\tests\testComparisons.h" />
     <ClInclude Include="source\engine-common\scenes\tests\testStringOperations.h" />
     <ClInclude Include="source\engine-common\types\ActorAnimation.h" />
     <ClInclude Include="source\engine-common\types\Damage.h" />
@@ -172,6 +173,7 @@
     <ClCompile Include="source\engine-common\scenes\benchmark\benchmarkSemaphores.cpp" />
     <ClCompile Include="source\engine-common\scenes\gmsceneSystemBuilder.cpp" />
     <ClCompile Include="source\engine-common\scenes\gmsceneSystemLoader.cpp" />
+    <ClCompile Include="source\engine-common\scenes\tests\testComparisons.cpp" />
     <ClCompile Include="source\engine-common\scenes\tests\testStringOperations.cpp" />
     <ClCompile Include="source\engine-common\utils\AnimationMixing.cpp" />
     <ClCompile Include="source\engine-common\utils\CDeveloperConsoleUI.cpp" />
@@ -200,7 +202,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>

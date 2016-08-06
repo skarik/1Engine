@@ -20,6 +20,17 @@ namespace M04
 		Vector3d	position;
 		float		angle;
 		Vector3d	scale;
+
+	public:
+		//=========================================//
+		// Static listing
+		//=========================================//
+		
+		//		Objects ()
+		// Returns read-only list of all editor objects
+		GAME_API static const std::vector<EditorObject*>& Objects ( void );
+	private:
+		static std::vector<EditorObject*>	m_objects;
 	};
 }
 

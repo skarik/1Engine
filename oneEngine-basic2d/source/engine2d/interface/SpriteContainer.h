@@ -2,11 +2,12 @@
 #ifndef _ENGINE2D_INTERFACE_SPRITECONTAINER_
 #define _ENGINE2D_INTERFACE_SPRITECONTAINER_
 
+#include "core/math/Math2d.h"
 #include "core/math/Math3d.h"
 #include "core/math/vect2d_template.h"
 #include "renderer/logic/CLogicObject.h"
 
-class CRenderable2D;
+class CStreamedRenderable2D;
 
 namespace Engine2D
 {
@@ -27,11 +28,20 @@ namespace Engine2D
 		// Used to update the geometry generated for rendering.
 		ENGINE2D_API void			PostStepSynchronus ( void ) override;
 
+		//		UpdateSpriteProperties()
+		// Pulls sprite info from the m_sprite object
+		ENGINE2D_API void			UpdateSpriteProperties ( void );
+
+	public:
+		//		GetSpriteRect()
+		// Pulls untransformed sprite rect, using the m_sprite object and taking into account origin.
+		ENGINE2D_API Rect			GetSpriteRect ( void );
+
 	protected:
 		// Renderer:
 
 		//	Current sprite renderer.
-		CRenderable2D*				m_sprite;
+		CStreamedRenderable2D*		m_sprite;
 
 		// Animation information:
 

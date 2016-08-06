@@ -24,8 +24,8 @@ namespace M04
 
 // Expose values to the editor and serializer
 BEGIN_OBJECT_DESC(M04::TestEntityBasic);
-	DEFINE_DISPLAY(DISPLAY_2D_SPRITE,"sprites/test0");
-	DEFINE_VALUE(position,FIELD_POSITION);				// This will allow the object to be moved properly in the editor.
+	DEFINE_DISPLAY(DISPLAY_2D_SPRITE,"sprites/test0.png");
+	DEFINE_VALUE(position,FIELD_POSITION);				// This will allow the object to have position saved/loaded in the editor
 END_OBJECT_DESC();
 
 // Create editor object

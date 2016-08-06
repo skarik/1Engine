@@ -3,9 +3,10 @@
 #ifndef _PHYSICAL_SKELETON_BONE_H_
 #define _PHYSICAL_SKELETON_BONE_H_
 
+#include "core/containers/arstring.h"
 #include "core-ext/transform/CTransform.h"
-#include <string>
-using std::string;
+
+#include <vector>
 
 class skeletonBone_t
 {
@@ -30,7 +31,7 @@ public:
 	~skeletonBone_t ( void ) {
 
 	}
-		// Copy
+	// Copy
 	skeletonBone_t& operator= ( skeletonBone_t const& right )
 	{
 		transform.Get( right.transform );
@@ -60,7 +61,7 @@ public:
 
 	void SetBindPose ( void )
 	{
-		bindPose = transform.GetTransformMatrix();
+		bindPose = transform.WorldMatrix();
 		invBindPose = bindPose.inverse();
 	};
 
@@ -75,7 +76,7 @@ public:
 
 	void UpdatePose ( void )
 	{
-		currentPose = (transform.GetTransformMatrix() * invBindPose);
+		currentPose = (transform.WorldMatrix() * invBindPose);
 	}
 
 	void SendTransformation ( void )
@@ -89,8 +90,8 @@ public:
 	// Bind Pose
 	Matrix4x4 bindPose;
 	Matrix4x4 invBindPose;
-		// xBindPose is not used the in the built-in animation, but is used to store the Havok bind-pose
-		// Since the engine's transform system is still wonky/wrong, this is absolutely necessary.
+	// xBindPose is not used the in the built-in animation, but is used to store the Havok bind-pose
+	// Since the engine's transform system is still wonky/wrong, this is absolutely necessary.
 	XTransform xBindPose;
 	XTransform xBindPoseModel;
 	XTransform xRagdollPoseModel;

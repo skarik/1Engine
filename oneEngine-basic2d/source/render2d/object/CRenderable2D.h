@@ -12,6 +12,7 @@
 
 #include "core/types/ModelData.h"
 #include "renderer/object/CRenderableObject.h"
+#include "render2d/types/spriteInfo.h"
 
 class CRenderable2D : public CRenderableObject
 {
@@ -22,6 +23,10 @@ public:
 	//		SetSpriteFile ( c-string sprite filename )
 	// Sets the sprite filename to load or convert
 	RENDER2D_API void		SetSpriteFile ( const char* n_sprite_filename );
+
+	//		GetSpriteInfo ()
+	// Returns read-only reference to the current sprite information structure.
+	RENDER2D_API const spriteInfo_t& GetSpriteInfo ( void );
 
 	//		Render()
 	// Render the model using the 2D engine's style
@@ -38,6 +43,9 @@ protected:
 	//	GPU information
 	uint					m_buffer_verts;
 	uint					m_buffer_tris;
+
+	//	Sprite information
+	spriteInfo_t			m_spriteInfo;
 };
 
 #endif//_RENDER2D_C_RENDERABLE_2D_H_

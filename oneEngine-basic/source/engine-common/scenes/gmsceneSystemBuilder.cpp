@@ -240,6 +240,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 								|| resource_extension == "ttf" || resource_extension == "otf"
 								|| resource_extension == "vert"|| resource_extension == "frag"
 								|| resource_extension == "wav" || resource_extension == "mp3" || resource_extension == "ogg"
+								|| resource_extension == "oel"
 								|| resource_extension == "" )
 							{
 								// File needs to be copied over (the folder will already exist)
@@ -255,4 +256,5 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 			}
 		}
 	}
+	Debug::Console->PrintWarning( "Build done!\n" );
 }

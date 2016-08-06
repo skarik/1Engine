@@ -355,9 +355,14 @@ tPixel* Textures::loadJPG ( const std::string& n_inputfile, timgInfo& o_info )
 tPixel* Textures::loadPNG ( const std::string& n_inputfile, timgInfo& o_info )
 {
 	GL_ACCESS // Using the glMainSystem accessor
+
 	int calcW, calcH, calcBPP;
 	unsigned char * pixelData = NULL;
 	tPixel* pData = NULL;
+
+	alphaLoadMode_t alphaMode = ALPHA_LOAD_MODE_DEFAULT;
+	int iTransSize = 0;
+	tPixel* pTransTable = NULL;
 
 	// Read in the data
 	FILE* file = fopen( n_inputfile.c_str(), "rb");  //open the file
@@ -410,10 +415,13 @@ tPixel* Textures::loadPNG ( const std::string& n_inputfile, timgInfo& o_info )
 
         calcW = png_get_image_width(png_ptr, info_ptr);
         calcH = png_get_image_height(png_ptr, info_ptr);
-        //color_type = png_get_color_type(png_ptr, info_ptr);
-        //calcBPP = png_get_bit_depth(png_ptr, info_ptr);
-		//calcBPP = png_get_bit_depth(png_ptr, info_ptr) / 2;
+ 
+		// Figure out the bit depth ajd transparency modes
 		int color_type, bit_depth;
+		png_bytep trans_alpha = NULL;
+		int num_trans = 0;
+		png_color_16p trans_color = NULL;
+
 		color_type = png_get_color_type(png_ptr, info_ptr);
         bit_depth = png_get_bit_depth(png_ptr, info_ptr);
 		if ( color_type == PNG_COLOR_TYPE_RGBA ) {
@@ -421,8 +429,26 @@ tPixel* Textures::loadPNG ( const std::string& n_inputfile, timgInfo& o_info )
 		}
 		else if ( color_type == PNG_COLOR_TYPE_RGB ) {
 			calcBPP = (bit_depth / 8)*3;
+			// Check for tRNS alpha chunk
+			{
+				png_get_tRNS(png_ptr, info_ptr, &trans_alpha, &num_trans, &trans_color);
+				if (trans_alpha != NULL)
+				{
+					alphaMode = ALPHA_LOAD_MODE_INDEXED;
+				}
+				else if ( num_trans >= 1 )
+				{
+					iTransSize = 1;
+					pTransTable = new tPixel [1];
+					pTransTable->r = trans_color->red;
+					pTransTable->g = trans_color->green;
+					pTransTable->b = trans_color->blue;
+					pTransTable->a = trans_color->gray;
+					alphaMode = ALPHA_LOAD_MODE_KEYED;
+				}
+			}
 		}
-		else {
+		else { // todo: color_type == PNG_COLOR_TYPE_GA
 			calcBPP = 1;
 		}
 		//cout << "PNG BPP: " << calcBPP << endl;
@@ -464,13 +490,6 @@ tPixel* Textures::loadPNG ( const std::string& n_inputfile, timgInfo& o_info )
 				{
 					pixelData[x+(y*calcW*calcBPP)] = row_pointers[y][x];
 				}
-				/*for ( int x = 0; x < calcW; ++x )
-				{
-					for ( int b = 0; b < calcBPP; ++b )
-					{
-						pixelData[(calcBPP-b-1)+(x*calcBPP)+(y*calcW*calcBPP)] = row_pointers[y][(x*calcBPP)+b];
-					}
-				}*/
 			}
 
 			// Cleanup heap
@@ -494,6 +513,18 @@ tPixel* Textures::loadPNG ( const std::string& n_inputfile, timgInfo& o_info )
 			iResX = std::max<uint>( o_info.width/calcW, 1 );
 			iResY = std::max<uint>( o_info.height/calcH, 1 );
 		}
+		// Check and set the bitdepth
+		if ( calcBPP == 3 ) {
+			if ( alphaMode == ALPHA_LOAD_MODE_DEFAULT ) {
+				o_info.internalFormat = RGB8;
+			}
+			else {
+				o_info.internalFormat = RGBA8;
+			}
+		}
+		else if ( calcBPP == 4 ) {
+			o_info.internalFormat = RGBA8;
+		}
 		// Do oldstyle texture loading if power of two loading mandatory 
 		if ( !GL.NPOTsAvailable )
 		{
@@ -504,11 +535,6 @@ tPixel* Textures::loadPNG ( const std::string& n_inputfile, timgInfo& o_info )
 			o_info.height = 1;
 			while (( o_info.height < (unsigned)calcH )&&( o_info.height < (unsigned)GL.MaxTextureSize ))
 				o_info.height *= 2;
-			// Check and set the bitdepth
-			if ( calcBPP == 3 )
-				o_info.internalFormat = RGB8;
-			else if ( calcBPP == 4 )
-				o_info.internalFormat = RGBA8;
 			// Create the pixel data
 			pData = new tPixel [ o_info.width * o_info.height ];
 			// Go through the stored data and save it to the texture pixel data
@@ -526,6 +552,13 @@ tPixel* Textures::loadPNG ( const std::string& n_inputfile, timgInfo& o_info )
 					if ( calcBPP == 4 ) {
 						pData[ iTarget ].a = pixelData[ iSource+3 ];
 					}
+					else if ( alphaMode == ALPHA_LOAD_MODE_KEYED ) {
+						pData[ iTarget ].a = (
+							(pData[ iTarget ].r == pTransTable[0].r) && 
+							(pData[ iTarget ].g == pTransTable[0].g) && 
+							(pData[ iTarget ].b == pTransTable[0].b)) ?
+							0 : 255;
+					}
 					else {
 						pData[ iTarget ].a = 255;
 					}
@@ -537,11 +570,6 @@ tPixel* Textures::loadPNG ( const std::string& n_inputfile, timgInfo& o_info )
 			// Set the new texture size
 			o_info.width = calcW;
 			o_info.height = calcH;
-			// Check and set the bitdepth
-			if ( calcBPP == 3 )
-				o_info.internalFormat = RGB8;
-			else if ( calcBPP == 4 )
-				o_info.internalFormat = RGBA8;
 			// Create the pixel data
 			pData = new tPixel [ o_info.width * o_info.height ];
 			// Go through the stored data and save it to the texture pixel data
@@ -559,12 +587,21 @@ tPixel* Textures::loadPNG ( const std::string& n_inputfile, timgInfo& o_info )
 					if ( calcBPP == 4 ) {
 						pData[ iTarget ].a = pixelData[ iSource+3 ];
 					}
+					else if ( alphaMode == ALPHA_LOAD_MODE_KEYED ) {
+						pData[ iTarget ].a = (
+							(pData[ iTarget ].r == pTransTable[0].r) && 
+							(pData[ iTarget ].g == pTransTable[0].g) && 
+							(pData[ iTarget ].b == pTransTable[0].b)) ?
+							0 : 255;
+					}
 					else {
 						pData[ iTarget ].a = 255;
 					}
 				}
 			}
 		}
+		// Delete index tables
+		delete [] pTransTable;
 		// Delete the source data
 		delete [] pixelData;
 		// Return the final data

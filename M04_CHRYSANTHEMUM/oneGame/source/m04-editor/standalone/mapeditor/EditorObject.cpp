@@ -1,8 +1,14 @@
 
 #include "EditorObject.h"
-#include "render2d/object/CRenderable2D.h"
+#include "render2d/object/sprite/CStreamedRenderable2D.h"
 
 using namespace M04;
+
+std::vector<EditorObject*>	EditorObject::m_objects;
+const std::vector<EditorObject*>& EditorObject::Objects ( void )
+{
+	return m_objects;
+}
 
 EditorObject::EditorObject ( const char* object_name )
 	: CGameBehavior(), Engine2D::SpriteContainer( &position, &angle, &scale ),
@@ -43,11 +49,15 @@ EditorObject::EditorObject ( const char* object_name )
 		// Default to a stupidass box
 		m_sprite->SetSpriteFile("textures/white");
 	}
+
+	// Add this area to the list
+	m_objects.push_back( this );
 }
 
 EditorObject::~EditorObject ( void )
 {
 	delete_safe( m_object );
+	m_objects.erase( std::find( m_objects.begin(), m_objects.end(), this ) );
 }
 
 void EditorObject::Update ( void )

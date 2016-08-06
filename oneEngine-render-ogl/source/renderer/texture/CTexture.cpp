@@ -26,6 +26,7 @@ CTexture::CTexture ( string sInFilename,
 		eMipmapGenerationStyle	mipmapGeneration,
 		eSamplingFilter	filter
 		)
+		: arBaseObject()
 {
 	GL_ACCESS; // Using the glMainSystem accessor
 
@@ -85,65 +86,14 @@ CTexture::CTexture ( string sInFilename,
 		tempData.b = 128;
 
 		// Send the data to OpenGL
-		HANDLE context = wglGetCurrentContext();
-		//info.index = GL.GetNewTexture();
+		//HANDLE context = wglGetCurrentContext(); // Only work in current context?
 		glGenTextures( 1, &info.index );
 		// Bind the texture object
 		glBindTexture( GL_TEXTURE_2D, info.index );
-		// Set the pack alignment
-		/*glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-		// Change the texture repeat
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL.Enum(info.repeatX) );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL.Enum(info.repeatY) );
-		// Change the filtering
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-		// Change the lod bias
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.5f );*/
 		// Copy the data to the texture object
 		glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum(info.internalFormat), 1,1, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, &tempData );
-		// Generate the mipmaps
-		//GenerateMipmap( info.mipmapStyle );
-		//glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE );
 		// Unbind the data
 		glBindTexture( GL_TEXTURE_2D, 0 );
-
-		// Send the data to OpenGL
-		/*info.index = GL.GetNewTexture();
-		// Bind the texture object
-		glBindTexture( GL_TEXTURE_2D, info.index );
-		// Change the texture repeat
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, info.repeatX );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, info.repeatY );
-		// Change the filtering
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-		// Copy the data to the texture object
-		glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, info.width, info.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, 0 );
-		// Bind buffer
-		static GLuint pbuf = 0;
-		if ( pbuf == 0 ) {
-			glGenBuffers( 1, &pbuf );
-		}
-		glBindBuffer( GL_PIXEL_UNPACK_BUFFER, pbuf );
-		// Null existing data
-		glBufferData( GL_PIXEL_UNPACK_BUFFER, info.width*info.height*4, NULL, GL_STREAM_DRAW );
-		// Map buffer. Returns pointer to buffer memory
-		GLubyte* pboMemory = (GLubyte*)glMapBuffer( GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY );
-		memcpy( pboMemory, pData, info.width*info.height*4 );
-		// Unmaps buffer, indicating we are done writing data to it
-		glUnmapBuffer( GL_PIXEL_UNPACK_BUFFER );
-		// Unbind buffer
-		glBindBuffer( GL_PIXEL_UNPACK_BUFFER, 0 );
-		// Unbind the texture
-		glBindTexture( GL_TEXTURE_2D, 0 );*/
-
-		// Delete the texture data
-		//delete [] pData;
-		//pData = NULL;
-
-		// Add a reference to the data
-		TextureMaster.AddReference( this );
 
 		// Load the actual data in
 		if ( !CRenderState::Active->mResourceManager->settings.streamTextures )
@@ -167,6 +117,9 @@ CTexture::CTexture ( string sInFilename,
 				CRenderState::Active->mResourceManager->AddResource( this );
 			}
 		}
+
+		// Add a reference to the data
+		TextureMaster.AddReference( this );
 	}
 	else
 	{

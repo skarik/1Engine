@@ -44,8 +44,9 @@ namespace Engine
 		//vect2d_template<REAL> operator* ( Matrix2x2 const& right ) const;	//Matrix multiplication added: 6/4/13		
 		//Vector2d rvrMultMatx ( Matrix2x2 const& right ) const;
 
-		bool operator== (vect2d_template<REAL> const& right) const;			//Equal comparison overload
-		bool operator!= (vect2d_template<REAL> const& right) const;			//Not equal comparison overload
+		bool operator== (vect2d_template<REAL> const& right) const;			//Equal comparison
+		bool operator!= (vect2d_template<REAL> const& right) const;			//Not equal comparison
+		bool operator<  (vect2d_template<REAL> const& right) const;			//Component-based comparison for lookups
 
 		REAL x;
 		REAL y;

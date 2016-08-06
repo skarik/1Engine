@@ -3,6 +3,8 @@
 #define _C_TEXTURE_H_
 
 // ==Includes==
+// Memory management
+#include "core/types/arBaseObject.h"
 // OpenGL interface and game link
 //#include "renderer/system/glMainSystem.h"
 #include "renderer/types/types.h"
@@ -17,69 +19,7 @@ using std::string;
 
 // ==Defines==
 // A define to allow for a function to differentiate between different kinds of textures in the texture master class
-//#define TextureType(a) public: virtual string GetTypeName ( void ) { return string(a); };
 #define TextureType(a) public: RENDER_API virtual eTextureClass ClassType ( void ) { return a; };
-/*
-// ===ENUMERATIONS===
-// Enumerations for the internal format
-enum eInternalFormat
-{
-	RGB8 = GL_RGB8,
-	RGBA8 = GL_RGBA8,
-	RGB16 = GL_RGB16,
-	RGB16F = GL_RGB16F,
-	RGBA16F = GL_RGBA16F,
-	RGBA16 = GL_RGBA16,
-	RGBc = GL_COMPRESSED_RGB,
-    RGBAc = GL_COMPRESSED_RGBA
-};
-// Enumerations for the texture type
-enum eTextureType
-{
-	Texture2D = GL_TEXTURE_2D,
-	//Texture1Darray = GL_TEXTURE_1D_ARRAY,
-	Texture3D = GL_TEXTURE_3D,
-	//Texture2Darray = GL_TEXTURE_2D_ARRAY,
-	TextureCube = GL_TEXTURE_CUBE_MAP
-};
-// Enumerations for the depth type
-enum eDepthFormat
-{
-	DepthNone = 0,
-	Depth16 = GL_DEPTH_COMPONENT16,
-	Depth24 = GL_DEPTH_COMPONENT24,
-	Depth32 = GL_DEPTH_COMPONENT32
-};
-// Enumerations for the stencil type
-enum eStencilFormat
-{
-	StencilNone = 0,
-	StencilIndex1 = GL_STENCIL_INDEX1,
-	StencilIndex4 = GL_STENCIL_INDEX4,
-	StencilIndex8 = GL_STENCIL_INDEX8,
-	StencilIndex16 = GL_STENCIL_INDEX16
-};
-// Enumerations for the texture wrap
-enum eWrappingType
-{
-	Repeat			= GL_REPEAT,
-	Clamp			= GL_CLAMP,
-	MirroredRepeat	= GL_MIRRORED_REPEAT
-};
-// Enumerations for import options
-enum eOrientation
-{
-	NoFlip,
-	Flip
-};
-// Enumerations for mipmap generation options
-enum eMipmapGenerationStyle
-{
-	MipmapNormal = 0,
-	MipmapNone,
-	MipmapNearest
-};
-*/
 
 //===============================================================================================//
 // Texture info structures
@@ -129,7 +69,7 @@ class CResourceManager;
 
 // ===CLASS===
 // Class definition
-class CTexture
+class CTexture : public arBaseObject
 {
 	//TextureType( "TextureBase" );
 	TextureType( TextureClassBase );

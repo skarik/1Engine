@@ -96,6 +96,9 @@
     <ClInclude Include="source\m04-editor\standalone\mapeditor\EditorObject.h">
       <Filter>SOURCE\M04-Editor\Standalone\Mapeditor</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\renderer\object\GizmoRenderer.h">
+      <Filter>SOURCE\M04-Editor\Renderer\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -142,6 +145,9 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\mapeditor\EditorObject.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\Mapeditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\renderer\object\GizmoRenderer.cpp">
+      <Filter>SOURCE\M04-Editor\Renderer\Object</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

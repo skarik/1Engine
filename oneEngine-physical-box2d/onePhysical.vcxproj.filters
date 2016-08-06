@@ -73,6 +73,9 @@
     <Filter Include="SOURCE\Physical\Wrapper">
       <UniqueIdentifier>{2105e972-e144-4609-8cf9-8da243b7de10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Physical\Resource">
+      <UniqueIdentifier>{24e8bac0-6a18-4eec-9c26-fa18ab0ec103}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\physical\physical.h">
@@ -327,6 +330,12 @@
     <ClInclude Include="source\physical\physics\motion\physCharacterRigidBodyInfo.h">
       <Filter>SOURCE\Physical\Physics\Motion</Filter>
     </ClInclude>
+    <ClInclude Include="source\physical\animation\Injectors.h">
+      <Filter>SOURCE\Physical\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\resource\ResourceManager.h">
+      <Filter>SOURCE\Physical\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\physical\physics\CPhysics.cpp">
@@ -511,6 +520,9 @@
     </ClCompile>
     <ClCompile Include="source\physical\wrapper\physContactEvents.cpp">
       <Filter>SOURCE\Physical\Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\resource\ResourceManager.cpp">
+      <Filter>SOURCE\Physical\Resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

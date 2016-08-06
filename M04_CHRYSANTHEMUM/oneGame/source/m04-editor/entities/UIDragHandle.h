@@ -57,6 +57,23 @@ namespace M04
 		// Sets the position that being rendered at
 		void		SetRenderPosition ( const Vector3d& n_newPosition );
 
+		//		HasFocus
+		// Is this UI element in focus or currently working?
+		bool		HasFocus ( void );
+
+		//		GetGizmoPosition
+		// Returns the position the handle is now being rendered at
+		Vector3d	GetGizmoPosition ( void );
+
+	protected:
+
+		//		OnEnable
+		// When enabled, also enables renderer
+		void OnEnable ( void ) override;
+		//		OnEnable
+		// When disabled, also disables renderer
+		void OnDisable ( void ) override;
+
 	protected:
 		DrawStyle	m_style;
 		Mode		m_mode;

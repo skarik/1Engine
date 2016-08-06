@@ -44,14 +44,19 @@
     <ClCompile Include="source\render2d\camera\COrthoCamera.cpp" />
     <ClCompile Include="source\render2d\object\Background2D.cpp" />
     <ClCompile Include="source\render2d\object\CRenderable2D.cpp" />
+    <ClCompile Include="source\render2d\object\sprite\CAnimSprite2D.cpp" />
+    <ClCompile Include="source\render2d\object\sprite\CStreamedRenderable2D.cpp" />
     <ClCompile Include="source\render2d\object\TileMapLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\render2d\camera\COrthoCamera.h" />
     <ClInclude Include="source\render2d\object\Background2D.h" />
     <ClInclude Include="source\render2d\object\CRenderable2D.h" />
+    <ClInclude Include="source\render2d\object\sprite\CAnimSprite2D.h" />
+    <ClInclude Include="source\render2d\object\sprite\CStreamedRenderable2D.h" />
     <ClInclude Include="source\render2d\object\TileMapLayer.h" />
     <ClInclude Include="source\render2d\preprocess\PaletteToLUT.h" />
+    <ClInclude Include="source\render2d\types\spriteInfo.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}</ProjectGuid>
@@ -77,7 +82,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
@@ -105,7 +110,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -114,7 +119,7 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
-    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>

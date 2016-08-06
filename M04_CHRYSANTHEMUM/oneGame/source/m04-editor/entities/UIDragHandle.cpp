@@ -140,3 +140,29 @@ void M04::UIDragHandle::SetRenderPosition ( const Vector3d& n_newPosition )
 {
 	m_position = n_newPosition;
 }
+
+//		HasFocus
+// Is this UI element in focus or currently working?
+bool M04::UIDragHandle::HasFocus ( void )
+{
+	return active && (m_dragging || (m_drag_axis_hover != Axis::None));
+}
+//		GetGizmoPosition
+// Returns the position the handle is now being rendered at
+Vector3d M04::UIDragHandle::GetGizmoPosition ( void )
+{
+	return m_position;
+}
+
+//		OnEnable
+// When enabled, also enables renderer
+void M04::UIDragHandle::OnEnable ( void )
+{
+	m_renderer->SetVisible( true );
+}
+//		OnEnable
+// When disabled, also disables renderer
+void M04::UIDragHandle::OnDisable ( void )
+{
+	m_renderer->SetVisible( false );
+}

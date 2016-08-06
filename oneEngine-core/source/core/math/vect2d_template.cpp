@@ -178,6 +178,16 @@ bool vect2d_template<REAL>::operator!= (vect2d_template<REAL> const& right) cons
 {
 	return !((*this) == right);
 }
+//Component-based comparison for lookups
+template <typename REAL>
+bool vect2d_template<REAL>::operator<  (vect2d_template<REAL> const& right) const
+{
+	if ( x > right.x ) return false;
+	else if ( x == right.x ) {
+		if ( y >= right.y ) return false;
+	}
+	return true;
+}
 
 
 // prototypes

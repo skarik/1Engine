@@ -16,6 +16,12 @@
     <Filter Include="SOURCE\Render2D\Camera">
       <UniqueIdentifier>{1eecf4ed-d83f-4107-ba53-9038af4d56ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Render2D\Object\Sprite">
+      <UniqueIdentifier>{b3eeab0a-bfed-4bb9-bbaf-4eee6b1628aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Render2D\Types">
+      <UniqueIdentifier>{59ba7d68-aa2a-4ea3-b7e4-2961b6c1420d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\render2d\object\CRenderable2D.cpp">
@@ -29,6 +35,12 @@
     </ClCompile>
     <ClCompile Include="source\render2d\object\Background2D.cpp">
       <Filter>SOURCE\Render2D\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="source\render2d\object\sprite\CAnimSprite2D.cpp">
+      <Filter>SOURCE\Render2D\Object\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="source\render2d\object\sprite\CStreamedRenderable2D.cpp">
+      <Filter>SOURCE\Render2D\Object\Sprite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +58,15 @@
     </ClInclude>
     <ClInclude Include="source\render2d\object\Background2D.h">
       <Filter>SOURCE\Render2D\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\object\sprite\CAnimSprite2D.h">
+      <Filter>SOURCE\Render2D\Object\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\object\sprite\CStreamedRenderable2D.h">
+      <Filter>SOURCE\Render2D\Object\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\types\spriteInfo.h">
+      <Filter>SOURCE\Render2D\Types</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

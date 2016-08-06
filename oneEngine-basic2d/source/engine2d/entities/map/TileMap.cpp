@@ -1,6 +1,9 @@
 
 #include <algorithm>
 #include <thread>
+#include <map>
+
+#include "core/math/Math3d.h"
 
 #include "TileMap.h"
 
@@ -418,6 +421,26 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 	};
 	const Vector2d tile_size_reference = Vector2d( (Real)m_tileset->tilesize_x, (Real)m_tileset->tilesize_y );
 
+#	define FULL_SPEED_AHEAD
+#	ifdef  FULL_SPEED_AHEAD
+	std::map<Vector2i,uint32_t> tiletype_map;
+	// Store a quick lookup of the map to speed up the autotile system
+	for ( uint i = start_offset; i < m_tiles.size(); ++i )
+	{
+		// Hit the end of the layer yet?
+		if ( m_tiles[i].depth != layer ) {
+			break; // Yea, we're leaving. Peace out nigga.
+		}
+		// The tile needs lookup data? Then we store it.
+		const tilesetEntry_t tile_type = m_tileset->tiles[m_tiles[i].type];
+		if ( tile_type.type == TILE_RANDOMIZED || tile_type.type == TILE_DEFAULT || 
+		     tile_type.type == TILE_AUTOTILE || tile_type.type == TILE_AUTOWALL )
+		{
+			tiletype_map[Vector2i(m_tiles[i].x,m_tiles[i].y)] = m_tiles[i].type;
+		}
+	}
+#	endif
+
 	// Loop through the tiles
 	for ( uint i = start_offset; i < m_tiles.size(); ++i )
 	{
@@ -489,6 +512,7 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 			{
 				int tx = m_tiles[i].x + ox * m_tileset->tilesize_x;
 				int ty = m_tiles[i].y + oy * m_tileset->tilesize_y;
+#	ifndef FULL_SPEED_AHEAD
 				for ( uint j = start_offset; j < m_tiles.size(); ++j )
 				{
 					// Hit the end of the layer yet?
@@ -500,6 +524,13 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 						return m_tiles[j].type; 
 					}
 				}
+#	else //FULL_SPEED_AHEAD
+				auto lookupResult = tiletype_map.find(Vector2i(tx,ty));
+				if ( lookupResult != tiletype_map.end() )
+				{
+					return lookupResult->second;
+				}
+#	endif//FULL_SPEED_AHEAD
 				return m_tiles[i].type;
 			};
 			// Lambda: check the border for mismatch
@@ -628,8 +659,7 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 		{
 			throw Core::NotYetImplementedException();
 		}
-		
-	}
+	};
 
 	// Lock the result storage and copy our mesh pointers to it
 	m_mut_meshstorage.lock();

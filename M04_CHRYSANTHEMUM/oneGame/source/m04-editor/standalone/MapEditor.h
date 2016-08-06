@@ -23,6 +23,8 @@ namespace M04
 	class TileSelector;
 	class ObjectEditorListing;
 	class UIDragHandle;
+	class GizmoRenderer;
+	class EditorObject;
 }
 
 //=========================================//
@@ -131,6 +133,7 @@ namespace M04
 		CDuskGUI*	dusk;
 		TileSelector*	m_tile_selector;
 		AreaRenderer*	m_area_renderer;
+		GizmoRenderer*	m_gizmo_renderer;
 
 		int			m_area_corner_selection;
 		Engine2D::Area2DBase*	m_area_target;
@@ -141,6 +144,7 @@ namespace M04
 		// constructor of it will be explicit, taking a Vector3d pointer, which will be draw pos
 		//										  and a float pointer, which will be angle
 		//										  and a Vector3d pointer, for scale
+		M04::EditorObject*	m_object_target;
 
 		ObjectEditorListing*	m_listing;
 		UIDragHandle*			m_drag_handle;

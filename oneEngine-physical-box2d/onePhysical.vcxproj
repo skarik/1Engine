@@ -73,6 +73,7 @@
     <ClInclude Include="source-lib\Box2D\Rope\b2Rope.h" />
     <ClInclude Include="source\physical\animation\CHKAnimation.h" />
     <ClInclude Include="source\physical\animation\curve\CHKAnimationCurve.h" />
+    <ClInclude Include="source\physical\animation\Injectors.h" />
     <ClInclude Include="source\physical\animation\set\CHKAnimationSet.h" />
     <ClInclude Include="source\physical\mode.h" />
     <ClInclude Include="source\physical\module_physical.h" />
@@ -98,6 +99,7 @@
     <ClInclude Include="source\physical\physics\water\Water.h" />
     <ClInclude Include="source\physical\physics\wind\CPhysWindBase.h" />
     <ClInclude Include="source\physical\physics\wind\Wind.h" />
+    <ClInclude Include="source\physical\resource\ResourceManager.h" />
     <ClInclude Include="source\physical\skeleton\skeletonBone.h" />
     <ClInclude Include="source\physical\system\Layers.h" />
     <ClInclude Include="source\physical\wrapper\physAabb.h" />
@@ -170,25 +172,27 @@
     <ClCompile Include="source\physical\physics\water\Water.cpp" />
     <ClCompile Include="source\physical\physics\wind\CPhysWindBase.cpp" />
     <ClCompile Include="source\physical\physics\wind\Wind.cpp" />
+    <ClCompile Include="source\physical\resource\ResourceManager.cpp" />
     <ClCompile Include="source\physical\wrapper\physContactEvents.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4FDB8ACD-7078-4806-B6B0-04C5351F3F87}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
     <ProjectName>onePhysical</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>

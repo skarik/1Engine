@@ -19,23 +19,24 @@
     <ProjectGuid>{410E2926-EC32-401C-A45B-DCBBB8342517}</ProjectGuid>
     <RootNamespace>OpenGlTest</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
@@ -241,6 +242,7 @@
   <ItemGroup>
     <ClInclude Include="source\m04-editor\entities\UIDragHandle.h" />
     <ClInclude Include="source\m04-editor\renderer\object\AreaRenderer.h" />
+    <ClInclude Include="source\m04-editor\renderer\object\GizmoRenderer.h" />
     <ClInclude Include="source\m04-editor\renderer\object\UIDragHandleRenderer.h" />
     <ClInclude Include="source\m04-editor\scenes\sceneDeveloperMenu.h" />
     <ClInclude Include="source\m04-editor\scenes\sceneEditorMain.h" />
@@ -260,6 +262,7 @@
   <ItemGroup>
     <ClCompile Include="source\m04-editor\entities\UIDragHandle.cpp" />
     <ClCompile Include="source\m04-editor\renderer\object\AreaRenderer.cpp" />
+    <ClCompile Include="source\m04-editor\renderer\object\GizmoRenderer.cpp" />
     <ClCompile Include="source\m04-editor\renderer\object\UIDragHandleRenderer.cpp" />
     <ClCompile Include="source\m04-editor\scenes\sceneDeveloperMenu.cpp" />
     <ClCompile Include="source\m04-editor\scenes\sceneEditorMain.cpp" />

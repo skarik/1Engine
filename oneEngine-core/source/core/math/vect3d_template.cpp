@@ -213,6 +213,19 @@ bool vect3d_template<REAL>::operator!= (vect3d_template<REAL> const& right) cons
 {
 	return !((*this) == right);
 }
+//Component-based comparison for lookups
+template <typename REAL>
+bool vect3d_template<REAL>::operator<  (vect3d_template<REAL> const& right) const
+{
+	if ( x > right.x ) return false;
+	else if ( x == right.x ) {
+		if ( y > right.y ) return false;
+		else if ( y == right.y ) {
+			if ( z >= right.z ) return false;
+		}
+	}
+	return false;
+}
 
 // prototypes
 template class vect3d_template<float>;

@@ -18,16 +18,20 @@ namespace Textures
 	{
 		char		head[4];	// Always "BPD\0"
 		uint16_t	version[2];		// version
+		//	CONVERSION TIME
 		uint64_t	datetime;
 		//	FLAGS
 		// First 8 bits are for texture type
 		uint32_t	flags;
+		//	SIZE
 		uint16_t	width;
 		uint16_t	height;
 		uint16_t	depth;
-		uint16_t	levels;		// (mipmap levels)
+		//	MIPMAP LEVELS
 		// The smallest width will be
 		// width/(2^(levels-1))
+		uint16_t	levels;
+		//	FRAMES
 		uint16_t	frames;
 		char 		padding0[2];	// 32 byte aligned
 	};
@@ -40,6 +44,13 @@ namespace Textures
 		IMG_FORMAT_RGBA16	=0x03,	//HDR Integer
 		IMG_FORMAT_RGBA16F	=0x04,	//HDR Floating Point
 		IMG_FORMAT_PALLETTE	=0x05	//Palletted GIF
+	};
+
+	enum alphaLoadMode_t
+	{
+		ALPHA_LOAD_MODE_DEFAULT	=0x00,
+		ALPHA_LOAD_MODE_INDEXED	=0x01,
+		ALPHA_LOAD_MODE_KEYED	=0x02
 	};
 
 	//LEVELN~

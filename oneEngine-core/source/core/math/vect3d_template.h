@@ -53,6 +53,7 @@ namespace Engine
 
 		bool operator== (vect3d_template<REAL> const& right) const;			//Equal comparison overload
 		bool operator!= (vect3d_template<REAL> const& right) const;			//Not equal comparison overload
+		bool operator<  (vect3d_template<REAL> const& right) const;			//Component-based comparison for lookups
 
 	public: // CHANGED TO PUBLIC FROM PRIVATE SOZ
 		REAL x;

@@ -12,9 +12,9 @@ CRenderable2D::CRenderable2D ( void )
 {
 	// Use a default 2D material
 	m_material = new glMaterial();
-	m_material->setTexture( 0, new CTexture("null") );
+	m_material->setTexture( 0, Core::Orphan(new CTexture("null")) );
 	m_material->passinfo.push_back( glPass() );
-	m_material->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	m_material->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	m_material->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	m_material->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
 	m_material->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
@@ -22,6 +22,12 @@ CRenderable2D::CRenderable2D ( void )
 	// Start with empty buffers
 	m_buffer_verts = NIL;
 	m_buffer_tris = NIL;
+
+	// Start off with empty model data
+	m_modeldata.triangleNum = 0;
+	m_modeldata.triangles = NULL;
+	m_modeldata.vertexNum = 0;
+	m_modeldata.vertices = NULL;
 }
 
 CRenderable2D::~CRenderable2D ()
@@ -44,23 +50,39 @@ CRenderable2D::~CRenderable2D ()
 // Sets the sprite filename to load or convert
 void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 {
-	// TODO: Convert the texture. For now, set the material based on the input file.
-	m_material->setTexture(
-		0,
-		new CTexture (
-			n_sprite_filename, 
-			Texture2D, RGBA8,
-			1024,1024, Clamp,Clamp,
-			MipmapNone,SamplingPoint
-		)
+	// Load new sprite
+	CTexture* new_texture = new CTexture (
+		n_sprite_filename, 
+		Texture2D, RGBA8,
+		1024,1024, Clamp,Clamp,
+		MipmapNone,SamplingPoint
 	);
+
+	// Set sprite info
+	m_spriteInfo.fullsize.x = new_texture->GetWidth();
+	m_spriteInfo.fullsize.y = new_texture->GetHeight();
+
+	m_spriteInfo.framesize.x = new_texture->GetWidth();
+	m_spriteInfo.framesize.y = new_texture->GetHeight();
+
+	// TODO: Convert the texture. For now, set the material based on the input file.
+	m_material->setTexture(0, new_texture);
+
+	// No longer need the texture in this object
+	new_texture->RemoveReference();
+}
+
+//		GetSpriteInfo ()
+// Returns read-only reference to the current sprite information structure.
+const spriteInfo_t& CRenderable2D::GetSpriteInfo ( void )
+{
+	return m_spriteInfo;
 }
 
 //		PushModelData()
 // Takes the information inside of m_modeldata and pushes it to the GPU so that it may be rendered.
 void CRenderable2D::PushModeldata ( void )
 { GL_ACCESS
-
 	GL.BindVertexArray( 0 );
 
 	// Create new buffers
@@ -93,8 +115,11 @@ void CRenderable2D::PushModeldata ( void )
 // Render the model using the 2D engine's style
 bool CRenderable2D::Render ( const char pass )
 { GL_ACCESS
-
-	//GL.beginOrtho( 0,0, 640,480, -100,100 );
+	// Do not render if no buffer to render with
+	if ( m_buffer_verts == 0 || m_buffer_tris == 0 )
+	{
+		return true;
+	}
 
 	// For now, we will render the same way as the 3d meshes render
 	GL.Transform( &(transform) );

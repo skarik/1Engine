@@ -32,6 +32,7 @@
 #include "m04-editor/standalone/mapeditor/EditorObject.h"
 
 #include "m04-editor/renderer/object/AreaRenderer.h"
+#include "m04-editor/renderer/object/GizmoRenderer.h"
 
 using namespace M04;
 
@@ -39,7 +40,8 @@ MapEditor::MapEditor ( void )
 	: CGameBehavior(),
 	m_current_mode(Mode::TileEdit), m_current_submode(SubMode::None), m_navigation_busy(false),
 	m_current_savetarget(""),
-	m_drag_handle(NULL)
+	m_drag_handle(NULL),
+	m_area_target(NULL), m_object_target(NULL)
 {
 	// Load editor listing
 	{
@@ -91,6 +93,11 @@ MapEditor::MapEditor ( void )
 	// Create area renderer
 	{
 		m_area_renderer = new M04::AreaRenderer();
+		m_area_renderer->transform.position.z = -99;
+	}
+	// Create gizmo renderer
+	{
+		m_gizmo_renderer = new M04::GizmoRenderer();
 		m_area_renderer->transform.position.z = -100;
 	}
 	// Build Dusk Gui
@@ -119,6 +126,7 @@ MapEditor::~MapEditor ( void )
 	delete_safe_decrement(dusk);
 	delete_safe(m_tile_selector);
 	delete_safe(m_area_renderer);
+	delete_safe(m_gizmo_renderer);
 	
 	delete_safe(m_listing);
 	delete_safe_decrement(m_drag_handle);
@@ -485,6 +493,15 @@ void MapEditor::doAreaEditing ( void )
 				m_area_target->m_rect.size.y *= -1;
 			}
 		}
+		// Check for area deletion
+		if ( Input::Key( Keys.Delete ) )
+		{
+			if ( m_area_target != NULL )
+			{
+				delete m_area_target;
+				m_area_target = NULL;
+			}
+		}
 	}
 }
 
@@ -497,6 +514,36 @@ void MapEditor::doObjectEditing ( void )
 	{
 		// Grab mouse position in the world
 		Vector3d worldpos = m_target_camera->ScreenToWorldPos( Vector2d( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+		worldpos.z = 0;
+
+		M04::EditorObject* t_object_selection = NULL;
+		// Grab area list
+		std::vector<M04::EditorObject*> t_object_listing = M04::EditorObject::Objects();
+		// If there's a selection, put that at the front of the list
+		if ( m_object_target != NULL ) t_object_listing.insert( t_object_listing.begin(), m_object_target );
+		// Check all areas to find the best match
+		for ( auto object = t_object_listing.begin(); object != t_object_listing.end(); ++object )
+		{
+			Rect rect = (*object)->GetSpriteRect();
+			rect.pos += (*object)->position;
+			if ( rect.Contains( worldpos ) )
+			{
+				// Mouse is in, use this
+				t_object_selection = *object;
+				// We're going with the first match
+				break;
+			}
+		}
+
+		// Set tips for the gizmo itself
+		if ( m_drag_handle == NULL ) {
+			m_drag_handle = new UIDragHandle();
+			m_drag_handle->active = false;
+		}
+
+		// Set tips for the gizmo renderer: Update UI glowing
+		m_gizmo_renderer->m_target_glow = t_object_selection;
+		m_gizmo_renderer->m_target_selection = m_object_target;
 
 		if ( Input::MouseDown( Input::MBLeft ) )
 		{
@@ -505,6 +552,51 @@ void MapEditor::doObjectEditing ( void )
 				// Create the object
 				EditorObject* object = new EditorObject( dusk->GetCurrentDropdownString( ui_fld_object_type ).c_str() );
 				object->position = worldpos;
+				object->RemoveReference();
+				// Set UI
+				m_object_target = object;
+				m_drag_handle->active = true;
+				m_drag_handle->SetRenderPosition( m_object_target->position );
+			}
+			else if ( !m_drag_handle->HasFocus() )
+			{
+				// Select the object
+				m_object_target = t_object_selection;
+				// Set UI
+				if ( m_object_target != NULL )
+				{
+					m_drag_handle->active = true;
+					m_drag_handle->SetRenderPosition( m_object_target->position );
+				}
+				else
+				{
+					m_drag_handle->active = false;
+				}
+			}
+		}
+		// Update position based on transform gizmo
+		if ( m_object_target != NULL )
+		{
+			m_object_target->position = m_drag_handle->GetGizmoPosition();
+			if ( m_drag_handle->HasFocus() && Input::Key( Keys.Alt ) )
+			{
+				Vector3d objpos = m_object_target->position;
+				// Snap to half-tile
+				objpos.x = (Real) Math.Round( objpos.x * 2 / m_tilemap->m_tileset->tilesize_x ) * m_tilemap->m_tileset->tilesize_x * 0.5F;
+				objpos.y = (Real) Math.Round( objpos.y * 2 / m_tilemap->m_tileset->tilesize_y ) * m_tilemap->m_tileset->tilesize_y * 0.5F;
+				// Set positions to snapped values
+				m_object_target->position = objpos;
+				m_drag_handle->SetRenderPosition( objpos );
+			}
+		}
+		// Check for object deletion
+		if ( Input::Key( Keys.Delete ) )
+		{
+			if ( m_object_target != NULL )
+			{
+				delete m_object_target;
+				m_drag_handle->active = false;
+				m_object_target = NULL;
 			}
 		}
 	}
