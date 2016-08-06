@@ -141,6 +141,9 @@
     <ClInclude Include="source\physical\resource\ResourceManager.h">
       <Filter>SOURCE\Physical\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="source\physical\animation\Injectors.h">
+      <Filter>SOURCE\Physical\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\physical\physics\CPhysics.cpp">

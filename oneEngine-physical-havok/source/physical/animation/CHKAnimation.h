@@ -5,6 +5,7 @@
 #include "physical/physics/CPhysicsCommon.h"
 #include "core-ext/animation/CAnimationCommon.h"
 #include "core-ext/animation/CAnimation.h"
+#include "physical/animation/Injectors.h"
 
 class glhkSkeleton;
 class skeletonBone_t;
@@ -49,7 +50,17 @@ public:
 
 	PHYS_API virtual void GetRagdollPose ( skeletonBone_t*, std::vector<skeletonBone_t*>& );
 
+	//	TODO: Document
 	static Vector3d defaultJointVector;
+
+	//	Injector for modifying motion based on aiming
+	// Do not edit values during physics step.
+	Animation::injectorAimer_t					m_injectorAimer;
+	//	Injector for specifically modifying neck and eye motion
+	Animation::injectorLookat_t					m_injectorLookat;
+	//	Injector for adding simulation of jiggle physics
+	// Do not edit values during physics step.
+	std::vector<Animation::injectorJiggle_t>	m_injectorsJiggle;
 private:
 	//hkaPose*	mPose;	// Stores the actual Havok transforms (HOWEVER, REQUIRES A SKELETON)
 

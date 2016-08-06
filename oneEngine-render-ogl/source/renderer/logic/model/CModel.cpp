@@ -434,10 +434,10 @@ void CModel::SetForcedDraw ( void ) {
 // If the referenced model is deleted, unexpected behavior will occur.
 void CModel::SetReferencedAnimationMode ( CModel* pReference, const AnimRefType ref_type )
 {
-	//pMyAnimation = pReference->GetAnimation();
-	pReferencedAnimation = pReference->GetAnimation();
-	bReferenceAnimation = true;
-	eRefMode = ref_type;
+	throw Core::DeprecatedCallException();
+	//pReferencedAnimation = pReference->GetAnimation();
+	//bReferenceAnimation = true;
+	//eRefMode = ref_type;
 }
 
 // Hides or shows all of the child meshes

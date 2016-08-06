@@ -75,6 +75,10 @@ namespace Animation
 		//	GenerateShaderMatrices ( void ) : generates matrices in current_pose to pass into a shader
 		// Using current_transform, inv_bind_pose, and simulation via TransformLite, data is generated into current_pose.
 		CORE_API static void		GenerateShaderMatrices ( Skeleton& n_skeleton );
+
+		//	FindInSkeleton ( const char* name ) : finds best match for input name
+		// Loops through the information in names[], selects the best match, and returns its index. -1 if no match.
+		CORE_API static int32_t		FindInSkeleton ( const Skeleton& n_skeleton, const char* n_name );
 	};
 }
 

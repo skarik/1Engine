@@ -182,9 +182,9 @@ public:
 	RENDER_API glMaterial*	FindMaterial ( const char* n_name, const int n_offset=0 ) const;
 
 	// Get the animation reference
-	CAnimation*	GetAnimation ( void ) {
+	/*CAnimation*	GetAnimation ( void ) {
 		return pMyAnimation;
-	}
+	}*/
 	// Get the hitbox list
 	std::vector<sHitbox>*	GetHitboxes ( void ) {
 		return &vHitboxes;

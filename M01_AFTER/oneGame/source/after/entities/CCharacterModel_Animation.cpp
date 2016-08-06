@@ -19,8 +19,7 @@
 
 void CCharacterModel::ConfigureAnimations ( void )
 {
-	CAnimation* pAnim = charModel->GetAnimation();
-	CAnimation& anim = *pAnim;
+	CAnimation& anim = *animator;
 
 	// Define functors for easy animation setup
 	struct _setupanim_upperbody_t {
@@ -267,8 +266,7 @@ void CCharacterModel::ConfigureAnimations ( void )
 
 void CCharacterModel::ConfigureCommonAnimations ( void )
 {
-	CAnimation* pAnim = charModel->GetAnimation();
-	CAnimation& anim = *pAnim;
+	CAnimation& anim = *animator;
 	CAnimAction* action;
 
 	action = anim.FindAction( "jump" );
@@ -293,12 +291,11 @@ void CCharacterModel::ConfigureCommonAnimations ( void )
 // == Animations ==
 bool CCharacterModel::PlayScriptedAnimation ( const string& sAnimName, const float fFramesPerSecond )
 {
-	CAnimation* anim = charModel->GetAnimation();
 	CAnimAction* action;
-	if ( action = anim->FindAction( sAnimName ) ) {
+	if ( action = animator->FindAction( sAnimName ) ) {
 		if ( !action->isPlaying ) {
-			action->layer = anim->maxLayers-1;
-			anim->Play( sAnimName );
+			action->layer = animator->maxLayers-1;
+			animator->Play( sAnimName );
 			//action->end_behavior = 2; //hold end and fade out
 			action->framesPerSecond = fFramesPerSecond;
 			SetMoveAnimation( "anim" );
@@ -317,7 +314,7 @@ bool CCharacterModel::SetNextBlendingValue ( const float nNextBlendSpeed )
 bool CCharacterModel::PlayAnimation ( const string& sAnimType, const float fArg, const float fAnimSpeed, const float fAttackSkip, const int nArm )
 {
 	bool validAnim = false;
-	CAnimation& anim = (*(charModel->GetAnimation()));
+	CAnimation& anim = *animator;
 
 	if ( iFallType < 0 )
 		iFallType = 0;
@@ -1162,7 +1159,7 @@ bool CCharacterModel::PlayAnimation ( const string& sAnimType, const float fArg,
 
 bool CCharacterModel::PlayAnimationIdle ( const string &sAnimType, const float fArg, const float fAnimSpeed, const float fAttackSkip, const int nArm )
 {
-	CAnimation& anim = (*(charModel->GetAnimation()));
+	CAnimation& anim = *animator;
 
 	// Reset fall type
 	if ( iFallType < 0 )
@@ -1221,7 +1218,7 @@ void CCharacterModel::UpdateAnimations ( void )
 	}
 
 
-	CAnimation& anim = (*(charModel->GetAnimation()));
+	CAnimation& anim = *animator;
 
 	/*if ( anim.FindAction("land") )
 	{
@@ -1347,7 +1344,7 @@ void CCharacterModel::UpdateAnimations ( void )
 
 void CCharacterModel::AddAnimationBlendout ( const char* n_anim, const Real n_fadeIn, const Real n_fadeOut )
 {
-	CAnimation& anim = (*(charModel->GetAnimation()));
+	CAnimation& anim = *animator;
 	CAnimAction* action = anim.FindAction( n_anim );
 	if ( action ) 
 	{
@@ -1360,7 +1357,7 @@ void CCharacterModel::AddAnimationBlendout ( const char* n_anim, const Real n_fa
 }
 void CCharacterModel::AddAnimationBlendoutPct ( const char* n_anim, const Real n_fadeInPct, const Real n_fadeOutPct )
 {
-	CAnimation& anim = (*(charModel->GetAnimation()));
+	CAnimation& anim = *animator;
 	CAnimAction* action = anim.FindAction( n_anim );
 	if ( action ) 
 	{
@@ -1373,7 +1370,7 @@ void CCharacterModel::AddAnimationBlendoutPct ( const char* n_anim, const Real n
 
 void CCharacterModel::AddAnimationBlendstopped ( const char* n_anim, const Real n_fadeOutTime )
 {
-	CAnimation& anim = (*(charModel->GetAnimation()));
+	CAnimation& anim = *animator;
 	CAnimAction* action = anim.FindAction( n_anim );
 	if ( action ) 
 	{
@@ -1443,7 +1440,7 @@ bool CCharacterModel::SetMoveAnimation ( string const& sAnimType )
 	// If it's not an SEQUENCE, then assume ANIMATION.
 	else {
 		sCurrentMoveAnim = sAnimType;
-		CAnimation& anim = (*(charModel->GetAnimation()));
+		CAnimation& anim = *animator;
 		if ( anim["idle_relaxed_hover_02"].isPlaying )
 		{
 			if ( sAnimType.find("idle") != string::npos )
@@ -1464,19 +1461,19 @@ bool CCharacterModel::SetIdleAnimation ( string const& sAnimType )
 // Stops an animation entirely
 void CCharacterModel::StopAnimation ( string const& sAnimType )
 {
-	CAnimation& anim = (*(charModel->GetAnimation()));
+	CAnimation& anim = *animator;
 	anim[sAnimType].Stop();
 }
 // Stop an animation's playing
 void CCharacterModel::StopAnimationPlaying ( const string& sAnimType )
 {
-	CAnimation& anim = (*(charModel->GetAnimation()));
+	CAnimation& anim = *animator;
 	anim[sAnimType].isPlaying = false; // don't remove weight, as it will fade out automatically if not playing (this way can blend properly from interrupts into stuns)
 }
 //
 void CCharacterModel::StopMoveAnimation ( string const& sAnimType )
 {
-	CAnimation& anim = (*(charModel->GetAnimation()));
+	CAnimation& anim = *animator;
 
 	if ( sAnimType == "roll" ) {
 		anim.StopSmoothed("roll",0.4f);
@@ -1507,7 +1504,7 @@ bool CCharacterModel::SetAnimationMotion ( Vector3d const& velocity )
 }
 void CCharacterModel::SetMoveAnimationSpeed ( const ftype playbackSpeed )
 {
-	CAnimAction* mAction = charModel->GetAnimation()->FindAction( sCurrentMoveAnim );
+	CAnimAction* mAction = animator->FindAction( sCurrentMoveAnim );
 	if ( mAction ) {
 		//mAction->playSpeed = playbackSpeed;
 		mAction->framesPerSecond = 30.0f * playbackSpeed;

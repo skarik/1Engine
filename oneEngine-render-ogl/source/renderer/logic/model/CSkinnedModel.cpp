@@ -24,8 +24,6 @@
 
 #include "renderer/debug/CDebugDrawer.h"
 
-//#include <boost/lexical_cast.hpp>
-
 // Constructor
 CSkinnedModel::CSkinnedModel( const string &sFilename )
 	: CModel()
@@ -41,12 +39,8 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	throw Core::NotYetImplementedException();
 #endif
 
-	// Clear out the material list
-	//vMaterials.clear();
 	// Set basic properties
 	bUseFrustumCulling = true;
-	//bCelShadingEnabled = false;
-	//bUseSeparateMaterialBatches = false;
 	bDrawSkeleton = true;
 
 	// Set animation properties
@@ -63,10 +57,8 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	referenceToCopySkeletonFrom = NULL;
 
 	// First look for the model in the model master
-	//const std::vector<glMesh*> * pMeshSetReference = ModelMaster.GetReference( myModelFilename );
 	auto t_meshSet = RenderResources::Active()->GetMesh( myModelFilename.c_str() );
 	// If there's no reference, then load it
-	//if ( pMeshSetReference == NULL )
 	if ( t_meshSet == NULL )
 	{
 		LoadSkinnedModel( myModelFilename );
@@ -81,32 +73,6 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	{
 		throw Core::NullReferenceException();
 	}
-	/*	// Copy the skeleton list and leave it alone. We don't want to use the mesh's skeleton.
-		std::vector<skeletonBone_t*>* skellyList = new std::vector<skeletonBone_t*>;
-		(*skellyList) = vSkeleton;
-		for ( unsigned int n = 0; n < m_glMeshlist.size(); ++n ) {
-			((glSkinnedMesh*)m_glMeshlist[n])->SetSkeleton( skellyList );
-		}
-		vSkeleton.clear();
-		// Create a new mesh set
-		pvOriginalMeshSet = new std::vector<glMesh*>;
-		(*pvOriginalMeshSet) = m_glMeshlist;	// Copy the data from the meshes to the new set
-	}
-	else // If there is a reference, copy the data
-	{
-		m_glMeshlist = *pMeshSetReference;	// Copy the mesh to local list
-		pvOriginalMeshSet = new std::vector<glMesh*>;
-		*pvOriginalMeshSet = *pMeshSetReference;	// Point original set over
-
-		vHitboxes = *ModelMaster.GetHitboxReference( myModelFilename );
-	}*/
-
-	// Duplicate the mesh streams
-	//CopyMeshStreams( &m_glMeshlist ); 
-
-	// Add to the reference of the model
-	//ModelMaster.AddReference( myModelFilename, *pvOriginalMeshSet, vHitboxes );	// Add reference to original mesh set
-	//ModelMaster.AddReference( myModelFilename, m_physMeshlist );
 
 	// Grab a copy of the skeleton
 	auto t_skeleton = PhysicalResources::Active()->GetSkeleton( myModelFilename.c_str() );
@@ -119,34 +85,6 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	{
 		throw Core::NullReferenceException();
 	}
-	//GrabSkeletonCopy( ((glSkinnedMesh*)m_glMeshlist[0])->GetSkeleton() );
-	// Create a new animation, which will look for the reference and copy it
-	/*CAnimation* pFoundReference = ModelMaster.GetAnimationReference( myModelFilename );
-	if ( pFoundReference == NULL ) {
-		throw Core::InvalidCallException();
-	}
-	else {
-		ModelMaster.AddReference( myModelFilename, pFoundReference );
-	}
-	if ( !CAnimation::useHavok ) {
-		pMyAnimation = new CAnimation( myModelFilename, pFoundReference );
-	}
-	else {
-		pMyAnimation = new CHKAnimation( myModelFilename, pFoundReference );
-	}
-	pMyAnimation->SetOwner( this );*/
-	// Send the animation our references as well
-	//SendSkeletonReferences();
-
-	// Check for a valid animation
-	/*if ( !pMyAnimation->IsValid() ) {
-		delete pMyAnimation;
-		pMyAnimation = NULL;
-	}
-	else {
-		// Play zero animation to start
-		(*pMyAnimation)[0].Play();
-	}*/
 
 	// Search for a morph to use
 	//CMorpher* possibleMorpher = ModelMaster.GetMorpherReference( myModelFilename );
@@ -189,13 +127,6 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	// Set skinned count
 	skinning_data.bonecount = skeleton.names.size();
 
-	// Create default list of materials
-	/*while ( vMaterials.size() < vMeshes.size() )
-	{
-		vMaterials.push_back( NULL );
-	}
-	vMaterials[0] = vMeshes[0]->pmMat;*/
-
 	// Get the bounding box
 	CalculateBoundingBox();
 	// Increase culling distance
@@ -227,136 +158,8 @@ CSkinnedModel::~CSkinnedModel ( void )
 	// Free skinning buffers
 	SkinningBuffersFree();
 
-	//FreeMeshStreams( &m_glMeshlist );
-	//cout << " Freed mesh streams.";
-
 	// The model references should decrement automatically from CModel's destructor
-
-	// Delete the created copied skeleton
-	/*while ( !vSkeleton.empty() ) {
-		delete vSkeleton[vSkeleton.size()-1];
-		vSkeleton.pop_back();
-	}*/
-
-	//cout << " Freed skeleton instance." << endl;
-
-	//cout << "     Leaving ~CSkinnedModel" << endl;
 }
-
-// Copy skeleton
-//void CSkinnedModel::GrabSkeletonCopy ( std::vector<skeletonBone_t*>* pvOldSkeleton )
-//{
-//	throw Core::DeprecatedCallException();
-//	/*
-//	skeletonBone_t* newBone;
-//	// For each bone, create a copy
-//	for ( unsigned int i = 0; i < pvOldSkeleton->size(); i++ )
-//	{
-//		newBone = new skeletonBone_t( NULL );
-//		// copy bind pose and all
-//		(*newBone) = (*((*pvOldSkeleton)[i]));
-//
-//		// thats it
-//		vSkeleton.push_back( newBone );
-//	}
-//
-//	// Now, link up bones
-//	for ( unsigned int i = 0; i < pvOldSkeleton->size(); i++ )
-//	{
-//		// Look at old skelly
-//		glBone* oldBone = ((*pvOldSkeleton)[i]);
-//
-//		// Look at the children
-//		for ( unsigned int j = 0; j < oldBone->transform.children.size(); j++ )
-//		{
-//			// now for each child, find the corresponding bone
-//			// get the bone assiociated with the child
-//			skeletonBone_t* childBone = ((skeletonBone_t*)(oldBone->transform.children[j]->owner));
-//
-//			// Loop through the current bones
-//			for ( unsigned int k = 0; k < vSkeleton.size(); k++ )
-//			{
-//				// if the indices match
-//				if ( vSkeleton[k]->index == childBone->index )
-//				{
-//					// add the child
-//					vSkeleton[k]->transform.SetParent( &(vSkeleton[i]->transform) );
-//					vSkeleton[k]->transform.LateUpdate();
-//					// break out
-//					k = vSkeleton.size()+1;
-//				}
-//			}
-//		}
-//	}
-//
-//	// For each bone, create a copy
-//	for ( unsigned int i = 0; i < pvOldSkeleton->size(); i++ )
-//	{
-//		// copy bind pose and all
-//		(*(vSkeleton[i])) = (*((*pvOldSkeleton)[i]));
-//	}
-//
-//	// Set root bone
-//	rootBone = vSkeleton[0];
-//
-//	char tempstring [64];
-//	sprintf( tempstring, "%p", rootBone );
-//	Debug::Console->PrintError( tempstring );*/
-//}
-//// Send skeleton referneces
-//void CSkinnedModel::SendSkeletonReferences ( void )
-//{
-//	throw Core::DeprecatedCallException();
-//
-//	//// And set the pointer map for the animation
-//	//std::vector<void*> voidMap;
-//	//for ( unsigned int i = 0; i < vSkeleton.size(); i++ )
-//	//{
-//	//	//voidMap.push_back( (void*)(&(vSkeleton[i]->tempMatx)) );
-//	//	voidMap.push_back( (void*)(&(vSkeleton[i]->animTransform)) );
-//	//}
-//	//pMyAnimation->AssignReferenceList( voidMap );
-//
-//	//// Build the skeleton if we're in Havok mode
-//	//if ( CAnimation::useHavok )
-//	//{
-//	//	((CHKAnimation*)pMyAnimation)->SetSkeleton( rootBone, vSkeleton );
-//	//	((CHKAnimation*)pMyAnimation)->GetRagdollPose( rootBone, vSkeleton );
-//	//}
-//}
-
-//void CSkinnedModel::CopyMeshStreams ( std::vector<glMesh*> *psrcStream )
-//{
-//	throw Core::DeprecatedCallException();
-//
-//	// Need to duplicate the mesh, keeping the same mesh data, but using unique stream values.
-//	std::vector<glMesh*> newStream;
-//
-//	// Loop through the source stream, and copy each mesh
-//	for ( std::vector<glMesh*>::iterator meshIter = psrcStream->begin(); meshIter != psrcStream->end(); ++meshIter )
-//	{
-//		glSkinnedMesh* srcSkinnedMesh = (glSkinnedMesh*)(*meshIter);
-//
-//		glSkinnedMesh* destMesh = new glSkinnedMesh();
-//		destMesh->CopyStream( srcSkinnedMesh ); // Copy the stream
-//		newStream.push_back( destMesh );
-//	}
-//
-//	// Clear the mesh list
-//	m_glMeshlist.clear();
-//	// Copy the new stream over
-//	m_glMeshlist = newStream;
-//}
-//void CSkinnedModel::FreeMeshStreams ( std::vector<glMesh*> *psrcStream )
-//{
-//	throw Core::DeprecatedCallException();
-//	// Loop through the source stream, and copy each mesh
-//	for ( std::vector<glMesh*>::iterator meshIter = psrcStream->begin(); meshIter != psrcStream->end(); ++meshIter )
-//	{
-//		glSkinnedMesh* srcSkinnedMesh = (glSkinnedMesh*)(*meshIter);
-//		srcSkinnedMesh->FreeStream();
-//	}
-//}
 
 // Nonsynchronous step
 void CSkinnedModel::PreStep ( void )
@@ -372,62 +175,6 @@ void CSkinnedModel::PreStep ( void )
 
 	// Mark skinning as out of date
 	skinning_pushed = false;
-
-	//// Work on the bone references
-	//if ( bReferenceSkeleton )
-	//{
-	//	if ( !bPerfectReference )
-	//	{
-	//		for ( auto boneRef = mBoneMismatchList.begin(); boneRef != mBoneMismatchList.end(); ++boneRef )
-	//		{
-	//			(*boneRef)->transform.SetLocalTransform( (*boneRef)->animTransform );
-	//		}
-	//	}
-	//	std::map<skeletonBone_t*,skeletonBone_t*>::iterator refSet;
-	//	for ( refSet = mBoneReferenceMap.begin(); refSet != mBoneReferenceMap.end(); ++refSet )
-	//	{
-	//		//fnl_assert( refSet->first != NULL && refSet->second != NULL );
-	//		// TODO: Measure difference between refpose and curpose to apply changes.
-	//		//refSet->first->transform.Get( refSet->second->transform ); // Copy the transform over
-	//		if ( refSet->first && refSet->second ) {
-	//			refSet->first->transform.Get( refSet->second->transform ); // Copy the transform over
-	//			//refSet->first->transform.rotation = refSet->second->transform.rotation; // Copy the transform over
-	//			//refSet->first->transform.localRotation = refSet->second->transform.localRotation; // Copy the transform over
-	//		}
-	//	}
-	//	UpdateSkeleton( false );
-	//	for ( refSet = mBoneReferenceMap.begin(); refSet != mBoneReferenceMap.end(); ++refSet )
-	//	{
-	//		//refSet->first->tempMatx = refSet->second->tempMatx; // Copy the pose over (we don't copy this one over as to not upset smooth effects)
-	//		//refSet->first->currentPose = refSet->second->currentPose; // Copy the pose over to grab jiggle effects
-	//		//refSet->first->transform.SetLocalTransform( refSet->second->transform.localPosition, refSet->second->transform.localRotation, refSet->second->transform.localScale );
-	//		if ( refSet->first && refSet->second ) {
-	//			refSet->first->currentPose = refSet->second->currentPose; // Copy the pose over to grab jiggle effects
-	//		}
-	//	}
-	//	//UpdateSkeleton();
-	//	if ( !bPerfectReference )
-	//	{
-	//		for ( auto boneRef = mBoneMismatchList.begin(); boneRef != mBoneMismatchList.end(); ++boneRef )
-	//		{
-	//			(*boneRef)->transform.LateUpdate();
-	//			//((glBone*)(cur_transform->pOwnerRenderer))->UpdatePose();
-	//			(*boneRef)->UpdatePose();
-	//		}
-	//		/*for ( uint i = 0; i < vSkeleton.size(); ++i )
-	//		{
-	//			vSkeleton[i]->transform.SetLocalTransform( vSkeleton[i]->animTransform );
-	//		}*/
-	//	}
-	//	//UpdateSkeleton();
-	//}
-	//else
-	//{
-	//	UpdateSkeleton();	// approximately 2 ms on a 67-bone skeleton
-	//}
-
-	// Update the jigglebones
-	//UpdateJigglebones();
 }
 
 void CSkinnedModel::PreStepSynchronus ( void )
@@ -643,54 +390,11 @@ void CSkinnedModel::DebugRenderSkeleton ( void )
 	}
 }
 
-//void CSkinnedModel::UpdateSkeleton ( bool lateUpdate )
-//{
-//	UpdateSkeleton( &(rootBone->transform), lateUpdate );
-//}
-//
-//void CSkinnedModel::UpdateSkeleton( Transform* cur_transform, bool lateUpdate )
-//{
-//	// Update the transform
-//	if ( lateUpdate ) 
-//	{
-//		cur_transform->LateUpdate();
-//	}
-//	// Send the pose from the transform to the bone.
-//	((skeletonBone_t*)(cur_transform->owner))->UpdatePose();
-//	// loop through children
-//	for ( std::vector<Transform*>::iterator it = cur_transform->children.begin(); it != cur_transform->children.end(); it++ )
-//	{
-//		UpdateSkeleton( (*it), lateUpdate );
-//	}
-//}
+void CSkinnedModel::EnsureUpdateSkeleton ( void )
+{
+	// Nothing here, yet.
+}
 
-//void CSkinnedModel::SendOutSkeleton ( void )
-//{
-//	SendOutSkeleton( rootBone );
-//}
-//void CSkinnedModel::SendOutSkeleton ( glBone* bone )
-//{
-//	// send out bone
-//	//bone->transform.LateUpdate();
-//	bone->SendTransformation();
-//	//bone->transform.LateUpdate();
-//	// loop through children
-//	for ( std::vector<Transform*>::iterator it = bone->transform.children.begin(); it != bone->transform.children.end(); it++ )
-//	{
-//		SendOutSkeleton( (glBone*)((*it)->owner) );
-//	}
-//}
-
-
-
-//Transform* CSkinnedModel::GetSkeletonRoot( void )
-//{
-//	return &(rootBone->transform);
-//}
-//std::vector<skeletonBone_t*>* CSkinnedModel::GetSkeletonList( void )
-//{
-//	return &(vSkeleton);
-//}
 CMorpher*	CSkinnedModel::GetMorpher ( void )
 {
 	return pMorpher;
@@ -803,60 +507,6 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 		}
 	}
 }
-
-//void CSkinnedModel::SetReferencedBoneMode ( CSkinnedModel* pReference )
-//{
-//	if ( !pReference ) {
-//		// Turn off skeleton referencing
-//		pReferencedSkeleton = NULL;
-//		bReferenceSkeleton = false;
-//		bPerfectReference = false;
-//		mBoneReferenceMap.clear();
-//		mBoneMismatchList.clear();
-//	}
-//	else
-//	{
-//		// Draw the skeleton of our reference to show the target's animation state
-//		//bDrawSkeleton = false;
-//		//pReference->bDrawSkeleton = true;
-//
-//		// Enable skelly reference
-//		pReferencedSkeleton = pReference;
-//		bReferenceSkeleton = true;
-//		bPerfectReference = true;
-//		mBoneReferenceMap.clear();
-//		mBoneMismatchList.clear();
-//		// Grab the refed skelly
-//		std::vector<skeletonBone_t*>* refedSkelly = pReference->GetSkeletonList();
-//
-//		// Loop through all of our bones.
-//		for ( uint i = 0; i < vSkeleton.size(); ++i )
-//		{
-//			// Loop through all of the target's bones for a match.
-//			for ( std::vector<skeletonBone_t*>::iterator refBone = refedSkelly->begin(); refBone != refedSkelly->end(); ++refBone )
-//			{
-//				// If it matches, add it to the map.
-//				if ( vSkeleton[i]->name == (*refBone)->name ) {
-//					mBoneReferenceMap[vSkeleton[i]] = (*refBone);
-//					break; // Break out and go to the next iteration
-//				}
-//			}
-//		}
-//		// If our matching does not match up with the size of our skeleton, then some bones were not mapped
-//		if ( vSkeleton.size() != mBoneReferenceMap.size() )
-//		{
-//			bPerfectReference = false; // Turn off perfect reference mode
-//			// Loop through all the bones. Anything not in the map, we add to the mismatch map.
-//			for ( uint i = 0; i < vSkeleton.size(); ++i )
-//			{
-//				if ( mBoneReferenceMap.find( vSkeleton[i] ) == mBoneReferenceMap.end() ) {
-//					mBoneMismatchList.push_back( vSkeleton[i] );
-//				}
-//			}
-//			// And that's it!
-//		}
-//	}
-//}
 
 // Updates jigglebones
 //void CSkinnedModel::UpdateJigglebones ( void )

@@ -101,9 +101,13 @@ namespace NPC
 		// What's nice about this guy is that the visibility and unloading for it is handled by this base class.
 		// Thus, you should use this if you're thinking of giving your character class a general model.
 		CModel*	pModel;
+		// If you're using a model, and you need an animation, you'll need to make it yourself.
+		// Set this guy up if you really want it.
+		CAnimation* animator;
 		// However, say that managing a simple model like that isn't your cup of tea, there's also this bad boy.
 		// That's right, this base class also manages a CCharacterModel instance.
 		// You should use this if you need your character class to have a character model.
+		// A CCharacterModel instance handles its own animation state as well, so no need to make one yourself.
 		CCharacterModel* pCharModel;
 		// This is a pointer to the current active player.
 		static CPlayer*	currentActivePlayer;

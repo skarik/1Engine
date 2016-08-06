@@ -59,11 +59,11 @@ CCharTest::CONSTRUCTOR_ZCC_V2(CCharTest)
 
 CCharTest::~CCharTest ( void )
 {
+	delete_safe(pRigidBody);
+	delete_safe(pCollision);
 
-	delete pRigidBody;
-	delete pCollision;
-
-	delete pModel;
+	delete_safe(pModel);
+	delete_safe(animator);
 }
 
 void CCharTest::OnInteract ( CActor* interactingActor )
@@ -98,7 +98,7 @@ void CCharTest::UpdateActive ( void )
 	}
 	if ( pModel ) {
 		pModel->transform.Get( this->transform );
-		pModel->GetAnimation()->Play( "Idle Short" );
+		animator->Play( "Idle Short" );
 	}
 	if ( pCharModel ) {
 		//pCharModel->SetMoveAnimation( "walk" );

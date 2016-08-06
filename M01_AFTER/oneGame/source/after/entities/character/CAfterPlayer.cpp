@@ -589,12 +589,14 @@ void CAfterPlayer::Update ( void )
 	/*if ( bInActiveArea && bMoveUnobstructed ) {
 		MoveUnstuck();
 	}*/
-	if ( bInActiveArea ) {
+	if ( bInActiveArea )
+	{
 		m_motion->Update();
 	}
 
 	// Toggle cameras
-	if ( Input::Keydown('7') ) {
+	if ( Input::Keydown('7') )
+	{
 		//bUseThirdPersonMode = !bUseThirdPersonMode;
 		if ( bUseThirdPersonMode ) {
 			bUseThirdPersonMode = false;
@@ -612,12 +614,15 @@ void CAfterPlayer::Update ( void )
 		}
 	}
 	// Toggle test ragdoll
-	if ( Input::Keydown('8') ) {
+	if ( Input::Keydown('8') )
+	{
 		//bUseThirdPersonMode = !bUseThirdPersonMode;
 	}
 	// Toggle test ragdoll
-	if ( Input::Keydown('9') ) {
-		if ( ((glBone*)model->GetSkeletonRoot()->owner)->ragdollStrength > 0.5 ) {
+	if ( Input::Keydown('9') )
+	{
+		//if ( ((glBone*)model->GetSkeletonRoot()->owner)->ragdollStrength > 0.5 ) {
+		if ( model->GetAnimationState()->GetSkeleton().ext_physics_strength[0] > 0.5F ) {
 			model->BlendToAnimation( 2.0f );
 		}
 		else {

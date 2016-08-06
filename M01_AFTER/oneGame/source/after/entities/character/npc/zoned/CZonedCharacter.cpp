@@ -31,6 +31,7 @@ CZonedCharacter::CZonedCharacter ( const Vector3d & inPosition, const uint64_t &
 	transform.SetDirty();
 
 	pModel = NULL;
+	animator = NULL;
 	pCharModel = NULL;
 
 	if ( currentActivePlayer == NULL ) {

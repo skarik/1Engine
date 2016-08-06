@@ -133,8 +133,10 @@ void CMccCharacterModel::Update ( void )
 	charTargetModel = mdlBody;
 
 	// Do particle effects
-	if ( mstats && (mstats->iRace == CRACE_FLUXXOR) ) {
-		if ( mFingerParticles == NULL ) {
+	if ( mstats && (mstats->iRace == CRACE_FLUXXOR) )
+	{
+		if ( mFingerParticles == NULL )
+		{
 			//mFingerParticles = new CParticleSystem( "particlesystems/fluxtrail.pcf" ) [2];
 			mFingerParticles = new CParticleSystem* [4];
 			for ( uint i = 0; i < 4; ++i ) {
@@ -144,7 +146,8 @@ void CMccCharacterModel::Update ( void )
 				mFingerParticles[i]->GetRenderable()->GetMaterial()->m_diffuse = mstats->cSkinColor;
 			}
 		}
-		else {
+		else
+		{
 			XTransform target;
 
 			Transform* pFinger1 = charModel->GetSkeletonRoot()->FindChildRecursive( "R Finger02" );

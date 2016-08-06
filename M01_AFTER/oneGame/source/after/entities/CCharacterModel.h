@@ -2,6 +2,7 @@
 #ifndef _C_CHARACTER_MODEL_H_
 #define _C_CHARACTER_MODEL_H_
 
+#include "core-ext/transform/TransformUtility.h"
 #include "core-ext/animation/AnimationEvents.h"
 #include "engine/behavior/CGameObject.h"
 //#include "after/entities/item/CWeaponItem.h"
@@ -16,6 +17,7 @@ class CModel;
 class CSkinnedModel;
 class CActor;
 class CAnimation;
+class CHKAnimation;
 class CRagdollCollision;
 class CMorpher;
 namespace Animation
@@ -141,7 +143,7 @@ public:
 
 	const CSkinnedModel*	GetModelLowLevel ( void );
 	CAnimation*		GetAnimationState ( void );
-	Transform*		GetSkeletonRoot ( void );
+	const Core::TransformLite*		GetSkeletonRoot ( void );
 	const Rotator&	GetModelRotation ( void );
 
 	// = Edit Model State =
@@ -173,6 +175,9 @@ protected:
 	CSkinnedModel*		charTargetModel;
 	// Ragdoll/Hitbox collision. Used for both hitboxes and ragdoll animation
 	CRagdollCollision*	charRagdoll;
+	// Animator for the actor
+	CAnimation*			animator;
+	CHKAnimation*		hkanimator;
 	
 	// Also the hiding aspect needs to be accessed
 	bool			bShowModel;
@@ -182,25 +187,27 @@ protected:
 	void	ResetTransformTrackers ( void );
 
 	// These are identifiers keeping track of the transforms.
-	Transform* pEyeL;
-	Transform* pEyeR;
-	Transform* pHead;
-	Transform* pNeck;
-	Transform* pSpine0;
-	Transform* pSpine1;
-	Transform* pSpine2;
-	Transform* pSpine3;
-	Transform* pUpperArmL;
-	Transform* pUpperArmR;
-	Transform* pProp1;
-	Transform* pProp2;
-	Transform* pProp3;
-	Transform* pProp4;
+	Core::TransformLite* pEyeL;
+	Core::TransformLite* pEyeR;
+	Core::TransformLite* pHead;
+	Core::TransformLite* pNeck;
+	Core::TransformLite* pSpine0;
+	Core::TransformLite* pSpine1;
+	Core::TransformLite* pSpine2;
+	Core::TransformLite* pSpine3;
+	Core::TransformLite* pUpperArmL;
+	Core::TransformLite* pUpperArmR;
+	Core::TransformLite* pProp1;
+	Core::TransformLite* pProp2;
+	Core::TransformLite* pProp3;
+	Core::TransformLite* pProp4;
 
-	Transform* pFootL0;
-	Transform* pFootL1;
-	Transform* pFootR0;
-	Transform* pFootR1;
+	Core::TransformLite* pFootL0;
+	Core::TransformLite* pFootL1;
+	Core::TransformLite* pFootR0;
+	Core::TransformLite* pFootR1;
+
+	Core::TransformLite* getTransformLite ( const char* n_bone_name );
 
 	// This is the list of sequences that the character will look at
 	std::vector<Animation::Sequence*>	sequences;
@@ -265,7 +272,7 @@ private: // Derived classes do NOT muck with the animations, however
 		LockAllButHead,
 		LockAll
 	};
-	eAimerStateLocks iIdleType;		// How the player is idling. 0 is standing, 1 is crouching, 2 is prone.
+	eAimerStateLocks iIdleType;		// How the player is idling.
 	bool		bIsIdling;
 
 	string		basename;		// Model set basename. Is empty for non-standard sets.

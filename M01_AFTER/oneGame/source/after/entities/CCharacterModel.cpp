@@ -169,31 +169,31 @@ bool CCharacterModel::LoadModel ( const string& model_filename )
 
 void CCharacterModel::Update ( void )
 {
-	if ( !charModel ) {
-		return;
-	}
-	charModel->UpdateSkeleton();
+	if ( !charModel ) return;
+	charModel->EnsureUpdateSkeleton();
 
-	if ( actor ) {
-		//charModel->transform.Get( character->transform );
+	if ( actor )
+	{
 		transform.position = actor->transform.position;
 		charModel->transform.position = transform.position + vPlacementOffset;
-		//charModel->UpdateSkeleton();
 	}
-	else {
+	else
+	{
 		charModel->transform.position = transform.position;
 	}
+
 	fAnimCooldown -= Time::deltaTime;
-	if ( !bIsIdling ) {
+
+	if ( !bIsIdling ) 
+	{
 		PlayAnimation( sCurrentMoveAnim );
 	}
-	else {
+	else 
+	{
 		PlayAnimationIdle( sCurrentMoveAnim );
 	}
 	UpdateAnimations();
 
-	//charModel->visible = bShowModel;
-	//charModel->visible = false;
 	charModel->SetVisibility( bShowModel );
 
 	// Pull back the model when too far forward
@@ -253,7 +253,7 @@ void CCharacterModel::LateUpdate ( void )
 	// Need to grab the events, and then send them to the character.
 	{
 		unsigned int animEventCount;
-		charModel->GetAnimation()->GetEvents( animEventList, animEventCount );
+		animator->GetEvents( animEventList, animEventCount );
 		if ( animEventCount > 0 )
 		{
 			while ( !animEventList.empty() )
@@ -273,12 +273,11 @@ void CCharacterModel::LateUpdate ( void )
 	if ( charModel )
 	{
 		// Set the IK info
-		CAnimation* anim = charModel->GetAnimation();
-		ikinfo_t& ik_lf = anim->GetIKInfo( "def_lfoot" );
+		ikinfo_t& ik_lf = animator->GetIKInfo( "def_lfoot" );
 		//ik_lf.subinfo[0] = 0;
 		ik_lf.subinfo[1] = m_IKFootEnable ? 1.0f : 0.0f;
 		ik_lf.enabled = (fRagdollStrength < 0.5f);
-		ikinfo_t& ik_rf = anim->GetIKInfo( "def_rfoot" );
+		ikinfo_t& ik_rf = animator->GetIKInfo( "def_rfoot" );
 		//ik_rf.subinfo[0] = 0;
 		ik_rf.subinfo[1] = m_IKFootEnable ? 1.0f : 0.0f;
 		ik_rf.enabled = (fRagdollStrength < 0.5f);
@@ -320,12 +319,9 @@ void CCharacterModel::PostUpdate ( void )
 	// Loop through model's bones and set the ragdoll params
 	ftype calcRagdollStrength;
 	calcRagdollStrength = powf( fRagdollStrength, 0.022f );
-	//calcRagdollStrength = powf( fRagdollStrength, 0.011f );
-	//cout << "calcRagdollStrength: " << calcRagdollStrength << endl;
-	for ( uint i = 0; i < charModel->GetSkeletonList()->size(); ++i )
+	for ( uint i = 0; i < charModel->GetSkeleton()->ext_physics_strength.size(); ++i )
 	{
-		skeletonBone_t* bone = charModel->GetSkeletonList()->at(i);
-		bone->ragdollStrength = calcRagdollStrength;
+		charModel->GetSkeleton()->ext_physics_strength[i] = calcRagdollStrength;
 	}
 
 	// If ragdoll strength all the way up, stop animations
@@ -336,8 +332,7 @@ void CCharacterModel::PostUpdate ( void )
 }
 void CCharacterModel::PostFixedUpdate ( void )
 {
-	//
-	charModel->UpdateSkeleton();
+	charModel->EnsureUpdateSkeleton();
 }
 
 const CSkinnedModel* CCharacterModel::GetModelLowLevel ( void )
@@ -346,15 +341,19 @@ const CSkinnedModel* CCharacterModel::GetModelLowLevel ( void )
 }
 CAnimation* CCharacterModel::GetAnimationState ( void )
 {
-	if ( charModel ) {
-		return charModel->GetAnimation();
+	//if ( charModel ) {
+	//	return charModel->GetAnimation();
+	//}
+	if ( animator != NULL ) {
+		return animator;
 	}
 	return NULL;
 }
-Transform* CCharacterModel::GetSkeletonRoot ( void )
+const Core::TransformLite* CCharacterModel::GetSkeletonRoot ( void )
 {
 	if ( charModel ) {
-		return charModel->GetSkeletonRoot();
+		//return charModel->GetSkeletonRoot();
+		return &charModel->GetSkeleton()->current_transform[0];
 	}
 	return NULL;
 }
@@ -364,6 +363,19 @@ const Rotator&	CCharacterModel::GetModelRotation ( void )
 		return charModel->transform.rotation;
 	}
 	return transform.rotation;
+}
+
+Core::TransformLite* CCharacterModel::getTransformLite ( const char* n_bone_name )
+{
+	int32_t index = Animation::Skeleton::FindInSkeleton( *charModel->GetSkeleton(), n_bone_name );
+	if ( index >= 0 )
+	{
+		return &charModel->GetSkeleton()->current_transform[index];
+	}
+	else
+	{
+		return NULL;
+	}
 }
 
 
@@ -380,9 +392,9 @@ void CCharacterModel::SetFaceAtRotation ( const Rotator& rotation )
 			try
 			{
 				// Now, get the anim, cast to HK anim, and configure the IK
-				CAnimation* anim = charModel->GetAnimation();
+				//CAnimation* anim = charModel->GetAnimation();
 				// Set the strength
-				ikinfo_t& ik0 = anim->GetIKInfo( "def_aimer0" );
+				ikinfo_t& ik0 = animator->GetIKInfo( "def_aimer0" );
 				ik0.subinput1.y = 0;
 			}
 			catch ( std::out_of_range& )
@@ -425,10 +437,10 @@ void CCharacterModel::SetFaceAtRotation ( const Rotator& rotation )
 
 		charModel->transform.rotation = faceatRotation;
 		Rotator difference = rotation * faceatRotation.inverse();
-
 		Vector3d angle ( difference.getEulerAngles().z,0,0 );
 		if ( !CAnimation::useHavok )
 		{
+			// TODO: This information must be passed into the Animator.
 			if ( !pSpine1 )
 				pSpine1 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine1" );
 			if ( !pSpine2 )
@@ -436,22 +448,24 @@ void CCharacterModel::SetFaceAtRotation ( const Rotator& rotation )
 			if ( !pSpine3 )
 				pSpine3 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine3" );
 
-			pSpine1->localRotation.Euler( pSpine1->localRotation.getEulerAngles() + angle*0.444f );
-			pSpine2->localRotation.Euler( pSpine2->localRotation.getEulerAngles() + angle*0.333f );
-			pSpine3->localRotation.Euler( pSpine3->localRotation.getEulerAngles() + angle*0.222f );
+			pSpine1->local.rotation.Euler( pSpine1->local.rotation.getEulerAngles() + angle*0.444f );
+			pSpine2->local.rotation.Euler( pSpine2->local.rotation.getEulerAngles() + angle*0.333f );
+			pSpine3->local.rotation.Euler( pSpine3->local.rotation.getEulerAngles() + angle*0.222f );
 		}
 		else
 		{
 			try
 			{
 				// Now, get the anim, cast to HK anim, and configure the IK
-				CAnimation* anim = charModel->GetAnimation();
+				//CAnimation* anim = charModel->GetAnimation();
 				// Set the strength
-				ikinfo_t& ik0 = anim->GetIKInfo( "def_aimer0" );
+				ikinfo_t& ik0 = animator->GetIKInfo( "def_aimer0" );
 				ik0.subinput1.y = angle.x;
 			}
 			catch ( std::out_of_range& )
 			{
+				// TODO: This information must be passed into the Animator.
+
 				if ( !pSpine1 )
 					pSpine1 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine1" );
 				if ( !pSpine2 )
@@ -469,8 +483,10 @@ void CCharacterModel::SetFaceAtRotation ( const Rotator& rotation )
 //#include "CDebugDrawer.h"
 void CCharacterModel::SetLookAtPosition ( const Vector3d& vLookAtPos )
 {
+	// TODO: This information must be passed into the Animator, and math performed there as well.
+
 	if ( !pHead ) {
-		pHead = charModel->GetSkeletonRoot()->FindChildRecursive( "Head" );
+		pHead = getTransformLite( "Head" );
 	}
 
 	if ( pHead )
@@ -493,7 +509,7 @@ void CCharacterModel::SetLookAtPosition ( const Vector3d& vLookAtPos )
 
 			//target.rotation = pHead->rotation.getQuaternion();
 			//target.rotation = ( !charModel->transform.rotation * pHead->rotation ).getQuaternion();
-			eyecamPos.rotation = pHead->rotation.getQuaternion();
+			eyecamPos.rotation = pHead->world.rotation.getQuaternion();
 
 			Vector3d fromVect = eyecamPos.rotation*Vector3d(0,1,0);
 			Vector3d fromVectFlat = Vector3d( fromVect.x, fromVect.y, 0 ).normal();
@@ -578,16 +594,16 @@ void CCharacterModel::SetLookAtPosition ( const Vector3d& vLookAtPos )
 			}
 
 
-			pHead->localRotation *= lookatRotation;
+			pHead->local.rotation *= lookatRotation;
 
-			CAnimation* anim = charModel->GetAnimation();
-			ikinfo_t& ik0 = anim->GetIKInfo( "def_lookat" );
+			//CAnimation* anim = charModel->GetAnimation();
+			ikinfo_t& ik0 = animator->GetIKInfo( "def_lookat" );
 			ik0.enabled = false;
 		}
 		else
 		{
 			// Now, get the anim, cast to HK anim, and configure the IK
-			CAnimation* anim = charModel->GetAnimation();
+			//CAnimation* anim = charModel->GetAnimation();
 
 			//pHead->localRotation = lookatRotation;
 			//Vector3d eyePosition = charModel->transform.rotation*((pEyeL->position + pEyeR->position)*0.5f + (pHead->rotation.getQuaternion()*Vector3d( 0,0.19f,0 ))) + charModel->transform.position;
@@ -663,7 +679,7 @@ void CCharacterModel::SetLookAtPosition ( const Vector3d& vLookAtPos )
 			}
 
 			// Set the IK info
-			ikinfo_t& ik0 = anim->GetIKInfo( "def_lookat" );
+			ikinfo_t& ik0 = animator->GetIKInfo( "def_lookat" );
 			ik0.input = lookatHeadPositionS;//!charModel->transform.rotation * (lookatHeadPositionS - charModel->transform.position);//charModel->GetSkeletonList()->at(ik0.bone[0])->transform.position;
 			ik0.subinput0 = lookatEyePositionS;//!charModel->transform.rotation * (lookatEyePositionS - charModel->transform.position);
 			ik0.enabled = true;
@@ -677,6 +693,8 @@ void CCharacterModel::SetLookAtPosition ( const Vector3d& vLookAtPos )
 
 void CCharacterModel::SetFaceAtPosition ( const Vector3d& vFaceAtPos )
 {
+	// TODO: This information must be passed into the Animator, and math performed there as well.
+
 	// Need angle to where camera looking
 	Quaternion rot;
 	XTransform eyecamPos;
@@ -745,15 +763,16 @@ void CCharacterModel::SetFaceAtPosition ( const Vector3d& vFaceAtPos )
 
 void CCharacterModel::SetEyeRotation ( const Rotator& eyes )
 {
-	if ( !pEyeL )
-		pEyeL = charModel->GetSkeletonRoot()->FindChildRecursive( "L Eye" );
-	if ( !pEyeR )
-		pEyeR = charModel->GetSkeletonRoot()->FindChildRecursive( "R Eye" );
+	//if ( !pEyeL )
+	//	pEyeL = charModel->GetSkeletonRoot()->FindChildRecursive( "L Eye" );
+	//if ( !pEyeR )
+	//	pEyeR = charModel->GetSkeletonRoot()->FindChildRecursive( "R Eye" );
 
-	if ( pEyeL && pEyeR ) {
-		pEyeL->localRotation *= eyes;
-		pEyeR->localRotation *= eyes;
-	}
+	//if ( pEyeL && pEyeR ) {
+	//	pEyeL->localRotation *= eyes;
+	//	pEyeR->localRotation *= eyes;
+	//}
+	hkanimator->m_injectorLookat.rotation_eye = eyes;
 }
 
 void CCharacterModel::SetLookAtSpeed ( const float headSpeed, const float eyeSpeed )
@@ -764,75 +783,65 @@ void CCharacterModel::SetLookAtSpeed ( const float headSpeed, const float eyeSpe
 
 void CCharacterModel::FixAimingAnglesHack ( const Rotator & aimRotator )
 {
+	// TODO: This information must be passed into the Animator, and math performed there as well.
 	Debug::Console->PrintWarning( "FixAimingAnglesHack is deprecated\n" );
+	throw Core::DeprecatedCallException();
 
-	if ( !pHead )
-		pHead = charModel->GetSkeletonRoot()->FindChildRecursive( "Head" );
-	if ( !pSpine1 )
-		pSpine1 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine1" );
-	if ( !pSpine0 )
-		pSpine0 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine" );
-	if ( !pSpine2 )
-		pSpine2 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine2" );
-	if ( !pSpine3 )
-		pSpine3 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine3" );
-	if ( !pUpperArmL )
-		pUpperArmL = charModel->GetSkeletonRoot()->FindChildRecursive( "L UpperArm" );
-	if ( !pUpperArmR )
-		pUpperArmR = charModel->GetSkeletonRoot()->FindChildRecursive( "R UpperArm" );
+	//if ( !pHead )
+	//	pHead = charModel->GetSkeletonRoot()->FindChildRecursive( "Head" );
+	//if ( !pSpine1 )
+	//	pSpine1 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine1" );
+	//if ( !pSpine0 )
+	//	pSpine0 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine" );
+	//if ( !pSpine2 )
+	//	pSpine2 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine2" );
+	//if ( !pSpine3 )
+	//	pSpine3 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine3" );
+	//if ( !pUpperArmL )
+	//	pUpperArmL = charModel->GetSkeletonRoot()->FindChildRecursive( "L UpperArm" );
+	//if ( !pUpperArmR )
+	//	pUpperArmR = charModel->GetSkeletonRoot()->FindChildRecursive( "R UpperArm" );
 
-	if ( pHead && pSpine1 && pSpine0 )
-	{
-		//Vector3d angle ( pHead->rotation.getEulerAngles().x,0, 0 );
+	//if ( pHead && pSpine1 && pSpine0 )
+	//{
+	//	//Vector3d angle ( pHead->rotation.getEulerAngles().x,0, 0 );
 
-		//pSpine1->localRotation.Euler( pSpine1->localRotation.getEulerAngles() - angle );
-		/*Quaternion angle;
-		angle.CreateRotationTo( Vector3d(1,0,0), Vector3d(1,0,0)*pHead->rotation );
+	//	//pSpine1->localRotation.Euler( pSpine1->localRotation.getEulerAngles() - angle );
+	//	/*Quaternion angle;
+	//	angle.CreateRotationTo( Vector3d(1,0,0), Vector3d(1,0,0)*pHead->rotation );
 
-		pSpine1->localRotation *= Rotator( angle );*/
+	//	pSpine1->localRotation *= Rotator( angle );*/
 
-		Vector3d target;
-		target = pHead->rotation * Vector3d( 1,0,0 );
-		target.y = target.x;
-		target.x = target.z;
-		//cout << "TARGET: " << target << endl;
-		target.z = 0;
-		Quaternion angle;
-		angle.RotationTo( Vector3d(1,0,0), target );
+	//	Vector3d target;
+	//	target = pHead->rotation * Vector3d( 1,0,0 );
+	//	target.y = target.x;
+	//	target.x = target.z;
+	//	//cout << "TARGET: " << target << endl;
+	//	target.z = 0;
+	//	Quaternion angle;
+	//	angle.RotationTo( Vector3d(1,0,0), target );
 
-		Vector3d targetAngle = angle.GetEulerAngles();
-		//cout << targetAngle << endl;
+	//	Vector3d targetAngle = angle.GetEulerAngles();
+	//	//cout << targetAngle << endl;
 
-		Vector3d finalAngle = Vector3d( targetAngle.z*0.5f, 0,0 );
+	//	Vector3d finalAngle = Vector3d( targetAngle.z*0.5f, 0,0 );
 
-		pSpine0->localRotation.Euler( pSpine0->localRotation.getEulerAngles() + finalAngle );
-		pSpine1->localRotation.Euler( pSpine1->localRotation.getEulerAngles() + finalAngle*1.3f );
-		pSpine2->localRotation.Euler( pSpine2->localRotation.getEulerAngles() + finalAngle*1.5f );
-		pSpine3->localRotation.Euler( pSpine3->localRotation.getEulerAngles() + finalAngle*1.8f );
+	//	pSpine0->localRotation.Euler( pSpine0->localRotation.getEulerAngles() + finalAngle );
+	//	pSpine1->localRotation.Euler( pSpine1->localRotation.getEulerAngles() + finalAngle*1.3f );
+	//	pSpine2->localRotation.Euler( pSpine2->localRotation.getEulerAngles() + finalAngle*1.5f );
+	//	pSpine3->localRotation.Euler( pSpine3->localRotation.getEulerAngles() + finalAngle*1.8f );
 
-		Vector3d armAngle = Vector3d( 0, -targetAngle.z*0.1f, -aimRotator.getEulerAngles().y*0.2f );
+	//	Vector3d armAngle = Vector3d( 0, -targetAngle.z*0.1f, -aimRotator.getEulerAngles().y*0.2f );
 
-		pUpperArmR->localRotation.Euler( pUpperArmR->localRotation.getEulerAngles() + armAngle );
-		pUpperArmL->localRotation.Euler( pUpperArmL->localRotation.getEulerAngles() + armAngle );
-	}
+	//	pUpperArmR->localRotation.Euler( pUpperArmR->localRotation.getEulerAngles() + armAngle );
+	//	pUpperArmL->localRotation.Euler( pUpperArmL->localRotation.getEulerAngles() + armAngle );
+	//}
 }
 
 void CCharacterModel::SetLookAtRotations ( const Vector3d & headEuler, const Rotator & torso )
 {
-	if ( !pHead )
-		pHead = charModel->GetSkeletonRoot()->FindChildRecursive( "Head" );
-	if ( !pSpine1 )
-		pSpine1 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine1" );
-	if ( !pSpine2 )
-		pSpine2 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine2" );
-	if ( !pSpine3 )
-		pSpine3 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine3" );
-	if ( !pNeck )
-		pNeck = charModel->GetSkeletonRoot()->FindChildRecursive( "Neck" );
-	
 	if ( pHead && pSpine1 )
 	{
-		//Vector3d angle ( head.getEulerAngles().z,0,head.getEulerAngles().y );
 		Vector3d angle( headEuler.z, 0, headEuler.y );
 		if ( angle.z < -180 )
 			angle.z += 360;
@@ -844,34 +853,36 @@ void CCharacterModel::SetLookAtRotations ( const Vector3d & headEuler, const Rot
 			switch ( iIdleType )
 			{
 			case LockNone:
-				pHead->localRotation.Euler( pHead->localRotation.getEulerAngles() + angle*0.5f );
-				pSpine1->localRotation.Euler( pSpine1->localRotation.getEulerAngles() + angle*0.15f );
-				pSpine2->localRotation.Euler( pSpine2->localRotation.getEulerAngles() + angle*0.10f );
-				pSpine3->localRotation.Euler( pSpine3->localRotation.getEulerAngles() + angle*0.05f );
-				pNeck->localRotation.Euler( pNeck->localRotation.getEulerAngles() + angle*0.20f );
+				hkanimator->m_injectorAimer.rotation_head = angle * 0.50F;
+				hkanimator->m_injectorAimer.rotation_neck = angle * 0.20F;
+				hkanimator->m_injectorAimer.rotation_spine = angle * 0.30F;
+				hkanimator->m_injectorAimer.spine_split_mode = Animation::SPLIT_123_6;
+				hkanimator->m_injectorAimer.spine_split_to_last = true;
 				break;
 			case LockMajor:
-				pHead->localRotation.Euler( pHead->localRotation.getEulerAngles() + angle*0.4f );
-				pSpine1->localRotation.Euler( pSpine1->localRotation.getEulerAngles() + angle*0.1f );
-				pSpine2->localRotation.Euler( pSpine2->localRotation.getEulerAngles() + angle*0.05f );
-				//pSpine3->localRotation.Euler( pSpine3->localRotation.getEulerAngles() + angle*0.0f );
-				pNeck->localRotation.Euler( pNeck->localRotation.getEulerAngles() + angle*0.2f );
+				hkanimator->m_injectorAimer.rotation_head = angle * 0.40F;
+				hkanimator->m_injectorAimer.rotation_neck = angle * 0.20F;
+				hkanimator->m_injectorAimer.rotation_spine = angle * 0.15F;
+				hkanimator->m_injectorAimer.spine_split_mode = Animation::SPLIT_123_6;
+				hkanimator->m_injectorAimer.spine_split_to_last = false;
 				break;
 			case LockAllButNeck:
-				pHead->localRotation.Euler( pHead->localRotation.getEulerAngles() + angle*0.6f );
-				pNeck->localRotation.Euler( pNeck->localRotation.getEulerAngles() + angle*0.1f );
+				hkanimator->m_injectorAimer.rotation_head = angle * 0.60F;
+				hkanimator->m_injectorAimer.rotation_neck = angle * 0.10F;
+				hkanimator->m_injectorAimer.rotation_spine = Vector3d::zero;
 				break;
 			case LockAllButHead:
-				pHead->localRotation.Euler( pHead->localRotation.getEulerAngles() + angle*0.5f );
+				hkanimator->m_injectorAimer.rotation_head = angle * 0.50F;
+				hkanimator->m_injectorAimer.rotation_neck = Vector3d::zero;
+				hkanimator->m_injectorAimer.rotation_spine = Vector3d::zero;
 				break;
 			}
 		}
 		else
 		{
 			// Now, get the anim, cast to HK anim, and configure the IK
-			CAnimation* anim = charModel->GetAnimation();
 			// Set the strength
-			ikinfo_t& ik0 = anim->GetIKInfo( "def_aimer0" );
+			ikinfo_t& ik0 = animator->GetIKInfo( "def_aimer0" );
 			ik0.input = angle;
 
 			switch ( iIdleType )
@@ -907,16 +918,13 @@ void CCharacterModel::SetLookAtRotations ( const Vector3d & headEuler, const Rot
 		if ( iIdleType != LockAll )
 		{
 			// Now, get the anim, cast to HK anim, and configure the IK
-			CAnimation* anim = charModel->GetAnimation();
-	
 			// Set the strength
-			ikinfo_t& ik0 = anim->GetIKInfo( "def_aimer0" );
+			ikinfo_t& ik0 = animator->GetIKInfo( "def_aimer0" );
 			ik0.input = angle;
 		}
 
 		// Turn off head IK
-		CAnimation* anim = charModel->GetAnimation();
-		ikinfo_t& ik0 = anim->GetIKInfo( "def_lookat" );
+		ikinfo_t& ik0 = animator->GetIKInfo( "def_lookat" );
 		ik0.enabled = false;
 	}
 }
@@ -1054,15 +1062,13 @@ void CCharacterModel::SetSplitFacing ( const bool splitfacing )
 
 int CCharacterModel::GetMeleeAttackFrame ( const short hand )
 {
-	CAnimation& anim = (*(charModel->GetAnimation()));
-
 	// For now, look at the animations
 
 	arstring<256> t_animName;
 	//hold_oneblade_01_swing-0 to 8 for oneblade swings
 	for ( uint i = 0; i < 9; ++i ) {
 		sprintf( t_animName, "hold_oneblade_01_swing-%d", i );
-		CAnimAction& action = anim[t_animName.c_str()];
+		CAnimAction& action = (*animator)[t_animName.c_str()];
 		if ( action.isPlaying ) {
 			int midpoint = action.GetEvent( Animation::Event_Attack );
 			if ( action.frame >= midpoint ) {
@@ -1082,8 +1088,6 @@ int CCharacterModel::GetMeleeAttackFrame ( const short hand )
 void CCharacterModel::SetAimerIK ( const uchar nArmIndex, const Item::HoldType& nHoldType )
 {
 	// Now, get the anim, cast to HK anim, and configure the IK
-	CAnimation* anim = charModel->GetAnimation();
-
 
 	//
 	//ik0.subinput0.x = 0.50f;	// Head
@@ -1106,10 +1110,10 @@ void CCharacterModel::SetAimerIK ( const uchar nArmIndex, const Item::HoldType& 
 	if ( nHoldType == Item::EmptyHanded ||
 		( sCurrentMoveAnim == "anim" )||( sCurrentMoveAnim == "hang_idle" ) )
 	{
-		ikinfo_t& ik0 = anim->GetIKInfo( "def_aimer0" );
+		ikinfo_t& ik0 = animator->GetIKInfo( "def_aimer0" );
 
 		// Check for fist actions
-		if ( (*anim)["fisticuffs_left"].isPlaying || (*anim)["fisticuffs_left_hit"].isPlaying || (*anim)["fisticuffs_left_hit_broke"].isPlaying )
+		if ( (*animator)["fisticuffs_left"].isPlaying || (*animator)["fisticuffs_left_hit"].isPlaying || (*animator)["fisticuffs_left_hit_broke"].isPlaying )
 		{	// Left hand IK
 			ik0.subinfo[0] = 1.0f;
 			ik0.subinfo[1] = 0.0f;
@@ -1118,7 +1122,7 @@ void CCharacterModel::SetAimerIK ( const uchar nArmIndex, const Item::HoldType& 
 			ik0.enabled = true;
 			if ( ik0.subinfo[3] > t_maxStrength ) ik0.subinfo[3] = t_maxStrength;
 		}
-		else if ( (*anim)["fisticuffs_right"].isPlaying || (*anim)["fisticuffs_right_hit"].isPlaying || (*anim)["fisticuffs_right_hit_broke"].isPlaying )
+		else if ( (*animator)["fisticuffs_right"].isPlaying || (*animator)["fisticuffs_right_hit"].isPlaying || (*animator)["fisticuffs_right_hit_broke"].isPlaying )
 		{	// Right hand IK
 			ik0.subinfo[0] = 0.0f;
 			ik0.subinfo[1] = 1.0f;
@@ -1139,7 +1143,7 @@ void CCharacterModel::SetAimerIK ( const uchar nArmIndex, const Item::HoldType& 
 	}
 	else
 	{	// All other cases, turn on the aimer IK
-		ikinfo_t& ik0 = anim->GetIKInfo( "def_aimer0" );
+		ikinfo_t& ik0 = animator->GetIKInfo( "def_aimer0" );
 		
 		ik0.subinfo[3] += Time::deltaTime*4;
 		ik0.enabled = true;

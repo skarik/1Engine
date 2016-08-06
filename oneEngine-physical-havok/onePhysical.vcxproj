@@ -34,6 +34,7 @@
   <ItemGroup>
     <ClInclude Include="source\physical\animation\CHKAnimation.h" />
     <ClInclude Include="source\physical\animation\curve\CHKAnimationCurve.h" />
+    <ClInclude Include="source\physical\animation\Injectors.h" />
     <ClInclude Include="source\physical\animation\set\CHKAnimationSet.h" />
     <ClInclude Include="source\physical\mode.h" />
     <ClInclude Include="source\physical\module_physical.h" />
