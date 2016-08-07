@@ -151,6 +151,9 @@ void MapEditor::Update ( void )
 	{
 		if ( !dusk->GetMouseInGUI() )
 		{
+			// Enable navigation events
+			m_preclude_navigation = false;
+
 			// Only do map mouse events if the mouse is not in the dusk GUI
 			switch ( m_current_mode )
 			{
@@ -173,10 +176,13 @@ void MapEditor::Update ( void )
 				break;
 
 			case Mode::ObjectEdit:
+				if ( Input::Key( Keys.Shift ) && Input::Key( Keys.Alt ) )
+				{
+					m_preclude_navigation = true;
+				}
 				doViewNavigationDrag();
 				doObjectEditing();
 				break;
-
 			}
 		}
 		else
@@ -197,6 +203,7 @@ void MapEditor::Update ( void )
 				m_drag_handle = new UIDragHandle();
 			}
 		}*/
+		if ( m_current_mode == Mode::Preferences ) uiStepPreferencesPanel();
 
 		// Update the lower status UI
 		uiStepBottomEdge();
@@ -210,6 +217,7 @@ void MapEditor::Update ( void )
 	ui_panel_shit->visible = m_current_mode == Mode::Properties;
 	ui_panel_area->visible = m_current_mode == Mode::AreaEdit;
 	ui_panel_object->visible = m_current_mode == Mode::ObjectEdit;
+	ui_panel_preferences->visible = m_current_mode == Mode::Preferences;
 }
 
 //===============================================================================================//
@@ -219,17 +227,26 @@ void MapEditor::Update ( void )
 // move the map around when middle button pressed
 void MapEditor::doViewNavigationDrag ( void )
 {
-	m_navigation_busy = false;
-	if ( Input::Mouse( Input::MBMiddle ) || ( Input::Mouse( Input::MBLeft ) && Input::Key( Keys.Control ) ) )
+	if ( m_preclude_navigation == false )
 	{
-		m_navigation_busy = true;
-		m_target_camera->transform.position -= Vector2d(
-			Input::DeltaMouseX(), Input::DeltaMouseY()
-			);
-	}
-	if ( Input::DeltaMouseW() != 0 )
-	{
-		m_target_camera->transform.position.y += Input::DeltaMouseW() * 0.05f;
+		m_navigation_busy = false;
+		// Drag navigation
+		if ( Input::Mouse( Input::MBMiddle ) || ( Input::Mouse( Input::MBRight ) && Input::Key( Keys.Control ) ) )
+		{
+			m_navigation_busy = true;
+			m_target_camera->transform.position -= Vector2d(
+				Input::DeltaMouseX(), Input::DeltaMouseY()
+				);
+		}
+		if ( Input::DeltaMouseW() != 0 )
+		{
+			m_target_camera->transform.position.y += Input::DeltaMouseW() * 0.05f;
+		}
+		// Navigation via arrow keys for bonus usability
+		if ( Input::Key( Keys.Left ) )  m_target_camera->transform.position.x -= m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
+		if ( Input::Key( Keys.Right ) ) m_target_camera->transform.position.x += m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
+		if ( Input::Key( Keys.Up ) )	m_target_camera->transform.position.y -= m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
+		if ( Input::Key( Keys.Down ) )	m_target_camera->transform.position.y += m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
 	}
 }
 
@@ -580,6 +597,8 @@ void MapEditor::doObjectEditing ( void )
 			m_object_target->position = m_drag_handle->GetGizmoPosition();
 			if ( m_drag_handle->HasFocus() && Input::Key( Keys.Alt ) )
 			{
+				// Set visual snapping
+				m_drag_handle->SetSnapping( Vector2d( m_tilemap->m_tileset->tilesize_x * 0.5F, m_tilemap->m_tileset->tilesize_y * 0.5F ) );
 				Vector3d objpos = m_object_target->position;
 				// Snap to half-tile
 				objpos.x = (Real) Math.Round( objpos.x * 2 / m_tilemap->m_tileset->tilesize_x ) * m_tilemap->m_tileset->tilesize_x * 0.5F;
@@ -587,6 +606,10 @@ void MapEditor::doObjectEditing ( void )
 				// Set positions to snapped values
 				m_object_target->position = objpos;
 				m_drag_handle->SetRenderPosition( objpos );
+			}
+			else
+			{	// Reset snapping of tool
+				m_drag_handle->SetSnapping( Vector2d(0,0) );
 			}
 		}
 		// Check for object deletion
@@ -778,6 +801,11 @@ void MapEditor::uiCreate ( void )
 		button.SetText("Global Settings");
 		button.SetRect(Rect(800,5,95,30));
 		ui_toolbox_global = button;
+
+		button = dusk->CreateButton( panel );
+		button.SetText("Preferences...");
+		button.SetRect(Rect(1180,5,95,30));
+		ui_mode_preferences = button;
 	}
 
 	// Bottom bar
@@ -919,7 +947,7 @@ void MapEditor::uiCreate ( void )
 		label.SetRect(Rect(11,21,0,0));
 
 		// Create help info
-		label = dusk->CreateText( panel, "CTRL+SHIFT+LMB to create object" );
+		label = dusk->CreateText( panel, "ALT+SHIFT+LMB to create object" );
 		label.SetRect(Rect(20,50,0,0));
 		label = dusk->CreateText( panel, "LMB to select object" );
 		label.SetRect(Rect(20,70,0,0));
@@ -937,6 +965,40 @@ void MapEditor::uiCreate ( void )
 				dusk->AddDropdownOption( field, entry->name.c_str(), ++i );
 		}
 		ui_fld_object_type = field;
+	}
+
+
+	// Preferences panel
+	{
+		Dusk::Handle panel;
+		Dusk::Handle button, label, field;
+
+		// Create the panel
+		panel = dusk->CreatePanel();
+		panel.SetRect( Rect(0,40,200,650) );
+		ui_panel_preferences = panel;
+
+		// Create labels
+		label = dusk->CreateText( panel, "PREFERENCES" );
+		label.SetRect(Rect(11,1,0,0));
+		label = dusk->CreateText( panel, "user options and such" );
+		label.SetRect(Rect(11,21,0,0));
+
+		// Mouse sensitivity field
+		label = dusk->CreateText( panel, "Mouse Sensitivity" );
+		label.SetRect(Rect(20,50,0,0));
+
+		field = dusk->CreateSlider( panel );
+		field.SetRect(Rect(20,70,160,30));
+		dusk->SetSliderMinMax( field, 0.2F, 5.0F );
+		Real t_val = 1.0F;
+		dusk->UpdateSlider( field, t_val );
+		ui_fld_pref_mouse_sensitivity = field;
+
+		label = dusk->CreateText( panel, "The engine ignores OS mouse" );
+		label.SetRect(Rect(20,100,0,0));
+		label = dusk->CreateText( panel, "settings." );
+		label.SetRect(Rect(20,120,0,0));
 	}
 }
 
@@ -1023,6 +1085,11 @@ void MapEditor::uiStepTopEdge ( void )
 	if ( ui_toolbox_global.GetButtonClicked() )
 	{
 		m_current_mode = Mode::Toolbox;
+	}
+
+	if ( ui_mode_preferences.GetButtonClicked() )
+	{
+		m_current_mode = Mode::Preferences;
 	}
 }
 //		uiStepDialogues () : dialogue polling
@@ -1194,6 +1261,15 @@ void MapEditor::uiStepObjectPanel ( void )
 	{
 
 	}
+}
+
+//		uiStepObjectPanel () : preferencess panel update
+// handles input and updates to the preferencess panel
+void MapEditor::uiStepPreferencesPanel ( void )
+{
+	static Real sensitivity = 1.0F;
+	dusk->UpdateSlider( ui_fld_pref_mouse_sensitivity, sensitivity );
+	CInput::SetMouseSensitivity( sensitivity );
 }
 
 //		uiStepBottomEdge () : status panel update

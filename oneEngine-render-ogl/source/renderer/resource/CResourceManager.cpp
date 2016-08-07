@@ -686,6 +686,11 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 
 				// Close the file
 				fclose( t_bpdFile );
+
+				// Set image properties
+				n_texture->info.width	= bpdHeader.width;
+				n_texture->info.height	= bpdHeader.height;
+				n_texture->info.depth	= bpdHeader.depth;
 			}
 			else
 			{

@@ -757,6 +757,7 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 			{
 				case SC_SCREENSAVE:					// Screensaver Trying To Start?
 				case SC_MONITORPOWER:				// Monitor Trying To Enter Powersave?
+				case SC_KEYMENU:					// ALT-Key nonsense?
 				return 0;							// Prevent From Happening
 			}
 			break;									// Exit

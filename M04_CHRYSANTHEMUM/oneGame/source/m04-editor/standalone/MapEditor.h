@@ -67,6 +67,9 @@ namespace M04
 		//		uiStepObjectPanel () : object panel update
 		// handles input and updates to the object panel
 		void		uiStepObjectPanel ( void );
+		//		uiStepObjectPanel () : preferencess panel update
+		// handles input and updates to the preferencess panel
+		void		uiStepPreferencesPanel ( void );
 		//		uiStepBottomEdge () : status panel update
 		// updates display of the current editor state
 		void		uiStepBottomEdge ( void );
@@ -115,6 +118,7 @@ namespace M04
 			ScriptEdit,
 			UtilityEdit,
 			Toolbox,
+			Preferences,
 		};
 		enum class SubMode : uint32_t
 		{
@@ -129,6 +133,7 @@ namespace M04
 
 		CCamera*	m_target_camera;
 		bool		m_navigation_busy;
+		bool		m_preclude_navigation;	// Stop the navigation
 
 		CDuskGUI*	dusk;
 		TileSelector*	m_tile_selector;
@@ -169,6 +174,7 @@ namespace M04
 		Dusk::Handle	ui_mode_utils;
 		Dusk::Handle	ui_toolbox_cutscene;
 		Dusk::Handle	ui_toolbox_global;
+		Dusk::Handle	ui_mode_preferences;
 
 		Dusk::Handle	ui_lbl_mode;
 		Dusk::Handle	ui_lbl_mousex;
@@ -192,6 +198,9 @@ namespace M04
 
 		Dusk::Handle	ui_panel_object;
 		Dusk::Handle	ui_fld_object_type;
+
+		Dusk::Handle	ui_panel_preferences;
+		Dusk::Handle	ui_fld_pref_mouse_sensitivity;
 	};
 }
 

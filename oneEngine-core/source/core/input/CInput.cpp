@@ -52,6 +52,7 @@ void CInput::Initialize ( void )
 		Active->mousedown[i]= false;
 		Active->mouseup[i]	= false;
 	}
+	SetMouseSensitivity( 1.0F );
 
 	xboxControl = new InputControl::CXBoxController(1);
 }
@@ -142,10 +143,10 @@ void CInput::_Update ( void )
 	}*/
 	
 	// offset them real mouse posses, limiting to window
-	mouseX += deltaMouseX;
+	mouseX += deltaMouseX * mouseSensitivityX;
 	mouseX = (mouseX<0) ? 0 : mouseX;
 	mouseX = (mouseX>Screen::Info.width) ? Screen::Info.width : mouseX;
-	mouseY += deltaMouseY;
+	mouseY += deltaMouseY * mouseSensitivityY;
 	mouseY = (mouseY<0) ? 0 : mouseY;
 	mouseY = (mouseY>Screen::Info.height) ? Screen::Info.height : mouseY;
 
@@ -160,6 +161,16 @@ void CInput::_Update ( void )
 		currMouseW = 0;
 		prevMouseW = 0;
 	}
+}
+
+void CInput::SetMouseSensitivity ( const Real sensitivity )
+{
+	Active->mouseSensitivityX = sensitivity;
+	Active->mouseSensitivityY = sensitivity;
+}
+Real CInput::GetMouseSensitivity ( void )
+{
+	return Active->mouseSensitivityX;
 }
 
 

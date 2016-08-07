@@ -43,6 +43,8 @@ public:
 
 	CORE_API static unsigned char	GetTypeChar ( void );
 	
+	CORE_API static void		SetMouseSensitivity ( const Real sensitivity );
+	CORE_API static Real		GetMouseSensitivity ( void );
 private:
 	float mouseX;
 	float mouseY;
@@ -54,6 +56,8 @@ private:
 	int rawDeltaMouseY;
 	int prevRawDeltaMouseX;
 	int prevRawDeltaMouseY;
+	float mouseSensitivityX;
+	float mouseSensitivityY;
 	int currMouseW;
 	int deltaMouseW;
 	bool mouse[4];
