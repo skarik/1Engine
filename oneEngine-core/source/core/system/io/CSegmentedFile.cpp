@@ -9,37 +9,30 @@ using std::string;
 
 // == Constructor ==
 CSegmentedFile::CSegmentedFile ( const string& sInFilename )
+	: validFile(false), fileExists(false), fp_output(NULL)
 {
 	sFilename = sInFilename;
 	// Check if the file exists
-	//ifstream ifile( sFilename.c_str() );
-	//bValidFile = (ifile.is_open());
 	CheckExists();
-
-	// 
-	fp_output = NULL;
+	// Check if can write to the file
+	if (!fileExists)
+	{
+		fp_output = fopen( sFilename.c_str(), "w" );
+		if ( fp_output != NULL )
+		{
+			validFile = true;
+		}
+		fclose( fp_output );
+		remove( sFilename.c_str() );
+		fp_output = NULL;
+	}
 }
 
 // == Destructor ==
 CSegmentedFile::~CSegmentedFile ( void )
 {
-	// Go through the lists and delete all data
-	/*for ( vector<string*>::iterator it = vpsTitleList.begin(); it != vpsTitleList.end(); it++ )
+	if ( fp_output )
 	{
-		delete (*it);
-		*it = NULL;
-	}*/
-	/*for ( vector<stringstream*>::iterator it = vpssDataList.begin(); it != vpssDataList.end(); it++ )
-	{
-		delete (*it);
-		*it = NULL;
-	}*/
-	/*for ( vector<string*>::iterator it = vpsDataList.begin(); it != vpsDataList.end(); it++ )
-	{
-		delete (*it);
-		*it = NULL;
-	}*/
-	if ( fp_output ) {
 		fclose( fp_output );
 		fp_output = NULL;
 	}
@@ -50,12 +43,11 @@ void CSegmentedFile::CheckExists ( void )
 {
 	FILE* fp;
 	fp = fopen( sFilename.c_str(), "r" );
-	if ( fp != NULL ) {
+	if ( fp != NULL )
+	{
 		fclose( fp );
-		bValidFile = true;
-	}
-	else {
-		bValidFile = false;
+		validFile = true;
+		fileExists = true;
 	}
 }
 
@@ -84,14 +76,17 @@ bool CSegmentedFile::ReadData ( void )
 		fclose( ifile );
 	}
 	return bValidFile;*/
-	if ( bValidFile )
+	if ( validFile )
 	{
 		// Open file
 		FILE* fp = fopen( sFilename.c_str(), "r+b" );
-		if ( fp == NULL ) {
-			bValidFile = false;
+		if ( fp == NULL )
+		{
+			fileExists = false;
+			validFile = false;
 			return false;
 		}
+		validFile = true;
 
 		// Loop through the entire file, looking for the positions of data
 		while ( !feof( fp ) ) {
@@ -101,7 +96,7 @@ bool CSegmentedFile::ReadData ( void )
 		// Close file
 		fclose( fp );
 	}
-	return bValidFile;
+	return validFile;
 }
 
 //==Locate Start and Read Infos==
@@ -113,21 +108,8 @@ bool CSegmentedFile::FindSegmentStart ( FILE* fp )
 	sCurrentData = "";
 
 	const char matchBuffer [8] = "<<begin";
-	//while ( sCurrentData != "<<begin" )
 	while ( true )
 	{
-		// Read in a character at a time to find position
-		/*fread( &temp, sizeof( unsigned char ), 1, fp );
-		sCurrentData += temp;
-		// Clear buffer if cannot find opening sequence
-		if ( sCurrentData[sCurrentData.length()-1] != matchBuffer[sCurrentData.length()-1] ) {
-			sCurrentData = "";
-		}
-		else {
-			if ( sCurrentData.length() == 7 ) {
-				break;
-			}
-		}*/
 		// Exit if at the end of file
 		if ( feof( fp ) ) {
 			return false;
@@ -139,15 +121,19 @@ bool CSegmentedFile::FindSegmentStart ( FILE* fp )
 		uint offset = 0;
 		for ( uint i = 0; i < readAmount; ++i )
 		{
-			if ( tempBuffer[i] == matchBuffer[matchpoint] ) {
-				if ( i >= readAmount-(7-matchpoint) ) {
+			if ( tempBuffer[i] == matchBuffer[matchpoint] )
+			{
+				if ( i >= readAmount-(7-matchpoint) )
+				{
 					matchpoint = 0;
 					fseek( fp, std::max<long>( ftell(fp)-8, 0 ), SEEK_SET );
 					break;
 				}
-				else {
+				else
+				{
 					matchpoint += 1;
-					if ( matchpoint == 7 ) {
+					if ( matchpoint == 7 )
+					{
 						offset = i;
 						break;
 					}
@@ -158,7 +144,8 @@ bool CSegmentedFile::FindSegmentStart ( FILE* fp )
 			}
 		}
 		// Now check match
-		if ( matchpoint == 7 ) {
+		if ( matchpoint == 7 )
+		{
 			long seekpos = ftell(fp)-(readAmount-offset-1);
 			//printf( "Seeking to position %d for new segment found\n", seekpos );
 			fseek( fp, seekpos, SEEK_SET );
@@ -217,7 +204,8 @@ bool CSegmentedFile::FindSegmentStart ( FILE* fp )
 	fread( &temp, sizeof( unsigned char ), 1, fp );
 
 	// Save current cursor position
-	if ( added ) {
+	if ( added )
+	{
 		viSectorPositions.push_back( ftell( fp ) );
 	}
 
@@ -285,7 +273,8 @@ bool CSegmentedFile::GetSectionData ( const string& sSection, string& sOutString
 	// Search for the target title
 	for ( uint i = 0; i < vsSectorNames.size(); ++i )
 	{
-		if ( strcmp( sSection.c_str(), vsSectorNames[i].c_str() ) == 0 ) {
+		if ( strcmp( sSection.c_str(), vsSectorNames[i].c_str() ) == 0 )
+		{
 			sectionIndex = i;
 			break;
 		}
@@ -301,8 +290,10 @@ bool CSegmentedFile::GetSectionData ( const string& sSection, string& sOutString
 
 		// Open file
 		FILE* fp = fopen( sFilename.c_str(), "rb" );
-		if ( fp == NULL ) {
-			bValidFile = false;
+		if ( fp == NULL )
+		{
+			validFile = false;
+			fileExists = false;
 			return false;
 		}
 
@@ -352,7 +343,8 @@ CBufferIO CSegmentedFile::GetSectionStream ( const std::string& sSection, const 
 		FILE* fp = fopen( sFilename.c_str(), "rb" );
 		if ( fp == NULL )
 		{
-			bValidFile = false;
+			validFile = false;
+			fileExists = false;
 			return CBufferIO(NULL);
 		}
 
@@ -385,16 +377,8 @@ CBufferIO CSegmentedFile::GetSectionStream ( const std::string& sSection, const 
 // Saves the file to the filename.
 bool CSegmentedFile::WriteData ( void )
 {
-	if ( fp_output == NULL )
+	if ( validFile )
 	{
-		return false;
-	}
-	else
-	{
-		// Close output file
-		fclose( fp_output );
-		fp_output = NULL;
-
 		// Open real output file
 		FILE* ofile = fopen( sFilename.c_str(), "wb" );
 		// Open temp file
@@ -416,11 +400,15 @@ bool CSegmentedFile::WriteData ( void )
 
 		return true;
 	}
+	else
+	{
+		return false;
+	}
 }
 
 //==Write Segment Data==
 // Writes shit.
-void CSegmentedFile::WriteSector( string& sName, string& sData, bool bAppend )
+void CSegmentedFile::WriteSector( string& sName, string& sData )
 {
 	/*unsigned int iDataIndex = (unsigned) -1;
 
@@ -451,44 +439,45 @@ void CSegmentedFile::WriteSector( string& sName, string& sData, bool bAppend )
 	// Edit the data already there.
 	(*vpsDataList[iDataIndex]) = sData;
 	*/
+
 	//
-	if ( bValidFile )
+	if ( validFile || fileExists )
 	{
 		// Open temp file
-		if ( fp_output==NULL ) {
-			fp_output = fopen( (sFilename + ".temp").c_str(), "wb" );
-			if ( fp_output == NULL ) {
-				return;
-			}
-		}
-		if ( !bAppend )
-		{	// Write to the temp file
-			
-			// Write the section header
-			fwrite( "<<begin,", sizeof(char), 8, fp_output );
-			// Write the keys. Currently, only key is name
-			{
-				fwrite( "name<", sizeof(char), 5, fp_output );
-				fwrite( sName.c_str(), sizeof(char), sName.length(), fp_output );
-				fwrite( ">,", sizeof(char), 2, fp_output );
-			}
-			// Write out the data
-			{
-				// Write the size of the data as a 32 bit integer
-				uint32_t datasize;
-				datasize = sData.length();
-				fwrite( &datasize, sizeof(uint32_t), 1, fp_output );
-				
-				// Write out the actual data
-				fwrite( sData.c_str(), sizeof(char), datasize, fp_output );
-			}
-			// Write out the ending of this section
-			fwrite( "-end>>", sizeof(char), 6, fp_output );
-
+		fp_output = fopen( (sFilename + ".temp").c_str(), "ab+" );
+		if ( fp_output == NULL )
+		{
+			validFile = false;
+			return;
 		}
 		else
 		{
-			// We're totally fucked here
+			fileExists = true;
 		}
+
+		// Write the section header
+		fwrite( "<<begin,", sizeof(char), 8, fp_output );
+		// Write the keys. Currently, only key is name
+		{
+			fwrite( "name<", sizeof(char), 5, fp_output );
+			fwrite( sName.c_str(), sizeof(char), sName.length(), fp_output );
+			fwrite( ">,", sizeof(char), 2, fp_output );
+		}
+		// Write out the data
+		{
+			// Write the size of the data as a 32 bit integer
+			uint32_t datasize;
+			datasize = sData.length();
+			fwrite( &datasize, sizeof(uint32_t), 1, fp_output );
+				
+			// Write out the actual data
+			fwrite( sData.c_str(), sizeof(char), datasize, fp_output );
+		}
+		// Write out the ending of this section
+		fwrite( "-end>>", sizeof(char), 6, fp_output );
+
+		// Close output
+		fclose( fp_output );
+		fp_output = NULL;
 	}
 }

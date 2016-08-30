@@ -150,34 +150,34 @@ void CMccCharacterModel::Update ( void )
 		{
 			XTransform target;
 
-			Transform* pFinger1 = charModel->GetSkeletonRoot()->FindChildRecursive( "R Finger02" );
+			Core::TransformLite* pFinger1 = getTransformLite( "R Finger02" );
 			if ( pFinger1 ) {
-				target.position = charModel->transform.rotation*pFinger1->position + charModel->transform.position;
-				target.rotation = ( !charModel->transform.rotation * pFinger1->rotation ).getQuaternion();
+				target.position = charModel->transform.rotation*pFinger1->world.position + charModel->transform.position;
+				target.rotation = ( !charModel->transform.rotation * pFinger1->world.rotation ).getQuaternion();
 	
 				mFingerParticles[0]->transform.position = target.position;
 			}
 			
-			Transform* pFinger2 = charModel->GetSkeletonRoot()->FindChildRecursive( "L Finger02" );
+			Core::TransformLite* pFinger2 = getTransformLite( "L Finger02" );
 			if ( pFinger2 ) {
-				target.position = charModel->transform.rotation*pFinger2->position + charModel->transform.position;
-				target.rotation = ( !charModel->transform.rotation * pFinger2->rotation ).getQuaternion();
+				target.position = charModel->transform.rotation*pFinger2->world.position + charModel->transform.position;
+				target.rotation = ( !charModel->transform.rotation * pFinger2->world.rotation ).getQuaternion();
 
 				mFingerParticles[1]->transform.position = target.position;
 			}
 
-			Transform* pFinger3 = charModel->GetSkeletonRoot()->FindChildRecursive( "R Finger22" );
+			Core::TransformLite* pFinger3 = getTransformLite( "R Finger22" );
 			if ( pFinger3 ) {
-				target.position = charModel->transform.rotation*pFinger3->position + charModel->transform.position;
-				target.rotation = ( !charModel->transform.rotation * pFinger3->rotation ).getQuaternion();
+				target.position = charModel->transform.rotation*pFinger3->world.position + charModel->transform.position;
+				target.rotation = ( !charModel->transform.rotation * pFinger3->world.rotation ).getQuaternion();
 	
 				mFingerParticles[2]->transform.position = target.position;
 			}
 			
-			Transform* pFinger4 = charModel->GetSkeletonRoot()->FindChildRecursive( "L Finger22" );
+			Core::TransformLite* pFinger4 = getTransformLite( "L Finger22" );
 			if ( pFinger4 ) {
-				target.position = charModel->transform.rotation*pFinger4->position + charModel->transform.position;
-				target.rotation = ( !charModel->transform.rotation * pFinger4->rotation ).getQuaternion();
+				target.position = charModel->transform.rotation*pFinger4->world.position + charModel->transform.position;
+				target.rotation = ( !charModel->transform.rotation * pFinger4->world.rotation ).getQuaternion();
 
 				mFingerParticles[3]->transform.position = target.position;
 			}
@@ -204,15 +204,14 @@ void CMccCharacterModel::Update ( void )
 		Real t_maxStrength = 1-GetRagdollStrength();
 
 		if ( !pHead ) {
-			pHead = charModel->GetSkeletonRoot()->FindChildRecursive( "Head" ); 
+			pHead = getTransformLite( "Head" ); 
 		}
 		// Foot IK
 		// Set the IK info
-		CAnimation* anim = charModel->GetAnimation();
 		{
-			ikinfo_t& ik_lf = anim->GetIKInfo( "def_lfoot" );
+			ikinfo_t& ik_lf = animator->GetIKInfo( "def_lfoot" );
 			if ( mstats && (mstats->iRace == CRACE_KITTEN) ) {
-				ik_lf.subinfo[0] = Math.Clamp( pHead->position.z / 5.0f, 0.2f, 1 );
+				ik_lf.subinfo[0] = Math.Clamp( pHead->world.position.z / 5.0f, 0.2f, 1 );
 			}
 			else {
 				ik_lf.subinfo[0] = 0;
@@ -220,9 +219,9 @@ void CMccCharacterModel::Update ( void )
 			ik_lf.enabled = (t_maxStrength > 0.5f);
 		}
 		{
-			ikinfo_t& ik_rf = anim->GetIKInfo( "def_rfoot" );
+			ikinfo_t& ik_rf = animator->GetIKInfo( "def_rfoot" );
 			if ( mstats && (mstats->iRace == CRACE_KITTEN) ) {
-				ik_rf.subinfo[0] = Math.Clamp( pHead->position.z / 5.0f, 0.2f, 1 );
+				ik_rf.subinfo[0] = Math.Clamp( pHead->world.position.z / 5.0f, 0.2f, 1 );
 			}
 			else {
 				ik_rf.subinfo[0] = 0;
@@ -316,9 +315,10 @@ void CMccCharacterModel::SetVisualsFromStats( CRacialStats* refstats )
 	}
 	for ( uint i = 0; i < modelList.size(); ++i )
 	{
-		if ( (*modelList[i]) != NULL ) {
+		if ( (*modelList[i]) != NULL )
+		{
 			//(*modelList[i])->SetReferencedAnimationMode( charModel );
-			(*modelList[i])->SetReferencedBoneMode( charModel );
+			(*modelList[i])->SetReferencedSkeletonBuffer( charModel );
 		}
 	}
 
@@ -380,12 +380,14 @@ void CMccCharacterModel::Load ( void )
 	mdlBody = new CSkinnedModel( baseName + "body.fbx" );
 	mdlBody->DuplicateMaterials();
 	//mdlBody->SetReferencedAnimationMode( charModel );
-	mdlBody->SetReferencedBoneMode( charModel );
+	//mdlBody->SetReferencedBoneMode( charModel );
+	mdlBody->SetReferencedSkeletonBuffer( charModel );
 	charTargetModel = mdlBody;
 	mdlHead = new CSkinnedModel( baseName + "head.fbx" );
 	mdlHead->DuplicateMaterials();
 	//mdlHead->SetReferencedAnimationMode( charModel );
-	mdlHead->SetReferencedBoneMode( charModel );
+	//mdlHead->SetReferencedBoneMode( charModel );
+	mdlHead->SetReferencedSkeletonBuffer( charModel );
 
 	SetVisualsFromStats( mstats );
 
@@ -413,7 +415,8 @@ void CMccCharacterModel::SetHair ( const int hairType )
 		mdlHair = new CSkinnedModel( modelName );
 		mdlHair->DuplicateMaterials();
 		//mdlHair->SetReferencedAnimationMode( charModel );
-		mdlHair->SetReferencedBoneMode( charModel );
+		//mdlHair->SetReferencedBoneMode( charModel );
+		mdlHair->SetReferencedSkeletonBuffer( charModel );
 	}
 }
 
@@ -438,7 +441,8 @@ void CMccCharacterModel::SetRace ( const eCharacterRace race )
 		mdlBody = new CSkinnedModel( modelName );
 		mdlBody->DuplicateMaterials();
 		//mdlBody->SetReferencedAnimationMode( charModel );
-		mdlBody->SetReferencedBoneMode( charModel );
+		//mdlBody->SetReferencedBoneMode( charModel );
+		mdlBody->SetReferencedSkeletonBuffer( charModel );
 
 		UpdateTattoos();
 	}
@@ -459,7 +463,8 @@ void CMccCharacterModel::SetRace ( const eCharacterRace race )
 		mdlHead = new CSkinnedModel( modelName );
 		mdlHead->DuplicateMaterials();
 		//mdlBody->SetReferencedAnimationMode( charModel );
-		mdlHead->SetReferencedBoneMode( charModel );
+		//mdlHead->SetReferencedBoneMode( charModel );
+		mdlHead->SetReferencedSkeletonBuffer( charModel );
 
 		UpdateTattoos();
 	}
@@ -495,7 +500,8 @@ void CMccCharacterModel::SetRace ( const eCharacterRace race )
 		mdlEars = new CSkinnedModel( modelName );
 		mdlEars->DuplicateMaterials();
 		//mdlEars->SetReferencedAnimationMode( charModel );
-		mdlEars->SetReferencedBoneMode( charModel );
+		//mdlEars->SetReferencedBoneMode( charModel );
+		mdlEars->SetReferencedSkeletonBuffer( charModel );
 	}
 
 	// Set the eyeball materials
@@ -647,7 +653,8 @@ void CMccCharacterModel::SetPartModel ( const string & partName, CSkinnedModel**
 	}
 	*pMdlTarget = new CSkinnedModel( modelName );
 	//(*pMdlTarget)->SetReferencedAnimationMode( charModel );
-	(*pMdlTarget)->SetReferencedBoneMode( charModel );
+	//(*pMdlTarget)->SetReferencedBoneMode( charModel );
+	(*pMdlTarget)->SetReferencedSkeletonBuffer( charModel );
 }
 void CMccCharacterModel::SetShirtModel ( const string & shirtname )
 {
@@ -941,7 +948,7 @@ void CMccCharacterModel::AddDecal ( const Vector3d& n_sourcePosition, const uint
 	}
 
 	cutdecal.projection_pos = n_sourcePosition - transform.position;
-	cutdecal.projection_pos -= GetSkeletonRoot()->position;
+	cutdecal.projection_pos -= GetSkeletonRoot()->world.position;
 	cutdecal.projection_pos = GetModelRotation().transpose() * cutdecal.projection_pos;
 	/*cutdecal.projection_pos.x *= 2;
 	cutdecal.projection_pos.y *= 2;*/

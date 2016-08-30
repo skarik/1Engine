@@ -29,6 +29,7 @@ public:
 
 	// ==Data Reading==
 	// Reads in the new data
+	// Returns false if the data cannot be read
 	bool ReadData ( void );
 private:
 	void CheckExists ( void );
@@ -54,12 +55,17 @@ public:
 
 	// Writes out the current data
 	bool WriteData ( void );
+
 	// Writes a new sector with the target name and containing the target data
-	void WriteSector ( std::string& name, std::string& data, bool bAppend=false );
+	// Will not replace any existing data.
+	void WriteSector ( std::string& name, std::string& data );
 
 private:
 	std::string					sFilename;
-	bool						bValidFile;
+	// Can the file be opened and written to?
+	bool						validFile;
+	// Does the file already exist?
+	bool						fileExists;
 	FILE*						fp_output;
 	
 	std::vector<arstring<256>>	vsSectorNames;

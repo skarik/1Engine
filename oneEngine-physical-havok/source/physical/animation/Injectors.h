@@ -28,6 +28,9 @@ namespace Animation
 	struct injectorLookat_t
 	{
 		Rotator rotation_eye;
+		Vector3d rotation_spine_lateral;
+		// Controls what table is used to pull split values
+		splitMode_t spine_split_mode;
 	};
 
 	// Jigglebone animation

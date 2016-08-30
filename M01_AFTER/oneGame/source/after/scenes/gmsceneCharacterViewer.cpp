@@ -86,9 +86,19 @@ void gmsceneCharacterViewer::LoadScene ( void )
 	}
 	loadscreen->StepScreen();
 
+	// Precache the flat basecase model first
+	{
+		CModel* precache;
+
+		precache = new CModel( "models/biased_cube.FBX" );
+		delete precache;
+		loadscreen->StepScreen();
+	}
+
 	// Precache animation models
 	{
 		CSkinnedModel* precache;
+
 		precache = new CSkinnedModel( "models/character/clara.FBX" );
 		delete precache;
 		loadscreen->StepScreen();

@@ -31,7 +31,7 @@ void CRWBowShitty::Generate ( void )
 
 	//pModel = new CSkinnedModel( bowModel );
 	pModel = new CModel( bowModel.c_str() );
-	if (pModel->GetAnimation()) {
+	/*if (pModel->GetAnimation()) {
 		pModel->GetAnimation()->Play("ref");
-	}
+	}*/
 }

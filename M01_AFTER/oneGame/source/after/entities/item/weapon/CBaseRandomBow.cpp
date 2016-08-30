@@ -311,18 +311,22 @@ void CBaseRandomBow::Update ( void )
 		if ( tension > 0.01f ) {
 			iAnimationSubset = 5;
 			// If not pulling bow, then do pull action
-			if ( pModel ) {
-				if ( pModel->GetAnimation() ) {
+			if ( pModel )
+			{
+				/*if ( pModel->GetAnimation() )
+				{
 					CAnimAction* action = pModel->GetAnimation()->FindAction( "pull" );
-					if ( action ) {
+					if ( action )
+					{
 						action->Play( 1.0f, 0.2f );
 						action->framesPerSecond = 0.01f;
 						action->frame = (action->GetLength()-1.2f) * tension;
 					}
-					else {
-						std::cout << "No action called 'pull'" << std::endl;
+					else
+					{
+						Debug::Console->PrintWarning("Missing action \"pull\"\n");
 					}
-				}
+				}*/
 			}
 			if ( pOwner ) {
 				((CCharacter*)pOwner)->PlayItemAnimation( NPC::ItemAnim::Charge, 1, mHand, tension );
@@ -336,12 +340,12 @@ void CBaseRandomBow::Update ( void )
 		}
 		else {
 			// Play animations
-			if ( pModel ) {
+			/*if ( pModel ) {
 				if ( pModel->GetAnimation() ) {
 					CAnimAction* action = pModel->GetAnimation()->FindAction( "ref" );
 					action->Play(Time::deltaTime);
 				}
-			}
+			}*/
 			if ( pOwner ) {
 				((CCharacter*)pOwner)->PlayItemAnimation( NPC::ItemAnim::Idle, 1, mHand, 0 );
 			}

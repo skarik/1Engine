@@ -68,6 +68,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 		if ( file_extension == "" )
 		{
 			fbx_rezname += ".fbx";
+			model_filename += ".pad";
 		}
 		else if ( file_extension != "fbx" )
 		{
@@ -79,6 +80,16 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 		if ( ConvertFile( fbx_filename.c_str() ) == false )
 		{
 			Debug::Console->PrintError( "ModelLoader::LoadModel : Error occurred in ModelLoader::ConvertFile call\n" );
+		}
+
+		// Make sure loading in a pad file now
+		if ( file_extension == "" )
+		{
+			model_filename += ".pad";
+		}
+		else if ( file_extension != "pad" )
+		{
+			model_filename = model_filename.substr( 0, model_filename.find_last_of( "." ) ) + ".pad";
 		}
 	}
 
@@ -99,6 +110,10 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 	if ( buffer.Valid() )
 	{
 		buffer.ReadData( (char*) &header, sizeof(modelFmtHeader_t) );
+	}
+	else
+	{
+		throw Core::CorruptedDataException();
 	}
 
 	// Based on that data, read in the other segments
@@ -444,7 +459,7 @@ bool ModelLoader::ConvertFile ( const char* n_filename )
 		targetFilename = Core::Resources::PathTo( targetFilename );
 
 		// Return proper conversion
-		return true;
+		return IO::FileExists( targetFilename );
 	}
 	else if ( file_extension == "pad" )
 	{

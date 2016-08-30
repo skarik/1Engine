@@ -441,7 +441,7 @@ void CCharacterModel::SetFaceAtRotation ( const Rotator& rotation )
 		if ( !CAnimation::useHavok )
 		{
 			// TODO: This information must be passed into the Animator.
-			if ( !pSpine1 )
+			/*if ( !pSpine1 )
 				pSpine1 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine1" );
 			if ( !pSpine2 )
 				pSpine2 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine2" );
@@ -450,7 +450,8 @@ void CCharacterModel::SetFaceAtRotation ( const Rotator& rotation )
 
 			pSpine1->local.rotation.Euler( pSpine1->local.rotation.getEulerAngles() + angle*0.444f );
 			pSpine2->local.rotation.Euler( pSpine2->local.rotation.getEulerAngles() + angle*0.333f );
-			pSpine3->local.rotation.Euler( pSpine3->local.rotation.getEulerAngles() + angle*0.222f );
+			pSpine3->local.rotation.Euler( pSpine3->local.rotation.getEulerAngles() + angle*0.222f );*/
+			throw Core::DeprecatedCallException();
 		}
 		else
 		{
@@ -464,9 +465,7 @@ void CCharacterModel::SetFaceAtRotation ( const Rotator& rotation )
 			}
 			catch ( std::out_of_range& )
 			{
-				// TODO: This information must be passed into the Animator.
-
-				if ( !pSpine1 )
+				/*if ( !pSpine1 )
 					pSpine1 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine1" );
 				if ( !pSpine2 )
 					pSpine2 = charModel->GetSkeletonRoot()->FindChildRecursive( "Spine2" );
@@ -475,7 +474,10 @@ void CCharacterModel::SetFaceAtRotation ( const Rotator& rotation )
 
 				pSpine1->localRotation.Euler( pSpine1->localRotation.getEulerAngles() + angle*0.444f );
 				pSpine2->localRotation.Euler( pSpine2->localRotation.getEulerAngles() + angle*0.333f );
-				pSpine3->localRotation.Euler( pSpine3->localRotation.getEulerAngles() + angle*0.222f );
+				pSpine3->localRotation.Euler( pSpine3->localRotation.getEulerAngles() + angle*0.222f );*/
+
+				hkanimator->m_injectorLookat.rotation_spine_lateral = angle;
+				hkanimator->m_injectorLookat.spine_split_mode = Animation::SPLIT_234_9;
 			}
 		}
 	}
@@ -934,11 +936,11 @@ void CCharacterModel::GetEyecamTransform ( XTransform& target )
 {
 	// Left and Right eye transforms both need to be grabbed (and head)
 	if ( !pEyeL )
-		pEyeL = charModel->GetSkeletonRoot()->FindChildRecursive( "L Eye" ); 
+		pEyeL = getTransformLite( "L Eye" ); 
 	if ( !pEyeR )
-		pEyeR = charModel->GetSkeletonRoot()->FindChildRecursive( "R Eye" ); 
+		pEyeR = getTransformLite( "R Eye" ); 
 	if ( !pHead )
-		pHead = charModel->GetSkeletonRoot()->FindChildRecursive( "Head" ); 
+		pHead = getTransformLite( "Head" ); 
 
 	if ( (!pEyeL) || (!pEyeR) || (!pHead) )
 	{
@@ -961,16 +963,16 @@ void CCharacterModel::GetEyecamTransform ( XTransform& target )
 		target.position.z *= target.scale.z;
 		target.position = target.rotation*target.position;*/
 
-		target.rotation = pHead->rotation.getQuaternion();
-		target.position = charModel->transform.rotation*((pEyeL->position + pEyeR->position)*0.5f + (target.rotation*Vector3d( 0,0.19f,0 ))) + charModel->transform.position;
+		target.rotation = pHead->world.rotation.getQuaternion();
+		target.position = charModel->transform.rotation*((pEyeL->world.position + pEyeR->world.position)*0.5f + (target.rotation*Vector3d( 0,0.19f,0 ))) + charModel->transform.position;
 
-		target.rotation = ( charModel->transform.rotation * pHead->rotation ).getQuaternion();
+		target.rotation = ( charModel->transform.rotation * pHead->world.rotation ).getQuaternion();
 	}
 }
 void CCharacterModel::GetHeadTransform ( XTransform &target )
 {
 	if ( !pHead )
-		pHead = charModel->GetSkeletonRoot()->FindChildRecursive( "Head" ); 
+		pHead = getTransformLite( "Head" ); 
 
 	if ( !pHead )
 	{
@@ -979,8 +981,8 @@ void CCharacterModel::GetHeadTransform ( XTransform &target )
 	}
 	else
 	{
-		target.position = charModel->transform.rotation*pHead->position + charModel->transform.position;
-		target.rotation = ( charModel->transform.rotation * pHead->rotation ).getQuaternion();
+		target.position = charModel->transform.rotation*pHead->world.position + charModel->transform.position;
+		target.rotation = ( charModel->transform.rotation * pHead->world.rotation ).getQuaternion();
 	}
 }
 
@@ -988,63 +990,64 @@ void CCharacterModel::GetHeadTransform ( XTransform &target )
 void CCharacterModel::GetProp01Transform ( XTransform& target )
 {
 	if ( !pProp1 )
-		pProp1 = charModel->GetSkeletonRoot()->FindChildRecursive( "Prop1" );
+		pProp1 = getTransformLite( "Prop1" );
 
 	if ( pProp1 )
 	{
-		target.position = charModel->transform.rotation*pProp1->position + charModel->transform.position;
+		target.position = charModel->transform.rotation*pProp1->world.position + charModel->transform.position;
 		///target.rotation = prop->rotation.getQuaternion()*charModel->transform.rotation.getQuaternion();
 		///target.rotation = !((charModel->transform.rotation*!prop->rotation).getQuaternion());
 		//target.rotation = ( charModel->transform.rotation * prop->rotation ).getQuaternion();
 		//target.rotation = ( pProp1->rotation * charModel->transform.rotation ).getQuaternion();
-		target.rotation = ( charModel->transform.rotation * pProp1->rotation ).getQuaternion();
+		target.rotation = ( charModel->transform.rotation * pProp1->world.rotation ).getQuaternion();
 	}
 }
 void CCharacterModel::GetProp02Transform ( XTransform& target )
 {
 	if ( !pProp2 )
-		pProp2 = charModel->GetSkeletonRoot()->FindChildRecursive( "Prop2" );
+		pProp2 = getTransformLite( "Prop2" );
 
 	if ( pProp2 )
 	{
-		target.position = charModel->transform.rotation*pProp2->position + charModel->transform.position;
+		target.position = charModel->transform.rotation*pProp2->world.position + charModel->transform.position;
 		///target.rotation = prop->rotation.getQuaternion()*charModel->transform.rotation.getQuaternion();
 		///target.rotation = !((charModel->transform.rotation*!prop->rotation).getQuaternion());
 		//target.rotation = ( charModel->transform.rotation * prop->rotation ).getQuaternion();
-		target.rotation = ( charModel->transform.rotation * pProp2->rotation ).getQuaternion();
+		target.rotation = ( charModel->transform.rotation * pProp2->world.rotation ).getQuaternion();
 	}
 }
 void CCharacterModel::GetLFootTransform ( const int index, XTransform & target )
 {
 	if ( !pFootL0 )
-		pFootL0 = charModel->GetSkeletonRoot()->FindChildRecursive( "L Foot" );
+		pFootL0 = getTransformLite( "L Foot" );
 
 	if ( pFootL0 )
 	{
-		target.position = charModel->transform.rotation*pFootL0->position + charModel->transform.position;
-		target.rotation = ( charModel->transform.rotation * pFootL0->rotation ).getQuaternion();
+		target.position = charModel->transform.rotation*pFootL0->world.position + charModel->transform.position;
+		target.rotation = ( charModel->transform.rotation * pFootL0->world.rotation ).getQuaternion();
 	}
 }
 void CCharacterModel::GetRFootTransform ( const int index, XTransform & target )
 {
 	if ( !pFootR0 )
-		pFootR0 = charModel->GetSkeletonRoot()->FindChildRecursive( "R Foot" );
+		pFootR0 = getTransformLite( "R Foot" );
 
 	if ( pFootL0 )
 	{
-		target.position = charModel->transform.rotation*pFootR0->position + charModel->transform.position;
-		target.rotation = ( charModel->transform.rotation * pFootR0->rotation ).getQuaternion();
+		target.position = charModel->transform.rotation*pFootR0->world.position + charModel->transform.position;
+		target.rotation = ( charModel->transform.rotation * pFootR0->world.rotation ).getQuaternion();
 	}
 }
 
 void CCharacterModel::GetBoneTransform ( const int index, XTransform & target )
 {
-	Transform* boneTransform = &(charModel->GetSkeletonList()->at(index)->transform);
+	//Transform* boneTransform = &(charModel->GetSkeletonList()->at(index)->transform);
+	Core::TransformLite* boneTransform = &(charModel->GetSkeleton()->current_transform[index]);
 
 	if ( boneTransform )
 	{
-		target.position = charModel->transform.rotation*boneTransform->position + charModel->transform.position;
-		target.rotation = ( charModel->transform.rotation * boneTransform->rotation ).getQuaternion();
+		target.position = charModel->transform.rotation*boneTransform->world.position + charModel->transform.position;
+		target.rotation = ( charModel->transform.rotation * boneTransform->world.rotation ).getQuaternion();
 	}
 }
 

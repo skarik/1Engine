@@ -1,6 +1,7 @@
 
 #include "CRfCharacterModel.h"
 //#include "CRagdollTest.h"
+#include "core-ext/animation/CAnimation.h"
 #include "engine-common/physics/motion/CRagdollCollision.h"
 
 CRfCharacterModel::CRfCharacterModel ( CCharacter* owner )
@@ -23,9 +24,9 @@ bool CRfCharacterModel::LoadModel ( const string& model_filename )
 
 	string file = "models/" + model_filename + "/ref.fbx";
 	refModel = new CSkinnedModel ( file );
-	refModel->SetReferencedBoneMode( charModel );
-
-	//new CRagdollTest( charModel );
+	//refModel->SetReferencedBoneMode( charModel );
+	//animator->AddOutput( refModel->GetSkeleton() );
+	refModel->SetReferencedSkeletonBuffer( charModel );
 	
 	return true;
 }

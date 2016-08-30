@@ -1,5 +1,6 @@
 #include "Skeleton.h"
 #include "core-ext/transform/TransformUtility.h"
+#include "core/utils/StringUtils.h"
 
 void Animation::Skeleton::GenerationAnimationTransforms ( Skeleton & n_skeleton )
 {
@@ -36,4 +37,27 @@ void Animation::Skeleton::GenerateShaderMatrices ( Skeleton& n_skeleton )
 		// Create the value that will be applied to the skinning math
 		n_skeleton.current_pose[i] = n_skeleton.current_transform[i].WorldMatrix() * n_skeleton.inv_bind_pose[i];
 	}
+}
+
+//	FindInSkeleton ( const char* name ) : finds best match for input name
+// Loops through the information in names[], selects the best match, and returns its index. -1 if no match.
+int32_t Animation::Skeleton::FindInSkeleton ( const Skeleton& n_skeleton, const char* n_name )
+{
+	int32_t match = -1;
+
+	// Start with no match, and a minimum length of the name passed in
+	string comparison = n_name;
+	size_t largest_match = comparison.length();
+
+	// Loop through all names
+	for ( size_t i = 0; i < n_skeleton.names.size(); ++i )
+	{
+		size_t current_match = StringUtils::LargestCommonSubstringLength( comparison, n_skeleton.names[i].c_str() );
+		if ( current_match > largest_match )
+		{
+			current_match = largest_match;
+			match = (int32_t)i;
+		}
+	}
+	return match;
 }

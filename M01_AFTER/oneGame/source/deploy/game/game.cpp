@@ -55,7 +55,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	gameSettings.s_cmd = lpCmdLine;
 	if ( CGameSettings::Active()->b_ro_Enable30Steroscopic ) {
 		MessageBox( NULL, "Stereoscopic 3D mode either currently cascades into memory hell or isn't implemented.", "Invalid system setting", 0 );
-		return 0;
+		return 0; // currently causes infinite loop in renderer
 	}
 
 	// Create jobs system
@@ -70,10 +70,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	std::cout << "Win32 Build (" << __DATE__ << ") Prealpha" << std::endl;
 
 	// Init Physics
-	Physics::Init();
-	/*CPhysics* physics = new CPhysics;
-	CPhysics::Instance = physics;
-	CPhysics::Instance->_Init();*/
+	Physics::Init(); // Multiple simulations run in single instance now
 	// Create Renderstate
 	CRenderState aRenderer (NULL); // passing null creates default resource manager
 	aWindow.mRenderer = &aRenderer; // Set the window's renderer (multiple possible render states)

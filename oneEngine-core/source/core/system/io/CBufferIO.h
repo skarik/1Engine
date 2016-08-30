@@ -53,6 +53,11 @@ public:
 	}
 	CBufferIO& operator= ( CBufferIO&& other )
 	{
+		if ( m_bufferowned )
+		{
+			delete [] m_buffer;
+			m_bufferowned = false;
+		}
 		m_buffer = other.m_buffer;
 		m_position = other.m_position;
 		m_maxsize = other.m_maxsize;
@@ -106,6 +111,7 @@ public:
 			*_odata = m_buffer[m_position];
 			_odata++; m_position++;
 		}
+		*_odata = '\0';
 		m_position++;
 		return m_position - startpos;
 	}
