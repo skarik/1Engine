@@ -1,8 +1,0 @@
-biomeSampler.pgm	Image that maps out the biome selection across temperature and humidity. Supertundra covers a fairly large majority of it, but the terrain generation tends to bias away from supertundra near the equator and the ocean.
-terrainSampler.pgm	Image that maps out the terrain type selection across rockiness and unpredictability.
-reference.png		Color reference for dungeon layouts. Use this for modding the system dungeons, as the colors are hard-coded to match the enumeration in the engine.
-*.mcc.VXG files		Custom 3D image format: MCC Variant aligned voxel graphic. All data values are 32 bit aligned. Data is Zlib compressed. Every sector is prefixed with 4 characters (32 bits) to identify itself. Windows users, note that for the editor, file extensions are case-sensitive. The format is extremely easy to parse, but a small library to load the data can be given on request. Run the engine with the command line argument "voxeleditor" for the demonstration of the format.
-_culture_manifest	List of cultures and components used for terrain generation. Plaintext file.
-_floorplan_manifest	List of floorplans used for generating buildings. Plaintext file, same format as _culture_manifest
-/floorplans/		Folder containing usable floorplans. Filename stems are limited to 15 characters.
-/components/		Folder containing usable components. Filename stems are limited to 15 characters.
