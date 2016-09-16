@@ -119,7 +119,7 @@ protected: // PROTECTED FIELDS and ROUTINES
 	CInputControl*	input;
 
 	// Input function
-	void GrabInput ( void );
+	ENGCOM_API void GrabInput ( void );
 };
 
 

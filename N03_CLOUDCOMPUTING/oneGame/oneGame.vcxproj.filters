@@ -337,6 +337,9 @@
     <Filter Include="SOURCE\Cloud\Entities">
       <UniqueIdentifier>{8b1793dd-4296-4f2a-bc79-365f9322f620}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Cloud\Scenes">
+      <UniqueIdentifier>{7c1cd398-51cd-40af-aaa0-8c3d7b0df8a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\after\scenes\gmsceneGame_5.h">
@@ -1221,6 +1224,12 @@
     <ClInclude Include="source\cloud\cloud-common.h">
       <Filter>SOURCE\Cloud</Filter>
     </ClInclude>
+    <ClInclude Include="source\cloud\scenes\sceneCloudGame.h">
+      <Filter>SOURCE\Cloud\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cloud\entities\CCloudPlayer.h">
+      <Filter>SOURCE\Cloud\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\after\scenes\gmsceneGame_5.cpp">
@@ -2023,6 +2032,12 @@
     </ClCompile>
     <ClCompile Include="source\cloud\cloud-common.cpp">
       <Filter>SOURCE\Cloud</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cloud\scenes\sceneCloudGame.cpp">
+      <Filter>SOURCE\Cloud\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cloud\entities\CCloudPlayer.cpp">
+      <Filter>SOURCE\Cloud\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
