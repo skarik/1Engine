@@ -15,11 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\deploy\deploy\AFTER.cpp">
-      <Filter>SOURCE\deploy\deploy</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
@@ -33,5 +28,10 @@
     <Image Include="icon1.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\deploy\deploy\CloudComputing.cpp">
+      <Filter>SOURCE\deploy\deploy</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

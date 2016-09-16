@@ -331,6 +331,12 @@
     <Filter Include="SOURCE\AFTER\Scenes\Tests">
       <UniqueIdentifier>{e0c53f5e-4fee-4ff8-8082-53305835d36b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Cloud">
+      <UniqueIdentifier>{e24f051a-2640-417f-9926-210338d8cf28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Cloud\Entities">
+      <UniqueIdentifier>{8b1793dd-4296-4f2a-bc79-365f9322f620}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\after\scenes\gmsceneGame_5.h">
@@ -774,9 +780,6 @@
     <ClInclude Include="source\after\entities\props\props\PropLantern.h">
       <Filter>SOURCE\AFTER\Entities\Props\Props</Filter>
     </ClInclude>
-    <ClInclude Include="source\after\after-common.h">
-      <Filter>SOURCE\AFTER</Filter>
-    </ClInclude>
     <ClInclude Include="source\after\states\weaponeffect\WeaponEffects.h">
       <Filter>SOURCE\AFTER\States\Weapon Effect</Filter>
     </ClInclude>
@@ -1214,6 +1217,9 @@
     </ClInclude>
     <ClInclude Include="source\after\scenes\tests\testSceneStaticMesh.h">
       <Filter>SOURCE\AFTER\Scenes\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cloud\cloud-common.h">
+      <Filter>SOURCE\Cloud</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1904,9 +1910,6 @@
     <ClCompile Include="source\after\animation\Sequence.cpp">
       <Filter>SOURCE\AFTER\Animation</Filter>
     </ClCompile>
-    <ClCompile Include="source\after\after-common.cpp">
-      <Filter>SOURCE\AFTER</Filter>
-    </ClCompile>
     <ClCompile Include="source\after\lua\CLuaSkill.cpp">
       <Filter>SOURCE\AFTER\Lua</Filter>
     </ClCompile>
@@ -2017,6 +2020,9 @@
     </ClCompile>
     <ClCompile Include="source\after\scenes\tests\testSceneStaticMesh.cpp">
       <Filter>SOURCE\AFTER\Scenes\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cloud\cloud-common.cpp">
+      <Filter>SOURCE\Cloud</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
