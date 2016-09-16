@@ -1,0 +1,215 @@
+// basic recipies
+
+Name Torch 
+{
+	Width: 1
+	Height: 2
+	ID: 4 
+	SubID: 0
+	Stack: 3
+	
+	Ingredients
+	{
+		1: 6 0 1
+		2: 51 0 1
+	}
+}
+
+Name Twig
+{
+	Width: 1
+	Height: 1
+	ID: 52 
+	SubID: 0
+	Stack: 4
+	
+	Ingredients
+	{
+		1: 51 0 1
+	}
+}
+
+Name Hand Drill 
+{
+	Width: 2
+	Height: 1
+	ID: 250 
+	SubID: 0
+	Stack: 1
+	Forge: 1
+	
+	Ingredients
+	{
+		1: 4 0 1
+		2: 4 0 1
+	}
+}
+
+Name Crossbow Bolt 
+{
+	Width: 1
+	Height: 2
+	ID: 10
+	SubID: 0
+	Stack: 10
+	
+	Ingredients
+	{
+		1: 12 0 1
+		2: 51 0 1
+	}
+}
+
+Name Wood Block
+{
+	Width: 2
+	Height: 2
+	ID: 2 
+	SubID: 6
+	Stack: 1
+	
+	Ingredients
+	{
+		1: 52 0 1
+		2: 52 0 1
+		3: 52 0 1
+		4: 52 0 1
+	}
+}
+
+Name Gravel Block
+{
+	Width: 1
+	Height: 1
+	ID: 2
+	SubID: 10
+	Stack: 3
+	
+	Ingredients
+	{
+		1: 2 3 1
+	}
+}
+
+Name Stone Brick
+{
+	Width: 1
+	Height: 1
+	ID: 2
+	SubID: 11
+	Stack: 1
+	
+	Ingredients
+	{
+		1: 2 3 2
+	}
+}
+
+Name Wooden Arrow
+{
+	Width: 1
+	Height: 2
+	ID: 11 
+	SubID: 0
+	Stack: 4
+	
+	Ingredients
+	{
+		1: 52 0 1
+		2: 52 0 1
+	}
+}
+
+Name Pebble
+{
+	Width: 1
+	Height: 1
+	ID: 12
+	SubID: 0
+	Stack: 30
+	
+	Ingredients
+	{
+		1: 2 3 1
+	}
+}
+
+Name Pebble
+{
+	Width: 1
+	Height: 1
+	ID: 12
+	SubID: 0
+	Stack: 10
+	
+	Ingredients
+	{
+		1: 2 10 1
+	}
+}
+
+Name Branch
+{
+	Width: 1
+	Height: 1
+	ID: 51 
+	SubID: 0
+	Stack: 3
+	
+	Ingredients
+	{
+		1: 50 0 1
+	}
+}
+
+Name Campfire
+{
+	Width: 2
+	Height: 1
+	ID: 91
+	SubID: 0
+	Stack: 1
+
+	Ingredients
+	{
+		1: 51 0 1
+		2: 4 0 1
+	}
+}
+
+Name Bottle
+{
+	Width: 1
+	Height: 1
+	ID: 2000
+	SubID: 0
+	Stack: 3
+	Forge: 1
+	
+	Ingredients
+	{
+		1: 2 4 1
+	}
+}
+
+Name Wooden Crate
+{
+	Width: 3
+	Height: 3
+	ID: 3000
+	SubID: 0
+	Stack: 1
+	
+	Ingredients
+	{
+		1: 2 6 1
+		2: 2 6 1
+		3: 2 6 1
+		4: 2 6 1
+		5: 0 0 0
+		6: 2 6 1
+		7: 2 6 1
+		8: 2 6 1
+		9: 2 6 1
+	}
+}

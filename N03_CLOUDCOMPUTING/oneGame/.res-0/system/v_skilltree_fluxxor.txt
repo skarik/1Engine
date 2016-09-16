@@ -1,0 +1,15 @@
+<!-- MAIN SKILLTREE DEFINITIONS -->
+<skilltree title="Fluxxor Skill Tree" background_color=".7,.85,.85,0.3" />
+
+
+<skill id="PassiveRaceManablood" pos="0,0" />
+
+
+<title type="1" content="FLOW WITH FATE" pos="-290,100" />
+<title type="1" content="CONTROL THE FLOW" pos="200,100" />
+
+<!-- Luck tree -->
+	<skill id="PassiveRaceMagiDodge1" pos="-150,150" parent="PassiveRaceManablood,1" />
+	
+<!-- Certainty tree -->
+	<skill id="PassiveRaceMagiAbsorb1" pos="150,150" parent="PassiveRaceManablood,1" />

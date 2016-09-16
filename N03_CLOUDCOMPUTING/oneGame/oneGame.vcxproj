@@ -1,0 +1,1054 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Optimized Release|Win32">
+      <Configuration>Optimized Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Optimized Release|x64">
+      <Configuration>Optimized Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Unoptimized|Win32">
+      <Configuration>Unoptimized</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Unoptimized|x64">
+      <Configuration>Unoptimized</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>oneGame</ProjectName>
+    <ProjectGuid>{410E2926-EC32-401C-A45B-DCBBB8342517}</ProjectGuid>
+    <RootNamespace>OpenGlTest</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Optimized Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Optimized Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.60315.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/havok;source-lib/boost_1_55;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/fmod;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_ENGINE_GAME_CORE;_ENGINE_RELEASE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</RuntimeTypeInfo>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsWinRT>
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</SDLCheck>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</MultiProcessorCompilation>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</EnableParallelCodeGeneration>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsWinRT>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsWinRT>
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</SDLCheck>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</MultiProcessorCompilation>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/MP2 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">sad %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/MP2</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/Gm %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/D "_ENGINE_DEBUG" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/Md %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</MultiProcessorCompilation>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/D "_ENGINE_DEBUG" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/D "_ENGINE_UNOPTIMIZED" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/D "_ENGINE_DEBUG" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/D "_ENGINE_UNOPTIMIZED" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/D "_ENGINE_UNOPTIMIZED" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/D "_ENGINE_UNOPTIMIZED" %(AdditionalOptions)</AdditionalOptions>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST.lib;Lua.5.2-release.lib;OpenGL32.lib;GLu32.lib;OpenAL32.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;libyaml-cppmd.lib;fmodex_vc.lib;hkBase.lib;hkSerialize.lib;hkSceneData.lib;hkInternal.lib;hkGeometryUtilities.lib;hkVisualize.lib;hkCompat.lib;hkcdInternal.lib;hkcdCollide.lib;hkpCollide.lib;hkpConstraintSolver.lib;hkpDynamics.lib;hkpInternal.lib;hkpUtilities.lib;hkpVehicle.lib;hkaAnimation.lib;hkaInternal.lib;hkaRagdoll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs/core;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalOptions>/SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <ShowProgress>LinkVerboseLib</ShowProgress>
+      <LinkStatus>
+      </LinkStatus>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <HeapReserveSize>2097152</HeapReserveSize>
+      <Profile>false</Profile>
+      <LargeAddressAware>true</LargeAddressAware>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/havok;source-lib/boost_1_55;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/fmod;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_ENGINE_GAME_CORE;_ENGINE_RELEASE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</EnableParallelCodeGeneration>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</RuntimeTypeInfo>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsWinRT>
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</SDLCheck>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</MultiProcessorCompilation>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</EnableParallelCodeGeneration>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsWinRT>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsWinRT>
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</SDLCheck>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</MultiProcessorCompilation>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/MP2 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">sad %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/MP2</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/Gm %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/D "_ENGINE_DEBUG" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/Md %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</MultiProcessorCompilation>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/D "_ENGINE_DEBUG" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/D "_ENGINE_UNOPTIMIZED" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/D "_ENGINE_DEBUG" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/D "_ENGINE_UNOPTIMIZED" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/D "_ENGINE_UNOPTIMIZED" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/D "_ENGINE_UNOPTIMIZED" %(AdditionalOptions)</AdditionalOptions>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST.lib;Lua.5.2-release.lib;OpenGL32.lib;GLu32.lib;OpenAL32.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;libyaml-cppmd.lib;fmodex_vc.lib;hkBase.lib;hkSerialize.lib;hkSceneData.lib;hkInternal.lib;hkGeometryUtilities.lib;hkVisualize.lib;hkCompat.lib;hkcdInternal.lib;hkcdCollide.lib;hkpCollide.lib;hkpConstraintSolver.lib;hkpDynamics.lib;hkpInternal.lib;hkpUtilities.lib;hkpVehicle.lib;hkaAnimation.lib;hkaInternal.lib;hkaRagdoll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs/core;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <AdditionalOptions>/SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <ShowProgress>LinkVerboseLib</ShowProgress>
+      <LinkStatus>
+      </LinkStatus>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <HeapReserveSize>2097152</HeapReserveSize>
+      <Profile>false</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Optimized Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/havok;source-lib/boost_1_55;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/fmod;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_ENGINE_GAME_CORE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <AdditionalOptions>/D "_ENGINE_RELEASE" %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST.lib;Lua.5.2-release.lib;OpenGL32.lib;GLu32.lib;OpenAL32.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;libyaml-cppmd.lib;fmodex_vc.lib;hkBase.lib;hkSerialize.lib;hkSceneData.lib;hkInternal.lib;hkGeometryUtilities.lib;hkVisualize.lib;hkCompat.lib;hkcdInternal.lib;hkcdCollide.lib;hkpCollide.lib;hkpConstraintSolver.lib;hkpDynamics.lib;hkpInternal.lib;hkpUtilities.lib;hkpVehicle.lib;hkaAnimation.lib;hkaInternal.lib;hkaRagdoll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs/core;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalOptions>/SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <ShowProgress>LinkVerboseLib</ShowProgress>
+      <LinkStatus>false</LinkStatus>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <LargeAddressAware>true</LargeAddressAware>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Optimized Release|x64'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/havok;source-lib/boost_1_55;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/fmod;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_ENGINE_GAME_CORE;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <AdditionalOptions>/D "_ENGINE_RELEASE" %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST.lib;Lua.5.2-release.lib;OpenGL32.lib;GLu32.lib;OpenAL32.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;libyaml-cppmd.lib;fmodex_vc.lib;hkBase.lib;hkSerialize.lib;hkSceneData.lib;hkInternal.lib;hkGeometryUtilities.lib;hkVisualize.lib;hkCompat.lib;hkcdInternal.lib;hkcdCollide.lib;hkpCollide.lib;hkpConstraintSolver.lib;hkpDynamics.lib;hkpInternal.lib;hkpUtilities.lib;hkpVehicle.lib;hkaAnimation.lib;hkaInternal.lib;hkaRagdoll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs/core;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <AdditionalOptions>/SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <ShowProgress>LinkVerboseLib</ShowProgress>
+      <LinkStatus>false</LinkStatus>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/D "_ENGINE_DEBUG" %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/havok;source-lib/boost_1_55;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/fmod;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_ENGINE_GAME_CORE;_ENGINE_DEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">true</EnableParallelCodeGeneration>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">true</RuntimeTypeInfo>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">false</CompileAsManaged>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">false</CompileAsWinRT>
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">false</SDLCheck>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">true</MultiProcessorCompilation>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">true</EnableParallelCodeGeneration>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">true</RuntimeTypeInfo>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">false</OpenMPSupport>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">true</RuntimeTypeInfo>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">false</CompileAsManaged>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">false</CompileAsWinRT>
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">false</SDLCheck>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">true</MultiProcessorCompilation>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">true</EnableParallelCodeGeneration>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">true</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">false</MultiProcessorCompilation>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">false</CompileAsManaged>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|Win32'">false</CompileAsWinRT>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;Lua.5.2-debug.lib;libyaml-cppmd.lib;steam_api.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs/core;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>
+      </OptimizeReferences>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalOptions>/SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <HeapReserveSize>2097152</HeapReserveSize>
+      <LargeAddressAware>true</LargeAddressAware>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalOptions>/D "_ENGINE_DEBUG" %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/havok;source-lib/boost_1_55;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/fmod;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_ENGINE_GAME_CORE;_ENGINE_DEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">true</EnableParallelCodeGeneration>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">true</RuntimeTypeInfo>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">false</CompileAsManaged>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">false</CompileAsWinRT>
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">false</SDLCheck>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">true</MultiProcessorCompilation>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">true</EnableParallelCodeGeneration>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">true</EnableParallelCodeGeneration>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">true</RuntimeTypeInfo>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">false</OpenMPSupport>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">true</RuntimeTypeInfo>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">false</CompileAsManaged>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">false</CompileAsWinRT>
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">false</SDLCheck>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">true</MultiProcessorCompilation>
+      <EnableParallelCodeGeneration Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">true</EnableParallelCodeGeneration>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">true</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">false</MultiProcessorCompilation>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">false</CompileAsManaged>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='DebugRLcode|x64'">false</CompileAsWinRT>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;Lua.5.2-debug.lib;libyaml-cppmd.lib;steam_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;boost_1_55\lib;libs/core;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>
+      </OptimizeReferences>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <AdditionalOptions>/SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <HeapReserveSize>2097152</HeapReserveSize>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="source\after-editor\scenes\gmsceneLipsyncEditor.h" />
+    <ClInclude Include="source\after-editor\scenes\gmsceneParticleEditor.h" />
+    <ClInclude Include="source\after-editor\scenes\gmsceneSkyColorEditor.h" />
+    <ClInclude Include="source\after-editor\scenes\gmsceneTattooTester.h" />
+    <ClInclude Include="source\after-editor\scenes\gmsceneVoxelEditor.h" />
+    <ClInclude Include="source\after-editor\standalone\CLipsyncEditor.h" />
+    <ClInclude Include="source\after-editor\standalone\CParticleEditor.h" />
+    <ClInclude Include="source\after-editor\standalone\CSkyColorEditor.h" />
+    <ClInclude Include="source\after\after-common.h" />
+    <ClInclude Include="source\after\animation\Sequence.h" />
+    <ClInclude Include="source\after\developer\CAiTester.h" />
+    <ClInclude Include="source\after\developer\CRegionMapTester.h" />
+    <ClInclude Include="source\after\developer\editor\CTattooTester.h" />
+    <ClInclude Include="source\after\developer\editor\CTerrainSamplerEditor.h" />
+    <ClInclude Include="source\after\developer\editor\CVoxelFileEditor.h" />
+    <ClInclude Include="source\after\entities\CCharacterModel.h" />
+    <ClInclude Include="source\after\entities\character\CAfterPlayer.h" />
+    <ClInclude Include="source\after\entities\character\CCharacter.h" />
+    <ClInclude Include="source\after\entities\character\CMccCharacterModel.h" />
+    <ClInclude Include="source\after\entities\character\CRfCharacterModel.h" />
+    <ClInclude Include="source\after\entities\character\npc\CCharTest.h" />
+    <ClInclude Include="source\after\entities\character\npc\CNpcBase.h" />
+    <ClInclude Include="source\after\entities\character\npc\zoned\automaton\RobotAutomaton.h" />
+    <ClInclude Include="source\after\entities\character\npc\zoned\CZonedCharacter.h" />
+    <ClInclude Include="source\after\entities\character\npc\zoned\CZonedCharacterController.h" />
+    <ClInclude Include="source\after\entities\character\npc\zoned\fauna\FaunaDesertBird.h" />
+    <ClInclude Include="source\after\entities\character\npc\zoned\fauna\FaunaKomodo.h" />
+    <ClInclude Include="source\after\entities\cutscene\CCutscene.h" />
+    <ClInclude Include="source\after\entities\cutscene\CDialogueGUI.h" />
+    <ClInclude Include="source\after\entities\cutscene\CDialogueLoader.h" />
+    <ClInclude Include="source\after\entities\effects\CFXNotice.h" />
+    <ClInclude Include="source\after\entities\foliage\CFoliage.h" />
+    <ClInclude Include="source\after\entities\foliage\CFoliageTree.h" />
+    <ClInclude Include="source\after\entities\foliage\CTerraFoliageFactory.h" />
+    <ClInclude Include="source\after\entities\foliage\CTreeBase.h" />
+    <ClInclude Include="source\after\entities\foliage\nottrees\FoliageBushGreen.h" />
+    <ClInclude Include="source\after\entities\foliage\nottrees\FoliageCactusDefault.h" />
+    <ClInclude Include="source\after\entities\foliage\trees\FoliageTreePine.h" />
+    <ClInclude Include="source\after\entities\foliage\trees\FoliageTreeWarped.h" />
+    <ClInclude Include="source\after\entities\gametype\CGameType.h" />
+    <ClInclude Include="source\after\entities\gametype\gametypeCharview.h" />
+    <ClInclude Include="source\after\entities\gametype\gametypeGodMode.h" />
+    <ClInclude Include="source\after\entities\gametype\gametypeMenu.h" />
+    <ClInclude Include="source\after\entities\gametype\gametypeNotDying.h" />
+    <ClInclude Include="source\after\entities\hud\player\CCharacterScreen.h" />
+    <ClInclude Include="source\after\entities\hud\player\CInventoryGUI.h" />
+    <ClInclude Include="source\after\entities\hud\player\CPlayerHud.h" />
+    <ClInclude Include="source\after\entities\hud\player\CPlayerHudStatus.h" />
+    <ClInclude Include="source\after\entities\hud\player\CPlayerInventoryGUI.h" />
+    <ClInclude Include="source\after\entities\hud\player\CPlayerLogbook.h" />
+    <ClInclude Include="source\after\entities\hud\player\CPlayerMenu.h" />
+    <ClInclude Include="source\after\entities\hud\player\CSkillTreeGUI.h" />
+    <ClInclude Include="source\after\entities\hud\player\Plhud_RadialMenu.h" />
+    <ClInclude Include="source\after\entities\item\ammo\AmmoArrow.h" />
+    <ClInclude Include="source\after\entities\item\ammo\AmmoCrossbowBolt.h" />
+    <ClInclude Include="source\after\entities\item\ammo\CAmmoBase.h" />
+    <ClInclude Include="source\after\entities\item\ammo\ItemPebble.h" />
+    <ClInclude Include="source\after\entities\item\beta\Flare.h" />
+    <ClInclude Include="source\after\entities\item\beta\WeaponCrossbow.h" />
+    <ClInclude Include="source\after\entities\item\CRecipeLibrary.h" />
+    <ClInclude Include="source\after\entities\item\CWeaponItem.h" />
+    <ClInclude Include="source\after\entities\item\CWeaponItemComponents.h" />
+    <ClInclude Include="source\after\entities\item\CWeaponItemComponents.hpp" />
+    <ClInclude Include="source\after\entities\item\CWeaponItemFactory.h" />
+    <ClInclude Include="source\after\entities\item\CWeaponItemTypes.h" />
+    <ClInclude Include="source\after\entities\item\ItemCrafting.h" />
+    <ClInclude Include="source\after\entities\item\ItemForging.h" />
+    <ClInclude Include="source\after\entities\item\junk\CItemJunkBase.h" />
+    <ClInclude Include="source\after\entities\item\junk\ItemComponentBottle.h" />
+    <ClInclude Include="source\after\entities\item\junk\ItemJunkSkull.h" />
+    <ClInclude Include="source\after\entities\item\material\ItemTreeBranch.h" />
+    <ClInclude Include="source\after\entities\item\material\ItemTreeResin.h" />
+    <ClInclude Include="source\after\entities\item\material\ItemTreeTrunk.h" />
+    <ClInclude Include="source\after\entities\item\material\ItemTreeTwig.h" />
+    <ClInclude Include="source\after\entities\item\props\flora\ItemFloraLifedrop.h" />
+    <ClInclude Include="source\after\entities\item\props\flora\ItemFloraSnowLily.h" />
+    <ClInclude Include="source\after\entities\item\props\ItemCampfire.h" />
+    <ClInclude Include="source\after\entities\item\props\ItemCrateWooden.h" />
+    <ClInclude Include="source\after\entities\item\props\ItemElectricLamp.h" />
+    <ClInclude Include="source\after\entities\item\props\ItemElectricSource.h" />
+    <ClInclude Include="source\after\entities\item\props\ItemLantern.h" />
+    <ClInclude Include="source\after\entities\item\props\ItemTorch.h" />
+    <ClInclude Include="source\after\entities\item\skill\CSkill.h" />
+    <ClInclude Include="source\after\entities\item\skill\CSkillReference.h" />
+    <ClInclude Include="source\after\entities\item\skill\passive\racial\PassiveRaceMagiDodge1.h" />
+    <ClInclude Include="source\after\entities\item\skill\SkillList.h" />
+    <ClInclude Include="source\after\entities\item\skill\skills\defensive\SkillPressureBlast.h" />
+    <ClInclude Include="source\after\entities\item\skill\skills\defensive\SkillShield.h" />
+    <ClInclude Include="source\after\entities\item\skill\skills\mobility\SkillBlink.h" />
+    <ClInclude Include="source\after\entities\item\skill\skills\modifier\SkillFireArrow.h" />
+    <ClInclude Include="source\after\entities\item\skill\skills\modifier\SkillHailOfArrows.h" />
+    <ClInclude Include="source\after\entities\item\skill\skills\modifier\SkillReflectshot.h" />
+    <ClInclude Include="source\after\entities\item\skill\skills\modifier\SkillSplitshot.h" />
+    <ClInclude Include="source\after\entities\item\skill\skills\offensive\SkillFiretoss.h" />
+    <ClInclude Include="source\after\entities\item\skill\skills\offensive\SkillFrostBall.h" />
+    <ClInclude Include="source\after\entities\item\skill\skills\offensive\SkillMagicBolt.h" />
+    <ClInclude Include="source\after\entities\item\skill\skills\offensive\SkillMagikinesis.h" />
+    <ClInclude Include="source\after\entities\item\system\ItemBlockPuncher.h" />
+    <ClInclude Include="source\after\entities\item\system\ItemMeleeCombat.h" />
+    <ClInclude Include="source\after\entities\item\system\ItemTerraBlok.h" />
+    <ClInclude Include="source\after\entities\item\weapon\bow\CRWBowShitty.h" />
+    <ClInclude Include="source\after\entities\item\weapon\CBaseRandomBow.h" />
+    <ClInclude Include="source\after\entities\item\weapon\CBaseRandomGun.h" />
+    <ClInclude Include="source\after\entities\item\weapon\CBaseRandomItem.h" />
+    <ClInclude Include="source\after\entities\item\weapon\CBaseRandomMelee.h" />
+    <ClInclude Include="source\after\entities\item\weapon\CBaseRandomTossable.h" />
+    <ClInclude Include="source\after\entities\item\weapon\CWeaponItemGenerator.h" />
+    <ClInclude Include="source\after\entities\item\weapon\ItemAdditives.h" />
+    <ClInclude Include="source\after\entities\item\weapon\ItemRandomizer.h" />
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWDagger.h" />
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWHoe.h" />
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWPickaxeSuShitty.h" />
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWShovelSuShitty.h" />
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWSpear.h" />
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWSword.h" />
+    <ClInclude Include="source\after\entities\item\weapon\melee\CRWSwordShortShitty.h" />
+    <ClInclude Include="source\after\entities\item\weapon\tool\CRWDrillBasic.h" />
+    <ClInclude Include="source\after\entities\item\weapon\tossable\CRIDynamite.h" />
+    <ClInclude Include="source\after\entities\item\wearable\armor\ArmorLeatherBoots.h" />
+    <ClInclude Include="source\after\entities\item\wearable\armor\ArmorLeatherPants.h" />
+    <ClInclude Include="source\after\entities\item\wearable\CWearableItem.h" />
+    <ClInclude Include="source\after\entities\item\wearable\vanity\WearElvenpunk02_goggles.h" />
+    <ClInclude Include="source\after\entities\item\wearable\vanity\WearElvenpunk02_set.h" />
+    <ClInclude Include="source\after\entities\item\wearable\vanity\WearElvenpunk02_skirt.h" />
+    <ClInclude Include="source\after\entities\menu\COctreePauseloader.h" />
+    <ClInclude Include="source\after\entities\menu\CTerrainLoadscreen.h" />
+    <ClInclude Include="source\after\entities\menu\front\C_RCharacterCreator.h" />
+    <ClInclude Include="source\after\entities\menu\front\C_RMainMenu.h" />
+    <ClInclude Include="source\after\entities\menu\front\C_RMainMenuTitle.h" />
+    <ClInclude Include="source\after\entities\menu\splash\CSplashScreens.h" />
+    <ClInclude Include="source\after\entities\menu\splash\CStudioSplash.h" />
+    <ClInclude Include="source\after\entities\projectile\AfterBaseProjectile.h" />
+    <ClInclude Include="source\after\entities\projectile\magical\ProjectileFiretoss.h" />
+    <ClInclude Include="source\after\entities\projectile\magical\ProjectileFrostball.h" />
+    <ClInclude Include="source\after\entities\projectile\magical\ProjectileMagicBolt.h" />
+    <ClInclude Include="source\after\entities\projectile\ProjectileMagicalBase.h" />
+    <ClInclude Include="source\after\entities\projectile\projectile\ProjectileArrow.h" />
+    <ClInclude Include="source\after\entities\projectile\projectile\ProjectileCBolt.h" />
+    <ClInclude Include="source\after\entities\projectile\projectile\ProjectilePebble.h" />
+    <ClInclude Include="source\after\entities\props\CTerrainProp.h" />
+    <ClInclude Include="source\after\entities\props\CTerrainPropFactory.h" />
+    <ClInclude Include="source\after\entities\props\flora\PropFloraLifedrop.h" />
+    <ClInclude Include="source\after\entities\props\flora\PropFloraSnowLily.h" />
+    <ClInclude Include="source\after\entities\props\props\ElectricLampComponent.h" />
+    <ClInclude Include="source\after\entities\props\props\ElectricSourceComponent.h" />
+    <ClInclude Include="source\after\entities\props\props\PropCampfire.h" />
+    <ClInclude Include="source\after\entities\props\props\PropChestBase.h" />
+    <ClInclude Include="source\after\entities\props\props\PropContainerBase.h" />
+    <ClInclude Include="source\after\entities\props\props\PropCrateWooden.h" />
+    <ClInclude Include="source\after\entities\props\props\PropDoorBase.h" />
+    <ClInclude Include="source\after\entities\props\props\PropLantern.h" />
+    <ClInclude Include="source\after\entities\props\props\PropTorch.h" />
+    <ClInclude Include="source\after\entities\test\CTestPhysicsCrate.h" />
+    <ClInclude Include="source\after\entities\test\CTestPhysicsFlare.h" />
+    <ClInclude Include="source\after\entities\test\CTestPhysicsFloor.h" />
+    <ClInclude Include="source\after\entities\world\CGameEventGenerator.h" />
+    <ClInclude Include="source\after\entities\world\client\CQuestSystem.h" />
+    <ClInclude Include="source\after\entities\world\CNpcSpawner.h" />
+    <ClInclude Include="source\after\entities\world\environment\CEnvironmentEffects.h" />
+    <ClInclude Include="source\after\entities\world\environment\CloudSphere.h" />
+    <ClInclude Include="source\after\entities\world\environment\DayAndNightCycle.h" />
+    <ClInclude Include="source\after\entities\world\environment\EnvHeavyWeather.h" />
+    <ClInclude Include="source\after\entities\world\environment\EnvSunlight.h" />
+    <ClInclude Include="source\after\entities\world\environment\weather\CCloudMaster.h" />
+    <ClInclude Include="source\after\entities\world\environment\weather\CWeatherCloud.h" />
+    <ClInclude Include="source\after\entities\world\environment\weather\CWeatherSimulator.h" />
+    <ClInclude Include="source\after\entities\world\events\CEventBase.h" />
+    <ClInclude Include="source\after\entities\world\events\EventAutomatonDesert.h" />
+    <ClInclude Include="source\after\entities\world\events\EventBanditSpawnSmall.h" />
+    <ClInclude Include="source\after\entities\world\events\EventDesertStorm.h" />
+    <ClInclude Include="source\after\interfaces\CAfterCharacterAnimator.h" />
+    <ClInclude Include="source\after\interfaces\CCharacterMotion.h" />
+    <ClInclude Include="source\after\interfaces\CSpeechTrie.h" />
+    <ClInclude Include="source\after\interfaces\io\CZonedCharacterIO.h" />
+    <ClInclude Include="source\after\interfaces\world\CWorldCartographer.h" />
+    <ClInclude Include="source\after\lua\CLuaSkill.h" />
+    <ClInclude Include="source\after\lua\CLuaWeaponItem.h" />
+    <ClInclude Include="source\after\lua\Lua.h" />
+    <ClInclude Include="source\after\physics\Caster.h" />
+    <ClInclude Include="source\after\physics\CMeshedStaticProp.h" />
+    <ClInclude Include="source\after\physics\water\Water.h" />
+    <ClInclude Include="source\after\physics\wind\WindMotion.h" />
+    <ClInclude Include="source\after\renderer\objects\grass\CTerraGrass.h" />
+    <ClInclude Include="source\after\renderer\objects\hud\CBlockCursor.h" />
+    <ClInclude Include="source\after\renderer\objects\hud\Plhud3d_Hurt01.h" />
+    <ClInclude Include="source\after\renderer\objects\hud\Plhud_AreaNotifier.h" />
+    <ClInclude Include="source\after\renderer\objects\hud\Plhud_TextNotifier.h" />
+    <ClInclude Include="source\after\renderer\objects\hud\Ploverlay_Goggles01.h" />
+    <ClInclude Include="source\after\renderer\objects\hud\Ploverlay_Hurt01.h" />
+    <ClInclude Include="source\after\renderer\objects\hud\Ploverlay_Icing.h" />
+    <ClInclude Include="source\after\renderer\objects\tree\CTreeLeafRenderer.h" />
+    <ClInclude Include="source\after\renderer\objects\tree\CTreeRenderer.h" />
+    <ClInclude Include="source\after\scenes\gmsceneCharacterViewer.h" />
+    <ClInclude Include="source\after\scenes\gmsceneGame_5.h" />
+    <ClInclude Include="source\after\scenes\gmsceneGame_6.h" />
+    <ClInclude Include="source\after\scenes\gmsceneMainGame.h" />
+    <ClInclude Include="source\after\scenes\gmsceneMenu.h" />
+    <ClInclude Include="source\after\scenes\gmsceneSplashScreens.h" />
+    <ClInclude Include="source\after\scenes\tests\testSceneStaticMesh.h" />
+    <ClInclude Include="source\after\states\ai\NPC_AIState.h" />
+    <ClInclude Include="source\after\states\CharacterStats.h" />
+    <ClInclude Include="source\after\states\CRacialStats.h" />
+    <ClInclude Include="source\after\states\CWorldState.h" />
+    <ClInclude Include="source\after\states\debuffs\DebuffList.h" />
+    <ClInclude Include="source\after\states\debuffs\Debuffs.h" />
+    <ClInclude Include="source\after\states\debuffs\racial\BuffFluxxorManablood.h" />
+    <ClInclude Include="source\after\states\debuffs\racial\BuffRacialDarkElf.h" />
+    <ClInclude Include="source\after\states\debuffs\racial\BuffRacialKitten.h" />
+    <ClInclude Include="source\after\states\debuffs\standard\DebuffBurningFlametoss.h" />
+    <ClInclude Include="source\after\states\debuffs\standard\DebuffDisable.h" />
+    <ClInclude Include="source\after\states\debuffs\standard\DebuffDPS.h" />
+    <ClInclude Include="source\after\states\debuffs\standard\DebuffRooted.h" />
+    <ClInclude Include="source\after\states\debuffs\standard\DebuffSlow.h" />
+    <ClInclude Include="source\after\states\debuffs\standard\DebuffSlowBurnFrostball.h" />
+    <ClInclude Include="source\after\states\inventory\CCrafting.h" />
+    <ClInclude Include="source\after\states\inventory\CInventory.h" />
+    <ClInclude Include="source\after\states\inventory\CPlayerInventory.h" />
+    <ClInclude Include="source\after\states\model\CLipsyncSequence.h" />
+    <ClInclude Include="source\after\states\model\CTattooRenderer.h" />
+    <ClInclude Include="source\after\states\NPC_CombatState.h" />
+    <ClInclude Include="source\after\states\player\CPlayerStats.h" />
+    <ClInclude Include="source\after\states\player\StatsProgressFlags.h" />
+    <ClInclude Include="source\after\states\projectileeffect\effects\PEffectBouncing.h" />
+    <ClInclude Include="source\after\states\projectileeffect\effects\PEffectBurnOnHit.h" />
+    <ClInclude Include="source\after\states\projectileeffect\ProjectileEffects.h" />
+    <ClInclude Include="source\after\states\skilltree\CSkillTree.h" />
+    <ClInclude Include="source\after\states\weaponeffect\WeaponEffects.h" />
+    <ClInclude Include="source\after\states\world\CMCCPlanet.h" />
+    <ClInclude Include="source\after\states\world\CMCCRealm.h" />
+    <ClInclude Include="source\after\states\world\ProvinceManager.h" />
+    <ClInclude Include="source\after\terrain\data\GamePayload.h" />
+    <ClInclude Include="source\after\terrain\data\GameState.h" />
+    <ClInclude Include="source\after\terrain\data\IOHeader.h" />
+    <ClInclude Include="source\after\terrain\data\Node.h" />
+    <ClInclude Include="source\after\terrain\data\MeshState.h" />
+    <ClInclude Include="source\after\terrain\edit\csg\SidebufferVolumeEditor.h" />
+    <ClInclude Include="source\after\terrain\edit\CTerrainAccessor.h" />
+    <ClInclude Include="source\after\terrain\edit\SidebufferAccessor.h" />
+    <ClInclude Include="source\after\terrain\generation\CWorldGenerator.h" />
+    <ClInclude Include="source\after\terrain\generation\CWorldGen_Terran.h" />
+    <ClInclude Include="source\after\terrain\generation\CWorldGen_Terran_Architecture.h" />
+    <ClInclude Include="source\after\terrain\generation\CWorldGen_Terran_Biome.h" />
+    <ClInclude Include="source\after\terrain\generation\CWorldGen_Terran_Landmasses.h" />
+    <ClInclude Include="source\after\terrain\generation\dungeons\DungeonBase.h" />
+    <ClInclude Include="source\after\terrain\generation\dungeons\DungeonCaveSystem.h" />
+    <ClInclude Include="source\after\terrain\generation\dungeons\DungeonFactory.h" />
+    <ClInclude Include="source\after\terrain\generation\dungeons\DungeonLua.h" />
+    <ClInclude Include="source\after\terrain\generation\patterns\CPatternController.h" />
+    <ClInclude Include="source\after\terrain\generation\patterns\IPatternGeneration.h" />
+    <ClInclude Include="source\after\terrain\generation\patterns\ruins\PatternDesertRuins.h" />
+    <ClInclude Include="source\after\terrain\generation\regions\CRegionGenerator.h" />
+    <ClInclude Include="source\after\terrain\io\COctreeIO.h" />
+    <ClInclude Include="source\after\terrain\modifiers\CTerraExplosion.h" />
+    <ClInclude Include="source\after\terrain\system\CVoxelMesher.h" />
+    <ClInclude Include="source\after\terrain\system\DataSampler.h" />
+    <ClInclude Include="source\after\terrain\system\JobHandler.h" />
+    <ClInclude Include="source\after\terrain\system\MemoryManager.h" />
+    <ClInclude Include="source\after\terrain\system\TerrainRenderer.h" />
+    <ClInclude Include="source\after\terrain\utils\indexing.h" />
+    <ClInclude Include="source\after\terrain\version.h" />
+    <ClInclude Include="source\after\terrain\VoxelTerrain.h" />
+    <ClInclude Include="source\after\terrain\Zones.h" />
+    <ClInclude Include="source\after\types\character\AggroEnum.h" />
+    <ClInclude Include="source\after\types\character\Animation.h" />
+    <ClInclude Include="source\after\types\character\Attributes.h" />
+    <ClInclude Include="source\after\types\character\Dialogue.h" />
+    <ClInclude Include="source\after\types\character\MovementEnum.h" />
+    <ClInclude Include="source\after\types\character\NPC_AIFocus.h" />
+    <ClInclude Include="source\after\types\character\NPC_WorldState.h" />
+    <ClInclude Include="source\after\types\character\TypeEnum.h" />
+    <ClInclude Include="source\after\types\CharHealth.h" />
+    <ClInclude Include="source\after\types\DebuffChance.h" />
+    <ClInclude Include="source\after\types\Disciplines.h" />
+    <ClInclude Include="source\after\types\Experience.h" />
+    <ClInclude Include="source\after\types\terrain\BiomeTypes.h" />
+    <ClInclude Include="source\after\types\terrain\BlockData.h" />
+    <ClInclude Include="source\after\types\terrain\BlockTracker.h" />
+    <ClInclude Include="source\after\types\terrain\BlockType.h" />
+    <ClInclude Include="source\after\types\terrain\DirectionFlags.h" />
+    <ClInclude Include="source\after\types\terrain\Grass.h" />
+    <ClInclude Include="source\after\types\terrain\GrassTypes.h" />
+    <ClInclude Include="source\after\types\terrain\IndexInformation.h" />
+    <ClInclude Include="source\after\types\terrain\InstanceTypes.h" />
+    <ClInclude Include="source\after\types\terrain\IOPropData.h" />
+    <ClInclude Include="source\after\types\terrain\PatternTypes.h" />
+    <ClInclude Include="source\after\types\terrain\TerrainTypes.h" />
+    <ClInclude Include="source\after\types\terrain\WeatherTypes.h" />
+    <ClInclude Include="source\after\types\WorldVector.h" />
+    <ClInclude Include="source\after\types\world\Cultures.h" />
+    <ClInclude Include="source\after\types\world\Provinces.h" />
+    <ClInclude Include="source\after\types\world\Regions.h" />
+    <ClInclude Include="source\after\types\world\Resources.h" />
+    <ClInclude Include="source\after\types\world\Towns.h" />
+    <ClInclude Include="source\after\utils\NamingUtils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\after-editor\scenes\gmsceneLipsyncEditor.cpp" />
+    <ClCompile Include="source\after-editor\scenes\gmsceneParticleEditor.cpp" />
+    <ClCompile Include="source\after-editor\scenes\gmsceneSkyColorEditor.cpp" />
+    <ClCompile Include="source\after-editor\scenes\gmsceneTattooTester.cpp" />
+    <ClCompile Include="source\after-editor\scenes\gmsceneVoxelEditor.cpp" />
+    <ClCompile Include="source\after-editor\standalone\CLipsyncEditor.cpp" />
+    <ClCompile Include="source\after-editor\standalone\CParticleEditor.cpp" />
+    <ClCompile Include="source\after-editor\standalone\CSkyColorEditor.cpp" />
+    <ClCompile Include="source\after\after-common.cpp" />
+    <ClCompile Include="source\after\animation\Sequence.cpp" />
+    <ClCompile Include="source\after\developer\CAiTester.cpp" />
+    <ClCompile Include="source\after\developer\CRegionMapTester.cpp" />
+    <ClCompile Include="source\after\developer\editor\CTattooTester.cpp" />
+    <ClCompile Include="source\after\developer\editor\CTerrainSamplerEditor.cpp" />
+    <ClCompile Include="source\after\developer\editor\CVoxelFileEditor.cpp" />
+    <ClCompile Include="source\after\entities\CCharacterModel.cpp" />
+    <ClCompile Include="source\after\entities\CCharacterModel_Animation.cpp" />
+    <ClCompile Include="source\after\entities\character\CAfterPlayer.cpp" />
+    <ClCompile Include="source\after\entities\character\CAfterPlayer_Animation.cpp" />
+    <ClCompile Include="source\after\entities\character\CAfterPlayer_Camera.cpp" />
+    <ClCompile Include="source\after\entities\character\CAfterPlayer_Movetypes.cpp" />
+    <ClCompile Include="source\after\entities\character\CAfterPlayer_Transforms.cpp" />
+    <ClCompile Include="source\after\entities\character\CCharacter.cpp" />
+    <ClCompile Include="source\after\entities\character\CMccCharacterModel.cpp" />
+    <ClCompile Include="source\after\entities\character\CRfCharacterModel.cpp" />
+    <ClCompile Include="source\after\entities\character\npc\CCharTest.cpp" />
+    <ClCompile Include="source\after\entities\character\npc\CNpcBase.cpp" />
+    <ClCompile Include="source\after\entities\character\npc\zoned\automaton\RobotAutomaton.cpp" />
+    <ClCompile Include="source\after\entities\character\npc\zoned\CZonedCharacter.cpp" />
+    <ClCompile Include="source\after\entities\character\npc\zoned\CZonedCharacterController.cpp" />
+    <ClCompile Include="source\after\entities\character\npc\zoned\fauna\FaunaDesertBird.cpp" />
+    <ClCompile Include="source\after\entities\character\npc\zoned\fauna\FaunaKomodo.cpp" />
+    <ClCompile Include="source\after\entities\cutscene\CCutscenes.cpp" />
+    <ClCompile Include="source\after\entities\cutscene\CDialogueGUI.cpp" />
+    <ClCompile Include="source\after\entities\cutscene\CDialogueLoader.cpp" />
+    <ClCompile Include="source\after\entities\effects\CFXNotice.cpp" />
+    <ClCompile Include="source\after\entities\foliage\CFoliage.cpp" />
+    <ClCompile Include="source\after\entities\foliage\CFoliageTree.cpp" />
+    <ClCompile Include="source\after\entities\foliage\CTerraFoliageFactory.cpp" />
+    <ClCompile Include="source\after\entities\foliage\CTreeBase.cpp" />
+    <ClCompile Include="source\after\entities\foliage\nottrees\FoliageBushGreen.cpp" />
+    <ClCompile Include="source\after\entities\foliage\nottrees\FoliageCactusDefault.cpp" />
+    <ClCompile Include="source\after\entities\foliage\trees\FoliageTreePine.cpp" />
+    <ClCompile Include="source\after\entities\foliage\trees\FoliageTreeWarped.cpp" />
+    <ClCompile Include="source\after\entities\gametype\CGameType.cpp" />
+    <ClCompile Include="source\after\entities\gametype\gametypeCharview.cpp" />
+    <ClCompile Include="source\after\entities\gametype\gametypeMenu.cpp" />
+    <ClCompile Include="source\after\entities\gametype\gametypeNotDying.cpp" />
+    <ClCompile Include="source\after\entities\hud\player\CCharacterScreen.cpp" />
+    <ClCompile Include="source\after\entities\hud\player\CCraftingGUI.cpp" />
+    <ClCompile Include="source\after\entities\hud\player\CInventoryGUI.cpp" />
+    <ClCompile Include="source\after\entities\hud\player\CPlayerHud.cpp" />
+    <ClCompile Include="source\after\entities\hud\player\CPlayerHudStatus.cpp" />
+    <ClCompile Include="source\after\entities\hud\player\CPlayerInventoryGUI.cpp" />
+    <ClCompile Include="source\after\entities\hud\player\CPlayerLogbook.cpp" />
+    <ClCompile Include="source\after\entities\hud\player\CPlayerMenu.cpp" />
+    <ClCompile Include="source\after\entities\hud\player\CSkillTreeGUI.cpp" />
+    <ClCompile Include="source\after\entities\hud\player\Plhud_RadialMenu.cpp" />
+    <ClCompile Include="source\after\entities\item\ammo\AmmoArrow.cpp" />
+    <ClCompile Include="source\after\entities\item\ammo\AmmoCrossbowBolt.cpp" />
+    <ClCompile Include="source\after\entities\item\ammo\CAmmoBase.cpp" />
+    <ClCompile Include="source\after\entities\item\beta\WeaponCrossbow.cpp" />
+    <ClCompile Include="source\after\entities\item\CRecipeLibrary.cpp" />
+    <ClCompile Include="source\after\entities\item\CRecipeLibrary_Forging.cpp" />
+    <ClCompile Include="source\after\entities\item\CWeaponItem.cpp" />
+    <ClCompile Include="source\after\entities\item\CWeaponItemFactory.cpp" />
+    <ClCompile Include="source\after\entities\item\CWeaponItemRendering.cpp" />
+    <ClCompile Include="source\after\entities\item\CWeaponItemTypes.cpp" />
+    <ClCompile Include="source\after\entities\item\junk\CItemJunkBase.cpp" />
+    <ClCompile Include="source\after\entities\item\material\ItemTreeBranch.cpp" />
+    <ClCompile Include="source\after\entities\item\material\ItemTreeTrunk.cpp" />
+    <ClCompile Include="source\after\entities\item\material\ItemTreeTwig.cpp" />
+    <ClCompile Include="source\after\entities\item\props\flora\ItemFloraLifedrop.cpp" />
+    <ClCompile Include="source\after\entities\item\props\flora\ItemFloraSnowLily.cpp" />
+    <ClCompile Include="source\after\entities\item\props\ItemCampfire.cpp" />
+    <ClCompile Include="source\after\entities\item\props\ItemCrateWooden.cpp" />
+    <ClCompile Include="source\after\entities\item\props\ItemElectricLamp.cpp" />
+    <ClCompile Include="source\after\entities\item\props\ItemElectricSource.cpp" />
+    <ClCompile Include="source\after\entities\item\props\ItemLantern.cpp" />
+    <ClCompile Include="source\after\entities\item\props\ItemTorch.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\CSkill.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\CSkillReference.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\SkillList.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\skills\defensive\SkillPressureBlast.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\skills\defensive\SkillShield.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\skills\mobility\SkillBlink.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\skills\modifier\SkillFireArrow.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\skills\modifier\SkillHailOfArrows.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\skills\modifier\SkillReflectshot.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\skills\modifier\SkillSplitshot.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\skills\offensive\SkillFiretoss.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\skills\offensive\SkillFrostball.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\skills\offensive\SkillMagicBolt.cpp" />
+    <ClCompile Include="source\after\entities\item\skill\skills\offensive\SkillMagikinesis.cpp" />
+    <ClCompile Include="source\after\entities\item\system\ItemBlockPuncher.cpp" />
+    <ClCompile Include="source\after\entities\item\system\ItemMeleeCombat.cpp" />
+    <ClCompile Include="source\after\entities\item\system\ItemTerraBlok.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\bow\CRWBowShitty.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\CBaseRandomBow.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\CBaseRandomItem.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\CBaseRandomMelee.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\CBaseRandomTossable.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\CWeaponItemGenerator.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\ItemAdditives.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\ItemRandomizer.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWDagger.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWHoe.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWPickaxeSuShitty.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWShovelSuShitty.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWSpear.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWSword.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\melee\CRWSwordShortShitty.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\tool\CRWDrillBasic.cpp" />
+    <ClCompile Include="source\after\entities\item\weapon\tossable\CRIDynamite.cpp" />
+    <ClCompile Include="source\after\entities\item\wearable\CWearableItem.cpp" />
+    <ClCompile Include="source\after\entities\menu\COctreePauseloader.cpp" />
+    <ClCompile Include="source\after\entities\menu\CTerrainLoadscreen.cpp" />
+    <ClCompile Include="source\after\entities\menu\front\C_RCharacterCreator.cpp" />
+    <ClCompile Include="source\after\entities\menu\front\C_RMainMenu.cpp" />
+    <ClCompile Include="source\after\entities\menu\front\C_RMainMenuTitle.cpp" />
+    <ClCompile Include="source\after\entities\menu\splash\CSplashScreens.cpp" />
+    <ClCompile Include="source\after\entities\menu\splash\CStudioSplash.cpp" />
+    <ClCompile Include="source\after\entities\projectile\AfterBaseProjectile.cpp" />
+    <ClCompile Include="source\after\entities\projectile\magical\ProjectileFiretoss.cpp" />
+    <ClCompile Include="source\after\entities\projectile\magical\ProjectileFrostball.cpp" />
+    <ClCompile Include="source\after\entities\projectile\magical\ProjectileMagicBolt.cpp" />
+    <ClCompile Include="source\after\entities\projectile\projectile\ProjectileArrow.cpp" />
+    <ClCompile Include="source\after\entities\projectile\projectile\ProjectileCBolt.cpp" />
+    <ClCompile Include="source\after\entities\projectile\projectile\ProjectilePebble.cpp" />
+    <ClCompile Include="source\after\entities\props\CTerrainProp.cpp" />
+    <ClCompile Include="source\after\entities\props\CTerrainPropFactory.cpp" />
+    <ClCompile Include="source\after\entities\props\flora\PropFloraLifedrop.cpp" />
+    <ClCompile Include="source\after\entities\props\flora\PropFloraSnowLily.cpp" />
+    <ClCompile Include="source\after\entities\props\props\ElectricLampComponent.cpp" />
+    <ClCompile Include="source\after\entities\props\props\ElectricSourceComponent.cpp" />
+    <ClCompile Include="source\after\entities\props\props\PropCampfire.cpp" />
+    <ClCompile Include="source\after\entities\props\props\PropChestBase.cpp" />
+    <ClCompile Include="source\after\entities\props\props\PropCrateWooden.cpp" />
+    <ClCompile Include="source\after\entities\props\props\PropDoorBase.cpp" />
+    <ClCompile Include="source\after\entities\props\props\PropLantern.cpp" />
+    <ClCompile Include="source\after\entities\props\props\PropTorch.cpp" />
+    <ClCompile Include="source\after\entities\test\CTestPhysicsCrate.cpp" />
+    <ClCompile Include="source\after\entities\test\CTestPhysicsFloor.cpp" />
+    <ClCompile Include="source\after\entities\world\CGameEventGenerator.cpp" />
+    <ClCompile Include="source\after\entities\world\CGameEventList.cpp" />
+    <ClCompile Include="source\after\entities\world\client\CQuestSystem.cpp" />
+    <ClCompile Include="source\after\entities\world\CNpcSpawner.cpp" />
+    <ClCompile Include="source\after\entities\world\environment\CEnvironmentEffects.cpp" />
+    <ClCompile Include="source\after\entities\world\environment\CloudSphere.cpp" />
+    <ClCompile Include="source\after\entities\world\environment\DayAndNightCycle.cpp" />
+    <ClCompile Include="source\after\entities\world\environment\EnvHeavyWeather.cpp" />
+    <ClCompile Include="source\after\entities\world\environment\EnvSunlight.cpp" />
+    <ClCompile Include="source\after\entities\world\environment\weather\CCloudMaster.cpp" />
+    <ClCompile Include="source\after\entities\world\environment\weather\CWeatherCloud.cpp" />
+    <ClCompile Include="source\after\entities\world\environment\weather\CWeatherSimulator.cpp" />
+    <ClCompile Include="source\after\entities\world\events\EventAutomatonDesert.cpp" />
+    <ClCompile Include="source\after\entities\world\events\EventBanditSpawnSmall.cpp" />
+    <ClCompile Include="source\after\entities\world\events\EventDesertStorm.cpp" />
+    <ClCompile Include="source\after\interfaces\CAfterCharacterAnimator.cpp" />
+    <ClCompile Include="source\after\interfaces\CAfterCharacterAnimator_Speech.cpp" />
+    <ClCompile Include="source\after\interfaces\CCharacterMotion.cpp" />
+    <ClCompile Include="source\after\interfaces\CCharacterMotion_States.cpp" />
+    <ClCompile Include="source\after\interfaces\CSpeechTrie.cpp" />
+    <ClCompile Include="source\after\interfaces\io\CZonedCharacterIO.cpp" />
+    <ClCompile Include="source\after\interfaces\world\CWorldCartographer.cpp" />
+    <ClCompile Include="source\after\lua\CLuaSkill.cpp" />
+    <ClCompile Include="source\after\lua\CLuaWeaponItem.cpp" />
+    <ClCompile Include="source\after\lua\Lua_GameObjects.cpp" />
+    <ClCompile Include="source\after\lua\Lua_QuestSystem.cpp" />
+    <ClCompile Include="source\after\physics\Caster.cpp" />
+    <ClCompile Include="source\after\physics\CMeshedStaticProp.cpp" />
+    <ClCompile Include="source\after\physics\water\Water.cpp" />
+    <ClCompile Include="source\after\physics\wind\WindMotion.cpp" />
+    <ClCompile Include="source\after\renderer\objects\grass\CTerraGrass.cpp" />
+    <ClCompile Include="source\after\renderer\objects\hud\CBlockCursor.cpp" />
+    <ClCompile Include="source\after\renderer\objects\hud\Plhud3d_Hurt01.cpp" />
+    <ClCompile Include="source\after\renderer\objects\hud\Plhud_AreaNotifier.cpp" />
+    <ClCompile Include="source\after\renderer\objects\hud\Plhud_TextNotifier.cpp" />
+    <ClCompile Include="source\after\renderer\objects\hud\Ploverlay_Goggles01.cpp" />
+    <ClCompile Include="source\after\renderer\objects\hud\Ploverlay_Hurt01.cpp" />
+    <ClCompile Include="source\after\renderer\objects\hud\Ploverlay_Icing.cpp" />
+    <ClCompile Include="source\after\renderer\objects\tree\CTreeLeafRenderer.cpp" />
+    <ClCompile Include="source\after\renderer\objects\tree\CTreeRenderer.cpp" />
+    <ClCompile Include="source\after\scenes\gmsceneCharacterViewer.cpp" />
+    <ClCompile Include="source\after\scenes\gmsceneGame_5.cpp" />
+    <ClCompile Include="source\after\scenes\gmsceneGame_6.cpp" />
+    <ClCompile Include="source\after\scenes\gmsceneMainGame.cpp" />
+    <ClCompile Include="source\after\scenes\gmsceneMenu.cpp" />
+    <ClCompile Include="source\after\scenes\gmsceneSplashScreens.cpp" />
+    <ClCompile Include="source\after\scenes\tests\testSceneStaticMesh.cpp" />
+    <ClCompile Include="source\after\states\ai\NPC_AIFocus.cpp" />
+    <ClCompile Include="source\after\states\ai\NPC_AIKill.cpp" />
+    <ClCompile Include="source\after\states\ai\NPC_AILookAt.cpp" />
+    <ClCompile Include="source\after\states\ai\NPC_AIPathfinding.cpp" />
+    <ClCompile Include="source\after\states\ai\NPC_AIState.cpp" />
+    <ClCompile Include="source\after\states\ai\NPC_AIThink.cpp" />
+    <ClCompile Include="source\after\states\CharacterStats.cpp" />
+    <ClCompile Include="source\after\states\CRacialStats.cpp" />
+    <ClCompile Include="source\after\states\CWorldState.cpp" />
+    <ClCompile Include="source\after\states\debuffs\DebuffList.cpp" />
+    <ClCompile Include="source\after\states\debuffs\Debuffs.cpp" />
+    <ClCompile Include="source\after\states\debuffs\racial\BuffFluxxorManablood.cpp" />
+    <ClCompile Include="source\after\states\debuffs\racial\BuffRacialDarkElf.cpp" />
+    <ClCompile Include="source\after\states\debuffs\racial\BuffRacialKitten.cpp" />
+    <ClCompile Include="source\after\states\debuffs\standard\DebuffBurningFlametoss.cpp" />
+    <ClCompile Include="source\after\states\debuffs\standard\DebuffDisable.cpp" />
+    <ClCompile Include="source\after\states\debuffs\standard\DebuffDPS.cpp" />
+    <ClCompile Include="source\after\states\debuffs\standard\DebuffRooted.cpp" />
+    <ClCompile Include="source\after\states\debuffs\standard\DebuffSlow.cpp" />
+    <ClCompile Include="source\after\states\debuffs\standard\DebuffSlowBurnFrostball.cpp" />
+    <ClCompile Include="source\after\states\inventory\CCrafting.cpp" />
+    <ClCompile Include="source\after\states\inventory\CInventory.cpp" />
+    <ClCompile Include="source\after\states\inventory\CPlayerInventory.cpp" />
+    <ClCompile Include="source\after\states\model\CLipsyncSequence.cpp" />
+    <ClCompile Include="source\after\states\model\CTattooRenderer.cpp" />
+    <ClCompile Include="source\after\states\NPC_CombatState.cpp" />
+    <ClCompile Include="source\after\states\player\CPlayerStats.cpp" />
+    <ClCompile Include="source\after\states\player\CPlayerStats_Lua.cpp" />
+    <ClCompile Include="source\after\states\player\CPlayerStats_RaceDesc.cpp" />
+    <ClCompile Include="source\after\states\projectileeffect\effects\PEffectBouncing.cpp" />
+    <ClCompile Include="source\after\states\projectileeffect\effects\PEffectBurnOnHit.cpp" />
+    <ClCompile Include="source\after\states\projectileeffect\ProjectileEffects.cpp" />
+    <ClCompile Include="source\after\states\skilltree\CSkillTree.cpp" />
+    <ClCompile Include="source\after\states\weaponeffect\WeaponEffects.cpp" />
+    <ClCompile Include="source\after\states\world\CMCCPlanet.cpp" />
+    <ClCompile Include="source\after\states\world\CMCCRealm.cpp" />
+    <ClCompile Include="source\after\states\world\ProvinceManager.cpp" />
+    <ClCompile Include="source\after\terrain\edit\csg\SidebufferVolumeEditor.cpp" />
+    <ClCompile Include="source\after\terrain\edit\CTerrainAccessor.cpp" />
+    <ClCompile Include="source\after\terrain\edit\SidebufferAccessor.cpp" />
+    <ClCompile Include="source\after\terrain\generation\CWorldGenerator.cpp" />
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran.cpp" />
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran_Architecture.cpp" />
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran_Biome.cpp" />
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran_Caves.cpp" />
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran_Landmasses.cpp" />
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran_Patterns.cpp" />
+    <ClCompile Include="source\after\terrain\generation\CWorldGen_Terran_Terrain.cpp" />
+    <ClCompile Include="source\after\terrain\generation\dungeons\DungeonBase.cpp" />
+    <ClCompile Include="source\after\terrain\generation\dungeons\DungeonCaveSystem.cpp" />
+    <ClCompile Include="source\after\terrain\generation\dungeons\DungeonFactory.cpp" />
+    <ClCompile Include="source\after\terrain\generation\patterns\CPatternController.cpp" />
+    <ClCompile Include="source\after\terrain\generation\patterns\CPatternController_Excavation.cpp" />
+    <ClCompile Include="source\after\terrain\generation\patterns\CPatternController_IO.cpp" />
+    <ClCompile Include="source\after\terrain\generation\patterns\ruins\PatternDesertRuins.cpp" />
+    <ClCompile Include="source\after\terrain\generation\regions\CRegionGenerator.cpp" />
+    <ClCompile Include="source\after\terrain\generation\regions\CRegionGenerator_IO.cpp" />
+    <ClCompile Include="source\after\terrain\io\COctreeIO.cpp" />
+    <ClCompile Include="source\after\terrain\io\COctreeIO_BTree.cpp" />
+    <ClCompile Include="source\after\terrain\io\COctreeIO_Compression.cpp" />
+    <ClCompile Include="source\after\terrain\io\COctreeIO_GameData.cpp" />
+    <ClCompile Include="source\after\terrain\io\COctreeIO_LUT.cpp" />
+    <ClCompile Include="source\after\terrain\modifiers\CTerraExplosion.cpp" />
+    <ClCompile Include="source\after\terrain\system\CVoxelMesher.cpp" />
+    <ClCompile Include="source\after\terrain\system\CVoxelMesherDC.cpp" />
+    <ClCompile Include="source\after\terrain\system\CVoxelMesherMC.cpp" />
+    <ClCompile Include="source\after\terrain\system\CVoxelMesherTVMC.cpp" />
+    <ClCompile Include="source\after\terrain\system\DataSampler.cpp" />
+    <ClCompile Include="source\after\terrain\system\JobHandler.cpp" />
+    <ClCompile Include="source\after\terrain\system\MemoryManager.cpp" />
+    <ClCompile Include="source\after\terrain\system\TerrainRenderer.cpp" />
+    <ClCompile Include="source\after\terrain\VoxelTerrain.cpp" />
+    <ClCompile Include="source\after\terrain\ZoneChecker.cpp" />
+    <ClCompile Include="source\after\terrain\Zones.cpp" />
+    <ClCompile Include="source\after\types\terrain\BlockType.cpp" />
+    <ClCompile Include="source\after\types\world\Cultures.cpp" />
+    <ClCompile Include="source\after\utils\NamingUtil_Town.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="oneAudio.vcxproj">
+      <Project>{6d8ba09c-513f-4030-8428-0d8797f7264c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="oneCore.vcxproj">
+      <Project>{55249828-4343-423d-91d7-c5f5765eb240}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <ProjectReference Include="oneCoreExt.vcxproj">
+      <Project>{3f16b475-b8c7-4e8a-9678-f368cd0de5c3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="oneEngine.vcxproj">
+      <Project>{5cc6093b-cb43-4cdc-817a-002246731bc9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="oneEngineCommon.vcxproj">
+      <Project>{32bc2667-0024-48a2-a1c4-f7f995e5ef9b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="onePhysical.vcxproj">
+      <Project>{4fdb8acd-7078-4806-b6b0-04c5351f3f87}</Project>
+    </ProjectReference>
+    <ProjectReference Include="oneRenderer.vcxproj">
+      <Project>{c1bc5440-9ce1-4a7e-89dd-dcd57005426a}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

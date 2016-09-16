@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{ecb72345-03ee-4020-952e-e0a662cb5784}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\deploy">
+      <UniqueIdentifier>{9b18fc51-81be-4e8c-b2e3-adcb3be9130c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\deploy\deploy">
+      <UniqueIdentifier>{597dd72e-dc25-4dad-bcea-d3d4c58e1714}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\deploy\deploy\testOneEngineCore.cpp">
+      <Filter>SOURCE\deploy\deploy</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

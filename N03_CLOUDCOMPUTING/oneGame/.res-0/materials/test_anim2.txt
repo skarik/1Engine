@@ -1,0 +1,14 @@
+main
+{
+	//blendmode	alphablend
+	alphamode	full
+	lighting	disabled
+	shadows		disabled
+	
+	diffuse		0.9 0.9 0.9
+	emissive	0 0 0
+
+	shader		particle
+	
+	texture		textures/particles/smokeSheet.png
+}

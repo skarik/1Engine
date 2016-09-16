@@ -1,0 +1,437 @@
+$properties
+	$head "Bip001 Head" 
+	$root "Bip001" #search for FIRST match
+	# todo: move this jiggle to the female body model
+	$jiggle "Bip001 L Tit" _sys_jiggle_breast
+	$jiggle "Bip001 R Tit" _sys_jiggle_breast
+
+$ikdefinitions
+	IK_AIMING	def_aimer0	"Spine1" "Spine2" "Spine3" "L UpperArm" "R UpperArm"
+	# following line is for the bani race
+	##IK_AIMING	def_aimer1	"Spine1" "Spine2" "Spine3" "L Bottom UpperArm" "R Bottom UpperArm"
+	IK_FOOTSTEP	def_lfoot	"L Foot" "L Calf" "L Thigh" "L Toe0" "L Toe1"
+	IK_FOOTSTEP	def_rfoot	"R Foot" "R Calf" "R Thigh" "R Toe0" "R Toe1"
+	IK_PROPS	def_props	"Prop1" "Prop2"
+	IK_LOOKAT	def_lookat	"Head" "L Eye" "R Eye"
+	
+$hitboxes
+# note that the converter is dumb, so these hitboxes must be in the order of heirarchy
+# both havok and the in-house code need the hitbox skelly to be in proper order
+	begin "Hips"
+		extents 0.16 0.1 0.2
+		center	0 0.15 0
+		bone	"Spine"
+	end
+	begin "Torso"
+		extents 0.27 0.2 0.3
+		center	0 -0.12 0
+		bone	"Spine1"
+	end
+	begin "Chest"
+		extents 0.37 0.2 0.25
+		bone	"Spine3"
+	end
+	begin "Head"
+		center	0.18 0 0
+		extents	0.25 0.15 0.18
+		bone	"Head"
+	end
+	begin "LUpperArm"
+		center	0.2 0 0
+		extents 0.4 0.1 0.1
+		bone	"L UpperArm"
+	end
+	begin "RUpperArm"
+		center	0.2 0 0
+		extents 0.4 0.1 0.1
+		bone	"R UpperArm"
+	end
+	begin "LLowerArm"
+		center	0.23 0 0
+		extents 0.45 0.1 0.1
+		bone	"L Forearm"
+	end
+	begin "RLowerArm"
+		center	0.23 0 0
+		extents 0.45 0.1 0.1
+		bone	"R Forearm"
+	end
+	begin "LThigh"
+		extents 0.76 0.16 0.16
+		center	0.38 0 0
+		bone "L Thigh"
+	end
+	begin "RThigh"
+		extents 0.76 0.16 0.16
+		center	0.38 0 0
+		bone "R Thigh"
+	end
+	begin "LCalf"
+		extents 0.8 0.14 0.14
+		center	0.45 0 0
+		bone "L Calf"
+	end
+	begin "RCalf"
+		extents 0.8 0.14 0.14
+		center	0.45 0 0
+		bone "R Calf"
+	end
+	
+$actions
+"ref" 0 1 0
+"idle" 2 102 1
+
+# Walking/onground animation
+
+"run" 139 171 1
+	$begin_events
+		footstep 10
+		footstep 26
+	$end_events
+"run_hover" 1988 2033 1
+
+"sprint02_backward" 5076 5096 1
+	$extrapolate xy
+	$begin_events
+		footstep 5
+		footstep 15
+	$end_events
+"sprint02_backward_left" 5098 5118 1
+	$extrapolate xy
+	$begin_events
+		footstep 5
+		footstep 15
+	$end_events
+"sprint02_backward_right" 5120 5140 1
+	$extrapolate xy
+	$begin_events
+		footstep 5
+		footstep 15
+	$end_events
+"sprint02_forward" 5142 5162 1
+	$extrapolate xy
+	$begin_events
+		footstep 0
+		footstep 10
+	$end_events
+"sprint02_forward_left" 5164 5184 1
+	$extrapolate xy
+	$begin_events
+		footstep 0
+		footstep 10
+	$end_events
+"sprint02_forward_right" 5186 5206 1
+	$extrapolate xy
+	$begin_events
+		footstep 0
+		footstep 10
+	$end_events
+"sprint02_left" 5208 5228 1
+	$extrapolate xy
+	$begin_events
+		footstep 0
+		footstep 10
+	$end_events
+"sprint02_right" 5230 5250 1
+	$extrapolate xy
+	$begin_events
+		footstep 5
+		footstep 15
+	$end_events
+	
+"sprint90_backward" 5252 5297 1
+"sprint90_backward_left" 5299 5344 1
+"sprint90_backward_right" 5346 5391 1
+"sprint90_forward" 5393 5438 1
+"sprint90_forward_left" 5440 5485 1
+"sprint90_forward_right" 5487 5532 1
+"sprint90_left" 5534 5579 1
+"sprint90_right" 5581 5626 1
+
+"run02_forward" 5628 5648 1
+	$extrapolate xy
+	$begin_events
+		footstep 5
+		footstep 15
+	$end_events
+	
+"mv2_run" 4666 4702 1
+	$extrapolate xy
+	$begin_events
+		footstep 18
+		footstep 36
+	$end_events
+
+"walk" 103 138 1
+	$begin_events
+		footstep 11
+		footstep 28
+	$end_events
+"walk01_backward" 3499 3534 1
+	$begin_events
+		footstep 11
+		footstep 28
+	$end_events
+"walk01_forward" 3536 3571 1
+	$begin_events
+		footstep 11
+		footstep 28
+	$end_events
+"walk01_left" 3573 3608 1
+	$begin_events
+		footstep 11
+		footstep 28
+	$end_events
+"walk01_right" 3610 3645 1
+	$begin_events
+		footstep 11
+		footstep 28
+	$end_events
+"walk_bow_forward" 3811 3846 1
+	$begin_events
+		footstep 11
+		footstep 28
+	$end_events
+"walk_hover" 1941 1986 1
+"walkHT_forward" 5012 5042 1
+	$extrapolate xy
+	$begin_events
+		footstep 0
+		footstep 19
+	$end_events
+"walkSH_forward" 5044 5074 1
+	$extrapolate xy
+	$begin_events
+		footstep 0
+		footstep 15
+	$end_events
+
+"crouch_idle" 308 408 1
+"crouch_idle_2" 2338 2438 1
+"crouch_move" 409 469 1
+
+"crawl_forward_1" 2035 2095 1
+	$begin_events
+		footstep 28
+		footstep 58
+	$end_events
+"crawl_idle_1" 2097 2147 1
+"crawl_sprint_1" 2149 2209 1
+	$begin_events
+		footstep 19
+		footstep 24
+	$end_events	
+	
+"prone_idle" 470 570 1
+"prone_move" 571 610 1
+
+"swim_tread" 665 705 1
+"swim" 2514 2554 1
+
+"jump" 254 274 0
+	$begin_events
+		footstep 2
+	$end_events
+	
+"fall" 275 285 1
+"land" 286 296 0
+"fall_reg" 297 307 1
+
+"fall_hard" 1857 1892 0
+	$begin_events
+		footstep 5
+	$end_events
+"stun_stagger_hard" 3396 3423 0
+"stun_stagger_twist" 4611 4638 0
+"falldown_start" 3854 3880 0
+	$extrapolate xy
+"falldown_idle_0" 3883 3903 1
+	$extrapolate xy
+"falldown_idle_1" 3918 3938 1
+	$extrapolate xy
+"falldown_end" 3943 3988 0
+	$extrapolate xy
+	
+"jump_03" 612 632 0
+	$begin_events
+		footstep 2
+	$end_events
+
+"fall_03" 633 643 1
+"fall_sprint" 644 664 1
+
+"idle_02" 706 806 1
+
+"hold_bow_idle" 1565 1615 1
+"hold_bow_aim" 1617 1667 0
+
+"hang_ledge" 832 867 1
+"hang_ledge_climb" 2211 2246 0
+"hang_ledge_02" 2440 2475 1
+"hang_ledge_02_climb" 2477 2512 0
+
+"hold_onehanded_draw" 172 212 0
+"hold_onehanded" 213 253 1
+"hold_onehanded_draw_fast" 807 831 0
+"hold_onehanded_toss" 3769 3809 0
+	$begin_events
+		attack 7
+	$end_events
+"hold_onehanded_smack" 1006 1046 0
+	$begin_events
+		attack 13
+	$end_events
+	
+"hold_general_push" 4000 4040 0
+"hold_general_shut" 4042 4082 0
+
+"hold_anim_googleson" 4908 4958 0
+"hold_anim_googlesoff" 4960 5010 0
+
+"fisticuffs_left" 868 886 0
+"fisticuffs_right" 887 905 0
+"fisticuffs_left_hit" 968 986 0
+	$begin_events
+		attack 4
+	$end_events
+
+"fisticuffs_right_hit" 987 1005 0
+	$begin_events
+		attack 4
+	$end_events
+"fisticuffs_left_hit_broke" 2248 2291 0
+"fisticuffs_right_hit_broke" 2293 2336 0
+
+"spell01_idle" 906 946 1
+"spell01_snap" 947 967 0
+
+"spell02_idle" 3647 3767 1
+
+"hold_torch" 1047 1087 1
+"hold_torch_draw" 1088 1108 0
+"hold_torch_draw_02" 1109 1129 0
+
+#########################
+# Melee animations
+#########################
+# One handed
+"hold_oneblade_01_idle" 2556 2596 1
+"hold_oneblade_draw_top" 1171 1201 0
+"hold_oneblade_draw" 1202 1232 0
+"hold_oneblade_01_block-1" 2598 2638 1
+"hold_oneblade_01_block-2" 2640 2680 1
+"hold_oneblade_01_block-3" 2682 2722 1
+"hold_oneblade_01_block-4" 2724 2764 1
+"hold_oneblade_01_block-5" 2766 2806 1
+"hold_oneblade_01_parry" 2808 2848 0
+"hold_oneblade_01_prepare-0" 2850 2890 0
+"hold_oneblade_01_prepare-2" 2892 2932 0
+"hold_oneblade_01_prepare-4" 2934 2974 0
+"hold_oneblade_01_prepare-6" 2976 3016 0
+"hold_oneblade_01_swing-0" 3018 3058 0
+	$begin_events
+		clang_check 15
+		attack 16
+		chargeup 8
+	$end_events
+"hold_oneblade_01_swing-1" 3060 3100 0
+	$begin_events
+		clang_check 15
+		attack 16
+		chargeup 8
+	$end_events
+"hold_oneblade_01_swing-2" 3102 3142 0
+	$begin_events
+		clang_check 15
+		attack 16
+		chargeup 8
+	$end_events
+"hold_oneblade_01_swing-3" 3144 3184 0
+	$begin_events
+		clang_check 15
+		attack 16
+		chargeup 8
+	$end_events
+"hold_oneblade_01_swing-4" 3186 3226 0
+	$begin_events
+		clang_check 15
+		attack 16
+		chargeup 8
+	$end_events
+"hold_oneblade_01_swing-5" 3228 3268 0
+	$begin_events
+		clang_check 15
+		attack 16
+		chargeup 8
+	$end_events
+"hold_oneblade_01_swing-6" 3270 3310 0
+	$begin_events
+		clang_check 15
+		attack 16
+		chargeup 8
+	$end_events
+"hold_oneblade_01_swing-7" 3312 3352 0
+	$begin_events
+		clang_check 15
+		attack 16
+		chargeup 8
+	$end_events
+"hold_oneblade_01_swing-8" 3354 3394 0
+	$begin_events
+		clang_check 15
+		attack 16
+		chargeup 8
+	$end_events
+"hold_oneblade_01_ministun-0-4" 4640 4664 0
+
+# One handed, dual wield
+"hold_twoblade_01_idle" 4443 4483 1
+"hold_twoblade_01_block-3" 4401 4441 1
+"hold_twoblade_01_parry" 4485 4525 0
+"hold_twoblade_01_swing-left-0-4" 4527 4567 0
+	$begin_events
+		clang_check 15
+		attack 16
+		chargeup 8
+	$end_events
+"hold_twoblade_01_swing-right-0-4" 4569 4609 0
+	$begin_events
+		clang_check 15
+		attack 16
+		chargeup 8
+	$end_events
+
+"hold_twohanded" 1334 1374 1
+"hold_twohanded_draw" 1375 1405 0
+"hold_twohanded_smack" 1406 1446 0
+	$begin_events
+		attack 10
+	$end_events
+
+"roll" 1447 1512 1
+
+"slide" 1513 1563 1
+
+"fly_idle" 1233 1333 1
+
+"idle_combat_01" 1669 1714 1
+"idle_gaurded_01" 1716 1761 1
+
+"idle_relaxed_01" 1763 1808 1
+"idle_relaxed_02" 4084 4129 1
+"idle_relaxed_gloomy_01" 4131 4176 1
+"idle_relaxed_hammy_02" 4178 4223 1
+"idle_relaxed_jolly_01" 4225 4305 1
+"idle_relaxed_jolly_02" 4307 4337 1
+
+"idle_magic_showoff" 1810 1855 1
+
+"idle_relaxed_hover_01" 1894 1939 1
+"idle_relaxed_hover_02" 4339 4399 1
+
+"idle_sit_01" 4704 4804 1
+"idle_sit_02" 4806 4906 1
+	
+"die_forward" 3425 3465 0
+"die_backward" 3467 3497 0
+

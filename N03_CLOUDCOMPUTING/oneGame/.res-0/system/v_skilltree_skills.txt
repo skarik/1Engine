@@ -1,0 +1,46 @@
+<!-- MAIN SKILLTREE DEFINITIONS -->
+<skilltree title="General Ability Tree" background_color=".85,.85,.7,0.3" />
+
+
+<!-- Western Magic Tree -->
+<title type="1" content="Western Magic" pos="100,30" />
+<skill id="SkillMagicBolt" pos="0,0" />
+<skill id="PassiveSelfTaught" pos="-130,0" parent="SkillMagicBolt" />
+<skill id="PassiveArcaneMissileMastery" pos="70,110" parent="SkillMagicBolt,10" />
+<skill id="SkillBlink" pos="70,-110" parent="SkillMagicBolt,1" />
+	<!-- Tier 1 selections -->
+	<skill id="SkillFiretoss" pos="0,-230" parent="SkillMagicBolt,1" />
+	<skill id="SkillFrostBall" pos="0,230" parent="SkillMagicBolt,1" />
+	<skill id="SkillWaterbolt" pos="-200,150" parent="SkillMagicBolt,1" />
+	<skill id="SkillSparks" pos="-200,-150" parent="SkillMagicBolt,1" />
+	<skill id="SkillHeal" pos="220,-130" parent="SkillMagicBolt,1" />
+	<skill id="SkillShield" pos="220,130" parent="SkillMagicBolt,1" />
+	
+	<!-- Water Skill Tree -->
+	<skill id="SkillPressureBlast" pos ="-400,400" parent="SkillWaterbolt"/>
+	
+	<!-- Electric Skill Tree -->
+	<skill id="PassiveSparksArcLightning" pos="-300,-300" parent="SkillSparks,1" />
+	<skill id="PassiveSparksLotsOfPotential" pos="-375,-195" parent="SkillSparks,1" />
+	<skill id="PassiveSparksLightningBolt" pos="-400,-70" parent="SkillSparks,1" />
+	
+	<!-- Fire Skill Tree -->
+	<skill id="SkillFlameEnchant" pos="150,-380" parent="SkillFiretoss,1" />
+	<skill id="SkillFlames" pos="0,-420" parent="SkillFiretoss,1" />
+	<skill id="PassiveTooHotToHandle" pos="-150,-380" parent="SkillFiretoss,1" />
+	
+	<skill id="SkillLuaTest" pos="-150,-500" parent="SkillFiretoss,1" />
+	
+<!-- Ranged Combat Tree -->
+<title type="1" content="Ranged Combat" pos="2000,-50" />
+<skill id="SkillPowershot" pos="2000,0" />
+<skill id="SkillReflectshot" pos="1940,120" parent="SkillPowershot" />
+<skill id="SkillSplitshot" pos="2060,120" parent="SkillPowershot" />
+<skill id="SkillFireArrow" pos="1925,360" parent="SkillReflectshot,1,SkillFiretoss,1" />
+
+
+<skill id="SkillHailOfArrows" pos="2075,240" parent="SkillSplitshot" />
+
+
+<!-- for when not able to parent things the normal way, use a postlink -->
+<!-- <postlink parents="" child="" -->
