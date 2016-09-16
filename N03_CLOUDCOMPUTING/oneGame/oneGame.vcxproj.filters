@@ -1230,6 +1230,9 @@
     <ClInclude Include="source\cloud\entities\CCloudPlayer.h">
       <Filter>SOURCE\Cloud\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="source\cloud\entities\CCloudEnemy.h">
+      <Filter>SOURCE\Cloud\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\after\scenes\gmsceneGame_5.cpp">
@@ -2037,6 +2040,9 @@
       <Filter>SOURCE\Cloud\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="source\cloud\entities\CCloudPlayer.cpp">
+      <Filter>SOURCE\Cloud\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cloud\entities\CCloudEnemy.cpp">
       <Filter>SOURCE\Cloud\Entities</Filter>
     </ClCompile>
   </ItemGroup>
