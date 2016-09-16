@@ -283,7 +283,14 @@ void CDeveloperConsole::AddConsoleVariable( string const& name, ftype* var )
 // Add manual match
 void CDeveloperConsole::AddConsoleMatch( string const& name )
 {
-	manualMatchList.push_back(name);
+	if ( std::find(manualMatchList.begin(),manualMatchList.end(), name) == manualMatchList.end() )
+	{
+		manualMatchList.push_back(name);
+	}
+	else
+	{
+		Debug::Console->PrintError("Double console link on \"" + name + "\"\n");
+	}
 }
 
 // Parse the command and actually run it

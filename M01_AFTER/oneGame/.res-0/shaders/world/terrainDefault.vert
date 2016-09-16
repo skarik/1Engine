@@ -39,6 +39,7 @@ varying vec4 v2f_lightcoord[8];
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
@@ -51,17 +52,17 @@ void main ( void )
 	v2f_normals		= sys_ModelRotationMatrix * vec4( mdl_Normal, 1.0 );
 	v2f_colors		= mdl_Color;
 	v2f_position	= sys_ModelMatrix*v_localPos;
-	
+
 	v2f_texcoord0.xyz = (1+2*mdl_TexCoord.xyz)/(2*16);
-	
-	
+
+
 	v2f_fogdensity  = (sys_FogEnd - v_screenPos.z) * sys_FogScale;
 
 	// Terrain blending values
 	v2f_ter_blends1 = ter_Blends1;
 	v2f_ter_blends1.xyz /= (v2f_ter_blends1.x+v2f_ter_blends1.y+v2f_ter_blends1.z);
 	v2f_ter_blends2 = ter_Blends2;
-	
+
 	// Light matrices
 	v2f_screenpos = vec3( v_screenPos.x,v_screenPos.y,v_screenPos.w );
 	v2f_lightcoord[0] = (v2f_position * sys_LightMatrix[0]);

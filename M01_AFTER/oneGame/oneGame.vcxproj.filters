@@ -328,6 +328,9 @@
     <Filter Include="SOURCE\AFTER-Editor\Standalone">
       <UniqueIdentifier>{a93ac015-8f7e-48da-a6a8-1445385f48a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\AFTER\Scenes\Tests">
+      <UniqueIdentifier>{e0c53f5e-4fee-4ff8-8082-53305835d36b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\after\scenes\gmsceneGame_5.h">
@@ -1209,6 +1212,9 @@
     <ClInclude Include="source\after\scenes\gmsceneGame_6.h">
       <Filter>SOURCE\AFTER\Scenes\Developer %28filter only%29</Filter>
     </ClInclude>
+    <ClInclude Include="source\after\scenes\tests\testSceneStaticMesh.h">
+      <Filter>SOURCE\AFTER\Scenes\Tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\after\scenes\gmsceneGame_5.cpp">
@@ -2008,6 +2014,9 @@
     </ClCompile>
     <ClCompile Include="source\after\scenes\gmsceneGame_6.cpp">
       <Filter>SOURCE\AFTER\Scenes\Developer %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\after\scenes\tests\testSceneStaticMesh.cpp">
+      <Filter>SOURCE\AFTER\Scenes\Tests</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -23,16 +23,17 @@ uniform float gm_HorizonStrength;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
 
-void main ( void )  
+void main ( void )
 {
 	/*vec4 finalColor = sys_DiffuseColor;
 	float fHorizonFactor = abs( v2f_normals.z );
 	//gl_FragColor *= fHorizonFactor*sys_DiffuseColor;
-	
+
 	//gl_FragColor += max(0, v2f_directional.x*(1-fHorizonFactor)*(1-fHorizonFactor) )*vec4(0.2,0.2,0.1,0);
 	//gl_Fog.color
 	//finalColor = sys_DiffuseColor + (gl_Fog.color-sys_DiffuseColor)*(1-fHorizonFactor);
@@ -41,19 +42,19 @@ void main ( void )
 	finalColor = finalColor + (gl_Fog.color-finalColor)*(1.0-fHorizonFactor)*(1.0-fHorizonFactor);
 	//finalColor = //finalColor + (gl_Fog.color-finalColor)*(1.0-fHorizonFactor)*(1.0-fHorizonFactor);
 	finalColor.a = 1;
-	
+
 	gl_FragColor = finalColor;*/
-	
+
 	vec4 finalColor = gm_SkyColor;
-	
+
 	float horizonfactor = 1.0-abs( v2f_normals.z );
 	horizonfactor = horizonfactor;
-	
+
 	float sunfactor = dot( gm_LightDirection, v2f_normals );
 	sunfactor = max( 0.0, sunfactor );
 	sunfactor = sunfactor*sunfactor;
 	sunfactor = mix( sunfactor*sunfactor, sunfactor, horizonfactor );
-	
+
 	finalColor = mix( finalColor, sys_DiffuseColor, horizonfactor );
 	//finalColor = mix( finalColor, mix(finalColor,gl_Fog.color,0.8), pow(horizonfactor,3) );
 	//finalColor = mix( finalColor, gl_Fog.color, pow(horizonfactor,14) );
@@ -61,9 +62,11 @@ void main ( void )
 	finalColor = mix( finalColor, gm_SunColor, sunfactor );
 	//finalColor += gm_SunColor*sunfactor;
 	//finalColor = mix( finalColor, gm_SkyColor, 0.999 );
-	
+
 	//finalColor *= 0.01;
-	
+
+	finalColor.a = 1.0;
 	gl_FragColor = finalColor;
-	gl_FragColor.a = 1.0;
+	//gl_FragColor.rgb = vec3(1,0,0);
+	//gl_FragColor.a = 1.0;
 }

@@ -23,14 +23,15 @@ uniform float sys_AlphaCutoff;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
 
-void main ( void )  
+void main ( void )
 {
 	vec4 diffuseColor = texture2D( textureSampler0, v2f_texcoord0 );
-	
+
 	float alpha = 0.0;
 	float alphamap = texture2D( textureSampler1, vec2(v2f_texcoord0.x,v2f_texcoord0.y*9.0+sys_Time.z*1.5)*0.7 ).r;
 	alphamap -= texture2D( textureSampler1,(vec2(v2f_texcoord0.x*1.5,v2f_texcoord0.y*7.2+sys_Time.z*2.0) + vec2(sys_SinTime.y,sys_Time.y*0.3)*3.0)*0.4 ).r;
@@ -43,12 +44,12 @@ void main ( void )
 		alpha = 0.0;
 	}
 	alpha *= diffuseColor.a*v2f_colors.a;
-	
+
 	if ( alpha < sys_AlphaCutoff ) discard;
 
 	gl_FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb * (v2f_colors.rgb+v2f_emissive), v2f_fogdensity ) * alpha;
 	gl_FragColor.a = alpha;
-	
+
 }
 /*
 float alphamap = texture2D( textureSampler2, v2f_texcoord0*0.8 + vec2(sys_CosTime.x,sys_Time.y*0.7) );

@@ -45,6 +45,7 @@ CWeatherSimulator::CWeatherSimulator ( short xSize, short ySize, short zSize )
 	// Init update state
 	bNeedsUpdate = true;
 	fUpdateTimer = 0.0f;
+	simulationThread = NULL;
 
 	// Set active instance
 	if ( pActiveSim == NULL )
@@ -66,6 +67,12 @@ CWeatherSimulator::CWeatherSimulator ( short xSize, short ySize, short zSize )
 
 CWeatherSimulator::~CWeatherSimulator ( void )
 {
+	// First thing: stop the weather simulation
+	if ( simulationThread ) {
+		simulationThread->join();
+		delete simulationThread;
+	}
+
 	delete noise;
 
 	delete [] data;
@@ -95,8 +102,9 @@ void CWeatherSimulator::Update ( void )
 	UpdateRoot();
 	if ( !bNeedsUpdate )
 	{
-		fUpdateTimer += Time::smoothDeltaTime;
-		if ( fUpdateTimer > 0.1f )
+		fUpdateTimer += Time::deltaTime;
+		//if ( fUpdateTimer > 0.1F ) // Update weather at 10 FPS
+		if ( fUpdateTimer > 0.25F ) // Update weather at 4 FPS
 		{
 			bNeedsUpdate = true;
 		} 
@@ -105,19 +113,15 @@ void CWeatherSimulator::Update ( void )
 	{
 		bNeedsUpdate = false;
 		fUpdateTimer = 0;
-		// TODO: Make threaded.
-		/*
 		
-		*/
+		// TODO: Make threaded.
 		/*static Jobs::result_t result;
 		Jobs::System::Perform( &CWeatherSimulator::UpdateTick, this, &result );*/
-		static std::thread* jobthread = NULL;
-
-		if ( jobthread ) {
-			jobthread->join();
-			delete jobthread;
+		if ( simulationThread ) {
+			simulationThread->join();
+			delete simulationThread;
 		}
-		jobthread = new std::thread( &CWeatherSimulator::UpdateTick, this );
+		simulationThread = new std::thread( &CWeatherSimulator::UpdateTick, this );
 	}
 }
 // System Simulate
@@ -350,6 +354,10 @@ void CWeatherSimulator::GrabTerrainValues ( void )
 // Generates humidity values
 void CWeatherSimulator::GenerateHumidityValues ( void )
 {
+	Real current_time = 1.0F;
+	if (ActiveGameWorld != NULL)
+		current_time = (Real)(ActiveGameWorld->fCurrentTime*0.01f);
+
 	int x, y, z;
 	for ( x = 0; x < size.x; ++x )
 	{
@@ -359,9 +367,9 @@ void CWeatherSimulator::GenerateHumidityValues ( void )
 			{
 				sWeatherSimCell& currentCell = get( data,x,y,z );
 				currentCell.humidity = 1.0f + noise->Get3D(
-					(ftype)root_position.x + x,
-					(ftype)root_position.y + y,
-					(ftype)root_position.z + z*0.1f + (ftype)(ActiveGameWorld->fCurrentTime*0.01f) ) * 0.7f;
+					(Real)root_position.x + x,
+					(Real)root_position.y + y,
+					(Real)root_position.z + z*0.1f + current_time) * 0.7f;
 
 				switch ( currentCell.biome )
 				{
@@ -390,6 +398,10 @@ void CWeatherSimulator::GenerateHumidityValues ( void )
 //  The biome is the largest factor (though season does factor in)
 void CWeatherSimulator::SimulateTemperatureValues ( void )
 {
+	Real current_time = 1.0F;
+	if (ActiveGameWorld != NULL)
+		current_time = (Real)(ActiveGameWorld->fCurrentTime*0.012f);
+
 	int x, y, z;
 	ftype temperatureTarget;
 	for ( x = 0; x < size.x; ++x )
@@ -438,7 +450,7 @@ void CWeatherSimulator::SimulateTemperatureValues ( void )
 				temperatureTarget += noise->Get3D(
 					(ftype)root_position.y + x + 3.2f,
 					(ftype)root_position.z + y + 3.2f,
-					(ftype)root_position.x + z*0.1f + (ftype)(ActiveGameWorld->fCurrentTime*0.012f) ) * 0.2f;
+					(ftype)root_position.x + z*0.1f + current_time ) * 0.2f;
 
 				currentCell.temperature += (1+temperatureTarget - currentCell.temperature)*0.2f;
 			}

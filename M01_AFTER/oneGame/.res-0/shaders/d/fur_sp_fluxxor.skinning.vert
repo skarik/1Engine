@@ -25,6 +25,7 @@ uniform vec4 sys_SinTime, sys_CosTime, sys_Time;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
@@ -62,7 +63,7 @@ void main ( void )
 		v_tempMatrix = transpose(v_tempMatrix);
 	v_finalPos += v_tempMatrix * v_localPos * mdl_BoneWeights.w;
 	v_finalNorm += mat3(v_tempMatrix) * mdl_Normal * mdl_BoneWeights.w;
-	
+
 	// Set the final result
 	v_localPos = v_finalPos;
 	// End vertex skinning
@@ -75,11 +76,11 @@ void main ( void )
 	offset.z += cos( sys_Time.z*0.4+v_localPos.x*14.2+v_localPos.y*13.2 )*0.8;
 	v_localPos.xyz += offset*(1-v2f_colors.g)*0.09;
 	// End vertex offset
-	
+
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
 
 	v2f_normals		= sys_ModelRotationMatrix*vec4( normalize(v_finalNorm), 1.0 );
-	
+
 	v2f_position	= sys_ModelMatrix*v_localPos;
 	v2f_texcoord0	= mdl_TexCoord.xy;
 	v2f_fogdensity  = max( 0.0, (sys_FogEnd - v_screenPos.z) * sys_FogScale );

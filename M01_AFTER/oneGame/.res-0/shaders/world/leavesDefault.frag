@@ -29,6 +29,7 @@ layout(std140) uniform sys_LightingInfo
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
@@ -37,10 +38,10 @@ float diffuseLighting ( vec3 normal, vec3 lightDist, float lightRange, float lig
 {
 	// Distance-based attenuation
 	float attenuation = pow( max( 1.0 - (length( lightDist )*lightRange), 0.0 ), lightFalloff );
-	
+
 	// Cosine law * attenuation
 	float color = mix( max( dot( normal,normalize( lightDist ) ), 0.0 ), 1.0, lightPass*(1.0+attenuation) ) * attenuation;
-	
+
 	// Return final color
 	return color;
 }
@@ -63,37 +64,37 @@ vec3 hsv2rgb(vec3 c)
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
-void main ( void )  
+void main ( void )
 {
 	vec4 diffuseColor = texture2D( textureSampler0, v2f_texcoord0 );
 	float f_alpha = diffuseColor.a * v2f_colors.a;
 	if ( f_alpha < sys_AlphaCutoff ) discard;
-	
+
 	vec3 lightColor = vec3 ( 0.0, 0.0, 0.0 );
-	
+
 	// Shift the hue with the hue shift value
 	/*vec3 diffuseHSV = rgb2hsv( diffuseColor.rgb );
 	diffuseHSV.r -= 0.18;
 	diffuseHSV.g += 0.2;
 	diffuseColor.rgb = hsv2rgb( diffuseHSV );*/
-	
+
 	diffuseColor.rgb += (vec3(1,1,1)-diffuseColor.rgb)*v2f_weatherdensity.x*(min(v2f_normals.z+0.4,1));
-	
+
 	float fresnelFactor = (( dot( v2f_normals.xyz, vec3( 0.0,0.0,1.0 ) ) + 3.0 )/4.0);
-	
+
 	lightColor += sys_LightAmbient.rgb * fresnelFactor;
 	for ( int i = 0; i < 8; i += 1 )
 	{
 		vec3 lightDir;
 		lightDir = sys_LightPosition[i].xyz - v2f_position.xyz;
-		
+
 		float lightVal1 = diffuseLighting( v2f_normals.xyz, lightDir, sys_LightProperties[i].x, sys_LightProperties[i].y, sys_LightProperties[i].z );
 		float lightVal2 = max( dot( sys_LightPosition[i].xyz, v2f_normals.xyz ), 0.0 );
-		
+
 		lightColor += sys_LightColor[i].rgb * mix( lightVal2, lightVal1, sys_LightPosition[i].w ) * 1.6;
-		
+
 	}
-	
+
 	gl_FragColor = mix( sys_FogColor, diffuseColor * v2f_colors * vec4( lightColor, 1.0 ), v2f_fogdensity );
 	gl_FragColor.a = f_alpha;
 }

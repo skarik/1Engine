@@ -44,19 +44,20 @@ uniform vec4 sys_SinTime, sys_CosTime, sys_Time;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
 
 // Sine wave appoximation method (benchmarked to about 3% speed increase over all shadows)
-float SmoothCurve( float x ) {  
-	return x * x *( 3.0 - 2.0 * x );  
-}  
-float TriangleWave( float x ) {  
-	return abs( fract( x + 0.5 ) * 2.0 - 1.0 );  
-}  
-float SmoothTriangleWave( float x ) {  
-	return (SmoothCurve( TriangleWave( x ) ))*2 - 1;  
+float SmoothCurve( float x ) {
+	return x * x *( 3.0 - 2.0 * x );
+}
+float TriangleWave( float x ) {
+	return abs( fract( x + 0.5 ) * 2.0 - 1.0 );
+}
+float SmoothTriangleWave( float x ) {
+	return (SmoothCurve( TriangleWave( x ) ))*2 - 1;
 }
 // Random
 float random ( vec3 seed3 )
@@ -71,7 +72,7 @@ void main ( void )
 	// Calculate squared vertex weight
 	float vertWeight = mdl_Color.a * mdl_Color.a;
 	vec3 offset = vec3 ( 0.0,0.0,0.0 );
-	
+
 	// Slightly offset grass height based on position
 	v_localPos.z += random( v_localPos.xyz )*vertWeight*1.5;
 	// Offset the grass
@@ -81,7 +82,7 @@ void main ( void )
 	v_localPos.z -= (12.0*(gm_WindDirection.x*gm_WindDirection.x + gm_WindDirection.y*gm_WindDirection.y))*vertWeight;
 	// Offset the location position by the position offset
 	v_localPos.xyz += offset;
-	
+
 	// Push away from the camera
 	vec3 dir = sys_WorldCameraPos-(sys_ModelMatrix*v_localPos).xyz;
 	v2f_camDist		= length( dir );
@@ -89,7 +90,7 @@ void main ( void )
 	// Add a vector away from the camera
 	v_localPos.xy -= dir.xy * 8.0 * vertWeight;
 	v_localPos.z -= 8.0/(v2f_camDist*v2f_camDist) * vertWeight;
-	
+
 	// Calculate the screen position now based on the new vertex position
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
 
@@ -101,13 +102,13 @@ void main ( void )
 	v2f_position	= sys_ModelMatrix*v_localPos;
 	v2f_texcoord0	= mdl_TexCoord.xy;
 	v2f_fogdensity = clamp( (sys_FogEnd - v_screenPos.z) * sys_FogScale, 0, 1 );
-	
-	
+
+
 	v2f_screenpos = vec3( v_screenPos.x,v_screenPos.y,v_screenPos.w );
 	v2f_lightcoord[0] = (v2f_position * sys_LightMatrix[0]);
 	v2f_lightcoord[1] = (v2f_position * sys_LightMatrix[1]);
 	v2f_lightcoord[2] = (v2f_position * sys_LightMatrix[2]);
 	v2f_lightcoord[3] = (v2f_position * sys_LightMatrix[3]);
-	
+
 	gl_Position = v_screenPos;
 }

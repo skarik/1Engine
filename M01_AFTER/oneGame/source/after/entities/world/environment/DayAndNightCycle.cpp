@@ -25,31 +25,27 @@ Daycycle::Daycycle ( )
 {
 	vPosition = Vector3d(0, 0, 0); // Initializes the position vector to the default position.
 	skyObject = new EnvSunlight;
-	//skyObject = new DirectionalLight;
-	//speed = 60;
 	timeofDay = 60*60*3; //6+3= 9 oclock morning
 	//timeofDay = 60*60*12; //6+12= 18 = 6 oclock afternoon
 	//timeofDay = 60*60*18; //6+18= 24 = 12 oclock midnight (DEFAULT)
-	/*pSunBillboard = new CBillboard();
-	pSunBillboard->SetSize( 2.0f );
-	pSunBillboard->SetRenderType( Background );*/
+
 	cloudCoverage = 0;
 	spaceEffect = 0;
 
 	// Skysphere
 	pSkyMat = new glMaterial();
-	pSkyMat->setTexture( 0, new CTexture( ".res/textures/starmap.jpg" ) );
-	pSkyMat->setTexture( 1, new CTexture( ".res/textures/cloudmap_hf.png" ) );
+	pSkyMat->setTexture( 0, new CTexture( "textures/starmap.jpg" ) );
+	pSkyMat->setTexture( 1, new CTexture( "textures/cloudmap_hf.png" ) );
 	pSkyMat->passinfo.push_back( glPass() );
 	pSkyMat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	pSkyMat->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
-	pSkyMat->passinfo[0].shader = new glShader ( ".res/shaders/sky/skycolors.glsl" );
+	pSkyMat->passinfo[0].shader = new glShader ( "shaders/sky/skycolors.glsl" );
 
-	pSkyMat->passinfo.push_back( glPass() );
+	/*pSkyMat->passinfo.push_back( glPass() );
 	pSkyMat->passinfo[1].m_lighting_mode = Renderer::LI_NONE;
 	pSkyMat->passinfo[1].m_face_mode = Renderer::FM_FRONTANDBACK;
 	pSkyMat->passinfo[1].shader = new glShader ( ".res/shaders/sky/skycolors.glsl" );
-	pSkyMat->passinfo[1].m_hint = RL_SKYGLOW;
+	pSkyMat->passinfo[1].m_hint = RL_SKYGLOW;*/
 
 	/*pSkyMat->deferredinfo.push_back( glPass_Deferred() );
 	pSkyMat->deferredinfo[0].m_lighting_mode = Renderer::LI_NONE;
@@ -59,9 +55,9 @@ Daycycle::Daycycle ( )
 	pSkyMat->removeReference();
 
 	skyModel = new CModel ( "models/geosphere.FBX" );
+	//skyModel = new CModel ( "models/cube.FBX" );
 	skyModel->SetMaterial( pSkyMat );
 	skyModel->SetRenderType( Renderer::Background );
-	skyModel->transform.scale = Vector3d( 1000,1000,-1000 );
 	skyModel->SetFrustumCulling( false );
 
 	// Starsphere
@@ -94,7 +90,6 @@ Daycycle::Daycycle ( )
 	horizonPlane = new CRenderPlane( 1024.0f, 1024.0f );
 	horizonPlane->SetRenderType( Renderer::Background );
 	horizonPlane->SetMaterial( pHorizonMat );
-	horizonPlane->transform.scale = Vector3d( 8,8,1 );
 	//horizonPlane->visible = false;
 
 	clearColors.push_back( Color( 0.77f,0.65f,0.09f ) );
@@ -191,9 +186,7 @@ void Daycycle::Update ( void )
 	
 	vPosition.x = (ftype)cos(timeofDay * (((degtorad(360) / 24) / 60) / 60 )); // X position of light source.
 	vPosition.z = (ftype)sin(timeofDay * (((degtorad(360) / 24) / 60) / 60 ));	// Z position of light source.
-	//vPosition.y = 0.0f;
 	vPosition.y = (ftype)sin(timeofDay * (((degtorad(360) / 24) / 60) / 60 )) * 0.1f; // Y position of light source. (rolls the sun a little)
-	//vPosition.normalize();
 
 	skyObject->vLightDir = Color(vPosition.x, vPosition.y, vPosition.z, 0);
 	skyObject->diffuseColor = (Color( 0.6f,0.6f,0.6f )*0.5f+((Renderer::Settings.clearColor)*0.6f)) * std::max<ftype>( 0, std::min<ftype>( 1, (vPosition.z+0.2f)/0.2f ) ); // Fades out sunlight at night

@@ -59,6 +59,7 @@ uniform vec3 sys_WorldCameraPos;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
@@ -70,13 +71,13 @@ float diffuseLighting ( vec3 normal, vec4 lightDist, float lightRange, float lig
 {
 	// Distance-based attenuation
 	float attenuation = pow( max( 1.0 - (lightDist.w*lightRange), 0.0 ), lightFalloff );
-	
+
 	// Cosine law breaking ( cuz objects need more detail )
 	float normalAttenuate = dot( normal,lightDist.xyz/lightDist.w );
 	normalAttenuate = (max( normalAttenuate, -mixthrough ) + mixthrough)/(1+mixthrough);
 	// Attenuation
 	float color = mix( normalAttenuate, 1.0, lightPass*(1.0+attenuation) ) * attenuation;
-	
+
 	// Return final color
 	return color;
 }
@@ -88,7 +89,7 @@ float specularLighting( vec3 normal, vec4 lightDist, vec3 viewdir, float specula
 	float attenuation = max( dot( normalize(reflectdir), normalize(viewdir) ), 0.0 );
 	// Also add distance-based attenuation though
 	float distance_attenuation = max( 1.0 - (lightDist.w*lightRange*0.4), 0.0 );
-	
+
 	//return pow( attenuation, specular_pow );
 	return pow( attenuation*distance_attenuation, specular_pow+((1.0-distance_attenuation)*2.0) );
 }
@@ -99,7 +100,7 @@ float cellShade ( float lumin )
 	float t = lumin*levels;
 	float dif = 0.5 - mod(t+0.5,1);
 	t += dif * min(1,(0.5-abs(dif))*32) * 0.5;
-	
+
 	lumin = t/levels;
 	return lumin;
 }
@@ -107,7 +108,7 @@ float cellShade ( float lumin )
 vec3 defaultLighting ( vec4 lightPosition, vec4 lightProperties, vec4 lightColor, in vec4 lightDir, in float rimStrength, in vec3 vertDir, in vec3 vertNormal, in vec4 surfaceInfo )
 {
 	vec3 resultColor;
-	
+
 	// Perform base lighting
 	float diffuseLight = 0;
 	float diffuseLightO = diffuseLighting( vertNormal, lightDir, lightProperties.x, lightProperties.y, lightProperties.z );
@@ -115,34 +116,34 @@ vec3 defaultLighting ( vec4 lightPosition, vec4 lightProperties, vec4 lightColor
 	diffuseLightD = (max( diffuseLightD, -mixthrough ) + mixthrough)/(1+mixthrough); // Directional light mixthrough
 	// Mix between light styles for the directional/nondirectional
 	diffuseLight = mix( diffuseLightD, diffuseLightO, lightPosition.w );
-	
+
 	// Add major rim lighting
 	diffuseLight += diffuseLight * rimStrength * surfaceInfo.a;
 	// Apply cellshading
-	diffuseLight = cellShade(diffuseLight); 
-	
+	diffuseLight = cellShade(diffuseLight);
+
 	// Specular lighting
 	float specularLight = 0;
 	float specularLightO = specularLighting( vertNormal, lightDir, vertDir, surfaceInfo.b, lightProperties.x );
-	float specularLightD = specularLighting( vertNormal, vec4(lightPosition.xyz,1), vertDir, surfaceInfo.b, 0 ); 
+	float specularLightD = specularLighting( vertNormal, vec4(lightPosition.xyz,1), vertDir, surfaceInfo.b, 0 );
 	// Mix between light styles for the directional/nondirectional
 	specularLight = mix( specularLightD, specularLightO, lightPosition.w );
-		
+
 	resultColor = lightColor.rgb * max( 0, diffuseLight+specularLight*surfaceInfo.g );
-	
+
 	return resultColor;
 }
 
 // Sine wave appoximation method (benchmarked to about 3% speed increase over all shadows)
-float SmoothCurve( float x ) {  
-	return x * x *( 3.0 - 2.0 * x );  
-}  
-float TriangleWave( float x ) {  
-	return abs( fract( x + 0.5 ) * 2.0 - 1.0 );  
-}  
-float SmoothTriangleWave( float x ) {  
-	return (SmoothCurve( TriangleWave( x ) ))*2 - 1;  
-}  
+float SmoothCurve( float x ) {
+	return x * x *( 3.0 - 2.0 * x );
+}
+float TriangleWave( float x ) {
+	return abs( fract( x + 0.5 ) * 2.0 - 1.0 );
+}
+float SmoothTriangleWave( float x ) {
+	return (SmoothCurve( TriangleWave( x ) ))*2 - 1;
+}
 // Random value
 vec2 random ( vec3 seed3 )
 {
@@ -158,7 +159,7 @@ float shadowCalculate ( /*vec4 lightCoords,*/ in float s_strength, sampler2D tex
 	vec4 shadowWcoord3 = v2f_lightcoord[0];
 	shadowWcoord3.xyz /= shadowWcoord3.w;
 	vec4 shadowWcoord2 = v2f_lightcoord[1];
-	shadowWcoord2.xyz /= shadowWcoord2.w;	
+	shadowWcoord2.xyz /= shadowWcoord2.w;
 	vec4 shadowWcoord1 = v2f_lightcoord[2];
 	shadowWcoord1.xyz /= shadowWcoord1.w;
 	vec4 shadowWcoord0 = v2f_lightcoord[3];
@@ -167,24 +168,24 @@ float shadowCalculate ( /*vec4 lightCoords,*/ in float s_strength, sampler2D tex
 	// Get rid of the non-uniformity. Always sample shadows.
 	{
 		const float cspd = 0.98; // Cascade padding value
-					
+
 		float depthDifference = 0.0;
 		float distanceFromLight;
-		vec3 coord; 
+		vec3 coord;
 		float bias = 0;
 		for ( int i = 0; i < 4; i += 1 )
 		{
 			/*coord.xy = random( vec3(m_randomizer.xy,i) ).xy*(1-cspd)*0.12;
 			coord.z = 0;
 			coord.xy += vec2( SmoothTriangleWave(i*0.25),SmoothTriangleWave(i*0.25+0.25) )*(1-cspd)*0.12;*/
-			
+
 			//float spread;
 			//spread = sqrt(0.02/bias)*2;
 			coord.xy = random( vec3(v2f_texcoord0.xy,i)+sys_WorldCameraPos )*(1-cspd)*0.12;
 			//coord.xy = vec2(0,0);
 			coord.z = 0;
 			coord.xy += vec2( SmoothTriangleWave(i*0.25),SmoothTriangleWave(i*0.25+0.25) )*(1-cspd)*0.12;//*spread;
-		
+
 			if ( (abs(shadowWcoord0.x-0.5) < 0.5*cspd) && (abs(shadowWcoord0.y-0.5) < 0.5*cspd) )
 			{
 				coord += shadowWcoord0.xyz;
@@ -209,15 +210,15 @@ float shadowCalculate ( /*vec4 lightCoords,*/ in float s_strength, sampler2D tex
 				coord.x = coord.x*0.25;
 				bias = 2.56;
 			}
-			
+
 			// Limit Y coordinate
 			coord.y = max( min( coord.y, 1.0 ), 0.0 );
-			
+
 			distanceFromLight = texture( textureShadow, coord.xy ).r;
 			depthDifference += clamp((coord.z - distanceFromLight)*1024.0 - bias, 0.0,1.0);
 		}
 		depthDifference /= 4.0;
-		
+
 		minCoords = min( abs(shadowWcoord3.xy-vec2(0.5,0.5)), abs(shadowWcoord2.xy-vec2(0.5,0.5)) );
 		minCoords = min( minCoords, abs(shadowWcoord1.xy-vec2(0.5,0.5)) );
 		minCoords = min( minCoords, abs(shadowWcoord0.xy-vec2(0.5,0.5)) );
@@ -227,7 +228,7 @@ float shadowCalculate ( /*vec4 lightCoords,*/ in float s_strength, sampler2D tex
 		depthDifference *= clamp( 8.0-abs(maxCoords.y-0.5)*16.0, 0.0,1.0 );*/
 		depthDifference *= clamp( 8.0-minCoords.x*16.0, 0.0,1.0 );
 		depthDifference *= clamp( 8.0-minCoords.y*16.0, 0.0,1.0 );
-		
+
 		// Do the color mix
 		shadowDist = clamp( 1.0-depthDifference, 0.0,1.0 );
 	}
@@ -251,19 +252,19 @@ float delinearizeD ( float edepth )
 }
 
 
-void main ( void )  
+void main ( void )
 {
 	vec4 pixelDiffuse		= texture( textureSampler0, v2f_texcoord0 );
 	vec4 pixelWorldPosition = texture( textureSampler2, v2f_texcoord0 ); // position
 	vec4 pixelDepth 		= texture( textureSampler5, v2f_texcoord0 );
 	gl_FragColor = pixelWorldPosition;
-	
+
 	//vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1),((gl_FragColor.w-0.1)/(1000-0.1))*2-1,1.0 );
 	vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1),pixelDepth.r,1.0 );
 	//((gl_FragColor.w-sys_CameraRange.x)/sys_CameraRange.z)*2-1
 	//pixelPosition.z = (pixelPosition.z-sys_CameraRange.x)/(sys_CameraRange.y-sys_CameraRange.x);
 	//pixelPosition.z = pixelPosition.z / sys_CameraRange.y;
-	//pixelPosition.z = linearizeD(pixelPosition.z) / sys_CameraRange.z; 
+	//pixelPosition.z = linearizeD(pixelPosition.z) / sys_CameraRange.z;
 	//pixelPosition.z = linearizeD( pixelPosition.z );
 	//pixelPosition.z = -pixelPosition.z;
 	//pixelPosition.z = linearizeD( pixelPosition.z );
@@ -271,16 +272,16 @@ void main ( void )
 	//pixelPosition.z = 1 - pixelPosition.z * 2;
 	//pixelPosition.z = (pixelPosition.z+1)/2;
 	pixelPosition.z = ( pixelPosition.z*2 - 1 );
-	
+
 	vec4 targetCoordinate;
 	targetCoordinate = sys_ModelViewProjectionMatrix * vec4( pixelWorldPosition.xyz,1.0 );
 	targetCoordinate.xyz /= targetCoordinate.w;
-	
+
 	targetCoordinate = sys_ModelViewProjectionMatrixInverse * vec4( targetCoordinate.xyz,1.0 );
 	targetCoordinate.xyz /= targetCoordinate.w;
 	pixelPosition = sys_ModelViewProjectionMatrixInverse * vec4( pixelPosition.xyz, 1.0 );
 	pixelPosition.xyz /= pixelPosition.w;
-	
+
 	// following two lines are equivalent
 	//pixelPosition.xyz = sys_WorldCameraPos.xyz;
 	//pixelPosition.xyz = mat3(sys_ViewMatrixInverse) * -vec3( sys_ViewMatrix[3].x, sys_ViewMatrix[3].y, sys_ViewMatrix[3].z );
@@ -306,27 +307,27 @@ void main ( void )
 	gl_FragColor.a = pixelDiffuse.a;
 	//gl_FragColor.a = 0.5;
 	//gl_FragColor.rgb = gl_FragColor.aaa;
-	
+
 	/*vec4 pixelDiffuse		= texture( textureSampler0, v2f_texcoord0 );
 	vec4 pixelNormal		= texture( textureSampler1, v2f_texcoord0 );
 	vec4 pixelPosition		= texture( textureSampler2, v2f_texcoord0 );
 	vec4 pixelLightProperty	= texture( textureSampler3, v2f_texcoord0 );
 	vec4 pixelGlow			= texture( textureSampler4, v2f_texcoord0 );
-	
+
 	//vec4 pixelPosition = vec4( v2f_texcoord0.x,v2f_texcoord0.y,pixelNormal.w,pixelNormal.w );
-	
+
 	vec4 n_cameraVector;
 	n_cameraVector.xyz = sys_WorldCameraPos - pixelPosition.xyz;
 	n_cameraVector.w = length( n_cameraVector.xyz );
 	vec3 n_cameraDir = n_cameraVector.xyz / n_cameraVector.w;
-	
+
 	float n_rimValue = max(1-dot( pixelNormal.xyz, n_cameraDir ),0.0);
 
 	v2f_lightcoord[0] = pixelPosition * def_LightMatrix0[0];
 	v2f_lightcoord[1] = pixelPosition * def_LightMatrix0[1];
 	v2f_lightcoord[2] = pixelPosition * def_LightMatrix0[2];
 	v2f_lightcoord[3] = pixelPosition * def_LightMatrix0[3];
-	
+
 	// ==Perform lighting==
 	float lightingStrength = clamp( (pixelLightProperty.r-0.4)/0.6, 0, 1 );
 	vec3 luminColor = vec3( 0,0,0 );
@@ -337,12 +338,12 @@ void main ( void )
 		{
 			vec4 lightProperties	= texelFetch( textureLightBuffer, lightIndex*4 + 1 );
 			vec4 lightPosition		= texelFetch( textureLightBuffer, lightIndex*4 + 2 );
-				
-			// Get direction to light 
+
+			// Get direction to light
 			vec4 lightDir;
 			lightDir.xyz = lightPosition.xyz - pixelPosition.xyz;
 			lightDir.w = length(lightDir.xyz);
-			if ( lightDir.w*lightPosition.w > 1.4/lightProperties.x ) 
+			if ( lightDir.w*lightPosition.w > 1.4/lightProperties.x )
 			{	// Skip if light out of range
 				continue; // Drops FPS on NVidia if this continue isn't here
 			}
@@ -350,7 +351,7 @@ void main ( void )
 			{	// Otherwise perform the light effects
 				vec4 lightColor			= texelFetch( textureLightBuffer, lightIndex*4 + 0 );
 				vec4 lightDirection		= texelFetch( textureLightBuffer, lightIndex*4 + 3 );
-				
+
 				float shadowValue = 1.0;
 				if ( lightIndex < 1 && lightProperties.w > 0 )
 				{
@@ -371,30 +372,30 @@ void main ( void )
 	vec3 diffuseColor = pixelDiffuse.rgb;
 	// Shadow "outline" effect
 	diffuseColor *= 1-(clamp( (pow( clamp(n_rimValue,0,1), 5 )-0.12)/0.1, 0,1 ) * (1-min(1,length(luminColor-sys_LightAmbient.rgb)*4)))*0.3*(lightingStrength);
-	
+
 	// Choose lumin based on glow
 	pixelGlow.a *= pixelLightProperty.r;
 	luminColor = (luminColor*(1-pixelGlow.a)) + max( luminColor*(pixelGlow.a), pixelGlow.rgb );
-	
+
 	// Create color diffuse*lighting result
-	diffuseColor.rgb = diffuseColor*luminColor; 
-	
+	diffuseColor.rgb = diffuseColor*luminColor;
+
 	// ==Perform fog==
 	float n_fogDensity = clamp( (sys_FogEnd - n_cameraVector.w) * sys_FogScale, 0, 1 );
 	n_fogDensity = mix( 1, n_fogDensity, lightingStrength );
 	//gl_FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb * sys_DiffuseColor.rgb * lightColor, v2f_fogdensity );
 	// Mix output with fog
-	
+
 	// Output fog mix
 	gl_FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb, n_fogDensity );
-	//mix( pixelDiffuse.rgb, diffuseColor*luminColor, clamp( (pixelLightProperty.r-0.4)/0.6, 0, 1 ) ); 
+	//mix( pixelDiffuse.rgb, diffuseColor*luminColor, clamp( (pixelLightProperty.r-0.4)/0.6, 0, 1 ) );
 	gl_FragColor.a = pixelDiffuse.a;
-	
-	
+
+
 	//gl_FragColor.rgb = pixelGlow.rgb * pixelLightProperty.r;//luminColor.rgb*0.5;//vec3(1,1,1) * pixelGlow.a;
 	//+ dot( n_cameraDir, pixelNormal.xyz );
 	*/
-	
+
 	// 4X Debug Output
 	/*if ( v2f_texcoord0.x < 0.5 && v2f_texcoord0.y < 0.5 ) {
 		gl_FragColor = texture( textureSampler0, v2f_texcoord0*2 );
@@ -409,6 +410,6 @@ void main ( void )
 		gl_FragColor = texture( textureSampler3, v2f_texcoord0*2 - vec2(1,1) );
 	}
 	gl_FragColor.a = clamp( gl_FragColor.a , 0 , 1 );*/
-	
-	
+
+
 }

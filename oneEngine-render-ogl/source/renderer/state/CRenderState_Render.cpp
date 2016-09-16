@@ -12,6 +12,8 @@ using std::sort;
 #include "core/system/Screen.h"
 #include "core-ext/threads/Jobs.h"
 
+#include "renderer/exceptions/exceptions.h"
+
 #include "renderer/camera/CCamera.h"
 #include "renderer/light/CLight.h"
 #include "renderer/texture/CRenderTexture.h"
@@ -634,6 +636,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				||( renderRQ_next.obj && renderRQ_current.forward == false && renderRQ_current.renderType != renderRQ_next.renderType ) // Render out if this will be the last deferred object on this layer
 				))
 			{
+				
 				TimeProfiler.BeginTimeProfile( "rs_render_lightpush" );
 
 				// Set up the scene rendering types
@@ -746,6 +749,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				)
 			{
 				rendered = false;
+
 				// Copy over the depth to use when drawing in forward mode
 				GL.GetMainScreenBuffer()->BindBuffer();
 				GL.setupViewport(0,0,GL.GetMainScreenBuffer()->GetWidth(),GL.GetMainScreenBuffer()->GetHeight());
@@ -756,11 +760,24 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					0,0,Screen::Info.width,Screen::Info.height,
 					GL_DEPTH_BUFFER_BIT, GL_NEAREST ); // Color doesn't need to be blit, since the deferred compositor outputs color
 				GL.CheckError();
+
+				if ( false ) // Driver depth-blit unit test
+				{
+					float depth_test_0 [4];
+					float depth_test_1 [4];
+					glBindFramebuffer( GL_READ_FRAMEBUFFER, currentCamera->GetRenderTexture()->GetRTInfo().findex );
+					glReadPixels( 10,10, 2,2, GL_DEPTH_COMPONENT, GL_FLOAT, &depth_test_0 );
+					glBindFramebuffer( GL_READ_FRAMEBUFFER, GL.GetMainScreenBuffer()->GetRTInfo().findex );
+					glReadPixels( 10,10, 2,2, GL_DEPTH_COMPONENT, GL_FLOAT, &depth_test_1 );
 				
-				/*glDepthMask( true );
-				glClearDepth(1.0f);
-				glClearColor(1.0f, 0.0f, 0.0f, 0.0f);				// Black Background
-				glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );*/
+					for ( int n = 0; n < 4; ++n )
+					{
+						if ( depth_test_0[n] != depth_test_1[n] )
+						{
+							throw Renderer::GLStateException();
+						}
+					}
+				}
 
 				// Set to forward mode
 				CGameSettings::Active()->i_ro_RendererMode = RENDER_MODE_FORWARD;

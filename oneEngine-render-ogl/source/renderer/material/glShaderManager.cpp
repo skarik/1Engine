@@ -50,7 +50,14 @@ glShader* glShaderManager::ShaderExists ( const string& a_sShaderName, const GLE
 	{
 		if ( ((*it)->stTag == a_nShaderTag) && ((*it)->sShaderFilename == a_sShaderName) )
 		{
-			return (*it);
+			return *it;
+		}
+	}
+	for ( std::vector<glShader*>::iterator it = vShaderList.begin(); it != vShaderList.end(); it++ )
+	{
+		if ( (*it)->sShaderFilename.find( a_sShaderName ) != string::npos )
+		{
+			return *it;
 		}
 	}
 	return NULL;

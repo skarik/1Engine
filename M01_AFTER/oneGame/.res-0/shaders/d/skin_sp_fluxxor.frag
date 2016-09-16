@@ -39,6 +39,7 @@ uniform float	gm_HalfScale = 0.5;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
@@ -49,7 +50,7 @@ float cellShade ( float lumin )
 	float t = lumin*levels;
 	float dif = 0.5 - mod(t+0.5,1);
 	t += dif * min(1,(0.5-abs(dif))*32) * 0.5;
-	
+
 	lumin = t/levels;
 	/*const float minval = 0.3;
 	if ( lumin < -minval ) {
@@ -65,13 +66,13 @@ float diffuseLighting ( vec3 normal, vec3 lightDist, float lightRange, float lig
 {
 	// Distance-based attenuation
 	float attenuation = pow( max( 1.0 - (length( lightDist )*lightRange), 0.0 ), lightFalloff );
-	
+
 	// Cosine law * attenuation
 	float normalAttenuate = dot( normal,normalize( lightDist ) );
 	normalAttenuate = (max( normalAttenuate, -mixthrough ) + mixthrough)/(1+mixthrough);
 	// hard step passthrough
 	float color = mix( normalAttenuate, 1.0, lightPass*(1.0+attenuation) ) * attenuation;
-	
+
 	// Return final color
 	return (color);
 }
@@ -84,16 +85,16 @@ float specularLighting( vec3 normal, vec3 lightdir, vec3 viewdir, float specular
 	float attenuation = max( dot( normalize(reflectdir), normalize(viewdir) ), 0.0 );
 	// Also add distance-based attenuation though
 	float distance_attenuation = max( 1.0 - (length( lightdir )*lightRange*0.4), 0.0 );
-	
+
 	//return pow( attenuation, specular_pow );
 	return pow( attenuation*distance_attenuation, specular_pow+((1.0-distance_attenuation)*2.0) );
 }
 
-void main ( void )  
+void main ( void )
 {
 	/*vec4 fadeValue = (texture2D( textureSampler2, v2f_texcoord0 )
 				   + texture2D( textureSampler2, (v2f_texcoord0*0.5)+vec2(sys_SinTime.x+1,sys_CosTime.x+1)*0.5 ))/2;*/
-	vec4 fadeValue = texture2D( textureSampler2, v2f_texcoord0 );		   
+	vec4 fadeValue = texture2D( textureSampler2, v2f_texcoord0 );
 	float fadeDif = fadeValue.r - (gm_FadeValue-0.17);
 	if ( fadeDif < 0 ) {
 		discard;
@@ -102,28 +103,28 @@ void main ( void )
 	if ( alphaMask < 0.1 ) {
 		discard;
 	}
-	
+
 	float rimStrength = max( 0.03, min( 1, sys_LightAmbient.r+sys_LightAmbient.g+sys_LightAmbient.b - 0.4 ) );
-	
+
 	vec4 diffuseColor = texture2D( textureSampler0, v2f_texcoord0 );
 	//diffuseColor.rgb = diffuseColor.rgb*0.5 + ((diffuseColor.rgb*2)-0.917)*0.5; // this line makes texture more pronounced
 	diffuseColor.rgb -= (0.917-diffuseColor.rgb)*(1-sys_DiffuseColor.rgb); // this line makes texture more pronoused without mucking everything up
 	//vec4 tattooColor = texture2D( textureSampler3, vec2(v2f_texcoord0.x*0.5,v2f_texcoord0.y) );
 	vec4 tattooColor = texture2D( textureSampler3, vec2(v2f_texcoord0.x*gm_HalfScale,v2f_texcoord0.y) ) * diffuseColor;
 	//diffuseColor.rgb += (tattooColor.rgb*2 - diffuseColor.rgb)*tattooColor.a;
-	
+
 	// == LIGHTING ==
 	vec3 lightColor = vec3(0,0,0);// = sys_EmissiveColor*rimStrength + (tattooColor.rgb-0.5)*tattooColor.a;
 	float mixthrough = 0.3;
-	
+
 	vec3 lightDir, vertDir;
 	vertDir = sys_WorldCameraPos-v2f_position.xyz;
 	float lightVal3 = max(1-dot( v2f_normals.xyz, normalize(vertDir) ),0.0);
-	
+
 	for ( int i = 0; i < 8; i += 1 )
 	{
 		lightDir = sys_LightPosition[i].xyz - v2f_position.xyz;
-		
+
 		float lightVal1 = diffuseLighting(
 			v2f_normals.xyz, lightDir,
 			sys_LightProperties[i].x, sys_LightProperties[i].y, sys_LightProperties[i].z,
@@ -131,41 +132,41 @@ void main ( void )
 			);
 		float lightVal2 = dot( sys_LightPosition[i].xyz, v2f_normals.xyz );
 		lightVal2 = (max( lightVal2, -mixthrough ) + mixthrough)/(1+mixthrough);
-		
+
 		lightVal1 = cellShade(lightVal1);
 		lightVal2 = cellShade(lightVal2);
-		
+
 		lightVal1 += (lightVal1) * lightVal3 * 1.3; // rim lighting
 		lightVal2 += (lightVal2) * lightVal3 * 1.3;
-		
+
 		rimStrength += mix( length(lightVal2*sys_LightColor[i].rgb), length(lightVal1*sys_LightColor[i].rgb), sys_LightPosition[i].w )*0.25;
 		rimStrength = min( 1, rimStrength );
-		
+
 		// Specular lighting
 		float specLight1 = specularLighting( v2f_normals.xyz, lightDir, vertDir, 4, sys_LightProperties[i].x ) * 0.2;
-		float specLight2 = specularLighting( v2f_normals.xyz, sys_LightPosition[i].xyz, vertDir, 4, 0 ) * 0.2; 
-		
+		float specLight2 = specularLighting( v2f_normals.xyz, sys_LightPosition[i].xyz, vertDir, 4, 0 ) * 0.2;
+
 		lightColor += sys_LightColor[i].rgb * mix( lightVal2*0.9+specLight2, lightVal1*0.9+specLight1, sys_LightPosition[i].w );
 	}
 	vec3 preAmbientLight = lightColor;
-	
+
 	lightColor += sys_EmissiveColor*rimStrength + (tattooColor.rgb-0.5)*tattooColor.a;
 	lightColor += sys_LightAmbient.rgb;
 	lightColor += max(sys_DiffuseColor.rgb,vec3(0.3,0.3,0.3)) * lightVal3 * 0.16 *rimStrength;
 	lightColor += sys_EmissiveColor*lightVal3*4 *rimStrength;
-	
+
 	// Texture and tattoo colors
 	diffuseColor = diffuseColor * sys_DiffuseColor;
 	diffuseColor.rgb += (tattooColor.rgb*2 - diffuseColor.rgb)*tattooColor.a;
 	// Shadow "outline" effect
 	diffuseColor.rgb *= 1-(clamp( (pow( clamp(lightVal3,0,1), 5 )-0.12)/0.1, 0,1 ) * (1-min(1,length(preAmbientLight)*4)))*0.6;
-	
+
 	gl_FragColor = mix( sys_FogColor, diffuseColor * vec4( lightColor, 1.0 ), v2f_fogdensity );
-	
+
 	float _lerpVal = (1-min(1,fadeDif/0.17));
 	gl_FragColor.rgb = gl_FragColor.rgb*(1-_lerpVal) +  vec3(0.7,0.8,0.9)*_lerpVal;
 	gl_FragColor.a = diffuseColor.a * sys_DiffuseColor.a * alphaMask;
-	
+
 	float alphamap = texture2D( textureSampler2, v2f_texcoord0*0.8 + vec2(sys_CosTime.x,sys_Time.y*0.7) ).r;
 	alphamap -= texture2D( textureSampler2, v2f_texcoord0*1.5 + vec2(sys_SinTime.y,sys_Time.y*0.3) ).r;
 	if ( alphamap < 0 ) {

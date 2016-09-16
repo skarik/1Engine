@@ -59,6 +59,7 @@ uniform float	gm_FadeValue;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
@@ -70,7 +71,7 @@ float diffuseLighting ( vec3 normal, vec3 lightDist, float lightRange, float lig
 {
 	// Distance-based attenuation
 	float attenuation = pow( max( 1.0 - (length( lightDist )*lightRange), 0.0 ), lightFalloff );
-	
+
 	// Cosine law * attenuation
 	//float color = mix( dot( normal,normalize( lightDist ) ), 1.0, lightPass*(1.0+attenuation) ) * attenuation;
 	// Cosine law breaking ( cuz objects need more detail )
@@ -78,7 +79,7 @@ float diffuseLighting ( vec3 normal, vec3 lightDist, float lightRange, float lig
 	normalAttenuate = (max( normalAttenuate, -mixthrough ) + mixthrough)/(1+mixthrough);
 	// Attenuation
 	float color = mix( normalAttenuate, 1.0, lightPass*(1.0+attenuation) ) * attenuation;
-	
+
 	// Return final color
 	return color;
 }
@@ -88,7 +89,7 @@ float cellShade ( float lumin )
 	float t = lumin*levels;
 	float dif = 0.5 - mod(t+0.5,1);
 	t += dif * min(1,(0.5-abs(dif))*32) * 0.5;
-	
+
 	lumin = t/levels;
 	/*const float minval = 0.3;
 	if ( lumin < -minval ) {
@@ -101,15 +102,15 @@ float cellShade ( float lumin )
 }
 
 // Sine wave appoximation method (benchmarked to about 3% speed increase over all shadows)
-float SmoothCurve( float x ) {  
-	return x * x *( 3.0 - 2.0 * x );  
-}  
-float TriangleWave( float x ) {  
-	return abs( fract( x + 0.5 ) * 2.0 - 1.0 );  
-}  
-float SmoothTriangleWave( float x ) {  
-	return (SmoothCurve( TriangleWave( x ) ))*2 - 1;  
-} 
+float SmoothCurve( float x ) {
+	return x * x *( 3.0 - 2.0 * x );
+}
+float TriangleWave( float x ) {
+	return abs( fract( x + 0.5 ) * 2.0 - 1.0 );
+}
+float SmoothTriangleWave( float x ) {
+	return (SmoothCurve( TriangleWave( x ) ))*2 - 1;
+}
 // Randomizer
 vec3 random ( vec3 seed3 )
 {
@@ -132,9 +133,9 @@ vec3 defaultLighting ( vec4 lightPosition, vec4 lightProperties, vec4 lightColor
 	// Mix between light styles for the directional/nondirectional
 	float lightValf = mix( lightVal2, lightVal1, lightPosition.w );
 	lightValf = cellShade(lightValf); // Apply cellshading
-		
+
 	resultColor = lightColor.rgb * max( 0, lightValf );
-	
+
 	return resultColor;
 }
 float shadowCalculate ( /*vec4 lightCoords,*/ vec4 shadowInfo, sampler2D textureShadow )
@@ -149,7 +150,7 @@ float shadowCalculate ( /*vec4 lightCoords,*/ vec4 shadowInfo, sampler2D texture
 	vec4 shadowWcoord3 = v2f_lightcoord[0];
 	shadowWcoord3.xyz /= shadowWcoord3.w;
 	vec4 shadowWcoord2 = v2f_lightcoord[1];
-	shadowWcoord2.xyz /= shadowWcoord2.w;	
+	shadowWcoord2.xyz /= shadowWcoord2.w;
 	vec4 shadowWcoord1 = v2f_lightcoord[2];
 	shadowWcoord1.xyz /= shadowWcoord1.w;
 	vec4 shadowWcoord0 = v2f_lightcoord[3];
@@ -158,17 +159,17 @@ float shadowCalculate ( /*vec4 lightCoords,*/ vec4 shadowInfo, sampler2D texture
 	// Get rid of the non-uniformity. Always sample shadows.
 	{
 		const float cspd = 0.98; // Cascade padding value
-					
+
 		float depthDifference = 0.0;
 		float distanceFromLight;
-		vec3 coord; 
+		vec3 coord;
 		float bias = 0;
 		for ( int i = 0; i < 4; i += 1 )
 		{
 			coord.xy = random( vec3(v2f_screenpos.xy,i) ).xy*(1-cspd)*0.12;
 			coord.z = 0;
 			coord.xy += vec2( SmoothTriangleWave(i*0.25),SmoothTriangleWave(i*0.25+0.25) )*(1-cspd)*0.12;
-		
+
 			if ( (abs(shadowWcoord0.x-0.5) < 0.5*cspd) && (abs(shadowWcoord0.y-0.5) < 0.5*cspd) )
 			{
 				coord += shadowWcoord0.xyz;
@@ -193,15 +194,15 @@ float shadowCalculate ( /*vec4 lightCoords,*/ vec4 shadowInfo, sampler2D texture
 				coord.x = coord.x*0.25;
 				bias = 2.56;
 			}
-			
+
 			// Limit Y coordinate
 			coord.y = max( min( coord.y, 1.0 ), 0.0 );
-			
+
 			distanceFromLight = texture( textureShadow, coord.xy ).r;
 			depthDifference += clamp((coord.z - distanceFromLight)*1024.0 - bias, 0.0,1.0);
 		}
 		depthDifference /= 4.0;
-		
+
 		minCoords = min( abs(shadowWcoord3.xy-vec2(0.5,0.5)), abs(shadowWcoord2.xy-vec2(0.5,0.5)) );
 		minCoords = min( minCoords, abs(shadowWcoord1.xy-vec2(0.5,0.5)) );
 		minCoords = min( minCoords, abs(shadowWcoord0.xy-vec2(0.5,0.5)) );
@@ -211,7 +212,7 @@ float shadowCalculate ( /*vec4 lightCoords,*/ vec4 shadowInfo, sampler2D texture
 		depthDifference *= clamp( 8.0-abs(maxCoords.y-0.5)*16.0, 0.0,1.0 );*/
 		depthDifference *= clamp( 8.0-minCoords.x*16.0, 0.0,1.0 );
 		depthDifference *= clamp( 8.0-minCoords.y*16.0, 0.0,1.0 );
-		
+
 		// Do the color mix
 		shadowDist = clamp( 1.0-depthDifference, 0.0,1.0 );
 	}
@@ -243,16 +244,16 @@ vec3 bpcem ( in vec3 n_raydir )
 }
 #endif
 
-void main ( void )  
+void main ( void )
 {
 	// Diffuse color
 	vec4 diffuseColor = texture( textureSampler0, v2f_texcoord0 );
 	float f_alpha = diffuseColor.a * sys_DiffuseColor.a;
 	if ( f_alpha < sys_AlphaCutoff ) discard;
-	
+
 	// Grab specular amount
 	vec4 pixelSpecular = texture( textureSampler2, v2f_texcoord0 );
-	
+
 	// Normal mapping
 	vec3 normalColor = texture( textureSampler3, v2f_texcoord0 ).rgb;
 	normalColor = normalColor*2 - 1;
@@ -271,11 +272,11 @@ void main ( void )
 		normalColor = normalize( normalColor );
 	}*/
 	vec3 pixelNormal = v2f_tangent * normalColor;
-	
+
 	// Camera direction
 	vec3 vertDir;
 	vertDir = sys_WorldCameraPos-v2f_position.xyz;
-	
+
 	// Create the reflection vector and compute reflection
 #ifdef USE_REFLECTSPECULAR
 	vec3 pixelReflect = normalize(vertDir) - 2*dot(pixelNormal,normalize(vertDir))*normalize(pixelNormal);
@@ -284,7 +285,7 @@ void main ( void )
 
 	// Rim effect
 	float lightVal3 = max(1-dot( pixelNormal, normalize(vertDir) ),0.0);
-	
+
 	// Lighting
 	vec3 lightColor = sys_EmissiveColor;	// gl_SecondaryColor is set as emissive when useColors = false for materials
 	lightColor += texture( textureSampler1, v2f_texcoord0 ).rgb;
@@ -300,10 +301,10 @@ void main ( void )
 	lightColor += lightColor*clamp(length(lightColor)-0.3,0,1)*pow(lightVal3,3);
 	// Ambient
 	lightColor += sys_LightAmbient.rgb;
-	
+
 	// Shadow "outline" effect
 	diffuseColor.rgb *= 1-(clamp( (pow( clamp(lightVal3,0,1), 5 )-0.12)/0.1, 0,1 ) * (1-min(1,length(lightColor-sys_LightAmbient.rgb)*4)))*0.3;
-	
+
 #ifdef USE_REFLECTSPECULAR
 	// Reflection
 	lightColor += reflectionColor.rgb * lightColor * (pixelSpecular.r+max(length(reflectionColor)*0.3-0.2,0));

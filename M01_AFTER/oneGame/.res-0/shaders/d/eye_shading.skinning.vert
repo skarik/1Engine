@@ -30,6 +30,7 @@ layout(std140) uniform sys_SkinningDataMajor
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
@@ -61,7 +62,7 @@ void main ( void )
 		v_tempMatrix = transpose(v_tempMatrix);
 	v_finalPos += v_tempMatrix * v_localPos * mdl_BoneWeights.w;
 	v_finalNorm += mat3(v_tempMatrix) * mdl_Normal * mdl_BoneWeights.w;
-	
+
 	// Set the final result
 	v_localPos = v_finalPos;
 	// End vertex skinning

@@ -46,6 +46,7 @@ varying vec3 v2f_screenpos;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
@@ -104,7 +105,7 @@ void main ( void )
 		v_softPos += v_tempMatrix * v_localPos * mdl_BoneWeights.w;
 		v_softNorm += mat3(v_tempMatrix) * mdl_Normal * mdl_BoneWeights.w;
 	}
-	
+
 	// Set the final result
 	v_localPos = mix(v_finalPos,v_softPos, pow(1-mdl_Color.r,2) );// pow( min(max(abs(v_localPos.x)-0.3,0)*2,1.5), 2 ) );
 	// End vertex skinning
@@ -121,6 +122,6 @@ void main ( void )
 	v2f_lightcoord[1] = (v2f_position * sys_LightMatrix[1]);
 	v2f_lightcoord[2] = (v2f_position * sys_LightMatrix[2]);
 	v2f_lightcoord[3] = (v2f_position * sys_LightMatrix[3]);
-	
+
 	gl_Position = v_screenPos;
 }

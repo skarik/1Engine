@@ -704,8 +704,11 @@ void CEnvironmentEffects::UpdateColorFilter ( void )
 {
 	if ( pColorFilter == NULL )
 	{
-		pColorFilter = (CColorFilterShader*)((CRendererHolder*)CGameState::Active()->FindFirstObjectWithName( "Color Filter Shader Holder" ))->GetRenderer();
-		return;
+		CRendererHolder* holder = (CRendererHolder*)CGameState::Active()->FindFirstObjectWithName("Color Filter Shader Holder");
+		if ( holder != NULL )
+			pColorFilter = (CColorFilterShader*)(holder)->GetRenderer();
+		if ( pColorFilter == NULL )
+			return;
 	}
 
 	// These are the defaults.

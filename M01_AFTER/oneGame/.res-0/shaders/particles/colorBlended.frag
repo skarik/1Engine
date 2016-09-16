@@ -18,16 +18,17 @@ uniform float sys_AlphaCutoff;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
 
-void main ( void )  
+void main ( void )
 {
 	vec4 diffuseColor = texture2D( textureSampler0, v2f_texcoord0 );
 	float f_alpha = diffuseColor.a * v2f_colors.a;
 	if ( f_alpha < sys_AlphaCutoff ) discard;
-	
+
 	gl_FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb * (v2f_colors.rgb+v2f_emissive), v2f_fogdensity );
 	gl_FragColor.a = f_alpha;
 }

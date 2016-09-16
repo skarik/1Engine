@@ -124,6 +124,7 @@ glHandle	glMaterial::m_ubo_reflectinfo = 0;
 struct _fogInfo_t
 {
 	Color	color;
+	Color	atmo;
 	float	end;
 	float	scale;
 }; 
@@ -148,7 +149,9 @@ void glMaterial::updateStaticUBO ( void )
 		_fogInfo_t t_fogInfo;
 		// Create fog struct data
 		t_fogInfo.color	= Renderer::Settings.fogColor;
-		t_fogInfo.color.alpha = 1.0f;
+		t_fogInfo.color.alpha = 1.0F;
+		t_fogInfo.atmo	= Color::Lerp( Renderer::Settings.fogColor, Renderer::Settings.ambientColor, 0.5F ) * Color(0.9F,0.9F,1.1F);
+		t_fogInfo.atmo.alpha = 1.0F;
 		t_fogInfo.end	= Renderer::Settings.fogEnd;
 		t_fogInfo.scale	= Renderer::Settings.fogScale;
 		// Send it to video card
@@ -163,6 +166,8 @@ void glMaterial::updateStaticUBO ( void )
 
 	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
 	{
+		if ( Renderer::Settings.maxLights <= 0 ) throw Core::NullReferenceException(); // Null data passed to shader
+
 		_lightingInfo_t t_lightingInfo;
 		// Get the light list
 		std::vector<CLight*>* lightList = CLight::GetActiveLightList();
@@ -249,7 +254,8 @@ void glMaterial::updateStaticUBO ( void )
 		}
 
 		// Send it to video card
-		if ( m_ubo_lightinginfo == 0 ) {
+		if ( m_ubo_lightinginfo == 0 )
+		{
 			glGenBuffers( 1, &m_ubo_lightinginfo );
 			glBindBuffer( GL_UNIFORM_BUFFER, m_ubo_lightinginfo );
 			glBufferData( GL_UNIFORM_BUFFER, sizeof(_lightingInfo_t), NULL, GL_STREAM_DRAW );
@@ -276,7 +282,8 @@ void glMaterial::updateStaticUBO ( void )
 			t_reflectInfo.ReflectMinBox = t_reflectInfo.ReflectSource - Vector4d( 1000,1000,1000 );
 		}
 		// Send it to video card
-		if ( m_ubo_reflectinfo == 0 ) {
+		if ( m_ubo_reflectinfo == 0 )
+		{
 			glGenBuffers( 1, &m_ubo_reflectinfo );
 			glBindBuffer( GL_UNIFORM_BUFFER, m_ubo_reflectinfo );
 			glBufferData( GL_UNIFORM_BUFFER, sizeof(_reflectInfo_t), NULL, GL_STREAM_DRAW );
@@ -941,6 +948,8 @@ void glMaterial::shader_bind_samplers ( glShader* shader )
 
 #include "core/system/Screen.h"
 
+#define MATERIAL_CALL_ONCE(_IDENTIFIER)
+
 void glMaterial::shader_bind_world ( glShader* shader )
 {
 	// Binds upon shader change (not very often)
@@ -1032,10 +1041,9 @@ void glMaterial::shader_bind_world ( glShader* shader )
 	if ( uniformLocation >= 0 )
 	{
 		glUniformBlockBinding( shader->get_program(), uniformLocation, fogLocation );
-		static bool fucked = true;
-		if ( fucked ) {
+		MATERIAL_CALL_ONCE("sys_Fog")
+		{
 			glBindBufferRange( GL_UNIFORM_BUFFER, fogLocation, m_ubo_foginfo, NIL, sizeof(_fogInfo_t) );
-			fucked = false;
 		}
 	}
 
@@ -1044,10 +1052,9 @@ void glMaterial::shader_bind_world ( glShader* shader )
 	if ( uniformLocation >= 0 )
 	{
 		glUniformBlockBinding( shader->get_program(), uniformLocation, lightLocation );
-		static bool fucked = true;
-		if ( fucked ) {
+		MATERIAL_CALL_ONCE("sys_LightingInfo")
+		{
 			glBindBufferRange( GL_UNIFORM_BUFFER, lightLocation, m_ubo_lightinginfo, NIL, sizeof(_lightingInfo_t) );
-			fucked = false;
 		}
 	}
 	// Light. // Handled now by deferred renderer

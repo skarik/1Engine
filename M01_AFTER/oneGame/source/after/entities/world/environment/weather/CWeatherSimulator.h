@@ -14,6 +14,8 @@
 #include "after/types/terrain/WeatherTypes.h"
 #include "after/types/WorldVector.h"
 
+#include <thread>
+
 // Predefines
 class CWindMotion;
 class CWorldState;
@@ -149,6 +151,8 @@ private:
 	// Keeping track of time to update the simulation
 	bool				bNeedsUpdate;
 	ftype				fUpdateTimer;
+	// Internal simulation thread
+	std::thread*		simulationThread;
 
 	// Noise function for some slow-changing variation
 	Perlin*				noise;

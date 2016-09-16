@@ -66,6 +66,7 @@ COglWindowWin32::COglWindowWin32(
 	Renderer::Settings.lightingEnabled = true;
 	Renderer::Settings.clearColor = Color( 0,0,0, 1 );
 	Renderer::Settings.swapIntervals = 0;
+	Renderer::Settings.maxLights = 8; // Forward rendering light count (still used)
 
 	//RenderSettings.ambientColor = Color( 0.2f,0.15f,0.3f, 1 );
 	Renderer::Settings.ambientColor = Color( 0.02f,0.015f,0.03f, 1 );
@@ -254,8 +255,8 @@ int COglWindowWin32::InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 	}
 
 	//glEnable(GL_TEXTURE_2D);							// Enable Texture Mapping
-	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);				// Black Background
-	glClearDepth(1.0f);									// Depth Buffer Setup
+	glClearColor(0.0F, 0.0F, 0.0F, 0.0F);				// Black Background
+	glClearDepth(1.0F);									// Depth Buffer Setup
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
 	glDepthMask(GL_TRUE);								// Enable depth mask 
 	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do

@@ -26,6 +26,7 @@ uniform vec4 sys_SinTime, sys_CosTime;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
@@ -44,6 +45,6 @@ void main ( void )
 	v2f_texcoord0	= mdl_TexCoord.xyz; //vec3( gl_MultiTexCoord0.xy, 0.25 );
 	v2f_fogdensity  = max( 0.0, (sys_FogEnd - v_screenPos.z) * sys_FogScale );
 	v2f_weatherdensity = mdl_TexCoord4;
-	
+
 	gl_Position = v_screenPos;
 }

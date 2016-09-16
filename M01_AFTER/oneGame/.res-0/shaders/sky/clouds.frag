@@ -32,6 +32,7 @@ uniform float gm_Stormvalue;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
@@ -45,7 +46,7 @@ vec2 getplane ( float height )
 	/*if ( offset.z*plane.z < 0.0 ) {
 		discard;
 	}*/
-	
+
 	float time = (plane.z - sys_WorldCameraPos.z) / offset.z;
 	plane.x = offset.x * time;
 	plane.y = offset.y * time;
@@ -53,11 +54,11 @@ vec2 getplane ( float height )
 	if ( time < 0.0 ) {
 		discard;
 	}
-	
+
 	plane.xy += sys_WorldCameraPos.xy;
 	if ( length( plane ) > 8000 )
 		discard;
-	
+
 	return plane.xy;
 }
 
@@ -69,10 +70,10 @@ float getdensity ( void )
 	vec2 plane;
 	vec4 mainTex;
 	vec4 offsetTex;
-	
+
 	vec4 warpTex = texture2D( textureSampler0, (getplane(320.0)*0.001-planeoffset*0.8)*0.02 );
 	warpTex.xy = (warpTex.xy-0.5)*0.8;
-	
+
 	//for ( int i = 0; i < 10; i += 1 )
 	for ( int i = 0; i < 7; i += 1 )
 	{
@@ -100,31 +101,31 @@ float diffuseLighting ( vec3 normal, vec3 lightDist, float lightRange, float lig
 	return color;
 }
 
-void main ( void )  
+void main ( void )
 {
 	// Generate the volume data
 	float cloudDensity = 0;
 	vec2 plane = getplane( 320 );
-	
+
 	cloudDensity = getdensity();
-	
+
 	// ==Perform the final color math==
 	// Do fog
 	float pixelDist = length(vec3(plane.x,plane.y,320) - sys_WorldCameraPos) / 12.0;
 	float fogdensity  = min( 1, max(0, (sys_FogEnd - pixelDist) * sys_FogScale ) );	// alpha fog
 	float fogdensity2 = min( 1, max(0, (sys_FogEnd - pixelDist*3) * sys_FogScale ) );	// diffuse fog
-	
+
 	// Create base alpha for clouds
 	vec4 diffuseColor;
 	//float baseAlpha = mix( 0, 1, max(fogdensity,0) );
 	float baseAlpha = fogdensity;
 	float finalAlpha = min( 1, cloudDensity ) * baseAlpha;
-	
+
 	// Do colors
 	float rDensity = (1-cloudDensity)*0.05 + 0.95;
 	diffuseColor = vec4( rDensity,rDensity,rDensity,1 );
-	
-	//vec4 cloudColor = 
+
+	//vec4 cloudColor =
 	//	  texture2D( textureDiffuse, plane*0.0007 + vec2( sys_Time.x*0.1+gm_Datettime*0.3, sys_Time.x*0.06+gm_Datettime*0.34 ) )
 	//	+ texture2D( textureDiffuse, plane*0.0008 + vec2( sys_Time.x*0.05-gm_Datettime*0.27, sys_Time.x*0.07-gm_Datettime*0.37 ) ).gbra;
 	vec4 cloudColor = texture2D( textureSampler0, plane*0.0007 + vec2( sys_Time.x*0.1+gm_Datettime*0.3, sys_Time.x*0.06+gm_Datettime*0.34 ) );
@@ -133,29 +134,29 @@ void main ( void )
 	cloudColor.g += cloudColor_Off.b;
 	cloudColor.b += cloudColor_Off.r;
 	diffuseColor.rgb *= ( 1 - (cloudColor.g * 0.13 * gm_Stormvalue)) ;
-	
+
 	vec4 lightColor;
 	lightColor = sys_LightAmbient;
 	for ( int i = 0; i < 4; i += 1 )
 	{
 		vec3 lightDir;
 		lightDir = sys_LightPosition[i].xyz - vec3( plane.x,plane.y,310 );
-		
+
 		float lightVal1 = diffuseLighting( v2f_normals.xyz, lightDir, sys_LightProperties[i].x, sys_LightProperties[i].y, sys_LightProperties[i].z );
 		float lightVal2 = max( dot( sys_LightPosition[i].xyz, v2f_normals.xyz ) + 0.2, 0.0 );
 		if ( lightVal2 > 0.2 )
 			lightVal2 = lightVal2 * 2 - 0.2;
-		
+
 		lightColor.rgb += sys_LightColor[i].rgb * mix( lightVal2, lightVal1, sys_LightPosition[i].w );
 	}
-	
+
 	lightColor += (lightColor-0.3)*2;
 	float luminance = lightColor.r * 0.299 + lightColor.g * 0.587 + lightColor.b * 0.114;
 	lightColor = (lightColor + vec4( luminance,luminance,luminance,luminance ) + vec4(1,1,1,1))*0.333;
 	lightColor = min( vec4(1,1,1,1), lightColor );
-	
+
 	diffuseColor = mix( sys_FogColor, diffuseColor*lightColor, fogdensity2 );
-	
+
 	// Set final alpha
 	diffuseColor.a = finalAlpha;
 	gl_FragColor = diffuseColor;

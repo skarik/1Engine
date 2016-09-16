@@ -11,6 +11,7 @@
 
 #include "after/scenes/gmsceneGame_6.h"
 #include "after/scenes/gmsceneCharacterViewer.h"
+#include "after/scenes/tests/testSceneStaticMesh.h"
 #include "after-editor/scenes/gmsceneParticleEditor.h"
 #include "after-editor/scenes/gmsceneLipsyncEditor.h"
 #include "after-editor/scenes/gmsceneVoxelEditor.h"
@@ -33,9 +34,12 @@ int GameInitialize ( void )
 	// Scene registration
 	EngineCommon::RegisterScene<gmsceneGame_6>( "game" );
 	EngineCommon::RegisterScene<gmsceneCharacterViewer>( "test" );
+
 	EngineCommon::RegisterScene<gmsceneParticleEditor>( "pce" );
 	EngineCommon::RegisterScene<gmsceneLipsyncEditor>( "lse" );
 	EngineCommon::RegisterScene<gmsceneVoxelEditor>( "vxe" );
+
+	EngineCommon::RegisterScene<testSceneStaticMesh>( "ttsm" );
 
 	//===============================================================================================//
 	// PLACE YOUR CUSTOM ENGINE MODULES BELOW HERE

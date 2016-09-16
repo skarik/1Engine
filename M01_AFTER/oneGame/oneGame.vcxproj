@@ -654,6 +654,7 @@
     <ClInclude Include="source\after\scenes\gmsceneMainGame.h" />
     <ClInclude Include="source\after\scenes\gmsceneMenu.h" />
     <ClInclude Include="source\after\scenes\gmsceneSplashScreens.h" />
+    <ClInclude Include="source\after\scenes\tests\testSceneStaticMesh.h" />
     <ClInclude Include="source\after\states\ai\NPC_AIState.h" />
     <ClInclude Include="source\after\states\CharacterStats.h" />
     <ClInclude Include="source\after\states\CRacialStats.h" />
@@ -940,6 +941,7 @@
     <ClCompile Include="source\after\scenes\gmsceneMainGame.cpp" />
     <ClCompile Include="source\after\scenes\gmsceneMenu.cpp" />
     <ClCompile Include="source\after\scenes\gmsceneSplashScreens.cpp" />
+    <ClCompile Include="source\after\scenes\tests\testSceneStaticMesh.cpp" />
     <ClCompile Include="source\after\states\ai\NPC_AIFocus.cpp" />
     <ClCompile Include="source\after\states\ai\NPC_AIKill.cpp" />
     <ClCompile Include="source\after\states\ai\NPC_AILookAt.cpp" />

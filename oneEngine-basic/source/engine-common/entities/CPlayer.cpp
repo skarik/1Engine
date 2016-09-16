@@ -179,10 +179,10 @@ void*	CPlayer::mvtPhaseFlying ( void )
 	moveVector = rotMatrix*moveVector;
 
 	if ( input->axes.jump ) {
-		moveVector.z += 1;
+		moveVector.z += Time::deltaTime * 6.0F;
 	}
 	if ( input->axes.crouch ) {
-		moveVector.z -= 1;
+		moveVector.z -= Time::deltaTime * 6.0F;
 	}
 
 	if ( input->axes.sprint ) { 

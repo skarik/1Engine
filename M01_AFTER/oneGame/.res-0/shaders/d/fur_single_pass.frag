@@ -33,6 +33,7 @@ uniform vec3 sys_WorldCameraPos;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
@@ -43,7 +44,7 @@ float cellShade ( float lumin )
 	float t = lumin*levels;
 	float dif = 0.5 - mod(t+0.5,1);
 	t += dif * min(1,(0.5-abs(dif))*32) * 0.5;
-	
+
 	lumin = t/levels;
 	/*const float minval = 0.3;
 	if ( lumin < -minval ) {
@@ -59,10 +60,10 @@ float diffuseLighting ( vec3 normal, vec3 lightDist, float lightRange, float lig
 {
 	// Distance-based attenuation
 	float attenuation = pow( max( 1.0 - (length( lightDist )*lightRange), 0.0 ), lightFalloff );
-	
+
 	// Cosine law * attenuation
 	float color = mix( max( dot( normal,normalize( lightDist ) ), 0.0 ), 1.0, lightPass*(1.0+attenuation) ) * attenuation;
-	
+
 	// Return final color
 	return color;
 }
@@ -80,12 +81,12 @@ float specularLighting( vec3 normal, vec3 lightdir, vec3 viewdir, float specular
 	float 	l_lightdist	= length( lightdir );
 	vec3 	n_lightdir	= lightdir/l_lightdist;
 	vec3 	n_viewdir	= normalize(viewdir);
-	
+
 	// Create the reflection vector
 	vec3 reflectdir = 2*dot(normal,lightdir)*n_normal - n_lightdir;
 	// Attenuation is based on camera position and reflection dir
 	float attenuation = max( dot( normalize(reflectdir), n_viewdir ), 0.0 );
-	
+
 	// Move the highlight down to 60 degrees
 	const float t_angleBias = 0.707;
 	attenuation = (t_angleBias-abs(t_angleBias-attenuation))/t_angleBias;
@@ -100,10 +101,10 @@ float specularLighting( vec3 normal, vec3 lightdir, vec3 viewdir, float specular
 	attenuation *= clamp( 1.7-normal_attenuation, 0.0,1.0 );
 	// If highlight is facing downwards, remove it
 	attenuation *= clamp( 1.0+n_normal.z, 0.0, 1.0 );
-	
+
 	// Also add distance-based attenuation though
 	float distance_attenuation = max( 1.0 - (l_lightdist*lightRange*0.3), 0.0 );
-	
+
 	// Perform exponent and distance attenuation
 	attenuation = pow( attenuation*distance_attenuation, specular_pow*(2.0-distance_attenuation) );
 	// Cell shade it
@@ -112,34 +113,34 @@ float specularLighting( vec3 normal, vec3 lightdir, vec3 viewdir, float specular
 	return attenuation;
 }
 
-void main ( void )  
+void main ( void )
 {
 	vec4 diffuseColor = texture( textureSampler0, v2f_texcoord0 );
 	vec3 colorMap = texture( textureSampler1, v2f_texcoord0 ).rgb;
 	vec3 lightColor = sys_EmissiveColor;	// gl_SecondaryColor is set as emissive when useColors = false for materials
 	//lightColor += texture2D( textureSampler1, v2f_texcoord0 ).rgb;
-	
+
 	vec3 vertDir;	// Calculate rim lighting
 	vertDir = sys_WorldCameraPos-v2f_position.xyz;
 	float lightVal3	= 1-dot( v2f_normals.xyz, normalize(vertDir) );
 	float rimValue	= pow(lightVal3, 2)*0.5;
 	lightVal3 = max( lightVal3, 0 );
-	
+
 	float intensity;
 	vec3 lightDir;
 	lightColor += sys_LightAmbient.rgb;
 	for ( int i = 0; i < 8; i += 1 )
 	{
 		lightDir = sys_LightPosition[i].xyz - v2f_position.xyz;
-		
+
 		// Diffuse lighting
 		float lightVal1 = diffuseLighting( v2f_normals.xyz, lightDir, sys_LightProperties[i].x, sys_LightProperties[i].y, sys_LightProperties[i].z );
 		float lightVal2 = max( dot( sys_LightPosition[i].xyz, v2f_normals.xyz ), 0.0 );
-		
+
 		// Specular lighting
 		float specLight1 = specularLighting( v2f_normals.xyz, lightDir, vertDir, 14, sys_LightProperties[i].x ) * 0.9;
-		float specLight2 = specularLighting( v2f_normals.xyz, sys_LightPosition[i].xyz, vertDir, 14, 0 ) * 0.9; 
-		
+		float specLight2 = specularLighting( v2f_normals.xyz, sys_LightPosition[i].xyz, vertDir, 14, 0 ) * 0.9;
+
 		// Light intensity value
 		intensity = cellShade( mix( lightVal2, lightVal1, sys_LightPosition[i].w ) );
 		intensity += intensity*rimValue;
@@ -150,7 +151,7 @@ void main ( void )
 	diffuseColor.rgb *= 1-(clamp( (pow( clamp(lightVal3,0,1), 5 )-0.12)/0.1, 0,1 ) * (1-min(1,length(lightColor-sys_LightAmbient.rgb)*4)))*0.3;
 	// Final light rim
 	lightColor += sys_LightAmbient.rgb * (rimValue*0.5);
-	
+
 	gl_FragColor = mix( sys_FogColor, diffuseColor * mix( vec4(1,1,1,1), sys_DiffuseColor, colorMap.r ) * vec4( lightColor, 1.0 ), v2f_fogdensity );
 	gl_FragColor.a = diffuseColor.a * v2f_colors.a;
 }

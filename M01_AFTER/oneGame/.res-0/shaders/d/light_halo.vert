@@ -27,6 +27,7 @@ uniform vec3 sys_EmissiveColor;
 layout(std140) uniform sys_Fog
 {
 	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
@@ -35,7 +36,7 @@ void main ( void )
 {
 	vec4 v_localPos = vec4( mdl_Vertex, 1.0 );
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
-	
+
 	v2f_normals		= sys_ModelRotationMatrix*vec4( mdl_Normal, 1.0 );
 	v2f_colors		= sys_DiffuseColor;
 	v2f_emissive	= sys_EmissiveColor;
