@@ -25,10 +25,9 @@ CCloudAI::CCloudAI (CCloudEnemy *host, CPersonality *personality): pHost(host), 
 
 CCloudAI::~CCloudAI ()
 {
-	if (pHost != NULL)
-		delete pHost;
+	//Don't delete pHost because something else does, unsurprisingly
 
-	if (pPersonality != NULL)
+	if (pPersonality != nullptr)
 		delete pPersonality;
 }
 
@@ -41,4 +40,13 @@ void CCloudAI::Initialize (CCloudEnemy *host, CPersonality *personality)
 	{
 		//Randomly pick a personality and use it because the moron who called this passed in null
 	}
+}
+
+void CCloudAI::Update() 
+{
+	pPersonality->Execute(mTurn, mAcc, mFlags);
+
+	pHost->SetDirInput(mAcc);
+	pHost->SetTurnInput(mTurn);
+	pHost->SetVAxes(mFlags);
 }

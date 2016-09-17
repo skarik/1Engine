@@ -340,6 +340,9 @@
     <Filter Include="SOURCE\Cloud\Scenes">
       <UniqueIdentifier>{7c1cd398-51cd-40af-aaa0-8c3d7b0df8a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Cloud\Entities\Personalities">
+      <UniqueIdentifier>{be81cf51-db8e-408d-9fbb-c7bee2a7abb5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\after\scenes\gmsceneGame_5.h">
@@ -1242,6 +1245,9 @@
     <ClInclude Include="source\cloud\entities\CPersonalityFactory.h">
       <Filter>SOURCE\Cloud\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="source\cloud\entities\Personalities\CTestPersonality.h">
+      <Filter>SOURCE\Cloud\Entities\Personalities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\after\scenes\gmsceneGame_5.cpp">
@@ -2062,6 +2068,9 @@
     </ClCompile>
     <ClCompile Include="source\cloud\entities\CPersonalityFactory.cpp">
       <Filter>SOURCE\Cloud\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cloud\entities\Personalities\CTestPersonality.cpp">
+      <Filter>SOURCE\Cloud\Entities\Personalities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

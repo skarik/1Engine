@@ -23,13 +23,17 @@ public:
 	void ChangePersonality(CPersonality *personality) {}
 
 	//Update step overrides
-	void Update() override {}
+	void Update() override;
 	void LateUpdate() override {}
 	void PostUpdate() override {}
 
 private:
 	CCloudEnemy *pHost;
 	CPersonality *pPersonality;
+
+	Vector3d mTurn;
+	Vector3d mAcc;
+	int mFlags;
 };
 
 #endif

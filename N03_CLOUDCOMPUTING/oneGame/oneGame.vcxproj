@@ -755,6 +755,7 @@
     <ClInclude Include="source\cloud\entities\CCloudPlayer.h" />
     <ClInclude Include="source\cloud\entities\CPersonality.h" />
     <ClInclude Include="source\cloud\entities\CPersonalityFactory.h" />
+    <ClInclude Include="source\cloud\entities\Personalities\CTestPersonality.h" />
     <ClInclude Include="source\cloud\scenes\sceneCloudGame.h" />
   </ItemGroup>
   <ItemGroup>
@@ -1030,6 +1031,7 @@
     <ClCompile Include="source\cloud\entities\CCloudPlayer.cpp" />
     <ClCompile Include="source\cloud\entities\CPersonality.cpp" />
     <ClCompile Include="source\cloud\entities\CPersonalityFactory.cpp" />
+    <ClCompile Include="source\cloud\entities\Personalities\CTestPersonality.cpp" />
     <ClCompile Include="source\cloud\scenes\sceneCloudGame.cpp" />
   </ItemGroup>
   <ItemGroup>
