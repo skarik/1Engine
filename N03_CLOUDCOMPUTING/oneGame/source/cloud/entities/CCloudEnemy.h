@@ -66,6 +66,7 @@ public: // ROUTINES
 	// Provides sexy player motion.
 	void* mvtNormalShip(void);
 
+	//Setters to create a virtual controller for the AI to use
 	void SetTurnInput(Vector3d turn);
 	void SetDirInput(Vector3d dir);
 	void SetVAxes(int flags);

@@ -1233,6 +1233,15 @@
     <ClInclude Include="source\cloud\entities\CCloudEnemy.h">
       <Filter>SOURCE\Cloud\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="source\cloud\entities\CCloudAI.h">
+      <Filter>SOURCE\Cloud\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cloud\entities\CPersonality.h">
+      <Filter>SOURCE\Cloud\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cloud\entities\CPersonalityFactory.h">
+      <Filter>SOURCE\Cloud\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\after\scenes\gmsceneGame_5.cpp">
@@ -2043,6 +2052,15 @@
       <Filter>SOURCE\Cloud\Entities</Filter>
     </ClCompile>
     <ClCompile Include="source\cloud\entities\CCloudEnemy.cpp">
+      <Filter>SOURCE\Cloud\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cloud\entities\CCloudAI.cpp">
+      <Filter>SOURCE\Cloud\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cloud\entities\CPersonality.cpp">
+      <Filter>SOURCE\Cloud\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cloud\entities\CPersonalityFactory.cpp">
       <Filter>SOURCE\Cloud\Entities</Filter>
     </ClCompile>
   </ItemGroup>

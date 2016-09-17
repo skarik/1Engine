@@ -750,8 +750,11 @@
     <ClInclude Include="source\after\types\world\Towns.h" />
     <ClInclude Include="source\after\utils\NamingUtils.h" />
     <ClInclude Include="source\cloud\cloud-common.h" />
+    <ClInclude Include="source\cloud\entities\CCloudAI.h" />
     <ClInclude Include="source\cloud\entities\CCloudEnemy.h" />
     <ClInclude Include="source\cloud\entities\CCloudPlayer.h" />
+    <ClInclude Include="source\cloud\entities\CPersonality.h" />
+    <ClInclude Include="source\cloud\entities\CPersonalityFactory.h" />
     <ClInclude Include="source\cloud\scenes\sceneCloudGame.h" />
   </ItemGroup>
   <ItemGroup>
@@ -1022,8 +1025,11 @@
     <ClCompile Include="source\after\types\world\Cultures.cpp" />
     <ClCompile Include="source\after\utils\NamingUtil_Town.cpp" />
     <ClCompile Include="source\cloud\cloud-common.cpp" />
+    <ClCompile Include="source\cloud\entities\CCloudAI.cpp" />
     <ClCompile Include="source\cloud\entities\CCloudEnemy.cpp" />
     <ClCompile Include="source\cloud\entities\CCloudPlayer.cpp" />
+    <ClCompile Include="source\cloud\entities\CPersonality.cpp" />
+    <ClCompile Include="source\cloud\entities\CPersonalityFactory.cpp" />
     <ClCompile Include="source\cloud\scenes\sceneCloudGame.cpp" />
   </ItemGroup>
   <ItemGroup>

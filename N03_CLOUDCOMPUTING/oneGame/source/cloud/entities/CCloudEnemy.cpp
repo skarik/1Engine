@@ -27,7 +27,6 @@ CCloudEnemy::~CCloudEnemy(void)
 	delete_safe(collider);
 }
 
-
 // Game step
 
 void CCloudEnemy::Update(void)
@@ -117,6 +116,7 @@ void*	CCloudEnemy::mvtNormalShip(void)
 	return NULL;
 }
 
+//Take a 3D vector and use it for turning
 void CCloudEnemy::SetTurnInput(Vector3d turn)
 {
 	vTurnInput.x = turn.x;
@@ -124,6 +124,7 @@ void CCloudEnemy::SetTurnInput(Vector3d turn)
 	vTurnInput.z = turn.z;
 }
 
+//Take a 3D vector and use it for movement
 void CCloudEnemy::SetDirInput(Vector3d dir)
 {
 	vDirInput.x = dir.x;
@@ -131,6 +132,7 @@ void CCloudEnemy::SetDirInput(Vector3d dir)
 	vDirInput.z = dir.z;
 }
 
+//Set the flags for crouch, jump, menuToggle, and sprint, to mirror the player
 void CCloudEnemy::SetVAxes(int flags)
 {
 	if (flags & 1)
