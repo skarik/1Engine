@@ -195,10 +195,13 @@ void CDuskGUIPropertyview::Update ( void )
 	scroll_offset = std::max<ftype>( -1, std::min<ftype>( scroll_offset, max_scroll_offset ) );
 
 	// Update specific dialogues
-	for ( uint i = 0; i < propertyList.size(); ++i ) {
-		if ( propertyList[i].element >= 0 ) {
+	for ( uint i = 0; i < propertyList.size(); ++i )
+	{
+		if ( propertyList[i].element >= 0 )
+		{
 			int selectedId;
-			switch ( propertyList[i].type ) {
+			switch ( propertyList[i].type )
+			{
 			case 1: // Float
 				activeGUI->UpdateFloatfield( propertyList[i].element, *((ftype*)propertyList[i].target) );
 				break;
@@ -243,9 +246,11 @@ void CDuskGUIPropertyview::Update ( void )
 				else
 				{
 					// Dropdown does not match target
-					if (( Get<CParticleEmitter*>( propertyList[i].target ) == NULL )||( selectedId != (int)Get<CParticleEmitter*>( propertyList[i].target ) )) {
+					if (( Get<CParticleEmitter*>( propertyList[i].target ) == NULL )||( selectedId != (int)Get<CParticleEmitter*>( propertyList[i].target ) ))
+					{
 						// Something changed
-						if ( Get<CParticleEmitter*>( propertyList[i].target ) == NULL ) {
+						if ( Get<CParticleEmitter*>( propertyList[i].target ) == NULL )
+						{
 							// Dropdown list changed to nonnull, so change value
 							if ( selectedId >= 0 )
 								Set<CParticleEmitter*>( propertyList[i].value, (CParticleEmitter*) CGameState::Active()->GetBehavior( selectedId ) );
@@ -253,7 +258,8 @@ void CDuskGUIPropertyview::Update ( void )
 								Set<CParticleEmitter*>( propertyList[i].value, NULL );
 						}
 						//else if ( Get<CParticleEmitter*>( propertyList[i].target )->GetId() == Get<CParticleEmitter*>( propertyList[i].value )->GetId() ) {
-						else if ( (int)Get<CParticleEmitter*>( propertyList[i].target ) == (int)Get<CParticleEmitter*>( propertyList[i].value ) ) {
+						else if ( (int)Get<CParticleEmitter*>( propertyList[i].target ) == (int)Get<CParticleEmitter*>( propertyList[i].value ) )
+						{
 							// Dropdown list changed, so change value
 							if ( selectedId >= 0 )
 								Set<CParticleEmitter*>( propertyList[i].value, (CParticleEmitter*) CGameState::Active()->GetBehavior( selectedId ) );
@@ -288,9 +294,9 @@ void CDuskGUIPropertyview::Update ( void )
 				activeGUI->SetElementVisible( propertyList[i].element, true );
 				activeGUI->SetElementRect( propertyList[i].element,
 					Rect(
-					rect.pos.x + rect.size.x*name_width,
-					rect.pos.y + field_height*(i-scroll_offset),
-					rect.size.x*(1-name_width-scrollbar_width), field_height )
+						activeGUI->parenting_offset.x + rect.size.x*name_width,
+						activeGUI->parenting_offset.y + field_height*(i-scroll_offset),
+						rect.size.x*(1-name_width-scrollbar_width), field_height )
 				);
 			}
 		}

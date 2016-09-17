@@ -7,6 +7,9 @@
 class CRigidBody;
 class CCapsuleCollider;
 
+class CModel;
+class CInstancedModel;
+
 struct VAxes {
 	bool crouch;
 	bool jump;
@@ -26,11 +29,11 @@ public:
 	GAME_API ~CCloudEnemy(void);
 
 public: // ROUTINES
-		//===============================================================================================//
-		// READ-ONLY PROPERITES
-		//===============================================================================================//
+	//===============================================================================================//
+	// READ-ONLY PROPERITES
+	//===============================================================================================//
 
-		// Retrieve the type of actor this is.
+	// Retrieve the type of actor this is.
 	virtual eActorObjectType ActorType(void) override { return ACTOR_TYPE_NPC; }
 
 	//===============================================================================================//
@@ -72,9 +75,9 @@ public: // ROUTINES
 	void SetVAxes(int flags);
 
 protected: // PROTECTED FIELDS and ROUTINES
-		   //===============================================================================================//
-		   // Location state 
-		   //===============================================================================================//
+	//===============================================================================================//
+	// Location state 
+	//===============================================================================================//
 
 	Rotator enemyRotation;
 
@@ -91,6 +94,8 @@ protected: // PROTECTED FIELDS and ROUTINES
 	CRigidBody*			rigidbody;
 	CCapsuleCollider*	collider;
 
+	//CInstanedModel*		model;
+	CModel*				model;
 };
 
 #endif _C_CLOUD_ENEMY_H_

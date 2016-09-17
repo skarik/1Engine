@@ -17,7 +17,8 @@ CDuskGUI::Handle CDuskGUI::CreateVector3dPicker ( const Handle& parent, const Ve
 void CDuskGUI::UpdateVector3dPicker ( const Handle& handle, Vector3d & inOutVectorVal )
 {
 	CDuskGUIVector3dPicker* cp = (CDuskGUIVector3dPicker*)vElements[int(handle)];
-	if ( cp->hVecX == -1 ) {
+	if ( cp->hVecX == -1 )
+	{
 		if (( fabs(cp->lastColorValue.x-inOutVectorVal.x) > FTYPE_PRECISION )
 		  ||( fabs(cp->lastColorValue.y-inOutVectorVal.y) > FTYPE_PRECISION )
 		  ||( fabs(cp->lastColorValue.z-inOutVectorVal.z) > FTYPE_PRECISION ))
@@ -80,10 +81,15 @@ void CDuskGUIVector3dPicker::SetVector ( Vector3d& v )
 
 void CDuskGUIVector3dPicker::Update ( void )
 {
-	if ( hVecX == -1 ) {
+	if ( hVecX == -1 )
+	{
 		hVecX = activeGUI->CreateFloatfield( activeGUI->GetFromPointer( this ), colorValue.x );
 		hVecY = activeGUI->CreateFloatfield( activeGUI->GetFromPointer( this ), colorValue.y );
 		hVecZ = activeGUI->CreateFloatfield( activeGUI->GetFromPointer( this ), colorValue.z );
+
+		/*activeGUI->SetElementRect( hVecX, Rect( rect.size.x*0.1f, rect.size.y*0.05f, rect.size.x * 0.25f, rect.size.y * 0.9f ) );
+		activeGUI->SetElementRect( hVecY, Rect( rect.size.x*0.4f, rect.size.y*0.05f, rect.size.x * 0.25f, rect.size.y * 0.9f ) );
+		activeGUI->SetElementRect( hVecZ, Rect( rect.size.x*0.7f, rect.size.y*0.05f, rect.size.x * 0.25f, rect.size.y * 0.9f ) );*/
 	}
 	lastColorValue = colorValue;
 
@@ -96,29 +102,24 @@ void CDuskGUIVector3dPicker::Update ( void )
 	if ( (!visible) || (!drawn) )
 		return;
 
-	if ( !inDialogueMode )
-	{
+	//if ( !inDialogueMode )
+	//{
 		// Button state
 		homeRect = rect;
-		if ( isPressed )
-		{
-			//inDialogueMode = true;
-			//rect = Rect( 0.2f, 0.5f, 0.4f, 0.4f );
-			//activeGUI->hCurrentDialogue = activeGUI->hCurrentElement;
-		}
 
-		activeGUI->SetElementRect( hVecX, Rect( rect.pos.x+rect.size.x*0.1f, rect.pos.y+rect.size.y*0.05f, rect.size.x * 0.25f, rect.size.y * 0.9f ) );
-		activeGUI->SetElementRect( hVecY, Rect( rect.pos.x+rect.size.x*0.4f, rect.pos.y+rect.size.y*0.05f, rect.size.x * 0.25f, rect.size.y * 0.9f ) );
-		activeGUI->SetElementRect( hVecZ, Rect( rect.pos.x+rect.size.x*0.7f, rect.pos.y+rect.size.y*0.05f, rect.size.x * 0.25f, rect.size.y * 0.9f ) );
-	}
+		// TODO: y position incorrect
+		activeGUI->SetElementRect( hVecX, Rect( rect.size.x*0.1f, rect.size.y*1.4f + rect.size.y*0.05f, rect.size.x * 0.25f, rect.size.y * 0.9f ) );
+		activeGUI->SetElementRect( hVecY, Rect( rect.size.x*0.4f, rect.size.y*1.4f + rect.size.y*0.05f, rect.size.x * 0.25f, rect.size.y * 0.9f ) );
+		activeGUI->SetElementRect( hVecZ, Rect( rect.size.x*0.7f, rect.size.y*1.4f + rect.size.y*0.05f, rect.size.x * 0.25f, rect.size.y * 0.9f ) );
+	/*}
 	else
 	{
 		// Color picking state
 		activeGUI->hCurrentDialogue = activeGUI->hCurrentElement;
 
-		activeGUI->SetElementRect( hVecX, Rect( rect.pos.x+rect.size.x*0.1f, rect.pos.y + rect.size.y*0.2f, rect.size.x * 0.3f, rect.size.y * 0.17f ) );
-		activeGUI->SetElementRect( hVecY, Rect( rect.pos.x+rect.size.x*0.1f, rect.pos.y + rect.size.y*0.4f, rect.size.x * 0.3f, rect.size.y * 0.17f ) );
-		activeGUI->SetElementRect( hVecZ, Rect( rect.pos.x+rect.size.x*0.1f, rect.pos.y + rect.size.y*0.6f, rect.size.x * 0.3f, rect.size.y * 0.17f ) );
+		activeGUI->SetElementRect( hVecX, Rect( rect.size.x*0.1f, rect.size.y*0.2f, rect.size.x * 0.3f, rect.size.y * 0.17f ) );
+		activeGUI->SetElementRect( hVecY, Rect( rect.size.x*0.1f, rect.size.y*0.4f, rect.size.x * 0.3f, rect.size.y * 0.17f ) );
+		activeGUI->SetElementRect( hVecZ, Rect( rect.size.x*0.1f, rect.size.y*0.6f, rect.size.x * 0.3f, rect.size.y * 0.17f ) );
 
 		if ( mouseIn )
 		{
@@ -139,7 +140,7 @@ void CDuskGUIVector3dPicker::Update ( void )
 				rect = homeRect;
 			}
 		}
-	}
+	}*/
 }
 
 void CDuskGUIVector3dPicker::Render ( void )

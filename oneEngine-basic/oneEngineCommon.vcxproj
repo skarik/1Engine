@@ -58,6 +58,7 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDraggablePanel.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDropdownList.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_GO.h" />
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_LO.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_RO.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIEdgePanel.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIElement.h" />
@@ -132,6 +133,7 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDraggablePanel.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDropdownList.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_GO.cpp" />
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_LO.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIEdgePanel.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIElement.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.cpp" />

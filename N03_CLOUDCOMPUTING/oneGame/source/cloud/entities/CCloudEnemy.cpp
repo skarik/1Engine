@@ -7,7 +7,9 @@
 #include "engine/physics/motion/CRigidbody.h"
 #include "engine/physics/collider/types/CCapsuleCollider.h"
 
-#include "renderer/camera/CCamera.h"
+//#include "renderer/camera/CCamera.h"
+#include "renderer/logic/model/CModel.h"
+//#include "renderer/logic/model/CInstancedModel.h"
 
 CCloudEnemy::CCloudEnemy(void)
 	: CActor()
@@ -19,12 +21,20 @@ CCloudEnemy::CCloudEnemy(void)
 	// Create motion rigidbody
 	rigidbody = new CRigidBody(collider, this, 100.0F);
 	rigidbody->SetGravity(false);
+	rigidbody->SetAngularDamping( 0.1F );
+	rigidbody->SetLinearDamping( 0.1F );
+
+	// Create model for the bot.
+	model = new CModel( "models/geosphere.fbx" );
+	model->transform.scale = Vector3d(1,1,1) * t_sphereRadius;
 }
 
 CCloudEnemy::~CCloudEnemy(void)
 {
 	delete_safe_decrement(rigidbody);
 	delete_safe(collider);
+
+	delete_safe(model);
 }
 
 // Game step
@@ -48,6 +58,11 @@ void CCloudEnemy::LateUpdate(void)
 	pListener->position = pCamera->transform.position;
 	pListener->orient_forward = pCamera->transform.Forward();
 	pListener->orient_up = pCamera->transform.Up();*/
+
+	model->transform.position = transform.position;
+	model->transform.rotation = transform.rotation;
+
+	rigidbody->Wake();
 }
 
 // Physics Step

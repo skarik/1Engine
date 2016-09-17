@@ -31,7 +31,7 @@ void CDuskGUIDraggablePanel::Update ( void )
 		//Vector2d vTargetPoint = Vector2d( Input::mouseX/(ftype)Screen::Info.width, Input::mouseY/(ftype)Screen::Info.height );
 		Vector2d vDeltaPoint = Vector2d( Input::DeltaMouseX(), Input::DeltaMouseY() );
 		if ( !activeGUI->bInPixelMode ) {
-			vDeltaPoint.divComponents( Vector2d( (Real)Screen::Info.width, (Real)Screen::Info.height ) );
+			vDeltaPoint = vDeltaPoint.divComponents( Vector2d( (Real)Screen::Info.width, (Real)Screen::Info.height ) );
 		}
 
 		// Limit position

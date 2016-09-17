@@ -92,7 +92,7 @@ void Physics::_Init ( void )
 	// Set the physics world properties
 	//worldInfo.m_gravity.set( 0,0, -9.81f );
 	worldInfo.m_gravity.set( 0,0, -9.81f*2.717f );
-	//worldInfo.setBroadPhaseWorldSize( 1000.0f );
+	worldInfo.setBroadPhaseWorldSize( 1000.0f );
 	worldInfo.setupSolverInfo( hkpWorldCinfo::SOLVER_TYPE_4ITERS_MEDIUM );
 	// Set the simulation type
 #ifdef _PHYSICS_MULTITHREADED_

@@ -65,6 +65,7 @@ CParticleEditor::CParticleEditor ( bool ingame )
 	}*/
 	mDaycycle = new Daycycle();
 	mDaycycle->SetTimeOfDay( 60*60*18 );
+	mDaycycle->RemoveReference();
 
 	// Create particle system
 	LoadDefaults();
@@ -76,8 +77,8 @@ CParticleEditor::CParticleEditor ( bool ingame )
 // Destructor
 CParticleEditor::~CParticleEditor ( void )
 {
-	delete myCamera;
-	delete myGUI;
+	delete_safe( myCamera );
+	delete_safe_decrement( myGUI );
 
 	//delete [] hFFRendererColors;
 	if ( mParticleObject ) {
@@ -200,26 +201,26 @@ void CParticleEditor::CreateGUI ( void )
 	myGUI->SetElementText( prntHandle, "Components" );
 	{
 		tempHandle = myGUI->CreateListview( prntHandle );
-		myGUI->SetElementRect( tempHandle, Rect( 0.04f, 0.07f, 0.23f, 0.50f ) );
+		myGUI->SetElementRect( tempHandle, Rect( 0.02f, 0.07f, 0.23f, 0.50f ) );
 		edtComponentList.list = tempHandle;
 		
 		tempHandle = myGUI->CreateButton( prntHandle );
-		myGUI->SetElementRect( tempHandle, Rect( 0.04f, 0.59f, 0.10f, 0.04f ) );
+		myGUI->SetElementRect( tempHandle, Rect( 0.02f, 0.57f, 0.10f, 0.04f ) );
 		myGUI->SetElementText( tempHandle, "Delete selected" );
 		edtComponentList.btnDelete = tempHandle;
 
 		tempHandle = myGUI->CreateButton( prntHandle );
-		myGUI->SetElementRect( tempHandle, Rect( 0.16f, 0.59f, 0.09f, 0.04f ) );
+		myGUI->SetElementRect( tempHandle, Rect( 0.14f, 0.57f, 0.09f, 0.04f ) );
 		myGUI->SetElementText( tempHandle, "Edit selected" );
 		edtComponentList.btnEdit = tempHandle;
 
 		tempHandle = myGUI->CreateButton( prntHandle );
-		myGUI->SetElementRect( tempHandle, Rect( 0.04f, 0.64f, 0.09f, 0.04f ) );
+		myGUI->SetElementRect( tempHandle, Rect( 0.02f, 0.62f, 0.09f, 0.04f ) );
 		myGUI->SetElementText( tempHandle, "Load System" );
 		edtComponentList.btnLoad = tempHandle;
 
 		tempHandle = myGUI->CreateButton( prntHandle );
-		myGUI->SetElementRect( tempHandle, Rect( 0.16f, 0.64f, 0.09f, 0.04f ) );
+		myGUI->SetElementRect( tempHandle, Rect( 0.14f, 0.62f, 0.09f, 0.04f ) );
 		myGUI->SetElementText( tempHandle, "Save System" );
 		edtComponentList.btnSave = tempHandle;
 	}
@@ -229,7 +230,7 @@ void CParticleEditor::CreateGUI ( void )
 	myGUI->SetElementText( prntHandle, "Add Component" );
 	{
 		tempHandle = myGUI->CreateListview( prntHandle );
-		myGUI->SetElementRect( tempHandle, Rect( 0.34f, 0.07f, 0.20f, 0.30f ) );
+		myGUI->SetElementRect( tempHandle, Rect( 0.02f, 0.05f, 0.20f, 0.30f ) );
 		myGUI->AddListviewOption( tempHandle, "Default Emitter", 0 );
 		myGUI->AddListviewOption( tempHandle, "Default Updater", 1 );
 		myGUI->AddListviewOption( tempHandle, "Default Renderer", 2 );
@@ -240,7 +241,7 @@ void CParticleEditor::CreateGUI ( void )
 		edtNewComponents.list = tempHandle;
 
 		tempHandle = myGUI->CreateButton( prntHandle );
-		myGUI->SetElementRect( tempHandle, Rect( 0.34f, 0.39f, 0.09f, 0.04f ) );
+		myGUI->SetElementRect( tempHandle, Rect( 0.04f, 0.37f, 0.09f, 0.04f ) );
 		myGUI->SetElementText( tempHandle, "Add selected" );
 		edtNewComponents.btnNew = tempHandle;
 	}
@@ -250,7 +251,7 @@ void CParticleEditor::CreateGUI ( void )
 	myGUI->SetElementText( prntHandle, "Component Properties" );
 	{
 		tempHandle = myGUI->CreatePropertyview( prntHandle );
-		myGUI->SetElementRect( tempHandle, Rect( 0.42f, 0.55f, 0.54f, 0.40f ) );
+		myGUI->SetElementRect( tempHandle, Rect( 0.02f, 0.05f, 0.54f, 0.40f ) );
 		edtProperties.view = tempHandle;
 	}
 
@@ -353,7 +354,8 @@ void CParticleEditor::DoGUIWork ( void )
 	}
 
 	// ==Add Component==
-	if ( myGUI->GetButtonClicked( edtNewComponents.btnNew ) ) {
+	if ( myGUI->GetButtonClicked( edtNewComponents.btnNew ) )
+	{
 		int selection = myGUI->GetListviewSelection( edtNewComponents.list );
 		if ( selection >= 0 ) {
 			editorComponent_t newComponentEntry;
@@ -445,53 +447,57 @@ void CParticleEditor::RecreatePropertyList ( const editorComponent_t &component 
 	myGUI->ClearPropertyview( edtProperties.view );
 
 	// Now, set the possible values
-	if ( component.type == 0 ) {
-		myGUI->AddPropertyOption<string>( edtProperties.view, "Component Name", &(((CGameBehavior*)component.ptr)->name) );
+	if ( component.type == 0 )
+	{
+		CParticleEmitter* emitter = (CParticleEmitter*)component.ptr;
+		myGUI->AddPropertyOption<string>( edtProperties.view, "Component Name", &emitter->name );
 		myGUI->AddPropertyDivider( edtProperties.view, "Emitter Properties" );
-		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Emitter Size", &(((CParticleEmitter*)component.ptr)->vEmitterSize) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Max Particles", &(((CParticleEmitter*)component.ptr)->fMaxParticles) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Emit per sec (min)", &(((CParticleEmitter*)component.ptr)->rfParticlesSpawned.mMinVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Emit per sec (max)", &(((CParticleEmitter*)component.ptr)->rfParticlesSpawned.mMaxVal) );
-		myGUI->AddPropertyOption<bool>( edtProperties.view, "One shot", &(((CParticleEmitter*)component.ptr)->bOneShot) );
-		myGUI->AddPropertyOption<bool>( edtProperties.view, "Use worldspace", &(((CParticleEmitter*)component.ptr)->bSimulateInWorldspace) );
-		myGUI->AddPropertyOption<bool>( edtProperties.view, "Smooth emitter", &(((CParticleEmitter*)component.ptr)->bSmoothEmitter) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "World velocity scale", &(((CParticleEmitter*)component.ptr)->fVelocityScale) );
+		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Emitter Size", &emitter->vEmitterSize );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Max Particles", &emitter->fMaxParticles );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Emit per sec (min)", &emitter->rfParticlesSpawned.mMinVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Emit per sec (max)", &emitter->rfParticlesSpawned.mMaxVal );
+		myGUI->AddPropertyOption<bool>( edtProperties.view, "One shot", &emitter->bOneShot );
+		myGUI->AddPropertyOption<bool>( edtProperties.view, "Use worldspace", &emitter->bSimulateInWorldspace );
+		myGUI->AddPropertyOption<bool>( edtProperties.view, "Smooth emitter", &emitter->bSmoothEmitter );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "World velocity scale", &emitter->fVelocityScale );
 		myGUI->AddPropertyDivider( edtProperties.view, "Motion Properties" );
-		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Velocity (min)", &(((CParticleEmitter*)component.ptr)->rvVelocity.mMinVal) );
-		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Velocity (max)", &(((CParticleEmitter*)component.ptr)->rvVelocity.mMaxVal) );
-		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Acceleration (min)", &(((CParticleEmitter*)component.ptr)->rvAcceleration.mMinVal) );
-		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Acceleration (max)", &(((CParticleEmitter*)component.ptr)->rvAcceleration.mMaxVal) );
-		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Linear Damping (min)", &(((CParticleEmitter*)component.ptr)->rvLinearDamping.mMinVal) );
-		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Linear Damping (max)", &(((CParticleEmitter*)component.ptr)->rvLinearDamping.mMaxVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Angular Velocity (min)", &(((CParticleEmitter*)component.ptr)->rfAngularVelocity.mMinVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Angular Velocity (max)", &(((CParticleEmitter*)component.ptr)->rfAngularVelocity.mMaxVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Angular Aceleration (min)", &(((CParticleEmitter*)component.ptr)->rfAngularAcceleration.mMinVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Angular Aceleration (max)", &(((CParticleEmitter*)component.ptr)->rfAngularAcceleration.mMaxVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Angular Damping (min)", &(((CParticleEmitter*)component.ptr)->rfAngularDamping.mMinVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Angular Damping (max)", &(((CParticleEmitter*)component.ptr)->rfAngularDamping.mMaxVal) );
+		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Velocity (min)", &emitter->rvVelocity.mMinVal );
+		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Velocity (max)", &emitter->rvVelocity.mMaxVal );
+		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Acceleration (min)", &emitter->rvAcceleration.mMinVal );
+		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Acceleration (max)", &emitter->rvAcceleration.mMaxVal );
+		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Linear Damping (min)", &emitter->rvLinearDamping.mMinVal );
+		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Linear Damping (max)", &emitter->rvLinearDamping.mMaxVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Angular Velocity (min)", &emitter->rfAngularVelocity.mMinVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Angular Velocity (max)", &emitter->rfAngularVelocity.mMaxVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Angular Aceleration (min)", &emitter->rfAngularAcceleration.mMinVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Angular Aceleration (max)", &emitter->rfAngularAcceleration.mMaxVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Angular Damping (min)", &emitter->rfAngularDamping.mMinVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Angular Damping (max)", &emitter->rfAngularDamping.mMaxVal );
 		myGUI->AddPropertyDivider( edtProperties.view, "Particle Properties" );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Start Size (min)", &(((CParticleEmitter*)component.ptr)->rfStartSize.mMinVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Start Size (max)", &(((CParticleEmitter*)component.ptr)->rfStartSize.mMaxVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "End Size (min)", &(((CParticleEmitter*)component.ptr)->rfEndSize.mMinVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "End Size (max)", &(((CParticleEmitter*)component.ptr)->rfEndSize.mMaxVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Lifetime (min)", &(((CParticleEmitter*)component.ptr)->rfLifetime.mMinVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Lifetime (max)", &(((CParticleEmitter*)component.ptr)->rfLifetime.mMaxVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Start Angle (min)", &(((CParticleEmitter*)component.ptr)->rfStartAngle.mMinVal) );
-		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Start Angle (max)", &(((CParticleEmitter*)component.ptr)->rfStartAngle.mMaxVal) );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Start Size (min)", &emitter->rfStartSize.mMinVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Start Size (max)", &emitter->rfStartSize.mMaxVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "End Size (min)", &emitter->rfEndSize.mMinVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "End Size (max)", &emitter->rfEndSize.mMaxVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Lifetime (min)", &emitter->rfLifetime.mMinVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Lifetime (max)", &emitter->rfLifetime.mMaxVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Start Angle (min)", &emitter->rfStartAngle.mMinVal );
+		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Start Angle (max)", &emitter->rfStartAngle.mMaxVal );
 		myGUI->AddPropertyDivider( edtProperties.view, "Particle Color" );
-		for ( uint cn = 0; cn < ((CParticleEmitter*)component.ptr)->vcColors.size(); ++cn ) {
-			myGUI->AddPropertyOption<Color>( edtProperties.view, "Color", &(((CParticleEmitter*)component.ptr)->vcColors[cn]) );
+		for ( uint cn = 0; cn < ((CParticleEmitter*)component.ptr)->vcColors.size(); ++cn )
+		{
+			myGUI->AddPropertyOption<Color>( edtProperties.view, "Color", &emitter->vcColors[cn] );
 		}
 	}
-	else if ( component.type == 1 ) {
-		myGUI->AddPropertyOption<string>( edtProperties.view, "Component Name", &(((CGameBehavior*)component.ptr)->name) );
-		myGUI->AddPropertyOption<CParticleEmitter*>( edtProperties.view, "Target Emitter", &(((CParticleUpdater*)component.ptr)->myEmitter) );
+	else if ( component.type == 1 )
+	{
+		CParticleUpdater* updater = (CParticleUpdater*)component.ptr;
+		myGUI->AddPropertyOption<string>( edtProperties.view, "Component Name", &updater->name );
+		//myGUI->AddPropertyOption<CParticleEmitter*>( edtProperties.view, "Target Emitter", &updater->myEmitter );
 	}
-	else if ( component.type == 2 || component.type == 5 ) {
-		//myGUI->AddPropertyOption<string>( edtProperties.view, "Object Name", &(((CRenderableObject*)component.ptr)->) );
-		myGUI->AddPropertyOption<CParticleEmitter*>( edtProperties.view, "Target Emitter", &(((CParticleRenderer*)component.ptr)->myEmitter) );
-		//myGUI->AddPropertyOption<glMaterial*>( edtProperties.view, "Material", &(((CParticleRenderer*)component.ptr)->GetPassMaterial(0)) );
-		//myGUI->AddPropertyOption<glMaterial*>( edtProperties.view, "Material", (((CParticleRenderer*)component.ptr)->vM) );
+	else if ( component.type == 2 || component.type == 5 )
+	{
+		CParticleRenderer* renderer = (CParticleRenderer*)component.ptr;
+		//myGUI->AddPropertyOption<CParticleEmitter*>( edtProperties.view, "Target Emitter", &(((CParticleRenderer*)component.ptr)->myEmitter) );
 		myGUI->AddPropertyOption<glMaterial>( edtProperties.view, "Material", ((CParticleRenderer*)component.ptr)->GetMaterial() );
 
 		DuskGUI::Handle tempDropdownHandle = myGUI->CreateDropdownList( edtProperties.view );
@@ -502,7 +508,8 @@ void CParticleEditor::RecreatePropertyList ( const editorComponent_t &component 
 
 		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Stretched Speed Scale", &(((CParticleRenderer*)component.ptr)->fR_SpeedScale) );
 
-		if ( component.type == 5 ) {
+		if ( component.type == 5 )
+		{
 			myGUI->AddPropertyOption<ftype>( edtProperties.view, "Frames", &(((CParticleRenderer_Animated*)component.ptr)->iFrameCount) );
 			myGUI->AddPropertyOption<ftype>( edtProperties.view, "Horizontal Divs", &(((CParticleRenderer_Animated*)component.ptr)->iHorizontalDivs) );
 			myGUI->AddPropertyOption<ftype>( edtProperties.view, "Vertical Divs", &(((CParticleRenderer_Animated*)component.ptr)->iVerticalDivs) );
@@ -512,7 +519,8 @@ void CParticleEditor::RecreatePropertyList ( const editorComponent_t &component 
 		}
 
 	}
-	else if ( component.type == 6 ) {
+	else if ( component.type == 6 )
+	{
 		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Frequency", &(((CParticleMod_Spiral*)component.ptr)->m_rotaryFrequency) );
 		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Offset", &(((CParticleMod_Spiral*)component.ptr)->m_rotaryOffset) );
 		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Position Edit", &(((CParticleMod_Spiral*)component.ptr)->m_rotaryPosition) );

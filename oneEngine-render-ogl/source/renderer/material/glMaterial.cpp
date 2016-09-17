@@ -964,6 +964,14 @@ void glMaterial::shader_bind_world ( glShader* shader )
 		glUniform3fv( uniformLocation, 1, &(cameraPos.x) );
 	}
 
+	// World Offset
+	uniformLocation = shader->get_uniform_location( "sys_WorldOffset" );
+	if ( uniformLocation >= 0 )
+	{
+		Vector3d worldOffset = Transform::root.localPosition;
+		glUniform3fv( uniformLocation, 1, &(worldOffset.x) );
+	}
+
 	// Time variables
 	uniformLocation = shader->get_uniform_location( "sys_Time" );
 	if ( uniformLocation >= 0 )

@@ -300,6 +300,9 @@
     <ClInclude Include="source\engine-common\scenes\tests\testComparisons.h">
       <Filter>SOURCE\Engine-Common\Scenes\Tests</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_LO.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -472,6 +475,9 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\scenes\tests\testComparisons.cpp">
       <Filter>SOURCE\Engine-Common\Scenes\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_LO.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

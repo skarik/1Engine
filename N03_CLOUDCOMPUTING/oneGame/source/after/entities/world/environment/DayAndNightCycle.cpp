@@ -36,10 +36,11 @@ Daycycle::Daycycle ( )
 	pSkyMat = new glMaterial();
 	pSkyMat->setTexture( 0, new CTexture( "textures/starmap.jpg" ) );
 	pSkyMat->setTexture( 1, new CTexture( "textures/cloudmap_hf.png" ) );
+	pSkyMat->setTexture( 2, new CTexture( "textures/cloudmap_lf.png" ) );
 	pSkyMat->passinfo.push_back( glPass() );
 	pSkyMat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	pSkyMat->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
-	pSkyMat->passinfo[0].shader = new glShader ( "shaders/sky/skycolors.glsl" );
+	pSkyMat->passinfo[0].shader = new glShader ( "shaders/sky/skybox.glsl" );
 
 	/*pSkyMat->passinfo.push_back( glPass() );
 	pSkyMat->passinfo[1].m_lighting_mode = Renderer::LI_NONE;
@@ -54,8 +55,8 @@ Daycycle::Daycycle ( )
 
 	pSkyMat->removeReference();
 
-	skyModel = new CModel ( "models/geosphere.FBX" );
-	//skyModel = new CModel ( "models/cube.FBX" );
+	//skyModel = new CModel ( "models/geosphere.FBX" );
+	skyModel = new CModel ( "models/cube.FBX" );
 	skyModel->SetMaterial( pSkyMat );
 	skyModel->SetRenderType( Renderer::Background );
 	skyModel->SetFrustumCulling( false );
@@ -79,7 +80,7 @@ Daycycle::Daycycle ( )
 	starModel->SetFrustumCulling( false );
 
 	// Horizon Object
-	pHorizonMat = new glMaterial();
+	/*pHorizonMat = new glMaterial();
 	pHorizonMat->setTexture( 0, new CTexture( "null" ) );
 	pHorizonMat->passinfo.push_back( glPass() );
 	pHorizonMat->passinfo[0].m_lighting_mode = Renderer::LI_NORMAL;
@@ -89,7 +90,7 @@ Daycycle::Daycycle ( )
 
 	horizonPlane = new CRenderPlane( 1024.0f, 1024.0f );
 	horizonPlane->SetRenderType( Renderer::Background );
-	horizonPlane->SetMaterial( pHorizonMat );
+	horizonPlane->SetMaterial( pHorizonMat );*/
 	//horizonPlane->visible = false;
 
 	clearColors.push_back( Color( 0.77f,0.65f,0.09f ) );
@@ -147,7 +148,7 @@ Daycycle::~Daycycle(void)
 	delete_safe_decrement( skyObject );
 	delete starModel;
 	delete skyModel;
-	delete horizonPlane;
+	//delete horizonPlane;
 
 	if ( DominantCycle == this ) {
 		DominantCycle = NULL;
@@ -181,8 +182,8 @@ void Daycycle::Update ( void )
 		return;
 
 	// Scale sky and stars to the camera zFar
-	skyModel->transform.scale = Vector3d( 1,1,-1 ) * CCamera::activeCamera->zFar;
-	starModel->transform.scale = Vector3d( 0.94f,0.94f,-0.94f ) * CCamera::activeCamera->zFar;
+	skyModel->transform.scale = Vector3d( 1,1,-1 ) * CCamera::activeCamera->zFar * 0.95F / 120.0F;
+	starModel->transform.scale = Vector3d( 0.94f,0.94f,-0.94f ) * CCamera::activeCamera->zFar * 0.5F;
 	
 	vPosition.x = (ftype)cos(timeofDay * (((degtorad(360) / 24) / 60) / 60 )); // X position of light source.
 	vPosition.z = (ftype)sin(timeofDay * (((degtorad(360) / 24) / 60) / 60 ));	// Z position of light source.
@@ -230,7 +231,7 @@ void Daycycle::PostUpdate ( void )
 	starModel->transform.rotation.Euler( Vector3d( 90,timeofDay/86400 * 360,0 ) );
 
 	skyModel->transform.position = CCamera::activeCamera->transform.position;
-	skyModel->transform.rotation.Euler( Vector3d( 90,timeofDay/86400 * 360,0 ) );
+	//skyModel->transform.rotation.Euler( Vector3d( 90,timeofDay/86400 * 360,0 ) );
 	//skyModel->transform.rotation = starModel->transform.rotation;
 
 	pStarMat->m_diffuse = Color::Lerp( Color( 1.0f,1.0f,1.0f ), Color( spaceEffect,spaceEffect,spaceEffect ), vPosition.z+1 );
@@ -245,14 +246,14 @@ void Daycycle::PostUpdate ( void )
 	skyObject->cFogAmbientColor = Color::Lerp( Renderer::Settings.ambientColor * 0.8f, Color( 0.3f,0.3f,0.3f ), 0.2f );
 	skyObject->fFogFalloff = 1.0f;
 
-	horizonPlane->transform.position = CCamera::activeCamera->transform.position - Vector3d( 0,0, (Real)Zones.GetCurrentRoot().z );
+	/*horizonPlane->transform.position = CCamera::activeCamera->transform.position - Vector3d( 0,0, (Real)Zones.GetCurrentRoot().z );
 	horizonPlane->transform.position.z = std::min<Real>(
 		std::min<Real>( horizonPlane->transform.position.z*0.3f, horizonPlane->transform.position.z - 0.5f ),
 		horizonPlane->transform.position.z + 5.0f )
 		- (spaceEffect*4000.0f);
 
 	pHorizonMat->m_diffuse = (Renderer::Settings.clearColor + skyColors.get_target_value( Math.Wrap( timeofDay/86400, 0, 1 ) ) + Renderer::Settings.ambientColor) * 0.33f;
-	pHorizonMat->m_diffuse.alpha = 1;
+	pHorizonMat->m_diffuse.alpha = 1;*/
 }
 
 Vector3d Daycycle::GetSunPosition ( CCamera* cam )

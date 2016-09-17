@@ -48,7 +48,8 @@ CTransform::CTransform ( void )
 // Destructor
 CTransform::~CTransform ( void )
 {
-	if ( this != &root ) {
+	if ( this != &root )
+	{
 		SetParent( NULL, true );
 		UnlinkChildren();
 	}
@@ -350,12 +351,18 @@ void CTransform::LateUpdate ( void )
 				children[i]->position += position;
 				children[i]->SetDirty();
 			}
+
+			// Save the offsets
+			localPosition -= position;
+			localRotation *= rotation;
+			localScale = localScale.mulComponents(scale);
 		}
 
-		// Its local positions control it.
-		position = localPosition;
-		rotation = localRotation;
-		scale	 = localScale;
+
+		// Reset position
+		position = Vector3d(0,0,0);
+		rotation = Quaternion();
+		scale = Vector3d(1,1,1);
 
 		{	// Create the transformation matrix
 			/*Matrix4x4 transMatrix;
@@ -369,12 +376,12 @@ void CTransform::LateUpdate ( void )
 			matxLocalRot = rotMatrix;*/
 		}
 
-		Core::TransformUtility::TRSToMatrix4x4(
+		/*Core::TransformUtility::TRSToMatrix4x4(
 			localPosition, localRotation, localScale,
 			matxLocal, matxLocalRot );
 		// Set the global matrices
 		matx = matxLocal;
-		matxRot = matxLocalRot;
+		matxRot = matxLocalRot;*/
 	}
 }
 
@@ -601,6 +608,7 @@ void CTransform::PropogateTransforms ( void )
 		//
 	}
 #else
+	CTransform::root.LateUpdate();
 	for ( auto t_tr = CTransform::root.children.begin(); t_tr != CTransform::root.children.end(); ++t_tr )
 	{
 		Jobs::System::Current::AddJobRequest( Jobs::JOBTYPE_ENGINE, PropogateSub, *t_tr );

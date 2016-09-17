@@ -25,6 +25,7 @@
 #include "after/entities/world/environment/DayAndNightCycle.h"
 
 #include "cloud/entities/CCloudPlayer.h"
+#include "cloud/entities/CCloudEnemy.h"
 
 void sceneCloudGame::LoadScene ( void )
 {
@@ -45,26 +46,12 @@ void sceneCloudGame::LoadScene ( void )
 		CGameSettings::Active()->SetPlayerSaveTarget( "clara" );
 	}
 	loadscreen->StepScreen();
-
-	// Create testing lambda
-	auto showResults = [&]( const string& message, void* success )
-	{
-		std::cout << message << ": ";
-		// Print test result
-		if ( success == NULL ) {
-			Debug::Console->PrintError( "[FAILED]\n" );
-		}
-		else {
-			std::cout << "[PASS]" << std::endl;
-		}
-	};
 	
 	{	// Precache the flat basecase model first
-		CModel* precache = new CModel( "models/biased_cube.FBX" );
-		showResults( "Biased cube simple model load", precache );
-		precache->transform.position = Vector3d(0,0,16);
+		//CModel* precache = new CModel( "models/cube.FBX" );
+		//precache->transform.position = Vector3d(0,0,0);
 		//precache->transform.position = Vector3d::zero;
-		precache->transform.scale = Vector3d(1,1,1);
+		//precache->transform.scale = Vector3d(1,1,1);
 		//delete precache;
 	}
 	loadscreen->StepScreen();
@@ -84,6 +71,19 @@ void sceneCloudGame::LoadScene ( void )
 		CGameBehavior* effects = new Daycycle();
 		//effects->active = false;
 		effects->RemoveReference();
+	}
+	loadscreen->StepScreen();
+
+	// enemy test
+	{
+		CCloudEnemy* enemy;
+		enemy = new CCloudEnemy();
+		enemy->transform.position = Vector3d( 4,0, 2 );
+		enemy->RemoveReference();
+
+		enemy = new CCloudEnemy();
+		enemy->transform.position = Vector3d( 4,4, 2 );
+		enemy->RemoveReference();
 	}
 	loadscreen->StepScreen();
 
@@ -120,44 +120,36 @@ void sceneCloudGame::LoadScene ( void )
 		{
 			shaderHolder = new CRendererHolder( new CScreenSpaceOutlineShader() );
 			shaderHolder->name = "Screen space outline shader Holder";
-			showResults( shaderHolder->name, shaderHolder->GetRenderer() );
 			shaderHolder->RemoveReference();
 
 			shaderHolder = new CRendererHolder( new CZoomBloomShader() );
 			shaderHolder->name = "Zoom Bloom Shader Holder";
-			showResults( shaderHolder->name, shaderHolder->GetRenderer() );
 			shaderHolder->RemoveReference();
 
 			shaderHolder = new CRendererHolder( new CBloomShader() );
 			shaderHolder->name = "Bloom Shader Holder";
-			showResults( shaderHolder->name, shaderHolder->GetRenderer() );
 			shaderHolder->RemoveReference();
 
 			shaderHolder = new CRendererHolder( new CColorFilterShader() );
 			shaderHolder->name = "Color Filter Shader Holder";
-			showResults( shaderHolder->name, shaderHolder->GetRenderer() );
 			shaderHolder->RemoveReference();
 
 			shaderHolder = new CRendererHolder( new CTestViewShader() );
 			shaderHolder->name = "Testview Shader Holder";
-			showResults( shaderHolder->name, shaderHolder->GetRenderer() );
 			shaderHolder->RemoveReference();
 		}
 		else
 		{
 			shaderHolder = new CRendererHolder( new CScreenSpaceOutlineShader() );
 			shaderHolder->name = "Screen space outline shader Holder";
-			showResults( shaderHolder->name, shaderHolder->GetRenderer() );
 			shaderHolder->RemoveReference();
 
 			shaderHolder = new CRendererHolder( new CBloomShader() );
 			shaderHolder->name = "Bloom Shader Holder";
-			showResults( shaderHolder->name, shaderHolder->GetRenderer() );
 			shaderHolder->RemoveReference();
 
 			shaderHolder = new CRendererHolder( new CColorFilterShader() );
 			shaderHolder->name = "Color Filter Shader Holder";
-			showResults( shaderHolder->name, shaderHolder->GetRenderer() );
 			shaderHolder->RemoveReference();
 		}
 	}

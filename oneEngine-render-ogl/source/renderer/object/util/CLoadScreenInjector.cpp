@@ -61,7 +61,8 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 
 	SetMaterial( screenMaterial );
 
-	fntNotifier	= new CBitmapFont ( "benegraphic.ttf", 72, FW_BOLD );
+	//fntNotifier	= new CBitmapFont ( "benegraphic.ttf", 72, FW_BOLD );
+	fntNotifier	= new CBitmapFont ( "YanoneKaffeesatz-B", 72, FW_NORMAL );
 
 	matNotifierDrawer = new glMaterial;
 	matNotifierDrawer->m_diffuse = Color( 0.4f,0.4f,0.4f );
@@ -98,7 +99,9 @@ bool CLoadScreenInjector::Render ( const char pass )
 		//fntNotifier->Set();
 		//	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
 		matNotifierDrawer->bindPass(0);
-			GLd.DrawAutoTextCentered( 0.5f+cosf(Time::currentTime*0.2f)*0.02f, 0.8f+sinf(Time::currentTime*0.5f)*0.04f, "Loading" );
+		matNotifierDrawer->m_diffuse.alpha = 0.75F + sinf(Time::currentTime * 2.0F) * 0.25F;
+		//GLd.DrawAutoTextCentered( 0.5f+cosf(Time::currentTime*0.2f)*0.02f, 0.8f+sinf(Time::currentTime*0.5f)*0.04f, "Loading" );
+		GLd.DrawAutoTextCentered( 0.5F, 0.8F, "L  O  A  D  I  N  G" );
 		//fntNotifier->Unbind();
 		//matNotifierDrawer->unbind();
 

@@ -16,6 +16,7 @@ class CLight;
 class CRigidBody;
 class CCapsuleCollider;
 
+class CParticleSystem;
 
 //===============================================================================================//
 // Basic Player Class
@@ -57,6 +58,10 @@ public: // ROUTINES
 	// Sub-update functions
 	//===============================================================================================//
 
+	//	controlNormalShip
+	// Provides logic and control for normal ship behavior
+	void controlNormalShip ( void );
+
 	//	camDefault
 	// Provides camera position and works on input
 	//void* camDefault ( void );
@@ -80,6 +85,16 @@ protected: // PROTECTED FIELDS and ROUTINES
 
 	Rotator playerRotation;
 
+	// Camera state
+	float shakeAmount;
+	float fovWiden;
+
+	// Motion control state
+	bool drive_afterburner;
+	bool drive_gravitydrive;
+	float fuel_afterburner;
+	float fuel_gravitydrive;
+
 	//===============================================================================================//
 	// Attached objects
 	//===============================================================================================//
@@ -87,6 +102,7 @@ protected: // PROTECTED FIELDS and ROUTINES
 	CRigidBody*			rigidbody;
 	CCapsuleCollider*	collider;
 
+	CParticleSystem*	particlesystem;
 };
 
 #endif//_CLOUD_PLAYER_H_

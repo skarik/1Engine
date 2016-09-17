@@ -20,12 +20,12 @@ public:
 	//Only use this function if the default constructor was used for some reason
 	void Initialize(CCloudEnemy *host, CPersonality *personality);
 	//Duh. Change this AI's personality
-	void ChangePersonality(CPersonality *personality);
+	void ChangePersonality(CPersonality *personality) {}
 
 	//Update step overrides
-	void Update() override;
-	void LateUpdate() override;
-	void PostUpdate() override;
+	void Update() override {}
+	void LateUpdate() override {}
+	void PostUpdate() override {}
 
 private:
 	CCloudEnemy *pHost;

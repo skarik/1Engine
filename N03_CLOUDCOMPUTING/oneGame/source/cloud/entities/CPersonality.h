@@ -9,7 +9,7 @@ public:
 	~CPersonality();
 
 	//Likely going to need some arguments
-	virtual void Execute();
+	virtual void Execute() = 0;
 
 private:
 	//Knowledge
