@@ -2,18 +2,23 @@
 #define _C_PERSONALITY_H_
 
 #include "core/math/Vector3d.h"
+#include "core/math/Rotator.h"
+
+class CCloudEnemy;
 
 class CPersonality
 {
 public:
-	CPersonality();
+	CPersonality(){}
+	CPersonality(CCloudEnemy *host);
 
 	~CPersonality();
 
-	//Likely going to need some arguments
-	virtual void Execute(Vector3d &turn, Vector3d &acceleration, int &flags) = 0;
+	virtual void Execute(Rotator &turn, Vector3d &acceleration, int &flags);
 
-private:
+protected:
+	//Pointer to host, so the location doesn't have to be passed in all the damn time
+	CCloudEnemy *pHost;
 	//Knowledge
 	bool mPlayerLocation;
 	//Timers

@@ -3,24 +3,25 @@
 
 #include "CCloudEnemy.h"
 #include "CPersonality.h"
+#include "CPersonalityFactory.h"
 
 class CCloudAI: public CGameObject
 {
 public:
 	//Default constructor because it'll be useful somewhere
-	CCloudAI();
+	CCloudAI(); //Be sure to call Initialize() with proper arguments before trying to use the AI
 	//Host-only constructor. Will randomly pick a personality
 	CCloudAI(CCloudEnemy *host);
 	//Full constructor
-	CCloudAI(CCloudEnemy *host, CPersonality *personality);
+	CCloudAI(CCloudEnemy *host, int type);
 
 	//Destructor
 	~CCloudAI();
 
 	//Only use this function if the default constructor was used for some reason
-	void Initialize(CCloudEnemy *host, CPersonality *personality);
+	void Initialize(CCloudEnemy *host, int type);
 	//Duh. Change this AI's personality
-	void ChangePersonality(CPersonality *personality) {}
+	void ChangePersonality(CCloudEnemy *host, int type);
 
 	//Update step overrides
 	void Update() override;
@@ -31,6 +32,7 @@ private:
 	CCloudEnemy *pHost;
 	CPersonality *pPersonality;
 
+	Rotator mRot;
 	Vector3d mTurn;
 	Vector3d mAcc;
 	int mFlags;

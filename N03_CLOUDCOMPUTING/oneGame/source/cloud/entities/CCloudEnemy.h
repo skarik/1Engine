@@ -73,6 +73,7 @@ public: // ROUTINES
 	void SetTurnInput(Vector3d turn);
 	void SetDirInput(Vector3d dir);
 	void SetVAxes(int flags);
+	void SetRotation(Rotator rot);
 
 protected: // PROTECTED FIELDS and ROUTINES
 	//===============================================================================================//

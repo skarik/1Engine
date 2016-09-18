@@ -9,18 +9,17 @@ CCloudAI::CCloudAI(CCloudEnemy *host): pHost(host)
 		throw "CCouldAI Error: NULL host (0)";
 	
 	//Randomly pick a personality and use it
+	pPersonality = pfac->MakePersonality(host, -1);
 }
 
-CCloudAI::CCloudAI (CCloudEnemy *host, CPersonality *personality): pHost(host), pPersonality(personality)
+CCloudAI::CCloudAI (CCloudEnemy *host, int type): pHost(host)
 {
 	//Throw an exception because someone is a simp
 	if (pHost == NULL)
 		throw "CCloudAI Error: NULL host (1)";
 	
-	if (pPersonality == NULL)
-	{
-		//Randomly pick a personality and use it because the twat who called this passed in null
-	}
+	//Make the personality
+	pPersonality = pfac->MakePersonality(host, type);
 }
 
 CCloudAI::~CCloudAI ()
@@ -31,22 +30,29 @@ CCloudAI::~CCloudAI ()
 		delete pPersonality;
 }
 
-void CCloudAI::Initialize (CCloudEnemy *host, CPersonality *personality)
+void CCloudAI::Initialize (CCloudEnemy *host, int type)
 {
 	if (host == NULL)
 		throw "CCloudAI Error: NULL host (2)";
 
-	if (personality == NULL)
-	{
-		//Randomly pick a personality and use it because the moron who called this passed in null
-	}
+	pHost = host;
+	pPersonality = pfac->MakePersonality(host, type);
+}
+
+void CCloudAI::ChangePersonality(CCloudEnemy *host, int type)
+{
+	if (pPersonality)
+		delete pPersonality;
+
+	pPersonality = pfac->MakePersonality(host, type);
 }
 
 void CCloudAI::Update() 
 {
-	pPersonality->Execute(mTurn, mAcc, mFlags);
+	pPersonality->Execute(mRot, mAcc, mFlags);
 
+	//pHost->SetTurnInput(mTurn);
+	pHost->SetRotation(mRot);
 	pHost->SetDirInput(mAcc);
-	pHost->SetTurnInput(mTurn);
 	pHost->SetVAxes(mFlags);
 }

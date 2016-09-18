@@ -34,9 +34,6 @@ void sceneCloudGame::LoadScene ( void )
 {
 	Debug::Console->PrintMessage( "Loading scene. (instance of sceneCloudGame)\n" );
 
-	//Create the PersonalityFactory here for now. Will not help you get through high school
-	CPersonalityFactory *pfactory = new CPersonalityFactory();
-
 	// Create load screen
 	CLoadScreenInjector* loadscreen = new CLoadScreenInjector();
 	loadscreen->StepScreen();
@@ -86,10 +83,11 @@ void sceneCloudGame::LoadScene ( void )
 		enemy = new CCloudEnemy();
 		enemy->transform.position = Vector3d( 4,0, 2 );
 		CCloudAI *brain;
-		brain = new CCloudAI(enemy, pfactory->MakePersonality(0));
+		brain = new CCloudAI(enemy, 0);
 		enemy->RemoveReference();
 
 		enemy = new CCloudEnemy();
+		brain = new CCloudAI(enemy, 4);
 		enemy->transform.position = Vector3d( 4,4, 2 );
 		enemy->RemoveReference();
 	}

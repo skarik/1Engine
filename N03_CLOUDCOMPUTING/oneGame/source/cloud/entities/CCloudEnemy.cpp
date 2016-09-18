@@ -97,7 +97,7 @@ void*	CCloudEnemy::mvtNormalShip(void)
 		moveVector.z = -1;
 	}
 
-	// Rotate the move vector to match the player
+	// Rotate the move vector to match the enemy
 	moveVector = enemyRotation*moveVector;
 
 	Vector3d t_velocity = rigidbody->GetVelocity();
@@ -151,15 +151,16 @@ void CCloudEnemy::SetDirInput(Vector3d dir)
 //Set the flags for crouch, jump, menuToggle, and sprint, to mirror the player
 void CCloudEnemy::SetVAxes(int flags)
 {
-	if (flags & 1)
-		input.crouch = true;
+	(flags & 1) ? input.crouch = true		: input.crouch = false;
 	
-	if (flags & 2)
-		input.jump = true;
+	(flags & 2)	? input.jump = true			: input.jump = false;
+	
+	(flags & 4)	? input.menuToggle = true	: input.menuToggle = false;
 
-	if (flags & 4)
-		input.menuToggle = true;
+	(flags & 8)	? input.sprint = true		: input.sprint = false;
+}
 
-	if (flags & 8)
-		input.sprint = true;
+void CCloudEnemy::SetRotation(Rotator rot)
+{
+	enemyRotation *= rot;
 }
