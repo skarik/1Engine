@@ -1251,6 +1251,9 @@
     <ClInclude Include="source\cloud\entities\Personalities\CPersonalityVanguard.h">
       <Filter>SOURCE\Cloud\Entities\Personalities</Filter>
     </ClInclude>
+    <ClInclude Include="source\cloud\entities\Personalities\CPersonalityScout.h">
+      <Filter>SOURCE\Cloud\Entities\Personalities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\after\scenes\gmsceneGame_5.cpp">
@@ -2076,6 +2079,9 @@
       <Filter>SOURCE\Cloud\Entities\Personalities</Filter>
     </ClCompile>
     <ClCompile Include="source\cloud\entities\Personalities\CPersonalityVanguard.cpp">
+      <Filter>SOURCE\Cloud\Entities\Personalities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cloud\entities\Personalities\CPersonalityScout.cpp">
       <Filter>SOURCE\Cloud\Entities\Personalities</Filter>
     </ClCompile>
   </ItemGroup>

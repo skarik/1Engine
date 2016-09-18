@@ -128,9 +128,9 @@ void CCloudEnemy::FixedUpdate(void)
 void*	CCloudEnemy::mvtNormalShip(void)
 {
 	// Turn first
-	enemyRotation *= Rotator(Vector3d(0, -vTurnInput.y, vTurnInput.x));
+	/*enemyRotation *= Rotator(Vector3d(0, -vTurnInput.y, vTurnInput.x));
 	vTurnInput.x = 0;
-	vTurnInput.y = 0;
+	vTurnInput.y = 0;*/
 
 	//Set the direction the enemy will move in
 	Vector3d moveVector(0, 0, 0);
@@ -211,5 +211,11 @@ void CCloudEnemy::SetVAxes(int flags)
 
 void CCloudEnemy::SetRotation(Rotator rot)
 {
-	enemyRotation *= rot;
+	transform.rotation = rot * transform.rotation;
+	enemyRotation = transform.rotation;
+}
+
+Vector3d CCloudEnemy::GetVelocity()
+{
+	return rigidbody->GetVelocity();
 }

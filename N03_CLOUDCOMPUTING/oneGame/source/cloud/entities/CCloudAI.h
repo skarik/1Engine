@@ -25,7 +25,7 @@ public:
 
 	//Update step overrides
 	void Update() override;
-	void LateUpdate() override {}
+	void LateUpdate() override;
 	void PostUpdate() override {}
 
 private:

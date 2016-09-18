@@ -8,7 +8,7 @@ CPersonalityVanguard::CPersonalityVanguard (CCloudEnemy *host) : CPersonality(ho
 {
 	Calc = Rotator();
 	mIsRotating = true;
-	mRotateTimer = 6.0;
+	mRotateTimer = 2.0;
 	mChargeTimer = 0.0;
 }
 
@@ -19,32 +19,34 @@ CPersonalityVanguard::~CPersonalityVanguard()
 void  CPersonalityVanguard::Execute (Rotator &turn, Vector3d &acceleration, int &flags)
 {
 	//if (mIsRotating)
-	if (mRotateTimer > 0)
 	{
-		//Get player info
 		CActor *player = Network::GetPlayerActors()[0].actor;
-	
+
 		//Turn towards the player
-		Calc.RotationTo(pHost->transform.position, player->transform.position);
+		Calc.RotationTo(pHost->transform.Forward(), (player->transform.position - pHost->transform.position).normal());
 
 		turn = Calc;
+		acceleration = Vector3d(1.0, 0.0, 0.0);
 
-		acceleration = Vector3d(0.0, 0.0, 0.0);
-		
-		mRotateTimer -= Time::deltaTime;
-
+		flags = 0;
 		/*mRotateTimer -= Time::deltaTime;
-		if (mRotateTimer <= 0.0)
+		if (mRotateTimer <= 0)
 		{
+			mChargeTimer = 2.0;
 			mIsRotating = !mIsRotating;
-			mChargeTimer = 3.0;
 		}*/
 	}
-	else
+	/*else
 	{
-		turn = Rotator(0,0,0);
+		turn = Rotator(0, 0, 0);
 		acceleration = Vector3d(1.0, 0.0, 0.0);
-	}
-	//Sprint. Don't sprint
-	flags = 0;
+
+		flags = 0;
+		mChargeTimer -= Time::deltaTime;
+		if (mChargeTimer <= 0)
+		{
+			mRotateTimer = 2.0;
+			mIsRotating = !mIsRotating;
+		}
+	}*/
 }

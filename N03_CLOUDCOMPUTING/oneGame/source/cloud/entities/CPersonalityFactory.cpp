@@ -3,12 +3,13 @@
 //Personality Types
 #include "Personalities/CTestPersonality.h"
 #include "Personalities/CPersonalityVanguard.h"
+#include "Personalities/CPersonalityScout.h"
 
 CPersonalityFactory *pfac = new CPersonalityFactory();
 
 CPersonalityFactory::CPersonalityFactory (void) 
 {
-	numPersonalities = 1;
+	numPersonalities = 2;
 	srand(time(NULL));
 }
 
@@ -31,6 +32,8 @@ CPersonality *CPersonalityFactory::MakePersonality (CCloudEnemy *host, int type)
 	{
 	case 0:
 		return new CPersonalityVanguard(host);
+	case 1:
+		return new CPersonalityScout(host);
 	default:
 		return new CTestPersonality(host);
 	}

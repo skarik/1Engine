@@ -56,3 +56,12 @@ void CCloudAI::Update()
 	pHost->SetDirInput(mAcc);
 	pHost->SetVAxes(mFlags);
 }
+
+void CCloudAI::LateUpdate()
+{
+	/*pHost->SetRotation(mRot);
+	pHost->SetDirInput(mAcc);
+	pHost->SetVAxes(mFlags);*/
+}
+
+//Fixed update, apply velocity directly

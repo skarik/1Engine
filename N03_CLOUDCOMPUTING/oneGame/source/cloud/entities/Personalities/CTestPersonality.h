@@ -15,6 +15,7 @@ public:
 
 private:
 	Real mTimer;
+	bool mSwitch;
 };
 
 #endif

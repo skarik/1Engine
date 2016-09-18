@@ -81,13 +81,13 @@ void sceneCloudGame::LoadScene ( void )
 	{
 		CCloudEnemy* enemy;
 		enemy = new CCloudEnemy();
-		enemy->transform.position = Vector3d( 4,0, 2 );
+		enemy->transform.position = Vector3d( 12, -4, 4 );
 		CCloudAI *brain;
-		brain = new CCloudAI(enemy, 0);
+		brain = new CCloudAI(enemy, 5);
 		enemy->RemoveReference();
 		brain->RemoveReference();
 
-		enemy = new CCloudEnemy();
+		/*enemy = new CCloudEnemy();
 		brain = new CCloudAI(enemy, 4);
 		enemy->transform.position = Vector3d( 4,4, 2 );
 		enemy->RemoveReference();
@@ -98,7 +98,7 @@ void sceneCloudGame::LoadScene ( void )
 
 		enemy = new CCloudEnemy();
 		enemy->transform.position = Vector3d( 4,4, 6 );
-		enemy->RemoveReference();
+		enemy->RemoveReference();*/
 
 		for ( int x = 0; x < 20; ++x )
 		{
@@ -106,6 +106,7 @@ void sceneCloudGame::LoadScene ( void )
 			{
 				enemy = new CCloudEnemy();
 				enemy->transform.position = Vector3d( 5*x + 5, 16, 5*y + 5 );
+				brain = new CCloudAI(enemy, 1);
 				enemy->RemoveReference();
 			}
 		}

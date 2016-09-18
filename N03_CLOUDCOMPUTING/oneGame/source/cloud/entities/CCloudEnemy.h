@@ -76,6 +76,9 @@ public: // ROUTINES
 	void SetVAxes(int flags);
 	void SetRotation(Rotator rot);
 
+	//Getters to help the AI decide what to do
+	Vector3d GetVelocity();
+
 protected: // PROTECTED FIELDS and ROUTINES
 	//===============================================================================================//
 	// Location state 
@@ -98,7 +101,7 @@ protected: // PROTECTED FIELDS and ROUTINES
 
 	uint32_t			manifest_id;
 
-	//CInstanedModel*		model;
+	//CInstancedModel*		model;
 	static CModel*				model;
 	static CInstancedMesh*		mesh;
 
