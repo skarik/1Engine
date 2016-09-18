@@ -99,6 +99,11 @@ CCloudEnemy::~CCloudEnemy(void)
 
 void CCloudEnemy::Update(void)
 {
+	model->transform.position = Vector3d::zero;
+	model->transform.localPosition = Vector3d::zero;
+	mesh->transform.position = Vector3d::zero;
+	mesh->transform.localPosition = Vector3d::zero;
+
 	// Update base class code first
 	CActor::Update();
 	guncooldown -= Time::deltaTime;

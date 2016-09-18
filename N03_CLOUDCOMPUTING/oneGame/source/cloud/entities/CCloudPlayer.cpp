@@ -397,6 +397,7 @@ void*	CCloudPlayer::camShipFirstPerson ( void )
 	Vector3d randomRotation = Random.PointInUnitSphere() * shakeAmount;
 	randomRotation.x *= 0.15F;
 
+	transform.rotation = playerRotation;
 	pCamera->transform.rotation = playerRotation * Rotator(randomRotation);
 	pCamera->fov = 75.0F + fovWiden;
 
@@ -464,7 +465,6 @@ void*	CCloudPlayer::mvtNormalShip ( void )
 // Updates hud shit
 void CCloudPlayer::hudUpdate ( void )
 {	// TODO: Move this to a CLogicObject renderer derivative so can push the mesh at a faster time
-	return;
 
 	// Create the hudmesh
 	if ( hudmesh == NULL )
@@ -479,6 +479,7 @@ void CCloudPlayer::hudUpdate ( void )
 			material->passinfo[0].shader = new glShader( ".res/shaders/particles/colorBlended.glsl" );
 			material->passinfo[0].m_blend_mode = Renderer::BM_NORMAL;
 			material->passinfo[0].b_depthmask = false;
+			material->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 			material->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 			material->passinfo[0].m_hint = RL_WORLD | RL_FOG;
 			hudmesh->SetMaterial( material );
@@ -491,11 +492,34 @@ void CCloudPlayer::hudUpdate ( void )
 	}
 
 	CModelData* modeldata = hudmesh->GetModelData();
-	// let's start simple
-	for ( int i = 0; i < 10; ++i )
+	modeldata->vertexNum = 0;
+	modeldata->triangleNum = 0;
+	Vector3d points [3];
+	auto pushtriangle = [&]()
 	{
-		Vector3d points [3];
+		// Push new triangle to the fuckin mesh
+		for ( int v = 0; v < 3; ++v )
+		{
+			modeldata->vertices[modeldata->vertexNum + v] = {0};
 
+			modeldata->vertices[modeldata->vertexNum + v].x = points[v].x;
+			modeldata->vertices[modeldata->vertexNum + v].y = points[v].y;
+			modeldata->vertices[modeldata->vertexNum + v].z = points[v].z;
+
+			modeldata->vertices[modeldata->vertexNum + v].r = 1.0F;
+			modeldata->vertices[modeldata->vertexNum + v].g = 1.0F;
+			modeldata->vertices[modeldata->vertexNum + v].b = 1.0F;
+			modeldata->vertices[modeldata->vertexNum + v].a = 1.0F;
+
+			modeldata->triangles[modeldata->triangleNum].vert[v] = modeldata->vertexNum + v;
+		}
+		modeldata->vertexNum += 3;
+		modeldata->triangleNum += 1;
+	};
+
+	// let's start simple
+	/*for ( int i = 0; i < 10; ++i )
+	{
 		points[0] = Vector3d( cos(i*2), 0, 0 );
 		points[1] = Vector3d( 0, i, 0 );
 		points[2] = Vector3d( 0, 0, cos(i*2) );
@@ -518,11 +542,34 @@ void CCloudPlayer::hudUpdate ( void )
 		}
 	}
 	modeldata->vertexNum = 30;
-	modeldata->triangleNum = 10;
+	modeldata->triangleNum = 10;*/
 
+	// Add aiming reticle
+	{
+		const int divs = 10;
+		const float r0 = 0.1F;
+		const float r1 = r0 * 0.8F;
+		for ( int i = 0; i < divs; ++i )
+		{
+			Real angle0 = (Real)(PI * 2.0F / divs * (i+0));
+			Real angle1 = (Real)(PI * 2.0F / divs * (i+1));
+
+			points[0] = Vector3d( 0,cos(angle0), sin(angle0) ) * r0;
+			points[1] = Vector3d( 0,cos(angle1), sin(angle1) ) * r0;
+			points[2] = Vector3d( 0,cos(angle1), sin(angle1) ) * r1;
+			pushtriangle();
+
+			points[0] = Vector3d( 0,cos(angle0), sin(angle0) ) * r1;
+			points[1] = Vector3d( 0,cos(angle0), sin(angle0) ) * r0;
+			points[2] = Vector3d( 0,cos(angle1), sin(angle1) ) * r1;
+			pushtriangle();
+		}
+	}
+	
 	// Push the modified data to the GPU now
 	hudmesh->StreamLockModelData();
 
 	// Move the hudmesh in front of the camera
-	hudmesh->transform.position = pCamera->transform.position + pCamera->transform.Forward() * 3.0F;
+	hudmesh->transform.position = pCamera->transform.position + transform.Forward() * 3.0F;
+	hudmesh->transform.rotation = transform.rotation;
 }
