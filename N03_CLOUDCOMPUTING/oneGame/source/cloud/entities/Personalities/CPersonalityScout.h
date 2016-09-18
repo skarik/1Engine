@@ -2,6 +2,7 @@
 #define _C_PERSONALITY_SCOUT_H_
 
 #include "../CPersonality.h"
+#include <random>
 
 //This personality type tries to spread out and keep vision over the area
 class CPersonalityScout : public CPersonality
@@ -24,6 +25,9 @@ private:
 	Vector3d mDirection;
 
 	Real DistanceFromStart(void);
+
+	static int mFireCount;
+	static float mRegenTime;
 };
 
 #endif

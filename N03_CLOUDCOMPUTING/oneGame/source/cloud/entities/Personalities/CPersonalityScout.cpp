@@ -1,16 +1,19 @@
 #include "CPersonalityScout.h"
 #include "../CCloudEnemy.h"
 #include "core/time.h"
-#include <random>
+#include "../CPersonalityFactory.h"
+#include "engine-common/network/playerlist.h"
+#include "engine-common/entities/CActor.h"
+
+int CPersonalityScout::mFireCount = 5;
+float CPersonalityScout::mRegenTime = Time::currentTime;
 
 CPersonalityScout::CPersonalityScout(CCloudEnemy *host) : CPersonality(host)
 {
 	mStart = pHost->transform.position;
 	mDist = 200.0;
-	std::random_device rd;
-	std::mt19937 mt(rd());
 
-	switch (mt() % 3)
+	switch (pfac->GetRand() % 3)
 	{
 	case 0:
 		mDirection.x = -1.0;
@@ -23,7 +26,7 @@ CPersonalityScout::CPersonalityScout(CCloudEnemy *host) : CPersonality(host)
 		break;
 	}
 
-	switch (mt() % 3)
+	switch (pfac->GetRand() % 3)
 	{
 	case 0:
 		mDirection.y = -1.0;
@@ -36,7 +39,7 @@ CPersonalityScout::CPersonalityScout(CCloudEnemy *host) : CPersonality(host)
 		break;
 	}
 
-	switch (mt() % 3)
+	switch (pfac->GetRand() % 3)
 	{
 	case 0:
 		mDirection.z = -1.0;
@@ -51,7 +54,7 @@ CPersonalityScout::CPersonalityScout(CCloudEnemy *host) : CPersonality(host)
 
 	if (mDirection.magnitude() < FTYPE_PRECISION)
 	{
-		switch(mt() % 3)
+		switch(pfac->GetRand() % 3)
 		{
 		case 0:
 			mDirection.x = 1;
@@ -69,7 +72,8 @@ CPersonalityScout::CPersonalityScout(CCloudEnemy *host) : CPersonality(host)
 	}
 }
 
-CPersonalityScout::~CPersonalityScout() {}
+CPersonalityScout::~CPersonalityScout() 
+{}
 
 void CPersonalityScout::Execute (Rotator &turn, Vector3d &acceleration, int &flags)
 {
@@ -92,6 +96,29 @@ void CPersonalityScout::Execute (Rotator &turn, Vector3d &acceleration, int &fla
 			acceleration.x = -velocity.x;
 			acceleration.y = -velocity.y;
 			acceleration.z = -velocity.z;
+		}
+
+		if (CPersonalityScout::mFireCount > 0)
+		{
+			CActor *player = Network::GetPlayerActors()[0].actor;
+
+			//Turn towards the player
+			Rotator Calc;
+			Calc.RotationTo(pHost->transform.Forward(), (player->transform.position - pHost->transform.position).normal());
+
+			turn = Calc;
+
+			if ((pfac->GetRand() % 100) < 20)
+			{
+				if (pHost->FireGun())
+					mFireCount--;
+			}
+		}
+
+		if (Time::currentTime - CPersonalityScout::mRegenTime > 2.0)
+		{
+			mFireCount++;
+			mRegenTime = Time::currentTime;
 		}
 	}
 }

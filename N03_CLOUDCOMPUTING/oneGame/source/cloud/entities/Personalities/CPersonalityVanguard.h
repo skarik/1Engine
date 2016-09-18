@@ -3,7 +3,7 @@
 
 #include "../CPersonality.h"
 #include "core/math/Rotator.h"
-#include "core/math/Quaternion.h"
+#include "engine-common/entities/CActor.h"
 
 //This personality just blindly rushes at the player 
 class CPersonalityVanguard: public CPersonality
@@ -16,7 +16,9 @@ public:
 	void Execute(Rotator &turn, Vector3d &acceleration, int &flags) override;
 
 private:
-	Quaternion Calc;
+	Real DistanceFromPlayer(CActor *player);
+
+	Rotator Calc;
 	bool mIsRotating;
 	Real mRotateTimer;
 	Real mChargeTimer;

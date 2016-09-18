@@ -20,13 +20,16 @@
 #include "engine-common/entities/CParticleSystem.h"
 #include "renderer/object/particle/CParticleRenderer_Animated.h"
 
+#include "cloud/entities/projectiles/ProjectileBullet.h"
+
+
 
 CModel*				CCloudEnemy::model	= NULL;
 CInstancedMesh*		CCloudEnemy::mesh	= NULL;
 std::vector<CCloudEnemy*>	CCloudEnemy::manifest;
 
 CCloudEnemy::CCloudEnemy(void)
-	: CActor(), health(100)
+	: CActor(), health(100), guncooldown(3.0)
 {
 	// Create collision sphere
 	const Real t_sphereRadius = 2.5F;
@@ -95,6 +98,7 @@ void CCloudEnemy::Update(void)
 {
 	// Update base class code first
 	CActor::Update();
+	guncooldown -= Time::deltaTime;
 }
 
 void CCloudEnemy::LateUpdate(void)
@@ -270,4 +274,19 @@ Vector3d CCloudEnemy::GetVelocity()
 		return rigidbody->GetVelocity();
 	else
 		return Vector3d(0,0,0);
+}
+
+bool CCloudEnemy::FireGun(void)
+{
+	if (guncooldown <= 0.0)
+	{
+		CProjectile* projectile;
+		projectile = new ProjectileBullet(
+			Ray(transform.position + enemyRotation * Vector3d(0, 1, 0), enemyRotation * Vector3d(1, 0, 0)), 1000.0F);
+		projectile->SetOwner(this);
+		projectile->RemoveReference();
+		guncooldown = 3.0;
+		return true;
+	}
+	return false;
 }

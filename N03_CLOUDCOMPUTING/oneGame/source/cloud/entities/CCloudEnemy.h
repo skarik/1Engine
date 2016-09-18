@@ -84,7 +84,10 @@ public: // ROUTINES
 	void SetRotation(Rotator rot);
 
 	//Getters to help the AI decide what to do
-	Vector3d GetVelocity();
+	Vector3d GetVelocity(void);
+
+	//FIRE ZE CANNONS!!!! (Not really. Just shoot a bullet)
+	bool FireGun(void);
 
 protected: // PROTECTED FIELDS and ROUTINES
 	//===============================================================================================//
@@ -103,6 +106,7 @@ protected: // PROTECTED FIELDS and ROUTINES
 	// Game state 
 	//===============================================================================================//
 	float health;
+	float guncooldown;
 
 	//===============================================================================================//
 	// Attached objects

@@ -17,7 +17,8 @@ public:
 private:
 	Rotator Calc;
 	Real DistanceFromPlayer(CActor *player);
-
+	static int mFireCount;
+	static float mRegenTime;
 };
 
 #endif

@@ -46,3 +46,8 @@ CPersonality *CPersonalityFactory::MakePersonality (CCloudEnemy *host, int type)
 		return new CTestPersonality(host);
 	}
 }
+
+int CPersonalityFactory::GetRand(void)
+{
+	return (*mt)();
+}

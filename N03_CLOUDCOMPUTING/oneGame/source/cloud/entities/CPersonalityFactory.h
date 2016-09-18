@@ -12,6 +12,7 @@ public:
 
 	CPersonality * MakePersonality(CCloudEnemy * host, int type);
 
+	int GetRand(void);
 private:
 	int numPersonalities;
 	std::mt19937 *mt;

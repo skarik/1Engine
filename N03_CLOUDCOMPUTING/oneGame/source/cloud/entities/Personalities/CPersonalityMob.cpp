@@ -1,6 +1,10 @@
 #include "CPersonalityMob.h"
 #include "engine-common/network/playerlist.h"
 #include "../CCloudEnemy.h"
+#include "../CPersonalityFactory.h"
+
+int CPersonalityMob::mFireCount = 20;
+float CPersonalityMob::mRegenTime = Time::currentTime;
 
 CPersonalityMob::CPersonalityMob(CCloudEnemy *host) : CPersonality(host)
 {
@@ -40,6 +44,29 @@ void CPersonalityMob::Execute(Rotator &turn, Vector3d &acceleration, int &flags)
 		acceleration.x = 0.0;
 		acceleration.y = 1.0;
 		acceleration.z = -1.0;
+	}
+
+	if (CPersonalityMob::mFireCount > 0)
+	{
+		CActor *player = Network::GetPlayerActors()[0].actor;
+
+		//Turn towards the player
+		Rotator Calc;
+		Calc.RotationTo(pHost->transform.Forward(), (player->transform.position - pHost->transform.position).normal());
+
+		turn = Calc;
+
+		if ((pfac->GetRand() % 100) < 50)
+		{
+			if (pHost->FireGun())
+				mFireCount--;
+		}
+	}
+
+	if (Time::currentTime - CPersonalityMob::mRegenTime > .25)
+	{
+		mFireCount++;
+		mRegenTime = Time::currentTime;
 	}
 }
 
