@@ -34,6 +34,7 @@ CScreenFade::CScreenFade ( bool inbFadeIn, float infFadeTime, float infFadeDelay
 	screenMaterial->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	screenMaterial->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
 	screenMaterial->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
+	SetMaterial( screenMaterial );
 }
 CScreenFade::~CScreenFade ( void )
 {
@@ -62,7 +63,8 @@ void CScreenFade::PreStepSynchronus ( void )
 			fAlpha = 0.0f;
 		else
 			fAlpha = 1.0f;
-		DeleteObject( this );
+		//this->DeleteObject( this );
+		// TODO: Fix this
 	}
 }
 
@@ -73,16 +75,13 @@ bool CScreenFade::Render ( const char pass )
 	{
 		GL.beginOrtho();
 			GL.Translate( Vector3d( 0,0,40 ) );
+			GLd.P_PushColor(1,1,1);
 			GLd.DrawSet2DMode( GLd.D2D_FLAT );
 			GLd.DrawSet2DScaleMode( GLd.SCALE_DEFAULT );
 			screenMaterial->m_diffuse.alpha = std::min<Real>( fAlpha, 1 );
 			screenMaterial->bindPass(0);
-			//screenMaterial->bind();
-			//	glColor4f( 1,1,1,1 );
 				GLd.DrawRectangleA( 0,0, 1,1 );
-			//screenMaterial->unbind();
 		GL.endOrtho();
 	}
-
 	return true;
 }

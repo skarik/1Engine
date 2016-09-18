@@ -62,7 +62,7 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 	SetMaterial( screenMaterial );
 
 	//fntNotifier	= new CBitmapFont ( "benegraphic.ttf", 72, FW_BOLD );
-	fntNotifier	= new CBitmapFont ( "YanoneKaffeesatz-B", 72, FW_NORMAL );
+	fntNotifier	= new CBitmapFont ( "YanoneKaffeesatz-B.otf", 72, FW_NORMAL );
 
 	matNotifierDrawer = new glMaterial;
 	matNotifierDrawer->m_diffuse = Color( 0.4f,0.4f,0.4f );

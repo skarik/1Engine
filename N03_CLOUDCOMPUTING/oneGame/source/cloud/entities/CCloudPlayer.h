@@ -67,6 +67,7 @@ protected:
 	//	controlNormalShip
 	// Provides logic and control for normal ship behavior
 	void controlNormalShip ( void );
+	void weaponsNormalShip ( void );
 
 	//	camDefault
 	// Provides camera position and works on input
@@ -100,6 +101,27 @@ protected: // PROTECTED FIELDS and ROUTINES
 	bool drive_gravitydrive;
 	float fuel_afterburner;
 	float fuel_gravitydrive;
+
+	// Weapon control state
+	struct weaponState_t
+	{
+		float autocannon_cd;
+		float plasma_cd;
+		float missile_cd;
+
+		float autocannon_overheat;
+		float plasma_overheat;
+		bool autocannon_overheated;
+		bool plasma_overheated;
+
+		int plasma_state;
+		int missile_state;
+
+		bool autocannon_active;
+		bool plasma_active;
+		bool missile_active;
+	};
+	weaponState_t weapons;
 
 	//===============================================================================================//
 	// Attached objects

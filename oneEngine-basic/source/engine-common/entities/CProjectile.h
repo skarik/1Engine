@@ -55,7 +55,8 @@ protected:
 	CActor*		mOwner;
 	Ray			rStartDirection;
 	ftype		fStartSpeed;
-	physShape*	mProjectileShape;
+	//physShape*	mProjectileShape;
+	CCollider*	mProjectileCollider;
 	ftype		fShapeRadius;
 
 	Vector3d	vStartPosition;

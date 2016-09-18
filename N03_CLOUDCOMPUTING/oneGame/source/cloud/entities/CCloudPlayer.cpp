@@ -19,10 +19,24 @@
 
 #include "CCloudPlayer.h"
 
+#include "cloud/entities/projectiles/ProjectileBullet.h"
+#include "cloud/entities/projectiles/ProjectilePlasma.h"
+#include "cloud/entities/projectiles/ProjectileMissile.h"
+
+#include "engine-common/utils/CDeveloperConsoleUI.h"
+
+#include "renderer/object/screen/CScreenFade.h"
+#include "core-ext/system/io/Resources.h"
+
+#include "engine/audio/CAudioInterface.h"
+#include "audio/CAudioSource.h"
+#include "engine/audio/CSoundBehavior.h"
+
 CCloudPlayer::CCloudPlayer ( void )
 	: CPlayer(),
 	drive_afterburner(false), drive_gravitydrive(false),
-	fuel_afterburner(0), fuel_gravitydrive(0)
+	fuel_afterburner(0), fuel_gravitydrive(0),
+	weapons({0})
 {
 	// Create collision sphere
 	const Real t_sphereRadius = 2.5F;
@@ -33,7 +47,7 @@ CCloudPlayer::CCloudPlayer ( void )
 	rigidbody->SetGravity(false);
 	rigidbody->SetAngularDamping( 0.1F );
 	rigidbody->SetLinearDamping( 0.1F );
-
+	rigidbody->SetCollisionLayer( Layers::PHYS_CHARACTER );
 
 	// Zoom particle shits
 	particlesystem = new CParticleSystem("particlesystems/zoom_shit.pcf");
@@ -56,6 +70,14 @@ CCloudPlayer::CCloudPlayer ( void )
 		particlesystem->GetRenderable()->SetMaterial( particle_material );
 		particle_material->removeReference();
 	}
+
+	ActiveCursor->SetVisible(false);
+
+	weapons.autocannon_active = true;
+
+	CScreenFade* fade = new CScreenFade ( true, 1.0F, 2.0F, Color(1,1,1,1) );
+	fade->GetMaterial()->setTexture( 0, new CTexture("textures/system/cc.png") );
+	// TODO: Delete the screeenfade later
 }
 
 CCloudPlayer::~CCloudPlayer ( void )
@@ -163,7 +185,148 @@ void CCloudPlayer::controlNormalShip ( void )
 		drive_afterburner = false;
 	}
 
+	// Update weapons now
+	weaponsNormalShip();
 }
+void CCloudPlayer::weaponsNormalShip ( void )
+{
+	weapons.autocannon_cd	-= Time::deltaTime;
+	weapons.plasma_cd		-= Time::deltaTime;
+	weapons.missile_cd		-= Time::deltaTime;
+
+	weapons.autocannon_overheat	= std::max(0.0F, weapons.autocannon_overheat - Time::deltaTime * 5.0F );
+	weapons.plasma_overheat		= std::max(0.0F, weapons.plasma_overheat - Time::deltaTime * 2.0F );
+	if ( weapons.autocannon_overheat < 1.0F ) weapons.autocannon_overheated = false;
+	else if ( weapons.autocannon_overheat > 50.0F )
+	{
+		if ( !weapons.autocannon_overheated )
+		{
+			CSoundBehavior* behavior = Audio.playSound( "Char.Wep.Overheat" );
+			if ( behavior )
+			{
+				behavior->position = Vector3d(0,0,0);
+				behavior->parent = &transform;
+				behavior->Update();
+				behavior->RemoveReference();
+			}
+			weapons.autocannon_overheated = true;
+		}
+	}
+	if ( weapons.plasma_overheat < 1.0F ) weapons.plasma_overheated = false;
+	else if ( weapons.plasma_overheat > 50.0F )
+	{
+		if ( !weapons.plasma_overheated )
+		{
+			CSoundBehavior* behavior = Audio.playSound( "Char.Wep.Overheat" );
+			if ( behavior )
+			{
+				behavior->position = Vector3d(0,0,0);
+				behavior->parent = &transform;
+				behavior->Update();
+				behavior->RemoveReference();
+			}
+			weapons.plasma_overheated = true;
+		}
+	}
+
+	// Enable autocannon!
+	if ( input->axes.secondary.pressed() || input->axes.tertiary.pressed() || input->axes.prone.pressed() )
+	{
+		if ( weapons.autocannon_active )
+		{
+			weapons.autocannon_active = false;
+			weapons.plasma_active = true;
+		}
+		else if ( weapons.plasma_active )
+		{
+			weapons.plasma_active = false;
+			weapons.missile_active = true;
+		}
+		else if ( weapons.missile_active )
+		{
+			weapons.missile_active = false;
+			weapons.autocannon_active = true;
+		}
+	}
+
+	// Fire ze weaponz!
+	if ( input->axes.primary )
+	{
+		if ( weapons.autocannon_active )
+		{
+			if ( weapons.autocannon_cd <= 0.0F )
+			{
+				// 10 rounds/sec
+				weapons.autocannon_cd = weapons.autocannon_overheated ? 0.7F : 0.1F;
+				weapons.autocannon_overheat += 0.5F;
+				// Fire autocannon!
+
+				CProjectile* projectile;
+				projectile = new ProjectileBullet( 
+					Ray( transform.position + playerRotation * Vector3d(0,1,0), playerRotation * Vector3d(1,0,0) ), 1000.0F );
+				projectile->SetOwner(this);
+				projectile->RemoveReference();
+				projectile = new ProjectileBullet( 
+					Ray( transform.position - playerRotation * Vector3d(0,1,0), playerRotation * Vector3d(1,0,0) ), 1000.0F );
+				projectile->SetOwner(this);
+				projectile->RemoveReference();
+
+				// Load in a sound, set lipsync with the feedback sound file name
+				CSoundBehavior* behavior = Audio.playSound( "Char.Wep.Autocannon" );
+				if ( behavior )
+				{
+					behavior->position = Vector3d(0,0,0);
+					behavior->parent = &transform;
+					behavior->Update();
+					behavior->RemoveReference();
+				}
+
+				shakeAmount += 0.2F;
+			}
+		}
+		if ( weapons.plasma_active )
+		{
+			if ( weapons.plasma_cd <= 0.0F )
+			{
+				// 2 rounds/sec
+				weapons.plasma_cd = weapons.plasma_overheated ? 2.0F : 0.5F; 
+				weapons.plasma_overheat += 5.0F;
+				// Fire plasma!
+
+				shakeAmount += 1.0F;
+
+				weapons.plasma_state = (weapons.plasma_state + 1) % 2;
+				CProjectile* projectile;
+				if ( weapons.plasma_state == 0 )
+				{
+					projectile = new ProjectilePlasma( 
+						Ray( transform.position + playerRotation * Vector3d(0,1,0), playerRotation * Vector3d(1,0,0) ), 400.0F );
+				}
+				else
+				{
+					projectile = new ProjectilePlasma( 
+						Ray( transform.position - playerRotation * Vector3d(0,1,0), playerRotation * Vector3d(1,0,0) ), 400.0F );
+				}
+				projectile->SetOwner(this);
+				projectile->RemoveReference();
+				
+				// Load in a sound, set lipsync with the feedback sound file name
+				CSoundBehavior* behavior = Audio.playSound( "Char.Wep.Plasma" );
+				if ( behavior )
+				{
+					behavior->position = Vector3d(0,0,0);
+					behavior->parent = &transform;
+					behavior->Update();
+					behavior->RemoveReference();
+				}
+
+				shakeAmount += 0.2F;
+			}
+		}
+	}
+}
+
+
 
 // Physics Step
 

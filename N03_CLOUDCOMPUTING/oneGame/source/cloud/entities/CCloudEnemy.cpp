@@ -1,5 +1,7 @@
 #include "CCloudEnemy.h"
 // Includes
+#include "core/math/random/Random.h"
+
 #include "core-ext/input/CInputControl.h"
 
 #include "engine/audio/CAudioInterface.h"
@@ -11,15 +13,20 @@
 #include "renderer/logic/model/CModel.h"
 //#include "renderer/logic/model/CInstancedModel.h"
 #include "renderer/object/mesh/CInstancedMesh.h"
+
 #include "renderer/material/glMaterial.h"
 #include "renderer/texture/CTexture.h"
+
+#include "engine-common/entities/CParticleSystem.h"
+#include "renderer/object/particle/CParticleRenderer_Animated.h"
+
 
 CModel*				CCloudEnemy::model	= NULL;
 CInstancedMesh*		CCloudEnemy::mesh	= NULL;
 std::vector<CCloudEnemy*>	CCloudEnemy::manifest;
 
 CCloudEnemy::CCloudEnemy(void)
-	: CActor()
+	: CActor(), health(100)
 {
 	// Create collision sphere
 	const Real t_sphereRadius = 2.5F;
@@ -30,6 +37,7 @@ CCloudEnemy::CCloudEnemy(void)
 	rigidbody->SetGravity(false);
 	rigidbody->SetAngularDamping( 0.1F );
 	rigidbody->SetLinearDamping( 0.1F );
+	rigidbody->SetCollisionLayer( Layers::PHYS_CHARACTER );
 
 	// Create model for the bot.
 	//model = new CModel( "models/geosphere.fbx" );
@@ -51,7 +59,7 @@ CCloudEnemy::CCloudEnemy(void)
 		material->passinfo[0].shader = new glShader( ".res/shaders/particles/colorBlended.instanced.glsl" );
 		material->passinfo[0].m_blend_mode = Renderer::BM_NORMAL;
 		material->passinfo[0].b_depthmask = true;
-		material->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
+		material->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
 		material->passinfo[0].m_hint = RL_WORLD | RL_FOG;
 		mesh->SetMaterial( material );
 		material->removeReference();
@@ -95,14 +103,6 @@ void CCloudEnemy::LateUpdate(void)
 
 	//camShipFirstPerson();
 
-	// Update listener position
-	//Not sure if enemies need this stuff - Chiefmasamune
-	/*
-	pListener->velocity = pCamera->transform.position - pListener->position;
-	pListener->position = pCamera->transform.position;
-	pListener->orient_forward = pCamera->transform.Forward();
-	pListener->orient_up = pCamera->transform.Up();*/
-
 	//model->transform.position = transform.position;
 	//model->transform.rotation = transform.rotation;
 	if ( mesh != NULL )
@@ -114,6 +114,55 @@ void CCloudEnemy::LateUpdate(void)
 
 	rigidbody->Wake();
 }
+
+void CCloudEnemy::OnDamaged ( Damage const& damage, DamageFeedback* )
+{
+	//rigidbody->ApplyForce( ((transform.position - damage.source).normal()*2 + Random.PointInUnitSphere()) * damage.amount * 1000.0F );
+	Vector3d hitforce = ((transform.position - damage.source).normal()*2 + Random.PointInUnitSphere()) * damage.amount;
+	rigidbody->SetVelocity( rigidbody->GetVelocity() + hitforce * 0.3F );
+
+	health -= damage.amount;
+	if ( health <= 0 )
+	{
+		OnDeath( damage );
+	}
+}
+void CCloudEnemy::OnDeath ( Damage const& )
+{
+	CParticleSystem* ps = new CParticleSystem("particlesystems/sparkexplo.pcf");
+
+	CParticleRenderer_Animated* renderer = (CParticleRenderer_Animated*)ps->GetRenderable();
+
+	renderer->GetMaterial()->loadFromFile("particle/sparks");
+	renderer->GetMaterial()->passinfo[0].m_hint = RL_WORLD | RL_FOG;
+	renderer->GetMaterial()->passinfo[0].b_depthmask = false;
+
+	// following is a hack. currently these values are not serialized properly (corrupted) so set them here to fix
+	renderer->fFramesPerSecond = 30.0F;
+	renderer->bStretchAnimationToLifetime = true;
+	renderer->bClampToFrameCount = true;
+	renderer->iFrameCount = 16;
+	renderer->iHorizontalDivs = 4;
+	renderer->iVerticalDivs = 4;
+
+	ps->transform.position = transform.position;
+	ps->bAutoDestroy = true;
+	ps->PostUpdate();
+	ps->RemoveReference();
+
+	// play sound
+	CSoundBehavior* behavior = Audio.playSound( "Char.Wep.Explo" );
+	if ( behavior )
+	{
+		behavior->position = Vector3d(0,0,0);
+		behavior->parent = &transform;
+		behavior->Update();
+		behavior->RemoveReference();
+	}
+
+	DeleteObject(this);
+}
+
 
 // Physics Step
 

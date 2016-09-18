@@ -18,6 +18,11 @@
 #include "after/physics/water/Water.h"
 #include "after/physics/wind/WindMotion.h"
 
+int Cloud_Gamestart ( const std::string& sceneName )
+{
+	return EngineCommon::LoadScene("game");
+}
+
 //===============================================================================================//
 //	GameInitialize
 //
@@ -29,6 +34,8 @@ int GameInitialize ( void )
 {
 	// Engine
 	EngineCommonInitialize();
+
+	Engine::Console->AddConsoleFunc( "listen",	Cloud_Gamestart );
 
 	// Scene registration
 	EngineCommon::RegisterScene<sceneCloudGame>( "game" );

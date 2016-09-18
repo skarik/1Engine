@@ -343,6 +343,9 @@
     <Filter Include="SOURCE\Cloud\Entities\Personalities">
       <UniqueIdentifier>{be81cf51-db8e-408d-9fbb-c7bee2a7abb5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Cloud\Entities\Projectiles">
+      <UniqueIdentifier>{e8f17257-c363-4392-995c-d904dbd7b1d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\after\scenes\gmsceneGame_5.h">
@@ -1254,6 +1257,15 @@
     <ClInclude Include="source\cloud\entities\Personalities\CPersonalityScout.h">
       <Filter>SOURCE\Cloud\Entities\Personalities</Filter>
     </ClInclude>
+    <ClInclude Include="source\cloud\entities\projectiles\ProjectileBullet.h">
+      <Filter>SOURCE\Cloud\Entities\Projectiles</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cloud\entities\projectiles\ProjectileMissile.h">
+      <Filter>SOURCE\Cloud\Entities\Projectiles</Filter>
+    </ClInclude>
+    <ClInclude Include="source\cloud\entities\projectiles\ProjectilePlasma.h">
+      <Filter>SOURCE\Cloud\Entities\Projectiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\after\scenes\gmsceneGame_5.cpp">
@@ -2083,6 +2095,15 @@
     </ClCompile>
     <ClCompile Include="source\cloud\entities\Personalities\CPersonalityScout.cpp">
       <Filter>SOURCE\Cloud\Entities\Personalities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cloud\entities\projectiles\ProjectileMissile.cpp">
+      <Filter>SOURCE\Cloud\Entities\Projectiles</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cloud\entities\projectiles\ProjectilePlasma.cpp">
+      <Filter>SOURCE\Cloud\Entities\Projectiles</Filter>
+    </ClCompile>
+    <ClCompile Include="source\cloud\entities\projectiles\ProjectileBullet.cpp">
+      <Filter>SOURCE\Cloud\Entities\Projectiles</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -758,6 +758,9 @@
     <ClInclude Include="source\cloud\entities\Personalities\CPersonalityScout.h" />
     <ClInclude Include="source\cloud\entities\Personalities\CPersonalityVanguard.h" />
     <ClInclude Include="source\cloud\entities\Personalities\CTestPersonality.h" />
+    <ClInclude Include="source\cloud\entities\projectiles\ProjectileBullet.h" />
+    <ClInclude Include="source\cloud\entities\projectiles\ProjectileMissile.h" />
+    <ClInclude Include="source\cloud\entities\projectiles\ProjectilePlasma.h" />
     <ClInclude Include="source\cloud\scenes\sceneCloudGame.h" />
   </ItemGroup>
   <ItemGroup>
@@ -1036,6 +1039,9 @@
     <ClCompile Include="source\cloud\entities\Personalities\CPersonalityScout.cpp" />
     <ClCompile Include="source\cloud\entities\Personalities\CPersonalityVanguard.cpp" />
     <ClCompile Include="source\cloud\entities\Personalities\CTestPersonality.cpp" />
+    <ClCompile Include="source\cloud\entities\projectiles\ProjectileBullet.cpp" />
+    <ClCompile Include="source\cloud\entities\projectiles\ProjectileMissile.cpp" />
+    <ClCompile Include="source\cloud\entities\projectiles\ProjectilePlasma.cpp" />
     <ClCompile Include="source\cloud\scenes\sceneCloudGame.cpp" />
   </ItemGroup>
   <ItemGroup>

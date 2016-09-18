@@ -8,6 +8,7 @@
 #include "physical/physics/water/Water.h"
 #include "physical/physics/CPhysics.h"
 #include "physical/physics/shapes/physSphereShape.h"
+#include "engine/physics/collider/types/CCapsuleCollider.h"
 
 #include "engine/physics/raycast/Raycaster.h"
 
@@ -49,7 +50,8 @@ CProjectile::CProjectile( Ray const& rnInRay, ftype fnInSpeed, ftype fnWidth )
 	}
 
 	// Create shape
-	mProjectileShape = CPhysics::CreateSphereShape( fShapeRadius );
+	//mProjectileShape = CPhysics::CreateSphereShape( fShapeRadius );
+	mProjectileCollider = new CCapsuleCollider( fShapeRadius * 2, fShapeRadius, true );
 
 	// Initialize buffs
 	//effects.UpdateParent( this );
@@ -58,7 +60,8 @@ CProjectile::CProjectile( Ray const& rnInRay, ftype fnInSpeed, ftype fnWidth )
 // Destructor
 CProjectile::~CProjectile ( void )
 {
-	delete_safe( mProjectileShape );
+	//delete_safe( mProjectileShape );
+	delete_safe( mProjectileCollider );
 }
 
 // == Update ==
@@ -112,7 +115,11 @@ void CProjectile::Update ( void )
 		//=========================================//
 		// Perform casting
 		Item::HitType hittype;
-		if ( Raycaster.Linecast( castRay, vVelocity.magnitude() * Time::deltaTime, mProjectileShape, &rhLastHit, 1, Physics::GetCollisionFilter(Layers::PHYS_BULLET_TRACE,0,31), mOwner ) )
+		//if ( Raycaster.Linecast( castRay, vVelocity.magnitude() * Time::deltaTime, mProjectileShape, &rhLastHit, 1, Physics::GetCollisionFilter(Layers::PHYS_BULLET_TRACE,0,31), mOwner ) )
+		if ( Raycaster.Linecast(
+			castRay, vVelocity.magnitude() * Time::deltaTime,
+			mProjectileCollider->GetCollisionShape(), &rhLastHit, 1,
+			Physics::GetCollisionFilter(Layers::PHYS_BULLET_TRACE,0,31), mOwner ) )
 		{
 			if ( rhLastHit.pHitBehavior == NULL )
 			{

@@ -67,7 +67,16 @@ void gmsceneSystemLoader::LoadScene ( void )
 	}
 
 	// Check that they don't want to stay in the console
-	if ( !CGameSettings::Active()->s_cmd.empty() && CGameSettings::Active()->s_cmd.find( "-console" ) == string::npos )
+	bool wantsConsole = false;
+	if ( CGameSettings::Active()->s_cmd.empty() )
+	{
+		if ( CGameSettings::Active()->s_cmd.find( "-console" ) != string::npos )
+		{
+			wantsConsole = true;
+		}
+	}
+
+	if ( !wantsConsole )
 	{
 		// At this point, check if this is still the active scene. If it is, then we move to the splash screens.
 		/*if ( CGameState::Active()->GetNextScene() == NULL ) {

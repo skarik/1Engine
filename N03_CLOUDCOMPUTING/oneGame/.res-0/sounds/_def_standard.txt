@@ -1,6 +1,23 @@
 # sounds in this file default to the default channel
 # volume defaults to 75dB
 
+Char.Wep.Autocannon
+{
+	wave		"weapons/autocannon.wav"
+}
+Char.Wep.Explo
+{
+	wave		"weapons/explosion.wav"
+}
+Char.Wep.Overheat
+{
+	wave		"weapons/overheat.wav"
+}
+Char.Wep.Missile
+{
+	wave		"weapons/missile.wav"
+}
+
 # Menu Group
 Menu.Click
 {
