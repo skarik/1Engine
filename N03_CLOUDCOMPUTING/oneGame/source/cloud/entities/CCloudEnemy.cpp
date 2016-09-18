@@ -280,6 +280,12 @@ Vector3d CCloudEnemy::GetVelocity()
 		return Vector3d(0,0,0);
 }
 
+void CCloudEnemy::SetVelocity(Vector3d velocity)
+{
+	if (rigidbody != NULL)
+		rigidbody->SetVelocity(velocity);
+}
+
 bool CCloudEnemy::FireGun(void)
 {
 	if (guncooldown <= 0.0)

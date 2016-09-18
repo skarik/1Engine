@@ -11,7 +11,7 @@ float CPersonalityScout::mRegenTime = Time::currentTime;
 CPersonalityScout::CPersonalityScout(CCloudEnemy *host) : CPersonality(host)
 {
 	mStart = pHost->transform.position;
-	mDist = 200.0;
+	mDist = 100;
 
 	switch (pfac->GetRand() % 3)
 	{

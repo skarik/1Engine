@@ -85,6 +85,9 @@ public: // ROUTINES
 
 	//Getters to help the AI decide what to do
 	Vector3d GetVelocity(void);
+	//Cheat and let the AI have much better control over the ship
+	//ONLY CALL DURING FIXEDUPDATE
+	void SetVelocity(Vector3d velocity);
 
 	//FIRE ZE CANNONS!!!! (Not really. Just shoot a bullet)
 	bool FireGun(void);
