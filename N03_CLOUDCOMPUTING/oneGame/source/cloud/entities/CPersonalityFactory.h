@@ -2,7 +2,7 @@
 #define _C_PERSONALITY_FACTORY_H_
 
 #include "CPersonality.h"
-#include <stdlib.h>
+#include <random>
 
 class CPersonalityFactory
 {
@@ -14,6 +14,7 @@ public:
 
 private:
 	int numPersonalities;
+	std::mt19937 *mt;
 };
 
 extern CPersonalityFactory *pfac;

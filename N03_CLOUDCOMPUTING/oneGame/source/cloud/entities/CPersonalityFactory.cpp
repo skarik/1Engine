@@ -1,5 +1,4 @@
 #include "CPersonalityFactory.h"
-#include <time.h>
 //Personality Types
 #include "Personalities/CTestPersonality.h"
 #include "Personalities/CPersonalityVanguard.h"
@@ -10,20 +9,26 @@ CPersonalityFactory *pfac = new CPersonalityFactory();
 CPersonalityFactory::CPersonalityFactory (void) 
 {
 	numPersonalities = 2;
-	srand(time(NULL));
+	std::random_device rd;
+
+	mt = new std::mt19937(rd());
 }
 
 CPersonalityFactory::~CPersonalityFactory (void) 
 {
 	if (pfac != nullptr)
 		delete pfac;
+
+	if (mt)
+		delete mt;
+	mt = NULL;
 }
 
 CPersonality *CPersonalityFactory::MakePersonality (CCloudEnemy *host, int type)
 {
 	if (type < 0)
 	{//Change the type to a random number and proceed
-		type = rand() % numPersonalities;
+		type = (*mt)() % numPersonalities;
 	}
 	
 	//Now make the personality

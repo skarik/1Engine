@@ -1,16 +1,16 @@
 #include "CPersonalityScout.h"
 #include "../CCloudEnemy.h"
 #include "core/time.h"
-#include <stdlib.h>
-#include <time.h>
+#include <random>
 
 CPersonalityScout::CPersonalityScout(CCloudEnemy *host) : CPersonality(host)
 {
 	mStart = pHost->transform.position;
 	mDist = 200.0;
-	srand(time(NULL));
-	
-	switch (rand() % 3)
+	std::random_device rd;
+	std::mt19937 mt(rd());
+
+	switch (mt() % 3)
 	{
 	case 0:
 		mDirection.x = -1.0;
@@ -23,7 +23,7 @@ CPersonalityScout::CPersonalityScout(CCloudEnemy *host) : CPersonality(host)
 		break;
 	}
 
-	switch (rand() % 3)
+	switch (mt() % 3)
 	{
 	case 0:
 		mDirection.y = -1.0;
@@ -36,7 +36,7 @@ CPersonalityScout::CPersonalityScout(CCloudEnemy *host) : CPersonality(host)
 		break;
 	}
 
-	switch (rand() % 3)
+	switch (mt() % 3)
 	{
 	case 0:
 		mDirection.z = -1.0;
@@ -51,7 +51,7 @@ CPersonalityScout::CPersonalityScout(CCloudEnemy *host) : CPersonality(host)
 
 	if (mDirection.magnitude() < FTYPE_PRECISION)
 	{
-		switch(rand() % 3)
+		switch(mt() % 3)
 		{
 		case 0:
 			mDirection.x = 1;
