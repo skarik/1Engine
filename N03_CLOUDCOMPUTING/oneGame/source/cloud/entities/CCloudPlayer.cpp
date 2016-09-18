@@ -99,8 +99,8 @@ void CCloudPlayer::OnDamaged ( Damage const& damage, DamageFeedback* )
 	if ( health > 0 )
 	{
 		//rigidbody->ApplyForce( ((transform.position - damage.source).normal()*2 + Random.PointInUnitSphere()) * damage.amount * 1000.0F );
-		Vector3d hitforce = ((transform.position - damage.source).normal()*2 + Random.PointInUnitSphere()) * damage.amount;
-		rigidbody->SetVelocity( rigidbody->GetVelocity() + hitforce * 0.3F );
+		//Vector3d hitforce = ((transform.position - damage.source).normal()*2 + Random.PointInUnitSphere()) * damage.amount;
+		//rigidbody->SetVelocity( rigidbody->GetVelocity() + hitforce * 0.3F );
 
 		health -= damage.amount * 0.01F;
 		if ( health <= 0 )

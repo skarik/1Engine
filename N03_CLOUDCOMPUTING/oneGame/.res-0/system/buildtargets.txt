@@ -1,5 +1,5 @@
 // Classic bottle
-bottle "D:/Project/MCC SVN/MCC/Bottle/AFTER"
+bottle "D:/Projects/N03/Bottle"
 {
 	mode copy
 	rebuild images

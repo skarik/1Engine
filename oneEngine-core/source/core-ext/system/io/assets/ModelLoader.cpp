@@ -91,6 +91,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 		{
 			model_filename = model_filename.substr( 0, model_filename.find_last_of( "." ) ) + ".pad";
 		}
+		model_filename = Core::Resources::PathTo( model_filename );
 	}
 
 	// Read in the file
