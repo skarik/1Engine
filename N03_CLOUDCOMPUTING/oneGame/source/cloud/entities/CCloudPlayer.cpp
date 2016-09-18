@@ -278,6 +278,7 @@ void CCloudPlayer::weaponsNormalShip ( void )
 					behavior->position = Vector3d(0,0,0);
 					behavior->parent = &transform;
 					behavior->Update();
+					behavior->Play();
 					behavior->RemoveReference();
 				}
 
@@ -317,6 +318,7 @@ void CCloudPlayer::weaponsNormalShip ( void )
 					behavior->position = Vector3d(0,0,0);
 					behavior->parent = &transform;
 					behavior->Update();
+					behavior->Play();
 					behavior->RemoveReference();
 				}
 			}
@@ -353,6 +355,7 @@ void CCloudPlayer::weaponsNormalShip ( void )
 					behavior->position = Vector3d(0,0,0);
 					behavior->parent = &transform;
 					behavior->Update();
+					behavior->Play();
 					behavior->RemoveReference();
 				}
 			}

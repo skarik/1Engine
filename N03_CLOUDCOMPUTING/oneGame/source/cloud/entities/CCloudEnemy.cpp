@@ -139,19 +139,20 @@ void CCloudEnemy::OnDeath ( Damage const& )
 	CParticleSystem* ps = new CParticleSystem("particlesystems/sparkexplo.pcf");
 
 	CParticleRenderer_Animated* renderer = (CParticleRenderer_Animated*)ps->GetRenderable();
+	if ( renderer )
+	{
+		renderer->GetMaterial()->loadFromFile("particle/sparks");
+		renderer->GetMaterial()->passinfo[0].m_hint = RL_WORLD | RL_FOG;
+		renderer->GetMaterial()->passinfo[0].b_depthmask = false;
 
-	renderer->GetMaterial()->loadFromFile("particle/sparks");
-	renderer->GetMaterial()->passinfo[0].m_hint = RL_WORLD | RL_FOG;
-	renderer->GetMaterial()->passinfo[0].b_depthmask = false;
-
-	// following is a hack. currently these values are not serialized properly (corrupted) so set them here to fix
-	renderer->fFramesPerSecond = 30.0F;
-	renderer->bStretchAnimationToLifetime = true;
-	renderer->bClampToFrameCount = true;
-	renderer->iFrameCount = 16;
-	renderer->iHorizontalDivs = 4;
-	renderer->iVerticalDivs = 4;
-
+		// following is a hack. currently these values are not serialized properly (corrupted) so set them here to fix
+		renderer->fFramesPerSecond = 30.0F;
+		renderer->bStretchAnimationToLifetime = true;
+		renderer->bClampToFrameCount = true;
+		renderer->iFrameCount = 16;
+		renderer->iHorizontalDivs = 4;
+		renderer->iVerticalDivs = 4;
+	}
 	ps->transform.position = transform.position;
 	ps->bAutoDestroy = true;
 	ps->PostUpdate();
