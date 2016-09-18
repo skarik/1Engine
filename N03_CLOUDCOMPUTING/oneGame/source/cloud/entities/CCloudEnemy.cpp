@@ -10,6 +10,13 @@
 //#include "renderer/camera/CCamera.h"
 #include "renderer/logic/model/CModel.h"
 //#include "renderer/logic/model/CInstancedModel.h"
+#include "renderer/object/mesh/CInstancedMesh.h"
+#include "renderer/material/glMaterial.h"
+#include "renderer/texture/CTexture.h"
+
+CModel*				CCloudEnemy::model	= NULL;
+CInstancedMesh*		CCloudEnemy::mesh	= NULL;
+std::vector<CCloudEnemy*>	CCloudEnemy::manifest;
 
 CCloudEnemy::CCloudEnemy(void)
 	: CActor()
@@ -26,8 +33,32 @@ CCloudEnemy::CCloudEnemy(void)
 
 	// Create model for the bot.
 	//model = new CModel( "models/geosphere.fbx" );
-	model = new CModel( "models/enemy/bot_zero.fbx" );
-	model->transform.scale = Vector3d(1,1,1) * t_sphereRadius * 2.54F;// / 120.0F;
+	if ( model == NULL )
+	{
+		model = new CModel( "models/enemy/bot_zero.fbx" );
+		model->transform.scale = Vector3d(1,1,1) * t_sphereRadius * 2.54F;// / 120.0F;
+		model->SetVisibility(false);
+	}
+	if ( mesh == NULL )
+	{
+		mesh = new CInstancedMesh( model->GetMesh(uint(0))->m_glMesh );
+		mesh->transform.scale = model->transform.scale;
+
+		glMaterial* material = new glMaterial;
+		material->setTexture( 0, new CTexture("textures/white.jpg") );
+		material->m_diffuse = Color(1,0.5F,0.0F,1.0F);
+		material->passinfo.push_back( glPass() );
+		material->passinfo[0].shader = new glShader( ".res/shaders/particles/colorBlended.instanced.glsl" );
+		material->passinfo[0].m_blend_mode = Renderer::BM_NORMAL;
+		material->passinfo[0].b_depthmask = true;
+		material->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
+		material->passinfo[0].m_hint = RL_WORLD | RL_FOG;
+		mesh->SetMaterial( material );
+		material->removeReference();
+
+	}
+	manifest.push_back(this);
+	manifest_id = manifest.size() - 1;
 }
 
 CCloudEnemy::~CCloudEnemy(void)
@@ -36,6 +67,18 @@ CCloudEnemy::~CCloudEnemy(void)
 	delete_safe(collider);
 
 	delete_safe(model);
+
+	// Remove this from the manifest
+	auto manifest_spot = std::find( manifest.begin(), manifest.end(), this );
+	if ( manifest_spot != manifest.end() )
+	{
+		manifest.erase(manifest_spot);
+		// Update the manifest ID's so the instancing can still work
+		for ( uint i = 0; i < manifest.size(); ++i )
+		{
+			manifest[i]->manifest_id = i;
+		}
+	}
 }
 
 // Game step
@@ -60,8 +103,14 @@ void CCloudEnemy::LateUpdate(void)
 	pListener->orient_forward = pCamera->transform.Forward();
 	pListener->orient_up = pCamera->transform.Up();*/
 
-	model->transform.position = transform.position;
-	model->transform.rotation = transform.rotation;
+	//model->transform.position = transform.position;
+	//model->transform.rotation = transform.rotation;
+	if ( mesh != NULL )
+	{
+		mesh->SetInstanceCount( manifest.size() );
+		mesh->SetInstancePosition( manifest_id, transform.position );
+		mesh->SetInstanceRotation( manifest_id, transform.rotation );
+	}
 
 	rigidbody->Wake();
 }

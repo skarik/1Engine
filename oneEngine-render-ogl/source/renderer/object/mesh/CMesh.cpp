@@ -11,7 +11,7 @@
 
 CMesh::CMesh ( glMesh* nMesh, bool n_enableSkinning )
 	: CRenderableObject(),
-	m_glMesh( nMesh ), bUseSkinning(n_enableSkinning)
+	m_glMesh( nMesh ), m_parent(NULL), bUseSkinning(n_enableSkinning)
 {
 	if ( m_glMesh != NULL )
 	{

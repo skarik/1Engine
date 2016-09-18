@@ -128,6 +128,8 @@ public:
 	//GLuint		m_bufferMatricesSoftbody;
 	glHandle	m_bufferSkeletonSize;
 
+	glHandle	m_tex_instancedinfo;
+
 	// Textures (global properties)
 	RENDER_API static CTexture*	m_sampler_reflection;
 

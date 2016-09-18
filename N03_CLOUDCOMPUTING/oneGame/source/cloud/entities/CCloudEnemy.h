@@ -9,6 +9,7 @@ class CCapsuleCollider;
 
 class CModel;
 class CInstancedModel;
+class CInstancedMesh;
 
 struct VAxes {
 	bool crouch;
@@ -95,8 +96,13 @@ protected: // PROTECTED FIELDS and ROUTINES
 	CRigidBody*			rigidbody;
 	CCapsuleCollider*	collider;
 
+	uint32_t			manifest_id;
+
 	//CInstanedModel*		model;
-	CModel*				model;
+	static CModel*				model;
+	static CInstancedMesh*		mesh;
+
+	static std::vector<CCloudEnemy*>	manifest;
 };
 
 #endif _C_CLOUD_ENEMY_H_

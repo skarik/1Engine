@@ -85,40 +85,59 @@ void sceneCloudGame::LoadScene ( void )
 		CCloudAI *brain;
 		brain = new CCloudAI(enemy, 0);
 		enemy->RemoveReference();
+		brain->RemoveReference();
 
 		enemy = new CCloudEnemy();
 		brain = new CCloudAI(enemy, 4);
 		enemy->transform.position = Vector3d( 4,4, 2 );
 		enemy->RemoveReference();
-	}
-	loadscreen->StepScreen();
 
-	{	// World
-		glMaterial* material = new glMaterial;
-		material->loadFromFile( "debug_terra" );
+		enemy = new CCloudEnemy();
+		enemy->transform.position = Vector3d( 4,-4, 2 );
+		enemy->RemoveReference();
 
-		CModel* model;
-		model = new CModel( "models/debug/parkourtest01.FBX" );
-		model->transform.position = Vector3d( 0,0,-8.0f );
-		model->SetMaterial( material );
-		/*CExtendableGameObject* go = new CExtendableGameObject();
-		CCollider* collider;
-		CRigidBody* body;
+		enemy = new CCloudEnemy();
+		enemy->transform.position = Vector3d( 4,4, 6 );
+		enemy->RemoveReference();
+
+		for ( int x = 0; x < 20; ++x )
 		{
-			
-			go->AddComponent( model );
-			collider = new CStaticMeshCollider( model->GetModelData(0) );
-			go->AddComponent( collider );
-			body = new CRigidBody ( collider, NULL );
-			body->SetPosition( model->transform.position );
-			body->SetCollisionLayer( Layers::PHYS_LANDSCAPE );
-			body->SetMotionType( physMotion::MOTION_FIXED );
-			go->AddComponent( body );
+			for ( int y = 0; y < 20; ++y )
+			{
+				enemy = new CCloudEnemy();
+				enemy->transform.position = Vector3d( 5*x + 5, 16, 5*y + 5 );
+				enemy->RemoveReference();
+			}
 		}
-		go->RemoveReference();*/
-		material->removeReference();
 	}
 	loadscreen->StepScreen();
+
+	//{	// World
+	//	glMaterial* material = new glMaterial;
+	//	material->loadFromFile( "debug_terra" );
+
+	//	CModel* model;
+	//	model = new CModel( "models/debug/parkourtest01.FBX" );
+	//	model->transform.position = Vector3d( 0,0,-8.0f );
+	//	model->SetMaterial( material );
+	//	/*CExtendableGameObject* go = new CExtendableGameObject();
+	//	CCollider* collider;
+	//	CRigidBody* body;
+	//	{
+	//		
+	//		go->AddComponent( model );
+	//		collider = new CStaticMeshCollider( model->GetModelData(0) );
+	//		go->AddComponent( collider );
+	//		body = new CRigidBody ( collider, NULL );
+	//		body->SetPosition( model->transform.position );
+	//		body->SetCollisionLayer( Layers::PHYS_LANDSCAPE );
+	//		body->SetMotionType( physMotion::MOTION_FIXED );
+	//		go->AddComponent( body );
+	//	}
+	//	go->RemoveReference();*/
+	//	material->removeReference();
+	//}
+	//loadscreen->StepScreen();
 
 	{	// Create screen shaders
 		CRendererHolder* shaderHolder;

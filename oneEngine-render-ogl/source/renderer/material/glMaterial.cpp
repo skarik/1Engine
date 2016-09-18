@@ -944,6 +944,16 @@ void glMaterial::shader_bind_samplers ( glShader* shader )
 		glBindTexture( GL_TEXTURE_BUFFER, m_tex_lightinfo );
 		current_sampler_slot += 1;
 	}
+
+	uniformLocation = shader->get_uniform_location( "textureInstanceBuffer" );
+	if ( uniformLocation >= 0 )
+	{
+		glUniform1i( uniformLocation, current_sampler_slot );
+		glActiveTexture( GL_TEXTURE0+current_sampler_slot );
+		CTexture::Unbind(0);
+		glBindTexture( GL_TEXTURE_BUFFER, m_tex_instancedinfo );
+		current_sampler_slot += 1;
+	}
 }
 
 #include "core/system/Screen.h"
@@ -1301,13 +1311,11 @@ void glMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_f
 			modelRotation.setRotation( source_object->transform.rotation );
 			glUniformMatrix4fv( uniformLocation, 1,false, (!modelRotation)[0] );
 		}
-		//sys_ModelViewProjectionMatrix
+
 		uniformLocation = shader->get_uniform_location( "sys_ModelViewProjectionMatrix" );
 		if ( uniformLocation >= 0 )
 		{
 			Matrix4x4 modelViewProjection;
-			//modelViewProjection = (!source_object->transform.GetTransformMatrix()) * CCamera::activeCamera->viewTransform * CCamera::activeCamera->projTransform;
-			//modelViewProjection = (!source_object->transform.GetTransformMatrix()) * GL.getProjection();
 			modelViewProjection = (!modelMatrix) * GL.getProjection();
 			glUniformMatrix4fv( uniformLocation, 1,false, (modelViewProjection)[0] );
 		}
@@ -1316,21 +1324,17 @@ void glMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_f
 		if ( uniformLocation >= 0 )
 		{
 			Matrix4x4 modelViewProjection;
-			//modelViewProjection = (!source_object->transform.GetTransformMatrix()) * CCamera::activeCamera->viewTransform * CCamera::activeCamera->projTransform;
-			//modelViewProjection = (!source_object->transform.GetTransformMatrix()) * GL.getProjection();
 			modelViewProjection = (!modelMatrix) * GL.getProjection();
 			glUniformMatrix4fv( uniformLocation, 1,false, (modelViewProjection.inverse())[0] );
 		}
 
-		/*uniformLocation = shader->get_uniform_location( "sys_ViewProjectionMatrix" );
+		uniformLocation = shader->get_uniform_location( "sys_ViewProjectionMatrix" );
 		if ( uniformLocation >= 0 )
 		{
 			Matrix4x4 viewProjection;
-			//modelViewProjection = (!source_object->transform.GetTransformMatrix()) * CCamera::activeCamera->viewTransform * CCamera::activeCamera->projTransform;
-			//modelViewProjection = (!source_object->transform.GetTransformMatrix()) * GL.getProjection();
 			viewProjection = GL.getProjection();
 			glUniformMatrix4fv( uniformLocation, 1,false, (viewProjection)[0] );
-		}*/
+		}
 	}
 	else
 	{

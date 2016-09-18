@@ -170,7 +170,7 @@ void CProjectile::Update ( void )
 						multiplier = 1;
 						hittype = Item::HIT_CHARACTER;
 					}
-					else if ( pHitObject->GetTypeName() == "CActor" )
+					else if ( pHitObject->GetTypeName() == "CActor" || pHitObject->GetBaseClassName() == "CActor" )
 					{
 						hitBehavior = pHitObject;
 						multiplier = 1;
@@ -255,23 +255,17 @@ void CProjectile::OnHit ( CGameObject* pHitObject, Item::HitType nHitType )
 
 		// If it is, then hurt it. Bah. HURT IT.
 		CActor*	pCharacter = (CActor*)pHitObject;
-		//bool bDestroy = effects.OnHitEnemy( pCharacter );
+
 		if ( mOwner ) mOwner->OnDealDamage( dDamage, pCharacter );
 		pCharacter->OnDamaged( dDamage );
 
-		//if ( bDestroy ) {
-			// Finally, delete ourselves.
-			DeleteObject( this );
-		//}
+		// Finally, delete ourselves.
+		DeleteObject( this );
 	}
 	else if ( nHitType == Item::HIT_TERRAIN )
 	{
-		//bool bDestroy = effects.OnHitWorld( rhLastHit.hitPos, rhLastHit.hitNormal );
-
-		//if ( bDestroy ) {
-			// Finally, delete ourselves.
-			DeleteObject( this );
-		//}
+		// Finally, delete ourselves.
+		DeleteObject( this );
 	}
 	
 }
