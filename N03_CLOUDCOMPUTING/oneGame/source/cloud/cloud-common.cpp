@@ -42,18 +42,18 @@ int GameInitialize ( void )
 	//EngineCommon::RegisterScene<gmsceneCharacterViewer>( "test" );
 
 	EngineCommon::RegisterScene<gmsceneParticleEditor>( "pce" );
-	EngineCommon::RegisterScene<gmsceneLipsyncEditor>( "lse" );
-	EngineCommon::RegisterScene<gmsceneVoxelEditor>( "vxe" );
+	//EngineCommon::RegisterScene<gmsceneLipsyncEditor>( "lse" );
+	//EngineCommon::RegisterScene<gmsceneVoxelEditor>( "vxe" );
 
-	EngineCommon::RegisterScene<testSceneStaticMesh>( "ttsm" );
+	//EngineCommon::RegisterScene<testSceneStaticMesh>( "ttsm" );
 
 	//===============================================================================================//
 	// PLACE YOUR CUSTOM ENGINE MODULES BELOW HERE
 	//===============================================================================================//
 
 	// create testers
-	new CAfterWaterTester();
-	new CWindMotion();
+	//new CAfterWaterTester();
+	//new CWindMotion();
 
 	return 0;
 }

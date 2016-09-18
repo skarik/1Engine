@@ -67,6 +67,11 @@ bool CInstancedMesh::Render ( const char pass )
 		return true; // Only render when have a valid mesh and rendering enabled
 	GL_ACCESS;
 
+	// Get rid of any transforms
+	transform.position = Vector3d::zero;
+	transform.localPosition = Vector3d::zero;
+	transform.LateUpdate();
+
 	// Set up transformation for the mesh
 	if ( m_parent )
 		GL.Transform( &m_parent->transform );

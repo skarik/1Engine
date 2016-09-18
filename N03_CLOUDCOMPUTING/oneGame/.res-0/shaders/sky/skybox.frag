@@ -33,7 +33,7 @@ layout(std140) uniform sys_Fog
 	float 	sys_FogScale;
 };
 
-const float WorldRadius = 40000000;
+const float WorldRadius = 120000000;
 //const float WorldRadius = 20000;
 
 // Sine wave appoximation method (benchmarked to about 3% speed increase over all shadows)
@@ -62,7 +62,7 @@ vec3 build_sky ( vec3 spherical_direction, out float space_effect )
 	color = pow( color, vec3(1,1,1) * (spherical_direction.z + 2.0F) );
 
 	// Pull the sky into space
-	float horizon_pull_strength = clamp( max(camera_position.z, 0.0) / pow(WorldRadius, 0.4) - 0.2, 0.0,1.0 );
+	float horizon_pull_strength = clamp( max(camera_position.z, 0.0) / pow(WorldRadius, 0.35) - 0.2, 0.0,1.0 );
 	color = mix( color, vec3(0,0,0), horizon_pull_strength );
 
 	// Sample the stars
@@ -111,10 +111,10 @@ vec3 build_horizon ( vec3 spherical_direction, vec3 base_color, float space_effe
 	color = mix(color, sys_DiffuseColor.rgb, horizon_factor1 * (1-space_effect));
 	color = mix(color, sys_FogColor.rgb, pow(min(1.0, 2.0 - horizon_factor0),5.0) * gm_HorizonStrength * (1-space_effect));
 
-	/*if ( spherical_direction.z < horizon_height )
+	if ( spherical_direction.z < horizon_height )
 	{
-		color = mix( color, sys_FogColor.rgb, space_effect );
-	}*/
+		color = mix( color, gm_SkyColor.rgb * gm_SkyColor.rgb * (horizon_factor0+1), space_effect );
+	}
 
 	return color;
 }

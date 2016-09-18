@@ -71,3 +71,8 @@ void CAudioListener::Update ( void )
 	FMOD::FMOD_System_Set3DListenerAttributes( CAudioMaster::System(), 0, &t_position, &t_velocity, &t_orient_forward, &t_orient_forward );
 #endif
 }
+
+void CAudioListener::Destroy ( void )
+{
+	// TODO
+}

@@ -97,7 +97,14 @@ void CGameState::CleanWorld ( void )
 				else
 				{
 					//cout << "Clear[" << i << "]." << pBehaviors[i]->GetTypeName() << endl;
-					delete (pBehaviors[i]);
+					try
+					{
+						delete (pBehaviors[i]);
+					}
+					catch ( ... )
+					{
+						Debug::Console->PrintError( "SOMETHING WENT WRONG." );
+					}
 					pBehaviors[i] = NULL;
 				}
 			}

@@ -57,6 +57,18 @@ glMaterial::~glMaterial ( void ) throw(...)
 	if ( hasReference() ) {
 		throw std::exception();
 	}
+
+	// Clear off existing textures
+	for ( int n_index = 0; n_index < 12; ++n_index )
+	{
+		if ( m_highlevel_storage[n_index] != NULL )
+		{
+			m_highlevel_storage[n_index]->RemoveReference();
+			if ( !m_highlevel_storage[n_index]->HasReference() ) {
+				delete_safe(m_highlevel_storage[n_index]);
+			}
+		}
+	}
 }
 
 // UBO locations

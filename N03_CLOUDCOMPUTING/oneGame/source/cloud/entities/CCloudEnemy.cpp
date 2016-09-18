@@ -129,14 +129,17 @@ void CCloudEnemy::LateUpdate(void)
 
 void CCloudEnemy::OnDamaged ( Damage const& damage, DamageFeedback* )
 {
-	//rigidbody->ApplyForce( ((transform.position - damage.source).normal()*2 + Random.PointInUnitSphere()) * damage.amount * 1000.0F );
-	Vector3d hitforce = ((transform.position - damage.source).normal()*2 + Random.PointInUnitSphere()) * damage.amount;
-	rigidbody->SetVelocity( rigidbody->GetVelocity() + hitforce * 0.3F );
-
-	health -= damage.amount;
-	if ( health <= 0 )
+	if ( health > 0 )
 	{
-		OnDeath( damage );
+		//rigidbody->ApplyForce( ((transform.position - damage.source).normal()*2 + Random.PointInUnitSphere()) * damage.amount * 1000.0F );
+		Vector3d hitforce = ((transform.position - damage.source).normal()*2 + Random.PointInUnitSphere()) * damage.amount;
+		rigidbody->SetVelocity( rigidbody->GetVelocity() + hitforce * 0.3F );
+
+		health -= damage.amount;
+		if ( health <= 0 )
+		{
+			OnDeath( damage );
+		}
 	}
 }
 void CCloudEnemy::OnDeath ( Damage const& )

@@ -256,15 +256,16 @@ void CProjectile::OnHit ( CGameObject* pHitObject, Item::HitType nHitType )
 	//if ( pHitObject->GetBaseClassName() == "CActor_Character" )
 	if ( nHitType == Item::HIT_CHARACTER || nHitType == Item::HIT_ACTOR )
 	{
-		std::cout << "Projectile damage: " << dDamage.amount << " (d" << dDamage.type << ")" << std::endl;
-
 		dDamage.actor = mOwner;
 
 		// If it is, then hurt it. Bah. HURT IT.
-		CActor*	pCharacter = (CActor*)pHitObject;
+		CActor*	pCharacter = dynamic_cast<CActor*>(pHitObject);
 
-		if ( mOwner ) mOwner->OnDealDamage( dDamage, pCharacter );
-		pCharacter->OnDamaged( dDamage );
+		if ( pCharacter != NULL )
+		{
+			if ( mOwner ) mOwner->OnDealDamage( dDamage, pCharacter );
+			pCharacter->OnDamaged( dDamage );
+		}
 
 		// Finally, delete ourselves.
 		DeleteObject( this );

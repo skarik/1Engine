@@ -10,6 +10,7 @@
 #include "engine/physics/collider/types/CCapsuleCollider.h"
 
 #include "engine-common/entities/CParticleSystem.h"
+#include "renderer/object/particle/CParticleRenderer_Animated.h"
 #include "renderer/logic/particle/CParticleEmitter.h"
 #include "renderer/material/glMaterial.h"
 #include "renderer/texture/CTexture.h"
@@ -38,6 +39,8 @@ CCloudPlayer::CCloudPlayer ( void )
 	fuel_afterburner(0), fuel_gravitydrive(0),
 	weapons({0})
 {
+	health = 100;
+
 	// Create collision sphere
 	const Real t_sphereRadius = 2.5F;
 	collider = new CCapsuleCollider( t_sphereRadius*2, t_sphereRadius, true );
@@ -87,6 +90,62 @@ CCloudPlayer::~CCloudPlayer ( void )
 
 	delete_safe_decrement( particlesystem );
 	delete_safe( hudmesh );
+}
+
+
+
+void CCloudPlayer::OnDamaged ( Damage const& damage, DamageFeedback* )
+{
+	if ( health > 0 )
+	{
+		//rigidbody->ApplyForce( ((transform.position - damage.source).normal()*2 + Random.PointInUnitSphere()) * damage.amount * 1000.0F );
+		Vector3d hitforce = ((transform.position - damage.source).normal()*2 + Random.PointInUnitSphere()) * damage.amount;
+		rigidbody->SetVelocity( rigidbody->GetVelocity() + hitforce * 0.3F );
+
+		health -= damage.amount * 0.01F;
+		if ( health <= 0 )
+		{
+			OnDeath( damage );
+		}
+	}
+}
+void CCloudPlayer::OnDeath ( Damage const& )
+{
+	bHasInput = false;
+	rigidbody->SetVelocity( Vector3d::zero );
+	rigidbody->SetMotionType( physMotionType::MOTION_KEYFRAMED );
+
+	CParticleSystem* ps = new CParticleSystem("particlesystems/sparkexplo.pcf");
+
+	CParticleRenderer_Animated* renderer = (CParticleRenderer_Animated*)ps->GetRenderable();
+	if ( renderer )
+	{
+		renderer->GetMaterial()->loadFromFile("particle/sparks");
+		renderer->GetMaterial()->passinfo[0].m_hint = RL_WORLD | RL_FOG;
+		renderer->GetMaterial()->passinfo[0].b_depthmask = false;
+
+		// following is a hack. currently these values are not serialized properly (corrupted) so set them here to fix
+		renderer->fFramesPerSecond = 30.0F;
+		renderer->bStretchAnimationToLifetime = true;
+		renderer->bClampToFrameCount = true;
+		renderer->iFrameCount = 16;
+		renderer->iHorizontalDivs = 4;
+		renderer->iVerticalDivs = 4;
+	}
+	ps->transform.position = transform.position;
+	ps->bAutoDestroy = true;
+	ps->PostUpdate();
+	ps->RemoveReference();
+
+	// play sound
+	CSoundBehavior* behavior = Audio.playSound( "Char.Wep.Explo" );
+	if ( behavior )
+	{
+		behavior->position = Vector3d(0,0,0);
+		behavior->parent = &transform;
+		behavior->Update();
+		behavior->RemoveReference();
+	}
 }
 
 
@@ -455,6 +514,11 @@ void*	CCloudPlayer::mvtNormalShip ( void )
 		}
 	}
 
+	const Real max_speed = 400.0F;
+	if ( t_velocity.magnitude() > max_speed )
+	{
+		t_velocity = t_velocity.normal() * max_speed;
+	}
 
 	rigidbody->SetVelocity(t_velocity);
 
@@ -465,6 +529,15 @@ void*	CCloudPlayer::mvtNormalShip ( void )
 // Updates hud shit
 void CCloudPlayer::hudUpdate ( void )
 {	// TODO: Move this to a CLogicObject renderer derivative so can push the mesh at a faster time
+
+	if ( health <= 0 )
+	{
+		if ( hudmesh ) 
+		{
+			hudmesh->SetVisible(false);
+		}
+		return;
+	}
 
 	// Create the hudmesh
 	if ( hudmesh == NULL )

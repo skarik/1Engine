@@ -38,7 +38,7 @@ public: // ROUTINES
 	// READ-ONLY PROPERITES
 	//===============================================================================================//
 
-		// Retrieve the type of actor this is.
+	// Retrieve the type of actor this is.
 	virtual eActorObjectType ActorType ( void ) override { return ACTOR_TYPE_PLAYER; }
 
 	//===============================================================================================//
@@ -54,6 +54,13 @@ public: // ROUTINES
 	// Physics Step
 
 	void FixedUpdate ( void );
+
+	//===============================================================================================//
+	// Callback functions
+	//===============================================================================================//
+
+	void OnDamaged ( Damage const&, DamageFeedback* =NULL ) override;
+	void OnDeath ( Damage const& ) override;
 
 protected:
 	//===============================================================================================//
@@ -122,6 +129,9 @@ protected: // PROTECTED FIELDS and ROUTINES
 		bool missile_active;
 	};
 	weaponState_t weapons;
+
+	// Health state
+	Real health;
 
 	//===============================================================================================//
 	// Attached objects

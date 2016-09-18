@@ -24,10 +24,11 @@ CAudioMaster::CAudioMaster ( void )
 	next_sound_id = 0;
 
 	// Output debug messages
-	cout << "Audio: using Win32 build of OpenAL Soft 1.14 (DirectSound build)" << endl;
+	//cout << "Audio: using Win32 build of OpenAL Soft 1.14 (DirectSound build)" << endl;
+	cout << "Audio: start up the audio system..." << endl;
 	InitSystem();
 	if ( Active() )
-		cout << "Creation of OpenAL device successful!" << endl;
+		cout << "Creation of audio device successful!" << endl;
 	else
 		cout << "Error in creating OpenAL device..." << endl;
 }

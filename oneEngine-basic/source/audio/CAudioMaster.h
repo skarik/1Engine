@@ -52,11 +52,11 @@ public:
 #ifdef _AUDIO_FMOD_
 	static	FMOD::FMOD_SYSTEM*	System ( void ) {
 #ifdef _ENGINE_DEBUG
-		if ( pActiveAudioMaster == NULL ) {
+		if ( GetCurrent() == NULL ) {
 			throw 0;
 		}
 #endif
-		return pActiveAudioMaster->m_system;
+		return GetCurrent()->m_system;
 	}
 #endif
 
