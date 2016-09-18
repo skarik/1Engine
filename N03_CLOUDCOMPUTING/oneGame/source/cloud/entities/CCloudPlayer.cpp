@@ -15,6 +15,7 @@
 #include "renderer/texture/CTexture.h"
 
 #include "renderer/camera/CCamera.h"
+#include "renderer/object/mesh/CStreamedMesh.h"
 
 #include "CCloudPlayer.h"
 
@@ -38,19 +39,20 @@ CCloudPlayer::CCloudPlayer ( void )
 	particlesystem = new CParticleSystem("particlesystems/zoom_shit.pcf");
 	particlesystem->transform.SetParent(&transform);
 	particlesystem->transform.localPosition = Vector3d(0,0,0);
-	{
+	{	// Set up the additional details
 		particlesystem->GetEmitter()->vEmitterSize = Vector3d( 20,20,20 );
-		particlesystem->GetEmitter()->rfStartSize.SetRange( 0.3F, 0.3F );
+		particlesystem->GetEmitter()->rfStartSize.SetRange( 0.5F, 0.5F );
 		particlesystem->GetEmitter()->rfEndSize.SetRange( 0.3F, 0.3F );
-
+		// Set up the material
 		glMaterial* particle_material = new glMaterial;
 		particle_material->setTexture( 0, new CTexture("textures/white.jpg") );
+		particle_material->m_diffuse = Color(1,1,1,0.5F);
 		particle_material->passinfo.push_back( glPass() );
 		particle_material->passinfo[0].shader = new glShader( ".res/shaders/particles/colorBlended.glsl" );
 		particle_material->passinfo[0].m_blend_mode = Renderer::BM_ADD;
 		particle_material->passinfo[0].b_depthmask = false;
 		particle_material->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-		particle_material->m_diffuse = Color(1,1,1,0.5F);
+		particle_material->passinfo[0].m_hint = RL_WORLD | RL_FOG;
 		particlesystem->GetRenderable()->SetMaterial( particle_material );
 		particle_material->removeReference();
 	}
@@ -62,6 +64,7 @@ CCloudPlayer::~CCloudPlayer ( void )
 	delete_safe( collider );
 
 	delete_safe_decrement( particlesystem );
+	delete_safe( hudmesh );
 }
 
 
@@ -82,6 +85,9 @@ void CCloudPlayer::LateUpdate ( void )
 
 	// Update camera
 	camShipFirstPerson();
+
+	// Update the hud after the camera has moved
+	hudUpdate();
 
 	// Update listener position
 	pListener->velocity = pCamera->transform.position - pListener->position;
@@ -252,4 +258,71 @@ void*	CCloudPlayer::mvtNormalShip ( void )
 	rigidbody->SetVelocity(t_velocity);
 
 	return NULL;
+}
+
+//	hudUpdate
+// Updates hud shit
+void CCloudPlayer::hudUpdate ( void )
+{	// TODO: Move this to a CLogicObject renderer derivative so can push the mesh at a faster time
+	return;
+
+	// Create the hudmesh
+	if ( hudmesh == NULL )
+	{
+		hudmesh = new CStreamedMesh();
+		hudmesh->SetRenderType( Renderer::Foreground );
+		{
+			glMaterial* material = new glMaterial;
+			material->setTexture( 0, new CTexture("textures/white.jpg") );
+			material->m_diffuse = Color(1,0.5F,0.0F,1.0F);
+			material->passinfo.push_back( glPass() );
+			material->passinfo[0].shader = new glShader( ".res/shaders/particles/colorBlended.glsl" );
+			material->passinfo[0].m_blend_mode = Renderer::BM_NORMAL;
+			material->passinfo[0].b_depthmask = false;
+			material->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
+			material->passinfo[0].m_hint = RL_WORLD | RL_FOG;
+			hudmesh->SetMaterial( material );
+			material->removeReference();
+		}
+
+		CModelData* modeldata = hudmesh->GetModelData();
+		modeldata->triangles = new CModelTriangle [2048];
+		modeldata->vertices = new CModelVertex [2048];
+	}
+
+	CModelData* modeldata = hudmesh->GetModelData();
+	// let's start simple
+	for ( int i = 0; i < 10; ++i )
+	{
+		Vector3d points [3];
+
+		points[0] = Vector3d( cos(i*2), 0, 0 );
+		points[1] = Vector3d( 0, i, 0 );
+		points[2] = Vector3d( 0, 0, cos(i*2) );
+
+		// Push new triangle to the fuckin mesh
+		for ( int v = 0; v < 3; ++v )
+		{
+			modeldata->vertices[i*3 + v] = {0};
+
+			modeldata->vertices[i*3 + v].x = points[v].x;
+			modeldata->vertices[i*3 + v].y = points[v].y;
+			modeldata->vertices[i*3 + v].z = points[v].z;
+
+			modeldata->vertices[i*3 + v].r = 1.0F;
+			modeldata->vertices[i*3 + v].g = 1.0F;
+			modeldata->vertices[i*3 + v].b = 1.0F;
+			modeldata->vertices[i*3 + v].a = 1.0F;
+
+			modeldata->triangles[i].vert[v] = i*3 + v;
+		}
+	}
+	modeldata->vertexNum = 30;
+	modeldata->triangleNum = 10;
+
+	// Push the modified data to the GPU now
+	hudmesh->StreamLockModelData();
+
+	// Move the hudmesh in front of the camera
+	hudmesh->transform.position = pCamera->transform.position + pCamera->transform.Forward() * 3.0F;
 }

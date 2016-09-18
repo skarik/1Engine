@@ -31,7 +31,9 @@ public:
 	// Create a new VBO associated with this glMesh
 	// Removes any old VBO data.
 	// This object gains ownership of the model data. Well, it should, or you'll get memory errors and shit. And that's bad.
-	virtual void	Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames=1 );
+	virtual void	Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames=1, bool willStream=false );
+	// Sends new VBO data to the mesh
+	virtual void	Restream ( void );
 
 	// Recalculates the normals per-triangle.
 	void			RecalculateNormals ( void );

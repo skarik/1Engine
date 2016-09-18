@@ -101,7 +101,7 @@ protected:
 
 public:
 	// Send shader uniform list
-	RENDER_API void SendShaderUniforms ( CMesh* n_calling_mesh );
+	RENDER_API void SendShaderUniforms ( void );
 
 	// Begin render
 	void PreStep ( void ) override;

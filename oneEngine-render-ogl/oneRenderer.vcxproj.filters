@@ -369,6 +369,12 @@
     <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp">
       <Filter>SOURCE\Renderer\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\CStreamedMesh.cpp">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\CInstancedMesh.cpp">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\window\COglWindow.h">
@@ -649,6 +655,12 @@
     </ClInclude>
     <ClInclude Include="source\renderer\types\ModelStructures.h">
       <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\CStreamedMesh.h">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\CInstancedMesh.h">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

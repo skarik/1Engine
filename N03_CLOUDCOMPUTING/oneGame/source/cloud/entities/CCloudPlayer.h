@@ -17,6 +17,7 @@ class CRigidBody;
 class CCapsuleCollider;
 
 class CParticleSystem;
+class CStreamedMesh;
 
 //===============================================================================================//
 // Basic Player Class
@@ -54,9 +55,14 @@ public: // ROUTINES
 
 	void FixedUpdate ( void );
 
+protected:
 	//===============================================================================================//
 	// Sub-update functions
 	//===============================================================================================//
+
+	//	hudUpdate
+	// Updates hud shit
+	void hudUpdate ( void );
 
 	//	controlNormalShip
 	// Provides logic and control for normal ship behavior
@@ -102,7 +108,11 @@ protected: // PROTECTED FIELDS and ROUTINES
 	CRigidBody*			rigidbody;
 	CCapsuleCollider*	collider;
 
+	// effects
 	CParticleSystem*	particlesystem;
+
+	// hud
+	CStreamedMesh*		hudmesh;
 };
 
 #endif//_CLOUD_PLAYER_H_

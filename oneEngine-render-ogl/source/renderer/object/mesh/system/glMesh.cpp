@@ -54,7 +54,7 @@ const string& glMesh::GetName ( void ) const
 // Create a new VBO associated with this glMesh
 // Removes any old VBO data.
 // This object gains ownership of the model data. Well, it should, or you'll get memory errors and shit. And that's bad.
-void glMesh::Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames )
+void glMesh::Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames, bool willStream )
 {
 	mName = nNewName;
 
@@ -79,11 +79,51 @@ void glMesh::Initialize ( const string& nNewName, CModelData* const pNewModelDat
 	glBufferData( GL_ARRAY_BUFFER,
 		sizeof(CModelVertex) * (pmData->vertexNum),
 		pmData->vertices,
-		GL_STATIC_DRAW );
+		willStream ? GL_STREAM_DRAW : GL_STATIC_DRAW );
 	glBufferData( GL_ELEMENT_ARRAY_BUFFER,
 		sizeof(CModelTriangle) * (pmData->triangleNum),
 		pmData->triangles,
-		GL_STATIC_DRAW );
+		willStream ? GL_STREAM_DRAW : GL_STATIC_DRAW );
+
+	// bind with 0, so, switch back to normal pointer operation
+	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+}
+// Sends new VBO data to the mesh
+void glMesh::Restream ( void )
+{
+	// Bind to some buffer objects
+	glBindBuffer( GL_ARRAY_BUFFER,			iVBOverts ); // for vertex coordinates
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER,	iVBOfaces ); // for face vertex indexes
+
+	// Tell data to be discarded
+	glBufferData( GL_ARRAY_BUFFER,
+		sizeof(CModelVertex) * (pmData->vertexNum),
+		NULL,
+		GL_STREAM_DRAW );
+	glBufferData( GL_ELEMENT_ARRAY_BUFFER,
+		sizeof(CModelTriangle) * (pmData->triangleNum),
+		NULL,
+		GL_STREAM_DRAW );
+
+	// Copy data to the buffer
+	void* memoryData;
+	size_t bufferSize;
+
+	bufferSize = sizeof(CModelVertex) * (pmData->vertexNum);
+	memoryData = glMapBufferRange( GL_ARRAY_BUFFER, 0, bufferSize, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_BUFFER_BIT|GL_MAP_UNSYNCHRONIZED_BIT );
+	if ( memoryData ) {
+		memcpy( memoryData, pmData->vertices, bufferSize );
+	}
+	bufferSize = sizeof(CModelTriangle) * (pmData->triangleNum);
+	memoryData = glMapBufferRange( GL_ELEMENT_ARRAY_BUFFER, 0, bufferSize, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_BUFFER_BIT|GL_MAP_UNSYNCHRONIZED_BIT );
+	if ( memoryData ) {
+		memcpy( memoryData, pmData->triangles, bufferSize );
+	}
+	
+	glUnmapBuffer( GL_ARRAY_BUFFER );
+	glUnmapBuffer( GL_ELEMENT_ARRAY_BUFFER );
+
 
 	// bind with 0, so, switch back to normal pointer operation
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );

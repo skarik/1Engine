@@ -69,7 +69,9 @@
     <ClCompile Include="source\renderer\material\glShaderManager.cpp" />
     <ClCompile Include="source\renderer\module_renderer.cpp" />
     <ClCompile Include="source\renderer\object\CRenderableObject.cpp" />
+    <ClCompile Include="source\renderer\object\mesh\CInstancedMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\CMesh.cpp" />
+    <ClCompile Include="source\renderer\object\mesh\CStreamedMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\system\glMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\system\glSkinnedMesh.cpp" />
     <ClCompile Include="source\renderer\object\particle\CParticleRenderer.cpp" />
@@ -162,7 +164,9 @@
     <ClInclude Include="source\renderer\material\glShaderManager.h" />
     <ClInclude Include="source\renderer\module_renderer.h" />
     <ClInclude Include="source\renderer\object\CRenderableObject.h" />
+    <ClInclude Include="source\renderer\object\mesh\CInstancedMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\CMesh.h" />
+    <ClInclude Include="source\renderer\object\mesh\CStreamedMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\system\glMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\system\glSkinnedMesh.h" />
     <ClInclude Include="source\renderer\object\model\Model.h" />

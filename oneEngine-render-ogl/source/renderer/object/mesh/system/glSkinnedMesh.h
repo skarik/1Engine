@@ -36,7 +36,7 @@ public:
 	//	Initialize ( name, data ) : sets up new mesh data
 	// Creates a new VBO associated with this glMesh
 	// Removes any old VBO data.
-	void Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames=1 ) override;
+	void Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames=1, bool isStreamed=false ) override;
 
 	//	Copy ( ) : creates a new glSkinnedMesh with duplicated streams
 	glSkinnedMesh* Copy ( void );

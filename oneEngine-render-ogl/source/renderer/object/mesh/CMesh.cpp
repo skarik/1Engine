@@ -13,8 +13,11 @@ CMesh::CMesh ( glMesh* nMesh, bool n_enableSkinning )
 	: CRenderableObject(),
 	m_glMesh( nMesh ), bUseSkinning(n_enableSkinning)
 {
-	SetMaterial( m_glMesh->pmMat );
-	CalculateBoundingBox();
+	if ( m_glMesh != NULL )
+	{
+		SetMaterial( m_glMesh->pmMat );
+		CalculateBoundingBox();
+	}
 }
 
 CMesh::~CMesh ( void )
@@ -88,73 +91,45 @@ bool CMesh::PreRender ( const char pass )
 // Render the mesh
 bool CMesh::Render ( const char pass )
 {
-	if ( !bCanRender )
-		return true;
+	if ( !bCanRender || m_glMesh == NULL )
+		return true; // Only render when have a valid mesh and rendering enabled
+	GL_ACCESS;
 
-	GL_ACCESS
-	/*try
-	{*/
-		GL.Transform( &(m_parent->transform) );
+	// Set up transformation for the mesh
+	if ( m_parent )
+		GL.Transform( &m_parent->transform );
+	else
+		GL.Transform( &this->transform );
+	
+	// Set up material properties before mesh is bound
+	if ( bUseSkinning )
+	{	// Mesh MUST be a glSkinnedMesh instance, otherwise crashes will result.
+		m_material->m_bufferSkeletonSize		= ((glSkinnedMesh*)m_glMesh)->skinning_data.bonecount;
+		m_material->m_bufferMatricesSkinning	= ((glSkinnedMesh*)m_glMesh)->skinning_data.textureBufferData;
+	}
+	else
+	{
+		m_material->m_bufferSkeletonSize = 0;
+		m_material->m_bufferMatricesSkinning = 0;
+	}
+	GL.CheckError();
+	// Set up the material now
+	m_material->bindPass(pass);
+	GL.CheckError();
+	// Pass in shader constant now that the pass has been bound
+	glMaterial::current->setShaderConstants( this );
+	if ( m_parent ) m_parent->SendShaderUniforms();
+	GL.CheckError();
 
-	//glBindVertexArray( 0 );
-		if ( bUseSkinning )
-		{
-			//if ( ((CSkinnedModel*)m_parent)->bPerfectReference )
-			/*if ( false )
-			{
-				m_material->m_bufferSkeletonSize = ((glSkinnedMesh*)m_glMesh)->GetSkeleton()->size();
-				CMesh* zeroMesh = m_parent->GetMesh(uint(0));
-				if ( this == zeroMesh ) {
-					// use my own skinning and main body
-					//m_material->m_bufferMatricesSkinning = ((glSkinnedMesh*)m_glMesh)->getTextureBuffer();
-					//m_material->m_bufferMatricesSoftbody = ((glSkinnedMesh*)m_glMesh)->getSoftTextureBuffer();
-					m_material->m_bufferMatricesSkinning = ((glSkinnedMesh*)m_glMesh)->getBuffer();
-					//m_material->m_bufferMatricesSoftbody = ((glSkinnedMesh*)m_glMesh)->getSoftBuffer();
-				}
-				else {
-					// use zero mesh main body
-					//m_material->m_bufferMatricesSkinning = ((glSkinnedMesh*)zeroMesh->m_glMesh)->getTextureBuffer();
-					m_material->m_bufferMatricesSkinning = ((glSkinnedMesh*)zeroMesh->m_glMesh)->getBuffer();
-					// use my own soft skinning
-					//m_material->m_bufferMatricesSoftbody = ((glSkinnedMesh*)m_glMesh)->getSoftTextureBuffer();
-					//m_material->m_bufferMatricesSoftbody = ((glSkinnedMesh*)m_glMesh)->getSoftBuffer();
-				}
-			}
-			else
-			{*/
-				m_material->m_bufferSkeletonSize		= ((glSkinnedMesh*)m_glMesh)->skinning_data.bonecount;
-				m_material->m_bufferMatricesSkinning	= ((glSkinnedMesh*)m_glMesh)->skinning_data.textureBufferData;
-			//}
-		}
-		else
-		{
-			m_material->m_bufferSkeletonSize = 0;
-			m_material->m_bufferMatricesSkinning = 0;
-			//m_material->m_bufferMatricesSoftbody = 0;
-		}
-		GL.CheckError();
-		m_material->bindPass(pass);
-		GL.CheckError();
-		m_parent->SendShaderUniforms(this);
-		GL.CheckError();
-		BindVAO( pass, m_glMesh->GetVBOverts(), m_glMesh->GetVBOfaces() );
-		GL.CheckError();
-		/*
-		GLint arraybuf_0, arraybuf_1;
-		glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING,&arraybuf_0);
-		//glGetIntegerv(GL_ARRAY_BUFFER_BINDING,&arraybuf_1);
-		if ( arraybuf_0 == 0 ) {
-			throw std::exception();
-			glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_glMesh->GetVBOfaces() );
-		}*/
-		glDrawElements( GL_TRIANGLES, m_glMesh->pmData->triangleNum*3, GL_UNSIGNED_INT, 0 );
-		GL.CheckError();
+	// Bind the current mesh
+	BindVAO( pass, m_glMesh->GetVBOverts(), m_glMesh->GetVBOfaces() );
+	GL.CheckError();
 
-		//GLenum error = glGetError();
-	/*}
-	catch ( const std::exception& e ) {
-		printf( e.what() );
-	}*/
+	// Render the mesh
+	glDrawElements( GL_TRIANGLES, m_glMesh->pmData->triangleNum*3, GL_UNSIGNED_INT, 0 );
+	GL.CheckError();
 
+
+	// Successful rendering
 	return true;
 }

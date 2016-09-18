@@ -13,8 +13,8 @@ class CMesh : public CRenderableObject
 {
 
 public:
-	explicit CMesh ( glMesh*, bool n_enableSkinning=false );
-	~CMesh ( void );
+	RENDER_API explicit	CMesh ( glMesh*, bool n_enableSkinning=false );
+	RENDER_API virtual ~CMesh ( void );
 
 public:
 	// Return my mesh's name

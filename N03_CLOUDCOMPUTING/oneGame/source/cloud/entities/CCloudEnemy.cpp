@@ -25,8 +25,9 @@ CCloudEnemy::CCloudEnemy(void)
 	rigidbody->SetLinearDamping( 0.1F );
 
 	// Create model for the bot.
-	model = new CModel( "models/geosphere.fbx" );
-	model->transform.scale = Vector3d(1,1,1) * t_sphereRadius;
+	//model = new CModel( "models/geosphere.fbx" );
+	model = new CModel( "models/enemy/bot_zero.fbx" );
+	model->transform.scale = Vector3d(1,1,1) * t_sphereRadius * 2.54F;// / 120.0F;
 }
 
 CCloudEnemy::~CCloudEnemy(void)

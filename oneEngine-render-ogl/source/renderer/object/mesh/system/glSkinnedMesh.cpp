@@ -79,9 +79,9 @@ glSkinnedMesh::~glSkinnedMesh ( void )
 //	iVBOfaces = 0;
 //}
 
-void glSkinnedMesh::Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames )
+void glSkinnedMesh::Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames, bool isStreamed )
 {
-	glMesh::Initialize( nNewName, pNewModelData, frames );
+	glMesh::Initialize( nNewName, pNewModelData, frames, false );
 
 	
 	// Find max bone index

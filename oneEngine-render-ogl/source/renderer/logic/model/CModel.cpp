@@ -348,9 +348,8 @@ void CModel::SetShaderUniform ( const char* sUniformName, const Color& fInput )
 	(*uniformMapColor)[arstring128(sUniformName)] = fInput;
 }
 
-void CModel::SendShaderUniforms ( CMesh* n_calling_mesh )
+void CModel::SendShaderUniforms ( void )
 {
-	glMaterial::current->setShaderConstants( n_calling_mesh );
 	if ( glMaterial::current->getUsingShader() ) {
 		if ( uniformMapFloat ) {
 			for ( auto entry = uniformMapFloat->begin(); entry != uniformMapFloat->end(); ++entry ) {
