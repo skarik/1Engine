@@ -80,37 +80,109 @@ void sceneCloudGame::LoadScene ( void )
 	// enemy test
 	{
 		CCloudEnemy* enemy;
-		enemy = new CCloudEnemy();
-		enemy->transform.position = Vector3d( 12, -4, 4 );
 		CCloudAI *brain;
-		brain = new CCloudAI(enemy, 9);
-		enemy->RemoveReference();
-		brain->RemoveReference();
 
-		/*enemy = new CCloudEnemy();
-		brain = new CCloudAI(enemy, 4);
-		enemy->transform.position = Vector3d( 4,4, 2 );
-		enemy->RemoveReference();
-
-		enemy = new CCloudEnemy();
-		enemy->transform.position = Vector3d( 4,-4, 2 );
-		enemy->RemoveReference();
-
-		enemy = new CCloudEnemy();
-		enemy->transform.position = Vector3d( 4,4, 6 );
-		enemy->RemoveReference();*/
-
-		for ( int x = 0; x < 20; ++x )
+		//Make some Vanguards (0)
+		for (int x = 0; x < 5; x++)
 		{
-			for ( int y = 0; y < 20; ++y )
+			enemy = new CCloudEnemy();
+			enemy->transform.position = Vector3d( 100, 10 * x - 20, 10);
+			brain = new CCloudAI(enemy, 0);
+			enemy->RemoveReference();
+			brain->RemoveReference();
+		}
+
+		//Make 6 groups of Mobs (2)
+		//Front
+		for (int x = 0; x < 5; x++)
+		{
+			for (int y = 0; y < 5; y++)
 			{
 				enemy = new CCloudEnemy();
-				enemy->transform.position = Vector3d( 5*x + 5, 16, 5*y + 5 );
-				brain = new CCloudAI(enemy, 1);
+				enemy->transform.position = Vector3d(100, 10 * x - 20, 10 * y - 20);
+				brain = new CCloudAI(enemy, 2);
 				enemy->RemoveReference();
 				brain->RemoveReference();
 			}
 		}
+
+		//Above
+		for (int x = 0; x < 5; x++)
+		{
+			for (int y = 0; y < 5; y++)
+			{
+				enemy = new CCloudEnemy();
+				enemy->transform.position = Vector3d(10 * x - 20, 10 * y - 20, 100);
+				brain = new CCloudAI(enemy, 2);
+				enemy->RemoveReference();
+				brain->RemoveReference();
+			}
+		}
+
+		//Below
+		for (int x = 0; x < 5; x++)
+		{
+			for (int y = 0; y < 5; y++)
+			{
+				enemy = new CCloudEnemy();
+				enemy->transform.position = Vector3d(10 * x - 20, 10 * y - 20, -100);
+				brain = new CCloudAI(enemy, 2);
+				enemy->RemoveReference();
+				brain->RemoveReference();
+			}
+		}
+
+		//Right
+		for (int x = 0; x < 5; x++)
+		{
+			for (int y = 0; y < 5; y++)
+			{
+				enemy = new CCloudEnemy();
+				enemy->transform.position = Vector3d(10 * x - 20, 100, 10 * y - 20);
+				brain = new CCloudAI(enemy, 2);
+				enemy->RemoveReference();
+				brain->RemoveReference();
+			}
+		}
+
+		//Left
+		for (int x = 0; x < 5; x++)
+		{
+			for (int y = 0; y < 5; y++)
+			{
+				enemy = new CCloudEnemy();
+				enemy->transform.position = Vector3d(10 * x - 20, -100, 10 * y - 20);
+				brain = new CCloudAI(enemy, 2);
+				enemy->RemoveReference();
+				brain->RemoveReference();
+			}
+		}
+
+		//Back
+		for (int x = 0; x < 5; x++)
+		{
+			for (int y = 0; y < 5; y++)
+			{
+				enemy = new CCloudEnemy();
+				enemy->transform.position = Vector3d(-100, 10 * x - 20, 10 * y - 20);
+				brain = new CCloudAI(enemy, 2);
+				enemy->RemoveReference();
+				brain->RemoveReference();
+			}
+		}
+
+		//WILDCARDS
+		enemy = new CCloudEnemy();
+		enemy->transform.position = Vector3d( -75, -75, -75);
+		brain = new CCloudAI(enemy, 2);
+		enemy->RemoveReference();
+		brain->RemoveReference();
+
+		enemy = new CCloudEnemy();
+		enemy->transform.position = Vector3d(75, 75, 75);
+		brain = new CCloudAI(enemy, 2);
+		enemy->RemoveReference();
+		brain->RemoveReference();
 	}
 	loadscreen->StepScreen();
 
