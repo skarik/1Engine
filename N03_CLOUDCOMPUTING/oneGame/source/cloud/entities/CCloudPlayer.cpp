@@ -319,8 +319,42 @@ void CCloudPlayer::weaponsNormalShip ( void )
 					behavior->Update();
 					behavior->RemoveReference();
 				}
+			}
+		}
+		if ( weapons.missile_active )
+		{
+			if ( weapons.missile_cd <= 0.0F )
+			{
+				// 5 rounds/sec
+				weapons.missile_cd = 1 / 5.0F;
 
-				shakeAmount += 0.2F;
+				// Fire missiles!
+				shakeAmount += 0.1F;
+
+				weapons.missile_state = (weapons.missile_state + 1) % 2;
+				CProjectile* projectile;
+				if ( weapons.missile_state == 0 )
+				{
+					projectile = new ProjectileMissile( 
+						Ray( transform.position + playerRotation * Vector3d(0,1,0), playerRotation * Vector3d(1,0,0) ), 100.0F );
+				}
+				else
+				{
+					projectile = new ProjectileMissile( 
+						Ray( transform.position - playerRotation * Vector3d(0,1,0), playerRotation * Vector3d(1,0,0) ), 100.0F );
+				}
+				projectile->SetOwner(this);
+				projectile->RemoveReference();
+
+				// Load in a sound, set lipsync with the feedback sound file name
+				CSoundBehavior* behavior = Audio.playSound( "Char.Wep.Missile" );
+				if ( behavior )
+				{
+					behavior->position = Vector3d(0,0,0);
+					behavior->parent = &transform;
+					behavior->Update();
+					behavior->RemoveReference();
+				}
 			}
 		}
 	}

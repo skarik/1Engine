@@ -108,6 +108,7 @@ void sceneCloudGame::LoadScene ( void )
 				enemy->transform.position = Vector3d( 5*x + 5, 16, 5*y + 5 );
 				brain = new CCloudAI(enemy, 2);
 				enemy->RemoveReference();
+				brain->RemoveReference();
 			}
 		}
 	}

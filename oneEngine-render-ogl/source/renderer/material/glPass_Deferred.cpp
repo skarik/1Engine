@@ -60,11 +60,16 @@ void glMaterial::deferred_shader_build( uchar pass )
 		IO::AppendStringToFile( t_shaderNameVert.c_str(), "\n#version 140\n\n" );
 		// Add in the vertex model inputs
 		if ( !m_isSkinnedShader ) {
-			if ( dpass.m_diffuse_method != Renderer::Deferred::DIFFUSE_TERRAIN ) {
-				IO::AppendFile( t_shaderNameVert.c_str(), prefix+"vertin.vert" );
+			if ( !m_isInstancedShader ) {
+				if ( dpass.m_diffuse_method != Renderer::Deferred::DIFFUSE_TERRAIN ) {
+					IO::AppendFile( t_shaderNameVert.c_str(), prefix+"vertin.vert" );
+				}
+				else {
+					IO::AppendFile( t_shaderNameVert.c_str(), prefix+"vertin_terrain.vert" );
+				}
 			}
 			else {
-				IO::AppendFile( t_shaderNameVert.c_str(), prefix+"vertin_terrain.vert" );
+				IO::AppendFile( t_shaderNameVert.c_str(), prefix+"vertin.instanced.vert" );
 			}
 		}
 		else {
@@ -94,7 +99,12 @@ void glMaterial::deferred_shader_build( uchar pass )
 		else {
 			IO::AppendFile( t_shaderNameVert.c_str(), prefix+"vertpos.skinning.vert" );
 		}
-		IO::AppendFile( t_shaderNameVert.c_str(), prefix+"vertex_trans.vert" );
+		if ( !m_isInstancedShader ) {
+			IO::AppendFile( t_shaderNameVert.c_str(), prefix+"vertex_trans.vert" );
+		}
+		else {
+			IO::AppendFile( t_shaderNameVert.c_str(), prefix+"vertex_trans.instanced.vert" );
+		}
 		if ( dpass.m_diffuse_method != Renderer::Deferred::DIFFUSE_TERRAIN ) {
 			IO::AppendFile( t_shaderNameVert.c_str(), prefix+"vertout_main.vert" );
 		}

@@ -93,6 +93,7 @@ public:
 	// Global options
 	bool	m_isScreenShader;
 	bool	m_isSkinnedShader;
+	bool	m_isInstancedShader;
 
 public:
 	// Constants (textures and uniforms)

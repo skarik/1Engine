@@ -9,7 +9,7 @@
 ProjectilePlasma::ProjectilePlasma ( const Ray & direction, Real speed )
 	:CProjectile( direction, speed, 0.5F )
 {
-	dDamage.amount = 50.0F;
+	dDamage.amount = 70.0F;
 
 	pTrailParticle = new CParticleSystem( "particlesystems/arrowtrail01.pcf" );
 	pTrailParticle->transform.position = transform.position;

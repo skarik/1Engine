@@ -196,11 +196,12 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 
 void CParticleSystem::PostUpdate ( void )
 {
-	// Loop through all the components. If they've no owner, remove them.
-	/*for ( vector<CGameBehavior*>::iterator it = vpComponents.begin(); it != vpComponents.end(); it++ )
+	// Error check for components
+	if ( vpEmitters.size() > 256 || vpRComponents.size() > 256 )
 	{
-		(*it)->transform.get( this->transform );
-	}*/
+		return;
+	}
+
 	for ( vector<CParticleEmitter*>::iterator it = vpEmitters.begin(); it != vpEmitters.end(); it++ )
 	{
 		(*it)->transform.Get( this->transform );

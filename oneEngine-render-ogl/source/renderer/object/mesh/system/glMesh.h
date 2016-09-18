@@ -36,7 +36,7 @@ public:
 	virtual void	Restream ( void );
 
 	// Recalculates the normals per-triangle.
-	void			RecalculateNormals ( void );
+	RENDER_API void	RecalculateNormals ( void );
 	// Smooths the normals
 	void			SmoothNormals ( float val );
 

@@ -41,7 +41,7 @@ CTexture*	glMaterial::m_sampler_reflection = NULL;
 // =====================================
 
 glMaterial::glMaterial ( void )
-	: m_isScreenShader(false), m_isSkinnedShader(false),
+	: m_isScreenShader(false), m_isSkinnedShader(false), m_isInstancedShader(false),
 	m_diffuse(1,1,1,1), m_specular(0,0,0,1), m_specularPower(32), m_emissive(0,0,0,0),
 	gm_WindDirection(0,0,0,1), gm_FadeValue(0), gm_HalfScale(0),
 	m_bufferMatricesSkinning(0), /*m_bufferMatricesSoftbody(0),*/ m_bufferSkeletonSize(0),

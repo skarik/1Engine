@@ -49,6 +49,7 @@ CCloudEnemy::CCloudEnemy(void)
 		model = new CModel( "models/enemy/bot_zero.fbx" );
 		model->transform.scale = Vector3d(1,1,1) * t_sphereRadius * 2.54F;// / 120.0F;
 		model->SetVisibility(false);
+		model->GetMesh(uint(0))->m_glMesh->RecalculateNormals();
 	}
 	if ( mesh == NULL )
 	{
@@ -58,12 +59,14 @@ CCloudEnemy::CCloudEnemy(void)
 		glMaterial* material = new glMaterial;
 		material->setTexture( 0, new CTexture("textures/white.jpg") );
 		material->m_diffuse = Color(1,0.5F,0.0F,1.0F);
+		material->m_isInstancedShader = true;
 		material->passinfo.push_back( glPass() );
 		material->passinfo[0].shader = new glShader( ".res/shaders/particles/colorBlended.instanced.glsl" );
-		material->passinfo[0].m_blend_mode = Renderer::BM_NORMAL;
+		/*material->passinfo[0].m_blend_mode = Renderer::BM_NORMAL;
 		material->passinfo[0].b_depthmask = true;
 		material->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
-		material->passinfo[0].m_hint = RL_WORLD | RL_FOG;
+		material->passinfo[0].m_hint = RL_WORLD | RL_FOG;*/
+		material->deferredinfo.push_back( glPass_Deferred() );
 		mesh->SetMaterial( material );
 		material->removeReference();
 
@@ -77,7 +80,7 @@ CCloudEnemy::~CCloudEnemy(void)
 	delete_safe_decrement(rigidbody);
 	delete_safe(collider);
 
-	delete_safe(model);
+	//delete_safe(model);
 
 	// Remove this from the manifest
 	auto manifest_spot = std::find( manifest.begin(), manifest.end(), this );

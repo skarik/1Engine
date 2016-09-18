@@ -9,7 +9,7 @@
 ProjectileBullet::ProjectileBullet ( const Ray & direction, Real speed )
 	:CProjectile( direction, speed, 0.05F )
 {
-	dDamage.amount = 10.0F;
+	dDamage.amount = 20.0F;
 
 	pTrailParticle = new CParticleSystem( "particlesystems/arrowtrail01.pcf" );
 	pTrailParticle->transform.position = transform.position;
@@ -19,6 +19,7 @@ ProjectileBullet::ProjectileBullet ( const Ray & direction, Real speed )
 	CParticleRenderer* renderer = (CParticleRenderer*)pTrailParticle->GetRenderable();
 	renderer->GetMaterial()->loadFromFile("particle/sparks");
 	renderer->GetMaterial()->setTexture( 0, new CTexture("textures/white.jpg") );
+	renderer->GetMaterial()->m_diffuse = Color( 1.0F, 0.3F, 0.0F );
 	renderer->GetMaterial()->passinfo[0].m_hint = RL_WORLD | RL_FOG;
 	renderer->GetMaterial()->passinfo[0].b_depthmask = false;
 }
