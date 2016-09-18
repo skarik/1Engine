@@ -3,12 +3,13 @@
 #include "Personalities/CTestPersonality.h"
 #include "Personalities/CPersonalityVanguard.h"
 #include "Personalities/CPersonalityScout.h"
+#include "Personalities/CPersonalityMob.h"
 
 CPersonalityFactory *pfac = new CPersonalityFactory();
 
 CPersonalityFactory::CPersonalityFactory (void) 
 {
-	numPersonalities = 2;
+	numPersonalities = 3;
 	std::random_device rd;
 
 	mt = new std::mt19937(rd());
@@ -39,6 +40,8 @@ CPersonality *CPersonalityFactory::MakePersonality (CCloudEnemy *host, int type)
 		return new CPersonalityVanguard(host);
 	case 1:
 		return new CPersonalityScout(host);
+	case 2:
+		return new CPersonalityMob(host);
 	default:
 		return new CTestPersonality(host);
 	}

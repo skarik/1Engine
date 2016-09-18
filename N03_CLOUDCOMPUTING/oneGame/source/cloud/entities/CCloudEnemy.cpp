@@ -266,5 +266,8 @@ void CCloudEnemy::SetRotation(Rotator rot)
 
 Vector3d CCloudEnemy::GetVelocity()
 {
-	return rigidbody->GetVelocity();
+	if (rigidbody != NULL)
+		return rigidbody->GetVelocity();
+	else
+		return Vector3d(0,0,0);
 }
