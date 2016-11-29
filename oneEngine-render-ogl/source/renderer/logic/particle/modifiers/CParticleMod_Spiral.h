@@ -9,7 +9,7 @@ class CParticleMod_Spiral : public CParticleModifier
 public:
 	RENDER_API CParticleMod_Spiral ( void );
 
-	RENDER_API void Modify ( std::vector<CParticle>::iterator& particle ) override;
+	RENDER_API void Modify ( CParticle* particle ) override;
 	RENDER_API virtual void	serialize ( Serializer &, const uint );
 
 public:

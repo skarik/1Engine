@@ -12,6 +12,12 @@ CParticleEmitter::CParticleEmitter ( void )
 	: CLogicObject()
 {
 	// Set initial states
+	m_particles = NULL;
+	m_max_particle_index = 0;
+	m_next_particle_index = 0;
+	m_particle_count = 0;
+	m_particle_array_size = 0;
+	
 	bHasEmitted = false;
 	fEmitCount	= 0.0f;
 
@@ -46,9 +52,31 @@ CParticleEmitter::CParticleEmitter ( void )
 
 CParticleEmitter::~CParticleEmitter ( void )
 {
-	;
+	if ( m_particles != NULL )
+	{
+		delete [] m_particles;
+		m_particles = NULL;
+	}
 }
 
+// Start up system
+void CParticleEmitter::Initialize ( void )
+{
+	if ( m_particles != NULL && m_particle_array_size != (uint16_t)fMaxParticles )
+	{
+		delete [] m_particles;
+	}
+	// Create new array of particles
+	m_particle_array_size = std::min<uint16_t>( (uint16_t)(rfParticlesSpawned.mMaxVal * rfLifetime.mMaxVal * 1.41F), (uint16_t)fMaxParticles );
+	m_particles = new CParticle [m_particle_array_size];
+	// Zero out their data
+	memset( m_particles, 0, sizeof(CParticle) * m_particle_array_size );
+
+	// Reset the other values
+	m_max_particle_index = 0;
+	m_next_particle_index = 0;
+	m_particle_count = 0;
+}
 
 // Update
 void CParticleEmitter::PreStepSynchronus ( void )
@@ -56,18 +84,22 @@ void CParticleEmitter::PreStepSynchronus ( void )
 	// Update velocity
 	m_worldVelocity = m_worldVelocity.lerp( (transform.position-m_lastPosition) / Time::deltaTime, Time::deltaTime*10 );
 	m_lastPosition = transform.position;
-	// Update emit
-	if ( !bOneShot )
+	// Emit if we have a working particle listing
+	if ( m_particles != NULL )
 	{
-		Emit();
-		bHasEmitted = false;
-	}
-	else
-	{
-		if ( !bHasEmitted )
+		// Update emit
+		if ( !bOneShot )
 		{
 			Emit();
-			bHasEmitted = true;
+			bHasEmitted = false;
+		}
+		else
+		{
+			if ( !bHasEmitted )
+			{
+				Emit();
+				bHasEmitted = true;
+			}
 		}
 	}
 }
@@ -75,14 +107,15 @@ void CParticleEmitter::PreStepSynchronus ( void )
 // Emit Particles
 void CParticleEmitter::Emit ( void )
 {
-	if ( vParticles.size() < fMaxParticles )
+	if ( m_particle_count < m_particle_array_size )
 	{
 		if ( !bOneShot )
 		{
-			ftype fReleaseCount = 0;
-			ftype fTargetReleaseCount = rfParticlesSpawned.GetRandom() * CTime::deltaTime;
+			Real fReleaseCount = 0;
+			Real fTargetReleaseCount = rfParticlesSpawned.GetRandom() * CTime::deltaTime;
 
 			fEmitCount += fTargetReleaseCount;
+			fEmitCount = std::min<Real>( fEmitCount, (Real)(m_particle_array_size - m_particle_count) );
 			if ( fEmitCount >= 1.0f )
 			{
 				while ( fReleaseCount < fTargetReleaseCount )
@@ -97,8 +130,8 @@ void CParticleEmitter::Emit ( void )
 		}
 		else
 		{
-			ftype fReleaseCount = 0;
-			ftype fTargetReleaseCount = rfParticlesSpawned.GetRandom();
+			Real fReleaseCount = 0;
+			Real fTargetReleaseCount = rfParticlesSpawned.GetRandom();
 
 			while (( fReleaseCount < fTargetReleaseCount )&&( fReleaseCount < fMaxParticles ))
 			{
@@ -115,8 +148,13 @@ void CParticleEmitter::Emit ( void )
 // Create new particle and add to internal particle list
 void CParticleEmitter::CreateParticle ( const Vector3d & vInPosition )
 {
-	CParticle newParticle;
+	if ( m_next_particle_index >= m_particle_array_size )
+	{	// Need to do a quick check to fix this edge case
+		m_next_particle_index = 0;
+	}
+	CParticle& newParticle = m_particles[m_next_particle_index];
 
+	// Set the new values
 	if ( !bSmoothEmitter )
 	{
 		newParticle.fStartLife	= rfLifetime.GetRandom();
@@ -155,13 +193,28 @@ void CParticleEmitter::CreateParticle ( const Vector3d & vInPosition )
 		newParticle.vAcceleration	= rvAcceleration.GetNext();
 		newParticle.vLinearDamping	= rvLinearDamping.GetNext();
 	}
+	newParticle.alive = true;
 
-	vParticles.push_back( newParticle );
+	// Increment particle count
+	m_particle_count += 1;
+
+	// Increment iteration count
+	m_max_particle_index = std::max<uint16_t>( m_max_particle_index,std::max<uint16_t>(m_particle_count, m_next_particle_index + 1));
+
+	// Grab next particle index
+	m_next_particle_index = newParticle.next_free_particle;
+	newParticle.next_free_particle = 0; // Clear out next free particle
+	// If the next particle is invalid, then go to the end of the current listing
+	if ( m_next_particle_index == 0 )
+	{
+		m_next_particle_index = m_particle_count;
+	}
 }
 
 // Return particle count
 unsigned int CParticleEmitter::GetParticleCount ( void ) {
-	return vParticles.size();
+	//return vParticles.size();
+	return m_particle_count;
 }
 // Return if emitted
 bool CParticleEmitter::HasEmitted ( void ) {
@@ -316,4 +369,6 @@ void	CParticleEmitter::serialize ( Serializer & ser, const uint ver )
 	if ( ver < 3 ) return;
 
 	ser & fVelocityScale;
+
+	Initialize();
 }

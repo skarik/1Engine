@@ -45,7 +45,7 @@ public:
 			//(*it)->transform.SetParent(NULL);
 			/*if ( !((*it)->HasReference()) )
 			{*/
-				delete (*it);
+			delete_safe(*it);
 			//}
 		}
 		for ( std::vector<CLogicObject*>::iterator it = vpLComponents.begin(); it != vpLComponents.end(); it++ )
@@ -53,14 +53,14 @@ public:
 			//(*it)->transform.SetParent(NULL);
 			/*if ( !((*it)->HasReference()) )
 			{*/
-				delete (*it);
+			delete_safe (*it);
 			//}
 		}
 		for ( std::vector<CCollider*>::iterator it = vpCComponents.begin(); it != vpCComponents.end(); it++ )
 		{
-			///if ( !((*it)->HasReference()) )
+			//if ( !((*it)->HasReference()) )
 			//{
-				delete (*it);
+			delete_safe (*it);
 			//}
 		}
 	}

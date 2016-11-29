@@ -170,15 +170,18 @@ void CParticleRenderer::CreateMesh ( uint32_t& out_vertCount, uint32_t& out_triC
 		uint32_t i = 0;
 		uint32_t t = 0;
 		// Loop through all the particles and add to the list
-		for ( std::vector<CParticle>::iterator it = myEmitter->vParticles.begin(); it != myEmitter->vParticles.end(); ++it )
+		for ( uint16_t pi = 0; pi < myEmitter->m_max_particle_index; ++pi )
 		{
+			const CParticle& particle = myEmitter->m_particles[pi];
+			if ( !particle.alive ) continue;
+
 			// Generate true position
-			vParticlePosition = (myEmitter->bSimulateInWorldspace) ? it->vPosition :( it->vPosition + myEmitter->transform.position );
+			vParticlePosition = (myEmitter->bSimulateInWorldspace) ? particle.vPosition :( particle.vPosition + myEmitter->transform.position );
 
 			// Get corner positions
-			particleRot.AxisAngle( vCamForward, it->fAngle );
-			vrRight = (particleRot*vRight) *it->fSize;
-			vrUp = (particleRot*vUp) *it->fSize;
+			particleRot.AxisAngle( vCamForward, particle.fAngle );
+			vrRight = (particleRot*vRight) *particle.fSize;
+			vrUp = (particleRot*vUp) * particle.fSize;
 			corners[3] = (-vrRight+vrUp);
 			corners[2] = (-vrRight-vrUp);
 			corners[1] = (vrRight-vrUp);
@@ -188,10 +191,10 @@ void CParticleRenderer::CreateMesh ( uint32_t& out_vertCount, uint32_t& out_triC
 			// Set the colors and normals
 			temp = cameraRot*(-corners[4]);
 			for ( int j = 0; j < 4; ++j ) {
-				pVertices[i+j].r = it->cColor.red;
-				pVertices[i+j].g = it->cColor.green;
-				pVertices[i+j].b = it->cColor.blue;
-				pVertices[i+j].a = it->cColor.alpha;
+				pVertices[i+j].r = particle.cColor.red;
+				pVertices[i+j].g = particle.cColor.green;
+				pVertices[i+j].b = particle.cColor.blue;
+				pVertices[i+j].a = particle.cColor.alpha;
 				pVertices[i+j].nx = temp.x;
 				pVertices[i+j].ny = temp.y;
 				pVertices[i+j].nz = temp.z;
@@ -240,8 +243,8 @@ void CParticleRenderer::CreateMesh ( uint32_t& out_vertCount, uint32_t& out_triC
 		}
 
 		// Set output count
-		out_vertCount = myEmitter->vParticles.size() * 4;
-		out_triCount = myEmitter->vParticles.size() * 2;
+		out_vertCount = i;
+		out_triCount = t;
 	}
 	else if ( iRenderMethod == P_STRETCHED_BILLBOARD )
 	{
@@ -267,21 +270,24 @@ void CParticleRenderer::CreateMesh ( uint32_t& out_vertCount, uint32_t& out_triC
 		uint32_t i = 0;
 		uint32_t t = 0;
 		// Loop through all the particles and add to the list
-		for ( std::vector<CParticle>::iterator it = myEmitter->vParticles.begin(); it != myEmitter->vParticles.end(); ++it )
+		for ( uint16_t pi = 0; pi < myEmitter->m_max_particle_index; ++pi )
 		{
-			// Get corner positions// Generate true position
-			vParticlePosition = (myEmitter->bSimulateInWorldspace) ? it->vPosition :( it->vPosition + myEmitter->transform.position );
+			const CParticle& particle = myEmitter->m_particles[pi];
+			if ( !particle.alive ) continue;
 
-			vrRight = it->vVelocity * fR_SpeedScale;
-			if ( vrRight.sqrMagnitude() < sqr(it->fSize*0.5f) ) {
-				vrRight = vrRight.normal() * it->fSize*0.5f;
+			// Get corner positions// Generate true position
+			vParticlePosition = (myEmitter->bSimulateInWorldspace) ? particle.vPosition :( particle.vPosition + myEmitter->transform.position );
+
+			vrRight = particle.vVelocity * fR_SpeedScale;
+			if ( vrRight.sqrMagnitude() < sqr(particle.fSize*0.5f) ) {
+				vrRight = vrRight.normal() * particle.fSize*0.5f;
 			}
 			vrUp = vCamForward.cross( vrRight.normal() );
 			if ( vrUp.sqrMagnitude() < 0.01f ) {
-				particleRot.AxisAngle( vCamForward, it->fAngle );
+				particleRot.AxisAngle( vCamForward, particle.fAngle );
 				vrUp = (particleRot*vRight);
 			}
-			vrUp *= it->fSize;
+			vrUp *= particle.fSize;
 
 			corners[3] = (-vrRight+vrUp);
 			corners[2] = (-vrRight-vrUp);
@@ -292,10 +298,10 @@ void CParticleRenderer::CreateMesh ( uint32_t& out_vertCount, uint32_t& out_triC
 			// Set the colors and normals
 			temp = cameraRot*(-corners[4]);
 			for ( int j = 0; j < 4; ++j ) {
-				pVertices[i+j].r = it->cColor.red;
-				pVertices[i+j].g = it->cColor.green;
-				pVertices[i+j].b = it->cColor.blue;
-				pVertices[i+j].a = it->cColor.alpha;
+				pVertices[i+j].r = particle.cColor.red;
+				pVertices[i+j].g = particle.cColor.green;
+				pVertices[i+j].b = particle.cColor.blue;
+				pVertices[i+j].a = particle.cColor.alpha;
 				pVertices[i+j].nx = temp.x;
 				pVertices[i+j].ny = temp.y;
 				pVertices[i+j].nz = temp.z;
@@ -351,8 +357,8 @@ void CParticleRenderer::CreateMesh ( uint32_t& out_vertCount, uint32_t& out_triC
 		}
 
 		// Set output count
-		out_vertCount = myEmitter->vParticles.size() * 4;
-		out_triCount = myEmitter->vParticles.size() * 4;
+		out_vertCount = i;
+		out_triCount = t;
 	}
 	else if ( iRenderMethod == P_FLAT_TRAILS )
 	{
@@ -379,40 +385,59 @@ void CParticleRenderer::CreateMesh ( uint32_t& out_vertCount, uint32_t& out_triC
 		CParticle* prevparticle = NULL;
 
 		// TODO: Unroll loop
-		if ( myEmitter->vParticles.size() > 0 )
-		for ( uint32_t p = 0; p <= myEmitter->vParticles.size(); ++p )
+		if ( myEmitter->m_particle_count > 0 )
+		for ( uint16_t pi = 0; pi <= myEmitter->m_max_particle_index; ++pi )
 		{
+			//const CParticle& particle = myEmitter->m_particles[pi];
+
 			// Save previous iteration's information
 			vrPrevUp = vrUp;
 			prevparticle = particle; 
-			
+
 			// Get current particle
-			if ( p < myEmitter->vParticles.size() )
-				particle = &(myEmitter->vParticles[p]);
+			if ( pi < myEmitter->m_max_particle_index )
+			{
+				particle = &myEmitter->m_particles[pi];
+				if ( particle != NULL && !particle->alive ) continue;
+			}
+			else
+			{	// Need to finish off the trail w/ last iteration
+				particle = NULL;
+			}
+
+			if ( particle == NULL ) continue;
+
+			//if ( p < myEmitter->vParticles.size() )
+			//	particle = &(myEmitter->vParticles[p]);
 
 			// Generate true position
 			vPrevParticlePosition = vParticlePosition;
 			vParticlePosition = (myEmitter->bSimulateInWorldspace) ? particle->vPosition :( particle->vPosition + myEmitter->transform.position );
 
 			// First need to get the vector offsets for the position.
-			vrNext = Vector3d( 0,0,0 );
+			/*vrNext = Vector3d( 0,0,0 );
 			if ( p > 0 ) {
 				vrNext += vParticlePosition - myEmitter->vParticles[p-1].vPosition;
 			}
 			if ( p < myEmitter->vParticles.size()-1 ) {
 				vrNext += myEmitter->vParticles[p+1].vPosition - vParticlePosition;
+			}*/
+			if ( prevparticle != NULL )
+			{
+				vrNext = vParticlePosition - prevparticle->vPosition;
+				vrNext.normalize();
 			}
-			vrNext.normalize();
 
 			// With an approximate vector of the particle direction, now generate point offset
 			vrUp = vCamForward.cross( vrNext ).normal();
 			//vrNext = vrUp.cross( vCamForward );
 			
 			// First particle uses emitter origin
-			if ( p == 0 ) {
+			//if ( p == 0 ) {
+			if ( prevparticle == NULL ) {
 				continue;
 			}
-			else if ( p < myEmitter->vParticles.size()-1 )
+			else if ( particle != NULL )
 			{
 				// Create a quad that works off the vrUp and vrPrevUp
 				corners[0] = vParticlePosition + vrUp*particle->fSize;
@@ -542,8 +567,8 @@ void CParticleRenderer::CreateMesh ( uint32_t& out_vertCount, uint32_t& out_triC
 
 
 		// Set output count
-		out_vertCount = (myEmitter->vParticles.size()) * 4;
-		out_triCount = (myEmitter->vParticles.size()) * 4;
+		out_vertCount = i;
+		out_triCount = t;
 	}
 	else {
 		out_vertCount = 0;

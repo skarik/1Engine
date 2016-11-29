@@ -69,7 +69,7 @@ void CParticleEmitterSkeleton::Emit ( void )
 		return;
 	}
 
-	if ( vParticles.size() < fMaxParticles )
+	if ( m_particle_count < m_particle_array_size )
 	{
 		if ( !bOneShot )
 		{
@@ -94,7 +94,7 @@ void CParticleEmitterSkeleton::Emit ( void )
 					targetPosition = model->transform.rotation*bone->transform.position + model->transform.position;
 					boneRotation = ( model->transform.rotation * bone->transform.rotation ).getQuaternion();
 					// Add the emitter's properties
-					targetPosition += Vector3d( random_range( -vEmitterSize.x, vEmitterSize.x ), random_range( -vEmitterSize.y, vEmitterSize.y ), random_range( -vEmitterSize.z, vEmitterSize.z ) );
+					targetPosition += Vector3d( Random.Range( -vEmitterSize.x, vEmitterSize.x ), Random.Range( -vEmitterSize.y, vEmitterSize.y ), Random.Range( -vEmitterSize.z, vEmitterSize.z ) );
 					// Either way, the position gets added to the particle. We need to subtract the emitter's position
 					targetPosition -= transform.position;
 
@@ -122,7 +122,7 @@ void CParticleEmitterSkeleton::Emit ( void )
 				targetPosition = model->transform.rotation*bone->transform.position + model->transform.position;
 				boneRotation = ( model->transform.rotation * bone->transform.rotation ).getQuaternion();
 				// Add the emitter's properties
-				targetPosition += Vector3d( random_range( -vEmitterSize.x, vEmitterSize.x ), random_range( -vEmitterSize.y, vEmitterSize.y ), random_range( -vEmitterSize.z, vEmitterSize.z ) );
+				targetPosition += Vector3d( Random.Range( -vEmitterSize.x, vEmitterSize.x ), Random.Range( -vEmitterSize.y, vEmitterSize.y ), Random.Range( -vEmitterSize.z, vEmitterSize.z ) );
 				// Either way, the position gets added to the particle. We need to subtract the emitter's position
 				targetPosition -= transform.position;
 

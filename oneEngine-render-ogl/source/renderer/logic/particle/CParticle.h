@@ -45,25 +45,33 @@ private:
 	friend CParticleEmitterSmooth;
 
 public:
-	RENDER_API bool Simulate ( void );
+	FORCE_INLINE RENDER_API void Simulate ( void );
 
 private:
-	ftype	fStartLife;
-	ftype	fStartSize;
-	ftype	fEndSize;
+	uint8_t		alive;
+	uint8_t		dummy;
+	uint16_t	next_free_particle;
+	Real_32	fLife;
 
-	ftype	fLife;
-	ftype	fSize;
-	ftype	fAngle;
-	ftype	fAngleVelocity;
-	ftype	fAngleAcceleration;
-	ftype	fAngleDamping;
+	Real_32	fStartLife;
+	Real_32	fStartSize;
+	Real_32	fEndSize;
+	Real_32	fSize;
+	
+	Real_32	fAngle;
+	Real_32	fAngleVelocity;
+	Real_32	fAngleAcceleration;
+	Real_32	fAngleDamping;
+	
 	Vector3d	vPosition;
 	Vector3d	vVelocity;
 	Vector3d	vAcceleration;
 	Vector3d	vLinearDamping;
+	
 	Color		cColor;
-
 };
+
+// Source Definition:
+#include "CParticle.hpp"
 
 #endif

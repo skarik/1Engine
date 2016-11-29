@@ -71,12 +71,15 @@ void CParticleRenderer_Animated::CreateMesh ( uint32_t& out_vertCount, uint32_t&
 		uint32_t t = 0;
 		int frame;
 		// Loop through all the particles and add to the list
-		for ( std::vector<CParticle>::iterator it = myEmitter->vParticles.begin(); it != myEmitter->vParticles.end(); ++it )
+		for ( uint16_t pi = 0; pi < myEmitter->m_max_particle_index; ++pi )
 		{
+			const CParticle& particle = myEmitter->m_particles[pi];
+			if ( !particle.alive ) continue;
+		
 			// Get corner positions
-			particleRot.AxisAngle( vCamForward, it->fAngle );
-			vrRight = (particleRot*vRight) *it->fSize;
-			vrUp = (particleRot*vUp) *it->fSize;
+			particleRot.AxisAngle( vCamForward, particle.fAngle );
+			vrRight = (particleRot*vRight) * particle.fSize;
+			vrUp = (particleRot*vUp) * particle.fSize;
 			corners[3] = (-vrRight+vrUp);
 			corners[2] = (-vrRight-vrUp);
 			corners[1] = (vrRight-vrUp);
@@ -85,25 +88,30 @@ void CParticleRenderer_Animated::CreateMesh ( uint32_t& out_vertCount, uint32_t&
 
 			// Set the colors and normals
 			temp = cameraRot*(-corners[4]);
-			for ( int j = 0; j < 4; ++j ) {
-				pVertices[i+j].r = it->cColor.red;
-				pVertices[i+j].g = it->cColor.green;
-				pVertices[i+j].b = it->cColor.blue;
-				pVertices[i+j].a = it->cColor.alpha;
+			for ( int j = 0; j < 4; ++j )
+			{
+				pVertices[i+j].r = particle.cColor.red;
+				pVertices[i+j].g = particle.cColor.green;
+				pVertices[i+j].b = particle.cColor.blue;
+				pVertices[i+j].a = particle.cColor.alpha;
 				pVertices[i+j].nx = temp.x;
 				pVertices[i+j].ny = temp.y;
 				pVertices[i+j].nz = temp.z;
 			}
 
 			// Calculate the frame
-			if ( !bStretchAnimationToLifetime ) {
-				frame = (int)((it->fStartLife-it->fLife)*fFramesPerSecond);
+			if ( !bStretchAnimationToLifetime )
+			{
+				frame = (int)((particle.fStartLife-particle.fLife)*fFramesPerSecond);
 			}
-			else {
-				frame = (int)(maxFrameCount*(1-(it->fLife/it->fStartLife)));
+			else
+			{
+				frame = (int)(maxFrameCount*(1-(particle.fLife/particle.fStartLife)));
 			}
-			if ( bClampToFrameCount ) {
-				if ( frame >= maxFrameCount ) {
+			if ( bClampToFrameCount )
+			{
+				if ( frame >= maxFrameCount )
+				{
 					frame = maxFrameCount-1;
 				}
 			}
@@ -112,28 +120,28 @@ void CParticleRenderer_Animated::CreateMesh ( uint32_t& out_vertCount, uint32_t&
 			frameOffset.y = (int(frame) / int(iVerticalDivs)) / (ftype)(iVerticalDivs);
 
 			// Set the positions and texture coordinates
-			temp = it->vPosition+corners[0];
+			temp = particle.vPosition+corners[0];
 			pVertices[i+0].x = temp.x;
 			pVertices[i+0].y = temp.y;
 			pVertices[i+0].z = temp.z;
 			pVertices[i+0].u = frameOffset.x;
 			pVertices[i+0].v = frameOffset.y;
 
-			temp = it->vPosition+corners[1];
+			temp = particle.vPosition+corners[1];
 			pVertices[i+1].x = temp.x;
 			pVertices[i+1].y = temp.y;
 			pVertices[i+1].z = temp.z;
 			pVertices[i+1].u = frameOffset.x;
 			pVertices[i+1].v = frameOffset.y+frameSize.y;
 
-			temp = it->vPosition+corners[2];
+			temp = particle.vPosition+corners[2];
 			pVertices[i+2].x = temp.x;
 			pVertices[i+2].y = temp.y;
 			pVertices[i+2].z = temp.z;
 			pVertices[i+2].u = frameOffset.x+frameSize.x;
 			pVertices[i+2].v = frameOffset.y+frameSize.y;
 
-			temp = it->vPosition+corners[3];
+			temp = particle.vPosition+corners[3];
 			pVertices[i+3].x = temp.x;
 			pVertices[i+3].y = temp.y;
 			pVertices[i+3].z = temp.z;
@@ -154,8 +162,8 @@ void CParticleRenderer_Animated::CreateMesh ( uint32_t& out_vertCount, uint32_t&
 		}
 
 		// Set output count
-		out_vertCount = myEmitter->vParticles.size() * 4;
-		out_triCount = myEmitter->vParticles.size() * 2;
+		out_vertCount = i;
+		out_triCount = t;
 	}
 	else if ( iRenderMethod == P_STRETCHED_BILLBOARD )
 	{
@@ -189,21 +197,26 @@ void CParticleRenderer_Animated::CreateMesh ( uint32_t& out_vertCount, uint32_t&
 		uint32_t t = 0;
 		int frame;
 		// Loop through all the particles and add to the list
-		for ( std::vector<CParticle>::iterator it = myEmitter->vParticles.begin(); it != myEmitter->vParticles.end(); ++it )
+		for ( uint16_t pi = 0; pi < myEmitter->m_max_particle_index; ++pi )
 		{
-			// Get corner positions// Generate true position
-			vParticlePosition = (myEmitter->bSimulateInWorldspace) ? it->vPosition :( it->vPosition + myEmitter->transform.position );
+			const CParticle& particle = myEmitter->m_particles[pi];
+			if ( !particle.alive ) continue;
 
-			vrRight = it->vVelocity * fR_SpeedScale;
-			if ( vrRight.sqrMagnitude() < sqr(it->fSize*0.5f) ) {
-				vrRight = vrRight.normal() * it->fSize*0.5f;
+			// Get corner positions// Generate true position
+			vParticlePosition = (myEmitter->bSimulateInWorldspace) ? particle.vPosition :( particle.vPosition + myEmitter->transform.position );
+
+			vrRight = particle.vVelocity * fR_SpeedScale;
+			if ( vrRight.sqrMagnitude() < sqr(particle.fSize*0.5f) )
+			{
+				vrRight = vrRight.normal() * particle.fSize*0.5f;
 			}
 			vrUp = vCamForward.cross( vrRight.normal() );
-			if ( vrUp.sqrMagnitude() < 0.01f ) {
-				particleRot.AxisAngle( vCamForward, it->fAngle );
+			if ( vrUp.sqrMagnitude() < 0.01f )
+			{	// If it's a degenerate normal, then we make up a new angle based on the particle's angle
+				particleRot.AxisAngle( vCamForward, particle.fAngle );
 				vrUp = (particleRot*vRight);
 			}
-			vrUp *= it->fSize;
+			vrUp *= particle.fSize;
 
 			corners[3] = (-vrRight+vrUp);
 			corners[2] = (-vrRight-vrUp);
@@ -214,10 +227,10 @@ void CParticleRenderer_Animated::CreateMesh ( uint32_t& out_vertCount, uint32_t&
 			// Set the colors and normals
 			temp = cameraRot*(-corners[4]);
 			for ( int j = 0; j < 4; ++j ) {
-				pVertices[i+j].r = it->cColor.red;
-				pVertices[i+j].g = it->cColor.green;
-				pVertices[i+j].b = it->cColor.blue;
-				pVertices[i+j].a = it->cColor.alpha;
+				pVertices[i+j].r = particle.cColor.red;
+				pVertices[i+j].g = particle.cColor.green;
+				pVertices[i+j].b = particle.cColor.blue;
+				pVertices[i+j].a = particle.cColor.alpha;
 				pVertices[i+j].nx = temp.x;
 				pVertices[i+j].ny = temp.y;
 				pVertices[i+j].nz = temp.z;
@@ -225,10 +238,10 @@ void CParticleRenderer_Animated::CreateMesh ( uint32_t& out_vertCount, uint32_t&
 
 			// Calculate the frame
 			if ( !bStretchAnimationToLifetime ) {
-				frame = (int)((it->fStartLife-it->fLife)*fFramesPerSecond);
+				frame = (int)((particle.fStartLife-particle.fLife)*fFramesPerSecond);
 			}
 			else {
-				frame = (int)(maxFrameCount*(1-(it->fLife/it->fStartLife)));
+				frame = (int)(maxFrameCount*(1-(particle.fLife/particle.fStartLife)));
 			}
 			if ( bClampToFrameCount ) {
 				if ( frame >= maxFrameCount ) {
@@ -289,8 +302,8 @@ void CParticleRenderer_Animated::CreateMesh ( uint32_t& out_vertCount, uint32_t&
 		}
 
 		// Set output count
-		out_vertCount = myEmitter->vParticles.size() * 4;
-		out_triCount = myEmitter->vParticles.size() * 4;
+		out_vertCount = i;
+		out_triCount = t;
 	}
 	else {
 		out_vertCount = 0;

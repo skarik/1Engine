@@ -119,7 +119,7 @@ void CProjectile::Update ( void )
 		if ( Raycaster.Linecast(
 			castRay, vVelocity.magnitude() * Time::deltaTime,
 			mProjectileCollider->GetCollisionShape(), &rhLastHit, 1,
-			Physics::GetCollisionFilter(Layers::PHYS_BULLET_TRACE,0,31), mOwner ) )
+			Physics::GetCollisionFilter(Layers::PHYS_BULLET_TRACE,0,31), mOwner.cast<void*>() ) )
 		{
 			if ( rhLastHit.pHitBehavior == NULL )
 			{
@@ -226,16 +226,18 @@ void CProjectile::Update ( void )
 			}
 			else
 			{
-				switch ( hittype ) {
+				switch ( hittype )
+				{
+					case Item::HIT_ACTOR:
+					case Item::HIT_CHARACTER:
+						if ( hitBehavior != mOwner.cast<CGameBehavior*>() )
+						{
+							OnHit( (CGameObject*)hitBehavior, hittype );
+						}
+						break;
 					case Item::HIT_TREE:
 					case Item::HIT_COMPONENT:
 						OnHit( (CGameObject*)hitBehavior, hittype );
-						break;
-					case Item::HIT_ACTOR:
-					case Item::HIT_CHARACTER:
-						if ( hitBehavior != mOwner ) {
-							OnHit( (CGameObject*)hitBehavior, hittype );
-						}
 						break;
 				};
 			}
@@ -256,16 +258,16 @@ void CProjectile::OnHit ( CGameObject* pHitObject, Item::HitType nHitType )
 	//if ( pHitObject->GetBaseClassName() == "CActor_Character" )
 	if ( nHitType == Item::HIT_CHARACTER || nHitType == Item::HIT_ACTOR )
 	{
-		dDamage.actor = mOwner;
-
 		// If it is, then hurt it. Bah. HURT IT.
-		CActor*	pCharacter = dynamic_cast<CActor*>(pHitObject);
+		CActor*	pCharacter = dynamic_cast<CActor*>((CGameBehavior*)pHitObject);
+		CActor* pOwner = mOwner.cast<CActor*>();
 
+		dDamage.actor = pOwner;
+
+		if ( pOwner != NULL )
+			pOwner->OnDealDamage( dDamage, pCharacter );
 		if ( pCharacter != NULL )
-		{
-			if ( mOwner ) mOwner->OnDealDamage( dDamage, pCharacter );
 			pCharacter->OnDamaged( dDamage );
-		}
 
 		// Finally, delete ourselves.
 		DeleteObject( this );
@@ -279,11 +281,12 @@ void CProjectile::OnHit ( CGameObject* pHitObject, Item::HitType nHitType )
 }
 void CProjectile::OnEnterWater ( void )
 {
-	if ( !bInWater ) {
-		// What is this I don't even
+	if ( !bInWater )
+	{	// What is this I don't even
 		DeleteObject( this );
 	}
-	else {
+	else 
+	{
 		vVelocity *= 0.5f;
 	}
 }

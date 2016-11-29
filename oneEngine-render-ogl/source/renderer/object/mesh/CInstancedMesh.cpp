@@ -53,7 +53,7 @@ void CInstancedMesh::SetInstanceRotation ( int instance_id, const Quaternion& ro
 
 void CInstancedMesh::SetInstanceCount ( int instance_count )
 {
-	if ( data.size() < instance_count )
+	if ( (signed)data.size() < instance_count )
 	{
 		data.resize( instance_count );
 	}

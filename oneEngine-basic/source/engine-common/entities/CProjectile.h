@@ -6,6 +6,7 @@
 
 // Includes
 #include "engine/behavior/CGameObject.h"
+#include "engine/behavior/CGameHandle.h"
 //#include "Raytracer.h"
 //#include "Water.h"
 //#include "Damage.h"
@@ -28,7 +29,7 @@ public:
 	ENGCOM_API explicit CProjectile( Ray const& rnInRay, ftype fnInSpeed, ftype fnWidth=0.2f );
 	ENGCOM_API ~CProjectile ( void );
 
-	ENGCOM_API void SetOwner ( CActor* nActor ) { mOwner = nActor; }
+	ENGCOM_API void SetOwner ( CActor* nActor ) { mOwner = (CGameBehavior*)nActor; }
 
 	// == Update ==
 	ENGCOM_API void Update ( void );
@@ -52,7 +53,8 @@ public:
 	//Debuffs::ProjectileEffects* Effects ( void ) { return &effects; };
 
 protected:
-	CActor*		mOwner;
+	//CActor*		mOwner;
+	CGameHandle	mOwner;
 	Ray			rStartDirection;
 	ftype		fStartSpeed;
 	//physShape*	mProjectileShape;

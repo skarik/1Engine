@@ -56,6 +56,7 @@ CCloudPlayer::CCloudPlayer ( void )
 	particlesystem = new CParticleSystem("particlesystems/zoom_shit.pcf");
 	particlesystem->transform.SetParent(&transform);
 	particlesystem->transform.localPosition = Vector3d(0,0,0);
+	if ( particlesystem->GetEmitter() != NULL )
 	{	// Set up the additional details
 		particlesystem->GetEmitter()->vEmitterSize = Vector3d( 20,20,20 );
 		particlesystem->GetEmitter()->rfStartSize.SetRange( 0.5F, 0.5F );

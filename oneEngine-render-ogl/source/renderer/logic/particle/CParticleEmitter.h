@@ -44,7 +44,6 @@ private:
 
 public:
 	RENDER_API explicit		CParticleEmitter ( void );
-	RENDER_API explicit		CParticleEmitter ( const string & );
 	RENDER_API 				~CParticleEmitter ( void );
 	
 	RENDER_API void			PreStepSynchronus ( void ) override;
@@ -55,6 +54,8 @@ public:
 	RENDER_API unsigned int	GetParticleCount ( void );
 	RENDER_API bool			HasEmitted ( void );
 
+	// Start up system
+	RENDER_API void			Initialize ( void );
 	// Load system from file
 	RENDER_API void			LoadFromFile ( const string & );
 	// Serialization
@@ -77,7 +78,14 @@ public:
 
 protected:
 	// Common Particle Emitter Data
-	std::vector<CParticle>	vParticles;
+	//std::vector<CParticle>	vParticles;
+	CParticle*	m_particles;
+	uint16_t	m_max_particle_index;
+	uint16_t	m_next_particle_index;
+	uint16_t	m_particle_array_size;
+	uint16_t	m_particle_count;
+
+	bool		m_strictly_ordered_particles;
 
 public:
 	bool				bOneShot;

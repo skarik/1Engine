@@ -120,23 +120,27 @@ private:
 	// Adding and removing renderer objects
 	gameid_t AddBehavior ( CGameBehavior* );
 	void RemoveBehavior ( const gameid_t );
+	// Generate a unique GUID for the caller
+	guid32_t GetGUID ( void );
+	// TODO
 	void CleanBehaviorList ( void );
 
 private:
 	static CGameState*	mActive;
+	static guid32_t		nextGUID;
 
 	// -- Game Behavior Management --
 	// Private list of game objects
 	CGameBehavior** pBehaviors;
 	//auto_ptr<CGameBehavior>* pBehaviors;
-	unsigned int iCurrentIndex;
-	unsigned int iListSize;
+	unsigned int	iCurrentIndex;
+	unsigned int	iListSize;
 	// Mutex for threaded access of game objects
 	mutex	mtListLock;
 
 	// Deletion List for objects thrown into DeleteObject().
 	std::vector<sObjectFCounter>	vDeletionList;
-	std::vector<CGameBehavior*> vCreationList;
+	std::vector<CGameBehavior*>		vCreationList;
 
 	// -- Game Scene Management --
 	CGameScene*	pScene;

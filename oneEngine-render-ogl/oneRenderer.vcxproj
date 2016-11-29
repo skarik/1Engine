@@ -53,7 +53,7 @@
     <ClCompile Include="source\renderer\logic\model\CSkinnedModelLoader.cpp" />
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpher.cpp" />
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpherSet.cpp" />
-    <ClCompile Include="source\renderer\logic\particle\CParticle.cpp" />
+    <ClCompile Include="source\renderer\logic\particle\CParticle.hpp" />
     <ClCompile Include="source\renderer\logic\particle\CParticleEmitter.cpp" />
     <ClCompile Include="source\renderer\logic\particle\CParticleEmitterCloud.cpp" />
     <ClCompile Include="source\renderer\logic\particle\CParticleEmitterSkeleton.cpp" />

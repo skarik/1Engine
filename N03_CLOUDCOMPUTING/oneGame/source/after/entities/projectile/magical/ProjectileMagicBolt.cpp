@@ -89,8 +89,10 @@ void ProjectileMagicBolt::Update ( void )
 	// Muck with the light
 	pLight->transform.position = transform.position;
 
-	if ( mOwner && mOwner->IsCharacter() ) {
-		CCharacter* mChar = (CCharacter*)mOwner;
+	CActor* pOwner = mOwner.cast<CActor*>();
+	if ( pOwner && pOwner->IsCharacter() )
+	{
+		CCharacter* mChar = (CCharacter*)pOwner;
 		//Color baseColor = mChar->GetRacialStats()->cFocusColor;
 		CRacialStats* race_stats = mChar->GetRacialStats();
 		if ( race_stats != NULL )

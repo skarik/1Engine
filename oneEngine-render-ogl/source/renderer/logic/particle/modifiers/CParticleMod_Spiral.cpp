@@ -13,7 +13,7 @@ CParticleMod_Spiral::CParticleMod_Spiral ( void )
 	m_rotaryAcceleration	= Vector3d( 0,0,0 );
 }
 
-void CParticleMod_Spiral::Modify ( std::vector<CParticle>::iterator& particle )
+void CParticleMod_Spiral::Modify ( CParticle* particle )
 {
 	//particle->vVelocity += WindMotion.GetFlowFieldFast( particle->vPosition ) * 32.2f * Time::deltaTime * m_SpeedMultipler;
 	particle->vPosition.x += sinf( (Real) (m_rotaryOffset.x + m_rotaryFrequency.x*(particle->fStartLife - particle->fLife))*Real(PI) ) * m_rotaryPosition.x * Time::deltaTime;

@@ -10,7 +10,7 @@
 class CParticleModifier
 {
 public:
-	RENDER_API virtual void Modify ( std::vector<CParticle>::iterator& ) =0;
+	RENDER_API virtual void Modify ( CParticle* ) =0;
 };
 
 #endif

@@ -30,13 +30,19 @@ void AfterBaseProjectile::OnHit ( CGameObject* pHitObject, Item::HitType nHitTyp
 	{
 		std::cout << "Projectile damage: " << dDamage.amount << " (d" << dDamage.type << ")" << std::endl;
 
-		dDamage.actor = mOwner;
-
 		// If it is, then hurt it. Bah. HURT IT.
-		CActor*	pCharacter = (CActor*)pHitObject;
+		CActor*	pCharacter = dynamic_cast<CActor*>((CGameBehavior*)pHitObject);
+		CActor* pOwner = NULL;
+		if ( mOwner.valid() ) 
+			pOwner = dynamic_cast<CActor*>( (CGameBehavior*)mOwner );
+
+		dDamage.actor = pOwner;
+
 		bool bDestroy = effects.OnHitEnemy( pCharacter );
-		if ( mOwner ) mOwner->OnDealDamage( dDamage, pCharacter );
-		pCharacter->OnDamaged( dDamage );
+		if ( pOwner != NULL )
+			pOwner->OnDealDamage( dDamage, pCharacter );
+		if ( pCharacter != NULL )
+			pCharacter->OnDamaged( dDamage );
 
 		if ( bDestroy ) {
 			// Finally, delete ourselves.

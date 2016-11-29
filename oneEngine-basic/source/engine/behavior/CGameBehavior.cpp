@@ -19,8 +19,9 @@ CGameBehavior::CGameBehavior ( void )
 
 	// Add to the list last
 	// gbbools default to true, so already active.
-	netid = -1; // Set invalid net ID
-	id = CGameState::Active()->AddBehavior( this );
+	netid	= -1; // Set invalid net ID
+	id		= CGameState::Active()->AddBehavior( this );
+	guid	= CGameState::Active()->GetGUID();
 }
 // Destructor
 //  removes behavior from the list of GBs in CGameState

@@ -15,10 +15,23 @@
 class CGameHandle
 {
 public:
-	CGameHandle ( CGameBehavior* );
+	ENGINE_API CGameHandle ( void );
+	ENGINE_API CGameHandle ( CGameBehavior* );
+
+	// Assignemnt
+	ENGINE_API void operator= ( CGameBehavior* );
 
 	// Conversion
 	ENGINE_API operator CGameBehavior*();
+	// Conversion
+	template <class BehaviorType>
+	BehaviorType cast ( void )
+	{
+		if ( valid() )
+			return dynamic_cast<BehaviorType>( behavior );
+		return NULL;
+	}
+
 	// Dereference
 	ENGINE_API CGameBehavior* operator-> ( void );
 	// Check
@@ -28,6 +41,7 @@ private:
 	CGameBehavior*	behavior;
 	gameid_t		id;
 	netid_t			netid;
+	guid32_t		guid;
 };
 
 

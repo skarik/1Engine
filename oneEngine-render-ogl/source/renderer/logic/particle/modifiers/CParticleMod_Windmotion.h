@@ -10,7 +10,7 @@ public:
 	RENDER_API CParticleMod_Windmotion ( ftype SpeedMultiplier = 1.0f ) : CParticleModifier(), m_SpeedMultipler( SpeedMultiplier ) {
 		;
 	}
-	RENDER_API void Modify ( std::vector<CParticle>::iterator& particle ) override;
+	RENDER_API void Modify ( CParticle* particle ) override;
 	RENDER_API virtual void	serialize ( Serializer &, const uint );
 private:
 	ftype m_SpeedMultipler;

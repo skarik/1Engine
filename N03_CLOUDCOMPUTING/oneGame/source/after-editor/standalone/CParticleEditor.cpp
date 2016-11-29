@@ -154,7 +154,9 @@ void CParticleEditor::Update ( void )
 	{
 		if ( particleComponentList[i].type == 0 ) {
 			CParticleEmitter* emitter = (CParticleEmitter*) particleComponentList[i].ptr;
-			if ( !emitter->vParticles.empty() ) {
+			//if ( !emitter->vParticles.empty() ) {
+			if ( emitter->GetParticleCount() != 0 )
+			{
 				canReset = false;
 			}
 		}

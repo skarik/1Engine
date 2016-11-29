@@ -19,11 +19,14 @@ ProjectileMissile::ProjectileMissile ( const Ray & direction, Real speed )
 	pTrailParticle->transform.LateUpdate();
 
 	CParticleRenderer* renderer = (CParticleRenderer*)pTrailParticle->GetRenderable();
-	renderer->GetMaterial()->loadFromFile("particle/sparks");
-	renderer->GetMaterial()->setTexture( 0, new CTexture("textures/white.jpg") );
-	renderer->GetMaterial()->m_diffuse = Color( 1.0F, 1.0F, 1.0F );
-	renderer->GetMaterial()->passinfo[0].m_hint = RL_WORLD | RL_FOG;
-	renderer->GetMaterial()->passinfo[0].b_depthmask = false;
+	if ( renderer != NULL )
+	{
+		renderer->GetMaterial()->loadFromFile("particle/sparks");
+		renderer->GetMaterial()->setTexture( 0, new CTexture("textures/white.jpg") );
+		renderer->GetMaterial()->m_diffuse = Color( 1.0F, 1.0F, 1.0F );
+		renderer->GetMaterial()->passinfo[0].m_hint = RL_WORLD | RL_FOG;
+		renderer->GetMaterial()->passinfo[0].b_depthmask = false;
+	}
 
 	randomOffset = Random.PointOnUnitSphere();
 }

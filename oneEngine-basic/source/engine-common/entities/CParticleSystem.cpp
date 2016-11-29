@@ -22,17 +22,20 @@
 using namespace std;
 
 CParticleSystem::CParticleSystem ( const string& s_ps, const bool b_hasMeshOverride )
-	: CExtendableGameObject(), bAutoDestroy( true )
+	: CExtendableGameObject(), bAutoDestroy( false )
 {
 	this->name = "Particle System";
+	if ( s_ps == "particlesystems/sparkexplo.pcf" ){
 	enabled = true;
 	Init( s_ps, b_hasMeshOverride );
+	}
 }
 CParticleSystem::CParticleSystem ( const string& s_ps, const string& s_mat )
-	: CExtendableGameObject(), bAutoDestroy( true )
+	: CExtendableGameObject(), bAutoDestroy( false )
 {
 	this->name = "Particle System";
-	enabled = true;
+	if ( s_ps == "particlesystems/sparkexplo.pcf" ){
+		enabled = true;
 	Init( s_ps, false );
 
 	if ( s_mat.size() > 0 )
@@ -45,7 +48,7 @@ CParticleSystem::CParticleSystem ( const string& s_ps, const string& s_mat )
 		if ( targetRenderable ) {
 			targetRenderable->SetMaterial( mat );
 		}
-	}
+	}}
 }
 
 CParticleSystem::~CParticleSystem ( void )
@@ -139,43 +142,47 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 				while ( !feof( inFile.GetFILE() ) )
 				{
 					switch ( currentObjType )
-					{
+					{	// TODO: Make constants an enumeration
 					case 0:	// Default emitter
-						if ( !bHasMeshOverride ) { 
+						if ( !bHasMeshOverride )
 							newComponent = new CParticleEmitter();
-						}
-						else {
+						else
 							newComponent = new CParticleEmitterSkeleton();
-						}
 						deserializer >> ((CParticleEmitter*)(newComponent));
 						AddComponent( (CParticleEmitter*)(newComponent) );
 						lastEmitter = (CParticleEmitter*)(newComponent);
 						vpEmitters.push_back( lastEmitter );
 						break;
+
 					case 1: // Default updater
 						newComponent = new CParticleUpdater(lastEmitter);
 						deserializer >> ((CParticleUpdater*)(newComponent));
 						AddComponent( (CParticleUpdater*)(newComponent) );
 						break;
+
 					case 2: // Default renderer
 						newComponent = new CParticleRenderer(lastEmitter);
 						((CParticleRenderer*)(newComponent))->SetMaterial( new glMaterial );
 						deserializer >> ((CParticleRenderer*)(newComponent));
 						AddComponent( (CParticleRenderer*)(newComponent) );
 						break;
+
 					case 3: // Emitter - Clouds; Skip this
 						break;
+
 					case 5: // Renderer - Animation; not yet implemented
 						newComponent = new CParticleRenderer_Animated(lastEmitter);
 						((CParticleRenderer_Animated*)(newComponent))->SetMaterial( new glMaterial );
 						deserializer >> ((CParticleRenderer_Animated*)(newComponent));
 						AddComponent( (CParticleRenderer_Animated*)(newComponent) );
 						break;
+
 					case 4: // Modifier - Wind
 						newComponent = new CParticleMod_Windmotion();
 						deserializer >> ((CParticleMod_Windmotion*)(newComponent));
 						lastUpdater->AddModifier( ((CParticleMod_Windmotion*)(newComponent)) );
 						break;
+
 					default:
 						Debug::Console->PrintError( "particle system: unrecognized component type!" );
 						break;
@@ -196,12 +203,6 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 
 void CParticleSystem::PostUpdate ( void )
 {
-	// Error check for components
-	if ( vpEmitters.size() > 256 || vpRComponents.size() > 256 )
-	{
-		return;
-	}
-
 	for ( vector<CParticleEmitter*>::iterator it = vpEmitters.begin(); it != vpEmitters.end(); it++ )
 	{
 		(*it)->transform.Get( this->transform );

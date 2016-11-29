@@ -30,43 +30,62 @@ void CParticleUpdater::PreStepSynchronus ( void )
 	ftype fColorIndex;
 
 	// Loop through all the particles and simulate, as well as update color and size.
-	for ( std::vector<CParticle>::iterator it = myEmitter->vParticles.begin(); it != myEmitter->vParticles.end(); )
+	for ( uint16_t i = 0; i < myEmitter->m_max_particle_index; ++i )
 	{
-		if ( it->Simulate() )
+		CParticle& particle = myEmitter->m_particles[i];
+		if ( particle.alive )
 		{
-			fTempPercent = it->fLife / it->fStartLife;
-			it->fSize = it->fEndSize + ( it->fStartSize - it->fEndSize ) * fTempPercent;
-
-			// Now update color
-			if ( myEmitter->vcColors.size() > 1 )
+			// Sim the particle
+			particle.Simulate();
+			// Check for life
+			if ( particle.fLife < 0 )
 			{
-				// todo: make this faster
-				fColorIndex = ( (1-fTempPercent) * (myEmitter->vcColors.size()-1) );
-				iColorIndex = int(fColorIndex);
-				fColorIndex -= iColorIndex;
-				if ( iColorIndex >= (signed)(myEmitter->vcColors.size()-1) )
-				{
-					iColorIndex = myEmitter->vcColors.size()-2;
-					fColorIndex = 1.0f;
+				particle.alive = false;
+				// Build up the linked list of free particles
+				particle.next_free_particle = myEmitter->m_next_particle_index;
+				myEmitter->m_next_particle_index = i;
+				// Decrement the particle count
+				myEmitter->m_particle_count -= 1;
+				// Going to shift everything back
+				if (myEmitter->m_strictly_ordered_particles)
+				{	// Shift it back
+					myEmitter->m_max_particle_index -= 1;
+					i -= 1; // Go back one particle
+					memcpy( myEmitter->m_particles + i, myEmitter->m_particles + i + 1, myEmitter->m_max_particle_index - i );
 				}
-				it->cColor = myEmitter->vcColors[iColorIndex].Lerp( myEmitter->vcColors[iColorIndex+1], fColorIndex );
 			}
-			else if ( myEmitter->vcColors.size() > 0 )
-				it->cColor = myEmitter->vcColors[0];
 			else
-				it->cColor = Color( 1.0f,1.0f,1.0f,1.0f );
+			{
+				fTempPercent = particle.fLife / particle.fStartLife;
+				particle.fSize = particle.fEndSize + ( particle.fStartSize - particle.fEndSize ) * fTempPercent;
 
-			// Now, perform modefiers
-			for ( std::vector<CParticleModifier*>::iterator mod = vMyModifiers.begin(); mod != vMyModifiers.end(); ++mod )
-				(*mod)->Modify( it );
+				// Now update color
+				if ( myEmitter->vcColors.size() > 1 )
+				{
+					// todo: make this faster
+					fColorIndex = ( (1-fTempPercent) * (myEmitter->vcColors.size()-1) );
+					iColorIndex = int(fColorIndex);
+					fColorIndex -= iColorIndex;
+					if ( iColorIndex >= (signed)(myEmitter->vcColors.size()-1) )
+					{
+						iColorIndex = myEmitter->vcColors.size()-2;
+						fColorIndex = 1.0f;
+					}
+					particle.cColor = myEmitter->vcColors[iColorIndex].Lerp( myEmitter->vcColors[iColorIndex+1], fColorIndex );
+				}
+				else if ( myEmitter->vcColors.size() > 0 )
+				{
+					particle.cColor = myEmitter->vcColors[0];
+				}
+				else
+				{
+					particle.cColor = Color( 1.0f,1.0f,1.0f,1.0f );
+				}
 
-			// Move onto next particle
-			++it;
-		}
-		else
-		{
-			// Delete the particle if it's too old
-			it = myEmitter->vParticles.erase( it );
+				// Now, perform modefiers
+				for ( std::vector<CParticleModifier*>::iterator mod = vMyModifiers.begin(); mod != vMyModifiers.end(); ++mod )
+					(*mod)->Modify( myEmitter->m_particles + i );
+			}
 		}
 	}
 }

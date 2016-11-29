@@ -119,6 +119,15 @@ namespace Core
 			;
 		}
 	};
+
+	class YouSuckException : public std::runtime_error
+	{
+	public:
+		YouSuckException ( void ) : runtime_error( "You really suck." )
+		{
+			;
+		}
+	};
 }
 
 #endif//_CORE_EXCEPTIONS_H_

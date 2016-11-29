@@ -288,9 +288,6 @@
     <ClCompile Include="source\renderer\logic\CLogicObject.cpp">
       <Filter>SOURCE\Renderer\Logic</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\logic\particle\CParticle.cpp">
-      <Filter>SOURCE\Renderer\Logic\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\logic\particle\CParticleUpdater.cpp">
       <Filter>SOURCE\Renderer\Logic\Particle</Filter>
     </ClCompile>
@@ -374,6 +371,9 @@
     </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\CInstancedMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\logic\particle\CParticle.hpp">
+      <Filter>SOURCE\Renderer\Logic\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -560,9 +560,6 @@
     <ClInclude Include="source\renderer\logic\CLogicObject.h">
       <Filter>SOURCE\Renderer\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\logic\particle\CParticle.h">
-      <Filter>SOURCE\Renderer\Logic\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\logic\particle\CParticleUpdater.h">
       <Filter>SOURCE\Renderer\Logic\Particle</Filter>
     </ClInclude>
@@ -661,6 +658,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\CInstancedMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\logic\particle\CParticle.h">
+      <Filter>SOURCE\Renderer\Logic\Particle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

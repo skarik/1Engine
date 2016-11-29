@@ -19,6 +19,7 @@ using std::vector;
 
 CGameState* CGameState::mActive = NULL;
 //CGameState*	GameState = NULL;
+guid32_t CGameState::nextGUID = 0;
 
 //===Class functions===
 
@@ -487,6 +488,12 @@ void CGameState::RemoveBehavior ( const gameid_t id )
 
 	// Remove behavior from the list completely
 	pBehaviors[id] = NULL;
+}
+
+// Generate a unique GUID for the caller
+guid32_t CGameState::GetGUID ( void )
+{
+	return nextGUID++;
 }
 
 // Finder functions

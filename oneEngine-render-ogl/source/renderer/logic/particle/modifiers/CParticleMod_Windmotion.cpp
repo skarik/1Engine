@@ -3,7 +3,7 @@
 #include "CParticleMod_Windmotion.h"
 #include "physical/physics/wind/Wind.h"
 
-void CParticleMod_Windmotion::Modify ( std::vector<CParticle>::iterator& particle )
+void CParticleMod_Windmotion::Modify ( CParticle* particle )
 {
 	particle->vVelocity += WindTester::Get()->GetFlowFieldFast( particle->vPosition ) * 32.2f * Time::deltaTime * m_SpeedMultipler;
 }

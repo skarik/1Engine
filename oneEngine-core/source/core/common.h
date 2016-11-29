@@ -35,6 +35,16 @@ template<typename T> T * _instantiate( void ) { return new T; }
 
 #include "callback_basics.h"
 
+template<typename CastTo, typename CastFrom>
+FORCE_INLINE CastTo arcast( CastFrom value )
+{
+#ifdef _ENGINE_DEBUG
+	return dynamic_cast<CastTo>(value);
+#else
+	return static_cast<CastTo>(value);
+#endif
+}
+
 
 #ifdef _ENGINE_SAFE_CHECK_
 #undef _ENGINE_SAFE_CHECK_

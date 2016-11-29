@@ -39,7 +39,7 @@ class CLogicObject
 {
 private:
 	// No copying with "="
-	CLogicObject & operator= (const CLogicObject & other);
+	CLogicObject & operator= (const CLogicObject & other) = delete;
 
 public:
 	//	CLogicObject (Constructor)

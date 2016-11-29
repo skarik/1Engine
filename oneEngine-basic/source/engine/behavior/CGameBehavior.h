@@ -137,6 +137,12 @@ public:
 		return netid;
 	}
 
+	//	GetGUID
+	// Returns the GUID of the behavior
+	ENGINE_API guid32_t GetGUID ( void ) {
+		return guid;
+	}
+
 	// Returns a pointer to the spot in the array where the object is held.
 	// This is very unsafe and can cause memory leaks if not used properly!
 	// Avoid use of this function if possible!
@@ -194,6 +200,9 @@ private:
 	//	netid
 	// Object's network ID used to sync tables
 	netid_t		netid;
+	//  guid
+	// Object's unique ID used for referencing game behaviors
+	guid32_t	guid;
 	//	referenceCount
 	// used for reference counting
 	uint16_t	referenceCount;
