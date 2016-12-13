@@ -70,7 +70,6 @@ public:
 		_tempcast = _tempcast - sampleTarget1;
 		return (Type)(m_entries[sampleTarget1]*(1-_tempcast) + m_entries[sampleTarget2]*_tempcast);
 
-
 		throw std::out_of_range("Weight was out of calculated range.");
 	}
 public:

@@ -24,14 +24,14 @@ CParticleRenderer_Animated::~CParticleRenderer_Animated ( void )
 
 void CParticleRenderer_Animated::CreateMesh ( uint32_t& out_vertCount, uint32_t& out_triCount )
 {
-	if ( ((int)iHorizontalDivs) == 0 ) {
-		//iHorizontalDivs = 1;
+	if ( ((int)iHorizontalDivs) == 0 )
+	{
 		out_vertCount = 0;
 		out_triCount = 0;
 		return;
 	}
-	if ( ((int)iVerticalDivs) == 0 ) {
-		//iVerticalDivs = 1;
+	else if ( ((int)iVerticalDivs) == 0 )
+	{
 		out_vertCount = 0;
 		out_triCount = 0;
 		return;

@@ -18,6 +18,8 @@
 #include "after/entities/world/environment/DayAndNightCycle.h"
 #include "engine/behavior/CExtendableGameObject.h"
 
+#include "engine-common/types/ParticleEnums.h"
+
 #include "renderer/state/Settings.h"
 #include "renderer/logic/model/CModel.h"
 #include "renderer/texture/CBitmapFont.h"
@@ -269,19 +271,19 @@ void CParticleEditor::DoGUIWork ( void )
 
 		for ( uint i = 0; i < particleComponentList.size(); ++i ) {
 			switch ( particleComponentList[i].type ) {
-			case 0:
+			case Engine::PARTICLESYS_EMITTER:
 				myGUI->AddListviewOption( edtComponentList.list, "Default Emitter",particleComponentList[i].type );	break;
-			case 1:
+			case Engine::PARTICLESYS_UPDATER:
 				myGUI->AddListviewOption( edtComponentList.list, "Default Updater",particleComponentList[i].type );	break;
-			case 2:
+			case Engine::PARTICLESYS_RENDERER:
 				myGUI->AddListviewOption( edtComponentList.list, "Default Renderer",particleComponentList[i].type );break;	
-			case 3:
+			case Engine::PARTICLESYS_EMITTER_CLOUDS:
 				myGUI->AddListviewOption( edtComponentList.list, "Emitter - Cloud",particleComponentList[i].type );break;	
-			case 4:
+			case Engine::PARTICLESYS_MODIFIER_WIND:
 				myGUI->AddListviewOption( edtComponentList.list, "Modifier - Wind",particleComponentList[i].type );break;
-			case 5:
+			case Engine::PARTICLESYS_RENDERER_ANIMATED:
 				myGUI->AddListviewOption( edtComponentList.list, "Renderer - Animation",particleComponentList[i].type );break;
-			case 6:
+			case Engine::PARTICLESYS_MODIFIER_SPIRAL:
 				myGUI->AddListviewOption( edtComponentList.list, "Modifier - Spiral",particleComponentList[i].type );break;
 			}
 		}
@@ -293,10 +295,13 @@ void CParticleEditor::DoGUIWork ( void )
 			if ( particleComponentList[selection].ptr != NULL ) {
 				mParticleObject->RemoveComponent( particleComponentList[selection].ptr );
 				switch ( particleComponentList[selection].type ) {
-				case 0: case 1: case 3:
-					delete (CGameBehavior*)(particleComponentList[selection].ptr);
+				case Engine::PARTICLESYS_EMITTER:
+				case Engine::PARTICLESYS_UPDATER:
+				case Engine::PARTICLESYS_EMITTER_CLOUDS:
+					delete (CLogicObject*)(particleComponentList[selection].ptr);
 					break;
-				case 4: case 6:
+				case Engine::PARTICLESYS_MODIFIER_WIND:
+				case Engine::PARTICLESYS_MODIFIER_SPIRAL:
 					delete (CParticleModifier*)(particleComponentList[selection].ptr);
 					break;
 				default:
@@ -449,7 +454,7 @@ void CParticleEditor::RecreatePropertyList ( const editorComponent_t &component 
 	myGUI->ClearPropertyview( edtProperties.view );
 
 	// Now, set the possible values
-	if ( component.type == 0 )
+	if ( component.type == Engine::PARTICLESYS_EMITTER )
 	{
 		CParticleEmitter* emitter = (CParticleEmitter*)component.ptr;
 		myGUI->AddPropertyOption<string>( edtProperties.view, "Component Name", &emitter->name );
@@ -490,13 +495,13 @@ void CParticleEditor::RecreatePropertyList ( const editorComponent_t &component 
 			myGUI->AddPropertyOption<Color>( edtProperties.view, "Color", &emitter->vcColors[cn] );
 		}
 	}
-	else if ( component.type == 1 )
+	else if ( component.type == Engine::PARTICLESYS_UPDATER )
 	{
 		CParticleUpdater* updater = (CParticleUpdater*)component.ptr;
 		myGUI->AddPropertyOption<string>( edtProperties.view, "Component Name", &updater->name );
 		//myGUI->AddPropertyOption<CParticleEmitter*>( edtProperties.view, "Target Emitter", &updater->myEmitter );
 	}
-	else if ( component.type == 2 || component.type == 5 )
+	else if ( component.type == Engine::PARTICLESYS_RENDERER || component.type == Engine::PARTICLESYS_RENDERER_ANIMATED )
 	{
 		CParticleRenderer* renderer = (CParticleRenderer*)component.ptr;
 		//myGUI->AddPropertyOption<CParticleEmitter*>( edtProperties.view, "Target Emitter", &(((CParticleRenderer*)component.ptr)->myEmitter) );
@@ -510,7 +515,7 @@ void CParticleEditor::RecreatePropertyList ( const editorComponent_t &component 
 
 		myGUI->AddPropertyOption<ftype>( edtProperties.view, "Stretched Speed Scale", &(((CParticleRenderer*)component.ptr)->fR_SpeedScale) );
 
-		if ( component.type == 5 )
+		if ( component.type == Engine::PARTICLESYS_RENDERER_ANIMATED )
 		{
 			myGUI->AddPropertyOption<ftype>( edtProperties.view, "Frames", &(((CParticleRenderer_Animated*)component.ptr)->iFrameCount) );
 			myGUI->AddPropertyOption<ftype>( edtProperties.view, "Horizontal Divs", &(((CParticleRenderer_Animated*)component.ptr)->iHorizontalDivs) );
@@ -521,7 +526,7 @@ void CParticleEditor::RecreatePropertyList ( const editorComponent_t &component 
 		}
 
 	}
-	else if ( component.type == 6 )
+	else if ( component.type == Engine::PARTICLESYS_MODIFIER_SPIRAL )
 	{
 		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Frequency", &(((CParticleMod_Spiral*)component.ptr)->m_rotaryFrequency) );
 		myGUI->AddPropertyOption<Vector3d>( edtProperties.view, "Offset", &(((CParticleMod_Spiral*)component.ptr)->m_rotaryOffset) );
@@ -555,7 +560,8 @@ void CParticleEditor::SaveSystem ( const string& fname )
 		// Loop through emitters
 		for ( uint i = 0; i < particleComponentList.size(); ++i )
 		{
-			if ( particleComponentList[i].type == 0 )
+			editorComponent_t current_component = particleComponentList[i];
+			if ( particleComponentList[i].type == Engine::PARTICLESYS_EMITTER )
 			{
 				// Serialize emitter
 				outFile.WriteUInt32( 0 );
@@ -564,12 +570,13 @@ void CParticleEditor::SaveSystem ( const string& fname )
 				// Serialize updaters
 				for ( uint j = 0; j < particleComponentList.size(); ++j )
 				{
-					if ( particleComponentList[j].type == 1 )
+					editorComponent_t component = particleComponentList[j];
+					if ( component.type == Engine::PARTICLESYS_UPDATER )
 					{
-						if ( ((CParticleUpdater*)(particleComponentList[j].ptr))->myEmitter == (CParticleEmitter*)(particleComponentList[i].ptr) )
+						if ( ((CParticleUpdater*)(component.ptr))->myEmitter == (CParticleEmitter*)(current_component.ptr) )
 						{
-							outFile.WriteUInt32( 1 );
-							output << ((CParticleUpdater*)(particleComponentList[j].ptr));
+							outFile.WriteUInt32( component.type );
+							output << ((CParticleUpdater*)(component.ptr));
 						}
 						// Serialize modifiers that use this updater
 						/*for ( uint k = 0; k < particleComponentList.size(); ++k )
@@ -585,20 +592,23 @@ void CParticleEditor::SaveSystem ( const string& fname )
 				// Serialize renderers
 				for ( uint j = 0; j < particleComponentList.size(); ++j )
 				{
-					if (( particleComponentList[j].type == 2 )||( particleComponentList[j].type == 5 ))
+					editorComponent_t component = particleComponentList[j];
+					if ( component.type == Engine::PARTICLESYS_RENDERER || component.type == Engine::PARTICLESYS_RENDERER_ANIMATED )
 					{
-						if ( ((CParticleRenderer*)(particleComponentList[j].ptr))->myEmitter == (CParticleEmitter*)(particleComponentList[i].ptr) )
+						if ( ((CParticleRenderer*)(component.ptr))->myEmitter == (CParticleEmitter*)(current_component.ptr) )
 						{
-							outFile.WriteUInt32( particleComponentList[j].type );
-							output << (CParticleRenderer*)(particleComponentList[j].ptr);
+							outFile.WriteUInt32( component.type );
+							output << (CParticleRenderer*)(component.ptr);
 						}
 					}
 				}
 			}
-			else if ( particleComponentList[i].type == 3 ) {
+			else if ( particleComponentList[i].type == Engine::PARTICLESYS_EMITTER_CLOUDS )
+			{
 				// UEHHHH
 			}
-			else {
+			else
+			{
 				continue;
 			}
 		}
@@ -700,40 +710,47 @@ void CParticleEditor::LoadSystem ( const string& sSystemFile )
 					cout << "Reading in object of type " << currentObjType << endl;
 					switch ( currentObjType )
 					{
-					case 0:	// Default emitter
+					case Engine::PARTICLESYS_EMITTER:
 						newComponent = new CParticleEmitter();
 						deserializer >> ((CParticleEmitter*)(newComponent));
 						mParticleObject->AddComponent( (CParticleEmitter*)(newComponent) );
 						lastEmitter = (CParticleEmitter*)(newComponent);
 						lastEmitter->transform.SetParent( &(mParticleObject->transform) );
 						break;
-					case 1: // Default updater
+
+					case Engine::PARTICLESYS_UPDATER:
 						newComponent = new CParticleUpdater(lastEmitter);
 						deserializer >> ((CParticleUpdater*)(newComponent));
 						mParticleObject->AddComponent( (CParticleUpdater*)(newComponent) );
 						break;
-					case 2: // Default renderer
+
+					case Engine::PARTICLESYS_RENDERER:
 						newComponent = new CParticleRenderer(lastEmitter);
 						((CParticleRenderer*)(newComponent))->SetMaterial( new glMaterial );
 						deserializer >> ((CParticleRenderer*)(newComponent));
 						mParticleObject->AddComponent( (CParticleRenderer*)(newComponent) );
 						((CParticleRenderer*)newComponent)->transform.SetParent( &(mParticleObject->transform) );
 						break;
-					case 3: // Emitter - Clouds; Skip this
+
+					case Engine::PARTICLESYS_EMITTER_CLOUDS: // Emitter - Clouds; Skip this
 						break;
-					case 5: // Renderer - Animation
+
+					case Engine::PARTICLESYS_RENDERER_ANIMATED: // Renderer - Animation
 						newComponent = new CParticleRenderer_Animated(lastEmitter);
 						((CParticleRenderer_Animated*)(newComponent))->SetMaterial( new glMaterial );
 						deserializer >> ((CParticleRenderer_Animated*)(newComponent));
 						mParticleObject->AddComponent( (CParticleRenderer_Animated*)(newComponent) );
 						((CParticleRenderer*)newComponent)->transform.SetParent( &(mParticleObject->transform) );
 						break;
-					case 4: // Modifier - Wind
+
+					case Engine::PARTICLESYS_MODIFIER_WIND: // Modifier - Wind
 						newComponent = new CParticleMod_Windmotion();
 						deserializer >> ((CParticleMod_Windmotion*)(newComponent));
 						lastUpdater->AddModifier( ((CParticleMod_Windmotion*)(newComponent)) );
 						break;
+
 					default:
+						throw Core::CorruptedDataException();
 						Debug::Console->PrintError( "particle system: unrecognized component type!" );
 						break;
 					}

@@ -67,7 +67,7 @@ void CParticleEmitter::Initialize ( void )
 		delete [] m_particles;
 	}
 	// Create new array of particles
-	m_particle_array_size = std::min<uint16_t>( (uint16_t)(rfParticlesSpawned.mMaxVal * rfLifetime.mMaxVal * 1.41F), (uint16_t)fMaxParticles );
+	m_particle_array_size = bOneShot ? (uint16_t)fMaxParticles : std::min<uint16_t>( (uint16_t)(rfParticlesSpawned.mMaxVal * rfLifetime.mMaxVal * 1.41F), (uint16_t)fMaxParticles );
 	m_particles = new CParticle [m_particle_array_size];
 	// Zero out their data
 	memset( m_particles, 0, sizeof(CParticle) * m_particle_array_size );
@@ -115,10 +115,10 @@ void CParticleEmitter::Emit ( void )
 			Real fTargetReleaseCount = rfParticlesSpawned.GetRandom() * CTime::deltaTime;
 
 			fEmitCount += fTargetReleaseCount;
-			fEmitCount = std::min<Real>( fEmitCount, (Real)(m_particle_array_size - m_particle_count) );
+			fEmitCount = std::min<Real>( fEmitCount, (Real)(m_particle_array_size - m_particle_count) - 1.0F );
 			if ( fEmitCount >= 1.0f )
 			{
-				while ( fReleaseCount < fTargetReleaseCount )
+				while ( fReleaseCount < fEmitCount )
 				{
 					fReleaseCount += 1.0f;
 
@@ -150,7 +150,7 @@ void CParticleEmitter::CreateParticle ( const Vector3d & vInPosition )
 {
 	if ( m_next_particle_index >= m_particle_array_size )
 	{	// Need to do a quick check to fix this edge case
-		m_next_particle_index = 0;
+		throw Core::YouSuckException();
 	}
 	CParticle& newParticle = m_particles[m_next_particle_index];
 
@@ -197,18 +197,39 @@ void CParticleEmitter::CreateParticle ( const Vector3d & vInPosition )
 
 	// Increment particle count
 	m_particle_count += 1;
+	m_next_particle_index += 1;
 
-	// Increment iteration count
-	m_max_particle_index = std::max<uint16_t>( m_max_particle_index,std::max<uint16_t>(m_particle_count, m_next_particle_index + 1));
-
-	// Grab next particle index
-	m_next_particle_index = newParticle.next_free_particle;
-	newParticle.next_free_particle = 0; // Clear out next free particle
-	// If the next particle is invalid, then go to the end of the current listing
-	if ( m_next_particle_index == 0 )
+	// Have we hit the end? If so, we need to slide back to fill in all the now-empty spots
+	if ( m_next_particle_index >= m_particle_array_size )
 	{
-		m_next_particle_index = m_particle_count;
+		int offset = 0;
+		for ( uint i = 0; i < m_next_particle_index; ++i )
+		{
+			// For each blank particle, we need to increase the offset to pull the particle from
+			while ( !m_particles[i+offset].alive && i+offset < m_next_particle_index )
+			{
+				offset++;
+			}
+			// If we're pulling from ahead of the array...
+			if ( offset != 0 )
+			{
+				uint i_other = i+offset;
+				if ( i_other < m_next_particle_index )
+				{	// Pull the next particle
+					m_particles[i] = m_particles[i_other];
+				}
+				else
+				{	// Otherwise, it is a dead particle
+					m_particles[i].alive = false;
+				}
+			}
+		}
+		// Subtract the amount of empty spots from the max size to get the next particle we can use
+		m_next_particle_index = m_particle_array_size - offset;
 	}
+
+	// Max particle index to loop through will alpways be the same as the max index.
+	m_max_particle_index = m_next_particle_index;
 }
 
 // Return particle count

@@ -24,7 +24,7 @@ public:
 	RENDER_API bool PreRender ( const char pass );
 	RENDER_API bool Render ( const char pass );
 
-	RENDER_API void	serialize ( Serializer &, const uint );
+	RENDER_API virtual void	serialize ( Serializer &, const uint );
 
 	enum eParticleRenderMethod
 	{

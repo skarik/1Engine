@@ -91,8 +91,8 @@ bool CParticleRenderer::BeginRender ( void )
 	glBufferData( GL_ARRAY_BUFFER, sizeof(CParticleVertex)*vertNum, NULL, GL_STREAM_DRAW );
 	glBufferData( GL_ELEMENT_ARRAY_BUFFER,sizeof(CModelTriangle)*triNum, NULL, GL_STREAM_DRAW );
 
-	glBufferSubData( GL_ARRAY_BUFFER, 0,sizeof(CParticleVertex)*vertNum, pVertices );
-	glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, 0,  sizeof(CModelTriangle)*triNum, pTriangles );
+	glBufferSubData( GL_ARRAY_BUFFER, 0, sizeof(CParticleVertex)*vertNum, pVertices );
+	glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(CModelTriangle)*triNum, pTriangles );
 
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
@@ -581,9 +581,14 @@ void	CParticleRenderer::serialize ( Serializer & ser, const uint ver )
 {
 	ser & iRenderMethod;
 	ser & fR_SpeedScale;
-	std::string dummy;
-	ser & dummy;
-	m_material->loadFromFile(dummy.c_str());
-	//ser & (*(vMaterials[0])); 
-	//ser & (*m_material); // TODO
+
+	// Save the material filename
+	std::string t_material_filename = "";
+	if ( m_material != NULL )
+	{
+		t_material_filename = m_material->getFilename();
+	}
+	ser & t_material_filename;
+	// Or load it from file
+	m_material->loadFromFile( t_material_filename.c_str() );
 }

@@ -6,6 +6,8 @@
 #include "core-ext/system/io/serializer/ISerialBinary.h"
 #include "core-ext/system/io/Resources.h"
 
+#include "engine-common/types/ParticleEnums.h"
+
 #include "renderer/material/glMaterial.h"
 
 #include "renderer/logic/particle/CParticleEmitter.h"
@@ -25,17 +27,14 @@ CParticleSystem::CParticleSystem ( const string& s_ps, const bool b_hasMeshOverr
 	: CExtendableGameObject(), bAutoDestroy( false )
 {
 	this->name = "Particle System";
-	if ( s_ps == "particlesystems/sparkexplo.pcf" ){
 	enabled = true;
 	Init( s_ps, b_hasMeshOverride );
-	}
 }
 CParticleSystem::CParticleSystem ( const string& s_ps, const string& s_mat )
 	: CExtendableGameObject(), bAutoDestroy( false )
 {
 	this->name = "Particle System";
-	if ( s_ps == "particlesystems/sparkexplo.pcf" ){
-		enabled = true;
+	enabled = true;
 	Init( s_ps, false );
 
 	if ( s_mat.size() > 0 )
@@ -48,21 +47,13 @@ CParticleSystem::CParticleSystem ( const string& s_ps, const string& s_mat )
 		if ( targetRenderable ) {
 			targetRenderable->SetMaterial( mat );
 		}
-	}}
+	}
 }
 
 CParticleSystem::~CParticleSystem ( void )
 {
-	/*for ( vector<CParticleEmitter*>::iterator it = vpEmitters.begin(); it != vpEmitters.end(); it++ )
-	{
-		//delete (*it); // Why was this commented out?
-		// commented out b/c of memory error
-		(*it)->RemoveReference();
-		if ( !((*it)->HasReference()) )
-		{
-			delete (*it);
-		}
-	}*/
+	// Emitters are also added to the logic object list, so no need to delete them here.
+	// Instead, they are deleted by CExtendableGameObject's destructor.
 	vpEmitters.clear();
 }
 
@@ -142,8 +133,8 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 				while ( !feof( inFile.GetFILE() ) )
 				{
 					switch ( currentObjType )
-					{	// TODO: Make constants an enumeration
-					case 0:	// Default emitter
+					{
+					case Engine::PARTICLESYS_EMITTER:
 						if ( !bHasMeshOverride )
 							newComponent = new CParticleEmitter();
 						else
@@ -154,36 +145,37 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 						vpEmitters.push_back( lastEmitter );
 						break;
 
-					case 1: // Default updater
+					case Engine::PARTICLESYS_UPDATER:
 						newComponent = new CParticleUpdater(lastEmitter);
 						deserializer >> ((CParticleUpdater*)(newComponent));
 						AddComponent( (CParticleUpdater*)(newComponent) );
 						break;
 
-					case 2: // Default renderer
+					case Engine::PARTICLESYS_RENDERER:
 						newComponent = new CParticleRenderer(lastEmitter);
 						((CParticleRenderer*)(newComponent))->SetMaterial( new glMaterial );
 						deserializer >> ((CParticleRenderer*)(newComponent));
 						AddComponent( (CParticleRenderer*)(newComponent) );
 						break;
 
-					case 3: // Emitter - Clouds; Skip this
+					case Engine::PARTICLESYS_EMITTER_CLOUDS: // Skip this
 						break;
 
-					case 5: // Renderer - Animation; not yet implemented
+					case Engine::PARTICLESYS_RENDERER_ANIMATED: // Renderer - Animation; not yet implemented
 						newComponent = new CParticleRenderer_Animated(lastEmitter);
 						((CParticleRenderer_Animated*)(newComponent))->SetMaterial( new glMaterial );
 						deserializer >> ((CParticleRenderer_Animated*)(newComponent));
 						AddComponent( (CParticleRenderer_Animated*)(newComponent) );
 						break;
 
-					case 4: // Modifier - Wind
+					case Engine::PARTICLESYS_MODIFIER_WIND: // Modifier - Wind
 						newComponent = new CParticleMod_Windmotion();
 						deserializer >> ((CParticleMod_Windmotion*)(newComponent));
 						lastUpdater->AddModifier( ((CParticleMod_Windmotion*)(newComponent)) );
 						break;
 
 					default:
+						throw Core::CorruptedDataException();
 						Debug::Console->PrintError( "particle system: unrecognized component type!" );
 						break;
 					}

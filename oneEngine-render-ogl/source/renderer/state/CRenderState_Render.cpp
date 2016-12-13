@@ -40,7 +40,7 @@ void CRenderState::Render ( void )
 	unsigned int i;
 
 	// Begin the logic jobs
-	//Jobs::System::Current::WaitForJobs( Jobs::JOBTYPE_RENDERSTEP );
+	Jobs::System::Current::WaitForJobs( Jobs::JOBTYPE_RENDERSTEP );
 	for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
 			Jobs::System::Current::AddJobRequest( Jobs::JOBTYPE_RENDERSTEP, &(CLogicObject::PreStep), mLogicObjects[i] );

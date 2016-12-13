@@ -477,12 +477,15 @@ void CGameState::RemoveBehavior ( const gameid_t id )
 	}
 
 	// Remove from deletion list
-	for ( auto it = vDeletionList.begin(); it != vDeletionList.end(); ++it )
+	for ( auto it = vDeletionList.begin(); it != vDeletionList.end(); )
 	{
 		if ( it->pBehavior == pBehaviors[id] )
 		{
-			vDeletionList.erase( it );
-			break;
+			it = vDeletionList.erase( it );
+		}
+		else
+		{
+			++it;
 		}
 	}
 

@@ -37,16 +37,14 @@ void CParticleUpdater::PreStepSynchronus ( void )
 		{
 			// Sim the particle
 			particle.Simulate();
-			// Check for life
+			// Will the particle be dying?
 			if ( particle.fLife < 0 )
 			{
+				// Mark particle as dead and decrement the particle count
 				particle.alive = false;
-				// Build up the linked list of free particles
-				particle.next_free_particle = myEmitter->m_next_particle_index;
-				myEmitter->m_next_particle_index = i;
-				// Decrement the particle count
 				myEmitter->m_particle_count -= 1;
-				// Going to shift everything back
+
+				// Strictly ordered particles for trails? Going to shift everything back
 				if (myEmitter->m_strictly_ordered_particles)
 				{	// Shift it back
 					myEmitter->m_max_particle_index -= 1;
@@ -54,6 +52,7 @@ void CParticleUpdater::PreStepSynchronus ( void )
 					memcpy( myEmitter->m_particles + i, myEmitter->m_particles + i + 1, myEmitter->m_max_particle_index - i );
 				}
 			}
+			// Else we update the particle normally
 			else
 			{
 				fTempPercent = particle.fLife / particle.fStartLife;

@@ -50,7 +50,7 @@ public:
 private:
 	uint8_t		alive;
 	uint8_t		dummy;
-	uint16_t	next_free_particle;
+
 	Real_32	fLife;
 
 	Real_32	fStartLife;

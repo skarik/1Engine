@@ -13,11 +13,10 @@ public:
 	// Construct color
 	FORCE_INLINE Color ( double r, double g, double b, double a=1.0 );
 
-
 	// Linear interpolation
-	FORCE_INLINE static Color Lerp(Color const c_one, Color const c_two, Real t);
+	FORCE_INLINE static Color Lerp (Color const c_one, Color const c_two, Real t);
 	// Linear interpolation
-	FORCE_INLINE Color Lerp(Color const c_two, Real t) const;
+	FORCE_INLINE Color Lerp (Color const c_two, Real t) const;
 	// Addition overload
 	FORCE_INLINE Color operator+ (Color const& right) const;		
 	// Subtraction overload
@@ -25,11 +24,13 @@ public:
 	// Multiplication overload
 	FORCE_INLINE Color operator* (Color const& right) const;	
 	// Multiplication overload (scalar)
-	FORCE_INLINE Color operator* (Real const& right) const;				
+	FORCE_INLINE Color operator* (Real_32 const& right) const;
+	FORCE_INLINE Color operator* (Real_64 const& right) const;
 	// Division overload
 	FORCE_INLINE Color operator/ (Color const& right) const;
 	// Division overload (scalar)
-	FORCE_INLINE Color operator/ (Real const& right) const;
+	FORCE_INLINE Color operator/ (Real_32 const& right) const;
+	FORCE_INLINE Color operator/ (Real_64 const& right) const;
 	// Equal comparison overload
 	FORCE_INLINE bool operator== (Color const& right) const;
 	//Not equal comparison overload
@@ -140,7 +141,11 @@ FORCE_INLINE Color Color::operator* (Color const& right) const
 	return Color (red * right.red, green * right.green, blue * right.blue, alpha * right.alpha);
 }
 //Multiplication operator overload (scalar)
-FORCE_INLINE Color Color::operator* (Real const& right) const 
+FORCE_INLINE Color Color::operator* (Real_32 const& right) const 
+{
+	return Color (red * right, green * right, blue * right, alpha * right);
+}
+FORCE_INLINE Color Color::operator* (Real_64 const& right) const 
 {
 	return Color (red * right, green * right, blue * right, alpha * right);
 }
@@ -151,11 +156,14 @@ FORCE_INLINE Color Color::operator/ (Color const& right) const
 	return Color (red / right.red, green / right.green, blue / right.blue, alpha / right.alpha);
 }
 //Division operator overload (scalar)
-FORCE_INLINE Color Color::operator/ (Real const& right) const
+FORCE_INLINE Color Color::operator/ (Real_32 const& right) const
 {
 	return Color (red / right, green / right, blue / right, alpha / right);
 }
-
+FORCE_INLINE Color Color::operator/ (Real_64 const& right) const
+{
+	return Color (red / right, green / right, blue / right, alpha / right);
+}
 
 //Equal comparison overload
 FORCE_INLINE bool Color::operator== (Color const& right) const

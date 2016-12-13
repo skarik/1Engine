@@ -13,7 +13,7 @@ public:
 	RENDER_API CParticleRenderer_Animated ( CParticleEmitter* );
 	RENDER_API ~CParticleRenderer_Animated ( void );
 
-	RENDER_API void	serialize ( Serializer &, const uint );
+	RENDER_API virtual void	serialize ( Serializer &, const uint );
 
 	ftype	iFrameCount;
 	ftype	iHorizontalDivs;

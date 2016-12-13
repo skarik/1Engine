@@ -9,6 +9,8 @@
 //#include "RangeVector.h"
 //#include "glMaterial.h"
 
+#include "core/exceptions.h"
+
 using std::string;
 using std::vector;
 
@@ -135,7 +137,9 @@ Serializer& ISerialBinary::operator&	( glMaterial& mat )
 Serializer& ISerialBinary::operator&	( vector<Color>& vec )
 {
 	string check = m_file->ReadString();
-	if ( check != "colorarray" ) {
+	if ( check != "colorarray" )
+	{
+		throw Core::CorruptedDataException();
 		std::cout << "BAD INPUT: " << check << std::endl;
 	}
 	uint32_t count = m_file->ReadUInt32();

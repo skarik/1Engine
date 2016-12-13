@@ -303,6 +303,9 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_LO.h">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\types\ParticleEnums.h">
+      <Filter>SOURCE\Engine-Common\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
