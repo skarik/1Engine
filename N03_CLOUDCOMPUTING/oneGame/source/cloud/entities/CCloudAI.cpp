@@ -28,6 +28,7 @@ CCloudAI::~CCloudAI ()
 
 	if (pPersonality != nullptr)
 		delete pPersonality;
+
 }
 
 void CCloudAI::Initialize (CCloudEnemy *host, int type)

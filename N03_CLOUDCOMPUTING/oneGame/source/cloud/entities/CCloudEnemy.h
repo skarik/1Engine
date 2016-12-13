@@ -11,6 +11,8 @@ class CModel;
 class CInstancedModel;
 class CInstancedMesh;
 
+class CCloudAI;
+
 struct VAxes {
 	bool crouch;
 	bool jump;
@@ -92,6 +94,8 @@ public: // ROUTINES
 	//FIRE ZE CANNONS!!!! (Not really. Just shoot a bullet)
 	bool FireGun(void);
 
+	void SetAIPointer(CCloudAI* brain);
+
 protected: // PROTECTED FIELDS and ROUTINES
 	//===============================================================================================//
 	// Location state 
@@ -125,6 +129,8 @@ protected: // PROTECTED FIELDS and ROUTINES
 	static CInstancedMesh*		mesh;
 
 	static std::vector<CCloudEnemy*>	manifest;
+
+	CCloudAI * ai;
 };
 
 #endif _C_CLOUD_ENEMY_H_

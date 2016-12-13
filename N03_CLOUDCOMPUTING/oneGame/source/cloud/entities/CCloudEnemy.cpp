@@ -21,8 +21,7 @@
 #include "renderer/object/particle/CParticleRenderer_Animated.h"
 
 #include "cloud/entities/projectiles/ProjectileBullet.h"
-
-
+#include "cloud/entities/CCloudAI.h"
 
 CModel*				CCloudEnemy::model	= NULL;
 CInstancedMesh*		CCloudEnemy::mesh	= NULL;
@@ -176,6 +175,10 @@ void CCloudEnemy::OnDeath ( Damage const& )
 		behavior->RemoveReference();
 	}
 
+	if (ai)
+		delete(ai);
+	ai = NULL;
+
 	DeleteObject(this);
 }
 
@@ -307,4 +310,9 @@ bool CCloudEnemy::FireGun(void)
 		return true;
 	}
 	return false;
+}
+
+void CCloudEnemy::SetAIPointer(CCloudAI *brain)
+{
+	ai = brain;
 }

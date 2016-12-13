@@ -88,6 +88,7 @@ void sceneCloudGame::LoadScene ( void )
 			enemy = new CCloudEnemy();
 			enemy->transform.position = Vector3d( 100, 10 * x - 20, 10);
 			brain = new CCloudAI(enemy, 0);
+			enemy->SetAIPointer(brain);
 			enemy->RemoveReference();
 			brain->RemoveReference();
 		}
@@ -101,6 +102,7 @@ void sceneCloudGame::LoadScene ( void )
 				enemy = new CCloudEnemy();
 				enemy->transform.position = Vector3d(100, 10 * x - 20, 10 * y - 20);
 				brain = new CCloudAI(enemy, 2);
+				enemy->SetAIPointer(brain);
 				enemy->RemoveReference();
 				brain->RemoveReference();
 			}
@@ -114,6 +116,7 @@ void sceneCloudGame::LoadScene ( void )
 				enemy = new CCloudEnemy();
 				enemy->transform.position = Vector3d(10 * x - 20, 10 * y - 20, 100);
 				brain = new CCloudAI(enemy, 2);
+				enemy->SetAIPointer(brain);
 				enemy->RemoveReference();
 				brain->RemoveReference();
 			}
@@ -127,6 +130,7 @@ void sceneCloudGame::LoadScene ( void )
 				enemy = new CCloudEnemy();
 				enemy->transform.position = Vector3d(10 * x - 20, 10 * y - 20, -100);
 				brain = new CCloudAI(enemy, 2);
+				enemy->SetAIPointer(brain);
 				enemy->RemoveReference();
 				brain->RemoveReference();
 			}
@@ -140,6 +144,7 @@ void sceneCloudGame::LoadScene ( void )
 				enemy = new CCloudEnemy();
 				enemy->transform.position = Vector3d(10 * x - 20, 100, 10 * y - 20);
 				brain = new CCloudAI(enemy, 2);
+				enemy->SetAIPointer(brain);
 				enemy->RemoveReference();
 				brain->RemoveReference();
 			}
@@ -153,6 +158,7 @@ void sceneCloudGame::LoadScene ( void )
 				enemy = new CCloudEnemy();
 				enemy->transform.position = Vector3d(10 * x - 20, -100, 10 * y - 20);
 				brain = new CCloudAI(enemy, 2);
+				enemy->SetAIPointer(brain);
 				enemy->RemoveReference();
 				brain->RemoveReference();
 			}
@@ -166,6 +172,7 @@ void sceneCloudGame::LoadScene ( void )
 				enemy = new CCloudEnemy();
 				enemy->transform.position = Vector3d(-100, 10 * x - 20, 10 * y - 20);
 				brain = new CCloudAI(enemy, 2);
+				enemy->SetAIPointer(brain);
 				enemy->RemoveReference();
 				brain->RemoveReference();
 			}
@@ -175,12 +182,14 @@ void sceneCloudGame::LoadScene ( void )
 		enemy = new CCloudEnemy();
 		enemy->transform.position = Vector3d( -75, -75, -75);
 		brain = new CCloudAI(enemy, 2);
+		enemy->SetAIPointer(brain);
 		enemy->RemoveReference();
 		brain->RemoveReference();
 
 		enemy = new CCloudEnemy();
 		enemy->transform.position = Vector3d(75, 75, 75);
 		brain = new CCloudAI(enemy, 2);
+		enemy->SetAIPointer(brain);
 		enemy->RemoveReference();
 		brain->RemoveReference();
 	}
