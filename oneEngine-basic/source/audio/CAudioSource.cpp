@@ -130,7 +130,11 @@ void CAudioSource::SetChannelProperties ( const int& n_channel )
 		options.gain *= 0.4f;
 		break;
 	case AudioStructs::CHAN_DEFAULT:
-		FMOD::FMOD_Channel_Set3DMinMaxDistance( m_instance, 3.0f, 5000.0f );
+	default:
+		// 4.5 is the normal rolloff amount
+		float rolloff_amount = 4.5F / options.rolloff;
+		// Change the default distance based on actual rolloff
+		FMOD::FMOD_Channel_Set3DMinMaxDistance( m_instance, 3.0f * rolloff_amount, 5000.0f * rolloff_amount );
 		break;
 	}
 #endif

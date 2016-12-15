@@ -46,7 +46,6 @@ void CRenderState::Render ( void )
 			Jobs::System::Current::AddJobRequest( Jobs::JOBTYPE_RENDERSTEP, &(CLogicObject::PreStep), mLogicObjects[i] );
 		}
 	}
-	Jobs::System::Current::WaitForJobs( Jobs::JOBTYPE_RENDERSTEP );
 	// Perform the synchronous logic jobs
 	for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
@@ -60,7 +59,7 @@ void CRenderState::Render ( void )
 	}
 
 	// Call to step all the render jobs
-	//Jobs::System::Current::WaitForJobs( Jobs::JOBTYPE_RENDERSTEP );
+	Jobs::System::Current::WaitForJobs( Jobs::JOBTYPE_RENDERSTEP );
 
 	// Update the camera system
 	for ( i = 0; i < CCamera::vCameraList.size(); ++i )
@@ -250,7 +249,6 @@ void CRenderState::Render ( void )
 			Jobs::System::Current::AddJobRequest( Jobs::JOBTYPE_RENDERSTEP, &(CLogicObject::PostStep), mLogicObjects[i] );
 		}
 	}
-	Jobs::System::Current::WaitForJobs( Jobs::JOBTYPE_RENDERSTEP );
 	// Perform the synchronous logic jobs
 	for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {

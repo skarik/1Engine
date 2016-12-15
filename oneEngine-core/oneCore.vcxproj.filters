@@ -262,9 +262,6 @@
     <ClInclude Include="source\core\system\io\CMappedBinaryFile.h">
       <Filter>SOURCE\Core\System\IO</Filter>
     </ClInclude>
-    <ClInclude Include="source\core\system\io\CSegmentedFile.h">
-      <Filter>SOURCE\Core\System\IO</Filter>
-    </ClInclude>
     <ClInclude Include="source\core\system\io\FileUtils.h">
       <Filter>SOURCE\Core\System\IO</Filter>
     </ClInclude>
@@ -337,9 +334,6 @@
     <ClInclude Include="source\core\utils\armodule.h">
       <Filter>SOURCE\Core\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="source\core\system\io\CBinaryFile.h">
-      <Filter>SOURCE\Core\System\IO</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\containers\ExtendibleMap2D.h">
       <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClInclude>
@@ -369,6 +363,9 @@
     </ClInclude>
     <ClInclude Include="source\core\legacy\linkerfix_legacy.h">
       <Filter>SOURCE\Core\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\system\io\CBinaryFile.h">
+      <Filter>SOURCE\Core\System\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -436,9 +433,6 @@
       <Filter>SOURCE\Core\System</Filter>
     </ClCompile>
     <ClCompile Include="source\core\system\io\CMappedBinaryFile.cpp">
-      <Filter>SOURCE\Core\System\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core\system\io\CSegmentedFile.cpp">
       <Filter>SOURCE\Core\System\IO</Filter>
     </ClCompile>
     <ClCompile Include="source\core\system\io\FileUtils.cpp">

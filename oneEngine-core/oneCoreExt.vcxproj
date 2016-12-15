@@ -47,6 +47,7 @@
     <ClCompile Include="source\core\input\CXboxController.cpp" />
     <ClCompile Include="source\core\settings\CGameSettings.cpp" />
     <ClCompile Include="source\core\settings\CGameSettingsDirs.cpp" />
+    <ClCompile Include="source\core\system\io\CSegmentedFile.cpp" />
     <ClCompile Include="source\core\system\Screen.cpp" />
     <ClCompile Include="source\core\time\CTime.cpp" />
     <ClCompile Include="source\core\time\CTimeOsmac.cpp" />
@@ -74,6 +75,7 @@
     <ClInclude Include="source\core\input\CInput.h" />
     <ClInclude Include="source\core\input\CXboxController.h" />
     <ClInclude Include="source\core\settings\CGameSettings.h" />
+    <ClInclude Include="source\core\system\io\CSegmentedFile.h" />
     <ClInclude Include="source\core\system\Screen.h" />
     <ClInclude Include="source\core\time\CTimeOsmac.h" />
     <ClInclude Include="source\core\time\CTimeWin32.h" />

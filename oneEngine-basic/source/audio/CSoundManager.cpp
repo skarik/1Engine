@@ -37,7 +37,8 @@ CAudioSound*	CSoundManager::GetSound ( const char* soundName, const int n_positi
 			// So create a new reference
 			//  (choose between streamed and buffered based on extension)
 		string sFileExtension = StringUtils::ToLower( StringUtils::GetFileExtension( soundName ) );
-		if ( sFileExtension == "ogg" || sFileExtension == "mp3" || sFileExtension == "mp2" ) {
+		if ( sFileExtension == "ogg" || sFileExtension == "mp3" || sFileExtension == "mp2" )
+		{
 			if ( n_positional == -1 ) {
 				soundmap[ar_soundName] = new CAudioSoundStreamed( soundName, false );
 			}
@@ -45,7 +46,8 @@ CAudioSound*	CSoundManager::GetSound ( const char* soundName, const int n_positi
 				soundmap[ar_soundName] = new CAudioSoundStreamed( soundName, n_positional );
 			}
 		}
-		else {
+		else
+		{
 			if ( n_positional == -1 ) {
 				soundmap[ar_soundName] = new CAudioSound( soundName, true );
 			}

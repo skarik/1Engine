@@ -360,7 +360,6 @@
     <ClInclude Include="source\core\system\io\CBinaryFile.h" />
     <ClInclude Include="source\core\system\io\CBufferIO.h" />
     <ClInclude Include="source\core\system\io\CMappedBinaryFile.h" />
-    <ClInclude Include="source\core\system\io\CSegmentedFile.h" />
     <ClInclude Include="source\core\system\io\FileUtils.h" />
     <ClInclude Include="source\core\system\System.h" />
     <ClInclude Include="source\core\time.h" />
@@ -407,7 +406,6 @@
     <ClCompile Include="source\core\system\CMemoryMonitorWin32.cpp" />
     <ClCompile Include="source\core\system\io\CBinaryFile.cpp" />
     <ClCompile Include="source\core\system\io\CMappedBinaryFile.cpp" />
-    <ClCompile Include="source\core\system\io\CSegmentedFile.cpp" />
     <ClCompile Include="source\core\system\io\FileUtils.cpp" />
     <ClCompile Include="source\core\system\System.cpp" />
     <ClCompile Include="source\core\utils\StringUtils.cpp" />

@@ -2,6 +2,8 @@
 #include "CAudioSoundStreamed.h"
 #include "CAudioSoundLoader.h"
 
+#include "core/debug/console.h"
+
 using std::string;
 
 CAudioSoundStreamed::CAudioSoundStreamed ( const string& sFileName, const int nPositional )
@@ -75,12 +77,21 @@ void CAudioSoundStreamed::InitStream ( const string& sFileName )
 		buffer_usage[i] = false;
 	}
 #else
+	FMOD::FMOD_RESULT result = FMOD::FMOD_OK;
+
 	if ( positional ) {
-		FMOD::FMOD_System_CreateStream( CAudioMaster::System(), sFileName.c_str(), FMOD_DEFAULT | FMOD_3D, 0, &m_sound );
+		result = FMOD::FMOD_System_CreateStream( CAudioMaster::System(), sFileName.c_str(), FMOD_DEFAULT | FMOD_3D, 0, &m_sound );
 	}
 	else {
-		FMOD::FMOD_System_CreateStream( CAudioMaster::System(), sFileName.c_str(), FMOD_DEFAULT /*| FMOD_3D*/, 0, &m_sound );
+		result = FMOD::FMOD_System_CreateStream( CAudioMaster::System(), sFileName.c_str(), FMOD_DEFAULT /*| FMOD_3D*/, 0, &m_sound );
 	}
+
+	// Check to see if it loaded properly
+	if ( result != FMOD::FMOD_OK )
+	{
+		Debug::Console->PrintError("FMOD could not open the file \"" + sFileName + "\"");
+	}
+
 	streamed = true;
 #endif
 }

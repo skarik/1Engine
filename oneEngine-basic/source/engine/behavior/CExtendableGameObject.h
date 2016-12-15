@@ -24,44 +24,26 @@ public:
 	// ==Destructor==
 	~CExtendableGameObject ( void )
 	{
-		// First unlink the children.
-		//transform.UnlinkChildren();
 		// Loop through all the components. If they've no owner, remove them.
 		for ( std::vector<CGameBehavior*>::iterator it = vpComponents.begin(); it != vpComponents.end(); it++ )
 		{
 			(*it)->RemoveReference();
-			if ( !((*it)->HasReference()) )
+			if ( (*it)->HasReference() == false )
 			{
-				//delete (*it);
 				DeleteObject( *it );
 			}
-			/*else
-			{
-				(*it)->RemoveReference();
-			}*/
 		}
 		for ( std::vector<CRenderableObject*>::iterator it = vpRComponents.begin(); it != vpRComponents.end(); it++ )
 		{
-			//(*it)->transform.SetParent(NULL);
-			/*if ( !((*it)->HasReference()) )
-			{*/
 			delete_safe(*it);
-			//}
 		}
 		for ( std::vector<CLogicObject*>::iterator it = vpLComponents.begin(); it != vpLComponents.end(); it++ )
 		{
-			//(*it)->transform.SetParent(NULL);
-			/*if ( !((*it)->HasReference()) )
-			{*/
 			delete_safe (*it);
-			//}
 		}
 		for ( std::vector<CCollider*>::iterator it = vpCComponents.begin(); it != vpCComponents.end(); it++ )
 		{
-			//if ( !((*it)->HasReference()) )
-			//{
 			delete_safe (*it);
-			//}
 		}
 	}
 
@@ -73,10 +55,8 @@ public:
 		{
 			if ( (*it) == pNewBehavior )
 				return pNewBehavior;
-				//return false;
 		}
 		vpComponents.push_back( pNewBehavior );
-		//return true;
 		return pNewBehavior;
 	}
 	// Add new component (logic renderable object) to track
@@ -87,10 +67,8 @@ public:
 		{
 			if ( (*it) == pNewBehavior )
 				return pNewBehavior;
-				//return false;
 		}
 		vpLComponents.push_back( pNewBehavior );
-		//return true;
 		return pNewBehavior;
 	}
 	// Add new component (renderable object) to track
@@ -101,10 +79,8 @@ public:
 		{
 			if ( (*it) == pNewBehavior )
 				return pNewBehavior;
-				//return false;
 		}
 		vpRComponents.push_back( pNewBehavior );
-		//return true;
 		return pNewBehavior;
 	}
 	// Add new component (collider object) to track
@@ -115,10 +91,8 @@ public:
 		{
 			if ( (*it) == pNewBehavior )
 				return pNewBehavior;
-				//return false;
 		}
 		vpCComponents.push_back( pNewBehavior );
-		//return true;
 		return pNewBehavior;
 	}
 
@@ -137,6 +111,13 @@ public:
 		{
 			if ( (*it) == pBehavior ) {
 				vpRComponents.erase(it);
+				return;
+			}
+		}
+		for ( std::vector<CLogicObject*>::iterator it = vpLComponents.begin(); it != vpLComponents.end(); it++ )
+		{
+			if ( (*it) == pBehavior ) {
+				vpLComponents.erase(it);
 				return;
 			}
 		}

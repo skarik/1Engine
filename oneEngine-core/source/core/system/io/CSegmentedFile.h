@@ -22,15 +22,14 @@
 class CSegmentedFile
 {
 public:
-
 	// Constructor and Destructor
-	CSegmentedFile ( const std::string& sInFilename );
-	~CSegmentedFile ( void );
+	CORE_API CSegmentedFile ( const std::string& sInFilename );
+	CORE_API ~CSegmentedFile ( void );
 
 	// ==Data Reading==
 	// Reads in the new data
 	// Returns false if the data cannot be read
-	bool ReadData ( void );
+	CORE_API bool ReadData ( void );
 private:
 	void CheckExists ( void );
 
@@ -45,20 +44,20 @@ public:
 	
 	// Get the desired string stream
 	// Returns false if the section can't be found
-	bool GetSectionData ( const std::string& sSection, std::string& sOutString );
+	CORE_API bool GetSectionData ( const std::string& sSection, std::string& sOutString );
 
 	// Returns a stream to the section.
 	// Returns invalid CBufferIO object if section cannot be found.
-	CBufferIO GetSectionStream ( const std::string& sSection, const size_t iMaxSize = 0 );
+	CORE_API CBufferIO GetSectionStream ( const std::string& sSection, const size_t iMaxSize = 0 );
 
 	// ==Data Writing==
 
 	// Writes out the current data
-	bool WriteData ( void );
+	CORE_API bool WriteData ( void );
 
 	// Writes a new sector with the target name and containing the target data
 	// Will not replace any existing data.
-	void WriteSector ( std::string& name, std::string& data );
+	CORE_API void WriteSector ( std::string& name, std::string& data );
 
 private:
 	std::string					sFilename;

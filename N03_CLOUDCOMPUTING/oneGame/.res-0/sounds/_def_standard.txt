@@ -3,19 +3,25 @@
 
 Char.Wep.Autocannon
 {
-	wave		"weapons/autocannon.wav"
+	wave		"weapon/autocannon.wav"
+    gain        0.4
+    pitch       1.5
 }
 Char.Wep.Explo
 {
-	wave		"weapons/explosion.wav"
+	wave		"weapon/explosion.wav"
+    gain        1.0
+    attenuation 0.1
 }
 Char.Wep.Overheat
 {
-	wave		"weapons/overheat.wav"
+	wave		"weapon/overheat.wav"
 }
 Char.Wep.Missile
 {
-	wave		"weapons/missile.wav"
+	wave		"weapon/missile.wav"
+    gain        0.7
+    pitch       1.0
 }
 
 # Menu Group
@@ -30,8 +36,8 @@ Menu.Click
 Phys.Dirt.Hit
 {
 	# physics channel is a "quiet" hit channel
-	channel		physics	
-	
+	channel		physics
+
 	wave		phys/dirt_hit1.wav
 }
 
@@ -41,7 +47,7 @@ Char.FootstepSand
 	channel		heavy
 	gain		0.8
 	pitch		1.0
-	
+
 	# choose random value (todo)
 	wave		"phys/step_sand0.wav"
 	wave		"phys/step_sand1.wav"
@@ -55,7 +61,7 @@ Char.Footstep
 	channel		heavy
 	gain		0.7
 	pitch		1.0
-	
+
 	wave		"phys/step_rock0.wav"
 	wave		"phys/step_rock1.wav"
 	wave		"phys/step_rock2.wav"
@@ -68,7 +74,7 @@ Char.FootstepGrass
 	channel		heavy
 	gain		0.8
 	pitch		1.0
-	
+
 	wave		"phys/step_grass0.wav"
 	wave		"phys/step_grass1.wav"
 	wave		"phys/step_grass2.wav"
@@ -80,7 +86,7 @@ Char.FootstepWood
 	channel		heavy
 	gain		0.8
 	pitch		1.0
-	
+
 	wave		"phys/step_wood0.wav"
 	wave		"phys/step_wood1.wav"
 	wave		"phys/step_wood2.wav"
@@ -99,7 +105,7 @@ Test.Yell
 	# volume controls the attenuation (the distance you can still hear the sound)
 	# example is a gunshot. Design-wise, it'd be a pain in the ass to estimate how far away you'd hear the shot
 	# so instead, let the engine take care of it, giving an approximate volume
-	
+
 	wave		voice/yell.wav
 }
 Test.Yell2
@@ -112,7 +118,7 @@ Test.Yell2
 
 # test for subtitles (should subtitles go into soundscripts?)
 # (possibly have dialogue scripts instead? DISCUSS!)
-Speech.Person1.Greet	
+Speech.Person1.Greet
 {
 	# Speech will also need a voice-per-race indexer.
 

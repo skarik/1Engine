@@ -29,6 +29,6 @@ void main ( void )
 	float f_alpha = diffuseColor.a * v2f_colors.a;
 	if ( f_alpha < sys_AlphaCutoff ) discard;
 
-	gl_FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb * (v2f_colors.rgb+v2f_emissive), v2f_fogdensity );
+	gl_FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb * (v2f_colors.rgb+v2f_emissive), v2f_fogdensity ) * f_alpha;
 	gl_FragColor.a = f_alpha;
 }

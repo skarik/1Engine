@@ -170,15 +170,16 @@ CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
 		}
 
 		// Play sound
-		if ( chosen_sound_index >= 0 ) {
+		if ( chosen_sound_index >= 0 )
+		{
 			// Create the sound
 			string soundfilename =  Core::Resources::PathTo( string("sounds/") + scriptResult->second.sounds[chosen_sound_index].c_str() );
 			CAudioSound* newSound = CSoundManager::GetActive()->GetSound( soundfilename.c_str() );
 
 			// If sound driver is FUBAR, don't crash. Just warn about it.
-			if ( newSound == NULL ) {
+			if ( newSound == NULL )
+			{
 				cout << "Warning: sound engine could not load sound file! (is the device being whored?)" << endl;
-				//return NULL;
 			}
 			
 			// Create the source playing it
@@ -329,6 +330,7 @@ void CAudioInterface::LoadEntry ( const char* soundName, const soundIndex_t& ind
 	newScript.count = 0;
 	newScript.loop = 0;
 	newScript.gain = 1.0f;
+	newScript.attenuation = 0.8F;
 	memset( newScript.sound_usage, 0, 4 );
 	memset( newScript.sounds, 0, 256*4 );
 	switch ( indexInfo.set )
@@ -535,5 +537,8 @@ void CAudioInterface::EditSoundScript ( soundScript_t & script, const string& ke
 	}
 	else if ( key == "gain" ) {
 		script.gain = (float)atof( value.c_str() );
+	}
+	else if ( key == "attenuation" ) {
+		script.attenuation = (float)atof( value.c_str() );
 	}
 }

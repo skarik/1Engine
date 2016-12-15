@@ -21,9 +21,9 @@ CSegmentedFile::CSegmentedFile ( const string& sInFilename )
 		if ( fp_output != NULL )
 		{
 			validFile = true;
+			fclose( fp_output );
+			remove( sFilename.c_str() );
 		}
-		fclose( fp_output );
-		remove( sFilename.c_str() );
 		fp_output = NULL;
 	}
 }

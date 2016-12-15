@@ -126,6 +126,9 @@
     <ClCompile Include="source\core-ext\animation\Skeleton.cpp">
       <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="source\core\system\io\CSegmentedFile.cpp">
+      <Filter>SOURCE\Core\System\IO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\transform\TransformUtility.h">
       <Filter>SOURCE\Core-ext\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\system\io\CSegmentedFile.h">
+      <Filter>SOURCE\Core\System\IO</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

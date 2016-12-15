@@ -17,7 +17,7 @@ using std::endl;
 //bool CTransform::updateRenderSide = false;
 CTransform CTransform::root;
 
-#define DISABLE_PROPOGATE_THREADING
+//#define DISABLE_PROPOGATE_THREADING
 
 // Constructor
 CTransform::CTransform ( void )
@@ -610,11 +610,22 @@ void CTransform::PropogateTransforms ( void )
 		//
 	}
 #else
+	// Update root...
 	CTransform::root.LateUpdate();
+	
+	// Check for a ridiculous number of transforms
+	if ( CTransform::root.children.size() > 8191 )
+	{	// If there's this many transforms, there's likely an issue occuring with the world.
+		throw Core::YouSuckException();
+	}
+
+	// Create a job for each base-level transform to update
 	for ( auto t_tr = CTransform::root.children.begin(); t_tr != CTransform::root.children.end(); ++t_tr )
 	{
 		Jobs::System::Current::AddJobRequest( Jobs::JOBTYPE_ENGINE, PropogateSub, *t_tr );
 	}
+
+	// Wait for the transforms to propogate before continuing.
 	Jobs::System::Current::WaitForJobs( Jobs::JOBTYPE_ENGINE );
 #endif
 }

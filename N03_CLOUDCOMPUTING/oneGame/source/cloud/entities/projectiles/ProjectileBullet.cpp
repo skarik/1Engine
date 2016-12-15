@@ -29,6 +29,7 @@ ProjectileBullet::ProjectileBullet ( const Ray & direction, Real speed )
 ProjectileBullet::~ProjectileBullet ( void )
 {
 	pTrailParticle->enabled = false;
+	pTrailParticle->bAutoDestroy = true;
 	pTrailParticle->RemoveReference();
 }
 
@@ -51,6 +52,7 @@ void ProjectileBullet::OnHit ( CGameObject* go, Item::HitType hittype )
 			renderer->GetMaterial()->loadFromFile("particle/sparks");
 			renderer->GetMaterial()->passinfo[0].m_hint = RL_WORLD | RL_FOG;
 			renderer->GetMaterial()->passinfo[0].b_depthmask = false;
+			renderer->GetMaterial()->passinfo[0].m_blend_mode = Renderer::BM_SOFT_ADD;
 
 			// following is a hack. currently these values are not serialized properly (corrupted) so set them here to fix
 			renderer->fFramesPerSecond = 30.0F;
@@ -64,6 +66,7 @@ void ProjectileBullet::OnHit ( CGameObject* go, Item::HitType hittype )
 		ps->transform.rotation = Quaternion::CreateRotationTo( Vector3d(1,0,0), rhLastHit.hitNormal );
 		ps->PostUpdate(); ps->PostUpdate(); // Update position
 
+		ps->bAutoDestroy = true;
 		ps->RemoveReference();
 	}
 

@@ -206,7 +206,7 @@ void CParticleEmitter::CreateParticle ( const Vector3d & vInPosition )
 		for ( uint i = 0; i < m_next_particle_index; ++i )
 		{
 			// For each blank particle, we need to increase the offset to pull the particle from
-			while ( !m_particles[i+offset].alive && i+offset < m_next_particle_index )
+			while ( i+offset < m_next_particle_index && !m_particles[i+offset].alive )
 			{
 				offset++;
 			}

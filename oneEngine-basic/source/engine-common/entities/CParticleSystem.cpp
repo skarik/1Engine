@@ -195,34 +195,49 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 
 void CParticleSystem::PostUpdate ( void )
 {
+	// Update transform & activity of particle emitters...
 	for ( vector<CParticleEmitter*>::iterator it = vpEmitters.begin(); it != vpEmitters.end(); it++ )
 	{
 		(*it)->transform.Get( this->transform );
-		//(*it)->active = enabled;
 		(*it)->SetActive( enabled );
 	}
+	// Update the transform of particle renderers...
 	for ( vector<CRenderableObject*>::iterator it = vpRComponents.begin(); it != vpRComponents.end(); it++ )
 	{
 		(*it)->transform.Get( this->transform );
 	}
 
+	// Check for automatic system destruction:
 	if ( bAutoDestroy )
 	{
+		bool can_destroy = true;
+
 		// Loop through emitters
-		bool bCanDestroy = true;
 		for ( vector<CParticleEmitter*>::iterator it = vpEmitters.begin(); it != vpEmitters.end(); it++ )
 		{
 			// If the emitter is not one-shot or has particles out, then destroy self automatically
 			CParticleEmitter* emitter = *it;
 			
-			if ( ( !emitter->bOneShot )||( emitter->GetParticleCount() > 0 )||( !emitter->HasEmitted() ) ) {
-				bCanDestroy = false;
-				break;
+			if ( emitter->bOneShot )
+			{	// One shots may not have emitted yet, so we wait until they have.
+				if ( emitter->GetParticleCount() > 0 || !emitter->HasEmitted() )
+				{
+					can_destroy = false;
+					continue;
+				}
+			}
+			else
+			{	// Constant emitters will be set to autodestroy after their owner has died. We just check their particle count.
+				if ( emitter->GetParticleCount() > 0 )
+				{
+					can_destroy = false;
+				}
 			}
 		}
+
 		// Send delete message if should be deleting
-		if ( bCanDestroy ) {
-			//cout << "DESTROYED :D" << endl;
+		if ( can_destroy )
+		{
 			DeleteObject( this );
 		}
 	}

@@ -767,10 +767,12 @@ void glMaterial::bindPassDeferred ( uchar pass )
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		break;
 	case Renderer::BM_ADD:
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+		//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+		glBlendFunc( GL_ONE, GL_ONE );
 		break;
 	case Renderer::BM_SOFT_ADD:
-		glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+		//glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+		glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
 		break;
 	case Renderer::BM_INV_MULTIPLY:
 		glBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_COLOR );
