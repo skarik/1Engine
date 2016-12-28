@@ -6,53 +6,121 @@
 #include <atomic>
 #include <condition_variable>
 #include "compile_mode.h"
+//#include "core/os.h"
 
 namespace Threads
 {
+/*#ifdef _WIN32
+	class semaphore
+	{
+	private:
+		HANDLE ghSemaphore;
+
+	public:
+		semaphore (int count_ = 0)
+		{
+			ghSemaphore = CreateSemaphore(
+				NULL,
+				64,
+				64,
+				NULL);
+		}
+		~semaphore ()
+		{
+			CloseHandle(ghSemaphore);
+		}
+
+		inline void notify()
+		{
+			ReleaseSemaphore(ghSemaphore, 1, NULL);
+		}
+
+		inline void wait()
+		{
+			WaitForSingleObject(ghSemaphore,INFINITE);
+		}
+
+		inline bool try_wait()
+		{
+			DWORD result = WaitForSingleObject(ghSemaphore,0);
+			if ( result == WAIT_TIMEOUT )
+				return false;
+			return true;
+		}
+	};
+#else*/
+#ifndef THREAD_CLASSES_USE_ATOMICS
+
 	class semaphore
 	{
 	private:
 		std::mutex mtx;
 		std::condition_variable cv;
-#	ifdef THREAD_CLASSES_USE_ATOMICS
-		std::atomic_int count;
-#	else
 		int count;
-#	endif
 
 	public:
 		semaphore (int count_ = 0)
-#	ifdef THREAD_CLASSES_USE_ATOMICS
-		{
-			count.store(count_);
-		}
-#	else
 			: count(count_) {}
-#	endif
 
 		inline void notify()
 		{
-#		ifndef THREAD_CLASSES_USE_ATOMICS
 			std::unique_lock<std::mutex> lock(mtx);
-#		endif
-			count++;
+			++count;
 			cv.notify_one();
 		}
 
 		inline void wait()
 		{
-#		ifndef THREAD_CLASSES_USE_ATOMICS
 			std::unique_lock<std::mutex> lock(mtx);
-#		endif
 			while ( count <= 0 ) {
-#			ifdef THREAD_CLASSES_USE_ATOMICS
-				std::unique_lock<std::mutex> lock(mtx);
-#			endif
 				cv.wait(lock);
 			}
-			count--;
+			--count;
 		}
 	};
+
+#else //THREAD_CLASSES_USE_ATOMICS
+
+	class semaphore
+	{
+	private:
+		std::mutex mtx;
+		std::condition_variable cv;
+		std::atomic_int count;
+
+	public:
+		semaphore (int count_ = 0)
+			: count(count_) {}
+
+		inline void notify()
+		{
+			std::unique_lock<std::mutex> lock(mtx);
+			++count;
+			cv.notify_one();
+		}
+
+		inline void wait()
+		{
+			std::unique_lock<std::mutex> lock(mtx);
+			while ( count <= 0 ) {
+				cv.wait(lock);
+			}
+			--count;
+		}
+
+		inline bool try_wait()
+		{
+			std::unique_lock<std::mutex> lock(mtx);
+			if ( count > 0 ) {
+				--count;
+				return true;
+			}
+			return false;
+		}
+	};
+
+#endif//THREAD_CLASSES_USE_ATOMICS
+//#endif
 }
 
 #endif//_THREADS_SEMAPHORE_H_

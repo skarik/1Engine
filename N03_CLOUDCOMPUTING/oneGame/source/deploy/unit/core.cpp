@@ -21,14 +21,6 @@
 #include "steam/steam_api.h"
 
 // Program entry point
-/*#ifdef _WIN32
-int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
-					HINSTANCE	hPrevInstance,		// Previous Instance
-					LPSTR		lpCmdLine,			// Command Line Parameters
-					int			nCmdShow)			// Window Show State
-#else
-int main ( char** lpCmdLine )
-#endif*/
 DEPLOY_API int _ARUNIT_CALL Unit::Test_Core ( _ARUNIT_ARGS )
 {	_ARUNIT_BUILD_CMDLINE
 

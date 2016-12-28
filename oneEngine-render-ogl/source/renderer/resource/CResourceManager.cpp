@@ -87,6 +87,8 @@ void CResourceManager::RenderUpdate ( void )
 	// Stream in textures
 	for ( auto resource = mResourceList.begin(); resource != mResourceList.end(); resource++ )
 	{
+		// TODO: Make streaming list. Do NOT loop over all things.
+
 		// If resource is streaming
 		if ( resource->m_needStream && resource->m_resourceType == resourceInfo_t::RESOURCE_TEXTURE )
 		{

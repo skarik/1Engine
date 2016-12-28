@@ -7,13 +7,19 @@
     <Filter Include="SOURCE\Deploy">
       <UniqueIdentifier>{465a5a1a-cfd1-4245-a810-3df94a918426}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Deploy\Deploy">
+      <UniqueIdentifier>{ad8c304b-be1b-4dd0-b2f3-6597d98b6282}</UniqueIdentifier>
+    </Filter>
     <Filter Include="SOURCE\Deploy\Unit">
-      <UniqueIdentifier>{05855e1f-8ded-4f65-bdcd-6f38c4254306}</UniqueIdentifier>
+      <UniqueIdentifier>{e96d7501-c598-4c81-8602-209cab5b42b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\deploy\unit\core.cpp">
       <Filter>SOURCE\Deploy\Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\deploy\deploy\testOneCore.cpp">
+      <Filter>SOURCE\Deploy\Deploy</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

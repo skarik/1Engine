@@ -269,12 +269,12 @@ int COglWindowWin32::InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 	return TRUE;										// Initialization Went OK
 }
 
-int COglWindowWin32::DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
+// Draws the actual scene by calling into the renderer
+int COglWindowWin32::DrawGLScene(GLvoid)
 {
-	//glClearColor( RenderSettings.clearColor.red, RenderSettings.clearColor.green, RenderSettings.clearColor.blue, RenderSettings.clearColor.alpha );
 	GL_ACCESS;
 
-	//CRenderState::pActive->Render(); // Nope
+	// Update the opengl render viewport if there's been a change
 	if ( Screen::Info.width != iWidth || Screen::Info.height != iHeight )
 	{
 		wglMakeCurrent( hDC,hRenderContext );
@@ -292,10 +292,21 @@ int COglWindowWin32::DrawGLScene(GLvoid)									// Here's Where We Do All The D
 	// Render out the scene.
 	mRenderer->Render();
 
-	char szTitle[256]={0};
-	//sprintf( szTitle, "%d FPS :: FT: %d ms :: mousex: %d :: mousey: %d :: prevmousex: %d :: dmousex: %d", int(1.0f/Time::smoothDeltaTime), int(Time::smoothDeltaTime*1000.0f), CInput::mouseX, CInput::mouseY, CInput::prevMouseX, CInput::deltaMouseX );
-	sprintf( szTitle, "%d FPS :: FT: %d ms ", int(1.0f/Time::smoothDeltaTime), int(Time::smoothDeltaTime*1000.0f) );
-	SetWindowText( hWnd, szTitle );
+	// Slow down the framerate if it's too fast
+	int fps = int(1.0f/Time::smoothDeltaTime);
+	if ( fps > 500 )
+	{
+		std::this_thread::sleep_for(std::chrono::microseconds(100));
+	}
+
+#ifdef _ENGINE_DEBUG
+	// Change the window text to show the framerate and frametime when in debug mode
+	{
+		char szTitle[256]={0};
+		sprintf( szTitle, "%d FPS :: FT: %d ms ", fps, int(Time::smoothDeltaTime*1000.0f) );
+		SetWindowText( hWnd, szTitle );
+	}
+#endif
 
 	return TRUE;										// Everything Went OK
 }
@@ -454,26 +465,24 @@ COglWindowWin32::eReturnStatus COglWindowWin32::CreateGLWindow(char* title, int 
 		return status_FAILED;						// Return FALSE
 	}
 
-	static	PIXELFORMATDESCRIPTOR pfd=				// pfd Tells Windows How We Want Things To Be
+	static PIXELFORMATDESCRIPTOR pfd =
 	{
 		sizeof(PIXELFORMATDESCRIPTOR),				// Size Of This Pixel Format Descriptor
 		1,											// Version Number
-		PFD_DRAW_TO_WINDOW |						// Format Must Support Window
-		PFD_SUPPORT_OPENGL |						// Format Must Support OpenGL
-		PFD_DOUBLEBUFFER,							// Must Support Double Buffering
+													// Pixel format
+		PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
 		PFD_TYPE_RGBA,								// Request An RGBA Format
-		8,
-		//bits,										// Select Our Color Depth
-		0, 0, 0, 0, 0, 0,							// Color Bits Ignored
-		0,											// No Alpha Buffer
-		0,											// Shift Bit Ignored
-		0,											// No Accumulation Buffer
-		0, 0, 0, 0,									// Accumulation Bits Ignored
-		16,											// 16Bit Z-Buffer (Depth Buffer)  
-		1,											// No Stencil Buffer
+		32,											// Select Our Color Depth
+		0, 0, 0, 0, 0, 0,							// (Ignored) Color Bits Ignored
+		0,											// (Ignored) No Alpha Buffer
+		0,											// (Ignored) Shift Bit Ignored
+		0,											// (Ignored) No Accumulation Buffer
+		0, 0, 0, 0,									// (Ignored) Accumulation Bits Ignored
+		24,											// 16Bit Z-Buffer (Depth Buffer)  
+		8,											// No Stencil Buffer
 		0,											// No Auxiliary Buffer
-		PFD_MAIN_PLANE,								// Main Drawing Layer
-		0,											// Reserved
+		0,											// (Ignored) Main Drawing Layer
+		0,											// (Ignored) Reserved
 		0, 0, 0										// Layer Masks Ignored
 	};
 	// Did We Get A Device Context?

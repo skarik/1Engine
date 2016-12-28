@@ -17,7 +17,7 @@ using std::endl;
 //bool CTransform::updateRenderSide = false;
 CTransform CTransform::root;
 
-//#define DISABLE_PROPOGATE_THREADING
+#define DISABLE_PROPOGATE_THREADING
 
 // Constructor
 CTransform::CTransform ( void )
