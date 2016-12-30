@@ -54,7 +54,7 @@ CCloudPlayer::CCloudPlayer ( void )
 
 	// Zoom particle shits
 	particlesystem = new CParticleSystem("particlesystems/zoom_shit.pcf");
-	particlesystem->transform.SetParent(&transform);
+	//particlesystem->transform.SetParent(&transform);
 	particlesystem->transform.localPosition = Vector3d(0,0,0);
 	if ( particlesystem->GetEmitter() != NULL )
 	{	// Set up the additional details
@@ -154,6 +154,9 @@ void CCloudPlayer::OnDeath ( Damage const& )
 
 void CCloudPlayer::Update ( void )
 {
+	// Update particle system position
+	particlesystem->transform.position = transform.position;
+
 	// Update base class code first
 	CActor::Update();
 }

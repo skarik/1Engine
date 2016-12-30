@@ -1,6 +1,7 @@
 
 #include "CParticleSystem.h"
 
+#include "core/system/io/FileUtils.h"
 #include "core/system/io/CBinaryFile.h"
 #include "core/system/io/CSegmentedFile.h"
 #include "core-ext/system/io/serializer/ISerialBinary.h"
@@ -60,11 +61,24 @@ CParticleSystem::~CParticleSystem ( void )
 void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverride )
 {
 	string sActualSystemFile = Core::Resources::PathTo( sSystemFile );
+
+#ifdef _ENGINE_DEBUG
+	if (!IO::FileExists(sActualSystemFile))
+	{
+		throw Core::MissingFileException();
+	}
+#endif
+
 	uint32_t iVersion = 0;
 	{
-		// Input
+		// Input file!
 		CSegmentedFile inFile ( sActualSystemFile );
-		inFile.ReadData();
+
+		// Read in the data
+		if ( inFile.ReadData() == false )
+		{
+			throw Core::CorruptedDataException();
+		}
 
 		// Check header for version number
 		{
@@ -154,6 +168,7 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 					case Engine::PARTICLESYS_RENDERER:
 						newComponent = new CParticleRenderer(lastEmitter);
 						((CParticleRenderer*)(newComponent))->SetMaterial( new glMaterial );
+						((CParticleRenderer*)(newComponent))->GetMaterial()->removeReference();
 						deserializer >> ((CParticleRenderer*)(newComponent));
 						AddComponent( (CParticleRenderer*)(newComponent) );
 						break;
@@ -164,6 +179,7 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 					case Engine::PARTICLESYS_RENDERER_ANIMATED: // Renderer - Animation; not yet implemented
 						newComponent = new CParticleRenderer_Animated(lastEmitter);
 						((CParticleRenderer_Animated*)(newComponent))->SetMaterial( new glMaterial );
+						((CParticleRenderer_Animated*)(newComponent))->GetMaterial()->removeReference();
 						deserializer >> ((CParticleRenderer_Animated*)(newComponent));
 						AddComponent( (CParticleRenderer_Animated*)(newComponent) );
 						break;

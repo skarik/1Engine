@@ -76,14 +76,14 @@ bool CDebugRTInspector::Render ( const char pass )
 			{
 				defaultMat->setSampler( 0, rtList[rt_i]->GetColorSampler(), GL.Enum(Texture2D) );
 				defaultMat->bindPass(0);
-				GLd.DrawRectangle( currentX, currentY, 128.0F*((Real)rtList[rt_i]->GetWidth()/(Real)rtList[rt_i]->GetHeight()),128.0F );
+				GLd.DrawRectangle( (Real)currentX, (Real)currentY, 128.0F*((Real)rtList[rt_i]->GetWidth()/(Real)rtList[rt_i]->GetHeight()),128.0F );
 				currentY += 128;
 			}
 			if ( rtList[rt_i]->GetDepthSampler() )
 			{
 				defaultMat->setSampler( 0, rtList[rt_i]->GetDepthSampler(), GL.Enum(Texture2D) );
 				defaultMat->bindPass(0);
-				GLd.DrawRectangle( currentX, currentY, 128.0F*((Real)rtList[rt_i]->GetWidth()/(Real)rtList[rt_i]->GetHeight()),128.0F );
+				GLd.DrawRectangle( (Real)currentX, (Real)currentY, 128.0F*((Real)rtList[rt_i]->GetWidth()/(Real)rtList[rt_i]->GetHeight()),128.0F );
 				currentY += 128;
 			}
 

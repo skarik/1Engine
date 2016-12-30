@@ -133,7 +133,7 @@ bool CDeveloperCursor::Render ( const char pass )
 	matCursor->setShaderConstants( this );
 	GLd.P_PushColor( 1,1,1,1 );
 	//	GLd.DrawScreenQuad();
-	GLd.DrawRectangle( (int)Input::MouseX(), (int)Input::MouseY(), 32,32 );
+	GLd.DrawRectangle( (Real)Input::MouseX(), (Real)Input::MouseY(), 32,32 );
 
 	GL.endOrtho();
 

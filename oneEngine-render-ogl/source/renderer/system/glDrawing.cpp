@@ -26,6 +26,13 @@ glDrawing::glDrawing ( void )
 	// Initialize drawing
 	MarkBuffersFreeUsage();
 }
+glDrawing::~glDrawing ( void )
+{
+	if ( ActiveSystem == this )
+	{
+		ActiveSystem = NULL;
+	}
+}
 // System's current active reference
 glDrawing* glDrawing::ActiveReference ( void )
 {

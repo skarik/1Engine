@@ -475,8 +475,9 @@ void CResourceManager::StreamUpdate_Texture ( const char* n_targetFile )
 			}
 			// Increment the memory offset
 			t_memoryOffset += t_width*t_height*4;
-
 		}
+
+		fclose( t_bpdFile );
 	}
 	else
 	{

@@ -116,7 +116,8 @@ namespace Core
 		{
 			std::string currentFilename = *itr_path + filename;
 			FILE* file = fopen( currentFilename.c_str(), "r" );
-			if ( file ) {
+			if ( file != NULL )
+			{
 				fclose( file ); // Close file beforehand
 				return currentFilename;
 			}

@@ -58,7 +58,7 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 	screenMaterial->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	screenMaterial->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
 	screenMaterial->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
-
+	screenMaterial->removeReference();
 	SetMaterial( screenMaterial );
 
 	//fntNotifier	= new CBitmapFont ( "benegraphic.ttf", 72, FW_BOLD );
@@ -74,11 +74,9 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 
 CLoadScreenInjector::~CLoadScreenInjector ( void )
 {
-	//screenMaterial->removeReference();
-	//delete screenMaterial;
-	delete fntNotifier;
 	matNotifierDrawer->removeReference();
 	delete matNotifierDrawer;
+	delete fntNotifier;
 }
 
 bool CLoadScreenInjector::Render ( const char pass )

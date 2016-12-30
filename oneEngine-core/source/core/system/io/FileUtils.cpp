@@ -11,8 +11,7 @@ bool IO::FileExists ( const std::string& n_filename )
 bool IO::FileExists ( const char* n_filename )
 {
 	// Check file exists by simple open for read
-	FILE* fp;
-	fp = fopen( n_filename, "r" );
+	FILE* fp = fopen( n_filename, "r" );
 	if ( fp != NULL ) {
 		fclose( fp );
 		return true;
@@ -51,6 +50,7 @@ bool IO::AppendFile ( const char* n_targetfile, const char* n_sourcefile )
 	}
 	FILE* fp_target = fopen( n_targetfile, "ab" );
 	if ( fp_target == NULL ) {
+		fclose( fp_source );
 		return false;
 	}
 

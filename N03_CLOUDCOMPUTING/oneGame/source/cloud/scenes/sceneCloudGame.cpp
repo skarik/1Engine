@@ -17,6 +17,7 @@
 #include "renderer/logic/model/CModel.h"
 #include "renderer/logic/model/CSkinnedModel.h"
 #include "renderer/material/glMaterial.h"
+#include "renderer/camera/CCamera.h"
 
 #include "engine-common/entities/CPlayer.h"
 #include "engine-common/network/playerlist.h"
@@ -36,19 +37,19 @@ void sceneCloudGame::LoadScene ( void )
 
 	// Create load screen
 	CLoadScreenInjector* loadscreen = new CLoadScreenInjector();
-	loadscreen->StepScreen();
+	//loadscreen->StepScreen();
 
 	{	// Create console visual and leave it floating in the engine
 		Engine::CDeveloperConsole* devconsole = new Engine::CDeveloperConsole();
 		devconsole->RemoveReference();
 	}
 
-	{	// Go to _debugging for debugging
+	/*{	// Go to _debugging for debugging
 		CGameSettings::Active()->SetRealmSaveTarget( "_debugging" );
 		CGameSettings::Active()->SetWorldSaveTarget( "terra" );
 		CGameSettings::Active()->SetPlayerSaveTarget( "clara" );
 	}
-	loadscreen->StepScreen();
+	loadscreen->StepScreen();*/
 	
 	{	// Precache the flat basecase model first
 		//CModel* precache = new CModel( "models/cube.FBX" );
@@ -57,8 +58,9 @@ void sceneCloudGame::LoadScene ( void )
 		//precache->transform.scale = Vector3d(1,1,1);
 		//delete precache;
 	}
-	loadscreen->StepScreen();
+	//loadscreen->StepScreen();
 
+	if ( true )
 	{	// Camera control
 		CActor* player = new CCloudPlayer();
 		player->transform.position = Vector3d( -4,-4,6 );
@@ -67,17 +69,25 @@ void sceneCloudGame::LoadScene ( void )
 		// Quick hack for adding player to the player list
 		Network::AddPlayerActor(player,-1);
 	}
-	loadscreen->StepScreen();
+	else
+	{
+		CCamera* camera = new CCamera();
+		CRenderCameraHolder* holder = new CRenderCameraHolder(camera);
+		holder->RemoveReference();
+	}
+	//loadscreen->StepScreen();
 
+	if ( true )
 	{	// World backgrounds
 		//CGameBehavior* effects = new CEnvironmentEffects();
 		CGameBehavior* effects = new Daycycle();
 		//effects->active = false;
 		effects->RemoveReference();
 	}
-	loadscreen->StepScreen();
+	//loadscreen->StepScreen();
 
 	// enemy test
+	if ( true )
 	{
 		CCloudEnemy* enemy;
 		CCloudAI *brain;
@@ -193,7 +203,7 @@ void sceneCloudGame::LoadScene ( void )
 		enemy->RemoveReference();
 		brain->RemoveReference();
 	}
-	loadscreen->StepScreen();
+	//loadscreen->StepScreen();
 
 	//{	// World
 	//	glMaterial* material = new glMaterial;
@@ -222,6 +232,7 @@ void sceneCloudGame::LoadScene ( void )
 	//}
 	//loadscreen->StepScreen();
 
+	if ( true )
 	{	// Create screen shaders
 		CRendererHolder* shaderHolder;
 		if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
@@ -261,7 +272,7 @@ void sceneCloudGame::LoadScene ( void )
 			shaderHolder->RemoveReference();
 		}
 	}
-	loadscreen->StepScreen();
+	//loadscreen->StepScreen();
 
 	delete loadscreen;
 }

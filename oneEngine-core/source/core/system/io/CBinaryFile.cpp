@@ -84,6 +84,7 @@ bool	CBinaryFile::Open ( const char * sFilename, int inOpenmode )
 	}
 
 	bHitEoF = false;
+	bIsStream = false;
 
 	// Check if file is already open
 	if ( find( v_sOpenFiles.begin(), v_sOpenFiles.end(), sCurrentFileName ) != v_sOpenFiles.end() )

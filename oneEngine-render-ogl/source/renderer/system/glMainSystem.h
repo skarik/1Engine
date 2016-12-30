@@ -49,6 +49,7 @@ public:
 	//	Constructor
 	// System initialization
 	glMainSystem ( void );
+	~glMainSystem ( void );
 
 private:
 	// Current instance of the system

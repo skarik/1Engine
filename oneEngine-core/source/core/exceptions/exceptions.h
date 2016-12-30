@@ -93,6 +93,15 @@ namespace Core
 		}
 	};
 
+	class MemoryLeakException : public std::runtime_error
+	{
+	public:
+		MemoryLeakException ( void ) : runtime_error( "Memory leak detected." )
+		{
+			;
+		}
+	};
+
 	class InvalidArgumentException : public std::runtime_error
 	{
 	public:

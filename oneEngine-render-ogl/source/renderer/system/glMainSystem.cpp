@@ -41,6 +41,13 @@ glMainSystem::glMainSystem ( void )
 	bFogEnabled			= false;
 	bDepthWriteEnabled	= true;
 }
+glMainSystem::~glMainSystem ( void )
+{
+	if ( ActiveSystem == this )
+	{
+		ActiveSystem = NULL;
+	}
+}
 // System's current active reference
 glMainSystem* glMainSystem::ActiveReference ( void )
 {

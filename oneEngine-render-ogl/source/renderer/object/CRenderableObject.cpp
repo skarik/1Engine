@@ -84,11 +84,19 @@ void CRenderableObject::SetMaterial ( glMaterial* n_pNewMaterial )
 	}*/
 
 	// Free old material usage
-	if ( m_material ) {
+	if ( m_material )
+	{
 		m_material->removeReference();
-		if ( !m_material->hasReference() ) {
+		if ( !m_material->hasReference() )
+		{
 			delete m_material;
 		}
+#ifdef _ENGINE_DEBUG
+		else if ( m_material != glMaterial::Default )
+		{
+			throw Core::MemoryLeakException();
+		}
+#endif
 	}
 
 	m_material = n_pNewMaterial;

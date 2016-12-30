@@ -22,6 +22,7 @@ public:
 	//	Constructor
 	// System initialization
 	glDrawing ( void );
+	~glDrawing ( void );
 
 private:
 	// Current instance of the system

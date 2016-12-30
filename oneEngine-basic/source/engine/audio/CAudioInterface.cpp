@@ -230,7 +230,8 @@ void CAudioInterface::BuildIndexMap ( void )
 			default:	fp = Core::Resources::Open( "sounds/level_list.txt", "rb" ); break;
 		}
 
-		if ( fp ) {
+		if ( fp )
+		{
 			// Loop through the file, creating the entries
 			while ( !feof( fp ) || ( read_mode == 2 ) || ( read_mode == 1 ) ) {
 				// Looking for title
@@ -313,7 +314,8 @@ void CAudioInterface::BuildIndexMap ( void )
 			} // End while loop
 			fclose( fp );
 		}
-		else {
+		else
+		{
 			throw Core::NullReferenceException();
 		}
 	}

@@ -308,11 +308,6 @@ void glMaterial::loadFromFile ( const char* n_materialfile )
 
 	// Set material name
 	m_name = n_materialfile;
-
-	// Perform any needed cleanup
-	if ( ifile.is_open() ) {
-		ifile.close();
-	}
 }
 
 ELoadState loadPassProperties ( glMaterial* material,

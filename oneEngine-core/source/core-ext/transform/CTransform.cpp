@@ -39,7 +39,8 @@ CTransform::CTransform ( void )
 	matxLocal = Matrix4x4();
 
 	//_parent = NULL;
-	SetParent( &root );
+	//SetParent( &root );
+	_parent = &root;
 
 	_is_dirty = false;
 	_is_ready = false;
@@ -52,8 +53,8 @@ CTransform::~CTransform ( void )
 {
 	if ( this != &root )
 	{
-		SetParent( NULL, true );
-		UnlinkChildren();
+		//SetParent( NULL, true );
+		//UnlinkChildren();
 	}
 }
 
@@ -117,6 +118,8 @@ Vector3d CTransform::Side ( void )
 // Unlinker
 void CTransform::UnlinkChildren ( void )
 {
+	throw Core::DeprecatedCallException();
+
 	/*for ( vector<CTransform*>::iterator child = children.begin(); child != children.end(); ++child )
 	{
 		// Abandon our children
@@ -135,6 +138,8 @@ void CTransform::UnlinkChildren ( void )
 // Set Parent
 void CTransform::SetParent ( CTransform * pNewParent, bool onDeathlink )
 {
+	throw Core::DeprecatedCallException();
+
 	if ( _parent != NULL && !_is_ready )
 		LateUpdate();
 

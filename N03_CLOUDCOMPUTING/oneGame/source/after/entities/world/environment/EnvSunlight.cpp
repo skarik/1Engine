@@ -21,17 +21,17 @@ EnvSunlight::EnvSunlight ( void )
 
 	pSunMat = new glMaterial();
 	pSunMat->m_diffuse = Color( 1.6f,1.6f,1.6f );
-	pSunMat->setTexture( 0, new CTexture(".res/textures/sun_flat.jpg") );
+	pSunMat->setTexture( 0, new CTexture("textures/sun_flat.jpg") );
 	pSunMat->passinfo.push_back( glPass() );
 	pSunMat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	pSunMat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	pSunMat->passinfo[0].shader = new glShader( ".res/shaders/d/default_billboard.glsl" );
+	pSunMat->passinfo[0].shader = new glShader( "shaders/d/default_billboard.glsl" );
 	pSunMat->passinfo[0].m_blend_mode = Renderer::BM_ADD;
 
 	pSunMat->passinfo.push_back( glPass() );
 	pSunMat->passinfo[1].m_lighting_mode = Renderer::LI_NONE;
 	pSunMat->passinfo[1].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	pSunMat->passinfo[1].shader = new glShader( ".res/shaders/d/default_billboard.glsl" );
+	pSunMat->passinfo[1].shader = new glShader( "shaders/d/default_billboard.glsl" );
 	pSunMat->passinfo[1].m_blend_mode = Renderer::BM_ADD;
 	pSunMat->passinfo[1].m_hint = RL_SKYGLOW;
 
@@ -44,13 +44,13 @@ EnvSunlight::EnvSunlight ( void )
 	pSunMat->removeReference();
 
 	pSunMatGlare = new glMaterial();
-	pSunMatGlare->setTexture( 0, new CTexture(".res/textures/sun_glare.jpg") );
+	pSunMatGlare->setTexture( 0, new CTexture("textures/sun_glare.jpg") );
 	pSunMatGlare->m_diffuse = Color( 1.5f,1.5f,1.5f );
 	pSunMatGlare->passinfo.push_back( glPass() );
 	pSunMatGlare->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	pSunMatGlare->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	pSunMatGlare->passinfo[0].m_blend_mode = Renderer::BM_ADD;
-	pSunMatGlare->passinfo[0].shader = new glShader( ".res/shaders/d/default_billboard.glsl" );
+	pSunMatGlare->passinfo[0].shader = new glShader( "shaders/d/default_billboard.glsl" );
 
 	/*pSunMatGlare->deferredinfo.push_back( glPass_Deferred() );
 	pSunMatGlare->deferredinfo[0].m_blend_mode = Renderer::BM_ADD;
@@ -61,13 +61,13 @@ EnvSunlight::EnvSunlight ( void )
 	pSunMatGlare->removeReference();
 
 	pSunMatForeground = new glMaterial();
-	pSunMatForeground->setTexture( 0, new CTexture(".res/textures/sun_glare.jpg") );
+	pSunMatForeground->setTexture( 0, new CTexture("textures/sun_glare.jpg") );
 	pSunMatForeground->m_diffuse = Color( 1.5f,1.5f,1.5f );
 	pSunMatForeground->passinfo.push_back( glPass() );
 	pSunMatForeground->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	pSunMatForeground->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	pSunMatForeground->passinfo[0].m_blend_mode = Renderer::BM_ADD;
-	pSunMatForeground->passinfo[0].shader = new glShader( ".res/shaders/d/default_billboard.glsl" );
+	pSunMatForeground->passinfo[0].shader = new glShader( "shaders/d/default_billboard.glsl" );
 
 	/*pSunMatForeground->deferredinfo.push_back( glPass_Deferred() );
 	pSunMatForeground->deferredinfo[0].m_blend_mode = Renderer::BM_ADD;
