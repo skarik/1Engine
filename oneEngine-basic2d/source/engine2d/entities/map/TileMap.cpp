@@ -332,6 +332,12 @@ void TileMap::Rebuild ( void )
 
 	if ( m_tiles.empty() )
 	{
+		// Clear out the render layers that are currently there
+		for ( uint i = 0; i < m_render_layers.size(); ++i )
+		{
+			delete m_render_layers[i];
+		}
+		m_render_layers.clear();
 		// No tiles? Then fuck off, yo.
 		throw Core::InvalidCallException();
 	}

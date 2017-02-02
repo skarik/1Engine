@@ -725,7 +725,11 @@ void MapEditor::doNewMap ( void )
 	m_object_target = NULL;
 
 	// Update tilemap
-	m_tilemap->Rebuild();
+	try
+	{
+		m_tilemap->Rebuild();
+	}
+	catch (Core::InvalidCallException&) {}
 }
 
 //===============================================================================================//
