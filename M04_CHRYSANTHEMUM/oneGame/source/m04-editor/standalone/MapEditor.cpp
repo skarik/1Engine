@@ -712,8 +712,20 @@ void MapEditor::doNewMap ( void )
 	{
 		delete *Engine2D::Area2D::Areas().begin();
 	}
+	// Delete all objects
+	while ( !M04::EditorObject::Objects().empty() )
+	{
+		delete *M04::EditorObject::Objects().begin();
+	}
 	// Delete all tiles
 	m_tilemap->m_tiles.clear();
+
+	// Clear out selection
+	m_area_target = NULL;
+	m_object_target = NULL;
+
+	// Update tilemap
+	m_tilemap->Rebuild();
 }
 
 //===============================================================================================//
