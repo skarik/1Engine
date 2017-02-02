@@ -106,8 +106,10 @@ void CDuskGUI::InitializeDefaultMaterials ( void )
 		return;
 	}
 	matDefDefault	= new glMaterial ();
+	matDefDefault->setStaticResource();
 
 	matDefFont		= new glMaterial ();
+	matDefFont->setStaticResource();
 	//fntDefDefault	= new CBitmapFont ( "Calibri", 16, FW_NORMAL );
 	fntDefDefault	= new CBitmapFont ( "ComicNeue-Bold.ttf", 16, FW_NORMAL );
 	//fntDefDefault	= new CBitmapFont ( "monofonto.ttf", 16, FW_NORMAL );

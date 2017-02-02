@@ -92,7 +92,7 @@ void CRenderableObject::SetMaterial ( glMaterial* n_pNewMaterial )
 			delete m_material;
 		}
 #ifdef _ENGINE_DEBUG
-		else if ( m_material != glMaterial::Default )
+		else if ( m_material != glMaterial::Default && !m_material->isStatic() )
 		{
 			throw Core::MemoryLeakException();
 		}

@@ -170,8 +170,16 @@ public:
 	RENDER_API bool		hasReference ( void ) const {
 		return referenceCount>0;
 	}
+
+	RENDER_API void		setStaticResource ( const bool static_state = true ) {
+		staticResource = static_state;
+	}
+	RENDER_API bool		isStatic ( void ) const {
+		return staticResource;
+	}
 private:
 	int		referenceCount;
+	bool	staticResource;
 
 public:
 	// Get the name of the material

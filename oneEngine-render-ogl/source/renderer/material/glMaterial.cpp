@@ -45,7 +45,7 @@ glMaterial::glMaterial ( void )
 	m_diffuse(1,1,1,1), m_specular(0,0,0,1), m_specularPower(32), m_emissive(0,0,0,0),
 	gm_WindDirection(0,0,0,1), gm_FadeValue(0), gm_HalfScale(0),
 	m_bufferMatricesSkinning(0), /*m_bufferMatricesSoftbody(0),*/ m_bufferSkeletonSize(0),
-	referenceCount(1)
+	referenceCount(1), staticResource(false)
 {
 	memset( m_highlevel_storage, 0, sizeof(CTexture*) * 12 );
 	memset( m_samplers,			 0, sizeof(glHandle) * 12 );
