@@ -47,6 +47,7 @@
     <ClCompile Include="source\render2d\object\sprite\CAnimSprite2D.cpp" />
     <ClCompile Include="source\render2d\object\sprite\CStreamedRenderable2D.cpp" />
     <ClCompile Include="source\render2d\object\TileMapLayer.cpp" />
+    <ClCompile Include="source\render2d\preprocess\PaletteToLUT.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\render2d\camera\COrthoCamera.h" />

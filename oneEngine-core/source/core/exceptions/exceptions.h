@@ -129,6 +129,15 @@ namespace Core
 		}
 	};
 
+	class MissingDataException : public std::runtime_error
+	{
+	public:
+		MissingDataException ( void ) : runtime_error( "Data culd not be found" )
+		{
+			;
+		}
+	};
+
 	class YouSuckException : public std::runtime_error
 	{
 	public:

@@ -214,6 +214,7 @@ void MapEditor::Update ( void )
 
 	// Update visibilty of elements based on the modes
 	m_tile_selector->SetVisible ( m_current_mode == Mode::TileEdit );
+	ui_panel_tiles->visible = m_current_mode == Mode::TileEdit;
 	ui_panel_shit->visible = m_current_mode == Mode::Properties;
 	ui_panel_area->visible = m_current_mode == Mode::AreaEdit;
 	ui_panel_object->visible = m_current_mode == Mode::ObjectEdit;
@@ -845,6 +846,17 @@ void MapEditor::uiCreate ( void )
 		label = dusk->CreateText( panel, "Y: ???" );
 		label.SetRect(Rect(300,1,0,0));
 		ui_lbl_mousey = label;
+	}
+
+	// Map panel
+	{
+		Dusk::Handle panel;
+		Dusk::Handle button, label, list;
+
+		// Create the panel
+		panel = dusk->CreatePanel();
+		panel.SetRect( Rect(256, 40, 1280 - 256, 40) );
+		ui_panel_tiles = panel;
 	}
 
 	// Shit panel

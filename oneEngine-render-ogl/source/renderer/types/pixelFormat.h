@@ -11,7 +11,7 @@
 #include "core/math/Color.h"
 
 // 32 bit pixel struct
-struct tPixel
+struct pixel_t
 {
 	// Data set
 	uint8_t r;
@@ -20,18 +20,67 @@ struct tPixel
 	uint8_t a;
 	
 	// Default constructor
-	tPixel ( void ) :
+	pixel_t ( void ) :
 		r(0x00), g(0x00), b(0x00), a(0xFF)
 	{
 		;
 	}
 	// Construct from color
-	tPixel ( Color& color )
+	pixel_t ( Color& color )
 	{
 		*((uint32_t*)&r) = color.GetCode();
 	}
+
+	// comparison for using in maps
+	bool operator== (const pixel_t& pixel) const
+	{
+		return (r == pixel.r && b == pixel.b && g == pixel.g && a == pixel.a);
+	}
+	bool operator!= (const pixel_t& pixel) const
+	{
+		return (r != pixel.r || b != pixel.b || g != pixel.g || a != pixel.a);
+	}
+	bool operator< (const pixel_t& pixel) const
+	{
+		if ( r < pixel.r ) {
+			return true;
+		}
+		else if ( r == pixel.r )
+		{
+			if ( g < pixel.g ) {
+				return true;
+			}
+			else if ( g == pixel.g )
+			{
+				if ( b < pixel.b ) {
+					return true;
+				}
+				else if ( b == pixel.b ) {
+					if ( a < pixel.a ) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	// size_t cast : used for indexing RangeVectors into hash tables
+	operator size_t () const
+	{
+		return (r) | (b << 8) | (g << 8) | (a << 8);
+	}
 };
-typedef tPixel pixel_t;
+typedef pixel_t tPixel;
+
+// Definition for C++11 hash function
+template<> struct std::hash <pixel_t>
+{
+	size_t operator() ( const pixel_t& arg ) const {
+		return (size_t)(arg);
+	}
+};
+
 
 // Floating point pixel struct
 struct tPixelF

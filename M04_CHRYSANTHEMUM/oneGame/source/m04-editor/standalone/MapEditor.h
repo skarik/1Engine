@@ -183,6 +183,10 @@ namespace M04
 		Dusk::Handle	ui_dg_save;
 		Dusk::Handle	ui_dg_load;
 
+		Dusk::Handle	ui_panel_tiles;
+		Dusk::Handle	ui_lst_tile_layer;
+		Dusk::Handle	ui_btn_clear_layer;
+
 		Dusk::Handle	ui_panel_shit;
 		Dusk::Handle	ui_btn_cancel_shit;
 		Dusk::Handle	ui_btn_apply_shit;

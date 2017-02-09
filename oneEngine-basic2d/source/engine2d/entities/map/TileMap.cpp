@@ -537,7 +537,7 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 					return lookupResult->second;
 				}
 #	endif//FULL_SPEED_AHEAD
-				return m_tiles[i].type;
+				return -1;//m_tiles[i].type;
 			};
 			// Lambda: check the border for mismatch
 			auto check = [&]( int o ) -> bool

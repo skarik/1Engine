@@ -28,6 +28,7 @@ TileSelectorUI::TileSelectorUI ( void )
 	draw_mat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	draw_mat->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 	SetMaterial( draw_mat );
+	draw_mat->removeReference();
 
 	glMaterial* ui_mat = new glMaterial;
 	ui_mat->m_diffuse = Color( 1,1,1,1 );
