@@ -125,6 +125,58 @@ namespace Core
 		return n_filename;
 	}
 
+	//	Exists( filename ) : Find file in the current paths.
+	bool Resources::Exists ( const std::string& n_filename )
+	{
+		return Exists( n_filename.c_str() );
+	}
+	bool Resources::Exists ( const char* n_filename )
+	{
+		FILE* fp = Open(n_filename, "r");
+		if (fp != NULL)
+		{
+			fclose(fp);
+			return true;
+		}
+		return false;
+	}
+
+	//	MakePathTo( filename ) : Finds file and creates a string that represents path to the file.
+	bool Resources::MakePathTo ( const std::string& n_filename, std::string& o_filename )
+	{
+		return MakePathTo( n_filename.c_str(), o_filename );
+	}
+	bool Resources::MakePathTo ( const char* n_filename, std::string& o_filename )
+	{
+		// Load up the paths first
+		FindAllPaths();
+
+		// Convert to string
+		std::string filename = n_filename;
+
+		// Check the input for ".res" and remove if needed
+		if ( std::string(filename).find(".res/") != std::string::npos )
+		{
+			filename = filename.replace( 0, 5, "" );
+			Debug::Console->PrintWarning( filename + " was opened using old method!\n" );
+		}
+
+		// Loop through the paths and return the first result
+		for ( auto itr_path = m_paths.begin(); itr_path != m_paths.end(); ++itr_path )
+		{
+			std::string currentFilename = *itr_path + filename;
+			FILE* file = fopen( currentFilename.c_str(), "r" );
+			if ( file != NULL )
+			{
+				fclose( file ); // Close file beforehand
+				o_filename = currentFilename;
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	//	Reset( ) : Clears out the stored paths so they have to be rebuilt
 	void Resources::Reset ( void )
 	{

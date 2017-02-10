@@ -54,6 +54,18 @@ namespace Core
 		CORE_API static std::string PathTo ( const std::string& n_filename );
 		CORE_API static std::string PathTo ( const char* n_filename );
 
+		//	Exists( filename )
+		// Find file in the current paths. Uses fopen() internally.
+		// Will return false if cannot find the file, true if found.
+		CORE_API static bool Exists ( const std::string& n_filename );
+		CORE_API static bool Exists ( const char* n_filename );
+
+		//	MakePathTo( filename )
+		// Finds file and creates a string that represents path to the file. Uses fopen() internally.
+		// Will return false if it cannot find the file.
+		CORE_API static bool MakePathTo ( const std::string& n_filename, std::string& o_filename );
+		CORE_API static bool MakePathTo ( const char* n_filename, std::string& o_filename );
+
 		//	Reset( )
 		// Clears out the stored paths so they have to be rebuilt
 		CORE_API static void Reset ( void );

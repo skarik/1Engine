@@ -359,7 +359,7 @@ void glMaterial::updateLightTBO ( void )
 		glTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA32F, m_tex_shadowinfo ); 
 		glBindTexture( GL_TEXTURE_BUFFER, 0 );
 	}*/
-	if ( special_mode == Renderer::SP_MODE_NORMAL || special_mode == Renderer::SP_MODE_SHAFT )
+	if ( special_mode == Renderer::SP_MODE_NORMAL || special_mode == Renderer::SP_MODE_SHAFT || special_mode == Renderer::SP_MODE_2DPALETTE )
 	{
 		// Go through all the lights and add them to this list
 		_lightInfo_t lightProperties [32];

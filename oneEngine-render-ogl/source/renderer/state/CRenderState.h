@@ -4,20 +4,9 @@
 #ifndef _C_TO_BE_SEEN_H_
 #define _C_TO_BE_SEEN_H_
 
-//#define _HAS_ITERATOR_DEBUGGING 0
-//#define _SECURE_SCL 0
-
-//
 #include "core/types/types.h"
 #include "core/containers/arstring.h"
-
-// Includes 
-//#include "renderer/object/CRenderableObject.h"
-//#include "renderer/logic/CLogicObject.h"
-
-// Needs the OpenGL functions
-//#include "renderer/ogl/GLCommon.h"
-//#include "renderer/system/glMainSystem.h"
+#include "renderer/types/ObjectSettings.h"
 
 #include <vector>
 
@@ -78,6 +67,11 @@ public:
 	// RenderObjectArray() renders a null terminated list of objects, assuming the projection has been already set up.
 	RENDER_API void RenderObjectArray ( CRenderableObject** objectsToRender );
 
+	// Rendering configuration
+	// ================================
+	// Returns the material used for rendering a screen's pass in the given effect
+	RENDER_API glMaterial* GetScreenMaterial ( const eRenderMode mode, const Renderer::eSpecialModes mode_type );
+
 private:
 	bool bSpecialRender_ResetLights;
 	std::vector<CLight*> vSpecialRender_LightList;
@@ -94,8 +88,6 @@ private:
 
 	// Give RO constructor and destructor access to adding and removing
 	friend CRenderableObject;
-	//friend CRenderableObject::CRenderableObject ();
-	//friend CRenderableObject::~CRenderableObject();
 	// Adding and removing renderable objects
 	unsigned int AddRO ( CRenderableObject* );
 	void RemoveRO ( unsigned int );
@@ -104,9 +96,7 @@ private:
 	void ReorderList ( void );
 
 	// Give RO constructor and destructor access to adding and removing
-	friend CLogicObject;//::CLogicObject ();
-	//friend CLogicObject::CLogicObject ();
-	//friend CLogicObject::~CLogicObject();
+	friend CLogicObject;
 	// Adding and removing renderable objects
 	unsigned int AddLO ( CLogicObject* );
 	void RemoveLO ( unsigned int );
@@ -139,6 +129,12 @@ private:
 	unsigned int mLoCurrentIndex;
 	unsigned int mLoListSize;
 
+	// Deferred pass materials
+	// ================================
+	glMaterial* LightingPass;
+	glMaterial* EchoPass;
+	glMaterial* ShaftPass;
+	glMaterial* Lighting2DPass;
 };
 
 // Backwards compatibility

@@ -22,6 +22,9 @@
     <Filter Include="SOURCE\Render2D\Types">
       <UniqueIdentifier>{59ba7d68-aa2a-4ea3-b7e4-2961b6c1420d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Render2D\State">
+      <UniqueIdentifier>{8c5b799a-9055-4d97-bfe9-9d7dd6dc84e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\render2d\object\CRenderable2D.cpp">
@@ -44,6 +47,9 @@
     </ClCompile>
     <ClCompile Include="source\render2d\preprocess\PaletteToLUT.cpp">
       <Filter>SOURCE\Render2D\Preprocess</Filter>
+    </ClCompile>
+    <ClCompile Include="source\render2d\state\WorldPalette.cpp">
+      <Filter>SOURCE\Render2D\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="source\render2d\types\spriteInfo.h">
       <Filter>SOURCE\Render2D\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\state\WorldPalette.h">
+      <Filter>SOURCE\Render2D\State</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

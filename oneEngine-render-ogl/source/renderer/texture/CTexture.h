@@ -109,7 +109,17 @@ public:
 
 	RENDER_API virtual void Reload ( void );
 
-	RENDER_API void GenerateMipmap ( eMipmapGenerationStyle generationStyle=MipmapNormal );
+	RENDER_API void GenerateMipmap ( eMipmapGenerationStyle generationStyle = MipmapNormal );
+
+	RENDER_API void Upload (
+		pixel_t* data,
+		uint width,
+		uint height,
+		eWrappingType	repeatX			= Repeat,
+		eWrappingType	repeatY			= Repeat,
+		eMipmapGenerationStyle	mipmapGeneration = MipmapNormal,
+		eSamplingFilter	filter			= SamplingLinear
+		);
 protected:
 	friend CTextureMaster;
 	friend CResourceManager;
@@ -118,7 +128,7 @@ protected:
 	tTextureInfo	info;
 	tTextureState	state;
 
-	tPixel	*		pData;
+	pixel_t	*		pData;
 	
 protected:
 	RENDER_API void LoadImageInfo ( void );

@@ -45,6 +45,9 @@ public:
 
 	// Camera position setup
 	RENDER2D_API void UpdateMatrix ( void ) override;
+
+	// Update parameters needed for 2D rendering
+	RENDER2D_API void RenderSet ( void ) override;
 };
 
 #endif//_RENDER2D_C_ORTHO_CAMERA_H_

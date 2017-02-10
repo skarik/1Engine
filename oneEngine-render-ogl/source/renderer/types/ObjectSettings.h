@@ -123,8 +123,9 @@ namespace Renderer
 	{
 		SP_MODE_NORMAL,
 		SP_MODE_ECHO,
-		SP_MODE_AETHER,
-		SP_MODE_SHAFT
+		SP_MODE_AETHER, // Imagination mode
+		SP_MODE_SHAFT,
+		SP_MODE_2DPALETTE // Requires 2D extension to function properly
 	};
 
 	struct _n_hint_rendering_information

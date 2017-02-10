@@ -639,34 +639,6 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				
 				TimeProfiler.BeginTimeProfile( "rs_render_lightpush" );
 
-				// Set up the scene rendering types
-				static glMaterial* LightingPass = NULL;
-				if ( LightingPass == NULL ) {
-					LightingPass = new glMaterial();
-					// Setup forward pass
-					LightingPass->passinfo.push_back( glPass() );
-					LightingPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting.glsl" );
-					LightingPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
-				}
-				static glMaterial* EchoPass = NULL;
-				if ( EchoPass == NULL ) {
-					EchoPass = new glMaterial();
-					// Setup forward pass
-					EchoPass->passinfo.push_back( glPass() );
-					EchoPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting_echo.glsl" );
-					EchoPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
-				}
-				static glMaterial* ShaftPass = NULL;
-				if ( ShaftPass == NULL ) {
-					ShaftPass = new glMaterial();
-					// Setup forward pass
-					ShaftPass->passinfo.push_back( glPass() );
-					ShaftPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting_shaft.glsl" );
-					ShaftPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
-					// Set effect textures
-					ShaftPass->setTexture( 5, new CTexture( "textures/ditherdots.jpg" ) );
-				}
-
 				// Bind main screen in order to render the deferred result to it
 				CRenderTexture* currentMainRenderTarget = GL.GetMainScreenBuffer();
 				{
@@ -690,6 +662,9 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				}
 				else if ( glMaterial::special_mode == Renderer::SP_MODE_SHAFT ) {
 					targetPass = ShaftPass;
+				}
+				else if ( glMaterial::special_mode == Renderer::SP_MODE_2DPALETTE ) {
+					targetPass = Lighting2DPass;
 				}
 
 				// Change the projection to identity-type 2D (similar to orthographic)
@@ -796,7 +771,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					// Render the object
 					//if ( renderRQ_current.obj->visible && renderRQ_current.renderType == V2D && (
 					if ( renderRQ_current.obj->visible && (
-						( (glMaterial::special_mode == Renderer::SP_MODE_NORMAL || glMaterial::special_mode == Renderer::SP_MODE_SHAFT) && renderRQ_current.forward )
+						( (glMaterial::special_mode == Renderer::SP_MODE_NORMAL || glMaterial::special_mode == Renderer::SP_MODE_SHAFT || glMaterial::special_mode == Renderer::SP_MODE_2DPALETTE) && renderRQ_current.forward )
 						||( glMaterial::special_mode == Renderer::SP_MODE_ECHO && renderRQ_current.forward  && renderRQ_current.renderType == V2D ) // (unless echopass, then only do v2d)
 						))
 					{

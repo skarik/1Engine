@@ -48,6 +48,7 @@
     <ClCompile Include="source\render2d\object\sprite\CStreamedRenderable2D.cpp" />
     <ClCompile Include="source\render2d\object\TileMapLayer.cpp" />
     <ClCompile Include="source\render2d\preprocess\PaletteToLUT.cpp" />
+    <ClCompile Include="source\render2d\state\WorldPalette.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\render2d\camera\COrthoCamera.h" />
@@ -57,6 +58,7 @@
     <ClInclude Include="source\render2d\object\sprite\CStreamedRenderable2D.h" />
     <ClInclude Include="source\render2d\object\TileMapLayer.h" />
     <ClInclude Include="source\render2d\preprocess\PaletteToLUT.h" />
+    <ClInclude Include="source\render2d\state\WorldPalette.h" />
     <ClInclude Include="source\render2d\types\spriteInfo.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

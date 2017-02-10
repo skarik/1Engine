@@ -18,6 +18,10 @@ using namespace std;
 void		glMaterial::setTexture ( const uint n_index, CTexture* n_texture )
 {
 	GL_ACCESS
+	// Check doubly set texture
+	if ( m_highlevel_storage[n_index] == n_texture ) {
+		return;
+	}
 	// Clear off existing texture
 	if ( m_highlevel_storage[n_index] != NULL )
 	{

@@ -94,6 +94,41 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	new Debug::CDebugRTInspector;
 	// Create the sprite renderer
 	new SpriteContainer;
+
+	// Create the passes for rendering the screen:
+	{
+		LightingPass = new glMaterial();
+		// Setup forward pass
+		LightingPass->passinfo.push_back( glPass() );
+		LightingPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting.glsl" );
+		LightingPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	}
+	{
+		EchoPass = new glMaterial();
+		// Setup forward pass
+		EchoPass->passinfo.push_back( glPass() );
+		EchoPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting_echo.glsl" );
+		EchoPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	}
+	{
+		ShaftPass = new glMaterial();
+		// Setup forward pass
+		ShaftPass->passinfo.push_back( glPass() );
+		ShaftPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting_shaft.glsl" );
+		ShaftPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+		// Set effect textures
+		ShaftPass->setTexture( 5, new CTexture( "textures/ditherdots.jpg" ) );
+	}
+	{
+		Lighting2DPass = new glMaterial();
+		// Setup forward pass
+		Lighting2DPass->passinfo.push_back( glPass() );
+		Lighting2DPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting.glsl" );
+		Lighting2DPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+		// Set effect textures
+		//Lighting2DPass->setTexture( 5, new CTexture( "textures/ditherdots.jpg" ) );
+	}
+
 }
 
 // Class destructor
@@ -234,4 +269,24 @@ unsigned int CRenderState::AddLO ( CLogicObject * pLO )
 void CRenderState::RemoveLO ( unsigned int id )
 {
 	mLogicObjects[id] = NULL;
+}
+
+
+
+// Rendering configuration
+// ================================
+// Returns the material used for rendering a screen's pass in the given effect
+glMaterial* CRenderState::GetScreenMaterial ( const eRenderMode mode, const Renderer::eSpecialModes mode_type )
+{
+	if ( mode == RENDER_MODE_DEFERRED )
+	{
+		switch (mode_type)
+		{
+		case Renderer::SP_MODE_NORMAL: return LightingPass;
+		case Renderer::SP_MODE_ECHO: return EchoPass;
+		case Renderer::SP_MODE_SHAFT: return ShaftPass;
+		case Renderer::SP_MODE_2DPALETTE: return Lighting2DPass;
+		}
+	}
+	return NULL;
 }

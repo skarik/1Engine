@@ -228,6 +228,56 @@ void CTexture::Reload ( void )
 }
 
 //=========================================//
+// === Manual Upload ===
+void CTexture::Upload (
+	pixel_t* data,
+	uint width,
+	uint height,
+	eWrappingType	repeatX,
+	eWrappingType	repeatY,
+	eMipmapGenerationStyle	mipmapGeneration,
+	eSamplingFilter	filter
+	)
+{
+	GL_ACCESS; // Using the glMainSystem accessor
+
+	// Null out data
+	pData = NULL;
+	// Set the information structure to prepare for reading in
+	info.type			= Texture2D;
+	info.internalFormat	= RGBA8;
+	info.width			= width;
+	info.height			= height;
+	info.index			= 0;
+	info.repeatX		= repeatX;
+	info.repeatY		= repeatY;
+	info.mipmapStyle	= mipmapGeneration;
+	info.filter			= filter;
+	// And prepare the state information
+	state.level_base	= 0;
+	state.level_max		= 0;
+
+	// Create texture
+	glGenTextures( 1, &info.index );
+	// Bind the texture object
+	glBindTexture( GL_TEXTURE_2D, info.index );
+	// Set the pack alignment
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+	// Change the texture repeat
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL.Enum(info.repeatX) );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL.Enum(info.repeatY) );
+	// Change the filtering
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(info.filter) );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL.Enum(info.filter) );
+	// Copy the data to the texture object
+	glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum(info.internalFormat), width,height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, &data );
+	// Generate the mipmaps
+	GenerateMipmap( info.mipmapStyle );
+	// Unbind the data
+	glBindTexture( GL_TEXTURE_2D, 0 );
+}
+
+//=========================================//
 // === Mipmap Generation ===
 void CTexture::GenerateMipmap ( eMipmapGenerationStyle generationStyle )
 {

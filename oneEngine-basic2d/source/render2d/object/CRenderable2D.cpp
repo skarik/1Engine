@@ -13,11 +13,17 @@ CRenderable2D::CRenderable2D ( void )
 	// Use a default 2D material
 	m_material = new glMaterial();
 	m_material->setTexture( 0, Core::Orphan(new CTexture("null")) );
+
 	m_material->passinfo.push_back( glPass() );
 	m_material->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	m_material->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	m_material->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
 	m_material->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+
+	m_material->deferredinfo.push_back( glPass_Deferred() );
+	m_material->deferredinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
+	m_material->deferredinfo[0].m_lighting_mode = Renderer::LI_NONE;
+	m_material->deferredinfo[0].m_diffuse_method = Renderer::Deferred::DIFFUSE_DEFAULT;
 
 	// Start with empty buffers
 	m_buffer_verts = NIL;

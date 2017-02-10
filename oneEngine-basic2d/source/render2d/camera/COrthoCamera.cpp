@@ -1,6 +1,10 @@
 
 #include "core/system/Screen.h"
 #include "renderer/texture/CRenderTexture.h"
+#include "renderer/state/CRenderState.h"
+#include "renderer/material/glMaterial.h"
+
+#include "render2d/state/WorldPalette.h"
 
 #include "COrthoCamera.h"
 
@@ -57,4 +61,16 @@ void COrthoCamera::UpdateMatrix ( void )
 
 	// After projection parameters has been modified, perform orthographic view normally.
 	CCamera::UpdateMatrix();
+}
+
+// Update parameters needed for 2D rendering
+void COrthoCamera::RenderSet ( void )
+{
+	glMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( RENDER_MODE_DEFERRED, Renderer::SP_MODE_2DPALETTE );
+	palette_pass_material->setTexture(5, Render2D::WorldPalette::Active()->GetTexture());
+
+	glMaterial::special_mode = Renderer::SP_MODE_2DPALETTE;
+
+	// Set up the camera normally
+	CCamera::RenderSet();
 }
