@@ -373,7 +373,7 @@ void main ( void )
 	//+ dot( n_cameraDir, pixelNormal.xyz );
 
 	// 4X Debug Output
-	/*if ( v2f_texcoord0.x < 0.5 && v2f_texcoord0.y < 0.5 ) {
+    if ( v2f_texcoord0.x < 0.5 && v2f_texcoord0.y < 0.5 ) {
 		FragColor = texture( textureSampler0, v2f_texcoord0*2 );
 	}
 	else if ( v2f_texcoord0.x > 0.5 && v2f_texcoord0.y < 0.5 ) {
@@ -385,7 +385,7 @@ void main ( void )
 	else if ( v2f_texcoord0.x > 0.5 && v2f_texcoord0.y > 0.5 ) {
 		FragColor = texture( textureSampler3, v2f_texcoord0*2 - vec2(1,1) );
 	}
-	FragColor.a = clamp( FragColor.a , 0.0 , 1.0 );*/
+	FragColor.a = clamp( FragColor.a , 0.0 , 1.0 );
 	//FragColor.a = 0.0;
 
 }
