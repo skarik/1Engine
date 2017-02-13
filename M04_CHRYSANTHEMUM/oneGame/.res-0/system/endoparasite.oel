@@ -8,3 +8,8 @@ entity test_entity_basic
 {
 	default
 }
+
+entity light_point
+{
+	default
+}

@@ -22,10 +22,17 @@
 
 namespace StringUtils
 {
-	string GetFileExtension( const string& FileName )
+	//	GetFileStemLeaf ( filename ) : Returns the file without the extension. Not gaurenteed to work with a missing extension.
+	string GetFileStemLeaf( const string& filename )
 	{
-		if ( FileName.find_last_of(".") != std::string::npos )
-			return FileName.substr(FileName.find_last_of(".")+1);
+		return filename.substr(0, filename.find_last_of("."));
+	}
+
+	//	GetFileExtension ( filename ) : Returns the file's last extension.
+	string GetFileExtension( const string& filename )
+	{
+		if ( filename.find_last_of(".") != std::string::npos )
+			return filename.substr(filename.find_last_of(".")+1);
 		return "";
 	}
 
@@ -38,16 +45,6 @@ namespace StringUtils
 
 	string TrimRight( const string &t, const string &ws )
 	{
-		/*std::string str = t;
-		size_t found;
-		found = str.find_last_not_of(ws);
-		if (found != std::string::npos) {
-			str.erase(found+1);
-		}
-		else { // str is all whitespace
-			str.clear();  
-		}
-		return str;*/
 		std::string s = t;
 		s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
 		return s;
@@ -55,20 +52,6 @@ namespace StringUtils
 	//http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 	string TrimLeft ( const string &t, const string &ws )
 	{
-		/*std::string str = t;
-		boost::trim( t );
-		size_t found;
-		//found = str.find_first_not_of(ws);
-		//while (found != std::string::npos) {
-		//	str = str.substr(found+1);
-		//	found = str.find_first_not_of(ws);
-		//}
-		found = str.find_first_of(ws);
-		while (found != std::string::npos) {
-			str = str.substr(found+1);
-			found = str.find_first_of(ws);
-		}
-		std::cout << "result: " << str << std::endl;*/
 		std::string s = t;
 		s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
 		return s;
@@ -77,15 +60,15 @@ namespace StringUtils
 	string FullTrim ( const string &t )
 	{
 		// Trim input string name
-		std::string trimmedMatname = t;
-		//boost::trim( trimmedMatname );
-		trimmedMatname = TrimLeft(TrimRight(trimmedMatname));
+		std::string trimmedMatname = TrimLeft(TrimRight(t));
+
 		char str [128];
 		char*tok;
 		strcpy( str, trimmedMatname.c_str() );
 		tok = strtok( str, "\0 ");
 		trimmedMatname.clear();
 		trimmedMatname = tok;
+
 		return trimmedMatname;
 	}
 

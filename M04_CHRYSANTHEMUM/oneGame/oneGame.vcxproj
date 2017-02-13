@@ -253,6 +253,7 @@
     <ClInclude Include="source\m04-editor\standalone\mapeditor\TileSelector.h" />
     <ClInclude Include="source\m04-editor\standalone\mapeditor\TileSelectorUI.h" />
     <ClInclude Include="source\m04-editor\utilties\PaletteConverter.h" />
+    <ClInclude Include="source\m04\entities\LightPoint.h" />
     <ClInclude Include="source\m04\entities\TestEntityBasic.h" />
     <ClInclude Include="source\m04\interfaces\MapIO.h" />
     <ClInclude Include="source\m04\m04-common.h" />
@@ -272,6 +273,7 @@
     <ClCompile Include="source\m04-editor\standalone\mapeditor\ObjectEditorListing.cpp" />
     <ClCompile Include="source\m04-editor\standalone\mapeditor\TileSelector.cpp" />
     <ClCompile Include="source\m04-editor\standalone\mapeditor\TileSelectorUI.cpp" />
+    <ClCompile Include="source\m04\entities\LightPoint.cpp" />
     <ClCompile Include="source\m04\entities\TestEntityBasic.cpp" />
     <ClCompile Include="source\m04\interfaces\MapIO.cpp" />
     <ClCompile Include="source\m04\m04-common.cpp" />

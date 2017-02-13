@@ -30,12 +30,18 @@ namespace Engine
 		VALUE_TYPE		source;
 	};
 	// Pointer to saved data to serialize
-	template <typename VALUE_TYPE>
-	class MetadataPValue : public Metadata
+	class MetadataPData : public Metadata
 	{
 	public:
-		MetadataPValue ( VALUE_TYPE* _source ) : source(_source) {;}
-		VALUE_TYPE*		source;
+		MetadataPData ( void* _source, size_t _size ) : source_size(_size), source(_source) {;}
+		size_t			source_size;
+		void*			source;
+	};
+	template <typename VALUE_TYPE>
+	class MetadataPValue : public MetadataPData
+	{
+	public:
+		MetadataPValue ( VALUE_TYPE* _source, size_t _size ) : MetadataPData(_source, _size) {;}
 	};
 	// Stored metadata grabber
 	template <typename VALUE_TYPE>
@@ -167,6 +173,7 @@ enum fieldtype_t : uint32_t
 	FIELD_POSITION,
 	FIELD_ROTATION,
 	FIELD_SCALE,
+	FIELD_COLOR,
 
 	FIELD_MATRIX3x3,
 	FIELD_MATRIX4x4,
@@ -176,7 +183,8 @@ enum fielddisplay_t : uint32_t
 {
 	DISPLAY_BOX,
 	DISPLAY_2D_SPRITE,
-	DISPLAY_3D_MODEL
+	DISPLAY_3D_MODEL,
+	DISPLAY_LIGHT
 };
 
 enum metadataNamedKey_t : uint32_t
@@ -193,6 +201,7 @@ enum metadataNamedKey_t : uint32_t
 //		LINK_OBJECT_TO_CLASS
 // Used once in the Header of the class. Builds the prototype for the metadata and extra shit.
 #define LINK_OBJECT_TO_CLASS(behaviorname,cppclass) \
+template<> const Engine::MetadataTable* const Engine::GetBehaviorMetadata<cppclass> ( void ) { return cppclass::__GetMetadataTable(); } \
 class behaviorname : public ::Engine::ObjectBase \
 { \
 public: \
@@ -210,14 +219,18 @@ public: \
 
 //		BEGIN_OBJECT_DESC
 // Begins definition of a metadata table grab, to be used in the header
-#define BEGIN_OBJECT_DESC(cppclass) template<> const Engine::MetadataTable* const Engine::GetBehaviorMetadata<cppclass> ( void ) { \
-	static Engine::MetadataTable* table = NULL; if ( table == NULL ) { table = new Engine::MetadataTable();
+#define BEGIN_OBJECT_DESC(cppclass) \
+	public: \
+	static const Engine::MetadataTable* const __GetMetadataTable ( void ) { \
+	static Engine::MetadataTable* table = NULL; if ( table == NULL ) { table = new Engine::MetadataTable(); \
+	typedef cppclass CPP_CLASS;
 //		END_OBJECT_DESC
 // End definition of a metadata table grab, to be used in the header
 #define END_OBJECT_DESC() } return table; };
 //		DEFINE_VALUE
 // Defines a variable that is saved/loaded from disk
-#define DEFINE_VALUE(variable,type)
+#define DEFINE_VALUE(variable,type,classification) \
+	table->data.push_back(Engine::MetadataPair( #variable, new Engine::MetadataPValue<type>((type*)offsetof(CPP_CLASS, variable), sizeof(type)) ));
 //		DEFINE_KEYVALUE
 // Defines a variable that is saved/loaded from disk and is visible in the editor
 #define DEFINE_KEYVALUE(variable,type)

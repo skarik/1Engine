@@ -44,6 +44,9 @@ void ObjectEditorListing::LoadListing ( const char* n_filename )
 			else if ( streq(entry.name,"editor") )
 			{
 				if ( streq(entry.name,"3d") || streq(entry.name,"3D") ) {
+					is3D = true;
+				}
+				else if ( streq(entry.name,"2d") || streq(entry.name,"2D") ) {
 					is3D = false;
 				}
 			}

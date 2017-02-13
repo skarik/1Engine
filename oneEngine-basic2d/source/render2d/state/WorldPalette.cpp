@@ -43,7 +43,7 @@ CTexture* WorldPalette::GetTexture ( void )
 	}
 	if ( palette_texture_needs_update )
 	{
-		palette_texture->Upload(palette_data, palette_width, palette_size, Clamp, Clamp, MipmapNone, SamplingPoint);
+		palette_texture->Upload(palette_data, palette_width, MAX_HEIGHT, Clamp, Clamp, MipmapNone, SamplingPoint);
 		palette_texture_needs_update = false;
 	}
 

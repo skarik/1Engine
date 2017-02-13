@@ -123,10 +123,8 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		Lighting2DPass = new glMaterial();
 		// Setup forward pass
 		Lighting2DPass->passinfo.push_back( glPass() );
-		Lighting2DPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting.glsl" );
+		Lighting2DPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting2d.glsl" );
 		Lighting2DPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
-		// Set effect textures
-		//Lighting2DPass->setTexture( 5, new CTexture( "textures/ditherdots.jpg" ) );
 	}
 
 }

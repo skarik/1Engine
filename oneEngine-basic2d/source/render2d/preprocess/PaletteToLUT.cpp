@@ -27,15 +27,19 @@ void Render2D::Preprocess::DataToLUT ( pixel_t* io_pixel_data, const uint n_pixe
 		// Missing lookup data, need to find it:
 		if (case_data == previous_cases.end())
 		{
-			for (uint row = 0; row < n_palette_size; ++row)
+			bool work = true;
+			for (uint row = 0; work && row < n_palette_size; ++row)
 			{
-				for (uint column = 0; column < n_palette_size; ++column)
+				for (uint column = 0; work && column < n_palette_width; ++column)
 				{
 					if (*current_pixel == n_palette[column + row * n_palette_width])
 					{
-						previous_cases[*current_pixel] == Vector2i(column, row);
+						previous_cases[*current_pixel] = Vector2i(column, row);
 						// Update case data now
 						case_data = previous_cases.find(*current_pixel);
+						// Break out
+						work = false;
+						break;
 					}
 				}
 			}
@@ -44,8 +48,10 @@ void Render2D::Preprocess::DataToLUT ( pixel_t* io_pixel_data, const uint n_pixe
 		// Change color to the XY position on the lookup table
 		if (case_data != previous_cases.end())
 		{
-			current_pixel->r = ((Real)case_data->second.x + 0.5F) / n_palette_width;
-			current_pixel->g = ((Real)case_data->second.y + 0.5F) / n_palette_size;
+			current_pixel->r = (uint8_t)( 255.0 * ((Real)case_data->second.x + 0.5F) / n_palette_width );
+			current_pixel->g = (uint8_t)( 255.0 * ((Real)case_data->second.y + 0.5F) / n_palette_size );
+			current_pixel->b = 0;
+			current_pixel->a = 255;
 		}
 		else
 		{

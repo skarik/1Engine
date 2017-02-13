@@ -74,7 +74,8 @@ class CTexture : public arBaseObject
 	//TextureType( "TextureBase" );
 	TextureType( TextureClassBase );
 public:
-	//CTexture ( void );
+	//	Constructor.
+	// Pass in an empty string for the filename to just initialize a texture instance without any data.
 	RENDER_API explicit CTexture ( string sInFilename,
 		eTextureType	textureType		= Texture2D,
 		eInternalFormat	format			= RGBA8,

@@ -32,7 +32,7 @@ CTexture::CTexture ( string sInFilename,
 
 	sFilename = sInFilename;
 	// Check for system overrides here
-	if (( sFilename == "_hx_SYSTEM_FONTLOAD" )||( sFilename == "_hx_SYSTEM_RENDERTEXTURE" )||( sFilename == "_hx_SYSTEM_SKIP" ))
+	if (( sFilename == "" )||( sFilename == "_hx_SYSTEM_FONTLOAD" )||( sFilename == "_hx_SYSTEM_RENDERTEXTURE" )||( sFilename == "_hx_SYSTEM_SKIP" ))
 	{
 		return;
 	}
@@ -270,7 +270,7 @@ void CTexture::Upload (
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(info.filter) );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL.Enum(info.filter) );
 	// Copy the data to the texture object
-	glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum(info.internalFormat), width,height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, &data );
+	glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum(info.internalFormat), width,height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, data );
 	// Generate the mipmaps
 	GenerateMipmap( info.mipmapStyle );
 	// Unbind the data

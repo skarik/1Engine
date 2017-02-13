@@ -10,7 +10,13 @@ namespace StringUtils
 {
 		using std::string;
 
-	string					GetFileExtension( const string& FileName );
+	//	GetFileStemLeaf ( filename )
+	// Returns the file without the extension. Not gaurenteed to work with a missing extension.
+	string					GetFileStemLeaf( const string& filename );
+	//	GetFileExtension ( filename )
+	// Returns the file's last extension.
+	string					GetFileExtension( const string& filename );
+
 	string					ToLower( const string& input );
 
 	string					TrimRight( const string &t, const string &ws = "\0\t\f\v\n\r " );

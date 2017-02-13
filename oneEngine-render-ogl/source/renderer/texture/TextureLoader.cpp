@@ -28,21 +28,19 @@ tPixel* Textures::LoadRawImageData ( const std::string& n_inputfile, timgInfo& o
 	std::string sExtension = StringUtils::ToLower( StringUtils::GetFileExtension( n_inputfile ) );
 	if ( sExtension == "tga" )
 	{
-		return loadTGA(n_inputfile,o_info);
+		return loadTGA(n_inputfile, o_info);
 	}
 	else if ( sExtension == "png" )
 	{
-		return loadPNG(n_inputfile,o_info);
+		return loadPNG(n_inputfile, o_info);
 	}
 	else if (( sExtension == "jpeg" )||( sExtension == "jpg" ))
 	{
-		return loadJPG(n_inputfile,o_info);
+		return loadJPG(n_inputfile, o_info);
 	}
 	else if ( sExtension == "bpd" )
 	{
-		//return loadBPD(n_inputfile,o_info); // TODO
-		//return loadDefault(o_info);
-		return loadBPD(n_inputfile,o_info,-1);
+		return loadBPD(n_inputfile, o_info, -1);
 	}
 	else
 	{
@@ -634,11 +632,11 @@ tPixel* Textures::loadBPD ( const std::string& n_inputfile, timgInfo& o_info, co
 		fread( &bpdHeader, sizeof(Textures::tbpdHeader), 1, t_bpdFile );
 		// Skip the lowres data
 		fseek( t_bpdFile, sizeof(tPixel)*16*16, SEEK_CUR );
-		// Skip all the mipmap data until the last one (that will be the highest resolution one)
-		//fseek( t_bpdFile, sizeof(Textures::tbpdLevel)*(bpdHeader.levels-1), SEEK_CUR );
 		// Seek to the mipmap data that we're going to use
 		int t_actualLevel = level;
-		if ( level == -1 || level >= bpdHeader.levels-1 ) {
+		if ( level == -1 || level >= bpdHeader.levels-1 )
+		{
+			// If invalid level specified, skip all the mipmap data until the last one (that will be the highest resolution one)
 			t_actualLevel = bpdHeader.levels-1;
 		}
 		fseek( t_bpdFile, sizeof(Textures::tbpdLevel)*(t_actualLevel), SEEK_CUR );
@@ -655,6 +653,8 @@ tPixel* Textures::loadBPD ( const std::string& n_inputfile, timgInfo& o_info, co
 		// Create the pixel data
 		pData = new tPixel [ o_info.width * o_info.height ];
 
+		// Go to where the data is
+		fseek( t_bpdFile, bpdLevel.offset, SEEK_SET );
 		// Load in the pixel data
 		uint32_t t_originalSize;
 		fread( &t_originalSize, sizeof(uint32_t),1, t_bpdFile );

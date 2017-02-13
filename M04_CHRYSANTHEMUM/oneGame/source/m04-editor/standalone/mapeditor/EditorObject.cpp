@@ -42,6 +42,9 @@ EditorObject::EditorObject ( const char* object_name )
 			// m_model = new CSkinnedModel( file_key );
 			// m_model->SetOwner( this );
 			break;
+		case DISPLAY_LIGHT:
+			m_sprite->SetSpriteFile( file_key );
+			break;
 		}
 	}
 	else

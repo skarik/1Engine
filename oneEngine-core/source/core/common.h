@@ -45,6 +45,22 @@ FORCE_INLINE CastTo arcast( CastFrom value )
 #endif
 }
 
+#ifndef offsetof
+template <typename T, typename U>
+constexpr size_t offsetof_impl(T const* t, U T::* a)
+{
+	return	(char const*)t - (char const*)&(t->*a) >= 0 ?
+			(char const*)t - (char const*)&(t->*a)      :
+			(char const*)&(t->*a) - (char const*)t;
+}
+
+//	offsetof(Class, Variable)
+// Caller must be in scope of the variable.
+// The variable must be a C-compatible type. This means only data, no functions, statics, constants, or C++ specific types.
+// Returns in bytes the offset of the variable in the given class.
+#define offsetof(Type_, Attr_) \
+    offsetof_impl((Type_ const*)nullptr, &Type_::Attr_)
+#endif
 
 #ifdef _ENGINE_SAFE_CHECK_
 #undef _ENGINE_SAFE_CHECK_

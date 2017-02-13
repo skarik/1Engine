@@ -1,11 +1,18 @@
 
 #include "CRenderable2D.h"
 
+#include "core/utils/StringUtils.h"
+#include "core-ext/system/io/Resources.h"
+
 #include "renderer/material/glShader.h"
 #include "renderer/material/glMaterial.h"
 #include "renderer/texture/CTexture.h"
+#include "renderer/texture/TextureLoader.h"
 
 #include "renderer/system/glMainSystem.h"
+
+#include "render2d/preprocess/PaletteToLUT.h"
+#include "render2d/state/WorldPalette.h"
 
 CRenderable2D::CRenderable2D ( void )
 	: CRenderableObject()
@@ -56,12 +63,93 @@ CRenderable2D::~CRenderable2D ()
 // Sets the sprite filename to load or convert
 void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 {
-	// Load new sprite
-	CTexture* new_texture = new CTexture (
-		n_sprite_filename, 
-		Texture2D, RGBA8,
-		1024,1024, Clamp,Clamp,
-		MipmapNone,SamplingPoint
+	// Create the filename for the palette.
+	std::string filename_palette = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_pal";
+	std::string filename_sprite = StringUtils::GetFileStemLeaf(n_sprite_filename);
+
+	std::string resource_palette;
+	std::string resource_sprite;
+
+#if 1 // DEVELOPER_MODE
+	// Convert the resource files to engine's format (if the PNGs exist)
+	if ( Core::Resources::MakePathTo(filename_sprite + ".png", resource_sprite) )
+	{
+		Textures::ConvertFile(resource_sprite, StringUtils::GetFileStemLeaf(resource_sprite) + ".bpd");
+	}
+	if ( Core::Resources::MakePathTo(filename_palette + ".png", resource_palette) )
+	{
+		Textures::ConvertFile(resource_palette, StringUtils::GetFileStemLeaf(resource_palette)  + ".bpd");
+	}
+#endif// DEVELOPER_MODE
+
+	// Now create BPD paths
+	if ( !Core::Resources::MakePathTo(filename_sprite + ".bpd", resource_sprite) )
+	{
+		throw Core::MissingFileException();
+	}
+	if ( !Core::Resources::MakePathTo(filename_palette + ".bpd", resource_palette) )
+	{
+		CTexture* new_texture = new CTexture (
+			n_sprite_filename, 
+			Texture2D, RGBA8,
+			1024,1024, Clamp,Clamp,
+			MipmapNone,SamplingPoint
+		);
+
+		// Set sprite info
+		m_spriteInfo.fullsize.x = new_texture->GetWidth();
+		m_spriteInfo.fullsize.y = new_texture->GetHeight();
+
+		m_spriteInfo.framesize.x = new_texture->GetWidth();
+		m_spriteInfo.framesize.y = new_texture->GetHeight();
+
+		// TODO: Convert the texture. For now, set the material based on the input file.
+		m_material->setTexture(0, new_texture);
+
+		// No longer need the texture in this object
+		new_texture->RemoveReference();
+
+		// TODO: Remove deferred pass from the shader so it only renders in forward mode
+		//m_material->deferredinfo.clear();
+
+		// Not a palette'd sprite.
+		return;
+	}
+
+	// Load the raw data from the palette first
+	Textures::timgInfo imginfo_palette;
+	pixel_t* raw_palette = Textures::LoadRawImageData(resource_palette, imginfo_palette);
+	if ( raw_palette == NULL ) throw Core::MissingDataException();
+
+	// Set all data in the palette to have 255 alpha (opaque)
+	for (int i = 0; i < imginfo_palette.width * imginfo_palette.height; ++i)
+		raw_palette[i].a = 255;
+
+	// Add the palette to the world's palette
+	Render2D::WorldPalette::Active()->AddPalette( raw_palette, imginfo_palette.height, imginfo_palette.width );
+	
+	// No longer need local palette
+	delete [] raw_palette;
+
+	// Load the raw data from the sprite
+	Textures::timgInfo imginfo_sprite;
+	pixel_t* raw_sprite = Textures::LoadRawImageData(resource_sprite, imginfo_sprite);
+	if ( raw_sprite == NULL ) throw Core::MissingDataException();
+
+	// Convert the colors to the internal world's palette
+	Render2D::Preprocess::DataToLUT(
+		raw_sprite, imginfo_sprite.width * imginfo_sprite.height,
+		Render2D::WorldPalette::Active()->palette_data, Render2D::WorldPalette::MAX_HEIGHT, Render2D::WorldPalette::Active()->palette_width);
+
+	// Create empty texture to upload data into
+	CTexture* new_texture = new CTexture("");
+
+	// Upload the data
+	new_texture->Upload(
+		raw_sprite,
+		imginfo_sprite.width, imginfo_sprite.height, 
+		Clamp, Clamp,
+		MipmapNone, SamplingPoint
 	);
 
 	// Set sprite info
@@ -71,8 +159,11 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 	m_spriteInfo.framesize.x = new_texture->GetWidth();
 	m_spriteInfo.framesize.y = new_texture->GetHeight();
 
-	// TODO: Convert the texture. For now, set the material based on the input file.
+	// Set the palette texture as the sprite
 	m_material->setTexture(0, new_texture);
+
+	// Clear off the data now that it's on the GPU
+	delete [] raw_sprite;
 
 	// No longer need the texture in this object
 	new_texture->RemoveReference();

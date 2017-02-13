@@ -1,6 +1,7 @@
 #version 330
 
-#define DEBUG_OUTPUT
+//#define DEBUG_OUTPUT
+//#define ENABLE_LIGHTING
 
 // Output to screen
 layout(location = 0) out vec4 FragColor;
@@ -17,6 +18,7 @@ uniform sampler2D textureSampler1;	// Normals
 uniform sampler2D textureSampler2;	// Lighting Properties
 uniform sampler2D textureSampler3;	// Glow (for now)
 uniform sampler2D textureSampler4;	// Depth
+uniform sampler2D textureSampler5; // Palette
 /*
 // Lighting samplers
 uniform samplerBuffer textureLightBuffer;
@@ -273,10 +275,10 @@ void main ( void )
 		pixelPosition.xyzw /= pixelPosition.w;
 	}
 
-	// pixelDiffuse
-	// rgb	surface diffuse
+	// pixelLookup
+	// xy	palette lookup
 	// a	unused (used as temp discard in source)
-	vec4 pixelDiffuse		= texture( textureSampler0, v2f_texcoord0 );
+	vec4 pixelLookup		= texture( textureSampler0, v2f_texcoord0 );
 	// pixelNormal
 	// rgb	surface normal
 	// a	unused
@@ -292,8 +294,6 @@ void main ( void )
 	// a	backside lighting to add
 	vec4 pixelGlow			= texture( textureSampler3, v2f_texcoord0 );
 
-	//vec4 pixelPosition = vec4( v2f_texcoord0.x,v2f_texcoord0.y,pixelNormal.w,pixelNormal.w );
-
 	vec4 n_cameraVector;
 	n_cameraVector.xyz = sys_WorldCameraPos - pixelPosition.xyz;
 	n_cameraVector.w = length( n_cameraVector.xyz );
@@ -306,6 +306,7 @@ void main ( void )
 	v2f_lightcoord[2] = pixelPosition * def_LightMatrix0[2];
 	v2f_lightcoord[3] = pixelPosition * def_LightMatrix0[3];
 
+#ifdef ENABLE_LIGHTING
 	// ==Perform lighting==
 	float lightingStrength = clamp( (pixelLightProperty.r-0.4)/0.6, 0, 1 );
 	vec3 luminColor = vec3( 0,0,0 );
@@ -357,6 +358,21 @@ void main ( void )
 
 	// Create color diffuse*lighting result
 	diffuseColor.rgb = diffuseColor*luminColor;
+#else
+    vec2 rounded_coord = v2f_texcoord0.xy;
+    rounded_coord.x = floor(rounded_coord.x * 640.0) / 640.0;
+    rounded_coord.y = floor(rounded_coord.y * 360.0) / 360.0;
+
+    float light = 0.5 - (length(vec2(0.5,0.5) /*+ random(rounded_coord.xxy)/10.0*/ - rounded_coord.xy) * 3.0);
+    pixelLookup.x = ((pixelLookup.x + light) + (pixelLookup.x * light)) * 0.5;
+
+    // pixelDiffuse
+    // rgb  surface color
+    vec4 pixelDiffuse       = texture( textureSampler5, pixelLookup.xy );
+
+    float lightingStrength = 0.0;
+    vec3 diffuseColor = pixelDiffuse.rgb;
+#endif
 
 	// ==Perform fog==
 	float n_fogDensity = clamp( (sys_FogEnd - n_cameraVector.w) * sys_FogScale, 0, 1 );
@@ -367,8 +383,9 @@ void main ( void )
 	// Output fog mix
 	FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb, n_fogDensity );
 	//mix( pixelDiffuse.rgb, diffuseColor*luminColor, clamp( (pixelLightProperty.r-0.4)/0.6, 0, 1 ) );
-	FragColor.a = pixelDiffuse.a;
+	FragColor.a = 1.0;//pixelDiffuse.a;
 	//FragColor.a = 0;
+
 
 
 	//FragColor.rgb = pixelGlow.rgb * pixelLightProperty.r;//luminColor.rgb*0.5;//vec3(1,1,1) * pixelGlow.a;
