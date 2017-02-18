@@ -32,6 +32,10 @@ void COrthoCamera::UpdateMatrix ( void )
 	zNear = 1;
 	zFar = 1000;
 
+	// Round to the pixel position
+	transform.position.x = std::floor(transform.position.x);
+	transform.position.y = std::floor(transform.position.y);
+
 	// Setup orthographic view
 	switch ( pixel_scale_mode )
 	{

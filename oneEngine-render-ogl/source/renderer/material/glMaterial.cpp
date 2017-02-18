@@ -808,7 +808,10 @@ void glMaterial::bindPassDeferred ( uchar pass )
 		//glDisable(GL_ALPHA_TEST);
 		break;
 	}
-	if ( !deferredinfo[pass].m_ready ) {
+
+	// Do first-time initialization checks
+	if ( !deferredinfo[pass].m_ready )
+	{
 		deferredinfo[pass].m_ready = true;
 		deferred_shader_build( pass );
 	}

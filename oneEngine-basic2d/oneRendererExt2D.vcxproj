@@ -49,6 +49,7 @@
     <ClCompile Include="source\render2d\object\TileMapLayer.cpp" />
     <ClCompile Include="source\render2d\preprocess\PaletteToLUT.cpp" />
     <ClCompile Include="source\render2d\state\WorldPalette.cpp" />
+    <ClCompile Include="source\render2d\texture\TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\render2d\camera\COrthoCamera.h" />
@@ -59,6 +60,7 @@
     <ClInclude Include="source\render2d\object\TileMapLayer.h" />
     <ClInclude Include="source\render2d\preprocess\PaletteToLUT.h" />
     <ClInclude Include="source\render2d\state\WorldPalette.h" />
+    <ClInclude Include="source\render2d\texture\TextureLoader.h" />
     <ClInclude Include="source\render2d\types\spriteInfo.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -152,7 +154,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST_D.lib;libyaml-cppmd.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST_D.lib;libyaml-cppmd.lib;OpenGL32.lib;galefile.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>libs\Havok\release_multithreaded_dll;libs\core;libs\basic;libs\render;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>

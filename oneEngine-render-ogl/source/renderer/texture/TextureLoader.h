@@ -4,7 +4,6 @@
 
 #include <string>
 #include <stdint.h>
-#include <algorithm>
 
 #include "renderer/types/pixelFormat.h"
 
@@ -75,18 +74,20 @@ namespace Textures
 	// == FUNCTIONS ==
 	// Converts a given file
 	RENDER_API void ConvertFile ( const std::string& n_inputfile, const std::string& n_outputfile, const bool n_override=false );
+	// Converts given bitmap data
+	RENDER_API void ConvertData ( const pixel_t* n_inputimg, const timgInfo* n_inputimg_info, const std::string& n_outputfile, const uint64_t n_timewrite=0 );
 
 	// Given a file, will try to use the proper converter
-	RENDER_API tPixel* LoadRawImageData ( const std::string& n_inputfile, timgInfo& o_info );
+	RENDER_API pixel_t* LoadRawImageData ( const std::string& n_inputfile, timgInfo& o_info );
 
 	// Creates a default XOR texture
-	RENDER_API tPixel* loadDefault ( timgInfo& o_info );
+	RENDER_API pixel_t* loadDefault ( timgInfo& o_info );
 
 	// Actual conversions
-	RENDER_API tPixel* loadTGA ( const std::string& n_inputfile, timgInfo& o_info );
-	RENDER_API tPixel* loadJPG ( const std::string& n_inputfile, timgInfo& o_info );
-	RENDER_API tPixel* loadPNG ( const std::string& n_inputfile, timgInfo& o_info );
-	RENDER_API tPixel* loadBPD ( const std::string& n_inputfile, timgInfo& o_info, const int level );
+	RENDER_API pixel_t* loadTGA ( const std::string& n_inputfile, timgInfo& o_info );
+	RENDER_API pixel_t* loadJPG ( const std::string& n_inputfile, timgInfo& o_info );
+	RENDER_API pixel_t* loadPNG ( const std::string& n_inputfile, timgInfo& o_info );
+	RENDER_API pixel_t* loadBPD ( const std::string& n_inputfile, timgInfo& o_info, const int level );
 
 };
 

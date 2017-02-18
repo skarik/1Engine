@@ -9,6 +9,7 @@
 #include "engine-common/dusk/CDuskGUI.h"
 #include "engine-common/entities/CRendererHolder.h"
 
+#include "renderer/state/Settings.h"
 #include "renderer/texture/CBitmapFont.h"
 #include "renderer/camera/CCamera.h"
 #include "renderer/debug/CDebugDrawer.h"
@@ -54,6 +55,9 @@ MapEditor::MapEditor ( void )
 		// Set default map size
 		m_mapinfo->tilesize_x = 40;
 		m_mapinfo->tilesize_y = 40;
+		// Set default ambient
+		m_mapinfo->env_ambientcolor = 0x808080FF;
+		Renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
 	}
 	// Craete tile map
 	{
@@ -138,6 +142,10 @@ MapEditor::~MapEditor ( void )
 
 void MapEditor::Update ( void )
 {
+	// Update renderer
+	Renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
+
+	// Update the editor
 	Dusk::Handle openDialogue = dusk->GetOpenDialogue();
 	if ( dusk->HasOpenDialogue() && openDialogue != ui_fld_area_type && openDialogue != ui_fld_object_type )
 	{
@@ -235,19 +243,22 @@ void MapEditor::doViewNavigationDrag ( void )
 		if ( Input::Mouse( Input::MBMiddle ) || ( Input::Mouse( Input::MBRight ) && Input::Key( Keys.Control ) ) )
 		{
 			m_navigation_busy = true;
-			m_target_camera->transform.position -= Vector2d(
+			m_target_camera_position -= Vector2d(
 				Input::DeltaMouseX(), Input::DeltaMouseY()
-				);
+			);
 		}
 		if ( Input::DeltaMouseW() != 0 )
 		{
-			m_target_camera->transform.position.y += Input::DeltaMouseW() * 0.05f;
+			m_target_camera_position.y += Input::DeltaMouseW() * 0.05f;
 		}
 		// Navigation via arrow keys for bonus usability
-		if ( Input::Key( Keys.Left ) )  m_target_camera->transform.position.x -= m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
-		if ( Input::Key( Keys.Right ) ) m_target_camera->transform.position.x += m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
-		if ( Input::Key( Keys.Up ) )	m_target_camera->transform.position.y -= m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
-		if ( Input::Key( Keys.Down ) )	m_target_camera->transform.position.y += m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
+		if ( Input::Key( Keys.Left ) )  m_target_camera_position.x -= m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
+		if ( Input::Key( Keys.Right ) ) m_target_camera_position.x += m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
+		if ( Input::Key( Keys.Up ) )	m_target_camera_position.y -= m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
+		if ( Input::Key( Keys.Down ) )	m_target_camera_position.y += m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
+
+		// Update camera position
+		m_target_camera->transform.position = m_target_camera_position;
 	}
 }
 
@@ -905,6 +916,12 @@ void MapEditor::uiCreate ( void )
 		label.SetRect(Rect(20,200,0,0));
 		ui_lbl_map_size = label;
 
+		label = dusk->CreateText( panel, "Ambient Light" );
+		label.SetRect(Rect(20,250,0,0));
+		field = dusk->CreateTextfield( panel, "808080FF" );
+		field.SetRect(Rect(20,275,70,30) );
+		ui_fld_map_ambient_color = field;
+
 		// Create button
 		button = dusk->CreateButton( panel );
 		button.SetText("Apply");
@@ -1192,6 +1209,7 @@ void MapEditor::uiStepShitPanel ( void )
 	if ( ui_btn_apply_shit.GetButtonClicked() )
 	{
 		string s_temp;
+		
 		// Set all values in the M04::MapInformation structure
 		m_mapinfo->tilesize_x = sizex;
 		m_mapinfo->tilesize_y = sizey;
@@ -1199,6 +1217,10 @@ void MapEditor::uiStepShitPanel ( void )
 		m_mapinfo->map_name = s_temp.c_str();
 		dusk->GetTextfieldData( ui_fld_map_area, s_temp );
 		m_mapinfo->area_name = s_temp.c_str();
+
+		dusk->GetTextfieldData( ui_fld_map_ambient_color, s_temp );
+		m_mapinfo->env_ambientcolor = (uint32_t)std::stoul( s_temp, NULL, 16 );
+
 		// Apply new map options
 		doMapResize();
 	}

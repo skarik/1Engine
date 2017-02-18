@@ -1,7 +1,10 @@
 #version 330
 
 //#define DEBUG_OUTPUT
-//#define ENABLE_LIGHTING
+#define ENABLE_LIGHTING
+//#define ENABLE_DITHERING
+//#define LIGHTING_FLAT
+#define LIGHTING_CELLD
 
 // Output to screen
 layout(location = 0) out vec4 FragColor;
@@ -79,11 +82,14 @@ float diffuseLighting ( vec3 normal, vec4 lightDist, float lightRange, float lig
 
 	// Cosine law breaking ( cuz objects need more detail )
 	float normalAttenuate = dot( normal,lightDist.xyz/lightDist.w );
+    //normalAttenuate = max( 0.0, normalAttenuate );
 	normalAttenuate = (max( normalAttenuate, -mixthrough ) + mixthrough)/(1+mixthrough);
 	// Attenuation
-	float color = mix( normalAttenuate, 1.0, lightPass*(1.0+attenuation) ) * attenuation;
+	//float color = mix( normalAttenuate, 1.0, lightPass*(1.0+attenuation) ) * attenuation;
 	// Output backlighting
-	backfaceColor = mix( clamp( 1.0-normalAttenuate, 0.0,1.0 ), 0.0, lightPass*(1.0+attenuation) ) * attenuation;
+	//backfaceColor = mix( clamp( 1.0-normalAttenuate, 0.0,1.0 ), 0.0, lightPass*(1.0+attenuation) ) * attenuation;
+
+    float color = (normalAttenuate + 0.5) * attenuation;
 
 	// Return final color
 	return color;
@@ -116,32 +122,42 @@ vec3 defaultLighting ( vec4 lightPosition, vec4 lightProperties, vec4 lightColor
 {
 	vec3 resultColor;
 
+    lightPosition.w = 1.0; // Force point lights, not directional
+
 	// Perform base lighting
 	float diffuseLight, diffuseLightO, diffuseLightD;
 	float difbackLight, difbackLightO, difbackLightD;
 	diffuseLightO = diffuseLighting( vertNormal, lightDir, lightProperties.x, lightProperties.y, lightProperties.z, difbackLightO );
-	diffuseLightD = dot( lightPosition.xyz, vertNormal );
+	/*diffuseLightD = dot( lightPosition.xyz, vertNormal );
 	{
 		difbackLightD = clamp( -diffuseLightD, 0.0,1.0 );
 		diffuseLightD = (max( diffuseLightD, -mixthrough ) + mixthrough)/(1+mixthrough); // Directional light mixthrough
-	}
+	}*/
 	// Mix between light styles for the directional/nondirectional
-	diffuseLight = mix( diffuseLightD, diffuseLightO, lightPosition.w );
-	difbackLight = 0.8 * (1-backsideGlow) * mix( difbackLightD, difbackLightO, lightPosition.w );
+	//diffuseLight = mix( diffuseLightD, diffuseLightO, lightPosition.w );
+	//difbackLight = 0.8 * (1-backsideGlow) * mix( difbackLightD, difbackLightO, lightPosition.w );
 
 	// Add major rim lighting
-	diffuseLight += diffuseLight * rimStrength * surfaceInfo.a;
+	//diffuseLight += diffuseLight * rimStrength * surfaceInfo.a;
 	// Apply cellshading
-	diffuseLight = cellShade(diffuseLight);
+	//diffuseLight = cellShade(diffuseLight);
 
 	// Specular lighting
 	float specularLight = 0;
-	float specularLightO = specularLighting( vertNormal, lightDir, vertDir, surfaceInfo.b, lightProperties.x );
+	/*float specularLightO = specularLighting( vertNormal, lightDir, vertDir, surfaceInfo.b, lightProperties.x );
 	float specularLightD = specularLighting( vertNormal, vec4(lightPosition.xyz,1), vertDir, surfaceInfo.b, 0 );
 	// Mix between light styles for the directional/nondirectional
-	specularLight = mix( specularLightD, specularLightO, lightPosition.w );
+	specularLight = mix( specularLightD, specularLightO, lightPosition.w );*/
 
-	resultColor = lightColor.rgb * max( 0, difbackLight+diffuseLight+specularLight*surfaceInfo.g );
+    //resultColor = lightColor.rgb * max( 0, difbackLight+diffuseLight+specularLight*surfaceInfo.g );
+
+#ifdef LIGHTING_FLAT
+    // make the color more fullbright + fast change to zero
+    diffuseLightO -= 1.0 / 6;
+    diffuseLightO = max(0.0, min(1.0, diffuseLightO * 200.0)) * 0.5;
+#endif
+
+	resultColor = vec3(1,1,1) * diffuseLightO;
 
 	return resultColor;
 }
@@ -269,11 +285,14 @@ void main ( void )
 	// Use depth to generate the world position
 	float pixelDepth 		= texture( textureSampler4, v2f_texcoord0 ).r;
 	vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1),pixelDepth,1.0 );
-	{
+	/*{
 		pixelPosition.z = ( pixelPosition.z*2 - 1 );
-		pixelPosition = sys_ModelViewProjectionMatrixInverse * vec4( pixelPosition.xyz, 1.0 );
+        pixelPosition = sys_ModelViewProjectionMatrixInverse * vec4( pixelPosition.xyz, 1.0 );
 		pixelPosition.xyzw /= pixelPosition.w;
-	}
+	}*/
+    pixelPosition.x *= 1280 * 0.25;
+    pixelPosition.y *= -720 * 0.25;
+    pixelPosition.xyz += sys_WorldCameraPos;
 
 	// pixelLookup
 	// xy	palette lookup
@@ -294,6 +313,11 @@ void main ( void )
 	// a	backside lighting to add
 	vec4 pixelGlow			= texture( textureSampler3, v2f_texcoord0 );
 
+    // TODO: do proper normals. for now, fuck with it
+    //pixelNormal = vec4(0,0,-1,0);
+    //pixelNormal.xy += vec2( v2f_texcoord0.x*2-1, v2f_texcoord0.y*2-1 );
+    //pixelNormal.xyz = normalize(pixelNormal.xyz);
+
 	vec4 n_cameraVector;
 	n_cameraVector.xyz = sys_WorldCameraPos - pixelPosition.xyz;
 	n_cameraVector.w = length( n_cameraVector.xyz );
@@ -308,11 +332,11 @@ void main ( void )
 
 #ifdef ENABLE_LIGHTING
 	// ==Perform lighting==
-	float lightingStrength = clamp( (pixelLightProperty.r-0.4)/0.6, 0, 1 );
+	float lightingStrength = 1.0;//clamp( (pixelLightProperty.r-0.4)/0.6, 0, 1 );
 	vec3 luminColor = vec3( 0,0,0 );
 	if ( lightingStrength > 0.5 )
 	{
-		luminColor = sys_LightAmbient.rgb;
+		//luminColor = sys_LightAmbient.rgb;
 		for ( int lightIndex = 0; lightIndex < sys_LightNumber; lightIndex += 1 )
 		{
 			vec4 lightProperties	= texelFetch( textureLightBuffer, lightIndex*4 + 1 );
@@ -320,72 +344,108 @@ void main ( void )
 
 			// Get direction to light
 			vec4 lightDir;
-			lightDir.xyz = lightPosition.xyz - pixelPosition.xyz;
+			lightDir.xyz = lightPosition.xyz - floor(pixelPosition.xyz);
+            lightDir.z = 0;
+            lightDir.x *= 0.5;
+
 			lightDir.w = length(lightDir.xyz);
-			if ( lightDir.w*lightPosition.w > 1.4/lightProperties.x )
+
+            //luminColor += vec3(1,1,1) * max(0.0, 1.0 - length(lightDir)*0.01);
+			/*if ( lightDir.w*lightPosition.w > 1.4/lightProperties.x )
 			{	// Skip if light out of range
 				continue; // Drops FPS on NVidia if this continue isn't here
 			}
-			else
+			else*/
 			{	// Otherwise perform the light effects
 				vec4 lightColor			= texelFetch( textureLightBuffer, lightIndex*4 + 0 );
 				vec4 lightDirection		= texelFetch( textureLightBuffer, lightIndex*4 + 3 );
 
-				float shadowValue = 1.0;
-				if ( lightIndex < 1 && lightProperties.w > 0 )
-				{
-					//vec4 lightCoords = vec4(pixelPosition.xyz,1.0) * sys_LightMatrix[0];
-					shadowValue = shadowCalculate( lightProperties.w, textureShadow0, vec4(v2f_texcoord0,vec2(0,0)) );
-				}
-				luminColor += shadowValue * defaultLighting( lightPosition, lightProperties, lightColor, lightDir, n_rimValue, n_cameraVector.xyz, pixelNormal.xyz, pixelLightProperty, pixelGlow.a );
+				luminColor += defaultLighting( lightPosition, lightProperties, lightColor, lightDir, n_rimValue, n_cameraVector.xyz, pixelNormal.xyz, pixelLightProperty, pixelGlow.a ) * 0.5;
 			}
 		}
 		// Rim amount
-		luminColor += luminColor*clamp(length(luminColor-sys_LightAmbient.rgb)-0.3,0,1)*pow(n_rimValue,3)*0.5 * pixelLightProperty.a;
+		//luminColor += luminColor*clamp(length(luminColor-sys_LightAmbient.rgb)-0.3,0,1)*pow(n_rimValue,3)*0.5 * pixelLightProperty.a;
 	}
 	else
 	{
 		luminColor = vec3( 1,1,1 );
 	}
 	// ==Perform diffuse==
-	vec3 diffuseColor = pixelDiffuse.rgb;
+	//vec3 diffuseColor = pixelDiffuse.rgb;
 	// Shadow "outline" effect
-	diffuseColor *= 1-(clamp( (pow( clamp(n_rimValue,0,1), 5 )-0.12)/0.1, 0,1 ) * (1-min(1,length(luminColor-sys_LightAmbient.rgb)*4)))*0.3*(lightingStrength);
+	//diffuseColor *= 1-(clamp( (pow( clamp(n_rimValue,0,1), 5 )-0.12)/0.1, 0,1 ) * (1-min(1,length(luminColor-sys_LightAmbient.rgb)*4)))*0.3*(lightingStrength);
 
 	// Choose lumin based on glow
-	pixelGlow.a *= pixelLightProperty.r;
-	luminColor = (luminColor*(1-pixelGlow.a)) + max( luminColor*(pixelGlow.a), pixelGlow.rgb );
+	//pixelGlow.a *= pixelLightProperty.r;
+	//luminColor = (luminColor*(1-pixelGlow.a)) + max( luminColor*(pixelGlow.a), pixelGlow.rgb );
 
 	// Create color diffuse*lighting result
-	diffuseColor.rgb = diffuseColor*luminColor;
+	//diffuseColor.rgb = diffuseColor*luminColor;
+#ifdef LIGHTING_CELLD
+
+    float light = -1.0 + luminColor.r * 2.0;
+
+    const float light_levels = 3;
+    float light_stretched = light * light_levels;
+	float light_div_dif = 0.5 - mod(light_stretched + 0.5, 1);
+	light_stretched += light_div_dif * min(1,(0.5-abs(light_div_dif)) * 350) * 0.5;
+	light = (light_stretched)/light_levels;
+
+    light = round(light * 6) / 6;
+    light += round(sys_LightAmbient.r * 2.0 * 6) / 6;
+
 #else
+        luminColor += sys_LightAmbient.rgb;
+        float light = -1.0 + luminColor.r * 2.0;
+        //pixelLookup.x = ((pixelLookup.x + light) + (pixelLookup.x * light)) * 0.5;
+
+    #ifdef ENABLE_DITHERING
+        // create dithering push
+        vec2 coord = round(gl_FragCoord.xy * 0.5);
+        float ditherpush = fract( (coord.x + coord.y) * 0.5 ) * 0.1;
+
+        // light needs to be split into 6 levels (based on width of texture5/palette)
+        light = round(light * 6 + ditherpush - 0.5) / 6;
+    #else
+        // light needs to be split into 6 levels (based on width of texture5/palette)
+        light = round(light * 6) / 6;
+    #endif
+#endif
+    pixelLookup.x = pixelLookup.x + light;
+
+#else
+
     vec2 rounded_coord = v2f_texcoord0.xy;
     rounded_coord.x = floor(rounded_coord.x * 640.0) / 640.0;
     rounded_coord.y = floor(rounded_coord.y * 360.0) / 360.0;
 
     float light = 0.5 - (length(vec2(0.5,0.5) /*+ random(rounded_coord.xxy)/10.0*/ - rounded_coord.xy) * 3.0);
     pixelLookup.x = ((pixelLookup.x + light) + (pixelLookup.x * light)) * 0.5;
+    float lightingStrength = 0.0;
 
+#endif
     // pixelDiffuse
     // rgb  surface color
     vec4 pixelDiffuse       = texture( textureSampler5, pixelLookup.xy );
 
-    float lightingStrength = 0.0;
     vec3 diffuseColor = pixelDiffuse.rgb;
-#endif
+
+
 
 	// ==Perform fog==
 	float n_fogDensity = clamp( (sys_FogEnd - n_cameraVector.w) * sys_FogScale, 0, 1 );
 	n_fogDensity = mix( 1, n_fogDensity, lightingStrength );
-	//FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb * sys_DiffuseColor.rgb * lightColor, v2f_fogdensity );
 	// Mix output with fog
 
-	// Output fog mix
-	FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb, n_fogDensity );
-	//mix( pixelDiffuse.rgb, diffuseColor*luminColor, clamp( (pixelLightProperty.r-0.4)/0.6, 0, 1 ) );
-	FragColor.a = 1.0;//pixelDiffuse.a;
-	//FragColor.a = 0;
+    //FragColor.rgb = luminColor.rgb;
+    //FragColor.rgb += diffuseColor.rgb * 0.1;
+    //FragColor.rgb += pixelPosition.rgb;
 
+    FragColor.rgb = diffuseColor;
+
+	// Output fog mix
+	//FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb, n_fogDensity );
+	FragColor.a = 1.0;
 
 
 	//FragColor.rgb = pixelGlow.rgb * pixelLightProperty.r;//luminColor.rgb*0.5;//vec3(1,1,1) * pixelGlow.a;

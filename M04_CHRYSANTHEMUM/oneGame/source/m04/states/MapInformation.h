@@ -15,11 +15,11 @@ namespace M04
 		arstring<256>		map_name;
 		arstring<256>		area_name;
 
-		int32_t				tilesize_x;
-		int32_t				tilesize_y;
+		int32_t				tilesize_x;		// Width of the map in tiles
+		int32_t				tilesize_y;		// Height of the map in tiles
 
 		uint32_t			env_weathertype;
-		uint32_t			env_unused1;
+		uint32_t			env_ambientcolor;
 		uint32_t			env_unused2;
 		uint32_t			env_unused3;
 		uint32_t			env_unused4;

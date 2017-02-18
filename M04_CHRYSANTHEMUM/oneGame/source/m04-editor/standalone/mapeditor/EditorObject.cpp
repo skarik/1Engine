@@ -2,6 +2,8 @@
 #include "EditorObject.h"
 #include "render2d/object/sprite/CStreamedRenderable2D.h"
 
+#include "renderer/light/CLight.h"
+
 using namespace M04;
 
 std::vector<EditorObject*>	EditorObject::m_objects;
@@ -12,7 +14,8 @@ const std::vector<EditorObject*>& EditorObject::Objects ( void )
 
 EditorObject::EditorObject ( const char* object_name )
 	: CGameBehavior(), Engine2D::SpriteContainer( &position, &angle, &scale ),
-	position( 0,0,0 ), angle( 0 ), scale( 1,1,1 )
+	position( 0,0,0 ), angle( 0 ), scale( 1,1,1 ),
+	light(NULL)
 {
 	auto registration = Engine::BehaviorList::GetRegistration(object_name);
 	m_object = registration.editor_inst();
@@ -44,6 +47,8 @@ EditorObject::EditorObject ( const char* object_name )
 			break;
 		case DISPLAY_LIGHT:
 			m_sprite->SetSpriteFile( file_key );
+			light = new CLight;
+			light->range = 128.0F;
 			break;
 		}
 	}
@@ -65,5 +70,9 @@ EditorObject::~EditorObject ( void )
 
 void EditorObject::Update ( void )
 {
-	; // Nothing.
+	// Update child objects the engine could use
+	if ( light != NULL )
+	{
+		light->transform.position = position;
+	}
 }

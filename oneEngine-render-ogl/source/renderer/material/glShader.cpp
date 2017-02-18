@@ -202,7 +202,8 @@ void glShader::begin ( void )
 	}
 	else
 	{
-		throw std::exception( "Shader compile error" );
+		glUseProgram( 0 );
+		//throw std::exception( "Shader compile error" );
 	}
 }
 void glShader::end ( void )

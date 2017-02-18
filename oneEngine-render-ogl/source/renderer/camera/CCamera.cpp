@@ -263,47 +263,7 @@ void CCamera::UpdateMatrix ( void )
 {
 	if ( orthographic )
 	{
-		/*glPopMatrix();
-		glPopMatrix();
-
-		glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-		glLoadIdentity();									// Reset The Projection Matrix
-		
-		//glOrtho( -ortho_size.x/2, ortho_size.x/2,ortho_size.y/2, -ortho_size.y/2, -zNear, -zFar ); 
-		glOrtho( -ortho_size.x/2, ortho_size.x/2, -ortho_size.y/2,ortho_size.y/2, zNear, zFar ); 
-
-		float FV[16];
-		glGetFloatv(GL_PROJECTION_MATRIX, FV);
-		projTransform = Matrix4x4( FV );
-
-		// Switch to model view
-		glMatrixMode( GL_MODELVIEW );
-		glLoadIdentity();
-
-		// CROSSS PROOODDUUCCT?!?!?!?!?
-		Vector3d side ( forward.y*up.z-forward.z*up.y, forward.z*up.x-forward.x*up.z, forward.x*up.y-forward.y*up.x );
-
-		glRotatef( -90, 1,0,0 ); // Looking towards positive Y
-		glRotatef( 90, 0,0,1 ); // Now looking towards positive X
-
-		Matrix4x4 temp;
-		temp.setRotation( transform.rotation );
-		glMultMatrixf( temp.pData );
-
-		glTranslatef( -transform.position.x, -transform.position.y, -transform.position.z );
-
-		float MV[16];
-		glGetFloatv(GL_MODELVIEW_MATRIX, MV);
-		viewTransform = Matrix4x4( MV );
-
-		glPushMatrix();
-		glPushMatrix();*/
-
 		projTransform = Matrix4x4();
-		/*if ( viewport.size.y < FTYPE_PRECISION ) {
-			viewport.size.x = (Real)Screen::Info.width;
-			viewport.size.y = (Real)Screen::Info.height;
-		}*/
 
 		// Define constants
 		float left		= -ortho_size.x/2;
@@ -339,55 +299,13 @@ void CCamera::UpdateMatrix ( void )
 		projTransform[3][1] = (flipped? (1) : (-1)) * ((top+top+height)/(y_max));
 		projTransform[3][2] = (minz+maxz)/(-z_max);
 		projTransform[3][3] = 1;
-
-		//projTransform = !projTransform;
-
-		// Switch to model view
-		{
-			Matrix4x4 rotMatrix;
-			rotMatrix.setRotation( transform.rotation );
-
-			// Rotate the move vector to match the camera
-			forward = rotMatrix*Vector3d(1,0,0);
-			up = rotMatrix*Vector3d(0,0,1);
-		}
-		Vector3d side = forward.cross(up);
-
-		// Build the view transform matrix
-		viewTransform[0][0] = side.x;
-		viewTransform[0][1] = side.y;
-		viewTransform[0][2] = side.z;
-		viewTransform[0][3] = 0;
-
-		viewTransform[1][0] = up.x;
-		viewTransform[1][1] = up.y;
-		viewTransform[1][2] = up.z;
-		viewTransform[1][3] = 0;
-
-		viewTransform[2][0] = -forward.x;
-		viewTransform[2][1] = -forward.y;
-		viewTransform[2][2] = -forward.z;
-		viewTransform[2][3] = 0;
-
-		viewTransform[3][0] = 0;
-		viewTransform[3][1] = 0;
-		viewTransform[3][2] = 0;
-		viewTransform[3][3] = 1;
-
-		viewTransform = !viewTransform;
-		Matrix4x4 translation;
-		translation.setTranslation( -transform.position );
-		viewTransform = (!translation) * viewTransform;
 	}
 	else
 	{
-		const Real f = Real( 1.0 / tan( degtorad(fov)/2 ) );
 		projTransform = Matrix4x4();
 
-		/*if ( viewport.size.y < FTYPE_PRECISION ) {
-			viewport.size.x = (Real)Screen::Info.width;
-			viewport.size.y = (Real)Screen::Info.height;
-		}*/
+		// Define constants
+		const Real f = Real( 1.0 / tan( degtorad(fov)/2 ) );
 
 		// Build the perspective projection first
 		projTransform.pData[0] = f/(viewport.size.x/viewport.size.y);
@@ -403,52 +321,50 @@ void CCamera::UpdateMatrix ( void )
 		projTransform.pData[8] = 0;
 		projTransform.pData[9] = 0;
 		projTransform.pData[10]= (zFar+zNear)/(zNear-zFar);
-		projTransform.pData[11]= (2*zFar*zNear)/(zNear-zFar);
+		projTransform.pData[11]= mirror_view ? 1.0f : -1.0f;
 
 		projTransform.pData[12]= 0;
 		projTransform.pData[13]= 0;
-		projTransform.pData[14]= mirror_view ? 1.0f : -1.0f;
+		projTransform.pData[14]= (2*zFar*zNear)/(zNear-zFar);
 		projTransform.pData[15]= 0;
-
-		projTransform = !projTransform;
-
-		// Switch to model view
-		{
-			Matrix4x4 rotMatrix;
-			rotMatrix.setRotation( transform.rotation );
-
-			// Rotate the move vector to match the camera
-			forward = rotMatrix*Vector3d(1,0,0);
-			up = rotMatrix*Vector3d(0,0,1);
-		}
-		Vector3d side = forward.cross(up);
-
-		// Build the view transform matrix
-		viewTransform[0][0] = side.x;
-		viewTransform[0][1] = side.y;
-		viewTransform[0][2] = side.z;
-		viewTransform[0][3] = 0;
-
-		viewTransform[1][0] = up.x;
-		viewTransform[1][1] = up.y;
-		viewTransform[1][2] = up.z;
-		viewTransform[1][3] = 0;
-
-		viewTransform[2][0] = -forward.x;
-		viewTransform[2][1] = -forward.y;
-		viewTransform[2][2] = -forward.z;
-		viewTransform[2][3] = 0;
-
-		viewTransform[3][0] = 0;
-		viewTransform[3][1] = 0;
-		viewTransform[3][2] = 0;
-		viewTransform[3][3] = 1;
-
-		viewTransform = !viewTransform;
-		Matrix4x4 translation;
-		translation.setTranslation( -transform.position );
-		viewTransform = (!translation) * viewTransform;
 	}
+
+	// Switch to model view
+	{
+		Matrix4x4 rotMatrix;
+		rotMatrix.setRotation( transform.rotation );
+
+		// Rotate the move vector to match the camera
+		forward = rotMatrix*Vector3d(1,0,0);
+		up = rotMatrix*Vector3d(0,0,1);
+	}
+	Vector3d side = forward.cross(up);
+
+	// Build the view transform matrix
+	viewTransform[0][0] = side.x;
+	viewTransform[0][1] = side.y;
+	viewTransform[0][2] = side.z;
+	viewTransform[0][3] = 0;
+
+	viewTransform[1][0] = up.x;
+	viewTransform[1][1] = up.y;
+	viewTransform[1][2] = up.z;
+	viewTransform[1][3] = 0;
+
+	viewTransform[2][0] = -forward.x;
+	viewTransform[2][1] = -forward.y;
+	viewTransform[2][2] = -forward.z;
+	viewTransform[2][3] = 0;
+
+	viewTransform[3][0] = 0;
+	viewTransform[3][1] = 0;
+	viewTransform[3][2] = 0;
+	viewTransform[3][3] = 1;
+
+	viewTransform = !viewTransform;
+	Matrix4x4 translation;
+	translation.setTranslation( -transform.position );
+	viewTransform = (!translation) * viewTransform;
 }
 
 void CCamera::CameraUpdate ( void )

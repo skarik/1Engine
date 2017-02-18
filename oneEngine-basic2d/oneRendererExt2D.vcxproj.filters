@@ -25,6 +25,9 @@
     <Filter Include="SOURCE\Render2D\State">
       <UniqueIdentifier>{8c5b799a-9055-4d97-bfe9-9d7dd6dc84e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Render2D\Texture">
+      <UniqueIdentifier>{4e81aa00-53e3-404c-972f-4e591e3dc718}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\render2d\object\CRenderable2D.cpp">
@@ -50,6 +53,9 @@
     </ClCompile>
     <ClCompile Include="source\render2d\state\WorldPalette.cpp">
       <Filter>SOURCE\Render2D\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\render2d\texture\TextureLoader.cpp">
+      <Filter>SOURCE\Render2D\Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="source\render2d\state\WorldPalette.h">
       <Filter>SOURCE\Render2D\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\texture\TextureLoader.h">
+      <Filter>SOURCE\Render2D\Texture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

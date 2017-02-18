@@ -4,6 +4,8 @@
 #include "engine/behavior/CGameBehavior.h"
 #include "engine2d/interface/SpriteContainer.h"
 
+class CLight;
+
 namespace M04
 {
 	class EditorObject : public CGameBehavior, public Engine2D::SpriteContainer
@@ -20,6 +22,9 @@ namespace M04
 		Vector3d	position;
 		float		angle;
 		Vector3d	scale;
+
+	public:
+		CLight*		light;
 
 	public:
 		//=========================================//

@@ -1,7 +1,7 @@
 // only a single sprite for entire game
 sprite
 {
-	file "textures/ruins.png"
+	file "textures/tileset_city.gal"
 	index 0
 }
 // set information for the atlas
@@ -14,7 +14,7 @@ atlas
 }
 
 // basic ruins type tileset
-tile "Ruins Floor"
+tile "Sidewalk"
 {
 	type autotile
 	atlas 1 1
@@ -30,73 +30,21 @@ tile "Ruins Floor"
 		6 0 2
 		7 1 2
 		8 2 2
-		9 6 2
-		10 7 2
-		11 6 3
-		12 7 3
+		9 0 3
+		10 1 3
+		11 0 4
+		12 1 4
 	}
 }
-tile "Ruins Wall"
+tile "Street Asphalt"
 {
-	type		autowall
-	atlas		4 1
-	size		1 1
-	collision	impassable
-	
-	autotile
+	type randomized
+	atlas 3 0
+	choices
 	{
-		0 3 0
+		1 3 0
 		1 4 0
-		2 5 0
-		3 3 1
-		4 4 1
-		5 5 1
-		6 3 2
-		7 4 2
-		8 5 2
-	}
-}
-tile "Ruins Deadzone"
-{
-	type		autotile
-	atlas		1 4
-	autotile
-	{
-		0 0 3
-		1 1 3
-		2 2 3
-		3 0 4
-		4 1 4
-		5 2 4
-		6 0 5
-		7 1 5
-		8 2 5
-	}
-}
-tile "Ruins Grass"
-{
-	type randomized
-	atlas 6 0
-	choices
-	{
-		1 6 0
-		1 7 0
-		1 6 1
-		1 7 1
-	}
-}
-
-// more types below
-
-tile "Pasture Grass"
-{
-	type randomized
-	atlas 0 6
-	choices
-	{
-		1 0 6
-		1 0 7
-		1 1 6
-		1 1 7
+		1 3 1
+		1 4 1
 	}
 }

@@ -3,6 +3,8 @@
 #include "FileUtils.h"
 #include "core/exceptions.h"
 
+#include <fstream>
+
 bool IO::FileExists ( const std::string& n_filename )
 {
 	return IO::FileExists( n_filename.c_str() );
@@ -96,4 +98,13 @@ bool IO::ReadLine ( FILE* n_file, char* n_buffer )
 		return false;
 	}
 	return true;
+}
+
+std::string IO::ReadFileToString ( const char* n_filename )
+{
+	// TODO: find faster C variant
+	std::ifstream ifs( n_filename );
+	std::string content( (std::istreambuf_iterator<char>(ifs) ),
+						 (std::istreambuf_iterator<char>()    ) );
+	return content;
 }

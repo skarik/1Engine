@@ -132,6 +132,7 @@ namespace M04
 		SubMode		m_current_submode;
 
 		CCamera*	m_target_camera;
+		Vector3d	m_target_camera_position;
 		bool		m_navigation_busy;
 		bool		m_preclude_navigation;	// Stop the navigation
 
@@ -196,6 +197,7 @@ namespace M04
 		Dusk::Handle	ui_fld_map_size_y;
 		Dusk::Handle	ui_lbl_map_area;
 		Dusk::Handle	ui_lbl_map_size;
+		Dusk::Handle	ui_fld_map_ambient_color;
 
 		Dusk::Handle	ui_panel_area;
 		Dusk::Handle	ui_fld_area_type;

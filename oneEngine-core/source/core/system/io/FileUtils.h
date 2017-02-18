@@ -22,6 +22,9 @@ namespace IO
 
 	// File reading
 	bool ReadLine ( FILE* n_file, char* n_buffer );
+
+	// Big fat tiles
+	std::string ReadFileToString ( const char* n_filename );
 };
 
 #endif//_IO_FILE_UTILS_H_

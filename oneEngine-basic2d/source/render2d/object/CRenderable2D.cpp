@@ -8,6 +8,7 @@
 #include "renderer/material/glMaterial.h"
 #include "renderer/texture/CTexture.h"
 #include "renderer/texture/TextureLoader.h"
+#include "render2d/texture/TextureLoader.h"
 
 #include "renderer/system/glMainSystem.h"
 
@@ -65,20 +66,54 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 {
 	// Create the filename for the palette.
 	std::string filename_palette = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_pal";
-	std::string filename_sprite = StringUtils::GetFileStemLeaf(n_sprite_filename);
+	std::string filename_sprite	 = StringUtils::GetFileStemLeaf(n_sprite_filename);
+	std::string filename_normals = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_normal";
 
 	std::string resource_palette;
 	std::string resource_sprite;
+	std::string resource_normals;
 
 #if 1 // DEVELOPER_MODE
-	// Convert the resource files to engine's format (if the PNGs exist)
-	if ( Core::Resources::MakePathTo(filename_sprite + ".png", resource_sprite) )
+	// Check for the PNGs:
 	{
-		Textures::ConvertFile(resource_sprite, StringUtils::GetFileStemLeaf(resource_sprite) + ".bpd");
+		// Convert the resource files to engine's format (if the PNGs exist)
+		if ( Core::Resources::MakePathTo(filename_sprite + ".png", resource_sprite) )
+		{
+			Textures::ConvertFile(resource_sprite, StringUtils::GetFileStemLeaf(resource_sprite) + ".bpd");
+		}
+		if ( Core::Resources::MakePathTo(filename_palette + ".png", resource_palette) )
+		{
+			Textures::ConvertFile(resource_palette, StringUtils::GetFileStemLeaf(resource_palette)  + ".bpd");
+		}
+		if ( Core::Resources::MakePathTo(filename_normals + ".png", resource_normals) )
+		{
+			Textures::ConvertFile(resource_normals, StringUtils::GetFileStemLeaf(resource_normals)  + ".bpd");
+		}
 	}
-	if ( Core::Resources::MakePathTo(filename_palette + ".png", resource_palette) )
+	// Check for the GALs:
 	{
-		Textures::ConvertFile(resource_palette, StringUtils::GetFileStemLeaf(resource_palette)  + ".bpd");
+		// Convert the resource files to engine's format (if the GALs exist)
+		if ( Core::Resources::MakePathTo(filename_sprite + ".gal", resource_sprite) )
+		{
+			Textures::timgInfo image_info;
+			pixel_t* image = Textures::loadGAL(resource_sprite, image_info); 
+			Textures::ConvertData(image, &image_info, StringUtils::GetFileStemLeaf(resource_sprite) + ".bpd");
+			delete [] image;
+
+			image = Textures::loadGAL_Layer(resource_sprite, "normals", image_info);
+			if (image != NULL)
+			{
+				Textures::ConvertData(image, &image_info, StringUtils::GetFileStemLeaf(resource_sprite) + "_normal.bpd");
+				delete [] image;
+			}
+		}
+		if ( Core::Resources::MakePathTo(filename_palette + ".gal", resource_palette) )
+		{
+			Textures::timgInfo image_info;
+			pixel_t* image = Textures::loadGAL(resource_palette, image_info); 
+			Textures::ConvertData(image, &image_info, StringUtils::GetFileStemLeaf(resource_palette) + ".bpd");
+			delete [] image;
+		}
 	}
 #endif// DEVELOPER_MODE
 
@@ -103,7 +138,7 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 		m_spriteInfo.framesize.x = new_texture->GetWidth();
 		m_spriteInfo.framesize.y = new_texture->GetHeight();
 
-		// TODO: Convert the texture. For now, set the material based on the input file.
+		// Set the material based on the input file.
 		m_material->setTexture(0, new_texture);
 
 		// No longer need the texture in this object
@@ -167,6 +202,30 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 
 	// No longer need the texture in this object
 	new_texture->RemoveReference();
+
+	// Create normal map texture
+	if ( Core::Resources::MakePathTo(filename_normals + ".bpd", resource_normals) )
+	{
+		CTexture* new_texture = new CTexture (
+			resource_normals, 
+			Texture2D, RGBA8,
+			1024,1024, Clamp,Clamp,
+			MipmapNone,SamplingPoint
+		);
+
+		m_material->setTexture(1, new_texture);
+
+		// No longer need the texture in this object
+		new_texture->RemoveReference();
+	}
+	else
+	{
+		CTexture* new_texture = new CTexture( "textures/default_normals.jpg" );
+		m_material->setTexture(1, new_texture);
+
+		// No longer need the texture in this object
+		new_texture->RemoveReference();
+	}
 }
 
 //		GetSpriteInfo ()

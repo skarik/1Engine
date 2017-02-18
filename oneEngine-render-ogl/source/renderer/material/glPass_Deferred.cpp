@@ -28,6 +28,8 @@ glPass_Deferred::~glPass_Deferred( void )
 #include "glMaterial.h"
 #include "core/system/IO/FileUtils.h"
 #include "core-ext/system/io/Resources.h"
+#include <cctype>
+#include <map>
 
 void glMaterial::deferred_shader_build( uchar pass )
 {
@@ -54,6 +56,47 @@ void glMaterial::deferred_shader_build( uchar pass )
 	// ============================
 	// Build the vertex shader
 	{
+		string shader = IO::ReadFileToString( (Core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/surface_default.vert").c_str() );
+		size_t pos;
+
+		// Remove macro at the top
+		pos = shader.find("#define VERTEX_PROCESSOR");
+		if (pos != string::npos)
+		{
+			shader.erase(pos, sizeof("#define VERTEX_PROCESSOR"));
+		}
+
+		// Add macro at the bottom
+		pos = shader.find("VERTEX_PROCESSOR");
+		if (pos != string::npos)
+		{
+			shader.erase(pos, sizeof("VERTEX_PROCESSOR"));
+			string stub;
+			if ( t_shaderTag == GLE::SHADER_TAG_SKINNING )
+				stub = IO::ReadFileToString( (Core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/vertex_proccessing.skinning.vert.stub").c_str() );
+			else if ( t_shaderTag == GLE::SHADER_TAG_DEFAULT )
+				stub = IO::ReadFileToString( (Core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/vertex_proccessing.vert.stub").c_str() );
+			shader.insert(pos, stub);
+		}
+
+		string t_shaderNameVert = t_shaderName + ".vert";
+		IO::ClearFile( t_shaderNameVert.c_str() );
+		IO::AppendStringToFile( t_shaderNameVert.c_str(), shader.c_str() );
+	}
+
+	// ============================
+	// Build the pixel shader
+	{
+		string shader = IO::ReadFileToString( (Core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/surface_default.frag").c_str() );
+
+		string t_shaderNameFrag = t_shaderName+".frag";
+		IO::ClearFile( t_shaderNameFrag.c_str() );
+		IO::AppendStringToFile( t_shaderNameFrag.c_str(), shader.c_str() );
+	}
+
+	// ============================
+	// Build the vertex shader
+	/*{
 		arstring<256> prefix ( (Core::Resources::GetPrimaryResourcePath() + "shaders/def/").c_str() );
 		string t_shaderNameVert = t_shaderName+".vert";
 		IO::ClearFile( t_shaderNameVert.c_str() );
@@ -229,7 +272,7 @@ void glMaterial::deferred_shader_build( uchar pass )
 			}
 		}
 		IO::AppendStringToFile( t_shaderNameFrag.c_str(), "\n}" );
-	}
+	}*/
 
 	// Create the shader
 	dpass.shader = new glShader( t_shaderName+".glsl", t_shaderTag );
