@@ -28,11 +28,11 @@ namespace Engine2D
 		// Used to update the geometry generated for rendering.
 		ENGINE2D_API void			PostStepSynchronus ( void ) override;
 
+	public:
 		//		UpdateSpriteProperties()
 		// Pulls sprite info from the m_sprite object
 		ENGINE2D_API void			UpdateSpriteProperties ( void );
 
-	public:
 		//		GetSpriteRect()
 		// Pulls untransformed sprite rect, using the m_sprite object and taking into account origin.
 		ENGINE2D_API Rect			GetSpriteRect ( void );

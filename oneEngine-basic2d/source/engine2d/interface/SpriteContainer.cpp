@@ -113,26 +113,28 @@ void SpriteContainer::PostStepSynchronus ( void )
 	}
 
 	// Set the sprite information
-	modeldata->vertices[0].x = 0;
-	modeldata->vertices[0].y = 0;
+	Rect sprite_rect = GetSpriteRect();
+
+	modeldata->vertices[0].x = sprite_rect.pos.x;
+	modeldata->vertices[0].y = sprite_rect.pos.y;
 	modeldata->vertices[0].z = 0;
 	modeldata->vertices[0].u = 0.0F;
 	modeldata->vertices[0].v = 0.0F;
 
-	modeldata->vertices[1].x = (Real)m_spriteSize.x;
-	modeldata->vertices[1].y = 0;
+	modeldata->vertices[1].x = sprite_rect.pos.x + sprite_rect.size.x;
+	modeldata->vertices[1].y = sprite_rect.pos.y;
 	modeldata->vertices[1].z = 0;
 	modeldata->vertices[1].u = 1.0F;
 	modeldata->vertices[1].v = 0.0F;
 
-	modeldata->vertices[2].x = (Real)m_spriteSize.x;
-	modeldata->vertices[2].y = (Real)m_spriteSize.y;
+	modeldata->vertices[2].x = sprite_rect.pos.x + sprite_rect.size.x;
+	modeldata->vertices[2].y = sprite_rect.pos.y + sprite_rect.size.y;
 	modeldata->vertices[2].z = 0;
 	modeldata->vertices[2].u = 1.0F;
 	modeldata->vertices[2].v = 1.0F;
 
-	modeldata->vertices[3].x = 0;
-	modeldata->vertices[3].y = (Real)m_spriteSize.y;
+	modeldata->vertices[3].x = sprite_rect.pos.x;
+	modeldata->vertices[3].y = sprite_rect.pos.y + sprite_rect.size.y;
 	modeldata->vertices[3].z = 0;
 	modeldata->vertices[3].u = 0.0F;
 	modeldata->vertices[3].v = 1.0F;

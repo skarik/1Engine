@@ -41,6 +41,7 @@ EditorObject::EditorObject ( const char* object_name )
 			break;
 		case DISPLAY_2D_SPRITE:
 			m_sprite->SetSpriteFile( file_key );
+			m_spriteOrigin = m_sprite->GetSpriteInfo().fullsize / 2;
 			break;
 		case DISPLAY_3D_MODEL: // TODO someday
 			// m_model = new CSkinnedModel( file_key );
@@ -48,6 +49,7 @@ EditorObject::EditorObject ( const char* object_name )
 			break;
 		case DISPLAY_LIGHT:
 			m_sprite->SetSpriteFile( file_key );
+			m_spriteOrigin = m_sprite->GetSpriteInfo().fullsize / 2;
 			light = new CLight;
 			light->range = 128.0F;
 			break;

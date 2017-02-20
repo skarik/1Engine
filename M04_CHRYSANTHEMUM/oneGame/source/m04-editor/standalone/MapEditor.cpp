@@ -760,6 +760,9 @@ void MapEditor::doIOLoading ( void )
 
 	// Close file
 	fclose( fp );
+
+	// Do map finalization
+	m_tile_selector->SetTileMap(m_tilemap);
 }
 
 //		doNewMap () : delete all items in map, clear out tilemap
@@ -778,6 +781,7 @@ void MapEditor::doNewMap ( void )
 	}
 	// Delete all tiles
 	m_tilemap->m_tiles.clear();
+	m_tile_selector->SetTileMap(m_tilemap);
 
 	// Clear out selection
 	m_area_target = NULL;
