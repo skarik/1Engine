@@ -65,6 +65,8 @@ namespace M04
 		Engine2D::TileMap*		m_tilemap;
 		M04::MapInformation*	m_mapinfo;
 		bool					m_io_areas;
+		bool					m_io_objects_editor;
+		bool					m_io_objects_game;
 
 	public:
 
@@ -78,7 +80,8 @@ namespace M04
 
 	public:
 		MapIO ( void )
-			: m_file(NULL), m_tilemap(NULL), m_io_areas(false)
+			: m_file(NULL), m_tilemap(NULL),
+			m_io_areas(false), m_io_objects_editor(false), m_io_objects_game(false)
 		{
 			;
 		}

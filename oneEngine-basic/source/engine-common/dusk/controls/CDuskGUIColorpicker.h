@@ -9,7 +9,11 @@
 class CDuskGUIColorpicker : public CDuskGUIButton
 {
 public:
-	CDuskGUIColorpicker ( void ) : CDuskGUIButton(), inDialogueMode(false), homeRect(rect), hue(-1.0f), useMode(0) { ; }
+	CDuskGUIColorpicker ( void ) : 
+		CDuskGUIButton(), inDialogueMode(false),
+		homeRect(rect), hue(-1.0f), useMode(0),
+		colorDialogue(-1)
+	{ ; }
 
 	// Overridable update
 	void Update ( void );
@@ -23,6 +27,8 @@ public:
 	Color homeColorValue;
 
 	bool inDialogueMode;
+
+	Handle colorDialogue;
 
 	Rect homeRect;
 

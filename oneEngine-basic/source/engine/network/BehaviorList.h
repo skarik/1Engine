@@ -14,6 +14,67 @@
 
 class CGameBehavior;
 
+//===============================================================================================//
+// ENUMERATIONS
+//===============================================================================================//
+
+enum fieldtype_t : uint32_t
+{
+	// Default serialization mode. Automatically attempts to match data size and performs lossless compression.
+	FIELD_DEFAULT,
+
+	// Specific field for serializing Vector3's that represent positions.
+	// Only one FIELD_ROTATION is valid per object.
+	FIELD_POSITION,
+	// Specific field for serializing Vector4's or Quaternion's that represent rotation.
+	// Only one FIELD_ROTATION is valid per object.
+	FIELD_ROTATION,
+	// Specific field for serializing Vector3's that represent scaling.
+	// Only one FIELD_SCALE is valid per object.
+	FIELD_SCALE,
+	// Specific field for serializing Vector4's or Color's that represent main rendering color.
+	// Only one FIELD_COLOR is valid per object.
+	FIELD_COLOR,
+
+	FIELD_MATRIX3x3,
+	FIELD_MATRIX4x4,
+};
+
+enum valuetype_t : uint32_t
+{
+	VALUE_INVALID,
+
+	VALUE_INT32,
+
+	VALUE_FLOAT,
+	VALUE_FLOAT2,
+	VALUE_FLOAT3,
+	VALUE_FLOAT4,
+
+	VALUE_FLOAT3x3,
+	VALUE_FLOAT4x4,
+};
+
+enum fielddisplay_t : uint32_t
+{
+	DISPLAY_BOX,
+	DISPLAY_2D_SPRITE,
+	DISPLAY_3D_MODEL,
+	DISPLAY_LIGHT
+};
+
+enum metadataNamedKey_t : uint32_t
+{
+	METADATA_NONE				= 0,
+	METADATA_DISPLAY_MODE		= 1,
+	METADATA_DISPLAY_FILENAME	= 2,
+};
+
+
+//===============================================================================================//
+// CLASSES / FUNCTIONS
+//===============================================================================================//
+
 namespace Engine
 {
 	//===============================================================================================//
@@ -34,7 +95,7 @@ namespace Engine
 	{
 	public:
 		MetadataPData ( void* _source, size_t _size ) : source_size(_size), source(_source) {;}
-		size_t			source_size;
+		uint32_t		source_size;
 		void*			source;
 	};
 	template <typename VALUE_TYPE>
@@ -52,18 +113,25 @@ namespace Engine
 
 	// Pair type
 	typedef std::pair<arstring128,Metadata*> MetadataPair;
-	typedef std::pair<int,Metadata*> MetadataSpecialPair;
+	typedef std::pair<uint32_t,MetadataPData*> MetadataPointerPair;
+	typedef std::pair<uint32_t,valuetype_t> MetadataPointerTypePair;
+	typedef std::pair<uint32_t,fieldtype_t> MetadataPointerFieldPair;
+	typedef std::pair<uint32_t,arstring128> MetadataPointerNamePair;
+	typedef std::pair<int,Metadata*> MetadataNamedPair;
 	// Table type
 	class MetadataTable
 	{
 	public:
-		std::vector<MetadataPair>			data;
-		std::vector<MetadataSpecialPair>	sp_data;
+		std::vector<MetadataPointerPair>		data;
+		std::vector<MetadataPointerTypePair>	data_type;
+		std::vector<MetadataPointerFieldPair>	data_field;
+		std::vector<MetadataPointerNamePair>	data_name;
+		std::vector<MetadataNamedPair>	named_info;
 	public:
 		const Metadata* Get ( const char* const key ) const
 		{
 			for ( size_t i = 0; i < data.size(); ++i ) {
-				if ( data[i].first.compare(key) ) {
+				if ( data_name[i].second.compare(key) ) {
 					return data[i].second;
 				}
 			}
@@ -72,9 +140,9 @@ namespace Engine
 		template <int SPECIAL_LISTING_INDEX>
 		const Metadata* Get ( void ) const
 		{
-			for ( size_t i = 0; i < sp_data.size(); ++i ) {
-				if ( sp_data[i].first == SPECIAL_LISTING_INDEX ) {
-					return sp_data[i].second;
+			for ( size_t i = 0; i < named_info.size(); ++i ) {
+				if ( named_info[i].first == SPECIAL_LISTING_INDEX ) {
+					return named_info[i].second;
 				}
 			}
 			return NULL;
@@ -160,39 +228,13 @@ namespace Engine
 
 	};
 
-
 }
 
-//===============================================================================================//
-// ENUMERATIONS
-//===============================================================================================//
-
-enum fieldtype_t : uint32_t
+namespace Network
 {
-	FIELD_DEFAULT,
-	FIELD_POSITION,
-	FIELD_ROTATION,
-	FIELD_SCALE,
-	FIELD_COLOR,
+	ENGINE_API valuetype_t ValueTypeFromName ( const char* n_typename );
+}
 
-	FIELD_MATRIX3x3,
-	FIELD_MATRIX4x4,
-};
-
-enum fielddisplay_t : uint32_t
-{
-	DISPLAY_BOX,
-	DISPLAY_2D_SPRITE,
-	DISPLAY_3D_MODEL,
-	DISPLAY_LIGHT
-};
-
-enum metadataNamedKey_t : uint32_t
-{
-	METADATA_NONE				= 0,
-	METADATA_DISPLAY_MODE		= 1,
-	METADATA_DISPLAY_FILENAME	= 2,
-};
 
 //===============================================================================================//
 // MACROS
@@ -230,14 +272,17 @@ public: \
 //		DEFINE_VALUE
 // Defines a variable that is saved/loaded from disk
 #define DEFINE_VALUE(variable,type,classification) \
-	table->data.push_back(Engine::MetadataPair( #variable, new Engine::MetadataPValue<type>((type*)offsetof(CPP_CLASS, variable), sizeof(type)) ));
+	table->data.push_back(		Engine::MetadataPointerPair(	  (uint32_t)offsetof(CPP_CLASS, variable), new Engine::MetadataPValue<type>((type*)offsetof(CPP_CLASS, variable), sizeof(type)) )); \
+	table->data_type.push_back(	Engine::MetadataPointerTypePair(  (uint32_t)offsetof(CPP_CLASS, variable), Network::ValueTypeFromName( #type ) )); \
+	table->data_field.push_back(Engine::MetadataPointerFieldPair( (uint32_t)offsetof(CPP_CLASS, variable), classification )); \
+	table->data_name.push_back(	Engine::MetadataPointerNamePair(  (uint32_t)offsetof(CPP_CLASS, variable), #variable ));
 //		DEFINE_KEYVALUE
 // Defines a variable that is saved/loaded from disk and is visible in the editor
 #define DEFINE_KEYVALUE(variable,type)
 //		DEFINE_DISPLAY
 // Defines a display mode, as well as a display file
 #define DEFINE_DISPLAY(mode,file) \
-	table->sp_data.push_back(Engine::MetadataSpecialPair(METADATA_DISPLAY_MODE,new Engine::MetadataValue<fielddisplay_t>( mode ))); \
-	table->sp_data.push_back(Engine::MetadataSpecialPair(METADATA_DISPLAY_FILENAME,new Engine::MetadataValue<arstring128>( arstring128(file) )));
+	table->named_info.push_back(Engine::MetadataNamedPair(METADATA_DISPLAY_MODE,new Engine::MetadataValue<fielddisplay_t>( mode ))); \
+	table->named_info.push_back(Engine::MetadataNamedPair(METADATA_DISPLAY_FILENAME,new Engine::MetadataValue<arstring128>( arstring128(file) )));
 
 #endif//_BEHAVIOR_LIST_H_

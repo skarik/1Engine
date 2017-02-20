@@ -306,6 +306,9 @@
     <ClInclude Include="source\engine-common\types\ParticleEnums.h">
       <Filter>SOURCE\Engine-Common\Types</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogues</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -481,6 +484,9 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_LO.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogues</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

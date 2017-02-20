@@ -14,17 +14,17 @@ double saturate ( double f ) {
 
 CMath Math;
 
-ftype CMath::Smoothlerp ( ftype t )
+Real CMath::Smoothlerp ( Real t )
 {
 	t = Math.Clamp( t,0,1 );
 	return ( t * t * (3 - 2 * t) );
 }
 
-ftype CMath::Smoothlerp ( ftype t, ftype a, ftype b )
+Real CMath::Smoothlerp ( Real t, Real a, Real b )
 {
 	return Lerp( Smoothlerp(t), a,b );
 }
-ftype CMath::Lerp ( ftype t, ftype a, ftype b )
+Real CMath::Lerp ( Real t, Real a, Real b )
 {
 	if ( t < 0 )
 		return a;
@@ -34,14 +34,15 @@ ftype CMath::Lerp ( ftype t, ftype a, ftype b )
 		return ( a+t*(b-a) );
 }
 // Performs an unlimited linear interpolation
-ftype CMath::lerp ( ftype t, ftype a, ftype b )
+Real CMath::lerp ( Real t, Real a, Real b )
 {
 	return ( a+t*(b-a) );
 }
-ftype CMath::Clamp ( ftype val, ftype lower, ftype upper )
+Real CMath::Clamp ( Real val, Real lower, Real upper )
 {
-	if ( upper < lower ) {
-		ftype temp = upper;
+	if ( upper < lower )
+	{
+		Real temp = upper;
 		upper = lower;
 		lower = temp;
 	}
@@ -52,17 +53,20 @@ ftype CMath::Clamp ( ftype val, ftype lower, ftype upper )
 	else
 		return val;
 }
-ftype CMath::Wrap ( ftype val, ftype lower, ftype upper )
+Real CMath::Wrap ( Real val, Real lower, Real upper )
 {
-	if ( upper < lower ) {
-		ftype temp = upper;
+	if ( upper < lower )
+	{
+		Real temp = upper;
 		upper = lower;
 		lower = temp;
 	}
-	while ( val > upper ) {
+	while ( val > upper )
+	{
 		val -= upper-lower;
 	}
-	while ( val < lower ) {
+	while ( val < lower )
+	{
 		val += upper-lower;
 	}
 	return val;

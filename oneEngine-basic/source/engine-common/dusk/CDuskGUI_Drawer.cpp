@@ -1,6 +1,7 @@
 
 // Include Header
 #include "core/time.h"
+#include "core/math/Math.h"
 #include "renderer/material/glMaterial.h"
 #include "renderer/texture/CBitmapFont.h"
 #include "renderer/system/glMainSystem.h"
@@ -126,7 +127,18 @@ void CDuskGUI::SetDrawColor ( void )
 
 void CDuskGUI::drawRect ( const Rect& rect )
 {
-	GL_ACCESS GLd_ACCESS
+	GL_ACCESS GLd_ACCESS;
+
+	Rect draw_rect = rect;
+
+	// Modify input rect by the screen mode, if needed
+	if ( !bInPixelMode )
+	{
+		draw_rect.pos.x *= Screen::Info.width;
+		draw_rect.pos.y *= Screen::Info.height;
+		draw_rect.size.x *= Screen::Info.width;
+		draw_rect.size.y *= Screen::Info.height;
+	}
 
 	CModelVertex vert;
 	SetDrawColor();
@@ -138,33 +150,37 @@ void CDuskGUI::drawRect ( const Rect& rect )
 	vert.v = 0.1f;
 	vert.z = 0;
 
-	vert.x = rect.pos.x;
-	vert.y = rect.pos.y;
+	vert.x = draw_rect.pos.x;
+	vert.y = draw_rect.pos.y;
 	modelSolidMeshList.push_back( vert );
-	vert.x = rect.pos.x+rect.size.x;
-	vert.y = rect.pos.y;
+	vert.x = draw_rect.pos.x+draw_rect.size.x;
+	vert.y = draw_rect.pos.y;
 	modelSolidMeshList.push_back( vert );
-	vert.x = rect.pos.x;
-	vert.y = rect.pos.y+rect.size.y;
-	modelSolidMeshList.push_back( vert );
-
-	vert.x = rect.pos.x;
-	vert.y = rect.pos.y+rect.size.y;
-	modelSolidMeshList.push_back( vert );
-	vert.x = rect.pos.x+rect.size.x;
-	vert.y = rect.pos.y;
-	modelSolidMeshList.push_back( vert );
-	vert.x = rect.pos.x+rect.size.x;
-	vert.y = rect.pos.y+rect.size.y;
+	vert.x = draw_rect.pos.x;
+	vert.y = draw_rect.pos.y+draw_rect.size.y;
 	modelSolidMeshList.push_back( vert );
 
+	vert.x = draw_rect.pos.x;
+	vert.y = draw_rect.pos.y+draw_rect.size.y;
+	modelSolidMeshList.push_back( vert );
+	vert.x = draw_rect.pos.x+draw_rect.size.x;
+	vert.y = draw_rect.pos.y;
+	modelSolidMeshList.push_back( vert );
+	vert.x = draw_rect.pos.x+draw_rect.size.x;
+	vert.y = draw_rect.pos.y+draw_rect.size.y;
+	modelSolidMeshList.push_back( vert );
+
+	// Round values
+	for ( uint i = 0; i < modelSolidMeshList.size(); ++i )
+	{
+		modelSolidMeshList[i].x = (Real)Math.Round(modelSolidMeshList[i].x);
+		modelSolidMeshList[i].y = (Real)Math.Round(modelSolidMeshList[i].y);
+	}
+
+	// Render mesh
 	{
 		GL.prepareDraw();
-
-		if ( !bInPixelMode )
-			GL.beginOrtho( 0,0, 1,1, -45,45 );
-		else
-			GL.beginOrtho();
+		GL.beginOrtho();
 		GLd.DrawSet2DScaleMode();
 
 		matDefault->bindPass(0);
@@ -185,19 +201,32 @@ void CDuskGUI::drawRect ( const Rect& rect )
 }
 void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 {
-	GL_ACCESS GLd_ACCESS
+	GL_ACCESS GLd_ACCESS;
+
+	Rect draw_rect = rect;
+
+	// Modify input rect by the screen mode, if needed
+	if ( !bInPixelMode )
+	{
+		draw_rect.pos.x *= Screen::Info.width;
+		draw_rect.pos.y *= Screen::Info.height;
+		draw_rect.size.x *= Screen::Info.width;
+		draw_rect.size.y *= Screen::Info.height;
+	}
+	draw_rect.size.x -= 1.0F;
+	draw_rect.size.y -= 1.0F;
 
 	CModelVertex vert;
 	SetDrawColor();
 	if ( focused ) {
-		m_drawcolor.red *= 1.1f;
-		m_drawcolor.green *= 1.1f;
-		m_drawcolor.blue *= 1.1f;
+		m_drawcolor.red *= 1.61F;
+		m_drawcolor.green *= 1.61F;
+		m_drawcolor.blue *= 1.61F;
 	}
 	else {
-		m_drawcolor.red *= 0.6f;
-		m_drawcolor.green *= 0.6f;
-		m_drawcolor.blue *= 0.6f;
+		m_drawcolor.red /= 1.61F * 1.61F;
+		m_drawcolor.green /= 1.61F * 1.61F;
+		m_drawcolor.blue /= 1.61F * 1.61F;
 	}
 	vert.r = m_drawcolor.red;
 	vert.g = m_drawcolor.green;
@@ -207,41 +236,45 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 	vert.v = 0.1f;
 	vert.z = 0;
 
-	vert.x = rect.pos.x;
-	vert.y = rect.pos.y;
+	vert.x = draw_rect.pos.x;
+	vert.y = draw_rect.pos.y;
 	modelLineMeshList.push_back( vert );
-	vert.x = rect.pos.x+rect.size.x;
-	vert.y = rect.pos.y;
-	modelLineMeshList.push_back( vert );
-
-	vert.x = rect.pos.x+rect.size.x;
-	vert.y = rect.pos.y;
-	modelLineMeshList.push_back( vert );
-	vert.x = rect.pos.x+rect.size.x;
-	vert.y = rect.pos.y+rect.size.y;
+	vert.x = draw_rect.pos.x + draw_rect.size.x;
+	vert.y = draw_rect.pos.y;
 	modelLineMeshList.push_back( vert );
 
-	vert.x = rect.pos.x+rect.size.x;
-	vert.y = rect.pos.y+rect.size.y;
+	vert.x = draw_rect.pos.x + draw_rect.size.x;
+	vert.y = draw_rect.pos.y;
 	modelLineMeshList.push_back( vert );
-	vert.x = rect.pos.x;
-	vert.y = rect.pos.y+rect.size.y;
-	modelLineMeshList.push_back( vert );
-
-	vert.x = rect.pos.x;
-	vert.y = rect.pos.y+rect.size.y;
-	modelLineMeshList.push_back( vert );
-	vert.x = rect.pos.x;
-	vert.y = rect.pos.y;
+	vert.x = draw_rect.pos.x + draw_rect.size.x;
+	vert.y = draw_rect.pos.y + draw_rect.size.y;
 	modelLineMeshList.push_back( vert );
 
+	vert.x = draw_rect.pos.x + draw_rect.size.x;
+	vert.y = draw_rect.pos.y + draw_rect.size.y;
+	modelLineMeshList.push_back( vert );
+	vert.x = draw_rect.pos.x;
+	vert.y = draw_rect.pos.y + draw_rect.size.y;
+	modelLineMeshList.push_back( vert );
+
+	vert.x = draw_rect.pos.x;
+	vert.y = draw_rect.pos.y + draw_rect.size.y;
+	modelLineMeshList.push_back( vert );
+	vert.x = draw_rect.pos.x;
+	vert.y = draw_rect.pos.y + Math.sgn(draw_rect.size.y);
+	modelLineMeshList.push_back( vert );
+
+	// Round values
+	for ( uint i = 0; i < modelLineMeshList.size(); ++i )
+	{
+		modelLineMeshList[i].x = (Real)Math.Round(modelLineMeshList[i].x);
+		modelLineMeshList[i].y = (Real)Math.Round(modelLineMeshList[i].y);
+	}
+
+	// Render mesh
 	{
 		GL.prepareDraw();
-
-		if ( !bInPixelMode )
-			GL.beginOrtho( 0,0, 1,1, -45,45 );
-		else
-			GL.beginOrtho();
+		GL.beginOrtho();
 		GLd.DrawSet2DScaleMode();
 
 		matDefault->bindPass(0);
@@ -280,6 +313,19 @@ void CDuskGUI::drawLine ( const ftype x1, const ftype y1, const ftype x2, const 
 	vert.y = y2;
 	modelLineMeshList.push_back( vert );
 
+	// Round values
+	for ( uint i = 0; i < modelLineMeshList.size(); ++i )
+	{
+		if ( !bInPixelMode )
+		{
+			modelLineMeshList[i].x *= Screen::Info.width;
+			modelLineMeshList[i].y *= Screen::Info.height;
+		}
+		modelLineMeshList[i].x = (Real)Math.Round(modelLineMeshList[i].x);
+		modelLineMeshList[i].y = (Real)Math.Round(modelLineMeshList[i].y);
+	}
+
+	// Render mesh
 	{
 		GL.prepareDraw();
 

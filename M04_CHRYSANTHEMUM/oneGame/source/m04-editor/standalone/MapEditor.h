@@ -23,6 +23,7 @@ namespace M04
 	class TileSelector;
 	class ObjectEditorListing;
 	class UIDragHandle;
+	class UILightHandle;
 	class GizmoRenderer;
 	class EditorObject;
 }
@@ -90,6 +91,8 @@ namespace M04
 		//		doObjectEditing () : actor editing
 		// do actor selection, moving, deleting, and such
 		void		doObjectEditing ( void );
+		void		_doObjectEditingSub_GizmoEnable ( void );
+		void		_doObjectEditingSub_GizmoDisable ( void );
 
 		//		doMapResize () : resize the map
 		// using the size given in m_mapinfo structure, change the map size.
@@ -154,6 +157,7 @@ namespace M04
 
 		ObjectEditorListing*	m_listing;
 		UIDragHandle*			m_drag_handle;
+		UILightHandle*			m_light_handle;
 
 		M04::MapInformation*	m_mapinfo;
 		Engine2D::TileMap*		m_tilemap;

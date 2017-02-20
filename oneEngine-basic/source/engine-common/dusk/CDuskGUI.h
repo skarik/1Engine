@@ -64,6 +64,7 @@ class CDuskGUIEdgePanel;
 namespace Dusk
 {
 	class DialogueFileSelector;
+	class DialogueColorpicker;
 }
 
 // Class Definition
@@ -103,6 +104,7 @@ private:
 	friend CDuskGUISlider;
 	friend CDuskGUIEdgePanel;
 	friend Dusk::DialogueFileSelector;
+	friend Dusk::DialogueColorpicker;
 public:
 	// Constructor+Destructor
 	ENGCOM_API CDuskGUI ( void );
@@ -227,6 +229,7 @@ public:
 	// Color picker updating
 	ENGCOM_API void UpdateColorPicker ( const Handle&, Color & inOutColorVal );
 	ENGCOM_API void SetColorPicker ( const Handle &, Color & inColorVal );
+	ENGCOM_API void GetColorPicker ( const Handle &, Color & outColorVal );
 	ENGCOM_API bool ColorPickerInDialogue ( const Handle & );
 	// Floatfield updating
 	ENGCOM_API void UpdateFloatfield ( const Handle&, float & inOutFloatVal );
@@ -251,6 +254,11 @@ public:
 	ENGCOM_API bool SaveDialogueHasSelection ( const Handle& handleOverride=-1 );
 	ENGCOM_API bool GetOpenFilename ( char* nOutFilename, const Handle& handleOverride=-1 );
 	ENGCOM_API bool GetSaveFilename ( char* nOutFilename, const Handle& handleOverride=-1 );
+
+	// Item Dialogues
+	ENGCOM_API Handle DialogueOpenColorpicker ( const Color& n_initialColor, const char* nDialogueTitle );
+	ENGCOM_API bool ColorpickerDialogueHasSelection ( const Handle& handleOverride=-1 );
+	ENGCOM_API bool GetColorpickerValue ( Color* n_outColor, const Handle& handleOverride=-1 );
 
 	// Destroying elements
 	void DeleteElement ( const Handle & );

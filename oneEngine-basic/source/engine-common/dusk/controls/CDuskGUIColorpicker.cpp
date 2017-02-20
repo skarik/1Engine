@@ -2,6 +2,7 @@
 // Include stuph
 #include "../CDuskGUI.h"
 #include "CDuskGUIColorpicker.h"
+#include "../dialogues/DGUI_DialogueColorpicker.h"
 #include "core/system/Screen.h" // Include screen properties
 #include "renderer/material/glMaterial.h"
 #include "renderer/texture/CBitmapFont.h"
@@ -28,12 +29,7 @@ void CDuskGUIColorpicker::Update ( void )
 	if ( hue < 0 )
 	{
 		// compute hue
-		//ftype alpha, beta, chroma;
 		ftype chroma;
-		/*alpha = (colorValue.red*2 - colorValue.green - colorValue.blue) * 0.5f;
-		beta  = (ftype)sqrt(3.0f)*0.5f*( colorValue.green - colorValue.blue );
-		hue = (ftype)radtodeg( atan2( beta, alpha ) );
-		chroma = (ftype)sqrt( sqr(alpha) + sqr(beta) );*/
 
 		// compute lightness
 		ftype fmax, fmin;
@@ -60,15 +56,10 @@ void CDuskGUIColorpicker::Update ( void )
 			saturation = chroma/(1-fabs(2*lightness-1));
 		else
 			saturation = 0;
-
-		///cout << " h: " << hue << " l: " << lightness << " s: " << saturation << endl;
 	}
 
 	if ( (!visible) || (!drawn) )
 		return;
-
-	// Change label to show alpha
-	label = "Alpha: " + std::to_string( colorValue.alpha );
 
 	// Update color
 	lastColorValue = colorValue;
@@ -76,17 +67,26 @@ void CDuskGUIColorpicker::Update ( void )
 	{
 		// Button state
 		homeRect = rect;
-		if ( isPressed )
+		if ( colorDialogue == -1 && isPressed )
 		{
-			inDialogueMode = true;
-			rect = Rect( 0.2f, 0.5f, 0.4f, 0.4f );
-			activeGUI->hCurrentDialogue = activeGUI->hCurrentElement;
+			// Create dialogue...
+			colorDialogue = activeGUI->DialogueOpenColorpicker(colorValue, "Select Color");
+			Dusk::DialogueColorpicker* colorpicker = (Dusk::DialogueColorpicker*)*colorDialogue;
+			colorpicker->m_sourcePicker = activeGUI->hCurrentElement;
 		}
+		if ( colorDialogue != -1 && colorDialogue->m_type == 41 )
+		{
+			if (activeGUI->GetColorpickerValue( &colorValue, colorDialogue ))
+			{	// Returns true when closing
+				colorDialogue = -1;
+			}
+		}
+
 		homeColorValue = colorValue;
 
 		useMode = 0;
 	}
-	else
+	/*else
 	{
 		// Color picking state
 		activeGUI->hCurrentDialogue = activeGUI->hCurrentElement;
@@ -154,8 +154,6 @@ void CDuskGUIColorpicker::Update ( void )
 						 ( cursor_pos.x > rect.pos.x+rect.size.x*0.82f )&&( cursor_pos.x < rect.pos.x+rect.size.x*0.88f )
 					   &&( cursor_pos.y > rect.pos.y+rect.size.y*0.05f )&&( cursor_pos.y < rect.pos.y+rect.size.y*0.95f )))
 				{
-					/*rect.pos.x+rect.size.x*0.82f,rect.pos.y+rect.size.y*0.05f,rect.size.x*0.06f,rect.size.y*0.9f 
-					*/
 					if ( useMode == MODE_OFF ) {
 						useMode = MODE_ALPHA;
 					}
@@ -219,7 +217,7 @@ void CDuskGUIColorpicker::Update ( void )
 				lastColorValue = homeColorValue;
 			}
 		}
-	}
+	}*/
 }
 
 void CDuskGUIColorpicker::Render ( void )
@@ -228,13 +226,9 @@ void CDuskGUIColorpicker::Render ( void )
 
 	Rect temp = rect;
 	rect = homeRect;
-		/*activeGUI->matDefault->bind();
-			glColor4f( colorValue.red,colorValue.green,colorValue.blue,colorValue.alpha );
-			GLd.DrawSet2DMode( GL.D2D_FLAT );
-			GLd.DrawRectangleA( rect.pos.x, rect.pos.y, rect.size.x, rect.size.y );
-		activeGUI->matDefault->unbind();*/
+
+		// Draw the background
 		{
-			// Material binding
 			if ( mouseIn )
 			{
 				if ( beginPress )
@@ -247,32 +241,41 @@ void CDuskGUIColorpicker::Render ( void )
 				setDrawDefault();
 			}
 
-			// Begin draw/ material
-			drawRectWire( rect );
+			// Draw background
 			drawRect( rect );
+			// Draw background outline
+			drawRectWire( rect );
 		}
 
+		// Draw the rect showing current color
 		setDrawDefault();
-		setSubdrawOverrideColor( Color(colorValue.red,colorValue.green,colorValue.blue,1.0) );
+		setSubdrawOverrideColor( Color(colorValue.red, colorValue.green, colorValue.blue, 1.0) );
 		drawRect( rect );
-		//CDuskGUIButton::Render();
-		setDrawDefault();
-		setSubdrawDefault();
-		drawRectWire( rect );
+		// Draw a rectangle for the current alpha value
+		setSubdrawOverrideColor( Color(0.0, 0.0, 0.0, 1.0) );
+		drawRect( Rect(rect.pos.x, rect.pos.y + rect.size.y * 0.9F, rect.size.x, rect.size.y * 0.1F) );
+		setSubdrawOverrideColor( Color(1.0, 1.0, 1.0, 1.0) );
+		drawRect( Rect(rect.pos.x, rect.pos.y + rect.size.y * 0.9F, rect.size.x * colorValue.alpha, rect.size.y * 0.1F) );
 
+		// Draw the border
 		{
-			if ( lightness > 0.35f )
-				GLd.P_PushColor( 0.0f,0.0f,0.0f,1.0f );
+			if ( mouseIn )
+			{
+				if ( beginPress )
+					setDrawDown();
+				else
+					setDrawHover();
+			}
 			else
-				GLd.P_PushColor( 1.0f,1.0f,1.0f,1.0f );
-			// Now draw text
-			drawText( rect.pos.x + rect.size.x*0.1f, rect.pos.y + rect.size.y*0.1f  + 0.02f, label.c_str() );
+			{
+				setDrawDefault();
+			}
+			setSubdrawDefault();
+
+			// Draw outline
+			drawRectWire( rect );
 		}
-		/*activeGUI->matDefault->bind();
-			glColor4f( colorValue.red,colorValue.green,colorValue.blue,1.0f );
-			GLd.DrawSet2DMode( GL.D2D_WIRE );
-			GLd.DrawRectangleA( rect.pos.x, rect.pos.y, rect.size.x, rect.size.y );
-		activeGUI->matDefault->unbind();*/
+
 	rect = temp;
 
 	if ( inDialogueMode )

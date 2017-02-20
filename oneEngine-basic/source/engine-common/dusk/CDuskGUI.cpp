@@ -751,6 +751,11 @@ void CDuskGUI::SetColorPicker ( const Handle & handle, Color & inColorVal )
 	CDuskGUIColorpicker* cp = (CDuskGUIColorpicker*)vElements[int(handle)];
 	cp->SetColor( inColorVal );
 }
+void CDuskGUI::GetColorPicker ( const Handle & handle, Color & outColorVal )
+{
+	CDuskGUIColorpicker* cp = (CDuskGUIColorpicker*)vElements[int(handle)];
+	outColorVal = cp->colorValue;
+}
 bool CDuskGUI::ColorPickerInDialogue ( const Handle & handle )
 {
 	CDuskGUIColorpicker* cp = (CDuskGUIColorpicker*)vElements[int(handle)];

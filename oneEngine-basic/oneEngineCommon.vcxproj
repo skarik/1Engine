@@ -75,6 +75,7 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUITextfield.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIVector2dPicker.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.h" />
+    <ClInclude Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.h" />
     <ClInclude Include="source\engine-common\dusk\dialogues\DGUI_DialogueFileSelector.h" />
     <ClInclude Include="source\engine-common\engine-common-console.h" />
     <ClInclude Include="source\engine-common\engine-common-scenes.h" />
@@ -147,6 +148,7 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUISlider.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUITextfield.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.cpp" />
+    <ClCompile Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.cpp" />
     <ClCompile Include="source\engine-common\dusk\dialogues\DGUI_DialogueFileSelector.cpp" />
     <ClCompile Include="source\engine-common\engine-common-console.cpp" />
     <ClCompile Include="source\engine-common\engine-common.cpp" />

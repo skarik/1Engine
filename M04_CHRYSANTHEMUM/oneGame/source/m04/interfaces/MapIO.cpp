@@ -10,6 +10,7 @@
 #include "engine2d/entities/AreaPlayerSpawn.h"
 
 #include "m04/states/MapInformation.h"
+#include "m04-editor/standalone/mapeditor/EditorObject.h"
 
 //		Save ( )
 // Saves data to the file, using anything that's not null
@@ -95,6 +96,44 @@ void M04::MapIO::Save ( void )
 			{
 				fwrite( ((Engine2D::AreaTrigger*)area)->m_target_actor_type, 128, 1, m_file );
 				fwrite( ((Engine2D::AreaTrigger*)area)->m_target_actor_name, 128, 1, m_file );
+			}
+		}
+	}
+
+	// Write object information
+	if ( m_io_objects_editor )
+	{
+		for ( auto object : M04::EditorObject::Objects() )
+		{
+			// Force object update
+			object->WorldToMetadata();
+
+			// Write the topper
+			mapio_section_start_t topper;
+			strcpy( topper.name, "object" );
+
+			// Loop through the metadata table to get the required storage
+			topper.size = 128;
+			for ( auto metadatap : object->m_object->GetMetadata()->data )
+			{
+				topper.size += sizeof(uint32_t) * 2;
+				topper.size += ((Engine::MetadataPData*)metadatap.second)->source_size;
+			}
+
+			fwrite( &topper, sizeof(mapio_section_start_t), 1, m_file );
+
+			// Write out the information
+			fwrite( object->m_object_name.c_str(), 128, 1, m_file );
+			for ( auto metadatap : object->m_object->GetMetadata()->data )
+			{
+				Engine::MetadataPData* pdata = (Engine::MetadataPData*)metadatap.second;
+
+				// Write offset
+				fwrite( &metadatap.first, sizeof(uint32_t), 1, m_file );
+				// Write size
+				fwrite( &pdata->source_size, sizeof(uint32_t), 1, m_file );
+				// Write data
+				fwrite( object->m_data_storage_buffer + (size_t)pdata->source, pdata->source_size, 1, m_file );
 			}
 		}
 	}
@@ -233,6 +272,37 @@ void M04::MapIO::Load ( void )
 				size_t offset = 128 + sizeof(Rect);
 				memcpy( &((Engine2D::AreaTrigger*)area)->m_target_actor_type, buffer+offset, 128 ); offset += 128;
 				memcpy( &((Engine2D::AreaTrigger*)area)->m_target_actor_name, buffer+offset, 128 );
+			}
+		}
+		// Check for object structures
+		if ( strcmp( topper.name, "object" ) == 0 )
+		{
+			if ( m_io_objects_editor )
+			{
+				arstring128 object_type_name;
+				memcpy( (void*)object_type_name.c_str(), buffer, 128 );
+
+				// Instiantiate the object
+				EditorObject* object = new EditorObject(object_type_name.c_str());
+
+				// Pull in the key-value data hell
+				size_t offset = 128;
+				while ( offset < topper.size )
+				{
+					uint32_t kv_offset, kv_size;
+					memcpy( &kv_offset, buffer + offset, sizeof(uint32_t) );
+					offset += sizeof(uint32_t);
+					memcpy( &kv_size, buffer + offset, sizeof(uint32_t) );
+					offset += sizeof(uint32_t);
+					memcpy( object->m_data_storage_buffer + kv_offset, buffer + offset, kv_size );
+					// Go to the next triplet
+					offset += kv_size;
+				}
+
+				// Force update
+				object->MetadataToWorld();
+				// No longer need to track the object here
+				object->RemoveReference();
 			}
 		}
 

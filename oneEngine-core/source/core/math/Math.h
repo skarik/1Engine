@@ -17,16 +17,16 @@
 class CMath
 {
 public:
-	ftype Smoothlerp ( ftype t );
-	ftype Smoothlerp ( ftype t, ftype a, ftype b );
+	Real Smoothlerp ( Real t );
+	Real Smoothlerp ( Real t, Real a, Real b );
 
 	// Performs a limited linear interpolation
-	ftype Lerp ( ftype t, ftype a, ftype b );
+	Real Lerp ( Real t, Real a, Real b );
 	// Performs an unlimited linear interpolation
-	ftype lerp ( ftype t, ftype a, ftype b );
+	Real lerp ( Real t, Real a, Real b );
 
-	ftype Clamp ( ftype val, ftype lower, ftype upper );
-	ftype Wrap ( ftype val, ftype lower, ftype upper );
+	Real Clamp ( Real val, Real lower, Real upper );
+	Real Wrap ( Real val, Real lower, Real upper );
 
 	// pointsOnSphere ( int NumberOfPoints )
 	// Generates a list of equidistant points on a sphere. Usable for explosive ideas.

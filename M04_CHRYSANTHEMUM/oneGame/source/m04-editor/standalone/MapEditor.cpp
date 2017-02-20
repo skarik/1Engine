@@ -13,6 +13,7 @@
 #include "renderer/texture/CBitmapFont.h"
 #include "renderer/camera/CCamera.h"
 #include "renderer/debug/CDebugDrawer.h"
+#include "renderer/light/CLight.h"
 #include "render2d/camera/COrthoCamera.h"
 #include "render2d/object/Background2D.h"
 
@@ -29,6 +30,7 @@
 
 #include "m04-editor/standalone/mapeditor/ObjectEditorListing.h"
 #include "m04-editor/entities/UIDragHandle.h"
+#include "m04-editor/entities/UILightHandle.h"
 
 #include "m04-editor/standalone/mapeditor/EditorObject.h"
 
@@ -134,6 +136,7 @@ MapEditor::~MapEditor ( void )
 	
 	delete_safe(m_listing);
 	delete_safe_decrement(m_drag_handle);
+	delete_safe_decrement(m_light_handle);
 }
 
 //===============================================================================================//
@@ -147,7 +150,8 @@ void MapEditor::Update ( void )
 
 	// Update the editor
 	Dusk::Handle openDialogue = dusk->GetOpenDialogue();
-	if ( dusk->HasOpenDialogue() && openDialogue != ui_fld_area_type && openDialogue != ui_fld_object_type )
+	//if ( dusk->HasOpenDialogue() && openDialogue != ui_fld_area_type && openDialogue != ui_fld_object_type )
+	if ( dusk->HasOpenDialogue() && (openDialogue == ui_dg_save || openDialogue == ui_dg_load) )
 	{
 		// Close all modes for the dialogue system
 		m_current_mode = Mode::None;
@@ -206,11 +210,6 @@ void MapEditor::Update ( void )
 		if ( m_current_mode == Mode::Properties ) uiStepShitPanel();
 		if ( m_current_mode == Mode::AreaEdit ) uiStepAreaPanel();
 		if ( m_current_mode == Mode::ObjectEdit ) uiStepObjectPanel();
-		/*if ( m_current_mode == Mode::UtilityEdit ) {
-			if ( m_drag_handle == NULL ) {
-				m_drag_handle = new UIDragHandle();
-			}
-		}*/
 		if ( m_current_mode == Mode::Preferences ) uiStepPreferencesPanel();
 
 		// Update the lower status UI
@@ -227,6 +226,12 @@ void MapEditor::Update ( void )
 	ui_panel_area->visible = m_current_mode == Mode::AreaEdit;
 	ui_panel_object->visible = m_current_mode == Mode::ObjectEdit;
 	ui_panel_preferences->visible = m_current_mode == Mode::Preferences;
+
+	if ( m_current_mode != Mode::ObjectEdit )
+	{
+		_doObjectEditingSub_GizmoDisable();
+	}
+
 }
 
 //===============================================================================================//
@@ -569,6 +574,10 @@ void MapEditor::doObjectEditing ( void )
 			m_drag_handle = new UIDragHandle();
 			m_drag_handle->active = false;
 		}
+		if ( m_light_handle == NULL ) {
+			m_light_handle = new UILightHandle();
+			m_light_handle->active = false;
+		}
 
 		// Set tips for the gizmo renderer: Update UI glowing
 		m_gizmo_renderer->m_target_glow = t_object_selection;
@@ -584,29 +593,22 @@ void MapEditor::doObjectEditing ( void )
 				object->RemoveReference();
 				// Set UI
 				m_object_target = object;
-				m_drag_handle->active = true;
-				m_drag_handle->SetRenderPosition( m_object_target->position );
+				_doObjectEditingSub_GizmoEnable();
 			}
-			else if ( !m_drag_handle->HasFocus() )
+			else if ( !m_drag_handle->HasFocus() && !m_light_handle->HasFocus() )
 			{
 				// Select the object
 				m_object_target = t_object_selection;
 				// Set UI
-				if ( m_object_target != NULL )
-				{
-					m_drag_handle->active = true;
-					m_drag_handle->SetRenderPosition( m_object_target->position );
-				}
-				else
-				{
-					m_drag_handle->active = false;
-				}
+				_doObjectEditingSub_GizmoEnable();
 			}
 		}
-		// Update position based on transform gizmo
+		// Update properties based on the gizmo
 		if ( m_object_target != NULL )
 		{
+			// Transform gizmo:
 			m_object_target->position = m_drag_handle->GetGizmoPosition();
+			// Transform gizmo position snapping:
 			if ( m_drag_handle->HasFocus() && Input::Key( Keys.Alt ) )
 			{
 				// Set visual snapping
@@ -623,18 +625,61 @@ void MapEditor::doObjectEditing ( void )
 			{	// Reset snapping of tool
 				m_drag_handle->SetSnapping( Vector2d(0,0) );
 			}
+
+			// Light gizmo:
+			if ( m_object_target->light != NULL )
+			{
+				m_object_target->light->range = m_light_handle->GetRange();
+				m_object_target->light->falloff = m_light_handle->GetPower();
+				// Update gizmo position
+				m_light_handle->SetRenderPosition( m_object_target->position );
+			}
 		}
 		// Check for object deletion
 		if ( Input::Key( Keys.Delete ) )
 		{
 			if ( m_object_target != NULL )
 			{
+				_doObjectEditingSub_GizmoDisable();
+
 				delete m_object_target;
-				m_drag_handle->active = false;
 				m_object_target = NULL;
 			}
 		}
 	}
+}
+void MapEditor::_doObjectEditingSub_GizmoEnable ( void )
+{
+	if ( m_object_target != NULL )
+	{
+		// Enable transform gizmo
+		m_drag_handle->active = true;
+		m_drag_handle->SetRenderPosition( m_object_target->position );
+
+		// Enable light gizmo
+		if ( m_object_target->light != NULL )
+		{
+			m_light_handle->active = true;
+			m_light_handle->SetRenderPosition( m_object_target->position );
+			m_light_handle->SetRange( m_object_target->light->range );
+			m_light_handle->SetPower( m_object_target->light->falloff );
+		}
+		else
+		{
+			m_light_handle->active = false;
+		}
+	}
+	else
+	{
+		_doObjectEditingSub_GizmoDisable();
+	}
+}
+void MapEditor::_doObjectEditingSub_GizmoDisable ( void )
+{
+	if ( m_drag_handle != NULL )
+		m_drag_handle->active = false;
+	if ( m_light_handle != NULL )
+		m_light_handle->active = false;
 }
 
 //		doMapResize () : resize the map
@@ -680,6 +725,7 @@ void MapEditor::doIOSaving ( void )
 	io.m_mapinfo = m_mapinfo;
 	io.m_tilemap = m_tilemap;
 	io.m_io_areas = true;
+	io.m_io_objects_editor = true;
 
 	// save
 	io.Save();
@@ -707,6 +753,7 @@ void MapEditor::doIOLoading ( void )
 	io.m_mapinfo = m_mapinfo;
 	io.m_tilemap = m_tilemap;
 	io.m_io_areas = true;
+	io.m_io_objects_editor = true;
 
 	// load
 	io.Load();
@@ -918,7 +965,8 @@ void MapEditor::uiCreate ( void )
 
 		label = dusk->CreateText( panel, "Ambient Light" );
 		label.SetRect(Rect(20,250,0,0));
-		field = dusk->CreateTextfield( panel, "808080FF" );
+		//field = dusk->CreateTextfield( panel, "808080FF" );
+		field = dusk->CreateColorPicker( panel, Renderer::Settings.ambientColor );
 		field.SetRect(Rect(20,275,70,30) );
 		ui_fld_map_ambient_color = field;
 
@@ -1066,6 +1114,39 @@ void MapEditor::uiStepKeyboardShortcuts ( void )
 		{
 			doIOSaving();
 		}
+	}
+
+	if ( Input::Keydown( '1' ) )
+	{
+		m_current_mode = Mode::Properties;
+	}
+	if ( Input::Keydown( '2' ) )
+	{
+		m_current_mode = Mode::TileEdit;
+	}
+	if ( Input::Keydown( '3' ) )
+	{
+		m_current_mode = Mode::AreaEdit;
+	}
+	if ( Input::Keydown( '4' ) )
+	{
+		m_current_mode = Mode::ObjectEdit;
+	}
+	if ( Input::Keydown( '5' ) )
+	{
+		m_current_mode = Mode::ScriptEdit;
+	}
+	if ( Input::Keydown( '6' ) )
+	{
+		m_current_mode = Mode::UtilityEdit;
+	}
+	if ( Input::Keydown( '7' ) )
+	{
+		m_current_mode = Mode::Toolbox;
+	}
+	if ( Input::Keydown( '8' ) )
+	{
+		m_current_mode = Mode::Preferences;
 	}
 }
 
@@ -1218,9 +1299,6 @@ void MapEditor::uiStepShitPanel ( void )
 		dusk->GetTextfieldData( ui_fld_map_area, s_temp );
 		m_mapinfo->area_name = s_temp.c_str();
 
-		dusk->GetTextfieldData( ui_fld_map_ambient_color, s_temp );
-		m_mapinfo->env_ambientcolor = (uint32_t)std::stoul( s_temp, NULL, 16 );
-
 		// Apply new map options
 		doMapResize();
 	}
@@ -1228,6 +1306,12 @@ void MapEditor::uiStepShitPanel ( void )
 	if ( ui_btn_cancel_shit.GetButtonClicked() )
 	{	// Just reload all fields
 		uiDoShitRefresh();
+	}
+
+	// Do realtime changes:
+	{
+		dusk->GetColorPicker( ui_fld_map_ambient_color, Renderer::Settings.ambientColor );
+		m_mapinfo->env_ambientcolor = Renderer::Settings.ambientColor.GetCode();
 	}
 }
 //		uiDoShitRefresh () : S.H.I.T. panel reinit

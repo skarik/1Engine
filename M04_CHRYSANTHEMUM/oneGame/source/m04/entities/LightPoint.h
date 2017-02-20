@@ -8,9 +8,9 @@
 
 namespace M04
 {
-	//		TestEntityBasic
-	// Testing basic 2D functionality
-	class LightPoint : public CGameBehavior//, public Engine2D::SpriteContainer
+	//		LightPoint
+	// Basic engine-serialized light object
+	class LightPoint : public CGameBehavior
 	{
 	public:
 		explicit		LightPoint ( void );
@@ -20,15 +20,15 @@ namespace M04
 	protected:
 		Vector3d position;
 		float range;
-		float intensity;
+		float power;
 		Color color;
 
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::LightPoint);
 			DEFINE_DISPLAY(DISPLAY_LIGHT,"sprites/editor/lightbulb.png");
 			DEFINE_VALUE(position,Vector3d,FIELD_POSITION);
-			DEFINE_VALUE(range,float,FIELD_DEFAULT);	
-			DEFINE_VALUE(intensity,float,FIELD_DEFAULT);
+			DEFINE_VALUE(range,float,FIELD_DEFAULT);
+			DEFINE_VALUE(power,float,FIELD_DEFAULT);
 			DEFINE_VALUE(color,Color,FIELD_COLOR);	
 		END_OBJECT_DESC();
 	};

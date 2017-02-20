@@ -34,12 +34,16 @@ public:
 	// Equal comparison overload
 	FORCE_INLINE bool operator== (Color const& right) const;
 	//Not equal comparison overload
-	FORCE_INLINE bool operator!= (Color const& right) const;				
+	FORCE_INLINE bool operator!= (Color const& right) const;
 
-	//Return the address of the color red as a pointer
+	// Return the address of the color red as a pointer
 	FORCE_INLINE const Real* start_point (void) const;
-	//Return the address of the color red as a pointer
+	// Return the address of the color red as a pointer
 	FORCE_INLINE Real* start_point (void);
+	// Access via array
+	FORCE_INLINE Real& operator[] ( const int );
+	// Const access via array
+	FORCE_INLINE const Real& operator[] ( const int ) const;
 
 	//===============================================================================================//
 	// HSL + INT Conversion
@@ -192,6 +196,17 @@ FORCE_INLINE const Real* Color::start_point (void) const
 FORCE_INLINE Real* Color::start_point (void)
 {
 	return &red;
+}
+
+// Access via array
+FORCE_INLINE Real& Color::operator[] ( const int a )
+{
+	return *(&red + a);
+}
+// Const access via array
+FORCE_INLINE const Real& Color::operator[] ( const int a ) const
+{
+	return *(&red + a);
 }
 
 //===============================================================================================//
