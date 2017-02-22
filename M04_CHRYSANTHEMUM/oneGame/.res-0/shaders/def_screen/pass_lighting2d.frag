@@ -157,7 +157,7 @@ vec3 defaultLighting ( vec4 lightPosition, vec4 lightProperties, vec4 lightColor
     diffuseLightO = max(0.0, min(1.0, diffuseLightO * 200.0)) * 0.5;
 #endif
 
-	resultColor = vec3(1,1,1) * diffuseLightO;
+	resultColor = vec3(1,1,1) * diffuseLightO * lightColor.rgb;
 
 	return resultColor;
 }
@@ -454,13 +454,14 @@ void main ( void )
 #ifdef DEBUG_OUTPUT
 	// 4X Debug Output
     if ( v2f_texcoord0.x < 0.5 && v2f_texcoord0.y < 0.5 ) {
-		FragColor = texture( textureSampler0, v2f_texcoord0*2 );
+		FragColor = clamp( texture( textureSampler0, v2f_texcoord0*2 ) * vec4(1.0, 8.0, 1.0, 1.0), 0.0, 1.0 );
 	}
 	else if ( v2f_texcoord0.x > 0.5 && v2f_texcoord0.y < 0.5 ) {
 		FragColor = (texture( textureSampler1, v2f_texcoord0*2 - vec2(1,0) )+1)*0.5;
 	}
 	else if ( v2f_texcoord0.x < 0.5 && v2f_texcoord0.y > 0.5 ) {
-		FragColor = texture( textureSampler2, v2f_texcoord0*2 - vec2(0,1) );
+        //FragColor = texture( textureSampler2, v2f_texcoord0*2 - vec2(0,1) );
+		FragColor = vec4( texture( textureSampler5, v2f_texcoord0*2 - vec2(0,1) ).rgb, 1.0 );
 	}
 	else if ( v2f_texcoord0.x > 0.5 && v2f_texcoord0.y > 0.5 ) {
 		FragColor = texture( textureSampler3, v2f_texcoord0*2 - vec2(1,1) );

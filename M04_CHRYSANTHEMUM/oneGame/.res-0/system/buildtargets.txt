@@ -1,5 +1,5 @@
 // Classic bottle
-bottle "D:/Project/EHS/M04-Builds/Bottle"
+bottle "A:/Projects/EHS/M04-Builds/Bottle"
 {
 	mode copy
 	rebuild images

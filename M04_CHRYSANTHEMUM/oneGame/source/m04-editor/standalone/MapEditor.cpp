@@ -161,7 +161,7 @@ void MapEditor::Update ( void )
 	}
 	else
 	{
-		if ( !dusk->GetMouseInGUI() )
+		if ( !dusk->GetMouseInGUI() && !dusk->HasOpenDialogue() )
 		{
 			// Enable navigation events
 			m_preclude_navigation = false;
@@ -601,6 +601,7 @@ void MapEditor::doObjectEditing ( void )
 				m_object_target = t_object_selection;
 				// Set UI
 				_doObjectEditingSub_GizmoEnable();
+				_uiStepObjectPanelSub_ClearProperties();
 			}
 		}
 		// Update properties based on the gizmo
@@ -1062,6 +1063,11 @@ void MapEditor::uiCreate ( void )
 				dusk->AddDropdownOption( field, entry->name.c_str(), ++i );
 		}
 		ui_fld_object_type = field;
+
+		// Create labels
+		label = dusk->CreateText( panel, "PROPERTIES" );
+		label.SetRect(Rect(11,181,0,0));
+		ui_lbl_object_properties = label;
 	}
 
 
@@ -1105,52 +1111,62 @@ void MapEditor::uiCreate ( void )
 // handles keyboard inputs (shortcuts) to do things fast
 void MapEditor::uiStepKeyboardShortcuts ( void )
 {
-	if ( Input::Key( Keys.Control ) && Input::Keydown( 'S' ) )
+	if ( Input::Key( Keys.Control ) )
 	{
-		if ( m_current_savetarget.empty() )
+		if ( Input::Keydown( 'S' ) )
+		{
+			if ( m_current_savetarget.empty() )
+			{
+				System::sFileDialogueEntry filetypes [1];
+				strcpy( filetypes[0].extension, "m04" );
+				strcpy( filetypes[0].filetype, "OneEngine M04 Map" );
+				ui_dg_save = dusk->DialogueSaveFilename(filetypes,1,"./.res-0/");
+			}
+			else
+			{
+				doIOSaving();
+			}
+		}
+		if ( Input::Keydown( 'O' ) )
 		{
 			System::sFileDialogueEntry filetypes [1];
 			strcpy( filetypes[0].extension, "m04" );
 			strcpy( filetypes[0].filetype, "OneEngine M04 Map" );
-			ui_dg_save = dusk->DialogueSaveFilename(filetypes,1,"./.res-0/");
+			ui_dg_load = dusk->DialogueOpenFilename(filetypes,1,"./.res-0/");
 		}
-		else
-		{
-			doIOSaving();
-		}
-	}
 
-	if ( Input::Keydown( '1' ) )
-	{
-		m_current_mode = Mode::Properties;
-	}
-	if ( Input::Keydown( '2' ) )
-	{
-		m_current_mode = Mode::TileEdit;
-	}
-	if ( Input::Keydown( '3' ) )
-	{
-		m_current_mode = Mode::AreaEdit;
-	}
-	if ( Input::Keydown( '4' ) )
-	{
-		m_current_mode = Mode::ObjectEdit;
-	}
-	if ( Input::Keydown( '5' ) )
-	{
-		m_current_mode = Mode::ScriptEdit;
-	}
-	if ( Input::Keydown( '6' ) )
-	{
-		m_current_mode = Mode::UtilityEdit;
-	}
-	if ( Input::Keydown( '7' ) )
-	{
-		m_current_mode = Mode::Toolbox;
-	}
-	if ( Input::Keydown( '8' ) )
-	{
-		m_current_mode = Mode::Preferences;
+		if ( Input::Keydown( '1' ) )
+		{
+			m_current_mode = Mode::Properties;
+		}
+		if ( Input::Keydown( '2' ) )
+		{
+			m_current_mode = Mode::TileEdit;
+		}
+		if ( Input::Keydown( '3' ) )
+		{
+			m_current_mode = Mode::AreaEdit;
+		}
+		if ( Input::Keydown( '4' ) )
+		{
+			m_current_mode = Mode::ObjectEdit;
+		}
+		if ( Input::Keydown( '5' ) )
+		{
+			m_current_mode = Mode::ScriptEdit;
+		}
+		if ( Input::Keydown( '6' ) )
+		{
+			m_current_mode = Mode::UtilityEdit;
+		}
+		if ( Input::Keydown( '7' ) )
+		{
+			m_current_mode = Mode::Toolbox;
+		}
+		if ( Input::Keydown( '8' ) )
+		{
+			m_current_mode = Mode::Preferences;
+		}
 	}
 }
 
@@ -1397,9 +1413,153 @@ void MapEditor::uiStepObjectPanel ( void )
 	}
 	else
 	{
+		if ( m_object_target == NULL )
+		{
+			ui_lbl_object_properties.SetVisible( false );
+			_uiStepObjectPanelSub_ClearProperties();
+		}
+		else
+		{
+			ui_lbl_object_properties.SetVisible( true );
 
+			// Get the object's metadata
+			const Engine::MetadataTable* metadata = m_object_target->m_object->GetMetadata();
+			// Generate the UI for the object's editable properties
+			if ( ui_lbl_object_keys.empty() )
+			{
+				// Force update on its metadata
+				m_object_target->WorldToMetadata();
+
+				Dusk::Handle panel = ui_panel_object;
+				Dusk::Handle label, field;
+
+				for ( uint i = 0; i < metadata->data.size(); ++i )
+				{
+					char* target_data = m_object_target->m_data_storage_buffer + metadata->data[i].first;
+
+					// Create label for the data
+					label = dusk->CreateText( panel, metadata->data_name[i].second.c_str() );
+					label.SetRect(Rect(20.0F, 200.0F + i * 50.0F,0,0));
+					// Create field for the data
+					switch (metadata->data_type[i].second)
+					{
+					case VALUE_INT32:
+						field = dusk->CreateTextfield( panel, std::to_string( *((uint32_t*)target_data) ) );
+					case VALUE_FLOAT:
+						field = dusk->CreateTextfield( panel, std::to_string( *((float*)target_data) ) );
+						break;
+					case VALUE_FLOAT4:
+						if (metadata->data_field[i].second == FIELD_COLOR)
+							field = dusk->CreateColorPicker( panel, *((Color*)target_data) );
+						break;
+					default:
+						field = -1;
+						break;
+					}
+					if (field != -1)
+					{
+						field.SetRect(Rect(20.0F,225.0F + i * 50.0F,160,30));
+					}
+					// Pull current state for the data
+
+					ui_lbl_object_keys.push_back(label);
+					ui_lbl_object_values.push_back(field);
+				}
+			}
+
+			if ( !dusk->GetMouseInGUI() && !dusk->HasOpenDialogue() )
+			{
+				// Force update on its metadata
+				m_object_target->WorldToMetadata();
+
+				for ( uint i = 0; i < ui_lbl_object_values.size(); ++i )
+				{
+					if ( ui_lbl_object_values[i] == -1 ) continue;
+
+					char* target_data = m_object_target->m_data_storage_buffer + metadata->data[i].first;
+
+					// Update field data from world
+					switch (metadata->data_type[i].second)
+					{
+					case VALUE_INT32:
+						ui_lbl_object_values[i].SetText( std::to_string( *((uint32_t*)target_data) ) );
+					case VALUE_FLOAT:
+						ui_lbl_object_values[i].SetText( std::to_string( *((float*)target_data) ) );
+						break;
+					case VALUE_FLOAT4:
+						if (metadata->data_field[i].second == FIELD_COLOR)
+							dusk->SetColorPicker( ui_lbl_object_values[i], *((Color*)target_data) );
+						break;
+					}
+				}
+			}
+			else
+			{
+				// UI Is generated, has valid data. We pull information from the UI and place them into the metadata
+				for ( uint i = 0; i < ui_lbl_object_values.size(); ++i )
+				{
+					if ( ui_lbl_object_values[i] == -1 ) continue;
+
+					char* target_data = m_object_target->m_data_storage_buffer + metadata->data[i].first;
+
+					string s_temp;
+					Color c_temp;
+					uint32_t i_temp;
+					float f_temp;
+
+					// Update field based on data
+					switch (metadata->data_type[i].second)
+					{
+					case VALUE_INT32:
+						dusk->GetTextfieldData( ui_lbl_object_values[i], s_temp );
+						i_temp = std::atoi( s_temp.c_str() );
+						memcpy( target_data, &i_temp, sizeof(uint32_t) );
+						break;
+					case VALUE_FLOAT:
+						dusk->GetTextfieldData( ui_lbl_object_values[i], s_temp );
+						f_temp = (float)std::atof( s_temp.c_str() );
+						memcpy( target_data, &f_temp, sizeof(float) );
+						break;
+					case VALUE_FLOAT4:
+						if (metadata->data_field[i].second == FIELD_COLOR)
+						{
+							dusk->GetColorPicker( ui_lbl_object_values[i], c_temp );
+							memcpy( target_data, &c_temp, sizeof(Color) );
+						}
+						break;
+					}
+				}
+				// Force update from its metadata
+				m_object_target->MetadataToWorld();
+				// Update gizmos
+				_doObjectEditingSub_GizmoEnable();
+			}
+		}
 	}
 }
+void MapEditor::_uiStepObjectPanelSub_ClearProperties ( void )
+{
+	// Delete all objects created for the UI
+	if ( !ui_lbl_object_keys.empty() )
+	{
+		for ( DuskGUI::Handle handle : ui_lbl_object_keys )
+		{
+			if ( handle != -1 )
+				dusk->DeleteElement(handle);
+		}
+		ui_lbl_object_keys.clear();
+	}
+	if ( !ui_lbl_object_values.empty() )
+	{
+		for ( DuskGUI::Handle handle : ui_lbl_object_values )
+		{
+			if ( handle != -1 )
+				dusk->DeleteElement(handle);
+		}
+		ui_lbl_object_values.clear();
+	}
+}
+
 
 //		uiStepObjectPanel () : preferencess panel update
 // handles input and updates to the preferencess panel

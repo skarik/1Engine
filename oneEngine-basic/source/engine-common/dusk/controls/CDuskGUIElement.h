@@ -24,6 +24,7 @@ public:
 public:
 	// Constructor for defaul val
 	explicit CDuskGUIElement ( const int ntype ) :
+		delete_me( false ),
 		parent(-1), visible( true ), hasFocus( false ), canHaveFocus(true),
 		tooltip(""), drawn(false),
 		m_type(ntype)
@@ -40,6 +41,9 @@ public:
 	virtual void Render ( void ) =0;
 
 public:
+	// Set to true when needs deletion by system
+	bool delete_me;
+
 	// Rect for positioning
 	Rect rect;
 	// Reference to parent

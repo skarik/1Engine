@@ -17,7 +17,7 @@ WorldPalette* WorldPalette::Active ( void )
 
 WorldPalette::WorldPalette ( void )
 {
-	memset(palette_data, 0, sizeof(palette_data));
+	memset(palette_data, 0x0000FF00, sizeof(palette_data));
 	palette_size = 0;
 	palette_width = 0;
 }
@@ -69,18 +69,26 @@ bool WorldPalette::AddPalette ( pixel_t* n_palette_to_add, const uint n_palette_
 	{
 		// Do init of the first row
 		for ( uint i = 0; i < n_palette_width; ++i )
+		{
+			palette_data[i].r = 0;
+			palette_data[i].g = 0;
+			palette_data[i].b = 0;
 			palette_data[i].a = 255;
+		}
 
 		// Copy over to just past the first row
 		palette_width = n_palette_width;
 		palette_size = n_palette_to_add_size + 1;
-		memcpy( palette_data + sizeof(pixel_t) * n_palette_width, n_palette_to_add, sizeof(pixel_t) * n_palette_to_add_size * n_palette_width );
+		memcpy( palette_data + n_palette_width, n_palette_to_add, sizeof(pixel_t) * n_palette_to_add_size * n_palette_width );
 	}
 	// Use the LUT utilities to combile the palettes (if there will be room)
 	else
 	{
 		palette_size = Preprocess::CombineLUT( palette_data, palette_size, n_palette_to_add, n_palette_to_add_size, palette_width );
 	}
+
+	// Need an update for next load
+	palette_texture_needs_update = true;
 
 	return true;
 }

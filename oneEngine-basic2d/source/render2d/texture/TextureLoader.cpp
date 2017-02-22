@@ -51,7 +51,11 @@ pixel_t* Textures::loadGAL ( const std::string& n_inputfile, timgInfo& o_info )
 				image[dest].r = *(((uchar*)oBitmap.bmBits) + source_offset + 2);
 				image[dest].g = *(((uchar*)oBitmap.bmBits) + source_offset + 1);
 				image[dest].b = *(((uchar*)oBitmap.bmBits) + source_offset + 0);
-				image[dest].a = 255;
+
+				if (image[dest].r == 255 && image[dest].g == 255 && image[dest].b == 255)
+					image[dest].a = 0;
+				else
+					image[dest].a = 255;
 			}
 		}
 	}

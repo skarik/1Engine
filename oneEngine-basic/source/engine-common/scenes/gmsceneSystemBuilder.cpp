@@ -238,7 +238,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 								|| resource_extension == "txt" || resource_extension == "yml" || resource_extension == "xml"
 								|| resource_extension == "lua" || resource_extension == "js"
 								|| resource_extension == "ttf" || resource_extension == "otf"
-								|| resource_extension == "vert"|| resource_extension == "frag"
+								|| resource_extension == "vert"|| resource_extension == "frag"|| resource_extension == "stub" 
 								|| resource_extension == "wav" || resource_extension == "mp3" || resource_extension == "ogg"
 								|| resource_extension == "oel"
 								|| resource_extension == "" )

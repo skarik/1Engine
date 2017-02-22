@@ -108,6 +108,12 @@
     <ClInclude Include="source\m04-editor\renderer\object\UILightHandleRenderer.h">
       <Filter>SOURCE\M04-Editor\Renderer\Object</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04\entities\PlayerLeyo.h">
+      <Filter>SOURCE\M04\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04\scenes\sceneGameLuvPpl.h">
+      <Filter>SOURCE\M04\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -166,6 +172,12 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\renderer\object\UILightHandleRenderer.cpp">
       <Filter>SOURCE\M04-Editor\Renderer\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\entities\PlayerLeyo.cpp">
+      <Filter>SOURCE\M04\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\scenes\sceneGameLuvPpl.cpp">
+      <Filter>SOURCE\M04\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -12,6 +12,8 @@
 #include "m04/states/MapInformation.h"
 #include "m04-editor/standalone/mapeditor/EditorObject.h"
 
+#define MAP_SLOW_BUT_COMPATIBLE
+
 //		Save ( )
 // Saves data to the file, using anything that's not null
 void M04::MapIO::Save ( void )
@@ -105,6 +107,7 @@ void M04::MapIO::Save ( void )
 	{
 		for ( auto object : M04::EditorObject::Objects() )
 		{
+#ifndef MAP_SLOW_BUT_COMPATIBLE
 			// Force object update
 			object->WorldToMetadata();
 
@@ -113,7 +116,7 @@ void M04::MapIO::Save ( void )
 			strcpy( topper.name, "object" );
 
 			// Loop through the metadata table to get the required storage
-			topper.size = 128;
+			topper.size = 128; // Object name/id
 			for ( auto metadatap : object->m_object->GetMetadata()->data )
 			{
 				topper.size += sizeof(uint32_t) * 2;
@@ -135,6 +138,46 @@ void M04::MapIO::Save ( void )
 				// Write data
 				fwrite( object->m_data_storage_buffer + (size_t)pdata->source, pdata->source_size, 1, m_file );
 			}
+#else//MAP_SLOW_BUT_COMPATIBLE
+			// Force object update
+			object->WorldToMetadata();
+
+			auto metadata = object->m_object->GetMetadata();
+
+			// Write the topper
+			mapio_section_start_t topper;
+			strcpy( topper.name, "object" );
+
+			// Loop through the metadata table to get the required storage
+			topper.size = 128; // Object name/id
+			for ( uint i = 0; i < metadata->data.size(); ++i )
+			{
+				topper.size += 1;
+				topper.size += metadata->data_name[i].second.length();
+				topper.size += sizeof(uint32_t) * 2;
+				topper.size += (metadata->data[i].second)->source_size;
+			}
+
+			fwrite( &topper, sizeof(mapio_section_start_t), 1, m_file );
+
+			// Write out the information
+			fwrite( object->m_object_name.c_str(), 128, 1, m_file );
+			for ( uint i = 0; i < metadata->data.size(); ++i )
+			{
+				// Write name length
+				uchar length = metadata->data_name[i].second.length();
+				fwrite( &length, 1, 1, m_file );
+				// Write name
+				fwrite( metadata->data_name[i].second.c_str(), 1, length, m_file );
+
+				// Write offset
+				fwrite( &metadata->data[i].first, sizeof(uint32_t), 1, m_file );
+				// Write size
+				fwrite( &metadata->data[i].second->source_size, sizeof(uint32_t), 1, m_file );
+				// Write data
+				fwrite( object->m_data_storage_buffer + (size_t)metadata->data[i].second->source, metadata->data[i].second->source_size, 1, m_file );
+			}
+#endif
 		}
 	}
 }
@@ -279,6 +322,7 @@ void M04::MapIO::Load ( void )
 		{
 			if ( m_io_objects_editor )
 			{
+#ifndef MAP_SLOW_BUT_COMPATIBLE
 				arstring128 object_type_name;
 				memcpy( (void*)object_type_name.c_str(), buffer, 128 );
 
@@ -303,6 +347,169 @@ void M04::MapIO::Load ( void )
 				object->MetadataToWorld();
 				// No longer need to track the object here
 				object->RemoveReference();
+#else//MAP_SLOW_BUT_COMPATIBLE
+				arstring128 object_type_name;
+				memcpy( (void*)object_type_name.c_str(), buffer, 128 );
+
+				// Instiantiate the object
+				EditorObject* object = new EditorObject(object_type_name.c_str());
+
+				auto metadata = object->m_object->GetMetadata();
+
+				// Pull in the key-value data hell
+				size_t offset = 128;
+				while ( offset < topper.size )
+				{
+					uchar str_length;
+					arstring128 str_match;
+					memcpy( &str_length, buffer + offset, 1 );
+					offset += 1;
+					memset( (void*)str_match.c_str(), 0, 128 );
+					memcpy( (void*)str_match.c_str(), buffer + offset, str_length );
+					offset += str_length;
+
+					uint32_t kv_offset, kv_size;
+					memcpy( &kv_offset, buffer + offset, sizeof(uint32_t) );
+					offset += sizeof(uint32_t);
+					memcpy( &kv_size, buffer + offset, sizeof(uint32_t) );
+					offset += sizeof(uint32_t);
+
+					// Check the value of kv_offset against str_match
+					bool valid = false;
+					for ( uint i = 0; i < metadata->data.size(); ++i )
+					{
+						if ( metadata->data_name[i].first == kv_offset )
+						{
+							if ( metadata->data_name[i].second.compare(str_match) )
+							{
+								valid = true;
+								break;
+							}
+						}
+					}
+					// If it's not valid, try to find a match
+					if ( !valid )
+					{
+						for ( uint i = 0; i < metadata->data.size(); ++i )
+						{
+							if ( metadata->data_name[i].second.compare(str_match) )
+							{
+								kv_offset = metadata->data_name[i].first;
+								valid = true;
+								break;
+							}
+						}
+					}
+
+					// Only copy data over if it's valid
+					if ( valid )
+					{
+						memcpy( object->m_data_storage_buffer + kv_offset, buffer + offset, kv_size );
+					}
+					// Go to the next triplet
+					offset += kv_size;
+				}
+
+				// Force update
+				object->MetadataToWorld();
+				// No longer need to track the object here
+				object->RemoveReference();
+#endif
+			}
+			if ( m_io_objects_game )
+			{
+#ifndef MAP_SLOW_BUT_COMPATIBLE
+				arstring128 object_type_name;
+				memcpy( (void*)object_type_name.c_str(), buffer, 128 );
+
+				// Instiantiate the object
+				EditorObject* object = new EditorObject(object_type_name.c_str());
+
+				// Pull in the key-value data hell
+				size_t offset = 128;
+				while ( offset < topper.size )
+				{
+					uint32_t kv_offset, kv_size;
+					memcpy( &kv_offset, buffer + offset, sizeof(uint32_t) );
+					offset += sizeof(uint32_t);
+					memcpy( &kv_size, buffer + offset, sizeof(uint32_t) );
+					offset += sizeof(uint32_t);
+					memcpy( object->m_data_storage_buffer + kv_offset, buffer + offset, kv_size );
+					// Go to the next triplet
+					offset += kv_size;
+				}
+
+				// Force update
+				object->MetadataToWorld();
+				// No longer need to track the object here
+				object->RemoveReference();
+#else//MAP_SLOW_BUT_COMPATIBLE
+				arstring128 object_type_name;
+				memcpy( (void*)object_type_name.c_str(), buffer, 128 );
+
+				// Instiantiate the object
+				auto registration = Engine::BehaviorList::GetRegistration(object_type_name.c_str());
+				CGameBehavior* object = registration.engine_inst();
+
+				auto metadata = registration.metadata();
+
+				// Pull in the key-value data hell
+				size_t offset = 128;
+				while ( offset < topper.size )
+				{
+					uchar str_length;
+					arstring128 str_match;
+					memcpy( &str_length, buffer + offset, 1 );
+					offset += 1;
+					memset( (void*)str_match.c_str(), 0, 128 );
+					memcpy( (void*)str_match.c_str(), buffer + offset, str_length );
+					offset += str_length;
+
+					uint32_t kv_offset, kv_size;
+					memcpy( &kv_offset, buffer + offset, sizeof(uint32_t) );
+					offset += sizeof(uint32_t);
+					memcpy( &kv_size, buffer + offset, sizeof(uint32_t) );
+					offset += sizeof(uint32_t);
+
+					// Check the value of kv_offset against str_match
+					bool valid = false;
+					for ( uint i = 0; i < metadata->data.size(); ++i )
+					{
+						if ( metadata->data_name[i].first == kv_offset )
+						{
+							if ( metadata->data_name[i].second.compare(str_match) )
+							{
+								valid = true;
+								break;
+							}
+						}
+					}
+					// If it's not valid, try to find a match
+					if ( !valid )
+					{
+						for ( uint i = 0; i < metadata->data.size(); ++i )
+						{
+							if ( metadata->data_name[i].second.compare(str_match) )
+							{
+								kv_offset = metadata->data_name[i].first;
+								valid = true;
+								break;
+							}
+						}
+					}
+
+					// Only copy data over if it's valid
+					if ( valid )
+					{
+						memcpy( ((char*)object) + kv_offset, buffer + offset, kv_size );
+					}
+					// Go to the next triplet
+					offset += kv_size;
+				}
+
+				// No longer need to track the object here
+				object->RemoveReference();
+#endif
 			}
 		}
 

@@ -44,6 +44,7 @@ namespace M04
 		// Dusk handles
 
 		Dusk::Handle	ui_main_game;
+		Dusk::Handle	ui_main_testg;
 		Dusk::Handle	ui_main_test0;
 		Dusk::Handle	ui_main_editor;
 	};

@@ -184,13 +184,15 @@ namespace Engine
 		// Typedefs for readable registration
 		typedef CGameBehavior* (*BehaviorInstFunction) (void);
 		typedef ObjectBase* (*ObjectInstFunction) (void);
+		typedef const MetadataTable* const (*GetMetadataFunction) (void);
 		// Registration storage type
 		struct Registration
 		{
 			BehaviorInstFunction	engine_inst;
 			ObjectInstFunction		editor_inst;
+			GetMetadataFunction		metadata;
 
-			Registration() : engine_inst(NULL), editor_inst(NULL) {}
+			Registration() : engine_inst(NULL), editor_inst(NULL), metadata(NULL) {}
 		};
 
 	private:
@@ -209,6 +211,7 @@ namespace Engine
 				Registration reg;
 				reg.engine_inst = _instGameBehavior<BEHAVIOR>;
 				reg.editor_inst = _instObject<OBJECT>;
+				reg.metadata	= GetBehaviorMetadata<BEHAVIOR>;
 				listing->m_registry[arstring128(objectName)] = reg;
 			}
 		};

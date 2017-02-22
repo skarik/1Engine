@@ -13,3 +13,8 @@ entity light_point
 {
 	default
 }
+
+entity player_leyo
+{
+	default
+}

@@ -101,7 +101,7 @@ uint Render2D::Preprocess::CombineLUT ( pixel_t* n_palette, const uint n_palette
 		else
 		{
 			// Copy the row over to the main palette
-			memcpy(n_palette + palette_size*n_palette_width, n_palette_to_add + target_row*n_palette_width, sizeof(pixel_t) * n_palette_width);
+			memcpy(n_palette + palette_size*n_palette_width, n_palette_to_add + row*n_palette_width, sizeof(pixel_t) * n_palette_width);
 			palette_size += 1; // Increment height of the palette
 		}
 	}

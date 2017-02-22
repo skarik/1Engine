@@ -143,6 +143,22 @@ void CDuskGUI::Update ( void )
 	// Skip if there's nothing to do
 	if ( vElements.empty() ) return;
 
+	// Delete objects that need to be deleted
+	{
+		std::vector<int> delete_list;
+		for ( unsigned int i = 0; i < vElements.size(); ++i )
+		{
+			if ( vElements[i] != NULL && vElements[i]->delete_me )
+			{
+				delete_list.push_back(i);
+			}
+		}
+		for ( unsigned int i = 0; i < delete_list.size(); ++i )
+		{
+			DeleteElement(delete_list[i]);
+		}
+	}
+
 	// Set pixel + screen parameters + current GUI
 	Screen::_screen_info_t prevInfo = Screen::Info;
 	if ( !bInPixelMode ) {

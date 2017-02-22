@@ -34,6 +34,7 @@ CTexture::CTexture ( string sInFilename,
 	// Check for system overrides here
 	if (( sFilename == "" )||( sFilename == "_hx_SYSTEM_FONTLOAD" )||( sFilename == "_hx_SYSTEM_RENDERTEXTURE" )||( sFilename == "_hx_SYSTEM_SKIP" ))
 	{
+		info.index = 0;
 		return;
 	}
 	// Look for null texture request (just a fast white sampler)
@@ -248,7 +249,6 @@ void CTexture::Upload (
 	info.internalFormat	= RGBA8;
 	info.width			= width;
 	info.height			= height;
-	info.index			= 0;
 	info.repeatX		= repeatX;
 	info.repeatY		= repeatY;
 	info.mipmapStyle	= mipmapGeneration;
@@ -257,8 +257,12 @@ void CTexture::Upload (
 	state.level_base	= 0;
 	state.level_max		= 0;
 
-	// Create texture
-	glGenTextures( 1, &info.index );
+	if (info.index == 0)
+	{
+		// Create texture
+		glGenTextures( 1, &info.index );
+	}
+
 	// Bind the texture object
 	glBindTexture( GL_TEXTURE_2D, info.index );
 	// Set the pack alignment

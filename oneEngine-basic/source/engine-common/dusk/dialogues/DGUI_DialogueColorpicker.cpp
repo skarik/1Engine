@@ -1,6 +1,7 @@
 
 #include "DGUI_DialogueColorpicker.h"
 #include "../CDuskGUI.h"
+#include "../controls/CDuskGUIColorpicker.h"
 
 #include "core/math/Color.h"
 #include "core/math/Math.h"
@@ -134,7 +135,17 @@ void Dusk::DialogueColorpicker::Update ( void )
 	// Update picker (if any)
 	if (m_sourcePicker != -1)
 	{
-		m_sourcePicker->Update();
+		CDuskGUIColorpicker* picker = dynamic_cast<CDuskGUIColorpicker*>( *m_sourcePicker );
+		if ( picker != NULL )
+		{
+			picker->Update();
+		}
+		else
+		{
+			delete_me = true;
+			if ( activeGUI->hCurrentDialogue == activeGUI->hCurrentElement )
+				activeGUI->hCurrentDialogue = -1;
+		}
 	}
 }
 

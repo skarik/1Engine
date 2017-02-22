@@ -4,11 +4,21 @@
 
 CDuskGUI* Dusk::activeGUI = NULL;
 
-CDuskGUIElement* Dusk::Handle::operator*() const {
-	return activeGUI->vElements[index];
+CDuskGUIElement* Dusk::Handle::operator*() const
+{
+	if (index >= 0 && index < activeGUI->vElements.size())
+	{
+		return activeGUI->vElements[index];
+	}
+	return NULL;
 }
-CDuskGUIElement* Dusk::Handle::operator->() const {
-	return activeGUI->vElements[index];
+CDuskGUIElement* Dusk::Handle::operator->() const
+{
+	if (index >= 0 && index < activeGUI->vElements.size())
+	{
+		return activeGUI->vElements[index];
+	}
+	return NULL;
 }
 
 void	Dusk::Handle::SetVisible ( const bool visibility )

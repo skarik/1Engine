@@ -72,11 +72,16 @@ void DeveloperMenu::uiCreate ( void )
 
 		button = dusk->CreateButton( panel );
 		button.SetRect( Rect( 20,100,150,20 ) );
+		button.SetText( "Actually game" );
+		ui_main_testg = button;
+
+		button = dusk->CreateButton( panel );
+		button.SetRect( Rect( 20,150,150,20 ) );
 		button.SetText( "Test 0" );
 		ui_main_test0 = button;
 
 		button = dusk->CreateButton( panel );
-		button.SetRect( Rect( 20,150,150,20 ) );
+		button.SetRect( Rect( 20,200,150,20 ) );
 		button.SetText( "Game (don't click)" );
 		ui_main_game = button;
 	}
@@ -91,6 +96,10 @@ void DeveloperMenu::uiStepMainPanel ( void )
 	if ( ui_main_editor.GetButtonClicked() )
 	{
 		Engine::Console->RunCommand( "scene test1" );
+	}
+	else if ( ui_main_testg.GetButtonClicked() )
+	{
+		Engine::Console->RunCommand( "scene game_luvppl" );
 	}
 	else if ( ui_main_test0.GetButtonClicked() )
 	{

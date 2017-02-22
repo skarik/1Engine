@@ -68,6 +68,7 @@ namespace M04
 		//		uiStepObjectPanel () : object panel update
 		// handles input and updates to the object panel
 		void		uiStepObjectPanel ( void );
+		void		_uiStepObjectPanelSub_ClearProperties ( void );
 		//		uiStepObjectPanel () : preferencess panel update
 		// handles input and updates to the preferencess panel
 		void		uiStepPreferencesPanel ( void );
@@ -208,6 +209,9 @@ namespace M04
 
 		Dusk::Handle	ui_panel_object;
 		Dusk::Handle	ui_fld_object_type;
+		Dusk::Handle	ui_lbl_object_properties;
+		std::vector<Dusk::Handle>	ui_lbl_object_keys;
+		std::vector<Dusk::Handle>	ui_lbl_object_values;
 
 		Dusk::Handle	ui_panel_preferences;
 		Dusk::Handle	ui_fld_pref_mouse_sensitivity;

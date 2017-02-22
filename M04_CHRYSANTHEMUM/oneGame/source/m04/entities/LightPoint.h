@@ -6,6 +6,8 @@
 #include "engine/behavior/CGameBehavior.h"
 #include "engine2d/interface/SpriteContainer.h"
 
+class CLight;
+
 namespace M04
 {
 	//		LightPoint
@@ -22,6 +24,8 @@ namespace M04
 		float range;
 		float power;
 		Color color;
+
+		CLight*	m_light;
 
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::LightPoint);

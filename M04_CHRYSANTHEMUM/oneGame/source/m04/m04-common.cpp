@@ -18,6 +18,7 @@
 #include "renderer/state/Options.h"
 
 #include "m04/scenes/sceneTilesetTest.h"
+#include "m04/scenes/sceneGameLuvPpl.h"
 #include "m04-editor/scenes/sceneEditorMain.h"
 #include "m04-editor/scenes/sceneDeveloperMenu.h"
 
@@ -37,6 +38,7 @@ int GameInitialize ( void )
 	EngineCommon::RegisterScene<sceneTilesetTest>( "test0" );
 	EngineCommon::RegisterScene<sceneEditorMain>( "test1" );
 	EngineCommon::RegisterScene<sceneDeveloperMenu>( "m04devmenu" );
+	EngineCommon::RegisterScene<sceneGameLuvPpl>( "game_luvppl" );
 	//EngineCommon::RegisterScene<gmsceneParticleEditor>( "pce" );
 	//EngineCommon::RegisterScene<gmsceneLipsyncEditor>( "lse" );
 

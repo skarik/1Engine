@@ -261,7 +261,7 @@ public:
 	ENGCOM_API bool GetColorpickerValue ( Color* n_outColor, const Handle& handleOverride=-1 );
 
 	// Destroying elements
-	void DeleteElement ( const Handle & );
+	ENGCOM_API void DeleteElement ( const Handle & );
 
 private:
 	// Current options

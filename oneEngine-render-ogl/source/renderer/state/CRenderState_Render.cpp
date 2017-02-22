@@ -387,7 +387,7 @@ void CRenderState::RenderScene ( const uint32_t n_renderHint )
 			}
 			if ( currentCamera->clearDepthAfterLayer ) {
 				glDepthMask( GL_TRUE );
-				glClear( GL_DEPTH_BUFFER_BIT );
+				glClear( GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 			}
 			for ( i = 0; i < (int)sortedListSize; ++i )
 			{
@@ -800,7 +800,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					{
 						if ( currentCamera->clearDepthAfterLayer ) {
 							glDepthMask( GL_TRUE );
-							glClear( GL_DEPTH_BUFFER_BIT );
+							glClear( GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 						}
 					}
 				}
@@ -815,7 +815,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			{
 				if ( currentCamera->clearDepthAfterLayer ) {
 					glDepthMask( GL_TRUE );
-					glClear( GL_DEPTH_BUFFER_BIT );
+					glClear( GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 				}
 			}
 		}
