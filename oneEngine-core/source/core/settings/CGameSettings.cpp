@@ -214,6 +214,10 @@ void CGameSettings::LoadSettings ( void )
 				{
 					sysprop_default_cmd = entry.value;
 				}
+				else if ( strcmp( entry.name, "editor" ) == 0 )
+				{
+					sysprop_editor = entry.value;
+				}
 			}
 		}
 		while ( entry.type != MCCOSF_ENTRY_EOF );

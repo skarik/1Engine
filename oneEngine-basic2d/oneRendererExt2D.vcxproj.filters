@@ -57,6 +57,9 @@
     <ClCompile Include="source\render2d\texture\TextureLoader.cpp">
       <Filter>SOURCE\Render2D\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="source\render2d\object\CTextMesh.cpp">
+      <Filter>SOURCE\Render2D\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\render2d\object\CRenderable2D.h">
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="source\render2d\texture\TextureLoader.h">
       <Filter>SOURCE\Render2D\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\object\CTextMesh.h">
+      <Filter>SOURCE\Render2D\Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

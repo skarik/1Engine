@@ -121,6 +121,8 @@ public:
 		eMipmapGenerationStyle	mipmapGeneration = MipmapNormal,
 		eSamplingFilter	filter			= SamplingLinear
 		);
+
+	RENDER_API void SetFilter ( eSamplingFilter filter );
 protected:
 	friend CTextureMaster;
 	friend CResourceManager;

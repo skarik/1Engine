@@ -23,6 +23,7 @@ PlayerLeyo::PlayerLeyo ( void )
 	camera->viewport_target.size = Vector2d( 1280,720 ) * 0.5f;
 	camera->SetActive(); // Mark it as the main camera to use IMMEDIATELY
 
+	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 1.0F, 1.0F).normal();
 	m_sprite->SetSpriteFile("sprites/leo.gal");
 	m_spriteOrigin = m_sprite->GetSpriteInfo().fullsize / 2;
 

@@ -2,7 +2,6 @@
 #ifndef _C_EMULATED_INPUT_CONTROL_H_
 #define _C_EMULATED_INPUT_CONTROL_H_
 
-#include "core/time/time.h"
 #include "core-ext/input/CInputControl.h"
 
 class CEmulatedInputControl
@@ -23,13 +22,13 @@ public:
 		}
 	}
 
-	void Update ( void )
+	void Update ( float deltatime )
 	{
 		for ( int i = 0; i < MAX_INPUT_COUNT; ++i )
 		{
 			axes._total[i].Update( keypress_timer[i] >= 0 );
 			if ( keypress_timer[i] >= 0 ) {
-				keypress_timer[i] -= Time::deltaTime;
+				keypress_timer[i] -= deltatime;
 			}
 		}
 	}

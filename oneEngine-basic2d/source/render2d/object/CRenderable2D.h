@@ -14,6 +14,11 @@
 #include "renderer/object/CRenderableObject.h"
 #include "render2d/types/spriteInfo.h"
 
+struct spriteGenParams2D_t
+{
+	Vector3d normal_default;
+};
+
 class CRenderable2D : public CRenderableObject
 {
 public:
@@ -27,6 +32,10 @@ public:
 	//		GetSpriteInfo ()
 	// Returns read-only reference to the current sprite information structure.
 	RENDER2D_API const spriteInfo_t& GetSpriteInfo ( void );
+
+	//		SpriteGenParams ()
+	// Returns read-write reference to the sprite generation parameters
+	RENDER2D_API spriteGenParams2D_t& SpriteGenParams ( void );
 
 	//		Render()
 	// Render the model using the 2D engine's style
@@ -46,6 +55,8 @@ protected:
 
 	//	Sprite information
 	spriteInfo_t			m_spriteInfo;
+	//	Sprite generation parameters
+	spriteGenParams2D_t		m_spriteGenerationInfo;
 };
 
 #endif//_RENDER2D_C_RENDERABLE_2D_H_

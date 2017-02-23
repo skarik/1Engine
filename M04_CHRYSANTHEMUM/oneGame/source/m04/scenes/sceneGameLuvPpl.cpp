@@ -26,6 +26,9 @@ void sceneGameLuvPpl::LoadScene ( void )
 {
 	Debug::Console->PrintMessage( "Loading sceneGameLuvPpl.\n" );
 
+	// Hide the cursor
+	ActiveCursor->SetVisible(false);
+
 	// Create orthographic camera
 	/*{
 		COrthoCamera* cam = new COrthoCamera();

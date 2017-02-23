@@ -44,6 +44,7 @@
     <ClCompile Include="source\render2d\camera\COrthoCamera.cpp" />
     <ClCompile Include="source\render2d\object\Background2D.cpp" />
     <ClCompile Include="source\render2d\object\CRenderable2D.cpp" />
+    <ClCompile Include="source\render2d\object\CTextMesh.cpp" />
     <ClCompile Include="source\render2d\object\sprite\CAnimSprite2D.cpp" />
     <ClCompile Include="source\render2d\object\sprite\CStreamedRenderable2D.cpp" />
     <ClCompile Include="source\render2d\object\TileMapLayer.cpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="source\render2d\camera\COrthoCamera.h" />
     <ClInclude Include="source\render2d\object\Background2D.h" />
     <ClInclude Include="source\render2d\object\CRenderable2D.h" />
+    <ClInclude Include="source\render2d\object\CTextMesh.h" />
     <ClInclude Include="source\render2d\object\sprite\CAnimSprite2D.h" />
     <ClInclude Include="source\render2d\object\sprite\CStreamedRenderable2D.h" />
     <ClInclude Include="source\render2d\object\TileMapLayer.h" />

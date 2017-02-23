@@ -182,6 +182,7 @@ public: // Members that are edited by outside objects often are put here, as a g
 
 	string	sysprop_developerstring;
 	string	sysprop_default_cmd;
+	string	sysprop_editor;
 
 private:
 	//=========================================//

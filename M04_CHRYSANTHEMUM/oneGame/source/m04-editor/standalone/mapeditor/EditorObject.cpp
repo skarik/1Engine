@@ -79,6 +79,7 @@ EditorObject::EditorObject ( const char* object_name )
 EditorObject::~EditorObject ( void )
 {
 	delete_safe( m_object );
+	delete_safe( light );
 
 	m_objects.erase( std::find( m_objects.begin(), m_objects.end(), this ) );
 

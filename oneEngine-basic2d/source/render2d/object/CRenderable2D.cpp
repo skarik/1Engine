@@ -18,6 +18,10 @@
 CRenderable2D::CRenderable2D ( void )
 	: CRenderableObject()
 {
+	// Set up default parameters
+	m_spriteGenerationInfo = spriteGenParams2D_t();
+	m_spriteGenerationInfo.normal_default = Vector3d(0, 0, 1.0F);
+
 	// Use a default 2D material
 	m_material = new glMaterial();
 	m_material->setTexture( 0, Core::Orphan(new CTexture("null")) );
@@ -220,8 +224,28 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 	}
 	else
 	{
-		CTexture* new_texture = new CTexture( "textures/default_normals.jpg" );
+		CTexture* new_texture = new CTexture("");
+
+		// Generate a normal map based on input parameters
+		pixel_t* raw_normalmap = new pixel_t [imginfo_sprite.width * imginfo_sprite.height];
+		raw_normalmap[0].r = (uint8_t)( (m_spriteGenerationInfo.normal_default.x * 0.5F + 0.5F) * 255.0F + 0.5F );
+		raw_normalmap[0].g = (uint8_t)( (m_spriteGenerationInfo.normal_default.y * 0.5F + 0.5F) * 255.0F + 0.5F );
+		raw_normalmap[0].b = (uint8_t)( (m_spriteGenerationInfo.normal_default.z * 0.5F + 0.5F) * 255.0F + 0.5F );
+		raw_normalmap[0].a = 255;
+
+		// Upload the data
+		new_texture->Upload(
+			raw_normalmap,
+			1, 1, 
+			Clamp, Clamp,
+			MipmapNone, SamplingPoint
+		);
+		
+		// Set this new normal map
 		m_material->setTexture(1, new_texture);
+
+		// Clear off the data now that it's on the GPU
+		delete [] raw_normalmap;
 
 		// No longer need the texture in this object
 		new_texture->RemoveReference();
@@ -233,6 +257,13 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 const spriteInfo_t& CRenderable2D::GetSpriteInfo ( void )
 {
 	return m_spriteInfo;
+}
+
+//		SpriteGenParams ()
+// Returns read-write reference to the sprite generation parameters
+spriteGenParams2D_t& CRenderable2D::SpriteGenParams ( void )
+{
+	return m_spriteGenerationInfo;
 }
 
 //		PushModelData()

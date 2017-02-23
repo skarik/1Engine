@@ -12,8 +12,8 @@ class CLight;
 
 namespace M04
 {
-	//		LightPoint
-	// Basic engine-serialized light object
+	//		PlayerLeyo
+	// Basic main character nonsense.
 	class PlayerLeyo : public CGameBehavior, public Engine2D::SpriteContainer
 	{
 	public:
@@ -44,4 +44,4 @@ namespace M04
 // Create editor object
 LINK_OBJECT_TO_CLASS(player_leyo,M04::PlayerLeyo);
 
-#endif//_M04_LIGHT_POINT_H_
+#endif//_M04_PLAYER_LEYO_H_

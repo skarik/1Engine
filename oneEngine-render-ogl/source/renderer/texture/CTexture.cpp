@@ -351,3 +351,19 @@ void CTexture::LoadImageInfo ( void )
 	this->info.height			= t_info.height;
 	this->info.internalFormat	= (eInternalFormat)t_info.internalFormat;
 }
+
+
+//=========================================//
+// === Setters ===
+void CTexture::SetFilter ( eSamplingFilter filter )
+{
+	GL_ACCESS;
+
+	// Bind the texture object
+	glBindTexture( GL_TEXTURE_2D, info.index );
+	// Change the filtering
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(info.filter) );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL.Enum(info.filter) );
+	// Unbind the data
+	glBindTexture( GL_TEXTURE_2D, 0 );
+}

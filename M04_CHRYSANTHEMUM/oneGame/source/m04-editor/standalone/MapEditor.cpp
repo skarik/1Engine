@@ -3,6 +3,7 @@
 
 #include "core/input/CInput.h"
 #include "core/math/Math.h"
+#include "core/settings/CGameSettings.h"
 
 #include <map>
 
@@ -49,7 +50,7 @@ MapEditor::MapEditor ( void )
 	// Load editor listing
 	{
 		m_listing = new M04::ObjectEditorListing ();
-		m_listing->LoadListing( "system/endoparasite.oel" );
+		m_listing->LoadListing( CGameSettings::Active()->sysprop_editor.c_str() );
 	}
 	// Create map info
 	{
