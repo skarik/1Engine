@@ -21,11 +21,17 @@ namespace M04
 		~PlayerLeyo ( void );
 
 		void			Update ( void ) override;
-	protected:
+
+	public:
+		static PlayerLeyo* active;
+
+	public:
 		// Current state:
 		
 		Vector3d position;
 		Vector3d velocity;
+
+	protected:
 
 		// Components:
 		
@@ -40,8 +46,5 @@ namespace M04
 		END_OBJECT_DESC();
 	};
 }
-
-// Create editor object
-LINK_OBJECT_TO_CLASS(player_leyo,M04::PlayerLeyo);
 
 #endif//_M04_PLAYER_LEYO_H_

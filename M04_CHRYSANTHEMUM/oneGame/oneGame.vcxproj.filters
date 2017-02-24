@@ -120,6 +120,12 @@
     <ClInclude Include="source\m04\entities\NpcPenni.h">
       <Filter>SOURCE\M04\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04\entities\TalkerBase.h">
+      <Filter>SOURCE\M04\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04\entities\TalkerBox.h">
+      <Filter>SOURCE\M04\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -189,6 +195,9 @@
       <Filter>SOURCE\M04\Entities</Filter>
     </ClCompile>
     <ClCompile Include="source\m04\entities\NpcPenni.cpp">
+      <Filter>SOURCE\M04\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\entities\TalkerBox.cpp">
       <Filter>SOURCE\M04\Entities</Filter>
     </ClCompile>
   </ItemGroup>

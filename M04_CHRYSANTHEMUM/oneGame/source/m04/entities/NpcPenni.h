@@ -5,16 +5,12 @@
 #include "core/containers/arstring.h"
 #include "m04/entities/NpcBase.h"
 
-class CInputControl;
-class COrthoCamera;
-class CLight;
-
-class CTextMesh;
-
 namespace M04
 {
-	//		PlayerLeyo
-	// Basic main character nonsense.
+	class TalkerBox;
+
+	//		NpcPenni
+	// Basic side character nonsense.
 	class NpcPenni : public NpcBase
 	{
 	public:
@@ -23,8 +19,7 @@ namespace M04
 
 		void			Update ( void ) override;
 	protected:
-
-		CTextMesh*	test_text;
+		TalkerBox*		talker;
 
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::NpcPenni);
@@ -35,6 +30,6 @@ namespace M04
 }
 
 // Create editor object
-LINK_OBJECT_TO_CLASS(npc_rex,M04::NpcPenni);
+//LINK_OBJECT_TO_CLASS(npc_rex,M04::NpcPenni);
 
 #endif//_M04_NPC_PENNI_H_

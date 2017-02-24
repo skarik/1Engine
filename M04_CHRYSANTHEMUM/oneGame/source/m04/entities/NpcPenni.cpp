@@ -4,7 +4,9 @@
 #include "core/math/Math.h"
 #include "core-ext/input/emulated/CEmulatedInputControl.h"
 #include "render2d/object/sprite/CStreamedRenderable2D.h"
-#include "render2d/object/CTextMesh.h"
+#include "m04/entities/TalkerBox.h"
+
+#include "m04/entities/PlayerLeyo.h"
 
 using namespace M04;
 
@@ -13,26 +15,34 @@ DECLARE_OBJECT_REGISTRAR(npc_rex,M04::NpcPenni);
 NpcPenni::NpcPenni ( void )
 	: NpcBase()
 {
-	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 1.0F, 1.0F).normal();
+	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 2.0F, 1.0F).normal();
 	m_sprite->SetSpriteFile("sprites/penni.gal");
 	m_spriteOrigin = m_sprite->GetSpriteInfo().fullsize / 2;
 
-	test_text = new CTextMesh();
-	test_text->SetFont("ComicNeue-Angular-Bold.ttf", 12, FW_BOLD);
-	test_text->m_text = "Hella!";
-	test_text->UpdateText();
+	talker = NULL;
 }
 
 NpcPenni::~NpcPenni ( void )
 {
-
+	delete_safe_decrement(talker);
 }
 
 void NpcPenni::Update ( void )
 {
-	test_text->transform.position = position;
-	test_text->transform.position.y -= 36.0F;
-	test_text->transform.position.x -= 20.0F;
+	if (talker != NULL)
+	{
+		talker->position = position;
+		talker->position.y -= 36.0F;
+		talker->position.x -= 20.0F;
+		talker->text = "It's scientifically proven that larger textboxes are less likely to be read!";
+	}
+	else
+	{
+		if ( (PlayerLeyo::active->position - position).magnitude() < 100 )
+		{
+			talker = new TalkerBox();
+		}
+	}
 
 	input->Update(Time::deltaTime);
 

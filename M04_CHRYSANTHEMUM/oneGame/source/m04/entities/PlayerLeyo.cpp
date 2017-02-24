@@ -11,9 +11,13 @@ using namespace M04;
 
 DECLARE_OBJECT_REGISTRAR(player_leyo,M04::PlayerLeyo);
 
+PlayerLeyo* PlayerLeyo::active = NULL;
+
 PlayerLeyo::PlayerLeyo ( void )
 	: CGameBehavior(), Engine2D::SpriteContainer(&position)
 {
+	active = this;
+
 	input = new CInputControl(this);
 	input->Capture();
 
@@ -23,7 +27,7 @@ PlayerLeyo::PlayerLeyo ( void )
 	camera->viewport_target.size = Vector2d( 1280,720 ) * 0.5f;
 	camera->SetActive(); // Mark it as the main camera to use IMMEDIATELY
 
-	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 1.0F, 1.0F).normal();
+	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 2.0F, 1.0F).normal();
 	m_sprite->SetSpriteFile("sprites/leo.gal");
 	m_spriteOrigin = m_sprite->GetSpriteInfo().fullsize / 2;
 

@@ -29,6 +29,6 @@ namespace M04
 }
 
 // Create editor object
-LINK_OBJECT_TO_CLASS(test_entity_basic,M04::TestEntityBasic);
+//LINK_OBJECT_TO_CLASS(test_entity_basic,M04::TestEntityBasic);
 
 #endif//_TEST_ENTITY_BASIC_H_

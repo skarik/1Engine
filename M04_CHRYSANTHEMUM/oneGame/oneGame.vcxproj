@@ -259,6 +259,8 @@
     <ClInclude Include="source\m04\entities\NpcBase.h" />
     <ClInclude Include="source\m04\entities\NpcPenni.h" />
     <ClInclude Include="source\m04\entities\PlayerLeyo.h" />
+    <ClInclude Include="source\m04\entities\TalkerBase.h" />
+    <ClInclude Include="source\m04\entities\TalkerBox.h" />
     <ClInclude Include="source\m04\entities\TestEntityBasic.h" />
     <ClInclude Include="source\m04\interfaces\MapIO.h" />
     <ClInclude Include="source\m04\m04-common.h" />
@@ -285,6 +287,7 @@
     <ClCompile Include="source\m04\entities\NpcBase.cpp" />
     <ClCompile Include="source\m04\entities\NpcPenni.cpp" />
     <ClCompile Include="source\m04\entities\PlayerLeyo.cpp" />
+    <ClCompile Include="source\m04\entities\TalkerBox.cpp" />
     <ClCompile Include="source\m04\entities\TestEntityBasic.cpp" />
     <ClCompile Include="source\m04\interfaces\MapIO.cpp" />
     <ClCompile Include="source\m04\m04-common.cpp" />

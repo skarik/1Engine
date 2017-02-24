@@ -39,6 +39,6 @@ namespace M04
 }
 
 // Create editor object
-LINK_OBJECT_TO_CLASS(light_point,M04::LightPoint);
+//LINK_OBJECT_TO_CLASS(light_point,M04::LightPoint);
 
 #endif//_M04_LIGHT_POINT_H_

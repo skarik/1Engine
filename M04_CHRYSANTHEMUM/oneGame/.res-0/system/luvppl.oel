@@ -1,0 +1,32 @@
+// Object Editor Listing for Endoparasite
+
+// Use 2d editor
+editor 2d
+
+
+entity light_point
+{
+	default
+}
+
+entity player_leyo
+{
+	default
+}
+entity npc_rex
+{
+	default
+}
+entity npc_samia
+{
+	default
+}
+
+entity npc_random
+{
+	default
+}
+entity npc_rioter
+{
+	default
+}

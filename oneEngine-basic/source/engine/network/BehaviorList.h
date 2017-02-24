@@ -259,7 +259,9 @@ public: \
 };
 //		DECLARE_OBJECT_REGISTRAR
 // Used once in the CPP file of the class. Creates a link between a behavior and a C++ class
-#define DECLARE_OBJECT_REGISTRAR(behaviorname,cppclass) static ::Engine::BehaviorList::Registrar< behaviorname , cppclass > __REGISTRAR_##behaviorname ( #behaviorname );
+#define DECLARE_OBJECT_REGISTRAR(behaviorname,cppclass) \
+	LINK_OBJECT_TO_CLASS( behaviorname, cppclass ) \
+	static ::Engine::BehaviorList::Registrar< behaviorname , cppclass > __REGISTRAR_##behaviorname ( #behaviorname );
 
 
 //		BEGIN_OBJECT_DESC
