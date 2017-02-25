@@ -300,7 +300,7 @@ void CRenderState::RenderScene ( const uint32_t n_renderHint )
 	// Loop through each hint (reverse mode)
 	for ( uint currentLayer = 1<<RL_LAYER_COUNT; currentLayer != 0; currentLayer >>= 1 )
 	{
-		int layer = Math.log2( currentLayer );
+		int layer = Math::log2( currentLayer );
 		// Skip non-drawn hints
 		if ( !(currentLayer & n_renderHint) ) {
 			continue;
@@ -425,7 +425,7 @@ void CRenderState::RenderScene ( const uint32_t n_renderHint )
 			else
 			{
 				// Unbind the proper layer buffer
-				int layer = Math.log2( currentLayer );
+				int layer = Math::log2( currentLayer );
 			}
 		}
 	}

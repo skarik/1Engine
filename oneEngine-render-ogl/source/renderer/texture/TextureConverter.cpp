@@ -107,7 +107,7 @@ void Textures::ConvertData ( const pixel_t* n_inputimg, const timgInfo* n_inputi
 	bpdHeader.flags		= IMG_FORMAT_RGBA8;
 	bpdHeader.width		= n_inputimg_info->width;
 	bpdHeader.height	= n_inputimg_info->height;
-	bpdHeader.levels	= (uint16_t) std::max<int>( 1, Math.log2( std::min<uint>(n_inputimg_info->width,n_inputimg_info->height) )-3 ); // -3 for 16, -4 for 32
+	bpdHeader.levels	= (uint16_t) std::max<int>( 1, Math::log2( std::min<uint>(n_inputimg_info->width,n_inputimg_info->height) )-3 ); // -3 for 16, -4 for 32
 																														  // Write the header out
 	fwrite( &bpdHeader, sizeof(tbpdHeader), 1, t_outFile );
 
@@ -180,7 +180,7 @@ void Textures::ConvertData ( const pixel_t* n_inputimg, const timgInfo* n_inputi
 			int t_total_offset = 0;
 			for ( int j = bpdHeader.levels-1; j > t_level; j -= 1 )
 			{
-				t_total_offset += (n_inputimg_info->width*n_inputimg_info->height) / Math.exp2(j*2);
+				t_total_offset += (n_inputimg_info->width*n_inputimg_info->height) / Math::exp2(j*2);
 			}
 
 			tbpdLevel bpdLevel;
@@ -193,7 +193,7 @@ void Textures::ConvertData ( const pixel_t* n_inputimg, const timgInfo* n_inputi
 				+( sizeof(tbpdLevel)*bpdHeader.levels )			// All the level data
 				+( t_total_offset*sizeof(tPixel) );	// Offset of the level
 													// size is (fullsize / (2^level) ) where level is 0 to N
-			bpdLevel.size = ((n_inputimg_info->width*n_inputimg_info->height) / Math.exp2(t_level*2))*sizeof(tPixel);
+			bpdLevel.size = ((n_inputimg_info->width*n_inputimg_info->height) / Math::exp2(t_level*2))*sizeof(tPixel);
 
 			// Write out the level
 			fwrite( &bpdLevel, sizeof(tbpdLevel), 1, t_outFile );
@@ -205,7 +205,7 @@ void Textures::ConvertData ( const pixel_t* n_inputimg, const timgInfo* n_inputi
 		for ( uint i = 0; i < bpdHeader.levels; i += 1 )
 		{
 			int t_level = (bpdHeader.levels-i)-1; // Loop from low-res to high-res
-			uint32_t	t_blocks = Math.exp2(t_level);
+			uint32_t	t_blocks = Math::exp2(t_level);
 			uint32_t	t_width = n_inputimg_info->width / t_blocks;
 			uint32_t	t_height = n_inputimg_info->height / t_blocks;
 
@@ -300,7 +300,7 @@ void Textures::ConvertData ( const pixel_t* n_inputimg, const timgInfo* n_inputi
 			bpdLevel.head[3] = 0;
 			bpdLevel.offset = (uint32_t)t_levelDataOffsets[i]; // Use the saved offsets
 															   // size is (fullsize / (2^level) ) where level is 0 to N
-			bpdLevel.size = ((n_inputimg_info->width*n_inputimg_info->height) / Math.exp2(t_level*2))*sizeof(tPixel);
+			bpdLevel.size = ((n_inputimg_info->width*n_inputimg_info->height) / Math::exp2(t_level*2))*sizeof(tPixel);
 
 			// Write out the level
 			fwrite( &bpdLevel, sizeof(tbpdLevel), 1, t_outFile );

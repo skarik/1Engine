@@ -86,7 +86,7 @@ void CDuskGUISlider::Update ( void )
 			Vector2d vDeltaPoint = Vector2d( Input::DeltaMouseX()/(ftype)Screen::Info.width * screen.size.x, Input::DeltaMouseY()/(ftype)Screen::Info.height * screen.size.y );
 
 			valPercent += ( vDeltaPoint.x / rect.size.x ) * 1.04f;
-			valPercent = Math.Clamp( valPercent, 0, 1 );
+			valPercent = Math::saturate(valPercent);
 
 			value.SetValue( value.mMinVal + ((value.mMaxVal-value.mMinVal)*valPercent) );
 			//value.mCurVal = ( value.mMinVal + ((value.mMaxVal-value.mMinVal)*valPercent) );

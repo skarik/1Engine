@@ -25,8 +25,9 @@ class Vector3d;
 
 #ifdef random_range
 	#undef random_range
-	#define random_range(a,b) ( ((a) + ((Random.Next()/((ftype)Random.Max()))*((b)-(a)))) )
+	#define random_range(a,b) Random::Range((a),(b))
 #endif
+#define random_range(a,b) CRandom::Range((a),(b))
 
 class CRandom
 {
@@ -36,29 +37,33 @@ private:
 	base_generator_type m_generator;
 
 public:
-	static ftype Range ( ftype min, ftype max );
+	static Real Range ( Real min, Real max );
 
 	static Vector3d PointOnUnitSphere ( void );
 	static Vector3d PointInUnitSphere ( void );
 
 	static Vector2d PointOnUnitCircle ( void );
 
-	void Seed ( uint32_t seed ) {
+	void Seed ( uint32_t seed )
+	{
 		m_generator.seed( seed );
 	};
-	uint32_t Next ( void ) {
+	uint32_t Next ( void )
+	{
 		return m_generator();
 	};
-	uint32_t Next ( int min, int max ) {
+	uint32_t Next ( int min, int max )
+	{
 		//boost::random::uniform_int_distribution<> distribution( min, max );
 		std::uniform_int_distribution<> distribution( min,max );
 		return distribution(m_generator);
 	};
-	uint32_t Max ( void ) {
+	uint32_t Max ( void )
+	{
 		return base_generator_type::max();
 	};
 
-	bool Chance ( ftype test_value );
+	bool Chance ( Real test_value );
 };
 
 extern CRandom Random;

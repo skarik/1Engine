@@ -23,7 +23,7 @@ Renderer::_n_hint_rendering_information::_n_hint_rendering_information ( void )
 	// Setup default replacement settings
 	
 	// Setup shadow shader renderer replacement. (Will replace any material with no shadow pass)
-	layer = Math.log2(RL_SHADOW_COLOR);
+	layer = Math::log2(RL_SHADOW_COLOR);
 	mats_default[layer]	= new glMaterial;
 	mats_default[layer]->setTexture( 0, new CTexture("null") );
 	mats_default[layer]->m_diffuse = Color( 0,0,0, 1.0f );
@@ -43,7 +43,7 @@ Renderer::_n_hint_rendering_information::_n_hint_rendering_information ( void )
 	clear_color[layer]= Color( 0,0,0, 1.0 );
 
 	// Setup sky glow render shader replacement. (Will replace any material with no shadow pass)
-	layer = Math.log2(RL_SKYGLOW);
+	layer = Math::log2(RL_SKYGLOW);
 	mats_default[layer]	= new glMaterial;
 	mats_default[layer]->setTexture( 0, new CTexture("null") );
 	mats_default[layer]->m_diffuse = Color( 0,0,0, 1.0f );

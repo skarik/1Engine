@@ -319,6 +319,7 @@
     <ClInclude Include="source\core\math\BoundingBox.h" />
     <ClInclude Include="source\core\math\Color.h" />
     <ClInclude Include="source\core\math\Cubic.h" />
+    <ClInclude Include="source\core\math\Easing.h" />
     <ClInclude Include="source\core\math\Frustum.h" />
     <ClInclude Include="source\core\math\Line.h" />
     <ClInclude Include="source\core\math\Math.h" />

@@ -306,24 +306,24 @@ void Dusk::DialogueColorpicker::updateColorSliders ( const Vector2d& position )
 		switch (current_mode)
 		{
 		case Mode::R:
-			m_currentColor[0] = Math.Clamp( color_start[0] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
+			m_currentColor[0] = Math::clamp( color_start[0] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
 			break;
 		case Mode::G:
-			m_currentColor[1] = Math.Clamp( color_start[1] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
+			m_currentColor[1] = Math::clamp( color_start[1] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
 			break;
 		case Mode::B:
-			m_currentColor[2] = Math.Clamp( color_start[2] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
+			m_currentColor[2] = Math::clamp( color_start[2] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
 			break;
 		case Mode::H:
-			hsl[0] = Math.Clamp( hsl[0] + (drag_now.x - drag_start.x) / 360.0F, 0.0F, 360.0F );
+			hsl[0] = Math::clamp( hsl[0] + (drag_now.x - drag_start.x) / 360.0F, 0.0F, 360.0F );
 			m_currentColor.SetHSL(hsl);
 			break;
 		case Mode::S:
-			hsl[1] = Math.Clamp( hsl[1] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
+			hsl[1] = Math::clamp( hsl[1] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
 			m_currentColor.SetHSL(hsl);
 			break;
 		case Mode::V:
-			hsl[2] = Math.Clamp( hsl[2] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
+			hsl[2] = Math::clamp( hsl[2] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
 			m_currentColor.SetHSL(hsl);
 			break;
 		}

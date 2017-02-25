@@ -147,7 +147,7 @@ void	CMorpher::PerformMorph ( glSkinnedMesh* sourceMesh, glSkinnedMesh* targetMe
 			ftype delta = it->second.target_weight - it->second.weight;
 			ftype changeSpeed = Time::deltaTime * 7.0f;
 			if ( fabs( delta ) > changeSpeed ) {
-				it->second.weight += Math.sgn<ftype>( delta ) * changeSpeed;
+				it->second.weight += Math::sgn<Real>( delta ) * changeSpeed;
 			}
 			else {
 				it->second.weight = it->second.target_weight;

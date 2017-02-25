@@ -122,9 +122,9 @@ void CInputControl::Update ( void* owner, float deltaTime )
 			
 		// Get the keydown input
 		//axes.crouch.Update			( (float)Input::Key(Keys.Control) + (float)Input::Key('C') );
-		axes.crouch.Update			( -Math.Clamp(vDirInput.z,-1,0) );
+		axes.crouch.Update			( -Math::clamp<Real>(vDirInput.z,-1,0) );
 		//axes.jump.Update			( (float)Input::Key(Keys.Space) );
-		axes.jump.Update			( Math.Clamp(vDirInput.z,0,1) );
+		axes.jump.Update			( Math::clamp<Real>(vDirInput.z,0,1) );
 		axes.primary.Update			( (float)CInput::Mouse(CInput::MBLeft) + ((Input::xboxControl->GetState().Gamepad.bRightTrigger-XINPUT_GAMEPAD_TRIGGER_THRESHOLD)/(255.0f-XINPUT_GAMEPAD_TRIGGER_THRESHOLD)) );
 		axes.secondary.Update		( (float)CInput::Mouse(CInput::MBRight) + ((Input::xboxControl->GetState().Gamepad.bLeftTrigger-XINPUT_GAMEPAD_TRIGGER_THRESHOLD)/(255.0f-XINPUT_GAMEPAD_TRIGGER_THRESHOLD)) );
 		//axes.sprint.Update			( (float)Input::Key(Keys.Shift) );

@@ -3,6 +3,7 @@
 #include "core/time/time.h"
 #include "core/system/io/CSegmentedFile.h"
 #include "core-ext/system/io/Resources.h"
+#include "core/math/random/Random.h"
 #include <sstream>
 
 using namespace std;

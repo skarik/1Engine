@@ -55,7 +55,7 @@ void PlayerLeyo::Update ( void )
 	{
 		float target = motion_input[i] * maxSpeed;
 		float distance = target - velocity[i];
-		float delta = Math.sgn(distance) * acceleration * Time::deltaTime;
+		float delta = Math::sgn(distance) * acceleration * Time::deltaTime;
 
 		if ( fabs(delta) > fabs(distance) )
 		{
@@ -71,9 +71,9 @@ void PlayerLeyo::Update ( void )
 	position += velocity * Time::deltaTime;
 
 	// Update camera position
-	camera->transform.position.x = (Real)Math.Round(position.x);
-	camera->transform.position.y = (Real)Math.Round(position.y - 16);
+	camera->transform.position.x = (Real)Math::round(position.x);
+	camera->transform.position.y = (Real)Math::round(position.y - 16);
 
-	light->transform.position.x = (Real)Math.Round(position.x);
-	light->transform.position.y = (Real)Math.Round(position.y + 32);
+	light->transform.position.x = (Real)Math::round(position.x);
+	light->transform.position.y = (Real)Math::round(position.y + 32);
 }

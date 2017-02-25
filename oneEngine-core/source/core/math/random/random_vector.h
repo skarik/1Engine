@@ -4,18 +4,14 @@
 
 #include <vector>
 #include <stdexcept> 
+
 #include "core/types/types.h"
-
-#ifndef random_range
-#define random_range(a,b) ( ((a) + ((rand()/((ftype)RAND_MAX))*((b)-(a)))) )
-#endif
-
-extern float saturate ( float f );
-extern double saturate ( double f );
+#include "core/math/Math.h"
+#include "core/math/random/Random.h"
 
 template <class myType>
-class random_vector {
-
+class random_vector
+{
 public:
 	random_vector ( void ) : m_maxweight(0) {
 		;

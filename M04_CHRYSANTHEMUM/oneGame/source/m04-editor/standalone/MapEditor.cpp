@@ -449,11 +449,11 @@ void MapEditor::doAreaEditing ( void )
 			if ( m_area_target != NULL )
 			{
 				// Round the rect size
-				m_area_target->m_rect.size.x = (Real)Math.Round(m_area_target->m_rect.size.x);
-				m_area_target->m_rect.size.y = (Real)Math.Round(m_area_target->m_rect.size.y);
+				m_area_target->m_rect.size.x = (Real)Math::round(m_area_target->m_rect.size.x);
+				m_area_target->m_rect.size.y = (Real)Math::round(m_area_target->m_rect.size.y);
 				// Round the rect position
-				m_area_target->m_rect.pos.x = (Real)Math.Round(m_area_target->m_rect.pos.x);
-				m_area_target->m_rect.pos.y = (Real)Math.Round(m_area_target->m_rect.pos.y);
+				m_area_target->m_rect.pos.x = (Real)Math::round(m_area_target->m_rect.pos.x);
+				m_area_target->m_rect.pos.y = (Real)Math::round(m_area_target->m_rect.pos.y);
 			}
 			m_current_submode = SubMode::None;
 			
@@ -476,8 +476,8 @@ void MapEditor::doAreaEditing ( void )
 			// Snap to half tile
 			if ( Input::Key( Keys.Alt ) )
 			{
-				worldpos.x = (Real) Math.Round( worldpos.x * 2 / m_tilemap->m_tileset->tilesize_x ) * m_tilemap->m_tileset->tilesize_x * 0.5F;
-				worldpos.y = (Real) Math.Round( worldpos.y * 2 / m_tilemap->m_tileset->tilesize_y ) * m_tilemap->m_tileset->tilesize_y * 0.5F;
+				worldpos.x = (Real) Math::round( worldpos.x * 2 / m_tilemap->m_tileset->tilesize_x ) * m_tilemap->m_tileset->tilesize_x * 0.5F;
+				worldpos.y = (Real) Math::round( worldpos.y * 2 / m_tilemap->m_tileset->tilesize_y ) * m_tilemap->m_tileset->tilesize_y * 0.5F;
 			}
 
 			// Move the x coordinate of the rect
@@ -617,8 +617,8 @@ void MapEditor::doObjectEditing ( void )
 				m_drag_handle->SetSnapping( Vector2d( m_tilemap->m_tileset->tilesize_x * 0.5F, m_tilemap->m_tileset->tilesize_y * 0.5F ) );
 				Vector3d objpos = m_object_target->position;
 				// Snap to half-tile
-				objpos.x = (Real) Math.Round( objpos.x * 2 / m_tilemap->m_tileset->tilesize_x ) * m_tilemap->m_tileset->tilesize_x * 0.5F;
-				objpos.y = (Real) Math.Round( objpos.y * 2 / m_tilemap->m_tileset->tilesize_y ) * m_tilemap->m_tileset->tilesize_y * 0.5F;
+				objpos.x = (Real) Math::round( objpos.x * 2 / m_tilemap->m_tileset->tilesize_x ) * m_tilemap->m_tileset->tilesize_x * 0.5F;
+				objpos.y = (Real) Math::round( objpos.y * 2 / m_tilemap->m_tileset->tilesize_y ) * m_tilemap->m_tileset->tilesize_y * 0.5F;
 				// Set positions to snapped values
 				m_object_target->position = objpos;
 				m_drag_handle->SetRenderPosition( objpos );
@@ -1605,13 +1605,13 @@ void MapEditor::uiStepBottomEdge ( void )
 		// Round the position to half-tile if ALT is held down
 		if ( !Input::Key( Keys.Alt ) )
 		{
-			ui_lbl_mousex.SetText( "X: " + std::to_string(Math.Round(worldpos.x)) );
-			ui_lbl_mousey.SetText( "Y: " + std::to_string(Math.Round(worldpos.y)) );
+			ui_lbl_mousex.SetText( "X: " + std::to_string(Math::round(worldpos.x)) );
+			ui_lbl_mousey.SetText( "Y: " + std::to_string(Math::round(worldpos.y)) );
 		}
 		else
 		{
-			ui_lbl_mousex.SetText( "X: " + std::to_string((int)(Math.Round(worldpos.x*2.0F/m_tilemap->m_tileset->tilesize_x) * m_tilemap->m_tileset->tilesize_x * 0.5F)) );
-			ui_lbl_mousey.SetText( "Y: " + std::to_string((int)(Math.Round(worldpos.y*2.0F/m_tilemap->m_tileset->tilesize_y) * m_tilemap->m_tileset->tilesize_y * 0.5F)) );
+			ui_lbl_mousex.SetText( "X: " + std::to_string((int)(Math::round(worldpos.x*2.0F/m_tilemap->m_tileset->tilesize_x) * m_tilemap->m_tileset->tilesize_x * 0.5F)) );
+			ui_lbl_mousey.SetText( "Y: " + std::to_string((int)(Math::round(worldpos.y*2.0F/m_tilemap->m_tileset->tilesize_y) * m_tilemap->m_tileset->tilesize_y * 0.5F)) );
 		}
 	}
 }

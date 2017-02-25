@@ -1,5 +1,9 @@
 
 #include "m04/entities/TalkerBox.h"
+
+#include "core/math/Math.h"
+#include "core/math/Easing.h"
+
 #include "render2d/object/CTextMesh.h"
 
 using namespace M04;

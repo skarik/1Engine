@@ -281,7 +281,7 @@ float Perlin::Get(float x,float y)
 	vec[1] = x*0.5f + y*0.866f;
 	float result = perlin_noise_2D(vec);
 	if ( unnormalize ) {
-		result += ((1-exp(-fabs(result/0.707f))) + ( sqr( (mAmplitude/2)-fabs(result) )*fabs(result) ) ) * Math.sgn<float>( result );
+		result += ((1-exp(-fabs(result/0.707f))) + ( sqr( (mAmplitude/2)-fabs(result) )*fabs(result) ) ) * Math::sgn<float>( result );
 		result = std::max<float>( -0.5f, std::min<float>( 0.5f, result ) );
 	}
 
@@ -297,7 +297,7 @@ float Perlin::Get3D(float x,float y,float z)
 	vec[2] = x*0.382f - y*0.175f + z*0.908f;
 	float result = perlin_noise_3D(vec);
 	if ( unnormalize ) {
-		result += ((1-exp(-fabs(result/0.707f))) + ( sqr( (mAmplitude/2)-fabs(result) )*fabs(result) ) ) * Math.sgn<float>( result );
+		result += ((1-exp(-fabs(result/0.707f))) + ( sqr( (mAmplitude/2)-fabs(result) )*fabs(result) ) ) * Math::sgn<float>( result );
 		result = std::max<float>( -0.5f, std::min<float>( 0.5f, result ) );
 	}
 
@@ -307,7 +307,7 @@ float Perlin::Get3D(float x,float y,float z)
 
 float Perlin::Unnormalize(float result)
 {
-	result += ((1-exp(-fabs(result/0.707f))) + ( sqr( (mAmplitude/2)-fabs(result) )*fabs(result) ) ) * Math.sgn<float>( result );
+	result += ((1-exp(-fabs(result/0.707f))) + ( sqr( (mAmplitude/2)-fabs(result) )*fabs(result) ) ) * Math::sgn<float>( result );
 	result = std::max<float>( -0.5f, std::min<float>( 0.5f, result ) );
 	return result;
 }

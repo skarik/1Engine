@@ -6,9 +6,9 @@
 
 CRandom Random;
 
-ftype CRandom::Range ( ftype min, ftype max )
+Real CRandom::Range ( Real min, Real max )
 {
-	return random_range( min,max );
+	return min + (Random.Next() / (Real)Random.Max()) * ( max - min );
 }
 
 Vector3d CRandom::PointOnUnitSphere ( void )

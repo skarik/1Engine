@@ -173,8 +173,8 @@ void CDuskGUI::drawRect ( const Rect& rect )
 	// Round values
 	for ( uint i = 0; i < modelSolidMeshList.size(); ++i )
 	{
-		modelSolidMeshList[i].x = (Real)Math.Round(modelSolidMeshList[i].x);
-		modelSolidMeshList[i].y = (Real)Math.Round(modelSolidMeshList[i].y);
+		modelSolidMeshList[i].x = (Real)Math::round(modelSolidMeshList[i].x);
+		modelSolidMeshList[i].y = (Real)Math::round(modelSolidMeshList[i].y);
 	}
 
 	// Render mesh
@@ -261,14 +261,14 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 	vert.y = draw_rect.pos.y + draw_rect.size.y;
 	modelLineMeshList.push_back( vert );
 	vert.x = draw_rect.pos.x;
-	vert.y = draw_rect.pos.y + Math.sgn(draw_rect.size.y);
+	vert.y = draw_rect.pos.y + Math::sgn(draw_rect.size.y);
 	modelLineMeshList.push_back( vert );
 
 	// Round values
 	for ( uint i = 0; i < modelLineMeshList.size(); ++i )
 	{
-		modelLineMeshList[i].x = (Real)Math.Round(modelLineMeshList[i].x);
-		modelLineMeshList[i].y = (Real)Math.Round(modelLineMeshList[i].y);
+		modelLineMeshList[i].x = (Real)Math::round(modelLineMeshList[i].x);
+		modelLineMeshList[i].y = (Real)Math::round(modelLineMeshList[i].y);
 	}
 
 	// Render mesh
@@ -321,8 +321,8 @@ void CDuskGUI::drawLine ( const ftype x1, const ftype y1, const ftype x2, const 
 			modelLineMeshList[i].x *= Screen::Info.width;
 			modelLineMeshList[i].y *= Screen::Info.height;
 		}
-		modelLineMeshList[i].x = (Real)Math.Round(modelLineMeshList[i].x);
-		modelLineMeshList[i].y = (Real)Math.Round(modelLineMeshList[i].y);
+		modelLineMeshList[i].x = (Real)Math::round(modelLineMeshList[i].x);
+		modelLineMeshList[i].y = (Real)Math::round(modelLineMeshList[i].y);
 	}
 
 	// Render mesh

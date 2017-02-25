@@ -56,7 +56,7 @@ void NpcPenni::Update ( void )
 	{
 		float target = motion_input[i] * maxSpeed;
 		float distance = target - velocity[i];
-		float delta = Math.sgn(distance) * acceleration * Time::deltaTime;
+		float delta = Math::sgn(distance) * acceleration * Time::deltaTime;
 
 		if ( fabs(delta) > fabs(distance) )
 		{
