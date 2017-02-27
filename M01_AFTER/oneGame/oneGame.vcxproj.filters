@@ -936,9 +936,6 @@
     <ClInclude Include="source\after\states\world\CMCCPlanet.h">
       <Filter>SOURCE\AFTER\States\World</Filter>
     </ClInclude>
-    <ClInclude Include="source\after\entities\cutscene\CDialogueLoader.h">
-      <Filter>SOURCE\AFTER\Entities\Cutscene</Filter>
-    </ClInclude>
     <ClInclude Include="source\after\entities\cutscene\CDialogueGUI.h">
       <Filter>SOURCE\AFTER\Entities\Cutscene</Filter>
     </ClInclude>
@@ -1758,9 +1755,6 @@
       <Filter>SOURCE\AFTER\States\World</Filter>
     </ClCompile>
     <ClCompile Include="source\after\entities\cutscene\CDialogueGUI.cpp">
-      <Filter>SOURCE\AFTER\Entities\Cutscene</Filter>
-    </ClCompile>
-    <ClCompile Include="source\after\entities\cutscene\CDialogueLoader.cpp">
       <Filter>SOURCE\AFTER\Entities\Cutscene</Filter>
     </ClCompile>
     <ClCompile Include="source\after\entities\cutscene\CCutscenes.cpp">

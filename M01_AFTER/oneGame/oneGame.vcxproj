@@ -485,7 +485,6 @@
     <ClInclude Include="source\after\entities\character\npc\zoned\fauna\FaunaKomodo.h" />
     <ClInclude Include="source\after\entities\cutscene\CCutscene.h" />
     <ClInclude Include="source\after\entities\cutscene\CDialogueGUI.h" />
-    <ClInclude Include="source\after\entities\cutscene\CDialogueLoader.h" />
     <ClInclude Include="source\after\entities\effects\CFXNotice.h" />
     <ClInclude Include="source\after\entities\foliage\CFoliage.h" />
     <ClInclude Include="source\after\entities\foliage\CFoliageTree.h" />
@@ -786,7 +785,6 @@
     <ClCompile Include="source\after\entities\character\npc\zoned\fauna\FaunaKomodo.cpp" />
     <ClCompile Include="source\after\entities\cutscene\CCutscenes.cpp" />
     <ClCompile Include="source\after\entities\cutscene\CDialogueGUI.cpp" />
-    <ClCompile Include="source\after\entities\cutscene\CDialogueLoader.cpp" />
     <ClCompile Include="source\after\entities\effects\CFXNotice.cpp" />
     <ClCompile Include="source\after\entities\foliage\CFoliage.cpp" />
     <ClCompile Include="source\after\entities\foliage\CFoliageTree.cpp" />

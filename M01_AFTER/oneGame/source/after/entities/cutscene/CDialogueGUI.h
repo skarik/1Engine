@@ -13,7 +13,7 @@
 
 #include "after/entities/character/CCharacter.h"
 
-#include "CDialogueLoader.h"
+#include "engine-common/dialogue/CDialogueTree.h"
 
 class CInputControl;
 class CPlayer;

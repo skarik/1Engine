@@ -76,6 +76,9 @@
     <Filter Include="SOURCE\Engine-Common\Scenes\Tests">
       <UniqueIdentifier>{83453048-277d-4507-a849-14a3ef756e50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Engine-Common\Dialogue">
+      <UniqueIdentifier>{87e283ed-aa34-4c9a-a134-702228a24caa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\engine-common\engine-common.h">
@@ -306,8 +309,11 @@
     <ClInclude Include="source\engine-common\types\ParticleEnums.h">
       <Filter>SOURCE\Engine-Common\Types</Filter>
     </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.h">
-      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogues</Filter>
+    <ClInclude Include="source\engine-common\dialogue\CDialogueLoader.h">
+      <Filter>SOURCE\Engine-Common\Dialogue</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dialogue\CDialogueTree.h">
+      <Filter>SOURCE\Engine-Common\Dialogue</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -485,8 +491,11 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_LO.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.cpp">
-      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogues</Filter>
+    <ClCompile Include="source\engine-common\dialogue\CDialogueLoader.cpp">
+      <Filter>SOURCE\Engine-Common\Dialogue</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dialogue\CDialogueTree.cpp">
+      <Filter>SOURCE\Engine-Common\Dialogue</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

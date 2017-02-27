@@ -47,6 +47,8 @@
     <ClInclude Include="source\engine-common\dawn\DawnGUI.h" />
     <ClInclude Include="source\engine-common\debug\AllTools.h" />
     <ClInclude Include="source\engine-common\debug\CTimeProfilerUI.h" />
+    <ClInclude Include="source\engine-common\dialogue\CDialogueLoader.h" />
+    <ClInclude Include="source\engine-common\dialogue\CDialogueTree.h" />
     <ClInclude Include="source\engine-common\dusk\CDuskGUI.h" />
     <ClInclude Include="source\engine-common\dusk\CDuskGUIHandle.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIButton.h" />
@@ -75,7 +77,6 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUITextfield.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIVector2dPicker.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.h" />
-    <ClInclude Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.h" />
     <ClInclude Include="source\engine-common\dusk\dialogues\DGUI_DialogueFileSelector.h" />
     <ClInclude Include="source\engine-common\engine-common-console.h" />
     <ClInclude Include="source\engine-common\engine-common-scenes.h" />
@@ -124,6 +125,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\debug\CTimeProfilerUI.cpp" />
+    <ClCompile Include="source\engine-common\dialogue\CDialogueLoader.cpp" />
+    <ClCompile Include="source\engine-common\dialogue\CDialogueTree.cpp" />
     <ClCompile Include="source\engine-common\dusk\CDuskGUI.cpp" />
     <ClCompile Include="source\engine-common\dusk\CDuskGUIHandle.cpp" />
     <ClCompile Include="source\engine-common\dusk\CDuskGUI_Drawer.cpp" />
@@ -148,7 +151,6 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUISlider.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUITextfield.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.cpp" />
-    <ClCompile Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.cpp" />
     <ClCompile Include="source\engine-common\dusk\dialogues\DGUI_DialogueFileSelector.cpp" />
     <ClCompile Include="source\engine-common\engine-common-console.cpp" />
     <ClCompile Include="source\engine-common\engine-common.cpp" />
