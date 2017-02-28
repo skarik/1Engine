@@ -32,6 +32,7 @@ struct DialogueNode
 struct ChoiceNode : DialogueNode
 {
 	std::vector<CDialogueLoader::ChoiceStruct> Choices;
+	int defaultChoice;
 };
 
 class CDialogueTree
@@ -45,8 +46,8 @@ public:
 
 	//Go to the next line of dialogue
 	void AdvanceDialogue (void);
-	//Report the player's choice
-	int ReportChoice (int choice);
+	//Report the player's choice. Should be 0-indexed. -1 or (void) to use default choice
+	int ReportChoice (int choice = -1);
 	//Go back one line of dialogue
 	int Backtrack (void);
 

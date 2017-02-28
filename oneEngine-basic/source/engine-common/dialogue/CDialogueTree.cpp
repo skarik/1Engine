@@ -126,7 +126,8 @@ void CDialogueTree::CreateTree (char * file)
 			currentChoice->type = 1; //Decision
 			currentChoice->character = pLoader->GetCurrentSpeaker();
 			currentChoice->ID = mTree.size();
-			
+			currentChoice->defaultChoice = pLoader->GetDefaultChoice();
+
 			if (!currentAddress.empty())
 			{
 				strcpy(currentChoice->address, currentAddress.c_str());
@@ -241,14 +242,19 @@ void CDialogueTree::AdvanceDialogue (void)
 		std::cout << "lolwut?" << std::endl;
 }
 
-//This should probably return the next line of dialogue instead
+//Choice reported should be 0-indexed.
 int CDialogueTree::ReportChoice (int choice)
 {
-	if (choice < mTree[mCurrent]->Next.size() && choice >= 0)
+	if ((choice < mTree[mCurrent]->Next.size() && choice >= 0) || choice == -1)
+	{
+		if (choice == -1)
+			choice = ((ChoiceNode *)mTree[mCurrent])->defaultChoice;
 		mCurrent = mTree[mCurrent]->Next[choice];
+	}
 	else
-		std::cout << "Error: Invalid choice reported" << std::endl; //Maybe make an exception here later?
+		std::cout << "Error: Invalid choice reported" << choice << std::endl; //Maybe make an exception here later?
 
+	//Check for end of tree. Either the next child is one past the size of the tree or the next one leads to a different, unrelated branch
 	if (mTree[mCurrent]->Next[0] >= mTree.size() || mTree[mTree[mCurrent]->Next[0]]->Parent != mCurrent)
 	{
 		sNodeType = DIALOGUE_END;
