@@ -72,10 +72,6 @@ string CDialogueLoader::GetCurrentLine (void)
 {
 	return sLines[LineIt].line;
 }
-string CDialogueLoader::GetCurrentLine(void)
-{
-	return sLines[LineIt].line;
-}
 string CDialogueLoader::GetCurrentAction(void)
 {
 	return sLines[LineIt].action;

@@ -54,7 +54,6 @@ public:
 	string GetCurrentExpression(void);
 	string GetCurrentAddress(void);
 
-	string GetCurrentLine (void);
 	void GoNextLine (void);
 
 	std::vector<ChoiceStruct> GetChoices (void);
