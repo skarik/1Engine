@@ -22,9 +22,11 @@ public:
 
 public:
 	std::string		m_text;
+	float			m_max_width;
 
 protected:
 	CBitmapFont*	m_font_texture;
+	size_t			m_text_triangle_count;
 };
 
 #endif//_RENDER2D_C_TEXTMESH_H_

@@ -13,7 +13,7 @@ CTextureCube::CTextureCube ( const string &sInIdentifier,
 		const string& sInFilenameYPos, const string& sInFilenameYNeg,
 		const string& sInFilenameZPos, const string& sInFilenameZNeg,
 		eTextureType	textureType,
-		eInternalFormat	format,
+		eColorFormat	format,
 		eMipmapGenerationStyle	mipmapGeneration
 		) : CTexture( "_hx_SYSTEM_SKIP" )
 {
@@ -46,7 +46,7 @@ CTextureCube::CTextureCube ( const string &sInIdentifier,
 	info.mipmapStyle	= mipmapGeneration;
 	
 	// Check if the texture has a reference
-	const glTexture* pTextureReference = TextureMaster.GetReference( this );
+	const textureEntry_t* pTextureReference = TextureMaster.GetReference( this );
 	// Texture doesn't exist yet
 	if ( pTextureReference == NULL ) 
 	{

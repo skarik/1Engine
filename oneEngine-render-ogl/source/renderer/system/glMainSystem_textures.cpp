@@ -61,7 +61,7 @@ void glMainSystem::TextureSetWrapping( const glHandle tex, const eWrappingType w
 // FORMATS (specific to openGL)
 //==============================================================================================//
 
-glEnum glMainSystem::Enum ( const eInternalFormat fmt )
+glEnum glMainSystem::Enum ( const eColorFormat fmt )
 {
 	switch ( fmt ) {
 	case RGB8:		return GL_RGB8;
@@ -70,8 +70,6 @@ glEnum glMainSystem::Enum ( const eInternalFormat fmt )
 	case RGB16F:	return GL_RGB16F;
 	case RGBA16F:	return GL_RGBA16F;
 	case RGBA16:	return GL_RGBA16;
-	case RGBc:		return GL_COMPRESSED_RGB;
-	case RGBAc:		return GL_COMPRESSED_RGBA;
 	}
 	throw Core::InvalidArgumentException();
 	return 0x0;

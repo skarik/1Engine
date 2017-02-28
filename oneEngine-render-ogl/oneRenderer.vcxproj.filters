@@ -97,6 +97,9 @@
     <Filter Include="SOURCE\Renderer\Exceptions">
       <UniqueIdentifier>{562c253f-1b16-4503-bf8c-eb58c2a99361}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Renderer\GPU Wrapper">
+      <UniqueIdentifier>{27f97c23-3b8e-4366-9b54-66a9f1305aea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\renderer\window\COglWindowWin32.cpp">
@@ -374,6 +377,9 @@
     </ClCompile>
     <ClCompile Include="source\renderer\logic\particle\CParticle.hpp">
       <Filter>SOURCE\Renderer\Logic\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Textures.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -661,6 +667,15 @@
     </ClInclude>
     <ClInclude Include="source\renderer\logic\particle\CParticle.h">
       <Filter>SOURCE\Renderer\Logic\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\InternalSettings.h">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\glTexture.h">
+      <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Textures.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

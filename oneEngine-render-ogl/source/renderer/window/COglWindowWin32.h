@@ -74,9 +74,9 @@ public:
 	}
 
 	// Return screen buffer
-	CRenderTexture* getScreenBuffer ( void ) {
+	/*CRenderTexture* getScreenBuffer ( void ) {
 		return pSbuf;
-	}
+	}*/
 
 private:
 	enum eReturnStatus {
@@ -99,7 +99,7 @@ private:
 	eReturnStatus	CreateGLContext ( void );
 
 	// Creates screen buffer to render to
-	eReturnStatus	CreateBuffer ( void );
+	//eReturnStatus	CreateBuffer ( void );
 
 
 	eReturnStatus	ErrorOut( const char* message );
@@ -135,7 +135,7 @@ private:
 	bool	focused;
 
 	// Rendering
-	CRenderTexture*	pSbuf;	// Main screen buffer owned by the window
+	//CRenderTexture*	pSbuf;	// Main screen buffer owned by the window
 };
 
 

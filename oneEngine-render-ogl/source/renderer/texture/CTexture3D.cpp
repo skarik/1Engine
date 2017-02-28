@@ -11,7 +11,7 @@
 // === Constructor ===
 CTexture3D::CTexture3D ( string sInFilename,
 		eTextureType	textureType,
-		eInternalFormat	format,
+		eColorFormat	format,
 		unsigned int	atlasSizeX,
 		unsigned int	atlasSizeY,
 		eWrappingType	repeatX,
@@ -49,7 +49,7 @@ CTexture3D::CTexture3D ( string sInFilename,
 	info.mipmapStyle	= mipmapGeneration;
 	
 	// Check if the texture has a reference
-	const glTexture* pTextureReference = TextureMaster.GetReference( this );
+	const textureEntry_t* pTextureReference = TextureMaster.GetReference( this );
 	// Texture doesn't exist yet
 	if ( pTextureReference == NULL ) 
 	{

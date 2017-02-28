@@ -12,7 +12,7 @@ class CTexture3D : public CTexture
 public:
 	RENDER_API explicit CTexture3D ( string sInFilename,
 		eTextureType	textureType		= Texture3D,
-		eInternalFormat	format			= RGBA8,
+		eColorFormat	format			= RGBA8,
 		unsigned int	atlasSizeX		= 4,
 		unsigned int	atlasSizeY		= 4,
 		eWrappingType	repeatX			= Repeat,

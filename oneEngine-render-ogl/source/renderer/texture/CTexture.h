@@ -5,8 +5,9 @@
 // ==Includes==
 // Memory management
 #include "core/types/arBaseObject.h"
-// OpenGL interface and game link
-//#include "renderer/system/glMainSystem.h"
+// Math libraries
+#include "core/math/vect2d_template.h"
+// Renderer types
 #include "renderer/types/types.h"
 #include "renderer/types/textureFormats.h"
 #include "renderer/types/pixelFormat.h"
@@ -31,7 +32,7 @@ struct tTextureInfo
 	glHandle		index;
 
 	eTextureType	type;
-	eInternalFormat internalFormat;
+	eColorFormat	internalFormat;
 	eMipmapGenerationStyle	mipmapStyle;
 	eSamplingFilter	filter;
 
@@ -78,7 +79,7 @@ public:
 	// Pass in an empty string for the filename to just initialize a texture instance without any data.
 	RENDER_API explicit CTexture ( string sInFilename,
 		eTextureType	textureType		= Texture2D,
-		eInternalFormat	format			= RGBA8,
+		eColorFormat	format			= RGBA8,
 		unsigned int	maxTextureWidth	= 1024,
 		unsigned int	maxTextureHeight= 1024,
 		eWrappingType	repeatX			= Repeat,
@@ -94,8 +95,8 @@ public:
 
 	RENDER_API unsigned int GetWidth ( void ) { return info.width; };
 	RENDER_API unsigned int GetHeight( void ) { return info.height; };
+	RENDER_API Vector2i GetSize ( void ) { return Vector2i((int32_t)info.width, (int32_t)info.height); }
 	RENDER_API unsigned int GetDepth ( void ) { return info.depth; };
-
 	RENDER_API eTextureType GetType ( void ) { return info.type; };
 
 	RENDER_API virtual glHandle GetColorSampler ( void ) {

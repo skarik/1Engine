@@ -71,12 +71,12 @@ void CBloomShader::UpdateBuffer ( void )
 	}*/
 	// Create other small buffers
 	if ( buf_4th == NULL ) {
-		buf_4th = new CRenderTexture( m_buf->GetInternalFormat(), m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, Texture2D, DepthNone );
+		buf_4th = new CRenderTexture( m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, m_buf->GetInternalFormat(), DepthNone, StencilNone );
 	}
 	else if (( buf_4th->GetWidth() != m_buf->GetWidth()/4 )||( buf_4th->GetHeight() != m_buf->GetHeight()/4 ))
 	{
 		delete buf_4th;
-		buf_4th = new CRenderTexture( m_buf->GetInternalFormat(), m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, Texture2D, DepthNone );
+		buf_4th = new CRenderTexture( m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, m_buf->GetInternalFormat(), DepthNone, StencilNone );
 	}
 
 	/*if ( buf_16th == NULL ) {

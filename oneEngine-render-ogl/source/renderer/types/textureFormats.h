@@ -1,32 +1,12 @@
-
 #ifndef _RENDERER_TEXTURE_FORMATS_H_
 #define _RENDERER_TEXTURE_FORMATS_H_
 
+#include "core/types/types.h"
+
 // ===ENUMERATIONS===
-// Enumerations for the internal format
-enum eInternalFormat
-{
-	/*	
-	RGB8 = GL_RGB8,
-	RGBA8 = GL_RGBA8,
-	RGB16 = GL_RGB16,
-	RGB16F = GL_RGB16F,
-	RGBA16F = GL_RGBA16F,
-	RGBA16 = GL_RGBA16,
-	RGBc = GL_COMPRESSED_RGB,
-    RGBAc = GL_COMPRESSED_RGBA
-	*/
-	RGB8,
-	RGBA8,
-	RGB16,
-	RGB16F,
-	RGBA16F,
-	RGBA16,
-	RGBc,
-    RGBAc
-};
+
 // Enumerations for the texture type
-enum eTextureType
+enum eTextureType : uint8_t
 {
 	/*
 	Texture2D = GL_TEXTURE_2D,
@@ -39,38 +19,56 @@ enum eTextureType
 	Texture3D,
 	TextureCube
 };
+
+// Enumerations for the internal format
+enum eColorFormat : uint8_t
+{
+	ColorNone = 0,
+
+	__COLOR_FORMAT_RGB_MIN,
+	RGB8,
+	RGB16,
+	RGB16F,
+	__COLOR_FORMAT_RGB_MAX,
+
+	__COLOR_FORMAT_RGBA_MIN,
+	RGBA8,
+	RGBA16F,
+	RGBA16,
+	__COLOR_FORMAT_RGBA_MAX,
+
+	__COLOR_FORMAT_MAX
+};
 // Enumerations for the depth type
 enum eDepthFormat
 {
-	/*
-	DepthNone = 0,
-	Depth16 = GL_DEPTH_COMPONENT16,
-	Depth24 = GL_DEPTH_COMPONENT24,
-	Depth32 = GL_DEPTH_COMPONENT32
-	*/
-	DepthNone = 0,
+	DepthNone = __COLOR_FORMAT_MAX,
+
 	Depth16,
 	Depth24,
-	Depth32
+	Depth32,
+
+	__DEPTH_FORMAT_MAX
 };
 // Enumerations for the stencil type
-enum eStencilFormat
+enum eStencilFormat : uint8_t
 {
-	/*
-	StencilNone = 0,
-	StencilIndex1 = GL_STENCIL_INDEX1,
-	StencilIndex4 = GL_STENCIL_INDEX4,
-	StencilIndex8 = GL_STENCIL_INDEX8,
-	StencilIndex16 = GL_STENCIL_INDEX16
-	*/
-	StencilNone = 0,
+	StencilNone = __DEPTH_FORMAT_MAX,
+
+	// Unsupported on textures
 	StencilIndex1,
+	// Unsupported on textures
 	StencilIndex4,
+	// This is the only supported value on textures
 	StencilIndex8,
-	StencilIndex16
+	// Unsupported on textures
+	StencilIndex16,
+
+	__STENCIL_FORMAT_MAX
 };
+
 // Enumerations for the texture wrap
-enum eWrappingType
+enum eWrappingType : uint8_t
 {
 	/*
 	Repeat			= GL_REPEAT,
@@ -82,20 +80,20 @@ enum eWrappingType
 	MirroredRepeat
 };
 // Enumerations for import options
-enum eOrientation
+enum eOrientation : uint8_t
 {
 	NoFlip,
 	Flip
 };
 // Enumerations for mipmap generation options
-enum eMipmapGenerationStyle
+enum eMipmapGenerationStyle : uint8_t
 {
 	MipmapNormal = 0,
 	MipmapNone,
 	MipmapNearest
 };
 // Enumeration for the texture class
-enum eTextureClass
+enum eTextureClass : uint8_t
 {
 	TextureClassBase,
 	TextureClass3D,
@@ -106,7 +104,7 @@ enum eTextureClass
 	TextureClassRenderTarget_MRT,
 };
 // Enumeration for texture sampling
-enum eSamplingFilter
+enum eSamplingFilter : uint8_t
 {
 	SamplingPoint = 0,
 	SamplingLinear,

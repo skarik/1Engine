@@ -4,7 +4,12 @@
 #include "core/debug/CDebugConsole.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/exceptions.h"
+#include "renderer/gpuw/Textures.h"
 
+// Stringstream for unique string id generation
+#include <sstream>
+
+using std::stringstream;
 using std::cout;
 using std::endl;
 
@@ -13,8 +18,8 @@ std::stack<unsigned int> CRenderTexture::buffer_stack;
 
 // == Constructor + Destructor ==
 // Explicit Constructor
-CRenderTexture::CRenderTexture ( 
-		eInternalFormat	format,
+/*CRenderTexture::CRenderTexture ( 
+		eColorFormat	format,
 		unsigned int	maxTextureWidth,
 		unsigned int	maxTextureHeight,
 		eWrappingType	repeatX,
@@ -169,6 +174,174 @@ CRenderTexture::CRenderTexture (
 	// Make sure the buffer stack is not empty
 	if ( buffer_stack.empty() )
 		buffer_stack.push(0);
+}*/
+CRenderTexture::CRenderTexture (
+	unsigned int	requestedWidth,
+	unsigned int	requestedHeight,
+	eWrappingType	repeatX,
+	eWrappingType	repeatY,
+	eColorFormat	requestedColor,
+	eDepthFormat	requestedDepth,
+	eStencilFormat	requestedStencil
+)
+	: CRenderTexture(
+		requestedWidth, requestedHeight,
+		repeatX, repeatY,
+		requestedColor,
+		glTexture(0, requestedDepth), requestedDepth != DepthNone,
+		glTexture(0, requestedStencil), requestedStencil != StencilNone )
+{
+	// Delegated constructor
+}
+
+
+CRenderTexture::CRenderTexture (
+	unsigned int	requestedWidth,
+	unsigned int	requestedHeight,
+	eWrappingType	repeatX,
+	eWrappingType	repeatY,
+	eColorFormat	requestedColor,
+	glTexture		depthRequest,
+	bool			depthFetch,
+	glTexture		stencilRequest,
+	bool			stencilFetch )
+	: CTexture ( "_hx_SYSTEM_RENDERTEXTURE" )
+{
+	GL_ACCESS; // Using the glMainSystem accessor
+
+	// Check for NPOT texture support, and modify texture size accordingly.
+	if ( !GL.NPOTsAvailable )
+	{
+		unsigned int nWidth		= 2;
+		unsigned int nHeight	= 2;
+
+		while ( nWidth < requestedWidth )
+		{
+			nWidth *= 2;
+		}
+		while ( nHeight < requestedHeight )
+		{
+			nHeight *= 2;
+		}
+
+		requestedWidth	= nWidth;
+		requestedHeight	= nHeight;
+	}
+
+	// Set the information structure to prepare for reading in
+	info.type			= Texture2D;
+	info.internalFormat	= ColorNone;
+	info.width			= std::min<uint>( requestedWidth, (unsigned)GL.MaxTextureSize );
+	info.height			= std::min<uint>( requestedHeight, (unsigned)GL.MaxTextureSize );
+	info.index			= 0;
+	info.repeatX		= repeatX;
+	info.repeatY		= repeatY;
+
+	rtInfo.fetchcolor	= (requestedColor != ColorNone);
+	rtInfo.depth		= DepthNone;
+	rtInfo.fetchdepth	= false;
+	rtInfo.stencil		= StencilNone;
+	rtInfo.fetchstencil	= false;
+
+	// Initialze data
+	rtInfo.findex		= 0;
+	rtInfo.depthRBO		= 0;
+	rtInfo.stencilRBO	= 0;
+	rtInfo.active		= false;
+
+	// Generate an id
+	stringstream tempstream;
+	tempstream << "__hx_rt_" << (void*)this << "_" << info.width << "_" << info.height; 
+	rtUniqueSId = string( tempstream.str() );
+	// Thing is, this ID isn't really needed, as the way render textures work is much different.
+
+	// Print out infos
+	cout << "New render texture: " << rtUniqueSId << endl;
+
+	// Generate the data
+	if ( rtInfo.fetchcolor )
+	{
+		cout << " + Fetch color enabled." << endl;
+
+		// Create a new color texture and set it up
+		info.index = GPU::TextureAllocate( Texture2D, requestedColor, info.width, info.height );
+		GPU::TextureSampleSettings( Texture2D, info.index, info.repeatX, info.repeatY, 0, SamplingLinear, SamplingLinear );
+		GL.CheckError();
+
+		// Update color format
+		info.internalFormat = requestedColor;
+	}
+	else
+	{
+		info.index = 0;
+	}
+
+	// Do the same if there's a renderbuffer
+	if ( depthFetch )
+	{
+		cout << " + Fetch depth enabled." << endl;
+
+		if ( depthRequest.texture == 0 )
+		{
+			// Create a new depth texture and set it up
+			rtInfo.depthtex = GPU::TextureAllocate( Texture2D, depthRequest.format, info.width, info.height );
+			GPU::TextureSampleSettings( Texture2D, rtInfo.depthtex, info.repeatX, info.repeatY, 0, SamplingLinear, SamplingLinear );
+			GL.CheckError();
+
+			// Update color format
+			rtInfo.depth = (eDepthFormat)depthRequest.format;
+			rtInfo.depthowned = true;
+		}
+		else
+		{
+			rtInfo.depthtex = depthRequest.texture;
+			rtInfo.depth = (eDepthFormat)depthRequest.format;
+			rtInfo.depthowned = false;
+		}
+	}
+	else
+	{
+		rtInfo.depthtex = 0;
+		rtInfo.depth = (eDepthFormat)depthRequest.format;
+		rtInfo.depthRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.depth, info.width, info.height);
+	}
+
+	// Do the same if there's a stencilbuffer
+	if ( stencilFetch )
+	{
+		cout << " + Fetch stencil enabled." << endl;
+
+		if ( stencilRequest.texture == 0 )
+		{
+			// Create a new stencil texture and set it up
+			rtInfo.stenciltex = GPU::TextureAllocate( Texture2D, stencilRequest.format, info.width, info.height );
+			GPU::TextureSampleSettings( Texture2D, rtInfo.stenciltex, info.repeatX, info.repeatY, 0, SamplingLinear, SamplingLinear );
+			GL.CheckError();
+
+			// Update color format
+			rtInfo.stencil = (eStencilFormat)stencilRequest.format;
+			rtInfo.stencilowned = true;
+		}
+		else
+		{
+			rtInfo.stenciltex = stencilRequest.texture;
+			rtInfo.stencil = (eStencilFormat)stencilRequest.format;
+			rtInfo.stencilowned = false;
+		}
+	}
+	else
+	{
+		rtInfo.stenciltex = 0;
+		rtInfo.stencil = (eStencilFormat)stencilRequest.format;
+		rtInfo.stencilRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.depth, info.width, info.height);
+	}
+
+	// And now create the framebuffer
+	GenerateFramebuffer();
+
+	// Make sure the buffer stack is not empty
+	if ( buffer_stack.empty() )
+		buffer_stack.push(0);
 }
 
 // Destructor
@@ -177,40 +350,36 @@ CRenderTexture::~CRenderTexture ( void )
 	// Free framebuffer
 	if ( rtInfo.findex )
 		glDeleteFramebuffers( 1, &rtInfo.findex );
-	if ( rtInfo.depthRBO ) {
-		/*if ( rtInfo.fetchdepth )
-			glDeleteFramebuffers( 1, &rtInfo.depthRBO );
-		else*/
-		if ( !rtInfo.fetchdepth )
-			glDeleteRenderbuffers( 1, &rtInfo.depthRBO );
-	}
-	if ( rtInfo.stencilRBO ) {
-		/*if ( rtInfo.fetchstencil )
-			glDeleteFramebuffers( 1, &rtInfo.stencilRBO );
-		else*/
-		if ( !rtInfo.fetchstencil )
-			glDeleteRenderbuffers( 1, &rtInfo.stencilRBO );
-	}
-	// Free texture
+
+	// Free renderbuffers
+	if ( rtInfo.depthRBO )
+		glDeleteRenderbuffers( 1, &rtInfo.depthRBO );
+	if ( rtInfo.stencilRBO )
+		glDeleteRenderbuffers( 1, &rtInfo.stencilRBO );
+
+	// Free textures
 	if ( info.index )
 		glDeleteTextures( 1, &info.index );
-		//GL.FreeTexture( info.index );
-	if ( rtInfo.depthtex )
+	if ( rtInfo.depthtex && rtInfo.depthowned )
 		glDeleteTextures( 1, &rtInfo.depthtex );
-		//GL.FreeTexture( rtInfo.depthtex );
-	if ( rtInfo.stenciltex )
+	if ( rtInfo.stenciltex && rtInfo.stencilowned )
 		glDeleteTextures( 1, &rtInfo.stenciltex );
-		//GL.FreeTexture( rtInfo.stenciltex );
 }
 
 // == Generating Identical-sized Buffers ==
 // Public copy generation
 CRenderTexture* CRenderTexture::GenerateCopy ( void )
 {
-	return new CRenderTexture(
+	/*return new CRenderTexture(
 		info.internalFormat, info.width, info.height,
 		info.repeatX, info.repeatY, info.type,
-		rtInfo.depth, rtInfo.fetchdepth, !rtInfo.fetchcolor, rtInfo.stencil, rtInfo.fetchstencil );
+		rtInfo.depth, rtInfo.fetchdepth, !rtInfo.fetchcolor, rtInfo.stencil, rtInfo.fetchstencil );*/
+	return new CRenderTexture(
+		info.width, info.height,
+		info.repeatX, info.repeatY,
+		info.internalFormat,
+		glTexture(0, rtInfo.depth), rtInfo.depthtex != 0,
+		glTexture(0, rtInfo.stencil), rtInfo.stenciltex != 0 );
 }
 
 // == Texture binding ==
@@ -324,43 +493,26 @@ void CRenderTexture::GenerateFramebuffer ( void )
 			}
 		}
 
-		if ( rtInfo.depth != DepthNone )
+		// Bind the render buffer
+		if ( rtInfo.depthRBO != 0 )
 		{
-			if ( rtInfo.fetchdepth )
-			{
-				cout << " + Attaching depth texture." << endl;
-				// Attach the depth texture to depth attachment
-				glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, rtInfo.depthtex, 0 );
-			}
-			else
-			{
-				// If requested, create a renderbuffer object to store depth info
-				glGenRenderbuffers( 1, &rtInfo.depthRBO );
-				glBindRenderbuffer( GL_RENDERBUFFER, rtInfo.depthRBO );
-				glRenderbufferStorage( GL_RENDERBUFFER, GL.Enum(rtInfo.depth), info.width, info.height );
-				glBindRenderbuffer( GL_RENDERBUFFER, 0 );
-				// attach the renderbuffer to depth attachment point
-				glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rtInfo.depthRBO );
-			}
+			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rtInfo.depthRBO );
 		}
-		if ( rtInfo.stencil != StencilNone )
+		else if ( rtInfo.depthtex != 0 )
 		{
-			if ( rtInfo.fetchstencil )
-			{
-				cout << " + Attaching stencil texture." << endl;
-				// Attach the stencil texture to stencil attachment
-				glFramebufferTexture2D( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, rtInfo.stenciltex, 0 );
-			}
-			else
-			{
-				// If requested, create a renderbuffer object to store stencil info
-				glGenRenderbuffers( 1, &rtInfo.stencilRBO );
-				glBindRenderbuffer( GL_RENDERBUFFER, rtInfo.stencilRBO );
-				glRenderbufferStorage( GL_RENDERBUFFER, GL.Enum(rtInfo.stencil), info.width, info.height );
-				glBindRenderbuffer( GL_RENDERBUFFER, 0 );
-				// attach the renderbuffer to stencil attachment point
-				glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rtInfo.stencilRBO );
-			}
+			cout << " + Attaching depth texture." << endl;
+			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, rtInfo.depthtex, 0 );
+		}
+
+		// Bind the stencil buffer
+		if ( rtInfo.stencilRBO != 0 )
+		{
+			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rtInfo.stencilRBO );
+		}
+		else if ( rtInfo.stenciltex != 0 )
+		{
+			cout << " + Attaching stencil texture." << endl;
+			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, rtInfo.stenciltex, 0 );
 		}
 
 		// check FBO status
@@ -384,10 +536,8 @@ void CRenderTexture::GenerateFramebuffer ( void )
 				cout << "   bufferStatus: GL_FRAMEBUFFER_UNSUPPORTED" << endl; break;
 			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
 				cout << "   bufferStatus: GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE" << endl; break;
-#ifdef _OPENGL4_
 			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
 				cout << "   bufferStatus: GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS" << endl; break;
-#endif
 			}
 		}
 		else {

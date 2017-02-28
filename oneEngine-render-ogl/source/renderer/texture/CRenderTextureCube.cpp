@@ -4,6 +4,10 @@
 #include "core/debug/CDebugConsole.h"
 #include "renderer/system/glMainSystem.h"
 
+// Stringstream for unique string id generation
+#include <sstream>
+
+using std::stringstream;
 using std::cout;
 using std::endl;
 
@@ -11,7 +15,7 @@ using std::endl;
 // Explicit Constructor
 CRenderTextureCube::CRenderTextureCube ( 
 		eTextureType	textureType,
-		eInternalFormat	format,
+		eColorFormat	format,
 		unsigned int	maxTextureWidth,
 		unsigned int	maxTextureHeight,
 		eDepthFormat	depthType,

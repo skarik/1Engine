@@ -765,6 +765,11 @@ void MapEditor::doIOLoading ( void )
 
 	// Do map finalization
 	m_tile_selector->SetTileMap(m_tilemap);
+
+	// Force an update now
+	Update();
+	// Update the UI to new values
+	dusk->SetColorPicker( ui_fld_map_ambient_color, Renderer::Settings.ambientColor );
 }
 
 //		doNewMap () : delete all items in map, clear out tilemap
@@ -1118,6 +1123,8 @@ void MapEditor::uiStepKeyboardShortcuts ( void )
 		{
 			if ( m_current_savetarget.empty() )
 			{
+				m_current_mode = Mode::None; // Close out everything to prevent UI from locking up
+
 				System::sFileDialogueEntry filetypes [1];
 				strcpy( filetypes[0].extension, "m04" );
 				strcpy( filetypes[0].filetype, "OneEngine M04 Map" );
@@ -1130,6 +1137,8 @@ void MapEditor::uiStepKeyboardShortcuts ( void )
 		}
 		if ( Input::Keydown( 'O' ) )
 		{
+			m_current_mode = Mode::None; // Close out everything to prevent UI from locking up
+
 			System::sFileDialogueEntry filetypes [1];
 			strcpy( filetypes[0].extension, "m04" );
 			strcpy( filetypes[0].filetype, "OneEngine M04 Map" );
@@ -1187,6 +1196,8 @@ void MapEditor::uiStepTopEdge ( void )
 	}
 	if ( ui_file_save.GetButtonClicked() )
 	{
+		m_current_mode = Mode::None; // Close out everything to prevent UI from locking up
+
 		System::sFileDialogueEntry filetypes [1];
 		strcpy( filetypes[0].extension, "m04" );
 		strcpy( filetypes[0].filetype, "OneEngine M04 Map" );
@@ -1194,6 +1205,8 @@ void MapEditor::uiStepTopEdge ( void )
 	}
 	if ( ui_file_load.GetButtonClicked() )
 	{
+		m_current_mode = Mode::None; // Close out everything to prevent UI from locking up
+
 		System::sFileDialogueEntry filetypes [1];
 		strcpy( filetypes[0].extension, "m04" );
 		strcpy( filetypes[0].filetype, "OneEngine M04 Map" );

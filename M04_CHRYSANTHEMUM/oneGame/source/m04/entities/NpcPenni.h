@@ -29,7 +29,4 @@ namespace M04
 	};
 }
 
-// Create editor object
-//LINK_OBJECT_TO_CLASS(npc_rex,M04::NpcPenni);
-
 #endif//_M04_NPC_PENNI_H_

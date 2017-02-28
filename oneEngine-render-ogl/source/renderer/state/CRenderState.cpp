@@ -3,17 +3,22 @@
 #include "CRenderState.h"
 #include "Settings.h"
 
+#include "core/system/Screen.h"
+
 #include "renderer/object/CRenderableObject.h"
 #include "renderer/logic/CLogicObject.h"
 
 #include "renderer/material/glMaterial.h"
 #include "renderer/texture/CTexture.h"
+#include "renderer/texture/CRenderTexture.h"
 
 #include "renderer/debug/CDebugDrawer.h"
 #include "renderer/debug/CDebugRTInspector.h"
 #include "renderer/object/sprite/CSpriteContainer.h"
 
 #include "renderer/resource/CResourceManager.h"
+
+#include "renderer/gpuw/Textures.h"
 
 //===Class static member data===
 
@@ -31,8 +36,23 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	Active = this;
 	SceneRenderer = this;
 
+	// Set up default rendering targets
+	{
+		internal_settings.mainColorAttachmentCount = 4;
+		internal_settings.mainColorAttachmentFormat = RGBA16F;
+		internal_settings.mainDepthFormat = Depth24;
+		internal_settings.mainStencilFormat = StencilIndex8;
+	}
+	// Set initial rendertarget states
+	{
+		internal_buffer_forward_rt = NULL;
+		internal_buffer_depth = 0;
+		internal_buffer_stencil = 0;
+	}
+
 	// Create resource manager
-	if ( mResourceManager == NULL ) {
+	if ( mResourceManager == NULL )
+	{
 		mResourceManager = new CResourceManager;
 		mResourceManager->m_renderStateOwned = true;
 	}
@@ -270,9 +290,9 @@ void CRenderState::RemoveLO ( unsigned int id )
 }
 
 
-
 // Rendering configuration
 // ================================
+
 // Returns the material used for rendering a screen's pass in the given effect
 glMaterial* CRenderState::GetScreenMaterial ( const eRenderMode mode, const Renderer::eSpecialModes mode_type )
 {
@@ -287,4 +307,60 @@ glMaterial* CRenderState::GetScreenMaterial ( const eRenderMode mode, const Rend
 		}
 	}
 	return NULL;
+}
+
+// Settings and query
+// ================================
+
+// Returns internal settings that govern the current render setup
+const Renderer::internalSettings_t& CRenderState::GetSettings ( void ) const
+{
+	return internal_settings;
+}
+
+
+
+
+void CRenderState::CreateBuffer ( void )
+{
+	if ( internal_buffer_forward_rt != NULL )
+	{
+		delete internal_buffer_forward_rt;
+		internal_buffer_forward_rt = NULL;
+
+		GPU::TextureFree( internal_buffer_depth );
+		internal_buffer_depth = 0;
+
+		GPU::TextureFree( internal_buffer_stencil );
+		internal_buffer_stencil = 0;
+	}
+	if ( internal_buffer_forward_rt == NULL )
+	{
+		if ( internal_settings.mainDepthFormat != DepthNone )
+			internal_buffer_depth	= GPU::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
+		if ( internal_settings.mainStencilFormat != StencilNone )
+			internal_buffer_stencil	= GPU::TextureAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
+
+		internal_buffer_forward_rt = new CRenderTexture(
+			Screen::Info.width, Screen::Info.height,
+			Clamp, Clamp,
+			internal_settings.mainColorAttachmentFormat,
+			glTexture(internal_buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
+			glTexture(internal_buffer_stencil, internal_settings.mainStencilFormat), internal_settings.mainStencilFormat != StencilNone
+		);
+	}
+}
+
+CRenderTexture* CRenderState::GetForwardBuffer ( void )
+{
+	return internal_buffer_forward_rt;
+}
+
+glTexture CRenderState::GetDepthTexture ( void )
+{
+	return glTexture( internal_buffer_depth, internal_settings.mainDepthFormat );
+}
+glTexture CRenderState::GetStencilTexture ( void )
+{
+	return glTexture( internal_buffer_stencil, internal_settings.mainStencilFormat );
 }

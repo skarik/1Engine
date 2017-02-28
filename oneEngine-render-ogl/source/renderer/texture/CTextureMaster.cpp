@@ -19,7 +19,7 @@ CTextureMaster::~CTextureMaster ( void )
 }
 
 // Add a reference to a mesh set
-glTexture* CTextureMaster::AddReference ( CTexture* ptex )
+textureEntry_t* CTextureMaster::AddReference ( CTexture* ptex )
 {
 	// First look for it
 	std::map<string,TexmapSetReference>::iterator it;
@@ -63,7 +63,7 @@ glTexture* CTextureMaster::AddReference ( CTexture* ptex )
 	}
 
 }
-glTexture* CTextureMaster::AddReference ( string texMapSId, CTexture* ptex )
+textureEntry_t* CTextureMaster::AddReference ( string texMapSId, CTexture* ptex )
 {
 	// First look for it
 	std::map<string,TexmapSetReference>::iterator it;
@@ -169,7 +169,7 @@ void CTextureMaster::RemoveReference ( string texMapSId, CTexture* ptex )
 }
 
 // Returns a pointer to the wanted model data, null if not found
-const glTexture* CTextureMaster::GetReference ( CTexture* ptex )
+const textureEntry_t* CTextureMaster::GetReference ( CTexture* ptex )
 {
 	// First look for it
 	std::map<string,TexmapSetReference>::iterator it;
@@ -187,7 +187,7 @@ const glTexture* CTextureMaster::GetReference ( CTexture* ptex )
 	}
 }
 // Returns a pointer to the wanted model data, null if not found
-const glTexture* CTextureMaster::GetReference ( string texMapSId, CTexture* ptex )
+const textureEntry_t* CTextureMaster::GetReference ( string texMapSId, CTexture* ptex )
 {
 	// First look for it
 	std::map<string,TexmapSetReference>::iterator it;

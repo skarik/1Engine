@@ -121,13 +121,19 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 	}
 #endif// DEVELOPER_MODE
 
-	// Now create BPD paths
+	// Now create BPD paths:
+	// Require the sprite
 	if ( !Core::Resources::MakePathTo(filename_sprite + ".bpd", resource_sprite) )
 	{
 		throw Core::MissingFileException();
 	}
+	// If no palette, then load the object in forward mode.
 	if ( !Core::Resources::MakePathTo(filename_palette + ".bpd", resource_palette) )
 	{
+		// Remove deferred pass from the shader so it only renders in forward mode
+		m_material->deferredinfo.clear();
+
+		// Load up the texture
 		CTexture* new_texture = new CTexture (
 			n_sprite_filename, 
 			Texture2D, RGBA8,
@@ -147,9 +153,6 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 
 		// No longer need the texture in this object
 		new_texture->RemoveReference();
-
-		// TODO: Remove deferred pass from the shader so it only renders in forward mode
-		//m_material->deferredinfo.clear();
 
 		// Not a palette'd sprite.
 		return;
@@ -312,15 +315,10 @@ bool CRenderable2D::Render ( const char pass )
 	GL.Transform( &(transform) );
 	m_material->m_bufferSkeletonSize = 0;
 	m_material->m_bufferMatricesSkinning = 0;
-		GL.CheckError();
 	m_material->bindPass(pass);
-		GL.CheckError();
 	//parent->SendShaderUniforms(this);
-	//	GL.CheckError();
 	BindVAO( pass, m_buffer_verts, m_buffer_tris );
-		GL.CheckError();
 	GL.DrawElements( GL_TRIANGLES, m_modeldata.triangleNum*3, GL_UNSIGNED_INT, 0 );
-		GL.CheckError();
 
 	//GL.endOrtho();
 	// Success!

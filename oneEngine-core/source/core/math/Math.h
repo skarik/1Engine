@@ -17,25 +17,27 @@ namespace Math
 	// Values:
 	//
 
+	//	saturate ( float ) : clamps the value before 0 and 1
 	template <typename Number> inline
 		Number saturate ( Number f )
 	{
 		f =    ( (f>1) ? 1 : f );
 		return ( (0>f) ? 0 : f );
 	}
-
+	//	clamp ( float value, lower, upper ) : clamps the value between the two input numbers
 	template <typename Number> inline
 		Number clamp ( Number val, Number lower, Number upper )
 	{
 		val = ( (val > upper) ? upper : val );
 		return  (lower > val) ? lower : val;
 	}
-
+	//	wrap_max ( float value, max ) : wraps the value to range of 0 to max
 	template <typename Number> inline
 		Number wrap_max ( Number val, Number max )
 	{
 		return (Number)fmod(max + fmod(x, max), max);
 	}
+	//	wrap ( float value, lower, upper ) : wraps the value to range of lower to upper
 	template <typename Number> inline
 		Number wrap ( Number val, Number lower, Number upper )
 	{
@@ -47,29 +49,32 @@ namespace Math
 	// Operations:
 	//
 
+	//	sgn ( number ) : finds sign of the input value
 	template <typename Number> inline
 		int sgn(Number val)
 	{
 		return (Number(0) < val) - (val < Number(0));
 	}
+	//	square ( number ) : returns value to the second power
 	template <typename Number> inline
 		Number square(Number val)
 	{
 		return sqr(val);
 	}
+	//	cube ( number ) : returns value to the third power
 	template <typename Number> inline
 		Number cube(Number val)
 	{
 		return cub(val);
 	}
-
+	//	round ( number ) : rounds value to the neearest integer
 	template <typename Number> inline
 		int32_t round(Number r)
 	{
 		return (int32_t)((r > 0.0) ? (r + 0.5) : (r - 0.5)); 
 	}
 
-	// Very fast Log2.
+	//	log2 ( integer ) : Very fast Log2.
 	// It has a very large chance of failure on non-powers of two. Don't fuck up.
 	inline
 		uint32_t log2 ( const uint32_t x )
@@ -92,7 +97,7 @@ namespace Math
 #endif
 	}
 
-	// Pretty fast integer Exp2.
+	//	exp2 ( integer ) : pretty fast integer Exp2.
 	// No way to screw this up
 	inline
 		uint32_t exp2 ( const uint32_t x )

@@ -75,8 +75,8 @@ CBitmapFont::CBitmapFont ( string sInFontname,
 	fontUniqueSId = "__hx_font_" + fontInfo.name + std::to_string(fontInfo.height) + "_" + std::to_string(fontInfo.weight);
 
 	// Check if the texture has a reference
-	//const glTexture* pTextureReference = TextureMaster.GetReference( fontUniqueSId, this );
-	const glTexture* pTextureReference = NULL;
+	//const textureEntry_t* pTextureReference = TextureMaster.GetReference( fontUniqueSId, this );
+	const textureEntry_t* pTextureReference = NULL;
 	// Texture doesn't exist yet
 	if ( pTextureReference == NULL ) 
 	{
@@ -86,7 +86,7 @@ CBitmapFont::CBitmapFont ( string sInFontname,
 
 		// Add a reference to the data
 		//TextureMaster.AddReference( fontUniqueSId, this )->info.userdata = iLetterList;
-		glTexture* pNewTextureReference = TextureMaster.AddReference( fontUniqueSId, this );
+		textureEntry_t* pNewTextureReference = TextureMaster.AddReference( fontUniqueSId, this );
 
 		// Save the font info to the user data
 		pNewTextureReference->info.userdata = iLetterList;

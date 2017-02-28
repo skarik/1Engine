@@ -13,18 +13,17 @@
 using std::string;
 
 // Texture info storage class definition
-class glTexture
+struct textureEntry_t
 {
 public:
 	tTextureInfo info;
 };
 
 // Storage Class Definition
-class TexmapSetReference
+struct TexmapSetReference
 {
-public:
 	unsigned int referenceCount;
-	glTexture texture;
+	textureEntry_t texture;
 };
 
 // Class definition
@@ -34,14 +33,14 @@ public:
 	CTextureMaster ( void );
 	~CTextureMaster ( void );
 
-	glTexture* AddReference ( CTexture* ptex );
-	glTexture* AddReference ( string texMapSId, CTexture* ptex );
+	textureEntry_t* AddReference ( CTexture* ptex );
+	textureEntry_t* AddReference ( string texMapSId, CTexture* ptex );
 
 	void RemoveReference ( CTexture* ptex );
 	void RemoveReference ( string texMapSId, CTexture* ptex );
 
-	const glTexture* GetReference ( CTexture* ptex );
-	const glTexture* GetReference ( string texMapSId, CTexture* ptex );
+	const textureEntry_t* GetReference ( CTexture* ptex );
+	const textureEntry_t* GetReference ( string texMapSId, CTexture* ptex );
 
 	void ReloadAll ( void );
 

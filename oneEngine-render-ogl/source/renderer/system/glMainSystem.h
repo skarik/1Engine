@@ -193,7 +193,7 @@ public:
 	// FORMATS (specific to openGL)
 	//==============================================================================================//
 
-	RENDER_API glEnum		Enum ( const eInternalFormat );
+	RENDER_API glEnum		Enum ( const eColorFormat );
 	RENDER_API glEnum		Enum ( const eTextureType );
 	RENDER_API glEnum		Enum ( const eDepthFormat );
 	RENDER_API glEnum		Enum ( const eStencilFormat );

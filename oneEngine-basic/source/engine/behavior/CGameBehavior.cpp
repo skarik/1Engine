@@ -40,6 +40,11 @@ void CGameBehavior::SetId( const gameid_t nId )
 {
 	id = nId;
 }
+// Private net ID 'safe' set
+void CGameBehavior::SetNetId ( const netid_t nId )
+{
+	netid = nId;
+}
 
 // Delete object
 void CGameBehavior::DeleteObject ( CGameBehavior* pObjectToDelete )

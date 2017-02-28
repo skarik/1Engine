@@ -217,7 +217,8 @@ void glMainSystem::CheckError ( void )
 			Debug::Console->PrintError( "gl: UNKNOWN ERROR\n" );
 			break;
 		}
-	} while ( error != GL_NO_ERROR );
+	}
+	while ( error != GL_NO_ERROR );
 
 	// If there's an error, throw exception
 	if ( hasError ) {

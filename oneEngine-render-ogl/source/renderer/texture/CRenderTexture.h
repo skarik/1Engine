@@ -5,9 +5,8 @@
 // ==Includes==
 // CTexture class
 #include "CTexture.h"
-// Stringstream for unique string id generation
-#include <sstream>
-using std::stringstream;
+// Request structure
+#include "renderer/types/glTexture.h"
 // Stack for buffer stack
 #include <stack>
 
@@ -26,7 +25,9 @@ struct tRenderTargetInfo
 	bool			fetchdepth;
 	bool			fetchstencil;
 	glHandle		depthtex;
+	bool			depthowned;
 	glHandle		stenciltex;
+	bool			stencilowned;
 
 	bool			active;
 };
@@ -42,8 +43,8 @@ protected:
 		;
 	}
 public:
-	RENDER_API explicit CRenderTexture ( 
-		eInternalFormat	format			= RGBA8,
+	/*RENDER_API explicit CRenderTexture ( 
+		eColorFormat	format			= RGBA8,
 		unsigned int	maxTextureWidth	= 1024,
 		unsigned int	maxTextureHeight= 1024,
 		eWrappingType	repeatX			= Clamp,
@@ -54,7 +55,42 @@ public:
 		bool			ignoreRGB		= false,
 		eStencilFormat	stencilType		= StencilNone,
 		bool			stencilFetch	= false
-		);
+		);*/
+
+
+	RENDER_API explicit CRenderTexture (
+		unsigned int	requestedWidth,
+		unsigned int	requestedHeight,
+		eWrappingType	repeatX,
+		eWrappingType	repeatY,
+		eColorFormat	requestedColor,
+		eDepthFormat	requestedDepth,
+		eStencilFormat	requestedStencil
+	);
+
+	//		Constructor : Create render texture with optionally pre-existing textures.
+	// requestedWidth, requestedHeight		Size of the desired target when creating new textures
+	// repeatX, repeatY						Behavior of edges of created textures
+	// requestedColor						Color format for the color that is requested. Set to ColorNone to ignore color rendering.
+	// depthRequest							Pointer to depth texture to attach/generate.
+	//											If input handle is zero and depth fetch is enabled, a depth texture will be generated with the given format.
+	//											Otherwise, a renderbuffer will be created.
+	// depthFetch							When true, uses the input texture. When false, uses a renderbuffer.
+	// stencilRequest						Pointer to stencil texture to attach/generate.
+	//											If input handle is zero and stencil fetch is enabled, a stencil texture will be generated with the given format.
+	//											Otherwise, a renderbuffer will be created.
+	// stencilFetch							When true, uses the input texture. When false, uses a renderbuffer.
+	RENDER_API explicit CRenderTexture (
+		unsigned int	requestedWidth,
+		unsigned int	requestedHeight,
+		eWrappingType	repeatX,
+		eWrappingType	repeatY,
+		eColorFormat	requestedColor,
+		glTexture		depthRequest,
+		bool			depthFetch,
+		glTexture		stencilRequest,
+		bool			stencilFetch
+	);
 	RENDER_API ~CRenderTexture ( void );
 
 	// Public Binding and Unbinding
@@ -83,7 +119,7 @@ public:
 	}
 
 	// Public property queries
-	eInternalFormat GetInternalFormat ( void ) const {
+	eColorFormat GetInternalFormat ( void ) const {
 		return info.internalFormat;
 	};
 	// State queue

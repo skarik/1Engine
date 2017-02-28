@@ -15,7 +15,7 @@ public:
 		const string& sInFilenameYPos, const string& sInFilenameYNeg,
 		const string& sInFilenameZPos, const string& sInFilenameZNeg,
 		eTextureType	textureType		= TextureCube,
-		eInternalFormat	format			= RGBA8,
+		eColorFormat	format			= RGBA8,
 		eMipmapGenerationStyle	mipmapGeneration = MipmapNone
 		);
 	~CTextureCube ( void );

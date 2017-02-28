@@ -23,7 +23,7 @@ protected:
 public:
 	explicit CRenderTextureCube ( 
 		eTextureType	textureType		= TextureCube,
-		eInternalFormat	format			= RGBA8,
+		eColorFormat	format			= RGBA8,
 		unsigned int	maxTextureWidth	= 1024,
 		unsigned int	maxTextureHeight= 1024,
 		eDepthFormat	depthType		= DepthNone,
@@ -65,7 +65,7 @@ public:
 	}
 
 	// Public property queries
-	/*eInternalFormat GetInternalFormat ( void ) const {
+	/*eColorFormat GetInternalFormat ( void ) const {
 		return info.internalFormat;
 	};
 	// State queue

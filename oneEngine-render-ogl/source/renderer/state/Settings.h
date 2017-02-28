@@ -1,10 +1,7 @@
-
-
 #ifndef _RENDER_SETTINGS_STRUCT_
 #define _RENDER_SETTINGS_STRUCT_
 
 // Includes
-//#include "CGameSettings.h"
 #include "core/types/float.h"
 #include "core/math/Color.h"
 
@@ -36,5 +33,4 @@ namespace Renderer
 	RENDER_API extern renderSettings_t Settings;
 }
 
-
-#endif
+#endif//_RENDER_SETTINGS_STRUCT_

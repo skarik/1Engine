@@ -283,12 +283,25 @@ void CLight::UpdateShadows ( void )
 {
 	if ( generateShadows && CGameSettings::Active()->b_ro_EnableShadows )
 	{
-		if ( !shadowTexture ) {
-			if ( isDirectional ) {
-				shadowTexture = new CRenderTexture( RGBA8, (unsigned int)(shadowResolution*2), (unsigned int)(shadowResolution/2), Clamp, Clamp, Texture2D, Depth24,true,false );
+		if ( !shadowTexture )
+		{
+			if ( isDirectional )
+			{
+				shadowTexture = new CRenderTexture(
+					(unsigned int)(shadowResolution*2), (unsigned int)(shadowResolution/2), 
+					Clamp, Clamp,
+					RGBA8,
+					glTexture(0,Depth24),true,
+					glTexture(), false );
 			}
-			else {
-				shadowTexture = new CRenderTexture( RGBA8, (unsigned int)shadowResolution, (unsigned int)shadowResolution, Clamp, Clamp, Texture2D, Depth24,true,false );
+			else
+			{
+				shadowTexture = new CRenderTexture(
+					(unsigned int)(shadowResolution), (unsigned int)(shadowResolution), 
+					Clamp, Clamp,
+					RGBA8,
+					glTexture(0,Depth24),true,
+					glTexture(), false );
 			}
 		}
 			//shadowTexture = new CRenderTexture( RGBA8, (unsigned int)shadowResolution, (unsigned int)shadowResolution, Clamp, Clamp, Texture2D, Depth16,true,true );

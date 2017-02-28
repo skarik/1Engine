@@ -65,7 +65,7 @@ void CRTCameraCube::RenderScene ( void )
 		CCamera::UpdateMatrix();
 		CCamera::RenderSet();
 		GL.pushProjection( viewTransform * projTransform );
-		SceneRenderer->RenderScene( enabledHints );
+		SceneRenderer->RenderSceneForward( enabledHints );
 		GL.popProjection();
 		CCamera::RenderUnset();
 

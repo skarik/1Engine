@@ -213,38 +213,59 @@ void CCamera::RenderScene ( void )
 	GL_ACCESS;
 	RenderSet();
 	GL.pushProjection( viewTransform * projTransform );
+
 	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
 	{
-		SceneRenderer->RenderScene(enabledHints);
+		SceneRenderer->RenderSceneForward(enabledHints);
 	}
 	else if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_DEFERRED )
 	{
-		GL.CheckError();
+		// Set up the MRT render target
 		if ( !bIsRTcamera )
 		{
 			CRenderTexture* s_buf = GL.GetMainScreenBuffer();
 
-			if ( (m_renderTexture) && ((m_renderTexture->GetWidth() != s_buf->GetWidth()) || (m_renderTexture->GetHeight() != s_buf->GetHeight())) )
+			if ( m_renderTexture && m_renderTexture->GetSize() != s_buf->GetSize() )
 			{
 				delete m_renderTexture;
 				m_renderTexture = NULL;
 			}
 			if ( !m_renderTexture )
 			{
-				//new CRenderTexture( RGBA16F, s_buf->GetWidth(), s_buf->GetHeight(), Clamp,Clamp, Texture2D, Depth32, true, false, StencilNone, false );
-				//m_renderTexture = new CMRTTexture( RGBA16F, s_buf->GetWidth(), s_buf->GetHeight(), Clamp,Clamp, Depth32,false,StencilNone,false, 5 );
-				//m_renderTexture = new CMRTTexture( RGBA16F, s_buf->GetWidth(), s_buf->GetHeight(), Clamp,Clamp, Depth32,true,StencilNone,false, 5 );
-				m_renderTexture = new CMRTTexture( RGBA16F, s_buf->GetWidth(), s_buf->GetHeight(), Clamp,Clamp, Depth32,true,StencilNone,false, 4 );
-				GL.CheckError();
+				eColorFormat	colorMode	= SceneRenderer->GetSettings().mainColorAttachmentFormat;
+				eDepthFormat	depthMode	= SceneRenderer->GetSettings().mainDepthFormat;
+				eStencilFormat	stencilMode	= SceneRenderer->GetSettings().mainStencilFormat;
+				uint			colorCount	= SceneRenderer->GetSettings().mainColorAttachmentCount;
+
+				glTexture		depthTexture = SceneRenderer->GetDepthTexture();
+				glTexture		stencilTexture = SceneRenderer->GetStencilTexture();
+
+				glTexture textureRequests [4];
+				memset( textureRequests, 0, sizeof(glTexture) * 4 );
+				textureRequests[0].format = RGBA8;
+				textureRequests[1].format = RGBA16F;
+				textureRequests[2].format = RGBA8;
+				textureRequests[3].format = RGBA8;
+
+				m_renderTexture = new CMRTTexture(
+					s_buf->GetWidth(), s_buf->GetHeight(),
+					Clamp, Clamp,
+					textureRequests + 0, 4,
+					&depthTexture, depthTexture.format != DepthNone,
+					&stencilTexture, stencilTexture.format != StencilNone );
 			}
 		}
+		// Render now, with this camera set, and the render texture set up
 		SceneRenderer->RenderSceneDeferred(enabledHints);
 	}
-	else {
-
+	else
+	{
+		throw Core::InvalidCallException();
 	}
 	GL.popProjection();
 	RenderUnset();
+
+	GL.CheckError();
 }
 
 

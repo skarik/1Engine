@@ -137,8 +137,9 @@ void CRenderState::Render ( void )
 			currentCamera->UpdateMatrix();
 		}
 	}
-	// Check for zero camera to render to
-	if ( CCamera::vCameraList[0] != prevActiveCam ) {
+	// Double check to make sure the zero camera is the active camera
+	if ( CCamera::vCameraList[0] != prevActiveCam )
+	{
 		std::cout << "Error in rendering: invalid zero index camera! (Seriously, this CAN'T happen)" << std::endl;
 		// Meaning, resort the camera list
 		for ( auto it = CCamera::vCameraList.begin(); it != CCamera::vCameraList.end(); )
@@ -151,13 +152,12 @@ void CRenderState::Render ( void )
 				++it;
 			}
 		}
-		//CCamera::vCameraList[0]->active = true;
-		//throw std::exception( "Bad camera" );
 		return; // Don't render past here, then.
 	}
 	TimeProfiler.EndTimeProfile( "rs_camera_matrix" );
 	
 	TimeProfiler.BeginTimeProfile( "rs_render" );
+	// Loop through all cameras:
 	for ( std::vector<CCamera*>::reverse_iterator it = CCamera::vCameraList.rbegin(); it != CCamera::vCameraList.rend(); ++it )
 	{
 		CCamera* currentCamera = *it;
@@ -180,58 +180,45 @@ void CRenderState::Render ( void )
 	}
 	// Set active camera back to default
 	CCamera::activeCamera = prevActiveCam;
+
 	// End camera loop
 	TimeProfiler.EndTimeProfile( "rs_render" );
 	
 	TimeProfiler.BeginTimeProfile( "rs_buffer_push" );
-	// Now, if we're in the buffer mode
+	// Are we in buffer mode? (This should always be true)
 	if ( CGameSettings::Active()->b_ro_UseBufferModel )
 	{
 		GL.setupViewport(0,0,Screen::Info.width,Screen::Info.height);
-		// Change the projection to orthographic
-		//GL.beginOrtho( 0,1, 1,-1, -1,1, false );
 		GL.pushModelMatrix( Matrix4x4() );
+		{
+			// Set the current main screen buffer as the texture
+			glMaterial::Copy->setTexture( 0, GL.GetMainScreenBuffer() );
+			glMaterial::Copy->bindPassForward(0);
 
-		//glMaterial::Copy->setTexture( 0, GL.GetMainScreenBuffer() );
-		//static CTexture* dbgTexture = new CTexture("textures/caustics.png");
-		/*static CTexture* dbgTexture = NULL;
-		if ( dbgTexture == NULL ) {
-			dbgTexture = new CTexture("textures/system/cursor.png");
-		}*/
-		glMaterial::Copy->setTexture( 0, GL.GetMainScreenBuffer() );
-		//glMaterial::Copy->setTexture( 0, dbgTexture );
-		glMaterial::Copy->bindPassForward(0);
+			// Set up an always-rendered
+			glStencilMask( GL_FALSE );
+			glDepthMask( GL_FALSE );
+		
+			glDisable( GL_STENCIL_TEST );
+			glDisable( GL_DEPTH_TEST );
 
-		glDepthMask( false );
-		glDepthFunc( GL_ALWAYS );
+			glEnable( GL_BLEND );
+			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-		glEnable( GL_BLEND );
-		//glBlendFunc( GL_ONE, GL_ZERO );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-		glDisable( GL_CULL_FACE );
-
-		/*GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
-			GLd.P_PushTexcoord( 0,1 );
-			GLd.P_AddVertex( -1,1 );
-			GLd.P_PushTexcoord( 0,0 );
-			GLd.P_AddVertex( -1,-1 );
-			GLd.P_PushTexcoord( 1,1 );
-			GLd.P_AddVertex( 1,1 );
-			GLd.P_PushTexcoord( 1,0 );
-			GLd.P_AddVertex( 1,-1 );
-		GLd.EndPrimitive();*/
-		GLd.DrawScreenQuad();
-
-		glDepthFunc( GL_LEQUAL );
-
-		//GL.endOrtho();
+			GLd.DrawScreenQuad();
+		}
 		GL.popModelMatrix();
+
+		// Send signal that this frame is done.
+		GL.Present();
+	}
+	else
+	{
+		// Call present
+		GL.Present();	// Swap to the new frame now
 	}
 	TimeProfiler.EndTimeProfile( "rs_buffer_push" );
 
-	// Call present
-	GL.Present();	// Swap to the new frame now
 
 	TimeProfiler.BeginTimeProfile( "rs_end_render" );
 	// Call end render
@@ -256,18 +243,6 @@ void CRenderState::Render ( void )
 		}
 	}
 
-	// Queue transform update
-	/*static ftype updateTimer = 0;
-	updateTimer += Time::deltaTime;
-	if ( updateTimer > 1/30.0f ) {
-		CTransform::updateRenderSide = true;
-		updateTimer = std::min<ftype>( 1/30.0f, updateTimer-(1/30.0f) );
-	}
-	else {
-		CTransform::updateRenderSide = false;
-	}*/
-	//CTransform::updateRenderSide = true;
-
 	// Do error check at this point
 	if ( glMaterial::Default->passinfo.size() > 16 ) throw std::exception();
 	GL.CheckError();
@@ -278,7 +253,7 @@ void CRenderState::Render ( void )
 
 // Normal rendering routine. Called by a camera. Camera passes in its render hint.
 // This function will render to the scene targets needed.
-void CRenderState::RenderScene ( const uint32_t n_renderHint )
+void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 {
 	GL_ACCESS GLd_ACCESS
 	// Save current mode
@@ -442,6 +417,7 @@ void CRenderState::RenderScene ( const uint32_t n_renderHint )
 // Some debug compiler flags
 //#define SKIP_NON_WORLD_STUFF
 #define FORCE_BUFFER_CLEAR
+//#define ENABLE_RUNTIME_BLIT_TEST
 
 // Deferred rendering routine.
 void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
@@ -643,7 +619,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				CRenderTexture* currentMainRenderTarget = GL.GetMainScreenBuffer();
 				{
 					currentMainRenderTarget->BindBuffer();
-					GL.setupViewport(0,0,currentMainRenderTarget->GetWidth(),currentMainRenderTarget->GetHeight());
+					GL.setupViewport( 0, 0, currentMainRenderTarget->GetWidth(), currentMainRenderTarget->GetHeight() );
 				}
 				// Clear on first render
 				/*if ( firstRender ) {
@@ -653,7 +629,6 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					}
 					firstRender = false;
 				}*/
-				GL.CheckError();
 
 				// Choose lighting pass to use
 				glMaterial* targetPass = LightingPass;
@@ -696,13 +671,14 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					// Enable alpha blending
 					glEnable( GL_BLEND );
 					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-					// Disable writing to the depth buffer
-					glDepthMask( false );
-					glDepthFunc( GL_ALWAYS );
+					// Enable writing to depth and stencil
+					glStencilMask( GL_TRUE );
+					glDepthMask( GL_TRUE );
+					// Disable tests
+					glDisable( GL_STENCIL_TEST );
+					glDisable( GL_DEPTH_TEST );
 					// Draw the screen quad
 					GLd.DrawScreenQuad();
-					// Change depth equation back to the previous value
-					glDepthFunc( GL_LEQUAL );
 				// Finish rendering
 				GL.popModelMatrix();
 
@@ -727,16 +703,17 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 
 				// Copy over the depth to use when drawing in forward mode
 				GL.GetMainScreenBuffer()->BindBuffer();
-				GL.setupViewport(0,0,GL.GetMainScreenBuffer()->GetWidth(),GL.GetMainScreenBuffer()->GetHeight());
-				glBindFramebuffer( GL_READ_FRAMEBUFFER, currentCamera->GetRenderTexture()->GetRTInfo().findex );
+				GL.setupViewport(0, 0, GL.GetMainScreenBuffer()->GetWidth(), GL.GetMainScreenBuffer()->GetHeight());
+				/*glBindFramebuffer( GL_READ_FRAMEBUFFER, currentCamera->GetRenderTexture()->GetRTInfo().findex );
 				glBindFramebuffer( GL_DRAW_FRAMEBUFFER, GL.GetMainScreenBuffer()->GetRTInfo().findex );
 				glBlitFramebuffer(
 					0,0,Screen::Info.width,Screen::Info.height,
 					0,0,Screen::Info.width,Screen::Info.height,
 					GL_DEPTH_BUFFER_BIT, GL_NEAREST ); // Color doesn't need to be blit, since the deferred compositor outputs color
-				GL.CheckError();
+				GL.CheckError();*/
 
-				if ( false ) // Driver depth-blit unit test
+#ifdef ENABLE_RUNTIME_BLIT_TEST
+				// Driver depth-blit unit test
 				{
 					float depth_test_0 [4];
 					float depth_test_1 [4];
@@ -753,6 +730,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 						}
 					}
 				}
+#endif
 
 				// Set to forward mode
 				CGameSettings::Active()->i_ro_RendererMode = RENDER_MODE_FORWARD;
@@ -783,7 +761,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 						GL.cleanupDraw();
 					}
 					else if ( !renderRQ_current.forward ) 
-					{
+					{	// Shouldn't be rendering a deferred object here.
 						throw std::exception();
 					}
 					// Check the next object to see if should keep rendering
@@ -798,7 +776,9 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					// If next object is on another layer, just swap modes (check for main layer switch)
 					else if ( renderRQ_current.renderType != renderRQ_next.renderType )
 					{
-						if ( currentCamera->clearDepthAfterLayer ) {
+						if ( currentCamera->clearDepthAfterLayer )
+						{
+							glStencilMask( GL_TRUE );
 							glDepthMask( GL_TRUE );
 							glClear( GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 						}
@@ -807,13 +787,14 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				// Switch back to deferred renderer
 				CGameSettings::Active()->i_ro_RendererMode = RENDER_MODE_DEFERRED;
 				// Go back to deferred buffer
-				//GL.GetMainScreenBuffer()->UnbindBuffer();
 				GL.GetMainScreenBuffer()->UnbindBuffer();
 			}
 			// Check for main layer switch
 			if ( renderRQ_next.obj && renderRQ_current.renderType != renderRQ_next.renderType )
 			{
-				if ( currentCamera->clearDepthAfterLayer ) {
+				if ( currentCamera->clearDepthAfterLayer )
+				{
+					glStencilMask( GL_TRUE );
 					glDepthMask( GL_TRUE );
 					glClear( GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 				}
@@ -828,50 +809,17 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 	{
 		sortedRenderList[i].obj->PostRender( sortedRenderList[i].pass );
 	}
-	GL.CheckError();
 	// End render loop
 
 	// Unbind fbo when done rendering
 	if ( !currentCamera->IsRTCamera() )
 	{
-		//GL.GetMainScreenBuffer()->UnbindBuffer();
 		currentCamera->GetRenderTexture()->UnbindBuffer();
-		GL.CheckError();
-	}
-
-	// For the final camera, render to a buffer
-	if ( currentCamera == mainBufferCamera )
-	{
-		/*GL.GetMainScreenBuffer()->BindBuffer();
-		GL.CheckError();
-
-		// Change the projection to orthographic
-		GL.beginOrtho(-1,-1,2,2,-1,1,false);
-			// Copy buffer over
-			glMaterial::Copy->setSampler( 0, ((CMRTTexture*)(currentCamera->GetRenderTexture()))->GetBufferTexture(0) );
-			//glMaterial::Copy->setSampler( 0, currentCamera->GetRenderTexture()->GetColorSampler() );
-			glMaterial::Copy->bindPassForward(0);
-
-			glEnable( GL_BLEND );
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			glDepthMask( false );
-			glDepthFunc( GL_ALWAYS );
-				GLd.DrawScreenQuad();
-			glDepthFunc( GL_LEQUAL );
-		GL.endOrtho();
-
-		GL.GetMainScreenBuffer()->UnbindBuffer();*/
-		/*GL.GetMainScreenBuffer()->BindBuffer();
-		glBindFramebuffer( GL_READ_FRAMEBUFFER, currentCamera->GetRenderTexture()->GetRTInfo().findex );
-		glBindFramebuffer( GL_DRAW_FRAMEBUFFER, GL.GetMainScreenBuffer()->GetRTInfo().findex );
-		glBlitFramebuffer(
-			0,0,Screen::Info.width,Screen::Info.height,
-			0,0,Screen::Info.width,Screen::Info.height,
-			GL_COLOR_BUFFER_BIT, GL_LINEAR );
-		GL.GetMainScreenBuffer()->UnbindBuffer();*/
 	}
 
 }
+
+
 
 // Specialized Rendering Routines
 void CRenderState::PreRenderSetLighting ( std::vector<CLight*> & lightsToUse )

@@ -41,7 +41,7 @@ COglWindowWin32::COglWindowWin32(
 	hRenderContext	= NULL;
 	hWnd= NULL;
 
-	pSbuf=NULL;
+	//pSbuf=NULL;
 
 	active		= true;
 	focused		= true;
@@ -55,10 +55,11 @@ COglWindowWin32::COglWindowWin32(
 	pWindowName = "Test Window";
 	iWidth	= CGameSettings::Active()->i_ro_TargetResX;
 	iHeight = CGameSettings::Active()->i_ro_TargetResY;
-	if ( CGameSettings::Active()->b_ro_UseHighRange )
+	/*if ( CGameSettings::Active()->b_ro_UseHighRange )
 		iColorDepth = 16;
 	else
-		iColorDepth = 8;
+		iColorDepth = 8;*/
+	iColorDepth = 16;
 
 	done = false;
 
@@ -257,15 +258,17 @@ int COglWindowWin32::InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 	//glEnable(GL_TEXTURE_2D);							// Enable Texture Mapping
 	glClearColor(0.0F, 0.0F, 0.0F, 0.0F);				// Black Background
 	glClearDepth(1.0F);									// Depth Buffer Setup
-	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+	glClearStencil(0);
+	/*glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
 	glDepthMask(GL_TRUE);								// Enable depth mask 
 	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
 	glHint(GL_FRAGMENT_SHADER_DERIVATIVE_HINT, GL_NICEST);	// Really Nice Perspective Calculations
 	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_DONT_CARE);					// Want nice fog, but don't really care
 	//glHint(GL_FOG_HINT, GL_DONT_CARE);					// Want nice fog, but don't really care
+	*/
 	glEnable(GL_CULL_FACE);								// Enabled backface culling
-
+	
 	return TRUE;										// Initialization Went OK
 }
 
@@ -275,7 +278,7 @@ int COglWindowWin32::DrawGLScene(GLvoid)
 	GL_ACCESS;
 
 	// Update the opengl render viewport if there's been a change
-	if ( Screen::Info.width != iWidth || Screen::Info.height != iHeight )
+	if ( SceneRenderer->GetForwardBuffer() == NULL || Screen::Info.width != iWidth || Screen::Info.height != iHeight )
 	{
 		wglMakeCurrent( hDC,hRenderContext );
 
@@ -284,7 +287,8 @@ int COglWindowWin32::DrawGLScene(GLvoid)
 		Screen::Info.scale = iHeight/720.0f;
 		Screen::Info.Update();
 
-		CreateBuffer();							// Reset the buffer
+		//CreateBuffer();							// Reset the buffer
+		SceneRenderer->CreateBuffer();
 
 		GL.setupViewport( 0,0,Screen::Info.width,Screen::Info.height );
 	}
@@ -294,7 +298,7 @@ int COglWindowWin32::DrawGLScene(GLvoid)
 
 	// Slow down the framerate if it's too fast
 	int fps = int(1.0f/Time::smoothDeltaTime);
-	if ( fps > 500 )
+	if ( fps > 600 )
 	{
 		std::this_thread::sleep_for(std::chrono::microseconds(100));
 	}
@@ -526,8 +530,8 @@ COglWindowWin32::eReturnStatus COglWindowWin32::CreateGLWindow(char* title, int 
 		ReSizeGLScene(width, height);					// Set Up Our Perspective GL Screen
 
 		// Set view info
-		Screen::Info.width = width;
-		Screen::Info.height = height;
+		//Screen::Info.width = width;
+		//Screen::Info.height = height;
 	}
 
 	// init raw mouse input
@@ -657,39 +661,54 @@ COglWindowWin32::eReturnStatus	COglWindowWin32::CreateGLContext ( void )
 	CGameSettings::Active()->LoadSettings();
 
 	// Create buffer for the window
-	if ( !CreateBuffer() ) {
+	/*if ( !CreateBuffer() )
+	{
 		KillGLWindow();								// Reset The Display
 		return ErrorOut("Buffer creation Failed.");
-	}
+	}*/
 
 	return status_SUCCESSFUL;
 }
 
 
-COglWindowWin32::eReturnStatus COglWindowWin32::CreateBuffer ( void )
-{
-	// Remove old buffer
-	if ( pSbuf ) {
-		delete pSbuf;
-	}
-	pSbuf = NULL;
-	// If requested, make the screen buffer
-	if ( CGameSettings::Active()->b_ro_UseBufferModel )
-	{
-		if ( iColorDepth == 8 ) {
-			pSbuf = new CRenderTexture( RGB8, Screen::Info.width, Screen::Info.height, Clamp,Clamp, Texture2D, Depth16, true,false );
-		}
-		else if ( iColorDepth == 16 ) {
-			pSbuf = new CRenderTexture( RGB16F, Screen::Info.width, Screen::Info.height, Clamp,Clamp, Texture2D, Depth32, true,false );
-			//pSbuf = new CRenderTexture( RGB16, iWidth, iHeight, Clamp,Clamp, Texture2D, Depth32, true,false );
-		}
-		else {
-			throw Core::NotYetImplementedException();
-			return status_FAILED;
-		}
-	}
-	return status_SUCCESSFUL;
-}
+//COglWindowWin32::eReturnStatus COglWindowWin32::CreateBuffer ( void )
+//{
+//	// Remove old buffer
+//	if ( pSbuf )
+//	{
+//		delete pSbuf;
+//	}
+//	pSbuf = NULL;
+//	// If requested, make the screen buffer
+//	if ( CGameSettings::Active()->b_ro_UseBufferModel )
+//	{
+//		/*if ( iColorDepth == 8 )
+//		{
+//			pSbuf = new CRenderTexture( RGB8, Screen::Info.width, Screen::Info.height, Clamp,Clamp, Texture2D, Depth16, true, false );
+//		}
+//		else if ( iColorDepth == 16 )
+//		{
+//			pSbuf = new CRenderTexture( RGB16F, Screen::Info.width, Screen::Info.height, Clamp,Clamp, Texture2D, Depth32, true, false );
+//			//pSbuf = new CRenderTexture( RGB16, iWidth, iHeight, Clamp,Clamp, Texture2D, Depth32, true,false );
+//		}
+//		else {
+//			throw Core::NotYetImplementedException();
+//			return status_FAILED;
+//		}*/
+//		eColorFormat	colorMode	= SceneRenderer->GetSettings().mainColorAttachmentFormat;
+//		eDepthFormat	depthMode	= SceneRenderer->GetSettings().mainDepthFormat;
+//		eStencilFormat	stencilMode	= SceneRenderer->GetSettings().mainStencilFormat;
+//		uint			colorCount	= SceneRenderer->GetSettings().mainColorAttachmentCount;
+//
+//		pSbuf = new CRenderTexture(
+//			colorMode,
+//			Screen::Info.width, Screen::Info.height, Clamp,Clamp, Texture2D,
+//			depthMode,		(depthMode == DepthNone) ? false : true,
+//			false,
+//			stencilMode,	(stencilMode == StencilNone) ? false : true );
+//	}
+//	return status_SUCCESSFUL;
+//}
 
 
 void WndSetMouseClip ( HWND	hWnd, bool & hiddencursor )

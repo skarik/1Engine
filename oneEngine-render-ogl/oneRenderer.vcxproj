@@ -44,6 +44,7 @@
     <ClCompile Include="source\renderer\camera\CRTCameraCube.cpp" />
     <ClCompile Include="source\renderer\debug\CDebugDrawer.cpp" />
     <ClCompile Include="source\renderer\debug\CDebugRTInspector.cpp" />
+    <ClCompile Include="source\renderer\gpuw\Textures.cpp" />
     <ClCompile Include="source\renderer\light\CLight.cpp" />
     <ClCompile Include="source\renderer\light\DirectionalLight.cpp" />
     <ClCompile Include="source\renderer\logic\CLogicObject.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="source\renderer\debug\CDebugRTInspector.h" />
     <ClInclude Include="source\renderer\exceptions.h" />
     <ClInclude Include="source\renderer\exceptions\exceptions.h" />
+    <ClInclude Include="source\renderer\gpuw\Textures.h" />
     <ClInclude Include="source\renderer\light\CLight.h" />
     <ClInclude Include="source\renderer\light\DirectionalLight.h" />
     <ClInclude Include="source\renderer\logic\CLogicObject.h" />
@@ -199,6 +201,7 @@
     <ClInclude Include="source\renderer\resource\CModelMaster.h" />
     <ClInclude Include="source\renderer\resource\CResourceManager.h" />
     <ClInclude Include="source\renderer\state\CRenderState.h" />
+    <ClInclude Include="source\renderer\state\InternalSettings.h" />
     <ClInclude Include="source\renderer\state\Options.h" />
     <ClInclude Include="source\renderer\state\Settings.h" />
     <ClInclude Include="source\renderer\system\glDrawing.h" />
@@ -216,6 +219,7 @@
     <ClInclude Include="source\renderer\texture\CTextureMaster.h" />
     <ClInclude Include="source\renderer\types\blendModes.h" />
     <ClInclude Include="source\renderer\types\glShaderConstants.h" />
+    <ClInclude Include="source\renderer\types\glTexture.h" />
     <ClInclude Include="source\renderer\types\ModelStructures.h" />
     <ClInclude Include="source\renderer\types\ObjectSettings.h" />
     <ClInclude Include="source\renderer\types\pixelFormat.h" />

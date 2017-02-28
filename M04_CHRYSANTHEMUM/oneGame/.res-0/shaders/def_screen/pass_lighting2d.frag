@@ -447,6 +447,7 @@ void main ( void )
 	//FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb, n_fogDensity );
 	FragColor.a = 1.0;
 
+    gl_FragDepth = pixelDepth;
 
 	//FragColor.rgb = pixelGlow.rgb * pixelLightProperty.r;//luminColor.rgb*0.5;//vec3(1,1,1) * pixelGlow.a;
 	//+ dot( n_cameraDir, pixelNormal.xyz );

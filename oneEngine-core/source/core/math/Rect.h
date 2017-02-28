@@ -10,23 +10,29 @@
 class Rect
 {
 public:
-	Rect ( Real x, Real y, Real w, Real h )
+	Vector2d pos;
+	Vector2d size;
+
+public:
+	Rect ( const Vector2d& n_pos, const Vector2d& n_size )
 	{
-		pos.x = x;
-		pos.y = y;
-		size.x = w;
-		size.y = h;
+		pos		= n_pos;
+		size	= n_size;
+	}
+	Rect ( const Real x, const Real y, const Real w, const Real h )
+	{
+		pos.x	= x;
+		pos.y	= y;
+		size.x	= w;
+		size.y	= h;
 	}
 	Rect ( void )
 	{
-		pos.x = 0;
-		pos.y = 0;
-		size.x = 0;
-		size.y = 0;
+		pos.x	= 0;
+		pos.y	= 0;
+		size.x	= 0;
+		size.y	= 0;
 	}
-
-	Vector2d pos;
-	Vector2d size;
 
 	//		Fix ()
 	// Changes the rect bounds and position so that size is positive on both components

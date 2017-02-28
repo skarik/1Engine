@@ -65,12 +65,12 @@ void CTestViewShader::UpdateBuffer ( void )
 
 	if ( m_rttex == NULL )
 	{
-		m_rttex = new CRenderTexture( m_buf->GetInternalFormat(), m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, Texture2D, Depth16 );
+		m_rttex = new CRenderTexture( m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, m_buf->GetInternalFormat(), Depth16, StencilNone );
 	}
 	else if (( m_rttex->GetWidth() != m_buf->GetWidth()/4 )||( m_rttex->GetHeight() != m_buf->GetHeight()/4 ))
 	{
 		delete m_rttex;
-		m_rttex = new CRenderTexture( m_buf->GetInternalFormat(), m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, Texture2D, Depth16 );
+		m_rttex = new CRenderTexture( m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, m_buf->GetInternalFormat(), Depth16, StencilNone );
 	}
 
 	m_rtcam->SetTarget( m_rttex );

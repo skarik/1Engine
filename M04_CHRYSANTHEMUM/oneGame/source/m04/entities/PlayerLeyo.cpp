@@ -39,6 +39,9 @@ PlayerLeyo::PlayerLeyo ( void )
 PlayerLeyo::~PlayerLeyo ( void )
 {
 	delete_safe(input);
+
+	delete_safe(camera);
+	delete_safe(light);
 }
 
 void PlayerLeyo::Update ( void )

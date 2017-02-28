@@ -3,6 +3,7 @@
 #include "glDrawing.h"
 
 #include "renderer/window/COglWindow.h"
+#include "renderer/state/CRenderState.h"
 
 #include <thread>
 #include <atomic>
@@ -48,7 +49,8 @@ void glMainSystem::EndFrame ( void )
 // Get the current main screen buffer
 CRenderTexture* glMainSystem::GetMainScreenBuffer ( void )
 {
-	return COglWindow::pActive->getScreenBuffer();
+	//return COglWindow::pActive->getScreenBuffer();
+	return SceneRenderer->GetForwardBuffer();
 }
 
 // Tell the entire system to restart

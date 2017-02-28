@@ -6,7 +6,10 @@
 
 #include "core/types/types.h"
 #include "core/containers/arstring.h"
+#include "renderer/types/types.h"
 #include "renderer/types/ObjectSettings.h"
+#include "renderer/types/glTexture.h"
+#include "renderer/state/InternalSettings.h"
 
 #include <vector>
 
@@ -17,6 +20,7 @@ class CLight;
 class CCamera;
 class CResourceManager;
 class glMaterial;
+class CRenderTexture;
 
 // Class Definition
 class CRenderState
@@ -25,7 +29,8 @@ public:
 	// Structure Definitions
 	// ================================
 	// Render request
-	struct tRenderRequest {
+	struct tRenderRequest
+	{
 		CRenderableObject*	obj;
 		char				pass;
 		// should glMaterial be passed in as well? (should renderer handle materials, not objects?)
@@ -36,7 +41,8 @@ public:
 		uchar				renderType;
 	};
 	// Render material replacement rule
-	struct tReplacementRule {
+	struct tReplacementRule
+	{
 		arstring<32>	hintToReplace;
 		glMaterial*		materialToUse;
 		// Meaning material settings must be done before the Render() call
@@ -45,32 +51,57 @@ public:
 public:
 	// Constructor and Destructor
 	// ================================
+
 	RENDER_API CRenderState ( CResourceManager* nResourceManager );
 	RENDER_API ~CRenderState ( void );
 
+
+	// Buffer management
+	// ================================
+
+	RENDER_API void CreateBuffer ( void );
+	RENDER_API CRenderTexture* GetForwardBuffer ( void );
+	RENDER_API glTexture GetDepthTexture ( void );
+	RENDER_API glTexture GetStencilTexture ( void );
+
+
 	// Public Render routine
 	// ================================
+
 	RENDER_API void Render ( void );
+
 
 	// Full Scene Rendering Routines
 	// ================================
+
 	// Normal rendering routine.
-	RENDER_API void RenderScene ( const uint32_t n_renderHint );
+	RENDER_API void RenderSceneForward ( const uint32_t n_renderHint );
 	// Deferred rendering routine.
 	RENDER_API void RenderSceneDeferred ( const uint32_t n_renderHint );
 
+
 	// Specialized Rendering Routines
 	// ================================
+
 	RENDER_API void PreRenderSetLighting ( std::vector<CLight*> & lightsToUse );
 	// RenderSingleObject renders an object, assuming the projection has been already set up.
 	RENDER_API void RenderSingleObject ( CRenderableObject* objectToRender );
 	// RenderObjectArray() renders a null terminated list of objects, assuming the projection has been already set up.
 	RENDER_API void RenderObjectArray ( CRenderableObject** objectsToRender );
 
+
 	// Rendering configuration
 	// ================================
+
 	// Returns the material used for rendering a screen's pass in the given effect
 	RENDER_API glMaterial* GetScreenMaterial ( const eRenderMode mode, const Renderer::eSpecialModes mode_type );
+
+
+	// Settings and query
+	// ================================
+
+	// Returns internal settings that govern the current render setup
+	RENDER_API const Renderer::internalSettings_t& GetSettings ( void ) const;
 
 private:
 	bool bSpecialRender_ResetLights;
@@ -119,6 +150,7 @@ private:
 	struct render_deferred_comparator_t {
 		bool operator() ( tRenderRequest& i, tRenderRequest& j);
 	} OrderComparatorDeferred;
+
 	// Render state
 	// ================================
 	CCamera*	mainBufferCamera;
@@ -129,6 +161,13 @@ private:
 	unsigned int mLoCurrentIndex;
 	unsigned int mLoListSize;
 
+	// Internal setup state
+	// ================================
+	Renderer::internalSettings_t	internal_settings;
+	glHandle						internal_buffer_depth;
+	glHandle						internal_buffer_stencil;
+	CRenderTexture*					internal_buffer_forward_rt;
+
 	// Deferred pass materials
 	// ================================
 	glMaterial* LightingPass;
@@ -136,9 +175,6 @@ private:
 	glMaterial* ShaftPass;
 	glMaterial* Lighting2DPass;
 };
-
-// Backwards compatibility
-typedef CRenderState CToBeSeen;
 
 // Global instance
 RENDER_API extern CRenderState* SceneRenderer;

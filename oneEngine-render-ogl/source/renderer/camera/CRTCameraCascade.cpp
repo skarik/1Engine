@@ -38,12 +38,11 @@ void CRTCameraCascade::RenderScene ( void )
 
 		//if ( i == 3 )
 		{
-			//CCamera::UpdateMatrix();
 			CRTCamera::UpdateMatrix();
 			m_renderMatrices[i] = textureMatrix;
 			CCamera::RenderSet();
 			GL.pushProjection( viewTransform * projTransform );
-			SceneRenderer->RenderScene( enabledHints );
+			SceneRenderer->RenderSceneForward( enabledHints );
 			GL.popProjection();
 			CCamera::RenderUnset();
 		}

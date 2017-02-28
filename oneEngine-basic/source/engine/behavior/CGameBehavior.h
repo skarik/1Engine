@@ -187,7 +187,7 @@ protected:
 	ENGINE_API void SetId ( const gameid_t );
 	//	SetNetId ()
 	// Changes this object's Net ID. This should NEVER be called manually.
-	ENGINE_API void SetId ( const netid_t );
+	ENGINE_API void SetNetId ( const netid_t );
 
 private:
 	//===============================================================================================//

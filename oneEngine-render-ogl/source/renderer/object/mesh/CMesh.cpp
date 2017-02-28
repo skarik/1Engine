@@ -112,22 +112,19 @@ bool CMesh::Render ( const char pass )
 		m_material->m_bufferSkeletonSize = 0;
 		m_material->m_bufferMatricesSkinning = 0;
 	}
-	GL.CheckError();
+
 	// Set up the material now
 	m_material->bindPass(pass);
-	GL.CheckError();
+
 	// Pass in shader constant now that the pass has been bound
 	glMaterial::current->setShaderConstants( this );
 	if ( m_parent ) m_parent->SendShaderUniforms();
-	GL.CheckError();
 
 	// Bind the current mesh
 	BindVAO( pass, m_glMesh->GetVBOverts(), m_glMesh->GetVBOfaces() );
-	GL.CheckError();
 
 	// Render the mesh
 	glDrawElements( GL_TRIANGLES, m_glMesh->pmData->triangleNum*3, GL_UNSIGNED_INT, 0 );
-	GL.CheckError();
 
 
 	// Successful rendering

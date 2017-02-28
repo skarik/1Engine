@@ -18,7 +18,7 @@ using std::endl;
 // === Constructor ===
 CTexture::CTexture ( string sInFilename,
 		eTextureType	textureType,
-		eInternalFormat	format,
+		eColorFormat	format,
 		unsigned int	maxTextureWidth,
 		unsigned int	maxTextureHeight,
 		eWrappingType	repeatX,
@@ -32,7 +32,7 @@ CTexture::CTexture ( string sInFilename,
 
 	sFilename = sInFilename;
 	// Check for system overrides here
-	if (( sFilename == "" )||( sFilename == "_hx_SYSTEM_FONTLOAD" )||( sFilename == "_hx_SYSTEM_RENDERTEXTURE" )||( sFilename == "_hx_SYSTEM_SKIP" ))
+	if ( sFilename == "" || sFilename == "_hx_SYSTEM_FONTLOAD" || sFilename == "_hx_SYSTEM_RENDERTEXTURE" || sFilename == "_hx_SYSTEM_SKIP" )
 	{
 		info.index = 0;
 		return;
@@ -66,7 +66,7 @@ CTexture::CTexture ( string sInFilename,
 	state.level_max		= 0;
 
 	// Check if the texture has a reference
-	const glTexture* pTextureReference = TextureMaster.GetReference( this );
+	const textureEntry_t* pTextureReference = TextureMaster.GetReference( this );
 	// Texture doesn't exist yet
 	if ( pTextureReference == NULL ) 
 	{
@@ -143,15 +143,15 @@ CTexture::CTexture ( string sInFilename,
 CTexture::~CTexture ( void )
 {
 	// Check for system overrides here
-	if (( sFilename == "_hx_SYSTEM_FONTLOAD" )||( sFilename == "_hx_SYSTEM_RENDERTEXTURE" ))
-	{
+	if ( info.index == 0 ||  sFilename == "_hx_SYSTEM_FONTLOAD" || sFilename == "_hx_SYSTEM_RENDERTEXTURE" )
+	{	// System overrides should be skipped:
 		return;
 	}
 
-	//GL.FreeTexture( info.index );
 	TextureMaster.RemoveReference( this );
 	CRenderState::Active->mResourceManager->RemoveResource( this );
 }
+
 // === Bind and Unbind ===
 void CTexture::Bind ( void )
 {
@@ -349,7 +349,7 @@ void CTexture::LoadImageInfo ( void )
 	pData = Textures::LoadRawImageData( sFilename, t_info );
 	this->info.width			= t_info.width;
 	this->info.height			= t_info.height;
-	this->info.internalFormat	= (eInternalFormat)t_info.internalFormat;
+	this->info.internalFormat	= (eColorFormat)t_info.internalFormat;
 }
 
 

@@ -3,6 +3,12 @@
 #include "core/debug/CDebugConsole.h"
 #include "renderer/system/glMainSystem.h"
 
+#include "renderer/gpuw/Textures.h"
+
+// Stringstream for unique string id generation
+#include <sstream>
+
+using std::stringstream;
 using std::cout;
 using std::endl;
 
@@ -27,57 +33,58 @@ void printFramebufferLimits()
 }
 
 CMRTTexture::CMRTTexture ( 
-		eInternalFormat	format			,
-		unsigned int	maxTextureWidth	,
-		unsigned int	maxTextureHeight,
-		eWrappingType	repeatX			,
-		eWrappingType	repeatY			,
-		eDepthFormat	depthType		,
-		bool			depthFetch		,
-		eStencilFormat	stencilType		,
-		bool			stencilFetch	,
-		uint			colorAttachments
-		)
+	unsigned int	requestedWidth,
+	unsigned int	requestedHeight,
+	eWrappingType	repeatX,
+	eWrappingType	repeatY,
+	glTexture*		rgbRequestList,
+	const uint		rgbRequestListSize,
+	glTexture*		depthRequest,
+	bool			depthFetch,
+	glTexture*		stencilRequest,
+	bool			stencilFetch
+)
 	: CRenderTexture ( "_hx_SYSTEM_RENDERTEXTURE" )
 {
 	GL_ACCESS;
 
 	printFramebufferLimits();
+
 	// Check for NPOT texture support, and modify texture size accordingly.
 	if ( !GL.NPOTsAvailable )
 	{
 		unsigned int nWidth		= 2;
 		unsigned int nHeight	= 2;
 
-		while ( nWidth < maxTextureWidth )
+		while ( nWidth < requestedWidth )
 		{
 			nWidth *= 2;
 		}
-		while ( nHeight < maxTextureHeight )
+		while ( nHeight < requestedHeight )
 		{
 			nHeight *= 2;
 		}
-	
-		maxTextureWidth		= nWidth;
-		maxTextureHeight	= nHeight;
+
+		requestedWidth	= nWidth;
+		requestedHeight	= nHeight;
 	}
 
 	// Set the information structure to prepare for reading in
 	info.type			= Texture2D;
-	info.internalFormat	= format;
-	info.width			= std::min<uint>( maxTextureWidth, (unsigned)GL.MaxTextureSize );
-	info.height			= std::min<uint>( maxTextureHeight, (unsigned)GL.MaxTextureSize );
+	info.internalFormat	= ColorNone;
+	info.width			= std::min<uint>( requestedWidth, (unsigned)GL.MaxTextureSize );
+	info.height			= std::min<uint>( requestedHeight, (unsigned)GL.MaxTextureSize );
 	info.index			= 0;
 	info.repeatX		= repeatX;
 	info.repeatY		= repeatY;
 
 	info.mipmapStyle	= MipmapNone;
 	info.filter			= SamplingLinear;
-	
-	rtInfo.fetchcolor	= (colorAttachments!=0);
-	rtInfo.depth		= depthType;
+
+	rtInfo.fetchcolor	= rgbRequestListSize != 0;
+	rtInfo.depth		= DepthNone;
 	rtInfo.fetchdepth	= depthFetch;
-	rtInfo.stencil		= stencilType;
+	rtInfo.stencil		= StencilNone;
 	rtInfo.fetchstencil	= stencilFetch;
 
 	// Initialze data
@@ -86,9 +93,10 @@ CMRTTexture::CMRTTexture (
 	rtInfo.stencilRBO	= 0;
 	rtInfo.active		= false;
 
-	mrtInfo.colorAttachments	= colorAttachments;
-	mrtInfo.depthAttachment		= -1;
-	mrtInfo.stencilAttachment	= -1;
+	mrtInfo.attachments			= 0;
+	mrtInfo.colorAttachments	= 0;
+	mrtInfo.depthAttachment		= 0;
+	mrtInfo.stencilAttachment	= 0;
 
 	// Generate an id
 	stringstream tempstream;
@@ -98,96 +106,105 @@ CMRTTexture::CMRTTexture (
 	// Print out infos
 	cout << "New render texture: " << rtUniqueSId << endl;
 
-	// Generate the textures for the colors
-	for ( int i = 0; i < mrtInfo.colorAttachments; ++i )
+	// Generate the texture information for the colors
+	for ( uint i = 0; i < rgbRequestListSize; ++i )
 	{
-		cout << " + Fetch color " << i << " enabled." << endl;
-		// Send the data to OpenGL
-		//mrtInfo.tx_indices[i] = GL.GetNewTexture();
-		glGenTextures( 1, &(mrtInfo.tx_indices[i]) );
-		// Bind the texture object
-		glBindTexture( GL_TEXTURE_2D, mrtInfo.tx_indices[i] );
-		// Change the texture repeat
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL.Enum(info.repeatX) );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL.Enum(info.repeatY) );
-		// Change the filtering
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(info.filter) );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL.Enum(info.filter) );
-		// Turn on automatic mipmap generation
-		//glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE );
-		// Copy the data to the texture object
-		glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
-		// Unbind the data
-		glBindTexture(GL_TEXTURE_2D, 0);
+		if ( rgbRequestList[i].texture == 0 )
+		{
+			mrtInfo.texture_formats[mrtInfo.attachments] = rgbRequestList[i].format;
+			mrtInfo.texture_owned[mrtInfo.attachments] = true;
+
+			mrtInfo.texture[mrtInfo.attachments] = GPU::TextureAllocate(
+				Texture2D,
+				mrtInfo.texture_formats[mrtInfo.attachments], info.width, info.height );
+			GPU::TextureSampleSettings(
+				Texture2D,
+				mrtInfo.texture[mrtInfo.attachments],
+				info.repeatX, info.repeatY, 0, info.filter, info.filter );
+
+			GL.CheckError();
+		}
+		else
+		{
+			mrtInfo.texture[mrtInfo.attachments] = rgbRequestList[i].texture;
+			mrtInfo.texture_formats[mrtInfo.attachments] = rgbRequestList[i].format;
+			mrtInfo.texture_owned[mrtInfo.attachments] = false;
+		}
+
+		mrtInfo.attachments += 1;
+	}
+	mrtInfo.colorAttachments = mrtInfo.attachments;
+
+	// Generate the texture information for the depth
+	if ( depthFetch )
+	{
+		if ( depthRequest->texture == 0 )
+		{
+			mrtInfo.texture_formats[mrtInfo.attachments] = depthRequest->format;
+			mrtInfo.texture_owned[mrtInfo.attachments] = true;
+
+			mrtInfo.texture[mrtInfo.attachments] = GPU::TextureAllocate(
+				Texture2D,
+				mrtInfo.texture_formats[mrtInfo.attachments], info.width, info.height );
+			GPU::TextureSampleSettings(
+				Texture2D,
+				mrtInfo.texture[mrtInfo.attachments],
+				info.repeatX, info.repeatY, 0, info.filter, info.filter );
+
+			GL.CheckError();
+		}
+		else
+		{
+			mrtInfo.texture[mrtInfo.attachments] = depthRequest->texture;
+			mrtInfo.texture_formats[mrtInfo.attachments] = depthRequest->format;
+			mrtInfo.texture_owned[mrtInfo.attachments] = false;
+		}
+		rtInfo.depth = (eDepthFormat)depthRequest->format;
+		rtInfo.depthtex = mrtInfo.texture[mrtInfo.attachments];
+
+		mrtInfo.depthAttachment = mrtInfo.attachments;
+		mrtInfo.attachments += 1;
+	}
+	else if ( depthRequest != NULL )
+	{
+		rtInfo.depth = (eDepthFormat)depthRequest->format;
+		rtInfo.depthRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.depth, info.width, info.height);
 	}
 
-	int8_t m_attachmentIndex = mrtInfo.colorAttachments;
+	// Generate the texture information for the stencil
+	if ( stencilFetch )
+	{
+		if ( stencilRequest->texture == 0 )
+		{
+			mrtInfo.texture_formats[mrtInfo.attachments] = stencilRequest->format;
+			mrtInfo.texture_owned[mrtInfo.attachments] = true;
 
-	// Do the same if there's a renderbuffer
-	if (( rtInfo.depth != DepthNone )&&( rtInfo.fetchdepth ))
-	{
-		cout << " + Fetch depth enabled." << endl;
-		mrtInfo.depthAttachment = m_attachmentIndex;
-		m_attachmentIndex += 1;
-		// Send the data to OpenGL
-		glGenTextures( 1, &(mrtInfo.tx_indices[mrtInfo.depthAttachment]) );
-		//mrtInfo.tx_indices[mrtInfo.depthAttachment] = GL.GetNewTexture();
-		rtInfo.depthtex = mrtInfo.tx_indices[mrtInfo.depthAttachment];
-		// Bind the texture object
-		glBindTexture( GL_TEXTURE_2D, mrtInfo.tx_indices[mrtInfo.depthAttachment] );
-		// Change the texture repeat
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL.Enum(info.repeatX) );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL.Enum(info.repeatY) );
-		// Change the filtering
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(info.filter) );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL.Enum(info.filter) );
-		// Turn on automatic mipmap generation
-		//glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE );
-		// Copy the data to the texture object
-		glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum(rtInfo.depth), info.width, info.height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0 );
-		// Unbind the data
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-	else
-	{
-		rtInfo.depthtex = 0;
-		rtInfo.depthRBO = 0;
-		mrtInfo.depthAttachment = -1;
-	}
+			mrtInfo.texture[mrtInfo.attachments] = GPU::TextureAllocate(
+				Texture2D,
+				mrtInfo.texture_formats[mrtInfo.attachments], info.width, info.height );
+			GPU::TextureSampleSettings(
+				Texture2D,
+				mrtInfo.texture[mrtInfo.attachments],
+				info.repeatX, info.repeatY, 0, info.filter, info.filter );
 
-	// Do the same if there's a stencilbuffer
-	if (( rtInfo.stencil != StencilNone )&&( rtInfo.fetchstencil ))
-	{
-		cout << " + Fetch stencil enabled." << endl;
-		mrtInfo.stencilAttachment = m_attachmentIndex;
-		m_attachmentIndex += 1;
-		// Send the data to OpenGL
-		glGenTextures( 1, &(mrtInfo.tx_indices[mrtInfo.stencilAttachment]) );
-		//mrtInfo.tx_indices[mrtInfo.stencilAttachment] = GL.GetNewTexture();
-		// Bind the texture object
-		glBindTexture( GL_TEXTURE_2D, mrtInfo.tx_indices[mrtInfo.stencilAttachment] );
-		// Change the texture repeat
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL.Enum(info.repeatX) );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL.Enum(info.repeatY) );
-		// Change the filtering
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(info.filter) );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL.Enum(info.filter) );
-		// Turn on automatic mipmap generation
-		GL.CheckError();
-		//glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE );
-		// Copy the data to the texture object
-		GL.CheckError();
-		glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum(rtInfo.stencil), info.width, info.height, 0, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, 0 );
-		GL.CheckError();
-		// Unbind the data
-		glBindTexture(GL_TEXTURE_2D, 0);
-		GL.CheckError();
+			GL.CheckError();
+		}
+		else
+		{
+			mrtInfo.texture[mrtInfo.attachments] = stencilRequest->texture;
+			mrtInfo.texture_formats[mrtInfo.attachments] = stencilRequest->format;
+			mrtInfo.texture_owned[mrtInfo.attachments] = false;
+		}
+		rtInfo.stencil = (eStencilFormat)stencilRequest->format;
+		rtInfo.stenciltex = mrtInfo.texture[mrtInfo.attachments];
+
+		mrtInfo.stencilAttachment = mrtInfo.attachments;
+		mrtInfo.attachments += 1;
 	}
-	else
+	else if ( stencilRequest != NULL )
 	{
-		rtInfo.stenciltex = 0;
-		rtInfo.stencilRBO = 0;
-		mrtInfo.stencilAttachment = -1;
+		rtInfo.stencil = (eStencilFormat)stencilRequest->format;
+		rtInfo.stencilRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.stencil, info.width, info.height);
 	}
 
 	// And now create the framebuffer
@@ -198,19 +215,22 @@ CMRTTexture::CMRTTexture (
 	if ( buffer_stack.empty() )
 		buffer_stack.push(0);
 }
+
+
 CMRTTexture::~CMRTTexture ( void )
 {
-	int8_t bufferCount = mrtInfo.colorAttachments;
-	if ( mrtInfo.depthAttachment >= 0 ) {
-		bufferCount += 1;
-	}
-	if ( mrtInfo.stencilAttachment >= 0 ) {
-		bufferCount += 1;
-	}
-	for ( int8_t i = 0; i < bufferCount; ++i )
+	// Don't let CRenderTexture delete the textures
+	info.index = 0;
+	rtInfo.depthtex = 0;
+	rtInfo.stenciltex = 0;
+
+	// Delete the owned textures
+	for ( int8_t i = 0; i < mrtInfo.attachments; ++i )
 	{
-		//GL.FreeTexture( mrtInfo.tx_indices[i] );
-		glDeleteTextures( 1, &(mrtInfo.tx_indices[i]) );
+		if ( mrtInfo.texture_owned[i] )
+		{
+			glDeleteTextures( 1, &(mrtInfo.texture[i]) );
+		}
 	}
 }
 
@@ -307,46 +327,29 @@ void CMRTTexture::GenerateFramebuffer ( void )
 		{
 			cout << " + Attaching color texture " << (int)i << endl;
 			// attach the texture to FBO color attachment point
-			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+i, GL_TEXTURE_2D, mrtInfo.tx_indices[i], 0 );
+			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+i, GL_TEXTURE_2D, mrtInfo.texture[i], 0 );
 		}
 
-		if ( rtInfo.depth != DepthNone )
+		// Bind the render buffer
+		if ( rtInfo.depthRBO != 0 )
 		{
-			if ( rtInfo.fetchdepth )
-			{
-				cout << " + Attaching depth texture." << endl;
-				// Attach the depth texture to depth attachment
-				glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, rtInfo.depthtex, 0 );
-			}
-			else
-			{
-				// If requested depth, but no depth texture, create a renderbuffer object to store depth info
-				glGenRenderbuffers( 1, &rtInfo.depthRBO );
-				glBindRenderbuffer( GL_RENDERBUFFER, rtInfo.depthRBO );
-				glRenderbufferStorage( GL_RENDERBUFFER, GL.Enum(rtInfo.depth), info.width, info.height );
-				glBindRenderbuffer( GL_RENDERBUFFER, 0 );
-				// attach the renderbuffer to depth attachment point
-				glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rtInfo.depthRBO );
-			}
+			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rtInfo.depthRBO );
 		}
-		if ( rtInfo.stencil != StencilNone )
+		else if ( rtInfo.depthtex != 0 )
 		{
-			if ( rtInfo.fetchstencil )
-			{
-				cout << " + Attaching stencil texture." << endl;
-				// Attach the stencil texture to stencil attachment
-				glFramebufferTexture2D( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, rtInfo.stenciltex, 0 );
-			}
-			else
-			{
-				// If requested stencil, but no stencil texture, create a renderbuffer object to store stencil info
-				glGenRenderbuffers( 1, &rtInfo.stencilRBO );
-				glBindRenderbuffer( GL_RENDERBUFFER, rtInfo.stencilRBO );
-				glRenderbufferStorage( GL_RENDERBUFFER, GL.Enum(rtInfo.stencil), info.width, info.height );
-				glBindRenderbuffer( GL_RENDERBUFFER, 0 );
-				// attach the renderbuffer to stencil attachment point
-				glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rtInfo.stencilRBO );
-			}
+			cout << " + Attaching depth texture." << endl;
+			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, rtInfo.depthtex, 0 );
+		}
+
+		// Bind the stencil buffer
+		if ( rtInfo.stencilRBO != 0 )
+		{
+			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rtInfo.stencilRBO );
+		}
+		else if ( rtInfo.stenciltex != 0 )
+		{
+			cout << " + Attaching stencil texture." << endl;
+			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, rtInfo.stenciltex, 0 );
 		}
 
 		// check FBO status
@@ -371,10 +374,8 @@ void CMRTTexture::GenerateFramebuffer ( void )
 				cout << "   bufferStatus: GL_FRAMEBUFFER_UNSUPPORTED" << endl; break;
 			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
 				cout << "   bufferStatus: GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE" << endl; break;
-#			ifdef _OPENGL4_
 			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
 				cout << "   bufferStatus: GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS" << endl; break;
-#			endif
 			}
 		}
 		else {
