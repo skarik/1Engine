@@ -36,12 +36,6 @@ bool CRenderState::render_forward_comparator_t::operator() ( CRenderState::tRend
 	bool imat_depthmask = (imat->m_transparency_mode!=ALPHAMODE_TRANSLUCENT)&&(imat->b_depthmask);
 	bool jmat_depthmask = (jmat->m_transparency_mode!=ALPHAMODE_TRANSLUCENT)&&(jmat->b_depthmask);
 
-	// Set transparency really quick here
-	i.transparent = !imat_depthmask;
-	j.transparent = !jmat_depthmask;
-	i.screenshader = i.obj->m_material->m_isScreenShader;
-	j.screenshader = j.obj->m_material->m_isScreenShader;
-
 	if ( imat_depthmask != jmat_depthmask )
 	{
 		// Sort first by depthmasking
@@ -141,17 +135,17 @@ bool CRenderState::render_deferred_comparator_t::operator() ( CRenderState::tRen
 	{	// Render back-to-front on 2D
 		return (i.obj->renderDistance) > (j.obj->renderDistance);
 	}
-
+	
 	// Check for depth writing (depth write comes first)
 	bool imat_depthmask = (imat->m_transparency_mode!=ALPHAMODE_TRANSLUCENT)&&(imat->b_depthmask);
 	bool jmat_depthmask = (jmat->m_transparency_mode!=ALPHAMODE_TRANSLUCENT)&&(jmat->b_depthmask);
-
+	/*
 	// Set transparency really quick here
 	i.transparent = !imat_depthmask;
 	j.transparent = !jmat_depthmask;
 	i.screenshader = i.obj->m_material->m_isScreenShader;
 	j.screenshader = j.obj->m_material->m_isScreenShader;
-
+	*/
 	if ( imat_depthmask != jmat_depthmask )
 	{
 		// Sort first by depthmasking

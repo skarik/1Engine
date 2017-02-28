@@ -305,9 +305,15 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 						// Mask the render hint (multipass across multiple targets)
 						if ( pass->m_hint & currentLayer )
 						{
+							// Check for depth writing (depth write comes first)
+							bool depthmask = (pass->m_transparency_mode!=ALPHAMODE_TRANSLUCENT)&&(pass->b_depthmask);
+
 							tRenderRequest newRequest;
 							newRequest.obj  = pRO;
-							newRequest.pass = p;
+							newRequest.pass = p;	
+							newRequest.transparent = !depthmask;
+							newRequest.screenshader = pRO->m_material->m_isScreenShader;
+
 							sortedRenderList.push_back( newRequest );
 						}
 					}
@@ -459,6 +465,8 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 						newRequest.pass = p;
 						newRequest.forward = false;
 						newRequest.renderType = pRO->renderType;
+						newRequest.transparent = false;
+						newRequest.screenshader = false;
 						sortedRenderList.push_back( newRequest );
 					}
 				}
@@ -469,11 +477,16 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 						glPass* pass = pRO->GetPass(0);
 						if ( pass->m_hint & RL_WORLD )
 						{
+							// Check for depth writing
+							bool depthmask = (pass->m_transparency_mode!=ALPHAMODE_TRANSLUCENT)&&(pass->b_depthmask);
+
 							tRenderRequest newRequest;
 							newRequest.obj  = pRO;
 							newRequest.pass = 0;
 							newRequest.forward = true;
 							newRequest.renderType = pRO->renderType;
+							newRequest.transparent = !depthmask;
+							newRequest.screenshader = pRO->m_material->m_isScreenShader;
 							sortedRenderList.push_back( newRequest );
 						}
 					}
@@ -621,14 +634,6 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					currentMainRenderTarget->BindBuffer();
 					GL.setupViewport( 0, 0, currentMainRenderTarget->GetWidth(), currentMainRenderTarget->GetHeight() );
 				}
-				// Clear on first render
-				/*if ( firstRender ) {
-					if ( currentCamera->clearColor ) {
-						// Clear with BG color
-						glClear( GL_COLOR_BUFFER_BIT ); // use rendering options for this
-					}
-					firstRender = false;
-				}*/
 
 				// Choose lighting pass to use
 				glMaterial* targetPass = LightingPass;
@@ -671,9 +676,9 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					// Enable alpha blending
 					glEnable( GL_BLEND );
 					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-					// Enable writing to depth and stencil
-					glStencilMask( GL_TRUE );
-					glDepthMask( GL_TRUE );
+					// Disable writing to depth and stencil
+					glStencilMask( GL_FALSE );
+					glDepthMask( GL_FALSE );
 					// Disable tests
 					glDisable( GL_STENCIL_TEST );
 					glDisable( GL_DEPTH_TEST );
@@ -704,13 +709,8 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				// Copy over the depth to use when drawing in forward mode
 				GL.GetMainScreenBuffer()->BindBuffer();
 				GL.setupViewport(0, 0, GL.GetMainScreenBuffer()->GetWidth(), GL.GetMainScreenBuffer()->GetHeight());
-				/*glBindFramebuffer( GL_READ_FRAMEBUFFER, currentCamera->GetRenderTexture()->GetRTInfo().findex );
-				glBindFramebuffer( GL_DRAW_FRAMEBUFFER, GL.GetMainScreenBuffer()->GetRTInfo().findex );
-				glBlitFramebuffer(
-					0,0,Screen::Info.width,Screen::Info.height,
-					0,0,Screen::Info.width,Screen::Info.height,
-					GL_DEPTH_BUFFER_BIT, GL_NEAREST ); // Color doesn't need to be blit, since the deferred compositor outputs color
-				GL.CheckError();*/
+
+				// Continue rendering normally. The forward an deferred buffers share their depth and stencil.
 
 #ifdef ENABLE_RUNTIME_BLIT_TEST
 				// Driver depth-blit unit test
@@ -816,7 +816,6 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 	{
 		currentCamera->GetRenderTexture()->UnbindBuffer();
 	}
-
 }
 
 

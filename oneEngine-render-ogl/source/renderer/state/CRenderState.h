@@ -33,19 +33,23 @@ public:
 	{
 		CRenderableObject*	obj;
 		char				pass;
-		// should glMaterial be passed in as well? (should renderer handle materials, not objects?)
-		//glMaterial*			replacement;
 		bool				transparent;
 		bool				forward;
 		bool				screenshader;
 		uchar				renderType;
+
+		// Default constructor
+		tRenderRequest ( void ) :
+			obj(NULL), pass(0), transparent(false), forward(true), screenshader(false), renderType(2)
+		{ ; }
 	};
+
 	// Render material replacement rule
+	// Material settings must be done before the Render() call
 	struct tReplacementRule
 	{
 		arstring<32>	hintToReplace;
 		glMaterial*		materialToUse;
-		// Meaning material settings must be done before the Render() call
 	};
 
 public:

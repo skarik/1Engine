@@ -334,8 +334,8 @@ void main ( void )
 	// ==Perform lighting==
 	float lightingStrength = 1.0;//clamp( (pixelLightProperty.r-0.4)/0.6, 0, 1 );
 	vec3 luminColor = vec3( 0,0,0 );
-	if ( lightingStrength > 0.5 )
-	{
+	//if ( lightingStrength > 0.5 )
+	//{
 		//luminColor = sys_LightAmbient.rgb;
 		for ( int lightIndex = 0; lightIndex < sys_LightNumber; lightIndex += 1 )
 		{
@@ -356,20 +356,21 @@ void main ( void )
 				continue; // Drops FPS on NVidia if this continue isn't here
 			}
 			else*/
-			{	// Otherwise perform the light effects
+			//{	// Otherwise perform the light effects
 				vec4 lightColor			= texelFetch( textureLightBuffer, lightIndex*4 + 0 );
 				vec4 lightDirection		= texelFetch( textureLightBuffer, lightIndex*4 + 3 );
 
 				luminColor += defaultLighting( lightPosition, lightProperties, lightColor, lightDir, n_rimValue, n_cameraVector.xyz, pixelNormal.xyz, pixelLightProperty, pixelGlow.a ) * 0.5;
-			}
+			//}
 		}
 		// Rim amount
 		//luminColor += luminColor*clamp(length(luminColor-sys_LightAmbient.rgb)-0.3,0,1)*pow(n_rimValue,3)*0.5 * pixelLightProperty.a;
-	}
+	/*}
 	else
 	{
 		luminColor = vec3( 1,1,1 );
-	}
+	}*/
+    luminColor = mix( vec3(1,1,1), luminColor, lightingStrength );
 	// ==Perform diffuse==
 	//vec3 diffuseColor = pixelDiffuse.rgb;
 	// Shadow "outline" effect
@@ -447,7 +448,7 @@ void main ( void )
 	//FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb, n_fogDensity );
 	FragColor.a = 1.0;
 
-    gl_FragDepth = pixelDepth;
+    //gl_FragDepth = pixelDepth;
 
 	//FragColor.rgb = pixelGlow.rgb * pixelLightProperty.r;//luminColor.rgb*0.5;//vec3(1,1,1) * pixelGlow.a;
 	//+ dot( n_cameraDir, pixelNormal.xyz );
