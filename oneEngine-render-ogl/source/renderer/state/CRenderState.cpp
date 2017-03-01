@@ -41,7 +41,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		internal_settings.mainColorAttachmentCount = 4;
 		internal_settings.mainColorAttachmentFormat = RGBA16F;
 		internal_settings.mainDepthFormat = Depth24;
-		internal_settings.mainStencilFormat = StencilIndex8;
+		internal_settings.mainStencilFormat = StencilNone;
 	}
 	// Set initial rendertarget states
 	{

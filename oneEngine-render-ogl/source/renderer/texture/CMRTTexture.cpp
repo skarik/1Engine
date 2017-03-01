@@ -168,7 +168,8 @@ CMRTTexture::CMRTTexture (
 	else if ( depthRequest != NULL )
 	{
 		rtInfo.depth = (eDepthFormat)depthRequest->format;
-		rtInfo.depthRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.depth, info.width, info.height);
+		if ( rtInfo.depth != DepthNone )
+			rtInfo.depthRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.depth, info.width, info.height);
 	}
 
 	// Generate the texture information for the stencil
@@ -204,7 +205,8 @@ CMRTTexture::CMRTTexture (
 	else if ( stencilRequest != NULL )
 	{
 		rtInfo.stencil = (eStencilFormat)stencilRequest->format;
-		rtInfo.stencilRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.stencil, info.width, info.height);
+		if ( rtInfo.stencil != StencilNone )
+			rtInfo.stencilRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.stencil, info.width, info.height);
 	}
 
 	// And now create the framebuffer
