@@ -32,8 +32,8 @@ void NpcPenni::Update ( void )
 	if (talker != NULL)
 	{
 		talker->position = position;
-		talker->position.y -= 36.0F;
-		talker->position.x -= 20.0F;
+		talker->position.y -= 96.0F;
+		talker->position.x -= 40.0F;
 		talker->text = "It's scientifically proven that larger textboxes are less likely to be read!";
 	}
 	else

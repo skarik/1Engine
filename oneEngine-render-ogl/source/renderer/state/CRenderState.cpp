@@ -331,7 +331,7 @@ void CRenderState::CreateBuffer ( void )
 		GPU::TextureFree( internal_buffer_depth );
 		internal_buffer_depth = 0;
 
-		GPU::TextureFree( internal_buffer_stencil );
+		GPU::TextureBufferFree( internal_buffer_stencil );
 		internal_buffer_stencil = 0;
 	}
 	if ( internal_buffer_forward_rt == NULL )
@@ -339,7 +339,7 @@ void CRenderState::CreateBuffer ( void )
 		if ( internal_settings.mainDepthFormat != DepthNone )
 			internal_buffer_depth	= GPU::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
 		if ( internal_settings.mainStencilFormat != StencilNone )
-			internal_buffer_stencil	= GPU::TextureAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
+			internal_buffer_stencil	= GPU::TextureBufferAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
 
 		internal_buffer_forward_rt = new CRenderTexture(
 			Screen::Info.width, Screen::Info.height,

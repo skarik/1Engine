@@ -13,6 +13,7 @@
 #include "renderer/system/glMainSystem.h"
 
 #include "render2d/preprocess/PaletteToLUT.h"
+#include "render2d/preprocess/NormalMapGeneration.h"
 #include "render2d/state/WorldPalette.h"
 
 CRenderable2D::CRenderable2D ( void )
@@ -204,9 +205,6 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 	// Set the palette texture as the sprite
 	m_material->setTexture(0, new_texture);
 
-	// Clear off the data now that it's on the GPU
-	delete [] raw_sprite;
-
 	// No longer need the texture in this object
 	new_texture->RemoveReference();
 
@@ -231,15 +229,16 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 
 		// Generate a normal map based on input parameters
 		pixel_t* raw_normalmap = new pixel_t [imginfo_sprite.width * imginfo_sprite.height];
-		raw_normalmap[0].r = (uint8_t)( (m_spriteGenerationInfo.normal_default.x * 0.5F + 0.5F) * 255.0F + 0.5F );
+		/*raw_normalmap[0].r = (uint8_t)( (m_spriteGenerationInfo.normal_default.x * 0.5F + 0.5F) * 255.0F + 0.5F );
 		raw_normalmap[0].g = (uint8_t)( (m_spriteGenerationInfo.normal_default.y * 0.5F + 0.5F) * 255.0F + 0.5F );
 		raw_normalmap[0].b = (uint8_t)( (m_spriteGenerationInfo.normal_default.z * 0.5F + 0.5F) * 255.0F + 0.5F );
-		raw_normalmap[0].a = 255;
+		raw_normalmap[0].a = 255;*/
+		Render2D::Preprocess::GenerateNormalMap( raw_sprite, raw_normalmap, imginfo_sprite.width, imginfo_sprite.height, m_spriteGenerationInfo.normal_default );
 
 		// Upload the data
 		new_texture->Upload(
 			raw_normalmap,
-			1, 1, 
+			imginfo_sprite.width, imginfo_sprite.height, 
 			Clamp, Clamp,
 			MipmapNone, SamplingPoint
 		);
@@ -253,6 +252,9 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 		// No longer need the texture in this object
 		new_texture->RemoveReference();
 	}
+
+	// Clear off the data now that it's on the GPU and we're done using it for generation
+	delete [] raw_sprite;
 }
 
 //		GetSpriteInfo ()

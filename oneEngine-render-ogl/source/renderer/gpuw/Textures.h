@@ -7,6 +7,7 @@
 
 namespace GPU
 {
+	// Create a read/write buffer
 	RENDER_API glHandle TextureAllocate(
 		const glEnum textureType,
 		const glEnum textureFormat, 
@@ -18,6 +19,7 @@ namespace GPU
 		const glEnum repeatX, const glEnum repeatY, const glEnum repeatZ,
 		const glEnum sampleMinify, const glEnum sampleMagnify
 	);
+	// Free read/write buffer
 	RENDER_API int TextureFree(
 		const glHandle texture
 	);
@@ -27,6 +29,10 @@ namespace GPU
 		const glEnum textureType,
 		const glEnum textureFormat, 
 		const uint width = 0, const uint height = 0, const uint depth = 0
+	);
+	// Free write-only buffer
+	RENDER_API int TextureBufferFree(
+		const glHandle texture
 	);
 }
 

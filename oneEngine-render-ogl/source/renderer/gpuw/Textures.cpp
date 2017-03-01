@@ -89,3 +89,13 @@ glHandle GPU::TextureBufferAllocate(
 
 	return buffer;
 }
+// Free write-only buffer
+int GPU::TextureBufferFree(
+	const glHandle texture
+)
+{
+	glHandle tex = texture;
+	glDeleteRenderbuffers( 1, &tex );
+
+	return 0;
+}

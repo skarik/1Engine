@@ -147,9 +147,19 @@ CRenderTexture::CRenderTexture (
 	else
 	{
 		rtInfo.depthtex = 0;
-		rtInfo.depth = (eDepthFormat)depthRequest.format;
-		if ( rtInfo.depth != DepthNone )
-			rtInfo.depthRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.depth, info.width, info.height);
+		if ( depthRequest.texture == 0 )
+		{
+			rtInfo.depth = (eDepthFormat)depthRequest.format;
+			if ( rtInfo.depth != DepthNone )
+				rtInfo.depthRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.depth, info.width, info.height);
+			rtInfo.depthowned = true;
+		}
+		else
+		{
+			rtInfo.depth = (eDepthFormat)depthRequest.format;
+			rtInfo.depthRBO = depthRequest.texture;
+			rtInfo.depthowned = false;
+		}
 	}
 
 	// Do the same if there's a stencilbuffer
@@ -178,9 +188,19 @@ CRenderTexture::CRenderTexture (
 	else
 	{
 		rtInfo.stenciltex = 0;
-		rtInfo.stencil = (eStencilFormat)stencilRequest.format;
-		if ( rtInfo.stencil != StencilNone )
-			rtInfo.stencilRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.stencil, info.width, info.height);
+		if ( stencilRequest.texture == 0 )
+		{
+			rtInfo.stencil = (eStencilFormat)stencilRequest.format;
+			if ( rtInfo.stencil != StencilNone )
+				rtInfo.stencilRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.stencil, info.width, info.height);
+			rtInfo.stencilowned = true;
+		}
+		else
+		{
+			rtInfo.stencil = (eStencilFormat)stencilRequest.format;
+			rtInfo.stencilRBO = stencilRequest.texture;
+			rtInfo.stencilowned = false;
+		}
 	}
 
 	// And now create the framebuffer
@@ -199,9 +219,9 @@ CRenderTexture::~CRenderTexture ( void )
 		glDeleteFramebuffers( 1, &rtInfo.findex );
 
 	// Free renderbuffers
-	if ( rtInfo.depthRBO )
+	if ( rtInfo.depthRBO && rtInfo.depthowned )
 		glDeleteRenderbuffers( 1, &rtInfo.depthRBO );
-	if ( rtInfo.stencilRBO )
+	if ( rtInfo.stencilRBO && rtInfo.stencilowned )
 		glDeleteRenderbuffers( 1, &rtInfo.stencilRBO );
 
 	// Free textures

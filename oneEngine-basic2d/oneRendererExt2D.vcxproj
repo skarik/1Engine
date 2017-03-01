@@ -48,6 +48,7 @@
     <ClCompile Include="source\render2d\object\sprite\CAnimSprite2D.cpp" />
     <ClCompile Include="source\render2d\object\sprite\CStreamedRenderable2D.cpp" />
     <ClCompile Include="source\render2d\object\TileMapLayer.cpp" />
+    <ClCompile Include="source\render2d\preprocess\NormalMapGeneration.cpp" />
     <ClCompile Include="source\render2d\preprocess\PaletteToLUT.cpp" />
     <ClCompile Include="source\render2d\state\WorldPalette.cpp" />
     <ClCompile Include="source\render2d\texture\TextureLoader.cpp" />
@@ -60,6 +61,7 @@
     <ClInclude Include="source\render2d\object\sprite\CAnimSprite2D.h" />
     <ClInclude Include="source\render2d\object\sprite\CStreamedRenderable2D.h" />
     <ClInclude Include="source\render2d\object\TileMapLayer.h" />
+    <ClInclude Include="source\render2d\preprocess\NormalMapGeneration.h" />
     <ClInclude Include="source\render2d\preprocess\PaletteToLUT.h" />
     <ClInclude Include="source\render2d\state\WorldPalette.h" />
     <ClInclude Include="source\render2d\texture\TextureLoader.h" />

@@ -254,7 +254,6 @@
     <ClInclude Include="source\m04-editor\standalone\mapeditor\ObjectEditorListing.h" />
     <ClInclude Include="source\m04-editor\standalone\mapeditor\TileSelector.h" />
     <ClInclude Include="source\m04-editor\standalone\mapeditor\TileSelectorUI.h" />
-    <ClInclude Include="source\m04-editor\utilties\PaletteConverter.h" />
     <ClInclude Include="source\m04\entities\LightPoint.h" />
     <ClInclude Include="source\m04\entities\NpcBase.h" />
     <ClInclude Include="source\m04\entities\NpcPenni.h" />

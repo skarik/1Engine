@@ -1,4 +1,3 @@
-
 #ifndef _RENDER2D_PALETTE_TO_LUT_H_
 #define _RENDER2D_PALETTE_TO_LUT_H_
 

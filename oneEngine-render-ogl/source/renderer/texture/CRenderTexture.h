@@ -18,14 +18,14 @@ struct tRenderTargetInfo
 	eStencilFormat	stencil;
 
 	glHandle		findex;
-	glHandle		depthRBO;
-	glHandle		stencilRBO;
 
 	bool			fetchcolor;
 	bool			fetchdepth;
 	bool			fetchstencil;
+	glHandle		depthRBO;
 	glHandle		depthtex;
 	bool			depthowned;
+	glHandle		stencilRBO;
 	glHandle		stenciltex;
 	bool			stencilowned;
 

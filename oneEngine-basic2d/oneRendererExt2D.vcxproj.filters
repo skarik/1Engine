@@ -60,6 +60,9 @@
     <ClCompile Include="source\render2d\object\CTextMesh.cpp">
       <Filter>SOURCE\Render2D\Object</Filter>
     </ClCompile>
+    <ClCompile Include="source\render2d\preprocess\NormalMapGeneration.cpp">
+      <Filter>SOURCE\Render2D\Preprocess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\render2d\object\CRenderable2D.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="source\render2d\object\CTextMesh.h">
       <Filter>SOURCE\Render2D\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\preprocess\NormalMapGeneration.h">
+      <Filter>SOURCE\Render2D\Preprocess</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

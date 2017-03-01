@@ -51,9 +51,6 @@
     <ClInclude Include="source\m04\scenes\sceneTilesetTest.h">
       <Filter>SOURCE\M04\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="source\m04-editor\utilties\PaletteConverter.h">
-      <Filter>SOURCE\M04-Editor\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="source\m04-editor\standalone\MapEditor.h">
       <Filter>SOURCE\M04-Editor\Standalone</Filter>
     </ClInclude>
