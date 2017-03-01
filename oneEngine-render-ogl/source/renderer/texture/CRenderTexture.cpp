@@ -180,7 +180,7 @@ CRenderTexture::CRenderTexture (
 		rtInfo.stenciltex = 0;
 		rtInfo.stencil = (eStencilFormat)stencilRequest.format;
 		if ( rtInfo.stencil != StencilNone )
-			rtInfo.stencilRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.depth, info.width, info.height);
+			rtInfo.stencilRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.stencil, info.width, info.height);
 	}
 
 	// And now create the framebuffer
@@ -343,6 +343,7 @@ void CRenderTexture::GenerateFramebuffer ( void )
 		// Bind the render buffer
 		if ( rtInfo.depthRBO != 0 )
 		{
+			cout << " + Attaching depth RBO." << endl;
 			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rtInfo.depthRBO );
 		}
 		else if ( rtInfo.depthtex != 0 )
@@ -354,6 +355,7 @@ void CRenderTexture::GenerateFramebuffer ( void )
 		// Bind the stencil buffer
 		if ( rtInfo.stencilRBO != 0 )
 		{
+			cout << " + Attaching stencil RBO." << endl;
 			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rtInfo.stencilRBO );
 		}
 		else if ( rtInfo.stenciltex != 0 )
@@ -364,7 +366,8 @@ void CRenderTexture::GenerateFramebuffer ( void )
 
 		// check FBO status
 		GLenum status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
-		if ( status != GL_FRAMEBUFFER_COMPLETE ) {
+		if ( status != GL_FRAMEBUFFER_COMPLETE )
+		{
 			rtInfo.active = false;
 
 			switch ( status )

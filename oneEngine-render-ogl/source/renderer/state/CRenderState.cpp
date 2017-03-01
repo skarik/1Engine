@@ -41,7 +41,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		internal_settings.mainColorAttachmentCount = 4;
 		internal_settings.mainColorAttachmentFormat = RGBA16F;
 		internal_settings.mainDepthFormat = Depth24;
-		internal_settings.mainStencilFormat = StencilNone;
+		internal_settings.mainStencilFormat = StencilIndex8;
 	}
 	// Set initial rendertarget states
 	{
@@ -346,7 +346,7 @@ void CRenderState::CreateBuffer ( void )
 			Clamp, Clamp,
 			internal_settings.mainColorAttachmentFormat,
 			glTexture(internal_buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
-			glTexture(internal_buffer_stencil, internal_settings.mainStencilFormat), internal_settings.mainStencilFormat != StencilNone
+			glTexture(internal_buffer_stencil, internal_settings.mainStencilFormat), false
 		);
 	}
 }

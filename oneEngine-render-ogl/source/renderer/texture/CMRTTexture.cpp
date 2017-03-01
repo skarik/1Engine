@@ -335,6 +335,7 @@ void CMRTTexture::GenerateFramebuffer ( void )
 		// Bind the render buffer
 		if ( rtInfo.depthRBO != 0 )
 		{
+			cout << " + Attaching depth RBO." << endl;
 			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rtInfo.depthRBO );
 		}
 		else if ( rtInfo.depthtex != 0 )
@@ -346,6 +347,7 @@ void CMRTTexture::GenerateFramebuffer ( void )
 		// Bind the stencil buffer
 		if ( rtInfo.stencilRBO != 0 )
 		{
+			cout << " + Attaching stencil RBO." << endl;
 			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rtInfo.stencilRBO );
 		}
 		else if ( rtInfo.stenciltex != 0 )

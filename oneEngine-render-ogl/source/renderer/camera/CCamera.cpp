@@ -252,7 +252,7 @@ void CCamera::RenderScene ( void )
 					Clamp, Clamp,
 					textureRequests + 0, 4,
 					&depthTexture, depthTexture.format != DepthNone,
-					&stencilTexture, stencilTexture.format != StencilNone );
+					&stencilTexture, false );
 			}
 		}
 		// Render now, with this camera set, and the render texture set up
