@@ -1,3 +1,4 @@
+#include "core/input/CInput.h"
 
 #include "../CDuskGUI.h"
 #include "CDuskGUISlider.h"

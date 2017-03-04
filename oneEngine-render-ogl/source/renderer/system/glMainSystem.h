@@ -125,6 +125,7 @@ public:
 	//==============================================================================================//
 
 	RENDER_API void		setupViewport ( int x, int y, int width, int height );
+	RENDER_API void		scissorViewport ( int x, int y, int width, int height );
 
 	RENDER_API void		beginOrtho ( void );
 	RENDER_API void		beginOrtho ( ftype left, ftype top, ftype width, ftype height, ftype minz, ftype maxz, bool flipped=true );

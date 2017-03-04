@@ -886,8 +886,82 @@ void		glDrawing::DrawLine ( float x1, float y1, float x2, float y2 )
 // Draw a screen quad
 void		glDrawing::DrawScreenQuad ( void )
 {
-	GL_ACCESS GLd_ACCESS
-	GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+	GL_ACCESS GLd_ACCESS;
+
+	static glHandle vaoQuad = 0;
+	static glHandle vboQuad = 0;
+	static uchar attribs [16];
+
+	if ( vaoQuad == 0 )
+	{
+		glGenVertexArrays( 1, &vaoQuad );
+		memset( attribs, 0, sizeof(attribs) );
+	}
+	if ( vboQuad == 0 )
+	{
+		glGenBuffers( 1, &vboQuad );
+		glBindBuffer( GL_ARRAY_BUFFER, vboQuad );
+
+		CModelVertex buffer [4];
+		memset(buffer, 0, sizeof(buffer));
+		for (CModelVertex& vert : buffer)
+		{
+			vert.r = 1.0F;
+			vert.g = 1.0F;
+			vert.b = 1.0F;
+			vert.a = 1.0F;
+		}
+
+		// Create quad mesh
+		buffer[0].x = 1;
+		buffer[0].y = 1;
+		buffer[0].u = 1;
+		buffer[0].v = 1;
+
+		buffer[1].x = -1;
+		buffer[1].y = 1;
+		buffer[1].u = 0;
+		buffer[1].v = 1;
+
+		buffer[2].x = 1;
+		buffer[2].y = -1;
+		buffer[2].u = 1;
+		buffer[2].v = 0;
+
+		buffer[3].x = -1;
+		buffer[3].y = -1;
+		buffer[3].u = 0;
+		buffer[3].v = 0;
+
+		glBufferData( GL_ARRAY_BUFFER, sizeof(buffer), buffer, GL_STATIC_DRAW );
+	}
+
+	glBindVertexArray( vaoQuad );
+	glBindBuffer( GL_ARRAY_BUFFER, vboQuad );
+
+	// Then disable all values in the VAO (this part of the engine is the only place where they get reused)
+	for ( uchar i = 0; i < 16; ++i )
+	{
+		if ( attribs[i] )
+		{	// TODO: DO MATCHING WITH CURRENT MATERIAL.
+			attribs[i] = false;
+			glDisableVertexAttribArray(i);
+		}
+	}
+
+	// Now, send the material attributes
+	glMaterial::current->bindPassAtrribs(glMaterial::current_pass);
+	glMaterial::current->setShaderConstants( NULL, false );
+	// Mark the enabled attributes
+	for ( uchar i = 0; i < 16; ++i )
+	{
+		attribs[i] = glPass::enabled_attributes[i];
+	}
+
+	// Draw the current primitive
+	glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+
+	/*GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
 		GLd.P_PushColor( 1,1,1,1 );
 
 		GLd.P_PushTexcoord( 1,1 );
@@ -902,7 +976,7 @@ void		glDrawing::DrawScreenQuad ( void )
 		GLd.P_PushTexcoord( 0,0 );
 		GLd.P_AddVertex( -1,-1 );
 
-	GLd.EndPrimitive();
+	GLd.EndPrimitive();*/
 }
 
 // Set primitive options

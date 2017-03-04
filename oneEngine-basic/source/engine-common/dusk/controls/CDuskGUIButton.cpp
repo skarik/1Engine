@@ -1,7 +1,7 @@
+#include "core/input/CInput.h"
 
 #include "../CDuskGUI.h"
 #include "CDuskGUIButton.h"
-
 
 void CDuskGUIButton::Update ( void )
 {

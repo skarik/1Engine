@@ -129,9 +129,14 @@ void	glMainSystem::setupAmbient ( void )
 
 void	glMainSystem::setupViewport ( int x, int y, int width, int height )
 {
-	glViewport( x,y,width,height );
+	glViewport( x, y, width, height );
+	glScissor( x, y, width, height );
 }
 
+void glMainSystem::scissorViewport ( int x, int y, int width, int height )
+{
+	glScissor( x, y, width, height );
+}
 
 
 

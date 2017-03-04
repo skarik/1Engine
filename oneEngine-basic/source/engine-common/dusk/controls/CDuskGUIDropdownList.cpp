@@ -1,5 +1,5 @@
+#include "core/input/CInput.h"
 
-// Include stuph
 #include "../CDuskGUI.h"
 #include "CDuskGUIDropdownList.h"
 

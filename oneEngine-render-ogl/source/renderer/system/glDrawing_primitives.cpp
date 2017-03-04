@@ -51,6 +51,7 @@ void glDrawing::EndPrimitive ( void )
 				glDisableVertexAttribArray(i);
 			}
 		}
+
 		// Now, bind the VBO and stream the data to it
 		glBindBuffer( GL_ARRAY_BUFFER, prim_list[prim_count].vboObject );
 		//glBufferData( GL_ARRAY_BUFFER, sizeof(CModelVertex) * prim_list[prim_count].elementCount, prim_vertex_list, GL_STREAM_DRAW );
@@ -67,7 +68,7 @@ void glDrawing::EndPrimitive ( void )
 		/*GLsizeiptr bufferSize = sizeof(CModelVertex) * prim_list[prim_count].elementCount;
 		glBufferData( GL_ARRAY_BUFFER, bufferSize, NULL, GL_STREAM_DRAW );
 		glBufferSubData( GL_ARRAY_BUFFER, 0, bufferSize, prim_vertex_list );*/
-
+		
 		// Now, send the material attributes
 		glMaterial::current->bindPassAtrribs(glMaterial::current_pass);
 		glMaterial::current->setShaderConstants( NULL, false );

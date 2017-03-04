@@ -2,6 +2,7 @@
 
 //#define DEBUG_OUTPUT
 #define ENABLE_LIGHTING
+//#define ENABLE_JOKE_AMBIENT_OCCLUSION
 //#define ENABLE_DITHERING
 //#define LIGHTING_FLAT
 #define LIGHTING_CELLD
@@ -180,105 +181,43 @@ vec2 random ( vec3 seed3 )
     return vec2( fract(dot_product * 43758.5453), fract(dot_product * 35362.2151) );
 }
 
-float shadowCalculate ( /*vec4 lightCoords,*/ in float s_strength, sampler2D textureShadow, vec4 m_randomizer/*, vec4 shadowInfo*/ )
+
+#ifdef ENABLE_JOKE_AMBIENT_OCCLUSION
+
+float ao_test ( void )
 {
-	float shadowDist = 1.0;
-	// Generate texture coords
-	vec4 shadowWcoord3 = v2f_lightcoord[0];
-	shadowWcoord3.xyz /= shadowWcoord3.w;
-	vec4 shadowWcoord2 = v2f_lightcoord[1];
-	shadowWcoord2.xyz /= shadowWcoord2.w;
-	vec4 shadowWcoord1 = v2f_lightcoord[2];
-	shadowWcoord1.xyz /= shadowWcoord1.w;
-	vec4 shadowWcoord0 = v2f_lightcoord[3];
-	shadowWcoord0.xyz /= shadowWcoord0.w;
-	vec2 minCoords;
-	// Get rid of the non-uniformity. Always sample shadows.
-	{
-		const float cspd = 0.98; // Cascade padding value
+    vec2 offset = vec2( 1.0 / 1280, 1.0 / 720 ) * 2.0;
+    vec4 pixelNormalCenter = texture( textureSampler1, v2f_texcoord0 );
+    vec4 pixelNormalBlurred = vec4(0,0,0,0);
 
-		float depthDifference = 0.0;
-		float distanceFromLight;
-		vec3 coord;
-		float bias = 0;
-		for ( int i = 0; i < 4; i += 1 )
-		{
-			/*coord.xy = random( vec3(m_randomizer.xy,i) ).xy*(1-cspd)*0.12;
-			coord.z = 0;
-			coord.xy += vec2( SmoothTriangleWave(i*0.25),SmoothTriangleWave(i*0.25+0.25) )*(1-cspd)*0.12;*/
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(offset.x,0) );
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(0,offset.y) );
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(-offset.x,0) );
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(0,-offset.y) );
 
-			//float spread;
-			//spread = sqrt(0.02/bias)*2;
-			coord.xy = random( vec3(v2f_texcoord0.xy,i)+sys_WorldCameraPos )*(1-cspd)*0.12;
-			//coord.xy = vec2(0,0);
-			coord.z = 0;
-			coord.xy += vec2( SmoothTriangleWave(i*0.25),SmoothTriangleWave(i*0.25+0.25) )*(1-cspd)*0.12;//*spread;
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(offset.x,offset.y) ) * 2.0 / 3.0;
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(offset.x,-offset.y) ) * 2.0 / 3.0;
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(-offset.x,offset.y) ) * 2.0 / 3.0;
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(-offset.x,-offset.y) ) * 2.0 / 3.0;
 
-			if ( (abs(shadowWcoord0.x-0.5) < 0.5*cspd) && (abs(shadowWcoord0.y-0.5) < 0.5*cspd) )
-			{
-				coord += shadowWcoord0.xyz;
-				coord.x = coord.x*0.25 + 0.75;
-				bias = 0.02;
-			}
-			else if ( (abs(shadowWcoord1.x-0.5) < 0.5*cspd) && (abs(shadowWcoord1.y-0.5) < 0.5*cspd) )
-			{
-				coord += shadowWcoord1.xyz;
-				coord.x = coord.x*0.25 + 0.50;
-				bias = 0.08;
-			}
-			else if ( (abs(shadowWcoord2.x-0.5) < 0.5*cspd) && (abs(shadowWcoord2.y-0.5) < 0.5*cspd) )
-			{
-				coord += shadowWcoord2.xyz;
-				coord.x = coord.x*0.25 + 0.25;
-				bias = 0.64;
-			}
-			else
-			{
-				coord += shadowWcoord3.xyz;
-				coord.x = coord.x*0.25;
-				bias = 2.56;
-			}
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(offset.x,0) * 2 ) / 2.0;
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(0,offset.y) * 2 ) / 2.0;
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(-offset.x,0) * 2 ) / 2.0;
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(0,-offset.y) * 2 ) / 2.0;
 
-			// Limit Y coordinate
-			coord.y = max( min( coord.y, 1.0 ), 0.0 );
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(offset.x,offset.y) * 2 ) / 3.0;
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(offset.x,-offset.y) * 2 ) / 3.0;
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(-offset.x,offset.y) * 2 ) / 3.0;
+    pixelNormalBlurred += texture( textureSampler1, v2f_texcoord0 + vec2(-offset.x,-offset.y) * 2 ) / 3.0;
 
-			distanceFromLight = texture( textureShadow, coord.xy ).r;
-			depthDifference += clamp((coord.z - distanceFromLight)*1024.0 - bias, 0.0,1.0);
-		}
-		depthDifference /= 4.0;
+    pixelNormalBlurred /= 10;
 
-		minCoords = min( abs(shadowWcoord3.xy-vec2(0.5,0.5)), abs(shadowWcoord2.xy-vec2(0.5,0.5)) );
-		minCoords = min( minCoords, abs(shadowWcoord1.xy-vec2(0.5,0.5)) );
-		minCoords = min( minCoords, abs(shadowWcoord0.xy-vec2(0.5,0.5)) );
-		//minCoords.xy /= cspd;
-		// Decrease dif val if close to edge
-		/*depthDifference *= clamp( 8.0-abs(maxCoords.x-0.5)*16.0, 0.0,1.0 );
-		depthDifference *= clamp( 8.0-abs(maxCoords.y-0.5)*16.0, 0.0,1.0 );*/
-		depthDifference *= clamp( 8.0-minCoords.x*16.0, 0.0,1.0 );
-		depthDifference *= clamp( 8.0-minCoords.y*16.0, 0.0,1.0 );
-
-		// Do the color mix
-		shadowDist = clamp( 1.0-depthDifference, 0.0,1.0 );
-	}
-	// If out of range or shadows are not enabled, set shadowDist to 1
-	if (( s_strength <= 0.5 )||( shadowWcoord3.z < 0.0 )||( minCoords.x > 0.5 )||( minCoords.y > 0.5 ))
-	{
-		shadowDist = 1.0;
-	}
-
-	return shadowDist;
+    float dist = length(max(pixelNormalBlurred.xy - pixelNormalCenter.xy, vec2(0,0)));
+    //float dist = length(pixelNormalBlurred.xy - pixelNormalCenter.xy);
+    return (1.0 - dist);
 }
-/*
-float linearizeD ( float depth )
-{
-	return (2*sys_CameraRange.x) / ( sys_CameraRange.y+sys_CameraRange.x - depth * (sys_CameraRange.y-sys_CameraRange.x) );
-}
-float delinearizeD ( float edepth )
-{
-	//return (2*sys_CameraRange.x) / (sys_CameraRange.y+sys_CameraRange.x - depth * (sys_CameraRange.y-sys_CameraRange.x));
-	return ( sys_CameraRange.y*edepth + sys_CameraRange.x*(edepth-2) )/( edepth * (sys_CameraRange.y-sys_CameraRange.x) );
-}
-*/
+
+#endif
 
 void main ( void )
 {
@@ -370,7 +309,11 @@ void main ( void )
 	{
 		luminColor = vec3( 1,1,1 );
 	}*/
+#ifdef ENABLE_JOKE_AMBIENT_OCCLUSION
+    luminColor = mix( vec3(1,1,1), luminColor * ao_test(), lightingStrength );
+#else
     luminColor = mix( vec3(1,1,1), luminColor, lightingStrength );
+#endif
 	// ==Perform diffuse==
 	//vec3 diffuseColor = pixelDiffuse.rgb;
 	// Shadow "outline" effect

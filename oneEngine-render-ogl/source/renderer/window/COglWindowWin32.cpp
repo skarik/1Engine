@@ -268,7 +268,8 @@ int COglWindowWin32::InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 	//glHint(GL_FOG_HINT, GL_DONT_CARE);					// Want nice fog, but don't really care
 	*/
 	glEnable(GL_CULL_FACE);								// Enabled backface culling
-	
+	glEnable(GL_SCISSOR_TEST);
+
 	return TRUE;										// Initialization Went OK
 }
 

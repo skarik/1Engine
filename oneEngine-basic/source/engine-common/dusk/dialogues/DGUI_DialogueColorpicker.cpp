@@ -1,3 +1,4 @@
+#include "core/input/CInput.h"
 
 #include "DGUI_DialogueColorpicker.h"
 #include "../CDuskGUI.h"

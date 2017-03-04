@@ -2,43 +2,30 @@
 #ifndef _C_DUSK_GUI_H_
 #define _C_DUSK_GUI_H_
 
-// Includes
+
+#include "core/system/Screen.h"
+#include "core/system/System.h"
+#include "core/types/ModelData.h"
+#include "core/math/Rect.h"
+
 #include "engine/behavior/CGameBehavior.h"
 #include "renderer/object/CRenderableObject.h"
 
 // Include Draw stuff
-//#include "glMaterial.h"
 class glMaterial;
-//#include "CBitmapFont.h"
 class CBitmapFont;
+class CRenderTexture;
 
-// Include screen
-#include "core/system/Screen.h"
-
-// Include input
-#include "core/input/CInput.h"
-
-// Include system
-#include "core/system/System.h"
-
-// Include Rect
-#include "core/types/ModelData.h"
-#include "core/math/Rect.h"
-// Include string
 #include <string>
-using std::string;
-// Include vector
 #include <vector>
-//using std::vector;
-// Include list
 #include <list>
-//using std::list;
+
+using std::string;
 
 // Include handle type
 #include "CDuskGUIHandle.h"
 
-
-// Class prototype
+// Forward declaration of all Dusk UI element classes
 class CDuskGUIElement;
 class CDuskGUIPanel;
 class CDuskGUIButton;
@@ -73,7 +60,6 @@ class CDuskGUI : public CGameBehavior, public CRenderableObject
 	ClassName( "DuskGUI" );
 public:
 	// Handle type
-	//typedef int Handle;
 	friend Dusk::Handle;
 	typedef Dusk::Handle Handle;
 
@@ -115,6 +101,13 @@ public:
 	void Update ( void );
 	// Render
 	bool Render ( const char pass );
+
+private:
+
+	void Render_SetupMaterial ( glMaterial* );
+	void RenderUI ( void );
+
+public:
 
 	// == Setters ==
 	// Set materials
@@ -269,6 +262,7 @@ private:
 
 private:
 	// Materials used in drawing
+	glMaterial*	matScreenCopy;
 	glMaterial*	matDefault;
 	glMaterial*	matHover;
 	glMaterial*	matDown;
@@ -282,12 +276,17 @@ private:
 	static glMaterial*	matDefFont;
 	static CBitmapFont*	fntDefDefault;
 
+	// Rendering state
+	CRenderTexture* renderBuffer;
+
 	// Element information and handles
 	std::vector<CDuskGUIElement*>	vElements;
 	Handle	hCurrentElement;
 	Handle	hCurrentDialogue;
 	Handle	hCurrentMouseover;
 	Handle	hCurrentFocus;
+
+	std::vector<Rect>	forceUpdateRects;
 
 private:
 	// == Private Routines ==

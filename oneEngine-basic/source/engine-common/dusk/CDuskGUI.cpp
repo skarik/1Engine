@@ -1,6 +1,5 @@
+#include "core/input/CInput.h"
 
-// Include Header
-#include "CDuskGUI.h"
 // Include Elements
 #include "controls/CDuskGUIElement.h"
 #include "controls/CDuskGUIPanel.h"
@@ -14,21 +13,24 @@
 #include "controls/CDuskGUIDialogue_YN.h"
 #include "controls/CDuskGUITextfield.h"
 #include "controls/CDuskGUIDropdownList.h"
-//#include "CDuskGUIListview.h"
-//#include "CDuskGUIPropertyview.h"
 
+// Renderer bits
 #include "renderer/material/glMaterial.h"
 #include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/CRenderTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
+
+// Main header
+#include "CDuskGUI.h"
 
 using namespace std;
 
 // Static variables
-glMaterial*	CDuskGUI::matDefDefault	= NULL;
-glMaterial*	CDuskGUI::matDefHover	= NULL;
-glMaterial*	CDuskGUI::matDefDown	= NULL;
-glMaterial*	CDuskGUI::matDefFont	= NULL;
+glMaterial*		CDuskGUI::matDefDefault	= NULL;
+glMaterial*		CDuskGUI::matDefHover	= NULL;
+glMaterial*		CDuskGUI::matDefDown	= NULL;
+glMaterial*		CDuskGUI::matDefFont	= NULL;
 CBitmapFont*	CDuskGUI::fntDefDefault	= NULL;
 
 // Constructor
@@ -45,7 +47,7 @@ CDuskGUI::CDuskGUI ( void )
 	//matDown		= matDefDown;
 	matFont		= matDefFont;
 	fntDefault	= fntDefDefault;
-	SetMaterial( matDefault );
+	//SetMaterial( matDefault );
 
 	// Set default colors and mat settings
 	m_basecolor			= Color( 0.25f,0.25f,0.35f, 0.7f );
@@ -63,6 +65,22 @@ CDuskGUI::CDuskGUI ( void )
 
 	// Set active GUI
 	Dusk::activeGUI = this;
+
+	// Null out renderbuffer for now
+	renderBuffer = NULL;
+	
+	// Create the copy material
+	{
+		matScreenCopy = new glMaterial ();
+		matScreenCopy->m_diffuse = Color( 1,1,1,1 );
+		matScreenCopy->passinfo.push_back( glPass() );
+		matScreenCopy->passinfo[0].shader = new glShader( "shaders/sys/copy_buffer.glsl" );
+		matScreenCopy->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
+		matScreenCopy->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
+		matScreenCopy->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	}
+	SetMaterial( matScreenCopy );
+	matScreenCopy->removeReference();
 }
 // Destructor
 CDuskGUI::~CDuskGUI ( void )
@@ -282,23 +300,58 @@ void CDuskGUI::Update ( void )
 	
 	// Restore screen info
 	Screen::Info = prevInfo;
+
+	// Now render the UI!
+	RenderUI();
 }
 
-// Rendering
-bool CDuskGUI::Render ( const char pass )
+void CDuskGUI::Render_SetupMaterial ( glMaterial* mat )
 {
-	GL_ACCESS GLd_ACCESS
+	if ( mat != NULL )
+	{
+		for ( glPass& pass : mat->passinfo )
+		{
+			pass.b_depthmask = false;
+			pass.m_lighting_mode = Renderer::LI_NONE;
+		}
+	}
+}
+
+// Re-render UI to buffer
+void CDuskGUI::RenderUI ( void )
+{
+	GL_ACCESS GLd_ACCESS;
+
+	// Update the buffer to render to
+	if ( renderBuffer )
+	{
+		if ( renderBuffer->GetSize() != Vector2i( Screen::Info.width, Screen::Info.height ) )
+		{
+			delete renderBuffer;
+			renderBuffer = NULL;
+		}
+	}
+	if ( renderBuffer == NULL )
+	{
+		renderBuffer = new CRenderTexture( Screen::Info.width, Screen::Info.height, Clamp, Clamp, RGBA8, DepthNone, StencilNone );
+	}
+	// Update material options
+	Render_SetupMaterial(matDefault);
+	Render_SetupMaterial(matHover);
+	Render_SetupMaterial(matDown);
+	Render_SetupMaterial(matFont);
+
 
 	// Set pixel + screen parameters + current GUI
 	Screen::_screen_info_t prevInfo = Screen::Info;
-	if ( !bInPixelMode ) {
+	if ( !bInPixelMode )
+	{
+		throw Core::DeprecatedCallException();
 		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX() / (ftype)Screen::Info.width, CInput::MouseY() / (ftype)Screen::Info.height );
 	}
-	else {
+	else
+	{
 		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX(), CInput::MouseY() );
-		/*Screen::Info.width = 1;
-		Screen::Info.height = 1;
-		Screen::Info.scale = 1;*/
 	}
 	CDuskGUIElement::activeGUI = this;
 
@@ -306,9 +359,8 @@ bool CDuskGUI::Render ( const char pass )
 	fntDefault->Set();
 
 	// Create drawn last list
-	bool* pbElementDrawn = new bool [vElements.size()];
-	for ( unsigned int i = 0; i < vElements.size(); ++i )
-		pbElementDrawn[i] = false;
+	bool* t_element_handled = new bool [vElements.size()];
+	Vector2d* t_element_reference_position = new Vector2d [vElements.size()];
 
 	// Check for last element drawn
 	Handle currentElement = 0;
@@ -316,26 +368,43 @@ bool CDuskGUI::Render ( const char pass )
 	int iDrawCount = 0;
 	// List for the 'recursive' drawing
 	std::list<Handle> drawList;
-	drawList.push_back( currentElement );
+	std::vector<Handle> t_finalDrawList;
 
 	// Reset offset
 	parenting_offset = Vector2d(0,0);
 	offsetList.resize( vElements.size(), Vector2d(0,0) );
 	offsetList.assign( vElements.size(), Vector2d(0,0) );
 
-	// Iterate through all the components
-	for ( unsigned int i = 0; i < vElements.size(); ++i ) {
-		if ( vElements[i] != NULL ) {
-			vElements[i]->drawn = false;
+	// Create base update rect
+	Rect update_rect;
+	if ( forceUpdateRects.empty() ) 
+	{
+		update_rect = Rect( Input::MouseX(), Input::MouseY(), 0, 0 );
+	}
+	else
+	{
+		update_rect = forceUpdateRects[0];
+		for ( Rect rect : forceUpdateRects)
+		{
+			update_rect.Expand(rect);
 		}
+		forceUpdateRects.clear();
+	}
+
+	// Iterate through all the components to figure out which to update
+	drawList.clear();
+	drawList.push_back( currentElement );
+	memset( t_element_handled, 0, sizeof(bool) * vElements.size() );
+	for ( CDuskGUIElement* element : vElements ) {
+		if ( element != NULL ) element->drawn = false;
 	}
 	for ( unsigned int i = 0; i < vElements.size(); ++i )
 	{
 		if ( vElements[i] == NULL ) 
 			continue;
-		if ( pbElementDrawn[i] == false ) // If element not been drawn yet
+		if ( t_element_handled[i] == false ) // If element not been drawn yet
 			drawList.push_back( Handle(i) ); // Add it to the draw list
-		// Draw all objects queued to draw list
+											 // Draw all objects queued to draw list
 		while ( !drawList.empty() )
 		{
 			// Get the current element
@@ -348,49 +417,48 @@ bool CDuskGUI::Render ( const char pass )
 			}
 
 			// If the current element is visible
-			if (( vElements[currentElement]->visible )||( hCurrentDialogue == currentElement ))
+			if ( vElements[currentElement]->visible || hCurrentDialogue == currentElement )
 			{
-				// If the parent is real
-				if ( vElements[currentElement]->parent >= 0 )
-				{
-					// And if the parent has not been drawn yet
-					if ( pbElementDrawn[vElements[currentElement]->parent] == false )
-					{
-						// Then postpone drawing, adding parent first
-						drawList.push_back( vElements[currentElement]->parent );
-						drawList.push_back( currentElement );
-					}
-					else // If it has been drawn
-					{
-						if ( pbElementDrawn[currentElement] == false ) // Make sure we were not made to skip
-						{
-							// Save offsets
-							offsetList[currentElement] += vElements[currentElement]->parent->rect.pos;
-							parenting_offset = offsetList[currentElement];
-							// Draw the element
-							pbElementDrawn[currentElement] = true;
-							setSubdrawDefault();
-							vElements[currentElement]->Render();
-							vElements[currentElement]->drawn = true;
-							// Save offsets
-							offsetList[currentElement] += vElements[currentElement]->rect.pos;
-						}
-					}
+				// Skip already handled objects
+				if (t_element_handled[currentElement]) {
+					continue;
 				}
-				else // If no parent, then just draw the element
+
+				Handle parent = vElements[currentElement]->parent;
+
+				// If we have a parent and the parent has rendered
+				if ( (parent >= 0 && t_element_handled[parent]) || (parent < 0) )
 				{
-					if ( pbElementDrawn[currentElement] == false )
+					// Create new offset if parent exists
+					if ( parent >= 0 )
+						offsetList[currentElement] += vElements[currentElement]->parent->rect.pos;
+					// Save offsets
+					parenting_offset = offsetList[currentElement];
+
+					// "Draw" the element
+					t_element_handled[currentElement] = true;
+					t_element_reference_position[currentElement] = parenting_offset;
+					vElements[currentElement]->last_visible_rect = Rect(
+						t_element_reference_position[currentElement] + vElements[currentElement]->rect.pos,
+						vElements[currentElement]->rect.size);
+					if ( vElements[currentElement]->mouseIn || vElements[currentElement]->hasFocus )
 					{
-						// Save offsets
-						parenting_offset = offsetList[currentElement];
-						// Draw the element
-						pbElementDrawn[currentElement] = true;
-						setSubdrawDefault();
-						vElements[currentElement]->Render();
-						vElements[currentElement]->drawn = true;
-						// Save offsets
-						offsetList[currentElement] += vElements[currentElement]->rect.pos;
+						update_rect.Expand( vElements[currentElement]->last_visible_rect );
 					}
+
+					// Push element to the list for drawing
+					t_finalDrawList.push_back(currentElement);
+
+					vElements[currentElement]->drawn = true;
+					// Save offsets
+					offsetList[currentElement] += vElements[currentElement]->rect.pos;
+				}
+				// If parent exists, but has not been drawn
+				else if ( parent >= 0 && t_element_handled[parent] == false )
+				{
+					// Then postpone drawing, adding parent first
+					drawList.push_back( vElements[currentElement]->parent );
+					drawList.push_back( currentElement );
 				}
 			}
 			// End if visible
@@ -407,7 +475,7 @@ bool CDuskGUI::Render ( const char pass )
 					// Get the current element
 					currentSkipElement = skipList.front();
 					skipList.pop_front();
-					
+
 					// Add all elements with this as the parent to skip
 					for ( unsigned int j = 0; j < vElements.size(); ++j )
 					{
@@ -417,7 +485,7 @@ bool CDuskGUI::Render ( const char pass )
 					}
 
 					// Notify skip
-					pbElementDrawn[currentSkipElement] = true;
+					t_element_handled[currentSkipElement] = true;
 				}
 				// End skip list
 			}
@@ -425,71 +493,75 @@ bool CDuskGUI::Render ( const char pass )
 		}
 		// End draw queue (while loop)
 	}
+
 	// Draw the dialogue that's active
-	if ( hCurrentDialogue >= 0 ) {
-		if ( vElements[hCurrentDialogue] != NULL ) {
-			parenting_offset = offsetList[hCurrentDialogue] - vElements[hCurrentDialogue]->rect.pos;
-			setSubdrawDefault();
-			vElements[hCurrentDialogue]->Render();
+	if ( hCurrentDialogue >= 0 )
+	{
+		currentElement = hCurrentDialogue;
+		if ( vElements[currentElement] != NULL )
+		{
+			parenting_offset = offsetList[currentElement] - vElements[currentElement]->rect.pos;
+
+			// "Draw" the element
+			t_element_handled[currentElement] = true;
+			t_element_reference_position[currentElement] = parenting_offset;
+			vElements[currentElement]->last_visible_rect = Rect(
+				t_element_reference_position[currentElement] + vElements[currentElement]->rect.pos,
+				vElements[currentElement]->rect.size);
+
+			if ( vElements[currentElement]->mouseIn || vElements[currentElement]->hasFocus )
+			{
+				update_rect.Expand( vElements[currentElement]->last_visible_rect );
+			}
+
+			// Push element to the list for drawing
+			t_finalDrawList.push_back(currentElement);
+
 			vElements[hCurrentDialogue]->drawn = true;
 		}
 	}
+
+	// Check update rect. Don't need to re-render if there's nothing to update
+	if ( update_rect.size.x < 1 && update_rect.size.y < 1 )
+	{
+		delete [] t_element_handled;
+		delete [] t_element_reference_position;
+		return;
+	}
+
+	// Bind to the render buffer
+	renderBuffer->BindBuffer();
+
+	// Scissor viewport to what needs to be updated
+	GL.scissorViewport(
+		(int)update_rect.pos.x,
+		(int)(Screen::Info.height - update_rect.pos.y - update_rect.size.y),
+		(int)update_rect.size.x,
+		(int)update_rect.size.y );
+
+	// Clear the color of where we're rendering
+	GL.clearColor( Color(0.0F, 0.0F, 0.0F, 0.0F) );
+	GL.ClearBuffer( GL_COLOR_BUFFER_BIT );
+
+	// Iterate through all the components
+	for ( unsigned int i = 0; i < t_finalDrawList.size(); ++i )
+	{
+		currentElement = t_finalDrawList[i];
+
+		// Skip null elements
+		if ( vElements[currentElement] == NULL ) {
+			continue;
+		}
+
+		parenting_offset = t_element_reference_position[currentElement];
+		// Draw the element
+		setSubdrawDefault();
+		vElements[currentElement]->Render();
+	}
+
 	// Free the list
-	delete [] pbElementDrawn;
-
-	GL.prepareDraw();
-
-	GL.beginOrtho( 0,0, 1,1, -45,45 );
-	GLd.DrawSet2DScaleMode();
-
-	matDefault->bindPass(0);
-	matDefault->setShaderConstants( this );
-
-	// Draw the solids
-	if ( !modelSolidMeshList.empty() ) {
-		GLd.BeginPrimitive( GL_TRIANGLES );
-		for ( uint i = 0; i < modelSolidMeshList.size(); ++i )
-		{
-			GLd.P_PushColor( modelSolidMeshList[i].r, modelSolidMeshList[i].g, modelSolidMeshList[i].b, modelSolidMeshList[i].a );
-			GLd.P_AddVertex( modelSolidMeshList[i].x, modelSolidMeshList[i].y );
-		}
-		GLd.EndPrimitive();
-	}
-	// Draw the lines
-	if ( !modelLineMeshList.empty() ) {
-		GLd.BeginPrimitive( GL_LINES );
-		for ( uint i = 0; i < modelLineMeshList.size(); ++i )
-		{
-			GLd.P_PushColor( modelLineMeshList[i].r, modelLineMeshList[i].g, modelLineMeshList[i].b, modelLineMeshList[i].a );
-			GLd.P_AddVertex( modelLineMeshList[i].x, modelLineMeshList[i].y );
-		}
-		GLd.EndPrimitive();
-	}
-
-	GL.endOrtho();
-	GL.beginOrtho();
-
-	// Draw the text
-	matFont->setTexture( 0, fntDefault );
-	matFont->bindPass(0);
-	matFont->setShaderConstants( this );
-	if ( !modelTextRequestList.empty() ) {
-		for ( uint i = 0; i < modelTextRequestList.size(); ++i )
-		{
-			if ( modelTextRequestList[i].mode == 0 ) {
-				GLd.DrawAutoText( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-			}
-			else if ( modelTextRequestList[i].mode == 1 ) {
-				GLd.DrawAutoTextCentered( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-			}
-			else if ( modelTextRequestList[i].mode == 2 ) {
-				GLd.DrawAutoTextWrapped( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].width, modelTextRequestList[i].text.c_str() );
-			}
-		}
-	}
-
-	GL.endOrtho();
-	GL.cleanupDraw();
+	delete [] t_element_handled;
+	delete [] t_element_reference_position;
 
 	// Clear draw lists (we're done here)
 	modelLineMeshList.clear();
@@ -498,6 +570,23 @@ bool CDuskGUI::Render ( const char pass )
 
 	// Restore screen info
 	Screen::Info = prevInfo;
+
+	// Restore scissor
+	GL.scissorViewport( 0,0, Screen::Info.width, Screen::Info.height );
+
+	// Unbind the buffer
+	renderBuffer->UnbindBuffer();
+}
+
+// Rendering
+bool CDuskGUI::Render ( const char pass )
+{
+	GL_ACCESS GLd_ACCESS;
+
+	// Bind the material for alpha-blending
+	matScreenCopy->setTexture( 0, renderBuffer );
+	matScreenCopy->bindPass( pass );
+	GLd.DrawScreenQuad();
 
 	return true;
 }
@@ -580,23 +669,33 @@ void CDuskGUI::SetPixelMode ( bool enabled )
 // Set element properties
 void CDuskGUI::SetElementVisible ( const Handle & handle, const bool vis )
 {
-	vElements[int(handle)]->visible = vis;
+	if (vElements[int(handle)]->visible != vis)
+	{
+		vElements[int(handle)]->visible = vis;
+		forceUpdateRects.push_back( vElements[int(handle)]->last_visible_rect );
+	}
 }
 void CDuskGUI::SetElementText ( const Handle & handle, const string & str )
 {
-	vElements[int(handle)]->label = str;
+	if (vElements[int(handle)]->label != str)
+	{
+		vElements[int(handle)]->label = str;
+		forceUpdateRects.push_back( vElements[int(handle)]->last_visible_rect );
+	}
 }
 void CDuskGUI::SetElementRect ( const Handle & handle, const Rect & rect )
 {
 	vElements[int(handle)]->rect = rect;
+	forceUpdateRects.push_back( Rect(0,0, (Real)Screen::Info.width, (Real)Screen::Info.height) );
 }
 void CDuskGUI::SetElementParent ( const Handle & handle, const Handle & newparent )
 {
 	vElements[int(handle)]->parent = newparent;
+	forceUpdateRects.push_back( Rect(0,0, (Real)Screen::Info.width, (Real)Screen::Info.height) );
 }
 void CDuskGUI::ToggleElementVisible ( const Handle & handle )
 {
-	vElements[int(handle)]->visible = !(vElements[int(handle)]->visible);
+	SetElementVisible( !vElements[int(handle)]->visible );
 }
 
 // == Getters/Observers ==
@@ -766,6 +865,7 @@ void CDuskGUI::SetColorPicker ( const Handle & handle, Color & inColorVal )
 {
 	CDuskGUIColorpicker* cp = (CDuskGUIColorpicker*)vElements[int(handle)];
 	cp->SetColor( inColorVal );
+	forceUpdateRects.push_back( vElements[int(handle)]->last_visible_rect );
 }
 void CDuskGUI::GetColorPicker ( const Handle & handle, Color & outColorVal )
 {
@@ -810,6 +910,7 @@ void CDuskGUI::DeleteElement ( const Handle & handleToDelete )
 		delete vElements[int(handleToDelete)];
 		vElements[int(handleToDelete)] = NULL;
 	}
+	forceUpdateRects.push_back( Rect(0,0, (Real)Screen::Info.width, (Real)Screen::Info.height) );
 }
 
 // Update hCurrentMouseOver variable

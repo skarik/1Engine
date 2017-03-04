@@ -109,6 +109,11 @@ protected:
 	void drawTextWidth ( const ftype x, const ftype y, const ftype w, const char* str );
 	void drawTextCentered ( const ftype x, const ftype y, const char* str );
 
+private:
+	friend CDuskGUI;
+
+	Rect last_visible_rect;
+
 };
 
 #endif

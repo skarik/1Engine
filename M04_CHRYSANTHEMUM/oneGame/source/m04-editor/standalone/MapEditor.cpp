@@ -209,6 +209,7 @@ void MapEditor::Update ( void )
 
 		// Update portions of the UI if can be updated
 		if ( m_current_mode == Mode::Properties ) uiStepShitPanel();
+		if ( m_current_mode == Mode::TileEdit ) uiStepTilePanel();
 		if ( m_current_mode == Mode::AreaEdit ) uiStepAreaPanel();
 		if ( m_current_mode == Mode::ObjectEdit ) uiStepObjectPanel();
 		if ( m_current_mode == Mode::Preferences ) uiStepPreferencesPanel();
@@ -309,7 +310,7 @@ void MapEditor::_doTileEditingSub ( float mousex, float mousey )
 		int next_tile = m_tile_selector->GetTileSelection();
 		for ( auto itr_tile = m_tilemap->m_tiles.begin(); itr_tile != m_tilemap->m_tiles.end(); ++itr_tile )
 		{
-			if ( itr_tile->x == ix && itr_tile->y == iy )
+			if ( itr_tile->x == ix && itr_tile->y == iy && itr_tile->depth == m_tile_layer_current )
 			{
 				changed_tile = true;
 				// Perform change if there's a difference
@@ -331,7 +332,7 @@ void MapEditor::_doTileEditingSub ( float mousex, float mousey )
 				// Create a new tile object
 				mapTile_t tile;
 				tile.type = next_tile;
-				tile.depth = 0;
+				tile.depth = m_tile_layer_current;
 				tile.collision_override = 0;
 				tile.x = ix;
 				tile.y = iy;
@@ -348,7 +349,7 @@ void MapEditor::_doTileEditingSub ( float mousex, float mousey )
 		int next_tile = m_tile_selector->GetTileSelection();
 		for ( auto itr_tile = m_tilemap->m_tiles.begin(); itr_tile != m_tilemap->m_tiles.end(); ++itr_tile )
 		{
-			if ( itr_tile->x == ix && itr_tile->y == iy )
+			if ( itr_tile->x == ix && itr_tile->y == iy && itr_tile->depth == m_tile_layer_current )
 			{
 				// remove the tile from it all
 				m_tilemap->m_tiles.erase(itr_tile);
@@ -926,6 +927,44 @@ void MapEditor::uiCreate ( void )
 		panel = dusk->CreatePanel();
 		panel.SetRect( Rect(256, 40, 1280 - 256, 40) );
 		ui_panel_tiles = panel;
+
+		// Create labels
+		label = dusk->CreateText( panel, "LAYER" );
+		label.SetRect(Rect(10,5,0,0));
+
+		label = dusk->CreateText( panel, "MODE" );
+		label.SetRect(Rect(160,5,0,0));
+
+		// Create layer thingies
+		button = dusk->CreateButton( panel );
+		button.SetText("-");
+		button.SetRect(Rect(50,5,30,30));
+		ui_btn_dec_layer = button;
+
+		label = dusk->CreateText( panel, "0" );
+		label.SetRect(Rect(90,5,0,0));
+		ui_fld_current_layer = label;
+
+		button = dusk->CreateButton( panel );
+		button.SetText("+");
+		button.SetRect(Rect(110,5,30,30));
+		ui_btn_inc_layer = button;
+
+		// Create edit mode toggles
+		button = dusk->CreateButton( panel );
+		button.SetText("Visuals");
+		button.SetRect(Rect(200,5,50,30));
+		ui_btn_tile_mode_visual = button;
+
+		button = dusk->CreateButton( panel );
+		button.SetText("Collision");
+		button.SetRect(Rect(255,5,50,30));
+		ui_btn_tile_mode_collision = button;
+
+		button = dusk->CreateButton( panel );
+		button.SetText("Height");
+		button.SetRect(Rect(310,5,50,30));
+		ui_btn_tile_mode_height = button;
 	}
 
 	// Shit panel
@@ -1356,6 +1395,49 @@ void MapEditor::uiDoShitRefresh ( void )
 	ui_fld_map_area.SetText( string( m_mapinfo->area_name ) );
 	ui_fld_map_size_x.SetText( std::to_string( m_mapinfo->tilesize_x ) );
 	ui_fld_map_size_y.SetText( std::to_string( m_mapinfo->tilesize_y ) );
+}
+
+//		uiStepTilePanel () : tile editor panel update
+// handles inputs and updates to the tile panel
+void MapEditor::uiStepTilePanel ( void )
+{
+	// Ensure correct tile mode is up
+	switch (m_current_submode)
+	{
+	case SubMode::TilesVisual:
+	case SubMode::TilesCollision:
+	case SubMode::TilesHeight:
+		// nothing;
+		break;
+	default:
+		m_current_submode = SubMode::TilesVisual;
+	}
+
+	// Do button stuffs
+	if ( ui_btn_inc_layer.GetButtonClicked() )
+	{
+		m_tile_layer_current++;
+		ui_fld_current_layer.SetText( std::to_string(m_tile_layer_current) );
+	}
+	if ( ui_btn_dec_layer.GetButtonClicked() )
+	{
+		m_tile_layer_current--;
+		ui_fld_current_layer.SetText( std::to_string(m_tile_layer_current) );
+	}
+	
+	// Change mode with buttons
+	if ( ui_btn_tile_mode_visual.GetButtonClicked() )
+	{
+		m_current_submode = SubMode::TilesVisual;
+	}
+	if ( ui_btn_tile_mode_collision.GetButtonClicked() )
+	{
+		m_current_submode = SubMode::TilesCollision;
+	}
+	if ( ui_btn_tile_mode_height.GetButtonClicked() )
+	{
+		m_current_submode = SubMode::TilesHeight;
+	}
 }
 
 //		uiStepAreaPanel () : area panel update

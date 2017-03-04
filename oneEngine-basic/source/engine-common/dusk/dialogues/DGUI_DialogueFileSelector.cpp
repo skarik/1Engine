@@ -1,3 +1,4 @@
+#include "core/input/CInput.h"
 
 #include <algorithm>
 #include "DGUI_DialogueFileSelector.h"
@@ -27,9 +28,11 @@ Dusk::Handle CDuskGUI::DialogueOpenFilename ( System::sFileDialogueEntry* nFilet
 
 		// Set the current dialogue
 		hCurrentDialogue = handle;
+		forceUpdateRects.push_back( Rect( 0,0, (Real)Screen::Info.width, (Real)Screen::Info.height) );
 		// Save the handle
 		return handle;
 	}
+
 	return -1;
 }
 Dusk::Handle CDuskGUI::DialogueSaveFilename ( System::sFileDialogueEntry* nFiletypes, int nFiletypeCount, const char* nInitialDir, const char* nDialogueTitle )
@@ -52,6 +55,7 @@ Dusk::Handle CDuskGUI::DialogueSaveFilename ( System::sFileDialogueEntry* nFilet
 
 		// Set the current dialogue
 		hCurrentDialogue = handle;
+		forceUpdateRects.push_back( Rect( 0,0, (Real)Screen::Info.width, (Real)Screen::Info.height) );
 		// Save the handle
 		return handle;
 	}
@@ -60,6 +64,8 @@ Dusk::Handle CDuskGUI::DialogueSaveFilename ( System::sFileDialogueEntry* nFilet
 
 bool CDuskGUI::GetOpenFilename ( char* nOutFilename, const Handle& handleOverride )
 {
+	forceUpdateRects.push_back( Rect( 0,0, (Real)Screen::Info.width, (Real)Screen::Info.height) );
+
 	if ( hCurrentDialogue >= 0 && hCurrentDialogue->m_type == 40 )
 	{
 		if ( ((int)handleOverride != -1) && hCurrentDialogue != handleOverride ) {
@@ -80,6 +86,8 @@ bool CDuskGUI::GetOpenFilename ( char* nOutFilename, const Handle& handleOverrid
 }
 bool CDuskGUI::GetSaveFilename ( char* nOutFilename, const Handle& handleOverride )
 {
+	forceUpdateRects.push_back( Rect( 0,0, (Real)Screen::Info.width, (Real)Screen::Info.height) );
+
 	if ( hCurrentDialogue >= 0 && hCurrentDialogue->m_type == 40 )
 	{
 		if ( ((int)handleOverride != -1) && hCurrentDialogue != handleOverride ) {
@@ -101,6 +109,8 @@ bool CDuskGUI::GetSaveFilename ( char* nOutFilename, const Handle& handleOverrid
 
 bool CDuskGUI::OpenDialogueHasSelection ( const Handle& handleOverride )
 {
+	forceUpdateRects.push_back( Rect( 0,0, (Real)Screen::Info.width, (Real)Screen::Info.height) );
+
 	if ( hCurrentDialogue >= 0 && hCurrentDialogue->m_type == 40 )
 	{
 		if ( hCurrentDialogue != handleOverride ) {
@@ -128,6 +138,8 @@ bool CDuskGUI::OpenDialogueHasSelection ( const Handle& handleOverride )
 }
 bool CDuskGUI::SaveDialogueHasSelection ( const Handle& handleOverride )
 {
+	forceUpdateRects.push_back( Rect( 0,0, (Real)Screen::Info.width, (Real)Screen::Info.height) );
+
 	if ( hCurrentDialogue >= 0 && hCurrentDialogue->m_type == 40 )
 	{
 		if ( hCurrentDialogue != handleOverride ) {

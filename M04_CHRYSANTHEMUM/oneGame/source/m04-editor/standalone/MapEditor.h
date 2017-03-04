@@ -62,6 +62,9 @@ namespace M04
 		//		uiDoShitRefresh () : S.H.I.T. panel reinit
 		// resets all input in the shit panel with the current values
 		void		uiDoShitRefresh ( void );
+		//		uiStepTilePanel () : tile editor panel update
+		// handles inputs and updates to the tile panel
+		void		uiStepTilePanel ( void );
 		//		uiStepAreaPanel () : area panel update
 		// handles input and updates to the area panel
 		void		uiStepAreaPanel ( void );
@@ -129,6 +132,10 @@ namespace M04
 			None = 0,
 			Dragging,
 			Dropdown,
+
+			TilesVisual,
+			TilesCollision,
+			TilesHeight
 		};
 
 	protected:
@@ -144,6 +151,8 @@ namespace M04
 		TileSelector*	m_tile_selector;
 		AreaRenderer*	m_area_renderer;
 		GizmoRenderer*	m_gizmo_renderer;
+
+		int			m_tile_layer_current;
 
 		int			m_area_corner_selection;
 		Engine2D::Area2DBase*	m_area_target;
@@ -192,6 +201,12 @@ namespace M04
 		Dusk::Handle	ui_panel_tiles;
 		Dusk::Handle	ui_lst_tile_layer;
 		Dusk::Handle	ui_btn_clear_layer;
+		Dusk::Handle	ui_btn_inc_layer;
+		Dusk::Handle	ui_btn_dec_layer;
+		Dusk::Handle	ui_fld_current_layer;
+		Dusk::Handle	ui_btn_tile_mode_visual;
+		Dusk::Handle	ui_btn_tile_mode_collision;
+		Dusk::Handle	ui_btn_tile_mode_height;
 
 		Dusk::Handle	ui_panel_shit;
 		Dusk::Handle	ui_btn_cancel_shit;

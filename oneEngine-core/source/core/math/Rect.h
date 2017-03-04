@@ -54,6 +54,32 @@ public:
 	{
 		return ((point.x > pos.x) && (point.y > pos.y) && (point.x < pos.x+size.x) && (point.y < pos.y+size.y));
 	}
+
+	//		Expand ( point )
+	// Expands rect to contain point
+	FORCE_INLINE void Expand ( const Vector2d& point )
+	{
+		for ( uint i = 0; i < 2; ++i )
+		{
+			if ( point[i] < pos[i] )
+			{
+				size[i] += pos[i] - point[i];
+				pos[i] = point[i];
+			}
+			else if( point[i] > pos[i] + size[i] )
+			{
+				size[i] += point[i] - (pos[i] + size[i]);
+			}
+		}
+	}
+	//		Expand ( rect )
+	// Expands rect to contain rect
+	FORCE_INLINE void Expand ( const Rect& rect )
+	{
+		Expand( rect.pos );
+		Expand( rect.pos + rect.size );
+	}
+
 };
 
 #endif
