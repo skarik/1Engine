@@ -144,6 +144,7 @@ void Textures::ConvertData ( const pixel_t* n_inputimg, const timgInfo* n_inputi
 						else {
 							pixelIndex += (y / (16/n_inputimg_info->height))*n_inputimg_info->width;
 						}
+						pixelIndex = std::min<uint32_t>( pixelIndex, (uint32_t)(n_inputimg_info->width * n_inputimg_info->height) - 1 );
 						aggregate_r += imageData[pixelIndex].r;
 						aggregate_g += imageData[pixelIndex].g;
 						aggregate_b += imageData[pixelIndex].b;
