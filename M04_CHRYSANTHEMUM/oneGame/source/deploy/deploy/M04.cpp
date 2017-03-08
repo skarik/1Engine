@@ -14,6 +14,8 @@ CLimitSingleInstance g_SingleInstanceObj(TEXT("Global\\{479DFDD7-3051-4a3f-B1C2-
 { 0x479dfdd7, 0x3051, 0x4a3f, { 0xb1, 0xc2, 0x6e, 0xcc, 0xcb, 0x2a, 0x36, 0x2d } };*/
 #endif
 
+#include <crtdbg.h>
+
 // Program entry point
 int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
 					HINSTANCE	hPrevInstance,		// Previous Instance
@@ -30,7 +32,7 @@ int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
 	#endif
 
 	// Throw exception or crash when the memory heap gets corrupted in order to track down larger errors.
-	BOOL f=HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
+	BOOL f = HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
 
 	// Call the Unit to run
 	return Deploy::Game(hInstance,hPrevInstance,lpCmdLine,nCmdShow);

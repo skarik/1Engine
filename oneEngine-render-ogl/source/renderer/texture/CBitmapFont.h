@@ -95,7 +95,7 @@ public:
 	RENDER_API glHandle GetLetterList ( void ) {
 		return iLetterList;
 	}
-	RENDER_API tBitmapFontInfo GetFontInfo ( void ) {
+	RENDER_API const tBitmapFontInfo& GetFontInfo ( void ) {
 		return fontInfo;
 	}
 

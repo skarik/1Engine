@@ -54,7 +54,16 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setMotionType ( const hkpMotion::Mot
 _FORCE_INLINE_ PHYS_API hkpMotion::MotionType physRigidBody::getMotionType ( void ) const
 {
 	//return body->getMotionType();
-	throw Core::InvalidCallException();
+	switch (body->GetType()) 
+	{
+	case b2_dynamicBody:
+		return physMotion::MOTION_DYNAMIC;
+	case b2_kinematicBody:
+		return physMotion::MOTION_KEYFRAMED;
+	case b2_staticBody:
+		return physMotion::MOTION_FIXED;
+	}
+	return physMotion::MOTION_DYNAMIC;
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setQualityType ( const hkpCollidableQualityType type )
 {
@@ -119,12 +128,13 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setAngularDamping ( const Real_32 da
 _FORCE_INLINE_ PHYS_API void physRigidBody::setMaxAngularVelocity ( Real_32 maxVel )
 {
 	//body->setMaxAngularVelocity( maxVel );
-	throw Core::NotYetImplementedException();
+	//throw Core::NotYetImplementedException();
 }
 _FORCE_INLINE_ PHYS_API Real_32 physRigidBody::getMaxAngularVelocity ( void ) const
 {
 	//return body->getMaxAngularVelocity();
-	throw Core::NotYetImplementedException();
+	//throw Core::NotYetImplementedException();
+	return INFINITY;
 }
 
 

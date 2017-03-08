@@ -14,8 +14,7 @@
 class CPhysics
 {
 public:
-	PHYS_API CPhysics ( void ) {};
-	PHYS_API CPhysics ( const CPhysics& ) {};
+	PHYS_API CPhysics ( void );
 private:
 	PHYS_API static CPhysics* Instance;
 	//PHYS_API void TestFunc ( float time );
@@ -35,6 +34,12 @@ private:
 	void InitLayers ( void );
 	
 public:
+	//=========================================//
+	// Debugger
+	//=========================================//
+	PHYS_API static void SetDebugRenderer ( b2Draw* physicsDebugRenderer );
+	PHYS_API static void RenderDebugInfo ( void );
+
 	//=========================================//
 	// Modifying the Physics World
 	//=========================================//
@@ -176,6 +181,7 @@ private:
 	int					totalNumThreadsUsed;
 	*/
 	b2World*			pWorld;
+	b2Draw*				pWorldDebugger;
 
 	// World Properties
 	Vector3d			vWorldCenter;

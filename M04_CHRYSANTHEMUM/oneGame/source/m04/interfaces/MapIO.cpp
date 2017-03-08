@@ -165,7 +165,7 @@ void M04::MapIO::Save ( void )
 			for ( uint i = 0; i < metadata->data.size(); ++i )
 			{
 				// Write name length
-				uchar length = metadata->data_name[i].second.length();
+				uchar length = (uchar)metadata->data_name[i].second.length();
 				fwrite( &length, 1, 1, m_file );
 				// Write name
 				fwrite( metadata->data_name[i].second.c_str(), 1, length, m_file );

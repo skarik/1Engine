@@ -21,4 +21,5 @@ NpcBase::~NpcBase ( void )
 void NpcBase::Update ( void )
 {
 	input->Update(Time::deltaTime);
+	position.z = -4.5F;
 }

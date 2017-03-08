@@ -20,6 +20,10 @@ public:
 	// Updates the mesh with the text in m_text
 	RENDER2D_API void		UpdateText ( void );
 
+	//		GetLineHeight ( )
+	// Returns approximate line height based on letter M, plus 3 pixels
+	RENDER2D_API Real		GetLineHeight ( void );
+
 public:
 	std::string		m_text;
 	float			m_max_width;

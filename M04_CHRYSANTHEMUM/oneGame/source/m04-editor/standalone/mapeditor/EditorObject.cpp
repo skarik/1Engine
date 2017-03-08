@@ -94,7 +94,7 @@ void EditorObject::Update ( void )
 	{
 		light->transform.position = position;
 	}
-
+	position.z = -495;
 	
 	// Update metadata entries if we have the entries to pull/save them from
 	WorldToMetadata();

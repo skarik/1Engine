@@ -6,7 +6,7 @@
 #include "sCollision.h"
 
 class CCollider;
-class CRigidBody;
+class CRigidbody;
 
 class CCollider
 {
@@ -21,11 +21,11 @@ public:
 	Vector3d GetCenter ( void ) {
 		return vCenterOfMass;
 	}
-	CRigidBody* GetRigidBody ( void ) {
+	CRigidbody* GetRigidBody ( void ) {
 		return pRigidBody;
 	}
 
-	void SetRigidBody ( CRigidBody* pNewBody ) {
+	void SetRigidBody ( CRigidbody* pNewBody ) {
 		pRigidBody = pNewBody;
 	}
 	void SetCenter ( Vector3d const& v_newCenter ) {
@@ -35,7 +35,7 @@ public:
 
 protected:
 	physShape*	pCollisionShape;
-	CRigidBody*	pRigidBody;
+	CRigidbody*	pRigidBody;
 
 	Vector3d vCenterOfMass;
 };

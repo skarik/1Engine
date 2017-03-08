@@ -10,7 +10,7 @@
 // testosterone
 //#include "CCapsuleCollider.h"
 //#include "CCylinderCollider.h"
-//#include "CRigidBody.h"
+//#include "CRigidbody.h"
 
 // estrogen
 //#include "CInventory.h"
@@ -306,7 +306,7 @@ public:
 	virtual bool	GetIsCrouching ( void ) { return false; }
 	virtual bool	GetIsSprinting ( void ) { return false; }
 
-	virtual CRigidBody*	GetRigidbody ( void ) { return NULL; }
+	virtual CRigidbody*	GetRigidbody ( void ) { return NULL; }
 
 protected:
 	// ===Input===

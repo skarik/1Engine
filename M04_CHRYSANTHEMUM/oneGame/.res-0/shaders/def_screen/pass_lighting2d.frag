@@ -214,7 +214,7 @@ float ao_test ( void )
 
     float dist = length(max(pixelNormalBlurred.xy - pixelNormalCenter.xy, vec2(0,0)));
     //float dist = length(pixelNormalBlurred.xy - pixelNormalCenter.xy);
-    return (1.0 - dist);
+    return dist;
 }
 
 #endif
@@ -310,7 +310,7 @@ void main ( void )
 		luminColor = vec3( 1,1,1 );
 	}*/
 #ifdef ENABLE_JOKE_AMBIENT_OCCLUSION
-    luminColor = mix( vec3(1,1,1), luminColor * ao_test(), lightingStrength );
+    luminColor = mix( vec3(1,1,1), luminColor - ao_test() * 0.4, lightingStrength );
 #else
     luminColor = mix( vec3(1,1,1), luminColor, lightingStrength );
 #endif

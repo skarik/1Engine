@@ -17,13 +17,13 @@
 class CRagdollCollision;
 
 //==Collision Listener==
-class CRigidBody::mCollisionListener : public physContactListener
+class CRigidbody::mCollisionListener : public physContactListener
 {
 public:
-	CRigidBody*	m_rb;
+	CRigidbody*	m_rb;
 
 public:
-	mCollisionListener ( CRigidBody* rb ) : m_rb(rb)
+	mCollisionListener ( CRigidbody* rb ) : m_rb(rb)
 	{
 		;
 	}
@@ -52,9 +52,9 @@ public:
 			n_collision.m_hit_This = (CGameBehavior*)(CRagdollCollision*)behavior;
 		}
 		else if ( behavior && behavior->GetTypeName() == "CRigidbody" ) {
-			//n_collision.m_hit_This = ((CRigidBody*)behavior)->GetOwner();
-			n_collision.m_hit_This = (CRigidBody*)behavior;
-			n_collision.m_collider_This = ((CRigidBody*)behavior)->pCollider;
+			//n_collision.m_hit_This = ((CRigidbody*)behavior)->GetOwner();
+			n_collision.m_hit_This = (CRigidbody*)behavior;
+			n_collision.m_collider_This = ((CRigidbody*)behavior)->pCollider;
 		}
 
 		// Grab collision of object 1
@@ -65,9 +65,9 @@ public:
 			n_collision.m_hit_Other = (CGameBehavior*)(CRagdollCollision*)behavior;
 		}
 		else if ( behavior && behavior->GetTypeName() == "CRigidbody" ) {
-			//n_collision.m_hit_Other = ((CRigidBody*)behavior)->GetOwner();
-			n_collision.m_hit_Other = (CRigidBody*)behavior;
-			n_collision.m_collider_Other = ((CRigidBody*)behavior)->pCollider;
+			//n_collision.m_hit_Other = ((CRigidbody*)behavior)->GetOwner();
+			n_collision.m_hit_Other = (CRigidbody*)behavior;
+			n_collision.m_collider_Other = ((CRigidbody*)behavior)->pCollider;
 		}
 
 		// Swap the collisions to give match to Other and This
@@ -87,8 +87,10 @@ public:
 };
 
 //==Constructor==
-CRigidBody::CRigidBody ( CCollider* pTargetCollider, CGameObject * pOwnerGameObject, float fMass )
-	: CMotion(pOwnerGameObject), pBody(NULL), bGravityEnabled(true)
+CRigidbody::CRigidbody ( CCollider* body_collider, CGameBehavior * owner_behavior, float mass )
+	: CMotion(owner_behavior),
+	target_transform(NULL), target_position(NULL),
+	pBody(NULL), bGravityEnabled(true)
 {
 	// Set the layer
 	layer = Layers::Rigidbody;
@@ -98,33 +100,21 @@ CRigidBody::CRigidBody ( CCollider* pTargetCollider, CGameObject * pOwnerGameObj
 	bRotationEnabled = true;
 
 	// Save the collider
-	pCollider = pTargetCollider;
-	// Save the transform we want to edit
-	if ( pOwnerGameObject ) 
-	{
-		pTargetTransform = &(pOwnerGameObject->transform);
-		pTargetTransform->SetDirty(); // First frame is ALWAYS a dirty frame
-		pOwner = pOwnerGameObject;
-	}
-	else
-	{
-		pOwner = NULL;
-		pTargetTransform = NULL;
-	}
+	pCollider = body_collider;
 
 	// Tell the collider who it's bitch to
 	pCollider->SetRigidBody( this );
 
 	// Create the body info
 	physRigidBodyInfo info;
-	info.m_mass	= fabs(fMass);							// Set the body's mass
+	info.m_mass	= fabs(mass);							// Set the body's mass
 	info.m_shape = pCollider->GetCollisionShape();		// Set the collision shape to the collider's
 	vCenterOfMass = pCollider->GetCenter();				// Get the collision shape's center of mass
 	info.m_centerOfMass = physVector4( vCenterOfMass.x, vCenterOfMass.y, vCenterOfMass.z );	
 	info.m_friction	= 0.5f;								// Set the default friction value
 	info.m_collisionFilterInfo = Physics::GetCollisionFilter( Layers::PHYS_DYNAMIC );
 	// If mass is negative, change the motion
-	if ( fMass < 0.0f )
+	if ( mass < 0.0F )
 	{
 		info.m_motionType = physMotion::MOTION_FIXED;
 	}
@@ -143,7 +133,7 @@ CRigidBody::CRigidBody ( CCollider* pTargetCollider, CGameObject * pOwnerGameObj
 }
 
 //==Destructor==
-CRigidBody::~CRigidBody ( void )
+CRigidbody::~CRigidbody ( void )
 {
 	// Tell the physics engine that this rigidbody is no longer important.
 	if ( pBody ) {
@@ -159,12 +149,12 @@ CRigidBody::~CRigidBody ( void )
 }
 
 // Accessors
-physRigidBody* CRigidBody::GetBody ( void ) 
+physRigidBody* CRigidbody::GetBody ( void ) 
 {
 	return pBody;
 }
 
-void CRigidBody::EnableCollisionCallback ( void )
+void CRigidbody::EnableCollisionCallback ( void )
 {
 	if ( !m_listener )
 	{
@@ -173,7 +163,7 @@ void CRigidBody::EnableCollisionCallback ( void )
 		pBody->addContactListener( m_listener );
 	}
 }
-void CRigidBody::DisableCollisionCallback ( void )
+void CRigidbody::DisableCollisionCallback ( void )
 {
 	if ( m_listener )
 	{
@@ -185,9 +175,9 @@ void CRigidBody::DisableCollisionCallback ( void )
 
 //==Physics step==
 // This is executed every physics step.
-void CRigidBody::RigidbodyUpdate ( void )
+void CRigidbody::RigidbodyUpdate ( void )
 {
-	if ( bRigidBodyActive && pTargetTransform )
+	/*if ( bRigidBodyActive && pTargetTransform )
 	{
 		if ( pBody->getMotionType() == physMotion::MOTION_KEYFRAMED )
 		{
@@ -223,63 +213,126 @@ void CRigidBody::RigidbodyUpdate ( void )
 	else
 	{
 		// Disable rigidbody
+	}*/
+	if ( bRigidBodyActive )
+	{
+		switch (pBody->getMotionType())
+		{
+		case physMotion::MOTION_FIXED:
+			// Nobody cares.
+			break;
+		case physMotion::MOTION_KEYFRAMED:
+			// Keyframed? Pull data from the target.
+			if ( target_transform != NULL )
+			{
+				pBody->SetTransform( target_transform );
+			}
+			else if ( target_position != NULL )
+			{
+				pBody->setPosition( *target_position );
+			}
+			break;
+		default:
+			// Otherwise, data goes from rigidbody to target.
+			if ( target_transform != NULL )
+			{
+				if ( bRotationEnabled )
+					pBody->GetTransform( target_transform );
+				else
+					pBody->GetTranslation( target_transform );
+			}
+			else if ( target_position != NULL )
+			{
+#ifdef PHYSICS_USING_BOX2D
+				Vector3d position = pBody->getPosition();
+				target_position->x = position.x;
+				target_position->y = position.y;
+#else
+				*target_position = pBody->getPosition();
+#endif
+			}
+			break;
+		}
+	}
+	else
+	{
+		// Disable rigidbody
 	}
 }
 
 
-//==Setters and Getters==
+//===============================================================================================//
+// GETTERS AND SETTERS (PHYSICS ENGINE WRAPPER)
+//===============================================================================================//
+
+// Owner
+CGameBehavior* CRigidbody::GetOwner ( void )
+{
+	if ( owner ) {
+		return owner;
+	}
+	else if ( target_transform )
+	{
+		if ( target_transform->owner && target_transform->ownerType == Transform::TYPE_BEHAVIOR )
+		{
+			return (CGameBehavior*)target_transform->owner;
+		}
+	}
+	return NULL;
+}
+
 // Mass Properties
-void CRigidBody::SetMass ( float mass )
+void CRigidbody::SetMass ( float mass )
 {
 	pBody->setMass( mass );
 }
-float CRigidBody::GetMass ( void )
+float CRigidbody::GetMass ( void )
 {
 	return (float)(pBody->getMass());
 }
 
 // Changes the instantaneous velocity of the rigidbody
-void CRigidBody::SetVelocity ( Vector3d newVelocity )
+void CRigidbody::SetVelocity ( Vector3d newVelocity )
 {
 	pBody->setLinearVelocity( newVelocity );
 }
 // Returns the current velocity of the rigidbody
-Vector3d CRigidBody::GetVelocity ( void )
+Vector3d CRigidbody::GetVelocity ( void )
 {
 	return pBody->getLinearVelocity();
 }
-void CRigidBody::SetAcceleration ( Vector3d )
+void CRigidbody::SetAcceleration ( Vector3d )
 {
 	//pBody->set
 }
-Vector3d CRigidBody::GetAcceleration ( void )
+Vector3d CRigidbody::GetAcceleration ( void )
 {
 	return Vector3d::zero;
 }
 // Enables or disables gravity
-void CRigidBody::SetGravity ( bool bIn )
+void CRigidbody::SetGravity ( bool bIn )
 {
 	bGravityEnabled = bIn;
 	pBody->setGravityFactor( bGravityEnabled ? 1.0F : 0.0F );
 }
 // Returns if gravity is significantly enabled for the object
-bool CRigidBody::GetGravity ( void )
+bool CRigidbody::GetGravity ( void )
 {
 	//pBody->setGravityFactor( 1 );
 	return ( pBody->getGravityFactor() > 0.05f );
 }
 // Sets the current position of the rigidbody
-void CRigidBody::SetPosition ( Vector3d newPosition )
+void CRigidbody::SetPosition ( Vector3d newPosition )
 {
 	pBody->setPosition( newPosition );
 }
 // Returns the current position of the rigidbody
-Vector3d CRigidBody::GetPosition ( void )
+Vector3d CRigidbody::GetPosition ( void )
 {
 	return pBody->getPosition();
 }
 // Adds the given vector to the current position and then returns the new position
-Vector3d CRigidBody::AddToPosition ( Vector3d posAdd )
+Vector3d CRigidbody::AddToPosition ( Vector3d posAdd )
 {
 	/*Vector3d result;
 	pBody->getPosition().store3( &(result.x) );
@@ -290,11 +343,11 @@ Vector3d CRigidBody::AddToPosition ( Vector3d posAdd )
 	pBody->setPosition( result );
 	return result;
 }
-void CRigidBody::SetRotation ( Quaternion newRotation )
+void CRigidbody::SetRotation ( Quaternion newRotation )
 {
 	pBody->setRotation( newRotation );
 }
-Quaternion CRigidBody::GetRotation ( void )
+Quaternion CRigidbody::GetRotation ( void )
 {
 	return pBody->getRotation();
 }
@@ -303,7 +356,7 @@ Quaternion CRigidBody::GetRotation ( void )
 //		physMotionType::MOTION_DYNAMIC		physically simulated
 //		physMotionType::MOTION_FIXED		static object
 //		physMotionType::MOTION_KEYFRAMED	moving/static but not physically simulated
-void CRigidBody::SetMotionType ( physMotionType newMotionType )
+void CRigidbody::SetMotionType ( physMotionType newMotionType )
 {
 	pBody->setMotionType( newMotionType );
 }
@@ -316,7 +369,7 @@ void CRigidBody::SetMotionType ( physMotionType newMotionType )
 //		PhysicsQualityCritical			= HK_COLLIDABLE_QUALITY_CRITICAL,
 //		PhysicsQualityBullet			= HK_COLLIDABLE_QUALITY_BULLET,
 //		PhysicsQualityCharacter			= HK_COLLIDABLE_QUALITY_CHARACTER
-void CRigidBody::SetQualityType ( physMotionQualityType newQualityType )
+void CRigidbody::SetQualityType ( physMotionQualityType newQualityType )
 {
 	Physics::ThreadLock();
 	pBody->setQualityType( newQualityType );
@@ -324,7 +377,7 @@ void CRigidBody::SetQualityType ( physMotionQualityType newQualityType )
 }
 // This adds an impulse with the current deltaTime.
 // This needs to be tested to make sure the current timestep works and lag doesn't change the size of the impulse.
-void CRigidBody::ApplyForce ( Vector3d push )
+void CRigidbody::ApplyForce ( Vector3d push )
 {
 	//pBody->applyForce( Time::deltaTime, hkVector4( push.x,push.y,push.z ) );
 	pBody->applyForce( Time::fixedTime*10.0f, push );
@@ -335,7 +388,7 @@ void CRigidBody::ApplyForce ( Vector3d push )
 // Set the restitution. This controls how bouncy the object is.
 //   The default value is 0.4. To main something bounce forever, set the value to 1 (one).
 //   For full energy absorption, set restitution to 0 (zero).
-void CRigidBody::SetRestitution ( float fRestitution )
+void CRigidbody::SetRestitution ( float fRestitution )
 {
 	Physics::ThreadLock();
 	pBody->setRestitution( fRestitution );
@@ -344,13 +397,13 @@ void CRigidBody::SetRestitution ( float fRestitution )
 
 // Set the friction. This controls how rough the surface of the object is.
 //   The default value is 0.5. To emulate something with a rougher surface, increase the friction.
-void CRigidBody::SetFriction ( float fFriction )
+void CRigidbody::SetFriction ( float fFriction )
 {
 	Physics::ThreadLock();
 	pBody->setFriction( fFriction );
 	Physics::ThreadUnlock();
 }
-float CRigidBody::GetFriction ( void )
+float CRigidbody::GetFriction ( void )
 {
 	return pBody->getFriction();
 }
@@ -358,7 +411,7 @@ float CRigidBody::GetFriction ( void )
 // Set the linear damping. This controls approximately what percentage of an object's velocity is removed each second
 //   For example, if set to 0.1, the velocity will be reduced by about 10 percent each second.
 //   The default value is 0
-void CRigidBody::SetLinearDamping ( float fLinearDamping )
+void CRigidbody::SetLinearDamping ( float fLinearDamping )
 {
 	Physics::ThreadLock();
 	pBody->setLinearDamping( fLinearDamping );
@@ -366,7 +419,7 @@ void CRigidBody::SetLinearDamping ( float fLinearDamping )
 }
 // Set the angular damping. No idea what exactly this works with, but it slows stuff down.
 //   The default value is 0.05
-void CRigidBody::SetAngularDamping ( float fAngularDamping )
+void CRigidbody::SetAngularDamping ( float fAngularDamping )
 {
 	Physics::ThreadLock();
 	pBody->setAngularDamping( fAngularDamping );
@@ -374,7 +427,7 @@ void CRigidBody::SetAngularDamping ( float fAngularDamping )
 }
 
 // Set if rotation is enabled
-void CRigidBody::SetRotationEnabled ( bool inRotationEnabled )
+void CRigidbody::SetRotationEnabled ( bool inRotationEnabled )
 {
 	bRotationEnabled = inRotationEnabled;
 	if ( bRotationEnabled ) {
@@ -386,14 +439,14 @@ void CRigidBody::SetRotationEnabled ( bool inRotationEnabled )
 }
 
 // Wakes up the rigidbody
-void CRigidBody::Wake ( void )
+void CRigidbody::Wake ( void )
 {
 	pBody->activate();
 }
 
 // Collision Settings
 // Set new Rigidbody shape. This does NOT re-calculate the mass or inertia data.
-void CRigidBody::SetShape ( physShape* pNewShape )
+void CRigidbody::SetShape ( physShape* pNewShape )
 {
 	// Get the Read/Write copy of the rigidbody's collision info, and set the collision's new shape.
 	//pBody->getCollidableRw()->setShape( pNewShape );
@@ -403,13 +456,13 @@ void CRigidBody::SetShape ( physShape* pNewShape )
 // Set new minimum penetration depth.
 // The default value is 0.05, which works for objects down to size of 0.2
 // Decreasing this value will allow for better simulation, but at a cost of speed.
-void CRigidBody::SetPenetrationDepth ( float fPenetrationDepth )
+void CRigidbody::SetPenetrationDepth ( float fPenetrationDepth )
 {
 	pBody->setAllowedPenetrationDepth( fPenetrationDepth );
 }
 
 // Set new collision layer
-void CRigidBody::SetCollisionLayer ( Layers::PhysicsTypes layer, int subsystem )
+void CRigidbody::SetCollisionLayer ( Layers::PhysicsTypes layer, int subsystem )
 {
 	pBody->setCollisionFilterInfo( CPhysics::GetCollisionFilter( layer, subsystem ) );
 	pBody->ForcePropertyUpdate(); //calls CPhysics::ForceEntityUpdate( pBody );

@@ -21,7 +21,7 @@ void	CPlayer::InitMovement ( void )
 {
 	//pPlayerCollision = new CCylinderCollider ( fPlayerHeight, fPlayerRadius );
 	pPlayerCollision = new CCapsuleCollider ( fPlayerHeight, fPlayerRadius );
-	//pMainRigidBody = new CRigidBody ( pPlayerCollision, this, 30 ); //weight should be 30
+	//pMainRigidBody = new CRigidbody ( pPlayerCollision, this, 30 ); //weight should be 30
 	pMainRigidBody = new CRigidBodyCharacter ( pPlayerCollision, this, 30 ); //weight should be 30
 	pMainRigidBody->SetRotationEnabled( false );
 	pMainRigidBody->SetQualityType( HK_COLLIDABLE_QUALITY_CHARACTER );

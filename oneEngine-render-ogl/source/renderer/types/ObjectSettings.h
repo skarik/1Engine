@@ -83,6 +83,8 @@ namespace Renderer
 		BM_NORMAL = 0,
 		BM_ADD,
 		BM_INV_MULTIPLY,
+		BM_MULTIPLY,
+		BM_MULTIPLY_X2,
 		BM_SOFT_ADD,
 		BM_NONE
 	};

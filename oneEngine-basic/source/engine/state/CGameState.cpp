@@ -291,7 +291,7 @@ void CGameState::LateUpdate ( void )
 #else
 		Time::limitedDeltaTime = std::min<Real>( Time::limitedDeltaTime*2.0f, std::max<Real>( Time::limitedDeltaTime/2.0f, (Time::deltaTime*2+Time::targetFixedTime)/3.0f ) );
 		//Physics::Update( Time::limitedDeltaTime, this, &CGameState::FixedUpdate, &CGameState::PhysicsUpdate ); // TODO CRASH HERE
-		PhysicsEngine::Update( Time::deltaTime, this, &CGameState::FixedUpdate, &CGameState::PhysicsUpdate ); // TODO CRASH HERE
+		PhysicsEngine::Update( Time::fixedTime, this, &CGameState::FixedUpdate, &CGameState::PhysicsUpdate ); // TODO CRASH HERE
 #endif
 
 		Time::fixedTime = 0;

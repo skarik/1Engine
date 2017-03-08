@@ -20,6 +20,10 @@
 // Include MapIO so we can load up the first map
 #include "m04/interfaces/MapIO.h"
 
+// Include debug tools
+#include "engine-common/entities/CRendererHolder.h"
+#include "render2d/object/debug/Box2DDebugger.h"
+
 #include "renderer/state/Settings.h"
 
 void sceneGameLuvPpl::LoadScene ( void )
@@ -101,7 +105,10 @@ void sceneGameLuvPpl::LoadScene ( void )
 	// Close file
 	fclose( fp );
 
-
 	// Update the world
 	Renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
+
+	// Create debugger
+	auto debug_holder = new CRendererHolder( new Box2DDebugger() );
+	debug_holder->RemoveReference();
 }

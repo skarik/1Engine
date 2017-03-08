@@ -49,8 +49,8 @@ void glDrawing::MarkBuffersFreeUsage ( void )
 	}
 	prim_count = 0;
 
-	//std::swap( prim_list, prim_list_swap );
-	//prim_list.swap( prim_list_swap );
+	// Swap buffer list
+	std::swap( prim_list, prim_list_swap );
 }
 
 //===============================================================================================//

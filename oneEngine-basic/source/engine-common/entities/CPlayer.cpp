@@ -393,7 +393,7 @@ void CPlayer::DoLookAtCommands ( void )
 		pHitObject = result.pHitBehavior;
 		// Get parent object if the object is a rigidbody
 		if ( (pHitObject->layer & Layers::Rigidbody) != 0 ) {
-			pHitObject = ((CRigidBody*)result.pHitBehavior)->GetOwner();
+			pHitObject = ((CRigidbody*)result.pHitBehavior)->GetOwner();
 		}
 		else if ( (pHitObject->layer & Layers::Hitboxes) != 0 ) {
 			pHitObject = ((CRagdollCollision*)result.pHitBehavior)->GetActor();

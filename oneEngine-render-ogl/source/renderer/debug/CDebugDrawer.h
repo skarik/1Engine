@@ -33,8 +33,6 @@ namespace Debug
 		std::vector<Line>  avLineList;
 		std::vector<Color> avColorList;
 
-		glMaterial* defaultMat;
-
 		static CDebugDrawer* mActive;
 	};
 

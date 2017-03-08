@@ -32,9 +32,18 @@ void NpcPenni::Update ( void )
 	if (talker != NULL)
 	{
 		talker->position = position;
-		talker->position.y -= 96.0F;
-		talker->position.x -= 40.0F;
+		talker->position.y -= 80.0F;
+		talker->position.x -= 64.0F;
 		talker->text = "It's scientifically proven that larger textboxes are less likely to be read!";
+
+		if ( (PlayerLeyo::active->position - position).magnitude() > 150 )
+		{
+			talker->Hide();
+			if (talker->IsHidden())
+			{
+				delete_safe_decrement(talker);
+			}
+		}
 	}
 	else
 	{
@@ -70,4 +79,5 @@ void NpcPenni::Update ( void )
 
 	// Move around
 	position += velocity * Time::deltaTime;
+	position.z = -4.5F;
 }

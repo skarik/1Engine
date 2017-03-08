@@ -3,9 +3,9 @@
 #define _C_VOLUME_TRIGGER_
 
 // Include Rigidbody class to inherited from
-#include "engine/physics/motion/CRigidBody.h"
+#include "engine/physics/motion/CRigidbody.h"
 
-class CVolumeTrigger : public CRigidBody
+class CVolumeTrigger : public CRigidbody
 {
 public:
 	CVolumeTrigger ( CCollider* pTargetCollider, CGameObject * pOwnerGameObject );

@@ -6,7 +6,7 @@ CDuskGUI* Dusk::activeGUI = NULL;
 
 CDuskGUIElement* Dusk::Handle::operator*() const
 {
-	if (index >= 0 && index < activeGUI->vElements.size())
+	if (index >= 0 && index < (int)activeGUI->vElements.size())
 	{
 		return activeGUI->vElements[index];
 	}
@@ -14,7 +14,7 @@ CDuskGUIElement* Dusk::Handle::operator*() const
 }
 CDuskGUIElement* Dusk::Handle::operator->() const
 {
-	if (index >= 0 && index < activeGUI->vElements.size())
+	if (index >= 0 && index < (int)activeGUI->vElements.size())
 	{
 		return activeGUI->vElements[index];
 	}

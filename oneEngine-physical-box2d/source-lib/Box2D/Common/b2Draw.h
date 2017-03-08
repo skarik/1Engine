@@ -1,5 +1,6 @@
 /*
 * Copyright (c) 2011 Erin Catto http://box2d.org
+* Modified by EpicHouse Studios LLC. Copyright (c) 2016-2017.
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -19,6 +20,7 @@
 #ifndef B2_DRAW_H
 #define B2_DRAW_H
 
+#include "core/types/types.h"
 #include <Box2D/Common/b2Math.h>
 
 /// Color for debug drawing. Each value has the range [0,1].
@@ -35,9 +37,9 @@ struct b2Color
 class b2Draw
 {
 public:
-	b2Draw();
+	PHYS_API b2Draw();
 
-	virtual ~b2Draw() {}
+	PHYS_API virtual ~b2Draw() {}
 
 	enum
 	{
@@ -49,16 +51,16 @@ public:
 	};
 
 	/// Set the drawing flags.
-	void SetFlags(uint32 flags);
+	PHYS_API void SetFlags(uint32 flags);
 
 	/// Get the drawing flags.
-	uint32 GetFlags() const;
+	PHYS_API uint32 GetFlags() const;
 	
 	/// Append flags to the current flags.
-	void AppendFlags(uint32 flags);
+	PHYS_API void AppendFlags(uint32 flags);
 
 	/// Clear flags from the current flags.
-	void ClearFlags(uint32 flags);
+	PHYS_API void ClearFlags(uint32 flags);
 
 	/// Draw a closed polygon provided in CCW order.
 	virtual void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) = 0;

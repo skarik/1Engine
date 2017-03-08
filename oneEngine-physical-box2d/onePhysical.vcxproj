@@ -35,6 +35,7 @@
     <ClInclude Include="source-lib\Box2D\Collision\Shapes\b2EdgeShape.h" />
     <ClInclude Include="source-lib\Box2D\Collision\Shapes\b2PolygonShape.h" />
     <ClInclude Include="source-lib\Box2D\Collision\Shapes\b2Shape.h" />
+    <ClInclude Include="source-lib\Box2D\Collision\Shapes\b2TriangleCollectionShape.h" />
     <ClInclude Include="source-lib\Box2D\Common\b2BlockAllocator.h" />
     <ClInclude Include="source-lib\Box2D\Common\b2Draw.h" />
     <ClInclude Include="source-lib\Box2D\Common\b2GrowableStack.h" />
@@ -124,6 +125,7 @@
     <ClCompile Include="source-lib\Box2D\Collision\Shapes\b2CircleShape.cpp" />
     <ClCompile Include="source-lib\Box2D\Collision\Shapes\b2EdgeShape.cpp" />
     <ClCompile Include="source-lib\Box2D\Collision\Shapes\b2PolygonShape.cpp" />
+    <ClCompile Include="source-lib\Box2D\Collision\Shapes\b2TriangleCollectionShape.cpp" />
     <ClCompile Include="source-lib\Box2D\Common\b2BlockAllocator.cpp" />
     <ClCompile Include="source-lib\Box2D\Common\b2Draw.cpp" />
     <ClCompile Include="source-lib\Box2D\Common\b2Math.cpp" />

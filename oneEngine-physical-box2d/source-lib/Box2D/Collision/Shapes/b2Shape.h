@@ -49,7 +49,9 @@ public:
 		e_edge = 1,
 		e_polygon = 2,
 		e_chain = 3,
-		e_typeCount = 4
+		e_triangle_collection = 4,
+
+		e_typeCount
 	};
 
 	virtual ~b2Shape() {}

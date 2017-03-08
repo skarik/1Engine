@@ -45,6 +45,14 @@ void CTextMesh::SetFont ( const char* fontFile, int fontSize, int fontWeight )
 	m_material->setTexture( 0, m_font_texture );
 }
 
+//		GetLineHeight ( )
+// Returns approximate line height based on letter M, plus 3 pixels
+Real CTextMesh::GetLineHeight ( void )
+{
+	auto fontInfo	= m_font_texture->GetFontInfo();
+	return fontInfo.fontSizes['M' - fontInfo.startCharacter].y + 3.0F;
+}
+
 //		UpdateText ( ) 
 // Updates the mesh with the text in m_text
 void CTextMesh::UpdateText ( void )
@@ -76,8 +84,8 @@ void CTextMesh::UpdateText ( void )
 
 	// Get the font info:
 
-	tBitmapFontInfo fontInfo = m_font_texture->GetFontInfo();
-	Real baseScale			 = (Real)m_font_texture->GetWidth();
+	auto fontInfo	= m_font_texture->GetFontInfo();
+	Real baseScale	= (Real)m_font_texture->GetWidth();
 
 	// Set up information for the text passes:
 
@@ -117,7 +125,7 @@ void CTextMesh::UpdateText ( void )
 				for ( int cf = c + 1; cf < maxLength; ++cf )
 				{
 					// Get the current character offset into the existing character set
-					cf_lookup = m_text[c] - fontInfo.startCharacter;
+					cf_lookup = m_text[cf] - fontInfo.startCharacter;
 					// Check that character is in set
 					if ( cf_lookup < 0 || cf_lookup >= (int)fontInfo.setLength )
 					{
@@ -131,11 +139,11 @@ void CTextMesh::UpdateText ( void )
 					// If it's a space, check the current location of the virtual letter
 					else 
 					{
-						if ( pen_m_x > m_max_width )
+						if ( pen_m_x >= m_max_width )
 						{
 							// Go to next line
 							pen.x = 0;
-							pen.y += font_max_size.y + 2.0F;
+							pen.y += font_max_size.y + 3.0F;
 						}
 						break;
 					}

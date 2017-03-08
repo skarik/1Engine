@@ -55,9 +55,9 @@ public:
 
 //==Constructor==
 CRigidBodyCharacter::CRigidBodyCharacter ( CCollider* pTargetCollider, CGameObject * pOwnerGameObject, float fMass )
-	: CRigidBody(), /*mContactListener(NULL),*/ mCharController(NULL)
+	: CRigidbody(), /*mContactListener(NULL),*/ mCharController(NULL)
 {
-	// todo: move to CRigidBody constructor
+	// todo: move to CRigidbody constructor
 	bGravityEnabled = true;
 
 	// Set the layer
@@ -253,7 +253,7 @@ void		CRigidBodyCharacter::SetVelocity ( Vector3d nvelo )
 		mCharController->setLinearVelocity( nvelo, Time::deltaTime );
 	}
 	else {
-		CRigidBody::SetVelocity( nvelo );
+		CRigidbody::SetVelocity( nvelo );
 	}
 }
 Vector3d	CRigidBodyCharacter::GetVelocity ( void )
@@ -261,7 +261,7 @@ Vector3d	CRigidBodyCharacter::GetVelocity ( void )
 	if ( mCharController ) {
 		return mCharController->getLinearVelocity();
 	}
-	return CRigidBody::GetVelocity();
+	return CRigidbody::GetVelocity();
 }
 
 #endif

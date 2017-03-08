@@ -9,6 +9,7 @@
 class CInputControl;
 class COrthoCamera;
 class CLight;
+class CRigidbody;
 
 namespace M04
 {
@@ -21,6 +22,7 @@ namespace M04
 		~PlayerLeyo ( void );
 
 		void			Update ( void ) override;
+		void			PostFixedUpdate ( void ) override;
 
 	public:
 		static PlayerLeyo* active;
@@ -38,6 +40,7 @@ namespace M04
 		CInputControl* input;
 		COrthoCamera* camera;
 		CLight* light;
+		CRigidbody* bod;
 
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::PlayerLeyo);

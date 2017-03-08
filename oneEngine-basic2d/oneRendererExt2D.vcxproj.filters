@@ -28,6 +28,9 @@
     <Filter Include="SOURCE\Render2D\Texture">
       <UniqueIdentifier>{4e81aa00-53e3-404c-972f-4e591e3dc718}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Render2D\Object\Debug">
+      <UniqueIdentifier>{0628f9e3-3d25-4b88-9693-a79b8e30e465}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\render2d\object\CRenderable2D.cpp">
@@ -62,6 +65,9 @@
     </ClCompile>
     <ClCompile Include="source\render2d\preprocess\NormalMapGeneration.cpp">
       <Filter>SOURCE\Render2D\Preprocess</Filter>
+    </ClCompile>
+    <ClCompile Include="source\render2d\object\debug\Box2DDebugger.cpp">
+      <Filter>SOURCE\Render2D\Object\Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="source\render2d\preprocess\NormalMapGeneration.h">
       <Filter>SOURCE\Render2D\Preprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\object\debug\Box2DDebugger.h">
+      <Filter>SOURCE\Render2D\Object\Debug</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

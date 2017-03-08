@@ -11,32 +11,50 @@
 
 class physRigidBody;
 
-class CRigidBody : public CMotion
+class CRigidbody : public CMotion
 {
 	ClassName( "CRigidbody" );
 protected:
-	explicit CRigidBody () : CMotion(), pBody(NULL) {};
+	explicit CRigidbody () : CMotion(), pBody(NULL) {};
 public:
-	// Regular constructor
-	ENGINE_API explicit CRigidBody ( CCollider* pTargetCollider, CGameObject * pOwnerGameObject, float fMass=1.0f );
-	// Destructor
-	ENGINE_API ~CRigidBody ( void );
+	//===============================================================================================//
+	// CONSTRUCTION and DESTRUCTION
+	//===============================================================================================//
+	ENGINE_API explicit	CRigidbody ( CCollider* body_collider, CGameBehavior * owner_behavior, float mass=1.0F );
+	ENGINE_API			~CRigidbody ( void );
 
-	//==Game step==
-	virtual void Update ( void ) {};
-	virtual void LateUpdate ( void ) {};
+	//===============================================================================================//
+	// STEP EVENTS
+	//===============================================================================================//
+
+	// Empty game loop 
+	void Update ( void ) override {};
+	void LateUpdate ( void ) override {};
 	
-	//==Physics step==
+	// Physics step - the only object type that uses this.
 	void RigidbodyUpdate ( void );
 
-	//==Setters and Getters==
-	// Get the target transform this rigidbody is editing
-	CTransform* GetTargetTransform ( void ) { return pTargetTransform; }
-	// Set the target transform this rigidbody is editing
-	void SetTargetTransform ( CTransform* nTransform ) { pTargetTransform = nTransform; }
+public:
+	// Output targets.
+	
+	// Transform that motion results are copied to. If NULL, transform must be queried manually.
+	Transform*		target_transform;
+	// Position that motion results are copied to. If NULL, transform must be queried manually.
+	// target_transform must be NULL for this to work.
+	Vector3d*		target_position;
+
+public:
+	//===============================================================================================//
+	// GETTERS AND SETTERS (PHYSICS ENGINE WRAPPER)
+	//===============================================================================================//
+
+	// Owner
+	ENGINE_API CGameBehavior*	GetOwner ( void );
+
 	// Mass Properties
-	ENGINE_API void	SetMass ( float=1.0f );
+	ENGINE_API void		SetMass ( float=1.0F );
 	ENGINE_API float	GetMass ( void );
+
 	// Movement setters
 	ENGINE_API virtual void		SetVelocity ( Vector3d );
 	ENGINE_API virtual Vector3d	GetVelocity ( void );
@@ -50,12 +68,14 @@ public:
 	ENGINE_API Vector3d	AddToPosition ( Vector3d );
 	ENGINE_API void		SetRotation ( Quaternion );
 	ENGINE_API Quaternion	GetRotation ( void );
+
 	// Movement property setters
 	ENGINE_API void SetRestitution ( float=0.4f );
 	ENGINE_API void	SetFriction ( float=0.5f );
 	ENGINE_API float	GetFriction ( void );
 	ENGINE_API void SetLinearDamping ( float=0.0f );
 	ENGINE_API void SetAngularDamping ( float=0.05f );
+
 	// Motion Settings
 	ENGINE_API void SetMotionType ( physMotionType );
 	ENGINE_API void SetQualityType ( physMotionQualityType );
@@ -63,6 +83,7 @@ public:
 	ENGINE_API physMotionQualityType	GetQualityType ( void );
 	ENGINE_API void SetRotationEnabled ( bool );
 	ENGINE_API void Wake ( void );
+
 	// Collision Settings
 	ENGINE_API void SetShape ( physShape* );
 	ENGINE_API void SetPenetrationDepth ( float=0.05f );
@@ -74,31 +95,35 @@ public:
 	// Accessors
 	ENGINE_API physRigidBody* GetBody ( void ) override;
 
+public:
+	// Listener class used to forward collision events to the engine
 	class mCollisionListener;
 	friend mCollisionListener;
+
 protected:
+	//===============================================================================================//
+	// INTERNAL STATE AND COMPONENTS
+	//===============================================================================================//
+
+	// Components
 	physRigidBody*	pBody;
 	CCollider*		pCollider;
-	CTransform*		pTargetTransform;
 	Vector3d		vCenterOfMass;
-	//CGameObject*	pOwner;
-
 	mCollisionListener*	m_listener;
 
+	// Properties
 	physMaterial	mMaterial;
+	unsigned int	bitmask;
 
-	Vector3d velocity;
-	Vector3d gravity;
-	bool	bGravityEnabled;
-	bool	bRotationEnabled;
-	float	fMaxAngularVelocity;
+	// Motion state
+	Vector3d	velocity;
+	Vector3d	gravity;
+	bool		bGravityEnabled;
+	bool		bRotationEnabled;
+	float		fMaxAngularVelocity;
 
-	bool	bRigidBodyActive;
-
-
-	//void FixedUpdate ( void );
-	unsigned int bitmask;
-
+	// System motion state
+	bool		bRigidBodyActive;
 };
 
 #endif

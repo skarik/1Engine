@@ -10,20 +10,20 @@ class CMotion : public CGameBehavior
 {
 
 public:
-	explicit CMotion ( CGameObject* owner = NULL )
-		: pOwner(owner)
+	explicit CMotion ( CGameBehavior* n_owner = NULL )
+		: owner(n_owner)
 	{
 		;
 	}
 
 	// Owner properties
-	CGameObject* GetOwner ( void )
+	CGameBehavior* GetOwner ( void )
 	{
-		return pOwner;
+		return owner;
 	}
-	void SetOwner ( CGameObject* owner )
+	void SetOwner ( CGameBehavior* n_owner )
 	{
-		pOwner = owner;
+		owner = n_owner;
 	}
 
 	// Accessors
@@ -32,7 +32,7 @@ public:
 		return NULL;
 	}
 protected:
-	CGameObject*	pOwner;
+	CGameBehavior*	owner;
 };
 
 #endif//_ENGINE_PHYSICS_C_MOTION_BASE_H_

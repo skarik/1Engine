@@ -149,7 +149,8 @@ CTexture::~CTexture ( void )
 	}
 
 	TextureMaster.RemoveReference( this );
-	CRenderState::Active->mResourceManager->RemoveResource( this );
+	if ( CRenderState::Active )
+		CRenderState::Active->mResourceManager->RemoveResource( this );
 }
 
 // === Bind and Unbind ===

@@ -600,7 +600,7 @@ void CRagdollCollision::FixedUpdate ( void )
 void CRagdollCollision::SetActor ( CActor* n_actor )
 {
 	m_owning_actor = n_actor;
-	pOwner = (CGameObject*)n_actor;
+	owner = (CGameBehavior*)n_actor;
 }
 
 CActor* CRagdollCollision::GetActor ( void )

@@ -206,7 +206,7 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 			}
 #		else
 			if ( outHitInfo->pHitBehavior != NULL ) {
-				outHitInfo->pHitBody = ((CRigidBody*)outHitInfo->pHitBehavior)->GetBody(); //(hkpRigidBody*) hkRayHitOutput.m_rootCollidable->getOwner();
+				outHitInfo->pHitBody = ((CRigidbody*)outHitInfo->pHitBehavior)->GetBody(); //(hkpRigidBody*) hkRayHitOutput.m_rootCollidable->getOwner();
 			}
 #		endif
 		}
@@ -245,7 +245,7 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 			}
 #		else
 			if ( outHitInfo->pHitBehavior != NULL ) {
-				outHitInfo->pHitBody = ((CRigidBody*)outHitInfo->pHitBehavior)->GetBody(); //(hkpRigidBody*) hkRayHitOutput.m_rootCollidable->getOwner();
+				outHitInfo->pHitBody = ((CRigidbody*)outHitInfo->pHitBehavior)->GetBody(); //(hkpRigidBody*) hkRayHitOutput.m_rootCollidable->getOwner();
 			}
 #		endif
         }
@@ -337,7 +337,7 @@ void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pS
 			outHitInfo[currentHitInfo].hitNormal = hitCollection[i].first.normal;
 
 			outHitInfo[currentHitInfo].pHitBehavior = behavior;
-			outHitInfo[currentHitInfo].pHitBody = ((CRigidBody*)behavior)->GetBody();//(hkpRigidBody*) hkLineHitOutput.m_rootCollidableB->getOwner();
+			outHitInfo[currentHitInfo].pHitBody = ((CRigidbody*)behavior)->GetBody();//(hkpRigidBody*) hkLineHitOutput.m_rootCollidableB->getOwner();
 
 			// Increment hitinfo index
 			currentHitInfo += 1;
@@ -378,7 +378,7 @@ void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pS
 				hkLineHitOutput.m_contact.getNormal().store3( &outHitInfo[currentHitInfo].hitNormal.x );
 
 				outHitInfo[currentHitInfo].pHitBehavior = behavior;
-				outHitInfo[currentHitInfo].pHitBody = ((CRigidBody*)behavior)->GetBody();//(hkpRigidBody*) hkLineHitOutput.m_rootCollidableB->getOwner();
+				outHitInfo[currentHitInfo].pHitBody = ((CRigidbody*)behavior)->GetBody();//(hkpRigidBody*) hkLineHitOutput.m_rootCollidableB->getOwner();
 
 				// Increment hitinfo index
 				currentHitInfo += 1;

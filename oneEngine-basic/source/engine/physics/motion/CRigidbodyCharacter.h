@@ -6,7 +6,7 @@
 
 class physCharacter;
 
-class CRigidBodyCharacter : public CRigidBody
+class CRigidBodyCharacter : public CRigidbody
 {
 
 public:

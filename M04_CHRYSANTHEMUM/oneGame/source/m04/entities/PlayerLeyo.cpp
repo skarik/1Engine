@@ -7,6 +7,9 @@
 #include "render2d/camera/COrthoCamera.h"
 #include "render2d/object/sprite/CStreamedRenderable2D.h"
 
+#include "engine/physics/collider/types/CBoxCollider.h"
+#include "engine/physics/motion/CRigidbody.h"
+
 using namespace M04;
 
 DECLARE_OBJECT_REGISTRAR(player_leyo,M04::PlayerLeyo);
@@ -29,11 +32,15 @@ PlayerLeyo::PlayerLeyo ( void )
 
 	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 2.0F, 1.0F).normal();
 	m_sprite->SetSpriteFile("sprites/leo.gal");
-	m_spriteOrigin = m_sprite->GetSpriteInfo().fullsize / 2;
+	m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y - 8 );
 
 	light = new CLight;
-	light->diffuseColor = Color(0.4,0.4,0.4);
+	light->diffuseColor = Color(0.4,0.4,0.4) * 0.0F;
 	light->range = 128;
+
+	auto box = new CBoxCollider( Vector2d( 24,16 ) );
+	bod = new CRigidbody(box, this);
+	bod->target_position = &position;
 }
 
 PlayerLeyo::~PlayerLeyo ( void )
@@ -42,6 +49,8 @@ PlayerLeyo::~PlayerLeyo ( void )
 
 	delete_safe(camera);
 	delete_safe(light);
+
+	delete_safe_decrement(bod);
 }
 
 void PlayerLeyo::Update ( void )
@@ -70,9 +79,15 @@ void PlayerLeyo::Update ( void )
 		}
 	}
 
-	// Move around
-	position += velocity * Time::deltaTime;
+	bod->SetVelocity( velocity );
 
+	// Move around
+	//position += velocity * Time::deltaTime;
+	position.z = -4.5F;
+}
+
+void PlayerLeyo::PostFixedUpdate ( void )
+{
 	// Update camera position
 	camera->transform.position.x = (Real)Math::round(position.x);
 	camera->transform.position.y = (Real)Math::round(position.y - 16);

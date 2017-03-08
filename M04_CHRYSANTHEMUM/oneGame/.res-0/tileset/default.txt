@@ -36,15 +36,96 @@ tile "Sidewalk"
 		12 1 4
 	}
 }
-tile "Street Asphalt"
+tile "Street"
 {
 	type randomized
 	atlas 3 0
 	choices
 	{
-		1 3 0
+		4 3 0
 		1 4 0
-		1 3 1
+		4 3 1
 		1 4 1
+        20 3 2
+		1 4 2
 	}
+}
+
+tile "Building0"
+{
+    type		autowall
+    atlas		6 1
+    size		1 1
+    collision	impassable
+
+	autotile
+	{
+		0 5 0
+		1 6 0
+		2 7 0
+		3 5 1
+		4 6 1
+		5 7 1
+		6 5 2
+		7 6 2
+		8 7 2
+	}
+}
+
+tile "Building0 Window"
+{
+    type		autowall
+    atlas		6 4
+    size		1 1
+    collision	impassable
+
+	autotile
+	{
+		0 5 3
+		1 6 3
+		2 7 3
+		3 5 4
+		4 6 4
+		5 7 4
+		6 5 5
+		7 6 5
+		8 7 5
+	}
+}
+
+tile "Building0 Pipe"
+{
+    type		autowall
+    atlas		4 5
+    size		1 1
+    collision	impassable
+
+	autotile
+	{
+		0 4 4
+		1 4 4
+		2 4 4
+		3 4 4
+		4 4 4
+		5 4 4
+		6 4 5
+		7 4 5
+		8 4 5
+	}
+}
+
+tile "Street Grate"
+{
+	type simple
+	atlas 4 3
+}
+tile "Junk 0"
+{
+	type simple
+	atlas 2 4
+}
+tile "Junk 1"
+{
+	type simple
+	atlas 3 4
 }

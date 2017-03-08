@@ -151,24 +151,24 @@ void CProjectile::Update ( void )
 					hittype = Item::HIT_CHARACTER;
 				}
 			}
-			else if ( ((CRigidBody*)rhLastHit.pHitBehavior)->GetOwner() == NULL )
+			else if ( ((CRigidbody*)rhLastHit.pHitBehavior)->GetOwner() == NULL )
 			{
 				hitBehavior = NULL;
 				hittype = Item::HIT_UNKNOWN;
 			}
-			else if ( ((CRigidBody*)rhLastHit.pHitBehavior)->GetOwner()->GetBaseClassName() == "CFoliage_TreeBase" )
+			else if ( ((CRigidbody*)rhLastHit.pHitBehavior)->GetOwner()->GetBaseClassName() == "CFoliage_TreeBase" )
 			{
-				hitBehavior = ((CRigidBody*)rhLastHit.pHitBehavior)->GetOwner();
+				hitBehavior = ((CRigidbody*)rhLastHit.pHitBehavior)->GetOwner();
 				hittype = Item::HIT_TREE;
 			}
-			else if ( ((CRigidBody*)rhLastHit.pHitBehavior)->GetOwner()->GetBaseClassName() == "CGameObject_TerrainProp" )
+			else if ( ((CRigidbody*)rhLastHit.pHitBehavior)->GetOwner()->GetBaseClassName() == "CGameObject_TerrainProp" )
 			{
-				hitBehavior = ((CRigidBody*)rhLastHit.pHitBehavior)->GetOwner();
+				hitBehavior = ((CRigidbody*)rhLastHit.pHitBehavior)->GetOwner();
 				hittype = Item::HIT_COMPONENT;
 			}
 			else
 			{
-				CGameObject* pHitObject = ((CRigidBody*)rhLastHit.pHitBehavior)->GetOwner();
+				CGameBehavior* pHitObject = ((CRigidbody*)rhLastHit.pHitBehavior)->GetOwner();
 				if ( pHitObject )
 				{
 					if ( pHitObject->GetBaseClassName() == "CActor_Character" )

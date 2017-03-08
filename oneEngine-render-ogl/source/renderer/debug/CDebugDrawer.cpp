@@ -20,12 +20,11 @@ CDebugDrawer* CDebugDrawer::mActive = NULL;
 CDebugDrawer::CDebugDrawer ( void )
 	: CRenderableObject ()
 {
-	renderType = Renderer::Secondary;
 	mActive = this;
 	Debug::Drawer = this;
 
 	// Set the default white material
-	defaultMat = new glMaterial;
+	glMaterial* defaultMat = new glMaterial;
 	defaultMat->m_diffuse = Color( 1,1,1,1 );
 	defaultMat->setTexture( 0, new CTexture( "textures/white.jpg" ) );
 	defaultMat->passinfo.push_back( glPass() );
@@ -33,8 +32,9 @@ CDebugDrawer::CDebugDrawer ( void )
 	defaultMat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	defaultMat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	defaultMat->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
-	defaultMat->removeReference();
+	defaultMat->passinfo[0].b_depthmask = true;
 	SetMaterial( defaultMat );
+	defaultMat->removeReference();
 }
 // Destructor
 CDebugDrawer::~CDebugDrawer ( void )
@@ -44,51 +44,40 @@ CDebugDrawer::~CDebugDrawer ( void )
 		mActive = NULL;
 		Debug::Drawer = NULL;
 	}
-	//delete defaultMat;
 }
 
 // Rendering
 bool CDebugDrawer::Render ( const char pass )
 {
-	if ( avLineList.size() < 0 ) {
+	// If there's no lines in the list, no need to render.
+	if ( avLineList.size() < 0 )
+	{
 		return true;
 	}
+
 	GLd_ACCESS;
 
-	defaultMat->bindPass(0);
+	// Bind wanted pass
+	m_material->bindPass(pass);
 
-	//glDepthMask( GL_TRUE );
-	glDepthFunc( GL_ALWAYS );
-	//glDisable( GL_LIGHTING );
-	// Load identity matrix
-	//glLoadIdentity();
-
-	//glColor4f( 1.0f,1.0f,0.0f, 1.0f );
+	// Disable normal depth testing
+	glDisable( GL_DEPTH_TEST );
 
 	// Draw all the lines in the list
-	//std::vector<Line>::iterator index;
 	GLd.BeginPrimitive( GL_LINES );
-	//glMaterialfv( GL_FRONT_AND_BACK, GL_EMISSION, Color( 1,1,1,1 ).start_point() );
-	//for ( index = avLineList.begin(); index != avLineList.end(); index++ )
 	GLd.P_PushTexcoord( 0,0 );
 	GLd.P_PushNormal( 0,0,0 );
 	for ( uint i = 0; i < avLineList.size(); ++i )
 	{
 		GLd.P_PushColor( avColorList[i] );
-		//glVertex3fv( &((*index).start.x) );
-		//glVertex3fv( &((*index).end.x) );
 		GLd.P_AddVertex( avLineList[i].start );
 		GLd.P_AddVertex( avLineList[i].end );
 	}
 	GLd.EndPrimitive();
 
-	// Empty the list
-	//while ( !avLineList.empty() )
-	//	avLineList.pop_back();
-		//avLineList.erase( avLineList.begin() );
+	// Reenable normal depth testing
+	glEnable( GL_DEPTH_TEST );
 
-	glDepthFunc( GL_LEQUAL );
-	//glEnable( GL_LIGHTING );
 	// Return success
 	return true;
 }
@@ -105,7 +94,6 @@ void CDebugDrawer::DrawLine ( const Line& newLine, const Color& color )
 {
 	if ( mActive != NULL )
 	{
-		//pActive->avLineList.( newLine );
 		mActive->avLineList.push_back( newLine );
 		mActive->avColorList.push_back( color );
 	}

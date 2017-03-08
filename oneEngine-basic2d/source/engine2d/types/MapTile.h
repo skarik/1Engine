@@ -30,8 +30,8 @@ struct tilesetEntry_t
 	uint16_t			atlas_y;
 	uint16_t			atlas_h;
 
-	uint8_t		autotile_0 [16];
-	uint8_t		autotile_1 [16];
+	uint8_t		autotile_0 [32];
+	uint8_t		autotile_1 [32];
 };
 
 // autotile looks around but for now, let's focus on tile editing

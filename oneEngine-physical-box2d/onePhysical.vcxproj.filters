@@ -336,6 +336,9 @@
     <ClInclude Include="source\physical\resource\ResourceManager.h">
       <Filter>SOURCE\Physical\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="source-lib\Box2D\Collision\Shapes\b2TriangleCollectionShape.h">
+      <Filter>SOURCE-LIB\Box2D\Collision\Shapes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\physical\physics\CPhysics.cpp">
@@ -523,6 +526,9 @@
     </ClCompile>
     <ClCompile Include="source\physical\resource\ResourceManager.cpp">
       <Filter>SOURCE\Physical\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="source-lib\Box2D\Collision\Shapes\b2TriangleCollectionShape.cpp">
+      <Filter>SOURCE-LIB\Box2D\Collision\Shapes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

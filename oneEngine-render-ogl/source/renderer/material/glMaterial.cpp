@@ -643,8 +643,15 @@ void glMaterial::bindPassForward ( uchar pass )
 	case Renderer::BM_INV_MULTIPLY:
 		glBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_COLOR );
 		break;
+	case Renderer::BM_MULTIPLY:
+		glBlendFunc( GL_DST_COLOR, GL_ZERO );
+		break;
+	case Renderer::BM_MULTIPLY_X2:
+		glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
+		break;
 	case Renderer::BM_NONE:
-		throw std::exception();
+		glDisable( GL_BLEND );
+		glBlendFunc( GL_ONE, GL_ZERO );
 		break;
 	}
 	// Set transparency mode

@@ -42,7 +42,7 @@ FORCE_INLINE PHYS_API void Physics::UpdateSimulationTarget ( float deltaTime )
 	Physics::World()->advanceTime();
 	*/
 	Active()->targetTime = deltaTime;
-	Active()->worldTime = 0;
+	Active()->worldTime -= deltaTime;
 }
 FORCE_INLINE PHYS_API bool Physics::SimulationAtTarget ( void )
 {
@@ -261,6 +261,10 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( CModelData const* pM
 
 	// Return the new shape
 	return ((physShape*)meshShape);*/
+	// todo: implement new class in box2d:
+	//	-that takes triangles
+	//	-implements raycast from b2EdgeShape
+	//	-removes double verts??? look into b2PolygonShape for shit to steal
 	throw Core::NotYetImplementedException();
 }
 // Creates a faster, but RAM eating mesh shape from the given data. Should be used for larger objects that change often

@@ -20,22 +20,38 @@ namespace M04
 		void			Update ( void ) override;
 
 		void			Show ( void );
+		void			Hide ( void );
+
+		bool			IsHidden ( void );
+
+	protected:
+		//		InitializeTalkerValues()
+		// Sets up default talker values without touching or creating any visual elements
+		void			InitializeTalkerValues ( void );
 
 	public:
 		std::string	text;
 		Vector3d	position;
 		Real		width;
 
+		bool		scramble_lerp;
+
 	protected:
 		CTextMesh*	m_textmesh;
-		TalkerBoxBackground*	m_boxbackground;
+		TalkerBoxBackground*		m_boxbackground;
+		TalkerBoxBackgroundColor*	m_boxbackgroundblend;
 
 		float		m_displayTickerTimer;
 		int			m_displayLength;
 		std::string	m_displayString;
 
-		float		m_fadeLerp;
+		float		m_scrambleFixTimer;
+		float		m_scrambleTimer;
+		int			m_scrambleLength;
+		bool		m_scrambleUpdate;
 
+		float		m_fadeLerp;
+		bool		m_fadeIn;
 	};
 }
 

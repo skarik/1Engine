@@ -8,7 +8,7 @@
 
 //==Constructor==
 CVolumeTrigger::CVolumeTrigger ( CCollider* pTargetCollider, CGameObject * pOwnerGameObject )
-	: CRigidBody ()
+	: CRigidbody ()
 {
 	// The rigidbody of course is active.
 	bRigidBodyActive = true;
@@ -16,7 +16,7 @@ CVolumeTrigger::CVolumeTrigger ( CCollider* pTargetCollider, CGameObject * pOwne
 	// Save the collider
 	pCollider = pTargetCollider;
 	// Save the transform we want to edit
-	pTargetTransform = &(pOwnerGameObject->transform);
+	target_transform = &(pOwnerGameObject->transform);
 
 	// Tell the collider who it's bitch to
 	pCollider->SetRigidBody( this );

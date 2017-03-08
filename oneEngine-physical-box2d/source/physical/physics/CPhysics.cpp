@@ -52,6 +52,13 @@ PHYS_API hkVisualDebugger*	Physics::vdb;
 // and the excluded features.
 #include <Common/Base/Config/hkProductFeatures.cxx>
 */
+
+CPhysics::CPhysics ( void )
+	: pWorld(NULL), pWorldDebugger(NULL), worldScaling(1,1,1)
+{
+	;
+}
+
 //===Function Definitions===
 void Physics::Init ( void )
 {
@@ -75,6 +82,8 @@ void Physics::_Init ( void )
 	pWorld = new b2World ( b2Vec2(0,0) );
 	std::cout << "Box2D base systems started!" << std::endl;
 	std::cout << "\t+version " << b2_version.major << "." << b2_version.minor << "." << b2_version.revision << std::endl;
+
+	pWorld->SetDebugDraw(NULL);
 
 	// Set the physics world properties
 	//worldInfo.m_gravity.set( 0,0, -9.81f );
@@ -246,3 +255,16 @@ hkVisualDebugger* Physics::VDB ( void )
 	return Instance->vdb;
 }
 #endif
+
+
+void CPhysics::SetDebugRenderer ( b2Draw* physicsDebugRenderer )
+{
+	Instance->pWorldDebugger = physicsDebugRenderer;
+	Instance->pWorld->SetDebugDraw(physicsDebugRenderer);
+}
+
+PHYS_API void CPhysics::RenderDebugInfo(void)
+{
+	// Draw debug shit! :D
+	World()->DrawDebugData();
+}
