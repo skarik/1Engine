@@ -74,6 +74,14 @@ namespace Core
 			;
 		}
 	};
+	class DeprecatedFeatureException : public std::runtime_error
+	{
+	public:
+		DeprecatedFeatureException ( void ) : runtime_error( "Deprecated feature used" )
+		{
+			;
+		}
+	};
 
 	class CorruptedDataException : public std::runtime_error
 	{

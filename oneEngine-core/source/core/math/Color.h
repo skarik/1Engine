@@ -217,10 +217,10 @@ FORCE_INLINE const Real& Color::operator[] ( const int a ) const
 FORCE_INLINE uint32_t Color::GetCode ( void ) const
 {
 	uint32_t result;
-	result =	(uint32_t(red*255)		& 0xFF) << 24;
-	result |=	(uint32_t(green*255)	& 0xFF) << 16;
-	result |=	(uint32_t(blue*255)		& 0xFF) << 8;
-	result |=	(uint32_t(alpha*255) & 0xFF);
+	result =	(uint32_t(red*255 + 0.5)	& 0xFF) << 24;
+	result |=	(uint32_t(green*255 + 0.5)	& 0xFF) << 16;
+	result |=	(uint32_t(blue*255 + 0.5)	& 0xFF) << 8;
+	result |=	(uint32_t(alpha*255 + 0.5)	& 0xFF);
 	return result;
 }
 // Sets the Color to a value represented by the given integer.
