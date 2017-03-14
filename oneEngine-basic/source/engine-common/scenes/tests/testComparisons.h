@@ -10,4 +10,4 @@ protected:
 	ENGCOM_API void LoadScene(void);
 };
 
-#endif//_TEST_STRING_OPERATIONS_
+#endif//_TEST_COMPARISONS_

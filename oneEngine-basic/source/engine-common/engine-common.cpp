@@ -17,6 +17,7 @@
 #include "engine-common/scenes/gmsceneSystemBuilder.h"
 #include "engine-common/scenes/benchmark/benchmarkSemaphores.h"
 #include "engine-common/scenes/benchmark/benchmarkMatrices.h"
+#include "engine-common/scenes/tests/testColorConversion.h"
 #include "engine-common/scenes/tests/testComparisons.h"
 #include "engine-common/scenes/tests/testStringOperations.h"
 
@@ -38,6 +39,7 @@ int EngineCommonInitialize ( void )
 
 	EngineCommon::RegisterScene<testComparisons>( "test_cmp" );
 	EngineCommon::RegisterScene<testStringOperations>( "test_string" );
+	EngineCommon::RegisterScene<testColorConversion>("test_color_conversion");
 
 	// Lua
 	Engine::Console->AddConsoleFunc( "lua",	Lua::con_execLua );
