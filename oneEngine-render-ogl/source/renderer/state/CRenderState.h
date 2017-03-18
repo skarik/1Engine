@@ -21,6 +21,7 @@ class CCamera;
 class CResourceManager;
 class glMaterial;
 class CRenderTexture;
+class CMRTTexture;
 
 // Class Definition
 class CRenderState
@@ -65,6 +66,7 @@ public:
 
 	RENDER_API void CreateBuffer ( void );
 	RENDER_API CRenderTexture* GetForwardBuffer ( void );
+	RENDER_API CRenderTexture* GetDeferredBuffer ( void );
 	RENDER_API glTexture GetDepthTexture ( void );
 	RENDER_API glTexture GetStencilTexture ( void );
 
@@ -172,8 +174,12 @@ private:
 	glHandle						internal_buffer_stencil;
 	CRenderTexture*					internal_buffer_forward_rt;
 
+	CMRTTexture*					internal_buffer_deferred_mrt;
+	CRenderTexture*					internal_buffer_deferred_rt;
+
 	// Deferred pass materials
 	// ================================
+	glMaterial*	CopyScaled;
 	glMaterial* LightingPass;
 	glMaterial* EchoPass;
 	glMaterial* ShaftPass;

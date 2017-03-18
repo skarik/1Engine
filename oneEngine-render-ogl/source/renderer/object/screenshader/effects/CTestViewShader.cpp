@@ -39,7 +39,7 @@ CTestViewShader::CTestViewShader ( void )
 
 	m_rttex = NULL;
 	m_rtcam->SetTarget( NULL );
-	m_rtcam->clearColor = true;
+	//m_rtcam->clearColor = true;
 }
 
 CTestViewShader::~CTestViewShader ( void )

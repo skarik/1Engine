@@ -4,6 +4,7 @@
 #include "Settings.h"
 
 #include "core/system/Screen.h"
+#include "core-ext/threads/Jobs.h"
 
 #include "renderer/object/CRenderableObject.h"
 #include "renderer/logic/CLogicObject.h"
@@ -11,6 +12,7 @@
 #include "renderer/material/glMaterial.h"
 #include "renderer/texture/CTexture.h"
 #include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/CMRTTexture.h"
 
 #include "renderer/debug/CDebugDrawer.h"
 #include "renderer/debug/CDebugRTInspector.h"
@@ -128,8 +130,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		glMaterial::Copy->passinfo.push_back( glPass() );
 		glMaterial::Copy->passinfo[0].shader = new glShader( "shaders/sys/copy_buffer.glsl" );
 		glMaterial::Copy->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
-		// Setup deferred pass
-		// Hilariously, this one doesn't use a deferred pass.
+		// No deferred pass.
 	}
 	// Create the fallback shader
 	if ( glMaterial::Fallback == NULL )
@@ -138,14 +139,22 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		// Setup forward pass
 		glMaterial::Fallback->passinfo.push_back( glPass() );
 		glMaterial::Fallback->passinfo[0].shader = new glShader( "shaders/sys/fullbright.glsl" );
-		// Setup deferred pass
-		glMaterial::Fallback->deferredinfo.push_back( glPass_Deferred() );
+		// No deferred pass.
 	}
 	// Create the default hint options
 	if ( Renderer::m_default_hint_options == NULL )
 	{
 		Renderer::m_default_hint_options = new Renderer::_n_hint_rendering_information();
 	}
+	// Create the render copy upscaling shader
+	{
+		CopyScaled = new glMaterial();
+		// Setup forward pass
+		CopyScaled->passinfo.push_back( glPass() );
+		CopyScaled->passinfo[0].shader = new glShader( "shaders/sys/copy_buffer_scaled.glsl" );
+		CopyScaled->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	}
+
 	bSpecialRender_ResetLights = false;
 
 	// Create the debug tools
@@ -220,6 +229,18 @@ CRenderState::~CRenderState ( void )
 	glMaterial::Fallback->removeReference();
 	delete glMaterial::Fallback;
 	glMaterial::Fallback = NULL;
+
+	// Free the other materials
+	CopyScaled->removeReference();
+	delete_safe(CopyScaled);
+	LightingPass->removeReference();
+	delete_safe(LightingPass);
+	EchoPass->removeReference();
+	delete_safe(EchoPass);
+	ShaftPass->removeReference();
+	delete_safe(ShaftPass);
+	Lighting2DPass->removeReference();
+	delete_safe(Lighting2DPass);
 
 	// Stop the resource manager
 	if ( mResourceManager && mResourceManager->m_renderStateOwned ) {
@@ -325,6 +346,10 @@ unsigned int CRenderState::AddLO ( CLogicObject * pLO )
 //  only to be used by RO destructor
 void CRenderState::RemoveLO ( unsigned int id )
 {
+	// TODO: Optimize this
+	Jobs::System::Current::WaitForJobs( Jobs::JOBTYPE_RENDERSTEP );
+
+	// Now set to null now that the object is pretty much gone
 	mLogicObjects[id] = NULL;
 }
 
@@ -362,6 +387,7 @@ const Renderer::internalSettings_t& CRenderState::GetSettings ( void ) const
 
 void CRenderState::CreateBuffer ( void )
 {
+	// Delete forward buffers
 	if ( internal_buffer_forward_rt != NULL )
 	{
 		delete internal_buffer_forward_rt;
@@ -373,8 +399,20 @@ void CRenderState::CreateBuffer ( void )
 		GPU::TextureBufferFree( internal_buffer_stencil );
 		internal_buffer_stencil = 0;
 	}
+	// Delete deferred buffers
+	if ( internal_buffer_deferred_mrt != NULL )
+	{
+		delete internal_buffer_deferred_mrt;
+		internal_buffer_deferred_mrt = NULL;
+
+		delete internal_buffer_deferred_rt;
+		internal_buffer_deferred_rt = NULL;
+	}
+
+	// Create forward buffers
 	if ( internal_buffer_forward_rt == NULL )
 	{
+		// Generate shared depth and stencil buffers
 		if ( internal_settings.mainDepthFormat != DepthNone )
 		{
 			internal_buffer_depth	= GPU::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
@@ -391,11 +429,47 @@ void CRenderState::CreateBuffer ( void )
 			glTexture(internal_buffer_stencil, internal_settings.mainStencilFormat), false
 		);
 	}
+	// Create deferred buffers
+	if ( internal_buffer_deferred_mrt == NULL )
+	{
+		// Create the internal stage color render target (uses shared forward buffers)
+		internal_buffer_deferred_rt = new CRenderTexture(
+			Screen::Info.width, Screen::Info.height,
+			Clamp, Clamp,
+			internal_settings.mainColorAttachmentFormat,
+			glTexture(internal_buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
+			glTexture(internal_buffer_stencil, internal_settings.mainStencilFormat), false
+		);
+
+		glTexture		depthTexture = SceneRenderer->GetDepthTexture();
+		glTexture		stencilTexture = SceneRenderer->GetStencilTexture();
+
+		// TODO: Make configurable
+		glTexture textureRequests [4];
+		memset( textureRequests, 0, sizeof(glTexture) * 4 );
+		textureRequests[0].format = RGBA8;
+		textureRequests[1].format = RGBA16F;
+		textureRequests[2].format = RGBA8;
+		textureRequests[3].format = RGBA8;
+
+		// Create the MRT to be used by the rendering pipeline
+		internal_buffer_deferred_mrt = new CMRTTexture(
+			Screen::Info.width, Screen::Info.height,
+			Clamp, Clamp,
+			textureRequests + 0, 4,
+			&depthTexture, depthTexture.format != DepthNone,
+			&stencilTexture, false
+		);
+	}
 }
 
 CRenderTexture* CRenderState::GetForwardBuffer ( void )
 {
 	return internal_buffer_forward_rt;
+}
+CRenderTexture* CRenderState::GetDeferredBuffer ( void )
+{
+	return internal_buffer_deferred_rt;
 }
 
 glTexture CRenderState::GetDepthTexture ( void )

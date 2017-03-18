@@ -114,6 +114,7 @@ public:
 	Real		zNear;
 	Real		zFar;
 	Real		fov;
+	Real		render_scale;
 	// Viewport options
 	Rect		viewport_percent;
 	bool		mirror_view;
@@ -123,8 +124,8 @@ public:
 
 	// Draw modes
 	bool		shadowCamera;
-	bool		clearColor;
-	bool		clearDepthAfterLayer;
+	//bool		clearColor;
+	//bool		clearDepthAfterLayer;
 
 	bool		layerVisibility [5];
 

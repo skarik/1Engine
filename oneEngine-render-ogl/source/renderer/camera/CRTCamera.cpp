@@ -24,7 +24,7 @@ CRTCamera::CRTCamera (
 	// And on default, do not update
 	bNeedsUpdate = false;
 	// Also, don't clear
-	clearColor = false;
+	//clearColor = false;
 
 	// Set default render layer mode
 	for ( uint i = 0; i <= Renderer::V2D; ++i ) {

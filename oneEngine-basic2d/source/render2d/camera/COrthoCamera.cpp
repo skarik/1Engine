@@ -73,6 +73,8 @@ void COrthoCamera::RenderSet ( void )
 	glMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( RENDER_MODE_DEFERRED, Renderer::SP_MODE_2DPALETTE );
 	palette_pass_material->setTexture(5, (CTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
 	palette_pass_material->setTexture(6, (CTexture*)Render2D::WorldPalette::Active()->GetTexture3D());	// Set 3D lookup
+	// Remove filtering on the upscaling pass
+	SceneRenderer->GetDeferredBuffer()->SetFilter( SamplingPoint );
 
 	glMaterial::special_mode = Renderer::SP_MODE_2DPALETTE;
 

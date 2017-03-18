@@ -359,7 +359,8 @@ void CTexture::LoadImageInfo ( void )
 void CTexture::SetFilter ( eSamplingFilter filter )
 {
 	GL_ACCESS;
-
+	// Update value
+	info.filter = filter;
 	// Bind the texture object
 	glBindTexture( GL_TEXTURE_2D, info.index );
 	// Change the filtering

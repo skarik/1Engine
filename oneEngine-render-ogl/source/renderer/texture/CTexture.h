@@ -123,7 +123,7 @@ public:
 		eSamplingFilter	filter			= SamplingLinear
 		);
 
-	RENDER_API void SetFilter ( eSamplingFilter filter );
+	RENDER_API virtual void SetFilter ( eSamplingFilter filter );
 protected:
 	friend CTextureMaster;
 	friend CResourceManager;

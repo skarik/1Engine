@@ -2,7 +2,9 @@
 #include <cmath>
 
 #include "core/system/Screen.h"
+#include "core/math/Math.h"
 #include "core/settings/CGameSettings.h"
+
 #include "renderer/light/CLight.h"
 #include "renderer/types/ObjectSettings.h"
 
@@ -12,9 +14,8 @@ CCamera*				CCamera::activeCamera	= NULL;
 std::vector<CCamera*>	CCamera::vCameraList;
 
 CCamera::CCamera ( void )
+	: active(true), render_scale(1.0F)
 {
-	active = true;
-
 	// Set up camera renderer
 	transform.name = "Camera Transform";
 	transform.owner = this;
@@ -43,9 +44,9 @@ CCamera::CCamera ( void )
 	// On Default, not a shadow camera
 	shadowCamera = false;
 	// On Default, clears background
-	clearColor = true;
+	//clearColor = true;
 	// On Default, clears depth buffer after every draw layer
-	clearDepthAfterLayer = true;
+	//clearDepthAfterLayer = true;
 
 	// Set default render layer mode
 	for ( uint i = 0; i <= Renderer::V2D; ++i ) {
@@ -211,61 +212,31 @@ void CCamera::LateUpdate ( void )
 void CCamera::RenderScene ( void )
 {
 	GL_ACCESS;
+
+	// Bind camera
 	RenderSet();
 	GL.pushProjection( viewTransform * projTransform );
 
+	// Limit render scale between 10% and 100%
+	render_scale = Math::clamp( render_scale, 0.1F, 1.0F );
+
+	// Perform rendering
 	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
 	{
 		SceneRenderer->RenderSceneForward(enabledHints);
 	}
 	else if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_DEFERRED )
 	{
-		// Set up the MRT render target
-		if ( !bIsRTcamera )
-		{
-			CRenderTexture* s_buf = GL.GetMainScreenBuffer();
-
-			if ( m_renderTexture && m_renderTexture->GetSize() != s_buf->GetSize() )
-			{
-				delete m_renderTexture;
-				m_renderTexture = NULL;
-			}
-			if ( !m_renderTexture )
-			{
-				eColorFormat	colorMode	= SceneRenderer->GetSettings().mainColorAttachmentFormat;
-				eDepthFormat	depthMode	= SceneRenderer->GetSettings().mainDepthFormat;
-				eStencilFormat	stencilMode	= SceneRenderer->GetSettings().mainStencilFormat;
-				uint			colorCount	= SceneRenderer->GetSettings().mainColorAttachmentCount;
-
-				glTexture		depthTexture = SceneRenderer->GetDepthTexture();
-				glTexture		stencilTexture = SceneRenderer->GetStencilTexture();
-
-				glTexture textureRequests [4];
-				memset( textureRequests, 0, sizeof(glTexture) * 4 );
-				textureRequests[0].format = RGBA8;
-				textureRequests[1].format = RGBA16F;
-				textureRequests[2].format = RGBA8;
-				textureRequests[3].format = RGBA8;
-
-				m_renderTexture = new CMRTTexture(
-					s_buf->GetWidth(), s_buf->GetHeight(),
-					Clamp, Clamp,
-					textureRequests + 0, 4,
-					&depthTexture, depthTexture.format != DepthNone,
-					&stencilTexture, false );
-			}
-		}
-		// Render now, with this camera set, and the render texture set up
 		SceneRenderer->RenderSceneDeferred(enabledHints);
 	}
 	else
 	{
 		throw Core::InvalidCallException();
 	}
+
+	// Unbind camera
 	GL.popProjection();
 	RenderUnset();
-
-	GL.CheckError();
 }
 
 

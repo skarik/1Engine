@@ -96,7 +96,7 @@ Color DirectionalLight::GetSendVector ( void )
 // Special update code
 void DirectionalLight::UpdateShadowCamera ( void )
 {
-	shadowCamera->clearDepthAfterLayer = false;
+	//shadowCamera->clearDepthAfterLayer = false;
 	shadowCamera->orthographic = true;
 	shadowCamera->ortho_size = Vector2d( shadowRange,shadowRange );
 	shadowCamera->zNear = 1.0f;

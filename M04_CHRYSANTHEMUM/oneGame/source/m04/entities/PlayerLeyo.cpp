@@ -29,6 +29,7 @@ PlayerLeyo::PlayerLeyo ( void )
 	// Set camera options
 	camera->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
 	camera->viewport_target.size = Vector2d( 1280,720 ) * 0.5f;
+	camera->render_scale = 0.5F;
 	camera->SetActive(); // Mark it as the main camera to use IMMEDIATELY
 	// Start camera in follow mode
 	camera_mode = 1;
@@ -106,7 +107,7 @@ void PlayerLeyo::PostFixedUpdate ( void )
 	// Update sprite
 	if ( Math::sgn( velocity.x ) != 0 )
 	{
-		flipstate.x = Math::sgn( velocity.x );
+		flipstate.x = (Real)Math::sgn( velocity.x );
 	}
 
 	// Update camera position

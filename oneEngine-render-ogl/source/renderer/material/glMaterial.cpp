@@ -1046,6 +1046,23 @@ void glMaterial::shader_bind_world ( glShader* shader )
 		screensize[1] = (float)Screen::Info.height;
 		glUniform2fv( uniformLocation, 1, screensize );
 	}
+	// Viewport size
+	uniformLocation = shader->get_uniform_location( "sys_ViewportInfo" );
+	if ( uniformLocation >= 0 )
+	{
+		float screensize [4];
+		screensize[0] = (float)0;
+		screensize[1] = (float)0;
+		screensize[2] = (float)Screen::Info.width * CCamera::activeCamera->render_scale;
+		screensize[3] = (float)Screen::Info.height * CCamera::activeCamera->render_scale;
+		glUniform4fv( uniformLocation, 1, screensize );
+	}
+	// Pixel size
+	uniformLocation = shader->get_uniform_location( "sys_PixelRatio" );
+	if ( uniformLocation >= 0 )
+	{
+		glUniform1f( uniformLocation, CCamera::activeCamera->ortho_size.x / Screen::Info.width / CCamera::activeCamera->render_scale );
+	}
 
 	uniformLocation = shader->get_uniform_location( "sys_ViewMatrixInverse" );
 	if ( uniformLocation >= 0 )
@@ -1224,11 +1241,7 @@ void glMaterial::shader_bind_lights	 ( glShader* shader )
 		uniformLocation = shader->get_uniform_location( "sys_LightAmbient" );
 		if ( uniformLocation >= 0 )
 		{
-			//throw std::exception( "UPDATE" );
 			Color actualAmbient = Renderer::Settings.ambientColor;
-			/*if ( ActiveGameWorld ) {
-				actualAmbient = actualAmbient + ActiveGameWorld->cBaseAmbient;
-			}*/
 			glUniform4f( uniformLocation,
 				actualAmbient.red,
 				actualAmbient.green,
@@ -1288,7 +1301,8 @@ void glMaterial::shader_bind_nolights ( glShader* shader )
 {
 	// Fullbright on the ambient, though
 	int uniformLocation = shader->get_uniform_location( "sys_LightAmbient" );
-	if ( uniformLocation >= 0 ) {
+	if ( uniformLocation >= 0 )
+	{
 		glUniform4f( uniformLocation, 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 }

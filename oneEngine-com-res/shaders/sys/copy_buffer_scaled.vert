@@ -7,11 +7,13 @@
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;
 
+uniform vec4 sys_DiffuseColor;
+
 // Outputs to fragment shader
 out vec2 v2f_texcoord0;
 
 void main ( void )
 {
-	v2f_texcoord0	= mdl_TexCoord.xy;
+	v2f_texcoord0	= mdl_TexCoord.xy * sys_DiffuseColor.xy;
 	gl_Position = vec4( mdl_Vertex, 1.0 );
 }

@@ -13,6 +13,7 @@ layout(location = 0) out vec4 FragColor;
 // Inputs from vertex shader
 in vec4 v2f_position;
 in vec2 v2f_texcoord0;
+in vec2 v2f_texcoord1;
 
 // Samplers
 uniform sampler2D textureSampler0;	// Diffuse
@@ -86,6 +87,7 @@ uniform sampler2D textureShadow2;
 
 // System inputs
 uniform vec3 sys_WorldCameraPos;
+uniform vec4 sys_ViewportInfo;
 
 // Fog
 layout(std140) uniform sys_Fog
@@ -323,14 +325,16 @@ void main ( void )
 {
 	// Use depth to generate the world position
 	float pixelDepth   = texture( textureSampler4, v2f_texcoord0 ).r;
-	vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1), pixelDepth, 1.0 );
+    //vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1), pixelDepth, 1.0 );
+	//vec4 pixelPosition = vec4( (v2f_texcoord0.x*2 - 0.5),(v2f_texcoord0.y*2 - 0.5), pixelDepth, 1.0 );
+    vec4 pixelPosition = vec4( v2f_texcoord1.xy, pixelDepth, 1.0 );
 	/*{
 		pixelPosition.z = ( pixelPosition.z*2 - 1 );
         pixelPosition = sys_ModelViewProjectionMatrixInverse * vec4( pixelPosition.xyz, 1.0 );
 		pixelPosition.xyzw /= pixelPosition.w;
 	}*/
-    pixelPosition.x *= 1280 * 0.25;
-    pixelPosition.y *= -720 * 0.25;
+    pixelPosition.x *= sys_ViewportInfo.z;
+    pixelPosition.y *= -sys_ViewportInfo.w;
     pixelPosition.z *= (pixelPosition.z - 0.5) * -1000;
     pixelPosition.xyz += sys_WorldCameraPos;
 
@@ -372,14 +376,12 @@ void main ( void )
 
     vec3 diffuseColor = lighting_mix(
         pixelLookup.xyz,
-        pixelNormal.xyz, floor(pixelPosition.xyz), specularMask, pixelLightProperty.a
+        pixelNormal.xyz, pixelPosition.xyz, specularMask, pixelLightProperty.a
     );
 
 #else
 
     vec2 rounded_coord = v2f_texcoord0.xy;
-    rounded_coord.x = floor(rounded_coord.x * 640.0) / 640.0;
-    rounded_coord.y = floor(rounded_coord.y * 360.0) / 360.0;
 
     float light = 0.5 - (length(vec2(0.5,0.5) /*+ random(rounded_coord.xxy)/10.0*/ - rounded_coord.xy) * 3.0);
     pixelLookup.x = ((pixelLookup.x + light) + (pixelLookup.x * light)) * 0.5;

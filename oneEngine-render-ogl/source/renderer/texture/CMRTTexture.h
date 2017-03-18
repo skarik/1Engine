@@ -63,6 +63,9 @@ public:
 		return mrtInfo.texture[index];
 	}
 
+
+	RENDER_API void SetFilter ( eSamplingFilter filter ) override;
+
 protected:
 	// Private routines
 	void GenerateFramebuffer ( void ) override;

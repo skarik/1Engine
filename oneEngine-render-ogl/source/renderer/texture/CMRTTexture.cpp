@@ -419,3 +419,29 @@ void CMRTTexture::GenerateFramebuffer ( void )
 		// And we're done!
 	}
 }
+
+
+//=========================================//
+// === Setters ===
+void CMRTTexture::SetFilter ( eSamplingFilter filter )
+{
+	GL_ACCESS;
+
+	// Update value
+	info.filter = filter;
+
+	for ( int8_t i = 0; i < mrtInfo.attachments; ++i )
+	{
+		if ( mrtInfo.texture_owned[i] )
+		{
+			// Bind the texture object
+			glBindTexture( GL_TEXTURE_2D, mrtInfo.texture[i] );
+			// Change the filtering
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum(info.filter) );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL.Enum(info.filter) );
+		}
+	}
+
+	// Unbind the data
+	glBindTexture( GL_TEXTURE_2D, 0 );
+}
