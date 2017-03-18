@@ -6,8 +6,8 @@ varying vec2 v2f_texcoord0;
 varying float v2f_fogdensity;
 
 // System inputs
-uniform mat4 sys_ModelMatrix;
-uniform mat4 sys_ModelRotationMatrix;
+uniform mat4 sys_ModelTRS;
+uniform mat4 sys_ModelRS;
 uniform mat4 sys_BoneMatrix[24];
 uniform float sys_BoneOffset;
 

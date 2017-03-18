@@ -19,6 +19,11 @@ namespace Engine2D
 		//		SpriteContinaer (Destructor)
 		ENGINE2D_API				~SpriteContainer ( void );
 
+		//		SetupDepthOffset
+		// Sets up depth offset of the sprite. Input is percent of sprite size.
+		// Changes values written to z-buffer, used for 3d effects.
+		ENGINE2D_API void			SetupDepthOffset ( const Real top_offset, const Real bottom_offset );
+
 	private:
 		//		PreStep()
 		// Used to update the position of the renderer as well as animation parameters.
@@ -66,6 +71,11 @@ namespace Engine2D
 		Vector3d const*				m_sourcePosition;
 		Real const*					m_sourceAngle;
 		Vector3d const*				m_sourceScale;
+
+		// Depth offset used when building mesh:
+
+		Real						m_doffsetTop;
+		Real						m_doffsetBottom;
 	};
 }
 

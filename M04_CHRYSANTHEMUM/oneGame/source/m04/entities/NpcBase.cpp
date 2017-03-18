@@ -11,6 +11,7 @@ NpcBase::NpcBase ( void )
 	: CGameBehavior(), Engine2D::SpriteContainer(&position)
 {
 	input = new CEmulatedInputControl();
+	SetupDepthOffset( -1.0F, 0.0F );
 }
 
 NpcBase::~NpcBase ( void )

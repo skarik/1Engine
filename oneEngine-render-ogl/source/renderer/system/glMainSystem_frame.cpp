@@ -31,7 +31,6 @@ void glMainSystem::Present ( void )
 // Prepare system for a new frame
 void glMainSystem::BeginFrame ( void )
 {
-	SwapBuffers(COglWindow::pActive->getDevicePointer());				// Swap Buffers (Double Buffering) (VSYNC)
 	/*if ( presentThread ) {
 		presentThread->join();
 		delete presentThread;
@@ -39,8 +38,15 @@ void glMainSystem::BeginFrame ( void )
 }
 // Cleanup after old frame
 void glMainSystem::EndFrame ( void )
-{
-	GLd_ACCESS; // Using the glMainSystem accessor
+{	// Using the glMainSystem accessor
+	GLd_ACCESS;
+
+	// Swap Buffers (Double Buffering)
+	SwapBuffers(COglWindow::pActive->getDevicePointer());
+
+	// Mark that we're done with rendering
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
 	// Mark buffers as free to use
 	GLd.MarkBuffersFreeUsage();
 }

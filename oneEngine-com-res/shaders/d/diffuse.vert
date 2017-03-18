@@ -17,8 +17,8 @@ out float v2f_fogdensity;
 out vec3 v2f_screenpos;
 
 // System inputs
-uniform mat4 sys_ModelMatrix;
-uniform mat4 sys_ModelRotationMatrix;
+uniform mat4 sys_ModelTRS;
+uniform mat4 sys_ModelRS;
 uniform mat4 sys_ModelViewProjectionMatrix;
 
 // Lighting and Shadows
@@ -45,17 +45,17 @@ void main ( void )
 	vec4 v_localPos = vec4( mdl_Vertex, 1.0 );
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
 
-	//v2f_normals		= sys_ModelRotationMatrix*vec4( normalize(mdl_Normal), 1.0 );
-	vec4 v_normal	= sys_ModelRotationMatrix*vec4( normalize(mdl_Normal), 1.0 );
-	vec4 v_tangent	= sys_ModelRotationMatrix*vec4( normalize(mdl_Tangents), 1.0 );
-	vec4 v_binormal	= sys_ModelRotationMatrix*vec4( normalize(mdl_Binormals), 1.0 );
+	//v2f_normals		= sys_ModelRS*vec4( normalize(mdl_Normal), 1.0 );
+	vec4 v_normal	= sys_ModelRS*vec4( normalize(mdl_Normal), 1.0 );
+	vec4 v_tangent	= sys_ModelRS*vec4( normalize(mdl_Tangents), 1.0 );
+	vec4 v_binormal	= sys_ModelRS*vec4( normalize(mdl_Binormals), 1.0 );
 	if ( dot( cross( v_normal.xyz, v_tangent.xyz ), v_binormal.xyz ) < 0 ) {
 		v_tangent = -v_tangent;
 	}
 	v2f_tangent		= mat3( v_tangent.xyz, v_binormal.xyz, v_normal.xyz );
 	
 	v2f_colors		= mdl_Color;
-	v2f_position	= sys_ModelMatrix*v_localPos;
+	v2f_position	= sys_ModelTRS*v_localPos;
 	v2f_texcoord0	= mdl_TexCoord.xy;
 	v2f_fogdensity = clamp( (sys_FogEnd - v_screenPos.z) * sys_FogScale, 0, 1 );
 	
@@ -85,10 +85,10 @@ void main ( void )
 {
 	vec4 v_localPos = gl_Vertex;
 	
-	v2f_normals		= sys_ModelRotationMatrix*vec4( gl_Normal, 1.0 );
+	v2f_normals		= sys_ModelRS*vec4( gl_Normal, 1.0 );
 	v2f_colors		= gl_Color;
 	//v2f_emissive	= gl_SecondaryColor.rgb;
-	v2f_position	= sys_ModelMatrix*gl_Vertex;
+	v2f_position	= sys_ModelTRS*gl_Vertex;
 	v2f_texcoord0	= gl_MultiTexCoord0.xy;
 	
 

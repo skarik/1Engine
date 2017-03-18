@@ -65,6 +65,8 @@ namespace M04
 		//		uiStepTilePanel () : tile editor panel update
 		// handles inputs and updates to the tile panel
 		void		uiStepTilePanel ( void );
+		// Called when tile-editing mode ends
+		void		_uiStepTilePanel_End ( void );
 		//		uiStepAreaPanel () : area panel update
 		// handles input and updates to the area panel
 		void		uiStepAreaPanel ( void );

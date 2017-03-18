@@ -798,3 +798,37 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 	}
 	delete [] lowQuality;
 }
+
+
+namespace Renderer
+{
+	std::map<arstring128, CTexture*> Resources::textureMap;
+	CTexture*	Resources::GetTexture ( const char* identifier )
+	{
+		auto id = arstring128(identifier);
+		auto find_result = textureMap.find( id );
+		if ( find_result == textureMap.end() )
+		{
+			return NULL;
+		}
+		else
+		{
+			return find_result->second;
+		}
+	}
+	void		Resources::AddTexture ( const char* identifier, CTexture* texture )
+	{
+		auto id = arstring128(identifier);
+		auto find_result = textureMap.find( id );
+		if ( find_result == textureMap.end() )
+		{
+			textureMap[id] = texture;
+			if ( texture != (CTexture*)0xF33D )
+				texture->AddReference();
+		}
+		else
+		{
+			throw Core::MemoryLeakException();
+		}
+	}
+}

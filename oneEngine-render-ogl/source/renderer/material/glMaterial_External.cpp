@@ -262,7 +262,7 @@ void glMaterial::loadFromFile ( const char* n_materialfile )
 						deferredinfo.back().m_transparency_mode = passinfo[0].m_transparency_mode;
 						//deferredinfo.back().m_blend_mode = passinfo[0].m_blend_mode;
 						deferredinfo.back().m_blend_mode = Renderer::BM_NONE;
-						deferredinfo.back().m_lighting_mode = passinfo[0].m_lighting_mode;
+						//deferredinfo.back().m_lighting_mode = passinfo[0].m_lighting_mode;
 					}
 					t_hasDeferredPass = true;
 				}
@@ -285,7 +285,7 @@ void glMaterial::loadFromFile ( const char* n_materialfile )
 				deferredinfo[0].m_transparency_mode = passinfo[0].m_transparency_mode;
 				//deferredinfo[0].m_blend_mode = passinfo[0].m_blend_mode;
 				deferredinfo[0].m_blend_mode = Renderer::BM_NONE;
-				deferredinfo[0].m_lighting_mode = passinfo[0].m_lighting_mode;
+				//deferredinfo[0].m_lighting_mode = passinfo[0].m_lighting_mode;
 				//deferredinfo[0].m_diffuse_method = passinfo[0].m;
 			}
 		}
@@ -658,7 +658,7 @@ ELoadState loadDeferredPassProperties ( glMaterial* material,
 	}
 	else if ( command == "diffuse" )
 	{
-		ss >> subCommand;
+		/*ss >> subCommand;
 		if ( subCommand == "default" || subCommand == "standard" ) {
 			t_pass->m_diffuse_method = Renderer::Deferred::DIFFUSE_DEFAULT;
 		}
@@ -673,7 +673,8 @@ ELoadState loadDeferredPassProperties ( glMaterial* material,
 		else if ( subCommand == "hair" ) {
 			t_pass->m_diffuse_method = Renderer::Deferred::DIFFUSE_HAIR;
 			t_pass->m_rimlight_strength = 0.4f;
-		}
+		}*/
+		throw Core::DeprecatedFeatureException();
 	}
 
 	return LOADING_DEFERRED_PASS_PROPERTIES;

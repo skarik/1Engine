@@ -29,9 +29,22 @@ namespace M04
 
 	public:
 		// Current state:
+
+		Vector3d flipstate;
 		
 		Vector3d position;
 		Vector3d velocity;
+
+		int		camera_mode;
+		float	camera_lerp_mode;
+		float	camera_stuck_time;
+		Vector3d camera_position;
+		Vector3d camera_lockposition;
+
+	protected:
+
+		void CameraUpdate ( void );
+
 
 	protected:
 

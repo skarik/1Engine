@@ -25,6 +25,12 @@ struct pixel_t
 	{
 		;
 	}
+	// Construct from channel bytes
+	pixel_t ( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a ) :
+		r(_r), g(_g), b(_b), a(_a)
+	{
+		;
+	}
 	// Construct from color
 	pixel_t ( Color& color )
 	{

@@ -101,7 +101,7 @@ namespace Renderer
 		FM_FRONTANDBACK
 	};
 
-	namespace Deferred
+	/*namespace Deferred
 	{
 		enum eDiffuseMethod : uint8_t
 		{
@@ -119,15 +119,31 @@ namespace Renderer
 			DIFFUSE_HAIR // slight change w/ alpha and glow
 		};
 
-	};
+	};*/
 
 	enum eSpecialModes : uint8_t
 	{
+		// Default rendering pipeline. Eat a cock.
 		SP_MODE_NORMAL,
+
+		// Pulls information from the attached audio engine.
+		// The entirety of the audio list is shoved into the light list.
+		// Albedo is dropped. Instead, approximated sound reflections are rendered.
 		SP_MODE_ECHO,
-		SP_MODE_AETHER, // Imagination mode
+		
+		// Imagination mode. Doesn't actually render.
+		SP_MODE_AETHER,
+
+		// Insprited by Studio SHAFT animation style (particularly Nisemonogatari)
+		// Mostly the same as SP_MODE_NORMAL, however:
+		//	* Shadows are fucking dithered
+		//	* Sometimes the color palette changes
+		//	* Sometimes the scene is flatshaded
 		SP_MODE_SHAFT,
-		SP_MODE_2DPALETTE // Requires 2D extension to function properly
+
+		// Default 2D rendering pipeline, with orthographic optimizations.
+		// Requires 2D extension to function properly.
+		SP_MODE_2DPALETTE 
 	};
 
 	struct _n_hint_rendering_information

@@ -6,7 +6,7 @@
 
 glPass_Deferred::glPass_Deferred ( void )
 	: m_blend_mode(Renderer::BM_NONE), m_transparency_mode(Renderer::ALPHAMODE_NONE),
-	m_lighting_mode(Renderer::LI_NORMAL), m_diffuse_method(Renderer::Deferred::DIFFUSE_DEFAULT),
+	/*m_lighting_mode(Renderer::LI_NORMAL), m_diffuse_method(Renderer::Deferred::DIFFUSE_DEFAULT),*/
 	m_rimlight_strength(0.2f),
 	m_ready(false), shader(NULL)
 {
@@ -41,7 +41,7 @@ void glMaterial::deferred_shader_build( uchar pass )
 
 	// Generate shader name based on settings
 	t_shaderName = ".game/.dfshaders/shader";
-	t_shaderName += ".df" + std::to_string((uint)dpass.m_diffuse_method);
+	//t_shaderName += ".df" + std::to_string((uint)dpass.m_diffuse_method);
 	t_shaderName += (dpass.m_blend_mode==Renderer::BM_ADD) ? ".bm_a" : ( (dpass.m_blend_mode==Renderer::BM_SOFT_ADD) ? ".bm_s" : "" );
 	t_shaderName += ".am" + std::to_string((uint)dpass.m_transparency_mode);
 	t_shaderName += m_isSkinnedShader ? ".skinning" : "";

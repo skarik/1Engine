@@ -15,8 +15,8 @@ in vec3 mdl_TexCoord3;
 in vec3 mdl_TexCoord4;
 
 // System inputs
-uniform mat4 sys_ModelMatrix;
-uniform mat4 sys_ModelRotationMatrix;
+uniform mat4 sys_ModelTRS;
+uniform mat4 sys_ModelRS;
 uniform mat4 sys_ModelViewProjectionMatrix;
 uniform mat4 sys_ViewProjectionMatrix;
 
@@ -55,11 +55,12 @@ void main ( void )
 
     VERTEX_PROCESSOR;
 
-    vec4 v_worldPosition	= sys_ModelMatrix * ov_vertex;
-    vec4 v_worldNormal		= sys_ModelRotationMatrix * ov_normal;
+    vec4 v_worldPosition	= sys_ModelTRS * ov_vertex;
+    vec4 v_worldNormal		= sys_ModelRS * ov_normal;
     vec4 v_screenPosition	= sys_ModelViewProjectionMatrix * ov_vertex;
 
-    gl_Position = v_screenPosition;v2f_normals = v_worldNormal;
+    gl_Position = v_screenPosition;
+    v2f_normals = v_worldNormal;
     v2f_colors	= mdl_Color;
     v2f_position= v_worldPosition;
 

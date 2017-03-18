@@ -91,7 +91,7 @@ void Debug::CDebugConsole::Init ( void )
 		freopen_s(&pCin,  "CONIN$",  "r", stdin );
 		// Redirect STDERR to console
 		FILE* pCerr;
-		freopen_s(&pCerr, "CONERR$", "w", stderr);
+		freopen_s(&pCerr, "CONOUT$", "w", stderr);
 
 		// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog point to console as well
 		std::ios::sync_with_stdio();

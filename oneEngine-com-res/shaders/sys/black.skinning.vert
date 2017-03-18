@@ -13,8 +13,8 @@ in uvec4 mdl_BoneIndices;
 out vec2 v2f_texcoord0;
 
 // System inputs
-uniform mat4 sys_ModelMatrix;
-uniform mat4 sys_ModelRotationMatrix;
+uniform mat4 sys_ModelTRS;
+uniform mat4 sys_ModelRS;
 uniform mat4 sys_ModelViewProjectionMatrix;
 
 // Skinning

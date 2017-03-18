@@ -3,6 +3,7 @@
 #include <thread>
 #include <map>
 
+#include "core/math/Math.h"
 #include "core/math/Math3d.h"
 
 #include "TileMap.h"
@@ -174,6 +175,8 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 								tiletype.type = TILE_AUTOWALL;
 							else if ( strcmp(entry.value,"randomized") == 0 )
 								tiletype.type = TILE_RANDOMIZED;
+							else if ( strcmp(entry.value,"prop") == 0 )
+								tiletype.type = TILE_PROP;
 						}
 						// Set new tile coordinates
 						else if ( key.compare("atlas") )
@@ -201,8 +204,8 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 						// Autotile entry? Need to set autotile information
 						if ( key.compare("autotile") )
 						{
-							// Start by setting all autotile information to zero
-							for ( int i = 0; i < 16; ++i ) {
+							// Start by setting all autotile information to 'zero'
+							for ( int i = 0; i < MAPTILE_AUTOTILE_SIZE; ++i ) {
 								tiletype.autotile_0[i] = 255;
 								tiletype.autotile_1[i] = 255;
 							}
@@ -257,6 +260,33 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 									{	// Load the entry into the given table index X amount of times
 										tiletype.autotile_0[++tiletype.autotile_0[0]] = nx;
 										tiletype.autotile_1[++tiletype.autotile_1[0]] = ny;
+									}
+								}
+							}
+							while ( entry.type != MCCOSF_ENTRY_END );
+						}
+						// Prop entry? Need to load in the pieces for the prop
+						else if ( key.compare("pieces") )
+						{
+							// Start by setting all autotile information to 'zero'
+							for ( int i = 0; i < MAPTILE_AUTOTILE_SIZE; ++i ) {
+								tiletype.autotile_0[i] = 255;
+								tiletype.autotile_1[i] = 255;
+							}
+
+							// Go into the entry
+							loader.GoInto( entry );
+							do
+							{
+								loader.GetNext( entry );
+								// Grab all the entries available
+								if ( entry.type == MCCOSF_ENTRY_NORMAL )
+								{
+									key = entry.name;
+									uint entry_lookup = (uint)atoi(key); // Convert the name into the index in the table
+									if ( entry_lookup < 16 ) {
+										// Load the entry into the given table index
+										_split_to_integer( entry.value, tiletype.autotile_0[entry_lookup], tiletype.autotile_1[entry_lookup] );
 									}
 								}
 							}
@@ -349,6 +379,7 @@ void TileMap::Rebuild ( void )
 		delete [] m_meshstorage[i].triangles;
 	}
 	m_meshstorage.clear();
+	m_meshstorage_layer.clear();
 	
 	// Sort all the tiles by depth to start with (should be fairly quick)
 	struct tileComparator_t {
@@ -395,6 +426,7 @@ void TileMap::Rebuild ( void )
 	m_render_layers.clear();
 
 	// Use the stored meshes to make the TileMapLayer renderable objects
+	m_render_layers.resize( m_meshstorage.size(), NULL );
 	for ( uint i = 0; i < m_meshstorage.size(); ++i )
 	{
 		printf( " +Creating layer ???\n" );
@@ -402,6 +434,7 @@ void TileMap::Rebuild ( void )
 		Renderer::TileMapLayer* render_layer = new Renderer::TileMapLayer (); // This needs to be stored and deleted.
 		render_layer->SetSpriteFile( m_sprite_file );
 		render_layer->SetLayer( &m_meshstorage[i] );
+		render_layer->source_layer_id = m_meshstorage_layer[i];
 
 		m_render_layers.push_back( render_layer );
 	}
@@ -459,8 +492,8 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 		// Grab the tile type for creating the mesh
 		const tilesetEntry_t tile_type = m_tileset->tiles[m_tiles[i].type];
 
-		// Do different types of meshes based on the 
-		if ( tile_type.type == TILE_RANDOMIZED || tile_type.type == TILE_DEFAULT || tile_type.type == TILE_PROP )
+		// Do different types of meshes based on the tile type
+		if ( tile_type.type == TILE_RANDOMIZED || tile_type.type == TILE_DEFAULT )
 		{
 			// Link up the triangles first
 			model.triangles[model.triangleNum+0].vert[0] = model.vertexNum + 0;
@@ -507,11 +540,57 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 
 			model.vertexNum += 4;
 		}
+		else if ( tile_type.type == TILE_PROP )
+		{
+			for ( int o = 0; o < 9; ++o )
+			{
+				// Check for valid tile set
+				if ( tile_type.autotile_0[o] != 255 )
+				{
+					// Link up the triangles first
+					model.triangles[model.triangleNum+0].vert[0] = model.vertexNum + 0;
+					model.triangles[model.triangleNum+0].vert[1] = model.vertexNum + 1;
+					model.triangles[model.triangleNum+0].vert[2] = model.vertexNum + 2;
+
+					model.triangles[model.triangleNum+1].vert[0] = model.vertexNum + 2;
+					model.triangles[model.triangleNum+1].vert[1] = model.vertexNum + 1;
+					model.triangles[model.triangleNum+1].vert[2] = model.vertexNum + 3;
+
+					model.triangleNum += 2;
+
+					int offset_y = o % 3;
+					int offset_x = o / 3;
+
+					// Create the 4 vertices
+					for ( int v = 0; v < 4; ++v )
+					{
+						// Set positions
+						model.vertices[model.vertexNum+v].x = ((Real)m_tiles[i].x) + (position_offsets[v].x + (Real)offset_x) * tile_type.atlas_w * m_tileset->tilesize_x;
+						model.vertices[model.vertexNum+v].y = ((Real)m_tiles[i].y) + (position_offsets[v].y + (Real)offset_y) * tile_type.atlas_h * m_tileset->tilesize_y;
+						model.vertices[model.vertexNum+v].z = (Real)layer;
+
+						// Set up other values
+						model.vertices[model.vertexNum+v].r = 1.0F;
+						model.vertices[model.vertexNum+v].g = 1.0F;
+						model.vertices[model.vertexNum+v].b = 1.0F;
+						model.vertices[model.vertexNum+v].a = 1.0F;
+
+						// Set UVs for the vertex
+						model.vertices[model.vertexNum+v].u = ((tile_type.autotile_0[o] + position_offsets[v].x * tile_type.atlas_w) * m_tileset->tilesize_x) / (Real)m_tileset->atlassize_x;
+						model.vertices[model.vertexNum+v].v = ((tile_type.autotile_1[o] + position_offsets[v].y * tile_type.atlas_h) * m_tileset->tilesize_y) / (Real)m_tileset->atlassize_y;
+					}
+
+					model.vertexNum += 4;
+				}
+			}
+		}
 		else if ( tile_type.type == TILE_AUTOTILE || tile_type.type == TILE_AUTOWALL )
 		{
 			// Declare check space
 			uint32_t	bordering [9];
 			bool		checkgrid [9];
+			Real		offset_top = 0;
+			Real		offset_bottom = 0;
 
 			// Lambda: build the border info
 			auto border = [&]( int ox, int oy ) -> uint32_t
@@ -579,6 +658,9 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 				bordering[6] = border(-1,+1);
 				bordering[7] = border( 0,+1);
 				bordering[8] = border(+1,+1);
+				// Change the offset
+				offset_top		= -1.0F * (offset + 1) * m_tileset->tilesize_y;
+				offset_bottom	= -1.0F * (offset + 0) * m_tileset->tilesize_y;
 			}
 
 			// Build mismatch grid
@@ -618,6 +700,12 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 				{0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0}
 			};
 
+			// Create bitmasks in first pass
+			uint8_t bitmask [4] = {0,0,0,0};
+			for ( int c = 0; c < 4; ++c )
+				for ( int b = 0; b < 3; ++b )
+					bitmask[c] |= (checkgrid[tri_lookup[c][b]]) ? (1 << b) : 0;
+
 			// Loop through each corner of the quad
 			for ( int c = 0; c < 4; ++c )
 			{
@@ -633,11 +721,18 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 				model.triangleNum += 2;
 
 				// Do lookup for the corners
-				uint8_t bitmask = 0;
-				for ( int b = 0; b < 3; ++b )
-					bitmask |= (checkgrid[tri_lookup[c][b]]) ? (1 << b) : 0;
 				uint rindex = 4;
-				rindex = tri_index_lookup[c][bitmask];
+				rindex = tri_index_lookup[c][bitmask[c]];
+
+				// If bitmask is 4, maybe keep looking through the triangles to find one that isn't 4
+				if ( rindex == 4 )
+				{
+					for ( int b = 0; b < 4; ++b )
+					{
+						if ( tri_index_lookup[b][bitmask[b]] != 4 )
+							rindex = tri_index_lookup[b][bitmask[b]];
+					}
+				}
 
 				// Create the 4 vertices
 				for ( int v = 0; v < 4; ++v )
@@ -645,7 +740,7 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 					// Set positions
 					model.vertices[model.vertexNum+v].x = ((Real)m_tiles[i].x) + (position_offsets[v].x+position_offsets[c].x) * tile_type.atlas_w * m_tileset->tilesize_x * 0.5F;
 					model.vertices[model.vertexNum+v].y = ((Real)m_tiles[i].y) + (position_offsets[v].y+position_offsets[c].y) * tile_type.atlas_h * m_tileset->tilesize_y * 0.5F;
-					model.vertices[model.vertexNum+v].z = (Real)layer;
+					model.vertices[model.vertexNum+v].z = (Real)layer + Math::lerp((position_offsets[v].y+position_offsets[c].y) * 0.5F, offset_top, offset_bottom);
 
 					// Set up other values
 					model.vertices[model.vertexNum+v].r = 1.0F;
@@ -670,6 +765,7 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 	// Lock the result storage and copy our mesh pointers to it
 	m_mut_meshstorage.lock();
 	m_meshstorage.push_back( model );
+	m_meshstorage_layer.push_back( layer );
 
 	// Unlock the storage
 	m_mut_meshstorage.unlock();

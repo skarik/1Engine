@@ -11,8 +11,8 @@ varying float v2f_fogdensity;
 uniform vec4 sys_DiffuseColor;
 uniform vec3 sys_EmissiveColor;
 
-uniform mat4 sys_ModelMatrix;
-uniform mat4 sys_ModelRotationMatrix;
+uniform mat4 sys_ModelTRS;
+uniform mat4 sys_ModelRS;
 
 uniform vec4 sys_LightAmbient;
 uniform vec4 sys_LightColor[8];
@@ -36,9 +36,9 @@ void main ( void )
 	vec4 v_localPos = gl_Vertex;
 	vec4 v_screenPos = gl_ModelViewProjectionMatrix * v_localPos;
 
-	v2f_normals		= sys_ModelRotationMatrix*vec4( gl_Normal, 1.0 );
+	v2f_normals		= sys_ModelRS*vec4( gl_Normal, 1.0 );
 	v2f_colors		= sys_DiffuseColor;
-	v2f_position	= sys_ModelMatrix*gl_Vertex;
+	v2f_position	= sys_ModelTRS*gl_Vertex;
 	v2f_texcoord0	= gl_MultiTexCoord0.xy;
 	v2f_fogdensity  = max( 0.0, (gl_Fog.end - v_screenPos.z) * gl_Fog.scale );
 	

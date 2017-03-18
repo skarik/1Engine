@@ -64,9 +64,9 @@ CTexture3D::CTexture3D ( string sInFilename,
 		// Set the pack alignment
 		glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 		// Change the texture repeat
-		glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, info.repeatX );
-		glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, info.repeatY );
-		glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, info.repeatZ );
+		glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL.Enum(info.repeatX) );
+		glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL.Enum(info.repeatY) );
+		glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL.Enum(info.repeatZ) );
 		// Change the filtering
 		glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
@@ -135,6 +135,65 @@ void CTexture3D::Load3DImageInfoFromAtlas ( const unsigned int atlasSizeX, const
 	}
 	delete [] pOldData;
 	pOldData = NULL;
+}
+
+
+//=========================================//
+// === Manual Upload ===
+void CTexture3D::Upload (
+	pixel_t* data,
+	uint width,
+	uint height,
+	uint depth,
+	eWrappingType	repeatX,
+	eWrappingType	repeatY,
+	eWrappingType	repeatZ,
+	eMipmapGenerationStyle	mipmapGeneration,
+	eSamplingFilter	filter
+)
+{
+	GL_ACCESS; // Using the glMainSystem accessor
+
+			   // Null out data
+	pData = NULL;
+	// Set the information structure to prepare for reading in
+	info.type			= Texture3D;
+	info.internalFormat	= RGBA8;
+	info.width			= width;
+	info.height			= height;
+	info.depth			= depth;
+	info.repeatX		= repeatX;
+	info.repeatY		= repeatY;
+	info.repeatZ		= repeatZ;
+	info.mipmapStyle	= mipmapGeneration;
+	info.filter			= filter;
+	// And prepare the state information
+	state.level_base	= 0;
+	state.level_max		= 0;
+
+	if (info.index == 0)
+	{
+		// Create texture
+		glGenTextures( 1, &info.index );
+	}
+
+	// Bind the texture object
+	glBindTexture( GL_TEXTURE_3D, info.index );
+	// Set the pack alignment
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+	// Change the texture repeat
+	glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL.Enum(info.repeatX) );
+	glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL.Enum(info.repeatY) );
+	glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL.Enum(info.repeatZ) );
+	// Change the filtering
+	glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL.Enum(info.filter) );
+	glTexParameteri( GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL.Enum(info.filter) );
+	// Copy the data to the texture object
+	glTexImage3D( GL_TEXTURE_3D, 0, GL.Enum(info.internalFormat), width, height, depth, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, data );
+	// Generate the mipmaps
+	GenerateMipmap( info.mipmapStyle );
+	// Unbind the data
+	glBindTexture( GL_TEXTURE_3D, 0 );
 }
 
 // === Mipmap Generation ===

@@ -2,7 +2,7 @@
 #include "TileMapLayer.h"
 
 Renderer::TileMapLayer::TileMapLayer ( void )
-	: CRenderable2D()
+	: CRenderable2D(), source_layer_id(0)
 {
 	;
 }

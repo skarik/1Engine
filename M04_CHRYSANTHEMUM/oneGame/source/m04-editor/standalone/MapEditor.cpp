@@ -15,8 +15,10 @@
 #include "renderer/camera/CCamera.h"
 #include "renderer/debug/CDebugDrawer.h"
 #include "renderer/light/CLight.h"
+#include "renderer/material/glMaterial.h"
 #include "render2d/camera/COrthoCamera.h"
 #include "render2d/object/Background2D.h"
+#include "render2d/object/TileMapLayer.h"
 
 #include "./mapeditor/TileSelector.h"
 
@@ -200,11 +202,20 @@ void MapEditor::Update ( void )
 		}
 		else
 		{
+			// Save current mode in case changes in next inputs
+			Mode previous_mode = m_current_mode;
+
 			// Update the UI if the mouse is in the UI
 			uiStepTopEdge();
-
 			// Do shortcut checking
 			uiStepKeyboardShortcuts();
+
+			// Check for mode changes
+			if ( previous_mode != m_current_mode )
+			{
+				if ( previous_mode == Mode::TileEdit )
+					_uiStepTilePanel_End();
+			}
 		}
 
 		// Update portions of the UI if can be updated
@@ -327,7 +338,7 @@ void MapEditor::_doTileEditingSub ( float mousex, float mousey )
 		if ( changed_tile == false )
 		{
 			// Make sure the tile is in range
-			if ( ix >= min_x && iy >= min_x && ix < max_x && iy < max_y )
+			if ( Input::Key( Keys.Shift ) || (ix >= min_x && iy >= min_x && ix < max_x && iy < max_y) )
 			{
 				// Create a new tile object
 				mapTile_t tile;
@@ -1417,12 +1428,18 @@ void MapEditor::uiStepTilePanel ( void )
 	// Do button stuffs
 	if ( ui_btn_inc_layer.GetButtonClicked() )
 	{
-		m_tile_layer_current++;
+		if ( Input::Key(Keys.Control) )
+			m_tile_layer_current += 16;
+		else
+			m_tile_layer_current += 1;
 		ui_fld_current_layer.SetText( std::to_string(m_tile_layer_current) );
 	}
 	if ( ui_btn_dec_layer.GetButtonClicked() )
 	{
-		m_tile_layer_current--;
+		if ( Input::Key(Keys.Control) )
+			m_tile_layer_current -= 16;
+		else
+			m_tile_layer_current -= 1;
 		ui_fld_current_layer.SetText( std::to_string(m_tile_layer_current) );
 	}
 	
@@ -1438,6 +1455,59 @@ void MapEditor::uiStepTilePanel ( void )
 	if ( ui_btn_tile_mode_height.GetButtonClicked() )
 	{
 		m_current_submode = SubMode::TilesHeight;
+	}
+
+	// Change tile brightness to help w/ UI editing
+	if ( m_current_submode == SubMode::TilesVisual )
+	{
+		// In visual mode, change brightness of tiles
+
+		// Change brightness of tiles being edited
+		for ( Renderer::TileMapLayer* layer : m_tilemap->m_render_layers )
+		{
+			if ( layer == NULL ) continue;
+
+			glMaterial* material = layer->GetMaterial();
+			if ( material != NULL )
+			{
+				if ( layer->source_layer_id == m_tile_layer_current )
+				{
+					material->m_diffuse = Color(1.25F, 1.25F, 1.25F, 1.0F);
+				}
+				else
+				{
+					material->m_diffuse = Color(0.25F, 0.25F, 0.25F, 1.0F);
+				}
+			}
+		}
+		// Anything else?
+	}
+	// Other modes, use normal layer brightness
+	else
+	{
+		// Change brightness of tiles being edited
+		for ( Renderer::TileMapLayer* layer : m_tilemap->m_render_layers )
+		{
+			if ( layer == NULL ) continue;
+
+			glMaterial* material = layer->GetMaterial();
+			if ( material != NULL )
+				material->m_diffuse = Color(1.0F, 1.0F, 1.0F, 1.0F);
+		}
+	}
+
+}
+// Called when tile-editing mode ends
+void MapEditor::_uiStepTilePanel_End ( void )
+{
+	// Reset tile brightneess
+	for ( Renderer::TileMapLayer* layer : m_tilemap->m_render_layers )
+	{
+		if ( layer == NULL ) continue;
+
+		glMaterial* material = layer->GetMaterial();
+		if ( material != NULL )
+			material->m_diffuse = Color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 }
 

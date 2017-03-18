@@ -17,12 +17,11 @@ in vec2 v2f_texcoord0;
 // Samplers
 uniform sampler2D textureSampler0;	// Diffuse
 uniform sampler2D textureSampler1;	// Normals
-//uniform sampler2D textureSampler2;	// Position (not anymore, now it shall be WARP...maybe)
-//uniform sampler2D textureSampler2;  // Warp
 uniform sampler2D textureSampler2;	// Lighting Properties
 uniform sampler2D textureSampler3;	// Glow (for now)
 uniform sampler2D textureSampler4;	// Depth
-uniform sampler2D textureSampler5; // Palette
+uniform sampler2D textureSampler5;  // Palette
+uniform sampler3D textureSampler6;  // 3D Palette
 /*
 // Lighting samplers
 uniform samplerBuffer textureLightBuffer;
@@ -38,6 +37,30 @@ uniform sampler2D textureShadow2;
 uniform samplerBuffer textureLightBuffer;
 uniform int sys_LightNumber;
 uniform vec4 sys_LightAmbient;
+/*
+textureLightBuffer layout:
+offset 0
+    float red;
+    float green;
+    float blue;
+    float specular;
+offset 1
+    float range;
+    float falloff;
+    float passthrough;
+    float hasshadow;
+offset 2
+    float x;
+    float y;
+    float z;
+    float directional;
+offset 3
+    float dx;
+    float dy;
+    float dz;
+    float dw;
+*/
+
 /*layout(std140) uniform sys_LightingInfo
 {
 	vec4 sys_LightColor[8];
@@ -50,16 +73,16 @@ uniform mat4 sys_ModelViewProjectionMatrix;
 uniform mat4 sys_ModelViewProjectionMatrixInverse;
 //uniform vec3 sys_CameraRange;
 
-layout(std140) uniform def_LightingInfo
+/*layout(std140) uniform def_LightingInfo
 {
 	mat4 def_LightMatrix0[4];
-};
+};*/
 uniform samplerBuffer textureLightMatrixBuffer;
 uniform sampler2D textureShadow0;
 uniform sampler2D textureShadow1;
 uniform sampler2D textureShadow2;
 
-vec4 v2f_lightcoord [8];
+//vec4 v2f_lightcoord [8];
 
 // System inputs
 uniform vec3 sys_WorldCameraPos;
@@ -73,95 +96,169 @@ layout(std140) uniform sys_Fog
 	float 	sys_FogScale;
 };
 
-// 0 for normal lighting, 1 for full wraparound lighting
-const float mixthrough = 0.2;
+// ========================================================================== //
+// Utility functions:
 
-float diffuseLighting ( vec3 normal, vec4 lightDist, float lightRange, float lightFalloff, float lightPass, out float backfaceColor )
+// Converts input RGB to HSV (all values 0-1)
+vec3 rgb2hsv(vec3 c)
 {
-	// Distance-based attenuation
-	float attenuation = pow( max( 1.0 - (lightDist.w*lightRange), 0.0 ), lightFalloff );
+    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
 
-	// Cosine law breaking ( cuz objects need more detail )
-	float normalAttenuate = dot( normal,lightDist.xyz/lightDist.w );
-    //normalAttenuate = max( 0.0, normalAttenuate );
-	normalAttenuate = (max( normalAttenuate, -mixthrough ) + mixthrough)/(1+mixthrough);
-	// Attenuation
-	//float color = mix( normalAttenuate, 1.0, lightPass*(1.0+attenuation) ) * attenuation;
-	// Output backlighting
-	//backfaceColor = mix( clamp( 1.0-normalAttenuate, 0.0,1.0 ), 0.0, lightPass*(1.0+attenuation) ) * attenuation;
-
-    float color = (normalAttenuate + 0.5) * attenuation;
-
-	// Return final color
-	return color;
+    float d = q.x - min(q.w, q.y);
+    float e = 1.0e-10;
+    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 }
-float specularLighting( vec3 normal, vec4 lightDist, vec3 viewdir, float specular_pow, float lightRange )
-{ //TODO: DISTANCE ATTENUATION
-	// Create the reflection vector
-	vec3 reflectdir = 2*dot(normal,lightDist.xyz)*normal - (lightDist.xyz/lightDist.w);
-	// Attenuation is based on camera position and reflection dir
-	float attenuation = max( dot( normalize(reflectdir), normalize(viewdir) ), 0.0 );
-	// Also add distance-based attenuation though
-	float distance_attenuation = max( 1.0 - (lightDist.w*lightRange*0.4), 0.0 );
-
-	//return pow( attenuation, specular_pow );
-	return pow( attenuation*distance_attenuation, specular_pow+((1.0-distance_attenuation)*2.0) );
+// Converts input HSV to RGB (all values 0-1)
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+// Returns luminosity of the inupt RGB value
+float rgb2luma(vec3 color)
+{
+    return dot(color, vec3(0.299, 0.587, 0.114));
 }
 
-float cellShade ( float lumin )
-{
-	const int levels = 2;
-	float t = lumin*levels;
-	float dif = 0.5 - mod(t+0.5,1);
-	t += dif * min(1,(0.5-abs(dif))*32) * 0.5;
+// ========================================================================== //
+// Shading model:
 
-	lumin = t/levels;
-	return lumin;
+//      lighting_reflection_source()
+// Calculates scene reflections.
+// Yeah this is horse shit, taking some bullshit junk from...screen-space reflections.
+vec3 lighting_reflection_source ( vec3 surfaceNormal, float surfaceSmoothness )
+{
+    // Pull target pixel color and normal
+    vec2 lookup = texture(textureSampler0, v2f_texcoord0 - vec2(-surfaceNormal.x, surfaceNormal.y - 0.134) * 0.05).rg;
+    vec3 normal = texture(textureSampler1, v2f_texcoord0 - vec2(-surfaceNormal.x, surfaceNormal.y - 0.134) * 0.05).rgb;
+    // Darken the pixel based on the normal, environment, and material properties
+    lookup.r *= rgb2luma(sys_LightAmbient.rgb) * 2.0;
+    lookup.r *= 0.75 - dot(surfaceNormal, normal) * 0.25;
+    lookup.r *= surfaceSmoothness;
+    lookup.r *= 2.0;
+    // Sample color from the palette
+    return texture(textureSampler5, lookup).rgb;
 }
 
-vec3 defaultLighting ( vec4 lightPosition, vec4 lightProperties, vec4 lightColor, in vec4 lightDir, in float rimStrength, in vec3 vertDir, in vec3 vertNormal, in vec4 surfaceInfo, in float backsideGlow )
+//      lighting_collect()
+// Performs light collection routine: Loops through all the lights and performs simple calcuations.
+// The first two arguments are the RGB outputs of the color.
+void lighting_collect ( out vec3 diffuseFactor, out vec3 specularFactor, in vec3 surfaceNormal, in vec3 surfacePosition )
 {
-	vec3 resultColor;
+    diffuseFactor = vec3(0,0,0);
+    specularFactor = vec3(0,0,0);
 
-    lightPosition.w = 1.0; // Force point lights, not directional
-
-	// Perform base lighting
-	float diffuseLight, diffuseLightO, diffuseLightD;
-	float difbackLight, difbackLightO, difbackLightD;
-	diffuseLightO = diffuseLighting( vertNormal, lightDir, lightProperties.x, lightProperties.y, lightProperties.z, difbackLightO );
-	/*diffuseLightD = dot( lightPosition.xyz, vertNormal );
+    for ( int lightIndex = 0; lightIndex < sys_LightNumber; lightIndex += 1 )
 	{
-		difbackLightD = clamp( -diffuseLightD, 0.0,1.0 );
-		diffuseLightD = (max( diffuseLightD, -mixthrough ) + mixthrough)/(1+mixthrough); // Directional light mixthrough
-	}*/
-	// Mix between light styles for the directional/nondirectional
-	//diffuseLight = mix( diffuseLightD, diffuseLightO, lightPosition.w );
-	//difbackLight = 0.8 * (1-backsideGlow) * mix( difbackLightD, difbackLightO, lightPosition.w );
+        vec4 lightColor			= texelFetch( textureLightBuffer, lightIndex*4 + 0 );
+		vec4 lightProperties	= texelFetch( textureLightBuffer, lightIndex*4 + 1 );
+		vec4 lightPosition		= texelFetch( textureLightBuffer, lightIndex*4 + 2 );
+        vec4 lightDirection		= texelFetch( textureLightBuffer, lightIndex*4 + 3 );
 
-	// Add major rim lighting
-	//diffuseLight += diffuseLight * rimStrength * surfaceInfo.a;
-	// Apply cellshading
-	//diffuseLight = cellShade(diffuseLight);
+		// Get direction of surface to light
+		vec4 surface_to_light;
+		surface_to_light.xyz = lightPosition.xyz - surfacePosition.xyz;
+        surface_to_light.z += 0.3 / lightProperties.x;
+        //surface_to_light.x *= 0.5;
+        surface_to_light.x *= 0.5;
+        surface_to_light.y *= 1.0 - (surfaceNormal.y * 0.33);
+		surface_to_light.w = max(0.01, length(surface_to_light.xyz));
 
-	// Specular lighting
-	float specularLight = 0;
-	/*float specularLightO = specularLighting( vertNormal, lightDir, vertDir, surfaceInfo.b, lightProperties.x );
-	float specularLightD = specularLighting( vertNormal, vec4(lightPosition.xyz,1), vertDir, surfaceInfo.b, 0 );
-	// Mix between light styles for the directional/nondirectional
-	specularLight = mix( specularLightD, specularLightO, lightPosition.w );*/
+        // Calculate diffuse
+        float surface_dot_light = clamp( dot(surfaceNormal, surface_to_light.xyz/surface_to_light.w), -1.0, 1.0 );
+        float diffuse_light_range = lightProperties.x;// * (1.0 - max(0.0, surface_dot_light) * 0.25);
+        float diffuse_attenuation = pow( max( 1.0 - (surface_to_light.w * diffuse_light_range), 0.0 ), lightProperties.y );
+        diffuseFactor += lightColor.rgb * max(0.0, surface_dot_light) * diffuse_attenuation;
 
-    //resultColor = lightColor.rgb * max( 0, difbackLight+diffuseLight+specularLight*surfaceInfo.g );
+        // Calculate specular
+        // TODO
+	}
 
-#ifdef LIGHTING_FLAT
-    // make the color more fullbright + fast change to zero
-    diffuseLightO -= 1.0 / 6;
-    diffuseLightO = max(0.0, min(1.0, diffuseLightO * 200.0)) * 0.5;
-#endif
-
-	resultColor = vec3(1,1,1) * diffuseLightO * lightColor.rgb;
-
-	return resultColor;
+    // Add ambient color
+    diffuseFactor += sys_LightAmbient.rgb;
 }
+
+//      lighting_reflection()
+// Input light via reflections. Usually for metal.
+// Metal to non-metal blending is controlled by geometry pass.
+vec3 lighting_reflection( vec3 surfaceSpecularMask, vec3 specular, vec3 reflection )
+{
+    return (specular + reflection) * surfaceSpecularMask;
+}
+//      lighting_diffuse()
+// Input light via diffuse reflection. Metals have a near-zero albedo.
+vec3 lighting_diffuse ( vec3 diffuse, vec3 albedo )
+{
+    return diffuse * albedo;//+ fresnel_reflection
+}
+
+//      lighting_step()
+// Takes light and cel-shades it
+float lighting_step ( float light_level )
+{
+    // Round light to same number of levels as the palette width
+    const float light_levels = 6 / 2;
+    float  light_stretched = light_level * light_levels;
+	float  light_div_dif = 0.5 - mod(light_stretched + 0.5, 1);
+	light_stretched += light_div_dif * min(1.0, (0.5-abs(light_div_dif)) * 350) * 0.5;
+	float light = (light_stretched)/light_levels;
+    light = round(light * 6) / 6;
+
+    return light;
+}
+//      lighting_mix()
+// Performs surface coloring, lighting, and reflection.
+vec3 lighting_mix (
+    vec3 pixelLookup,
+    vec3 surfaceNormal, vec3 surfacePosition, vec3 surfaceSpecularMask, float surfaceSmoothness )
+{
+    // First collect the values of diffuse lights.
+    vec3 diffuse_factor;
+    vec3 specular_factor;
+    lighting_collect(
+        // Outputs
+        diffuse_factor, specular_factor,
+        // Inputs
+        surfaceNormal, surfacePosition
+    );
+    // Generate reflection
+    vec3 reflection_factor = lighting_reflection_source( surfaceNormal, surfaceSmoothness );
+
+    // Normally, the result would be simple:
+    //return lighting_diffuse(...) + lighting_reflection(...);
+    // However, since we want everything to stay on the same palette, we change that.
+
+    // First, we calculate diffuse lighting.
+    vec4 diffuse_light;
+    diffuse_light.rgb = lighting_diffuse(diffuse_factor, vec3(1,1,1));
+    diffuse_light.a = rgb2luma(diffuse_light.rgb);
+    // Next, we calculate reflection lighting.
+    vec4 reflection_light;
+    reflection_light.rgb = lighting_reflection(surfaceSpecularMask, specular_factor, reflection_factor);
+    reflection_light.a = rgb2luma(reflection_light.rgb);
+    reflection_light.rgb = (reflection_light.rgb + reflection_light.aaa) * 0.5;
+
+    // The brightness of the diffuse + reflection is used to offset the X lookup in the palette.
+    float light_level = diffuse_light.a;// + reflection_light.a;
+    pixelLookup.x += lighting_step((light_level - 0.5) * 2.0);
+    pixelLookup.x += reflection_light.a * 2.0;
+    // Now, the palette is sampled and we have our base world color.
+    vec3 surfaceColor = texture( textureSampler5, pixelLookup.xy ).rgb;
+
+    // With the world color, we need to blend in the light color. To properly do this, we use the light's saturation and hue.
+    vec3 light_color = normalize(hsv2rgb(vec3( rgb2hsv(diffuse_light.rgb + reflection_light.rgb).xy, 1.0 ))) * 1.732;
+    // We multiply the world by this color, then use that to cast into all the available colors
+    surfaceColor *= light_color;
+    surfaceColor = texture( textureSampler6, surfaceColor.xyz ).rgb;
+
+    return surfaceColor;
+}
+
+// ========================================================================== //
+// Shadow sampling utilities (noise filter):
 
 // Sine wave appoximation method (benchmarked to about 3% speed increase over all shadows)
 float SmoothCurve( float x ) {
@@ -181,7 +278,7 @@ vec2 random ( vec3 seed3 )
     return vec2( fract(dot_product * 43758.5453), fract(dot_product * 35362.2151) );
 }
 
-
+/*
 #ifdef ENABLE_JOKE_AMBIENT_OCCLUSION
 
 float ao_test ( void )
@@ -217,13 +314,16 @@ float ao_test ( void )
     return dist;
 }
 
-#endif
+#endif*/
+
+// ========================================================================== //
+// Main shader:
 
 void main ( void )
 {
 	// Use depth to generate the world position
-	float pixelDepth 		= texture( textureSampler4, v2f_texcoord0 ).r;
-	vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1),pixelDepth,1.0 );
+	float pixelDepth   = texture( textureSampler4, v2f_texcoord0 ).r;
+	vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1), pixelDepth, 1.0 );
 	/*{
 		pixelPosition.z = ( pixelPosition.z*2 - 1 );
         pixelPosition = sys_ModelViewProjectionMatrixInverse * vec4( pixelPosition.xyz, 1.0 );
@@ -231,6 +331,7 @@ void main ( void )
 	}*/
     pixelPosition.x *= 1280 * 0.25;
     pixelPosition.y *= -720 * 0.25;
+    pixelPosition.z *= (pixelPosition.z - 0.5) * -1000;
     pixelPosition.xyz += sys_WorldCameraPos;
 
 	// pixelLookup
@@ -239,123 +340,40 @@ void main ( void )
 	vec4 pixelLookup		= texture( textureSampler0, v2f_texcoord0 );
 	// pixelNormal
 	// rgb	surface normal
-	// a	unused
+	// a	ambient occlusion
 	vec4 pixelNormal		= texture( textureSampler1, v2f_texcoord0 );
 	// pixelLightProperty
-	// r	lighting effect (0 is fullbright, 1 is normal)
-	// g	specular add (from uniform)
-	// b	specular power (from unifrom)
-	// a	rim lighting strength
+    // rgb  specular color
+	// a	smoothness
 	vec4 pixelLightProperty	= texture( textureSampler2, v2f_texcoord0 );
 	// pixelGlow
 	// rgb	surface glow
-	// a	backside lighting to add
+	// a	rim lighting strength
 	vec4 pixelGlow			= texture( textureSampler3, v2f_texcoord0 );
 
-    // TODO: do proper normals. for now, fuck with it
-    //pixelNormal = vec4(0,0,-1,0);
-    //pixelNormal.xy += vec2( v2f_texcoord0.x*2-1, v2f_texcoord0.y*2-1 );
-    //pixelNormal.xyz = normalize(pixelNormal.xyz);
+    // Fix up the normals quickly here
+    pixelNormal.w = length(pixelNormal.xyz);
+    pixelNormal.xyz /= pixelNormal.w;
+
+    // ==Perform lighting==
 
 	vec4 n_cameraVector;
-	n_cameraVector.xyz = sys_WorldCameraPos - pixelPosition.xyz;
+	n_cameraVector.xyz = sys_WorldCameraPos - pixelPosition.xyz + vec3(0,0,500);
 	n_cameraVector.w = length( n_cameraVector.xyz );
 	vec3 n_cameraDir = n_cameraVector.xyz / n_cameraVector.w;
+    vec3 n_cameraDirRim = vec3(0,0.707,0.707);
 
-	float n_rimValue = max(1-dot( pixelNormal.xyz, n_cameraDir ),0.0);
-
-	v2f_lightcoord[0] = pixelPosition * def_LightMatrix0[0];
-	v2f_lightcoord[1] = pixelPosition * def_LightMatrix0[1];
-	v2f_lightcoord[2] = pixelPosition * def_LightMatrix0[2];
-	v2f_lightcoord[3] = pixelPosition * def_LightMatrix0[3];
+    // Generate general rim-light value
+	float n_rimValue = max(1.0 - dot( pixelNormal.xyz, n_cameraDirRim ), 0.0);
 
 #ifdef ENABLE_LIGHTING
-	// ==Perform lighting==
-	float lightingStrength = 1.0;//clamp( (pixelLightProperty.r-0.4)/0.6, 0, 1 );
-	vec3 luminColor = vec3( 0,0,0 );
-	//if ( lightingStrength > 0.5 )
-	//{
-		//luminColor = sys_LightAmbient.rgb;
-		for ( int lightIndex = 0; lightIndex < sys_LightNumber; lightIndex += 1 )
-		{
-			vec4 lightProperties	= texelFetch( textureLightBuffer, lightIndex*4 + 1 );
-			vec4 lightPosition		= texelFetch( textureLightBuffer, lightIndex*4 + 2 );
 
-			// Get direction to light
-			vec4 lightDir;
-			lightDir.xyz = lightPosition.xyz - floor(pixelPosition.xyz);
-            lightDir.z = 0;
-            lightDir.x *= 0.5;
+    vec3 specularMask = max(vec3(0.0,0.0,0.0), texture(textureSampler5, pixelLightProperty.xy).rgb - vec3(0.16,0.16,0.16));
 
-			lightDir.w = length(lightDir.xyz);
-
-            //luminColor += vec3(1,1,1) * max(0.0, 1.0 - length(lightDir)*0.01);
-			/*if ( lightDir.w*lightPosition.w > 1.4/lightProperties.x )
-			{	// Skip if light out of range
-				continue; // Drops FPS on NVidia if this continue isn't here
-			}
-			else*/
-			//{	// Otherwise perform the light effects
-				vec4 lightColor			= texelFetch( textureLightBuffer, lightIndex*4 + 0 );
-				vec4 lightDirection		= texelFetch( textureLightBuffer, lightIndex*4 + 3 );
-
-				luminColor += defaultLighting( lightPosition, lightProperties, lightColor, lightDir, n_rimValue, n_cameraVector.xyz, pixelNormal.xyz, pixelLightProperty, pixelGlow.a ) * 0.5;
-			//}
-		}
-		// Rim amount
-		//luminColor += luminColor*clamp(length(luminColor-sys_LightAmbient.rgb)-0.3,0,1)*pow(n_rimValue,3)*0.5 * pixelLightProperty.a;
-	/*}
-	else
-	{
-		luminColor = vec3( 1,1,1 );
-	}*/
-#ifdef ENABLE_JOKE_AMBIENT_OCCLUSION
-    luminColor = mix( vec3(1,1,1), luminColor - ao_test() * 0.4, lightingStrength );
-#else
-    luminColor = mix( vec3(1,1,1), luminColor, lightingStrength );
-#endif
-	// ==Perform diffuse==
-	//vec3 diffuseColor = pixelDiffuse.rgb;
-	// Shadow "outline" effect
-	//diffuseColor *= 1-(clamp( (pow( clamp(n_rimValue,0,1), 5 )-0.12)/0.1, 0,1 ) * (1-min(1,length(luminColor-sys_LightAmbient.rgb)*4)))*0.3*(lightingStrength);
-
-	// Choose lumin based on glow
-	//pixelGlow.a *= pixelLightProperty.r;
-	//luminColor = (luminColor*(1-pixelGlow.a)) + max( luminColor*(pixelGlow.a), pixelGlow.rgb );
-
-	// Create color diffuse*lighting result
-	//diffuseColor.rgb = diffuseColor*luminColor;
-#ifdef LIGHTING_CELLD
-
-    float light = -1.0 + luminColor.r * 2.0;
-
-    const float light_levels = 3;
-    float light_stretched = light * light_levels;
-	float light_div_dif = 0.5 - mod(light_stretched + 0.5, 1);
-	light_stretched += light_div_dif * min(1,(0.5-abs(light_div_dif)) * 350) * 0.5;
-	light = (light_stretched)/light_levels;
-
-    light = round(light * 6) / 6;
-    light += round(sys_LightAmbient.r * 2.0 * 6) / 6;
-
-#else
-        luminColor += sys_LightAmbient.rgb;
-        float light = -1.0 + luminColor.r * 2.0;
-        //pixelLookup.x = ((pixelLookup.x + light) + (pixelLookup.x * light)) * 0.5;
-
-    #ifdef ENABLE_DITHERING
-        // create dithering push
-        vec2 coord = round(gl_FragCoord.xy * 0.5);
-        float ditherpush = fract( (coord.x + coord.y) * 0.5 ) * 0.1;
-
-        // light needs to be split into 6 levels (based on width of texture5/palette)
-        light = round(light * 6 + ditherpush - 0.5) / 6;
-    #else
-        // light needs to be split into 6 levels (based on width of texture5/palette)
-        light = round(light * 6) / 6;
-    #endif
-#endif
-    pixelLookup.x = pixelLookup.x + light;
+    vec3 diffuseColor = lighting_mix(
+        pixelLookup.xyz,
+        pixelNormal.xyz, floor(pixelPosition.xyz), specularMask, pixelLightProperty.a
+    );
 
 #else
 
@@ -367,31 +385,29 @@ void main ( void )
     pixelLookup.x = ((pixelLookup.x + light) + (pixelLookup.x * light)) * 0.5;
     float lightingStrength = 0.0;
 
-#endif
-    // pixelDiffuse
+    // pixelDiffuse - Generate via pulling from the palette.
     // rgb  surface color
     vec4 pixelDiffuse       = texture( textureSampler5, pixelLookup.xy );
-
     vec3 diffuseColor = pixelDiffuse.rgb;
 
+#endif
 
 
 	// ==Perform fog==
-	float n_fogDensity = clamp( (sys_FogEnd - n_cameraVector.w) * sys_FogScale, 0, 1 );
-	n_fogDensity = mix( 1, n_fogDensity, lightingStrength );
+	//float n_fogDensity = clamp( (sys_FogEnd - n_cameraVector.w) * sys_FogScale, 0, 1 );
+	//n_fogDensity = mix( 1, n_fogDensity, lightingStrength );
 	// Mix output with fog
 
-    //FragColor.rgb = luminColor.rgb;
+    FragColor.rgb = diffuseColor;
+    //if ( v2f_texcoord0.x > 0.5 )
+    //    FragColor.rgb = luminColor.rgb;
     //FragColor.rgb += diffuseColor.rgb * 0.1;
     //FragColor.rgb += pixelPosition.rgb;
 
-    FragColor.rgb = diffuseColor;
 
 	// Output fog mix
 	//FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb, n_fogDensity );
 	FragColor.a = 1.0;
-
-    //gl_FragDepth = pixelDepth;
 
 	//FragColor.rgb = pixelGlow.rgb * pixelLightProperty.r;//luminColor.rgb*0.5;//vec3(1,1,1) * pixelGlow.a;
 	//+ dot( n_cameraDir, pixelNormal.xyz );
@@ -402,15 +418,25 @@ void main ( void )
 		FragColor = clamp( texture( textureSampler0, v2f_texcoord0*2 ) * vec4(1.0, 8.0, 1.0, 1.0), 0.0, 1.0 );
 	}
 	else if ( v2f_texcoord0.x > 0.5 && v2f_texcoord0.y < 0.5 ) {
-		FragColor = (texture( textureSampler1, v2f_texcoord0*2 - vec2(1,0) )+1)*0.5;
+        //FragColor = vec4( (texture( textureSampler1, v2f_texcoord0*2 - vec2(1,0) ).rgb+1)*0.5, 1.0 );
+		FragColor = clamp( texture( textureSampler4, v2f_texcoord0*2 - vec2(1,0) ).rrra, 0.0, 1.0 );
 	}
 	else if ( v2f_texcoord0.x < 0.5 && v2f_texcoord0.y > 0.5 ) {
         //FragColor = texture( textureSampler2, v2f_texcoord0*2 - vec2(0,1) );
-		FragColor = vec4( texture( textureSampler5, v2f_texcoord0*2 - vec2(0,1) ).rgb, 1.0 );
+        //FragColor = vec4( texture( textureSampler5, v2f_texcoord0*2 - vec2(0,1) ).rgb, 1.0 );
+		FragColor = vec4(
+            texture( textureSampler6,
+                vec3(
+                    v2f_texcoord0*2 - vec2(0,1),
+                    fract(sys_WorldCameraPos.x / 128.0)
+                )
+            ).rgb, 1.0 );
 	}
 	else if ( v2f_texcoord0.x > 0.5 && v2f_texcoord0.y > 0.5 ) {
-		FragColor = texture( textureSampler3, v2f_texcoord0*2 - vec2(1,1) );
+        //FragColor = texture( textureSampler2, v2f_texcoord0*2 - vec2(1,1) );
+		FragColor = vec4( texture( textureSampler2, v2f_texcoord0*2 - vec2(1,1) ).rgb, 1.0 );
 	}
+
 	FragColor.a = clamp( FragColor.a , 0.0 , 1.0 );
 #endif
 

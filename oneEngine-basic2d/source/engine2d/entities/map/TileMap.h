@@ -11,7 +11,10 @@
 #include "engine/behavior/CGameBehavior.h"
 #include "engine2d/interface/Tileset.h"
 
-class CRenderable2D;
+namespace Renderer
+{
+	class TileMapLayer;
+}
 
 namespace Engine2D
 {
@@ -81,6 +84,7 @@ namespace Engine2D
 
 		// Mesh data
 		std::mutex				m_mut_meshstorage;
+		std::vector<int>		m_meshstorage_layer;
 		std::vector<ModelData>	m_meshstorage;
 
 		// target files being used
@@ -88,9 +92,9 @@ namespace Engine2D
 		arstring<256>			m_sprite_file;
 
 		// list of layers used to render this
-		std::vector<CRenderable2D*>	m_render_layers;
+		std::vector<Renderer::TileMapLayer*> m_render_layers;
 		// if this system is active
-		std::atomic<uint32_t>		m_state_flags;
+		std::atomic<uint32_t>	m_state_flags;
 	};
 };
 

@@ -318,6 +318,9 @@
     <ClInclude Include="source\engine-common\dialogue\CDialogueTree.h">
       <Filter>SOURCE\Engine-Common\Dialogue</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\scenes\tests\testColorConversion.h">
+      <Filter>SOURCE\Engine-Common\Scenes\Tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -502,6 +505,9 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\dialogue\CDialogueTree.cpp">
       <Filter>SOURCE\Engine-Common\Dialogue</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\scenes\tests\testColorConversion.cpp">
+      <Filter>SOURCE\Engine-Common\Scenes\Tests</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

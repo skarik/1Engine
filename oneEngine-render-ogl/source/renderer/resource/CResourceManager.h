@@ -7,7 +7,12 @@
 #ifndef _C_RESOURCE_MANAGER_H_
 #define _C_RESOURCE_MANAGER_H_
 
+#include "core/types/types.h"
+#include "core/containers/arstring.h"
+
 #include <vector>
+#include <map>
+#include <string>
 #include <thread>
 #include <atomic>
 
@@ -128,5 +133,35 @@ private:
 	void StreamUpdate_Texture ( const char* n_targetFile );
 
 };
+
+#define RESOURCE_GET_TEXTURE(name, conditional_texture) conditional_texture
+
+namespace Renderer
+{
+	static const char* TextureBlack = "black";
+	static const char* TextureWhite = "white";
+	static const char* TextureGrayA0 = "graya0";
+
+	//	CResourceManager
+	// Class that manages texture references in a fun and dirty way.
+	class Resources
+	{
+	public:
+		RENDER_API static CTexture*	GetTexture ( const std::string& identifier )
+		{
+			return GetTexture( identifier.c_str() );
+		}
+		RENDER_API static CTexture*	GetTexture ( const char* identifier );
+
+		RENDER_API static void		AddTexture ( const std::string& identifier, CTexture* texture = (CTexture*)0xF33D )
+		{
+			return AddTexture( identifier.c_str(), texture );
+		}
+		RENDER_API static void		AddTexture ( const char* identifier, CTexture* texture = (CTexture*)0xF33D );
+
+	protected:
+		static std::map<arstring128, CTexture*> textureMap;
+	};
+}
 
 #endif//_C_RESOURCE_MANAGER_H_

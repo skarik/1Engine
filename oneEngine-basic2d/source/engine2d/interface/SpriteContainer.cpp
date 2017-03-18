@@ -22,6 +22,16 @@ SpriteContainer::~SpriteContainer ( void )
 	}
 }
 
+//		SetupDepthOffset
+// Sets up depth offset of the sprite. Input is percent of sprite size.
+// Changes values written to z-buffer, used for 3d effects.
+void SpriteContainer::SetupDepthOffset ( const Real top_offset, const Real bottom_offset )
+{
+	m_doffsetTop	= top_offset;
+	m_doffsetBottom	= bottom_offset;
+}
+
+
 void SpriteContainer::PreStep ( void )
 {
 	// Update sprite position
@@ -34,10 +44,10 @@ void SpriteContainer::PreStep ( void )
 			m_sprite->transform.position.y = (Real)Math::round(m_sprite->transform.position.y);
 		}
 		if ( m_sourceAngle != NULL ) {
-			m_sprite->transform.localRotation = Quaternion::CreateAxisAngle( Vector3d::up , *m_sourceAngle );
+			m_sprite->transform.rotation = Quaternion::CreateAxisAngle( Vector3d::up , *m_sourceAngle );
 		}
 		if ( m_sourceScale != NULL ) {
-			m_sprite->transform.localScale = *m_sourceScale;
+			m_sprite->transform.scale = *m_sourceScale;
 		}
 	}
 
@@ -122,25 +132,25 @@ void SpriteContainer::PostStepSynchronus ( void )
 
 	modeldata->vertices[0].x = sprite_rect.pos.x;
 	modeldata->vertices[0].y = sprite_rect.pos.y;
-	modeldata->vertices[0].z = 0;
+	modeldata->vertices[0].z = m_doffsetTop * sprite_rect.size.y;
 	modeldata->vertices[0].u = 0.0F;
 	modeldata->vertices[0].v = 0.0F;
 
 	modeldata->vertices[1].x = sprite_rect.pos.x + sprite_rect.size.x;
 	modeldata->vertices[1].y = sprite_rect.pos.y;
-	modeldata->vertices[1].z = 0;
+	modeldata->vertices[1].z = m_doffsetTop * sprite_rect.size.y;
 	modeldata->vertices[1].u = 1.0F;
 	modeldata->vertices[1].v = 0.0F;
 
 	modeldata->vertices[2].x = sprite_rect.pos.x + sprite_rect.size.x;
 	modeldata->vertices[2].y = sprite_rect.pos.y + sprite_rect.size.y;
-	modeldata->vertices[2].z = 0;
+	modeldata->vertices[2].z = m_doffsetBottom * sprite_rect.size.y;
 	modeldata->vertices[2].u = 1.0F;
 	modeldata->vertices[2].v = 1.0F;
 
 	modeldata->vertices[3].x = sprite_rect.pos.x;
 	modeldata->vertices[3].y = sprite_rect.pos.y + sprite_rect.size.y;
-	modeldata->vertices[3].z = 0;
+	modeldata->vertices[3].z = m_doffsetBottom * sprite_rect.size.y;
 	modeldata->vertices[3].u = 0.0F;
 	modeldata->vertices[3].v = 1.0F;
 

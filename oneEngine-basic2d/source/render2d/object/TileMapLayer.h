@@ -21,6 +21,9 @@ namespace Renderer
 		RENDER2D_API			~TileMapLayer ();
 
 		RENDER2D_API void		SetLayer ( const ModelData* model_info );
+
+	public:
+		int		source_layer_id;
 	};
 }
 

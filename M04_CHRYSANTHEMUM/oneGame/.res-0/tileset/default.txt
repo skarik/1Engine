@@ -8,8 +8,8 @@ sprite
 atlas
 {
 	index 0
-	size	256 256
-	count	8 8
+	size	512 256
+	count	16 8
 	tilesize 32 32
 }
 
@@ -128,4 +128,56 @@ tile "Junk 1"
 {
 	type simple
 	atlas 3 4
+}
+tile "Street Mainhole L"
+{
+	type simple
+	atlas 2 3
+}
+tile "Street Mainhole R"
+{
+	type simple
+	atlas 3 3
+}
+
+tile "Sign 0 T"
+{
+	type simple
+	atlas 4 6
+}
+tile "Sign 0 B"
+{
+	type simple
+	atlas 4 7
+}
+
+tile "Handrail Mid"
+{
+    type prop
+    atlas 5 6
+    pieces
+    {
+        0 5 6
+        1 5 7
+    }
+}
+tile "Handrail Left"
+{
+    type prop
+    atlas 6 6
+    pieces
+    {
+        0 6 6
+        1 6 7
+    }
+}
+tile "Handrail Right"
+{
+    type prop
+    atlas 7 6
+    pieces
+    {
+        0 7 6
+        1 7 7
+    }
 }

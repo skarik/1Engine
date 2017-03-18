@@ -1166,7 +1166,7 @@ void glMaterial::shader_bind_deferred ( glShader* shader )
 	if ( uniformLocation >= 0 )
 	{
 		float lightvars [3];
-		lightvars[0] = (deferredinfo[current_pass].m_lighting_mode == Renderer::LI_NONE) ? 0.0f : 1.0f;
+		lightvars[0] = 0;//(deferredinfo[current_pass].m_lighting_mode == Renderer::LI_NONE) ? 0.0f : 1.0f;
 		lightvars[1] = deferredinfo[current_pass].m_rimlight_strength;
 		lightvars[2] = 0;
 		glUniform3fv( uniformLocation, 1, lightvars );
@@ -1315,24 +1315,27 @@ void glMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_f
 
 		// Find the uniforms
 		// Model Matrix (object transform) matrix
-		uniformLocation = shader->get_uniform_location( "sys_ModelMatrix" );
+		uniformLocation = shader->get_uniform_location( "sys_ModelTRS" );
 		if ( uniformLocation >= 0 )
 		{
 			Matrix4x4 modelTransform = modelMatrix;
 			glUniformMatrix4fv( uniformLocation, 1,false, (!modelTransform)[0] );
 
-			uniformLocation = shader->get_uniform_location( "sys_ModelMatrixInverse" );
+			uniformLocation = shader->get_uniform_location( "sys_ModelTRSInverse" );
 			if ( uniformLocation >= 0 )
 			{
 				modelTransform = modelMatrix.inverse();
 				glUniformMatrix4fv( uniformLocation, 1,false, (!modelTransform)[0] );
 			}
 		}
-		uniformLocation = shader->get_uniform_location( "sys_ModelRotationMatrix" );
+		uniformLocation = shader->get_uniform_location( "sys_ModelRS" );
 		if ( uniformLocation >= 0 )
 		{
 			Matrix4x4 modelRotation;
 			modelRotation.setRotation( source_object->transform.rotation );
+			modelRotation.pData[0] *= source_object->transform.scale.x;
+			modelRotation.pData[5] *= source_object->transform.scale.y;
+			modelRotation.pData[10] *= source_object->transform.scale.z;
 			glUniformMatrix4fv( uniformLocation, 1,false, (!modelRotation)[0] );
 		}
 
@@ -1372,23 +1375,24 @@ void glMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_f
 
 		// Find the uniforms
 		// Model Matrix (object transform) matrix
-		uniformLocation = shader->get_uniform_location( "sys_ModelMatrix" );
+		uniformLocation = shader->get_uniform_location( "sys_ModelTRS" );
 		if ( uniformLocation >= 0 )
 		{
 			Matrix4x4 modelTransform = modelMatrix;
 			glUniformMatrix4fv( uniformLocation, 1,false, (!modelTransform)[0] );
 
-			uniformLocation = shader->get_uniform_location( "sys_ModelMatrixInverse" );
+			uniformLocation = shader->get_uniform_location( "sys_ModelTRSInverse" );
 			if ( uniformLocation >= 0 )
 			{
 				modelTransform = modelMatrix.inverse();
 				glUniformMatrix4fv( uniformLocation, 1,false, (!modelTransform)[0] );
 			}
 		}
-		uniformLocation = shader->get_uniform_location( "sys_ModelRotationMatrix" );
+		uniformLocation = shader->get_uniform_location( "sys_ModelRS" );
 		if ( uniformLocation >= 0 )
 		{
-			Matrix4x4 modelRotation;
+			Matrix4x4 modelRotation = modelMatrix;
+			modelRotation.setTranslation(0, 0, 0);
 			glUniformMatrix4fv( uniformLocation, 1,false, (!modelRotation)[0] );
 		}
 		//sys_ModelViewProjectionMatrix

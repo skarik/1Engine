@@ -115,6 +115,7 @@
     <ClInclude Include="source\engine-common\scenes\gmsceneFromFile.h" />
     <ClInclude Include="source\engine-common\scenes\gmsceneSystemBuilder.h" />
     <ClInclude Include="source\engine-common\scenes\gmsceneSystemLoader.h" />
+    <ClInclude Include="source\engine-common\scenes\tests\testColorConversion.h" />
     <ClInclude Include="source\engine-common\scenes\tests\testComparisons.h" />
     <ClInclude Include="source\engine-common\scenes\tests\testStringOperations.h" />
     <ClInclude Include="source\engine-common\types\ActorAnimation.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="source\engine-common\scenes\benchmark\benchmarkSemaphores.cpp" />
     <ClCompile Include="source\engine-common\scenes\gmsceneSystemBuilder.cpp" />
     <ClCompile Include="source\engine-common\scenes\gmsceneSystemLoader.cpp" />
+    <ClCompile Include="source\engine-common\scenes\tests\testColorConversion.cpp" />
     <ClCompile Include="source\engine-common\scenes\tests\testComparisons.cpp" />
     <ClCompile Include="source\engine-common\scenes\tests\testStringOperations.cpp" />
     <ClCompile Include="source\engine-common\utils\AnimationMixing.cpp" />

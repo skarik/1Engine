@@ -65,6 +65,45 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	mLoListSize		= 50; // Start with 50 logic slots
 	mLoCurrentIndex	= 0;
 	mLogicObjects.resize( mLoListSize, NULL );
+
+	// Create default textures
+	{
+		CTexture* white_texture = new CTexture("");
+		{
+			pixel_t white;
+			white.r = 255;
+			white.g = 255;
+			white.b = 255;
+			white.a = 255;
+			white_texture->Upload( &white, 1,1, Repeat, Repeat, MipmapNone, SamplingPoint );
+		}
+		Renderer::Resources::AddTexture(Renderer::TextureWhite, white_texture);
+		white_texture->RemoveReference();
+
+		CTexture* black_texture = new CTexture("");
+		{
+			pixel_t black;
+			black.r = 0;
+			black.g = 0;
+			black.b = 0;
+			black.a = 255;
+			black_texture->Upload( &black, 1,1, Repeat, Repeat, MipmapNone, SamplingPoint );
+		}
+		Renderer::Resources::AddTexture(Renderer::TextureBlack, black_texture);
+		black_texture->RemoveReference();
+
+		CTexture* gray0_texture = new CTexture("");
+		{
+			pixel_t gray0;
+			gray0.r = 127;
+			gray0.g = 127;
+			gray0.b = 127;
+			gray0.a = 0;
+			gray0_texture->Upload( &gray0, 1,1, Repeat, Repeat, MipmapNone, SamplingPoint );
+		}
+		Renderer::Resources::AddTexture(Renderer::TextureGrayA0, gray0_texture);
+		gray0_texture->RemoveReference();
+	}
 	
 	// Create the default material
 	if ( glMaterial::Default == NULL )
@@ -72,10 +111,10 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		// The default material must be a single pass in both modes.
 		// This to provide compatibility with the default system implementation. (A lot of early engine code is implemented lazily)
 		glMaterial::Default = new glMaterial;
-		glMaterial::Default->setTexture( 0, new CTexture( "textures/white.jpg" ) );			// Diffuse
-		glMaterial::Default->setTexture( 1, new CTexture( "textures/black.jpg" ) );			// Glow
-		glMaterial::Default->setTexture( 2, new CTexture( "textures/default_specular.jpg" ) );	// Specular
-		glMaterial::Default->setTexture( 3, new CTexture( "textures/default_normals.jpg" ) );	// Normals
+		glMaterial::Default->setTexture( 0, Renderer::Resources::GetTexture(Renderer::TextureWhite) );		// Diffuse
+		glMaterial::Default->setTexture( 1, new CTexture( "textures/default_normals.jpg" ) );				// Normals
+		glMaterial::Default->setTexture( 2, Renderer::Resources::GetTexture(Renderer::TextureBlack) );		// Surface
+		glMaterial::Default->setTexture( 3, Renderer::Resources::GetTexture(Renderer::TextureGrayA0) );		// Overlay
 		// Setup forward pass
 		glMaterial::Default->passinfo.push_back( glPass() );
 		glMaterial::Default->passinfo[0].shader = new glShader( "shaders/d/diffuse.glsl" );
@@ -337,7 +376,10 @@ void CRenderState::CreateBuffer ( void )
 	if ( internal_buffer_forward_rt == NULL )
 	{
 		if ( internal_settings.mainDepthFormat != DepthNone )
+		{
 			internal_buffer_depth	= GPU::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
+			GPU::TextureSampleSettings( Texture2D, internal_buffer_depth, Clamp, Clamp, Clamp, SamplingPoint, SamplingPoint );
+		}
 		if ( internal_settings.mainStencilFormat != StencilNone )
 			internal_buffer_stencil	= GPU::TextureBufferAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
 

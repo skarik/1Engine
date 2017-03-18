@@ -4,6 +4,8 @@
 
 #include "core/types/types.h"
 
+#define MAPTILE_AUTOTILE_SIZE 32
+
 struct mapTile_t
 {
 	uint32_t	type;				// tile ID in the tileset. In terms of autotiles, number may not be contiguous
@@ -30,8 +32,8 @@ struct tilesetEntry_t
 	uint16_t			atlas_y;
 	uint16_t			atlas_h;
 
-	uint8_t		autotile_0 [32];
-	uint8_t		autotile_1 [32];
+	uint8_t		autotile_0 [MAPTILE_AUTOTILE_SIZE];
+	uint8_t		autotile_1 [MAPTILE_AUTOTILE_SIZE];
 };
 
 // autotile looks around but for now, let's focus on tile editing

@@ -8,6 +8,9 @@
 #include "renderer/material/glMaterial.h"
 #include "renderer/texture/CTexture.h"
 #include "renderer/texture/TextureLoader.h"
+
+#include "renderer/resource/CResourceManager.h"
+
 #include "render2d/texture/TextureLoader.h"
 
 #include "renderer/system/glMainSystem.h"
@@ -26,6 +29,7 @@ CRenderable2D::CRenderable2D ( void )
 	// Use a default 2D material
 	m_material = new glMaterial();
 	m_material->setTexture( 0, Core::Orphan(new CTexture("null")) );
+	m_material->setTexture( 2, Renderer::Resources::GetTexture(Renderer::TextureBlack) );
 
 	m_material->passinfo.push_back( glPass() );
 	m_material->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
@@ -35,8 +39,6 @@ CRenderable2D::CRenderable2D ( void )
 
 	m_material->deferredinfo.push_back( glPass_Deferred() );
 	m_material->deferredinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
-	m_material->deferredinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	m_material->deferredinfo[0].m_diffuse_method = Renderer::Deferred::DIFFUSE_DEFAULT;
 
 	// Start with empty buffers
 	m_buffer_verts = NIL;
@@ -66,17 +68,19 @@ CRenderable2D::~CRenderable2D ()
 }
 
 //		SetSpriteFile ( c-string sprite filename )
-// Sets the sprite filename to load or convert
+// Sets the sprite filename to load or convert. Uses resource manager to cache data.
 void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 {
 	// Create the filename for the palette.
 	std::string filename_palette = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_pal";
 	std::string filename_sprite	 = StringUtils::GetFileStemLeaf(n_sprite_filename);
 	std::string filename_normals = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_normal";
+	std::string filename_surface = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_surface";
 
 	std::string resource_palette;
 	std::string resource_sprite;
 	std::string resource_normals;
+	std::string resource_surface;
 
 #if 1 // DEVELOPER_MODE
 	// Check for the PNGs:
@@ -94,6 +98,10 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 		{
 			Textures::ConvertFile(resource_normals, StringUtils::GetFileStemLeaf(resource_normals)  + ".bpd");
 		}
+		if ( Core::Resources::MakePathTo(filename_surface + ".png", resource_surface) )
+		{
+			Textures::ConvertFile(resource_surface, StringUtils::GetFileStemLeaf(resource_surface)  + ".bpd");
+		}
 	}
 	// Check for the GALs:
 	{
@@ -109,6 +117,13 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 			if (image != NULL)
 			{
 				Textures::ConvertData(image, &image_info, StringUtils::GetFileStemLeaf(resource_sprite) + "_normal.bpd");
+				delete [] image;
+			}
+
+			image = Textures::loadGAL_Layer(resource_sprite, "surface", image_info);
+			if (image != NULL)
+			{
+				Textures::ConvertData(image, &image_info, StringUtils::GetFileStemLeaf(resource_sprite) + "_surface.bpd");
 				delete [] image;
 			}
 		}
@@ -135,11 +150,14 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 		m_material->deferredinfo.clear();
 
 		// Load up the texture
-		CTexture* new_texture = new CTexture (
-			n_sprite_filename, 
-			Texture2D, RGBA8,
-			1024,1024, Clamp,Clamp,
-			MipmapNone,SamplingPoint
+		CTexture* new_texture = RESOURCE_GET_TEXTURE(
+			n_sprite_filename,
+			new CTexture (
+				n_sprite_filename, 
+				Texture2D, RGBA8,
+				1024,1024, Clamp,Clamp,
+				MipmapNone,SamplingPoint
+			)
 		);
 
 		// Set sprite info
@@ -159,102 +177,164 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 		return;
 	}
 
-	// Load the raw data from the palette first
-	Textures::timgInfo imginfo_palette;
-	pixel_t* raw_palette = Textures::LoadRawImageData(resource_palette, imginfo_palette);
-	if ( raw_palette == NULL ) throw Core::MissingDataException();
+	// Check for paletted textures:
+	CTexture* loaded_palette	= Renderer::Resources::GetTexture(filename_palette);
+	CTexture* loaded_sprite		= Renderer::Resources::GetTexture(filename_sprite);
+	CTexture* loaded_normals	= Renderer::Resources::GetTexture(filename_normals);
+	CTexture* loaded_surface	= Renderer::Resources::GetTexture(filename_surface);
 
-	// Set all data in the palette to have 255 alpha (opaque)
-	for (int i = 0; i < imginfo_palette.width * imginfo_palette.height; ++i)
-		raw_palette[i].a = 255;
+	if ( loaded_palette == NULL )
+	{
+		// Load the raw data from the palette first
+		Textures::timgInfo imginfo_palette;
+		pixel_t* raw_palette = Textures::LoadRawImageData(resource_palette, imginfo_palette);
+		if ( raw_palette == NULL ) throw Core::MissingDataException();
 
-	// Add the palette to the world's palette
-	Render2D::WorldPalette::Active()->AddPalette( raw_palette, imginfo_palette.height, imginfo_palette.width );
+		// Set all data in the palette to have 255 alpha (opaque)
+		for (int i = 0; i < imginfo_palette.width * imginfo_palette.height; ++i)
+			raw_palette[i].a = 255;
+
+		// Add the palette to the world's palette
+		Render2D::WorldPalette::Active()->AddPalette( raw_palette, imginfo_palette.height, imginfo_palette.width );
 	
-	// No longer need local palette
-	delete [] raw_palette;
+		// No longer need local palette
+		delete [] raw_palette;
 
-	// Load the raw data from the sprite
-	Textures::timgInfo imginfo_sprite;
-	pixel_t* raw_sprite = Textures::LoadRawImageData(resource_sprite, imginfo_sprite);
-	if ( raw_sprite == NULL ) throw Core::MissingDataException();
-
-	// Convert the colors to the internal world's palette
-	Render2D::Preprocess::DataToLUT(
-		raw_sprite, imginfo_sprite.width * imginfo_sprite.height,
-		Render2D::WorldPalette::Active()->palette_data, Render2D::WorldPalette::MAX_HEIGHT, Render2D::WorldPalette::Active()->palette_width);
-
-	// Create empty texture to upload data into
-	CTexture* new_texture = new CTexture("");
-
-	// Upload the data
-	new_texture->Upload(
-		raw_sprite,
-		imginfo_sprite.width, imginfo_sprite.height, 
-		Clamp, Clamp,
-		MipmapNone, SamplingPoint
-	);
-
-	// Set sprite info
-	m_spriteInfo.fullsize.x = new_texture->GetWidth();
-	m_spriteInfo.fullsize.y = new_texture->GetHeight();
-
-	m_spriteInfo.framesize.x = new_texture->GetWidth();
-	m_spriteInfo.framesize.y = new_texture->GetHeight();
-
-	// Set the palette texture as the sprite
-	m_material->setTexture(0, new_texture);
-
-	// No longer need the texture in this object
-	new_texture->RemoveReference();
-
-	// Create normal map texture
-	if ( Core::Resources::MakePathTo(filename_normals + ".bpd", resource_normals) )
-	{
-		CTexture* new_texture = new CTexture (
-			resource_normals, 
-			Texture2D, RGBA8,
-			1024,1024, Clamp,Clamp,
-			MipmapNone,SamplingPoint
-		);
-
-		m_material->setTexture(1, new_texture);
-
-		// No longer need the texture in this object
-		new_texture->RemoveReference();
+		// Save dummy value
+		Renderer::Resources::AddTexture(filename_palette);
 	}
-	else
-	{
-		CTexture* new_texture = new CTexture("");
 
-		// Generate a normal map based on input parameters
-		pixel_t* raw_normalmap = new pixel_t [imginfo_sprite.width * imginfo_sprite.height];
-		/*raw_normalmap[0].r = (uint8_t)( (m_spriteGenerationInfo.normal_default.x * 0.5F + 0.5F) * 255.0F + 0.5F );
-		raw_normalmap[0].g = (uint8_t)( (m_spriteGenerationInfo.normal_default.y * 0.5F + 0.5F) * 255.0F + 0.5F );
-		raw_normalmap[0].b = (uint8_t)( (m_spriteGenerationInfo.normal_default.z * 0.5F + 0.5F) * 255.0F + 0.5F );
-		raw_normalmap[0].a = 255;*/
-		Render2D::Preprocess::GenerateNormalMap( raw_sprite, raw_normalmap, imginfo_sprite.width, imginfo_sprite.height, m_spriteGenerationInfo.normal_default );
+	if ( loaded_sprite == NULL )
+	{
+		// Load the raw data from the sprite
+		Textures::timgInfo imginfo_sprite;
+		pixel_t* raw_sprite = Textures::LoadRawImageData(resource_sprite, imginfo_sprite);
+		if ( raw_sprite == NULL ) throw Core::MissingDataException();
+
+		// Convert the colors to the internal world's palette
+		Render2D::Preprocess::DataToLUT(
+			raw_sprite, imginfo_sprite.width * imginfo_sprite.height,
+			Render2D::WorldPalette::Active()->palette_data, Render2D::WorldPalette::MAX_HEIGHT, Render2D::WorldPalette::Active()->palette_width);
+
+		// Create empty texture to upload data into
+		CTexture* new_texture = new CTexture("");
 
 		// Upload the data
 		new_texture->Upload(
-			raw_normalmap,
+			raw_sprite,
 			imginfo_sprite.width, imginfo_sprite.height, 
 			Clamp, Clamp,
 			MipmapNone, SamplingPoint
 		);
-		
-		// Set this new normal map
-		m_material->setTexture(1, new_texture);
 
-		// Clear off the data now that it's on the GPU
-		delete [] raw_normalmap;
+		// Set sprite info
+		m_spriteInfo.fullsize.x = new_texture->GetWidth();
+		m_spriteInfo.fullsize.y = new_texture->GetHeight();
+
+		m_spriteInfo.framesize.x = new_texture->GetWidth();
+		m_spriteInfo.framesize.y = new_texture->GetHeight();
+
+		// Set the palette texture as the sprite
+		m_material->setTexture(0, new_texture);
 
 		// No longer need the texture in this object
 		new_texture->RemoveReference();
-	}
 
-	// Clear off the data now that it's on the GPU and we're done using it for generation
-	delete [] raw_sprite;
+		// Add it to manager
+		Renderer::Resources::AddTexture(filename_sprite, new_texture);
+
+
+		// Create normal map texture
+		if ( Core::Resources::MakePathTo(filename_normals + ".bpd", resource_normals) )
+		{
+			CTexture* new_texture = new CTexture (
+				resource_normals, 
+				Texture2D, RGBA8,
+				1024,1024, Clamp,Clamp,
+				MipmapNone,SamplingPoint
+			);
+
+			m_material->setTexture(1, new_texture);
+
+			// No longer need the texture in this object
+			new_texture->RemoveReference();
+
+			// Add it to manager
+			Renderer::Resources::AddTexture(filename_normals, new_texture);
+		}
+		else
+		{
+			CTexture* new_texture = new CTexture("");
+
+			// Generate a normal map based on input parameters
+			pixel_t* raw_normalmap = new pixel_t [imginfo_sprite.width * imginfo_sprite.height];
+			Render2D::Preprocess::GenerateNormalMap( raw_sprite, raw_normalmap, imginfo_sprite.width, imginfo_sprite.height, m_spriteGenerationInfo.normal_default );
+
+			// Upload the data
+			new_texture->Upload(
+				raw_normalmap,
+				imginfo_sprite.width, imginfo_sprite.height, 
+				Clamp, Clamp,
+				MipmapNone, SamplingPoint
+			);
+
+			// Set this new normal map
+			m_material->setTexture(1, new_texture);
+
+			// Clear off the data now that it's on the GPU
+			delete [] raw_normalmap;
+
+			// No longer need the texture in this object
+			new_texture->RemoveReference();
+
+			// Add it to manager
+			Renderer::Resources::AddTexture(filename_normals, new_texture);
+		}
+
+
+		// Clear off the data now that it's on the GPU and we're done using it for generation
+		delete [] raw_sprite;
+
+
+		// Create surface map texture
+		if ( Core::Resources::MakePathTo(filename_surface + ".bpd", resource_surface) )
+		{
+			CTexture* new_texture = new CTexture (
+				resource_surface, 
+				Texture2D, RGBA8,
+				1024,1024, Clamp,Clamp,
+				MipmapNone,SamplingPoint
+			);
+
+			// Set this new surface map
+			m_material->setTexture(2, new_texture);
+
+			// No longer need the texture in this object
+			new_texture->RemoveReference();
+
+			// Add it to manager
+			Renderer::Resources::AddTexture(filename_surface, new_texture);
+		}
+
+	}
+	else
+	{
+		CTexture* new_texture = loaded_sprite;
+
+		// Set sprite info
+		m_spriteInfo.fullsize.x = new_texture->GetWidth();
+		m_spriteInfo.fullsize.y = new_texture->GetHeight();
+
+		m_spriteInfo.framesize.x = new_texture->GetWidth();
+		m_spriteInfo.framesize.y = new_texture->GetHeight();
+
+		// Set the palette texture as the sprite
+		m_material->setTexture(0, new_texture);
+		// Set the normal map up as well
+		if (loaded_normals) m_material->setTexture(1, loaded_normals);
+		// Set the surface map up as well
+		if (loaded_surface) m_material->setTexture(2, loaded_surface);
+	}
 }
 
 //		GetSpriteInfo ()

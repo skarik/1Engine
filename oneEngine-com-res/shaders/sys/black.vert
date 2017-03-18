@@ -9,8 +9,8 @@ in vec3 mdl_TexCoord;
 out vec2 v2f_texcoord0;
 
 // System inputs
-uniform mat4 sys_ModelMatrix;
-uniform mat4 sys_ModelRotationMatrix;
+uniform mat4 sys_ModelTRS;
+uniform mat4 sys_ModelRS;
 uniform mat4 sys_ModelViewProjectionMatrix;
 uniform vec4 sys_DiffuseColor;
 

@@ -23,9 +23,9 @@ public:
 
 	Renderer::eAlphaMode		m_transparency_mode;
 	Renderer::eDrawBlendMode	m_blend_mode;
-	Renderer::eDrawLightingMode	m_lighting_mode;
+	//Renderer::eDrawLightingMode	m_lighting_mode;
 
-	Renderer::Deferred::eDiffuseMethod	m_diffuse_method;
+	//Renderer::Deferred::eDiffuseMethod	m_diffuse_method;
 
 	float		m_rimlight_strength;
 

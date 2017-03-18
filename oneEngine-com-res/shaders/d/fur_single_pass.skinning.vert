@@ -16,8 +16,8 @@ varying vec2 v2f_texcoord0;
 varying float v2f_fogdensity;
 
 // System inputs
-uniform mat4 sys_ModelMatrix;
-uniform mat4 sys_ModelRotationMatrix;
+uniform mat4 sys_ModelTRS;
+uniform mat4 sys_ModelRS;
 uniform mat4 sys_ModelViewProjectionMatrix;
 
 // Skinning
@@ -67,9 +67,9 @@ void main ( void )
 	// End vertex skinning
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
 
-	v2f_normals		= sys_ModelRotationMatrix*vec4( normalize(v_finalNorm), 1.0 );
+	v2f_normals		= sys_ModelRS*vec4( normalize(v_finalNorm), 1.0 );
 	v2f_colors		= mdl_Color;
-	v2f_position	= sys_ModelMatrix*v_localPos;
+	v2f_position	= sys_ModelTRS*v_localPos;
 	v2f_texcoord0	= mdl_TexCoord.xy;
 	v2f_fogdensity = clamp( (sys_FogEnd - v_screenPos.z) * sys_FogScale, 0, 1 );
 

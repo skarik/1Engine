@@ -23,10 +23,12 @@ uniform vec3 sys_EmissiveColor;
 uniform vec3 sys_WorldCameraPos;
 uniform vec3 sys_LightingOverrides;
 
+uniform mat4 sys_ModelRS;
+
 // Samplers
 uniform sampler2D textureSampler0; // Diffuse RGB, Specular/Discard A
-uniform sampler2D textureSampler1; // Normals RG, Height B, Ambient Occlusion A
-uniform sampler2D textureSampler2; // Discard A
+uniform sampler2D textureSampler1; // Normals RGB, Height A
+uniform sampler2D textureSampler2; // Ambient Occlusion R, Metallic G, Smoothness B, Discard A
 uniform sampler2D textureSampler3; // Overlay RGB, Blend Style A (0 for MUL-BIAS, 1 for LERP)
 
 // Vertex Outputs
@@ -38,73 +40,78 @@ in vec3 v2f_texcoord;
 uniform float sys_AlphaCutoff;
 
 
-vec4 mainDiffuse ( vec4 colorDiffuse, vec4 colorOverlay )
+vec4 mainDiffuse ( vec4 colorDiffuse, vec4 colorOverlay, vec4 surfaceProperties )
 {
-	/*vec4 result = texture( textureSampler0, v2f_texcoord.xy ) * sys_DiffuseColor;
-	if ( result.a < sys_AlphaCutoff ) {
-		discard;
-	}
-	return vec4( result.rgb, 1.0 );*/
+    // pixelDiffuse - Generate via pulling from the palette.
+    // rgb  surface color
 
-    vec4 result = colorDiffuse;
+    // Start with a diffuse pushed to zero by metallicness
+    /*vec4 result = colorDiffuse * sys_DiffuseColor * (1.0 - surfaceProperties.g);
     // MUL-BIAS
     result.rgb *= mix( min(colorOverlay.rgb * 2.0, 1.0), vec3(1.0,1.0,1.0), colorOverlay.a );
     // MIX
-    result.rgb += (colorOverlay.rgb - result.rgb) * colorOverlay.a;
+    result.rgb += (colorOverlay.rgb - result.rgb) * colorOverlay.a;*/
+
+    // Start with input palette
+    vec4 result = colorDiffuse;
+    // Push palette brightness down
+    result.r *= sys_DiffuseColor.r * (1.0 - surfaceProperties.g);
 
     return vec4( result.rgb, 1.0 );
 }
 
 vec4 mainGlowmap ( vec4 colorOverlay )
 {
-	//return vec4( texture( textureSampler1, v2f_texcoord.xy ).rgb, v2f_colors.g );
-    return vec4( max(colorOverlay.rgb - vec3(0.5,0.5,0.5), 0.0) * 2.0 * colorOverlay.a, v2f_colors.g );
+    // pixelGlow
+	// rgb	surface glow
+	// a	rim lighting strength
+
+    return vec4(
+        max(colorOverlay.rgb - vec3(0.5,0.5,0.5), 0.0) * 2.0 * colorOverlay.a,
+        sys_LightingOverrides.g );
 }
-vec4 mainLighting ( void )
+vec4 mainLighting ( vec4 colorDiffuse, vec4 surfaceProperties )
 {
-	return vec4(
-		sys_LightingOverrides.r,
-		(sys_SpecularColor.r + sys_SpecularColor.g + sys_SpecularColor.b) / 3,
-		sys_SpecularColor.a,
-		sys_LightingOverrides.g );
+    // pixelLightProperty
+    // rgb  specular color
+	// a	smoothness
+
+    /*return vec4(
+		colorDiffuse.rgb * surfaceProperties.g * 2.0,
+		surfaceProperties.b );*/
+    return vec4(
+        // Instead use a palette lookup RGB
+		(colorDiffuse.r + 0.5) * surfaceProperties.g * 2.0,
+        colorDiffuse.g,
+        colorDiffuse.b,
+		surfaceProperties.b );
 }
 
-vec4 mainNormals ( vec4 colorNormals )
+vec4 mainNormals ( vec4 colorNormals, vec4 colorSurface )
 {
+    // pixelNormal
+    // rgb	surface normal
+    // a	ambient occlusion
+
     vec4 baseNormal = vec4( v2f_normals.xyz, 1.0 );
-
     // TODO: Use normal map properly
-    baseNormal.xy = colorNormals.xy * 2.0 - 1.0; // Unbias the normal
-    baseNormal.z = sqrt(1.0 - dot(baseNormal.xy,baseNormal.xy));
+    baseNormal.xyz = colorNormals.xyz * 2.0 - 1.0;
+    vec4 transformedNormal = sys_ModelRS * vec4(baseNormal.xyz, 1.0);
 
-    return baseNormal;
+    return vec4(transformedNormal.xyz, colorSurface.r);
 }
-
-// colorLighting
-// r	lighting effect (0 is fullbright, 1 is normal)
-// g	specular add (from uniform)
-// b	specular power (from unifrom)
-// a	rim lighting strength
 
 void main ( void )
 {
     vec4 colorDiffuse = texture( textureSampler0, v2f_texcoord.xy );
     if ( colorDiffuse.a < sys_AlphaCutoff ) discard;
-    vec4 colorDiscard = texture( textureSampler2, v2f_texcoord.xy );
-    if ( colorDiscard.a < 0.5 ) discard;
+    vec4 colorSurface = texture( textureSampler2, v2f_texcoord.xy );
+    if ( colorSurface.a < 0.5 ) discard;
     vec4 colorNormals = texture( textureSampler1, v2f_texcoord.xy );
     vec4 colorOverlay = texture( textureSampler3, v2f_texcoord.xy );
 
-    /*vec4 colorDiffuse = mainDiffuse();
-    vec4 colorGlowmap = mainGlowmap();
-    vec4 colorNormals = v2f_normals;
-    //vec4 colorPosition= v2f_position;
-    //colorNormals.w = v2f_position.w;
-    colorNormals.w = 1.0;
-    vec4 colorLighting= mainLighting();*/
-
-    FragDiffuse  = mainDiffuse(colorDiffuse, colorOverlay);
-    FragNormals  = mainNormals(colorNormals);
-    FragLighting = mainLighting();
+    FragDiffuse  = mainDiffuse(colorDiffuse, colorOverlay, colorSurface);
+    FragNormals  = mainNormals(colorNormals, colorSurface);
+    FragLighting = mainLighting(colorDiffuse, colorSurface);
     FragGlowmap  = mainGlowmap(colorOverlay);
 }
