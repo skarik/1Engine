@@ -129,12 +129,12 @@ tile "Junk 1"
 	type simple
 	atlas 3 4
 }
-tile "Street Mainhole L"
+tile "Street Manhole L"
 {
 	type simple
 	atlas 2 3
 }
-tile "Street Mainhole R"
+tile "Street Manhole R"
 {
 	type simple
 	atlas 3 3

@@ -21,7 +21,7 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 	fntMenu	= new CBitmapFont ( "monofonto.ttf", 16, FW_BOLD );
 	matfntMenu = new glMaterial;
 	matfntMenu->m_diffuse = Color( 1.0f,1,1 );
-	matfntMenu->setTexture( 0, fntMenu );
+	matfntMenu->setTexture( TEX_MAIN, fntMenu );
 	matfntMenu->passinfo.push_back( glPass() );
 	matfntMenu->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	matfntMenu->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
@@ -29,7 +29,7 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 
 	matMenu = new glMaterial;
 	matMenu->m_diffuse = Color( 0.0f,0,0 );
-	matMenu->setTexture( 0, new CTexture("null") );
+	matMenu->setTexture( TEX_MAIN, new CTexture("null") );
 	matMenu->passinfo.push_back( glPass() );
 	matMenu->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	matMenu->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
@@ -98,7 +98,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	texCursor = new CTexture( "textures/system/cursor.png" );
 	matCursor = new glMaterial;
 	matCursor->m_diffuse = Color( 1.0f,1,1 );
-	matCursor->setTexture( 0, texCursor );
+	matCursor->setTexture( TEX_MAIN, texCursor );
 	matCursor->passinfo.push_back( glPass() );
 	matCursor->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	matCursor->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;

@@ -42,6 +42,9 @@
     <ClInclude Include="source\engine2d\interface\SpriteContainer.h">
       <Filter>SOURCE\Engine2D\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine2d\interface\AnimationContainer.h">
+      <Filter>SOURCE\Engine2D\Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine2d\entities\map\TileMap.cpp">
@@ -54,6 +57,9 @@
       <Filter>SOURCE\Engine2D\Entities</Filter>
     </ClCompile>
     <ClCompile Include="source\engine2d\interface\SpriteContainer.cpp">
+      <Filter>SOURCE\Engine2D\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine2d\interface\AnimationContainer.cpp">
       <Filter>SOURCE\Engine2D\Interface</Filter>
     </ClCompile>
   </ItemGroup>

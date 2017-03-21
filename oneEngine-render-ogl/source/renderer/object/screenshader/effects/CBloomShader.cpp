@@ -122,7 +122,7 @@ void CBloomShader::Copy ( void )
 	}
 	else
 	{	
-		glMaterial::Copy->setTexture( 0, s_buf );
+		glMaterial::Copy->setTexture( TEX_MAIN, s_buf );
 		glMaterial::Copy->bindPass( 0 );
 
 		glDepthMask( false );
@@ -166,13 +166,13 @@ void CBloomShader::DrawOutput ( void )
 		//Copy();
 
 		// Draw screen with given material
-		m_material->setTexture( 0, s_buf );
+		m_material->setTexture( TEX_SLOT0, s_buf );
 		/*vMaterials[0]->bindTexture( half_buf, "textureHalfDiffuse" );
 		vMaterials[0]->bindTexture( buf_4th, "texture4thDiffuse" );
 		vMaterials[0]->bindTexture( buf_16th, "texture16thDiffuse" );*/
-		m_material->setTexture( 1, half_buf );
-		m_material->setTexture( 2, buf_4th );
-		m_material->setTexture( 3, buf_16th );
+		m_material->setTexture( TEX_SLOT1, half_buf );
+		m_material->setTexture( TEX_SLOT2, buf_4th );
+		m_material->setTexture( TEX_SLOT3, buf_16th );
 		m_material->bindPass(0);
 		m_material->setShaderConstants( this );
 		m_material->setUniform( "lightThreshold", m_threshold );

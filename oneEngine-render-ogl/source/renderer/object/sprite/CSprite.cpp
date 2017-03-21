@@ -58,7 +58,7 @@ void CSprite::Render ( void )
 	{
 		//myMaterial->useTexture = true;
 		//myMaterial->pTextures[0] = myTexture;
-		myMaterial->setTexture( 0, myTexture );
+		myMaterial->setTexture( TEX_MAIN, myTexture );
 	}
 	else
 	{

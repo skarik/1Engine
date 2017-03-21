@@ -25,7 +25,7 @@ Renderer::_n_hint_rendering_information::_n_hint_rendering_information ( void )
 	// Setup shadow shader renderer replacement. (Will replace any material with no shadow pass)
 	layer = Math::log2(RL_SHADOW_COLOR);
 	mats_default[layer]	= new glMaterial;
-	mats_default[layer]->setTexture( 0, new CTexture("null") );
+	mats_default[layer]->setTexture( TEX_MAIN, new CTexture("null") );
 	mats_default[layer]->m_diffuse = Color( 0,0,0, 1.0f );
 	mats_default[layer]->passinfo.push_back( glPass() );
 	mats_default[layer]->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
@@ -33,7 +33,7 @@ Renderer::_n_hint_rendering_information::_n_hint_rendering_information ( void )
 
 	mats_default_skin[layer]	= new glMaterial;
 	mats_default_skin[layer]->m_isSkinnedShader = true;
-	mats_default_skin[layer]->setTexture( 0, new CTexture("null") );
+	mats_default_skin[layer]->setTexture( TEX_MAIN, new CTexture("null") );
 	mats_default_skin[layer]->m_diffuse = Color( 0,0,0, 1.0f );
 	mats_default_skin[layer]->passinfo.push_back( glPass() );
 	mats_default_skin[layer]->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
@@ -45,7 +45,7 @@ Renderer::_n_hint_rendering_information::_n_hint_rendering_information ( void )
 	// Setup sky glow render shader replacement. (Will replace any material with no shadow pass)
 	layer = Math::log2(RL_SKYGLOW);
 	mats_default[layer]	= new glMaterial;
-	mats_default[layer]->setTexture( 0, new CTexture("null") );
+	mats_default[layer]->setTexture( TEX_MAIN, new CTexture("null") );
 	mats_default[layer]->m_diffuse = Color( 0,0,0, 1.0f );
 	mats_default[layer]->passinfo.push_back( glPass() );
 	mats_default[layer]->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
@@ -53,7 +53,7 @@ Renderer::_n_hint_rendering_information::_n_hint_rendering_information ( void )
 
 	mats_default_skin[layer]	= new glMaterial;
 	mats_default_skin[layer]->m_isSkinnedShader = true;
-	mats_default_skin[layer]->setTexture( 0, new CTexture("null") );
+	mats_default_skin[layer]->setTexture( TEX_MAIN, new CTexture("null") );
 	mats_default_skin[layer]->m_diffuse = Color( 0,0,0, 1.0f );
 	mats_default_skin[layer]->passinfo.push_back( glPass() );
 	mats_default_skin[layer]->passinfo[0].m_lighting_mode = Renderer::LI_NONE;

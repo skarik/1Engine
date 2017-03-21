@@ -113,10 +113,10 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		// The default material must be a single pass in both modes.
 		// This to provide compatibility with the default system implementation. (A lot of early engine code is implemented lazily)
 		glMaterial::Default = new glMaterial;
-		glMaterial::Default->setTexture( 0, Renderer::Resources::GetTexture(Renderer::TextureWhite) );		// Diffuse
-		glMaterial::Default->setTexture( 1, new CTexture( "textures/default_normals.jpg" ) );				// Normals
-		glMaterial::Default->setTexture( 2, Renderer::Resources::GetTexture(Renderer::TextureBlack) );		// Surface
-		glMaterial::Default->setTexture( 3, Renderer::Resources::GetTexture(Renderer::TextureGrayA0) );		// Overlay
+		glMaterial::Default->setTexture( TEX_DIFFUSE, Renderer::Resources::GetTexture(Renderer::TextureWhite) );
+		glMaterial::Default->setTexture( TEX_NORMALS, new CTexture( "textures/default_normals.jpg" ) );
+		glMaterial::Default->setTexture( TEX_SURFACE, Renderer::Resources::GetTexture(Renderer::TextureBlack) );
+		glMaterial::Default->setTexture( TEX_OVERLAY, Renderer::Resources::GetTexture(Renderer::TextureGrayA0) );
 		// Setup forward pass
 		glMaterial::Default->passinfo.push_back( glPass() );
 		glMaterial::Default->passinfo[0].shader = new glShader( "shaders/d/diffuse.glsl" );
@@ -185,7 +185,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		ShaftPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting_shaft.glsl" );
 		ShaftPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 		// Set effect textures
-		ShaftPass->setTexture( 5, new CTexture( "textures/ditherdots.jpg" ) );
+		ShaftPass->setTexture( TEX_SLOT5, new CTexture( "textures/ditherdots.jpg" ) );
 	}
 	{
 		Lighting2DPass = new glMaterial();

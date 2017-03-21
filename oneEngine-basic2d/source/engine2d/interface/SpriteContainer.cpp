@@ -10,7 +10,8 @@ using namespace Engine2D;
 SpriteContainer::SpriteContainer ( Vector3d* position, Real* angle, Vector3d* scale )
 	: CLogicObject(),
 	m_sourcePosition(position), m_sourceAngle(angle), m_sourceScale(scale),
-	m_sprite(NULL)
+	m_sprite(NULL),
+	m_requireRestream(false)
 {
 	m_sprite = new CStreamedRenderable2D();
 }
@@ -29,6 +30,7 @@ void SpriteContainer::SetupDepthOffset ( const Real top_offset, const Real botto
 {
 	m_doffsetTop	= top_offset;
 	m_doffsetBottom	= bottom_offset;
+	m_requireRestream = true;
 }
 
 
@@ -70,7 +72,11 @@ void SpriteContainer::UpdateSpriteProperties ( void )
 	if ( m_sprite != NULL )
 	{
 		// Pull sprite info from the sprite info stored on the renderer
-		m_spriteSize = m_sprite->GetSpriteInfo().framesize;
+		if ( m_spriteSize != m_sprite->GetSpriteInfo().framesize )
+		{
+			m_spriteSize = m_sprite->GetSpriteInfo().framesize;
+			m_requireRestream = true;
+		}
 	}
 }
 
@@ -92,6 +98,12 @@ void SpriteContainer::PostStepSynchronus ( void )
 	{
 		// Don't do anything. Instead, ask for an update
 		UpdateSpriteProperties();
+		return;
+	}
+
+	// Also don't do anything if restreaming is off
+	if ( m_requireRestream == false )
+	{
 		return;
 	}
 
@@ -156,4 +168,7 @@ void SpriteContainer::PostStepSynchronus ( void )
 
 	// Push resultant shit
 	m_sprite->StreamLockModelData();
+
+	// Just streamed, no need for restream.
+	m_requireRestream = false;
 }

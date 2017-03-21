@@ -18,10 +18,10 @@ namespace Animation
 		Event_SlideStart,
 		Event_SlideEnd,
 
-		Event_INVALID
+		Event_INVALID = 0xFFFF
 	};
+	
 	typedef uint32_t tag_t;
-
 	enum eAnimEventTags : tag_t
 	{
 		EventTag_NoTag = tag_t(-1),

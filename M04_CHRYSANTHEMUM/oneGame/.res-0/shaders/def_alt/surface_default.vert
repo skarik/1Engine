@@ -25,7 +25,9 @@ uniform mat4 sys_ViewProjectionMatrix;
 
 // Material inputs
 //uniform vec3 sys_LightingOverrides;
-uniform vec4 gm_WindDirection;
+//uniform vec4 gm_WindDirection;
+uniform vec4 sys_TextureScale;
+uniform vec4 sys_TextureOffset;
 
 // Time inputs
 uniform vec4 sys_SinTime;
@@ -63,8 +65,5 @@ void main ( void )
     v2f_normals = v_worldNormal;
     v2f_colors	= mdl_Color;
     v2f_position= v_worldPosition;
-
-    // set the vertex position W as the screen-space Z
-    //v2f_position.w = v_screenPosition.w;//v_screenPosition.w;///gl_DepthRange.diff;
-    v2f_texcoord= mdl_TexCoord;
+    v2f_texcoord= mdl_TexCoord * sys_TextureScale.xyz + sys_TextureOffset.xyz;
 }

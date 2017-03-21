@@ -16,6 +16,32 @@
 
 #include <vector>
 
+// todo: move elsewhere
+enum textureslot_t : uint8_t
+{
+	TEX_MAIN = 0,
+
+	TEX_SLOT0 = 0,
+	TEX_SLOT1 = 1,
+	TEX_SLOT2 = 2,
+	TEX_SLOT3 = 3,
+	TEX_SLOT4 = 4,
+	TEX_SLOT5 = 5,
+	TEX_SLOT6 = 6,
+	TEX_SLOT7 = 7,
+	TEX_SLOT8 = 8,
+	TEX_SLOT9 = 9,
+	TEX_SLOT10 = 10,
+	TEX_SLOT11 = 11,
+
+	TEX_DIFFUSE = 0,
+	TEX_NORMALS = 1,
+	TEX_SURFACE = 2,
+	TEX_OVERLAY = 3,
+
+	TEX_PALETTE = 0,
+};
+
 // Prototype
 class CRenderableObject;
 class CTexture;
@@ -104,6 +130,10 @@ public:
 	float		m_specularPower;
 	Color		m_emissive;
 
+	// Contants (Coordinates)
+	Vector4d	m_texcoordScaling;
+	Vector4d	m_texcoordOffset;
+
 	// Constants (Other)
 	Vector4d	gm_WindDirection;
 	float		gm_FadeValue;
@@ -114,9 +144,9 @@ public:
 	// Sampler and Texture get/set interface
 	//=========================================//
 
-	RENDER_API void			setTexture ( const uint n_index, CTexture* n_texture );
-	RENDER_API void			setSampler ( const uint n_index, const glHandle n_sampler, const glEnum n_sampler_target=0 );
-	RENDER_API CTexture*	getTexture ( const uint n_index );
+	RENDER_API void			setTexture ( const textureslot_t n_index, CTexture* n_texture );
+	RENDER_API void			setSampler ( const textureslot_t n_index, const glHandle n_sampler, const glEnum n_sampler_target=0 );
+	RENDER_API CTexture*	getTexture ( const textureslot_t n_index );
 
 private:
 	// Textures (samplers)

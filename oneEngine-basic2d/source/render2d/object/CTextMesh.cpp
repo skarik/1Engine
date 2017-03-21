@@ -42,7 +42,7 @@ void CTextMesh::SetFont ( const char* fontFile, int fontSize, int fontWeight )
 	m_font_texture = new CBitmapFont( fontFile, fontSize, fontWeight );
 	m_font_texture->SetFilter( SamplingPoint );
 
-	m_material->setTexture( 0, m_font_texture );
+	m_material->setTexture( TEX_DIFFUSE, m_font_texture );
 }
 
 //		GetLineHeight ( )

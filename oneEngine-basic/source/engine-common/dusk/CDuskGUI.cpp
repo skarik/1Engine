@@ -139,7 +139,7 @@ void CDuskGUI::InitializeDefaultMaterials ( void )
 
 	matDefDefault->m_diffuse = Color( 1,1,1,1 );
 	//matDefDefault->setTexture( 0, new CTexture("textures/hud/dusk_element.png") );
-	matDefDefault->setTexture( 0, new CTexture("null") );
+	matDefDefault->setTexture( TEX_MAIN, new CTexture("null") );
 	matDefDefault->passinfo.push_back( glPass() );
 	matDefDefault->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	matDefDefault->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
@@ -147,7 +147,7 @@ void CDuskGUI::InitializeDefaultMaterials ( void )
 	matDefDefault->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 
 	matDefFont->m_diffuse = Color( 1,1,1,1 );
-	matDefFont->setTexture( 0, fntDefDefault );
+	matDefFont->setTexture( TEX_MAIN, fntDefDefault );
 	matDefFont->passinfo.push_back( glPass() );
 	matDefFont->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
 	matDefFont->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
@@ -584,7 +584,7 @@ bool CDuskGUI::Render ( const char pass )
 	GL_ACCESS GLd_ACCESS;
 
 	// Bind the material for alpha-blending
-	matScreenCopy->setTexture( 0, renderBuffer );
+	matScreenCopy->setTexture( TEX_MAIN, renderBuffer );
 	matScreenCopy->bindPass( pass );
 	GLd.DrawScreenQuad();
 

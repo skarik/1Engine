@@ -33,7 +33,7 @@ void CColorFilterShader::DrawOutput ( void )
 	CRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	{
 		// Draw screen with given material
-		m_material->setTexture( 0, s_buf );
+		m_material->setTexture( TEX_MAIN, s_buf );
 		m_material->bindPass(0);
 		m_material->setShaderConstants( this );
 		m_material->setUniform( "blendMidtone", m_midtone_blend );

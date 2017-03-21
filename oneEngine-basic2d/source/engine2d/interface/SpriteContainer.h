@@ -24,7 +24,7 @@ namespace Engine2D
 		// Changes values written to z-buffer, used for 3d effects.
 		ENGINE2D_API void			SetupDepthOffset ( const Real top_offset, const Real bottom_offset );
 
-	private:
+	protected:
 		//		PreStep()
 		// Used to update the position of the renderer as well as animation parameters.
 		ENGINE2D_API void			PreStep ( void ) override;
@@ -76,6 +76,10 @@ namespace Engine2D
 
 		Real						m_doffsetTop;
 		Real						m_doffsetBottom;
+
+		// Internal state for rebuilding the mesh
+
+		bool						m_requireRestream;
 	};
 }
 

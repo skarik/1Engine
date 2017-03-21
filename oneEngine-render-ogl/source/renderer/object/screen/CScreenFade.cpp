@@ -29,7 +29,7 @@ CScreenFade::CScreenFade ( bool inbFadeIn, float infFadeTime, float infFadeDelay
 
 	screenMaterial = new glMaterial();
 	screenMaterial->m_diffuse = cFadeColor;
-	screenMaterial->setTexture( 0, new CTexture("textures/white.jpg") );
+	screenMaterial->setTexture( TEX_DIFFUSE, new CTexture("textures/white.jpg") );
 	screenMaterial->passinfo.push_back( glPass() );
 	screenMaterial->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	screenMaterial->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;

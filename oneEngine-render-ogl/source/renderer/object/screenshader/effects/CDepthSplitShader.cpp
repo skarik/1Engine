@@ -12,7 +12,7 @@ CDepthSplitShader::CDepthSplitShader ( void )
 	renderSettings.renderHints = RL_WORLD;
 
 	glMaterial *shaderMaterial = new glMaterial;
-	shaderMaterial->setTexture( 2, new CTexture( "textures/hud/overlay_goggles_warp.jpg" ) );
+	shaderMaterial->setTexture( TEX_SLOT2, new CTexture( "textures/hud/overlay_goggles_warp.jpg" ) );
 	shaderMaterial->m_isScreenShader = true;
 	shaderMaterial->passinfo.push_back( glPass() );
 	shaderMaterial->passinfo[0].shader = new glShader( "shaders/screen/depth_split.glsl" );
@@ -29,8 +29,8 @@ void CDepthSplitShader::DrawOutput ( void )
 	CRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	{
 		// Draw screen with given material
-		m_material->setTexture( 0, s_buf );
-		m_material->setSampler( 1, s_buf->GetDepthSampler(), GL.Enum(Texture2D) );
+		m_material->setTexture( TEX_SLOT0, s_buf );
+		m_material->setSampler( TEX_SLOT1, s_buf->GetDepthSampler(), GL.Enum(Texture2D) );
 		m_material->bindPass(0);
 		m_material->setShaderConstants( this );
 		m_material->setUniform( "zNear", CCamera::activeCamera->zNear );

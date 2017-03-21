@@ -16,7 +16,7 @@ CTimeProfilerUI::CTimeProfilerUI ( void )
 	fntDebug	= new CBitmapFont ( "YanoneKaffeesatz-R.otf", 12, FW_BOLD );
 	matFntDebug = new glMaterial;
 	matFntDebug->m_diffuse = Color( 0.2f,0.0f,0.4f );
-	matFntDebug->setTexture( 0, fntDebug );
+	matFntDebug->setTexture( TEX_MAIN, fntDebug );
 	matFntDebug->passinfo.push_back( glPass() );
 	matFntDebug->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
 	matFntDebug->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );

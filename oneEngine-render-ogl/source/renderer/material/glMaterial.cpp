@@ -43,6 +43,7 @@ CTexture*	glMaterial::m_sampler_reflection = NULL;
 glMaterial::glMaterial ( void )
 	: m_isScreenShader(false), m_isSkinnedShader(false), m_isInstancedShader(false),
 	m_diffuse(1,1,1,1), m_specular(0,0,0,1), m_specularPower(32), m_emissive(0,0,0,0),
+	m_texcoordScaling(1,1,1,1), m_texcoordOffset(0,0,0,0),
 	gm_WindDirection(0,0,0,1), gm_FadeValue(0), gm_HalfScale(0),
 	m_bufferMatricesSkinning(0), /*m_bufferMatricesSoftbody(0),*/ m_bufferSkeletonSize(0),
 	referenceCount(1), staticResource(false)
@@ -1150,7 +1151,27 @@ void glMaterial::shader_bind_constants( glShader* shader )
 	if ( uniformLocation >= 0 ) {
 		glUniform4f( uniformLocation, m_specular.red, m_specular.green, m_specular.blue, m_specularPower );
 	}
+	uniformLocation = shader->get_uniform_location( "sys_AlphaCutoff" );
+	if ( uniformLocation >= 0 ) {
+		if ( passinfo[current_pass].m_transparency_mode == Renderer::ALPHAMODE_ALPHATEST ) {
+			glUniform1f( uniformLocation, passinfo[current_pass].f_alphatest_value );
+		}
+		else {
+			glUniform1f( uniformLocation, -1.0f );
+		}
+	}
+	
+	// Texture coordinates
+	uniformLocation = shader->get_uniform_location( "sys_TextureScale" );
+	if ( uniformLocation >= 0 ) {
+		glUniform4fv( uniformLocation, 1, &m_texcoordScaling[0] );
+	}
+	uniformLocation = shader->get_uniform_location( "sys_TextureOffset" );
+	if ( uniformLocation >= 0 ) {
+		glUniform4fv( uniformLocation, 1, &m_texcoordOffset[0] );
+	}
 
+	// World effects
 	uniformLocation = shader->get_uniform_location( "gm_WindDirection" );
 	if ( uniformLocation >= 0 ) {
 		glUniform4f( uniformLocation, gm_WindDirection.x, gm_WindDirection.y, gm_WindDirection.z, gm_WindDirection.w );
@@ -1162,15 +1183,6 @@ void glMaterial::shader_bind_constants( glShader* shader )
 	uniformLocation = shader->get_uniform_location( "gm_HalfScale" );
 	if ( uniformLocation >= 0 ) {
 		glUniform1f( uniformLocation, gm_HalfScale );
-	}
-	uniformLocation = shader->get_uniform_location( "sys_AlphaCutoff" );
-	if ( uniformLocation >= 0 ) {
-		if ( passinfo[current_pass].m_transparency_mode == Renderer::ALPHAMODE_ALPHATEST ) {
-			glUniform1f( uniformLocation, passinfo[current_pass].f_alphatest_value );
-		}
-		else {
-			glUniform1f( uniformLocation, -1.0f );
-		}
 	}
 }
 

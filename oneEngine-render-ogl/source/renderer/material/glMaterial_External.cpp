@@ -331,45 +331,49 @@ ELoadState loadPassProperties ( glMaterial* material,
 	else if ( command == "shader" )
 	{
 		ss >> subCommand;
-		if ( subCommand == "default" ) {
+		
+		throw Core::NotYetImplementedException();
+
+		if ( subCommand == "default" )
+		{
 			t_pass->shader = new glShader( "shaders/d/diffuse.glsl", targetTag );
 			// Set default textures if non allocated
-			if ( material->getTexture(1) == NULL ) {	// Glowmap	
-				material->setTexture( 1, new CTexture ( "textures/black.jpg" ) );
+			if ( material->getTexture(TEX_OVERLAY) == NULL ) {	// Glowmap	
+				material->setTexture( TEX_OVERLAY, new CTexture ( "textures/black.jpg" ) );
 			}
-			if ( material->getTexture(2) == NULL ) {	// Specular map
-				material->setTexture( 2, new CTexture ( "textures/default_specular.jpg" ) );
+			if ( material->getTexture(TEX_SURFACE) == NULL ) {	// Specular map
+				material->setTexture( TEX_SURFACE, new CTexture ( "textures/default_specular.jpg" ) );
 			}
-			if ( material->getTexture(3) == NULL ) {	// Normal map
-				material->setTexture( 3, new CTexture ( "textures/default_normals.jpg" ) );
+			if ( material->getTexture(TEX_NORMALS) == NULL ) {	// Normal map
+				material->setTexture( TEX_NORMALS, new CTexture ( "textures/default_normals.jpg" ) );
 			}
 		}
 		else if ( subCommand == "flora" ) {
 			t_pass->shader = new glShader( "shaders/world/foliage.glsl", targetTag );
-			if ( material->getTexture(1) == NULL ) {	// Set default textures if non allocated
-				material->setTexture( 1, new CTexture ( "textures/black.jpg" ) );
+			if ( material->getTexture(TEX_OVERLAY) == NULL ) {	// Set default textures if non allocated
+				material->setTexture( TEX_OVERLAY, new CTexture ( "textures/black.jpg" ) );
 			}
 		}
 		else if ( subCommand == "fur_single_pass" ) {
 			t_pass->shader = new glShader( "shaders/d/fur_single_pass.glsl", targetTag );
 			t_pass->m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
-			if ( material->getTexture(1) == NULL ) {	// Set default color mask
-				material->setTexture( 1, new CTexture ( "textures/white.jpg" ) );
+			if ( material->getTexture(TEX_OVERLAY) == NULL ) {	// Set default color mask
+				material->setTexture( TEX_OVERLAY, new CTexture ( "textures/white.jpg" ) );
 			}
 		}
 		else if ( subCommand == "skin" ) {
 			t_pass->shader = new glShader( "shaders/d/skin.glsl", targetTag );
-			if ( material->getTexture(1) == NULL ) {	// Set default inverse cutout mask
-				material->setTexture( 1, new CTexture ( "textures/black.jpg" ) );
+			if ( material->getTexture(TEX_OVERLAY) == NULL ) {	// Set default inverse cutout mask
+				material->setTexture( TEX_OVERLAY, new CTexture ( "textures/black.jpg" ) );
 			}
-			if ( material->getTexture(2) == NULL ) {	// Set default fademap
-				material->setTexture( 2, new CTexture ( "textures/black.jpg" ) );
+			if ( material->getTexture(TEX_OVERLAY) == NULL ) {	// Set default fademap
+				material->setTexture( TEX_OVERLAY, new CTexture ( "textures/black.jpg" ) );
 			}
-			if ( material->getTexture(3) == NULL ) {	// Set default transparent tattoo map
-				material->setTexture( 3, new CTexture ( "textures/transparent.png" ) );
+			if ( material->getTexture(TEX_OVERLAY) == NULL ) {	// Set default transparent tattoo map
+				material->setTexture( TEX_OVERLAY, new CTexture ( "textures/transparent.png" ) );
 			}
-			if ( material->getTexture(4) == NULL ) {
-				material->setTexture( 4, new CTextureCube( "__m_reflectCubemap",
+			if ( material->getTexture(TEX_SLOT4) == NULL ) {
+				material->setTexture( TEX_SLOT4, new CTextureCube( "__m_reflectCubemap",
 					"textures/sky/sky3side.jpg","textures/sky/sky3side.jpg",
 					"textures/sky/sky3side.jpg","textures/sky/sky3side.jpg",
 					"textures/sky/sky3top.jpg","textures/sky/sky3bottom.jpg"
@@ -384,19 +388,19 @@ ELoadState loadPassProperties ( glMaterial* material,
 		}
 		else if ( subCommand == "terrain" ) {
 			t_pass->shader = new glShader( "shaders/world/terrainDefault.glsl" );
-			if ( material->getTexture(1) == NULL ) {	// Set default textures if non allocated
-				material->setTexture( 1, new CTexture ( "textures/black.jpg" ) );
+			if ( material->getTexture(TEX_SLOT1) == NULL ) {	// Set default textures if non allocated
+				material->setTexture( TEX_SLOT1, new CTexture ( "textures/black.jpg" ) );
 			}
 		}
 		else if ( subCommand == "custom" ) {
-			if ( material->getTexture(0) == NULL ) {	// Set default textures if non allocated
-				material->setTexture( 0, new CTexture ( "textures/white.jpg" ) );
+			if ( material->getTexture(TEX_SLOT0) == NULL ) {	// Set default textures if non allocated
+				material->setTexture( TEX_SLOT0, new CTexture ( "textures/white.jpg" ) );
 			}
-			if ( material->getTexture(1) == NULL ) {	// Set default textures if non allocated
-				material->setTexture( 1, new CTexture ( "textures/black.jpg" ) );
+			if ( material->getTexture(TEX_SLOT1) == NULL ) {	// Set default textures if non allocated
+				material->setTexture( TEX_SLOT1, new CTexture ( "textures/black.jpg" ) );
 			}
-			if ( material->getTexture(2) == NULL ) {	// Set default textures if non allocated
-				material->setTexture( 2, new CTexture ( "textures/black.jpg" ) );
+			if ( material->getTexture(TEX_SLOT2) == NULL ) {	// Set default textures if non allocated
+				material->setTexture( TEX_SLOT2, new CTexture ( "textures/black.jpg" ) );
 			}
 		}
 	}
@@ -526,28 +530,28 @@ ELoadState loadPassProperties ( glMaterial* material,
 		ss.getline( str, 256, '\n' );
 		subCommand = StringUtils::TrimLeft( str );
 		if ( subCommand.length() > 1 ) {
-			material->setTexture( 0, new CTexture( subCommand, Texture2D, RGBA8, 1024,1024, Repeat, Repeat, mipmapMode ) );
+			material->setTexture( TEX_DIFFUSE, new CTexture( subCommand, Texture2D, RGBA8, 1024,1024, Repeat, Repeat, mipmapMode ) );
 		}
 	}
 	else if (( command == "glowmap" )||( command == "fur_colormask" )||( command == "texture1" )) { // Set texture
 		ss.getline( str, 256, '\n' );
 		subCommand = StringUtils::TrimLeft( str );
 		if ( subCommand.length() > 1 ) {
-			material->setTexture( 1, new CTexture( subCommand, Texture2D, RGBA8, 1024,1024, Repeat, Repeat, mipmapMode ) );
+			material->setTexture( TEX_OVERLAY, new CTexture( subCommand, Texture2D, RGBA8, 1024,1024, Repeat, Repeat, mipmapMode ) );
 		}
 	}
 	else if (( command == "ftexture" )||( command == "texture2" )) { // Set texture
 		ss.getline( str, 256, '\n' );
 		subCommand = StringUtils::TrimLeft( str );
 		if ( subCommand.length() > 1 ) {
-			material->setTexture( 2, new CTexture( subCommand, Texture2D, RGBA8, 1024,1024, Repeat, Repeat, mipmapMode ) );
+			material->setTexture( TEX_SURFACE, new CTexture( subCommand, Texture2D, RGBA8, 1024,1024, Repeat, Repeat, mipmapMode ) );
 		}
 	}
 	else if (( command == "tattoomap" )||( command == "texture3" )) { // Set texture
 		ss.getline( str, 256, '\n' );
 		subCommand = StringUtils::TrimLeft( str );
 		if ( subCommand.length() > 1 ) {
-			material->setTexture( 3, new CTexture( subCommand, Texture2D, RGBA8, 1024,1024, Repeat, Repeat, mipmapMode ) );
+			material->setTexture( TEX_OVERLAY, new CTexture( subCommand, Texture2D, RGBA8, 1024,1024, Repeat, Repeat, mipmapMode ) );
 		}
 	}
 	else if ( command == "diffuse" )
@@ -612,7 +616,7 @@ ELoadState loadEyePassProperties ( glMaterial* material,
 		ss.getline( str, 256, '\n' );
 		subCommand = StringUtils::TrimLeft( str );
 		if ( subCommand.length() > 1 ) {
-			material->setTexture( 0, new CTexture ( subCommand ) );
+			material->setTexture( TEX_DIFFUSE, new CTexture ( subCommand ) );
 		}
 	}
 	else if ( command == "iris" )
@@ -620,7 +624,7 @@ ELoadState loadEyePassProperties ( glMaterial* material,
 		ss.getline( str, 256, '\n' );
 		subCommand = StringUtils::TrimLeft( str );
 		if ( subCommand.length() > 1 ) {
-			material->setTexture( 1, new CTexture ( subCommand ) );
+			material->setTexture( TEX_SLOT1, new CTexture ( subCommand ) );
 		}
 	}
 	else if ( command == "pupil" )
@@ -628,7 +632,7 @@ ELoadState loadEyePassProperties ( glMaterial* material,
 		ss.getline( str, 256, '\n' );
 		subCommand = StringUtils::TrimLeft( str );
 		if ( subCommand.length() > 1 ) {
-			material->setTexture( 2, new CTexture ( subCommand ) );
+			material->setTexture( TEX_SLOT2, new CTexture ( subCommand ) );
 		}
 	}
 	else if ( command == "specular" )

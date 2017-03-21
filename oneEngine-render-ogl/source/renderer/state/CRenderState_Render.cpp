@@ -190,7 +190,7 @@ void CRenderState::Render ( void )
 		GL.pushModelMatrix( Matrix4x4() );
 		{
 			// Set the current main screen buffer as the texture
-			glMaterial::Copy->setTexture( 0, internal_buffer_forward_rt );
+			glMaterial::Copy->setTexture( TEX_MAIN, internal_buffer_forward_rt );
 			glMaterial::Copy->bindPassForward(0);
 
 			// Set up an always-rendered
@@ -651,11 +651,11 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			// Change the projection to identity-type 2D (similar to orthographic)
 			{
 				// Perform a lighting pass
-				targetPass->setSampler( 0, internal_buffer_deferred_mrt->GetBufferTexture(0), GL.Enum(Texture2D) );
-				targetPass->setSampler( 1, internal_buffer_deferred_mrt->GetBufferTexture(1), GL.Enum(Texture2D) );
-				targetPass->setSampler( 2, internal_buffer_deferred_mrt->GetBufferTexture(2), GL.Enum(Texture2D) );
-				targetPass->setSampler( 3, internal_buffer_deferred_mrt->GetBufferTexture(3), GL.Enum(Texture2D) );
-				targetPass->setSampler( 4, internal_buffer_deferred_mrt->GetDepthSampler(), GL.Enum(Texture2D) );
+				targetPass->setSampler( TEX_SLOT0, internal_buffer_deferred_mrt->GetBufferTexture(0), GL.Enum(Texture2D) );
+				targetPass->setSampler( TEX_SLOT1, internal_buffer_deferred_mrt->GetBufferTexture(1), GL.Enum(Texture2D) );
+				targetPass->setSampler( TEX_SLOT2, internal_buffer_deferred_mrt->GetBufferTexture(2), GL.Enum(Texture2D) );
+				targetPass->setSampler( TEX_SLOT3, internal_buffer_deferred_mrt->GetBufferTexture(3), GL.Enum(Texture2D) );
+				targetPass->setSampler( TEX_SLOT4, internal_buffer_deferred_mrt->GetDepthSampler(), GL.Enum(Texture2D) );
 				targetPass->bindPassForward(0);
 				// Pass in all the lighting information
 				{
@@ -778,7 +778,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				GL.setupViewport(0, 0, render_target->GetWidth(), render_target->GetHeight());
 				{
 					// Set the current main screen buffer as the texture
-					CopyScaled->setTexture( 0, internal_buffer_deferred_rt );
+					CopyScaled->setTexture( TEX_MAIN, internal_buffer_deferred_rt );
 					CopyScaled->m_diffuse[0] = currentRenderSize.x / (Real)unscaledRenderSize.x;
 					CopyScaled->m_diffuse[1] = currentRenderSize.y / (Real)unscaledRenderSize.y;
 					CopyScaled->bindPassForward(0);

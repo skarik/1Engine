@@ -28,8 +28,8 @@ CRenderable2D::CRenderable2D ( void )
 
 	// Use a default 2D material
 	m_material = new glMaterial();
-	m_material->setTexture( 0, Core::Orphan(new CTexture("null")) );
-	m_material->setTexture( 2, Renderer::Resources::GetTexture(Renderer::TextureBlack) );
+	m_material->setTexture( TEX_DIFFUSE, Core::Orphan(new CTexture("null")) );
+	m_material->setTexture( TEX_SURFACE, Renderer::Resources::GetTexture(Renderer::TextureBlack) );
 
 	m_material->passinfo.push_back( glPass() );
 	m_material->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
@@ -168,7 +168,7 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 		m_spriteInfo.framesize.y = new_texture->GetHeight();
 
 		// Set the material based on the input file.
-		m_material->setTexture(0, new_texture);
+		m_material->setTexture(TEX_DIFFUSE, new_texture);
 
 		// No longer need the texture in this object
 		new_texture->RemoveReference();
@@ -235,7 +235,7 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 		m_spriteInfo.framesize.y = new_texture->GetHeight();
 
 		// Set the palette texture as the sprite
-		m_material->setTexture(0, new_texture);
+		m_material->setTexture(TEX_DIFFUSE, new_texture);
 
 		// No longer need the texture in this object
 		new_texture->RemoveReference();
@@ -254,7 +254,7 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 				MipmapNone,SamplingPoint
 			);
 
-			m_material->setTexture(1, new_texture);
+			m_material->setTexture(TEX_NORMALS, new_texture);
 
 			// No longer need the texture in this object
 			new_texture->RemoveReference();
@@ -279,7 +279,7 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 			);
 
 			// Set this new normal map
-			m_material->setTexture(1, new_texture);
+			m_material->setTexture(TEX_NORMALS, new_texture);
 
 			// Clear off the data now that it's on the GPU
 			delete [] raw_normalmap;
@@ -307,7 +307,7 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 			);
 
 			// Set this new surface map
-			m_material->setTexture(2, new_texture);
+			m_material->setTexture(TEX_SURFACE, new_texture);
 
 			// No longer need the texture in this object
 			new_texture->RemoveReference();
@@ -329,11 +329,11 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 		m_spriteInfo.framesize.y = new_texture->GetHeight();
 
 		// Set the palette texture as the sprite
-		m_material->setTexture(0, new_texture);
+		m_material->setTexture(TEX_DIFFUSE, new_texture);
 		// Set the normal map up as well
-		if (loaded_normals) m_material->setTexture(1, loaded_normals);
+		if (loaded_normals) m_material->setTexture(TEX_NORMALS, loaded_normals);
 		// Set the surface map up as well
-		if (loaded_surface) m_material->setTexture(2, loaded_surface);
+		if (loaded_surface) m_material->setTexture(TEX_SURFACE, loaded_surface);
 	}
 }
 

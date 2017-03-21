@@ -29,7 +29,7 @@ CDebugRTInspector::CDebugRTInspector ( void )
 	defaultMat->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
 	defaultMat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
 	defaultMat->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
-	defaultMat->setTexture( 0, new CTexture( "textures/white.jpg" ) );
+	defaultMat->setTexture( TEX_DIFFUSE, new CTexture( "textures/white.jpg" ) );
 	defaultMat->removeReference();
 	SetMaterial( defaultMat );
 }
@@ -74,14 +74,14 @@ bool CDebugRTInspector::Render ( const char pass )
 
 			if ( rtList[rt_i]->GetColorSampler() )
 			{
-				defaultMat->setSampler( 0, rtList[rt_i]->GetColorSampler(), GL.Enum(Texture2D) );
+				defaultMat->setSampler( TEX_SLOT0, rtList[rt_i]->GetColorSampler(), GL.Enum(Texture2D) );
 				defaultMat->bindPass(0);
 				GLd.DrawRectangle( (Real)currentX, (Real)currentY, 128.0F*((Real)rtList[rt_i]->GetWidth()/(Real)rtList[rt_i]->GetHeight()),128.0F );
 				currentY += 128;
 			}
 			if ( rtList[rt_i]->GetDepthSampler() )
 			{
-				defaultMat->setSampler( 0, rtList[rt_i]->GetDepthSampler(), GL.Enum(Texture2D) );
+				defaultMat->setSampler( TEX_SLOT0, rtList[rt_i]->GetDepthSampler(), GL.Enum(Texture2D) );
 				defaultMat->bindPass(0);
 				GLd.DrawRectangle( (Real)currentX, (Real)currentY, 128.0F*((Real)rtList[rt_i]->GetWidth()/(Real)rtList[rt_i]->GetHeight()),128.0F );
 				currentY += 128;

@@ -21,7 +21,7 @@ TileSelectorUI::TileSelectorUI ( void )
 	// Mat init
 	glMaterial* draw_mat = new glMaterial;
 	draw_mat->m_diffuse = Color( 1,1,1,1 );
-	draw_mat->setTexture( 0, new CTexture("null") );
+	draw_mat->setTexture( TEX_DIFFUSE, new CTexture("null") );
 	draw_mat->passinfo.push_back( glPass() );
 	draw_mat->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
 	draw_mat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
@@ -32,7 +32,7 @@ TileSelectorUI::TileSelectorUI ( void )
 
 	glMaterial* ui_mat = new glMaterial;
 	ui_mat->m_diffuse = Color( 1,1,1,1 );
-	ui_mat->setTexture( 0, new CTexture( "textures/white.jpg" ) );
+	ui_mat->setTexture( TEX_DIFFUSE, new CTexture( "textures/white.jpg" ) );
 	ui_mat->passinfo.push_back( glPass() );
 	ui_mat->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
 	ui_mat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
@@ -61,7 +61,7 @@ void TileSelectorUI::SetTileMap ( Engine2D::TileMap* target )
 
 	// TODO: Convert the texture. For now, set the material based on the input file.
 	m_material->setTexture(
-		0,
+		TEX_MAIN,
 		new CTexture (
 			target->m_sprite_file.c_str(), 
 			Texture2D, RGBA8,

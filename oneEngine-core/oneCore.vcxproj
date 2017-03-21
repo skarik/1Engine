@@ -287,6 +287,7 @@
     <ClInclude Include="source\core-ext\animation\curve\CAnimationCurve.h" />
     <ClInclude Include="source\core-ext\animation\curve\CAnimationCurveBase.h" />
     <ClInclude Include="source\core-ext\animation\curve\CArrayAnimationCurve.h" />
+    <ClInclude Include="source\core-ext\animation\Types.h" />
     <ClInclude Include="source\core-ext\constants\distances.h" />
     <ClInclude Include="source\core-ext\containers\arproperty.h" />
     <ClInclude Include="source\core-ext\containers\ExtendibleMap2D.h" />

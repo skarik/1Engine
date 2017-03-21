@@ -18,7 +18,7 @@ GizmoRenderer::GizmoRenderer ( void )
 	// Set the default white material
 	glMaterial* defaultMat = new glMaterial;
 	defaultMat->m_diffuse = Color( 1,1,1,1 );
-	defaultMat->setTexture( 0, new CTexture( "textures/white.jpg" ) );
+	defaultMat->setTexture( TEX_MAIN, new CTexture( "textures/white.jpg" ) );
 	defaultMat->passinfo.push_back( glPass() );
 	defaultMat->passinfo[0].shader = new glShader( "shaders/sys/fullbright.glsl" );
 	defaultMat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;

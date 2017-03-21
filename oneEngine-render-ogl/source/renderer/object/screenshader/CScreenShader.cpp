@@ -143,7 +143,7 @@ void CScreenShader::DrawOutput ( void )
 		return;
 	{
 		// Draw screen with given material
-		m_material->setTexture( 0, s_buf );
+		m_material->setTexture( TEX_SLOT0, s_buf );
 		m_material->bindPass(0);
 		m_material->setShaderConstants( this );
 		{
@@ -177,7 +177,7 @@ void CScreenShader::CopyResult ( void )
 	else
 	{
 		s_buf->BindBuffer();
-		glMaterial::Copy->setTexture( 0, m_buf );
+		glMaterial::Copy->setTexture( TEX_SLOT0, m_buf );
 		glMaterial::Copy->bindPass(0);
 		
 		glDepthMask( false );

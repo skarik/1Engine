@@ -15,7 +15,7 @@ using namespace std;
 
 
 //Texture set
-void		glMaterial::setTexture ( const uint n_index, CTexture* n_texture )
+void		glMaterial::setTexture ( const textureslot_t n_index, CTexture* n_texture )
 {
 	GL_ACCESS
 	// Check doubly set texture
@@ -45,7 +45,7 @@ void		glMaterial::setTexture ( const uint n_index, CTexture* n_texture )
 		m_sampler_targets[n_index]	= 0;
 	}
 }
-void		glMaterial::setSampler ( const uint n_index, const uint n_sampler, const uint n_sampler_target )
+void		glMaterial::setSampler ( const textureslot_t n_index, const uint n_sampler, const uint n_sampler_target )
 {
 	GL_ACCESS
 #ifdef _ENGINE_DEBUG
@@ -67,7 +67,7 @@ void		glMaterial::setSampler ( const uint n_index, const uint n_sampler, const u
 	m_samplers[n_index]			= n_sampler;
 	m_sampler_targets[n_index]	= n_sampler_target;
 }
-CTexture*	glMaterial::getTexture ( const uint n_index )
+CTexture*	glMaterial::getTexture ( const textureslot_t n_index )
 {
 	return m_highlevel_storage[n_index];
 }

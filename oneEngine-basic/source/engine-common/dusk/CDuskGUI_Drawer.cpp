@@ -373,7 +373,7 @@ void CDuskGUI::drawText ( const ftype x, const ftype y, const char* str )
 		GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
 
 		// Draw the text
-		matFont->setTexture( 0, fntDefault );
+		matFont->setTexture( TEX_MAIN, fntDefault );
 		matFont->bindPass(0);
 		matFont->setShaderConstants( this );
 		if ( !modelTextRequestList.empty() ) {
@@ -419,7 +419,7 @@ void CDuskGUI::drawTextWidth ( const ftype x, const ftype y, const ftype w, cons
 		GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
 
 		// Draw the text
-		matFont->setTexture( 0, fntDefault );
+		matFont->setTexture( TEX_MAIN, fntDefault );
 		matFont->bindPass(0);
 		matFont->setShaderConstants( this );
 		if ( !modelTextRequestList.empty() ) {
@@ -464,7 +464,7 @@ void CDuskGUI::drawTextCentered ( const ftype x, const ftype y, const char* str 
 		GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
 
 		// Draw the text
-		matFont->setTexture( 0, fntDefault );
+		matFont->setTexture( TEX_MAIN, fntDefault );
 		matFont->bindPass(0);
 		matFont->setShaderConstants( this );
 		if ( !modelTextRequestList.empty() ) {
