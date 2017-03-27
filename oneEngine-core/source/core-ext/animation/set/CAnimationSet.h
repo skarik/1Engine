@@ -20,7 +20,7 @@ public:
 	
 	void Add ( CAnimationCurve<Matrix4x4>* newCurve )
 	{
-		throw Core::DeprecatedCallException();
+		throw core::DeprecatedCallException();
 		//animMap.push_back( newCurve );
 	}
 	void Add ( CAnimationCurve<Matrix2x2>* );
@@ -29,7 +29,7 @@ public:
 	void Add ( CAnimationCurve<ftype>* );
 	void Add ( CAnimationCurve<XTransform>* newCurve )
 	{
-		throw Core::DeprecatedCallException();
+		throw core::DeprecatedCallException();
 		//animMap.push_back( newCurve );
 	}
 

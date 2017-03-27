@@ -38,6 +38,10 @@ namespace Engine2D
 		// Pulls sprite info from the m_sprite object
 		ENGINE2D_API void			UpdateSpriteProperties ( void );
 
+		//		SetSpriteSize( Vector2i size )
+		// Overrides the rect the sprite will use to render
+		ENGINE2D_API void			SetSpriteSize ( const Vector2i size );
+
 		//		GetSpriteRect()
 		// Pulls untransformed sprite rect, using the m_sprite object and taking into account origin.
 		ENGINE2D_API Rect			GetSpriteRect ( void );

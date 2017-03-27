@@ -25,7 +25,7 @@ CVolumeTrigger::CVolumeTrigger ( CCollider* pTargetCollider, CGameObject * pOwne
 	physRigidBodyInfo info;
 	//info.m_shape = pCollider->GetCollisionShape();		// Set the collision shape to the collider's
 	//pBody = PhysicsEngine::CreateTriggerVolume( &info, pCollider->GetCollisionShape() ); // Create a trigger volume and assign it to the body variable.
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 	pBody = new physTriggerVolume( &info, pCollider->GetCollisionShape(), NULL ); // Create a trigger volume and assign it to the body variable.
 	pBody->setUserData( uint64_t(GetId()) );				// Give the rigid body the rigidbody's object index, so other objects may reference it on havok raycast results.
 }

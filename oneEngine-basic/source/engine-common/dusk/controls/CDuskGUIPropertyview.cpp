@@ -15,7 +15,7 @@
 
 #include "core/math/random/RangeValue.h"
 
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 
 // A listview
 CDuskGUI::Handle CDuskGUI::CreatePropertyview ( const Handle & parent )
@@ -163,11 +163,11 @@ template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( CParticleEmitter**
 	activeGUI->SetDropdownValue( newProp.element, (int)Get<CParticleEmitter*>( newProp.value ) );
 	propertyList.push_back( newProp );
 }
-template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( glMaterial* value )
+template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( RrMaterial* value )
 {
 	ListElement_t newProp;
-	//Set<glMaterial*>( newProp.value, *value );
-	//Set<glMaterial*>( newProp.previous, *value );
+	//Set<RrMaterial*>( newProp.value, *value );
+	//Set<RrMaterial*>( newProp.previous, *value );
 	newProp.type = 9;
 	newProp.element = activeGUI->CreateMaterialfield( activeGUI->GetFromPointer( this ), value->getName(), value );
 	propertyList.push_back( newProp );
@@ -276,7 +276,7 @@ void CDuskGUIPropertyview::Update ( void )
 					Set<CParticleEmitter*>( propertyList[i].target, Get<CParticleEmitter*>( propertyList[i].value ) );
 				}
 				break;
-			case 9: // glMaterial pointer
+			case 9: // RrMaterial pointer
 				//string dummyVar = 
 				//activeGUI->UpdateTextfield( propertyList[i].element, *((string*)propertyList[i].target) );
 				// Should be automatically managed

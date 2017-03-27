@@ -11,13 +11,13 @@ ARSINGLETON_CPP_DEF(PhysicalResources);
 
 #define HANDLE_REFERENCE_DECREMENT(LISTING) \
 	HANDLE_REFERENCE_FIND(LISTING) { \
-		if ( itr->second.refCount == 0 ) throw Core::NullReferenceException(); \
+		if ( itr->second.refCount == 0 ) throw core::NullReferenceException(); \
 		itr->second.refCount--; return; \
-	} throw Core::NullReferenceException();
+	} throw core::NullReferenceException();
 
 void PhysicalResources::AddAnimationSet ( const char* filename, CAnimationSet* animSet )
 {
-	HANDLE_REFERENCE_FIND(animSets) throw Core::InvalidCallException();
+	HANDLE_REFERENCE_FIND(animSets) throw core::InvalidCallException();
 	animationset_reference_t ref;
 	ref.refCount = 0;
 	ref.set = animSet;
@@ -26,7 +26,7 @@ void PhysicalResources::AddAnimationSet ( const char* filename, CAnimationSet* a
 
 void PhysicalResources::AddSkeleton ( const char* filename, Animation::Skeleton& skeleton )
 {
-	HANDLE_REFERENCE_FIND(skellySets) throw Core::InvalidCallException();
+	HANDLE_REFERENCE_FIND(skellySets) throw core::InvalidCallException();
 	skelly_reference_t ref;
 	ref.refCount = 0;
 	ref.set = skeleton;
@@ -35,7 +35,7 @@ void PhysicalResources::AddSkeleton ( const char* filename, Animation::Skeleton&
 
 void PhysicalResources::AddPhysMeshSet ( const char* filename, std::vector<physMesh*>& meshSet )
 {
-	HANDLE_REFERENCE_FIND(physmeshSets) throw Core::InvalidCallException();
+	HANDLE_REFERENCE_FIND(physmeshSets) throw core::InvalidCallException();
 	physmeshset_reference_t ref;
 	ref.refCount = 0;
 	ref.set = meshSet;
@@ -44,7 +44,7 @@ void PhysicalResources::AddPhysMeshSet ( const char* filename, std::vector<physM
 
 void PhysicalResources::AddHitboxSet ( const char* filename, std::vector<sHitbox>& hitboxSet )
 {
-	HANDLE_REFERENCE_FIND(hitboxSets) throw Core::InvalidCallException();
+	HANDLE_REFERENCE_FIND(hitboxSets) throw core::InvalidCallException();
 	hitbox_reference_t ref;
 	ref.refCount = 0;
 	ref.set = hitboxSet;

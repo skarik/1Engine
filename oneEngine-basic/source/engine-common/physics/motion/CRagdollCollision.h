@@ -31,8 +31,8 @@ public:
 	ENGCOM_API ftype	GetMultiplier ( physRigidBody* );
 
 private:
-	void CreateJoints ( std::vector<Core::TransformLite>& pose_model );
-	void CreateMapping ( std::vector<Core::TransformLite>& pose_model );
+	void CreateJoints ( std::vector<core::TransformLite>& pose_model );
+	void CreateMapping ( std::vector<core::TransformLite>& pose_model );
 
 	CSkinnedModel*		m_skinnedmodel;
 	CActor*				m_owning_actor;

@@ -4,7 +4,7 @@
 #include "CDuskGUIColorpicker.h"
 #include "../dialogues/DGUI_DialogueColorpicker.h"
 #include "core/system/Screen.h" // Include screen properties
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/CBitmapFont.h"
 #include "renderer/system/glMainSystem.h" // Include the main system
 #include "renderer/system/glDrawing.h"

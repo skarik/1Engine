@@ -53,8 +53,8 @@ int EngineCommonInitialize ( void )
 	Lua::Controller->RunLuaFile( "sys_engine.lua" );
 
 	// Register Renderer info
-	Engine::Console->AddConsoleFunc( "recompile_shader",	Renderer::con_recompile_shader );
-	Engine::Console->AddConsoleFunc( "recompile_shaders",	Renderer::con_recompile_shaders );
+	Engine::Console->AddConsoleFunc( "recompile_shader",	renderer::con_recompile_shader );
+	Engine::Console->AddConsoleFunc( "recompile_shaders",	renderer::con_recompile_shaders );
 
 	// Debug tools
 	Engine::Console->AddConsoleFunc( "showtimes", EngineCommon::DebugToggleTimeProfilerUI );

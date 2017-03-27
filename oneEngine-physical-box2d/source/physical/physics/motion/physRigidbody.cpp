@@ -24,7 +24,7 @@ _FORCE_INLINE_ PHYS_API physCollidable* physRigidBody::getCollidableRw ( void )
 	//return body->getCollidableRw();
 	//fixture->GetBody();
 	//return fixture;
-	throw Core::InvalidCallException();
+	throw core::InvalidCallException();
 }
 
 
@@ -49,7 +49,7 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setCollisionFilterInfo ( const b2Fil
 _FORCE_INLINE_ PHYS_API void physRigidBody::setMotionType ( const hkpMotion::MotionType motion )
 {
 	//body->setMotionType( motion );
-	throw Core::InvalidCallException();
+	throw core::InvalidCallException();
 }
 _FORCE_INLINE_ PHYS_API hkpMotion::MotionType physRigidBody::getMotionType ( void ) const
 {
@@ -68,7 +68,7 @@ _FORCE_INLINE_ PHYS_API hkpMotion::MotionType physRigidBody::getMotionType ( voi
 _FORCE_INLINE_ PHYS_API void physRigidBody::setQualityType ( const hkpCollidableQualityType type )
 {
 	//body->setQualityType( type );
-	throw Core::InvalidCallException();
+	throw core::InvalidCallException();
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setAllowedPenetrationDepth ( const Real_32 penetration )
 {
@@ -77,7 +77,7 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setAllowedPenetrationDepth ( const R
 _FORCE_INLINE_ PHYS_API void physRigidBody::setShape ( const b2Shape* shape )
 {
 	//body->setShape(shape);
-	throw Core::InvalidCallException();
+	throw core::InvalidCallException();
 }
 
 
@@ -128,12 +128,12 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setAngularDamping ( const Real_32 da
 _FORCE_INLINE_ PHYS_API void physRigidBody::setMaxAngularVelocity ( Real_32 maxVel )
 {
 	//body->setMaxAngularVelocity( maxVel );
-	//throw Core::NotYetImplementedException();
+	//throw core::NotYetImplementedException();
 }
 _FORCE_INLINE_ PHYS_API Real_32 physRigidBody::getMaxAngularVelocity ( void ) const
 {
 	//return body->getMaxAngularVelocity();
-	//throw Core::NotYetImplementedException();
+	//throw core::NotYetImplementedException();
 	return INFINITY;
 }
 
@@ -172,14 +172,14 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setRotation ( const Quaternion& newR
 {
 	//body->setRotation( hkQuaternion( newRotation.x, newRotation.y, newRotation.z, newRotation.w ) );
 	//body->SetTransform( body->GetPosition(), newRotation.GetEulerAngles().z );
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 _FORCE_INLINE_ PHYS_API const Quaternion physRigidBody::getRotation ( void ) const
 {
 	/*Quaternion result;
 	body->getRotation().m_vec.store4( &(result.x) );
 	return result;*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setPositionAndRotation ( const Vector3d& position, const Quaternion& rotation )
 {
@@ -208,19 +208,19 @@ _FORCE_INLINE_ PHYS_API const Vector4d physRigidBody::getAngularVelocity ( void 
 	/*Vector4d result;
 	body->getAngularVelocity().store4( &(result.x) );
 	return result;*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 
 _FORCE_INLINE_ PHYS_API void physRigidBody::addContactListener ( physContactListener* listener )
 {
 	//body->addContactListener( listener );
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::removeContactListener ( physContactListener* listener )
 {
 	//body->removeContactListener( listener );
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 
@@ -245,5 +245,5 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::GetTranslation ( CTransform* transfo
 _FORCE_INLINE_ PHYS_API void physRigidBody::ForcePropertyUpdate ( void )
 {
 	//CPhysics::ForceEntityUpdate( body );
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }

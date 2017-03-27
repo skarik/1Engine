@@ -79,7 +79,7 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents
 	boxShape->SetAsBox( vHalfExtents.x,vHalfExtents.y );
 	return boxShape;*/
 
-	throw Core::DeprecatedCallException();
+	throw core::DeprecatedCallException();
 }
 FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents, Vector3d vCenterOffset )
 {
@@ -98,7 +98,7 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents
 	boxShape->SetAsBox( vHalfExtents.x,vHalfExtents.y, b2Vec2(vCenterOffset.x,vCenterOffset.y), 0 );
 	return boxShape;*/
 
-	throw Core::DeprecatedCallException();
+	throw core::DeprecatedCallException();
 }
 // Create a capsule shape
 FORCE_INLINE PHYS_API physShape* Physics::CreateCapsuleShape ( Vector3d vStart, Vector3d vEnd, float fRadius )
@@ -108,7 +108,7 @@ FORCE_INLINE PHYS_API physShape* Physics::CreateCapsuleShape ( Vector3d vStart, 
 	hkpCapsuleShape* capsuleShape = new hkpCapsuleShape( start, end, fRadius ); // creates a capsule with a axis between "start" and "end", and the specified "radius"
 	
 	return capsuleShape;*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 FORCE_INLINE PHYS_API physShape* Physics::CreateSphereShape ( float fRadius )
 {
@@ -117,7 +117,7 @@ FORCE_INLINE PHYS_API physShape* Physics::CreateSphereShape ( float fRadius )
 	/*b2CircleShape* circleShape = new b2CircleShape;
 	circleShape->m_radius = fRadius;
 	return circleShape;*/
-	throw Core::DeprecatedCallException();
+	throw core::DeprecatedCallException();
 }
 // Create a cylinder shape
 FORCE_INLINE PHYS_API physShape* Physics::CreateCylinderShape ( Vector3d vStart, Vector3d vEnd, float fRadius, float fConvexRadius )
@@ -127,7 +127,7 @@ FORCE_INLINE PHYS_API physShape* Physics::CreateCylinderShape ( Vector3d vStart,
 	hkpCylinderShape* cylinderShape = new hkpCylinderShape( start, end, fRadius, fConvexRadius ); // creates a cylinder with a axis between "start" and "end", and the specified "radius"
 	
 	return cylinderShape;*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 // Creates a mesh shape using a set of physics vertices.
 FORCE_INLINE PHYS_API physShape*	Physics::CreateConvMeshShape ( CPhysicsData* pMesh )
@@ -156,7 +156,7 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateConvMeshShape ( CPhysicsData* pM
 	//pWorld->unmarkForRead();
 	// Return the new shape
 	return ((physShape*)meshShape);*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 // Creates a mesh shape using a set of physics vertices.
 FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( CPhysicsData* pMesh )
@@ -189,7 +189,7 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( CPhysicsData* pMesh 
 
 	// Return the new shape
 	return ((physShape*)meshShape);*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 FORCE_INLINE PHYS_API physShape* Physics::CreateMeshShape ( CTerrainVertex* pVertices, CModelQuad* pQuads, unsigned short vertexCount, unsigned short faceCount )
 {
@@ -228,7 +228,7 @@ FORCE_INLINE PHYS_API physShape* Physics::CreateMeshShape ( CTerrainVertex* pVer
 
 	// Return the new shape
 	return ((physShape*)meshShape);*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 // Creates a mesh shape using a set of model vertices.
 FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( CModelData const* pMesh )
@@ -265,7 +265,7 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( CModelData const* pM
 	//	-that takes triangles
 	//	-implements raycast from b2EdgeShape
 	//	-removes double verts??? look into b2PolygonShape for shit to steal
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 // Creates a faster, but RAM eating mesh shape from the given data. Should be used for larger objects that change often
 FORCE_INLINE PHYS_API physShape* Physics::CreateFastMeshShape ( Vector3d* pVertices, CModelTriangle* pTris, unsigned short vertexCount, unsigned short faceCount )
@@ -304,7 +304,7 @@ FORCE_INLINE PHYS_API physShape* Physics::CreateFastMeshShape ( Vector3d* pVerti
 	// Return the new shape
 	return ((physShape*)moppBvShape);
 	*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 // Freeing shapes
@@ -376,7 +376,7 @@ FORCE_INLINE PHYS_API void Physics::FreeRigidBody ( b2Body* pRigidBody )
 //	tempTransform.setTranslation( tempVect );
 //
 //	pRigidBody->setTransform( tempTransform );*/
-//	throw Core::NotYetImplementedException();
+//	throw core::NotYetImplementedException();
 //}
 //// Grabbing their info
 //FORCE_INLINE PHYS_API void Physics::GetRigidBodyTransform ( physRigidBody* pRigidBody, CTransform* pTargetTransform )
@@ -412,7 +412,7 @@ FORCE_INLINE PHYS_API void Physics::FreeRigidBody ( b2Body* pRigidBody )
 //	// offset the object
 //	pTargetTransform->position += temp3Vect;*/
 //
-//	throw Core::NotYetImplementedException();
+//	throw core::NotYetImplementedException();
 //}
 //// Grabbing their info (position only)
 //FORCE_INLINE PHYS_API void Physics::GetRigidBodyTranslation( physRigidBody* pRigidBody, CTransform* pTargetTransform )
@@ -422,7 +422,7 @@ FORCE_INLINE PHYS_API void Physics::FreeRigidBody ( b2Body* pRigidBody )
 //	// translation
 //	hkVector4 tempVect = pRigidBody->getTransform().getTranslation();
 //	tempVect.store3( &(pTargetTransform->position.x) );*/
-//	throw Core::NotYetImplementedException();
+//	throw core::NotYetImplementedException();
 //}
 
 //==Phantoms==
@@ -437,7 +437,7 @@ FORCE_INLINE PHYS_API physCollisionVolume* Physics::CreateAABBPhantom ( physAabb
 
 	// Return the new object
 	return pPhantom;*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 // Create a phantom using a collider
 FORCE_INLINE PHYS_API physCollisionVolume* Physics::CreateShapePhantom ( physShape* pShape, CTransform* pSourceTransform, unsigned int iOwnerID )
@@ -454,14 +454,14 @@ FORCE_INLINE PHYS_API physCollisionVolume* Physics::CreateShapePhantom ( physSha
 
 	// Return the new object
 	return pPhantom;*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 // Remove phantom
 FORCE_INLINE PHYS_API void Physics::FreePhantom ( physCollisionVolume* pCollisionVolume )
 {
 	/*World()->removePhantom( pCollisionVolume );*/
 	// TODO: remove reference?
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 // Checking for phantom collisions contacts
 FORCE_INLINE PHYS_API void Physics::CheckPhantomContacts ( physCollisionVolume* pCollisionVolume )
@@ -469,12 +469,12 @@ FORCE_INLINE PHYS_API void Physics::CheckPhantomContacts ( physCollisionVolume* 
 	/*hkpFlagCdBodyPairCollector collisionAccumulation;
 
 	((hkpShapePhantom*)pCollisionVolume)->getPenetrations( collisionAccumulation );*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 // Modifiy shapes
 FORCE_INLINE PHYS_API void Physics::SetPhantomAABB( physCollisionVolume* m_phantom, physAabb* m_aabb )
 {
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 // Creation of a trigger phantom
 FORCE_INLINE PHYS_API physRigidBody* Physics::CreateTriggerVolume ( physRigidBodyInfo* pBodyInfo, physShape* pShape, physPhantomCallbackShape* pCbPhantom )
@@ -494,7 +494,7 @@ FORCE_INLINE PHYS_API physRigidBody* Physics::CreateTriggerVolume ( physRigidBod
 	bvShape->removeReference();
 
 	return pRigidBody;*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 //=========================================//
@@ -505,14 +505,14 @@ FORCE_INLINE PHYS_API physRigidBody* Physics::CreateTriggerVolume ( physRigidBod
 FORCE_INLINE PHYS_API void Physics::Raycast( const physWorldRayCastInput& input, physRayHitCollector& collector )
 {
 	//Physics::World()->castRay ( input, collector );
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 // Cast a shape
 //PHYS_API static void Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, uint32_t collisionFilter = 0, void* mismatch=NULL );
 FORCE_INLINE PHYS_API void Physics::Linearcast( const physCollidable* collA, const physLinearCastInput& input, physCdPointCollector& castCollector, physCdPointCollector* startCollector )
 {
 	//Physics::World()->linearCast( collA, input, castCollector, startCollector );
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 //==Collision==
@@ -567,14 +567,14 @@ FORCE_INLINE PHYS_API physCollisionFilter Physics::GetCollisionFilter ( int laye
 FORCE_INLINE PHYS_API physCollisionInput* Physics::GetCollisionCollector ( void )
 {
 	//return (physCollisionInput*)World()->getCollisionInput();
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 // Get closest points to a collider
 FORCE_INLINE PHYS_API void Physics::GetClosestPoints ( const physCollidable* collA, const physCollisionInput& input, physCdPointCollector& collector )
 {
 	//World()->getClosestPoints( collA, input, collector );
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 //=========================================//
@@ -583,29 +583,29 @@ FORCE_INLINE PHYS_API void Physics::GetClosestPoints ( const physCollidable* col
 FORCE_INLINE PHYS_API void Physics::AddEntity ( physEntity* entity )
 {
 	//Physics::World()->addEntity(entity);
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 FORCE_INLINE PHYS_API void Physics::ForceEntityUpdate ( physEntity* entity )
 {
 	//Physics::World()->updateCollisionFilterOnEntity( entity, HK_UPDATE_FILTER_ON_ENTITY_FULL_CHECK, HK_UPDATE_COLLECTION_FILTER_PROCESS_SHAPE_COLLECTIONS ); //todo
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 FORCE_INLINE PHYS_API void Physics::AddConstraint ( physConstraintInstance* constraint )
 {
 	//Physics::World()->addConstraint( constraint );
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 FORCE_INLINE PHYS_API void Physics::AddPhantom ( physPhantom* phantom )
 {
 	//Physics::World()->addPhantom( phantom );
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 FORCE_INLINE PHYS_API void Physics::AddListener ( physWorldPostSimulationListener* listener )
 {
 	//Physics::World()->addWorldPostSimulationListener( listener );
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 FORCE_INLINE PHYS_API void Physics::RemoveReference ( physObject* entity )

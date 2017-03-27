@@ -7,7 +7,7 @@ _FORCE_INLINE_ PHYS_API physCharacter::physCharacter( hkpCharacterRigidBodyCinfo
 	/*controller = new hkpCharacterRigidBody( *info );
 	Physics::AddEntity( controller->getRigidBody() );
 	body = controller->m_character;*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 
@@ -19,7 +19,7 @@ _FORCE_INLINE_ PHYS_API void physCharacter::setLinearVelocity ( const Vector3d& 
 	else {
 		physRigidBody::setLinearVelocity( newVel );
 	}*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 _FORCE_INLINE_ PHYS_API Vector3d physCharacter::getLinearVelocity ( void )
 {
@@ -29,6 +29,6 @@ _FORCE_INLINE_ PHYS_API Vector3d physCharacter::getLinearVelocity ( void )
 		return result;
 	}
 	return physRigidBody::getLinearVelocity();*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 

@@ -12,16 +12,16 @@ class physCylinderShape : public physShape
 public:
 	explicit physCylinderShape ( const Vector3d& n_min, const Vector3d& n_max, const Real radius )
 	{
-		throw Core::NotYetImplementedException();
+		throw core::NotYetImplementedException();
 	}
 
 	void setVertex ( const int vertex, const Vector3d& position )
 	{
-		throw Core::NotYetImplementedException();
+		throw core::NotYetImplementedException();
 	}
 	void setRadius ( const Real radius )
 	{
-		throw Core::NotYetImplementedException();
+		throw core::NotYetImplementedException();
 	}
 
 };

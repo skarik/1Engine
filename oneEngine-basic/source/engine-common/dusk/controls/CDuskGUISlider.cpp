@@ -126,10 +126,10 @@ void CDuskGUISlider::Render ( void )
 		}
 		// draw slider
 		/*glColor4f(
-			!hasFocus ? glMaterial::current->diffuse.red * 0.6f : glMaterial::current->diffuse.red * 1.1f,
-			!hasFocus ? glMaterial::current->diffuse.green * 0.6f : glMaterial::current->diffuse.green * 1.1f,
-			!hasFocus ? glMaterial::current->diffuse.blue * 0.6f : glMaterial::current->diffuse.blue * 1.1f,
-			glMaterial::current->diffuse.alpha * 0.6f );
+			!hasFocus ? RrMaterial::current->diffuse.red * 0.6f : RrMaterial::current->diffuse.red * 1.1f,
+			!hasFocus ? RrMaterial::current->diffuse.green * 0.6f : RrMaterial::current->diffuse.green * 1.1f,
+			!hasFocus ? RrMaterial::current->diffuse.blue * 0.6f : RrMaterial::current->diffuse.blue * 1.1f,
+			RrMaterial::current->diffuse.alpha * 0.6f );
 		GLd.DrawSet2DMode( GL.D2D_WIRE );*/
 		drawRectWire( Rect( rect.pos.x + rect.size.x*(valPercent-0.03f), rect.pos.y, rect.size.x*0.06f, rect.size.y ) );
 

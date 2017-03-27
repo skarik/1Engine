@@ -11,7 +11,7 @@
 #include "engine/behavior/CGameBehavior.h"
 #include "engine2d/interface/Tileset.h"
 
-namespace Renderer
+namespace renderer
 {
 	class TileMapLayer;
 }
@@ -92,7 +92,7 @@ namespace Engine2D
 		arstring<256>			m_sprite_file;
 
 		// list of layers used to render this
-		std::vector<Renderer::TileMapLayer*> m_render_layers;
+		std::vector<renderer::TileMapLayer*> m_render_layers;
 		// if this system is active
 		std::atomic<uint32_t>	m_state_flags;
 	};

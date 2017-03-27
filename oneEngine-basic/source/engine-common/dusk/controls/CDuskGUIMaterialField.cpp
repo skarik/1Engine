@@ -1,10 +1,10 @@
 
 #include "../CDuskGUI.h"
 #include "CDuskGUIMaterialField.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glDrawing.h"
 
-DuskGUI::Handle CDuskGUI::CreateMaterialfield ( const Handle& parent, const string& defVal, glMaterial* mat )
+DuskGUI::Handle CDuskGUI::CreateMaterialfield ( const Handle& parent, const string& defVal, RrMaterial* mat )
 {
 	vElements.push_back( new CDuskGUIMaterialField() );
 	vElements.back()->parent = parent;
@@ -12,7 +12,7 @@ DuskGUI::Handle CDuskGUI::CreateMaterialfield ( const Handle& parent, const stri
 	((CDuskGUIMaterialField*)vElements.back())->target = mat;
 	return Handle(vElements.size()-1);
 }
-void CDuskGUI::SetMaterialfieldTarget ( const Handle& handle, glMaterial* mat )
+void CDuskGUI::SetMaterialfieldTarget ( const Handle& handle, RrMaterial* mat )
 {
 	CDuskGUIMaterialField* tf = (CDuskGUIMaterialField*)vElements[int(handle)];
 	tf->target = mat;
@@ -23,7 +23,7 @@ void CDuskGUIMaterialField::Update ( void )
 	CDuskGUITextfield::Update();
 
 	if ( lastTextValue != textValue ) {
-		hasValidValue = glMaterial::isValidFile( textValue.c_str() );
+		hasValidValue = RrMaterial::isValidFile( textValue.c_str() );
 		if ( hasValidValue ) {
 			if ( target ) {
 				target->loadFromFile( textValue.c_str() );

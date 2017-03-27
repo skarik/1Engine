@@ -46,6 +46,12 @@ namespace Engine2D
 
 	class AnimationContainer : public SpriteContainer
 	{
+	protected:
+		//		SpriteContainer (Constructor)
+		ENGINE2D_API explicit		AnimationContainer ( Vector3d* position, Real* angle = NULL, Vector3d* scale = NULL );
+		//		SpriteContinaer (Destructor)
+		ENGINE2D_API				~AnimationContainer ( void );
+
 	private:
 		//		PreStep()
 		// Updates SpriteContainer properties, and then updates texture transformation uniforms used for animation.
@@ -77,7 +83,7 @@ namespace Engine2D
 	private:
 
 		//	Animation listing.
-		std::vector< std::pair<animation_entry_t, AnimationContainerSubstate*> > m_animations;
+		std::vector< std::pair<animation_entry_t*, AnimationContainerSubstate*> > m_animations;
 		// Current playing animation
 		uint32_t m_current_animation;
 
@@ -108,7 +114,7 @@ namespace Engine2D
 		uint32_t			m_frame;		// Current animation frame
 
 											//		Private constructor
-		AnimationContainerSubstate ( const uint32_t n_index, AnimationContainer* n_owner, animation_entry_t* n_entry )
+		explicit AnimationContainerSubstate ( const uint32_t n_index, AnimationContainer* n_owner, animation_entry_t* n_entry )
 			: m_index(n_index), m_owner(n_owner), m_entry(n_entry), time(0), timescale(1.0F), m_frame(0)
 		{
 			// Create length of the animation now

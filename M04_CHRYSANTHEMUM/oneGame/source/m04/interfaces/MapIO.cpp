@@ -306,7 +306,7 @@ void M04::MapIO::Load ( void )
 				Engine2D::AreaTrigger* area = NULL;
 					 if ( strcmp( topper.name, "AreaTrigger" ) == 0 )		area = new Engine2D::AreaTrigger;
 				else if ( strcmp( topper.name, "AreaPlayerSpawn" ) == 0 )	area = new Engine2D::AreaPlayerSpawn;
-				else throw Core::InvalidInstantiationException();
+				else throw core::InvalidInstantiationException();
 				area->RemoveReference();
 
 				memcpy( &area->m_rect, buffer, sizeof(Rect) );

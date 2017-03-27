@@ -78,7 +78,7 @@ public:
 		}
 		else if ( n_collision.m_collider_This != m_rb->pCollider )
 		{
-			throw Core::CorruptedDataException();
+			throw core::CorruptedDataException();
 		}
 
 		// Apply the event

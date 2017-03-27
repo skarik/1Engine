@@ -25,7 +25,7 @@ private:
 		void _free ( void ) \
 		{ \
 			if ( mActive != this ) \
-				throw Core::InvalidInstantiationException(); \
+				throw core::InvalidInstantiationException(); \
 			mActive = NULL; \
 		} 
 #define ARSINGLETON_H_ACCESS(T) \

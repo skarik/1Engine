@@ -49,7 +49,7 @@ int GameInitialize ( void )
 	// create testers
 	//new CAfterWaterTester();
 	//new CWindMotion();
-	Renderer::Options::TextureStreaming( false );
+	renderer::Options::TextureStreaming( false );
 
 	return 0;
 }

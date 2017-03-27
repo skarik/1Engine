@@ -118,7 +118,7 @@ Vector3d CTransform::Side ( void )
 // Unlinker
 void CTransform::UnlinkChildren ( void )
 {
-	throw Core::DeprecatedCallException();
+	throw core::DeprecatedCallException();
 
 	/*for ( vector<CTransform*>::iterator child = children.begin(); child != children.end(); ++child )
 	{
@@ -138,7 +138,7 @@ void CTransform::UnlinkChildren ( void )
 // Set Parent
 void CTransform::SetParent ( CTransform * pNewParent, bool onDeathlink )
 {
-	throw Core::DeprecatedCallException();
+	throw core::DeprecatedCallException();
 
 	if ( _parent != NULL && !_is_ready )
 		LateUpdate();
@@ -189,7 +189,7 @@ void CTransform::SetParent ( CTransform * pNewParent, bool onDeathlink )
 			localRotation = (_parent->GetTransformMatrixRot().inverse().getRotator() * rotation);
 			// Just take the new scale, I guess
 			localScale = Vector3d( scale.x/_parent->scale.x, scale.y/_parent->scale.y, scale.z/_parent->scale.z );*/
-			Core::TransformUtility::WorldToLocal(
+			core::TransformUtility::WorldToLocal(
 				_parent->WorldMatrix().inverse(), _parent->WorldRotation().inverse().getRotator(), _parent->scale,
 				position, rotation, scale,
 				localPosition, localRotation, localScale );
@@ -328,7 +328,7 @@ void CTransform::LateUpdate ( void )
 			matxLocal = transMatrix*((rotMatrix)*scalMatrix);
 			matxLocalRot = rotMatrix;*/
 		}
-		Core::TransformUtility::TRSToMatrix4x4(
+		core::TransformUtility::TRSToMatrix4x4(
 			localPosition, localRotation, localScale,
 			matxLocal, matxLocalRot );
 
@@ -383,7 +383,7 @@ void CTransform::LateUpdate ( void )
 			matxLocalRot = rotMatrix;*/
 		}
 
-		/*Core::TransformUtility::TRSToMatrix4x4(
+		/*core::TransformUtility::TRSToMatrix4x4(
 			localPosition, localRotation, localScale,
 			matxLocal, matxLocalRot );
 		// Set the global matrices
@@ -419,7 +419,7 @@ void CTransform::SetTransform ( Vector3d inPos, Rotator inRot, Vector3d inScal )
 			localRotation = (_parent->GetTransformMatrixRot().inverse().getRotator() * rotation);
 			// Just take the new scale, I guess
 			localScale = Vector3d( scale.x/_parent->scale.x, scale.y/_parent->scale.y, scale.z/_parent->scale.z );*/
-			Core::TransformUtility::WorldToLocal(
+			core::TransformUtility::WorldToLocal(
 				_parent->WorldMatrix().inverse(), _parent->WorldRotation().inverse().getRotator(), _parent->scale,
 				position, rotation, scale,
 				localPosition, localRotation, localScale );
@@ -431,7 +431,7 @@ void CTransform::SetLocalTransform ( Matrix4x4 & inMatrix )
 {
 	if ( _parent == NULL ) 
 	{
-		throw Core::NotYetImplementedException();
+		throw core::NotYetImplementedException();
 		//SetTransform( inMatrix );
 	}
 	else
@@ -621,7 +621,7 @@ void CTransform::PropogateTransforms ( void )
 	// Check for a ridiculous number of transforms
 	if ( CTransform::root.children.size() > 8191 )
 	{	// If there's this many transforms, there's likely an issue occuring with the world.
-		throw Core::YouSuckException();
+		throw core::YouSuckException();
 	}
 
 	// Create a job for each base-level transform to update

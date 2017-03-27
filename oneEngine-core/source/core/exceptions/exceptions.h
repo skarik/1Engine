@@ -14,7 +14,7 @@
 #	define	EXCEPTION_CATCH_END } catch ( const std::exception& e ) { Debug::Console->PrintWarning( e.what() ); __debugbreak(); }
 #endif
 
-namespace Core
+namespace core
 {
 	class NotYetImplementedException : public std::runtime_error
 	{

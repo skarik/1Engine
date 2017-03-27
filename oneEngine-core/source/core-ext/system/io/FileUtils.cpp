@@ -13,8 +13,8 @@ bool IO::ModelExists ( const std::string& n_filename )
 
 	// Now check both path types
 	std::string results [2];
-	results[0] = Core::Resources::PathTo( mfilename + ".PAD" );
-	results[1] = Core::Resources::PathTo( mfilename + ".FBX" );
+	results[0] = core::Resources::PathTo( mfilename + ".PAD" );
+	results[1] = core::Resources::PathTo( mfilename + ".FBX" );
 
 	// Check file exists by simple open for read
 	return FileExists( results[0] ) || FileExists( results[1] );

@@ -8,7 +8,7 @@
 #include "core/math/Math.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 
 #include <algorithm>
 

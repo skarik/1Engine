@@ -40,7 +40,7 @@ CAnimation::CAnimation ( CAnimation* pFoundReference )
 	}
 	else
 	{
-		throw Core::InvalidArgumentException();
+		throw core::InvalidArgumentException();
 	}
 
 	_AnimationInstances.push_back(this);
@@ -260,7 +260,7 @@ bool CAnimation::AddOutput ( Animation::Skeleton* output, Animation::BoneMapper&
 	{
 		if ( output == output_itr->target )
 		{
-			throw Core::InvalidCallException();
+			throw core::InvalidCallException();
 			return false;
 		}
 	}
@@ -322,7 +322,7 @@ void CAnimation::Update ( const Real deltaTime )
 				if ( currentAction.weight > 0.001f )
 				{
 					//currentAction.Sample( pAnimationSet, skeleton.animation_xpose );
-					throw Core::NotYetImplementedException();
+					throw core::NotYetImplementedException();
 				}
 			}
 

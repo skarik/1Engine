@@ -4,7 +4,7 @@
 #include "core/math/Math3d.h"
 #include "core/containers/arstring.h"
 #include "engine/behavior/CGameBehavior.h"
-#include "engine2d/interface/SpriteContainer.h"
+#include "engine2d/interface/AnimationContainer.h"
 
 class CInputControl;
 class COrthoCamera;
@@ -15,7 +15,7 @@ namespace M04
 {
 	//		PlayerLeyo
 	// Basic main character nonsense.
-	class PlayerLeyo : public CGameBehavior, public Engine2D::SpriteContainer
+	class PlayerLeyo : public CGameBehavior, public Engine2D::AnimationContainer
 	{
 	public:
 		explicit		PlayerLeyo ( void );

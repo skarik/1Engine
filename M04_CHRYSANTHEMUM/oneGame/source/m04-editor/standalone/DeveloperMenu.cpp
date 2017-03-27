@@ -20,7 +20,7 @@ DeveloperMenu::DeveloperMenu ( void )
 {
 	// Create background
 	{
-		CRenderable2D* bg = new Renderer::Background2D();
+		CRenderable2D* bg = new renderer::Background2D();
 		(new CRendererHolder (bg))->RemoveReference();
 	}
 	// Build Dusk Gui

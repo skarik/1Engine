@@ -2,7 +2,7 @@
 #include "core/system/Screen.h"
 #include "renderer/texture/CRenderTexture.h"
 #include "renderer/state/CRenderState.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 
 #include "render2d/state/WorldPalette.h"
 
@@ -48,7 +48,7 @@ void COrthoCamera::UpdateMatrix ( void )
 		ortho_size.y = viewport_target.size.y;
 		break;
 	case ORTHOSCALE_MODE_TOUCH_INSIDE:
-		throw Core::NotYetImplementedException();
+		throw core::NotYetImplementedException();
 		/*
 		Real targetdim_view  = 
 
@@ -59,7 +59,7 @@ void COrthoCamera::UpdateMatrix ( void )
 		*/
 		break;
 	case ORTHOSCALE_MODE_TOUCH_OUTSIDE:
-		throw Core::NotYetImplementedException();
+		throw core::NotYetImplementedException();
 		break;
 	}
 
@@ -70,13 +70,13 @@ void COrthoCamera::UpdateMatrix ( void )
 // Update parameters needed for 2D rendering
 void COrthoCamera::RenderSet ( void )
 {
-	glMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( RENDER_MODE_DEFERRED, Renderer::SP_MODE_2DPALETTE );
+	RrMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( RENDER_MODE_DEFERRED, renderer::SP_MODE_2DPALETTE );
 	palette_pass_material->setTexture(TEX_SLOT5, (CTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
 	palette_pass_material->setTexture(TEX_SLOT6, (CTexture*)Render2D::WorldPalette::Active()->GetTexture3D());	// Set 3D lookup
 	// Remove filtering on the upscaling pass
 	SceneRenderer->GetDeferredBuffer()->SetFilter( SamplingPoint );
 
-	glMaterial::special_mode = Renderer::SP_MODE_2DPALETTE;
+	RrMaterial::special_mode = renderer::SP_MODE_2DPALETTE;
 
 	// Set up the camera normally
 	CCamera::RenderSet();

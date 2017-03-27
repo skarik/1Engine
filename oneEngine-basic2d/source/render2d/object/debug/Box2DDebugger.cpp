@@ -2,7 +2,7 @@
 #include "Box2DDebugger.h"
 
 #include "physical/physics/CPhysics.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 
 #include "renderer/debug/CDebugDrawer.h"
@@ -12,7 +12,7 @@ Box2DDebugger::Box2DDebugger ( void )
 {
 	Physics::SetDebugRenderer(this);
 
-	glMaterial* new_material = glMaterial::Default->copy();
+	RrMaterial* new_material = RrMaterial::Default->copy();
 	new_material->deferredinfo.clear();
 	SetMaterial( new_material );
 	new_material->removeReference();

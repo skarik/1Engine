@@ -55,7 +55,7 @@ void Render2D::Preprocess::DataToLUT ( pixel_t* io_pixel_data, const uint n_pixe
 		}
 		else
 		{
-			throw Core::MissingDataException();
+			throw core::MissingDataException();
 		}
 		// Go to next pixel
 		current_pixel++;

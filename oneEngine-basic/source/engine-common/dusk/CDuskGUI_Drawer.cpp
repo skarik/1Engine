@@ -2,7 +2,7 @@
 // Include Header
 #include "core/time.h"
 #include "core/math/Math.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/CBitmapFont.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"

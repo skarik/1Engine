@@ -82,7 +82,7 @@ private:
 // Returns the ragdoll pose int vModelSkelly
 void CHKAnimation::GetRagdollPose( skeletonBone_t* rootBone, std::vector<skeletonBone_t*> &vModelSkelly )
 {
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 	//hkArray<hkQsTransform> nextTransforms;
 	//nextTransforms.setSize( mSkelly->m_bones.getSize() );
 	//hkArray<hkReal> tempReals;
@@ -122,7 +122,7 @@ void CHKAnimation::GetRagdollPose( skeletonBone_t* rootBone, std::vector<skeleto
 // Cleanup
 CHKAnimation::~CHKAnimation ( void )
 {
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 	////delete mSkelly;
 	//mSkelly->removeReference();
 	////mAnimSkelly->removeReference();
@@ -140,12 +140,12 @@ CHKAnimation::~CHKAnimation ( void )
 
 void CHKAnimation::SkeletonToHkaSkeleton ( void )
 {
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 void CHKAnimation::Update ( const Real deltaTime )
 {
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 //	// Create binding
 //	if ( mAnimBinding == NULL ) {
 //		mAnimBinding = new hkaAnimationBinding();

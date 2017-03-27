@@ -33,7 +33,7 @@ public:
 	Serializer&	operator&	( arstring<128> & ) override;
 	Serializer&	operator&	( arstring<256> & ) override;
 
-	//Serializer&	operator&	( glMaterial & ) override;
+	//Serializer&	operator&	( RrMaterial & ) override;
 
 	Serializer&	operator&	( std::vector<Color> & ) override;
 	

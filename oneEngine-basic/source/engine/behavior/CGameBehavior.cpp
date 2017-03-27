@@ -29,7 +29,7 @@ CGameBehavior::CGameBehavior ( void )
 CGameBehavior::~CGameBehavior ( void )
 {
 	if ( referenceCount > 0 ) {
-		throw Core::NullReferenceException();
+		throw core::NullReferenceException();
 	}
 	CGameState::Active()->RemoveBehavior( id );
 }

@@ -2,7 +2,7 @@
 #include "Background2D.h"
 #include "renderer/camera/CCamera.h"
 
-Renderer::Background2D::Background2D ( void )
+renderer::Background2D::Background2D ( void )
 	: CRenderable2D()
 {
 	// Create a model for a simple quad
@@ -44,13 +44,13 @@ Renderer::Background2D::Background2D ( void )
 	// Set the sprite to use to render the background
 	SetSpriteFile( "textures/black.jpg" );
 }
-Renderer::Background2D::~Background2D ( void )
+renderer::Background2D::~Background2D ( void )
 {
 	delete [] m_modeldata.triangles;
 	delete [] m_modeldata.vertices;
 }
 
-bool Renderer::Background2D::Render ( const char pass )
+bool renderer::Background2D::Render ( const char pass )
 {
 	// Set the position to follow the camera
 	transform.position = CCamera::activeCamera->transform.position;

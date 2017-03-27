@@ -12,6 +12,7 @@
 
 #include "core/types/ModelData.h"
 #include "renderer/object/CRenderableObject.h"
+#include "renderer/types/textureStructures.h"
 #include "render2d/types/spriteInfo.h"
 
 struct spriteGenParams2D_t
@@ -26,8 +27,11 @@ public:
 	RENDER2D_API virtual	~CRenderable2D ();
 
 	//		SetSpriteFile ( c-string sprite filename )
-	// Sets the sprite filename to load or convert
+	// Sets the sprite filename to load and possibly convert.
 	RENDER2D_API void		SetSpriteFile ( const char* n_sprite_filename );
+	//		SetSpriteFileAnimated ( c-string sprite filename )
+	// Sets the sprite filename to load and possibly convert, but provides returns for additional information.
+	RENDER2D_API void		SetSpriteFileAnimated ( const char* n_sprite_filename, Textures::timgInfo* o_img_info, Real** o_img_frametimes );
 
 	//		GetSpriteInfo ()
 	// Returns read-only reference to the current sprite information structure.

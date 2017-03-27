@@ -116,7 +116,7 @@ public:
 		if ( referenceCount > 0 )
 			referenceCount--;
 		else
-			throw Core::InvalidCallException();
+			throw core::InvalidCallException();
 	}
 	ENGINE_API void AddReference ( void ) { referenceCount++; }
 	ENGINE_API bool HasReference ( void ) { return (referenceCount != 0); }

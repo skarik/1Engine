@@ -11,7 +11,7 @@ class Vector3d;
 class Quaternion;
 class Rotator;
 class Color;
-//class glMaterial;
+//class RrMaterial;
 template <typename type>
 class RangeValue;
 
@@ -38,7 +38,7 @@ public:
 	virtual CBaseSerializer&	operator&	( arstring<128> & ) { return *this; };
 	virtual CBaseSerializer&	operator&	( arstring<256> & ) { return *this; };
 
-	//virtual CBaseSerializer&	operator&	( glMaterial & ) { return *this; };
+	//virtual CBaseSerializer&	operator&	( RrMaterial & ) { return *this; };
 
 	virtual CBaseSerializer&	operator&	( std::vector<Color> & ) { return *this; };
 

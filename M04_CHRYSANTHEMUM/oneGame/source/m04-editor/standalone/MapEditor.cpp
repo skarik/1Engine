@@ -15,7 +15,7 @@
 #include "renderer/camera/CCamera.h"
 #include "renderer/debug/CDebugDrawer.h"
 #include "renderer/light/CLight.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "render2d/camera/COrthoCamera.h"
 #include "render2d/object/Background2D.h"
 #include "render2d/object/TileMapLayer.h"
@@ -62,7 +62,7 @@ MapEditor::MapEditor ( void )
 		m_mapinfo->tilesize_y = 40;
 		// Set default ambient
 		m_mapinfo->env_ambientcolor = 0x808080FF;
-		Renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
+		renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
 	}
 	// Craete tile map
 	{
@@ -96,7 +96,7 @@ MapEditor::MapEditor ( void )
 	}
 	// Create background
 	{
-		CRenderable2D* bg = new Renderer::Background2D();
+		CRenderable2D* bg = new renderer::Background2D();
 		(new CRendererHolder (bg))->RemoveReference();
 	}
 	// Create area renderer
@@ -149,7 +149,7 @@ MapEditor::~MapEditor ( void )
 void MapEditor::Update ( void )
 {
 	// Update renderer
-	Renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
+	renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
 
 	// Update the editor
 	Dusk::Handle openDialogue = dusk->GetOpenDialogue();
@@ -732,7 +732,7 @@ void MapEditor::doIOSaving ( void )
 	// Open the file
 	FILE* fp = fopen( m_current_savetarget.c_str(), "wb" );
 	if ( fp == NULL )
-		throw Core::NullReferenceException();
+		throw core::NullReferenceException();
 
 	// Create mapio, set options
 	M04::MapIO io;
@@ -760,7 +760,7 @@ void MapEditor::doIOLoading ( void )
 	// Open the file
 	FILE* fp = fopen( m_current_savetarget.c_str(), "rb" );
 	if ( fp == NULL )
-		throw Core::NullReferenceException();
+		throw core::NullReferenceException();
 
 	// Create mapio, set options
 	M04::MapIO io;
@@ -782,7 +782,7 @@ void MapEditor::doIOLoading ( void )
 	// Force an update now
 	Update();
 	// Update the UI to new values
-	dusk->SetColorPicker( ui_fld_map_ambient_color, Renderer::Settings.ambientColor );
+	dusk->SetColorPicker( ui_fld_map_ambient_color, renderer::Settings.ambientColor );
 }
 
 //		doNewMap () : delete all items in map, clear out tilemap
@@ -812,7 +812,7 @@ void MapEditor::doNewMap ( void )
 	{
 		m_tilemap->Rebuild();
 	}
-	catch (Core::InvalidCallException&) {}
+	catch (core::InvalidCallException&) {}
 }
 
 //===============================================================================================//
@@ -1028,7 +1028,7 @@ void MapEditor::uiCreate ( void )
 		label = dusk->CreateText( panel, "Ambient Light" );
 		label.SetRect(Rect(20,250,0,0));
 		//field = dusk->CreateTextfield( panel, "808080FF" );
-		field = dusk->CreateColorPicker( panel, Renderer::Settings.ambientColor );
+		field = dusk->CreateColorPicker( panel, renderer::Settings.ambientColor );
 		field.SetRect(Rect(20,275,70,30) );
 		ui_fld_map_ambient_color = field;
 
@@ -1241,7 +1241,7 @@ void MapEditor::uiStepTopEdge ( void )
 		try {
 			m_tilemap->Rebuild();
 		}
-		catch ( Core::InvalidCallException& ) {
+		catch ( core::InvalidCallException& ) {
 			printf( "No tiles on new map. This is normal.\n" );
 		}
 	}
@@ -1395,8 +1395,8 @@ void MapEditor::uiStepShitPanel ( void )
 
 	// Do realtime changes:
 	{
-		dusk->GetColorPicker( ui_fld_map_ambient_color, Renderer::Settings.ambientColor );
-		m_mapinfo->env_ambientcolor = Renderer::Settings.ambientColor.GetCode();
+		dusk->GetColorPicker( ui_fld_map_ambient_color, renderer::Settings.ambientColor );
+		m_mapinfo->env_ambientcolor = renderer::Settings.ambientColor.GetCode();
 	}
 }
 //		uiDoShitRefresh () : S.H.I.T. panel reinit
@@ -1463,11 +1463,11 @@ void MapEditor::uiStepTilePanel ( void )
 		// In visual mode, change brightness of tiles
 
 		// Change brightness of tiles being edited
-		for ( Renderer::TileMapLayer* layer : m_tilemap->m_render_layers )
+		for ( renderer::TileMapLayer* layer : m_tilemap->m_render_layers )
 		{
 			if ( layer == NULL ) continue;
 
-			glMaterial* material = layer->GetMaterial();
+			RrMaterial* material = layer->GetMaterial();
 			if ( material != NULL )
 			{
 				if ( layer->source_layer_id == m_tile_layer_current )
@@ -1486,11 +1486,11 @@ void MapEditor::uiStepTilePanel ( void )
 	else
 	{
 		// Change brightness of tiles being edited
-		for ( Renderer::TileMapLayer* layer : m_tilemap->m_render_layers )
+		for ( renderer::TileMapLayer* layer : m_tilemap->m_render_layers )
 		{
 			if ( layer == NULL ) continue;
 
-			glMaterial* material = layer->GetMaterial();
+			RrMaterial* material = layer->GetMaterial();
 			if ( material != NULL )
 				material->m_diffuse = Color(1.0F, 1.0F, 1.0F, 1.0F);
 		}
@@ -1501,11 +1501,11 @@ void MapEditor::uiStepTilePanel ( void )
 void MapEditor::_uiStepTilePanel_End ( void )
 {
 	// Reset tile brightneess
-	for ( Renderer::TileMapLayer* layer : m_tilemap->m_render_layers )
+	for ( renderer::TileMapLayer* layer : m_tilemap->m_render_layers )
 	{
 		if ( layer == NULL ) continue;
 
-		glMaterial* material = layer->GetMaterial();
+		RrMaterial* material = layer->GetMaterial();
 		if ( material != NULL )
 			material->m_diffuse = Color(1.0F, 1.0F, 1.0F, 1.0F);
 	}

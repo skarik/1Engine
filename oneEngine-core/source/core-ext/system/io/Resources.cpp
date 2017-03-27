@@ -4,7 +4,7 @@
 #include <filesystem>
 namespace fs = std::tr2::sys;
 
-namespace Core
+namespace core
 {
 	//=========================================//
 	// Statics

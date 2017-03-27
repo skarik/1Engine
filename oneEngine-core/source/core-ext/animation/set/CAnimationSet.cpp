@@ -18,7 +18,7 @@ CAnimationSet::~CAnimationSet ( void )
 // Export animation to targets
 void CAnimationSet::Export ( std::vector<void*> & referenceList )
 {
-	throw Core::DeprecatedCallException();
+	throw core::DeprecatedCallException();
 	/*
 	for ( unsigned int i = 0; i < referenceList.size(); i++ )
 	{
@@ -43,12 +43,12 @@ void CAnimationSet::Export ( std::vector<void*> & referenceList )
 void CAnimationSet::AddActions ( CAnimation* target )
 {
 	// Load up the model file first
-	Core::ModelLoader loader;
+	core::ModelLoader loader;
 	loader.m_loadActions = true;
 	loader.m_loadSkeleton = true;
 	if ( !loader.LoadModel( filename.c_str() ) )
 	{
-		throw Core::InvalidCallException();
+		throw core::InvalidCallException();
 	}
 	
 	int8_t targetMapping = -1;

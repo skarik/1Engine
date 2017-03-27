@@ -3,7 +3,7 @@
 #include "engine2d/entities/map/TileMap.h"
 
 #include "core/system/Screen.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/CTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
@@ -16,28 +16,28 @@ TileSelectorUI::TileSelectorUI ( void )
 	: CRenderableObject(), m_tileset(NULL)
 {
 	// Sys drawing
-	renderType = Renderer::V2D;
+	renderType = renderer::V2D;
 
 	// Mat init
-	glMaterial* draw_mat = new glMaterial;
+	RrMaterial* draw_mat = new RrMaterial;
 	draw_mat->m_diffuse = Color( 1,1,1,1 );
 	draw_mat->setTexture( TEX_DIFFUSE, new CTexture("null") );
-	draw_mat->passinfo.push_back( glPass() );
-	draw_mat->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
-	draw_mat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	draw_mat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	draw_mat->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	draw_mat->passinfo.push_back( RrPassForward() );
+	draw_mat->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
+	draw_mat->passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	draw_mat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	draw_mat->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	SetMaterial( draw_mat );
 	draw_mat->removeReference();
 
-	glMaterial* ui_mat = new glMaterial;
+	RrMaterial* ui_mat = new RrMaterial;
 	ui_mat->m_diffuse = Color( 1,1,1,1 );
 	ui_mat->setTexture( TEX_DIFFUSE, new CTexture( "textures/white.jpg" ) );
-	ui_mat->passinfo.push_back( glPass() );
-	ui_mat->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
-	ui_mat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	ui_mat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	ui_mat->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	ui_mat->passinfo.push_back( RrPassForward() );
+	ui_mat->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
+	ui_mat->passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	ui_mat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	ui_mat->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	ui_material = ui_mat;
 
 	// ui value setup

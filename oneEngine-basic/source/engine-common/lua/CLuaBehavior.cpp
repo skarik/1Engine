@@ -7,10 +7,10 @@ CLuaBehavior::CLuaBehavior ( const char* entityName, const char* packageName )
 {
 	// Check length of inputs
 	if ( strlen( entityName ) > 127 ) {
-		throw Core::OutOfMemoryException();
+		throw core::OutOfMemoryException();
 	}
 	if ( strlen( packageName ) > 95 ) {
-		throw Core::OutOfMemoryException();
+		throw core::OutOfMemoryException();
 	}
 	// Set package names for loading in
 	m_entityName	= entityName;

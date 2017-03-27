@@ -80,6 +80,17 @@ void SpriteContainer::UpdateSpriteProperties ( void )
 	}
 }
 
+//		SetSpriteSize( Vector2i size )
+// Overrides the rect the sprite will use to render
+void SpriteContainer::SetSpriteSize ( const Vector2i size )
+{
+	if ( m_spriteSize != size )
+	{
+		m_spriteSize = size;
+		m_requireRestream = true;
+	}
+}
+
 //		GetSpriteRect()
 // Pulls untransformed sprite rect, using the m_sprite object and taking into account origin.
 Rect SpriteContainer::GetSpriteRect ( void )

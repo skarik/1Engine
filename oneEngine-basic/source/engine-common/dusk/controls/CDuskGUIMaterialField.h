@@ -9,7 +9,7 @@
 
 #include "CDuskGUITextfield.h"
 
-class glMaterial;
+class RrMaterial;
 
 class CDuskGUIMaterialField : public CDuskGUITextfield
 {
@@ -21,7 +21,7 @@ public:
 	void Render ( void );
 
 	bool hasValidValue;
-	glMaterial* target;
+	RrMaterial* target;
 };
 
 #endif//_C_DUSK_GUI_MATERIAL_FIELD_H_

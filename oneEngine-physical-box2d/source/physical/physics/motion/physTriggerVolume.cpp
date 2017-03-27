@@ -5,5 +5,5 @@ _FORCE_INLINE_ PHYS_API physTriggerVolume::physTriggerVolume ( physRigidBodyInfo
 	: physRigidBody()
 {
 	//body = Physics::CreateTriggerVolume( info, shape, phantom );
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }

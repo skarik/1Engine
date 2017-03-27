@@ -7,7 +7,7 @@
 #include "core/math/Rotator.h"
 #include "core/math/Color.h"
 //#include "RangeVector.h"
-//#include "glMaterial.h"
+//#include "RrMaterial.h"
 
 #include "core/exceptions.h"
 
@@ -127,7 +127,7 @@ Serializer&	ISerialBinary::operator&	( arstring<256> & str )
 	return *this;
 }
 /*
-Serializer& ISerialBinary::operator&	( glMaterial& mat )
+Serializer& ISerialBinary::operator&	( RrMaterial& mat )
 {
 	string matname = m_file->ReadString();
 	mat.loadFromFile( matname.c_str() );
@@ -139,7 +139,7 @@ Serializer& ISerialBinary::operator&	( vector<Color>& vec )
 	string check = m_file->ReadString();
 	if ( check != "colorarray" )
 	{
-		throw Core::CorruptedDataException();
+		throw core::CorruptedDataException();
 		std::cout << "BAD INPUT: " << check << std::endl;
 	}
 	uint32_t count = m_file->ReadUInt32();

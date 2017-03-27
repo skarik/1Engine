@@ -10,7 +10,7 @@
 #include "core/types/types.h"
 #include "core/exceptions/exceptions.h"
 
-namespace Core
+namespace core
 {
 	template <typename Data>
 	class ExtendibleMap2D
@@ -74,10 +74,10 @@ namespace Core
 		// Throws InvalidArgumentException if the input is out of range.
 		Data& GetData ( const int n_x, const int n_y ) {
 			if ( m_data == NULL ) {
-				throw Core::NullReferenceException;
+				throw core::NullReferenceException;
 			}
 			else if ( n_x + m_data_offsetx < 0 || n_x + m_data_offsetx >= m_dataw || n_y + m_data_offsety < 0 || n_y + m_data_offsety >= m_datah ) {
-				throw Core::InvalidArgumentException;
+				throw core::InvalidArgumentException;
 			}
 			return m_data[ (n_x + m_data_offsetx) + (n_y + m_data_offsety)*m_dataw ];
 		}

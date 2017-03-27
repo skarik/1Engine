@@ -27,7 +27,7 @@
 // Include renderer
 #include "renderer/camera/CCamera.h"
 #include "renderer/module_renderer.h"
-#include "renderer/window/COglWindow.h"
+#include "renderer/window/RrWindow.h"
 #include "renderer/state/CRenderState.h"
 #include "renderer/utils/glScreenshot.h"
 
@@ -62,7 +62,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	CInput::Initialize();
 
 	// Create Window
-	COglWindow aWindow( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
+	RrWindow aWindow( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
 	Debug::Console->PrintMessage( "Main system initialized properly. I think.\n" );
 	std::cout << "Win32 Build (" << __DATE__ << ") Prealpha" << std::endl;
 

@@ -12,7 +12,7 @@ void hkArDefaultDistributor::phantomEnterEvent ( const physCollidable *phantomCo
 	//result.vPos = otherColl->
 	CGameState::Active()->GetBehavior( ((hkpRigidBody*)(phantomColl->getOwner()))->getUserData() )->OnCollisionEnter(result);
 	CGameState::Active()->GetBehavior( ((hkpRigidBody*)(otherColl->getOwner()))->getUserData() )->OnCollisionEnter(result);*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 void hkArDefaultDistributor::phantomLeaveEvent ( const physCollidable *phantomColl, const physCollidable *otherColl )
@@ -20,5 +20,5 @@ void hkArDefaultDistributor::phantomLeaveEvent ( const physCollidable *phantomCo
 	/*sCollision result;
 	CGameState::Active()->GetBehavior( ((hkpRigidBody*)(phantomColl->getOwner()))->getUserData() )->OnCollisionLeave(result);
 	CGameState::Active()->GetBehavior( ((hkpRigidBody*)(otherColl->getOwner()))->getUserData() )->OnCollisionLeave(result);*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }

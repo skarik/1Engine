@@ -53,7 +53,7 @@ int EngineCommon::BuildToTarget ( const std::string& n_cmd )
 {
 	// Using the OSF system, load up /system/buildtargets.txt
 	// Need to locate the matching object
-	FILE* fp_loader = fopen( Core::Resources::PathTo("system/buildtargets.txt").c_str(), "rb" );
+	FILE* fp_loader = fopen( core::Resources::PathTo("system/buildtargets.txt").c_str(), "rb" );
 	COSF_Loader osf_loader ( fp_loader );
 
 	// Read in entries until we hit the end or until we hit a match
@@ -169,7 +169,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 				//fs::copy_file( fs::path(path->path().root_path().string()), target_path, fs::copy_option::overwrite_if_exists );
 				std::ifstream  src( string(m_exe_path) + "/" + filename,					std::ios::binary);
 				std::ofstream  dst( build_path.string() + "/" + path->path().filename().string(),	std::ios::binary);
-				if ( !src.is_open() ) throw Core::NullReferenceException();
+				if ( !src.is_open() ) throw core::NullReferenceException();
 				dst << src.rdbuf();
 			}
 		}
@@ -188,7 +188,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 				printf( "copying file: %s\n", filename.c_str() );
 				std::ifstream  src( "./" + path->path().string(),							std::ios::binary);
 				std::ofstream  dst( build_path.string() + "/" + path->path().filename().string(),	std::ios::binary);
-				if ( !src.is_open() ) throw Core::NullReferenceException();
+				if ( !src.is_open() ) throw core::NullReferenceException();
 				dst << src.rdbuf();
 			}
 		}
@@ -247,7 +247,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 								printf( "copying file: %s\n", resource_name.c_str() );
 								std::ifstream  src( "./" + rpath->path().string(),							std::ios::binary);
 								std::ofstream  dst( build_path.string() + "/" + rpath->path().string(),		std::ios::binary);
-								if ( !src.is_open() ) throw Core::NullReferenceException();
+								if ( !src.is_open() ) throw core::NullReferenceException();
 								dst << src.rdbuf();
 							}
 						}

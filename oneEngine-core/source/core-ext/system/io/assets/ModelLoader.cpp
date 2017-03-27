@@ -13,7 +13,7 @@
 #include <string>
 
 using std::string;
-using Core::ModelLoader;
+using core::ModelLoader;
 
 ModelLoader::ModelLoader ( void )
 	: m_loadMesh(false), m_loadMorphs(false), m_loadActions(false), m_loadAnimation(false), m_loadSkeleton(false)
@@ -76,7 +76,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 		}
 
 		// Find the file now
-		string fbx_filename = Core::Resources::PathTo( fbx_rezname );
+		string fbx_filename = core::Resources::PathTo( fbx_rezname );
 		if ( ConvertFile( fbx_filename.c_str() ) == false )
 		{
 			Debug::Console->PrintError( "ModelLoader::LoadModel : Error occurred in ModelLoader::ConvertFile call\n" );
@@ -91,7 +91,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 		{
 			model_filename = model_filename.substr( 0, model_filename.find_last_of( "." ) ) + ".pad";
 		}
-		model_filename = Core::Resources::PathTo( model_filename );
+		model_filename = core::Resources::PathTo( model_filename );
 	}
 
 	// Read in the file
@@ -114,7 +114,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 	}
 	else
 	{
-		throw Core::CorruptedDataException();
+		throw core::CorruptedDataException();
 	}
 
 	// Based on that data, read in the other segments
@@ -457,7 +457,7 @@ bool ModelLoader::ConvertFile ( const char* n_filename )
 		targetFilename = targetFilename + ".PAD";
 
 		// Look for the valid resource to load
-		targetFilename = Core::Resources::PathTo( targetFilename );
+		targetFilename = core::Resources::PathTo( targetFilename );
 
 		// Return proper conversion
 		return IO::FileExists( targetFilename );

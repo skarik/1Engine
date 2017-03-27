@@ -6,7 +6,7 @@
 #include "core/math/Easing.h"
 #include "core/math/random/Random.h"
 
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "render2d/object/CTextMesh.h"
 
 #include <cctype>
@@ -152,7 +152,7 @@ public:
 		: CRenderable2D()
 	{
 		SetSpriteFile( "textures/white.jpg" );
-		m_material->passinfo[0].m_blend_mode = Renderer::BM_MULTIPLY_X2;
+		m_material->passinfo[0].m_blend_mode = renderer::BM_MULTIPLY_X2;
 
 		memset( &m_modeldata, 0, sizeof(ModelData) );
 	}

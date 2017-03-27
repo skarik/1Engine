@@ -112,7 +112,7 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 #ifdef PHYSICS_USING_HAVOK
 	// Check for proper input
 	if ( outHitInfo == NULL ) {
-		throw Core::InvalidArgumentException();
+		throw core::InvalidArgumentException();
 	}
 
 	// Set physics lock state
@@ -261,7 +261,7 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 	return;
 #endif//PHYSICS_USING_HAVOK
 #ifdef PHYSICS_USING_BOX2D
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 #endif
 	
 }
@@ -399,7 +399,7 @@ void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pS
 	Physics::ReadUnlock();
 #endif//PHYSICS_USING_HAVOK
 #ifdef PHYSICS_USING_BOX2D
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 #endif
 }
 

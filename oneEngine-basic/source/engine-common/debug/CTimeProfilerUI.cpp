@@ -1,6 +1,6 @@
 
 #include "CTimeProfilerUI.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/CBitmapFont.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
@@ -11,15 +11,15 @@ CTimeProfilerUI::CTimeProfilerUI ( void )
 	: CRenderableObject()
 {
 	renderSettings.renderHints = RL_WORLD;
-	renderType = Renderer::V2D;
+	renderType = renderer::V2D;
 
 	fntDebug	= new CBitmapFont ( "YanoneKaffeesatz-R.otf", 12, FW_BOLD );
-	matFntDebug = new glMaterial;
+	matFntDebug = new RrMaterial;
 	matFntDebug->m_diffuse = Color( 0.2f,0.0f,0.4f );
 	matFntDebug->setTexture( TEX_MAIN, fntDebug );
-	matFntDebug->passinfo.push_back( glPass() );
-	matFntDebug->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	matFntDebug->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matFntDebug->passinfo.push_back( RrPassForward() );
+	matFntDebug->passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	matFntDebug->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
 	SetMaterial( matFntDebug );
 
 	visible = true;

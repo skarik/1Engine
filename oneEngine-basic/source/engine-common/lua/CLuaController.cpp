@@ -69,7 +69,7 @@ lua_State*	CLuaController::GetState ( void )
 // Runs the given file.
 void	CLuaController::RunLuaFile ( const string& filename, const string& env )
 {
-	string luaFile = Core::Resources::PathTo("lua/"+filename);
+	string luaFile = core::Resources::PathTo("lua/"+filename);
 	string workingDir = luaFile.substr( 0, luaFile.find_last_of('/')+1 );
 
 	// Get top of stack

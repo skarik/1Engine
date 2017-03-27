@@ -1,6 +1,5 @@
 
 #include "System.h"
-//#include "COglWindow.h"
 #include "core/exceptions/exceptions.h"
 
 // System specific includes
@@ -31,7 +30,7 @@ bool System::GetOpenFilename ( char* nOutFilename, sFileDialogueEntry* nFiletype
 	OPENFILENAME	ofn;
 	ZeroMemory( &ofn, sizeof( OPENFILENAME ) );
 	ofn.lStructSize = sizeof( OPENFILENAME );
-	ofn.hwndOwner = COglWindowWin32::pActive->getWindowHandle();
+	ofn.hwndOwner = RrWindow::pActive->getWindowHandle();
 	ofn.lpstrFilter	= pFiletypes;//"Particle system files\0*.PCF\0\0";
 	ofn.lpstrFile	= pstrFile;
 	ofn.lpstrFile[0] = '\0';
@@ -53,7 +52,7 @@ bool System::GetOpenFilename ( char* nOutFilename, sFileDialogueEntry* nFiletype
 	return result!=0;
 	*/
 #endif
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 	return false;
 }
 bool System::GetSaveFilename ( char* nOutFilename, sFileDialogueEntry* nFiletypes, int nFiletypeCount, const char* nInitialDir, const char* nDialogueTitle )
@@ -72,7 +71,7 @@ bool System::GetSaveFilename ( char* nOutFilename, sFileDialogueEntry* nFiletype
 	OPENFILENAME	ofn;
 	ZeroMemory( &ofn, sizeof( OPENFILENAME ) );
 	ofn.lStructSize = sizeof( OPENFILENAME );
-	ofn.hwndOwner = COglWindowWin32::pActive->getWindowHandle();
+	ofn.hwndOwner = RrWindow::pActive->getWindowHandle();
 	ofn.lpstrFilter	= pFiletypes;//"Particle system files\0*.PCF\0\0";
 	ofn.lpstrFile	= pstrFile;
 	ofn.lpstrFile[0] = '\0';
@@ -94,6 +93,6 @@ bool System::GetSaveFilename ( char* nOutFilename, sFileDialogueEntry* nFiletype
 	return result!=0;
 	*/
 #endif
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 	return false;
 }

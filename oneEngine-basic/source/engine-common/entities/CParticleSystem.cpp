@@ -9,7 +9,7 @@
 
 #include "engine-common/types/ParticleEnums.h"
 
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 
 #include "renderer/logic/particle/CParticleEmitter.h"
 #include "renderer/logic/particle/CParticleUpdater.h"
@@ -40,7 +40,7 @@ CParticleSystem::CParticleSystem ( const string& s_ps, const string& s_mat )
 
 	if ( s_mat.size() > 0 )
 	{
-		glMaterial* mat = new glMaterial();
+		RrMaterial* mat = new RrMaterial();
 		mat->loadFromFile( s_mat.c_str() );
 		mat->removeReference();
 		CRenderableObject* targetRenderable;
@@ -60,12 +60,12 @@ CParticleSystem::~CParticleSystem ( void )
 
 void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverride )
 {
-	string sActualSystemFile = Core::Resources::PathTo( sSystemFile );
+	string sActualSystemFile = core::Resources::PathTo( sSystemFile );
 
 #ifdef _ENGINE_DEBUG
 	if (!IO::FileExists(sActualSystemFile))
 	{
-		throw Core::MissingFileException();
+		throw core::MissingFileException();
 	}
 #endif
 
@@ -77,7 +77,7 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 		// Read in the data
 		if ( inFile.ReadData() == false )
 		{
-			throw Core::CorruptedDataException();
+			throw core::CorruptedDataException();
 		}
 
 		// Check header for version number
@@ -167,7 +167,7 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 
 					case Engine::PARTICLESYS_RENDERER:
 						newComponent = new CParticleRenderer(lastEmitter);
-						((CParticleRenderer*)(newComponent))->SetMaterial( new glMaterial );
+						((CParticleRenderer*)(newComponent))->SetMaterial( new RrMaterial );
 						((CParticleRenderer*)(newComponent))->GetMaterial()->removeReference();
 						deserializer >> ((CParticleRenderer*)(newComponent));
 						AddComponent( (CParticleRenderer*)(newComponent) );
@@ -178,7 +178,7 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 
 					case Engine::PARTICLESYS_RENDERER_ANIMATED: // Renderer - Animation; not yet implemented
 						newComponent = new CParticleRenderer_Animated(lastEmitter);
-						((CParticleRenderer_Animated*)(newComponent))->SetMaterial( new glMaterial );
+						((CParticleRenderer_Animated*)(newComponent))->SetMaterial( new RrMaterial );
 						((CParticleRenderer_Animated*)(newComponent))->GetMaterial()->removeReference();
 						deserializer >> ((CParticleRenderer_Animated*)(newComponent));
 						AddComponent( (CParticleRenderer_Animated*)(newComponent) );
@@ -191,7 +191,7 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 						break;
 
 					default:
-						throw Core::CorruptedDataException();
+						throw core::CorruptedDataException();
 						Debug::Console->PrintError( "particle system: unrecognized component type!" );
 						break;
 					}

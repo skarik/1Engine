@@ -15,7 +15,7 @@
 #include "controls/CDuskGUIDropdownList.h"
 
 // Renderer bits
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/CBitmapFont.h"
 #include "renderer/texture/CRenderTexture.h"
 #include "renderer/system/glMainSystem.h"
@@ -27,10 +27,10 @@
 using namespace std;
 
 // Static variables
-glMaterial*		CDuskGUI::matDefDefault	= NULL;
-glMaterial*		CDuskGUI::matDefHover	= NULL;
-glMaterial*		CDuskGUI::matDefDown	= NULL;
-glMaterial*		CDuskGUI::matDefFont	= NULL;
+RrMaterial*		CDuskGUI::matDefDefault	= NULL;
+RrMaterial*		CDuskGUI::matDefHover	= NULL;
+RrMaterial*		CDuskGUI::matDefDown	= NULL;
+RrMaterial*		CDuskGUI::matDefFont	= NULL;
 CBitmapFont*	CDuskGUI::fntDefDefault	= NULL;
 
 // Constructor
@@ -38,7 +38,7 @@ CDuskGUI::CDuskGUI ( void )
 	: CGameBehavior(), CRenderableObject()
 {
 	// Sys drawing
-	renderType = Renderer::V2D;
+	renderType = renderer::V2D;
 
 	// Mat init
 	InitializeDefaultMaterials();
@@ -71,13 +71,13 @@ CDuskGUI::CDuskGUI ( void )
 	
 	// Create the copy material
 	{
-		matScreenCopy = new glMaterial ();
+		matScreenCopy = new RrMaterial ();
 		matScreenCopy->m_diffuse = Color( 1,1,1,1 );
-		matScreenCopy->passinfo.push_back( glPass() );
-		matScreenCopy->passinfo[0].shader = new glShader( "shaders/sys/copy_buffer.glsl" );
-		matScreenCopy->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-		matScreenCopy->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-		matScreenCopy->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+		matScreenCopy->passinfo.push_back( RrPassForward() );
+		matScreenCopy->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer.glsl" );
+		matScreenCopy->passinfo[0].m_lighting_mode = renderer::LI_NONE;
+		matScreenCopy->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+		matScreenCopy->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	}
 	SetMaterial( matScreenCopy );
 	matScreenCopy->removeReference();
@@ -123,10 +123,10 @@ void CDuskGUI::InitializeDefaultMaterials ( void )
 	if ( matDefDefault != NULL ) {
 		return;
 	}
-	matDefDefault	= new glMaterial ();
+	matDefDefault	= new RrMaterial ();
 	matDefDefault->setStaticResource();
 
-	matDefFont		= new glMaterial ();
+	matDefFont		= new RrMaterial ();
 	matDefFont->setStaticResource();
 	//fntDefDefault	= new CBitmapFont ( "Calibri", 16, FW_NORMAL );
 	fntDefDefault	= new CBitmapFont ( "ComicNeue-Bold.ttf", 16, FW_NORMAL );
@@ -140,19 +140,19 @@ void CDuskGUI::InitializeDefaultMaterials ( void )
 	matDefDefault->m_diffuse = Color( 1,1,1,1 );
 	//matDefDefault->setTexture( 0, new CTexture("textures/hud/dusk_element.png") );
 	matDefDefault->setTexture( TEX_MAIN, new CTexture("null") );
-	matDefDefault->passinfo.push_back( glPass() );
-	matDefDefault->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
-	matDefDefault->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	matDefDefault->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	matDefDefault->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	matDefDefault->passinfo.push_back( RrPassForward() );
+	matDefDefault->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
+	matDefDefault->passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	matDefDefault->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	matDefDefault->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 
 	matDefFont->m_diffuse = Color( 1,1,1,1 );
 	matDefFont->setTexture( TEX_MAIN, fntDefDefault );
-	matDefFont->passinfo.push_back( glPass() );
-	matDefFont->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
-	matDefFont->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	matDefFont->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	matDefFont->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	matDefFont->passinfo.push_back( RrPassForward() );
+	matDefFont->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
+	matDefFont->passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	matDefFont->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	matDefFont->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 }
 
 // Updating
@@ -305,14 +305,14 @@ void CDuskGUI::Update ( void )
 	RenderUI();
 }
 
-void CDuskGUI::Render_SetupMaterial ( glMaterial* mat )
+void CDuskGUI::Render_SetupMaterial ( RrMaterial* mat )
 {
 	if ( mat != NULL )
 	{
-		for ( glPass& pass : mat->passinfo )
+		for ( RrPassForward& pass : mat->passinfo )
 		{
 			pass.b_depthmask = false;
-			pass.m_lighting_mode = Renderer::LI_NONE;
+			pass.m_lighting_mode = renderer::LI_NONE;
 		}
 	}
 }
@@ -346,7 +346,7 @@ void CDuskGUI::RenderUI ( void )
 	Screen::_screen_info_t prevInfo = Screen::Info;
 	if ( !bInPixelMode )
 	{
-		throw Core::DeprecatedCallException();
+		throw core::DeprecatedCallException();
 		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX() / (ftype)Screen::Info.width, CInput::MouseY() / (ftype)Screen::Info.height );
 	}
 	else
@@ -640,19 +640,19 @@ CDuskGUI::Handle CDuskGUI::GetFromPointer ( const CDuskGUIElement* element )
 
 // == Setters ==
 // Set materials
-void CDuskGUI::SetDefaultMaterial	( glMaterial* newmat )
+void CDuskGUI::SetDefaultMaterial	( RrMaterial* newmat )
 {
 	matDefault = newmat;
 }
-void CDuskGUI::SetHoverMaterial	( glMaterial* newmat )
+void CDuskGUI::SetHoverMaterial	( RrMaterial* newmat )
 {
 	matHover = newmat;
 }
-void CDuskGUI::SetDownMaterial	( glMaterial* newmat )
+void CDuskGUI::SetDownMaterial	( RrMaterial* newmat )
 {
 	matDown = newmat;
 }
-void CDuskGUI::SetFontMaterial	( glMaterial* newmat )
+void CDuskGUI::SetFontMaterial	( RrMaterial* newmat )
 {
 	matFont = newmat;
 }

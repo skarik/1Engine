@@ -19,10 +19,10 @@ ObjectEditorListing::~ObjectEditorListing ( void )
 // Will attempt to read in all entities and other map editing options.
 void ObjectEditorListing::LoadListing ( const char* n_filename )
 {
-	FILE* file = Core::Resources::Open( n_filename, "rb" );
+	FILE* file = core::Resources::Open( n_filename, "rb" );
 	if ( file == NULL )
 	{
-		throw Core::MissingFileException();
+		throw core::MissingFileException();
 	}
 	COSF_Loader osf( file );
 

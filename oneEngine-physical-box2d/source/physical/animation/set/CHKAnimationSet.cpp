@@ -63,7 +63,7 @@ void CHKAnimationSet::Initialize ( void )
 	// Loop through all actions and build up the sets
 	for ( unsigned int i = 0; i < mAnimations.size(); ++i )
 	{
-		throw Core::NotYetImplementedException();
+		throw core::NotYetImplementedException();
 		/*hkaInterleavedUncompressedAnimation* anim = new hkaInterleavedUncompressedAnimation();
 
 		// Set anim length
@@ -121,7 +121,7 @@ void CHKAnimationSet::Initialize ( void )
 void CHKAnimationSet::Export ( std::vector<void*> & )
 {
 	//std::cout << "INVALID SET TO EXPORT." << std::endl;
-	//throw Core::InvalidCallException();
+	//throw core::InvalidCallException();
 }
 std::vector<hkaAnimation*>* CHKAnimationSet::GetHKAnimation ( void )
 {

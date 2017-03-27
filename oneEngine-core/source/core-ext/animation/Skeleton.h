@@ -18,7 +18,7 @@
 // Animation: Additional effects occur over skeleton. Skeleton stores previous states.
 // Animation update: Skeleton transforms updated.
 // Animation update: Matrices for OpenGL created.
-// glSkinnedMesh::GetPoseMatrices pulls state directly from skeleton.
+// rrSkinnedMesh::GetPoseMatrices pulls state directly from skeleton.
 
 namespace Animation
 {
@@ -52,7 +52,7 @@ namespace Animation
 		std::vector<XTransform>		animation_xpose;
 
 		// Current skeleton transform storage
-		std::vector<Core::TransformLite>	current_transform;
+		std::vector<core::TransformLite>	current_transform;
 		// Current skeleton pose for OpenGL (in bone-bind-space)
 		std::vector<Matrix4x4>		current_pose;
 

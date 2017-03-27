@@ -192,7 +192,7 @@ void CGameSettings::LoadSettings ( void )
 	sysprop_developerstring	= "Development Build 05";
 	sysprop_default_cmd		= "";
 
-	FILE* fp_file = Core::Resources::Open("system/properties.txt","rb");
+	FILE* fp_file = core::Resources::Open("system/properties.txt","rb");
 	if ( fp_file != NULL )
 	{
 		COSF_Loader loader ( fp_file );
@@ -399,7 +399,7 @@ void CGameSettings::LinkSettingVariable ( int& variable, const char * s_id )
 	}
 	else
 	{
-		throw Core::InvalidCallException();
+		throw core::InvalidCallException();
 	}
 }
 void CGameSettings::LinkSettingVariable ( Real& variable, const char * s_id )
@@ -411,7 +411,7 @@ void CGameSettings::LinkSettingVariable ( Real& variable, const char * s_id )
 	}
 	else
 	{
-		throw Core::InvalidCallException();
+		throw core::InvalidCallException();
 	}
 }
 
@@ -478,7 +478,7 @@ const int CGameSettings::GetSettingAsInt ( const char * s_id )
 {
 	string t_actual_name = StringUtils::ToLower( s_id );
 #ifdef _ENGINE_DEBUG
-	if ( t_actual_name.length() < 1 ) throw Core::InvalidArgumentException();
+	if ( t_actual_name.length() < 1 ) throw core::InvalidArgumentException();
 #endif
 	// Search the list of reals first.
 	{
@@ -495,7 +495,7 @@ const Real CGameSettings::GetSettingAsReal ( const char * s_id )
 {
 	string t_actual_name = StringUtils::ToLower( s_id );
 #ifdef _ENGINE_DEBUG
-	if ( t_actual_name.length() < 1 ) throw Core::InvalidArgumentException();
+	if ( t_actual_name.length() < 1 ) throw core::InvalidArgumentException();
 #endif
 	// Search the list of reals first.
 	{
@@ -512,7 +512,7 @@ const string CGameSettings::GetSettingAsString ( const char * s_id )
 {
 	string t_actual_name = StringUtils::ToLower( s_id );
 #ifdef _ENGINE_DEBUG
-	if ( t_actual_name.length() < 1 ) throw Core::InvalidArgumentException();
+	if ( t_actual_name.length() < 1 ) throw core::InvalidArgumentException();
 #endif
 	// Search the list of strings first.
 	{

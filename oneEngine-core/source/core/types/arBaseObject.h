@@ -33,7 +33,7 @@ public:
 		if ( referenceCount > 0 )
 			referenceCount--;
 		else
-			throw Core::InvalidCallException();
+			throw core::InvalidCallException();
 		return this;
 	}
 	arBaseObject* AddReference ( void ) { referenceCount++; return this; }
@@ -49,9 +49,9 @@ private:
 	uint16_t	referenceCount;
 };
 
-namespace Core
+namespace core
 {
-	//		Core::Orphan
+	//		core::Orphan
 	// Removes the 1st reference, effectively leaving the object with no reference.
 	// To be used on an inline new object.
 	template <class T>

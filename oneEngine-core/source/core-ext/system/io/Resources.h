@@ -14,7 +14,7 @@
 
 #include "core/types/types.h"
 
-namespace Core
+namespace core
 {
 	class Resources
 	{

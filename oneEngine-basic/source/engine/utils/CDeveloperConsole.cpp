@@ -96,7 +96,7 @@ bool CDeveloperConsole::GetIsOpen ( void ) const
 	return bAcceptingCommands;
 }
 //#include "CTimeProfiler.h"
-//#include "glShaderManager.h"
+//#include "RrShaderManager.h"
 void CDeveloperConsole::Update ( void )
 {
 	// Execute the command if accepting

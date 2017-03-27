@@ -59,17 +59,17 @@ void CDuskGUIButton::Render ( void )
 	// Begin draw/ material
 
 		/*glColor4f(
-			!hasFocus ? glMaterial::current->m_diffuse.red * 0.6f : glMaterial::current->m_diffuse.red * 1.1f,
-			!hasFocus ? glMaterial::current->m_diffuse.green * 0.6f : glMaterial::current->m_diffuse.green * 1.1f,
-			!hasFocus ? glMaterial::current->m_diffuse.blue * 0.6f : glMaterial::current->m_diffuse.blue * 1.1f,
-			glMaterial::current->m_diffuse.alpha * 0.6f );*/
+			!hasFocus ? RrMaterial::current->m_diffuse.red * 0.6f : RrMaterial::current->m_diffuse.red * 1.1f,
+			!hasFocus ? RrMaterial::current->m_diffuse.green * 0.6f : RrMaterial::current->m_diffuse.green * 1.1f,
+			!hasFocus ? RrMaterial::current->m_diffuse.blue * 0.6f : RrMaterial::current->m_diffuse.blue * 1.1f,
+			RrMaterial::current->m_diffuse.alpha * 0.6f );*/
 		drawRectWire( rect );
 
 		/*glColor4f(
-			glMaterial::current->m_diffuse.red,
-			glMaterial::current->m_diffuse.green,
-			glMaterial::current->m_diffuse.blue,
-			glMaterial::current->m_diffuse.alpha * 0.6f );
+			RrMaterial::current->m_diffuse.red,
+			RrMaterial::current->m_diffuse.green,
+			RrMaterial::current->m_diffuse.blue,
+			RrMaterial::current->m_diffuse.alpha * 0.6f );
 		GLd.DrawSet2DMode( GL.D2D_FLAT );
 		GLd.DrawRectangleA( rect.pos.x, rect.pos.y, rect.size.x, rect.size.y );*/
 		drawRect( rect );

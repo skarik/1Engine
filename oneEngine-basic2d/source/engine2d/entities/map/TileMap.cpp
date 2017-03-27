@@ -85,7 +85,7 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 	m_tileset_file = n_tileset_file;
 
 	// Open the resources
-	FILE* p_tilsetfile = Core::Resources::Open( n_tileset_file, "rb" );
+	FILE* p_tilsetfile = core::Resources::Open( n_tileset_file, "rb" );
 	CBinaryFile tileset_file ( p_tilsetfile ); // Will close the file when exits scope
 	COSF_Loader loader ( p_tilsetfile ); // Create the OSF loader and begin on the merry excursion through the tileset file
 
@@ -369,7 +369,7 @@ void TileMap::Rebuild ( void )
 		}
 		m_render_layers.clear();
 		// No tiles? Then fuck off, yo.
-		throw Core::InvalidCallException();
+		throw core::InvalidCallException();
 	}
 
 	// Clear out the meshes storage
@@ -431,7 +431,7 @@ void TileMap::Rebuild ( void )
 	{
 		printf( " +Creating layer ???\n" );
 
-		Renderer::TileMapLayer* render_layer = new Renderer::TileMapLayer (); // This needs to be stored and deleted.
+		renderer::TileMapLayer* render_layer = new renderer::TileMapLayer (); // This needs to be stored and deleted.
 		render_layer->SetSpriteFile( m_sprite_file );
 		render_layer->SetLayer( &m_meshstorage[i] );
 		render_layer->source_layer_id = m_meshstorage_layer[i];
@@ -758,7 +758,7 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 		}
 		else
 		{
-			throw Core::NotYetImplementedException();
+			throw core::NotYetImplementedException();
 		}
 	};
 

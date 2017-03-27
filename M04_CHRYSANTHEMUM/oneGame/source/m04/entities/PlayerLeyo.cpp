@@ -18,7 +18,7 @@ DECLARE_OBJECT_REGISTRAR(player_leyo,M04::PlayerLeyo);
 PlayerLeyo* PlayerLeyo::active = NULL;
 
 PlayerLeyo::PlayerLeyo ( void )
-	: CGameBehavior(), Engine2D::SpriteContainer(&position, NULL, &flipstate)
+	: CGameBehavior(), Engine2D::AnimationContainer(&position, NULL, &flipstate)
 {
 	active = this;
 
@@ -37,8 +37,10 @@ PlayerLeyo::PlayerLeyo ( void )
 
 	SetupDepthOffset( -1.0F, 0.0F );
 	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 2.0F, 1.0F).normal();
-	m_sprite->SetSpriteFile("sprites/leo.gal");
-	m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y - 8 );
+	//m_sprite->SetSpriteFile("sprites/leo.gal");
+	this->AddFromFile(Animation::TYPE_IDLE, 0, "sprites/tests/demon-run.gal");
+	//m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y - 8 );
+	m_spriteOrigin = Vector2i( m_spriteSize.x / 2, m_spriteSize.y );
 
 	light = new CLight;
 	light->diffuseColor = Color(0.4,0.4,0.4) * 0.0F;

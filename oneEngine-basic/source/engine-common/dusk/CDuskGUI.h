@@ -12,7 +12,7 @@
 #include "renderer/object/CRenderableObject.h"
 
 // Include Draw stuff
-class glMaterial;
+class RrMaterial;
 class CBitmapFont;
 class CRenderTexture;
 
@@ -104,17 +104,17 @@ public:
 
 private:
 
-	void Render_SetupMaterial ( glMaterial* );
+	void Render_SetupMaterial ( RrMaterial* );
 	void RenderUI ( void );
 
 public:
 
 	// == Setters ==
 	// Set materials
-	ENGCOM_API void SetDefaultMaterial	( glMaterial* );
-	ENGCOM_API void SetHoverMaterial	( glMaterial* );
-	ENGCOM_API void SetDownMaterial	( glMaterial* );
-	ENGCOM_API void SetFontMaterial	( glMaterial* );
+	ENGCOM_API void SetDefaultMaterial	( RrMaterial* );
+	ENGCOM_API void SetHoverMaterial	( RrMaterial* );
+	ENGCOM_API void SetDownMaterial	( RrMaterial* );
+	ENGCOM_API void SetFontMaterial	( RrMaterial* );
 	ENGCOM_API void SetDefaultFont		( CBitmapFont* );
 	// Set pixel mode
 	ENGCOM_API void SetPixelMode ( bool enabled=false );
@@ -179,8 +179,8 @@ public:
 		ENGCOM_API void UpdateTextfield ( const Handle&, string & inOutTextVal );
 		ENGCOM_API void GetTextfieldData ( const Handle&, string & outTextVal );
 	// A material textfield
-	ENGCOM_API Handle CreateMaterialfield ( const Handle& =-1, const string& =string(""), glMaterial* =NULL );
-		ENGCOM_API void SetMaterialfieldTarget ( const Handle&, glMaterial* );
+	ENGCOM_API Handle CreateMaterialfield ( const Handle& =-1, const string& =string(""), RrMaterial* =NULL );
+		ENGCOM_API void SetMaterialfieldTarget ( const Handle&, RrMaterial* );
 	// A dropdown list
 	ENGCOM_API Handle CreateDropdownList ( const Handle& =-1 );
 		ENGCOM_API void AddDropdownOption ( const Handle&, const string&, const int );
@@ -262,18 +262,18 @@ private:
 
 private:
 	// Materials used in drawing
-	glMaterial*	matScreenCopy;
-	glMaterial*	matDefault;
-	glMaterial*	matHover;
-	glMaterial*	matDown;
-	glMaterial* matFont;
+	RrMaterial*	matScreenCopy;
+	RrMaterial*	matDefault;
+	RrMaterial*	matHover;
+	RrMaterial*	matDown;
+	RrMaterial* matFont;
 	CBitmapFont*	fntDefault;
 
 	// Static default values
-	static glMaterial*	matDefDefault;
-	static glMaterial*	matDefHover;
-	static glMaterial*	matDefDown;
-	static glMaterial*	matDefFont;
+	static RrMaterial*	matDefDefault;
+	static RrMaterial*	matDefHover;
+	static RrMaterial*	matDefDown;
+	static RrMaterial*	matDefFont;
 	static CBitmapFont*	fntDefDefault;
 
 	// Rendering state

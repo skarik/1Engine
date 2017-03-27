@@ -38,7 +38,7 @@ namespace M04
 		Engine2D::Tileset*	m_tileset;
 
 	protected:
-		glMaterial*			ui_material;
+		RrMaterial*			ui_material;
 
 		int					ui_columns;
 		int					ui_spacing;

@@ -29,9 +29,9 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 	Animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
 
 	// Create the model/world space of the reference pose
-	std::vector<Core::TransformLite> pose_model;
+	std::vector<core::TransformLite> pose_model;
 	pose_model.resize( skeleton->parent.size() );
-	Core::TransformUtility::LocalToWorld( &skeleton->parent[0], &skeleton->reference_xpose[0], &pose_model[0], pose_model.size() );
+	core::TransformUtility::LocalToWorld( &skeleton->parent[0], &skeleton->reference_xpose[0], &pose_model[0], pose_model.size() );
 
 	// Add root as first hitbox/bone
 	{
@@ -128,7 +128,7 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 	}*/
 }
 
-void CRagdollCollision::CreateJoints ( std::vector<Core::TransformLite>& pose_model )
+void CRagdollCollision::CreateJoints ( std::vector<core::TransformLite>& pose_model )
 {
 	std::vector<sHitbox>* mdl_hitboxes = m_skinnedmodel->GetHitboxes();
 	Animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
@@ -314,7 +314,7 @@ int boneNameCompare ( const char * bone1, const char * bone2 )
 	}
 }
 
-void CRagdollCollision::CreateMapping ( std::vector<Core::TransformLite>& pose_model )
+void CRagdollCollision::CreateMapping ( std::vector<core::TransformLite>& pose_model )
 {
 	// First, create the skeletons
 	/*skeletonModel = new hkaSkeleton();
@@ -497,7 +497,7 @@ void CRagdollCollision::RigidbodyUpdate ( void )
 		}*/
 		if ( skeleton->ext_physics_strength[hb->boneIndex] > FTYPE_PRECISION)
 		{
-			throw Core::NotYetImplementedException();
+			throw core::NotYetImplementedException();
 		}
 	}
 }
@@ -512,7 +512,7 @@ void CRagdollCollision::FixedUpdate ( void )
 	for ( auto hb = m_hitboxList.begin(); hb != m_hitboxList.end(); ++hb )
 	{
 		//glBone* targetBone = m_skinnedmodel->GetSkeletonList()->at(hb->boneIndex);
-		Core::TransformLite* bone_transform = &skeleton->current_transform[hb->boneIndex]; 
+		core::TransformLite* bone_transform = &skeleton->current_transform[hb->boneIndex]; 
 		Real bone_strength = skeleton->ext_physics_strength[hb->boneIndex];
 
 		Vector3d targetPosition = m_skinnedmodel->transform.rotation * bone_transform->world.position + m_skinnedmodel->transform.position;

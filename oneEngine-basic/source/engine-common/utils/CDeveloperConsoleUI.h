@@ -29,8 +29,8 @@ public:
 
 private:
 	CBitmapFont*	fntMenu;
-	glMaterial*		matfntMenu;
-	glMaterial*		matMenu;
+	RrMaterial*		matfntMenu;
+	RrMaterial*		matMenu;
 };
 
 class CDeveloperCursor : public CRenderableObject
@@ -43,7 +43,7 @@ public:
 	bool			Render ( const char pass );
 
 private:
-	glMaterial*		matCursor;
+	RrMaterial*		matCursor;
 	CTexture*		texCursor;
 };
 

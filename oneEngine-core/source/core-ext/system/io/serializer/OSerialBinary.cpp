@@ -7,7 +7,7 @@
 #include "core/math/Rotator.h"
 #include "core/math/Color.h"
 //#include "RangeVector.h"
-//#include "glMaterial.h"
+//#include "RrMaterial.h"
 
 using std::string;
 using std::vector;
@@ -125,7 +125,7 @@ Serializer&	OSerialBinary::operator&	( arstring<256> & str )
 	return *this;
 }
 /*
-Serializer& OSerialBinary::operator&	( glMaterial& mat )
+Serializer& OSerialBinary::operator&	( RrMaterial& mat )
 {
 	m_file->WriteString( mat.getName() );
 	return *this;

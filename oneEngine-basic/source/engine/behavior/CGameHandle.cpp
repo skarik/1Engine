@@ -33,7 +33,7 @@ CGameHandle::operator CGameBehavior*()
 		return behavior;
 	}
 	else {
-		throw Core::NullReferenceException();
+		throw core::NullReferenceException();
 		return NULL;
 	}
 }
@@ -43,7 +43,7 @@ CGameBehavior* CGameHandle::operator-> ( void )
 		return behavior;
 	}
 	else {
-		throw Core::NullReferenceException();
+		throw core::NullReferenceException();
 		return NULL;
 	}
 }

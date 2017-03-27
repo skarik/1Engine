@@ -37,7 +37,7 @@ CDialogueLoader::CDialogueLoader (const char* filename, std::vector<CCharacter*>
 void CDialogueLoader::Construct ( const char* filename, std::vector<CCharacter*> characters )
 {
 	//pFile = fopen (filename, "rb");
-	pFile = Core::Resources::Open (filename, "rb");
+	pFile = core::Resources::Open (filename, "rb");
 	lCurrentDialogue = new COSF_Loader (pFile);
 
 	sIndex = "0";

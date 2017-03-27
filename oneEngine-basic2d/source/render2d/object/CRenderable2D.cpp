@@ -4,8 +4,8 @@
 #include "core/utils/StringUtils.h"
 #include "core-ext/system/io/Resources.h"
 
-#include "renderer/material/glShader.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrShader.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/CTexture.h"
 #include "renderer/texture/TextureLoader.h"
 
@@ -27,18 +27,18 @@ CRenderable2D::CRenderable2D ( void )
 	m_spriteGenerationInfo.normal_default = Vector3d(0, 0, 1.0F);
 
 	// Use a default 2D material
-	m_material = new glMaterial();
-	m_material->setTexture( TEX_DIFFUSE, Core::Orphan(new CTexture("null")) );
-	m_material->setTexture( TEX_SURFACE, Renderer::Resources::GetTexture(Renderer::TextureBlack) );
+	m_material = new RrMaterial();
+	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new CTexture("null")) );
+	m_material->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
 
-	m_material->passinfo.push_back( glPass() );
-	m_material->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
-	m_material->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	m_material->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
-	m_material->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	m_material->passinfo.push_back( RrPassForward() );
+	m_material->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
+	m_material->passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	m_material->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
+	m_material->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 
-	m_material->deferredinfo.push_back( glPass_Deferred() );
-	m_material->deferredinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
+	m_material->deferredinfo.push_back( RrPassDeferred() );
+	m_material->deferredinfo[0].m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
 
 	// Start with empty buffers
 	m_buffer_verts = NIL;
@@ -71,6 +71,12 @@ CRenderable2D::~CRenderable2D ()
 // Sets the sprite filename to load or convert. Uses resource manager to cache data.
 void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 {
+	SetSpriteFileAnimated( n_sprite_filename, NULL, NULL );
+}
+//		SetSpriteFileAnimated ( c-string sprite filename )
+// Sets the sprite filename to load and possibly convert, but provides returns for additional information.
+void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, Textures::timgInfo* o_img_info, Real** o_img_frametimes )
+{
 	// Create the filename for the palette.
 	std::string filename_palette = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_pal";
 	std::string filename_sprite	 = StringUtils::GetFileStemLeaf(n_sprite_filename);
@@ -86,19 +92,19 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 	// Check for the PNGs:
 	{
 		// Convert the resource files to engine's format (if the PNGs exist)
-		if ( Core::Resources::MakePathTo(filename_sprite + ".png", resource_sprite) )
+		if ( core::Resources::MakePathTo(filename_sprite + ".png", resource_sprite) )
 		{
 			Textures::ConvertFile(resource_sprite, StringUtils::GetFileStemLeaf(resource_sprite) + ".bpd");
 		}
-		if ( Core::Resources::MakePathTo(filename_palette + ".png", resource_palette) )
+		if ( core::Resources::MakePathTo(filename_palette + ".png", resource_palette) )
 		{
 			Textures::ConvertFile(resource_palette, StringUtils::GetFileStemLeaf(resource_palette)  + ".bpd");
 		}
-		if ( Core::Resources::MakePathTo(filename_normals + ".png", resource_normals) )
+		if ( core::Resources::MakePathTo(filename_normals + ".png", resource_normals) )
 		{
 			Textures::ConvertFile(resource_normals, StringUtils::GetFileStemLeaf(resource_normals)  + ".bpd");
 		}
-		if ( Core::Resources::MakePathTo(filename_surface + ".png", resource_surface) )
+		if ( core::Resources::MakePathTo(filename_surface + ".png", resource_surface) )
 		{
 			Textures::ConvertFile(resource_surface, StringUtils::GetFileStemLeaf(resource_surface)  + ".bpd");
 		}
@@ -106,10 +112,14 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 	// Check for the GALs:
 	{
 		// Convert the resource files to engine's format (if the GALs exist)
-		if ( Core::Resources::MakePathTo(filename_sprite + ".gal", resource_sprite) )
+		if ( core::Resources::MakePathTo(filename_sprite + ".gal", resource_sprite) )
 		{
 			Textures::timgInfo image_info;
-			pixel_t* image = Textures::loadGAL(resource_sprite, image_info); 
+			pixel_t* image;
+			if (o_img_info != NULL && o_img_frametimes != NULL)
+				image = Textures::loadGAL_Animation(resource_sprite, image_info, NULL); 
+			else
+				image = Textures::loadGAL(resource_sprite, image_info); 
 			Textures::ConvertData(image, &image_info, StringUtils::GetFileStemLeaf(resource_sprite) + ".bpd");
 			delete [] image;
 
@@ -127,7 +137,7 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 				delete [] image;
 			}
 		}
-		if ( Core::Resources::MakePathTo(filename_palette + ".gal", resource_palette) )
+		if ( core::Resources::MakePathTo(filename_palette + ".gal", resource_palette) )
 		{
 			Textures::timgInfo image_info;
 			pixel_t* image = Textures::loadGAL(resource_palette, image_info); 
@@ -139,12 +149,12 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 
 	// Now create BPD paths:
 	// Require the sprite
-	if ( !Core::Resources::MakePathTo(filename_sprite + ".bpd", resource_sprite) )
+	if ( !core::Resources::MakePathTo(filename_sprite + ".bpd", resource_sprite) )
 	{
-		throw Core::MissingFileException();
+		throw core::MissingFileException();
 	}
 	// If no palette, then load the object in forward mode.
-	if ( !Core::Resources::MakePathTo(filename_palette + ".bpd", resource_palette) )
+	if ( !core::Resources::MakePathTo(filename_palette + ".bpd", resource_palette) )
 	{
 		// Remove deferred pass from the shader so it only renders in forward mode
 		m_material->deferredinfo.clear();
@@ -159,6 +169,9 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 				MipmapNone,SamplingPoint
 			)
 		);
+
+		// Set output texture info
+		if (o_img_info) *o_img_info = new_texture->GetIOImgInfo();
 
 		// Set sprite info
 		m_spriteInfo.fullsize.x = new_texture->GetWidth();
@@ -178,17 +191,17 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 	}
 
 	// Check for paletted textures:
-	CTexture* loaded_palette	= Renderer::Resources::GetTexture(filename_palette);
-	CTexture* loaded_sprite		= Renderer::Resources::GetTexture(filename_sprite);
-	CTexture* loaded_normals	= Renderer::Resources::GetTexture(filename_normals);
-	CTexture* loaded_surface	= Renderer::Resources::GetTexture(filename_surface);
+	CTexture* loaded_palette	= renderer::Resources::GetTexture(filename_palette);
+	CTexture* loaded_sprite		= renderer::Resources::GetTexture(filename_sprite);
+	CTexture* loaded_normals	= renderer::Resources::GetTexture(filename_normals);
+	CTexture* loaded_surface	= renderer::Resources::GetTexture(filename_surface);
 
 	if ( loaded_palette == NULL )
 	{
 		// Load the raw data from the palette first
 		Textures::timgInfo imginfo_palette;
 		pixel_t* raw_palette = Textures::LoadRawImageData(resource_palette, imginfo_palette);
-		if ( raw_palette == NULL ) throw Core::MissingDataException();
+		if ( raw_palette == NULL ) throw core::MissingDataException();
 
 		// Set all data in the palette to have 255 alpha (opaque)
 		for (int i = 0; i < imginfo_palette.width * imginfo_palette.height; ++i)
@@ -201,7 +214,7 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 		delete [] raw_palette;
 
 		// Save dummy value
-		Renderer::Resources::AddTexture(filename_palette);
+		renderer::Resources::AddTexture(filename_palette);
 	}
 
 	if ( loaded_sprite == NULL )
@@ -209,7 +222,10 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 		// Load the raw data from the sprite
 		Textures::timgInfo imginfo_sprite;
 		pixel_t* raw_sprite = Textures::LoadRawImageData(resource_sprite, imginfo_sprite);
-		if ( raw_sprite == NULL ) throw Core::MissingDataException();
+		if ( raw_sprite == NULL ) throw core::MissingDataException();
+
+		// Set output texture info
+		if (o_img_info) *o_img_info = imginfo_sprite;
 
 		// Convert the colors to the internal world's palette
 		Render2D::Preprocess::DataToLUT(
@@ -241,11 +257,11 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 		new_texture->RemoveReference();
 
 		// Add it to manager
-		Renderer::Resources::AddTexture(filename_sprite, new_texture);
+		renderer::Resources::AddTexture(filename_sprite, new_texture);
 
 
 		// Create normal map texture
-		if ( Core::Resources::MakePathTo(filename_normals + ".bpd", resource_normals) )
+		if ( core::Resources::MakePathTo(filename_normals + ".bpd", resource_normals) )
 		{
 			CTexture* new_texture = new CTexture (
 				resource_normals, 
@@ -260,7 +276,7 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 			new_texture->RemoveReference();
 
 			// Add it to manager
-			Renderer::Resources::AddTexture(filename_normals, new_texture);
+			renderer::Resources::AddTexture(filename_normals, new_texture);
 		}
 		else
 		{
@@ -288,7 +304,7 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 			new_texture->RemoveReference();
 
 			// Add it to manager
-			Renderer::Resources::AddTexture(filename_normals, new_texture);
+			renderer::Resources::AddTexture(filename_normals, new_texture);
 		}
 
 
@@ -297,7 +313,7 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 
 
 		// Create surface map texture
-		if ( Core::Resources::MakePathTo(filename_surface + ".bpd", resource_surface) )
+		if ( core::Resources::MakePathTo(filename_surface + ".bpd", resource_surface) )
 		{
 			CTexture* new_texture = new CTexture (
 				resource_surface, 
@@ -313,7 +329,7 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
 			new_texture->RemoveReference();
 
 			// Add it to manager
-			Renderer::Resources::AddTexture(filename_surface, new_texture);
+			renderer::Resources::AddTexture(filename_surface, new_texture);
 		}
 
 	}

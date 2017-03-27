@@ -17,7 +17,7 @@
 
 #include "core/math/XTransform.h"
 
-namespace Core
+namespace core
 {
 	class TransformLite
 	{

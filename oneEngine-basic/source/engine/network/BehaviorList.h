@@ -252,7 +252,7 @@ class behaviorname : public ::Engine::ObjectBase \
 public: \
 	CGameBehavior* Instantiate ( void ) override { \
 		Engine::BehaviorList::BehaviorInstFunction function = Engine::BehaviorList::GetRegistration( #behaviorname ).engine_inst; \
-		if ( function != NULL ) return function(); throw Core::InvalidInstantiationException(); } \
+		if ( function != NULL ) return function(); throw core::InvalidInstantiationException(); } \
 	const Engine::MetadataTable* GetMetadata ( void ) override { \
 		return Engine::GetBehaviorMetadata<cppclass>(); } \
 	\

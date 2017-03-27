@@ -5,7 +5,7 @@
 #include "core-ext/profiler/CTimeProfiler.h"
 #include "renderer/object/CRenderableObject.h"
 
-//#include "glMaterial.h"
+//#include "RrMaterial.h"
 //#include "CBitmapFont.h"
 class CBitmapFont;
 
@@ -22,7 +22,7 @@ public:
 	bool Render ( const char pass );
 
 private:
-	glMaterial*		matFntDebug;
+	RrMaterial*		matFntDebug;
 	CBitmapFont*	fntDebug;
 };
 

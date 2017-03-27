@@ -63,7 +63,7 @@ CPhysics::CPhysics ( void )
 void Physics::Init ( void )
 {
 	if ( Instance )
-		throw Core::InvalidInstantiationException();
+		throw core::InvalidInstantiationException();
 	//bActive = true;
 	Instance = new CPhysics();
 	Instance->_Init();

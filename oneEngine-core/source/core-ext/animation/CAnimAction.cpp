@@ -56,7 +56,7 @@ CAnimAction::CAnimAction( const char* name )
 #	ifdef _ENGINE_DEBUG
 	if ( animRefs.size() > pAnimSet->animMap.size() )
 	{
-		throw Core::CorruptedDataException();
+		throw core::CorruptedDataException();
 	}
 #	endif
 	if ( mixingList.size() == 0 )
@@ -187,7 +187,7 @@ void CAnimAction::Play ( const Real n_deltaTime, const Real n_playSpeed, const R
 {
 	if ( !owner )
 	{
-		throw Core::InvalidInstantiationException();
+		throw core::InvalidInstantiationException();
 		Debug::Console->PrintError( "Bad animation on this object (missing owner)!\n" );
 	}
 	// No blend time, so playing the animation instantly

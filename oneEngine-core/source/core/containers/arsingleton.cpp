@@ -9,7 +9,7 @@ arsingleton::arsingleton ( void )
 {
 	if ( mActive != NULL )
 	{
-		throw Core::InvalidInstantiationException();
+		throw core::InvalidInstantiationException();
 	}
 	mActive = this;
 }
@@ -17,7 +17,7 @@ arsingleton::~arsingleton ( void ) throw(...)
 {
 	if ( mActive != this )
 	{
-		throw Core::InvalidInstantiationException();
+		throw core::InvalidInstantiationException();
 	}
 	mActive = NULL;
 }

@@ -114,17 +114,16 @@ void CGameState::CleanWorld ( void )
 				//cout << "Could not delete o[" << i << "] (" << pBehaviors[i]->GetTypeName() << ") - dangling reference" << endl;
 				// Force it to throw an error
 				delete (pBehaviors[i]);
-				throw Core::NullReferenceException();
+				throw core::NullReferenceException();
 			}
 		}
 
 	}
 }
-//#include "COglWindow.h"
 void CGameState::EndGame ( void )
 {
 	// End game
-	//COglWindow::pActive->sendEndMessage();
+	//RrWindow::pActive->sendEndMessage();
 	bEndingGame = true;
 }
 

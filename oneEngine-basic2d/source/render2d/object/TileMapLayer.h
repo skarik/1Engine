@@ -12,7 +12,7 @@
 #include "core/types/ModelData.h"
 #include "render2d/object/CRenderable2D.h"
 
-namespace Renderer
+namespace renderer
 {
 	class TileMapLayer : public CRenderable2D
 	{

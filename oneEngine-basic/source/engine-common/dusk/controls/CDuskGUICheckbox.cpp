@@ -31,10 +31,10 @@ void CDuskGUICheckbox::Render ( void )
 	// Begin draw/ material
 
 		/*glColor4f(
-			glMaterial::current->diffuse.red * 0.6f,
-			glMaterial::current->diffuse.green * 0.6f,
-			glMaterial::current->diffuse.blue * 0.6f,
-			glMaterial::current->diffuse.alpha * 0.6f );
+			RrMaterial::current->diffuse.red * 0.6f,
+			RrMaterial::current->diffuse.green * 0.6f,
+			RrMaterial::current->diffuse.blue * 0.6f,
+			RrMaterial::current->diffuse.alpha * 0.6f );
 		GLd.DrawSet2DMode( GL.D2D_WIRE );
 		GLd.DrawRectangleA(  );*/
 		drawRectWire( Rect( rect.pos.x, rect.pos.y, 0.03f, 0.03f ) );
@@ -42,22 +42,22 @@ void CDuskGUICheckbox::Render ( void )
 	if ( boolValue )
 		setSubdrawSelection();
 		/*glColor4f(
-			glMaterial::current->diffuse.red * 1.7f,
-			glMaterial::current->diffuse.green * 1.7f,
-			glMaterial::current->diffuse.blue * 1.7f,
-			glMaterial::current->diffuse.alpha * 0.7f );*/
+			RrMaterial::current->diffuse.red * 1.7f,
+			RrMaterial::current->diffuse.green * 1.7f,
+			RrMaterial::current->diffuse.blue * 1.7f,
+			RrMaterial::current->diffuse.alpha * 0.7f );*/
 	else
 		setSubdrawDefault();
 		/*glColor4f(
-			glMaterial::current->diffuse.red,
-			glMaterial::current->diffuse.green,
-			glMaterial::current->diffuse.blue,
-			glMaterial::current->diffuse.alpha * 0.6f );
+			RrMaterial::current->diffuse.red,
+			RrMaterial::current->diffuse.green,
+			RrMaterial::current->diffuse.blue,
+			RrMaterial::current->diffuse.alpha * 0.6f );
 		GLd.DrawSet2DMode( GL.D2D_FLAT );*/
 		//GLd.DrawRectangleA( rect.pos.x, rect.pos.y, 0.03f, 0.03f );
 		drawRect( Rect( rect.pos.x, rect.pos.y, 0.03f, 0.03f ) );
 
-	//glMaterial::current->unbind();
+	//RrMaterial::current->unbind();
 
 	// Now draw text
 	/*activeGUI->matFont->bind();

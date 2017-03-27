@@ -118,7 +118,7 @@ void EditorObject::WorldToMetadata ( void )
 			break;
 
 		case FIELD_ROTATION:
-			throw Core::NotYetImplementedException();
+			throw core::NotYetImplementedException();
 			break;
 
 		case FIELD_SCALE:
@@ -163,7 +163,7 @@ void EditorObject::MetadataToWorld ( void )
 			break;
 
 		case FIELD_ROTATION:
-			throw Core::NotYetImplementedException();
+			throw core::NotYetImplementedException();
 			break;
 
 		case FIELD_SCALE:

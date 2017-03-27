@@ -87,9 +87,9 @@ void sceneGameLuvPpl::LoadScene ( void )
 	M04::MapInformation* m_mapinfo = new M04::MapInformation;
 
 	// Open the file
-	FILE* fp = Core::Resources::Open("maps/test1.m04", "rb");
+	FILE* fp = core::Resources::Open("maps/test1.m04", "rb");
 	if ( fp == NULL )
-		throw Core::NullReferenceException();
+		throw core::NullReferenceException();
 
 	// Create mapio, set options
 	M04::MapIO io;
@@ -106,7 +106,7 @@ void sceneGameLuvPpl::LoadScene ( void )
 	fclose( fp );
 
 	// Update the world
-	Renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
+	renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
 
 	// Create debugger
 	auto debug_holder = new CRendererHolder( new Box2DDebugger() );

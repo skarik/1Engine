@@ -4,7 +4,7 @@
 #include "core/input/CInput.h"
 #include "core/settings/CGameSettings.h"
 #include "renderer/texture/CBitmapFont.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
@@ -16,24 +16,24 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 {
 	ActiveConsoleUI = this;
 
-	renderType = Renderer::V2D;
+	renderType = renderer::V2D;
 
 	fntMenu	= new CBitmapFont ( "monofonto.ttf", 16, FW_BOLD );
-	matfntMenu = new glMaterial;
+	matfntMenu = new RrMaterial;
 	matfntMenu->m_diffuse = Color( 1.0f,1,1 );
 	matfntMenu->setTexture( TEX_MAIN, fntMenu );
-	matfntMenu->passinfo.push_back( glPass() );
-	matfntMenu->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	matfntMenu->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	matfntMenu->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matfntMenu->passinfo.push_back( RrPassForward() );
+	matfntMenu->passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	matfntMenu->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	matfntMenu->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
 
-	matMenu = new glMaterial;
+	matMenu = new RrMaterial;
 	matMenu->m_diffuse = Color( 0.0f,0,0 );
 	matMenu->setTexture( TEX_MAIN, new CTexture("null") );
-	matMenu->passinfo.push_back( glPass() );
-	matMenu->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	matMenu->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	matMenu->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	matMenu->passinfo.push_back( RrPassForward() );
+	matMenu->passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	matMenu->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	matMenu->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
 
 	SetMaterial( matfntMenu );
 
@@ -93,17 +93,17 @@ CDeveloperCursor::CDeveloperCursor ( void )
 
 	transform.position.z = -44;
 
-	renderType = Renderer::V2D;
+	renderType = renderer::V2D;
 
 	texCursor = new CTexture( "textures/system/cursor.png" );
-	matCursor = new glMaterial;
+	matCursor = new RrMaterial;
 	matCursor->m_diffuse = Color( 1.0f,1,1 );
 	matCursor->setTexture( TEX_MAIN, texCursor );
-	matCursor->passinfo.push_back( glPass() );
-	matCursor->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	matCursor->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
-	matCursor->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
-	//matCursor->passinfo[0].shader = new glShader( ".res/shaders/sys/copy_buffer.glsl" );
+	matCursor->passinfo.push_back( RrPassForward() );
+	matCursor->passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	matCursor->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
+	matCursor->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
+	//matCursor->passinfo[0].shader = new RrShader( ".res/shaders/sys/copy_buffer.glsl" );
 	matCursor->removeReference();
 	SetMaterial( matCursor );
 }

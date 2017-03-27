@@ -8,7 +8,7 @@
 #include "core/types/ModelData.h"
 #include "core-ext/system/io/Resources.h"
 
-namespace Core
+namespace core
 {
 	static const char* MODELFMT_HEADER			= "$_INFO";
 	static const char* MODELFMT_MATERIAL_PREFIX	= "$_MATERIAL";
