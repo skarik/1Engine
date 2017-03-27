@@ -18,7 +18,7 @@ CParticleEmitterCloud::CParticleEmitterCloud ( void )
 
 void CParticleEmitterCloud::Emit ( void )
 {
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 	/*if ( CCloudMaster::pActive->cloudList.size() <= 0 )
 		return;
 

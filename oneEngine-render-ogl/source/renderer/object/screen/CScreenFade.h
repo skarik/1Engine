@@ -28,7 +28,7 @@ private:
 	float		fCurrentTime;
 	float		fAlpha;
 
-	glMaterial*	screenMaterial;
+	RrMaterial*	screenMaterial;
 
 };
 

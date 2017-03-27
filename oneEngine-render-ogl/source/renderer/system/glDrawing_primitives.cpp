@@ -1,6 +1,6 @@
 #include "glDrawing.h"
 
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 
 #define GL_MAX_PRIMITIVE_VERTEX_COUNT 2048
 
@@ -70,11 +70,11 @@ void glDrawing::EndPrimitive ( void )
 		glBufferSubData( GL_ARRAY_BUFFER, 0, bufferSize, prim_vertex_list );*/
 		
 		// Now, send the material attributes
-		glMaterial::current->bindPassAtrribs(glMaterial::current_pass);
-		glMaterial::current->setShaderConstants( NULL, false );
+		RrMaterial::current->bindPassAtrribs(RrMaterial::current_pass);
+		RrMaterial::current->setShaderConstants( NULL, false );
 		// Mark the enabled attributes
 		for ( uchar i = 0; i < 16; ++i ) {
-			prim_list[prim_count].enabledAttributes[i] = glPass::enabled_attributes[i];
+			prim_list[prim_count].enabledAttributes[i] = RrPassForward::enabled_attributes[i];
 		}
 		// Draw the current primitive
 		glDrawArrays( prim_list[prim_count].drawMode, 0, prim_list[prim_count].elementCount );

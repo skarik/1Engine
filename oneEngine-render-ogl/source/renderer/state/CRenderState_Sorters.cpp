@@ -1,9 +1,9 @@
 
 #include "CRenderState.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/object/CRenderableObject.h"
 
-using namespace Renderer;
+using namespace renderer;
 
 // Render order control
 bool CRenderState::render_forward_comparator_t::operator() ( CRenderState::tRenderRequest& i, CRenderState::tRenderRequest& j )
@@ -15,7 +15,7 @@ bool CRenderState::render_forward_comparator_t::operator() ( CRenderState::tRend
 		throw std::invalid_argument("Null renderRequest");
 	}
 
-	glPass* imat, * jmat;
+	RrPassForward* imat, * jmat;
 	imat = i.obj->GetPass( i.pass );
 	jmat = j.obj->GetPass( j.pass );
 
@@ -116,7 +116,7 @@ bool CRenderState::render_deferred_comparator_t::operator() ( CRenderState::tRen
 		throw std::invalid_argument("Null renderRequest");
 	}
 
-	glPass* imat, * jmat;
+	RrPassForward* imat, * jmat;
 	imat = i.obj->GetPass( i.pass );
 	jmat = j.obj->GetPass( j.pass );
 

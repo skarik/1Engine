@@ -14,18 +14,18 @@
 
 class CMesh;
 class CAnimation;
-class glMesh;
+class rrMesh;
 class physMesh;
 
 //#include "renderer/object/mesh/CMesh.h"
 /*
 #include "CModelData.h"
 #include "CRenderableObject.h"
-#include "glMaterial.h"
+#include "RrMaterial.h"
 #include <vector>
 //using std::vector;
 
-#include "glMesh.h"
+#include "rrMesh.h"
 #include "physMesh.h"
 
 #include "CSegmentedFile.h"
@@ -92,12 +92,12 @@ public:
 	// Get the number of passes (as models will need a lot more than one pass)
 	/*virtual unsigned char	GetPassNumber ( void );
 	// Returns the material associated with the given pass
-	virtual glMaterial*		GetPassMaterial ( const char pass );
+	virtual RrMaterial*		GetPassMaterial ( const char pass );
 protected:
 	// Returns of material placement can be edited
 	virtual bool			GetPassMaterialConst ( const char pass );
 	// Returns the material placement
-	virtual glMaterial**	GetPassMaterialPosition ( const char pass );*/
+	virtual RrMaterial**	GetPassMaterialPosition ( const char pass );*/
 
 public:
 	// Send shader uniform list
@@ -126,10 +126,10 @@ public:
 
 	// Change the material the given material array thing.
 	// Give the ownership of the material to this mesh if the materials have been "released"
-	RENDER_API void SetMaterial ( glMaterial* n_pNewMaterial );
+	RENDER_API void SetMaterial ( RrMaterial* n_pNewMaterial );
 
 	// Returns material of mesh, or throws error if has multiple submeshes
-	RENDER_API glMaterial* GetMaterial ( void );
+	RENDER_API RrMaterial* GetMaterial ( void );
 
 	//======================================================//
 	// SETTERS
@@ -158,7 +158,7 @@ public:
 	// Hides or shows all of the child meshes
 	RENDER_API void SetVisibility ( const bool n_visibility );
 	// Sets child mesh render types
-	RENDER_API void SetRenderType ( const Renderer::RenderingType n_type );
+	RENDER_API void SetRenderType ( const renderer::RenderingType n_type );
 
 	//======================================================//
 	// GETTERS / FINDERS
@@ -179,7 +179,7 @@ public:
 	// Returns the first matching mesh with the given name in the array
 	RENDER_API CModelData* GetModelDataByName ( const char* nNameMatch ) const;
 	// Return the first matching material
-	RENDER_API glMaterial*	FindMaterial ( const char* n_name, const int n_offset=0 ) const;
+	RENDER_API RrMaterial*	FindMaterial ( const char* n_name, const int n_offset=0 ) const;
 
 	// Get the animation reference
 	/*CAnimation*	GetAnimation ( void ) {
@@ -204,10 +204,10 @@ protected:
 	//bool					bCanRender;
 
 	// Mesh Data
-	//vector<glMesh*>			vMeshes;
+	//vector<rrMesh*>			vMeshes;
 	//vector<physMesh*>		vPhysMeshes;
 	std::vector<CMesh*>			m_meshes;
-	std::vector<glMesh*>		m_glMeshlist;
+	std::vector<rrMesh*>		m_glMeshlist;
 	std::vector<physMesh*>		m_physMeshlist;
 	// Collision data
 	std::vector<sHitbox>			vHitboxes;

@@ -19,7 +19,7 @@ using std::sort;
 #include "renderer/texture/CRenderTexture.h"
 #include "renderer/texture/CMRTTexture.h"
 
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/object/CRenderableObject.h"
 
 #include "renderer/resource/CResourceManager.h"
@@ -27,7 +27,7 @@ using std::sort;
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
-using namespace Renderer;
+using namespace renderer;
 
 //===============================================================================================//
 // CRenderState: Rendering
@@ -112,7 +112,7 @@ void CRenderState::Render ( void )
 
 	// Update window buffer
 	/*TimeProfiler.BeginTimeProfile( "WD_Swap" );
-	SwapBuffers(COglWindow::pActive->getDevicePointer());				// Swap Buffers (Double Buffering) (VSYNC)
+	SwapBuffers(RrWindow::pActive->getDevicePointer());				// Swap Buffers (Double Buffering) (VSYNC)
 	//wglSwapLayerBuffers(aWindow.getDevicePointer(),WGL_SWAP_MAIN_PLANE );
 	TimeProfiler.EndTimeProfile( "WD_Swap" );*/
 
@@ -190,8 +190,8 @@ void CRenderState::Render ( void )
 		GL.pushModelMatrix( Matrix4x4() );
 		{
 			// Set the current main screen buffer as the texture
-			glMaterial::Copy->setTexture( TEX_MAIN, internal_buffer_forward_rt );
-			glMaterial::Copy->bindPassForward(0);
+			RrMaterial::Copy->setTexture( TEX_MAIN, internal_buffer_forward_rt );
+			RrMaterial::Copy->bindPassForward(0);
 
 			// Set up an always-rendered
 			glStencilMask( GL_FALSE );
@@ -249,7 +249,7 @@ void CRenderState::Render ( void )
 	}
 
 	// Do error check at this point
-	if ( glMaterial::Default->passinfo.size() > 16 ) throw std::exception();
+	if ( RrMaterial::Default->passinfo.size() > 16 ) throw std::exception();
 	GL.CheckError();
 
 	// Frame cleanup
@@ -308,7 +308,7 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 					passCount = pRO->GetPassNumber();
 					for ( unsigned char p = 0; p < passCount; ++p )
 					{
-						glPass* pass = pRO->GetPass(p);
+						RrPassForward* pass = pRO->GetPass(p);
 						// Mask the render hint (multipass across multiple targets)
 						if ( pass->m_hint & currentLayer )
 						{
@@ -349,9 +349,9 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 		}
 
 		// Calculate pass globals
-		Renderer::Settings.fogScale = 1.0f / (Renderer::Settings.fogEnd - Renderer::Settings.fogStart);//currentCamera->zFar
+		renderer::Settings.fogScale = 1.0f / (renderer::Settings.fogEnd - renderer::Settings.fogStart);//currentCamera->zFar
 		// Update UBOs
-		glMaterial::updateStaticUBO();
+		RrMaterial::updateStaticUBO();
 
 		// Clear with BG color
 		glClear( GL_COLOR_BUFFER_BIT ); // use rendereing options for this
@@ -450,7 +450,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 		{
 #ifdef SKIP_NON_WORLD_STUFF
 			// Only add 2D or world objects for now
-			if ( pRO->renderType != Renderer::World && pRO->renderType != Renderer::V2D ) { 
+			if ( pRO->renderType != renderer::World && pRO->renderType != renderer::V2D ) { 
 				continue;
 			}
 #endif
@@ -461,7 +461,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				passCount = pRO->GetPassNumber();
 				for ( unsigned char p = 0; p < passCount; ++p )
 				{
-					glPass_Deferred* pass = pRO->GetPassDeferred(p);
+					RrPassDeferred* pass = pRO->GetPassDeferred(p);
 					// Mask the render hint (multipass across multiple targets)
 					//if ( pass->m_hint & currentLayer )
 					{
@@ -479,7 +479,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				{
 					if ( pRO->GetMaterial() && pRO->GetMaterial()->passinfo.size() )
 					{
-						glPass* pass = pRO->GetPass(0);
+						RrPassForward* pass = pRO->GetPass(0);
 						if ( pass->m_hint & RL_WORLD )
 						{
 							// Check for depth writing
@@ -507,10 +507,10 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 	TimeProfiler.EndAddTimeProfile( "rs_render_makelist" );
 
 	// Calculate pass globals
-	Renderer::Settings.fogScale = 1.0f / (Renderer::Settings.fogEnd - Renderer::Settings.fogStart);//currentCamera->zFar
+	renderer::Settings.fogScale = 1.0f / (renderer::Settings.fogEnd - renderer::Settings.fogStart);//currentCamera->zFar
 	// Update UBOs
-	glMaterial::updateStaticUBO();
-	glMaterial::updateLightTBO();
+	RrMaterial::updateStaticUBO();
+	RrMaterial::updateLightTBO();
 	GL.CheckError();
 
 	int sortedListSize = sortedRenderList.size();
@@ -633,16 +633,16 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
 
 			// Choose lighting pass to use
-			glMaterial* targetPass = LightingPass;
-			switch ( glMaterial::special_mode )
+			RrMaterial* targetPass = LightingPass;
+			switch ( RrMaterial::special_mode )
 			{
-			case Renderer::SP_MODE_ECHO:
+			case renderer::SP_MODE_ECHO:
 				targetPass = EchoPass;
 				break;
-			case Renderer::SP_MODE_SHAFT:
+			case renderer::SP_MODE_SHAFT:
 				targetPass = ShaftPass;
 				break;
-			case Renderer::SP_MODE_2DPALETTE:
+			case renderer::SP_MODE_2DPALETTE:
 				targetPass = Lighting2DPass;
 				//currentCamera->GetRenderTexture()->SetFilter( SamplingPoint );
 				break;
@@ -659,19 +659,19 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				targetPass->bindPassForward(0);
 				// Pass in all the lighting information
 				{
-					glShader* shader = targetPass->getUsingShader();
+					RrShader* shader = targetPass->getUsingShader();
 					// Light number
 					int uniformLocation = shader->get_uniform_location( "sys_LightNumber" );
 					if ( uniformLocation >= 0 )
 					{
-						glUniform1i( uniformLocation, std::min<int>( glMaterial::m_lightCount, (renderRQ_current.obj->renderType==World)?64:3 ) );
+						glUniform1i( uniformLocation, std::min<int>( RrMaterial::m_lightCount, (renderRQ_current.obj->renderType==World)?64:3 ) );
 					}
 					// Light data
 					uniformLocation = shader->get_uniform_block_location( "def_LightingInfo" );
 					if ( uniformLocation >= 0 )
 					{
 						glUniformBlockBinding( shader->get_program(), uniformLocation, 5 );
-						glBindBufferRange( GL_UNIFORM_BUFFER, 5, glMaterial::m_ubo_deflightinginfo, NIL, sizeof(Matrix4x4)*4 );
+						glBindBufferRange( GL_UNIFORM_BUFFER, 5, RrMaterial::m_ubo_deflightinginfo, NIL, sizeof(Matrix4x4)*4 );
 					}
 				}
 				// Disable alpha blending
@@ -725,8 +725,8 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				}
 				// Render the object
 				if ( renderRQ_current.obj->visible && (
-					( (glMaterial::special_mode == Renderer::SP_MODE_NORMAL || glMaterial::special_mode == Renderer::SP_MODE_SHAFT || glMaterial::special_mode == Renderer::SP_MODE_2DPALETTE) && renderRQ_current.forward )
-					||( glMaterial::special_mode == Renderer::SP_MODE_ECHO && renderRQ_current.forward  && renderRQ_current.renderType == V2D ) // (unless echopass, then only do v2d)
+					( (RrMaterial::special_mode == renderer::SP_MODE_NORMAL || RrMaterial::special_mode == renderer::SP_MODE_SHAFT || RrMaterial::special_mode == renderer::SP_MODE_2DPALETTE) && renderRQ_current.forward )
+					||( RrMaterial::special_mode == renderer::SP_MODE_ECHO && renderRQ_current.forward  && renderRQ_current.renderType == V2D ) // (unless echopass, then only do v2d)
 					))
 				{
 					GL.prepareDraw();
@@ -840,9 +840,9 @@ void CRenderState::PreRenderSetLighting ( std::vector<CLight*> & lightsToUse )
 	bSpecialRender_ResetLights = true;
 
 	// Calculate pass globals
-	Renderer::Settings.fogScale = 1.0f / (Renderer::Settings.fogEnd - Renderer::Settings.fogStart);//currentCamera->zFar
+	renderer::Settings.fogScale = 1.0f / (renderer::Settings.fogEnd - renderer::Settings.fogStart);//currentCamera->zFar
 	// Update UBOs
-	glMaterial::updateStaticUBO();
+	RrMaterial::updateStaticUBO();
 }
 // RenderSingleObject renders an object, assuming the projection has been already set up.
 void CRenderState::RenderSingleObject ( CRenderableObject* objectToRender )

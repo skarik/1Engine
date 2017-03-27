@@ -6,7 +6,7 @@
 class CInstancedMesh : public CMesh
 {
 public:
-	RENDER_API explicit CInstancedMesh ( glMesh* );
+	RENDER_API explicit CInstancedMesh ( rrMesh* );
 	RENDER_API virtual ~CInstancedMesh ( void );
 
 public:

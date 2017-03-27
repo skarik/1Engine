@@ -14,7 +14,7 @@
 #include "core/settings/CGameSettings.h"
 
 // Effects
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/object/shapes/CBillboard.h"
 
 // Sorting and finding
@@ -150,12 +150,12 @@ void CLight::PreStepSynchronus ( void )
 			mHalo = new CBillboard;
 			mHalo->transform.position = transform.position;
 			mHalo->transform.SetParent( &transform );
-			glMaterial* newMat = new glMaterial;
+			RrMaterial* newMat = new RrMaterial;
 			newMat->removeReference();
-			newMat->passinfo.push_back( glPass() );
-			newMat->passinfo[0].shader = new glShader( "shaders/d/light_halo.glsl" );
-			newMat->passinfo[0].m_blend_mode = Renderer::BM_SOFT_ADD;
-			newMat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
+			newMat->passinfo.push_back( RrPassForward() );
+			newMat->passinfo[0].shader = new RrShader( "shaders/d/light_halo.glsl" );
+			newMat->passinfo[0].m_blend_mode = renderer::BM_SOFT_ADD;
+			newMat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
 			mHalo->SetMaterial( newMat );
 		}
 		else {
@@ -203,7 +203,7 @@ void CLight::UpdateLightList ( void )
 		vCameraPos = CCamera::activeCamera->transform.position;
 
 		if ( !CGameSettings::Active()->b_ro_EnableShaders ) {
-			for ( int i = 0; i < (Renderer::Settings.maxLights-1); i += 1 ) {
+			for ( int i = 0; i < (renderer::Settings.maxLights-1); i += 1 ) {
 				//glDisable( GL_LIGHT1+i );
 			}
 		}
@@ -259,7 +259,7 @@ void CLight::UpdateLight ( void )
 	vLightPos.green = transform.position.y;
 	vLightPos.blue	= transform.position.z;
 
-	if ( (int)lightIndex < (Renderer::Settings.maxLights-1) )
+	if ( (int)lightIndex < (renderer::Settings.maxLights-1) )
 	{
 		//glLoadIdentity();
 
@@ -291,8 +291,8 @@ void CLight::UpdateShadows ( void )
 					(unsigned int)(shadowResolution*2), (unsigned int)(shadowResolution/2), 
 					Clamp, Clamp,
 					RGBA8,
-					glTexture(0,Depth24),true,
-					glTexture(), false );
+					RrGpuTexture(0,Depth24),true,
+					RrGpuTexture(), false );
 			}
 			else
 			{
@@ -300,8 +300,8 @@ void CLight::UpdateShadows ( void )
 					(unsigned int)(shadowResolution), (unsigned int)(shadowResolution), 
 					Clamp, Clamp,
 					RGBA8,
-					glTexture(0,Depth24),true,
-					glTexture(), false );
+					RrGpuTexture(0,Depth24),true,
+					RrGpuTexture(), false );
 			}
 		}
 			//shadowTexture = new CRenderTexture( RGBA8, (unsigned int)shadowResolution, (unsigned int)shadowResolution, Clamp, Clamp, Texture2D, Depth16,true,true );

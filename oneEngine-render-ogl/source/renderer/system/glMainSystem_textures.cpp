@@ -71,7 +71,7 @@ glEnum glMainSystem::Enum ( const eColorFormat fmt )
 	case RGBA16F:	return GL_RGBA16F;
 	case RGBA16:	return GL_RGBA16;
 	}
-	throw Core::InvalidArgumentException();
+	throw core::InvalidArgumentException();
 	return 0x0;
 }
 glEnum glMainSystem::Enum ( const eTextureType fmt )
@@ -81,7 +81,7 @@ glEnum glMainSystem::Enum ( const eTextureType fmt )
 	case Texture3D:		return GL_TEXTURE_3D;
 	case TextureCube:	return GL_TEXTURE_CUBE_MAP;
 	}
-	throw Core::InvalidArgumentException();
+	throw core::InvalidArgumentException();
 	return 0x0;
 }
 glEnum glMainSystem::Enum ( const eDepthFormat fmt )
@@ -92,7 +92,7 @@ glEnum glMainSystem::Enum ( const eDepthFormat fmt )
 	case Depth24:		return GL_DEPTH_COMPONENT24;
 	case Depth32:		return GL_DEPTH_COMPONENT32;
 	}
-	throw Core::InvalidArgumentException();
+	throw core::InvalidArgumentException();
 	return 0x0;
 }
 glEnum glMainSystem::Enum ( const eStencilFormat fmt )
@@ -104,7 +104,7 @@ glEnum glMainSystem::Enum ( const eStencilFormat fmt )
 	case StencilIndex8:		return GL_STENCIL_INDEX8;
 	case StencilIndex16:	return GL_STENCIL_INDEX16;
 	}
-	throw Core::InvalidArgumentException();
+	throw core::InvalidArgumentException();
 	return 0x0;
 }
 glEnum glMainSystem::Enum ( const eWrappingType fmt )
@@ -114,7 +114,7 @@ glEnum glMainSystem::Enum ( const eWrappingType fmt )
 	case Clamp:				return GL_CLAMP_TO_EDGE;
 	case MirroredRepeat:	return GL_MIRRORED_REPEAT;
 	}
-	throw Core::InvalidArgumentException();
+	throw core::InvalidArgumentException();
 	return 0x0;
 }
 glEnum glMainSystem::Enum ( const eSamplingFilter fmt )
@@ -123,6 +123,6 @@ glEnum glMainSystem::Enum ( const eSamplingFilter fmt )
 	case SamplingLinear:	return GL_LINEAR;
 	case SamplingPoint:		return GL_NEAREST;
 	}
-	throw Core::InvalidArgumentException();
+	throw core::InvalidArgumentException();
 	return 0x0;
 }

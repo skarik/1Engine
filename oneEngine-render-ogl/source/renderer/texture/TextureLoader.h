@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #include "renderer/types/pixelFormat.h"
+#include "renderer/types/textureStructures.h"
 
 //Texture Converter: In-engine program.
 //Bit Pixel Data (BPD)
@@ -32,7 +33,8 @@ namespace Textures
 		uint16_t	levels;
 		//	FRAMES
 		uint16_t	frames;
-		char 		padding0[2];	// 32 byte aligned
+		uint8_t		xdivs;
+		uint8_t		ydivs;
 	};
 
 	enum
@@ -61,15 +63,6 @@ namespace Textures
 		char		padding0[4];// 16 byte aligned
 	};
 
-
-	// IMAGE INFO
-	struct timgInfo
-	{
-		uint16_t	width;
-		uint16_t	height;
-
-		uint32_t	internalFormat;
-	};
 
 	// == FUNCTIONS ==
 	// Converts a given file

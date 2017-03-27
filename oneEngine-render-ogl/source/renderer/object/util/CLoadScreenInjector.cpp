@@ -4,7 +4,7 @@
 
 #include "CLoadScreenInjector.h"
 #include "renderer/texture/CBitmapFont.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/camera/CCamera.h"
 #include "renderer/state/Settings.h"
 #include "renderer/system/glMainSystem.h"
@@ -22,12 +22,8 @@ void CLoadScreenInjector::StepScreen ( void )
 		//mCamera->Update();
 		mCamera->LateUpdate();
 	}
-	Renderer::Settings.clearColor = Color(0,0,0.1,1);
+	renderer::Settings.clearColor = Color(0,0,0.1,1);
 
-	// Clear up the message loop
-	//while ( COglWindow::pActive->UpdateMessages() == false ) {
-	//	;
-	//}
 	// Have to render twice because of the double buffering
 	GL.FullRedraw();
 	// Update timer
@@ -49,27 +45,27 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 	: CRenderableObject (  )
 {
 	renderSettings.renderHints = RL_WORLD;
-	renderType	= Renderer::V2D;
+	renderType	= renderer::V2D;
 
-	screenMaterial = new glMaterial();
+	screenMaterial = new RrMaterial();
 	screenMaterial->m_diffuse = Color(0,0,0);
 	screenMaterial->setTexture( TEX_MAIN, new CTexture( "textures/white.jpg" ) );
-	screenMaterial->passinfo.push_back( glPass() );
-	screenMaterial->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	screenMaterial->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
-	screenMaterial->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
+	screenMaterial->passinfo.push_back( RrPassForward() );
+	screenMaterial->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	screenMaterial->passinfo[0].m_lighting_mode	= renderer::LI_NONE;
+	screenMaterial->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
 	screenMaterial->removeReference();
 	SetMaterial( screenMaterial );
 
 	//fntNotifier	= new CBitmapFont ( "benegraphic.ttf", 72, FW_BOLD );
 	fntNotifier	= new CBitmapFont ( "YanoneKaffeesatz-B.otf", 72, FW_NORMAL );
 
-	matNotifierDrawer = new glMaterial;
+	matNotifierDrawer = new RrMaterial;
 	matNotifierDrawer->m_diffuse = Color( 0.4f,0.4f,0.4f );
 	matNotifierDrawer->setTexture( TEX_MAIN, fntNotifier );
-	matNotifierDrawer->passinfo.push_back( glPass() );
-	matNotifierDrawer->passinfo[0].m_lighting_mode	= Renderer::LI_NONE;
-	matNotifierDrawer->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
+	matNotifierDrawer->passinfo.push_back( RrPassForward() );
+	matNotifierDrawer->passinfo[0].m_lighting_mode	= renderer::LI_NONE;
+	matNotifierDrawer->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
 }
 
 CLoadScreenInjector::~CLoadScreenInjector ( void )

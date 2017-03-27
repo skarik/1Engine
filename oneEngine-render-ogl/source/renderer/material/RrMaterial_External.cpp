@@ -1,5 +1,5 @@
 
-#include "glMaterial.h"
+#include "RrMaterial.h"
 #include "core/debug/CDebugConsole.h"
 
 #include <iostream>
@@ -26,10 +26,10 @@ string trimMaterialName ( const char* n_name )
 	return trimmedMatname;
 }
 
-// static glMaterial::isValidFile ( fname )
+// static RrMaterial::isValidFile ( fname )
 // Searches for the material file with the given name.
 // When found, it will return true. Otherwise, returns false.
-bool glMaterial::isValidFile ( const char* n_materialfile )
+bool RrMaterial::isValidFile ( const char* n_materialfile )
 {
 	// Quick return to prevent memory access errors
 	if ( strlen(n_materialfile) <= 1 ) {
@@ -40,8 +40,8 @@ bool glMaterial::isValidFile ( const char* n_materialfile )
 
 	// Generate filenames to try
 	string sBasefilename = "materials/" + trimmedMatname;
-	string sTextfilename = Core::Resources::PathTo( sBasefilename + ".txt" );
-	string sMatrfilename = Core::Resources::PathTo( sBasefilename + ".mat" );
+	string sTextfilename = core::Resources::PathTo( sBasefilename + ".txt" );
+	string sMatrfilename = core::Resources::PathTo( sBasefilename + ".mat" );
 
 	// Try opening the file
 	std::ifstream ifile;
@@ -74,19 +74,19 @@ enum ELoadState
 	LOOKING_FOR_BEGIN_DEFERRED_PASS,
 	LOADING_DEFERRED_PASS_PROPERTIES
 }; 
-ELoadState loadPassProperties ( glMaterial* material,
+ELoadState loadPassProperties ( RrMaterial* material,
 							   const string& command, std::stringstream& ss,
-							   const GLE::shader_tag_t targetTag, eMipmapGenerationStyle& mipmapMode );
-ELoadState loadEyePassProperties ( glMaterial* material,
+							   const renderer::shader_tag_t targetTag, eMipmapGenerationStyle& mipmapMode );
+ELoadState loadEyePassProperties ( RrMaterial* material,
 							   const string& command, std::stringstream& ss,
-							   const GLE::shader_tag_t targetTag );
-ELoadState loadDeferredPassProperties ( glMaterial* material,
+							   const renderer::shader_tag_t targetTag );
+ELoadState loadDeferredPassProperties ( RrMaterial* material,
 								const string& command, std::stringstream& ss ); 
 
-// glMaterial::loadFromFile ( fname )
+// RrMaterial::loadFromFile ( fname )
 // First searches for the material file with the given name.
 // If it finds it, it then will load it and create all needed pass objects
-void glMaterial::loadFromFile ( const char* n_materialfile )
+void RrMaterial::loadFromFile ( const char* n_materialfile )
 {	
 	// Quick return to prevent memory access errors
 	if ( strlen(n_materialfile) <= 1 ) {
@@ -98,8 +98,8 @@ void glMaterial::loadFromFile ( const char* n_materialfile )
 
 	// Generate filenames to try
 	string sBasefilename = "materials/" + trimmedMatname;
-	string sTextfilename = Core::Resources::PathTo( sBasefilename + ".txt" );
-	string sMatrfilename = Core::Resources::PathTo( sBasefilename + ".mat" );
+	string sTextfilename = core::Resources::PathTo( sBasefilename + ".txt" );
+	string sMatrfilename = core::Resources::PathTo( sBasefilename + ".mat" );
 
 	// Try opening the file
 	std::ifstream ifile;
@@ -132,9 +132,9 @@ void glMaterial::loadFromFile ( const char* n_materialfile )
 		eMipmapGenerationStyle mipmapMode = MipmapNormal;
 
 		// Generate shader targets
-		GLE::shader_tag_t targetTag = GLE::SHADER_TAG_DEFAULT;
+		renderer::shader_tag_t targetTag = renderer::SHADER_TAG_DEFAULT;
 		if ( m_isSkinnedShader ) {
-			targetTag = GLE::SHADER_TAG_SKINNING;
+			targetTag = renderer::SHADER_TAG_SKINNING;
 		}
 
 		// Start parsing the file
@@ -224,7 +224,7 @@ void glMaterial::loadFromFile ( const char* n_materialfile )
 				if ( sCommand == "{" ) {
 					currentLoadState = LOADING_PASS_PROPERTIES;
 					// Add new pass.
-					passinfo.push_back( glPass() );
+					passinfo.push_back( RrPassForward() );
 					t_hasDiffusePass = true;
 				}
 				break;
@@ -242,7 +242,7 @@ void glMaterial::loadFromFile ( const char* n_materialfile )
 				if ( sCommand == "{" ) {
 					currentLoadState = LOADING_EYE_PASS_PROPERTIES;
 					// Add new pass.
-					passinfo.push_back( glPass() );
+					passinfo.push_back( RrPassForward() );
 					t_hasDiffusePass = true;
 				}
 				break;
@@ -255,13 +255,13 @@ void glMaterial::loadFromFile ( const char* n_materialfile )
 				if ( sCommand == "{" ) {
 					currentLoadState = LOADING_DEFERRED_PASS_PROPERTIES;
 					// Add new pass.
-					deferredinfo.push_back( glPass_Deferred() );
+					deferredinfo.push_back( RrPassDeferred() );
 					// This pass defaults to the forward pass options though
 					if ( t_hasDiffusePass )
 					{
 						deferredinfo.back().m_transparency_mode = passinfo[0].m_transparency_mode;
 						//deferredinfo.back().m_blend_mode = passinfo[0].m_blend_mode;
-						deferredinfo.back().m_blend_mode = Renderer::BM_NONE;
+						deferredinfo.back().m_blend_mode = renderer::BM_NONE;
 						//deferredinfo.back().m_lighting_mode = passinfo[0].m_lighting_mode;
 					}
 					t_hasDeferredPass = true;
@@ -279,12 +279,12 @@ void glMaterial::loadFromFile ( const char* n_materialfile )
 		if ( t_automaticDeferred && !t_hasDeferredPass && t_hasDiffusePass )
 		{
 			// Note we can't handle anything that's not BM_NORMAL and non-transparent
-			if ( passinfo[0].m_blend_mode == Renderer::BM_NORMAL || passinfo[0].m_blend_mode == Renderer::BM_NONE && passinfo[0].m_transparency_mode != Renderer::ALPHAMODE_TRANSLUCENT )
+			if ( passinfo[0].m_blend_mode == renderer::BM_NORMAL || passinfo[0].m_blend_mode == renderer::BM_NONE && passinfo[0].m_transparency_mode != renderer::ALPHAMODE_TRANSLUCENT )
 			{
-				deferredinfo.push_back( glPass_Deferred() );
+				deferredinfo.push_back( RrPassDeferred() );
 				deferredinfo[0].m_transparency_mode = passinfo[0].m_transparency_mode;
 				//deferredinfo[0].m_blend_mode = passinfo[0].m_blend_mode;
-				deferredinfo[0].m_blend_mode = Renderer::BM_NONE;
+				deferredinfo[0].m_blend_mode = renderer::BM_NONE;
 				//deferredinfo[0].m_lighting_mode = passinfo[0].m_lighting_mode;
 				//deferredinfo[0].m_diffuse_method = passinfo[0].m;
 			}
@@ -310,21 +310,21 @@ void glMaterial::loadFromFile ( const char* n_materialfile )
 	m_name = n_materialfile;
 }
 
-ELoadState loadPassProperties ( glMaterial* material,
+ELoadState loadPassProperties ( RrMaterial* material,
 							   const string& command, std::stringstream& ss,
-							   const GLE::shader_tag_t targetTag, eMipmapGenerationStyle& mipmapMode )
+							   const renderer::shader_tag_t targetTag, eMipmapGenerationStyle& mipmapMode )
 {
 	ftype t_float;
 	char str [256];
 	string subCommand;
-	glPass* t_pass = &(material->passinfo.back());
+	RrPassForward* t_pass = &(material->passinfo.back());
 
 	if ( command == "}" )
 	{
 		// If done, and no shader loaded, load default shader
 		if ( t_pass->shader == NULL )
 		{
-			t_pass->shader = new glShader( "shaders/d/diffuse.glsl", targetTag );
+			t_pass->shader = new RrShader( "shaders/d/diffuse.glsl", targetTag );
 		}
 		return FINISHED_MAIN_PASS;
 	}
@@ -332,11 +332,11 @@ ELoadState loadPassProperties ( glMaterial* material,
 	{
 		ss >> subCommand;
 		
-		throw Core::NotYetImplementedException();
+		throw core::NotYetImplementedException();
 
 		if ( subCommand == "default" )
 		{
-			t_pass->shader = new glShader( "shaders/d/diffuse.glsl", targetTag );
+			t_pass->shader = new RrShader( "shaders/d/diffuse.glsl", targetTag );
 			// Set default textures if non allocated
 			if ( material->getTexture(TEX_OVERLAY) == NULL ) {	// Glowmap	
 				material->setTexture( TEX_OVERLAY, new CTexture ( "textures/black.jpg" ) );
@@ -349,20 +349,20 @@ ELoadState loadPassProperties ( glMaterial* material,
 			}
 		}
 		else if ( subCommand == "flora" ) {
-			t_pass->shader = new glShader( "shaders/world/foliage.glsl", targetTag );
+			t_pass->shader = new RrShader( "shaders/world/foliage.glsl", targetTag );
 			if ( material->getTexture(TEX_OVERLAY) == NULL ) {	// Set default textures if non allocated
 				material->setTexture( TEX_OVERLAY, new CTexture ( "textures/black.jpg" ) );
 			}
 		}
 		else if ( subCommand == "fur_single_pass" ) {
-			t_pass->shader = new glShader( "shaders/d/fur_single_pass.glsl", targetTag );
-			t_pass->m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
+			t_pass->shader = new RrShader( "shaders/d/fur_single_pass.glsl", targetTag );
+			t_pass->m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
 			if ( material->getTexture(TEX_OVERLAY) == NULL ) {	// Set default color mask
 				material->setTexture( TEX_OVERLAY, new CTexture ( "textures/white.jpg" ) );
 			}
 		}
 		else if ( subCommand == "skin" ) {
-			t_pass->shader = new glShader( "shaders/d/skin.glsl", targetTag );
+			t_pass->shader = new RrShader( "shaders/d/skin.glsl", targetTag );
 			if ( material->getTexture(TEX_OVERLAY) == NULL ) {	// Set default inverse cutout mask
 				material->setTexture( TEX_OVERLAY, new CTexture ( "textures/black.jpg" ) );
 			}
@@ -381,13 +381,13 @@ ELoadState loadPassProperties ( glMaterial* material,
 			}
 		}
 		else if ( subCommand == "particle" ) {
-			t_pass->shader = new glShader( "shaders/particles/colorblended.glsl" );
+			t_pass->shader = new RrShader( "shaders/particles/colorblended.glsl" );
 		}
 		else if ( subCommand == "particle_softadd" ) {
-			t_pass->shader = new glShader( "shaders/particles/colorblendedsoftadd.glsl" );
+			t_pass->shader = new RrShader( "shaders/particles/colorblendedsoftadd.glsl" );
 		}
 		else if ( subCommand == "terrain" ) {
-			t_pass->shader = new glShader( "shaders/world/terrainDefault.glsl" );
+			t_pass->shader = new RrShader( "shaders/world/terrainDefault.glsl" );
 			if ( material->getTexture(TEX_SLOT1) == NULL ) {	// Set default textures if non allocated
 				material->setTexture( TEX_SLOT1, new CTexture ( "textures/black.jpg" ) );
 			}
@@ -420,17 +420,17 @@ ELoadState loadPassProperties ( glMaterial* material,
 		subCommand = StringUtils::TrimLeft( str );
 		if ( subCommand.length() > 1 ) {
 			// Load the texture
-			t_pass->shader = new glShader( subCommand, targetTag );
+			t_pass->shader = new RrShader( subCommand, targetTag );
 		}
 	}
 	else if ( command == "blendmode" )
 	{ // Set blendmode
 		ss >> subCommand;
 		if ( subCommand == "additive" ) {
-			t_pass->m_blend_mode = Renderer::BM_ADD;
+			t_pass->m_blend_mode = renderer::BM_ADD;
 		}
 		else if ( subCommand == "normal" || subCommand == "default" ) {
-			t_pass->m_blend_mode = Renderer::BM_NORMAL;
+			t_pass->m_blend_mode = renderer::BM_NORMAL;
 		}
 		else if ( subCommand == "alphatest" ) {
 			/*iBlendMode = BM_NORMAL;
@@ -447,10 +447,10 @@ ELoadState loadPassProperties ( glMaterial* material,
 			Debug::Console->PrintWarning( "\"blendmode alphablend\" is deprecated. Use transparency enumerator." );
 		}
 		else if ( subCommand == "softalphablend" ) {
-			t_pass->m_blend_mode = Renderer::BM_SOFT_ADD;
+			t_pass->m_blend_mode = renderer::BM_SOFT_ADD;
 		}
 		else if ( subCommand == "subtractive" || subCommand == "invmul" ) {
-			t_pass->m_blend_mode = Renderer::BM_INV_MULTIPLY;
+			t_pass->m_blend_mode = renderer::BM_INV_MULTIPLY;
 		}
 		else {
 			Debug::Console->PrintWarning( "Invalid blendmode matval.\n" );
@@ -461,7 +461,7 @@ ELoadState loadPassProperties ( glMaterial* material,
 		ss >> subCommand;
 		if ( subCommand == "normal" || subCommand == "none" )
 		{
-			t_pass->m_transparency_mode = Renderer::ALPHAMODE_NONE;
+			t_pass->m_transparency_mode = renderer::ALPHAMODE_NONE;
 		}
 		else if ( subCommand == "alphatest" )
 		{
@@ -469,12 +469,12 @@ ELoadState loadPassProperties ( glMaterial* material,
 			if ( t_float < FTYPE_PRECISION ) {
 				t_float = 0.5f;
 			}
-			t_pass->m_transparency_mode = Renderer::ALPHAMODE_ALPHATEST;
+			t_pass->m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
 			t_pass->f_alphatest_value = t_float;
 		}
 		else if ( subCommand == "full" )
 		{
-			t_pass->m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
+			t_pass->m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
 		}
 	}
 	else if ( command == "depthmask" )
@@ -491,16 +491,16 @@ ELoadState loadPassProperties ( glMaterial* material,
 	{ // Set lighting
 		ss >> subCommand;
 		if ( subCommand == "disabled" ) {
-			t_pass->m_lighting_mode = Renderer::LI_NONE;
+			t_pass->m_lighting_mode = renderer::LI_NONE;
 		}
 		else if ( subCommand == "enabled" || subCommand == "default" ) {
-			t_pass->m_lighting_mode = Renderer::LI_NORMAL;
+			t_pass->m_lighting_mode = renderer::LI_NORMAL;
 		}
 		else if ( subCommand == "cel" || subCommand == "shaded" ) {
-			t_pass->m_lighting_mode = Renderer::LI_NORMAL;
+			t_pass->m_lighting_mode = renderer::LI_NORMAL;
 		}
 		else if ( subCommand == "skin" ) {
-			t_pass->m_lighting_mode = Renderer::LI_SKIN;
+			t_pass->m_lighting_mode = renderer::LI_SKIN;
 		}
 		else {
 			Debug::Console->PrintWarning( "Invalid lighting matval.\n" );
@@ -580,34 +580,34 @@ ELoadState loadPassProperties ( glMaterial* material,
 	{
 		ss >> subCommand;
 		if ( subCommand == "twosided" ) {
-			t_pass->m_face_mode = Renderer::FM_FRONTANDBACK;
+			t_pass->m_face_mode = renderer::FM_FRONTANDBACK;
 		}
 		else if ( subCommand == "back" ) {
-			t_pass->m_face_mode = Renderer::FM_BACK;
+			t_pass->m_face_mode = renderer::FM_BACK;
 		}
 		else if ( subCommand == "front" ) {
-			t_pass->m_face_mode = Renderer::FM_FRONT;
+			t_pass->m_face_mode = renderer::FM_FRONT;
 		}
 	}
 	return LOADING_PASS_PROPERTIES;
 }
 
 
-ELoadState loadEyePassProperties ( glMaterial* material,
+ELoadState loadEyePassProperties ( RrMaterial* material,
 							   const string& command, std::stringstream& ss,
-							   const GLE::shader_tag_t targetTag )
+							   const renderer::shader_tag_t targetTag )
 {
 	//ftype t_float;
 	char str [256];
 	string subCommand;
-	glPass* t_pass = &(material->passinfo.back());
+	RrPassForward* t_pass = &(material->passinfo.back());
 
 	if ( command == "}" ) {
 		return FINISHED_MAIN_PASS;
 	}
 	else if ( command == "begin_eyepass" )
 	{
-		t_pass->shader = new glShader( "shaders/d/eye_shading.glsl", targetTag );
+		t_pass->shader = new RrShader( "shaders/d/eye_shading.glsl", targetTag );
 		material->m_specular = Color( 0,0,0 );
 		material->m_specularPower = 23;
 	}
@@ -644,13 +644,13 @@ ELoadState loadEyePassProperties ( glMaterial* material,
 	return LOADING_EYE_PASS_PROPERTIES;
 }
 
-ELoadState loadDeferredPassProperties ( glMaterial* material,
+ELoadState loadDeferredPassProperties ( RrMaterial* material,
 								const string& command, std::stringstream& ss )
 {
 	ftype t_float;
 	//char str [256];
 	string subCommand;
-	glPass_Deferred* t_pass = &(material->deferredinfo.back());
+	RrPassDeferred* t_pass = &(material->deferredinfo.back());
 
 	if ( command == "}" )
 	{
@@ -664,21 +664,21 @@ ELoadState loadDeferredPassProperties ( glMaterial* material,
 	{
 		/*ss >> subCommand;
 		if ( subCommand == "default" || subCommand == "standard" ) {
-			t_pass->m_diffuse_method = Renderer::Deferred::DIFFUSE_DEFAULT;
+			t_pass->m_diffuse_method = renderer::Deferred::DIFFUSE_DEFAULT;
 		}
 		if ( subCommand == "eyes" ) {
-			t_pass->m_diffuse_method = Renderer::Deferred::DIFFUSE_EYES;
+			t_pass->m_diffuse_method = renderer::Deferred::DIFFUSE_EYES;
 			t_pass->m_rimlight_strength = 0.5f;
 		}
 		else if ( subCommand == "skin" ) {
-			t_pass->m_diffuse_method = Renderer::Deferred::DIFFUSE_SKIN;
+			t_pass->m_diffuse_method = renderer::Deferred::DIFFUSE_SKIN;
 			t_pass->m_rimlight_strength = 1.0f;
 		}
 		else if ( subCommand == "hair" ) {
-			t_pass->m_diffuse_method = Renderer::Deferred::DIFFUSE_HAIR;
+			t_pass->m_diffuse_method = renderer::Deferred::DIFFUSE_HAIR;
 			t_pass->m_rimlight_strength = 0.4f;
 		}*/
-		throw Core::DeprecatedFeatureException();
+		throw core::DeprecatedFeatureException();
 	}
 
 	return LOADING_DEFERRED_PASS_PROPERTIES;

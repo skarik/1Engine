@@ -18,7 +18,7 @@
 
 #include "renderer/resource/CModelMaster.h"
 #include "renderer/object/mesh/CMesh.h"
-#include "renderer/object/mesh/system/glSkinnedMesh.h"
+#include "renderer/object/mesh/system/rrSkinnedMesh.h"
 
 #include "renderer/logic/model/morpher/CMorpher.h"
 
@@ -34,9 +34,9 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	// Standardize the filename
 	myModelFilename = IO::FilenameStandardize( myModelFilename );
 	// Look for the valid resource to load
-	myModelFilename = Core::Resources::PathTo( myModelFilename );
+	myModelFilename = core::Resources::PathTo( myModelFilename );
 #ifndef _ENGINE_DEBUG
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 #endif
 
 	// Set basic properties
@@ -71,7 +71,7 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	}
 	else
 	{
-		throw Core::NullReferenceException();
+		throw core::NullReferenceException();
 	}
 
 	// Grab a copy of the skeleton
@@ -83,7 +83,7 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	}
 	else
 	{
-		throw Core::NullReferenceException();
+		throw core::NullReferenceException();
 	}
 
 	// Search for a morph to use
@@ -108,7 +108,7 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	// Create a stream if needed
 	if ( iMorphTarget >= 0 )
 	{
-		glSkinnedMesh* source_mesh = (glSkinnedMesh*)(m_meshes[iMorphTarget]);
+		rrSkinnedMesh* source_mesh = (rrSkinnedMesh*)(m_meshes[iMorphTarget]);
 		m_glStreamedMesh = source_mesh->Copy();
 	}
 	else
@@ -153,7 +153,7 @@ CSkinnedModel::~CSkinnedModel ( void )
 	}
 	PhysicalResources::Active()->ReleaseSkeleton( myModelFilename.c_str() );
 
-	//throw Core::DeprecatedCallException();
+	//throw core::DeprecatedCallException();
 
 	//cout << "Entering ~CSkinnedModel.";
 
@@ -195,7 +195,7 @@ void CSkinnedModel::PreStepSynchronus ( void )
 	}
 
 	// Grab current skeleton mode
-	//auto renderMode = ((glSkinnedMesh*)m_glMeshlist[0])->iRenderMode;
+	//auto renderMode = ((rrSkinnedMesh*)m_glMeshlist[0])->iRenderMode;
 
 	TimeProfiler.EndAddTimeProfile( "rs_skinned_model_prestep1" );
 }
@@ -272,19 +272,19 @@ void CSkinnedModel::PostStep ( void )
 		}
 
 		// Before skinning and morphs, prepare the stream
-		//if ( renderMode == glSkinnedMesh::RD_CPU )
+		//if ( renderMode == rrSkinnedMesh::RD_CPU )
 		//{
-		//	for ( std::vector<glMesh*>::iterator it = m_glMeshlist.begin(); it != m_glMeshlist.end(); it++ )
+		//	for ( std::vector<rrMesh*>::iterator it = m_glMeshlist.begin(); it != m_glMeshlist.end(); it++ )
 		//	{
-		//		glSkinnedMesh* mesh = ((glSkinnedMesh*)(*it));
+		//		rrSkinnedMesh* mesh = ((rrSkinnedMesh*)(*it));
 		//		mesh->PrepareStream();
 		//	}
 		//}
-		//else if ( renderMode == glSkinnedMesh::RD_GPU )
+		//else if ( renderMode == rrSkinnedMesh::RD_GPU )
 		//{	// Only morpher needs to stream vertices
 		//	if ( bDoMorphing && m_meshes[iMorphTarget]->GetCanRender() )
 		//	{
-		//		((glSkinnedMesh*)m_glMeshlist[iMorphTarget])->PrepareStream();
+		//		((rrSkinnedMesh*)m_glMeshlist[iMorphTarget])->PrepareStream();
 		//	}
 		//}
 
@@ -293,15 +293,15 @@ void CSkinnedModel::PostStep ( void )
 		{
 			//pMorpher->FindAction("blink")->weight = fabs(sinf(Time::currentTime*2.0f))*0.10f;
 			//(*pMorpher)[0].weight = fabs(sinf(Time::currentTime*2.0f))*0.10f;
-			pMorpher->PerformMorph( (glSkinnedMesh*)(m_glMeshlist[iMorphTarget]), m_glStreamedMesh );
+			pMorpher->PerformMorph( (rrSkinnedMesh*)(m_glMeshlist[iMorphTarget]), m_glStreamedMesh );
 			m_glStreamedMesh->UpdateVBO();
 		}
 
 		GL_ACCESS;
 		// Update the meshes
-		for ( std::vector<glMesh*>::iterator it = m_glMeshlist.begin(); it != m_glMeshlist.end(); it++ )
+		for ( std::vector<rrMesh*>::iterator it = m_glMeshlist.begin(); it != m_glMeshlist.end(); it++ )
 		{
-			glSkinnedMesh* mesh = ((glSkinnedMesh*)(*it));
+			rrSkinnedMesh* mesh = ((rrSkinnedMesh*)(*it));
 			// Give the mesh the skeleton to pull the matrices from
 			if ( referenceToCopySkeletonFrom == NULL )
 			{
@@ -315,12 +315,12 @@ void CSkinnedModel::PostStep ( void )
 			//if ( CGameSettings::Active()->b_dbg_ro_EnableSkinning ) 
 			//{
 			//	GL.ThreadGrabLock();
-			//	//if ( renderMode == glSkinnedMesh::RD_CPU )
+			//	//if ( renderMode == rrSkinnedMesh::RD_CPU )
 			//	//{	// CPU Skinning does all the streaming each frame
 			//	//	mesh->StartSkinning();
 			//	//	mesh->UpdateVBO();
 			//	//}
-			//	//else if ( renderMode == glSkinnedMesh::RD_GPU )
+			//	//else if ( renderMode == rrSkinnedMesh::RD_GPU )
 			//	//{
 			//	if ( bDoMorphing && m_glMeshlist[iMorphTarget] == mesh && m_meshes[iMorphTarget]->GetCanRender() )
 			//	{	// Morphing needs full CPU streaming done
@@ -348,7 +348,7 @@ void CSkinnedModel::PostStep ( void )
 }
 
 /*
-void CSkinnedModel::PassBoneMatrices ( glMaterial* mat )
+void CSkinnedModel::PassBoneMatrices ( RrMaterial* mat )
 {
 	Matrix4x4* sys_BoneMatrix = new Matrix4x4 [vSkeleton.size()] ();
 	for ( vector<glBone*>::iterator bone = vSkeleton.begin(); bone != vSkeleton.end(); bone++ )
@@ -425,7 +425,7 @@ void CSkinnedModel::SetReferencedSkeletonBuffer ( CSkinnedModel* n_reference )
 		referenceToCopySkeletonFrom = n_reference;
 		if ( n_reference->skeleton.names.size() != this->skeleton.names.size() )
 		{
-			throw Core::InvalidArgumentException();
+			throw core::InvalidArgumentException();
 		}
 	}
 }

@@ -11,18 +11,18 @@
 
 //#include "GLCommon.h"
 //#include "glMainSystem.h"
-//#include "renderer/material/glMaterial.h"
+//#include "renderer/material/RrMaterial.h"
 
-#include "renderer/types/glShaderConstants.h"
+#include "renderer/types/RrObjectMaterialProperties.h"
 #include "renderer/types/ObjectSettings.h"
 
 //#include "CCamera.h"
 
 // Class prototypes
 class CRenderState;
-class glMaterial;
-class glPass;
-class glPass_Deferred;
+class RrMaterial;
+class RrPassForward;
+class RrPassDeferred;
 
 // Defines
 #ifndef RegisterRenderClassName
@@ -39,7 +39,7 @@ class glPass_Deferred;
 class CRenderableObject
 {
 public:
-		typedef Renderer::RenderingType RenderingType;
+		typedef renderer::RenderingType RenderingType;
 private:
 	// No copying with "="
 	CRenderableObject & operator= (const CRenderableObject & other);
@@ -52,7 +52,7 @@ protected:
 	// Returns of material placement can be edited
 	/*virtual bool			GetPassMaterialConst ( const char pass ) { return false; }
 	// Returns the material placement
-	virtual glMaterial**	GetPassMaterialPosition ( const char pass ) { return &(vMaterials[pass]); }*/
+	virtual RrMaterial**	GetPassMaterialPosition ( const char pass ) { return &(vMaterials[pass]); }*/
 
 public:
 	// == Rendering Prototypes ==
@@ -75,7 +75,7 @@ public:
 	// == Setters ==
 	// Change the material the given material array thing.
 	// Give the ownership of the material to this mesh if the materials have been "released"
-	RENDER_API virtual void			SetMaterial		( glMaterial* n_pNewMaterial );
+	RENDER_API virtual void			SetMaterial		( RrMaterial* n_pNewMaterial );
 	// Change the object's render type
 	RENDER_API void					SetRenderType	( RenderingType );
 	// Change visible state
@@ -84,8 +84,8 @@ public:
 	}
 	// == Getters ==
 	// Searches for the first material with the string in its name
-	//glMaterial*				FindMaterial( const string & strToFind, int skipAmount=0 );
-	RENDER_API virtual glMaterial*	GetMaterial ( void ) {
+	//RrMaterial*				FindMaterial( const string & strToFind, int skipAmount=0 );
+	RENDER_API virtual RrMaterial*	GetMaterial ( void ) {
 		return m_material;
 	}
 	// Returns visible state
@@ -102,15 +102,15 @@ public:
 	RENDER_API virtual uchar		GetPassNumber ( void );
 
 	// Returns the associated pass. This is used for ordering.
-	RENDER_API virtual glPass*		GetPass ( const uchar pass );
+	RENDER_API virtual RrPassForward*		GetPass ( const uchar pass );
 	// Returns the associated deferred rendering pass. This is used for ordering.
-	RENDER_API virtual glPass_Deferred*GetPassDeferred ( const uchar pass );
+	RENDER_API virtual RrPassDeferred*GetPassDeferred ( const uchar pass );
 
 
 private:
 	// == Update Prototypes ==
 	void UpdateRenderInfo ( void ) {
-		if ( renderType == Renderer::V2D ) {
+		if ( renderType == renderer::V2D ) {
 			renderDistance = ( transform.position.z * 50.0f ) + ( ( _activeCameraPosition - transform.position ).sqrMagnitude() * 0.005f );
 		}
 		else {
@@ -123,18 +123,18 @@ public:
 	CTransform	transform;
 	// Rendering states
 	//bool						visible;			// if object should be drawn or not
-	Renderer::objectSettings	renderSettings;		// miscelleneous render settings
-	glShaderConstants			shaderConstants;
+	renderer::objectSettings	renderSettings;		// miscelleneous render settings
+	RrObjectMaterialProperties			shaderConstants;
 
 protected:
 	// Rendering States
 	RenderingType			renderType;
-	//vector<glMaterial*>	vMaterials;
+	//vector<RrMaterial*>	vMaterials;
 protected:
-	glMaterial*					m_material;
+	RrMaterial*					m_material;
 	bool						visible;
 private:
-	//vector<Renderer::new_passinfo_t>	m_passinfo;	
+	//vector<renderer::new_passinfo_t>	m_passinfo;	
 	uint*		m_vao_info;
 	uint		m_vao_count;
 	uint		m_vao_maxcount;
@@ -160,15 +160,15 @@ protected:
 
 	// Public materials that are reused
 	/*static bool bStaticMaterialsInit;
-	static glMaterial* GLoutlineMaterial;
+	static RrMaterial* GLoutlineMaterial;
 
 	static void InitMaterials ( void )
 	{
 		if ( !bStaticMaterialsInit )
 		{
-			GLoutlineMaterial = new glMaterial();
+			GLoutlineMaterial = new RrMaterial();
 			GLoutlineMaterial->iFaceMode = GLoutlineMaterial->FM_BACK;
-			GLoutlineMaterial->setShader( new glShader( ".res/shaders/d/outline.glsl" ) );
+			GLoutlineMaterial->setShader( new RrShader( ".res/shaders/d/outline.glsl" ) );
 
 			bStaticMaterialsInit = true;
 		}

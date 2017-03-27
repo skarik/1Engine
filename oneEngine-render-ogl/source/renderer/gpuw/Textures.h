@@ -5,7 +5,7 @@
 #include "renderer/types/types.h"
 #include "renderer/types/textureFormats.h"
 
-namespace GPU
+namespace gpu
 {
 	// Create a read/write buffer
 	RENDER_API glHandle TextureAllocate(

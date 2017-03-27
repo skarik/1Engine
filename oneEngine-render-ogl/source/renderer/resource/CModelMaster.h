@@ -3,7 +3,7 @@
 #define _C_MODEL_MASTER_H_
 
 // Includes
-//#include "glMesh.h"
+//#include "rrMesh.h"
 //#include "physMesh.h"
 //#include "CAnimation.h"
 //#include "CMorpher.h"
@@ -17,7 +17,7 @@
 
 struct sHitbox;
 
-class glMesh;
+class rrMesh;
 class physMesh;
 class CAnimation;
 class CMorpher;
@@ -27,7 +27,7 @@ class CMorpher;
 {
 public:
 	unsigned int referenceCount;
-	std::vector<glMesh*> vMeshes;
+	std::vector<rrMesh*> vMeshes;
 	std::vector<sHitbox> vHitboxes;
 };
 class PhysSetReference
@@ -56,7 +56,7 @@ public:
 	CModelMaster ( void );
 	~CModelMaster ( void );
 
-	void AddReference ( const string& filename, std::vector<glMesh*>& meshes, std::vector<sHitbox>& hitboxes );
+	void AddReference ( const string& filename, std::vector<rrMesh*>& meshes, std::vector<sHitbox>& hitboxes );
 	void AddReference ( const string& filename, std::vector<physMesh*>& meshes );
 	void AddReference ( const string& filename, CAnimation* animSet );
 	void AddReference ( const string& filename, CMorpher* animSet );
@@ -66,7 +66,7 @@ public:
 	void RemoveAnimSetReference ( const string& filename );
 	void RemoveMorpherSetReference ( const string& filename );
 
-	const std::vector<glMesh*>*		GetReference ( const string& filename );
+	const std::vector<rrMesh*>*		GetReference ( const string& filename );
 	const std::vector<physMesh*>*	GetCollisionReference ( const string& filename );
 	const std::vector<sHitbox>*		GetHitboxReference ( const string& filename );
 	CAnimation*					GetAnimationReference ( const string& filename );
@@ -90,13 +90,13 @@ class RenderResources
 	ARSINGLETON_H_ACCESS(RenderResources)
 
 public:
-	RENDER_API void AddMeshSet ( const char* filename, std::vector<glMesh*>& meshes );
+	RENDER_API void AddMeshSet ( const char* filename, std::vector<rrMesh*>& meshes );
 	RENDER_API void AddMorphSet ( const char* filename, CMorpher* morphSet );
 
 	//	GetMesh ( filename )
 	// Returns the mesh set saved previously, and increments the reference count.
 	// Returns NULL if no reference is found.
-	RENDER_API const std::vector<glMesh*>*		GetMesh ( const char* filename );
+	RENDER_API const std::vector<rrMesh*>*		GetMesh ( const char* filename );
 
 	//	GetMorpher ( filename )
 	// Returns the morpher saved previously, and increments the reference count.
@@ -114,7 +114,7 @@ private:
 	struct meshset_reference_t
 	{
 		uint16_t refCount;
-		std::vector<glMesh*> set;
+		std::vector<rrMesh*> set;
 	};
 	struct morphset_reference_t
 	{

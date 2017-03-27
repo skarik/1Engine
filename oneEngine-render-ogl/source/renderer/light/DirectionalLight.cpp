@@ -71,7 +71,7 @@ void DirectionalLight::PreStepSynchronus ( void )
 // Different lateupdate
 void DirectionalLight::UpdateLight ( void )
 {
-	if ( (int)lightIndex < (Renderer::Settings.maxLights-1) )
+	if ( (int)lightIndex < (renderer::Settings.maxLights-1) )
 	{
 		//int i_glLightIndex = GL_LIGHT1+(int)lightIndex;
 		

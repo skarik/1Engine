@@ -151,7 +151,7 @@ void CParticleEmitter::CreateParticle ( const Vector3d & vInPosition )
 {
 	if ( m_next_particle_index >= m_particle_array_size )
 	{	// Need to do a quick check to fix this edge case
-		throw Core::YouSuckException();
+		throw core::YouSuckException();
 	}
 	CParticle& newParticle = m_particles[m_next_particle_index];
 
@@ -247,7 +247,7 @@ bool CParticleEmitter::HasEmitted ( void ) {
 void CParticleEmitter::LoadFromFile ( const string & filename )
 {
 	// Input
-	CSegmentedFile inFile ( Core::Resources::PathTo( filename ) );
+	CSegmentedFile inFile ( core::Resources::PathTo( filename ) );
 	inFile.ReadData();
 
 	// First check header

@@ -136,7 +136,7 @@ private:
 
 #define RESOURCE_GET_TEXTURE(name, conditional_texture) conditional_texture
 
-namespace Renderer
+namespace renderer
 {
 	static const char* TextureBlack = "black";
 	static const char* TextureWhite = "white";

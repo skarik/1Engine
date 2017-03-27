@@ -14,7 +14,7 @@
 
 #include "core/types/types.h"
 
-namespace Renderer
+namespace renderer
 {
 	RENDER_API int con_recompile_shader ( std::string const& cmd );
 	RENDER_API int con_recompile_shaders ( std::string const& cmd );

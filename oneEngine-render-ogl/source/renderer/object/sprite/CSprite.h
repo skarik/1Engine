@@ -7,7 +7,7 @@
 
 // Includes
 //#include "glMainSystem.h"
-//#include "glMaterial.h"
+//#include "RrMaterial.h"
 //#include "renderer/texture/CTexture.h"
 #include "core/types/float.h"
 #include "core/math/Vector2d.h"
@@ -21,7 +21,7 @@
 #include <string>
 using std::string;
 
-class glMaterial;
+class RrMaterial;
 class CTexture;
 
 // Class definition
@@ -48,19 +48,19 @@ public:
 	Real	depth;
 	bool	visible;
 
-	Renderer::eDrawBlendMode blendmode;
+	renderer::eDrawBlendMode blendmode;
 
 public:
 	// == Math Checker Functions ==
 	RENDER_API bool	ContainsPoint ( Vector2d );
 
-	glMaterial*	GetMaterial ( void ) {
+	RrMaterial*	GetMaterial ( void ) {
 		return myMaterial;
 	}
 private:
 	Vector2d size;
 
-	glMaterial*	myMaterial;
+	RrMaterial*	myMaterial;
 	CTexture*	myTexture;
 };
 

@@ -1,7 +1,7 @@
 
 #include "CParticleRenderer_Animated.h"
 
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/camera/CCamera.h"
 
 CParticleRenderer_Animated::CParticleRenderer_Animated( CParticleEmitter* pInEmitter )

@@ -3,7 +3,7 @@
 
 // Includes
 #include "../CRenderableObject.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include <vector>
 
 // Class Definition
@@ -15,7 +15,7 @@ public:
 
 	RENDER_API bool Render ( const char pass );
 
-	//void SetMaterial ( glMaterial* );
+	//void SetMaterial ( RrMaterial* );
 
 	void SetSize ( Real newSize )
 	{

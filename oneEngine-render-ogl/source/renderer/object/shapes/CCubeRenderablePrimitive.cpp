@@ -96,7 +96,7 @@ bool CCubeRenderPrim::Render ( const char pass )
 	//GL.Transform( &transform );
 
 	//GLdefaultMaterial.bind();
-	//glMaterial aMat;
+	//RrMaterial aMat;
 	//aMat.useColors = true;
 	//aMat.useLighting = false;
 	//aMat.bindPass(pass);

@@ -16,7 +16,7 @@
 // Prototypes
 class CModel;
 class CSkinnedModel;
-class glSkinnedMesh;
+class rrSkinnedMesh;
 
 // Morpher class
 // Used for badass morphing
@@ -52,7 +52,7 @@ public:
 	static CMorphAction	deadAction;
 protected:
 	// Function for model system
-	void	PerformMorph ( glSkinnedMesh* sourceMesh, glSkinnedMesh* targetMesh );
+	void	PerformMorph ( rrSkinnedMesh* sourceMesh, rrSkinnedMesh* targetMesh );
 
 protected:
 	friend CMorphAction;

@@ -1,12 +1,12 @@
 
-#include "glSkinnedMesh.h"
-#include "renderer/material/glMaterial.h"
+#include "rrSkinnedMesh.h"
+#include "renderer/material/RrMaterial.h"
 
 #include "renderer/system/glMainSystem.h"
 
 // Constructor
-glSkinnedMesh::glSkinnedMesh ( void )
-	: glMesh()
+rrSkinnedMesh::rrSkinnedMesh ( void )
+	: rrMesh()
 {
 	iRenderMode = RD_GPU;
 
@@ -39,7 +39,7 @@ glSkinnedMesh::glSkinnedMesh ( void )
 	skinning_data = {0};
 }
 // Destructor
-glSkinnedMesh::~glSkinnedMesh ( void )
+rrSkinnedMesh::~rrSkinnedMesh ( void )
 {
 	// Free the created streams
 	//FreeSplitMesh();
@@ -62,14 +62,14 @@ glSkinnedMesh::~glSkinnedMesh ( void )
 		pvSoftMatrices = NULL;
 	}*/
 }
-//void glSkinnedMesh::FreeStream ( void )
+//void rrSkinnedMesh::FreeStream ( void )
 //{
 //	// We can not delete the ibDataType
-//	ibDataType = USERDATA_NONE;	// Doesn't allow glMesh destructor to delete
+//	ibDataType = USERDATA_NONE;	// Doesn't allow rrMesh destructor to delete
 //	// We can not free the material
-//	pmMat = NULL;				// Doesn't allow glMesh destructor to delete
+//	pmMat = NULL;				// Doesn't allow rrMesh destructor to delete
 //	// We can not touch the source data
-//	bReady = false;				// Doesn't allow glMesh destructor to delete
+//	bReady = false;				// Doesn't allow rrMesh destructor to delete
 //	// We do need to get rid of the VBOs we use
 //	if ( iVBOverts )
 //		glDeleteBuffers( 1, &iVBOverts );
@@ -79,9 +79,9 @@ glSkinnedMesh::~glSkinnedMesh ( void )
 //	iVBOfaces = 0;
 //}
 
-void glSkinnedMesh::Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames, bool isStreamed )
+void rrSkinnedMesh::Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames, bool isStreamed )
 {
-	glMesh::Initialize( nNewName, pNewModelData, frames, false );
+	rrMesh::Initialize( nNewName, pNewModelData, frames, false );
 
 	
 	// Find max bone index
@@ -146,9 +146,9 @@ void glSkinnedMesh::Initialize ( const string& nNewName, CModelData* const pNewM
 	GL_ACCESS GL.CheckError();
 }
 
-glSkinnedMesh* glSkinnedMesh::Copy ( void )
+rrSkinnedMesh* rrSkinnedMesh::Copy ( void )
 {
-	glSkinnedMesh* newmesh = new glSkinnedMesh();
+	rrSkinnedMesh* newmesh = new rrSkinnedMesh();
 
 	newmesh->bReady	= bReady;
 	newmesh->iVBOverts	= iVBOverts;
@@ -189,7 +189,7 @@ glSkinnedMesh* glSkinnedMesh::Copy ( void )
 
 	//if ( pvSkeleton && pvSkeleton->size() > 1023 )
 	//{
-	//	throw Core::CorruptedDataException();
+	//	throw core::CorruptedDataException();
 	//}
 	// Create new matrix list
 	//pvPoseMatrices = new Matrix4x4 [pvSkeleton->size()];
@@ -246,7 +246,7 @@ glSkinnedMesh* glSkinnedMesh::Copy ( void )
 	return newmesh;
 }
 
-//void glSkinnedMesh::CopyStream ( glSkinnedMesh * const psrcMesh )
+//void rrSkinnedMesh::CopyStream ( rrSkinnedMesh * const psrcMesh )
 //{
 //	// Need to copy most values over
 //	bReady	= psrcMesh->bReady;
@@ -288,7 +288,7 @@ glSkinnedMesh* glSkinnedMesh::Copy ( void )
 //
 //	//if ( pvSkeleton && pvSkeleton->size() > 1023 )
 //	//{
-//	//	throw Core::CorruptedDataException();
+//	//	throw core::CorruptedDataException();
 //	//}
 //	// Create new matrix list
 //	//pvPoseMatrices = new Matrix4x4 [pvSkeleton->size()];
@@ -394,13 +394,13 @@ glSkinnedMesh* glSkinnedMesh::Copy ( void )
 //	GL_ACCESS GL.CheckError();
 //}
 
-void glSkinnedMesh::SetSkinningData ( const skinningData_t& n_skinning_data )
+void rrSkinnedMesh::SetSkinningData ( const skinningData_t& n_skinning_data )
 {
 	skinning_data = n_skinning_data;
 }
 
 //// Render the mesh
-//void glSkinnedMesh::Render ( void )
+//void rrSkinnedMesh::Render ( void )
 //{
 //	switch ( iRenderMode )
 //	{
@@ -422,23 +422,23 @@ void glSkinnedMesh::SetSkinningData ( const skinningData_t& n_skinning_data )
 //		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 //		glDisableClientState(GL_COLOR_ARRAY);
 //
-//		if ( glMaterial::current == NULL ) {
+//		if ( RrMaterial::current == NULL ) {
 //			throw std::exception();
 //		}
 //		if ( bShaderSetup == false )
 //		{
-//			glMaterial::current->initializeMeshAttributes();
+//			RrMaterial::current->initializeMeshAttributes();
 //			GL.CheckError();
 //			bShaderSetup = true;
 //		}
 //		else {
-//			glMaterial::current->forwardMeshAttributes();
+//			RrMaterial::current->forwardMeshAttributes();
 //			GL.CheckError();
 //			bShaderSetup = true;
 //		}
 //
 //		{
-//			glMaterial::current->bindTextureBuffer( m_textureBuffer, "textureMatrices" );
+//			RrMaterial::current->bindTextureBuffer( m_textureBuffer, "textureMatrices" );
 //			//GL.CheckError();
 //			//GL.CheckError();
 //		}
@@ -456,16 +456,16 @@ void glSkinnedMesh::SetSkinningData ( const skinningData_t& n_skinning_data )
 //	}
 //}
 //
-//void glSkinnedMesh::SendBoneMatrices ( int partOffset )
+//void rrSkinnedMesh::SendBoneMatrices ( int partOffset )
 //{
 //	/*unsigned int setSize = pvSkeleton->size() - partOffset;
 //	if ( setSize > 24 )
 //		setSize = 24;
-//	glMaterial::current->setUniformV( "sys_BoneMatrix", setSize, &(pvPoseMatrices[partOffset]) );
-//	glMaterial::current->setUniform( "sys_BoneOffset", ftype(partOffset) );*/
+//	RrMaterial::current->setUniformV( "sys_BoneMatrix", setSize, &(pvPoseMatrices[partOffset]) );
+//	RrMaterial::current->setUniform( "sys_BoneOffset", ftype(partOffset) );*/
 //}
 
-//void glSkinnedMesh::GetPoseMatrices ( void )
+//void rrSkinnedMesh::GetPoseMatrices ( void )
 //{
 //	for ( std::vector<glBone*>::iterator bone = pvSkeleton->begin(); bone != pvSkeleton->end(); bone++ )
 //	{
@@ -484,7 +484,7 @@ void glSkinnedMesh::SetSkinningData ( const skinningData_t& n_skinning_data )
 //}
 
 // Start skinning
-//void glSkinnedMesh::StartSkinning ( void )
+//void rrSkinnedMesh::StartSkinning ( void )
 //{
 //	/*LARGE_INTEGER tick1, tick2, freq;
 //	QueryPerformanceFrequency( &freq );
@@ -577,17 +577,17 @@ void glSkinnedMesh::SetSkinningData ( const skinningData_t& n_skinning_data )
 //	/*QueryPerformanceCounter( &tick2 );
 //	cout << (((ftype)(tick2.QuadPart-tick1.QuadPart))/(freq.QuadPart))*1000.0f << endl;*/
 //}
-//void glSkinnedMesh::sSkinningUpdater::operator () ( void )
+//void rrSkinnedMesh::sSkinningUpdater::operator () ( void )
 //{
 //	mesh->DoCPUSkinning();
 //}
 
-//void glSkinnedMesh::PrepareStream ( void )
+//void rrSkinnedMesh::PrepareStream ( void )
 //{
 //	memcpy( pmStreamData->vertices, pmData->vertices, sizeof(CModelVertex)*pmData->vertexNum );
 //}
 
-//void glSkinnedMesh::DoCPUSkinning ( void )
+//void rrSkinnedMesh::DoCPUSkinning ( void )
 //{
 //	/*LARGE_INTEGER tick1, tick2, freq;
 //	QueryPerformanceFrequency( &freq );
@@ -702,7 +702,7 @@ void glSkinnedMesh::SetSkinningData ( const skinningData_t& n_skinning_data )
 //	/*QueryPerformanceCounter( &tick2 );
 //	cout << (((ftype)(tick2.QuadPart-tick1.QuadPart))/(freq.QuadPart))*1000.0f << endl;*/
 //}
-void glSkinnedMesh::UpdateVBO ( void )
+void rrSkinnedMesh::UpdateVBO ( void )
 {
 	// Only need to update the vertex VBO
 	// Bind to some buffer objects
@@ -717,12 +717,12 @@ void glSkinnedMesh::UpdateVBO ( void )
 	// bind with 0, so, switch back to normal pointer operation
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );
 }
-//void glSkinnedMesh::RenderCPU ( void )
+//void rrSkinnedMesh::RenderCPU ( void )
 //{
-//	glMesh::Render();
+//	rrMesh::Render();
 //}
 //
-//void glSkinnedMesh::FreeCPUMesh ( void )
+//void rrSkinnedMesh::FreeCPUMesh ( void )
 //{
 //	//tSkinning.join();
 //
@@ -759,7 +759,7 @@ void glSkinnedMesh::UpdateVBO ( void )
 
 // GPU Skinning below
 
-//void glSkinnedMesh::CreateSplitMesh ( void )
+//void rrSkinnedMesh::CreateSplitMesh ( void )
 //{
 //	iVBOfaces_gpu = new GLuint [partNum];
 //	partTriCount = new unsigned int [partNum];
@@ -829,7 +829,7 @@ void glSkinnedMesh::UpdateVBO ( void )
 //	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 //}
 //// Clean up the nasty leaks from the split mesh
-//void glSkinnedMesh::FreeSplitMesh ( void )
+//void rrSkinnedMesh::FreeSplitMesh ( void )
 //{
 //	if ( iVBOfaces_gpu != NULL )
 //	{
@@ -850,7 +850,7 @@ void glSkinnedMesh::UpdateVBO ( void )
 //	pvPoseMatrices = NULL;
 //}
 //// Render with shader
-//void glSkinnedMesh::RenderGPUFallback ( void )
+//void rrSkinnedMesh::RenderGPUFallback ( void )
 //{
 //	// Draw current Mesh
 //	// Bind to the buffer objects
@@ -864,13 +864,13 @@ void glSkinnedMesh::UpdateVBO ( void )
 //	//glColorPointer( 3, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );
 //
 //	// Set skinning striding
-//	/*if ( glMaterial::current->useSkinning )
+//	/*if ( RrMaterial::current->useSkinning )
 //	{
 //		GLint weightLoc, boneLoc;
-//		weightLoc = glGetAttribLocation( glMaterial::current->pShader->get_program(),"sys_BoneWeights" );
+//		weightLoc = glGetAttribLocation( RrMaterial::current->pShader->get_program(),"sys_BoneWeights" );
 //		glEnableVertexAttribArray( weightLoc );
 //		glVertexAttribPointer( weightLoc, 4, GL_FLOAT, false, sizeof(CModelVertex), ((char*)4) + (sizeof(float)*19) );
-//		boneLoc = glGetAttribLocation( glMaterial::current->pShader->get_program(),"sys_BoneIndices" );
+//		boneLoc = glGetAttribLocation( RrMaterial::current->pShader->get_program(),"sys_BoneIndices" );
 //		glEnableVertexAttribArray( boneLoc );
 //		glVertexAttribPointer( boneLoc, 4, GL_UNSIGNED_BYTE, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*19) );
 //		//cout << unsigned int( pmData[0].vertices[pmData[0].vertexNum-1].bone[3] ) << endl;

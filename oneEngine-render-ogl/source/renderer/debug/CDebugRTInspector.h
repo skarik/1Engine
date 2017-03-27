@@ -31,7 +31,7 @@ namespace Debug
 	private:
 		bool bDrawRTs;
 		std::vector<CRenderTexture*>  rtList;
-		glMaterial* defaultMat;
+		RrMaterial* defaultMat;
 	};
 
 	// Typedef for ease of use

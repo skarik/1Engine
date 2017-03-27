@@ -1,5 +1,5 @@
 //===============================================================================================//
-//	class glPass
+//	class RrPassForward
 // Concurrent renderer render properties storage information. Only stores pass information.
 // Does not actually apply the rendering routines.
 //===============================================================================================//
@@ -9,31 +9,31 @@
 #include "core/types/types.h"
 #include "renderer/types/ObjectSettings.h"
 
-class glShader;
-class glMaterial;
+class RrShader;
+class RrMaterial;
 
 //=========================================//
-// glPass_Deferred - entire storage class exported
+// RrPassDeferred - entire storage class exported
 //=========================================//
-class RENDER_API glPass_Deferred
+class RENDER_API RrPassDeferred
 {
 public:
-	glPass_Deferred ( void );
-	~glPass_Deferred( void );
+	RrPassDeferred ( void );
+	~RrPassDeferred( void );
 
-	Renderer::eAlphaMode		m_transparency_mode;
-	Renderer::eDrawBlendMode	m_blend_mode;
-	//Renderer::eDrawLightingMode	m_lighting_mode;
+	renderer::eAlphaMode		m_transparency_mode;
+	renderer::eDrawBlendMode	m_blend_mode;
+	//renderer::eDrawLightingMode	m_lighting_mode;
 
-	//Renderer::Deferred::eDiffuseMethod	m_diffuse_method;
+	//renderer::Deferred::eDiffuseMethod	m_diffuse_method;
 
 	float		m_rimlight_strength;
 
-	glShader* GetShader ( void ) {  return shader; };
+	RrShader* GetShader ( void ) {  return shader; };
 protected:
-	friend glMaterial;
+	friend RrMaterial;
 
-	glShader*	shader;
+	RrShader*	shader;
 	bool		m_ready;
 
 	//void buildShader ( void );

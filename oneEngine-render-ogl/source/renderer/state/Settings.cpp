@@ -1,7 +1,7 @@
 
 #include "renderer/state/Settings.h"
 
-namespace Renderer
+namespace renderer
 {
 	renderSettings_t Settings;
 }

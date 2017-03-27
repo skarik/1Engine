@@ -7,7 +7,7 @@
 #include "core/types/ModelData.h"
 
 #include "../CRenderableObject.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 
 #include <vector>
 
@@ -26,7 +26,7 @@ protected:
 	int divisions;
 
 	
-	glMaterial* myMat;
+	RrMaterial* myMat;
 private:
 	void normalize(float *a);
 	void drawtri(float const *a, float const *b, float const *c, int div, float r);

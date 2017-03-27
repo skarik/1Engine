@@ -24,33 +24,33 @@
 
 #include "physical/resource/ResourceManager.h"
 #include "renderer/resource/CModelMaster.h"
-#include "renderer/object/mesh/system/glSkinnedMesh.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/object/mesh/system/rrSkinnedMesh.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/logic/model/morpher/CMorpher.h"
 
 void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 {
 	// Create loader and set options for the load
-	Core::ModelLoader loader;
+	core::ModelLoader loader;
 	loader.m_loadMesh = true;
 	loader.m_loadSkeleton = true;
 
 	// Attempt load
 	if ( !loader.LoadModel( sFilename.c_str() ) )
 	{
-		throw Core::MissingFileException();
+		throw core::MissingFileException();
 	}
 	else
 	{
 		// Model needs the skeleton loaded
 		skeleton = Animation::Skeleton(); // Clear out skelly
-		std::vector<Core::TransformLite> stored_transforms;
+		std::vector<core::TransformLite> stored_transforms;
 		for ( size_t i = 0; i < loader.skeleton.size(); ++i )
 		{
-			Core::modelFmtBoneEntry_t& bone = loader.skeleton[i];
+			core::modelFmtBoneEntry_t& bone = loader.skeleton[i];
 
 			// Create the correct values needed for bind pose information
-			stored_transforms.push_back(Core::TransformLite());
+			stored_transforms.push_back(core::TransformLite());
 			stored_transforms[i].world.position = bone.world_transform.position;
 			stored_transforms[i].world.scale	= bone.world_transform.scale;
 			stored_transforms[i].world.rotation = bone.world_transform.rotation;
@@ -75,13 +75,13 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 		}
 		PhysicalResources::Active()->AddSkeleton( sFilename.c_str(), skeleton );
 
-		// Model needs the mesh loaded. We need to create a std::vector<glMesh*> and pass it in
-		std::vector<glMesh*> meshList;
+		// Model needs the mesh loaded. We need to create a std::vector<rrMesh*> and pass it in
+		std::vector<rrMesh*> meshList;
 		for ( size_t i = 0; i < loader.meshes.size(); ++i )
 		{
 			// Create Mesh
-			glMesh* newMesh = new glSkinnedMesh ();
-			//((glSkinnedMesh*)newMesh)->SetSkeleton( &vSkeleton );
+			rrMesh* newMesh = new rrSkinnedMesh ();
+			//((rrSkinnedMesh*)newMesh)->SetSkeleton( &vSkeleton );
 
 			// Create the mesh object
 			ModelData* modeldata = new ModelData();
@@ -96,14 +96,14 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 			// Load material for this new mesh
 			if ( loader.meshes[i].material_index < loader.materials.size() )
 			{
-				glMaterial* newMat = new glMaterial;
+				RrMaterial* newMat = new RrMaterial;
 				newMat->m_isSkinnedShader = true;
 				newMat->loadFromFile( loader.materials[loader.meshes[i].material_index].filename );
 				newMesh->pmMat = newMat;
 			}
 			else
 			{
-				newMesh->pmMat = glMaterial::Default;
+				newMesh->pmMat = RrMaterial::Default;
 			}
 
 			// Put the mesh into the render list
@@ -183,7 +183,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //		sTargetFilename = sTargetFilename + ".PAD";
 //
 //		// Look for the valid resource to load
-//		sTargetFilename = Core::Resources::PathTo( sTargetFilename );
+//		sTargetFilename = core::Resources::PathTo( sTargetFilename );
 //	}
 //	else if ( sFileExtension == "pad" )
 //	{
@@ -551,7 +551,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //
 //				// Check for valid information
 //				if (boneName.size() == 0 ) {
-//					throw Core::CorruptedDataException();
+//					throw core::CorruptedDataException();
 //				}
 //
 //				// Set the bone's transform (bind pose)
@@ -671,8 +671,8 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //		for ( uint32_t i = 0; i < iMeshNum; i += 1 )
 //		{
 //			// Create Mesh
-//			glMesh* newMesh = new glSkinnedMesh ();
-//			((glSkinnedMesh*)newMesh)->SetSkeleton( &vSkeleton );
+//			rrMesh* newMesh = new rrSkinnedMesh ();
+//			((rrSkinnedMesh*)newMesh)->SetSkeleton( &vSkeleton );
 //
 //			// Create Model Data
 //			CModelData* newModelData = new CModelData();
@@ -786,7 +786,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //				{
 //					newMesh->pbData = (void*)( new char [parentName.length()+1] );
 //					strcpy( (char*)(newMesh->pbData), parentName.c_str() );
-//					newMesh->ibDataType = glMesh::USERDATA_CSTRING;
+//					newMesh->ibDataType = rrMesh::USERDATA_CSTRING;
 //				}
 //				//Seriously since this is skinned....nah, not going to do it.
 //				// So, store name of parent in the mesh
@@ -816,13 +816,13 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //
 //			// Load material for this new mesh
 //			if ( modelMaterial < vMaterialFiles.size() ) {
-//				glMaterial* newMat = new glMaterial;
+//				RrMaterial* newMat = new RrMaterial;
 //				newMat->m_isSkinnedShader = true;
 //				newMat->loadFromFile( vMaterialFiles[modelMaterial].c_str() );
 //				newMesh->pmMat = newMat;
 //			}
 //			else {
-//				newMesh->pmMat = glMaterial::Default;
+//				newMesh->pmMat = RrMaterial::Default;
 //			}
 //
 //			// Put the mesh into the render list
@@ -970,7 +970,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //		// Set mesh skeletons
 //		/*for ( unsigned int n = 0; n < vMeshes.size(); n++ )
 //		{
-//			((glSkinnedMesh*)vMeshes[n])->SetSkeleton( &vSkeleton );
+//			((rrSkinnedMesh*)vMeshes[n])->SetSkeleton( &vSkeleton );
 //		}*/
 //
 //		//===============================
@@ -1254,7 +1254,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //			ModelMaster.AddReference( sFilename, newAnimation );
 //		}
 //		else {
-//			throw Core::NullReferenceException();
+//			throw core::NullReferenceException();
 //		}
 //
 //		//===============================

@@ -7,11 +7,11 @@ CGlowObject::CGlowObject ( const CModel* n_model )
 {
 	model = (CModel*)n_model;
 
-	//throw Core::NotYetImplementedException();
+	//throw core::NotYetImplementedException();
 }
 
 bool CGlowObject::Render ( const char pass )
 {
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 	return true;
 }

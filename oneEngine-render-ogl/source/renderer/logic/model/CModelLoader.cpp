@@ -13,8 +13,8 @@
 #include "physical/physics/shapes/physMesh.h"
 
 #include "renderer/resource/CModelMaster.h"
-#include "renderer/material/glMaterial.h"
-#include "renderer/object/mesh/system/glMesh.h"
+#include "renderer/material/RrMaterial.h"
+#include "renderer/object/mesh/system/rrMesh.h"
 
 #include <sstream>
 
@@ -24,23 +24,23 @@
 void CModel::LoadModel ( const string& sFilename )
 {
 	// Create loader and set options for the load
-	Core::ModelLoader loader;
+	core::ModelLoader loader;
 	loader.m_loadMesh = true;
 	loader.m_loadSkeleton = true;
 
 	// Attempt load
 	if ( !loader.LoadModel( sFilename.c_str() ) )
 	{
-		throw Core::MissingFileException();
+		throw core::MissingFileException();
 	}
 	else
 	{
-		// Model needs the mesh loaded. We need to create a std::vector<glMesh*> and pass it in
-		std::vector<glMesh*> meshList;
+		// Model needs the mesh loaded. We need to create a std::vector<rrMesh*> and pass it in
+		std::vector<rrMesh*> meshList;
 		for ( size_t i = 0; i < loader.meshes.size(); ++i )
 		{
 			// Create Mesh
-			glMesh* newMesh = new glMesh ();
+			rrMesh* newMesh = new rrMesh ();
 
 			// Create the mesh object
 			ModelData* modeldata = new ModelData();
@@ -55,14 +55,14 @@ void CModel::LoadModel ( const string& sFilename )
 			// Load material for this new mesh
 			if ( loader.meshes[i].material_index < loader.materials.size() )
 			{
-				glMaterial* newMat = new glMaterial;
+				RrMaterial* newMat = new RrMaterial;
 				newMat->m_isSkinnedShader = true;
 				newMat->loadFromFile( loader.materials[loader.meshes[i].material_index].filename );
 				newMesh->pmMat = newMat;
 			}
 			else
 			{
-				newMesh->pmMat = glMaterial::Default;
+				newMesh->pmMat = RrMaterial::Default;
 			}
 
 			// Put the mesh into the render list
@@ -75,7 +75,7 @@ void CModel::LoadModel ( const string& sFilename )
 //	bool haveConverter = IO::FileExists("_devtools/FBXtoPAD.exe");
 //
 //	// First check for needed file conversion!
-//	string sTargetFilename = sFilename;//Core::Resources::PathTo( sFilename );
+//	string sTargetFilename = sFilename;//core::Resources::PathTo( sFilename );
 //	string sFileExtention = StringUtils::ToLower( StringUtils::GetFileExtension( sTargetFilename ) );
 //	//cout << sFileExtention << endl;
 //
@@ -128,7 +128,7 @@ void CModel::LoadModel ( const string& sFilename )
 //		sTargetFilename = sTargetFilename + ".PAD";
 //
 //		// Look for the valid resource to load
-//		sTargetFilename = Core::Resources::PathTo( sTargetFilename );
+//		sTargetFilename = core::Resources::PathTo( sTargetFilename );
 //	}
 //	// End Conversion
 //	//--------------------
@@ -336,7 +336,7 @@ void CModel::LoadModel ( const string& sFilename )
 //			}
 //
 //			// Create new mesh with the model data
-//			glMesh* newMesh = new glMesh ();
+//			rrMesh* newMesh = new rrMesh ();
 //			newMesh->Initialize( meshName, newModelData );
 //			//newMesh->RecalculateNormals();
 //
@@ -346,17 +346,17 @@ void CModel::LoadModel ( const string& sFilename )
 //
 //			// Load material for this new mesh
 //			if ( modelMaterial < vMaterialFiles.size() ) {
-//				/*glMaterial* newMat = new glMaterial;
+//				/*RrMaterial* newMat = new RrMaterial;
 //				newMat->loadFromFile( vMaterialFiles[modelMaterial] );
 //				this->SetMeshMaterial( newMat, 1, i );
 //				Debug::Console->PrintWarning( "Set material!\n" );*/
 //				Debug::Console->PrintWarning( "Set material!\n" );
-//				glMaterial* newMat = new glMaterial;
+//				RrMaterial* newMat = new RrMaterial;
 //				newMat->loadFromFile( vMaterialFiles[modelMaterial].c_str() );
 //				newMesh->pmMat = newMat;
 //			}
 //			else {
-//				newMesh->pmMat = glMaterial::Default;
+//				newMesh->pmMat = RrMaterial::Default;
 //			}
 //
 //			// Import collision 

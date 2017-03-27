@@ -1,6 +1,6 @@
-// When using glShader objects, keep in mind that "delete glShader" is NOT a valid statement!
-// Because of how FUCKING ANNOYING THEY ARE, memory management of glShader objects is handled AUTOMATICALLY.
-// All glShader objects MUST be created via new, and they must be 'destroyed' with ReleaseReference()!!
+// When using RrShader objects, keep in mind that "delete RrShader" is NOT a valid statement!
+// Because of how FUCKING ANNOYING THEY ARE, memory management of RrShader objects is handled AUTOMATICALLY.
+// All RrShader objects MUST be created via new, and they must be 'destroyed' with ReleaseReference()!!
 
 
 #ifndef _GL_SHADER_H_
@@ -42,9 +42,9 @@ needs to check at the top to see what kind of shader it is
 using std::string;
 
 
-class glShaderManager;
+class RrShaderManager;
 
-namespace GLE
+namespace renderer
 {
 	enum shader_tag_t : uint8_t
 	{
@@ -53,11 +53,11 @@ namespace GLE
 	};
 }
 
-class glShader
+class RrShader
 {
 public:
-	RENDER_API glShader ( const string& a_sShaderName, const GLE::shader_tag_t a_nShaderTag = GLE::SHADER_TAG_DEFAULT, const bool a_bCompileOnDemand = false );
-	RENDER_API ~glShader();
+	RENDER_API RrShader ( const string& a_sShaderName, const renderer::shader_tag_t a_nShaderTag = renderer::SHADER_TAG_DEFAULT, const bool a_bCompileOnDemand = false );
+	RENDER_API ~RrShader();
 public:
 	// Enumeration for the shader type
 	enum eShaderType
@@ -116,13 +116,13 @@ public:
 private:
 	void AddReference ( void );
 	void DecrementReference ( void );
-	friend glShaderManager;
+	friend RrShaderManager;
 
 protected:
 	// System info
 	string sShaderFilename;
 	string sRawShader;
-	GLE::shader_tag_t	stTag;
+	renderer::shader_tag_t	stTag;
 
 	// Shader properties
 	//string sVertexShader;
@@ -144,7 +144,7 @@ protected:
 	// Whether or not this shader is a reference
 	bool bIsReference;
 	// A pointer to the real shader
-	glShader* pParentShader;
+	RrShader* pParentShader;
 
 	// Whether or not to compile it on start or on first use
 	bool bCompileOnDemand;

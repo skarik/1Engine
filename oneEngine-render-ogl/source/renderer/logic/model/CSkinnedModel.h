@@ -10,7 +10,7 @@
 #include <vector>
 #include <map>
 
-class glSkinnedMesh;
+class rrSkinnedMesh;
 class skeletonBone_t;
 class CMorpher;
 
@@ -77,7 +77,7 @@ protected:
 	bool		bDoMorphing;
 	int			iMorphTarget;
 	CMorpher*	pMorpher;
-	glSkinnedMesh*	m_glStreamedMesh;
+	rrSkinnedMesh*	m_glStreamedMesh;
 
 	// Softness movement tracking
 	Matrix4x4	matrixPreviousStep;

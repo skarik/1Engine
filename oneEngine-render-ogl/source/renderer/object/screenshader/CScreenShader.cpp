@@ -4,7 +4,7 @@
 #include "core/settings/CGameSettings.h"
 
 #include "renderer/camera/CCamera.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
@@ -177,8 +177,8 @@ void CScreenShader::CopyResult ( void )
 	else
 	{
 		s_buf->BindBuffer();
-		glMaterial::Copy->setTexture( TEX_SLOT0, m_buf );
-		glMaterial::Copy->bindPass(0);
+		RrMaterial::Copy->setTexture( TEX_SLOT0, m_buf );
+		RrMaterial::Copy->bindPass(0);
 		
 		glDepthMask( false );
 		glDepthFunc( GL_ALWAYS );

@@ -2,7 +2,7 @@
 #include "glTMeshContainer.h"
 #include "renderer/system/glMainSystem.h"
 
-using namespace Renderer;
+using namespace renderer;
 
 glTMeshContainer::glTMeshContainer ( void )
 {

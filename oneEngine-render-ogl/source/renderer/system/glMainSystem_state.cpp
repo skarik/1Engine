@@ -6,12 +6,12 @@
 void	glMainSystem::setupFog ( void )
 {
 	// Set the fog
-	/*glFogf( GL_FOG_START, Renderer::Settings.fogStart );
-	glFogf( GL_FOG_END, Renderer::Settings.fogEnd );
-	glFogfv( GL_FOG_COLOR, Renderer::Settings.fogColor.start_point() );
+	/*glFogf( GL_FOG_START, renderer::Settings.fogStart );
+	glFogf( GL_FOG_END, renderer::Settings.fogEnd );
+	glFogfv( GL_FOG_COLOR, renderer::Settings.fogColor.start_point() );
 	glEnable( GL_FOG );*/
 
-	throw Core::DeprecatedCallException();
+	throw core::DeprecatedCallException();
 
 	bFogEnabled = true;
 }
@@ -37,7 +37,7 @@ void	glMainSystem::EnableFog ( void ) {
 
 void	glMainSystem::clearColor ( void )
 {
-	glClearColor( Renderer::Settings.clearColor.red, Renderer::Settings.clearColor.green, Renderer::Settings.clearColor.blue, Renderer::Settings.clearColor.alpha );
+	glClearColor( renderer::Settings.clearColor.red, renderer::Settings.clearColor.green, renderer::Settings.clearColor.blue, renderer::Settings.clearColor.alpha );
 }
 void	glMainSystem::clearColor ( const Color& clearColor )
 {

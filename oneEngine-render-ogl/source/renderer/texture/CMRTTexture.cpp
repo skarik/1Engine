@@ -37,11 +37,11 @@ CMRTTexture::CMRTTexture (
 	unsigned int	requestedHeight,
 	eWrappingType	repeatX,
 	eWrappingType	repeatY,
-	glTexture*		rgbRequestList,
+	RrGpuTexture*		rgbRequestList,
 	const uint		rgbRequestListSize,
-	glTexture*		depthRequest,
+	RrGpuTexture*		depthRequest,
 	bool			depthFetch,
-	glTexture*		stencilRequest,
+	RrGpuTexture*		stencilRequest,
 	bool			stencilFetch
 )
 	: CRenderTexture ( "_hx_SYSTEM_RENDERTEXTURE" )
@@ -114,10 +114,10 @@ CMRTTexture::CMRTTexture (
 			mrtInfo.texture_formats[mrtInfo.attachments] = rgbRequestList[i].format;
 			mrtInfo.texture_owned[mrtInfo.attachments] = true;
 
-			mrtInfo.texture[mrtInfo.attachments] = GPU::TextureAllocate(
+			mrtInfo.texture[mrtInfo.attachments] = gpu::TextureAllocate(
 				Texture2D,
 				mrtInfo.texture_formats[mrtInfo.attachments], info.width, info.height );
-			GPU::TextureSampleSettings(
+			gpu::TextureSampleSettings(
 				Texture2D,
 				mrtInfo.texture[mrtInfo.attachments],
 				info.repeatX, info.repeatY, 0, info.filter, info.filter );
@@ -143,10 +143,10 @@ CMRTTexture::CMRTTexture (
 			mrtInfo.texture_formats[mrtInfo.attachments] = depthRequest->format;
 			mrtInfo.texture_owned[mrtInfo.attachments] = true;
 
-			mrtInfo.texture[mrtInfo.attachments] = GPU::TextureAllocate(
+			mrtInfo.texture[mrtInfo.attachments] = gpu::TextureAllocate(
 				Texture2D,
 				mrtInfo.texture_formats[mrtInfo.attachments], info.width, info.height );
-			GPU::TextureSampleSettings(
+			gpu::TextureSampleSettings(
 				Texture2D,
 				mrtInfo.texture[mrtInfo.attachments],
 				info.repeatX, info.repeatY, 0, info.filter, info.filter );
@@ -172,7 +172,7 @@ CMRTTexture::CMRTTexture (
 		{
 			rtInfo.depth = (eDepthFormat)depthRequest->format;
 			if ( rtInfo.depth != DepthNone )
-				rtInfo.depthRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.depth, info.width, info.height);
+				rtInfo.depthRBO = gpu::TextureBufferAllocate(Texture2D, rtInfo.depth, info.width, info.height);
 			rtInfo.depthowned = true;
 		}
 		else
@@ -191,10 +191,10 @@ CMRTTexture::CMRTTexture (
 			mrtInfo.texture_formats[mrtInfo.attachments] = stencilRequest->format;
 			mrtInfo.texture_owned[mrtInfo.attachments] = true;
 
-			mrtInfo.texture[mrtInfo.attachments] = GPU::TextureAllocate(
+			mrtInfo.texture[mrtInfo.attachments] = gpu::TextureAllocate(
 				Texture2D,
 				mrtInfo.texture_formats[mrtInfo.attachments], info.width, info.height );
-			GPU::TextureSampleSettings(
+			gpu::TextureSampleSettings(
 				Texture2D,
 				mrtInfo.texture[mrtInfo.attachments],
 				info.repeatX, info.repeatY, 0, info.filter, info.filter );
@@ -220,7 +220,7 @@ CMRTTexture::CMRTTexture (
 		{
 			rtInfo.stencil = (eStencilFormat)stencilRequest->format;
 			if ( rtInfo.stencil != StencilNone )
-				rtInfo.stencilRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.stencil, info.width, info.height);
+				rtInfo.stencilRBO = gpu::TextureBufferAllocate(Texture2D, rtInfo.stencil, info.width, info.height);
 			rtInfo.stencilowned = true;
 		}
 		else

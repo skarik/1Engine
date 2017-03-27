@@ -10,6 +10,7 @@
 // Renderer types
 #include "renderer/types/types.h"
 #include "renderer/types/textureFormats.h"
+#include "renderer/types/textureStructures.h"
 #include "renderer/types/pixelFormat.h"
 // Standard libaries
 #include <stdio.h>
@@ -21,49 +22,6 @@ using std::string;
 // ==Defines==
 // A define to allow for a function to differentiate between different kinds of textures in the texture master class
 #define TextureType(a) public: RENDER_API virtual eTextureClass ClassType ( void ) { return a; };
-
-//===============================================================================================//
-// Texture info structures
-//===============================================================================================//
-
-// Texture info struct
-struct tTextureInfo
-{	
-	glHandle		index;
-
-	eTextureType	type;
-	eColorFormat	internalFormat;
-	eMipmapGenerationStyle	mipmapStyle;
-	eSamplingFilter	filter;
-
-	unsigned int width;
-	unsigned int height;
-	unsigned int depth;
-	unsigned int levels;	// mipmap levels
-
-	eWrappingType repeatX;
-	eWrappingType repeatY;
-	eWrappingType repeatZ;
-
-	// TODO: Implement:
-	eOrientation flipX;
-	eOrientation flipY;
-
-	unsigned int userdata;
-	void*		userpdata;
-
-	tTextureInfo ( void )
-		: index(0)
-	{
-		;
-	}
-};
-// Texture state struct
-struct tTextureState
-{
-	unsigned int level_base;
-	unsigned int level_max;
-};
 
 class CTextureMaster;
 class CResourceManager;
@@ -109,6 +67,10 @@ public:
 		return false;
 	}
 
+	RENDER_API const Textures::timgInfo& GetIOImgInfo ( void ) const {
+		return io_imginfo;
+	}
+
 	RENDER_API virtual void Reload ( void );
 
 	RENDER_API void GenerateMipmap ( eMipmapGenerationStyle generationStyle = MipmapNormal );
@@ -133,6 +95,8 @@ protected:
 	tTextureState	state;
 
 	pixel_t	*		pData;
+
+	Textures::timgInfo	io_imginfo;
 	
 protected:
 	RENDER_API void LoadImageInfo ( void );

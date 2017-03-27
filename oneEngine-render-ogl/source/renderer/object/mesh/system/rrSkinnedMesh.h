@@ -7,7 +7,7 @@
 
 // Include the OpenGL library
 //#include "glMainSystem.h"
-#include "glMesh.h"
+#include "rrMesh.h"
 #include "physical/skeleton/skeletonBone.h"
 
 // Include vertex data
@@ -25,25 +25,25 @@ using std::string;
 //using boost::thread;
 
 // Class Definition
-class glSkinnedMesh : public glMesh
+class rrSkinnedMesh : public rrMesh
 {
 public:
 	// Constructor
-	glSkinnedMesh ( void );
+	rrSkinnedMesh ( void );
 	// Destructor
-	virtual ~glSkinnedMesh ( void );
+	virtual ~rrSkinnedMesh ( void );
 
 	//	Initialize ( name, data ) : sets up new mesh data
-	// Creates a new VBO associated with this glMesh
+	// Creates a new VBO associated with this rrMesh
 	// Removes any old VBO data.
 	void Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames=1, bool isStreamed=false ) override;
 
-	//	Copy ( ) : creates a new glSkinnedMesh with duplicated streams
-	glSkinnedMesh* Copy ( void );
+	//	Copy ( ) : creates a new rrSkinnedMesh with duplicated streams
+	rrSkinnedMesh* Copy ( void );
 
 	////	CopyStream ( ) : prepare mesh for CPU-side skinning
 	//// Creates a new VBO and CPU-side stream for this mesh.
-	//void CopyStream ( glSkinnedMesh* const psrcMesh );
+	//void CopyStream ( rrSkinnedMesh* const psrcMesh );
 	////	FreeStream ( ) : frees used VBOs
 	//// Frees a stream that was created with CopyStream.
 	//void FreeStream ( void );
@@ -95,7 +95,7 @@ public:
 
 	//struct sSkinningUpdater
 	//{
-	//	glSkinnedMesh*	mesh;
+	//	rrSkinnedMesh*	mesh;
 	//	void operator() ( void );
 	//};
 

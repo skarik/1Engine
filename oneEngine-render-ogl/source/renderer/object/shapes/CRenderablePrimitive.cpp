@@ -45,7 +45,7 @@ bool CRenderablePrimitive::Render ( const char pass )
 }
 /*
 // Set the material, clearing the list of materials
-void CRenderablePrimitive::SetMaterial ( glMaterial* pNewMaterial )
+void CRenderablePrimitive::SetMaterial ( RrMaterial* pNewMaterial )
 {
 	ClearMaterialList();
 	vMaterials.push_back( pNewMaterial );

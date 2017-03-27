@@ -8,7 +8,7 @@
 
 #include "core-ext/profiler/CTimeProfiler.h"
 
-#include "COglWindowWin32.h"
+#include "rrWindowWin32.h"
 #include "renderer/state/Settings.h"
 #include "renderer/state/CRenderState.h"
 #include "renderer/texture/CRenderTexture.h"
@@ -20,10 +20,10 @@
 //bool	active;		// Window Active Flag Set To TRUE By Default
 bool	fullscreen;	// Fullscreen Flag Set To Fullscreen Mode By Default
 
-COglWindowWin32* COglWindowWin32::pActive = NULL;
-bool	COglWindowWin32::keys[256];
+RrWindow* RrWindow::pActive = NULL;
+bool	RrWindow::keys[256];
 
-COglWindowWin32::COglWindowWin32(
+RrWindow::RrWindow(
 					HINSTANCE	inhInstance,			// Instance
 					HINSTANCE	inhPrevInstance,		// Previous Instance
 					LPSTR		inlpCmdLine,			// Command Line Parameters
@@ -64,18 +64,18 @@ COglWindowWin32::COglWindowWin32(
 	done = false;
 
 	// Set the render settings
-	Renderer::Settings.lightingEnabled = true;
-	Renderer::Settings.clearColor = Color( 0,0,0, 1 );
-	Renderer::Settings.swapIntervals = 0;
-	Renderer::Settings.maxLights = 8; // Forward rendering light count (still used)
+	renderer::Settings.lightingEnabled = true;
+	renderer::Settings.clearColor = Color( 0,0,0, 1 );
+	renderer::Settings.swapIntervals = 0;
+	renderer::Settings.maxLights = 8; // Forward rendering light count (still used)
 
 	//RenderSettings.ambientColor = Color( 0.2f,0.15f,0.3f, 1 );
-	Renderer::Settings.ambientColor = Color( 0.02f,0.015f,0.03f, 1 );
+	renderer::Settings.ambientColor = Color( 0.02f,0.015f,0.03f, 1 );
 
-	Renderer::Settings.fogEnabled = true;
-	Renderer::Settings.fogColor = Color( 0.27f,0.24f,0.3f, 1 );
-	Renderer::Settings.fogStart = 10.0f;
-	Renderer::Settings.fogEnd = 300.0f;
+	renderer::Settings.fogEnabled = true;
+	renderer::Settings.fogColor = Color( 0.27f,0.24f,0.3f, 1 );
+	renderer::Settings.fogStart = 10.0f;
+	renderer::Settings.fogEnd = 300.0f;
 
 	Debug::CDebugConsole::Init();
 
@@ -83,9 +83,9 @@ COglWindowWin32::COglWindowWin32(
 	if ( createWindow() )
 	{	/*
 		// Do render setting stuff
-		if ( Renderer::Settings.lightingEnabled )
+		if ( renderer::Settings.lightingEnabled )
 			glEnable( GL_LIGHTING );
-		if ( Renderer::Settings.fogEnabled )
+		if ( renderer::Settings.fogEnabled )
 			glEnable( GL_FOG );
 		//glFogi( GL_FOG_COORD_SRC, GL_FRAGMENT_DEPTH );
 		//glFogi(GL_FOG_MODE, GL_LINEAR); 
@@ -98,21 +98,21 @@ COglWindowWin32::COglWindowWin32(
 		}
 
 		// Get maximum number of renderable lights
-		glGetIntegerv( GL_MAX_LIGHTS, &(Renderer::Settings.maxLights) );
+		glGetIntegerv( GL_MAX_LIGHTS, &(renderer::Settings.maxLights) );
 		
 		// Set the default ambient light
 		//float lighting [4] = {0.2f,0.15f,0.3f,1.0f};
 		if ( !CGameSettings::Active()->b_ro_EnableShaders ) {
-			//glLightfv( GL_LIGHT0, GL_AMBIENT, Renderer::Settings.ambientColor.start_point() );//lighting );
+			//glLightfv( GL_LIGHT0, GL_AMBIENT, renderer::Settings.ambientColor.start_point() );//lighting );
 			//glLightfv( GL_LIGHT0, GL_DIFFUSE, ((Color(0,0,0,1)).start_point()) );	
 			glEnable( GL_LIGHT0 );
 		}*/
 		// Set the swap number
-		GL.SetSwapInterval( Renderer::Settings.swapIntervals );
+		GL.SetSwapInterval( renderer::Settings.swapIntervals );
 	}
 	
 }
-COglWindowWin32::~COglWindowWin32 ( void )
+RrWindow::~RrWindow ( void )
 {
 	// If we're not in fullscreen mode
 	if ( !fullscreen )
@@ -137,12 +137,12 @@ COglWindowWin32::~COglWindowWin32 ( void )
 	Debug::CDebugConsole::Free();
 }
 
-bool COglWindowWin32::isActive ( void )
+bool RrWindow::isActive ( void )
 {
 	return active;
 }
 
-bool COglWindowWin32::createWindow ( void )
+bool RrWindow::createWindow ( void )
 {
 	if ( !CreateGLWindow(pWindowName,iWidth,iHeight,iColorDepth,fullscreen) )
 	{
@@ -153,13 +153,13 @@ bool COglWindowWin32::createWindow ( void )
 	return true;
 }
 
-COglWindowWin32::eReturnStatus COglWindowWin32::ErrorOut ( const char* message )
+RrWindow::eReturnStatus RrWindow::ErrorOut ( const char* message )
 {
 	MessageBox ( NULL,message,"ERROR",MB_OK | MB_ICONEXCLAMATION );
 	return status_FAILED;
 }
 
-bool COglWindowWin32::UpdateMessages ( void )
+bool RrWindow::UpdateMessages ( void )
 {
 	if (PeekMessage(&msg,NULL,0,0,PM_REMOVE))	// Is There A Message Waiting?
 	{	// Have We Received A Quit Message?
@@ -179,12 +179,12 @@ bool COglWindowWin32::UpdateMessages ( void )
 	return active;
 }
 
-void COglWindowWin32::sendEndMessage ( void )
+void RrWindow::sendEndMessage ( void )
 {
 	PostMessage( hWnd, WM_QUIT, NIL, NIL );
 }
 
-bool COglWindowWin32::Redraw ( void )
+bool RrWindow::Redraw ( void )
 {
 	//TimeProfiler.BeginTimeProfile( "WD_Preswap" );
 	DrawGLScene();					// Draw The Scene
@@ -199,12 +199,12 @@ bool COglWindowWin32::Redraw ( void )
 }
 
 
-bool COglWindowWin32::canContinue ( void )
+bool RrWindow::canContinue ( void )
 {
 	return (!done);
 }
 
-void COglWindowWin32::toggleFullscren ( void )
+void RrWindow::toggleFullscren ( void )
 {
 	KillGLWindow( false );				// Kill Our Current Window (but keep the render context)
 	fullscreen=!fullscreen;				// Toggle Fullscreen / Windowed Mode
@@ -227,7 +227,7 @@ void COglWindowWin32::toggleFullscren ( void )
 	}
 }
 
-GLvoid COglWindowWin32::ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Initialize The GL Window
+GLvoid RrWindow::ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Initialize The GL Window
 {
 	if (height==0)							// Prevent A Divide By Zero By
 	{
@@ -249,7 +249,7 @@ GLvoid COglWindowWin32::ReSizeGLScene(GLsizei width, GLsizei height)		// Resize 
 	pActive->iHeight= height;
 }
 
-int COglWindowWin32::InitGL(GLvoid)										// All Setup For OpenGL Goes Here
+int RrWindow::InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 {
 	if ( !CGameSettings::Active()->b_ro_EnableShaders ) {
 		//glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
@@ -274,7 +274,7 @@ int COglWindowWin32::InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 }
 
 // Draws the actual scene by calling into the renderer
-int COglWindowWin32::DrawGLScene(GLvoid)
+int RrWindow::DrawGLScene(GLvoid)
 {
 	GL_ACCESS;
 
@@ -317,7 +317,7 @@ int COglWindowWin32::DrawGLScene(GLvoid)
 }
 
 // Properly Kill The Window
-GLvoid COglWindowWin32::KillGLWindow( bool releaseRenderContext )
+GLvoid RrWindow::KillGLWindow( bool releaseRenderContext )
 {
 	// If we're not in fullscreen mode
 	if ( !fullscreen )
@@ -376,7 +376,7 @@ GLvoid COglWindowWin32::KillGLWindow( bool releaseRenderContext )
 	}
 }
 
-COglWindowWin32::eReturnStatus COglWindowWin32::CreateGLWindow(char* title, int width, int height, int bits, bool fullscreenflag)
+RrWindow::eReturnStatus RrWindow::CreateGLWindow(char* title, int width, int height, int bits, bool fullscreenflag)
 {
 	// Ensure at least a 1x1 pixel buffer. If not, the system will fail.
 	if ( width <= 0 ) {
@@ -578,7 +578,7 @@ COglWindowWin32::eReturnStatus COglWindowWin32::CreateGLWindow(char* title, int 
 	return status_SUCCESSFUL;
 }
 
-COglWindowWin32::eReturnStatus	COglWindowWin32::CreateGLContext ( void )
+RrWindow::eReturnStatus	RrWindow::CreateGLContext ( void )
 {
 	GL_ACCESS; // We are using the glMainSystem accessor
 
@@ -588,7 +588,7 @@ COglWindowWin32::eReturnStatus	COglWindowWin32::CreateGLContext ( void )
 
 	// Attempt to load up Windows OGL extension
 	if ( wgl_LoadFunctions( hDC ) == wgl_LOAD_FAILED ) {
-		//throw Core::NullReferenceException();
+		//throw core::NullReferenceException();
 		wglCreateContextAttribsARB = NULL;
 	}
 	// Set target attributes to load OpenGL 3.3
@@ -629,7 +629,7 @@ COglWindowWin32::eReturnStatus	COglWindowWin32::CreateGLContext ( void )
 	try {
 		GL.InitializeCommonExtensions();
 	}
-	catch ( Core::NullReferenceException ) {
+	catch ( core::NullReferenceException ) {
 		Debug::Console->PrintError( "Could not create OpenGL 3.3+ device." );
 	}
 
@@ -672,7 +672,7 @@ COglWindowWin32::eReturnStatus	COglWindowWin32::CreateGLContext ( void )
 }
 
 
-//COglWindowWin32::eReturnStatus COglWindowWin32::CreateBuffer ( void )
+//RrWindow::eReturnStatus RrWindow::CreateBuffer ( void )
 //{
 //	// Remove old buffer
 //	if ( pSbuf )
@@ -693,7 +693,7 @@ COglWindowWin32::eReturnStatus	COglWindowWin32::CreateGLContext ( void )
 //			//pSbuf = new CRenderTexture( RGB16, iWidth, iHeight, Clamp,Clamp, Texture2D, Depth32, true,false );
 //		}
 //		else {
-//			throw Core::NotYetImplementedException();
+//			throw core::NotYetImplementedException();
 //			return status_FAILED;
 //		}*/
 //		eColorFormat	colorMode	= SceneRenderer->GetSettings().mainColorAttachmentFormat;
@@ -747,28 +747,28 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 		{
 			if (!HIWORD(wParam))					// Check Minimization State
 			{
-				COglWindowWin32::pActive->active = true;	// Program Is Active
+				RrWindow::pActive->active = true;	// Program Is Active
 			}
 			else
 			{
-				COglWindowWin32::pActive->active = false;	// Program Is No Longer Active
-				COglWindowWin32::pActive->focused = false;	// Program is no longer focused
+				RrWindow::pActive->active = false;	// Program Is No Longer Active
+				RrWindow::pActive->focused = false;	// Program is no longer focused
 			}
 
 			return 0;								// Return To The Message Loop
 		}
 		case WM_SETFOCUS:
 		{
-			COglWindowWin32::pActive->focused = true;	// Program is no longer focused
+			RrWindow::pActive->focused = true;	// Program is no longer focused
 			WndSetMouseClip( hWnd, hiddencursor );
 			return 0;
 		}
 		case WM_KILLFOCUS:
-			COglWindowWin32::pActive->focused = false;	// Program is no longer focused
+			RrWindow::pActive->focused = false;	// Program is no longer focused
 			return 0;
 		case WM_MOVE:
 		{
-			if ( COglWindowWin32::pActive->focused )
+			if ( RrWindow::pActive->focused )
 			{
 				hiddencursor = false;
 				POINT pt;
@@ -802,7 +802,7 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 		// Mouse movement
 		case WM_MOUSEMOVE:
 		{
-			if ( COglWindowWin32::pActive->focused )
+			if ( RrWindow::pActive->focused )
 			{
 				CInput::_sysMouseX( LOWORD(lParam) );
 				CInput::_sysMouseY( HIWORD(lParam) );
@@ -835,7 +835,7 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 	    
 			RAWINPUT* raw = (RAWINPUT*)lpb;
 	    
-			if ((raw->header.dwType == RIM_TYPEMOUSE) && ( COglWindowWin32::pActive->focused ))
+			if ((raw->header.dwType == RIM_TYPEMOUSE) && ( RrWindow::pActive->focused ))
 			{
 				CInput::_addRawMouseX( raw->data.mouse.lLastX );
 				CInput::_addRawMouseY( raw->data.mouse.lLastY );
@@ -843,7 +843,7 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 				//return 0;
 				return DefWindowProc(hWnd,uMsg,wParam,lParam);
 			} 
-			else if ((raw->header.dwType == RIM_TYPEKEYBOARD) && ( COglWindowWin32::pActive->focused ))
+			else if ((raw->header.dwType == RIM_TYPEKEYBOARD) && ( RrWindow::pActive->focused ))
 			{
 				ushort vkey		= raw->data.keyboard.VKey;
 				ushort flags	= raw->data.keyboard.Flags;
@@ -974,7 +974,7 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 		case WM_SIZE:								// Resize The OpenGL Window
 		{
 			hiddencursor = false;
-			COglWindowWin32::ReSizeGLScene(LOWORD(lParam),HIWORD(lParam));  // LoWord=Width, HiWord=Height
+			RrWindow::ReSizeGLScene(LOWORD(lParam),HIWORD(lParam));  // LoWord=Width, HiWord=Height
 			return 0;								// Jump Back
 		}
 		

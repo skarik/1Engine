@@ -3,7 +3,7 @@
 #ifndef _GL_SHADER_CONSTANTS_H_
 #define _GL_SHADER_CONSTANTS_H_
 
-struct glShaderConstants
+struct RrObjectMaterialProperties
 {
 	// 32 bit float
 	float	wetness;

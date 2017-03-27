@@ -1,5 +1,5 @@
 
-#include "glMaterial.h"
+#include "RrMaterial.h"
 
 #include "core/time/time.h"
 #include "core/settings/CGameSettings.h"
@@ -23,24 +23,24 @@
 
 #include <map>
 
-glMaterial* glMaterial::current	= NULL;
-glMaterial*	glMaterial::Default = NULL;
-glMaterial*	glMaterial::Copy	= NULL;
-glMaterial*	glMaterial::Fallback= NULL;
-uchar		glMaterial::current_pass = 0;
-uint		glMaterial::current_sampler_slot = 0;
-int			glMaterial::m_currentShaderState = 1;
+RrMaterial* RrMaterial::current	= NULL;
+RrMaterial*	RrMaterial::Default = NULL;
+RrMaterial*	RrMaterial::Copy	= NULL;
+RrMaterial*	RrMaterial::Fallback= NULL;
+uchar		RrMaterial::current_pass = 0;
+uint		RrMaterial::current_sampler_slot = 0;
+int			RrMaterial::m_currentShaderState = 1;
 
 // Current material special mode.
 // The value of this will drastically change the rest of the program. These are hard-coded special effects.
-uchar		glMaterial::special_mode = Renderer::SP_MODE_NORMAL;
+uchar		RrMaterial::special_mode = renderer::SP_MODE_NORMAL;
 
 // Current material world sampler state
-CTexture*	glMaterial::m_sampler_reflection = NULL;
+CTexture*	RrMaterial::m_sampler_reflection = NULL;
 
 // =====================================
 
-glMaterial::glMaterial ( void )
+RrMaterial::RrMaterial ( void )
 	: m_isScreenShader(false), m_isSkinnedShader(false), m_isInstancedShader(false),
 	m_diffuse(1,1,1,1), m_specular(0,0,0,1), m_specularPower(32), m_emissive(0,0,0,0),
 	m_texcoordScaling(1,1,1,1), m_texcoordOffset(0,0,0,0),
@@ -53,7 +53,7 @@ glMaterial::glMaterial ( void )
 	memset( m_sampler_targets,	 0, sizeof(glHandle) * 12 );
 }
 
-glMaterial::~glMaterial ( void ) throw(...)
+RrMaterial::~RrMaterial ( void ) throw(...)
 {
 	if ( hasReference() ) {
 		throw std::exception();
@@ -81,9 +81,9 @@ const glHandle reflectLocation = 4;
 const glHandle pureShadowMatrices = 5;
 
 // Duplicate material (starting with 1 reference)
-glMaterial*	glMaterial::copy ( void )
+RrMaterial*	RrMaterial::copy ( void )
 {
-	glMaterial* newMaterial = new glMaterial;
+	RrMaterial* newMaterial = new RrMaterial;
 	newMaterial->m_diffuse	= m_diffuse;
 	newMaterial->m_specular	= m_specular;
 	newMaterial->m_specularPower	= m_specularPower;
@@ -110,7 +110,7 @@ glMaterial*	glMaterial::copy ( void )
 	return newMaterial;
 }
 
-uchar glMaterial::getPassCount ( void )
+uchar RrMaterial::getPassCount ( void )
 {
 	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
 	{
@@ -121,18 +121,18 @@ uchar glMaterial::getPassCount ( void )
 		return (uchar)deferredinfo.size();
 	}
 }
-uchar glMaterial::getPassCountForward ( void )
+uchar RrMaterial::getPassCountForward ( void )
 {
 	return (uchar)passinfo.size();
 }
-uchar glMaterial::getPassCountDeferred ( void )
+uchar RrMaterial::getPassCountDeferred ( void )
 {
 	return (uchar)deferredinfo.size();
 }
 
-glHandle	glMaterial::m_ubo_foginfo = 0;
-glHandle	glMaterial::m_ubo_lightinginfo = 0;
-glHandle	glMaterial::m_ubo_reflectinfo = 0;
+glHandle	RrMaterial::m_ubo_foginfo = 0;
+glHandle	RrMaterial::m_ubo_lightinginfo = 0;
+glHandle	RrMaterial::m_ubo_reflectinfo = 0;
 //GLuint	m_ubo_worldinfo = 0;
 struct _fogInfo_t
 {
@@ -156,17 +156,17 @@ struct _reflectInfo_t
 	Vector4d ReflectMaxBox;
 	Vector4d ReflectSource;
 };
-void glMaterial::updateStaticUBO ( void )
+void RrMaterial::updateStaticUBO ( void )
 {
 	{
 		_fogInfo_t t_fogInfo;
 		// Create fog struct data
-		t_fogInfo.color	= Renderer::Settings.fogColor;
+		t_fogInfo.color	= renderer::Settings.fogColor;
 		t_fogInfo.color.alpha = 1.0F;
-		t_fogInfo.atmo	= Color::Lerp( Renderer::Settings.fogColor, Renderer::Settings.ambientColor, 0.5F ) * Color(0.9F,0.9F,1.1F);
+		t_fogInfo.atmo	= Color::Lerp( renderer::Settings.fogColor, renderer::Settings.ambientColor, 0.5F ) * Color(0.9F,0.9F,1.1F);
 		t_fogInfo.atmo.alpha = 1.0F;
-		t_fogInfo.end	= Renderer::Settings.fogEnd;
-		t_fogInfo.scale	= Renderer::Settings.fogScale;
+		t_fogInfo.end	= renderer::Settings.fogEnd;
+		t_fogInfo.scale	= renderer::Settings.fogScale;
 		// Send it to video card
 		if ( m_ubo_foginfo == 0 ) {
 			glGenBuffers( 1, &m_ubo_foginfo );
@@ -179,13 +179,13 @@ void glMaterial::updateStaticUBO ( void )
 
 	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
 	{
-		if ( Renderer::Settings.maxLights <= 0 ) throw Core::NullReferenceException(); // Null data passed to shader
+		if ( renderer::Settings.maxLights <= 0 ) throw core::NullReferenceException(); // Null data passed to shader
 
 		_lightingInfo_t t_lightingInfo;
 		// Get the light list
 		std::vector<CLight*>* lightList = CLight::GetActiveLightList();
 		// Set the maximum value to iterate through
-		uint t_maxLights = std::min<uint>( (uint)(Renderer::Settings.maxLights-1), HARD_MAX );
+		uint t_maxLights = std::min<uint>( (uint)(renderer::Settings.maxLights-1), HARD_MAX );
 		uint maxVal = lightList->size();
 		maxVal = std::min<uint>( maxVal, t_maxLights );
 		// Loop through all the lights in the list
@@ -310,11 +310,11 @@ void glMaterial::updateStaticUBO ( void )
 // Light VBO specific to deferred renderer
 //#include "engine/audio/CAudioInterface.h"
 #include "audio/CAudioSource.h"
-GLuint	glMaterial::m_ubo_deflightinginfo = 0;
-GLuint	glMaterial::m_tbo_lightinfo = 0;
-GLuint	glMaterial::m_tex_lightinfo = 0;
-GLuint	glMaterial::m_tex_shadowinfo= 0;
-GLuint  glMaterial::m_lightCount = 0;
+GLuint	RrMaterial::m_ubo_deflightinginfo = 0;
+GLuint	RrMaterial::m_tbo_lightinfo = 0;
+GLuint	RrMaterial::m_tex_lightinfo = 0;
+GLuint	RrMaterial::m_tex_shadowinfo= 0;
+GLuint  RrMaterial::m_lightCount = 0;
 struct _lightInfo_t
 {
 	float red;
@@ -341,7 +341,7 @@ struct _shadowMatrix_t
 {
 	Matrix4x4 shadowCascade [4];
 };
-void glMaterial::updateLightTBO ( void )
+void RrMaterial::updateLightTBO ( void )
 {
 	if ( m_tbo_lightinfo == 0 ) {
 		glGenBuffers( 1, &m_tbo_lightinfo );
@@ -360,7 +360,7 @@ void glMaterial::updateLightTBO ( void )
 		glTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA32F, m_tex_shadowinfo ); 
 		glBindTexture( GL_TEXTURE_BUFFER, 0 );
 	}*/
-	if ( special_mode == Renderer::SP_MODE_NORMAL || special_mode == Renderer::SP_MODE_SHAFT || special_mode == Renderer::SP_MODE_2DPALETTE )
+	if ( special_mode == renderer::SP_MODE_NORMAL || special_mode == renderer::SP_MODE_SHAFT || special_mode == renderer::SP_MODE_2DPALETTE )
 	{
 		// Go through all the lights and add them to this list
 		_lightInfo_t lightProperties [32];
@@ -438,7 +438,7 @@ void glMaterial::updateLightTBO ( void )
 			glBindTexture( GL_TEXTURE_BUFFER, 0 );*/
 		}
 	}
-	else if ( special_mode == Renderer::SP_MODE_ECHO )
+	else if ( special_mode == renderer::SP_MODE_ECHO )
 	{
 		static std::map<unsigned int,_lightInfo_t> echomap;
 		std::vector<CAudioSource*> currentSounds = *CAudioMaster::GetCurrent()->GetSources();//Audio.GetCurrentSources();
@@ -546,11 +546,11 @@ void glMaterial::updateLightTBO ( void )
 
 #include "core-ext/profiler/CTimeProfiler.h"
 
-void glMaterial::bindPass ( uchar pass )
+void RrMaterial::bindPass ( uchar pass )
 {
 	GL_ACCESS;
-	/*if ( !this->m_isScreenShader && this != glMaterial::Copy && this != glMaterial::Default ) {
-		glMaterial::Default->bindPass(pass);
+	/*if ( !this->m_isScreenShader && this != RrMaterial::Copy && this != RrMaterial::Default ) {
+		RrMaterial::Default->bindPass(pass);
 		return;
 	}*/
 
@@ -577,8 +577,8 @@ void glMaterial::bindPass ( uchar pass )
 }
 
 static struct _pass_forward_state {
-	glShader* shader;
-	glPass*	  pass;
+	RrShader* shader;
+	RrPassForward*	  pass;
 	_pass_forward_state ( void )
 		: shader(NULL), pass(NULL)
 	{
@@ -586,8 +586,8 @@ static struct _pass_forward_state {
 	}
 } state;
 static struct _pass_deferred_state {
-	glShader*			shader;
-	glPass_Deferred*	pass;
+	RrShader*			shader;
+	RrPassDeferred*	pass;
 	_pass_deferred_state ( void )
 		: shader(NULL), pass(NULL)
 	{
@@ -596,7 +596,7 @@ static struct _pass_deferred_state {
 } df_state;
 
 
-void glMaterial::bindPassForward ( uchar pass )
+void RrMaterial::bindPassForward ( uchar pass )
 {
 	// Reset deferred state
 	df_state.shader = NULL;
@@ -609,15 +609,15 @@ void glMaterial::bindPassForward ( uchar pass )
 	// Set face mode
 	switch ( passinfo[pass].m_face_mode )
 	{
-	case Renderer::FM_FRONT:
+	case renderer::FM_FRONT:
 		glEnable( GL_CULL_FACE );
 		glCullFace( GL_BACK );
 		break;
-	case Renderer::FM_BACK:
+	case renderer::FM_BACK:
 		glEnable( GL_CULL_FACE );
 		glCullFace( GL_FRONT );
 		break;
-	case Renderer::FM_FRONTANDBACK:
+	case renderer::FM_FRONTANDBACK:
 		glDisable( GL_CULL_FACE );
 		break;
 	}
@@ -625,9 +625,9 @@ void glMaterial::bindPassForward ( uchar pass )
 	glEnable( GL_BLEND );
 	switch ( passinfo[pass].m_blend_mode )
 	{
-	case Renderer::BM_NORMAL:
+	case renderer::BM_NORMAL:
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		/*if ( passinfo[pass].m_transparency_mode != Renderer::ALPHAMODE_TRANSLUCENT ) {
+		/*if ( passinfo[pass].m_transparency_mode != renderer::ALPHAMODE_TRANSLUCENT ) {
 			glBlendFunc( GL_ONE, GL_ZERO );
 			glDisable( GL_BLEND );
 		}
@@ -635,22 +635,22 @@ void glMaterial::bindPassForward ( uchar pass )
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		}*/
 		break;
-	case Renderer::BM_ADD:
+	case renderer::BM_ADD:
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 		break;
-	case Renderer::BM_SOFT_ADD:
+	case renderer::BM_SOFT_ADD:
 		glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
 		break;
-	case Renderer::BM_INV_MULTIPLY:
+	case renderer::BM_INV_MULTIPLY:
 		glBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_COLOR );
 		break;
-	case Renderer::BM_MULTIPLY:
+	case renderer::BM_MULTIPLY:
 		glBlendFunc( GL_DST_COLOR, GL_ZERO );
 		break;
-	case Renderer::BM_MULTIPLY_X2:
+	case renderer::BM_MULTIPLY_X2:
 		glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
 		break;
-	case Renderer::BM_NONE:
+	case renderer::BM_NONE:
 		glDisable( GL_BLEND );
 		glBlendFunc( GL_ONE, GL_ZERO );
 		break;
@@ -660,7 +660,7 @@ void glMaterial::bindPassForward ( uchar pass )
 	glDepthFunc( GL_LEQUAL );
 	switch ( passinfo[pass].m_transparency_mode )
 	{
-	case Renderer::ALPHAMODE_NONE:
+	case renderer::ALPHAMODE_NONE:
 		if ( passinfo[pass].b_depthmask ) {
 			glDepthMask( GL_TRUE );
 		}
@@ -669,7 +669,7 @@ void glMaterial::bindPassForward ( uchar pass )
 		}
 		//glDisable(GL_ALPHA_TEST);
 		break;
-	case Renderer::ALPHAMODE_ALPHATEST:
+	case renderer::ALPHAMODE_ALPHATEST:
 		if ( passinfo[pass].b_depthmask ) {
 			glDepthMask( GL_TRUE );
 		}
@@ -679,7 +679,7 @@ void glMaterial::bindPassForward ( uchar pass )
 		//glAlphaFunc(GL_GREATER, passinfo[pass].f_alphatest_value);
 		//glEnable(GL_ALPHA_TEST);
 		break;
-	case Renderer::ALPHAMODE_TRANSLUCENT:
+	case renderer::ALPHAMODE_TRANSLUCENT:
 		glDepthMask( GL_FALSE );
 		//glDisable(GL_ALPHA_TEST);
 		break;
@@ -698,10 +698,10 @@ void glMaterial::bindPassForward ( uchar pass )
 			}
 			catch ( const std::exception& )
 			{
-				glMaterial::Fallback->passinfo[0].shader->begin();
-				state.shader = glMaterial::Fallback->passinfo[0].shader;
-				shader_bind_world(glMaterial::Fallback->passinfo[0].shader);
-				state.pass = &(glMaterial::Fallback->passinfo[0]);
+				RrMaterial::Fallback->passinfo[0].shader->begin();
+				state.shader = RrMaterial::Fallback->passinfo[0].shader;
+				shader_bind_world(RrMaterial::Fallback->passinfo[0].shader);
+				state.pass = &(RrMaterial::Fallback->passinfo[0]);
 			}
 		}
 	}
@@ -723,7 +723,7 @@ void glMaterial::bindPassForward ( uchar pass )
 	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_sampler" );
 
 	TimeProfiler.BeginTimeProfile( "rs_mat_uni_lights" );
-	if ( state.pass->m_lighting_mode != Renderer::LI_NONE ) {
+	if ( state.pass->m_lighting_mode != renderer::LI_NONE ) {
 		shader_bind_lights(state.shader);
 	}
 	else {
@@ -738,7 +738,7 @@ void glMaterial::bindPassForward ( uchar pass )
 	TimeProfiler.EndAddTimeProfile( "rs_mat_binduniforms" );
 }
 
-void glMaterial::bindPassDeferred ( uchar pass )
+void RrMaterial::bindPassDeferred ( uchar pass )
 {
 	// Reset forward state
 	state.shader = NULL;
@@ -751,15 +751,15 @@ void glMaterial::bindPassDeferred ( uchar pass )
 	// Set face mode
 	switch ( passinfo[pass].m_face_mode )
 	{
-	case Renderer::FM_FRONT:
+	case renderer::FM_FRONT:
 		glEnable( GL_CULL_FACE );
 		glCullFace( GL_BACK );
 		break;
-	case Renderer::FM_BACK:
+	case renderer::FM_BACK:
 		glEnable( GL_CULL_FACE );
 		glCullFace( GL_FRONT );
 		break;
-	case Renderer::FM_FRONTANDBACK:
+	case renderer::FM_FRONTANDBACK:
 		glDisable( GL_CULL_FACE );
 		break;
 	}
@@ -767,22 +767,22 @@ void glMaterial::bindPassDeferred ( uchar pass )
 	glEnable( GL_BLEND );
 	switch ( passinfo[pass].m_blend_mode )
 	{
-	case Renderer::BM_NONE:
+	case renderer::BM_NONE:
 		//glBlendFunc( GL_ONE, GL_ZERO );
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		break;
-	case Renderer::BM_NORMAL:
+	case renderer::BM_NORMAL:
 		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		break;
-	case Renderer::BM_ADD:
+	case renderer::BM_ADD:
 		//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 		glBlendFunc( GL_ONE, GL_ONE );
 		break;
-	case Renderer::BM_SOFT_ADD:
+	case renderer::BM_SOFT_ADD:
 		//glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
 		glBlendFunc( GL_ONE_MINUS_DST_COLOR, GL_ONE );
 		break;
-	case Renderer::BM_INV_MULTIPLY:
+	case renderer::BM_INV_MULTIPLY:
 		glBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_COLOR );
 		break;
 	}
@@ -791,7 +791,7 @@ void glMaterial::bindPassDeferred ( uchar pass )
 	glDepthFunc( GL_LEQUAL );
 	switch ( passinfo[pass].m_transparency_mode )
 	{
-	case Renderer::ALPHAMODE_NONE:
+	case renderer::ALPHAMODE_NONE:
 		glBlendFunc( GL_ONE, GL_ZERO );
 		if ( passinfo[pass].b_depthmask ) {
 			glDepthMask( GL_TRUE );
@@ -801,7 +801,7 @@ void glMaterial::bindPassDeferred ( uchar pass )
 		}
 		//glDisable(GL_ALPHA_TEST);
 		break;
-	case Renderer::ALPHAMODE_ALPHATEST:
+	case renderer::ALPHAMODE_ALPHATEST:
 		glBlendFunc( GL_ONE, GL_ZERO );
 		if ( passinfo[pass].b_depthmask ) {
 			glDepthMask( GL_TRUE );
@@ -811,7 +811,7 @@ void glMaterial::bindPassDeferred ( uchar pass )
 		}
 		//glDisable(GL_ALPHA_TEST);
 		break;
-	case Renderer::ALPHAMODE_TRANSLUCENT:
+	case renderer::ALPHAMODE_TRANSLUCENT:
 		glDepthMask( GL_FALSE );
 		//glDisable(GL_ALPHA_TEST);
 		break;
@@ -839,10 +839,10 @@ void glMaterial::bindPassDeferred ( uchar pass )
 			/*}
 			catch ( const std::exception& e )
 			{
-				glMaterial::Fallback->passinfo[0].shader->begin();
-				state.shader = glMaterial::Fallback->passinfo[0].shader;
-				shader_bind_world(glMaterial::Fallback->passinfo[0].shader);
-				state.pass = &(glMaterial::Fallback->passinfo[0]);
+				RrMaterial::Fallback->passinfo[0].shader->begin();
+				state.shader = RrMaterial::Fallback->passinfo[0].shader;
+				shader_bind_world(RrMaterial::Fallback->passinfo[0].shader);
+				state.pass = &(RrMaterial::Fallback->passinfo[0]);
 			}*/
 		}
 	}
@@ -873,7 +873,7 @@ void glMaterial::bindPassDeferred ( uchar pass )
 	TimeProfiler.EndAddTimeProfile( "rs_mat_binduniforms" );
 }
 
-void glMaterial::shader_bind_samplers ( glShader* shader )
+void RrMaterial::shader_bind_samplers ( RrShader* shader )
 {
 	int uniformLocation;
 	//CTexture*	m_samplers [8];
@@ -882,7 +882,7 @@ void glMaterial::shader_bind_samplers ( glShader* shader )
 		if ( m_samplers[i] )
 		{
 			// Get the uniform location
-			char uniformname_sh1 [] = "textureSamplerX";
+			char uniformname_sh1 [] = "textureSamplerX"; // TODO: Cache the texture sampler and other uniform locations in shader class
 			uniformname_sh1[14] = '0' + i;
 			uniformLocation = shader->get_uniform_location( uniformname_sh1 );
 			// If the spot exists, then use it
@@ -985,7 +985,7 @@ void glMaterial::shader_bind_samplers ( glShader* shader )
 
 #define MATERIAL_CALL_ONCE(_IDENTIFIER)
 
-void glMaterial::shader_bind_world ( glShader* shader )
+void RrMaterial::shader_bind_world ( RrShader* shader )
 {
 	// Binds upon shader change (not very often)
 
@@ -1134,7 +1134,7 @@ void glMaterial::shader_bind_world ( glShader* shader )
 }
 
 
-void glMaterial::shader_bind_constants( glShader* shader )
+void RrMaterial::shader_bind_constants( RrShader* shader )
 {
 	int uniformLocation;
 
@@ -1153,7 +1153,7 @@ void glMaterial::shader_bind_constants( glShader* shader )
 	}
 	uniformLocation = shader->get_uniform_location( "sys_AlphaCutoff" );
 	if ( uniformLocation >= 0 ) {
-		if ( passinfo[current_pass].m_transparency_mode == Renderer::ALPHAMODE_ALPHATEST ) {
+		if ( passinfo[current_pass].m_transparency_mode == renderer::ALPHAMODE_ALPHATEST ) {
 			glUniform1f( uniformLocation, passinfo[current_pass].f_alphatest_value );
 		}
 		else {
@@ -1186,7 +1186,7 @@ void glMaterial::shader_bind_constants( glShader* shader )
 	}
 }
 
-void glMaterial::shader_bind_deferred ( glShader* shader )
+void RrMaterial::shader_bind_deferred ( RrShader* shader )
 {
 	int uniformLocation;
 
@@ -1195,7 +1195,7 @@ void glMaterial::shader_bind_deferred ( glShader* shader )
 	if ( uniformLocation >= 0 )
 	{
 		float lightvars [3];
-		lightvars[0] = 0;//(deferredinfo[current_pass].m_lighting_mode == Renderer::LI_NONE) ? 0.0f : 1.0f;
+		lightvars[0] = 0;//(deferredinfo[current_pass].m_lighting_mode == renderer::LI_NONE) ? 0.0f : 1.0f;
 		lightvars[1] = deferredinfo[current_pass].m_rimlight_strength;
 		lightvars[2] = 0;
 		glUniform3fv( uniformLocation, 1, lightvars );
@@ -1203,7 +1203,7 @@ void glMaterial::shader_bind_deferred ( glShader* shader )
 }
 
 
-void glMaterial::shader_bind_lights	 ( glShader* shader )
+void RrMaterial::shader_bind_lights	 ( RrShader* shader )
 {
 	int uniformLocation;//, uniformLocationB;
 
@@ -1211,7 +1211,7 @@ void glMaterial::shader_bind_lights	 ( glShader* shader )
 	std::vector<CLight*>* lightList = CLight::GetActiveLightList();
 	// Set the maximum value to iterate through
 	unsigned int maxVal = lightList->size();
-	maxVal = std::min<uint>( maxVal, (uint)(Renderer::Settings.maxLights-1) );
+	maxVal = std::min<uint>( maxVal, (uint)(renderer::Settings.maxLights-1) );
 
 	// Prepare all the names for the uniforms for fast indexing
 	char uniformname1 [] = "sys_LightProperties[x]";
@@ -1253,7 +1253,7 @@ void glMaterial::shader_bind_lights	 ( glShader* shader )
 		uniformLocation = shader->get_uniform_location( "sys_LightAmbient" );
 		if ( uniformLocation >= 0 )
 		{
-			Color actualAmbient = Renderer::Settings.ambientColor;
+			Color actualAmbient = renderer::Settings.ambientColor;
 			glUniform4f( uniformLocation,
 				actualAmbient.red,
 				actualAmbient.green,
@@ -1309,7 +1309,7 @@ void glMaterial::shader_bind_lights	 ( glShader* shader )
 
 }
 
-void glMaterial::shader_bind_nolights ( glShader* shader )
+void RrMaterial::shader_bind_nolights ( RrShader* shader )
 {
 	// Fullbright on the ambient, though
 	int uniformLocation = shader->get_uniform_location( "sys_LightAmbient" );
@@ -1319,12 +1319,12 @@ void glMaterial::shader_bind_nolights ( glShader* shader )
 	}
 }
 
-void glMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_force_identity )
+void RrMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_force_identity )
 {
 	GL_ACCESS;
 
 	int uniformLocation;
-	glShader*	shader = getUsingShader();
+	RrShader*	shader = getUsingShader();
 
 	if ( source_object )
 	{
@@ -1441,7 +1441,7 @@ void glMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_f
 	}
 }
 
-void	glMaterial::bindPassAtrribs ( uchar pass )
+void	RrMaterial::bindPassAtrribs ( uchar pass )
 {
 	bindAttribute( "mdl_Vertex",	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*0) );
 	bindAttribute( "mdl_TexCoord",	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );
@@ -1456,12 +1456,12 @@ void	glMaterial::bindPassAtrribs ( uchar pass )
 	bindAttribute( "mdl_TexCoord4",	2, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*30) );
 	/*
 	int attributeLocation;
-	glShader*	shader = getUsingShader();
+	RrShader*	shader = getUsingShader();
 
 	attributeLocation = shader->get_attrib_location( "mdl_Vertex" );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribPointer( attributeLocation,
 			3, GL_FLOAT, false, sizeof(CModelVertex),
@@ -1470,7 +1470,7 @@ void	glMaterial::bindPassAtrribs ( uchar pass )
 	attributeLocation = shader->get_attrib_location( "mdl_TexCoord" );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribPointer( attributeLocation,
 			3, GL_FLOAT, false, sizeof(CModelVertex),
@@ -1479,7 +1479,7 @@ void	glMaterial::bindPassAtrribs ( uchar pass )
 	attributeLocation = shader->get_attrib_location( "mdl_Color" );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribPointer( attributeLocation,
 			4, GL_FLOAT, false, sizeof(CModelVertex),
@@ -1488,7 +1488,7 @@ void	glMaterial::bindPassAtrribs ( uchar pass )
 	attributeLocation = shader->get_attrib_location( "mdl_Normal" );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribPointer( attributeLocation,
 			3, GL_FLOAT, false, sizeof(CModelVertex),
@@ -1497,7 +1497,7 @@ void	glMaterial::bindPassAtrribs ( uchar pass )
 	attributeLocation = shader->get_attrib_location( "mdl_Tangents" );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribPointer( attributeLocation,
 			3, GL_FLOAT, false, sizeof(CModelVertex),
@@ -1506,7 +1506,7 @@ void	glMaterial::bindPassAtrribs ( uchar pass )
 	attributeLocation = shader->get_attrib_location( "mdl_Binormals" );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribPointer( attributeLocation,
 			3, GL_FLOAT, false, sizeof(CModelVertex),
@@ -1515,7 +1515,7 @@ void	glMaterial::bindPassAtrribs ( uchar pass )
 	attributeLocation = shader->get_attrib_location( "mdl_BoneWeights" );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribPointer( attributeLocation,
 			4, GL_FLOAT, false, sizeof(CModelVertex),
@@ -1524,7 +1524,7 @@ void	glMaterial::bindPassAtrribs ( uchar pass )
 	attributeLocation = shader->get_attrib_location( "mdl_BoneIndices" );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribIPointer( attributeLocation,
 			4, GL_UNSIGNED_BYTE, sizeof(CModelVertex),
@@ -1533,7 +1533,7 @@ void	glMaterial::bindPassAtrribs ( uchar pass )
 	attributeLocation = shader->get_attrib_location( "mdl_TexCoord2" );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribPointer( attributeLocation,
 			3, GL_FLOAT, false, sizeof(CModelVertex),
@@ -1542,7 +1542,7 @@ void	glMaterial::bindPassAtrribs ( uchar pass )
 	attributeLocation = shader->get_attrib_location( "mdl_TexCoord3" );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribPointer( attributeLocation,
 			3, GL_FLOAT, false, sizeof(CModelVertex),
@@ -1551,7 +1551,7 @@ void	glMaterial::bindPassAtrribs ( uchar pass )
 	attributeLocation = shader->get_attrib_location( "mdl_TexCoord4" );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribPointer( attributeLocation,
 			2, GL_FLOAT, false, sizeof(CModelVertex),
@@ -1559,30 +1559,30 @@ void	glMaterial::bindPassAtrribs ( uchar pass )
 	}
 	*/
 }
-void glMaterial::bindAttribute ( const char* sAttribName, const uint vec_size, const uint vec_type, const bool normalize, const int struct_size, const void* struct_offset )
+void RrMaterial::bindAttribute ( const char* sAttribName, const uint vec_size, const uint vec_type, const bool normalize, const int struct_size, const void* struct_offset )
 {
 	int attributeLocation;
-	glShader*	shader = getUsingShader();
+	RrShader*	shader = getUsingShader();
 	
 	attributeLocation = shader->get_attrib_location( sAttribName );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribPointer( attributeLocation,
 			vec_size, vec_type, normalize,
 			struct_size, struct_offset );
 	}
 }
-void glMaterial::bindAttributeI ( const char* sAttribName, const uint vec_size, const uint vec_type, const int struct_size, const void* struct_offset )
+void RrMaterial::bindAttributeI ( const char* sAttribName, const uint vec_size, const uint vec_type, const int struct_size, const void* struct_offset )
 {
 	int attributeLocation;
-	glShader*	shader = getUsingShader();
+	RrShader*	shader = getUsingShader();
 	
 	attributeLocation = shader->get_attrib_location( sAttribName );
 	if ( attributeLocation >= 0 )
 	{
-		glPass::enabled_attributes[attributeLocation] = true;
+		RrPassForward::enabled_attributes[attributeLocation] = true;
 		glEnableVertexAttribArray( attributeLocation );
 		glVertexAttribIPointer( attributeLocation,
 			vec_size, vec_type,

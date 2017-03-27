@@ -1,23 +1,23 @@
 
 #include "CTestScreenShader.h"
 #include "renderer/camera/CCamera.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
 CTestScreenShader::CTestScreenShader ( void )
 	: CScreenShader()
 {
-	/*vMaterials[0]->setShader( new glShader( "shaders\\sstest.glsl" ) );
+	/*vMaterials[0]->setShader( new RrShader( "shaders\\sstest.glsl" ) );
 	vMaterials[0]->isScreenShader = false;
 	vMaterials[0]->isTransparent = true;*/
 	renderSettings.renderHints = RL_WORLD;
 
-	glMaterial *shaderMaterial = new glMaterial;
+	RrMaterial *shaderMaterial = new RrMaterial;
 	shaderMaterial->m_isScreenShader = false;
-	shaderMaterial->passinfo.push_back( glPass() );
-	shaderMaterial->passinfo[0].shader = new glShader( ".res/shaders/sstest.glsl" );
-	shaderMaterial->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
+	shaderMaterial->passinfo.push_back( RrPassForward() );
+	shaderMaterial->passinfo[0].shader = new RrShader( ".res/shaders/sstest.glsl" );
+	shaderMaterial->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
 	shaderMaterial->removeReference();
 	SetMaterial( shaderMaterial );
 }

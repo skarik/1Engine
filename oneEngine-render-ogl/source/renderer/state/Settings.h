@@ -6,9 +6,9 @@
 #include "core/math/Color.h"
 
 class CRenderState;
-class glMaterial;
+class RrMaterial;
 
-namespace Renderer
+namespace renderer
 {
 	// Struct
 	struct renderSettings_t
@@ -24,7 +24,7 @@ namespace Renderer
 		bool	fogEnabled;	
 	private:
 		friend CRenderState;
-		friend glMaterial;
+		friend RrMaterial;
 
 		Real	fogScale;
 	};

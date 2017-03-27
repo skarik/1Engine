@@ -34,7 +34,7 @@ CTexture3D::CTexture3D ( string sInFilename,
 	// Standardize the filename
 	sFilename = IO::FilenameStandardize( sFilename );
 	// Look for the valid resource to load
-	sFilename = Core::Resources::PathTo( sFilename );
+	sFilename = core::Resources::PathTo( sFilename );
 
 	// Set the information structure to prepare for reading in
 	info.type			= textureType;

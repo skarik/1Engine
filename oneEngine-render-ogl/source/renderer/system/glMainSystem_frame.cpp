@@ -2,7 +2,7 @@
 #include "glMainSystem.h"
 #include "glDrawing.h"
 
-#include "renderer/window/COglWindow.h"
+#include "renderer/window/RrWindow.h"
 #include "renderer/state/CRenderState.h"
 
 #include <thread>
@@ -14,7 +14,7 @@ std::atomic_flag	presentLock = ATOMIC_FLAG_INIT;
 void performPresent ( void )
 {
 #ifdef _WIN32
-	SwapBuffers(COglWindow::pActive->getDevicePointer());				// Swap Buffers (Double Buffering) (VSYNC)
+	SwapBuffers(RrWindow::pActive->getDevicePointer());				// Swap Buffers (Double Buffering) (VSYNC)
 #endif
 
 	presentLock.clear();
@@ -42,7 +42,7 @@ void glMainSystem::EndFrame ( void )
 	GLd_ACCESS;
 
 	// Swap Buffers (Double Buffering)
-	SwapBuffers(COglWindow::pActive->getDevicePointer());
+	SwapBuffers(RrWindow::pActive->getDevicePointer());
 
 	// Mark that we're done with rendering
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -55,12 +55,12 @@ void glMainSystem::EndFrame ( void )
 // Get the current main screen buffer
 CRenderTexture* glMainSystem::GetMainScreenBuffer ( void )
 {
-	//return COglWindow::pActive->getScreenBuffer();
+	//return RrWindow::pActive->getScreenBuffer();
 	return SceneRenderer->GetForwardBuffer();
 }
 
 // Tell the entire system to restart
 void glMainSystem::FullRedraw( void )
 {
-	COglWindow::pActive->Redraw();
+	RrWindow::pActive->Redraw();
 }

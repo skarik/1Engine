@@ -2,7 +2,7 @@
 #include "core/settings/CGameSettings.h"
 
 #include "renderer/system/glMainSystem.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/camera/CCamera.h"
 
 #include "CParticleRenderer.h"

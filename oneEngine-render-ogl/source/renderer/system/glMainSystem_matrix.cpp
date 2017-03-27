@@ -11,14 +11,14 @@
 void	glMainSystem::prepareDraw ( void )
 {
 	if ( OldSchool ) {
-		throw Core::DeprecatedCallException();
+		throw core::DeprecatedCallException();
 		//glPushMatrix();
 	}
 }
 void	glMainSystem::cleanupDraw ( void )
 {
 	if ( OldSchool ) {
-		throw Core::DeprecatedCallException();
+		throw core::DeprecatedCallException();
 		//glPopMatrix();
 	}
 	while ( hasModelMatrix() ) {
@@ -120,10 +120,10 @@ const Matrix4x4& glMainSystem::getModelMatrix ( void )
 
 void	glMainSystem::setupAmbient ( void )
 {
-	throw Core::DeprecatedCallException();
+	throw core::DeprecatedCallException();
 	// Set the ambient lighting
 	if ( !CGameSettings::Active()->b_ro_EnableShaders ) {
-		//glLightfv( GL_LIGHT0, GL_AMBIENT, Renderer::Settings.ambientColor.start_point() );
+		//glLightfv( GL_LIGHT0, GL_AMBIENT, renderer::Settings.ambientColor.start_point() );
 	}
 }
 
@@ -213,7 +213,7 @@ void	glMainSystem::Translate ( Vector3d const& vPosition )
 {
 	if ( !hasModelMatrix() )
 	{
-		//throw Core::DeprecatedCallException();
+		//throw core::DeprecatedCallException();
 		/*
 		glPushMatrix();		//TODO: The fuck is this?
 		glLoadIdentity();

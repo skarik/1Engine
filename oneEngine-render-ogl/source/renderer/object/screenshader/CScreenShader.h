@@ -39,7 +39,7 @@ protected:
 
 	CRenderTexture* m_buf;
 
-	//glMaterial	m_copymat;
+	//RrMaterial	m_copymat;
 
 protected:
 	CCamera*	m_targetcam;

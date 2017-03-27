@@ -4,22 +4,20 @@
 
 #ifdef _WIN32
 
-	#include "COglWindowWin32.h"
-
-	typedef COglWindowWin32 COglWindow;
+	#include "rrWindowWin32.h"
 
 #elif __linux
 
 	#include "COglWindowLinux.h"
 
-	typedef COglWindow COglWindowWinLinux
+	typedef RrWindow COglWindowWinLinux
 
 #elif __APPLE__
 	#ifdef TARGET_OS_IPHONE
 
 		#include "COglWindowBullshittingyou.h"
 
-		typedef COglWindow COglWindowOsmac
+		typedef RrWindow COglWindowOsmac
 
 	#elif TARGET_IPHONE_SIMULATOR
 
@@ -27,7 +25,7 @@
 
 		#include "COglWindowOsmac.h"
 
-		typedef COglWindow COglWindowOsmac
+		typedef RrWindow COglWindowOsmac
 
 	#endif
 #endif

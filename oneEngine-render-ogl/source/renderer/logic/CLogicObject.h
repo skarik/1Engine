@@ -12,16 +12,16 @@
 
 //#include "GLCommon.h"
 //#include "glMainSystem.h"
-//#include "renderer/material/glMaterial.h"
+//#include "renderer/material/RrMaterial.h"
 
-#include "renderer/types/glShaderConstants.h"
+#include "renderer/types/RrObjectMaterialProperties.h"
 #include "renderer/types/ObjectSettings.h"
 
 // Class prototypes
 class CRenderState;
-class glMaterial;
-class glPass;
-class glPass_Deferred;
+class RrMaterial;
+class RrPassForward;
+class RrPassDeferred;
 
 // Defines
 #ifndef RegisterRenderClassName

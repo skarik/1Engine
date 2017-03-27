@@ -4,7 +4,7 @@
 #include "core/time/time.h"
 #include "core/math/Math.h"
 
-#include "renderer/object/mesh/system/glSkinnedMesh.h"
+#include "renderer/object/mesh/system/rrSkinnedMesh.h"
 
 // Class Constants
 CMorphAction		CMorpher::deadAction ( "" );
@@ -133,7 +133,7 @@ CMorphAction* CMorpher::FindAction ( const char* animName )
 }
 
 // Perform the morphs. Only affect positions and normals of the mesh's stream.
-void	CMorpher::PerformMorph ( glSkinnedMesh* sourceMesh, glSkinnedMesh* targetMesh )
+void	CMorpher::PerformMorph ( rrSkinnedMesh* sourceMesh, rrSkinnedMesh* targetMesh )
 {
 	// First, grab the stream to work on
 	CModelData* pStreamData = targetMesh->pmData;

@@ -30,17 +30,17 @@ class CRenderTexture;
 //void drawBuffer ( void );
 
 // Class Definition
-class COglWindowWin32
+class RrWindow
 {
 public:
-	//COglWindowWin32 ( void );
-	//~COglWindowWin32 ( void );
-	RENDER_API COglWindowWin32 (
+	//RrWindow ( void );
+	//~RrWindow ( void );
+	RENDER_API RrWindow (
 					HINSTANCE	inhInstance,			// Instance
 					HINSTANCE	inhPrevInstance,		// Previous Instance
 					LPSTR		inlpCmdLine,			// Command Line Parameters
 					int			innCmdShow);
-	RENDER_API ~COglWindowWin32 ( void );
+	RENDER_API ~RrWindow ( void );
 
 	friend LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 	int TestMain( void );
@@ -105,7 +105,7 @@ private:
 	eReturnStatus	ErrorOut( const char* message );
 	//void showFailureMessage ( char* message );
 public:
-	static COglWindowWin32* pActive;
+	static RrWindow* pActive;
 	static bool	keys[256];			// Array Used For The Keyboard Routine
 
 	CRenderState*	mRenderer;

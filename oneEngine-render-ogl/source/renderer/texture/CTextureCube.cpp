@@ -59,37 +59,37 @@ CTextureCube::CTextureCube ( const string &sInIdentifier,
 		glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
 		// Copy the data to the texture object
-		sFilename = Core::Resources::PathTo( sInFilenameXPos );
+		sFilename = core::Resources::PathTo( sInFilenameXPos );
 		LoadImageInfo();
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 		delete [] pData;
 		pData = NULL;
 
-		sFilename = Core::Resources::PathTo( sInFilenameXNeg );
+		sFilename = core::Resources::PathTo( sInFilenameXNeg );
 		LoadImageInfo();
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 		delete [] pData;
 		pData = NULL;
 
-		sFilename = Core::Resources::PathTo( sInFilenameYPos );
+		sFilename = core::Resources::PathTo( sInFilenameYPos );
 		LoadImageInfo();
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 		delete [] pData;
 		pData = NULL;
 
-		sFilename = Core::Resources::PathTo( sInFilenameYNeg );
+		sFilename = core::Resources::PathTo( sInFilenameYNeg );
 		LoadImageInfo();
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 		delete [] pData;
 		pData = NULL;
 
-		sFilename = Core::Resources::PathTo( sInFilenameZPos );
+		sFilename = core::Resources::PathTo( sInFilenameZPos );
 		LoadImageInfo();
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 		delete [] pData;
 		pData = NULL;
 
-		sFilename = Core::Resources::PathTo( sInFilenameZNeg );
+		sFilename = core::Resources::PathTo( sInFilenameZNeg );
 		LoadImageInfo();
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL.Enum(info.internalFormat), info.width, info.height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, pData );
 		delete [] pData;

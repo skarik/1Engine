@@ -9,8 +9,8 @@
 #include "renderer/logic/model/CModel.h"
 #include "renderer/texture/CTexture.h"
 #include "renderer/texture/CRenderTexture.h"
-#include "renderer/material/glMaterial.h"
-#include "renderer/material/glShader.h"
+#include "renderer/material/RrMaterial.h"
+#include "renderer/material/RrShader.h"
 
 #include "renderer/texture/TextureLoader.h"
 #include "core/math/Math.h"
@@ -404,7 +404,7 @@ void CResourceManager::StreamUpdate_Texture ( const char* n_targetFile )
 	if ( !IO::FileExists( t_bpdFilename ) )
 	{
 		// May be in release mode. Go directly to the BPD file
-		t_bpdFilename = Core::Resources::PathTo( t_bpdFilename );
+		t_bpdFilename = core::Resources::PathTo( t_bpdFilename );
 	}
 
 	// Open the BPD
@@ -459,7 +459,7 @@ void CResourceManager::StreamUpdate_Texture ( const char* n_targetFile )
 					break;
 				case Z_MEM_ERROR:
 					Debug::Console->PrintError("CResourceManager::StreamUpdate_Texture >> out of memory\n");
-					throw Core::OutOfMemoryException();
+					throw core::OutOfMemoryException();
 					break;
 				case Z_BUF_ERROR:
 					Debug::Console->PrintError("CResourceManager::StreamUpdate_Texture >> output buffer wasn't large enough!\n");
@@ -467,7 +467,7 @@ void CResourceManager::StreamUpdate_Texture ( const char* n_targetFile )
 					break;
 				case Z_DATA_ERROR:
 					Debug::Console->PrintError("CResourceManager::StreamUpdate_Texture >> corrupted data!\n");
-					throw Core::CorruptedDataException();
+					throw core::CorruptedDataException();
 					break;
 				}
 				// Delete the side buffer
@@ -482,7 +482,7 @@ void CResourceManager::StreamUpdate_Texture ( const char* n_targetFile )
 	else
 	{
 		// No file? Impossible. There's always a BPD, no matter what.
-		//throw Renderer::InvalidOperationException();
+		//throw renderer::InvalidOperationException();
 		Debug::Console->PrintError( "CResourceManager::StreamUpdate_Texture >> could not open file!\n" );
 	}
 
@@ -575,7 +575,7 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 			// Get the BPD filename
 			string t_bpdFilename = n_texture->sFilename;
 			t_bpdFilename = t_bpdFilename.substr(0, t_bpdFilename.find_last_of(".")) + ".bpd";
-			t_bpdFilename = Core::Resources::PathTo( t_bpdFilename );
+			t_bpdFilename = core::Resources::PathTo( t_bpdFilename );
 			// Does the BPD file exist?
 			if ( !IO::FileExists(t_bpdFilename) )
 			{
@@ -694,6 +694,14 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 				n_texture->info.width	= bpdHeader.width;
 				n_texture->info.height	= bpdHeader.height;
 				n_texture->info.depth	= bpdHeader.depth;
+
+				// Update IO info
+				n_texture->io_imginfo.width = bpdHeader.width;
+				n_texture->io_imginfo.height = bpdHeader.height;
+				n_texture->io_imginfo.internalFormat = 0;
+				n_texture->io_imginfo.framecount = bpdHeader.frames;
+				n_texture->io_imginfo.xdivs = bpdHeader.xdivs;
+				n_texture->io_imginfo.ydivs = bpdHeader.ydivs;
 			}
 			else
 			{
@@ -734,12 +742,12 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 		}
 	}*/
 	// Find the filename
-	string t_bpdFilename = Core::Resources::PathTo( n_texture->sFilename );
+	string t_bpdFilename = core::Resources::PathTo( n_texture->sFilename );
 	if ( !IO::FileExists( t_bpdFilename ) )
 	{
 		// May be in release mode. Go directly to the BPD file
 		t_bpdFilename = t_bpdFilename.substr( 0, t_bpdFilename.find_last_of( "." ) ) + ".bpd";
-		t_bpdFilename = Core::Resources::PathTo( t_bpdFilename );
+		t_bpdFilename = core::Resources::PathTo( t_bpdFilename );
 	}
 	else
 	{
@@ -789,6 +797,14 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 		glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum(n_texture->info.internalFormat), 16, 16, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, lowQuality );
 
 		glBindTexture( GL_TEXTURE_2D, 0 );
+
+		// Update IO info
+		n_texture->io_imginfo.width = bpdHeader.width;
+		n_texture->io_imginfo.height = bpdHeader.height;
+		n_texture->io_imginfo.internalFormat = 0;
+		n_texture->io_imginfo.framecount = bpdHeader.frames;
+		n_texture->io_imginfo.xdivs = bpdHeader.xdivs;
+		n_texture->io_imginfo.ydivs = bpdHeader.ydivs;
 	}
 	else
 	{
@@ -800,7 +816,7 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 }
 
 
-namespace Renderer
+namespace renderer
 {
 	std::map<arstring128, CTexture*> Resources::textureMap;
 	CTexture*	Resources::GetTexture ( const char* identifier )
@@ -828,7 +844,7 @@ namespace Renderer
 		}
 		else
 		{
-			throw Core::MemoryLeakException();
+			throw core::MemoryLeakException();
 		}
 	}
 }

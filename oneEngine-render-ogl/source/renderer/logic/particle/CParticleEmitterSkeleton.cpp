@@ -7,7 +7,7 @@
 #include "CParticleEmitterSkeleton.h"
 
 #include "renderer/logic/model/CSkinnedModel.h"
-#include "renderer/object/mesh/system/glSkinnedMesh.h"
+#include "renderer/object/mesh/system/rrSkinnedMesh.h"
 
 // Constructor
 CParticleEmitterSkeleton::CParticleEmitterSkeleton ( void )
@@ -58,7 +58,7 @@ void CParticleEmitterSkeleton::AddSkeleton ( const CSkinnedModel* n_model )
 	{
 		AddBone( *it, model );
 	}*/
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 }
 
 

@@ -18,10 +18,10 @@ public:
 	bool Render ( const char pass ) override;
 
 private:
-	glMaterial*	screenMaterial;
+	RrMaterial*	screenMaterial;
 
 	CBitmapFont*	fntNotifier;
-	glMaterial*		matNotifierDrawer;
+	RrMaterial*		matNotifierDrawer;
 };
 
 

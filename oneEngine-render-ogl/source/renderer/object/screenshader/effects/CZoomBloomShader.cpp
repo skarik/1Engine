@@ -1,7 +1,6 @@
 
 #include "CZoomBloomShader.h"
-//#include "COglWindow.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
@@ -11,19 +10,19 @@ CZoomBloomShader::CZoomBloomShader ( void )
 	: CScreenShader()
 {
 	renderSettings.renderHints = RL_WORLD;
-	/*vMaterials[0]->setShader( new glShader( ".res/shaders/screen/zoombloom.glsl" ) );
+	/*vMaterials[0]->setShader( new RrShader( ".res/shaders/screen/zoombloom.glsl" ) );
 	vMaterials[0]->isScreenShader = true;*/
 	//vMaterials[0]->isTransparent = true;
-	//vMaterials[0]->iBlendMode = glMaterial::BM_ADD;
+	//vMaterials[0]->iBlendMode = RrMaterial::BM_ADD;
 
-	//renderType = Renderer::Foreground;
+	//renderType = renderer::Foreground;
 
-	glMaterial *shaderMaterial = new glMaterial;
+	RrMaterial *shaderMaterial = new RrMaterial;
 	shaderMaterial->m_isScreenShader = true;
-	shaderMaterial->passinfo.push_back( glPass() );
-	shaderMaterial->passinfo[0].shader = new glShader( ".res/shaders/screen/zoombloom.glsl" );
-	shaderMaterial->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	shaderMaterial->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	shaderMaterial->passinfo.push_back( RrPassForward() );
+	shaderMaterial->passinfo[0].shader = new RrShader( ".res/shaders/screen/zoombloom.glsl" );
+	shaderMaterial->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	shaderMaterial->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	shaderMaterial->removeReference();
 	SetMaterial( shaderMaterial );
 }

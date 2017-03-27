@@ -5,7 +5,7 @@
 #include "core/math/Ray.h"
 #include "core/math/Color.h"
 
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/CTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
@@ -24,14 +24,14 @@ CDebugDrawer::CDebugDrawer ( void )
 	Debug::Drawer = this;
 
 	// Set the default white material
-	glMaterial* defaultMat = new glMaterial;
+	RrMaterial* defaultMat = new RrMaterial;
 	defaultMat->m_diffuse = Color( 1,1,1,1 );
 	defaultMat->setTexture( TEX_DIFFUSE, new CTexture( "textures/white.jpg" ) );
-	defaultMat->passinfo.push_back( glPass() );
-	defaultMat->passinfo[0].shader = new glShader( "shaders/sys/fullbright.glsl" );
-	defaultMat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	defaultMat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	defaultMat->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	defaultMat->passinfo.push_back( RrPassForward() );
+	defaultMat->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
+	defaultMat->passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	defaultMat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	defaultMat->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	defaultMat->passinfo[0].b_depthmask = true;
 	SetMaterial( defaultMat );
 	defaultMat->removeReference();

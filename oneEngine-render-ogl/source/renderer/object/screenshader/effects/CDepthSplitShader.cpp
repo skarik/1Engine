@@ -1,7 +1,7 @@
 
 #include "CDepthSplitShader.h"
 #include "renderer/camera/CCamera.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
@@ -11,13 +11,13 @@ CDepthSplitShader::CDepthSplitShader ( void )
 {
 	renderSettings.renderHints = RL_WORLD;
 
-	glMaterial *shaderMaterial = new glMaterial;
+	RrMaterial *shaderMaterial = new RrMaterial;
 	shaderMaterial->setTexture( TEX_SLOT2, new CTexture( "textures/hud/overlay_goggles_warp.jpg" ) );
 	shaderMaterial->m_isScreenShader = true;
-	shaderMaterial->passinfo.push_back( glPass() );
-	shaderMaterial->passinfo[0].shader = new glShader( "shaders/screen/depth_split.glsl" );
-	shaderMaterial->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	shaderMaterial->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	shaderMaterial->passinfo.push_back( RrPassForward() );
+	shaderMaterial->passinfo[0].shader = new RrShader( "shaders/screen/depth_split.glsl" );
+	shaderMaterial->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	shaderMaterial->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	shaderMaterial->removeReference();
 	SetMaterial( shaderMaterial );
 }

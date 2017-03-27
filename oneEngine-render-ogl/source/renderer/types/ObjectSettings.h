@@ -7,7 +7,7 @@
 #include "core/types/types.h"
 #include "core/math/Color.h"
 
-class glMaterial;
+class RrMaterial;
 
 // Renderer info
 enum eRenderMode : int32_t
@@ -33,7 +33,7 @@ enum eRenderHint : uint32_t
 	RL_LAYER_COUNT = 6
 };
 
-namespace Renderer
+namespace renderer
 {
 	// Structure definition
 	struct objectSettings
@@ -148,10 +148,10 @@ namespace Renderer
 
 	struct _n_hint_rendering_information
 	{
-		glMaterial*		mats_default		[RL_LAYER_COUNT];
-		glMaterial*		mats_default_skin	[RL_LAYER_COUNT];
-		glMaterial*		mats_transparent	[RL_LAYER_COUNT];
-		glMaterial*		mats_transparent_skin[RL_LAYER_COUNT];
+		RrMaterial*		mats_default		[RL_LAYER_COUNT];
+		RrMaterial*		mats_default_skin	[RL_LAYER_COUNT];
+		RrMaterial*		mats_transparent	[RL_LAYER_COUNT];
+		RrMaterial*		mats_transparent_skin[RL_LAYER_COUNT];
 		eClearType		clear_type			[RL_LAYER_COUNT];
 		Color			clear_color			[RL_LAYER_COUNT];
 

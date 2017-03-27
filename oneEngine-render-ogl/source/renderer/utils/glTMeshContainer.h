@@ -11,7 +11,7 @@
 #include "renderer/types/types.h"
 #include "renderer/object/CRenderableObject.h"
 
-namespace Renderer
+namespace renderer
 {
 	class glTMeshContainer
 	{

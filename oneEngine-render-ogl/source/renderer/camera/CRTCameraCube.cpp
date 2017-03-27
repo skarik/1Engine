@@ -23,10 +23,10 @@ void CRTCameraCube::RenderScene ( void )
 	// Replace w/ default hints (only render shadow layer)
 	//enabledHints = 0 | RL_SHADOW_COLOR;
 	enabledHints = RL_WORLD;
-	layerVisibility[Renderer::World] = true;
-	layerVisibility[Renderer::Background] = true;
-	layerVisibility[Renderer::Secondary] = true;
-	layerVisibility[Renderer::Foreground] = true;
+	layerVisibility[renderer::World] = true;
+	layerVisibility[renderer::Background] = true;
+	layerVisibility[renderer::Secondary] = true;
+	layerVisibility[renderer::Foreground] = true;
 
 
 	glEnum t_renderList [6] = { // Y and Z are flipped from cube map to engine

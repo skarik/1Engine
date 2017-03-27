@@ -5,7 +5,7 @@
 // CRenderTexture class
 #include "CRenderTexture.h"
 // Request structure
-#include "renderer/types/glTexture.h"
+#include "renderer/types/RrGpuTexture.h"
 
 // ===STRUCTS===
 // MRT Info struct
@@ -44,11 +44,11 @@ public:
 		unsigned int	requestedHeight,
 		eWrappingType	repeatX,
 		eWrappingType	repeatY,
-		glTexture*		rgbRequestList,
+		RrGpuTexture*		rgbRequestList,
 		const uint		rgbRequestListSize,
-		glTexture*		depthRequest,
+		RrGpuTexture*		depthRequest,
 		bool			depthFetch,
-		glTexture*		stencilRequest,
+		RrGpuTexture*		stencilRequest,
 		bool			stencilFetch
 	);
 	~CMRTTexture ( void );

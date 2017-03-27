@@ -1,5 +1,5 @@
 //===============================================================================================//
-//	class glPass
+//	class RrPassForward
 // Forward renderer render properties storage information. Only stores pass information.
 // Does not actually apply the rendering routines.
 //===============================================================================================//
@@ -9,34 +9,34 @@
 #include "core/types/types.h"
 #include "renderer/types/ObjectSettings.h"
 
-class glShader;
+class RrShader;
 
 //=========================================//
-// glPass - entire storage class exported
+// RrPassForward - entire storage class exported
 //=========================================//
-class RENDER_API glPass 
+class RENDER_API RrPassForward 
 {
 public:
 	static	bool enabled_attributes [16];
 
 public:
-	glPass ( void );
+	RrPassForward ( void );
 
-	glPass ( const glPass& other );
-	glPass ( glPass&& other );
-	~glPass( void );
-	glPass& operator= ( glPass& other );
-	glPass& operator= ( glPass&& other );
+	RrPassForward ( const RrPassForward& other );
+	RrPassForward ( RrPassForward&& other );
+	~RrPassForward( void );
+	RrPassForward& operator= ( RrPassForward& other );
+	RrPassForward& operator= ( RrPassForward&& other );
 
 public:
-	Renderer::eAlphaMode		m_transparency_mode;
+	renderer::eAlphaMode		m_transparency_mode;
 	ftype						f_alphatest_value;
 	bool						b_depthmask;
 
-	Renderer::eDrawBlendMode	m_blend_mode;
-	Renderer::eDrawLightingMode	m_lighting_mode;
+	renderer::eDrawBlendMode	m_blend_mode;
+	renderer::eDrawLightingMode	m_lighting_mode;
 
-	Renderer::eDrawFaceMode		m_face_mode;
+	renderer::eDrawFaceMode		m_face_mode;
 
 
 public:
@@ -47,7 +47,7 @@ public:
 	// Pass masking information
 	uint32_t	m_hint;
 
-	glShader*	shader;
+	RrShader*	shader;
 };
 
 #endif//_GL_PASS_H_

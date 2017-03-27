@@ -1,5 +1,5 @@
 
-#include "glMaterial.h"
+#include "RrMaterial.h"
 
 #include "core/math/Vector3d.h"
 #include "core/settings/CGameSettings.h"
@@ -15,7 +15,7 @@ using namespace std;
 
 
 //Texture set
-void		glMaterial::setTexture ( const textureslot_t n_index, CTexture* n_texture )
+void		RrMaterial::setTexture ( const textureslot_t n_index, CTexture* n_texture )
 {
 	GL_ACCESS
 	// Check doubly set texture
@@ -45,13 +45,13 @@ void		glMaterial::setTexture ( const textureslot_t n_index, CTexture* n_texture 
 		m_sampler_targets[n_index]	= 0;
 	}
 }
-void		glMaterial::setSampler ( const textureslot_t n_index, const uint n_sampler, const uint n_sampler_target )
+void		RrMaterial::setSampler ( const textureslot_t n_index, const uint n_sampler, const uint n_sampler_target )
 {
 	GL_ACCESS
 #ifdef _ENGINE_DEBUG
 	if ( n_sampler_target == 0 )
 	{
-		throw Core::InvalidArgumentException();
+		throw core::InvalidArgumentException();
 	}
 #endif
 	// Clear off existing texture
@@ -67,15 +67,15 @@ void		glMaterial::setSampler ( const textureslot_t n_index, const uint n_sampler
 	m_samplers[n_index]			= n_sampler;
 	m_sampler_targets[n_index]	= n_sampler_target;
 }
-CTexture*	glMaterial::getTexture ( const textureslot_t n_index )
+CTexture*	RrMaterial::getTexture ( const textureslot_t n_index )
 {
 	return m_highlevel_storage[n_index];
 }
 
 // Shader
-glShader*	glMaterial::getUsingShader ( void )
+RrShader*	RrMaterial::getUsingShader ( void )
 {
-	glShader*	shader = NULL;
+	RrShader*	shader = NULL;
 	if ( /*CGameSettings::Active()->i_ro_RendererMode*/m_currentShaderState == RENDER_MODE_FORWARD ) {
 		shader = passinfo[current_pass].shader;
 	}
@@ -89,13 +89,13 @@ glShader*	glMaterial::getUsingShader ( void )
 }
 
 // ==Shader Constants==
-void glMaterial::setUniform ( const char* sUniformName, float const fInput )
+void RrMaterial::setUniform ( const char* sUniformName, float const fInput )
 {
-	glShader* shader = getUsingShader();
+	RrShader* shader = getUsingShader();
 	if (( shader == NULL )||( !CGameSettings::Active()->b_ro_EnableShaders )) {
 		return;
 	}
-	if ( glMaterial::current != this ) {
+	if ( RrMaterial::current != this ) {
 		cout << "Warning in: " << this << ": can't set shader constants for inactive material" << endl;
 		return;
 	}
@@ -104,13 +104,13 @@ void glMaterial::setUniform ( const char* sUniformName, float const fInput )
 		glUniform1f( uniformLocation, fInput );
 	}
 }
-void glMaterial::setUniform ( const char* sUniformName, Vector2d const& vInput )
+void RrMaterial::setUniform ( const char* sUniformName, Vector2d const& vInput )
 {
-	glShader* shader = getUsingShader();
+	RrShader* shader = getUsingShader();
 	if (( shader == NULL )||( !CGameSettings::Active()->b_ro_EnableShaders )) {
 		return;
 	}
-	if ( glMaterial::current != this ) {
+	if ( RrMaterial::current != this ) {
 		cout << "Warning in: " << this << ": can't set shader constants for inactive material" << endl;
 		return;
 	}
@@ -119,13 +119,13 @@ void glMaterial::setUniform ( const char* sUniformName, Vector2d const& vInput )
 		glUniform2f( uniformLocation, vInput.x, vInput.y );
 	}
 }
-void glMaterial::setUniform ( const char* sUniformName, Vector3d const& vInput )
+void RrMaterial::setUniform ( const char* sUniformName, Vector3d const& vInput )
 {
-	glShader* shader = getUsingShader();
+	RrShader* shader = getUsingShader();
 	if (( shader == NULL )||( !CGameSettings::Active()->b_ro_EnableShaders )) {
 		return;
 	}
-	if ( glMaterial::current != this ) {
+	if ( RrMaterial::current != this ) {
 		cout << "Warning in: " << this << ": can't set shader constants for inactive material" << endl;
 		return;
 	}
@@ -134,13 +134,13 @@ void glMaterial::setUniform ( const char* sUniformName, Vector3d const& vInput )
 		glUniform3f( uniformLocation, vInput.x, vInput.y, vInput.z );
 	}
 }
-void glMaterial::setUniform ( const char* sUniformName, Color const& cInput )
+void RrMaterial::setUniform ( const char* sUniformName, Color const& cInput )
 {
-	glShader* shader = getUsingShader();
+	RrShader* shader = getUsingShader();
 	if (( shader == NULL )||( !CGameSettings::Active()->b_ro_EnableShaders )) {
 		return;
 	}
-	if ( glMaterial::current != this ) {
+	if ( RrMaterial::current != this ) {
 		cout << "Warning in: " << this << ": can't set shader constants for inactive material" << endl;
 		return;
 	}
@@ -149,13 +149,13 @@ void glMaterial::setUniform ( const char* sUniformName, Color const& cInput )
 		glUniform4f( uniformLocation, cInput.red, cInput.green, cInput.blue, cInput.alpha );
 	}
 }
-void glMaterial::setUniform ( const char* sUniformName, Matrix4x4 const& matxInput )
+void RrMaterial::setUniform ( const char* sUniformName, Matrix4x4 const& matxInput )
 {
-	glShader* shader = getUsingShader();
+	RrShader* shader = getUsingShader();
 	if (( shader == NULL )||( !CGameSettings::Active()->b_ro_EnableShaders )) {
 		return;
 	}
-	if ( glMaterial::current != this ) {
+	if ( RrMaterial::current != this ) {
 		cout << "Warning in: " << this << ": can't set shader constants for inactive material" << endl;
 		return;
 	}
@@ -165,13 +165,13 @@ void glMaterial::setUniform ( const char* sUniformName, Matrix4x4 const& matxInp
 	}
 }
 /*
-void glMaterial::setUniformV( const char* sUniformName, unsigned int count, const Matrix4x4 * pMatxInput )
+void RrMaterial::setUniformV( const char* sUniformName, unsigned int count, const Matrix4x4 * pMatxInput )
 {
-	glShader* shader = getUsingShader();
+	RrShader* shader = getUsingShader();
 	if (( shader == NULL )||( !CGameSettings::Active()->b_ro_EnableShaders )) {
 		return;
 	}
-	if ( glMaterial::current != this ) {
+	if ( RrMaterial::current != this ) {
 		cout << "Warning in: " << this << ": can't set shader constants for inactive material" << endl;
 		return;
 	}
@@ -180,13 +180,13 @@ void glMaterial::setUniformV( const char* sUniformName, unsigned int count, cons
 		glUniformMatrix4fv( uniformLocation, count,false, pMatxInput[0][0]  );
 	}
 }
-void glMaterial::setUniformV( const char* sUniformName, unsigned int count, const Matrix3x3 * pMatxInput )
+void RrMaterial::setUniformV( const char* sUniformName, unsigned int count, const Matrix3x3 * pMatxInput )
 {
-	glShader* shader = getUsingShader();
+	RrShader* shader = getUsingShader();
 	if (( shader == NULL )||( !CGameSettings::Active()->b_ro_EnableShaders )) {
 		return;
 	}
-	if ( glMaterial::current != this ) {
+	if ( RrMaterial::current != this ) {
 		cout << "Warning in: " << this << ": can't set shader constants for inactive material" << endl;
 		return;
 	}
@@ -196,13 +196,13 @@ void glMaterial::setUniformV( const char* sUniformName, unsigned int count, cons
 	}
 }
 
-void glMaterial::setUniformV ( const char* sUniformName, unsigned int count, const Vector3d* pVInput )
+void RrMaterial::setUniformV ( const char* sUniformName, unsigned int count, const Vector3d* pVInput )
 {
-	glShader* shader = getUsingShader();
+	RrShader* shader = getUsingShader();
 	if (( shader == NULL )||( !CGameSettings::Active()->b_ro_EnableShaders )) {
 		return;
 	}
-	if ( glMaterial::current != this ) {
+	if ( RrMaterial::current != this ) {
 		cout << "Warning in: " << this << ": can't set shader constants for inactive material" << endl;
 		return;
 	}

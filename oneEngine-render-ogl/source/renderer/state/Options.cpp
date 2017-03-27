@@ -4,7 +4,7 @@
 #include "renderer/state/CRenderState.h"
 #include "renderer/resource/CResourceManager.h"
 
-using namespace Renderer;
+using namespace renderer;
 
 void Options::TextureStreaming ( const bool enabled )
 {

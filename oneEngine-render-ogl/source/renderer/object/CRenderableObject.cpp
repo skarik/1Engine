@@ -3,13 +3,13 @@
 #include "core/settings/CGameSettings.h"
 #include "renderer/exceptions/exceptions.h"
 #include "renderer/state/CRenderState.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "CRenderableObject.h"
 
 // ==Static Members
 //bool CRenderableObject::bStaticMaterialsInit = false;
-//glMaterial* CRenderableObject::GLoutlineMaterial = NULL;
+//RrMaterial* CRenderableObject::GLoutlineMaterial = NULL;
 Vector3d CRenderableObject::_activeCameraPosition = Vector3d::zero;
 
 // ==Constructor
@@ -32,9 +32,9 @@ CRenderableObject::CRenderableObject ( void )
 	renderSettings.renderHints = RL_ALL;
 
 	//InitMaterials();
-	CRenderableObject::SetMaterial( glMaterial::Default );
+	CRenderableObject::SetMaterial( RrMaterial::Default );
 
-	renderType = Renderer::World;
+	renderType = renderer::World;
 	id = CRenderState::Active->AddRO( this );
 	visible = true;
 }
@@ -64,10 +64,10 @@ void CRenderableObject::SetRenderType ( RenderingType newRenderType )
 	renderType = newRenderType;
 }
 // Set Materials
-void CRenderableObject::SetMaterial ( glMaterial* n_pNewMaterial )
+void CRenderableObject::SetMaterial ( RrMaterial* n_pNewMaterial )
 {
 	// Go through current materials, delete them if they have no more owner
-	/*for ( vector<glMaterial*>::iterator mat = vMaterials.begin(); mat != vMaterials.end(); mat++ )
+	/*for ( vector<RrMaterial*>::iterator mat = vMaterials.begin(); mat != vMaterials.end(); mat++ )
 	{
 		if ((*mat)->canFree() )
 		{
@@ -92,9 +92,9 @@ void CRenderableObject::SetMaterial ( glMaterial* n_pNewMaterial )
 			delete m_material;
 		}
 #ifdef _ENGINE_DEBUG
-		else if ( m_material != glMaterial::Default && !m_material->isStatic() )
+		else if ( m_material != RrMaterial::Default && !m_material->isStatic() )
 		{
-			throw Core::MemoryLeakException();
+			throw core::MemoryLeakException();
 		}
 #endif
 	}
@@ -108,13 +108,13 @@ void CRenderableObject::SetMaterial ( glMaterial* n_pNewMaterial )
 		//{
 		// Check for a valid pass count
 		if ( m_material->passinfo.size() > 16 || m_material->deferredinfo.size() > 16 ) {
-			throw Renderer::TooManyPassesException();
+			throw renderer::TooManyPassesException();
 		}
 		// Check all passes have a shader
 		for ( uint pass = 0; pass < m_material->passinfo.size(); ++pass )
 		{
 			if ( m_material->passinfo[pass].shader == NULL ) {
-				throw Renderer::InvalidPassException();
+				throw renderer::InvalidPassException();
 			}
 		}
 		// Match up passes to the replacement system
@@ -134,23 +134,23 @@ void CRenderableObject::SetMaterial ( glMaterial* n_pNewMaterial )
 			}
 			if ( !hasPass ) // TODO: Search for ALL matching passes. (That actually won't work, but don't care right now.)
 			{
-				glPass* pass = &(m_material->passinfo[0]);
-				glPass* source;
+				RrPassForward* pass = &(m_material->passinfo[0]);
+				RrPassForward* source;
 				if ( !pass ) continue;
 				// Search for a matching pass
-				if ( pass->m_transparency_mode != Renderer::ALPHAMODE_TRANSLUCENT )
+				if ( pass->m_transparency_mode != renderer::ALPHAMODE_TRANSLUCENT )
 				{
 					if ( !m_material->m_isSkinnedShader )
 					{
 						// Check for objects on the current layer.
-						if ( Renderer::m_default_hint_options->mats_default[layer] != NULL )
+						if ( renderer::m_default_hint_options->mats_default[layer] != NULL )
 						{
-							source = &(Renderer::m_default_hint_options->mats_default[layer]->passinfo[0]);
+							source = &(renderer::m_default_hint_options->mats_default[layer]->passinfo[0]);
 							// Add a pass on the current layer
-							m_material->passinfo.push_back( glPass() );
+							m_material->passinfo.push_back( RrPassForward() );
 							m_material->passinfo.back() = *source;
 							std::swap( m_material->passinfo.back().shader, source->shader );
-							m_material->passinfo.back().shader = new glShader( source->shader->GetFilename() );
+							m_material->passinfo.back().shader = new RrShader( source->shader->GetFilename() );
 							m_material->passinfo.back().m_procedural = true;
 							m_material->passinfo.back().m_hint = (1<<layer);
 						}
@@ -158,29 +158,29 @@ void CRenderableObject::SetMaterial ( glMaterial* n_pNewMaterial )
 					else
 					{
 						// Check for objects on the current layer.
-						if ( Renderer::m_default_hint_options->mats_default_skin[layer] != NULL )
+						if ( renderer::m_default_hint_options->mats_default_skin[layer] != NULL )
 						{
-							source = &(Renderer::m_default_hint_options->mats_default_skin[layer]->passinfo[0]);
+							source = &(renderer::m_default_hint_options->mats_default_skin[layer]->passinfo[0]);
 							// Add a pass on the current layer
-							m_material->passinfo.push_back( glPass() );
+							m_material->passinfo.push_back( RrPassForward() );
 							m_material->passinfo.back() = *source;
 							std::swap( m_material->passinfo.back().shader, source->shader );
-							m_material->passinfo.back().shader = new glShader( source->shader->GetFilename(), GLE::SHADER_TAG_SKINNING );
+							m_material->passinfo.back().shader = new RrShader( source->shader->GetFilename(), renderer::SHADER_TAG_SKINNING );
 							m_material->passinfo.back().m_procedural = true;
 							m_material->passinfo.back().m_hint = (1<<layer);
 						}
 					}
-					/*if ( Renderer::m_default_hint_options->mats_default[layer] != NULL )
+					/*if ( renderer::m_default_hint_options->mats_default[layer] != NULL )
 					{
 						// End
 						// Add a pass on the current layer
-						m_material->passinfo.push_back( glPass() );
+						m_material->passinfo.push_back( RrPassForward() );
 						source = &(m_material->passinfo[0]);
 						m_material->passinfo.back() = *source;
 						std::swap( m_material->passinfo.back().shader, source->shader );
 						m_material->passinfo.back().shader = source->shader;
 						source->shader->GrabReference();
-						//m_material->passinfo.back().shader = new glShader( source->shader->GetFilename() );
+						//m_material->passinfo.back().shader = new RrShader( source->shader->GetFilename() );
 						m_material->passinfo.back().m_procedural = true;
 						m_material->passinfo.back().m_hint = (1<<layer);
 					}*/
@@ -262,11 +262,11 @@ uchar CRenderableObject::GetPassNumber ( void ) {
 	return m_material->getPassCount();
 }
 // Returns the associated pass. This is used for ordering.
-glPass* CRenderableObject::GetPass ( const uchar pass ) {
+RrPassForward* CRenderableObject::GetPass ( const uchar pass ) {
 	return &(m_material->passinfo[pass]);
 }
 // Returns the associated deferred rendering pass. This is used for ordering.
-glPass_Deferred* CRenderableObject::GetPassDeferred ( const uchar pass ) {
+RrPassDeferred* CRenderableObject::GetPassDeferred ( const uchar pass ) {
 	return &(m_material->deferredinfo[pass]);
 }
 
@@ -277,7 +277,7 @@ bool CRenderableObject::BindVAO ( const uchar pass, const uint vbo, const uint e
 		t_targetPass += m_material->getPassCountForward();
 	}
 	if ( t_targetPass >= m_vao_maxcount ) {
-		throw Renderer::InvalidPassException();
+		throw renderer::InvalidPassException();
 	}
 	if ( m_vao_info[t_targetPass] == 0 )
 	{

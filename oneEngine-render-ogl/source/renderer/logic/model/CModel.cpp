@@ -7,7 +7,7 @@
 #include "core-ext/system/io/FileUtils.h"
 #include "core-ext/system/io/Resources.h"
 
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/object/mesh/CMesh.h"
 #include "renderer/resource/CModelMaster.h"
 
@@ -22,9 +22,9 @@ CModel::CModel ( const char* sFilename )
 	// Standardize the filename
 	myModelFilename = IO::FilenameStandardize( myModelFilename );
 	// Look for the valid resource to load
-	myModelFilename = Core::Resources::PathTo( myModelFilename );
+	myModelFilename = core::Resources::PathTo( myModelFilename );
 #ifndef _ENGINE_DEBUG
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 #endif
 
 	// Clear out uniform lists
@@ -50,7 +50,7 @@ CModel::CModel ( const char* sFilename )
 	eRefMode = ANIM_REF_NONE;
 
 	// First look for the model in the model master
-	//const vector<glMesh*> * pMeshSetReference = ModelMaster.GetReference( myModelFilename );
+	//const vector<rrMesh*> * pMeshSetReference = ModelMaster.GetReference( myModelFilename );
 	auto t_meshSet = RenderResources::Active()->GetMesh( myModelFilename.c_str() );
 	// If there's no reference, then load it
 	if ( t_meshSet == NULL )
@@ -152,7 +152,7 @@ CModel::CModel ( CModelData& mdInModelData, const char* sModelName )
 	//visible = false;
 
 	// First look for the model in the model master
-	//const vector<glMesh*> * pMeshSetReference = ModelMaster.GetReference( sModelName );
+	//const vector<rrMesh*> * pMeshSetReference = ModelMaster.GetReference( sModelName );
 	auto t_meshSet = RenderResources::Active()->GetMesh( myModelFilename.c_str() );
 	// If there's no reference, then load it
 	if ( t_meshSet == NULL || myModelFilename == "_sys_override_" )
@@ -161,7 +161,7 @@ CModel::CModel ( CModelData& mdInModelData, const char* sModelName )
 		(*mdModelData) = mdInModelData;
 
 		// Create new mesh with the model data
-		glMesh* newMesh = new glMesh ();
+		rrMesh* newMesh = new rrMesh ();
 		newMesh->Initialize( "procedural mesh", mdModelData );
 
 		// Put the mesh into the render list
@@ -200,7 +200,7 @@ CModel::CModel ( CModelData& mdInModelData, const char* sModelName )
 	}
 
 	// Set the default white material
-	/*glMaterial* defaultMat = new glMaterial;
+	/*RrMaterial* defaultMat = new RrMaterial;
 	defaultMat->releaseOwnership();
 	vMaterials.push_back( defaultMat );
 
@@ -350,32 +350,32 @@ void CModel::SetShaderUniform ( const char* sUniformName, const Color& fInput )
 
 void CModel::SendShaderUniforms ( void )
 {
-	if ( glMaterial::current->getUsingShader() ) {
+	if ( RrMaterial::current->getUsingShader() ) {
 		if ( uniformMapFloat ) {
 			for ( auto entry = uniformMapFloat->begin(); entry != uniformMapFloat->end(); ++entry ) {
-				glMaterial::current->setUniform( entry->first.c_str(), entry->second );
+				RrMaterial::current->setUniform( entry->first.c_str(), entry->second );
 			}
 		}
 		if ( uniformMapVect2d ) {
 			for ( auto entry = uniformMapVect2d->begin(); entry != uniformMapVect2d->end(); ++entry ) {
-				glMaterial::current->setUniform( entry->first.c_str(), entry->second );
+				RrMaterial::current->setUniform( entry->first.c_str(), entry->second );
 			}
 		}
 		if ( uniformMapVect3d ) {
 			for ( auto entry = uniformMapVect3d->begin(); entry != uniformMapVect3d->end(); ++entry ) {
-				glMaterial::current->setUniform( entry->first.c_str(), entry->second );
+				RrMaterial::current->setUniform( entry->first.c_str(), entry->second );
 			}
 		}
 		if ( uniformMapColor ) {
 			for ( auto entry = uniformMapColor->begin(); entry != uniformMapColor->end(); ++entry ) {
-				glMaterial::current->setUniform( entry->first.c_str(), entry->second );
+				RrMaterial::current->setUniform( entry->first.c_str(), entry->second );
 			}
 		}
 	}
 }
 
 // Set material for meshes
-void CModel::SetMaterial ( glMaterial* n_pNewMaterial )
+void CModel::SetMaterial ( RrMaterial* n_pNewMaterial )
 {
 	if ( m_meshes.size() == 1 ) {
 		m_meshes[0]->SetMaterial( n_pNewMaterial );
@@ -385,7 +385,7 @@ void CModel::SetMaterial ( glMaterial* n_pNewMaterial )
 	}
 }
 // Get material for meshes
-glMaterial* CModel::GetMaterial ( void )
+RrMaterial* CModel::GetMaterial ( void )
 {
 	if ( m_meshes.size() == 1 ) {
 		return m_meshes[0]->GetMaterial();
@@ -433,7 +433,7 @@ void CModel::SetForcedDraw ( void ) {
 // If the referenced model is deleted, unexpected behavior will occur.
 void CModel::SetReferencedAnimationMode ( CModel* pReference, const AnimRefType ref_type )
 {
-	throw Core::DeprecatedCallException();
+	throw core::DeprecatedCallException();
 	//pReferencedAnimation = pReference->GetAnimation();
 	//bReferenceAnimation = true;
 	//eRefMode = ref_type;
@@ -446,7 +446,7 @@ void CModel::SetVisibility ( const bool n_visibility ) {
 	}
 }
 // Hides or shows all of the child meshes
-void CModel::SetRenderType ( const Renderer::RenderingType n_type ) {
+void CModel::SetRenderType ( const renderer::RenderingType n_type ) {
 	for ( uint i = 0; i < m_meshes.size(); ++i ) {
 		m_meshes[i]->renderType = n_type;
 	}
@@ -499,7 +499,7 @@ CModelData* CModel::GetModelDataByName ( const char* nNameMatch ) const
 }
 
 // Return the first matching material
-glMaterial*	CModel::FindMaterial ( const char* n_name, const int n_offset ) const
+RrMaterial*	CModel::FindMaterial ( const char* n_name, const int n_offset ) const
 {
 	int foundCount = 0;
 	for ( uint i = 0; i < m_meshes.size(); ++i ) {

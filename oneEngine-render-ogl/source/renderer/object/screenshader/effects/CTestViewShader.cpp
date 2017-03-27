@@ -7,7 +7,7 @@
 
 #include "core/settings/CGameSettings.h"
 
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
@@ -20,21 +20,21 @@ CTestViewShader::CTestViewShader ( void )
 
 	renderSettings.renderHints = RL_WORLD;
 
-	glMaterial *shaderMaterial = new glMaterial;
+	RrMaterial *shaderMaterial = new RrMaterial;
 	shaderMaterial->m_isScreenShader = true;
-	shaderMaterial->passinfo.push_back( glPass() );
-	shaderMaterial->passinfo[0].shader = new glShader( ".res/shaders/screen/viewtest.glsl" );
-	shaderMaterial->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	shaderMaterial->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+	shaderMaterial->passinfo.push_back( RrPassForward() );
+	shaderMaterial->passinfo[0].shader = new RrShader( ".res/shaders/screen/viewtest.glsl" );
+	shaderMaterial->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	shaderMaterial->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	shaderMaterial->removeReference();
 	SetMaterial( shaderMaterial );
 
 	m_rtcam = new CRTCamera;
-	m_rtcam->layerVisibility[Renderer::Background]	= true;
-	m_rtcam->layerVisibility[Renderer::Secondary]	= false;
-	m_rtcam->layerVisibility[Renderer::World]		= true;
-	m_rtcam->layerVisibility[Renderer::Foreground]	= false;
-	m_rtcam->layerVisibility[Renderer::V2D]			= false;
+	m_rtcam->layerVisibility[renderer::Background]	= true;
+	m_rtcam->layerVisibility[renderer::Secondary]	= false;
+	m_rtcam->layerVisibility[renderer::World]		= true;
+	m_rtcam->layerVisibility[renderer::Foreground]	= false;
+	m_rtcam->layerVisibility[renderer::V2D]			= false;
 	m_rtcam->enabledHints = RL_SKYGLOW;
 
 	m_rttex = NULL;

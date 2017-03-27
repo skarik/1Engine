@@ -4,7 +4,7 @@
 
 #include "renderer/system/glMainSystem.h"
 #include "renderer/texture/CBitmapFont.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/state/Settings.h"
 
 // The Global GL drawing object
@@ -100,7 +100,7 @@ void	glDrawing::DrawText ( float dx, float dy, const char* fmt, ... )
 	// Pops The Display List Bits
 	glPopAttrib();
 	*/
-	throw Core::DeprecatedCallException();
+	throw core::DeprecatedCallException();
 
 	GL.cleanupDraw();
 }
@@ -149,7 +149,7 @@ void	glDrawing::DrawTextP ( int ix, int iy, const char* fmt, ... )
 	// Pops The Display List Bits
 	glPopAttrib();
 	*/
-	throw Core::DeprecatedCallException();
+	throw core::DeprecatedCallException();
 
 	GL.cleanupDraw();
 }
@@ -257,7 +257,7 @@ void	glDrawing::DrawAutoText ( float dx, float dy, const char* fmt, ... )
 		translationMatrix.setTranslation( translation );
 		
 		GL.Transform( translationMatrix*scaleMatrix );
-		glMaterial::current->setShaderConstants(NULL);
+		RrMaterial::current->setShaderConstants(NULL);
 	}
 
 	// Push Display List Bits
@@ -387,7 +387,7 @@ void	glDrawing::DrawAutoTextCentered ( float dx, float dy, const char* fmt, ... 
 		translationMatrix.setTranslation( translation );
 		
 		GL.Transform( translationMatrix*scaleMatrix );
-		glMaterial::current->setShaderConstants(NULL);
+		RrMaterial::current->setShaderConstants(NULL);
 	}
 
 	// Push Display List Bits
@@ -528,7 +528,7 @@ void		glDrawing::DrawAutoTextWrapped ( float dx, float dy, float dw, const char*
 		translationMatrix.setTranslation( translation );
 		
 		GL.Transform( translationMatrix*scaleMatrix );
-		glMaterial::current->setShaderConstants(NULL);
+		RrMaterial::current->setShaderConstants(NULL);
 	}
 
 	// Push Display List Bits
@@ -950,12 +950,12 @@ void		glDrawing::DrawScreenQuad ( void )
 	}
 
 	// Now, send the material attributes
-	glMaterial::current->bindPassAtrribs(glMaterial::current_pass);
-	glMaterial::current->setShaderConstants( NULL, false );
+	RrMaterial::current->bindPassAtrribs(RrMaterial::current_pass);
+	RrMaterial::current->setShaderConstants( NULL, false );
 	// Mark the enabled attributes
 	for ( uchar i = 0; i < 16; ++i )
 	{
-		attribs[i] = glPass::enabled_attributes[i];
+		attribs[i] = RrPassForward::enabled_attributes[i];
 	}
 
 	// Draw the current primitive

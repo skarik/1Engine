@@ -33,8 +33,8 @@ CRenderTexture::CRenderTexture (
 		requestedWidth, requestedHeight,
 		repeatX, repeatY,
 		requestedColor,
-		glTexture(0, requestedDepth), requestedDepth != DepthNone,
-		glTexture(0, requestedStencil), requestedStencil != StencilNone )
+		RrGpuTexture(0, requestedDepth), requestedDepth != DepthNone,
+		RrGpuTexture(0, requestedStencil), requestedStencil != StencilNone )
 {
 	// Delegated constructor
 }
@@ -46,9 +46,9 @@ CRenderTexture::CRenderTexture (
 	eWrappingType	repeatX,
 	eWrappingType	repeatY,
 	eColorFormat	requestedColor,
-	glTexture		depthRequest,
+	RrGpuTexture		depthRequest,
 	bool			depthFetch,
-	glTexture		stencilRequest,
+	RrGpuTexture		stencilRequest,
 	bool			stencilFetch )
 	: CTexture ( "_hx_SYSTEM_RENDERTEXTURE" )
 {
@@ -109,8 +109,8 @@ CRenderTexture::CRenderTexture (
 		cout << " + Fetch color enabled." << endl;
 
 		// Create a new color texture and set it up
-		info.index = GPU::TextureAllocate( Texture2D, requestedColor, info.width, info.height );
-		GPU::TextureSampleSettings( Texture2D, info.index, info.repeatX, info.repeatY, 0, SamplingLinear, SamplingLinear );
+		info.index = gpu::TextureAllocate( Texture2D, requestedColor, info.width, info.height );
+		gpu::TextureSampleSettings( Texture2D, info.index, info.repeatX, info.repeatY, 0, SamplingLinear, SamplingLinear );
 		GL.CheckError();
 
 		// Update color format
@@ -129,8 +129,8 @@ CRenderTexture::CRenderTexture (
 		if ( depthRequest.texture == 0 )
 		{
 			// Create a new depth texture and set it up
-			rtInfo.depthtex = GPU::TextureAllocate( Texture2D, depthRequest.format, info.width, info.height );
-			GPU::TextureSampleSettings( Texture2D, rtInfo.depthtex, info.repeatX, info.repeatY, 0, SamplingLinear, SamplingLinear );
+			rtInfo.depthtex = gpu::TextureAllocate( Texture2D, depthRequest.format, info.width, info.height );
+			gpu::TextureSampleSettings( Texture2D, rtInfo.depthtex, info.repeatX, info.repeatY, 0, SamplingLinear, SamplingLinear );
 			GL.CheckError();
 
 			// Update color format
@@ -151,7 +151,7 @@ CRenderTexture::CRenderTexture (
 		{
 			rtInfo.depth = (eDepthFormat)depthRequest.format;
 			if ( rtInfo.depth != DepthNone )
-				rtInfo.depthRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.depth, info.width, info.height);
+				rtInfo.depthRBO = gpu::TextureBufferAllocate(Texture2D, rtInfo.depth, info.width, info.height);
 			rtInfo.depthowned = true;
 		}
 		else
@@ -170,8 +170,8 @@ CRenderTexture::CRenderTexture (
 		if ( stencilRequest.texture == 0 )
 		{
 			// Create a new stencil texture and set it up
-			rtInfo.stenciltex = GPU::TextureAllocate( Texture2D, stencilRequest.format, info.width, info.height );
-			GPU::TextureSampleSettings( Texture2D, rtInfo.stenciltex, info.repeatX, info.repeatY, 0, SamplingLinear, SamplingLinear );
+			rtInfo.stenciltex = gpu::TextureAllocate( Texture2D, stencilRequest.format, info.width, info.height );
+			gpu::TextureSampleSettings( Texture2D, rtInfo.stenciltex, info.repeatX, info.repeatY, 0, SamplingLinear, SamplingLinear );
 			GL.CheckError();
 
 			// Update color format
@@ -192,7 +192,7 @@ CRenderTexture::CRenderTexture (
 		{
 			rtInfo.stencil = (eStencilFormat)stencilRequest.format;
 			if ( rtInfo.stencil != StencilNone )
-				rtInfo.stencilRBO = GPU::TextureBufferAllocate(Texture2D, rtInfo.stencil, info.width, info.height);
+				rtInfo.stencilRBO = gpu::TextureBufferAllocate(Texture2D, rtInfo.stencil, info.width, info.height);
 			rtInfo.stencilowned = true;
 		}
 		else
@@ -245,8 +245,8 @@ CRenderTexture* CRenderTexture::GenerateCopy ( void )
 		info.width, info.height,
 		info.repeatX, info.repeatY,
 		info.internalFormat,
-		glTexture(0, rtInfo.depth), rtInfo.depthtex != 0,
-		glTexture(0, rtInfo.stencil), rtInfo.stenciltex != 0 );
+		RrGpuTexture(0, rtInfo.depth), rtInfo.depthtex != 0,
+		RrGpuTexture(0, rtInfo.stencil), rtInfo.stenciltex != 0 );
 }
 
 // == Texture binding ==
@@ -254,7 +254,7 @@ void CRenderTexture::BindDepth ( void )
 {
 #ifdef _ENGINE_DEBUG
 	if ( rtInfo.depthtex == 0 )
-		throw Renderer::InvalidOperationException();
+		throw renderer::InvalidOperationException();
 #endif
 	glBindTexture( GL_TEXTURE_2D, rtInfo.depthtex );
 }
@@ -262,7 +262,7 @@ void CRenderTexture::BindStencil ( void )
 {
 #ifdef _ENGINE_DEBUG
 	if ( rtInfo.stenciltex == 0 )
-		throw Renderer::InvalidOperationException();
+		throw renderer::InvalidOperationException();
 #endif
 	glBindTexture( GL_TEXTURE_2D, rtInfo.stenciltex );
 }

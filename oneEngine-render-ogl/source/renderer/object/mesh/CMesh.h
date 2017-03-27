@@ -5,7 +5,7 @@
 #include "core/math/BoundingBox.h"
 
 #include "renderer/object/CRenderableObject.h"
-#include "renderer/object/mesh/system/glMesh.h"
+#include "renderer/object/mesh/system/rrMesh.h"
 
 class CModel;
 
@@ -13,7 +13,7 @@ class CMesh : public CRenderableObject
 {
 
 public:
-	RENDER_API explicit	CMesh ( glMesh*, bool n_enableSkinning=false );
+	RENDER_API explicit	CMesh ( rrMesh*, bool n_enableSkinning=false );
 	RENDER_API virtual ~CMesh ( void );
 
 public:
@@ -36,7 +36,7 @@ protected:
 	void CalculateBoundingBox ( void );
 
 public:
-	glMesh*		m_glMesh;
+	rrMesh*		m_glMesh;
 	CModel*		m_parent;
 
 	// Frustom Culling Check

@@ -3,7 +3,7 @@
 #include "CDebugRTInspector.h"
 #include "core/math/Color.h"
 #include "renderer/texture/CRenderTexture.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
@@ -17,18 +17,18 @@ CDebugRTInspector* Debug::RTInspector = NULL;
 CDebugRTInspector::CDebugRTInspector ( void )
 	: CRenderableObject ()
 {
-	renderType = Renderer::V2D;
+	renderType = renderer::V2D;
 	Debug::RTInspector = this;
 
 	bDrawRTs = true;
 
 	// Set the default white material
-	defaultMat = new glMaterial;
-	defaultMat->passinfo.push_back( glPass() );
-	defaultMat->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	defaultMat->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
-	defaultMat->passinfo[0].m_transparency_mode = Renderer::ALPHAMODE_TRANSLUCENT;
-	defaultMat->passinfo[0].shader = new glShader( "shaders/v2d/default.glsl" );
+	defaultMat = new RrMaterial;
+	defaultMat->passinfo.push_back( RrPassForward() );
+	defaultMat->passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	defaultMat->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
+	defaultMat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	defaultMat->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
 	defaultMat->setTexture( TEX_DIFFUSE, new CTexture( "textures/white.jpg" ) );
 	defaultMat->removeReference();
 	SetMaterial( defaultMat );

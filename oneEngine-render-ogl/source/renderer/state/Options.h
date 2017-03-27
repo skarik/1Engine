@@ -5,7 +5,7 @@
 #include "core/types/types.h"
 #include "core/types/float.h"
 
-namespace Renderer
+namespace renderer
 {
 	class Options
 	{

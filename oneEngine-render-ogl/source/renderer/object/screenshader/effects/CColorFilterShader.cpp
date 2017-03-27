@@ -1,7 +1,7 @@
 
 #include "CColorFilterShader.h"
 #include "renderer/camera/CCamera.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
@@ -10,16 +10,16 @@ CColorFilterShader::CColorFilterShader ( void )
 {
 	renderSettings.renderHints = RL_WORLD;
 	//vMaterials[0]->isTransparent = true;
-	//vMaterials[0]->iBlendMode = glMaterial::BM_ADD;
-	glMaterial *shaderMaterial = new glMaterial;
+	//vMaterials[0]->iBlendMode = RrMaterial::BM_ADD;
+	RrMaterial *shaderMaterial = new RrMaterial;
 	shaderMaterial->m_isScreenShader = true;
-	shaderMaterial->passinfo.push_back( glPass() );
-	shaderMaterial->passinfo[0].shader = new glShader( ".res/shaders/screen/colorfilter.glsl" );
+	shaderMaterial->passinfo.push_back( RrPassForward() );
+	shaderMaterial->passinfo[0].shader = new RrShader( ".res/shaders/screen/colorfilter.glsl" );
 	//shaderMaterial->passinfo[0].b_depthmask = false;
 	shaderMaterial->removeReference();
 	SetMaterial( shaderMaterial );
 
-	//renderType = Renderer::Foreground;
+	//renderType = renderer::Foreground;
 
 	m_midtone_blend		= Color( 1,1,1,-0.05 );
 	m_highlight_blend	= Color( 1,1,1,0.05 ); 

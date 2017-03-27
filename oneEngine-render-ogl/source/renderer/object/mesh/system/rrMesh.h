@@ -17,18 +17,18 @@
 using std::string;
 
 // Prototype material
-class glMaterial;
+class RrMaterial;
 
 // Class Definition
-class glMesh
+class rrMesh
 {
 public:
 					// Constructor
-					glMesh ( void );
+					rrMesh ( void );
 					// Destructor
-	virtual			~glMesh ( void );
+	virtual			~rrMesh ( void );
 
-	// Create a new VBO associated with this glMesh
+	// Create a new VBO associated with this rrMesh
 	// Removes any old VBO data.
 	// This object gains ownership of the model data. Well, it should, or you'll get memory errors and shit. And that's bad.
 	virtual void	Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames=1, bool willStream=false );
@@ -70,7 +70,7 @@ public:
 		USERDATA_CSTRING = 2
 	};
 	// Material data
-	glMaterial*	pmMat;
+	RrMaterial*	pmMat;
 
 	glHandle	GetVBOverts ( void ) {
 		return iVBOverts;

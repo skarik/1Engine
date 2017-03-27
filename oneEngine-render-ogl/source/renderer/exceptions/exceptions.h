@@ -4,7 +4,7 @@
 
 #include "core/exceptions/exceptions.h"
 
-namespace Renderer
+namespace renderer
 {
 	class GLStateException : public std::runtime_error
 	{

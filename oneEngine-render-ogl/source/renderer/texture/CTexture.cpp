@@ -44,9 +44,9 @@ CTexture::CTexture ( string sInFilename,
 	// Standardize the filename
 	sFilename = IO::FilenameStandardize( sFilename );
 	// Look for the valid resource to load
-	sFilename = Core::Resources::PathTo( sFilename );
+	sFilename = core::Resources::PathTo( sFilename );
 #ifndef _ENGINE_DEBUG
-	throw Core::NotYetImplementedException();
+	throw core::NotYetImplementedException();
 #endif
 
 	// Null out data

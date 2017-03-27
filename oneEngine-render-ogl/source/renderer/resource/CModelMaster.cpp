@@ -6,7 +6,7 @@
 #include "renderer/logic/model/morpher/CMorpher.h"
 #include "renderer/resource/CModelMaster.h"
 
-#include "renderer/object/mesh/system/glMesh.h"
+#include "renderer/object/mesh/system/rrMesh.h"
 #include "physical/physics/shapes/physMesh.h"
 
 ARSINGLETON_CPP_DEF(RenderResources);
@@ -17,13 +17,13 @@ ARSINGLETON_CPP_DEF(RenderResources);
 
 #define HANDLE_REFERENCE_DECREMENT(LISTING) \
 	HANDLE_REFERENCE_FIND(LISTING) { \
-		if ( itr->second.refCount == 0 ) throw Core::NullReferenceException(); \
+		if ( itr->second.refCount == 0 ) throw core::NullReferenceException(); \
 		itr->second.refCount--; return; \
-	} throw Core::NullReferenceException();
+	} throw core::NullReferenceException();
 
-void RenderResources::AddMeshSet ( const char* filename, std::vector<glMesh*>& meshes )
+void RenderResources::AddMeshSet ( const char* filename, std::vector<rrMesh*>& meshes )
 {
-	HANDLE_REFERENCE_FIND(meshSets) throw Core::InvalidCallException();
+	HANDLE_REFERENCE_FIND(meshSets) throw core::InvalidCallException();
 	meshset_reference_t ref;
 	ref.refCount = 0;
 	ref.set = meshes;
@@ -31,7 +31,7 @@ void RenderResources::AddMeshSet ( const char* filename, std::vector<glMesh*>& m
 }
 void RenderResources::AddMorphSet ( const char* filename, CMorpher* morphSet )
 {
-	HANDLE_REFERENCE_FIND(morphSets) throw Core::InvalidCallException();
+	HANDLE_REFERENCE_FIND(morphSets) throw core::InvalidCallException();
 	morphset_reference_t ref;
 	ref.refCount = 0;
 	ref.set = morphSet;
@@ -41,7 +41,7 @@ void RenderResources::AddMorphSet ( const char* filename, CMorpher* morphSet )
 //	GetMesh ( filename )
 // Returns the mesh set saved previously, and increments the reference count.
 // Returns NULL if no reference is found.
-const std::vector<glMesh*>* RenderResources::GetMesh ( const char* filename )
+const std::vector<rrMesh*>* RenderResources::GetMesh ( const char* filename )
 {
 	HANDLE_REFERENCE_FIND(meshSets)
 	{
@@ -139,7 +139,7 @@ CModelMaster::~CModelMaster ( void )
 }
 
 // Add a reference to a mesh set
-void CModelMaster::AddReference ( const string& filename, vector<glMesh*>& meshes, vector<sHitbox>& hitboxes )
+void CModelMaster::AddReference ( const string& filename, vector<rrMesh*>& meshes, vector<sHitbox>& hitboxes )
 {
 	// First look for it
 	std::map<string,MeshSetReference>::iterator it;
@@ -344,7 +344,7 @@ void CModelMaster::RemoveMorpherSetReference ( const string& filename )
 }
 
 // Returns a pointer to the wanted model data, null if not found
-const vector<glMesh*>* CModelMaster::GetReference ( const string& filename )
+const vector<rrMesh*>* CModelMaster::GetReference ( const string& filename )
 {
 	// First look for it
 	map<string,MeshSetReference>::iterator it;

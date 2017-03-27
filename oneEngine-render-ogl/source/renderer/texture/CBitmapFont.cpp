@@ -6,9 +6,9 @@
 // Include class and structure definition
 #include "CBitmapFont.h"
 // Include Window definition to get the needed device for font generation
-//#include "COglWindow.h"
+//#include "RrWindow.h"
 // Include the material definition for the font conversion code
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 // Include texture master class calls
 #include "CTextureMaster.h"
 
@@ -170,7 +170,7 @@ void CBitmapFont::LoadFontAsTexture ( void )
 	memset( grayBitmap,0, max_width*max_width );
 
 	// Create the font face
-	error = FT_New_Face( library, Core::Resources::PathTo(string("fonts/") + fontInfo.name).c_str(), 0, &face );
+	error = FT_New_Face( library, core::Resources::PathTo(string("fonts/") + fontInfo.name).c_str(), 0, &face );
 	if ( error == FT_Err_Unknown_File_Format ) {
 		Debug::Console->PrintError( "the font file could be opened and read, but it appears that its font format is unsupported\n" );
 		Debug::Console->PrintWarning( "loading font from system\n" );
@@ -367,17 +367,17 @@ void CBitmapFont::LoadFontAsTexture ( void )
 }
 
 #ifdef _WIN32
-//#include "renderer/window/COglWindow.h"
+//#include "renderer/window/RrWindow.h"
 #endif
 // == Load a font using the primary way ==
 void CBitmapFont::LoadFont ( void )
 {
-	throw Core::InvalidCallException();
+	throw core::InvalidCallException();
 #ifdef _WIN32
 	/*
 	HFONT	font;
 	HFONT	oldfont;
-	HDC		hDC = COglWindow::pActive->getDevicePointer();
+	HDC		hDC = RrWindow::pActive->getDevicePointer();
 	iLetterList = glGenLists( fontInfo.setLength );
 
 	SetMapMode( hDC, MM_TEXT );
@@ -408,7 +408,7 @@ void CBitmapFont::LoadFont ( void )
 #elif __linux
 
 	FontStruct *font;
-    Display * dpy = COglWindow::pActive->getDevicePointer();
+    Display * dpy = RrWindow::pActive->getDevicePointer();
     iLetterList = glGenLists( fontInfo.setLength );
 
     /* load a font with a specific name in "Host Portable Character Encoding" */
@@ -437,16 +437,16 @@ void CBitmapFont::LoadFont ( void )
 // == Load a font by conversion to texture ==
 void CBitmapFont::LoadFontAsTexture_System ( void )
 {
-	string filepath = Core::Resources::PathTo( string("fonts/") + fontInfo.name );
+	string filepath = core::Resources::PathTo( string("fonts/") + fontInfo.name );
 	if ( IO::FileExists( filepath ) )
-		throw Core::InvalidCallException();
+		throw core::InvalidCallException();
 	else
 		Debug::Console->PrintError( "Font file does not exist" );
 	/*
 #ifdef _WIN32
 	HFONT	font;
 	HFONT	oldfont;
-	HDC		hDC = COglWindow::pActive->getDevicePointer();
+	HDC		hDC = RrWindow::pActive->getDevicePointer();
 
 	SetMapMode( hDC, MM_TEXT );
 
@@ -664,9 +664,9 @@ void CBitmapFont::LoadFontAsTexture_System ( void )
 // Takes a loaded font file and draws them to a bitmap, then proceeds to 
 void CBitmapFont::ConvertFontToBitmap ( void )
 {
-	string filepath = Core::Resources::PathTo( string("fonts/") + fontInfo.name );
+	string filepath = core::Resources::PathTo( string("fonts/") + fontInfo.name );
 	if ( IO::FileExists( filepath ) )
-		throw Core::InvalidCallException();
+		throw core::InvalidCallException();
 	else
 		Debug::Console->PrintError( "Font file does not exist" );
 	// Don't convert the font if it's already a bitmap
@@ -679,16 +679,16 @@ void CBitmapFont::ConvertFontToBitmap ( void )
 	const unsigned int	max_width = 256;
 
 	// Create the needed materials
-	glMaterial blackOut;
-	blackOut.passinfo.push_back( glPass() );
-	blackOut.passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	blackOut.passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	RrMaterial blackOut;
+	blackOut.passinfo.push_back( RrPassForward() );
+	blackOut.passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	blackOut.passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
 	blackOut.m_diffuse = Color( 0,0,0,1 );
 	blackOut.removeReference();
-	glMaterial whiteOut;
-	whiteOut.passinfo.push_back( glPass() );
-	whiteOut.passinfo[0].m_lighting_mode = Renderer::LI_NONE;
-	whiteOut.passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	RrMaterial whiteOut;
+	whiteOut.passinfo.push_back( RrPassForward() );
+	whiteOut.passinfo[0].m_lighting_mode = renderer::LI_NONE;
+	whiteOut.passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
 	whiteOut.m_diffuse = Color( 1,1,1,1 );
 	whiteOut.removeReference();
 

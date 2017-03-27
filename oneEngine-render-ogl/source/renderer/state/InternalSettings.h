@@ -7,9 +7,9 @@
 #include "renderer/types/textureFormats.h"
 
 class CRenderState;
-class glMaterial;
+class RrMaterial;
 
-namespace Renderer
+namespace renderer
 {
 	// Struct
 	struct internalSettings_t

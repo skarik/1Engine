@@ -49,7 +49,7 @@ CCamera::CCamera ( void )
 	//clearDepthAfterLayer = true;
 
 	// Set default render layer mode
-	for ( uint i = 0; i <= Renderer::V2D; ++i ) {
+	for ( uint i = 0; i <= renderer::V2D; ++i ) {
 		layerVisibility[i] = true;
 	}
 
@@ -231,7 +231,7 @@ void CCamera::RenderScene ( void )
 	}
 	else
 	{
-		throw Core::InvalidCallException();
+		throw core::InvalidCallException();
 	}
 
 	// Unbind camera

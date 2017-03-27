@@ -2,10 +2,10 @@
 #include "CStreamedMesh.h"
 #include "renderer/logic/model/CModel.h"
 #include "renderer/logic/model/CSkinnedModel.h"
-#include "renderer/object/mesh/system/glMesh.h"
-#include "renderer/object/mesh/system/glSkinnedMesh.h"
+#include "renderer/object/mesh/system/rrMesh.h"
+#include "renderer/object/mesh/system/rrSkinnedMesh.h"
 #include "renderer/camera/CCamera.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 
 CStreamedMesh::CStreamedMesh ( void )
@@ -30,7 +30,7 @@ CModelData* CStreamedMesh::GetModelData ( void )
 		modeldata->vertexNum = 0;
 		modeldata->vertices = NULL;
 
-		m_glMesh = new glMesh;
+		m_glMesh = new rrMesh;
 		m_glMesh->Initialize( "Stream mesh instance", modeldata, 1, true );
 	}
 	// Return mesh data directly

@@ -10,9 +10,9 @@
 
 #include "renderer/types/types.h"
 
-#include "glShader.h"
-#include "glPass.h"
-#include "glPass_Deferred.h"
+#include "RrShader.h"
+#include "RrPassForward.h"
+#include "RrPassDeferred.h"
 
 #include <vector>
 
@@ -48,25 +48,25 @@ class CTexture;
 class CRenderTexture;
 class CRenderState;
 
-class glMaterial
+class RrMaterial
 {
 	friend CRenderState;
 public:
-	RENDER_API				glMaterial ( void );
-	RENDER_API				~glMaterial ( void ) throw(...);
+	RENDER_API				RrMaterial ( void );
+	RENDER_API				~RrMaterial ( void ) throw(...);
 	
 	// Load material from file
 	RENDER_API void			loadFromFile ( const char* n_materialfile );
 	// Check if file is material
 	RENDER_API static bool	isValidFile ( const char* n_materialfile );
 	// Duplicate material (starting with 1 reference)
-	RENDER_API glMaterial*	copy ( void );
+	RENDER_API RrMaterial*	copy ( void );
 
 	// Current material active and bound
-	RENDER_API static glMaterial*	current;
-	RENDER_API static glMaterial*	Default;
-	RENDER_API static glMaterial*	Copy;
-	RENDER_API static glMaterial*	Fallback;
+	RENDER_API static RrMaterial*	current;
+	RENDER_API static RrMaterial*	Default;
+	RENDER_API static RrMaterial*	Copy;
+	RENDER_API static RrMaterial*	Fallback;
 	// Current pass being bound
 	RENDER_API static uchar		current_pass;
 	// Current material count
@@ -88,7 +88,7 @@ public:
 	RENDER_API uchar		getPassCountDeferred ( void );
 
 	//	Returns shader currently in use for the current pass
-	RENDER_API glShader*	getUsingShader ( void );
+	RENDER_API RrShader*	getUsingShader ( void );
 
 	RENDER_API void			setUniform ( const char* sUniformName, float const fInput );
 	RENDER_API void			setUniform ( const char* sUniformName, Vector2d const& vInput );
@@ -100,21 +100,21 @@ public:
 	RENDER_API void			bindAttributeI ( const char* sAttribName, const uint vec_size, const uint vec_type, const int struct_size, const void* struct_offset ); 
 
 private:
-	void	shader_bind_world	 ( glShader* shader );
+	void	shader_bind_world	 ( RrShader* shader );
 
-	void	shader_bind_samplers ( glShader* shader );
-	void	shader_bind_constants( glShader* shader );
-	void	shader_bind_lights	 ( glShader* shader );
-	void	shader_bind_nolights ( glShader* shader );
+	void	shader_bind_samplers ( RrShader* shader );
+	void	shader_bind_constants( RrShader* shader );
+	void	shader_bind_lights	 ( RrShader* shader );
+	void	shader_bind_nolights ( RrShader* shader );
 
 	void	deferred_shader_build( uchar pass );
-	void	shader_bind_deferred ( glShader* shader );
+	void	shader_bind_deferred ( RrShader* shader );
 
 public:
 	// List of forward rendered passes
-	std::vector<glPass>				passinfo;
+	std::vector<RrPassForward>				passinfo;
 	// Deferred rendering information
-	std::vector<glPass_Deferred>	deferredinfo;
+	std::vector<RrPassDeferred>	deferredinfo;
 
 	// Global options
 	bool	m_isScreenShader;

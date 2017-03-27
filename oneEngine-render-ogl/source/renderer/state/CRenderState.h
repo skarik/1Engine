@@ -8,7 +8,7 @@
 #include "core/containers/arstring.h"
 #include "renderer/types/types.h"
 #include "renderer/types/ObjectSettings.h"
-#include "renderer/types/glTexture.h"
+#include "renderer/types/RrGpuTexture.h"
 #include "renderer/state/InternalSettings.h"
 
 #include <vector>
@@ -19,7 +19,7 @@ class CLogicObject;
 class CLight;
 class CCamera;
 class CResourceManager;
-class glMaterial;
+class RrMaterial;
 class CRenderTexture;
 class CMRTTexture;
 
@@ -50,7 +50,7 @@ public:
 	struct tReplacementRule
 	{
 		arstring<32>	hintToReplace;
-		glMaterial*		materialToUse;
+		RrMaterial*		materialToUse;
 	};
 
 public:
@@ -67,8 +67,8 @@ public:
 	RENDER_API void CreateBuffer ( void );
 	RENDER_API CRenderTexture* GetForwardBuffer ( void );
 	RENDER_API CRenderTexture* GetDeferredBuffer ( void );
-	RENDER_API glTexture GetDepthTexture ( void );
-	RENDER_API glTexture GetStencilTexture ( void );
+	RENDER_API RrGpuTexture GetDepthTexture ( void );
+	RENDER_API RrGpuTexture GetStencilTexture ( void );
 
 
 	// Public Render routine
@@ -100,14 +100,14 @@ public:
 	// ================================
 
 	// Returns the material used for rendering a screen's pass in the given effect
-	RENDER_API glMaterial* GetScreenMaterial ( const eRenderMode mode, const Renderer::eSpecialModes mode_type );
+	RENDER_API RrMaterial* GetScreenMaterial ( const eRenderMode mode, const renderer::eSpecialModes mode_type );
 
 
 	// Settings and query
 	// ================================
 
 	// Returns internal settings that govern the current render setup
-	RENDER_API const Renderer::internalSettings_t& GetSettings ( void ) const;
+	RENDER_API const renderer::internalSettings_t& GetSettings ( void ) const;
 
 private:
 	bool bSpecialRender_ResetLights;
@@ -169,7 +169,7 @@ private:
 
 	// Internal setup state
 	// ================================
-	Renderer::internalSettings_t	internal_settings;
+	renderer::internalSettings_t	internal_settings;
 	glHandle						internal_buffer_depth;
 	glHandle						internal_buffer_stencil;
 	CRenderTexture*					internal_buffer_forward_rt;
@@ -179,11 +179,11 @@ private:
 
 	// Deferred pass materials
 	// ================================
-	glMaterial*	CopyScaled;
-	glMaterial* LightingPass;
-	glMaterial* EchoPass;
-	glMaterial* ShaftPass;
-	glMaterial* Lighting2DPass;
+	RrMaterial*	CopyScaled;
+	RrMaterial* LightingPass;
+	RrMaterial* EchoPass;
+	RrMaterial* ShaftPass;
+	RrMaterial* Lighting2DPass;
 };
 
 // Global instance

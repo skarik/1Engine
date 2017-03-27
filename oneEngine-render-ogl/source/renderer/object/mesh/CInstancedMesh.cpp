@@ -2,13 +2,13 @@
 #include "CInstancedMesh.h"
 #include "renderer/logic/model/CModel.h"
 #include "renderer/logic/model/CSkinnedModel.h"
-#include "renderer/object/mesh/system/glMesh.h"
-#include "renderer/object/mesh/system/glSkinnedMesh.h"
+#include "renderer/object/mesh/system/rrMesh.h"
+#include "renderer/object/mesh/system/rrSkinnedMesh.h"
 #include "renderer/camera/CCamera.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 
-CInstancedMesh::CInstancedMesh ( glMesh* mesh )
+CInstancedMesh::CInstancedMesh ( rrMesh* mesh )
 	: CMesh(mesh, false),
 	data_count(0), uploaded_data_count(0)
 {
@@ -80,9 +80,9 @@ bool CInstancedMesh::Render ( const char pass )
 
 	// Set up material properties before mesh is bound
 	if ( bUseSkinning && false )
-	{	// Mesh MUST be a glSkinnedMesh instance, otherwise crashes will result.
-		m_material->m_bufferSkeletonSize		= ((glSkinnedMesh*)m_glMesh)->skinning_data.bonecount;
-		m_material->m_bufferMatricesSkinning	= ((glSkinnedMesh*)m_glMesh)->skinning_data.textureBufferData;
+	{	// Mesh MUST be a rrSkinnedMesh instance, otherwise crashes will result.
+		m_material->m_bufferSkeletonSize		= ((rrSkinnedMesh*)m_glMesh)->skinning_data.bonecount;
+		m_material->m_bufferMatricesSkinning	= ((rrSkinnedMesh*)m_glMesh)->skinning_data.textureBufferData;
 	}
 	else
 	{
@@ -96,7 +96,7 @@ bool CInstancedMesh::Render ( const char pass )
 	m_material->bindPass(pass);
 	GL.CheckError();
 	// Pass in shader constant now that the pass has been bound
-	glMaterial::current->setShaderConstants( this );
+	RrMaterial::current->setShaderConstants( this );
 	if ( m_parent ) m_parent->SendShaderUniforms();
 	GL.CheckError();
 

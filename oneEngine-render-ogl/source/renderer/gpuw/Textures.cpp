@@ -2,7 +2,7 @@
 #include "renderer/system/glMainSystem.h"
 #include "renderer/gpuw/Textures.h"
 
-glHandle GPU::TextureAllocate(
+glHandle gpu::TextureAllocate(
 	const glEnum textureType,
 	const glEnum textureFormat, 
 	const uint width, const uint height, const uint depth
@@ -29,7 +29,7 @@ glHandle GPU::TextureAllocate(
 
 	return texture;
 }
-int GPU::TextureSampleSettings(
+int gpu::TextureSampleSettings(
 	const glEnum textureType,
 	const glHandle texture,
 	const glEnum repeatX, const glEnum repeatY, const glEnum repeatZ,
@@ -52,7 +52,7 @@ int GPU::TextureSampleSettings(
 
 	return 0;
 }
-int GPU::TextureFree(
+int gpu::TextureFree(
 	const glHandle texture
 )
 {
@@ -63,7 +63,7 @@ int GPU::TextureFree(
 }
 
 // Create a write-only buffer
-glHandle GPU::TextureBufferAllocate(
+glHandle gpu::TextureBufferAllocate(
 	const glEnum textureType,
 	const glEnum textureFormat, 
 	const uint width, const uint height, const uint depth
@@ -90,7 +90,7 @@ glHandle GPU::TextureBufferAllocate(
 	return buffer;
 }
 // Free write-only buffer
-int GPU::TextureBufferFree(
+int gpu::TextureBufferFree(
 	const glHandle texture
 )
 {

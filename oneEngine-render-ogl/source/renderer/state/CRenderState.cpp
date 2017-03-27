@@ -9,7 +9,7 @@
 #include "renderer/object/CRenderableObject.h"
 #include "renderer/logic/CLogicObject.h"
 
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/CTexture.h"
 #include "renderer/texture/CRenderTexture.h"
 #include "renderer/texture/CMRTTexture.h"
@@ -79,7 +79,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 			white.a = 255;
 			white_texture->Upload( &white, 1,1, Repeat, Repeat, MipmapNone, SamplingPoint );
 		}
-		Renderer::Resources::AddTexture(Renderer::TextureWhite, white_texture);
+		renderer::Resources::AddTexture(renderer::TextureWhite, white_texture);
 		white_texture->RemoveReference();
 
 		CTexture* black_texture = new CTexture("");
@@ -91,7 +91,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 			black.a = 255;
 			black_texture->Upload( &black, 1,1, Repeat, Repeat, MipmapNone, SamplingPoint );
 		}
-		Renderer::Resources::AddTexture(Renderer::TextureBlack, black_texture);
+		renderer::Resources::AddTexture(renderer::TextureBlack, black_texture);
 		black_texture->RemoveReference();
 
 		CTexture* gray0_texture = new CTexture("");
@@ -103,56 +103,56 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 			gray0.a = 0;
 			gray0_texture->Upload( &gray0, 1,1, Repeat, Repeat, MipmapNone, SamplingPoint );
 		}
-		Renderer::Resources::AddTexture(Renderer::TextureGrayA0, gray0_texture);
+		renderer::Resources::AddTexture(renderer::TextureGrayA0, gray0_texture);
 		gray0_texture->RemoveReference();
 	}
 	
 	// Create the default material
-	if ( glMaterial::Default == NULL )
+	if ( RrMaterial::Default == NULL )
 	{
 		// The default material must be a single pass in both modes.
 		// This to provide compatibility with the default system implementation. (A lot of early engine code is implemented lazily)
-		glMaterial::Default = new glMaterial;
-		glMaterial::Default->setTexture( TEX_DIFFUSE, Renderer::Resources::GetTexture(Renderer::TextureWhite) );
-		glMaterial::Default->setTexture( TEX_NORMALS, new CTexture( "textures/default_normals.jpg" ) );
-		glMaterial::Default->setTexture( TEX_SURFACE, Renderer::Resources::GetTexture(Renderer::TextureBlack) );
-		glMaterial::Default->setTexture( TEX_OVERLAY, Renderer::Resources::GetTexture(Renderer::TextureGrayA0) );
+		RrMaterial::Default = new RrMaterial;
+		RrMaterial::Default->setTexture( TEX_DIFFUSE, renderer::Resources::GetTexture(renderer::TextureWhite) );
+		RrMaterial::Default->setTexture( TEX_NORMALS, new CTexture( "textures/default_normals.jpg" ) );
+		RrMaterial::Default->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
+		RrMaterial::Default->setTexture( TEX_OVERLAY, renderer::Resources::GetTexture(renderer::TextureGrayA0) );
 		// Setup forward pass
-		glMaterial::Default->passinfo.push_back( glPass() );
-		glMaterial::Default->passinfo[0].shader = new glShader( "shaders/d/diffuse.glsl" );
+		RrMaterial::Default->passinfo.push_back( RrPassForward() );
+		RrMaterial::Default->passinfo[0].shader = new RrShader( "shaders/d/diffuse.glsl" );
 		// Setup deferred pass
-		glMaterial::Default->deferredinfo.push_back( glPass_Deferred() );
+		RrMaterial::Default->deferredinfo.push_back( RrPassDeferred() );
 	}
-	if ( glMaterial::Copy == NULL )
+	if ( RrMaterial::Copy == NULL )
 	{
-		glMaterial::Copy = new glMaterial;
+		RrMaterial::Copy = new RrMaterial;
 		// Setup forward pass
-		glMaterial::Copy->passinfo.push_back( glPass() );
-		glMaterial::Copy->passinfo[0].shader = new glShader( "shaders/sys/copy_buffer.glsl" );
-		glMaterial::Copy->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+		RrMaterial::Copy->passinfo.push_back( RrPassForward() );
+		RrMaterial::Copy->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer.glsl" );
+		RrMaterial::Copy->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 		// No deferred pass.
 	}
 	// Create the fallback shader
-	if ( glMaterial::Fallback == NULL )
+	if ( RrMaterial::Fallback == NULL )
 	{
-		glMaterial::Fallback = new glMaterial;
+		RrMaterial::Fallback = new RrMaterial;
 		// Setup forward pass
-		glMaterial::Fallback->passinfo.push_back( glPass() );
-		glMaterial::Fallback->passinfo[0].shader = new glShader( "shaders/sys/fullbright.glsl" );
+		RrMaterial::Fallback->passinfo.push_back( RrPassForward() );
+		RrMaterial::Fallback->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
 		// No deferred pass.
 	}
 	// Create the default hint options
-	if ( Renderer::m_default_hint_options == NULL )
+	if ( renderer::m_default_hint_options == NULL )
 	{
-		Renderer::m_default_hint_options = new Renderer::_n_hint_rendering_information();
+		renderer::m_default_hint_options = new renderer::_n_hint_rendering_information();
 	}
 	// Create the render copy upscaling shader
 	{
-		CopyScaled = new glMaterial();
+		CopyScaled = new RrMaterial();
 		// Setup forward pass
-		CopyScaled->passinfo.push_back( glPass() );
-		CopyScaled->passinfo[0].shader = new glShader( "shaders/sys/copy_buffer_scaled.glsl" );
-		CopyScaled->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+		CopyScaled->passinfo.push_back( RrPassForward() );
+		CopyScaled->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer_scaled.glsl" );
+		CopyScaled->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	}
 
 	bSpecialRender_ResetLights = false;
@@ -165,34 +165,34 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 
 	// Create the passes for rendering the screen:
 	{
-		LightingPass = new glMaterial();
+		LightingPass = new RrMaterial();
 		// Setup forward pass
-		LightingPass->passinfo.push_back( glPass() );
-		LightingPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting.glsl" );
-		LightingPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+		LightingPass->passinfo.push_back( RrPassForward() );
+		LightingPass->passinfo[0].shader = new RrShader( "shaders/def_screen/pass_lighting.glsl" );
+		LightingPass->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	}
 	{
-		EchoPass = new glMaterial();
+		EchoPass = new RrMaterial();
 		// Setup forward pass
-		EchoPass->passinfo.push_back( glPass() );
-		EchoPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting_echo.glsl" );
-		EchoPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+		EchoPass->passinfo.push_back( RrPassForward() );
+		EchoPass->passinfo[0].shader = new RrShader( "shaders/def_screen/pass_lighting_echo.glsl" );
+		EchoPass->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	}
 	{
-		ShaftPass = new glMaterial();
+		ShaftPass = new RrMaterial();
 		// Setup forward pass
-		ShaftPass->passinfo.push_back( glPass() );
-		ShaftPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting_shaft.glsl" );
-		ShaftPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+		ShaftPass->passinfo.push_back( RrPassForward() );
+		ShaftPass->passinfo[0].shader = new RrShader( "shaders/def_screen/pass_lighting_shaft.glsl" );
+		ShaftPass->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 		// Set effect textures
 		ShaftPass->setTexture( TEX_SLOT5, new CTexture( "textures/ditherdots.jpg" ) );
 	}
 	{
-		Lighting2DPass = new glMaterial();
+		Lighting2DPass = new RrMaterial();
 		// Setup forward pass
-		Lighting2DPass->passinfo.push_back( glPass() );
-		Lighting2DPass->passinfo[0].shader = new glShader( "shaders/def_screen/pass_lighting2d.glsl" );
-		Lighting2DPass->passinfo[0].m_face_mode = Renderer::FM_FRONTANDBACK;
+		Lighting2DPass->passinfo.push_back( RrPassForward() );
+		Lighting2DPass->passinfo[0].shader = new RrShader( "shaders/def_screen/pass_lighting2d.glsl" );
+		Lighting2DPass->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	}
 
 }
@@ -217,18 +217,18 @@ CRenderState::~CRenderState ( void )
 	iListSize = 0;
 
 	// Free system default material
-	while ( glMaterial::Default->hasReference() ) 
-		glMaterial::Default->removeReference();
-	delete glMaterial::Default;
-	glMaterial::Default = NULL;
+	while ( RrMaterial::Default->hasReference() ) 
+		RrMaterial::Default->removeReference();
+	delete RrMaterial::Default;
+	RrMaterial::Default = NULL;
 
-	glMaterial::Copy->removeReference();
-	delete glMaterial::Copy;
-	glMaterial::Copy = NULL;
+	RrMaterial::Copy->removeReference();
+	delete RrMaterial::Copy;
+	RrMaterial::Copy = NULL;
 
-	glMaterial::Fallback->removeReference();
-	delete glMaterial::Fallback;
-	glMaterial::Fallback = NULL;
+	RrMaterial::Fallback->removeReference();
+	delete RrMaterial::Fallback;
+	RrMaterial::Fallback = NULL;
 
 	// Free the other materials
 	CopyScaled->removeReference();
@@ -358,16 +358,16 @@ void CRenderState::RemoveLO ( unsigned int id )
 // ================================
 
 // Returns the material used for rendering a screen's pass in the given effect
-glMaterial* CRenderState::GetScreenMaterial ( const eRenderMode mode, const Renderer::eSpecialModes mode_type )
+RrMaterial* CRenderState::GetScreenMaterial ( const eRenderMode mode, const renderer::eSpecialModes mode_type )
 {
 	if ( mode == RENDER_MODE_DEFERRED )
 	{
 		switch (mode_type)
 		{
-		case Renderer::SP_MODE_NORMAL: return LightingPass;
-		case Renderer::SP_MODE_ECHO: return EchoPass;
-		case Renderer::SP_MODE_SHAFT: return ShaftPass;
-		case Renderer::SP_MODE_2DPALETTE: return Lighting2DPass;
+		case renderer::SP_MODE_NORMAL: return LightingPass;
+		case renderer::SP_MODE_ECHO: return EchoPass;
+		case renderer::SP_MODE_SHAFT: return ShaftPass;
+		case renderer::SP_MODE_2DPALETTE: return Lighting2DPass;
 		}
 	}
 	return NULL;
@@ -377,7 +377,7 @@ glMaterial* CRenderState::GetScreenMaterial ( const eRenderMode mode, const Rend
 // ================================
 
 // Returns internal settings that govern the current render setup
-const Renderer::internalSettings_t& CRenderState::GetSettings ( void ) const
+const renderer::internalSettings_t& CRenderState::GetSettings ( void ) const
 {
 	return internal_settings;
 }
@@ -393,10 +393,10 @@ void CRenderState::CreateBuffer ( void )
 		delete internal_buffer_forward_rt;
 		internal_buffer_forward_rt = NULL;
 
-		GPU::TextureFree( internal_buffer_depth );
+		gpu::TextureFree( internal_buffer_depth );
 		internal_buffer_depth = 0;
 
-		GPU::TextureBufferFree( internal_buffer_stencil );
+		gpu::TextureBufferFree( internal_buffer_stencil );
 		internal_buffer_stencil = 0;
 	}
 	// Delete deferred buffers
@@ -415,18 +415,18 @@ void CRenderState::CreateBuffer ( void )
 		// Generate shared depth and stencil buffers
 		if ( internal_settings.mainDepthFormat != DepthNone )
 		{
-			internal_buffer_depth	= GPU::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
-			GPU::TextureSampleSettings( Texture2D, internal_buffer_depth, Clamp, Clamp, Clamp, SamplingPoint, SamplingPoint );
+			internal_buffer_depth	= gpu::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
+			gpu::TextureSampleSettings( Texture2D, internal_buffer_depth, Clamp, Clamp, Clamp, SamplingPoint, SamplingPoint );
 		}
 		if ( internal_settings.mainStencilFormat != StencilNone )
-			internal_buffer_stencil	= GPU::TextureBufferAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
+			internal_buffer_stencil	= gpu::TextureBufferAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
 
 		internal_buffer_forward_rt = new CRenderTexture(
 			Screen::Info.width, Screen::Info.height,
 			Clamp, Clamp,
 			internal_settings.mainColorAttachmentFormat,
-			glTexture(internal_buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
-			glTexture(internal_buffer_stencil, internal_settings.mainStencilFormat), false
+			RrGpuTexture(internal_buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
+			RrGpuTexture(internal_buffer_stencil, internal_settings.mainStencilFormat), false
 		);
 	}
 	// Create deferred buffers
@@ -437,16 +437,16 @@ void CRenderState::CreateBuffer ( void )
 			Screen::Info.width, Screen::Info.height,
 			Clamp, Clamp,
 			internal_settings.mainColorAttachmentFormat,
-			glTexture(internal_buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
-			glTexture(internal_buffer_stencil, internal_settings.mainStencilFormat), false
+			RrGpuTexture(internal_buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
+			RrGpuTexture(internal_buffer_stencil, internal_settings.mainStencilFormat), false
 		);
 
-		glTexture		depthTexture = SceneRenderer->GetDepthTexture();
-		glTexture		stencilTexture = SceneRenderer->GetStencilTexture();
+		RrGpuTexture		depthTexture = SceneRenderer->GetDepthTexture();
+		RrGpuTexture		stencilTexture = SceneRenderer->GetStencilTexture();
 
 		// TODO: Make configurable
-		glTexture textureRequests [4];
-		memset( textureRequests, 0, sizeof(glTexture) * 4 );
+		RrGpuTexture textureRequests [4];
+		memset( textureRequests, 0, sizeof(RrGpuTexture) * 4 );
 		textureRequests[0].format = RGBA8;
 		textureRequests[1].format = RGBA16F;
 		textureRequests[2].format = RGBA8;
@@ -472,11 +472,11 @@ CRenderTexture* CRenderState::GetDeferredBuffer ( void )
 	return internal_buffer_deferred_rt;
 }
 
-glTexture CRenderState::GetDepthTexture ( void )
+RrGpuTexture CRenderState::GetDepthTexture ( void )
 {
-	return glTexture( internal_buffer_depth, internal_settings.mainDepthFormat );
+	return RrGpuTexture( internal_buffer_depth, internal_settings.mainDepthFormat );
 }
-glTexture CRenderState::GetStencilTexture ( void )
+RrGpuTexture CRenderState::GetStencilTexture ( void )
 {
-	return glTexture( internal_buffer_stencil, internal_settings.mainStencilFormat );
+	return RrGpuTexture( internal_buffer_stencil, internal_settings.mainStencilFormat );
 }

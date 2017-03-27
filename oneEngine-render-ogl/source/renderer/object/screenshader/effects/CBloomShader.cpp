@@ -5,7 +5,7 @@
 #include "core/settings/CGameSettings.h"
 
 #include "renderer/camera/CCamera.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
@@ -14,15 +14,15 @@ CBloomShader::CBloomShader ( void )
 {
 	renderSettings.renderHints = RL_WORLD;
 
-	glMaterial *shaderMaterial = new glMaterial;
+	RrMaterial *shaderMaterial = new RrMaterial;
 	shaderMaterial->m_isScreenShader = true;
-	shaderMaterial->passinfo.push_back( glPass() );
-	shaderMaterial->passinfo[0].shader = new glShader( ".res/shaders/screen/bloom+hurt.glsl" );
+	shaderMaterial->passinfo.push_back( RrPassForward() );
+	shaderMaterial->passinfo[0].shader = new RrShader( ".res/shaders/screen/bloom+hurt.glsl" );
 	shaderMaterial->passinfo[0].b_depthmask = false;
 	shaderMaterial->removeReference();
 	SetMaterial( shaderMaterial );
 	
-	renderType = Renderer::Foreground;
+	renderType = renderer::Foreground;
 
 	half_buf = NULL;
 	buf_4th = NULL;
@@ -122,8 +122,8 @@ void CBloomShader::Copy ( void )
 	}
 	else
 	{	
-		glMaterial::Copy->setTexture( TEX_MAIN, s_buf );
-		glMaterial::Copy->bindPass( 0 );
+		RrMaterial::Copy->setTexture( TEX_MAIN, s_buf );
+		RrMaterial::Copy->bindPass( 0 );
 
 		glDepthMask( false );
 		glDepthFunc( GL_ALWAYS );

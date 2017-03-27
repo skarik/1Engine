@@ -1,12 +1,12 @@
 
 // Includes
-#include "glMesh.h"
-#include "renderer/material/glMaterial.h"
+#include "rrMesh.h"
+#include "renderer/material/RrMaterial.h"
 
 #include "renderer/system/glMainSystem.h"
 
 // Constructor
-glMesh::glMesh ( void )
+rrMesh::rrMesh ( void )
 	: mName("unnamed")
 {
 	bReady	= false;
@@ -25,7 +25,7 @@ glMesh::glMesh ( void )
 }
 
 // Destructor
-glMesh::~glMesh ( void )
+rrMesh::~rrMesh ( void )
 {
 	// We gotta free the model
 	FreeVBOData();
@@ -45,16 +45,16 @@ glMesh::~glMesh ( void )
 	}
 }
 
-const string& glMesh::GetName ( void ) const
+const string& rrMesh::GetName ( void ) const
 {
 	return mName;
 }
 
 
-// Create a new VBO associated with this glMesh
+// Create a new VBO associated with this rrMesh
 // Removes any old VBO data.
 // This object gains ownership of the model data. Well, it should, or you'll get memory errors and shit. And that's bad.
-void glMesh::Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames, bool willStream )
+void rrMesh::Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames, bool willStream )
 {
 	mName = nNewName;
 
@@ -90,7 +90,7 @@ void glMesh::Initialize ( const string& nNewName, CModelData* const pNewModelDat
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 }
 // Sends new VBO data to the mesh
-void glMesh::Restream ( void )
+void rrMesh::Restream ( void )
 {
 	// Bind to some buffer objects
 	glBindBuffer( GL_ARRAY_BUFFER,			iVBOverts ); // for vertex coordinates
@@ -131,12 +131,12 @@ void glMesh::Restream ( void )
 }
 
 // Reputs the data into the VBO
-void glMesh::Reinitialize ( void )
+void rrMesh::Reinitialize ( void )
 {
 	Initialize( mName, pmData, meshNum );
 }
 // Recalculates normals for all meshes
-void glMesh::RecalculateNormals ( void )
+void rrMesh::RecalculateNormals ( void )
 {
 	for ( unsigned int i = 0; i < meshNum; i += 1 )
 	{
@@ -146,7 +146,7 @@ void glMesh::RecalculateNormals ( void )
 }
 
 // Render the mesh
-//void glMesh::Render ( void )
+//void rrMesh::Render ( void )
 //{
 //	// Draw current Mesh
 //	// Bind to the buffer objects
@@ -157,27 +157,27 @@ void glMesh::RecalculateNormals ( void )
 //	/*glVertexPointer( 3, GL_FLOAT, sizeof(CModelVertex), 0 ); 
 //	glNormalPointer( GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*6) );
 //	glTexCoordPointer( 3, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );
-//	glMaterial::current->setShaderAttributesDefault();
+//	RrMaterial::current->setShaderAttributesDefault();
 //	glColorPointer( 4, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );*/
 //	// Check if material has been initialized for this fucker.
-//	//if ( !glMaterial::current->hasInitializedMeshAttributes() )
+//	//if ( !RrMaterial::current->hasInitializedMeshAttributes() )
 //
 //	/*glDisableClientState(GL_VERTEX_ARRAY);             // activate vertex coords array
 //	glDisableClientState(GL_NORMAL_ARRAY);
 //	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 //	glDisableClientState(GL_COLOR_ARRAY);*/
 //	/*
-//	if ( glMaterial::current == NULL ) {
+//	if ( RrMaterial::current == NULL ) {
 //		throw std::exception();
 //	}
 //	if ( bShaderSetup == false )
 //	{
-//		glMaterial::current->initializeMeshAttributes();
+//		RrMaterial::current->initializeMeshAttributes();
 //		GL.CheckError();
 //		bShaderSetup = true;
 //	}
 //	else {
-//		glMaterial::current->forwardMeshAttributes();
+//		RrMaterial::current->forwardMeshAttributes();
 //		GL.CheckError();
 //		bShaderSetup = true;
 //	}*/
@@ -188,13 +188,13 @@ void glMesh::RecalculateNormals ( void )
 //	glTexCoordPointer( 3, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );
 //	glColorPointer( 4, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );
 //	*/
-//	/*if ( glMaterial::current->useSkinning )
+//	/*if ( RrMaterial::current->useSkinning )
 //	{
 //		GLint weightLoc, boneLoc;
-//		weightLoc = glGetAttribLocation( glMaterial::current->pShader->get_program(),"sys_BoneWeights" );
+//		weightLoc = glGetAttribLocation( RrMaterial::current->pShader->get_program(),"sys_BoneWeights" );
 //		glEnableVertexAttribArray( weightLoc );
 //		glVertexAttribPointer( weightLoc, 4, GL_FLOAT, false, sizeof(CModelVertex), ((char*)4) + (sizeof(float)*19) );
-//		boneLoc = glGetAttribLocation( glMaterial::current->pShader->get_program(),"sys_BoneIndices" );
+//		boneLoc = glGetAttribLocation( RrMaterial::current->pShader->get_program(),"sys_BoneIndices" );
 //		glEnableVertexAttribArray( boneLoc );
 //		glVertexAttribPointer( boneLoc, 4, GL_UNSIGNED_BYTE, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*19) );
 //		//cout << unsigned int( pmData[0].vertices[pmData[0].vertexNum-1].bone[3] ) << endl;
@@ -231,7 +231,7 @@ void glMesh::RecalculateNormals ( void )
 //}
 
 // == Private Routines ==
-void glMesh::FreeVBOData ( void )
+void rrMesh::FreeVBOData ( void )
 {
 	// If the mesh is ready to render, then we gotta free the model
 	if ( bReady )
@@ -249,7 +249,7 @@ void glMesh::FreeVBOData ( void )
 	// Otherwise, do nothing really
 }
 
-void glMesh::FreeRAMData ( void )
+void rrMesh::FreeRAMData ( void )
 {
 	if ( pmData != NULL )
 	{
@@ -273,7 +273,7 @@ void glMesh::FreeRAMData ( void )
 
 
 // Recalculate Normals
-void glMesh::RecalculateNormals ( CModelData* modelData )
+void rrMesh::RecalculateNormals ( CModelData* modelData )
 {
 	// Some standard mesh information that you should have lying around.
 	// vertex is your vertex structure that just contains a normal and position here.

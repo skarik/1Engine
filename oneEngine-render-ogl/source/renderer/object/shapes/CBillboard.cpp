@@ -117,7 +117,7 @@ bool CBillboard::Render ( const char pass )
 }
 
 // Set the material, clearing the list of materials
-/*void CBillboard::SetMaterial ( glMaterial* pNewMaterial )
+/*void CBillboard::SetMaterial ( RrMaterial* pNewMaterial )
 {
 	ClearMaterialList();
 	vMaterials.push_back( pNewMaterial );

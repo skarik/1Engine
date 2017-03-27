@@ -108,7 +108,10 @@ void Textures::ConvertData ( const pixel_t* n_inputimg, const timgInfo* n_inputi
 	bpdHeader.width		= n_inputimg_info->width;
 	bpdHeader.height	= n_inputimg_info->height;
 	bpdHeader.levels	= (uint16_t) std::max<int>( 1, Math::log2( std::min<uint>(n_inputimg_info->width,n_inputimg_info->height) )-3 ); // -3 for 16, -4 for 32
-																														  // Write the header out
+	bpdHeader.frames	= n_inputimg_info->framecount;
+	bpdHeader.xdivs		= n_inputimg_info->xdivs;
+	bpdHeader.ydivs		= n_inputimg_info->ydivs;
+																																		 // Write the header out
 	fwrite( &bpdHeader, sizeof(tbpdHeader), 1, t_outFile );
 
 	// Write low quality image

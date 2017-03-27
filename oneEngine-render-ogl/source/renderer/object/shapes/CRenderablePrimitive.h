@@ -9,7 +9,7 @@
 #include "core/types/ModelData.h"
 #include "core/math/Vector3d.h"
 #include "../CRenderableObject.h"
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 
 // Class definition
 class CRenderablePrimitive : public CRenderableObject
@@ -23,7 +23,7 @@ public:
 	bool Render ( const char pass );
 
 	// Set material
-	//void SetMaterial ( glMaterial* );
+	//void SetMaterial ( RrMaterial* );
 
 	// Set vertices
 	RENDER_API void SetVertices ( CModelVertex*, unsigned int );
@@ -33,7 +33,7 @@ protected:
 	unsigned int vertexNum;
 
 	// Material list
-	//vector<glMaterial*> vMaterials;
+	//vector<RrMaterial*> vMaterials;
 	//void ClearMaterialList ( void );
 };
 

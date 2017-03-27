@@ -1,19 +1,19 @@
 
-#include "glShaderManager.h"
+#include "RrShaderManager.h"
 
-glShaderManager ShaderManager;
+RrShaderManager ShaderManager;
 
 // REKOMPILE
-void glShaderManager::RecompileAll ( void )
+void RrShaderManager::RecompileAll ( void )
 {
-	for ( std::vector<glShader*>::iterator it = vShaderList.begin(); it != vShaderList.end(); it++ )
+	for ( std::vector<RrShader*>::iterator it = vShaderList.begin(); it != vShaderList.end(); it++ )
 	{
 		(*it)->recompile();
 	}
 }
 
 
-void glShaderManager::AddShader ( glShader * pNewShader )
+void RrShaderManager::AddShader ( RrShader * pNewShader )
 {
 	/*glShaderReference newRef;
 	newRef->shader = pNewShader;
@@ -21,13 +21,13 @@ void glShaderManager::AddShader ( glShader * pNewShader )
 	vShaderList.push_back( pNewShader );
 }
 
-bool glShaderManager::RemoveShader ( glShader * pOldShader )
+bool RrShaderManager::RemoveShader ( RrShader * pOldShader )
 {
-	glShader* pTargetShader = pOldShader;
+	RrShader* pTargetShader = pOldShader;
 	if ( pOldShader->bIsReference )
 		pTargetShader = pOldShader->pParentShader;
 
-	for ( std::vector<glShader*>::iterator it = vShaderList.begin(); it != vShaderList.end(); it++ )
+	for ( std::vector<RrShader*>::iterator it = vShaderList.begin(); it != vShaderList.end(); it++ )
 	{
 		if ( (*it) == pTargetShader )
 		{
@@ -44,16 +44,16 @@ bool glShaderManager::RemoveShader ( glShader * pOldShader )
 	return false;
 }
 
-glShader* glShaderManager::ShaderExists ( const string& a_sShaderName, const GLE::shader_tag_t a_nShaderTag )
+RrShader* RrShaderManager::ShaderExists ( const string& a_sShaderName, const renderer::shader_tag_t a_nShaderTag )
 {
-	for ( std::vector<glShader*>::iterator it = vShaderList.begin(); it != vShaderList.end(); it++ )
+	for ( std::vector<RrShader*>::iterator it = vShaderList.begin(); it != vShaderList.end(); it++ )
 	{
 		if ( ((*it)->stTag == a_nShaderTag) && ((*it)->sShaderFilename == a_sShaderName) )
 		{
 			return *it;
 		}
 	}
-	for ( std::vector<glShader*>::iterator it = vShaderList.begin(); it != vShaderList.end(); it++ )
+	for ( std::vector<RrShader*>::iterator it = vShaderList.begin(); it != vShaderList.end(); it++ )
 	{
 		if ( (*it)->sShaderFilename.find( a_sShaderName ) != string::npos )
 		{

@@ -2,7 +2,7 @@
 #include "CSprite.h"
 #include "CSpriteContainer.h"
 
-#include "renderer/material/glMaterial.h"
+#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/CTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
@@ -19,11 +19,11 @@ CSprite::CSprite ( void )
 	blend		= Color( 1,1,1, 1 );
 	depth		= 0;
 	visible		= true;
-	blendmode	= Renderer::BM_NORMAL;
+	blendmode	= renderer::BM_NORMAL;
 
-	myMaterial	= new glMaterial ();
-	myMaterial->passinfo.push_back( glPass() );
-	myMaterial->passinfo[0].shader = new glShader( ".res/shaders/v2d/default.glsl" );
+	myMaterial	= new RrMaterial ();
+	myMaterial->passinfo.push_back( RrPassForward() );
+	myMaterial->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
 	myTexture	= NULL;
 }
 CSprite::~CSprite ( void )
@@ -51,7 +51,7 @@ void CSprite::Render ( void )
 	//glColor4f( blend.red,blend.green,blend.blue,blend.alpha );
 
 	myMaterial->m_diffuse = blend;
-	myMaterial->passinfo[0].m_lighting_mode = Renderer::LI_NONE;
+	myMaterial->passinfo[0].m_lighting_mode = renderer::LI_NONE;
 	//myMaterial->useColors = true;
 	myMaterial->passinfo[0].m_blend_mode = blendmode;
 	if ( myTexture != NULL )

@@ -5,7 +5,7 @@
 #include "core/system/Screen.h"
 
 // Include the openGl window stuff to grab the handle
-//#include "COglWindow.h"
+//#include "RrWindow.h"
 
 // Clears the buffer. Kind of a repeated thingy, so rather not mess with it
 void glMainSystem::ClearBuffer ( unsigned int bitmask )
@@ -17,7 +17,7 @@ void glMainSystem::ClearBuffer ( unsigned int bitmask )
 void glMainSystem::UpdateBuffer ( void )
 {
 	glFinish();
-	//SwapBuffers( COglWindow::pActive->getDevicePointer() );
+	//SwapBuffers( RrWindow::pActive->getDevicePointer() );
 }
 
 // Get a pixel from the screen

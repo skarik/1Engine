@@ -4,7 +4,7 @@
 // Includes
 #include "core/debug/CDebugConsole.h"
 #include "renderer/exceptions/exceptions.h"
-#include "renderer/window/COglWindow.h"
+#include "renderer/window/RrWindow.h"
 #include "glMainSystem.h"
 
 // STD library includes
@@ -144,15 +144,15 @@ void glMainSystem::InitializeCommonExtensions ( void )
 	{
 		// Load up the actual OpenGL extension
 		if ( ogl_LoadFunctions() == ogl_LOAD_FAILED ) {
-			throw Core::NullReferenceException();
+			throw core::NullReferenceException();
 		}
 #		ifdef _WIN32
-		if ( wgl_LoadFunctions( COglWindowWin32::pActive->getDevicePointer() ) == ogl_LOAD_FAILED ) {
-			throw Core::NullReferenceException();
+		if ( wgl_LoadFunctions( RrWindow::pActive->getDevicePointer() ) == ogl_LOAD_FAILED ) {
+			throw core::NullReferenceException();
 		}
 #		else
 		if ( glx_LoadFunctions () == ogl_LOAD_FAILED ) {
-			throw Core::NullReferenceException();
+			throw core::NullReferenceException();
 		}
 #		endif
 
@@ -222,7 +222,7 @@ void glMainSystem::CheckError ( void )
 
 	// If there's an error, throw exception
 	if ( hasError ) {
-		throw Renderer::GLStateException();
+		throw renderer::GLStateException();
 	}
 }
 #endif

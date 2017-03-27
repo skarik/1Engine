@@ -6,7 +6,7 @@
 // CTexture class
 #include "CTexture.h"
 // Request structure
-#include "renderer/types/glTexture.h"
+#include "renderer/types/RrGpuTexture.h"
 // Stack for buffer stack
 #include <stack>
 
@@ -86,9 +86,9 @@ public:
 		eWrappingType	repeatX,
 		eWrappingType	repeatY,
 		eColorFormat	requestedColor,
-		glTexture		depthRequest,
+		RrGpuTexture		depthRequest,
 		bool			depthFetch,
-		glTexture		stencilRequest,
+		RrGpuTexture		stencilRequest,
 		bool			stencilFetch
 	);
 	RENDER_API ~CRenderTexture ( void );

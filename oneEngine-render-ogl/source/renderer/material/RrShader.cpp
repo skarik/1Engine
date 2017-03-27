@@ -1,6 +1,6 @@
 
-#include "glShader.h"
-#include "glShaderManager.h"
+#include "RrShader.h"
+#include "RrShaderManager.h"
 #include "core/settings/CGameSettings.h"
 #include "core/debug/CDebugConsole.h"
 #include "core-ext/system/io/Resources.h"
@@ -11,14 +11,14 @@ using namespace std;
 
 // == Constructor ==
 // takes a shader filename or system built-in as an argument
-//glShader::glShader ( const string& a_sShaderName, bool a_bCompileOnDemand )
-glShader::glShader ( const string& a_sShaderName, const GLE::shader_tag_t a_nShaderTag, const bool a_bCompileOnDemand )
+//RrShader::RrShader ( const string& a_sShaderName, bool a_bCompileOnDemand )
+RrShader::RrShader ( const string& a_sShaderName, const renderer::shader_tag_t a_nShaderTag, const bool a_bCompileOnDemand )
 {
 	sShaderFilename = a_sShaderName;
 	bCompileOnDemand= a_bCompileOnDemand;
 	stTag			= a_nShaderTag;
 
-	glShader* pResult = ShaderManager.ShaderExists( a_sShaderName, a_nShaderTag );
+	RrShader* pResult = ShaderManager.ShaderExists( a_sShaderName, a_nShaderTag );
 	if ( pResult == NULL )
 	{
 		bIsReference = false;
@@ -73,7 +73,7 @@ glShader::glShader ( const string& a_sShaderName, const GLE::shader_tag_t a_nSha
 
 // == Destructor ==
 // Yeah, not sure.
-glShader::~glShader ( void )
+RrShader::~RrShader ( void )
 {
 	// Probably should remove the OpenGL program
 
@@ -87,7 +87,7 @@ glShader::~glShader ( void )
 }
 
 // == Uniform Grabbing ==
-int	glShader::get_uniform_location ( const char* name )
+int	RrShader::get_uniform_location ( const char* name )
 {
 	if ( !bIsReference )
 	{
@@ -121,7 +121,7 @@ int	glShader::get_uniform_location ( const char* name )
 	}
 }
 // Get Uniform Block location
-int glShader::get_uniform_block_location ( const char* name )
+int RrShader::get_uniform_block_location ( const char* name )
 {
 	if ( !bIsReference )
 	{
@@ -150,7 +150,7 @@ int glShader::get_uniform_block_location ( const char* name )
 	}
 }
 // Vertex Attribute grabbing
-int	glShader::get_attrib_location ( const char* name )
+int	RrShader::get_attrib_location ( const char* name )
 {
 	if ( !bIsReference )
 	{
@@ -180,7 +180,7 @@ int	glShader::get_attrib_location ( const char* name )
 }
 
 // == Drawing Program Controls ==
-void glShader::begin ( void )
+void RrShader::begin ( void )
 {
 	// If the shader is a reference, begin it's parent instead
 	if ( bIsReference )
@@ -206,7 +206,7 @@ void glShader::begin ( void )
 		//throw std::exception( "Shader compile error" );
 	}
 }
-void glShader::end ( void )
+void RrShader::end ( void )
 {
 	// Reset the program being used
 	glUseProgram( 0 );
@@ -214,7 +214,7 @@ void glShader::end ( void )
 
 // == Memory Management ==
 // Increment number of references
-void glShader::AddReference ( void )
+void RrShader::AddReference ( void )
 {
 	if ( !bIsReference )
 		iRefNumber++;
@@ -222,7 +222,7 @@ void glShader::AddReference ( void )
 		pParentShader->AddReference();
 }
 // Decrement number of references
-void glShader::DecrementReference ( void )
+void RrShader::DecrementReference ( void )
 {
 	if ( !bIsReference ) {
 		if ( iRefNumber == 0 )
@@ -237,12 +237,12 @@ void glShader::DecrementReference ( void )
 	}
 }
 // Returns number of references around. Job of user to properly manage this number.
-unsigned int glShader::ReferenceCount ( void )
+unsigned int RrShader::ReferenceCount ( void )
 {
 	return iRefNumber;
 }
 // Frees the shader
-void glShader::ReleaseReference ( void )
+void RrShader::ReleaseReference ( void )
 {
 	DecrementReference();
 	bool result = ShaderManager.RemoveShader( this );
@@ -250,14 +250,14 @@ void glShader::ReleaseReference ( void )
 		cout << " -parent shader is destroyed." << endl;
 }
 // Increament number of references
-void glShader::GrabReference ( void )
+void RrShader::GrabReference ( void )
 {
 	AddReference();
 }
 
 // == Shader Construction ==
 // Recompile
-bool glShader::recompile ( void )
+bool RrShader::recompile ( void )
 {
 	mUniformMap.clear();
 
@@ -309,7 +309,7 @@ long GetFileSize(std::string filename)
 #include "core/utils/StringUtils.h"
 #include "core/system/io/FileUtils.h"
 // This loads the shader from the file and into the sRawShader string
-void glShader::open_shader ( void )
+void RrShader::open_shader ( void )
 {
 	// Based on the file extention, get the shader type.
 	string sExtension = StringUtils::ToLower( StringUtils::GetFileExtension( sShaderFilename ) );
@@ -336,15 +336,15 @@ void glShader::open_shader ( void )
 		string sVertFilename = sShaderFilename.substr( 0,sShaderFilename.length()-sExtension.length() );
 		string sFragFilename = sVertFilename + "frag";
 		// Vertex shader filname may need a skinning variant
-		if ( stTag == GLE::SHADER_TAG_DEFAULT )
+		if ( stTag == renderer::SHADER_TAG_DEFAULT )
 		{
 			sVertFilename = sVertFilename + "vert";
-			sVertFilename = Core::Resources::PathTo( sVertFilename );
+			sVertFilename = core::Resources::PathTo( sVertFilename );
 		}
-		else if ( stTag == GLE::SHADER_TAG_SKINNING )
+		else if ( stTag == renderer::SHADER_TAG_SKINNING )
 		{
 			string tsVertFilename = sVertFilename + "skinning.vert";
-			tsVertFilename = Core::Resources::PathTo( tsVertFilename );
+			tsVertFilename = core::Resources::PathTo( tsVertFilename );
 			if (!IO::FileExists( tsVertFilename )) {
 				Debug::Console->PrintWarning( "WARNING: COULD NOT FIND SKINNING TARGET FOR SHADER '" + sVertFilename + "'\n" );
 				sVertFilename = sVertFilename + "vert";
@@ -359,11 +359,11 @@ void glShader::open_shader ( void )
 		}
 
 		// Look for both files
-		sVertFilename = Core::Resources::PathTo( sVertFilename );
+		sVertFilename = core::Resources::PathTo( sVertFilename );
 		if (!IO::FileExists( sVertFilename )) {
 			fail = true;
 		}
-		sFragFilename = Core::Resources::PathTo( sFragFilename );
+		sFragFilename = core::Resources::PathTo( sFragFilename );
 		if (!IO::FileExists( sFragFilename )) {
 			fail = true;
 		}
@@ -461,12 +461,12 @@ void glShader::open_shader ( void )
 	}
 }
 // This takes the data in sRawShader and outputs proper shaders into the vertex and pixel shader strings
-void glShader::parse_shader ( void )
+void RrShader::parse_shader ( void )
 {
 	// Parse the shader differently based on stShaderType.
 }
 // This compiles the shaders and adds them to a program object
-void glShader::compile_shader ( void )
+void RrShader::compile_shader ( void )
 {
 	GL_ACCESS;
 	int compiled = 0;

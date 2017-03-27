@@ -10,7 +10,7 @@ CSpriteContainer* CSpriteContainer::Active = NULL;
 CSpriteContainer::CSpriteContainer ( void )
 	: CRenderableObject ()
 {
-	renderType = Renderer::V2D;
+	renderType = renderer::V2D;
 	Active = this;
 }
 // Destructor

@@ -25,11 +25,11 @@ const uint CIsosphere::tindices[20][3] = {
 CIsosphere::CIsosphere ( void )
 	: CRenderableObject ()
 {
-	renderType = Renderer::World;
+	renderType = renderer::World;
 	divisions = 1;
 	radius = -1.0f;
 
-	/*myMat = new glMaterial;
+	/*myMat = new RrMaterial;
 	//myMat->loadTexture( "textures\\test1.tga" );
 	myMat->loadTexture( "textures\\starmap.jpg" );
 	//myMat->useTexture = true;
