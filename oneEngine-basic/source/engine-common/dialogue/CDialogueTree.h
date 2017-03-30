@@ -5,7 +5,7 @@
 #include <vector>
 #include "CDialogueLoader.h"
 
-enum NODE_TYPE
+enum cutsceneNodeType_t
 {
 	DIALOGUE_NULL = 0,
 	DIALOGUE_LINE,
@@ -17,7 +17,7 @@ enum NODE_TYPE
 struct DialogueNode
 {
 	int ID;
-	int type; //Dialogue or Choice, really
+	cutsceneNodeType_t type; //Dialogue or Choice, really
 	int flags;
 	int length;
 	int character;
@@ -38,8 +38,13 @@ struct ChoiceNode : DialogueNode
 class CDialogueTree
 {
 public:
-	CDialogueTree (void);
-	CDialogueTree (char *file);
+	//		Default Constructor : creates default tree
+	// Only used for testing purposes
+	explicit CDialogueTree (void);
+	//		Constructor from file : creates tree from given file
+	// Attempts to load the given file into a dialogue tree
+	explicit CDialogueTree (char *file);
+	
 	~CDialogueTree (void);
 
 	/*Functions related to advancing the dialogue*/
@@ -69,7 +74,7 @@ public:
 	//Prints the contents of the tree to cout
 	void PrintTree (void);
 
-	NODE_TYPE sNodeType;
+	cutsceneNodeType_t sNodeType;
 
 private:
 	void CreateTree (char * file);

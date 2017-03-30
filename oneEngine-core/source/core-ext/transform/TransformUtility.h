@@ -1,4 +1,3 @@
-
 #ifndef _C_TRANSFORM_UTILITY_H_
 #define _C_TRANSFORM_UTILITY_H_
 

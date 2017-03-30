@@ -38,10 +38,10 @@ public:
 	// Output targets.
 	
 	// Transform that motion results are copied to. If NULL, transform must be queried manually.
-	Transform*		target_transform;
+	core::Transform*	target_transform;
 	// Position that motion results are copied to. If NULL, transform must be queried manually.
 	// target_transform must be NULL for this to work.
-	Vector3d*		target_position;
+	Vector3d*			target_position;
 
 public:
 	//===============================================================================================//

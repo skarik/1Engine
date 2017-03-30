@@ -9,7 +9,7 @@
 using std::cout;
 using std::endl;
 
-using namespace Debug;
+using namespace debug;
 
 CTimeProfiler TimeProfiler;
 

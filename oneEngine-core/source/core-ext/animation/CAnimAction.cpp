@@ -188,7 +188,7 @@ void CAnimAction::Play ( const Real n_deltaTime, const Real n_playSpeed, const R
 	if ( !owner )
 	{
 		throw core::InvalidInstantiationException();
-		Debug::Console->PrintError( "Bad animation on this object (missing owner)!\n" );
+		debug::Console->PrintError( "Bad animation on this object (missing owner)!\n" );
 	}
 	// No blend time, so playing the animation instantly
 	if ( n_blendTime <= FTYPE_PRECISION )

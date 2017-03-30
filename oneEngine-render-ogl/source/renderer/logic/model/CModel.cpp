@@ -61,7 +61,7 @@ CModel::CModel ( const char* sFilename )
 	if ( t_meshSet )
 	{
 		m_glMeshlist = *t_meshSet;	// Copy the meshes to local list
-		Debug::Console->PrintMessage( " +Has mesh set\n" );
+		debug::Console->PrintMessage( " +Has mesh set\n" );
 	}
 	/*if ( pMeshSetReference == NULL )
 	{
@@ -175,13 +175,13 @@ CModel::CModel ( CModelData& mdInModelData, const char* sModelName )
 			myModelFilename = t_newName;
 		}
 
-		Debug::Console->PrintMessage( " +Adding data for procedural mesh...\n" );
-		Debug::Console->PrintMessage( " +Has mesh set\n" );
+		debug::Console->PrintMessage( " +Adding data for procedural mesh...\n" );
+		debug::Console->PrintMessage( " +Has mesh set\n" );
 	}
 	else // If there is a reference, copy the data
 	{
 		m_glMeshlist = *t_meshSet;	// Copy the meshes to local list
-		Debug::Console->PrintMessage( " +Has mesh set\n" );
+		debug::Console->PrintMessage( " +Has mesh set\n" );
 	}
 	
 	// Add to the reference of the model
@@ -257,7 +257,8 @@ void CModel::PreStep ( void )
 {
 	for ( uint i = 0; i < m_meshes.size(); ++i )
 	{
-		m_meshes[i]->transform.Get(transform);
+		//m_meshes[i]->transform.Get(transform);
+		m_meshes[i]->transform.world = transform;
 		m_meshes[i]->bUseFrustumCulling = bUseFrustumCulling;
 	}
 	/*if ( visible )

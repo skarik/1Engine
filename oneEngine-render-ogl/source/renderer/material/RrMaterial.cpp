@@ -1003,7 +1003,7 @@ void RrMaterial::shader_bind_world ( RrShader* shader )
 	uniformLocation = shader->get_uniform_location( "sys_WorldOffset" );
 	if ( uniformLocation >= 0 )
 	{
-		Vector3d worldOffset = Transform::root.localPosition;
+		Vector3d worldOffset = Vector3d(core::world_origin.x, core::world_origin.y, core::world_origin.z);
 		glUniform3fv( uniformLocation, 1, &(worldOffset.x) );
 	}
 
@@ -1358,10 +1358,10 @@ void RrMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_f
 		if ( uniformLocation >= 0 )
 		{
 			Matrix4x4 modelRotation;
-			modelRotation.setRotation( source_object->transform.rotation );
-			modelRotation.pData[0] *= source_object->transform.scale.x;
-			modelRotation.pData[5] *= source_object->transform.scale.y;
-			modelRotation.pData[10] *= source_object->transform.scale.z;
+			modelRotation.setRotation( source_object->transform.world.rotation );
+			modelRotation.pData[0]  *= source_object->transform.world.scale.x;
+			modelRotation.pData[5]  *= source_object->transform.world.scale.y;
+			modelRotation.pData[10] *= source_object->transform.world.scale.z;
 			glUniformMatrix4fv( uniformLocation, 1,false, (!modelRotation)[0] );
 		}
 

@@ -130,7 +130,7 @@ void Box2DDebugger::DrawSolidCircle(const b2Vec2& center, float32 radius, const 
 /// Draw a line segment.
 void Box2DDebugger::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
 {
-	Debug::Drawer->DrawLine( Vector3d(p1.x, p1.y, 0), Vector3d(p2.x, p2.y, 0), Color(color.r, color.g, color.b, color.a) );
+	debug::Drawer->DrawLine( Vector3d(p1.x, p1.y, 0), Vector3d(p2.x, p2.y, 0), Color(color.r, color.g, color.b, color.a) );
 }
 
 /// Draw a transform. Choose your own length scale.

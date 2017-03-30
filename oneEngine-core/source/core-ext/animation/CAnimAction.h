@@ -68,26 +68,26 @@ public:
 	bool	enableMotionExtrapolation [3];
 
 	// Constructor
-	CAnimAction ( const char* name );
-	CAnimAction ( void );
+	CORE_API CAnimAction ( const char* name );
+	CORE_API CAnimAction ( void );
 
 	// == Setters ==
-	void SetRange ( Real fStart, Real fEnd );
+	CORE_API void SetRange ( Real fStart, Real fEnd );
 
 	// == Modders ==
-	void Reset ( void );
-	void Play ( const Real n_deltaTime, const Real n_playSpeed=1.0F, const Real n_blendTime=0.0F );
-	void Stop ( void );
+	CORE_API void Reset ( void );
+	CORE_API void Play ( const Real n_deltaTime, const Real n_playSpeed=1.0F, const Real n_blendTime=0.0F );
+	CORE_API void Stop ( void );
 	//void Sample ( CAnimationSet*, std::vector<XTransform> const& );
 
 		// Vertex skinned models ONLY!
 		// Searches for the given transform in the skeleton and adds it to the mix list.
 	//void AddMixingTransform ( string const&, bool );
-	void AddMixingTransform ( const uint32_t skippedIndex );
+	CORE_API void AddMixingTransform ( const uint32_t skippedIndex );
 	
 	// == Updater ==
 	// Must be thread-safe
-	void Update ( const Real n_deltaTime, const Real n_frameOverride );
+	CORE_API void Update ( const Real n_deltaTime, const Real n_frameOverride );
 
 	// == Getters ==
 	const arstring128& GetName ( void ) const

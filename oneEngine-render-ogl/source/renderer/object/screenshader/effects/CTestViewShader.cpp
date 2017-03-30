@@ -51,11 +51,13 @@ CTestViewShader::~CTestViewShader ( void )
 void CTestViewShader::UpdateBuffer ( void )
 {
 	// Copy over!
-	if ( CCamera::activeCamera ) {
-		if ( m_rtcam->transform.GetParent() != &CCamera::activeCamera->transform ) {
+	if ( CCamera::activeCamera )
+	{
+		/*if ( m_rtcam->transform.GetParent() != &CCamera::activeCamera->transform ) {
 			m_rtcam->transform.Get( CCamera::activeCamera->transform );
 			m_rtcam->transform.SetParent( &CCamera::activeCamera->transform );
-		}
+		}*/
+		m_rtcam->transform = CCamera::activeCamera->transform;
 		m_rtcam->fov = CCamera::activeCamera->fov;
 		m_rtcam->zNear = CCamera::activeCamera->zNear*2;
 		m_rtcam->zFar = CCamera::activeCamera->zFar;

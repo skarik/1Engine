@@ -1,10 +1,10 @@
+#if 0
 // definition for the opengl bones
-
 #ifndef _PHYSICAL_SKELETON_BONE_H_
 #define _PHYSICAL_SKELETON_BONE_H_
 
 #include "core/containers/arstring.h"
-#include "core-ext/transform/CTransform.h"
+#include "core-ext/transform/Transform.h"
 
 #include <vector>
 
@@ -121,3 +121,4 @@ typedef skeletonBone_t glBone;
 
 
 #endif//_PHYSICAL_SKELETON_BONE_H_
+#endif

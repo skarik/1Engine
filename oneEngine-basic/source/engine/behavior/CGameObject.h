@@ -4,7 +4,7 @@
 
 // Includes
 #include "CGameBehavior.h"
-#include "core-ext/transform/CTransform.h"
+#include "core-ext/transform/Transform.h"
 
 // Class Definition
 class CGameObject : public CGameBehavior
@@ -15,9 +15,9 @@ public:
 	// Constructor setting owner behavior
 	CGameObject ( void ) : CGameBehavior ()
 	{
-		transform.owner = this;
-		transform.ownerType = Transform::TYPE_BEHAVIOR;
-		transform.name = this->name;
+		//transform.owner = this;
+		//transform.ownerType = Transform::TYPE_BEHAVIOR;
+		//transform.name = this->name;
 	};
 	~CGameObject ( void ) {
 		;
@@ -29,7 +29,7 @@ public:
 
 public:
 	// Basic transformation
-	CTransform transform;
+	core::Transform transform;
 };
 
 #endif

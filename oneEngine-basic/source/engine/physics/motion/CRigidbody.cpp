@@ -271,6 +271,7 @@ CGameBehavior* CRigidbody::GetOwner ( void )
 	if ( owner ) {
 		return owner;
 	}
+#if 0
 	else if ( target_transform )
 	{
 		if ( target_transform->owner && target_transform->ownerType == Transform::TYPE_BEHAVIOR )
@@ -278,6 +279,7 @@ CGameBehavior* CRigidbody::GetOwner ( void )
 			return (CGameBehavior*)target_transform->owner;
 		}
 	}
+#endif
 	return NULL;
 }
 

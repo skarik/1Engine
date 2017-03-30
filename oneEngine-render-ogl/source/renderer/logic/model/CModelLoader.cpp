@@ -349,8 +349,8 @@ void CModel::LoadModel ( const string& sFilename )
 //				/*RrMaterial* newMat = new RrMaterial;
 //				newMat->loadFromFile( vMaterialFiles[modelMaterial] );
 //				this->SetMeshMaterial( newMat, 1, i );
-//				Debug::Console->PrintWarning( "Set material!\n" );*/
-//				Debug::Console->PrintWarning( "Set material!\n" );
+//				debug::Console->PrintWarning( "Set material!\n" );*/
+//				debug::Console->PrintWarning( "Set material!\n" );
 //				RrMaterial* newMat = new RrMaterial;
 //				newMat->loadFromFile( vMaterialFiles[modelMaterial].c_str() );
 //				newMesh->pmMat = newMat;

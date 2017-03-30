@@ -8,8 +8,8 @@
 #include "core/settings/CGameSettings.h"
 
 // Static variables
-Debug::CDebugConsole*	Debug::Console							= NULL;
-bool					Debug::CDebugConsole::bOutputEnabled	= true;
+debug::CDebugConsole*	debug::Console							= NULL;
+bool					debug::CDebugConsole::bOutputEnabled	= true;
 
 #ifdef _WIN32
 #	if _MSC_VER >= 1900
@@ -29,7 +29,7 @@ public:
 
 // Static functions
 // Debug Console Init
-void Debug::CDebugConsole::Init ( void )
+void debug::CDebugConsole::Init ( void )
 {
 	// Create a new console
 	if ( !Console ) {
@@ -110,7 +110,7 @@ void Debug::CDebugConsole::Init ( void )
 }
 
 // Free
-void Debug::CDebugConsole::Free ( void )
+void debug::CDebugConsole::Free ( void )
 {
 	// Kill the console
 	if ( Console ) {
@@ -125,7 +125,7 @@ void Debug::CDebugConsole::Free ( void )
 
 
 // Output functions
-void Debug::CDebugConsole::PrintMessage ( const string& sOut )
+void debug::CDebugConsole::PrintMessage ( const string& sOut )
 {
 #ifdef _WIN32
 	HANDLE lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -138,7 +138,7 @@ void Debug::CDebugConsole::PrintMessage ( const string& sOut )
 #endif
 }
 
-void Debug::CDebugConsole::PrintWarning ( const string& sOut )
+void debug::CDebugConsole::PrintWarning ( const string& sOut )
 {
 #ifdef _WIN32
 	HANDLE lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -151,7 +151,7 @@ void Debug::CDebugConsole::PrintWarning ( const string& sOut )
 #endif
 }
 
-void Debug::CDebugConsole::PrintError ( const string& sOut )
+void debug::CDebugConsole::PrintError ( const string& sOut )
 {
 #ifdef _WIN32
 	HANDLE lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -165,11 +165,11 @@ void Debug::CDebugConsole::PrintError ( const string& sOut )
 }
 
 
-void Debug::CDebugConsole::DisableOutput ( void )
+void debug::CDebugConsole::DisableOutput ( void )
 {
 	bOutputEnabled = false;
 }
-void Debug::CDebugConsole::EnableOutput ( void )
+void debug::CDebugConsole::EnableOutput ( void )
 {
 	bOutputEnabled = true;
 }

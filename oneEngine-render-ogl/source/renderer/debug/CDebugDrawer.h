@@ -9,7 +9,7 @@
 struct Line;
 struct Ray;
 
-namespace Debug
+namespace debug
 {
 	// Class Definition
 	class CDebugDrawer : public CRenderableObject

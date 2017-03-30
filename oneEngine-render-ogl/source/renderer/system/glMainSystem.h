@@ -5,7 +5,7 @@
 // Need the standard types
 #include "core/types/types.h"
 #include "core/math/Color.h"
-#include "core-ext/transform/CTransform.h"
+#include "core-ext/transform/Transform.h"
 // Needs the OpenGL functions
 #include "renderer/ogl/GLCommon.h"
 #include "renderer/types/types.h"
@@ -150,7 +150,7 @@ public:
 #endif
 
 	// == Transformations and lazy transforms ==
-	RENDER_API void		Transform ( CTransform* );
+	RENDER_API void		Transform ( const XrTransform* );
 	RENDER_API void		Transform ( const Matrix2x2& );
 	RENDER_API void		Transform ( const Matrix4x4& );
 

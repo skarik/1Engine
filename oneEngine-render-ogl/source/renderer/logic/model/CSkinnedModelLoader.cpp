@@ -445,7 +445,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //			
 //			if ( iEventNum == 0 )
 //			{
-//				/*Debug::Console->PrintWarning( "No animation action chunk found. Adding default ref.\n" );
+//				/*debug::Console->PrintWarning( "No animation action chunk found. Adding default ref.\n" );
 //				// Since there's no action block, we just create one for the entire animation
 //				CAnimAction newAction ( "ref" );
 //				newAction.SetRange( 0, (ftype)(iFrameNum) );

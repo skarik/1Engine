@@ -14,7 +14,7 @@
 
 void sceneDeveloperMenu::LoadScene ( void )
 {
-	Debug::Console->PrintMessage( "Loading M04 developer menu...\n" );
+	debug::Console->PrintMessage( "Loading M04 developer menu...\n" );
 
 	// Create the menu
 	{
@@ -29,5 +29,5 @@ void sceneDeveloperMenu::LoadScene ( void )
 	}
 
 	// Print a prompt
-	Debug::Console->PrintMessage( "You are running a debug build of M04.\n" );
+	debug::Console->PrintMessage( "You are running a debug build of M04.\n" );
 }

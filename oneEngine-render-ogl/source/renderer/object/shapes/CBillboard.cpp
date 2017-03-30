@@ -35,12 +35,12 @@ bool CBillboard::Render ( const char pass )
 	if ( CCamera::activeCamera )
 	{
 		if ( m_curvetowards ) {
-			lookPos = (CCamera::activeCamera->transform.position - transform.position).normal();
+			lookPos = (CCamera::activeCamera->transform.position - transform.world.position).normal();
 		}
 		else {
-			lookPos = CCamera::activeCamera->transform.Forward();
+			lookPos = CCamera::activeCamera->transform.rotation * Vector3d(1,0,0);
 		}
-		transform.rotation = Vector3d(0,0,0);
+		transform.world.rotation = Vector3d(0,0,0);
 		vRight = CCamera::activeCamera->GetUp().cross( lookPos );
 		vUp = lookPos.cross( vRight );
 	}
@@ -50,19 +50,19 @@ bool CBillboard::Render ( const char pass )
 
 	// Set transform data
 	{
-		transform.rotation.pData[0] = lookPos.x;
-		transform.rotation.pData[3] = lookPos.y;
-		transform.rotation.pData[6] = lookPos.z;
+		transform.world.rotation.pData[0] = lookPos.x;
+		transform.world.rotation.pData[3] = lookPos.y;
+		transform.world.rotation.pData[6] = lookPos.z;
 
-		transform.rotation.pData[1] = vRight.x;
-		transform.rotation.pData[4] = vRight.y;
-		transform.rotation.pData[7] = vRight.z;
+		transform.world.rotation.pData[1] = vRight.x;
+		transform.world.rotation.pData[4] = vRight.y;
+		transform.world.rotation.pData[7] = vRight.z;
 
-		transform.rotation.pData[2] = vUp.x;
-		transform.rotation.pData[5] = vUp.y;
-		transform.rotation.pData[8] = vUp.z;
+		transform.world.rotation.pData[2] = vUp.x;
+		transform.world.rotation.pData[5] = vUp.y;
+		transform.world.rotation.pData[8] = vUp.z;
 
-		transform.scale = Vector3d( 1,1,1 );
+		transform.world.scale = Vector3d( 1,1,1 );
 	}
 
 	// Genereate the mesh if it doesn't exist
@@ -92,7 +92,7 @@ bool CBillboard::Render ( const char pass )
 	}
 
 
-	GL.Transform( &transform );
+	GL.Transform( &transform.world );
 
 	m_material->bindPass(pass);
 	m_material->setShaderConstants(this);

@@ -82,7 +82,7 @@ RrShader::~RrShader ( void )
 	// Check if there's references, post a warning if there is.
 	if ( iRefNumber > 0 )
 	{
-		Debug::Console->PrintWarning( "WARNING: Shader being deleted with active references!\n" );
+		debug::Console->PrintWarning( "WARNING: Shader being deleted with active references!\n" );
 	}
 }
 
@@ -346,7 +346,7 @@ void RrShader::open_shader ( void )
 			string tsVertFilename = sVertFilename + "skinning.vert";
 			tsVertFilename = core::Resources::PathTo( tsVertFilename );
 			if (!IO::FileExists( tsVertFilename )) {
-				Debug::Console->PrintWarning( "WARNING: COULD NOT FIND SKINNING TARGET FOR SHADER '" + sVertFilename + "'\n" );
+				debug::Console->PrintWarning( "WARNING: COULD NOT FIND SKINNING TARGET FOR SHADER '" + sVertFilename + "'\n" );
 				sVertFilename = sVertFilename + "vert";
 			}
 			else {
@@ -509,8 +509,8 @@ void RrShader::compile_shader ( void )
 				glGetShaderInfoLog( iVertexShaderID, blen, &slen, compiler_log );
 				//cout << "vertex shader compiler_log:\n" << compiler_log;
 				std::cout << "Filename: " << sShaderFilename << "\n";
-				Debug::Console->PrintError( "vertex shader compiler_log:\n" );
-				Debug::Console->PrintError( compiler_log );
+				debug::Console->PrintError( "vertex shader compiler_log:\n" );
+				debug::Console->PrintError( compiler_log );
 				free ( compiler_log );
 			}
 			bHasCompileError = true;
@@ -526,8 +526,8 @@ void RrShader::compile_shader ( void )
 				glGetShaderInfoLog( iVertexShaderID, blen, &slen, compiler_log );
 				//cout << "vertex shader compiler_log:\n" << compiler_log;
 				std::cout << "Filename: " << sShaderFilename << "\n";
-				Debug::Console->PrintWarning( "vertex shader compiler_log:\n" );
-				Debug::Console->PrintWarning( compiler_log );
+				debug::Console->PrintWarning( "vertex shader compiler_log:\n" );
+				debug::Console->PrintWarning( compiler_log );
 				free ( compiler_log );
 			}
 		}
@@ -562,8 +562,8 @@ void RrShader::compile_shader ( void )
 				glGetShaderInfoLog( iPixelShaderID, blen, &slen, compiler_log );
 				//cout << "pixel/fragment shader compiler_log:\n" << compiler_log;
 				std::cout << "Filename: " << sShaderFilename << "\n";
-				Debug::Console->PrintError( "pixel/fragment shader compiler_log:\n" );
-				Debug::Console->PrintError( compiler_log );
+				debug::Console->PrintError( "pixel/fragment shader compiler_log:\n" );
+				debug::Console->PrintError( compiler_log );
 				free ( compiler_log );
 			}
 			bHasCompileError = true;
@@ -579,8 +579,8 @@ void RrShader::compile_shader ( void )
 				glGetShaderInfoLog( iPixelShaderID, blen, &slen, compiler_log );
 				//cout << "pixel/fragment shader compiler_log:\n" << compiler_log;
 				std::cout << "Filename: " << sShaderFilename << "\n";
-				Debug::Console->PrintWarning( "pixel/fragment shader compiler_log:\n" );
-				Debug::Console->PrintWarning( compiler_log );
+				debug::Console->PrintWarning( "pixel/fragment shader compiler_log:\n" );
+				debug::Console->PrintWarning( compiler_log );
 				free ( compiler_log );
 			}
 		}

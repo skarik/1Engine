@@ -1,7 +1,7 @@
 
 #include "CSoundBehavior.h"
 #include "audio/CAudioSource.h"
-#include "core-ext/transform/CTransform.h"
+#include "core-ext/transform/Transform.h"
 
 using std::vector;
 
@@ -16,7 +16,7 @@ CSoundBehavior::CSoundBehavior ( void ) : CGameBehavior()
 	position		= Vector3d();
 	velocity		= Vector3d();
 
-	parent			= NULL;
+	source_position	= NULL;
 
 	soundList.push_back( this );
 }
@@ -41,8 +41,8 @@ void CSoundBehavior::Update ( void )
 		return;
 	}
 
-	if ( parent ) {
-		mySource->position = position + parent->position;
+	if ( source_position ) {
+		mySource->position = position + *source_position;
 		mySource->velocity = velocity;
 	}
 	else {

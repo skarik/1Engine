@@ -1,5 +1,5 @@
 // The extendable game object is a great class for instanciating those one-time objects and other such stuff
-
+#if 0
 
 #ifndef _C_EXTENDABLE_GAME_OBJECT_
 #define _C_EXTENDABLE_GAME_OBJECT_
@@ -138,5 +138,7 @@ protected:
 	std::vector<CCollider*> vpCComponents;
 };
 
+
+#endif
 
 #endif

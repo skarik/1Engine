@@ -4,7 +4,7 @@
 
 // Need the standard types
 #include "core/types/types.h"
-#include "core-ext/transform/CTransform.h"
+#include "core-ext/transform/Transform.h"
 #include "core/math/Color.h"
 // Needs the OpenGL functions
 #include "renderer/ogl/GLCommon.h"

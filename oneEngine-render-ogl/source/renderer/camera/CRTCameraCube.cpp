@@ -74,10 +74,10 @@ void CRTCameraCube::RenderScene ( void )
 	}
 
 	// Watch the render texture
-	//Debug::RTInspector->AddWatch( m_renderTexture );
+	//debug::RTInspector->AddWatch( m_renderTexture );
 
 
-	//Debug::RTInspector->AddWatch( myRenderTexture );
+	//debug::RTInspector->AddWatch( myRenderTexture );
 
 	/*RenderSet();
 	SceneRenderer->RenderScene();

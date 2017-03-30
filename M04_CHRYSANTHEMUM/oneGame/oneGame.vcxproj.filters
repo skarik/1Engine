@@ -43,6 +43,9 @@
     <Filter Include="SOURCE\M04\Entities">
       <UniqueIdentifier>{07427d47-d2cc-49b9-8b55-26ecd109f829}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04-Editor\Standalone\CTSeditor">
+      <UniqueIdentifier>{9aaf115a-3f98-4cb5-8313-adbe5cae7b6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -123,6 +126,12 @@
     <ClInclude Include="source\m04\entities\TalkerBox.h">
       <Filter>SOURCE\M04\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04\entities\PropChineseLamp.h">
+      <Filter>SOURCE\M04\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\ctseditor\CtsNodeBase.h">
+      <Filter>SOURCE\M04-Editor\Standalone\CTSeditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -195,6 +204,9 @@
       <Filter>SOURCE\M04\Entities</Filter>
     </ClCompile>
     <ClCompile Include="source\m04\entities\TalkerBox.cpp">
+      <Filter>SOURCE\M04\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\entities\PropChineseLamp.cpp">
       <Filter>SOURCE\M04\Entities</Filter>
     </ClCompile>
   </ItemGroup>

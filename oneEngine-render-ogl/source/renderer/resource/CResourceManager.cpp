@@ -458,15 +458,15 @@ void CResourceManager::StreamUpdate_Texture ( const char* n_targetFile )
 				case Z_OK:
 					break;
 				case Z_MEM_ERROR:
-					Debug::Console->PrintError("CResourceManager::StreamUpdate_Texture >> out of memory\n");
+					debug::Console->PrintError("CResourceManager::StreamUpdate_Texture >> out of memory\n");
 					throw core::OutOfMemoryException();
 					break;
 				case Z_BUF_ERROR:
-					Debug::Console->PrintError("CResourceManager::StreamUpdate_Texture >> output buffer wasn't large enough!\n");
+					debug::Console->PrintError("CResourceManager::StreamUpdate_Texture >> output buffer wasn't large enough!\n");
 					throw std::out_of_range("Out of space");
 					break;
 				case Z_DATA_ERROR:
-					Debug::Console->PrintError("CResourceManager::StreamUpdate_Texture >> corrupted data!\n");
+					debug::Console->PrintError("CResourceManager::StreamUpdate_Texture >> corrupted data!\n");
 					throw core::CorruptedDataException();
 					break;
 				}
@@ -483,7 +483,7 @@ void CResourceManager::StreamUpdate_Texture ( const char* n_targetFile )
 	{
 		// No file? Impossible. There's always a BPD, no matter what.
 		//throw renderer::InvalidOperationException();
-		Debug::Console->PrintError( "CResourceManager::StreamUpdate_Texture >> could not open file!\n" );
+		debug::Console->PrintError( "CResourceManager::StreamUpdate_Texture >> could not open file!\n" );
 	}
 
 	// Mark stream operation as done
@@ -513,7 +513,7 @@ void CResourceManager::AddResource ( CTexture* n_texture )
 	{
 		newTexture.m_needStream = false;
 		newTexture.m_streamState = S_DONE;
-		Debug::Console->PrintWarning( " + Texture already set on dupe.\n" );
+		debug::Console->PrintWarning( " + Texture already set on dupe.\n" );
 	}
 	mResourceList.push_back( newTexture );
 }
@@ -658,15 +658,15 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 						case Z_OK:
 							break;
 						case Z_MEM_ERROR:
-							Debug::Console->PrintError("CResourceManager::ForceLoadResource >> out of memory\n");
+							debug::Console->PrintError("CResourceManager::ForceLoadResource >> out of memory\n");
 							//throw Engine::OutOfMemoryException();
 							break;
 						case Z_BUF_ERROR:
-							Debug::Console->PrintError("CResourceManager::ForceLoadResource >> output buffer wasn't large enough!\n");
+							debug::Console->PrintError("CResourceManager::ForceLoadResource >> output buffer wasn't large enough!\n");
 							//throw std::out_of_range("Out of space");
 							break;
 						case Z_DATA_ERROR:
-							Debug::Console->PrintError("CResourceManager::ForceLoadResource >> corrupted data!\n");
+							debug::Console->PrintError("CResourceManager::ForceLoadResource >> corrupted data!\n");
 							//throw Engine::CorruptedDataException();
 							break;
 						}
@@ -706,7 +706,7 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 			else
 			{
 				// Print error if things go terribly wrong!
-				Debug::Console->PrintError("CResourceManager::ForceLoadResource >> could not open file!\n");
+				debug::Console->PrintError("CResourceManager::ForceLoadResource >> could not open file!\n");
 				printf( " + file: \"%s\"\n", t_bpdFilename.c_str() );
 			}
 
@@ -809,7 +809,7 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 	else
 	{
 		// Print error if things go terribly wrong!
-		Debug::Console->PrintError("CResourceManager::FinishAddResource >> could not open file!\n");
+		debug::Console->PrintError("CResourceManager::FinishAddResource >> could not open file!\n");
 		printf( " + file: \"%s\"\n", t_bpdFilename.c_str() );
 	}
 	delete [] lowQuality;

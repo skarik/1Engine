@@ -100,11 +100,11 @@
     <Filter Include="SOURCE\Renderer\GPU Wrapper">
       <UniqueIdentifier>{27f97c23-3b8e-4366-9b54-66a9f1305aea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Renderer\Particle">
+      <UniqueIdentifier>{5ff5d927-5930-4dd0-b76f-22606cb99959}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\renderer\window\COglWindowWin32.cpp">
-      <Filter>SOURCE\Renderer\Window</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\system\glDrawing.cpp">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClCompile>
@@ -201,20 +201,8 @@
     <ClCompile Include="source\renderer\object\shapes\CRotBoxRPrimitive.cpp">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\object\particle\CParticleRenderer.cpp">
-      <Filter>SOURCE\Renderer\Object\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\particle\CParticleRenderer_Animated.cpp">
-      <Filter>SOURCE\Renderer\Object\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\CMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\mesh\system\glMesh.cpp">
-      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\mesh\system\glSkinnedMesh.cpp">
-      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\sprite\CSprite.cpp">
       <Filter>SOURCE\Renderer\Object\Sprite</Filter>
@@ -227,27 +215,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp">
       <Filter>SOURCE\Renderer\Object\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\glMaterial.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\glMaterial_External.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\glMaterial_Utility.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\glPass.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\glPass_Deferred.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\glShader.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\glShaderManager.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\types\ObjectSettings.cpp">
       <Filter>SOURCE\Renderer\Types</Filter>
@@ -290,24 +257,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\logic\CLogicObject.cpp">
       <Filter>SOURCE\Renderer\Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\logic\particle\CParticleUpdater.cpp">
-      <Filter>SOURCE\Renderer\Logic\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\logic\particle\CParticleEmitter.cpp">
-      <Filter>SOURCE\Renderer\Logic\Particle\Emitters %28filter only%29</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\logic\particle\CParticleEmitterCloud.cpp">
-      <Filter>SOURCE\Renderer\Logic\Particle\Emitters %28filter only%29</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\logic\particle\CParticleEmitterSkeleton.cpp">
-      <Filter>SOURCE\Renderer\Logic\Particle\Emitters %28filter only%29</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\logic\particle\modifiers\CParticleMod_Spiral.cpp">
-      <Filter>SOURCE\Renderer\Logic\Particle\Modifiers</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\logic\particle\modifiers\CParticleMod_Windmotion.cpp">
-      <Filter>SOURCE\Renderer\Logic\Particle\Modifiers</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\logic\model\CModel.cpp">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
@@ -375,26 +324,44 @@
     <ClCompile Include="source\renderer\object\mesh\CInstancedMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\logic\particle\CParticle.hpp">
-      <Filter>SOURCE\Renderer\Logic\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\gpuw\Textures.cpp">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\system\rrMesh.cpp">
+      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp">
+      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial_External.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial_Utility.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrPassForward.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrPassDeferred.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrShader.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrShaderManager.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\window\RrWindowWin32.cpp">
+      <Filter>SOURCE\Renderer\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp">
+      <Filter>SOURCE\Renderer\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\renderer\window\COglWindow.h">
-      <Filter>SOURCE\Renderer\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\window\COglWindowLinux.h">
-      <Filter>SOURCE\Renderer\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\window\COglWindowOsmac.h">
-      <Filter>SOURCE\Renderer\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\window\COglWindowWin32.h">
-      <Filter>SOURCE\Renderer\Window</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\ogl\GLCommon.h">
       <Filter>SOURCE\Renderer\OGL</Filter>
     </ClInclude>
@@ -476,20 +443,8 @@
     <ClInclude Include="source\renderer\object\shapes\CRotBoxRPrimitive.h">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\object\particle\CParticleRenderer.h">
-      <Filter>SOURCE\Renderer\Object\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\particle\CParticleRenderer_Animated.h">
-      <Filter>SOURCE\Renderer\Object\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\CMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\mesh\system\glMesh.h">
-      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\mesh\system\glSkinnedMesh.h">
-      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\model\Model.h">
       <Filter>SOURCE\Renderer\Object\Model</Filter>
@@ -506,25 +461,7 @@
     <ClInclude Include="source\renderer\object\util\CLoadScreenInjector.h">
       <Filter>SOURCE\Renderer\Object\Util</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\material\glMaterial.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\material\glPass.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\material\glPass_Deferred.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\material\glShader.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\material\glShaderManager.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\types\types.h">
-      <Filter>SOURCE\Renderer\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\types\glShaderConstants.h">
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\types\ObjectSettings.h">
@@ -565,27 +502,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\logic\CLogicObject.h">
       <Filter>SOURCE\Renderer\Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\particle\CParticleUpdater.h">
-      <Filter>SOURCE\Renderer\Logic\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\particle\CParticleEmitter.h">
-      <Filter>SOURCE\Renderer\Logic\Particle\Emitters %28filter only%29</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\particle\CParticleEmitterCloud.h">
-      <Filter>SOURCE\Renderer\Logic\Particle\Emitters %28filter only%29</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\particle\CParticleEmitterSkeleton.h">
-      <Filter>SOURCE\Renderer\Logic\Particle\Emitters %28filter only%29</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\particle\modifiers\CParticleModifier.h">
-      <Filter>SOURCE\Renderer\Logic\Particle\Modifiers</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\particle\modifiers\CParticleMod_Spiral.h">
-      <Filter>SOURCE\Renderer\Logic\Particle\Modifiers</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\particle\modifiers\CParticleMod_Windmotion.h">
-      <Filter>SOURCE\Renderer\Logic\Particle\Modifiers</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\logic\model\CModel.h">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
@@ -665,17 +581,56 @@
     <ClInclude Include="source\renderer\object\mesh\CInstancedMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\logic\particle\CParticle.h">
-      <Filter>SOURCE\Renderer\Logic\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\state\InternalSettings.h">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\types\glTexture.h">
-      <Filter>SOURCE\Renderer\Types</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\gpuw\Textures.h">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\system\rrMesh.h">
+      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h">
+      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\textureStructures.h">
+      <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\RrGpuTexture.h">
+      <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\RrObjectMaterialProperties.h">
+      <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrMaterial.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrPassForward.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrPassDeferred.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrShader.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrShaderManager.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\window\RrWindow.h">
+      <Filter>SOURCE\Renderer\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\window\RrWindowLinux.h">
+      <Filter>SOURCE\Renderer\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\window\RrWindowOsmac.h">
+      <Filter>SOURCE\Renderer\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\window\RrWindowWin32.h">
+      <Filter>SOURCE\Renderer\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\particle\RrParticleSystem.h">
+      <Filter>SOURCE\Renderer\Particle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

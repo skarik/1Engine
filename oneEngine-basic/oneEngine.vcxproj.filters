@@ -60,9 +60,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\engine\behavior\CExtendableGameObject.h">
-      <Filter>SOURCE\Engine\Behavior</Filter>
-    </ClInclude>
     <ClInclude Include="source\engine\behavior\CGameBehavior.h">
       <Filter>SOURCE\Engine\Behavior</Filter>
     </ClInclude>

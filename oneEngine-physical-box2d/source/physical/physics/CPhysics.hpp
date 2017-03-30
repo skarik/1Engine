@@ -440,7 +440,7 @@ FORCE_INLINE PHYS_API physCollisionVolume* Physics::CreateAABBPhantom ( physAabb
 	throw core::NotYetImplementedException();
 }
 // Create a phantom using a collider
-FORCE_INLINE PHYS_API physCollisionVolume* Physics::CreateShapePhantom ( physShape* pShape, CTransform* pSourceTransform, unsigned int iOwnerID )
+FORCE_INLINE PHYS_API physCollisionVolume* Physics::CreateShapePhantom ( physShape* pShape, core::Transform* pSourceTransform, unsigned int iOwnerID )
 {
 	// Get the transform
 	/*hkTransform tempTransform ( hkRotation(),

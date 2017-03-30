@@ -39,7 +39,7 @@ void testColorConversion::LoadScene(void)
 				<< "B: (" << b.red << "," << b.green << "," << b.blue << "," << b.alpha << ") ";
 			// Print test result
 			if ( !success ) {
-				Debug::Console->PrintError( "[FAILED]\n" );
+				debug::Console->PrintError( "[FAILED]\n" );
 			}
 			else {
 				cout << "[PASS]" << endl;
@@ -93,7 +93,7 @@ void testColorConversion::LoadScene(void)
 				<< "B: (" << (b & 0xFF000000) << "-" << (b & 0x00FF0000) << "-" << (b & 0x0000FF00) << "-" << (b & 0x000000FF) << ") ";
 			// Print test result
 			if ( !success ) {
-				Debug::Console->PrintError( "[FAILED]\n" );
+				debug::Console->PrintError( "[FAILED]\n" );
 			}
 			else {
 				cout << "[PASS]" << endl;

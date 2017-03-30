@@ -281,7 +281,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="source\core-ext\animation\AnimationEvents.h" />
-    <ClInclude Include="source\core-ext\animation\CAnimAction.h" />
     <ClInclude Include="source\core-ext\animation\CAnimationEvents.h" />
     <ClInclude Include="source\core-ext\animation\CAnimIK.h" />
     <ClInclude Include="source\core-ext\animation\curve\CAnimationCurve.h" />
@@ -377,8 +376,6 @@
     <ClInclude Include="source\core\utils\StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\core-ext\animation\CAnimAction.cpp" />
-    <ClCompile Include="source\core-ext\animation\CAnimActionMixing.cpp" />
     <ClCompile Include="source\core-ext\math\MathQEF.cpp" />
     <ClCompile Include="source\core-ext\math\noise\MidpointNoiseBuffer.cpp" />
     <ClCompile Include="source\core-ext\system\io\mccosf.cpp" />

@@ -43,10 +43,10 @@ CBitmapFont::CBitmapFont ( string sInFontname,
 		int error;
 		error = FT_Init_FreeType( &library );
 		if ( error ) {
-			Debug::Console->PrintError( "Could not initialize freetype library\n" ); 
+			debug::Console->PrintError( "Could not initialize freetype library\n" ); 
 		}
 		else {
-			Debug::Console->PrintMessage( "Freetype library initialized! :)\n" );
+			debug::Console->PrintMessage( "Freetype library initialized! :)\n" );
 		}
 	}
 
@@ -172,14 +172,14 @@ void CBitmapFont::LoadFontAsTexture ( void )
 	// Create the font face
 	error = FT_New_Face( library, core::Resources::PathTo(string("fonts/") + fontInfo.name).c_str(), 0, &face );
 	if ( error == FT_Err_Unknown_File_Format ) {
-		Debug::Console->PrintError( "the font file could be opened and read, but it appears that its font format is unsupported\n" );
-		Debug::Console->PrintWarning( "loading font from system\n" );
+		debug::Console->PrintError( "the font file could be opened and read, but it appears that its font format is unsupported\n" );
+		debug::Console->PrintWarning( "loading font from system\n" );
 		LoadFontAsTexture_System();
 		return;
 	} 
 	else if ( error ) {
-		Debug::Console->PrintError( "font file could not be opened or read, or is simply broken\n" );
-		Debug::Console->PrintWarning( "loading font from system\n" );
+		debug::Console->PrintError( "font file could not be opened or read, or is simply broken\n" );
+		debug::Console->PrintWarning( "loading font from system\n" );
 		LoadFontAsTexture_System();
 		return;
 	}
@@ -187,7 +187,7 @@ void CBitmapFont::LoadFontAsTexture ( void )
 	// Set the font face size
 	error = FT_Set_Pixel_Sizes( face, 0, fontInfo.height );
 	if ( error ) { 
-		Debug::Console->PrintWarning( "Could not set font size (possibly a bitmap font)\n" );
+		debug::Console->PrintWarning( "Could not set font size (possibly a bitmap font)\n" );
 	}
 
 	// Query the glyphs
@@ -199,13 +199,13 @@ void CBitmapFont::LoadFontAsTexture ( void )
 		// Load the glyph
 		error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT ); 
 		if ( error ) {
-			Debug::Console->PrintWarning( "Skipping char\n" );
+			debug::Console->PrintWarning( "Skipping char\n" );
 			continue;
 		}
 		// Get the glyph's bitmap
 		error = FT_Render_Glyph( face->glyph, FT_RENDER_MODE_NORMAL );
 		if ( error ) {
-			Debug::Console->PrintWarning( "Skipping char\n" );
+			debug::Console->PrintWarning( "Skipping char\n" );
 			continue;
 		}
 
@@ -441,7 +441,7 @@ void CBitmapFont::LoadFontAsTexture_System ( void )
 	if ( IO::FileExists( filepath ) )
 		throw core::InvalidCallException();
 	else
-		Debug::Console->PrintError( "Font file does not exist" );
+		debug::Console->PrintError( "Font file does not exist" );
 	/*
 #ifdef _WIN32
 	HFONT	font;
@@ -668,7 +668,7 @@ void CBitmapFont::ConvertFontToBitmap ( void )
 	if ( IO::FileExists( filepath ) )
 		throw core::InvalidCallException();
 	else
-		Debug::Console->PrintError( "Font file does not exist" );
+		debug::Console->PrintError( "Font file does not exist" );
 	// Don't convert the font if it's already a bitmap
 	/*if ( fontInfo.isTexture )
 	{

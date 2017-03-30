@@ -2,11 +2,13 @@
 #ifndef _C_PARTICLE_SYSTEM_H_
 #define _C_PARTICLE_SYSTEM_H_
 
-#include "engine/behavior/CExtendableGameObject.h"
+#include "engine/behavior/CGameObject.h"
 
+class CRenderableObject;
+class CLogicObject;
 class CParticleEmitter;
 
-class CParticleSystem : public CExtendableGameObject
+class CParticleSystem : public CGameObject
 {
 	ClassName( "CParticleSystem" );
 public:
@@ -36,6 +38,12 @@ public:
 protected:
 	void				Init ( const string&, const bool );
 
+protected:
+	// List of the components
+	std::vector<CGameBehavior*> vpComponents;
+	std::vector<CRenderableObject*> vpRComponents;
+	std::vector<CLogicObject*> vpLComponents;
+	std::vector<CCollider*> vpCComponents;
 	std::vector<CParticleEmitter*> vpEmitters;
 
 public:

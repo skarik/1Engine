@@ -96,9 +96,6 @@
     <ClCompile Include="source\core\system\Screen.cpp">
       <Filter>SOURCE\Core\System</Filter>
     </ClCompile>
-    <ClCompile Include="source\core-ext\transform\CTransform.cpp">
-      <Filter>SOURCE\Core-ext\Transform</Filter>
-    </ClCompile>
     <ClCompile Include="source\core-ext\animation\CAnimation.cpp">
       <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClCompile>
@@ -128,6 +125,15 @@
     </ClCompile>
     <ClCompile Include="source\core\system\io\CSegmentedFile.cpp">
       <Filter>SOURCE\Core\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\animation\CAnimAction.cpp">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\animation\CAnimActionMixing.cpp">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\transform\Transform.cpp">
+      <Filter>SOURCE\Core-ext\Transform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,9 +173,6 @@
     <ClInclude Include="source\core\system\Screen.h">
       <Filter>SOURCE\Core\System</Filter>
     </ClInclude>
-    <ClInclude Include="source\core-ext\transform\CTransform.h">
-      <Filter>SOURCE\Core-ext\Transform</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\animation\CAnimation.h">
       <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClInclude>
@@ -208,6 +211,12 @@
     </ClInclude>
     <ClInclude Include="source\core\system\io\CSegmentedFile.h">
       <Filter>SOURCE\Core\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\CAnimAction.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\transform\Transform.h">
+      <Filter>SOURCE\Core-ext\Transform</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

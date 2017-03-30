@@ -158,8 +158,8 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	bSpecialRender_ResetLights = false;
 
 	// Create the debug tools
-	new Debug::CDebugDrawer;
-	new Debug::CDebugRTInspector;
+	new debug::CDebugDrawer;
+	new debug::CDebugRTInspector;
 	// Create the sprite renderer
 	new SpriteContainer;
 
@@ -205,8 +205,8 @@ CRenderState::~CRenderState ( void )
 	// Delete the sprite renderer
 	delete SpriteContainer::Active;
 	// Delete the debug tools
-	delete Debug::Drawer;
-	delete Debug::RTInspector;
+	delete debug::Drawer;
+	delete debug::RTInspector;
 
 	// Free state info
 	Active			= NULL;

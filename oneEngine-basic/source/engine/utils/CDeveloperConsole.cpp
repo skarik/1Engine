@@ -289,7 +289,7 @@ void CDeveloperConsole::AddConsoleMatch( string const& name )
 	}
 	else
 	{
-		Debug::Console->PrintError("Double console link on \"" + name + "\"\n");
+		debug::Console->PrintError("Double console link on \"" + name + "\"\n");
 	}
 }
 
@@ -325,7 +325,7 @@ bool CDeveloperConsole::RunLastCommand ( void )
 	// Search the function list for the command
 	if ( functionList.find(verb) != functionList.end() )
 	{
-		Debug::Console->PrintMessage( cmd );
+		debug::Console->PrintMessage( cmd );
 		std::cout << std::endl;
 		functionList[verb].fnc( args );
 	}
@@ -334,8 +334,8 @@ bool CDeveloperConsole::RunLastCommand ( void )
 	{
 		// If argument list is empty, then display current value
 		if ( args.length() <= 0 ) {
-			Debug::Console->PrintMessage( verb );
-			Debug::Console->PrintMessage( " = " );
+			debug::Console->PrintMessage( verb );
+			debug::Console->PrintMessage( " = " );
 			int type = variableList[verb].type;
 			if ( type == 0 ) {
 				std::cout << (*((int*)(variableList[verb].var)));
@@ -347,7 +347,7 @@ bool CDeveloperConsole::RunLastCommand ( void )
 		}
 		else
 		{
-			Debug::Console->PrintMessage( cmd );
+			debug::Console->PrintMessage( cmd );
 			int type = variableList[verb].type;
 			if ( type == 0 ) {
 				(*((int*)(variableList[verb].var))) = atoi( args.c_str() );
@@ -359,8 +359,8 @@ bool CDeveloperConsole::RunLastCommand ( void )
 	}
 	else // Print that cannot find values
 	{
-		Debug::Console->PrintError( verb );
-		Debug::Console->PrintError( ": command doesn't exist\n" );
+		debug::Console->PrintError( verb );
+		debug::Console->PrintError( ": command doesn't exist\n" );
 	}
 	return true;
 }

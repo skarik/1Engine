@@ -182,39 +182,39 @@ void glMainSystem::CheckError ( void )
 		{
 		case GL_NO_ERROR: break;
 		case GL_INVALID_ENUM:
-			Debug::Console->PrintError( "gl: GL_INVALID_ENUM\n" );
+			debug::Console->PrintError( "gl: GL_INVALID_ENUM\n" );
 			//"An unacceptable value is specified for an enumerated argument. The offending function is ignored, having no side effect other than to set the error flag." 
 			break;
 		case GL_INVALID_VALUE:
-			Debug::Console->PrintError( "gl: GL_INVALID_VALUE\n" );
+			debug::Console->PrintError( "gl: GL_INVALID_VALUE\n" );
 			//"A numeric argument is out of range. The offending function is ignored, having no side effect other than to set the error flag."
 			break;
 		case GL_INVALID_OPERATION:
-			Debug::Console->PrintError( "gl: GL_INVALID_OPERATION\n" );
+			debug::Console->PrintError( "gl: GL_INVALID_OPERATION\n" );
 			//"The specified operation is not allowed in the current state. The offending function is ignored, having no side effect other than to set the error flag."
 			break;
 		case GL_INVALID_FRAMEBUFFER_OPERATION:
-			Debug::Console->PrintError( "gl: GL_INVALID_FRAMEBUFFER_OPERATION\n" );
+			debug::Console->PrintError( "gl: GL_INVALID_FRAMEBUFFER_OPERATION\n" );
 			//"The framebuffer object is not complete. The offending command is ignored and has no other side effect than to set the error flag."
 			break;
 		case GL_OUT_OF_MEMORY:
-			Debug::Console->PrintError( "gl: GL_OUT_OF_MEMORY\n" );
+			debug::Console->PrintError( "gl: GL_OUT_OF_MEMORY\n" );
 			//"There is not enough memory left to execute the function. The state of OpenGL is undefined, except for the state of the error flags, after this error is recorded."
 			break;
 		//case GL_STACK_UNDERFLOW:
-		//	Debug::Console->PrintError( "gl: GL_STACK_UNDERFLOW\n" );
+		//	debug::Console->PrintError( "gl: GL_STACK_UNDERFLOW\n" );
 		//	//"This function would cause a stack underflow. The offending function is ignored, having no side effect other than to set the error flag."
 		//	break;
 		//case GL_STACK_OVERFLOW:
-		//	Debug::Console->PrintError( "gl: GL_STACK_OVERFLOW\n" );
+		//	debug::Console->PrintError( "gl: GL_STACK_OVERFLOW\n" );
 		//	//"This function would cause a stack overflow. The offending function is ignored, having no side effect other than to set the error flag."
 		//	break;
 		//case GL_TABLE_TOO_LARGE:
-		//	Debug::Console->PrintError( "gl: GL_TABLE_TOO_LARGE\n" );
+		//	debug::Console->PrintError( "gl: GL_TABLE_TOO_LARGE\n" );
 		//	//"The specified table exceeds the implementation's maximum supported table size. The offending command is ignored and has no other side effect than to set the error flag."
 		//	break;
 		default:
-			Debug::Console->PrintError( "gl: UNKNOWN ERROR\n" );
+			debug::Console->PrintError( "gl: UNKNOWN ERROR\n" );
 			break;
 		}
 	}

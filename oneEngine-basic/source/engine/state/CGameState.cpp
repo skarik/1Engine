@@ -1,7 +1,7 @@
 
 // Includes
 #include "core/time.h"
-#include "core-ext/transform/CTransform.h"
+#include "core-ext/transform/Transform.h"
 #include "core-ext/animation/CAnimation.h"
 #include "engine/state/CGameState.h"
 
@@ -47,8 +47,6 @@ CGameState::CGameState ( void )
 	bSceneActive = true;
 
 	bEndingGame = false;
-
-	CTransform::root.name = "Root";
 }
 // Class destructor
 //  sets pActive pointer to null
@@ -92,7 +90,7 @@ void CGameState::CleanWorld ( void )
 				if ( i != pBehaviors[i]->GetId() )
 				{
 					std::cout << "Warning: an improper id (" << i << ") was found. Ignoring object.\n  Note that this is a fatal warning, and should be reported." << std::endl;
-					Debug::Console->PrintError( "WARNING: MISMATCHED OBJECT ID. OBJECT IGNORING. NOTE THIS WARNING IS FATAL AND SHOULD BE REPORTED." );
+					debug::Console->PrintError( "WARNING: MISMATCHED OBJECT ID. OBJECT IGNORING. NOTE THIS WARNING IS FATAL AND SHOULD BE REPORTED." );
 					pBehaviors[i] = NULL;
 				}
 				else
@@ -104,7 +102,7 @@ void CGameState::CleanWorld ( void )
 					}
 					catch ( ... )
 					{
-						Debug::Console->PrintError( "SOMETHING WENT WRONG." );
+						debug::Console->PrintError( "SOMETHING WENT WRONG." );
 					}
 					pBehaviors[i] = NULL;
 				}
@@ -185,6 +183,7 @@ void CGameState::LateUpdate ( void )
 		}
 	}
 
+#if 0
 	// Update the transforms
 #if defined(_ENGINE_UNOPTIMIZED) || defined(_ENGINE_DEBUG)
 	TimeProfiler.EndTimeProfile( "gs_lateupdate" );
@@ -198,6 +197,7 @@ void CGameState::LateUpdate ( void )
 	//  Update if active
 #if defined(_ENGINE_UNOPTIMIZED) || defined(_ENGINE_DEBUG)
 	TimeProfiler.EndTimeProfile( "gs_propogate_transforms" );
+#endif
 #endif
 
 	// Loop through the delete list
@@ -422,7 +422,7 @@ gameid_t CGameState::AddBehavior ( CGameBehavior * pBehavior )
 	for ( unsigned int i = 0; i < iListSize; i += 1 )
 	{
 		if ( pBehaviors[i] == pBehavior ) {
-			Debug::Console->PrintWarning( "Double instance in list detected!\n" );
+			debug::Console->PrintWarning( "Double instance in list detected!\n" );
 			return i;
 		}
 	}

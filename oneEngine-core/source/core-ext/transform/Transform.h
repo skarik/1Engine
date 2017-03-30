@@ -1,4 +1,35 @@
+#ifndef _CORE_TRANSFORM_H_
+#define _CORE_TRANSFORM_H_
 
+// Includes
+#include <string>
+#include <vector>
+
+#include "core/common.h"
+#include "core/types/float.h"
+#include "core/math/Vector2d.h"
+#include "core/math/Vector3d.h"
+#include "core/math/Vector4d.h"
+#include "core/math/vect2d_template.h"
+#include "core/math/vect3d_template.h"
+#include "core/math/Quaternion.h"
+#include "core/math/matrix/CMatrix.h"
+#include "core/math/Rotator.h"
+
+#include "core/math/XTransform.h"
+
+#include "core-ext/transform/TransformUtility.h"
+
+namespace core
+{
+	typedef TransformLite Transform;
+
+	CORE_API	extern Vector3d_d	world_origin;
+}
+
+#endif//_CORE_TRANSFORM_H_
+
+#if 0
 #ifndef _C_TRANSFORM_H_
 #define _C_TRANSFORM_H_
 
@@ -166,4 +197,5 @@ public:
 typedef CTransform Transform;
 
 
+#endif
 #endif

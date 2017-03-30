@@ -224,23 +224,23 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::removeContactListener ( physContactL
 }
 
 
-_FORCE_INLINE_ PHYS_API void physRigidBody::SetTransform ( CTransform* transform )
+_FORCE_INLINE_ PHYS_API void physRigidBody::SetTransform ( core::Transform* transform )
 {
 	//Physics::SetRigidBodyTransform( body, transform );
-	Vector2d position = transform->position.mulComponents( Physics::WorldScaling() );
-	Real_32 rotation = transform->rotation.getEulerAngles().z;
+	Vector2d position = transform->world.position.mulComponents( Physics::WorldScaling() );
+	Real_32 rotation = transform->world.rotation.getEulerAngles().z;
 	body->SetTransform( b2Vec2(position.x,position.y), rotation );
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::GetTransform ( CTransform* transform )
+_FORCE_INLINE_ PHYS_API void physRigidBody::GetTransform ( core::Transform* transform )
 {
 	//Physics::GetRigidBodyTransform( body, transform );
 	GetTranslation(transform);
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::GetTranslation ( CTransform* transform )
+_FORCE_INLINE_ PHYS_API void physRigidBody::GetTranslation ( core::Transform* transform )
 {
 	//Physics::GetRigidBodyTranslation( body, transform );
 	b2Vec2 position = body->GetPosition();
-	transform->position = Vector2d( position.x, position.y ).divComponents( Physics::WorldScaling() );
+	transform->world.position = Vector2d( position.x, position.y ).divComponents( Physics::WorldScaling() );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::ForcePropertyUpdate ( void )
 {

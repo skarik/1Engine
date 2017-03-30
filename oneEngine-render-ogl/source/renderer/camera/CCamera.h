@@ -11,7 +11,7 @@
 #include "core/math/BoundingBox.h"
 #include "core/math/matrix/CMatrix.h"
 
-#include "core-ext/transform/CTransform.h"
+#include "core-ext/transform/Transform.h"
 
 //#include "renderer/logic/CLogicObject.h"
 
@@ -109,7 +109,7 @@ private:
 public:
 	// == Public Options ==
 	bool		active;
-	Transform	transform;
+	XrTransform	transform;
 	// Render options
 	Real		zNear;
 	Real		zFar;

@@ -55,8 +55,8 @@ bool CIsosphere::Render ( const char pass )
 	//myMat->bind();
 	m_material->bindPass(0);
 
-	transform.position = CCamera::activeCamera->transform.position;
-	GL.Transform( &transform );
+	transform.world.position = CCamera::activeCamera->transform.position;
+	GL.Transform( &transform.world );
 	//drawList();
 	drawsphere( divisions, -radius );
 

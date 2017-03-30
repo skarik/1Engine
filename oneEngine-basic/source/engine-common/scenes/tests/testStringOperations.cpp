@@ -38,7 +38,7 @@ void testStringOperations::LoadScene(void)
 				 << "Expecting result of " << target << ", got " << cm << " ";
 			// Print test result
 			if ( target != cm ) {
-				Debug::Console->PrintError( "[FAILED]\n" );
+				debug::Console->PrintError( "[FAILED]\n" );
 			}
 			else {
 				cout << "[PASS]" << endl;

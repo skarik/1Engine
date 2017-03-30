@@ -6,7 +6,7 @@
 #include "engine-common/utils/CDeveloperConsoleUI.h"
 // Needed includes
 #include "benchmarkMatrices.h"
-#include "core-ext/transform/CTransform.h"
+#include "core-ext/transform/Transform.h"
 #include <iostream>
 #include <chrono>
 

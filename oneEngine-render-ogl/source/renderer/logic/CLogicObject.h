@@ -8,7 +8,7 @@
 // Includes
 #include "core/types/types.h"
 #include "core/math/Vector3d.h"
-#include "core-ext/transform/CTransform.h"
+#include "core-ext/transform/Transform.h"
 
 //#include "GLCommon.h"
 //#include "glMainSystem.h"
@@ -81,7 +81,7 @@ public:
 
 public:
 	// Positional transform
-	CTransform	transform;
+	//CTransform	transform;
 	// Character name
 	string		name;
 

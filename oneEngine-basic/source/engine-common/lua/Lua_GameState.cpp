@@ -67,9 +67,9 @@ int lua_go_GetPosition	( lua_State* luaState )
 	CGameObject* target = (CGameObject*) lua_touserdata( luaState, 1 );
 	if ( target )
 	{
-		lua_pushnumber( luaState, target->transform.position.x );
-		lua_pushnumber( luaState, target->transform.position.y );
-		lua_pushnumber( luaState, target->transform.position.z );
+		lua_pushnumber( luaState, target->transform.world.position.x );
+		lua_pushnumber( luaState, target->transform.world.position.y );
+		lua_pushnumber( luaState, target->transform.world.position.z );
 		return 3; // Returns 3 values
 	}
 	else
@@ -85,9 +85,9 @@ int lua_go_SetPosition	( lua_State* luaState )
 	CGameObject* target = (CGameObject*) lua_touserdata( luaState, 1 );
 	if ( target )
 	{
-		target->transform.position.x = (ftype) lua_tonumber( luaState, 2 );
-		target->transform.position.y = (ftype) lua_tonumber( luaState, 3 );
-		target->transform.position.z = (ftype) lua_tonumber( luaState, 4 );
+		target->transform.world.position.x = (ftype) lua_tonumber( luaState, 2 );
+		target->transform.world.position.y = (ftype) lua_tonumber( luaState, 3 );
+		target->transform.world.position.z = (ftype) lua_tonumber( luaState, 4 );
 	}
 	else {
 		printf( "lua_go_SetPosition: object was null\n" );

@@ -5,7 +5,7 @@
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
-using namespace Debug;
+using namespace debug;
 
 CTimeProfilerUI::CTimeProfilerUI ( void )
 	: CRenderableObject()

@@ -9,9 +9,9 @@
 //  sets visibility to true
 CLogicObject::CLogicObject ( void )
 {
-	transform.owner = this;
+	/*transform.owner = this;
 	transform.ownerType = Transform::TYPE_RENDERER_LOGIC;
-	transform.name = "Transform(RenderLogic)";
+	transform.name = "Transform(RenderLogic)";*/
 	//transform.name = this->name; // TODO: ADD NAME
 
 	id = CRenderState::Active->AddLO( this );

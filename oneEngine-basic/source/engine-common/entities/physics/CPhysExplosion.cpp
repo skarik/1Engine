@@ -6,7 +6,7 @@
 CPhysExplosion::CPhysExplosion( Vector3d &vPos, ftype fMagnitude, ftype fPhysicsMultiplier )
 	: CGameObject()
 {
-	transform.position = vPos;
+	transform.world.position = vPos;
 	magnitude = fMagnitude;
 	physics_multiplier = fPhysicsMultiplier;
 
@@ -28,7 +28,7 @@ void CPhysExplosion::Explode ( void )
 {
 	if ( !exploded )
 	{
-		physExplosion* physExplo = new physExplosion ( transform.position, sqrt(magnitude)*physics_multiplier, magnitude, magnitude*2.5f );
+		physExplosion* physExplo = new physExplosion ( transform.world.position, sqrt(magnitude)*physics_multiplier, magnitude, magnitude*2.5f );
 	}
 	exploded = true;
 

@@ -6,7 +6,7 @@
 // Game System Includes
 #include "core/types/types.h"
 #include "core/types/ModelData.h"
-#include "core-ext/transform/CTransform.h"
+#include "core-ext/transform/Transform.h"
 #include "core/debug/CDebugConsole.h"
 
 // Raytracing includes
@@ -121,8 +121,8 @@ static void __cdecl errorReport( const char* msg, void* userContext )
 {
     //using namespace std;
     //printf("%s", msg);
-	Debug::Console->PrintMessage( msg );
-	Debug::Console->PrintMessage( "\n" );
+	debug::Console->PrintMessage( msg );
+	debug::Console->PrintMessage( "\n" );
 }
 
 //===Physics Class Typedefs===

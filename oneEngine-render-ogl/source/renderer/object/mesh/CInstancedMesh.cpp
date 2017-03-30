@@ -68,15 +68,15 @@ bool CInstancedMesh::Render ( const char pass )
 	GL_ACCESS;
 
 	// Get rid of any transforms
-	transform.position = Vector3d::zero;
-	transform.localPosition = Vector3d::zero;
-	transform.LateUpdate();
+	transform.world.position = Vector3d::zero;
+	transform.local.position = Vector3d::zero;
+	//transform.LateUpdate();
 
 	// Set up transformation for the mesh
 	if ( m_parent )
 		GL.Transform( &m_parent->transform );
 	else
-		GL.Transform( &this->transform );
+		GL.Transform( &this->transform.world );
 
 	// Set up material properties before mesh is bound
 	if ( bUseSkinning && false )

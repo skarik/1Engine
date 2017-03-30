@@ -123,7 +123,7 @@ void	CLuaController::ReportErrors( lua_State *L, int status )
 	if ( status != 0 ) {
 		//std::cerr << "-- " << lua_tostring(L, -1) << std::endl;
 		string err = string("lua: ") + lua_tostring(L, -1) + "\n";
-		Debug::Console->PrintError( err );
+		debug::Console->PrintError( err );
 		lua_pop(L, 1); // remove error message
 	}
 }
@@ -190,7 +190,7 @@ int		CLuaController::Call ( const string & fnName, const int fnArgNum, va_list a
 				lua_pushlightuserdata( luaVM, var );
 			}
 			else {
-				Debug::Console->PrintError( "Invalid arguments to Lua::Call\n" );
+				debug::Console->PrintError( "Invalid arguments to Lua::Call\n" );
 			}
 		}
 		//va_end( arguments );
@@ -210,10 +210,10 @@ int		CLuaController::Call ( const string & fnName, const int fnArgNum, va_list a
 	{
 		// Print that function not exists
 		if ( lua_isnil( luaVM, -1 ) ) {
-			Debug::Console->PrintError( string("variable \"")+fnName+"\" is nil\n" );
+			debug::Console->PrintError( string("variable \"")+fnName+"\" is nil\n" );
 		}
 		else {
-			Debug::Console->PrintError( string("variable \"")+fnName+"\" is not a function\n" );
+			debug::Console->PrintError( string("variable \"")+fnName+"\" is not a function\n" );
 		}
 		lua_pop( luaVM, 1 );
 		return 0;
@@ -228,7 +228,7 @@ void	CLuaController::PopValid ( const int popCount )
 	}
 	else {
 		if ( popCount != 0 ) {
-			Debug::Console->PrintWarning( "Invalid pop count passed to PopValid().\n" );
+			debug::Console->PrintWarning( "Invalid pop count passed to PopValid().\n" );
 		}
 	}
 }

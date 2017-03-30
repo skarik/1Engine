@@ -21,9 +21,9 @@ CProjectile::CProjectile( Ray const& rnInRay, ftype fnInSpeed, ftype fnWidth )
 	: CGameObject(), rStartDirection( rnInRay ), fStartSpeed( fnInSpeed ), fShapeRadius( fnWidth )
 {
 	// Immediately set the position of the projectile
-	transform.position	= rStartDirection.pos;
-	vPreviousPosition	= rStartDirection.pos;
-	vStartPosition		= rStartDirection.pos;
+	transform.world.position	= rStartDirection.pos;
+	vPreviousPosition			= rStartDirection.pos;
+	vStartPosition				= rStartDirection.pos;
 
 	// Immediately set the velocity
 	vVelocity	= rStartDirection.dir.normal() * fStartSpeed;
@@ -41,7 +41,7 @@ CProjectile::CProjectile( Ray const& rnInRay, ftype fnInSpeed, ftype fnWidth )
 	fDamageMultiplier	= 1.0f;
 
 	// Set if in water
-	if ( WaterTester::Get() && WaterTester::Get()->PositionInside( transform.position ) ) {
+	if ( WaterTester::Get() && WaterTester::Get()->PositionInside( transform.world.position ) ) {
 		bInWater = true;
 		vVelocity *= 0.5f;
 	}
@@ -68,7 +68,7 @@ CProjectile::~CProjectile ( void )
 void CProjectile::Update ( void )
 {
 	// First check water
-	if ( WaterTester::Get() && WaterTester::Get()->PositionInside( transform.position ) ) {
+	if ( WaterTester::Get() && WaterTester::Get()->PositionInside( transform.world.position ) ) {
 		OnEnterWater();
 	}
 
@@ -76,7 +76,7 @@ void CProjectile::Update ( void )
 	//effects.Update();
 
 	// Perform movement
-	vPreviousPosition = transform.position;
+	vPreviousPosition = transform.world.position;
 	if ( bPerformDrop )
 	{
 		vVelocity.z -= Time::deltaTime * ( 3.0f + std::max<Real>( 0, fStartSpeed*fDropPoint - vVelocity.magnitude() ) * 2.0f );
@@ -94,9 +94,9 @@ void CProjectile::Update ( void )
 	{
 		vVelocity = vVelocity.normal() * fStartSpeed;
 	}
-	transform.position += vVelocity * Time::deltaTime;
+	transform.world.position += vVelocity * Time::deltaTime;
 	//transform.rotation = vVelocity.normal().toEulerAngles();
-	transform.rotation = Quaternion::CreateRotationTo( Vector3d::forward, vVelocity.normal() );
+	transform.world.rotation = Quaternion::CreateRotationTo( Vector3d::forward, vVelocity.normal() );
 
 	// Check to make sure we're in range
 	if ( (vPreviousPosition - vStartPosition).sqrMagnitude() > sqr( fMaxRange ) )

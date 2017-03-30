@@ -24,8 +24,6 @@ uniform mat4 sys_ViewProjectionMatrix;
 //uniform vec3 sys_WorldCameraPos;
 
 // Material inputs
-//uniform vec3 sys_LightingOverrides;
-//uniform vec4 gm_WindDirection;
 uniform vec4 sys_TextureScale;
 uniform vec4 sys_TextureOffset;
 

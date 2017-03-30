@@ -53,12 +53,12 @@ void CRTCameraCascade::RenderScene ( void )
 	ortho_size = old_ortho_size;
 
 	// Watch the render texture
-	//Debug::RTInspector->AddWatch( m_renderTexture );
+	//debug::RTInspector->AddWatch( m_renderTexture );
 
 	// Unbind the frame buffer
 	m_renderTexture->UnbindBuffer();
 
-	//Debug::RTInspector->AddWatch( myRenderTexture );
+	//debug::RTInspector->AddWatch( myRenderTexture );
 
 	/*RenderSet();
 	SceneRenderer->RenderScene();

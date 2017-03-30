@@ -19,7 +19,7 @@
 
 void gmsceneSystemBuilder::LoadScene ( void )
 {
-	Debug::Console->PrintMessage( "Loading scene (System Builder).\n" );
+	debug::Console->PrintMessage( "Loading scene (System Builder).\n" );
 
 	// Create the console (basically our script link)
 	CDeveloperConsoleUI* devConsole = new CDeveloperConsoleUI();
@@ -29,8 +29,8 @@ void gmsceneSystemBuilder::LoadScene ( void )
 	Engine::Console->AddConsoleFunc( "build", EngineCommon::BuildToTarget );
 
 	// Print a prompt
-	Debug::Console->PrintMessage( "You are running a debug build of oneEngine.\n" );
-	Debug::Console->PrintMessage( "Please enter a build to create, or \"scene default\" to go back.\n" );
+	debug::Console->PrintMessage( "You are running a debug build of oneEngine.\n" );
+	debug::Console->PrintMessage( "Please enter a build to create, or \"scene default\" to go back.\n" );
 }
 
 enum buildMode_t
@@ -63,7 +63,7 @@ int EngineCommon::BuildToTarget ( const std::string& n_cmd )
 	{
 		if ( strcmp( entry.name, n_cmd.c_str() ) == 0 )
 		{
-			Debug::Console->PrintMessage( "Building to target \"" + string(entry.name) + "\"\n" );
+			debug::Console->PrintMessage( "Building to target \"" + string(entry.name) + "\"\n" );
 
 			arstring<256> m_builddir ( entry.value );
 			buildMode_t m_buildmode = BUILD_MODE_UNSPECIFIED;
@@ -94,7 +94,7 @@ int EngineCommon::BuildToTarget ( const std::string& n_cmd )
 					else if ( value.compare("sounds") )
 						m_rebuildtargets |= BUILD_TARGET_SOUNDS;
 					else
-						Debug::Console->PrintWarning( "+Unrecognized rebuild target \"" + string(value) + "\"\n" );
+						debug::Console->PrintWarning( "+Unrecognized rebuild target \"" + string(value) + "\"\n" );
 				}
 
 				// Read next
@@ -118,7 +118,7 @@ int EngineCommon::BuildToTarget ( const std::string& n_cmd )
 		osf_loader.GetNext( entry );
 	}
 	// Here? We could not find it. Try again later.
-	Debug::Console->PrintWarning( "Could not find build target \"" + n_cmd + "\"\n" );
+	debug::Console->PrintWarning( "Could not find build target \"" + n_cmd + "\"\n" );
 	return 0;
 }
 
@@ -133,7 +133,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 	fs::remove_all( build_path );
 	// Wait for the filesystem to update
 	while ( fs::exists( build_path ) ) fs::remove_all( build_path );
-	Debug::Console->PrintWarning( "Waiting 500ms for the filesystem.\n" );
+	debug::Console->PrintWarning( "Waiting 500ms for the filesystem.\n" );
 	std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
 	// Now, create the directory again
 	fs::create_directories( build_path );
@@ -256,5 +256,5 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 			}
 		}
 	}
-	Debug::Console->PrintWarning( "Build done!\n" );
+	debug::Console->PrintWarning( "Build done!\n" );
 }

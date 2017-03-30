@@ -127,18 +127,18 @@ bool Cubic::PointIsInside ( Vector3d const& point )
 /*#include "../CDebugDrawer.h"
 void Cubic::DrawDebug ( void )
 {
-	Debug::Drawer->DrawLine( position+Vector3d( 0,0,0 ), position+Vector3d( size.x,0,0 ) );
-	Debug::Drawer->DrawLine( position+Vector3d( size.x,0,0 ), position+Vector3d( size.x,size.y,0 ) );
-	Debug::Drawer->DrawLine( position+Vector3d( size.x,size.y,0 ), position+Vector3d( 0,size.y,0 ) );
-	Debug::Drawer->DrawLine( position+Vector3d( 0,size.y,0 ), position+Vector3d( 0,0,0 ) );
-	Debug::Drawer->DrawLine( position+Vector3d( 0,0,size.z ), position+Vector3d( size.x,0,size.z ) );
-	Debug::Drawer->DrawLine( position+Vector3d( size.x,0,size.z ), position+Vector3d( size.x,size.y,size.z ) );
-	Debug::Drawer->DrawLine( position+Vector3d( size.x,size.y,size.z ), position+Vector3d( 0,size.y,size.z ) );
-	Debug::Drawer->DrawLine( position+Vector3d( 0,size.y,size.z ), position+Vector3d( 0,0,size.z ) );
-	Debug::Drawer->DrawLine( position+Vector3d( 0,0,0 ), position+Vector3d( 0,0,size.z ) );
-	Debug::Drawer->DrawLine( position+Vector3d( size.x,0,0 ), position+Vector3d( size.x,0,size.z ) );
-	Debug::Drawer->DrawLine( position+Vector3d( size.x,size.y,0 ), position+Vector3d( size.x,size.y,size.z ) );
-	Debug::Drawer->DrawLine( position+Vector3d( 0,size.y,0 ), position+Vector3d( 0,size.y,size.z ) );
+	debug::Drawer->DrawLine( position+Vector3d( 0,0,0 ), position+Vector3d( size.x,0,0 ) );
+	debug::Drawer->DrawLine( position+Vector3d( size.x,0,0 ), position+Vector3d( size.x,size.y,0 ) );
+	debug::Drawer->DrawLine( position+Vector3d( size.x,size.y,0 ), position+Vector3d( 0,size.y,0 ) );
+	debug::Drawer->DrawLine( position+Vector3d( 0,size.y,0 ), position+Vector3d( 0,0,0 ) );
+	debug::Drawer->DrawLine( position+Vector3d( 0,0,size.z ), position+Vector3d( size.x,0,size.z ) );
+	debug::Drawer->DrawLine( position+Vector3d( size.x,0,size.z ), position+Vector3d( size.x,size.y,size.z ) );
+	debug::Drawer->DrawLine( position+Vector3d( size.x,size.y,size.z ), position+Vector3d( 0,size.y,size.z ) );
+	debug::Drawer->DrawLine( position+Vector3d( 0,size.y,size.z ), position+Vector3d( 0,0,size.z ) );
+	debug::Drawer->DrawLine( position+Vector3d( 0,0,0 ), position+Vector3d( 0,0,size.z ) );
+	debug::Drawer->DrawLine( position+Vector3d( size.x,0,0 ), position+Vector3d( size.x,0,size.z ) );
+	debug::Drawer->DrawLine( position+Vector3d( size.x,size.y,0 ), position+Vector3d( size.x,size.y,size.z ) );
+	debug::Drawer->DrawLine( position+Vector3d( 0,size.y,0 ), position+Vector3d( 0,size.y,size.z ) );
 }*/
 
 // Check if box intersects with box

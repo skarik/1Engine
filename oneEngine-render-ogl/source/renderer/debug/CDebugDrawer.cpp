@@ -10,10 +10,10 @@
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
-using namespace Debug;
+using namespace debug;
 
 // Static Variables
-CDebugDrawer* Debug::Drawer = NULL;
+CDebugDrawer* debug::Drawer = NULL;
 CDebugDrawer* CDebugDrawer::mActive = NULL;
 
 // Constructor
@@ -21,7 +21,7 @@ CDebugDrawer::CDebugDrawer ( void )
 	: CRenderableObject ()
 {
 	mActive = this;
-	Debug::Drawer = this;
+	debug::Drawer = this;
 
 	// Set the default white material
 	RrMaterial* defaultMat = new RrMaterial;
@@ -42,7 +42,7 @@ CDebugDrawer::~CDebugDrawer ( void )
 	if ( mActive == this )
 	{
 		mActive = NULL;
-		Debug::Drawer = NULL;
+		debug::Drawer = NULL;
 	}
 }
 

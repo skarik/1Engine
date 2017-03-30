@@ -64,9 +64,9 @@ bool CParticleRenderer::BeginRender ( void )
 	/*for ( auto it = myEmitter->vParticles.begin(); it != myEmitter->vParticles.end(); ++it )
 	{
 		Color tColor = it->cColor * m_material->m_diffuse;
-		Debug::Drawer->DrawLine( it->vPosition + Vector3d( it->fSize,0,0 ), it->vPosition + Vector3d( -it->fSize,0,0 ), tColor );
-		Debug::Drawer->DrawLine( it->vPosition + Vector3d( 0,it->fSize,0 ), it->vPosition + Vector3d( 0,-it->fSize,0 ), tColor );
-		Debug::Drawer->DrawLine( it->vPosition + Vector3d( 0,0,it->fSize ), it->vPosition + Vector3d( 0,0,-it->fSize ), tColor );
+		debug::Drawer->DrawLine( it->vPosition + Vector3d( it->fSize,0,0 ), it->vPosition + Vector3d( -it->fSize,0,0 ), tColor );
+		debug::Drawer->DrawLine( it->vPosition + Vector3d( 0,it->fSize,0 ), it->vPosition + Vector3d( 0,-it->fSize,0 ), tColor );
+		debug::Drawer->DrawLine( it->vPosition + Vector3d( 0,0,it->fSize ), it->vPosition + Vector3d( 0,0,-it->fSize ), tColor );
 	}*/
 
 	TimeProfiler.BeginTimeProfile( "rs_particle_renderer_begin" );

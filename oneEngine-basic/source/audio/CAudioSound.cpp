@@ -57,7 +57,7 @@ void CAudioSound::Init ( const string& sFileName )
 	// Check to see if it loaded properly
 	if ( result != FMOD::FMOD_OK )
 	{
-		Debug::Console->PrintError("FMOD could not open the file \"" + sFileName + "\"");
+		debug::Console->PrintError("FMOD could not open the file \"" + sFileName + "\"");
 	}
 
 	streamed = false;

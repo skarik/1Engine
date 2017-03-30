@@ -11,7 +11,7 @@ class CStreamedRenderable2D;
 
 namespace Engine2D
 {
-	class SpriteContainer : CLogicObject
+	class SpriteContainer : private CLogicObject
 	{
 	protected:
 		//		SpriteContainer (Constructor)

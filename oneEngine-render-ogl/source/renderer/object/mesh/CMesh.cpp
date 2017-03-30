@@ -62,7 +62,9 @@ bool CMesh::PreRender ( const char pass )
 
 		if ( !bUseSkinning )
 		{
-			if ( CCamera::activeCamera->SphereIsVisible( transform.WorldMatrix() * vCheckRenderPos, fCheckRenderDist * (transform.scale.x+transform.scale.y+transform.scale.z) * 0.4f ) )
+			if ( CCamera::activeCamera->SphereIsVisible(
+				transform.WorldMatrix() * vCheckRenderPos,
+				fCheckRenderDist * (transform.world.scale.x+transform.world.scale.y+transform.world.scale.z) * 0.4f ) )
 			{
 				bCanRender = true;
 			}
@@ -74,7 +76,10 @@ bool CMesh::PreRender ( const char pass )
 			modelOrigin = ((CSkinnedModel*)m_parent)->GetSkeleton()->current_transform[1].WorldMatrix() * vCheckRenderPos;
 			modelOrigin = transform.WorldMatrix() * modelOrigin;
 			//modelOrigin += transform.GetTransformMatrix() * vCheckRenderPos
-			if ( CCamera::activeCamera->SphereIsVisible( modelOrigin, fCheckRenderDist * (transform.scale.x+transform.scale.y+transform.scale.z) * 0.6f ) ) {
+			if ( CCamera::activeCamera->SphereIsVisible(
+				modelOrigin, 
+				fCheckRenderDist * (transform.world.scale.x+transform.world.scale.y+transform.world.scale.z) * 0.6f ) )
+			{
 				bCanRender = true;
 			}
 		}
@@ -99,7 +104,7 @@ bool CMesh::Render ( const char pass )
 	if ( m_parent )
 		GL.Transform( &m_parent->transform );
 	else
-		GL.Transform( &this->transform );
+		GL.Transform( &this->transform.world );
 	
 	// Set up material properties before mesh is bound
 	if ( bUseSkinning )

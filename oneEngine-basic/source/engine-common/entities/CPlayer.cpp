@@ -58,8 +58,8 @@ void CPlayer::LateUpdate ( void )
 	// Update listener position
 	pListener->velocity = pCamera->transform.position - pListener->position;
 	pListener->position = pCamera->transform.position;
-	pListener->orient_forward = pCamera->transform.Forward();
-	pListener->orient_up = pCamera->transform.Up();
+	pListener->orient_forward = pCamera->transform.rotation * Vector3d(1,0,0);
+	pListener->orient_up = pCamera->transform.rotation * Vector3d(0,0,1);
 }
 
 //LateUpdate for updating the current movement
@@ -142,7 +142,7 @@ void CPlayer::GrabInput ( void )
 void*	CPlayer::camDefault ( void )
 {
 	// Set the position of the view
-	pCamera->transform.position = transform.position;
+	pCamera->transform.position = transform.world.position;
 
 	// Do mouse look
 	vCameraRotation.z = vPlayerRotation.z;
@@ -186,10 +186,10 @@ void*	CPlayer::mvtPhaseFlying ( void )
 	}
 
 	if ( input->axes.sprint ) { 
-		transform.position += moveVector * Time::deltaTime * 30.0f;
+		transform.world.position += moveVector * Time::deltaTime * 30.0f;
 	}
 	else {
-		transform.position += moveVector * Time::deltaTime * 6.0f;
+		transform.world.position += moveVector * Time::deltaTime * 6.0f;
 	}
 
 	return NULL;

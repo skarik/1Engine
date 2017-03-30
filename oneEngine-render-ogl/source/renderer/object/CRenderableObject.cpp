@@ -18,9 +18,9 @@ Vector3d CRenderableObject::_activeCameraPosition = Vector3d::zero;
 CRenderableObject::CRenderableObject ( void )
 	: m_material(NULL), m_vao_info(NULL), m_vao_count(0), m_vao_maxcount(0)
 {
-	transform.owner = this;
+	/*transform.owner = this;
 	transform.ownerType = Transform::TYPE_RENDERER_OBJECT;
-	transform.name = "Transform(Renderable)";
+	transform.name = "Transform(Renderable)";*/
 	//transform.name = this->name; // TODO: ADD NAME
 
 	// Set default render settings

@@ -28,7 +28,7 @@
 
 void sceneGameLuvPpl::LoadScene ( void )
 {
-	Debug::Console->PrintMessage( "Loading sceneGameLuvPpl.\n" );
+	debug::Console->PrintMessage( "Loading sceneGameLuvPpl.\n" );
 
 	// Hide the cursor
 	ActiveCursor->SetVisible(false);
@@ -79,8 +79,8 @@ void sceneGameLuvPpl::LoadScene ( void )
 	}*/
 
 	// Print a prompt
-	Debug::Console->PrintMessage( "You are running a debug build of M04.\n" );
-	Debug::Console->PrintMessage( "Loading Luv/ppl...\n" );
+	debug::Console->PrintMessage( "You are running a debug build of M04.\n" );
+	debug::Console->PrintMessage( "Loading Luv/ppl...\n" );
 
 	// Create needed objects:
 	Engine2D::TileMap* m_tilemap = new Engine2D::TileMap; m_tilemap->RemoveReference();

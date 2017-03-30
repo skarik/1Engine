@@ -48,13 +48,13 @@ bool	CRaycaster::Raycast	( const Ray & ray, ftype max_dist, RaycastHit * pOutHit
 	Ray debugRay;
 	debugRay.dir = pOutHitInfo->hitNormal * 1.0f;
 	debugRay.pos = pOutHitInfo->hitPos;
-	Debug::Drawer->DrawRay(debugRay);
-	Debug::Drawer->DrawLine( pOutHitInfo->hitPos, pOutHitInfo->hitPos+Vector3d( 0.25f,0,0 ) );
-	Debug::Drawer->DrawLine( pOutHitInfo->hitPos, pOutHitInfo->hitPos+Vector3d( -0.25f,0,0 ) );
-	Debug::Drawer->DrawLine( pOutHitInfo->hitPos, pOutHitInfo->hitPos+Vector3d( 0,0.25f,0 ) );
-	Debug::Drawer->DrawLine( pOutHitInfo->hitPos, pOutHitInfo->hitPos+Vector3d( 0,-0.25f,0 ) );
-	Debug::Drawer->DrawLine( pOutHitInfo->hitPos, pOutHitInfo->hitPos+Vector3d( 0,0,0.25f ) );
-	Debug::Drawer->DrawLine( pOutHitInfo->hitPos, pOutHitInfo->hitPos+Vector3d( 0,0,-0.25f ) );
+	debug::Drawer->DrawRay(debugRay);
+	debug::Drawer->DrawLine( pOutHitInfo->hitPos, pOutHitInfo->hitPos+Vector3d( 0.25f,0,0 ) );
+	debug::Drawer->DrawLine( pOutHitInfo->hitPos, pOutHitInfo->hitPos+Vector3d( -0.25f,0,0 ) );
+	debug::Drawer->DrawLine( pOutHitInfo->hitPos, pOutHitInfo->hitPos+Vector3d( 0,0.25f,0 ) );
+	debug::Drawer->DrawLine( pOutHitInfo->hitPos, pOutHitInfo->hitPos+Vector3d( 0,-0.25f,0 ) );
+	debug::Drawer->DrawLine( pOutHitInfo->hitPos, pOutHitInfo->hitPos+Vector3d( 0,0,0.25f ) );
+	debug::Drawer->DrawLine( pOutHitInfo->hitPos, pOutHitInfo->hitPos+Vector3d( 0,0,-0.25f ) );
 #endif
 	*/
 	return pOutHitInfo->hit;

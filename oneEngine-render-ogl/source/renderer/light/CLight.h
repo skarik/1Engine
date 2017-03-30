@@ -80,6 +80,9 @@ public:
 
 public:
 	// == Publics Settings ==
+	// Position & Rotaton
+	Vector3d position;
+
 	// Color
 	Color diffuseColor;
 	Color hdrColor;

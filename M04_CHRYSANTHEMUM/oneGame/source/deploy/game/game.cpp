@@ -63,7 +63,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 
 	// Create Window
 	RrWindow aWindow( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
-	Debug::Console->PrintMessage( "Main system initialized properly. I think.\n" );
+	debug::Console->PrintMessage( "Main system initialized properly. I think.\n" );
 	std::cout << "Win32 Build (" << __DATE__ << ") Prealpha" << std::endl;
 
 	// Init Physics
@@ -82,7 +82,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	// Inialize steam
 	bool bSteamy = false;
 	//bSteamy = SteamAPI_Init();
-	//Debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
+	//debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
 
 	// Create the engine systems
 	Lua::CLuaController* luaController = new Lua::CLuaController();
@@ -97,8 +97,8 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	//CDeveloperCursor* devCursor = new CDeveloperCursor();
 
 	// Create the debug drawers
-	//Debug::CDebugDrawer debugDrawer;
-	//Debug::CDebugRTInspector debugRTInspector;
+	//debug::CDebugDrawer debugDrawer;
+	//debug::CDebugRTInspector debugRTInspector;
 	// Create the sprite drawer
 	//CSpriteContainer spriteContainer;
 

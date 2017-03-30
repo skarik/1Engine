@@ -13,7 +13,7 @@ using std::string;
 
 class CTimeProfilerUI;
 
-namespace Debug
+namespace debug
 {
 	class CTimeProfiler
 	{
@@ -59,7 +59,7 @@ namespace Debug
 	};
 }
 
-CORE_API extern Debug::CTimeProfiler TimeProfiler;
+CORE_API extern debug::CTimeProfiler TimeProfiler;
 
 #endif
 

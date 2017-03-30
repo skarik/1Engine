@@ -79,7 +79,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 		string fbx_filename = core::Resources::PathTo( fbx_rezname );
 		if ( ConvertFile( fbx_filename.c_str() ) == false )
 		{
-			Debug::Console->PrintError( "ModelLoader::LoadModel : Error occurred in ModelLoader::ConvertFile call\n" );
+			debug::Console->PrintError( "ModelLoader::LoadModel : Error occurred in ModelLoader::ConvertFile call\n" );
 		}
 
 		// Make sure loading in a pad file now
@@ -99,7 +99,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 	if ( !segment_file->ReadData() )
 	{
 		// Count not read in the file.
-		Debug::Console->PrintError( "ModelLoader::LoadModel : could not load model file\n" );
+		debug::Console->PrintError( "ModelLoader::LoadModel : could not load model file\n" );
 		delete segment_file;
 		return false;
 	}
@@ -139,7 +139,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			else
 			{
 				materials.push_back( modelFmtMaterialEntry_t() );
-				Debug::Console->PrintError( "ModelLoader::LoadModel : could not load find material segment!\n" );
+				debug::Console->PrintError( "ModelLoader::LoadModel : could not load find material segment!\n" );
 			}
 		}
 	}
@@ -187,7 +187,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			else
 			{
 				skeleton.push_back( modelFmtBoneEntry_t() );
-				Debug::Console->PrintError( "ModelLoader::LoadModel : could not load find bone segment!\n" );
+				debug::Console->PrintError( "ModelLoader::LoadModel : could not load find bone segment!\n" );
 			}
 		}
 	}
@@ -220,7 +220,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			}
 			else
 			{
-				Debug::Console->PrintError( "ModelLoader::LoadModel : could not load find bone segment for animation!\n" );
+				debug::Console->PrintError( "ModelLoader::LoadModel : could not load find bone segment for animation!\n" );
 			}
 		}
 	}
@@ -257,7 +257,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			else
 			{
 				meshes.push_back( modelFmtMeshEntry_t() );
-				Debug::Console->PrintError( "ModelLoader::LoadModel : could not find mesh to load!\n" );
+				debug::Console->PrintError( "ModelLoader::LoadModel : could not find mesh to load!\n" );
 			}
 		}
 	}
@@ -291,7 +291,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 				else
 				{
 					collisions.push_back( modelFmtCollisionEntry_t() );
-					Debug::Console->PrintError( "ModelLoader::LoadModel : could not find collision entry to load!\n" );
+					debug::Console->PrintError( "ModelLoader::LoadModel : could not find collision entry to load!\n" );
 				}
 			}
 		}
@@ -317,7 +317,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			else
 			{
 				morphs.push_back( modelFmtMorphEntry_t() );
-				Debug::Console->PrintError( "ModelLoader::LoadModel : could not find morph to load!\n" );
+				debug::Console->PrintError( "ModelLoader::LoadModel : could not find morph to load!\n" );
 			}
 		}
 	}
@@ -388,7 +388,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			else
 			{
 				effects.push_back( modelFmtFxEntry_t() );
-				Debug::Console->PrintError( "ModelLoader::LoadModel : could not find FX to load!\n" );
+				debug::Console->PrintError( "ModelLoader::LoadModel : could not find FX to load!\n" );
 			}
 		}
 	}
@@ -435,7 +435,7 @@ bool ModelLoader::ConvertFile ( const char* n_filename )
 
 			if ( !result )
 			{
-				Debug::Console->PrintWarning( "Cannot convert model: no FBX conversion devtool!\n" );
+				debug::Console->PrintWarning( "Cannot convert model: no FBX conversion devtool!\n" );
 			}
 			else
 			{
@@ -449,7 +449,7 @@ bool ModelLoader::ConvertFile ( const char* n_filename )
 
 			delete[] lpCommandLine;
 #		elif
-			Debug::Console->PrintWarning( "Cannot convert model: conversion can only be performed on Windows.\n" );
+			debug::Console->PrintWarning( "Cannot convert model: conversion can only be performed on Windows.\n" );
 #		endif
 		}
 

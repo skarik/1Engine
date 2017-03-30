@@ -58,8 +58,8 @@ bool CLightComparison::operator() ( CLight* pLight2, CLight* pLight1 )
 		return false;
 
 	// Else, sort by distance
-	Vector3d vDist1 = pLight1->transform.position - CLight::vCameraPos;
-	Vector3d vDist2 = pLight2->transform.position - CLight::vCameraPos;
+	Vector3d vDist1 = pLight1->position - CLight::vCameraPos;
+	Vector3d vDist2 = pLight2->position - CLight::vCameraPos;
 	if ( vDist1.sqrMagnitude() > vDist2.sqrMagnitude() )
 	{
 		return false;
@@ -87,8 +87,8 @@ bool CLightComparisonExternal::operator() ( CLight* pLight1, CLight* pLight2 )
 		return false;
 
 	// Else, sort by distance
-	Vector3d vDist1 = pLight1->transform.position - CLight::vCameraPos;
-	Vector3d vDist2 = pLight2->transform.position - CLight::vCameraPos;
+	Vector3d vDist1 = pLight1->position - CLight::vCameraPos;
+	Vector3d vDist2 = pLight2->position - CLight::vCameraPos;
 	if ( vDist1.sqrMagnitude() > vDist2.sqrMagnitude() )
 	{
 		return false;
@@ -146,10 +146,10 @@ void CLight::PreStepSynchronus ( void )
 {
 	if ( drawHalo )
 	{
-		if ( !mHalo ) {
+		if ( !mHalo )
+		{
 			mHalo = new CBillboard;
-			mHalo->transform.position = transform.position;
-			mHalo->transform.SetParent( &transform );
+			mHalo->transform.world.position = position;
 			RrMaterial* newMat = new RrMaterial;
 			newMat->removeReference();
 			newMat->passinfo.push_back( RrPassForward() );
@@ -158,7 +158,9 @@ void CLight::PreStepSynchronus ( void )
 			newMat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
 			mHalo->SetMaterial( newMat );
 		}
-		else {
+		else
+		{
+			mHalo->transform.world.position = position;
 			mHalo->GetMaterial()->m_diffuse = diffuseColor;
 			mHalo->GetMaterial()->m_diffuse.alpha = range;
 			mHalo->GetMaterial()->m_emissive = Color( haloStrength, falloff, pass );
@@ -255,9 +257,9 @@ void CLight::UpdateLightList ( void )
 void CLight::UpdateLight ( void )
 {
 	// Push the light positions to the 4-component structure
-	vLightPos.red	= transform.position.x;
-	vLightPos.green = transform.position.y;
-	vLightPos.blue	= transform.position.z;
+	vLightPos.red	= position.x;
+	vLightPos.green = position.y;
+	vLightPos.blue	= position.z;
 
 	if ( (int)lightIndex < (renderer::Settings.maxLights-1) )
 	{
@@ -334,7 +336,11 @@ void CLight::UpdateShadows ( void )
 // Update shadow camera
 void CLight::UpdateShadowCamera ( void )
 {
-	shadowCamera->transform.Get( transform );
+	//shadowCamera->transform.Get( transform );
+	if ( shadowCamera != NULL )
+	{
+		shadowCamera->transform.position = position;
+	}
 }
 
 // == Getters ==

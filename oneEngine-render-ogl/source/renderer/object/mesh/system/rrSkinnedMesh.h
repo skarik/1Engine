@@ -129,7 +129,7 @@ protected:
 	//Matrix4x4*	pvPoseMatrices;
 	//Matrix4x4*	pvSoftMatrices;
 
-	glBone*		parentBone;
+	//glBone*		parentBone;
 	bool		useSkinning;
 
 	//CModelData* pmStreamData;

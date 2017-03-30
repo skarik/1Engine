@@ -77,36 +77,11 @@ RrWindow::RrWindow(
 	renderer::Settings.fogStart = 10.0f;
 	renderer::Settings.fogEnd = 300.0f;
 
-	Debug::CDebugConsole::Init();
+	debug::CDebugConsole::Init();
 
 	// Create the window
 	if ( createWindow() )
-	{	/*
-		// Do render setting stuff
-		if ( renderer::Settings.lightingEnabled )
-			glEnable( GL_LIGHTING );
-		if ( renderer::Settings.fogEnabled )
-			glEnable( GL_FOG );
-		//glFogi( GL_FOG_COORD_SRC, GL_FRAGMENT_DEPTH );
-		//glFogi(GL_FOG_MODE, GL_LINEAR); 
-
-		// Change ambient light and vertex color calculations
-		if ( !CGameSettings::Active()->b_ro_EnableShaders ) {
-			glEnable( GL_COLOR_MATERIAL );
-			//glLightModelfv( GL_LIGHT_MODEL_AMBIENT, Color( 0,0,0,1 ).start_point() );
-			//glColorMaterial( GL_FRONT,GL_AMBIENT_AND_DIFFUSE );
-		}
-
-		// Get maximum number of renderable lights
-		glGetIntegerv( GL_MAX_LIGHTS, &(renderer::Settings.maxLights) );
-		
-		// Set the default ambient light
-		//float lighting [4] = {0.2f,0.15f,0.3f,1.0f};
-		if ( !CGameSettings::Active()->b_ro_EnableShaders ) {
-			//glLightfv( GL_LIGHT0, GL_AMBIENT, renderer::Settings.ambientColor.start_point() );//lighting );
-			//glLightfv( GL_LIGHT0, GL_DIFFUSE, ((Color(0,0,0,1)).start_point()) );	
-			glEnable( GL_LIGHT0 );
-		}*/
+	{	
 		// Set the swap number
 		GL.SetSwapInterval( renderer::Settings.swapIntervals );
 	}
@@ -134,7 +109,7 @@ RrWindow::~RrWindow ( void )
 	wglDeleteContext( hRenderContext );
 	
 	// close misc windows
-	Debug::CDebugConsole::Free();
+	debug::CDebugConsole::Free();
 }
 
 bool RrWindow::isActive ( void )
@@ -630,7 +605,7 @@ RrWindow::eReturnStatus	RrWindow::CreateGLContext ( void )
 		GL.InitializeCommonExtensions();
 	}
 	catch ( core::NullReferenceException ) {
-		Debug::Console->PrintError( "Could not create OpenGL 3.3+ device." );
+		debug::Console->PrintError( "Could not create OpenGL 3.3+ device." );
 	}
 
 	// Clear out errors now
@@ -947,27 +922,27 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 
 		case WM_TOUCH:
 		{
-			Debug::Console->PrintWarning( "Touch message\n" );
+			debug::Console->PrintWarning( "Touch message\n" );
 			return 0;
 		}
 		case WM_GESTURENOTIFY:
 		{
-			Debug::Console->PrintWarning( "Gesture notify message\n" );
+			debug::Console->PrintWarning( "Gesture notify message\n" );
 			return 0;
 		}
 		case WM_GESTURE:
 		{
-			Debug::Console->PrintWarning( "Gesture message\n" );
+			debug::Console->PrintWarning( "Gesture message\n" );
 			return 0;
 		}
 		case WM_HSCROLL:
 		{
-			Debug::Console->PrintWarning( "HScroll message\n" );
+			debug::Console->PrintWarning( "HScroll message\n" );
 			return 0;
 		}
 		case WM_VSCROLL:
 		{
-			Debug::Console->PrintWarning( "VScroll message\n" );
+			debug::Console->PrintWarning( "VScroll message\n" );
 			return 0;
 		}
 

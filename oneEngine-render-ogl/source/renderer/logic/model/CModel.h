@@ -197,6 +197,9 @@ public:
 	// Gets if any of the meshes are being rendered
 	RENDER_API bool GetVisibility ( void );
 
+public:
+	XrTransform transform;
+
 protected:
 	// Rendering Options
 	bool					bUseFrustumCulling;

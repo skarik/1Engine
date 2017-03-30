@@ -94,8 +94,8 @@ public:
 	virtual	Ray		GetEyeRay ( void )
 	{
 		Ray newRay;
-		newRay.pos = transform.position;
-		newRay.dir = transform.Forward();
+		newRay.pos = transform.world.position;
+		newRay.dir = transform.world.rotation * Vector3d(1,0,0);
 		return newRay;
 	};
 	// Get aim ray. Used for off-center weapon projectiles.
@@ -116,7 +116,7 @@ public:
 	// Get aiming direction. Used for melee weapons.
 	virtual Rotator GetAimRotator ( void )
 	{
-		return transform.rotation;
+		return transform.world.rotation;
 	}
 
 	/* Component Getters */

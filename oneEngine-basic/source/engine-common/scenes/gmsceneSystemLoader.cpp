@@ -25,7 +25,7 @@
 
 void gmsceneSystemLoader::LoadScene ( void )
 {
-	Debug::Console->PrintMessage( "Loading scene (System Loader).\n" );
+	debug::Console->PrintMessage( "Loading scene (System Loader).\n" );
 	
 	// Set current save files (this is temporary until the menu is finished)
 	{
@@ -41,7 +41,7 @@ void gmsceneSystemLoader::LoadScene ( void )
 	CDeveloperCursor* devCursor = new CDeveloperCursor();
 
 	// Check the command line now
-	Debug::Console->PrintMessage( "Checking command line options...\n" );
+	debug::Console->PrintMessage( "Checking command line options...\n" );
 	{
 		// Parse out each word and execute it in the console.
 		uint i = 0;
@@ -95,13 +95,13 @@ void gmsceneSystemLoader::LoadScene ( void )
 		//aCamera->RemoveReference();
 
 #ifdef _ENGINE_DEBUG
-		Debug::Console->PrintMessage( "You are running a debug build of oneEngine.\n" );
-		Debug::Console->PrintMessage( "Press the tilde (`) to open up the command line.\n" );
-		Debug::Console->PrintMessage( "The following scene commands are available:\n" );
-		Debug::Console->PrintMessage( "\tscene test\tloads up engine debugging testbed\n" );
-		Debug::Console->PrintMessage( "\tscene after\tloads AFTER main game scene (may not be active)\n" );
-		Debug::Console->PrintMessage( "\tscene pce\tloads AFTER-Editor particle editor\n" );
-		Debug::Console->PrintMessage( "\tscene lse\tloads AFTER-Editor lipsync editor\n" );
+		debug::Console->PrintMessage( "You are running a debug build of oneEngine.\n" );
+		debug::Console->PrintMessage( "Press the tilde (`) to open up the command line.\n" );
+		debug::Console->PrintMessage( "The following scene commands are available:\n" );
+		debug::Console->PrintMessage( "\tscene test\tloads up engine debugging testbed\n" );
+		debug::Console->PrintMessage( "\tscene after\tloads AFTER main game scene (may not be active)\n" );
+		debug::Console->PrintMessage( "\tscene pce\tloads AFTER-Editor particle editor\n" );
+		debug::Console->PrintMessage( "\tscene lse\tloads AFTER-Editor lipsync editor\n" );
 #endif
 	}
 }

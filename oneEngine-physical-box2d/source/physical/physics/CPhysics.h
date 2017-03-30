@@ -75,7 +75,7 @@ public:
 	FORCE_INLINE PHYS_API static physShape* CreateFastMeshShape ( Vector3d* pVertices, CModelTriangle* pTris, unsigned short vertexCount, unsigned short faceCount );
 	// Creation of static meshes
 	//inline static int CreateMeshConcave ( CPhysicsData const&, CTransform const& );
-	FORCE_INLINE PHYS_API static physShape* CreateEMesh ( CPhysicsVertex* pMesh, CTransform const& );
+	FORCE_INLINE PHYS_API static physShape* CreateEMesh ( CPhysicsVertex* pMesh, core::Transform const* );
 	// Freeing shapes
 	FORCE_INLINE PHYS_API static void FreeShape ( physShape* pShape );
 
@@ -99,7 +99,7 @@ public:
 	//=========================================//
 	// Creation of phantoms
 	FORCE_INLINE PHYS_API static physCollisionVolume* CreateAABBPhantom ( physAabb* pInfo, unsigned int iOwnerID );
-	FORCE_INLINE PHYS_API static physCollisionVolume* CreateShapePhantom ( physShape* pShape, CTransform* pSourceTransform, unsigned int iOwnerID );
+	FORCE_INLINE PHYS_API static physCollisionVolume* CreateShapePhantom ( physShape* pShape, core::Transform* pSourceTransform, unsigned int iOwnerID );
 	// Destruction of phantoms
 	FORCE_INLINE PHYS_API static void FreePhantom ( physCollisionVolume* pCollisionVolume );
 	// Checking for phantom collisions contacts

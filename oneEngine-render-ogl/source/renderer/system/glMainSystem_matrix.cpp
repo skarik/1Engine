@@ -140,8 +140,9 @@ void glMainSystem::scissorViewport ( int x, int y, int width, int height )
 
 
 
-void	glMainSystem::Transform ( CTransform* pTransform )
+void	glMainSystem::Transform ( const XrTransform* pTransform )
 {
+#if 0
 #ifdef _ENGINE_DEBUG
 #ifdef _ENGINE_SAFE_CHECK_
 	fnl_assert( VALID_FLOAT(pTransform->position.x) );
@@ -166,6 +167,7 @@ void	glMainSystem::Transform ( CTransform* pTransform )
 		invalid = invalid || !VALID_FLOAT(pTransform->rotation.pData[i]);
 	}
 	if ( invalid ) pTransform->rotation = Matrix3x3();
+#endif
 #endif
 #endif
 

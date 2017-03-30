@@ -62,7 +62,7 @@ CFXMaterialHit::CFXMaterialHit ( const physMaterial& hitMat, const RaycastHit& h
 		// Create material hit with given particle effect and normal
 		CParticleSystem* ps_hit_effect;
 		ps_hit_effect = new CParticleSystem ( string(particleSystemName), string(materialName) );
-		ps_hit_effect->transform.position = hitResult.hitPos;
+		ps_hit_effect->transform.world.position = hitResult.hitPos;
 		// Update velocity based on the hit normal
 		if ( hitType == HT_HIT )
 		{

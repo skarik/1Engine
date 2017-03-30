@@ -92,6 +92,6 @@ int EngineCommon::LoadScene ( const std::string& sceneName )
 		// gmsceneFromFile will be used. For now, no file found.
 	}
 
-	Debug::Console->PrintError( "Could not find map \""+sceneName+"\"\n" );
+	debug::Console->PrintError( "Could not find map \""+sceneName+"\"\n" );
 	return -1;
 }

@@ -117,7 +117,7 @@ void CTextureMaster::RemoveReference ( CTexture* ptex )
 	if ( it == textureMap.end() )
 	{
 		if ( ptex->ClassType() != TextureClassRenderTarget && ptex->ClassType() != TextureClassRenderTarget_Cube && ptex->ClassType() != TextureClassRenderTarget_MRT ) {
-			Debug::Console->PrintWarning( "Attempting to free a non-existant texture reference: " + ptex->sFilename + "\n" );
+			debug::Console->PrintWarning( "Attempting to free a non-existant texture reference: " + ptex->sFilename + "\n" );
 		}
 	}
 	else
@@ -147,7 +147,7 @@ void CTextureMaster::RemoveReference ( string texMapSId, CTexture* ptex )
 	it = textureMap.find( texMapSId );
 	if ( it == textureMap.end() )
 	{
-		Debug::Console->PrintWarning( "Attempting to free a non-existant texture reference: " + texMapSId + "\n" );
+		debug::Console->PrintWarning( "Attempting to free a non-existant texture reference: " + texMapSId + "\n" );
 	}
 	else
 	{

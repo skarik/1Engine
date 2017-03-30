@@ -11,7 +11,7 @@
 #	define	EXCEPTION_CATCH_END
 #else
 #	define	EXCEPTION_CATCH_BEGIN try {
-#	define	EXCEPTION_CATCH_END } catch ( const std::exception& e ) { Debug::Console->PrintWarning( e.what() ); __debugbreak(); }
+#	define	EXCEPTION_CATCH_END } catch ( const std::exception& e ) { debug::Console->PrintWarning( e.what() ); __debugbreak(); }
 #endif
 
 namespace core

@@ -14,7 +14,7 @@ CRTCamera::CRTCamera (
 		: CCamera (), fRenderCounter(0)
 {
 	//m_type = CAMERA_TYPE_RT;
-	transform.name = "RTCamera Transform";
+	//transform.name = "RTCamera Transform";
 
 	zNear = 0.1f;
 	zFar = 1000.0f;

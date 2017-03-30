@@ -29,7 +29,7 @@
 #include <string>
 using std::string;
 
-namespace Debug
+namespace debug
 {
 
 	// Class Definition

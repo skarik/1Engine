@@ -297,7 +297,7 @@ void CMRTTexture::UnbindBuffer ( void )
 		buffer_stack.pop();
 	}
 	if ( buffer_stack.empty() ) {
-		Debug::Console->PrintError( "ERROR! IMBALANCED BUFFER STACK!\n" );
+		debug::Console->PrintError( "ERROR! IMBALANCED BUFFER STACK!\n" );
 	}
 	else {
 		glBindFramebuffer( GL_FRAMEBUFFER, buffer_stack.top() ); // TODO: MOVE TO FRAMEBUFFER STACK

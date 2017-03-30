@@ -12,10 +12,10 @@ CDialogueTree::CDialogueTree (void)
 	CreateLinks();
 	switch (mTree[mCurrent]->type)
 	{
-	case 0:
+	case DIALOGUE_LINE:
 		sNodeType = DIALOGUE_LINE;
 		break;
-	case 1:
+	case DIALOGUE_CHOICE:
 		sNodeType = DIALOGUE_CHOICE;
 		break;
 	default:
@@ -37,10 +37,10 @@ CDialogueTree::CDialogueTree (char * file)
 	CreateLinks();
 	switch (mTree[mCurrent]->type)
 	{
-	case 0:
+	case DIALOGUE_LINE:
 		sNodeType = DIALOGUE_LINE;
 		break;
-	case 1:
+	case DIALOGUE_CHOICE:
 		sNodeType = DIALOGUE_CHOICE;
 		break;
 	default:
@@ -77,7 +77,7 @@ void CDialogueTree::CreateTree (char * file)
 		switch (pLoader->sDialogueState)
 		{
 		case DIALOGUE_STATE_LUACODE:
-			//Debug::Console->PrintMessage("Lua state. Input skipped.\n");
+			//debug::Console->PrintMessage("Lua state. Input skipped.\n");
 			pLoader->PostLua(); //Hopefully this is all I need to do here
 			/*pLoader->GetLua();
 			pLoader->GoNextLine();*/
@@ -100,7 +100,7 @@ void CDialogueTree::CreateTree (char * file)
 		case DIALOGUE_STATE_NPCTALKING:
 			current = new DialogueNode();
 			
-			current->type = 0; //Regular dialogue line
+			current->type = DIALOGUE_LINE; //Regular dialogue line
 			current->character = pLoader->GetCurrentSpeaker();
 			current->ID = mTree.size();
 			
@@ -123,7 +123,7 @@ void CDialogueTree::CreateTree (char * file)
 			break;
 		case DIALOGUE_STATE_CHOICES:
 			currentChoice = new ChoiceNode();
-			currentChoice->type = 1; //Decision
+			currentChoice->type = DIALOGUE_CHOICE; //Decision
 			currentChoice->character = pLoader->GetCurrentSpeaker();
 			currentChoice->ID = mTree.size();
 			currentChoice->defaultChoice = pLoader->GetDefaultChoice();
@@ -152,7 +152,7 @@ void CDialogueTree::CreateTree (char * file)
 			pLoader->GoNextLine(); //Maybe? Need to figure this out.
 			break;
 		default:
-			//Debug::Console->PrintWarning("Unhandled dialogue option\n");
+			//debug::Console->PrintWarning("Unhandled dialogue option\n");
 			std::cout << "How did we get here?" << std::endl;
 			break;
 		}
@@ -166,7 +166,7 @@ void CDialogueTree::CreateLinks (void)
 
 	for (; index < mTree.size(); index++)
 	{
-		if (mTree[index]->type == 1) //If this is a choice
+		if (mTree[index]->type == DIALOGUE_CHOICE) //If this is a choice
 		{
 			ChoiceNode *current = (ChoiceNode *)(mTree[index]);
 
@@ -213,7 +213,7 @@ void CDialogueTree::DestroyTree (void)
 
 void CDialogueTree::AdvanceDialogue (void)
 {
-	if (mTree[mCurrent]->type == 0)
+	if (mTree[mCurrent]->type == DIALOGUE_LINE)
 	{
 		if (mTree[mCurrent]->Next[0] >= mTree.size() || mTree[mTree[mCurrent]->Next[0]]->Parent != mCurrent)
 		{
@@ -224,10 +224,10 @@ void CDialogueTree::AdvanceDialogue (void)
 		mCurrent = mTree[mCurrent]->Next[0]; //Go to the next node
 		switch (mTree[mCurrent]->type) //Check its type of set the state accordingly
 		{
-		case 0:
+		case DIALOGUE_LINE:
 			sNodeType = DIALOGUE_LINE;
 			break;
-		case 1:
+		case DIALOGUE_CHOICE:
 			sNodeType = DIALOGUE_CHOICE;
 			break;
 		default:
@@ -236,7 +236,7 @@ void CDialogueTree::AdvanceDialogue (void)
 			break;
 		}
 	}
-	else if (mTree[mCurrent]->type == 1)
+	else if (mTree[mCurrent]->type == DIALOGUE_CHOICE)
 		std::cout << "Error: Current node is a choice. Call ReportChoice() instead" << std::endl;
 	else
 		std::cout << "lolwut?" << std::endl;
@@ -263,10 +263,10 @@ int CDialogueTree::ReportChoice (int choice)
 
 	switch (mTree[mCurrent]->type) //Check its type of set the state accordingly
 	{
-	case 0:
+	case DIALOGUE_LINE:
 		sNodeType = DIALOGUE_LINE;
 		break;
-	case 1:
+	case DIALOGUE_CHOICE:
 		sNodeType = DIALOGUE_CHOICE;
 		break;
 	default:
@@ -286,10 +286,10 @@ int CDialogueTree::Backtrack (void)
 	
 	switch (mTree[mCurrent]->type) //Check its type of set the state accordingly
 	{
-	case 0:
+	case DIALOGUE_LINE:
 		sNodeType = DIALOGUE_LINE;
 		break;
-	case 1:
+	case DIALOGUE_CHOICE:
 		sNodeType = DIALOGUE_CHOICE;
 		break;
 	default:
@@ -303,7 +303,7 @@ int CDialogueTree::Backtrack (void)
 
 const char * CDialogueTree::GetLine (void)
 {
-	if (mTree[mCurrent]->type == 0)
+	if (mTree[mCurrent]->type == DIALOGUE_LINE)
 		return mTree[mCurrent]->Lines[0].c_str();
 	else
 		std::cout << "Error: Calling GetLine when node is not a line type. Use GetChoices() instead" << std::endl;
@@ -313,7 +313,7 @@ const char * CDialogueTree::GetLine (void)
 
 std::vector<string> CDialogueTree::GetChoices (void)
 {
-	if (mTree[mCurrent]->type == 1)
+	if (mTree[mCurrent]->type == DIALOGUE_CHOICE)
 		return mTree[mCurrent]->Lines;
 	std::cout << "Error: Calling GetChoices() when node is a Line type. Call GetLine() instead" << std::endl;
 	std::vector<string> empty;
@@ -334,7 +334,7 @@ void CDialogueTree::PrintTree (void)
 {
 	for (int i = 0; i < mTree.size(); i++)
 	{
-		if (mTree[i]->type == 0)
+		if (mTree[i]->type == DIALOGUE_LINE)
 		{
 			DialogueNode *current = mTree[i];
 
@@ -345,7 +345,7 @@ void CDialogueTree::PrintTree (void)
 			std::cout << "Sound: " << current->sound << '\n';
 			std::cout << "Motion: " << current->motion << '\n';
 		}
-		else if (mTree[i]->type == 1)
+		else if (mTree[i]->type == DIALOGUE_CHOICE)
 		{
 			DialogueNode *current = mTree[i];
 			std::cout << "ID: " << current->ID << " " << "Character: " << current->character << '\n';

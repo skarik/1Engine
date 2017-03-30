@@ -57,9 +57,9 @@ public:
 	_FORCE_INLINE_ PHYS_API void			addContactListener ( physContactListener* );
 	_FORCE_INLINE_ PHYS_API void			removeContactListener ( physContactListener* );
 
-	_FORCE_INLINE_ PHYS_API void			SetTransform ( CTransform* );
-	_FORCE_INLINE_ PHYS_API void			GetTransform ( CTransform* );
-	_FORCE_INLINE_ PHYS_API void			GetTranslation ( CTransform* );
+	_FORCE_INLINE_ PHYS_API void			SetTransform ( core::Transform* );
+	_FORCE_INLINE_ PHYS_API void			GetTransform ( core::Transform* );
+	_FORCE_INLINE_ PHYS_API void			GetTranslation ( core::Transform* );
 	_FORCE_INLINE_ PHYS_API void			ForcePropertyUpdate ( void );
 protected:
 	b2Body* body;

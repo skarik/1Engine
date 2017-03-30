@@ -37,7 +37,7 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 
 	SetMaterial( matfntMenu );
 
-	transform.position.z = -35;
+	transform.world.position.z = -35;
 }
 
 CDeveloperConsoleUI::~CDeveloperConsoleUI ( void )
@@ -91,7 +91,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 {
 	ActiveCursor = this;
 
-	transform.position.z = -44;
+	transform.world.position.z = -44;
 
 	renderType = renderer::V2D;
 

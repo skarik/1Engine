@@ -119,7 +119,7 @@ void RrMaterial::loadFromFile ( const char* n_materialfile )
 	// Check for success
 	if ( !(ifile.is_open()) )
 	{	// Spit error if cannot open material
-		Debug::Console->PrintError( "Could not open material " );
+		debug::Console->PrintError( "Could not open material " );
 		std::cout << '"' << sBasefilename << '"' << std::endl;
 	}
 	else 
@@ -208,7 +208,7 @@ void RrMaterial::loadFromFile ( const char* n_materialfile )
 					}
 					else {
 						// Invalid command, remove
-						Debug::Console->PrintWarning( "Invalid command '"+sCommand+"' in material "+string(m_filename) );
+						debug::Console->PrintWarning( "Invalid command '"+sCommand+"' in material "+string(m_filename) );
 					}
 				}
 				break;
@@ -437,14 +437,14 @@ ELoadState loadPassProperties ( RrMaterial* material,
 			isTransparent = true;
 			useAlphaTest = true;
 			useDepthMask = true;*/
-			Debug::Console->PrintWarning( "\"blendmode alphatest\" is deprecated. Use transparency enumerator." );
+			debug::Console->PrintWarning( "\"blendmode alphatest\" is deprecated. Use transparency enumerator." );
 		}
 		else if ( subCommand == "alphablend" ) {
 			/*iBlendMode = BM_NORMAL;
 			isTransparent = true;
 			useAlphaTest = false;
 			useDepthMask = false;*/
-			Debug::Console->PrintWarning( "\"blendmode alphablend\" is deprecated. Use transparency enumerator." );
+			debug::Console->PrintWarning( "\"blendmode alphablend\" is deprecated. Use transparency enumerator." );
 		}
 		else if ( subCommand == "softalphablend" ) {
 			t_pass->m_blend_mode = renderer::BM_SOFT_ADD;
@@ -453,7 +453,7 @@ ELoadState loadPassProperties ( RrMaterial* material,
 			t_pass->m_blend_mode = renderer::BM_INV_MULTIPLY;
 		}
 		else {
-			Debug::Console->PrintWarning( "Invalid blendmode matval.\n" );
+			debug::Console->PrintWarning( "Invalid blendmode matval.\n" );
 		}
 	}
 	else if ( command == "transparency" || command == "alphamode" )
@@ -503,13 +503,13 @@ ELoadState loadPassProperties ( RrMaterial* material,
 			t_pass->m_lighting_mode = renderer::LI_SKIN;
 		}
 		else {
-			Debug::Console->PrintWarning( "Invalid lighting matval.\n" );
+			debug::Console->PrintWarning( "Invalid lighting matval.\n" );
 		}
 	}
 	else if ( command == "shadows" )
 	{ // Set shadows
 		ss >> subCommand;
-		//Debug::Console->PrintWarning( "Shadow matvals are ALWAYS invalid, fool.\n" );
+		//debug::Console->PrintWarning( "Shadow matvals are ALWAYS invalid, fool.\n" );
 	}
 	else if ( command == "blended_diffuse" )
 	{ // Set blended diffuse
@@ -521,9 +521,9 @@ ELoadState loadPassProperties ( RrMaterial* material,
 			//useBlendedDiffuse = true;
 		}
 		else {
-			Debug::Console->PrintWarning( "Invalid blended_diffuse matval.\n" );
+			debug::Console->PrintWarning( "Invalid blended_diffuse matval.\n" );
 		}
-		Debug::Console->PrintWarning( "Matval 'blended_diffuse' is depreceated. Use sys_DiffuseColor in shaders instead.\n" );
+		debug::Console->PrintWarning( "Matval 'blended_diffuse' is depreceated. Use sys_DiffuseColor in shaders instead.\n" );
 	}
 	else if (( command == "texture" )||( command == "texture0" ))
 	{ // Set texture

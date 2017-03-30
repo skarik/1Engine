@@ -40,7 +40,6 @@
   <ItemGroup>
     <ClInclude Include="source\engine\audio\CAudioInterface.h" />
     <ClInclude Include="source\engine\audio\CSoundBehavior.h" />
-    <ClInclude Include="source\engine\behavior\CExtendableGameObject.h" />
     <ClInclude Include="source\engine\behavior\CGameBehavior.h" />
     <ClInclude Include="source\engine\behavior\CGameHandle.h" />
     <ClInclude Include="source\engine\behavior\CGameObject.h" />

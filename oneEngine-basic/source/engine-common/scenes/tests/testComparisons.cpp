@@ -35,7 +35,7 @@ void testComparisons::LoadScene(void)
 				 << "B: (" << b.x << "," << b.y << ") ";
 			// Print test result
 			if ( !success ) {
-				Debug::Console->PrintError( "[FAILED]\n" );
+				debug::Console->PrintError( "[FAILED]\n" );
 			}
 			else {
 				cout << "[PASS]" << endl;

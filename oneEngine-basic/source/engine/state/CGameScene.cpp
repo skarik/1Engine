@@ -17,7 +17,7 @@ CGameScene::CGameScene ( void )
 	}
 	else
 	{*/
-		Debug::Console->PrintMessage( "Game Scene created, waiting for load command.\n" );
+		debug::Console->PrintMessage( "Game Scene created, waiting for load command.\n" );
 	//}
 
 	bFreeWorld = true;

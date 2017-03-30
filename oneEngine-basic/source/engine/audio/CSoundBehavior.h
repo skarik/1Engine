@@ -44,7 +44,8 @@ public:
 	AudioStructs::soundScript_aialert	ai_alert_amount;
 	AudioStructs::soundScript_channel	channel;
 
-	CTransform*		parent;
+	//CTransform*		parent;
+	Vector3d*		source_position;
 
 private:
 	static std::vector<CSoundBehavior*>	soundList;

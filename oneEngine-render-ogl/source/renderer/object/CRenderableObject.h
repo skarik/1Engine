@@ -7,7 +7,7 @@
 // Includes
 #include "core/types/types.h"
 #include "core/math/Vector3d.h"
-#include "core-ext/transform/CTransform.h"
+#include "core-ext/transform/Transform.h"
 
 //#include "GLCommon.h"
 //#include "glMainSystem.h"
@@ -109,18 +109,25 @@ public:
 
 private:
 	// == Update Prototypes ==
-	void UpdateRenderInfo ( void ) {
-		if ( renderType == renderer::V2D ) {
-			renderDistance = ( transform.position.z * 50.0f ) + ( ( _activeCameraPosition - transform.position ).sqrMagnitude() * 0.005f );
+
+
+	//		UpdateRenderInfo : generate data needed for sorting
+	// Generated data needed for sorting, namely distance from the camera. Is not fast.
+	void UpdateRenderInfo ( void )
+	{
+		if ( renderType == renderer::V2D )
+		{
+			renderDistance = ( transform.world.position.z * 50.0f ) + ( ( _activeCameraPosition - transform.world.position ).sqrMagnitude() * 0.005f );
 		}
-		else {
-			renderDistance = ( _activeCameraPosition - transform.position ).sqrMagnitude();
+		else
+		{
+			renderDistance = ( _activeCameraPosition - transform.world.position ).sqrMagnitude();
 		}
 	};
 
 public:
 	// Positional transform
-	CTransform	transform;
+	core::Transform	transform;
 	// Rendering states
 	//bool						visible;			// if object should be drawn or not
 	renderer::objectSettings	renderSettings;		// miscelleneous render settings

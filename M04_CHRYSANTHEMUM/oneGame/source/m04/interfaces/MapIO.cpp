@@ -18,7 +18,7 @@
 // Saves data to the file, using anything that's not null
 void M04::MapIO::Save ( void )
 {
-	Debug::Console->PrintMessage( "Saving a M04 map file with M04::MapIO...\n" );
+	debug::Console->PrintMessage( "Saving a M04 map file with M04::MapIO...\n" );
 
 	// Start by writing the map header
 	{
@@ -27,7 +27,7 @@ void M04::MapIO::Save ( void )
 		header.vmajor = 0;
 		header.vminor = 0;
 		fwrite( &header, sizeof(mapio_header_t), 1, m_file );
-		Debug::Console->PrintMessage( "\t+Wrote file header.\n" );
+		debug::Console->PrintMessage( "\t+Wrote file header.\n" );
 	}
 
 	// Write map information.
@@ -41,7 +41,7 @@ void M04::MapIO::Save ( void )
 		// Write the map information
 		fwrite( m_mapinfo, sizeof(M04::MapInformation), 1, m_file );
 
-		Debug::Console->PrintMessage( "\t+Wrote M04::MapInformation.\n" );
+		debug::Console->PrintMessage( "\t+Wrote M04::MapInformation.\n" );
 	}
 
 	// Write tilemap information
@@ -62,7 +62,7 @@ void M04::MapIO::Save ( void )
 			fwrite( &m_tilemap->m_tiles[i], sizeof(mapTile_t), 1, m_file );
 		}
 
-		Debug::Console->PrintMessage( "\t+Wrote Engine2D::TileMap.\n" );
+		debug::Console->PrintMessage( "\t+Wrote Engine2D::TileMap.\n" );
 	}
 
 	// Write area information
@@ -186,7 +186,7 @@ void M04::MapIO::Save ( void )
 // Loads data from the file, filling anything that's not null
 void M04::MapIO::Load ( void )
 {
-	Debug::Console->PrintMessage( "Loading a M04 map file with M04::MapIO...\n" );
+	debug::Console->PrintMessage( "Loading a M04 map file with M04::MapIO...\n" );
 
 	// Perform prelim setups
 	if ( m_tilemap )
@@ -204,7 +204,7 @@ void M04::MapIO::Load ( void )
 		fread( &header, sizeof(mapio_header_t), 1, m_file );
 		if ( strncmp( header.signature, "M04p", 4 ) != 0 )
 		{
-			Debug::Console->PrintError( "\t+Bad M04p signature.\n" );
+			debug::Console->PrintError( "\t+Bad M04p signature.\n" );
 			return;
 		}
 		printf( "\t+File version %d.%d\n", header.vmajor, header.vminor );
@@ -217,12 +217,12 @@ void M04::MapIO::Load ( void )
 		fread( &topper, sizeof(mapio_section_start_t), 1, m_file );
 		if ( strncmp( topper.signature, "$TOP", 4 ) != 0 )
 		{
-			Debug::Console->PrintError( "\t+Bad M04p topper signature.\n" );
+			debug::Console->PrintError( "\t+Bad M04p topper signature.\n" );
 			return;
 		}
 		// Check for invalid start (it happens since feof isn't triggered until an invalid read)
 		if ( feof( m_file ) ) {
-			Debug::Console->PrintWarning( "\t+End of file.\n" );
+			debug::Console->PrintWarning( "\t+End of file.\n" );
 			break;
 		}
 

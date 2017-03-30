@@ -304,9 +304,6 @@
     <ClInclude Include="source\core-ext\animation\AnimationEvents.h">
       <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClInclude>
-    <ClInclude Include="source\core-ext\animation\CAnimAction.h">
-      <Filter>SOURCE\Core-ext\Animation</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\animation\CAnimationEvents.h">
       <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClInclude>
@@ -458,12 +455,6 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\system\io\serializer\OSerialBinary.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core-ext\animation\CAnimAction.cpp">
-      <Filter>SOURCE\Core-ext\Animation</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core-ext\animation\CAnimActionMixing.cpp">
-      <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClCompile>
     <ClCompile Include="source\core-ext\math\MathQEF.cpp">
       <Filter>SOURCE\Core-ext\Math</Filter>

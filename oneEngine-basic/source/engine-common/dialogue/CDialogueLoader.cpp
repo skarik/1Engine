@@ -329,23 +329,23 @@ int pcallktest( lua_State *L )
 	// Check that the code loaded properly
 	if ( s != LUA_OK ) {
 		Lua::Controller->ReportErrors( L, s );
-		Debug::Console->PrintError( "...error in lua load!" );
+		debug::Console->PrintError( "...error in lua load!" );
 	}
     s = lua_pcallk(L, 0, 0, 0, 0, cont);
 	// Check for errors caused
 	if ( s == LUA_OK ) {
-		Debug::Console->PrintWarning( "...routine finished w/o yield?" );
+		debug::Console->PrintWarning( "...routine finished w/o yield?" );
 	}
 	else {
 		Lua::Controller->ReportErrors( L, s );
-		Debug::Console->PrintError( "...error in lua!" );
+		debug::Console->PrintError( "...error in lua!" );
 	}
     return 0;
 }
 
 void CDialogueLoader::PostLua (void)
 {
-	//Debug::Console->PrintMessage( "Lua execution...\n" );
+	//debug::Console->PrintMessage( "Lua execution...\n" );
 
 	// Load up lua
 	//string m_environment;
@@ -359,7 +359,7 @@ void CDialogueLoader::PostLua (void)
 
 	if ( m_luaState == 0 )
 	{
-		Debug::Console->PrintMessage( "Lua execution...\n" );
+		debug::Console->PrintMessage( "Lua execution...\n" );
 
 		luaThread = lua_newthread( Lua::Controller->GetState() );
 		//Lua::Controller->SetEnvironment( m_environment.c_str() );
@@ -383,21 +383,21 @@ void CDialogueLoader::PostLua (void)
 	if ( m_luaState == 1 || m_luaState == 2 )
 	{
 		int s;
-		//Debug::Console->PrintMessage( "...running function...\n" );
+		//debug::Console->PrintMessage( "...running function...\n" );
 		s = lua_resume( luaThread, NULL, (m_luaState==1)?1:0 );
 
 		if ( s == LUA_YIELD ) {
-			//Debug::Console->PrintMessage( "yielded...\n" );
+			//debug::Console->PrintMessage( "yielded...\n" );
 			m_luaState = 2;
 			return; // hohoho
 		}
 		else if ( s == LUA_OK ) {
-			Debug::Console->PrintWarning( "...routine finished!\n" );
+			debug::Console->PrintWarning( "...routine finished!\n" );
 			m_luaState = 3;
 		}
 		else {
 			Lua::Controller->ReportErrors( luaThread, s );
-			Debug::Console->PrintError( "...error in lua!" );
+			debug::Console->PrintError( "...error in lua!" );
 			m_luaState = 3;
 		}
 	}

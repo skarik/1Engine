@@ -108,6 +108,6 @@ void DeveloperMenu::uiStepMainPanel ( void )
 	else if ( ui_main_game.GetButtonClicked() )
 	{
 		while ( true )
-			Debug::Console->PrintError("HA ");
+			debug::Console->PrintError("HA ");
 	}
 }

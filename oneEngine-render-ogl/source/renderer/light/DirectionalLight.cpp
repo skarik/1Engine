@@ -54,14 +54,14 @@ void DirectionalLight::PreStepSynchronus ( void )
 	if ( CCamera::activeCamera != NULL )
 	{
 		// Set position to the main scene's camera
-		transform.position = CCamera::activeCamera->transform.position;
+		position = CCamera::activeCamera->transform.position;
 		// Offset by the focal distance (to a point)
-		transform.position += CCamera::activeCamera->transform.Forward() * std::min<ftype>( CCamera::activeCamera->focalDistance*0.4f, shadowRange*0.15f );
+		position += CCamera::activeCamera->transform.rotation * Vector3d(1,0,0) * std::min<ftype>( CCamera::activeCamera->focalDistance*0.4f, shadowRange*0.15f );
 	}
 	else
 	{
 		// If there's no camera, set to the last known camera position
-		transform.position = vCameraPos;
+		position = vCameraPos;
 	}
 
 	// Update shadows
@@ -104,7 +104,7 @@ void DirectionalLight::UpdateShadowCamera ( void )
 	shadowCamera->fov = 70;
 
 	Vector3d ds = Vector3d( vLightDir.red,vLightDir.green,vLightDir.blue ).normal();
-	shadowCamera->transform.position = transform.position + ds*shadowRange*1.5f;
+	shadowCamera->transform.position = position + ds*shadowRange*1.5f;
 	ds = -ds;
 	shadowCamera->transform.rotation = Vector3d(
 		0,
@@ -114,7 +114,7 @@ void DirectionalLight::UpdateShadowCamera ( void )
 	ds = -ds;
 
 	// Now, generate the positions of the shadow cascades
-	Vector3d offsetDirection = CCamera::activeCamera->transform.Forward();
+	Vector3d offsetDirection = CCamera::activeCamera->transform.rotation * Vector3d(1,0,0);
 	Real cascadeDistance;
 	cascadeDistance = (shadowRange/64.0F) * 0.433f;
 	cascadeDistance += std::min<Real>( cascadeDistance*0.5f, std::max<Real>( CCamera::activeCamera->focalDistance-3.0f, 0 ) );

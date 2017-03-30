@@ -10,7 +10,7 @@
 #include "engine-common/types/ParticleEnums.h"
 
 #include "renderer/material/RrMaterial.h"
-
+/*
 #include "renderer/logic/particle/CParticleEmitter.h"
 #include "renderer/logic/particle/CParticleUpdater.h"
 #include "renderer/object/particle/CParticleRenderer.h"
@@ -19,20 +19,23 @@
 
 #include "renderer/logic/particle/modifiers/CParticleMod_Windmotion.h"
 #include "renderer/object/particle/CParticleRenderer_Animated.h"
+*/
+#include "renderer/object/CRenderableObject.h"
+#include "renderer/particle/RrParticleSystem.h"
 
 #include <sstream>
 
 using namespace std;
 
 CParticleSystem::CParticleSystem ( const string& s_ps, const bool b_hasMeshOverride )
-	: CExtendableGameObject(), bAutoDestroy( false )
+	: CGameObject(), bAutoDestroy( false )
 {
 	this->name = "Particle System";
 	enabled = true;
 	Init( s_ps, b_hasMeshOverride );
 }
 CParticleSystem::CParticleSystem ( const string& s_ps, const string& s_mat )
-	: CExtendableGameObject(), bAutoDestroy( false )
+	: CGameObject(), bAutoDestroy( false )
 {
 	this->name = "Particle System";
 	enabled = true;
@@ -45,7 +48,8 @@ CParticleSystem::CParticleSystem ( const string& s_ps, const string& s_mat )
 		mat->removeReference();
 		CRenderableObject* targetRenderable;
 		targetRenderable = GetRenderable();
-		if ( targetRenderable ) {
+		if ( targetRenderable )
+		{
 			targetRenderable->SetMaterial( mat );
 		}
 	}
@@ -69,6 +73,7 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 	}
 #endif
 
+#if 0
 	uint32_t iVersion = 0;
 	{
 		// Input file!
@@ -192,7 +197,7 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 
 					default:
 						throw core::CorruptedDataException();
-						Debug::Console->PrintError( "particle system: unrecognized component type!" );
+						debug::Console->PrintError( "particle system: unrecognized component type!" );
 						break;
 					}
 					currentObjType = inFile.ReadUInt32();
@@ -202,15 +207,17 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 		}
 		break;
 	default:
-		Debug::Console->PrintError( "could not read " );
-		Debug::Console->PrintError( sSystemFile.c_str() );
-		Debug::Console->PrintError( ": unsupported file version or invalid\n" );
+		debug::Console->PrintError( "could not read " );
+		debug::Console->PrintError( sSystemFile.c_str() );
+		debug::Console->PrintError( ": unsupported file version or invalid\n" );
 		break;
 	}
+#endif
 }
 
 void CParticleSystem::PostUpdate ( void )
 {
+#if 0
 	// Update transform & activity of particle emitters...
 	for ( vector<CParticleEmitter*>::iterator it = vpEmitters.begin(); it != vpEmitters.end(); it++ )
 	{
@@ -257,4 +264,5 @@ void CParticleSystem::PostUpdate ( void )
 			DeleteObject( this );
 		}
 	}
+#endif
 }

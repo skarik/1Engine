@@ -1,4 +1,11 @@
+#include "Transform.h"
 
+namespace core
+{
+	Vector3d_d	world_origin = Vector3d_d(0,0,0);
+}
+
+#if 0
 // Includes
 #include "CTransform.h"
 #include "TransformUtility.h"
@@ -238,16 +245,16 @@ void CTransform::LateUpdate ( void )
 	}
 #endif
 
-	/*Debug::Drawer->DrawLine( position, position+Forward() );
-	Debug::Drawer->DrawLine( position, position+Up() );
-	Debug::Drawer->DrawLine( position, position+Side() );*/
+	/*debug::Drawer->DrawLine( position, position+Forward() );
+	debug::Drawer->DrawLine( position, position+Up() );
+	debug::Drawer->DrawLine( position, position+Side() );*/
 
 	_is_ready = true;
 	//if ( _parent != NULL )
 	if ( this != &root )
 	{
 		if ( _parent == NULL ) {
-			Debug::Console->PrintError( "TRANSFORM WITH NO PARENT\n" );
+			debug::Console->PrintError( "TRANSFORM WITH NO PARENT\n" );
 			return;
 		}
 
@@ -634,3 +641,4 @@ void CTransform::PropogateTransforms ( void )
 	Jobs::System::Current::WaitForJobs( Jobs::JOBTYPE_ENGINE );
 #endif
 }
+#endif

@@ -850,9 +850,9 @@ void CHKAnimation::Update ( const Real deltaTime )
 //					hkVector4 targetWorldPosition;
 //					targetWorldPosition.setTransformedPos( modelToWorld, targetPosition );
 //					Vector3d result ( targetWorldPosition.getComponent<0>(), targetWorldPosition.getComponent<1>(), targetWorldPosition.getComponent<2>() );
-//					Debug::Drawer->DrawLine( result-Vector3d(0,0.5f,0), result+Vector3d(0,0.5f,0), Color(1,0,1,1) );
-//					Debug::Drawer->DrawLine( result-Vector3d(0,0,0.5f), result+Vector3d(0,0,0.5f), Color(1,0,1,1) );
-//					Debug::Drawer->DrawLine( result-Vector3d(0.5f,0,0), result+Vector3d(0.5f,0,0), Color(1,0,1,1) );
+//					debug::Drawer->DrawLine( result-Vector3d(0,0.5f,0), result+Vector3d(0,0.5f,0), Color(1,0,1,1) );
+//					debug::Drawer->DrawLine( result-Vector3d(0,0,0.5f), result+Vector3d(0,0,0.5f), Color(1,0,1,1) );
+//					debug::Drawer->DrawLine( result-Vector3d(0.5f,0,0), result+Vector3d(0.5f,0,0), Color(1,0,1,1) );
 //#endif
 //*/
 //					// Generate the target rotation
@@ -969,9 +969,9 @@ void CHKAnimation::Update ( const Real deltaTime )
 ///*
 //#ifdef _ENGINE_DEBUG	// Draw the toe positions
 //						Vector3d result ( toeWorldSpace.getComponent<0>(), toeWorldSpace.getComponent<1>(), toeWorldSpace.getComponent<2>() );
-//						Debug::Drawer->DrawLine( result-Vector3d(0,0.5f,0), result+Vector3d(0,0.5f,0), Color(1,0,1,1) );
-//						Debug::Drawer->DrawLine( result-Vector3d(0,0,0.5f), result+Vector3d(0,0,0.5f), Color(1,0,1,1) );
-//						Debug::Drawer->DrawLine( result-Vector3d(0.5f,0,0), result+Vector3d(0.5f,0,0), Color(1,0,1,1) );
+//						debug::Drawer->DrawLine( result-Vector3d(0,0.5f,0), result+Vector3d(0,0.5f,0), Color(1,0,1,1) );
+//						debug::Drawer->DrawLine( result-Vector3d(0,0,0.5f), result+Vector3d(0,0,0.5f), Color(1,0,1,1) );
+//						debug::Drawer->DrawLine( result-Vector3d(0.5f,0,0), result+Vector3d(0.5f,0,0), Color(1,0,1,1) );
 //#endif*/
 //						// Z is the ground. Compare with parent model Z=0
 //						hkVector4 targetPosition = toeWorldSpace;

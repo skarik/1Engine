@@ -8,17 +8,17 @@
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
-using namespace Debug;
+using namespace debug;
 
 // Static Variables
-CDebugRTInspector* Debug::RTInspector = NULL;
+CDebugRTInspector* debug::RTInspector = NULL;
 
 // Constructor
 CDebugRTInspector::CDebugRTInspector ( void )
 	: CRenderableObject ()
 {
 	renderType = renderer::V2D;
-	Debug::RTInspector = this;
+	debug::RTInspector = this;
 
 	bDrawRTs = true;
 
@@ -36,9 +36,9 @@ CDebugRTInspector::CDebugRTInspector ( void )
 // Destructor
 CDebugRTInspector::~CDebugRTInspector ( void )
 {
-	if ( Debug::RTInspector == this )
+	if ( debug::RTInspector == this )
 	{
-		Debug::RTInspector = NULL;
+		debug::RTInspector = NULL;
 	}
 	//delete defaultMat;
 }

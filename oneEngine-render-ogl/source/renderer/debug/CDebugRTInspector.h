@@ -8,7 +8,7 @@
 #include "renderer/object/CRenderableObject.h"
 class CRenderTexture;
 
-namespace Debug
+namespace debug
 {
 	// Using
 	//using std::vector;

@@ -28,7 +28,7 @@
 CSkinnedModel::CSkinnedModel( const string &sFilename )
 	: CModel()
 {
-	Debug::Console->PrintMessage( "Loading model \"" + sFilename + "\"\n" );
+	debug::Console->PrintMessage( "Loading model \"" + sFilename + "\"\n" );
 	// Set model name to input filename
 	myModelFilename = sFilename;
 	// Standardize the filename
@@ -67,7 +67,7 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	if ( t_meshSet )
 	{
 		m_glMeshlist = *t_meshSet;	// Copy the meshes to local list
-		Debug::Console->PrintMessage( " +Has mesh set\n" );
+		debug::Console->PrintMessage( " +Has mesh set\n" );
 	}
 	else
 	{
@@ -79,7 +79,7 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	if ( t_skeleton != NULL )
 	{
 		skeleton = *t_skeleton;
-		Debug::Console->PrintMessage( " +Has skeleton\n" );
+		debug::Console->PrintMessage( " +Has skeleton\n" );
 	}
 	else
 	{
@@ -98,7 +98,7 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 		// Set morph target
 		iMorphTarget = pMorpher->GetMorpherSet()->iMorphTarget;
 		// Say we got morphs
-		Debug::Console->PrintMessage( " +Has morph set\n" );
+		debug::Console->PrintMessage( " +Has morph set\n" );
 	}
 	else
 	{
@@ -139,7 +139,7 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 	// Check errors
 	GL_ACCESS GL.CheckError();
 
-	Debug::Console->PrintMessage( " +Loaded\n" );
+	debug::Console->PrintMessage( " +Loaded\n" );
 }
 
 // Destructor
@@ -384,13 +384,13 @@ void CSkinnedModel::DebugRenderSkeleton ( void )
 		//Vector3d t_bonePosition = bone->transform.position + transform.position;
 		Vector3d t_bonePosition = skeleton.current_transform[i].world.position + transform.position;
 		Rotator& t_rotation = skeleton.current_transform[i].world.rotation;
-		Debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3d(1,0,0) * 0.2f, t_drawColor );
-		Debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3d(0,0,1) * 0.2f, t_drawColor );
-		Debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3d(0,1,0) * 0.2f, t_drawColor );
+		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3d(1,0,0) * 0.2f, t_drawColor );
+		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3d(0,0,1) * 0.2f, t_drawColor );
+		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3d(0,1,0) * 0.2f, t_drawColor );
 		// loop through children
 		/*for ( std::vector<Transform*>::iterator it = bone->transform.children.begin(); it != bone->transform.children.end(); it++ )
 		{
-			Debug::Drawer->DrawLine( t_bonePosition, (*it)->position + transform.position, t_drawColor );
+			debug::Drawer->DrawLine( t_bonePosition, (*it)->position + transform.position, t_drawColor );
 			DebugRenderSkeleton( (glBone*)((*it)->owner) );
 		}*/
 	}

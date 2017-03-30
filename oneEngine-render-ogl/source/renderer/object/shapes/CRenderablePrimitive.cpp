@@ -24,7 +24,7 @@ CRenderablePrimitive::~CRenderablePrimitive ( void )
 bool CRenderablePrimitive::Render ( const char pass )
 {
 	GL_ACCESS GLd_ACCESS
-	GL.Transform( &transform );
+	GL.Transform( &transform.world );
 
 	m_material->bindPass(pass);
 	m_material->setShaderConstants(this);

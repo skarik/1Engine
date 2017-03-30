@@ -175,7 +175,7 @@ rrSkinnedMesh* rrSkinnedMesh::Copy ( void )
 	//pvPoseMatrices	= psrcMesh->pvPoseMatrices;
 	//pvSoftMatrices	= psrcMesh->pvSoftMatrices;
 
-	newmesh->parentBone		= parentBone;
+	//newmesh->parentBone		= parentBone;
 	newmesh->useSkinning	= useSkinning;
 
 	//partNum	= psrcMesh->partNum;

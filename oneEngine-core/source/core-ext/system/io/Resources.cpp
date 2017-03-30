@@ -75,7 +75,7 @@ namespace core
 		if ( std::string(filename).find(".res/") != std::string::npos )
 		{
 			filename = filename.replace( 0, 5, "" );
-			Debug::Console->PrintWarning( filename + " was opened using old method!\n" );
+			debug::Console->PrintWarning( filename + " was opened using old method!\n" );
 		}
 
 		// Loop through the paths and return the first result
@@ -108,7 +108,7 @@ namespace core
 		if ( std::string(filename).find(".res/") != std::string::npos )
 		{
 			filename = filename.replace( 0, 5, "" );
-			Debug::Console->PrintWarning( filename + " was opened using old method!\n" );
+			debug::Console->PrintWarning( filename + " was opened using old method!\n" );
 		}
 
 		// Loop through the paths and return the first result
@@ -158,7 +158,7 @@ namespace core
 		if ( std::string(filename).find(".res/") != std::string::npos )
 		{
 			filename = filename.replace( 0, 5, "" );
-			Debug::Console->PrintWarning( filename + " was opened using old method!\n" );
+			debug::Console->PrintWarning( filename + " was opened using old method!\n" );
 		}
 
 		// Loop through the paths and return the first result

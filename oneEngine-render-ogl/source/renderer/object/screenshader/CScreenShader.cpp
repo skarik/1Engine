@@ -77,7 +77,7 @@ bool CScreenShader::Render ( const char pass )
 		}
 	}
 
-	transform.position = CCamera::activeCamera->transform.position;
+	transform.world.position = CCamera::activeCamera->transform.position;
 
 	GL.CheckError();
 

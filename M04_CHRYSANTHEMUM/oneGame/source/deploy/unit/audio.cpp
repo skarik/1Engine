@@ -51,10 +51,10 @@ DEPLOY_API int _ARUNIT_CALL Unit::Test_Audio ( _ARUNIT_ARGS )
 	CInput::Initialize();
 
 	// Create debug console
-	Debug::CDebugConsole::Init();
+	debug::CDebugConsole::Init();
 
 	// Create Window
-	Debug::Console->PrintMessage( "Main system initialized properly. I think.\n" );
+	debug::Console->PrintMessage( "Main system initialized properly. I think.\n" );
 	std::cout << "Win32 Build (" << __DATE__ << ") Prealpha" << std::endl;
 
 	// Create Audio
@@ -62,8 +62,8 @@ DEPLOY_API int _ARUNIT_CALL Unit::Test_Audio ( _ARUNIT_ARGS )
 	
 	// Inialize steam
 	bool bSteamy = SteamAPI_Init();
-	Debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
-	Debug::Console->PrintWarning( "Press Escape to exit this module test.\n" );
+	debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
+	debug::Console->PrintWarning( "Press Escape to exit this module test.\n" );
 	
 	// Set up the thread priority
 	{

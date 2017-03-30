@@ -65,7 +65,7 @@ DEPLOY_API int _ARUNIT_CALL Unit::Test_EngineCommon ( _ARUNIT_ARGS )
 
 	// Create Window
 	RrWindow aWindow( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
-	Debug::Console->PrintMessage( "Main system initialized properly. I think.\n" );
+	debug::Console->PrintMessage( "Main system initialized properly. I think.\n" );
 	std::cout << "Win32 Build (" << __DATE__ << ") Prealpha" << std::endl;
 
 	// Init Physics
@@ -84,7 +84,7 @@ DEPLOY_API int _ARUNIT_CALL Unit::Test_EngineCommon ( _ARUNIT_ARGS )
 	// Inialize steam
 	bool bSteamy = false;
 	//bSteamy = SteamAPI_Init();
-	//Debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
+	//debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
 
 	// Create the engine systems
 	Lua::CLuaController* luaController = new Lua::CLuaController();
@@ -98,8 +98,8 @@ DEPLOY_API int _ARUNIT_CALL Unit::Test_EngineCommon ( _ARUNIT_ARGS )
 	//CDeveloperCursor* devCursor = new CDeveloperCursor();
 
 	// Create the debug drawers
-	//Debug::CDebugDrawer debugDrawer;
-	//Debug::CDebugRTInspector debugRTInspector;
+	//debug::CDebugDrawer debugDrawer;
+	//debug::CDebugRTInspector debugRTInspector;
 	// Create the sprite drawer
 	//CSpriteContainer spriteContainer;
 
@@ -157,9 +157,9 @@ DEPLOY_API int _ARUNIT_CALL Unit::Test_EngineCommon ( _ARUNIT_ARGS )
 				{
 					for ( int z = -10; z <= 10; ++z )
 					{
-						Debug::Drawer->DrawLine( Vector3d(x,y,-10), Vector3d(x,y,+10) );
-						Debug::Drawer->DrawLine( Vector3d(x,-10,z), Vector3d(x,+10,z) );
-						Debug::Drawer->DrawLine( Vector3d(-10,y,z), Vector3d(+10,y,z) );
+						debug::Drawer->DrawLine( Vector3d(x,y,-10), Vector3d(x,y,+10) );
+						debug::Drawer->DrawLine( Vector3d(x,-10,z), Vector3d(x,+10,z) );
+						debug::Drawer->DrawLine( Vector3d(-10,y,z), Vector3d(+10,y,z) );
 					}
 				}
 			}*/

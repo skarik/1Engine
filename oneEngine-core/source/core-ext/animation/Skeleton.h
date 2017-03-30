@@ -2,7 +2,7 @@
 #define _CORE_ANIMATION_SKELETON_H_
 
 #include "core/containers/arstring.h"
-#include "core-ext/transform/CTransform.h"
+#include "core-ext/transform/Transform.h"
 #include "core-ext/transform/TransformUtility.h"
 
 #include <vector>

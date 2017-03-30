@@ -37,7 +37,7 @@ void CWaypoint::Update (void)
 		{
 			if ( playerList[i].actor != NULL ) // If the actor is valid....
 			{	// ....then work with that actor!
-				distance = (m_position - playerList[i].actor->transform.position).magnitude(); //TODO: Check if the actor is indeed a player.
+				distance = (m_position - playerList[i].actor->transform.world.position).magnitude(); //TODO: Check if the actor is indeed a player.
 
 				if (distance < 3.0f && in_range == false)
 				{
