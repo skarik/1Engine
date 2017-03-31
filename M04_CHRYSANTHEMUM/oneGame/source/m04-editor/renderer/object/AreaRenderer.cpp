@@ -53,8 +53,8 @@ bool AreaRenderer::Render ( const char pass )
 	{
 		Rect rect = (*area)->m_rect;
 		Vector3d points [4];
-		points[0] = rect.pos + Vector3d( 0,0,transform.position.z );
-		points[2] = rect.pos + rect.size + Vector3d( 0,0,transform.position.z );
+		points[0] = rect.pos + Vector3d( 0,0,transform.world.position.z );
+		points[2] = rect.pos + rect.size + Vector3d( 0,0,transform.world.position.z );
 		points[1] = Vector3d( points[2].x, points[0].y, points[0].z );
 		points[3] = Vector3d( points[0].x, points[2].y, points[0].z );
 

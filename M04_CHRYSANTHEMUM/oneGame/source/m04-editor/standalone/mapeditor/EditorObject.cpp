@@ -92,7 +92,7 @@ void EditorObject::Update ( void )
 	// Update child objects the engine could use
 	if ( light != NULL )
 	{
-		light->transform.position = position;
+		light->position = position;
 	}
 	position.z = -495;
 	

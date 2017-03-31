@@ -360,7 +360,7 @@ void TalkerBox::Update ( void )
 	if (m_boxbackgroundblend)	m_boxbackgroundblend->GenerateMesh( estimatedSize - Vector2d(2,2) );
 
 	// Update text position
-	m_textmesh->transform.position		= Vector3d( position.x, position.y, -100 );
+	m_textmesh->transform.world.position	= Vector3d( position.x, position.y, -100 );
 
 	// Update text alpha
 	m_textmesh->GetMaterial()->m_diffuse.alpha = m_fadeLerpX;
@@ -368,14 +368,14 @@ void TalkerBox::Update ( void )
 	// Update background positions
 	if (m_boxbackground)
 	{
-		m_boxbackground->transform.position	= Vector3d(
+		m_boxbackground->transform.world.position	= Vector3d(
 			position.x - 4.0F + (width + 14 - estimatedSize.x) * 0.5F,
 			position.y - 15.0F,
 			-99 );
 	}
 	if (m_boxbackgroundblend)
 	{
-		m_boxbackgroundblend->transform.position = Vector3d(
+		m_boxbackgroundblend->transform.world.position = Vector3d(
 			position.x - 3.0F + (width + 14 - estimatedSize.x) * 0.5F,
 			position.y - 14.0F,
 			-98 );

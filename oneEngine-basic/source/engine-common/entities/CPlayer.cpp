@@ -58,7 +58,7 @@ void CPlayer::LateUpdate ( void )
 	// Update listener position
 	pListener->velocity = pCamera->transform.position - pListener->position;
 	pListener->position = pCamera->transform.position;
-	pListener->orient_forward = pCamera->transform.rotation * Vector3d(1,0,0);
+	pListener->orient_forward = pCamera->transform.rotation * Vector3d::forward;
 	pListener->orient_up = pCamera->transform.rotation * Vector3d(0,0,1);
 }
 

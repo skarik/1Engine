@@ -16,7 +16,7 @@ CAudioListener::CAudioListener( void )
 	position = Vector3d();
 	position_prev = Vector3d();
 	velocity = Vector3d();
-	orient_forward = Vector3d( 1,0,0 );
+	orient_forward = Vector3d::forward;
 	orient_up = Vector3d( 0,0,1 );
 }
 

@@ -38,7 +38,7 @@ bool CBillboard::Render ( const char pass )
 			lookPos = (CCamera::activeCamera->transform.position - transform.world.position).normal();
 		}
 		else {
-			lookPos = CCamera::activeCamera->transform.rotation * Vector3d(1,0,0);
+			lookPos = CCamera::activeCamera->transform.rotation * Vector3d::forward;
 		}
 		transform.world.rotation = Vector3d(0,0,0);
 		vRight = CCamera::activeCamera->GetUp().cross( lookPos );

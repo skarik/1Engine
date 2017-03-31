@@ -53,11 +53,11 @@ renderer::Background2D::~Background2D ( void )
 bool renderer::Background2D::Render ( const char pass )
 {
 	// Set the position to follow the camera
-	transform.position = CCamera::activeCamera->transform.position;
-	transform.position.z = 495;
+	transform.world.position = CCamera::activeCamera->transform.position;
+	transform.world.position.z = 495;
 	// Set the scale to fill the screen
-	transform.scale.x = CCamera::activeCamera->ortho_size.x;
-	transform.scale.y = CCamera::activeCamera->ortho_size.y;
+	transform.world.scale.x = CCamera::activeCamera->ortho_size.x;
+	transform.world.scale.y = CCamera::activeCamera->ortho_size.y;
 
 	// Render normally otherwise
 	return CRenderable2D::Render(pass);

@@ -27,6 +27,6 @@ void PropChineseLamp::Update ( void )
 		m_light->hdrColor = color;
 		m_light->range = 64.0F;
 		m_light->falloff = 1.0F;
-		m_light->transform.position = position;
+		m_light->position = position;
 	}
 }

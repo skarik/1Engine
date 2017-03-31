@@ -26,7 +26,7 @@ void LightPoint::Update ( void )
 		m_light->hdrColor = color;
 		m_light->range = range;
 		m_light->falloff = power;
-		m_light->transform.position = position;
+		m_light->position = position;
 
 		// Disable update on this object
 		active = false;

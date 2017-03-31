@@ -95,7 +95,7 @@ public:
 	{
 		Ray newRay;
 		newRay.pos = transform.world.position;
-		newRay.dir = transform.world.rotation * Vector3d(1,0,0);
+		newRay.dir = transform.world.rotation * Vector3d::forward;
 		return newRay;
 	};
 	// Get aim ray. Used for off-center weapon projectiles.

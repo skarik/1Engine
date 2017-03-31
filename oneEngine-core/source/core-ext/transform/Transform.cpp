@@ -109,7 +109,7 @@ CTransform * CTransform::GetParent ( void )
 // Return forward direction
 Vector3d CTransform::Forward ( void )
 {
-	return rotation * Vector3d(1,0,0);
+	return rotation * Vector3d::forward;
 }
 // Return up direction
 Vector3d CTransform::Up ( void )

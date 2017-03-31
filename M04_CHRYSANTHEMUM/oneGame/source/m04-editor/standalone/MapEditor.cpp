@@ -102,12 +102,12 @@ MapEditor::MapEditor ( void )
 	// Create area renderer
 	{
 		m_area_renderer = new M04::AreaRenderer();
-		m_area_renderer->transform.position.z = -99;
+		m_area_renderer->transform.world.position.z = -99;
 	}
 	// Create gizmo renderer
 	{
 		m_gizmo_renderer = new M04::GizmoRenderer();
-		m_area_renderer->transform.position.z = -100;
+		m_area_renderer->transform.world.position.z = -100;
 	}
 	// Build Dusk Gui
 	{

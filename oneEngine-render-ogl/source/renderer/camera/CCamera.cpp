@@ -26,7 +26,7 @@ CCamera::CCamera ( void )
 	fov = 100.0f;
 
 	up = Vector3d( 0,0,1 );
-	forward = Vector3d( 1,0,0 );
+	forward = Vector3d::forward;
 
 	viewport_percent.pos = Vector2d( 0,0 );
 	viewport_percent.size = Vector2d( 1,1 );
@@ -186,7 +186,7 @@ void CCamera::LateUpdate ( void )
 	rotMatrix.setRotation( transform.rotation );
 
 	// Rotate the move vector to match the camera
-	forward = rotMatrix*Vector3d(1,0,0);
+	forward = rotMatrix*Vector3d::forward;
 
 	/*up.z = cos( (ftype)degtorad( transform.rotation.y ) );
 	up.x = -cos( (ftype)degtorad( transform.rotation.z ) ) * sin( (ftype)degtorad( transform.rotation.y ) );
@@ -327,7 +327,7 @@ void CCamera::UpdateMatrix ( void )
 		rotMatrix.setRotation( transform.rotation );
 
 		// Rotate the move vector to match the camera
-		forward = rotMatrix*Vector3d(1,0,0);
+		forward = rotMatrix*Vector3d::forward;
 		up = rotMatrix*Vector3d(0,0,1);
 	}
 	Vector3d side = forward.cross(up);

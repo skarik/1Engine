@@ -96,7 +96,7 @@ public:
 public:
 	// A vector of value Vector3d( 0,0,0 )
 	static const Vector3d zero;
-	// A vector of value Vector3d( 1,0,0 )
+	// A vector of value Vector3d::forward
 	static const Vector3d forward;
 	// A vector of value Vector3d( 0,0,1 )
 	static const Vector3d up;

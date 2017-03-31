@@ -116,8 +116,8 @@ void PlayerLeyo::PostFixedUpdate ( void )
 	camera->transform.position.x = (Real)Math::round(camera_position.x);
 	camera->transform.position.y = (Real)Math::round(camera_position.y);
 
-	light->transform.position.x = (Real)Math::round(position.x);
-	light->transform.position.y = (Real)Math::round(position.y + 32);
+	light->position.x = (Real)Math::round(position.x);
+	light->position.y = (Real)Math::round(position.y + 32);
 }
 
 void PlayerLeyo::CameraUpdate ( void )

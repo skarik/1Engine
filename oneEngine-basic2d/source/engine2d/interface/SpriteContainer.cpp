@@ -40,16 +40,16 @@ void SpriteContainer::PreStep ( void )
 	if ( m_sprite != NULL )
 	{
 		if ( m_sourcePosition != NULL ) {
-			m_sprite->transform.position = *m_sourcePosition;
+			m_sprite->transform.world.position = *m_sourcePosition;
 			// TODO: Remove this rounding from here
-			m_sprite->transform.position.x = (Real)Math::round(m_sprite->transform.position.x);
-			m_sprite->transform.position.y = (Real)Math::round(m_sprite->transform.position.y);
+			m_sprite->transform.world.position.x = (Real)Math::round(m_sprite->transform.world.position.x);
+			m_sprite->transform.world.position.y = (Real)Math::round(m_sprite->transform.world.position.y);
 		}
 		if ( m_sourceAngle != NULL ) {
-			m_sprite->transform.rotation = Quaternion::CreateAxisAngle( Vector3d::up , *m_sourceAngle );
+			m_sprite->transform.world.rotation = Quaternion::CreateAxisAngle( Vector3d::up , *m_sourceAngle );
 		}
 		if ( m_sourceScale != NULL ) {
-			m_sprite->transform.scale = *m_sourceScale;
+			m_sprite->transform.world.scale = *m_sourceScale;
 		}
 	}
 
