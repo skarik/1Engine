@@ -8,7 +8,7 @@
 //	XTransform : 10 Float Structure for animation
 struct XTransform
 {
-	XTransform ( const Vector3d & pos =Vector3d(), const Quaternion & rot =Quaternion(), const Vector3d & scal =Vector3d() )
+	XTransform ( const Vector3d & pos =Vector3d(), const Quaternion & rot =Quaternion(), const Vector3d & scal =Vector3d(1,1,1) )
 		: position( pos ), rotation( rot ), scale( scal )
 	{
 		;
@@ -21,7 +21,7 @@ static_assert(sizeof(XTransform) == 40, "Invalid size on XvTransform!");
 
 struct XvTransform	// 9 float structure
 {
-	XvTransform ( const Vector3d & pos =Vector3d(), const Vector3d & rot =Vector3d(), const Vector3d & scal =Vector3d() )
+	XvTransform ( const Vector3d & pos =Vector3d(), const Vector3d & rot =Vector3d(), const Vector3d & scal =Vector3d(1,1,1) )
 		: position( pos ), rotation( rot ), scale( scal )
 	{
 		;
@@ -35,7 +35,7 @@ static_assert(sizeof(XvTransform) == 36, "Invalid size on XvTransform!");
 //	XrTransform : 16 Float Structure for calculation
 struct ALIGNAS(64) XrTransform	// 16 float structure
 {
-	XrTransform ( const Vector3d & pos =Vector3d(), const Rotator & rot =Rotator(), const Vector3d & scal =Vector3d() )
+	XrTransform ( const Vector3d & pos =Vector3d(), const Rotator & rot =Rotator(), const Vector3d & scal =Vector3d(1,1,1) )
 		: position( pos ), scale( scal ), rotation( rot )
 	{
 		;
