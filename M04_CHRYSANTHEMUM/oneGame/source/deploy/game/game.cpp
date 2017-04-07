@@ -11,6 +11,7 @@
 
 #include "core-ext/profiler/CTimeProfiler.h"
 #include "core-ext/threads/Jobs.h"
+#include "core-ext/system/shell/Status.h"
 
 // Include audio
 #include "audio/CAudioMaster.h"
@@ -50,8 +51,9 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	// Load window settings
 	CGameSettings gameSettings;
 	gameSettings.s_cmd = lpCmdLine;
-	if ( CGameSettings::Active()->b_ro_Enable30Steroscopic ) {
-		MessageBox( NULL, "Stereoscopic 3D mode either currently cascades into memory hell or isn't implemented.", "Invalid system setting", 0 );
+	if ( CGameSettings::Active()->b_ro_Enable30Steroscopic )
+	{
+		std::cerr << "Stereoscopic 3D mode either currently cascades into memory hell or isn't implemented." << std::endl;
 		return 0;
 	}
 
@@ -63,14 +65,16 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 
 	// Create Window
 	RrWindow aWindow( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
-	debug::Console->PrintMessage( "Main system initialized properly. I think.\n" );
-	std::cout << "Win32 Build (" << __DATE__ << ") Prealpha" << std::endl;
+	debug::Console->PrintMessage( "Windowing system initialized." );
+	std::cout << "Win32 Build (" << __DATE__ << ") Indev" << std::endl;
+	
+	// Set shell status (loading engine)
+	core::shell::SetTaskbarProgressHandle(aWindow.GetShellHandle());
+	core::shell::SetTaskbarProgressValue(NIL, 100, 100);
+	core::shell::SetTaskbarProgressState(NIL, core::shell::TBP_INDETERMINATE);
 
 	// Init Physics
 	Physics::Init();
-	/*CPhysics* physics = new CPhysics;
-	CPhysics::Instance = physics;
-	CPhysics::Instance->_Init();*/
 	// Create Renderstate
 	CRenderState aRenderer (NULL); // passing null creates default resource manager
 	aWindow.mRenderer = &aRenderer; // Set the window's renderer (multiple possible render states)
@@ -81,34 +85,30 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	
 	// Inialize steam
 	bool bSteamy = false;
-	//bSteamy = SteamAPI_Init();
-	//debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
+#	ifdef STEAM_ENABLED
+	bSteamy = SteamAPI_Init();
+#	endif
+	if (bSteamy) debug::Console->PrintMessage( "holy shit it's STEAMy! (STEAM library initialized).\n" );
+	else debug::Console->PrintWarning( "STEAM was not initialized\n" );
 
 	// Create the engine systems
 	Lua::CLuaController* luaController = new Lua::CLuaController();
 	Engine::CDeveloperConsole* engConsole = new Engine::CDeveloperConsole();
 
 	// Set up engine component
-	//EngineCommonInitialize();
 	GameInitialize();
-
-	// Create the developer console
-	//CDeveloperConsoleUI* devConsole = new CDeveloperConsoleUI();
-	//CDeveloperCursor* devCursor = new CDeveloperCursor();
 
 	// Create the debug drawers
 	//debug::CDebugDrawer debugDrawer;
 	//debug::CDebugRTInspector debugRTInspector;
-	// Create the sprite drawer
-	//CSpriteContainer spriteContainer;
 
 	// Create the game scene
-	CGameScene* pNewScene = CGameScene::NewScene<gmsceneSystemLoader> ();
+	CGameScene* pNewScene = CGameScene::NewScene<gmsceneSystemLoader>();
 	CGameScene::SceneGoto( pNewScene );
 	//EngineCommon::LoadScene("default");
 
-	// Sync up instances
-	//CCamera* cam = new CCamera;
+	// Set shell state (done loading engine)
+	core::shell::SetTaskbarProgressValue(NIL, 100, 100);
 
 	// Start off the clock timer
 	Time::Init();
@@ -161,12 +161,10 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 		}
 	}
 
-	//delete cam;
-
 	// Save all app data
 	gameSettings.SaveSettings();
 	// End Steam
-	//SteamAPI_Shutdown();
+	if (bSteamy) SteamAPI_Shutdown();
 	// Clean game
 	aGameState.CleanWorld();
 

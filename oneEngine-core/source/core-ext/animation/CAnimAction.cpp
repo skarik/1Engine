@@ -1,7 +1,8 @@
 
+#include "core/time.h"
+
 #include "CAnimation.h"
 #include "CAnimAction.h"
-#include "core/time.h"
 
 // constructor
 CAnimAction::CAnimAction( void )

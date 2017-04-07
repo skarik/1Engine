@@ -1,14 +1,6 @@
 
 #include "StringUtils.h"
 
-#include <vector>
-#include <iostream>
-#include <algorithm> 
-#include <functional> 
-#include <cctype>
-#include <locale>
-//#include <boost/algorithm/string.hpp>
-
 #include "core/types/types.h"
 #include "core/math/Vector2d.h"
 #include "core/math/Vector3d.h"
@@ -19,6 +11,13 @@
 #include "core/math/XTransform.h"
 #include "core/math/Color.h"
 #include "core/math/Rect.h"
+
+#include <vector>
+#include <iostream>
+#include <algorithm> 
+#include <functional> 
+#include <cctype>
+#include <locale>
 
 namespace StringUtils
 {
@@ -64,7 +63,8 @@ namespace StringUtils
 
 		char str [128];
 		char*tok;
-		strcpy( str, trimmedMatname.c_str() );
+		memcpy( str, trimmedMatname.c_str(), 128 );
+		str[127] = 0;
 		tok = strtok( str, "\0 ");
 		trimmedMatname.clear();
 		trimmedMatname = tok;

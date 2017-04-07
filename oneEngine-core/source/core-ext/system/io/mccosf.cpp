@@ -88,7 +88,7 @@ bool COSF_Loader::GetNext ( mccOSF_entry_info_t& nextEntry, char* output_value )
 		while ( fins < line_length && !isspace(m_linebuffer[fins]) ) ++fins;
 
 		// Copy the key to the entry
-		strncpy( nextEntry.name, &(m_linebuffer[i]), fins-i );
+		memcpy( nextEntry.name, &(m_linebuffer[i]), fins-i );
 		nextEntry.name[fins-i] = 0;
 
 		// Set the key as valid
@@ -110,7 +110,7 @@ bool COSF_Loader::GetNext ( mccOSF_entry_info_t& nextEntry, char* output_value )
 		}
 		else {
 			// Now, read in the rest of the string to the endline to the buffer
-			strncpy( &(m_linebuffer[0]), &(m_linebuffer[fins]), line_length-fins );
+			memcpy( &(m_linebuffer[0]), &(m_linebuffer[fins]), line_length-fins );
 			m_linebuffer[line_length-fins-1] = 0;
 
 			// Now, parse out comments from the end of the entry
@@ -122,7 +122,7 @@ bool COSF_Loader::GetNext ( mccOSF_entry_info_t& nextEntry, char* output_value )
 
 			// Now, if there are quotes, remove them
 			if ( m_linebuffer[0] == '"' ) {
-				strncpy( m_linebuffer, &(m_linebuffer[1]), line_length-fins-2 );
+				memcpy( m_linebuffer, &(m_linebuffer[1]), line_length-fins-2 );
 				for ( i = 1; i < line_length-fins-2; ++i ) {
 					if ( m_linebuffer[i] == '"' ) {
 						m_linebuffer[i] = 0;
@@ -131,7 +131,7 @@ bool COSF_Loader::GetNext ( mccOSF_entry_info_t& nextEntry, char* output_value )
 			}
 
 			// Now copy string over to smaller buffer
-			strncpy( nextEntry.value, m_linebuffer, ( line_length-fins < 128 ? line_length-fins : 128 ) );
+			memcpy( nextEntry.value, m_linebuffer, ( line_length-fins < 128 ? line_length-fins : 128 ) );
 			int finalLength = (signed)strlen(nextEntry.value);
 			if ( (finalLength > 0) && (nextEntry.value[finalLength-1] == '\r') ) {
 				nextEntry.value[finalLength-1] = 0;

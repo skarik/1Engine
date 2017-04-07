@@ -1,9 +1,10 @@
 
-#include "CGameScene.h"
 #include "core/debug/CDebugConsole.h"
-#include "CGameState.h"
-
+#include "core-ext/system/shell/Status.h"
 #include "engine/utils/CDeveloperConsole.h"
+
+#include "CGameScene.h"
+#include "CGameState.h"
 
 // ==Static Variables==
 CGameScene* CGameScene::pCurrent = NULL;
@@ -11,23 +12,14 @@ CGameScene* CGameScene::pCurrent = NULL;
 // ==Constructor==
 CGameScene::CGameScene ( void )
 {
-	/*if ( pCurrent == NULL )
-	{
-		pCurrent = this;
-	}
-	else
-	{*/
-		debug::Console->PrintMessage( "Game Scene created, waiting for load command.\n" );
-	//}
-
+	debug::Console->PrintMessage( "Game Scene created, waiting for load command.\n" );
 	bFreeWorld = true;
 }
 
 // ==Destructor==
 CGameScene::~CGameScene ( void )
 {
-
-
+	//
 }
 
 // ==Load Next Scene==
@@ -50,10 +42,11 @@ void CGameScene::SceneGoto ( CGameScene* pNewScene )
 	CGameState::Active()->SetNextScene( pNewScene );
 }
 
-
-
 void CGameScene::Load ( void )
 {
+	// Show user that we are currently loading
+	core::shell::SetTaskbarProgressState(NIL, core::shell::TBP_INDETERMINATE);
+
 	// Load scene and set current scene to this
 	LoadScene();
 	pCurrent = this;
@@ -64,4 +57,7 @@ void CGameScene::Load ( void )
 		Engine::CDeveloperConsole* devconsole = new Engine::CDeveloperConsole();
 		devconsole->RemoveReference();
 	}
+
+	// Signify loading is done
+	core::shell::SetTaskbarProgressValue(NIL, 100, 100);
 }

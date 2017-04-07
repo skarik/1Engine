@@ -21,16 +21,8 @@
 #include "steam/steam_api.h"
 
 // Program entry point
-/*#ifdef _WIN32
-int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
-					HINSTANCE	hPrevInstance,		// Previous Instance
-					LPSTR		lpCmdLine,			// Command Line Parameters
-					int			nCmdShow)			// Window Show State
-#else
-int main ( char** lpCmdLine )
-#endif*/
-DEPLOY_API int _ARUNIT_CALL Unit::Test_Core ( _ARUNIT_ARGS )
-{	_ARUNIT_BUILD_CMDLINE
+int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
+{	ARUNIT_BUILD_CMDLINE
 
 	// In core, need to ensure that the conversions are working properly.
 	{ // Test matrix math

@@ -5,6 +5,12 @@
 #ifndef _C_BINARY_FILE_
 #define _C_BINARY_FILE_
 
+#include "core/types/types.h"
+
+#include "core/math/Vector2d.h"
+#include "core/math/Vector3d.h"
+#include "core/math/Color.h"
+
 #include <cstdio>
 #include <string>
 
@@ -13,13 +19,6 @@
 #include <sys/stat.h>
 #include <thread>
 #include <mutex>
-
-#include "core/types/types.h"
-
-#include "core/math/Vector2d.h"
-#include "core/math/Vector3d.h"
-#include "core/math/Color.h"
-
 
 class CBinaryFile
 {

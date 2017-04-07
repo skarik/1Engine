@@ -36,14 +36,8 @@
 // Steam Include
 #include "steam/steam_api.h"
 
-
-// Program entry point
-/*int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
-					HINSTANCE	hPrevInstance,		// Previous Instance
-					LPSTR		lpCmdLine,			// Command Line Parameters
-					int			nCmdShow)			// Window Show State*/
-DEPLOY_API int _ARUNIT_CALL Unit::Test_EngineCore ( _ARUNIT_ARGS )
-{	_ARUNIT_BUILD_CMDLINE
+DEPLOY_API int ARUNIT_CALL Unit::Test_EngineCore ( ARUNIT_ARGS )
+{	ARUNIT_BUILD_CMDLINE
 	// Load window settings
 	CGameSettings gameSettings;
 	gameSettings.s_cmd = lpCmdLine;

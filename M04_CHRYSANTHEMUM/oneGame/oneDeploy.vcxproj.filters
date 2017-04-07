@@ -15,12 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\deploy\unit\audio.cpp">
-      <Filter>SOURCE\deploy\unit</Filter>
-    </ClCompile>
-    <ClCompile Include="source\deploy\unit\core.cpp">
-      <Filter>SOURCE\deploy\unit</Filter>
-    </ClCompile>
     <ClCompile Include="source\deploy\unit\enginecore.cpp">
       <Filter>SOURCE\deploy\unit</Filter>
     </ClCompile>

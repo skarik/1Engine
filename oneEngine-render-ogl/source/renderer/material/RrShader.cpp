@@ -1,11 +1,14 @@
 
-#include "RrShader.h"
-#include "RrShaderManager.h"
 #include "core/settings/CGameSettings.h"
 #include "core/debug/CDebugConsole.h"
+
 #include "core-ext/system/io/Resources.h"
+#include "core-ext/system/shell/Status.h"
 
 #include "renderer/system/glMainSystem.h"
+
+#include "RrShader.h"
+#include "RrShaderManager.h"
 
 using namespace std;
 
@@ -202,8 +205,11 @@ void RrShader::begin ( void )
 	}
 	else
 	{
+		// Alert user that a shader compile failed, especially if we're working in silent mode
+		core::shell::SetTaskbarProgressState(NIL, core::shell::TBP_ERROR);
+
+		// Bind default program
 		glUseProgram( 0 );
-		//throw std::exception( "Shader compile error" );
 	}
 }
 void RrShader::end ( void )
@@ -487,27 +493,19 @@ void RrShader::compile_shader ( void )
 
 	if ( sVertexShader != NULL )
 	{
-		//cout << string( sVertexShader, iVertexShaderLength ) << "--2end" << endl;
-		//cout << sVertexShader << "--2end" << endl;
-		//psTempShader = new GLchar [sVertexShader.size()+1];
-		//strcpy ( psTempShader, sVertexShader.c_str() );
-		//cout << iVertexShaderLength << endl;
 		glShaderSource( iVertexShaderID, 1, (const char**)&sVertexShader, &iVertexShaderLength );
 		glCompileShader( iVertexShaderID );
-		//delete psTempShader;
 
 		// Check for error in the compiling
-		//glGetObjectParameterivARB( iVertexShaderID, GL_COMPILE_STATUS, &compiled );
 		glGetShaderiv( iVertexShaderID, GL_COMPILE_STATUS, &compiled );
 		if ( !compiled )
 		{
-			std::cout << "Compile error in vertex shader.\n";
+			debug::Console->PrintMessage("Compile error in vertex shader.\n");
 			glGetShaderiv( iVertexShaderID, GL_INFO_LOG_LENGTH , &blen ); 
 			if ( blen > 1 )
 			{
 				GLchar* compiler_log = (GLchar*)malloc(blen);
 				glGetShaderInfoLog( iVertexShaderID, blen, &slen, compiler_log );
-				//cout << "vertex shader compiler_log:\n" << compiler_log;
 				std::cout << "Filename: " << sShaderFilename << "\n";
 				debug::Console->PrintError( "vertex shader compiler_log:\n" );
 				debug::Console->PrintError( compiler_log );
@@ -524,7 +522,6 @@ void RrShader::compile_shader ( void )
 			{
 				GLchar* compiler_log = (GLchar*)malloc(blen);
 				glGetShaderInfoLog( iVertexShaderID, blen, &slen, compiler_log );
-				//cout << "vertex shader compiler_log:\n" << compiler_log;
 				std::cout << "Filename: " << sShaderFilename << "\n";
 				debug::Console->PrintWarning( "vertex shader compiler_log:\n" );
 				debug::Console->PrintWarning( compiler_log );
@@ -543,26 +540,21 @@ void RrShader::compile_shader ( void )
 
 	if ( sPixelShader != NULL )
 	{
-		//psTempShader = new GLchar [sPixelShader.size()+1];
-		//strcpy ( psTempShader, sPixelShader.c_str() );
 		glShaderSource( iPixelShaderID, 1, (const char**)&sPixelShader, &iPixelShaderLength );
 		glCompileShader( iPixelShaderID );
-		//delete psTempShader;
 
 		// Check for error in the compiling
 		glGetShaderiv( iPixelShaderID, GL_COMPILE_STATUS, &compiled );
 		if ( !compiled )
 		{
-			std::cout << "Compile error in pixel/fragment shader.\n";
+			debug::Console->PrintMessage( "Compile error in fragment shader.\n" );
 			glGetShaderiv( iPixelShaderID, GL_INFO_LOG_LENGTH , &blen ); 
 			if ( blen > 1 )
 			{
 				GLchar* compiler_log = (GLchar*)malloc(blen);
-				//glGetInfoLogARB( iPixelShaderID, blen, &slen, compiler_log );
 				glGetShaderInfoLog( iPixelShaderID, blen, &slen, compiler_log );
-				//cout << "pixel/fragment shader compiler_log:\n" << compiler_log;
 				std::cout << "Filename: " << sShaderFilename << "\n";
-				debug::Console->PrintError( "pixel/fragment shader compiler_log:\n" );
+				debug::Console->PrintError( "fragment shader compiler_log:\n" );
 				debug::Console->PrintError( compiler_log );
 				free ( compiler_log );
 			}
@@ -577,9 +569,8 @@ void RrShader::compile_shader ( void )
 			{
 				GLchar* compiler_log = (GLchar*)malloc(blen);
 				glGetShaderInfoLog( iPixelShaderID, blen, &slen, compiler_log );
-				//cout << "pixel/fragment shader compiler_log:\n" << compiler_log;
 				std::cout << "Filename: " << sShaderFilename << "\n";
-				debug::Console->PrintWarning( "pixel/fragment shader compiler_log:\n" );
+				debug::Console->PrintWarning( "fragment shader compiler_log:\n" );
 				debug::Console->PrintWarning( compiler_log );
 				free ( compiler_log );
 			}
@@ -618,6 +609,10 @@ void RrShader::compile_shader ( void )
 	// Output errors if the compiling or linking didn't work
 	if ( bHasCompileError )
 	{
+		// Alert user that a shader compile failed, especially if we're working in silent mode
+		core::shell::SetTaskbarProgressState(NIL, core::shell::TBP_ERROR);
+		core::shell::FlashTray(NIL, 5);
+
 		// Print out failure
 		cout << "Shader creation failure. Here's the failures:\n";
 		// Print out all the compile error types

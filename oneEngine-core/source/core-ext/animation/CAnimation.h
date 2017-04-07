@@ -4,17 +4,18 @@
 
 // == Includes ==
 // Animation common
-#include "CAnimationCommon.h"
-#include "set/CAnimationSet.h"
-#include "CAnimationEvents.h"
+#include "core/types/types.h"
+#include "core-ext/animation/CAnimationCommon.h"
+#include "core-ext/animation/CAnimationEvents.h"
+#include "core-ext/animation/set/CAnimationSet.h"
 
 // Include actions
-#include "CAnimAction.h"
+#include "core-ext/animation/CAnimAction.h"
 // Include IK
-#include "CAnimIK.h"
+#include "core-ext/animation/CAnimIK.h"
 // Include skeleton and mapping
-#include "Skeleton.h"
-#include "BoneMapper.h"
+#include "core-ext/animation/Skeleton.h"
+#include "core-ext/animation/BoneMapper.h"
 
 // Using string and map to reference animation
 #include "core/containers/arstring.h"

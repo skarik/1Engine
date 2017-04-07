@@ -17,6 +17,17 @@
 	#define WIN32_LEAN_AND_MEAN 1
 	#endif
 
+	// Disable certain security warnings
+#	ifndef _CRT_SECURE_NO_WARNINGS
+#	define _CRT_SECURE_NO_WARNINGS
+#	endif
+#	ifndef _CRT_SECURE_NO_DEPRECATE
+#	define _CRT_SECURE_NO_DEPRECATE
+#	endif
+#	ifndef _SCL_SECURE_NO_DEPRECATE
+#	define _SCL_SECURE_NO_DEPRECATE
+#	endif
+
 	#include <windows.h>		// Header File For Windows
 
 	#ifdef min

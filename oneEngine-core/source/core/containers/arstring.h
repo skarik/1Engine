@@ -6,6 +6,7 @@
 #ifndef _C_AR_STRING_H_
 #define _C_AR_STRING_H_
 
+#include "core/types/types.h"
 #include <cstring>
 
 template <unsigned short Ln>

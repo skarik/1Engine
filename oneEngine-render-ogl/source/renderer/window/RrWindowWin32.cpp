@@ -7,6 +7,7 @@
 #include "core/debug/CDebugConsole.h"
 
 #include "core-ext/profiler/CTimeProfiler.h"
+#include "core-ext/system/shell/Status.h"
 
 #include "rrWindowWin32.h"
 #include "renderer/state/Settings.h"
@@ -125,6 +126,9 @@ bool RrWindow::createWindow ( void )
 		ErrorOut( "Failed to create OpenGL window." );
 		return false;
 	}
+
+	core::shell::SetTaskbarProgressHandle(GetShellHandle());
+
 	return true;
 }
 

@@ -2,13 +2,15 @@
 #ifndef _STRING_HELPER_H_
 #define	_STRING_HELPER_H_
 
+#include "core/types/types.h"
+
 #include <vector>
 #include <algorithm>
 #include <string>
 
 namespace StringUtils
 {
-		using std::string;
+	using std::string;
 
 	//	GetFileStemLeaf ( filename )
 	// Returns the file without the extension. Not gaurenteed to work with a missing extension.

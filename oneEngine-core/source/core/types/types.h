@@ -12,6 +12,17 @@
 	// Treat unused destructors as error
 #	pragma warning (error: 4150)
 
+	// Disable certain security warnings
+#	ifndef _CRT_SECURE_NO_WARNINGS
+#	define _CRT_SECURE_NO_WARNINGS
+#	endif
+#	ifndef _CRT_SECURE_NO_DEPRECATE
+#	define _CRT_SECURE_NO_DEPRECATE
+#	endif
+#	ifndef _SCL_SECURE_NO_DEPRECATE
+#	define _SCL_SECURE_NO_DEPRECATE
+#	endif
+
 	// Treat float truncation as an error
 //#	pragma warning (error: 4244)
 //#	pragma warning (error: 4305)

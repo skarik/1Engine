@@ -1,15 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneGame", "oneGame\oneGame.vcxproj", "{410E2926-EC32-401C-A45B-DCBBB8342517}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneCore", "oneGame\oneCore.vcxproj", "{55249828-4343-423D-91D7-C5F5765EB240}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_oneCore", "oneGame\oneCore_test.vcxproj", "{17D36E91-579B-4BD9-9309-F65AAC7007D7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3F16B475-B8C7-4E8A-9678-F368CD0DE5C3} = {3F16B475-B8C7-4E8A-9678-F368CD0DE5C3}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneAudio", "oneGame\oneAudio.vcxproj", "{6D8BA09C-513F-4030-8428-0D8797F7264C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_oneAudio", "oneGame\oneAudio_test.vcxproj", "{F630F5A9-217B-40E5-9557-6227163544C9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3F16B475-B8C7-4E8A-9678-F368CD0DE5C3} = {3F16B475-B8C7-4E8A-9678-F368CD0DE5C3}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneEngine", "oneGame\oneEngine.vcxproj", "{5CC6093B-CB43-4CDC-817A-002246731BC9}"
 EndProject

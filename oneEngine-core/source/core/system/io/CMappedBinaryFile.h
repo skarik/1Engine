@@ -5,9 +5,10 @@
 #ifndef _C_MAPPED_BINARY_FILE_H_
 #define _C_MAPPED_BINARY_FILE_H_
 
-#include <cstdio>
 #include "core/types/types.h"
 #include "core/containers/arstring.h"
+
+#include <cstdio>
 
 class CMappedBinaryFile
 {

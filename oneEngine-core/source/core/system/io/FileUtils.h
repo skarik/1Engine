@@ -2,6 +2,7 @@
 #ifndef _IO_FILE_UTILS_H_
 #define _IO_FILE_UTILS_H_
 
+#include "core/types/types.h"
 #include <string>
 
 namespace IO

@@ -49,8 +49,6 @@
   <ItemGroup>
     <ClCompile Include="source\deploy\game\game.cpp" />
     <ClCompile Include="source\deploy\liscensing.cpp" />
-    <ClCompile Include="source\deploy\unit\audio.cpp" />
-    <ClCompile Include="source\deploy\unit\core.cpp" />
     <ClCompile Include="source\deploy\unit\enginecommon.cpp" />
     <ClCompile Include="source\deploy\unit\enginecore.cpp" />
   </ItemGroup>

@@ -73,6 +73,10 @@ public:
 		return hWnd;
 	}
 
+	intptr_t GetShellHandle ( void ) {
+		return (intptr_t)hWnd;
+	}
+
 	// Return screen buffer
 	/*CRenderTexture* getScreenBuffer ( void ) {
 		return pSbuf;

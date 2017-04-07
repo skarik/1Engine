@@ -46,8 +46,8 @@
 #include "steam/steam_api.h"
 
 
-DEPLOY_API int _ARUNIT_CALL Unit::Test_EngineCommon ( _ARUNIT_ARGS )
-{	_ARUNIT_BUILD_CMDLINE
+DEPLOY_API int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
+{	ARUNIT_BUILD_CMDLINE
 
 	// Load window settings
 	CGameSettings gameSettings;

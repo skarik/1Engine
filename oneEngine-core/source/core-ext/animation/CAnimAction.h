@@ -3,6 +3,7 @@
 #define _C_ANIM_ACTION_H_
 
 // Includes
+#include "core/types/types.h"
 #include "core/types/float.h"
 #include "core/containers/arstring.h"
 #include "core-ext/animation/CAnimationEvents.h"
