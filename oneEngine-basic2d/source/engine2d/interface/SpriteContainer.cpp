@@ -1,6 +1,6 @@
 
 #include "SpriteContainer.h"
-#include "render2d/object/sprite/CStreamedRenderable2D.h"
+#include "render2d/object/sprite/CEditableRenderable2D.h"
 
 #include "core/math/Math.h"
 
@@ -13,7 +13,7 @@ SpriteContainer::SpriteContainer ( Vector3d* position, Real* angle, Vector3d* sc
 	m_sprite(NULL),
 	m_requireRestream(false)
 {
-	m_sprite = new CStreamedRenderable2D();
+	m_sprite = new CEditableRenderable2D();
 }
 SpriteContainer::~SpriteContainer ( void )
 {

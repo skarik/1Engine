@@ -12,7 +12,7 @@
 #include "renderer/texture/CTexture.h"
 #include "renderer/resource/CResourceManager.h"
 
-#include "render2d/object/sprite/CStreamedRenderable2D.h"
+#include "render2d/object/sprite/CEditableRenderable2D.h"
 #include "render2d/texture/TextureLoader.h"
 
 using namespace Engine2D;
@@ -22,7 +22,7 @@ AnimationContainer::AnimationContainer ( Vector3d* position, Real* angle, Vector
 	: SpriteContainer(position, angle, scale), 
 	m_current_animation(0)
 {
-	m_sprite = new CStreamedRenderable2D();
+	m_sprite = new CEditableRenderable2D();
 }
 AnimationContainer::~AnimationContainer ( void )
 {
@@ -34,6 +34,7 @@ AnimationContainer::~AnimationContainer ( void )
 void AnimationContainer::PreStep ( void )
 {
 	SpriteContainer::PreStep();
+	if (m_animations.empty()) return;
 
 	// Update material transformations:
 
@@ -62,6 +63,8 @@ void AnimationContainer::PreStep ( void )
 // Updates SpriteContainer properties, then updates animation events.
 void AnimationContainer::PostStepSynchronus ( void )
 {
+	if (m_animations.empty()) return;
+
 	// Update render mesh:
 
 	animation_entry_t* entry = m_animations[m_current_animation].first;

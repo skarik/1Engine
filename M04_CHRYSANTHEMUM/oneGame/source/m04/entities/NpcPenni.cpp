@@ -3,7 +3,7 @@
 
 #include "core/math/Math.h"
 #include "core-ext/input/emulated/CEmulatedInputControl.h"
-#include "render2d/object/sprite/CStreamedRenderable2D.h"
+#include "render2d/object/sprite/CEditableRenderable2D.h"
 #include "m04/entities/TalkerBox.h"
 
 #include "m04/entities/PlayerLeyo.h"
@@ -15,6 +15,7 @@ DECLARE_OBJECT_REGISTRAR(npc_rex,M04::NpcPenni);
 NpcPenni::NpcPenni ( void )
 	: NpcBase()
 {
+	SetupDepthOffset( -1.0F, 0.0F );
 	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 2.0F, 1.0F).normal();
 	m_sprite->SetSpriteFile("sprites/penni.gal");
 	m_spriteOrigin = m_sprite->GetSpriteInfo().fullsize / 2;

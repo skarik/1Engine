@@ -179,6 +179,7 @@
     <ClInclude Include="source\renderer\ogl\GLCommon.h" />
     <ClInclude Include="source\renderer\ogl\gl_core_3_3.h" />
     <ClInclude Include="source\renderer\ogl\wgl_core_3_3.h" />
+    <ClInclude Include="source\renderer\particle\motion.h" />
     <ClInclude Include="source\renderer\particle\RrParticleSystem.h" />
     <ClInclude Include="source\renderer\renderer-console.h" />
     <ClInclude Include="source\renderer\resource\CModelMaster.h" />

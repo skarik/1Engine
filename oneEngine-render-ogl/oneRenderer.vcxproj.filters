@@ -632,5 +632,8 @@
     <ClInclude Include="source\renderer\particle\RrParticleSystem.h">
       <Filter>SOURCE\Renderer\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="source\renderer\particle\motion.h">
+      <Filter>SOURCE\Renderer\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

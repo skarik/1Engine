@@ -53,15 +53,6 @@
     <Filter Include="SOURCE\Core-ext\Types">
       <UniqueIdentifier>{09fb4212-fd00-4322-9665-67718f46d60f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\Core-ext\System">
-      <UniqueIdentifier>{e7984645-a1f0-4293-801b-813fbc0e4519}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SOURCE\Core-ext\System\IO">
-      <UniqueIdentifier>{1f93b0f8-622c-4349-9107-d95cf39523e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SOURCE\Core-ext\System\IO\Serializer">
-      <UniqueIdentifier>{ccc4e887-91a9-4b35-8159-5c6453e9cca6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SOURCE\Core-ext\Animation">
       <UniqueIdentifier>{4378ff49-114b-43ff-b3a2-1554dd1ab3f3}</UniqueIdentifier>
     </Filter>
@@ -85,6 +76,15 @@
     </Filter>
     <Filter Include="SOURCE\Core\Legacy">
       <UniqueIdentifier>{bde0f651-209f-4201-8b24-c1632d38ee07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\System">
+      <UniqueIdentifier>{c10beba5-9550-45de-b96b-97aa8ee89000}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\System\IO">
+      <UniqueIdentifier>{97925657-1c34-498d-8ec7-cdf399280790}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\System\IO\Serializer">
+      <UniqueIdentifier>{cedf24a4-7d14-439a-8f50-04496883162f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -283,24 +283,6 @@
     <ClInclude Include="source\core-ext\types\sHitbox.h">
       <Filter>SOURCE\Core-ext\Types</Filter>
     </ClInclude>
-    <ClInclude Include="source\core-ext\system\io\mccosf.h">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\system\io\mccvxg.h">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\system\io\serializer.h">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\system\io\serializer\CBaseSerializer.h">
-      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\system\io\serializer\ISerialBinary.h">
-      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\system\io\serializer\OSerialBinary.h">
-      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\animation\AnimationEvents.h">
       <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClInclude>
@@ -369,6 +351,24 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\animation\Types.h">
       <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\mccosf.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\mccvxg.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\serializer.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\serializer\CBaseSerializer.h">
+      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\serializer\ISerialBinary.h">
+      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\serializer\OSerialBinary.h">
+      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -444,18 +444,6 @@
     <ClCompile Include="source\core\utils\StringUtils.cpp">
       <Filter>SOURCE\Core\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="source\core-ext\system\io\mccosf.cpp">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core-ext\system\io\mccvxg.c">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core-ext\system\io\serializer\ISerialBinary.cpp">
-      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core-ext\system\io\serializer\OSerialBinary.cpp">
-      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
-    </ClCompile>
     <ClCompile Include="source\core-ext\math\MathQEF.cpp">
       <Filter>SOURCE\Core-ext\Math</Filter>
     </ClCompile>
@@ -467,6 +455,18 @@
     </ClCompile>
     <ClCompile Include="source\core\system\io\CBinaryFile.cpp">
       <Filter>SOURCE\Core\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\mccosf.cpp">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\mccvxg.c">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\serializer\ISerialBinary.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\serializer\OSerialBinary.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

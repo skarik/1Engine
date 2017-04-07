@@ -16,7 +16,7 @@ namespace M04
 	{
 	public:
 		explicit		PropChineseLamp ( void );
-		~PropChineseLamp ( void );
+						~PropChineseLamp ( void );
 
 		void			Update ( void ) override;
 	protected:

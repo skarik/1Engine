@@ -27,6 +27,7 @@ void LightPoint::Update ( void )
 		m_light->range = range;
 		m_light->falloff = power;
 		m_light->position = position;
+		m_light->position.z = range * -0.3F;
 
 		// Disable update on this object
 		active = false;

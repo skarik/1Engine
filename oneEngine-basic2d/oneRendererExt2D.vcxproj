@@ -47,6 +47,7 @@
     <ClCompile Include="source\render2d\object\CTextMesh.cpp" />
     <ClCompile Include="source\render2d\object\debug\Box2DDebugger.cpp" />
     <ClCompile Include="source\render2d\object\sprite\CAnimSprite2D.cpp" />
+    <ClCompile Include="source\render2d\object\sprite\CEditableRenderable2D.cpp" />
     <ClCompile Include="source\render2d\object\sprite\CStreamedRenderable2D.cpp" />
     <ClCompile Include="source\render2d\object\TileMapLayer.cpp" />
     <ClCompile Include="source\render2d\preprocess\NormalMapGeneration.cpp" />
@@ -61,6 +62,7 @@
     <ClInclude Include="source\render2d\object\CTextMesh.h" />
     <ClInclude Include="source\render2d\object\debug\Box2DDebugger.h" />
     <ClInclude Include="source\render2d\object\sprite\CAnimSprite2D.h" />
+    <ClInclude Include="source\render2d\object\sprite\CEditableRenderable2D.h" />
     <ClInclude Include="source\render2d\object\sprite\CStreamedRenderable2D.h" />
     <ClInclude Include="source\render2d\object\TileMapLayer.h" />
     <ClInclude Include="source\render2d\preprocess\NormalMapGeneration.h" />

@@ -1299,11 +1299,12 @@ void RrMaterial::shader_bind_lights	 ( RrShader* shader )
 				"textures/sky/sky2side0.jpg","textures/sky/sky2side1.jpg",
 				"textures/sky/sky2top.jpg","textures/sky/sky2bottom.jpg"
 				);*/
-			m_sampler_reflection = new CTextureCube( "__m_reflectCubemap",
+			/*m_sampler_reflection = new CTextureCube( "__m_reflectCubemap",
 				"textures/sky/sky2top.jpg","textures/sky/sky2top.jpg",
 				"textures/sky/sky2top.jpg","textures/sky/sky2top.jpg",
 				"textures/sky/sky2top.jpg","textures/sky/sky2top.jpg"
-				);
+				);*/
+			m_sampler_reflection = NULL;
 		}
 	}
 

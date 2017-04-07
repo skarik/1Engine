@@ -5,13 +5,16 @@
 #include "renderer/logic/CLogicObject.h"
 
 #define PARTICLE_CONFIG_MAX_SIZE 256
-#define PARTICLE_CONFIG_VERIFY(config) static_assert(sizeof(config) < PARTICLE_CONFIG_MAX_SIZE);
+#define PARTICLE_CONFIG_VERIFY(config) static_assert(sizeof(config) < PARTICLE_CONFIG_MAX_SIZE, "Configuration out of size range");
+#define PARTICLE_UPDATE_FUNCTION(name) void name (char* particle_data, const size_t particle_stride, const size_t particle_count, const void* update_config)
 
 namespace renderer
 {
 	namespace particle
 	{
+		typedef void (*emit_function)(char* particle_data, const size_t particle_stride, const size_t particle_count, const void* update_config);
 		typedef void (*update_function)(char* particle_data, const size_t particle_stride, const size_t particle_count, const void* update_config);
+		typedef void (*render_function)(char* particle_data, const size_t particle_stride, const size_t particle_count, const void* update_config);
 	}
 }
 
@@ -21,13 +24,19 @@ public:
 	RENDER_API explicit		RrParticleSystem ( void );
 	RENDER_API				~RrParticleSystem ( void );
 
-	//		SetParticleSize ( size ) : sets size of a single particle in bytes
-	// sets the size of a particle in bytes.
+	//		SetParticleSize ( size ) : sets size of a single particle in floats (4 bytes)
+	// sets the size of a particle in floats (4 bytes). actual size is input parameter * 4
 	RENDER_API void			SetParticleSize ( const size_t size );
 
+	//      AddEmit( function, config ) : adds emit function to list of functions to run
+	// returns id of new emit entry
+	RENDER_API uint8_t		AddEmit( renderer::particle::emit_function function, void* config );
 	//      AddUpdate( function, config ) : adds update function to list of functions to run
 	// returns id of new update entry
 	RENDER_API uint8_t		AddUpdate( renderer::particle::update_function function, void* config );
+	//      AddRender( function, config ) : adds render function to list of functions to run
+	// returns id of new render entry
+	RENDER_API uint8_t		AddRender( renderer::particle::render_function function, void* config );
 
 	//      Finalize () : locks particle system layout and prepares it for rendering
 	// none of the previous add* or set* functions may be used after this.

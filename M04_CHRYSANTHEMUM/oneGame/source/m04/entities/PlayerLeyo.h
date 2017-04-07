@@ -13,13 +13,15 @@ class CRigidbody;
 
 namespace M04
 {
+	class UILuvPpl;
+
 	//		PlayerLeyo
 	// Basic main character nonsense.
-	class PlayerLeyo : public CGameBehavior, public Engine2D::AnimationContainer
+	class PlayerLeyo : public CGameBehavior, public Engine2D::SpriteContainer
 	{
 	public:
 		explicit		PlayerLeyo ( void );
-		~PlayerLeyo ( void );
+						~PlayerLeyo ( void );
 
 		void			Update ( void ) override;
 		void			PostFixedUpdate ( void ) override;
@@ -54,6 +56,7 @@ namespace M04
 		COrthoCamera* camera;
 		CLight* light;
 		CRigidbody* bod;
+		UILuvPpl* ui;
 
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::PlayerLeyo);

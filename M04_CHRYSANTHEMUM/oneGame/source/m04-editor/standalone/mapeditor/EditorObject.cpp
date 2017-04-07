@@ -1,6 +1,6 @@
 
 #include "EditorObject.h"
-#include "render2d/object/sprite/CStreamedRenderable2D.h"
+#include "render2d/object/sprite/CEditableRenderable2D.h"
 
 #include "renderer/light/CLight.h"
 

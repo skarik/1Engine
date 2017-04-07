@@ -7,7 +7,7 @@
 #include "core/math/vect2d_template.h"
 #include "renderer/logic/CLogicObject.h"
 
-class CStreamedRenderable2D;
+class CEditableRenderable2D;
 
 namespace Engine2D
 {
@@ -50,7 +50,7 @@ namespace Engine2D
 		// Renderer:
 
 		//	Current sprite renderer.
-		CStreamedRenderable2D*		m_sprite;
+		CEditableRenderable2D*		m_sprite;
 
 		// Animation information:
 

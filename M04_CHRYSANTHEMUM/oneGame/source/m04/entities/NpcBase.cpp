@@ -3,7 +3,7 @@
 
 #include "core/math/Math.h"
 #include "core-ext/input/emulated/CEmulatedInputControl.h"
-#include "render2d/object/sprite/CStreamedRenderable2D.h"
+#include "render2d/object/sprite/CEditableRenderable2D.h"
 
 using namespace M04;
 

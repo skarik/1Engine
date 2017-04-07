@@ -6,10 +6,12 @@
 #include "core-ext/input/CInputControl.h"
 #include "renderer/light/CLight.h"
 #include "render2d/camera/COrthoCamera.h"
-#include "render2d/object/sprite/CStreamedRenderable2D.h"
+#include "render2d/object/sprite/CEditableRenderable2D.h"
 
 #include "engine/physics/collider/types/CBoxCollider.h"
 #include "engine/physics/motion/CRigidbody.h"
+
+#include "m04/entities/UILuvPpl.h"
 
 using namespace M04;
 
@@ -18,7 +20,8 @@ DECLARE_OBJECT_REGISTRAR(player_leyo,M04::PlayerLeyo);
 PlayerLeyo* PlayerLeyo::active = NULL;
 
 PlayerLeyo::PlayerLeyo ( void )
-	: CGameBehavior(), Engine2D::AnimationContainer(&position, NULL, &flipstate)
+	: CGameBehavior(), Engine2D::SpriteContainer(&position, NULL, &flipstate)
+	//: CGameBehavior(), Engine2D::AnimationContainer(&position, NULL, &flipstate)
 {
 	active = this;
 
@@ -37,10 +40,12 @@ PlayerLeyo::PlayerLeyo ( void )
 
 	SetupDepthOffset( -1.0F, 0.0F );
 	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 2.0F, 1.0F).normal();
-	//m_sprite->SetSpriteFile("sprites/leo.gal");
-	this->AddFromFile(Animation::TYPE_IDLE, 0, "sprites/tests/demon-run.gal");
-	//m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y - 8 );
-	m_spriteOrigin = Vector2i( m_spriteSize.x / 2, m_spriteSize.y );
+	m_sprite->SetSpriteFile("sprites/leo.gal");
+	m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y - 8 );
+	
+	//this->AddFromFile(Animation::TYPE_IDLE, 0, "sprites/tests/demon-run.gal");
+	//this->AddFromFile(Animation::TYPE_IDLE, 0, "sprites/leo.gal");
+	//m_spriteOrigin = Vector2i( m_spriteSize.x / 2, m_spriteSize.y );
 
 	light = new CLight;
 	light->diffuseColor = Color(0.4,0.4,0.4) * 0.0F;
@@ -49,6 +54,8 @@ PlayerLeyo::PlayerLeyo ( void )
 	bod = NULL;
 
 	flipstate = Vector3d(1,1,1);
+
+	ui = new UILuvPpl();
 }
 
 PlayerLeyo::~PlayerLeyo ( void )
@@ -59,6 +66,8 @@ PlayerLeyo::~PlayerLeyo ( void )
 	delete_safe(light);
 
 	delete_safe_decrement(bod);
+
+	delete_safe_decrement(ui);
 }
 
 void PlayerLeyo::Update ( void )
@@ -118,6 +127,10 @@ void PlayerLeyo::PostFixedUpdate ( void )
 
 	light->position.x = (Real)Math::round(position.x);
 	light->position.y = (Real)Math::round(position.y + 32);
+
+	// Update UI
+	ui->transform.world.position = camera->transform.position;
+	ui->transform.world.position.z = -101;
 }
 
 void PlayerLeyo::CameraUpdate ( void )

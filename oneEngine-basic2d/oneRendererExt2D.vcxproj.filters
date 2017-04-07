@@ -69,6 +69,9 @@
     <ClCompile Include="source\render2d\object\debug\Box2DDebugger.cpp">
       <Filter>SOURCE\Render2D\Object\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="source\render2d\object\sprite\CEditableRenderable2D.cpp">
+      <Filter>SOURCE\Render2D\Object\Sprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\render2d\object\CRenderable2D.h">
@@ -109,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="source\render2d\object\debug\Box2DDebugger.h">
       <Filter>SOURCE\Render2D\Object\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\object\sprite\CEditableRenderable2D.h">
+      <Filter>SOURCE\Render2D\Object\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

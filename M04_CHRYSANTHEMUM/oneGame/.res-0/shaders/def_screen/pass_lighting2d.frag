@@ -163,8 +163,9 @@ void lighting_collect ( out vec3 diffuseFactor, out vec3 specularFactor, in vec3
 		// Get direction of surface to light
 		vec4 surface_to_light;
 		surface_to_light.xyz = lightPosition.xyz - surfacePosition.xyz;
-        surface_to_light.z += 0.3 / lightProperties.x;
+        //surface_to_light.z += 0.3 / lightProperties.x;
         //surface_to_light.x *= 0.5;
+        surface_to_light.z = -surface_to_light.z;
         surface_to_light.x *= 0.5;
         surface_to_light.y *= 1.0 - (surfaceNormal.y * 0.33);
 		surface_to_light.w = max(0.01, length(surface_to_light.xyz));
@@ -336,7 +337,7 @@ void main ( void )
     pixelPosition.x *= sys_ViewportInfo.z;
     pixelPosition.y *= -sys_ViewportInfo.w;
     pixelPosition.z *= (pixelPosition.z - 0.5) * -1000;
-    pixelPosition.xyz += sys_WorldCameraPos;
+    pixelPosition.xy += sys_WorldCameraPos.xy;
 
 	// pixelLookup
 	// xy	palette lookup
@@ -404,7 +405,7 @@ void main ( void )
     //if ( v2f_texcoord0.x > 0.5 )
     //    FragColor.rgb = luminColor.rgb;
     //FragColor.rgb += diffuseColor.rgb * 0.1;
-    //FragColor.rgb += pixelPosition.rgb;
+    //FragColor.rgb = ((pixelPosition.zzz) + 500.0)/1000.0;
 
 
 	// Output fog mix
