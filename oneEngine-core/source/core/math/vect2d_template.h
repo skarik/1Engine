@@ -8,7 +8,7 @@
 
 class Matrix2x2;
 
-namespace Engine
+namespace core
 {
 	template <typename REAL>
 	class vect2d_template 
@@ -52,9 +52,12 @@ namespace Engine
 		REAL y;
 
 	};
+
+	typedef vect2d_template<double> Vector2d_d;
+	typedef vect2d_template<int32_t> Vector2i;
 };
 
-typedef Engine::vect2d_template<double> Vector2d_d;
-typedef Engine::vect2d_template<int32_t> Vector2i;
+typedef core::Vector2d_d Vector2d_d;
+typedef core::Vector2i Vector2i;
 
 #endif//_ENGINE_VECT2D_TEMPLATE_H_

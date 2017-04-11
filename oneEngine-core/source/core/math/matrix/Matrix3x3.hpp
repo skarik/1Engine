@@ -22,24 +22,22 @@ FORCE_INLINE Matrix3x3::Matrix3x3 ( const ftype* nData )
 }
 
 // Setting scale via FTYPE
-FORCE_INLINE bool Matrix3x3::setScale ( const ftype x, const ftype y, const ftype z )
+FORCE_INLINE void Matrix3x3::setScale ( const ftype x, const ftype y, const ftype z )
 {
 	pData[0] = x;
 	pData[4] = y;
 	pData[8] = z;
-	return true;
 }
 // Settin the scaling via Vector3D
-FORCE_INLINE bool Matrix3x3::setScale ( const Vector3d& vect )
+FORCE_INLINE void Matrix3x3::setScale ( const Vector3d& vect )
 {
 	pData[0] = vect.x;
 	pData[4] = vect.y;
 	pData[8] = vect.z;
-	return true;
 }
 
 // Settin the rotation
-FORCE_INLINE bool Matrix3x3::setRotation ( const ftype angle_x, const ftype angle_y, const ftype angle_z )
+FORCE_INLINE void Matrix3x3::setRotation ( const ftype angle_x, const ftype angle_y, const ftype angle_z )
 {
 	ftype ax = (ftype)degtorad(angle_x);
 	ftype ay = (ftype)degtorad(angle_y);
@@ -64,10 +62,8 @@ FORCE_INLINE bool Matrix3x3::setRotation ( const ftype angle_x, const ftype angl
     pData[2]  = -AD * E + B * F;
     pData[5]  =  AD * F + B * E;
     pData[8]  =   A * C;
-
-	return true;
 }
-FORCE_INLINE bool Matrix3x3::setRotationZYX ( const ftype angle_x, const ftype angle_y, const ftype angle_z )
+FORCE_INLINE void Matrix3x3::setRotationZYX ( const ftype angle_x, const ftype angle_y, const ftype angle_z )
 {
 	ftype ax = (ftype)degtorad(angle_x);
 	ftype ay = (ftype)degtorad(angle_y);
@@ -92,18 +88,16 @@ FORCE_INLINE bool Matrix3x3::setRotationZYX ( const ftype angle_x, const ftype a
     pData[6]  = -AD * E + B * F;
     pData[7]  =  AD * F + B * E;
     pData[8]  =   A * C;
-
-	return true;
 }
 
 
 // Setting the rotation of a 3d matrix via 3d vector
-FORCE_INLINE bool Matrix3x3::setRotation ( const Vector3d& vect )
+FORCE_INLINE void Matrix3x3::setRotation ( const Vector3d& vect )
 {
 	return setRotation( vect.x, vect.y, vect.z );
 }
 // Setting rotation of a 3d matrix via a quaternion
-FORCE_INLINE bool Matrix3x3::setRotation ( const Quaternion& quat )
+FORCE_INLINE void Matrix3x3::setRotation ( const Quaternion& quat )
 {
 	ftype xx      = quat.x * quat.x;
     ftype xy      = quat.x * quat.y;
@@ -136,11 +130,9 @@ FORCE_INLINE bool Matrix3x3::setRotation ( const Quaternion& quat )
     pData[2]  =     2 * ( xz - yw );
     pData[5]  =     2 * ( yz + xw );
     pData[8]  = 1 - 2 * ( xx + yy );*/
-
-	return true;
 }
 // Copy this shiet
-FORCE_INLINE bool Matrix3x3::setRotation ( const Matrix3x3& nMatx )
+FORCE_INLINE void Matrix3x3::setRotation ( const Matrix3x3& nMatx )
 {
 	memcpy( pData, nMatx.pData, 9*sizeof(ftype) );
 }

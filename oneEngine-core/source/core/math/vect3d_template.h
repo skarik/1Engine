@@ -5,7 +5,7 @@
 #include "core/types/float.h"
 #include <cmath>
 
-namespace Engine
+namespace core
 {
 	template <typename REAL>
 	class vect3d_template 
@@ -62,10 +62,11 @@ namespace Engine
 
 	};
 
+	typedef vect3d_template<double> Vector3d_d;
+	typedef vect3d_template<int32_t> Vector3i;
 };
 
-typedef Engine::vect3d_template<double> Vector3d_d;
-typedef Engine::vect3d_template<int32_t> Vector3i;
-
+typedef core::Vector3d_d Vector3d_d;
+typedef core::Vector3i Vector3i;
 
 #endif//_ENGINE_VECT3D_TEMPLATE_H_

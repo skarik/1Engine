@@ -10,16 +10,16 @@ public:
 	FORCE_INLINE Matrix3x3 ( const ftype* );
 
 	// Setters - Scaling
-	FORCE_INLINE bool setScale ( const ftype = 0, const ftype = 0, const ftype = 0 );
-	FORCE_INLINE bool setScale ( const Vector3d& );
+	FORCE_INLINE void setScale ( const ftype = 0, const ftype = 0, const ftype = 0 );
+	FORCE_INLINE void setScale ( const Vector3d& );
 
 	// Setters - Rotation
-	FORCE_INLINE bool setRotation ( const ftype = 0, const ftype = 0, const ftype = 0 );
-	FORCE_INLINE bool setRotation ( const Vector3d& );
-	FORCE_INLINE bool setRotation ( const Quaternion& );
-	FORCE_INLINE bool setRotation ( const Matrix3x3& );
+	FORCE_INLINE void setRotation ( const ftype = 0, const ftype = 0, const ftype = 0 );
+	FORCE_INLINE void setRotation ( const Vector3d& );
+	FORCE_INLINE void setRotation ( const Quaternion& );
+	FORCE_INLINE void setRotation ( const Matrix3x3& );
 
-	FORCE_INLINE bool setRotationZYX ( const ftype = 0, const ftype = 0, const ftype = 0 );
+	FORCE_INLINE void setRotationZYX ( const ftype = 0, const ftype = 0, const ftype = 0 );
 
 	// Getters - Rotation
 	FORCE_INLINE Vector3d	getEulerAngles ( void ) const;

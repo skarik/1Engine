@@ -223,9 +223,9 @@ long	CBinaryFile::GetFilesize ( void )
 	if ( bIsStream ) {
 		throw std::exception( "Can not stat stream!" );
 	}
-	struct stat filestatus;
-	stat( sCurrentFileName.c_str(), &filestatus );
-	return filestatus.st_size;
+	struct _stat64 filestatus;
+	_stat64( sCurrentFileName.c_str(), &filestatus );
+	return (long)filestatus.st_size;
 }
 
 void	CBinaryFile::WriteUChar ( unsigned char c )

@@ -1,11 +1,14 @@
 #ifndef _MATH_H_
 #define _MATH_H_
 
-#include <cmath>
-
 #include "core/types/types.h"
 #include "core/types/float.h"
 #include "Vector3d.h"
+
+#include <cmath>
+#ifdef _MSC_VER
+#	include <intrin.h>
+#endif
 
 // Math namespace. Straighten up, you're about to get some learning on!
 // Provides repeatedly used math operations on basic types, such as Linear Interpolation or Cubic Interpolation (Smoothlerp).
@@ -35,7 +38,7 @@ namespace Math
 	template <typename Number> inline
 		Number wrap_max ( Number val, Number max )
 	{
-		return (Number)fmod(max + fmod(x, max), max);
+		return (Number)fmod(max + fmod(val, max), max);
 	}
 	//	wrap ( float value, lower, upper ) : wraps the value to range of lower to upper
 	template <typename Number> inline
@@ -79,21 +82,19 @@ namespace Math
 	inline
 		uint32_t log2 ( const uint32_t x )
 	{
-#ifndef _MSC_VER
-		return __builtin_ctz (x); // should work on ARM
-#else
-#	if _WIN64
-		DWORD result;
-		_BitScanReverse( &result, DWORD(x) );
+#ifdef _MSC_VER
+		unsigned long result;
+		_BitScanReverse( &result, (unsigned long)(x) );
 		return uint32_t(result);
-#	else
-		uint32_t y;
+		/*uint32_t y;
 		__asm {
 			bsr eax, x
 			mov y, eax
 		};
-		return y;
-#	endif
+		return y;*/
+#endif
+#ifdef __clang__
+		return __builtin_ctz (x); // should work on ARM
 #endif
 	}
 

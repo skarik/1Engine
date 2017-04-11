@@ -62,16 +62,7 @@
 #endif
 
 // Include the fixed-size integer types
-#if __cplusplus > 199711L
-	// Only include it if it's in the current version
-#	include <stdint.h>
-	//#include <inttypes.h> //this one if it doesn't work
-#ifdef _WIN32
-#	define alignas(a) __declspec( align( a ) ) 
-#endif
-#else
-
-#	ifdef _WIN32
+#if defined(_MSC_VER)
 		// Define 32bit number if not defined
 #		if _MSC_VER > 1500
 #			include <stdint.h>
@@ -86,16 +77,19 @@
 			typedef __int32 int32_t;
 			typedef __int64 int64_t;
 #		endif
+#endif
 
-		// Define alignment if not defined
+#if defined(__clang__)
+#			include <stdint.h>
+#endif
+
+// Define alignment if not defined
 //#		if _MSC_VER > 1700
 //#			define ALIGNAS(a) alignas( a )
 //#		else
 //#			define ALIGNAS(a) __declspec( align( a ) ) 
 //#		endif
 #		define ALIGNAS(a)
-#	endif
-#endif
 
 typedef unsigned char	uchar;
 typedef unsigned short	ushort;
