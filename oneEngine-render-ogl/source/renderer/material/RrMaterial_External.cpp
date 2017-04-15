@@ -420,7 +420,7 @@ ELoadState loadPassProperties ( RrMaterial* material,
 		subCommand = StringUtils::TrimLeft( str );
 		if ( subCommand.length() > 1 ) {
 			// Load the texture
-			t_pass->shader = new RrShader( subCommand, targetTag );
+			t_pass->shader = new RrShader( subCommand.c_str(), targetTag );
 		}
 	}
 	else if ( command == "blendmode" )

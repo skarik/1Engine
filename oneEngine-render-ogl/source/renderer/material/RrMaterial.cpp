@@ -1444,149 +1444,35 @@ void RrMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_f
 
 void	RrMaterial::bindPassAtrribs ( uchar pass )
 {
-	bindAttribute( "mdl_Vertex",	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*0) );
-	bindAttribute( "mdl_TexCoord",	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );
-	bindAttribute( "mdl_Color",		4, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );
-	bindAttribute( "mdl_Normal",	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*6) );
-	bindAttribute( "mdl_Tangents",	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*9) );
-	bindAttribute( "mdl_Binormals",	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*12) );
-	bindAttribute( "mdl_BoneWeights",4,GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*20) );
-	bindAttributeI( "mdl_BoneIndices",4,GL_UNSIGNED_BYTE, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*19) );
-	bindAttribute( "mdl_TexCoord2",	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*24) );
-	bindAttribute( "mdl_TexCoord3",	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*27) );
-	bindAttribute( "mdl_TexCoord4",	2, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*30) );
-	/*
-	int attributeLocation;
-	RrShader*	shader = getUsingShader();
-
-	attributeLocation = shader->get_attrib_location( "mdl_Vertex" );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribPointer( attributeLocation,
-			3, GL_FLOAT, false, sizeof(CModelVertex),
-			((char*)0) + (sizeof(float)*0) );
-	}
-	attributeLocation = shader->get_attrib_location( "mdl_TexCoord" );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribPointer( attributeLocation,
-			3, GL_FLOAT, false, sizeof(CModelVertex),
-			((char*)0) + (sizeof(float)*3) );
-	}
-	attributeLocation = shader->get_attrib_location( "mdl_Color" );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribPointer( attributeLocation,
-			4, GL_FLOAT, false, sizeof(CModelVertex),
-			((char*)0) + (sizeof(float)*15) );
-	}
-	attributeLocation = shader->get_attrib_location( "mdl_Normal" );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribPointer( attributeLocation,
-			3, GL_FLOAT, false, sizeof(CModelVertex),
-			((char*)0) + (sizeof(float)*6) );
-	}
-	attributeLocation = shader->get_attrib_location( "mdl_Tangents" );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribPointer( attributeLocation,
-			3, GL_FLOAT, false, sizeof(CModelVertex),
-			((char*)0) + (sizeof(float)*9) );
-	}
-	attributeLocation = shader->get_attrib_location( "mdl_Binormals" );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribPointer( attributeLocation,
-			3, GL_FLOAT, false, sizeof(CModelVertex),
-			((char*)0) + (sizeof(float)*12) );
-	}
-	attributeLocation = shader->get_attrib_location( "mdl_BoneWeights" );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribPointer( attributeLocation,
-			4, GL_FLOAT, false, sizeof(CModelVertex),
-			((char*)0) + (sizeof(float)*20) );
-	}
-	attributeLocation = shader->get_attrib_location( "mdl_BoneIndices" );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribIPointer( attributeLocation,
-			4, GL_UNSIGNED_BYTE, sizeof(CModelVertex),
-			((char*)0) + (sizeof(float)*19) );
-	}
-	attributeLocation = shader->get_attrib_location( "mdl_TexCoord2" );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribPointer( attributeLocation,
-			3, GL_FLOAT, false, sizeof(CModelVertex),
-			((char*)0) + (sizeof(float)*24) );
-	}
-	attributeLocation = shader->get_attrib_location( "mdl_TexCoord3" );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribPointer( attributeLocation,
-			3, GL_FLOAT, false, sizeof(CModelVertex),
-			((char*)0) + (sizeof(float)*27) );
-	}
-	attributeLocation = shader->get_attrib_location( "mdl_TexCoord4" );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribPointer( attributeLocation,
-			2, GL_FLOAT, false, sizeof(CModelVertex),
-			((char*)0) + (sizeof(float)*30) );
-	}
-	*/
+	bindAttribute( renderer::ATTRIB_VERTEX,		3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*0) );
+	bindAttribute( renderer::ATTRIB_TEXCOORD0,	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );
+	bindAttribute( renderer::ATTRIB_COLOR,		4, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );
+	bindAttribute( renderer::ATTRIB_NORMAL,		3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*6) );
+	bindAttribute( renderer::ATTRIB_TANGENTS,	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*9) );
+	bindAttribute( renderer::ATTRIB_BINORMALS,	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*12) );
+	bindAttribute( renderer::ATTRIB_BONEWEIGHTS,4,GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*20) );
+	bindAttributeI( renderer::ATTRIB_BONEINDICES,4,GL_UNSIGNED_BYTE, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*19) );
+	bindAttribute( renderer::ATTRIB_TEXCOORD2,	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*24) );
+	bindAttribute( renderer::ATTRIB_TEXCOORD3,	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*27) );
+	bindAttribute( renderer::ATTRIB_TEXCOORD4,	2, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*30) );
 }
-void RrMaterial::bindAttribute ( const char* sAttribName, const uint vec_size, const uint vec_type, const bool normalize, const int struct_size, const void* struct_offset )
+void RrMaterial::bindAttribute ( int attributeIndex, const uint vec_size, const uint vec_type, const bool normalize, const int struct_size, const void* struct_offset )
 {
-	int attributeLocation;
 	RrShader*	shader = getUsingShader();
 	
-	attributeLocation = shader->get_attrib_location( sAttribName );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribPointer( attributeLocation,
-			vec_size, vec_type, normalize,
-			struct_size, struct_offset );
-	}
+	RrPassForward::enabled_attributes[attributeIndex] = true;
+	glEnableVertexAttribArray( attributeIndex );
+	glVertexAttribPointer( attributeIndex,
+		vec_size, vec_type, normalize,
+		struct_size, struct_offset );
 }
-void RrMaterial::bindAttributeI ( const char* sAttribName, const uint vec_size, const uint vec_type, const int struct_size, const void* struct_offset )
+void RrMaterial::bindAttributeI ( int attributeIndex, const uint vec_size, const uint vec_type, const int struct_size, const void* struct_offset )
 {
-	int attributeLocation;
 	RrShader*	shader = getUsingShader();
 	
-	attributeLocation = shader->get_attrib_location( sAttribName );
-	if ( attributeLocation >= 0 )
-	{
-		RrPassForward::enabled_attributes[attributeLocation] = true;
-		glEnableVertexAttribArray( attributeLocation );
-		glVertexAttribIPointer( attributeLocation,
-			vec_size, vec_type,
-			struct_size, struct_offset );
-	}
+	RrPassForward::enabled_attributes[attributeIndex] = true;
+	glEnableVertexAttribArray( attributeIndex );
+	glVertexAttribIPointer( attributeIndex,
+		vec_size, vec_type,
+		struct_size, struct_offset );
 }

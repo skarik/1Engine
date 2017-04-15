@@ -15,7 +15,7 @@ using namespace std;
 // == Constructor ==
 // takes a shader filename or system built-in as an argument
 //RrShader::RrShader ( const string& a_sShaderName, bool a_bCompileOnDemand )
-RrShader::RrShader ( const string& a_sShaderName, const renderer::shader_tag_t a_nShaderTag, const bool a_bCompileOnDemand )
+RrShader::RrShader ( const char* a_sShaderName, const renderer::shader_tag_t a_nShaderTag, const bool a_bCompileOnDemand )
 {
 	sShaderFilename = a_sShaderName;
 	bCompileOnDemand= a_bCompileOnDemand;
@@ -153,7 +153,7 @@ int RrShader::get_uniform_block_location ( const char* name )
 	}
 }
 // Vertex Attribute grabbing
-int	RrShader::get_attrib_location ( const char* name )
+/*int	RrShader::get_attrib_location ( const char* name )
 {
 	if ( !bIsReference )
 	{
@@ -180,7 +180,7 @@ int	RrShader::get_attrib_location ( const char* name )
 	{
 		return pParentShader->get_attrib_location( name );
 	}
-}
+}*/
 
 // == Drawing Program Controls ==
 void RrShader::begin ( void )
@@ -593,10 +593,16 @@ void RrShader::compile_shader ( void )
 		if ( (iCompileResult&SCE_FRAGCOMPILE) == 0 )	// Attach pixel shader if it compiled
 			glAttachShader( iProgramID, iPixelShaderID );
 
-		glLinkProgram( iProgramID );
-		GL.CheckError();
+		// Create the attribute link points
+		for ( uint i = 0; i < sizeof(renderer::AttributeNames)/sizeof(renderer::attributeReservedName_t); ++i )
+		{
+			glBindAttribLocation( iProgramID, renderer::AttributeNames[i].id, renderer::AttributeNames[i].token );
+		}
 
-		int linked = 0;
+		// Link the program
+		glLinkProgram( iProgramID );
+
+		GLint linked = 0;
 		glGetProgramiv( iProgramID, GL_LINK_STATUS, &linked );
 		if ( !linked )
 		{

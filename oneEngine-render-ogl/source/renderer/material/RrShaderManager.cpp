@@ -44,7 +44,7 @@ bool RrShaderManager::RemoveShader ( RrShader * pOldShader )
 	return false;
 }
 
-RrShader* RrShaderManager::ShaderExists ( const string& a_sShaderName, const renderer::shader_tag_t a_nShaderTag )
+RrShader* RrShaderManager::ShaderExists ( const std::string& a_sShaderName, const renderer::shader_tag_t a_nShaderTag )
 {
 	for ( std::vector<RrShader*>::iterator it = vShaderList.begin(); it != vShaderList.end(); it++ )
 	{
@@ -55,7 +55,7 @@ RrShader* RrShaderManager::ShaderExists ( const string& a_sShaderName, const ren
 	}
 	for ( std::vector<RrShader*>::iterator it = vShaderList.begin(); it != vShaderList.end(); it++ )
 	{
-		if ( (*it)->sShaderFilename.find( a_sShaderName ) != string::npos )
+		if ( (*it)->sShaderFilename.find( a_sShaderName ) != std::string::npos )
 		{
 			return *it;
 		}

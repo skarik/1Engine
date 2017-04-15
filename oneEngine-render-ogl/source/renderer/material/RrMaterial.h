@@ -96,8 +96,8 @@ public:
 	RENDER_API void			setUniform ( const char* sUniformName, Color const& cInput );
 	RENDER_API void			setUniform ( const char* sUniformName, Matrix4x4 const& matxInput );
 
-	RENDER_API void			bindAttribute ( const char* sAttribName, const uint vec_size, const uint vec_type, const bool normalize, const int struct_size, const void* struct_offset ); 
-	RENDER_API void			bindAttributeI ( const char* sAttribName, const uint vec_size, const uint vec_type, const int struct_size, const void* struct_offset ); 
+	RENDER_API void			bindAttribute ( int attributeIndex, const uint vec_size, const uint vec_type, const bool normalize, const int struct_size, const void* struct_offset ); 
+	RENDER_API void			bindAttributeI ( int attributeIndex, const uint vec_size, const uint vec_type, const int struct_size, const void* struct_offset ); 
 
 private:
 	void	shader_bind_world	 ( RrShader* shader );

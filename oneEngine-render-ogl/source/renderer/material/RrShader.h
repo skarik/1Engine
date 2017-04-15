@@ -39,9 +39,6 @@ needs to check at the top to see what kind of shader it is
 //using std::map;
 #include <unordered_map>
 
-using std::string;
-
-
 class RrShaderManager;
 
 namespace renderer
@@ -51,22 +48,58 @@ namespace renderer
 		SHADER_TAG_DEFAULT = 0,
 		SHADER_TAG_SKINNING
 	};
+	enum attributeId_t : uint8_t
+	{
+		ATTRIB_VERTEX		= 0,
+		ATTRIB_TEXCOORD0	= 1,
+		ATTRIB_COLOR		= 2,
+		ATTRIB_NORMAL		= 3,
+		ATTRIB_TANGENTS		= 4,
+		ATTRIB_BINORMALS	= 5,
+		ATTRIB_BONEWEIGHTS	= 6,
+		ATTRIB_BONEINDICES	= 7,
+		ATTRIB_TEXCOORD2	= 8,
+		ATTRIB_TEXCOORD3	= 9,
+		ATTRIB_TEXCOORD4	= 10,
+	};
+
+	struct attributeReservedName_t
+	{
+		attributeId_t id;
+		const char* token;
+	};
+	static struct attributeReservedName_t AttributeNames[] =
+	{
+		{ ATTRIB_VERTEX,	"mdl_Vertex" },
+		{ ATTRIB_TEXCOORD0,	"mdl_TexCoord" },
+		{ ATTRIB_COLOR,		"mdl_Color" },
+		{ ATTRIB_NORMAL,	"mdl_Normal" },
+		{ ATTRIB_TANGENTS,	"mdl_Tangents" },
+		{ ATTRIB_BINORMALS,	"mdl_Binormals" },
+		{ ATTRIB_BONEWEIGHTS, "mdl_BoneWeights" },
+		{ ATTRIB_BONEINDICES, "mdl_BoneIndices" },
+		{ ATTRIB_TEXCOORD2, "mdl_TexCoord2" },
+		{ ATTRIB_TEXCOORD3, "mdl_TexCoord3" },
+		{ ATTRIB_TEXCOORD4, "mdl_TexCoord4" },
+	};
 }
 
 class RrShader
 {
 public:
-	RENDER_API RrShader ( const string& a_sShaderName, const renderer::shader_tag_t a_nShaderTag = renderer::SHADER_TAG_DEFAULT, const bool a_bCompileOnDemand = false );
+	RENDER_API RrShader ( const char* a_sShaderName, const renderer::shader_tag_t a_nShaderTag = renderer::SHADER_TAG_DEFAULT, const bool a_bCompileOnDemand = false );
 	RENDER_API ~RrShader();
 public:
 	// Enumeration for the shader type
 	enum eShaderType
 	{
 		None,
-		Assembly,
+		/*Assembly,
 		GLSL,
 		HLSL,
-		CG
+		CG*/
+		GLSL,
+		Binary,
 	};
 	// Enumeration for compile error types
 	enum eShaderCompileError
@@ -101,7 +134,7 @@ public:
 	// Get Uniform Block location
 	int get_uniform_block_location ( const char* name );
 	// Get Vertex Attribute location
-	int get_attrib_location ( const char* name );
+	//int get_attrib_location ( const char* name );
 
 	// Memory management functions
 	//void AddReference ( void );
@@ -110,8 +143,8 @@ public:
 	void ReleaseReference ( void );
 	unsigned int ReferenceCount ( void );
 	
-	const string& GetFilename ( void ) const {
-		return sShaderFilename;
+	const char* GetFilename ( void ) const {
+		return sShaderFilename.c_str();
 	}
 private:
 	void AddReference ( void );
@@ -120,8 +153,8 @@ private:
 
 protected:
 	// System info
-	string sShaderFilename;
-	string sRawShader;
+	std::string sShaderFilename;
+	std::string sRawShader;
 	renderer::shader_tag_t	stTag;
 
 	// Shader properties

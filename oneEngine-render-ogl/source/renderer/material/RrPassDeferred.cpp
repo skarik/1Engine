@@ -36,7 +36,7 @@ void RrMaterial::deferred_shader_build( uchar pass )
 	RrPassDeferred& dpass = deferredinfo[pass];
 	// Build a shader based on the dpass.
 
-	string				t_shaderName;
+	std::string				t_shaderName;
 	renderer::shader_tag_t	t_shaderTag;
 
 	// Generate shader name based on settings
@@ -56,22 +56,22 @@ void RrMaterial::deferred_shader_build( uchar pass )
 	// ============================
 	// Build the vertex shader
 	{
-		string shader = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/surface_default.vert").c_str() );
+		std::string shader = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/surface_default.vert").c_str() );
 		size_t pos;
 
 		// Remove macro at the top
 		pos = shader.find("#define VERTEX_PROCESSOR");
-		if (pos != string::npos)
+		if (pos != std::string::npos)
 		{
 			shader.erase(pos, sizeof("#define VERTEX_PROCESSOR"));
 		}
 
 		// Add macro at the bottom
 		pos = shader.find("VERTEX_PROCESSOR");
-		if (pos != string::npos)
+		if (pos != std::string::npos)
 		{
 			shader.erase(pos, sizeof("VERTEX_PROCESSOR"));
-			string stub;
+			std::string stub;
 			if ( t_shaderTag == renderer::SHADER_TAG_SKINNING )
 				stub = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/vertex_proccessing.skinning.vert.stub").c_str() );
 			else if ( t_shaderTag == renderer::SHADER_TAG_DEFAULT )
@@ -79,7 +79,7 @@ void RrMaterial::deferred_shader_build( uchar pass )
 			shader.insert(pos, stub);
 		}
 
-		string t_shaderNameVert = t_shaderName + ".vert";
+		std::string t_shaderNameVert = t_shaderName + ".vert";
 		IO::ClearFile( t_shaderNameVert.c_str() );
 		IO::AppendStringToFile( t_shaderNameVert.c_str(), shader.c_str() );
 	}
@@ -87,9 +87,9 @@ void RrMaterial::deferred_shader_build( uchar pass )
 	// ============================
 	// Build the pixel shader
 	{
-		string shader = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/surface_default.frag").c_str() );
+		std::string shader = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/surface_default.frag").c_str() );
 
-		string t_shaderNameFrag = t_shaderName+".frag";
+		std::string t_shaderNameFrag = t_shaderName+".frag";
 		IO::ClearFile( t_shaderNameFrag.c_str() );
 		IO::AppendStringToFile( t_shaderNameFrag.c_str(), shader.c_str() );
 	}
@@ -275,5 +275,5 @@ void RrMaterial::deferred_shader_build( uchar pass )
 	}*/
 
 	// Create the shader
-	dpass.shader = new RrShader( t_shaderName+".glsl", t_shaderTag );
+	dpass.shader = new RrShader( (t_shaderName+".glsl").c_str(), t_shaderTag );
 }

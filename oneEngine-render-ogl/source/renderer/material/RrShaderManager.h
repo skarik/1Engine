@@ -13,7 +13,7 @@ public:
 	void RecompileAll ( void );
 	void AddShader ( RrShader* );
 	bool RemoveShader ( RrShader* );
-	RrShader* ShaderExists ( const string& a_sShaderName, const renderer::shader_tag_t a_nShaderTag );
+	RrShader* ShaderExists ( const std::string& a_sShaderName, const renderer::shader_tag_t a_nShaderTag );
 private:
 	std::vector<RrShader*> vShaderList;
 };
