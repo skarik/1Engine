@@ -1,6 +1,13 @@
-
-#ifndef _C_AR_VECTOR_H_
-#define _C_AR_VECTOR_H_
+//===============================================================================================//
+//
+//		arvector.h
+//
+// Stub for an std::vector alternative. This was created in response to a memory leak within the
+// VS2008 compiler. This bug has since been fixed, and this class is here as a monument to idiocy.
+//
+//===============================================================================================//
+#ifndef CORE_VECTOR_H_
+#define CORE_VECTOR_H_
 
 #include "core/types/arBaseObject.h"
 
@@ -52,4 +59,4 @@ private:
 
 };
 
-#endif//_C_AR_VECTOR_H_
+#endif//CORE_VECTOR_H_

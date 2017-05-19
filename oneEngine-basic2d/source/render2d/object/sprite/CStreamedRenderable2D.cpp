@@ -30,7 +30,7 @@ CStreamedRenderable2D::~CStreamedRenderable2D ( void )
 }
 
 // Return access to model data
-CModelData* CStreamedRenderable2D::GetModelData ( void )
+arModelData* CStreamedRenderable2D::GetModelData ( void )
 {
 	return &m_modeldata;
 }

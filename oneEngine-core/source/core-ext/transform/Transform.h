@@ -66,11 +66,11 @@ public:
 	CORE_API ~CTransform ( void );
 
 	CORE_API void SetPosition( Vector3d );
-	CORE_API void SetPosition( ftype, ftype, ftype );
+	CORE_API void SetPosition( Real, Real, Real );
 	CORE_API void SetScaling( Vector3d );
-	CORE_API void SetScaling( ftype, ftype, ftype );
+	CORE_API void SetScaling( Real, Real, Real );
 	CORE_API void SetRotation( Vector3d );
-	CORE_API void SetRotation( ftype, ftype, ftype );
+	CORE_API void SetRotation( Real, Real, Real );
 	//DEPRECATED( void SetTransform ( Matrix4x4 & ) );
 	CORE_API void SetTransform ( Vector3d, Rotator, Vector3d );
 	//DEPRECATED( void SetLocalTransform ( Matrix4x4 & ) );

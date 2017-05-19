@@ -1,44 +1,47 @@
-// arsinglton.h
-// Singleton pattern base class.
-// Also provides macro definitions for building a singleton class
-
-#ifndef _C_AR_SINGLETON_H_
-#define _C_AR_SINGLETON_H_
+//===============================================================================================//
+//
+//		arsingleton.h
+//
+// Provides macro definitions for a singleton class.
+// Because of the behavior of singleton templates in the linker, they are not provided.
+//
+//===============================================================================================//
+#ifndef CORE_SINGLETON_H_
+#define CORE_SINGLETON_H_
 
 #include "core/types/types.h"
 #include "core/exceptions/exceptions.h"
 
-class arsingleton
-{
-public:
-	arsingleton ( void );
-	virtual ~arsingleton ( void ) throw(...);
-	static arsingleton* Active ( void );
-private:
-	static arsingleton*	mActive;
-};
+//===============================================================================================//
+// 1. Place the following in the header
+//===============================================================================================//
 
-// Singleton Header declaration
+// Singleton header storage definition. Place into class declaration:
 #define ARSINGLETON_H_STORAGE(T,STORAGE) \
 	private: \
-		STORAGE static T * mActive; \
+		STORAGE static T * m_Active; \
 		void _free ( void ) \
 		{ \
-			if ( mActive != this ) \
+			if ( m_Active != this ) \
 				throw core::InvalidInstantiationException(); \
-			mActive = NULL; \
+			m_Active = NULL; \
 		} 
+// Singleton header storage definition. Place into class declaration:
 #define ARSINGLETON_H_ACCESS(T) \
 	public: \
 		static T * Active ( void ) \
 		{ \
-			if ( mActive == NULL ) { \
-				mActive = new T(); \
+			if ( m_Active == NULL ) { \
+				m_Active = new T(); \
 			} \
-			return mActive; \
+			return m_Active; \
 		} 
 
-// Singleton CPP definition
-#define ARSINGLETON_CPP_DEF(T) T* T::mActive = NULL; 
+//===============================================================================================//
+// 2. Place the following in the source implementation
+//===============================================================================================//
 
-#endif//_C_AR_SINGLETON_H_
+// Singleton CPP definition. Place into class definition file in source:
+#define ARSINGLETON_CPP_DEF(T) T* T::m_Active = NULL; 
+
+#endif//CORE_SINGLETON_H_

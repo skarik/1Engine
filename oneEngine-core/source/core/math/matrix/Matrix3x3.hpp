@@ -14,15 +14,15 @@ FORCE_INLINE Matrix3x3::Matrix3x3 ( void )
 }
 FORCE_INLINE Matrix3x3::Matrix3x3 ( const Matrix3x3& nSrc )
 {
-	memcpy( pData, nSrc.pData, 9*sizeof(ftype) );
+	memcpy( pData, nSrc.pData, 9*sizeof(Real) );
 }
-FORCE_INLINE Matrix3x3::Matrix3x3 ( const ftype* nData )
+FORCE_INLINE Matrix3x3::Matrix3x3 ( const Real* nData )
 {
-	memcpy( pData, nData, 9*sizeof(ftype) );
+	memcpy( pData, nData, 9*sizeof(Real) );
 }
 
 // Setting scale via FTYPE
-FORCE_INLINE void Matrix3x3::setScale ( const ftype x, const ftype y, const ftype z )
+FORCE_INLINE void Matrix3x3::setScale ( const Real x, const Real y, const Real z )
 {
 	pData[0] = x;
 	pData[4] = y;
@@ -37,19 +37,19 @@ FORCE_INLINE void Matrix3x3::setScale ( const Vector3d& vect )
 }
 
 // Settin the rotation
-FORCE_INLINE void Matrix3x3::setRotation ( const ftype angle_x, const ftype angle_y, const ftype angle_z )
+FORCE_INLINE void Matrix3x3::setRotation ( const Real angle_x, const Real angle_y, const Real angle_z )
 {
-	ftype ax = (ftype)degtorad(angle_x);
-	ftype ay = (ftype)degtorad(angle_y);
-	ftype az = (ftype)degtorad(angle_z);
-	ftype A       = cos(ax);
-    ftype B       = sin(ax);
-    ftype C       = cos(ay);
-    ftype D       = sin(ay);
-    ftype E       = cos(az);
-    ftype F       = sin(az);
-    ftype AD      =   A * D;
-    ftype BD      =   B * D;
+	Real ax = (Real)degtorad(angle_x);
+	Real ay = (Real)degtorad(angle_y);
+	Real az = (Real)degtorad(angle_z);
+	Real A       = cos(ax);
+    Real B       = sin(ax);
+    Real C       = cos(ay);
+    Real D       = sin(ay);
+    Real E       = cos(az);
+    Real F       = sin(az);
+    Real AD      =   A * D;
+    Real BD      =   B * D;
 
     pData[0]  =   C * E;
     pData[3]  =  -C * F;
@@ -63,19 +63,19 @@ FORCE_INLINE void Matrix3x3::setRotation ( const ftype angle_x, const ftype angl
     pData[5]  =  AD * F + B * E;
     pData[8]  =   A * C;
 }
-FORCE_INLINE void Matrix3x3::setRotationZYX ( const ftype angle_x, const ftype angle_y, const ftype angle_z )
+FORCE_INLINE void Matrix3x3::setRotationZYX ( const Real angle_x, const Real angle_y, const Real angle_z )
 {
-	ftype ax = (ftype)degtorad(angle_x);
-	ftype ay = (ftype)degtorad(angle_y);
-	ftype az = (ftype)degtorad(angle_z);
-	ftype A       = cos(ax);
-    ftype B       = sin(ax);
-    ftype C       = cos(ay);
-    ftype D       = sin(ay);
-    ftype E       = cos(az);
-    ftype F       = sin(az);
-    ftype AD      =   A * D;
-    ftype BD      =   B * D;
+	Real ax = (Real)degtorad(angle_x);
+	Real ay = (Real)degtorad(angle_y);
+	Real az = (Real)degtorad(angle_z);
+	Real A       = cos(ax);
+    Real B       = sin(ax);
+    Real C       = cos(ay);
+    Real D       = sin(ay);
+    Real E       = cos(az);
+    Real F       = sin(az);
+    Real AD      =   A * D;
+    Real BD      =   B * D;
 
     pData[0]  =   C * E;
     pData[1]  =  -C * F;
@@ -99,15 +99,15 @@ FORCE_INLINE void Matrix3x3::setRotation ( const Vector3d& vect )
 // Setting rotation of a 3d matrix via a quaternion
 FORCE_INLINE void Matrix3x3::setRotation ( const Quaternion& quat )
 {
-	ftype xx      = quat.x * quat.x;
-    ftype xy      = quat.x * quat.y;
-    ftype xz      = quat.x * quat.z;
-    ftype xw      = quat.x * quat.w;
-    ftype yy      = quat.y * quat.y;
-    ftype yz      = quat.y * quat.z;
-    ftype yw      = quat.y * quat.w;
-    ftype zz      = quat.z * quat.z;
-    ftype zw      = quat.z * quat.w;
+	Real xx      = quat.x * quat.x;
+    Real xy      = quat.x * quat.y;
+    Real xz      = quat.x * quat.z;
+    Real xw      = quat.x * quat.w;
+    Real yy      = quat.y * quat.y;
+    Real yz      = quat.y * quat.z;
+    Real yw      = quat.y * quat.w;
+    Real zz      = quat.z * quat.z;
+    Real zw      = quat.z * quat.w;
     pData[0]  = 1 - 2 * ( yy + zz );
     pData[1]  =     2 * ( xy - zw );
     pData[2]  =     2 * ( xz + yw );
@@ -134,7 +134,7 @@ FORCE_INLINE void Matrix3x3::setRotation ( const Quaternion& quat )
 // Copy this shiet
 FORCE_INLINE void Matrix3x3::setRotation ( const Matrix3x3& nMatx )
 {
-	memcpy( pData, nMatx.pData, 9*sizeof(ftype) );
+	memcpy( pData, nMatx.pData, 9*sizeof(Real) );
 }
 
 // Getters - Rotation
@@ -143,43 +143,43 @@ FORCE_INLINE Vector3d Matrix3x3::getEulerAngles ( void ) const
 	float tr_x, tr_y, D,C;
 	Vector3d angle;
 
-	//angle.y = D =  asin( min<ftype>(max<ftype>(pData[2],-1.0f),1.0f) );        /* Calculate Y-axis angle */
+	//angle.y = D =  asin( min<Real>(max<Real>(pData[2],-1.0f),1.0f) );        /* Calculate Y-axis angle */
  //   C           =  cos( angle.y );
- //   angle.y		=  (ftype)radtodeg(angle.y);//*=  RADIANS;
+ //   angle.y		=  (Real)radtodeg(angle.y);//*=  RADIANS;
  //   if ( fabs( C ) > 0.005 )             /* Gimball lock? */
  //   {
 	//	tr_x      =  pData[8] / C;           /* No, so get X-axis angle */
 	//	tr_y      = -pData[5] / C;
-	//	angle.x  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+	//	angle.x  = (Real)radtodeg(atan2( tr_y, tr_x ));
 	//	tr_x      =  pData[0] / C;            /* Get Z-axis angle */
 	//	tr_y      = -pData[1] / C;
-	//	angle.z  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+	//	angle.z  = (Real)radtodeg(atan2( tr_y, tr_x ));
  //   }
  //   else                                 /* Gimball lock has occurred */
  //   {
 	//	angle.x  = 0;                      /* Set X-axis angle to zero */
 	//	tr_x      =  pData[4];                 /* And calculate Z-axis angle */
 	//	tr_y      =  pData[3];
-	//	angle.z  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+	//	angle.z  = (Real)radtodeg(atan2( tr_y, tr_x ));
  //   }
-	angle.y = D =  asin( std::min<ftype>(std::max<ftype>(pData[6],-1.0f),1.0f) );        /* Calculate Y-axis angle */
+	angle.y = D =  asin( std::min<Real>(std::max<Real>(pData[6],-1.0f),1.0f) );        /* Calculate Y-axis angle */
     C           =  cos( angle.y );
-    angle.y		=  (ftype)radtodeg(angle.y);//*=  RADIANS;
+    angle.y		=  (Real)radtodeg(angle.y);//*=  RADIANS;
     if ( fabs( C ) > 0.005 )             /* Gimball lock? */
     {
 		tr_x      =  pData[8] / C;           /* No, so get X-axis angle */
 		tr_y      = -pData[7] / C;
-		angle.x  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+		angle.x  = (Real)radtodeg(atan2( tr_y, tr_x ));
 		tr_x      =  pData[0] / C;            /* Get Z-axis angle */
 		tr_y      = -pData[3] / C;
-		angle.z  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+		angle.z  = (Real)radtodeg(atan2( tr_y, tr_x ));
     }
     else                                 /* Gimball lock has occurred */
     {
 		angle.x  = 0;                      /* Set X-axis angle to zero */
 		tr_x      =  pData[4];                 /* And calculate Z-axis angle */
 		tr_y      =  pData[1];
-		angle.z  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+		angle.z  = (Real)radtodeg(atan2( tr_y, tr_x ));
     }
 
     /* return only positive angles in [0,360] */
@@ -201,9 +201,9 @@ FORCE_INLINE Vector3d Matrix3x3::getEulerAngles ( void ) const
 // Convert the rotation into a quaternion
 FORCE_INLINE Quaternion Matrix3x3::getQuaternion ( void ) const
 {
-	ftype S, X, Y, Z, W;
+	Real S, X, Y, Z, W;
 
-	ftype tr = pData[0] + pData[4] + pData[8];
+	Real tr = pData[0] + pData[4] + pData[8];
 	if ( tr > 0 ) { 
 		S = sqrt(tr+1.0f) * 2; // S=4*qw 
 		W = 0.25f * S;
@@ -213,7 +213,7 @@ FORCE_INLINE Quaternion Matrix3x3::getQuaternion ( void ) const
 	}
 	else if ( pData[0] > pData[4] && pData[0] > pData[8] ) 
 	{	// Column 0: 
-        S  = (ftype)sqrt( 1.0f + pData[0] - pData[4] - pData[8] ) * 2;
+        S  = (Real)sqrt( 1.0f + pData[0] - pData[4] - pData[8] ) * 2;
         X = 0.25f * S;
         Y = (pData[3] + pData[1]) / S;
         Z = (pData[2] + pData[6]) / S;
@@ -221,7 +221,7 @@ FORCE_INLINE Quaternion Matrix3x3::getQuaternion ( void ) const
     }
 	else if ( pData[4] > pData[8] )
 	{	// Column 1: 
-        S  = (ftype)sqrt( 1.0f + pData[4] - pData[0] - pData[8] ) * 2;
+        S  = (Real)sqrt( 1.0f + pData[4] - pData[0] - pData[8] ) * 2;
         X = (pData[3] + pData[1]) / S;
         Y = 0.25f * S;
         Z = (pData[7] + pData[5]) / S;
@@ -229,7 +229,7 @@ FORCE_INLINE Quaternion Matrix3x3::getQuaternion ( void ) const
     }
 	else
 	{	// Column 2:
-        S  = (ftype)sqrt( 1.0f + pData[8] - pData[0] - pData[4] ) * 2;
+        S  = (Real)sqrt( 1.0f + pData[8] - pData[0] - pData[4] ) * 2;
         X = (pData[2] + pData[6]) / S;
         Y = (pData[7] + pData[5]) / S;
         Z = 0.25f * S;
@@ -286,7 +286,7 @@ FORCE_INLINE Matrix3x3 Matrix3x3::operator! ( void ) const
 // Matrix inverse general
 FORCE_INLINE Matrix3x3 Matrix3x3::inverse ( void ) const
 {
-	ftype detVal = det();
+	Real detVal = det();
 	assert( detVal == detVal );
 	assert( detVal <= FLT_MAX && detVal >= -FLT_MAX );
 	if ( fabs( detVal ) <= 0.0005f )
@@ -311,7 +311,7 @@ FORCE_INLINE Matrix3x3 Matrix3x3::inverse ( void ) const
 	}
 }
 // Determinant
-FORCE_INLINE ftype Matrix3x3::det ( void ) const
+FORCE_INLINE Real Matrix3x3::det ( void ) const
 {
 	return ( (pData[0]*pData[4]*pData[8]) + (pData[1]*pData[5]*pData[6]) + (pData[2]*pData[3]*pData[7])
 		- (pData[2]*pData[4]*pData[6]) - (pData[1]*pData[3]*pData[8]) - (pData[0]*pData[5]*pData[7]) );
@@ -320,7 +320,7 @@ FORCE_INLINE ftype Matrix3x3::det ( void ) const
 // Retrieve submatrix
 FORCE_INLINE Matrix2x2 Matrix3x3::submatrix ( int ex_x, int ex_y ) const
 {
-	ftype newData [4];
+	Real newData [4];
 	int di, dj, si, sj;
 	for( di = 0; di < 2; ++di )
 	{
@@ -341,7 +341,7 @@ FORCE_INLINE Matrix2x2 Matrix3x3::submatrix ( int ex_x, int ex_y ) const
 }
 
 // Linear Interpolation
-FORCE_INLINE void Matrix3x3::Lerp ( const Matrix3x3& right, const ftype t )
+FORCE_INLINE void Matrix3x3::Lerp ( const Matrix3x3& right, const Real t )
 {
 	int x;
 	for ( x = 0; x < 9; x += 1 )
@@ -349,7 +349,7 @@ FORCE_INLINE void Matrix3x3::Lerp ( const Matrix3x3& right, const ftype t )
 		pData[x] += ( right.pData[x] - pData[x] )*t;
 	}
 }
-FORCE_INLINE Matrix3x3 Matrix3x3::LerpTo ( const Matrix3x3& right, const ftype t ) const
+FORCE_INLINE Matrix3x3 Matrix3x3::LerpTo ( const Matrix3x3& right, const Real t ) const
 {
 	Matrix3x3 result;
 	int x;
@@ -464,7 +464,7 @@ FORCE_INLINE Vector3d Matrix3x3::operator* ( const Vector3d& vect ) const
 		);*/
 }
 // Scalar multiply
-FORCE_INLINE Matrix3x3 Matrix3x3::operator* ( const ftype right ) const
+FORCE_INLINE Matrix3x3 Matrix3x3::operator* ( const Real right ) const
 {
 	Matrix3x3 result;
 	for ( int x = 0; x < 9; x++ )
@@ -488,12 +488,12 @@ FORCE_INLINE Matrix3x3 Matrix3x3::operator+= ( const Matrix3x3& right )
 }
 
 // Public Accessor
-FORCE_INLINE const ftype* Matrix3x3::operator[] ( int index ) const
+FORCE_INLINE const Real* Matrix3x3::operator[] ( int index ) const
 {
 	return &( pData[index*3] );
 }
 // Private Accessor and Editor
-FORCE_INLINE ftype* Matrix3x3::operator[] ( int index )
+FORCE_INLINE Real* Matrix3x3::operator[] ( int index )
 {
 	return &( pData[index*3] );
 }

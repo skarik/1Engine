@@ -450,9 +450,6 @@
     <ClCompile Include="source\core-ext\math\noise\MidpointNoiseBuffer.cpp">
       <Filter>SOURCE\Core-ext\Math\Noise</Filter>
     </ClCompile>
-    <ClCompile Include="source\core\containers\arsingleton.cpp">
-      <Filter>SOURCE\Core\Containers</Filter>
-    </ClCompile>
     <ClCompile Include="source\core\system\io\CBinaryFile.cpp">
       <Filter>SOURCE\Core\System\IO</Filter>
     </ClCompile>

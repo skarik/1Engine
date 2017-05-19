@@ -31,7 +31,7 @@ public:
 	// Create a new VBO associated with this rrMesh
 	// Removes any old VBO data.
 	// This object gains ownership of the model data. Well, it should, or you'll get memory errors and shit. And that's bad.
-	virtual void	Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames=1, bool willStream=false );
+	virtual void	Initialize ( const string& nNewName, arModelData* const pNewModelData, unsigned int frames=1, bool willStream=false );
 	// Sends new VBO data to the mesh
 	virtual void	Restream ( void );
 
@@ -52,13 +52,13 @@ protected:
 	// Frees up the RAM data used by the object
 	void			FreeRAMData ( void );
 	// Recalculates the normals per-triangle.
-	void			RecalculateNormals ( CModelData* modelData );
+	void			RecalculateNormals ( arModelData* modelData );
 	// Sets things to the VBO's again
 	void			Reinitialize ( void );
 
 public:
 	// Model data
-	CModelData* pmData;
+	arModelData* pmData;
 	// Userdata
 	void*		pbData;
 	int			ibDataType;

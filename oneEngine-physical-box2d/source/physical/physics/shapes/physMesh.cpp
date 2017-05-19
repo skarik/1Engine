@@ -31,7 +31,7 @@ physMesh::~physMesh ( void )
 }
 
 // Init
-void physMesh::Initialize ( CPhysicsData* const pNewModelData )
+void physMesh::Initialize ( arModelPhysicsData* const pNewModelData )
 {
 	// Free the old data, duh
 	//FreeVBOData ( );

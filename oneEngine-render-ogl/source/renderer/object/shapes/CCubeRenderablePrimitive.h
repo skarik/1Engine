@@ -11,20 +11,20 @@ class CCubeRenderablePrimitive : public CRenderablePrimitive
 {
 public:
 	RENDER_API CCubeRenderablePrimitive ( void );
-	RENDER_API CCubeRenderablePrimitive ( ftype width, ftype depth, ftype height );
+	RENDER_API CCubeRenderablePrimitive ( Real width, Real depth, Real height );
 
 	// Render function
 	bool Render ( const char pass );
 
 	// Set size
-	RENDER_API void SetSize ( ftype width, ftype depth, ftype height );
+	RENDER_API void SetSize ( Real width, Real depth, Real height );
 
 protected:
 	void GenerateVertices ( void );
 protected:
-	ftype fWidth;
-	ftype fDepth;
-	ftype fHeight;
+	Real fWidth;
+	Real fDepth;
+	Real fHeight;
 };
 
 // Typedef for ease, because that's a friggin horrible name (change later)

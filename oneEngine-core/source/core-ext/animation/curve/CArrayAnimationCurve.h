@@ -22,7 +22,7 @@ public:
 		vData.clear();	
 	};
 
-	void SampleAt ( ftype time, ftype weight, bool additive=false );
+	void SampleAt ( Real time, Real weight, bool additive=false );
 
 	void AddValue ( CurveType& newValue )
 	{
@@ -44,7 +44,7 @@ private:
 }*/
 
 // Sample At
-inline void CArrayAnimationCurve<Matrix4x4>::SampleAt( ftype time, ftype weight, bool additive )
+inline void CArrayAnimationCurve<Matrix4x4>::SampleAt( Real time, Real weight, bool additive )
 {
 	Matrix4x4	targetMatx;
 
@@ -56,7 +56,7 @@ inline void CArrayAnimationCurve<Matrix4x4>::SampleAt( ftype time, ftype weight,
 	matx2 = vData[nextindex];
 	targetMatx = vData[(unsigned int)(floor( time ))];
 
-	ftype intpart, fracpart;
+	Real intpart, fracpart;
 	fracpart = modf ( time, &intpart );
 	targetMatx.Lerp( matx2, fracpart );
 
@@ -68,7 +68,7 @@ inline void CArrayAnimationCurve<Matrix4x4>::SampleAt( ftype time, ftype weight,
 }
 
 // Sample At
-inline void CArrayAnimationCurve<XTransform>::SampleAt( ftype time, ftype weight, bool additive )
+inline void CArrayAnimationCurve<XTransform>::SampleAt( Real time, Real weight, bool additive )
 {
 	XTransform	trans1;
 
@@ -80,7 +80,7 @@ inline void CArrayAnimationCurve<XTransform>::SampleAt( ftype time, ftype weight
 	trans2 = vData[nextindex];
 	trans1 = vData[(unsigned int)(floor( time ))];
 
-	ftype intpart, fracpart;
+	Real intpart, fracpart;
 	fracpart = modf ( time, &intpart );
 
 	trans1.position	= trans1.position.lerp( trans2.position, fracpart );

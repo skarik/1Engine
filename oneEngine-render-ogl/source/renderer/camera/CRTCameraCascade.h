@@ -15,7 +15,7 @@ public:
 	// Constructor/destructor
 	explicit		CRTCameraCascade (
 		CRenderTexture*	targetTexture	= NULL,
-		ftype			renderFramerate	= 30.0f,
+		Real			renderFramerate	= 30.0f,
 		bool			autoRender		= false
 		) : CRTCamera( targetTexture, renderFramerate, autoRender )
 	{

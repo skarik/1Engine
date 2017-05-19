@@ -17,7 +17,7 @@ Box2DDebugger::Box2DDebugger ( void )
 	SetMaterial( new_material );
 	new_material->removeReference();
 
-	memset(&m_modeldata, 0, sizeof(ModelData));
+	memset(&m_modeldata, 0, sizeof(arModelData));
 
 	SetFlags( b2Draw::e_shapeBit | b2Draw::e_aabbBit | b2Draw::e_centerOfMassBit );
 }
@@ -50,11 +50,11 @@ bool Box2DDebugger::EndRender ( void )
 
 															 // Copy data to the buffer
 	GL.UploadBuffer( GL_ARRAY_BUFFER,
-		sizeof(CModelVertex) * (m_modeldata.vertexNum),
+		sizeof(arModelVertex) * (m_modeldata.vertexNum),
 		m_modeldata.vertices,
 		GL_STATIC_DRAW );
 	GL.UploadBuffer( GL_ELEMENT_ARRAY_BUFFER,
-		sizeof(CModelTriangle) * (m_modeldata.triangleNum),
+		sizeof(arModelTriangle) * (m_modeldata.triangleNum),
 		m_modeldata.triangles,
 		GL_STATIC_DRAW );
 

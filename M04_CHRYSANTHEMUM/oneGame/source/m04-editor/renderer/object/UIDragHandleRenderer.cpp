@@ -56,9 +56,9 @@ bool UIDragHandleRenderer::Render ( const char pass )
 	};
 
 	Vector3d ui_position = m_ui->m_position;
-	if ( m_ui->m_position_snap.x > 0.1F ) ui_position.x = Math::round( ui_position.x / m_ui->m_position_snap.x ) * m_ui->m_position_snap.x;
-	if ( m_ui->m_position_snap.y > 0.1F ) ui_position.y = Math::round( ui_position.y / m_ui->m_position_snap.y ) * m_ui->m_position_snap.y;
-	if ( m_ui->m_position_snap.z > 0.1F ) ui_position.z = Math::round( ui_position.z / m_ui->m_position_snap.z ) * m_ui->m_position_snap.z;
+	if ( m_ui->m_position_snap.x > 0.1F ) ui_position.x = math::round( ui_position.x / m_ui->m_position_snap.x ) * m_ui->m_position_snap.x;
+	if ( m_ui->m_position_snap.y > 0.1F ) ui_position.y = math::round( ui_position.y / m_ui->m_position_snap.y ) * m_ui->m_position_snap.y;
+	if ( m_ui->m_position_snap.z > 0.1F ) ui_position.z = math::round( ui_position.z / m_ui->m_position_snap.z ) * m_ui->m_position_snap.z;
 
 	if ( m_ui->m_style == UIDragHandle::DrawStyle::s2D )
 	{

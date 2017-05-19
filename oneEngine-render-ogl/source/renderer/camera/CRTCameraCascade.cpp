@@ -29,10 +29,10 @@ void CRTCameraCascade::RenderScene ( void )
 	for ( uint i = 0; i < 4; ++i )
 	{
 		// Update viewport
-		viewport.pos.x = (ftype)iPixelSize*i;
+		viewport.pos.x = (Real)iPixelSize*i;
 		viewport.pos.y = 0;
-		viewport.size.x = (ftype)iPixelSize;
-		viewport.size.y = (ftype)iPixelSize;
+		viewport.size.x = (Real)iPixelSize;
+		viewport.size.y = (Real)iPixelSize;
 
 		transform.position = m_renderPositions[i];
 

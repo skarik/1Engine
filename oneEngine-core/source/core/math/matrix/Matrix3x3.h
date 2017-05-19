@@ -7,19 +7,19 @@ class Matrix3x3
 public:
 	FORCE_INLINE Matrix3x3 ( void );
 	FORCE_INLINE Matrix3x3 ( const Matrix3x3& );
-	FORCE_INLINE Matrix3x3 ( const ftype* );
+	FORCE_INLINE Matrix3x3 ( const Real* );
 
 	// Setters - Scaling
-	FORCE_INLINE void setScale ( const ftype = 0, const ftype = 0, const ftype = 0 );
+	FORCE_INLINE void setScale ( const Real = 0, const Real = 0, const Real = 0 );
 	FORCE_INLINE void setScale ( const Vector3d& );
 
 	// Setters - Rotation
-	FORCE_INLINE void setRotation ( const ftype = 0, const ftype = 0, const ftype = 0 );
+	FORCE_INLINE void setRotation ( const Real = 0, const Real = 0, const Real = 0 );
 	FORCE_INLINE void setRotation ( const Vector3d& );
 	FORCE_INLINE void setRotation ( const Quaternion& );
 	FORCE_INLINE void setRotation ( const Matrix3x3& );
 
-	FORCE_INLINE void setRotationZYX ( const ftype = 0, const ftype = 0, const ftype = 0 );
+	FORCE_INLINE void setRotationZYX ( const Real = 0, const Real = 0, const Real = 0 );
 
 	// Getters - Rotation
 	FORCE_INLINE Vector3d	getEulerAngles ( void ) const;
@@ -31,17 +31,17 @@ public:
 	// Operations
 	FORCE_INLINE Matrix3x3 transpose ( void ) const;
 	FORCE_INLINE Matrix3x3 inverse ( void ) const;
-	FORCE_INLINE ftype det ( void ) const;
+	FORCE_INLINE Real det ( void ) const;
 	
 	FORCE_INLINE Matrix2x2 submatrix ( int, int ) const;
 
-	FORCE_INLINE Matrix3x3 LerpTo( Matrix3x3 const&, ftype const ) const;
-	FORCE_INLINE void Lerp ( Matrix3x3 const&, ftype const ); 
+	FORCE_INLINE Matrix3x3 LerpTo( Matrix3x3 const&, Real const ) const;
+	FORCE_INLINE void Lerp ( Matrix3x3 const&, Real const ); 
 
 	// Multiplication
 	FORCE_INLINE Matrix3x3 operator* ( Matrix3x3 const& ) const;
 	FORCE_INLINE Matrix3x3 operator*=( Matrix3x3 const& );
-	FORCE_INLINE Matrix3x3 operator* ( ftype const ) const;
+	FORCE_INLINE Matrix3x3 operator* ( Real const ) const;
 
 	FORCE_INLINE Matrix3x3 operator+ ( Matrix3x3 const& ) const;
 	FORCE_INLINE Matrix3x3 operator+=( Matrix3x3 const& );
@@ -52,9 +52,9 @@ public:
 	FORCE_INLINE Matrix3x3 operator! ( void ) const;
 
 	// Accessor
-	FORCE_INLINE const ftype* operator[] ( int ) const;
+	FORCE_INLINE const Real* operator[] ( int ) const;
 	// Editor
-	FORCE_INLINE ftype* operator[] ( int );
+	FORCE_INLINE Real* operator[] ( int );
 
 	//Equal comparison overload
 	FORCE_INLINE bool operator== (Matrix3x3 const& right) const;
@@ -65,7 +65,7 @@ public:
 	// Check for valid values
 	FORCE_INLINE bool isOk ( void );
 public:
-	ftype pData [9];
+	Real pData [9];
 };
 
 #endif//_MATRIX_3_3_H_

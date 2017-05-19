@@ -51,17 +51,17 @@ private:
 	uint8_t		alive;
 	uint8_t		dummy;
 
-	Real_32	fLife;
+	Real32	fLife;
 
-	Real_32	fStartLife;
-	Real_32	fStartSize;
-	Real_32	fEndSize;
-	Real_32	fSize;
+	Real32	fStartLife;
+	Real32	fStartSize;
+	Real32	fEndSize;
+	Real32	fSize;
 	
-	Real_32	fAngle;
-	Real_32	fAngleVelocity;
-	Real_32	fAngleAcceleration;
-	Real_32	fAngleDamping;
+	Real32	fAngle;
+	Real32	fAngleVelocity;
+	Real32	fAngleAcceleration;
+	Real32	fAngleDamping;
 	
 	Vector3d	vPosition;
 	Vector3d	vVelocity;

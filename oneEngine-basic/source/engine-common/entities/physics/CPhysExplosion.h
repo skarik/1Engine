@@ -8,7 +8,7 @@ class CPhysExplosion : public CGameObject
 {
 	ClassName( "PhysExplosion" );
 public:
-	explicit CPhysExplosion ( Vector3d& vPos, ftype fMagnitude=30.0f, ftype fPhysicsMultiplier=1.0f );
+	explicit CPhysExplosion ( Vector3d& vPos, Real fMagnitude=30.0f, Real fPhysicsMultiplier=1.0f );
 	~CPhysExplosion ( void );
 
 	void Explode ( void );
@@ -16,8 +16,8 @@ public:
 
 protected:
 	bool	exploded;
-	ftype	magnitude;
-	ftype	physics_multiplier;
+	Real	magnitude;
+	Real	physics_multiplier;
 };
 
 #endif

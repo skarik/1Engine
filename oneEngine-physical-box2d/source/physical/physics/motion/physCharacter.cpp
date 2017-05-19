@@ -11,7 +11,7 @@ _FORCE_INLINE_ PHYS_API physCharacter::physCharacter( hkpCharacterRigidBodyCinfo
 }
 
 
-_FORCE_INLINE_ PHYS_API void physCharacter::setLinearVelocity ( const Vector3d& newVel, const Real_32 timestep )
+_FORCE_INLINE_ PHYS_API void physCharacter::setLinearVelocity ( const Vector3d& newVel, const Real32 timestep )
 {
 	/*if ( controller ) {
 		controller->setLinearVelocity( hkVector4( newVel.x, newVel.y, newVel.z ), timestep );

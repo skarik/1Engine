@@ -85,7 +85,7 @@ namespace Engine2D
 		// Mesh data
 		std::mutex				m_mut_meshstorage;
 		std::vector<int>		m_meshstorage_layer;
-		std::vector<ModelData>	m_meshstorage;
+		std::vector<arModelData>	m_meshstorage;
 
 		// target files being used
 		arstring<256>			m_tileset_file;

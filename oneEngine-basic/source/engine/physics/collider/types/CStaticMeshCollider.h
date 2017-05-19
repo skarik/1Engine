@@ -16,7 +16,7 @@ class CStaticMeshCollider : public CCollider
 public:
 	// Constructor and destructor
 	//explicit CStaticMeshCollider ( CModel* p_model, bool bUseRenderMesh = true, int iMeshIndex = 0 );
-	ENGINE_API explicit CStaticMeshCollider ( CModelData* p_modeldata );
+	ENGINE_API explicit CStaticMeshCollider ( arModelData* p_modeldata );
 	ENGINE_API ~CStaticMeshCollider ( void );
 
 protected:

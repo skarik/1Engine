@@ -1,40 +1,38 @@
-
 #include "CDialogueLoader.h"
+
 #include "core/debug/CDebugConsole.h"
 #include "core-ext/system/io/Resources.h"
-#include <iostream>
-
-//using namespace std;
+#include "engine-common/entities/CActor.h"
 
 char CDialogueLoader::m_luaCode [2048];
 
 CDialogueLoader::CDialogueLoader (const string & filename) :
 	mDialogue (filename)
 {
-	std::vector<CCharacter*> characters;
+	std::vector<CActor*> characters;
 	Construct( filename.c_str(), characters );
 }
 
 CDialogueLoader::CDialogueLoader (const char* filename) :
 	mDialogue (filename)
 {
-	std::vector<CCharacter*> characters;
+	std::vector<CActor*> characters;
 	Construct( filename, characters );
 }
 
-CDialogueLoader::CDialogueLoader (const string & filename, std::vector<CCharacter*> characters) : 
+CDialogueLoader::CDialogueLoader (const string & filename, std::vector<CActor*> characters) : 
 	mDialogue (filename), nCharacters (characters)
 {
 	Construct( filename.c_str(), characters );
 }
 
-CDialogueLoader::CDialogueLoader (const char* filename, std::vector<CCharacter*> characters):
+CDialogueLoader::CDialogueLoader (const char* filename, std::vector<CActor*> characters):
 	mDialogue (filename), nCharacters (characters)
 {
 	Construct( filename, characters );
 }
 
-void CDialogueLoader::Construct ( const char* filename, std::vector<CCharacter*> characters )
+void CDialogueLoader::Construct ( const char* filename, std::vector<CActor*> characters )
 {
 	//pFile = fopen (filename, "rb");
 	pFile = core::Resources::Open (filename, "rb");
@@ -411,39 +409,39 @@ void CDialogueLoader::PostLua (void)
 
 void CDialogueLoader::SoundAndFace (void)
 {
-	/*if ( sDialogueState == DIALOGUE_STATE_PLAYERTALKING )
-	{
-		if (sLines[LineIt].audio.empty() == false)
-		{
-			nCharacters[0]->SpeakDialogue (sLines[LineIt].audio);
-			sLines[LineIt].audio.clear();
-		}
-	}
-	if ( sDialogueState == DIALOGUE_STATE_NPCTALKING )
-	{
-		if (sLines[LineIt].audio.empty() == false)
-		{
-			nCharacters[sTalker]->SpeakDialogue (sLines[LineIt].audio);
-			sLines[LineIt].audio.clear();
-		}
-	}*/
-	if ( !sLines[LineIt].audio.empty() )
-	{
-		nCharacters[sTalker]->SpeakDialogue( sLines[LineIt].audio );
-		sLines[LineIt].audio.clear(); // So we play the audio then destroy it so we don't play it again? Alright.
-	}
+	///*if ( sDialogueState == DIALOGUE_STATE_PLAYERTALKING )
+	//{
+	//	if (sLines[LineIt].audio.empty() == false)
+	//	{
+	//		nCharacters[0]->SpeakDialogue (sLines[LineIt].audio);
+	//		sLines[LineIt].audio.clear();
+	//	}
+	//}
+	//if ( sDialogueState == DIALOGUE_STATE_NPCTALKING )
+	//{
+	//	if (sLines[LineIt].audio.empty() == false)
+	//	{
+	//		nCharacters[sTalker]->SpeakDialogue (sLines[LineIt].audio);
+	//		sLines[LineIt].audio.clear();
+	//	}
+	//}*/
+	//if ( !sLines[LineIt].audio.empty() )
+	//{
+	//	nCharacters[sTalker]->SpeakDialogue( sLines[LineIt].audio );
+	//	sLines[LineIt].audio.clear(); // So we play the audio then destroy it so we don't play it again? Alright.
+	//}
 
-	if ( !sLines[LineIt].expression.empty() || !sLines[LineIt].action.empty() )
-	{
-		nCharacters[sTalker]->PerformActionList( sLines[LineIt].action );
-		nCharacters[sTalker]->PerformExpressionList( sLines[LineIt].expression );
+	//if ( !sLines[LineIt].expression.empty() || !sLines[LineIt].action.empty() )
+	//{
+	//	nCharacters[sTalker]->PerformActionList( sLines[LineIt].action );
+	//	nCharacters[sTalker]->PerformExpressionList( sLines[LineIt].expression );
 
-		sLines[LineIt].action.clear(); // So we play the audio then destroy it so we don't play it again? Alright.
-		sLines[LineIt].expression.clear(); // So we play the audio then destroy it so we don't play it again? Alright.
-	}
+	//	sLines[LineIt].action.clear(); // So we play the audio then destroy it so we don't play it again? Alright.
+	//	sLines[LineIt].expression.clear(); // So we play the audio then destroy it so we don't play it again? Alright.
+	//}
 }
 
-CCharacter* CDialogueLoader::GetParticipant ( const short n_index )
+CActor* CDialogueLoader::GetParticipant ( const short n_index )
 {
 	if ( n_index < 0 || n_index >= (short) nCharacters.size() ) {
 		return NULL;

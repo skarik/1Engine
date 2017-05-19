@@ -8,7 +8,7 @@ class CFXExplosion : public CGameObject
 {
 	ClassName( "FXExplosion" );
 public:
-	explicit CFXExplosion ( Vector3d& vPos, ftype fMagnitude=30.0f, ftpye fPhysicsMultiplier=1.0f, bool ignoreDamage=false );
+	explicit CFXExplosion ( Vector3d& vPos, Real fMagnitude=30.0f, ftpye fPhysicsMultiplier=1.0f, bool ignoreDamage=false );
 	~CFXExplosion ( void );
 
 	void Explode ( void );
@@ -16,8 +16,8 @@ public:
 
 protected:
 	bool	exploded;
-	ftype	magnitude;
-	ftype	physics_multiplier;
+	Real	magnitude;
+	Real	physics_multiplier;
 	bool	ignoreDamage;
 };
 

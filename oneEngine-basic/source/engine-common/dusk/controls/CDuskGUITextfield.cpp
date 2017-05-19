@@ -47,7 +47,7 @@ void CDuskGUITextfield::Render ( void )
 
 	// Now draw text
 	drawText( rect.pos.x + rect.size.x*0.01f, rect.pos.y + rect.size.y*0.01f + 0.03f*screen.size.y, label.c_str() );
-	ftype cursor_x = rect.pos.x + rect.size.x*0.01f + 0.002f*screen.size.x + (GLd.GetAutoTextWidth( label.c_str() )/Screen::Info.width)*screen.size.x;
+	Real cursor_x = rect.pos.x + rect.size.x*0.01f + 0.002f*screen.size.x + (GLd.GetAutoTextWidth( label.c_str() )/Screen::Info.width)*screen.size.x;
 
 	if ( hasFocus ) {
 		setSubdrawPulse();

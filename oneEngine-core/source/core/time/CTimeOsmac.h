@@ -21,17 +21,17 @@ public:
 	static void Tick();
 
 public:
-	static ftype deltaTime;
-	static ftype smoothDeltaTime;
+	static Real deltaTime;
+	static Real smoothDeltaTime;
 
-	static ftype fixedTime;
-	static ftype targetFixedTime;
+	static Real fixedTime;
+	static Real targetFixedTime;
 
 private:
 	static clock_t iLastTick;
 	static clock_t iCurrentTick;
 
-	static ftype fDeltaTimes[10];
+	static Real fDeltaTimes[10];
 
 };
 

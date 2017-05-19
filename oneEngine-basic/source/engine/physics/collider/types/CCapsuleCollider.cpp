@@ -5,7 +5,7 @@
 #include "physical/physics/shapes/physCapsuleShape.h"
 
 
-CCapsuleCollider::CCapsuleCollider ( ftype height, ftype radius, bool centered )
+CCapsuleCollider::CCapsuleCollider ( Real height, Real radius, bool centered )
 	: fFootOffset(0)
 {
 	vSize = Vector3d( 0,0,height );
@@ -24,7 +24,7 @@ CCapsuleCollider::~CCapsuleCollider ( void )
 }
 
 // Setters
-void CCapsuleCollider::SetSize ( ftype height, ftype radius )
+void CCapsuleCollider::SetSize ( Real height, Real radius )
 {
 	// Set the current extents of the collider
 	//vExtents = size;
@@ -40,14 +40,14 @@ void CCapsuleCollider::SetSize ( ftype height, ftype radius )
 	pRigidBody->SetShape( pCollisionShape );
 
 }
-void CCapsuleCollider::SetHeight ( ftype height )
+void CCapsuleCollider::SetHeight ( Real height )
 {
 	((physCapsuleShape*)pCollisionShape)->setVertex( 0, Vector3d( 0,0,fFootOffset+fRadius ) );
 	((physCapsuleShape*)pCollisionShape)->setVertex( 1, Vector3d( 0,0,fFootOffset+height-fRadius ) );
 	// Change the rigid body's current shape to the new collider object
 	pRigidBody->SetShape( pCollisionShape );
 }
-void CCapsuleCollider::SetFootOffset ( ftype foot )
+void CCapsuleCollider::SetFootOffset ( Real foot )
 {
 	fFootOffset = foot;
 }
@@ -57,11 +57,11 @@ Vector3d CCapsuleCollider::GetSize ( void )
 {
 	return vSize;
 }
-ftype CCapsuleCollider::GetRadius ( void )
+Real CCapsuleCollider::GetRadius ( void )
 {
 	return fRadius;
 }
-ftype CCapsuleCollider::GetFootOffset ( void )
+Real CCapsuleCollider::GetFootOffset ( void )
 {
 	return fFootOffset;
 }

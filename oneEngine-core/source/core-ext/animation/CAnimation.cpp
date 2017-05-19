@@ -108,7 +108,7 @@ void CAnimation::Play ( const char* animName )
 		it->second.Play( 1.0f );
 	}
 }
-void CAnimation::PlaySmoothed ( const char* animName, ftype const smoothTime )
+void CAnimation::PlaySmoothed ( const char* animName, Real const smoothTime )
 {
 	// Find animation with name
 	auto it = mAnimations.find( arstring128(animName) );
@@ -134,7 +134,7 @@ void CAnimation::Stop ( const char* animName )
 		it->second.Stop();
 	}
 }
-void CAnimation::StopSmoothed ( const char* animName, ftype const smoothTime )
+void CAnimation::StopSmoothed ( const char* animName, Real const smoothTime )
 {
 	// Find animation with name
 	auto anim = mAnimations.find( arstring128(animName) );
@@ -153,14 +153,14 @@ void CAnimation::StopSmoothed ( const char* animName, ftype const smoothTime )
 			}
 		}
 		// here, entry not exists
-		std::pair<CAnimAction*,ftype> newFade ( &(anim->second), smoothTime );
+		std::pair<CAnimAction*,Real> newFade ( &(anim->second), smoothTime );
 		fadeOutList.push_back( newFade );
 	}
 }
 
 void CAnimation::Normalize ( const uchar layer )
 {
-	ftype weightCount = 0;
+	Real weightCount = 0;
 	for ( auto anim = mAnimations.begin(); anim != mAnimations.end(); ++anim )
 	{
 		if ( anim->second.layer == layer )

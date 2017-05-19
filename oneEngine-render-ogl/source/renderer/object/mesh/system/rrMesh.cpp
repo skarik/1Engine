@@ -54,7 +54,7 @@ const string& rrMesh::GetName ( void ) const
 // Create a new VBO associated with this rrMesh
 // Removes any old VBO data.
 // This object gains ownership of the model data. Well, it should, or you'll get memory errors and shit. And that's bad.
-void rrMesh::Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames, bool willStream )
+void rrMesh::Initialize ( const string& nNewName, arModelData* const pNewModelData, unsigned int frames, bool willStream )
 {
 	mName = nNewName;
 
@@ -77,11 +77,11 @@ void rrMesh::Initialize ( const string& nNewName, CModelData* const pNewModelDat
 
 	// Copy data to the buffer
 	glBufferData( GL_ARRAY_BUFFER,
-		sizeof(CModelVertex) * (pmData->vertexNum),
+		sizeof(arModelVertex) * (pmData->vertexNum),
 		pmData->vertices,
 		willStream ? GL_STREAM_DRAW : GL_STATIC_DRAW );
 	glBufferData( GL_ELEMENT_ARRAY_BUFFER,
-		sizeof(CModelTriangle) * (pmData->triangleNum),
+		sizeof(arModelTriangle) * (pmData->triangleNum),
 		pmData->triangles,
 		willStream ? GL_STREAM_DRAW : GL_STATIC_DRAW );
 
@@ -98,11 +98,11 @@ void rrMesh::Restream ( void )
 
 	// Tell data to be discarded
 	glBufferData( GL_ARRAY_BUFFER,
-		sizeof(CModelVertex) * (pmData->vertexNum),
+		sizeof(arModelVertex) * (pmData->vertexNum),
 		NULL,
 		GL_STREAM_DRAW );
 	glBufferData( GL_ELEMENT_ARRAY_BUFFER,
-		sizeof(CModelTriangle) * (pmData->triangleNum),
+		sizeof(arModelTriangle) * (pmData->triangleNum),
 		NULL,
 		GL_STREAM_DRAW );
 
@@ -110,12 +110,12 @@ void rrMesh::Restream ( void )
 	void* memoryData;
 	size_t bufferSize;
 
-	bufferSize = sizeof(CModelVertex) * (pmData->vertexNum);
+	bufferSize = sizeof(arModelVertex) * (pmData->vertexNum);
 	memoryData = glMapBufferRange( GL_ARRAY_BUFFER, 0, bufferSize, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_BUFFER_BIT|GL_MAP_UNSYNCHRONIZED_BIT );
 	if ( memoryData ) {
 		memcpy( memoryData, pmData->vertices, bufferSize );
 	}
-	bufferSize = sizeof(CModelTriangle) * (pmData->triangleNum);
+	bufferSize = sizeof(arModelTriangle) * (pmData->triangleNum);
 	memoryData = glMapBufferRange( GL_ELEMENT_ARRAY_BUFFER, 0, bufferSize, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_BUFFER_BIT|GL_MAP_UNSYNCHRONIZED_BIT );
 	if ( memoryData ) {
 		memcpy( memoryData, pmData->triangles, bufferSize );
@@ -154,11 +154,11 @@ void rrMesh::RecalculateNormals ( void )
 //	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER,	iVBOfaces ); // for face vertex indexes
 //	
 //	// Tell where the vertex coordinates are in the array
-//	/*glVertexPointer( 3, GL_FLOAT, sizeof(CModelVertex), 0 ); 
-//	glNormalPointer( GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*6) );
-//	glTexCoordPointer( 3, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );
+//	/*glVertexPointer( 3, GL_FLOAT, sizeof(arModelVertex), 0 ); 
+//	glNormalPointer( GL_FLOAT, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*6) );
+//	glTexCoordPointer( 3, GL_FLOAT, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*3) );
 //	RrMaterial::current->setShaderAttributesDefault();
-//	glColorPointer( 4, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );*/
+//	glColorPointer( 4, GL_FLOAT, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*15) );*/
 //	// Check if material has been initialized for this fucker.
 //	//if ( !RrMaterial::current->hasInitializedMeshAttributes() )
 //
@@ -183,20 +183,20 @@ void rrMesh::RecalculateNormals ( void )
 //	}*/
 //	throw std::exception("BLEH");
 //	/*
-//	glVertexPointer( 3, GL_FLOAT, sizeof(CModelVertex), 0 ); 
-//	glNormalPointer( GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*6) );
-//	glTexCoordPointer( 3, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );
-//	glColorPointer( 4, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );
+//	glVertexPointer( 3, GL_FLOAT, sizeof(arModelVertex), 0 ); 
+//	glNormalPointer( GL_FLOAT, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*6) );
+//	glTexCoordPointer( 3, GL_FLOAT, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*3) );
+//	glColorPointer( 4, GL_FLOAT, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*15) );
 //	*/
 //	/*if ( RrMaterial::current->useSkinning )
 //	{
 //		GLint weightLoc, boneLoc;
 //		weightLoc = glGetAttribLocation( RrMaterial::current->pShader->get_program(),"sys_BoneWeights" );
 //		glEnableVertexAttribArray( weightLoc );
-//		glVertexAttribPointer( weightLoc, 4, GL_FLOAT, false, sizeof(CModelVertex), ((char*)4) + (sizeof(float)*19) );
+//		glVertexAttribPointer( weightLoc, 4, GL_FLOAT, false, sizeof(arModelVertex), ((char*)4) + (sizeof(float)*19) );
 //		boneLoc = glGetAttribLocation( RrMaterial::current->pShader->get_program(),"sys_BoneIndices" );
 //		glEnableVertexAttribArray( boneLoc );
-//		glVertexAttribPointer( boneLoc, 4, GL_UNSIGNED_BYTE, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*19) );
+//		glVertexAttribPointer( boneLoc, 4, GL_UNSIGNED_BYTE, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*19) );
 //		//cout << unsigned int( pmData[0].vertices[pmData[0].vertexNum-1].bone[3] ) << endl;
 //	}*/
 //
@@ -273,7 +273,7 @@ void rrMesh::FreeRAMData ( void )
 
 
 // Recalculate Normals
-void rrMesh::RecalculateNormals ( CModelData* modelData )
+void rrMesh::RecalculateNormals ( arModelData* modelData )
 {
 	// Some standard mesh information that you should have lying around.
 	// vertex is your vertex structure that just contains a normal and position here.
@@ -289,9 +289,9 @@ void rrMesh::RecalculateNormals ( CModelData* modelData )
 	for ( unsigned int i = 0; i < modelData->triangleNum; i += 1 )
 	{
 		// get the three vertices that make the face
-		Vector3d p1 = _VertexToVect( modelData->vertices[modelData->triangles[i].vert[0]] );
-		Vector3d p2 = _VertexToVect( modelData->vertices[modelData->triangles[i].vert[1]] );
-		Vector3d p3 = _VertexToVect( modelData->vertices[modelData->triangles[i].vert[2]] );
+		Vector3d p1 = Vector3d( &modelData->vertices[modelData->triangles[i].vert[0]].x );
+		Vector3d p2 = Vector3d( &modelData->vertices[modelData->triangles[i].vert[1]].y );
+		Vector3d p3 = Vector3d( &modelData->vertices[modelData->triangles[i].vert[2]].z );
 
 		// Calculate the face normal
 		Vector3d v1 = p2 - p1;

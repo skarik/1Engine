@@ -14,9 +14,9 @@ public:
 	void Update ( void );
 	void Render ( void );
 
-	ftype divs;
-	RangeValue<ftype> value;
-	RangeValue<ftype> prevValue;
+	Real divs;
+	RangeValue<Real> value;
+	RangeValue<Real> prevValue;
 
 	bool isDragging;
 };

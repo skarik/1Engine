@@ -1,5 +1,18 @@
-#ifndef _MATH_H_
-#define _MATH_H_
+//===============================================================================================//
+//
+//		Math.h
+//
+// Provides repeatedly used and some not-so-much used math operations in the math:: namespace.
+//
+// Math namespace. Straighten up, you're about to get some learning on!
+// Provides repeatedly used math operations on basic types, such as Linear Interpolation or Cubic
+//	Interpolation (Smoothlerp).
+// Provides some not-so-much used math operations that are still used repeatedly, such as
+//	generating a non-random sequence of points on a sphere.
+//
+//===============================================================================================//
+#ifndef CORE_MATH_H_
+#define CORE_MATH_H_
 
 #include "core/types/types.h"
 #include "core/types/float.h"
@@ -10,11 +23,7 @@
 #	include <intrin.h>
 #endif
 
-// Math namespace. Straighten up, you're about to get some learning on!
-// Provides repeatedly used math operations on basic types, such as Linear Interpolation or Cubic Interpolation (Smoothlerp).
-// Provides some not-so-much used math operations that are still used repeatedly, such as generating a non-random sequence of points on a sphere.
-
-namespace Math
+namespace math
 {
 	//
 	// Values:
@@ -146,4 +155,4 @@ namespace Math
 };
 
 
-#endif//_MATH_H_
+#endif//CORE_MATH_H_

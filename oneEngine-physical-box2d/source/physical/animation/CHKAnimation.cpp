@@ -265,7 +265,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //
 //	// First, loop through all the animations to setup sync tracks and the event system.
 //	CAnimAction*	syncMaxers [5] = {0,0,0,0,0};
-//	ftype			syncFrames [5] = {0,0,0,0,0};
+//	Real			syncFrames [5] = {0,0,0,0,0};
 //	CAnimAction*	eventMaster = NULL;
 //	{
 //		std::map<string,CAnimAction>::iterator it = mAnimations.begin(); // Loop thru all the actions
@@ -332,12 +332,12 @@ void CHKAnimation::Update ( const Real deltaTime )
 //					// And only sample if the weight is larger than zero
 //					if ( currentAction.weight > 0.001f )
 //					{
-//						ftype currentTime;
+//						Real currentTime;
 //						//currentTime = ( currentAction.GetStart()+currentAction.frame ) * (1/30.0f);
 //						currentTime = currentAction.frame * (1/30.0f);
 //
 //						// Increase the weight to full if this is the first animation to be sampled
-//						ftype temp = currentAction.weight;
+//						Real temp = currentAction.weight;
 //						if ( bFirstAnim ) {
 //							currentAction.weight = 1;
 //						}
@@ -494,7 +494,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //			cout << "BAD SHIT ON AM" << i << endl;
 //	}
 //#endif
-//	fAimrBlend = std::max<ftype>( 0, std::min<ftype>( 1, fAimrBlend ) );
+//	fAimrBlend = std::max<Real>( 0, std::min<Real>( 1, fAimrBlend ) );
 //
 //	// Create the pose
 //	hkaPose skeletonPose ( hkaPose::LOCAL_SPACE, mSkelly, nextTransforms );
@@ -833,7 +833,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //
 //					// Rotate the dif vect
 //					hkQuaternion lookatRot;
-//					Real t_armOffset = std::max<ftype>( ikList[i].input.z, -10-70*ikList[i].subinfo[2] ) * std::max<ftype>( 0, 1.0f - t_aimrIK_pushval + 0.2f*ikList[i].subinfo[2] );
+//					Real t_armOffset = std::max<Real>( ikList[i].input.z, -10-70*ikList[i].subinfo[2] ) * std::max<Real>( 0, 1.0f - t_aimrIK_pushval + 0.2f*ikList[i].subinfo[2] );
 //					lookatRot.setAxisAngle( hkVector4(1,0,0), -(hkReal)degtorad(t_armOffset) );
 //					vHeadDistance.setRotatedDir( lookatRot, vHeadDistance );
 //
@@ -857,7 +857,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //*/
 //					// Generate the target rotation
 //					hkQuaternion targetRotation = wristModelSource.getRotation();
-//					//lookatRot.setAxisAngle( hkVector4(1,0,0), -(hkReal)degtorad(std::min<ftype>( (ikList[i].input.z*0.5f) - 25.0f, 5 )) );
+//					//lookatRot.setAxisAngle( hkVector4(1,0,0), -(hkReal)degtorad(std::min<Real>( (ikList[i].input.z*0.5f) - 25.0f, 5 )) );
 //					lookatRot.setAxisAngle( hkVector4(1,0,0), -(hkReal)degtorad(ikList[i].input.z * 0.7f) );
 //					//lookatRot.setAxisAngle( hkVector4(1,0,0), -(hkReal)degtorad(t_armOffset) );
 //					targetRotation.setMul( lookatRot, wristModelSource.getRotation() );

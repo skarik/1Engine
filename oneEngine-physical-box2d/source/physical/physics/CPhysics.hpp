@@ -130,7 +130,7 @@ FORCE_INLINE PHYS_API physShape* Physics::CreateCylinderShape ( Vector3d vStart,
 	throw core::NotYetImplementedException();
 }
 // Creates a mesh shape using a set of physics vertices.
-FORCE_INLINE PHYS_API physShape*	Physics::CreateConvMeshShape ( CPhysicsData* pMesh )
+FORCE_INLINE PHYS_API physShape*	Physics::CreateConvMeshShape ( arModelPhysicsData* pMesh )
 {
 	//pWorld->markForWrite();
 	//pWorld->markForRead();
@@ -159,7 +159,7 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateConvMeshShape ( CPhysicsData* pM
 	throw core::NotYetImplementedException();
 }
 // Creates a mesh shape using a set of physics vertices.
-FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( CPhysicsData* pMesh )
+FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( arModelPhysicsData* pMesh )
 {
 	//
 	/*hkpBvCompressedMeshShape* meshShape;
@@ -191,7 +191,7 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( CPhysicsData* pMesh 
 	return ((physShape*)meshShape);*/
 	throw core::NotYetImplementedException();
 }
-FORCE_INLINE PHYS_API physShape* Physics::CreateMeshShape ( CTerrainVertex* pVertices, CModelQuad* pQuads, unsigned short vertexCount, unsigned short faceCount )
+FORCE_INLINE PHYS_API physShape* Physics::CreateMeshShape ( arTerrainVertex* pVertices, arModelQuad* pQuads, unsigned short vertexCount, unsigned short faceCount )
 {
 	// BLEH
 	/*hkpBvCompressedMeshShape* meshShape;
@@ -231,7 +231,7 @@ FORCE_INLINE PHYS_API physShape* Physics::CreateMeshShape ( CTerrainVertex* pVer
 	throw core::NotYetImplementedException();
 }
 // Creates a mesh shape using a set of model vertices.
-FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( CModelData const* pMesh )
+FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( arModelData const* pMesh )
 {
 	//
 	/*hkpBvCompressedMeshShape* meshShape;
@@ -268,7 +268,7 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( CModelData const* pM
 	throw core::NotYetImplementedException();
 }
 // Creates a faster, but RAM eating mesh shape from the given data. Should be used for larger objects that change often
-FORCE_INLINE PHYS_API physShape* Physics::CreateFastMeshShape ( Vector3d* pVertices, CModelTriangle* pTris, unsigned short vertexCount, unsigned short faceCount )
+FORCE_INLINE PHYS_API physShape* Physics::CreateFastMeshShape ( Vector3d* pVertices, arModelTriangle* pTris, unsigned short vertexCount, unsigned short faceCount )
 {
 	// BLEH
 	/*hkpExtendedMeshShape* meshShape = new hkpExtendedMeshShape ();
@@ -284,7 +284,7 @@ FORCE_INLINE PHYS_API physShape* Physics::CreateFastMeshShape ( Vector3d* pVerti
 	// set triangles
 	part.m_indexBase = &(pTris[0].vert[0]);
 	part.m_numTriangleShapes = faceCount;
-	part.m_indexStriding = sizeof(CModelTriangle);
+	part.m_indexStriding = sizeof(arModelTriangle);
 	part.m_stridingType = hkpExtendedMeshShape::INDICES_INT32;
 
 	// Add triangles to the mesh
@@ -501,14 +501,14 @@ FORCE_INLINE PHYS_API physRigidBody* Physics::CreateTriggerVolume ( physRigidBod
 // Tracing Collision Queries
 //=========================================//
 // Cast a ray
-//PHYS_API static void Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * outHitInfo, uint32_t collisionFilter = 0, void* mismatch=NULL );
+//PHYS_API static void Raycast ( Ray const& rDir, Real fCastDist, RaycastHit * outHitInfo, uint32_t collisionFilter = 0, void* mismatch=NULL );
 FORCE_INLINE PHYS_API void Physics::Raycast( const physWorldRayCastInput& input, physRayHitCollector& collector )
 {
 	//Physics::World()->castRay ( input, collector );
 	throw core::NotYetImplementedException();
 }
 // Cast a shape
-//PHYS_API static void Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, uint32_t collisionFilter = 0, void* mismatch=NULL );
+//PHYS_API static void Linearcast ( Ray const& rDir, Real fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, uint32_t collisionFilter = 0, void* mismatch=NULL );
 FORCE_INLINE PHYS_API void Physics::Linearcast( const physCollidable* collA, const physLinearCastInput& input, physCdPointCollector& castCollector, physCdPointCollector* startCollector )
 {
 	//Physics::World()->linearCast( collA, input, castCollector, startCollector );

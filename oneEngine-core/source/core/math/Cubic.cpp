@@ -20,17 +20,17 @@ Cubic::Cubic ( Vector3d const& vPosition, Vector3d const& vSize )
 Cubic Cubic::FromPosition ( Vector3d vMinPos, Vector3d vMaxPos )
 {
 	if ( vMinPos.x > vMaxPos.x ) {
-		ftype temp = vMinPos.x;
+		Real temp = vMinPos.x;
 		vMinPos.x  = vMaxPos.x;
 		vMaxPos.x  = temp;
 	}
 	if ( vMinPos.y > vMaxPos.y ) {
-		ftype temp = vMinPos.y;
+		Real temp = vMinPos.y;
 		vMinPos.y  = vMaxPos.y;
 		vMaxPos.y  = temp;
 	}
 	if ( vMinPos.z > vMaxPos.z ) {
-		ftype temp = vMinPos.z;
+		Real temp = vMinPos.z;
 		vMinPos.z  = vMaxPos.z;
 		vMaxPos.z  = temp;
 	}
@@ -88,8 +88,8 @@ Frustum Cubic::GetFrustum ( Vector3d const& casterPosition )
 		{3,2,6,4,5,1}
 	};
 	// So gotta find closests vertex to camera
-	ftype mindist = -1.0;
-	ftype currentdist;
+	Real mindist = -1.0;
+	Real currentdist;
 	char sm_vertex = -1;
 	for ( char i = 0; i < 8; i += 1 )
 	{
@@ -171,8 +171,8 @@ bool Cubic::LineCollides ( Line const& line )
 
 	return false;*/
 
-	Vector3d cubeCenter = position+size*ftype(0.5);
-	Vector3d cubeExtents = size*ftype(0.5);
+	Vector3d cubeCenter = position+size*Real(0.5);
+	Vector3d cubeExtents = size*Real(0.5);
 
 	Vector3d lineMid = ((line.midpoint())-cubeCenter);
 	Vector3d lineDir = ((line.start-cubeCenter) - lineMid);
@@ -223,7 +223,7 @@ bool Cubic::LineCollides ( Line const& line )
 }
 
 // Helper functions for collision
-bool inline CCubic::GetIntersection( ftype fDst1, ftype fDst2, Vector3d P1, Vector3d P2, Vector3d & Hit )
+bool inline CCubic::GetIntersection( Real fDst1, Real fDst2, Vector3d P1, Vector3d P2, Vector3d & Hit )
 {
 	if ( (fDst1 * fDst2) >= 0.0f) return false;
 	//if ( fDst1 == fDst2 ) return false; 

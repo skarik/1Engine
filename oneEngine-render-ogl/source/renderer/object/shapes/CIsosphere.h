@@ -31,8 +31,8 @@ private:
 	void normalize(float *a);
 	void drawtri(float const *a, float const *b, float const *c, int div, float r);
 	void drawsphere(int ndiv, float radius=1.0);
-	//vector<CModelVertex> sphereData;
-	CModelVertex* pSphereData;
+	//vector<arModelVertex> sphereData;
+	arModelVertex* pSphereData;
 	int size;
 	void createtri(float const *a, float const *b, float const *c, int div, float r);
 	inline void createvertex ( float const *a, float r );

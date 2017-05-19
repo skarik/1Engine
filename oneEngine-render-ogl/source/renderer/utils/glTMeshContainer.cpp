@@ -17,11 +17,11 @@ glTMeshContainer::~glTMeshContainer ( void )
 	if ( vbo_faces ) GL.FreeBuffer( &vbo_faces ); vbo_faces = 0;
 }
 
-void glTMeshContainer::UploadVerts ( const CTerrainVertex* verts, const size_t vert_count )
+void glTMeshContainer::UploadVerts ( const arTerrainVertex* verts, const size_t vert_count )
 {
 	GL_ACCESS; if ( vbo_verts == 0 ) GL.CreateBuffer( &vbo_verts );
 
-	size_t newBufferSize = sizeof(CTerrainVertex)*vert_count;
+	size_t newBufferSize = sizeof(arTerrainVertex)*vert_count;
 	glBindBuffer( GL_ARRAY_BUFFER, vbo_verts );
 	glBufferData( GL_ARRAY_BUFFER, newBufferSize, NULL, GL_DYNAMIC_DRAW );
 	glBufferSubData( GL_ARRAY_BUFFER, 0, newBufferSize, verts ); GL.CheckError();
@@ -33,11 +33,11 @@ void glTMeshContainer::UploadVerts ( const CTerrainVertex* verts, const size_t v
 		glUnmapBuffer( GL_ARRAY_BUFFER );
 	}*/
 }
-void glTMeshContainer::UploadFaces ( const CModelTriangle* faces, const size_t face_count )
+void glTMeshContainer::UploadFaces ( const arModelTriangle* faces, const size_t face_count )
 {
 	GL_ACCESS; if ( vbo_faces == 0 ) GL.CreateBuffer( &vbo_faces );
 
-	size_t newBufferSize = sizeof(CTerrainVertex)*face_count;
+	size_t newBufferSize = sizeof(arTerrainVertex)*face_count;
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, vbo_faces );
 	glBufferData( GL_ELEMENT_ARRAY_BUFFER, newBufferSize, NULL, GL_DYNAMIC_DRAW );
 	glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, 0, newBufferSize, faces ); GL.CheckError();

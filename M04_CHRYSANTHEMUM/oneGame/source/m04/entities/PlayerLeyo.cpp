@@ -92,7 +92,7 @@ void PlayerLeyo::Update ( void )
 	{
 		float target = motion_input[i] * maxSpeed;
 		float distance = target - velocity[i];
-		float delta = Math::sgn(distance) * acceleration * Time::deltaTime;
+		float delta = math::sgn(distance) * acceleration * Time::deltaTime;
 
 		if ( fabs(delta) > fabs(distance) )
 		{
@@ -116,17 +116,17 @@ void PlayerLeyo::PostFixedUpdate ( void )
 	CameraUpdate();
 
 	// Update sprite
-	if ( Math::sgn( velocity.x ) != 0 )
+	if ( math::sgn( velocity.x ) != 0 )
 	{
-		flipstate.x = (Real)Math::sgn( velocity.x );
+		flipstate.x = (Real)math::sgn( velocity.x );
 	}
 
 	// Update camera position
-	camera->transform.position.x = (Real)Math::round(camera_position.x);
-	camera->transform.position.y = (Real)Math::round(camera_position.y);
+	camera->transform.position.x = (Real)math::round(camera_position.x);
+	camera->transform.position.y = (Real)math::round(camera_position.y);
 
-	light->position.x = (Real)Math::round(position.x);
-	light->position.y = (Real)Math::round(position.y + 32);
+	light->position.x = (Real)math::round(position.x);
+	light->position.y = (Real)math::round(position.y + 32);
 
 	// Update UI
 	ui->transform.world.position = camera->transform.position;
@@ -137,8 +137,8 @@ void PlayerLeyo::CameraUpdate ( void )
 {
 	// Create limited camera position
 	Vector3d cam_pos_limited = position + Vector3d(0, -16, 0);
-	cam_pos_limited.x = Math::clamp<Real>(cam_pos_limited.x, camera->ortho_size.x * 0.5F, 100000);
-	cam_pos_limited.y = Math::clamp<Real>(cam_pos_limited.y, camera->ortho_size.y * 0.5F, 100000);
+	cam_pos_limited.x = math::clamp<Real>(cam_pos_limited.x, camera->ortho_size.x * 0.5F, 100000);
+	cam_pos_limited.y = math::clamp<Real>(cam_pos_limited.y, camera->ortho_size.y * 0.5F, 100000);
 
 	Real camera_delta = (cam_pos_limited - camera_position).magnitude();
 	
@@ -179,8 +179,8 @@ void PlayerLeyo::CameraUpdate ( void )
 	{
 		camera_lerp_mode += Time::deltaTime * 1.0F;
 	}
-	camera_lerp_mode = Math::saturate(camera_lerp_mode);
+	camera_lerp_mode = math::saturate(camera_lerp_mode);
 
 	// Lerp for final camera position
-	camera_position = camera_lockposition.lerp(cam_pos_limited, Easing::cubic_inout(camera_lerp_mode));
+	camera_position = camera_lockposition.lerp(cam_pos_limited, easing::cubic_inout(camera_lerp_mode));
 }

@@ -53,24 +53,24 @@ public:
 	// Constructor
 	CMatrix ( void );
 	//CMatrix ( CMatrix const& ); // Copy constructor not needed!
-	CMatrix ( ftype * );
+	CMatrix ( Real * );
 
 	// Setters - Translation
-	bool setTranslation ( ftype const = 0, ftype const = 0, ftype const = 0 );
-	bool setTranslation ( ftype * );
+	bool setTranslation ( Real const = 0, Real const = 0, Real const = 0 );
+	bool setTranslation ( Real * );
 	bool setTranslation ( Vector2d const& );
 	bool setTranslation ( Vector3d const& );
 
 	// Setters - Scaling
-	bool setScale ( ftype const = 0, ftype const = 0, ftype const = 0 );
-	bool setScale ( ftype * );
+	bool setScale ( Real const = 0, Real const = 0, Real const = 0 );
+	bool setScale ( Real * );
 	bool setScale ( Vector2d const& );
 	bool setScale ( Vector3d const& );
 
 	// Setters - Rotation
-	bool setRotation ( ftype const );
-	bool setRotation ( ftype * );
-	bool setRotation ( ftype const = 0, ftype const = 0, ftype const = 0 );
+	bool setRotation ( Real const );
+	bool setRotation ( Real * );
+	bool setRotation ( Real const = 0, Real const = 0, Real const = 0 );
 	bool setRotation ( Vector3d const& );
 	bool setRotation ( Quaternion const& );
 	bool setRotation ( CMatrix<3,3> const& );
@@ -92,19 +92,19 @@ public:
 	// Operations
 	CMatrix<H,W> transpose ( void );
 	CMatrix<W,H> inverse ( void );
-	ftype det ( void );
+	Real det ( void );
 	
 	CMatrix<W-1,H-1> submatrix ( int, int ) const;
 
-	CMatrix<W,H> lerp( CMatrix<W,H> const&, ftype const ) const;
-	void Lerp ( CMatrix<W,H> const&, ftype const ); 
+	CMatrix<W,H> lerp( CMatrix<W,H> const&, Real const ) const;
+	void Lerp ( CMatrix<W,H> const&, Real const ); 
 
 	// Multiplication
 	template <int C>
 	CMatrix<C,H> operator* ( CMatrix<C,W> const& ) const;
 	//CMatrix<W,H> operator* ( CMatrix<W,H> const& );
 	CMatrix<W,H> operator*=( CMatrix<W,H> const& );
-	CMatrix<W,H> operator* ( ftype const ) const;
+	CMatrix<W,H> operator* ( Real const ) const;
 
 	CMatrix<W,H> operator+ ( CMatrix<W,H> const& ) const;
 	CMatrix<W,H> operator+= ( CMatrix<W,H> const& );
@@ -116,13 +116,13 @@ public:
 	CMatrix<H,W> operator! ( void ) const;
 
 	// Accessor
-	const ftype* operator[] ( int ) const;
+	const Real* operator[] ( int ) const;
 	// Editor
-	ftype* operator[] ( int );
+	Real* operator[] ( int );
 
 public:
 	// Data
-	ftype pData [W*H];
+	Real pData [W*H];
 };
 
 // Typedefs

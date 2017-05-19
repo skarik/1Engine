@@ -17,15 +17,15 @@ FORCE_INLINE Matrix4x4::Matrix4x4 ( void )
 }
 FORCE_INLINE Matrix4x4::Matrix4x4 ( const Matrix4x4& nSrc )
 {
-	memcpy( pData, nSrc.pData, 16*sizeof(ftype) );
+	memcpy( pData, nSrc.pData, 16*sizeof(Real) );
 }
-FORCE_INLINE Matrix4x4::Matrix4x4 ( const ftype* nData )
+FORCE_INLINE Matrix4x4::Matrix4x4 ( const Real* nData )
 {
-	memcpy( pData, nData, 16*sizeof(ftype) );
+	memcpy( pData, nData, 16*sizeof(Real) );
 }
 
 // Set translation with FTYPE
-FORCE_INLINE bool Matrix4x4::setTranslation ( ftype const x, ftype const y, ftype const z )
+FORCE_INLINE bool Matrix4x4::setTranslation ( Real const x, Real const y, Real const z )
 {
 	pData[3] = x;
 	pData[7] = y;
@@ -41,7 +41,7 @@ FORCE_INLINE bool Matrix4x4::setTranslation ( Vector3d const& vect )
 	return true;
 }
 // Set scaling with FTYPE
-FORCE_INLINE bool Matrix4x4::setScale ( ftype const x, ftype const y, ftype const z )
+FORCE_INLINE bool Matrix4x4::setScale ( Real const x, Real const y, Real const z )
 {
 	pData[0] = x;
 	pData[5] = y;
@@ -58,19 +58,19 @@ FORCE_INLINE bool Matrix4x4::setScale ( Vector3d const& vect )
 }
 
 // Settin the rotation
-FORCE_INLINE bool Matrix4x4::setRotation ( const ftype angle_x, const ftype angle_y, const ftype angle_z )
+FORCE_INLINE bool Matrix4x4::setRotation ( const Real angle_x, const Real angle_y, const Real angle_z )
 {
-	ftype ax = (ftype)degtorad(angle_x);
-	ftype ay = (ftype)degtorad(angle_y);
-	ftype az = (ftype)degtorad(angle_z);
-	ftype A       = cos(ax);
-    ftype B       = sin(ax);
-    ftype C       = cos(ay);
-    ftype D       = sin(ay);
-    ftype E       = cos(az);
-    ftype F       = sin(az);
-    ftype AD      =   A * D;
-    ftype BD      =   B * D;
+	Real ax = (Real)degtorad(angle_x);
+	Real ay = (Real)degtorad(angle_y);
+	Real az = (Real)degtorad(angle_z);
+	Real A       = cos(ax);
+    Real B       = sin(ax);
+    Real C       = cos(ay);
+    Real D       = sin(ay);
+    Real E       = cos(az);
+    Real F       = sin(az);
+    Real AD      =   A * D;
+    Real BD      =   B * D;
 
     pData[0]  =   C * E;
     pData[4]  =  -C * F;
@@ -89,19 +89,19 @@ FORCE_INLINE bool Matrix4x4::setRotation ( const ftype angle_x, const ftype angl
 
 	return true;
 }
-FORCE_INLINE bool Matrix4x4::setRotationZYX ( const ftype angle_x, const ftype angle_y, const ftype angle_z )
+FORCE_INLINE bool Matrix4x4::setRotationZYX ( const Real angle_x, const Real angle_y, const Real angle_z )
 {
-	ftype ax = (ftype)degtorad(angle_x);
-	ftype ay = (ftype)degtorad(angle_y);
-	ftype az = (ftype)degtorad(angle_z);
-	ftype A       = cos(ax);
-    ftype B       = sin(ax);
-    ftype C       = cos(ay);
-    ftype D       = sin(ay);
-    ftype E       = cos(az);
-    ftype F       = sin(az);
-    ftype AD      =   A * D;
-    ftype BD      =   B * D;
+	Real ax = (Real)degtorad(angle_x);
+	Real ay = (Real)degtorad(angle_y);
+	Real az = (Real)degtorad(angle_z);
+	Real A       = cos(ax);
+    Real B       = sin(ax);
+    Real C       = cos(ay);
+    Real D       = sin(ay);
+    Real E       = cos(az);
+    Real F       = sin(az);
+    Real AD      =   A * D;
+    Real BD      =   B * D;
 
     pData[0]  =   C * E;
     pData[1]  =  -C * F;
@@ -129,15 +129,15 @@ FORCE_INLINE bool Matrix4x4::setRotation ( const Vector3d& vect )
 // Setting rotation of a 3d matrix via a quaternion
 FORCE_INLINE bool Matrix4x4::setRotation ( const Quaternion& quat )
 {
-	ftype xx      = quat.x * quat.x;
-    ftype xy      = quat.x * quat.y;
-    ftype xz      = quat.x * quat.z;
-    ftype xw      = quat.x * quat.w;
-    ftype yy      = quat.y * quat.y;
-    ftype yz      = quat.y * quat.z;
-    ftype yw      = quat.y * quat.w;
-    ftype zz      = quat.z * quat.z;
-    ftype zw      = quat.z * quat.w;
+	Real xx      = quat.x * quat.x;
+    Real xy      = quat.x * quat.y;
+    Real xz      = quat.x * quat.z;
+    Real xw      = quat.x * quat.w;
+    Real yy      = quat.y * quat.y;
+    Real yz      = quat.y * quat.z;
+    Real yw      = quat.y * quat.w;
+    Real zz      = quat.z * quat.z;
+    Real zw      = quat.z * quat.w;
     pData[0]  = 1 - 2 * ( yy + zz );
     pData[1]  =     2 * ( xy - zw );
     pData[2]  =     2 * ( xz + yw );
@@ -224,44 +224,44 @@ FORCE_INLINE Vector3d Matrix4x4::getEulerAngles ( void ) const
 	assert( errno != EDOM );*/
 	// End check
 
-	//angle.y = D =  asin( min<ftype>(max<ftype>(pData[2],-1.0f),1.0f) );        /* Calculate Y-axis angle */
+	//angle.y = D =  asin( min<Real>(max<Real>(pData[2],-1.0f),1.0f) );        /* Calculate Y-axis angle */
  //   C           =  cos( angle.y );
- //   angle.y		=  (ftype)radtodeg(angle.y);//*=  RADIANS;
+ //   angle.y		=  (Real)radtodeg(angle.y);//*=  RADIANS;
  //   if ( fabs( C ) > 0.005 )             /* Gimball lock? */
  //   {
  //     tr_x      =  pData[10] / C;           /* No, so get X-axis angle */
  //     tr_y      = -pData[6]  / C;
- //     angle.x  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+ //     angle.x  = (Real)radtodeg(atan2( tr_y, tr_x ));
  //     tr_x      =  pData[0] / C;            /* Get Z-axis angle */
  //     tr_y      = -pData[1] / C;
- //     angle.z  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+ //     angle.z  = (Real)radtodeg(atan2( tr_y, tr_x ));
  //   }
  //   else                                 /* Gimball lock has occurred */
  //   {
  //     angle.x  = 0;                      /* Set X-axis angle to zero */
  //     tr_x      =  pData[5];                 /* And calculate Z-axis angle */
  //     tr_y      =  pData[4];
- //     angle.z  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+ //     angle.z  = (Real)radtodeg(atan2( tr_y, tr_x ));
  //   }
 
-	angle.y = D =  asin( std::min<ftype>(std::max<ftype>(pData[8],-1.0f),1.0f) );        /* Calculate Y-axis angle */
+	angle.y = D =  asin( std::min<Real>(std::max<Real>(pData[8],-1.0f),1.0f) );        /* Calculate Y-axis angle */
     C           =  cos( angle.y );
-    angle.y		=  (ftype)radtodeg(angle.y);//*=  RADIANS;
+    angle.y		=  (Real)radtodeg(angle.y);//*=  RADIANS;
     if ( fabs( C ) > 0.005 )             /* Gimball lock? */
     {
       tr_x      =  pData[10] / C;           /* No, so get X-axis angle */
       tr_y      = -pData[9]  / C;
-      angle.x  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+      angle.x  = (Real)radtodeg(atan2( tr_y, tr_x ));
       tr_x      =  pData[0] / C;            /* Get Z-axis angle */
       tr_y      = -pData[4] / C;
-      angle.z  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+      angle.z  = (Real)radtodeg(atan2( tr_y, tr_x ));
     }
     else                                 /* Gimball lock has occurred */
     {
       angle.x  = 0;                      /* Set X-axis angle to zero */
       tr_x      =  pData[5];                 /* And calculate Z-axis angle */
       tr_y      =  pData[1];
-      angle.z  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+      angle.z  = (Real)radtodeg(atan2( tr_y, tr_x ));
     }
 
     /* return only positive angles in [0,360] */
@@ -281,9 +281,9 @@ FORCE_INLINE Vector3d Matrix4x4::getEulerAngles ( void ) const
 }
 FORCE_INLINE Quaternion Matrix4x4::getQuaternion ( void ) const
 {
-	ftype S, X, Y, Z, W;
+	Real S, X, Y, Z, W;
 
-	ftype tr = pData[0] + pData[5] + pData[10];
+	Real tr = pData[0] + pData[5] + pData[10];
 	if ( tr > 0 ) {
 		S = sqrt(tr+1.0f) * 2; // S=4*qw
 		W = 0.25f * S;
@@ -293,7 +293,7 @@ FORCE_INLINE Quaternion Matrix4x4::getQuaternion ( void ) const
 	}
 	else if ( pData[0] > pData[5] && pData[0] > pData[10] )
 	{	// Column 0:
-        S  = (ftype)sqrt( 1.0f + pData[0] - pData[5] - pData[10] ) * 2;
+        S  = (Real)sqrt( 1.0f + pData[0] - pData[5] - pData[10] ) * 2;
         X = 0.25f * S;
         Y = (pData[4] + pData[1]) / S;
         Z = (pData[2] + pData[8]) / S;
@@ -301,7 +301,7 @@ FORCE_INLINE Quaternion Matrix4x4::getQuaternion ( void ) const
     }
 	else if ( pData[5] > pData[10] )
 	{	// Column 1:
-        S  = (ftype)sqrt( 1.0f + pData[5] - pData[0] - pData[10] ) * 2;
+        S  = (Real)sqrt( 1.0f + pData[5] - pData[0] - pData[10] ) * 2;
         X = (pData[4] + pData[1]) / S;
         Y = 0.25f * S;
         Z = (pData[9] + pData[6]) / S;
@@ -309,7 +309,7 @@ FORCE_INLINE Quaternion Matrix4x4::getQuaternion ( void ) const
     }
 	else
 	{	// Column 2:
-        S  = (ftype)sqrt( 1.0f + pData[10] - pData[0] - pData[5] ) * 2;
+        S  = (Real)sqrt( 1.0f + pData[10] - pData[0] - pData[5] ) * 2;
         X = (pData[2] + pData[8]) / S;
         Y = (pData[9] + pData[6]) / S;
         Z = 0.25f * S;
@@ -368,7 +368,7 @@ FORCE_INLINE Matrix4x4 Matrix4x4::transpose ( void ) const
 // Matrix inverse general
 FORCE_INLINE Matrix4x4 Matrix4x4::inverse ( void ) const
 {
-	ftype detVal = det();
+	Real detVal = det();
 	assert( detVal == detVal );
 	assert( detVal <= FLT_MAX && detVal >= -FLT_MAX );
 	if ( fabs( detVal ) <= 0.0005f )
@@ -394,9 +394,9 @@ FORCE_INLINE Matrix4x4 Matrix4x4::inverse ( void ) const
 }
 
 // Matrix determinant of arbitrary size (TODO)
-FORCE_INLINE ftype Matrix4x4::det ( void ) const
+FORCE_INLINE Real Matrix4x4::det ( void ) const
 {
-	ftype   det, result = 0, i = 1;
+	Real   det, result = 0, i = 1;
 	Matrix3x3 msub;
 	int     n;
 	for ( n = 0; n < 4; n++, i *= -1 )
@@ -411,7 +411,7 @@ FORCE_INLINE ftype Matrix4x4::det ( void ) const
 // Retrieve submatrix
 FORCE_INLINE Matrix3x3 Matrix4x4::submatrix ( int ex_x, int ex_y ) const
 {
-	ftype newData [9];
+	Real newData [9];
 	int di, dj, si, sj;
 	for( di = 0; di < 3; ++di )
 	{
@@ -433,7 +433,7 @@ FORCE_INLINE Matrix3x3 Matrix4x4::submatrix ( int ex_x, int ex_y ) const
 
 
 // Linear Interpolation
-FORCE_INLINE void Matrix4x4::Lerp ( const Matrix4x4& right, const ftype t )
+FORCE_INLINE void Matrix4x4::Lerp ( const Matrix4x4& right, const Real t )
 {
 	int x;
 	for ( x = 0; x < 16; x += 1 )
@@ -441,7 +441,7 @@ FORCE_INLINE void Matrix4x4::Lerp ( const Matrix4x4& right, const ftype t )
 		pData[x] += ( right.pData[x] - pData[x] )*t;
 	}
 }
-FORCE_INLINE Matrix4x4 Matrix4x4::LerpTo ( const Matrix4x4& right, const ftype t ) const
+FORCE_INLINE Matrix4x4 Matrix4x4::LerpTo ( const Matrix4x4& right, const Real t ) const
 {
 	Matrix4x4 result;
 	int x;
@@ -590,7 +590,7 @@ FORCE_INLINE Vector4d Matrix4x4::operator* ( const Vector4d& vect ) const
 }
 
 // Multiply scalar
-FORCE_INLINE Matrix4x4 Matrix4x4::operator* ( const ftype right ) const
+FORCE_INLINE Matrix4x4 Matrix4x4::operator* ( const Real right ) const
 {
 	Matrix4x4 result;
 	for ( int x = 0; x < 16; x++ )
@@ -640,12 +640,12 @@ FORCE_INLINE Matrix4x4 Matrix4x4::operator! ( void ) const
 }
 
 // Public Accessor
-FORCE_INLINE const ftype* Matrix4x4::operator[] ( int index ) const
+FORCE_INLINE const Real* Matrix4x4::operator[] ( int index ) const
 {
 	return &( pData[index*4] );
 }
 // Private Accessor and Editor
-FORCE_INLINE ftype* Matrix4x4::operator[] ( int index )
+FORCE_INLINE Real* Matrix4x4::operator[] ( int index )
 {
 	return &( pData[index*4] );
 }

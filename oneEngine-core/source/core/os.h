@@ -1,6 +1,5 @@
-
-#ifndef _OS_
-#define _OS_
+#ifndef CORE_OS_
+#define CORE_OS_
 
 #ifdef _WIN32
 
@@ -39,4 +38,4 @@
 
 #endif
 
-#endif//_OS_
+#endif//CORE_OS_

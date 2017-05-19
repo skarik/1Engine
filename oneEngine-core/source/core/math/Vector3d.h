@@ -104,7 +104,7 @@ public:
 	static const Vector3d left;
 
 };
-typedef Vector3d Vector3d_f;
+typedef Vector3d Vector3f;
 
 //===============================================================================================//
 // Vector3d implementation

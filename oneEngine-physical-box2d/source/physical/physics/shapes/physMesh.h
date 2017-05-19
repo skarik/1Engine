@@ -23,7 +23,7 @@ public:
 	PHYS_API ~physMesh ( void );
 
 	// 
-	PHYS_API void Initialize ( CPhysicsData* const pNewModelData );
+	PHYS_API void Initialize ( arModelPhysicsData* const pNewModelData );
 
 	// 
 	PHYS_API physShape* GetShape ( void );
@@ -31,7 +31,7 @@ public:
 private:
 	bool	bReady;
 
-	CPhysicsData* pmData;
+	arModelPhysicsData* pmData;
 	unsigned int meshNum;
 
 	physShape* pConvexShape;

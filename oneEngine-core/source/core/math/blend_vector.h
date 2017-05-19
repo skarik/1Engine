@@ -1,13 +1,20 @@
-
-#ifndef _BLEND_VECTOR_H_
-#define _BLEND_VECTOR_H_
+//===============================================================================================//
+//
+//		class blend_vector<Numeric Type>
+//
+// The blend_vector class is great! It's a vector - but you can blend between the values!
+// It's like a shitty version of the code behind Jak & Daxter's skybox.
+//
+//===============================================================================================//
+#ifndef CORE_MATH_BLEND_VECTOR_H_
+#define CORE_MATH_BLEND_VECTOR_H_
 
 #include <vector>
 #include <stdexcept> 
 
 template <class Type>
-class blend_vector {
-
+class blend_vector
+{
 public:
 	blend_vector ( void ) : loop(false) {
 		;
@@ -78,5 +85,4 @@ private:
 	std::vector<Type> m_entries;
 };
 
-
-#endif//_BLEND_VECTOR_H_
+#endif//CORE_MATH_BLEND_VECTOR_H_

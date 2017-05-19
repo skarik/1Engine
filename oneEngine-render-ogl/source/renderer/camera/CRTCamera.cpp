@@ -8,7 +8,7 @@
 // Constructor
 CRTCamera::CRTCamera (
 		CRenderTexture*	targetTexture,
-		ftype			renderFramerate,
+		Real			renderFramerate,
 		bool			autoRender
 		)
 		: CCamera (), fRenderCounter(0)
@@ -142,8 +142,8 @@ void CRTCamera::UpdateTextureMatrix ( void )
 	// Grab modelview and transformation matrices
 	//glGetDoublev(GL_MODELVIEW_MATRIX, modelView);
 	//glGetDoublev(GL_PROJECTION_MATRIX, projection); // SO ARE THESE MATRICES UP HERE CORRECT?
-	memcpy( modelView,  this->viewTransform.pData, sizeof(ftype)*16 );
-	memcpy( projection, this->projTransform.pData, sizeof(ftype)*16 );
+	memcpy( modelView,  this->viewTransform.pData, sizeof(Real)*16 );
+	memcpy( projection, this->projTransform.pData, sizeof(Real)*16 );
 
 	// THIS COULD BE WRONG
 	glMatrixMode(GL_MODELVIEW);
@@ -165,7 +165,7 @@ void CRTCamera::UpdateTextureMatrix ( void )
 	glPopMatrix();*/
 	//glMatrixMode(GL_MODELVIEW);
 
-	const ftype bias[16] = {	
+	const Real bias[16] = {	
 		0.5, 0.0, 0.0, 0.0, 
 		0.0, 0.5, 0.0, 0.0,
 		0.0, 0.0, 0.5, 0.0,
@@ -184,7 +184,7 @@ void CRTCamera::SetAutorender ( bool n_autorender )
 {
 	bAutoRender = n_autorender;
 }
-void CRTCamera::SetUpdateFPS ( ftype n_updatefps )
+void CRTCamera::SetUpdateFPS ( Real n_updatefps )
 {
 	fRenderFramerate = n_updatefps;
 }

@@ -79,7 +79,7 @@ rrSkinnedMesh::~rrSkinnedMesh ( void )
 //	iVBOfaces = 0;
 //}
 
-void rrSkinnedMesh::Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames, bool isStreamed )
+void rrSkinnedMesh::Initialize ( const string& nNewName, arModelData* const pNewModelData, unsigned int frames, bool isStreamed )
 {
 	rrMesh::Initialize( nNewName, pNewModelData, frames, false );
 
@@ -124,9 +124,9 @@ void rrSkinnedMesh::Initialize ( const string& nNewName, CModelData* const pNewM
 	//}
 
 	// stream stuff
-	/*pmStreamData = new CModelData();
+	/*pmStreamData = new arModelData();
 	(*pmStreamData) = (*pmData);
-	pmStreamData->vertices = new CModelVertex [pmStreamData->vertexNum] ();*/
+	pmStreamData->vertices = new arModelVertex [pmStreamData->vertexNum] ();*/
 
 	// NORMALIZE!
 	for ( unsigned int vert = 0; vert < pmData->vertexNum; vert++ )
@@ -196,9 +196,9 @@ rrSkinnedMesh* rrSkinnedMesh::Copy ( void )
 	//pvPoseMatrices = psrcMesh->pvPoseMatrices;
 
 	// Need to create new stream data
-	//pmStreamData = new CModelData();
+	//pmStreamData = new arModelData();
 	//(*pmStreamData) = (*pmData);
-	//pmStreamData->vertices = new CModelVertex [pmStreamData->vertexNum] ();
+	//pmStreamData->vertices = new arModelVertex [pmStreamData->vertexNum] ();
 
 	// Normalize
 	for ( unsigned int vert = 0; vert < newmesh->pmData->vertexNum; vert++ )
@@ -227,11 +227,11 @@ rrSkinnedMesh* rrSkinnedMesh::Copy ( void )
 
 															 // Copy data to the buffer
 		glBufferData( GL_ARRAY_BUFFER,
-			sizeof(CModelVertex) * (pmData->vertexNum),
+			sizeof(arModelVertex) * (pmData->vertexNum),
 			pmData->vertices,
 			GL_STATIC_DRAW );
 		glBufferData( GL_ELEMENT_ARRAY_BUFFER,
-			sizeof(CModelTriangle) * (pmData->triangleNum),
+			sizeof(arModelTriangle) * (pmData->triangleNum),
 			pmData->triangles,
 			GL_STATIC_DRAW );
 
@@ -295,9 +295,9 @@ rrSkinnedMesh* rrSkinnedMesh::Copy ( void )
 //	//pvPoseMatrices = psrcMesh->pvPoseMatrices;
 //
 //	// Need to create new stream data
-//	pmStreamData = new CModelData();
+//	pmStreamData = new arModelData();
 //	(*pmStreamData) = (*pmData);
-//	pmStreamData->vertices = new CModelVertex [pmStreamData->vertexNum] ();
+//	pmStreamData->vertices = new arModelVertex [pmStreamData->vertexNum] ();
 //	// Normalize
 //	for ( unsigned int vert = 0; vert < pmData->vertexNum; vert++ )
 //	{
@@ -323,11 +323,11 @@ rrSkinnedMesh* rrSkinnedMesh::Copy ( void )
 //
 //		// Copy data to the buffer
 //		glBufferData( GL_ARRAY_BUFFER,
-//			sizeof(CModelVertex) * (pmData->vertexNum),
+//			sizeof(arModelVertex) * (pmData->vertexNum),
 //			pmData->vertices,
 //			GL_STATIC_DRAW );
 //		glBufferData( GL_ELEMENT_ARRAY_BUFFER,
-//			sizeof(CModelTriangle) * (pmData->triangleNum),
+//			sizeof(arModelTriangle) * (pmData->triangleNum),
 //			pmData->triangles,
 //			GL_STATIC_DRAW );
 //
@@ -462,7 +462,7 @@ void rrSkinnedMesh::SetSkinningData ( const skinningData_t& n_skinning_data )
 //	if ( setSize > 24 )
 //		setSize = 24;
 //	RrMaterial::current->setUniformV( "sys_BoneMatrix", setSize, &(pvPoseMatrices[partOffset]) );
-//	RrMaterial::current->setUniform( "sys_BoneOffset", ftype(partOffset) );*/
+//	RrMaterial::current->setUniform( "sys_BoneOffset", Real(partOffset) );*/
 //}
 
 //void rrSkinnedMesh::GetPoseMatrices ( void )
@@ -575,7 +575,7 @@ void rrSkinnedMesh::SetSkinningData ( const skinningData_t& n_skinning_data )
 //		}
 //	}
 //	/*QueryPerformanceCounter( &tick2 );
-//	cout << (((ftype)(tick2.QuadPart-tick1.QuadPart))/(freq.QuadPart))*1000.0f << endl;*/
+//	cout << (((Real)(tick2.QuadPart-tick1.QuadPart))/(freq.QuadPart))*1000.0f << endl;*/
 //}
 //void rrSkinnedMesh::sSkinningUpdater::operator () ( void )
 //{
@@ -584,7 +584,7 @@ void rrSkinnedMesh::SetSkinningData ( const skinningData_t& n_skinning_data )
 
 //void rrSkinnedMesh::PrepareStream ( void )
 //{
-//	memcpy( pmStreamData->vertices, pmData->vertices, sizeof(CModelVertex)*pmData->vertexNum );
+//	memcpy( pmStreamData->vertices, pmData->vertices, sizeof(arModelVertex)*pmData->vertexNum );
 //}
 
 //void rrSkinnedMesh::DoCPUSkinning ( void )
@@ -595,7 +595,7 @@ void rrSkinnedMesh::SetSkinningData ( const skinningData_t& n_skinning_data )
 //
 //	Vector3d ipos, inorm;
 //	Vector3d fpos, fnorm;
-//	ftype weight;
+//	Real weight;
 //	Matrix4x4 fmatx;
 //	char bone;
 //	//float zeroes [16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -700,7 +700,7 @@ void rrSkinnedMesh::SetSkinningData ( const skinningData_t& n_skinning_data )
 //	isStreaming = false;
 //
 //	/*QueryPerformanceCounter( &tick2 );
-//	cout << (((ftype)(tick2.QuadPart-tick1.QuadPart))/(freq.QuadPart))*1000.0f << endl;*/
+//	cout << (((Real)(tick2.QuadPart-tick1.QuadPart))/(freq.QuadPart))*1000.0f << endl;*/
 //}
 void rrSkinnedMesh::UpdateVBO ( void )
 {
@@ -710,7 +710,7 @@ void rrSkinnedMesh::UpdateVBO ( void )
 
 	// Copy data to the buffer
 	glBufferData( GL_ARRAY_BUFFER,
-		sizeof(CModelVertex) * (pmData->vertexNum),
+		sizeof(arModelVertex) * (pmData->vertexNum),
 		pmData->vertices,
 		GL_STREAM_DRAW );
 
@@ -764,7 +764,7 @@ void rrSkinnedMesh::UpdateVBO ( void )
 //	iVBOfaces_gpu = new GLuint [partNum];
 //	partTriCount = new unsigned int [partNum];
 //
-//	std::vector<CModelTriangle>	triangleList;
+//	std::vector<arModelTriangle>	triangleList;
 //	unsigned int boneIndexOffset;
 //	for ( unsigned int i = 0; i < partNum; i++ )
 //	{
@@ -813,14 +813,14 @@ void rrSkinnedMesh::UpdateVBO ( void )
 //		if ( partTriCount[i] > 0 )
 //		{
 //			glBufferData( GL_ELEMENT_ARRAY_BUFFER,
-//				sizeof(CModelTriangle) * (partTriCount[i]),
+//				sizeof(arModelTriangle) * (partTriCount[i]),
 //				&triangleList[0],
 //				GL_STATIC_DRAW );
 //		}
 //		else
 //		{
 //			glBufferData( GL_ELEMENT_ARRAY_BUFFER,
-//				sizeof(CModelTriangle) * (partTriCount[i]),
+//				sizeof(arModelTriangle) * (partTriCount[i]),
 //				NULL,
 //				GL_STATIC_DRAW );
 //		}
@@ -857,11 +857,11 @@ void rrSkinnedMesh::UpdateVBO ( void )
 //	glBindBuffer( GL_ARRAY_BUFFER,			iVBOverts ); // for vertex coordinates
 //	
 //	// Tell where the vertex coordinates are in the array
-//	/*glVertexPointer( 3, GL_FLOAT, sizeof(CModelVertex), 0 ); 
-//	glNormalPointer( GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*6) );
-//	glTexCoordPointer( 3, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );*/
-//	//glVertexAttribPointer( 1, 3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*12) );
-//	//glColorPointer( 3, GL_FLOAT, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );
+//	/*glVertexPointer( 3, GL_FLOAT, sizeof(arModelVertex), 0 ); 
+//	glNormalPointer( GL_FLOAT, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*6) );
+//	glTexCoordPointer( 3, GL_FLOAT, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*3) );*/
+//	//glVertexAttribPointer( 1, 3, GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*12) );
+//	//glColorPointer( 3, GL_FLOAT, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*15) );
 //
 //	// Set skinning striding
 //	/*if ( RrMaterial::current->useSkinning )
@@ -869,10 +869,10 @@ void rrSkinnedMesh::UpdateVBO ( void )
 //		GLint weightLoc, boneLoc;
 //		weightLoc = glGetAttribLocation( RrMaterial::current->pShader->get_program(),"sys_BoneWeights" );
 //		glEnableVertexAttribArray( weightLoc );
-//		glVertexAttribPointer( weightLoc, 4, GL_FLOAT, false, sizeof(CModelVertex), ((char*)4) + (sizeof(float)*19) );
+//		glVertexAttribPointer( weightLoc, 4, GL_FLOAT, false, sizeof(arModelVertex), ((char*)4) + (sizeof(float)*19) );
 //		boneLoc = glGetAttribLocation( RrMaterial::current->pShader->get_program(),"sys_BoneIndices" );
 //		glEnableVertexAttribArray( boneLoc );
-//		glVertexAttribPointer( boneLoc, 4, GL_UNSIGNED_BYTE, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*19) );
+//		glVertexAttribPointer( boneLoc, 4, GL_UNSIGNED_BYTE, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*19) );
 //		//cout << unsigned int( pmData[0].vertices[pmData[0].vertexNum-1].bone[3] ) << endl;
 //	}*/
 //

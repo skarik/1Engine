@@ -12,7 +12,7 @@ void glDrawing::BeginPrimitive ( unsigned int n_primitiveType )
 {
 	// Allocate mesh area
 	if ( prim_vertex_list == NULL ) {
-		prim_vertex_list = new CModelVertex [GL_MAX_PRIMITIVE_VERTEX_COUNT];
+		prim_vertex_list = new arModelVertex [GL_MAX_PRIMITIVE_VERTEX_COUNT];
 	}
 
 	// Check if need to add new request to prim_list
@@ -54,9 +54,9 @@ void glDrawing::EndPrimitive ( void )
 
 		// Now, bind the VBO and stream the data to it
 		glBindBuffer( GL_ARRAY_BUFFER, prim_list[prim_count].vboObject );
-		//glBufferData( GL_ARRAY_BUFFER, sizeof(CModelVertex) * prim_list[prim_count].elementCount, prim_vertex_list, GL_STREAM_DRAW );
+		//glBufferData( GL_ARRAY_BUFFER, sizeof(arModelVertex) * prim_list[prim_count].elementCount, prim_vertex_list, GL_STREAM_DRAW );
 
-		GLsizeiptr bufferSize = sizeof(CModelVertex) * prim_list[prim_count].elementCount;
+		GLsizeiptr bufferSize = sizeof(arModelVertex) * prim_list[prim_count].elementCount;
 		glBufferData( GL_ARRAY_BUFFER, bufferSize, NULL, GL_STREAM_DRAW );
 		//void* memoryData = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
 		void* memoryData = glMapBufferRange( GL_ARRAY_BUFFER, 0, bufferSize, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_BUFFER_BIT|GL_MAP_UNSYNCHRONIZED_BIT );
@@ -65,7 +65,7 @@ void glDrawing::EndPrimitive ( void )
 			glUnmapBuffer( GL_ARRAY_BUFFER );
 		}
 
-		/*GLsizeiptr bufferSize = sizeof(CModelVertex) * prim_list[prim_count].elementCount;
+		/*GLsizeiptr bufferSize = sizeof(arModelVertex) * prim_list[prim_count].elementCount;
 		glBufferData( GL_ARRAY_BUFFER, bufferSize, NULL, GL_STREAM_DRAW );
 		glBufferSubData( GL_ARRAY_BUFFER, 0, bufferSize, prim_vertex_list );*/
 		

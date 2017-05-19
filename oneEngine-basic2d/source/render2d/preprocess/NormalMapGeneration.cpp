@@ -63,10 +63,10 @@ void Render2D::Preprocess::GenerateNormalMap (
 			}
 
 			// Now we have an aggregate for the normal. Thus, we use that to generate our x-y strengths
-			int32_t dist_x = Math::round( sqrtf( std::max<float>(0, abs(current_aggregate.x) - 1.0F) ) - 0.5F );
-			int32_t dist_y = Math::round( sqrtf( std::max<float>(0, abs(current_aggregate.y) - 1.0F) ) - 0.5F );
-			float strength_x = Math::saturate( dist_x / (float)filter_radius ) * Math::sgn( current_aggregate.x );
-			float strength_y = Math::saturate( dist_y / (float)filter_radius ) * Math::sgn( current_aggregate.y );
+			int32_t dist_x = math::round( sqrtf( std::max<float>(0, abs(current_aggregate.x) - 1.0F) ) - 0.5F );
+			int32_t dist_y = math::round( sqrtf( std::max<float>(0, abs(current_aggregate.y) - 1.0F) ) - 0.5F );
+			float strength_x = math::saturate( dist_x / (float)filter_radius ) * math::sgn( current_aggregate.x );
+			float strength_y = math::saturate( dist_y / (float)filter_radius ) * math::sgn( current_aggregate.y );
 
 			// Create the normal
 			target_normal = Vector3d();
@@ -81,7 +81,7 @@ void Render2D::Preprocess::GenerateNormalMap (
 			else
 				target_normal += n_normal_up * -strength_y;
 
-			current_normal = n_default_normal.lerp( target_normal, sqrtf(Math::square(strength_x) + Math::square(strength_y)) );
+			current_normal = n_default_normal.lerp( target_normal, sqrtf(math::square(strength_x) + math::square(strength_y)) );
 
 			// Normalize result
 			current_normal.normalize();

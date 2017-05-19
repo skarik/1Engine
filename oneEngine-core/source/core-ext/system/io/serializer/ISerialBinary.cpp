@@ -103,7 +103,7 @@ Serializer&	ISerialBinary::operator&	( Quaternion & qat )
 }
 Serializer&	ISerialBinary::operator&	( Rotator & rot )
 {
-	m_file->ReadData( (char*)rot.pData, sizeof( ftype ) * 9 );
+	m_file->ReadData( (char*)rot.pData, sizeof( Real ) * 9 );
 	return *this;
 }
 Serializer& ISerialBinary::operator&	( Color & col )

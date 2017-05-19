@@ -41,16 +41,16 @@ CBloomShader::~CBloomShader ( void )
 }
 
 
-void CBloomShader::SetParameters ( const ftype threshold, const ftype gradient )
+void CBloomShader::SetParameters ( const Real threshold, const Real gradient )
 {
 	m_threshold = threshold;
 	m_gradient = gradient;
 }
-void CBloomShader::SetBlur ( const ftype amount )
+void CBloomShader::SetBlur ( const Real amount )
 {
 	m_blur = amount;
 }
-void CBloomShader::SetRed ( const ftype amount )
+void CBloomShader::SetRed ( const Real amount )
 {
 	m_red = amount;
 }

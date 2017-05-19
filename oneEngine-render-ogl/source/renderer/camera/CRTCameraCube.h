@@ -16,7 +16,7 @@ public:
 	// Constructor/destructor
 	explicit		CRTCameraCube (
 		CRenderTextureCube*	targetTexture	= NULL,
-		ftype			renderFramerate	= 30.0f,
+		Real			renderFramerate	= 30.0f,
 		bool			autoRender		= true,
 		bool			staggerRender	= true
 		) : CRTCamera( targetTexture, renderFramerate, autoRender ), m_staggerRender(staggerRender), m_staggerTarget(0)

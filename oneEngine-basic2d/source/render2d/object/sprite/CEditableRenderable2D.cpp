@@ -12,7 +12,7 @@ CEditableRenderable2D::~CEditableRenderable2D ( void )
 }
 
 // Return access to model data
-CModelData* CEditableRenderable2D::GetModelData ( void )
+arModelData* CEditableRenderable2D::GetModelData ( void )
 {
 	return &m_modeldata;
 }

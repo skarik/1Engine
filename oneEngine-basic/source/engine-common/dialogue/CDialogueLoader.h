@@ -4,9 +4,10 @@
 #include "core-ext/system/io/mccosf.h"
 #include <string>
 #include <vector>
-#include "after/entities/character/CCharacter.h"
+//#include "after/entities/character/CCharacter.h"
 
 using std::string;
+class CActor;
 
 enum DialogueState_enum
 {
@@ -39,11 +40,11 @@ public:
 	explicit CDialogueLoader (const string& filename);
 	explicit CDialogueLoader (const char* filename);
 
-	explicit CDialogueLoader (const string& filename, std::vector<CCharacter*> characters);
-	explicit CDialogueLoader (const char* filename, std::vector<CCharacter*> characters);
+	explicit CDialogueLoader (const string& filename, std::vector<CActor*> characters);
+	explicit CDialogueLoader (const char* filename, std::vector<CActor*> characters);
 
 private:
-	void Construct ( const char* filename, std::vector<CCharacter*> characters );
+	void Construct ( const char* filename, std::vector<CActor*> characters );
 
 public:
 	~CDialogueLoader (void);
@@ -79,7 +80,7 @@ public:
 	short GetCurrentSpeaker ( void ) const;
 
 	// Return the numbered participant of the conversation. Typically used for event hooks and name rendering.
-	CCharacter* GetParticipant ( const short );
+	CActor* GetParticipant ( const short );
 
 	//Current state of dialogue, to keep track of what the dialogue GUI should be looking for
 	short sDialogueState;
@@ -115,7 +116,7 @@ private:
 	
 	string sPrevious;
 
-	std::vector<CCharacter*>	nCharacters;
+	std::vector<CActor*>	nCharacters;
 	short				sTalker;
 };
 

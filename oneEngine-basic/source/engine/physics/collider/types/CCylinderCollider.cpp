@@ -5,7 +5,7 @@
 #include "physical/physics/shapes/physCylinderShape.h"
 
 
-CCylinderCollider::CCylinderCollider ( ftype height, ftype radius, bool centered )
+CCylinderCollider::CCylinderCollider ( Real height, Real radius, bool centered )
 {
 	vSize = Vector3d( 0,0,height );
 	fRadius = radius;
@@ -23,7 +23,7 @@ CCylinderCollider::~CCylinderCollider ( void )
 }
 
 // Setters
-void CCylinderCollider::SetSize ( ftype height, ftype radius )
+void CCylinderCollider::SetSize ( Real height, Real radius )
 {
 	// Set the current extents of the collider
 	//vExtents = size;
@@ -39,7 +39,7 @@ void CCylinderCollider::SetSize ( ftype height, ftype radius )
 	pRigidBody->SetShape( pCollisionShape );
 
 }
-void CCylinderCollider::SetHeight ( ftype height )
+void CCylinderCollider::SetHeight ( Real height )
 {
 	((physCylinderShape*)pCollisionShape)->setVertex( 0, Vector3d( 0,0,0 ) );
 	((physCylinderShape*)pCollisionShape)->setVertex( 1, Vector3d( 0,0,height ) );
@@ -52,7 +52,7 @@ Vector3d CCylinderCollider::GetSize ( void )
 {
 	return vSize;
 }
-ftype CCylinderCollider::GetRadius ( void )
+Real CCylinderCollider::GetRadius ( void )
 {
 	return fRadius;
 }

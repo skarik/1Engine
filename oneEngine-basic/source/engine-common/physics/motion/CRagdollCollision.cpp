@@ -607,7 +607,7 @@ CActor* CRagdollCollision::GetActor ( void )
 {
 	return m_owning_actor;
 }
-ftype	CRagdollCollision::GetMultiplier ( physRigidBody* )
+Real	CRagdollCollision::GetMultiplier ( physRigidBody* )
 {
 	return 1;
 }

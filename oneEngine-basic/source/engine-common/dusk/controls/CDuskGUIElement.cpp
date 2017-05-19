@@ -93,20 +93,20 @@ void CDuskGUIElement::drawRectWire ( const Rect& rect )
 	// other draws at a dark color. automatically sets.
 	activeGUI->drawRectWire(rect,hasFocus);
 }
-void CDuskGUIElement::drawLine ( const ftype x1, const ftype y1, const ftype x2, const ftype y2 )
+void CDuskGUIElement::drawLine ( const Real x1, const Real y1, const Real x2, const Real y2 )
 {
 	activeGUI->drawLine(x1,y1,x2,y2);
 }
 	
-void CDuskGUIElement::drawText ( const ftype x, const ftype y, const char* str )
+void CDuskGUIElement::drawText ( const Real x, const Real y, const char* str )
 {
 	activeGUI->drawText(x,y,str);
 }
-void CDuskGUIElement::drawTextWidth ( const ftype x, const ftype y, const ftype w, const char* str )
+void CDuskGUIElement::drawTextWidth ( const Real x, const Real y, const Real w, const char* str )
 {
 	activeGUI->drawTextWidth(x,y,w,str);
 }
-void CDuskGUIElement::drawTextCentered ( const ftype x, const ftype y, const char* str )
+void CDuskGUIElement::drawTextCentered ( const Real x, const Real y, const char* str )
 {
 	activeGUI->drawTextCentered(x,y,str);
 }

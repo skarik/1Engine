@@ -242,12 +242,12 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 				buffer.ReadData( (char*)(&entry.transform), sizeof(float)*16 );
 
 				entry.model.vertexNum	= buffer.ReadUInt32();
-				entry.model.vertices	= new CModelVertex [entry.model.vertexNum];
-				buffer.ReadData( (char*)(entry.model.vertices),  sizeof(CModelVertex)*entry.model.vertexNum );
+				entry.model.vertices	= new arModelVertex [entry.model.vertexNum];
+				buffer.ReadData( (char*)(entry.model.vertices),  sizeof(arModelVertex)*entry.model.vertexNum );
 
 				entry.model.triangleNum	= buffer.ReadUInt32();
-				entry.model.triangles	= new CModelTriangle [entry.model.triangleNum];
-				buffer.ReadData( (char*)(entry.model.triangles), sizeof(CModelTriangle)*entry.model.triangleNum );
+				entry.model.triangles	= new arModelTriangle [entry.model.triangleNum];
+				buffer.ReadData( (char*)(entry.model.triangles), sizeof(arModelTriangle)*entry.model.triangleNum );
 
 				entry.collision_index	= buffer.ReadUInt32();
 				buffer.ReadString( entry.parent.data );
@@ -279,12 +279,12 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 					buffer.ReadData( (char*)(&entry.transform), sizeof(float)*16 );
 
 					entry.model.vertexNum	= buffer.ReadUInt32();
-					entry.model.vertices	= new CPhysicsVertex [entry.model.vertexNum];
-					buffer.ReadData( (char*)(entry.model.vertices),  sizeof(CPhysicsVertex)*entry.model.vertexNum );
+					entry.model.vertices	= new arPhysicsVertex [entry.model.vertexNum];
+					buffer.ReadData( (char*)(entry.model.vertices),  sizeof(arPhysicsVertex)*entry.model.vertexNum );
 
 					entry.model.triangleNum	= buffer.ReadUInt32();
-					entry.model.triangles	= new CModelTriangle [entry.model.triangleNum];
-					buffer.ReadData( (char*)(entry.model.triangles), sizeof(CModelTriangle)*entry.model.triangleNum );
+					entry.model.triangles	= new arModelTriangle [entry.model.triangleNum];
+					buffer.ReadData( (char*)(entry.model.triangles), sizeof(arModelTriangle)*entry.model.triangleNum );
 
 					collisions.push_back( entry );
 				}
@@ -309,8 +309,8 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 				modelFmtMorphEntry_t entry;
 
 				buffer.ReadString( entry.name.data );
-				entry.vertices	= new CModelVertex [meshes[header.morphmesh].model.vertexNum];
-				buffer.ReadData( (char*)(entry.vertices),  sizeof(CModelVertex)*meshes[header.morphmesh].model.vertexNum );
+				entry.vertices	= new arModelVertex [meshes[header.morphmesh].model.vertexNum];
+				buffer.ReadData( (char*)(entry.vertices),  sizeof(arModelVertex)*meshes[header.morphmesh].model.vertexNum );
 
 				morphs.push_back( entry );
 			}

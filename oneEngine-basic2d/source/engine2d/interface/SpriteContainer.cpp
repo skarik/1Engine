@@ -42,8 +42,8 @@ void SpriteContainer::PreStep ( void )
 		if ( m_sourcePosition != NULL ) {
 			m_sprite->transform.world.position = *m_sourcePosition;
 			// TODO: Remove this rounding from here
-			m_sprite->transform.world.position.x = (Real)Math::round(m_sprite->transform.world.position.x);
-			m_sprite->transform.world.position.y = (Real)Math::round(m_sprite->transform.world.position.y);
+			m_sprite->transform.world.position.x = (Real)math::round(m_sprite->transform.world.position.x);
+			m_sprite->transform.world.position.y = (Real)math::round(m_sprite->transform.world.position.y);
 		}
 		if ( m_sourceAngle != NULL ) {
 			m_sprite->transform.world.rotation = Quaternion::CreateAxisAngle( Vector3d::up , *m_sourceAngle );
@@ -119,13 +119,13 @@ void SpriteContainer::PostStepSynchronus ( void )
 	}
 
 	// TODO: Make the mesh and push it to the renderer. That's right: we stream that shit.
-	CModelData* modeldata = m_sprite->GetModelData();
+	arModelData* modeldata = m_sprite->GetModelData();
 
 	// Generate the buffer information when shit is needed
 	if ( modeldata->triangleNum == 0 )
 	{
 		modeldata->triangleNum = 2;
-		modeldata->triangles = new CModelTriangle [2];
+		modeldata->triangles = new arModelTriangle [2];
 
 		modeldata->triangles[0].vert[0] = 0;
 		modeldata->triangles[0].vert[1] = 1;
@@ -138,8 +138,8 @@ void SpriteContainer::PostStepSynchronus ( void )
 	if ( modeldata->vertexNum == 0 )
 	{
 		modeldata->vertexNum = 4;
-		modeldata->vertices = new CModelVertex [4];
-		memset( modeldata->vertices, 0, sizeof(CModelVertex) * 4 );
+		modeldata->vertices = new arModelVertex [4];
+		memset( modeldata->vertices, 0, sizeof(arModelVertex) * 4 );
 
 		for ( uint i = 0; i < 4; ++i )
 		{

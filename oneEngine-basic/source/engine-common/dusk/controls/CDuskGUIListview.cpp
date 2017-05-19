@@ -29,7 +29,7 @@ int  CDuskGUI::GetListviewCount ( const Handle& handle )
 	CDuskGUIListview* ddl = (CDuskGUIListview*)(vElements[int(handle)]);
 	return (int)ddl->optionList.size();
 }
-void CDuskGUI::SetListviewFieldHeight ( const Handle& handle, const ftype newheight )
+void CDuskGUI::SetListviewFieldHeight ( const Handle& handle, const Real newheight )
 {
 	CDuskGUIListview* ddl = (CDuskGUIListview*)(vElements[int(handle)]);
 	ddl->field_height = newheight;

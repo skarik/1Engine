@@ -1,11 +1,12 @@
 //===============================================================================================//
-// One(|)Engine Core : types.h
+//
+//		types.h
 // 
 // Standard types and defines
+//
 //===============================================================================================//
-
-#ifndef _C_STANDARD_TYPES_H_
-#define _C_STANDARD_TYPES_H_
+#ifndef CORE_TYPES_H_
+#define CORE_TYPES_H_
 
 // Visual Studio specific options
 #ifdef _MSC_VER
@@ -243,4 +244,4 @@ typedef unsigned int	uint;
 // Include string and cstring
 #include "string_extension.h"
 
-#endif
+#endif//CORE_TYPES_H_

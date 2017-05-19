@@ -11,7 +11,7 @@
 #include "physical/skeleton/skeletonBone.h"
 
 // Include vertex data
-//#include "CModelData.h"
+//#include "arModelData.h"
 
 // Include string
 #include <string>
@@ -36,7 +36,7 @@ public:
 	//	Initialize ( name, data ) : sets up new mesh data
 	// Creates a new VBO associated with this rrMesh
 	// Removes any old VBO data.
-	void Initialize ( const string& nNewName, CModelData* const pNewModelData, unsigned int frames=1, bool isStreamed=false ) override;
+	void Initialize ( const string& nNewName, arModelData* const pNewModelData, unsigned int frames=1, bool isStreamed=false ) override;
 
 	//	Copy ( ) : creates a new rrSkinnedMesh with duplicated streams
 	rrSkinnedMesh* Copy ( void );
@@ -103,7 +103,7 @@ public:
 	{
 		pvSkeleton = newSkelly;
 	}*/
-	/*CModelData* getCurrentStream ( void )
+	/*arModelData* getCurrentStream ( void )
 	{
 		return pmStreamData;
 	}*/
@@ -132,7 +132,7 @@ protected:
 	//glBone*		parentBone;
 	bool		useSkinning;
 
-	//CModelData* pmStreamData;
+	//arModelData* pmStreamData;
 	//friend sSkinningUpdater;
 	//thread	tSkinning;
 

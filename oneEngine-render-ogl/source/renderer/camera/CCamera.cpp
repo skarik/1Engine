@@ -188,9 +188,9 @@ void CCamera::LateUpdate ( void )
 	// Rotate the move vector to match the camera
 	forward = rotMatrix*Vector3d::forward;
 
-	/*up.z = cos( (ftype)degtorad( transform.rotation.y ) );
-	up.x = -cos( (ftype)degtorad( transform.rotation.z ) ) * sin( (ftype)degtorad( transform.rotation.y ) );
-	up.y = -sin( (ftype)degtorad( transform.rotation.z ) ) * sin( (ftype)degtorad( transform.rotation.y ) );*/
+	/*up.z = cos( (Real)degtorad( transform.rotation.y ) );
+	up.x = -cos( (Real)degtorad( transform.rotation.z ) ) * sin( (Real)degtorad( transform.rotation.y ) );
+	up.y = -sin( (Real)degtorad( transform.rotation.z ) ) * sin( (Real)degtorad( transform.rotation.y ) );*/
 	up = rotMatrix*Vector3d(0,0,1);
 	
 	// Wireframe mode
@@ -218,7 +218,7 @@ void CCamera::RenderScene ( void )
 	GL.pushProjection( viewTransform * projTransform );
 
 	// Limit render scale between 10% and 100%
-	render_scale = Math::clamp( render_scale, 0.1F, 1.0F );
+	render_scale = math::clamp( render_scale, 0.1F, 1.0F );
 
 	// Perform rendering
 	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
@@ -463,7 +463,7 @@ bool CCamera::PointIsVisible ( Vector3d const& point )
 }
 
 // tests if a sphere is within the frustrum
-char CCamera::SphereIsVisible( Vector3d const& point, ftype radius )
+char CCamera::SphereIsVisible( Vector3d const& point, Real radius )
 {
 	// various distances
 	float fDistance;

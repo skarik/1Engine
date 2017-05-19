@@ -10,16 +10,16 @@
 class CRenderPlane : public CRenderablePrimitive
 {
 public:
-	RENDER_API CRenderPlane ( ftype xsize = 1.0f, ftype ysize = 1.0f );
+	RENDER_API CRenderPlane ( Real xsize = 1.0f, Real ysize = 1.0f );
 	RENDER_API ~CRenderPlane();
 
-	RENDER_API void SetSize ( ftype xsize = 1.0f, ftype ysize = 1.0f );
+	RENDER_API void SetSize ( Real xsize = 1.0f, Real ysize = 1.0f );
 
 private:
-	ftype width;
-	ftype height;
+	Real width;
+	Real height;
 
-	void GenerateShape ( ftype xsize, ftype ysize );
+	void GenerateShape ( Real xsize, Real ysize );
 
 };
 

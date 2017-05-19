@@ -18,7 +18,7 @@ float SimplexNoise::Get3D(float x,float y,float z)
 float SimplexNoise::Unnormalize(float value)
 {
 	float result = value/2;
-	result += ((1-exp(-fabs(result/0.707f))) + ( Math::square<float>( (m_amp/2)-fabs(result) )*fabs(result) ) ) * Math::sgn<float>( result );
+	result += ((1-exp(-fabs(result/0.707f))) + ( math::square<float>( (m_amp/2)-fabs(result) )*fabs(result) ) ) * math::sgn<float>( result );
 	result = std::max<float>( -0.5f, std::min<float>( 0.5f, result ) );
 	return result*2;
 }

@@ -18,9 +18,9 @@ Quadrilateral::Quadrilateral ( void )
 }
 
 
-ftype Quadrilateral::Area ( void ) const
+Real Quadrilateral::Area ( void ) const
 {
-	ftype area;
+	Real area;
 	area = 0.5f * (m_corners[2]-m_corners[0]).cross(m_corners[3]-m_corners[1]);
 	return fabs(area);
 }

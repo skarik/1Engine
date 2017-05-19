@@ -45,8 +45,8 @@ void CRTCameraCube::RenderScene ( void )
 		// Update viewport
 		viewport.pos.x = 0;
 		viewport.pos.y = 0;
-		viewport.size.x = (ftype)iPixelSize;
-		viewport.size.y = (ftype)iPixelSize;
+		viewport.size.x = (Real)iPixelSize;
+		viewport.size.y = (Real)iPixelSize;
 		//fov = 90;
 		fov = (Real)(2.0 * radtodeg( atan( iPixelSize / (iPixelSize-0.5) ) ));
 		mirror_view = true;

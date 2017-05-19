@@ -15,13 +15,13 @@ public:
 	}
 
 	// return parametric value of collision of this ray
-	ftype CollideRay ( const Ray2d& other ) const
+	Real CollideRay ( const Ray2d& other ) const
 	{
-		//ftype dx = bs.x - as.x
-		//ftype dy = bs.y - as.y
+		//Real dx = bs.x - as.x
+		//Real dy = bs.y - as.y
 		Vector2d delta = other.pos - pos;
 		//det = bd.x * ad.y - bd.y * ad.x
-		ftype det = other.dir.cross(dir);
+		Real det = other.dir.cross(dir);
 		//u = (dy * bd.x - dx * bd.y) / det
 		//v = (dy * ad.x - dx * ad.y) / det
 		return (delta.y * other.dir.x - delta.x * other.dir.y) / det;

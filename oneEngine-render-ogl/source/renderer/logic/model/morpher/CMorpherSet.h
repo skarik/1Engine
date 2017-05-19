@@ -15,10 +15,10 @@ public:
 
 	int iMorphTarget;
 
-	CModelVertex*	vertexData;
+	arModelVertex*	vertexData;
 
 public:
-	const CModelVertex*	GetMorphData ( const unsigned int nMorphId ) const;
+	const arModelVertex*	GetMorphData ( const unsigned int nMorphId ) const;
 
 	unsigned int	mVertexCount;
 	unsigned int	mMorphCount;

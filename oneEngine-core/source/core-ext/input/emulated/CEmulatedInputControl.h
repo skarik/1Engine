@@ -16,7 +16,7 @@ public:
 		}
 	}
 
-	void SimulatePress ( const int keyIndex, ftype pressLength = 0.1f, bool pressOverride=false ) {
+	void SimulatePress ( const int keyIndex, Real pressLength = 0.1f, bool pressOverride=false ) {
 		if ( keypress_timer[keyIndex] <= 0 || pressOverride ) {
 			keypress_timer[keyIndex] = pressLength;
 		}
@@ -75,7 +75,7 @@ public:
 
 private:
 	
-	ftype	keypress_timer [MAX_INPUT_COUNT];
+	Real	keypress_timer [MAX_INPUT_COUNT];
 };
 
 #endif//_C_EMULATED_INPUT_CONTROL_H_

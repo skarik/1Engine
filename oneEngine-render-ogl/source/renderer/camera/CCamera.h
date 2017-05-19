@@ -85,7 +85,7 @@ public:
 
 	// == Visibility Queries ==
 	RENDER_API bool	PointIsVisible ( Vector3d const& );
-	RENDER_API char	SphereIsVisible ( Vector3d const&, ftype );
+	RENDER_API char	SphereIsVisible ( Vector3d const&, Real );
 	RENDER_API bool	BoundingBoxIsVisible ( BoundingBox& );
 
 	// == Transform Queries ==
@@ -130,7 +130,7 @@ public:
 	bool		layerVisibility [5];
 
 	// External states
-	ftype		focalDistance;
+	Real		focalDistance;
 
 	// Drawn layers (will skip objects with layers that don't match)
 	// Not matching is somewhat of a misleading description.

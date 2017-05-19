@@ -30,16 +30,16 @@ void CMesh::CalculateBoundingBox ( void )
 	Vector3d minPos, maxPos;
 
 	//for ( unsigned int i = 0; i < vMeshes.size(); i++ )
-	CModelData* pmData = m_glMesh->pmData;
+	arModelData* pmData = m_glMesh->pmData;
 	for ( unsigned int v = 0; v < pmData->vertexNum; v++ )
 	{
-		CModelVertex* vert = &(pmData->vertices[v]);
-		minPos.x = std::min<ftype>( minPos.x, vert->x );
-		minPos.y = std::min<ftype>( minPos.y, vert->y );
-		minPos.z = std::min<ftype>( minPos.z, vert->z );
-		maxPos.x = std::max<ftype>( maxPos.x, vert->x );
-		maxPos.y = std::max<ftype>( maxPos.y, vert->y );
-		maxPos.z = std::max<ftype>( maxPos.z, vert->z );
+		arModelVertex* vert = &(pmData->vertices[v]);
+		minPos.x = std::min<Real>( minPos.x, vert->x );
+		minPos.y = std::min<Real>( minPos.y, vert->y );
+		minPos.z = std::min<Real>( minPos.z, vert->z );
+		maxPos.x = std::max<Real>( maxPos.x, vert->x );
+		maxPos.y = std::max<Real>( maxPos.y, vert->y );
+		maxPos.z = std::max<Real>( maxPos.z, vert->z );
 	}
 
 	vMinExtents = minPos;

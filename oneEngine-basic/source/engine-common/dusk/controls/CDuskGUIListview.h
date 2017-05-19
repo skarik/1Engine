@@ -28,7 +28,7 @@ public:
 	std::vector<ListElement_t> optionList;
 	int  selection;
 	int  currentmouseover;
-	ftype field_height;
+	Real field_height;
 };
 
 #endif//_C_DUSK_GUI_LISTVIEW_H_

@@ -469,7 +469,7 @@ void CPlayer::DoLookAtCommands ( void )
 	}
 
 	// Set camera's focal distance based on the LookAt result
-	ftype targetFocalDistance = pCamera->focalDistance;
+	Real targetFocalDistance = pCamera->focalDistance;
 	if ( rhLookAtResult.hit ) {
 		targetFocalDistance = rhLookAtResult.distance;
 	}

@@ -1,5 +1,13 @@
-#ifndef _CORE_MATH_EASING_H_
-#define _CORE_MATH_EASING_H_
+//===============================================================================================//
+//
+//		Easing.h
+//
+// Provides a shitton of easing functions (see http://easings.net/ if you're a noob) within the
+//	easing:: namespace.
+//
+//===============================================================================================//
+#ifndef CORE_MATH_EASING_H_
+#define CORE_MATH_EASING_H_
 
 #include "core/types/types.h"
 #include "core/types/Real.h"
@@ -34,7 +42,7 @@
 
 // For a visual example of what each of these functions do, see http://easings.net/
 
-namespace Easing
+namespace easing
 {
 
 	// Linear interpolation. No easing.
@@ -313,4 +321,4 @@ namespace Easing
 
 }
 
-#endif//_CORE_MATH_EASING_H_
+#endif//CORE_MATH_EASING_H_

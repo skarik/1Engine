@@ -11,15 +11,15 @@ FORCE_INLINE Matrix2x2::Matrix2x2 ( void )
 }
 FORCE_INLINE Matrix2x2::Matrix2x2 ( const Matrix2x2& nSrc )
 {
-	memcpy( pData, nSrc.pData, 4*sizeof(ftype) );
+	memcpy( pData, nSrc.pData, 4*sizeof(Real) );
 }
-FORCE_INLINE Matrix2x2::Matrix2x2 ( const ftype* nData )
+FORCE_INLINE Matrix2x2::Matrix2x2 ( const Real* nData )
 {
-	memcpy( pData, nData, 4*sizeof(ftype) );
+	memcpy( pData, nData, 4*sizeof(Real) );
 }
 
 // Settin the translation
-FORCE_INLINE bool Matrix2x2::setTranslation ( const ftype x, const ftype y )
+FORCE_INLINE bool Matrix2x2::setTranslation ( const Real x, const Real y )
 {
 	pData[1] = x;
 	pData[3] = y;
@@ -33,7 +33,7 @@ FORCE_INLINE bool Matrix2x2::setTranslation ( const Vector2d& v )
 	return true;
 }
 // Settin the scaling
-FORCE_INLINE bool Matrix2x2::setScale ( const ftype x, const ftype y )
+FORCE_INLINE bool Matrix2x2::setScale ( const Real x, const Real y )
 {
 	pData[0] = x;
 	pData[3] = y;
@@ -48,17 +48,17 @@ FORCE_INLINE bool Matrix2x2::setScale ( const Vector2d& vect )
 }
 
 // Settin the rotation of a 2D matrix
-FORCE_INLINE bool Matrix2x2::setRotation ( const ftype angle )
+FORCE_INLINE bool Matrix2x2::setRotation ( const Real angle )
 {
 	/*Matrix2x2 rotationResult;
-	ftype trueAngle = angle * 3.14159265f / 180.0f;
+	Real trueAngle = angle * 3.14159265f / 180.0f;
 	rotationResult.pData[0] = cos( trueAngle );
 	rotationResult.pData[3] = rotationResult.pData[0];
 	rotationResult.pData[2] = sin( trueAngle );
 	rotationResult.pData[2] = -rotationResult.pData[1];
 
 	(*this) *= rotationResult;*/
-	ftype trueAngle = angle * 3.14159265f / 180.0f;
+	Real trueAngle = angle * 3.14159265f / 180.0f;
 	pData[0] = cos( trueAngle );
 	pData[3] = pData[0];
 	pData[1] = sin( trueAngle );
@@ -96,7 +96,7 @@ FORCE_INLINE Matrix2x2 Matrix2x2::transpose ( void ) const
 // Matrix inverse 2x2
 FORCE_INLINE Matrix2x2 Matrix2x2::inverse ( void ) const
 {
-	ftype detVal = det();
+	Real detVal = det();
 	if ( fabs( detVal ) <= 0.0005f )
 	{
 		return Matrix2x2();
@@ -114,13 +114,13 @@ FORCE_INLINE Matrix2x2 Matrix2x2::inverse ( void ) const
 }
 
 // Matrix determinant
-FORCE_INLINE ftype Matrix2x2::det ( void ) const
+FORCE_INLINE Real Matrix2x2::det ( void ) const
 {
 	return ( (pData[0]*pData[3]) - (pData[1]*pData[2]) );
 }
 
 // Linear Interpolation
-FORCE_INLINE void Matrix2x2::Lerp ( const Matrix2x2& right, const ftype t )
+FORCE_INLINE void Matrix2x2::Lerp ( const Matrix2x2& right, const Real t )
 {
 	int x;
 	for ( x = 0; x < 4; x += 1 )
@@ -128,7 +128,7 @@ FORCE_INLINE void Matrix2x2::Lerp ( const Matrix2x2& right, const ftype t )
 		pData[x] += ( right.pData[x] - pData[x] )*t;
 	}
 }
-FORCE_INLINE Matrix2x2 Matrix2x2::LerpTo ( const Matrix2x2& right, const ftype t ) const
+FORCE_INLINE Matrix2x2 Matrix2x2::LerpTo ( const Matrix2x2& right, const Real t ) const
 {
 	Matrix2x2 result;
 	int x;
@@ -187,7 +187,7 @@ FORCE_INLINE Vector2d Matrix2x2::operator* ( const Vector2d& vect ) const
 }
 
 
-FORCE_INLINE Matrix2x2 Matrix2x2::operator* ( const ftype right ) const
+FORCE_INLINE Matrix2x2 Matrix2x2::operator* ( const Real right ) const
 {
 	Matrix2x2 result;
 	for ( int x = 0; x < 4; x++ )
@@ -222,13 +222,13 @@ FORCE_INLINE Matrix2x2 Matrix2x2::operator! ( void ) const
 }
 
 // Public Accessor
-FORCE_INLINE const ftype* Matrix2x2::operator[] ( int index ) const
+FORCE_INLINE const Real* Matrix2x2::operator[] ( int index ) const
 {
 	return &( pData[index*2] );
 }
 
 // Private Accessor and Editor
-FORCE_INLINE ftype* Matrix2x2::operator[] ( int index )
+FORCE_INLINE Real* Matrix2x2::operator[] ( int index )
 {
 	return &( pData[index*2] );
 }

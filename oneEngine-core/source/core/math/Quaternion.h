@@ -25,7 +25,7 @@ public:
 
 	// Operations
 	//Quaternion Invert(Quaternion const& qa) const; //Note: This also gives you the conjugate of a quarternion
-	//ftype Magnitude(Quaternion const& qa) const; // returns a ftype magnitude of the quarternion.
+	//Real Magnitude(Quaternion const& qa) const; // returns a Real magnitude of the quarternion.
 	//void Normalize(Quaternion const& qa); // Normalizes the quaternion.
 	FORCE_INLINE void Invert ( void );
 	FORCE_INLINE Real Magnitude( void ) const;
@@ -129,7 +129,7 @@ FORCE_INLINE void Quaternion::Invert ( void )
 	z = -z;
 }
 
-FORCE_INLINE Real Quaternion::Magnitude( void ) const // returns a ftype magnitude of the quarternion.
+FORCE_INLINE Real Quaternion::Magnitude( void ) const // returns a Real magnitude of the quarternion.
 {
 	return sqrt( sqr(w) + sqr(x) + sqr(y) + sqr(z) );
 }
@@ -299,9 +299,9 @@ FORCE_INLINE void Quaternion::SetEulerAngles ( const Vector3d& euler_angles )
 		// and multiply those together.
 		// the calculation below does the same, just shorter
  
-		/*float p = (ftype) degtorad( euler_angles.x ) * 0.5f;
-		float y = (ftype) degtorad( euler_angles.y ) * 0.5f;
-		float r = (ftype) degtorad( euler_angles.z ) * 0.5f;
+		/*float p = (Real) degtorad( euler_angles.x ) * 0.5f;
+		float y = (Real) degtorad( euler_angles.y ) * 0.5f;
+		float r = (Real) degtorad( euler_angles.z ) * 0.5f;
  
 		float sinp = sin(p);
 		float siny = sin(y);

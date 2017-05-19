@@ -26,10 +26,10 @@ public:
 	//void SetMaterial ( RrMaterial* );
 
 	// Set vertices
-	RENDER_API void SetVertices ( CModelVertex*, unsigned int );
+	RENDER_API void SetVertices ( arModelVertex*, unsigned int );
 
 protected:
-	CModelVertex * vertexData;	// In derived classes, this class retains ownership
+	arModelVertex * vertexData;	// In derived classes, this class retains ownership
 	unsigned int vertexNum;
 
 	// Material list

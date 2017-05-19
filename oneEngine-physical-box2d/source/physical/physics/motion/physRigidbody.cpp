@@ -70,7 +70,7 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setQualityType ( const hkpCollidable
 	//body->setQualityType( type );
 	throw core::InvalidCallException();
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setAllowedPenetrationDepth ( const Real_32 penetration )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setAllowedPenetrationDepth ( const Real32 penetration )
 {
 	//body->setAllowedPenetrationDepth( penetration );
 }
@@ -81,7 +81,7 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setShape ( const b2Shape* shape )
 }
 
 
-_FORCE_INLINE_ PHYS_API void physRigidBody::setMass ( const Real_32 mass )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setMass ( const Real32 mass )
 {
 	//body->setMass( mass );
 	b2MassData newmassdata;
@@ -89,48 +89,48 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setMass ( const Real_32 mass )
 	newmassdata.mass = mass;
 	body->SetMassData( &newmassdata );
 }
-_FORCE_INLINE_ PHYS_API Real_32 physRigidBody::getMass ( void ) const
+_FORCE_INLINE_ PHYS_API Real32 physRigidBody::getMass ( void ) const
 {
 	return body->GetMass();
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setGravityFactor ( const Real_32 factor )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setGravityFactor ( const Real32 factor )
 {
 	body->SetGravityScale( factor );
 }
-_FORCE_INLINE_ PHYS_API Real_32 physRigidBody::getGravityFactor ( void ) const
+_FORCE_INLINE_ PHYS_API Real32 physRigidBody::getGravityFactor ( void ) const
 {
 	return body->GetGravityScale();
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setRestitution ( const Real_32 restitution )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setRestitution ( const Real32 restitution )
 {
 	fixture->SetRestitution( restitution );
 }
-_FORCE_INLINE_ PHYS_API Real_32 physRigidBody::getRestitution ( void ) const
+_FORCE_INLINE_ PHYS_API Real32 physRigidBody::getRestitution ( void ) const
 {
 	return fixture->GetRestitution();
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setFriction ( const Real_32 friction )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setFriction ( const Real32 friction )
 {
 	fixture->SetFriction( friction );
 }
-_FORCE_INLINE_ PHYS_API Real_32 physRigidBody::getFriction ( void ) const
+_FORCE_INLINE_ PHYS_API Real32 physRigidBody::getFriction ( void ) const
 {
 	return fixture->GetFriction();
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setLinearDamping ( const Real_32 damping )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setLinearDamping ( const Real32 damping )
 {
 	body->SetLinearDamping( damping );
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setAngularDamping ( const Real_32 damping )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setAngularDamping ( const Real32 damping )
 {
 	body->SetAngularDamping( damping );
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setMaxAngularVelocity ( Real_32 maxVel )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setMaxAngularVelocity ( Real32 maxVel )
 {
 	//body->setMaxAngularVelocity( maxVel );
 	//throw core::NotYetImplementedException();
 }
-_FORCE_INLINE_ PHYS_API Real_32 physRigidBody::getMaxAngularVelocity ( void ) const
+_FORCE_INLINE_ PHYS_API Real32 physRigidBody::getMaxAngularVelocity ( void ) const
 {
 	//return body->getMaxAngularVelocity();
 	//throw core::NotYetImplementedException();
@@ -143,7 +143,7 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::activate ( void )
 	//body->activate();
 	body->SetAwake(true);
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::applyForce ( const Real_32 delta, const Vector3d& vect )
+_FORCE_INLINE_ PHYS_API void physRigidBody::applyForce ( const Real32 delta, const Vector3d& vect )
 {
 	//body->applyForce( delta, hkVector4( vect.x,vect.y,vect.z ) );
 	Vector3d force = vect.mulComponents( Physics::WorldScaling() );
@@ -228,7 +228,7 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::SetTransform ( core::Transform* tran
 {
 	//Physics::SetRigidBodyTransform( body, transform );
 	Vector2d position = transform->world.position.mulComponents( Physics::WorldScaling() );
-	Real_32 rotation = transform->world.rotation.getEulerAngles().z;
+	Real32 rotation = transform->world.rotation.getEulerAngles().z;
 	body->SetTransform( b2Vec2(position.x,position.y), rotation );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::GetTransform ( core::Transform* transform )

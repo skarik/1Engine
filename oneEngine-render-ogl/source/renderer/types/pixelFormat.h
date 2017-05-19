@@ -91,10 +91,10 @@ template<> struct std::hash <pixel_t>
 // Floating point pixel struct
 struct tPixelF
 {
-	Real_32 r;
-	Real_32 g;
-	Real_32 b;
-	Real_32 a;
+	Real32 r;
+	Real32 g;
+	Real32 b;
+	Real32 a;
 };
 typedef tPixelF pixelF_t;
 

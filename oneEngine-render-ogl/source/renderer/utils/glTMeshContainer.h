@@ -19,8 +19,8 @@ namespace renderer
 		RENDER_API explicit glTMeshContainer ( void );
 		RENDER_API			~glTMeshContainer ( void );
 
-		RENDER_API void UploadVerts ( const CTerrainVertex* verts, const size_t vert_count );
-		RENDER_API void UploadFaces ( const CModelTriangle* faces, const size_t face_count );
+		RENDER_API void UploadVerts ( const arTerrainVertex* verts, const size_t vert_count );
+		RENDER_API void UploadFaces ( const arModelTriangle* faces, const size_t face_count );
 
 		RENDER_API FORCE_INLINE const glHandle GetVBOverts ( void ) const
 		{

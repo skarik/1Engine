@@ -1,5 +1,13 @@
-#ifndef _COLOR_H_
-#define _COLOR_H_
+//===============================================================================================//
+//
+//		class Color
+//
+// POD color class, 16 bytes.
+// Represents a 4-component floating point color.
+//
+//===============================================================================================//
+#ifndef CORE_MATH_COLOR_H_
+#define CORE_MATH_COLOR_H_
 
 #include <algorithm>
 #include "core/types/types.h"
@@ -10,8 +18,18 @@ class Color
 public:
 	// Construct color, opaque black
 	FORCE_INLINE Color ( void );
+	// Copy constructor
+	FORCE_INLINE Color ( const Color&c );
 	// Construct color
-	FORCE_INLINE Color ( double r, double g, double b, double a=1.0 );
+	FORCE_INLINE Color ( Real32 r, Real32 g, Real32 b, Real32 a=1.0F );
+	// Construct color
+	FORCE_INLINE Color ( Real64 r, Real64 g, Real64 b, Real64 a=1.0F );
+	// Construct color from templated RGB inputs:
+	template <typename T0, typename T1, typename T2>
+	FORCE_INLINE Color (T0 r, T1 g, T2 b);
+	// Construct color from templated RGBA inputs:
+	template <typename T0, typename T1, typename T2, typename T3>
+	FORCE_INLINE Color (T0 r, T1 g, T2 b, T3 a);
 
 	// Linear interpolation
 	FORCE_INLINE static Color Lerp (Color const c_one, Color const c_two, Real t);
@@ -24,13 +42,13 @@ public:
 	// Multiplication overload
 	FORCE_INLINE Color operator* (Color const& right) const;	
 	// Multiplication overload (scalar)
-	FORCE_INLINE Color operator* (Real_32 const& right) const;
-	FORCE_INLINE Color operator* (Real_64 const& right) const;
+	FORCE_INLINE Color operator* (Real32 const& right) const;
+	FORCE_INLINE Color operator* (Real64 const& right) const;
 	// Division overload
 	FORCE_INLINE Color operator/ (Color const& right) const;
 	// Division overload (scalar)
-	FORCE_INLINE Color operator/ (Real_32 const& right) const;
-	FORCE_INLINE Color operator/ (Real_64 const& right) const;
+	FORCE_INLINE Color operator/ (Real32 const& right) const;
+	FORCE_INLINE Color operator/ (Real64 const& right) const;
 	// Equal comparison overload
 	FORCE_INLINE bool operator== (Color const& right) const;
 	//Not equal comparison overload
@@ -68,10 +86,34 @@ public:
 	void randomize (void);
 
 public:
-	Real red;
-	Real green;
-	Real blue;
-	Real alpha;
+	union
+	{
+		struct
+		{
+			Real red;
+			Real green;
+			Real blue;
+			Real alpha;
+		};
+		struct
+		{
+			Real r;
+			Real g;
+			Real b;
+			Real a;
+		};
+		struct
+		{
+			Real x;
+			Real y;
+			Real z;
+			Real w;
+		};
+		struct
+		{
+			Real raw [4];
+		};
+	};
 };
 
 
@@ -82,13 +124,38 @@ public:
 
 // Construct color, opaque black
 FORCE_INLINE Color::Color()
-	: red(0), green(0), blue(0), alpha(1)
+	: red(0.0F), green(0.0F), blue(0.0F), alpha(1.0F)
 {
 	;
 }
-
+// Copy constructor
+FORCE_INLINE Color::Color ( const Color&c )
+	: r(c.r), g(c.g), b(c.b), a(c.a)
+{
+	;
+}
 // Construct color
-FORCE_INLINE Color::Color ( double r, double g, double b, double a )
+FORCE_INLINE Color::Color ( Real32 r, Real32 g, Real32 b, Real32 a )
+	: red(Real(r)), green(Real(g)), blue(Real(b)), alpha(Real(a))
+{
+	;
+}
+// Construct color
+FORCE_INLINE Color::Color ( Real64 r, Real64 g, Real64 b, Real64 a )
+	: red(Real(r)), green(Real(g)), blue(Real(b)), alpha(Real(a))
+{
+	;
+}
+// Construct color from templated RGB inputs:
+template <typename T0, typename T1, typename T2>
+FORCE_INLINE Color::Color (T0 r, T1 g, T2 b)
+	: red(Real(r)), green(Real(g)), blue(Real(b)), alpha(Real(1.0))
+{
+
+}
+// Construct color from templated RGBA inputs:
+template <typename T0, typename T1, typename T2, typename T3>
+FORCE_INLINE Color::Color (T0 r, T1 g, T2 b, T3 a)
 	: red(Real(r)), green(Real(g)), blue(Real(b)), alpha(Real(a))
 {
 	;
@@ -145,11 +212,11 @@ FORCE_INLINE Color Color::operator* (Color const& right) const
 	return Color (red * right.red, green * right.green, blue * right.blue, alpha * right.alpha);
 }
 //Multiplication operator overload (scalar)
-FORCE_INLINE Color Color::operator* (Real_32 const& right) const 
+FORCE_INLINE Color Color::operator* (Real32 const& right) const 
 {
 	return Color (red * right, green * right, blue * right, alpha * right);
 }
-FORCE_INLINE Color Color::operator* (Real_64 const& right) const 
+FORCE_INLINE Color Color::operator* (Real64 const& right) const 
 {
 	return Color (red * right, green * right, blue * right, alpha * right);
 }
@@ -160,11 +227,11 @@ FORCE_INLINE Color Color::operator/ (Color const& right) const
 	return Color (red / right.red, green / right.green, blue / right.blue, alpha / right.alpha);
 }
 //Division operator overload (scalar)
-FORCE_INLINE Color Color::operator/ (Real_32 const& right) const
+FORCE_INLINE Color Color::operator/ (Real32 const& right) const
 {
 	return Color (red / right, green / right, blue / right, alpha / right);
 }
-FORCE_INLINE Color Color::operator/ (Real_64 const& right) const
+FORCE_INLINE Color Color::operator/ (Real64 const& right) const
 {
 	return Color (red / right, green / right, blue / right, alpha / right);
 }
@@ -232,4 +299,4 @@ FORCE_INLINE void Color::SetCode ( const uint32_t code )
 	alpha =	((code) & 0xFF) / Real(255);
 }
 
-#endif//_COLOR_H_
+#endif//CORE_MATH_COLOR_H_

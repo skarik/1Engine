@@ -64,7 +64,7 @@ void CRenderablePrimitive::ClearMaterialList ( void )
 }
 */
 // Set vertices
-void CRenderablePrimitive::SetVertices ( CModelVertex* newData, unsigned int newSize )
+void CRenderablePrimitive::SetVertices ( arModelVertex* newData, unsigned int newSize )
 {
 	vertexData	= newData;
 	vertexNum	= newSize;

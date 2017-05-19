@@ -24,24 +24,24 @@ public:
 	_FORCE_INLINE_ PHYS_API void			setMotionType ( const hkpMotion::MotionType );
 	_FORCE_INLINE_ PHYS_API hkpMotion::MotionType getMotionType ( void ) const;
 	_FORCE_INLINE_ PHYS_API void			setQualityType ( const hkpCollidableQualityType );
-	_FORCE_INLINE_ PHYS_API void			setAllowedPenetrationDepth ( const Real_32 );
+	_FORCE_INLINE_ PHYS_API void			setAllowedPenetrationDepth ( const Real32 );
 	_FORCE_INLINE_ PHYS_API void			setShape ( const b2Shape* shape );
 
-	_FORCE_INLINE_ PHYS_API void			setMass ( const Real_32 );
-	_FORCE_INLINE_ PHYS_API Real_32		getMass ( void ) const;
-	_FORCE_INLINE_ PHYS_API void			setGravityFactor ( const Real_32 );
-	_FORCE_INLINE_ PHYS_API Real_32		getGravityFactor ( void ) const;
-	_FORCE_INLINE_ PHYS_API void			setRestitution ( const Real_32 );
-	_FORCE_INLINE_ PHYS_API Real_32		getRestitution ( void ) const;
-	_FORCE_INLINE_ PHYS_API void			setFriction ( const Real_32 );
-	_FORCE_INLINE_ PHYS_API Real_32		getFriction ( void ) const;
-	_FORCE_INLINE_ PHYS_API void			setLinearDamping ( const Real_32 );
-	_FORCE_INLINE_ PHYS_API void			setAngularDamping ( const Real_32 );
-	_FORCE_INLINE_ PHYS_API void			setMaxAngularVelocity ( Real_32 );
-	_FORCE_INLINE_ PHYS_API Real_32		getMaxAngularVelocity ( void ) const;
+	_FORCE_INLINE_ PHYS_API void			setMass ( const Real32 );
+	_FORCE_INLINE_ PHYS_API Real32		getMass ( void ) const;
+	_FORCE_INLINE_ PHYS_API void			setGravityFactor ( const Real32 );
+	_FORCE_INLINE_ PHYS_API Real32		getGravityFactor ( void ) const;
+	_FORCE_INLINE_ PHYS_API void			setRestitution ( const Real32 );
+	_FORCE_INLINE_ PHYS_API Real32		getRestitution ( void ) const;
+	_FORCE_INLINE_ PHYS_API void			setFriction ( const Real32 );
+	_FORCE_INLINE_ PHYS_API Real32		getFriction ( void ) const;
+	_FORCE_INLINE_ PHYS_API void			setLinearDamping ( const Real32 );
+	_FORCE_INLINE_ PHYS_API void			setAngularDamping ( const Real32 );
+	_FORCE_INLINE_ PHYS_API void			setMaxAngularVelocity ( Real32 );
+	_FORCE_INLINE_ PHYS_API Real32		getMaxAngularVelocity ( void ) const;
 
 	_FORCE_INLINE_ PHYS_API void			activate ( void );
-	_FORCE_INLINE_ PHYS_API void			applyForce ( const Real_32 delta, const Vector3d& vect );
+	_FORCE_INLINE_ PHYS_API void			applyForce ( const Real32 delta, const Vector3d& vect );
 	_FORCE_INLINE_ PHYS_API void			setIdentityRotation ( void );
 
 	_FORCE_INLINE_ PHYS_API void			setPosition ( const Vector3d& );

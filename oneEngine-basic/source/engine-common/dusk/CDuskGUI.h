@@ -156,12 +156,12 @@ public:
 	// A slider control w/ io
 	ENGCOM_API Handle CreateSlider	( const Handle& =-1 );
 		// One-way get
-		ENGCOM_API ftype GetSliderValue ( const Handle& );
+		ENGCOM_API Real GetSliderValue ( const Handle& );
 		// Slider updating
-		ENGCOM_API void UpdateSlider ( const Handle&, ftype & inOutSliderVal );
+		ENGCOM_API void UpdateSlider ( const Handle&, Real & inOutSliderVal );
 		// Slider options
-		ENGCOM_API void SetSliderMinMax ( const Handle&, const ftype, const ftype );
-		ENGCOM_API void SetSliderSnapping ( const Handle&, const ftype =-1 );
+		ENGCOM_API void SetSliderMinMax ( const Handle&, const Real, const Real );
+		ENGCOM_API void SetSliderSnapping ( const Handle&, const Real =-1 );
 	// A checkbox control w/ io
 	ENGCOM_API Handle CreateCheckbox	( const Handle& =-1, const bool=false );
 	// A color picker w/ io
@@ -199,7 +199,7 @@ public:
 	ENGCOM_API Handle CreateListview ( const Handle& =-1 );
 		ENGCOM_API void AddListviewOption ( const Handle&, const string&, const int );
 		ENGCOM_API void ClearListview ( const Handle& );
-		ENGCOM_API void SetListviewFieldHeight ( const Handle&, const ftype );
+		ENGCOM_API void SetListviewFieldHeight ( const Handle&, const Real );
 		ENGCOM_API int  GetListviewCount ( const Handle& );
 	// A property view
 	ENGCOM_API Handle CreatePropertyview ( const Handle& =-1 );
@@ -208,7 +208,7 @@ public:
 		ENGCOM_API void AddPropertyOptionDropdown ( const Handle&, const string&, int*, const Handle& );
 		ENGCOM_API void AddPropertyDivider ( const Handle&, const string& );
 		ENGCOM_API void ClearPropertyview ( const Handle& );
-		ENGCOM_API void SetPropertyviewHeight ( const Handle&, const ftype );
+		ENGCOM_API void SetPropertyviewHeight ( const Handle&, const Real );
 	// A tab view
 	ENGCOM_API Handle CreateTabview ( const Handle& =-1 );
 		ENGCOM_API Handle AddTabOption ( const Handle&, const string& ); // Adds a tab with the string to designated tabview, returns handle to panel
@@ -330,11 +330,11 @@ public:
 
 	ENGCOM_API void drawRect ( const Rect& rect );
 	ENGCOM_API void drawRectWire ( const Rect& rect, bool focused );
-	ENGCOM_API void drawLine ( const ftype x1, const ftype y1, const ftype x2, const ftype y2 );
+	ENGCOM_API void drawLine ( const Real x1, const Real y1, const Real x2, const Real y2 );
 
-	ENGCOM_API void drawText ( const ftype x, const ftype y, const char* str );
-	ENGCOM_API void drawTextWidth ( const ftype x, const ftype y, const ftype w, const char* str );
-	ENGCOM_API void drawTextCentered ( const ftype x, const ftype y, const char* str );
+	ENGCOM_API void drawText ( const Real x, const Real y, const char* str );
+	ENGCOM_API void drawTextWidth ( const Real x, const Real y, const Real w, const char* str );
+	ENGCOM_API void drawTextCentered ( const Real x, const Real y, const char* str );
 
 private:
 	Color	m_basecolor;
@@ -357,7 +357,7 @@ private:
 	{
 		string		text;
 		Vector2d	position;
-		ftype		width;
+		Real		width;
 		char		mode;
 	};
 
@@ -365,8 +365,8 @@ private:
 	std::vector<Vector2d> offsetList;
 
 	// Drawing queue
-	std::vector<CModelVertex>	modelSolidMeshList;
-	std::vector<CModelVertex>	modelLineMeshList;
+	std::vector<arModelVertex>	modelSolidMeshList;
+	std::vector<arModelVertex>	modelLineMeshList;
 
 	std::vector<textRequest_t>	modelTextRequestList;
 };

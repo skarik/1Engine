@@ -13,9 +13,9 @@ Polygon::~Polygon( void )
 	m_vertices = NULL;
 }
 
-ftype Polygon::GetArea ( void )
+Real Polygon::GetArea ( void )
 {
-	ftype totalArea = 0;
+	Real totalArea = 0;
 	
 	for ( int i = 0; i < m_num_verts-1; ++i )
 	{

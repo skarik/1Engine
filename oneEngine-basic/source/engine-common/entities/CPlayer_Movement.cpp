@@ -214,14 +214,14 @@ void	CPlayer::FreeMovement ( void )
 	return NULL;
 }*/
 // Check if there's ground below
-/*bool	CPlayer::OnGround ( ftype& outGroundDistance )
+/*bool	CPlayer::OnGround ( Real& outGroundDistance )
 {
 	bool onGround = false;
 	bool hasHit = false;
-	const ftype maxStepHeight = 1.8f;
+	const Real maxStepHeight = 1.8f;
 	outGroundDistance = -10;
 	RaycastHit hitResult;
-	//const static ftype playerWidth = 1.5f;
+	//const static Real playerWidth = 1.5f;
 	// First check for the ground
 	Ray ray;
 	ray.dir = Vector3d(0,0,-1);
@@ -283,11 +283,11 @@ void	CPlayer::FreeMovement ( void )
 // Attempt to move to a position
 /*bool CPlayer::AttemptMoveToPosition ( Vector3d targetPos )
 {
-	const static ftype playerWidth = 1.5f;
-	const static ftype halfPlayerWidth = 0.75f;
+	const static Real playerWidth = 1.5f;
+	const static Real halfPlayerWidth = 0.75f;
 
 	Vector3d vDist = targetPos-transform.position;
-	ftype maxDist = vDist.magnitude();
+	Real maxDist = vDist.magnitude();
 	if ( maxDist <= 0 )
 		return true;
 	
@@ -296,13 +296,13 @@ void	CPlayer::FreeMovement ( void )
 	Vector3d offsetDir ( moveRay.dir.y, moveRay.dir.x, 0 );
 	offsetDir = offsetDir.normal();
 
-	ftype currentDist = maxDist;
+	Real currentDist = maxDist;
 
 	RaycastHit hitResult;
 
 	for ( short i = 0; i < (int)(fPlayerHeight-0.1f)*3; i += 1 )
 	{
-		moveRay.pos = transform.position+Vector3d( 0,0,0.1f+ftype(i/3) )-(offsetDir*ftype(1-i%3)*halfPlayerWidth);
+		moveRay.pos = transform.position+Vector3d( 0,0,0.1f+Real(i/3) )-(offsetDir*Real(1-i%3)*halfPlayerWidth);
 		if ( Raytracer.Raycast( moveRay, maxDist, &hitResult,NULL, 1|2|4 ) )
 		{
 			if (( hitResult.distance > 0 )&&( hitResult.distance < currentDist ))
@@ -453,7 +453,7 @@ void*	CPlayer::mvtWalkingOnGround ( void )
 			vMoveVelocity += moveVector * Time::deltaTime * fGroundAccelBase;
 
 		// Get the move speed limit
-		ftype limit;
+		Real limit;
 		if ( bIsCrouching )
 			limit = fCrouchSpeed;
 		else
@@ -574,7 +574,7 @@ void*	CPlayer::mvtSwimmingInWater ( void )
 			vMoveVelocity.z = 12.0f;
 
 		// Get the move speed limit
-		ftype limit;
+		Real limit;
 		//if ( bIsCrouching )
 			//limit = fRunSpeed * fCrouchSpeed/fRunSpeed;
 		//else

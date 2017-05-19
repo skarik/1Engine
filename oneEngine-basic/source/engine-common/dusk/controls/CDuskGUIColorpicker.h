@@ -32,9 +32,9 @@ public:
 
 	Rect homeRect;
 
-	ftype hue;
-	ftype saturation;
-	ftype lightness;
+	Real hue;
+	Real saturation;
+	Real lightness;
 
 	int useMode;
 };

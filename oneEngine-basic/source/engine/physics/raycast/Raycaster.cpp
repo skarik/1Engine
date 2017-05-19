@@ -16,7 +16,7 @@ physMaterial* CRaycaster::m_lastHitMaterial = NULL;
 
 //#include "CDebugDrawer.h"
 // Raytracer
-bool	CRaycaster::Raycast	( const Ray & ray, ftype max_dist, RaycastHit * pOutHitInfo, /*BlockTrackInfo * pOutBlockInfo,*/ physCollisionFilter collisionFilter, void* mismatch )
+bool	CRaycaster::Raycast	( const Ray & ray, Real max_dist, RaycastHit * pOutHitInfo, /*BlockTrackInfo * pOutBlockInfo,*/ physCollisionFilter collisionFilter, void* mismatch )
 {
 	//bool hit = false;
 
@@ -59,12 +59,12 @@ bool	CRaycaster::Raycast	( const Ray & ray, ftype max_dist, RaycastHit * pOutHit
 	*/
 	return pOutHitInfo->hit;
 }
-/*bool	CRaycaster::Raycast	( const Ray & ray, ftype max_dist, RaycastHit * pOutHitInfo, r_bitmask collisionFilter, void* mismatch )
+/*bool	CRaycaster::Raycast	( const Ray & ray, Real max_dist, RaycastHit * pOutHitInfo, r_bitmask collisionFilter, void* mismatch )
 {
 	return Raycast( ray,max_dist,pOutHitInfo,&m_blockInfo,collisionFilter,mismatch );
 }*/
 
-bool CRaycaster::Linecast ( const Ray & ray, ftype max_dist, physShape* pShape, RaycastHit* pOutHitInfo, const int hitInfoArrayCount, physCollisionFilter collisionFilter, void* mismatch )
+bool CRaycaster::Linecast ( const Ray & ray, Real max_dist, physShape* pShape, RaycastHit* pOutHitInfo, const int hitInfoArrayCount, physCollisionFilter collisionFilter, void* mismatch )
 {
 	if ( (collisionFilter == (1|2|4)) || (collisionFilter == 0x00) )
 	{
@@ -97,33 +97,33 @@ bool CRaycaster::Linecast ( const Ray & ray, ftype max_dist, physShape* pShape, 
 // Compute barycentric coordinates (u, v, w) for
 // point p with respect to triangle (a, b, c)
 //http://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
-void Barycentric ( const Vector3d& p, const Vector3d& a, const Vector3d& b, const Vector3d& c, ftype &u, ftype &v, ftype &w)
+void Barycentric ( const Vector3d& p, const Vector3d& a, const Vector3d& b, const Vector3d& c, Real &u, Real &v, Real &w)
 {
     Vector3d v0 = b - a, v1 = c - a, v2 = p - a;
-    ftype d00 = v0.dot(v0);
-    ftype d01 = v0.dot(v1);
-    ftype d11 = v1.dot(v1);
-    ftype d20 = v2.dot(v0);
-    ftype d21 = v2.dot(v1);
-    ftype invDenom = 1.0f / (d00 * d11 - d01 * d01);
+    Real d00 = v0.dot(v0);
+    Real d01 = v0.dot(v1);
+    Real d11 = v1.dot(v1);
+    Real d20 = v2.dot(v0);
+    Real d21 = v2.dot(v1);
+    Real invDenom = 1.0f / (d00 * d11 - d01 * d01);
     v = (d11 * d20 - d01 * d21) * invDenom;
     w = (d00 * d21 - d01 * d20) * invDenom;
     u = 1.0f - v - w;
 }
 
 // Basic mesh raytracer
-int CRaycaster::Raycast ( const Ray & ray, ftype max_dist, const CModelData* model, Vector3d& out_point, Vector3d& out_bary )
+int CRaycaster::Raycast ( const Ray & ray, Real max_dist, const arModelData* model, Vector3d& out_point, Vector3d& out_bary )
 {
 	Maths::Plane triPlane;
-	CModelVertex* v0;
-	CModelVertex* v1;
-	CModelVertex* v2;
-	ftype ray_incidence;
-	ftype param_t;
+	arModelVertex* v0;
+	arModelVertex* v1;
+	arModelVertex* v2;
+	Real ray_incidence;
+	Real param_t;
 	Vector3d incident_point;
 	Vector3d bry_coords;
 
-	ftype min_param_t = max_dist;
+	Real min_param_t = max_dist;
 	int closestTri = -1;
 	
 	// Need to loop through all the triangles of the mesh
@@ -175,20 +175,20 @@ int CRaycaster::Raycast ( const Ray & ray, ftype max_dist, const CModelData* mod
 }
 
 // Basic mesh raytracer
-int CRaycaster::RaycastExpensiveMiss ( const Ray & ray, ftype max_dist, const CModelData* model, Vector3d& out_point, Vector3d& out_bary )
+int CRaycaster::RaycastExpensiveMiss ( const Ray & ray, Real max_dist, const arModelData* model, Vector3d& out_point, Vector3d& out_bary )
 {
 	Maths::Plane triPlane;
-	CModelVertex* v0;
-	CModelVertex* v1;
-	CModelVertex* v2;
-	ftype ray_incidence;
-	ftype param_t;
+	arModelVertex* v0;
+	arModelVertex* v1;
+	arModelVertex* v2;
+	Real ray_incidence;
+	Real param_t;
 	Vector3d incident_point;
 	Vector3d bry_coords;
 	Vector3d dif_bary_coords;
 	Vector3d min_dif_bary_coords = Vector3d(max_dist,max_dist,max_dist);
 
-	ftype min_param_t = max_dist;
+	Real min_param_t = max_dist;
 	int closestTri = -1;
 	
 	// Need to loop through all the triangles of the mesh
@@ -229,9 +229,9 @@ int CRaycaster::RaycastExpensiveMiss ( const Ray & ray, ftype max_dist, const CM
 		//dif_bary_coords.y = (bry_coords.y < 0) ? (bry_coords.y) : ( (bry_coords.y > 1) ? (bry_coords.y-1) : 0 );
 		//dif_bary_coords.z = (bry_coords.z < 0) ? (bry_coords.z) : ( (bry_coords.z > 1) ? (bry_coords.z-1) : 0 );
 		dif_bary_coords = bry_coords;
-		dif_bary_coords.x = (bry_coords.x > 0) ? std::max<ftype>(dif_bary_coords.x-1,0) : dif_bary_coords.x;
-		dif_bary_coords.y = (bry_coords.y > 0) ? std::max<ftype>(dif_bary_coords.y-1,0) : dif_bary_coords.y;
-		dif_bary_coords.z = (bry_coords.z > 0) ? std::max<ftype>(dif_bary_coords.z-1,0) : dif_bary_coords.z;
+		dif_bary_coords.x = (bry_coords.x > 0) ? std::max<Real>(dif_bary_coords.x-1,0) : dif_bary_coords.x;
+		dif_bary_coords.y = (bry_coords.y > 0) ? std::max<Real>(dif_bary_coords.y-1,0) : dif_bary_coords.y;
+		dif_bary_coords.z = (bry_coords.z > 0) ? std::max<Real>(dif_bary_coords.z-1,0) : dif_bary_coords.z;
 
 		// Check for range, and if this one is closer, set value
 		//if ( min_param_t > param_t ) {

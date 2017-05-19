@@ -11,7 +11,7 @@ public:
 	explicit		Quadrilateral ( const Vector2d& a, const Vector2d& b, const Vector2d& c, const Vector2d& d );
 	explicit		Quadrilateral ( void );
 
-	ftype			Area ( void ) const;
+	Real			Area ( void ) const;
 
 	Vector2d&		operator[] ( const int index );
 	const Vector2d& operator[] ( const int index ) const;

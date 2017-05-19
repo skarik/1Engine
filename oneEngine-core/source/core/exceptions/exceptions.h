@@ -1,6 +1,13 @@
-
-#ifndef _CORE_EXCEPTIONS_H_
-#define _CORE_EXCEPTIONS_H_
+//===============================================================================================//
+//
+//		exceptions.h
+//
+// Provides silly exceptions with great meaning under the core:: namespace, as well as the
+//	EXCEPTION_CATCH_BEGIN and EXCEPTION_CATCH_END macros.
+//
+//===============================================================================================//
+#ifndef CORE_EXCEPTIONS_H_
+#define CORE_EXCEPTIONS_H_
 
 #include "core/types/types.h"
 #include <exception>
@@ -156,4 +163,4 @@ namespace core
 	};
 }
 
-#endif//_CORE_EXCEPTIONS_H_
+#endif//CORE_EXCEPTIONS_H_

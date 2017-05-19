@@ -9,7 +9,7 @@ namespace core
 {
 	namespace meshbuilder
 	{
-		CORE_API void Quad ( ModelData* md, const Rect& position, const Rect& uvs );
+		CORE_API void Quad ( arModelData* md, const Rect& position, const Rect& uvs );
 	}
 }
 

@@ -47,7 +47,7 @@ bool CLightComparison::operator() ( CLight* pLight2, CLight* pLight1 )
 
 	// Check if both are directional, and sort by brightness
 	if ( pLight1->isDirectional && pLight2->isDirectional ) {
-		ftype l1, l2;
+		Real l1, l2;
 		l1 = pLight1->diffuseColor.red * .299f + pLight1->diffuseColor.green * .587f + pLight1->diffuseColor.blue * .114f;
 		l2 = pLight2->diffuseColor.red * .299f + pLight2->diffuseColor.green * .587f + pLight2->diffuseColor.blue * .114f;
 		return (l1>l2);
@@ -76,7 +76,7 @@ bool CLightComparisonExternal::operator() ( CLight* pLight1, CLight* pLight2 )
 
 	// Check if both are directional, and sort by brightness
 	if ( pLight1->isDirectional && pLight2->isDirectional ) {
-		ftype l1, l2;
+		Real l1, l2;
 		l1 = pLight1->diffuseColor.red * .299f + pLight1->diffuseColor.green * .587f + pLight1->diffuseColor.blue * .114f;
 		l2 = pLight2->diffuseColor.red * .299f + pLight2->diffuseColor.green * .587f + pLight2->diffuseColor.blue * .114f;
 		return (l1>l2);

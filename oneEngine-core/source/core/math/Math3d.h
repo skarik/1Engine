@@ -1,5 +1,12 @@
-#ifndef _MATH_3D_H_
-#define _MATH_3D_H_
+//===============================================================================================//
+//
+//		Math3d.h
+//
+// Provides support for 3D math. Includes Vector, Quaternion, and Matrix.
+//
+//===============================================================================================//
+#ifndef CORE_MATH_3D_H_
+#define CORE_MATH_3D_H_
 
 #include "core/common.h"
 #include "core/types/float.h"
@@ -10,4 +17,4 @@
 #include "core/math/matrix/CMatrix.h"
 #include "core/math/Rotator.h"
 
-#endif//_MATH_3D_H_
+#endif//CORE_MATH_3D_H_

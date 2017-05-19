@@ -67,7 +67,7 @@ protected:
 
 	// Emitter states
 	bool		bHasEmitted;
-	ftype		fEmitCount;
+	Real		fEmitCount;
 
 	Vector3d	m_lastPosition;
 	Vector3d	m_worldVelocity;
@@ -92,20 +92,20 @@ public:
 	bool				bSimulateInWorldspace;
 	bool				bSmoothEmitter;
 
-	ftype				fVelocityScale;
+	Real				fVelocityScale;
 
-	RangeValue<ftype>	rfParticlesSpawned;
-	ftype				fMaxParticles;
+	RangeValue<Real>	rfParticlesSpawned;
+	Real				fMaxParticles;
 	
-	RangeValue<ftype>	rfLifetime;
+	RangeValue<Real>	rfLifetime;
 
-	RangeValue<ftype>	rfStartSize;
-	RangeValue<ftype>	rfEndSize;
+	RangeValue<Real>	rfStartSize;
+	RangeValue<Real>	rfEndSize;
 
-	RangeValue<ftype>	rfStartAngle;
-	RangeValue<ftype>	rfAngularVelocity;
-	RangeValue<ftype>	rfAngularAcceleration;
-	RangeValue<ftype>	rfAngularDamping;
+	RangeValue<Real>	rfStartAngle;
+	RangeValue<Real>	rfAngularVelocity;
+	RangeValue<Real>	rfAngularAcceleration;
+	RangeValue<Real>	rfAngularDamping;
 
 	RangeValue<Vector3d>	rvVelocity;
 	RangeValue<Vector3d>	rvAcceleration;

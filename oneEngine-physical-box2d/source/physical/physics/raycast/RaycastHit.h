@@ -15,7 +15,7 @@ struct RaycastHit
 	bool		hit;
 	Vector3d	hitPos;
 	Vector3d	hitNormal;
-	ftype		distance;
+	Real		distance;
 	CGameBehavior*	pHitBehavior;
 	physRigidBody*	pHitBody;
 

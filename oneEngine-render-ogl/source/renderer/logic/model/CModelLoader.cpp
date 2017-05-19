@@ -43,7 +43,7 @@ void CModel::LoadModel ( const string& sFilename )
 			rrMesh* newMesh = new rrMesh ();
 
 			// Create the mesh object
-			ModelData* modeldata = new ModelData();
+			arModelData* modeldata = new arModelData();
 			*modeldata = loader.meshes[i].model;	// Shallow copy the data over
 			// Ownership of pointers are now in modeldata
 			loader.meshes[i].model.triangles = NULL;
@@ -238,7 +238,7 @@ void CModel::LoadModel ( const string& sFilename )
 //		for ( uint32_t i = 0; i < iMeshNum; i += 1 )
 //		{
 //			// Create Model Data
-//			CModelData* newModelData = new CModelData();
+//			arModelData* newModelData = new arModelData();
 //			uint32_t	modelMaterial;
 //			string		meshName;
 //			string		parentName;
@@ -271,9 +271,9 @@ void CModel::LoadModel ( const string& sFilename )
 //				[uint32] material index
 //				[float][16][f] transformation matrix of the mesh. Supposed to be column-major. If animated per-vertex, f set for numframes
 //				[uint32] vertexnum
-//				[CModelVertex][n][f] vertex data where n is an integer from 0 to vertexnum
+//				[arModelVertex][n][f] vertex data where n is an integer from 0 to vertexnum
 //				[uint32] trianglenum
-//				[CModelTriangle][n][f] triangle data where n is an integer from 0 to trianglenum
+//				[arModelTriangle][n][f] triangle data where n is an integer from 0 to trianglenum
 //				[uint32] index of convex collision mesh. signed(-1) if no separate collision mesh*/
 //
 //				//[string] string giving mesh name
@@ -298,10 +298,10 @@ void CModel::LoadModel ( const string& sFilename )
 //				//[uint32] vertexnum
 //				sin.read( (char*)(&vertexNum), sizeof( uint32_t ) );
 //
-//				//[CModelVertex][n][f] vertex data where n is an integer from 0 to vertexnum
+//				//[arModelVertex][n][f] vertex data where n is an integer from 0 to vertexnum
 //				newModelData->vertexNum = vertexNum;
-//				newModelData->vertices = new CModelVertex [vertexNum];
-//				sin.read( (char*)(newModelData->vertices), sizeof( CModelVertex ) * vertexNum );
+//				newModelData->vertices = new arModelVertex [vertexNum];
+//				sin.read( (char*)(newModelData->vertices), sizeof( arModelVertex ) * vertexNum );
 //
 //				// Convert the vertex coordinates
 //				for ( uint32_t vert = 0; vert < vertexNum; vert += 1 )
@@ -317,10 +317,10 @@ void CModel::LoadModel ( const string& sFilename )
 //				//[uint32] trianglenum
 //				sin.read( (char*)(&triangleNum), sizeof( uint32_t ) );
 //
-//				//[CModelTriangle][n][f] triangle data where n is an integer from 0 to trianglenum
+//				//[arModelTriangle][n][f] triangle data where n is an integer from 0 to trianglenum
 //				newModelData->triangleNum = triangleNum;
-//				newModelData->triangles = new CModelTriangle [triangleNum];
-//				sin.read( (char*)(newModelData->triangles), sizeof( CModelTriangle ) * triangleNum );
+//				newModelData->triangles = new arModelTriangle [triangleNum];
+//				sin.read( (char*)(newModelData->triangles), sizeof( arModelTriangle ) * triangleNum );
 //
 //				//[uint32] index of convex collision mesh. signed(-1) if no separate collision mesh
 //				sin.read( (char*)(&collisionMesh), sizeof( uint32_t ) );
@@ -363,7 +363,7 @@ void CModel::LoadModel ( const string& sFilename )
 //			if ( pCollideIndices[i] != unsigned(-1) )
 //			{
 //				// Create Model Data
-//				CPhysicsData* newPhysData = new CPhysicsData();
+//				arModelPhysicsData* newPhysData = new arModelPhysicsData();
 //
 //				// Read in the section data
 //				sin.seekg( 0, ios::beg );
@@ -389,9 +389,9 @@ void CModel::LoadModel ( const string& sFilename )
 //					/*[string] string giving mesh name, null terminated
 //					[float][16] transformation matrix of the mesh. Supposed to be column-major.
 //					[uint32] vertexnum
-//					[CPhysicsVertex][n] vertex data where n is an integer from 0 to vertexnum
+//					[arPhysicsVertex][n] vertex data where n is an integer from 0 to vertexnum
 //					[uint32] trianglenum
-//					[CModelTriangle][n] triangle data where n is an integer from 0 to trianglenum
+//					[arModelTriangle][n] triangle data where n is an integer from 0 to trianglenum
 //					*/
 //
 //					//[string] string giving mesh name
@@ -409,10 +409,10 @@ void CModel::LoadModel ( const string& sFilename )
 //					//[uint32] vertexnum
 //					sin.read( (char*)(&vertexNum), sizeof( uint32_t ) );
 //
-//					//[CModelVertex][n][f] vertex data where n is an integer from 0 to vertexnum
+//					//[arModelVertex][n][f] vertex data where n is an integer from 0 to vertexnum
 //					newPhysData->vertexNum = vertexNum;
-//					newPhysData->vertices = new CPhysicsVertex [vertexNum];
-//					sin.read( (char*)(newPhysData->vertices), sizeof( CPhysicsVertex ) * vertexNum );
+//					newPhysData->vertices = new arPhysicsVertex [vertexNum];
+//					sin.read( (char*)(newPhysData->vertices), sizeof( arPhysicsVertex ) * vertexNum );
 //
 //					// Convert the vertex coordinates
 //					for ( uint32_t vert = 0; vert < vertexNum; vert += 1 )
@@ -428,10 +428,10 @@ void CModel::LoadModel ( const string& sFilename )
 //					//[uint32] trianglenum
 //					sin.read( (char*)(&triangleNum), sizeof( uint32_t ) );
 //
-//					//[CModelTriangle][n][f] triangle data where n is an integer from 0 to trianglenum
+//					//[arModelTriangle][n][f] triangle data where n is an integer from 0 to trianglenum
 //					newPhysData->triangleNum = triangleNum;
-//					newPhysData->triangles = new CModelTriangle [triangleNum];
-//					sin.read( (char*)(newPhysData->triangles), sizeof( CModelTriangle ) * triangleNum );
+//					newPhysData->triangles = new arModelTriangle [triangleNum];
+//					sin.read( (char*)(newPhysData->triangles), sizeof( arModelTriangle ) * triangleNum );
 //				}
 //
 //				// Create the new mesh with the physics data
@@ -464,9 +464,9 @@ void CModel::LoadModel ( const string& sFilename )
 //				// [uchar] parentbone
 //				sin.read( (char*)(&hitbox.parentIndex), sizeof(uchar) );
 //				// [Vector3d] center
-//				sin.read( (char*)(&hitbox.center.x), sizeof(ftype)*3 );
+//				sin.read( (char*)(&hitbox.center.x), sizeof(Real)*3 );
 //				// [Vector3d] extents
-//				sin.read( (char*)(&hitbox.extents.x), sizeof(ftype)*3 );
+//				sin.read( (char*)(&hitbox.extents.x), sizeof(Real)*3 );
 //				// [string] hitbox name
 //				uint namei = 0;
 //				char tempChar;

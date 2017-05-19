@@ -30,7 +30,7 @@ void	glMainSystem::beginOrtho ( void )
 {
 	beginOrtho( 0,0, (Real)Screen::Info.width,(Real)Screen::Info.height, -45.0f, 45.0f );
 }
-void	glMainSystem::beginOrtho ( ftype left, ftype top, ftype width, ftype height, ftype minz, ftype maxz, bool flipped )
+void	glMainSystem::beginOrtho ( Real left, Real top, Real width, Real height, Real minz, Real maxz, bool flipped )
 {
 	//if ( iCurrentProjectionMode == 1 )
 	//	return;

@@ -445,9 +445,9 @@ void TileMap::Rebuild ( void )
 void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_count )
 {
 	// Start with creating the mesh
-	ModelData model;
-	model.vertices = new CModelVertex [predictive_tile_count * 4];
-	model.triangles = new CModelTriangle [predictive_tile_count * 2];
+	arModelData model;
+	model.vertices = new arModelVertex [predictive_tile_count * 4];
+	model.triangles = new arModelTriangle [predictive_tile_count * 2];
 	model.vertexNum = 0;
 	model.triangleNum = 0;
 
@@ -740,7 +740,7 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 					// Set positions
 					model.vertices[model.vertexNum+v].x = ((Real)m_tiles[i].x) + (position_offsets[v].x+position_offsets[c].x) * tile_type.atlas_w * m_tileset->tilesize_x * 0.5F;
 					model.vertices[model.vertexNum+v].y = ((Real)m_tiles[i].y) + (position_offsets[v].y+position_offsets[c].y) * tile_type.atlas_h * m_tileset->tilesize_y * 0.5F;
-					model.vertices[model.vertexNum+v].z = (Real)layer + Math::lerp((position_offsets[v].y+position_offsets[c].y) * 0.5F, offset_top, offset_bottom);
+					model.vertices[model.vertexNum+v].z = (Real)layer + math::lerp((position_offsets[v].y+position_offsets[c].y) * 0.5F, offset_top, offset_bottom);
 
 					// Set up other values
 					model.vertices[model.vertexNum+v].r = 1.0F;

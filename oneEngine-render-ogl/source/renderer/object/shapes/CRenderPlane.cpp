@@ -4,13 +4,13 @@
 
 
 // == Constructor + Destructor ==
-CRenderPlane::CRenderPlane ( ftype xsize, ftype ysize )
+CRenderPlane::CRenderPlane ( Real xsize, Real ysize )
 	: CRenderablePrimitive()
 {
 	width = xsize;
 	height = ysize;
 
-	vertexData = new CModelVertex [6];
+	vertexData = new arModelVertex [6];
 	vertexNum = 6;
 
 	GenerateShape( width/2.0f, height/2.0f );
@@ -21,7 +21,7 @@ CRenderPlane::~CRenderPlane ( void )
 	// Nothing, as vertexData is owned by CRenderablePrimitive.
 }
 
-void CRenderPlane::SetSize ( ftype xsize, ftype ysize )
+void CRenderPlane::SetSize ( Real xsize, Real ysize )
 {
 	width = xsize;
 	height = ysize;
@@ -29,7 +29,7 @@ void CRenderPlane::SetSize ( ftype xsize, ftype ysize )
 	GenerateShape( width/2.0f, height/2.0f );
 }
 
-void CRenderPlane::GenerateShape ( ftype xsize, ftype ysize )
+void CRenderPlane::GenerateShape ( Real xsize, Real ysize )
 {
 	for ( unsigned int i = 0; i < 6; i += 1 )
 	{

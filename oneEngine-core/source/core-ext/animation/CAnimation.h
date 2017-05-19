@@ -50,12 +50,12 @@ public:
 
 			 void Play ( const string& animName ) { return this->Play(animName.c_str()); }
 	CORE_API void Play ( const char* animName );
-	         void PlaySmoothed ( const string& animName, ftype const smoothTime ) { return this->PlaySmoothed(animName.c_str(),smoothTime); }
-	CORE_API void PlaySmoothed ( const char* animName, ftype const smoothTime );
+	         void PlaySmoothed ( const string& animName, Real const smoothTime ) { return this->PlaySmoothed(animName.c_str(),smoothTime); }
+	CORE_API void PlaySmoothed ( const char* animName, Real const smoothTime );
 	         void Stop ( const string& animName ) { return this->Stop(animName.c_str()); }
 	CORE_API void Stop ( const char* animName );
-	         void StopSmoothed ( const string& animName, ftype const smoothTime ) { return this->StopSmoothed(animName.c_str(),smoothTime); }
-	CORE_API void StopSmoothed ( const char* animName, ftype const smoothTime );
+	         void StopSmoothed ( const string& animName, Real const smoothTime ) { return this->StopSmoothed(animName.c_str(),smoothTime); }
+	CORE_API void StopSmoothed ( const char* animName, Real const smoothTime );
 
 	CORE_API void Normalize ( const uchar layer );
 
@@ -140,7 +140,7 @@ protected:
 	std::vector<ikinfo_t>	ikList;
 
 	// Animations to fade out next
-	std::vector<std::pair<CAnimAction*,ftype>>	fadeOutList;
+	std::vector<std::pair<CAnimAction*,Real>>	fadeOutList;
 
 	// Event sampling information
 	CORE_API void			PushFrameEvent ( const Animation::ActionEvent & );

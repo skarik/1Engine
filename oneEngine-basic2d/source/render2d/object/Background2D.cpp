@@ -7,7 +7,7 @@ renderer::Background2D::Background2D ( void )
 {
 	// Create a model for a simple quad
 	m_modeldata.triangleNum = 2;
-	m_modeldata.triangles = new CModelTriangle[2];
+	m_modeldata.triangles = new arModelTriangle[2];
 	{
 		m_modeldata.triangles[0].vert[0] = 0;
 		m_modeldata.triangles[0].vert[1] = 1;
@@ -17,7 +17,7 @@ renderer::Background2D::Background2D ( void )
 		m_modeldata.triangles[1].vert[2] = 3;
 	}
 	m_modeldata.vertexNum = 4;
-	m_modeldata.vertices = new CModelVertex[4];
+	m_modeldata.vertices = new arModelVertex[4];
 	{
 		for ( int i = 0; i < 4; ++i ) {
 			m_modeldata.vertices[i].r = 1.0F;

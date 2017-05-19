@@ -13,13 +13,13 @@ CDuskGUI::Handle CDuskGUI::CreateSlider	( const Handle& parent )
 	return Handle(vElements.size()-1);
 }
 // One-way get
-ftype CDuskGUI::GetSliderValue ( const Handle& handle )
+Real CDuskGUI::GetSliderValue ( const Handle& handle )
 {
 	CDuskGUISlider* slider = (CDuskGUISlider*)vElements[int(handle)];
 	return slider->value.mCurVal;
 }
 // Slider updating
-void CDuskGUI::UpdateSlider ( const Handle& handle, ftype & inOutSliderVal )
+void CDuskGUI::UpdateSlider ( const Handle& handle, Real & inOutSliderVal )
 {
 	CDuskGUISlider* slider = (CDuskGUISlider*)vElements[int(handle)];
 	if ( slider->prevValue.mCurVal != inOutSliderVal )
@@ -32,13 +32,13 @@ void CDuskGUI::UpdateSlider ( const Handle& handle, ftype & inOutSliderVal )
 	}
 }
 // Slider options
-void CDuskGUI::SetSliderMinMax ( const Handle& handle, const ftype newmin, const ftype newmax )
+void CDuskGUI::SetSliderMinMax ( const Handle& handle, const Real newmin, const Real newmax )
 {
 	CDuskGUISlider* slider = (CDuskGUISlider*)vElements[int(handle)];
 	slider->value.SetRange( newmin, newmax );
 	slider->prevValue.SetRange( newmin, newmax );
 }
-void CDuskGUI::SetSliderSnapping ( const Handle& handle, const ftype newdiv )
+void CDuskGUI::SetSliderSnapping ( const Handle& handle, const Real newdiv )
 {
 	CDuskGUISlider* slider = (CDuskGUISlider*)vElements[int(handle)];
 	slider->divs = newdiv;
@@ -83,11 +83,11 @@ void CDuskGUISlider::Update ( void )
 		if ( isDragging )
 		{
 			Rect screen = activeGUI->GetScreenRect();
-			ftype valPercent = (value.mCurVal-value.mMinVal)/(value.mMaxVal-value.mMinVal); 
-			Vector2d vDeltaPoint = Vector2d( Input::DeltaMouseX()/(ftype)Screen::Info.width * screen.size.x, Input::DeltaMouseY()/(ftype)Screen::Info.height * screen.size.y );
+			Real valPercent = (value.mCurVal-value.mMinVal)/(value.mMaxVal-value.mMinVal); 
+			Vector2d vDeltaPoint = Vector2d( Input::DeltaMouseX()/(Real)Screen::Info.width * screen.size.x, Input::DeltaMouseY()/(Real)Screen::Info.height * screen.size.y );
 
 			valPercent += ( vDeltaPoint.x / rect.size.x ) * 1.04f;
-			valPercent = Math::saturate(valPercent);
+			valPercent = math::saturate(valPercent);
 
 			value.SetValue( value.mMinVal + ((value.mMaxVal-value.mMinVal)*valPercent) );
 			//value.mCurVal = ( value.mMinVal + ((value.mMaxVal-value.mMinVal)*valPercent) );
@@ -113,7 +113,7 @@ void CDuskGUISlider::Render ( void )
 		setDrawDefault();
 	}
 
-	ftype valPercent = (value.mCurVal-value.mMinVal)/(value.mMaxVal-value.mMinVal);
+	Real valPercent = (value.mCurVal-value.mMinVal)/(value.mMaxVal-value.mMinVal);
 
 	// Begin draw/ material
 

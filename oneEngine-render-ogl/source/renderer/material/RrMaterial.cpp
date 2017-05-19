@@ -501,7 +501,7 @@ void RrMaterial::updateLightTBO ( void )
 			lightProperties[0].directional		= 1;
 			lightProperties[0].falloff			= 1;
 			lightProperties[0].passthrough		= 0.4f;
-			lightProperties[0].range		= 1/(4.0f);//1/(std::max<ftype>( 3.0f, std::min<ftype>( 12.0f, CCamera::activeCamera->focalDistance )));
+			lightProperties[0].range		= 1/(4.0f);//1/(std::max<Real>( 3.0f, std::min<Real>( 12.0f, CCamera::activeCamera->focalDistance )));
 
 			m_lightCount += 1;
 		}
@@ -509,7 +509,7 @@ void RrMaterial::updateLightTBO ( void )
 		for ( auto echo = echomap.begin(); echo != echomap.end(); )
 		{
 			// Calculate the range
-			ftype apparentRange = 12 * (1+echo->second.dw);
+			Real apparentRange = 12 * (1+echo->second.dw);
 			echo->second.range = 1/(apparentRange*echo->second.hasshadow);
 
 			if ( m_lightCount < 32 ) {
@@ -1444,17 +1444,17 @@ void RrMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_f
 
 void	RrMaterial::bindPassAtrribs ( uchar pass )
 {
-	bindAttribute( renderer::ATTRIB_VERTEX,		3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*0) );
-	bindAttribute( renderer::ATTRIB_TEXCOORD0,	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*3) );
-	bindAttribute( renderer::ATTRIB_COLOR,		4, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*15) );
-	bindAttribute( renderer::ATTRIB_NORMAL,		3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*6) );
-	bindAttribute( renderer::ATTRIB_TANGENTS,	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*9) );
-	bindAttribute( renderer::ATTRIB_BINORMALS,	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*12) );
-	bindAttribute( renderer::ATTRIB_BONEWEIGHTS,4,GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*20) );
-	bindAttributeI( renderer::ATTRIB_BONEINDICES,4,GL_UNSIGNED_BYTE, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*19) );
-	bindAttribute( renderer::ATTRIB_TEXCOORD2,	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*24) );
-	bindAttribute( renderer::ATTRIB_TEXCOORD3,	3, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*27) );
-	bindAttribute( renderer::ATTRIB_TEXCOORD4,	2, GL_FLOAT, false, sizeof(CModelVertex), ((char*)0) + (sizeof(float)*30) );
+	bindAttribute( renderer::ATTRIB_VERTEX,		3, GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*0) );
+	bindAttribute( renderer::ATTRIB_TEXCOORD0,	3, GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*3) );
+	bindAttribute( renderer::ATTRIB_COLOR,		4, GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*15) );
+	bindAttribute( renderer::ATTRIB_NORMAL,		3, GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*6) );
+	bindAttribute( renderer::ATTRIB_TANGENTS,	3, GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*9) );
+	bindAttribute( renderer::ATTRIB_BINORMALS,	3, GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*12) );
+	bindAttribute( renderer::ATTRIB_BONEWEIGHTS,4,GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*20) );
+	bindAttributeI( renderer::ATTRIB_BONEINDICES,4,GL_UNSIGNED_BYTE, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*19) );
+	bindAttribute( renderer::ATTRIB_TEXCOORD2,	3, GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*24) );
+	bindAttribute( renderer::ATTRIB_TEXCOORD3,	3, GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*27) );
+	bindAttribute( renderer::ATTRIB_TEXCOORD4,	2, GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*30) );
 }
 void RrMaterial::bindAttribute ( int attributeIndex, const uint vec_size, const uint vec_type, const bool normalize, const int struct_size, const void* struct_offset )
 {

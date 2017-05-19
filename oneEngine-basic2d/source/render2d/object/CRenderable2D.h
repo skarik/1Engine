@@ -52,7 +52,7 @@ protected:
 	RENDER2D_API void		PushModeldata ( void );
 
 	//	Mesh information
-	ModelData				m_modeldata;
+	arModelData				m_modeldata;
 	//	GPU information
 	uint					m_buffer_verts;
 	uint					m_buffer_tris;

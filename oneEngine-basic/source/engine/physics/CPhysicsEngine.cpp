@@ -31,8 +31,8 @@ void PhysicsEngine::Update ( float deltaTime, CGameState* pGameState, void (CGam
 		}
 		{
 			// Save old times
-			ftype tempDelta		= Time::deltaTime;
-			ftype tempSmooth	= Time::smoothDeltaTime;
+			Real tempDelta		= Time::deltaTime;
+			Real tempSmooth	= Time::smoothDeltaTime;
 			// Set delta time to use for timesteps
 			Time::deltaTime			= Time::targetFixedTime;
 			Time::smoothDeltaTime	= Time::targetFixedTime;
@@ -107,7 +107,7 @@ void PhysicsEngine::UpdateThreaded ( float frameDeltaTime, float fixedDeltaTime,
 #include "engine/physics/motion/CMotion.h"
 //#include "engine/physics/motion/CRagdollCollision.h"
 
-void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * outHitInfo, const physCollisionFilter& collisionFilter, void* mismatch )
+void PhysicsEngine::Raycast ( Ray const& rDir, Real fCastDist, RaycastHit * outHitInfo, const physCollisionFilter& collisionFilter, void* mismatch )
 {
 #ifdef PHYSICS_USING_HAVOK
 	// Check for proper input
@@ -268,7 +268,7 @@ void PhysicsEngine::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * out
 
 
 // Cast a shape
-void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, const physCollisionFilter& collisionFilter, void* mismatch )
+void PhysicsEngine::Linearcast ( Ray const& rDir, Real fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, const physCollisionFilter& collisionFilter, void* mismatch )
 {
 #ifdef PHYSICS_USING_HAVOK
 	Physics::ReadLock();
@@ -407,7 +407,7 @@ void PhysicsEngine::Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pS
 
 //==Raytracing==
 // Cast a ray
-/*void			Physics::Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * outHitInfo, uint32_t collisionFilter, void* mismatch )
+/*void			Physics::Raycast ( Ray const& rDir, Real fCastDist, RaycastHit * outHitInfo, uint32_t collisionFilter, void* mismatch )
 {
 	//pWorld->lock();
 	pWorld->markForRead();

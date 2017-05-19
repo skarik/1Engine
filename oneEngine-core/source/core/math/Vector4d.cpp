@@ -18,16 +18,16 @@ Vector4d::Vector4d (Vector3d const& old): x(old.x), y(old.y), z(old.z), w(1)
 {}
 
 //Component input constructor
-Vector4d::Vector4d (ftype const& new_x, ftype const& new_y, ftype const& new_z, ftype const& new_w): x(new_x), y(new_y), z(new_z), w(new_w)
+Vector4d::Vector4d (Real const& new_x, Real const& new_y, Real const& new_z, Real const& new_w): x(new_x), y(new_y), z(new_z), w(new_w)
 {
 	/*x = new_x;
 	y = new_y;
 	z = new_z;*/
 }
 // Array input constructor Added: 8/30/12
-/*Vector3d::Vector3d (const ftype* arr) : x(arr[0]), y(arr[1]), z(arr[2])
+/*Vector3d::Vector3d (const Real* arr) : x(arr[0]), y(arr[1]), z(arr[2])
 {}*/
-Vector4d::Vector4d (const ftype* arr) 
+Vector4d::Vector4d (const Real* arr) 
 {
 	x = arr[0];
 	y = arr[1];
@@ -82,7 +82,7 @@ void Vector4d::operator-= (Vector4d const& right)
 }
 
 //Scalar multiplication overload
-Vector4d Vector4d::operator* (ftype const& right) const
+Vector4d Vector4d::operator* (Real const& right) const
 {
 	Vector4d temp;
 
@@ -95,13 +95,13 @@ Vector4d Vector4d::operator* (ftype const& right) const
 }
 
 //Scalar multiplication shorthand overload
-void Vector4d::operator*= (ftype const& right)
+void Vector4d::operator*= (Real const& right)
 {
 	*this = *this * right;
 }
 
 //Scalar division overload		Added: 5/3/2012
-Vector4d Vector4d::operator/ (ftype const& right) const
+Vector4d Vector4d::operator/ (Real const& right) const
 {
 	Vector4d temp;
 
@@ -113,13 +113,13 @@ Vector4d Vector4d::operator/ (ftype const& right) const
 	return temp;
 }
 //Scalar division shorthand overload		Added: 5/3/2012
-void Vector4d::operator/= (ftype const& right)
+void Vector4d::operator/= (Real const& right)
 {
 	*this = *this / right;
 }
 
 //Dot product    Added: 1/4/12
-ftype Vector4d::dot (Vector4d const& right) const
+Real Vector4d::dot (Vector4d const& right) const
 {
  return x * right.x + y * right.y + z * right.z + w * right.w;
 }
@@ -138,11 +138,11 @@ std::ostream& operator<< (std::ostream& out, Vector4d const& current)
 	return out;
 }
 
-ftype Vector4d::magnitude (void) const
+Real Vector4d::magnitude (void) const
 {
 	return sqrt (x*x + y*y + z*z + w*w);
 }
-ftype Vector4d::sqrMagnitude (void) const
+Real Vector4d::sqrMagnitude (void) const
 {
 	return (x*x + y*y + z*z + w*w);
 }
@@ -164,7 +164,7 @@ Vector4d Vector4d::operator- ( void ) const
 }
 
 //Index Accessor Added: 5/3/12
-ftype& Vector4d::operator[] ( const int a )
+Real& Vector4d::operator[] ( const int a )
 {
 	/*if ( a == 0 )
 		return x;
@@ -177,7 +177,7 @@ ftype& Vector4d::operator[] ( const int a )
 	return x;*/
 	return *(&x + a);
 }
-const ftype& Vector4d::operator[] ( const int a ) const
+const Real& Vector4d::operator[] ( const int a ) const
 {
 	return *(&x + a);
 }
@@ -197,7 +197,7 @@ Vector4d Vector4d::rvrMultMatx ( Matrix4x4 const& right ) const
 
 
 //Linear interpolation Added: 9/8/12 at 9:12
-Vector4d Vector4d::lerp (Vector4d const& right, ftype const& t)
+Vector4d Vector4d::lerp (Vector4d const& right, Real const& t)
 {
 	if(t <= 0)
 	{

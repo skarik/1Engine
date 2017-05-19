@@ -198,11 +198,11 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
 		for ( int i = 0; i <= 360; i += 1 )
 		{
-			dopos1.x = position.x + (ftype)( cos( degtorad( i ) ) * circle_radius_outer );
-			dopos1.y = position.y + (ftype)( sin( degtorad( i ) ) * circle_radius_outer );
+			dopos1.x = position.x + (Real)( cos( degtorad( i ) ) * circle_radius_outer );
+			dopos1.y = position.y + (Real)( sin( degtorad( i ) ) * circle_radius_outer );
 
-			dopos2.x = position.x + (ftype)( cos( degtorad( i ) ) * circle_radius_inner );
-			dopos2.y = position.y + (ftype)( sin( degtorad( i ) ) * circle_radius_inner );
+			dopos2.x = position.x + (Real)( cos( degtorad( i ) ) * circle_radius_inner );
+			dopos2.y = position.y + (Real)( sin( degtorad( i ) ) * circle_radius_inner );
 
 			// Select color
 			modColor = i % 60;
@@ -244,11 +244,11 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 		GLd.P_PushColor( m_currentColor );
 		for ( int i = 0; i <= 360; i += 5 )
 		{
-			dopos1.x = position.x + (ftype)( cos( degtorad( i ) ) * circle_radius_outer );
-			dopos1.y = position.y + (ftype)( sin( degtorad( i ) ) * circle_radius_outer );
+			dopos1.x = position.x + (Real)( cos( degtorad( i ) ) * circle_radius_outer );
+			dopos1.y = position.y + (Real)( sin( degtorad( i ) ) * circle_radius_outer );
 
-			dopos2.x = position.x + (ftype)( cos( degtorad( i ) ) * circle_radius_inner );
-			dopos2.y = position.y + (ftype)( sin( degtorad( i ) ) * circle_radius_inner );
+			dopos2.x = position.x + (Real)( cos( degtorad( i ) ) * circle_radius_inner );
+			dopos2.y = position.y + (Real)( sin( degtorad( i ) ) * circle_radius_inner );
 
 			GLd.P_AddVertex( dopos1.x,dopos1.y );
 			GLd.P_AddVertex( dopos2.x,dopos2.y );
@@ -307,24 +307,24 @@ void Dusk::DialogueColorpicker::updateColorSliders ( const Vector2d& position )
 		switch (current_mode)
 		{
 		case Mode::R:
-			m_currentColor[0] = Math::clamp( color_start[0] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
+			m_currentColor[0] = math::clamp( color_start[0] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
 			break;
 		case Mode::G:
-			m_currentColor[1] = Math::clamp( color_start[1] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
+			m_currentColor[1] = math::clamp( color_start[1] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
 			break;
 		case Mode::B:
-			m_currentColor[2] = Math::clamp( color_start[2] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
+			m_currentColor[2] = math::clamp( color_start[2] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
 			break;
 		case Mode::H:
-			hsl[0] = Math::clamp( hsl[0] + (drag_now.x - drag_start.x) / 360.0F, 0.0F, 360.0F );
+			hsl[0] = math::clamp( hsl[0] + (drag_now.x - drag_start.x) / 360.0F, 0.0F, 360.0F );
 			m_currentColor.SetHSL(hsl);
 			break;
 		case Mode::S:
-			hsl[1] = Math::clamp( hsl[1] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
+			hsl[1] = math::clamp( hsl[1] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
 			m_currentColor.SetHSL(hsl);
 			break;
 		case Mode::V:
-			hsl[2] = Math::clamp( hsl[2] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
+			hsl[2] = math::clamp( hsl[2] + (drag_now.x - drag_start.x) / 255.0F, 0.0F, 1.0F );
 			m_currentColor.SetHSL(hsl);
 			break;
 		}

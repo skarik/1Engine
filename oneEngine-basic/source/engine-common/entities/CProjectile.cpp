@@ -17,7 +17,7 @@
 
 // == Constructor and Destructor ==
 // Constructor
-CProjectile::CProjectile( Ray const& rnInRay, ftype fnInSpeed, ftype fnWidth )
+CProjectile::CProjectile( Ray const& rnInRay, Real fnInSpeed, Real fnWidth )
 	: CGameObject(), rStartDirection( rnInRay ), fStartSpeed( fnInSpeed ), fShapeRadius( fnWidth )
 {
 	// Immediately set the position of the projectile
@@ -293,7 +293,7 @@ void CProjectile::OnEnterWater ( void )
 
 // == Set Options ==
 // Set motion damping
-void CProjectile::SetDamping ( ftype fInDamping, ftype fInDropPoint, ftype fInMaxRange )
+void CProjectile::SetDamping ( Real fInDamping, Real fInDropPoint, Real fInMaxRange )
 {
 	fDamping	= fInDamping;
 	fDropPoint	= fInDropPoint;
@@ -321,7 +321,7 @@ Vector3d CProjectile::GetHeading ( void )
 
 // ==Property Get==
 // Return width of the collision used
-ftype CProjectile::GetWidth ( void )
+Real CProjectile::GetWidth ( void )
 {
 	return fShapeRadius;
 }

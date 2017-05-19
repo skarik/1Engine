@@ -47,8 +47,8 @@ namespace DamageType
 
 struct Damage
 {
-	ftype		amount;
-	ftype		stagger_chance;
+	Real		amount;
+	Real		stagger_chance;
 	uint64_t	type;
 
 	Vector3d	source;

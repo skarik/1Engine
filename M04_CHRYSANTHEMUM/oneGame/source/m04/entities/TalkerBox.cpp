@@ -21,7 +21,7 @@ public:
 	{
 		SetSpriteFile( "sprites/ui/ui_msgbox.gal" );
 
-		memset( &m_modeldata, 0, sizeof(ModelData) );
+		memset( &m_modeldata, 0, sizeof(arModelData) );
 	}
 	~TalkerBoxBackground ( void )
 	{
@@ -47,13 +47,13 @@ public:
 			m_modeldata.triangleNum = 2 * 16;
 			m_modeldata.vertexNum = 4 * 16;
 
-			m_modeldata.triangles = new CModelTriangle [m_modeldata.triangleNum];
-			m_modeldata.vertices = new CModelVertex [m_modeldata.vertexNum];
+			m_modeldata.triangles = new arModelTriangle [m_modeldata.triangleNum];
+			m_modeldata.vertices = new arModelVertex [m_modeldata.vertexNum];
 		}
 
 		// Reset mesh data:
 
-		memset(m_modeldata.vertices, 0, sizeof(CModelVertex) * m_modeldata.vertexNum);
+		memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * m_modeldata.vertexNum);
 		for ( uint i = 0; i < m_modeldata.vertexNum; ++i )
 		{
 			m_modeldata.vertices[i].r = 1.0F;
@@ -154,7 +154,7 @@ public:
 		SetSpriteFile( "textures/white.jpg" );
 		m_material->passinfo[0].m_blend_mode = renderer::BM_MULTIPLY_X2;
 
-		memset( &m_modeldata, 0, sizeof(ModelData) );
+		memset( &m_modeldata, 0, sizeof(arModelData) );
 	}
 	~TalkerBoxBackgroundColor ( void )
 	{
@@ -180,13 +180,13 @@ public:
 			m_modeldata.triangleNum = 2;
 			m_modeldata.vertexNum = 4;
 
-			m_modeldata.triangles = new CModelTriangle [m_modeldata.triangleNum];
-			m_modeldata.vertices = new CModelVertex [m_modeldata.vertexNum];
+			m_modeldata.triangles = new arModelTriangle [m_modeldata.triangleNum];
+			m_modeldata.vertices = new arModelVertex [m_modeldata.vertexNum];
 		}
 
 		// Reset mesh data:
 
-		memset(m_modeldata.vertices, 0, sizeof(CModelVertex) * m_modeldata.vertexNum);
+		memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * m_modeldata.vertexNum);
 		for ( uint i = 0; i < m_modeldata.vertexNum; ++i )
 		{
 			m_modeldata.vertices[i].r = 0.3F;
@@ -278,9 +278,9 @@ void TalkerBox::Update ( void )
 	{
 		m_fadeLerp -= Time::deltaTime * 2.0F;
 	}
-	m_fadeLerp = Math::saturate(m_fadeLerp);
-	Real m_fadeLerpX = Math::saturate((m_fadeLerp - 0.5F) * 2.0F);
-	Real m_fadeLerpY = Math::saturate(m_fadeLerp * 2.0F);
+	m_fadeLerp = math::saturate(m_fadeLerp);
+	Real m_fadeLerpX = math::saturate((m_fadeLerp - 0.5F) * 2.0F);
+	Real m_fadeLerpY = math::saturate(m_fadeLerp * 2.0F);
 
 	if ( m_fadeLerp > 0.5F )
 	{
@@ -352,8 +352,8 @@ void TalkerBox::Update ( void )
 
 	// Lerp in the box
 	Vector2d estimatedSize;
-	estimatedSize.x = Math::lerp( Easing::back_out(m_fadeLerpX), 16, width + 14 );
-	estimatedSize.y = Math::lerp( Easing::back_out(m_fadeLerpY), 16, 10 + m_textmesh->GetLineHeight() * (Real)Math::round(0.5F + text.length() / 23.0F)  );
+	estimatedSize.x = math::lerp( easing::back_out(m_fadeLerpX), 16, width + 14 );
+	estimatedSize.y = math::lerp( easing::back_out(m_fadeLerpY), 16, 10 + m_textmesh->GetLineHeight() * (Real)math::round(0.5F + text.length() / 23.0F)  );
 
 	// Update box size
 	if (m_boxbackground)		m_boxbackground->GenerateMesh( estimatedSize );

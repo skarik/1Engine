@@ -8,20 +8,20 @@ class CCylinderCollider : public CCollider
 {
 public:
 	// Constructor and Destructor
-	//CCapsuleCollider ( Vector3d const& size, ftype radius );
-	CCylinderCollider ( ftype height, ftype radius, bool centered=false );
+	//CCapsuleCollider ( Vector3d const& size, Real radius );
+	CCylinderCollider ( Real height, Real radius, bool centered=false );
 	~CCylinderCollider ( void );
 
 	// Setters
-	void SetSize ( ftype height, ftype radius );
-	void SetHeight ( ftype height );
+	void SetSize ( Real height, Real radius );
+	void SetHeight ( Real height );
 	// Getters
 	Vector3d GetSize ( void );
-	ftype GetRadius ( void );
+	Real GetRadius ( void );
 
 protected:
 	Vector3d vSize;
-	ftype fRadius;
+	Real fRadius;
 };
 
 #endif

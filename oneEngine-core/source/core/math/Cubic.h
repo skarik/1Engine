@@ -42,7 +42,7 @@ namespace Maths
 		bool CubicCollides ( const Cubic & );
 	private:
 		// Helper functions for collision
-		bool inline GetIntersection( ftype fDst1, ftype fDst2, Vector3d P1, Vector3d P2, Vector3d & Hit );
+		bool inline GetIntersection( Real fDst1, Real fDst2, Vector3d P1, Vector3d P2, Vector3d & Hit );
 		bool inline InBox( Vector3d Hit, Vector3d B1, Vector3d B2, const char Axis );
 	};
 }

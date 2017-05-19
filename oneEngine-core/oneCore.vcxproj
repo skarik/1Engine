@@ -388,7 +388,6 @@
     <ClCompile Include="source\core-ext\system\io\serializer\ISerialBinary.cpp" />
     <ClCompile Include="source\core-ext\system\io\serializer\OSerialBinary.cpp" />
     <ClCompile Include="source\core\callbacks\Events.cpp" />
-    <ClCompile Include="source\core\containers\arsingleton.cpp" />
     <ClCompile Include="source\core\math\BoundingBox.cpp" />
     <ClCompile Include="source\core\math\Color.cpp" />
     <ClCompile Include="source\core\math\Cubic.cpp" />

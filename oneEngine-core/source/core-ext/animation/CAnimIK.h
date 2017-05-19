@@ -40,7 +40,7 @@ struct ikinfo_t
 	Vector3d		input;
 	Vector3d		subinput0;
 	Vector3d		subinput1;
-	ftype			subinfo[4];
+	Real			subinfo[4];
 	uint32_t		bone [5];
 };
 

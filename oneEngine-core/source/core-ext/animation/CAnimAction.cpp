@@ -51,7 +51,7 @@ CAnimAction::CAnimAction( const char* name )
 /*void CAnimAction::Sample ( CAnimationSet* pAnimSet, std::vector<XTransform> const& animRefs )
 {
 	// Loop through all the animations, sample at the current time
-	ftype currentTime;
+	Real currentTime;
 	currentTime = start+frame;
 
 #	ifdef _ENGINE_DEBUG

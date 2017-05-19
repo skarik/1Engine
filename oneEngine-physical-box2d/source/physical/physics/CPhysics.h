@@ -68,14 +68,14 @@ public:
 	FORCE_INLINE PHYS_API static physShape* CreateCylinderShape ( Vector3d vStart, Vector3d vEnd, float fRadius, float fConvexRadius=0.01f );
 	FORCE_INLINE PHYS_API static physShape* CreateSphereShape ( float fRadius );
 	FORCE_INLINE PHYS_API static physShape* CreateTriangleShape ( Vector3d* vpPositions, float fExtrusion=0.01f );
-	FORCE_INLINE PHYS_API static physShape* CreateConvMeshShape ( CPhysicsData* pMesh );
-	FORCE_INLINE PHYS_API static physShape* CreateMeshShape ( CPhysicsData* pMesh );
-	FORCE_INLINE PHYS_API static physShape* CreateMeshShape ( CTerrainVertex* pVertices, CModelQuad* pQuads, unsigned short vertexCount, unsigned short faceCount );
-	FORCE_INLINE PHYS_API static physShape* CreateMeshShape ( CModelData const* pMesh );
-	FORCE_INLINE PHYS_API static physShape* CreateFastMeshShape ( Vector3d* pVertices, CModelTriangle* pTris, unsigned short vertexCount, unsigned short faceCount );
+	FORCE_INLINE PHYS_API static physShape* CreateConvMeshShape ( arModelPhysicsData* pMesh );
+	FORCE_INLINE PHYS_API static physShape* CreateMeshShape ( arModelPhysicsData* pMesh );
+	FORCE_INLINE PHYS_API static physShape* CreateMeshShape ( arTerrainVertex* pVertices, arModelQuad* pQuads, unsigned short vertexCount, unsigned short faceCount );
+	FORCE_INLINE PHYS_API static physShape* CreateMeshShape ( arModelData const* pMesh );
+	FORCE_INLINE PHYS_API static physShape* CreateFastMeshShape ( Vector3d* pVertices, arModelTriangle* pTris, unsigned short vertexCount, unsigned short faceCount );
 	// Creation of static meshes
-	//inline static int CreateMeshConcave ( CPhysicsData const&, CTransform const& );
-	FORCE_INLINE PHYS_API static physShape* CreateEMesh ( CPhysicsVertex* pMesh, core::Transform const* );
+	//inline static int CreateMeshConcave ( arModelPhysicsData const&, CTransform const& );
+	FORCE_INLINE PHYS_API static physShape* CreateEMesh ( arPhysicsVertex* pMesh, core::Transform const* );
 	// Freeing shapes
 	FORCE_INLINE PHYS_API static void FreeShape ( physShape* pShape );
 
@@ -114,10 +114,10 @@ public:
 	// Tracing Collision Queries
 	//=========================================//
 	// Cast a ray
-	//PHYS_API static void Raycast ( Ray const& rDir, ftype fCastDist, RaycastHit * outHitInfo, uint32_t collisionFilter = 0, void* mismatch=NULL );
+	//PHYS_API static void Raycast ( Ray const& rDir, Real fCastDist, RaycastHit * outHitInfo, uint32_t collisionFilter = 0, void* mismatch=NULL );
 	FORCE_INLINE PHYS_API static void Raycast( const physWorldRayCastInput& input, physRayHitCollector& collector );
 	// Cast a shape
-	//PHYS_API static void Linearcast ( Ray const& rDir, ftype fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, uint32_t collisionFilter = 0, void* mismatch=NULL );
+	//PHYS_API static void Linearcast ( Ray const& rDir, Real fCastDist, physShape* pShape, RaycastHit* outHitInfo, const int hitInfoArrayCount, uint32_t collisionFilter = 0, void* mismatch=NULL );
 	FORCE_INLINE PHYS_API static void Linearcast( const physCollidable* collA, const physLinearCastInput& input, physCdPointCollector& castCollector, physCdPointCollector* startCollector = HK_NULL );
 
 	//=========================================//

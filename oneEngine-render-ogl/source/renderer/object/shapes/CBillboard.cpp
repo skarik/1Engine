@@ -71,7 +71,7 @@ bool CBillboard::Render ( const char pass )
 		glGenBuffers( 1, &m_vbo );
 		glBindBuffer( GL_ARRAY_BUFFER, m_vbo );
 
-		CModelVertex model [4];
+		arModelVertex model [4];
 		model[0].r = 1;		model[0].g = 1;		model[0].b = 1;		model[0].a = 1;
 		model[0].x = 0;		model[0].y = -1;	model[0].z = +1;
 		model[0].u = 0;		model[0].v = 0;
@@ -88,7 +88,7 @@ bool CBillboard::Render ( const char pass )
 		model[2].x = 0;		model[2].y = +1;	model[2].z = +1;
 		model[2].u = 1;		model[2].v = 0;
 
-		glBufferData( GL_ARRAY_BUFFER, sizeof(CModelVertex)*(4), model, GL_STATIC_DRAW );
+		glBufferData( GL_ARRAY_BUFFER, sizeof(arModelVertex)*(4), model, GL_STATIC_DRAW );
 	}
 
 

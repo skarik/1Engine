@@ -75,7 +75,7 @@ void CIsosphere::drawList ( void )
 		glNormal3fv( &(sphereData[i].nx) );
 		glVertex3fv( &(sphereData[i].x) );
 	}*/
-	/*for ( vector<CModelVertex>::iterator itr = sphereData.begin(); itr != sphereData.end(); itr++ )
+	/*for ( vector<arModelVertex>::iterator itr = sphereData.begin(); itr != sphereData.end(); itr++ )
 	{
 		glTexCoord3fv( &(itr->tx) );
 		glNormal3fv( &(itr->nx) );
@@ -175,13 +175,13 @@ void CIsosphere::createtri ( float const *a, float const *b, float const *c, int
 void CIsosphere::createvertex ( float const *a, float r )
 {
 	size += 1;
-	CModelVertex* pNewData = new CModelVertex [size];
+	arModelVertex* pNewData = new arModelVertex [size];
 	for ( int i = 0; i < size-1; i += 1 )
 	{
 		pNewData[i] = pSphereData[i];
 	}
 	
-	CModelVertex newVertex;
+	arModelVertex newVertex;
 	newVertex.x = a[0]*r;
 	newVertex.y = a[1]*r;
 	newVertex.z = a[2]*r;

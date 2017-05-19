@@ -8,7 +8,7 @@ using namespace M04;
 UILuvPpl::UILuvPpl ( void )
 	: CGameBehavior(), CStreamedRenderable2D()
 {
-	memset( &m_modeldata, 0, sizeof(ModelData) );
+	memset( &m_modeldata, 0, sizeof(arModelData) );
 
 	// Set up the material and sprite:
 	SetSpriteFile( "sprites/ui/ui_hudparts_tex.gal" );
@@ -39,10 +39,10 @@ void UILuvPpl::Update ( void )
 		delete [] m_modeldata.triangles;
 		delete [] m_modeldata.vertices;
 
-		m_modeldata.triangles = new CModelTriangle [512];
-		m_modeldata.vertices = new CModelVertex [1024];
+		m_modeldata.triangles = new arModelTriangle [512];
+		m_modeldata.vertices = new arModelVertex [1024];
 
-		memset(m_modeldata.vertices, 0, sizeof(CModelVertex) * 1024);
+		memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * 1024);
 		for ( uint i = 0; i < 1024; ++i )
 		{
 			m_modeldata.vertices[i].r = 1.0F;

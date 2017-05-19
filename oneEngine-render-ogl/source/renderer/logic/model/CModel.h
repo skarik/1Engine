@@ -19,7 +19,7 @@ class physMesh;
 
 //#include "renderer/object/mesh/CMesh.h"
 /*
-#include "CModelData.h"
+#include "arModelData.h"
 #include "CRenderableObject.h"
 #include "RrMaterial.h"
 #include <vector>
@@ -62,7 +62,7 @@ public:
 	// Loads up model file
 	RENDER_API explicit CModel ( const char* sFilename );	
 	// Load up model data struct
-	RENDER_API explicit CModel ( CModelData& mdInModelData, const char* sModelName = "_sys_override_" );
+	RENDER_API explicit CModel ( arModelData& mdInModelData, const char* sModelName = "_sys_override_" );
 	// Create empty model
 	RENDER_API explicit CModel ( void ) : CLogicObject() {
 		// Clear out uniform lists
@@ -175,9 +175,9 @@ public:
 		return myModelFilename;
 	}
 	// Gets the indicated mesh data in the array
-	RENDER_API CModelData* GetModelData ( int iMeshIndex ) const;
+	RENDER_API arModelData* GetModelData ( int iMeshIndex ) const;
 	// Returns the first matching mesh with the given name in the array
-	RENDER_API CModelData* GetModelDataByName ( const char* nNameMatch ) const;
+	RENDER_API arModelData* GetModelDataByName ( const char* nNameMatch ) const;
 	// Return the first matching material
 	RENDER_API RrMaterial*	FindMaterial ( const char* n_name, const int n_offset=0 ) const;
 

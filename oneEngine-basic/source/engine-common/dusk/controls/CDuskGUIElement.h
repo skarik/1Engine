@@ -103,11 +103,11 @@ protected:
 
 	void drawRect ( const Rect& rect );
 	void drawRectWire ( const Rect& rect );
-	void drawLine ( const ftype x1, const ftype y1, const ftype x2, const ftype y2 );
+	void drawLine ( const Real x1, const Real y1, const Real x2, const Real y2 );
 	
-	void drawText ( const ftype x, const ftype y, const char* str );
-	void drawTextWidth ( const ftype x, const ftype y, const ftype w, const char* str );
-	void drawTextCentered ( const ftype x, const ftype y, const char* str );
+	void drawText ( const Real x, const Real y, const char* str );
+	void drawTextWidth ( const Real x, const Real y, const Real w, const char* str );
+	void drawTextCentered ( const Real x, const Real y, const char* str );
 
 private:
 	friend CDuskGUI;

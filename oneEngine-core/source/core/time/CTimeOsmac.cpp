@@ -5,16 +5,16 @@
 #include "CTimeOsmac.h"
 
 // Static variable declares
-ftype CTime::deltaTime;
-ftype CTime::smoothDeltaTime;
+Real CTime::deltaTime;
+Real CTime::smoothDeltaTime;
 
-ftype CTime::fixedTime;
-ftype CTime::targetFixedTime;
+Real CTime::fixedTime;
+Real CTime::targetFixedTime;
 
 clock_t CTime::iLastTick;
 clock_t CTime::iCurrentTick;
 
-ftype CTime::fDeltaTimes [10];
+Real CTime::fDeltaTimes [10];
 
 // Timer initialization
 //  Sets default timer values
@@ -48,7 +48,7 @@ void CTime::Tick ( void )
 		fDeltaTimes[i] = fDeltaTimes[i-1];
 		smoothDeltaTime += fDeltaTimes[i];
 	}
-	fDeltaTimes[0] = ftype( ftype( iCurrentTick-iLastTick )/CLOCKS_PER_SEC );
+	fDeltaTimes[0] = Real( Real( iCurrentTick-iLastTick )/CLOCKS_PER_SEC );
 	smoothDeltaTime += fDeltaTimes[0];
 
 	// Set output

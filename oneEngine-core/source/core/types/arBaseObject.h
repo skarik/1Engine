@@ -2,7 +2,7 @@
 //
 //		class arBaseObject
 //
-//	Basic reference counted base class, used for keeping track of objects and fixing memory leakage.
+//	Basic reference counted base class, used for keeping track of objects and memory leakage.
 //
 //===============================================================================================//
 #ifndef _C_AR_BASE_OBJECT_H_
@@ -14,7 +14,7 @@
 class arBaseObject
 {
 private:
-	// Disable arBaseObject copying
+	// Disable arBaseObject copying:
 	arBaseObject & operator= (const arBaseObject & other) { fnl_assert(0); return(*this); }
 	arBaseObject ( const arBaseObject& other) { fnl_assert(0); }
 

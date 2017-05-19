@@ -108,12 +108,12 @@ public:
 	std::vector<ListElement_t> propertyList;
 	int  selection;
 	int  currentmouseover;
-	ftype field_height;
-	ftype name_width;
-	ftype scrollbar_width;
+	Real field_height;
+	Real name_width;
+	Real scrollbar_width;
 	
-	ftype scroll_offset;
-	ftype max_scroll_offset;
+	Real scroll_offset;
+	Real max_scroll_offset;
 };
 
 #endif//_C_DUSK_GUI_PROPERTYVIEW_H_

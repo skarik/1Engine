@@ -20,7 +20,7 @@ namespace renderer
 		RENDER2D_API explicit	TileMapLayer ( void );
 		RENDER2D_API			~TileMapLayer ();
 
-		RENDER2D_API void		SetLayer ( const ModelData* model_info );
+		RENDER2D_API void		SetLayer ( const arModelData* model_info );
 
 	public:
 		int		source_layer_id;

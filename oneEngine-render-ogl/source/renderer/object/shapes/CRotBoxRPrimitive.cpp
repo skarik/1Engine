@@ -19,7 +19,7 @@ CRotBoxRPrimitive::CRotBoxRPrimitive ( void )
 
 }
 //  sets values to user-defined, then creates vertices
-CRotBoxRPrimitive::CRotBoxRPrimitive ( ftype width, ftype depth, ftype height )
+CRotBoxRPrimitive::CRotBoxRPrimitive ( Real width, Real depth, Real height )
 	: CRenderablePrimitive ()
 {
 	fWidth = width;
@@ -38,7 +38,7 @@ void CRotBoxRPrimitive::GenerateVertices ( void )
 	vertexNum = 8;
 	if ( vertexData == NULL )
 	{
-		vertexData = new CModelVertex [8];
+		vertexData = new arModelVertex [8];
 	}
 	vertexData[0].x = 0;
 	vertexData[0].y = 0;

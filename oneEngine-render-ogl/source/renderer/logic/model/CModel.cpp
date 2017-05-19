@@ -128,7 +128,7 @@ CModel::CModel ( const char* sFilename )
 }
 
 // Constructor, taking model info struct (nice for procedural generation)
-CModel::CModel ( CModelData& mdInModelData, const char* sModelName )
+CModel::CModel ( arModelData& mdInModelData, const char* sModelName )
 	: CLogicObject()
 {
 	// Start out setting the model name
@@ -157,7 +157,7 @@ CModel::CModel ( CModelData& mdInModelData, const char* sModelName )
 	// If there's no reference, then load it
 	if ( t_meshSet == NULL || myModelFilename == "_sys_override_" )
 	{
-		CModelData* mdModelData = new CModelData();
+		arModelData* mdModelData = new arModelData();
 		(*mdModelData) = mdInModelData;
 
 		// Create new mesh with the model data
@@ -302,16 +302,16 @@ void CModel::CalculateBoundingBox ( void )
 
 	for ( unsigned int i = 0; i < m_glMeshlist.size(); i++ )
 	{
-		CModelData* pmData = m_glMeshlist[i]->pmData;
+		arModelData* pmData = m_glMeshlist[i]->pmData;
 		for ( unsigned int v = 0; v < pmData->vertexNum; v++ )
 		{
-			CModelVertex* vert = &(pmData->vertices[v]);
-			minPos.x = std::min<ftype>( minPos.x, vert->x );
-			minPos.y = std::min<ftype>( minPos.y, vert->y );
-			minPos.z = std::min<ftype>( minPos.z, vert->z );
-			maxPos.x = std::max<ftype>( maxPos.x, vert->x );
-			maxPos.y = std::max<ftype>( maxPos.y, vert->y );
-			maxPos.z = std::max<ftype>( maxPos.z, vert->z );
+			arModelVertex* vert = &(pmData->vertices[v]);
+			minPos.x = std::min<Real>( minPos.x, vert->x );
+			minPos.y = std::min<Real>( minPos.y, vert->y );
+			minPos.z = std::min<Real>( minPos.z, vert->z );
+			maxPos.x = std::max<Real>( maxPos.x, vert->x );
+			maxPos.y = std::max<Real>( maxPos.y, vert->y );
+			maxPos.z = std::max<Real>( maxPos.z, vert->z );
 		}
 	}
 
@@ -479,7 +479,7 @@ CMesh* CModel::GetMesh ( const char* n_name ) const
 }
 
 // Gets the indicated mesh data in the array
-CModelData* CModel::GetModelData ( int iMeshIndex ) const
+arModelData* CModel::GetModelData ( int iMeshIndex ) const
 {
 	//return (vMeshes[iMeshIndex]->pmData);
 	CMesh* mesh = GetMesh( iMeshIndex );
@@ -490,7 +490,7 @@ CModelData* CModel::GetModelData ( int iMeshIndex ) const
 }
 
 // Returns the first matching mesh with the given name in the array
-CModelData* CModel::GetModelDataByName ( const char* nNameMatch ) const 
+arModelData* CModel::GetModelDataByName ( const char* nNameMatch ) const 
 {
 	CMesh* mesh = GetMesh( nNameMatch );
 	if ( mesh ) {

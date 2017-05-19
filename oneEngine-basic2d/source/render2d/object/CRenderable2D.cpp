@@ -386,11 +386,11 @@ void CRenderable2D::PushModeldata ( void )
 
 	// Copy data to the buffer
 	GL.UploadBuffer( GL_ARRAY_BUFFER,
-		sizeof(CModelVertex) * (m_modeldata.vertexNum),
+		sizeof(arModelVertex) * (m_modeldata.vertexNum),
 		m_modeldata.vertices,
 		GL_STATIC_DRAW );
 	GL.UploadBuffer( GL_ELEMENT_ARRAY_BUFFER,
-		sizeof(CModelTriangle) * (m_modeldata.triangleNum),
+		sizeof(arModelTriangle) * (m_modeldata.triangleNum),
 		m_modeldata.triangles,
 		GL_STATIC_DRAW );
 

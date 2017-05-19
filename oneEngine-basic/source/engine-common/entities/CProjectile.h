@@ -26,7 +26,7 @@ class CActor;
 class CProjectile : public CGameObject
 {
 public:
-	ENGCOM_API explicit CProjectile( Ray const& rnInRay, ftype fnInSpeed, ftype fnWidth=0.2f );
+	ENGCOM_API explicit CProjectile( Ray const& rnInRay, Real fnInSpeed, Real fnWidth=0.2f );
 	ENGCOM_API ~CProjectile ( void );
 
 	ENGCOM_API void SetOwner ( CActor* nActor ) { mOwner = (CGameBehavior*)nActor; }
@@ -39,7 +39,7 @@ public:
 	ENGCOM_API virtual void OnEnterWater ( void );
 
 	// ==Option Set==
-	ENGCOM_API void SetDamping ( ftype fInDamping = 0.02f, ftype fInDropPoint = 0.7f, ftype fInMaxRange = 500.0f );
+	ENGCOM_API void SetDamping ( Real fInDamping = 0.02f, Real fInDropPoint = 0.7f, Real fInMaxRange = 500.0f );
 	ENGCOM_API void SetDamage ( const Damage & );
 	// ==Movement Set==
 	ENGCOM_API void SetHeading ( const Vector3d& newHeading );
@@ -47,7 +47,7 @@ public:
 	// ==Movement Get==
 	ENGCOM_API Vector3d GetHeading ( void );
 	// ==Property Get==
-	ENGCOM_API ftype GetWidth ( void );
+	ENGCOM_API Real GetWidth ( void );
 
 	// Buff Accessor for editing effects on creation
 	//Debuffs::ProjectileEffects* Effects ( void ) { return &effects; };
@@ -56,17 +56,17 @@ protected:
 	//CActor*		mOwner;
 	CGameHandle	mOwner;
 	Ray			rStartDirection;
-	ftype		fStartSpeed;
+	Real		fStartSpeed;
 	//physShape*	mProjectileShape;
 	CCollider*	mProjectileCollider;
-	ftype		fShapeRadius;
+	Real		fShapeRadius;
 
 	Vector3d	vStartPosition;
 
 	// Motion properties
-	ftype	fDamping;
-	ftype	fDropPoint;
-	ftype	fMaxRange;
+	Real	fDamping;
+	Real	fDropPoint;
+	Real	fMaxRange;
 
 	// Projectile properties
 	Damage		dDamage;

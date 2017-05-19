@@ -56,11 +56,11 @@ public:
 	// == Public Getters ==
 	valtype GetRandom ( void )
 	{
-		return ( mMinVal + (mMaxVal-mMinVal)*(rand()/((ftype)RAND_MAX)) );
+		return ( mMinVal + (mMaxVal-mMinVal)*(rand()/((Real)RAND_MAX)) );
 	};
 	valtype GetNext ( void )
 	{
-		SetValue( mCurVal + ((mMinVal-mMaxVal)*0.5f + (mMaxVal-mMinVal)*(rand()/((ftype)RAND_MAX)) )*0.2f );
+		SetValue( mCurVal + ((mMinVal-mMaxVal)*0.5f + (mMaxVal-mMinVal)*(rand()/((Real)RAND_MAX)) )*0.2f );
 		return mCurVal;
 	}
 
@@ -119,17 +119,17 @@ inline void RangeValue<Vector3d>::SetValue ( const Vector3d& curVal )
 inline Vector3d RangeValue<Vector3d>::GetRandom ( void )
 {
 	Vector3d result;
-	result.x = ( mMinVal.x + (mMaxVal.x-mMinVal.x)*(rand()/((ftype)RAND_MAX)) );
-	result.y = ( mMinVal.y + (mMaxVal.y-mMinVal.y)*(rand()/((ftype)RAND_MAX)) );
-	result.z = ( mMinVal.z + (mMaxVal.z-mMinVal.z)*(rand()/((ftype)RAND_MAX)) );
+	result.x = ( mMinVal.x + (mMaxVal.x-mMinVal.x)*(rand()/((Real)RAND_MAX)) );
+	result.y = ( mMinVal.y + (mMaxVal.y-mMinVal.y)*(rand()/((Real)RAND_MAX)) );
+	result.z = ( mMinVal.z + (mMaxVal.z-mMinVal.z)*(rand()/((Real)RAND_MAX)) );
 	return result;
 };
 inline Vector3d RangeValue<Vector3d>::GetNext ( void )
 {
 	SetValue( Vector3d(
-		mCurVal.x + ((mMinVal.x-mMaxVal.x)*0.5f + (mMaxVal.x-mMinVal.x)*(rand()/((ftype)RAND_MAX)) )*0.2f,
-		mCurVal.y + ((mMinVal.y-mMaxVal.y)*0.5f + (mMaxVal.y-mMinVal.y)*(rand()/((ftype)RAND_MAX)) )*0.2f,
-		mCurVal.z + ((mMinVal.z-mMaxVal.z)*0.5f + (mMaxVal.z-mMinVal.z)*(rand()/((ftype)RAND_MAX)) )*0.2f )
+		mCurVal.x + ((mMinVal.x-mMaxVal.x)*0.5f + (mMaxVal.x-mMinVal.x)*(rand()/((Real)RAND_MAX)) )*0.2f,
+		mCurVal.y + ((mMinVal.y-mMaxVal.y)*0.5f + (mMaxVal.y-mMinVal.y)*(rand()/((Real)RAND_MAX)) )*0.2f,
+		mCurVal.z + ((mMinVal.z-mMaxVal.z)*0.5f + (mMaxVal.z-mMinVal.z)*(rand()/((Real)RAND_MAX)) )*0.2f )
 		);
 	return mCurVal;
 }

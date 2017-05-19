@@ -1,7 +1,7 @@
 
 #include "physExplosion.h"
 
-physExplosion::physExplosion ( const Vector3d& center, const ftype magnitude, const ftype range, const ftype speed )
+physExplosion::physExplosion ( const Vector3d& center, const Real magnitude, const Real range, const Real speed )
 	: CPhysWindBase()
 {
 	m_center	= center;
@@ -11,7 +11,7 @@ physExplosion::physExplosion ( const Vector3d& center, const ftype magnitude, co
 	currentRadius = 0;
 }
 
-void physExplosion::Update ( ftype deltaTime )
+void physExplosion::Update ( Real deltaTime )
 {
 	currentRadius += m_speed * deltaTime;
 }
@@ -20,7 +20,7 @@ void physExplosion::GetWindVector ( const Vector3d& pos, Vector3d& windOut ) con
 {
 	Vector3d difVect = pos - m_center;
 
-	ftype dist = difVect.magnitude();
+	Real dist = difVect.magnitude();
 	if ( dist < sqr(currentRadius) )
 	{
 		windOut = (difVect / dist) * ( 1 - sqr( dist/m_range ) ) * m_magnitude;

@@ -140,7 +140,7 @@ void CDuskGUI::drawRect ( const Rect& rect )
 		draw_rect.size.y *= Screen::Info.height;
 	}
 
-	CModelVertex vert;
+	arModelVertex vert;
 	SetDrawColor();
 	vert.r = m_drawcolor.red;
 	vert.g = m_drawcolor.green;
@@ -173,8 +173,8 @@ void CDuskGUI::drawRect ( const Rect& rect )
 	// Round values
 	for ( uint i = 0; i < modelSolidMeshList.size(); ++i )
 	{
-		modelSolidMeshList[i].x = (Real)Math::round(modelSolidMeshList[i].x);
-		modelSolidMeshList[i].y = (Real)Math::round(modelSolidMeshList[i].y);
+		modelSolidMeshList[i].x = (Real)math::round(modelSolidMeshList[i].x);
+		modelSolidMeshList[i].y = (Real)math::round(modelSolidMeshList[i].y);
 	}
 
 	// Render mesh
@@ -216,7 +216,7 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 	draw_rect.size.x -= 1.0F;
 	draw_rect.size.y -= 1.0F;
 
-	CModelVertex vert;
+	arModelVertex vert;
 	SetDrawColor();
 	if ( focused ) {
 		m_drawcolor.red *= 1.61F;
@@ -261,14 +261,14 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 	vert.y = draw_rect.pos.y + draw_rect.size.y;
 	modelLineMeshList.push_back( vert );
 	vert.x = draw_rect.pos.x;
-	vert.y = draw_rect.pos.y + Math::sgn(draw_rect.size.y);
+	vert.y = draw_rect.pos.y + math::sgn(draw_rect.size.y);
 	modelLineMeshList.push_back( vert );
 
 	// Round values
 	for ( uint i = 0; i < modelLineMeshList.size(); ++i )
 	{
-		modelLineMeshList[i].x = (Real)Math::round(modelLineMeshList[i].x);
-		modelLineMeshList[i].y = (Real)Math::round(modelLineMeshList[i].y);
+		modelLineMeshList[i].x = (Real)math::round(modelLineMeshList[i].x);
+		modelLineMeshList[i].y = (Real)math::round(modelLineMeshList[i].y);
 	}
 
 	// Render mesh
@@ -292,11 +292,11 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 		GL.cleanupDraw();
 	}
 }
-void CDuskGUI::drawLine ( const ftype x1, const ftype y1, const ftype x2, const ftype y2 )
+void CDuskGUI::drawLine ( const Real x1, const Real y1, const Real x2, const Real y2 )
 {
 	GL_ACCESS GLd_ACCESS
 
-	CModelVertex vert;
+	arModelVertex vert;
 	SetDrawColor();
 	vert.r = m_drawcolor.red;
 	vert.g = m_drawcolor.green;
@@ -321,8 +321,8 @@ void CDuskGUI::drawLine ( const ftype x1, const ftype y1, const ftype x2, const 
 			modelLineMeshList[i].x *= Screen::Info.width;
 			modelLineMeshList[i].y *= Screen::Info.height;
 		}
-		modelLineMeshList[i].x = (Real)Math::round(modelLineMeshList[i].x);
-		modelLineMeshList[i].y = (Real)Math::round(modelLineMeshList[i].y);
+		modelLineMeshList[i].x = (Real)math::round(modelLineMeshList[i].x);
+		modelLineMeshList[i].y = (Real)math::round(modelLineMeshList[i].y);
 	}
 
 	// Render mesh
@@ -351,7 +351,7 @@ void CDuskGUI::drawLine ( const ftype x1, const ftype y1, const ftype x2, const 
 	}
 }
 
-void CDuskGUI::drawText ( const ftype x, const ftype y, const char* str )
+void CDuskGUI::drawText ( const Real x, const Real y, const char* str )
 {
 	GL_ACCESS GLd_ACCESS
 
@@ -396,7 +396,7 @@ void CDuskGUI::drawText ( const ftype x, const ftype y, const char* str )
 		GL.cleanupDraw();
 	}
 }
-void CDuskGUI::drawTextWidth ( const ftype x, const ftype y, const ftype w, const char* str )
+void CDuskGUI::drawTextWidth ( const Real x, const Real y, const Real w, const char* str )
 {
 	GL_ACCESS GLd_ACCESS
 
@@ -442,7 +442,7 @@ void CDuskGUI::drawTextWidth ( const ftype x, const ftype y, const ftype w, cons
 		GL.cleanupDraw();
 	}
 }
-void CDuskGUI::drawTextCentered ( const ftype x, const ftype y, const char* str )
+void CDuskGUI::drawTextCentered ( const Real x, const Real y, const char* str )
 {
 	GL_ACCESS GLd_ACCESS
 

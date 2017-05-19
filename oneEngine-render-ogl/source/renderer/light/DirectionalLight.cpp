@@ -33,7 +33,7 @@ DirectionalLight::DirectionalLight ( void )
 		// Set position to the main scene's camera
 		transform.position = CCamera::activeCamera->transform.position;
 		// Offset by the focal distance (to a point)
-		transform.position += CCamera::activeCamera->transform.Forward() * std::min<ftype>( CCamera::activeCamera->focalDistance*0.4f, shadowRange*0.15f );
+		transform.position += CCamera::activeCamera->transform.Forward() * std::min<Real>( CCamera::activeCamera->focalDistance*0.4f, shadowRange*0.15f );
 	}
 	else
 	{
@@ -56,7 +56,7 @@ void DirectionalLight::PreStepSynchronus ( void )
 		// Set position to the main scene's camera
 		position = CCamera::activeCamera->transform.position;
 		// Offset by the focal distance (to a point)
-		position += CCamera::activeCamera->transform.rotation * Vector3d::forward * std::min<ftype>( CCamera::activeCamera->focalDistance*0.4f, shadowRange*0.15f );
+		position += CCamera::activeCamera->transform.rotation * Vector3d::forward * std::min<Real>( CCamera::activeCamera->focalDistance*0.4f, shadowRange*0.15f );
 	}
 	else
 	{
@@ -108,8 +108,8 @@ void DirectionalLight::UpdateShadowCamera ( void )
 	ds = -ds;
 	shadowCamera->transform.rotation = Vector3d(
 		0,
-		(ftype)radtodeg( atan2(ds.z, sqrt((ds.x * ds.x) + (ds.y * ds.y))) ),
-		-(ftype)radtodeg( atan2(ds.y, ds.x) )
+		(Real)radtodeg( atan2(ds.z, sqrt((ds.x * ds.x) + (ds.y * ds.y))) ),
+		-(Real)radtodeg( atan2(ds.y, ds.x) )
 		);
 	ds = -ds;
 

@@ -28,7 +28,7 @@ public:
 
 	ENGCOM_API void		SetActor ( CActor* n_actor );
 	ENGCOM_API CActor*	GetActor ( void );
-	ENGCOM_API ftype	GetMultiplier ( physRigidBody* );
+	ENGCOM_API Real	GetMultiplier ( physRigidBody* );
 
 private:
 	void CreateJoints ( std::vector<core::TransformLite>& pose_model );

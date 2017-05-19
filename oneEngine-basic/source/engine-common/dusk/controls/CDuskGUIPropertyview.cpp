@@ -58,7 +58,7 @@ CDuskGUIPropertyview::~CDuskGUIPropertyview ( void )
 	// Clear list
 	propertyList.clear();
 }
-void CDuskGUI::SetPropertyviewHeight ( const Handle& handle, const ftype newheight )
+void CDuskGUI::SetPropertyviewHeight ( const Handle& handle, const Real newheight )
 {
 	CDuskGUIPropertyview* pvl = (CDuskGUIPropertyview*)(vElements[int(handle)]);
 	pvl->field_height = newheight;
@@ -93,16 +93,16 @@ void CDuskGUI::AddPropertyOptionDropdown ( const Handle& handle, const string& o
 template <typename type> void CDuskGUIPropertyview::AddToList ( type* value )
 {
 	ListElement_t newProp;
-	Set<ftype>( newProp.value, *value );
-	Set<ftype>( newProp.previous, *value );
+	Set<Real>( newProp.value, *value );
+	Set<Real>( newProp.previous, *value );
 	newProp.type = 0;
 	propertyList.push_back( newProp );
 }
-template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( ftype* value )
+template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( Real* value )
 {
 	ListElement_t newProp;
-	Set<ftype>( newProp.value, *value );
-	Set<ftype>( newProp.previous, *value );
+	Set<Real>( newProp.value, *value );
+	Set<Real>( newProp.previous, *value );
 	newProp.type = 1;
 	newProp.element = activeGUI->CreateFloatfield( activeGUI->GetFromPointer( this ), *value );
 	propertyList.push_back( newProp );
@@ -142,7 +142,7 @@ template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( bool* value )
 	newProp.element = activeGUI->CreateCheckbox( activeGUI->GetFromPointer( this ), *value );
 	propertyList.push_back( newProp );
 }
-template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( RangeValue<ftype>* value )
+template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( RangeValue<Real>* value )
 {
 	ListElement_t newProp;
 	newProp.type = 6;
@@ -193,7 +193,7 @@ void CDuskGUIPropertyview::Update ( void )
 
 	// Calculate max scroll
 	max_scroll_offset = propertyList.size() - (rect.size.y/field_height) + 1;
-	scroll_offset = std::max<ftype>( -1, std::min<ftype>( scroll_offset, max_scroll_offset ) );
+	scroll_offset = std::max<Real>( -1, std::min<Real>( scroll_offset, max_scroll_offset ) );
 
 	// Update specific dialogues
 	for ( uint i = 0; i < propertyList.size(); ++i )
@@ -204,7 +204,7 @@ void CDuskGUIPropertyview::Update ( void )
 			switch ( propertyList[i].type )
 			{
 			case 1: // Float
-				activeGUI->UpdateFloatfield( propertyList[i].element, *((ftype*)propertyList[i].target) );
+				activeGUI->UpdateFloatfield( propertyList[i].element, *((Real*)propertyList[i].target) );
 				break;
 			case 2: // Vector3d
 				activeGUI->UpdateVector3dPicker( propertyList[i].element, *((Vector3d*)propertyList[i].target) );

@@ -22,7 +22,7 @@ CMatrix<W,H>::CMatrix ( void )
 }
 
 template <int W, int H>
-CMatrix<W,H>::CMatrix ( ftype * pInData )
+CMatrix<W,H>::CMatrix ( Real * pInData )
 {
 	for ( int i = W*H-1; i >= 0; i -= 1 )
 	{
@@ -32,13 +32,13 @@ CMatrix<W,H>::CMatrix ( ftype * pInData )
 
 //---Function definition
 // Settin the translation
-template<> inline bool Matrix2x2::setTranslation ( ftype const x, ftype const y, ftype const z )
+template<> inline bool Matrix2x2::setTranslation ( Real const x, Real const y, Real const z )
 {
 	pData[1] = x;
 	pData[3] = y;
 	return true;
 }
-template<> inline bool Matrix4x4::setTranslation ( ftype const x, ftype const y, ftype const z )
+template<> inline bool Matrix4x4::setTranslation ( Real const x, Real const y, Real const z )
 {
 	pData[3] = x;
 	pData[7] = y;
@@ -48,7 +48,7 @@ template<> inline bool Matrix4x4::setTranslation ( ftype const x, ftype const y,
 
 // Settin the translation via array of ftypes
 template <int W, int H>
-bool CMatrix<W,H>::setTranslation ( ftype * pInVector )
+bool CMatrix<W,H>::setTranslation ( Real * pInVector )
 {
 	int i;
 	for ( i = min(W,H); i > 0; i -= 1 )
@@ -76,13 +76,13 @@ template<> inline bool Matrix4x4::setTranslation ( Vector3d const& vect )
 }
 
 // Settin the scaling
-template<> inline bool Matrix2x2::setScale ( ftype const x, ftype const y, ftype const z )
+template<> inline bool Matrix2x2::setScale ( Real const x, Real const y, Real const z )
 {
 	pData[0] = x;
 	pData[3] = y;
 	return true;
 }
-template<> inline bool Matrix4x4::setScale ( ftype const x, ftype const y, ftype const z )
+template<> inline bool Matrix4x4::setScale ( Real const x, Real const y, Real const z )
 {
 	pData[0] = x;
 	pData[5] = y;
@@ -101,7 +101,7 @@ template<> inline bool Matrix4x4::setScale ( Vector3d const& vect )
 
 // Settin the scaling via array of ftypes
 template <int W, int H>
-bool CMatrix<W,H>::setScale ( ftype * pInVector )
+bool CMatrix<W,H>::setScale ( Real * pInVector )
 {
 	int i;
 	for ( i = min(W,H); i > 0; i -= 1 )
@@ -112,17 +112,17 @@ bool CMatrix<W,H>::setScale ( ftype * pInVector )
 }
 
 // Settin the rotation of a 2D matrix
-template<> inline bool Matrix2x2::setRotation ( ftype const angle )
+template<> inline bool Matrix2x2::setRotation ( Real const angle )
 {
 	/*Matrix2x2 rotationResult;
-	ftype trueAngle = angle * 3.14159265f / 180.0f;
+	Real trueAngle = angle * 3.14159265f / 180.0f;
 	rotationResult.pData[0] = cos( trueAngle );
 	rotationResult.pData[3] = rotationResult.pData[0];
 	rotationResult.pData[2] = sin( trueAngle );
 	rotationResult.pData[2] = -rotationResult.pData[1];
 
 	(*this) *= rotationResult;*/
-	ftype trueAngle = angle * 3.14159265f / 180.0f;
+	Real trueAngle = angle * 3.14159265f / 180.0f;
 	pData[0] = cos( trueAngle );
 	pData[3] = pData[0];
 	pData[2] = sin( trueAngle );
@@ -132,19 +132,19 @@ template<> inline bool Matrix2x2::setRotation ( ftype const angle )
 }
 
 // Settin the rotation
-template<> inline bool Matrix4x4::setRotation ( ftype const angle_x, ftype const angle_y, ftype const angle_z )
+template<> inline bool Matrix4x4::setRotation ( Real const angle_x, Real const angle_y, Real const angle_z )
 {
-	ftype ax = (ftype)degtorad(angle_x);
-	ftype ay = (ftype)degtorad(angle_y);
-	ftype az = (ftype)degtorad(angle_z);
-	ftype A       = cos(ax);
-    ftype B       = sin(ax);
-    ftype C       = cos(ay);
-    ftype D       = sin(ay);
-    ftype E       = cos(az);
-    ftype F       = sin(az);
-    ftype AD      =   A * D;
-    ftype BD      =   B * D;
+	Real ax = (Real)degtorad(angle_x);
+	Real ay = (Real)degtorad(angle_y);
+	Real az = (Real)degtorad(angle_z);
+	Real A       = cos(ax);
+    Real B       = sin(ax);
+    Real C       = cos(ay);
+    Real D       = sin(ay);
+    Real E       = cos(az);
+    Real F       = sin(az);
+    Real AD      =   A * D;
+    Real BD      =   B * D;
 
     pData[0]  =   C * E;
     pData[1]  =  -C * F;
@@ -188,17 +188,17 @@ template<> inline bool Matrix4x4::setRotation ( Vector3d const& vect )
 	assert( vect.z == vect.z );
 	assert( vect.z <= FLT_MAX && vect.z >= -FLT_MAX );
 
-	ftype ax = (ftype)degtorad(vect.x);
-	ftype ay = (ftype)degtorad(vect.y);
-	ftype az = (ftype)degtorad(vect.z);
-	ftype A       = cos(ax);
-    ftype B       = sin(ax);
-    ftype C       = cos(ay);
-    ftype D       = sin(ay);
-    ftype E       = cos(az);
-    ftype F       = sin(az);
-    ftype AD      =   A * D;
-    ftype BD      =   B * D;
+	Real ax = (Real)degtorad(vect.x);
+	Real ay = (Real)degtorad(vect.y);
+	Real az = (Real)degtorad(vect.z);
+	Real A       = cos(ax);
+    Real B       = sin(ax);
+    Real C       = cos(ay);
+    Real D       = sin(ay);
+    Real E       = cos(az);
+    Real F       = sin(az);
+    Real AD      =   A * D;
+    Real BD      =   B * D;
 
     pData[0]  =   C * E;
     pData[1]  =  -C * F;
@@ -231,15 +231,15 @@ template<> inline bool Matrix4x4::setRotation ( Vector3d const& vect )
 // Setting rotation of a 3d matrix via a quaternion
 template<> inline bool Matrix4x4::setRotation ( Quaternion const& quat )
 {
-	ftype xx      = quat.x * quat.x;
-    ftype xy      = quat.x * quat.y;
-    ftype xz      = quat.x * quat.z;
-    ftype xw      = quat.x * quat.w;
-    ftype yy      = quat.y * quat.y;
-    ftype yz      = quat.y * quat.z;
-    ftype yw      = quat.y * quat.w;
-    ftype zz      = quat.z * quat.z;
-    ftype zw      = quat.z * quat.w;
+	Real xx      = quat.x * quat.x;
+    Real xy      = quat.x * quat.y;
+    Real xz      = quat.x * quat.z;
+    Real xw      = quat.x * quat.w;
+    Real yy      = quat.y * quat.y;
+    Real yz      = quat.y * quat.z;
+    Real yw      = quat.y * quat.w;
+    Real zz      = quat.z * quat.z;
+    Real zw      = quat.z * quat.w;
     /*pData[0]  = 1 - 2 * ( yy + zz );
     pData[1]  =     2 * ( xy - zw );
     pData[2]  =     2 * ( xz + yw );
@@ -318,24 +318,24 @@ template<> inline Vector3d Matrix4x4::getEulerAngles ( void ) const
 	assert( errno != EDOM );*/
 	// End check
 
-	angle.y = D =  asin( min<ftype>(max<ftype>(pData[2],-1.0f),1.0f) );        /* Calculate Y-axis angle */
+	angle.y = D =  asin( min<Real>(max<Real>(pData[2],-1.0f),1.0f) );        /* Calculate Y-axis angle */
     C           =  cos( angle.y );
-    angle.y		=  (ftype)radtodeg(angle.y);//*=  RADIANS;
+    angle.y		=  (Real)radtodeg(angle.y);//*=  RADIANS;
     if ( fabs( C ) > 0.005 )             /* Gimball lock? */
     {
       tr_x      =  pData[10] / C;           /* No, so get X-axis angle */
       tr_y      = -pData[6]  / C;
-      angle.x  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+      angle.x  = (Real)radtodeg(atan2( tr_y, tr_x ));
       tr_x      =  pData[0] / C;            /* Get Z-axis angle */
       tr_y      = -pData[1] / C;
-      angle.z  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+      angle.z  = (Real)radtodeg(atan2( tr_y, tr_x ));
     }
     else                                 /* Gimball lock has occurred */
     {
       angle.x  = 0;                      /* Set X-axis angle to zero */
       tr_x      =  pData[5];                 /* And calculate Z-axis angle */
       tr_y      =  pData[4];
-      angle.z  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+      angle.z  = (Real)radtodeg(atan2( tr_y, tr_x ));
     }
 
     /* return only positive angles in [0,360] */
@@ -355,9 +355,9 @@ template<> inline Vector3d Matrix4x4::getEulerAngles ( void ) const
 }
 template<> inline Quaternion Matrix4x4::getQuaternion ( void ) const
 {
-	ftype S, X, Y, Z, W;
+	Real S, X, Y, Z, W;
 
-	ftype tr = pData[0] + pData[5] + pData[10];
+	Real tr = pData[0] + pData[5] + pData[10];
 	if ( tr > 0 ) {
 		S = sqrt(tr+1.0f) * 2; // S=4*qw
 		W = 0.25f * S;
@@ -367,7 +367,7 @@ template<> inline Quaternion Matrix4x4::getQuaternion ( void ) const
 	}
 	else if ( pData[0] > pData[5] && pData[0] > pData[10] )
 	{	// Column 0:
-        S  = (ftype)sqrt( 1.0f + pData[0] - pData[5] - pData[10] ) * 2;
+        S  = (Real)sqrt( 1.0f + pData[0] - pData[5] - pData[10] ) * 2;
         X = 0.25f * S;
         Y = (pData[4] + pData[1]) / S;
         Z = (pData[2] + pData[8]) / S;
@@ -375,7 +375,7 @@ template<> inline Quaternion Matrix4x4::getQuaternion ( void ) const
     }
 	else if ( pData[5] > pData[10] )
 	{	// Column 1:
-        S  = (ftype)sqrt( 1.0f + pData[5] - pData[0] - pData[10] ) * 2;
+        S  = (Real)sqrt( 1.0f + pData[5] - pData[0] - pData[10] ) * 2;
         X = (pData[4] + pData[1]) / S;
         Y = 0.25f * S;
         Z = (pData[9] + pData[6]) / S;
@@ -383,7 +383,7 @@ template<> inline Quaternion Matrix4x4::getQuaternion ( void ) const
     }
 	else
 	{	// Column 2:
-        S  = (ftype)sqrt( 1.0f + pData[10] - pData[0] - pData[5] ) * 2;
+        S  = (Real)sqrt( 1.0f + pData[10] - pData[0] - pData[5] ) * 2;
         X = (pData[2] + pData[8]) / S;
         Y = (pData[9] + pData[6]) / S;
         Z = 0.25f * S;
@@ -432,7 +432,7 @@ CMatrix<H,W> CMatrix<W,H>::transpose ( void )
 // Matrix inverse 2x2
 template<> inline CMatrix<2,2> CMatrix<2,2>::inverse ( void )
 {
-	ftype detVal = det();
+	Real detVal = det();
 	if ( fabs( detVal ) <= 0.0005f )
 	{
 		return CMatrix<2,2>();
@@ -454,7 +454,7 @@ inline CMatrix<W,H> CMatrix<W,H>::inverse ( void )
 {
 	if ( W == H )
 	{
-		ftype detVal = det();
+		Real detVal = det();
 		assert( detVal == detVal );
 		assert( detVal <= FLT_MAX && detVal >= -FLT_MAX );
 		if ( fabs( detVal ) <= 0.0005f )
@@ -483,20 +483,20 @@ inline CMatrix<W,H> CMatrix<W,H>::inverse ( void )
 }
 
 // Matrix determinant
-template<> inline ftype CMatrix<2,2>::det ( void )
+template<> inline Real CMatrix<2,2>::det ( void )
 {
 	return ( (pData[0]*pData[3]) - (pData[1]*pData[2]) );
 }
-template<> inline ftype CMatrix<3,3>::det ( void )
+template<> inline Real CMatrix<3,3>::det ( void )
 {
 	return ( (pData[0]*pData[4]*pData[8]) + (pData[1]*pData[5]*pData[6]) + (pData[2]*pData[3]*pData[7])
 		- (pData[2]*pData[4]*pData[6]) - (pData[1]*pData[3]*pData[8]) - (pData[0]*pData[5]*pData[7]) );
 }
 // Matrix determinant of arbitrary size (TODO)
 template <int W, int H>
-inline ftype CMatrix<W,H>::det ( void )
+inline Real CMatrix<W,H>::det ( void )
 {
-	ftype   det, result = 0, i = 1;
+	Real   det, result = 0, i = 1;
 	CMatrix<W-1,H-1> msub;
 	int     n;
 	for ( n = 0; n < W; n++, i *= -1 )
@@ -512,7 +512,7 @@ inline ftype CMatrix<W,H>::det ( void )
 template <int W, int H>
 CMatrix<W-1,H-1> CMatrix<W,H>::submatrix ( int ex_x, int ex_y ) const
 {
-	ftype newData [(W-1)*(H-1)];
+	Real newData [(W-1)*(H-1)];
 	static int di, dj, si, sj;
 	for( di = 0; di < W-1; ++di )
 	{
@@ -534,7 +534,7 @@ CMatrix<W-1,H-1> CMatrix<W,H>::submatrix ( int ex_x, int ex_y ) const
 
 // Linear Interpolation
 template <int W, int H>
-void CMatrix<W,H>::Lerp ( CMatrix<W,H> const& right, ftype const t )
+void CMatrix<W,H>::Lerp ( CMatrix<W,H> const& right, Real const t )
 {
 	int x;
 	for ( x = 0; x < W*H; x += 1 )
@@ -543,7 +543,7 @@ void CMatrix<W,H>::Lerp ( CMatrix<W,H> const& right, ftype const t )
 	}
 }
 template <int W, int H>
-CMatrix<W,H> CMatrix<W,H>::lerp ( CMatrix<W,H> const& right, ftype const t ) const
+CMatrix<W,H> CMatrix<W,H>::lerp ( CMatrix<W,H> const& right, Real const t ) const
 {
 	CMatrix <W,H> result;
 	int x;
@@ -660,7 +660,7 @@ inline Vector4d Matrix4x4::operator* ( Vector4d const& vect ) const
 
 // Multiply scalar
 template <int W, int H>
-CMatrix<W,H> CMatrix<W,H>::operator* ( ftype const right ) const
+CMatrix<W,H> CMatrix<W,H>::operator* ( Real const right ) const
 {
 	CMatrix <W,H> result;
 	int x, y;
@@ -674,7 +674,7 @@ CMatrix<W,H> CMatrix<W,H>::operator* ( ftype const right ) const
 	return result;
 }
 
-inline Matrix4x4 Matrix4x4::operator* ( ftype const right ) const
+inline Matrix4x4 Matrix4x4::operator* ( Real const right ) const
 {
 	Matrix4x4 result;
 	for ( int x = 0; x < 16; x++ )
@@ -781,14 +781,14 @@ CMatrix<H,W> CMatrix<W,H>::operator! ( void ) const
 
 // Public Accessor
 template <int W, int H>
-const ftype* CMatrix<W,H>::operator[] ( int index ) const
+const Real* CMatrix<W,H>::operator[] ( int index ) const
 {
 	return &( pData[index*W] );
 }
 
 // Private Accessor and Editor
 template <int W, int H>
-ftype* CMatrix<W,H>::operator[] ( int index )
+Real* CMatrix<W,H>::operator[] ( int index )
 {
 	return &( pData[index*W] );
 }

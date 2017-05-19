@@ -30,7 +30,7 @@ public:
 	};
 	eWaypointType type;
 
-	ftype distance;
+	Real distance;
 	bool in_range;
 
 	CModel* entity;

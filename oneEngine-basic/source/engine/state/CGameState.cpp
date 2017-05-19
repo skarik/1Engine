@@ -251,7 +251,7 @@ void CGameState::LateUpdate ( void )
 	/*Time::fixedTime += Time::deltaTime;
 	if ( Time::fixedTime >= Time::targetFixedTime )
 	{
-		ftype temp = Time::deltaTime;
+		Real temp = Time::deltaTime;
 		Time::deltaTime = Time::fixedTime;
 
 		Physics::Update( Time::deltaTime );
@@ -282,7 +282,7 @@ void CGameState::LateUpdate ( void )
 	Time::fixedTime += Time::deltaTime;
 	if ( Time::fixedTime >= Time::targetFixedTime )
 	{
-		ftype temp = Time::deltaTime;
+		Real temp = Time::deltaTime;
 		Time::deltaTime = Time::fixedTime;
 
 #ifdef _PHYSICS_MULTITHREADED_

@@ -25,19 +25,19 @@ inline Matrix3x3 Matrix4x4::getRotator ( void ) const
 }
 
 // Settin the rotation
-inline bool Matrix3x3::setRotation ( ftype const angle_x, ftype const angle_y, ftype const angle_z )
+inline bool Matrix3x3::setRotation ( Real const angle_x, Real const angle_y, Real const angle_z )
 {
-	ftype ax = (ftype)degtorad(angle_x);
-	ftype ay = (ftype)degtorad(angle_y);
-	ftype az = (ftype)degtorad(angle_z);
-	ftype A       = cos(ax);
-    ftype B       = sin(ax);
-    ftype C       = cos(ay);
-    ftype D       = sin(ay);
-    ftype E       = cos(az);
-    ftype F       = sin(az);
-    ftype AD      =   A * D;
-    ftype BD      =   B * D;
+	Real ax = (Real)degtorad(angle_x);
+	Real ay = (Real)degtorad(angle_y);
+	Real az = (Real)degtorad(angle_z);
+	Real A       = cos(ax);
+    Real B       = sin(ax);
+    Real C       = cos(ay);
+    Real D       = sin(ay);
+    Real E       = cos(az);
+    Real F       = sin(az);
+    Real AD      =   A * D;
+    Real BD      =   B * D;
 
     pData[0]  =   C * E;
     pData[1]  =  -C * F;
@@ -62,15 +62,15 @@ inline bool Matrix3x3::setRotation ( Vector3d const& vect )
 // Setting rotation of a 3d matrix via a quaternion
 inline bool Matrix3x3::setRotation ( Quaternion const& quat )
 {
-	ftype xx      = quat.x * quat.x;
-    ftype xy      = quat.x * quat.y;
-    ftype xz      = quat.x * quat.z;
-    ftype xw      = quat.x * quat.w;
-    ftype yy      = quat.y * quat.y;
-    ftype yz      = quat.y * quat.z;
-    ftype yw      = quat.y * quat.w;
-    ftype zz      = quat.z * quat.z;
-    ftype zw      = quat.z * quat.w;
+	Real xx      = quat.x * quat.x;
+    Real xy      = quat.x * quat.y;
+    Real xz      = quat.x * quat.z;
+    Real xw      = quat.x * quat.w;
+    Real yy      = quat.y * quat.y;
+    Real yz      = quat.y * quat.z;
+    Real yw      = quat.y * quat.w;
+    Real zz      = quat.z * quat.z;
+    Real zw      = quat.z * quat.w;
     /*pData[0]  = 1 - 2 * ( yy + zz );
     pData[1]  =     2 * ( xy - zw );
     pData[2]  =     2 * ( xz + yw );
@@ -102,24 +102,24 @@ inline Vector3d Matrix3x3::getEulerAngles ( void ) const
 	float tr_x, tr_y, D,C;
 	Vector3d angle;
 
-	angle.y = D =  asin( min<ftype>(max<ftype>(pData[2],-1.0f),1.0f) );        /* Calculate Y-axis angle */
+	angle.y = D =  asin( min<Real>(max<Real>(pData[2],-1.0f),1.0f) );        /* Calculate Y-axis angle */
     C           =  cos( angle.y );
-    angle.y		=  (ftype)radtodeg(angle.y);//*=  RADIANS;
+    angle.y		=  (Real)radtodeg(angle.y);//*=  RADIANS;
     if ( fabs( C ) > 0.005 )             /* Gimball lock? */
     {
 		tr_x      =  pData[8] / C;           /* No, so get X-axis angle */
 		tr_y      = -pData[5] / C;
-		angle.x  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+		angle.x  = (Real)radtodeg(atan2( tr_y, tr_x ));
 		tr_x      =  pData[0] / C;            /* Get Z-axis angle */
 		tr_y      = -pData[1] / C;
-		angle.z  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+		angle.z  = (Real)radtodeg(atan2( tr_y, tr_x ));
     }
     else                                 /* Gimball lock has occurred */
     {
 		angle.x  = 0;                      /* Set X-axis angle to zero */
 		tr_x      =  pData[4];                 /* And calculate Z-axis angle */
 		tr_y      =  pData[3];
-		angle.z  = (ftype)radtodeg(atan2( tr_y, tr_x ));
+		angle.z  = (Real)radtodeg(atan2( tr_y, tr_x ));
     }
 
     /* return only positive angles in [0,360] */
@@ -141,9 +141,9 @@ inline Vector3d Matrix3x3::getEulerAngles ( void ) const
 // Convert the rotation into a quaternion
 inline Quaternion Matrix3x3::getQuaternion ( void ) const
 {
-	ftype S, X, Y, Z, W;
+	Real S, X, Y, Z, W;
 
-	ftype tr = pData[0] + pData[4] + pData[8];
+	Real tr = pData[0] + pData[4] + pData[8];
 	if ( tr > 0 ) { 
 		S = sqrt(tr+1.0f) * 2; // S=4*qw 
 		W = 0.25f * S;
@@ -153,7 +153,7 @@ inline Quaternion Matrix3x3::getQuaternion ( void ) const
 	}
 	else if ( pData[0] > pData[4] && pData[0] > pData[8] ) 
 	{	// Column 0: 
-        S  = (ftype)sqrt( 1.0f + pData[0] - pData[4] - pData[8] ) * 2;
+        S  = (Real)sqrt( 1.0f + pData[0] - pData[4] - pData[8] ) * 2;
         X = 0.25f * S;
         Y = (pData[3] + pData[1]) / S;
         Z = (pData[2] + pData[6]) / S;
@@ -161,7 +161,7 @@ inline Quaternion Matrix3x3::getQuaternion ( void ) const
     }
 	else if ( pData[4] > pData[8] )
 	{	// Column 1: 
-        S  = (ftype)sqrt( 1.0f + pData[4] - pData[0] - pData[8] ) * 2;
+        S  = (Real)sqrt( 1.0f + pData[4] - pData[0] - pData[8] ) * 2;
         X = (pData[3] + pData[1]) / S;
         Y = 0.25f * S;
         Z = (pData[7] + pData[5]) / S;
@@ -169,7 +169,7 @@ inline Quaternion Matrix3x3::getQuaternion ( void ) const
     }
 	else
 	{	// Column 2:
-        S  = (ftype)sqrt( 1.0f + pData[8] - pData[0] - pData[4] ) * 2;
+        S  = (Real)sqrt( 1.0f + pData[8] - pData[0] - pData[4] ) * 2;
         X = (pData[2] + pData[6]) / S;
         Y = (pData[7] + pData[5]) / S;
         Z = 0.25f * S;

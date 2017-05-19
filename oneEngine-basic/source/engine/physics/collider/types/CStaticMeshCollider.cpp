@@ -8,7 +8,7 @@
 	pCollisionShape = Physics::CreateMeshShape( p_model->GetModelData( iMeshIndex ) );
 }*/
 
-CStaticMeshCollider::CStaticMeshCollider ( CModelData* p_modeldata )
+CStaticMeshCollider::CStaticMeshCollider ( arModelData* p_modeldata )
 {
 	pCollisionShape = Physics::CreateMeshShape( p_modeldata );
 }

@@ -26,7 +26,7 @@ public:
 	void Add ( CAnimationCurve<Matrix2x2>* );
 	void Add ( CAnimationCurve<Vector3d>* );
 	void Add ( CAnimationCurve<Vector2d>* );
-	void Add ( CAnimationCurve<ftype>* );
+	void Add ( CAnimationCurve<Real>* );
 	void Add ( CAnimationCurve<XTransform>* newCurve )
 	{
 		throw core::DeprecatedCallException();

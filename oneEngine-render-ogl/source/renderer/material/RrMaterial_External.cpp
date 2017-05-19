@@ -314,7 +314,7 @@ ELoadState loadPassProperties ( RrMaterial* material,
 							   const string& command, std::stringstream& ss,
 							   const renderer::shader_tag_t targetTag, eMipmapGenerationStyle& mipmapMode )
 {
-	ftype t_float;
+	Real t_float;
 	char str [256];
 	string subCommand;
 	RrPassForward* t_pass = &(material->passinfo.back());
@@ -597,7 +597,7 @@ ELoadState loadEyePassProperties ( RrMaterial* material,
 							   const string& command, std::stringstream& ss,
 							   const renderer::shader_tag_t targetTag )
 {
-	//ftype t_float;
+	//Real t_float;
 	char str [256];
 	string subCommand;
 	RrPassForward* t_pass = &(material->passinfo.back());
@@ -647,7 +647,7 @@ ELoadState loadEyePassProperties ( RrMaterial* material,
 ELoadState loadDeferredPassProperties ( RrMaterial* material,
 								const string& command, std::stringstream& ss )
 {
-	ftype t_float;
+	Real t_float;
 	//char str [256];
 	string subCommand;
 	RrPassDeferred* t_pass = &(material->deferredinfo.back());

@@ -146,8 +146,8 @@ void CResourceManager::RenderUpdate ( void )
 					{
 						// Create the level size data
 						t_level		= (bpdHeader.levels-1)-i;
-						t_width		= bpdHeader.width  / Math::exp2( t_level );
-						t_height	= bpdHeader.height / Math::exp2( t_level );
+						t_width		= bpdHeader.width  / math::exp2( t_level );
+						t_height	= bpdHeader.height / math::exp2( t_level );
 
 						// Clear the current level's texture (mark storage as proper size)
 						glTexImage2D( GL_TEXTURE_2D, t_level, GL.Enum(streamTarget->info.internalFormat), t_width,t_height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL );
@@ -426,8 +426,8 @@ void CResourceManager::StreamUpdate_Texture ( const char* n_targetFile )
 		{
 			// Create the level size data
 			t_level		= (bpdHeader.levels-1)-i;
-			t_width		= bpdHeader.width  / Math::exp2( t_level );
-			t_height	= bpdHeader.height / Math::exp2( t_level );
+			t_width		= bpdHeader.width  / math::exp2( t_level );
+			t_height	= bpdHeader.height / math::exp2( t_level );
 
 			// Seek to the target level
 			fseek( t_bpdFile, sizeof(Textures::tbpdHeader)+(sizeof(tPixel)*16*16)
@@ -699,7 +699,7 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 				n_texture->io_imginfo.width = bpdHeader.width;
 				n_texture->io_imginfo.height = bpdHeader.height;
 				n_texture->io_imginfo.internalFormat = 0;
-				n_texture->io_imginfo.framecount = bpdHeader.frames;
+				n_texture->io_imginfo.framecount = (uint8_t)bpdHeader.frames;
 				n_texture->io_imginfo.xdivs = bpdHeader.xdivs;
 				n_texture->io_imginfo.ydivs = bpdHeader.ydivs;
 			}
@@ -802,7 +802,7 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 		n_texture->io_imginfo.width = bpdHeader.width;
 		n_texture->io_imginfo.height = bpdHeader.height;
 		n_texture->io_imginfo.internalFormat = 0;
-		n_texture->io_imginfo.framecount = bpdHeader.frames;
+		n_texture->io_imginfo.framecount = (uint8_t)bpdHeader.frames;
 		n_texture->io_imginfo.xdivs = bpdHeader.xdivs;
 		n_texture->io_imginfo.ydivs = bpdHeader.ydivs;
 	}

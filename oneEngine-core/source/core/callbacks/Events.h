@@ -1,6 +1,6 @@
 
-#ifndef _WON_ENGINE_EVENTS_H_
-#define _WON_ENGINE_EVENTS_H_
+#ifndef CORE_1ENGINE_EVENTS_H_
+#define CORE_1ENGINE_EVENTS_H_
 
 #include "core/common.h"
 #include <vector>
@@ -29,4 +29,4 @@ private:
 	std::vector<cbpObserverInfo>	observers;
 };
 
-#endif//_WON_ENGINE_EVENTS_H_
+#endif//CORE_1ENGINE_EVENTS_H_

@@ -108,8 +108,8 @@ void M04::UIDragHandle::Update ( void )
 				}
 				m_position = m_position_start + t_drag_delta;
 				// Round to snapping divs
-				if ( m_position_snap.x > 0.1F ) m_position.x = Math::round( m_position.x / m_position_snap.x ) * m_position_snap.x;
-				if ( m_position_snap.y > 0.1F ) m_position.y = Math::round( m_position.y / m_position_snap.y ) * m_position_snap.y;
+				if ( m_position_snap.x > 0.1F ) m_position.x = math::round( m_position.x / m_position_snap.x ) * m_position_snap.x;
+				if ( m_position_snap.y > 0.1F ) m_position.y = math::round( m_position.y / m_position_snap.y ) * m_position_snap.y;
 			}
 		}
 

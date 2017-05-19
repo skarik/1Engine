@@ -29,12 +29,12 @@ void CDuskGUIColorpicker::Update ( void )
 	if ( hue < 0 )
 	{
 		// compute hue
-		ftype chroma;
+		Real chroma;
 
 		// compute lightness
-		ftype fmax, fmin;
-		fmax = std::max<ftype>( std::max<ftype>( colorValue.red, colorValue.green ), colorValue.blue );
-		fmin = std::min<ftype>( std::min<ftype>( colorValue.red, colorValue.green ), colorValue.blue );
+		Real fmax, fmin;
+		fmax = std::max<Real>( std::max<Real>( colorValue.red, colorValue.green ), colorValue.blue );
+		fmin = std::min<Real>( std::min<Real>( colorValue.red, colorValue.green ), colorValue.blue );
 		lightness = ( fmax + fmin ) * 0.5f;
 		chroma = fmax - fmin;
 
@@ -102,7 +102,7 @@ void CDuskGUIColorpicker::Update ( void )
 			{
 				bool hasChange = false;
 				Vector2d dpos, delta;
-				ftype dl, dist;
+				Real dl, dist;
 				Vector2d mouse_coords;
 				
 				// Get proper mouse coords
@@ -125,7 +125,7 @@ void CDuskGUIColorpicker::Update ( void )
 					}
 					if ( useMode == MODE_WHEEL ) {
 						// Get the angle
-						hue = (ftype)radtodeg( atan2( delta.y, delta.x ) );
+						hue = (Real)radtodeg( atan2( delta.y, delta.x ) );
 						if ( hue < 0 )
 							hue += 360;
 
@@ -171,9 +171,9 @@ void CDuskGUIColorpicker::Update ( void )
 				if ( hasChange )
 				{
 					// Update color with vals
-					ftype chroma = ( 1.0f - fabs( 2.0f*lightness - 1.0f )) * saturation;
-					ftype hue_t = hue / 60.0f;
-					ftype cx_t = chroma * ( 1 - fabs( ( (hue_t*0.5f - int(hue_t*0.5f))*2.0f ) - 1.0f ) );
+					Real chroma = ( 1.0f - fabs( 2.0f*lightness - 1.0f )) * saturation;
+					Real hue_t = hue / 60.0f;
+					Real cx_t = chroma * ( 1 - fabs( ( (hue_t*0.5f - int(hue_t*0.5f))*2.0f ) - 1.0f ) );
 					Color color_t;
 					if ( hue_t < 1 )
 						color_t = Color( chroma, cx_t, 0 );
@@ -189,7 +189,7 @@ void CDuskGUIColorpicker::Update ( void )
 						color_t = Color( chroma, 0, cx_t );
 					else
 						color_t = Color( 0.0f,0,0 );
-					ftype cm_t = lightness - chroma*0.5f;
+					Real cm_t = lightness - chroma*0.5f;
 					colorValue.red	= color_t.red	+ cm_t;
 					colorValue.green= color_t.green + cm_t;
 					colorValue.blue = color_t.blue	+ cm_t;
@@ -332,11 +332,11 @@ void CDuskGUIColorpicker::Render ( void )
 			GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
 			for ( int i = 0; i <= 360; i += 5 )
 			{
-				dopos1.x = dpos.x + (ftype)( cos( degtorad( i ) ) * dl );
-				dopos1.y = dpos.y + (ftype)( sin( degtorad( i ) ) * dl );
+				dopos1.x = dpos.x + (Real)( cos( degtorad( i ) ) * dl );
+				dopos1.y = dpos.y + (Real)( sin( degtorad( i ) ) * dl );
 
-				dopos2.x = dpos.x + (ftype)( cos( degtorad( i ) ) * dl * 0.8f );
-				dopos2.y = dpos.y + (ftype)( sin( degtorad( i ) ) * dl * 0.8f );
+				dopos2.x = dpos.x + (Real)( cos( degtorad( i ) ) * dl * 0.8f );
+				dopos2.y = dpos.y + (Real)( sin( degtorad( i ) ) * dl * 0.8f );
 
 				modColor = i % 60;
 				if (( i < 60 )||( i == 360 ))
@@ -363,26 +363,26 @@ void CDuskGUIColorpicker::Render ( void )
 			GLd.BeginPrimitive( GL_LINE_STRIP );
 				GLd.P_PushColor( 0.2f,0.2f,0.2f,0.8f );
 
-				dopos1.x = dpos.x + (ftype)( cos( degtorad( hue-2 ) ) * dl * 1.03f );
-				dopos1.y = dpos.y + (ftype)( sin( degtorad( hue-2 ) ) * dl * 1.03f );
+				dopos1.x = dpos.x + (Real)( cos( degtorad( hue-2 ) ) * dl * 1.03f );
+				dopos1.y = dpos.y + (Real)( sin( degtorad( hue-2 ) ) * dl * 1.03f );
 
-				dopos2.x = dpos.x + (ftype)( cos( degtorad( hue-2 ) ) * dl * 0.77f );
-				dopos2.y = dpos.y + (ftype)( sin( degtorad( hue-2 ) ) * dl * 0.77f );
+				dopos2.x = dpos.x + (Real)( cos( degtorad( hue-2 ) ) * dl * 0.77f );
+				dopos2.y = dpos.y + (Real)( sin( degtorad( hue-2 ) ) * dl * 0.77f );
 
 				GLd.P_AddVertex( dopos1.x,dopos1.y );
 				GLd.P_AddVertex( dopos2.x,dopos2.y );
 
-				dopos1.x = dpos.x + (ftype)( cos( degtorad( hue+2 ) ) * dl * 1.03f );
-				dopos1.y = dpos.y + (ftype)( sin( degtorad( hue+2 ) ) * dl * 1.03f );
+				dopos1.x = dpos.x + (Real)( cos( degtorad( hue+2 ) ) * dl * 1.03f );
+				dopos1.y = dpos.y + (Real)( sin( degtorad( hue+2 ) ) * dl * 1.03f );
 
-				dopos2.x = dpos.x + (ftype)( cos( degtorad( hue+2 ) ) * dl * 0.77f );
-				dopos2.y = dpos.y + (ftype)( sin( degtorad( hue+2 ) ) * dl * 0.77f );
+				dopos2.x = dpos.x + (Real)( cos( degtorad( hue+2 ) ) * dl * 0.77f );
+				dopos2.y = dpos.y + (Real)( sin( degtorad( hue+2 ) ) * dl * 0.77f );
 
 				GLd.P_AddVertex( dopos2.x,dopos2.y );
 				GLd.P_AddVertex( dopos1.x,dopos1.y );
 
-				dopos1.x = dpos.x + (ftype)( cos( degtorad( hue-2 ) ) * dl * 1.03f );
-				dopos1.y = dpos.y + (ftype)( sin( degtorad( hue-2 ) ) * dl * 1.03f );
+				dopos1.x = dpos.x + (Real)( cos( degtorad( hue-2 ) ) * dl * 1.03f );
+				dopos1.y = dpos.y + (Real)( sin( degtorad( hue-2 ) ) * dl * 1.03f );
 
 				GLd.P_AddVertex( dopos1.x,dopos1.y );
 

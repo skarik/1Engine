@@ -539,7 +539,7 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			Matrix4x4 t_finalEditVelocity;
 //			// Add world position to the wobble
 //			// Decrease translation input
-//			const ftype t_moveDistChange = 0.5f;
+//			const Real t_moveDistChange = 0.5f;
 //			//difference.pData[3] *= t_moveDistChange;
 //			//difference.pData[7] *= t_moveDistChange;
 //			//difference.pData[11]*= t_moveDistChange;
@@ -550,8 +550,8 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_bone->tempMatx = (nextDifference.inverse()) * t_bone->tempMatx;
 //
 //			// Create the "to resting position" velocities
-//			const ftype t_moveLimit_TranslationOffset = 10.0f;
-//			const ftype t_moveLimit = Time::deltaTime * 0.1f;
+//			const Real t_moveLimit_TranslationOffset = 10.0f;
+//			const Real t_moveLimit = Time::deltaTime * 0.1f;
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i];
 //				if ( i == 3 || i == 7 || i == 11 ) {
@@ -569,8 +569,8 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_finalEditVelocity = t_tempVelocities;
 //
 //			// Modify the real velocity matrix by working on acceleration. First, damp the velocity to zero.
-//			const ftype t_dampenConstant = 4.0f;
-//			const ftype t_dampenLimit = Time::deltaTime * 4.0f;
+//			const Real t_dampenConstant = 4.0f;
+//			const Real t_dampenLimit = Time::deltaTime * 4.0f;
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = -t_bone->veloMatx.pData[i] * Time::deltaTime * t_dampenConstant;
 //				if ( fabs(t_tempVelocities.pData[i]) > t_dampenLimit ) {
@@ -580,8 +580,8 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //				t_bone->veloMatx.pData[i] += t_tempVelocities.pData[i];
 //			}
 //			// Now apply distance acceleration
-//			const ftype t_distanceConstant = 1.2f;
-//			const ftype t_distanceLimit = Time::deltaTime * 10.0f;
+//			const Real t_distanceConstant = 1.2f;
+//			const Real t_distanceLimit = Time::deltaTime * 10.0f;
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = (t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i]) * Time::deltaTime * t_distanceConstant;
 //				if ( fabs(t_tempVelocities.pData[i]) > t_distanceLimit ) {
@@ -598,9 +598,9 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_bone->tempMatx += t_finalEditVelocity;
 //
 //			// Limit the translation
-//			const ftype t_positionLimit_Translation = 0.4f;
+//			const Real t_positionLimit_Translation = 0.4f;
 //			for ( uint i = 3; i < 12; i += 4 ) {
-//				ftype currentDifference = t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i];
+//				Real currentDifference = t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i];
 //				if ( fabs(currentDifference) > t_positionLimit_Translation ) {
 //					t_bone->tempMatx.pData[i] = t_bone->currentPose.pData[i] - Math.sgn(currentDifference)*t_positionLimit_Translation;
 //				}
@@ -617,7 +617,7 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			Matrix4x4 t_finalEditVelocity;
 //			// Add world position to the wobble
 //			// Decrease translation input
-//			const ftype t_moveDistChange = 0.5f;
+//			const Real t_moveDistChange = 0.5f;
 //			//difference.pData[3] *= t_moveDistChange;
 //			//difference.pData[7] *= t_moveDistChange;
 //			//difference.pData[11]*= t_moveDistChange;
@@ -628,8 +628,8 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_bone->tempMatx = (nextDifference.inverse()) * t_bone->tempMatx;
 //
 //			// Create the "to resting position" velocities
-//			const ftype t_moveLimit_TranslationOffset = 10.0f;
-//			const ftype t_moveLimit = Time::deltaTime * 0.1f;
+//			const Real t_moveLimit_TranslationOffset = 10.0f;
+//			const Real t_moveLimit = Time::deltaTime * 0.1f;
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i];
 //				if ( i == 3 || i == 7 || i == 11 ) {
@@ -647,8 +647,8 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_finalEditVelocity = t_tempVelocities;
 //
 //			// Modify the real velocity matrix by working on acceleration. First, damp the velocity to zero.
-//			const ftype t_dampenConstant = 4.0f;
-//			const ftype t_dampenLimit = Time::deltaTime * 4.0f;
+//			const Real t_dampenConstant = 4.0f;
+//			const Real t_dampenLimit = Time::deltaTime * 4.0f;
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = -t_bone->veloMatx.pData[i] * Time::deltaTime * t_dampenConstant;
 //				if ( fabs(t_tempVelocities.pData[i]) > t_dampenLimit ) {
@@ -658,8 +658,8 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //				t_bone->veloMatx.pData[i] += t_tempVelocities.pData[i];
 //			}
 //			// Now apply distance acceleration
-//			const ftype t_distanceConstant = 1.2f;
-//			const ftype t_distanceLimit = Time::deltaTime * 10.0f;
+//			const Real t_distanceConstant = 1.2f;
+//			const Real t_distanceLimit = Time::deltaTime * 10.0f;
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = (t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i]) * Time::deltaTime * t_distanceConstant;
 //				if ( fabs(t_tempVelocities.pData[i]) > t_distanceLimit ) {
@@ -676,9 +676,9 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_bone->tempMatx += t_finalEditVelocity;
 //
 //			// Limit the translation
-//			const ftype t_positionLimit_Translation = 0.4f;
+//			const Real t_positionLimit_Translation = 0.4f;
 //			for ( uint i = 3; i < 12; i += 4 ) {
-//				ftype currentDifference = t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i];
+//				Real currentDifference = t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i];
 //				if ( fabs(currentDifference) > t_positionLimit_Translation ) {
 //					t_bone->tempMatx.pData[i] = t_bone->currentPose.pData[i] - Math.sgn(currentDifference)*t_positionLimit_Translation;
 //				}
@@ -719,15 +719,15 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			Matrix4x4 nextDifference = boobDifferenceDifference;
 //			// Add world position to the wobble
 //			// Decrease translation input
-//			const ftype t_moveDistChange = 0.0f;
+//			const Real t_moveDistChange = 0.0f;
 //			//nextDifference *= t_bone->tempMatx;
 //			nextDifference = nextDifference.LerpTo( Matrix4x4(), t_moveDistChange );
 //			// Add translation to the matrix
 //			t_bone->tempMatx = (nextDifference.inverse()) * t_bone->tempMatx;
 //
 //			// Create the "to resting position" velocities
-//			const ftype t_moveLimit_TranslationOffset = 5.0f;
-//			const ftype t_moveLimit = Time::deltaTime * 0.05f;
+//			const Real t_moveLimit_TranslationOffset = 5.0f;
+//			const Real t_moveLimit = Time::deltaTime * 0.05f;
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i];
 //				if ( i == 3 || i == 7 || i == 11 ) {
@@ -745,8 +745,8 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_finalEditVelocity = t_tempVelocities;
 //
 //			// Modify the real velocity matrix by working on acceleration. First, damp the velocity to zero.
-//			const ftype t_dampenConstant = 8.0f;
-//			const ftype t_dampenLimit = Time::deltaTime * 8.0f;
+//			const Real t_dampenConstant = 8.0f;
+//			const Real t_dampenLimit = Time::deltaTime * 8.0f;
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = -t_bone->veloMatx.pData[i] * Time::deltaTime * t_dampenConstant;
 //				if ( fabs(t_tempVelocities.pData[i]) > t_dampenLimit ) {
@@ -756,8 +756,8 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //				t_bone->veloMatx.pData[i] += t_tempVelocities.pData[i];
 //			}
 //			// Now apply distance acceleration
-//			const ftype t_distanceConstant = 2.4f; // Fast acceleration
-//			const ftype t_distanceLimit = Time::deltaTime * 20.0f;
+//			const Real t_distanceConstant = 2.4f; // Fast acceleration
+//			const Real t_distanceLimit = Time::deltaTime * 20.0f;
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = (t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i]) * Time::deltaTime * t_distanceConstant;
 //				if ( fabs(t_tempVelocities.pData[i]) > t_distanceLimit ) {
@@ -774,10 +774,10 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_bone->tempMatx += t_finalEditVelocity;
 //
 //			// Limit the translation
-//			const ftype t_positionLimit_Translation = 0.005f; // Low translation limit
-//			const ftype t_positionLimit_Rotation = 0.04f; // Higher rotation limit
+//			const Real t_positionLimit_Translation = 0.005f; // Low translation limit
+//			const Real t_positionLimit_Rotation = 0.04f; // Higher rotation limit
 //			for ( uint i = 0; i < 16; ++i ) {
-//				ftype currentDifference = t_bone->tempMatx.pData[i] - t_bone->currentPose.pData[i];
+//				Real currentDifference = t_bone->tempMatx.pData[i] - t_bone->currentPose.pData[i];
 //				if ( i == 3 || i == 7 || i == 11 ) {
 //					if ( fabs(currentDifference) > t_positionLimit_Translation ) {
 //						t_bone->tempMatx.pData[i] = t_bone->currentPose.pData[i] + Math.sgn(currentDifference)*t_positionLimit_Translation;
@@ -813,7 +813,7 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			Matrix4x4 t_finalEditVelocity;
 //			// Add world position to the wobble
 //			// Decrease translation input
-//			ftype t_moveDistChange = 0.4f;
+//			Real t_moveDistChange = 0.4f;
 //			if ( t_bone->effect == 3 ) {
 //				t_moveDistChange = 0.8f;
 //			}
@@ -834,8 +834,8 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_bone->tempMatx = (nextDifference.inverse()) * t_bone->tempMatx;
 //
 //			// Create the "to resting position" velocities
-//			const ftype t_moveLimit_TranslationOffset = 10.0f;
-//			const ftype t_moveLimit = Time::deltaTime * 0.1f;
+//			const Real t_moveLimit_TranslationOffset = 10.0f;
+//			const Real t_moveLimit = Time::deltaTime * 0.1f;
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i];
 //				if ( i == 3 || i == 7 || i == 11 ) {
@@ -853,8 +853,8 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_finalEditVelocity = t_tempVelocities;
 //
 //			// Modify the real velocity matrix by working on acceleration. First, damp the velocity to zero.
-//			const ftype t_dampenConstant = 5.0f;
-//			const ftype t_dampenLimit = Time::deltaTime * 3.0f;
+//			const Real t_dampenConstant = 5.0f;
+//			const Real t_dampenLimit = Time::deltaTime * 3.0f;
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = -t_bone->veloMatx.pData[i] * Time::deltaTime * t_dampenConstant;
 //				if ( fabs(t_tempVelocities.pData[i]) > t_dampenLimit ) {
@@ -864,11 +864,11 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //				t_bone->veloMatx.pData[i] += t_tempVelocities.pData[i];
 //			}
 //			// Now apply distance acceleration
-//			ftype t_distanceConstant = 0.9f;
+//			Real t_distanceConstant = 0.9f;
 //			if ( t_bone->effect == 3 ) {
 //				t_distanceConstant = 1.9f;
 //			}
-//			const ftype t_distanceLimit = Time::deltaTime * 10.0f;
+//			const Real t_distanceLimit = Time::deltaTime * 10.0f;
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = (t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i]) * Time::deltaTime * t_distanceConstant;
 //				if ( fabs(t_tempVelocities.pData[i]) > t_distanceLimit ) {
@@ -885,13 +885,13 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_bone->tempMatx += t_finalEditVelocity;
 //
 //			// Limit the translation
-//			ftype t_positionLimit_Translation = 0.4f;
+//			Real t_positionLimit_Translation = 0.4f;
 //			t_positionLimit_Translation = (t_bone->effect-3)*0.12f;
 //			if ( t_bone->effect == 3 ) {
 //				t_positionLimit_Translation = 0.0f;
 //			}
 //			for ( uint i = 3; i < 12; i += 4 ) {
-//				ftype currentDifference = t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i];
+//				Real currentDifference = t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i];
 //				if ( fabs(currentDifference) > t_positionLimit_Translation ) {
 //					t_bone->tempMatx.pData[i] = t_bone->currentPose.pData[i] - Math.sgn(currentDifference)*t_positionLimit_Translation;
 //				}
@@ -907,15 +907,15 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			Matrix4x4 t_tempVelocities;
 //			Matrix4x4 t_finalEditVelocity;
 //			// Decrease translation input
-//			const ftype t_moveDistChange = t_bone->effect_v[0];
+//			const Real t_moveDistChange = t_bone->effect_v[0];
 //			Matrix4x4 nextDifference = difference;
 //			nextDifference = nextDifference.LerpTo( Matrix4x4(), t_moveDistChange );
 //			// Add translation to the matrix
 //			t_bone->tempMatx = (nextDifference.inverse()) * t_bone->tempMatx;
 //
 //			// Create the "to resting position" velocities
-//			const ftype t_moveLimit_TranslationOffset = t_bone->effect_v[1];
-//			const ftype t_moveLimit = Time::deltaTime * t_bone->effect_v[2];
+//			const Real t_moveLimit_TranslationOffset = t_bone->effect_v[1];
+//			const Real t_moveLimit = Time::deltaTime * t_bone->effect_v[2];
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i];
 //				if ( i == 3 || i == 7 || i == 11 ) {
@@ -933,8 +933,8 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_finalEditVelocity = t_tempVelocities;
 //
 //			// Modify the real velocity matrix by working on acceleration. First, damp the velocity to zero.
-//			const ftype t_dampenConstant = t_bone->effect_v[3];
-//			const ftype t_dampenLimit = Time::deltaTime * t_bone->effect_v[4];
+//			const Real t_dampenConstant = t_bone->effect_v[3];
+//			const Real t_dampenLimit = Time::deltaTime * t_bone->effect_v[4];
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = -t_bone->veloMatx.pData[i] * Time::deltaTime * t_dampenConstant;
 //				if ( fabs(t_tempVelocities.pData[i]) > t_dampenLimit ) {
@@ -944,8 +944,8 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //				t_bone->veloMatx.pData[i] += t_tempVelocities.pData[i];
 //			}
 //			// Now apply distance acceleration
-//			const ftype t_distanceConstant = t_bone->effect_v[5]; // Fast acceleration
-//			const ftype t_distanceLimit = Time::deltaTime * t_bone->effect_v[6];
+//			const Real t_distanceConstant = t_bone->effect_v[5]; // Fast acceleration
+//			const Real t_distanceLimit = Time::deltaTime * t_bone->effect_v[6];
 //			for ( uint i = 0; i < 16; ++i ) {
 //				t_tempVelocities.pData[i] = (t_bone->currentPose.pData[i] - t_bone->tempMatx.pData[i]) * Time::deltaTime * t_distanceConstant;
 //				if ( fabs(t_tempVelocities.pData[i]) > t_distanceLimit ) {
@@ -962,10 +962,10 @@ void CSkinnedModel::SkinningBuffersPush ( void )
 //			t_bone->tempMatx += t_finalEditVelocity;
 //
 //			// Limit the translation
-//			const ftype t_positionLimit_Translation = t_bone->effect_v[7]; // Low translation limit
-//			const ftype t_positionLimit_Rotation = t_bone->effect_v[8]; // Higher rotation limit
+//			const Real t_positionLimit_Translation = t_bone->effect_v[7]; // Low translation limit
+//			const Real t_positionLimit_Rotation = t_bone->effect_v[8]; // Higher rotation limit
 //			for ( uint i = 0; i < 16; ++i ) {
-//				ftype currentDifference = t_bone->tempMatx.pData[i] - t_bone->currentPose.pData[i];
+//				Real currentDifference = t_bone->tempMatx.pData[i] - t_bone->currentPose.pData[i];
 //				if ( i == 3 || i == 7 || i == 11 ) {
 //					if ( fabs(currentDifference) > t_positionLimit_Translation ) {
 //						t_bone->tempMatx.pData[i] = t_bone->currentPose.pData[i] + Math.sgn(currentDifference)*t_positionLimit_Translation;

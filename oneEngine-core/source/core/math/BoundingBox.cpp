@@ -24,12 +24,12 @@ BoundingBox BoundingBox::Expand ( const BoundingBox& BB )
 	maxPosB = ( BB.m_Extent)+curCenter;
 
 	// Grab the largest area
-	minPosA.x = std::min<ftype>( minPosA.x, minPosB.x );
-	minPosA.y = std::min<ftype>( minPosA.y, minPosB.y );
-	minPosA.z = std::min<ftype>( minPosA.z, minPosB.z );
-	maxPosA.x = std::max<ftype>( maxPosA.x, maxPosB.x );
-	maxPosA.y = std::max<ftype>( maxPosA.y, maxPosB.y );
-	maxPosA.z = std::max<ftype>( maxPosA.z, maxPosB.z );
+	minPosA.x = std::min<Real>( minPosA.x, minPosB.x );
+	minPosA.y = std::min<Real>( minPosA.y, minPosB.y );
+	minPosA.z = std::min<Real>( minPosA.z, minPosB.z );
+	maxPosA.x = std::max<Real>( maxPosA.x, maxPosB.x );
+	maxPosA.y = std::max<Real>( maxPosA.y, maxPosB.y );
+	maxPosA.z = std::max<Real>( maxPosA.z, maxPosB.z );
 
 	// Return new bounding box
 	return BoundingBox( Matrix4x4(), minPosA, maxPosA );

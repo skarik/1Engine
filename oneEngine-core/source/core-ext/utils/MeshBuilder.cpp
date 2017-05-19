@@ -1,7 +1,7 @@
 
 #include "MeshBuilder.h"
 
-void core::meshbuilder::Quad ( ModelData* md, const Rect& position, const Rect& uvs )
+void core::meshbuilder::Quad ( arModelData* md, const Rect& position, const Rect& uvs )
 {
 	int current_vertex = md->vertexNum;
 	int current_triangle = md->triangleNum;

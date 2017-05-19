@@ -154,7 +154,7 @@ void	glDrawing::DrawTextP ( int ix, int iy, const char* fmt, ... )
 	GL.cleanupDraw();
 }
 
-ftype	glDrawing::GetAutoTextWidth ( const char* fmt, ... )
+Real	glDrawing::GetAutoTextWidth ( const char* fmt, ... )
 {
 	va_list		ap;	// Argument list
 	static char	text[1024];
@@ -170,7 +170,7 @@ ftype	glDrawing::GetAutoTextWidth ( const char* fmt, ... )
 
 	// Get the font info
 	tBitmapFontInfo fontInfo = CBitmapFont::pActiveFont->GetFontInfo();
-	ftype baseScale			 = (Real)CBitmapFont::pActiveFont->GetWidth();
+	Real baseScale			 = (Real)CBitmapFont::pActiveFont->GetWidth();
 	GLuint fontList			 = CBitmapFont::pActiveFont->GetLetterList();
 
 	// begin virtual word draw (curw is cursor)
@@ -217,7 +217,7 @@ void	glDrawing::DrawAutoText ( float dx, float dy, const char* fmt, ... )
 
 	// Get the font info
 	tBitmapFontInfo fontInfo = CBitmapFont::pActiveFont->GetFontInfo();
-	ftype baseScale			 = (Real)CBitmapFont::pActiveFont->GetWidth();
+	Real baseScale			 = (Real)CBitmapFont::pActiveFont->GetWidth();
 	//GLuint fontList			 = CBitmapFont::pActiveFont->GetLetterList();
 
 	//GL.prepareDraw();
@@ -345,12 +345,12 @@ void	glDrawing::DrawAutoTextCentered ( float dx, float dy, const char* fmt, ... 
 
 	// Get the font info
 	tBitmapFontInfo fontInfo = CBitmapFont::pActiveFont->GetFontInfo();
-	ftype baseScale			 = (Real)CBitmapFont::pActiveFont->GetWidth();
+	Real baseScale			 = (Real)CBitmapFont::pActiveFont->GetWidth();
 	GLuint fontList			 = CBitmapFont::pActiveFont->GetLetterList();
 
 	//GL.prepareDraw();
 
-	ftype fHalfStringWidth = GetAutoTextWidth( text ) * 0.5f;
+	Real fHalfStringWidth = GetAutoTextWidth( text ) * 0.5f;
 
 	// Change offset behavior based on the font type
 	/*if ( !fontInfo.isTexture )
@@ -476,7 +476,7 @@ void		glDrawing::DrawAutoTextWrapped ( float dx, float dy, float dw, const char*
 	// Get the font info
 	if ( !CBitmapFont::pActiveFont ) return;
 	tBitmapFontInfo fontInfo = CBitmapFont::pActiveFont->GetFontInfo();
-	ftype baseScale			 = (Real)CBitmapFont::pActiveFont->GetWidth();
+	Real baseScale			 = (Real)CBitmapFont::pActiveFont->GetWidth();
 	GLuint fontList			 = CBitmapFont::pActiveFont->GetLetterList();
 
 	//GL.prepareDraw();
@@ -902,9 +902,9 @@ void		glDrawing::DrawScreenQuad ( void )
 		glGenBuffers( 1, &vboQuad );
 		glBindBuffer( GL_ARRAY_BUFFER, vboQuad );
 
-		CModelVertex buffer [4];
+		arModelVertex buffer [4];
 		memset(buffer, 0, sizeof(buffer));
-		for (CModelVertex& vert : buffer)
+		for (arModelVertex& vert : buffer)
 		{
 			vert.r = 1.0F;
 			vert.g = 1.0F;

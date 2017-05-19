@@ -183,47 +183,47 @@ namespace StringUtils
 	{
 		Vector2d result;
 		char* pos;
-		result.x = (ftype)strtod( t, &pos );
-		result.y = (ftype)strtod( pos, NULL );
+		result.x = (Real)strtod( t, &pos );
+		result.y = (Real)strtod( pos, NULL );
 		return result;
 	}
 	template<> inline Vector3d ToObject ( const char* t )
 	{
 		Vector3d result;
 		char* pos;
-		result.x = (ftype)strtod( t, &pos );
-		result.y = (ftype)strtod( pos, &pos );
-		result.z = (ftype)strtod( pos, NULL );
+		result.x = (Real)strtod( t, &pos );
+		result.y = (Real)strtod( pos, &pos );
+		result.z = (Real)strtod( pos, NULL );
 		return result;
 	}
 	template<> inline Vector4d ToObject ( const char* t )
 	{
 		Vector4d result;
 		char* pos;
-		result.x = (ftype)strtod( t, &pos );
-		result.y = (ftype)strtod( pos, &pos );
-		result.z = (ftype)strtod( pos, &pos );
-		result.w = (ftype)strtod( pos, NULL );
+		result.x = (Real)strtod( t, &pos );
+		result.y = (Real)strtod( pos, &pos );
+		result.z = (Real)strtod( pos, &pos );
+		result.w = (Real)strtod( pos, NULL );
 		return result;
 	}
 	template<> inline Color ToObject ( const char* t )
 	{
 		Color result;
 		char* pos;
-		result.red = (ftype)strtod( t, &pos );
-		result.green = (ftype)strtod( pos, &pos );
-		result.blue = (ftype)strtod( pos, &pos );
-		result.alpha = (ftype)strtod( pos, NULL );
+		result.red = (Real)strtod( t, &pos );
+		result.green = (Real)strtod( pos, &pos );
+		result.blue = (Real)strtod( pos, &pos );
+		result.alpha = (Real)strtod( pos, NULL );
 		return result;
 	}
 	template<> inline Rect ToObject ( const char* t )
 	{
 		Rect result;
 		char* pos;
-		result.pos.x = (ftype)strtod( t, &pos );
-		result.pos.y = (ftype)strtod( pos, &pos );
-		result.size.x = (ftype)strtod( pos, &pos );
-		result.size.y = (ftype)strtod( pos, NULL );
+		result.pos.x = (Real)strtod( t, &pos );
+		result.pos.y = (Real)strtod( pos, &pos );
+		result.size.x = (Real)strtod( pos, &pos );
+		result.size.y = (Real)strtod( pos, NULL );
 		return result;
 	}
 

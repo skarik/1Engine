@@ -12,7 +12,7 @@ const Vector3d Vector3d::up			= Vector3d( 0,0,1 );
 const Vector3d Vector3d::left		= Vector3d( 0,1,0 );
 
 //Copy constructor
-Vector3d::Vector3d (Vector2d const& old, ftype const new_z): x(old.x), y(old.y), z(new_z)
+Vector3d::Vector3d (Vector2d const& old, Real const new_z): x(old.x), y(old.y), z(new_z)
 {}
 Vector3d::Vector3d (Vector4d const& old): x(old.x), y(old.y), z(old.z)
 {}
@@ -31,9 +31,9 @@ Vector3d Vector3d::toEulerAngles ( void ) const
 	std::cout << "(" << __LINE__ << ") INCORRECT VECTOR3D FUNC" << std::endl;
 	return Vector3d(
 		0,
-		-(ftype)radtodeg( atan2(z, sqrt((x * x) + (y * y))) ),
-		//(ftype)radtodeg( atan( z / sqrt( x*x + y*y ) ) ),
-		(ftype)radtodeg( atan2(y, x) )
+		-(Real)radtodeg( atan2(z, sqrt((x * x) + (y * y))) ),
+		//(Real)radtodeg( atan( z / sqrt( x*x + y*y ) ) ),
+		(Real)radtodeg( atan2(y, x) )
 		);
 }
 

@@ -128,7 +128,7 @@ public:
 	RENDER_API void		scissorViewport ( int x, int y, int width, int height );
 
 	RENDER_API void		beginOrtho ( void );
-	RENDER_API void		beginOrtho ( ftype left, ftype top, ftype width, ftype height, ftype minz, ftype maxz, bool flipped=true );
+	RENDER_API void		beginOrtho ( Real left, Real top, Real width, Real height, Real minz, Real maxz, bool flipped=true );
 	RENDER_API void		endOrtho ( void );
 	RENDER_API bool		inOrtho ( void );
 

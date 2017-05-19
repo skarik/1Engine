@@ -1,4 +1,3 @@
-
 #ifndef REAL_TYPE_H_
 #define REAL_TYPE_H_
 

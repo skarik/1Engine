@@ -19,7 +19,7 @@ public:
 
 	//		GetModelData ( ) 
 	// Return access to model data
-	RENDER2D_API CModelData* GetModelData ( void );
+	RENDER2D_API arModelData* GetModelData ( void );
 
 	//		StreamLockModelData ( )
 	// Push the current stuff in model data to GPU.

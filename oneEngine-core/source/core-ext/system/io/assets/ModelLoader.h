@@ -37,7 +37,7 @@ namespace core
 		uint32_t animated;
 		// Number of frames in the animation
 		uint32_t framenumber;
-		Real_32	framerate;
+		Real32	framerate;
 		// Number of materials in the file
 		uint32_t materialnum;
 		// Number of bones in the file
@@ -80,7 +80,7 @@ namespace core
 		uint8_t		apv;
 		uint32_t	material_index;
 		Matrix4x4	transform;
-		ModelData	model;
+		arModelData	model;
 		uint32_t	collision_index;
 		// Parent node. "_is_root_" for no parent.
 		arstring128	parent;
@@ -89,12 +89,12 @@ namespace core
 	{
 		arstring128	name;
 		Matrix4x4	transform;
-		PhysicsData	model;
+		arModelPhysicsData	model;
 	};
 	struct modelFmtMorphEntry_t
 	{
 		arstring128		name;
-		CModelVertex*	vertices;
+		arModelVertex*	vertices;
 	};
 	struct modelFmtIkEntry_t
 	{

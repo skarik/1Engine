@@ -14,18 +14,18 @@ class CRotBoxRPrimitive : public CRenderablePrimitive
 {
 public:
 	CRotBoxRPrimitive ( void );
-	CRotBoxRPrimitive ( ftype width, ftype depth, ftype height );
+	CRotBoxRPrimitive ( Real width, Real depth, Real height );
 
 	// Render function
 	bool Render ( const char pass );
 protected:
 	void GenerateVertices ( void );
 protected:
-	ftype fWidth;
-	ftype fDepth;
-	ftype fHeight;
+	Real fWidth;
+	Real fDepth;
+	Real fHeight;
 
-	ftype fRot;
+	Real fRot;
 };
 
 #endif

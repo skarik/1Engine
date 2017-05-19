@@ -96,7 +96,7 @@ void CTestViewShader::DrawOutput ( void )
 		/*if ( Daycycle::DominantCycle ) {
 			Vector3d pos = Daycycle::DominantCycle->GetSunPosition( CCamera::activeCamera );
 			m_material->setUniform( "gm_SunScreenPosition", Vector3d(pos.x,1-pos.y,pos.z) );
-			m_material->setUniform( "gm_ZoomColorStrength", std::min<ftype>( 1.0f, Daycycle::DominantCycle->GetSkyobjectDiffuse().red*3 ) );
+			m_material->setUniform( "gm_ZoomColorStrength", std::min<Real>( 1.0f, Daycycle::DominantCycle->GetSkyobjectDiffuse().red*3 ) );
 		}
 		else {
 			m_material->setUniform( "gm_SunScreenPosition", Vector3d(0.5f,0.75f,1.0f) );
@@ -128,7 +128,7 @@ void CTestViewShader::DrawOutput ( void )
 		if ( Daycycle::DominantCycle ) {
 			Vector3d pos = Daycycle::DominantCycle->GetSunPosition( CCamera::activeCamera );
 			m_material->setUniform( "gm_SunScreenPosition", Vector3d(pos.x,1-pos.y,pos.z) );
-			m_material->setUniform( "gm_ZoomColorStrength", std::min<ftype>( 1.0f, Daycycle::DominantCycle->GetSkyobjectDiffuse().red*3 ) );
+			m_material->setUniform( "gm_ZoomColorStrength", std::min<Real>( 1.0f, Daycycle::DominantCycle->GetSkyobjectDiffuse().red*3 ) );
 		}
 		else {
 			m_material->setUniform( "gm_SunScreenPosition", Vector3d(0.5f,0.75f,1.0f) );

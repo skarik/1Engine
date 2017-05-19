@@ -3,7 +3,7 @@
 #include "Math.h"
 
 // Gives ownership of the returned array away. Remember to delete it.
-Vector3d* Math::points_on_sphere ( int N )
+Vector3d* math::points_on_sphere ( int N )
 {
 	Vector3d* pts = new Vector3d [N];
 

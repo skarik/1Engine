@@ -20,11 +20,11 @@ CStreamedMesh::~CStreamedMesh ( void )
 }
 
 // Return access to model data
-CModelData* CStreamedMesh::GetModelData ( void )
+arModelData* CStreamedMesh::GetModelData ( void )
 {
 	if ( m_glMesh == NULL )
 	{
-		CModelData* modeldata = new CModelData;
+		arModelData* modeldata = new arModelData;
 		modeldata->triangleNum = 0;
 		modeldata->triangles = NULL;
 		modeldata->vertexNum = 0;

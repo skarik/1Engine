@@ -100,18 +100,18 @@ public:
 	RENDER_API void		BeginPrimitive ( unsigned int n_primitiveType );
 
 	RENDER_API void		P_AddVertex		( const Vector3d& n_position );
-		RENDER_API void	P_AddVertex		( const ftype& n_x, const ftype& n_y, const ftype& n_z )	{ P_AddVertex( Vector3d(n_x,n_y,n_z) ); }
-		RENDER_API void	P_AddVertex		( const ftype& n_x, const ftype& n_y )						{ P_AddVertex( Vector3d(n_x,n_y,0) ); }
+		RENDER_API void	P_AddVertex		( const Real& n_x, const Real& n_y, const Real& n_z )	{ P_AddVertex( Vector3d(n_x,n_y,n_z) ); }
+		RENDER_API void	P_AddVertex		( const Real& n_x, const Real& n_y )						{ P_AddVertex( Vector3d(n_x,n_y,0) ); }
 	RENDER_API void		P_PushTexcoord	( const Vector3d& n_texcoord );
-		RENDER_API void	P_PushTexcoord	( const ftype& n_x, const ftype& n_y, const ftype& n_z )	{ P_PushTexcoord( Vector3d(n_x,n_y,n_z) ); }
-		RENDER_API void	P_PushTexcoord	( const ftype& n_x, const ftype& n_y )						{ P_PushTexcoord( Vector3d(n_x,n_y,0) ); }
+		RENDER_API void	P_PushTexcoord	( const Real& n_x, const Real& n_y, const Real& n_z )	{ P_PushTexcoord( Vector3d(n_x,n_y,n_z) ); }
+		RENDER_API void	P_PushTexcoord	( const Real& n_x, const Real& n_y )						{ P_PushTexcoord( Vector3d(n_x,n_y,0) ); }
 	RENDER_API void		P_PushColor		( const Color& n_color );
-		RENDER_API void	P_PushColor		( const ftype& n_r, const ftype& n_g, const ftype& n_b, const ftype& n_a )	{ P_PushColor( Color(n_r,n_g,n_b,n_a) ); }
-		RENDER_API void	P_PushColor		( const ftype& n_r, const ftype& n_g, const ftype& n_b )					{ P_PushColor( Color(n_r,n_g,n_b,1) ); }
+		RENDER_API void	P_PushColor		( const Real& n_r, const Real& n_g, const Real& n_b, const Real& n_a )	{ P_PushColor( Color(n_r,n_g,n_b,n_a) ); }
+		RENDER_API void	P_PushColor		( const Real& n_r, const Real& n_g, const Real& n_b )					{ P_PushColor( Color(n_r,n_g,n_b,1) ); }
 	RENDER_API void		P_PushNormal	( const Vector3d& n_normal );
-		RENDER_API void	P_PushNormal	( const ftype& n_x, const ftype& n_y, const ftype& n_z )	{ P_PushNormal( Vector3d(n_x,n_y,n_z) ); }
+		RENDER_API void	P_PushNormal	( const Real& n_x, const Real& n_y, const Real& n_z )	{ P_PushNormal( Vector3d(n_x,n_y,n_z) ); }
 	RENDER_API void		P_PushTangent	( const Vector3d& n_tangent );
-		RENDER_API void	P_PushTangent	( const ftype& n_x, const ftype& n_y, const ftype& n_z )	{ P_PushTangent( Vector3d(n_x,n_y,n_z) ); }
+		RENDER_API void	P_PushTangent	( const Real& n_x, const Real& n_y, const Real& n_z )	{ P_PushTangent( Vector3d(n_x,n_y,n_z) ); }
 
 	// Sends the primitive created with the last BeginPrimitive call to the device.
 	RENDER_API void		EndPrimitive ( void );
@@ -123,7 +123,7 @@ private:
 	Vector3d	prim_next_tangent;
 	Color		prim_next_color;
 
-	CModelVertex*	prim_vertex_list;
+	arModelVertex*	prim_vertex_list;
 
 	std::vector<glVBufferStreaming>	prim_list;
 	std::vector<glVBufferStreaming>	prim_list_swap;

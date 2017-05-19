@@ -11,7 +11,7 @@ renderer::TileMapLayer::~TileMapLayer ( void )
 	;
 }
 
-void renderer::TileMapLayer::SetLayer( const ModelData* model_info )
+void renderer::TileMapLayer::SetLayer( const arModelData* model_info )
 {
 	m_modeldata = *model_info;
 	PushModeldata();

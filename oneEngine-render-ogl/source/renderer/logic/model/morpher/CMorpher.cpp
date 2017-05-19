@@ -136,18 +136,18 @@ CMorphAction* CMorpher::FindAction ( const char* animName )
 void	CMorpher::PerformMorph ( rrSkinnedMesh* sourceMesh, rrSkinnedMesh* targetMesh )
 {
 	// First, grab the stream to work on
-	CModelData* pStreamData = targetMesh->pmData;
-	memcpy( pStreamData->vertices, sourceMesh->pmData->vertices, sizeof(CModelVertex) * sourceMesh->pmData->vertexNum );
+	arModelData* pStreamData = targetMesh->pmData;
+	memcpy( pStreamData->vertices, sourceMesh->pmData->vertices, sizeof(arModelVertex) * sourceMesh->pmData->vertexNum );
 
 	// Loop through all the actions and perform auto blending
 	auto it = mActions.begin();
 	while ( it != mActions.end() )
 	{
 		if ( it->second.auto_blend ) {
-			ftype delta = it->second.target_weight - it->second.weight;
-			ftype changeSpeed = Time::deltaTime * 7.0f;
+			Real delta = it->second.target_weight - it->second.weight;
+			Real changeSpeed = Time::deltaTime * 7.0f;
 			if ( fabs( delta ) > changeSpeed ) {
-				it->second.weight += Math::sgn<Real>( delta ) * changeSpeed;
+				it->second.weight += math::sgn<Real>( delta ) * changeSpeed;
 			}
 			else {
 				it->second.weight = it->second.target_weight;
@@ -162,7 +162,7 @@ void	CMorpher::PerformMorph ( rrSkinnedMesh* sourceMesh, rrSkinnedMesh* targetMe
 	{
 		if ( fabs(it->second.weight) > 0.01f )
 		{
-			const CModelVertex* vertOffset = pMorphSet->GetMorphData(it->second.index);
+			const arModelVertex* vertOffset = pMorphSet->GetMorphData(it->second.index);
 			if ( vertOffset )
 			{
 				// Perform the morphing

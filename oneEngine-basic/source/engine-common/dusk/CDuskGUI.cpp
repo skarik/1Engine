@@ -180,7 +180,7 @@ void CDuskGUI::Update ( void )
 	// Set pixel + screen parameters + current GUI
 	Screen::_screen_info_t prevInfo = Screen::Info;
 	if ( !bInPixelMode ) {
-		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX() / (ftype)Screen::Info.width, CInput::MouseY() / (ftype)Screen::Info.height );
+		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
 	}
 	else {
 		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX(), CInput::MouseY() );
@@ -347,7 +347,7 @@ void CDuskGUI::RenderUI ( void )
 	if ( !bInPixelMode )
 	{
 		throw core::DeprecatedCallException();
-		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX() / (ftype)Screen::Info.width, CInput::MouseY() / (ftype)Screen::Info.height );
+		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
 	}
 	else
 	{

@@ -72,7 +72,7 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 		matfntMenu->bindPass(0);
 		GLd.DrawAutoText( 0.03f, 0.98f, " >%s", Engine::Console->GetCommandString().c_str() );	// Draw command
 		for ( uint i = 0; i < Engine::Console->GetMatchingCommands().size(); ++i ) {		// Draw command list
-			GLd.DrawAutoText( 0.05f, 0.96f+(i-(ftype)(Engine::Console->GetMatchingCommands().size()))*0.03f, "%s", Engine::Console->GetMatchingCommands()[i].c_str() );
+			GLd.DrawAutoText( 0.05f, 0.96f+(i-(Real)(Engine::Console->GetMatchingCommands().size()))*0.03f, "%s", Engine::Console->GetMatchingCommands()[i].c_str() );
 		}
 	}
 

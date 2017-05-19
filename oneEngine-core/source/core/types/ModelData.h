@@ -1,58 +1,105 @@
 #ifndef _C_MODEL_DATA_
 #define _C_MODEL_DATA_
 
-#include "core/math/Vector3d.h"
 #include "core/types/types.h"
+#include "core/math/Vector2d.h"
+#include "core/math/Vector3d.h"
+#include "core/math/Vector4d.h"
 
-// 128 byte Model Vertex class
-struct ModelVertex
-{
-	float x,y,z; // Position
-	float u,v,w; // UV's
-	float nx,ny,nz; // Normal
-	float tx,ty,tz; // Tangent
-	float bx,by,bz; // Binormal
-	float r,g,b,a; // Vertex color //76
-	unsigned char bone[4]; // Bone indexes //80
-	float weight[4]; // Bone weights //96
-	float u2,v2,w2; //108
-	float u3,v3,w3; //120
-	float u4,v4; //128
-};
-typedef ModelVertex CModelVertex;
+// Vertex structures:
 
-inline Vector3d _VertexToVect ( CModelVertex& vert )
+//	Default ModelVertex structure
+// 128 bytes
+// use <stddef> offsetof macro or function in order for quick and readable offsets into vertex structures.
+struct arModelVertex
 {
-	return Vector3d( vert.x, vert.y, vert.z );
+	arModelVertex() {} // Empty default constructor
+	arModelVertex(const arModelVertex&c) { memcpy(rawbytes, c.rawbytes, 128); } // Copy constructor
+	union
+	{
+		struct
+		{
+			uint8_t rawbytes [128];
+		};
+		struct
+		{
+			// float3 position
+			Real32 x,y,z;
+			// float3 texcoord0
+			Real32 u,v,w;
+			// float3 normal
+			Real32 nx,ny,nz;
+			// float3 tangent (texcoord1)
+			Real32 tx,ty,tz;
+			// float3 binormal (unused)
+			Real32 bx,by,bz;
+			// float4 vertex color
+			Real32 r,g,b,a;
+	
+			// uchar4 bone indices.
+			// 253 bones are supported. Bone 0 and 255 have special meaning.
+			uint8_t bone[4];
+			// float4 bone weights
+			Real32 weight[4];
+
+			// float3 texcoord2
+			Real32 u2,v2,w2; 
+			// float3 texcoord3
+			Real32 u3,v3,w3; 
+			// float3 texcoord4
+			Real32 u4,v4; 
+		};
+		struct
+		{
+			Vector3f	position;
+			Vector3f	texcoord0;
+			Vector3f	normal;
+			Vector3f	tangent;
+			Vector3f	binormal;
+			Vector4f	color;
+
+			// uchar4 bone indices.
+			// 253 bones are supported. Bone 0 and 255 have special meaning.
+			//Vector4u8	bone;
+			uint8_t bones[4];
+			// float4 bone weights
+			//Vector4f weights;
+			Real32 weight[4];
+
+			Vector3f texcoord2;
+			Vector3f texcoord3;
+			Vector2f texcoord4;
+		};
+	};
 };
-inline Vector3d _NormalToVect ( CModelVertex& vert )
+static_assert(sizeof(arModelVertex)==128, "[core] arModelVertex must be 128 bytes.");
+
+//	Default PhysicsVertex structure
+// 24 bytes
+struct arPhysicsVertex
 {
-	return Vector3d( vert.nx, vert.ny, vert.nz );
+	// float3 position
+	float x,y,z;
+	// float3 normal
+	float nx,ny,nz;
 };
 
-// 24 byte Physics Vertex class
-struct PhysicsVertex
+//	Defeault Terrain Vertex structure
+// 64 byte
+/*struct arTerrainVertex
 {
-public:
-	float x,y,z; // Position
-	float nx,ny,nz; // Normal
-};
-typedef PhysicsVertex CPhysicsVertex;
-
-// 64 byte Terrain Vertex class
-/*class CTerrainVertex
-{
-public:
 	float x,y,z; // Position
 	float u,v,w; // UV's
 	float nx,ny,nz; // Normal
 	float tx,ty,tz; // Tangent
 	float r,g,b,a; // Vertex color (texture blending)
 };*/
-// 96 byte Terrain Vertex class
-struct TerrainVertex
+
+//	Extended Terrain Vertex structure
+// 96 byte 
+// use <stddef> offsetof macro or function in order for quick and readable offsets into vertex structures.
+struct arTerrainVertex
 {
-public:
 	float x,y,z; // Position
 	float u,v,w; // UV's
 	float nx,ny,nz; // Normal
@@ -61,53 +108,51 @@ public:
 	float l1,l2,l3,l4; // More texture blending
 	float m1,m2,m3,m4; // More texture blending
 };
-typedef TerrainVertex CTerrainVertex;
 
-// 64 byte Particle Vertex class
-struct ParticleVertex
+//	Default Particle Vertex structure.
+// 64 byte
+// use <stddef> offsetof macro or function in order for quick and readable offsets into vertex structures.
+struct arParticleVertex
 {
-public:
 	float x,y,z; // Position
 	float nx,ny,nz; // Normal
 	float u,v; // UV's
 	float r,g,b,a; // Vertex color
 	float r2,g2,b2,a2; // Secondary color
 };
-typedef ParticleVertex CParticleVertex;
 
-struct ModelTriangle
+// Index structures:
+
+struct arModelTriangle
 {
-public:
 	uint32_t vert [3];
 };
-typedef ModelTriangle CModelTriangle;
-
-struct ModelQuad
+struct arModelQuad
 {
-public:
-	unsigned short vert [4];
+	uint16_t vert [4];
 };
-typedef ModelQuad CModelQuad;
 
-struct ModelData
-{
-public:
-	CModelVertex* vertices;
-	CModelTriangle* triangles;
-	unsigned int vertexNum;
-	unsigned int triangleNum;
-};
-typedef ModelData CModelData;
+// Model structures:
 
-struct PhysicsData
+//	Default model data storage class.
+// Limit of 65000 vertices.
+struct arModelData
 {
-public:
-	CPhysicsVertex* vertices;
-	CModelTriangle* triangles;
-	unsigned int vertexNum;
-	unsigned int triangleNum;
+	arModelVertex* vertices;
+	arModelTriangle* triangles;
+	uint16_t vertexNum;
+	uint16_t triangleNum;
 };
-typedef PhysicsData CPhysicsData;
+
+//	Default model data storage class for physics engine.
+// Limit of 65000 vertices.
+struct arModelPhysicsData
+{
+	arPhysicsVertex* vertices;
+	arModelTriangle* triangles;
+	uint16_t vertexNum;
+	uint16_t triangleNum;
+};
 
 
 #endif

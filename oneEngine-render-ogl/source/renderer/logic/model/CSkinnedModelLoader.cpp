@@ -84,7 +84,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 			//((rrSkinnedMesh*)newMesh)->SetSkeleton( &vSkeleton );
 
 			// Create the mesh object
-			ModelData* modeldata = new ModelData();
+			arModelData* modeldata = new arModelData();
 			*modeldata = loader.meshes[i].model;	// Shallow copy the data over
 			// Ownership of pointers are now in modeldata
 			loader.meshes[i].model.triangles = NULL;
@@ -126,7 +126,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 		//		morphSet->AddAction( newAction );
 
 		//		// Load in morph mesh data
-		//		memcpy( (void*)morphSet->GetMorphData(i), loader.morphs[i].vertices, sizeof(CModelVertex) * vertexCount );
+		//		memcpy( (void*)morphSet->GetMorphData(i), loader.morphs[i].vertices, sizeof(arModelVertex) * vertexCount );
 		//	}
 		//	RenderResources::Active()->AddMorphSet( sFilename.c_str(), morphSet );
 		//}
@@ -359,7 +359,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //
 //					// Create new action
 //					CAnimAction newAction ( StringUtils::ToLower( sAnimName ).c_str() );
-//					newAction.SetRange( (ftype)(iStartFrame), (ftype)(iEndFrame) );
+//					newAction.SetRange( (Real)(iStartFrame), (Real)(iEndFrame) );
 //					newAction.framesPerSecond = 30.0f;
 //					newAction.index = iCurAction;
 //					newAction.loop = (iOptionsFlag & 0x01) > 0;
@@ -411,7 +411,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //
 //						// Add event
 //						Animation::ActionEvent newEvent;
-//						newEvent.frame = (ftype)iFrame;
+//						newEvent.frame = (Real)iFrame;
 //						newEvent.data = iData;
 //						if ( sEventName == "attack" ) {
 //							newEvent.type = Animation::Event_Attack;
@@ -448,7 +448,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //				/*debug::Console->PrintWarning( "No animation action chunk found. Adding default ref.\n" );
 //				// Since there's no action block, we just create one for the entire animation
 //				CAnimAction newAction ( "ref" );
-//				newAction.SetRange( 0, (ftype)(iFrameNum) );
+//				newAction.SetRange( 0, (Real)(iFrameNum) );
 //				newAction.framesPerSecond = 30.0f;
 //				newAction.index = 0;
 //				newAction.loop = false;
@@ -491,7 +491,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //		for ( uint32_t i = 0; i < iBoneNum; i += 1 )
 //		{
 //			// Create Bone Data
-//			//CModelData* newModelData = new CModelData();
+//			//arModelData* newModelData = new arModelData();
 //			//glBone* newBone = new glBone( NULL );
 //
 //			// Read in the section data
@@ -675,7 +675,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //			((rrSkinnedMesh*)newMesh)->SetSkeleton( &vSkeleton );
 //
 //			// Create Model Data
-//			CModelData* newModelData = new CModelData();
+//			arModelData* newModelData = new arModelData();
 //			uint32_t	modelMaterial;
 //			string		meshName;
 //			string		parentName;
@@ -713,9 +713,9 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //				[uint32] material index
 //				[float][16][f] transformation matrix of the mesh. Supposed to be column-major. If animated per-vertex, f set for numframes
 //				[uint32] vertexnum
-//				[CModelVertex][n][f] vertex data where n is an integer from 0 to vertexnum
+//				[arModelVertex][n][f] vertex data where n is an integer from 0 to vertexnum
 //				[uint32] trianglenum
-//				[CModelTriangle][n][f] triangle data where n is an integer from 0 to trianglenum
+//				[arModelTriangle][n][f] triangle data where n is an integer from 0 to trianglenum
 //				[uint32] index of convex collision mesh. signed(-1) if no separate collision mesh*/
 //
 //				//[string] string giving mesh name
@@ -740,10 +740,10 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //				//[uint32] vertexnum
 //				sin.read( (char*)(&vertexNum), sizeof( uint32_t ) );
 //
-//				//[CModelVertex][n][f] vertex data where n is an integer from 0 to vertexnum
+//				//[arModelVertex][n][f] vertex data where n is an integer from 0 to vertexnum
 //				newModelData->vertexNum = vertexNum;
-//				newModelData->vertices = new CModelVertex [vertexNum];
-//				sin.read( (char*)(newModelData->vertices), sizeof( CModelVertex ) * vertexNum );
+//				newModelData->vertices = new arModelVertex [vertexNum];
+//				sin.read( (char*)(newModelData->vertices), sizeof( arModelVertex ) * vertexNum );
 //
 //				// Convert the vertex coordinates
 //				for ( uint32_t vert = 0; vert < vertexNum; vert += 1 )
@@ -760,10 +760,10 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //				//[uint32] trianglenum
 //				sin.read( (char*)(&triangleNum), sizeof( uint32_t ) );
 //
-//				//[CModelTriangle][n][f] triangle data where n is an integer from 0 to trianglenum
+//				//[arModelTriangle][n][f] triangle data where n is an integer from 0 to trianglenum
 //				newModelData->triangleNum = triangleNum;
-//				newModelData->triangles = new CModelTriangle [triangleNum];
-//				sin.read( (char*)(newModelData->triangles), sizeof( CModelTriangle ) * triangleNum );
+//				newModelData->triangles = new arModelTriangle [triangleNum];
+//				sin.read( (char*)(newModelData->triangles), sizeof( arModelTriangle ) * triangleNum );
 //
 //				//[uint32] index of convex collision mesh. signed(-1) if no separate collision mesh
 //				sin.read( (char*)(&collisionMesh), sizeof( uint32_t ) );
@@ -833,7 +833,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //			if ( pCollideIndices[i] != unsigned(-1) )
 //			{
 //				// Create Model Data
-//				CPhysicsData* newPhysData = new CPhysicsData();
+//				arModelPhysicsData* newPhysData = new arModelPhysicsData();
 //
 //				// Read in the section data
 //				sin.seekg( 0, ios::beg );
@@ -859,9 +859,9 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //					/*[string] string giving mesh name, null terminated
 //					[float][16] transformation matrix of the mesh. Supposed to be column-major.
 //					[uint32] vertexnum
-//					[CPhysicsVertex][n] vertex data where n is an integer from 0 to vertexnum
+//					[arPhysicsVertex][n] vertex data where n is an integer from 0 to vertexnum
 //					[uint32] trianglenum
-//					[CModelTriangle][n] triangle data where n is an integer from 0 to trianglenum
+//					[arModelTriangle][n] triangle data where n is an integer from 0 to trianglenum
 //					*/
 //
 //					//[string] string giving mesh name
@@ -879,10 +879,10 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //					//[uint32] vertexnum
 //					sin.read( (char*)(&vertexNum), sizeof( uint32_t ) );
 //
-//					//[CModelVertex][n][f] vertex data where n is an integer from 0 to vertexnum
+//					//[arModelVertex][n][f] vertex data where n is an integer from 0 to vertexnum
 //					newPhysData->vertexNum = vertexNum;
-//					newPhysData->vertices = new CPhysicsVertex [vertexNum];
-//					sin.read( (char*)(newPhysData->vertices), sizeof( CPhysicsVertex ) * vertexNum );
+//					newPhysData->vertices = new arPhysicsVertex [vertexNum];
+//					sin.read( (char*)(newPhysData->vertices), sizeof( arPhysicsVertex ) * vertexNum );
 //
 //					// Convert the vertex coordinates
 //					for ( uint32_t vert = 0; vert < vertexNum; vert += 1 )
@@ -898,10 +898,10 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //					//[uint32] trianglenum
 //					sin.read( (char*)(&triangleNum), sizeof( uint32_t ) );
 //
-//					//[CModelTriangle][n][f] triangle data where n is an integer from 0 to trianglenum
+//					//[arModelTriangle][n][f] triangle data where n is an integer from 0 to trianglenum
 //					newPhysData->triangleNum = triangleNum;
-//					newPhysData->triangles = new CModelTriangle [triangleNum];
-//					sin.read( (char*)(newPhysData->triangles), sizeof( CModelTriangle ) * triangleNum );
+//					newPhysData->triangles = new arModelTriangle [triangleNum];
+//					sin.read( (char*)(newPhysData->triangles), sizeof( arModelTriangle ) * triangleNum );
 //				}
 //
 //				// Create the new mesh with the physics data
@@ -959,7 +959,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //					newMorpher->AddAction( newAction );
 //
 //					// Load in morph mesh data
-//					sin.read( (char*)(newMorphSet->GetMorphData(morphNum)), sizeof( CModelVertex ) * (newModelData->vertexNum) );
+//					sin.read( (char*)(newMorphSet->GetMorphData(morphNum)), sizeof( arModelVertex ) * (newModelData->vertexNum) );
 //				}
 //			}
 //		}
@@ -1006,8 +1006,8 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //					{
 //						// create new ik type
 //						ikinfo_t newIK;
-//						memset( newIK.subinfo, 0, sizeof(ftype)*4 );
-//						memset( newIK.bone, 0, sizeof(ftype)*5 );
+//						memset( newIK.subinfo, 0, sizeof(Real)*4 );
+//						memset( newIK.bone, 0, sizeof(Real)*5 );
 //
 //						//[uint32] ik type
 //						uint32_t iIKType;
@@ -1099,9 +1099,9 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //				// [uchar] parentbone
 //				sin.read( (char*)(&hitbox.parentIndex), sizeof(uchar) );
 //				// [Vector3d] center
-//				sin.read( (char*)(&hitbox.center.x), sizeof(ftype)*3 );
+//				sin.read( (char*)(&hitbox.center.x), sizeof(Real)*3 );
 //				// [Vector3d] extents
-//				sin.read( (char*)(&hitbox.extents.x), sizeof(ftype)*3 );
+//				sin.read( (char*)(&hitbox.extents.x), sizeof(Real)*3 );
 //
 //				//cout << "aa: " << hitbox.center << "  " << hitbox.extents << endl;
 //				// [string] hitbox name

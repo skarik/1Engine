@@ -35,8 +35,8 @@ public:
 		operator const bool() const { return (Value >= 0.5f); }
 		bool		pressed ( void ) { return _pressed; }
 		bool		released ( void ) { return _released; }
-		ftype Value;
-		ftype PreviousValue;
+		Real Value;
+		Real PreviousValue;
 		void		Zero ( void ) {
 			_pressed = false;
 			_released = false;
@@ -57,7 +57,7 @@ public:
 	private:
 		friend		CInputControl;
 		friend		CEmulatedInputControl;
-		void		Update( ftype NewValue ) {
+		void		Update( Real NewValue ) {
 			_pressed = ((!_pressed) && ((NewValue >= 0.5f)&&(PreviousValue < 0.5f)));
 			_released = ((!_released) && ((NewValue <= 0.5f)&&(PreviousValue > 0.5f)));
 			PreviousValue = Value;

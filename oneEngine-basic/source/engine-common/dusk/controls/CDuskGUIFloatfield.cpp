@@ -135,7 +135,7 @@ void CDuskGUIFloatfield::Render ( void )
 
 	// Now draw text
 	drawText( rect.pos.x + rect.size.x*0.01f  + 0.01f, rect.pos.y + rect.size.y*0.01f + 0.03f, label.c_str() );
-	ftype cursor_x = rect.pos.x + rect.size.x*0.01f + 0.012f + (GLd.GetAutoTextWidth( label.c_str() )/Screen::Info.width);
+	Real cursor_x = rect.pos.x + rect.size.x*0.01f + 0.012f + (GLd.GetAutoTextWidth( label.c_str() )/Screen::Info.width);
 	
 	if ( hasFocus ) {
 		//activeGUI->matDefault->bind();

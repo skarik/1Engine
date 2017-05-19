@@ -273,7 +273,7 @@ void CDeveloperConsole::AddConsoleVariable( string const& name, int* var )
 	newVr.type	= 0;
 	variableList[name] = newVr;
 }
-void CDeveloperConsole::AddConsoleVariable( string const& name, ftype* var )
+void CDeveloperConsole::AddConsoleVariable( string const& name, Real* var )
 {
 	consoleVar_t newVr;
 	newVr.var	= (void*)var;
@@ -341,7 +341,7 @@ bool CDeveloperConsole::RunLastCommand ( void )
 				std::cout << (*((int*)(variableList[verb].var)));
 			}
 			else if ( type == 1 ) {
-				std::cout << (*((ftype*)(variableList[verb].var)));
+				std::cout << (*((Real*)(variableList[verb].var)));
 			}
 			std::cout << std::endl;
 		}
@@ -353,7 +353,7 @@ bool CDeveloperConsole::RunLastCommand ( void )
 				(*((int*)(variableList[verb].var))) = atoi( args.c_str() );
 			}
 			else if ( type == 1 ) {
-				(*((ftype*)(variableList[verb].var))) = (ftype)atof( args.c_str() );
+				(*((Real*)(variableList[verb].var))) = (Real)atof( args.c_str() );
 			}
 		}
 	}

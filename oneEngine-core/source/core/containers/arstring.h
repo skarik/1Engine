@@ -1,10 +1,14 @@
-// arstring.h
+//===============================================================================================//
+//
+//		arstring.h
+//
 // Explicitly sized string class.
 // A string class that's a POD type, and uses built-in C++ operators to do most of its work.
-// Holds a null-terminated string to represent its data.
-
-#ifndef _C_AR_STRING_H_
-#define _C_AR_STRING_H_
+// Holds a statically sized null-terminated string (C string) to represent its data.
+//
+//===============================================================================================//
+#ifndef CORE_AR_STRING_H_
+#define CORE_AR_STRING_H_
 
 #include "core/types/types.h"
 #include <cstring>
@@ -160,4 +164,4 @@ typedef arstring<64>	arstring64;
 typedef arstring<128>	arstring128;
 typedef arstring<256>	arstring256;
 
-#endif//_C_AR_STRING_H_
+#endif//CORE_AR_STRING_H_

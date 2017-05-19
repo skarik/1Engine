@@ -20,11 +20,11 @@ public:
 		m_centerOfMass = physVector4(0,0);
 	}
 
-	Real_32		m_mass;
-	Real_32		m_friction;
-	Real_32		m_restitution;
-	Real_32		m_linearDamping;
-	Real_32		m_angularDamping;
+	Real32		m_mass;
+	Real32		m_friction;
+	Real32		m_restitution;
+	Real32		m_linearDamping;
+	Real32		m_angularDamping;
 
 	physShape*	m_shape;
 	b2Filter	m_collisionFilterInfo;

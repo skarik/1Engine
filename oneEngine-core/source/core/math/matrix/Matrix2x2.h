@@ -7,18 +7,18 @@ class Matrix2x2
 public:
 	FORCE_INLINE Matrix2x2 ( void );
 	FORCE_INLINE Matrix2x2 ( const Matrix2x2& );
-	FORCE_INLINE Matrix2x2 ( const ftype* );
+	FORCE_INLINE Matrix2x2 ( const Real* );
 
 	// Setters - Translation
-	FORCE_INLINE bool setTranslation ( const ftype = 0, const ftype = 0 );
+	FORCE_INLINE bool setTranslation ( const Real = 0, const Real = 0 );
 	FORCE_INLINE bool setTranslation ( const Vector2d& );
 
 	// Setters - Scaling
-	FORCE_INLINE bool setScale ( const ftype = 0, const ftype = 0 );
+	FORCE_INLINE bool setScale ( const Real = 0, const Real = 0 );
 	FORCE_INLINE bool setScale ( const Vector2d& );
 
 	// Setters - Rotation
-	FORCE_INLINE bool setRotation ( const ftype = 0 );
+	FORCE_INLINE bool setRotation ( const Real = 0 );
 
 	// Modders
 	FORCE_INLINE void translate ( const Vector2d& );
@@ -28,7 +28,7 @@ public:
 	FORCE_INLINE Vector2d	getTranslation ( void ) const;
 
 	// Getters - Rotation
-	FORCE_INLINE ftype		getEulerAngle ( void ) const;
+	FORCE_INLINE Real		getEulerAngle ( void ) const;
 
 	// Getters - Scale
 	FORCE_INLINE Vector2d	getScaling ( void ) const;
@@ -36,15 +36,15 @@ public:
 	// Operations
 	FORCE_INLINE Matrix2x2 transpose ( void ) const;
 	FORCE_INLINE Matrix2x2 inverse ( void ) const;
-	FORCE_INLINE ftype det ( void ) const;
+	FORCE_INLINE Real det ( void ) const;
 
-	FORCE_INLINE Matrix2x2 LerpTo( Matrix2x2 const&, ftype const ) const;
-	FORCE_INLINE void Lerp ( Matrix2x2 const&, ftype const ); 
+	FORCE_INLINE Matrix2x2 LerpTo( Matrix2x2 const&, Real const ) const;
+	FORCE_INLINE void Lerp ( Matrix2x2 const&, Real const ); 
 
 	// Multiplication
 	FORCE_INLINE Matrix2x2 operator* ( Matrix2x2 const& ) const;
 	FORCE_INLINE Matrix2x2 operator*=( Matrix2x2 const& );
-	FORCE_INLINE Matrix2x2 operator* ( ftype const ) const;
+	FORCE_INLINE Matrix2x2 operator* ( Real const ) const;
 
 	FORCE_INLINE Matrix2x2 operator+ ( Matrix2x2 const& ) const;
 	FORCE_INLINE Matrix2x2 operator+=( Matrix2x2 const& );
@@ -55,9 +55,9 @@ public:
 	FORCE_INLINE Matrix2x2 operator! ( void ) const;
 
 	// Accessor
-	FORCE_INLINE const ftype* operator[] ( int ) const;
+	FORCE_INLINE const Real* operator[] ( int ) const;
 	// Editor
-	FORCE_INLINE ftype* operator[] ( int );
+	FORCE_INLINE Real* operator[] ( int );
 
 	//Equal comparison overload
 	FORCE_INLINE bool operator== (Matrix2x2 const& right) const;
@@ -66,7 +66,7 @@ public:
 	FORCE_INLINE bool operator!= (Matrix2x2 const& right) const;
 
 public:
-	ftype pData [4];
+	Real pData [4];
 };
 
 #endif//_MATRIX_2_2_H_

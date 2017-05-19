@@ -67,13 +67,13 @@ void CTextMesh::UpdateText ( void )
 		m_text_triangle_count = m_text.length() * 2;
 		m_modeldata.vertexNum = m_text.length() * 4;
 
-		m_modeldata.triangles = new CModelTriangle [m_text_triangle_count];
-		m_modeldata.vertices = new CModelVertex [m_modeldata.vertexNum];
+		m_modeldata.triangles = new arModelTriangle [m_text_triangle_count];
+		m_modeldata.vertices = new arModelVertex [m_modeldata.vertexNum];
 	}
 
 	// Reset mesh data:
 
-	memset(m_modeldata.vertices, 0, sizeof(CModelVertex) * m_modeldata.vertexNum);
+	memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * m_modeldata.vertexNum);
 	for ( uint i = 0; i < m_modeldata.vertexNum; ++i )
 	{
 		m_modeldata.vertices[i].r = 1.0F;
@@ -169,8 +169,8 @@ void CTextMesh::UpdateText ( void )
 
 		// Set up final drawing position
 		Vector2d drawPos = pen - fontInfo.fontOrigins[c_lookup];
-		drawPos.x = (Real)Math::round( drawPos.x );
-		drawPos.y = (Real)Math::round( drawPos.y );
+		drawPos.x = (Real)math::round( drawPos.x );
+		drawPos.y = (Real)math::round( drawPos.y );
 
 		// 0
 		m_modeldata.vertices[vertex_index + 0].u = uv.pos.x;

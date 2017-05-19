@@ -1,6 +1,12 @@
-
-#ifndef _BASE_NOISE_H_
-#define _BASE_NOISE_H_
+//===============================================================================================//
+//
+//		class BaseNoise
+//
+// Abstract base class for a noise generator.
+//
+//===============================================================================================//
+#ifndef CORE_NOISE_BASE_H_
+#define CORE_NOISE_BASE_H_
 
 class BaseNoise
 {
@@ -14,4 +20,4 @@ public:
 
 };
 
-#endif
+#endif//CORE_NOISE_BASE_H_

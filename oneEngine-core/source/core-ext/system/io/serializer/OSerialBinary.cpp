@@ -101,7 +101,7 @@ Serializer&	OSerialBinary::operator&	( Quaternion & qat )
 }
 Serializer&	OSerialBinary::operator&	( Rotator & rot )
 {
-	m_file->WriteData( (char*)rot.pData, sizeof(ftype)*9 );
+	m_file->WriteData( (char*)rot.pData, sizeof(Real)*9 );
 	return *this;
 }
 Serializer&	OSerialBinary::operator&	( Color & col )

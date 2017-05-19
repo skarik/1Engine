@@ -104,7 +104,7 @@ public:
 	
 	// Effects
 	bool  drawHalo;
-	ftype haloStrength;
+	Real haloStrength;
 protected:
 	// Effects
 	CBillboard*	mHalo;
