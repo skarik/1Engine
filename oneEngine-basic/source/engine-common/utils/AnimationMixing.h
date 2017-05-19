@@ -7,7 +7,7 @@
 class CAnimation;
 class CAnimAction;
 
-namespace Animation
+namespace animation
 {
 	ENGCOM_API int AddMixingTransform ( CAnimation& anim, CAnimAction& action, const char* boneName, bool recursive=false );
 

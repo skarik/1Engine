@@ -1,6 +1,6 @@
 
-#ifndef _C_ANIMATION_SET_
-#define _C_ANIMATION_SET_
+#ifndef CORE_ANIMATION_SET_
+#define CORE_ANIMATION_SET_
 
 #include "core/containers/arstring.h"
 #include "core-ext/animation/CAnimationCommon.h"
@@ -12,6 +12,9 @@
 
 class CAnimation;
 
+//	class CAnimationSet
+// Base class for storage for raw animation data and action definitions.
+// Animation sets should be expected to be accessed when the animation is sampled.
 class CAnimationSet
 {
 public:
@@ -64,5 +67,4 @@ private:
 	arstring256 filename;
 };
 
-
-#endif
+#endif//CORE_ANIMATION_SET_

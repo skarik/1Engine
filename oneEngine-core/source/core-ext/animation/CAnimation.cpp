@@ -20,7 +20,7 @@ const std::vector<CAnimation*>& CAnimation::Instances ( void )
 }
 
 // Constructors
-CAnimation::CAnimation ( const Animation::Skeleton& n_skeleton )
+CAnimation::CAnimation ( const animation::Skeleton& n_skeleton )
 	: bIsValid(false), bEventsRead(false)
 {
 	skeleton = n_skeleton;
@@ -247,13 +247,13 @@ ikinfo_t& CAnimation::GetIKInfo ( const string& chainName )
 
 
 // Copy reference list
-bool CAnimation::AddOutput ( Animation::Skeleton* output )
+bool CAnimation::AddOutput ( animation::Skeleton* output )
 {
-	Animation::BoneMapper mapping;
-	Animation::BoneMapper::CreateFromNameMatching( skeleton, *output, mapping, false );
+	animation::BoneMapper mapping;
+	animation::BoneMapper::CreateFromNameMatching( skeleton, *output, mapping, false );
 	return AddOutput( output, mapping );
 }
-bool CAnimation::AddOutput ( Animation::Skeleton* output, Animation::BoneMapper& manual_mapping )
+bool CAnimation::AddOutput ( animation::Skeleton* output, animation::BoneMapper& manual_mapping )
 {
 	// Search for existing entry
 	for ( auto output_itr = vOutputs.begin(); output_itr != vOutputs.end(); ++output_itr )
@@ -337,12 +337,12 @@ void CAnimation::Update ( const Real deltaTime )
 }
 
 
-void CAnimation::PushFrameEvent ( const Animation::ActionEvent & a_event )
+void CAnimation::PushFrameEvent ( const animation::ActionEvent & a_event )
 {
 	vEvents.push_back( a_event );
 }
 
-void CAnimation::GetEvents ( std::vector<Animation::ActionEvent>& events, unsigned int & event_count )
+void CAnimation::GetEvents ( std::vector<animation::ActionEvent>& events, unsigned int & event_count )
 {
 	events.clear();
 	events = vEvents;

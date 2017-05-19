@@ -4,7 +4,7 @@
 
 #include "core/types/types.h"
 
-namespace Animation
+namespace animation
 {
 	enum eAnimSystemEvent : uint16_t
 	{

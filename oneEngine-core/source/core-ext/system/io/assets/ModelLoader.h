@@ -1,6 +1,9 @@
-
-#ifndef _CORE_IO_ASSETS_MODEL_LOADER_
-#define _CORE_IO_ASSETS_MODEL_LOADER_
+//
+//	ModelLoader.h
+// Definitions for the SegmentedFile model format. 
+//
+#ifndef CORE_IO_ASSETS_MODEL_LOADER_
+#define CORE_IO_ASSETS_MODEL_LOADER_
 
 #include "core/types.h"
 #include "core/math/Math3d.h"
@@ -164,7 +167,8 @@ namespace core
 	static const char* AD_KEY_IK_AIMING		= "IK_AIMING";
 	static const char* AD_KEY_IK_PROPS		= "IK_PROPS";
 
-
+	//	class ModelLoader
+	// Use to read model data from the disk. Set flags, hit LoadModel, and let it rip.
 	class ModelLoader
 	{
 	public:
@@ -214,4 +218,4 @@ namespace core
 	};
 }
 
-#endif//_CORE_IO_ASSETS_MODEL_LOADER_
+#endif//CORE_IO_ASSETS_MODEL_LOADER_

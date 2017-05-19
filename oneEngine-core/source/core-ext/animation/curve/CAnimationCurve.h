@@ -29,10 +29,12 @@ public:
 
 
 // Specific shiz
+template <>
 inline CAnimationCurveBase::eCurveType CAnimationCurve<Matrix4x4>::GetType ( void )
 {
 	return CT_MATRIX4;
 }
+template <>
 inline CAnimationCurveBase::eCurveType CAnimationCurve<XTransform>::GetType ( void )
 {
 	return CT_XTRANSFORM;

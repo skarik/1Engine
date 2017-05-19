@@ -43,7 +43,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 	else
 	{
 		// Model needs the skeleton loaded
-		skeleton = Animation::Skeleton(); // Clear out skelly
+		skeleton = animation::Skeleton(); // Clear out skelly
 		std::vector<core::TransformLite> stored_transforms;
 		for ( size_t i = 0; i < loader.skeleton.size(); ++i )
 		{
@@ -410,26 +410,26 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //						sin.read( (char*)(&iData), sizeof( uint32_t ) );
 //
 //						// Add event
-//						Animation::ActionEvent newEvent;
+//						animation::ActionEvent newEvent;
 //						newEvent.frame = (Real)iFrame;
 //						newEvent.data = iData;
 //						if ( sEventName == "attack" ) {
-//							newEvent.type = Animation::Event_Attack;
+//							newEvent.type = animation::Event_Attack;
 //						}
 //						else if ( sEventName == "footstep" ) {
-//							newEvent.type = Animation::Event_Footstep;
+//							newEvent.type = animation::Event_Footstep;
 //						}
 //						else if ( sEventName == "lfootstep" ) {
-//							newEvent.type = Animation::Event_Footstep_Left;
+//							newEvent.type = animation::Event_Footstep_Left;
 //						}
 //						else if ( sEventName == "rfootstep" ) {
-//							newEvent.type = Animation::Event_Footstep_Right;
+//							newEvent.type = animation::Event_Footstep_Right;
 //						}
 //						else if ( sEventName == "clang_check" ) {
-//							newEvent.type = Animation::Event_ClangCheck;
+//							newEvent.type = animation::Event_ClangCheck;
 //						}
 //						else {
-//							newEvent.type = Animation::Event_INVALID;
+//							newEvent.type = animation::Event_INVALID;
 //						}
 //						//newEvent.name = sEventName;
 //						if ( newEvent.frame >= (*newAnimation)[iTargetAction].GetLength() ) {

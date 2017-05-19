@@ -1,5 +1,10 @@
-#ifndef _CORE_ANIMATION_SKELETON_H_
-#define _CORE_ANIMATION_SKELETON_H_
+//
+//	Skeleton.h
+// Storage for skeletal animation information.
+// Attempts to be as minimal as required - only information that is needed is stored here. See class for more info.
+//
+#ifndef CORE_ANIMATION_SKELETON_H_
+#define CORE_ANIMATION_SKELETON_H_
 
 #include "core/containers/arstring.h"
 #include "core-ext/transform/Transform.h"
@@ -20,7 +25,7 @@
 // Animation update: Matrices for OpenGL created.
 // rrSkinnedMesh::GetPoseMatrices pulls state directly from skeleton.
 
-namespace Animation
+namespace animation
 {
 	//	class Skeleton
 	// Container for skeleton information used for simulation, animation, and display.
@@ -82,4 +87,4 @@ namespace Animation
 	};
 }
 
-#endif//_CORE_ANIMATION_SKELETON_H_
+#endif//CORE_ANIMATION_SKELETON_H_

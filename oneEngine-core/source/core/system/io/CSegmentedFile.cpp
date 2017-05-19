@@ -356,7 +356,7 @@ CBufferIO CSegmentedFile::GetSectionStream ( const std::string& sSection, const 
 		// Set size to actually read
 		if ( iMaxSize != 0 )
 		{
-			datasize = std::min( datasize, iMaxSize );
+			datasize = std::min<size_t>( datasize, iMaxSize );
 		}
 
 		// Read in contents to a string

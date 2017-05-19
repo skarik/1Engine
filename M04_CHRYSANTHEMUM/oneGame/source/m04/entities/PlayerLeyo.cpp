@@ -43,8 +43,8 @@ PlayerLeyo::PlayerLeyo ( void )
 	m_sprite->SetSpriteFile("sprites/leo.gal");
 	m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y - 8 );
 	
-	//this->AddFromFile(Animation::TYPE_IDLE, 0, "sprites/tests/demon-run.gal");
-	//this->AddFromFile(Animation::TYPE_IDLE, 0, "sprites/leo.gal");
+	//this->AddFromFile(animation::TYPE_IDLE, 0, "sprites/tests/demon-run.gal");
+	//this->AddFromFile(animation::TYPE_IDLE, 0, "sprites/leo.gal");
 	//m_spriteOrigin = Vector2i( m_spriteSize.x / 2, m_spriteSize.y );
 
 	light = new CLight;

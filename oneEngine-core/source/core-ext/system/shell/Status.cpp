@@ -1,7 +1,7 @@
 #include "Status.h"
 #include "core/os.h"
 
-#ifdef _WIN32
+#if _WIN32 && !__c2__
 
 // TODO: This shit leaks on deinit. Fix that shit.
 

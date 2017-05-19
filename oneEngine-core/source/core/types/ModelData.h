@@ -61,10 +61,10 @@ struct arModelVertex
 			// uchar4 bone indices.
 			// 253 bones are supported. Bone 0 and 255 have special meaning.
 			//Vector4u8	bone;
-			uint8_t bones[4];
+			uint8_t _bones[4];
 			// float4 bone weights
 			//Vector4f weights;
-			Real32 weight[4];
+			Real32 _weight[4];
 
 			Vector3f texcoord2;
 			Vector3f texcoord3;

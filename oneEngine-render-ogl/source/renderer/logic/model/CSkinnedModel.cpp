@@ -176,7 +176,7 @@ void CSkinnedModel::PreStep ( void )
 	// If not referenced perfectly, convert the pose into a GL compatible form
 	if ( referenceToCopySkeletonFrom != NULL )
 	{
-		Animation::Skeleton::GenerateShaderMatrices( skeleton );
+		animation::Skeleton::GenerateShaderMatrices( skeleton );
 	}
 
 	// Mark skinning as out of date
@@ -406,7 +406,7 @@ CMorpher*	CSkinnedModel::GetMorpher ( void )
 	return pMorpher;
 }
 // Get the skeleton 
-Animation::Skeleton* CSkinnedModel::GetSkeleton ( void )
+animation::Skeleton* CSkinnedModel::GetSkeleton ( void )
 {
 	return &skeleton;
 }

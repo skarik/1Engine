@@ -16,7 +16,7 @@ class CHKAnimation : public CAnimation
 public:
 	// Constructors
 	//explicit CHKAnimation ( glhkSkeleton * );
-	PHYS_API explicit CHKAnimation ( const Animation::Skeleton& n_skeleton )
+	PHYS_API explicit CHKAnimation ( const animation::Skeleton& n_skeleton )
 		: CAnimation( n_skeleton ),
 		mSkelly(NULL), mAnimSkelly(NULL), //mMirrorSkelly(NULL), mMirrorAnim(NULL),
 		mSpineBlends(), mPropBlends()
@@ -55,12 +55,12 @@ public:
 
 	//	Injector for modifying motion based on aiming
 	// Do not edit values during physics step.
-	Animation::injectorAimer_t					m_injectorAimer;
+	animation::injectorAimer_t					m_injectorAimer;
 	//	Injector for specifically modifying neck and eye motion
-	Animation::injectorLookat_t					m_injectorLookat;
+	animation::injectorLookat_t					m_injectorLookat;
 	//	Injector for adding simulation of jiggle physics
 	// Do not edit values during physics step.
-	std::vector<Animation::injectorJiggle_t>	m_injectorsJiggle;
+	std::vector<animation::injectorJiggle_t>	m_injectorsJiggle;
 private:
 	//hkaPose*	mPose;	// Stores the actual Havok transforms (HOWEVER, REQUIRES A SKELETON)
 

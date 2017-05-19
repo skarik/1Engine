@@ -2,7 +2,7 @@
 #include "BoneMapper.h"
 #include "core/utils/StringUtils.h"
 
-void Animation::BoneMapper::CreateFromNameMatching(const Skeleton& source, const Skeleton& target, BoneMapper& o_mapper, const bool true_match)
+void animation::BoneMapper::CreateFromNameMatching(const Skeleton& source, const Skeleton& target, BoneMapper& o_mapper, const bool true_match)
 {
 	// Loop through each bone in target, find the best match in the source
 	for ( uint8_t i = 0; i < source.names.size(); ++i )
@@ -63,7 +63,7 @@ void Animation::BoneMapper::CreateFromNameMatching(const Skeleton& source, const
 	// And we have ourselves a fairly simple mapping! :)
 }
 
-bool Animation::BoneMapper::OneToOne ( void )
+bool animation::BoneMapper::OneToOne ( void )
 {
 	for ( auto itr = mapping.begin(); itr != mapping.end(); ++itr )
 	{
@@ -71,7 +71,7 @@ bool Animation::BoneMapper::OneToOne ( void )
 	}
 	return true;
 }
-bool Animation::BoneMapper::Equivalent ( const BoneMapper& other )
+bool animation::BoneMapper::Equivalent ( const BoneMapper& other )
 {
 	if ( other.mapping.size() != this->mapping.size() )
 	{

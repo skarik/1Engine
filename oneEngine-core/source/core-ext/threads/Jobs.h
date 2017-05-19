@@ -64,17 +64,17 @@ namespace Jobs
 
 	public:
 		jobState_t(void)
-			: perform(false), signal()
+			: signal(), perform(false)
 		{
 			;
 		}
 		jobState_t(const jobState_t& that)
-			: perform(false), signal()
+			: signal(), perform(false)
 		{
 			function = that.function;
 		}
 		jobState_t(const jobState_t&& that)
-			: perform(false), signal()
+			: signal(), perform(false)
 		{
 			function = that.function;
 		}

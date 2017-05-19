@@ -29,7 +29,7 @@ class CSkinnedModel;
 class CAnimation
 {
 public:
-	CORE_API explicit		CAnimation ( const Animation::Skeleton& n_skeleton );
+	CORE_API explicit		CAnimation ( const animation::Skeleton& n_skeleton );
 	CORE_API explicit		CAnimation ( CAnimation* );		// Construct by reference
 	//CORE_API explicit		CAnimation ( string const&, CAnimationSet* );	// Construct by set
 
@@ -76,8 +76,8 @@ public:
 
 	//	AddOutput ( output, [optional] mapping ) : Add animation output target
 	// Returns true on successful mapping.
-	CORE_API bool			AddOutput ( Animation::Skeleton* output );
-	CORE_API bool			AddOutput ( Animation::Skeleton* output, Animation::BoneMapper& manual_mapping );
+	CORE_API bool			AddOutput ( animation::Skeleton* output );
+	CORE_API bool			AddOutput ( animation::Skeleton* output, animation::BoneMapper& manual_mapping );
 
 	/*CAnimationSet*	GetAnimationSet ( void ) {
 		return pAnimationSet;
@@ -97,11 +97,11 @@ public:
 	}*/
 
 	//	GetSkeleton () : Return skeleton used as the internal animation's sampling result
-	const Animation::Skeleton& GetSkeleton ( void ) {
+	const animation::Skeleton& GetSkeleton ( void ) {
 		return skeleton;
 	}
 
-	CORE_API void			GetEvents ( std::vector<Animation::ActionEvent>& events, unsigned int & event_count );
+	CORE_API void			GetEvents ( std::vector<animation::ActionEvent>& events, unsigned int & event_count );
 
 	CORE_API const Vector3d&	GetExtrapolatedMotion ( void );
 	CORE_API void			ResetExtrapolatedMotion ( void );
@@ -129,12 +129,12 @@ protected:
 	// Filename the animations are sourced from - invalid for multiple animation sets
 	string					sFilename;
 	// Skeleton used to save animations in the interim
-	Animation::Skeleton		skeleton;
+	animation::Skeleton		skeleton;
 
 	// Sampling source
 	std::vector<CAnimationSet*>			sampleSource;
 	// Mapping tracks used by animation sets for sampling to the internal skeleton
-	std::vector<Animation::BoneMapper>	sampleMappingTrack;
+	std::vector<animation::BoneMapper>	sampleMappingTrack;
 
 	// IK info
 	std::vector<ikinfo_t>	ikList;
@@ -143,8 +143,8 @@ protected:
 	std::vector<std::pair<CAnimAction*,Real>>	fadeOutList;
 
 	// Event sampling information
-	CORE_API void			PushFrameEvent ( const Animation::ActionEvent & );
-	std::vector<Animation::ActionEvent>		vEvents;
+	CORE_API void			PushFrameEvent ( const animation::ActionEvent & );
+	std::vector<animation::ActionEvent>		vEvents;
 	bool					bEventsRead;
 
 	// Extrapolated motion
@@ -155,8 +155,8 @@ protected:
 	// Output storage
 	struct output_t
 	{
-		Animation::BoneMapper	mapping;
-		Animation::Skeleton*	target;
+		animation::BoneMapper	mapping;
+		animation::Skeleton*	target;
 	};
 	std::vector<output_t>	vOutputs;
 

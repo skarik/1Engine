@@ -1,4 +1,7 @@
-
+//
+//	CAnimAction.h
+// Animation action information.
+//
 #ifndef _C_ANIM_ACTION_H_
 #define _C_ANIM_ACTION_H_
 
@@ -7,14 +10,14 @@
 #include "core/types/float.h"
 #include "core/containers/arstring.h"
 #include "core-ext/animation/CAnimationEvents.h"
-
 #include <vector>
 
-// Class prototype
 class CAnimation;
 class CAnimationSet;
 
-// Class definition
+//	class CAnimAction
+// Storage class for animation states.
+// Each "action" represents the state for a single animation.
 class CAnimAction
 {
 public:
@@ -124,10 +127,10 @@ public:
 		return index;
 	}
 
-	void AddEvent ( const Animation::ActionEvent & new_event ) {
+	void AddEvent ( const animation::ActionEvent & new_event ) {
 		eventList.push_back( new_event );
 	}
-	int GetEvent ( const Animation::eAnimSystemEvent & new_event ) {
+	int GetEvent ( const animation::eAnimSystemEvent & new_event ) {
 		//auto result = find( eventList.begin(), eventList.end(), new_event );
 		auto result = eventList.begin();
 		while ( result != eventList.end() ) {
@@ -181,7 +184,7 @@ private:
 	bool			events_enabled;
 
 	// Event list for this action to pass up the animation chain
-	std::vector<Animation::ActionEvent>	eventList;
+	std::vector<animation::ActionEvent>	eventList;
 	// Mixing list of indices to actually sample this action into
 	std::vector<int16_t>		mixingList;
 };

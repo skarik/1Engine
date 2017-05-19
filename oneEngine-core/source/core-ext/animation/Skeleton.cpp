@@ -2,7 +2,7 @@
 #include "core-ext/transform/TransformUtility.h"
 #include "core/utils/StringUtils.h"
 
-void Animation::Skeleton::GenerationAnimationTransforms ( Skeleton & n_skeleton )
+void animation::Skeleton::GenerationAnimationTransforms ( Skeleton & n_skeleton )
 {
 	// Ensure math targets are the correct size
 	if ( n_skeleton.current_transform.size() != n_skeleton.animation_xpose.size() )
@@ -24,7 +24,7 @@ void Animation::Skeleton::GenerationAnimationTransforms ( Skeleton & n_skeleton 
 	}
 }
 
-void Animation::Skeleton::GenerateShaderMatrices ( Skeleton& n_skeleton )
+void animation::Skeleton::GenerateShaderMatrices ( Skeleton& n_skeleton )
 {
 	// Ensure math targets are the correct size
 	if ( n_skeleton.current_pose.size() != n_skeleton.current_transform.size() )
@@ -41,7 +41,7 @@ void Animation::Skeleton::GenerateShaderMatrices ( Skeleton& n_skeleton )
 
 //	FindInSkeleton ( const char* name ) : finds best match for input name
 // Loops through the information in names[], selects the best match, and returns its index. -1 if no match.
-int32_t Animation::Skeleton::FindInSkeleton ( const Skeleton& n_skeleton, const char* n_name )
+int32_t animation::Skeleton::FindInSkeleton ( const Skeleton& n_skeleton, const char* n_name )
 {
 	int32_t match = -1;
 

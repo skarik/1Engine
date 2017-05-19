@@ -1,12 +1,15 @@
-
-#ifndef _CORE_ANIMATION_BONE_MAPPER_H_
-#define _CORE_ANIMATION_BONE_MAPPER_H_
+//
+//	BoneMapper.h
+// Provides methods to build mapping of mismatched skeletons.
+// 
+#ifndef CORE_ANIMATION_BONE_MAPPER_H_
+#define CORE_ANIMATION_BONE_MAPPER_H_
 
 #include "core/types.h"
 #include "core-ext/animation/Skeleton.h"
 #include <vector>
 
-namespace Animation
+namespace animation
 {
 	//	Bone index constants
 	enum eSpecialBoneTypes_t : uint8_t
@@ -64,4 +67,4 @@ namespace Animation
 	};
 }
 
-#endif//_CORE_ANIMATION_BONE_MAPPER_H_
+#endif//CORE_ANIMATION_BONE_MAPPER_H_

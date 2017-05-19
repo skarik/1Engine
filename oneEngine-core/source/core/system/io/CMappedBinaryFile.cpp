@@ -30,7 +30,7 @@ CMappedBinaryFile::~CMappedBinaryFile ( void )
 void CMappedBinaryFile::SyncToDisk ( void )
 {
 	// Get cursor
-	uint32_t prevPos = TellPos();
+	size_t prevPos = TellPos();
 	// Close and open file
 	fclose( m_file );
 	m_file = fopen( m_filename, "r+b" );
@@ -40,12 +40,12 @@ void CMappedBinaryFile::SyncToDisk ( void )
 
 // Seeks to the given location.
 // Will expand the file as necessary.
-void CMappedBinaryFile::SeekTo ( const uint32_t n_pos )
+void CMappedBinaryFile::SeekTo ( const size_t n_pos )
 {
-	uint32_t currentSize = TellSize();
+	size_t currentSize = TellSize();
 	if ( n_pos > currentSize ) {
 		fseek( m_file, 0, SEEK_END );
-		for ( uint i = 0; i < n_pos-currentSize; ++i ) {
+		for ( size_t i = 0; i < n_pos-currentSize; ++i ) {
 			//fwrite( "\0", 1, 1, m_file );
 			fputc( 0,m_file );
 		}
@@ -55,14 +55,14 @@ void CMappedBinaryFile::SeekTo ( const uint32_t n_pos )
 
 // Sets the buffer to 0, then reads in as much data as possible.
 // Does not expand the file.
-uint32_t CMappedBinaryFile::ReadBuffer ( void* n_buffer, const uint32_t n_buffer_size )
+size_t CMappedBinaryFile::ReadBuffer ( void* n_buffer, const size_t n_buffer_size )
 {
 	memset( n_buffer, 0, n_buffer_size );
 	return fread( n_buffer, 1, n_buffer_size, m_file );
 }
 // Writes the buffer to the file, overwriting data.
 // Expands file as necessary.
-uint32_t CMappedBinaryFile::WriteBuffer ( const void* n_buffer, const uint32_t n_buffer_size )
+size_t CMappedBinaryFile::WriteBuffer ( const void* n_buffer, const size_t n_buffer_size )
 {
 	return fwrite( n_buffer, 1, n_buffer_size, m_file );
 }
@@ -73,15 +73,15 @@ FILE* CMappedBinaryFile::GetStream ( void )
 	return m_file;
 }
 
-uint32_t CMappedBinaryFile::TellPos ( void )
+size_t CMappedBinaryFile::TellPos ( void )
 {
 	return ftell( m_file );
 }
-uint32_t CMappedBinaryFile::TellSize( void )
+size_t CMappedBinaryFile::TellSize( void )
 {
-	uint32_t prevPos = TellPos();
+	size_t prevPos = TellPos();
 	fseek( m_file, 0, SEEK_END );
-	uint32_t result = ftell(m_file);
+	size_t result = ftell(m_file);
 	fseek( m_file, prevPos, SEEK_SET );
 	return result;
 }

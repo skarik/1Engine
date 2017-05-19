@@ -7,7 +7,7 @@
 #include "physical/skeleton/skeletonBone.h"
 #include "renderer/logic/model/CSkinnedModel.h"
 
-int Animation::AddMixingTransform ( CAnimation& anim, CAnimAction& action, const char* boneName, bool recursive )
+int animation::AddMixingTransform ( CAnimation& anim, CAnimAction& action, const char* boneName, bool recursive )
 {
 	//anim["idle_relaxed_hover_02"].AddMixingTransform( "Bip001", false ); // Old syntax
 
@@ -17,7 +17,7 @@ int Animation::AddMixingTransform ( CAnimation& anim, CAnimAction& action, const
 	// Now need base of skeleton
 	//CTransform* skellyRoot = model->GetSkeletonRoot();
 	//std::vector<skeletonBone_t*>* skellyList = model->GetSkeletonList();
-	const Animation::Skeleton& skeleton = anim.GetSkeleton();
+	const animation::Skeleton& skeleton = anim.GetSkeleton();
 
 	// Loop through the list to find the bone
 	for ( uint32_t i = 0; i < skeleton.names.size(); ++i )

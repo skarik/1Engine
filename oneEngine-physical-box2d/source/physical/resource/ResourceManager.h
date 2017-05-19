@@ -22,7 +22,7 @@ class PhysicalResources
 
 public:
 	PHYS_API void AddAnimationSet ( const char* filename, CAnimationSet* animSet );
-	PHYS_API void AddSkeleton ( const char* filename, Animation::Skeleton& skeleton );
+	PHYS_API void AddSkeleton ( const char* filename, animation::Skeleton& skeleton );
 	PHYS_API void AddPhysMeshSet ( const char* filename, std::vector<physMesh*>& meshSet );
 	PHYS_API void AddHitboxSet ( const char* filename, std::vector<sHitbox>& hitboxSet );
 
@@ -34,7 +34,7 @@ public:
 	//	GetSkeleton ( filename )
 	// Returns the skeleton saved previously, and increments the reference count.
 	// Returns NULL if no reference is found.
-	PHYS_API const Animation::Skeleton*		GetSkeleton ( const char* filename );
+	PHYS_API const animation::Skeleton*		GetSkeleton ( const char* filename );
 
 	//	GetPhysMesh ( filename )
 	// Returns the skeleton saved previously, and increments the reference count.
@@ -64,7 +64,7 @@ private:
 	struct skelly_reference_t
 	{
 		uint16_t refCount;
-		Animation::Skeleton set;
+		animation::Skeleton set;
 	};
 	struct physmeshset_reference_t
 	{

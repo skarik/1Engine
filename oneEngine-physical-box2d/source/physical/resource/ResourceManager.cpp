@@ -24,7 +24,7 @@ void PhysicalResources::AddAnimationSet ( const char* filename, CAnimationSet* a
 	animSets[arstring256(filename)] = ref;
 }
 
-void PhysicalResources::AddSkeleton ( const char* filename, Animation::Skeleton& skeleton )
+void PhysicalResources::AddSkeleton ( const char* filename, animation::Skeleton& skeleton )
 {
 	HANDLE_REFERENCE_FIND(skellySets) throw core::InvalidCallException();
 	skelly_reference_t ref;
@@ -67,7 +67,7 @@ const CAnimationSet* PhysicalResources::GetAnimationSet ( const char* filename )
 //	GetSkeleton ( filename )
 // Returns the skeleton saved previously, and increments the reference count.
 // Returns NULL if no reference is found.
-const Animation::Skeleton* PhysicalResources::GetSkeleton ( const char* filename )
+const animation::Skeleton* PhysicalResources::GetSkeleton ( const char* filename )
 {
 	HANDLE_REFERENCE_FIND(skellySets)
 	{

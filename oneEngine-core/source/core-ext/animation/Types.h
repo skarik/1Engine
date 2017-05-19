@@ -3,7 +3,7 @@
 
 #include "core/types/types.h"
 
-namespace Animation
+namespace animation
 {
 	//		Animation Category
 	// Used for general categorization of animations for organizing.

@@ -4,7 +4,7 @@
 #include "core/types.h"
 #include "core/math/Math3d.h"
 
-namespace Animation
+namespace animation
 {
 	enum splitMode_t
 	{

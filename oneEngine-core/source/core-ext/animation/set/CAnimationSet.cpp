@@ -58,7 +58,7 @@ void CAnimationSet::AddActions ( CAnimation* target )
 	target->GetAnimationSource().push_back(this);
 	// Check if a new mapping is going to be needed
 	{
-		Animation::Skeleton skeleton;
+		animation::Skeleton skeleton;
 	}
 
 	// Pull up and create the actions based on the loaded data

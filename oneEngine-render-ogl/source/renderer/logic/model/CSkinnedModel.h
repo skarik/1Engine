@@ -47,7 +47,7 @@ public:
 	RENDER_API CMorpher*	GetMorpher ( void );
 	//	GetSkeleton ( ) : Return the skeleton internally used
 	// Pass this pointer into CAnimation instances to add a sampling target.
-	RENDER_API Animation::Skeleton*	GetSkeleton ( void );
+	RENDER_API animation::Skeleton*	GetSkeleton ( void );
 
 	// == SETTERS ==
 	// This sets the bones to copy the target skinned model's bones completely.
@@ -61,7 +61,7 @@ protected:
 	bool bDrawSkeleton;
 
 	// Skeleton Info
-	Animation::Skeleton			skeleton;
+	animation::Skeleton			skeleton;
 
 	//bool						bReferenceSkeleton;
 	//bool						bPerfectReference; // Is the matching perfect? If not, we have to update the imperfects

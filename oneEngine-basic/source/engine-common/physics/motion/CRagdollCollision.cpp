@@ -26,7 +26,7 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 
 	hitboxEntry hb;
 	std::vector<sHitbox>* mdl_hitboxes = m_skinnedmodel->GetHitboxes();
-	Animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
+	animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
 
 	// Create the model/world space of the reference pose
 	std::vector<core::TransformLite> pose_model;
@@ -131,7 +131,7 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 void CRagdollCollision::CreateJoints ( std::vector<core::TransformLite>& pose_model )
 {
 	std::vector<sHitbox>* mdl_hitboxes = m_skinnedmodel->GetHitboxes();
-	Animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
+	animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
 
 	// Loop through model skeleton, child-first order, to create joints
 	//Transform* tr_root = m_skinnedmodel->GetSkeletonRoot();
@@ -476,7 +476,7 @@ void CRagdollCollision::PostFixedUpdate ( void )
 
 void CRagdollCollision::RigidbodyUpdate ( void )
 {
-	Animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
+	animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
 	// Need a Ragdoll to Animation conversion here
 	for ( auto hb = m_hitboxList.begin(); hb != m_hitboxList.end(); ++hb )
 	{	// TODO: apply impulse and continue
@@ -505,7 +505,7 @@ void CRagdollCollision::RigidbodyUpdate ( void )
 
 void CRagdollCollision::FixedUpdate ( void )
 {
-	Animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
+	animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
 	// TODO: Ensure lite transform is updated
 
 	// Need a Animation to Ragdoll conversion here
