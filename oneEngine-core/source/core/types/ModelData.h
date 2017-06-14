@@ -1,5 +1,5 @@
-#ifndef _C_MODEL_DATA_
-#define _C_MODEL_DATA_
+#ifndef CORE_MODEL_DATA_
+#define CORE_MODEL_DATA_
 
 #include "core/types/types.h"
 #include "core/math/Vector2d.h"
@@ -78,22 +78,29 @@ static_assert(sizeof(arModelVertex)==128, "[core] arModelVertex must be 128 byte
 // 24 bytes
 struct arPhysicsVertex
 {
-	// float3 position
-	float x,y,z;
-	// float3 normal
-	float nx,ny,nz;
+	arPhysicsVertex() {} // Empty default constructor
+	arPhysicsVertex(const arPhysicsVertex&c) { memcpy(rawbytes, c.rawbytes, 24); } // Copy constructor
+	union
+	{
+		struct
+		{
+			uint8_t rawbytes [24];
+		};
+		struct
+		{
+			// float3 position
+			float x,y,z;
+			// float3 normal
+			float nx,ny,nz;
+		};
+		struct
+		{
+			Vector3f	position;
+			Vector3f	normal;
+		};
+	};
 };
-
-//	Defeault Terrain Vertex structure
-// 64 byte
-/*struct arTerrainVertex
-{
-	float x,y,z; // Position
-	float u,v,w; // UV's
-	float nx,ny,nz; // Normal
-	float tx,ty,tz; // Tangent
-	float r,g,b,a; // Vertex color (texture blending)
-};*/
+static_assert(sizeof(arPhysicsVertex)==24, "[core] arPhysicsVertex must be 24 bytes.");
 
 //	Extended Terrain Vertex structure
 // 96 byte 
@@ -155,4 +162,4 @@ struct arModelPhysicsData
 };
 
 
-#endif
+#endif//CORE_MODEL_DATA_

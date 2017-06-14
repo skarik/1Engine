@@ -104,18 +104,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
-    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">
     <TargetName>$(ProjectName)</TargetName>

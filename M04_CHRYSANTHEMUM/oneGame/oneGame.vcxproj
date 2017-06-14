@@ -96,8 +96,8 @@
     <_ProjectFileVersion>11.0.60315.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
@@ -106,8 +106,8 @@
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized Release|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
@@ -116,8 +116,8 @@
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir>obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>

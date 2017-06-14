@@ -1,6 +1,9 @@
-
-#ifndef _JOBS_H_
-#define _JOBS_H_
+//
+//	Jobs.h
+// Thread pool-like job system. Has sync points for different jobs.
+//
+#ifndef CORE_EXT_THREADS_JOBS_H_
+#define CORE_EXT_THREADS_JOBS_H_
 
 #include "core/types/types.h"
 #include "core-ext/threads/semaphore.h"
@@ -56,9 +59,7 @@ namespace Jobs
 	class jobState_t
 	{
 	public:
-		//std::condition_variable		signal;
-		//std::mutex				signal_mtx;
-		Threads::semaphore			signal;
+		Threads::semaphore		signal;
 		std::atomic<bool>		perform;
 		std::function<void()>	function;
 
@@ -305,8 +306,6 @@ namespace Jobs
 #ifdef _USING_JOB_SIGNALING_SYSTEM_
 		// Used to prevent the CPU usage from spin locking, instead executing update when a job is requested or finished.
 		Threads::semaphore			m_jobsignal;
-		//std::condition_variable		m_jobsignal;
-		//std::mutex					m_jobsignal_mtx;
 #endif
 
 		// Flag to mask the highest priority jobs
@@ -320,4 +319,4 @@ namespace Jobs
 	};
 };
 
-#endif//_JOBS_H_
+#endif//CORE_EXT_THREADS_JOBS_H_

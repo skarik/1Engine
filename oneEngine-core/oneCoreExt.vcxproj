@@ -180,10 +180,11 @@
     <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugClang|Win32'">
-    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
     <UseMultiToolTask>true</UseMultiToolTask>
+    <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">
     <TargetName>$(ProjectName)</TargetName>
@@ -191,9 +192,10 @@
     <UseMultiToolTask>true</UseMultiToolTask>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">
-    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">
     <TargetName>$(ProjectName)</TargetName>

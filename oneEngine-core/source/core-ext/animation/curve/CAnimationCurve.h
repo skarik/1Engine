@@ -1,6 +1,5 @@
-
-#ifndef _C_ANIMATION_CURVE_
-#define _C_ANIMATION_CURVE_
+#ifndef CORE_EXT_ANIMATION_CURVE_
+#define CORE_EXT_ANIMATION_CURVE_
 
 #include "CAnimationCurveBase.h"
 #include "core/math/matrix/CMatrix.h"
@@ -40,4 +39,4 @@ inline CAnimationCurveBase::eCurveType CAnimationCurve<XTransform>::GetType ( vo
 	return CT_XTRANSFORM;
 }
 
-#endif
+#endif//CORE_EXT_ANIMATION_CURVE_
