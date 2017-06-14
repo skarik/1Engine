@@ -1,0 +1,1 @@
+default c\skin_body

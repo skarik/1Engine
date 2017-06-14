@@ -1,0 +1,109 @@
+# sounds in this file default to the default channel
+# volume defaults to 75dB
+
+# Menu Group
+Menu.Click
+{
+	channel	background
+	volume	0
+	pitch	0.9
+	wave	menu/click.wav
+}
+
+Phys.Dirt.Hit
+{
+	# physics channel is a "quiet" hit channel
+	channel		physics	
+	
+	wave		phys/dirt_hit1.wav
+}
+
+Char.FootstepSand
+{
+	# heavy channel is a louder version of physics channel
+	channel		heavy
+	gain		0.8
+	pitch		1.0
+	
+	# choose random value (todo)
+	wave		"phys/step_sand0.wav"
+	wave		"phys/step_sand1.wav"
+	wave		"phys/step_sand2.wav"
+	wave		"phys/step_sand3.wav"
+}
+
+Char.Footstep
+{
+	# heavy channel is a louder version of physics channel
+	channel		heavy
+	gain		0.7
+	pitch		1.0
+	
+	wave		"phys/step_rock0.wav"
+	wave		"phys/step_rock1.wav"
+	wave		"phys/step_rock2.wav"
+	wave		"phys/step_rock3.wav"
+}
+
+Char.FootstepGrass
+{
+	# heavy channel is a louder version of physics channel
+	channel		heavy
+	gain		0.8
+	pitch		1.0
+	
+	wave		"phys/step_grass0.wav"
+	wave		"phys/step_grass1.wav"
+	wave		"phys/step_grass2.wav"
+}
+
+Char.FootstepWood
+{
+	# heavy channel is a louder version of physics channel
+	channel		heavy
+	gain		0.8
+	pitch		1.0
+	
+	wave		"phys/step_wood0.wav"
+	wave		"phys/step_wood1.wav"
+	wave		"phys/step_wood2.wav"
+}
+
+
+Test.Yell
+{
+	ai	3
+	# ai is normally set to 1 for sounds, 0 for music and environment
+	# 0 means to not affect AI
+	# 1 means to affect AI if the AI isn't too busy
+	# 2 is reserved for speech (just look at it or show that it's there)
+	# 3 means that this fucking thing requires immediate attention
+	volume		90dB
+	# volume controls the attenuation (the distance you can still hear the sound)
+	# example is a gunshot. Design-wise, it'd be a pain in the ass to estimate how far away you'd hear the shot
+	# so instead, let the engine take care of it, giving an approximate volume
+	
+	wave		voice/yell.wav
+}
+Test.Yell2
+{
+	# if "ai" field not found, then channel is used
+	channel 	voice
+	volume		90dB
+	wave		voice/yell.wav
+}
+
+# test for subtitles (should subtitles go into soundscripts?)
+# (possibly have dialogue scripts instead? DISCUSS!)
+Speech.Person1.Greet	
+{
+	# Speech will also need a voice-per-race indexer.
+
+	# speech will automatically go into speech channel unless specified
+	wave greet1.wav
+	subt "Hello!"
+	wave greet2.wav
+	subt "Hi!"
+	#volume	80dB
+	volume speech
+}

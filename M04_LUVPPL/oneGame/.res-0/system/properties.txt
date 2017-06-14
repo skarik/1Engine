@@ -1,0 +1,3 @@
+developerstring "Love/People Development Build"
+defaultcmd "scene m04devmenu"
+editor "system/luvppl.oel"

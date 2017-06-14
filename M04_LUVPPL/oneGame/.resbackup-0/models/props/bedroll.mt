@@ -1,0 +1,1 @@
+default props\bedroll

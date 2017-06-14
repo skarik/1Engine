@@ -1,0 +1,1 @@
+default cloths\mayang_m_d

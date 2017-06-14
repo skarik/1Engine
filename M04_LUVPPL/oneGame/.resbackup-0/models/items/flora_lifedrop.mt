@@ -1,0 +1,1 @@
+default flora/lifedrop_fern

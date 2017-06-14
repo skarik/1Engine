@@ -1,0 +1,11 @@
+main
+{
+	texture 	textures/robots/automaton_diffuse.png
+	glowmap		textures/robots/automaton_glowmap.png
+	diffuse		1 1 1
+	emissive	0 0 0
+	alphamode	alphatest
+	
+	
+	shader		default
+}
