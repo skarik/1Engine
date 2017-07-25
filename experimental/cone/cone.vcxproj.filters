@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="SOURCE\C-One">
+      <UniqueIdentifier>{20ec7354-ec1e-41dc-9d29-8526ba7aabd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\stb/nothings">
+      <UniqueIdentifier>{5a99fdd8-5c9a-42eb-b6d1-3b7e2195f88f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\errors.h">
+      <Filter>SOURCE\C-One</Filter>
+    </ClInclude>
+    <ClInclude Include="source\lexer.h">
+      <Filter>SOURCE\C-One</Filter>
+    </ClInclude>
+    <ClInclude Include="source\stb_c_lexer.h">
+      <Filter>SOURCE\stb/nothings</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\main.cpp">
+      <Filter>SOURCE</Filter>
+    </ClCompile>
+    <ClCompile Include="source\errors.cpp">
+      <Filter>SOURCE\C-One</Filter>
+    </ClCompile>
+    <ClCompile Include="source\lexer.cpp">
+      <Filter>SOURCE\C-One</Filter>
+    </ClCompile>
+    <ClCompile Include="source\vm.cpp">
+      <Filter>SOURCE\C-One</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
