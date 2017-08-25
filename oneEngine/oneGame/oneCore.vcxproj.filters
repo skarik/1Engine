@@ -1,0 +1,478 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="SOURCE\Core">
+      <UniqueIdentifier>{dabcf5ba-f29d-4b9a-8d5e-bbdd68621429}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Math">
+      <UniqueIdentifier>{d2cdad09-0f7a-4e75-a61f-f906a2a8d76f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Math\Noise">
+      <UniqueIdentifier>{2d413759-cbad-491e-bd41-36570c4c44d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Math\Matrix">
+      <UniqueIdentifier>{4d46fa4b-a5a1-4af5-a87e-302dfd59fcbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Math\Geometry %28filter only%29">
+      <UniqueIdentifier>{49fdcf71-f54c-4ef8-bcf3-e67881974712}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Math\Vector and Rotation %28filter only%29">
+      <UniqueIdentifier>{1dec7888-6c92-4d9e-8524-5d029f51f6c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Math\Random">
+      <UniqueIdentifier>{75a3ff37-2dee-4fbe-86d0-2455f222055e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Types">
+      <UniqueIdentifier>{93cf7b0d-c0eb-4ef9-9f33-eca22141ef38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Exceptions">
+      <UniqueIdentifier>{a77d9bc4-e3ea-4c41-911a-d9b8b1c4a9e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Callbacks">
+      <UniqueIdentifier>{0d9d7841-a74f-4645-befb-dd0cbad02589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Containers">
+      <UniqueIdentifier>{68dd43f9-d874-4911-8b7f-3d51c1b2320d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Utils">
+      <UniqueIdentifier>{2b1a68e5-44a4-4cf2-bd10-819b38e29800}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext">
+      <UniqueIdentifier>{e4a5cde5-1d74-4ad3-9855-988cee640cd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Constants">
+      <UniqueIdentifier>{80cbb7f8-f7e7-4bdd-9b46-8bf5c6b4ef6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Threads">
+      <UniqueIdentifier>{6738830a-5428-4319-a051-18b2310d76bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Types">
+      <UniqueIdentifier>{09fb4212-fd00-4322-9665-67718f46d60f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Animation">
+      <UniqueIdentifier>{4378ff49-114b-43ff-b3a2-1554dd1ab3f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Animation\Curve">
+      <UniqueIdentifier>{7c1b2269-40b4-4c46-ae01-e48711948c80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Math">
+      <UniqueIdentifier>{bb61afe1-227d-4671-ae09-011bf5960fcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Math\Noise">
+      <UniqueIdentifier>{ee9c6a2f-7d3a-4d00-b217-a6608015e90f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\System">
+      <UniqueIdentifier>{3a490ba1-89a2-4ae1-ae88-dfd97000e95e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\System\IO">
+      <UniqueIdentifier>{d4c00ca6-fd15-4ae8-8b12-e4faf9ce57fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Containers">
+      <UniqueIdentifier>{5b5d9a67-07ae-4014-a0fc-cd499a08e1c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core\Legacy">
+      <UniqueIdentifier>{bde0f651-209f-4201-8b24-c1632d38ee07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\System">
+      <UniqueIdentifier>{c10beba5-9550-45de-b96b-97aa8ee89000}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\System\IO">
+      <UniqueIdentifier>{97925657-1c34-498d-8ec7-cdf399280790}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\System\IO\Serializer">
+      <UniqueIdentifier>{cedf24a4-7d14-439a-8f50-04496883162f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\core\callback_basics.h">
+      <Filter>SOURCE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\common.h">
+      <Filter>SOURCE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\exceptions.h">
+      <Filter>SOURCE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\time.h">
+      <Filter>SOURCE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\types.h">
+      <Filter>SOURCE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\blend_vector.h">
+      <Filter>SOURCE\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Color.h">
+      <Filter>SOURCE\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Math.h">
+      <Filter>SOURCE\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\XTransform.h">
+      <Filter>SOURCE\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\noise\BaseNoise.h">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\noise\Perlin.h">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\noise\SimplexNoise.h">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\noise\simplex_noise.h">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\matrix\CMatrix.h">
+      <Filter>SOURCE\Core\Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\matrix\CMatrixFunctions.hpp">
+      <Filter>SOURCE\Core\Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\matrix\CMatrixFunctions2.hpp">
+      <Filter>SOURCE\Core\Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\matrix\CXMatrix4x4.h">
+      <Filter>SOURCE\Core\Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\matrix\Matrix2x2.h">
+      <Filter>SOURCE\Core\Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\matrix\Matrix2x2.hpp">
+      <Filter>SOURCE\Core\Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\matrix\Matrix3x3.h">
+      <Filter>SOURCE\Core\Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\matrix\Matrix3x3.hpp">
+      <Filter>SOURCE\Core\Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\matrix\Matrix4x4.h">
+      <Filter>SOURCE\Core\Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\matrix\Matrix4x4.hpp">
+      <Filter>SOURCE\Core\Math\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\BoundingBox.h">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Cubic.h">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Frustum.h">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Line.h">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Plane.h">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Polygon.h">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Quadrilateral.h">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Ray.h">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Ray2d.h">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Rect.h">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Quaternion.h">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Rotator.h">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\vect2d_template.h">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\vect3d_template.h">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Vector2d.h">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Vector3d.h">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Vector4d.h">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\random\Random.h">
+      <Filter>SOURCE\Core\Math\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\random\random_vector.h">
+      <Filter>SOURCE\Core\Math\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\random\RangeValue.h">
+      <Filter>SOURCE\Core\Math\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\types\arBaseObject.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\types\float.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\types\float_fn.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\types\ModelData.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\types\Real.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\types\types.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\exceptions\exceptions.h">
+      <Filter>SOURCE\Core\Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\callbacks\Events.h">
+      <Filter>SOURCE\Core\Callbacks</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\containers\arstring.h">
+      <Filter>SOURCE\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\containers\arvector.h">
+      <Filter>SOURCE\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\system\CMemoryMonitor.h">
+      <Filter>SOURCE\Core\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\system\CMemoryMonitorWin32.h">
+      <Filter>SOURCE\Core\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\system\System.h">
+      <Filter>SOURCE\Core\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\system\io\CBufferIO.h">
+      <Filter>SOURCE\Core\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\system\io\CMappedBinaryFile.h">
+      <Filter>SOURCE\Core\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\system\io\FileUtils.h">
+      <Filter>SOURCE\Core\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\utils\StringUtils.h">
+      <Filter>SOURCE\Core\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\constants\distances.h">
+      <Filter>SOURCE\Core-ext\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\threads\future.h">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\threads\shared_variable.h">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\types\dirtval.h">
+      <Filter>SOURCE\Core-ext\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\types\sHitbox.h">
+      <Filter>SOURCE\Core-ext\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\AnimationEvents.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\CAnimationEvents.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\CAnimIK.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\curve\CAnimationCurve.h">
+      <Filter>SOURCE\Core-ext\Animation\Curve</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\curve\CAnimationCurveBase.h">
+      <Filter>SOURCE\Core-ext\Animation\Curve</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\curve\CArrayAnimationCurve.h">
+      <Filter>SOURCE\Core-ext\Animation\Curve</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\math\MathQEF.h">
+      <Filter>SOURCE\Core-ext\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\math\noise\MidpointNoiseBuffer.h">
+      <Filter>SOURCE\Core-ext\Math\Noise</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\containers\arsingleton.h">
+      <Filter>SOURCE\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\utils\armodule.h">
+      <Filter>SOURCE\Core\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\containers\ExtendibleMap2D.h">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\containers\arproperty.h">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Math3d.h">
+      <Filter>SOURCE\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\containers\KDTree.h">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\threads\semaphore.h">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\threads\counter.h">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\threads\compile_mode.h">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\os.h">
+      <Filter>SOURCE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\types\string_extension.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\legacy\linkerfix_legacy.h">
+      <Filter>SOURCE\Core\Legacy</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\system\io\CBinaryFile.h">
+      <Filter>SOURCE\Core\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Easing.h">
+      <Filter>SOURCE\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\Types.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\mccosf.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\mccvxg.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\serializer.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\serializer\CBaseSerializer.h">
+      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\serializer\ISerialBinary.h">
+      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\serializer\OSerialBinary.h">
+      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\1docs.style.h">
+      <Filter>SOURCE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\types\baseType.h">
+      <Filter>SOURCE\Core-ext\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\types\exports.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\core\math\Color.cpp">
+      <Filter>SOURCE\Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Math.cpp">
+      <Filter>SOURCE\Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\noise\Perlin.cpp">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\noise\SimplexNoise.cpp">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\noise\simplex_noise.cpp">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\BoundingBox.cpp">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Cubic.cpp">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Plane.cpp">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Polygon.cpp">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Quadrilateral.cpp">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Quaternion.cpp">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Rotator.cpp">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\vect2d_template.cpp">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\vect3d_template.cpp">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Vector2d.cpp">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Vector3d.cpp">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Vector4d.cpp">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\random\Random.cpp">
+      <Filter>SOURCE\Core\Math\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\callbacks\Events.cpp">
+      <Filter>SOURCE\Core\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\system\CMemoryMonitorWin32.cpp">
+      <Filter>SOURCE\Core\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\system\System.cpp">
+      <Filter>SOURCE\Core\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\system\io\CMappedBinaryFile.cpp">
+      <Filter>SOURCE\Core\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\system\io\FileUtils.cpp">
+      <Filter>SOURCE\Core\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\utils\StringUtils.cpp">
+      <Filter>SOURCE\Core\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\math\MathQEF.cpp">
+      <Filter>SOURCE\Core-ext\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\math\noise\MidpointNoiseBuffer.cpp">
+      <Filter>SOURCE\Core-ext\Math\Noise</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\system\io\CBinaryFile.cpp">
+      <Filter>SOURCE\Core\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\mccosf.cpp">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\mccvxg.c">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\serializer\ISerialBinary.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\serializer\OSerialBinary.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

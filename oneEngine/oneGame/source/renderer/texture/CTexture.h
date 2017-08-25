@@ -1,0 +1,114 @@
+﻿
+#ifndef _C_TEXTURE_H_
+#define _C_TEXTURE_H_
+
+// ==Includes==
+// Memory management
+#include "core/types/arBaseObject.h"
+// Math libraries
+#include "core/math/vect2d_template.h"
+// Renderer types
+#include "renderer/types/types.h"
+#include "renderer/types/textureFormats.h"
+#include "renderer/types/textureStructures.h"
+#include "renderer/types/pixelFormat.h"
+// Standard libaries
+#include <stdio.h>
+#include <string>
+
+// Using the string
+using std::string;
+
+// ==Defines==
+// A define to allow for a function to differentiate between different kinds of textures in the texture master class
+#define TextureType(a) public: RENDER_API virtual eTextureClass ClassType ( void ) { return a; };
+
+class CTextureMaster;
+class CResourceManager;
+
+// ===CLASS===
+// Class definition
+class CTexture : public arBaseObject
+{
+	//TextureType( "TextureBase" );
+	TextureType( TextureClassBase );
+public:
+	//	Constructor.
+	// Pass in an empty string for the filename to just initialize a texture instance without any data.
+	RENDER_API explicit CTexture ( string sInFilename,
+		eTextureType	textureType		= Texture2D,
+		eColorFormat	format			= RGBA8,
+		unsigned int	maxTextureWidth	= 1024,
+		unsigned int	maxTextureHeight= 1024,
+		eWrappingType	repeatX			= Repeat,
+		eWrappingType	repeatY			= Repeat,
+		eMipmapGenerationStyle	mipmapGeneration = MipmapNormal,
+		eSamplingFilter	filter			= SamplingLinear
+		);
+	RENDER_API ~CTexture ( void );
+
+	RENDER_API void Bind ( void );
+	RENDER_API void Unbind ( void );
+	RENDER_API static void Unbind ( char );
+
+	RENDER_API unsigned int GetWidth ( void ) { return info.width; };
+	RENDER_API unsigned int GetHeight( void ) { return info.height; };
+	RENDER_API Vector2i GetSize ( void ) { return Vector2i((int32_t)info.width, (int32_t)info.height); }
+	RENDER_API unsigned int GetDepth ( void ) { return info.depth; };
+	RENDER_API eTextureType GetType ( void ) { return info.type; };
+
+	RENDER_API virtual glHandle GetColorSampler ( void ) {
+		return info.index;
+	}
+	RENDER_API virtual eTextureType GetSamplerTarget ( void ) {
+		return info.type;
+	}
+	RENDER_API virtual bool GetIsFont ( void ) {
+		return false;
+	}
+
+	RENDER_API const Textures::timgInfo& GetIOImgInfo ( void ) const {
+		return io_imginfo;
+	}
+
+	RENDER_API virtual void Reload ( void );
+
+	RENDER_API void GenerateMipmap ( eMipmapGenerationStyle generationStyle = MipmapNormal );
+
+	RENDER_API void Upload (
+		pixel_t* data,
+		uint width,
+		uint height,
+		eWrappingType	repeatX			= Repeat,
+		eWrappingType	repeatY			= Repeat,
+		eMipmapGenerationStyle	mipmapGeneration = MipmapNormal,
+		eSamplingFilter	filter			= SamplingLinear
+		);
+
+	RENDER_API virtual void SetFilter ( eSamplingFilter filter );
+protected:
+	friend CTextureMaster;
+	friend CResourceManager;
+
+	string			sFilename;	
+	tTextureInfo	info;
+	tTextureState	state;
+
+	pixel_t	*		pData;
+
+	Textures::timgInfo	io_imginfo;
+	
+protected:
+	RENDER_API void LoadImageInfo ( void );
+	/*
+	void loadTGA ( void );
+	void loadPNG ( void );
+	void loadJPG ( void );
+
+	void loadDefault ( void );
+	*/
+};
+
+
+
+#endif

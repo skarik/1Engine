@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{3b29ac3a-2fb0-40e4-a0b6-951f66c1b91c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Audio">
+      <UniqueIdentifier>{b84fd792-c7c1-47e6-88b0-0dc4766dc557}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\audio\CAudioListener.cpp">
+      <Filter>SOURCE\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\CAudioMaster.cpp">
+      <Filter>SOURCE\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\CAudioSound.cpp">
+      <Filter>SOURCE\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\CAudioSoundLoader.cpp">
+      <Filter>SOURCE\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\CAudioSoundLoaderOgg.cpp">
+      <Filter>SOURCE\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\CAudioSoundStreamed.cpp">
+      <Filter>SOURCE\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\CAudioSource.cpp">
+      <Filter>SOURCE\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\CSoundManager.cpp">
+      <Filter>SOURCE\Audio</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\audio\AudioHeaders.h">
+      <Filter>SOURCE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\AudioStructs.h">
+      <Filter>SOURCE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\CAudioListener.h">
+      <Filter>SOURCE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\CAudioMaster.h">
+      <Filter>SOURCE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\CAudioSound.h">
+      <Filter>SOURCE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\CAudioSoundLoader.h">
+      <Filter>SOURCE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\CAudioSoundStreamed.h">
+      <Filter>SOURCE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\CAudioSource.h">
+      <Filter>SOURCE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\CSoundManager.h">
+      <Filter>SOURCE\Audio</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
