@@ -1,0 +1,138 @@
+# sounds in this file default to the default channel
+# volume defaults to 75dB
+
+# #################################################### #
+# HUMAN SET
+# VA: JBO
+# #################################################### #
+Speech.Human.Bn.Jump
+{
+	wave voice/human/bn/jmp_jump0.wav
+	wave voice/human/bn/jmp_jump1.wav
+	wave voice/human/bn/jmp_jump2.wav
+	wave voice/human/bn/jmp_jump3.wav
+	volume speech
+}
+Speech.Human.Bn.JumpLand
+{
+	wave voice/human/bn/jmp_land0.wav
+	wave voice/human/bn/jmp_land1.wav
+	wave voice/human/bn/jmp_land2.wav
+	wave voice/human/bn/jmp_land3.wav
+	volume speech
+}
+Speech.Human.Bn.Huff
+{
+	wave voice/human/bn/cmpln_breathe.wav
+	volume speech
+}
+
+# #################################################### #
+# FLUXXOR SET
+# VA: TU
+# #################################################### #
+Speech.Fluxxor.Tu.Jump
+{
+	# speech will automatically go into speech channel unless specified
+	#wave voice/fluxxor/tu/jump_up2.wav
+	wave voice/fluxxor/tu/jump_up3.wav
+	wave voice/fluxxor/tu/jump_up4.wav
+	wave voice/fluxxor/tu/jump_up5.wav
+	volume speech
+}
+
+Speech.Fluxxor.Tu.JumpLand
+{
+	wave voice/fluxxor/tu/jumpland_raw.wav
+	volume speech
+}
+
+Speech.Fluxxor.Tu.Hurt
+{
+	# speech will automatically go into speech channel unless specified
+	wave voice/fluxxor/tu/hurt_oof2.wav
+	volume speech
+}
+
+Speech.Fluxxor.Tu.GruntYa
+{
+	wave voice/fluxxor/tu/grunt_ya1.wav
+	wave voice/fluxxor/tu/grunt_ya2.wav
+	wave voice/fluxxor/tu/grunt_ya3.wav
+	volume speech
+}
+
+Speech.Fluxxor.Tu.Huff
+{
+	# speech will automatically go into speech channel unless specified
+	wave voice/fluxxor/tu/lowstamana_huffhuffhuff.wav
+	volume speech
+}
+
+
+# #################################################### #
+# MAYANG SET
+# VA: AMBER VARNER
+# #################################################### #
+Speech.Mayang.Av.JumpF
+{
+	wave voice/kitten/av/jump_hup0.wav
+	wave voice/kitten/av/jump_hup1.wav
+	wave voice/kitten/av/jump_up2.wav
+	wave voice/kitten/av/jump_up1.wav
+	volume speech
+}
+Speech.Mayang.Av.Jump0
+{
+	wave voice/kitten/av/jump_hup0.wav
+	wave voice/kitten/av/jump_hup1.wav
+	wave voice/kitten/av/jump_hup2.wav
+	volume speech
+}
+Speech.Mayang.Av.Jump1
+{
+	wave voice/kitten/av/jump_up0.wav
+	wave voice/kitten/av/jump_up1.wav
+	wave voice/kitten/av/jump_up2.wav
+	volume speech
+}
+
+Speech.Mayang.Av.Land
+{
+	wave voice/kitten/av/land_oof0.wav
+	wave voice/kitten/av/land_oof1.wav
+	wave voice/kitten/av/land_oof2.wav
+	wave voice/kitten/av/land_oof3.wav
+	volume speech
+}
+Speech.Mayang.Av.LandHard
+{
+	wave voice/kitten/av/land_fallenfromworse.wav
+	wave voice/kitten/av/land_wasntsohigh.wav
+	volume speech
+}
+
+Speech.Mayang.Av.Hurt
+{
+	# speech will automatically go into speech channel unless specified
+	wave voice/kitten/av/hurt_oof0.wav
+	wave voice/kitten/av/hurt_ow0.wav
+	wave voice/kitten/av/hurt_nnf0.wav
+	volume speech
+}
+
+Speech.Mayang.Av.Kiai
+{
+	wave voice/kitten/av/kiai_haa0.wav
+	wave voice/kitten/av/kiai_haa1.wav
+	volume speech
+}
+
+Speech.Mayang.Av.Huff
+{
+	wave voice/kitten/av/tired_huff0.wav
+	wave voice/kitten/av/tired_huff1.wav
+	wave voice/kitten/av/tired_huff2.wav
+	wave voice/kitten/av/tired_huff3.wav
+	volume speech
+}

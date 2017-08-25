@@ -1,0 +1,14 @@
+main
+{
+	alphamode	full
+	//blendmode	softalphablend
+	blendmode	additive
+	lighting	disabled
+	shadows		disabled
+
+	diffuse		1 1 1
+	shader		particle
+	shadername	shaders/e/hurtRingGlow.glsl
+	
+	texture		textures/hud/3d/hurtglow_v.png
+}

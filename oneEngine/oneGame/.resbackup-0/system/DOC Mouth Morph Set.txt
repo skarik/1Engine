@@ -1,0 +1,20 @@
+blink
+
+leftEyebrow
+rightEyebrow
+frown
+smile
+mouthBreathe
+grin
+
+mouthA
+mouthE
+mouthAE
+mouthO
+mouthF
+
+smirk
+
+
+default for blink should be at 0.10-0.15
+0.1 should be default eye open

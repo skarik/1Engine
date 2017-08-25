@@ -1,0 +1,17 @@
+##diffuse is overwritten by the focus color in the engine
+
+main
+{
+	transparency full
+	blendmode	softalphablend
+
+	diffuse		0 1 0
+	emissive	0 0 0
+
+	lighting	disabled
+	shadows		disabled
+	
+	shader		particle_softadd
+	
+	texture 	textures/sun.png
+}

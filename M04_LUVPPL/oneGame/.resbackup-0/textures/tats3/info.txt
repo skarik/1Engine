@@ -1,9 +1,0 @@
-"makeup" files
-
-
-cl1		CLARA Human/elf
-cl3		CLARA Dwarf
-cl4		CLARA Mayang
-cl5		CLARA Fluxxor
-cl6		CLARA Bani
-

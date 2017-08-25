@@ -1,0 +1,1 @@
+default items\dynamite

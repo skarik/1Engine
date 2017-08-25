@@ -1,0 +1,20 @@
+##diffuse is overwritten by the focus color in the engine
+
+main
+{
+	blendmode	softalphablend
+
+	diffuse		0 1 0
+	emissive	0 0 0
+
+	lighting	disabled
+	shadows		disabled
+	transparency	full
+	
+	//shader		particle_softadd
+	shader custom
+	shadername	shaders/particles/colorBlendedSoftAddFluuxtrail.glsl
+	
+	texture 	textures/particles/trail01.png
+	texture1	textures/c/fluxxbubble.png
+}

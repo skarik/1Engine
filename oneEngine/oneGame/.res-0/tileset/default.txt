@@ -1,0 +1,183 @@
+// only a single sprite for entire game
+sprite
+{
+	file "textures/tileset_city.gal"
+	index 0
+}
+// set information for the atlas
+atlas
+{
+	index 0
+	size	512 256
+	count	16 8
+	tilesize 32 32
+}
+
+// basic ruins type tileset
+tile "Sidewalk"
+{
+	type autotile
+	atlas 1 1
+	// autotile 4 should always be set
+	autotile
+	{
+		0 0 0
+		1 1 0
+		2 2 0
+		3 0 1
+		4 1 1
+		5 2 1
+		6 0 2
+		7 1 2
+		8 2 2
+		9 0 3
+		10 1 3
+		11 0 4
+		12 1 4
+	}
+}
+tile "Street"
+{
+	type randomized
+	atlas 3 0
+	choices
+	{
+		4 3 0
+		1 4 0
+		4 3 1
+		1 4 1
+        20 3 2
+		1 4 2
+	}
+}
+
+tile "Building0"
+{
+    type		autowall
+    atlas		6 1
+    size		1 1
+    collision	impassable
+
+	autotile
+	{
+		0 5 0
+		1 6 0
+		2 7 0
+		3 5 1
+		4 6 1
+		5 7 1
+		6 5 2
+		7 6 2
+		8 7 2
+	}
+}
+
+tile "Building0 Window"
+{
+    type		autowall
+    atlas		6 4
+    size		1 1
+    collision	impassable
+
+	autotile
+	{
+		0 5 3
+		1 6 3
+		2 7 3
+		3 5 4
+		4 6 4
+		5 7 4
+		6 5 5
+		7 6 5
+		8 7 5
+	}
+}
+
+tile "Building0 Pipe"
+{
+    type		autowall
+    atlas		4 5
+    size		1 1
+    collision	impassable
+
+	autotile
+	{
+		0 4 4
+		1 4 4
+		2 4 4
+		3 4 4
+		4 4 4
+		5 4 4
+		6 4 5
+		7 4 5
+		8 4 5
+	}
+}
+
+tile "Street Grate"
+{
+	type simple
+	atlas 4 3
+}
+tile "Junk 0"
+{
+	type simple
+	atlas 2 4
+}
+tile "Junk 1"
+{
+	type simple
+	atlas 3 4
+}
+tile "Street Manhole L"
+{
+	type simple
+	atlas 2 3
+}
+tile "Street Manhole R"
+{
+	type simple
+	atlas 3 3
+}
+
+tile "Sign 0 T"
+{
+	type simple
+	atlas 4 6
+}
+tile "Sign 0 B"
+{
+	type simple
+	atlas 4 7
+}
+
+tile "Handrail Mid"
+{
+    type prop
+    atlas 5 6
+    pieces
+    {
+        0 5 6
+        1 5 7
+    }
+}
+tile "Handrail Left"
+{
+    type prop
+    atlas 6 6
+    pieces
+    {
+        0 6 6
+        1 6 7
+    }
+}
+tile "Handrail Right"
+{
+    type prop
+    atlas 7 6
+    pieces
+    {
+        0 7 6
+        1 7 7
+    }
+}

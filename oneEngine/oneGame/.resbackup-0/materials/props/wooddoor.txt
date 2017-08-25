@@ -1,0 +1,8 @@
+main
+{
+	texture 	materials\props\wooddoor.png
+	diffuse		1.3 1.3 1.3
+	emissive	0 0 0
+	
+	shader		default
+}

@@ -1,0 +1,24 @@
+$clanmark
+"Wisp" clan_mask1
+"Echo" clan_mask2
+"Elum" clan_mask3
+"Gnash" clan_mask4
+"Bandit Skull" clan_skullblack
+"Eye See" clan_eye
+"La'ak"	clan_laak
+"Bird" clan_bird
+
+$tattoo
+"Mara" tatt_mara
+"Gear" tatt_gear
+"Mark" tatt_mark
+"Elder" tatt_elder
+"Mom"	tatt_mom
+"KR wus here" tatt_killroy
+
+$scar
+"La'ak" scar_laak
+
+$fluxxglows
+"La'ak" glow_laak
+"Bird" glow_bird

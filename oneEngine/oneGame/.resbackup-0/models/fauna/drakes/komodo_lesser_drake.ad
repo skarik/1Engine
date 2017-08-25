@@ -1,0 +1,117 @@
+$ikdefinitions
+	IK_LOOKAT	def_lookat	"Head" "L Eye" "R Eye"
+	
+$hitboxes
+	begin "Head"
+		center	0.18 0.2 0
+		extents	0.6 0.8 0.6
+		bone	"Head"
+	end
+	begin "Neck"
+		extents 1.1 0.3 0.3
+		bone	"Neck1"
+	end
+	begin "Chest"
+		extents 0.6 0.7 0.7
+		bone	"Spine3"
+	end
+	begin "Torso"
+		extents 0.9 0.7 0.7
+		center	0 -0.12 0
+		bone	"Spine1"
+	end
+	begin "Torso"
+		extents 0.3 0.6 0.6
+		center	0 -0.12 0
+		bone	"Pelvis"
+	end
+	begin "Tail"
+		extents 1.1 0.3 0.3
+		bone	"Tail"
+	end
+	begin "Tail"
+		extents 1.1 0.2 0.2
+		bone	"Tail2"
+	end
+	begin "LUpperArm"
+		center	0.3 0 0
+		extents 0.8 0.4 0.4
+		bone	"L UpperArm"
+	end
+	begin "RUpperArm"
+		center	0.3 0 0
+		extents 0.8 0.4 0.4
+		bone	"R UpperArm"
+	end
+	begin "LLowerArm"
+		center	0.3 0 0
+		extents 1.1 0.3 0.3
+		bone	"L Forearm"
+	end
+	begin "RLowerArm"
+		center	0.3 0 0
+		extents 1.1 0.3 0.3
+		bone	"R Forearm"
+	end
+	begin "LThigh"
+		extents 0.7 0.4 0.4
+		center	0.4 0 0
+		bone "L Thigh"
+	end
+	begin "RThigh"
+		extents 0.7 0.4 0.4
+		center	0.4 0 0
+		bone "R Thigh"
+	end
+	begin "LCalf"
+		extents 0.9 0.3 0.3
+		center	0.5 0 0
+		bone "L Calf"
+	end
+	begin "RCalf"
+		extents 0.9 0.3 0.3
+		center	0.5 0 0
+		bone "R Calf"
+	end
+	begin "LCalf"
+		center	0.3 0 0
+		extents 0.7 0.2 0.2
+		bone "L HorseLink"
+	end
+	begin "RCalf"
+		center	0.3 0 0
+		extents 0.7 0.2 0.2
+		bone "R HorseLink"
+	end
+
+$actions
+"ref" 0 3 1
+"idle" 37 137 1
+	$ai idle
+	
+"shake" 37 137 1
+	$ai fidgit
+
+"walk" 171 251 1
+	$begin_events
+		footstep 0
+		footstep 20
+		footstep 40
+		footstep 60
+	$end_events
+	$ai walk
+	
+"bite" 5 35 0
+	$begin_events
+		attack 12
+	$end_events
+	$ai attack
+	
+"stagger" 139 169 0
+	$ai stagger
+
+"death" 253 303 0
+	$begin_events
+		ground_thump 18
+	$end_events
+	$ai death

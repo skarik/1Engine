@@ -1,0 +1,8 @@
+main
+{
+	texture 	textures/null.jpg
+	diffuse		0.137 0.137 0.137
+	emissive	0 0 0
+
+	shader		default
+}

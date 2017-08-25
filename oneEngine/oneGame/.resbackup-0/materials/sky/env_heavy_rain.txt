@@ -1,0 +1,13 @@
+main
+{
+	diffuse		1 1 1
+	emissive	0 0 0
+
+	blendmode	alphablend
+	
+	shader		custom
+	shadername	shaders/sky/env_heavy_rain.glsl
+	
+	//texture		textures/particles/fluid1.png
+	texture		textures/rain_texture.png
+}

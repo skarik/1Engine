@@ -1,0 +1,12 @@
+main
+{
+	diffuse		1 1 1 0.5
+	emissive	0 0 0
+	
+	blendmode	alphablend
+
+	shader		custom
+	shadername	shaders/e/blob.glsl
+	
+	texture		textures/white.jpg
+}

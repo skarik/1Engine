@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{85a0906e-c4e1-4323-8aef-ef2152256385}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Deploy">
+      <UniqueIdentifier>{5ff7beb5-50cf-451c-b77d-a5b873e78c3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Deploy\Unit">
+      <UniqueIdentifier>{d3dabbb1-f7b5-40c0-8439-7529dd0eb3a7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\deploy\unit\audio.cpp">
+      <Filter>SOURCE\Deploy\Unit</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
