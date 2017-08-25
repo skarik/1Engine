@@ -1,1 +1,0 @@
-default c\hair_ears_kitten

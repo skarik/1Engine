@@ -1,1 +1,0 @@
-default c\fluxxor_hair_00

@@ -1,1 +1,0 @@
-default cloths\human_f_d

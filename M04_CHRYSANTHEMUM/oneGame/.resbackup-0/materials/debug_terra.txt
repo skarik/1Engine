@@ -1,8 +1,0 @@
-main
-{
-	texture 	textures/debug01.jpg
-	diffuse		1.0 1.0 1.0
-	emissive	0 0 0
-
-	shader		default
-}

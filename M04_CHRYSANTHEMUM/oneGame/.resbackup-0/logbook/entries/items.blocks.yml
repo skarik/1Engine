@@ -1,7 +1,0 @@
-title: Blocks
-hidden:
- showblock:	ANY
- showbook:	Blocked_1
-default:
- Blocks are items that you can place on the terrain. Most blocks have the same function. Just right click to place it where your block cursor is.
- Some blocks can have edges chiseled into a specific shape. Careful not to break the whole block!

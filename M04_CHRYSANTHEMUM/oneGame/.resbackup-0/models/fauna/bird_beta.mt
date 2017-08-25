@@ -1,1 +1,0 @@
-default fauna\bird

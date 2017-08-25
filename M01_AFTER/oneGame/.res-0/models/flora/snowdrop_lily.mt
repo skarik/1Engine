@@ -1,1 +1,0 @@
-default flora/snow_lily
