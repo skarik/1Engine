@@ -5,6 +5,8 @@
 #include "core/containers/arstring.h"
 #include "m04/entities/NpcBase.h"
 
+class CRigidbody;
+
 namespace M04
 {
 	class TalkerBox;
@@ -20,6 +22,7 @@ namespace M04
 		void			Update ( void ) override;
 	protected:
 		TalkerBox*		talker;
+		CRigidbody*		bod;
 
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::NpcPenni);

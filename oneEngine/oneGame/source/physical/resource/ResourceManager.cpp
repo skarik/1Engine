@@ -1,7 +1,6 @@
-
 #include "ResourceManager.h"
 #include "core-ext/animation/set/CAnimationSet.h"
-#include "physical/physics/shapes/physMesh.h"
+#include "physical/physics/shapes/PrMesh.h"
 
 ARSINGLETON_CPP_DEF(PhysicalResources);
 
@@ -33,7 +32,7 @@ void PhysicalResources::AddSkeleton ( const char* filename, animation::Skeleton&
 	skellySets[arstring256(filename)] = ref;
 }
 
-void PhysicalResources::AddPhysMeshSet ( const char* filename, std::vector<physMesh*>& meshSet )
+void PhysicalResources::AddPhysMeshSet ( const char* filename, std::vector<PrMesh*>& meshSet )
 {
 	HANDLE_REFERENCE_FIND(physmeshSets) throw core::InvalidCallException();
 	physmeshset_reference_t ref;
@@ -80,7 +79,7 @@ const animation::Skeleton* PhysicalResources::GetSkeleton ( const char* filename
 //	GetPhysMesh ( filename )
 // Returns the skeleton saved previously, and increments the reference count.
 // Returns NULL if no reference is found.
-const std::vector<physMesh*>* PhysicalResources::GetPhysMesh ( const char* filename )
+const std::vector<PrMesh*>* PhysicalResources::GetPhysMesh ( const char* filename )
 {
 	HANDLE_REFERENCE_FIND(physmeshSets)
 	{

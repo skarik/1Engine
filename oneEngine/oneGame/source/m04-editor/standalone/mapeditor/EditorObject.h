@@ -26,7 +26,7 @@ namespace M04
 		void				MetadataToWorld ( void );
 	public:
 		arstring128			m_object_name;
-		Engine::ObjectBase*	m_object;
+		engine::ObjectBase*	m_object;
 
 	public:
 		Vector3d	position;

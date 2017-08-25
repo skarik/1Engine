@@ -95,15 +95,15 @@ void DeveloperMenu::uiStepMainPanel ( void )
 {
 	if ( ui_main_editor.GetButtonClicked() )
 	{
-		Engine::Console->RunCommand( "scene test1" );
+		engine::Console->RunCommand( "scene test1" );
 	}
 	else if ( ui_main_testg.GetButtonClicked() )
 	{
-		Engine::Console->RunCommand( "scene game_luvppl" );
+		engine::Console->RunCommand( "scene game_luvppl" );
 	}
 	else if ( ui_main_test0.GetButtonClicked() )
 	{
-		Engine::Console->RunCommand( "scene test0" );
+		engine::Console->RunCommand( "scene test0" );
 	}
 	else if ( ui_main_game.GetButtonClicked() )
 	{

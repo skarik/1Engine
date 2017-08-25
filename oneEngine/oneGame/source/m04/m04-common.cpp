@@ -17,6 +17,9 @@
 */
 #include "renderer/state/Options.h"
 
+#include "physical/physics/PrPhysics.h"
+#include "physical/physics/PrWorld.h"
+
 #include "m04/scenes/sceneTilesetTest.h"
 #include "m04/scenes/sceneGameLuvPpl.h"
 #include "m04-editor/scenes/sceneEditorMain.h"
@@ -33,6 +36,12 @@ int GameInitialize ( void )
 {
 	// Engine
 	EngineCommonInitialize();
+
+	// Create physics world
+	{
+		prWorldCreationParams params = {0};
+		PrPhysics::Active()->AddWorld( new PrWorld(params) );
+	}
 
 	// Scene registration
 	EngineCommon::RegisterScene<sceneTilesetTest>( "test0" );

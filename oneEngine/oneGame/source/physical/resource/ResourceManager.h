@@ -1,4 +1,3 @@
-
 #ifndef _PHYSICS_RESOURCE_MANAGER_H_
 #define _PHYSICS_RESOURCE_MANAGER_H_
 
@@ -11,7 +10,7 @@
 #include <vector>
 #include <map>
 
-class physMesh;
+class PrMesh;
 class CAnimationSet;
 
 class PhysicalResources
@@ -23,7 +22,7 @@ class PhysicalResources
 public:
 	PHYS_API void AddAnimationSet ( const char* filename, CAnimationSet* animSet );
 	PHYS_API void AddSkeleton ( const char* filename, animation::Skeleton& skeleton );
-	PHYS_API void AddPhysMeshSet ( const char* filename, std::vector<physMesh*>& meshSet );
+	PHYS_API void AddPhysMeshSet ( const char* filename, std::vector<PrMesh*>& meshSet );
 	PHYS_API void AddHitboxSet ( const char* filename, std::vector<sHitbox>& hitboxSet );
 
 	//	GetAnimationSet ( filename )
@@ -39,7 +38,7 @@ public:
 	//	GetPhysMesh ( filename )
 	// Returns the skeleton saved previously, and increments the reference count.
 	// Returns NULL if no reference is found.
-	PHYS_API const std::vector<physMesh*>*	GetPhysMesh ( const char* filename );
+	PHYS_API const std::vector<PrMesh*>*	GetPhysMesh ( const char* filename );
 
 	//	GetHitbox ( filename )
 	// Returns the skeleton saved previously, and increments the reference count.
@@ -69,7 +68,7 @@ private:
 	struct physmeshset_reference_t
 	{
 		uint16_t refCount;
-		std::vector<physMesh*> set;
+		std::vector<PrMesh*> set;
 	};
 	struct hitbox_reference_t
 	{

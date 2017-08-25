@@ -20,7 +20,7 @@
 
 // Include physics
 #include "physical/module_physical.h"
-#include "physical/physics/CPhysics.h"
+#include "physical/physics/PrPhysics.h"
 
 // Include gamestate
 #include "engine/module_engine.h"
@@ -37,7 +37,7 @@
 // Include engine-common
 #include "engine-common/engine-common.h"
 //#include "engine-common/utils/CDeveloperConsoleUI.h"
-#include "engine-common/lua/CLuaController.h"
+//#include "engine-common/lua/CLuaController.h"
 #include "engine-common/scenes/gmsceneSystemLoader.h"
 
 //#include "renderer/debug/CDebugDrawer.h"
@@ -69,10 +69,7 @@ DEPLOY_API int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	std::cout << "Win32 Build (" << __DATE__ << ") Prealpha" << std::endl;
 
 	// Init Physics
-	Physics::Init();
-	/*CPhysics* physics = new CPhysics;
-	CPhysics::Instance = physics;
-	CPhysics::Instance->_Init();*/
+	PrPhysics::Active()->Initialize();
 	// Create Renderstate
 	CRenderState aRenderer (NULL); // passing null creates default resource manager
 	aWindow.mRenderer = &aRenderer; // Set the window's renderer (multiple possible render states)
@@ -87,8 +84,8 @@ DEPLOY_API int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	//debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
 
 	// Create the engine systems
-	Lua::CLuaController* luaController = new Lua::CLuaController();
-	Engine::CDeveloperConsole* engConsole = new Engine::CDeveloperConsole();
+	//Lua::CLuaController* luaController = new Lua::CLuaController();
+	engine::CDeveloperConsole* engConsole = new engine::CDeveloperConsole();
 
 	// Set up engine component
 	EngineCommonInitialize();
@@ -184,7 +181,7 @@ DEPLOY_API int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	aGameState.CleanWorld();
 
 	// Free Physics
-	Physics::Free();
+	PrPhysics::FreeInstance();
 	// Free input
 	CInput::Free();
 

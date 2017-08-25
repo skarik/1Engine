@@ -1590,7 +1590,7 @@ void MapEditor::uiStepObjectPanel ( void )
 			ui_lbl_object_properties.SetVisible( true );
 
 			// Get the object's metadata
-			const Engine::MetadataTable* metadata = m_object_target->m_object->GetMetadata();
+			const engine::MetadataTable* metadata = m_object_target->m_object->GetMetadata();
 			// Generate the UI for the object's editable properties
 			if ( ui_lbl_object_keys.empty() )
 			{

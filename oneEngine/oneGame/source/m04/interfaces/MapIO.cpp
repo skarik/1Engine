@@ -120,7 +120,7 @@ void M04::MapIO::Save ( void )
 			for ( auto metadatap : object->m_object->GetMetadata()->data )
 			{
 				topper.size += sizeof(uint32_t) * 2;
-				topper.size += ((Engine::MetadataPData*)metadatap.second)->source_size;
+				topper.size += ((engine::MetadataPData*)metadatap.second)->source_size;
 			}
 
 			fwrite( &topper, sizeof(mapio_section_start_t), 1, m_file );
@@ -129,7 +129,7 @@ void M04::MapIO::Save ( void )
 			fwrite( object->m_object_name.c_str(), 128, 1, m_file );
 			for ( auto metadatap : object->m_object->GetMetadata()->data )
 			{
-				Engine::MetadataPData* pdata = (Engine::MetadataPData*)metadatap.second;
+				engine::MetadataPData* pdata = (engine::MetadataPData*)metadatap.second;
 
 				// Write offset
 				fwrite( &metadatap.first, sizeof(uint32_t), 1, m_file );
@@ -448,7 +448,7 @@ void M04::MapIO::Load ( void )
 				memcpy( (void*)object_type_name.c_str(), buffer, 128 );
 
 				// Instiantiate the object
-				auto registration = Engine::BehaviorList::GetRegistration(object_type_name.c_str());
+				auto registration = engine::BehaviorList::GetRegistration(object_type_name.c_str());
 				CGameBehavior* object = registration.engine_inst();
 
 				auto metadata = registration.metadata();

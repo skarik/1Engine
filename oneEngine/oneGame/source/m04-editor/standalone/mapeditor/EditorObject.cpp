@@ -18,20 +18,20 @@ EditorObject::EditorObject ( const char* object_name )
 	position( 0,0,0 ), angle( 0 ), scale( 1,1,1 ),
 	light(NULL)
 {
-	auto registration = Engine::BehaviorList::GetRegistration(object_name);
+	auto registration = engine::BehaviorList::GetRegistration(object_name);
 	m_object = registration.editor_inst();
 
 	auto metadata = m_object->GetMetadata();
 
 	// Pull wanted keys all at once
-	const Engine::Metadata* mt_display_mode = metadata->Get<METADATA_DISPLAY_MODE>();
-	const Engine::Metadata* mt_display_file = metadata->Get<METADATA_DISPLAY_FILENAME>();
+	const engine::Metadata* mt_display_mode = metadata->Get<METADATA_DISPLAY_MODE>();
+	const engine::Metadata* mt_display_file = metadata->Get<METADATA_DISPLAY_FILENAME>();
 
 	// Check display mode for the editor
 	if ( mt_display_mode && mt_display_file )
 	{
-		arstring128 file_key = Engine::MetadataTo<arstring128>(mt_display_file);
-		switch ( Engine::MetadataTo<fielddisplay_t>(mt_display_mode) )
+		arstring128 file_key = engine::MetadataTo<arstring128>(mt_display_file);
+		switch ( engine::MetadataTo<fielddisplay_t>(mt_display_mode) )
 		{
 		case DISPLAY_BOX:
 			// Set to box
