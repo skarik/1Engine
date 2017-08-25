@@ -313,99 +313,99 @@ void CDialogueLoader::GoNextLine (void)
 	}
 }
 
-#include "engine-common/Lua/CLuaController.h"
+//#include "engine-common/Lua/CLuaController.h"
+//
+//int cont(lua_State *L)
+//{
+//    return 0;
+//}
+//string lc_target;
+//int pcallktest( lua_State *L )
+//{
+//    int s;
+//	s = luaL_loadstring(L, lc_target.c_str());
+//	// Check that the code loaded properly
+//	if ( s != LUA_OK ) {
+//		Lua::Controller->ReportErrors( L, s );
+//		debug::Console->PrintError( "...error in lua load!" );
+//	}
+//    s = lua_pcallk(L, 0, 0, 0, 0, cont);
+//	// Check for errors caused
+//	if ( s == LUA_OK ) {
+//		debug::Console->PrintWarning( "...routine finished w/o yield?" );
+//	}
+//	else {
+//		Lua::Controller->ReportErrors( L, s );
+//		debug::Console->PrintError( "...error in lua!" );
+//	}
+//    return 0;
+//}
 
-int cont(lua_State *L)
-{
-    return 0;
-}
-string lc_target;
-int pcallktest( lua_State *L )
-{
-    int s;
-	s = luaL_loadstring(L, lc_target.c_str());
-	// Check that the code loaded properly
-	if ( s != LUA_OK ) {
-		Lua::Controller->ReportErrors( L, s );
-		debug::Console->PrintError( "...error in lua load!" );
-	}
-    s = lua_pcallk(L, 0, 0, 0, 0, cont);
-	// Check for errors caused
-	if ( s == LUA_OK ) {
-		debug::Console->PrintWarning( "...routine finished w/o yield?" );
-	}
-	else {
-		Lua::Controller->ReportErrors( L, s );
-		debug::Console->PrintError( "...error in lua!" );
-	}
-    return 0;
-}
-
-void CDialogueLoader::PostLua (void)
-{
-	//debug::Console->PrintMessage( "Lua execution...\n" );
-
-	// Load up lua
-	//string m_environment;
-	//m_environment = "__dialogue_object_";
-	//Lua::Controller->LoadLuaFile( m_behavior.c_str(), m_environment.c_str(), m_environment.c_str() );
-	//Lua::Controller->SetEnvironment( m_environment.c_str() );
-	//Lua::Controller->ResetEnvironment();
-	static lua_State* luaThread = NULL; 
-
-	// Todo: Mark this dialogue as the active one for the C hooks
-
-	if ( m_luaState == 0 )
-	{
-		debug::Console->PrintMessage( "Lua execution...\n" );
-
-		luaThread = lua_newthread( Lua::Controller->GetState() );
-		//Lua::Controller->SetEnvironment( m_environment.c_str() );
-
-		//Lua::Controller->RunLua( m_luaCode );
-
-		//string target = ;
-		//luaL_loadstring( Lua::Controller->GetState(), target.c_str() );
-		//int s = lua_pcallk( Lua::Controller->GetState(), 0,0,0,0, NULL );
-
-		luaL_loadstring( luaThread, "local pcallktest = ... \r\n pcallktest()" );
-
-		//lc_target = "print(\"HI\"); \r\n yield();\r\n" + string(m_luaCode);
-
-		lc_target = string(m_luaCode);
-		lua_pushcfunction( luaThread, pcallktest );
-		
-		//Lua::Controller->ResetEnvironment();
-		m_luaState = 1;
-	}
-	if ( m_luaState == 1 || m_luaState == 2 )
-	{
-		int s;
-		//debug::Console->PrintMessage( "...running function...\n" );
-		s = lua_resume( luaThread, NULL, (m_luaState==1)?1:0 );
-
-		if ( s == LUA_YIELD ) {
-			//debug::Console->PrintMessage( "yielded...\n" );
-			m_luaState = 2;
-			return; // hohoho
-		}
-		else if ( s == LUA_OK ) {
-			debug::Console->PrintWarning( "...routine finished!\n" );
-			m_luaState = 3;
-		}
-		else {
-			Lua::Controller->ReportErrors( luaThread, s );
-			debug::Console->PrintError( "...error in lua!" );
-			m_luaState = 3;
-		}
-	}
-	if ( m_luaState == 3 )
-	{
-		// Check if script is finished executing
-		sCurrentEntry.name[0] = 0;
-		NextObject();
-	}
-}
+//void CDialogueLoader::PostLua (void)
+//{
+//	//debug::Console->PrintMessage( "Lua execution...\n" );
+//
+//	// Load up lua
+//	//string m_environment;
+//	//m_environment = "__dialogue_object_";
+//	//Lua::Controller->LoadLuaFile( m_behavior.c_str(), m_environment.c_str(), m_environment.c_str() );
+//	//Lua::Controller->SetEnvironment( m_environment.c_str() );
+//	//Lua::Controller->ResetEnvironment();
+//	static lua_State* luaThread = NULL; 
+//
+//	// Todo: Mark this dialogue as the active one for the C hooks
+//
+//	if ( m_luaState == 0 )
+//	{
+//		debug::Console->PrintMessage( "Lua execution...\n" );
+//
+//		luaThread = lua_newthread( Lua::Controller->GetState() );
+//		//Lua::Controller->SetEnvironment( m_environment.c_str() );
+//
+//		//Lua::Controller->RunLua( m_luaCode );
+//
+//		//string target = ;
+//		//luaL_loadstring( Lua::Controller->GetState(), target.c_str() );
+//		//int s = lua_pcallk( Lua::Controller->GetState(), 0,0,0,0, NULL );
+//
+//		luaL_loadstring( luaThread, "local pcallktest = ... \r\n pcallktest()" );
+//
+//		//lc_target = "print(\"HI\"); \r\n yield();\r\n" + string(m_luaCode);
+//
+//		lc_target = string(m_luaCode);
+//		lua_pushcfunction( luaThread, pcallktest );
+//		
+//		//Lua::Controller->ResetEnvironment();
+//		m_luaState = 1;
+//	}
+//	if ( m_luaState == 1 || m_luaState == 2 )
+//	{
+//		int s;
+//		//debug::Console->PrintMessage( "...running function...\n" );
+//		s = lua_resume( luaThread, NULL, (m_luaState==1)?1:0 );
+//
+//		if ( s == LUA_YIELD ) {
+//			//debug::Console->PrintMessage( "yielded...\n" );
+//			m_luaState = 2;
+//			return; // hohoho
+//		}
+//		else if ( s == LUA_OK ) {
+//			debug::Console->PrintWarning( "...routine finished!\n" );
+//			m_luaState = 3;
+//		}
+//		else {
+//			Lua::Controller->ReportErrors( luaThread, s );
+//			debug::Console->PrintError( "...error in lua!" );
+//			m_luaState = 3;
+//		}
+//	}
+//	if ( m_luaState == 3 )
+//	{
+//		// Check if script is finished executing
+//		sCurrentEntry.name[0] = 0;
+//		NextObject();
+//	}
+//}
 
 void CDialogueLoader::SoundAndFace (void)
 {

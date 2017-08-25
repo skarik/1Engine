@@ -1,25 +1,21 @@
-
-// Includes
 #include "core/time.h"
 #include "core-ext/transform/Transform.h"
 #include "core-ext/animation/CAnimation.h"
 #include "engine/state/CGameState.h"
 
-#include "physical/physics/CPhysics.h"
-#include "engine/physics/CPhysicsEngine.h"
+//#include "physical/physics/CPhysics.h"
+//#include "engine/physics/CPhysicsEngine.h"
 #include "core-ext/profiler/CTimeProfiler.h"
 //#include "CResourceManager.h"
 
 #include <iostream>
 
-// Using
 using std::vector;
 
 //===Class static member data===
 
-CGameState* CGameState::mActive = NULL;
-//CGameState*	GameState = NULL;
-guid32_t CGameState::nextGUID = 0;
+CGameState*	CGameState::mActive = NULL;
+guid32_t	CGameState::nextGUID = 0;
 
 //===Class functions===
 
@@ -50,22 +46,11 @@ CGameState::CGameState ( void )
 }
 // Class destructor
 //  sets pActive pointer to null
-//  frees list of renderers, but not the renderers
+//  frees list of objects
 CGameState::~CGameState ( void )
 {
 	// Reset active gamestate
 	mActive = NULL;
-	//GameState = NULL;
-	// Loop through all instances
-	//  Delete if valid
-	/*for ( unsigned int i = 0; i < iCurrentIndex; i += 1 )
-	{
-		if ( pBehaviors[i] != NULL )
-		{
-			cout << (void*)pBehaviors << "::" << (void*)pBehaviors[i] << endl;
-			delete (pBehaviors[i]);
-		}
-	}*/
 	// Delete the list of instances
 	if ( pBehaviors != NULL )
 	{
@@ -79,18 +64,17 @@ CGameState::~CGameState ( void )
 void CGameState::CleanWorld ( void )
 {
 	// Loop through all instances
-	//  Delete if valid
 	for ( unsigned int i = 0; i < iCurrentIndex; i += 1 )
 	{
+		//  Delete if valid (not null and not persistent)
 		if ( pBehaviors[i] != NULL && !pBehaviors[i]->persistent )
 		{
-			//if ( pBehaviors[i]->noReference )
 			if ( !pBehaviors[i]->HasReference() )
 			{
 				if ( i != pBehaviors[i]->GetId() )
 				{
 					std::cout << "Warning: an improper id (" << i << ") was found. Ignoring object.\n  Note that this is a fatal warning, and should be reported." << std::endl;
-					debug::Console->PrintError( "WARNING: MISMATCHED OBJECT ID. OBJECT IGNORING. NOTE THIS WARNING IS FATAL AND SHOULD BE REPORTED." );
+					debug::Console->PrintError( "Mismatched object ID detected! PLEASE NOTE, THIS WARNING IS FATAL IN SINGLEPLAYER GAMES AND SHOULD BE REPORTED." );
 					pBehaviors[i] = NULL;
 				}
 				else
@@ -102,15 +86,13 @@ void CGameState::CleanWorld ( void )
 					}
 					catch ( ... )
 					{
-						debug::Console->PrintError( "SOMETHING WENT WRONG." );
+						debug::Console->PrintError( "Something went wrong when cleaning the world: delete behavior" );
 					}
 					pBehaviors[i] = NULL;
 				}
 			}
 			else
-			{	// Print out unable to delete
-				//cout << "Could not delete o[" << i << "] (" << pBehaviors[i]->GetTypeName() << ") - dangling reference" << endl;
-				// Force it to throw an error
+			{	// Force it to throw an error
 				delete (pBehaviors[i]);
 				throw core::NullReferenceException();
 			}
@@ -182,23 +164,6 @@ void CGameState::LateUpdate ( void )
 			EXCEPTION_CATCH_END
 		}
 	}
-
-#if 0
-	// Update the transforms
-#if defined(_ENGINE_UNOPTIMIZED) || defined(_ENGINE_DEBUG)
-	TimeProfiler.EndTimeProfile( "gs_lateupdate" );
-	TimeProfiler.BeginTimeProfile( "gs_propogate_transforms" );
-#endif
-	{
-		CTransform::PropogateTransforms();
-	}
-
-	// Loop through all instances
-	//  Update if active
-#if defined(_ENGINE_UNOPTIMIZED) || defined(_ENGINE_DEBUG)
-	TimeProfiler.EndTimeProfile( "gs_propogate_transforms" );
-#endif
-#endif
 
 	// Loop through the delete list
 	if ( !vDeletionList.empty() )
@@ -285,12 +250,11 @@ void CGameState::LateUpdate ( void )
 		Real temp = Time::deltaTime;
 		Time::deltaTime = Time::fixedTime;
 
-#ifdef _PHYSICS_MULTITHREADED_
-		Physics::UpdateThreaded( Time::deltaTime, Time::fixedTime, this, &CGameState::FixedUpdate, &CGameState::PhysicsUpdate );
+#ifdef PHYSICS_MULTITHREADED
+		IPrGameUpdate::PhysicsUpdateThreaded( Time::deltaTime, Time::fixedTime );
 #else
 		Time::limitedDeltaTime = std::min<Real>( Time::limitedDeltaTime*2.0f, std::max<Real>( Time::limitedDeltaTime/2.0f, (Time::deltaTime*2+Time::targetFixedTime)/3.0f ) );
-		//Physics::Update( Time::limitedDeltaTime, this, &CGameState::FixedUpdate, &CGameState::PhysicsUpdate ); // TODO CRASH HERE
-		PhysicsEngine::Update( Time::fixedTime, this, &CGameState::FixedUpdate, &CGameState::PhysicsUpdate ); // TODO CRASH HERE
+		IPrGameUpdate::PhysicsUpdate( Time::fixedTime );
 #endif
 
 		Time::fixedTime = 0;
@@ -392,7 +356,7 @@ void CGameState::FixedUpdate ( void )
 	}
 }
 // Called after FixedUpdate, during the physics updating
-void CGameState::PhysicsUpdate ( void )
+void CGameState::RigidbodyUpdate ( Real interpolation )
 {
 	CGameBehavior * pBehavior;
 	unsigned int i;
@@ -404,7 +368,7 @@ void CGameState::PhysicsUpdate ( void )
 		pBehavior = pBehaviors[i];
 		if (( pBehavior != NULL )&&( pBehavior->active ))
 		{
-			pBehavior->RigidbodyUpdate();
+			pBehavior->RigidbodyUpdate(interpolation);
 		}
 	}
 }
@@ -422,7 +386,7 @@ gameid_t CGameState::AddBehavior ( CGameBehavior * pBehavior )
 	for ( unsigned int i = 0; i < iListSize; i += 1 )
 	{
 		if ( pBehaviors[i] == pBehavior ) {
-			debug::Console->PrintWarning( "Double instance in list detected!\n" );
+			debug::Console->PrintWarning( "Double instance in list detected! Preventing.\n" );
 			return i;
 		}
 	}
@@ -511,7 +475,7 @@ bool CGameState::ObjectExists ( CGameBehavior* pTargetBehavior )
 	}
 	return false;
 }
-vector<CGameBehavior*>* CGameState::FindObjectsWithLayer ( Layers::Layer targetLayer )
+vector<CGameBehavior*>* CGameState::FindObjectsWithLayer ( physical::prLayer targetLayer )
 {
 	vector<CGameBehavior*>* pFoundObjects = new vector<CGameBehavior*> ();
 	for ( unsigned int i = 0; i < iCurrentIndex; i += 1 )

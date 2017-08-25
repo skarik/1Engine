@@ -26,7 +26,7 @@ void gmsceneSystemBuilder::LoadScene ( void )
 	CDeveloperCursor* devCursor = new CDeveloperCursor();
 
 	// Add the builder command
-	Engine::Console->AddConsoleFunc( "build", EngineCommon::BuildToTarget );
+	engine::Console->AddConsoleFunc( "build", EngineCommon::BuildToTarget );
 
 	// Print a prompt
 	debug::Console->PrintMessage( "You are running a debug build of oneEngine.\n" );

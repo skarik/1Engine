@@ -8,7 +8,7 @@ std::vector<Area2DBase*>	Area2DBase::m_areas;
 Area2DBase::Area2DBase ( void )
 	: CGameBehavior(), m_name("")
 {
-	layer |= Layers::Points;
+	layer = physical::layer::Points;
 	// Add this area to the list
 	m_areas.push_back( this );
 }

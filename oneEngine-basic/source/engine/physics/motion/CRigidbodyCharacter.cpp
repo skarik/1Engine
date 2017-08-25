@@ -3,8 +3,8 @@
 #include "core/debug/CDebugConsole.h"
 #include "core/time/time.h"
 
-#include "physical/physics/motion/physCharacter.h"
-#include "physical/physics/motion/physCharacterRigidBodyInfo.h"
+//#include "physical/physics/motion/physCharacter.h"
+//#include "physical/physics/motion/physCharacterRigidBodyInfo.h"
 
 #include "engine/behavior/CGameObject.h"
 

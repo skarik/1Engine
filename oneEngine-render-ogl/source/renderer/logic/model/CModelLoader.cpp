@@ -10,7 +10,8 @@
 #include "core-ext/system/io/Resources.h"
 #include "core-ext/system/io/FileUtils.h"
 
-#include "physical/physics/shapes/physMesh.h"
+//#include "physical/physics/shapes/physMesh.h"
+#include "physical/physics/shapes/PrMesh.h"
 
 #include "renderer/resource/CModelMaster.h"
 #include "renderer/material/RrMaterial.h"

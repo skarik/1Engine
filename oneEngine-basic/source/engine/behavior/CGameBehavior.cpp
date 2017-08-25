@@ -11,7 +11,7 @@ CGameBehavior::CGameBehavior ( void )
 {
 	referenceCount = 1;
 	persistent = false;
-	layer = Layers::None;
+	layer = physical::layer::None;
 	name = "Game Behavior";
 
 	// Set active target to this

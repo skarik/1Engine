@@ -16,8 +16,8 @@
 #include "core/time.h"		// Time definition
 #include "gbbool.h"			// Dirty bools
 
-#include "physical/system/Layers.h"			// Physics layers
-#include "engine/types.h"	// Engine integral types
+#include "physical/types/layers.h"	// Physics layers
+#include "engine/types.h"			// Engine integral types
 #include "engine/network/GameNetworking.h"	// Networking (includes server.h and client.h)
 #include "engine/physics/collider/sCollision.h"	// Collision info
 
@@ -82,7 +82,7 @@ public:
 	// Physics step
 
 	ENGINE_API virtual void FixedUpdate ( void ) {};
-	ENGINE_API virtual void RigidbodyUpdate ( void ) {}; // DO NOT OVERLOAD THIS FUNCTION
+	ENGINE_API virtual void RigidbodyUpdate ( Real interpolation ) {}; // DO NOT OVERLOAD THIS FUNCTION
 
 	//===============================================================================================//
 	// General events
@@ -169,7 +169,7 @@ public:
 
 	//	layer
 	// User-defined layer mask for game logic
-	Layers::Layer layer;
+	physical::layer::prLayerTypes	layer;
 	//	active
 	// Controls if Update() and other step events are called.
 	gbbool active;

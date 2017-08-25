@@ -65,7 +65,7 @@ void CTextMesh::UpdateText ( void )
 		delete [] m_modeldata.vertices;
 
 		m_text_triangle_count = m_text.length() * 2;
-		m_modeldata.vertexNum = m_text.length() * 4;
+		m_modeldata.vertexNum = (uint16_t)(m_text.length() * 4);
 
 		m_modeldata.triangles = new arModelTriangle [m_text_triangle_count];
 		m_modeldata.vertices = new arModelVertex [m_modeldata.vertexNum];

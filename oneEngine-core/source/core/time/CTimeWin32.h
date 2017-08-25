@@ -30,13 +30,15 @@ public:
 	CORE_API static Real SqrtTrainerFactor ( Real );
 
 public:
+	// Time in seconds the last frame took to run
 	CORE_API static Real deltaTime;
 	CORE_API static Real limitedDeltaTime;
+	// Low-pass filtered value of deltaTime
 	CORE_API static Real smoothDeltaTime;
 
 	CORE_API static Real fixedTime;
 	CORE_API static Real targetFixedTime;
-
+	// Time in seconds game has been running
 	CORE_API static Real currentTime;
 
 private:

@@ -75,7 +75,7 @@ enum metadataNamedKey_t : uint32_t
 // CLASSES / FUNCTIONS
 //===============================================================================================//
 
-namespace Engine
+namespace engine
 {
 	//===============================================================================================//
 	// METADATA STORAGE BASE
@@ -163,7 +163,7 @@ namespace Engine
 	{
 	public:
 		virtual CGameBehavior* Instantiate ( void )=0;
-		virtual const Engine::MetadataTable* GetMetadata ( void )=0;
+		virtual const engine::MetadataTable* GetMetadata ( void )=0;
 	};
 
 	// == GLOBAL INSTANTIATION TEMPLATE ==
@@ -246,30 +246,30 @@ namespace Network
 //		LINK_OBJECT_TO_CLASS
 // Used once in the Header of the class. Builds the prototype for the metadata and extra shit.
 #define LINK_OBJECT_TO_CLASS(behaviorname,cppclass) \
-template<> const Engine::MetadataTable* const Engine::GetBehaviorMetadata<cppclass> ( void ) { return cppclass::__GetMetadataTable(); } \
-class behaviorname : public ::Engine::ObjectBase \
+template<> const engine::MetadataTable* const engine::GetBehaviorMetadata<cppclass> ( void ) { return cppclass::__GetMetadataTable(); } \
+class behaviorname : public ::engine::ObjectBase \
 { \
 public: \
 	CGameBehavior* Instantiate ( void ) override { \
-		Engine::BehaviorList::BehaviorInstFunction function = Engine::BehaviorList::GetRegistration( #behaviorname ).engine_inst; \
+		engine::BehaviorList::BehaviorInstFunction function = engine::BehaviorList::GetRegistration( #behaviorname ).engine_inst; \
 		if ( function != NULL ) return function(); throw core::InvalidInstantiationException(); } \
-	const Engine::MetadataTable* GetMetadata ( void ) override { \
-		return Engine::GetBehaviorMetadata<cppclass>(); } \
+	const engine::MetadataTable* GetMetadata ( void ) override { \
+		return engine::GetBehaviorMetadata<cppclass>(); } \
 	\
 };
 //		DECLARE_OBJECT_REGISTRAR
 // Used once in the CPP file of the class. Creates a link between a behavior and a C++ class
 #define DECLARE_OBJECT_REGISTRAR(behaviorname,cppclass) \
 	LINK_OBJECT_TO_CLASS( behaviorname, cppclass ) \
-	static ::Engine::BehaviorList::Registrar< behaviorname , cppclass > __REGISTRAR_##behaviorname ( #behaviorname );
+	static ::engine::BehaviorList::Registrar< behaviorname , cppclass > __REGISTRAR_##behaviorname ( #behaviorname );
 
 
 //		BEGIN_OBJECT_DESC
 // Begins definition of a metadata table grab, to be used in the header
 #define BEGIN_OBJECT_DESC(cppclass) \
 	public: \
-	static const Engine::MetadataTable* const __GetMetadataTable ( void ) { \
-	static Engine::MetadataTable* table = NULL; if ( table == NULL ) { table = new Engine::MetadataTable(); \
+	static const engine::MetadataTable* const __GetMetadataTable ( void ) { \
+	static engine::MetadataTable* table = NULL; if ( table == NULL ) { table = new engine::MetadataTable(); \
 	typedef cppclass CPP_CLASS;
 //		END_OBJECT_DESC
 // End definition of a metadata table grab, to be used in the header
@@ -277,17 +277,17 @@ public: \
 //		DEFINE_VALUE
 // Defines a variable that is saved/loaded from disk
 #define DEFINE_VALUE(variable,type,classification) \
-	table->data.push_back(		Engine::MetadataPointerPair(	  (uint32_t)offsetof(CPP_CLASS, variable), new Engine::MetadataPValue<type>((type*)offsetof(CPP_CLASS, variable), sizeof(type)) )); \
-	table->data_type.push_back(	Engine::MetadataPointerTypePair(  (uint32_t)offsetof(CPP_CLASS, variable), Network::ValueTypeFromName( #type ) )); \
-	table->data_field.push_back(Engine::MetadataPointerFieldPair( (uint32_t)offsetof(CPP_CLASS, variable), classification )); \
-	table->data_name.push_back(	Engine::MetadataPointerNamePair(  (uint32_t)offsetof(CPP_CLASS, variable), #variable ));
+	table->data.push_back(		engine::MetadataPointerPair(	  (uint32_t)offsetof(CPP_CLASS, variable), new engine::MetadataPValue<type>((type*)offsetof(CPP_CLASS, variable), sizeof(type)) )); \
+	table->data_type.push_back(	engine::MetadataPointerTypePair(  (uint32_t)offsetof(CPP_CLASS, variable), Network::ValueTypeFromName( #type ) )); \
+	table->data_field.push_back(engine::MetadataPointerFieldPair( (uint32_t)offsetof(CPP_CLASS, variable), classification )); \
+	table->data_name.push_back(	engine::MetadataPointerNamePair(  (uint32_t)offsetof(CPP_CLASS, variable), #variable ));
 //		DEFINE_KEYVALUE
 // Defines a variable that is saved/loaded from disk and is visible in the editor
 #define DEFINE_KEYVALUE(variable,type)
 //		DEFINE_DISPLAY
 // Defines a display mode, as well as a display file
 #define DEFINE_DISPLAY(mode,file) \
-	table->named_info.push_back(Engine::MetadataNamedPair(METADATA_DISPLAY_MODE,new Engine::MetadataValue<fielddisplay_t>( mode ))); \
-	table->named_info.push_back(Engine::MetadataNamedPair(METADATA_DISPLAY_FILENAME,new Engine::MetadataValue<arstring128>( arstring128(file) )));
+	table->named_info.push_back(engine::MetadataNamedPair(METADATA_DISPLAY_MODE,new engine::MetadataValue<fielddisplay_t>( mode ))); \
+	table->named_info.push_back(engine::MetadataNamedPair(METADATA_DISPLAY_FILENAME,new engine::MetadataValue<arstring128>( arstring128(file) )));
 
 #endif//_BEHAVIOR_LIST_H_

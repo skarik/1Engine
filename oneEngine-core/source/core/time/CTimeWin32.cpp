@@ -28,8 +28,8 @@ void CTime::Init ( void )
 	deltaTime = 0.01f;
 	limitedDeltaTime = 0.01f;
 	smoothDeltaTime = 0.01f;
-	fixedTime = 0.01f;
-	targetFixedTime = 0.01f;
+	fixedTime = 1.0F / 120;//0.01f;
+	targetFixedTime = fixedTime;//0.01f;
 	//targetFixedTime = 1/60.0f;
 	//targetFixedTime = 1/15.0f;
 	currentTime = 0.0f;

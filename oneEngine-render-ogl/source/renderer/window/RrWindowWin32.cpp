@@ -166,7 +166,7 @@ void RrWindow::sendEndMessage ( void )
 bool RrWindow::Redraw ( void )
 {
 	//TimeProfiler.BeginTimeProfile( "WD_Preswap" );
-	DrawGLScene();					// Draw The Scene
+	DrawScene();					// Draw The Scene
 	//TimeProfiler.EndTimeProfile( "WD_Preswap" );
 	//GL.UpdateBuffer();
 	//
@@ -253,11 +253,11 @@ int RrWindow::InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 }
 
 // Draws the actual scene by calling into the renderer
-int RrWindow::DrawGLScene(GLvoid)
+int RrWindow::DrawScene(GLvoid)
 {
 	GL_ACCESS;
 
-	// Update the opengl render viewport if there's been a change
+	// Update the opengl render viewport if there's been a change, or if current forward buffer is invalid
 	if ( SceneRenderer->GetForwardBuffer() == NULL || Screen::Info.width != iWidth || Screen::Info.height != iHeight )
 	{
 		wglMakeCurrent( hDC,hRenderContext );
@@ -267,21 +267,51 @@ int RrWindow::DrawGLScene(GLvoid)
 		Screen::Info.scale = iHeight/720.0f;
 		Screen::Info.Update();
 
-		//CreateBuffer();							// Reset the buffer
+		// Reset the buffers:
 		SceneRenderer->CreateBuffer();
 
-		GL.setupViewport( 0,0,Screen::Info.width,Screen::Info.height );
+		// Set new viewport rect (this is redundant here)
+		GL.setupViewport( 0,0, Screen::Info.width,Screen::Info.height );
 	}
+
+#define _ENGINE_SMOOTH_FRAMES
+#define _ENGINE_LIMIT_FRAMES
+
+#ifdef _ENGINE_SMOOTH_FRAMES
+	// It's possible the rendering may stutter due to sync issues.
+	// To alleviate that, we apply frame smoothing: if the current frame is way faster than the previous frame, we slow down the current frame.
+	// Thus, we track the speed of the previous frame and current frame.
+	static auto time_delta_prev = std::chrono::microseconds(0);
+	auto time_start_render = std::chrono::system_clock::now();
+#endif
 
 	// Render out the scene.
 	mRenderer->Render();
 
-	// Slow down the framerate if it's too fast
+#ifdef _ENGINE_SMOOTH_FRAMES
+	// Get the time it took to finish rendering and either buffer swap or vsync.
+	auto time_end_render = std::chrono::system_clock::now();
+	auto time_delta = std::chrono::duration_cast<std::chrono::microseconds>(time_end_render - time_start_render);
+
+	// Is this frame faster?
+	if (time_delta < time_delta_prev)
+	{	// Smooth out stutters to a simple 80% exp curve.
+		std::this_thread::sleep_for((time_delta_prev - time_delta) * 0.8);
+	}
+	// Save previous frame.
+	time_delta_prev = time_delta;
+#endif
+
+#ifdef _ENGINE_LIMIT_FRAMES
+	// Slow down the framerate if it's too fast.
+	// Incredibly high framerates can cause massive issues with the windows Window Manager.
+	// To alleviate this, we sleep for 0.1 ms if we ever get too fast.
 	int fps = int(1.0f/Time::smoothDeltaTime);
 	if ( fps > 600 )
 	{
 		std::this_thread::sleep_for(std::chrono::microseconds(100));
 	}
+#endif
 
 #ifdef _ENGINE_DEBUG
 	// Change the window text to show the framerate and frametime when in debug mode
@@ -292,7 +322,7 @@ int RrWindow::DrawGLScene(GLvoid)
 	}
 #endif
 
-	return TRUE;										// Everything Went OK
+	return TRUE; // Everything went OK
 }
 
 // Properly Kill The Window

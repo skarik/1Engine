@@ -41,13 +41,13 @@ void Render2D::Preprocess::GenerateNormalMap (
 			for ( yoffset = -filter_radius; yoffset <= filter_radius; ++yoffset )
 			{
 				yt = y + yoffset;
-				if ( yt < 0 || yt >= n_image_height ) continue; // Skip out of range values
+				if ( yt < 0 || yt >= (int)n_image_height ) continue; // Skip out of range values
 
 				xoffsetmax = filter_radius - abs(yoffset);
 				for ( xoffset = -xoffsetmax; xoffset <= xoffsetmax; ++xoffset )
 				{
 					xt = x + xoffset;
-					if ( xt < 0 || xt >= n_image_width ) continue; // Skip out of range values
+					if ( xt < 0 || xt >= (int)n_image_width ) continue; // Skip out of range values
 
 					// Look up pixel position
 					pixel = i_pixel_data[xt + yt * n_image_width];

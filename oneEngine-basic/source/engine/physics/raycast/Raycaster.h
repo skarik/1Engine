@@ -7,7 +7,7 @@
 #include "core/math/Ray.h"
 #include "core/math/Cubic.h"
 #include "physical/physics/motion/physCollisionFilter.h"
-#include "physical/physics/raycast/RaycastHit.h"
+#include "physical/physics/cast/RaycastHit.h"
 //#include "CVoxelTerrain.h"
 //#include "CBoob.h"
 /*#include "CCubic.h"

@@ -1,21 +1,16 @@
-
-// Includes
 #include "CProjectile.h"
-//#include "CCharacter.h"
 #include "CActor.h"
-#include "engine-common/entities/effects/CFXMaterialHit.h"
-//#include "engine-common/entities/item/CWeaponItem.h"
-#include "physical/physics/water/Water.h"
-#include "physical/physics/CPhysics.h"
-#include "physical/physics/shapes/physSphereShape.h"
-#include "engine/physics/collider/types/CCapsuleCollider.h"
 
-#include "engine/physics/raycast/Raycaster.h"
+//#include "physical/physics/water/Water.h"
+#include "physical/physics/cast/PrCast.h"
+#include "physical/physics/fluid/PrWaterQuery.h"
 
+//#include "engine/physics/collider/types/CCapsuleCollider.h"
 #include "engine/physics/motion/CRigidbody.h"
-#include "engine-common/physics/motion/CRagdollCollision.h"
 
-// == Constructor and Destructor ==
+#include "engine-common/physics/motion/CRagdollCollision.h"
+#include "engine-common/entities/effects/CFXMaterialHit.h"
+
 // Constructor
 CProjectile::CProjectile( Ray const& rnInRay, Real fnInSpeed, Real fnWidth )
 	: CGameObject(), rStartDirection( rnInRay ), fStartSpeed( fnInSpeed ), fShapeRadius( fnWidth )
@@ -41,17 +36,20 @@ CProjectile::CProjectile( Ray const& rnInRay, Real fnInSpeed, Real fnWidth )
 	fDamageMultiplier	= 1.0f;
 
 	// Set if in water
-	if ( WaterTester::Get() && WaterTester::Get()->PositionInside( transform.world.position ) ) {
+	//if ( WaterTester::Get() && WaterTester::Get()->PositionInside( transform.world.position ) ) {
+	if ( PrWaterQuery( physical::water::prInside( transform.world.position ) ) )
+	{
 		bInWater = true;
 		vVelocity *= 0.5f;
 	}
-	else {
+	else
+	{
 		bInWater = false;
 	}
 
 	// Create shape
 	//mProjectileShape = CPhysics::CreateSphereShape( fShapeRadius );
-	mProjectileCollider = new CCapsuleCollider( fShapeRadius * 2, fShapeRadius, true );
+	//mProjectileCollider = new CCapsuleCollider( fShapeRadius * 2, fShapeRadius, true );
 
 	// Initialize buffs
 	//effects.UpdateParent( this );
@@ -61,14 +59,16 @@ CProjectile::CProjectile( Ray const& rnInRay, Real fnInSpeed, Real fnWidth )
 CProjectile::~CProjectile ( void )
 {
 	//delete_safe( mProjectileShape );
-	delete_safe( mProjectileCollider );
+	//delete_safe( mProjectileCollider );
 }
 
 // == Update ==
 void CProjectile::Update ( void )
 {
 	// First check water
-	if ( WaterTester::Get() && WaterTester::Get()->PositionInside( transform.world.position ) ) {
+	//if ( WaterTester::Get() && WaterTester::Get()->PositionInside( transform.world.position ) ) {
+	if ( PrWaterQuery( physical::water::prInside( transform.world.position ) ) )
+	{
 		OnEnterWater();
 	}
 
@@ -113,15 +113,39 @@ void CProjectile::Update ( void )
 		Real	multiplier = fDamageMultiplier;
 
 		//=========================================//
-		// Perform casting
+		// Cast motion forward
+
 		Item::HitType hittype;
+
+		// Create cast query
+		prRaycastQuery l_castQuery = {0};
+		l_castQuery.world = NULL;
+		l_castQuery.ray = Ray(
+			castRay.pos,
+			castRay.dir * vVelocity.magnitude() * Time::deltaTime
+		);
+		l_castQuery.collision.layer = physical::layer::PHYS_BULLET_TRACE;
+		l_castQuery.collision.group = 0;
+		l_castQuery.collision.id = 31;
+		l_castQuery.owner = mOwner.cast<void*>();
+		l_castQuery.ownerType = core::kBasetypeGameBehavior;
+		l_castQuery.maxHits = 1; // Stop on the first hit
+
+		// Perform cast
+		PrCast cast(l_castQuery);
+
 		//if ( Raycaster.Linecast( castRay, vVelocity.magnitude() * Time::deltaTime, mProjectileShape, &rhLastHit, 1, Physics::GetCollisionFilter(Layers::PHYS_BULLET_TRACE,0,31), mOwner ) )
-		if ( Raycaster.Linecast(
+		/*if ( Raycaster.Linecast(
 			castRay, vVelocity.magnitude() * Time::deltaTime,
 			mProjectileCollider->GetCollisionShape(), &rhLastHit, 1,
-			Physics::GetCollisionFilter(Layers::PHYS_BULLET_TRACE,0,31), mOwner.cast<void*>() ) )
+			Physics::GetCollisionFilter(physical::layer::PHYS_BULLET_TRACE,0,31), mOwner.cast<void*>() ) )*/
+		if ( cast.Hit() ) // Same as hit<0>
 		{
-			if ( rhLastHit.pHitBehavior == NULL )
+			CGameBehavior* l_hitObject0 = cast.HitObjectAs<0, CGameBehavior>();
+			CRigidbody* l_hitObject0asRigidBody = static_cast<CRigidbody*>(l_hitObject0);
+
+			//if ( rhLastHit.pHitBehavior == NULL )
+			if ( cast.HitType<0>() != core::kBasetypeGameBehavior )
 			{
 				hitBehavior = NULL;
 				hittype = Item::HIT_UNKNOWN;
@@ -137,38 +161,39 @@ void CProjectile::Update ( void )
 				*outHitBehavior = outHitResult->pHitBehavior;
 				return HIT_TERRAIN;
 			}*/
-			else if ( rhLastHit.pHitBehavior->GetTypeName() == "Terrain" )
+			//else if ( rhLastHit.pHitBehavior->GetTypeName() == "Terrain" )
+			else if ( l_hitObject0->GetTypeName() == "Terrain" )
 			{
-				hitBehavior = rhLastHit.pHitBehavior;
+				hitBehavior = l_hitObject0;
 				hittype = Item::HIT_TERRAIN;
 			}
-			else if ( rhLastHit.pHitBehavior->GetTypeName() == "CRagdollCollision" )
+			else if ( l_hitObject0->GetTypeName() == "CRagdollCollision" )
 			{
-				CRagdollCollision* pHitRagdoll = (CRagdollCollision*) rhLastHit.pHitBehavior;
-				multiplier = pHitRagdoll->GetMultiplier( (physRigidBody*) rhLastHit.pHitBody );
+				CRagdollCollision* pHitRagdoll = (CRagdollCollision*) l_hitObject0;
+				multiplier = pHitRagdoll->GetMultiplier( cast.HitRigidBody<0>() );
 				hitBehavior = pHitRagdoll->GetActor();
 				if ( hitBehavior ) {
 					hittype = Item::HIT_CHARACTER;
 				}
 			}
-			else if ( ((CRigidbody*)rhLastHit.pHitBehavior)->GetOwner() == NULL )
+			else if ( l_hitObject0asRigidBody->GetOwner<CGameBehavior>() == NULL )
 			{
 				hitBehavior = NULL;
 				hittype = Item::HIT_UNKNOWN;
 			}
-			else if ( ((CRigidbody*)rhLastHit.pHitBehavior)->GetOwner()->GetBaseClassName() == "CFoliage_TreeBase" )
+			else if ( l_hitObject0asRigidBody->GetOwner<CGameBehavior>()->GetBaseClassName() == "CFoliage_TreeBase" )
 			{
-				hitBehavior = ((CRigidbody*)rhLastHit.pHitBehavior)->GetOwner();
+				hitBehavior = l_hitObject0asRigidBody->GetOwner<CGameBehavior>();
 				hittype = Item::HIT_TREE;
 			}
-			else if ( ((CRigidbody*)rhLastHit.pHitBehavior)->GetOwner()->GetBaseClassName() == "CGameObject_TerrainProp" )
+			else if ( l_hitObject0asRigidBody->GetOwner<CGameBehavior>()->GetBaseClassName() == "CGameObject_TerrainProp" )
 			{
-				hitBehavior = ((CRigidbody*)rhLastHit.pHitBehavior)->GetOwner();
+				hitBehavior = l_hitObject0asRigidBody->GetOwner<CGameBehavior>();
 				hittype = Item::HIT_COMPONENT;
 			}
 			else
 			{
-				CGameBehavior* pHitObject = ((CRigidbody*)rhLastHit.pHitBehavior)->GetOwner();
+				CGameBehavior* pHitObject = l_hitObject0asRigidBody->GetOwner<CGameBehavior>();
 				if ( pHitObject )
 				{
 					if ( pHitObject->GetBaseClassName() == "CActor_Character" )
@@ -216,13 +241,13 @@ void CProjectile::Update ( void )
 			if ( hittype == Item::HIT_TERRAIN )
 			{
 				// Do material effects
-				CFXMaterialHit* newHitEffect = new CFXMaterialHit(
-					//Terrain::MaterialOf( Raycaster.HitBlock().block.block ),
+				/*CFXMaterialHit* newHitEffect = new CFXMaterialHit(
 					*Raycaster.m_lastHitMaterial,
 					rhLastHit, CFXMaterialHit::HT_HIT );
-				newHitEffect->RemoveReference();
+				newHitEffect->RemoveReference();*/
 
-				OnHit( (CGameObject*)rhLastHit.pHitBehavior, Item::HIT_TERRAIN );
+				//OnHit( (CGameObject*)rhLastHit.pHitBehavior, Item::HIT_TERRAIN );
+				OnHit( cast.HitObjectAs<0, CGameObject>(), Item::HIT_TERRAIN );
 			}
 			else
 			{

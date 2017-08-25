@@ -121,7 +121,7 @@ void CRenderState::Render ( void )
 	GL.BeginFrame();
 	TimeProfiler.EndTimeProfile( "rs_present" );
 	// Clear Screen And Depth Buffer
-	GL.ClearBuffer();	
+	//GL.ClearBuffer();	
 	
 	// Loop through all cameras (todo: sort render order for each camera)
 	TimeProfiler.BeginTimeProfile( "rs_camera_matrix" );
@@ -153,6 +153,7 @@ void CRenderState::Render ( void )
 	}
 	TimeProfiler.EndTimeProfile( "rs_camera_matrix" );
 	
+
 	// Loop through all cameras:
 	TimeProfiler.BeginTimeProfile( "rs_render" );
 	for ( std::vector<CCamera*>::reverse_iterator it = CCamera::vCameraList.rbegin(); it != CCamera::vCameraList.rend(); ++it )
@@ -175,22 +176,22 @@ void CRenderState::Render ( void )
 			currentCamera->RenderScene();
 		}
 	}
+	TimeProfiler.EndTimeProfile( "rs_render" );
+	
 	// Set active camera back to default
 	CCamera::activeCamera = prevActiveCam;
 
-	// End camera loop
-	TimeProfiler.EndTimeProfile( "rs_render" );
-	
-	TimeProfiler.BeginTimeProfile( "rs_buffer_push" );
+
 	// Are we in buffer mode? (This should always be true)
+	TimeProfiler.BeginTimeProfile( "rs_buffer_push" );
 	if ( CGameSettings::Active()->b_ro_UseBufferModel )
 	{
 		// Render the current result to the screen
-		GL.setupViewport(0, 0, internal_buffer_forward_rt->GetWidth(), internal_buffer_forward_rt->GetHeight());
+		GL.setupViewport(0, 0, internal_chain_current->buffer_forward_rt->GetWidth(), internal_chain_current->buffer_forward_rt->GetHeight());
 		GL.pushModelMatrix( Matrix4x4() );
 		{
 			// Set the current main screen buffer as the texture
-			RrMaterial::Copy->setTexture( TEX_MAIN, internal_buffer_forward_rt );
+			RrMaterial::Copy->setTexture( TEX_MAIN, internal_chain_current->buffer_forward_rt );
 			RrMaterial::Copy->bindPassForward(0);
 
 			// Set up an always-rendered
@@ -208,25 +209,19 @@ void CRenderState::Render ( void )
 		GL.popModelMatrix();
 
 		// Clear out the buffer now that we no longer need it.
-		internal_buffer_forward_rt->BindBuffer();
+		internal_chain_current->buffer_forward_rt->BindBuffer();
+		{
 			glStencilMask( GL_TRUE );
 			glDepthMask( GL_TRUE );
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-		internal_buffer_forward_rt->UnbindBuffer();
-
-		// Send signal that this frame is done.
-		GL.Present();
-	}
-	else
-	{
-		// Call present
-		GL.Present();	// Swap to the new frame now
+		}
+		internal_chain_current->buffer_forward_rt->UnbindBuffer();
 	}
 	TimeProfiler.EndTimeProfile( "rs_buffer_push" );
 
 
-	TimeProfiler.BeginTimeProfile( "rs_end_render" );
 	// Call end render
+	TimeProfiler.BeginTimeProfile( "rs_end_render" );
 	for ( i = 0; i < iCurrentIndex; i += 1 )
 	{
 		if ( pRenderableObjects[i] ) {
@@ -234,6 +229,21 @@ void CRenderState::Render ( void )
 		}
 	}
 	TimeProfiler.EndTimeProfile( "rs_end_render" );
+
+
+	// Signal frame ended
+	GL.EndFrame();
+
+	// Clear Screen And Depth Buffer
+	GL.ClearBuffer();
+
+	// Cycle the draw inputs
+	{
+		// Go to next input
+		internal_chain_index = (internal_chain_index + 1) % internal_chain_list.size();
+		// Pull its pointer
+		internal_chain_current = &internal_chain_list[internal_chain_index];
+	}
 
 	// Begin the post-step render jobs
 	for ( i = 0; i < mLoCurrentIndex; ++i ) {
@@ -251,9 +261,6 @@ void CRenderState::Render ( void )
 	// Do error check at this point
 	if ( RrMaterial::Default->passinfo.size() > 16 ) throw std::exception();
 	GL.CheckError();
-
-	// Frame cleanup
-	GL.EndFrame();
 }
 
 // Normal rendering routine. Called by a camera. Camera passes in its render hint.
@@ -534,7 +541,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 	CRenderTexture* render_target = currentCamera->GetRenderTexture();
 	if ( render_target == NULL )
 	{	// If not a render-camera, bind to the internal common buffer
-		render_target = internal_buffer_forward_rt;
+		render_target = internal_chain_current->buffer_forward_rt;
 	}
 
 	// Get the size of the viewport we should render at
@@ -551,17 +558,17 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 	}
 	else
 	{
-		unscaledRenderSize = internal_buffer_deferred_rt->GetSize();
+		unscaledRenderSize = internal_chain_current->buffer_deferred_rt->GetSize();
 		currentRenderSize = Vector2i(
-			(int)(internal_buffer_deferred_rt->GetWidth()  * currentCamera->render_scale),
-			(int)(internal_buffer_deferred_rt->GetHeight() * currentCamera->render_scale)
+			(int)(internal_chain_current->buffer_deferred_rt->GetWidth()  * currentCamera->render_scale),
+			(int)(internal_chain_current->buffer_deferred_rt->GetHeight() * currentCamera->render_scale)
 		);
 	}
 	// Set up viewport
 	GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
 
 	// Bind the MRT to render to
-	internal_buffer_deferred_mrt->BindBuffer();
+	internal_chain_current->buffer_deferred_mrt->BindBuffer();
 	
 	i = -1;	// Starts at -1 in case first object requires forward renderer
 	while ( i < sortedListSize )
@@ -628,7 +635,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			TimeProfiler.BeginTimeProfile( "rs_render_lightpush" );
 
 			// Bind the MRT's temporary results area in order to render the deferred result to it
-			internal_buffer_deferred_rt->BindBuffer();
+			internal_chain_current->buffer_deferred_rt->BindBuffer();
 			// Set up viewport. Deferred renderer runs at the same size as the source material
 			GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
 
@@ -651,23 +658,23 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			// Change the projection to identity-type 2D (similar to orthographic)
 			{
 				// Perform a lighting pass
-				targetPass->setSampler( TEX_SLOT0, internal_buffer_deferred_mrt->GetBufferTexture(0), GL.Enum(Texture2D) );
-				targetPass->setSampler( TEX_SLOT1, internal_buffer_deferred_mrt->GetBufferTexture(1), GL.Enum(Texture2D) );
-				targetPass->setSampler( TEX_SLOT2, internal_buffer_deferred_mrt->GetBufferTexture(2), GL.Enum(Texture2D) );
-				targetPass->setSampler( TEX_SLOT3, internal_buffer_deferred_mrt->GetBufferTexture(3), GL.Enum(Texture2D) );
-				targetPass->setSampler( TEX_SLOT4, internal_buffer_deferred_mrt->GetDepthSampler(), GL.Enum(Texture2D) );
+				targetPass->setSampler( TEX_SLOT0, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(0), GL.Enum(Texture2D) );
+				targetPass->setSampler( TEX_SLOT1, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(1), GL.Enum(Texture2D) );
+				targetPass->setSampler( TEX_SLOT2, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(2), GL.Enum(Texture2D) );
+				targetPass->setSampler( TEX_SLOT3, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(3), GL.Enum(Texture2D) );
+				targetPass->setSampler( TEX_SLOT4, internal_chain_current->buffer_deferred_mrt->GetDepthSampler(), GL.Enum(Texture2D) );
 				targetPass->bindPassForward(0);
 				// Pass in all the lighting information
 				{
 					RrShader* shader = targetPass->getUsingShader();
 					// Light number
-					int uniformLocation = shader->get_uniform_location( "sys_LightNumber" );
-					if ( uniformLocation >= 0 )
-					{
-						glUniform1i( uniformLocation, std::min<int>( RrMaterial::m_lightCount, (renderRQ_current.obj->renderType==World)?64:3 ) );
-					}
+					//int uniformLocation = shader->get_uniform_location( "sys_LightNumber" );
+					//if ( uniformLocation >= 0 )
+					//{
+						glUniform1i( renderer::UNI_LIGHTING_COUNT, std::min<int>( RrMaterial::m_lightCount, (renderRQ_current.obj->renderType==World)?64:3 ) );
+					//}
 					// Light data
-					uniformLocation = shader->get_uniform_block_location( "def_LightingInfo" );
+					int uniformLocation = shader->get_uniform_block_location( "def_LightingInfo" );
 					if ( uniformLocation >= 0 )
 					{
 						glUniformBlockBinding( shader->get_program(), uniformLocation, 5 );
@@ -689,7 +696,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			// Finish rendering
 
 			// Pop the main buffer off the render stack, returning to the MRT target
-			internal_buffer_deferred_rt->UnbindBuffer();
+			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
 
 			// Clear the MRT's color results now that we no longer need them
 			glClear( GL_COLOR_BUFFER_BIT );
@@ -703,7 +710,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			rendered = false;
 
 			// Copy over the depth to use when drawing in forward mode
-			internal_buffer_deferred_rt->BindBuffer();
+			internal_chain_current->buffer_deferred_rt->BindBuffer();
 			// Set up viewport. Current pass of the renderer again renders at the same size as the previous stage.
 			GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
 
@@ -761,7 +768,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			CGameSettings::Active()->i_ro_RendererMode = RENDER_MODE_DEFERRED;
 
 			// Go back to deferred buffer
-			internal_buffer_deferred_rt->UnbindBuffer();
+			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
 		}
 
 		// Check for main layer switch
@@ -778,7 +785,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				GL.setupViewport(0, 0, render_target->GetWidth(), render_target->GetHeight());
 				{
 					// Set the current main screen buffer as the texture
-					CopyScaled->setTexture( TEX_MAIN, internal_buffer_deferred_rt );
+					CopyScaled->setTexture( TEX_MAIN, internal_chain_current->buffer_deferred_rt );
 					CopyScaled->m_diffuse[0] = currentRenderSize.x / (Real)unscaledRenderSize.x;
 					CopyScaled->m_diffuse[1] = currentRenderSize.y / (Real)unscaledRenderSize.y;
 					CopyScaled->bindPassForward(0);
@@ -799,11 +806,13 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			render_target->UnbindBuffer();
 
 			// Clear out the buffer now that we no longer need it.
-			internal_buffer_deferred_rt->BindBuffer();
+			internal_chain_current->buffer_deferred_rt->BindBuffer();
+			{
 				glStencilMask( GL_TRUE );
 				glDepthMask( GL_TRUE );
 				glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-			internal_buffer_deferred_rt->UnbindBuffer();
+			}
+			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
 
 			// Reset render size in subsequent targets
 			if ( renderRQ_next.renderType != World )
@@ -825,7 +834,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 	// End render loop
 
 	// Unbind fbo when done rendering
-	internal_buffer_deferred_mrt->UnbindBuffer();
+	internal_chain_current->buffer_deferred_mrt->UnbindBuffer();
 }
 
 

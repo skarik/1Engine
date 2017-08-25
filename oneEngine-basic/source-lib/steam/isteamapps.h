@@ -10,7 +10,7 @@
 #pragma once
 #endif
 
-const int k_cubAppProofOfPurchaseKeyMax = 64;			// max bytes of a legacy cd key we support
+const int k_cubAppProofOfPurchaseKeyMax = 240;			// max supported length of a legacy cd key 
 
 
 //-----------------------------------------------------------------------------
@@ -49,8 +49,8 @@ public:
 	// Install/Uninstall control for optional DLC
 	virtual void InstallDLC( AppId_t nAppID ) = 0;
 	virtual void UninstallDLC( AppId_t nAppID ) = 0;
-
-	// Request cd-key for yourself or owned DLC. If you are interested in this
+	
+	// Request legacy cd-key for yourself or owned DLC. If you are interested in this
 	// data then make sure you provide us with a list of valid keys to be distributed
 	// to users when they purchase the game, before the game ships.
 	// You'll receive an AppProofOfPurchaseKeyResponse_t callback when
@@ -73,13 +73,23 @@ public:
 	// but it is advised that you not param names beginning with an underscore for your own features.
 	virtual const char *GetLaunchQueryParam( const char *pchKey ) = 0;
 
-#ifdef _PS3
-	// Result returned in a RegisterActivationCodeResponse_t callresult
-	virtual SteamAPICall_t RegisterActivationCode( const char *pchActivationCode ) = 0;
-#endif
+	// get download progress for optional DLC
+	virtual bool GetDlcDownloadProgress( AppId_t nAppID, uint64 *punBytesDownloaded, uint64 *punBytesTotal ) = 0; 
+
+	// return the buildid of this app, may change at any time based on backend updates to the game
+	virtual int GetAppBuildId() = 0;
+
+	// Request all proof of purchase keys for the calling appid and asociated DLC.
+	// A series of AppProofOfPurchaseKeyResponse_t callbacks will be sent with
+	// appropriate appid values, ending with a final callback where the m_nAppId
+	// member is k_uAppIdInvalid (zero).
+	virtual void RequestAllProofOfPurchaseKeys() = 0;
+
+	CALL_RESULT( FileDetailsResult_t )
+	virtual SteamAPICall_t GetFileDetails( const char* pszFileName ) = 0;
 };
 
-#define STEAMAPPS_INTERFACE_VERSION "STEAMAPPS_INTERFACE_VERSION006"
+#define STEAMAPPS_INTERFACE_VERSION "STEAMAPPS_INTERFACE_VERSION008"
 
 // callbacks
 #if defined( VALVE_CALLBACK_PACK_SMALL )
@@ -122,16 +132,6 @@ struct RegisterActivationCodeResponse_t
 	uint32 m_unPackageRegistered;						// package that was registered. Only set on success
 };
 
-//-----------------------------------------------------------------------------
-// Purpose: response to RegisterActivationCode()
-//-----------------------------------------------------------------------------
-struct AppProofOfPurchaseKeyResponse_t
-{
-	enum { k_iCallback = k_iSteamAppsCallbacks + 13 };
-	EResult m_eResult;
-	uint32	m_nAppID;
-	char	m_rgchKey[ k_cubAppProofOfPurchaseKeyMax ];
-};
 
 //---------------------------------------------------------------------------------
 // Purpose: posted after the user gains executes a steam url with query parameters
@@ -142,6 +142,33 @@ struct AppProofOfPurchaseKeyResponse_t
 struct NewLaunchQueryParameters_t
 {
 	enum { k_iCallback = k_iSteamAppsCallbacks + 14 };
+};
+
+
+//-----------------------------------------------------------------------------
+// Purpose: response to RequestAppProofOfPurchaseKey/RequestAllProofOfPurchaseKeys
+// for supporting third-party CD keys, or other proof-of-purchase systems.
+//-----------------------------------------------------------------------------
+struct AppProofOfPurchaseKeyResponse_t
+{
+	enum { k_iCallback = k_iSteamAppsCallbacks + 21 };
+	EResult m_eResult;
+	uint32	m_nAppID;
+	uint32	m_cchKeyLength;
+	char	m_rgchKey[k_cubAppProofOfPurchaseKeyMax];
+};
+
+
+//-----------------------------------------------------------------------------
+// Purpose: response to GetFileDetails
+//-----------------------------------------------------------------------------
+struct FileDetailsResult_t
+{
+	enum { k_iCallback = k_iSteamAppsCallbacks + 23 };
+	EResult		m_eResult;
+	uint64		m_ulFileSize;	// original file size in bytes
+	uint8		m_FileSHA[20];	// original file SHA1 hash
+	uint32		m_unFlags;		// 
 };
 
 

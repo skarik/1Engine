@@ -11,7 +11,7 @@
 //#include "Water.h"
 //#include "Damage.h"
 //#include "ProjectileEffects.h"
-#include "physical/physics/raycast/RaycastHit.h"
+#include "physical/physics/cast/RaycastHit.h"
 #include "physical/physics/shapes/physShape.h"
 
 #include "engine-common/types/Damage.h"

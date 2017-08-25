@@ -90,7 +90,7 @@ public:
 	// Cleanup after old frame
 	void		EndFrame ( void );
 	// Present frame
-	void		Present ( void );
+	//void		Present ( void );
 
 	//==============================================================================================//
 	// 

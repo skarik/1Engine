@@ -13,7 +13,6 @@
 
 #include <vector>
 
-// Prototypes
 class CRenderableObject;
 class CLogicObject;
 class CLight;
@@ -23,13 +22,14 @@ class RrMaterial;
 class CRenderTexture;
 class CMRTTexture;
 
-// Class Definition
+//	CRenderState : main render state & swapchain manager class
 class CRenderState
 {
 public:
 	// Structure Definitions
 	// ================================
-	// Render request
+
+	//	tRenderRequest : Render request
 	struct tRenderRequest
 	{
 		CRenderableObject*	obj;
@@ -45,12 +45,23 @@ public:
 		{ ; }
 	};
 
-	// Render material replacement rule
+	//	tReplacementRule : Render material replacement rule
 	// Material settings must be done before the Render() call
 	struct tReplacementRule
 	{
 		arstring<32>	hintToReplace;
 		RrMaterial*		materialToUse;
+	};
+
+	//	rrInternalBufferChain : internal storage of buffers used for rendering
+	struct rrInternalBufferChain
+	{
+		glHandle		buffer_depth;
+		glHandle		buffer_stencil;
+		CRenderTexture*	buffer_forward_rt;
+
+		CMRTTexture*	buffer_deferred_mrt;
+		CRenderTexture*	buffer_deferred_rt;
 	};
 
 public:
@@ -65,6 +76,8 @@ public:
 	// ================================
 
 	RENDER_API void CreateBuffer ( void );
+	// Recreates buffers for the given chain
+	RENDER_API void CreateBufferChain ( rrInternalBufferChain& bufferChain );
 	RENDER_API CRenderTexture* GetForwardBuffer ( void );
 	RENDER_API CRenderTexture* GetDeferredBuffer ( void );
 	RENDER_API RrGpuTexture GetDepthTexture ( void );
@@ -170,12 +183,16 @@ private:
 	// Internal setup state
 	// ================================
 	renderer::internalSettings_t	internal_settings;
-	glHandle						internal_buffer_depth;
+	std::vector<rrInternalBufferChain>	internal_chain_list;
+	rrInternalBufferChain*				internal_chain_current;
+	uint								internal_chain_index;
+
+	/*glHandle						internal_buffer_depth;
 	glHandle						internal_buffer_stencil;
 	CRenderTexture*					internal_buffer_forward_rt;
 
 	CMRTTexture*					internal_buffer_deferred_mrt;
-	CRenderTexture*					internal_buffer_deferred_rt;
+	CRenderTexture*					internal_buffer_deferred_rt;*/
 
 	// Deferred pass materials
 	// ================================

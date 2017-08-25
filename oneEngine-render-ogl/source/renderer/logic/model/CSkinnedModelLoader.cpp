@@ -3,18 +3,19 @@
 #include "CModelLoader.h"
 
 #include "physical/skeleton/skeletonBone.h"
-#include "physical/physics/shapes/physMesh.h"
+//#include "physical/physics/shapes/physMesh.h"
+#include "physical/physics/shapes/PrMesh.h"
 
 #include "core-ext/system/io/assets/ModelLoader.h"
 #include "core-ext/transform/TransformUtility.h"
 
 #include "core-ext/animation/set/CAnimationSet.h"
 #include "core-ext/animation/curve/CArrayAnimationCurve.h"
-#include "physical/animation/set/CHKAnimationSet.h"
+//#include "physical/animation/set/CHKAnimationSet.h"
 
 #include "core-ext/animation/CAnimation.h"
 #include "core-ext/animation/CAnimAction.h"
-#include "physical/animation/CHKAnimation.h"
+//#include "physical/animation/CHKAnimation.h"
 
 #include "core/utils/StringUtils.h"
 #include "core/system/io/CSegmentedFile.h"

@@ -59,20 +59,20 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 	GLd.DrawSet2DScaleMode();
 	GLd.DrawSet2DMode( GLd.D2D_FLAT );
 
-	if ( Engine::Console->GetIsOpen() )
+	if ( engine::Console->GetIsOpen() )
 	{
 		matMenu->m_diffuse = Color( 0.0f,0.0f,0.0f,0.6f );
 		matMenu->bindPass(0);
 		GLd.DrawRectangleA( 0.0f, 0.95f, 3.0f,0.05f );
-		if ( !Engine::Console->GetMatchingCommands().empty() ) {
-			GLd.DrawRectangleA( 0.02f, 0.93f - Engine::Console->GetMatchingCommands().size()*0.03f, 0.4f, Engine::Console->GetMatchingCommands().size()*0.03f + 0.02f );
+		if ( !engine::Console->GetMatchingCommands().empty() ) {
+			GLd.DrawRectangleA( 0.02f, 0.93f - engine::Console->GetMatchingCommands().size()*0.03f, 0.4f, engine::Console->GetMatchingCommands().size()*0.03f + 0.02f );
 		}
 		
 		matfntMenu->m_diffuse = Color( 0.0f,0.5f,1.0f,1.0f );
 		matfntMenu->bindPass(0);
-		GLd.DrawAutoText( 0.03f, 0.98f, " >%s", Engine::Console->GetCommandString().c_str() );	// Draw command
-		for ( uint i = 0; i < Engine::Console->GetMatchingCommands().size(); ++i ) {		// Draw command list
-			GLd.DrawAutoText( 0.05f, 0.96f+(i-(Real)(Engine::Console->GetMatchingCommands().size()))*0.03f, "%s", Engine::Console->GetMatchingCommands()[i].c_str() );
+		GLd.DrawAutoText( 0.03f, 0.98f, " >%s", engine::Console->GetCommandString().c_str() );	// Draw command
+		for ( uint i = 0; i < engine::Console->GetMatchingCommands().size(); ++i ) {		// Draw command list
+			GLd.DrawAutoText( 0.05f, 0.96f+(i-(Real)(engine::Console->GetMatchingCommands().size()))*0.03f, "%s", engine::Console->GetMatchingCommands()[i].c_str() );
 		}
 	}
 

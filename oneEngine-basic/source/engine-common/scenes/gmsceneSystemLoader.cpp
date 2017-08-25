@@ -35,7 +35,7 @@ void gmsceneSystemLoader::LoadScene ( void )
 	}
 
 	// Create the console (basically our script link)
-	//Engine::CDeveloperConsole* devconsole = new Engine::CDeveloperConsole();
+	//engine::CDeveloperConsole* devconsole = new engine::CDeveloperConsole();
 	//devconsole->RemoveReference();
 	CDeveloperConsoleUI* devConsole = new CDeveloperConsoleUI();
 	CDeveloperCursor* devCursor = new CDeveloperCursor();
@@ -49,7 +49,7 @@ void gmsceneSystemLoader::LoadScene ( void )
 		while ( i < CGameSettings::Active()->s_cmd.length() )
 		{
 			if ( CGameSettings::Active()->s_cmd[i] == '-' ) {
-				Engine::Console->RunCommand( currentcmd );
+				engine::Console->RunCommand( currentcmd );
 				currentcmd = "";
 			}
 			else {
@@ -57,12 +57,12 @@ void gmsceneSystemLoader::LoadScene ( void )
 			}
 			i++;
 		}
-		Engine::Console->RunCommand( currentcmd ); // Run the last command as well.
+		engine::Console->RunCommand( currentcmd ); // Run the last command as well.
 	}
 	// Check the final command line option
 	{
 		if ( !CGameSettings::Active()->sysprop_default_cmd.empty() ) {
-			Engine::Console->RunCommand( CGameSettings::Active()->sysprop_default_cmd );
+			engine::Console->RunCommand( CGameSettings::Active()->sysprop_default_cmd );
 		}
 	}
 
@@ -84,7 +84,7 @@ void gmsceneSystemLoader::LoadScene ( void )
 			//CGameScene* pNewScene = CGameScene::NewScene<gmsceneMainGame>();
 			CGameScene::SceneGoto( pNewScene );
 		}*/
-		Engine::Console->RunCommand( "listen" );
+		engine::Console->RunCommand( "listen" );
 	}
 	else
 	{

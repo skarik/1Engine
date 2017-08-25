@@ -22,7 +22,8 @@
 
 // Include debug tools
 #include "engine-common/entities/CRendererHolder.h"
-#include "render2d/object/debug/Box2DDebugger.h"
+//#include "render2d/object/debug/Box2DDebugger.h"
+#include "renderer/debug/RrBtDebugDraw.h"
 
 #include "renderer/state/Settings.h"
 
@@ -109,6 +110,6 @@ void sceneGameLuvPpl::LoadScene ( void )
 	renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
 
 	// Create debugger
-	auto debug_holder = new CRendererHolder( new Box2DDebugger() );
+	auto debug_holder = new CRendererHolder( new RrBtDebugDraw(NULL) );
 	debug_holder->RemoveReference();
 }

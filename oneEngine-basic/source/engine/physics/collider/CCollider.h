@@ -2,11 +2,11 @@
 #ifndef _C_COLLIDER_H_
 #define _C_COLLIDER_H_
 
-#include "physical/physics/CPhysics.h"
 #include "sCollision.h"
 
 class CCollider;
 class CRigidbody;
+class PrShape;
 
 class CCollider
 {
@@ -15,7 +15,7 @@ public:
 	ENGINE_API void OnEnter ( sCollision& );
 	ENGINE_API void OnLeave ( sCollision& );
 
-	physShape* GetCollisionShape ( void ) {
+	PrShape* GetCollisionShape ( void ) {
 		return pCollisionShape;
 	}
 	Vector3d GetCenter ( void ) {
@@ -34,7 +34,7 @@ public:
 
 
 protected:
-	physShape*	pCollisionShape;
+	PrShape*	pCollisionShape;
 	CRigidbody*	pRigidBody;
 
 	Vector3d vCenterOfMass;

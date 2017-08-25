@@ -1,4 +1,6 @@
 #version 330
+#extension GL_ARB_explicit_attrib_location : require
+#extension GL_ARB_explicit_uniform_location : require
 
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;
@@ -9,7 +11,7 @@ varying vec2 v2f_texcoord0;
 varying vec2 v2f_texcoord1;
 
 // System inputs
-uniform float sys_PixelRatio;
+layout(location = 140) uniform float sys_PixelRatio;
 
 void main ( void )
 {

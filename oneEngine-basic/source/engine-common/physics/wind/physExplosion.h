@@ -1,6 +1,5 @@
-
-#ifndef _PHYS_EXPLOSION_H_
-#define _PHYS_EXPLOSION_H_
+#ifndef ENGINE_COMMON_PHYSICS_EXPLOSION_H_
+#define ENGINE_COMMON_PHYSICS_EXPLOSION_H_
 /*
 #include "CPhysicsWindManager.h"
 
@@ -21,16 +20,17 @@ private:
 	
 };
 */
-#include "physical/physics/wind/CPhysWindBase.h"
+//#include "physical/physics/wind/CPhysWindBase.h"
+#include "physical/physics/fluid/IPrWind.h"
 
-class physExplosion : public CPhysWindBase
+class physExplosion : public IPrWind
 {
 public:
-	physExplosion ( const Vector3d& center, const Real magnitude, const Real range, const Real speed );
+	explicit	physExplosion ( const Vector3d& center, const Real magnitude, const Real range, const Real speed );
+				~physExplosion ( void );
 
-	virtual void Update ( Real deltaTime );
-	virtual void GetWindVector ( const Vector3d& pos, Vector3d& windOut ) const;
-	virtual bool IsActive ( void ) const;
+	virtual void Update ( Real deltaTime ) override;
+	virtual void GetWindVector ( const Vector3d& pos, Vector3d& windOut ) const override;
 
 private:
 	Vector3d	m_center;
@@ -42,6 +42,4 @@ private:
 };
 
 
-#endif
-
-
+#endif//ENGINE_COMMON_PHYSICS_EXPLOSION_H_

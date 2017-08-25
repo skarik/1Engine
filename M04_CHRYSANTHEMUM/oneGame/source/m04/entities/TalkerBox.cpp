@@ -93,49 +93,49 @@ public:
 
 		// Top of the box:
 
-		PUSH_QUAD( Rect(0,0, 16,16),
-			Rect(0,0,16,16) );
-		PUSH_QUAD( Rect(16,0, size.x/2 - 24,16),
-			Rect(16,0,8,16) );
+		PUSH_QUAD( Rect(0,0, 16.0F,16.0F),
+			Rect(0,0,16.0F,16.0F) );
+		PUSH_QUAD( Rect(16.0F,0, size.x/2 - 24.0F,16.0F),
+			Rect(16.0F,0,8.0F,16.0F) );
 
-		PUSH_QUAD( Rect(size.x/2 - 8,0, 16,16),
-			Rect(24,0,m_spriteInfo.fullsize.x - 48,16) );
+		PUSH_QUAD( Rect(size.x/2 - 8,0, 16.0F,16.0F),
+			Rect(24.0F,0,m_spriteInfo.fullsize.x - 48.0F,16.0F) );
 
-		PUSH_QUAD( Rect(size.x/2 + 8,0, size.x/2 - 24,16),
-			Rect(m_spriteInfo.fullsize.x - 24,0,8,16) );
-		PUSH_QUAD( Rect(size.x - 16,0, 16,16),
-			Rect(m_spriteInfo.fullsize.x - 16,0,16,16) );
+		PUSH_QUAD( Rect(size.x/2 + 8.0F,0, size.x/2 - 24.0F,16.0F),
+			Rect(m_spriteInfo.fullsize.x - 24.0F,0,8.0F,16.0F) );
+		PUSH_QUAD( Rect(size.x - 16.0F,0, 16.0F,16.0F),
+			Rect(m_spriteInfo.fullsize.x - 16.0F,0,16.0F,16.0F) );
 
 		// Middle of the box:
 
-		PUSH_QUAD( Rect(0,16, 16,size.y/2 - 24),
-			Rect(0,16,16,8) );
-		PUSH_QUAD( Rect(0,size.y/2 - 8, 16,16),
-			Rect(0,24,16,m_spriteInfo.fullsize.x - 48) );
-		PUSH_QUAD( Rect(0,size.y/2 + 8, 16,size.y/2 - 24),
-			Rect(0,m_spriteInfo.fullsize.x - 24,16,8) );
+		PUSH_QUAD( Rect(0,16.0F, 16.0F,size.y/2 - 24.0F),
+			Rect(0,16.0F,16.0F,8.0F) );
+		PUSH_QUAD( Rect(0,size.y/2 - 8.0F, 16.0F,16.0F),
+			Rect(0,24.0F,16.0F,m_spriteInfo.fullsize.x - 48.0F) );
+		PUSH_QUAD( Rect(0,size.y/2 + 8.0F, 16.0F,size.y/2 - 24.0F),
+			Rect(0,m_spriteInfo.fullsize.x - 24.0F,16.0F,8.0F) );
 
-		PUSH_QUAD( Rect(size.x - 16,16, 16,size.y/2 - 24),
-			Rect(m_spriteInfo.fullsize.x - 16,16,16,8) );
-		PUSH_QUAD( Rect(size.x - 16,size.y/2 - 8, 16,16),
-			Rect(m_spriteInfo.fullsize.x - 16,24,16,m_spriteInfo.fullsize.x - 48) );
-		PUSH_QUAD( Rect(size.x - 16,size.y/2 + 8, 16,size.y/2 - 24),
-			Rect(m_spriteInfo.fullsize.x - 16,m_spriteInfo.fullsize.x - 24,16,8) );
+		PUSH_QUAD( Rect(size.x - 16.0F,16.0F, 16.0F,size.y/2 - 24.0F),
+			Rect(m_spriteInfo.fullsize.x - 16.0F,16.0F,16.0F,8.0F) );
+		PUSH_QUAD( Rect(size.x - 16.0F,size.y/2 - 8.0F, 16.0F,16.0F),
+			Rect(m_spriteInfo.fullsize.x - 16.0F,24.0F,16.0F,m_spriteInfo.fullsize.x - 48.0F) );
+		PUSH_QUAD( Rect(size.x - 16.0F,size.y/2 + 8.0F, 16.0F,size.y/2 - 24.0F),
+			Rect(m_spriteInfo.fullsize.x - 16.0F,m_spriteInfo.fullsize.x - 24.0F,16.0F,8.0F) );
 
 		// Bottom of the box:
 
-		PUSH_QUAD( Rect(0,size.y - 16, 16,16),
-			Rect(0,m_spriteInfo.fullsize.y-16,16,16) );
-		PUSH_QUAD( Rect(16,size.y - 16, size.x/2 - 24,16),
-			Rect(16,m_spriteInfo.fullsize.y-16,8,16) );
+		PUSH_QUAD( Rect(0,size.y - 16.0F, 16.0F,16.0F),
+			Rect(0,m_spriteInfo.fullsize.y-16.0F,16.0F,16.0F) );
+		PUSH_QUAD( Rect(16.0F,size.y - 16.0F, size.x/2 - 24.0F,16.0F),
+			Rect(16.0F,m_spriteInfo.fullsize.y-16.0F,8.0F,16.0F) );
 
-		PUSH_QUAD( Rect(size.x/2 - 8,size.y - 16, 16,16),
-			Rect(24,m_spriteInfo.fullsize.y-16,m_spriteInfo.fullsize.x - 48,16) );
+		PUSH_QUAD( Rect(size.x/2 - 8.0F,size.y - 16.0F, 16.0F,16.0F),
+			Rect(24.0F,m_spriteInfo.fullsize.y-16.0F,m_spriteInfo.fullsize.x - 48.0F,16.0F) );
 
-		PUSH_QUAD( Rect(size.x/2 + 8,size.y - 16, size.x/2 - 24,16),
-			Rect(m_spriteInfo.fullsize.x - 24,m_spriteInfo.fullsize.y-16,8,16) );
-		PUSH_QUAD( Rect(size.x - 16,size.y - 16, 16,16),
-			Rect(m_spriteInfo.fullsize.x - 16,m_spriteInfo.fullsize.y-16,16,16) );
+		PUSH_QUAD( Rect(size.x/2 + 8.0F,size.y - 16.0F, size.x/2 - 24.0F,16.0F),
+			Rect(m_spriteInfo.fullsize.x - 24.0F,m_spriteInfo.fullsize.y-16.0F,8.0F,16.0F) );
+		PUSH_QUAD( Rect(size.x - 16.0F,size.y - 16.0F, 16.0F,16.0F),
+			Rect(m_spriteInfo.fullsize.x - 16.0F,m_spriteInfo.fullsize.y-16.0F,16.0F,16.0F) );
 
 #undef PUSH_QUAD
 

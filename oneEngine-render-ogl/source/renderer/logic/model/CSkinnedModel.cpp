@@ -11,7 +11,7 @@
 #include "core-ext/profiler/CTimeProfiler.h"
 
 #include "core-ext/animation/CAnimation.h"
-#include "physical/animation/CHKAnimation.h"
+//#include "physical/animation/CHKAnimation.h"
 #include "physical/resource/ResourceManager.h"
 
 #include "renderer/system/glMainSystem.h"

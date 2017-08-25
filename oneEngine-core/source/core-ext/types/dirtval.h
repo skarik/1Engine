@@ -1,6 +1,15 @@
+//===============================================================================================//
+//
+//		class dirtval
+//
+// Template class that wraps a type with an additional boolean value representing external change.
+// May be queried if the type was changed. Otherwise, acts as the underlying type.
+//
+//===============================================================================================//
+#ifndef CORE_EXT_DIRT_VAL_H_
+#define CORE_EXT_DIRT_VAL_H_
 
-#ifndef _DIRT_VAL_H_
-#define _DIRT_VAL_H_
+#include "core/math/Vector3d.h"
 
 template <typename Type>
 class dirtval
@@ -75,4 +84,4 @@ private:
 	bool m_dirty;
 };
 
-#endif//_DIRT_VAL_H_
+#endif//CORE_EXT_DIRT_VAL_H_

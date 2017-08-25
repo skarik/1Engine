@@ -1,21 +1,23 @@
+//===============================================================================================//
+//
+//		class CGameState
+//
+// Container and manager for all game-based objects.
+//
+//===============================================================================================//
 
-
-#ifndef _C_GAME_STATE_
-#define _C_GAME_STATE_
+#ifndef ENGINE_C_GAME_STATE_
+#define ENGINE_C_GAME_STATE_
 
 // Includes
 #include "engine/types.h"
 #include "engine/behavior/CGameBehavior.h"
 #include "engine/state/CGameScene.h"
 #include "engine/system/CGameMessenger.h"
+#include "physical/physics/IPrGameUpdate.h"
 #include <memory>
 #include <vector>
 #include <mutex>
-
-// Defines
-#ifndef NULL
-	#define NULL 0
-#endif
 
 // Prototypes
 class CResourceManager;
@@ -35,7 +37,7 @@ struct sObjectFCounter
 };
 
 // Class Definition
-class CGameState
+class CGameState : public IPrGameUpdate
 {
 	typedef std::mutex		mutex;
 public:
@@ -48,8 +50,8 @@ public:
 	ENGINE_API void			LateUpdate ( void );
 
 	// Fixed timestep for physics
-	ENGINE_API void			FixedUpdate ( void );
-	ENGINE_API void			PhysicsUpdate ( void );
+	ENGINE_API void			FixedUpdate ( void ) override;
+	ENGINE_API void			RigidbodyUpdate ( Real interpolation ) override;
 
 	// Accessor
 	ENGINE_API static CGameState*	Active ( void );
@@ -75,7 +77,7 @@ public:
 
 	// Returns a list of objects in the given layer.
 	// The list must be freed by the user.
-	ENGINE_API std::vector<CGameBehavior*>* FindObjectsWithLayer ( Layers::Layer );
+	ENGINE_API std::vector<CGameBehavior*>* FindObjectsWithLayer ( physical::prLayer );
 
 	// Returns the first found object with the target name string.
 	// NULL is returned otherwise.
@@ -111,9 +113,7 @@ public:
 	CResourceManager*	mResourceManager;
 
 private:
-	// Give GO constructor and destructor access to adding and removing
-	/*friend CGameBehavior::CGameBehavior ();
-	friend CGameBehavior::~CGameBehavior();*/
+	// Give base GameBehavior access.
 	friend CGameBehavior;
 	// Give Messenger full access to send messages through game
 	friend CGameMessenger;
@@ -150,6 +150,5 @@ private:
 	bool		bEndingGame;
 };
 
-//extern CGameState*	GameState;
 
-#endif
+#endif//ENGINE_C_GAME_STATE_

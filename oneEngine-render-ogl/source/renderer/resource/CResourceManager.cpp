@@ -286,7 +286,7 @@ void CResourceManager::RenderUpdate ( void )
 									break;
 								case Z_MEM_ERROR:
 									printf("CResourceManager::ForceLoadResource >> out of memory\n");
-									throw Engine::OutOfMemoryException();
+									throw engine::OutOfMemoryException();
 									break;
 								case Z_BUF_ERROR:
 									printf("CResourceManager::ForceLoadResource >> output buffer wasn't large enough!\n");
@@ -294,7 +294,7 @@ void CResourceManager::RenderUpdate ( void )
 									break;
 								case Z_DATA_ERROR:
 									printf("CResourceManager::ForceLoadResource >> corrupted data!\n");
-									throw Engine::CorruptedDataException();
+									throw engine::CorruptedDataException();
 									break;
 								}
 								// Delete the side buffer
@@ -659,7 +659,7 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 							break;
 						case Z_MEM_ERROR:
 							debug::Console->PrintError("CResourceManager::ForceLoadResource >> out of memory\n");
-							//throw Engine::OutOfMemoryException();
+							//throw engine::OutOfMemoryException();
 							break;
 						case Z_BUF_ERROR:
 							debug::Console->PrintError("CResourceManager::ForceLoadResource >> output buffer wasn't large enough!\n");
@@ -667,7 +667,7 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 							break;
 						case Z_DATA_ERROR:
 							debug::Console->PrintError("CResourceManager::ForceLoadResource >> corrupted data!\n");
-							//throw Engine::CorruptedDataException();
+							//throw engine::CorruptedDataException();
 							break;
 						}
 						// Delete the side buffer

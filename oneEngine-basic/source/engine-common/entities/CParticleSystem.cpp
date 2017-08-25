@@ -153,7 +153,7 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 				{
 					switch ( currentObjType )
 					{
-					case Engine::PARTICLESYS_EMITTER:
+					case engine::PARTICLESYS_EMITTER:
 						if ( !bHasMeshOverride )
 							newComponent = new CParticleEmitter();
 						else
@@ -164,13 +164,13 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 						vpEmitters.push_back( lastEmitter );
 						break;
 
-					case Engine::PARTICLESYS_UPDATER:
+					case engine::PARTICLESYS_UPDATER:
 						newComponent = new CParticleUpdater(lastEmitter);
 						deserializer >> ((CParticleUpdater*)(newComponent));
 						AddComponent( (CParticleUpdater*)(newComponent) );
 						break;
 
-					case Engine::PARTICLESYS_RENDERER:
+					case engine::PARTICLESYS_RENDERER:
 						newComponent = new CParticleRenderer(lastEmitter);
 						((CParticleRenderer*)(newComponent))->SetMaterial( new RrMaterial );
 						((CParticleRenderer*)(newComponent))->GetMaterial()->removeReference();
@@ -178,10 +178,10 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 						AddComponent( (CParticleRenderer*)(newComponent) );
 						break;
 
-					case Engine::PARTICLESYS_EMITTER_CLOUDS: // Skip this
+					case engine::PARTICLESYS_EMITTER_CLOUDS: // Skip this
 						break;
 
-					case Engine::PARTICLESYS_RENDERER_ANIMATED: // Renderer - Animation; not yet implemented
+					case engine::PARTICLESYS_RENDERER_ANIMATED: // Renderer - Animation; not yet implemented
 						newComponent = new CParticleRenderer_Animated(lastEmitter);
 						((CParticleRenderer_Animated*)(newComponent))->SetMaterial( new RrMaterial );
 						((CParticleRenderer_Animated*)(newComponent))->GetMaterial()->removeReference();
@@ -189,7 +189,7 @@ void CParticleSystem::Init ( const string& sSystemFile, const bool bHasMeshOverr
 						AddComponent( (CParticleRenderer_Animated*)(newComponent) );
 						break;
 
-					case Engine::PARTICLESYS_MODIFIER_WIND: // Modifier - Wind
+					case engine::PARTICLESYS_MODIFIER_WIND: // Modifier - Wind
 						newComponent = new CParticleMod_Windmotion();
 						deserializer >> ((CParticleMod_Windmotion*)(newComponent));
 						lastUpdater->AddModifier( ((CParticleMod_Windmotion*)(newComponent)) );

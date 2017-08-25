@@ -4,7 +4,7 @@
 
 #include "engine/behavior/CGameBehavior.h"
 #include "engine/physics/material/physMaterial.h"
-#include "physical/physics/raycast/RaycastHit.h"
+#include "physical/physics/cast/RaycastHit.h"
 
 class CFXMaterialHit : public CGameBehavior
 {

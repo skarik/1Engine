@@ -144,12 +144,6 @@
     <ClInclude Include="source\engine\utils\CDeveloperConsole.h">
       <Filter>SOURCE\Engine\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="source\engine\physics\CPhysicsEngine.h">
-      <Filter>SOURCE\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine\physics\CPhysicsEngine.hpp">
-      <Filter>SOURCE\Engine\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="source\engine\physics\motion\CMotion.h">
       <Filter>SOURCE\Engine\Physics\Motion</Filter>
     </ClInclude>
@@ -248,9 +242,6 @@
     <ClCompile Include="source\engine\utils\CDeveloperConsoleFunctions.cpp">
       <Filter>SOURCE\Engine\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="source\engine\physics\CPhysicsEngine.cpp">
-      <Filter>SOURCE\Engine\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="source\engine\module_engine.cpp">
       <Filter>SOURCE\Engine</Filter>
     </ClCompile>
@@ -268,6 +259,9 @@
     </ClCompile>
     <ClCompile Include="source\engine\network\BehaviorList.cpp">
       <Filter>SOURCE\Engine\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine\physics\motion\CMotion.cpp">
+      <Filter>SOURCE\Engine\Physics\Motion</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

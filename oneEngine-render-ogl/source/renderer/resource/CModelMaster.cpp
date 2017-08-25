@@ -7,7 +7,8 @@
 #include "renderer/resource/CModelMaster.h"
 
 #include "renderer/object/mesh/system/rrMesh.h"
-#include "physical/physics/shapes/physMesh.h"
+//#include "physical/physics/shapes/physMesh.h"
+#include "physical/physics/shapes/PrShape.h"
 
 ARSINGLETON_CPP_DEF(RenderResources);
 

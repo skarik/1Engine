@@ -1,6 +1,8 @@
 // v2d/default
 // Default shader for 2D GUI elements.
 #version 330
+#extension GL_ARB_explicit_attrib_location : require
+#extension GL_ARB_explicit_uniform_location : require
 
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;
@@ -18,8 +20,8 @@ uniform mat4 sys_ModelRS;
 uniform mat4 sys_ModelViewProjectionMatrix;
 
 // Material inputs
-uniform vec4 sys_TextureScale;
-uniform vec4 sys_TextureOffset;
+layout(location = 5) uniform vec4 sys_TextureScale;
+layout(location = 6) uniform vec4 sys_TextureOffset;
 
 void main ( void )
 {

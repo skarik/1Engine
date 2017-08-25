@@ -1,6 +1,12 @@
-
-#ifndef _THE_WON_ENGINE_COMMON___CORE__
-#define _THE_WON_ENGINE_COMMON___CORE__
+//===============================================================================================//
+//
+//		common.h
+// 
+// Old messy common code.
+//
+//===============================================================================================//
+#ifndef CORE_COMMON_MESSY_H_
+#define CORE_COMMON_MESSY_H_
 
 // == DEPRECIATED DEFINITION ==
 #ifdef __GNUC__
@@ -18,7 +24,6 @@
 using std::string;
 
 // == ENGINE EXCEPTION ==
-//#include "EngineExceptions.h"
 #include "exceptions/exceptions.h"
 
 // == CLASS PROTOTYPES ==
@@ -66,4 +71,4 @@ constexpr size_t offsetof_impl(T const* t, U T::* a)
 #undef _ENGINE_SAFE_CHECK_
 #endif
 
-#endif//_THE_WON_ENGINE_COMMON___CORE__
+#endif//CORE_COMMON_MESSY_H_

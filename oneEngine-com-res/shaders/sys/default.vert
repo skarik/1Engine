@@ -1,6 +1,8 @@
 // sys/default
 // Default forward rendering shader.
 #version 330
+#extension GL_ARB_explicit_attrib_location : require
+#extension GL_ARB_explicit_uniform_location : require
 
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;
@@ -18,8 +20,8 @@ uniform mat4 sys_ModelTRS;
 uniform mat4 sys_ModelRS;
 uniform mat4 sys_ModelViewProjectionMatrix;
 
-uniform vec4 sys_DiffuseColor;
-uniform vec3 sys_EmissiveColor;
+layout(location = 0) uniform vec4 sys_DiffuseColor;
+layout(location = 1) uniform vec3 sys_EmissiveColor;
 
 // Fog
 layout(std140) uniform sys_Fog
@@ -39,10 +41,10 @@ float diffuseLighting ( vec3 normal, vec3 lightDist, float lightRange, float lig
 {
 	// Distance-based attenuation
 	float attenuation = pow( max( 1.0 - (length( lightDist )*lightRange), 0.0 ), lightFalloff );
-	
+
 	// Cosine law * attenuation
 	float color = mix( dot( normal,normalize( lightDist ) ), 1.0, lightPass*(1.0+attenuation) ) * attenuation;
-	
+
 	// Return final color
 	return color;
 }
@@ -52,7 +54,7 @@ void main ( void )
 {
 	vec4 v_localPos = mdl_Vertex;
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
-	
+
 	vec4 v2f_normals	= sys_ModelRS*vec4( mdl_Normal, 1.0 );
 	v2f_colors			= sys_DiffuseColor*mdl_Color;
 	v2f_position		= sys_ModelTRS*mdl_Vertex;
@@ -60,23 +62,23 @@ void main ( void )
 	v2f_fogdensity 	 	= max( 0.0, (sys_FogEnd.end - v_screenPos.z) * sys_FogScale.scale );
 
 	gl_Position = v_screenPos;
-	
+
 	// Calculate lighting
 	/*vec3 lightColor = sys_EmissiveColor;
 	lightColor += sys_LightAmbient.rgb;
-	
+
 	for ( int i = 0; i < 8; i += 1 )
 	{
 		vec3 lightDir;
 		lightDir = sys_LightPosition[i].xyz - v2f_position.xyz;
-		
+
 		float lightVal1 = diffuseLighting( v2f_normals.xyz, lightDir, sys_LightProperties[i].x, sys_LightProperties[i].y, sys_LightProperties[i].z );
 		float lightVal2 = dot( sys_LightPosition[i].xyz, v2f_normals.xyz );
 		float lightValf = mix( lightVal2, lightVal1, sys_LightPosition[i].w );
 		//lightValf = cellShade(lightValf);
-		
+
 		lightColor += sys_LightColor[i].rgb * max( 0, lightValf );
 	}
-	
+
 	v2f_colors.rgb *= lightColor;*/
 }

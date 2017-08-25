@@ -1,6 +1,17 @@
 #ifndef CORE_OS_
 #define CORE_OS_
 
+// OS NAME:
+#if defined(_WIN64)
+#	define __OS_STRING_NAME__ "Win32 x64"
+#elif defined(_WIN32)
+#	define __OS_STRING_NAME__ "Win32 x86"
+#else
+#	define __OS_STRING_NAME__ "Unknown"
+#endif
+
+// OS SPECIFIC INCLUDES:
+
 #ifdef _WIN32
 
 	// Input defines

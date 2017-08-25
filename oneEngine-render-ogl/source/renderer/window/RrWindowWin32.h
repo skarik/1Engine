@@ -92,7 +92,7 @@ private:
 
 	int InitGL( void );
 
-	int DrawGLScene( void );
+	int DrawScene( void );
 
 	// Delete the window
 	void KillGLWindow( bool releaseRenderContext=true );

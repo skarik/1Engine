@@ -370,6 +370,15 @@
     <ClInclude Include="source\core-ext\system\io\serializer\OSerialBinary.h">
       <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\1docs.style.h">
+      <Filter>SOURCE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\types\baseType.h">
+      <Filter>SOURCE\Core-ext\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\types\exports.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">

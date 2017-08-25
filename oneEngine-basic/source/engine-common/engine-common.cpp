@@ -30,7 +30,7 @@
 int EngineCommonInitialize ( void )
 {
 	// Engine
-	Engine::Console->AddConsoleFunc( "scene",	EngineCommon::LoadScene );
+	engine::Console->AddConsoleFunc( "scene",	EngineCommon::LoadScene );
 	EngineCommon::RegisterScene<gmsceneSystemLoader>( "default" );
 	EngineCommon::RegisterScene<gmsceneSystemBuilder>( "sysbuild" );
 
@@ -42,22 +42,22 @@ int EngineCommonInitialize ( void )
 	EngineCommon::RegisterScene<testColorConversion>("test_color_conversion");
 
 	// Lua
-	Engine::Console->AddConsoleFunc( "lua",	Lua::con_execLua );
-	Engine::Console->AddConsoleFunc( "lua_file",	Lua::con_execLuaFile );
-	Engine::Console->AddConsoleFunc( "lua_reload",	Lua::con_luaReload );
+	//engine::Console->AddConsoleFunc( "lua",	Lua::con_execLua );
+	//engine::Console->AddConsoleFunc( "lua_file",	Lua::con_execLuaFile );
+	//engine::Console->AddConsoleFunc( "lua_reload",	Lua::con_luaReload );
 
 	// Register Lua info
-	Lua::Register_GameState( *Lua::Controller );
-	Lua::Register_Renderer( *Lua::Controller );
+	//Lua::Register_GameState( *Lua::Controller );
+	//Lua::Register_Renderer( *Lua::Controller );
 	//Lua::Register_GameObjects( *Lua::Controller );
-	Lua::Controller->RunLuaFile( "sys_engine.lua" );
+	//Lua::Controller->RunLuaFile( "sys_engine.lua" );
 
 	// Register Renderer info
-	Engine::Console->AddConsoleFunc( "recompile_shader",	renderer::con_recompile_shader );
-	Engine::Console->AddConsoleFunc( "recompile_shaders",	renderer::con_recompile_shaders );
+	engine::Console->AddConsoleFunc( "recompile_shader",	renderer::con_recompile_shader );
+	engine::Console->AddConsoleFunc( "recompile_shaders",	renderer::con_recompile_shaders );
 
 	// Debug tools
-	Engine::Console->AddConsoleFunc( "showtimes", EngineCommon::DebugToggleTimeProfilerUI );
+	engine::Console->AddConsoleFunc( "showtimes", EngineCommon::DebugToggleTimeProfilerUI );
 
 	//===============================================================================================//
 	// PLACE YOUR CUSTOM ENGINE MODULES BELOW HERE

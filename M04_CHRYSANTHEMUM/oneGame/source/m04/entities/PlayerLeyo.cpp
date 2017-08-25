@@ -8,7 +8,8 @@
 #include "render2d/camera/COrthoCamera.h"
 #include "render2d/object/sprite/CEditableRenderable2D.h"
 
-#include "engine/physics/collider/types/CBoxCollider.h"
+#include "physical/interface/tobt.h"
+#include "physical/physics/shapes/PrShapeBox.h"
 #include "engine/physics/motion/CRigidbody.h"
 
 #include "m04/entities/UILuvPpl.h"
@@ -71,13 +72,27 @@ PlayerLeyo::~PlayerLeyo ( void )
 }
 
 void PlayerLeyo::Update ( void )
-{
+{	
+	// Draw 4 pixels above the ground
+	position.z = -4.5F;
+
 	if ( bod == NULL )
 	{
-		auto box = new CBoxCollider( Vector2d( 24,16 ) );
-		bod = new CRigidbody(box, this);
+		PrShape* box = new PrShapeBox( Vector2d(24, 16) ); 
+
+		prRigidbodyCreateParams params = {0};
+		params.shape = box;
+		params.owner = this;
+		params.ownerType = core::kBasetypeGameBehavior;
+		params.group = physical::layer::PHYS_CHARACTER;
+		params.mass = 30.0F;
+
+		bod = new CRigidbody(params);
 		bod->target_position = &position;
-		bod->SetPosition(position);
+
+		bod->world_transform.position = position;
+		bod->PushTransform();
+		bod->ApiBody()->setActivationState(DISABLE_DEACTIVATION);
 	}
 
 	input->Update(this, Time::deltaTime);
@@ -104,11 +119,10 @@ void PlayerLeyo::Update ( void )
 		}
 	}
 
-	bod->SetVelocity( velocity );
+	bod->ApiBody()->setLinearVelocity( physical::bt(velocity) );
 
 	// Move around
 	//position += velocity * Time::deltaTime;
-	position.z = -4.5F;
 }
 
 void PlayerLeyo::PostFixedUpdate ( void )

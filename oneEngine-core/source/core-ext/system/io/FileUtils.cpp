@@ -6,7 +6,7 @@ bool IO::ModelExists ( const std::string& n_filename )
 {
 	// First build the filename base string
 	std::string mfilename = n_filename;
-	int pos = mfilename.find_last_of( "." );
+	size_t pos = mfilename.find_last_of( "." );
 	if ( (pos > 4) && pos != std::string::npos ) {
 		mfilename.assign( mfilename.begin(), mfilename.begin() + pos );
 	}

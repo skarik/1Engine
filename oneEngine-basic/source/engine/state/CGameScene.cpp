@@ -54,7 +54,7 @@ void CGameScene::Load ( void )
 	// Look through the created objects and look for developer console
 	if ( CGameState::Active()->FindFirstObjectWithTypename( "CDeveloperConsole" ) == NULL )
 	{
-		Engine::CDeveloperConsole* devconsole = new Engine::CDeveloperConsole();
+		engine::CDeveloperConsole* devconsole = new engine::CDeveloperConsole();
 		devconsole->RemoveReference();
 	}
 

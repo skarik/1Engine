@@ -18,7 +18,8 @@
 
 // Include physics
 #include "physical/module_physical.h"
-#include "physical/physics/CPhysics.h"
+//#include "physical/physics/CPhysics.h"
+#include "physical/physics/PrPhysics.h"
 
 // Include gamestate
 #include "engine/module_engine.h"
@@ -66,20 +67,22 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	// Create Window
 	RrWindow aWindow( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
 	debug::Console->PrintMessage( "Windowing system initialized." );
-	std::cout << "Win32 Build (" << __DATE__ << ") Indev" << std::endl;
+	std::cout << __OS_STRING_NAME__ " Build (" __DATE__ ") Indev" << std::endl;
 	
 	// Set shell status (loading engine)
 	core::shell::SetTaskbarProgressHandle(aWindow.GetShellHandle());
 	core::shell::SetTaskbarProgressValue(NIL, 100, 100);
 	core::shell::SetTaskbarProgressState(NIL, core::shell::TBP_INDETERMINATE);
 
-	// Init Physics
-	Physics::Init();
 	// Create Renderstate
 	CRenderState aRenderer (NULL); // passing null creates default resource manager
 	aWindow.mRenderer = &aRenderer; // Set the window's renderer (multiple possible render states)
+
+	// Init Physics
+	PrPhysics::Active()->Initialize();
 	// Create Gamestate
 	CGameState aGameState;
+
 	// Create Audio
 	CAudioMaster aMaster;
 	
@@ -88,14 +91,16 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 #	ifdef STEAM_ENABLED
 	bSteamy = SteamAPI_Init();
 #	endif
-	if (bSteamy) debug::Console->PrintMessage( "holy shit it's STEAMy! (STEAM library initialized).\n" );
-	else debug::Console->PrintWarning( "STEAM was not initialized\n" );
+	if (bSteamy)
+		debug::Console->PrintMessage( "STEAM library initialized: holy shit it's STEAMy!\n" );
+	else
+		debug::Console->PrintWarning( "STEAM was not initialized\n" );
 
 	// Create the engine systems
-	Lua::CLuaController* luaController = new Lua::CLuaController();
-	Engine::CDeveloperConsole* engConsole = new Engine::CDeveloperConsole();
+	//Lua::CLuaController* luaController = new Lua::CLuaController();
+	engine::CDeveloperConsole* engConsole = new engine::CDeveloperConsole();
 
-	// Set up engine component
+	// Set up engine component - GameInitialized is declared in OneGame and is game-specific.
 	GameInitialize();
 
 	// Create the debug drawers
@@ -169,7 +174,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	aGameState.CleanWorld();
 
 	// Free Physics
-	Physics::Free();
+	PrPhysics::FreeInstance();
 	// Free input
 	CInput::Free();
 

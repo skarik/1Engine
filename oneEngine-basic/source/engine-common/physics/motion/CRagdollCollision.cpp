@@ -1,7 +1,7 @@
 
 #include "CRagdollCollision.h"
 //#include "Water.h"
-#include "physical/physics/water/Water.h"
+//#include "physical/physics/water/Water.h"
 
 #include "core-ext/animation/Skeleton.h"
 #include "core-ext/types/sHitbox.h"
@@ -9,20 +9,20 @@
 
 #include "renderer/logic/model/CSkinnedModel.h"
 
-#include "physical/physics/motion/physRigidbody.h"
-#include "physical/physics/shapes/physBoxShape.h"
+//#include "physical/physics/motion/physRigidbody.h"
+//#include "physical/physics/shapes/physBoxShape.h"
 
 #include <list>
 using std::list;
 
-CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
-	: CMotion()
+CRagdollCollision::CRagdollCollision ( const prRigidbodyCreateParams& params, CSkinnedModel* sourceModel )
+	: CMotion(params.owner, params.ownerType)
 {
 	hasJoints = false;
-	m_skinnedmodel = nModel;
+	m_skinnedmodel = sourceModel;
 
 	// Set the layer
-	layer = Layers::Hitboxes;
+	layer = physical::layer::Hitboxes;
 
 	hitboxEntry hb;
 	std::vector<sHitbox>* mdl_hitboxes = m_skinnedmodel->GetHitboxes();
@@ -33,6 +33,7 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 	pose_model.resize( skeleton->parent.size() );
 	core::TransformUtility::LocalToWorld( &skeleton->parent[0], &skeleton->reference_xpose[0], &pose_model[0], pose_model.size() );
 
+#if 0
 	// Add root as first hitbox/bone
 	{
 		//glBone* targetBone = m_skinnedmodel->GetSkeletonList()->at(0);
@@ -111,6 +112,7 @@ CRagdollCollision::CRagdollCollision ( CSkinnedModel* nModel )
 		m_hitboxList.push_back( thb );
 		delete_safe(tCollider);
 	}
+#endif
 
 	CreateJoints(pose_model);
 	CreateMapping(pose_model);
@@ -171,6 +173,7 @@ void CRagdollCollision::CreateJoints ( std::vector<core::TransformLite>& pose_mo
 	//	if ( hitboxIndex == uint(-1) ) {
 	//		continue;
 	//	}*/
+#if 0
 	for ( uint i = 0; i < m_hitboxList.size(); ++i )
 	{
 		//Transform* tr_current = &(m_skinnedmodel->GetSkeletonList()->at(mdl_hitboxes->at(i).indexLink)->transform);
@@ -293,6 +296,7 @@ void CRagdollCollision::CreateJoints ( std::vector<core::TransformLite>& pose_mo
 			t_cst_inst->removeReference();
 		}*/
 	}
+#endif
 }
 
 //#include <boost/algorithm/string.hpp>
@@ -405,63 +409,58 @@ void CRagdollCollision::CreateMapping ( std::vector<core::TransformLite>& pose_m
 
 CRagdollCollision::~CRagdollCollision ( void )
 {
-	for ( auto hb = m_hitboxList.begin(); hb != m_hitboxList.end(); ++hb ) {
-		//Physics::FreeRigidBody( hb->rigidbody );
-		delete_safe( hb->rigidbody );
-		if ( hb->constraint ) {
-			Physics::RemoveReference(hb->constraint);
-			hb->constraint = NULL;
-		}
-	}
-	m_hitboxList.clear();
+	//for ( auto hb = m_hitboxList.begin(); hb != m_hitboxList.end(); ++hb ) {
+	//	//Physics::FreeRigidBody( hb->rigidbody );
+	//	delete_safe( hb->rigidbody );
+	//	if ( hb->constraint ) {
+	//		Physics::RemoveReference(hb->constraint);
+	//		hb->constraint = NULL;
+	//	}
+	//}
+	//m_hitboxList.clear();
 }
 
 void CRagdollCollision::Update ( void )
 {
-	bool inWater = WaterTester::Get()->PositionInside( m_hitboxList[0].start.position );
-	auto skeleton = m_skinnedmodel->GetSkeleton();
-	for ( auto hb = m_hitboxList.begin(); hb != m_hitboxList.end(); ++hb )
-	{
-		//glBone* targetBone = m_skinnedmodel->GetSkeletonList()->at(hb->boneIndex);
-		if ( hb->constraint )
-		{
-			//glBone* parentBone = (glBone*)(targetBone->transform.owner);
-			//hb->constraint->m_strength = std::max<Real>(targetBone->ragdollStrength,parentBone->ragdollStrength); //* 0.7f;
-			if ( skeleton->parent[hb->boneIndex] >= 0 )
-			{
-				hb->constraint->m_strength = std::max<Real>(
-					skeleton->ext_physics_strength[hb->boneIndex],
-					skeleton->ext_physics_strength[skeleton->parent[hb->boneIndex]]);
-			}
-		}
-		if ( hb->rigidbody )
-		{
-			if ( !inWater ) {
-				//hb->rigidbody->setGravityFactor( targetBone->ragdollStrength );
-				hb->rigidbody->setGravityFactor( skeleton->ext_physics_strength[hb->boneIndex] );
-				hb->rigidbody->setLinearDamping( 0.1f );
-			}
-			else {
-				hb->rigidbody->setGravityFactor( 0.05f );
-				hb->rigidbody->setLinearDamping( 0.6f );
-			}
-		}
-	}
+	//bool inWater = WaterTester::Get()->PositionInside( m_hitboxList[0].start.position );
+	//auto skeleton = m_skinnedmodel->GetSkeleton();
+	//for ( auto hb = m_hitboxList.begin(); hb != m_hitboxList.end(); ++hb )
+	//{
+	//	//glBone* targetBone = m_skinnedmodel->GetSkeletonList()->at(hb->boneIndex);
+	//	if ( hb->constraint )
+	//	{
+	//		//glBone* parentBone = (glBone*)(targetBone->transform.owner);
+	//		//hb->constraint->m_strength = std::max<Real>(targetBone->ragdollStrength,parentBone->ragdollStrength); //* 0.7f;
+	//		if ( skeleton->parent[hb->boneIndex] >= 0 )
+	//		{
+	//			hb->constraint->m_strength = std::max<Real>(
+	//				skeleton->ext_physics_strength[hb->boneIndex],
+	//				skeleton->ext_physics_strength[skeleton->parent[hb->boneIndex]]);
+	//		}
+	//	}
+	//	if ( hb->rigidbody )
+	//	{
+	//		if ( !inWater ) {
+	//			//hb->rigidbody->setGravityFactor( targetBone->ragdollStrength );
+	//			hb->rigidbody->setGravityFactor( skeleton->ext_physics_strength[hb->boneIndex] );
+	//			hb->rigidbody->setLinearDamping( 0.1f );
+	//		}
+	//		else {
+	//			hb->rigidbody->setGravityFactor( 0.05f );
+	//			hb->rigidbody->setLinearDamping( 0.6f );
+	//		}
+	//	}
+	//}
 }
 
 void CRagdollCollision::LateUpdate ( void )
 {
-	// Set the current hitbox rigidbody position, so can create proper velocities later
-	for ( auto hb = m_hitboxList.begin(); hb != m_hitboxList.end(); ++hb )
-	{
-		/*hkVector4 currentPosition = hb->rigidbody->getPosition();
-		hkQuaternion currentRotation = hb->rigidbody->getRotation();
-
-		currentPosition.store3( &(hb->start.position.x) );
-		currentRotation.m_vec.store4( &(hb->start.rotation.x) );*/
-		hb->start.position = hb->rigidbody->getPosition();
-		hb->start.rotation = hb->rigidbody->getRotation();
-	}
+	//// Set the current hitbox rigidbody position, so can create proper velocities later
+	//for ( auto hb = m_hitboxList.begin(); hb != m_hitboxList.end(); ++hb )
+	//{
+	//	hb->start.position = hb->rigidbody->getPosition();
+	//	hb->start.rotation = hb->rigidbody->getRotation();
+	//}
 }
 
 void CRagdollCollision::PostUpdate ( void )
@@ -474,7 +473,7 @@ void CRagdollCollision::PostFixedUpdate ( void )
 
 }
 
-void CRagdollCollision::RigidbodyUpdate ( void )
+void CRagdollCollision::RigidbodyUpdate ( Real interpolation )
 {
 	animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
 	// Need a Ragdoll to Animation conversion here
@@ -507,6 +506,7 @@ void CRagdollCollision::FixedUpdate ( void )
 {
 	animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
 	// TODO: Ensure lite transform is updated
+#if 0 
 
 	// Need a Animation to Ragdoll conversion here
 	for ( auto hb = m_hitboxList.begin(); hb != m_hitboxList.end(); ++hb )
@@ -554,6 +554,7 @@ void CRagdollCollision::FixedUpdate ( void )
 		hb->rigidbody->setPositionAndRotation( currentPosition, currentRotation );
 
 	}
+#endif
 	/*hkaPose modelPose ( skeletonModel );
 	hkaPose ragdollPose ( skeletonRagdoll );
 
@@ -607,7 +608,8 @@ CActor* CRagdollCollision::GetActor ( void )
 {
 	return m_owning_actor;
 }
-Real	CRagdollCollision::GetMultiplier ( physRigidBody* )
+Real	CRagdollCollision::GetMultiplier ( btRigidBody* n_hitBody )
 {
+	// Todo: give certain rigidbodies different damage boosters
 	return 1;
 }

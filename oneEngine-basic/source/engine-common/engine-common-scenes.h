@@ -45,7 +45,7 @@ namespace EngineCommon
 				}
 			)
 		);
-		Engine::Console->AddConsoleMatch( "scene "+sceneName );
+		engine::Console->AddConsoleMatch( "scene "+sceneName );
 	}
 
 };

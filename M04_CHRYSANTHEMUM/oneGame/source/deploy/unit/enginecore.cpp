@@ -20,7 +20,7 @@
 
 // Include physics
 #include "physical/module_physical.h"
-#include "physical/physics/CPhysics.h"
+#include "physical/physics/PrPhysics.h"
 
 // Include gamestate
 #include "engine/module_engine.h"
@@ -58,7 +58,7 @@ DEPLOY_API int ARUNIT_CALL Unit::Test_EngineCore ( ARUNIT_ARGS )
 	std::cout << "Win32 Build (" << __DATE__ << ") Prealpha" << std::endl;
 
 	// Init Physics
-	Physics::Init();
+	PrPhysics::Active()->Initialize();
 	// Create Renderstate
 	CRenderState aRenderer (NULL); // passing null creates default resource manager
 	aWindow.mRenderer = &aRenderer; // Set the window's renderer (multiple possible render states)
@@ -143,7 +143,7 @@ DEPLOY_API int ARUNIT_CALL Unit::Test_EngineCore ( ARUNIT_ARGS )
 	aGameState.CleanWorld();
 
 	// Free Physics
-	Physics::Free();
+	PrPhysics::FreeInstance();
 	// Free input
 	CInput::Free();
 

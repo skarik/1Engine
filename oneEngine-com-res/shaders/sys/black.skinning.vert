@@ -1,6 +1,8 @@
 // sys/black
 // Draws a purely black object.
 #version 330
+#extension GL_ARB_explicit_attrib_location : require
+#extension GL_ARB_explicit_uniform_location : require
 
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;
@@ -71,8 +73,8 @@ void main ( void )
 	// Set the final result
 	v_localPos = v_finalPos;//mix(v_finalPos,v_softPos, pow(mdl_Color.r,2) );
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
-	
+
 	v2f_texcoord0	= mdl_TexCoord.xy;
-	
+
 	gl_Position = v_screenPos;
 }

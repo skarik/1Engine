@@ -1,6 +1,12 @@
-
-#ifndef _C_BUFFER_IO_H_
-#define _C_BUFFER_IO_H_
+//===============================================================================================//
+//
+//		class CBufferIO
+//
+// Interface for reading and writing data from a block of currently accessible memory.
+//
+//===============================================================================================//
+#ifndef C_BUFFER_IO_H_
+#define C_BUFFER_IO_H_
 
 #include "core/types/types.h"
 #include <cstring>
@@ -99,13 +105,13 @@ public:
 	}
 	FORCE_INLINE size_t		ReadData ( char* _odata, size_t _datasize )
 	{
-		size_t readsize = std::min<size_t>( m_maxsize-m_position, _datasize );
+		size_t readsize = std::min<size_t>( (size_t)(m_maxsize-m_position), _datasize );
 		memcpy( _odata, &(m_buffer[m_position]), _datasize );
 		m_position += readsize;
 		return readsize;
 	}
 	FORCE_INLINE size_t		ReadString ( char* _odata ) {
-		uint32_t startpos = m_position;
+		uint64_t startpos = m_position;
 		while (m_buffer[m_position] != 0)
 		{
 			*_odata = m_buffer[m_position];
@@ -113,7 +119,7 @@ public:
 		}
 		*_odata = '\0';
 		m_position++;
-		return m_position - startpos;
+		return (size_t)(m_position - startpos);
 	}
 
 	FORCE_INLINE void		WriteChar ( char _val ) {
@@ -139,7 +145,7 @@ public:
 	}
 
 
-	FORCE_INLINE uint32_t	TellPosition ( void ) {
+	FORCE_INLINE uint64_t	TellPosition ( void ) {
 		return m_position;
 	}
 	FORCE_INLINE void		CheckPosition ( void ) {
@@ -151,8 +157,8 @@ public:
 private:
 	bool		m_bufferowned;
 	char*		m_buffer;
-	uint32_t	m_position;
-	uint32_t	m_maxsize;
+	uint64_t	m_position;
+	uint64_t	m_maxsize;
 };
 
-#endif//_C_BUFFER_IO_H_
+#endif//C_BUFFER_IO_H_

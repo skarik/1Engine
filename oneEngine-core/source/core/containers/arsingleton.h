@@ -35,6 +35,13 @@
 				m_Active = new T(); \
 			} \
 			return m_Active; \
+		} \
+		static void FreeInstance ( void ) \
+		{ \
+			if ( m_Active != NULL ) { \
+				delete m_Active; \
+				m_Active = NULL; \
+			} \
 		} 
 
 //===============================================================================================//

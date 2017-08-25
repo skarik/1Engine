@@ -360,6 +360,9 @@
     <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp">
       <Filter>SOURCE\Renderer\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\debug\RrBtDebugDraw.cpp">
+      <Filter>SOURCE\Renderer\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\ogl\GLCommon.h">
@@ -634,6 +637,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\particle\motion.h">
       <Filter>SOURCE\Renderer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\debug\RrBtDebugDraw.h">
+      <Filter>SOURCE\Renderer\Debug</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

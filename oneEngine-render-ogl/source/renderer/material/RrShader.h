@@ -82,6 +82,87 @@ namespace renderer
 		{ ATTRIB_TEXCOORD3, "mdl_TexCoord3" },
 		{ ATTRIB_TEXCOORD4, "mdl_TexCoord4" },
 	};
+
+	enum uniformId_t : uint8_t
+	{
+		UNI_SURFACE_DIFFUSE_COLOR	= 0,
+		UNI_SURFACE_EMISSIVE_COLOR	= 1,
+		UNI_SURFACE_SPECULAR_COLOR	= 2,
+		UNI_SURFACE_ALPHA_CUTOFF	= 3,
+		UNI_SURFACE_LIGHTING_OVERRIDES	= 4,
+
+		UNI_TEXTURE_SCALE			= 5,
+		UNI_TEXTURE_OFFSET			= 6,
+
+		UNI_GAME_WIND_DIRECTION		= 7,
+		UNI_GAME_FADE_VALUE			= 8,
+		UNI_GAME_HALF_SCALE			= 9,
+
+		UNI_LIGHTING_AMBIENT		= 10,
+		UNI_LIGHTING_COUNT			= 11,
+
+		UNI_SAMPLER_0				= 20,
+		UNI_SAMPLER_1				= 21,
+		UNI_SAMPLER_2				= 22,
+		UNI_SAMPLER_3				= 23,
+		UNI_SAMPLER_4				= 24,
+		UNI_SAMPLER_5				= 25,
+		UNI_SAMPLER_6				= 26,
+		UNI_SAMPLER_7				= 27,
+		UNI_SAMPLER_8				= 28,
+		UNI_SAMPLER_9				= 29,
+		UNI_SAMPLER_10				= 30,
+		UNI_SAMPLER_11				= 31,
+		UNI_SAMPLER_SHADOW_0		= 32,
+		UNI_SAMPLER_SHADOW_1		= 33,
+		UNI_SAMPLER_SHADOW_2		= 34,
+		UNI_SAMPLER_SHADOW_3		= 35,
+		UNI_SAMPLER_SHADOW_4		= 36,
+		UNI_SAMPLER_SHADOW_5		= 37,
+		UNI_SAMPLER_SHADOW_6		= 38,
+		UNI_SAMPLER_SHADOW_7		= 39,
+		UNI_SAMPLER_SHADOW_8		= 40,
+		UNI_SAMPLER_SHADOW_9		= 41,
+		UNI_SAMPLER_SHADOW_10		= 42,
+		UNI_SAMPLER_SHADOW_11		= 43,
+		UNI_SAMPLER_LIGHT_BUFFER_0	= 44,
+		UNI_SAMPLER_LIGHT_BUFFER_1	= 45,
+		UNI_SAMPLER_INSTANCE_BUFFER_0	= 46,
+		UNI_SAMPLER_INSTANCE_BUFFER_1	= 47,
+		UNI_SAMPLER_REFLECTION_0	= 47,
+		UNI_SAMPLER_REFLECTION_1	= 48,
+		UNI_SAMPLER_REFLECTION_2	= 49,
+		UNI_SAMPLER_REFLECTION_3	= 50,
+	};
+	struct uniformReservedName_t
+	{
+		uniformId_t id;
+		const char* token;
+	};
+	static struct uniformReservedName_t UniformNames[] =
+	{
+		{ UNI_SURFACE_DIFFUSE_COLOR,	"sys_DiffuseColor" },
+		{ UNI_SURFACE_EMISSIVE_COLOR,	"sys_EmissiveColor" },
+		{ UNI_SURFACE_SPECULAR_COLOR,	"sys_SpecularColor" },
+		{ UNI_SURFACE_ALPHA_CUTOFF,		"sys_AlphaCutoff" },
+		{ UNI_SURFACE_LIGHTING_OVERRIDES,	"sys_LightingOverrides" },
+
+		{ UNI_TEXTURE_SCALE,	"sys_TextureScale" },
+		{ UNI_TEXTURE_OFFSET,	"sys_TextureOffset" },
+
+		{ UNI_GAME_WIND_DIRECTION,	"gm_WindDirection" },
+		{ UNI_GAME_FADE_VALUE,	"gm_FadeValue" },
+		{ UNI_GAME_HALF_SCALE,	"gm_HalfScale" },
+
+		{ UNI_LIGHTING_AMBIENT,	"sys_LightAmbient" },
+		{ UNI_LIGHTING_COUNT,	"sys_LightNumber" },
+
+		{ UNI_SAMPLER_0,		"textureSampler0" },
+		{ UNI_SAMPLER_SHADOW_0,	"textureShadow0" },
+		{ UNI_SAMPLER_LIGHT_BUFFER_0,	"textureLightBuffer" },
+		{ UNI_SAMPLER_INSTANCE_BUFFER_0,"textureInstanceBuffer" },
+		{ UNI_SAMPLER_REFLECTION_0,		"textureReflection0" },
+	};
 }
 
 class RrShader
@@ -131,7 +212,7 @@ public:
 	}
 	// Get Uniform location
 	int	get_uniform_location ( const char* name );
-	// Get Uniform Block location
+	// get uniform block location
 	int get_uniform_block_location ( const char* name );
 	// Get Vertex Attribute location
 	//int get_attrib_location ( const char* name );

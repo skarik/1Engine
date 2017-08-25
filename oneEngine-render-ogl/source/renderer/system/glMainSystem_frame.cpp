@@ -21,13 +21,13 @@ void performPresent ( void )
 }
 
 // Present the current frame
-void glMainSystem::Present ( void )
-{
-	/*while ( presentLock.test_and_set() ) {
-		std::this_thread::yield();
-	}*/
-	//presentThread = new std::thread( performPresent );
-}
+//void glMainSystem::Present ( void )
+//{
+//	/*while ( presentLock.test_and_set() ) {
+//		std::this_thread::yield();
+//	}*/
+//	//presentThread = new std::thread( performPresent );
+//}
 // Prepare system for a new frame
 void glMainSystem::BeginFrame ( void )
 {

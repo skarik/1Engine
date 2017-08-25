@@ -875,20 +875,20 @@ void RrMaterial::bindPassDeferred ( uchar pass )
 
 void RrMaterial::shader_bind_samplers ( RrShader* shader )
 {
-	int uniformLocation;
+	//int uniformLocation;
 	//CTexture*	m_samplers [8];
 	for ( uint i = 0; i < 12; ++i )
 	{
 		if ( m_samplers[i] )
 		{
 			// Get the uniform location
-			char uniformname_sh1 [] = "textureSamplerX"; // TODO: Cache the texture sampler and other uniform locations in shader class
-			uniformname_sh1[14] = '0' + i;
-			uniformLocation = shader->get_uniform_location( uniformname_sh1 );
+			//char uniformname_sh1 [] = "textureSamplerX"; // TODO: Cache the texture sampler and other uniform locations in shader class
+			//uniformname_sh1[14] = '0' + i;
+			//uniformLocation = shader->get_uniform_location( uniformname_sh1 );
 			// If the spot exists, then use it
-			if ( uniformLocation >= 0 )
-			{
-				glUniform1i( uniformLocation, current_sampler_slot );
+			//if ( uniformLocation >= 0 )
+			//{
+				glUniform1i( renderer::UNI_SAMPLER_0 + i, current_sampler_slot );
 				glActiveTexture( GL_TEXTURE0+current_sampler_slot );
 				CTexture::Unbind(0);
 				//m_samplers[i]->Bind();
@@ -900,7 +900,7 @@ void RrMaterial::shader_bind_samplers ( RrShader* shader )
 				if ( m_highlevel_storage[i] && m_highlevel_storage[i]->GetIsFont() ) {
 					((CBitmapFont*)(m_highlevel_storage[i]))->Set();
 				}
-			}
+			//}
 			/*else {
 				CTexture::Unbind(0);
 			}*/
@@ -941,7 +941,7 @@ void RrMaterial::shader_bind_samplers ( RrShader* shader )
 	*/
 	if ( m_bufferMatricesSkinning && m_bufferSkeletonSize )
 	{
-		uniformLocation = shader->get_uniform_block_location( "sys_SkinningDataMajor" );
+		int uniformLocation = shader->get_uniform_block_location( "sys_SkinningDataMajor" );
 		if ( uniformLocation >= 0 )
 		{
 			glUniformBlockBinding( shader->get_program(), uniformLocation, skinningMajorLocation );
@@ -960,25 +960,25 @@ void RrMaterial::shader_bind_samplers ( RrShader* shader )
 		}
 	}*/
 	//static GLuint		m_tex_lightinfo;
-	uniformLocation = shader->get_uniform_location( "textureLightBuffer" );
-	if ( uniformLocation >= 0 )
-	{
-		glUniform1i( uniformLocation, current_sampler_slot );
+	//uniformLocation = shader->get_uniform_location( "textureLightBuffer" );
+	//if ( uniformLocation >= 0 )
+	//{
+		glUniform1i( renderer::UNI_SAMPLER_LIGHT_BUFFER_0, current_sampler_slot );
 		glActiveTexture( GL_TEXTURE0+current_sampler_slot );
 		CTexture::Unbind(0);
 		glBindTexture( GL_TEXTURE_BUFFER, m_tex_lightinfo );
 		current_sampler_slot += 1;
-	}
+	//}
 
-	uniformLocation = shader->get_uniform_location( "textureInstanceBuffer" );
-	if ( uniformLocation >= 0 )
-	{
-		glUniform1i( uniformLocation, current_sampler_slot );
+	//uniformLocation = shader->get_uniform_location( "textureInstanceBuffer" );
+	//if ( uniformLocation >= 0 )
+	//{
+		glUniform1i( renderer::UNI_SAMPLER_INSTANCE_BUFFER_0, current_sampler_slot );
 		glActiveTexture( GL_TEXTURE0+current_sampler_slot );
 		CTexture::Unbind(0);
 		glBindTexture( GL_TEXTURE_BUFFER, m_tex_instancedinfo );
 		current_sampler_slot += 1;
-	}
+	//}
 }
 
 #include "core/system/Screen.h"
@@ -1139,51 +1139,51 @@ void RrMaterial::shader_bind_constants( RrShader* shader )
 	int uniformLocation;
 
 	// Local constants
-	uniformLocation = shader->get_uniform_location( "sys_DiffuseColor" );
-	if ( uniformLocation >= 0 ) {
-		glUniform4f( uniformLocation, m_diffuse.red, m_diffuse.green, m_diffuse.blue, m_diffuse.alpha );
-	}
-	uniformLocation = shader->get_uniform_location( "sys_EmissiveColor" );
-	if ( uniformLocation >= 0 ) {
-		glUniform3f( uniformLocation, m_emissive.red, m_emissive.green, m_emissive.blue );
-	}
-	uniformLocation = shader->get_uniform_location( "sys_SpecularColor" );
-	if ( uniformLocation >= 0 ) {
-		glUniform4f( uniformLocation, m_specular.red, m_specular.green, m_specular.blue, m_specularPower );
-	}
-	uniformLocation = shader->get_uniform_location( "sys_AlphaCutoff" );
-	if ( uniformLocation >= 0 ) {
+	//uniformLocation = shader->get_uniform_location( "sys_DiffuseColor" );
+	//if ( uniformLocation >= 0 ) {
+		glUniform4f( renderer::UNI_SURFACE_DIFFUSE_COLOR, m_diffuse.red, m_diffuse.green, m_diffuse.blue, m_diffuse.alpha );
+	//}
+	//uniformLocation = shader->get_uniform_location( "sys_EmissiveColor" );
+	//if ( uniformLocation >= 0 ) {
+		glUniform3f( renderer::UNI_SURFACE_EMISSIVE_COLOR, m_emissive.red, m_emissive.green, m_emissive.blue );
+	//}
+	//uniformLocation = shader->get_uniform_location( "sys_SpecularColor" );
+	//if ( uniformLocation >= 0 ) {
+		glUniform4f( renderer::UNI_SURFACE_SPECULAR_COLOR, m_specular.red, m_specular.green, m_specular.blue, m_specularPower );
+	//}
+	//uniformLocation = shader->get_uniform_location( "sys_AlphaCutoff" );
+	//if ( uniformLocation >= 0 ) {
 		if ( passinfo[current_pass].m_transparency_mode == renderer::ALPHAMODE_ALPHATEST ) {
-			glUniform1f( uniformLocation, passinfo[current_pass].f_alphatest_value );
+			glUniform1f( renderer::UNI_SURFACE_ALPHA_CUTOFF, passinfo[current_pass].f_alphatest_value );
 		}
 		else {
-			glUniform1f( uniformLocation, -1.0f );
+			glUniform1f( renderer::UNI_SURFACE_ALPHA_CUTOFF, -1.0f );
 		}
-	}
+	//}
 	
 	// Texture coordinates
-	uniformLocation = shader->get_uniform_location( "sys_TextureScale" );
-	if ( uniformLocation >= 0 ) {
-		glUniform4fv( uniformLocation, 1, &m_texcoordScaling[0] );
-	}
-	uniformLocation = shader->get_uniform_location( "sys_TextureOffset" );
-	if ( uniformLocation >= 0 ) {
-		glUniform4fv( uniformLocation, 1, &m_texcoordOffset[0] );
-	}
+	//uniformLocation = shader->get_uniform_location( "sys_TextureScale" );
+	//if ( uniformLocation >= 0 ) {
+		glUniform4fv( renderer::UNI_TEXTURE_SCALE, 1, &m_texcoordScaling[0] );
+	//}
+	//uniformLocation = shader->get_uniform_location( "sys_TextureOffset" );
+	//if ( uniformLocation >= 0 ) {
+		glUniform4fv( renderer::UNI_TEXTURE_OFFSET, 1, &m_texcoordOffset[0] );
+	//}
 
 	// World effects
-	uniformLocation = shader->get_uniform_location( "gm_WindDirection" );
-	if ( uniformLocation >= 0 ) {
-		glUniform4f( uniformLocation, gm_WindDirection.x, gm_WindDirection.y, gm_WindDirection.z, gm_WindDirection.w );
-	}
-	uniformLocation = shader->get_uniform_location( "gm_FadeValue" );
-	if ( uniformLocation >= 0 ) {
-		glUniform1f( uniformLocation, gm_FadeValue );
-	}
-	uniformLocation = shader->get_uniform_location( "gm_HalfScale" );
-	if ( uniformLocation >= 0 ) {
-		glUniform1f( uniformLocation, gm_HalfScale );
-	}
+	//uniformLocation = shader->get_uniform_location( "gm_WindDirection" );
+	//if ( uniformLocation >= 0 ) {
+		glUniform4f( renderer::UNI_GAME_WIND_DIRECTION, gm_WindDirection.x, gm_WindDirection.y, gm_WindDirection.z, gm_WindDirection.w );
+	//}
+	//uniformLocation = shader->get_uniform_location( "gm_FadeValue" );
+	//if ( uniformLocation >= 0 ) {
+		glUniform1f( renderer::UNI_GAME_FADE_VALUE, gm_FadeValue );
+	//}
+	//uniformLocation = shader->get_uniform_location( "gm_HalfScale" );
+	//if ( uniformLocation >= 0 ) {
+		glUniform1f( renderer::UNI_GAME_HALF_SCALE, gm_HalfScale );
+	//}
 }
 
 void RrMaterial::shader_bind_deferred ( RrShader* shader )
@@ -1191,15 +1191,15 @@ void RrMaterial::shader_bind_deferred ( RrShader* shader )
 	int uniformLocation;
 
 	// Lighting info
-	uniformLocation = shader->get_uniform_location( "sys_LightingOverrides" );
-	if ( uniformLocation >= 0 )
-	{
+	//uniformLocation = shader->get_uniform_location( "sys_LightingOverrides" );
+	//if ( uniformLocation >= 0 )
+	//{
 		float lightvars [3];
 		lightvars[0] = 0;//(deferredinfo[current_pass].m_lighting_mode == renderer::LI_NONE) ? 0.0f : 1.0f;
 		lightvars[1] = deferredinfo[current_pass].m_rimlight_strength;
 		lightvars[2] = 0;
-		glUniform3fv( uniformLocation, 1, lightvars );
-	}
+		glUniform3fv( renderer::UNI_SURFACE_LIGHTING_OVERRIDES, 1, lightvars );
+	//}
 }
 
 
@@ -1228,13 +1228,13 @@ void RrMaterial::shader_bind_lights	 ( RrShader* shader )
 		// Setup shadow casting textures
 		if ( CGameSettings::Active()->b_ro_EnableShadows )
 		{
-			if ( (*lightList)[i]->generateShadows )
+			if ( (*lightList)[i]->generateShadows && i < 12 )
 			{
-				uniformname_sh3[13] = '0' + i;
-				uniformLocation = shader->get_uniform_location( uniformname_sh3 );
-				if ( uniformLocation >= 0 )
-				{
-					glUniform1i( uniformLocation, current_sampler_slot );
+				//uniformname_sh3[13] = '0' + i;
+				//uniformLocation = shader->get_uniform_location( uniformname_sh3 );
+				//if ( uniformLocation >= 0 )
+				//{
+					glUniform1i( renderer::UNI_SAMPLER_SHADOW_0 + i, current_sampler_slot );
 					glActiveTexture( GL_TEXTURE0+current_sampler_slot );
 					CTexture::Unbind(0);
 					if ( (*lightList)[i]->GetShadowTexture() ) {
@@ -1243,22 +1243,22 @@ void RrMaterial::shader_bind_lights	 ( RrShader* shader )
 
 					// Increment texture count.
 					current_sampler_slot += 1;
-				}
+				//}
 			}
 		}	
 	}
 
 	// Set the ambient color
 	{
-		uniformLocation = shader->get_uniform_location( "sys_LightAmbient" );
-		if ( uniformLocation >= 0 )
-		{
+		//uniformLocation = shader->get_uniform_location( "sys_LightAmbient" );
+		//if ( uniformLocation >= 0 )
+		//{
 			Color actualAmbient = renderer::Settings.ambientColor;
-			glUniform4f( uniformLocation,
+			glUniform4f( renderer::UNI_LIGHTING_AMBIENT,
 				actualAmbient.red,
 				actualAmbient.green,
 				actualAmbient.blue, 1.0f );
-		}
+		//}
 	}
 
 	// Set the ambient cubemap
@@ -1266,11 +1266,11 @@ void RrMaterial::shader_bind_lights	 ( RrShader* shader )
 		if ( m_sampler_reflection )
 		{
 			// Get the uniform location
-			uniformLocation = shader->get_uniform_location( "textureReflection0" );
+			//uniformLocation = shader->get_uniform_location( "textureReflection0" );
 			// If the spot exists, then use it
-			if ( uniformLocation >= 0 )
-			{
-				glUniform1i( uniformLocation, current_sampler_slot );
+			//if ( uniformLocation >= 0 )
+			//{
+				glUniform1i( renderer::UNI_SAMPLER_REFLECTION_0, current_sampler_slot );
 				glActiveTexture( GL_TEXTURE0+current_sampler_slot );
 				CTexture::Unbind(0);
 				m_sampler_reflection->Bind();
@@ -1285,7 +1285,7 @@ void RrMaterial::shader_bind_lights	 ( RrShader* shader )
 				*/
 				// Increment used texture count
 				current_sampler_slot += 1;
-			}
+			//}
 		}
 		else
 		{
@@ -1313,11 +1313,11 @@ void RrMaterial::shader_bind_lights	 ( RrShader* shader )
 void RrMaterial::shader_bind_nolights ( RrShader* shader )
 {
 	// Fullbright on the ambient, though
-	int uniformLocation = shader->get_uniform_location( "sys_LightAmbient" );
-	if ( uniformLocation >= 0 )
-	{
-		glUniform4f( uniformLocation, 1.0f, 1.0f, 1.0f, 1.0f );
-	}
+	//int uniformLocation = shader->get_uniform_location( "sys_LightAmbient" );
+	//if ( uniformLocation >= 0 )
+	//{
+		glUniform4f( renderer::UNI_LIGHTING_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f );
+	//}
 }
 
 void RrMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_force_identity )

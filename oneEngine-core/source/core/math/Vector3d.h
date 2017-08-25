@@ -130,10 +130,13 @@ FORCE_INLINE Vector3d::Vector3d (Real const& new_x, Real const& new_y, Real cons
 }
 //Array input constructor
 FORCE_INLINE Vector3d::Vector3d (const Real* arr) 
+	: x(0), y(0), z(0)
 {
-	x = arr[0];
-	y = arr[1];
-	z = arr[2];
+	if (arr != NULL) {
+		x = arr[0];
+		y = arr[1];
+		z = arr[2];
+	}
 }
 
 //Addition overload

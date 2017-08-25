@@ -152,6 +152,7 @@ int RrShader::get_uniform_block_location ( const char* name )
 		return pParentShader->get_uniform_block_location( name );
 	}
 }
+
 // Vertex Attribute grabbing
 /*int	RrShader::get_attrib_location ( const char* name )
 {
@@ -620,7 +621,7 @@ void RrShader::compile_shader ( void )
 		core::shell::FlashTray(NIL, 5);
 
 		// Print out failure
-		cout << "Shader creation failure. Here's the failures:\n";
+		cout << "In \"" << sShaderFilename << "\" : Shader creation failure. Here's the failures:\n";
 		// Print out all the compile error types
 		for ( unsigned char i = 0; i < 8; i += 1 )
 		{

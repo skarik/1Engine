@@ -1,6 +1,8 @@
 // v2d/default
 // Default shader for 2D GUI elements.
 #version 330
+#extension GL_ARB_explicit_attrib_location : require
+#extension GL_ARB_explicit_uniform_location : require
 
 // Inputs from vertex shader
 in vec4 v2f_colors;
@@ -8,13 +10,13 @@ in vec4 v2f_position;
 in vec2 v2f_texcoord0;
 
 // Samplers
-uniform sampler2D textureSampler0;
+layout(location = 20) uniform sampler2D textureSampler0;
 
 // Inputs
-uniform vec4 sys_DiffuseColor;
-uniform float sys_AlphaCutoff;
+layout(location = 0) uniform vec4 sys_DiffuseColor;
+layout(location = 3) uniform float sys_AlphaCutoff;
 
-void main ( void )  
+void main ( void )
 {
 	vec4 diffuseColor = texture( textureSampler0, v2f_texcoord0 );
 	float f_alpha = diffuseColor.a * v2f_colors.a * sys_DiffuseColor.a;

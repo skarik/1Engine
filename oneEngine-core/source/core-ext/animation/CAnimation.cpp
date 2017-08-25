@@ -348,7 +348,7 @@ void CAnimation::GetEvents ( std::vector<animation::ActionEvent>& events, unsign
 	events = vEvents;
 	//vEvents.clear();
 	bEventsRead = true;
-	event_count = events.size();
+	event_count = (unsigned int)events.size();
 }
 
 

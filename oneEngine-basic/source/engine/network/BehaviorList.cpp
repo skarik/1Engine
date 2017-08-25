@@ -1,7 +1,7 @@
 
 #include "BehaviorList.h"
 
-ARSINGLETON_CPP_DEF(Engine::BehaviorList);
+ARSINGLETON_CPP_DEF(engine::BehaviorList);
 
 valuetype_t Network::ValueTypeFromName ( const char* n_typename )
 {

@@ -3,12 +3,14 @@
 // There is no projection calculations that occur. Input vertex coordinates are the device's coordinates.
 // If you muck with this shader, you might as well release the cross-platform yandere phone virus.
 #version 330
+#extension GL_ARB_explicit_attrib_location : require
+#extension GL_ARB_explicit_uniform_location : require
 
 // Inputs from vertex shader
 in vec2 v2f_texcoord0;
 
 // Samplers
-uniform sampler2D textureSampler0;
+layout(location = 20) uniform sampler2D textureSampler0;
 
 uniform vec4 sys_SinTime;
 

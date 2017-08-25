@@ -1,8 +1,13 @@
+//===============================================================================================//
+//
+//		class CGameScene
+//
 // CGameScene is the object that controls what objects actually appear in the game
 // Scenes create what objects are needs, and really really probably should delete them when they end. They will eventually.
-
-// Scenes MUST be created with the "new" operator. If they are not, they do not function properly.
-
+//
+// Scenes MUST be created with the "new" operator on the heap. If they are not, they will not function properly.
+//
+//===============================================================================================//
 #ifndef _C_GAME_SCENE_
 #define _C_GAME_SCENE_
 

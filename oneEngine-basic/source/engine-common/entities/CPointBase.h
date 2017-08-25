@@ -12,7 +12,7 @@ class CPointBase : public CGameBehavior
 public:
 	CPointBase ( void ) : CGameBehavior()
 	{
-		layer |= Layers::Points;
+		layer = physical::layer::Points;
 	}
 
 	void Update ( void ) override

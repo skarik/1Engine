@@ -18,7 +18,7 @@ class CDeveloperCursor;
 
 //class CTimeProfilerUI;
 
-namespace Engine
+namespace engine
 {
 	class CDeveloperConsole : public CGameBehavior
 	{

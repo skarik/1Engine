@@ -47,9 +47,11 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	}
 	// Set initial rendertarget states
 	{
-		internal_buffer_forward_rt = NULL;
+		/*internal_buffer_forward_rt = NULL;
 		internal_buffer_depth = 0;
-		internal_buffer_stencil = 0;
+		internal_buffer_stencil = 0;*/
+		internal_chain_current = NULL;
+		internal_chain_index = 0;
 	}
 
 	// Create resource manager
@@ -387,58 +389,75 @@ const renderer::internalSettings_t& CRenderState::GetSettings ( void ) const
 
 void CRenderState::CreateBuffer ( void )
 {
-	// Delete forward buffers
-	if ( internal_buffer_forward_rt != NULL )
+	if (internal_chain_list.empty())
 	{
-		delete internal_buffer_forward_rt;
-		internal_buffer_forward_rt = NULL;
+		rrInternalBufferChain chain = {0};
+		// Three backbuffers
+		internal_chain_list.push_back(chain);
+		internal_chain_list.push_back(chain);
+		internal_chain_list.push_back(chain);
+		// Set current buffer to first
+		internal_chain_current = &internal_chain_list[0];
+	}
+	for (rrInternalBufferChain& chain : internal_chain_list)
+	{
+		CreateBufferChain(chain);
+	}
+}
+void CRenderState::CreateBufferChain ( rrInternalBufferChain& bufferChain )
+{
+	// Delete forward buffers
+	if ( bufferChain.buffer_forward_rt != NULL )
+	{
+		delete bufferChain.buffer_forward_rt;
+		bufferChain.buffer_forward_rt = NULL;
 
-		gpu::TextureFree( internal_buffer_depth );
-		internal_buffer_depth = 0;
+		gpu::TextureFree( bufferChain.buffer_depth );
+		bufferChain.buffer_depth = 0;
 
-		gpu::TextureBufferFree( internal_buffer_stencil );
-		internal_buffer_stencil = 0;
+		gpu::TextureBufferFree( bufferChain.buffer_stencil );
+		bufferChain.buffer_stencil = 0;
 	}
 	// Delete deferred buffers
-	if ( internal_buffer_deferred_mrt != NULL )
+	if ( bufferChain.buffer_deferred_mrt != NULL )
 	{
-		delete internal_buffer_deferred_mrt;
-		internal_buffer_deferred_mrt = NULL;
+		delete bufferChain.buffer_deferred_mrt;
+		bufferChain.buffer_deferred_mrt = NULL;
 
-		delete internal_buffer_deferred_rt;
-		internal_buffer_deferred_rt = NULL;
+		delete bufferChain.buffer_deferred_rt;
+		bufferChain.buffer_deferred_rt = NULL;
 	}
 
 	// Create forward buffers
-	if ( internal_buffer_forward_rt == NULL )
+	if ( bufferChain.buffer_forward_rt == NULL )
 	{
 		// Generate shared depth and stencil buffers
 		if ( internal_settings.mainDepthFormat != DepthNone )
 		{
-			internal_buffer_depth	= gpu::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
-			gpu::TextureSampleSettings( Texture2D, internal_buffer_depth, Clamp, Clamp, Clamp, SamplingPoint, SamplingPoint );
+			bufferChain.buffer_depth	= gpu::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
+			gpu::TextureSampleSettings( Texture2D, bufferChain.buffer_depth, Clamp, Clamp, Clamp, SamplingPoint, SamplingPoint );
 		}
 		if ( internal_settings.mainStencilFormat != StencilNone )
-			internal_buffer_stencil	= gpu::TextureBufferAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
+			bufferChain.buffer_stencil	= gpu::TextureBufferAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
 
-		internal_buffer_forward_rt = new CRenderTexture(
+		bufferChain.buffer_forward_rt = new CRenderTexture(
 			Screen::Info.width, Screen::Info.height,
 			Clamp, Clamp,
 			internal_settings.mainColorAttachmentFormat,
-			RrGpuTexture(internal_buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
-			RrGpuTexture(internal_buffer_stencil, internal_settings.mainStencilFormat), false
+			RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
+			RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat), false
 		);
 	}
 	// Create deferred buffers
-	if ( internal_buffer_deferred_mrt == NULL )
+	if ( bufferChain.buffer_deferred_mrt == NULL )
 	{
 		// Create the internal stage color render target (uses shared forward buffers)
-		internal_buffer_deferred_rt = new CRenderTexture(
+		bufferChain.buffer_deferred_rt = new CRenderTexture(
 			Screen::Info.width, Screen::Info.height,
 			Clamp, Clamp,
 			internal_settings.mainColorAttachmentFormat,
-			RrGpuTexture(internal_buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
-			RrGpuTexture(internal_buffer_stencil, internal_settings.mainStencilFormat), false
+			RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
+			RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat), false
 		);
 
 		RrGpuTexture		depthTexture = SceneRenderer->GetDepthTexture();
@@ -453,7 +472,7 @@ void CRenderState::CreateBuffer ( void )
 		textureRequests[3].format = RGBA8;
 
 		// Create the MRT to be used by the rendering pipeline
-		internal_buffer_deferred_mrt = new CMRTTexture(
+		bufferChain.buffer_deferred_mrt = new CMRTTexture(
 			Screen::Info.width, Screen::Info.height,
 			Clamp, Clamp,
 			textureRequests + 0, 4,
@@ -465,18 +484,26 @@ void CRenderState::CreateBuffer ( void )
 
 CRenderTexture* CRenderState::GetForwardBuffer ( void )
 {
-	return internal_buffer_forward_rt;
+	if (internal_chain_current)
+		return internal_chain_current->buffer_forward_rt;
+	return NULL;
 }
 CRenderTexture* CRenderState::GetDeferredBuffer ( void )
 {
-	return internal_buffer_deferred_rt;
+	if (internal_chain_current)
+		return internal_chain_current->buffer_deferred_rt;
+	return NULL;
 }
 
 RrGpuTexture CRenderState::GetDepthTexture ( void )
 {
-	return RrGpuTexture( internal_buffer_depth, internal_settings.mainDepthFormat );
+	if (internal_chain_current)
+		return RrGpuTexture( internal_chain_current->buffer_depth, internal_settings.mainDepthFormat );
+	return RrGpuTexture();
 }
 RrGpuTexture CRenderState::GetStencilTexture ( void )
 {
-	return RrGpuTexture( internal_buffer_stencil, internal_settings.mainStencilFormat );
+	if (internal_chain_current)
+		return RrGpuTexture( internal_chain_current->buffer_stencil, internal_settings.mainStencilFormat );
+	return RrGpuTexture();
 }

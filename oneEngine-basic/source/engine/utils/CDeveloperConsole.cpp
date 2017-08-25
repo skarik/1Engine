@@ -11,12 +11,12 @@
 #include <cctype>
 //#include "CGameSettings.h"
 
-using namespace Engine;
+using namespace engine;
 using std::cin;
 using std::string;
 
 // Global pointer to console
-CDeveloperConsole*	Engine::Console = NULL;
+CDeveloperConsole*	engine::Console = NULL;
 //CDeveloperCursor*	ActiveCursor = NULL;
 
 // Constructor and Destructor

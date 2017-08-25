@@ -55,7 +55,7 @@ public:
 	// Constructor
 	CActor ( void ) : CGameObject ()
 	{
-		layer = Layers::Actor;
+		layer = physical::layer::Actor;
 
 		bInteractable = false;
 		bAlive = false;

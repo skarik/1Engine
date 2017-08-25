@@ -4,7 +4,7 @@
 
 #include "core/types.h"
 
-namespace Engine
+namespace engine
 {
 	enum ParticleSystemComponent_t : uint32_t
 	{

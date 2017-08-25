@@ -14,7 +14,7 @@ Vector4d::Vector4d(): x(0.0), y(0.0), z(0.0), w(0.0)
 Vector4d::Vector4d (Vector4d const& old): x(old.x), y(old.y), z(old.z), w(old.w)
 {}
 
-Vector4d::Vector4d (Vector3d const& old): x(old.x), y(old.y), z(old.z), w(1)
+Vector4d::Vector4d (Vector3d const& old): x(old.x), y(old.y), z(old.z), w(1.0)
 {}
 
 //Component input constructor

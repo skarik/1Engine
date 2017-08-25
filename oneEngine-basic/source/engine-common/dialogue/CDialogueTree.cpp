@@ -76,12 +76,12 @@ void CDialogueTree::CreateTree (char * file)
 	{
 		switch (pLoader->sDialogueState)
 		{
-		case DIALOGUE_STATE_LUACODE:
-			//debug::Console->PrintMessage("Lua state. Input skipped.\n");
-			pLoader->PostLua(); //Hopefully this is all I need to do here
-			/*pLoader->GetLua();
-			pLoader->GoNextLine();*/
-			break;
+		//case DIALOGUE_STATE_LUACODE:
+		//	//debug::Console->PrintMessage("Lua state. Input skipped.\n");
+		//	pLoader->PostLua(); //Hopefully this is all I need to do here
+		//	/*pLoader->GetLua();
+		//	pLoader->GoNextLine();*/
+		//	break;
 		case DIALOGUE_STATE_ADDRESS:
 			/*Dequeue an entry from the choices
 			Set the address

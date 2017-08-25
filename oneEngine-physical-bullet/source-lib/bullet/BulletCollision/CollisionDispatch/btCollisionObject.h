@@ -16,6 +16,8 @@ subject to the following restrictions:
 #ifndef BT_COLLISION_OBJECT_H
 #define BT_COLLISION_OBJECT_H
 
+#include "btExports.h"
+
 #include "LinearMath/btTransform.h"
 
 //island management, m_activationState1
@@ -279,7 +281,7 @@ public:
 
 	SIMD_FORCE_INLINE	int	getActivationState() const { return m_activationState1;}
 	
-	void setActivationState(int newState) const;
+	BULLET_API void setActivationState(int newState) const;
 
 	void	setDeactivationTime(btScalar time)
 	{
@@ -290,7 +292,7 @@ public:
 		return m_deactivationTime;
 	}
 
-	void forceActivationState(int newState) const;
+	BULLET_API void forceActivationState(int newState) const;
 
 	void	activate(bool forceActivation = false) const;
 
