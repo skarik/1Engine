@@ -12,3 +12,4 @@
 .svn
 .vs
 /oneEngine/oneGame/obj
+*.bpd

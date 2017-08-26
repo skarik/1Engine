@@ -89,6 +89,14 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, Textu
 	std::string resource_surface;
 
 #if 1 // DEVELOPER_MODE
+	// Check for a JPG:
+	{
+		// Convert the resource files to engine's format (if the JPGs exist)
+		if ( core::Resources::MakePathTo(filename_sprite + ".jpg", resource_sprite) )
+		{
+			Textures::ConvertFile(resource_sprite, StringUtils::GetFileStemLeaf(resource_sprite) + ".bpd");
+		}
+	}
 	// Check for the PNGs:
 	{
 		// Convert the resource files to engine's format (if the PNGs exist)

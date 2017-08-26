@@ -230,6 +230,13 @@ GLvoid RrWindow::ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Ini
 
 int RrWindow::InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 {
+	// Get GL context:
+	const uchar* vendor		= glGetString(GL_VENDOR);
+	const uchar* renderer	= glGetString(GL_RENDERER);
+	// Print the result
+	debug::Console->PrintMessage("device vendor: " + std::string((const char*)vendor) + "\n");
+	debug::Console->PrintMessage("     renderer: " + std::string((const char*)renderer) + "\n");
+
 	if ( !CGameSettings::Active()->b_ro_EnableShaders ) {
 		//glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
 	}

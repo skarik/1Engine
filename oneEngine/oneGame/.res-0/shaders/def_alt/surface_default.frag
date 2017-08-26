@@ -1,4 +1,6 @@
 #version 330
+#extension GL_ARB_explicit_attrib_location : require
+#extension GL_ARB_explicit_uniform_location : require
 
 // System outputs
 layout(location = 0) out vec4 FragDiffuse;
@@ -16,29 +18,27 @@ layout(std140) uniform sys_Fog
 };
 
 // System Inputs
-uniform vec4 sys_DiffuseColor;
-uniform vec4 sys_SpecularColor;
-uniform vec3 sys_EmissiveColor;
+layout(location = 0) uniform vec4 sys_DiffuseColor;
+layout(location = 1) uniform vec4 sys_SpecularColor;
+layout(location = 2) uniform vec3 sys_EmissiveColor;
+layout(location = 3) uniform float sys_AlphaCutoff;
+layout(location = 4) uniform vec3 sys_LightingOverrides;
 
 uniform vec3 sys_WorldCameraPos;
-uniform vec3 sys_LightingOverrides;
 
 uniform mat4 sys_ModelRS;
 
 // Samplers
-uniform sampler2D textureSampler0; // Diffuse RGB, Specular/Discard A
-uniform sampler2D textureSampler1; // Normals RGB, Height A
-uniform sampler2D textureSampler2; // Ambient Occlusion R, Metallic G, Smoothness B, Discard A
-uniform sampler2D textureSampler3; // Overlay RGB, Blend Style A (0 for MUL-BIAS, 1 for LERP)
+layout(location = 20) uniform sampler2D textureSampler0; // Diffuse RGB, Specular/Discard A
+layout(location = 21) uniform sampler2D textureSampler1; // Normals RGB, Height A
+layout(location = 22) uniform sampler2D textureSampler2; // Ambient Occlusion R, Metallic G, Smoothness B, Discard A
+layout(location = 23) uniform sampler2D textureSampler3; // Overlay RGB, Blend Style A (0 for MUL-BIAS, 1 for LERP)
 
 // Vertex Outputs
 in vec4 v2f_normals;
 in vec4 v2f_colors;
 in vec4 v2f_position;
 in vec3 v2f_texcoord;
-
-uniform float sys_AlphaCutoff;
-
 
 vec4 mainDiffuse ( vec4 colorDiffuse, vec4 colorOverlay, vec4 surfaceProperties )
 {

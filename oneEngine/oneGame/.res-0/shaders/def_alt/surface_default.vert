@@ -1,4 +1,7 @@
 #version 330
+#extension GL_ARB_explicit_attrib_location : require
+#extension GL_ARB_explicit_uniform_location : require
+
 #define VERTEX_PROCESSOR
 
 // Attribute inputs
@@ -24,8 +27,8 @@ uniform mat4 sys_ViewProjectionMatrix;
 //uniform vec3 sys_WorldCameraPos;
 
 // Material inputs
-uniform vec4 sys_TextureScale;
-uniform vec4 sys_TextureOffset;
+layout(location = 5) uniform vec4 sys_TextureScale;
+layout(location = 6) uniform vec4 sys_TextureOffset;
 
 // Time inputs
 uniform vec4 sys_SinTime;

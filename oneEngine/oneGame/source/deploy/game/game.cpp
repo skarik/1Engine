@@ -66,7 +66,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 
 	// Create Window
 	RrWindow aWindow( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
-	debug::Console->PrintMessage( "Windowing system initialized." );
+	debug::Console->PrintMessage( "Windowing system initialized.\n" );
 	std::cout << __OS_STRING_NAME__ " Build (" __DATE__ ") Indev" << std::endl;
 	
 	// Set shell status (loading engine)
