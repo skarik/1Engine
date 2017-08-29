@@ -14,8 +14,11 @@
 mccVXG_file_infop	mccvxg_begin_io ( FILE* in_file )
 {
 	mccVXG_file_infop new_info = (mccVXG_file_infop)malloc( sizeof(mccVXG_file_info_t) );
-	new_info->file = in_file;
-	new_info->buffer = 0;
+	if (new_info)
+	{
+		new_info->file = in_file;
+		new_info->buffer = 0;
+	}
 	return new_info;
 }
 int		mccvxg_end_io ( mccVXG_file_infop file_info )
@@ -90,6 +93,11 @@ int		mccvxg_read_image ( mccVXG_file_infop file_info, void* outimagedata )
 	unsigned long compress_size;
 	unsigned long final_data_size;
 	int z_result;
+
+	// Bad file info, skip.
+	if (file_info == NULL) {
+		return -1;
+	}
 	
 	if ( file_info->locdata ) {
 		fseek( file_info->file, file_info->locdata, SEEK_SET );

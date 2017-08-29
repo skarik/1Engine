@@ -282,7 +282,7 @@ void CModel::PostStepSynchronus ( void )
 		}
 		else
 		{
-			if ( eRefMode = ANIM_REF_DIRECT )
+			if ( eRefMode == ANIM_REF_DIRECT )
 			{
 				// Directly copy the transforms
 				//pReferencedAnimation->GetAnimationSet

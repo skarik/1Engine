@@ -917,7 +917,7 @@ bool		btGjkEpaSolver2::Distance(	const btConvexShape*	shape0,
 }
 
 //
-bool	btGjkEpaSolver2::Penetration(	const btConvexShape*	shape0,
+bool	btGjkEpaSolver2::Penetration(const btConvexShape*	shape0,
 									 const btTransform&		wtrs0,
 									 const btConvexShape*	shape1,
 									 const btTransform&		wtrs1,

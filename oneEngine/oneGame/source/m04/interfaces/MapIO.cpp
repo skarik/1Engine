@@ -232,6 +232,9 @@ void M04::MapIO::Load ( void )
 			buffer = new char[topper.size];
 			fread( buffer, 1, topper.size, m_file );
 		}
+		else {
+			throw core::CorruptedDataException();
+		}
 
 		// Do something with the buffer based on the given information
 		printf( "\t+Read in \"%s\"\n", topper.name );

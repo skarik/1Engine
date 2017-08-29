@@ -78,8 +78,8 @@ void b3SetCustomErrorMessageFunc(b3PrintfFunc* errorMessageFunc)
 	b3s_errorMessageFunc = errorMessageFunc;
 }
 
-//#define B3_MAX_DEBUG_STRING_LENGTH 2048
-#define B3_MAX_DEBUG_STRING_LENGTH 32768
+#define B3_MAX_DEBUG_STRING_LENGTH 4096
+//#define B3_MAX_DEBUG_STRING_LENGTH 32768
 
 
 void b3OutputPrintfVarArgsInternal(const char *str, ...)

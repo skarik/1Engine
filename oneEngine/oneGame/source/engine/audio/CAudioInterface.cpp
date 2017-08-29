@@ -107,7 +107,7 @@ CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
 		if ( scriptResult->second.count > 1 )
 		{
 			// Playing the sound
-			int choice, current_index, chosen, maxchoice;
+			int choice, current_index, chosen = 0, maxchoice;
 
 			// Get max count of choices
 			maxchoice = 0;

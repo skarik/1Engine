@@ -822,7 +822,6 @@ void		glDrawing::DrawCircleA ( float x, float y, float r )
 {
 	GL_ACCESS GLd_ACCESS
 	uint16_t segs = (uint16_t)std::min<float>( std::max<float>( 4, r*64 + 3 ), 64 );
-	GLd.BeginPrimitive( GL_LINE_STRIP );
 	float percent;
 	float dx, dy, dr;
 	dx = x*Screen::Info.width;
@@ -836,6 +835,10 @@ void		glDrawing::DrawCircleA ( float x, float y, float r )
 	else if ( iPrim2DScalMode == SCALE_HEIGHT ) {
 		dr = r*Screen::Info.height;
 	}
+	else {
+		return;
+	}
+	GLd.BeginPrimitive( GL_LINE_STRIP );
 	for ( uint16_t i = 0; i <= segs; i++ )
 	{
 		percent = ((i/(float)(segs))*360.0f);
