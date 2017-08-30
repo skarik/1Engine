@@ -126,6 +126,9 @@ public:
 	const tRenderTargetInfo& GetRTInfo ( void ) const {
 		return rtInfo;
 	}
+	RENDER_API const bool IsValid ( void ) const {
+		return rtInfo.active;
+	}
 protected:
 	// Private routines
 	virtual void GenerateFramebuffer ( void );

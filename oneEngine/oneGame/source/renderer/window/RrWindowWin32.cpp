@@ -275,7 +275,7 @@ int RrWindow::DrawScene(GLvoid)
 		Screen::Info.Update();
 
 		// Reset the buffers:
-		SceneRenderer->CreateBuffer();
+		SceneRenderer->CreateTargetBuffers();
 
 		// Set new viewport rect (this is redundant here)
 		GL.setupViewport( 0,0, Screen::Info.width,Screen::Info.height );

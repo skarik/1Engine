@@ -75,9 +75,10 @@ public:
 	// Buffer management
 	// ================================
 
-	RENDER_API void CreateBuffer ( void );
-	// Recreates buffers for the given chain
-	RENDER_API void CreateBufferChain ( rrInternalBufferChain& bufferChain );
+	// Creates buffers for rendering to.
+	RENDER_API void CreateTargetBuffers ( void );
+	// Recreates buffers for the given chain. Returns success.
+	RENDER_API bool CreateTargetBufferChain ( rrInternalBufferChain& bufferChain );
 	RENDER_API CRenderTexture* GetForwardBuffer ( void );
 	RENDER_API CRenderTexture* GetDeferredBuffer ( void );
 	RENDER_API RrGpuTexture GetDepthTexture ( void );

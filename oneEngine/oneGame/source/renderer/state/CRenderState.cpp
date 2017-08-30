@@ -5,6 +5,7 @@
 
 #include "core/system/Screen.h"
 #include "core-ext/threads/Jobs.h"
+#include "core/debug/console.h"
 
 #include "renderer/object/CRenderableObject.h"
 #include "renderer/logic/CLogicObject.h"
@@ -42,8 +43,8 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	{
 		internal_settings.mainColorAttachmentCount = 4;
 		internal_settings.mainColorAttachmentFormat = RGBA16F;
-		internal_settings.mainDepthFormat = Depth24;
-		internal_settings.mainStencilFormat = StencilIndex8;
+		internal_settings.mainDepthFormat = Depth32;
+		internal_settings.mainStencilFormat = StencilIndex16;
 	}
 	// Set initial rendertarget states
 	{
@@ -384,10 +385,37 @@ const renderer::internalSettings_t& CRenderState::GetSettings ( void ) const
 	return internal_settings;
 }
 
+// Returns true if settings dropped. False otherwise.
+static bool _DropSettings (renderer::internalSettings_t& io_settings)
+{
+	if (io_settings.mainStencilFormat == StencilIndex16) 
+	{
+		debug::Console->PrintError("Dropping Stencil16 to Stencil8.");
+		io_settings.mainStencilFormat = StencilIndex8;
+		return true;
+	}
 
+	if (io_settings.mainDepthFormat == Depth32) 
+	{
+		debug::Console->PrintError("Dropping Depth32 to Depth16.");
+		io_settings.mainDepthFormat = Depth16;
+		return true;
+	}
 
+	if (io_settings.mainStencilFormat == StencilIndex8) 
+	{
+		debug::Console->PrintError("Dropping Stencil8 to None. (This may cause visual artifacts!)");
+		io_settings.mainStencilFormat = StencilNone;
+		return true;
+	}
 
-void CRenderState::CreateBuffer ( void )
+	debug::Console->PrintError("Could not downgrade screen buffer settings.");
+
+	// Couldn't drop any settings.
+	return false;
+}
+
+void CRenderState::CreateTargetBuffers ( void )
 {
 	if (internal_chain_list.empty())
 	{
@@ -401,10 +429,27 @@ void CRenderState::CreateBuffer ( void )
 	}
 	for (rrInternalBufferChain& chain : internal_chain_list)
 	{
-		CreateBufferChain(chain);
+		bool status = CreateTargetBufferChain(chain);
+		if (status == false)
+		{
+			// There was an error in creating the target buffer chain. We need to break, try another set of formats, then continue.
+			if (_DropSettings(internal_settings))
+			{
+				debug::Console->PrintError("Screen buffer formats not supported. Dropping settings and attempting again.");
+				// Attempt to create again.
+				CreateTargetBuffers();
+				// Stop the loop.
+				break; 
+			}
+			else
+			{
+				debug::Console->PrintError("Screen buffer formats not supported. Throwing an unsupported error.");
+				throw core::DeprecatedFeatureException();
+			}
+		}
 	}
 }
-void CRenderState::CreateBufferChain ( rrInternalBufferChain& bufferChain )
+bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain )
 {
 	// Delete forward buffers
 	if ( bufferChain.buffer_forward_rt != NULL )
@@ -447,6 +492,12 @@ void CRenderState::CreateBufferChain ( rrInternalBufferChain& bufferChain )
 			RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
 			RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat), false
 		);
+
+		// Check to make sure buffer is valid.
+		if (!bufferChain.buffer_forward_rt->IsValid())
+		{
+			return false;
+		}
 	}
 	// Create deferred buffers
 	if ( bufferChain.buffer_deferred_mrt == NULL )
@@ -479,7 +530,15 @@ void CRenderState::CreateBufferChain ( rrInternalBufferChain& bufferChain )
 			&depthTexture, depthTexture.format != DepthNone,
 			&stencilTexture, false
 		);
+
+		// Check to make sure buffer is valid.
+		if (!bufferChain.buffer_deferred_mrt->IsValid())
+		{
+			return false;
+		}
 	}
+	// Made it here, so return success.
+	return true;
 }
 
 CRenderTexture* CRenderState::GetForwardBuffer ( void )
