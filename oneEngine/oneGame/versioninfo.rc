@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,0,0,0
- PRODUCTVERSION 0,0,0,0
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0xbL
@@ -70,8 +70,8 @@ BEGIN
             VALUE "CompanyName", "EpicHouse Studios LLC"
             VALUE "FileDescription", "M04 Runner"
             VALUE "FileVersion", "0, 0, 5, XX"
-            VALUE "InternalName", "MegallymagiCallycraftyCraft"
-            VALUE "LegalCopyright", "Copyright (C) 2015-2015"
+            VALUE "InternalName", "1Engine Runner"
+            VALUE "LegalCopyright", "Copyright (C) 2015-2017"
             VALUE "OriginalFilename", "M04.exe"
             VALUE "ProductName", "M04 Runner"
             VALUE "ProductVersion", "0, 0, 5, XX"
@@ -92,6 +92,7 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_ICON2               ICON                    "icon2.ico"
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
