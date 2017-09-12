@@ -32,6 +32,8 @@ needs to check at the top to see what kind of shader it is
 #include "core/types/types.h"
 #include "core/containers/arstring.h"
 
+#include "core/math/Math3d.h"
+
 //#include <fstream>
 //using std::ifstream;
 #include <string>
@@ -43,12 +45,12 @@ class RrShaderManager;
 
 namespace renderer
 {
-	enum shader_tag_t : uint8_t
+	enum rrShaderTag : uint8_t
 	{
 		SHADER_TAG_DEFAULT = 0,
 		SHADER_TAG_SKINNING
 	};
-	enum attributeId_t : uint8_t
+	enum rrAttributeId : uint8_t
 	{
 		ATTRIB_VERTEX		= 0,
 		ATTRIB_TEXCOORD0	= 1,
@@ -63,12 +65,12 @@ namespace renderer
 		ATTRIB_TEXCOORD4	= 10,
 	};
 
-	struct attributeReservedName_t
+	struct rrAttributeReservedName
 	{
-		attributeId_t id;
+		rrAttributeId id;
 		const char* token;
 	};
-	static struct attributeReservedName_t AttributeNames[] =
+	static struct rrAttributeReservedName AttributeNames[] =
 	{
 		{ ATTRIB_VERTEX,	"mdl_Vertex" },
 		{ ATTRIB_TEXCOORD0,	"mdl_TexCoord" },
@@ -83,7 +85,7 @@ namespace renderer
 		{ ATTRIB_TEXCOORD4, "mdl_TexCoord4" },
 	};
 
-	enum uniformId_t : uint8_t
+	enum rrUniformId : uint8_t
 	{
 		UNI_SURFACE_DIFFUSE_COLOR	= 0,
 		UNI_SURFACE_EMISSIVE_COLOR	= 1,
@@ -134,12 +136,12 @@ namespace renderer
 		UNI_SAMPLER_REFLECTION_2	= 49,
 		UNI_SAMPLER_REFLECTION_3	= 50,
 	};
-	struct uniformReservedName_t
+	struct rrUniformReservedName
 	{
-		uniformId_t id;
+		rrUniformId id;
 		const char* token;
 	};
-	static struct uniformReservedName_t UniformNames[] =
+	static struct rrUniformReservedName UniformNames[] =
 	{
 		{ UNI_SURFACE_DIFFUSE_COLOR,	"sys_DiffuseColor" },
 		{ UNI_SURFACE_EMISSIVE_COLOR,	"sys_EmissiveColor" },
@@ -163,12 +165,99 @@ namespace renderer
 		{ UNI_SAMPLER_INSTANCE_BUFFER_0,"textureInstanceBuffer" },
 		{ UNI_SAMPLER_REFLECTION_0,		"textureReflection0" },
 	};
+
+	enum rrCBufferId
+	{
+		CBUFFER_PER_OBJECT_MATRICES		= 0,
+		CBUFFER_PER_OBJECT_EXTENDED		= 1,
+		CBUFFER_PER_CAMERA_INFORMATION	= 2,
+		CBUFFER_PER_FRAME_INFORMATION	= 3,
+		CBUFFER_PER_PASS_INFORMATION	= 4,
+	};
+	struct rrCBufferReservedName
+	{
+		rrCBufferId id;
+		const char* token;
+	};
+	static struct rrCBufferReservedName CBufferNames[] =
+	{
+		{CBUFFER_PER_OBJECT_MATRICES, "sys_cbuffer_PerObject"},
+		{CBUFFER_PER_OBJECT_EXTENDED, "sys_cbuffer_PerObjectExt"},
+		{CBUFFER_PER_CAMERA_INFORMATION, "sys_cbuffer_PerCamera"},
+		{CBUFFER_PER_FRAME_INFORMATION, "sys_cbuffer_PerFrame"},
+		{CBUFFER_PER_PASS_INFORMATION, "sys_cbuffer_PerPass"},
+	};
+
+	namespace cbuffer
+	{
+		// store per-model on the gpu
+		struct rrPerObjectMatrices
+		{
+			Matrix4x4	modelTRS;
+			Matrix4x4	modelRS;
+			Matrix4x4	modelViewProjection;
+			Matrix4x4	modelViewProjectionInverse;
+		};
+		LAYOUT_PACK_TIGHTLY
+		struct rrPerObjectSurface
+		{
+			Vector4f	diffuseColor;
+			Vector4f	specularColor;
+			Vector3f	emissiveColor;
+			float		alphaCutoff;
+			Vector3f	lightingOverrides;
+			int : sizeof(float);
+			Vector4f	textureScale;
+			Vector4f	textureOffset;
+		};
+		LAYOUT_PACK_END
+		static_assert(sizeof(rrPerObjectSurface) == sizeof(Vector4f)*6, "Alignment of rrPerObjectSurface incorrect for the GPU.");
+
+		struct rrPerObjectSamplers
+		{
+			uint		textureSampler0;
+			uint		textureSampler1;
+			uint		textureSampler2;
+			uint		textureSampler3;
+			uint		textureSampler4;
+			uint		textureSampler5;
+			uint		textureSampler6;
+			uint		textureSampler7;
+		};
+
+		struct rrPerCamera
+		{
+			Matrix4x4	viewProjection;
+			Vector4f	worldCameraPosition;
+			Vector4f	viewportInfo;
+			Vector2f	screenSize;
+			Vector2f	pixelRatio;
+		};
+
+		struct rrPerFrame
+		{
+			Vector4f	time;
+			Vector4f	sinTime;
+			Vector4f	cosTime;
+
+			Vector4f	fogColor;
+			Vector4f	atmoColor;
+			Real32		fogEnd;
+			Real32		fogScale;
+		};
+
+		struct rrPerPassLightingInfo
+		{
+			uint32_t	lightNumber;
+			Vector4f	ambientLightFallback;
+		};
+	}
 }
 
 class RrShader
 {
 public:
-	RENDER_API RrShader ( const char* a_sShaderName, const renderer::shader_tag_t a_nShaderTag = renderer::SHADER_TAG_DEFAULT, const bool a_bCompileOnDemand = false );
+	RENDER_API RrShader ( const char* a_sShaderName, const renderer::rrShaderTag a_nShaderTag = renderer::SHADER_TAG_DEFAULT, const bool a_bCompileOnDemand = false );
 	RENDER_API ~RrShader();
 public:
 	// Enumeration for the shader type
@@ -198,6 +287,9 @@ public:
 	// Enable and disable shader for drawing
 	void begin ( void );
 	void end ( void );
+
+	void prime ( void );
+	bool isPrimed ( void );
 public:
 	// Public recompile
 	bool recompile ( void );
@@ -211,9 +303,9 @@ public:
 			return pParentShader->get_program();
 	}
 	// Get Uniform location
-	int	get_uniform_location ( const char* name );
+	//int	get_uniform_location ( const char* name );
 	// get uniform block location
-	int get_uniform_block_location ( const char* name );
+	int getUniformBlockLocation ( const char* name );
 	// Get Vertex Attribute location
 	//int get_attrib_location ( const char* name );
 
@@ -236,7 +328,7 @@ protected:
 	// System info
 	std::string sShaderFilename;
 	std::string sRawShader;
-	renderer::shader_tag_t	stTag;
+	renderer::rrShaderTag	stTag;
 
 	// Shader properties
 	//string sVertexShader;
@@ -268,6 +360,9 @@ protected:
 	bool bHasCompileError;
 	unsigned int iCompileResult;
 
+	// Has this shader been used before?
+	bool	primed;
+
 	// Uniform map
 	std::unordered_map<arstring<128>,int> mUniformMap;
 
@@ -278,6 +373,10 @@ protected:
 	void parse_shader ( void );
 	// This compiles the shaders and adds them to a program object
 	void compile_shader ( void );
+
+	//	createConstantBufferBindings() : Internal post-compile step, grab engine refs.
+	// Locates constant buffer bindings and links them to their index
+	void createConstantBufferBindings ( void );
 
 	// Shader parsers
 	void ParseShader_ASM ( void );

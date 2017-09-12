@@ -37,7 +37,7 @@ void RrMaterial::deferred_shader_build( uchar pass )
 	// Build a shader based on the dpass.
 
 	std::string				t_shaderName;
-	renderer::shader_tag_t	t_shaderTag;
+	renderer::rrShaderTag	t_shaderTag;
 
 	// Generate shader name based on settings
 	t_shaderName = ".game/.dfshaders/shader";

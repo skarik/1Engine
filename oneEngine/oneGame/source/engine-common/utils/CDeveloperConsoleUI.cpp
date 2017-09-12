@@ -25,7 +25,7 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 	matfntMenu->passinfo.push_back( RrPassForward() );
 	matfntMenu->passinfo[0].m_lighting_mode = renderer::LI_NONE;
 	matfntMenu->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	matfntMenu->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
+	matfntMenu->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
 
 	matMenu = new RrMaterial;
 	matMenu->m_diffuse = Color( 0.0f,0,0 );
@@ -33,7 +33,7 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 	matMenu->passinfo.push_back( RrPassForward() );
 	matMenu->passinfo[0].m_lighting_mode = renderer::LI_NONE;
 	matMenu->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	matMenu->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
+	matMenu->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
 
 	SetMaterial( matfntMenu );
 
@@ -103,7 +103,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	matCursor->passinfo[0].m_lighting_mode = renderer::LI_NONE;
 	matCursor->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
 	matCursor->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
-	//matCursor->passinfo[0].shader = new RrShader( ".res/shaders/sys/copy_buffer.glsl" );
+	//matCursor->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer.glsl" );
 	matCursor->removeReference();
 	SetMaterial( matCursor );
 }

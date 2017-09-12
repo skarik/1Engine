@@ -10,7 +10,17 @@ in vec2 v2f_texcoord0;
 // Samplers
 layout(location = 20) uniform sampler2D textureSampler0;
 // External constants
-layout(location = 0) uniform vec4 sys_DiffuseColor;
+layout(std140) uniform sys_cbuffer_PerObjectExt
+{
+    vec4    sys_DiffuseColor;
+    vec4    sys_SpecularColor;
+    vec3    sys_EmissiveColor;
+    float   sys_AlphaCutoff;
+    vec4    sys_LightingOverrides;
+
+    vec4    sys_TextureScale;
+    vec4    sys_TextureOffset;
+};
 
 void main ( void )
 {

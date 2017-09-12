@@ -100,15 +100,17 @@ public:
 	RENDER_API void			bindAttributeI ( int attributeIndex, const uint vec_size, const uint vec_type, const int struct_size, const void* struct_offset ); 
 
 private:
-	void	shader_bind_world	 ( RrShader* shader );
+	void	shader_bind_world ( RrShader* shader );
 
 	void	shader_bind_samplers ( RrShader* shader );
-	void	shader_bind_constants( RrShader* shader );
-	void	shader_bind_lights	 ( RrShader* shader );
+	void	shader_bind_constants ( RrShader* shader );
+	void	shader_bind_lights ( RrShader* shader );
 	void	shader_bind_nolights ( RrShader* shader );
 
-	void	deferred_shader_build( uchar pass );
+	void	deferred_shader_build ( uchar pass );
 	void	shader_bind_deferred ( RrShader* shader );
+
+	void	shader_set_constantbuffers ( RrShader* shader );
 
 public:
 	// List of forward rendered passes
@@ -178,6 +180,10 @@ private:
 public:
 	RENDER_API static void	updateStaticUBO ( void );
 	RENDER_API static void	updateLightTBO ( void );
+
+	RENDER_API static void	pushConstantsPerFrame ( void );
+	RENDER_API static void	pushConstantsPerPass ( void );
+	RENDER_API static void	pushConstantsPerCamera ( void );
 
 private:
 	// Current update state

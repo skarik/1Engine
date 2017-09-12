@@ -38,8 +38,14 @@ uniform sampler2D textureShadow2;
 */
 // Lighting and Shadows
 layout(location = 44) uniform samplerBuffer textureLightBuffer;
-layout(location = 11) uniform int sys_LightNumber;
-layout(location = 10) uniform vec4 sys_LightAmbient;
+/*layout(location = 11) uniform int sys_LightNumber;
+layout(location = 10) uniform vec4 sys_LightAmbient;*/
+layout(std140) uniform sys_cbuffer_PerPass
+{
+    int     sys_LightNumber;
+    vec4    sys_LightAmbient;
+};
+
 /*
 textureLightBuffer layout:
 offset 0
@@ -72,8 +78,8 @@ offset 3
 	vec4 sys_LightShadowInfo[8];
 	mat4 sys_LightMatrix[8];
 };*/
-layout(location = 128) uniform mat4 sys_ModelViewProjectionMatrix;
-layout(location = 129) uniform mat4 sys_ModelViewProjectionMatrixInverse;
+/*layout(location = 128) uniform mat4 sys_ModelViewProjectionMatrix;
+layout(location = 129) uniform mat4 sys_ModelViewProjectionMatrixInverse;*/
 //uniform vec3 sys_CameraRange;
 
 /*layout(std140) uniform def_LightingInfo
@@ -88,12 +94,33 @@ layout(location = 34) uniform sampler2D textureShadow2;
 //vec4 v2f_lightcoord [8];
 
 // System inputs
-layout(location = 130) uniform vec3 sys_WorldCameraPos;
+/*layout(location = 130) uniform vec3 sys_WorldCameraPos;
 layout(location = 131) uniform vec4 sys_ViewportInfo;
 
 // Fog
 layout(std140) uniform sys_Fog
 {
+	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
+	float 	sys_FogEnd;
+	float 	sys_FogScale;
+};*/
+layout(std140) uniform sys_cbuffer_PerCamera
+{
+    mat4 sys_ViewProjectionMatrix;
+    vec4 sys_WorldCameraPos;
+    vec4 sys_ViewportInfo;
+    vec2 sys_ScreenSize;
+    vec2 sys_PixelRatio;
+};
+layout(std140) uniform sys_cbuffer_PerFrame
+{
+    // Time inputs
+    vec4    sys_SinTime;
+    vec4    sys_CosTime;
+    vec4    sys_Time;
+
+    // Fog
 	vec4	sys_FogColor;
 	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;

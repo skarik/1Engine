@@ -15,11 +15,13 @@ using namespace std;
 // == Constructor ==
 // takes a shader filename or system built-in as an argument
 //RrShader::RrShader ( const string& a_sShaderName, bool a_bCompileOnDemand )
-RrShader::RrShader ( const char* a_sShaderName, const renderer::shader_tag_t a_nShaderTag, const bool a_bCompileOnDemand )
+RrShader::RrShader ( const char* a_sShaderName, const renderer::rrShaderTag a_nShaderTag, const bool a_bCompileOnDemand )
 {
 	sShaderFilename = a_sShaderName;
 	bCompileOnDemand= a_bCompileOnDemand;
 	stTag			= a_nShaderTag;
+
+	primed = false;
 
 	RrShader* pResult = ShaderManager.ShaderExists( a_sShaderName, a_nShaderTag );
 	if ( pResult == NULL )
@@ -124,7 +126,7 @@ int	RrShader::get_uniform_location ( const char* name )
 	}
 }
 // Get Uniform Block location
-int RrShader::get_uniform_block_location ( const char* name )
+int RrShader::getUniformBlockLocation ( const char* name )
 {
 	if ( !bIsReference )
 	{
@@ -149,7 +151,7 @@ int RrShader::get_uniform_block_location ( const char* name )
 	}
 	else
 	{
-		return pParentShader->get_uniform_block_location( name );
+		return pParentShader->getUniformBlockLocation( name );
 	}
 }
 
@@ -217,6 +219,15 @@ void RrShader::end ( void )
 {
 	// Reset the program being used
 	glUseProgram( 0 );
+}
+
+void RrShader::prime ( void )
+{
+	primed = true;
+}
+bool RrShader::isPrimed ( void )
+{
+	return primed;
 }
 
 // == Memory Management ==
@@ -595,7 +606,7 @@ void RrShader::compile_shader ( void )
 			glAttachShader( iProgramID, iPixelShaderID );
 
 		// Create the attribute link points
-		for ( uint i = 0; i < sizeof(renderer::AttributeNames)/sizeof(renderer::attributeReservedName_t); ++i )
+		for ( uint i = 0; i < sizeof(renderer::AttributeNames)/sizeof(renderer::rrAttributeReservedName); ++i )
 		{
 			glBindAttribLocation( iProgramID, renderer::AttributeNames[i].id, renderer::AttributeNames[i].token );
 		}
@@ -649,5 +660,23 @@ void RrShader::compile_shader ( void )
 			// End if
 		}
 		// End loop
+	}
+	
+	// Got this far. Let's update bindings.
+	createConstantBufferBindings();
+}
+
+//	createConstantBufferBindings() : Internal post-compile step, grab engine refs.
+// Locates constant buffer bindings and links them to their index
+void RrShader::createConstantBufferBindings ( void )
+{
+	auto kEntryCount = sizeof(renderer::CBufferNames) / sizeof(renderer::rrCBufferReservedName);
+	for (auto i = 0; i < kEntryCount; ++i)
+	{
+		int uboIndex = getUniformBlockLocation( renderer::CBufferNames[i].token );
+		if (uboIndex >= 0)
+		{
+			glUniformBlockBinding( get_program(), uboIndex, (GLuint)renderer::CBufferNames[i].id );
+		}
 	}
 }

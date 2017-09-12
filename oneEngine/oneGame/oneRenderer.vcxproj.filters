@@ -363,6 +363,15 @@
     <ClCompile Include="source\renderer\debug\RrBtDebugDraw.cpp">
       <Filter>SOURCE\Renderer\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Buffers.ConstantBuffer.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Buffers.VertexBuffer.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.Constants.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\ogl\GLCommon.h">
@@ -640,6 +649,12 @@
     </ClInclude>
     <ClInclude Include="source\renderer\debug\RrBtDebugDraw.h">
       <Filter>SOURCE\Renderer\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Buffers.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Transfer.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

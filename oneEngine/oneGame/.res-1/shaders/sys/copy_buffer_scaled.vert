@@ -9,7 +9,17 @@
 in vec3 mdl_Vertex;
 in vec3 mdl_TexCoord;
 
-layout(location = 0) uniform vec4 sys_DiffuseColor;
+layout(std140) uniform sys_cbuffer_PerObjectExt
+{
+    vec4    sys_DiffuseColor;
+    vec4    sys_SpecularColor;
+    vec3    sys_EmissiveColor;
+    float   sys_AlphaCutoff;
+    vec4    sys_LightingOverrides;
+
+    vec4    sys_TextureScale;
+    vec4    sys_TextureOffset;
+};
 
 // Outputs to fragment shader
 out vec2 v2f_texcoord0;

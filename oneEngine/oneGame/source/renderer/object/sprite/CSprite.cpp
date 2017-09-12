@@ -1,4 +1,4 @@
-
+// TODO: has this class been deprecated?
 #include "CSprite.h"
 #include "CSpriteContainer.h"
 
@@ -23,7 +23,7 @@ CSprite::CSprite ( void )
 
 	myMaterial	= new RrMaterial ();
 	myMaterial->passinfo.push_back( RrPassForward() );
-	myMaterial->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
+	myMaterial->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
 	myTexture	= NULL;
 }
 CSprite::~CSprite ( void )

@@ -76,10 +76,10 @@ enum ELoadState
 }; 
 ELoadState loadPassProperties ( RrMaterial* material,
 							   const string& command, std::stringstream& ss,
-							   const renderer::shader_tag_t targetTag, eMipmapGenerationStyle& mipmapMode );
+							   const renderer::rrShaderTag targetTag, eMipmapGenerationStyle& mipmapMode );
 ELoadState loadEyePassProperties ( RrMaterial* material,
 							   const string& command, std::stringstream& ss,
-							   const renderer::shader_tag_t targetTag );
+							   const renderer::rrShaderTag targetTag );
 ELoadState loadDeferredPassProperties ( RrMaterial* material,
 								const string& command, std::stringstream& ss ); 
 
@@ -132,7 +132,7 @@ void RrMaterial::loadFromFile ( const char* n_materialfile )
 		eMipmapGenerationStyle mipmapMode = MipmapNormal;
 
 		// Generate shader targets
-		renderer::shader_tag_t targetTag = renderer::SHADER_TAG_DEFAULT;
+		renderer::rrShaderTag targetTag = renderer::SHADER_TAG_DEFAULT;
 		if ( m_isSkinnedShader ) {
 			targetTag = renderer::SHADER_TAG_SKINNING;
 		}
@@ -312,7 +312,7 @@ void RrMaterial::loadFromFile ( const char* n_materialfile )
 
 ELoadState loadPassProperties ( RrMaterial* material,
 							   const string& command, std::stringstream& ss,
-							   const renderer::shader_tag_t targetTag, eMipmapGenerationStyle& mipmapMode )
+							   const renderer::rrShaderTag targetTag, eMipmapGenerationStyle& mipmapMode )
 {
 	Real t_float;
 	char str [256];
@@ -595,7 +595,7 @@ ELoadState loadPassProperties ( RrMaterial* material,
 
 ELoadState loadEyePassProperties ( RrMaterial* material,
 							   const string& command, std::stringstream& ss,
-							   const renderer::shader_tag_t targetTag )
+							   const renderer::rrShaderTag targetTag )
 {
 	//Real t_float;
 	char str [256];
