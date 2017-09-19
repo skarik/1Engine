@@ -572,10 +572,10 @@ ELoadState loadPassProperties ( RrMaterial* material,
 		ss >> t_float;	material->m_specular.green	= t_float;
 		ss >> t_float;	material->m_specular.blue	= t_float;
 	}
-	else if ( command == "specpow" )
-	{ // Set specular color
-		ss >> t_float;	material->m_specularPower	= t_float;
-	}
+	//else if ( command == "specpow" )
+	//{ // Set specular color
+	//	ss >> t_float;	material->m_specularPower	= t_float;
+	//}
 	else if ( command == "facemode" )
 	{
 		ss >> subCommand;
@@ -588,6 +588,10 @@ ELoadState loadPassProperties ( RrMaterial* material,
 		else if ( subCommand == "front" ) {
 			t_pass->m_face_mode = renderer::FM_FRONT;
 		}
+	}
+	else
+	{
+		printf("Unrecognized material command \"%s\"\n", command.c_str());
 	}
 	return LOADING_PASS_PROPERTIES;
 }
@@ -609,7 +613,7 @@ ELoadState loadEyePassProperties ( RrMaterial* material,
 	{
 		t_pass->shader = new RrShader( "shaders/d/eye_shading.glsl", targetTag );
 		material->m_specular = Color( 0,0,0 );
-		material->m_specularPower = 23;
+		//material->m_specularPower = 23;
 	}
 	else if ( command == "base" )
 	{ // Set base texture
@@ -638,7 +642,11 @@ ELoadState loadEyePassProperties ( RrMaterial* material,
 	else if ( command == "specular" )
 	{
 		material->m_specular = Color( 1,1,1,1 );
-		material->m_specularPower = 23;
+		//material->m_specularPower = 23;
+	}
+	else
+	{
+		printf("Unrecognized material command \"%s\"\n", command.c_str());
 	}
 
 	return LOADING_EYE_PASS_PROPERTIES;
@@ -647,7 +655,7 @@ ELoadState loadEyePassProperties ( RrMaterial* material,
 ELoadState loadDeferredPassProperties ( RrMaterial* material,
 								const string& command, std::stringstream& ss )
 {
-	Real t_float;
+	//Real t_float;
 	//char str [256];
 	string subCommand;
 	RrPassDeferred* t_pass = &(material->deferredinfo.back());
@@ -656,10 +664,10 @@ ELoadState loadDeferredPassProperties ( RrMaterial* material,
 	{
 		return FINISHED_MAIN_PASS;
 	}
-	else if ( command == "specpow" )
+	/*else if ( command == "specpow" )
 	{ // Set specular color
 		ss >> t_float;	material->m_specularPower	= t_float;
-	}
+	}*/
 	else if ( command == "diffuse" )
 	{
 		/*ss >> subCommand;
@@ -679,6 +687,10 @@ ELoadState loadDeferredPassProperties ( RrMaterial* material,
 			t_pass->m_rimlight_strength = 0.4f;
 		}*/
 		throw core::DeprecatedFeatureException();
+	}
+	else
+	{
+		printf("Unrecognized material command \"%s\"\n", command.c_str());
 	}
 
 	return LOADING_DEFERRED_PASS_PROPERTIES;

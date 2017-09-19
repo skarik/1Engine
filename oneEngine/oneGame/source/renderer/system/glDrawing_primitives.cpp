@@ -8,46 +8,54 @@
 // Primitive Buffer handling
 //===============================================================================================//
 
-void glDrawing::BeginPrimitive ( unsigned int n_primitiveType )
+glHandle glDrawing::BeginPrimitive ( unsigned int n_primitiveType, RrMaterial* n_material )
 {
 	// Allocate mesh area
 	if ( prim_vertex_list == NULL ) {
 		prim_vertex_list = new arModelVertex [GL_MAX_PRIMITIVE_VERTEX_COUNT];
 	}
 
+	// First unused in prim_list is at index prim_count
+	glHandle primHandle = prim_count;
+
 	// Check if need to add new request to prim_list
-	if ( prim_count >= prim_list.size() )
+	if ( primHandle >= prim_list.size() )
 	{
-		prim_list.push_back( glVBufferStreaming() );
+		prim_list.push_back( rrVBufferStreaming() );
 	}
 
-	// First unused in prim_list is at index prim_count
-	
 	// Check to generate VBO
-	if ( prim_list[prim_count].vboObject == 0 ) {
-		glGenBuffers( 1, &(prim_list[prim_count].vboObject) );
+	if ( prim_list[primHandle].vboObject == 0 ) {
+		glGenBuffers( 1, &(prim_list[primHandle].vboObject) );
 	}
 	// Check to either generate or clear VAO
-	if ( prim_list[prim_count].vaoObject == 0 ) {
-		glGenVertexArrays( 1, &(prim_list[prim_count].vaoObject ) );
+	if ( prim_list[primHandle].vaoObject == 0 ) {
+		glGenVertexArrays( 1, &(prim_list[primHandle].vaoObject ) );
 	}
 
 	// Reset element count
-	prim_list[prim_count].elementCount = 0;
+	prim_list[primHandle].elementCount = 0;
 	// Set object type
-	prim_list[prim_count].drawMode = n_primitiveType;
+	prim_list[primHandle].drawMode = n_primitiveType;
+	// Set material
+	prim_list[primHandle].material = n_material;
+
+	// Prepare material constants now
+	prim_list[primHandle].material->prepareShaderConstants(NULL, false);
+
+	return primHandle;
 }
 
-void glDrawing::EndPrimitive ( void )
+void glDrawing::EndPrimitive ( const glHandle n_primitive )
 {
-	if ( prim_list[prim_count].elementCount > 0 )
+	if ( prim_list[n_primitive].elementCount > 0 )
 	{
 		// First bind the VAO
-		glBindVertexArray( prim_list[prim_count].vaoObject );
+		glBindVertexArray( prim_list[n_primitive].vaoObject );
 		// Then disable all values in the VAO (this part of the engine is the only place where they get reused)
 		for ( uchar i = 0; i < 16; ++i ) {
-			if ( prim_list[prim_count].enabledAttributes[i] ) {			// TODO: DO MATCHING WITH CURRENT MATERIAL.
-				prim_list[prim_count].enabledAttributes[i] = false;
+			if ( prim_list[n_primitive].enabledAttributes[i] ) {			// TODO: DO MATCHING WITH CURRENT MATERIAL.
+				prim_list[n_primitive].enabledAttributes[i] = false;
 				glDisableVertexAttribArray(i);
 			}
 		}
@@ -70,8 +78,9 @@ void glDrawing::EndPrimitive ( void )
 		glBufferSubData( GL_ARRAY_BUFFER, 0, bufferSize, prim_vertex_list );*/
 		
 		// Now, send the material attributes
-		RrMaterial::current->bindPassAtrribs(RrMaterial::current_pass);
-		RrMaterial::current->setShaderConstants( NULL, false );
+		prim_list[n_primitive].material->bindPassAtrribs();
+		//RrMaterial::current->bindPassAtrribs(RrMaterial::current_pass);
+		//RrMaterial::current->setShaderConstants( NULL, false );
 		// Mark the enabled attributes
 		for ( uchar i = 0; i < 16; ++i ) {
 			prim_list[prim_count].enabledAttributes[i] = RrPassForward::enabled_attributes[i];

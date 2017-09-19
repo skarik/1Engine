@@ -65,31 +65,6 @@ bool CIsosphere::Render ( const char pass )
 	return true;
 }
 
-void CIsosphere::drawList ( void )
-{
-	GLd_ACCESS
-	GLd.BeginPrimitive(GL_TRIANGLES);
-	/*for ( unsigned int i = 0; i < sphereData.size(); i += 1 )
-	{
-		glTexCoord3fv( &(sphereData[i].tx) );
-		glNormal3fv( &(sphereData[i].nx) );
-		glVertex3fv( &(sphereData[i].x) );
-	}*/
-	/*for ( vector<arModelVertex>::iterator itr = sphereData.begin(); itr != sphereData.end(); itr++ )
-	{
-		glTexCoord3fv( &(itr->tx) );
-		glNormal3fv( &(itr->nx) );
-		glVertex3fv( &(itr->x) );
-	}*/
-	/*for ( unsigned int i = 0; i < size; i += 1 )
-	{
-		glTexCoord3fv( &(pSphereData[i].tx) );
-		glNormal3fv( &(pSphereData[i].nx) );
-		glVertex3fv( &(pSphereData[i].x) );
-	}*/
-	GLd.EndPrimitive();
-}
-
 //http://www.3dbuzz.com/vbforum/showthread.php?118279-Quick-solution-for-making-a-sphere-in-OpenGL
 //redbook ch2?
 void CIsosphere::normalize(float *a) {
@@ -144,12 +119,12 @@ void CIsosphere::drawtri(float const *a, float const *b, float const *c, int div
 }
 void CIsosphere::drawsphere(int ndiv, float radius) {
 	GLd_ACCESS
-    GLd.BeginPrimitive(GL_TRIANGLES);
+    auto lPrim = GLd.BeginPrimitive(GL_TRIANGLES, m_material);
     for (int i=0;i<20;i++)
         drawtri(
 			vdata[tindices[i][0]], vdata[tindices[i][1]], vdata[tindices[i][2]],
 			ndiv, radius);
-    GLd.EndPrimitive();
+    GLd.EndPrimitive(lPrim);
 }
 
 void CIsosphere::createtri ( float const *a, float const *b, float const *c, int div, float r )

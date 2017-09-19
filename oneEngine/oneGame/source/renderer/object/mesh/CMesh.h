@@ -40,9 +40,9 @@ public:
 	CModel*		m_parent;
 
 	// Frustom Culling Check
-	bool PreRender ( const char pass );
+	bool PreRender ( void ) override;
 	// Public Render Routine
-	bool Render ( const char pass );
+	bool Render ( const char pass ) override;
 
 protected:
 	friend CModel;

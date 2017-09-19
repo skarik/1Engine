@@ -100,7 +100,8 @@ public:
 	// Update
 	void Update ( void );
 	// Render
-	bool Render ( const char pass );
+	bool PreRender ( void ) override;
+	bool Render ( const char pass ) override;
 
 private:
 

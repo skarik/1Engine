@@ -57,20 +57,22 @@ protected:
 public:
 	// == Rendering Prototypes ==
 	// If any of the rendering functions return false, the renderer will throw an exception.
-	RENDER_API virtual bool			PreRender ( const char pass ) {
-		return true;
-	}
-	RENDER_API virtual bool			Render ( const char pass ) =0;
-	RENDER_API virtual bool			PostRender ( const char pass ) {
-		return true;
-	}
 
-	RENDER_API virtual bool			BeginRender ( void ) {
-		return true;
-	}
-	RENDER_API virtual bool			EndRender ( void ) {
-		return true;
-	}
+	//	PreRender() : Called before the internal render-loop executes.
+	// Can be called multiple times per frame.
+	RENDER_API virtual bool			PreRender ( void )
+		{ return true; }
+	//	Render(const int pass) : Current pass
+	RENDER_API virtual bool			Render ( const char pass ) =0;
+	//	PostRender() : Called after the render-loop executes.
+	// Can be called multiple times per frame.
+	RENDER_API virtual bool			PostRender ( void )
+		{ return true; }
+
+	RENDER_API virtual bool			BeginRender ( void )
+		{ return true; }
+	RENDER_API virtual bool			EndRender ( void )
+		{ return true; }
 
 	// == Setters ==
 	// Change the material the given material array thing.

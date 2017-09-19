@@ -88,6 +88,12 @@ void CCubeRenderPrim::SetSize ( Real width, Real depth, Real height )
 }
 
 // Render object
+bool CCubeRenderPrim::PreRender ( void )
+{
+	m_material->prepareShaderConstants(this);
+	return true;
+}
+
 bool CCubeRenderPrim::Render ( const char pass )
 {
 	GL_ACCESS GLd_ACCESS
@@ -101,9 +107,9 @@ bool CCubeRenderPrim::Render ( const char pass )
 	//aMat.useLighting = false;
 	//aMat.bindPass(pass);
 	m_material->bindPass(pass);
-	m_material->setShaderConstants(this);
+	//m_material->setShaderConstants(this);
 
-	GLd.BeginPrimitive( GL_QUADS );
+	auto lPrim = GLd.BeginPrimitive( GL_QUADS, m_material );
 		GLd.P_PushTexcoord( 0.5F,0.5F,0.5F );
 		// Bottom
 		GLd.P_PushColor(1.0f,1.0f,1.0f);
@@ -153,7 +159,7 @@ bool CCubeRenderPrim::Render ( const char pass )
 		GLd.P_AddVertex( vertexData[5].x,vertexData[5].y,vertexData[5].z );
 		GLd.P_AddVertex( vertexData[1].x,vertexData[1].y,vertexData[1].z );
 		GLd.P_AddVertex( vertexData[2].x,vertexData[2].y,vertexData[2].z );
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 
 	//aMat.unbind();
 	return true;

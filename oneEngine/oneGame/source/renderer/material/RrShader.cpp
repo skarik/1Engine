@@ -92,39 +92,39 @@ RrShader::~RrShader ( void )
 }
 
 // == Uniform Grabbing ==
-int	RrShader::get_uniform_location ( const char* name )
-{
-	if ( !bIsReference )
-	{
-		/*if ( mUniformMap.count( name ) )
-		{
-			return mUniformMap[name];
-		}
-		else*/
-		arstring<128> cname ( name );
-		unordered_map<arstring<128>,int>::iterator result = mUniformMap.find( cname );
-		if ( result != mUniformMap.end() )
-		{
-			return result->second;
-		}
-		else
-		{
-			int uniformLocation = glGetUniformLocation( iProgramID, name );
-			mUniformMap[cname] = uniformLocation;
-			if ( uniformLocation < 0 && CGameSettings::Active()->b_dbg_ro_ShowMissingLinks )
-			{
-#ifdef _ENGINE_DEBUG
-				cout << "Warning in: " << this << ": can't find shader uniform '" << name << "'" << endl;
-#endif
-			}
-			return uniformLocation;
-		}
-	}
-	else
-	{
-		return pParentShader->get_uniform_location( name );
-	}
-}
+//int	RrShader::get_uniform_location ( const char* name )
+//{
+//	if ( !bIsReference )
+//	{
+//		/*if ( mUniformMap.count( name ) )
+//		{
+//			return mUniformMap[name];
+//		}
+//		else*/
+//		arstring<128> cname ( name );
+//		unordered_map<arstring<128>,int>::iterator result = mUniformMap.find( cname );
+//		if ( result != mUniformMap.end() )
+//		{
+//			return result->second;
+//		}
+//		else
+//		{
+//			int uniformLocation = glGetUniformLocation( iProgramID, name );
+//			mUniformMap[cname] = uniformLocation;
+//			if ( uniformLocation < 0 && CGameSettings::Active()->b_dbg_ro_ShowMissingLinks )
+//			{
+//#ifdef _ENGINE_DEBUG
+//				cout << "Warning in: " << this << ": can't find shader uniform '" << name << "'" << endl;
+//#endif
+//			}
+//			return uniformLocation;
+//		}
+//	}
+//	else
+//	{
+//		return pParentShader->get_uniform_location( name );
+//	}
+//}
 // Get Uniform Block location
 int RrShader::getUniformBlockLocation ( const char* name )
 {
@@ -671,7 +671,7 @@ void RrShader::compile_shader ( void )
 void RrShader::createConstantBufferBindings ( void )
 {
 	auto kEntryCount = sizeof(renderer::CBufferNames) / sizeof(renderer::rrCBufferReservedName);
-	for (auto i = 0; i < kEntryCount; ++i)
+	for (unsigned i = 0; i < kEntryCount; ++i)
 	{
 		int uboIndex = getUniformBlockLocation( renderer::CBufferNames[i].token );
 		if (uboIndex >= 0)

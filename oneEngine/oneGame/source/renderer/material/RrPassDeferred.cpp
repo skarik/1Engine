@@ -5,7 +5,8 @@
 #include <algorithm>
 
 RrPassDeferred::RrPassDeferred ( void )
-	: m_blend_mode(renderer::BM_NONE), m_transparency_mode(renderer::ALPHAMODE_NONE),
+	: m_dirty(true),
+	m_blend_mode(renderer::BM_NONE), m_transparency_mode(renderer::ALPHAMODE_NONE),
 	/*m_lighting_mode(renderer::LI_NORMAL), m_diffuse_method(renderer::Deferred::DIFFUSE_DEFAULT),*/
 	m_rimlight_strength(0.2f),
 	m_ready(false), shader(NULL)
@@ -14,7 +15,8 @@ RrPassDeferred::RrPassDeferred ( void )
 }
 RrPassDeferred::~RrPassDeferred( void )
 {
-	if ( shader ) {
+	if ( shader )
+	{
 		shader->ReleaseReference();
 	}
 }

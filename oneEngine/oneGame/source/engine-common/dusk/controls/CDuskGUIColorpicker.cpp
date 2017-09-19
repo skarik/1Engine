@@ -317,7 +317,7 @@ void CDuskGUIColorpicker::Render ( void )
 		GLd.DrawSet2DScaleMode();
 
 		activeGUI->matDefault->bindPass(0);
-		activeGUI->matDefault->setShaderConstants( activeGUI );
+		//activeGUI->matDefault->setShaderConstants( activeGUI );
 
 		{
 			// Now, draw the color wheel
@@ -329,7 +329,7 @@ void CDuskGUIColorpicker::Render ( void )
 			Vector2d dopos1, dopos2;
 			Color dcolor1, dcolor2;
 			int modColor;
-			GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+			auto lPrimWheel = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 			for ( int i = 0; i <= 360; i += 5 )
 			{
 				dopos1.x = dpos.x + (Real)( cos( degtorad( i ) ) * dl );
@@ -357,10 +357,10 @@ void CDuskGUIColorpicker::Render ( void )
 				GLd.P_AddVertex( dopos1.x,dopos1.y );
 				GLd.P_AddVertex( dopos2.x,dopos2.y );
 			}
-			GLd.EndPrimitive();
+			GLd.EndPrimitive(lPrimWheel);
 
 			// Draw the position of the current hue
-			GLd.BeginPrimitive( GL_LINE_STRIP );
+			auto lPrimPos = GLd.BeginPrimitive( GL_LINE_STRIP, activeGUI->matDefault );
 				GLd.P_PushColor( 0.2f,0.2f,0.2f,0.8f );
 
 				dopos1.x = dpos.x + (Real)( cos( degtorad( hue-2 ) ) * dl * 1.03f );
@@ -386,10 +386,10 @@ void CDuskGUIColorpicker::Render ( void )
 
 				GLd.P_AddVertex( dopos1.x,dopos1.y );
 
-			GLd.EndPrimitive();
+			GLd.EndPrimitive(lPrimPos);
 
 			// Draw the saturation/lightness triangle
-			GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+			auto lPrimTri = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 
 			{
 				int i = int(hue);
@@ -415,7 +415,7 @@ void CDuskGUIColorpicker::Render ( void )
 				GLd.P_AddVertex( dpos.x - dl*0.5f, dpos.y - dl*0.6f );
 				GLd.P_PushColor( 0.0f,0.0f,0.0f,1.0f );
 				GLd.P_AddVertex( dpos.x - dl*0.5f, dpos.y + dl*0.6f );
-			GLd.EndPrimitive();
+			GLd.EndPrimitive(lPrimTri);
 
 			// Draw the saturation/lightness selection
 			dopos1.x = dpos.x - dl*0.5f + dl*(0.75f+0.5f)*saturation;
@@ -436,7 +436,7 @@ void CDuskGUIColorpicker::Render ( void )
 			else
 				GLd.P_PushColor( 1.0f,1.0f,1.0f,0.0f );
 			GLd.DrawRectangleA( rect.pos.x+rect.size.x*0.82f,rect.pos.y+rect.size.y*0.05f,rect.size.x*0.06f,rect.size.y*0.9f );
-			GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+			auto lPrimAlpha = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 				GLd.P_PushColor( colorValue.red, colorValue.green, colorValue.blue, 1.0f );
 				GLd.P_AddVertex(
 					(rect.pos.x+rect.size.x*0.82f+rect.size.x*0.06f)*Screen::Info.width,
@@ -451,7 +451,7 @@ void CDuskGUIColorpicker::Render ( void )
 				GLd.P_AddVertex(
 					(rect.pos.x+rect.size.x*0.82f)*Screen::Info.width,
 					(rect.pos.y+rect.size.y*0.05f+rect.size.y*0.9f)*Screen::Info.height );
-			GLd.EndPrimitive();
+			GLd.EndPrimitive(lPrimAlpha);
 			GLd.DrawSet2DMode( GLd.D2D_WIRE );
 			//glColor4f( 0.0f,0.0f,0.0f,1.0f );
 			GLd.P_PushColor( 0.0f,0.0f,0.0f,1.0f );

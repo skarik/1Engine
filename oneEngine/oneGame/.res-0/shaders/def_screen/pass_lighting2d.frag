@@ -392,7 +392,7 @@ void main ( void )
     // ==Perform lighting==
 
 	vec4 n_cameraVector;
-	n_cameraVector.xyz = sys_WorldCameraPos - pixelPosition.xyz + vec3(0,0,500);
+	n_cameraVector.xyz = sys_WorldCameraPos.xyz - pixelPosition.xyz + vec3(0,0,500);
 	n_cameraVector.w = length( n_cameraVector.xyz );
 	vec3 n_cameraDir = n_cameraVector.xyz / n_cameraVector.w;
     vec3 n_cameraDirRim = vec3(0,0.707,0.707);

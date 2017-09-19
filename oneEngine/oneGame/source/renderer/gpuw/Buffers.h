@@ -13,20 +13,22 @@ namespace gpu
 	{
 	public:
 		//	Constructor : creates uninitalized GPU wrapper object.
-		explicit	ConstantBuffer( void );
+		RENDER_API explicit		ConstantBuffer( void );
 		//	Destructor : destroys any allocated buffer, if existing.
-					~ConstantBuffer( void );
+		RENDER_API 				~ConstantBuffer( void );
 
 		//	valid() : is this buffer valid to be used?
 		// If the buffer has not been created, it will be removed.
-		bool		valid ( void );
+		RENDER_API bool			valid ( void );
+		//	getGlIndex() : returns index of resource in OpenGL
+		glHandle				getGlIndex ( void );
 
 		//	init( data, data_size, transfer ) : initializes a constant buffer with data
-		int			init ( void* data, const  uint64_t data_size, const TransferStyle style );
+		RENDER_API int			init ( void* data, const  uint64_t data_size, const TransferStyle style );
 		//	upload( data, data_size, transfer ) : initializes and upload a constant buffer with data
-		int			upload ( void* data, const  uint64_t data_size, const TransferStyle style );
+		RENDER_API int			upload ( void* data, const  uint64_t data_size, const TransferStyle style );
 		//	free() : destroys any allocated buffer, if existing.
-		int			free ( void );
+		RENDER_API int			free ( void );
 
 	private:
 		glHandle	m_buffer;

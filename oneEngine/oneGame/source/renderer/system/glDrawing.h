@@ -10,9 +10,11 @@
 #include "renderer/ogl/GLCommon.h"
 
 // Streaming mesh data class
-#include "glVBufferStreaming.h"
+#include "rrVBufferStreaming.h"
 // For the vertex class
 #include "core/types/ModelData.h"
+// Misc types
+#include "renderer/types/types.h"
 
 #define GLd_ACCESS glDrawing& GLd = *glDrawing::ActiveReference();
 
@@ -40,9 +42,6 @@ public:
 	void MarkBuffersFreeUsage ( void );
 
 	// == Functions that Actually Draw Things ==
-	RENDER_API void		DrawText ( float, float, const char*, ... );
-	RENDER_API void		DrawTextP ( int, int, const char*, ... );
-
 	RENDER_API void		DrawAutoText ( float, float, const char*, ... );
 	RENDER_API void		DrawAutoTextCentered ( float, float, const char*, ... );
 	RENDER_API void		DrawAutoTextWrapped ( float, float, float, const char*, ... );
@@ -69,10 +68,6 @@ public:
 	};
 	RENDER_API void		DrawSet2DRounding ( e2DRoundingMode roundMode = RND_DONT_ROUND );
 
-	// OpenGL set color
-	//void		SetColor ( const Color& newColor );
-	//void		SetColor ( const Real& red, const Real& green, const Real& blue, const Real& alpha=1 );
-
 	// Draw an Autorectangle
 	RENDER_API void		DrawRectangleA ( float x, float y, float w, float h );
 	RENDER_API void		DrawRectangleATex ( float x, float y, float w, float h, float tx, float ty, float tw, float th );
@@ -91,13 +86,16 @@ public:
 	RENDER_API void		DrawLine ( float x1, float y1, float x2, float y2 );
 
 	// Draw a screen quad
-	RENDER_API void		DrawScreenQuad ( void );
+	RENDER_API void		DrawScreenQuad ( RrMaterial* n_material );
 
 	// Set primitive options
+	RENDER_API void		SetMaterial ( RrMaterial* n_mat ) { prim_next_material = n_mat; }
 	RENDER_API void		SetLineWidth	( const Real width=1.0f );
 
 	// Begin drawing a primitive. This doesn't not actually draw the primitive, but only starts it.
-	RENDER_API void		BeginPrimitive ( unsigned int n_primitiveType );
+	RENDER_API glHandle	BeginPrimitive ( unsigned int n_primitiveType, RrMaterial* n_material );
+	// Updates a primitive's type. Used internall when BeginPrimitive is called for a preset shape.
+	RENDER_API void		SetPrimitiveType ( const glHandle n_primitive, unsigned int n_primitiveType );
 
 	RENDER_API void		P_AddVertex		( const Vector3d& n_position );
 		RENDER_API void	P_AddVertex		( const Real& n_x, const Real& n_y, const Real& n_z )	{ P_AddVertex( Vector3d(n_x,n_y,n_z) ); }
@@ -114,9 +112,12 @@ public:
 		RENDER_API void	P_PushTangent	( const Real& n_x, const Real& n_y, const Real& n_z )	{ P_PushTangent( Vector3d(n_x,n_y,n_z) ); }
 
 	// Sends the primitive created with the last BeginPrimitive call to the device.
-	RENDER_API void		EndPrimitive ( void );
+	RENDER_API void		EndPrimitive ( const glHandle n_primitive );
 
 private:
+	// Used to set up the next draw call
+	RrMaterial*	prim_next_material;
+
 	// The following are used for keeping track of the model created with the BeginPrimitive...EndPrimitive calls.
 	Vector3d	prim_next_texcoord;
 	Vector3d	prim_next_normal;
@@ -125,8 +126,8 @@ private:
 
 	arModelVertex*	prim_vertex_list;
 
-	std::vector<glVBufferStreaming>	prim_list;
-	std::vector<glVBufferStreaming>	prim_list_swap;
+	std::vector<rrVBufferStreaming>	prim_list;
+	std::vector<rrVBufferStreaming>	prim_list_swap;
 	unsigned int	prim_count;
 
 private:

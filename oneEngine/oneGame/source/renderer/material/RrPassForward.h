@@ -29,6 +29,8 @@ public:
 	RrPassForward& operator= ( RrPassForward&& other );
 
 public:
+	bool						m_dirty;
+
 	renderer::eAlphaMode		m_transparency_mode;
 	Real						f_alphatest_value;
 	bool						b_depthmask;

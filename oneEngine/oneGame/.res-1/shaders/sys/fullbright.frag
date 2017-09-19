@@ -22,7 +22,7 @@ layout(std140) uniform sys_cbuffer_PerObjectExt
     vec4    sys_LightingOverrides;
 
     vec4    sys_TextureScale;
-    vec4    sys_TextureOffset
+    vec4    sys_TextureOffset;
 };
 
 void main ( void )

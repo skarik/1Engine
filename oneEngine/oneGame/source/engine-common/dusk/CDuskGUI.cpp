@@ -579,6 +579,15 @@ void CDuskGUI::RenderUI ( void )
 }
 
 // Rendering
+bool CDuskGUI::PreRender ( void )
+{
+	matScreenCopy->prepareShaderConstants(this);
+	matDefault->prepareShaderConstants(this);
+	//matDown->prepareShaderConstants(this);
+	matFont->prepareShaderConstants(this);
+	//matHover->prepareShaderConstants(this);
+	return true;
+}
 bool CDuskGUI::Render ( const char pass )
 {
 	GL_ACCESS GLd_ACCESS;
@@ -586,7 +595,7 @@ bool CDuskGUI::Render ( const char pass )
 	// Bind the material for alpha-blending
 	matScreenCopy->setTexture( TEX_MAIN, renderBuffer );
 	matScreenCopy->bindPass( pass );
-	GLd.DrawScreenQuad();
+	GLd.DrawScreenQuad(matScreenCopy);
 
 	return true;
 }

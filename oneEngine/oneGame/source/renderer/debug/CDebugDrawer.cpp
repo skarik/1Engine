@@ -64,7 +64,7 @@ bool CDebugDrawer::Render ( const char pass )
 	glDisable( GL_DEPTH_TEST );
 
 	// Draw all the lines in the list
-	GLd.BeginPrimitive( GL_LINES );
+	auto lPrim = GLd.BeginPrimitive( GL_LINES, m_material );
 	GLd.P_PushTexcoord( 0,0 );
 	GLd.P_PushNormal( 0,0,0 );
 	for ( uint i = 0; i < avLineList.size(); ++i )
@@ -73,7 +73,7 @@ bool CDebugDrawer::Render ( const char pass )
 		GLd.P_AddVertex( avLineList[i].start );
 		GLd.P_AddVertex( avLineList[i].end );
 	}
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 
 	// Reenable normal depth testing
 	glEnable( GL_DEPTH_TEST );

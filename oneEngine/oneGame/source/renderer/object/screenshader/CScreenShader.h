@@ -16,6 +16,8 @@ public:
 	RENDER_API explicit CScreenShader ( CCamera* pCam = NULL );
 	RENDER_API virtual ~CScreenShader ( void );
 
+	// Prepares general uniform buffers
+	bool PreRender ( void ) override;
 	// Renders the screen up
 	bool Render ( const char pass );
 

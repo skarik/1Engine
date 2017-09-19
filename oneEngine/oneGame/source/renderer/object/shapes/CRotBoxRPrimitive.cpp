@@ -89,7 +89,7 @@ bool CRotBoxRPrimitive::Render ( const char pass )
 	if ( fRot > 3.1415*2.0 )
 		fRot = 0;
 	
-	GLd.BeginPrimitive( GL_QUADS );
+	auto lPrim = GLd.BeginPrimitive( GL_QUADS, m_material );
 		// Bottom
 		GLd.P_PushColor(1.0f,0.0f,0.0f);
 		GLd.P_AddVertex( vertexData[0].x,vertexData[0].y,vertexData[0].z );
@@ -126,6 +126,6 @@ bool CRotBoxRPrimitive::Render ( const char pass )
 		GLd.P_AddVertex( vertexData[1].x,vertexData[1].y,vertexData[1].z );
 		GLd.P_AddVertex( vertexData[5].x,vertexData[5].y,vertexData[5].z );
 		GLd.P_AddVertex( vertexData[6].x,vertexData[6].y,vertexData[6].z );
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 	return true;
 }

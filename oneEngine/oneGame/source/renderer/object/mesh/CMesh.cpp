@@ -53,7 +53,7 @@ void CMesh::CalculateBoundingBox ( void )
 
 // == RENDERABLE OBJECT INTERFACE ==
 
-bool CMesh::PreRender ( const char pass )
+bool CMesh::PreRender ( void )
 {
 	// Culling check routine
 	if ( bUseFrustumCulling )
@@ -89,6 +89,12 @@ bool CMesh::PreRender ( const char pass )
 		bCanRender = true;
 	}
 
+	// If can render, then push the uniform buffers
+	if (bCanRender)
+	{
+		m_material->prepareShaderConstants(this, false);
+	}
+
 	// 
 	return true;
 }
@@ -122,8 +128,8 @@ bool CMesh::Render ( const char pass )
 	m_material->bindPass(pass);
 
 	// Pass in shader constant now that the pass has been bound
-	RrMaterial::current->setShaderConstants( this );
-	if ( m_parent ) m_parent->SendShaderUniforms();
+	//RrMaterial::current->setShaderConstants( this );
+	//if ( m_parent ) m_parent->SendShaderUniforms();
 
 	// Bind the current mesh
 	BindVAO( pass, m_glMesh->GetVBOverts(), m_glMesh->GetVBOfaces() );

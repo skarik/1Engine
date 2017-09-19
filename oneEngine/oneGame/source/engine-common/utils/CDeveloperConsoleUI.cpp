@@ -63,6 +63,7 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 	{
 		matMenu->m_diffuse = Color( 0.0f,0.0f,0.0f,0.6f );
 		matMenu->bindPass(0);
+		GLd.SetMaterial(matMenu);
 		GLd.DrawRectangleA( 0.0f, 0.95f, 3.0f,0.05f );
 		if ( !engine::Console->GetMatchingCommands().empty() ) {
 			GLd.DrawRectangleA( 0.02f, 0.93f - engine::Console->GetMatchingCommands().size()*0.03f, 0.4f, engine::Console->GetMatchingCommands().size()*0.03f + 0.02f );
@@ -70,6 +71,7 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 		
 		matfntMenu->m_diffuse = Color( 0.0f,0.5f,1.0f,1.0f );
 		matfntMenu->bindPass(0);
+		GLd.SetMaterial(matfntMenu);
 		GLd.DrawAutoText( 0.03f, 0.98f, " >%s", engine::Console->GetCommandString().c_str() );	// Draw command
 		for ( uint i = 0; i < engine::Console->GetMatchingCommands().size(); ++i ) {		// Draw command list
 			GLd.DrawAutoText( 0.05f, 0.96f+(i-(Real)(engine::Console->GetMatchingCommands().size()))*0.03f, "%s", engine::Console->GetMatchingCommands()[i].c_str() );
@@ -78,6 +80,7 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 
 	matfntMenu->m_diffuse = Color( 1.0f,1.0f,1.0f,0.5f );
 	matfntMenu->bindPass(0);
+	GLd.SetMaterial(matfntMenu);
 	GLd.DrawAutoText( 0.005f, 0.023f, CGameSettings::Active()->sysprop_developerstring.c_str() );
 
 	GL.endOrtho();
@@ -130,7 +133,8 @@ bool CDeveloperCursor::Render ( const char pass )
 	GLd.DrawSet2DMode( GLd.D2D_FLAT );
 
 	matCursor->bindPass(0);
-	matCursor->setShaderConstants( this );
+	GLd.SetMaterial(matCursor);
+	//matCursor->setShaderConstants( this );
 	GLd.P_PushColor( 1,1,1,1 );
 	//	GLd.DrawScreenQuad();
 	GLd.DrawRectangle( (Real)Input::MouseX(), (Real)Input::MouseY(), 32,32 );

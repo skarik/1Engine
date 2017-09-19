@@ -121,10 +121,10 @@ bool TileSelectorUI::Render ( const char pass )
 	GLd.DrawSet2DScaleMode();
 
 	m_material->bindPass(0);
-	m_material->setShaderConstants( this );
+	//m_material->setShaderConstants( this );
 
 	// render the selection shit
-	GLd.BeginPrimitive( GL_TRIANGLES );
+	auto lPrim = GLd.BeginPrimitive( GL_TRIANGLES, m_material );
 	GLd.P_PushColor( Color(0.5F,0.5F,0.5F,1) );
 	{
 		// Get background width
@@ -176,12 +176,12 @@ bool TileSelectorUI::Render ( const char pass )
 		GLd.P_PushTexcoord( Vector2d(tile.atlas_w,tile.atlas_h).mulComponents(tile_scale) + tile_offset );
 		GLd.P_AddVertex( Vector2d(tile.atlas_w,tile.atlas_h).mulComponents(ui_scale) + ui_offset );
 	}
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 
 	ui_material->bindPass(0);
-	ui_material->setShaderConstants( this );
+	//ui_material->setShaderConstants( this );
 	// render the selection box
-	GLd.BeginPrimitive( GL_LINES );
+	auto lPrimLines = GLd.BeginPrimitive( GL_LINES, ui_material );
 	GLd.P_PushTexcoord( 0,0 );
 	if ( ui_mouseover >= 0 )
 	{
@@ -215,7 +215,7 @@ bool TileSelectorUI::Render ( const char pass )
 			GLd.P_AddVertex( Vector2d(-f*l,-f*l).mulComponents(ui_scale) + ui_offset );
 		}
 	}
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrimLines);
 
 	GL.endOrtho();
 	GL.cleanupDraw();

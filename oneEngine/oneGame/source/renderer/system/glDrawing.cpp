@@ -25,6 +25,8 @@ glDrawing::glDrawing ( void )
 	prim_vertex_list	= NULL;
 	// Initialize drawing
 	MarkBuffersFreeUsage();
+
+	prim_next_material = RrMaterial::Default;
 }
 glDrawing::~glDrawing ( void )
 {
@@ -56,104 +58,6 @@ void glDrawing::MarkBuffersFreeUsage ( void )
 //===============================================================================================//
 // Rendering
 //===============================================================================================//
-void	glDrawing::DrawText ( float dx, float dy, const char* fmt, ... )
-{
-	GL_ACCESS; // Using the glMainSystem accessor
-	/*
-	return;
-	va_list		ap;	// Argument list
-	static char	text[256];
-
-	// If there's nothing to do, don't draw
-	if ( fmt == NULL )
-		return;
-
-	// Parses string and arguments into a final string
-	va_start(ap, fmt);
-	    vsprintf(text, fmt, ap);
-	va_end(ap);
-
-	// Get the font info
-	tBitmapFontInfo fontInfo = CBitmapFont::pActiveFont->GetFontInfo();
-	GLuint fontList			 = CBitmapFont::pActiveFont->GetLetterList();
-
-	GL.prepareDraw();
-
-	// Change offset behavior based on the font type
-	if ( !fontInfo.isTexture )
-	{
-		// Offset the font
-		glRasterPos2f( dx*Screen::Info.width, dy*Screen::Info.height );
-	}
-	else
-	{
-		// Offset the font
-		glTranslatef( dx*Screen::Info.width, dy*Screen::Info.height, 0 );
-	}
-
-	// Push Display List Bits
-	glPushAttrib(GL_LIST_BIT);
-	// Sets The Base Character to the start of the set
-	glListBase( fontList - fontInfo.startCharacter );
-	// Draws The Display List Text
-	glCallLists( strlen(text), GL_UNSIGNED_BYTE, text );
-	// Pops The Display List Bits
-	glPopAttrib();
-	*/
-	throw core::DeprecatedCallException();
-
-	GL.cleanupDraw();
-}
-
-void	glDrawing::DrawTextP ( int ix, int iy, const char* fmt, ... )
-{
-	GL_ACCESS; // Using the glMainSystem accessor
-	/*
-	return;
-	va_list		ap;	// Argument list
-	static char	text[256];
-
-	// If there's nothing to do, don't draw
-	if ( fmt == NULL )
-		return;
-
-	// Parses string and arguments into a final string
-	va_start(ap, fmt);
-	    vsprintf(text, fmt, ap);
-	va_end(ap);
-
-	// Get the font info
-	tBitmapFontInfo fontInfo = CBitmapFont::pActiveFont->GetFontInfo();
-	GLuint fontList			 = CBitmapFont::pActiveFont->GetLetterList();
-
-	GL.prepareDraw();
-
-	// Change offset behavior based on the font type
-	if ( !fontInfo.isTexture )
-	{
-		// Offset the font
-		glRasterPos2i( ix, iy );
-	}
-	else
-	{
-		// Offset the font
-		glTranslatef( (float)ix, (float)iy, 0 );
-	}
-
-	// Push Display List Bits
-	glPushAttrib(GL_LIST_BIT);
-	// Sets The Base Character to the start of the set
-	glListBase( fontList - fontInfo.startCharacter );
-	// Draws The Display List Text
-	glCallLists( strlen(text), GL_UNSIGNED_BYTE, text );
-	// Pops The Display List Bits
-	glPopAttrib();
-	*/
-	throw core::DeprecatedCallException();
-
-	GL.cleanupDraw();
-}
-
 Real	glDrawing::GetAutoTextWidth ( const char* fmt, ... )
 {
 	va_list		ap;	// Argument list
@@ -257,7 +161,7 @@ void	glDrawing::DrawAutoText ( float dx, float dy, const char* fmt, ... )
 		translationMatrix.setTranslation( translation );
 		
 		GL.Transform( translationMatrix*scaleMatrix );
-		RrMaterial::current->setShaderConstants(NULL);
+		//RrMaterial::current->setShaderConstants(NULL);
 	}
 
 	// Push Display List Bits
@@ -270,7 +174,7 @@ void	glDrawing::DrawAutoText ( float dx, float dy, const char* fmt, ... )
 	glPopAttrib();*/
 	// Loop through every character, and draw it if it's in range
 	glDisable( GL_CULL_FACE );
-	GLd.BeginPrimitive( GL_TRIANGLES );
+	auto lPrim = GLd.BeginPrimitive( GL_TRIANGLES, prim_next_material );
 	P_PushColor( 1,1,1,1 );
 	Vector2d pen (0,0);
 	int maxLength = strlen( text );
@@ -320,7 +224,7 @@ void	glDrawing::DrawAutoText ( float dx, float dy, const char* fmt, ... )
 
 		pen += fontInfo.fontOffsets[curChar];
 	}
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 	//glEnable( GL_CULL_FACE );
 
 	//GL.cleanupDraw();
@@ -387,7 +291,7 @@ void	glDrawing::DrawAutoTextCentered ( float dx, float dy, const char* fmt, ... 
 		translationMatrix.setTranslation( translation );
 		
 		GL.Transform( translationMatrix*scaleMatrix );
-		RrMaterial::current->setShaderConstants(NULL);
+		//RrMaterial::current->setShaderConstants(NULL);
 	}
 
 	// Push Display List Bits
@@ -400,7 +304,7 @@ void	glDrawing::DrawAutoTextCentered ( float dx, float dy, const char* fmt, ... 
 	glPopAttrib();*/
 	// Loop through every character, and draw it if it's in range
 	glDisable( GL_CULL_FACE );
-	GLd.BeginPrimitive( GL_TRIANGLES );
+	auto lPrim = GLd.BeginPrimitive( GL_TRIANGLES, prim_next_material );
 	P_PushColor( 1,1,1,1 );
 	Vector2d pen (0,0);
 	int maxLength = strlen( text );
@@ -450,7 +354,7 @@ void	glDrawing::DrawAutoTextCentered ( float dx, float dy, const char* fmt, ... 
 
 		pen += fontInfo.fontOffsets[curChar];
 	}
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 	//glEnable( GL_CULL_FACE );
 
 	//GL.cleanupDraw();
@@ -528,7 +432,7 @@ void		glDrawing::DrawAutoTextWrapped ( float dx, float dy, float dw, const char*
 		translationMatrix.setTranslation( translation );
 		
 		GL.Transform( translationMatrix*scaleMatrix );
-		RrMaterial::current->setShaderConstants(NULL);
+		//RrMaterial::current->setShaderConstants(NULL);
 	}
 
 	// Push Display List Bits
@@ -537,7 +441,7 @@ void		glDrawing::DrawAutoTextWrapped ( float dx, float dy, float dw, const char*
 	//glListBase( fontList - fontInfo.startCharacter );
 
 	glDisable( GL_CULL_FACE );
-	GLd.BeginPrimitive( GL_TRIANGLES );
+	auto lPrim = GLd.BeginPrimitive( GL_TRIANGLES, prim_next_material );
 	P_PushColor( 1,1,1,1 );
 	Vector2d pen (0,0);
 	// begin word warp draw
@@ -635,7 +539,7 @@ void		glDrawing::DrawAutoTextWrapped ( float dx, float dy, float dw, const char*
 		}
 	}
 
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 	//glEnable( GL_CULL_FACE );
 
 	//GL.cleanupDraw();
@@ -693,7 +597,7 @@ void		glDrawing::DrawRectangleA ( float x, float y, float w, float h )
 
 	if ( iPrim2DDrawMode == D2D_WIRE )
 	{
-		GLd.BeginPrimitive( GL_LINE_STRIP );
+		auto lPrim = GLd.BeginPrimitive( GL_LINE_STRIP, prim_next_material );
 		GLd.P_PushTexcoord( 0,0 );
 		GLd.P_AddVertex( pos[0].x,pos[0].y );
 		GLd.P_PushTexcoord( 0,1 );
@@ -704,11 +608,11 @@ void		glDrawing::DrawRectangleA ( float x, float y, float w, float h )
 		GLd.P_AddVertex( pos[3].x,pos[3].y );
 		GLd.P_PushTexcoord( 0,0 );
 		GLd.P_AddVertex( pos[0].x,pos[0].y );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 	}
 	else if ( iPrim2DDrawMode == D2D_FLAT )
 	{
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		auto lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, prim_next_material );
 		GLd.P_PushTexcoord( 0,0 );
 		GLd.P_AddVertex( pos[0].x,pos[0].y );
 		GLd.P_PushTexcoord( 0,1 );
@@ -717,7 +621,7 @@ void		glDrawing::DrawRectangleA ( float x, float y, float w, float h )
 		GLd.P_AddVertex( pos[3].x,pos[3].y );
 		GLd.P_PushTexcoord( 1,1 );
 		GLd.P_AddVertex( pos[2].x,pos[2].y );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 	}
 }
 void		glDrawing::DrawRectangleATex ( float x, float y, float w, float h, float tx, float ty, float tw, float th )
@@ -756,7 +660,7 @@ void		glDrawing::DrawRectangleATex ( float x, float y, float w, float h, float t
 
 	if ( iPrim2DDrawMode == D2D_WIRE )
 	{
-		GLd.BeginPrimitive( GL_LINE_STRIP );
+		auto lPrim = GLd.BeginPrimitive( GL_LINE_STRIP, prim_next_material );
 		GLd.P_PushTexcoord( tx,ty );
 		GLd.P_AddVertex( pos[0].x,pos[0].y );
 		GLd.P_PushTexcoord( tx,ty+th );
@@ -767,11 +671,11 @@ void		glDrawing::DrawRectangleATex ( float x, float y, float w, float h, float t
 		GLd.P_AddVertex( pos[3].x,pos[3].y );
 		GLd.P_PushTexcoord( tx,ty );
 		GLd.P_AddVertex( pos[0].x,pos[0].y );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 	}
 	else if ( iPrim2DDrawMode == D2D_FLAT )
 	{
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		auto lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, prim_next_material );
 		GLd.P_PushTexcoord( tx,ty );
 		GLd.P_AddVertex( pos[0].x,pos[0].y );
 		GLd.P_PushTexcoord( tx,ty+th );
@@ -780,7 +684,7 @@ void		glDrawing::DrawRectangleATex ( float x, float y, float w, float h, float t
 		GLd.P_AddVertex( pos[3].x,pos[3].y );
 		GLd.P_PushTexcoord( tx+tw,ty+th );
 		GLd.P_AddVertex( pos[2].x,pos[2].y );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 	}
 }
 
@@ -790,7 +694,7 @@ void		glDrawing::DrawRectangle( float x, float y, float w, float h )
 	GL_ACCESS GLd_ACCESS
 	if ( iPrim2DDrawMode == D2D_WIRE )
 	{
-		GLd.BeginPrimitive( GL_LINE_STRIP );
+		auto lPrim = GLd.BeginPrimitive( GL_LINE_STRIP, prim_next_material );
 		GLd.P_PushTexcoord( 0,0 );
 		GLd.P_AddVertex( (Real)x, (Real)y );
 		GLd.P_PushTexcoord( 0,1 );
@@ -801,11 +705,11 @@ void		glDrawing::DrawRectangle( float x, float y, float w, float h )
 		GLd.P_AddVertex( (Real)x+w, (Real)y );
 		GLd.P_PushTexcoord( 0,0 );
 		GLd.P_AddVertex( (Real)x, (Real)y );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 	}
 	else if ( iPrim2DDrawMode == D2D_FLAT )
 	{
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		auto lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, prim_next_material );
 		GLd.P_PushTexcoord( 0,0 );
 		GLd.P_AddVertex( (Real)x, (Real)y );
 		GLd.P_PushTexcoord( 0,1 );
@@ -814,7 +718,7 @@ void		glDrawing::DrawRectangle( float x, float y, float w, float h )
 		GLd.P_AddVertex( (Real)x+w, (Real)y );
 		GLd.P_PushTexcoord( 1,1 );
 		GLd.P_AddVertex( (Real)x+w, (Real)y+h );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 	}
 }
 // Draw an Autocircle
@@ -838,7 +742,7 @@ void		glDrawing::DrawCircleA ( float x, float y, float r )
 	else {
 		return;
 	}
-	GLd.BeginPrimitive( GL_LINE_STRIP );
+	auto lPrim = GLd.BeginPrimitive( GL_LINE_STRIP, prim_next_material );
 	for ( uint16_t i = 0; i <= segs; i++ )
 	{
 		percent = ((i/(float)(segs))*360.0f);
@@ -846,7 +750,7 @@ void		glDrawing::DrawCircleA ( float x, float y, float r )
 			Real( dx + cos( degtorad( percent ) )*dr ),
 			Real( dy + sin( degtorad( percent ) )*dr ) );
 	}
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 }
 // Draw a pixel circle
 void		glDrawing::DrawCircle ( float x, float y, float r )
@@ -854,7 +758,7 @@ void		glDrawing::DrawCircle ( float x, float y, float r )
 	GL_ACCESS GLd_ACCESS
 
 	uint16_t segs = (uint16_t)std::min<float>( std::max<float>( 4, r*2 + 3 ), 64 );
-	GLd.BeginPrimitive( GL_LINE_STRIP );
+	auto lPrim = GLd.BeginPrimitive( GL_LINE_STRIP, prim_next_material );
 	float percent;
 	for ( uint16_t i = 0; i <= segs; i++ )
 	{
@@ -863,7 +767,7 @@ void		glDrawing::DrawCircle ( float x, float y, float r )
 			Real( x + cos( degtorad( percent ) )*r ),
 			Real( y + sin( degtorad( percent ) )*r ) );
 	}
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 }
 
 
@@ -871,23 +775,23 @@ void		glDrawing::DrawCircle ( float x, float y, float r )
 void		glDrawing::DrawLineA ( float x1, float y1, float x2, float y2 )
 {
 	GL_ACCESS GLd_ACCESS
-	GLd.BeginPrimitive( GL_LINE_STRIP );
+	auto lPrim = GLd.BeginPrimitive( GL_LINE_STRIP, prim_next_material );
 		GLd.P_AddVertex( x1*Screen::Info.width, y1*Screen::Info.height );
 		GLd.P_AddVertex( x2*Screen::Info.width, y2*Screen::Info.height );
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 }
 // Draw a pixel line
 void		glDrawing::DrawLine ( float x1, float y1, float x2, float y2 )
 {
 	GL_ACCESS GLd_ACCESS
-	GLd.BeginPrimitive( GL_LINE_STRIP );
+	auto lPrim = GLd.BeginPrimitive( GL_LINE_STRIP, prim_next_material );
 		GLd.P_AddVertex( (Real)x1, (Real)y1 );
 		GLd.P_AddVertex( (Real)x2, (Real)y2 );
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 }
 
 // Draw a screen quad
-void		glDrawing::DrawScreenQuad ( void )
+void		glDrawing::DrawScreenQuad ( RrMaterial* n_material )
 {
 	GL_ACCESS GLd_ACCESS;
 
@@ -953,8 +857,10 @@ void		glDrawing::DrawScreenQuad ( void )
 	}
 
 	// Now, send the material attributes
-	RrMaterial::current->bindPassAtrribs(RrMaterial::current_pass);
-	RrMaterial::current->setShaderConstants( NULL, false );
+	//RrMaterial::current->bindPassAtrribs(RrMaterial::current_pass);
+	//RrMaterial::current->setShaderConstants( NULL, false );
+	n_material->bindPassAtrribs();
+	n_material->prepareShaderConstants(NULL, false);
 	// Mark the enabled attributes
 	for ( uchar i = 0; i < 16; ++i )
 	{

@@ -49,9 +49,6 @@
     <Filter Include="SOURCE\Renderer\Object\Model">
       <UniqueIdentifier>{926f2d88-0b6e-41a1-a501-1337916082b5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\Renderer\Object\Sprite">
-      <UniqueIdentifier>{ab0caa54-7e17-4e28-971c-89c4069719b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SOURCE\Renderer\Object\Util">
       <UniqueIdentifier>{9e2b2cc6-54ce-4b56-8916-f15efd92366a}</UniqueIdentifier>
     </Filter>
@@ -102,6 +99,9 @@
     </Filter>
     <Filter Include="SOURCE\Renderer\Particle">
       <UniqueIdentifier>{5ff5d927-5930-4dd0-b76f-22606cb99959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Renderer\Object\Sprite.unused">
+      <UniqueIdentifier>{ab0caa54-7e17-4e28-971c-89c4069719b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -205,13 +205,13 @@
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\sprite\CSprite.cpp">
-      <Filter>SOURCE\Renderer\Object\Sprite</Filter>
+      <Filter>SOURCE\Renderer\Object\Sprite.unused</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\sprite\CSpriteContainer.cpp">
-      <Filter>SOURCE\Renderer\Object\Sprite</Filter>
+      <Filter>SOURCE\Renderer\Object\Sprite.unused</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\sprite\CSprite_CheckFunctions.cpp">
-      <Filter>SOURCE\Renderer\Object\Sprite</Filter>
+      <Filter>SOURCE\Renderer\Object\Sprite.unused</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp">
       <Filter>SOURCE\Renderer\Object\Util</Filter>
@@ -383,9 +383,6 @@
     <ClInclude Include="source\renderer\system\glMainSystem.h">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\system\glVBufferStreaming.h">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\system\glSystem.h">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClInclude>
@@ -463,12 +460,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\object\model\SkinnedModel.h">
       <Filter>SOURCE\Renderer\Object\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\sprite\CSprite.h">
-      <Filter>SOURCE\Renderer\Object\Sprite</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\sprite\CSpriteContainer.h">
-      <Filter>SOURCE\Renderer\Object\Sprite</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\util\CLoadScreenInjector.h">
       <Filter>SOURCE\Renderer\Object\Util</Filter>
@@ -655,6 +646,15 @@
     </ClInclude>
     <ClInclude Include="source\renderer\gpuw\Transfer.h">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\sprite\CSprite.unused.h">
+      <Filter>SOURCE\Renderer\Object\Sprite.unused</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\sprite\CSpriteContainer.unused.h">
+      <Filter>SOURCE\Renderer\Object\Sprite.unused</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\system\rrVBufferStreaming.h">
+      <Filter>SOURCE\Renderer\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

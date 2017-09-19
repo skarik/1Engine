@@ -88,9 +88,24 @@
     <ClCompile Include="source\renderer\object\shapes\CRenderablePrimitive.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CRenderPlane.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CRotBoxRPrimitive.cpp" />
-    <ClCompile Include="source\renderer\object\sprite\CSprite.cpp" />
-    <ClCompile Include="source\renderer\object\sprite\CSpriteContainer.cpp" />
-    <ClCompile Include="source\renderer\object\sprite\CSprite_CheckFunctions.cpp" />
+    <ClCompile Include="source\renderer\object\sprite\CSprite.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\sprite\CSpriteContainer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\sprite\CSprite_CheckFunctions.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp" />
     <ClCompile Include="source\renderer\ogl\gl_core_3_3.c" />
     <ClCompile Include="source\renderer\ogl\wgl_core_3_3.c" />
@@ -180,8 +195,18 @@
     <ClInclude Include="source\renderer\object\shapes\CRenderablePrimitive.h" />
     <ClInclude Include="source\renderer\object\shapes\CRenderPlane.h" />
     <ClInclude Include="source\renderer\object\shapes\CRotBoxRPrimitive.h" />
-    <ClInclude Include="source\renderer\object\sprite\CSprite.h" />
-    <ClInclude Include="source\renderer\object\sprite\CSpriteContainer.h" />
+    <ClInclude Include="source\renderer\object\sprite\CSprite.unused.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\sprite\CSpriteContainer.unused.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\object\util\CLoadScreenInjector.h" />
     <ClInclude Include="source\renderer\ogl\GLCommon.h" />
     <ClInclude Include="source\renderer\ogl\gl_core_3_3.h" />
@@ -198,7 +223,7 @@
     <ClInclude Include="source\renderer\system\glDrawing.h" />
     <ClInclude Include="source\renderer\system\glMainSystem.h" />
     <ClInclude Include="source\renderer\system\glSystem.h" />
-    <ClInclude Include="source\renderer\system\glVBufferStreaming.h" />
+    <ClInclude Include="source\renderer\system\rrVBufferStreaming.h" />
     <ClInclude Include="source\renderer\texture\CBitmapFont.h" />
     <ClInclude Include="source\renderer\texture\CMRTTexture.h" />
     <ClInclude Include="source\renderer\texture\CRenderTexture.h" />

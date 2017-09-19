@@ -41,7 +41,7 @@ bool GizmoRenderer::Render ( const char pass )
 	m_material->bindPass(pass);
 
 	// Begin rendering the area rects
-	GLd.BeginPrimitive( GL_TRIANGLES );
+	auto lPrim = GLd.BeginPrimitive( GL_TRIANGLES, m_material );
 
 	GLd.P_PushTexcoord( 0,0 );
 	GLd.P_PushNormal( 0,0,0 );
@@ -141,7 +141,7 @@ bool GizmoRenderer::Render ( const char pass )
 		}*/
 	}
 
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 
 	return true;
 }

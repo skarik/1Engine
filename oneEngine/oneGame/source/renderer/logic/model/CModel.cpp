@@ -28,10 +28,10 @@ CModel::CModel ( const char* sFilename )
 #endif
 
 	// Clear out uniform lists
-	uniformMapFloat = NULL;
-	uniformMapVect2d = NULL;
-	uniformMapVect3d = NULL;
-	uniformMapColor = NULL;
+	//uniformMapFloat = NULL;
+	//uniformMapVect2d = NULL;
+	//uniformMapVect3d = NULL;
+	//uniformMapColor = NULL;
 
 	// Clear out the material list
 	//vMaterials.clear();
@@ -135,10 +135,10 @@ CModel::CModel ( arModelData& mdInModelData, const char* sModelName )
 	myModelFilename = sModelName;
 
 	// Clear out uniform lists
-	uniformMapFloat = NULL;
-	uniformMapVect2d = NULL;
-	uniformMapVect3d = NULL;
-	uniformMapColor = NULL;
+	//uniformMapFloat = NULL;
+	//uniformMapVect2d = NULL;
+	//uniformMapVect3d = NULL;
+	//uniformMapColor = NULL;
 
 	// Clear out the material list
 	//vMaterials.clear();
@@ -245,10 +245,10 @@ CModel::~CModel ( void )
 		delete pMyAnimation;
 	pMyAnimation = NULL;
 
-	delete_safe( uniformMapFloat );
-	delete_safe( uniformMapVect2d );
-	delete_safe( uniformMapVect3d );
-	delete_safe( uniformMapColor );
+	//delete_safe( uniformMapFloat );
+	//delete_safe( uniformMapVect2d );
+	//delete_safe( uniformMapVect3d );
+	//delete_safe( uniformMapColor );
 }
 
 
@@ -325,55 +325,55 @@ void CModel::CalculateBoundingBox ( void )
 }
 
 // ==Shader interface==
-void CModel::SetShaderUniform ( const char* sUniformName, float const fInput )
-{
-	/*if ( !CGameSettings::Active()->b_ro_EnableShaders ) {
-		return; // TODO
-	}*/
-	if ( !uniformMapFloat ) uniformMapFloat = new unordered_map<arstring128,float>;
-	(*uniformMapFloat)[arstring128(sUniformName)] = fInput;
-}
-void CModel::SetShaderUniform ( const char* sUniformName, const Vector2d& fInput )
-{
-	if ( !uniformMapVect2d ) uniformMapVect2d = new unordered_map<arstring128,Vector2d>;
-	(*uniformMapVect2d)[arstring128(sUniformName)] = fInput;
-}
-void CModel::SetShaderUniform ( const char* sUniformName, const Vector3d& fInput )
-{
-	if ( !uniformMapVect3d ) uniformMapVect3d = new unordered_map<arstring128,Vector3d>;
-	(*uniformMapVect3d)[arstring128(sUniformName)] = fInput;
-}
-void CModel::SetShaderUniform ( const char* sUniformName, const Color& fInput )
-{
-	if ( !uniformMapColor ) uniformMapColor = new unordered_map<arstring128,Color>;
-	(*uniformMapColor)[arstring128(sUniformName)] = fInput;
-}
+//void CModel::SetShaderUniform ( const char* sUniformName, float const fInput )
+//{
+//	/*if ( !CGameSettings::Active()->b_ro_EnableShaders ) {
+//		return; // TODO
+//	}*/
+//	if ( !uniformMapFloat ) uniformMapFloat = new unordered_map<arstring128,float>;
+//	(*uniformMapFloat)[arstring128(sUniformName)] = fInput;
+//}
+//void CModel::SetShaderUniform ( const char* sUniformName, const Vector2d& fInput )
+//{
+//	if ( !uniformMapVect2d ) uniformMapVect2d = new unordered_map<arstring128,Vector2d>;
+//	(*uniformMapVect2d)[arstring128(sUniformName)] = fInput;
+//}
+//void CModel::SetShaderUniform ( const char* sUniformName, const Vector3d& fInput )
+//{
+//	if ( !uniformMapVect3d ) uniformMapVect3d = new unordered_map<arstring128,Vector3d>;
+//	(*uniformMapVect3d)[arstring128(sUniformName)] = fInput;
+//}
+//void CModel::SetShaderUniform ( const char* sUniformName, const Color& fInput )
+//{
+//	if ( !uniformMapColor ) uniformMapColor = new unordered_map<arstring128,Color>;
+//	(*uniformMapColor)[arstring128(sUniformName)] = fInput;
+//}
 
-void CModel::SendShaderUniforms ( void )
-{
-	if ( RrMaterial::current->getUsingShader() ) {
-		if ( uniformMapFloat ) {
-			for ( auto entry = uniformMapFloat->begin(); entry != uniformMapFloat->end(); ++entry ) {
-				RrMaterial::current->setUniform( entry->first.c_str(), entry->second );
-			}
-		}
-		if ( uniformMapVect2d ) {
-			for ( auto entry = uniformMapVect2d->begin(); entry != uniformMapVect2d->end(); ++entry ) {
-				RrMaterial::current->setUniform( entry->first.c_str(), entry->second );
-			}
-		}
-		if ( uniformMapVect3d ) {
-			for ( auto entry = uniformMapVect3d->begin(); entry != uniformMapVect3d->end(); ++entry ) {
-				RrMaterial::current->setUniform( entry->first.c_str(), entry->second );
-			}
-		}
-		if ( uniformMapColor ) {
-			for ( auto entry = uniformMapColor->begin(); entry != uniformMapColor->end(); ++entry ) {
-				RrMaterial::current->setUniform( entry->first.c_str(), entry->second );
-			}
-		}
-	}
-}
+//void CModel::SendShaderUniforms ( void )
+//{
+//	if ( RrMaterial::current->getUsingShader() ) {
+//		if ( uniformMapFloat ) {
+//			for ( auto entry = uniformMapFloat->begin(); entry != uniformMapFloat->end(); ++entry ) {
+//				RrMaterial::current->setUniform( entry->first.c_str(), entry->second );
+//			}
+//		}
+//		if ( uniformMapVect2d ) {
+//			for ( auto entry = uniformMapVect2d->begin(); entry != uniformMapVect2d->end(); ++entry ) {
+//				RrMaterial::current->setUniform( entry->first.c_str(), entry->second );
+//			}
+//		}
+//		if ( uniformMapVect3d ) {
+//			for ( auto entry = uniformMapVect3d->begin(); entry != uniformMapVect3d->end(); ++entry ) {
+//				RrMaterial::current->setUniform( entry->first.c_str(), entry->second );
+//			}
+//		}
+//		if ( uniformMapColor ) {
+//			for ( auto entry = uniformMapColor->begin(); entry != uniformMapColor->end(); ++entry ) {
+//				RrMaterial::current->setUniform( entry->first.c_str(), entry->second );
+//			}
+//		}
+//	}
+//}
 
 // Set material for meshes
 void CModel::SetMaterial ( RrMaterial* n_pNewMaterial )

@@ -21,15 +21,20 @@ bool gpu::ConstantBuffer::valid ( void )
 {
 	return m_buffer != 0;
 }
+//	getGlIndex() : returns index of resource in OpenGL
+glHandle gpu::ConstantBuffer::getGlIndex ( void )
+{
+	return m_buffer;
+}
 
 static void _AllocateBufferSize ( const uint64_t data_size, const gpu::TransferStyle style )
 {
 	if (style == gpu::kTransferStatic)
-		glBufferData( GL_UNIFORM_BUFFER, data_size, NULL, GL_STATIC_DRAW );
+		glBufferData( GL_UNIFORM_BUFFER, (GLsizeiptr)data_size, NULL, GL_STATIC_DRAW );
 	else if (style == gpu::kTransferDynamic)
-		glBufferData( GL_UNIFORM_BUFFER, data_size, NULL, GL_DYNAMIC_DRAW );
+		glBufferData( GL_UNIFORM_BUFFER, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_DRAW );
 	else if (style == gpu::kTransferStream)
-		glBufferData( GL_UNIFORM_BUFFER, data_size, NULL, GL_STREAM_DRAW );
+		glBufferData( GL_UNIFORM_BUFFER, (GLsizeiptr)data_size, NULL, GL_STREAM_DRAW );
 }
 
 //	init ( data ) : initializes a constant buffer with data
@@ -60,7 +65,7 @@ int	gpu::ConstantBuffer::upload ( void* data, const uint64_t data_size, const Tr
 	}
 
 	glBindBuffer( GL_UNIFORM_BUFFER, m_buffer );
-	glBufferSubData( GL_UNIFORM_BUFFER, 0, data_size, data );
+	glBufferSubData( GL_UNIFORM_BUFFER, 0, (GLsizeiptr)data_size, data );
 
 	return 0;
 }

@@ -17,7 +17,7 @@
 
 #include "renderer/debug/CDebugDrawer.h"
 #include "renderer/debug/CDebugRTInspector.h"
-#include "renderer/object/sprite/CSpriteContainer.h"
+//#include "renderer/object/sprite/CSpriteContainer.h"
 
 #include "renderer/resource/CResourceManager.h"
 
@@ -163,8 +163,6 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	// Create the debug tools
 	new debug::CDebugDrawer;
 	new debug::CDebugRTInspector;
-	// Create the sprite renderer
-	new SpriteContainer;
 
 	// Create the passes for rendering the screen:
 	{
@@ -205,8 +203,6 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 //  frees list of renderers, but not the renderers
 CRenderState::~CRenderState ( void )
 {
-	// Delete the sprite renderer
-	delete SpriteContainer::Active;
 	// Delete the debug tools
 	delete debug::Drawer;
 	delete debug::RTInspector;

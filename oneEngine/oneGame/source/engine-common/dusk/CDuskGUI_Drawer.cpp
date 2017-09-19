@@ -184,15 +184,15 @@ void CDuskGUI::drawRect ( const Rect& rect )
 		GLd.DrawSet2DScaleMode();
 
 		matDefault->bindPass(0);
-		matDefault->setShaderConstants( this );
+		//matDefault->setShaderConstants( this );
 
-		GLd.BeginPrimitive( GL_TRIANGLES );
+		auto lPrim = GLd.BeginPrimitive( GL_TRIANGLES, matDefault );
 		for ( uint i = 0; i < modelSolidMeshList.size(); ++i )
 		{
 			GLd.P_PushColor( modelSolidMeshList[i].r, modelSolidMeshList[i].g, modelSolidMeshList[i].b, modelSolidMeshList[i].a );
 			GLd.P_AddVertex( modelSolidMeshList[i].x + parenting_offset.x, modelSolidMeshList[i].y + parenting_offset.y );
 		}
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 		modelSolidMeshList.clear();
 
 		GL.endOrtho();
@@ -278,14 +278,14 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 		GLd.DrawSet2DScaleMode();
 
 		matDefault->bindPass(0);
-		matDefault->setShaderConstants( this );
-		GLd.BeginPrimitive( GL_LINES );
+		//matDefault->setShaderConstants( this );
+		auto lPrim = GLd.BeginPrimitive( GL_LINES, matDefault );
 		for ( uint i = 0; i < modelLineMeshList.size(); ++i )
 		{
 			GLd.P_PushColor( modelLineMeshList[i].r, modelLineMeshList[i].g, modelLineMeshList[i].b, modelLineMeshList[i].a );
 			GLd.P_AddVertex( modelLineMeshList[i].x + parenting_offset.x, modelLineMeshList[i].y + parenting_offset.y );
 		}
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 		modelLineMeshList.clear();
 
 		GL.endOrtho();
@@ -336,14 +336,14 @@ void CDuskGUI::drawLine ( const Real x1, const Real y1, const Real x2, const Rea
 		GLd.DrawSet2DScaleMode();
 
 		matDefault->bindPass(0);
-		matDefault->setShaderConstants( this );
-		GLd.BeginPrimitive( GL_LINES );
+		//matDefault->setShaderConstants( this );
+		auto lPrim = GLd.BeginPrimitive( GL_LINES, matDefault );
 		for ( uint i = 0; i < modelLineMeshList.size(); ++i )
 		{
 			GLd.P_PushColor( modelLineMeshList[i].r, modelLineMeshList[i].g, modelLineMeshList[i].b, modelLineMeshList[i].a );
 			GLd.P_AddVertex( modelLineMeshList[i].x + parenting_offset.x, modelLineMeshList[i].y + parenting_offset.y );
 		}
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 		modelLineMeshList.clear();
 
 		GL.endOrtho();
@@ -375,7 +375,7 @@ void CDuskGUI::drawText ( const Real x, const Real y, const char* str )
 		// Draw the text
 		matFont->setTexture( TEX_MAIN, fntDefault );
 		matFont->bindPass(0);
-		matFont->setShaderConstants( this );
+		//matFont->setShaderConstants( this );
 		if ( !modelTextRequestList.empty() ) {
 			for ( uint i = 0; i < modelTextRequestList.size(); ++i )
 			{
@@ -421,7 +421,7 @@ void CDuskGUI::drawTextWidth ( const Real x, const Real y, const Real w, const c
 		// Draw the text
 		matFont->setTexture( TEX_MAIN, fntDefault );
 		matFont->bindPass(0);
-		matFont->setShaderConstants( this );
+		//matFont->setShaderConstants( this );
 		if ( !modelTextRequestList.empty() ) {
 			for ( uint i = 0; i < modelTextRequestList.size(); ++i )
 			{
@@ -466,7 +466,7 @@ void CDuskGUI::drawTextCentered ( const Real x, const Real y, const char* str )
 		// Draw the text
 		matFont->setTexture( TEX_MAIN, fntDefault );
 		matFont->bindPass(0);
-		matFont->setShaderConstants( this );
+		//matFont->setShaderConstants( this );
 		if ( !modelTextRequestList.empty() ) {
 			for ( uint i = 0; i < modelTextRequestList.size(); ++i )
 			{

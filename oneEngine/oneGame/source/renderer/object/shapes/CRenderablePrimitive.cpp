@@ -20,6 +20,13 @@ CRenderablePrimitive::~CRenderablePrimitive ( void )
 	vertexNum = 0;
 }
 
+bool CRenderablePrimitive::PreRender ( void )
+{
+	m_material->prepareShaderConstants(this);
+	return true;
+}
+
+
 // Render object
 bool CRenderablePrimitive::Render ( const char pass )
 {
@@ -27,11 +34,11 @@ bool CRenderablePrimitive::Render ( const char pass )
 	GL.Transform( &transform.world );
 
 	m_material->bindPass(pass);
-	m_material->setShaderConstants(this);
+	//m_material->setShaderConstants(this);
 
 	// Draw the object
 	unsigned int v;
-	GLd.BeginPrimitive( GL_TRIANGLES );
+	auto lPrim = GLd.BeginPrimitive( GL_TRIANGLES, m_material );
 	GLd.P_PushColor( Color(1,1,1,1) );
 	for ( v = 0; v < vertexNum; v += 1 )
 	{
@@ -39,7 +46,7 @@ bool CRenderablePrimitive::Render ( const char pass )
 		GLd.P_PushNormal( vertexData[v].nx, vertexData[v].ny, vertexData[v].nz );
 		GLd.P_AddVertex( vertexData[v].x, vertexData[v].y, vertexData[v].z );
 	}
-	GLd.EndPrimitive();
+	GLd.EndPrimitive(lPrim);
 
 	return true;
 }

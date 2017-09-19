@@ -14,7 +14,8 @@ public:
 	RENDER_API CCubeRenderablePrimitive ( Real width, Real depth, Real height );
 
 	// Render function
-	bool Render ( const char pass );
+	bool PreRender ( void ) override;
+	bool Render ( const char pass ) override;
 
 	// Set size
 	RENDER_API void SetSize ( Real width, Real depth, Real height );

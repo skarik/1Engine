@@ -19,8 +19,8 @@ public:
 	RENDER_API CRenderablePrimitive ( void );
 	RENDER_API ~CRenderablePrimitive ( void );
 
-	// Render function
-	bool Render ( const char pass );
+	bool PreRender ( void ) override;
+	bool Render ( const char pass ) override;
 
 	// Set material
 	//void SetMaterial ( RrMaterial* );

@@ -23,13 +23,13 @@
 
 #include <map>
 
-RrMaterial* RrMaterial::current	= NULL;
+//RrMaterial* RrMaterial::current	= NULL;
 RrMaterial*	RrMaterial::Default = NULL;
 RrMaterial*	RrMaterial::Copy	= NULL;
 RrMaterial*	RrMaterial::Fallback= NULL;
-uchar		RrMaterial::current_pass = 0;
+//uchar		RrMaterial::current_pass = 0;
 uint		RrMaterial::current_sampler_slot = 0;
-int			RrMaterial::m_currentShaderState = 1;
+//int			RrMaterial::m_currentShaderState = 1;
 
 // Current material special mode.
 // The value of this will drastically change the rest of the program. These are hard-coded special effects.
@@ -42,7 +42,7 @@ CTexture*	RrMaterial::m_sampler_reflection = NULL;
 
 RrMaterial::RrMaterial ( void )
 	: m_isScreenShader(false), m_isSkinnedShader(false), m_isInstancedShader(false),
-	m_diffuse(1,1,1,1), m_specular(0,0,0,1), m_specularPower(32), m_emissive(0,0,0,0),
+	m_diffuse(1,1,1,1), m_specular(0,0,0,1), /*m_specularPower(32),*/ m_emissive(0,0,0,0),
 	m_texcoordScaling(1,1,1,1), m_texcoordOffset(0,0,0,0),
 	gm_WindDirection(0,0,0,1), gm_FadeValue(0), gm_HalfScale(0),
 	m_bufferMatricesSkinning(0), /*m_bufferMatricesSoftbody(0),*/ m_bufferSkeletonSize(0),
@@ -86,7 +86,7 @@ RrMaterial*	RrMaterial::copy ( void )
 	RrMaterial* newMaterial = new RrMaterial;
 	newMaterial->m_diffuse	= m_diffuse;
 	newMaterial->m_specular	= m_specular;
-	newMaterial->m_specularPower	= m_specularPower;
+	//newMaterial->m_specularPower	= m_specularPower;
 	newMaterial->m_emissive	= m_emissive;
 	newMaterial->gm_WindDirection	= gm_WindDirection;
 	newMaterial->gm_FadeValue		= gm_FadeValue;
@@ -602,9 +602,12 @@ void RrMaterial::bindPassForward ( uchar pass )
 	df_state.shader = NULL;
 
 	// Save this material and pass as current
-	current			= this;
-	current_pass	= pass;
-	m_currentShaderState = RENDER_MODE_FORWARD;
+	//current			= this;
+	//current_pass	= pass;
+	m_currentShader	= passinfo[pass].shader;
+	m_currentPass = pass;
+	m_currentPassForward = true;
+	//m_currentShaderState = RENDER_MODE_FORWARD;
 
 	// Set face mode
 	switch ( passinfo[pass].m_face_mode )
@@ -686,21 +689,22 @@ void RrMaterial::bindPassForward ( uchar pass )
 	}
 	// Bind shader
 	TimeProfiler.BeginTimeProfile( "rs_mat_bindshader" );
-	if ( passinfo[pass].shader ) {
+	if ( passinfo[pass].shader )
+	{
 		if ( !state.shader || passinfo[pass].shader->get_program() != state.shader->get_program() )
 		{
 			try
 			{
 				passinfo[pass].shader->begin();
 				state.shader = passinfo[pass].shader;
-				shader_bind_world(passinfo[pass].shader);
+				//shader_bind_world(passinfo[pass].shader);
 				state.pass = &(passinfo[pass]);
 			}
 			catch ( const std::exception& )
 			{
 				RrMaterial::Fallback->passinfo[0].shader->begin();
 				state.shader = RrMaterial::Fallback->passinfo[0].shader;
-				shader_bind_world(RrMaterial::Fallback->passinfo[0].shader);
+				//shader_bind_world(RrMaterial::Fallback->passinfo[0].shader);
 				state.pass = &(RrMaterial::Fallback->passinfo[0]);
 			}
 		}
@@ -712,28 +716,32 @@ void RrMaterial::bindPassForward ( uchar pass )
 	// Send all constants
 	TimeProfiler.BeginTimeProfile( "rs_mat_binduniforms" );
 
-	TimeProfiler.BeginTimeProfile( "rs_mat_uni_consts" );
+	/*TimeProfiler.BeginTimeProfile( "rs_mat_uni_consts" );
 	shader_bind_constants(state.shader);
-	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_consts" );
-
-	current_sampler_slot = 0;
+	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_consts" );*/
 
 	TimeProfiler.BeginTimeProfile( "rs_mat_uni_sampler" );
+	current_sampler_slot = 0;
 	shader_bind_samplers(state.shader);
 	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_sampler" );
 
-	TimeProfiler.BeginTimeProfile( "rs_mat_uni_lights" );
+	/*TimeProfiler.BeginTimeProfile( "rs_mat_uni_lights" );
 	if ( state.pass->m_lighting_mode != renderer::LI_NONE ) {
 		shader_bind_lights(state.shader);
 	}
 	else {
 		shader_bind_nolights(state.shader);
 	}
-	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_lights" );
+	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_lights" );*/
 
-	TimeProfiler.BeginTimeProfile( "rs_mat_uni_obj" );
-	setShaderConstants(NULL); // TODO: move this (default take the current stack options)
-	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_obj" );
+	//TimeProfiler.BeginTimeProfile( "rs_mat_uni_obj" );
+	//setShaderConstants(NULL); // TODO: move this (default take the current stack options)
+	//TimeProfiler.EndAddTimeProfile( "rs_mat_uni_obj" );
+
+	// Tell the shader to use the constants
+	TimeProfiler.BeginTimeProfile( "rs_mat_cbuf" );
+	shader_set_constantbuffers(passinfo[pass].shader, pass, false);
+	TimeProfiler.EndTimeProfile( "rs_mat_cbuf" );
 
 	TimeProfiler.EndAddTimeProfile( "rs_mat_binduniforms" );
 }
@@ -744,9 +752,12 @@ void RrMaterial::bindPassDeferred ( uchar pass )
 	state.shader = NULL;
 
 	// Save this material and pass as current
-	current			= this;
-	current_pass	= pass;
-	m_currentShaderState = RENDER_MODE_DEFERRED;
+	//current			= this;
+	//current_pass	= pass;
+	m_currentShader	= deferredinfo[pass].shader;
+	m_currentPass = pass;
+	m_currentPassForward = false;
+	//m_currentShaderState = RENDER_MODE_DEFERRED;
 
 	// Set face mode
 	switch ( passinfo[pass].m_face_mode )
@@ -858,17 +869,22 @@ void RrMaterial::bindPassDeferred ( uchar pass )
 	shader_bind_samplers(deferredinfo[pass].shader);
 	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_sampler" );
 
-	TimeProfiler.BeginTimeProfile( "rs_mat_uni_consts" );
-	shader_bind_constants(deferredinfo[pass].shader);
-	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_consts" );
+	//TimeProfiler.BeginTimeProfile( "rs_mat_uni_consts" );
+	//shader_bind_constants(deferredinfo[pass].shader);
+	//TimeProfiler.EndAddTimeProfile( "rs_mat_uni_consts" );
 
-	TimeProfiler.BeginTimeProfile( "rs_mat_uni_lights" );
-	shader_bind_deferred(deferredinfo[pass].shader);
-	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_lights" );
+	//TimeProfiler.BeginTimeProfile( "rs_mat_uni_lights" );
+	//shader_bind_deferred(deferredinfo[pass].shader);
+	//TimeProfiler.EndAddTimeProfile( "rs_mat_uni_lights" );
 
-	TimeProfiler.BeginTimeProfile( "rs_mat_uni_obj" );
-	setShaderConstants(NULL); // TODO: move this (default take the current stack options)
-	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_obj" );
+	//TimeProfiler.BeginTimeProfile( "rs_mat_uni_obj" );
+	//setShaderConstants(NULL); // TODO: move this (default take the current stack options)
+	//TimeProfiler.EndAddTimeProfile( "rs_mat_uni_obj" );
+
+	// Tell the shader to use the constants
+	TimeProfiler.BeginTimeProfile( "rs_mat_cbuf" );
+	shader_set_constantbuffers(deferredinfo[pass].shader, pass, false);
+	TimeProfiler.EndTimeProfile( "rs_mat_cbuf" );
 
 	TimeProfiler.EndAddTimeProfile( "rs_mat_binduniforms" );
 }
@@ -941,7 +957,8 @@ void RrMaterial::shader_bind_samplers ( RrShader* shader )
 	*/
 	if ( m_bufferMatricesSkinning && m_bufferSkeletonSize )
 	{
-		int uniformLocation = shader->get_uniform_block_location( "sys_SkinningDataMajor" );
+		//int uniformLocation = shader->get_uniform_block_location( "sys_SkinningDataMajor" );
+		int uniformLocation = shader->getUniformBlockLocation( "sys_SkinningDataMajor" ); // TODO: Fix this.
 		if ( uniformLocation >= 0 )
 		{
 			glUniformBlockBinding( shader->get_program(), uniformLocation, skinningMajorLocation );
@@ -981,468 +998,437 @@ void RrMaterial::shader_bind_samplers ( RrShader* shader )
 	//}
 }
 
-#include "core/system/Screen.h"
+//#include "core/system/Screen.h"
+//
+//#define MATERIAL_CALL_ONCE(_IDENTIFIER)
+//
+//void RrMaterial::shader_bind_world ( RrShader* shader )
+//{
+//	// Binds upon shader change (not very often)
+//
+//	int uniformLocation;
+//
+//	// Camera Position
+//	uniformLocation = shader->get_uniform_location( "sys_WorldCameraPos" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		Vector3d cameraPos = CCamera::activeCamera->transform.position;
+//		glUniform3fv( uniformLocation, 1, &(cameraPos.x) );
+//	}
+//
+//	// World Offset
+//	uniformLocation = shader->get_uniform_location( "sys_WorldOffset" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		Vector3d worldOffset = Vector3d(core::world_origin.x, core::world_origin.y, core::world_origin.z);
+//		glUniform3fv( uniformLocation, 1, &(worldOffset.x) );
+//	}
+//
+//	// Time variables
+//	uniformLocation = shader->get_uniform_location( "sys_Time" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		float timevars [4];
+//		timevars[1] = CTime::currentTime;
+//		timevars[0] = timevars[1]/20.0f;
+//		timevars[2] = timevars[1]*2.0f;
+//		timevars[3] = timevars[1]*3.0f;
+//		glUniform4fv( uniformLocation, 1, timevars );
+//	}
+//	uniformLocation = shader->get_uniform_location( "sys_SinTime" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		float timevars [4];
+//		timevars[0] = sin( CTime::currentTime / 8.0f );
+//		timevars[1] = sin( CTime::currentTime / 4.0f );
+//		timevars[2] = sin( CTime::currentTime / 2.0f );
+//		timevars[3] = sin( CTime::currentTime / 1.0f );
+//		glUniform4fv( uniformLocation, 1, timevars );
+//	}
+//	uniformLocation = shader->get_uniform_location( "sys_CosTime" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		float timevars [4];
+//		timevars[0] = cos( CTime::currentTime / 8.0f );
+//		timevars[1] = cos( CTime::currentTime / 4.0f );
+//		timevars[2] = cos( CTime::currentTime / 2.0f );
+//		timevars[3] = cos( CTime::currentTime / 1.0f );
+//		glUniform4fv( uniformLocation, 1, timevars );
+//	}
+//	// Screen size
+//	uniformLocation = shader->get_uniform_location( "sys_ScreenSize" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		float screensize [2];
+//		screensize[0] = (float)Screen::Info.width;
+//		screensize[1] = (float)Screen::Info.height;
+//		glUniform2fv( uniformLocation, 1, screensize );
+//	}
+//	// Viewport size
+//	uniformLocation = shader->get_uniform_location( "sys_ViewportInfo" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		float screensize [4];
+//		screensize[0] = (float)0;
+//		screensize[1] = (float)0;
+//		screensize[2] = (float)Screen::Info.width * CCamera::activeCamera->render_scale;
+//		screensize[3] = (float)Screen::Info.height * CCamera::activeCamera->render_scale;
+//		glUniform4fv( uniformLocation, 1, screensize );
+//	}
+//	// Pixel size
+//	uniformLocation = shader->get_uniform_location( "sys_PixelRatio" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		glUniform1f( uniformLocation, CCamera::activeCamera->ortho_size.x / Screen::Info.width / CCamera::activeCamera->render_scale );
+//	}
+//
+//	uniformLocation = shader->get_uniform_location( "sys_ViewMatrixInverse" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		Matrix4x4 view;
+//		view = CCamera::activeCamera->viewTransform;
+//		glUniformMatrix4fv( uniformLocation, 1,false, (view.inverse())[0] );
+//	}
+//	uniformLocation = shader->get_uniform_location( "sys_ViewMatrix" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		Matrix4x4 view;
+//		view = CCamera::activeCamera->viewTransform;
+//		glUniformMatrix4fv( uniformLocation, 1,false, (view)[0] );
+//	}
+//	uniformLocation = shader->get_uniform_location( "sys_ProjectionMatrix" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		Matrix4x4 projection;
+//		projection = CCamera::activeCamera->projTransform;
+//		glUniformMatrix4fv( uniformLocation, 1,false, (projection)[0] );
+//	}
+//	uniformLocation = shader->get_uniform_location( "sys_CameraRange" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		Vector3d rangeinfo;
+//		rangeinfo.x = CCamera::activeCamera->zNear;
+//		rangeinfo.y = CCamera::activeCamera->zFar;
+//		rangeinfo.z = rangeinfo.y-rangeinfo.x;
+//		glUniform3fv( uniformLocation, 1, &(rangeinfo.x) );
+//	}
+//
+//	// Fog structure. (But don't bind it if certain things?)
+//	uniformLocation = shader->get_uniform_block_location( "sys_Fog" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		glUniformBlockBinding( shader->get_program(), uniformLocation, fogLocation );
+//		MATERIAL_CALL_ONCE("sys_Fog")
+//		{
+//			glBindBufferRange( GL_UNIFORM_BUFFER, fogLocation, m_ubo_foginfo, NIL, sizeof(_fogInfo_t) );
+//		}
+//	}
+//
+//	// Lighting structure.
+//	uniformLocation = shader->get_uniform_block_location( "sys_LightingInfo" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		glUniformBlockBinding( shader->get_program(), uniformLocation, lightLocation );
+//		MATERIAL_CALL_ONCE("sys_LightingInfo")
+//		{
+//			glBindBufferRange( GL_UNIFORM_BUFFER, lightLocation, m_ubo_lightinginfo, NIL, sizeof(_lightingInfo_t) );
+//		}
+//	}
+//	// Light. // Handled now by deferred renderer
+//	/*uniformLocation = shader->get_uniform_location( "sys_LightNumber" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		glUniform1i( uniformLocation, m_lightCount );
+//	}*/
+//
+//	// Reflection structure.
+//	uniformLocation = shader->get_uniform_block_location( "sys_ReflectInfo" );
+//	if ( uniformLocation >= 0 )
+//	{
+//		glUniformBlockBinding( shader->get_program(), uniformLocation, reflectLocation );
+//		glBindBufferRange( GL_UNIFORM_BUFFER, reflectLocation, m_ubo_reflectinfo, NIL, sizeof(_reflectInfo_t) );
+//	}
+//}
 
-#define MATERIAL_CALL_ONCE(_IDENTIFIER)
 
-void RrMaterial::shader_bind_world ( RrShader* shader )
-{
-	// Binds upon shader change (not very often)
+//void RrMaterial::shader_bind_constants( RrShader* shader )
+//{
+//	int uniformLocation;
+//
+//	// Local constants
+//		glUniform4f( renderer::UNI_SURFACE_DIFFUSE_COLOR, m_diffuse.red, m_diffuse.green, m_diffuse.blue, m_diffuse.alpha );
+//		glUniform3f( renderer::UNI_SURFACE_EMISSIVE_COLOR, m_emissive.red, m_emissive.green, m_emissive.blue );
+//		glUniform4f( renderer::UNI_SURFACE_SPECULAR_COLOR, m_specular.red, m_specular.green, m_specular.blue, m_specularPower );
+//		if ( passinfo[current_pass].m_transparency_mode == renderer::ALPHAMODE_ALPHATEST ) {
+//			glUniform1f( renderer::UNI_SURFACE_ALPHA_CUTOFF, passinfo[current_pass].f_alphatest_value );
+//		}
+//		else {
+//			glUniform1f( renderer::UNI_SURFACE_ALPHA_CUTOFF, -1.0f );
+//		}
+//	
+//	// Texture coordinates
+//		glUniform4fv( renderer::UNI_TEXTURE_SCALE, 1, &m_texcoordScaling[0] );
+//		glUniform4fv( renderer::UNI_TEXTURE_OFFSET, 1, &m_texcoordOffset[0] );
+//
+//	// World effects
+//		glUniform4f( renderer::UNI_GAME_WIND_DIRECTION, gm_WindDirection.x, gm_WindDirection.y, gm_WindDirection.z, gm_WindDirection.w );
+//		glUniform1f( renderer::UNI_GAME_FADE_VALUE, gm_FadeValue );
+//		glUniform1f( renderer::UNI_GAME_HALF_SCALE, gm_HalfScale );
+//}
 
-	int uniformLocation;
+//void RrMaterial::shader_bind_deferred ( RrShader* shader )
+//{
+//	int uniformLocation;
+//
+//	// Lighting info
+//	float lightvars [3];
+//	lightvars[0] = 0;//(deferredinfo[current_pass].m_lighting_mode == renderer::LI_NONE) ? 0.0f : 1.0f;
+//	lightvars[1] = deferredinfo[current_pass].m_rimlight_strength;
+//	lightvars[2] = 0;
+//	glUniform3fv( renderer::UNI_SURFACE_LIGHTING_OVERRIDES, 1, lightvars );
+//}
 
-	// Camera Position
-	uniformLocation = shader->get_uniform_location( "sys_WorldCameraPos" );
-	if ( uniformLocation >= 0 )
-	{
-		Vector3d cameraPos = CCamera::activeCamera->transform.position;
-		glUniform3fv( uniformLocation, 1, &(cameraPos.x) );
-	}
 
-	// World Offset
-	uniformLocation = shader->get_uniform_location( "sys_WorldOffset" );
-	if ( uniformLocation >= 0 )
-	{
-		Vector3d worldOffset = Vector3d(core::world_origin.x, core::world_origin.y, core::world_origin.z);
-		glUniform3fv( uniformLocation, 1, &(worldOffset.x) );
-	}
+//void RrMaterial::shader_bind_lights	 ( RrShader* shader )
+//{
+//	int uniformLocation;//, uniformLocationB;
+//
+//	// Get the light list
+//	std::vector<CLight*>* lightList = CLight::GetActiveLightList();
+//	// Set the maximum value to iterate through
+//	unsigned int maxVal = lightList->size();
+//	maxVal = std::min<uint>( maxVal, (uint)(renderer::Settings.maxLights-1) );
+//
+//	// Prepare all the names for the uniforms for fast indexing
+//	char uniformname1 [] = "sys_LightProperties[x]";
+//	char uniformname2 [] = "sys_LightPosition[x]";
+//	char uniformname3 [] = "sys_LightColor[x]";
+//
+//	char uniformname_sh1 [] = "sys_LightShadowInfo[x]";
+//	char uniformname_sh2 [] = "sys_LightMatrix[x]";
+//	char uniformname_sh3 [] = "textureShadowx";
+//
+//	// Loop through all the lights in the list
+//	for ( unsigned int i = 0; i < maxVal; i++ )
+//	{
+//		// Setup shadow casting textures
+//		if ( CGameSettings::Active()->b_ro_EnableShadows )
+//		{
+//			if ( (*lightList)[i]->generateShadows && i < 12 )
+//			{
+//				glUniform1i( renderer::UNI_SAMPLER_SHADOW_0 + i, current_sampler_slot );
+//				glActiveTexture( GL_TEXTURE0+current_sampler_slot );
+//				CTexture::Unbind(0);
+//				if ( (*lightList)[i]->GetShadowTexture() ) {
+//					(*lightList)[i]->GetShadowTexture()->BindDepth();
+//				}
+//
+//				// Increment texture count.
+//				current_sampler_slot += 1;
+//			}
+//		}	
+//	}
+//
+//	// Set the ambient color
+//	{
+//		Color actualAmbient = renderer::Settings.ambientColor;
+//		glUniform4f( renderer::UNI_LIGHTING_AMBIENT,
+//			actualAmbient.red,
+//			actualAmbient.green,
+//			actualAmbient.blue, 1.0f );
+//	}
+//
+//	// Set the ambient cubemap
+//	{
+//		if ( m_sampler_reflection )
+//		{
+//			// Get the uniform location
+//			glUniform1i( renderer::UNI_SAMPLER_REFLECTION_0, current_sampler_slot );
+//			glActiveTexture( GL_TEXTURE0+current_sampler_slot );
+//			CTexture::Unbind(0);
+//			m_sampler_reflection->Bind();
+//				
+//			// Increment used texture count
+//			current_sampler_slot += 1;
+//		}
+//		else
+//		{
+//			/*m_sampler_reflection = new CTextureCube( "__m_reflectCubemap",
+//				"textures/sky/sky3side.jpg","textures/sky/sky3side.jpg",
+//				"textures/sky/sky3side.jpg","textures/sky/sky3side.jpg",
+//				"textures/sky/sky3top.jpg","textures/sky/sky3bottom.jpg"
+//				);*/
+//			/*m_sampler_reflection = new CTextureCube( "__m_reflectCubemap",
+//				"textures/sky/sky2side0.jpg","textures/sky/sky2side1.jpg",
+//				"textures/sky/sky2side0.jpg","textures/sky/sky2side1.jpg",
+//				"textures/sky/sky2top.jpg","textures/sky/sky2bottom.jpg"
+//				);*/
+//			/*m_sampler_reflection = new CTextureCube( "__m_reflectCubemap",
+//				"textures/sky/sky2top.jpg","textures/sky/sky2top.jpg",
+//				"textures/sky/sky2top.jpg","textures/sky/sky2top.jpg",
+//				"textures/sky/sky2top.jpg","textures/sky/sky2top.jpg"
+//				);*/
+//			m_sampler_reflection = NULL;
+//		}
+//	}
+//
+//}
+//
+//void RrMaterial::shader_bind_nolights ( RrShader* shader )
+//{
+//	// Fullbright on the ambient, though
+//	glUniform4f( renderer::UNI_LIGHTING_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f );
+//}
 
-	// Time variables
-	uniformLocation = shader->get_uniform_location( "sys_Time" );
-	if ( uniformLocation >= 0 )
-	{
-		float timevars [4];
-		timevars[1] = CTime::currentTime;
-		timevars[0] = timevars[1]/20.0f;
-		timevars[2] = timevars[1]*2.0f;
-		timevars[3] = timevars[1]*3.0f;
-		glUniform4fv( uniformLocation, 1, timevars );
-	}
-	uniformLocation = shader->get_uniform_location( "sys_SinTime" );
-	if ( uniformLocation >= 0 )
-	{
-		float timevars [4];
-		timevars[0] = sin( CTime::currentTime / 8.0f );
-		timevars[1] = sin( CTime::currentTime / 4.0f );
-		timevars[2] = sin( CTime::currentTime / 2.0f );
-		timevars[3] = sin( CTime::currentTime / 1.0f );
-		glUniform4fv( uniformLocation, 1, timevars );
-	}
-	uniformLocation = shader->get_uniform_location( "sys_CosTime" );
-	if ( uniformLocation >= 0 )
-	{
-		float timevars [4];
-		timevars[0] = cos( CTime::currentTime / 8.0f );
-		timevars[1] = cos( CTime::currentTime / 4.0f );
-		timevars[2] = cos( CTime::currentTime / 2.0f );
-		timevars[3] = cos( CTime::currentTime / 1.0f );
-		glUniform4fv( uniformLocation, 1, timevars );
-	}
-	// Screen size
-	uniformLocation = shader->get_uniform_location( "sys_ScreenSize" );
-	if ( uniformLocation >= 0 )
-	{
-		float screensize [2];
-		screensize[0] = (float)Screen::Info.width;
-		screensize[1] = (float)Screen::Info.height;
-		glUniform2fv( uniformLocation, 1, screensize );
-	}
-	// Viewport size
-	uniformLocation = shader->get_uniform_location( "sys_ViewportInfo" );
-	if ( uniformLocation >= 0 )
-	{
-		float screensize [4];
-		screensize[0] = (float)0;
-		screensize[1] = (float)0;
-		screensize[2] = (float)Screen::Info.width * CCamera::activeCamera->render_scale;
-		screensize[3] = (float)Screen::Info.height * CCamera::activeCamera->render_scale;
-		glUniform4fv( uniformLocation, 1, screensize );
-	}
-	// Pixel size
-	uniformLocation = shader->get_uniform_location( "sys_PixelRatio" );
-	if ( uniformLocation >= 0 )
-	{
-		glUniform1f( uniformLocation, CCamera::activeCamera->ortho_size.x / Screen::Info.width / CCamera::activeCamera->render_scale );
-	}
+void RrMaterial::prepareShaderConstants ( CRenderableObject* source_object, bool n_force_identity )
+{	
+	GL_ACCESS;
 
-	uniformLocation = shader->get_uniform_location( "sys_ViewMatrixInverse" );
-	if ( uniformLocation >= 0 )
+	Matrix4x4 modelTRS, modelRS;
+	if ( !n_force_identity )
 	{
-		Matrix4x4 view;
-		view = CCamera::activeCamera->viewTransform;
-		glUniformMatrix4fv( uniformLocation, 1,false, (view.inverse())[0] );
-	}
-	uniformLocation = shader->get_uniform_location( "sys_ViewMatrix" );
-	if ( uniformLocation >= 0 )
-	{
-		Matrix4x4 view;
-		view = CCamera::activeCamera->viewTransform;
-		glUniformMatrix4fv( uniformLocation, 1,false, (view)[0] );
-	}
-	uniformLocation = shader->get_uniform_location( "sys_ProjectionMatrix" );
-	if ( uniformLocation >= 0 )
-	{
-		Matrix4x4 projection;
-		projection = CCamera::activeCamera->projTransform;
-		glUniformMatrix4fv( uniformLocation, 1,false, (projection)[0] );
-	}
-	uniformLocation = shader->get_uniform_location( "sys_CameraRange" );
-	if ( uniformLocation >= 0 )
-	{
-		Vector3d rangeinfo;
-		rangeinfo.x = CCamera::activeCamera->zNear;
-		rangeinfo.y = CCamera::activeCamera->zFar;
-		rangeinfo.z = rangeinfo.y-rangeinfo.x;
-		glUniform3fv( uniformLocation, 1, &(rangeinfo.x) );
-	}
-
-	// Fog structure. (But don't bind it if certain things?)
-	uniformLocation = shader->get_uniform_block_location( "sys_Fog" );
-	if ( uniformLocation >= 0 )
-	{
-		glUniformBlockBinding( shader->get_program(), uniformLocation, fogLocation );
-		MATERIAL_CALL_ONCE("sys_Fog")
+		if (source_object && !GL.hasModelMatrix())
 		{
-			glBindBufferRange( GL_UNIFORM_BUFFER, fogLocation, m_ubo_foginfo, NIL, sizeof(_fogInfo_t) );
-		}
-	}
+			modelTRS = source_object->transform.WorldMatrix();
 
-	// Lighting structure.
-	uniformLocation = shader->get_uniform_block_location( "sys_LightingInfo" );
-	if ( uniformLocation >= 0 )
-	{
-		glUniformBlockBinding( shader->get_program(), uniformLocation, lightLocation );
-		MATERIAL_CALL_ONCE("sys_LightingInfo")
-		{
-			glBindBufferRange( GL_UNIFORM_BUFFER, lightLocation, m_ubo_lightinginfo, NIL, sizeof(_lightingInfo_t) );
-		}
-	}
-	// Light. // Handled now by deferred renderer
-	/*uniformLocation = shader->get_uniform_location( "sys_LightNumber" );
-	if ( uniformLocation >= 0 )
-	{
-		glUniform1i( uniformLocation, m_lightCount );
-	}*/
-
-	// Reflection structure.
-	uniformLocation = shader->get_uniform_block_location( "sys_ReflectInfo" );
-	if ( uniformLocation >= 0 )
-	{
-		glUniformBlockBinding( shader->get_program(), uniformLocation, reflectLocation );
-		glBindBufferRange( GL_UNIFORM_BUFFER, reflectLocation, m_ubo_reflectinfo, NIL, sizeof(_reflectInfo_t) );
-	}
-}
-
-
-void RrMaterial::shader_bind_constants( RrShader* shader )
-{
-	int uniformLocation;
-
-	// Local constants
-	//uniformLocation = shader->get_uniform_location( "sys_DiffuseColor" );
-	//if ( uniformLocation >= 0 ) {
-		glUniform4f( renderer::UNI_SURFACE_DIFFUSE_COLOR, m_diffuse.red, m_diffuse.green, m_diffuse.blue, m_diffuse.alpha );
-	//}
-	//uniformLocation = shader->get_uniform_location( "sys_EmissiveColor" );
-	//if ( uniformLocation >= 0 ) {
-		glUniform3f( renderer::UNI_SURFACE_EMISSIVE_COLOR, m_emissive.red, m_emissive.green, m_emissive.blue );
-	//}
-	//uniformLocation = shader->get_uniform_location( "sys_SpecularColor" );
-	//if ( uniformLocation >= 0 ) {
-		glUniform4f( renderer::UNI_SURFACE_SPECULAR_COLOR, m_specular.red, m_specular.green, m_specular.blue, m_specularPower );
-	//}
-	//uniformLocation = shader->get_uniform_location( "sys_AlphaCutoff" );
-	//if ( uniformLocation >= 0 ) {
-		if ( passinfo[current_pass].m_transparency_mode == renderer::ALPHAMODE_ALPHATEST ) {
-			glUniform1f( renderer::UNI_SURFACE_ALPHA_CUTOFF, passinfo[current_pass].f_alphatest_value );
-		}
-		else {
-			glUniform1f( renderer::UNI_SURFACE_ALPHA_CUTOFF, -1.0f );
-		}
-	//}
-	
-	// Texture coordinates
-	//uniformLocation = shader->get_uniform_location( "sys_TextureScale" );
-	//if ( uniformLocation >= 0 ) {
-		glUniform4fv( renderer::UNI_TEXTURE_SCALE, 1, &m_texcoordScaling[0] );
-	//}
-	//uniformLocation = shader->get_uniform_location( "sys_TextureOffset" );
-	//if ( uniformLocation >= 0 ) {
-		glUniform4fv( renderer::UNI_TEXTURE_OFFSET, 1, &m_texcoordOffset[0] );
-	//}
-
-	// World effects
-	//uniformLocation = shader->get_uniform_location( "gm_WindDirection" );
-	//if ( uniformLocation >= 0 ) {
-		glUniform4f( renderer::UNI_GAME_WIND_DIRECTION, gm_WindDirection.x, gm_WindDirection.y, gm_WindDirection.z, gm_WindDirection.w );
-	//}
-	//uniformLocation = shader->get_uniform_location( "gm_FadeValue" );
-	//if ( uniformLocation >= 0 ) {
-		glUniform1f( renderer::UNI_GAME_FADE_VALUE, gm_FadeValue );
-	//}
-	//uniformLocation = shader->get_uniform_location( "gm_HalfScale" );
-	//if ( uniformLocation >= 0 ) {
-		glUniform1f( renderer::UNI_GAME_HALF_SCALE, gm_HalfScale );
-	//}
-}
-
-void RrMaterial::shader_bind_deferred ( RrShader* shader )
-{
-	int uniformLocation;
-
-	// Lighting info
-	//uniformLocation = shader->get_uniform_location( "sys_LightingOverrides" );
-	//if ( uniformLocation >= 0 )
-	//{
-		float lightvars [3];
-		lightvars[0] = 0;//(deferredinfo[current_pass].m_lighting_mode == renderer::LI_NONE) ? 0.0f : 1.0f;
-		lightvars[1] = deferredinfo[current_pass].m_rimlight_strength;
-		lightvars[2] = 0;
-		glUniform3fv( renderer::UNI_SURFACE_LIGHTING_OVERRIDES, 1, lightvars );
-	//}
-}
-
-
-void RrMaterial::shader_bind_lights	 ( RrShader* shader )
-{
-	int uniformLocation;//, uniformLocationB;
-
-	// Get the light list
-	std::vector<CLight*>* lightList = CLight::GetActiveLightList();
-	// Set the maximum value to iterate through
-	unsigned int maxVal = lightList->size();
-	maxVal = std::min<uint>( maxVal, (uint)(renderer::Settings.maxLights-1) );
-
-	// Prepare all the names for the uniforms for fast indexing
-	char uniformname1 [] = "sys_LightProperties[x]";
-	char uniformname2 [] = "sys_LightPosition[x]";
-	char uniformname3 [] = "sys_LightColor[x]";
-
-	char uniformname_sh1 [] = "sys_LightShadowInfo[x]";
-	char uniformname_sh2 [] = "sys_LightMatrix[x]";
-	char uniformname_sh3 [] = "textureShadowx";
-
-	// Loop through all the lights in the list
-	for ( unsigned int i = 0; i < maxVal; i++ )
-	{
-		// Setup shadow casting textures
-		if ( CGameSettings::Active()->b_ro_EnableShadows )
-		{
-			if ( (*lightList)[i]->generateShadows && i < 12 )
-			{
-				//uniformname_sh3[13] = '0' + i;
-				//uniformLocation = shader->get_uniform_location( uniformname_sh3 );
-				//if ( uniformLocation >= 0 )
-				//{
-					glUniform1i( renderer::UNI_SAMPLER_SHADOW_0 + i, current_sampler_slot );
-					glActiveTexture( GL_TEXTURE0+current_sampler_slot );
-					CTexture::Unbind(0);
-					if ( (*lightList)[i]->GetShadowTexture() ) {
-						(*lightList)[i]->GetShadowTexture()->BindDepth();
-					}
-
-					// Increment texture count.
-					current_sampler_slot += 1;
-				//}
-			}
-		}	
-	}
-
-	// Set the ambient color
-	{
-		//uniformLocation = shader->get_uniform_location( "sys_LightAmbient" );
-		//if ( uniformLocation >= 0 )
-		//{
-			Color actualAmbient = renderer::Settings.ambientColor;
-			glUniform4f( renderer::UNI_LIGHTING_AMBIENT,
-				actualAmbient.red,
-				actualAmbient.green,
-				actualAmbient.blue, 1.0f );
-		//}
-	}
-
-	// Set the ambient cubemap
-	{
-		if ( m_sampler_reflection )
-		{
-			// Get the uniform location
-			//uniformLocation = shader->get_uniform_location( "textureReflection0" );
-			// If the spot exists, then use it
-			//if ( uniformLocation >= 0 )
-			//{
-				glUniform1i( renderer::UNI_SAMPLER_REFLECTION_0, current_sampler_slot );
-				glActiveTexture( GL_TEXTURE0+current_sampler_slot );
-				CTexture::Unbind(0);
-				m_sampler_reflection->Bind();
-				/*glBindTexture( m_sampler_targets[i], m_samplers[i] );
-
-				glUniform1i( uniformLocation, current_sampler_slot );
-				glActiveTexture( GL_TEXTURE0+current_sampler_slot );
-				CTexture::Unbind(0);
-				if ( (*lightList)[i]->GetShadowTexture() ) {
-					(*lightList)[i]->GetShadowTexture()->BindDepth();
-				}
-				*/
-				// Increment used texture count
-				current_sampler_slot += 1;
-			//}
+			modelRS.setRotation( source_object->transform.world.rotation );
+			modelRS.pData[0]  *= source_object->transform.world.scale.x;
+			modelRS.pData[5]  *= source_object->transform.world.scale.y;
+			modelRS.pData[10] *= source_object->transform.world.scale.z;
 		}
 		else
 		{
-			/*m_sampler_reflection = new CTextureCube( "__m_reflectCubemap",
-				"textures/sky/sky3side.jpg","textures/sky/sky3side.jpg",
-				"textures/sky/sky3side.jpg","textures/sky/sky3side.jpg",
-				"textures/sky/sky3top.jpg","textures/sky/sky3bottom.jpg"
-				);*/
-			/*m_sampler_reflection = new CTextureCube( "__m_reflectCubemap",
-				"textures/sky/sky2side0.jpg","textures/sky/sky2side1.jpg",
-				"textures/sky/sky2side0.jpg","textures/sky/sky2side1.jpg",
-				"textures/sky/sky2top.jpg","textures/sky/sky2bottom.jpg"
-				);*/
-			/*m_sampler_reflection = new CTextureCube( "__m_reflectCubemap",
-				"textures/sky/sky2top.jpg","textures/sky/sky2top.jpg",
-				"textures/sky/sky2top.jpg","textures/sky/sky2top.jpg",
-				"textures/sky/sky2top.jpg","textures/sky/sky2top.jpg"
-				);*/
-			m_sampler_reflection = NULL;
+			modelTRS = GL.getModelMatrix();
 		}
 	}
 
+	// Update matrix constants
+	pushConstantsPerObject(!modelTRS, modelRS);
 }
 
-void RrMaterial::shader_bind_nolights ( RrShader* shader )
-{
-	// Fullbright on the ambient, though
-	//int uniformLocation = shader->get_uniform_location( "sys_LightAmbient" );
-	//if ( uniformLocation >= 0 )
-	//{
-		glUniform4f( renderer::UNI_LIGHTING_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f );
-	//}
-}
+//void RrMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_force_identity )
+//{
+//	GL_ACCESS;
+//
+//	int uniformLocation;
+//	RrShader*	shader = getUsingShader();
+//
+//	if ( source_object )
+//	{
+//		Matrix4x4 modelMatrix;
+//		if ( !n_force_identity )
+//		{
+//			if ( GL.hasModelMatrix() ) {
+//				modelMatrix = GL.getModelMatrix();
+//			}
+//			else {
+//				modelMatrix = source_object->transform.WorldMatrix();
+//			}
+//		}
+//
+//		// Find the uniforms
+//		// Model Matrix (object transform) matrix
+//		uniformLocation = shader->get_uniform_location( "sys_ModelTRS" );
+//		if ( uniformLocation >= 0 )
+//		{
+//			Matrix4x4 modelTransform = modelMatrix;
+//			glUniformMatrix4fv( uniformLocation, 1,false, (!modelTransform)[0] );
+//
+//			uniformLocation = shader->get_uniform_location( "sys_ModelTRSInverse" );
+//			if ( uniformLocation >= 0 )
+//			{
+//				modelTransform = modelMatrix.inverse();
+//				glUniformMatrix4fv( uniformLocation, 1,false, (!modelTransform)[0] );
+//			}
+//		}
+//		uniformLocation = shader->get_uniform_location( "sys_ModelRS" );
+//		if ( uniformLocation >= 0 )
+//		{
+//			Matrix4x4 modelRotation;
+//			modelRotation.setRotation( source_object->transform.world.rotation );
+//			modelRotation.pData[0]  *= source_object->transform.world.scale.x;
+//			modelRotation.pData[5]  *= source_object->transform.world.scale.y;
+//			modelRotation.pData[10] *= source_object->transform.world.scale.z;
+//			glUniformMatrix4fv( uniformLocation, 1,false, (!modelRotation)[0] );
+//		}
+//
+//		uniformLocation = shader->get_uniform_location( "sys_ModelViewProjectionMatrix" );
+//		if ( uniformLocation >= 0 )
+//		{
+//			Matrix4x4 modelViewProjection;
+//			modelViewProjection = (!modelMatrix) * GL.getProjection();
+//			glUniformMatrix4fv( uniformLocation, 1,false, (modelViewProjection)[0] );
+//		}
+//
+//		uniformLocation = shader->get_uniform_location( "sys_ModelViewProjectionMatrixInverse" );
+//		if ( uniformLocation >= 0 )
+//		{
+//			Matrix4x4 modelViewProjection;
+//			modelViewProjection = (!modelMatrix) * GL.getProjection();
+//			glUniformMatrix4fv( uniformLocation, 1,false, (modelViewProjection.inverse())[0] );
+//		}
+//
+//		uniformLocation = shader->get_uniform_location( "sys_ViewProjectionMatrix" );
+//		if ( uniformLocation >= 0 )
+//		{
+//			Matrix4x4 viewProjection;
+//			viewProjection = GL.getProjection();
+//			glUniformMatrix4fv( uniformLocation, 1,false, (viewProjection)[0] );
+//		}
+//	}
+//	else
+//	{
+//		Matrix4x4 modelMatrix;
+//		if ( !n_force_identity )
+//		{
+//			if ( GL.hasModelMatrix() ) {
+//				modelMatrix = GL.getModelMatrix();
+//			}
+//		}
+//
+//		// Find the uniforms
+//		// Model Matrix (object transform) matrix
+//		uniformLocation = shader->get_uniform_location( "sys_ModelTRS" );
+//		if ( uniformLocation >= 0 )
+//		{
+//			Matrix4x4 modelTransform = modelMatrix;
+//			glUniformMatrix4fv( uniformLocation, 1,false, (!modelTransform)[0] );
+//
+//			uniformLocation = shader->get_uniform_location( "sys_ModelTRSInverse" );
+//			if ( uniformLocation >= 0 )
+//			{
+//				modelTransform = modelMatrix.inverse();
+//				glUniformMatrix4fv( uniformLocation, 1,false, (!modelTransform)[0] );
+//			}
+//		}
+//		uniformLocation = shader->get_uniform_location( "sys_ModelRS" );
+//		if ( uniformLocation >= 0 )
+//		{
+//			Matrix4x4 modelRotation = modelMatrix;
+//			modelRotation.setTranslation(0, 0, 0);
+//			glUniformMatrix4fv( uniformLocation, 1,false, (!modelRotation)[0] );
+//		}
+//		//sys_ModelViewProjectionMatrix
+//		uniformLocation = shader->get_uniform_location( "sys_ModelViewProjectionMatrix" );
+//		if ( uniformLocation >= 0 )
+//		{
+//			Matrix4x4 modelViewProjection;
+//			modelViewProjection = (!modelMatrix) * GL.getProjection();
+//			glUniformMatrix4fv( uniformLocation, 1,false, (modelViewProjection)[0] );
+//		}
+//
+//		uniformLocation = shader->get_uniform_location( "sys_ModelViewProjectionMatrixInverse" );
+//		if ( uniformLocation >= 0 )
+//		{
+//			Matrix4x4 modelViewProjection;
+//			modelViewProjection = (!modelMatrix) * GL.getProjection();
+//			glUniformMatrix4fv( uniformLocation, 1,false, (modelViewProjection.inverse())[0] );
+//		}
+//
+//	}
+//}
 
-void RrMaterial::setShaderConstants ( CRenderableObject* source_object, bool n_force_identity )
-{
-	GL_ACCESS;
-
-	int uniformLocation;
-	RrShader*	shader = getUsingShader();
-
-	if ( source_object )
-	{
-		Matrix4x4 modelMatrix;
-		if ( !n_force_identity )
-		{
-			if ( GL.hasModelMatrix() ) {
-				modelMatrix = GL.getModelMatrix();
-			}
-			else {
-				modelMatrix = source_object->transform.WorldMatrix();
-			}
-		}
-
-		// Find the uniforms
-		// Model Matrix (object transform) matrix
-		uniformLocation = shader->get_uniform_location( "sys_ModelTRS" );
-		if ( uniformLocation >= 0 )
-		{
-			Matrix4x4 modelTransform = modelMatrix;
-			glUniformMatrix4fv( uniformLocation, 1,false, (!modelTransform)[0] );
-
-			uniformLocation = shader->get_uniform_location( "sys_ModelTRSInverse" );
-			if ( uniformLocation >= 0 )
-			{
-				modelTransform = modelMatrix.inverse();
-				glUniformMatrix4fv( uniformLocation, 1,false, (!modelTransform)[0] );
-			}
-		}
-		uniformLocation = shader->get_uniform_location( "sys_ModelRS" );
-		if ( uniformLocation >= 0 )
-		{
-			Matrix4x4 modelRotation;
-			modelRotation.setRotation( source_object->transform.world.rotation );
-			modelRotation.pData[0]  *= source_object->transform.world.scale.x;
-			modelRotation.pData[5]  *= source_object->transform.world.scale.y;
-			modelRotation.pData[10] *= source_object->transform.world.scale.z;
-			glUniformMatrix4fv( uniformLocation, 1,false, (!modelRotation)[0] );
-		}
-
-		uniformLocation = shader->get_uniform_location( "sys_ModelViewProjectionMatrix" );
-		if ( uniformLocation >= 0 )
-		{
-			Matrix4x4 modelViewProjection;
-			modelViewProjection = (!modelMatrix) * GL.getProjection();
-			glUniformMatrix4fv( uniformLocation, 1,false, (modelViewProjection)[0] );
-		}
-
-		uniformLocation = shader->get_uniform_location( "sys_ModelViewProjectionMatrixInverse" );
-		if ( uniformLocation >= 0 )
-		{
-			Matrix4x4 modelViewProjection;
-			modelViewProjection = (!modelMatrix) * GL.getProjection();
-			glUniformMatrix4fv( uniformLocation, 1,false, (modelViewProjection.inverse())[0] );
-		}
-
-		uniformLocation = shader->get_uniform_location( "sys_ViewProjectionMatrix" );
-		if ( uniformLocation >= 0 )
-		{
-			Matrix4x4 viewProjection;
-			viewProjection = GL.getProjection();
-			glUniformMatrix4fv( uniformLocation, 1,false, (viewProjection)[0] );
-		}
-	}
-	else
-	{
-		Matrix4x4 modelMatrix;
-		if ( !n_force_identity )
-		{
-			if ( GL.hasModelMatrix() ) {
-				modelMatrix = GL.getModelMatrix();
-			}
-		}
-
-		// Find the uniforms
-		// Model Matrix (object transform) matrix
-		uniformLocation = shader->get_uniform_location( "sys_ModelTRS" );
-		if ( uniformLocation >= 0 )
-		{
-			Matrix4x4 modelTransform = modelMatrix;
-			glUniformMatrix4fv( uniformLocation, 1,false, (!modelTransform)[0] );
-
-			uniformLocation = shader->get_uniform_location( "sys_ModelTRSInverse" );
-			if ( uniformLocation >= 0 )
-			{
-				modelTransform = modelMatrix.inverse();
-				glUniformMatrix4fv( uniformLocation, 1,false, (!modelTransform)[0] );
-			}
-		}
-		uniformLocation = shader->get_uniform_location( "sys_ModelRS" );
-		if ( uniformLocation >= 0 )
-		{
-			Matrix4x4 modelRotation = modelMatrix;
-			modelRotation.setTranslation(0, 0, 0);
-			glUniformMatrix4fv( uniformLocation, 1,false, (!modelRotation)[0] );
-		}
-		//sys_ModelViewProjectionMatrix
-		uniformLocation = shader->get_uniform_location( "sys_ModelViewProjectionMatrix" );
-		if ( uniformLocation >= 0 )
-		{
-			Matrix4x4 modelViewProjection;
-			modelViewProjection = (!modelMatrix) * GL.getProjection();
-			glUniformMatrix4fv( uniformLocation, 1,false, (modelViewProjection)[0] );
-		}
-
-		uniformLocation = shader->get_uniform_location( "sys_ModelViewProjectionMatrixInverse" );
-		if ( uniformLocation >= 0 )
-		{
-			Matrix4x4 modelViewProjection;
-			modelViewProjection = (!modelMatrix) * GL.getProjection();
-			glUniformMatrix4fv( uniformLocation, 1,false, (modelViewProjection.inverse())[0] );
-		}
-
-	}
-}
-
-void	RrMaterial::bindPassAtrribs ( uchar pass )
+void	RrMaterial::bindPassAtrribs ( void )
 {
 	bindAttribute( renderer::ATTRIB_VERTEX,		3, GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*0) );
 	bindAttribute( renderer::ATTRIB_TEXCOORD0,	3, GL_FLOAT, false, sizeof(arModelVertex), ((char*)0) + (sizeof(float)*3) );
@@ -1458,8 +1444,6 @@ void	RrMaterial::bindPassAtrribs ( uchar pass )
 }
 void RrMaterial::bindAttribute ( int attributeIndex, const uint vec_size, const uint vec_type, const bool normalize, const int struct_size, const void* struct_offset )
 {
-	RrShader*	shader = getUsingShader();
-	
 	RrPassForward::enabled_attributes[attributeIndex] = true;
 	glEnableVertexAttribArray( attributeIndex );
 	glVertexAttribPointer( attributeIndex,
@@ -1468,8 +1452,6 @@ void RrMaterial::bindAttribute ( int attributeIndex, const uint vec_size, const 
 }
 void RrMaterial::bindAttributeI ( int attributeIndex, const uint vec_size, const uint vec_type, const int struct_size, const void* struct_offset )
 {
-	RrShader*	shader = getUsingShader();
-	
 	RrPassForward::enabled_attributes[attributeIndex] = true;
 	glEnableVertexAttribArray( attributeIndex );
 	glVertexAttribIPointer( attributeIndex,

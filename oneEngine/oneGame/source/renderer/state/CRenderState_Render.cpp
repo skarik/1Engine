@@ -204,7 +204,7 @@ void CRenderState::Render ( void )
 			glDisable( GL_BLEND );
 			glBlendFunc( GL_ONE, GL_ZERO );
 
-			GLd.DrawScreenQuad();
+			GLd.DrawScreenQuad(RrMaterial::Copy);
 		}
 		GL.popModelMatrix();
 
@@ -303,6 +303,7 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 
 		// Create a sorted render list.
 		std::vector<tRenderRequest> sortedRenderList;
+		std::vector<CRenderableObject*> sortSinglePassList;
 		for ( i = 0; i < (int)iCurrentIndex; i += 1 )
 		{
 			pRO = pRenderableObjects[i];
@@ -311,6 +312,7 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 				// Only add to list if visible in this hint.
 				if ( pRO->renderSettings.renderHints & currentLayer )
 				{
+					bool added = false;
 					// Add each pass to the render list
 					passCount = pRO->GetPassNumber();
 					for ( unsigned char p = 0; p < passCount; ++p )
@@ -329,7 +331,13 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 							newRequest.screenshader = pRO->m_material->m_isScreenShader;
 
 							sortedRenderList.push_back( newRequest );
+							added = true;
 						}
+					}
+					// Add the single-pass object to the listing.
+					if (added)
+					{
+						sortSinglePassList.push_back(pRO);
 					}
 				}
 			}
@@ -366,10 +374,14 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 		int sortedListSize = sortedRenderList.size();
 
 		// First work on prerender
-		for ( i = 0; i < (int)sortedListSize; ++i )
+		//for ( i = 0; i < (int)sortedListSize; ++i )
+		//{
+		//	sortedRenderList[i].obj->PreRender( sortedRenderList[i].pass );
+		//	GL.CheckError();
+		//}
+		for ( i = 0; i < (int)sortSinglePassList.size(); ++i )
 		{
-			sortedRenderList[i].obj->PreRender( sortedRenderList[i].pass );
-			GL.CheckError();
+			sortSinglePassList[i]->PreRender();
 		}
 
 		// Then work on the actual render
@@ -400,9 +412,14 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 		}
 
 		// Finally, work on postrender
-		for ( i = 0; i < (int)sortedListSize; i += 1 )
+		//for ( i = 0; i < (int)sortedListSize; i += 1 )
+		//{
+		//	sortedRenderList[i].obj->PostRender( sortedRenderList[i].pass );
+		//}
+		for ( i = 0; i < (int)sortSinglePassList.size(); ++i )
 		{
-			sortedRenderList[i].obj->PostRender( sortedRenderList[i].pass );
+			sortSinglePassList[i]->PostRender();
+			GL.CheckError();
 		}
 		// End render loop
 
@@ -450,6 +467,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 	TimeProfiler.BeginTimeProfile( "rs_render_makelist" );
 	// Build the unsorted data
 	std::vector<tRenderRequest> sortedRenderList;
+	std::vector<CRenderableObject*> sortSinglePassList;
 	for ( i = 0; i < (int)iCurrentIndex; i += 1 )
 	{
 		pRO = pRenderableObjects[i];
@@ -464,6 +482,8 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			// Only add to list if visible in this hint.
 			if ( pRO->renderSettings.renderHints & n_renderHint )
 			{
+				bool added = false;
+
 				// Add each pass to the render list
 				passCount = pRO->GetPassNumber();
 				for ( unsigned char p = 0; p < passCount; ++p )
@@ -480,6 +500,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 						newRequest.transparent = false;
 						newRequest.screenshader = false;
 						sortedRenderList.push_back( newRequest );
+						added = true;
 					}
 				}
 				if ( passCount == 0 ) // No deferred passes? Must be a world object.
@@ -500,8 +521,15 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 							newRequest.transparent = !depthmask;
 							newRequest.screenshader = pRO->m_material->m_isScreenShader;
 							sortedRenderList.push_back( newRequest );
+							added = true;
 						}
 					}
+				}
+
+				// Add the single-pass object to the listing.
+				if (added)
+				{
+					sortSinglePassList.push_back(pRO);
 				}
 			}
 		} //
@@ -518,15 +546,22 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 	// Update UBOs
 	RrMaterial::updateStaticUBO();
 	RrMaterial::updateLightTBO();
+	RrMaterial::pushConstantsPerPass();
+	RrMaterial::pushConstantsPerFrame();
+	RrMaterial::pushConstantsPerCamera();
 	GL.CheckError();
 
 	int sortedListSize = sortedRenderList.size();
 
 	// First work on prerender
 	TimeProfiler.BeginTimeProfile( "rs_render_pre" );
-	for ( i = 0; i < sortedListSize; ++i )
+	//for ( i = 0; i < sortedListSize; ++i )
+	//{
+	//	sortedRenderList[i].obj->PreRender( sortedRenderList[i].pass );
+	//}
+	for ( i = 0; i < (int)sortSinglePassList.size(); ++i )
 	{
-		sortedRenderList[i].obj->PreRender( sortedRenderList[i].pass );
+		sortSinglePassList[i]->PreRender();
 	}
 	TimeProfiler.EndAddTimeProfile( "rs_render_pre" );
 	GL.CheckError();
@@ -674,7 +709,8 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 						glUniform1i( renderer::UNI_LIGHTING_COUNT, std::min<int>( RrMaterial::m_lightCount, (renderRQ_current.obj->renderType==World)?64:3 ) );
 					//}
 					// Light data
-					int uniformLocation = shader->get_uniform_block_location( "def_LightingInfo" );
+					//int uniformLocation = shader->get_uniform_block_location( "def_LightingInfo" );
+					int uniformLocation = shader->getUniformBlockLocation( "def_LightingInfo" ); //TODO
 					if ( uniformLocation >= 0 )
 					{
 						glUniformBlockBinding( shader->get_program(), uniformLocation, 5 );
@@ -691,7 +727,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				glDisable( GL_STENCIL_TEST );
 				glDisable( GL_DEPTH_TEST );
 				// Draw the screen quad
-				GLd.DrawScreenQuad();
+				GLd.DrawScreenQuad(targetPass);
 			}
 			// Finish rendering
 
@@ -800,7 +836,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					glEnable( GL_BLEND );
 					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-					GLd.DrawScreenQuad();
+					GLd.DrawScreenQuad(CopyScaled);
 				}
 			}
 			render_target->UnbindBuffer();
@@ -827,9 +863,13 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 	}
 
 	// Finally, work on postrender
-	for ( i = 0; i < sortedListSize; i += 1 )
+	//for ( i = 0; i < sortedListSize; i += 1 )
+	//{
+	//	sortedRenderList[i].obj->PostRender( sortedRenderList[i].pass );
+	//}
+	for ( i = 0; i < (int)sortSinglePassList.size(); ++i )
 	{
-		sortedRenderList[i].obj->PostRender( sortedRenderList[i].pass );
+		sortSinglePassList[i]->PostRender();
 	}
 	// End render loop
 

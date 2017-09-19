@@ -96,9 +96,9 @@ bool CInstancedMesh::Render ( const char pass )
 	m_material->bindPass(pass);
 	GL.CheckError();
 	// Pass in shader constant now that the pass has been bound
-	RrMaterial::current->setShaderConstants( this );
-	if ( m_parent ) m_parent->SendShaderUniforms();
-	GL.CheckError();
+	//RrMaterial::current->setShaderConstants( this );
+	//if ( m_parent ) m_parent->SendShaderUniforms();
+	//GL.CheckError();
 
 	// Bind the current mesh
 	BindVAO( pass, m_glMesh->GetVBOverts(), m_glMesh->GetVBOfaces() );

@@ -29,36 +29,38 @@ CZoomBloomShader::CZoomBloomShader ( void )
 
 void CZoomBloomShader::DrawOutput ( void )
 {
-	GL_ACCESS GLd_ACCESS
-	// Generate sum shit
-	CRenderTexture* s_buf = GL.GetMainScreenBuffer();
-	{
-		// Draw screen with given material
-		m_material->setTexture( TEX_MAIN, s_buf );
-		m_material->bindPass(0);
-		m_material->setShaderConstants( this );
-		//vMaterials[0]->bindDepth( s_buf, "textureDepth" );
-		//vMaterials[0]->setUniform( "zNear", CCamera::activeCamera->zNear );
-		//vMaterials[0]->setUniform( "zFar", CCamera::activeCamera->zFar );
-		/*if ( Daycycle::DominantCycle ) {
-			Vector3d pos = Daycycle::DominantCycle->GetSunPosition( CCamera::activeCamera );
-			m_material->setUniform( "gm_SunScreenPosition", Vector3d(pos.x,1-pos.y,pos.z) );
-			m_material->setUniform( "gm_ZoomColorStrength", std::min<Real>( 1.0f, Daycycle::DominantCycle->GetSkyobjectDiffuse().red*3 ) );
-		}
-		else {
-			m_material->setUniform( "gm_SunScreenPosition", Vector3d(0.5f,0.75f,1.0f) );
-			m_material->setUniform( "gm_ZoomColorStrength", 1.0f );
-		}*/
+	GL_ACCESS GLd_ACCESS;
+	throw core::NotYetImplementedException();
 
-		{
-			glDepthMask( false );
-			glDepthFunc( GL_ALWAYS );
-			//glDisable( GL_ALPHA_TEST );
+	//// Generate sum shit
+	//CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	//{
+	//	// Draw screen with given material
+	//	m_material->setTexture( TEX_MAIN, s_buf );
+	//	m_material->bindPass(0);
+	//	m_material->setShaderConstants( this );
+	//	//vMaterials[0]->bindDepth( s_buf, "textureDepth" );
+	//	//vMaterials[0]->setUniform( "zNear", CCamera::activeCamera->zNear );
+	//	//vMaterials[0]->setUniform( "zFar", CCamera::activeCamera->zFar );
+	//	/*if ( Daycycle::DominantCycle ) {
+	//		Vector3d pos = Daycycle::DominantCycle->GetSunPosition( CCamera::activeCamera );
+	//		m_material->setUniform( "gm_SunScreenPosition", Vector3d(pos.x,1-pos.y,pos.z) );
+	//		m_material->setUniform( "gm_ZoomColorStrength", std::min<Real>( 1.0f, Daycycle::DominantCycle->GetSkyobjectDiffuse().red*3 ) );
+	//	}
+	//	else {
+	//		m_material->setUniform( "gm_SunScreenPosition", Vector3d(0.5f,0.75f,1.0f) );
+	//		m_material->setUniform( "gm_ZoomColorStrength", 1.0f );
+	//	}*/
 
-			GLd.DrawScreenQuad();
+	//	{
+	//		glDepthMask( false );
+	//		glDepthFunc( GL_ALWAYS );
+	//		//glDisable( GL_ALPHA_TEST );
 
-			glDepthFunc( GL_LEQUAL );
-		}
-		//vMaterials[0]->unbind();
-	}
+	//		GLd.DrawScreenQuad();
+
+	//		glDepthFunc( GL_LEQUAL );
+	//	}
+	//	//vMaterials[0]->unbind();
+	//}
 }

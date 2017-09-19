@@ -184,7 +184,7 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 	GLd.DrawSet2DScaleMode();
 
 	activeGUI->matDefault->bindPass(0);
-	activeGUI->matDefault->setShaderConstants( activeGUI );
+	//activeGUI->matDefault->setShaderConstants( activeGUI );
 
 	// Draw the color circle
 	{
@@ -195,7 +195,7 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 		Color dcolor1, dcolor2;
 		int modColor;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		auto lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		for ( int i = 0; i <= 360; i += 1 )
 		{
 			dopos1.x = position.x + (Real)( cos( degtorad( i ) ) * circle_radius_outer );
@@ -230,7 +230,7 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 			GLd.P_PushColor( dcolor2 );
 			GLd.P_AddVertex( dopos2.x,dopos2.y );
 		}
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 	}
 
 	// Draw the circle of the current color
@@ -240,7 +240,7 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 
 		Vector2d dopos1, dopos2;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		auto lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		GLd.P_PushColor( m_currentColor );
 		for ( int i = 0; i <= 360; i += 5 )
 		{
@@ -253,7 +253,7 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 			GLd.P_AddVertex( dopos1.x,dopos1.y );
 			GLd.P_AddVertex( dopos2.x,dopos2.y );
 		}
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 	}
 
 
@@ -339,7 +339,7 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
 	GLd.DrawSet2DScaleMode();
 
 	activeGUI->matDefault->bindPass(0);
-	activeGUI->matDefault->setShaderConstants( activeGUI );
+	//activeGUI->matDefault->setShaderConstants( activeGUI );
 
 	// Draw the RGB bars
 	{
@@ -351,66 +351,66 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
 		const float selection_hwidth = 3;
 		const float selection_hheight = 3;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		auto lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		GLd.P_PushColor( 0.0F, m_currentColor[1], m_currentColor[2] );
 		GLd.P_AddVertex( position.x, position.y + y );
 		GLd.P_AddVertex( position.x, position.y + y + height );
 		GLd.P_PushColor( 1.0F, m_currentColor[1], m_currentColor[2] );
 		GLd.P_AddVertex( position.x + width, position.y + y );
 		GLd.P_AddVertex( position.x + width, position.y + y + height );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 
 		// Draw a box over current color
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		x_sub = width * m_currentColor[0];
 		GLd.P_PushColor( m_currentColor );
 		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y - selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y + height + selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y - selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 
 		y += 25;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		GLd.P_PushColor( m_currentColor[0], 0.0F, m_currentColor[2] );
 		GLd.P_AddVertex( position.x, position.y + y );
 		GLd.P_AddVertex( position.x, position.y + y + height );
 		GLd.P_PushColor( m_currentColor[0], 1.0F, m_currentColor[2] );
 		GLd.P_AddVertex( position.x + width, position.y + y );
 		GLd.P_AddVertex( position.x + width, position.y + y + height );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 
 		// Draw a box over current color
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		x_sub = width * m_currentColor[1];
 		GLd.P_PushColor( m_currentColor );
 		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y - selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y + height + selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y - selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 
 		y += 25;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		GLd.P_PushColor( m_currentColor[0], m_currentColor[1], 0.0F );
 		GLd.P_AddVertex( position.x, position.y + y );
 		GLd.P_AddVertex( position.x, position.y + y + height );
 		GLd.P_PushColor( m_currentColor[0], m_currentColor[1], 1.0F );
 		GLd.P_AddVertex( position.x + width, position.y + y );
 		GLd.P_AddVertex( position.x + width, position.y + y + height );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 
 		// Draw a box over current color
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		x_sub = width * m_currentColor[2];
 		GLd.P_PushColor( m_currentColor );
 		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y - selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y + height + selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y - selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 	}
 
 	// Draw the HSL bars
@@ -430,7 +430,7 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
 		Color color0;
 		Color color1;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		auto lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		for (int i = 0; i <= (int)width; i += 2)
 		{
 			color0.SetHSL( Color(i / width, colorhsl_ref[1], colorhsl_ref[2]) );
@@ -438,21 +438,21 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
 			GLd.P_AddVertex( position.x + i, position.y + y );
 			GLd.P_AddVertex( position.x + i, position.y + y + height );
 		}
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 
 		// Draw a box over current color
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		x_sub = width * colorhsl_ref[0];
 		GLd.P_PushColor( m_currentColor );
 		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y - selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y + height + selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y - selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 
 		y += 25;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		for (int i = 0; i <= (int)width; i += 2)
 		{
 			color0.SetHSL( Color(colorhsl_ref[0], i / width, colorhsl_ref[2]) );
@@ -460,21 +460,21 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
 			GLd.P_AddVertex( position.x + i, position.y + y );
 			GLd.P_AddVertex( position.x + i, position.y + y + height );
 		}
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 
 		// Draw a box over current color
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		x_sub = width * colorhsl_ref[1];
 		GLd.P_PushColor( m_currentColor );
 		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y - selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y + height + selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y - selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 
 		y += 25;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		for (int i = 0; i <= (int)width; i += 2)
 		{
 			color0.SetHSL( Color(colorhsl_ref[0], colorhsl_ref[1], i / width) );
@@ -482,17 +482,17 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
 			GLd.P_AddVertex( position.x + i, position.y + y );
 			GLd.P_AddVertex( position.x + i, position.y + y + height );
 		}
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 
 		// Draw a box over current color
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+		lPrim = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 		x_sub = width * colorhsl_ref[2];
 		GLd.P_PushColor( m_currentColor );
 		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y - selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y + height + selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y - selection_hheight );
 		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.EndPrimitive();
+		GLd.EndPrimitive(lPrim);
 	}
 
 	GL.endOrtho();

@@ -38,8 +38,6 @@ private:
 	inline void createvertex ( float const *a, float r );
 	void createsphere ( int ndiv, float radius = 1.0 );
 
-	void drawList ( void );
-
 	static const float X;
 	static const float Z;
 	static const float vdata[12][3];
