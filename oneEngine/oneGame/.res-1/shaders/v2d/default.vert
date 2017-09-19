@@ -13,7 +13,7 @@ in vec3 mdl_Normal;
 out vec4 v2f_colors;
 out vec4 v2f_position;
 out vec2 v2f_texcoord0;
-
+/*
 // System inputs
 uniform mat4 sys_ModelTRS;
 uniform mat4 sys_ModelRS;
@@ -21,7 +21,41 @@ uniform mat4 sys_ModelViewProjectionMatrix;
 
 // Material inputs
 layout(location = 5) uniform vec4 sys_TextureScale;
-layout(location = 6) uniform vec4 sys_TextureOffset;
+layout(location = 6) uniform vec4 sys_TextureOffset;*/
+
+
+layout(std140) uniform sys_cbuffer_PerObject
+{
+    mat4 sys_ModelTRS;
+    mat4 sys_ModelRS;
+    mat4 sys_ModelViewProjectionMatrix;
+    mat4 sys_ModelViewProjectionMatrixInverse;
+};
+layout(std140) uniform sys_cbuffer_PerObjectExt
+{
+    vec4    sys_DiffuseColor;
+    vec4    sys_SpecularColor;
+    vec3    sys_EmissiveColor;
+    float   sys_AlphaCutoff;
+    vec4    sys_LightingOverrides;
+
+    vec4    sys_TextureScale;
+    vec4    sys_TextureOffset;
+};
+layout(std140) uniform sys_cbuffer_PerFrame
+{
+    // Time inputs
+    vec4    sys_SinTime;
+    vec4    sys_CosTime;
+    vec4    sys_Time;
+
+    // Fog
+	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
+	float 	sys_FogEnd;
+	float 	sys_FogScale;
+};
+
 
 void main ( void )
 {

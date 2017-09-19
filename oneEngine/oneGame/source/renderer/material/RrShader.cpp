@@ -618,7 +618,17 @@ void RrShader::compile_shader ( void )
 		glGetProgramiv( iProgramID, GL_LINK_STATUS, &linked );
 		if ( !linked )
 		{
-			cout << "Error in shader program link.\n";
+			std::cout << "Error in shader program link.\n";
+			glGetProgramiv( iProgramID, GL_INFO_LOG_LENGTH , &blen ); 
+			if ( blen > 1 )
+			{
+				GLchar* linker_log = (GLchar*)malloc(blen);
+				glGetProgramInfoLog( iProgramID, blen, &slen, linker_log );
+				std::cout << "Filename: " << sShaderFilename << "\n";
+				debug::Console->PrintError( "program linker_log:\n" );
+				debug::Console->PrintError( linker_log );
+				free( linker_log );
+			}
 			bHasCompileError = true;
 			iCompileResult |= SCE_PROGRAM;
 		}   
