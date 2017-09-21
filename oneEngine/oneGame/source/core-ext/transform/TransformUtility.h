@@ -36,10 +36,10 @@ namespace core
 		CORE_API	void UpdateWorldFromLocal ( const TransformLite* parent );
 		CORE_API	void UpdateLocalFromWorld ( const TransformLite* parent=NULL );
 
-		const Matrix4x4& WorldMatrix ( void ) { return matx; }
-		const Matrix4x4& WorldRotation ( void ) { return matxRot; }
-		const Matrix4x4& LocalMatrix ( void ) { return matxLocal; }
-		const Matrix4x4& LocalRotation ( void ) { return matxLocalRot; }
+		const Matrix4x4& WorldMatrix ( void ) const { return matx; }
+		const Matrix4x4& WorldRotation ( void ) const { return matxRot; }
+		const Matrix4x4& LocalMatrix ( void ) const { return matxLocal; }
+		const Matrix4x4& LocalRotation ( void ) const { return matxLocalRot; }
 	};
 
 	class TransformUtility

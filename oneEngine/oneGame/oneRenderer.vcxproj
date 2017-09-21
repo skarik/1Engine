@@ -172,6 +172,7 @@
     <ClInclude Include="source\renderer\material\RrShaderManager.h" />
     <ClInclude Include="source\renderer\module_renderer.h" />
     <ClInclude Include="source\renderer\object\CRenderableObject.h" />
+    <ClInclude Include="source\renderer\object\immediate\immediate.h" />
     <ClInclude Include="source\renderer\object\mesh\CInstancedMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\CMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\CStreamedMesh.h" />

@@ -25,7 +25,8 @@ public:
 	ENGCOM_API		CDeveloperConsoleUI ( void );
 	ENGCOM_API		~CDeveloperConsoleUI ( void );
 
-	bool			Render ( const char pass );
+	bool			PreRender ( void ) override;
+	bool			Render ( const char pass ) override;
 
 private:
 	CBitmapFont*	fntMenu;
@@ -40,7 +41,8 @@ public:
 	ENGCOM_API		CDeveloperCursor ( void );
 	ENGCOM_API		~CDeveloperCursor ( void );
 
-	bool			Render ( const char pass );
+	bool			PreRender ( void ) override;
+	bool			Render ( const char pass ) override;;
 
 private:
 	RrMaterial*		matCursor;

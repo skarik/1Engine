@@ -9,6 +9,7 @@
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 #include "renderer/material/RrMaterial.h"
+#include "renderer/object/immediate/immediate.h"
 
 #include <algorithm>
 
@@ -179,8 +180,9 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 {
 	GL_ACCESS GLd_ACCESS;
 
-	GL.prepareDraw();
-	GL.beginOrtho();
+	//GL.prepareDraw();
+	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	//GL.beginOrtho();
 	GLd.DrawSet2DScaleMode();
 
 	activeGUI->matDefault->bindPass(0);
@@ -257,8 +259,8 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 	}
 
 
-	GL.endOrtho();
-	GL.cleanupDraw();
+	//GL.endOrtho();
+	//GL.cleanupDraw();
 }
 
 void Dusk::DialogueColorpicker::updateColorSliders ( const Vector2d& position )
@@ -334,8 +336,9 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
 {
 	GL_ACCESS GLd_ACCESS;
 
-	GL.prepareDraw();
-	GL.beginOrtho();
+	//GL.prepareDraw();
+	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	//GL.beginOrtho();
 	GLd.DrawSet2DScaleMode();
 
 	activeGUI->matDefault->bindPass(0);
@@ -495,8 +498,8 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
 		GLd.EndPrimitive(lPrim);
 	}
 
-	GL.endOrtho();
-	GL.cleanupDraw();
+	//GL.endOrtho();
+	//GL.cleanupDraw();
 
 	// Draw RGB text
 	drawText( position.x - 12, position.y +  0 + 13, "R" );

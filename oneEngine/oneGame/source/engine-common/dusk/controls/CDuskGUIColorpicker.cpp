@@ -8,6 +8,7 @@
 #include "renderer/texture/CBitmapFont.h"
 #include "renderer/system/glMainSystem.h" // Include the main system
 #include "renderer/system/glDrawing.h"
+#include "renderer/object/immediate/immediate.h"
 
 void CDuskGUIColorpicker::SetColor ( Color& c )
 {
@@ -310,10 +311,11 @@ void CDuskGUIColorpicker::Render ( void )
 		drawRect( Rect( rect.pos.x+0.02f, rect.pos.y+0.07f, rect.size.x*0.12f, rect.size.y*0.09f ) );
 
 
-		GL.prepareDraw();
+		//GL.prepareDraw();
 
 		//GL.beginOrtho( 0,0, 1,1, -45,45 );
-		GL.beginOrtho();
+		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+		//GL.beginOrtho();
 		GLd.DrawSet2DScaleMode();
 
 		activeGUI->matDefault->bindPass(0);
@@ -464,8 +466,8 @@ void CDuskGUIColorpicker::Render ( void )
 				rect.size.x*0.06f+0.010f,
 				0.010f );
 
-			GL.endOrtho();
-			GL.cleanupDraw();
+			//GL.endOrtho();
+			//GL.cleanupDraw();
 		}
 
 		//activeGUI->matDefault->unbind();

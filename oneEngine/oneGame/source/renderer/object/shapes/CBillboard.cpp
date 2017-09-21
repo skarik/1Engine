@@ -28,7 +28,7 @@ CBillboard::~CBillboard ( void )
 
 bool CBillboard::PreRender ( void )
 {
-	m_material->prepareShaderConstants(this);
+	m_material->prepareShaderConstants(transform);
 	return true;
 }
 
@@ -98,7 +98,7 @@ bool CBillboard::Render ( const char pass )
 	}
 
 
-	GL.Transform( &transform.world );
+	//GL.Transform( &transform.world );
 
 	m_material->bindPass(pass);
 	//m_material->setShaderConstants(this);

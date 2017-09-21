@@ -37,7 +37,7 @@ glMainSystem::glMainSystem ( void )
 	OldSchool = false;
 
 	// States
-	iCurrentProjectionMode = 0;
+	//iCurrentProjectionMode = 0;
 	bFogEnabled			= false;
 	bDepthWriteEnabled	= true;
 }

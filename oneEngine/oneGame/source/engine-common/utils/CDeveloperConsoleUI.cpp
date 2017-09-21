@@ -7,6 +7,7 @@
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
+#include "renderer/object/immediate/immediate.h"
 
 CDeveloperConsoleUI*	ActiveConsoleUI = NULL;
 CDeveloperCursor*		ActiveCursor = NULL;
@@ -51,10 +52,19 @@ CDeveloperConsoleUI::~CDeveloperConsoleUI ( void )
 	matMenu->removeReference();
 }
 
+bool CDeveloperConsoleUI::PreRender ( void )
+{
+	//GL.Translate( Vector3d( 0,0,-35 ) );
+	matMenu->prepareShaderConstants();
+	matfntMenu->prepareShaderConstants();
+	return true;
+}
 bool CDeveloperConsoleUI::Render ( const char pass )
 {
 	GL_ACCESS GLd_ACCESS
-	GL.beginOrtho();
+	//GL.beginOrtho();
+	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+
 	//GL.Translate( Vector3d( 0,0,-35 ) );
 	GLd.DrawSet2DScaleMode();
 	GLd.DrawSet2DMode( GLd.D2D_FLAT );
@@ -83,7 +93,7 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 	GLd.SetMaterial(matfntMenu);
 	GLd.DrawAutoText( 0.005f, 0.023f, CGameSettings::Active()->sysprop_developerstring.c_str() );
 
-	GL.endOrtho();
+	//GL.endOrtho();
 
 	// Return success
 	return true;
@@ -118,6 +128,12 @@ CDeveloperCursor::~CDeveloperCursor ( void )
 	//delete matCursor;
 	delete texCursor;
 }
+bool CDeveloperCursor::PreRender ( void )
+{
+	//GL.Translate( Vector3d( 0,0,-44 ) );
+	matCursor->prepareShaderConstants();
+	return true;
+}
 bool CDeveloperCursor::Render ( const char pass )
 {
 	GL_ACCESS GLd_ACCESS
@@ -125,10 +141,11 @@ bool CDeveloperCursor::Render ( const char pass )
 	if ( pass != 0 )
 		return false;
 
-	GL.pushModelMatrix( Matrix4x4() );
+	//GL.pushModelMatrix( Matrix4x4() );
 
-	GL.beginOrtho();
-	GL.Translate( Vector3d( 0,0,-44 ) );
+	//GL.beginOrtho();
+	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+
 	GLd.DrawSet2DScaleMode();
 	GLd.DrawSet2DMode( GLd.D2D_FLAT );
 
@@ -139,9 +156,9 @@ bool CDeveloperCursor::Render ( const char pass )
 	//	GLd.DrawScreenQuad();
 	GLd.DrawRectangle( (Real)Input::MouseX(), (Real)Input::MouseY(), 32,32 );
 
-	GL.endOrtho();
+	//GL.endOrtho();
 
-	GL.popModelMatrix();
+	//GL.popModelMatrix();
 
 	// Return success
 	return true;

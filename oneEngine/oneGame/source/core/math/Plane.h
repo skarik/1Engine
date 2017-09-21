@@ -1,4 +1,3 @@
-
 #ifndef _C_PLANE_
 #define _C_PLANE_
 
@@ -7,21 +6,24 @@
 #include "Vector3d.h"
 
 // Class Def
-namespace Maths
+namespace core
 {
-	class Plane
+	namespace math
 	{
-	public:
-		Vector3d n;
-		Real d;
+		class Plane
+		{
+		public:
+			Vector3d n;
+			Real d;
 
-	public:
-		// Constructors
-		Plane ( void );
-		Plane ( Vector3d * );
-		void ConstructFromPoints ( Vector3d * );
-		void ConstructFromPoints ( Vector3d const&, Vector3d const&, Vector3d const& );
-	};
+		public:
+			// Constructors
+			Plane ( void );
+			Plane ( Vector3d * );
+			void ConstructFromPoints ( Vector3d * );
+			void ConstructFromPoints ( Vector3d const&, Vector3d const&, Vector3d const& );
+		};
+	}
 }
 
 #endif

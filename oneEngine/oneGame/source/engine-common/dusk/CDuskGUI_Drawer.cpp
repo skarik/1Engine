@@ -6,6 +6,7 @@
 #include "renderer/texture/CBitmapFont.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
+#include "renderer/object/immediate/immediate.h"
 #include "CDuskGUI.h"
 
 void CDuskGUI::setDrawDown ( void )
@@ -179,8 +180,9 @@ void CDuskGUI::drawRect ( const Rect& rect )
 
 	// Render mesh
 	{
-		GL.prepareDraw();
-		GL.beginOrtho();
+		//GL.prepareDraw();
+		//GL.beginOrtho();
+		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 		GLd.DrawSet2DScaleMode();
 
 		matDefault->bindPass(0);
@@ -195,8 +197,8 @@ void CDuskGUI::drawRect ( const Rect& rect )
 		GLd.EndPrimitive(lPrim);
 		modelSolidMeshList.clear();
 
-		GL.endOrtho();
-		GL.cleanupDraw();
+		//GL.endOrtho();
+		//GL.cleanupDraw();
 	}
 }
 void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
@@ -273,8 +275,9 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 
 	// Render mesh
 	{
-		GL.prepareDraw();
-		GL.beginOrtho();
+		//GL.prepareDraw();
+		//GL.beginOrtho();
+		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 		GLd.DrawSet2DScaleMode();
 
 		matDefault->bindPass(0);
@@ -288,8 +291,8 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 		GLd.EndPrimitive(lPrim);
 		modelLineMeshList.clear();
 
-		GL.endOrtho();
-		GL.cleanupDraw();
+		//GL.endOrtho();
+		//GL.cleanupDraw();
 	}
 }
 void CDuskGUI::drawLine ( const Real x1, const Real y1, const Real x2, const Real y2 )
@@ -327,12 +330,14 @@ void CDuskGUI::drawLine ( const Real x1, const Real y1, const Real x2, const Rea
 
 	// Render mesh
 	{
-		GL.prepareDraw();
+		//GL.prepareDraw();
 
 		if ( !bInPixelMode )
-			GL.beginOrtho( 0,0, 1,1, -45,45 );
+			core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d(+1, +1, +45.0F) );
+			//GL.beginOrtho( 0,0, 1,1, -45,45 );
 		else
-			GL.beginOrtho();
+			core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+			//GL.beginOrtho();
 		GLd.DrawSet2DScaleMode();
 
 		matDefault->bindPass(0);
@@ -346,8 +351,8 @@ void CDuskGUI::drawLine ( const Real x1, const Real y1, const Real x2, const Rea
 		GLd.EndPrimitive(lPrim);
 		modelLineMeshList.clear();
 
-		GL.endOrtho();
-		GL.cleanupDraw();
+		//GL.endOrtho();
+		//GL.cleanupDraw();
 	}
 }
 
@@ -368,8 +373,9 @@ void CDuskGUI::drawText ( const Real x, const Real y, const char* str )
 	modelTextRequestList.push_back( req );
 
 	{
-		GL.prepareDraw();
-		GL.beginOrtho();
+		//GL.prepareDraw();
+		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+		//GL.beginOrtho();
 		GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
 
 		// Draw the text
@@ -392,8 +398,8 @@ void CDuskGUI::drawText ( const Real x, const Real y, const char* str )
 		}
 		modelTextRequestList.clear();
 
-		GL.endOrtho();
-		GL.cleanupDraw();
+		//GL.endOrtho();
+		//GL.cleanupDraw();
 	}
 }
 void CDuskGUI::drawTextWidth ( const Real x, const Real y, const Real w, const char* str )
@@ -414,8 +420,9 @@ void CDuskGUI::drawTextWidth ( const Real x, const Real y, const Real w, const c
 	modelTextRequestList.push_back( req );
 
 	{
-		GL.prepareDraw();
-		GL.beginOrtho();
+		//GL.prepareDraw();
+		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+		//GL.beginOrtho();
 		GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
 
 		// Draw the text
@@ -438,8 +445,8 @@ void CDuskGUI::drawTextWidth ( const Real x, const Real y, const Real w, const c
 		}
 		modelTextRequestList.clear();
 
-		GL.endOrtho();
-		GL.cleanupDraw();
+		//GL.endOrtho();
+		//GL.cleanupDraw();
 	}
 }
 void CDuskGUI::drawTextCentered ( const Real x, const Real y, const char* str )
@@ -459,8 +466,9 @@ void CDuskGUI::drawTextCentered ( const Real x, const Real y, const char* str )
 	modelTextRequestList.push_back( req );
 
 	{
-		GL.prepareDraw();
-		GL.beginOrtho();
+		//GL.prepareDraw();
+		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+		//GL.beginOrtho();
 		GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
 
 		// Draw the text
@@ -483,7 +491,7 @@ void CDuskGUI::drawTextCentered ( const Real x, const Real y, const char* str )
 		}
 		modelTextRequestList.clear();
 
-		GL.endOrtho();
-		GL.cleanupDraw();
+		//GL.endOrtho();
+		//GL.cleanupDraw();
 	}
 }

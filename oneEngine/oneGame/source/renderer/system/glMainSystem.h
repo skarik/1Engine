@@ -102,9 +102,9 @@ public:
 	RENDER_API void		FullRedraw ( void );
 
 	// Push matrix state
-	RENDER_API void		prepareDraw ( void );
-	// Pop matrix state
-	RENDER_API void		cleanupDraw ( void );
+	//RENDER_API void		prepareDraw ( void );
+	//// Pop matrix state
+	//RENDER_API void		cleanupDraw ( void );
 
 	RENDER_API void		setupFog ( void );
 	RENDER_API void		setupAmbient ( void );
@@ -127,21 +127,21 @@ public:
 	RENDER_API void		setupViewport ( int x, int y, int width, int height );
 	RENDER_API void		scissorViewport ( int x, int y, int width, int height );
 
-	RENDER_API void		beginOrtho ( void );
-	RENDER_API void		beginOrtho ( Real left, Real top, Real width, Real height, Real minz, Real maxz, bool flipped=true );
-	RENDER_API void		endOrtho ( void );
-	RENDER_API bool		inOrtho ( void );
+	//RENDER_API void		beginOrtho ( void );
+	//RENDER_API void		beginOrtho ( Real left, Real top, Real width, Real height, Real minz, Real maxz, bool flipped=true );
+	//RENDER_API void		endOrtho ( void );
+	//RENDER_API bool		inOrtho ( void );
 
-	RENDER_API void		pushProjection ( const Matrix4x4& );
-	RENDER_API void		popProjection ( );
+	//RENDER_API void		pushProjection ( const Matrix4x4& );
+	//RENDER_API void		popProjection ( );
 
-	RENDER_API const Matrix4x4& getProjection ( void );
+	//RENDER_API const Matrix4x4& getProjection ( void );
 
-	RENDER_API bool		hasModelMatrix ( void );
-	RENDER_API void		pushModelMatrix ( const Matrix4x4& );
-	RENDER_API void		popModelMatrix ( void );
+	//RENDER_API bool		hasModelMatrix ( void );
+	//RENDER_API void		pushModelMatrix ( const Matrix4x4& );
+	//RENDER_API void		popModelMatrix ( void );
 
-	RENDER_API const Matrix4x4& getModelMatrix ( void );
+	//RENDER_API const Matrix4x4& getModelMatrix ( void );
 
 #ifdef _ENGINE_RELEASE
 	RENDER_API FORCE_INLINE void CheckError ( void ) {}
@@ -150,13 +150,13 @@ public:
 #endif
 
 	// == Transformations and lazy transforms ==
-	RENDER_API void		Transform ( const XrTransform* );
-	RENDER_API void		Transform ( const Matrix2x2& );
-	RENDER_API void		Transform ( const Matrix4x4& );
+	//RENDER_API void		Transform ( const XrTransform* );
+	//RENDER_API void		Transform ( const Matrix2x2& );
+	//RENDER_API void		Transform ( const Matrix4x4& );
 
-	RENDER_API void		Translate ( Vector3d const& );
-	RENDER_API void		Translate ( Vector2d const& );
-	RENDER_API void		Rotate ( float );
+	//RENDER_API void		Translate ( Vector3d const& );
+	//RENDER_API void		Translate ( Vector2d const& );
+	//RENDER_API void		Rotate ( float );
 
 	//==============================================================================================//
 	// CURRENT RENDER STATES
@@ -178,8 +178,8 @@ public:
 	RENDER_API void		BlendMode( const eBlendModes src, const eBlendModes dest );
 
 private:
-	std::list<Matrix4x4>	viewprojection_stack;
-	std::list<Matrix4x4>	modelmatrix_stack;
+	//std::list<Matrix4x4>	viewprojection_stack;
+	//std::list<Matrix4x4>	modelmatrix_stack;
 
 public:
 	// == Screen and Pixels ==
@@ -230,7 +230,7 @@ public:
 	RENDER_API void			DrawElements ( uint type, int count, uint data, void* offset );
 
 private:
-	unsigned int	iCurrentProjectionMode;
+	//unsigned int	iCurrentProjectionMode;
 
 	bool	bFogEnabled;
 	bool	bDepthWriteEnabled;

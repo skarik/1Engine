@@ -207,6 +207,7 @@ void CCamera::LateUpdate ( void )
 #include "renderer/system/glMainSystem.h"
 #include "renderer/texture/CRenderTexture.h"
 #include "renderer/texture/CMRTTexture.h"
+#include "renderer/material/RrMaterial.h"
 
 // == Main Render Routine ==
 void CCamera::RenderScene ( void )
@@ -215,7 +216,9 @@ void CCamera::RenderScene ( void )
 
 	// Bind camera
 	RenderSet();
-	GL.pushProjection( viewTransform * projTransform );
+	//GL.pushProjection( viewTransform * projTransform );
+	camera_VP = viewTransform * projTransform;
+	RrMaterial::pushConstantsPerCamera();
 
 	// Limit render scale between 10% and 100%
 	render_scale = math::clamp( render_scale, 0.1F, 1.0F );
@@ -235,7 +238,7 @@ void CCamera::RenderScene ( void )
 	}
 
 	// Unbind camera
-	GL.popProjection();
+	//GL.popProjection();
 	RenderUnset();
 }
 
@@ -406,40 +409,40 @@ void CCamera::UpdateFrustum ( void )
 		projection[i] = result.pData[i];
 
 	// Left
-	frustum[0].n.x = projection[3] + projection[0];
-    frustum[0].n.y = projection[7] + projection[4];
-    frustum[0].n.z = projection[11] + projection[8];
-    frustum[0].d = projection[15] + projection[12];
+	frustum.plane[0].n.x = projection[3] + projection[0];
+	frustum.plane[0].n.y = projection[7] + projection[4];
+	frustum.plane[0].n.z = projection[11] + projection[8];
+	frustum.plane[0].d = projection[15] + projection[12];
 
 	// Right
-    frustum[1].n.x = projection[3] - projection[0];
-    frustum[1].n.y = projection[7] - projection[4];
-    frustum[1].n.z = projection[11] - projection[8];
-    frustum[1].d = projection[15] - projection[12];
+	frustum.plane[1].n.x = projection[3] - projection[0];
+	frustum.plane[1].n.y = projection[7] - projection[4];
+	frustum.plane[1].n.z = projection[11] - projection[8];
+	frustum.plane[1].d = projection[15] - projection[12];
 
 	// Bottom
-    frustum[2].n.x = projection[3] + projection[1];
-    frustum[2].n.y = projection[7] + projection[5];
-    frustum[2].n.z = projection[11] + projection[9];
-    frustum[2].d = projection[15] + projection[13];
+	frustum.plane[2].n.x = projection[3] + projection[1];
+	frustum.plane[2].n.y = projection[7] + projection[5];
+	frustum.plane[2].n.z = projection[11] + projection[9];
+	frustum.plane[2].d = projection[15] + projection[13];
 
 	// Top
-    frustum[3].n.x = projection[3] - projection[1];
-    frustum[3].n.y = projection[7] - projection[5];
-    frustum[3].n.z = projection[11] - projection[9];
-    frustum[3].d = projection[15] - projection[13];
+	frustum.plane[3].n.x = projection[3] - projection[1];
+	frustum.plane[3].n.y = projection[7] - projection[5];
+	frustum.plane[3].n.z = projection[11] - projection[9];
+	frustum.plane[3].d = projection[15] - projection[13];
 
 	// Near
-    frustum[4].n.x = projection[3] + projection[2];
-    frustum[4].n.y = projection[7] + projection[6];
-    frustum[4].n.z = projection[11] + projection[10];
-    frustum[4].d = projection[15] + projection[14];
+	frustum.plane[4].n.x = projection[3] + projection[2];
+	frustum.plane[4].n.y = projection[7] + projection[6];
+	frustum.plane[4].n.z = projection[11] + projection[10];
+	frustum.plane[4].d = projection[15] + projection[14];
 
 	// Far
-    frustum[5].n.x = projection[3] - projection[2];
-    frustum[5].n.y = projection[7] - projection[6];
-    frustum[5].n.z = projection[11] - projection[10];
-    frustum[5].d = projection[15] - projection[14];
+	frustum.plane[5].n.x = projection[3] - projection[2];
+	frustum.plane[5].n.y = projection[7] - projection[6];
+	frustum.plane[5].n.z = projection[11] - projection[10];
+	frustum.plane[5].d = projection[15] - projection[14];
 }
 
 bool CCamera::PointIsVisible ( Vector3d const& point )
@@ -452,7 +455,7 @@ bool CCamera::PointIsVisible ( Vector3d const& point )
 	{
 		// find the distance to this plane
 		//fDistance = m_plane[i].Normal().dotProduct(refSphere.Center())+m_plane[i].Distance();
-		fDistance = frustum[i].n.dot( point ) + frustum[i].d;
+		fDistance = frustum.plane[i].n.dot( point ) + frustum.plane[i].d;
 
 		// if this distance is < -sphere.radius, we are outside
 		if ( fDistance < 0 )
@@ -472,7 +475,7 @@ char CCamera::SphereIsVisible( Vector3d const& point, Real radius )
 	for ( int i = 0; i < 6; ++i )
 	{
 		// find the distance to this plane
-		fDistance = frustum[i].n.dot( point ) + frustum[i].d;
+		fDistance = frustum.plane[i].n.dot( point ) + frustum.plane[i].d;
 
 		// if this distance is < -sphere.radius, we are outside
 		if ( fDistance < -radius )
@@ -495,7 +498,7 @@ bool CCamera::BoundingBoxIsVisible ( BoundingBox& bbox )
 	{
 		// find the distance to this plane
 		//fDistance = frustum[i].n.dot( point ) + frustum[i].d;
-		bboxBehind = bbox.BoxOutsidePlane( frustum[i].n, Vector3d( 0,0, -frustum[i].d ) );
+		bboxBehind = bbox.BoxOutsidePlane( frustum.plane[i].n, Vector3d( 0,0, -frustum.plane[i].d ) );
 
 		if ( bboxBehind )
 			return false;

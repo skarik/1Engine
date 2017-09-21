@@ -188,10 +188,11 @@ void CRenderState::Render ( void )
 	{
 		// Render the current result to the screen
 		GL.setupViewport(0, 0, internal_chain_current->buffer_forward_rt->GetWidth(), internal_chain_current->buffer_forward_rt->GetHeight());
-		GL.pushModelMatrix( Matrix4x4() );
+		//GL.pushModelMatrix( Matrix4x4() );
 		{
 			// Set the current main screen buffer as the texture
 			RrMaterial::Copy->setTexture( TEX_MAIN, internal_chain_current->buffer_forward_rt );
+			//RrMaterial::Copy->prepareShaderConstants(NULL);
 			RrMaterial::Copy->bindPassForward(0);
 
 			// Set up an always-rendered
@@ -206,7 +207,7 @@ void CRenderState::Render ( void )
 
 			GLd.DrawScreenQuad(RrMaterial::Copy);
 		}
-		GL.popModelMatrix();
+		//GL.popModelMatrix();
 
 		// Clear out the buffer now that we no longer need it.
 		internal_chain_current->buffer_forward_rt->BindBuffer();
@@ -398,12 +399,12 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 				//if (( pRO )&&( pRO->renderType == rt ))
 				if ( pRO->visible && pRO->renderType == rt )
 				{
-					GL.prepareDraw();
+					//GL.prepareDraw();
 					if ( !pRO->Render( renderRQ.pass ) ) {
 						throw std::exception();
 					}
 					GL.CheckError();
-					GL.cleanupDraw();
+					//GL.cleanupDraw();
 				}
 			}
 			// Between layers, clear depth
@@ -548,7 +549,6 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 	RrMaterial::updateLightTBO();
 	RrMaterial::pushConstantsPerPass();
 	RrMaterial::pushConstantsPerFrame();
-	RrMaterial::pushConstantsPerCamera();
 	GL.CheckError();
 
 	int sortedListSize = sortedRenderList.size();
@@ -639,13 +639,13 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			}
 			else
 			{
-				GL.prepareDraw();
+				//GL.prepareDraw();
 				if ( !renderRQ_current.obj->Render( renderRQ_current.pass ) )
 				{
 					throw std::exception();
 				}
 				GL.CheckError();
-				GL.cleanupDraw();
+				//GL.cleanupDraw();
 				rendered = true;
 			}
 		}
@@ -698,6 +698,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				targetPass->setSampler( TEX_SLOT2, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(2), GL.Enum(Texture2D) );
 				targetPass->setSampler( TEX_SLOT3, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(3), GL.Enum(Texture2D) );
 				targetPass->setSampler( TEX_SLOT4, internal_chain_current->buffer_deferred_mrt->GetDepthSampler(), GL.Enum(Texture2D) );
+				//targetPass->prepareShaderConstants(NULL);
 				targetPass->bindPassForward(0);
 				// Pass in all the lighting information
 				{
@@ -772,12 +773,12 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					||( RrMaterial::special_mode == renderer::SP_MODE_ECHO && renderRQ_current.forward  && renderRQ_current.renderType == V2D ) // (unless echopass, then only do v2d)
 					))
 				{
-					GL.prepareDraw();
+					//GL.prepareDraw();
 					if ( !renderRQ_current.obj->Render( renderRQ_current.pass ) ) {
 						throw std::exception();
 					}
 					GL.CheckError();
-					GL.cleanupDraw();
+					//GL.cleanupDraw();
 				}
 				else if ( !renderRQ_current.forward ) 
 				{	// Shouldn't be rendering a deferred object here.
@@ -824,6 +825,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					CopyScaled->setTexture( TEX_MAIN, internal_chain_current->buffer_deferred_rt );
 					CopyScaled->m_diffuse[0] = currentRenderSize.x / (Real)unscaledRenderSize.x;
 					CopyScaled->m_diffuse[1] = currentRenderSize.y / (Real)unscaledRenderSize.y;
+					CopyScaled->prepareShaderConstants();
 					CopyScaled->bindPassForward(0);
 
 					// Set up an always-rendered
@@ -902,9 +904,9 @@ void CRenderState::RenderSingleObject ( CRenderableObject* objectToRender )
 	{
 		if ( objectToRender->GetPass( pass )->m_hint & RL_WORLD )
 		{
-			GL.prepareDraw();
+			//GL.prepareDraw();
 			objectToRender->Render( pass );
-			GL.cleanupDraw();
+			//GL.cleanupDraw();
 		}
 	}
 
@@ -922,9 +924,9 @@ void CRenderState::RenderObjectArray ( CRenderableObject** objectsToRender )
 		char maxPass = objectsToRender[i]->GetPassNumber();
 		for ( char pass = 0; pass < maxPass; ++pass )
 		{
-			GL.prepareDraw();
+			//GL.prepareDraw();
 			objectsToRender[i]->Render( pass );
-			GL.cleanupDraw();
+			//GL.cleanupDraw();
 		}
 	}
 

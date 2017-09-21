@@ -78,7 +78,7 @@ void	RrMaterial::pushConstantsPerCamera ( void )
 
 	// Set camera constants
 	GL_ACCESS;
-	perCamera.viewProjection = GL.getProjection();
+	perCamera.viewProjection = CCamera::activeCamera->camera_VP; //GL.getProjection();
 	perCamera.worldCameraPosition = CCamera::activeCamera->transform.position;
 	perCamera.viewportInfo = Vector4f(
 		0.0F,
@@ -109,7 +109,7 @@ void RrMaterial::pushConstantsPerObject ( const Matrix4x4& modelTRS, const Matri
 	GL_ACCESS;
 	perObject.matrices.modelTRS = modelTRS;
 	perObject.matrices.modelRS = modelRS;
-	perObject.matrices.modelViewProjection = modelTRS * GL.getProjection();
+	perObject.matrices.modelViewProjection = modelTRS * CCamera::activeCamera->camera_VP; //GL.getProjection();
 	perObject.matrices.modelViewProjectionInverse = perObject.matrices.modelViewProjection.inverse();
 
 	// Todo: optimize update via the passinfo[i].m_dirty and deferredinfo[i].m_dirty flags.

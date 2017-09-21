@@ -41,7 +41,7 @@ glHandle glDrawing::BeginPrimitive ( unsigned int n_primitiveType, RrMaterial* n
 	prim_list[primHandle].material = n_material;
 
 	// Prepare material constants now
-	prim_list[primHandle].material->prepareShaderConstants(NULL, false);
+	prim_list[primHandle].material->prepareShaderConstants();
 
 	return primHandle;
 }

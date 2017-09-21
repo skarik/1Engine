@@ -41,6 +41,10 @@ public:
 	// Returns read-write reference to the sprite generation parameters
 	RENDER2D_API spriteGenParams2D_t& SpriteGenParams ( void );
 
+	//		PreRender()
+	// Push the uniform properties
+	RENDER2D_API bool		PreRender ( void ) override;
+
 	//		Render()
 	// Render the model using the 2D engine's style
 	RENDER2D_API bool		Render ( const char pass ) override;

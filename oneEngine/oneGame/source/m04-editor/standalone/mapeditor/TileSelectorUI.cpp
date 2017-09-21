@@ -7,6 +7,7 @@
 #include "renderer/texture/CTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
+#include "renderer/object/immediate/immediate.h"
 
 #include "core/input/CInput.h"
 
@@ -116,8 +117,10 @@ bool TileSelectorUI::Render ( const char pass )
 {
 	GL_ACCESS GLd_ACCESS
 
-	GL.prepareDraw();
-	GL.beginOrtho( 0,0, 1,1, -45,45 );
+	//GL.prepareDraw();
+	//GL.beginOrtho( 0,0, 1,1, -45,45 );
+	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d(+1, +1, +45.0F) );
+
 	GLd.DrawSet2DScaleMode();
 
 	m_material->bindPass(0);
@@ -217,8 +220,8 @@ bool TileSelectorUI::Render ( const char pass )
 	}
 	GLd.EndPrimitive(lPrimLines);
 
-	GL.endOrtho();
-	GL.cleanupDraw();
+	//GL.endOrtho();
+	//GL.cleanupDraw();
 
 	return true;
 }

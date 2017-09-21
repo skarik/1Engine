@@ -6,7 +6,7 @@
 
 // Includes
 //#include "CGameObject.h"
-#include "core/math/Plane.h"
+#include "core/math/Frustum.h"
 #include "core/math/Rect.h"
 #include "core/math/BoundingBox.h"
 #include "core/math/matrix/CMatrix.h"
@@ -147,6 +147,9 @@ public:
 	Matrix4x4 projTransform;
 	Matrix4x4 textureMatrix;
 
+	// Calculated camera transform
+	Matrix4x4 camera_VP;
+
 	// == Static Values ==
 	// During Render, is the current active rendering camera
 	// During Update, is the renderer of the main viewport
@@ -164,7 +167,8 @@ protected:
 	Rect viewport;
 
 	// Camera frustum
-	Maths::Plane frustum [6];
+	//core::math::Plane frustum [6];
+	core::math::Frustum frustum;
 
 	// == Camera type properties ==
 	bool	bIsRTcamera;

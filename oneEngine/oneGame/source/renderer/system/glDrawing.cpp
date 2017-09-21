@@ -160,8 +160,9 @@ void	glDrawing::DrawAutoText ( float dx, float dy, const char* fmt, ... )
 		Matrix4x4 translationMatrix;
 		translationMatrix.setTranslation( translation );
 		
-		GL.Transform( translationMatrix*scaleMatrix );
+		//GL.Transform( translationMatrix*scaleMatrix );
 		//RrMaterial::current->setShaderConstants(NULL);
+		prim_next_material->prepareShaderConstants( XrTransform(translation, Rotator(), Vector3d(Screen::Info.scale, Screen::Info.scale, Screen::Info.scale)) );
 	}
 
 	// Push Display List Bits
@@ -228,7 +229,7 @@ void	glDrawing::DrawAutoText ( float dx, float dy, const char* fmt, ... )
 	//glEnable( GL_CULL_FACE );
 
 	//GL.cleanupDraw();
-	GL.popModelMatrix();
+	//GL.popModelMatrix();
 }
 
 void	glDrawing::DrawAutoTextCentered ( float dx, float dy, const char* fmt, ... )
@@ -290,8 +291,9 @@ void	glDrawing::DrawAutoTextCentered ( float dx, float dy, const char* fmt, ... 
 		Matrix4x4 translationMatrix;
 		translationMatrix.setTranslation( translation );
 		
-		GL.Transform( translationMatrix*scaleMatrix );
+		//GL.Transform( translationMatrix*scaleMatrix );
 		//RrMaterial::current->setShaderConstants(NULL);
+		prim_next_material->prepareShaderConstants( XrTransform(translation, Rotator(), Vector3d(Screen::Info.scale, Screen::Info.scale, Screen::Info.scale)) );
 	}
 
 	// Push Display List Bits
@@ -358,7 +360,7 @@ void	glDrawing::DrawAutoTextCentered ( float dx, float dy, const char* fmt, ... 
 	//glEnable( GL_CULL_FACE );
 
 	//GL.cleanupDraw();
-	GL.popModelMatrix();
+	//GL.popModelMatrix();
 }
 
 void		glDrawing::DrawAutoTextWrapped ( float dx, float dy, float dw, const char* fmt, ... )
@@ -431,8 +433,9 @@ void		glDrawing::DrawAutoTextWrapped ( float dx, float dy, float dw, const char*
 		Matrix4x4 translationMatrix;
 		translationMatrix.setTranslation( translation );
 		
-		GL.Transform( translationMatrix*scaleMatrix );
+		//GL.Transform( translationMatrix*scaleMatrix );
 		//RrMaterial::current->setShaderConstants(NULL);
+		prim_next_material->prepareShaderConstants( XrTransform(translation, Rotator(), Vector3d(Screen::Info.scale, Screen::Info.scale, Screen::Info.scale)) );
 	}
 
 	// Push Display List Bits
@@ -543,7 +546,7 @@ void		glDrawing::DrawAutoTextWrapped ( float dx, float dy, float dw, const char*
 	//glEnable( GL_CULL_FACE );
 
 	//GL.cleanupDraw();
-	GL.popModelMatrix();
+	//GL.popModelMatrix();
 }
 
 void		glDrawing::DrawSet2DMode ( e2DDrawMode drawMode )
@@ -860,7 +863,7 @@ void		glDrawing::DrawScreenQuad ( RrMaterial* n_material )
 	//RrMaterial::current->bindPassAtrribs(RrMaterial::current_pass);
 	//RrMaterial::current->setShaderConstants( NULL, false );
 	n_material->bindPassAtrribs();
-	n_material->prepareShaderConstants(NULL, false);
+	//n_material->prepareShaderConstants(NULL, false);
 	// Mark the enabled attributes
 	for ( uchar i = 0; i < 16; ++i )
 	{

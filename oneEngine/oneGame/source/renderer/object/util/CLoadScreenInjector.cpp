@@ -9,6 +9,7 @@
 #include "renderer/state/Settings.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
+#include "renderer/object/immediate/immediate.h"
 
 void CLoadScreenInjector::StepScreen ( void )
 {
@@ -75,11 +76,19 @@ CLoadScreenInjector::~CLoadScreenInjector ( void )
 	delete fntNotifier;
 }
 
+bool CLoadScreenInjector::PreRender ( void )
+{
+	//GL.Translate( Vector3d( 0,0,41 ) );
+	screenMaterial->prepareShaderConstants();
+	matNotifierDrawer->prepareShaderConstants();
+	return true;
+}
 bool CLoadScreenInjector::Render ( const char pass )
 {
 	GL_ACCESS GLd_ACCESS
-	GL.beginOrtho();
-		GL.Translate( Vector3d( 0,0,41 ) );
+	//GL.beginOrtho();
+	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+		//GL.Translate( Vector3d( 0,0,41 ) );
 		GLd.DrawSet2DMode( GLd.D2D_FLAT );
 		GLd.DrawSet2DScaleMode( GLd.SCALE_DEFAULT );
 		//screenMaterial->diffuse.alpha = 1.0;//std::min<Real>( fAlpha, 1 );
@@ -99,7 +108,7 @@ bool CLoadScreenInjector::Render ( const char pass )
 		//fntNotifier->Unbind();
 		//matNotifierDrawer->unbind();
 
-	GL.endOrtho();
+	//GL.endOrtho();
 
 	return true;
 }

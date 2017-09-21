@@ -581,10 +581,10 @@ void CDuskGUI::RenderUI ( void )
 // Rendering
 bool CDuskGUI::PreRender ( void )
 {
-	matScreenCopy->prepareShaderConstants(this);
-	matDefault->prepareShaderConstants(this);
+	matScreenCopy->prepareShaderConstants();
+	matDefault->prepareShaderConstants();
 	//matDown->prepareShaderConstants(this);
-	matFont->prepareShaderConstants(this);
+	matFont->prepareShaderConstants();
 	//matHover->prepareShaderConstants(this);
 	return true;
 }

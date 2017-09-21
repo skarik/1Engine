@@ -4,6 +4,7 @@
 #include "renderer/texture/CBitmapFont.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
+#include "renderer/object/immediate/immediate.h"
 
 using namespace debug;
 
@@ -39,7 +40,8 @@ bool CTimeProfilerUI::Render ( const char pass )
 	if ( pass != 0 ) 
 		return false;
 
-	GL.beginOrtho();
+	//GL.beginOrtho();
+	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 	GLd.DrawSet2DScaleMode();
 
 	Vector2d drawPos;
@@ -63,7 +65,7 @@ bool CTimeProfilerUI::Render ( const char pass )
 	//	fntDebug->Unbind();
 	//matFntDebug->unbind();
 
-	GL.endOrtho();
+	//GL.endOrtho();
 
 	return true;
 }

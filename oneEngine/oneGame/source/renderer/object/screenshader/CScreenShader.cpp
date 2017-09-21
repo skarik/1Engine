@@ -8,6 +8,8 @@
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
+#include "renderer/object/immediate/immediate.h"
+
 CScreenShader::CScreenShader ( CCamera* pCam )
 	: CRenderableObject(), m_targetcam( pCam )
 {
@@ -102,7 +104,8 @@ bool CScreenShader::Render ( const char pass )
 
 	// Change the projection to orthographic
 	{
-		GL.beginOrtho(-1,-1,2,2,-1,1,false);
+		//GL.beginOrtho(-1,-1,2,2,-1,1,false);
+		core::math::Cubic::FromPosition( Vector3d(-1,-1,-1), Vector3d(+1,+1,+1) );
 	}
 
 	// Predraw output
@@ -125,7 +128,7 @@ bool CScreenShader::Render ( const char pass )
 	
 	// Get the old projection matrix
 	{
-		GL.endOrtho();
+		//GL.endOrtho();
 		//GL.setupViewport(0,0,Screen::Info.width,Screen::Info.height); //Only needed if interrupting main render routine (which shouldn't be done)
 	}
 
@@ -136,7 +139,7 @@ bool CScreenShader::Render ( const char pass )
 // Prepares general uniform buffers
 bool CScreenShader::PreRender ( void )
 {
-	m_material->prepareShaderConstants(this);
+	m_material->prepareShaderConstants();
 	return true;
 }
 // Draws the output quad to m_buf

@@ -7,6 +7,7 @@
 #include "core/math/Vector2d.h"
 #include "core/math/Vector4d.h"
 #include "core/containers/arstring.h"
+#include "core-ext/transform/Transform.h"
 
 #include "renderer/types/types.h"
 #include "renderer/gpuw/Buffers.h"
@@ -80,11 +81,14 @@ public:
 	RENDER_API void			bindPass ( uchar pass );
 	RENDER_API void			bindPassAtrribs ( void );
 
-	//	prepareShaderConstants( object, identity ) : Push constants to GPU
+	//	prepareShaderConstants( transform, identity ) : Push constants to GPU
 	// Unlike the previous setShaderConstants(), this does not require the material to be bound.
 	// Reads current pass and material states and pushes them to the per-object buffer on the GPU.
 	// This has a bit of GPU delay, so should be done enough time before rendering to prevent an upload stall. (On consoles, this delay is minimized).
-	RENDER_API void			prepareShaderConstants ( CRenderableObject* source_object, const bool n_force_identity=false );
+	RENDER_API void			prepareShaderConstants ( void );
+	RENDER_API void			prepareShaderConstants ( const core::Transform& n_transform );
+	RENDER_API void			prepareShaderConstants ( const XrTransform& n_transform );
+	//RENDER_API void			prepareShaderConstants ( CRenderableObject* source_object, const bool n_force_identity=false );
 	//RENDER_API void			setShaderConstants ( CRenderableObject* source_object, const bool n_force_identity=false );
 
 	RENDER_API void			bindPassForward ( uchar pass );

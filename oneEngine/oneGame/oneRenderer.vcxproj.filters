@@ -103,6 +103,9 @@
     <Filter Include="SOURCE\Renderer\Object\Sprite.unused">
       <UniqueIdentifier>{ab0caa54-7e17-4e28-971c-89c4069719b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Renderer\Object\Immediate">
+      <UniqueIdentifier>{7e9475da-58a6-416f-83ad-d917a56d253b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\renderer\system\glDrawing.cpp">
@@ -655,6 +658,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\system\rrVBufferStreaming.h">
       <Filter>SOURCE\Renderer\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\immediate\immediate.h">
+      <Filter>SOURCE\Renderer\Object\Immediate</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

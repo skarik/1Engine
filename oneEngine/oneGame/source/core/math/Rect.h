@@ -1,6 +1,5 @@
-
-#ifndef _C_RECT_
-#define _C_RECT_
+#ifndef CORE_MATH_RECT_H_
+#define CORE_MATH_RECT_H_
 
 // Includes
 #include "core/types/types.h"
@@ -82,4 +81,4 @@ public:
 
 };
 
-#endif
+#endif//CORE_MATH_RECT_H_

@@ -90,7 +90,7 @@ void CCubeRenderPrim::SetSize ( Real width, Real depth, Real height )
 // Render object
 bool CCubeRenderPrim::PreRender ( void )
 {
-	m_material->prepareShaderConstants(this);
+	m_material->prepareShaderConstants(transform.world);
 	return true;
 }
 

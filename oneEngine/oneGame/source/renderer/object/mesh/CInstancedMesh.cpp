@@ -73,10 +73,10 @@ bool CInstancedMesh::Render ( const char pass )
 	//transform.LateUpdate();
 
 	// Set up transformation for the mesh
-	if ( m_parent )
-		GL.Transform( &m_parent->transform );
-	else
-		GL.Transform( &this->transform.world );
+	//if ( m_parent )
+	//	GL.Transform( &m_parent->transform );
+	//else
+	//	GL.Transform( &this->transform.world );
 
 	// Set up material properties before mesh is bound
 	if ( bUseSkinning && false )

@@ -1,4 +1,3 @@
-
 #include "CScreenFade.h"
 #include "core/time/time.h"
 
@@ -8,6 +7,8 @@
 
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
+
+#include "renderer/object/immediate/immediate.h"
 
 CScreenFade::CScreenFade ( bool inbFadeIn, float infFadeTime, float infFadeDelay, Color incFadeColor )
 	: CRenderableObject(), CLogicObject()
@@ -68,20 +69,27 @@ void CScreenFade::PreStepSynchronus ( void )
 	}
 }
 
+bool CScreenFade::PreRender ( void )
+{
+	//GL.Translate( Vector3d( 0,0,40 ) );
+	screenMaterial->prepareShaderConstants();
+	return true;
+}
 bool CScreenFade::Render ( const char pass )
 {
 	GL_ACCESS GLd_ACCESS
 	if ( fAlpha > 0.0f )
 	{
-		GL.beginOrtho();
-			GL.Translate( Vector3d( 0,0,40 ) );
+		//GL.beginOrtho();
+		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+			//GL.Translate( Vector3d( 0,0,40 ) );
 			GLd.P_PushColor(1,1,1);
 			GLd.DrawSet2DMode( GLd.D2D_FLAT );
 			GLd.DrawSet2DScaleMode( GLd.SCALE_DEFAULT );
 			screenMaterial->m_diffuse.alpha = std::min<Real>( fAlpha, 1 );
 			screenMaterial->bindPass(0);
 				GLd.DrawRectangleA( 0,0, 1,1 );
-		GL.endOrtho();
+		//GL.endOrtho();
 	}
 	return true;
 }

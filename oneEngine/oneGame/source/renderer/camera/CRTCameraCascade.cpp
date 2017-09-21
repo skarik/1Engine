@@ -4,6 +4,7 @@
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/texture/CRenderTexture.h"
 #include "renderer/system/glMainSystem.h"
+#include "renderer/material/RrMaterial.h"
 
 void CRTCameraCascade::RenderScene ( void )
 {
@@ -41,9 +42,11 @@ void CRTCameraCascade::RenderScene ( void )
 			CRTCamera::UpdateMatrix();
 			m_renderMatrices[i] = textureMatrix;
 			CCamera::RenderSet();
-			GL.pushProjection( viewTransform * projTransform );
+			//GL.pushProjection( viewTransform * projTransform );
+			camera_VP = viewTransform * projTransform;
+			RrMaterial::pushConstantsPerCamera();
 			SceneRenderer->RenderSceneForward( enabledHints );
-			GL.popProjection();
+			//GL.popProjection();
 			CCamera::RenderUnset();
 		}
 

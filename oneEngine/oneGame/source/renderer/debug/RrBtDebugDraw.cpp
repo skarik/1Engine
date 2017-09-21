@@ -99,6 +99,14 @@ bool RrBtDebugDraw::EndRender ( void )
 	return true;
 }
 
+//		PreRender()
+// Push the model's uniform up up.
+bool RrBtDebugDraw::PreRender ( void )
+{
+	m_material->prepareShaderConstants( transform.world );
+	return true;
+}
+
 //		Render()
 // Render the model using the 2D engine's style
 bool RrBtDebugDraw::Render ( const char pass ) 
@@ -110,7 +118,7 @@ bool RrBtDebugDraw::Render ( const char pass )
 	}
 
 	// For now, we will render the same way as the 3d meshes render
-	GL.Transform( &(transform.world) );
+	//GL.Transform( &(transform.world) );
 	m_material->m_bufferSkeletonSize = 0;
 	m_material->m_bufferMatricesSkinning = 0;
 	m_material->bindPass(pass);

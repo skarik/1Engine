@@ -19,8 +19,9 @@ public:
 	CIsosphere ( void );
 	~CIsosphere ( void );
 
+	bool PreRender ( void ) override;
 	// Render function
-	bool Render ( const char pass );
+	bool Render ( const char pass ) override;
 protected:
 	float radius;
 	int divisions;

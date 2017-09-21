@@ -35,6 +35,14 @@ arModelData* CStreamedRenderable2D::GetModelData ( void )
 	return &m_modeldata;
 }
 
+//		PreRender()
+// Push the uniform properties
+bool CStreamedRenderable2D::PreRender ( void )
+{
+	m_material->prepareShaderConstants(transform.world);
+	return true;
+}
+
 // Push the current stuff in model data to GPU.
 void CStreamedRenderable2D::StreamLockModelData ( void )
 {
@@ -68,7 +76,7 @@ bool CStreamedRenderable2D::Render ( const char pass )
 	}// TODO: Double check that per-object uniforms are sent to the videocard.
 
 	// For now, we will render the same way as the 3d meshes render
-	GL.Transform( &(transform.world) );
+	//GL.Transform( &(transform.world) );
 	m_material->m_bufferSkeletonSize = 0;
 	m_material->m_bufferMatricesSkinning = 0;
 	m_material->bindPass(pass);

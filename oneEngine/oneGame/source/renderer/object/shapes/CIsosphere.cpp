@@ -46,7 +46,13 @@ CIsosphere::~CIsosphere ( void )
 	if ( pSphereData != NULL )
 		delete [] pSphereData;
 }
-#include "core/time/time.h"
+
+bool CIsosphere::PreRender ( void )
+{
+	m_material->prepareShaderConstants(transform.world);
+	return true;
+}
+//#include "core/time/time.h"
 bool CIsosphere::Render ( const char pass )
 {
 	GL_ACCESS
@@ -56,7 +62,7 @@ bool CIsosphere::Render ( const char pass )
 	m_material->bindPass(0);
 
 	transform.world.position = CCamera::activeCamera->transform.position;
-	GL.Transform( &transform.world );
+	//GL.Transform( &transform.world );
 	//drawList();
 	drawsphere( divisions, -radius );
 

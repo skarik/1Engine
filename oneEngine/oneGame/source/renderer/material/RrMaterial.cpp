@@ -4,6 +4,7 @@
 #include "core/time/time.h"
 #include "core/settings/CGameSettings.h"
 #include "core/types/ModelData.h"
+#include "core-ext/transform/TransformUtility.h"
 
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/object/CRenderableObject.h"
@@ -560,11 +561,11 @@ void RrMaterial::bindPass ( uchar pass )
 	TimeProfiler.BeginTimeProfile( "rs_mat_bindpass" );
 
 	// Forward binding
-	if ( GL.inOrtho() || CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
+	if ( /*GL.inOrtho() ||*/ CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD || deferredinfo.empty() )
 	{
 		bindPassForward( pass );
 	}
-	else if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_DEFERRED )
+	else if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_DEFERRED || passinfo.empty() )
 	{
 		bindPassDeferred( pass );
 	}
@@ -1279,27 +1280,48 @@ void RrMaterial::shader_bind_samplers ( RrShader* shader )
 //	// Fullbright on the ambient, though
 //	glUniform4f( renderer::UNI_LIGHTING_AMBIENT, 1.0f, 1.0f, 1.0f, 1.0f );
 //}
+void RrMaterial::prepareShaderConstants ( void )
+{
+	Matrix4x4 modelTRS, modelRS;
+	// Update matrix constants
+	pushConstantsPerObject(modelTRS, modelRS);
+}
+void RrMaterial::prepareShaderConstants ( const core::Transform& n_transform )
+{
+	Matrix4x4 modelTRS, modelRS;
+	modelTRS = n_transform.WorldMatrix();
 
-void RrMaterial::prepareShaderConstants ( CRenderableObject* source_object, bool n_force_identity )
+	/*modelRS.setRotation( n_transform.world.rotation );
+	modelRS.pData[0]  *= n_transform.world.scale.x;
+	modelRS.pData[5]  *= n_transform.world.scale.y;
+	modelRS.pData[10] *= n_transform.world.scale.z;
+*/
+	modelRS = n_transform.WorldRotation();
+
+	// Update matrix constants
+	pushConstantsPerObject(!modelTRS, modelRS);
+}
+void RrMaterial::prepareShaderConstants ( const XrTransform& n_transform )
 {	
-	GL_ACCESS;
+	//GL_ACCESS;
 
 	Matrix4x4 modelTRS, modelRS;
-	if ( !n_force_identity )
+	//if ( !n_force_identity )
 	{
-		if (source_object && !GL.hasModelMatrix())
+		//if (source_object)// && !GL.hasModelMatrix())
 		{
-			modelTRS = source_object->transform.WorldMatrix();
+			/*modelTRS = source_object->transform.WorldMatrix();
 
-			modelRS.setRotation( source_object->transform.world.rotation );
-			modelRS.pData[0]  *= source_object->transform.world.scale.x;
-			modelRS.pData[5]  *= source_object->transform.world.scale.y;
-			modelRS.pData[10] *= source_object->transform.world.scale.z;
+			modelRS.setRotation( n_transform.rotation );
+			modelRS.pData[0]  *= n_transform.scale.x;
+			modelRS.pData[5]  *= n_transform.scale.y;
+			modelRS.pData[10] *= n_transform.scale.z;*/
+			core::TransformUtility::TRSToMatrix4x4(n_transform, modelTRS, modelRS);
 		}
-		else
-		{
-			modelTRS = GL.getModelMatrix();
-		}
+		//else
+		//{
+		//	modelTRS = GL.getModelMatrix();
+		//}
 	}
 
 	// Update matrix constants

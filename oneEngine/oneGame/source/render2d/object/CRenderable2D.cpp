@@ -407,6 +407,14 @@ void CRenderable2D::PushModeldata ( void )
 	GL.UnbindBuffer( GL_ELEMENT_ARRAY_BUFFER );
 }
 
+//		PreRender()
+// Push the uniform properties
+bool CRenderable2D::PreRender ( void )
+{
+	m_material->prepareShaderConstants(transform.world);
+	return true;
+}
+
 //		Render()
 // Render the model using the 2D engine's style
 bool CRenderable2D::Render ( const char pass )
@@ -418,7 +426,7 @@ bool CRenderable2D::Render ( const char pass )
 	}
 
 	// For now, we will render the same way as the 3d meshes render
-	GL.Transform( &(transform.world) );
+	//GL.Transform( &(transform.world) );
 	m_material->m_bufferSkeletonSize = 0;
 	m_material->m_bufferMatricesSkinning = 0;
 	m_material->bindPass(pass);

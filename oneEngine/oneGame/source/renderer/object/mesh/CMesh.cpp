@@ -92,7 +92,11 @@ bool CMesh::PreRender ( void )
 	// If can render, then push the uniform buffers
 	if (bCanRender)
 	{
-		m_material->prepareShaderConstants(this, false);
+		// Set up transformation for the mesh
+		if ( m_parent )
+			m_material->prepareShaderConstants(m_parent->transform);
+		else
+			m_material->prepareShaderConstants(this->transform.world);
 	}
 
 	// 
@@ -107,10 +111,10 @@ bool CMesh::Render ( const char pass )
 	GL_ACCESS;
 
 	// Set up transformation for the mesh
-	if ( m_parent )
-		GL.Transform( &m_parent->transform );
-	else
-		GL.Transform( &this->transform.world );
+	//if ( m_parent )
+	//	GL.Transform( &m_parent->transform );
+	//else
+	//	GL.Transform( &this->transform.world );
 	
 	// Set up material properties before mesh is bound
 	if ( bUseSkinning )

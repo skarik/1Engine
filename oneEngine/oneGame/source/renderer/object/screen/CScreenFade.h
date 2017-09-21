@@ -16,6 +16,7 @@ public:
 	RENDER_API /*Destructor*/	~CScreenFade ( void );
 
 	RENDER_API void PreStepSynchronus ( void ) override;
+	RENDER_API bool PreRender ( void ) override;
 	RENDER_API bool Render ( const char pass ) override;
 
 private:

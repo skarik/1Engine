@@ -22,7 +22,7 @@ CRenderablePrimitive::~CRenderablePrimitive ( void )
 
 bool CRenderablePrimitive::PreRender ( void )
 {
-	m_material->prepareShaderConstants(this);
+	m_material->prepareShaderConstants(transform.world);
 	return true;
 }
 
@@ -31,7 +31,7 @@ bool CRenderablePrimitive::PreRender ( void )
 bool CRenderablePrimitive::Render ( const char pass )
 {
 	GL_ACCESS GLd_ACCESS
-	GL.Transform( &transform.world );
+	//GL.Transform( &transform.world );
 
 	m_material->bindPass(pass);
 	//m_material->setShaderConstants(this);

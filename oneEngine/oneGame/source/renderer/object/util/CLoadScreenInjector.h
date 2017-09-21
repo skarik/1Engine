@@ -15,6 +15,7 @@ public:
 
 	RENDER_API void StepScreen ( void );
 
+	bool PreRender ( void ) override;
 	bool Render ( const char pass ) override;
 
 private:
