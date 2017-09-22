@@ -375,6 +375,15 @@
     <ClCompile Include="source\renderer\material\RrMaterial.Constants.cpp">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\utils\IrrMeshBuilder.cpp">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\utils\rrMeshBuilder2D.cpp">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\immediate\RrScopedMeshRenderer.cpp">
+      <Filter>SOURCE\Renderer\Object\Immediate</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\ogl\GLCommon.h">
@@ -660,6 +669,21 @@
       <Filter>SOURCE\Renderer\System</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\immediate\immediate.h">
+      <Filter>SOURCE\Renderer\Object\Immediate</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\utils\IrrMeshBuilder.h">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\utils\rrMeshBuilder2D.h">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\utils\rrMeshBuilder.h">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\immediate\IRrRenderableStreamedMesh.h">
+      <Filter>SOURCE\Renderer\Object\Immediate</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\immediate\RrScopedMeshRenderer.h">
       <Filter>SOURCE\Renderer\Object\Immediate</Filter>
     </ClInclude>
   </ItemGroup>

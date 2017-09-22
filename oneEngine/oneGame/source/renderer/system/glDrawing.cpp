@@ -846,49 +846,38 @@ void		glDrawing::DrawScreenQuad ( RrMaterial* n_material )
 		glBufferData( GL_ARRAY_BUFFER, sizeof(buffer), buffer, GL_STATIC_DRAW );
 	}
 
-	glBindVertexArray( vaoQuad );
-	glBindBuffer( GL_ARRAY_BUFFER, vboQuad );
-
-	// Then disable all values in the VAO (this part of the engine is the only place where they get reused)
-	for ( uchar i = 0; i < 16; ++i )
+	// Push the material
 	{
-		if ( attribs[i] )
-		{	// TODO: DO MATCHING WITH CURRENT MATERIAL.
-			attribs[i] = false;
-			glDisableVertexAttribArray(i);
-		}
+		n_material->prepareShaderConstants();
+		//n_material->bindPass(n_pass);
 	}
 
-	// Now, send the material attributes
-	//RrMaterial::current->bindPassAtrribs(RrMaterial::current_pass);
-	//RrMaterial::current->setShaderConstants( NULL, false );
-	n_material->bindPassAtrribs();
-	//n_material->prepareShaderConstants(NULL, false);
-	// Mark the enabled attributes
-	for ( uchar i = 0; i < 16; ++i )
+	// Set up attributes
 	{
-		attribs[i] = RrPassForward::enabled_attributes[i];
+		glBindVertexArray( vaoQuad );
+		glBindBuffer( GL_ARRAY_BUFFER, vboQuad );
+
+		// Then disable all values in the VAO (this part of the engine is the only place where they get reused)
+		for ( uchar i = 0; i < 16; ++i )
+		{
+			if ( attribs[i] )
+			{	// TODO: DO MATCHING WITH CURRENT MATERIAL.
+				attribs[i] = false;
+				glDisableVertexAttribArray(i);
+			}
+		}
+
+		// Bind the vertex attributes
+		n_material->bindPassAtrribs();
+		// Mark the enabled attributes
+		for ( uchar i = 0; i < 16; ++i )
+		{
+			attribs[i] = RrPassForward::enabled_attributes[i];
+		}
 	}
 
 	// Draw the current primitive
 	glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
-
-	/*GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
-		GLd.P_PushColor( 1,1,1,1 );
-
-		GLd.P_PushTexcoord( 1,1 );
-		GLd.P_AddVertex( 1,1 );
-
-		GLd.P_PushTexcoord( 0,1 );
-		GLd.P_AddVertex( -1,1 );
-
-		GLd.P_PushTexcoord( 1,0 );
-		GLd.P_AddVertex( 1,-1 );
-
-		GLd.P_PushTexcoord( 0,0 );
-		GLd.P_AddVertex( -1,-1 );
-
-	GLd.EndPrimitive();*/
 }
 
 // Set primitive options

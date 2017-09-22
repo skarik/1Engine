@@ -133,6 +133,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		RrMaterial::Copy->passinfo.push_back( RrPassForward() );
 		RrMaterial::Copy->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer.glsl" );
 		RrMaterial::Copy->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
+		RrMaterial::Copy->passinfo[0].b_depthtest = false;
 		// No deferred pass.
 	}
 	// Create the fallback shader
@@ -156,6 +157,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		CopyScaled->passinfo.push_back( RrPassForward() );
 		CopyScaled->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer_scaled.glsl" );
 		CopyScaled->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
+		CopyScaled->passinfo[0].b_depthtest = false;
 	}
 
 	bSpecialRender_ResetLights = false;

@@ -67,6 +67,7 @@
     <ClCompile Include="source\renderer\material\RrShaderManager.cpp" />
     <ClCompile Include="source\renderer\module_renderer.cpp" />
     <ClCompile Include="source\renderer\object\CRenderableObject.cpp" />
+    <ClCompile Include="source\renderer\object\immediate\RrScopedMeshRenderer.cpp" />
     <ClCompile Include="source\renderer\object\mesh\CInstancedMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\CMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\CStreamedMesh.cpp" />
@@ -141,6 +142,8 @@
     <ClCompile Include="source\renderer\types\ObjectSettings.cpp" />
     <ClCompile Include="source\renderer\utils\glScreenshot.cpp" />
     <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp" />
+    <ClCompile Include="source\renderer\utils\IrrMeshBuilder.cpp" />
+    <ClCompile Include="source\renderer\utils\rrMeshBuilder2D.cpp" />
     <ClCompile Include="source\renderer\window\RrWindowWin32.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +176,8 @@
     <ClInclude Include="source\renderer\module_renderer.h" />
     <ClInclude Include="source\renderer\object\CRenderableObject.h" />
     <ClInclude Include="source\renderer\object\immediate\immediate.h" />
+    <ClInclude Include="source\renderer\object\immediate\IRrRenderableStreamedMesh.h" />
+    <ClInclude Include="source\renderer\object\immediate\RrScopedMeshRenderer.h" />
     <ClInclude Include="source\renderer\object\mesh\CInstancedMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\CMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\CStreamedMesh.h" />
@@ -245,6 +250,9 @@
     <ClInclude Include="source\renderer\types\types.h" />
     <ClInclude Include="source\renderer\utils\glScreenshot.h" />
     <ClInclude Include="source\renderer\utils\glTMeshContainer.h" />
+    <ClInclude Include="source\renderer\utils\IrrMeshBuilder.h" />
+    <ClInclude Include="source\renderer\utils\rrMeshBuilder.h" />
+    <ClInclude Include="source\renderer\utils\rrMeshBuilder2D.h" />
     <ClInclude Include="source\renderer\window\RrWindow.h" />
     <ClInclude Include="source\renderer\window\RrWindowLinux.h" />
     <ClInclude Include="source\renderer\window\RrWindowOsmac.h" />

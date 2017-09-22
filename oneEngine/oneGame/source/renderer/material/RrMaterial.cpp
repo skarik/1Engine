@@ -660,8 +660,15 @@ void RrMaterial::bindPassForward ( uchar pass )
 		break;
 	}
 	// Set transparency mode
-	glEnable( GL_DEPTH_TEST );
-	glDepthFunc( GL_LEQUAL );
+	if ( passinfo[pass].b_depthtest )
+	{
+		glEnable( GL_DEPTH_TEST );
+		glDepthFunc( GL_LEQUAL );
+	}
+	else
+	{
+		glDisable( GL_DEPTH_TEST );
+	}
 	switch ( passinfo[pass].m_transparency_mode )
 	{
 	case renderer::ALPHAMODE_NONE:
@@ -741,7 +748,7 @@ void RrMaterial::bindPassForward ( uchar pass )
 
 	// Tell the shader to use the constants
 	TimeProfiler.BeginTimeProfile( "rs_mat_cbuf" );
-	shader_set_constantbuffers(passinfo[pass].shader, pass, false);
+	shader_set_constantbuffers(passinfo[pass].shader, pass, true);
 	TimeProfiler.EndTimeProfile( "rs_mat_cbuf" );
 
 	TimeProfiler.EndAddTimeProfile( "rs_mat_binduniforms" );

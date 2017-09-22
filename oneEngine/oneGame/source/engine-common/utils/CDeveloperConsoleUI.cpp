@@ -110,11 +110,13 @@ CDeveloperCursor::CDeveloperCursor ( void )
 
 	texCursor = new CTexture( "textures/system/cursor.png" );
 	matCursor = new RrMaterial;
-	matCursor->m_diffuse = Color( 1.0f,1,1 );
+	matCursor->m_diffuse = Color( 1.0F,1,1 );
 	matCursor->setTexture( TEX_MAIN, texCursor );
 	matCursor->passinfo.push_back( RrPassForward() );
 	matCursor->passinfo[0].m_lighting_mode = renderer::LI_NONE;
 	matCursor->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
+	matCursor->passinfo[0].b_depthmask = false;
+	matCursor->passinfo[0].b_depthtest = false;
 	matCursor->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
 	//matCursor->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer.glsl" );
 	matCursor->removeReference();
@@ -141,24 +143,28 @@ bool CDeveloperCursor::Render ( const char pass )
 	if ( pass != 0 )
 		return false;
 
-	//GL.pushModelMatrix( Matrix4x4() );
+	////GL.pushModelMatrix( Matrix4x4() );
+	////GL.beginOrtho();
+	//core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	//GLd.DrawSet2DScaleMode();
+	//GLd.DrawSet2DMode( GLd.D2D_FLAT );
+	//	matCursor->bindPass(0);
+	//	GLd.SetMaterial(matCursor);
+	//	//matCursor->setShaderConstants( this );
+	//	GLd.P_PushColor( 1,1,1,1 );
+	//	//	GLd.DrawScreenQuad();
+	//	GLd.DrawRectangle( (Real)Input::MouseX(), (Real)Input::MouseY(), 32,32 );
+	////GL.endOrtho();
+	////GL.popModelMatrix();
 
-	//GL.beginOrtho();
-	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	rrMeshBuilder2D builder(4);
+	builder.addRect(
+		Rect( (Real)Input::MouseX(), (Real)Input::MouseY(), 32,32 ),
+		Color(1.0F, 1.0F, 1.0F, 1.0F),
+		false);
 
-	GLd.DrawSet2DScaleMode();
-	GLd.DrawSet2DMode( GLd.D2D_FLAT );
-
-	matCursor->bindPass(0);
-	GLd.SetMaterial(matCursor);
-	//matCursor->setShaderConstants( this );
-	GLd.P_PushColor( 1,1,1,1 );
-	//	GLd.DrawScreenQuad();
-	GLd.DrawRectangle( (Real)Input::MouseX(), (Real)Input::MouseY(), 32,32 );
-
-	//GL.endOrtho();
-
-	//GL.popModelMatrix();
+	RrScopedMeshRenderer renderer;
+	renderer.render(this, m_material, pass, builder);
 
 	// Return success
 	return true;

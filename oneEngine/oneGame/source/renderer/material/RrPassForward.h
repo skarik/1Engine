@@ -34,6 +34,7 @@ public:
 	renderer::eAlphaMode		m_transparency_mode;
 	Real						f_alphatest_value;
 	bool						b_depthmask;
+	bool						b_depthtest;
 
 	renderer::eDrawBlendMode	m_blend_mode;
 	renderer::eDrawLightingMode	m_lighting_mode;
