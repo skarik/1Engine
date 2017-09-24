@@ -473,7 +473,7 @@ void CDuskGUIColorpicker::Render ( void )
 		//activeGUI->matDefault->unbind();
 
 		// Now draw text
-		activeGUI->matFont->bindPass(0);
+		activeGUI->matDefault->bindPass(0);
 		activeGUI->fntDefault->Set();
 			
 			GLd.DrawAutoText( rect.pos.x + rect.size.x*0.01f  + 0.01f, rect.pos.y + rect.size.y*0.01f + 0.03f, label.c_str() );

@@ -111,8 +111,9 @@ MapEditor::MapEditor ( void )
 	}
 	// Build Dusk Gui
 	{
-		dusk = new CDuskGUI();
-		dusk->SetDefaultFont( new CBitmapFont( "YanoneKaffeesatz-R.otf", 16 ) );
+		dusk = new CDuskGUI(
+			new CBitmapFont( "YanoneKaffeesatz-R.otf", 16 )
+		);
 		dusk->SetPixelMode(true);
 
 		uiCreate();

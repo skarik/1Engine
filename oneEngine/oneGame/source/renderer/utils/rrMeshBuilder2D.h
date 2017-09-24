@@ -44,6 +44,10 @@ public:
 	// "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
 	RENDER_API void			addRect ( const Rect& rect, const Color& color, bool outline );
 
+	//	addLine (point1, point2, color) : Adds a line to draw.
+	// The "line" is actually a very thin quad, with a width of what is calculated to be one pixel.
+	RENDER_API void			addLine ( const Vector2f& point1, const Vector2f& point2, const Color& color );
+
 protected:
 	Vector2d	m_multiplier;
 	Vector2d	m_offset;

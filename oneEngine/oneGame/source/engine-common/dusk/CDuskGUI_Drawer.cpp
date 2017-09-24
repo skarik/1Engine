@@ -133,73 +133,92 @@ void CDuskGUI::drawRect ( const Rect& rect )
 	Rect draw_rect = rect;
 
 	// Modify input rect by the screen mode, if needed
-	if ( !bInPixelMode )
+	//if ( !bInPixelMode )
+	//{
+	//	draw_rect.pos.x *= Screen::Info.width;
+	//	draw_rect.pos.y *= Screen::Info.height;
+	//	draw_rect.size.x *= Screen::Info.width;
+	//	draw_rect.size.y *= Screen::Info.height;
+	//}
+	// Round rect coordinates
 	{
-		draw_rect.pos.x *= Screen::Info.width;
-		draw_rect.pos.y *= Screen::Info.height;
-		draw_rect.size.x *= Screen::Info.width;
-		draw_rect.size.y *= Screen::Info.height;
+		Vector2d min = draw_rect.pos + parenting_offset;
+		Vector2d max = draw_rect.pos + draw_rect.size + parenting_offset;
+
+		min.x = (Real)math::round(min.x);
+		min.y = (Real)math::round(min.y);
+		max.x = (Real)math::round(max.x);
+		max.y = (Real)math::round(max.y);
+
+		draw_rect = Rect(min, max-min);
 	}
 
-	arModelVertex vert;
 	SetDrawColor();
-	vert.r = m_drawcolor.red;
-	vert.g = m_drawcolor.green;
-	vert.b = m_drawcolor.blue;
-	vert.a = m_drawcolor.alpha;
-	vert.u = 0.1f;
-	vert.v = 0.1f;
-	vert.z = 0;
 
-	vert.x = draw_rect.pos.x;
-	vert.y = draw_rect.pos.y;
-	modelSolidMeshList.push_back( vert );
-	vert.x = draw_rect.pos.x+draw_rect.size.x;
-	vert.y = draw_rect.pos.y;
-	modelSolidMeshList.push_back( vert );
-	vert.x = draw_rect.pos.x;
-	vert.y = draw_rect.pos.y+draw_rect.size.y;
-	modelSolidMeshList.push_back( vert );
+	m_builder->addRect(
+		draw_rect,
+		m_drawcolor,
+		false);
 
-	vert.x = draw_rect.pos.x;
-	vert.y = draw_rect.pos.y+draw_rect.size.y;
-	modelSolidMeshList.push_back( vert );
-	vert.x = draw_rect.pos.x+draw_rect.size.x;
-	vert.y = draw_rect.pos.y;
-	modelSolidMeshList.push_back( vert );
-	vert.x = draw_rect.pos.x+draw_rect.size.x;
-	vert.y = draw_rect.pos.y+draw_rect.size.y;
-	modelSolidMeshList.push_back( vert );
+	//arModelVertex vert;
+	//SetDrawColor();
+	//vert.r = m_drawcolor.red;
+	//vert.g = m_drawcolor.green;
+	//vert.b = m_drawcolor.blue;
+	//vert.a = m_drawcolor.alpha;
+	//vert.u = 0.1f;
+	//vert.v = 0.1f;
+	//vert.z = 0;
 
-	// Round values
-	for ( uint i = 0; i < modelSolidMeshList.size(); ++i )
-	{
-		modelSolidMeshList[i].x = (Real)math::round(modelSolidMeshList[i].x);
-		modelSolidMeshList[i].y = (Real)math::round(modelSolidMeshList[i].y);
-	}
+	//vert.x = draw_rect.pos.x;
+	//vert.y = draw_rect.pos.y;
+	//modelSolidMeshList.push_back( vert );
+	//vert.x = draw_rect.pos.x+draw_rect.size.x;
+	//vert.y = draw_rect.pos.y;
+	//modelSolidMeshList.push_back( vert );
+	//vert.x = draw_rect.pos.x;
+	//vert.y = draw_rect.pos.y+draw_rect.size.y;
+	//modelSolidMeshList.push_back( vert );
 
-	// Render mesh
-	{
-		//GL.prepareDraw();
-		//GL.beginOrtho();
-		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-		GLd.DrawSet2DScaleMode();
+	//vert.x = draw_rect.pos.x;
+	//vert.y = draw_rect.pos.y+draw_rect.size.y;
+	//modelSolidMeshList.push_back( vert );
+	//vert.x = draw_rect.pos.x+draw_rect.size.x;
+	//vert.y = draw_rect.pos.y;
+	//modelSolidMeshList.push_back( vert );
+	//vert.x = draw_rect.pos.x+draw_rect.size.x;
+	//vert.y = draw_rect.pos.y+draw_rect.size.y;
+	//modelSolidMeshList.push_back( vert );
 
-		matDefault->bindPass(0);
-		//matDefault->setShaderConstants( this );
+	//// Round values
+	//for ( uint i = 0; i < modelSolidMeshList.size(); ++i )
+	//{
+	//	modelSolidMeshList[i].x = (Real)math::round(modelSolidMeshList[i].x);
+	//	modelSolidMeshList[i].y = (Real)math::round(modelSolidMeshList[i].y);
+	//}
 
-		auto lPrim = GLd.BeginPrimitive( GL_TRIANGLES, matDefault );
-		for ( uint i = 0; i < modelSolidMeshList.size(); ++i )
-		{
-			GLd.P_PushColor( modelSolidMeshList[i].r, modelSolidMeshList[i].g, modelSolidMeshList[i].b, modelSolidMeshList[i].a );
-			GLd.P_AddVertex( modelSolidMeshList[i].x + parenting_offset.x, modelSolidMeshList[i].y + parenting_offset.y );
-		}
-		GLd.EndPrimitive(lPrim);
-		modelSolidMeshList.clear();
+	//// Render mesh
+	//{
+	//	//GL.prepareDraw();
+	//	//GL.beginOrtho();
+	//	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	//	GLd.DrawSet2DScaleMode();
 
-		//GL.endOrtho();
-		//GL.cleanupDraw();
-	}
+	//	matDefault->bindPass(0);
+	//	//matDefault->setShaderConstants( this );
+
+	//	auto lPrim = GLd.BeginPrimitive( GL_TRIANGLES, matDefault );
+	//	for ( uint i = 0; i < modelSolidMeshList.size(); ++i )
+	//	{
+	//		GLd.P_PushColor( modelSolidMeshList[i].r, modelSolidMeshList[i].g, modelSolidMeshList[i].b, modelSolidMeshList[i].a );
+	//		GLd.P_AddVertex( modelSolidMeshList[i].x + parenting_offset.x, modelSolidMeshList[i].y + parenting_offset.y );
+	//	}
+	//	GLd.EndPrimitive(lPrim);
+	//	modelSolidMeshList.clear();
+
+	//	//GL.endOrtho();
+	//	//GL.cleanupDraw();
+	//}
 }
 void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 {
@@ -208,17 +227,29 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 	Rect draw_rect = rect;
 
 	// Modify input rect by the screen mode, if needed
-	if ( !bInPixelMode )
+	//if ( !bInPixelMode )
+	//{
+	//	draw_rect.pos.x *= Screen::Info.width;
+	//	draw_rect.pos.y *= Screen::Info.height;
+	//	draw_rect.size.x *= Screen::Info.width;
+	//	draw_rect.size.y *= Screen::Info.height;
+	//}
+	//draw_rect.size.x -= 1.0F;
+	//draw_rect.size.y -= 1.0F;
+	// Round rect coordinates
 	{
-		draw_rect.pos.x *= Screen::Info.width;
-		draw_rect.pos.y *= Screen::Info.height;
-		draw_rect.size.x *= Screen::Info.width;
-		draw_rect.size.y *= Screen::Info.height;
-	}
-	draw_rect.size.x -= 1.0F;
-	draw_rect.size.y -= 1.0F;
+		Vector2d min = draw_rect.pos + parenting_offset;
+		Vector2d max = draw_rect.pos + draw_rect.size + parenting_offset;
 
-	arModelVertex vert;
+		min.x = (Real)math::round(min.x);
+		min.y = (Real)math::round(min.y);
+		max.x = (Real)math::round(max.x);
+		max.y = (Real)math::round(max.y);
+
+		draw_rect = Rect(min, max-min);
+	}
+
+	//arModelVertex vert;
 	SetDrawColor();
 	if ( focused ) {
 		m_drawcolor.red *= 1.61F;
@@ -230,268 +261,306 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 		m_drawcolor.green /= 1.61F * 1.61F;
 		m_drawcolor.blue /= 1.61F * 1.61F;
 	}
-	vert.r = m_drawcolor.red;
-	vert.g = m_drawcolor.green;
-	vert.b = m_drawcolor.blue;
-	vert.a = m_drawcolor.alpha;
-	vert.u = 0.1f;
-	vert.v = 0.1f;
-	vert.z = 0;
 
-	vert.x = draw_rect.pos.x;
-	vert.y = draw_rect.pos.y;
-	modelLineMeshList.push_back( vert );
-	vert.x = draw_rect.pos.x + draw_rect.size.x;
-	vert.y = draw_rect.pos.y;
-	modelLineMeshList.push_back( vert );
+	m_builder->addRect(
+		draw_rect,
+		m_drawcolor,
+		true);
+	//vert.r = m_drawcolor.red;
+	//vert.g = m_drawcolor.green;
+	//vert.b = m_drawcolor.blue;
+	//vert.a = m_drawcolor.alpha;
+	//vert.u = 0.1f;
+	//vert.v = 0.1f;
+	//vert.z = 0;
 
-	vert.x = draw_rect.pos.x + draw_rect.size.x;
-	vert.y = draw_rect.pos.y;
-	modelLineMeshList.push_back( vert );
-	vert.x = draw_rect.pos.x + draw_rect.size.x;
-	vert.y = draw_rect.pos.y + draw_rect.size.y;
-	modelLineMeshList.push_back( vert );
+	//vert.x = draw_rect.pos.x;
+	//vert.y = draw_rect.pos.y;
+	//modelLineMeshList.push_back( vert );
+	//vert.x = draw_rect.pos.x + draw_rect.size.x;
+	//vert.y = draw_rect.pos.y;
+	//modelLineMeshList.push_back( vert );
 
-	vert.x = draw_rect.pos.x + draw_rect.size.x;
-	vert.y = draw_rect.pos.y + draw_rect.size.y;
-	modelLineMeshList.push_back( vert );
-	vert.x = draw_rect.pos.x;
-	vert.y = draw_rect.pos.y + draw_rect.size.y;
-	modelLineMeshList.push_back( vert );
+	//vert.x = draw_rect.pos.x + draw_rect.size.x;
+	//vert.y = draw_rect.pos.y;
+	//modelLineMeshList.push_back( vert );
+	//vert.x = draw_rect.pos.x + draw_rect.size.x;
+	//vert.y = draw_rect.pos.y + draw_rect.size.y;
+	//modelLineMeshList.push_back( vert );
 
-	vert.x = draw_rect.pos.x;
-	vert.y = draw_rect.pos.y + draw_rect.size.y;
-	modelLineMeshList.push_back( vert );
-	vert.x = draw_rect.pos.x;
-	vert.y = draw_rect.pos.y + math::sgn(draw_rect.size.y);
-	modelLineMeshList.push_back( vert );
+	//vert.x = draw_rect.pos.x + draw_rect.size.x;
+	//vert.y = draw_rect.pos.y + draw_rect.size.y;
+	//modelLineMeshList.push_back( vert );
+	//vert.x = draw_rect.pos.x;
+	//vert.y = draw_rect.pos.y + draw_rect.size.y;
+	//modelLineMeshList.push_back( vert );
 
-	// Round values
-	for ( uint i = 0; i < modelLineMeshList.size(); ++i )
-	{
-		modelLineMeshList[i].x = (Real)math::round(modelLineMeshList[i].x);
-		modelLineMeshList[i].y = (Real)math::round(modelLineMeshList[i].y);
-	}
+	//vert.x = draw_rect.pos.x;
+	//vert.y = draw_rect.pos.y + draw_rect.size.y;
+	//modelLineMeshList.push_back( vert );
+	//vert.x = draw_rect.pos.x;
+	//vert.y = draw_rect.pos.y + math::sgn(draw_rect.size.y);
+	//modelLineMeshList.push_back( vert );
 
-	// Render mesh
-	{
-		//GL.prepareDraw();
-		//GL.beginOrtho();
-		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-		GLd.DrawSet2DScaleMode();
+	//// Round values
+	//for ( uint i = 0; i < modelLineMeshList.size(); ++i )
+	//{
+	//	modelLineMeshList[i].x = (Real)math::round(modelLineMeshList[i].x);
+	//	modelLineMeshList[i].y = (Real)math::round(modelLineMeshList[i].y);
+	//}
 
-		matDefault->bindPass(0);
-		//matDefault->setShaderConstants( this );
-		auto lPrim = GLd.BeginPrimitive( GL_LINES, matDefault );
-		for ( uint i = 0; i < modelLineMeshList.size(); ++i )
-		{
-			GLd.P_PushColor( modelLineMeshList[i].r, modelLineMeshList[i].g, modelLineMeshList[i].b, modelLineMeshList[i].a );
-			GLd.P_AddVertex( modelLineMeshList[i].x + parenting_offset.x, modelLineMeshList[i].y + parenting_offset.y );
-		}
-		GLd.EndPrimitive(lPrim);
-		modelLineMeshList.clear();
+	//// Render mesh
+	//{
+	//	//GL.prepareDraw();
+	//	//GL.beginOrtho();
+	//	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	//	GLd.DrawSet2DScaleMode();
 
-		//GL.endOrtho();
-		//GL.cleanupDraw();
-	}
+	//	matDefault->bindPass(0);
+	//	//matDefault->setShaderConstants( this );
+	//	auto lPrim = GLd.BeginPrimitive( GL_LINES, matDefault );
+	//	for ( uint i = 0; i < modelLineMeshList.size(); ++i )
+	//	{
+	//		GLd.P_PushColor( modelLineMeshList[i].r, modelLineMeshList[i].g, modelLineMeshList[i].b, modelLineMeshList[i].a );
+	//		GLd.P_AddVertex( modelLineMeshList[i].x + parenting_offset.x, modelLineMeshList[i].y + parenting_offset.y );
+	//	}
+	//	GLd.EndPrimitive(lPrim);
+	//	modelLineMeshList.clear();
+
+	//	//GL.endOrtho();
+	//	//GL.cleanupDraw();
+	//}
 }
 void CDuskGUI::drawLine ( const Real x1, const Real y1, const Real x2, const Real y2 )
 {
 	GL_ACCESS GLd_ACCESS
 
-	arModelVertex vert;
+//	arModelVertex vert;
 	SetDrawColor();
-	vert.r = m_drawcolor.red;
-	vert.g = m_drawcolor.green;
-	vert.b = m_drawcolor.blue;
-	vert.a = m_drawcolor.alpha;
-	vert.u = 0.1f;
-	vert.v = 0.1f;
-	vert.z = 0;
 
-	vert.x = x1;
-	vert.y = y1;
-	modelLineMeshList.push_back( vert );
-	vert.x = x2;
-	vert.y = y2;
-	modelLineMeshList.push_back( vert );
+	m_builder->addLine(
+		Vector2d(x1 + parenting_offset.x, y1 + parenting_offset.y),
+		Vector2d(x2 + parenting_offset.x, y2 + parenting_offset.y),
+		m_drawcolor);
 
-	// Round values
-	for ( uint i = 0; i < modelLineMeshList.size(); ++i )
-	{
-		if ( !bInPixelMode )
-		{
-			modelLineMeshList[i].x *= Screen::Info.width;
-			modelLineMeshList[i].y *= Screen::Info.height;
-		}
-		modelLineMeshList[i].x = (Real)math::round(modelLineMeshList[i].x);
-		modelLineMeshList[i].y = (Real)math::round(modelLineMeshList[i].y);
-	}
+	//vert.r = m_drawcolor.red;
+	//vert.g = m_drawcolor.green;
+	//vert.b = m_drawcolor.blue;
+	//vert.a = m_drawcolor.alpha;
+	//vert.u = 0.1f;
+	//vert.v = 0.1f;
+	//vert.z = 0;
 
-	// Render mesh
-	{
-		//GL.prepareDraw();
+	//vert.x = x1;
+	//vert.y = y1;
+	//modelLineMeshList.push_back( vert );
+	//vert.x = x2;
+	//vert.y = y2;
+	//modelLineMeshList.push_back( vert );
 
-		if ( !bInPixelMode )
-			core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d(+1, +1, +45.0F) );
-			//GL.beginOrtho( 0,0, 1,1, -45,45 );
-		else
-			core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-			//GL.beginOrtho();
-		GLd.DrawSet2DScaleMode();
+	//// Round values
+	//for ( uint i = 0; i < modelLineMeshList.size(); ++i )
+	//{
+	//	if ( !bInPixelMode )
+	//	{
+	//		modelLineMeshList[i].x *= Screen::Info.width;
+	//		modelLineMeshList[i].y *= Screen::Info.height;
+	//	}
+	//	modelLineMeshList[i].x = (Real)math::round(modelLineMeshList[i].x);
+	//	modelLineMeshList[i].y = (Real)math::round(modelLineMeshList[i].y);
+	//}
 
-		matDefault->bindPass(0);
-		//matDefault->setShaderConstants( this );
-		auto lPrim = GLd.BeginPrimitive( GL_LINES, matDefault );
-		for ( uint i = 0; i < modelLineMeshList.size(); ++i )
-		{
-			GLd.P_PushColor( modelLineMeshList[i].r, modelLineMeshList[i].g, modelLineMeshList[i].b, modelLineMeshList[i].a );
-			GLd.P_AddVertex( modelLineMeshList[i].x + parenting_offset.x, modelLineMeshList[i].y + parenting_offset.y );
-		}
-		GLd.EndPrimitive(lPrim);
-		modelLineMeshList.clear();
+	//// Render mesh
+	//{
+	//	//GL.prepareDraw();
 
-		//GL.endOrtho();
-		//GL.cleanupDraw();
-	}
+	//	if ( !bInPixelMode )
+	//		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d(+1, +1, +45.0F) );
+	//		//GL.beginOrtho( 0,0, 1,1, -45,45 );
+	//	else
+	//		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	//		//GL.beginOrtho();
+	//	GLd.DrawSet2DScaleMode();
+
+	//	matDefault->bindPass(0);
+	//	//matDefault->setShaderConstants( this );
+	//	auto lPrim = GLd.BeginPrimitive( GL_LINES, matDefault );
+	//	for ( uint i = 0; i < modelLineMeshList.size(); ++i )
+	//	{
+	//		GLd.P_PushColor( modelLineMeshList[i].r, modelLineMeshList[i].g, modelLineMeshList[i].b, modelLineMeshList[i].a );
+	//		GLd.P_AddVertex( modelLineMeshList[i].x + parenting_offset.x, modelLineMeshList[i].y + parenting_offset.y );
+	//	}
+	//	GLd.EndPrimitive(lPrim);
+	//	modelLineMeshList.clear();
+
+	//	//GL.endOrtho();
+	//	//GL.cleanupDraw();
+	//}
 }
 
 void CDuskGUI::drawText ( const Real x, const Real y, const char* str )
 {
-	GL_ACCESS GLd_ACCESS
+	//GL_ACCESS GLd_ACCESS
 
-	textRequest_t req;
-	req.text = str;
-	req.position.x = x + parenting_offset.x;
-	req.position.y = y + parenting_offset.y;
-	req.mode = 0;
-	if ( bInPixelMode )
-	{
-		req.position.x /= Screen::Info.width;
-		req.position.y /= Screen::Info.height;
-	}
-	modelTextRequestList.push_back( req );
+	Vector2d draw_pos = Vector2d(x + parenting_offset.x, y + parenting_offset.y);
+	draw_pos.x = (Real)math::round(draw_pos.x);
+	draw_pos.y = (Real)math::round(draw_pos.y);
 
-	{
-		//GL.prepareDraw();
-		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-		//GL.beginOrtho();
-		GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
+	m_builder->addText(
+		draw_pos,
+		Color(1.0F,1.0F,1.0F,1.0F),
+		str);
 
-		// Draw the text
-		matFont->setTexture( TEX_MAIN, fntDefault );
-		matFont->bindPass(0);
-		//matFont->setShaderConstants( this );
-		if ( !modelTextRequestList.empty() ) {
-			for ( uint i = 0; i < modelTextRequestList.size(); ++i )
-			{
-				if ( modelTextRequestList[i].mode == 0 ) {
-					GLd.DrawAutoText( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-				}
-				else if ( modelTextRequestList[i].mode == 1 ) {
-					GLd.DrawAutoTextCentered( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-				}
-				else if ( modelTextRequestList[i].mode == 2 ) {
-					GLd.DrawAutoTextWrapped( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].width, modelTextRequestList[i].text.c_str() );
-				}
-			}
-		}
-		modelTextRequestList.clear();
+	//textRequest_t req;
+	//req.text = str;
+	//req.position.x = x + parenting_offset.x;
+	//req.position.y = y + parenting_offset.y;
+	//req.mode = 0;
+	//if ( bInPixelMode )
+	//{
+	//	req.position.x /= Screen::Info.width;
+	//	req.position.y /= Screen::Info.height;
+	//}
+	//modelTextRequestList.push_back( req );
 
-		//GL.endOrtho();
-		//GL.cleanupDraw();
-	}
+	//{
+	//	//GL.prepareDraw();
+	//	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	//	//GL.beginOrtho();
+	//	GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
+
+	//	// Draw the text
+	//	matFont->setTexture( TEX_MAIN, fntDefault );
+	//	matFont->bindPass(0);
+	//	//matFont->setShaderConstants( this );
+	//	if ( !modelTextRequestList.empty() ) {
+	//		for ( uint i = 0; i < modelTextRequestList.size(); ++i )
+	//		{
+	//			if ( modelTextRequestList[i].mode == 0 ) {
+	//				GLd.DrawAutoText( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
+	//			}
+	//			else if ( modelTextRequestList[i].mode == 1 ) {
+	//				GLd.DrawAutoTextCentered( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
+	//			}
+	//			else if ( modelTextRequestList[i].mode == 2 ) {
+	//				GLd.DrawAutoTextWrapped( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].width, modelTextRequestList[i].text.c_str() );
+	//			}
+	//		}
+	//	}
+	//	modelTextRequestList.clear();
+
+	//	//GL.endOrtho();
+	//	//GL.cleanupDraw();
+	//}
 }
 void CDuskGUI::drawTextWidth ( const Real x, const Real y, const Real w, const char* str )
 {
-	GL_ACCESS GLd_ACCESS
+	Vector2d draw_pos = Vector2d(x + parenting_offset.x, y + parenting_offset.y);
+	draw_pos.x = (Real)math::round(draw_pos.x);
+	draw_pos.y = (Real)math::round(draw_pos.y);
 
-	textRequest_t req;
-	req.text = str;
-	req.position.x = x + parenting_offset.x;
-	req.position.y = y + parenting_offset.y;
-	req.mode = 2;
-	req.width = w;
-	if ( bInPixelMode )
-	{
-		req.position.x /= Screen::Info.width;
-		req.position.y /= Screen::Info.height;
-	}
-	modelTextRequestList.push_back( req );
+	m_builder->addText(
+		draw_pos,
+		Color(1.0F,1.0F,1.0F,1.0F),
+		str);
 
-	{
-		//GL.prepareDraw();
-		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-		//GL.beginOrtho();
-		GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
+	//GL_ACCESS GLd_ACCESS
 
-		// Draw the text
-		matFont->setTexture( TEX_MAIN, fntDefault );
-		matFont->bindPass(0);
-		//matFont->setShaderConstants( this );
-		if ( !modelTextRequestList.empty() ) {
-			for ( uint i = 0; i < modelTextRequestList.size(); ++i )
-			{
-				if ( modelTextRequestList[i].mode == 0 ) {
-					GLd.DrawAutoText( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-				}
-				else if ( modelTextRequestList[i].mode == 1 ) {
-					GLd.DrawAutoTextCentered( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-				}
-				else if ( modelTextRequestList[i].mode == 2 ) {
-					GLd.DrawAutoTextWrapped( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].width, modelTextRequestList[i].text.c_str() );
-				}
-			}
-		}
-		modelTextRequestList.clear();
+	//textRequest_t req;
+	//req.text = str;
+	//req.position.x = x + parenting_offset.x;
+	//req.position.y = y + parenting_offset.y;
+	//req.mode = 2;
+	//req.width = w;
+	//if ( bInPixelMode )
+	//{
+	//	req.position.x /= Screen::Info.width;
+	//	req.position.y /= Screen::Info.height;
+	//}
+	//modelTextRequestList.push_back( req );
 
-		//GL.endOrtho();
-		//GL.cleanupDraw();
-	}
+	//{
+	//	//GL.prepareDraw();
+	//	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	//	//GL.beginOrtho();
+	//	GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
+
+	//	// Draw the text
+	//	matFont->setTexture( TEX_MAIN, fntDefault );
+	//	matFont->bindPass(0);
+	//	//matFont->setShaderConstants( this );
+	//	if ( !modelTextRequestList.empty() ) {
+	//		for ( uint i = 0; i < modelTextRequestList.size(); ++i )
+	//		{
+	//			if ( modelTextRequestList[i].mode == 0 ) {
+	//				GLd.DrawAutoText( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
+	//			}
+	//			else if ( modelTextRequestList[i].mode == 1 ) {
+	//				GLd.DrawAutoTextCentered( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
+	//			}
+	//			else if ( modelTextRequestList[i].mode == 2 ) {
+	//				GLd.DrawAutoTextWrapped( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].width, modelTextRequestList[i].text.c_str() );
+	//			}
+	//		}
+	//	}
+	//	modelTextRequestList.clear();
+
+	//	//GL.endOrtho();
+	//	//GL.cleanupDraw();
+	//}
 }
 void CDuskGUI::drawTextCentered ( const Real x, const Real y, const char* str )
 {
-	GL_ACCESS GLd_ACCESS
+	Vector2d draw_pos = Vector2d(x + parenting_offset.x, y + parenting_offset.y);
+	draw_pos.x = (Real)math::round(draw_pos.x);
+	draw_pos.y = (Real)math::round(draw_pos.y);
 
-	textRequest_t req;
-	req.text = str;
-	req.position.x = x + parenting_offset.x;
-	req.position.y = y + parenting_offset.y;
-	req.mode = 1;
-	if ( bInPixelMode )
-	{
-		req.position.x /= Screen::Info.width;
-		req.position.y /= Screen::Info.height;
-	}
-	modelTextRequestList.push_back( req );
+	m_builder->addText(
+		draw_pos,
+		Color(1.0F,1.0F,1.0F,1.0F),
+		str);
 
-	{
-		//GL.prepareDraw();
-		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-		//GL.beginOrtho();
-		GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
+	//GL_ACCESS GLd_ACCESS
 
-		// Draw the text
-		matFont->setTexture( TEX_MAIN, fntDefault );
-		matFont->bindPass(0);
-		//matFont->setShaderConstants( this );
-		if ( !modelTextRequestList.empty() ) {
-			for ( uint i = 0; i < modelTextRequestList.size(); ++i )
-			{
-				if ( modelTextRequestList[i].mode == 0 ) {
-					GLd.DrawAutoText( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-				}
-				else if ( modelTextRequestList[i].mode == 1 ) {
-					GLd.DrawAutoTextCentered( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-				}
-				else if ( modelTextRequestList[i].mode == 2 ) {
-					GLd.DrawAutoTextWrapped( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].width, modelTextRequestList[i].text.c_str() );
-				}
-			}
-		}
-		modelTextRequestList.clear();
+	//textRequest_t req;
+	//req.text = str;
+	//req.position.x = x + parenting_offset.x;
+	//req.position.y = y + parenting_offset.y;
+	//req.mode = 1;
+	//if ( bInPixelMode )
+	//{
+	//	req.position.x /= Screen::Info.width;
+	//	req.position.y /= Screen::Info.height;
+	//}
+	//modelTextRequestList.push_back( req );
 
-		//GL.endOrtho();
-		//GL.cleanupDraw();
-	}
+	//{
+	//	//GL.prepareDraw();
+	//	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	//	//GL.beginOrtho();
+	//	GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
+
+	//	// Draw the text
+	//	matFont->setTexture( TEX_MAIN, fntDefault );
+	//	matFont->bindPass(0);
+	//	//matFont->setShaderConstants( this );
+	//	if ( !modelTextRequestList.empty() ) {
+	//		for ( uint i = 0; i < modelTextRequestList.size(); ++i )
+	//		{
+	//			if ( modelTextRequestList[i].mode == 0 ) {
+	//				GLd.DrawAutoText( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
+	//			}
+	//			else if ( modelTextRequestList[i].mode == 1 ) {
+	//				GLd.DrawAutoTextCentered( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
+	//			}
+	//			else if ( modelTextRequestList[i].mode == 2 ) {
+	//				GLd.DrawAutoTextWrapped( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].width, modelTextRequestList[i].text.c_str() );
+	//			}
+	//		}
+	//	}
+	//	modelTextRequestList.clear();
+
+	//	//GL.endOrtho();
+	//	//GL.cleanupDraw();
+	//}
 }

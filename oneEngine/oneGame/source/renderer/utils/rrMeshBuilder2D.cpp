@@ -113,8 +113,16 @@ void rrMeshBuilder2D::addRect ( const Rect& rect, const Color& color, bool outli
 		const Vector2d pixelSize ( 1.0F/(Real)Screen::Info.width, 1.0F/(Real)Screen::Info.height );
 
 		// Perform 4 addRect's for now
-		addRect(rect, color, false);
+		//addRect(rect, color, false);
 		
 		// UVs are separate so actually cannot do 4 addrects :)
 	}
+}
+
+//	addLine (point1, point2, color) : Adds a line to draw.
+// The "line" is actually a very thin quad, with a width of what is calculated to be one pixel.
+void rrMeshBuilder2D::addLine ( const Vector2f& point1, const Vector2f& point2, const Color& color )
+{
+	const Vector2d pos1 = point1.mulComponents(m_multiplier) + m_offset;
+	const Vector2d pos2 = point2.mulComponents(m_multiplier) + m_offset;
 }

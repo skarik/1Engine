@@ -17,10 +17,10 @@ void sceneDeveloperMenu::LoadScene ( void )
 	debug::Console->PrintMessage( "Loading M04 developer menu...\n" );
 
 	// Create the menu
-	/*{
+	{
 		M04::DeveloperMenu* menu = new M04::DeveloperMenu();
 		menu->RemoveReference();
-	}*/
+	}
 
 	// Create camera to render
 	{
