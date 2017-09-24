@@ -2,6 +2,7 @@
 #define RENDERER_UTILS_RR_TEXT_BUILDER_2D_H_
 
 #include "IrrMeshBuilder.h"
+#include "rrMeshBuilder2D.h"
 
 #include "core/math/Rect.h"
 #include "core/math/Color.h"
@@ -9,7 +10,7 @@
 
 class CBitmapFont;
 
-class rrTextBuilder2D : public IrrMeshBuilder
+class rrTextBuilder2D : public rrMeshBuilder2D
 {
 public:
 	//	Constructor (new data)
@@ -39,20 +40,11 @@ public:
 		getPrimitiveMode ( void ) const override
 	{ return renderer::kPrimitiveModeTriangleList_Indexed; }
 
-	//	setScreenMapping (cubic) : Sets the mapping of the Rect coordinates to the screen.
-	RENDER_API void			setScreenMapping ( const core::math::Cubic& screenMapping );
-
-	//	addRect (rect, color, outline) : Adds a rectangle to draw.
-	// "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
-	//RENDER_API void			addRect ( const Rect& rect, const Color& color, bool outline );
-
-
+	//	addText ( position, color, str ) : Adds text to draw.
+	// Uses the font to generate a mesh.
 	RENDER_API void			addText ( const Vector2d& position, const Color& color, const char* str );
 
 protected:
-	Vector2d	m_multiplier;
-	Vector2d	m_offset;
-
 	CBitmapFont*	m_font_texture;
 };
 

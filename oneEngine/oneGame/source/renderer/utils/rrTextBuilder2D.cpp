@@ -11,64 +11,38 @@
 // If the estimation is incorrect, the data will be resized.
 // The screen mapping for the meshes created defaults to 1:1 pixel-mode mapping.
 rrTextBuilder2D::rrTextBuilder2D ( CBitmapFont* font, const uint16_t estimatedVertexCount )
-	: IrrMeshBuilder(estimatedVertexCount), m_font_texture(font)
+	: rrMeshBuilder2D(estimatedVertexCount), m_font_texture(font)
 {
-	setScreenMapping(
-		core::math::Cubic::FromPosition(
-			Vector3d(0, 0, -45.0F),
-			Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) )
-	);
 }
 //	Constructor (existing data)
 // Sets up model, using the input data.
 // As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
 // The screen mapping for the meshes created defaults to 1:1 pixel-mode mapping.
 rrTextBuilder2D::rrTextBuilder2D ( CBitmapFont* font, arModelData* preallocatedModelData )
-	: IrrMeshBuilder(preallocatedModelData), m_font_texture(font)
+	: rrMeshBuilder2D(preallocatedModelData), m_font_texture(font)
 {
-	setScreenMapping(
-		core::math::Cubic::FromPosition(
-			Vector3d(0, 0, -45.0F),
-			Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) )
-	);
 }
 //	Constructor (cubic, new data)
 // Pulls a model from the the pool that has at least the estimated input size.
 // If the estimation is incorrect, the data will be resized.
 rrTextBuilder2D::rrTextBuilder2D ( CBitmapFont* font, const core::math::Cubic& screenMapping, const uint16_t estimatedVertexCount )
-	: IrrMeshBuilder(estimatedVertexCount), m_font_texture(font)
+	: rrMeshBuilder2D(screenMapping, estimatedVertexCount), m_font_texture(font)
 {
-	setScreenMapping(screenMapping);
 }
 //	Constructor (cubic, existing data)
 // Sets up model, using the input data.
 // As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
 rrTextBuilder2D::rrTextBuilder2D ( CBitmapFont* font, const core::math::Cubic& screenMapping, arModelData* preallocatedModelData )
-	: IrrMeshBuilder(preallocatedModelData), m_font_texture(font)
+	: rrMeshBuilder2D(screenMapping, preallocatedModelData), m_font_texture(font)
 {
-	setScreenMapping(screenMapping);
 }
-
-//	setScreenMapping (cubic) : Sets the mapping of the Rect coordinates to the screen.
-void rrTextBuilder2D::setScreenMapping ( const core::math::Cubic& screenMapping )
-{
-	m_multiplier.x = 2.0F / screenMapping.size.x;
-	m_multiplier.y = 2.0F / screenMapping.size.y;
-
-	m_offset.x = -screenMapping.position.x * m_multiplier.x - 1.0F;
-	m_offset.y = -screenMapping.position.y * m_multiplier.y - 1.0F;
-
-	// Then flip Y for OpenGL coordinates.
-	m_multiplier.y	= -m_multiplier.y;
-	m_offset.y		= -m_offset.y;
-}
-
 
 static Vector2d _transformVertexPosition ( const Vector2d& position, const Vector2d& multiplier, const Vector2d& offset)
 {
 	return position.mulComponents(multiplier) + offset;
 }
 
+//	addText ( position, color, str ) : Adds text to draw.
 void rrTextBuilder2D::addText ( const Vector2d& position, const Color& color, const char* str )
 {
 	// Estimate needed amount of vertices for the text:

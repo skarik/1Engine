@@ -1,6 +1,5 @@
-
-#ifndef _DAWN_GUI_H_
-#define _DAWN_GUI_H_
+#ifndef DAWN_GUI_H_
+#define DAWN_GUI_H_
 
 #include "engine/behavior/CGameBehavior.h"
 
@@ -16,4 +15,4 @@ namespace Dawn
 	};
 }
 
-#endif _DAWN_GUI_H_
+#endif DAWN_GUI_H_
