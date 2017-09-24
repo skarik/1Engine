@@ -18,6 +18,9 @@ namespace renderer
 		kPrimitiveModeLineList,
 		kPrimitiveModeLineStrip,
 		kPrimitiveModePointList,
+
+		kPrimitiveModeTriangleList_Indexed,
+		kPrimitiveModeLineList_Indexed,
 	};
 }
 

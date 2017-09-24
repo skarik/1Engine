@@ -384,6 +384,9 @@
     <ClCompile Include="source\renderer\object\immediate\RrScopedMeshRenderer.cpp">
       <Filter>SOURCE\Renderer\Object\Immediate</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\utils\rrTextBuilder2D.cpp">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\ogl\GLCommon.h">
@@ -688,6 +691,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\types\renderModes.h">
       <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\utils\rrTextBuilder2D.h">
+      <Filter>SOURCE\Renderer\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

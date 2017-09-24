@@ -82,3 +82,15 @@ RrPassForward& RrPassForward::operator= ( RrPassForward&& other )
 	other.shader = NULL;
     return *this;
 }
+
+
+//	set2DCommon () : Sets internal settings to common values for 2D/UI rendering.
+// Depth masking and testing disabled, no lighting, alpha blending, backface culling disabled.
+void RrPassForward::set2DCommon ( void )
+{
+	m_lighting_mode = renderer::LI_NONE;
+	m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	m_face_mode = renderer::FM_FRONTANDBACK;
+	b_depthmask = false;
+	b_depthtest = false;
+}

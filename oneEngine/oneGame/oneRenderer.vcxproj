@@ -144,6 +144,7 @@
     <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp" />
     <ClCompile Include="source\renderer\utils\IrrMeshBuilder.cpp" />
     <ClCompile Include="source\renderer\utils\rrMeshBuilder2D.cpp" />
+    <ClCompile Include="source\renderer\utils\rrTextBuilder2D.cpp" />
     <ClCompile Include="source\renderer\window\RrWindowWin32.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -254,6 +255,7 @@
     <ClInclude Include="source\renderer\utils\IrrMeshBuilder.h" />
     <ClInclude Include="source\renderer\utils\rrMeshBuilder.h" />
     <ClInclude Include="source\renderer\utils\rrMeshBuilder2D.h" />
+    <ClInclude Include="source\renderer\utils\rrTextBuilder2D.h" />
     <ClInclude Include="source\renderer\window\RrWindow.h" />
     <ClInclude Include="source\renderer\window\RrWindowLinux.h" />
     <ClInclude Include="source\renderer\window\RrWindowOsmac.h" />

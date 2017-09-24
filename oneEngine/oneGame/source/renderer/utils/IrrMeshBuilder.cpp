@@ -9,18 +9,19 @@ static arModelData l_modelDataTemp = {};
 // Pulls a model from the the pool that has at least the estimated input size.
 // If the estimation is incorrect, the data will be resized.
 IrrMeshBuilder::IrrMeshBuilder ( const uint16_t estimatedVertexCount )
-	: m_vertexCount(0), m_model(NULL), m_model_isFromPool(true)
+	: m_vertexCount(0), m_triangleCount(0), m_model(NULL), m_model_isFromPool(true)
 {
 	// Loop through the pool to find an unused model.
 
 	m_model = &l_modelDataTemp;
 	expand(estimatedVertexCount);
+	expandTri(estimatedVertexCount / 2);
 }
 //	Constructor (existing data)
 // Sets up model, using the input data.
 // As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
 IrrMeshBuilder::IrrMeshBuilder ( arModelData* preallocatedModelData )
-	: m_vertexCount(0), m_model(preallocatedModelData), m_model_isFromPool(false)
+	: m_vertexCount(0), m_triangleCount(0), m_model(preallocatedModelData), m_model_isFromPool(false)
 {
 	; // Nothing needed to be done here. :)
 }
@@ -41,6 +42,7 @@ arModelData IrrMeshBuilder::getModelData ( void ) const
 {
 	arModelData newData = *m_model;
 	newData.vertexNum = m_vertexCount;
+	newData.triangleNum = m_triangleCount;
 	return newData;
 }
 
@@ -90,4 +92,53 @@ void IrrMeshBuilder::reallocateConservative ( uint16_t targetSize )
 	m_model->vertices = new arModelVertex[m_model->vertexNum];
 	memcpy(m_model->vertices, old_vertices, old_count * sizeof(arModelVertex));
 	delete[] old_vertices;
+}
+
+
+//	expandTri ( new vertex count ) : Ensure storage is large enough to hold the count of triangles
+void IrrMeshBuilder::expandTri ( const uint16_t triangleCount )
+{
+	if (m_model->triangleNum < triangleCount)
+	{
+		if (m_model_isFromPool) {
+			reallocateTriGreedy(triangleCount);
+		}
+		else {
+			reallocateTriConservative(triangleCount);
+		}
+	}
+}
+
+//	reallocateTriGreedy ( new size ) : Expands triangle storage in a greedy way
+void IrrMeshBuilder::reallocateTriGreedy ( uint16_t targetSize )
+{
+	uint16_t old_count = m_model->triangleNum;
+	arModelTriangle* old_triangles = m_model->triangles;
+
+	// Increase the size by 150%.
+	while (m_model->triangleNum < targetSize)
+	{
+		m_model->triangleNum = (uint16_t)std::min<Real>(m_model->triangleNum * 1.5F + 1.0F, 65535.0F);
+	}
+
+	m_model->triangles = new arModelTriangle[m_model->triangleNum];
+	memcpy(m_model->triangles, old_triangles, old_count * sizeof(arModelTriangle));
+	delete[] old_triangles;
+}
+
+//	reallocateTriWild ( new size ) : Expands triangle storage in a conservative way
+void IrrMeshBuilder::reallocateTriConservative ( uint16_t targetSize )
+{
+	uint16_t old_count = m_model->triangleNum;
+	arModelTriangle* old_triangles = m_model->triangles;
+
+	// Increase the size to just above the target.
+	while (m_model->triangleNum < targetSize)
+	{
+		m_model->triangleNum = targetSize + m_model->triangleNum / 1024 + 1;
+	}
+
+	m_model->triangles = new arModelTriangle[m_model->triangleNum];
+	memcpy(m_model->triangles, old_triangles, old_count * sizeof(arModelTriangle));
+	delete[] old_triangles;
 }

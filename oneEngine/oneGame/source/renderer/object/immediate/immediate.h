@@ -6,6 +6,7 @@
 
 // Include CPU-side mesh builders
 #include "renderer/utils/rrMeshBuilder2D.h"
+#include "renderer/utils/rrTextBuilder2D.h"
 
 // Include scoped GPU streaming object.
 #include "renderer/object/immediate/RrScopedMeshRenderer.h"
