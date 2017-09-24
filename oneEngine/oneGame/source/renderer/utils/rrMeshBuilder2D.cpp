@@ -68,34 +68,42 @@ void rrMeshBuilder2D::addRect ( const Rect& rect, const Color& color, bool outli
 
 	if (!outline)
 	{
-		expand(m_vertexCount + 4);
+		expand(m_vertexCount + 6);
 		const uint16_t index = m_vertexCount;
 
-		memset(m_model->vertices + index, 0, sizeof(arModelVertex) * 4);
+		memset(m_model->vertices + index, 0, sizeof(arModelVertex) * 6);
 
 		// Add the quad:
 
 		m_model->vertices[index + 0].position = pos_min;
 		m_model->vertices[index + 1].position = Vector2f(pos_min.x, pos_max.y);
 		m_model->vertices[index + 2].position = Vector2f(pos_max.x, pos_min.y);
-		m_model->vertices[index + 3].position = pos_max;
+		m_model->vertices[index + 3].position = Vector2f(pos_max.x, pos_min.y);
+		m_model->vertices[index + 4].position = Vector2f(pos_min.x, pos_max.y);
+		m_model->vertices[index + 5].position = pos_max;
 
 		m_model->vertices[index + 0].texcoord0 = Vector2f(0,0);
 		m_model->vertices[index + 1].texcoord0 = Vector2f(0,1);
 		m_model->vertices[index + 2].texcoord0 = Vector2f(1,0);
-		m_model->vertices[index + 3].texcoord0 = Vector2f(1,1);
+		m_model->vertices[index + 3].texcoord0 = Vector2f(1,0);
+		m_model->vertices[index + 4].texcoord0 = Vector2f(0,1);
+		m_model->vertices[index + 5].texcoord0 = Vector2f(1,1);
 
 		m_model->vertices[index + 0].color = Vector4f(&color.x);
 		m_model->vertices[index + 1].color = Vector4f(&color.x);
 		m_model->vertices[index + 2].color = Vector4f(&color.x);
 		m_model->vertices[index + 3].color = Vector4f(&color.x);
+		m_model->vertices[index + 4].color = Vector4f(&color.x);
+		m_model->vertices[index + 5].color = Vector4f(&color.x);
 
 		m_model->vertices[index + 0].position.z = 0.5F;
 		m_model->vertices[index + 1].position.z = 0.5F;
 		m_model->vertices[index + 2].position.z = 0.5F;
 		m_model->vertices[index + 3].position.z = 0.5F;
+		m_model->vertices[index + 4].position.z = 0.5F;
+		m_model->vertices[index + 5].position.z = 0.5F;
 
-		m_vertexCount += 4;
+		m_vertexCount += 6;
 	}
 	else
 	{

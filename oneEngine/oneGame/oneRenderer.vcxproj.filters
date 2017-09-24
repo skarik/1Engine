@@ -686,5 +686,8 @@
     <ClInclude Include="source\renderer\object\immediate\RrScopedMeshRenderer.h">
       <Filter>SOURCE\Renderer\Object\Immediate</Filter>
     </ClInclude>
+    <ClInclude Include="source\renderer\types\renderModes.h">
+      <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

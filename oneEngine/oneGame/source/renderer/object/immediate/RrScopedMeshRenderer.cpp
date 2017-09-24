@@ -8,6 +8,27 @@ RrScopedMeshRenderer::RrScopedMeshRenderer ( void )
 
 }
 
+static GLenum _primitiveModeToGlMode( renderer::rrPrimitiveMode mode )
+{
+	switch (mode)
+	{
+	case renderer::kPrimitiveModeLineList:
+		return GL_LINES;
+	case renderer::kPrimitiveModeLineStrip:
+		return GL_LINE_STRIP;
+	case renderer::kPrimitiveModePointList:
+		return GL_POINTS;
+	case renderer::kPrimitiveModeTriangleList:
+		return GL_TRIANGLES;
+	case renderer::kPrimitiveModeTriangleStrip:
+		return GL_TRIANGLE_STRIP;
+	case renderer::kPrimitiveModeTriangleFan:
+		return GL_TRIANGLE_FAN;
+	}
+	return GL_INVALID_ENUM;
+}
+
+//	render() : Renders the given mesh builder.
 void RrScopedMeshRenderer::render (
 	CRenderableObject* owner, 
 	RrMaterial* material,
@@ -16,8 +37,6 @@ void RrScopedMeshRenderer::render (
 {
 	arModelData model = meshBuilder.getModelData();
 
-	// Push the material stuff
-	//material->prepareShaderConstants();
 	// Bind the material
 	material->bindPass(pass);
 
@@ -54,7 +73,8 @@ void RrScopedMeshRenderer::render (
 	material->bindPassAtrribs();
 
 	// Draw the mesh.
-	glDrawArrays( GL_TRIANGLE_STRIP, 0, model.vertexNum );
+	glEnum mode = _primitiveModeToGlMode( meshBuilder.getPrimitiveMode() );
+	glDrawArrays( mode, 0, model.vertexNum );
 
 	// Free the buffer and VAO
 	glDeleteBuffers(1, &vbuf);

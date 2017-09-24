@@ -240,6 +240,7 @@
     <ClInclude Include="source\renderer\texture\TextureLoader.h" />
     <ClInclude Include="source\renderer\texture\CTextureMaster.h" />
     <ClInclude Include="source\renderer\types\blendModes.h" />
+    <ClInclude Include="source\renderer\types\renderModes.h" />
     <ClInclude Include="source\renderer\types\RrObjectMaterialProperties.h" />
     <ClInclude Include="source\renderer\types\RrGpuTexture.h" />
     <ClInclude Include="source\renderer\types\ModelStructures.h" />

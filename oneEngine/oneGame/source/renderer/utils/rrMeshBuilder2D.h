@@ -29,6 +29,11 @@ public:
 	// As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
 	RENDER_API explicit		rrMeshBuilder2D ( const core::math::Cubic& screenMapping, arModelData* preallocatedModelData );
 
+	//	getPrimitiveMode () : returns the primitive mode this mesh builder would like to render in.
+	// Must be implemented by child classes.
+	RENDER_API renderer::rrPrimitiveMode
+							getPrimitiveMode ( void ) const override
+		{ return renderer::kPrimitiveModeTriangleList; }
 
 	//	setScreenMapping (cubic) : Sets the mapping of the Rect coordinates to the screen.
 	RENDER_API void			setScreenMapping ( const core::math::Cubic& screenMapping );

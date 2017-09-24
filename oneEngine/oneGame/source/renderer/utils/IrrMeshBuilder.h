@@ -3,6 +3,7 @@
 
 #include "core/types/types.h"
 #include "core/types/ModelData.h"
+#include "renderer/types/renderModes.h"
 
 class IrrMeshBuilder
 {
@@ -23,6 +24,11 @@ public:
 	//	getModelData () : Returns the current model data.
 	// The sizes in the model data are filled
 	RENDER_API arModelData	getModelData ( void ) const;
+
+	//	getPrimitiveMode () : returns the primitive mode this mesh builder would like to render in.
+	// Must be implemented by child classes.
+	RENDER_API virtual renderer::rrPrimitiveMode
+							getPrimitiveMode ( void ) const = 0;
 
 protected:
 	//	expand ( new vertex count ) : Ensure storage is large enough to hold the count
