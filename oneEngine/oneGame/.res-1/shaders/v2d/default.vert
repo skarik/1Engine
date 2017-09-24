@@ -13,24 +13,8 @@ in vec3 mdl_Normal;
 out vec4 v2f_colors;
 out vec4 v2f_position;
 out vec2 v2f_texcoord0;
-/*
-// System inputs
-uniform mat4 sys_ModelTRS;
-uniform mat4 sys_ModelRS;
-uniform mat4 sys_ModelViewProjectionMatrix;
 
-// Material inputs
-layout(location = 5) uniform vec4 sys_TextureScale;
-layout(location = 6) uniform vec4 sys_TextureOffset;*/
-
-
-/*layout(std140) uniform sys_cbuffer_PerObject
-{
-    mat4 sys_ModelTRS;
-    mat4 sys_ModelRS;
-    mat4 sys_ModelViewProjectionMatrix;
-    mat4 sys_ModelViewProjectionMatrixInverse;
-};*/
+// Inputs
 layout(std140) uniform sys_cbuffer_PerObjectExt
 {
     vec4    sys_DiffuseColor;
@@ -60,11 +44,10 @@ layout(std140) uniform sys_cbuffer_PerFrame
 void main ( void )
 {
 	vec4 v_localPos = vec4( mdl_Vertex, 1.0 );
-	//vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
     vec4 v_screenPos = v_localPos;
 
 	v2f_colors		= mdl_Color;
-	v2f_position	= v_localPos;//sys_ModelTRS*v_localPos;
+	v2f_position	= v_localPos;
 	v2f_texcoord0   = mdl_TexCoord.xy * sys_TextureScale.xy + sys_TextureOffset.xy;
 
 	gl_Position = v_screenPos;

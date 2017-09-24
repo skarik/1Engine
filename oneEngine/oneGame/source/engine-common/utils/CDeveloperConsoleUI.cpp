@@ -115,6 +115,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	matCursor->passinfo.push_back( RrPassForward() );
 	matCursor->passinfo[0].m_lighting_mode = renderer::LI_NONE;
 	matCursor->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
+	matCursor->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	matCursor->passinfo[0].b_depthmask = false;
 	matCursor->passinfo[0].b_depthtest = false;
 	matCursor->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );

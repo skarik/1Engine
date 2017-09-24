@@ -53,6 +53,10 @@ void rrMeshBuilder2D::setScreenMapping ( const core::math::Cubic& screenMapping 
 
 	m_offset.x = -screenMapping.position.x * m_multiplier.x - 1.0F;
 	m_offset.y = -screenMapping.position.y * m_multiplier.y - 1.0F;
+
+	// Then flip Y for OpenGL coordinates.
+	m_multiplier.y	= -m_multiplier.y;
+	m_offset.y		= -m_offset.y;
 }
 
 //	addRect (rect, color, outline) : Adds a rectangle to draw.
@@ -85,6 +89,11 @@ void rrMeshBuilder2D::addRect ( const Rect& rect, const Color& color, bool outli
 		m_model->vertices[index + 1].color = Vector4f(&color.x);
 		m_model->vertices[index + 2].color = Vector4f(&color.x);
 		m_model->vertices[index + 3].color = Vector4f(&color.x);
+
+		m_model->vertices[index + 0].position.z = 0.5F;
+		m_model->vertices[index + 1].position.z = 0.5F;
+		m_model->vertices[index + 2].position.z = 0.5F;
+		m_model->vertices[index + 3].position.z = 0.5F;
 
 		m_vertexCount += 4;
 	}

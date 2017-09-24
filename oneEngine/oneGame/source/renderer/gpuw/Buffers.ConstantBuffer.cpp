@@ -61,10 +61,10 @@ int	gpu::ConstantBuffer::upload ( void* data, const uint64_t data_size, const Tr
 	}
 	else
 	{
+		glBindBuffer( GL_UNIFORM_BUFFER, m_buffer );
 		_AllocateBufferSize(data_size, style);
 	}
 
-	glBindBuffer( GL_UNIFORM_BUFFER, m_buffer );
 	glBufferSubData( GL_UNIFORM_BUFFER, 0, (GLsizeiptr)data_size, data );
 
 	return 0;

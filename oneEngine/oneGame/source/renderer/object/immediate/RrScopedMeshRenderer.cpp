@@ -17,7 +17,7 @@ void RrScopedMeshRenderer::render (
 	arModelData model = meshBuilder.getModelData();
 
 	// Push the material stuff
-	material->prepareShaderConstants();
+	//material->prepareShaderConstants();
 	// Bind the material
 	material->bindPass(pass);
 

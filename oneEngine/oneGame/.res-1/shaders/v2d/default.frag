@@ -13,8 +13,6 @@ in vec2 v2f_texcoord0;
 layout(location = 20) uniform sampler2D textureSampler0;
 
 // Inputs
-/*layout(location = 0) uniform vec4 sys_DiffuseColor;
-layout(location = 3) uniform float sys_AlphaCutoff;*/
 layout(std140) uniform sys_cbuffer_PerObjectExt
 {
     vec4    sys_DiffuseColor;
