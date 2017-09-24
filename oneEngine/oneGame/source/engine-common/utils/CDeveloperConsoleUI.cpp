@@ -98,7 +98,7 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 		builder_text.addText(
 			Vector2d(2.0F, screenSize.y - 18.0F),
 			Color( 0.0F, 0.5F, 1.0F, 1.0F ),
-			(" >%s" + engine::Console->GetCommandString()).c_str() );
+			(" >" + engine::Console->GetCommandString()).c_str() );
 		for ( uint i = 0; i < engine::Console->GetMatchingCommands().size(); ++i )
 		{	// Draw command list
 		//	GLd.DrawAutoText( 0.05f, 0.96f+(i-(Real)(engine::Console->GetMatchingCommands().size()))*0.03f, "%s", engine::Console->GetMatchingCommands()[i].c_str() );

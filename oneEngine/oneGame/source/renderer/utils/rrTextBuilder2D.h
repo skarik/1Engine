@@ -37,7 +37,7 @@ public:
 	// Must be implemented by child classes.
 	RENDER_API renderer::rrPrimitiveMode
 		getPrimitiveMode ( void ) const override
-	{ return renderer::kPrimitiveModeTriangleList; }
+	{ return renderer::kPrimitiveModeTriangleList_Indexed; }
 
 	//	setScreenMapping (cubic) : Sets the mapping of the Rect coordinates to the screen.
 	RENDER_API void			setScreenMapping ( const core::math::Cubic& screenMapping );
