@@ -13,10 +13,17 @@
 
 namespace EngineCommon
 {
-	//		DebugToggleTimeProfilerUI(...)
+	//	DebugToggleTimeProfilerUI(...)
 	// Toggle if time profiler UI is up
 	ENGCOM_API int DebugToggleTimeProfilerUI ( const std::string& );
 
+	//	CommandClient()
+	// Performs a debug client command
+	ENGCOM_API int CommandClient ( const std::string& );
+
+	//	CommandClient()
+	// Performs a debug server command
+	ENGCOM_API int CommandServer ( const std::string& );
 };
 
 #endif//_ENGINE_COMMON_ENGINE_COMMON_CONSOLE_H_

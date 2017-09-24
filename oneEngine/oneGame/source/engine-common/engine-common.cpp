@@ -58,6 +58,9 @@ int EngineCommonInitialize ( void )
 
 	// Debug tools
 	engine::Console->AddConsoleFunc( "showtimes", EngineCommon::DebugToggleTimeProfilerUI );
+	engine::Console->AddConsoleFunc( "impulse", EngineCommon::CommandClient );
+	engine::Console->AddConsoleFunc( "cmdc", EngineCommon::CommandClient );
+	engine::Console->AddConsoleFunc( "cmds", EngineCommon::CommandServer );
 
 	//===============================================================================================//
 	// PLACE YOUR CUSTOM ENGINE MODULES BELOW HERE

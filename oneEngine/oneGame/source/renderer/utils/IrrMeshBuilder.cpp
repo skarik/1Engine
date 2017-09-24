@@ -3,7 +3,13 @@
 #include <stdlib.h>
 #include <algorithm>
 
-static arModelData l_modelDataTemp = {};
+//static arModelData l_modelDataTemp = {};
+struct rrModelDataEntry
+{
+	arModelData data;
+	bool in_use;
+};
+static rrModelDataEntry l_modelDatas [4] = {};
 
 //	Constructor (new data)
 // Pulls a model from the the pool that has at least the estimated input size.
@@ -13,7 +19,17 @@ IrrMeshBuilder::IrrMeshBuilder ( const uint16_t estimatedVertexCount )
 {
 	// Loop through the pool to find an unused model.
 
-	m_model = &l_modelDataTemp;
+	for (uint i = 0; i < 4; ++i)
+	{
+		if (l_modelDatas[i].in_use == false)
+		{
+			m_model = &l_modelDatas[i].data;
+			l_modelDatas[i].in_use = true;
+			break;
+		}
+	}
+	m_model_isFromPool = true;
+
 	expand(estimatedVertexCount);
 	expandTri(estimatedVertexCount / 2);
 }
@@ -33,6 +49,14 @@ IrrMeshBuilder::~IrrMeshBuilder ( void )
 	if (m_model_isFromPool)
 	{
 		// Free the pool model.
+		for (uint i = 0; i < 4; ++i)
+		{
+			if (m_model == &l_modelDatas[i].data)
+			{
+				l_modelDatas[i].in_use = false;
+				break;
+			}
+		}
 	}
 }
 

@@ -59,62 +59,51 @@ bool CDeveloperConsoleUI::PreRender ( void )
 }
 bool CDeveloperConsoleUI::Render ( const char pass )
 {
-	//GL_ACCESS GLd_ACCESS
-	//GL.beginOrtho();
-	//core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 	Vector2d screenSize ((Real)Screen::Info.width, (Real)Screen::Info.height);
+	const Real kLineHeight = (Real)fntMenu->GetFontInfo().height + 3.0F;
+	const Real kBottomMargin = 5.0F;
 
 	rrMeshBuilder2D builder(6);
 	rrTextBuilder2D builder_text(fntMenu, 100);
 
-	//GL.Translate( Vector3d( 0,0,-35 ) );
-	//GLd.DrawSet2DScaleMode();
-	//GLd.DrawSet2DMode( GLd.D2D_FLAT );
-
 	if ( engine::Console->GetIsOpen() )
 	{
-		//matMenu->m_diffuse = Color( 0.0f,0.0f,0.0f,0.6f );
-		//matMenu->bindPass(0);
-		//GLd.SetMaterial(matMenu);
-
+		// Console rect:
 		builder.addRect(
-			Rect( 0.0F, screenSize.y - 18.0F, screenSize.x, 18.0F),
-			Color(0.0F, 0.0F, 0.1F, 0.6F),
+			Rect( 0.0F, screenSize.y - kLineHeight - kBottomMargin * 2.0F, screenSize.x, kLineHeight + kBottomMargin * 2.0F),
+			Color(0.0F, 0.0F, 0.3F, 0.6F),
 			false);
-		//GLd.DrawRectangleA( 0.0f, 0.95f, 3.0f,0.05f );
-		if ( !engine::Console->GetMatchingCommands().empty() ) {
-			//GLd.DrawRectangleA( 0.02f, 0.93f - engine::Console->GetMatchingCommands().size()*0.03f, 0.4f, engine::Console->GetMatchingCommands().size()*0.03f + 0.02f );
-			Real boxHeight = engine::Console->GetMatchingCommands().size() * 17.0F + 8.0F;
+		if ( !engine::Console->GetMatchingCommands().empty() )
+		{
+			// Autocomplete rect:
+			Real boxHeight = engine::Console->GetMatchingCommands().size() * kLineHeight + kBottomMargin * 2.0F;
 			builder.addRect(
-				Rect( 0.0F, screenSize.y - 18.0F - boxHeight, screenSize.x, boxHeight),
-				Color(0.0F, 0.0F, 0.1F, 0.6F),
+				Rect( 0.0F, screenSize.y - kLineHeight - boxHeight - kBottomMargin * 2.0F, screenSize.x, boxHeight),
+				Color(0.0F, 0.0F, 0.3F, 0.6F),
 				false);
 		}
 		
-		//matfntMenu->m_diffuse = Color( 0.0f,0.5f,1.0f,1.0f );
-		//matfntMenu->bindPass(0);
-		//GLd.SetMaterial(matfntMenu);
-		//GLd.DrawAutoText( 0.03f, 0.98f, " >%s", engine::Console->GetCommandString().c_str() );	// Draw command
+		// Draw the current command:
 		builder_text.addText(
-			Vector2d(2.0F, screenSize.y - 18.0F),
+			Vector2d(2.0F, screenSize.y - kBottomMargin),
 			Color( 0.0F, 0.5F, 1.0F, 1.0F ),
-			(" >" + engine::Console->GetCommandString()).c_str() );
+			(">" + engine::Console->GetCommandString() + "_").c_str() );
+
+		// Draw the autocomplete results:
 		for ( uint i = 0; i < engine::Console->GetMatchingCommands().size(); ++i )
 		{	// Draw command list
-		//	GLd.DrawAutoText( 0.05f, 0.96f+(i-(Real)(engine::Console->GetMatchingCommands().size()))*0.03f, "%s", engine::Console->GetMatchingCommands()[i].c_str() );
 			builder_text.addText(
-				Vector2d(2.0F, screenSize.y - 18.0F - 17.0F * (i+1)),
+				Vector2d(18.0F, screenSize.y - kLineHeight - kBottomMargin * 3.0F - kLineHeight * i),
 				Color( 0.0F, 0.5F, 1.0F, 1.0F ),
 				engine::Console->GetMatchingCommands()[i].c_str() );
 		}
 	}
 
-	/*matfntMenu->m_diffuse = Color( 1.0f,1.0f,1.0f,0.5f );
-	matfntMenu->bindPass(0);
-	GLd.SetMaterial(matfntMenu);
-	GLd.DrawAutoText( 0.005f, 0.023f, CGameSettings::Active()->sysprop_developerstring.c_str() );*/
-
-	//GL.endOrtho();
+	// Draw the developer string in the upper-left corner.
+	builder_text.addText(
+		Vector2d(4.0F, (Real)fntMenu->GetFontInfo().height + 2.0F),
+		Color( 1.0F, 1.0F, 1.0F, 0.5F ),
+		CGameSettings::Active()->sysprop_developerstring.c_str() );
 
 	RrScopedMeshRenderer renderer;
 	renderer.render(this, matMenu, pass, builder);
