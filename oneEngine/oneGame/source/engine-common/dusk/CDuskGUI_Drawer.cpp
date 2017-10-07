@@ -128,18 +128,8 @@ void CDuskGUI::SetDrawColor ( void )
 
 void CDuskGUI::drawRect ( const Rect& rect )
 {
-	GL_ACCESS GLd_ACCESS;
-
 	Rect draw_rect = rect;
 
-	// Modify input rect by the screen mode, if needed
-	//if ( !bInPixelMode )
-	//{
-	//	draw_rect.pos.x *= Screen::Info.width;
-	//	draw_rect.pos.y *= Screen::Info.height;
-	//	draw_rect.size.x *= Screen::Info.width;
-	//	draw_rect.size.y *= Screen::Info.height;
-	//}
 	// Round rect coordinates
 	{
 		Vector2d min = draw_rect.pos + parenting_offset;
@@ -159,83 +149,11 @@ void CDuskGUI::drawRect ( const Rect& rect )
 		draw_rect,
 		m_drawcolor,
 		false);
-
-	//arModelVertex vert;
-	//SetDrawColor();
-	//vert.r = m_drawcolor.red;
-	//vert.g = m_drawcolor.green;
-	//vert.b = m_drawcolor.blue;
-	//vert.a = m_drawcolor.alpha;
-	//vert.u = 0.1f;
-	//vert.v = 0.1f;
-	//vert.z = 0;
-
-	//vert.x = draw_rect.pos.x;
-	//vert.y = draw_rect.pos.y;
-	//modelSolidMeshList.push_back( vert );
-	//vert.x = draw_rect.pos.x+draw_rect.size.x;
-	//vert.y = draw_rect.pos.y;
-	//modelSolidMeshList.push_back( vert );
-	//vert.x = draw_rect.pos.x;
-	//vert.y = draw_rect.pos.y+draw_rect.size.y;
-	//modelSolidMeshList.push_back( vert );
-
-	//vert.x = draw_rect.pos.x;
-	//vert.y = draw_rect.pos.y+draw_rect.size.y;
-	//modelSolidMeshList.push_back( vert );
-	//vert.x = draw_rect.pos.x+draw_rect.size.x;
-	//vert.y = draw_rect.pos.y;
-	//modelSolidMeshList.push_back( vert );
-	//vert.x = draw_rect.pos.x+draw_rect.size.x;
-	//vert.y = draw_rect.pos.y+draw_rect.size.y;
-	//modelSolidMeshList.push_back( vert );
-
-	//// Round values
-	//for ( uint i = 0; i < modelSolidMeshList.size(); ++i )
-	//{
-	//	modelSolidMeshList[i].x = (Real)math::round(modelSolidMeshList[i].x);
-	//	modelSolidMeshList[i].y = (Real)math::round(modelSolidMeshList[i].y);
-	//}
-
-	//// Render mesh
-	//{
-	//	//GL.prepareDraw();
-	//	//GL.beginOrtho();
-	//	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-	//	GLd.DrawSet2DScaleMode();
-
-	//	matDefault->bindPass(0);
-	//	//matDefault->setShaderConstants( this );
-
-	//	auto lPrim = GLd.BeginPrimitive( GL_TRIANGLES, matDefault );
-	//	for ( uint i = 0; i < modelSolidMeshList.size(); ++i )
-	//	{
-	//		GLd.P_PushColor( modelSolidMeshList[i].r, modelSolidMeshList[i].g, modelSolidMeshList[i].b, modelSolidMeshList[i].a );
-	//		GLd.P_AddVertex( modelSolidMeshList[i].x + parenting_offset.x, modelSolidMeshList[i].y + parenting_offset.y );
-	//	}
-	//	GLd.EndPrimitive(lPrim);
-	//	modelSolidMeshList.clear();
-
-	//	//GL.endOrtho();
-	//	//GL.cleanupDraw();
-	//}
 }
 void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 {
-	GL_ACCESS GLd_ACCESS;
-
 	Rect draw_rect = rect;
 
-	// Modify input rect by the screen mode, if needed
-	//if ( !bInPixelMode )
-	//{
-	//	draw_rect.pos.x *= Screen::Info.width;
-	//	draw_rect.pos.y *= Screen::Info.height;
-	//	draw_rect.size.x *= Screen::Info.width;
-	//	draw_rect.size.y *= Screen::Info.height;
-	//}
-	//draw_rect.size.x -= 1.0F;
-	//draw_rect.size.y -= 1.0F;
 	// Round rect coordinates
 	{
 		Vector2d min = draw_rect.pos + parenting_offset;
@@ -266,142 +184,19 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 		draw_rect,
 		m_drawcolor,
 		true);
-	//vert.r = m_drawcolor.red;
-	//vert.g = m_drawcolor.green;
-	//vert.b = m_drawcolor.blue;
-	//vert.a = m_drawcolor.alpha;
-	//vert.u = 0.1f;
-	//vert.v = 0.1f;
-	//vert.z = 0;
-
-	//vert.x = draw_rect.pos.x;
-	//vert.y = draw_rect.pos.y;
-	//modelLineMeshList.push_back( vert );
-	//vert.x = draw_rect.pos.x + draw_rect.size.x;
-	//vert.y = draw_rect.pos.y;
-	//modelLineMeshList.push_back( vert );
-
-	//vert.x = draw_rect.pos.x + draw_rect.size.x;
-	//vert.y = draw_rect.pos.y;
-	//modelLineMeshList.push_back( vert );
-	//vert.x = draw_rect.pos.x + draw_rect.size.x;
-	//vert.y = draw_rect.pos.y + draw_rect.size.y;
-	//modelLineMeshList.push_back( vert );
-
-	//vert.x = draw_rect.pos.x + draw_rect.size.x;
-	//vert.y = draw_rect.pos.y + draw_rect.size.y;
-	//modelLineMeshList.push_back( vert );
-	//vert.x = draw_rect.pos.x;
-	//vert.y = draw_rect.pos.y + draw_rect.size.y;
-	//modelLineMeshList.push_back( vert );
-
-	//vert.x = draw_rect.pos.x;
-	//vert.y = draw_rect.pos.y + draw_rect.size.y;
-	//modelLineMeshList.push_back( vert );
-	//vert.x = draw_rect.pos.x;
-	//vert.y = draw_rect.pos.y + math::sgn(draw_rect.size.y);
-	//modelLineMeshList.push_back( vert );
-
-	//// Round values
-	//for ( uint i = 0; i < modelLineMeshList.size(); ++i )
-	//{
-	//	modelLineMeshList[i].x = (Real)math::round(modelLineMeshList[i].x);
-	//	modelLineMeshList[i].y = (Real)math::round(modelLineMeshList[i].y);
-	//}
-
-	//// Render mesh
-	//{
-	//	//GL.prepareDraw();
-	//	//GL.beginOrtho();
-	//	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-	//	GLd.DrawSet2DScaleMode();
-
-	//	matDefault->bindPass(0);
-	//	//matDefault->setShaderConstants( this );
-	//	auto lPrim = GLd.BeginPrimitive( GL_LINES, matDefault );
-	//	for ( uint i = 0; i < modelLineMeshList.size(); ++i )
-	//	{
-	//		GLd.P_PushColor( modelLineMeshList[i].r, modelLineMeshList[i].g, modelLineMeshList[i].b, modelLineMeshList[i].a );
-	//		GLd.P_AddVertex( modelLineMeshList[i].x + parenting_offset.x, modelLineMeshList[i].y + parenting_offset.y );
-	//	}
-	//	GLd.EndPrimitive(lPrim);
-	//	modelLineMeshList.clear();
-
-	//	//GL.endOrtho();
-	//	//GL.cleanupDraw();
-	//}
 }
 void CDuskGUI::drawLine ( const Real x1, const Real y1, const Real x2, const Real y2 )
 {
-	GL_ACCESS GLd_ACCESS
-
-//	arModelVertex vert;
 	SetDrawColor();
 
 	m_builder->addLine(
 		Vector2d(x1 + parenting_offset.x, y1 + parenting_offset.y),
 		Vector2d(x2 + parenting_offset.x, y2 + parenting_offset.y),
 		m_drawcolor);
-
-	//vert.r = m_drawcolor.red;
-	//vert.g = m_drawcolor.green;
-	//vert.b = m_drawcolor.blue;
-	//vert.a = m_drawcolor.alpha;
-	//vert.u = 0.1f;
-	//vert.v = 0.1f;
-	//vert.z = 0;
-
-	//vert.x = x1;
-	//vert.y = y1;
-	//modelLineMeshList.push_back( vert );
-	//vert.x = x2;
-	//vert.y = y2;
-	//modelLineMeshList.push_back( vert );
-
-	//// Round values
-	//for ( uint i = 0; i < modelLineMeshList.size(); ++i )
-	//{
-	//	if ( !bInPixelMode )
-	//	{
-	//		modelLineMeshList[i].x *= Screen::Info.width;
-	//		modelLineMeshList[i].y *= Screen::Info.height;
-	//	}
-	//	modelLineMeshList[i].x = (Real)math::round(modelLineMeshList[i].x);
-	//	modelLineMeshList[i].y = (Real)math::round(modelLineMeshList[i].y);
-	//}
-
-	//// Render mesh
-	//{
-	//	//GL.prepareDraw();
-
-	//	if ( !bInPixelMode )
-	//		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d(+1, +1, +45.0F) );
-	//		//GL.beginOrtho( 0,0, 1,1, -45,45 );
-	//	else
-	//		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-	//		//GL.beginOrtho();
-	//	GLd.DrawSet2DScaleMode();
-
-	//	matDefault->bindPass(0);
-	//	//matDefault->setShaderConstants( this );
-	//	auto lPrim = GLd.BeginPrimitive( GL_LINES, matDefault );
-	//	for ( uint i = 0; i < modelLineMeshList.size(); ++i )
-	//	{
-	//		GLd.P_PushColor( modelLineMeshList[i].r, modelLineMeshList[i].g, modelLineMeshList[i].b, modelLineMeshList[i].a );
-	//		GLd.P_AddVertex( modelLineMeshList[i].x + parenting_offset.x, modelLineMeshList[i].y + parenting_offset.y );
-	//	}
-	//	GLd.EndPrimitive(lPrim);
-	//	modelLineMeshList.clear();
-
-	//	//GL.endOrtho();
-	//	//GL.cleanupDraw();
-	//}
 }
 
 void CDuskGUI::drawText ( const Real x, const Real y, const char* str )
 {
-	//GL_ACCESS GLd_ACCESS
-
 	Vector2d draw_pos = Vector2d(x + parenting_offset.x, y + parenting_offset.y);
 	draw_pos.x = (Real)math::round(draw_pos.x);
 	draw_pos.y = (Real)math::round(draw_pos.y);

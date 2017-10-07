@@ -1,6 +1,6 @@
-
 #include "Background2D.h"
 #include "renderer/camera/CCamera.h"
+#include "renderer/material/RrMaterial.h"
 
 renderer::Background2D::Background2D ( void )
 	: CRenderable2D()
@@ -18,31 +18,26 @@ renderer::Background2D::Background2D ( void )
 	}
 	m_modeldata.vertexNum = 4;
 	m_modeldata.vertices = new arModelVertex[4];
+	memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * m_modeldata.vertexNum);
 	{
-		for ( int i = 0; i < 4; ++i ) {
-			m_modeldata.vertices[i].r = 1.0F;
-			m_modeldata.vertices[i].g = 1.0F;
-			m_modeldata.vertices[i].b = 1.0F;
-			m_modeldata.vertices[i].a = 1.0F;
-			m_modeldata.vertices[i].z = 0;
+		for ( int i = 0; i < 4; ++i )
+		{
+			m_modeldata.vertices[i].color = Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 
-		m_modeldata.vertices[0].x = -1;
-		m_modeldata.vertices[0].y = -1;
-
-		m_modeldata.vertices[1].x = -1;
-		m_modeldata.vertices[2].y = +1;
-
-		m_modeldata.vertices[2].x = +1;
-		m_modeldata.vertices[2].y = +1;
-
-		m_modeldata.vertices[3].x = +1;
-		m_modeldata.vertices[3].y = -1;
+		m_modeldata.vertices[0].position = Vector2f(-1.0F, -1.0F);
+		m_modeldata.vertices[1].position = Vector2f(-1.0F, +1.0F);
+		m_modeldata.vertices[2].position = Vector2f(+1.0F, +1.0F);
+		m_modeldata.vertices[3].position = Vector2f(+1.0F, -1.0F);
 	}
 	// Upload the model
 	PushModeldata();
 	// Set the sprite to use to render the background
 	SetSpriteFile( "textures/black.jpg" );
+
+	// Update material to disable depth write
+	m_material->passinfo[0].b_depthmask = false;
+	m_material->passinfo[0].b_depthtest = true;
 }
 renderer::Background2D::~Background2D ( void )
 {

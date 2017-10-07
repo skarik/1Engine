@@ -698,25 +698,25 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				targetPass->setSampler( TEX_SLOT2, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(2), GL.Enum(Texture2D) );
 				targetPass->setSampler( TEX_SLOT3, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(3), GL.Enum(Texture2D) );
 				targetPass->setSampler( TEX_SLOT4, internal_chain_current->buffer_deferred_mrt->GetDepthSampler(), GL.Enum(Texture2D) );
-				//targetPass->prepareShaderConstants(NULL);
+				//targetPass->prepareShaderConstants();
 				targetPass->bindPassForward(0);
 				// Pass in all the lighting information
 				{
-					RrShader* shader = targetPass->getUsingShader();
-					// Light number
-					//int uniformLocation = shader->get_uniform_location( "sys_LightNumber" );
+					//RrShader* shader = targetPass->getUsingShader();
+					//// Light number
+					////int uniformLocation = shader->get_uniform_location( "sys_LightNumber" );
+					////if ( uniformLocation >= 0 )
+					////{
+					//	glUniform1i( renderer::UNI_LIGHTING_COUNT, std::min<int>( RrMaterial::m_lightCount, (renderRQ_current.obj->renderType==World)?64:3 ) );
+					////}
+					//// Light data
+					////int uniformLocation = shader->get_uniform_block_location( "def_LightingInfo" );
+					//int uniformLocation = shader->getUniformBlockLocation( "def_LightingInfo" ); //TODO
 					//if ( uniformLocation >= 0 )
 					//{
-						glUniform1i( renderer::UNI_LIGHTING_COUNT, std::min<int>( RrMaterial::m_lightCount, (renderRQ_current.obj->renderType==World)?64:3 ) );
+					//	glUniformBlockBinding( shader->get_program(), uniformLocation, 5 );
+					//	glBindBufferRange( GL_UNIFORM_BUFFER, 5, RrMaterial::m_ubo_deflightinginfo, NIL, sizeof(Matrix4x4)*4 );
 					//}
-					// Light data
-					//int uniformLocation = shader->get_uniform_block_location( "def_LightingInfo" );
-					int uniformLocation = shader->getUniformBlockLocation( "def_LightingInfo" ); //TODO
-					if ( uniformLocation >= 0 )
-					{
-						glUniformBlockBinding( shader->get_program(), uniformLocation, 5 );
-						glBindBufferRange( GL_UNIFORM_BUFFER, 5, RrMaterial::m_ubo_deflightinginfo, NIL, sizeof(Matrix4x4)*4 );
-					}
 				}
 				// Disable alpha blending
 				glDisable( GL_BLEND );

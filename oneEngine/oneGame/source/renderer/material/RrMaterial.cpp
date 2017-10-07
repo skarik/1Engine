@@ -131,17 +131,17 @@ uchar RrMaterial::getPassCountDeferred ( void )
 	return (uchar)deferredinfo.size();
 }
 
-glHandle	RrMaterial::m_ubo_foginfo = 0;
+//glHandle	RrMaterial::m_ubo_foginfo = 0;
 glHandle	RrMaterial::m_ubo_lightinginfo = 0;
 glHandle	RrMaterial::m_ubo_reflectinfo = 0;
 //GLuint	m_ubo_worldinfo = 0;
-struct _fogInfo_t
-{
-	Color	color;
-	Color	atmo;
-	float	end;
-	float	scale;
-}; 
+//struct _fogInfo_t
+//{
+//	Color	color;
+//	Color	atmo;
+//	float	end;
+//	float	scale;
+//}; 
 #define HARD_MAX 8
 struct _lightingInfo_t
 {
@@ -159,24 +159,24 @@ struct _reflectInfo_t
 };
 void RrMaterial::updateStaticUBO ( void )
 {
-	{
-		_fogInfo_t t_fogInfo;
-		// Create fog struct data
-		t_fogInfo.color	= renderer::Settings.fogColor;
-		t_fogInfo.color.alpha = 1.0F;
-		t_fogInfo.atmo	= Color::Lerp( renderer::Settings.fogColor, renderer::Settings.ambientColor, 0.5F ) * Color(0.9F,0.9F,1.1F);
-		t_fogInfo.atmo.alpha = 1.0F;
-		t_fogInfo.end	= renderer::Settings.fogEnd;
-		t_fogInfo.scale	= renderer::Settings.fogScale;
-		// Send it to video card
-		if ( m_ubo_foginfo == 0 ) {
-			glGenBuffers( 1, &m_ubo_foginfo );
-			glBindBuffer( GL_UNIFORM_BUFFER, m_ubo_foginfo );
-			glBufferData( GL_UNIFORM_BUFFER, sizeof(_fogInfo_t), NULL, GL_STREAM_DRAW );
-		}
-		glBindBuffer( GL_UNIFORM_BUFFER, m_ubo_foginfo );
-		glBufferSubData( GL_UNIFORM_BUFFER, 0, sizeof(_fogInfo_t), &t_fogInfo );
-	}
+	//{
+	//	_fogInfo_t t_fogInfo;
+	//	// Create fog struct data
+	//	t_fogInfo.color	= renderer::Settings.fogColor;
+	//	t_fogInfo.color.alpha = 1.0F;
+	//	t_fogInfo.atmo	= Color::Lerp( renderer::Settings.fogColor, renderer::Settings.ambientColor, 0.5F ) * Color(0.9F,0.9F,1.1F);
+	//	t_fogInfo.atmo.alpha = 1.0F;
+	//	t_fogInfo.end	= renderer::Settings.fogEnd;
+	//	t_fogInfo.scale	= renderer::Settings.fogScale;
+	//	// Send it to video card
+	//	if ( m_ubo_foginfo == 0 ) {
+	//		glGenBuffers( 1, &m_ubo_foginfo );
+	//		glBindBuffer( GL_UNIFORM_BUFFER, m_ubo_foginfo );
+	//		glBufferData( GL_UNIFORM_BUFFER, sizeof(_fogInfo_t), NULL, GL_STREAM_DRAW );
+	//	}
+	//	glBindBuffer( GL_UNIFORM_BUFFER, m_ubo_foginfo );
+	//	glBufferSubData( GL_UNIFORM_BUFFER, 0, sizeof(_fogInfo_t), &t_fogInfo );
+	//}
 
 	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
 	{

@@ -17,6 +17,7 @@ namespace M04
 		explicit	TileSelectorUI ( void );
 					~TileSelectorUI ( void );
 
+		bool		PreRender ( void ) override;
 		bool		Render ( const char pass ) override;
 
 		//		SetTileMap ( )

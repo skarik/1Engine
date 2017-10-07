@@ -1,5 +1,6 @@
 #include "rrMeshBuilder2D.h"
 
+#include "core/math/Math.h"
 #include "core/system/Screen.h"
 
 //	Constructor (new data)
@@ -63,8 +64,21 @@ void rrMeshBuilder2D::setScreenMapping ( const core::math::Cubic& screenMapping 
 // "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
 void rrMeshBuilder2D::addRect ( const Rect& rect, const Color& color, bool outline )
 {
-	const Vector2d pos_min = rect.pos.mulComponents(m_multiplier) + m_offset;
-	const Vector2d pos_max = (rect.pos + rect.size).mulComponents(m_multiplier) + m_offset;
+	return addRectTex(rect, Rect(0.0F, 0.0F, 1.0F, 1.0F), color, outline);
+}
+
+//	addRectTex (rect, tex, color, outline) : Adds a rectangle to draw, but with the specified texcoord0.
+// "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
+void rrMeshBuilder2D::addRectTex ( const Rect& rect, const Rect& tex, const Color& color, bool outline )
+{
+	Rect fixedRect = rect;
+	fixedRect.Fix();
+
+	const Vector2f pos_min = fixedRect.pos.mulComponents(m_multiplier) + m_offset;
+	const Vector2f pos_max = (fixedRect.pos + fixedRect.size).mulComponents(m_multiplier) + m_offset;
+
+	const Vector2f tex_min = tex.pos;
+	const Vector2f tex_max = tex.pos + tex.size;
 
 	if (!outline)
 	{
@@ -82,10 +96,10 @@ void rrMeshBuilder2D::addRect ( const Rect& rect, const Color& color, bool outli
 		m_model->vertices[index + 2].position = Vector2f(pos_max.x, pos_min.y);
 		m_model->vertices[index + 3].position = pos_max;
 
-		m_model->vertices[index + 0].texcoord0 = Vector2f(0,0);
-		m_model->vertices[index + 1].texcoord0 = Vector2f(0,1);
-		m_model->vertices[index + 2].texcoord0 = Vector2f(1,0);
-		m_model->vertices[index + 3].texcoord0 = Vector2f(1,1);
+		m_model->vertices[index + 0].texcoord0 = tex_min;
+		m_model->vertices[index + 1].texcoord0 = Vector2f(tex_min.x, tex_max.y);
+		m_model->vertices[index + 2].texcoord0 = Vector2f(tex_max.x, tex_min.y);
+		m_model->vertices[index + 3].texcoord0 = tex_max;
 
 		m_model->vertices[index + 0].color = Vector4f(&color.x);
 		m_model->vertices[index + 1].color = Vector4f(&color.x);
@@ -110,12 +124,68 @@ void rrMeshBuilder2D::addRect ( const Rect& rect, const Color& color, bool outli
 	}
 	else
 	{
-		const Vector2d pixelSize ( 1.0F/(Real)Screen::Info.width, 1.0F/(Real)Screen::Info.height );
+		const Vector2d pixelSize ( 2.0F/(Real)Screen::Info.width * math::sgn(m_multiplier.x), 2.0F/(Real)Screen::Info.height * math::sgn(m_multiplier.y) );
+		const Vector2d pos_min_inside = (fixedRect.pos).mulComponents(m_multiplier) + m_offset + pixelSize;
+		const Vector2d pos_max_inside = (fixedRect.pos + fixedRect.size).mulComponents(m_multiplier) + m_offset - pixelSize;
 
-		// Perform 4 addRect's for now
-		//addRect(rect, color, false);
-		
-		// UVs are separate so actually cannot do 4 addrects :)
+		expand(m_vertexCount + 8);
+		expandTri(m_triangleCount + 8);
+		const uint16_t index = m_vertexCount;
+		const uint16_t tri_index = m_triangleCount;
+
+		memset(m_model->vertices + index, 0, sizeof(arModelVertex) * 8);
+
+		// Add the outline quad:
+
+		m_model->vertices[index + 0].position = pos_min;
+		m_model->vertices[index + 1].position = pos_min_inside;
+		m_model->vertices[index + 2].position = Vector2f(pos_min.x, pos_max.y);
+		m_model->vertices[index + 3].position = Vector2f(pos_min_inside.x, pos_max_inside.y);
+		m_model->vertices[index + 4].position = pos_max;
+		m_model->vertices[index + 5].position = pos_max_inside;
+		m_model->vertices[index + 6].position = Vector2f(pos_max.x, pos_min.y);
+		m_model->vertices[index + 7].position = Vector2f(pos_max_inside.x, pos_min_inside.y);
+
+		m_model->vertices[index + 0].texcoord0 = tex_min;
+		m_model->vertices[index + 1].texcoord0 = tex_min;
+		m_model->vertices[index + 2].texcoord0 = Vector2f(tex_min.x,tex_max.y);
+		m_model->vertices[index + 3].texcoord0 = Vector2f(tex_min.x,tex_max.y);
+		m_model->vertices[index + 4].texcoord0 = tex_max;
+		m_model->vertices[index + 5].texcoord0 = tex_max;
+		m_model->vertices[index + 6].texcoord0 = Vector2f(tex_max.x,tex_min.y);
+		m_model->vertices[index + 7].texcoord0 = Vector2f(tex_max.x,tex_min.y);
+
+		m_model->vertices[index + 0].color = Vector4f(&color.x);
+		m_model->vertices[index + 1].color = Vector4f(&color.x);
+		m_model->vertices[index + 2].color = Vector4f(&color.x);
+		m_model->vertices[index + 3].color = Vector4f(&color.x);
+		m_model->vertices[index + 4].color = Vector4f(&color.x);
+		m_model->vertices[index + 5].color = Vector4f(&color.x);
+		m_model->vertices[index + 6].color = Vector4f(&color.x);
+		m_model->vertices[index + 7].color = Vector4f(&color.x);
+
+		m_model->vertices[index + 0].position.z = 0.5F;
+		m_model->vertices[index + 1].position.z = 0.5F;
+		m_model->vertices[index + 2].position.z = 0.5F;
+		m_model->vertices[index + 3].position.z = 0.5F;
+		m_model->vertices[index + 4].position.z = 0.5F;
+		m_model->vertices[index + 5].position.z = 0.5F;
+		m_model->vertices[index + 6].position.z = 0.5F;
+		m_model->vertices[index + 7].position.z = 0.5F;
+
+		for (uint i = 0; i < 4; ++i)
+		{
+			m_model->triangles[tri_index + 0 + i * 2].vert[0] = index + (0 + i * 2) % 8;
+			m_model->triangles[tri_index + 0 + i * 2].vert[1] = index + (1 + i * 2) % 8;
+			m_model->triangles[tri_index + 0 + i * 2].vert[2] = index + (2 + i * 2) % 8;
+
+			m_model->triangles[tri_index + 1 + i * 2].vert[0] = index + (2 + i * 2) % 8;
+			m_model->triangles[tri_index + 1 + i * 2].vert[1] = index + (1 + i * 2) % 8;
+			m_model->triangles[tri_index + 1 + i * 2].vert[2] = index + (3 + i * 2) % 8;
+		}
+
+		m_vertexCount += 8;
+		m_triangleCount += 8;
 	}
 }
 

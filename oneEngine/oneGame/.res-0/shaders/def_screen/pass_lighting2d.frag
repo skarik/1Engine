@@ -2,7 +2,7 @@
 #extension GL_ARB_explicit_attrib_location : require
 #extension GL_ARB_explicit_uniform_location : require
 
-//#define DEBUG_OUTPUT
+#define DEBUG_OUTPUT
 #define ENABLE_LIGHTING
 //#define ENABLE_JOKE_AMBIENT_OCCLUSION
 //#define ENABLE_DITHERING
