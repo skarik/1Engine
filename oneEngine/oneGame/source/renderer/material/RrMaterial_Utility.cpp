@@ -17,7 +17,7 @@ using namespace std;
 //Texture set
 void		RrMaterial::setTexture ( const textureslot_t n_index, CTexture* n_texture )
 {
-	GL_ACCESS
+	GL_ACCESS;
 	// Check doubly set texture
 	if ( m_highlevel_storage[n_index] == n_texture ) {
 		return;
@@ -47,7 +47,6 @@ void		RrMaterial::setTexture ( const textureslot_t n_index, CTexture* n_texture 
 }
 void		RrMaterial::setSampler ( const textureslot_t n_index, const uint n_sampler, const uint n_sampler_target )
 {
-	GL_ACCESS
 #ifdef _ENGINE_DEBUG
 	if ( n_sampler_target == 0 )
 	{

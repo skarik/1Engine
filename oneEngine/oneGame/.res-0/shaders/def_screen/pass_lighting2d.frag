@@ -2,7 +2,7 @@
 #extension GL_ARB_explicit_attrib_location : require
 #extension GL_ARB_explicit_uniform_location : require
 
-#define DEBUG_OUTPUT
+//#define DEBUG_OUTPUT
 #define ENABLE_LIGHTING
 //#define ENABLE_JOKE_AMBIENT_OCCLUSION
 //#define ENABLE_DITHERING
@@ -42,8 +42,11 @@ layout(location = 44) uniform samplerBuffer textureLightBuffer;
 layout(location = 10) uniform vec4 sys_LightAmbient;*/
 layout(std140) uniform sys_cbuffer_PerPass
 {
-    int     sys_LightNumber;
     vec4    sys_LightAmbient;
+    int     sys_LightNumber;
+    int     rr__unused0;
+    int     rr__unused1;
+    int     rr__unused2;
 };
 
 /*

@@ -18,7 +18,7 @@
 
 void sceneEditorMain::LoadScene ( void )
 {
-	debug::Console->PrintMessage( "Loading test scene 1: editor.\n" );
+	debug::Console->PrintMessage( "Loading scene: editor.\n" );
 
 	// Create orthographic camera
 	/*{
@@ -73,5 +73,5 @@ void sceneEditorMain::LoadScene ( void )
 
 	// Print a prompt
 	debug::Console->PrintMessage( "You are running a debug build of M04.\n" );
-	debug::Console->PrintMessage( "This test is meant to show both the tileset system's capabilities and a simple realtime lighting system.\n" );
+	debug::Console->PrintMessage( "This scene is meant to expose the 2D game module's built-in editor functionality.\n" );
 }

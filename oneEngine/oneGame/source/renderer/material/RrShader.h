@@ -206,7 +206,7 @@ namespace renderer
 			Vector3f	emissiveColor;
 			float		alphaCutoff;
 			Vector3f	lightingOverrides;
-			int : sizeof(float);
+			int : 32;
 			Vector4f	textureScale;
 			Vector4f	textureOffset;
 		};
@@ -248,8 +248,11 @@ namespace renderer
 
 		struct rrPerPassLightingInfo
 		{
-			uint32_t	lightNumber;
 			Vector4f	ambientLightFallback;
+			int32_t		lightNumber;
+			int32_t : 32;
+			int32_t : 32;
+			int32_t : 32;
 		};
 	}
 }

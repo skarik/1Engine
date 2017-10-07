@@ -115,60 +115,31 @@ bool TileSelectorUI::PreRender ( void )
 }
 bool TileSelectorUI::Render ( const char pass )
 {
-	//GL_ACCESS GLd_ACCESS
-
-	//GL.prepareDraw();
-	//GL.beginOrtho( 0,0, 1,1, -45,45 );
-	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d(+1, +1, +45.0F) );
-
-	rrMeshBuilder2D builder ((uint16_t)(4 + 4 * m_tileset->tiles.size()));
-	rrMeshBuilder2D builderLn (16);
-
-	//GLd.DrawSet2DScaleMode();
-
-	//m_material->bindPass(0);
-	//m_material->setShaderConstants( this );
+	rrMeshBuilder2D builder((uint16_t)(4 + 4 * m_tileset->tiles.size()));
+	rrMeshBuilder2D builderLn(16);
 
 	// render the selection shit
-	//auto lPrim = GLd.BeginPrimitive( GL_TRIANGLES, m_material );
-	//GLd.P_PushColor( Color(0.5F,0.5F,0.5F,1) );
 	{
 		// Get background width
 		Vector2d ui_size ( (Real) m_tileset->tilesize_x+ui_spacing, (Real) m_tileset->tilesize_y+ui_spacing );
 		ui_size.x *= ui_columns;
 		ui_size.y *= std::ceilf( (m_tileset->tiles.size() / (Real)ui_columns) );
-		//ui_size = ui_size.mulComponents( Vector2d( 1.0f / Screen::Info.width, 1.0f / Screen::Info.height ) );
 		Vector2d ui_offset = ui_base_offset;
-		//ui_offset = ui_offset.mulComponents( Vector2d( 1.0f / Screen::Info.width, 1.0f / Screen::Info.height ) );
-		//ui_size.divComponents( Vector2d( (Real)m_tileset->tilesize_x, (Real)m_tileset->tilesize_y ) );
-		//ui_size = ui_size.mulComponents( Vector2d( 1.0f / Screen::Info.width, 1.0f / Screen::Info.height ) );
 
+		// Draw the background for the selection box
 		builder.addRectTex(
 			Rect(ui_offset, ui_size),
 			Rect(0.5F, 0.5F, 0.0F, 0.0),
 			Color(0.5F,0.5F,0.5F,1.0F),
 			false
 		);
-
-		// Draw the background for the selection box
-		//GLd.P_PushTexcoord( Vector2d(0.5F,0.5F) );
-		//// Create the quad
-		//GLd.P_AddVertex( Vector2d(0,0) + ui_offset );
-		//GLd.P_AddVertex( Vector2d(ui_size.x,0) + ui_offset );
-		//GLd.P_AddVertex( Vector2d(0,ui_size.y) + ui_offset );
-
-		//GLd.P_AddVertex( Vector2d(0,ui_size.y) + ui_offset );
-		//GLd.P_AddVertex( Vector2d(ui_size.x,0) + ui_offset );
-		//GLd.P_AddVertex( Vector2d(ui_size.x,ui_size.y) + ui_offset );
 	}
-	//GLd.P_PushColor( Color(1,1,1,1) );
 	for ( int i = 0; i < (int)m_tileset->tiles.size(); ++i )
 	{
 		const tilesetEntry_t& tile = m_tileset->tiles[i];
 		
 		// Generate position to put the tile
 		Vector2d ui_offset = Vector2d( (Real) (i%ui_columns) * (m_tileset->tilesize_x+ui_spacing), (Real) (i/ui_columns) * (m_tileset->tilesize_y+ui_spacing) ) + ui_base_offset;
-		//ui_offset = ui_offset.mulComponents( Vector2d( 1.0f / Screen::Info.width, 1.0f / Screen::Info.height ) );
 
 		// Generate the UV coordinate basics
 		Vector2d tile_scale ( 1.0f / m_tileset->tilecount_x, 1.0f / m_tileset->tilecount_y );
@@ -180,30 +151,9 @@ bool TileSelectorUI::Render ( const char pass )
 			Color(1.0F, 1.0F, 1.0F, 1.0F),
 			false
 		);
-
-
-		// Create quad
-		//GLd.P_PushTexcoord( Vector2d(0,0).mulComponents(tile_scale) + tile_offset );
-		//GLd.P_AddVertex( Vector2d(0,0).mulComponents(ui_scale) + ui_offset );
-		//GLd.P_PushTexcoord( Vector2d(tile.atlas_w,0).mulComponents(tile_scale) + tile_offset );
-		//GLd.P_AddVertex( Vector2d(tile.atlas_w,0).mulComponents(ui_scale) + ui_offset );
-		//GLd.P_PushTexcoord( Vector2d(0,tile.atlas_h).mulComponents(tile_scale) + tile_offset );
-		//GLd.P_AddVertex( Vector2d(0,tile.atlas_h).mulComponents(ui_scale) + ui_offset );
-
-		//GLd.P_PushTexcoord( Vector2d(0,tile.atlas_h).mulComponents(tile_scale) + tile_offset );
-		//GLd.P_AddVertex( Vector2d(0,tile.atlas_h).mulComponents(ui_scale) + ui_offset );
-		//GLd.P_PushTexcoord( Vector2d(tile.atlas_w,0).mulComponents(tile_scale) + tile_offset );
-		//GLd.P_AddVertex( Vector2d(tile.atlas_w,0).mulComponents(ui_scale) + ui_offset );
-		//GLd.P_PushTexcoord( Vector2d(tile.atlas_w,tile.atlas_h).mulComponents(tile_scale) + tile_offset );
-		//GLd.P_AddVertex( Vector2d(tile.atlas_w,tile.atlas_h).mulComponents(ui_scale) + ui_offset );
 	}
-	//GLd.EndPrimitive(lPrim);
 
-	//ui_material->bindPass(0);
-	//ui_material->setShaderConstants( this );
 	// render the selection box
-	//auto lPrimLines = GLd.BeginPrimitive( GL_LINES, ui_material );
-	//GLd.P_PushTexcoord( 0,0 );
 	if ( ui_mouseover >= 0 )
 	{
 		const tilesetEntry_t& tile = m_tileset->tiles[ui_mouseover];
@@ -211,7 +161,6 @@ bool TileSelectorUI::Render ( const char pass )
 
 		// Generate position to put the tile
 		Vector2d ui_offset = Vector2d( (Real) (i%ui_columns) * (m_tileset->tilesize_x+ui_spacing), (Real) (i/ui_columns) * (m_tileset->tilesize_y+ui_spacing) ) + ui_base_offset;
-		//ui_offset = ui_offset.mulComponents( Vector2d( 1.0f / Screen::Info.width, 1.0f / Screen::Info.height ) );
 
 		// Create border value
 		const Real f = 1.0F / m_tileset->tilesize_x;
@@ -222,30 +171,11 @@ bool TileSelectorUI::Render ( const char pass )
 			float l_r = (Real)l;
 			builderLn.addRect(
 				Rect( ui_offset + Vector2f(-l_r,-l_r), Vector2f(tile.atlas_w, tile.atlas_h).mulComponents(ui_scale) + Vector2f(l_r,l_r) * 2.0F ),
+				// Make center of the border black
 				(l == 0) ? Color(0,0,0,1.0F) : Color(1,1,1,1.0F),
 				true );
-
-			//// Make center of the border black
-			//if ( l == 0 )	GLd.P_PushColor( Color(0,0,0,1.0F) );
-			//else			GLd.P_PushColor( Color(1,1,1,1.0F) );
-			//// Place box
-			//GLd.P_AddVertex( Vector2d(-f*l,-f*l).mulComponents(ui_scale) + ui_offset );
-			//GLd.P_AddVertex( Vector2d(tile.atlas_w+f*l,-f*l).mulComponents(ui_scale) + ui_offset );
-
-			//GLd.P_AddVertex( Vector2d(tile.atlas_w+f*l,-f*l).mulComponents(ui_scale) + ui_offset );
-			//GLd.P_AddVertex( Vector2d(tile.atlas_w+f*l,tile.atlas_h+f*l).mulComponents(ui_scale) + ui_offset );
-
-			//GLd.P_AddVertex( Vector2d(tile.atlas_w+f*l,tile.atlas_h+f*l).mulComponents(ui_scale) + ui_offset );
-			//GLd.P_AddVertex( Vector2d(-f*l,tile.atlas_h+f*l).mulComponents(ui_scale) + ui_offset );
-
-			//GLd.P_AddVertex( Vector2d(-f*l,tile.atlas_h+f*l).mulComponents(ui_scale) + ui_offset );
-			//GLd.P_AddVertex( Vector2d(-f*l,-f*l).mulComponents(ui_scale) + ui_offset );
 		}
 	}
-	//GLd.EndPrimitive(lPrimLines);
-
-	//GL.endOrtho();
-	//GL.cleanupDraw();
 
 	RrScopedMeshRenderer renderer;
 	renderer.render(this, m_material, 0, builder);

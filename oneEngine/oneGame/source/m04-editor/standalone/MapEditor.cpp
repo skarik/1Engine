@@ -95,7 +95,7 @@ MapEditor::MapEditor ( void )
 		m_target_camera = cam;
 	}
 	// Create background
-	{
+	if(0){
 		CRenderable2D* bg = new renderer::Background2D();
 		(new CRendererHolder (bg))->RemoveReference();
 	}
