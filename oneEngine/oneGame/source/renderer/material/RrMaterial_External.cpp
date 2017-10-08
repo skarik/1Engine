@@ -261,7 +261,7 @@ void RrMaterial::loadFromFile ( const char* n_materialfile )
 					{
 						deferredinfo.back().m_transparency_mode = passinfo[0].m_transparency_mode;
 						//deferredinfo.back().m_blend_mode = passinfo[0].m_blend_mode;
-						deferredinfo.back().m_blend_mode = renderer::BM_NONE;
+						//deferredinfo.back().m_blend_mode = renderer::BM_NONE;
 						//deferredinfo.back().m_lighting_mode = passinfo[0].m_lighting_mode;
 					}
 					t_hasDeferredPass = true;
@@ -284,7 +284,7 @@ void RrMaterial::loadFromFile ( const char* n_materialfile )
 				deferredinfo.push_back( RrPassDeferred() );
 				deferredinfo[0].m_transparency_mode = passinfo[0].m_transparency_mode;
 				//deferredinfo[0].m_blend_mode = passinfo[0].m_blend_mode;
-				deferredinfo[0].m_blend_mode = renderer::BM_NONE;
+				//deferredinfo[0].m_blend_mode = renderer::BM_NONE;
 				//deferredinfo[0].m_lighting_mode = passinfo[0].m_lighting_mode;
 				//deferredinfo[0].m_diffuse_method = passinfo[0].m;
 			}

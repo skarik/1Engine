@@ -808,7 +808,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
 		}
 
-		// Check for main layer switch
+		// Check for main layer switch (rendering is ending, or new layer)
 		if ( renderRQ_next.obj == NULL || renderRQ_current.renderType != renderRQ_next.renderType )
 		{
 			// Clear data between layers

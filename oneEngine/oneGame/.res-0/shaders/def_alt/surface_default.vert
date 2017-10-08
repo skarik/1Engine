@@ -63,8 +63,9 @@ layout(std140) uniform sys_cbuffer_PerObjectExt
 {
     vec4    sys_DiffuseColor;
     vec4    sys_SpecularColor;
-    vec3    sys_EmissiveColor;
-    float   sys_AlphaCutoff;
+    // Emissive RGB - Emissive color.
+    // Emissive A - Alpha cutoff.
+    vec4    sys_EmissiveColor;
     vec4    sys_LightingOverrides;
 
     vec4    sys_TextureScale;

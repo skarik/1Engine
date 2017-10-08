@@ -17,6 +17,7 @@ namespace renderer
 		Color	clearColor;
 		Color	ambientColor;
 		int		maxLights;
+		// VSync
 		short	swapIntervals;
 		Real	fogStart;
 		Real	fogEnd;

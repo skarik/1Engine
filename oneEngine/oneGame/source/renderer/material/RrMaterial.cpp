@@ -659,6 +659,7 @@ void RrMaterial::bindPassForward ( uchar pass )
 		glBlendFunc( GL_ONE, GL_ZERO );
 		break;
 	}
+
 	// Set transparency mode
 	if ( passinfo[pass].b_depthtest )
 	{
@@ -669,32 +670,23 @@ void RrMaterial::bindPassForward ( uchar pass )
 	{
 		glDisable( GL_DEPTH_TEST );
 	}
-	switch ( passinfo[pass].m_transparency_mode )
+	if ( !passinfo[pass].b_depthmask )
 	{
-	case renderer::ALPHAMODE_NONE:
-		if ( passinfo[pass].b_depthmask ) {
-			glDepthMask( GL_TRUE );
-		}
-		else {
-			glDepthMask( GL_FALSE );
-		}
-		//glDisable(GL_ALPHA_TEST);
-		break;
-	case renderer::ALPHAMODE_ALPHATEST:
-		if ( passinfo[pass].b_depthmask ) {
-			glDepthMask( GL_TRUE );
-		}
-		else {
-			glDepthMask( GL_FALSE );
-		}
-		//glAlphaFunc(GL_GREATER, passinfo[pass].f_alphatest_value);
-		//glEnable(GL_ALPHA_TEST);
-		break;
-	case renderer::ALPHAMODE_TRANSLUCENT:
 		glDepthMask( GL_FALSE );
-		//glDisable(GL_ALPHA_TEST);
-		break;
 	}
+	else
+	{
+		if (passinfo[pass].m_transparency_mode == renderer::ALPHAMODE_NONE ||
+			passinfo[pass].m_transparency_mode == renderer::ALPHAMODE_ALPHATEST)
+		{
+			glDepthMask( GL_TRUE );
+		}
+		else
+		{
+			glDepthMask( GL_FALSE );
+		}
+	}
+
 	// Bind shader
 	TimeProfiler.BeginTimeProfile( "rs_mat_bindshader" );
 	if ( passinfo[pass].shader )
@@ -768,23 +760,19 @@ void RrMaterial::bindPassDeferred ( uchar pass )
 	//m_currentShaderState = RENDER_MODE_DEFERRED;
 
 	// Set face mode
-	switch ( passinfo[pass].m_face_mode )
+	if (0) // TODO: Fix this.
 	{
-	case renderer::FM_FRONT:
 		glEnable( GL_CULL_FACE );
 		glCullFace( GL_BACK );
-		break;
-	case renderer::FM_BACK:
-		glEnable( GL_CULL_FACE );
-		glCullFace( GL_FRONT );
-		break;
-	case renderer::FM_FRONTANDBACK:
-		glDisable( GL_CULL_FACE );
-		break;
 	}
+	else
+	{
+		glDisable( GL_CULL_FACE );
+	}
+
 	// Set blend mode
-	glEnable( GL_BLEND );
-	switch ( passinfo[pass].m_blend_mode )
+	/*glEnable( GL_BLEND );
+	switch ( deferredinfo[pass].m_blend_mode )
 	{
 	case renderer::BM_NONE:
 		//glBlendFunc( GL_ONE, GL_ZERO );
@@ -804,35 +792,27 @@ void RrMaterial::bindPassDeferred ( uchar pass )
 	case renderer::BM_INV_MULTIPLY:
 		glBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_COLOR );
 		break;
-	}
+	}*/
+
 	// Set transparency mode
 	glEnable( GL_DEPTH_TEST );
 	glDepthFunc( GL_LEQUAL );
-	switch ( passinfo[pass].m_transparency_mode )
+	switch ( deferredinfo[pass].m_transparency_mode )
 	{
 	case renderer::ALPHAMODE_NONE:
+		glDisable( GL_BLEND );
 		glBlendFunc( GL_ONE, GL_ZERO );
-		if ( passinfo[pass].b_depthmask ) {
-			glDepthMask( GL_TRUE );
-		}
-		else {
-			glDepthMask( GL_FALSE );
-		}
-		//glDisable(GL_ALPHA_TEST);
+		glDepthMask( GL_TRUE );
 		break;
 	case renderer::ALPHAMODE_ALPHATEST:
+		glDisable( GL_BLEND );
 		glBlendFunc( GL_ONE, GL_ZERO );
-		if ( passinfo[pass].b_depthmask ) {
-			glDepthMask( GL_TRUE );
-		}
-		else {
-			glDepthMask( GL_FALSE );
-		}
-		//glDisable(GL_ALPHA_TEST);
+		glDepthMask( GL_TRUE );
 		break;
 	case renderer::ALPHAMODE_TRANSLUCENT:
+		glEnable( GL_BLEND );
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		glDepthMask( GL_FALSE );
-		//glDisable(GL_ALPHA_TEST);
 		break;
 	}
 

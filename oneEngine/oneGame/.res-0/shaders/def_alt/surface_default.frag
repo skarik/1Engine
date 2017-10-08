@@ -28,8 +28,9 @@ layout(std140) uniform sys_cbuffer_PerObjectExt
 {
     vec4    sys_DiffuseColor;
     vec4    sys_SpecularColor;
-    vec3    sys_EmissiveColor;
-    float   sys_AlphaCutoff;
+    // Emissive RGB - Emissive color.
+    // Emissive A - Alpha cutoff.
+    vec4    sys_EmissiveColor;
     vec4    sys_LightingOverrides;
 
     vec4    sys_TextureScale;
@@ -144,7 +145,7 @@ vec4 mainNormals ( vec4 colorNormals, vec4 colorSurface )
 void main ( void )
 {
     vec4 colorDiffuse = texture( textureSampler0, v2f_texcoord.xy );
-    if ( colorDiffuse.a < sys_AlphaCutoff ) discard;
+    if ( colorDiffuse.a < sys_EmissiveColor.a ) discard;
     vec4 colorSurface = texture( textureSampler2, v2f_texcoord.xy );
     if ( colorSurface.a < 0.5 ) discard;
     vec4 colorNormals = texture( textureSampler1, v2f_texcoord.xy );

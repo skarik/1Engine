@@ -38,6 +38,10 @@ renderer::Background2D::Background2D ( void )
 	// Update material to disable depth write
 	m_material->passinfo[0].b_depthmask = false;
 	m_material->passinfo[0].b_depthtest = true;
+
+	// Remove deferred pass from the shader so it only renders in forward mode
+	//m_material->passinfo.clear();
+	m_material->deferredinfo.clear();
 }
 renderer::Background2D::~Background2D ( void )
 {
@@ -45,7 +49,7 @@ renderer::Background2D::~Background2D ( void )
 	delete [] m_modeldata.vertices;
 }
 
-bool renderer::Background2D::Render ( const char pass )
+bool renderer::Background2D::PreRender ( void )
 {
 	// Set the position to follow the camera
 	transform.world.position = CCamera::activeCamera->transform.position;
@@ -54,6 +58,10 @@ bool renderer::Background2D::Render ( const char pass )
 	transform.world.scale.x = CCamera::activeCamera->ortho_size.x;
 	transform.world.scale.y = CCamera::activeCamera->ortho_size.y;
 
+	return CRenderable2D::PreRender();
+}
+bool renderer::Background2D::Render ( const char pass )
+{
 	// Render normally otherwise
 	return CRenderable2D::Render(pass);
 }

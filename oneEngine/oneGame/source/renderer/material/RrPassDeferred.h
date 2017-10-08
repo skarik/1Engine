@@ -25,7 +25,7 @@ public:
 	bool		m_dirty;
 
 	renderer::eAlphaMode		m_transparency_mode;
-	renderer::eDrawBlendMode	m_blend_mode;
+	//renderer::eDrawBlendMode	m_blend_mode;
 	//renderer::eDrawLightingMode	m_lighting_mode;
 
 	//renderer::Deferred::eDiffuseMethod	m_diffuse_method;

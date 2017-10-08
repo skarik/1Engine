@@ -168,6 +168,14 @@ private:
 	uchar		m_currentPass;
 	bool		m_currentPassForward;
 
+	// Command buffer buildstate:
+	struct rrCmdBufferBuildstate
+	{
+		uint	cmdbuffer_index : 4;
+		bool	track_state : 1;
+	};
+	rrCmdBufferBuildstate	m_buildState;
+
 	// Textures (samplers)
 	CTexture*	m_highlevel_storage [12];
 	glHandle	m_samplers [12];

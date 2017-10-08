@@ -422,6 +422,7 @@ void CRenderState::CreateTargetBuffers ( void )
 		internal_chain_list.push_back(chain);
 		internal_chain_list.push_back(chain);
 		internal_chain_list.push_back(chain);
+		internal_chain_list.push_back(chain);
 		// Set current buffer to first
 		internal_chain_current = &internal_chain_list[0];
 	}
@@ -509,8 +510,8 @@ bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain 
 			RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat), false
 		);
 
-		RrGpuTexture		depthTexture = SceneRenderer->GetDepthTexture();
-		RrGpuTexture		stencilTexture = SceneRenderer->GetStencilTexture();
+		RrGpuTexture		depthTexture = RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat);
+		RrGpuTexture		stencilTexture = RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat);
 
 		// TODO: Make configurable
 		RrGpuTexture textureRequests [4];
