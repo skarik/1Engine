@@ -24,7 +24,7 @@ void glMainSystem::UpdateBuffer ( void )
 Color glMainSystem::GetPixel ( int x, int y )
 {
 	Color result;
-	glReadPixels( x,y, 1,1, GL_RGBA, GL_FLOAT, result.start_point() );
+	glReadPixels( x,y, 1,1, GL_RGBA, GL_FLOAT, result.raw );
 	return result;
 }
 

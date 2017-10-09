@@ -51,6 +51,17 @@ public:
 	// The "line" is actually a very thin quad, with a width of what is calculated to be one pixel.
 	RENDER_API void			addLine ( const Vector2f& point1, const Vector2f& point2, const Color& color );
 
+	//	addCircle (center, radius, color, divs, outline) : Adds a circle to draw.
+	// "Wireframe" is done via as many thin quads as divs, inset by what is calculated to be one pixel.
+	// The argument "divs" refers to how many unique angles will be used to build the circle.
+	// A 20-div circle adds 20 triangles at 18 degree intervals (360 degrees divided by 20).
+	RENDER_API void			addCircle ( const Vector2f& center, const Real radius, const Color& color, int divs, bool outline );
+
+	//	addQuad (vertices [4]) : Adds a quad to draw.
+	// "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel. It may not be correct.
+	// Vertex order is done in the "Z" mesh order - similar to trianglestrip.
+	RENDER_API void			addQuad ( const arModelVertex* vertices, bool outline );
+
 protected:
 	Vector2d	m_multiplier;
 	Vector2d	m_offset;

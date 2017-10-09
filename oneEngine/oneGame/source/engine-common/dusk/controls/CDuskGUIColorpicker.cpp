@@ -316,9 +316,9 @@ void CDuskGUIColorpicker::Render ( void )
 		//GL.beginOrtho( 0,0, 1,1, -45,45 );
 		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 		//GL.beginOrtho();
-		GLd.DrawSet2DScaleMode();
+		//GLd.DrawSet2DScaleMode();
 
-		activeGUI->matDefault->bindPass(0);
+		//activeGUI->matDefault->bindPass(0);
 		//activeGUI->matDefault->setShaderConstants( activeGUI );
 
 		{
@@ -328,12 +328,18 @@ void CDuskGUIColorpicker::Render ( void )
 			dpos.x = (rect.pos.x+(rect.size.x*0.5f))*Screen::Info.width;
 			dpos.y = (rect.pos.y+(rect.size.y*0.5f))*Screen::Info.height;
 			dl = std::min<Real>( (rect.size.x*0.4f*Screen::Info.width), (rect.size.y*0.4f*Screen::Info.height) );
+			Vector2d popos1, popos2;
 			Vector2d dopos1, dopos2;
-			Color dcolor1, dcolor2;
+			Color pcolor1;
+			Color dcolor1;
 			int modColor;
-			auto lPrimWheel = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
+			//auto lPrimWheel = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 			for ( int i = 0; i <= 360; i += 5 )
 			{
+				popos1 = dopos1;
+				popos2 = dopos2;
+				pcolor1 = dcolor1;
+
 				dopos1.x = dpos.x + (Real)( cos( degtorad( i ) ) * dl );
 				dopos1.y = dpos.y + (Real)( sin( degtorad( i ) ) * dl );
 
@@ -355,11 +361,28 @@ void CDuskGUIColorpicker::Render ( void )
 					dcolor1 = Color( 1.0f, 0.0f, 1.0f - modColor/60.0f );
 				dcolor1.alpha = 1.0f;
 				
-				GLd.P_PushColor( dcolor1 );
-				GLd.P_AddVertex( dopos1.x,dopos1.y );
-				GLd.P_AddVertex( dopos2.x,dopos2.y );
+				//GLd.P_PushColor( dcolor1 );
+				//GLd.P_AddVertex( dopos1.x,dopos1.y );
+				//GLd.P_AddVertex( dopos2.x,dopos2.y );
+
+				if (i == 0) continue;
+
+				arModelVertex vertices [4];
+				memset(vertices, 0, sizeof(arModelVertex) * 4);
+
+				vertices[0].position = popos1;
+				vertices[1].position = popos2;
+				vertices[2].position = dopos1;
+				vertices[3].position = dopos2;
+
+				vertices[0].color = Vector4f(pcolor1.raw);
+				vertices[1].color = Vector4f(pcolor1.raw);
+				vertices[2].color = Vector4f(dcolor1.raw);
+				vertices[3].color = Vector4f(dcolor1.raw);
+
+				getMeshBuilder()->addQuad( vertices, false );
 			}
-			GLd.EndPrimitive(lPrimWheel);
+			//GLd.EndPrimitive(lPrimWheel);
 
 			// Draw the position of the current hue
 			auto lPrimPos = GLd.BeginPrimitive( GL_LINE_STRIP, activeGUI->matDefault );
