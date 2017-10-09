@@ -198,6 +198,8 @@ namespace renderer
 			Matrix4x4	modelViewProjection;
 			Matrix4x4	modelViewProjectionInverse;
 		};
+		static_assert(sizeof(rrPerObjectMatrices) == 256, "Alignment of rrPerObjectSurface incorrect for the GPU.");
+
 		LAYOUT_PACK_TIGHTLY
 		struct rrPerObjectSurface
 		{
@@ -206,12 +208,14 @@ namespace renderer
 			Vector3f	emissiveColor;
 			float		alphaCutoff;
 			Vector3f	lightingOverrides;
-			int : 32;
+			float		lightingAlpha;
 			Vector4f	textureScale;
 			Vector4f	textureOffset;
+
+			Vector4f	rr_padding [10];
 		};
 		LAYOUT_PACK_END
-		static_assert(sizeof(rrPerObjectSurface) == sizeof(Vector4f)*6, "Alignment of rrPerObjectSurface incorrect for the GPU.");
+		static_assert(sizeof(rrPerObjectSurface) == 256, "Alignment of rrPerObjectSurface incorrect for the GPU.");
 
 		struct rrPerObjectSamplers
 		{
@@ -367,7 +371,7 @@ protected:
 	bool	primed;
 
 	// Uniform map
-	std::unordered_map<arstring<128>,int> mUniformMap;
+	//std::unordered_map<arstring<128>,int> mUniformMap;
 
 protected:
 	// This loads the shader from the file and into the sRawShader string

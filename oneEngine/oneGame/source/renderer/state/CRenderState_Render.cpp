@@ -611,6 +611,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 		// Grab the next two render objects
 		if ( i < 0 )
 		{
+			// First object can never be forward - so we make a fake deferred object:
 			renderRQ_current.obj = NULL;
 			renderRQ_current.renderType = Background;
 			renderRQ_current.forward = false;
@@ -657,16 +658,13 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 		// Check for layer state changes:
 		
 		// Check if should perform deferred pass on everything that was currently rendered:
-		if ( (i >= 0) && (rendered) && ( renderRQ_current.renderType == World ) && ( 
-			//( renderRQ_next.obj == NULL && renderRQ_current.transparent == false ) // Render out if this will be the last solid object period
-			//||( renderRQ_current.transparent == false && renderRQ_next.obj && renderRQ_next.transparent == true ) // Render out if this will be the last solid object on this list
-			//||( renderRQ_next.obj && renderRQ_current.screenshader == false && renderRQ_next.screenshader == true ) // Render out if the next object is a screenshader
-			( renderRQ_next.obj == NULL ) // Render out if this will be the last deferred object period
-			||( renderRQ_next.obj && renderRQ_current.forward == false && renderRQ_next.forward == true ) // Render out if this is last deferred object on this list
-			||( renderRQ_next.obj && renderRQ_current.forward == false && renderRQ_current.renderType != renderRQ_next.renderType ) // Render out if this will be the last deferred object on this layer
+		if ( ( i >= 0 ) && ( rendered ) && ( renderRQ_current.renderType == World ) && ( 
+			// Render out if this will be the last deferred object period:
+			  ( renderRQ_next.obj == NULL ) ||
+			// Render out if this is last deferred object on this list or layer:
+			  ( !renderRQ_current.forward && (renderRQ_next.forward || renderRQ_current.renderType != renderRQ_next.renderType) ) 
 			))
 		{
-				
 			TimeProfiler.BeginTimeProfile( "rs_render_lightpush" );
 
 			// Bind the MRT's temporary results area in order to render the deferred result to it
@@ -686,7 +684,6 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				break;
 			case renderer::SP_MODE_2DPALETTE:
 				targetPass = Lighting2DPass;
-				//currentCamera->GetRenderTexture()->SetFilter( SamplingPoint );
 				break;
 			}
 
@@ -700,24 +697,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				targetPass->setSampler( TEX_SLOT4, internal_chain_current->buffer_deferred_mrt->GetDepthSampler(), GL.Enum(Texture2D) );
 				//targetPass->prepareShaderConstants();
 				targetPass->bindPassForward(0);
-				// Pass in all the lighting information
-				{
-					//RrShader* shader = targetPass->getUsingShader();
-					//// Light number
-					////int uniformLocation = shader->get_uniform_location( "sys_LightNumber" );
-					////if ( uniformLocation >= 0 )
-					////{
-					//	glUniform1i( renderer::UNI_LIGHTING_COUNT, std::min<int>( RrMaterial::m_lightCount, (renderRQ_current.obj->renderType==World)?64:3 ) );
-					////}
-					//// Light data
-					////int uniformLocation = shader->get_uniform_block_location( "def_LightingInfo" );
-					//int uniformLocation = shader->getUniformBlockLocation( "def_LightingInfo" ); //TODO
-					//if ( uniformLocation >= 0 )
-					//{
-					//	glUniformBlockBinding( shader->get_program(), uniformLocation, 5 );
-					//	glBindBufferRange( GL_UNIFORM_BUFFER, 5, RrMaterial::m_ubo_deflightinginfo, NIL, sizeof(Matrix4x4)*4 );
-					//}
-				}
+
 				// Disable alpha blending
 				glDisable( GL_BLEND );
 				glBlendFunc( GL_ONE, GL_ZERO );
@@ -768,26 +748,23 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					renderRQ_next.obj = NULL;
 				}
 				// Render the object
-				if ( renderRQ_current.obj->visible && (
-					( (RrMaterial::special_mode == renderer::SP_MODE_NORMAL || RrMaterial::special_mode == renderer::SP_MODE_SHAFT || RrMaterial::special_mode == renderer::SP_MODE_2DPALETTE) && renderRQ_current.forward )
+				if ( renderRQ_current.obj->visible && renderRQ_current.forward )
+					/*( (RrMaterial::special_mode == renderer::SP_MODE_NORMAL || RrMaterial::special_mode == renderer::SP_MODE_SHAFT || RrMaterial::special_mode == renderer::SP_MODE_2DPALETTE) && renderRQ_current.forward )
 					||( RrMaterial::special_mode == renderer::SP_MODE_ECHO && renderRQ_current.forward  && renderRQ_current.renderType == V2D ) // (unless echopass, then only do v2d)
-					))
+					))*/
 				{
-					//GL.prepareDraw();
 					if ( !renderRQ_current.obj->Render( renderRQ_current.pass ) ) {
 						throw std::exception();
 					}
 					GL.CheckError();
-					//GL.cleanupDraw();
 				}
 				else if ( !renderRQ_current.forward ) 
 				{	// Shouldn't be rendering a deferred object here.
 					throw std::exception();
 				}
 				// Check the next object to see if should keep rendering
-				if (  ( renderRQ_next.obj == NULL ) // No next object
-					||( !renderRQ_next.forward ) // Next object is not forward
-					)
+				if ( renderRQ_next.obj == NULL || // No next object
+					 !renderRQ_next.forward ) // Next object is not forward
 				{	// Stop rendering forward mode
 					renderForward = false;
 				}

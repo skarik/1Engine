@@ -422,7 +422,6 @@ void CRenderState::CreateTargetBuffers ( void )
 		internal_chain_list.push_back(chain);
 		internal_chain_list.push_back(chain);
 		internal_chain_list.push_back(chain);
-		internal_chain_list.push_back(chain);
 		// Set current buffer to first
 		internal_chain_current = &internal_chain_list[0];
 	}

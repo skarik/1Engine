@@ -214,7 +214,7 @@ void RrMaterial::shader_set_constantbuffers( RrShader* shader, uchar pass, bool 
 		glBindBufferRange(GL_UNIFORM_BUFFER,
 			renderer::CBUFFER_PER_OBJECT_EXTENDED,
 			m_cbufPerObject.getGlIndex(),
-			(GLintptr)sizeof(renderer::cbuffer::rrPerObjectMatrices) + sizeof(renderer::cbuffer::rrPerObjectSurface)*surface_offset,
+			sizeof(renderer::cbuffer::rrPerObjectMatrices) + sizeof(renderer::cbuffer::rrPerObjectSurface)*surface_offset,
 			sizeof(renderer::cbuffer::rrPerObjectSurface) );
 
 		// Now that buffers are set and pointed, prime it.

@@ -74,12 +74,12 @@ RrMaterial::~RrMaterial ( void ) throw(...)
 }
 
 // UBO locations
-const glHandle fogLocation = 0;
-const glHandle lightLocation = 1;
-const glHandle skinningMajorLocation = 2;
-const glHandle skinningMinorLocation = 3;
-const glHandle reflectLocation = 4;
-const glHandle pureShadowMatrices = 5;
+//const glHandle fogLocation = 0;
+//const glHandle lightLocation = 1;
+const glHandle skinningMajorLocation = 6;
+const glHandle skinningMinorLocation = 7;
+//const glHandle reflectLocation = 4;
+//const glHandle pureShadowMatrices = 5;
 
 // Duplicate material (starting with 1 reference)
 RrMaterial*	RrMaterial::copy ( void )

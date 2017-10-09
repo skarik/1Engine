@@ -130,7 +130,7 @@ int RrShader::getUniformBlockLocation ( const char* name )
 {
 	if ( !bIsReference )
 	{
-		arstring<128> cname ( name );
+/*		arstring<128> cname ( name );
 		unordered_map<arstring<128>,int>::iterator result = mUniformMap.find( cname );
 		if ( result != mUniformMap.end() )
 		{
@@ -147,7 +147,10 @@ int RrShader::getUniformBlockLocation ( const char* name )
 #endif
 			}
 			return uniformLocation;
-		}
+		}*/
+
+		int uniformLocation = glGetUniformBlockIndex( iProgramID, name );
+		return uniformLocation;
 	}
 	else
 	{
@@ -277,7 +280,7 @@ void RrShader::GrabReference ( void )
 // Recompile
 bool RrShader::recompile ( void )
 {
-	mUniformMap.clear();
+	//mUniformMap.clear();
 
 	if ( bIsCompiled )
 	{

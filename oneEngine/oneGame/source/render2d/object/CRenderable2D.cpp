@@ -32,7 +32,7 @@ CRenderable2D::CRenderable2D ( void )
 	m_material->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
 
 	m_material->passinfo.push_back( RrPassForward() );
-	m_material->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
+	m_material->passinfo[0].shader = new RrShader( "shaders/fws/fullbright.glsl" );
 	m_material->passinfo[0].m_lighting_mode = renderer::LI_NONE;
 	m_material->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
 	m_material->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
@@ -359,6 +359,9 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, Textu
 		// Set the surface map up as well
 		if (loaded_surface) m_material->setTexture(TEX_SURFACE, loaded_surface);
 	}
+
+	// Remove forward pass to save memory
+	m_material->passinfo.clear();
 }
 
 //		GetSpriteInfo ()
