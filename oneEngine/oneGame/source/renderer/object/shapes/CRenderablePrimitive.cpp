@@ -1,78 +1,95 @@
-
-
 #include "CRenderablePrimitive.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
-// Constructor
-CRenderablePrimitive::CRenderablePrimitive ( void ) : CRenderableObject()
+CRenderablePrimitive::CRenderablePrimitive ( void )
+	: CRenderableObject()
 {
-	vertexData = NULL;
-	vertexNum = 0;
+	// Start with empty buffers
+	m_buffer_verts = NIL;
+	m_buffer_tris = NIL;
+
+	// Start off with empty model data
+	m_modeldata.triangleNum = 0;
+	m_modeldata.triangles = NULL;
+	m_modeldata.vertexNum = 0;
+	m_modeldata.vertices = NULL;
 }
 
-// Destructor
 CRenderablePrimitive::~CRenderablePrimitive ( void )
-{
-	if ( vertexData != NULL )
-		delete [] vertexData;
-	vertexData = NULL;
-	vertexNum = 0;
+{ GL_ACCESS
+
+	// Still have to release buffers
+	if ( m_buffer_verts != NIL ) {
+		GL.FreeBuffer( &m_buffer_verts );
+		m_buffer_verts = NIL;
+	}
+	if ( m_buffer_tris != NIL ) {
+		GL.FreeBuffer( &m_buffer_tris );
+		m_buffer_tris = NIL;
+	}
 }
 
+//		PushModelData()
+// Takes the information inside of m_modeldata and pushes it to the GPU so that it may be rendered.
+void CRenderablePrimitive::PushModeldata ( void )
+{ GL_ACCESS
+	GL.BindVertexArray( 0 );
+
+	// Create new buffers
+	if ( m_buffer_verts == NIL )
+		GL.CreateBuffer( &m_buffer_verts );
+	if ( m_buffer_tris == NIL )
+		GL.CreateBuffer( &m_buffer_tris );
+	//bShaderSetup = false; // With making new buffers, shader is now not ready
+
+	// Bind to some buffer objects
+	GL.BindBuffer( GL_ARRAY_BUFFER,			m_buffer_verts ); // for vertex coordinates
+	GL.BindBuffer( GL_ELEMENT_ARRAY_BUFFER,	m_buffer_tris ); // for face vertex indexes
+
+	// Copy data to the buffer
+	GL.UploadBuffer( GL_ARRAY_BUFFER,
+		sizeof(arModelVertex) * (m_modeldata.vertexNum),
+		m_modeldata.vertices,
+		GL_STATIC_DRAW );
+	GL.UploadBuffer( GL_ELEMENT_ARRAY_BUFFER,
+		sizeof(arModelTriangle) * (m_modeldata.triangleNum),
+		m_modeldata.triangles,
+		GL_STATIC_DRAW );
+
+	// bind with 0, so, switch back to normal pointer operation
+	GL.UnbindBuffer( GL_ARRAY_BUFFER );
+	GL.UnbindBuffer( GL_ELEMENT_ARRAY_BUFFER );
+}
+
+//		PreRender()
+// Push the uniform properties
 bool CRenderablePrimitive::PreRender ( void )
 {
 	m_material->prepareShaderConstants(transform.world);
 	return true;
 }
 
-
-// Render object
+//		Render()
+// Render the model using the 2D engine's style
 bool CRenderablePrimitive::Render ( const char pass )
-{
-	GL_ACCESS GLd_ACCESS
-	//GL.Transform( &transform.world );
+{ GL_ACCESS
+	// Do not render if no buffer to render with
+	if ( m_buffer_verts == 0 || m_buffer_tris == 0 )
+	{
+		return true;
+	}
 
+	// For now, we will render the same way as the 3d meshes render
+	//GL.Transform( &(transform.world) );
+	m_material->m_bufferSkeletonSize = 0;
+	m_material->m_bufferMatricesSkinning = 0;
 	m_material->bindPass(pass);
-	//m_material->setShaderConstants(this);
+	//parent->SendShaderUniforms(this);
+	BindVAO( pass, m_buffer_verts, m_buffer_tris );
+	GL.DrawElements( GL_TRIANGLES, m_modeldata.triangleNum*3, GL_UNSIGNED_INT, 0 );
 
-	// Draw the object
-	unsigned int v;
-	auto lPrim = GLd.BeginPrimitive( GL_TRIANGLES, m_material );
-	GLd.P_PushColor( Color(1,1,1,1) );
-	for ( v = 0; v < vertexNum; v += 1 )
-	{
-		GLd.P_PushTexcoord( vertexData[v].u, vertexData[v].v );
-		GLd.P_PushNormal( vertexData[v].nx, vertexData[v].ny, vertexData[v].nz );
-		GLd.P_AddVertex( vertexData[v].x, vertexData[v].y, vertexData[v].z );
-	}
-	GLd.EndPrimitive(lPrim);
-
+	//GL.endOrtho();
+	// Success!
 	return true;
-}
-/*
-// Set the material, clearing the list of materials
-void CRenderablePrimitive::SetMaterial ( RrMaterial* pNewMaterial )
-{
-	ClearMaterialList();
-	vMaterials.push_back( pNewMaterial );
-}
-
-// Clear up the material list.
-void CRenderablePrimitive::ClearMaterialList ( void )
-{
-	for ( unsigned int i = 0; i < vMaterials.size(); i += 1 )
-	{
-		// If the material has no external owner, free it.
-		//if ( vMaterials[i]->canFree() )
-		//	delete vMaterials[i];
-	}
-	vMaterials.clear();
-}
-*/
-// Set vertices
-void CRenderablePrimitive::SetVertices ( arModelVertex* newData, unsigned int newSize )
-{
-	vertexData	= newData;
-	vertexNum	= newSize;
 }

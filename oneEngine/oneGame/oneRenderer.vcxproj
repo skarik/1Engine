@@ -88,7 +88,12 @@
     <ClCompile Include="source\renderer\object\shapes\CIsosphere.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CRenderablePrimitive.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CRenderPlane.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CRotBoxRPrimitive.cpp" />
+    <ClCompile Include="source\renderer\object\shapes\CRotBoxRPrimitive.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\object\sprite\CSprite.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
@@ -201,7 +206,12 @@
     <ClInclude Include="source\renderer\object\shapes\CIsosphere.h" />
     <ClInclude Include="source\renderer\object\shapes\CRenderablePrimitive.h" />
     <ClInclude Include="source\renderer\object\shapes\CRenderPlane.h" />
-    <ClInclude Include="source\renderer\object\shapes\CRotBoxRPrimitive.h" />
+    <ClInclude Include="source\renderer\object\shapes\CRotBoxRPrimitive.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\object\sprite\CSprite.unused.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>

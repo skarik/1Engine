@@ -25,12 +25,15 @@ namespace core
 		public:
 			Cubic ( void );
 			Cubic ( Vector3d const& vPosition, Vector3d const& vSize );
-			//CCubic ( Vector3d const& vMinPos, Vector3d const& vMaxPos );
+
+			//		FromPosition ( pos1, pos2 )
+			// Creates a new Cubic from the input positions
 			static Cubic FromPosition ( Vector3d vMinPos, Vector3d vMaxPos );
 
+			//		Realign ()
 			// Looks at the position and size, and moves their values around so that
 			// the position refers to the bottom back right corner of the Cubic.
-			void Realign( void );
+			void Realign ( void );
 
 			Vector3d center ( void ) const;
 		public:

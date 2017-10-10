@@ -79,6 +79,25 @@ public:
 		Expand( rect.pos + rect.size );
 	}
 
+public:
+
+	//		FromPosition ( pos1, pos2 )
+	// Creates a Rect from the given positions
+	FORCE_INLINE static Rect FromPosition ( Vector2d min_pos, Vector2d max_pos )
+	{
+		if ( min_pos.x > max_pos.x ) {
+			Real temp = min_pos.x;
+			min_pos.x  = max_pos.x;
+			max_pos.x  = temp;
+		}
+		if ( min_pos.y > max_pos.y ) {
+			Real temp = min_pos.y;
+			min_pos.y  = max_pos.y;
+			max_pos.y  = temp;
+		}
+		return Rect( min_pos, (max_pos-min_pos) );
+	}
+
 };
 
 #endif//CORE_MATH_RECT_H_

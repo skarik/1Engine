@@ -21,8 +21,8 @@ AreaRenderer::AreaRenderer ( void )
 	defaultMat->passinfo[0].m_lighting_mode = renderer::LI_NONE;
 	defaultMat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
 	defaultMat->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-	defaultMat->removeReference();
 	SetMaterial( defaultMat );
+	defaultMat->removeReference();
 }
 
 AreaRenderer::~AreaRenderer ( void )

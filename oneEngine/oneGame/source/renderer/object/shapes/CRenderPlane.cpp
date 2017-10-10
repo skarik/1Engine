@@ -1,78 +1,65 @@
-
-
 #include "CRenderPlane.h"
 
-
-// == Constructor + Destructor ==
 CRenderPlane::CRenderPlane ( Real xsize, Real ysize )
 	: CRenderablePrimitive()
 {
-	width = xsize;
-	height = ysize;
-
-	vertexData = new arModelVertex [6];
-	vertexNum = 6;
-
-	GenerateShape( width/2.0f, height/2.0f );
+	setSize(xsize, ysize);
 }
 
 CRenderPlane::~CRenderPlane ( void )
 {
-	// Nothing, as vertexData is owned by CRenderablePrimitive.
+	;
 }
 
-void CRenderPlane::SetSize ( Real xsize, Real ysize )
+void CRenderPlane::setSize ( Real xsize, Real ysize )
 {
-	width = xsize;
-	height = ysize;
+	buildPlane( xsize/2.0F, ysize/2.0F );
+	PushModeldata();
 
-	GenerateShape( width/2.0f, height/2.0f );
+	// Remove unneeded data:
+	delete[] m_modeldata.vertices;
+	delete[] m_modeldata.triangles;
+
+	m_modeldata.vertices = NULL;
+	m_modeldata.triangles = NULL;
 }
 
-void CRenderPlane::GenerateShape ( Real xsize, Real ysize )
+void CRenderPlane::buildPlane ( Real hxsize, Real hysize )
 {
-	for ( unsigned int i = 0; i < 6; i += 1 )
+	// Initialize data if it doesn't exist.
+	if (m_modeldata.vertices == NULL)
 	{
-		vertexData[i].nx = 0;
-		vertexData[i].ny = 0;
-		vertexData[i].nz = -1;
+		m_modeldata.vertexNum = 4;	// TODO: Put this data on the stack instead. It's not that complicated.
+		m_modeldata.triangleNum = 2;
+
+		m_modeldata.vertices = new arModelVertex [m_modeldata.vertexNum];
+		m_modeldata.triangles = new arModelTriangle [2];
+
+		memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * m_modeldata.vertexNum);
+		for ( uint i = 0; i < m_modeldata.vertexNum; i += 1 )
+		{
+			m_modeldata.vertices[i].normal = Vector3f(0, 0, -1.0F);
+		}
+
+		// Set UVs:
+		m_modeldata.vertices[0].texcoord0 = Vector2f(0,0);
+		m_modeldata.vertices[1].texcoord0 = Vector2f(1,0);
+		m_modeldata.vertices[2].texcoord0 = Vector2f(0,1);
+		m_modeldata.vertices[3].texcoord0 = Vector2f(1,1);
+
+		// Set triangles:
+		m_modeldata.triangles[0].vert[0] = 0;
+		m_modeldata.triangles[0].vert[1] = 1;
+		m_modeldata.triangles[0].vert[2] = 2;
+
+		m_modeldata.triangles[1].vert[0] = 2;
+		m_modeldata.triangles[1].vert[1] = 1;
+		m_modeldata.triangles[1].vert[2] = 3;
 	}
 
-	// tri 1
-	vertexData[0].x = -xsize;
-	vertexData[0].y = -ysize;
-	vertexData[0].z = 0;
-	vertexData[0].u = 0;
-	vertexData[0].v = 0;
-
-	vertexData[1].x = xsize;
-	vertexData[1].y = -ysize;
-	vertexData[1].z = 0;
-	vertexData[1].u = 1;
-	vertexData[1].v = 0;
-
-	vertexData[2].x = -xsize;
-	vertexData[2].y = ysize;
-	vertexData[2].z = 0;
-	vertexData[2].u = 0;
-	vertexData[2].v = 1;
-
-	// tri 2
-	vertexData[4].x = xsize;
-	vertexData[4].y = -ysize;
-	vertexData[4].z = 0;
-	vertexData[4].u = 1;
-	vertexData[4].v = 0;
-
-	vertexData[3].x = -xsize;
-	vertexData[3].y = ysize;
-	vertexData[3].z = 0;
-	vertexData[3].u = 0;
-	vertexData[3].v = 1;
-
-	vertexData[5].x = xsize;
-	vertexData[5].y = ysize;
-	vertexData[5].z = 0;
-	vertexData[5].u = 1;
-	vertexData[5].v = 1;
+	// Set new positions
+	m_modeldata.vertices[0].position = Vector2f(-hxsize, -hysize);
+	m_modeldata.vertices[1].position = Vector2f( hxsize, -hysize);
+	m_modeldata.vertices[2].position = Vector2f(-hxsize,  hysize);
+	m_modeldata.vertices[3].position = Vector2f( hxsize,  hysize);
 }

@@ -6,161 +6,122 @@
 
 // Constructor
 //  sets values to unit cube, generate vertices
-CCubeRenderPrim::CCubeRenderablePrimitive ( void )
+CPrimitiveCube::CPrimitiveCube ( void )
 	: CRenderablePrimitive ()
 {
-	fWidth = 1.0;
-	fDepth = 1.0;
-	fHeight = 1.0;
-
-	GenerateVertices();
-
+	setSize(1.0F, 1.0F, 1.0F);
 }
 //  sets values to user-defined, then creates vertices
-CCubeRenderPrim::CCubeRenderablePrimitive ( Real width, Real depth, Real height )
+CPrimitiveCube::CPrimitiveCube ( Real width, Real depth, Real height )
 	: CRenderablePrimitive ()
 {
-	fWidth = width;
-	fDepth = depth;
-	fHeight = height;
-
-	GenerateVertices();
+	setSize(width, depth, height);
 }
 
-// GenerateVertices
-//  protected function called to generate cube's vertex list
-void CCubeRenderPrim::GenerateVertices ( void )
+void CPrimitiveCube::buildCube ( Real x, Real y, Real z )
 {
-	vertexNum = 8;
-	if ( vertexData == NULL )
+	const Vector3f kHS ( x * 0.5F, y * 0.5F, z * 0.5F ); // Halfsize
+	const Vector3f kCorners [8] = {
+		{-kHS.x, -kHS.y, -kHS.z}, {+kHS.x, -kHS.y, -kHS.z}, {+kHS.x, +kHS.y, -kHS.z}, {-kHS.x, +kHS.y, -kHS.z},
+		{-kHS.x, -kHS.y, +kHS.z}, {+kHS.x, -kHS.y, +kHS.z}, {+kHS.x, +kHS.y, +kHS.z}, {-kHS.x, +kHS.y, +kHS.z}
+	};
+
+	m_modeldata.vertices = new arModelVertex [24];
+	m_modeldata.vertexNum = 24;
+	m_modeldata.triangles = new arModelTriangle [12];
+	m_modeldata.triangleNum = 12;
+
+	memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * m_modeldata.vertexNum);
+
+	// Bottom
+	m_modeldata.vertices[0 + 0].position = kCorners[3];
+	m_modeldata.vertices[0 + 1].position = kCorners[2];
+	m_modeldata.vertices[0 + 2].position = kCorners[1];
+	m_modeldata.vertices[0 + 3].position = kCorners[0];
+	for (uint i = 0; i < 4; ++i)
 	{
-		vertexData = new arModelVertex [8];
+		m_modeldata.vertices[0 + i].normal = Vector3f(0.0F, 0.0F, -1.0F);
+		m_modeldata.vertices[0 + i].tangent = Vector3f(0.0F, -1.0F, 0.0F);
 	}
-	vertexData[0].x = 0;
-	vertexData[0].y = 0;
-	vertexData[0].z = 0;
-
-	vertexData[1].x = fWidth;
-	vertexData[1].y = 0;
-	vertexData[1].z = 0;
-
-	vertexData[2].x = fWidth;
-	vertexData[2].y = fDepth;
-	vertexData[2].z = 0;
-
-	vertexData[3].x = 0;
-	vertexData[3].y = fDepth;
-	vertexData[3].z = 0;
-
-	vertexData[4].x = 0;
-	vertexData[4].y = 0;
-	vertexData[4].z = fHeight;
-
-	vertexData[5].x = fWidth;
-	vertexData[5].y = 0;
-	vertexData[5].z = fHeight;
-
-	vertexData[6].x = fWidth;
-	vertexData[6].y = fDepth;
-	vertexData[6].z = fHeight;
-
-	vertexData[7].x = 0;
-	vertexData[7].y = fDepth;
-	vertexData[7].z = fHeight;
-
-	// Makes the object centered on its local origin.
-	for ( int i = 0; i < 8; i += 1 )
+	// Top
+	m_modeldata.vertices[4 + 0].position = kCorners[4];
+	m_modeldata.vertices[4 + 1].position = kCorners[5];
+	m_modeldata.vertices[4 + 2].position = kCorners[6];
+	m_modeldata.vertices[4 + 3].position = kCorners[7];
+	for (uint i = 0; i < 4; ++i)
 	{
-		vertexData[i].x -= fWidth*0.5f;
-		vertexData[i].y -= fDepth*0.5f;
-		vertexData[i].z -= fHeight*0.5f;
+		m_modeldata.vertices[4 + i].normal = Vector3f(0.0F, 0.0F, 1.0F);
+		m_modeldata.vertices[4 + i].tangent = Vector3f(0.0F, 1.0F, 0.0F);
+	}
+
+	// Front
+	m_modeldata.vertices[8 + 0].position = kCorners[5];
+	m_modeldata.vertices[8 + 1].position = kCorners[4];
+	m_modeldata.vertices[8 + 2].position = kCorners[0];
+	m_modeldata.vertices[8 + 3].position = kCorners[1];
+	for (uint i = 0; i < 4; ++i)
+	{
+		m_modeldata.vertices[8 + i].normal = Vector3f(0.0F, -1.0F, 0.0F);
+		m_modeldata.vertices[8 + i].tangent = Vector3f(1.0F, 0.0F, 0.0F);
+	}
+	// Back
+	m_modeldata.vertices[12 + 0].position = kCorners[7];
+	m_modeldata.vertices[12 + 1].position = kCorners[6];
+	m_modeldata.vertices[12 + 2].position = kCorners[2];
+	m_modeldata.vertices[12 + 3].position = kCorners[3];
+	for (uint i = 0; i < 4; ++i)
+	{
+		m_modeldata.vertices[12 + i].normal = Vector3f(0.0F, 1.0F, 0.0F);
+		m_modeldata.vertices[12 + i].tangent = Vector3f(1.0F, 0.0F, 0.0F);
+	}
+
+	// Left
+	m_modeldata.vertices[16 + 0].position = kCorners[3];
+	m_modeldata.vertices[16 + 1].position = kCorners[0];
+	m_modeldata.vertices[16 + 2].position = kCorners[4];
+	m_modeldata.vertices[16 + 3].position = kCorners[7];
+	for (uint i = 0; i < 4; ++i)
+	{
+		m_modeldata.vertices[16 + i].normal = Vector3f(-1.0F, 0.0F, 0.0F);
+		m_modeldata.vertices[16 + i].tangent = Vector3f(0.0F, 1.0F, 0.0F);
+	}
+	// Right
+	m_modeldata.vertices[20 + 0].position = kCorners[6];
+	m_modeldata.vertices[20 + 1].position = kCorners[5];
+	m_modeldata.vertices[20 + 2].position = kCorners[1];
+	m_modeldata.vertices[20 + 3].position = kCorners[2];
+	for (uint i = 0; i < 4; ++i)
+	{
+		m_modeldata.vertices[20 + i].normal = Vector3f(1.0F, 0.0F, 0.0F);
+		m_modeldata.vertices[20 + i].tangent = Vector3f(0.0F, 1.0F, 0.0F);
+	}
+
+	// Set color & texcoord:
+	for (uint i = 0; i < 24; ++i)
+	{
+		m_modeldata.vertices[i].color = Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
+		m_modeldata.vertices[i].texcoord0 = Vector3f(0.5F,0.5F,0.5F);
+	}
+
+	// Set triangles:
+	for (uint i = 0; i < 6; ++i)
+	{
+		m_modeldata.triangles[i*2 + 0].vert[0] = i*4 + 0;
+		m_modeldata.triangles[i*2 + 0].vert[1] = i*4 + 1;
+		m_modeldata.triangles[i*2 + 0].vert[2] = i*4 + 2;
+		m_modeldata.triangles[i*2 + 1].vert[0] = i*4 + 2;
+		m_modeldata.triangles[i*2 + 1].vert[1] = i*4 + 3;
+		m_modeldata.triangles[i*2 + 1].vert[2] = i*4 + 0;
 	}
 }
 
 // Set a new size
-void CCubeRenderPrim::SetSize ( Real width, Real depth, Real height )
+void CPrimitiveCube::setSize ( Real width, Real depth, Real height )
 {
-	fWidth = width;
-	fDepth = depth;
-	fHeight = height;
+	buildCube(width, depth, height);
 
-	GenerateVertices();
-}
-
-// Render object
-bool CCubeRenderPrim::PreRender ( void )
-{
-	m_material->prepareShaderConstants(transform.world);
-	return true;
-}
-
-bool CCubeRenderPrim::Render ( const char pass )
-{
-	GL_ACCESS GLd_ACCESS
-	//glLoadIdentity();	
-	//glTranslatef( transform.position.x, transform.position.y, transform.position.z );
-	//GL.Transform( &transform );
-
-	//GLdefaultMaterial.bind();
-	//RrMaterial aMat;
-	//aMat.useColors = true;
-	//aMat.useLighting = false;
-	//aMat.bindPass(pass);
-	m_material->bindPass(pass);
-	//m_material->setShaderConstants(this);
-
-	auto lPrim = GLd.BeginPrimitive( GL_QUADS, m_material );
-		GLd.P_PushTexcoord( 0.5F,0.5F,0.5F );
-		// Bottom
-		GLd.P_PushColor(1.0f,1.0f,1.0f);
-		GLd.P_PushNormal( 0,0,-1.0f );
-		GLd.P_PushTangent( 0,-1.0f,0 );
-		GLd.P_AddVertex( vertexData[3].x,vertexData[3].y,vertexData[3].z );
-		GLd.P_AddVertex( vertexData[2].x,vertexData[2].y,vertexData[2].z );
-		GLd.P_AddVertex( vertexData[1].x,vertexData[1].y,vertexData[1].z );
-		GLd.P_AddVertex( vertexData[0].x,vertexData[0].y,vertexData[0].z );
-		// Top
-		//glColor3f(0.0f,1.0f,0.0f);
-		GLd.P_PushNormal( 0,0,1.0f );
-		GLd.P_PushTangent( 0,1.0f,0 );
-		GLd.P_AddVertex( vertexData[4].x,vertexData[4].y,vertexData[4].z );
-		GLd.P_AddVertex( vertexData[5].x,vertexData[5].y,vertexData[5].z );
-		GLd.P_AddVertex( vertexData[6].x,vertexData[6].y,vertexData[6].z );
-		GLd.P_AddVertex( vertexData[7].x,vertexData[7].y,vertexData[7].z );
-		// Front
-		//glColor3f(0.0f,0.0f,1.0f);
-		GLd.P_PushNormal( 0,-1.0f,0 );
-		GLd.P_PushTangent( 1.0f,0,0 );
-		GLd.P_AddVertex( vertexData[5].x,vertexData[5].y,vertexData[5].z );
-		GLd.P_AddVertex( vertexData[4].x,vertexData[4].y,vertexData[4].z );
-		GLd.P_AddVertex( vertexData[0].x,vertexData[0].y,vertexData[0].z );
-		GLd.P_AddVertex( vertexData[1].x,vertexData[1].y,vertexData[1].z );
-		// Back
-		//glColor3f(1.0f,1.0f,0.0f);
-		GLd.P_PushNormal( 0,1.0f,0 );
-		GLd.P_PushTangent( 1.0f,0,0 );
-		GLd.P_AddVertex( vertexData[7].x,vertexData[7].y,vertexData[7].z );
-		GLd.P_AddVertex( vertexData[6].x,vertexData[6].y,vertexData[6].z );
-		GLd.P_AddVertex( vertexData[2].x,vertexData[2].y,vertexData[2].z );
-		GLd.P_AddVertex( vertexData[3].x,vertexData[3].y,vertexData[3].z );
-		// Left
-		//glColor3f(1.0f,0.0f,1.0f);
-		GLd.P_PushNormal( -1.0f,0,0 );
-		GLd.P_PushTangent( 0,1.0f,0 );
-		GLd.P_AddVertex( vertexData[3].x,vertexData[3].y,vertexData[3].z );
-		GLd.P_AddVertex( vertexData[0].x,vertexData[0].y,vertexData[0].z );
-		GLd.P_AddVertex( vertexData[4].x,vertexData[4].y,vertexData[4].z );
-		GLd.P_AddVertex( vertexData[7].x,vertexData[7].y,vertexData[7].z );
-		// Right
-		//glColor3f(0.0f,1.0f,1.0f);
-		GLd.P_PushNormal( 1.0f,0,0 );
-		GLd.P_PushTangent( 0,1.0f,0 );
-		GLd.P_AddVertex( vertexData[6].x,vertexData[6].y,vertexData[6].z );
-		GLd.P_AddVertex( vertexData[5].x,vertexData[5].y,vertexData[5].z );
-		GLd.P_AddVertex( vertexData[1].x,vertexData[1].y,vertexData[1].z );
-		GLd.P_AddVertex( vertexData[2].x,vertexData[2].y,vertexData[2].z );
-	GLd.EndPrimitive(lPrim);
-
-	//aMat.unbind();
-	return true;
+	PushModeldata();
+	
+	delete[] m_modeldata.vertices;
+	delete[] m_modeldata.triangles;
 }

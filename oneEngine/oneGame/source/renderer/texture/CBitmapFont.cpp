@@ -314,38 +314,7 @@ void CBitmapFont::LoadFontAsTexture ( void )
 
 	fontInfo.isTexture = true;
 
-	// Create the font drawlist
-	//iLetterList = glGenLists( fontInfo.setLength );
 
-	//throw "NOT DONE YET";
-	/*
-	for ( unsigned char c = fontInfo.startCharacter; c < fontInfo.startCharacter+fontInfo.setLength; c += 1 )
-	{
-		unsigned char curChar = c-fontInfo.startCharacter;
-		Vector2d uvPos = (pCharPositions[curChar]) * (1.0f/max_width);
-		Vector2d uvSize = (pFontSizes[curChar]) * (1.0f/max_width);
-			glNewList( iLetterList+curChar, GL_COMPILE );
-			glTranslatef( -pFontOrigins[curChar].x,-pFontOrigins[curChar].y,0);
-			GLd.BeginPrimitive(GL_QUADS);
-					glTexCoord2f( uvPos.x,uvPos.y );
-					glNormal3f( -1,-1,uvSize.y/uvSize.x );
-				GLd.P_AddVertex( 0, 0 );
-					glTexCoord2f( uvPos.x,uvPos.y+uvSize.y );
-					glNormal3f( -1,1,uvSize.y/uvSize.x );
-				GLd.P_AddVertex( 0, pFontSizes[curChar].y );
-					glTexCoord2f( uvPos.x+uvSize.x,uvPos.y+uvSize.y );
-					glNormal3f( 1,1,uvSize.y/uvSize.x );
-				GLd.P_AddVertex( pFontSizes[curChar].x, pFontSizes[curChar].y );
-					glTexCoord2f( uvPos.x+uvSize.x,uvPos.y );
-					glNormal3f( 1,-1,uvSize.y/uvSize.x );
-				GLd.P_AddVertex( pFontSizes[curChar].x, 0 );
-			GLd.EndPrimitive();
-			glTranslatef( pFontOffsets[curChar].x+pFontOrigins[curChar].x,pFontOffsets[curChar].y+pFontOrigins[curChar].y,0);
-		glEndList();
-	}
-
-	fontInfo.letterSizes = pFontOffsets;*/
-	// The previous loop instead is to store a large collection of character information, to have a mesh made during draw text
 
 	for ( unsigned char c = fontInfo.startCharacter; c < fontInfo.startCharacter+fontInfo.setLength; c += 1 )
 	{

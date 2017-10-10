@@ -1,49 +1,19 @@
+#ifndef C_ISOSPHERE_H_
+#define C_ISOSPHERE_H_
 
-#ifndef _C_ISOSPHERE_H_
-#define _C_ISOSPHERE_H_
-
-// Includes
-#include "core/math/Vector3d.h"
-#include "core/types/ModelData.h"
-
-#include "../CRenderableObject.h"
-#include "renderer/material/RrMaterial.h"
-
+#include "CRenderablePrimitive.h"
 #include <vector>
 
-// Class definition
-class CIsosphere : public CRenderableObject
+class CIsosphere : public CRenderablePrimitive
 {
 public:
 	// Constructor and Destructor
-	CIsosphere ( void );
-	~CIsosphere ( void );
+	RENDER_API explicit	CIsosphere ( int divisions = 1 );
+	RENDER_API			~CIsosphere ( void );
 
-	bool PreRender ( void ) override;
-	// Render function
-	bool Render ( const char pass ) override;
 protected:
-	float radius;
-	int divisions;
-
-	
-	RrMaterial* myMat;
-private:
-	void normalize(float *a);
-	void drawtri(float const *a, float const *b, float const *c, int div, float r);
-	void drawsphere(int ndiv, float radius=1.0);
-	//vector<arModelVertex> sphereData;
-	arModelVertex* pSphereData;
-	int size;
-	void createtri(float const *a, float const *b, float const *c, int div, float r);
-	inline void createvertex ( float const *a, float r );
-	void createsphere ( int ndiv, float radius = 1.0 );
-
-	static const float X;
-	static const float Z;
-	static const float vdata[12][3];
-	static const float tdata[12][3];
-	static const uint tindices[20][3];
+	//	buildIsosphere() : Creates and pushes the isosphere mesh
+	void				buildIsosphere ( int divisions );
 };
 
-#endif
+#endif//C_ISOSPHERE_H_

@@ -1,5 +1,3 @@
-
-
 #include "CMesh.h"
 #include "renderer/logic/model/CModel.h"
 #include "renderer/logic/model/CSkinnedModel.h"
@@ -11,7 +9,8 @@
 
 CMesh::CMesh ( rrMesh* nMesh, bool n_enableSkinning )
 	: CRenderableObject(),
-	m_glMesh( nMesh ), m_parent(NULL), bUseSkinning(n_enableSkinning)
+	m_glMesh( nMesh ), m_parent(NULL),
+	bUseFrustumCulling(true), bCanRender(true), bUseSkinning(n_enableSkinning)
 {
 	if ( m_glMesh != NULL )
 	{
