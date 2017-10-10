@@ -76,7 +76,6 @@ bool CStreamedRenderable3D::Render ( const char pass )
 	}// TODO: Double check that per-object uniforms are sent to the videocard.
 
 	 // For now, we will render the same way as the 3d meshes render
-	 //GL.Transform( &(transform.world) );
 	m_material->m_bufferSkeletonSize = 0;
 	m_material->m_bufferMatricesSkinning = 0;
 	m_material->bindPass(pass);

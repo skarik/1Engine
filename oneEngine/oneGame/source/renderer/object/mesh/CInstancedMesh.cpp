@@ -70,7 +70,6 @@ bool CInstancedMesh::Render ( const char pass )
 	// Get rid of any transforms
 	transform.world.position = Vector3d::zero;
 	transform.local.position = Vector3d::zero;
-	//transform.LateUpdate();
 
 	// Set up transformation for the mesh
 	//if ( m_parent )

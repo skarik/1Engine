@@ -82,20 +82,7 @@ bool CScreenFade::Render ( const char pass )
 { GLd_ACCESS;
 	if ( fAlpha > 0.0F )
 	{
-		/*rrMeshBuilder2D builder (4);
-		builder.addRect(
-			Rect(0,0, Screen::Info.width, Screen::Info.width)*/
-
-		//GL.beginOrtho();
-		//core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-			//GL.Translate( Vector3d( 0,0,40 ) );
-			//GLd.P_PushColor(1,1,1);
-			//GLd.DrawSet2DMode( GLd.D2D_FLAT );
-			//GLd.DrawSet2DScaleMode( GLd.SCALE_DEFAULT );
-			//screenMaterial->bindPass(0);
-			//GLd.DrawRectangleA( 0,0, 1,1 );
 		GLd.DrawScreenQuad(screenMaterial);
-		//GL.endOrtho();
 	}
 	return true;
 }

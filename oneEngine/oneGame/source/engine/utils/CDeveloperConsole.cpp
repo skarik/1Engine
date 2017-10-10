@@ -46,18 +46,10 @@ CDeveloperConsole::CDeveloperConsole ( void )
 
 CDeveloperConsole::~CDeveloperConsole ( void )
 {
-	/*delete mUI;
-	mUI = NULL;
-	delete mCursor;
-	mCursor = NULL;
-	delete mTimeProfilerUI;
-	mTimeProfilerUI = NULL;*/
-
 	if ( Console == this ) {
 		Console		= NULL;
 	}
-	//ActiveCursor= NULL;
-
+	
 	delete_safe( mControl );
 }
 

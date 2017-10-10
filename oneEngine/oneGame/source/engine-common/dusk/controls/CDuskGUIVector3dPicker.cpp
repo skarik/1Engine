@@ -147,52 +147,15 @@ void CDuskGUIVector3dPicker::Render ( void )
 {
 	Rect temp = rect;
 	rect = homeRect;
-		/*activeGUI->matDefault->bind();
-			//glColor4f( colorValue.red,colorValue.green,colorValue.blue,colorValue.alpha );
-			glColor4f(
-				activeGUI->matDefault->diffuse.red * 0.6f,
-				activeGUI->matDefault->diffuse.green * 0.6f,
-				activeGUI->matDefault->diffuse.blue * 0.6f,
-				activeGUI->matDefault->diffuse.alpha * 0.6f );
-			GLd.DrawSet2DMode( GL.D2D_FLAT );
-			GLd.DrawRectangleA( rect.pos.x, rect.pos.y, rect.size.x, rect.size.y );
-		activeGUI->matDefault->unbind();*/
 		drawRect( rect );
 		CDuskGUIButton::Render();
 		setDrawDefault();
 		drawRectWire( rect );
-		/*activeGUI->matDefault->bind();
-			//glColor4f( colorValue.red,colorValue.green,colorValue.blue,1.0f );
-			glColor4f(
-				activeGUI->matDefault->diffuse.red,
-				activeGUI->matDefault->diffuse.green,
-				activeGUI->matDefault->diffuse.blue,
-				activeGUI->matDefault->diffuse.alpha * 0.6f );
-			GLd.DrawSet2DMode( GL.D2D_WIRE );
-			GLd.DrawRectangleA( rect.pos.x, rect.pos.y, rect.size.x, rect.size.y );
-		activeGUI->matDefault->unbind();*/
 	rect = temp;
 
 	if ( inDialogueMode )
 	{
-		//activeGUI->matDefault->bind();
-
-		/*glColor4f(
-			activeGUI->matDefault->diffuse.red * 0.6f,
-			activeGUI->matDefault->diffuse.green * 0.6f,
-			activeGUI->matDefault->diffuse.blue * 0.6f,
-			activeGUI->matDefault->diffuse.alpha * 0.6f );
-		GLd.DrawSet2DMode( GL.D2D_WIRE );
-		GLd.DrawRectangleA( rect.pos.x, rect.pos.y, rect.size.x, rect.size.y );*/
 		drawRectWire( rect );
-
-		/*glColor4f(
-			activeGUI->matDefault->diffuse.red,
-			activeGUI->matDefault->diffuse.green,
-			activeGUI->matDefault->diffuse.blue,
-			activeGUI->matDefault->diffuse.alpha * 0.6f );
-		GLd.DrawSet2DMode( GL.D2D_FLAT );
-		GLd.DrawRectangleA( rect.pos.x, rect.pos.y, rect.size.x, rect.size.y );*/
 		drawRect( rect );
 	}
 }

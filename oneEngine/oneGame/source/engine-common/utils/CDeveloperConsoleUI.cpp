@@ -1,4 +1,3 @@
-
 #include "engine/utils/CDeveloperConsole.h"
 #include "CDeveloperConsoleUI.h"
 #include "core/input/CInput.h"
@@ -157,8 +156,6 @@ bool CDeveloperCursor::PreRender ( void )
 }
 bool CDeveloperCursor::Render ( const char pass )
 {
-	GL_ACCESS GLd_ACCESS
-
 	if ( pass != 0 )
 		return false;
 

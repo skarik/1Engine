@@ -45,12 +45,6 @@
     <ClCompile Include="source\render2d\object\Background2D.cpp" />
     <ClCompile Include="source\render2d\object\CRenderable2D.cpp" />
     <ClCompile Include="source\render2d\object\CTextMesh.cpp" />
-    <ClCompile Include="source\render2d\object\debug\Box2DDebugger.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\render2d\object\sprite\CAnimSprite2D.cpp" />
     <ClCompile Include="source\render2d\object\sprite\CEditableRenderable2D.cpp" />
     <ClCompile Include="source\render2d\object\sprite\CStreamedRenderable2D.cpp" />
@@ -65,12 +59,6 @@
     <ClInclude Include="source\render2d\object\Background2D.h" />
     <ClInclude Include="source\render2d\object\CRenderable2D.h" />
     <ClInclude Include="source\render2d\object\CTextMesh.h" />
-    <ClInclude Include="source\render2d\object\debug\Box2DDebugger.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="source\render2d\object\sprite\CAnimSprite2D.h" />
     <ClInclude Include="source\render2d\object\sprite\CEditableRenderable2D.h" />
     <ClInclude Include="source\render2d\object\sprite\CStreamedRenderable2D.h" />

@@ -1,5 +1,3 @@
-
-// Include Header
 #include "core/time.h"
 #include "core/math/Math.h"
 #include "renderer/material/RrMaterial.h"
@@ -205,48 +203,6 @@ void CDuskGUI::drawText ( const Real x, const Real y, const char* str )
 		draw_pos,
 		Color(1.0F,1.0F,1.0F,1.0F),
 		str);
-
-	//textRequest_t req;
-	//req.text = str;
-	//req.position.x = x + parenting_offset.x;
-	//req.position.y = y + parenting_offset.y;
-	//req.mode = 0;
-	//if ( bInPixelMode )
-	//{
-	//	req.position.x /= Screen::Info.width;
-	//	req.position.y /= Screen::Info.height;
-	//}
-	//modelTextRequestList.push_back( req );
-
-	//{
-	//	//GL.prepareDraw();
-	//	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-	//	//GL.beginOrtho();
-	//	GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
-
-	//	// Draw the text
-	//	matFont->setTexture( TEX_MAIN, fntDefault );
-	//	matFont->bindPass(0);
-	//	//matFont->setShaderConstants( this );
-	//	if ( !modelTextRequestList.empty() ) {
-	//		for ( uint i = 0; i < modelTextRequestList.size(); ++i )
-	//		{
-	//			if ( modelTextRequestList[i].mode == 0 ) {
-	//				GLd.DrawAutoText( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-	//			}
-	//			else if ( modelTextRequestList[i].mode == 1 ) {
-	//				GLd.DrawAutoTextCentered( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-	//			}
-	//			else if ( modelTextRequestList[i].mode == 2 ) {
-	//				GLd.DrawAutoTextWrapped( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].width, modelTextRequestList[i].text.c_str() );
-	//			}
-	//		}
-	//	}
-	//	modelTextRequestList.clear();
-
-	//	//GL.endOrtho();
-	//	//GL.cleanupDraw();
-	//}
 }
 void CDuskGUI::drawTextWidth ( const Real x, const Real y, const Real w, const char* str )
 {
@@ -258,51 +214,6 @@ void CDuskGUI::drawTextWidth ( const Real x, const Real y, const Real w, const c
 		draw_pos,
 		Color(1.0F,1.0F,1.0F,1.0F),
 		str);
-
-	//GL_ACCESS GLd_ACCESS
-
-	//textRequest_t req;
-	//req.text = str;
-	//req.position.x = x + parenting_offset.x;
-	//req.position.y = y + parenting_offset.y;
-	//req.mode = 2;
-	//req.width = w;
-	//if ( bInPixelMode )
-	//{
-	//	req.position.x /= Screen::Info.width;
-	//	req.position.y /= Screen::Info.height;
-	//}
-	//modelTextRequestList.push_back( req );
-
-	//{
-	//	//GL.prepareDraw();
-	//	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-	//	//GL.beginOrtho();
-	//	GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
-
-	//	// Draw the text
-	//	matFont->setTexture( TEX_MAIN, fntDefault );
-	//	matFont->bindPass(0);
-	//	//matFont->setShaderConstants( this );
-	//	if ( !modelTextRequestList.empty() ) {
-	//		for ( uint i = 0; i < modelTextRequestList.size(); ++i )
-	//		{
-	//			if ( modelTextRequestList[i].mode == 0 ) {
-	//				GLd.DrawAutoText( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-	//			}
-	//			else if ( modelTextRequestList[i].mode == 1 ) {
-	//				GLd.DrawAutoTextCentered( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-	//			}
-	//			else if ( modelTextRequestList[i].mode == 2 ) {
-	//				GLd.DrawAutoTextWrapped( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].width, modelTextRequestList[i].text.c_str() );
-	//			}
-	//		}
-	//	}
-	//	modelTextRequestList.clear();
-
-	//	//GL.endOrtho();
-	//	//GL.cleanupDraw();
-	//}
 }
 void CDuskGUI::drawTextCentered ( const Real x, const Real y, const char* str )
 {
@@ -314,48 +225,4 @@ void CDuskGUI::drawTextCentered ( const Real x, const Real y, const char* str )
 		draw_pos,
 		Color(1.0F,1.0F,1.0F,1.0F),
 		str);
-
-	//GL_ACCESS GLd_ACCESS
-
-	//textRequest_t req;
-	//req.text = str;
-	//req.position.x = x + parenting_offset.x;
-	//req.position.y = y + parenting_offset.y;
-	//req.mode = 1;
-	//if ( bInPixelMode )
-	//{
-	//	req.position.x /= Screen::Info.width;
-	//	req.position.y /= Screen::Info.height;
-	//}
-	//modelTextRequestList.push_back( req );
-
-	//{
-	//	//GL.prepareDraw();
-	//	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-	//	//GL.beginOrtho();
-	//	GLd.DrawSet2DRounding( glDrawing::RND_ROUND );
-
-	//	// Draw the text
-	//	matFont->setTexture( TEX_MAIN, fntDefault );
-	//	matFont->bindPass(0);
-	//	//matFont->setShaderConstants( this );
-	//	if ( !modelTextRequestList.empty() ) {
-	//		for ( uint i = 0; i < modelTextRequestList.size(); ++i )
-	//		{
-	//			if ( modelTextRequestList[i].mode == 0 ) {
-	//				GLd.DrawAutoText( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-	//			}
-	//			else if ( modelTextRequestList[i].mode == 1 ) {
-	//				GLd.DrawAutoTextCentered( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].text.c_str() );
-	//			}
-	//			else if ( modelTextRequestList[i].mode == 2 ) {
-	//				GLd.DrawAutoTextWrapped( modelTextRequestList[i].position.x, modelTextRequestList[i].position.y, modelTextRequestList[i].width, modelTextRequestList[i].text.c_str() );
-	//			}
-	//		}
-	//	}
-	//	modelTextRequestList.clear();
-
-	//	//GL.endOrtho();
-	//	//GL.cleanupDraw();
-	//}
 }

@@ -66,9 +66,6 @@
     <ClCompile Include="source\render2d\preprocess\NormalMapGeneration.cpp">
       <Filter>SOURCE\Render2D\Preprocess</Filter>
     </ClCompile>
-    <ClCompile Include="source\render2d\object\debug\Box2DDebugger.cpp">
-      <Filter>SOURCE\Render2D\Object\Debug</Filter>
-    </ClCompile>
     <ClCompile Include="source\render2d\object\sprite\CEditableRenderable2D.cpp">
       <Filter>SOURCE\Render2D\Object\Sprite</Filter>
     </ClCompile>
@@ -109,9 +106,6 @@
     </ClInclude>
     <ClInclude Include="source\render2d\preprocess\NormalMapGeneration.h">
       <Filter>SOURCE\Render2D\Preprocess</Filter>
-    </ClInclude>
-    <ClInclude Include="source\render2d\object\debug\Box2DDebugger.h">
-      <Filter>SOURCE\Render2D\Object\Debug</Filter>
     </ClInclude>
     <ClInclude Include="source\render2d\object\sprite\CEditableRenderable2D.h">
       <Filter>SOURCE\Render2D\Object\Sprite</Filter>

@@ -282,11 +282,6 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 	unsigned char passCount;
 	CCamera* currentCamera = CCamera::activeCamera;
 
-#ifndef _ENGINE_RELEASE
-	GLd.vertexCount = 0;
-	GLd.triangleCount = 0;
-#endif
-
 	// Loop through each hint (reverse mode)
 	for ( uint currentLayer = 1<<RL_LAYER_COUNT; currentLayer != 0; currentLayer >>= 1 )
 	{
@@ -375,11 +370,6 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 		int sortedListSize = sortedRenderList.size();
 
 		// First work on prerender
-		//for ( i = 0; i < (int)sortedListSize; ++i )
-		//{
-		//	sortedRenderList[i].obj->PreRender( sortedRenderList[i].pass );
-		//	GL.CheckError();
-		//}
 		for ( i = 0; i < (int)sortSinglePassList.size(); ++i )
 		{
 			sortSinglePassList[i]->PreRender();
@@ -413,10 +403,6 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 		}
 
 		// Finally, work on postrender
-		//for ( i = 0; i < (int)sortedListSize; i += 1 )
-		//{
-		//	sortedRenderList[i].obj->PostRender( sortedRenderList[i].pass );
-		//}
 		for ( i = 0; i < (int)sortSinglePassList.size(); ++i )
 		{
 			sortSinglePassList[i]->PostRender();
@@ -442,11 +428,6 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 
 	// Restore render mode
 	CGameSettings::Active()->i_ro_RendererMode = t_currentRenderMode;
-
-#ifndef _ENGINE_RELEASE
-	//printf( "%d - %d ::\n", GL.vertexCount, GL.triangleCount );
-#endif
-
 }
 
 // Some debug compiler flags
@@ -555,10 +536,6 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 
 	// First work on prerender
 	TimeProfiler.BeginTimeProfile( "rs_render_pre" );
-	//for ( i = 0; i < sortedListSize; ++i )
-	//{
-	//	sortedRenderList[i].obj->PreRender( sortedRenderList[i].pass );
-	//}
 	for ( i = 0; i < (int)sortSinglePassList.size(); ++i )
 	{
 		sortSinglePassList[i]->PreRender();
@@ -842,10 +819,6 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 	}
 
 	// Finally, work on postrender
-	//for ( i = 0; i < sortedListSize; i += 1 )
-	//{
-	//	sortedRenderList[i].obj->PostRender( sortedRenderList[i].pass );
-	//}
 	for ( i = 0; i < (int)sortSinglePassList.size(); ++i )
 	{
 		sortSinglePassList[i]->PostRender();
