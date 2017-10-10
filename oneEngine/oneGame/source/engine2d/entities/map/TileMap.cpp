@@ -36,12 +36,12 @@ void TileMap::Update ( void )
 {
 	; // What does this need to do on update? xD
 
-	/*debug::Drawer->DrawLine( Vector3d(0,0,0), Vector3d(0,0,32), Color(0,0,1) );
-	debug::Drawer->DrawLine( Vector3d(0,0,0), Vector3d(0,0,-32), Color(0,1,1) );
-	for ( uint i = 0; i < m_tiles.size(); ++i )
-	{
-		debug::Drawer->DrawLine( Vector3d(0,0,0), Vector3d(m_tiles[i].x,m_tiles[i].y,m_tiles[i].depth) );
-	}*/
+	//debug::Drawer->DrawLine( Vector3d(0,0,0), Vector3d(0,0,32), Color(0,0,1) );
+	//debug::Drawer->DrawLine( Vector3d(0,0,0), Vector3d(0,0,-32), Color(0,1,1) );
+	//for ( uint i = 0; i < m_tiles.size(); ++i )
+	//{
+	//	debug::Drawer->DrawLine( Vector3d(0,0,0), Vector3d(m_tiles[i].x,m_tiles[i].y,m_tiles[i].depth) );
+	//}
 }
 
 

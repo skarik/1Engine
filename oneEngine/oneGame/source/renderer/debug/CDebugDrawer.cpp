@@ -1,5 +1,3 @@
-
-// Includes
 #include "CDebugDrawer.h"
 #include "core/math/Line.h"
 #include "core/math/Ray.h"
@@ -12,23 +10,28 @@
 
 using namespace debug;
 
-// Static Variables
-CDebugDrawer* debug::Drawer = NULL;
-CDebugDrawer* CDebugDrawer::mActive = NULL;
+CDebugDrawer* debug::Drawer			= NULL;
+CDebugDrawer* CDebugDrawer::mActive	= NULL;
 
-// Constructor
 CDebugDrawer::CDebugDrawer ( void )
-	: CRenderableObject ()
+	: CStreamedRenderable3D ()
 {
 	mActive = this;
 	debug::Drawer = this;
+
+	// Reserve data for the lines
+	m_vertices.reserve(1024);
+	m_tris.reserve(512);
+
+	// Reset model data
+	memset( &m_modeldata, 0, sizeof(arModelData) );
 
 	// Set the default white material
 	RrMaterial* defaultMat = new RrMaterial;
 	defaultMat->m_diffuse = Color( 1,1,1,1 );
 	defaultMat->setTexture( TEX_DIFFUSE, new CTexture( "textures/white.jpg" ) );
 	defaultMat->passinfo.push_back( RrPassForward() );
-	defaultMat->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
+	defaultMat->passinfo[0].shader = new RrShader( "shaders/sys/debug_lines.glsl" );
 	defaultMat->passinfo[0].m_lighting_mode = renderer::LI_NONE;
 	defaultMat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
 	defaultMat->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
@@ -36,7 +39,6 @@ CDebugDrawer::CDebugDrawer ( void )
 	SetMaterial( defaultMat );
 	defaultMat->removeReference();
 }
-// Destructor
 CDebugDrawer::~CDebugDrawer ( void )
 {
 	if ( mActive == this )
@@ -46,50 +48,66 @@ CDebugDrawer::~CDebugDrawer ( void )
 	}
 }
 
-// Rendering
-bool CDebugDrawer::Render ( const char pass )
+bool CDebugDrawer::PreRender ( void )
 {
-	// If there's no lines in the list, no need to render.
-	if ( avLineList.size() < 0 )
-	{
-		return true;
-	}
+	// Clear the old mesh data
+	m_vertices.clear();
+	m_tris.clear();
 
-	GLd_ACCESS;
+	arModelVertex vert;
+	memset(&vert, 0, sizeof(arModelVertex));
+	arModelTriangle tri;
 
-	// Bind wanted pass
-	m_material->bindPass(pass);
-
-	// Disable normal depth testing
-	glDisable( GL_DEPTH_TEST );
-
-	// Draw all the lines in the list
-	auto lPrim = GLd.BeginPrimitive( GL_LINES, m_material );
-	GLd.P_PushTexcoord( 0,0 );
-	GLd.P_PushNormal( 0,0,0 );
 	for ( uint i = 0; i < avLineList.size(); ++i )
 	{
-		GLd.P_PushColor( avColorList[i] );
-		GLd.P_AddVertex( avLineList[i].start );
-		GLd.P_AddVertex( avLineList[i].end );
-	}
-	GLd.EndPrimitive(lPrim);
+		// Add triangle data
+		tri.vert[0] = m_vertices.size() + 0;
+		tri.vert[1] = m_vertices.size() + 1;
+		tri.vert[2] = m_vertices.size() + 2;
+		m_tris.push_back(tri);
+		tri.vert[0] = m_vertices.size() + 0;
+		tri.vert[1] = m_vertices.size() + 2;
+		tri.vert[2] = m_vertices.size() + 3;
+		m_tris.push_back(tri);
 
-	// Reenable normal depth testing
-	glEnable( GL_DEPTH_TEST );
+		// Set line color and world-space offset
+		vert.color = Vector4f(avColorList[i].raw);
+		vert.normal = avLineList[i].start - avLineList[i].end;
 
-	// Return success
-	return true;
-}
+		// Line Start
+		vert.position = avLineList[i].start;
 
-bool CDebugDrawer::EndRender ( void )
-{
+		vert.texcoord0 = Vector2f(1.0F, 0.0F);
+		m_vertices.push_back(vert);
+		vert.texcoord0 = Vector2f(-1.0F, 0.0F);
+		m_vertices.push_back(vert);
+
+		// Line Ending
+		vert.position = avLineList[i].end;
+
+		vert.texcoord0 = Vector2f(1.0F, 0.0F);
+		m_vertices.push_back(vert);
+		vert.texcoord0 = Vector2f(-1.0F, 0.0F);
+		m_vertices.push_back(vert);
+	} // Offsets are handled within the vertex shader.
+
+	// Update model
+	m_modeldata.triangleNum	= (uint16_t)m_tris.size();
+	m_modeldata.triangles	= m_tris.data();
+	m_modeldata.vertexNum	= (uint16_t)m_vertices.size();
+	m_modeldata.vertices	= m_vertices.data();
+
+	// Clear line data now that we're done with it.
 	avLineList.clear();
 	avColorList.clear();
-	return true;
+
+	// Now with the mesh built, push it to the modeldata
+	StreamLockModelData();
+
+	// Push at the end
+	return CStreamedRenderable3D::PreRender();
 }
 
-// Adding lines to the list
 void CDebugDrawer::DrawLine ( const Line& newLine, const Color& color )
 {
 	if ( mActive != NULL )
