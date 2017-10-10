@@ -1,6 +1,7 @@
-
 #include "MeshBuilder.h"
 
+//	Quad(model, pos, uvs) : Adds a 2D quad to the given modeldata
+// Vertices are in counter-clockwise order around the quad edge.
 void core::meshbuilder::Quad ( arModelData* md, const Rect& position, const Rect& uvs )
 {
 	int current_vertex = md->vertexNum;
@@ -37,6 +38,8 @@ void core::meshbuilder::Quad ( arModelData* md, const Rect& position, const Rect
 	md->triangleNum += 2;
 }
 
+//	Quad(model, pos, color, uvs) : Adds a 3D quad to the given modeldata
+// Vertices are in counter-clockwise order around the quad edge.
 void core::meshbuilder::Quad ( arModelData* md, const Vector3f* positions, const Color& color, const Rect& uvs )
 {
 	int current_vertex = md->vertexNum;

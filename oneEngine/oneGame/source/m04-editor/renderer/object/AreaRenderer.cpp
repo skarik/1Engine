@@ -1,4 +1,3 @@
-
 #include "AreaRenderer.h"
 
 #include "engine2d/entities/Area2DBase.h"
@@ -31,16 +30,8 @@ AreaRenderer::AreaRenderer ( void )
 
 AreaRenderer::~AreaRenderer ( void )
 {
-	if ( m_modeldata.vertices )
-	{
-		delete[] m_modeldata.vertices;
-		m_modeldata.vertices = NULL;
-	}
-	if ( m_modeldata.triangles )
-	{
-		delete[] m_modeldata.triangles;
-		m_modeldata.triangles = NULL;
-	}
+	delete_safe_array(m_modeldata.vertices);
+	delete_safe_array(m_modeldata.triangles);
 }
 
 bool AreaRenderer::PreRender ( void )
@@ -133,7 +124,7 @@ bool AreaRenderer::PreRender ( void )
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 
 		// Draw the four corners
-		const Vector2d offsets [4] = {
+		const Vector2d kOffsets [4] = {
 			Vector2d(-1,-1), Vector2d(-1,1), Vector2d(1,1), Vector2d(1,-1)
 		};
 		for ( int i = 0; i < 4; ++i )
@@ -141,7 +132,7 @@ bool AreaRenderer::PreRender ( void )
 			// Build the corner quad
 			for ( int n = 0; n < 4; ++n )
 			{
-				meshpoints[n] = points[i] + offsets[n] * 4.0F;
+				meshpoints[n] = points[i] + kOffsets[n] * 4.0F;
 			}
 			// If mouse over a corner, highlight the corner
 			if ( (*area == m_target_selection || *area == m_target_glow) && i == m_target_corner ) 

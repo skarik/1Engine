@@ -1,19 +1,18 @@
+#ifndef EDITOR_UI_DRAGHANDLE_RENDERER_H_
+#define EDITOR_UI_DRAGHANDLE_RENDERER_H_
 
-#ifndef _EDITOR_UI_DRAGHANDLE_RENDERER_H_
-#define _EDITOR_UI_DRAGHANDLE_RENDERER_H_
-
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/CStreamedRenderable3D.h"
 
 namespace M04
 {
 	class UIDragHandle;
-	class UIDragHandleRenderer : public CRenderableObject
+	class UIDragHandleRenderer : public CStreamedRenderable3D
 	{
 	public:
 		explicit	UIDragHandleRenderer ( UIDragHandle* );
 					~UIDragHandleRenderer( void );
 
-		bool Render ( const char pass ) override;
+		bool PreRender ( void ) override;
 
 	public:
 		UIDragHandle*	m_ui;
@@ -21,4 +20,4 @@ namespace M04
 }
 
 
-#endif//_EDITOR_UI_DRAGHANDLE_RENDERER_H_
+#endif//EDITOR_UI_DRAGHANDLE_RENDERER_H_

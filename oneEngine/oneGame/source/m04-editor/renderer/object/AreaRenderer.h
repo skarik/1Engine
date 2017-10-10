@@ -1,7 +1,6 @@
 #ifndef EDITOR_2D_AREA_RENDERER_H_
 #define EDITOR_2D_AREA_RENDERER_H_
 
-#include "renderer/object/CRenderableObject.h"
 #include "renderer/object/CStreamedRenderable3D.h"
 
 namespace Engine2D

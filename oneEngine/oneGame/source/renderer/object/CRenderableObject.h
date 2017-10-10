@@ -34,6 +34,9 @@ class RrPassDeferred;
 #ifndef delete_safe
 #	define delete_safe(_ptr) { if ( _ptr ) { delete (_ptr); (_ptr) = NULL; } };
 #endif
+#ifndef delete_safe_array
+#	define delete_safe_array(_ptr) { if ( _ptr ) { delete[] (_ptr); (_ptr) = NULL; } };
+#endif
 
 // Base class, virtual/abstract
 class CRenderableObject
