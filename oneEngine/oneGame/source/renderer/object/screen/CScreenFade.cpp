@@ -32,9 +32,11 @@ CScreenFade::CScreenFade ( bool inbFadeIn, float infFadeTime, float infFadeDelay
 	screenMaterial->m_diffuse = cFadeColor;
 	screenMaterial->setTexture( TEX_DIFFUSE, new CTexture("textures/white.jpg") );
 	screenMaterial->passinfo.push_back( RrPassForward() );
-	screenMaterial->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	screenMaterial->passinfo[0].m_lighting_mode	= renderer::LI_NONE;
 	screenMaterial->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
+	screenMaterial->passinfo[0].set2DCommon();
+	screenMaterial->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	screenMaterial->passinfo[0].b_depthmask	= false;
+	screenMaterial->passinfo[0].b_depthtest = false;;
 	SetMaterial( screenMaterial );
 }
 CScreenFade::~CScreenFade ( void )
@@ -72,23 +74,27 @@ void CScreenFade::PreStepSynchronus ( void )
 bool CScreenFade::PreRender ( void )
 {
 	//GL.Translate( Vector3d( 0,0,40 ) );
-	screenMaterial->prepareShaderConstants();
+	screenMaterial->m_diffuse.alpha = std::min<Real>( fAlpha, 1.0F );
+	//screenMaterial->prepareShaderConstants();
 	return true;
 }
 bool CScreenFade::Render ( const char pass )
-{
-	GL_ACCESS GLd_ACCESS
-	if ( fAlpha > 0.0f )
+{ GLd_ACCESS;
+	if ( fAlpha > 0.0F )
 	{
+		/*rrMeshBuilder2D builder (4);
+		builder.addRect(
+			Rect(0,0, Screen::Info.width, Screen::Info.width)*/
+
 		//GL.beginOrtho();
-		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+		//core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 			//GL.Translate( Vector3d( 0,0,40 ) );
-			GLd.P_PushColor(1,1,1);
-			GLd.DrawSet2DMode( GLd.D2D_FLAT );
-			GLd.DrawSet2DScaleMode( GLd.SCALE_DEFAULT );
-			screenMaterial->m_diffuse.alpha = std::min<Real>( fAlpha, 1 );
-			screenMaterial->bindPass(0);
-				GLd.DrawRectangleA( 0,0, 1,1 );
+			//GLd.P_PushColor(1,1,1);
+			//GLd.DrawSet2DMode( GLd.D2D_FLAT );
+			//GLd.DrawSet2DScaleMode( GLd.SCALE_DEFAULT );
+			//screenMaterial->bindPass(0);
+			//GLd.DrawRectangleA( 0,0, 1,1 );
+		GLd.DrawScreenQuad(screenMaterial);
 		//GL.endOrtho();
 	}
 	return true;

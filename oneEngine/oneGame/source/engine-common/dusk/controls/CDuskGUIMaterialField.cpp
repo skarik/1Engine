@@ -61,11 +61,12 @@ void CDuskGUIMaterialField::Render ( void )
 	// Now draw text
 		
 	drawText( rect.pos.x + rect.size.x*0.01f  + 0.01f, rect.pos.y + rect.size.y*0.01f + 0.03f, label.c_str() );
-	GLd.DrawSet2DScaleMode(GLd.SCALE_WIDTH);
-	Real cursor_x = rect.pos.x + rect.size.x*0.01f + 0.012f + (GLd.GetAutoTextWidth( label.c_str() )/Screen::Info.width);
+	//GLd.DrawSet2DScaleMode(GLd.SCALE_WIDTH);
+	//Real cursor_x = rect.pos.x + rect.size.x*0.01f + 0.012f + (GLd.GetAutoTextWidth( label.c_str() )/Screen::Info.width);
 
-	if ( hasFocus ) {
-		setSubdrawPulse();
-		drawLine( cursor_x, rect.pos.y + rect.size.y*0.08f + 0.005f, cursor_x, rect.pos.y + rect.size.y*0.82f );
-	}
+	//if ( hasFocus )
+	//{
+	//	setSubdrawPulse();
+	//	drawLine( cursor_x, rect.pos.y + rect.size.y*0.08f + 0.005f, cursor_x, rect.pos.y + rect.size.y*0.82f );
+	//}
 }

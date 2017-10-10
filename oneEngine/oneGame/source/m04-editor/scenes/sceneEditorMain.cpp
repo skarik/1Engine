@@ -15,10 +15,15 @@
 
 // Include resource system in case want to muck around with manual tileset loading
 #include "core-ext/system/io/Resources.h"
+// Include loading screen
+#include "engine-common/entities/CLoadingScreen.h"
 
 void sceneEditorMain::LoadScene ( void )
 {
 	debug::Console->PrintMessage( "Loading scene: editor.\n" );
+
+	CLoadingScreen* loadScreen = new CLoadingScreen();
+	loadScreen->loadStep();
 
 	// Create orthographic camera
 	/*{
@@ -69,9 +74,13 @@ void sceneEditorMain::LoadScene ( void )
 	{
 		M04::MapEditor* editor = new M04::MapEditor();
 		editor->RemoveReference(); // So it can be destroyed when the game quits
-	}
+	} loadScreen->loadStep();
 
 	// Print a prompt
 	debug::Console->PrintMessage( "You are running a debug build of M04.\n" );
 	debug::Console->PrintMessage( "This scene is meant to expose the 2D game module's built-in editor functionality.\n" );
+
+	// Finish load screen.
+	loadScreen->loadSetDone();
+	loadScreen->RemoveReference();
 }
