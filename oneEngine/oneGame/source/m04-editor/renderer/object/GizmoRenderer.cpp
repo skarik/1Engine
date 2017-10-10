@@ -51,7 +51,7 @@ bool GizmoRenderer::Render ( const char pass )
 	const Color m_selectColor	(1.0F,1.0F,1.0F,0.8F);
 	Color m_typeColor;
 
-	// Do a render of all areas
+	// Do a render of all objects
 	for ( auto object = EditorObject::Objects().begin(); object != EditorObject::Objects().end(); ++object )
 	{
 		Rect rect = (*object)->GetSpriteRect();

@@ -43,5 +43,7 @@ protected:
 	uint					m_buffer_tris;
 };
 
+// Typedef'd to keep consistency with CRenderable2D
+typedef CRenderablePrimitive CRenderable3D;
 
 #endif//C_RENDERABLE_PRIMITIVE_

@@ -3,6 +3,7 @@
 #define _2D_AREA_RENDERER_H_
 
 #include "renderer/object/CRenderableObject.h"
+#include "renderer/object/shapes/CStreamedRenderable3D.h"
 
 namespace Engine2D
 {

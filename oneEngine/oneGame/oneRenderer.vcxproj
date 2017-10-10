@@ -84,34 +84,11 @@
     <ClCompile Include="source\renderer\object\screen\CGlowObject.cpp" />
     <ClCompile Include="source\renderer\object\screen\CScreenFade.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CBillboard.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CCubeRenderablePrimitive.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CIsosphere.cpp" />
+    <ClCompile Include="source\renderer\object\shapes\CPrimitiveCube.cpp" />
+    <ClCompile Include="source\renderer\object\shapes\CPrimitiveIsosphere.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CRenderablePrimitive.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CRenderPlane.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CRotBoxRPrimitive.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\sprite\CSprite.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\sprite\CSpriteContainer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\sprite\CSprite_CheckFunctions.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\CPrimitivePlane.cpp" />
+    <ClCompile Include="source\renderer\object\shapes\CStreamedRenderable3D.cpp" />
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp" />
     <ClCompile Include="source\renderer\ogl\gl_core_3_3.c" />
     <ClCompile Include="source\renderer\ogl\wgl_core_3_3.c" />
@@ -202,28 +179,11 @@
     <ClInclude Include="source\renderer\object\screen\CGlowObject.h" />
     <ClInclude Include="source\renderer\object\screen\CScreenFade.h" />
     <ClInclude Include="source\renderer\object\shapes\CBillboard.h" />
-    <ClInclude Include="source\renderer\object\shapes\CCubeRenderablePrimitive.h" />
-    <ClInclude Include="source\renderer\object\shapes\CIsosphere.h" />
+    <ClInclude Include="source\renderer\object\shapes\CPrimitiveCube.h" />
+    <ClInclude Include="source\renderer\object\shapes\CPrimitiveIsosphere.h" />
     <ClInclude Include="source\renderer\object\shapes\CRenderablePrimitive.h" />
-    <ClInclude Include="source\renderer\object\shapes\CRenderPlane.h" />
-    <ClInclude Include="source\renderer\object\shapes\CRotBoxRPrimitive.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\sprite\CSprite.unused.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\sprite\CSpriteContainer.unused.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\CPrimitivePlane.h" />
+    <ClInclude Include="source\renderer\object\shapes\CStreamedRenderable3D.h" />
     <ClInclude Include="source\renderer\object\util\CLoadScreenInjector.h" />
     <ClInclude Include="source\renderer\ogl\GLCommon.h" />
     <ClInclude Include="source\renderer\ogl\gl_core_3_3.h" />

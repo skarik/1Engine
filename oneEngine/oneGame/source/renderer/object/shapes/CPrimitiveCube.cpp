@@ -1,6 +1,6 @@
 
 // Includes
-#include "CCubeRenderablePrimitive.h"
+#include "CPrimitiveCube.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 

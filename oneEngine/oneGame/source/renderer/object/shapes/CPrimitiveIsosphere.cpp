@@ -1,4 +1,4 @@
-#include "CIsosphere.h"
+#include "CPrimitiveIsosphere.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 #include "renderer/camera/CCamera.h"
@@ -19,7 +19,7 @@ const arModelTriangle kIsoSphereTriangles[20] = {
     {6,1,10}, {9,0,11}, {9,11,2}, {9,2,5}, {7,2,11}
 };
 
-CIsosphere::CIsosphere ( int divisions )
+CPrimitiveIsosphere::CPrimitiveIsosphere ( int divisions )
 	: CRenderablePrimitive ()
 {
 	buildIsosphere(divisions);
@@ -30,7 +30,7 @@ CIsosphere::CIsosphere ( int divisions )
 	delete[] m_modeldata.triangles;
 }
 
-CIsosphere::~CIsosphere ( void )
+CPrimitiveIsosphere::~CPrimitiveIsosphere ( void )
 {
 	;
 }
@@ -102,7 +102,7 @@ FORCE_INLINE void rrAddTri ( int* vindex, int* tindex, arModelData* md, Vector3f
 	}  
 }
 
-void CIsosphere::buildIsosphere ( int divisions )
+void CPrimitiveIsosphere::buildIsosphere ( int divisions )
 {
 	// Each division splits every triangle into 4 new triangles.
 	m_modeldata.vertexNum	= (uint16_t)(20 * 3 * (int)powf(4, (Real)divisions));

@@ -100,9 +100,6 @@
     <Filter Include="SOURCE\Renderer\Particle">
       <UniqueIdentifier>{5ff5d927-5930-4dd0-b76f-22606cb99959}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\Renderer\Object\Sprite.unused">
-      <UniqueIdentifier>{ab0caa54-7e17-4e28-971c-89c4069719b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SOURCE\Renderer\Object\Immediate">
       <UniqueIdentifier>{7e9475da-58a6-416f-83ad-d917a56d253b}</UniqueIdentifier>
     </Filter>
@@ -189,32 +186,11 @@
     <ClCompile Include="source\renderer\object\shapes\CBillboard.cpp">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CCubeRenderablePrimitive.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CIsosphere.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\shapes\CRenderablePrimitive.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CRenderPlane.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CRotBoxRPrimitive.cpp">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\CMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\sprite\CSprite.cpp">
-      <Filter>SOURCE\Renderer\Object\Sprite.unused</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\sprite\CSpriteContainer.cpp">
-      <Filter>SOURCE\Renderer\Object\Sprite.unused</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\sprite\CSprite_CheckFunctions.cpp">
-      <Filter>SOURCE\Renderer\Object\Sprite.unused</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp">
       <Filter>SOURCE\Renderer\Object\Util</Filter>
@@ -387,6 +363,18 @@
     <ClCompile Include="source\renderer\utils\rrTextBuilder2D.cpp">
       <Filter>SOURCE\Renderer\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\CPrimitiveCube.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\CPrimitiveIsosphere.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\CPrimitivePlane.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\CStreamedRenderable3D.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\ogl\GLCommon.h">
@@ -452,19 +440,7 @@
     <ClInclude Include="source\renderer\object\shapes\CBillboard.h">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CCubeRenderablePrimitive.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CIsosphere.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\object\shapes\CRenderablePrimitive.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CRenderPlane.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CRotBoxRPrimitive.h">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\CMesh.h">
@@ -662,12 +638,6 @@
     <ClInclude Include="source\renderer\gpuw\Transfer.h">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\object\sprite\CSprite.unused.h">
-      <Filter>SOURCE\Renderer\Object\Sprite.unused</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\sprite\CSpriteContainer.unused.h">
-      <Filter>SOURCE\Renderer\Object\Sprite.unused</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\system\rrVBufferStreaming.h">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClInclude>
@@ -694,6 +664,18 @@
     </ClInclude>
     <ClInclude Include="source\renderer\utils\rrTextBuilder2D.h">
       <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\CPrimitiveCube.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\CPrimitiveIsosphere.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\CPrimitivePlane.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\CStreamedRenderable3D.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

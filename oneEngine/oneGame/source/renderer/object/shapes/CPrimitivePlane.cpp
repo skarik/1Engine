@@ -1,17 +1,17 @@
-#include "CRenderPlane.h"
+#include "CPrimitivePlane.h"
 
-CRenderPlane::CRenderPlane ( Real xsize, Real ysize )
+CPrimitivePlane::CPrimitivePlane ( Real xsize, Real ysize )
 	: CRenderablePrimitive()
 {
 	setSize(xsize, ysize);
 }
 
-CRenderPlane::~CRenderPlane ( void )
+CPrimitivePlane::~CPrimitivePlane ( void )
 {
 	;
 }
 
-void CRenderPlane::setSize ( Real xsize, Real ysize )
+void CPrimitivePlane::setSize ( Real xsize, Real ysize )
 {
 	buildPlane( xsize/2.0F, ysize/2.0F );
 	PushModeldata();
@@ -24,7 +24,7 @@ void CRenderPlane::setSize ( Real xsize, Real ysize )
 	m_modeldata.triangles = NULL;
 }
 
-void CRenderPlane::buildPlane ( Real hxsize, Real hysize )
+void CPrimitivePlane::buildPlane ( Real hxsize, Real hysize )
 {
 	// Initialize data if it doesn't exist.
 	if (m_modeldata.vertices == NULL)
