@@ -18,12 +18,12 @@ UILuvPpl::~UILuvPpl ( void )
 {
 	if ( m_modeldata.vertices )
 	{
-		delete [] m_modeldata.vertices;
+		delete[] m_modeldata.vertices;
 		m_modeldata.vertices = NULL;
 	}
 	if ( m_modeldata.triangles )
 	{
-		delete [] m_modeldata.triangles;
+		delete[] m_modeldata.triangles;
 		m_modeldata.triangles = NULL;
 	}
 }
@@ -36,8 +36,8 @@ void UILuvPpl::Update ( void )
 
 	if (m_modeldata.triangles == NULL)
 	{
-		delete [] m_modeldata.triangles;
-		delete [] m_modeldata.vertices;
+		delete[] m_modeldata.triangles;
+		delete[] m_modeldata.vertices;
 
 		m_modeldata.triangles = new arModelTriangle [512];
 		m_modeldata.vertices = new arModelVertex [1024];

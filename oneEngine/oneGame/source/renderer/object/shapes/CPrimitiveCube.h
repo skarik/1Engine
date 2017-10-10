@@ -2,10 +2,10 @@
 #define C_CUBE_RENDERABLE_PRIMITIVE_H_
 
 // Includes
-#include "CRenderablePrimitive.h"
+#include "renderer/object/CRenderable3D.h"
 
 // Class definition
-class CPrimitiveCube : public CRenderablePrimitive
+class CPrimitiveCube : public CRenderable3D
 {
 public:
 	RENDER_API explicit	CPrimitiveCube ( void );

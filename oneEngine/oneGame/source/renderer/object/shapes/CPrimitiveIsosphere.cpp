@@ -20,7 +20,7 @@ const arModelTriangle kIsoSphereTriangles[20] = {
 };
 
 CPrimitiveIsosphere::CPrimitiveIsosphere ( int divisions )
-	: CRenderablePrimitive ()
+	: CRenderable3D ()
 {
 	buildIsosphere(divisions);
 	PushModeldata();

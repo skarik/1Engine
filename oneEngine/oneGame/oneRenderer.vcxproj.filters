@@ -186,9 +186,6 @@
     <ClCompile Include="source\renderer\object\shapes\CBillboard.cpp">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CRenderablePrimitive.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\CMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClCompile>
@@ -372,8 +369,11 @@
     <ClCompile Include="source\renderer\object\shapes\CPrimitivePlane.cpp">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CStreamedRenderable3D.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    <ClCompile Include="source\renderer\object\CStreamedRenderable3D.cpp">
+      <Filter>SOURCE\Renderer\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\CRenderable3D.cpp">
+      <Filter>SOURCE\Renderer\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -438,9 +438,6 @@
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\shapes\CBillboard.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CRenderablePrimitive.h">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\CMesh.h">
@@ -674,8 +671,11 @@
     <ClInclude Include="source\renderer\object\shapes\CPrimitivePlane.h">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CStreamedRenderable3D.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    <ClInclude Include="source\renderer\object\CStreamedRenderable3D.h">
+      <Filter>SOURCE\Renderer\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\CRenderable3D.h">
+      <Filter>SOURCE\Renderer\Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

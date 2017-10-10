@@ -1,9 +1,9 @@
 #ifndef C_PRIMITIVE_PLANE_
 #define C_PRIMITIVE_PLANE_
 
-#include "CRenderablePrimitive.h"
+#include "renderer/object/CRenderable3D.h"
 
-class CPrimitivePlane : public CRenderablePrimitive
+class CPrimitivePlane : public CRenderable3D
 {
 public:
 	RENDER_API explicit		CPrimitivePlane ( Real xsize = 1.0f, Real ysize = 1.0f );

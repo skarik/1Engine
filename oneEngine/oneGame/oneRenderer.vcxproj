@@ -67,6 +67,8 @@
     <ClCompile Include="source\renderer\material\RrShaderManager.cpp" />
     <ClCompile Include="source\renderer\module_renderer.cpp" />
     <ClCompile Include="source\renderer\object\CRenderableObject.cpp" />
+    <ClCompile Include="source\renderer\object\CRenderable3D.cpp" />
+    <ClCompile Include="source\renderer\object\CStreamedRenderable3D.cpp" />
     <ClCompile Include="source\renderer\object\immediate\RrScopedMeshRenderer.cpp" />
     <ClCompile Include="source\renderer\object\mesh\CInstancedMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\CMesh.cpp" />
@@ -86,9 +88,7 @@
     <ClCompile Include="source\renderer\object\shapes\CBillboard.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CPrimitiveCube.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CPrimitiveIsosphere.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CRenderablePrimitive.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CPrimitivePlane.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CStreamedRenderable3D.cpp" />
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp" />
     <ClCompile Include="source\renderer\ogl\gl_core_3_3.c" />
     <ClCompile Include="source\renderer\ogl\wgl_core_3_3.c" />
@@ -158,6 +158,8 @@
     <ClInclude Include="source\renderer\material\RrShaderManager.h" />
     <ClInclude Include="source\renderer\module_renderer.h" />
     <ClInclude Include="source\renderer\object\CRenderableObject.h" />
+    <ClInclude Include="source\renderer\object\CRenderable3D.h" />
+    <ClInclude Include="source\renderer\object\CStreamedRenderable3D.h" />
     <ClInclude Include="source\renderer\object\immediate\immediate.h" />
     <ClInclude Include="source\renderer\object\immediate\IRrRenderableStreamedMesh.h" />
     <ClInclude Include="source\renderer\object\immediate\RrScopedMeshRenderer.h" />
@@ -181,9 +183,7 @@
     <ClInclude Include="source\renderer\object\shapes\CBillboard.h" />
     <ClInclude Include="source\renderer\object\shapes\CPrimitiveCube.h" />
     <ClInclude Include="source\renderer\object\shapes\CPrimitiveIsosphere.h" />
-    <ClInclude Include="source\renderer\object\shapes\CRenderablePrimitive.h" />
     <ClInclude Include="source\renderer\object\shapes\CPrimitivePlane.h" />
-    <ClInclude Include="source\renderer\object\shapes\CStreamedRenderable3D.h" />
     <ClInclude Include="source\renderer\object\util\CLoadScreenInjector.h" />
     <ClInclude Include="source\renderer\ogl\GLCommon.h" />
     <ClInclude Include="source\renderer\ogl\gl_core_3_3.h" />

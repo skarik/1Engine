@@ -13,14 +13,13 @@
 
 #include "core/types/ModelData.h"
 #include "core/math/Vector3d.h"
-#include "../CRenderableObject.h"
-#include "renderer/material/RrMaterial.h"
+#include "renderer/object/CRenderableObject.h"
 
-class CRenderablePrimitive : public CRenderableObject
+class CRenderable3D : public CRenderableObject
 {
 public:
-	RENDER_API				CRenderablePrimitive ( void );
-	RENDER_API				~CRenderablePrimitive ( void );
+	RENDER_API				CRenderable3D ( void );
+	RENDER_API				~CRenderable3D ( void );
 
 	//		PreRender()
 	// Push the uniform properties
@@ -42,8 +41,5 @@ protected:
 	uint					m_buffer_verts;
 	uint					m_buffer_tris;
 };
-
-// Typedef'd to keep consistency with CRenderable2D
-typedef CRenderablePrimitive CRenderable3D;
 
 #endif//C_RENDERABLE_PRIMITIVE_

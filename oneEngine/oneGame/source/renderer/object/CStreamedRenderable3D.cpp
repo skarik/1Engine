@@ -1,4 +1,4 @@
-#include "renderer/object/shapes/CStreamedRenderable3D.h"
+#include "renderer/object/CStreamedRenderable3D.h"
 
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"

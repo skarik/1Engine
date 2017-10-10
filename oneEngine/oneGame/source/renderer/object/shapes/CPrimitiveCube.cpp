@@ -1,5 +1,3 @@
-
-// Includes
 #include "CPrimitiveCube.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
@@ -7,13 +5,13 @@
 // Constructor
 //  sets values to unit cube, generate vertices
 CPrimitiveCube::CPrimitiveCube ( void )
-	: CRenderablePrimitive ()
+	: CRenderable3D ()
 {
 	setSize(1.0F, 1.0F, 1.0F);
 }
 //  sets values to user-defined, then creates vertices
 CPrimitiveCube::CPrimitiveCube ( Real width, Real depth, Real height )
-	: CRenderablePrimitive ()
+	: CRenderable3D ()
 {
 	setSize(width, depth, height);
 }

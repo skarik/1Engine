@@ -1,7 +1,7 @@
 #include "CPrimitivePlane.h"
 
 CPrimitivePlane::CPrimitivePlane ( Real xsize, Real ysize )
-	: CRenderablePrimitive()
+	: CRenderable3D()
 {
 	setSize(xsize, ysize);
 }

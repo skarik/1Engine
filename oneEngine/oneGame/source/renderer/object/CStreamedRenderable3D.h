@@ -11,7 +11,7 @@
 #ifndef RENDER_C_STREAMED_RENDERABLE_3D_H_
 #define RENDER_C_STREAMED_RENDERABLE_3D_H_
 
-#include "renderer/object/shapes/CRenderablePrimitive.h"
+#include "renderer/object/CRenderable3D.h"
 
 class CStreamedRenderable3D : public CRenderable3D
 {

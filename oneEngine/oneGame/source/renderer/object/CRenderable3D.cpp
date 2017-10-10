@@ -1,8 +1,9 @@
-#include "CRenderablePrimitive.h"
+#include "CRenderable3D.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
+#include "renderer/material/RrMaterial.h"
 
-CRenderablePrimitive::CRenderablePrimitive ( void )
+CRenderable3D::CRenderable3D ( void )
 	: CRenderableObject()
 {
 	// Start with empty buffers
@@ -16,7 +17,7 @@ CRenderablePrimitive::CRenderablePrimitive ( void )
 	m_modeldata.vertices = NULL;
 }
 
-CRenderablePrimitive::~CRenderablePrimitive ( void )
+CRenderable3D::~CRenderable3D ( void )
 { GL_ACCESS
 
 	// Still have to release buffers
@@ -32,7 +33,7 @@ CRenderablePrimitive::~CRenderablePrimitive ( void )
 
 //		PushModelData()
 // Takes the information inside of m_modeldata and pushes it to the GPU so that it may be rendered.
-void CRenderablePrimitive::PushModeldata ( void )
+void CRenderable3D::PushModeldata ( void )
 { GL_ACCESS
 	GL.BindVertexArray( 0 );
 
@@ -64,7 +65,7 @@ void CRenderablePrimitive::PushModeldata ( void )
 
 //		PreRender()
 // Push the uniform properties
-bool CRenderablePrimitive::PreRender ( void )
+bool CRenderable3D::PreRender ( void )
 {
 	m_material->prepareShaderConstants(transform.world);
 	return true;
@@ -72,7 +73,7 @@ bool CRenderablePrimitive::PreRender ( void )
 
 //		Render()
 // Render the model using the 2D engine's style
-bool CRenderablePrimitive::Render ( const char pass )
+bool CRenderable3D::Render ( const char pass )
 { GL_ACCESS
 	// Do not render if no buffer to render with
 	if ( m_buffer_verts == 0 || m_buffer_tris == 0 )

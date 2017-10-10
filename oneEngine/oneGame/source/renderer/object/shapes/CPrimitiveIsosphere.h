@@ -1,10 +1,9 @@
 #ifndef C_PRIMITIVE_ISOSPHERE_H_
 #define C_PRIMITIVE_ISOSPHERE_H_
 
-#include "CRenderablePrimitive.h"
-#include <vector>
+#include "renderer/object/CRenderable3D.h"
 
-class CPrimitiveIsosphere : public CRenderablePrimitive
+class CPrimitiveIsosphere : public CRenderable3D
 {
 public:
 	// Constructor and Destructor
