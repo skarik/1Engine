@@ -108,25 +108,7 @@
     <ClCompile Include="source\renderer\system\glDrawing.cpp">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\system\glDrawing_primitives.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\system\glMainSystem.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem_buffers.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem_matrix.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem_frame.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem_screen_pixels.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem_textures.cpp">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\camera\CCamera.cpp">
@@ -142,12 +124,6 @@
       <Filter>SOURCE\Renderer\Camera</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\state\CRenderState.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\state\CRenderState_Render.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\state\CRenderState_Sorters.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\state\Settings.cpp">
@@ -276,9 +252,6 @@
     <ClCompile Include="source\renderer\ogl\gl_core_3_3.c">
       <Filter>SOURCE\Renderer\OGL</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem_state.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\screen\CGlowObject.cpp">
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
     </ClCompile>
@@ -310,12 +283,6 @@
       <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\material\RrMaterial.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrMaterial_External.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrMaterial_Utility.cpp">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\material\RrPassForward.cpp">
@@ -374,6 +341,36 @@
     </ClCompile>
     <ClCompile Include="source\renderer\object\CRenderable3D.cpp">
       <Filter>SOURCE\Renderer\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.External.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.Utility.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.buffers.cpp">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.frame.cpp">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.matrix.cpp">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.screen_pixels.cpp">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.state.cpp">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.textures.cpp">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\CRenderState.Render.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\CRenderState.Sorters.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

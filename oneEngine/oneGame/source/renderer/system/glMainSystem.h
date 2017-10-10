@@ -22,25 +22,8 @@
 // Need threading locks
 #include <mutex>
 
-//#include "glExtentions.h"
-
-// Extension checking
-/*extern bool glVBOsAvailable;
-extern bool glNPOTsAvailable;
-// GL Values
-extern int	glMaxTextureSize;
-
-// Function Definitions
-void OpenGL_InitializeCommonExtentions ( void );
-void OpenGL_SetSwapInterval ( int );
-*/
-
 #define GL_ACCESS glMainSystem& GL = *glMainSystem::ActiveReference();
 
-// Streaming mesh data class
-//#include "glVBufferStreaming.h"
-// For the vertex class
-//#include "core/types/ModelData.h"
 class CRenderTexture;
 
 class glMainSystem
@@ -89,8 +72,6 @@ public:
 	void		BeginFrame ( void );
 	// Cleanup after old frame
 	void		EndFrame ( void );
-	// Present frame
-	//void		Present ( void );
 
 	//==============================================================================================//
 	// 
@@ -100,11 +81,6 @@ public:
 	RENDER_API CRenderTexture* GetMainScreenBuffer ( void );
 	// Tell the entire system to restart
 	RENDER_API void		FullRedraw ( void );
-
-	// Push matrix state
-	//RENDER_API void		prepareDraw ( void );
-	//// Pop matrix state
-	//RENDER_API void		cleanupDraw ( void );
 
 	RENDER_API void		setupFog ( void );
 	RENDER_API void		setupAmbient ( void );
@@ -127,36 +103,11 @@ public:
 	RENDER_API void		setupViewport ( int x, int y, int width, int height );
 	RENDER_API void		scissorViewport ( int x, int y, int width, int height );
 
-	//RENDER_API void		beginOrtho ( void );
-	//RENDER_API void		beginOrtho ( Real left, Real top, Real width, Real height, Real minz, Real maxz, bool flipped=true );
-	//RENDER_API void		endOrtho ( void );
-	//RENDER_API bool		inOrtho ( void );
-
-	//RENDER_API void		pushProjection ( const Matrix4x4& );
-	//RENDER_API void		popProjection ( );
-
-	//RENDER_API const Matrix4x4& getProjection ( void );
-
-	//RENDER_API bool		hasModelMatrix ( void );
-	//RENDER_API void		pushModelMatrix ( const Matrix4x4& );
-	//RENDER_API void		popModelMatrix ( void );
-
-	//RENDER_API const Matrix4x4& getModelMatrix ( void );
-
 #ifdef _ENGINE_RELEASE
 	RENDER_API FORCE_INLINE void CheckError ( void ) {}
 #else
 	RENDER_API void		CheckError ( void );
 #endif
-
-	// == Transformations and lazy transforms ==
-	//RENDER_API void		Transform ( const XrTransform* );
-	//RENDER_API void		Transform ( const Matrix2x2& );
-	//RENDER_API void		Transform ( const Matrix4x4& );
-
-	//RENDER_API void		Translate ( Vector3d const& );
-	//RENDER_API void		Translate ( Vector2d const& );
-	//RENDER_API void		Rotate ( float );
 
 	//==============================================================================================//
 	// CURRENT RENDER STATES
@@ -176,10 +127,6 @@ public:
 	RENDER_API void		DisableDepthWrite ( void );
 
 	RENDER_API void		BlendMode( const eBlendModes src, const eBlendModes dest );
-
-private:
-	//std::list<Matrix4x4>	viewprojection_stack;
-	//std::list<Matrix4x4>	modelmatrix_stack;
 
 public:
 	// == Screen and Pixels ==
@@ -202,16 +149,6 @@ public:
 	RENDER_API glEnum		Enum ( const eSamplingFilter );
 
 	//==============================================================================================//
-	// TEXTURES
-	//==============================================================================================//
-
-	/*glHandle		GetNewTexture( );
-	void			FreeTexture( glHandle );
-
-	void			TextureSetWrapping( const glHandle, const eWrappingType wrapX, const eWrappingType wrapY );
-	void			TextureSetWrapping( const glHandle, const eWrappingType wrapX, const eWrappingType wrapY, const eWrappingType wrapZ );*/
-
-	//==============================================================================================//
 	// BUFFERS
 	//==============================================================================================//
 
@@ -230,8 +167,6 @@ public:
 	RENDER_API void			DrawElements ( uint type, int count, uint data, void* offset );
 
 private:
-	//unsigned int	iCurrentProjectionMode;
-
 	bool	bFogEnabled;
 	bool	bDepthWriteEnabled;
 

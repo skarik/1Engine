@@ -76,34 +76,10 @@ bool CLoadScreenInjector::PreRender ( void )
 }
 bool CLoadScreenInjector::Render ( const char pass )
 {
-	rrTextBuilder2D builder (m_fntNotifier, 512);
-
-	//GL_ACCESS GLd_ACCESS
-	////GL.beginOrtho();
-	//core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
-	//	//GL.Translate( Vector3d( 0,0,41 ) );
-	//	GLd.DrawSet2DMode( GLd.D2D_FLAT );
-	//	GLd.DrawSet2DScaleMode( GLd.SCALE_DEFAULT );
-	//	//screenMaterial->diffuse.alpha = 1.0;//std::min<Real>( fAlpha, 1 );
-	//	//screenMaterial->bind();
-	//		//glColor4f( 1,1,1,1 );
-	//	screenMaterial->bindPass(0);
-	//		GLd.DrawRectangleA( 0,0, 1,1 );
-	//	//screenMaterial->unbind();
-
-	//	//matNotifierDrawer->bind();
-	//	//fntNotifier->Set();
-	//	//	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-	//	matNotifierDrawer->bindPass(0);
-	//	matNotifierDrawer->m_diffuse.alpha = 0.75F + sinf(Time::currentTime * 2.0F) * 0.25F;
-	//	//GLd.DrawAutoTextCentered( 0.5f+cosf(Time::currentTime*0.2f)*0.02f, 0.8f+sinf(Time::currentTime*0.5f)*0.04f, "Loading" );
-	//	GLd.DrawAutoTextCentered( 0.5F, 0.8F, "L  O  A  D  I  N  G" );
-	//	//fntNotifier->Unbind();
-	//	//matNotifierDrawer->unbind();
-
-	////GL.endOrtho();
 	const char* kScreenMessage = "LOADING";
-	const int kScreenMessageLen = strlen(kScreenMessage);
+	const int   kScreenMessageLen = strlen(kScreenMessage);
+
+	rrTextBuilder2D builder (m_fntNotifier, 512);
 
 	builder.addRect(
 		Rect(-(Real)Screen::Info.width, -(Real)Screen::Info.width, (Real)Screen::Info.width * 3.0F, (Real)Screen::Info.width * 3.0F),

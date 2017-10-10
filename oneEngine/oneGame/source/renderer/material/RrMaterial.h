@@ -101,26 +101,15 @@ public:
 	//	Returns shader currently in use for the current pass
 	RENDER_API RrShader*	getUsingShader ( void );
 
-	//RENDER_API void			setUniform ( const char* sUniformName, float const fInput );
-	//RENDER_API void			setUniform ( const char* sUniformName, Vector2d const& vInput );
-	//RENDER_API void			setUniform ( const char* sUniformName, Vector3d const& vInput );
-	//RENDER_API void			setUniform ( const char* sUniformName, Color const& cInput );
-	//RENDER_API void			setUniform ( const char* sUniformName, Matrix4x4 const& matxInput );
-
 	RENDER_API void			bindAttribute ( int attributeIndex, const uint vec_size, const uint vec_type, const bool normalize, const int struct_size, const void* struct_offset ); 
 	RENDER_API void			bindAttributeI ( int attributeIndex, const uint vec_size, const uint vec_type, const int struct_size, const void* struct_offset ); 
 
 private:
-	// internal bind states
-	//void	shader_bind_world ( RrShader* shader );
+	// internal bind states:
 
 	void	shader_bind_samplers ( RrShader* shader );
-	//void	shader_bind_constants ( RrShader* shader );
-	//void	shader_bind_lights ( RrShader* shader );
-	//void	shader_bind_nolights ( RrShader* shader );
 
 	void	deferred_shader_build ( uchar pass );
-	//void	shader_bind_deferred ( RrShader* shader );
 
 	// new bind:
 	void	shader_set_constantbuffers ( RrShader* shader, uchar pass, bool forward );
@@ -157,9 +146,14 @@ public:
 	//=========================================//
 	// Sampler and Texture get/set interface
 	//=========================================//
-
+	
+	//	setTexture ( slot, texture ) : Sets material texture.
+	// Material is given ownership of the texture (to an extent).
+	// Do not delete the texture directly, use RemoveReference.
 	RENDER_API void			setTexture ( const textureslot_t n_index, CTexture* n_texture );
+	//	setSampler ( slot, texture ) : Sets material texture with raw GPU handles.
 	RENDER_API void			setSampler ( const textureslot_t n_index, const glHandle n_sampler, const glEnum n_sampler_target=0 );
+	//	getTexture ( slot ) : Returns texture object set to slot
 	RENDER_API CTexture*	getTexture ( const textureslot_t n_index );
 
 private:
