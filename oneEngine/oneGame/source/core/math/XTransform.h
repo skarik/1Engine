@@ -1,6 +1,12 @@
-
-#ifndef _X_TRANSFORM_H_
-#define _X_TRANSFORM_H_
+//===============================================================================================//
+//
+//		class XTransform, XvTransform, and XrTransform
+//
+// Structures for holding TRS data (translation, rotation, scaling).
+//
+//===============================================================================================//
+#ifndef CORE_MATH_X_TRANSFORM_H_
+#define CORE_MATH_X_TRANSFORM_H_
 
 #include "Vector3d.h"
 #include "Quaternion.h"
@@ -46,5 +52,4 @@ struct ALIGNAS(64) XrTransform	// 16 float structure
 };
 //static_assert(sizeof(XrTransform) == 64, "Invalid alignment on XrTransform!");
 
-
-#endif
+#endif//CORE_MATH_X_TRANSFORM_H_

@@ -1,9 +1,8 @@
 // Lovely interface to toss control here and there and everywhere
 // Creates a layer between input system 
 
-
-#ifndef _C_INPUT_CONTROL_H_
-#define _C_INPUT_CONTROL_H_
+#ifndef C_INPUT_CONTROL_H_
+#define C_INPUT_CONTROL_H_
 
 #include "core/types/types.h"
 #include "core/types/float.h"
@@ -14,7 +13,6 @@ class CEmulatedInputControl;
 
 class CInputControl
 {
-
 public:
 	CORE_API explicit		CInputControl ( void* owner );
 	CORE_API 				~CInputControl ( void );
@@ -30,13 +28,17 @@ public:
 	CORE_API void*			GetUser ( void ) { return current_user; };
 
 public:
-	struct ControlValue {	// Control value class
+	// Control value class
+	class ControlValue
+	{	
 	public:
-		operator const bool() const { return (Value >= 0.5f); }
-		bool		pressed ( void ) { return _pressed; }
-		bool		released ( void ) { return _released; }
 		Real Value;
 		Real PreviousValue;
+	public:
+		operator const bool() const { return (Value >= 0.5F); }
+		bool		pressed ( void ) { return _pressed; }
+		bool		released ( void ) { return _released; }
+		
 		void		Zero ( void ) {
 			_pressed = false;
 			_released = false;
@@ -47,19 +49,15 @@ public:
 			_released = false;
 			PreviousValue = Value;
 		}
-
-		// Constructor
-		/*ControlValue ( void )
-			: Value(0), PreviousValue(0), _pressed(false), _released(false)
-		{
-			;
-		}*/
 	private:
+		// Allow different types of controls to have access to this class.
 		friend		CInputControl;
 		friend		CEmulatedInputControl;
+		
+		//	Update(newVal) : Updates press value and updates press states.
 		void		Update( Real NewValue ) {
-			_pressed = ((!_pressed) && ((NewValue >= 0.5f)&&(PreviousValue < 0.5f)));
-			_released = ((!_released) && ((NewValue <= 0.5f)&&(PreviousValue > 0.5f)));
+			_pressed = ((!_pressed) && ((NewValue >= 0.5F)&&(PreviousValue < 0.5F)));
+			_released = ((!_released) && ((NewValue <= 0.5F)&&(PreviousValue > 0.5F)));
 			PreviousValue = Value;
 			Value = NewValue;
 		}
@@ -72,7 +70,8 @@ public:
 
 	typedef union
 	{
-		struct {
+		struct
+		{
 			ControlValue crouch;
 			ControlValue jump;
 			ControlValue primary;
@@ -101,22 +100,6 @@ public:
 	axes_t axes;
 
 	static const short max_axes	= 19;
-
-	/*float		fInput [10];
-	float		fInputPrev [10];
-
-	enum eInputIndex
-	{
-		iCrouch		= 0,
-		iJump,
-		iPrimary,
-		iSecondary,
-		iTab,
-		iSprint,
-		iProne,
-		iThrow
-	};
-	static const short maxInputs	= 8;*/
 	
 private:
 	void* current_user;
@@ -125,4 +108,4 @@ private:
 };
 
 
-#endif//_C_INPUT_CONTROL_H_
+#endif//C_INPUT_CONTROL_H_

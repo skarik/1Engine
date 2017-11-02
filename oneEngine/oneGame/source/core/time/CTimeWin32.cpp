@@ -1,5 +1,5 @@
+#if _WIN32
 
-// Includes
 #include "CTimeWin32.h"
 #include <algorithm>
 
@@ -34,7 +34,7 @@ void CTime::Init ( void )
 	//targetFixedTime = 1/15.0f;
 	currentTime = 0.0f;
 
-	for ( char i = 0; i < 10; i += 1 )
+	for ( int i = 0; i < 10; i += 1 )
 	{
 		fDeltaTimes[i] = 0.01f;
 	}
@@ -54,7 +54,7 @@ void CTime::Tick ( void )
 	QueryPerformanceCounter( &iCurrentTick );
 
 	smoothDeltaTime = 0.0f;
-	for ( char i = 9; i > 0; i -= 1 )
+	for ( int i = 9; i > 0; i -= 1 )
 	{
 		fDeltaTimes[i] = fDeltaTimes[i-1];
 		smoothDeltaTime += fDeltaTimes[i];
@@ -99,3 +99,5 @@ Real_d CTime::GetCurrentCPUTime ( void )
 
 	return (Real_d(tempTime.QuadPart)/iFrequency.QuadPart)*1000;
 }
+
+#endif

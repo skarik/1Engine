@@ -1,20 +1,18 @@
-// CTime class
-// controls shiz
+//===============================================================================================//
+//
+//		CTime : Timer class, Win32
+//
+//===============================================================================================//
+#if _WIN32
+#ifndef C_TIME_
+#define C_TIME_
 
-#ifndef _C_TIME_
-#define _C_TIME_
-
-// Include
+#include "core/os.h"
 #include "core/types/types.h"
 #include "core/types/float.h"
 
 #include <ctime>
 
-#include "core/os.h"
-
-// Namespace for the lulz
-
-// Class Definition
 class CTime
 {
 public:
@@ -53,4 +51,5 @@ private:
 
 typedef CTime Time;
 
+#endif//C_TIME_
 #endif

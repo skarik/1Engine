@@ -1,5 +1,15 @@
-#ifndef _CORE_TRANSFORM_H_
-#define _CORE_TRANSFORM_H_
+//===============================================================================================//
+//
+//		class Transform
+//
+// Structure for holding commonly used matrix transformations.
+// Can be constructed with XTransforms.
+//
+// Currently, Transform is an alias for TransformLite, so they do not incur update costs.
+//
+//===============================================================================================//
+#ifndef CORE_TRANSFORM_H_
+#define CORE_TRANSFORM_H_
 
 // Includes
 #include <string>
@@ -27,7 +37,7 @@ namespace core
 	CORE_API	extern Vector3d_d	world_origin;
 }
 
-#endif//_CORE_TRANSFORM_H_
+#endif//CORE_TRANSFORM_H_
 
 #if 0
 #ifndef _C_TRANSFORM_H_

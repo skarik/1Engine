@@ -1,13 +1,10 @@
-#ifdef _WIN32
-
-#ifndef _C_TIME_PROFILER_H_
-#define _C_TIME_PROFILER_H_
+#ifndef C_TIME_PROFILER_H_
+#define C_TIME_PROFILER_H_
 
 #include "core/time/time.h"
 #include "core/containers/arstring.h"
 
 #include <string>
-using std::string;
 #include <map>
 #include <mutex>
 
@@ -15,6 +12,7 @@ class CTimeProfilerUI;
 
 namespace debug
 {
+#ifdef _WIN32
 	class CTimeProfiler
 	{
 	public:
@@ -57,10 +55,9 @@ namespace debug
 		typedef std::map<arstring<128>,sTimeProfile> TimeProfileMap;
 		TimeProfileMap mTimeProfiles;
 	};
+#endif
 }
 
 CORE_API extern debug::CTimeProfiler TimeProfiler;
 
-#endif
-
-#endif
+#endif//C_TIME_PROFILER_H_

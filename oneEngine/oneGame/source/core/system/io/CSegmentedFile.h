@@ -1,11 +1,16 @@
+//===============================================================================================//
+//
+//		Segmented File Class
+//
 // Segmented files are text-based files of the following format:
 //  <<begin,name<{name here}>,
 //    (binary data here as characters)
 //  -end>>
 // Because of this structure, data can be added easily.
-
-// (C) 2012-2013 Joshua Boren.
-
+//
+// (C) 2012-2013 Joshua Boren, (C) 2014-2017 EpicHouse Studios LLC. Use with permission.
+//
+//===============================================================================================//
 #ifndef _C_SEGMENTED_FILE_H_
 #define _C_SEGMENTED_FILE_H_
 

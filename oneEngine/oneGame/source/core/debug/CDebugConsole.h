@@ -1,15 +1,13 @@
-//===============================================================================================//
-// onengine/core-ext
+//=onengine/core-ext=============================================================================//
 //
-//	CDebugConsole
-//		shitty print debugging class that's lasted since first started with C++
-//		(it has pretty colors)
+//		CDebugConsole - Ultra basic print-statment debugging class.
 //
-//	Author: Joshua Boren
+// Used for print statement debugging. It has pretty colors.
+// Code is dated to before any team member knew how to program C++.
+//
 //===============================================================================================//
-
-#ifndef _C_DEBUG_CONSOLE_
-#define _C_DEBUG_CONSOLE_
+#ifndef C_DEBUG_CONSOLE_
+#define C_DEBUG_CONSOLE_
 
 #include "core/types/types.h"
 
@@ -31,7 +29,6 @@ using std::string;
 
 namespace debug
 {
-
 	// Class Definition
 	class CDebugConsole
 	{
@@ -45,17 +42,18 @@ namespace debug
 		CORE_API static void Init ( void );
 		CORE_API static void Free ( void );
 
-		CORE_API static void PrintMessage ( const string& );
+		// TODO: Make a const char* variant to avoid the copy
+		CORE_API static void PrintMessage ( const string& ); 
+		// TODO: Make a const char* variant to avoid the copy
 		CORE_API static void PrintWarning ( const string& );
+		// TODO: Make a const char* variant to avoid the copy
 		CORE_API static void PrintError ( const string& );
 
 		CORE_API static void DisableOutput ( void );
 		CORE_API static void EnableOutput ( void );
 	};
 
-	//typedef CDebugConsole DebugConsole;
 	CORE_API extern CDebugConsole*	Console;
-
 }
 
-#endif
+#endif//C_DEBUG_CONSOLE_

@@ -1,7 +1,5 @@
-#ifdef __APPLE__
-	#ifdef TARGET_OS_MAC
+#if (__APPLE__ && TARGET_OS_MAC)
 
-// Includes
 #include "CTimeOsmac.h"
 
 // Static variable declares
@@ -56,5 +54,4 @@ void CTime::Tick ( void )
 	smoothDeltaTime = smoothDeltaTime * 0.1f;
 }
 
-	#endif
 #endif

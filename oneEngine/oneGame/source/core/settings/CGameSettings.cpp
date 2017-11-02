@@ -1,5 +1,3 @@
-
-// Includes
 #include "CGameSettings.h"
 #include "core/containers/arstring.h"
 #include "core/utils/StringUtils.h"

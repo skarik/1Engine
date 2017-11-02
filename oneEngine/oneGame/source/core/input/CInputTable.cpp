@@ -38,10 +38,10 @@ void CInput::setInputTable ( void )
 	for ( int i = 0; i < 256; ++i ) {
 		_inputtable[i] = 0;
 	}
-	for ( char a = '0'; a != ':'; ++a ) {
+	for ( int a = '0'; a != ':'; ++a ) {
 		_inputtable[a] = a;
 	}
-	for ( char a = 'A'; a != '['; ++a ) {
+	for ( int a = 'A'; a != '['; ++a ) {
 		_inputtable[a] = a;
 	}
 

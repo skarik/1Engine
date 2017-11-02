@@ -1,6 +1,10 @@
-
-#ifndef _STRING_HELPER_H_
-#define	_STRING_HELPER_H_
+//===============================================================================================//
+//
+//		core/utils/StringUtils.h - Common string utilities.
+//
+//===============================================================================================//
+#ifndef CORE_STRING_HELPER_H_
+#define	CORE_STRING_HELPER_H_
 
 #include "core/types/types.h"
 
@@ -35,4 +39,4 @@ namespace StringUtils
 
 };
 
-#endif
+#endif//CORE_STRING_HELPER_H_

@@ -1,6 +1,13 @@
-
-#ifndef _C_GAME_SETTINGS_
-#define _C_GAME_SETTINGS_
+//===============================================================================================//
+//
+//		CGameSettings - Settings class for global external info.
+//
+// CGameSettings performs IO on simple command line and CFG files.
+// Values are stored under public members. Variables are manually parsed for simplicity.
+//
+//===============================================================================================//
+#ifndef C_GAME_SETTINGS_
+#define C_GAME_SETTINGS_
 
 #include "core/types/types.h"
 #include <vector>
@@ -89,9 +96,6 @@ public:
 	// Setters
 	//=========================================//
 
-	//CORE_API void SetTerrainSaveFile ( const string& );
-	//CORE_API void SetWorldSaveFile ( const string& );
-	//CORE_API void SetPlayerSaveFile ( const string& );
 	CORE_API void SetWorldSaveTarget ( const char* );
 	CORE_API void SetRealmSaveTarget ( const char* );
 	CORE_API void SetPlayerSaveTarget ( const char* );
@@ -101,17 +105,11 @@ public:
 	//=========================================//
 
 	// These can return references because they're references to class data
-	//CORE_API const string& GetTerrainSaveFile ( void );
-	//CORE_API const string& GetWorldSaveFile ( void );
-	//CORE_API const string& GetPlayerSaveFile ( void );
 	CORE_API const string& GetWorldTargetName ( void );
 	CORE_API const string& GetRealmTargetName ( void );
 	CORE_API const string& GetPlayerTargetName ( void );
 
 	// These return the actual directories to saving
-	//CORE_API string GetTerrainSaveDir ( void );
-	//CORE_API string GetWorldSaveDir ( void );
-	//CORE_API string GetWorldSaveDir ( const string& realmName );
 	CORE_API string MakeWorldSaveDirectory ( void );
 	CORE_API string MakeRealmSaveDirectory ( void );
 	CORE_API string MakeRealmSaveDirectory ( const string& realmName );
@@ -124,7 +122,7 @@ public:
 	CORE_API void GetRealmFileList ( std::vector<string>& );
 
 	// Populates a vector of resolutions with all the found (and wanted) resolutions and returns it
-	//const vector<resolution_t> & GetResolutionList ( void );
+	//const vector<resolution_t> & GetResolutionList ( void ); // TODO: does the renderer even work this way still?
 
 public: // Members that are edited by outside objects often are put here, as a get/set would be redundant like a second asshole
 	//=========================================//
@@ -190,9 +188,6 @@ private:
 	//=========================================//
 
 	// Current save targets (for game)
-	//string	sSaveFilePlayer;
-	//string	sSaveFileWorld;
-	//string	sSaveFileTerrain;
 	string	m_target_file_player;
 	string	m_target_file_world;
 	string	m_target_file_realm;
@@ -205,8 +200,4 @@ private:
 	std::map<string,string>	m_settings_string;
 };
 
-// Global Gamesettings
-//extern CGameSettings*	CGameSettings::Active();
-
-
-#endif
+#endif//C_GAME_SETTINGS_

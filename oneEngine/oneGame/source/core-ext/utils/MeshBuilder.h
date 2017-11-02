@@ -1,3 +1,10 @@
+//===============================================================================================//
+//
+//		core/utils/MeshBuilder.h
+//
+// Tool for helping build commonly made meshes.
+//
+//===============================================================================================//
 #ifndef CORE_EXTENSION_UTILS_MESH_BUILDER_H_
 #define CORE_EXTENSION_UTILS_MESH_BUILDER_H_
 

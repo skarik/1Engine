@@ -1,5 +1,13 @@
-#ifndef _C_TRANSFORM_UTILITY_H_
-#define _C_TRANSFORM_UTILITY_H_
+//===============================================================================================//
+//
+//		class TransformLite, TransformUtility
+//
+// TransformLite: Structure for holding commonly used matrix transformations.
+// TransformUtility: Class for performing common transform operations on TransformLite's.
+//
+//===============================================================================================//
+#ifndef CORE_TRANSFORM_UTILITY_H_
+#define CORE_TRANSFORM_UTILITY_H_
 
 // Includes
 #include <string>
@@ -69,4 +77,4 @@ namespace core
 	};
 };
 
-#endif//_C_TRANSFORM_UTILITY_H_
+#endif//CORE_TRANSFORM_UTILITY_H_

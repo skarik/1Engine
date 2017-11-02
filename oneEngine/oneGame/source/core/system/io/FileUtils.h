@@ -1,6 +1,5 @@
-
-#ifndef _IO_FILE_UTILS_H_
-#define _IO_FILE_UTILS_H_
+#ifndef CORE_IO_FILE_UTILS_H_
+#define CORE_IO_FILE_UTILS_H_
 
 #include "core/types/types.h"
 #include <string>
@@ -28,4 +27,4 @@ namespace IO
 	std::string ReadFileToString ( const char* n_filename );
 };
 
-#endif//_IO_FILE_UTILS_H_
+#endif//CORE_IO_FILE_UTILS_H_

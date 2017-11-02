@@ -124,7 +124,7 @@ int		mccvxg_read_image ( mccVXG_file_infop file_info, void* outimagedata )
 	fread( file_info->buffer, ((file_info->datasize+3)/4)*4,1, file_info->file );
 	
 	// Uncompress the data
-	z_result = uncompress( (char*)outimagedata, &final_data_size, (char*)file_info->buffer, file_info->datasize );
+	z_result = uncompress( (Bytef*)outimagedata, &final_data_size, (Bytef*)file_info->buffer, file_info->datasize );
 	switch( z_result )
 	{
 	case Z_OK:

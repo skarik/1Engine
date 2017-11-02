@@ -1,7 +1,10 @@
+//===============================================================================================//
 //
-//	Jobs.h
+//		Jobs.h
+//
 // Thread pool-like job system. Has sync points for different jobs.
 //
+//===============================================================================================//
 #ifndef CORE_EXT_THREADS_JOBS_H_
 #define CORE_EXT_THREADS_JOBS_H_
 

@@ -30,7 +30,7 @@ CMappedBinaryFile::~CMappedBinaryFile ( void )
 void CMappedBinaryFile::SyncToDisk ( void )
 {
 	// Get cursor
-	size_t prevPos = TellPos();
+	long prevPos = TellPos();
 	// Close and open file
 	fclose( m_file );
 	m_file = fopen( m_filename, "r+b" );
@@ -40,12 +40,12 @@ void CMappedBinaryFile::SyncToDisk ( void )
 
 // Seeks to the given location.
 // Will expand the file as necessary.
-void CMappedBinaryFile::SeekTo ( const size_t n_pos )
+void CMappedBinaryFile::SeekTo ( const long n_pos )
 {
-	size_t currentSize = TellSize();
+	long currentSize = TellSize();
 	if ( n_pos > currentSize ) {
 		fseek( m_file, 0, SEEK_END );
-		for ( size_t i = 0; i < n_pos-currentSize; ++i ) {
+		for ( long i = 0; i < n_pos-currentSize; ++i ) {
 			//fwrite( "\0", 1, 1, m_file );
 			fputc( 0,m_file );
 		}
@@ -73,15 +73,15 @@ FILE* CMappedBinaryFile::GetStream ( void )
 	return m_file;
 }
 
-size_t CMappedBinaryFile::TellPos ( void )
+long CMappedBinaryFile::TellPos ( void )
 {
 	return ftell( m_file );
 }
-size_t CMappedBinaryFile::TellSize( void )
+long CMappedBinaryFile::TellSize( void )
 {
-	size_t prevPos = TellPos();
+	long prevPos = TellPos();
 	fseek( m_file, 0, SEEK_END );
-	size_t result = ftell(m_file);
+	long result = ftell(m_file);
 	fseek( m_file, prevPos, SEEK_SET );
 	return result;
 }
