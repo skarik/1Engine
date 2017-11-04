@@ -3,8 +3,8 @@
 //
 // Contains definitions for individual pixel data storage
 //===============================================================================================//
-#ifndef _RENDERER_PIXEL_FORMAT_H_
-#define _RENDERER_PIXEL_FORMAT_H_
+#ifndef RENDERER_PIXEL_FORMAT_H_
+#define RENDERER_PIXEL_FORMAT_H_
 
 #include "core/types/types.h"
 #include "core/types/float.h"
@@ -99,4 +99,4 @@ struct tPixelF
 typedef tPixelF pixelF_t;
 
 
-#endif//_RENDERER_PIXEL_FORMAT_H_
+#endif//RENDERER_PIXEL_FORMAT_H_

@@ -18,31 +18,73 @@ in vec3 mdl_TexCoord3;
 in vec3 mdl_TexCoord4;
 
 // System inputs
-uniform mat4 sys_ModelTRS;
+/*uniform mat4 sys_ModelTRS;
 uniform mat4 sys_ModelRS;
 uniform mat4 sys_ModelViewProjectionMatrix;
-uniform mat4 sys_ViewProjectionMatrix;
+uniform mat4 sys_ViewProjectionMatrix;*/
 
-// State inputs
-//uniform vec3 sys_WorldCameraPos;
-
-// Material inputs
-layout(location = 5) uniform vec4 sys_TextureScale;
-layout(location = 6) uniform vec4 sys_TextureOffset;
-
-// Time inputs
-uniform vec4 sys_SinTime;
-uniform vec4 sys_CosTime;
-uniform vec4 sys_Time;
-
-// Fog
-layout(std140) uniform sys_Fog
+layout(std140) uniform sys_cbuffer_PerObject
 {
+    mat4 sys_ModelTRS;
+    mat4 sys_ModelRS;
+    mat4 sys_ModelViewProjectionMatrix;
+    mat4 sys_ModelViewProjectionMatrixInverse;
+};
+layout(std140) uniform sys_cbuffer_PerCamera
+{
+    mat4 sys_ViewProjectionMatrix;
+    vec4 sys_WorldCameraPos;
+    vec4 sys_ViewportInfo;
+    vec2 sys_ScreenSize;
+    vec2 sys_PixelRatio;
+};
+layout(std140) uniform sys_cbuffer_PerFrame
+{
+    // Time inputs
+    vec4 sys_SinTime;
+    vec4 sys_CosTime;
+    vec4 sys_Time;
+
+    // Fog
 	vec4	sys_FogColor;
 	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };
+
+// State inputs
+//uniform vec3 sys_WorldCameraPos;
+
+// Material inputs
+/*layout(location = 5) uniform vec4 sys_TextureScale;
+layout(location = 6) uniform vec4 sys_TextureOffset;*/
+
+layout(std140) uniform sys_cbuffer_PerObjectExt
+{
+    vec4    sys_DiffuseColor;
+    vec4    sys_SpecularColor;
+    // Emissive RGB - Emissive color.
+    // Emissive A - Alpha cutoff.
+    vec4    sys_EmissiveColor;
+    vec4    sys_LightingOverrides;
+
+    vec4    sys_TextureScale;
+    vec4    sys_TextureOffset;
+};
+
+// Time inputs
+/*uniform vec4 sys_SinTime;
+uniform vec4 sys_CosTime;
+uniform vec4 sys_Time;*/
+
+// Fog
+/*layout(std140) uniform sys_Fog
+{
+	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
+	float 	sys_FogEnd;
+	float 	sys_FogScale;
+};*/
 
 // Vertex Outputs
 out vec4 v2f_normals;

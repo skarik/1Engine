@@ -8,6 +8,7 @@
 #include "renderer/texture/CBitmapFont.h"
 #include "renderer/system/glMainSystem.h" // Include the main system
 #include "renderer/system/glDrawing.h"
+#include "renderer/object/immediate/immediate.h"
 
 void CDuskGUIColorpicker::SetColor ( Color& c )
 {
@@ -310,14 +311,15 @@ void CDuskGUIColorpicker::Render ( void )
 		drawRect( Rect( rect.pos.x+0.02f, rect.pos.y+0.07f, rect.size.x*0.12f, rect.size.y*0.09f ) );
 
 
-		GL.prepareDraw();
+		//GL.prepareDraw();
 
 		//GL.beginOrtho( 0,0, 1,1, -45,45 );
-		GL.beginOrtho();
-		GLd.DrawSet2DScaleMode();
+		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+		//GL.beginOrtho();
+		//GLd.DrawSet2DScaleMode();
 
-		activeGUI->matDefault->bindPass(0);
-		activeGUI->matDefault->setShaderConstants( activeGUI );
+		//activeGUI->matDefault->bindPass(0);
+		//activeGUI->matDefault->setShaderConstants( activeGUI );
 
 		{
 			// Now, draw the color wheel
@@ -326,12 +328,18 @@ void CDuskGUIColorpicker::Render ( void )
 			dpos.x = (rect.pos.x+(rect.size.x*0.5f))*Screen::Info.width;
 			dpos.y = (rect.pos.y+(rect.size.y*0.5f))*Screen::Info.height;
 			dl = std::min<Real>( (rect.size.x*0.4f*Screen::Info.width), (rect.size.y*0.4f*Screen::Info.height) );
+			Vector2d popos1, popos2;
 			Vector2d dopos1, dopos2;
-			Color dcolor1, dcolor2;
+			Color pcolor1;
+			Color dcolor1;
 			int modColor;
-			GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+			//auto lPrimWheel = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 			for ( int i = 0; i <= 360; i += 5 )
 			{
+				popos1 = dopos1;
+				popos2 = dopos2;
+				pcolor1 = dcolor1;
+
 				dopos1.x = dpos.x + (Real)( cos( degtorad( i ) ) * dl );
 				dopos1.y = dpos.y + (Real)( sin( degtorad( i ) ) * dl );
 
@@ -353,133 +361,150 @@ void CDuskGUIColorpicker::Render ( void )
 					dcolor1 = Color( 1.0f, 0.0f, 1.0f - modColor/60.0f );
 				dcolor1.alpha = 1.0f;
 				
-				GLd.P_PushColor( dcolor1 );
-				GLd.P_AddVertex( dopos1.x,dopos1.y );
-				GLd.P_AddVertex( dopos2.x,dopos2.y );
+				//GLd.P_PushColor( dcolor1 );
+				//GLd.P_AddVertex( dopos1.x,dopos1.y );
+				//GLd.P_AddVertex( dopos2.x,dopos2.y );
+
+				if (i == 0) continue;
+
+				arModelVertex vertices [4];
+				memset(vertices, 0, sizeof(arModelVertex) * 4);
+
+				vertices[0].position = popos1;
+				vertices[1].position = popos2;
+				vertices[2].position = dopos1;
+				vertices[3].position = dopos2;
+
+				vertices[0].color = Vector4f(pcolor1.raw);
+				vertices[1].color = Vector4f(pcolor1.raw);
+				vertices[2].color = Vector4f(dcolor1.raw);
+				vertices[3].color = Vector4f(dcolor1.raw);
+
+				getMeshBuilder()->addQuad( vertices, false );
 			}
-			GLd.EndPrimitive();
+			//GLd.EndPrimitive(lPrimWheel);
 
 			// Draw the position of the current hue
-			GLd.BeginPrimitive( GL_LINE_STRIP );
-				GLd.P_PushColor( 0.2f,0.2f,0.2f,0.8f );
+			//auto lPrimPos = GLd.BeginPrimitive( GL_LINE_STRIP, activeGUI->matDefault );
+			//	GLd.P_PushColor( 0.2f,0.2f,0.2f,0.8f );
 
-				dopos1.x = dpos.x + (Real)( cos( degtorad( hue-2 ) ) * dl * 1.03f );
-				dopos1.y = dpos.y + (Real)( sin( degtorad( hue-2 ) ) * dl * 1.03f );
+			//	dopos1.x = dpos.x + (Real)( cos( degtorad( hue-2 ) ) * dl * 1.03f );
+			//	dopos1.y = dpos.y + (Real)( sin( degtorad( hue-2 ) ) * dl * 1.03f );
 
-				dopos2.x = dpos.x + (Real)( cos( degtorad( hue-2 ) ) * dl * 0.77f );
-				dopos2.y = dpos.y + (Real)( sin( degtorad( hue-2 ) ) * dl * 0.77f );
+			//	dopos2.x = dpos.x + (Real)( cos( degtorad( hue-2 ) ) * dl * 0.77f );
+			//	dopos2.y = dpos.y + (Real)( sin( degtorad( hue-2 ) ) * dl * 0.77f );
 
-				GLd.P_AddVertex( dopos1.x,dopos1.y );
-				GLd.P_AddVertex( dopos2.x,dopos2.y );
+			//	GLd.P_AddVertex( dopos1.x,dopos1.y );
+			//	GLd.P_AddVertex( dopos2.x,dopos2.y );
 
-				dopos1.x = dpos.x + (Real)( cos( degtorad( hue+2 ) ) * dl * 1.03f );
-				dopos1.y = dpos.y + (Real)( sin( degtorad( hue+2 ) ) * dl * 1.03f );
+			//	dopos1.x = dpos.x + (Real)( cos( degtorad( hue+2 ) ) * dl * 1.03f );
+			//	dopos1.y = dpos.y + (Real)( sin( degtorad( hue+2 ) ) * dl * 1.03f );
 
-				dopos2.x = dpos.x + (Real)( cos( degtorad( hue+2 ) ) * dl * 0.77f );
-				dopos2.y = dpos.y + (Real)( sin( degtorad( hue+2 ) ) * dl * 0.77f );
+			//	dopos2.x = dpos.x + (Real)( cos( degtorad( hue+2 ) ) * dl * 0.77f );
+			//	dopos2.y = dpos.y + (Real)( sin( degtorad( hue+2 ) ) * dl * 0.77f );
 
-				GLd.P_AddVertex( dopos2.x,dopos2.y );
-				GLd.P_AddVertex( dopos1.x,dopos1.y );
+			//	GLd.P_AddVertex( dopos2.x,dopos2.y );
+			//	GLd.P_AddVertex( dopos1.x,dopos1.y );
 
-				dopos1.x = dpos.x + (Real)( cos( degtorad( hue-2 ) ) * dl * 1.03f );
-				dopos1.y = dpos.y + (Real)( sin( degtorad( hue-2 ) ) * dl * 1.03f );
+			//	dopos1.x = dpos.x + (Real)( cos( degtorad( hue-2 ) ) * dl * 1.03f );
+			//	dopos1.y = dpos.y + (Real)( sin( degtorad( hue-2 ) ) * dl * 1.03f );
 
-				GLd.P_AddVertex( dopos1.x,dopos1.y );
+			//	GLd.P_AddVertex( dopos1.x,dopos1.y );
 
-			GLd.EndPrimitive();
+			//GLd.EndPrimitive(lPrimPos);
 
 			// Draw the saturation/lightness triangle
-			GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
+			//auto lPrimTri = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
 
-			{
-				int i = int(hue);
-				modColor = i % 60;
-				if (( i < 60 )||( i == 360 ))
-					dcolor1 = Color( 1.0f, modColor/60.0f, 0.0f );
-				else if ( i < 120 )
-					dcolor1 = Color( 1.0f - modColor/60.0f, 1.0f, 0.0f );
-				else if ( i < 180 )
-					dcolor1 = Color( 0.0f, 1.0f, modColor/60.0f );
-				else if ( i < 240 )
-					dcolor1 = Color( 0.0f, 1.0f - modColor/60.0f, 1.0f );
-				else if ( i < 300 )
-					dcolor1 = Color( modColor/60.0f, 0.0f, 1.0f );
-				else
-					dcolor1 = Color( 1.0f, 0.0f, 1.0f - modColor/60.0f );
-				dcolor1.alpha = 1.0f;
-			}
-				//glColor4f( colorValue.red,colorValue.green,colorValue.blue,1.0f );
-				GLd.P_PushColor( dcolor1 );
-				GLd.P_AddVertex( dpos.x + dl*0.75f, dpos.y );
-				GLd.P_PushColor( 1.0f,1.0f,1.0f,1.0f );
-				GLd.P_AddVertex( dpos.x - dl*0.5f, dpos.y - dl*0.6f );
-				GLd.P_PushColor( 0.0f,0.0f,0.0f,1.0f );
-				GLd.P_AddVertex( dpos.x - dl*0.5f, dpos.y + dl*0.6f );
-			GLd.EndPrimitive();
+			//{
+			//	int i = int(hue);
+			//	modColor = i % 60;
+			//	if (( i < 60 )||( i == 360 ))
+			//		dcolor1 = Color( 1.0f, modColor/60.0f, 0.0f );
+			//	else if ( i < 120 )
+			//		dcolor1 = Color( 1.0f - modColor/60.0f, 1.0f, 0.0f );
+			//	else if ( i < 180 )
+			//		dcolor1 = Color( 0.0f, 1.0f, modColor/60.0f );
+			//	else if ( i < 240 )
+			//		dcolor1 = Color( 0.0f, 1.0f - modColor/60.0f, 1.0f );
+			//	else if ( i < 300 )
+			//		dcolor1 = Color( modColor/60.0f, 0.0f, 1.0f );
+			//	else
+			//		dcolor1 = Color( 1.0f, 0.0f, 1.0f - modColor/60.0f );
+			//	dcolor1.alpha = 1.0f;
+			//}
+			//	//glColor4f( colorValue.red,colorValue.green,colorValue.blue,1.0f );
+			//	GLd.P_PushColor( dcolor1 );
+			//	GLd.P_AddVertex( dpos.x + dl*0.75f, dpos.y );
+			//	GLd.P_PushColor( 1.0f,1.0f,1.0f,1.0f );
+			//	GLd.P_AddVertex( dpos.x - dl*0.5f, dpos.y - dl*0.6f );
+			//	GLd.P_PushColor( 0.0f,0.0f,0.0f,1.0f );
+			//	GLd.P_AddVertex( dpos.x - dl*0.5f, dpos.y + dl*0.6f );
+			//GLd.EndPrimitive(lPrimTri);
 
 			// Draw the saturation/lightness selection
-			dopos1.x = dpos.x - dl*0.5f + dl*(0.75f+0.5f)*saturation;
-			//dopos1.y = dpos.y + dl*( 0.6f - 1.2f*lightness )*(1-saturation);
-			dopos1.y = dpos.y + dl*( 0.6f - 1.2f*lightness );
-			if ( lightness > 0.35f )
-				GLd.P_PushColor( 0.0f,0.0f,0.0f,1.0f );
-			else
-				GLd.P_PushColor( 1.0f,1.0f,1.0f,1.0f );
-			GLd.DrawSet2DMode( GLd.D2D_WIRE );
-			GLd.DrawRectangleA( dopos1.x/Screen::Info.width-0.002f,dopos1.y/Screen::Info.height-0.002f,0.004f,0.004f );
-			//GL.DrawCircleA( dopos1.x,dopos1.y, 0.03f );
+			//dopos1.x = dpos.x - dl*0.5f + dl*(0.75f+0.5f)*saturation;
+			////dopos1.y = dpos.y + dl*( 0.6f - 1.2f*lightness )*(1-saturation);
+			//dopos1.y = dpos.y + dl*( 0.6f - 1.2f*lightness );
+			//if ( lightness > 0.35f )
+			//	GLd.P_PushColor( 0.0f,0.0f,0.0f,1.0f );
+			//else
+			//	GLd.P_PushColor( 1.0f,1.0f,1.0f,1.0f );
+			//GLd.DrawSet2DMode( GLd.D2D_WIRE );
+			//GLd.DrawRectangleA( dopos1.x/Screen::Info.width-0.002f,dopos1.y/Screen::Info.height-0.002f,0.004f,0.004f );
+			////GL.DrawCircleA( dopos1.x,dopos1.y, 0.03f );
 
-			// Draw the alpha bar on the right
-			GLd.DrawSet2DMode( GLd.D2D_FLAT );
-			if ( lightness > 0.35f )
-				GLd.P_PushColor( 0.0f,0.0f,0.0f,0.0f );
-			else
-				GLd.P_PushColor( 1.0f,1.0f,1.0f,0.0f );
-			GLd.DrawRectangleA( rect.pos.x+rect.size.x*0.82f,rect.pos.y+rect.size.y*0.05f,rect.size.x*0.06f,rect.size.y*0.9f );
-			GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
-				GLd.P_PushColor( colorValue.red, colorValue.green, colorValue.blue, 1.0f );
-				GLd.P_AddVertex(
-					(rect.pos.x+rect.size.x*0.82f+rect.size.x*0.06f)*Screen::Info.width,
-					(rect.pos.y+rect.size.y*0.05f)*Screen::Info.height );
-				GLd.P_AddVertex(
-					(rect.pos.x+rect.size.x*0.82f)*Screen::Info.width,
-					(rect.pos.y+rect.size.y*0.05f)*Screen::Info.height );
-				GLd.P_PushColor( colorValue.red, colorValue.green, colorValue.blue, 0.0f );
-				GLd.P_AddVertex(
-					(rect.pos.x+rect.size.x*0.82f+rect.size.x*0.06f)*Screen::Info.width,
-					(rect.pos.y+rect.size.y*0.05f+rect.size.y*0.9f)*Screen::Info.height );
-				GLd.P_AddVertex(
-					(rect.pos.x+rect.size.x*0.82f)*Screen::Info.width,
-					(rect.pos.y+rect.size.y*0.05f+rect.size.y*0.9f)*Screen::Info.height );
-			GLd.EndPrimitive();
-			GLd.DrawSet2DMode( GLd.D2D_WIRE );
-			//glColor4f( 0.0f,0.0f,0.0f,1.0f );
-			GLd.P_PushColor( 0.0f,0.0f,0.0f,1.0f );
-			GLd.DrawRectangleA( rect.pos.x+rect.size.x*0.82f,rect.pos.y+rect.size.y*0.05f,rect.size.x*0.06f,rect.size.y*0.9f );
+			//// Draw the alpha bar on the right
+			//GLd.DrawSet2DMode( GLd.D2D_FLAT );
+			//if ( lightness > 0.35f )
+			//	GLd.P_PushColor( 0.0f,0.0f,0.0f,0.0f );
+			//else
+			//	GLd.P_PushColor( 1.0f,1.0f,1.0f,0.0f );
+			//GLd.DrawRectangleA( rect.pos.x+rect.size.x*0.82f,rect.pos.y+rect.size.y*0.05f,rect.size.x*0.06f,rect.size.y*0.9f );
+			//auto lPrimAlpha = GLd.BeginPrimitive( GL_TRIANGLE_STRIP, activeGUI->matDefault );
+			//	GLd.P_PushColor( colorValue.red, colorValue.green, colorValue.blue, 1.0f );
+			//	GLd.P_AddVertex(
+			//		(rect.pos.x+rect.size.x*0.82f+rect.size.x*0.06f)*Screen::Info.width,
+			//		(rect.pos.y+rect.size.y*0.05f)*Screen::Info.height );
+			//	GLd.P_AddVertex(
+			//		(rect.pos.x+rect.size.x*0.82f)*Screen::Info.width,
+			//		(rect.pos.y+rect.size.y*0.05f)*Screen::Info.height );
+			//	GLd.P_PushColor( colorValue.red, colorValue.green, colorValue.blue, 0.0f );
+			//	GLd.P_AddVertex(
+			//		(rect.pos.x+rect.size.x*0.82f+rect.size.x*0.06f)*Screen::Info.width,
+			//		(rect.pos.y+rect.size.y*0.05f+rect.size.y*0.9f)*Screen::Info.height );
+			//	GLd.P_AddVertex(
+			//		(rect.pos.x+rect.size.x*0.82f)*Screen::Info.width,
+			//		(rect.pos.y+rect.size.y*0.05f+rect.size.y*0.9f)*Screen::Info.height );
+			//GLd.EndPrimitive(lPrimAlpha);
+			//GLd.DrawSet2DMode( GLd.D2D_WIRE );
+			////glColor4f( 0.0f,0.0f,0.0f,1.0f );
+			//GLd.P_PushColor( 0.0f,0.0f,0.0f,1.0f );
+			//GLd.DrawRectangleA( rect.pos.x+rect.size.x*0.82f,rect.pos.y+rect.size.y*0.05f,rect.size.x*0.06f,rect.size.y*0.9f );
 
-			// Draw alpha bar selector
-			GLd.DrawRectangleA(
-				rect.pos.x+rect.size.x*0.82f-0.005f,
-				rect.pos.y+rect.size.y*0.05f+(rect.size.y*0.9f*(1-colorValue.alpha))-0.005f,
-				rect.size.x*0.06f+0.010f,
-				0.010f );
+			//// Draw alpha bar selector
+			//GLd.DrawRectangleA(
+			//	rect.pos.x+rect.size.x*0.82f-0.005f,
+			//	rect.pos.y+rect.size.y*0.05f+(rect.size.y*0.9f*(1-colorValue.alpha))-0.005f,
+			//	rect.size.x*0.06f+0.010f,
+			//	0.010f );
 
-			GL.endOrtho();
-			GL.cleanupDraw();
+			//GL.endOrtho();
+			//GL.cleanupDraw();
 		}
 
 		//activeGUI->matDefault->unbind();
 
 		// Now draw text
-		activeGUI->matFont->bindPass(0);
-		activeGUI->fntDefault->Set();
-			
-			GLd.DrawAutoText( rect.pos.x + rect.size.x*0.01f  + 0.01f, rect.pos.y + rect.size.y*0.01f + 0.03f, label.c_str() );
+		//activeGUI->matDefault->bindPass(0);
+		//activeGUI->fntDefault->Set();
+		//	
+		//	GLd.DrawAutoText( rect.pos.x + rect.size.x*0.01f  + 0.01f, rect.pos.y + rect.size.y*0.01f + 0.03f, label.c_str() );
 
-			GLd.DrawAutoText( rect.pos.x + rect.size.x*0.01f  + 0.015f, rect.pos.y + rect.size.y*0.48f + 0.03f, "R: %.3lf", colorValue.red );
-			GLd.DrawAutoText( rect.pos.x + rect.size.x*0.01f  + 0.015f, rect.pos.y + rect.size.y*0.54f + 0.03f, "G: %.3lf", colorValue.green );
-			GLd.DrawAutoText( rect.pos.x + rect.size.x*0.01f  + 0.015f, rect.pos.y + rect.size.y*0.60f + 0.03f, "B: %.3lf", colorValue.blue );
-			GLd.DrawAutoText( rect.pos.x + rect.size.x*0.01f  + 0.015f, rect.pos.y + rect.size.y*0.66f + 0.03f, "A: %.3lf", colorValue.alpha );
+		//	GLd.DrawAutoText( rect.pos.x + rect.size.x*0.01f  + 0.015f, rect.pos.y + rect.size.y*0.48f + 0.03f, "R: %.3lf", colorValue.red );
+		//	GLd.DrawAutoText( rect.pos.x + rect.size.x*0.01f  + 0.015f, rect.pos.y + rect.size.y*0.54f + 0.03f, "G: %.3lf", colorValue.green );
+		//	GLd.DrawAutoText( rect.pos.x + rect.size.x*0.01f  + 0.015f, rect.pos.y + rect.size.y*0.60f + 0.03f, "B: %.3lf", colorValue.blue );
+		//	GLd.DrawAutoText( rect.pos.x + rect.size.x*0.01f  + 0.015f, rect.pos.y + rect.size.y*0.66f + 0.03f, "A: %.3lf", colorValue.alpha );
 
 		//activeGUI->fntDefault->Unbind();
 		//activeGUI->matFont->unbind();

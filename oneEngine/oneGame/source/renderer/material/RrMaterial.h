@@ -7,8 +7,10 @@
 #include "core/math/Vector2d.h"
 #include "core/math/Vector4d.h"
 #include "core/containers/arstring.h"
+#include "core-ext/transform/Transform.h"
 
 #include "renderer/types/types.h"
+#include "renderer/gpuw/Buffers.h"
 
 #include "RrShader.h"
 #include "RrPassForward.h"
@@ -63,12 +65,12 @@ public:
 	RENDER_API RrMaterial*	copy ( void );
 
 	// Current material active and bound
-	RENDER_API static RrMaterial*	current;
+	//RENDER_API static RrMaterial*	current;
 	RENDER_API static RrMaterial*	Default;
 	RENDER_API static RrMaterial*	Copy;
 	RENDER_API static RrMaterial*	Fallback;
 	// Current pass being bound
-	RENDER_API static uchar		current_pass;
+	//RENDER_API static uchar		current_pass;
 	// Current material count
 	RENDER_API static uint			current_sampler_slot;
 
@@ -77,8 +79,17 @@ public:
 	RENDER_API static uchar		special_mode;
 public:
 	RENDER_API void			bindPass ( uchar pass );
-	RENDER_API void			bindPassAtrribs ( uchar pass );
-	RENDER_API void			setShaderConstants ( CRenderableObject* source_object, const bool n_force_identity=false );
+	RENDER_API void			bindPassAtrribs ( void );
+
+	//	prepareShaderConstants( transform, identity ) : Push constants to GPU
+	// Unlike the previous setShaderConstants(), this does not require the material to be bound.
+	// Reads current pass and material states and pushes them to the per-object buffer on the GPU.
+	// This has a bit of GPU delay, so should be done enough time before rendering to prevent an upload stall. (On consoles, this delay is minimized).
+	RENDER_API void			prepareShaderConstants ( void );
+	RENDER_API void			prepareShaderConstants ( const core::Transform& n_transform );
+	RENDER_API void			prepareShaderConstants ( const XrTransform& n_transform );
+	//RENDER_API void			prepareShaderConstants ( CRenderableObject* source_object, const bool n_force_identity=false );
+	//RENDER_API void			setShaderConstants ( CRenderableObject* source_object, const bool n_force_identity=false );
 
 	RENDER_API void			bindPassForward ( uchar pass );
 	RENDER_API void			bindPassDeferred( uchar pass );
@@ -90,29 +101,22 @@ public:
 	//	Returns shader currently in use for the current pass
 	RENDER_API RrShader*	getUsingShader ( void );
 
-	RENDER_API void			setUniform ( const char* sUniformName, float const fInput );
-	RENDER_API void			setUniform ( const char* sUniformName, Vector2d const& vInput );
-	RENDER_API void			setUniform ( const char* sUniformName, Vector3d const& vInput );
-	RENDER_API void			setUniform ( const char* sUniformName, Color const& cInput );
-	RENDER_API void			setUniform ( const char* sUniformName, Matrix4x4 const& matxInput );
-
 	RENDER_API void			bindAttribute ( int attributeIndex, const uint vec_size, const uint vec_type, const bool normalize, const int struct_size, const void* struct_offset ); 
 	RENDER_API void			bindAttributeI ( int attributeIndex, const uint vec_size, const uint vec_type, const int struct_size, const void* struct_offset ); 
 
 private:
-	void	shader_bind_world	 ( RrShader* shader );
+	// internal bind states:
 
 	void	shader_bind_samplers ( RrShader* shader );
-	void	shader_bind_constants( RrShader* shader );
-	void	shader_bind_lights	 ( RrShader* shader );
-	void	shader_bind_nolights ( RrShader* shader );
 
-	void	deferred_shader_build( uchar pass );
-	void	shader_bind_deferred ( RrShader* shader );
+	void	deferred_shader_build ( uchar pass );
+
+	// new bind:
+	void	shader_set_constantbuffers ( RrShader* shader, uchar pass, bool forward );
 
 public:
 	// List of forward rendered passes
-	std::vector<RrPassForward>				passinfo;
+	std::vector<RrPassForward>	passinfo;
 	// Deferred rendering information
 	std::vector<RrPassDeferred>	deferredinfo;
 
@@ -127,7 +131,6 @@ public:
 	// Constants (Colors)
 	Color		m_diffuse;
 	Color		m_specular;
-	float		m_specularPower;
 	Color		m_emissive;
 
 	// Contants (Coordinates)
@@ -136,23 +139,45 @@ public:
 
 	// Constants (Other)
 	Vector4d	gm_WindDirection;
-	float		gm_FadeValue;
-	float		gm_HalfScale;
+	Real		gm_FadeValue;
+	Real		gm_HalfScale;
 
 public:
 	//=========================================//
 	// Sampler and Texture get/set interface
 	//=========================================//
-
+	
+	//	setTexture ( slot, texture ) : Sets material texture.
+	// Material is given ownership of the texture (to an extent).
+	// Do not delete the texture directly, use RemoveReference.
 	RENDER_API void			setTexture ( const textureslot_t n_index, CTexture* n_texture );
+	//	setSampler ( slot, texture ) : Sets material texture with raw GPU handles.
 	RENDER_API void			setSampler ( const textureslot_t n_index, const glHandle n_sampler, const glEnum n_sampler_target=0 );
+	//	getTexture ( slot ) : Returns texture object set to slot
 	RENDER_API CTexture*	getTexture ( const textureslot_t n_index );
 
 private:
+	// Current state:
+	RrShader*	m_currentShader;
+	uchar		m_currentPass;
+	bool		m_currentPassForward;
+
+	// Command buffer buildstate:
+	struct rrCmdBufferBuildstate
+	{
+		uint	cmdbuffer_index : 4;
+		bool	track_state : 1;
+	};
+	rrCmdBufferBuildstate	m_buildState;
+
 	// Textures (samplers)
 	CTexture*	m_highlevel_storage [12];
 	glHandle	m_samplers [12];
 	glEnum		m_sampler_targets [12];
+
+	// Constant Buffers
+	gpu::ConstantBuffer	m_cbufPerObject;
+
 public:
 	// Textures (buffers)
 	glHandle	m_bufferMatricesSkinning;
@@ -179,9 +204,15 @@ public:
 	RENDER_API static void	updateStaticUBO ( void );
 	RENDER_API static void	updateLightTBO ( void );
 
-private:
-	// Current update state
-	static int	m_currentShaderState;
+	RENDER_API static void	pushConstantsPerFrame ( void );
+	RENDER_API static void	pushConstantsPerPass ( void );
+	RENDER_API static void	pushConstantsPerCamera ( void );
+
+	RENDER_API void			pushConstantsPerObject ( const Matrix4x4& modelTRS, const Matrix4x4& modelRS );
+
+//private:
+//	// Current update state
+//	static int	m_currentShaderState;
 
 public:
 	//=========================================//

@@ -1,17 +1,15 @@
+#ifndef C_DUSK_GUI_ELEMENT_
+#define C_DUSK_GUI_ELEMENT_
 
-#ifndef _C_DUSK_GUI_ELEMENT_
-#define _C_DUSK_GUI_ELEMENT_
-
-// Includes
 #include "core/math/Rect.h"
 #include "core/math/Color.h"
-#include <string>
-using std::string;
-
 #include "../CDuskGUIHandle.h"
+#include <string>
 
-// Class Prototype
 class CDuskGUI;
+class rrTextBuilder2D;
+
+using std::string;
 
 // Class Definition
 class CDuskGUIElement
@@ -109,6 +107,8 @@ protected:
 	void drawTextWidth ( const Real x, const Real y, const Real w, const char* str );
 	void drawTextCentered ( const Real x, const Real y, const char* str );
 
+	rrTextBuilder2D* getMeshBuilder ( void );
+
 private:
 	friend CDuskGUI;
 
@@ -116,4 +116,4 @@ private:
 
 };
 
-#endif
+#endif//C_DUSK_GUI_ELEMENT_

@@ -31,7 +31,10 @@ class RrPassDeferred;
 #	define RegisterRenderBaseClass(_strname) public: virtual string GetBaseClassName ( void ) { return string(_strname); };
 #endif
 #ifndef delete_safe
-	#define delete_safe(_ptr) { if ( _ptr ) { delete (_ptr); (_ptr) = NULL; } };
+#	define delete_safe(_ptr) { if ( _ptr ) { delete (_ptr); (_ptr) = NULL; } };
+#endif
+#ifndef delete_safe_array
+#	define delete_safe_array(_ptr) { if ( _ptr ) { delete[] (_ptr); (_ptr) = NULL; } };
 #endif
 
 // Base class, virtual/abstract

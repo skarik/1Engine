@@ -6,7 +6,6 @@
 //
 //===============================================================================================//
 
-
 #ifndef _RENDER2D_C_RENDERABLE_2D_H_
 #define _RENDER2D_C_RENDERABLE_2D_H_
 
@@ -40,6 +39,10 @@ public:
 	//		SpriteGenParams ()
 	// Returns read-write reference to the sprite generation parameters
 	RENDER2D_API spriteGenParams2D_t& SpriteGenParams ( void );
+
+	//		PreRender()
+	// Push the uniform properties
+	RENDER2D_API bool		PreRender ( void ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style

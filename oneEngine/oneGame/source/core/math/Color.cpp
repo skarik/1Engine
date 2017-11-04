@@ -79,29 +79,6 @@ void Color::SetHSL ( const Color& inHSL )
 	Real saturation = inHSL.green;
 	Real lightness = inHSL.blue;
 
-	/*Real chroma = ( 1.0f - fabs( 2*lightness - 1.0f )) * saturation;
-	Real hue_t = hue * 6.0F;
-	Real cx_t = chroma * ( 1 - fabs( ( (hue_t*2 - int(hue_t/2))*2 ) - 1.0f ) );
-	Color color_t;
-	if ( hue_t < 1 )
-		color_t = Color( chroma, cx_t, 0 );
-	else if ( hue_t < 2 )
-		color_t = Color( cx_t, chroma, 0 );
-	else if ( hue_t < 3 )
-		color_t = Color( 0, chroma, cx_t );
-	else if ( hue_t < 4 )
-		color_t = Color( 0, cx_t, chroma );
-	else if ( hue_t < 5 )
-		color_t = Color( cx_t, 0, chroma );
-	else if ( hue_t < 6 )
-		color_t = Color( chroma, 0, cx_t );
-	else
-		color_t = Color( 0,0,0 );
-	Real cm_t = lightness - chroma/2;
-	red		= color_t.red	+ cm_t;
-	green	= color_t.green + cm_t;
-	blue	= color_t.blue	+ cm_t;*/
-
 	if ( saturation > 0.0F )
 	{
 		Real chroma = lightness < 0.5f ? (lightness * (1 + saturation)) : lightness + saturation - lightness * saturation;

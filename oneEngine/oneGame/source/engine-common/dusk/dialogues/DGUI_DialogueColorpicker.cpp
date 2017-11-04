@@ -9,6 +9,7 @@
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 #include "renderer/material/RrMaterial.h"
+#include "renderer/object/immediate/immediate.h"
 
 #include <algorithm>
 
@@ -179,25 +180,28 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 {
 	GL_ACCESS GLd_ACCESS;
 
-	GL.prepareDraw();
-	GL.beginOrtho();
-	GLd.DrawSet2DScaleMode();
-
-	activeGUI->matDefault->bindPass(0);
-	activeGUI->matDefault->setShaderConstants( activeGUI );
+	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 
 	// Draw the color circle
 	{
 		const float circle_radius_inner = 50.0F;
 		const float circle_radius_outer = 120.0F;
 
+		Vector2d popos1, popos2;
 		Vector2d dopos1, dopos2;
+		Color pcolor1, pcolor2;
 		Color dcolor1, dcolor2;
 		int modColor;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
 		for ( int i = 0; i <= 360; i += 1 )
 		{
+			// Save previous state
+			popos1 = dopos1;
+			popos2 = dopos2;
+			pcolor1 = dcolor1;
+			pcolor2 = dcolor2;
+
+			// Select positions
 			dopos1.x = position.x + (Real)( cos( degtorad( i ) ) * circle_radius_outer );
 			dopos1.y = position.y + (Real)( sin( degtorad( i ) ) * circle_radius_outer );
 
@@ -225,12 +229,23 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 			tempHSL[1] = 0.0F;
 			dcolor2.SetHSL(tempHSL);
 
-			GLd.P_PushColor( dcolor1 );
-			GLd.P_AddVertex( dopos1.x,dopos1.y );
-			GLd.P_PushColor( dcolor2 );
-			GLd.P_AddVertex( dopos2.x,dopos2.y );
+			if (i == 0) continue;
+
+			arModelVertex vertices [4];
+			memset(vertices, 0, sizeof(arModelVertex) * 4);
+
+			vertices[0].position = popos1;
+			vertices[1].position = popos2;
+			vertices[2].position = dopos1;
+			vertices[3].position = dopos2;
+
+			vertices[0].color = Vector4f(pcolor1.raw);
+			vertices[1].color = Vector4f(pcolor2.raw);
+			vertices[2].color = Vector4f(dcolor1.raw);
+			vertices[3].color = Vector4f(dcolor2.raw);
+
+			getMeshBuilder()->addQuad( vertices, false );
 		}
-		GLd.EndPrimitive();
 	}
 
 	// Draw the circle of the current color
@@ -238,27 +253,41 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 		const float circle_radius_outer = 40.0F;
 		const float circle_radius_inner = 20.0F;
 
+		Vector2d popos1, popos2;
 		Vector2d dopos1, dopos2;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
-		GLd.P_PushColor( m_currentColor );
 		for ( int i = 0; i <= 360; i += 5 )
 		{
+			// Save previous state
+			popos1 = dopos1;
+			popos2 = dopos2;
+
+			// Set positions
 			dopos1.x = position.x + (Real)( cos( degtorad( i ) ) * circle_radius_outer );
 			dopos1.y = position.y + (Real)( sin( degtorad( i ) ) * circle_radius_outer );
 
 			dopos2.x = position.x + (Real)( cos( degtorad( i ) ) * circle_radius_inner );
 			dopos2.y = position.y + (Real)( sin( degtorad( i ) ) * circle_radius_inner );
 
-			GLd.P_AddVertex( dopos1.x,dopos1.y );
-			GLd.P_AddVertex( dopos2.x,dopos2.y );
+			if (i == 0) continue;
+
+			// Add mesh
+			arModelVertex vertices [4];
+			memset(vertices, 0, sizeof(arModelVertex) * 4);
+
+			vertices[0].position = popos1;
+			vertices[1].position = popos2;
+			vertices[2].position = dopos1;
+			vertices[3].position = dopos2;
+
+			vertices[0].color = Vector4f(m_currentColor.raw);
+			vertices[1].color = Vector4f(m_currentColor.raw);
+			vertices[2].color = Vector4f(m_currentColor.raw);
+			vertices[3].color = Vector4f(m_currentColor.raw);
+
+			getMeshBuilder()->addQuad( vertices, false );
 		}
-		GLd.EndPrimitive();
 	}
-
-
-	GL.endOrtho();
-	GL.cleanupDraw();
 }
 
 void Dusk::DialogueColorpicker::updateColorSliders ( const Vector2d& position )
@@ -334,12 +363,7 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
 {
 	GL_ACCESS GLd_ACCESS;
 
-	GL.prepareDraw();
-	GL.beginOrtho();
-	GLd.DrawSet2DScaleMode();
-
-	activeGUI->matDefault->bindPass(0);
-	activeGUI->matDefault->setShaderConstants( activeGUI );
+	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 
 	// Draw the RGB bars
 	{
@@ -351,66 +375,70 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
 		const float selection_hwidth = 3;
 		const float selection_hheight = 3;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
-		GLd.P_PushColor( 0.0F, m_currentColor[1], m_currentColor[2] );
-		GLd.P_AddVertex( position.x, position.y + y );
-		GLd.P_AddVertex( position.x, position.y + y + height );
-		GLd.P_PushColor( 1.0F, m_currentColor[1], m_currentColor[2] );
-		GLd.P_AddVertex( position.x + width, position.y + y );
-		GLd.P_AddVertex( position.x + width, position.y + y + height );
-		GLd.EndPrimitive();
+		arModelVertex vertices [4];
+		memset(vertices, 0, sizeof(arModelVertex) * 4);
+
+
+		vertices[0].position = position + Vector2f(0, y);
+		vertices[1].position = position + Vector2f(0, y + height);
+		vertices[2].position = position + Vector2f(width, y);
+		vertices[3].position = position + Vector2f(width, y + height);
+		vertices[0].color = Vector4f(0.0F, m_currentColor[1], m_currentColor[2], 1.0F);
+		vertices[1].color = Vector4f(0.0F, m_currentColor[1], m_currentColor[2], 1.0F);
+		vertices[2].color = Vector4f(1.0F, m_currentColor[1], m_currentColor[2], 1.0F);
+		vertices[3].color = Vector4f(1.0F, m_currentColor[1], m_currentColor[2], 1.0F);
+		getMeshBuilder()->addQuad(vertices, false);
 
 		// Draw a box over current color
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
 		x_sub = width * m_currentColor[0];
-		GLd.P_PushColor( m_currentColor );
-		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y - selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y - selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.EndPrimitive();
+		getMeshBuilder()->addRect(
+			Rect(position + Vector2f(x_sub - selection_hwidth, y - selection_hheight),
+				 Vector2f(selection_hwidth * 2.0F, height + selection_hheight * 2.0F)),
+			m_currentColor,
+			false
+		);
 
 		y += 25;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
-		GLd.P_PushColor( m_currentColor[0], 0.0F, m_currentColor[2] );
-		GLd.P_AddVertex( position.x, position.y + y );
-		GLd.P_AddVertex( position.x, position.y + y + height );
-		GLd.P_PushColor( m_currentColor[0], 1.0F, m_currentColor[2] );
-		GLd.P_AddVertex( position.x + width, position.y + y );
-		GLd.P_AddVertex( position.x + width, position.y + y + height );
-		GLd.EndPrimitive();
+		vertices[0].position = position + Vector2f(0, y);
+		vertices[1].position = position + Vector2f(0, y + height);
+		vertices[2].position = position + Vector2f(width, y);
+		vertices[3].position = position + Vector2f(width, y + height);
+		vertices[0].color = Vector4f(m_currentColor[0], 0.0F, m_currentColor[2], 1.0F);
+		vertices[1].color = Vector4f(m_currentColor[0], 0.0F, m_currentColor[2], 1.0F);
+		vertices[2].color = Vector4f(m_currentColor[0], 1.0F, m_currentColor[2], 1.0F);
+		vertices[3].color = Vector4f(m_currentColor[0], 1.0F, m_currentColor[2], 1.0F);
+		getMeshBuilder()->addQuad(vertices, false);
 
 		// Draw a box over current color
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
 		x_sub = width * m_currentColor[1];
-		GLd.P_PushColor( m_currentColor );
-		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y - selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y - selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.EndPrimitive();
+		getMeshBuilder()->addRect(
+			Rect(position + Vector2f(x_sub - selection_hwidth, y - selection_hheight),
+				Vector2f(selection_hwidth * 2.0F, height + selection_hheight * 2.0F)),
+			m_currentColor,
+			false
+		);
 
 		y += 25;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
-		GLd.P_PushColor( m_currentColor[0], m_currentColor[1], 0.0F );
-		GLd.P_AddVertex( position.x, position.y + y );
-		GLd.P_AddVertex( position.x, position.y + y + height );
-		GLd.P_PushColor( m_currentColor[0], m_currentColor[1], 1.0F );
-		GLd.P_AddVertex( position.x + width, position.y + y );
-		GLd.P_AddVertex( position.x + width, position.y + y + height );
-		GLd.EndPrimitive();
+		vertices[0].position = position + Vector2f(0, y);
+		vertices[1].position = position + Vector2f(0, y + height);
+		vertices[2].position = position + Vector2f(width, y);
+		vertices[3].position = position + Vector2f(width, y + height);
+		vertices[0].color = Vector4f(m_currentColor[0], m_currentColor[1], 0.0F, 1.0F);
+		vertices[1].color = Vector4f(m_currentColor[0], m_currentColor[1], 0.0F, 1.0F);
+		vertices[2].color = Vector4f(m_currentColor[0], m_currentColor[1], 1.0F, 1.0F);
+		vertices[3].color = Vector4f(m_currentColor[0], m_currentColor[1], 1.0F, 1.0F);
+		getMeshBuilder()->addQuad(vertices, false);
 
 		// Draw a box over current color
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
 		x_sub = width * m_currentColor[2];
-		GLd.P_PushColor( m_currentColor );
-		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y - selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y - selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.EndPrimitive();
+		getMeshBuilder()->addRect(
+			Rect(position + Vector2f(x_sub - selection_hwidth, y - selection_hheight),
+				Vector2f(selection_hwidth * 2.0F, height + selection_hheight * 2.0F)),
+			m_currentColor,
+			false
+		);
 	}
 
 	// Draw the HSL bars
@@ -422,7 +450,10 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
 		const float height = 15;
 		const float selection_hwidth = 3;
 		const float selection_hheight = 3;
+		const int kDiv = 2;
 
+		arModelVertex vertices [4];
+		memset(vertices, 0, sizeof(arModelVertex) * 4);
 
 		Color colorhsl_ref;
 		m_currentColor.GetHSLC(colorhsl_ref);
@@ -430,73 +461,88 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
 		Color color0;
 		Color color1;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
-		for (int i = 0; i <= (int)width; i += 2)
+		for (int i = 0; i <= (int)width; i += kDiv)
 		{
-			color0.SetHSL( Color(i / width, colorhsl_ref[1], colorhsl_ref[2]) );
-			GLd.P_PushColor( color0 );
-			GLd.P_AddVertex( position.x + i, position.y + y );
-			GLd.P_AddVertex( position.x + i, position.y + y + height );
+			color0 = color1;
+			color1.SetHSL( Color(i / width, colorhsl_ref[1], colorhsl_ref[2]) );
+
+			if (i == 0) continue;
+			vertices[0].position = position + Vector2f((Real)i, y);
+			vertices[1].position = position + Vector2f((Real)i, y + height);
+			vertices[2].position = position + Vector2f((Real)i + kDiv, y);
+			vertices[3].position = position + Vector2f((Real)i + kDiv, y + height);
+			vertices[0].color = Vector4f(color0.raw);
+			vertices[1].color = Vector4f(color0.raw);
+			vertices[2].color = Vector4f(color1.raw);
+			vertices[3].color = Vector4f(color1.raw);
+			getMeshBuilder()->addQuad(vertices, false);
 		}
-		GLd.EndPrimitive();
 
 		// Draw a box over current color
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
 		x_sub = width * colorhsl_ref[0];
-		GLd.P_PushColor( m_currentColor );
-		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y - selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y - selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.EndPrimitive();
+		getMeshBuilder()->addRect(
+			Rect(position + Vector2f(x_sub - selection_hwidth, y - selection_hheight),
+				Vector2f(selection_hwidth * 2.0F, height + selection_hheight * 2.0F)),
+			m_currentColor,
+			false
+		);
 
 		y += 25;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
-		for (int i = 0; i <= (int)width; i += 2)
+		for (int i = 0; i <= (int)width; i += kDiv)
 		{
-			color0.SetHSL( Color(colorhsl_ref[0], i / width, colorhsl_ref[2]) );
-			GLd.P_PushColor( color0 );
-			GLd.P_AddVertex( position.x + i, position.y + y );
-			GLd.P_AddVertex( position.x + i, position.y + y + height );
+			color0 = color1;
+			color1.SetHSL( Color(colorhsl_ref[0], i / width, colorhsl_ref[2]) );
+
+			if (i == 0) continue;
+			vertices[0].position = position + Vector2f((Real)i, y);
+			vertices[1].position = position + Vector2f((Real)i, y + height);
+			vertices[2].position = position + Vector2f((Real)i + kDiv, y);
+			vertices[3].position = position + Vector2f((Real)i + kDiv, y + height);
+			vertices[0].color = Vector4f(color0.raw);
+			vertices[1].color = Vector4f(color0.raw);
+			vertices[2].color = Vector4f(color1.raw);
+			vertices[3].color = Vector4f(color1.raw);
+			getMeshBuilder()->addQuad(vertices, false);
 		}
-		GLd.EndPrimitive();
 
 		// Draw a box over current color
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
 		x_sub = width * colorhsl_ref[1];
-		GLd.P_PushColor( m_currentColor );
-		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y - selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y - selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.EndPrimitive();
+		getMeshBuilder()->addRect(
+			Rect(position + Vector2f(x_sub - selection_hwidth, y - selection_hheight),
+				Vector2f(selection_hwidth * 2.0F, height + selection_hheight * 2.0F)),
+			m_currentColor,
+			false
+		);
 
 		y += 25;
 
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
-		for (int i = 0; i <= (int)width; i += 2)
+		for (int i = 0; i <= (int)width; i += kDiv)
 		{
-			color0.SetHSL( Color(colorhsl_ref[0], colorhsl_ref[1], i / width) );
-			GLd.P_PushColor( color0 );
-			GLd.P_AddVertex( position.x + i, position.y + y );
-			GLd.P_AddVertex( position.x + i, position.y + y + height );
+			color0 = color1;
+			color1.SetHSL( Color(colorhsl_ref[0], colorhsl_ref[1], i / width) );
+
+			if (i == 0) continue;
+			vertices[0].position = position + Vector2f((Real)i, y);
+			vertices[1].position = position + Vector2f((Real)i, y + height);
+			vertices[2].position = position + Vector2f((Real)i + kDiv, y);
+			vertices[3].position = position + Vector2f((Real)i + kDiv, y + height);
+			vertices[0].color = Vector4f(color0.raw);
+			vertices[1].color = Vector4f(color0.raw);
+			vertices[2].color = Vector4f(color1.raw);
+			vertices[3].color = Vector4f(color1.raw);
+			getMeshBuilder()->addQuad(vertices, false);
 		}
-		GLd.EndPrimitive();
 
 		// Draw a box over current color
-		GLd.BeginPrimitive( GL_TRIANGLE_STRIP );
 		x_sub = width * colorhsl_ref[2];
-		GLd.P_PushColor( m_currentColor );
-		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y - selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub - selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y - selection_hheight );
-		GLd.P_AddVertex( position.x + x_sub + selection_hwidth, position.y + y + height + selection_hheight );
-		GLd.EndPrimitive();
+		getMeshBuilder()->addRect(
+			Rect(position + Vector2f(x_sub - selection_hwidth, y - selection_hheight),
+				Vector2f(selection_hwidth * 2.0F, height + selection_hheight * 2.0F)),
+			m_currentColor,
+			false
+		);
 	}
-
-	GL.endOrtho();
-	GL.cleanupDraw();
 
 	// Draw RGB text
 	drawText( position.x - 12, position.y +  0 + 13, "R" );

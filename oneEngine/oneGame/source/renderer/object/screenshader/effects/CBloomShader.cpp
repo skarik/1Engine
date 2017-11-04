@@ -136,7 +136,7 @@ void CBloomShader::Copy ( void )
 
 		buf_4th->BindBuffer();
 			GL.setupViewport(0,0,Screen::Info.width/4,Screen::Info.height/4);
-			GLd.DrawScreenQuad();
+			GLd.DrawScreenQuad(RrMaterial::Copy);
 		buf_4th->UnbindBuffer();
 
 		//buf_16th->BindBuffer();
@@ -157,35 +157,36 @@ void CBloomShader::PredrawOutput ( void )
 
 void CBloomShader::DrawOutput ( void )
 {
-	GL_ACCESS GLd_ACCESS
+	GL_ACCESS GLd_ACCESS;
+	throw core::NotYetImplementedException();
 
 	// Generate sum shit
-	CRenderTexture* s_buf = GL.GetMainScreenBuffer();
-	{
-		// Copy buffer down to half size texture
-		//Copy();
+	//CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	//{
+	//	// Copy buffer down to half size texture
+	//	//Copy();
 
-		// Draw screen with given material
-		m_material->setTexture( TEX_SLOT0, s_buf );
-		/*vMaterials[0]->bindTexture( half_buf, "textureHalfDiffuse" );
-		vMaterials[0]->bindTexture( buf_4th, "texture4thDiffuse" );
-		vMaterials[0]->bindTexture( buf_16th, "texture16thDiffuse" );*/
-		m_material->setTexture( TEX_SLOT1, half_buf );
-		m_material->setTexture( TEX_SLOT2, buf_4th );
-		m_material->setTexture( TEX_SLOT3, buf_16th );
-		m_material->bindPass(0);
-		m_material->setShaderConstants( this );
-		m_material->setUniform( "lightThreshold", m_threshold );
-		m_material->setUniform( "lightGradient", m_gradient );
-		m_material->setUniform( "blurAmount", m_blur );
-		m_material->setUniform( "redDesaturate", m_red );
-		//vMaterials[0]->setUniform( "sys_Time", Color( CTime::currentTime, CTime::currentTime/20.0f, CTime::currentTime*2.0f, CTime::currentTime*3.0f ) );
-		{
-			glDepthMask( false );
-			glDepthFunc( GL_ALWAYS );
-				GLd.DrawScreenQuad();
-			glDepthFunc( GL_LEQUAL );
-		}
-		//vMaterials[0]->unbind();
-	}
+	//	// Draw screen with given material
+	//	m_material->setTexture( TEX_SLOT0, s_buf );
+	//	/*vMaterials[0]->bindTexture( half_buf, "textureHalfDiffuse" );
+	//	vMaterials[0]->bindTexture( buf_4th, "texture4thDiffuse" );
+	//	vMaterials[0]->bindTexture( buf_16th, "texture16thDiffuse" );*/
+	//	m_material->setTexture( TEX_SLOT1, half_buf );
+	//	m_material->setTexture( TEX_SLOT2, buf_4th );
+	//	m_material->setTexture( TEX_SLOT3, buf_16th );
+	//	m_material->bindPass(0);
+	//	m_material->setShaderConstants( this );
+	//	m_material->setUniform( "lightThreshold", m_threshold );
+	//	m_material->setUniform( "lightGradient", m_gradient );
+	//	m_material->setUniform( "blurAmount", m_blur );
+	//	m_material->setUniform( "redDesaturate", m_red );
+	//	//vMaterials[0]->setUniform( "sys_Time", Color( CTime::currentTime, CTime::currentTime/20.0f, CTime::currentTime*2.0f, CTime::currentTime*3.0f ) );
+	//	{
+	//		glDepthMask( false );
+	//		glDepthFunc( GL_ALWAYS );
+	//			GLd.DrawScreenQuad();
+	//		glDepthFunc( GL_LEQUAL );
+	//	}
+	//	//vMaterials[0]->unbind();
+	//}
 }

@@ -1,8 +1,7 @@
+#ifndef EDITOR_2D_GIZMO_RENDERER_H_
+#define EDITOR_2D_GIZMO_RENDERER_H_
 
-#ifndef _2D_GIZMO_RENDERER_H_
-#define _2D_GIZMO_RENDERER_H_
-
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/CStreamedRenderable3D.h"
 
 namespace M04
 {
@@ -11,13 +10,13 @@ namespace M04
 
 namespace M04
 {
-	class GizmoRenderer : public CRenderableObject
+	class GizmoRenderer : public CStreamedRenderable3D
 	{
 	public:
 		GizmoRenderer ( void );
 		~GizmoRenderer( void );
 
-		bool Render ( const char pass ) override;
+		bool PreRender ( void ) override;
 
 	public:
 		EditorObject*	m_target_glow;
@@ -26,4 +25,4 @@ namespace M04
 }
 
 
-#endif//_2D_AREA_RENDERER_H_
+#endif//EDITOR_2D_GIZMO_RENDERER_H_

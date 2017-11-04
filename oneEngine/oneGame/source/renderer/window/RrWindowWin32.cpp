@@ -303,7 +303,9 @@ int RrWindow::DrawScene(GLvoid)
 	// Is this frame faster?
 	if (time_delta < time_delta_prev)
 	{	// Smooth out stutters to a simple 80% exp curve.
-		std::this_thread::sleep_for((time_delta_prev - time_delta) * 0.8);
+		auto sleep_time = (time_delta_prev - time_delta) * 0.8;
+		sleep_time = std::min(sleep_time, std::chrono::duration<double, std::micro>(1000*100));
+		std::this_thread::sleep_for(sleep_time);
 	}
 	// Save previous frame.
 	time_delta_prev = time_delta;

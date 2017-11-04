@@ -2,7 +2,7 @@
 // Include
 #include "Plane.h"
 
-using namespace Maths;
+using namespace core::math;
 
 // Constructors
 Plane::Plane ( void )

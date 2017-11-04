@@ -379,6 +379,9 @@
     <ClInclude Include="source\core\types\exports.h">
       <Filter>SOURCE\Core\Types</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\types\macros_common.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">

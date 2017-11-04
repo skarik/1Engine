@@ -1,28 +1,21 @@
+#ifndef RENDERER_C_DEBUG_DRAWER_H_
+#define RENDERER_C_DEBUG_DRAWER_H_
 
-#ifndef _C_DEBUG_DRAWER_H_
-#define _C_DEBUG_DRAWER_H_
-
-// Includes
+#include "core/math/Ray.h"
+#include "core/math/Line.h"
+#include "core/math/Color.h"
+#include "renderer/object/CStreamedRenderable3D.h"
 #include <vector>
-
-#include "renderer/object/CRenderableObject.h"
-struct Line;
-struct Ray;
 
 namespace debug
 {
-	// Class Definition
-	class CDebugDrawer : public CRenderableObject
+	class CDebugDrawer : public CStreamedRenderable3D
 	{
 	public:
-		// Constructor and destructor
 		explicit	CDebugDrawer ( void );
 					~CDebugDrawer ( void );
-	public:
-		// Drawing
-		bool Render ( const char pass );
 
-		bool EndRender ( void );
+		bool		PreRender ( void ) override;
 
 	public:
 		RENDER_API static void DrawLine ( const Line&, const Color& = Color(1,1,0,1) );
@@ -33,13 +26,15 @@ namespace debug
 		std::vector<Line>  avLineList;
 		std::vector<Color> avColorList;
 
+		std::vector<arModelVertex>		m_vertices;
+		std::vector<arModelTriangle>	m_tris;
+
 		static CDebugDrawer* mActive;
 	};
 
-	// Typedef for ease of use
-	//typedef CDebugDrawer DebugD;
+	// Global pointer to the current DebugDrawer instance.
+	// Totally usable for visual debugging anywhere in 1Engine!
 	RENDER_API extern CDebugDrawer* Drawer;
-
 };
 
-#endif
+#endif//RENDERER_C_DEBUG_DRAWER_H_

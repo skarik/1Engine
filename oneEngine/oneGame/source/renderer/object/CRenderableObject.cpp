@@ -290,8 +290,10 @@ bool CRenderableObject::BindVAO ( const uchar pass, const uint vbo, const uint e
 		// Bind target buffers
 		glBindBuffer( GL_ARRAY_BUFFER, vbo );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, eab );
-		if ( !userDefinedAttribs ) {
-			m_material->bindPassAtrribs( t_targetPass );
+		if ( !userDefinedAttribs )
+		{
+			//m_material->bindPassAtrribs( t_targetPass );
+			m_material->bindPassAtrribs();
 		}
 		GL_ACCESS GL.CheckError();
 		return true;

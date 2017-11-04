@@ -9,8 +9,49 @@ layout(location = 2) out vec4 FragLighting;
 layout(location = 3) out vec4 FragGlowmap;
 
 // Fog Iinput
-layout(std140) uniform sys_Fog
+/*layout(std140) uniform sys_Fog
 {
+	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
+	float 	sys_FogEnd;
+	float 	sys_FogScale;
+};*/
+
+layout(std140) uniform sys_cbuffer_PerObject
+{
+    mat4 sys_ModelTRS;
+    mat4 sys_ModelRS;
+    mat4 sys_ModelViewProjectionMatrix;
+    mat4 sys_ModelViewProjectionMatrixInverse;
+};
+layout(std140) uniform sys_cbuffer_PerObjectExt
+{
+    vec4    sys_DiffuseColor;
+    vec4    sys_SpecularColor;
+    // Emissive RGB - Emissive color.
+    // Emissive A - Alpha cutoff.
+    vec4    sys_EmissiveColor;
+    vec4    sys_LightingOverrides;
+
+    vec4    sys_TextureScale;
+    vec4    sys_TextureOffset;
+};
+layout(std140) uniform sys_cbuffer_PerCamera
+{
+    mat4 sys_ViewProjectionMatrix;
+    vec4 sys_WorldCameraPos;
+    vec4 sys_ViewportInfo;
+    vec2 sys_ScreenSize;
+    vec2 sys_PixelRatio;
+};
+layout(std140) uniform sys_cbuffer_PerFrame
+{
+    // Time inputs
+    vec4    sys_SinTime;
+    vec4    sys_CosTime;
+    vec4    sys_Time;
+
+    // Fog
 	vec4	sys_FogColor;
 	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
@@ -18,15 +59,15 @@ layout(std140) uniform sys_Fog
 };
 
 // System Inputs
-layout(location = 0) uniform vec4 sys_DiffuseColor;
+/*layout(location = 0) uniform vec4 sys_DiffuseColor;
 layout(location = 1) uniform vec4 sys_SpecularColor;
 layout(location = 2) uniform vec3 sys_EmissiveColor;
 layout(location = 3) uniform float sys_AlphaCutoff;
-layout(location = 4) uniform vec3 sys_LightingOverrides;
+layout(location = 4) uniform vec3 sys_LightingOverrides;*/
 
-uniform vec3 sys_WorldCameraPos;
+/*uniform vec3 sys_WorldCameraPos;
 
-uniform mat4 sys_ModelRS;
+uniform mat4 sys_ModelRS;*/
 
 // Samplers
 layout(location = 20) uniform sampler2D textureSampler0; // Diffuse RGB, Specular/Discard A
@@ -104,7 +145,7 @@ vec4 mainNormals ( vec4 colorNormals, vec4 colorSurface )
 void main ( void )
 {
     vec4 colorDiffuse = texture( textureSampler0, v2f_texcoord.xy );
-    if ( colorDiffuse.a < sys_AlphaCutoff ) discard;
+    if ( colorDiffuse.a < sys_EmissiveColor.a ) discard;
     vec4 colorSurface = texture( textureSampler2, v2f_texcoord.xy );
     if ( colorSurface.a < 0.5 ) discard;
     vec4 colorNormals = texture( textureSampler1, v2f_texcoord.xy );

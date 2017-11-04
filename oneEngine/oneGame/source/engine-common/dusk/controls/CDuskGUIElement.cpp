@@ -110,3 +110,8 @@ void CDuskGUIElement::drawTextCentered ( const Real x, const Real y, const char*
 {
 	activeGUI->drawTextCentered(x,y,str);
 }
+
+rrTextBuilder2D* CDuskGUIElement::getMeshBuilder ( void )
+{
+	return activeGUI->m_builder;
+}

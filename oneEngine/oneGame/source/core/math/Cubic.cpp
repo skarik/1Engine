@@ -2,7 +2,7 @@
 // Includes
 #include "Cubic.h"
 
-using namespace Maths;
+using namespace core::math;
 
 // Default empty constructor
 Cubic::Cubic ( void )
@@ -106,9 +106,9 @@ Frustum Cubic::GetFrustum ( Vector3d const& casterPosition )
 	Frustum result;
 	for ( char i = 0; i < 5; i += 1 )
 	{
-		result.planes[i].ConstructFromPoints( casterPosition, places[cube_lookup[sm_vertex][i]],places[cube_lookup[sm_vertex][i+1]] );
+		result.plane[i].ConstructFromPoints( casterPosition, places[cube_lookup[sm_vertex][i]],places[cube_lookup[sm_vertex][i+1]] );
 	}
-	result.planes[5].ConstructFromPoints( casterPosition, places[cube_lookup[sm_vertex][5]],places[cube_lookup[sm_vertex][0]] );
+	result.plane[5].ConstructFromPoints( casterPosition, places[cube_lookup[sm_vertex][5]],places[cube_lookup[sm_vertex][0]] );
 
 	return result;
 }

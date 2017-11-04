@@ -72,37 +72,18 @@ void CDuskGUIDraggablePanel::Update ( void )
 
 void CDuskGUIDraggablePanel::Render ( void )
 {
-	//activeGUI->matDefault->bind();
+	setDrawDefault();
 
-		/*if ( hasFocus ) {
-			glColor4f(
-				activeGUI->matDefault->diffuse.red * 2.0f,
-				activeGUI->matDefault->diffuse.green * 2.0f,
-				activeGUI->matDefault->diffuse.blue * 2.0f,
-				activeGUI->matDefault->diffuse.alpha * 0.6f );
-		}
-		else {
-			glColor4f(
-				activeGUI->matDefault->diffuse.red * 0.6f,
-				activeGUI->matDefault->diffuse.green * 0.6f,
-				activeGUI->matDefault->diffuse.blue * 0.6f,
-				activeGUI->matDefault->diffuse.alpha * 0.6f );
-		}
-		GLd.DrawSet2DMode( GL.D2D_WIRE );
-		GLd.DrawRectangleA( rect.pos.x, rect.pos.y, rect.size.x, rect.size.y );*/
-		setDrawDefault();
+	drawRectWire( rect );
 
-		drawRectWire( rect );
+	if ( isDragging ) {
+		setSubdrawTransparent();
+	}
+	else {
+		setSubdrawDefault();
+	}
 
-		if ( isDragging ) {
-			setSubdrawTransparent();
-		}
-		else {
-			setSubdrawDefault();
-		}
-		//GLd.DrawSet2DMode( GL.D2D_FLAT );
-		//GLd.DrawRectangleA( rect.pos.x, rect.pos.y, rect.size.x, rect.size.y );
-		drawRect( rect );
+	drawRect( rect );
 
 	// Now draw text
 	if ( !activeGUI->bInPixelMode )

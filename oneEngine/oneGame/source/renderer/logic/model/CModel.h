@@ -66,10 +66,10 @@ public:
 	// Create empty model
 	RENDER_API explicit CModel ( void ) : CLogicObject() {
 		// Clear out uniform lists
-		uniformMapFloat = NULL;
-		uniformMapVect2d = NULL;
-		uniformMapVect3d = NULL;
-		uniformMapColor = NULL;
+		//uniformMapFloat = NULL;
+		//uniformMapVect2d = NULL;
+		//uniformMapVect3d = NULL;
+		//uniformMapColor = NULL;
 	};
 	// Destructor
 	RENDER_API virtual ~CModel ( );
@@ -101,7 +101,7 @@ protected:
 
 public:
 	// Send shader uniform list
-	RENDER_API void SendShaderUniforms ( void );
+	//RENDER_API void SendShaderUniforms ( void );
 
 	// Begin render
 	void PreStep ( void ) override;
@@ -140,14 +140,14 @@ public:
 	// Forces the model to be drawn the next frame
 	RENDER_API void SetForcedDraw ( void );
 	// Adds an entry to the uniform list to be set on render
-	RENDER_API void SetShaderUniform ( const char*, float const );
-	RENDER_API void SetShaderUniform ( const char*, Vector2d const& );
-	RENDER_API void SetShaderUniform ( const char*, Vector3d const& );
-	RENDER_API void SetShaderUniform ( const char*, Color const& );
-	RENDER_API void SetShaderUniform ( const char*, Matrix4x4 const& );
-	RENDER_API void SetShaderUniformV ( const char*, unsigned int, const Matrix4x4* );
-	RENDER_API void SetShaderUniformV ( const char*, unsigned int, const Matrix3x3* );
-	RENDER_API void SetShaderUniformV ( const char*, unsigned int, const Vector3d* );
+	//RENDER_API void SetShaderUniform ( const char*, float const );
+	//RENDER_API void SetShaderUniform ( const char*, Vector2d const& );
+	//RENDER_API void SetShaderUniform ( const char*, Vector3d const& );
+	//RENDER_API void SetShaderUniform ( const char*, Color const& );
+	//RENDER_API void SetShaderUniform ( const char*, Matrix4x4 const& );
+	//RENDER_API void SetShaderUniformV ( const char*, unsigned int, const Matrix4x4* );
+	//RENDER_API void SetShaderUniformV ( const char*, unsigned int, const Matrix3x3* );
+	//RENDER_API void SetShaderUniformV ( const char*, unsigned int, const Vector3d* );
 
 	// Change the animation mode to reference another model's animation.
 	// This mode will save memory, but will completely copy the referenced animation
@@ -232,10 +232,10 @@ protected:
 	BoundingBox bbCheckRenderBox;
 
 	// Shader uniforms
-	std::unordered_map<arstring128,float>*			uniformMapFloat;
-	std::unordered_map<arstring128,Vector2d>*		uniformMapVect2d;
-	std::unordered_map<arstring128,Vector3d>*		uniformMapVect3d;
-	std::unordered_map<arstring128,Color>*			uniformMapColor;
+	//std::unordered_map<arstring128,float>*			uniformMapFloat;
+	//std::unordered_map<arstring128,Vector2d>*		uniformMapVect2d;
+	//std::unordered_map<arstring128,Vector3d>*		uniformMapVect3d;
+	//std::unordered_map<arstring128,Color>*			uniformMapColor;
 
 private:
 	//bool bUseBoneVertexBlending;

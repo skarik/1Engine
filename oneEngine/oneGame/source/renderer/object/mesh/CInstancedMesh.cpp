@@ -70,13 +70,12 @@ bool CInstancedMesh::Render ( const char pass )
 	// Get rid of any transforms
 	transform.world.position = Vector3d::zero;
 	transform.local.position = Vector3d::zero;
-	//transform.LateUpdate();
 
 	// Set up transformation for the mesh
-	if ( m_parent )
-		GL.Transform( &m_parent->transform );
-	else
-		GL.Transform( &this->transform.world );
+	//if ( m_parent )
+	//	GL.Transform( &m_parent->transform );
+	//else
+	//	GL.Transform( &this->transform.world );
 
 	// Set up material properties before mesh is bound
 	if ( bUseSkinning && false )
@@ -96,9 +95,9 @@ bool CInstancedMesh::Render ( const char pass )
 	m_material->bindPass(pass);
 	GL.CheckError();
 	// Pass in shader constant now that the pass has been bound
-	RrMaterial::current->setShaderConstants( this );
-	if ( m_parent ) m_parent->SendShaderUniforms();
-	GL.CheckError();
+	//RrMaterial::current->setShaderConstants( this );
+	//if ( m_parent ) m_parent->SendShaderUniforms();
+	//GL.CheckError();
 
 	// Bind the current mesh
 	BindVAO( pass, m_glMesh->GetVBOverts(), m_glMesh->GetVBOfaces() );

@@ -398,6 +398,7 @@
     <ClInclude Include="source\core\types\exports.h" />
     <ClInclude Include="source\core\types\float.h" />
     <ClInclude Include="source\core\types\float_fn.h" />
+    <ClInclude Include="source\core\types\macros_common.h" />
     <ClInclude Include="source\core\types\ModelData.h" />
     <ClInclude Include="source\core\types\Real.h" />
     <ClInclude Include="source\core\types\string_extension.h" />

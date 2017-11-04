@@ -54,10 +54,6 @@ public:
 	//Not equal comparison overload
 	FORCE_INLINE bool operator!= (Color const& right) const;
 
-	// Return the address of the color red as a pointer
-	FORCE_INLINE const Real* start_point (void) const;
-	// Return the address of the color red as a pointer
-	FORCE_INLINE Real* start_point (void);
 	// Access via array
 	FORCE_INLINE Real& operator[] ( const int );
 	// Const access via array
@@ -254,26 +250,15 @@ FORCE_INLINE bool Color::operator!= (Color const& right) const
 	return !((*this) == right);
 }
 
-
-//Return the address of the red component to use as an array
-FORCE_INLINE const Real* Color::start_point (void) const
-{
-	return &red;
-}
-FORCE_INLINE Real* Color::start_point (void)
-{
-	return &red;
-}
-
 // Access via array
 FORCE_INLINE Real& Color::operator[] ( const int a )
 {
-	return *(&red + a);
+	return raw[a];
 }
 // Const access via array
 FORCE_INLINE const Real& Color::operator[] ( const int a ) const
 {
-	return *(&red + a);
+	return raw[a];
 }
 
 //===============================================================================================//

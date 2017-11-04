@@ -5,6 +5,7 @@
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/texture/CRenderTexture.h"
 #include "renderer/debug/CDebugRTInspector.h"
+#include "renderer/material/RrMaterial.h"
 
 #include "renderer/system/glMainSystem.h"
 
@@ -64,9 +65,11 @@ void CRTCameraCube::RenderScene ( void )
 		GL_ACCESS;
 		CCamera::UpdateMatrix();
 		CCamera::RenderSet();
-		GL.pushProjection( viewTransform * projTransform );
+		//GL.pushProjection( viewTransform * projTransform );
+		camera_VP = viewTransform * projTransform;
+		RrMaterial::pushConstantsPerCamera();
 		SceneRenderer->RenderSceneForward( enabledHints );
-		GL.popProjection();
+		//GL.popProjection();
 		CCamera::RenderUnset();
 
 		// Unbind the frame buffer

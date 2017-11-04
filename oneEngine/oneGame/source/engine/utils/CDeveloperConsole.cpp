@@ -37,16 +37,6 @@ CDeveloperConsole::CDeveloperConsole ( void )
 
 		Console		= this;
 
-		//GenerateDefaultFunctionList();
-
-		/*mUI = new CDeveloperConsoleUI ();
-		mCursor = new CDeveloperCursor ();
-		ActiveCursor = mCursor;*/
-
-		// Create time profiler
-		/*mTimeProfilerUI = new CTimeProfilerUI ();
-		mTimeProfilerUI->visible = false;*/
-
 		// Set up input control
 		mControl = new CInputControl( this );
 
@@ -56,18 +46,10 @@ CDeveloperConsole::CDeveloperConsole ( void )
 
 CDeveloperConsole::~CDeveloperConsole ( void )
 {
-	/*delete mUI;
-	mUI = NULL;
-	delete mCursor;
-	mCursor = NULL;
-	delete mTimeProfilerUI;
-	mTimeProfilerUI = NULL;*/
-
 	if ( Console == this ) {
 		Console		= NULL;
 	}
-	//ActiveCursor= NULL;
-
+	
 	delete_safe( mControl );
 }
 
@@ -162,6 +144,8 @@ void CDeveloperConsole::PostUpdate ( void )
 			iPreviousCommandSelection = -1;
 			// Subtract a character
 			sLastCommand = sLastCommand.substr(0,sLastCommand.length()-1);
+			// Regenerate the matching commands list
+			MatchCommands();
 		}
 		if ( Input::Keydown( Keys.Tab ) ) {
 			if ( iPreviousCommandSelection == -1 ) {
@@ -254,6 +238,27 @@ void CDeveloperConsole::MatchCommands ( void )
 		}
 	}
 	// End add loop
+
+	// Finish off with silly hacks.
+	if (sLastCommand.find("what is a man") != string::npos)
+	{
+		matchingCommands.push_back("a miserable little pile of secrets");
+	}
+	else if (sLastCommand.find("impulse ") == 0)
+	{
+		if (sLastCommand == "impulse 101")
+		{
+			matchingCommands.push_back("Gordon, get away from the beam!");
+		}
+		else
+		{
+			matchingCommands.push_back("try cmdc or cmds");
+		}
+	}
+	else if (sLastCommand.find("        ") == 0)
+	{
+		matchingCommands.push_back("Maybe you should take a break. Pop open a beer and do something else.");
+	}
 }
 
 

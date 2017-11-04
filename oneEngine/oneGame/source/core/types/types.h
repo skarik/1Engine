@@ -11,6 +11,9 @@
 // Include exports
 #include "exports.h"
 
+// Include common macros
+#include "macros_common.h"
+
 // include default shit
 #include "float_fn.h"
 

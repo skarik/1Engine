@@ -37,10 +37,9 @@ RrBtDebugDraw::RrBtDebugDraw ( PrWorld* associated_world )
 	defaultMat->setTexture( TEX_DIFFUSE, new CTexture( "textures/white.jpg" ) );
 	defaultMat->passinfo.push_back( RrPassForward() );
 	defaultMat->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
-	defaultMat->passinfo[0].m_lighting_mode = renderer::LI_NONE;
-	defaultMat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	defaultMat->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
+	defaultMat->passinfo[0].set2DCommon();
 	defaultMat->passinfo[0].b_depthmask = true;
+	defaultMat->passinfo[0].b_depthtest = false;
 	SetMaterial( defaultMat );
 	defaultMat->removeReference();
 }
@@ -99,6 +98,15 @@ bool RrBtDebugDraw::EndRender ( void )
 	return true;
 }
 
+//		PreRender()
+// Push the model's uniform up up.
+bool RrBtDebugDraw::PreRender ( void )
+{
+	//m_material->prepareShaderConstants( transform.world );
+	m_material->prepareShaderConstants();
+	return true;
+}
+
 //		Render()
 // Render the model using the 2D engine's style
 bool RrBtDebugDraw::Render ( const char pass ) 
@@ -110,20 +118,13 @@ bool RrBtDebugDraw::Render ( const char pass )
 	}
 
 	// For now, we will render the same way as the 3d meshes render
-	GL.Transform( &(transform.world) );
 	m_material->m_bufferSkeletonSize = 0;
 	m_material->m_bufferMatricesSkinning = 0;
 	m_material->bindPass(pass);
 
-	// Disable normal depth testing
-	glDisable( GL_DEPTH_TEST );
-
 	// Bind VAO and render:
 	BindVAO( pass, m_buffer_verts, m_buffer_tris );
 	GL.DrawElements( GL_LINES, m_gpuIndexCount, GL_UNSIGNED_INT, 0 );
-
-	// Enable normal depth testing
-	glEnable( GL_DEPTH_TEST );
 
 	// Success!
 	return true;
@@ -143,6 +144,7 @@ void RrBtDebugDraw::drawLine(const btVector3& from,const btVector3& to,const btV
 	arModelVertex vert;
 	memset(vert.rawbytes, 0, sizeof(arModelVertex));
 	vert.color = physical::ar(color);
+	vert.color.w = 1.0F;
 
 	vert.position = physical::ar(from);
 	m_vertexData.push_back(vert);

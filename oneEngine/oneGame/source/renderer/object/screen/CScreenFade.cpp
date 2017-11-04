@@ -1,4 +1,3 @@
-
 #include "CScreenFade.h"
 #include "core/time/time.h"
 
@@ -8,6 +7,8 @@
 
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
+
+#include "renderer/object/immediate/immediate.h"
 
 CScreenFade::CScreenFade ( bool inbFadeIn, float infFadeTime, float infFadeDelay, Color incFadeColor )
 	: CRenderableObject(), CLogicObject()
@@ -31,9 +32,11 @@ CScreenFade::CScreenFade ( bool inbFadeIn, float infFadeTime, float infFadeDelay
 	screenMaterial->m_diffuse = cFadeColor;
 	screenMaterial->setTexture( TEX_DIFFUSE, new CTexture("textures/white.jpg") );
 	screenMaterial->passinfo.push_back( RrPassForward() );
-	screenMaterial->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	screenMaterial->passinfo[0].m_lighting_mode	= renderer::LI_NONE;
 	screenMaterial->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
+	screenMaterial->passinfo[0].set2DCommon();
+	screenMaterial->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
+	screenMaterial->passinfo[0].b_depthmask	= false;
+	screenMaterial->passinfo[0].b_depthtest = false;;
 	SetMaterial( screenMaterial );
 }
 CScreenFade::~CScreenFade ( void )
@@ -68,20 +71,18 @@ void CScreenFade::PreStepSynchronus ( void )
 	}
 }
 
-bool CScreenFade::Render ( const char pass )
+bool CScreenFade::PreRender ( void )
 {
-	GL_ACCESS GLd_ACCESS
-	if ( fAlpha > 0.0f )
+	//GL.Translate( Vector3d( 0,0,40 ) );
+	screenMaterial->m_diffuse.alpha = std::min<Real>( fAlpha, 1.0F );
+	//screenMaterial->prepareShaderConstants();
+	return true;
+}
+bool CScreenFade::Render ( const char pass )
+{ GLd_ACCESS;
+	if ( fAlpha > 0.0F )
 	{
-		GL.beginOrtho();
-			GL.Translate( Vector3d( 0,0,40 ) );
-			GLd.P_PushColor(1,1,1);
-			GLd.DrawSet2DMode( GLd.D2D_FLAT );
-			GLd.DrawSet2DScaleMode( GLd.SCALE_DEFAULT );
-			screenMaterial->m_diffuse.alpha = std::min<Real>( fAlpha, 1 );
-			screenMaterial->bindPass(0);
-				GLd.DrawRectangleA( 0,0, 1,1 );
-		GL.endOrtho();
+		GLd.DrawScreenQuad(screenMaterial);
 	}
 	return true;
 }

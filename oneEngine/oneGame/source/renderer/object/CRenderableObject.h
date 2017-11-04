@@ -34,6 +34,9 @@ class RrPassDeferred;
 #ifndef delete_safe
 #	define delete_safe(_ptr) { if ( _ptr ) { delete (_ptr); (_ptr) = NULL; } };
 #endif
+#ifndef delete_safe_array
+#	define delete_safe_array(_ptr) { if ( _ptr ) { delete[] (_ptr); (_ptr) = NULL; } };
+#endif
 
 // Base class, virtual/abstract
 class CRenderableObject
@@ -57,20 +60,22 @@ protected:
 public:
 	// == Rendering Prototypes ==
 	// If any of the rendering functions return false, the renderer will throw an exception.
-	RENDER_API virtual bool			PreRender ( const char pass ) {
-		return true;
-	}
-	RENDER_API virtual bool			Render ( const char pass ) =0;
-	RENDER_API virtual bool			PostRender ( const char pass ) {
-		return true;
-	}
 
-	RENDER_API virtual bool			BeginRender ( void ) {
-		return true;
-	}
-	RENDER_API virtual bool			EndRender ( void ) {
-		return true;
-	}
+	//	PreRender() : Called before the internal render-loop executes.
+	// Can be called multiple times per frame.
+	RENDER_API virtual bool			PreRender ( void )
+		{ return true; }
+	//	Render(const int pass) : Current pass
+	RENDER_API virtual bool			Render ( const char pass ) =0;
+	//	PostRender() : Called after the render-loop executes.
+	// Can be called multiple times per frame.
+	RENDER_API virtual bool			PostRender ( void )
+		{ return true; }
+
+	RENDER_API virtual bool			BeginRender ( void )
+		{ return true; }
+	RENDER_API virtual bool			EndRender ( void )
+		{ return true; }
 
 	// == Setters ==
 	// Change the material the given material array thing.
@@ -94,24 +99,26 @@ public:
 	}
 
 	// == Culling/Prerendering Prototypes ==
-	// Since culling is done before adding to the rendering list for a speed gain (OR WILL BE DONE)
-	/*virtual bool			GetVisibility ( void ) {
-		return true;
-	}*/
-	// Get the number of passes (as models will need a lot more than one pass)
-	RENDER_API virtual uchar		GetPassNumber ( void );
 
+	//	GetPassNumber : number of passes to add to render list
+	// Get the number of passes required to render the model in the current pipeline.
+	// When implementing your own overrides, only return the amount of passes for one pipeline.
+	// If there is both a deferred and a forward set of shaders, but the pipeline is deferred, only the deferred pass will be used.
+	// If this returns zero, the renderer will instead pull directly from the forward pass list in the material.
+	RENDER_API virtual uchar				GetPassNumber ( void );
+	//	GetPass : Return forward pass info
 	// Returns the associated pass. This is used for ordering.
 	RENDER_API virtual RrPassForward*		GetPass ( const uchar pass );
+	//	GetPassDeferred : Return deferred pass info
 	// Returns the associated deferred rendering pass. This is used for ordering.
-	RENDER_API virtual RrPassDeferred*GetPassDeferred ( const uchar pass );
+	RENDER_API virtual RrPassDeferred*		GetPassDeferred ( const uchar pass );
 
 
 private:
 	// == Update Prototypes ==
 
 
-	//		UpdateRenderInfo : generate data needed for sorting
+	//	UpdateRenderInfo : generate data needed for sorting
 	// Generated data needed for sorting, namely distance from the camera. Is not fast.
 	void UpdateRenderInfo ( void )
 	{

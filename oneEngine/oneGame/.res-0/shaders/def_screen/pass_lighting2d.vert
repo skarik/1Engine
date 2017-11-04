@@ -11,7 +11,15 @@ varying vec2 v2f_texcoord0;
 varying vec2 v2f_texcoord1;
 
 // System inputs
-layout(location = 140) uniform float sys_PixelRatio;
+//layout(location = 140) uniform float sys_PixelRatio;
+layout(std140) uniform sys_cbuffer_PerCamera
+{
+    mat4 sys_ViewProjectionMatrix;
+    vec4 sys_WorldCameraPos;
+    vec4 sys_ViewportInfo;
+    vec2 sys_ScreenSize;
+    vec2 sys_PixelRatio;
+};
 
 void main ( void )
 {

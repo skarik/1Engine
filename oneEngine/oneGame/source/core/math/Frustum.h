@@ -1,19 +1,20 @@
-
-
-#ifndef _C_FRUSTUM_
-#define _C_FRUSTUM_
+#ifndef CORE_MATH_FRUSTUM_H_
+#define CORE_MATH_FRUSTUM_H_
 
 // Includes
 #include "Plane.h"
 
 // Class definition
-namespace Maths
+namespace core
 {
-	class Frustum
+	namespace math
 	{
-	public:
-		Plane planes [6];
-	};
+		class Frustum
+		{
+		public:
+			Plane plane [6];
+		};
+	}
 }
 
-#endif
+#endif//CORE_MATH_FRUSTUM_H_

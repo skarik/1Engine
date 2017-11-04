@@ -1,5 +1,3 @@
-
-
 #include "CMesh.h"
 #include "renderer/logic/model/CModel.h"
 #include "renderer/logic/model/CSkinnedModel.h"
@@ -11,7 +9,8 @@
 
 CMesh::CMesh ( rrMesh* nMesh, bool n_enableSkinning )
 	: CRenderableObject(),
-	m_glMesh( nMesh ), m_parent(NULL), bUseSkinning(n_enableSkinning)
+	m_glMesh( nMesh ), m_parent(NULL),
+	bUseFrustumCulling(true), bCanRender(true), bUseSkinning(n_enableSkinning)
 {
 	if ( m_glMesh != NULL )
 	{
@@ -53,7 +52,7 @@ void CMesh::CalculateBoundingBox ( void )
 
 // == RENDERABLE OBJECT INTERFACE ==
 
-bool CMesh::PreRender ( const char pass )
+bool CMesh::PreRender ( void )
 {
 	// Culling check routine
 	if ( bUseFrustumCulling )
@@ -89,6 +88,16 @@ bool CMesh::PreRender ( const char pass )
 		bCanRender = true;
 	}
 
+	// If can render, then push the uniform buffers
+	if (bCanRender)
+	{
+		// Set up transformation for the mesh
+		if ( m_parent )
+			m_material->prepareShaderConstants(m_parent->transform);
+		else
+			m_material->prepareShaderConstants(this->transform.world);
+	}
+
 	// 
 	return true;
 }
@@ -101,10 +110,10 @@ bool CMesh::Render ( const char pass )
 	GL_ACCESS;
 
 	// Set up transformation for the mesh
-	if ( m_parent )
-		GL.Transform( &m_parent->transform );
-	else
-		GL.Transform( &this->transform.world );
+	//if ( m_parent )
+	//	GL.Transform( &m_parent->transform );
+	//else
+	//	GL.Transform( &this->transform.world );
 	
 	// Set up material properties before mesh is bound
 	if ( bUseSkinning )
@@ -122,8 +131,8 @@ bool CMesh::Render ( const char pass )
 	m_material->bindPass(pass);
 
 	// Pass in shader constant now that the pass has been bound
-	RrMaterial::current->setShaderConstants( this );
-	if ( m_parent ) m_parent->SendShaderUniforms();
+	//RrMaterial::current->setShaderConstants( this );
+	//if ( m_parent ) m_parent->SendShaderUniforms();
 
 	// Bind the current mesh
 	BindVAO( pass, m_glMesh->GetVBOverts(), m_glMesh->GetVBOfaces() );

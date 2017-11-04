@@ -26,24 +26,26 @@ CScreenSpaceOutlineShader::CScreenSpaceOutlineShader ( void )
 
 void CScreenSpaceOutlineShader::DrawOutput ( void )
 {
-	GL_ACCESS GLd_ACCESS
-	// Generate sum shit
-	CRenderTexture* s_buf = GL.GetMainScreenBuffer();
-	{
-		// Draw screen with given material
-		m_material->setSampler( TEX_SLOT0, s_buf->GetColorSampler(), GL.Enum(Texture2D) );
-		m_material->setSampler( TEX_SLOT1, s_buf->GetDepthSampler(), GL.Enum(Texture2D) );
-		m_material->bindPass(0);
-		m_material->setShaderConstants( this );
-		m_material->setUniform( "zNear", CCamera::activeCamera->zNear );
-		m_material->setUniform( "zFar", CCamera::activeCamera->zFar );
-		{
-			glDepthMask( false );
-			glDepthFunc( GL_ALWAYS );
+	GL_ACCESS GLd_ACCESS;
+	throw core::NotYetImplementedException();
 
-			GLd.DrawScreenQuad();
+	//// Generate sum shit
+	//CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	//{
+	//	// Draw screen with given material
+	//	m_material->setSampler( TEX_SLOT0, s_buf->GetColorSampler(), GL.Enum(Texture2D) );
+	//	m_material->setSampler( TEX_SLOT1, s_buf->GetDepthSampler(), GL.Enum(Texture2D) );
+	//	m_material->bindPass(0);
+	//	m_material->setShaderConstants( this );
+	//	m_material->setUniform( "zNear", CCamera::activeCamera->zNear );
+	//	m_material->setUniform( "zFar", CCamera::activeCamera->zFar );
+	//	{
+	//		glDepthMask( false );
+	//		glDepthFunc( GL_ALWAYS );
 
-			glDepthFunc( GL_LEQUAL );
-		}
-	}
+	//		GLd.DrawScreenQuad();
+
+	//		glDepthFunc( GL_LEQUAL );
+	//	}
+	//}
 }

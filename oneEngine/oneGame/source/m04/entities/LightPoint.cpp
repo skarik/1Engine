@@ -1,4 +1,3 @@
-
 #include "LightPoint.h"
 #include "renderer/light/CLight.h"
 

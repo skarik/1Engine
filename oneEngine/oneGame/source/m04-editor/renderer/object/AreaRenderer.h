@@ -1,8 +1,7 @@
+#ifndef EDITOR_2D_AREA_RENDERER_H_
+#define EDITOR_2D_AREA_RENDERER_H_
 
-#ifndef _2D_AREA_RENDERER_H_
-#define _2D_AREA_RENDERER_H_
-
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/CStreamedRenderable3D.h"
 
 namespace Engine2D
 {
@@ -11,13 +10,13 @@ namespace Engine2D
 
 namespace M04
 {
-	class AreaRenderer : public CRenderableObject
+	class AreaRenderer : public CStreamedRenderable3D
 	{
 	public:
 		AreaRenderer ( void );
 		~AreaRenderer( void );
 
-		bool Render ( const char pass ) override;
+		bool PreRender ( void ) override;
 
 	public:
 		Engine2D::Area2DBase*	m_target_glow;
@@ -27,4 +26,4 @@ namespace M04
 }
 
 
-#endif//_2D_AREA_RENDERER_H_
+#endif//EDITOR_2D_AREA_RENDERER_H_

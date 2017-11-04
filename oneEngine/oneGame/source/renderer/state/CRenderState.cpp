@@ -17,7 +17,7 @@
 
 #include "renderer/debug/CDebugDrawer.h"
 #include "renderer/debug/CDebugRTInspector.h"
-#include "renderer/object/sprite/CSpriteContainer.h"
+//#include "renderer/object/sprite/CSpriteContainer.h"
 
 #include "renderer/resource/CResourceManager.h"
 
@@ -133,6 +133,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		RrMaterial::Copy->passinfo.push_back( RrPassForward() );
 		RrMaterial::Copy->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer.glsl" );
 		RrMaterial::Copy->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
+		RrMaterial::Copy->passinfo[0].b_depthtest = false;
 		// No deferred pass.
 	}
 	// Create the fallback shader
@@ -156,6 +157,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		CopyScaled->passinfo.push_back( RrPassForward() );
 		CopyScaled->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer_scaled.glsl" );
 		CopyScaled->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
+		CopyScaled->passinfo[0].b_depthtest = false;
 	}
 
 	bSpecialRender_ResetLights = false;
@@ -163,8 +165,6 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	// Create the debug tools
 	new debug::CDebugDrawer;
 	new debug::CDebugRTInspector;
-	// Create the sprite renderer
-	new SpriteContainer;
 
 	// Create the passes for rendering the screen:
 	{
@@ -205,8 +205,6 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 //  frees list of renderers, but not the renderers
 CRenderState::~CRenderState ( void )
 {
-	// Delete the sprite renderer
-	delete SpriteContainer::Active;
 	// Delete the debug tools
 	delete debug::Drawer;
 	delete debug::RTInspector;
@@ -511,8 +509,8 @@ bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain 
 			RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat), false
 		);
 
-		RrGpuTexture		depthTexture = SceneRenderer->GetDepthTexture();
-		RrGpuTexture		stencilTexture = SceneRenderer->GetStencilTexture();
+		RrGpuTexture		depthTexture = RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat);
+		RrGpuTexture		stencilTexture = RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat);
 
 		// TODO: Make configurable
 		RrGpuTexture textureRequests [4];

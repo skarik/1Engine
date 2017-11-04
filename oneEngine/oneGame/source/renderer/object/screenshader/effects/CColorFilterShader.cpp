@@ -28,26 +28,28 @@ CColorFilterShader::CColorFilterShader ( void )
 
 void CColorFilterShader::DrawOutput ( void )
 {
-	GL_ACCESS GLd_ACCESS
-	// Generate sum shit
-	CRenderTexture* s_buf = GL.GetMainScreenBuffer();
-	{
-		// Draw screen with given material
-		m_material->setTexture( TEX_MAIN, s_buf );
-		m_material->bindPass(0);
-		m_material->setShaderConstants( this );
-		m_material->setUniform( "blendMidtone", m_midtone_blend );
-		m_material->setUniform( "blendHighlights", m_highlight_blend );
-		m_material->setUniform( "blendShadows", m_shadow_blend );
-		{
-			glDepthMask( false );
-			glDepthFunc( GL_ALWAYS );
-			//glDisable( GL_ALPHA_TEST );
-			
-			GLd.DrawScreenQuad();
+	GL_ACCESS GLd_ACCESS;
+	throw core::NotYetImplementedException();
 
-			glDepthFunc( GL_LEQUAL );
-		}
-		//vMaterials[0]->unbind();
-	}
+	//// Generate sum shit
+	//CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	//{
+	//	// Draw screen with given material
+	//	m_material->setTexture( TEX_MAIN, s_buf );
+	//	m_material->bindPass(0);
+	//	m_material->setShaderConstants( this );
+	//	m_material->setUniform( "blendMidtone", m_midtone_blend );
+	//	m_material->setUniform( "blendHighlights", m_highlight_blend );
+	//	m_material->setUniform( "blendShadows", m_shadow_blend );
+	//	{
+	//		glDepthMask( false );
+	//		glDepthFunc( GL_ALWAYS );
+	//		//glDisable( GL_ALPHA_TEST );
+	//		
+	//		GLd.DrawScreenQuad();
+
+	//		glDepthFunc( GL_LEQUAL );
+	//	}
+	//	//vMaterials[0]->unbind();
+	//}
 }

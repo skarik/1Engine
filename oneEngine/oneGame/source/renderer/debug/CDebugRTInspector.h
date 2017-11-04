@@ -10,10 +10,6 @@ class CRenderTexture;
 
 namespace debug
 {
-	// Using
-	//using std::vector;
-
-	// Class Definition
 	class CDebugRTInspector : public CRenderableObject
 	{
 	public:
@@ -22,6 +18,8 @@ namespace debug
 		RENDER_API			~CDebugRTInspector ( void );
 	public:
 		bool		BeginRender ( void ) override;
+
+		bool		PreRender ( void ) override;
 		bool		Render ( const char pass ) override;
 
 	public:
@@ -31,10 +29,9 @@ namespace debug
 	private:
 		bool bDrawRTs;
 		std::vector<CRenderTexture*>  rtList;
-		RrMaterial* defaultMat;
 	};
 
-	// Typedef for ease of use
+	// Publicly available RTInspector~
 	RENDER_API extern CDebugRTInspector* RTInspector;
 };
 

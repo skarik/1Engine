@@ -20,6 +20,7 @@ namespace renderer
 		RENDER2D_API explicit	Background2D ( void );
 		RENDER2D_API			~Background2D ();
 
+		RENDER2D_API bool		PreRender ( void ) override;
 		RENDER2D_API bool		Render ( const char pass ) override;
 	};
 }

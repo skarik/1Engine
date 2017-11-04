@@ -13,9 +13,6 @@ in float v2f_fogdensity;
 // Samplers
 layout(location = 20) uniform sampler2D textureDiffuse;
 
-// Game Inputs
-layout(location = 8) uniform float	gm_FadeValue;
-
 void main ( void )
 {
 	vec4 diffuseColor = texture( textureDiffuse, v2f_texcoord0 );

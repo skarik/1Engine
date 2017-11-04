@@ -83,6 +83,7 @@
     <ClInclude Include="source\engine-common\engine-common-scenes.h" />
     <ClInclude Include="source\engine-common\engine-common.h" />
     <ClInclude Include="source\engine-common\entities\CActor.h" />
+    <ClInclude Include="source\engine-common\entities\CLoadingScreen.h" />
     <ClInclude Include="source\engine-common\entities\CParticleSystem.h" />
     <ClInclude Include="source\engine-common\entities\CPlayer.h" />
     <ClInclude Include="source\engine-common\entities\CPointBase.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="source\engine-common\dusk\dialogues\DGUI_DialogueFileSelector.cpp" />
     <ClCompile Include="source\engine-common\engine-common-console.cpp" />
     <ClCompile Include="source\engine-common\engine-common.cpp" />
+    <ClCompile Include="source\engine-common\entities\CLoadingScreen.cpp" />
     <ClCompile Include="source\engine-common\entities\CParticleSystem.cpp" />
     <ClCompile Include="source\engine-common\entities\CPlayer.cpp" />
     <ClCompile Include="source\engine-common\entities\CPlayer_Camera.cpp" />

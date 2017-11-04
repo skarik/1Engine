@@ -1,5 +1,5 @@
-#ifndef _C_INSTANCED_MESH_H_
-#define _C_INSTANCED_MESH_H_
+#ifndef RENDERER_OBJECT_C_INSTANCED_MESH_H_
+#define RENDERER_OBJECT_C_INSTANCED_MESH_H_
 
 #include "renderer/object/mesh/CMesh.h"
 
@@ -38,4 +38,4 @@ protected:
 	int uploaded_data_count;
 };
 
-#endif//_C_INSTANCED_MESH_H_
+#endif//RENDERER_OBJECT_C_INSTANCED_MESH_H_

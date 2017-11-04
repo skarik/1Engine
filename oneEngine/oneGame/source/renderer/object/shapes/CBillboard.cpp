@@ -26,6 +26,12 @@ CBillboard::~CBillboard ( void )
 	}
 }
 
+bool CBillboard::PreRender ( void )
+{
+	m_material->prepareShaderConstants(transform);
+	return true;
+}
+
 bool CBillboard::Render ( const char pass )
 {
 	GL_ACCESS;
@@ -92,10 +98,10 @@ bool CBillboard::Render ( const char pass )
 	}
 
 
-	GL.Transform( &transform.world );
+	//GL.Transform( &transform.world );
 
 	m_material->bindPass(pass);
-	m_material->setShaderConstants(this);
+	//m_material->setShaderConstants(this);
 	BindVAO( pass, m_vbo );
 	glDisable( GL_CULL_FACE );
 	glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );

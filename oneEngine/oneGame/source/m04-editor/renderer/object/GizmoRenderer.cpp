@@ -1,4 +1,3 @@
-
 #include "GizmoRenderer.h"
 
 #include "m04-editor/entities/UIDragHandle.h"
@@ -9,12 +8,15 @@
 #include "renderer/system/glDrawing.h"
 
 #include "core/math/Rect.h"
+#include "core-ext/utils/MeshBuilder.h"
 
 using namespace M04;
 
 GizmoRenderer::GizmoRenderer ( void )
-	: CRenderableObject()
+	: CStreamedRenderable3D()
 {
+	memset( &m_modeldata, 0, sizeof(arModelData) );
+
 	// Set the default white material
 	RrMaterial* defaultMat = new RrMaterial;
 	defaultMat->m_diffuse = Color( 1,1,1,1 );
@@ -30,28 +32,45 @@ GizmoRenderer::GizmoRenderer ( void )
 
 GizmoRenderer::~GizmoRenderer ( void )
 {
-	; // Nothing
+	delete_safe_array(m_modeldata.vertices);
+	delete_safe_array(m_modeldata.triangles);
 }
 
-bool GizmoRenderer::Render ( const char pass )
+bool GizmoRenderer::PreRender ( void )
 {
-	GLd_ACCESS;
+	const uint kMaxVertices = 4096;
+	const uint kMaxTris		= kMaxVertices / 2; // We're doing 100% quads.
+	const uint kMaxObjects	= kMaxVertices / 16;
 
-	// Bind wanted pass
-	m_material->bindPass(pass);
+	// Error check now:
+	if (EditorObject::Objects().size() > kMaxObjects)
+	{	// todo: max this less likely to crash and eat shit
+		throw core::OutOfMemoryException();
+	}
+
+	// Allocate data for the streamed mesh
+	if (m_modeldata.triangles == NULL)
+	{
+		delete[] m_modeldata.triangles;
+		delete[] m_modeldata.vertices;
+
+		m_modeldata.triangles = new arModelTriangle [kMaxTris];
+		m_modeldata.vertices = new arModelVertex [kMaxVertices];
+
+		memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * kMaxVertices);
+	}
+	// Reset count
+	m_modeldata.triangleNum = 0;
+	m_modeldata.vertexNum = 0;
 
 	// Begin rendering the area rects
-	GLd.BeginPrimitive( GL_TRIANGLES );
+	const Color kDefaultColor	(0.6F,0.6F,0.6F,0.4F);
+	const Color kGlowColor		(0.9F,0.9F,0.9F,0.4F);
+	const Color kSelectColor	(1.0F,1.0F,1.0F,0.8F);
+	Color l_typeColor;
+	Color l_currentColor;
 
-	GLd.P_PushTexcoord( 0,0 );
-	GLd.P_PushNormal( 0,0,0 );
-
-	const Color m_defaultColor	(0.6F,0.6F,0.6F,0.4F);
-	const Color m_glowColor		(0.9F,0.9F,0.9F,0.4F);
-	const Color m_selectColor	(1.0F,1.0F,1.0F,0.8F);
-	Color m_typeColor;
-
-	// Do a render of all areas
+	// Do a render of all objects
 	for ( auto object = EditorObject::Objects().begin(); object != EditorObject::Objects().end(); ++object )
 	{
 		Rect rect = (*object)->GetSpriteRect();
@@ -62,86 +81,46 @@ bool GizmoRenderer::Render ( const char pass )
 		points[1] = Vector3d( points[2].x, points[0].y, points[0].z );
 		points[3] = Vector3d( points[0].x, points[2].y, points[0].z );
 
-		m_typeColor = Color( 1.0F,1.0F,1.0F, 1.0F );
-		/*string type = (*area)->GetTypeName();
-		if ( type == "Area2DBase" )
-			m_typeColor = Color( 0.6F,0.7F,1.0F, 1.0F );
-		else if ( type == "AreaTeleport" )
-			m_typeColor = Color( 0.9F,1.0F,0.6F, 1.0F );
-		else if ( type == "AreaTrigger" )
-			m_typeColor = Color( 0.8F,0.4F,0.4F, 1.0F );
-		else if ( type == "AreaPlayerSpawn" )
-			m_typeColor = Color( 0.5F,1.0F,0.3F, 1.0F );
-		else // Error type
-			m_typeColor = Color( 1.0F,0.0F,1.0F, 1.0F );*/
+		l_typeColor = Color( 1.0F,1.0F,1.0F, 1.0F );
 
 		if ( *object == m_target_selection )
-			GLd.P_PushColor( m_selectColor * m_typeColor );
+			l_currentColor = kSelectColor * l_typeColor;
 		else if ( *object == m_target_glow )
-			GLd.P_PushColor( m_glowColor * m_typeColor );
+			l_currentColor = kGlowColor * l_typeColor;
 		else
 			continue;
-			//GLd.P_PushColor( m_defaultColor * m_typeColor );
 
-		// Delare the lambda to streamline the mesh creation
 		Vector3d meshpoints [4];
-		auto PushQuad = [&]() -> void
-		{
-			GLd.P_AddVertex( meshpoints[0] );
-			GLd.P_AddVertex( meshpoints[1] );
-			GLd.P_AddVertex( meshpoints[2] );
-			GLd.P_AddVertex( meshpoints[0] );
-			GLd.P_AddVertex( meshpoints[2] );
-			GLd.P_AddVertex( meshpoints[3] );
-		};
 
 		// Draw the four quads around the edge of the area
 		meshpoints[0] = points[0];
 		meshpoints[1] = points[1];
 		meshpoints[2] = points[1]+Vector2d(0,2);
 		meshpoints[3] = points[0]+Vector2d(0,2);
-		PushQuad();
+		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 
 		meshpoints[0] = points[3]-Vector2d(0,2);
 		meshpoints[1] = points[2]-Vector2d(0,2);
 		meshpoints[2] = points[2];
 		meshpoints[3] = points[3];
-		PushQuad();
+		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 
 		meshpoints[0] = points[0];
 		meshpoints[1] = points[3];
 		meshpoints[2] = points[3]+Vector2d(2,0);
 		meshpoints[3] = points[0]+Vector2d(2,0);
-		PushQuad();
+		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 
 		meshpoints[0] = points[1]-Vector2d(2,0);
 		meshpoints[1] = points[2]-Vector2d(2,0);
 		meshpoints[2] = points[2];
 		meshpoints[3] = points[1];
-		PushQuad();
-
-		// Draw the four corners
-		/*const Vector2d offsets [4] = {
-			Vector2d(-1,-1), Vector2d(-1,1), Vector2d(1,1), Vector2d(1,-1)
-		};
-		for ( int i = 0; i < 4; ++i )
-		{
-			// Build the corner quad
-			for ( int n = 0; n < 4; ++n )
-			{
-				meshpoints[n] = points[i] + offsets[n] * 4.0F;
-			}
-			// If mouse over a corner, highlight the corner
-			if ( (*area == m_target_selection || *area == m_target_glow) && i == m_target_corner ) 
-				GLd.P_PushColor( m_selectColor );
-			else 
-				GLd.P_PushColor( m_defaultColor * m_typeColor );
-			// Push the quad
-			PushQuad();
-		}*/
+		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 	}
 
-	GLd.EndPrimitive();
+	// Now with the mesh built, push it to the modeldata
+	StreamLockModelData();
 
-	return true;
+	// Push at the end
+	return CStreamedRenderable3D::PreRender();
 }

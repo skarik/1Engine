@@ -57,4 +57,4 @@ protected:
 
 typedef CBaseSerializer Serializer;
 
-#endif _C_BASE_SERIALIZER_H_
+#endif//_C_BASE_SERIALIZER_H_

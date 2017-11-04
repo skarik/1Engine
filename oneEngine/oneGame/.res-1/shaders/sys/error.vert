@@ -1,7 +1,13 @@
 in vec3 mdl_Vertex;
 
 // System inputs
-uniform mat4 sys_ModelViewProjectionMatrix;
+layout(std140) uniform sys_cbuffer_PerObject
+{
+    mat4 sys_ModelTRS;
+    mat4 sys_ModelRS;
+    mat4 sys_ModelViewProjectionMatrix;
+    mat4 sys_ModelViewProjectionMatrixInverse;
+};
 
 void main ( void )
 {

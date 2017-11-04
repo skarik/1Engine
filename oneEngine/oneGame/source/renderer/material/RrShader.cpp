@@ -15,11 +15,13 @@ using namespace std;
 // == Constructor ==
 // takes a shader filename or system built-in as an argument
 //RrShader::RrShader ( const string& a_sShaderName, bool a_bCompileOnDemand )
-RrShader::RrShader ( const char* a_sShaderName, const renderer::shader_tag_t a_nShaderTag, const bool a_bCompileOnDemand )
+RrShader::RrShader ( const char* a_sShaderName, const renderer::rrShaderTag a_nShaderTag, const bool a_bCompileOnDemand )
 {
 	sShaderFilename = a_sShaderName;
 	bCompileOnDemand= a_bCompileOnDemand;
 	stTag			= a_nShaderTag;
+
+	primed = false;
 
 	RrShader* pResult = ShaderManager.ShaderExists( a_sShaderName, a_nShaderTag );
 	if ( pResult == NULL )
@@ -90,45 +92,45 @@ RrShader::~RrShader ( void )
 }
 
 // == Uniform Grabbing ==
-int	RrShader::get_uniform_location ( const char* name )
-{
-	if ( !bIsReference )
-	{
-		/*if ( mUniformMap.count( name ) )
-		{
-			return mUniformMap[name];
-		}
-		else*/
-		arstring<128> cname ( name );
-		unordered_map<arstring<128>,int>::iterator result = mUniformMap.find( cname );
-		if ( result != mUniformMap.end() )
-		{
-			return result->second;
-		}
-		else
-		{
-			int uniformLocation = glGetUniformLocation( iProgramID, name );
-			mUniformMap[cname] = uniformLocation;
-			if ( uniformLocation < 0 && CGameSettings::Active()->b_dbg_ro_ShowMissingLinks )
-			{
-#ifdef _ENGINE_DEBUG
-				cout << "Warning in: " << this << ": can't find shader uniform '" << name << "'" << endl;
-#endif
-			}
-			return uniformLocation;
-		}
-	}
-	else
-	{
-		return pParentShader->get_uniform_location( name );
-	}
-}
+//int	RrShader::get_uniform_location ( const char* name )
+//{
+//	if ( !bIsReference )
+//	{
+//		/*if ( mUniformMap.count( name ) )
+//		{
+//			return mUniformMap[name];
+//		}
+//		else*/
+//		arstring<128> cname ( name );
+//		unordered_map<arstring<128>,int>::iterator result = mUniformMap.find( cname );
+//		if ( result != mUniformMap.end() )
+//		{
+//			return result->second;
+//		}
+//		else
+//		{
+//			int uniformLocation = glGetUniformLocation( iProgramID, name );
+//			mUniformMap[cname] = uniformLocation;
+//			if ( uniformLocation < 0 && CGameSettings::Active()->b_dbg_ro_ShowMissingLinks )
+//			{
+//#ifdef _ENGINE_DEBUG
+//				cout << "Warning in: " << this << ": can't find shader uniform '" << name << "'" << endl;
+//#endif
+//			}
+//			return uniformLocation;
+//		}
+//	}
+//	else
+//	{
+//		return pParentShader->get_uniform_location( name );
+//	}
+//}
 // Get Uniform Block location
-int RrShader::get_uniform_block_location ( const char* name )
+int RrShader::getUniformBlockLocation ( const char* name )
 {
 	if ( !bIsReference )
 	{
-		arstring<128> cname ( name );
+/*		arstring<128> cname ( name );
 		unordered_map<arstring<128>,int>::iterator result = mUniformMap.find( cname );
 		if ( result != mUniformMap.end() )
 		{
@@ -145,11 +147,14 @@ int RrShader::get_uniform_block_location ( const char* name )
 #endif
 			}
 			return uniformLocation;
-		}
+		}*/
+
+		int uniformLocation = glGetUniformBlockIndex( iProgramID, name );
+		return uniformLocation;
 	}
 	else
 	{
-		return pParentShader->get_uniform_block_location( name );
+		return pParentShader->getUniformBlockLocation( name );
 	}
 }
 
@@ -219,6 +224,15 @@ void RrShader::end ( void )
 	glUseProgram( 0 );
 }
 
+void RrShader::prime ( void )
+{
+	primed = true;
+}
+bool RrShader::isPrimed ( void )
+{
+	return primed;
+}
+
 // == Memory Management ==
 // Increment number of references
 void RrShader::AddReference ( void )
@@ -266,7 +280,7 @@ void RrShader::GrabReference ( void )
 // Recompile
 bool RrShader::recompile ( void )
 {
-	mUniformMap.clear();
+	//mUniformMap.clear();
 
 	if ( bIsCompiled )
 	{
@@ -595,7 +609,7 @@ void RrShader::compile_shader ( void )
 			glAttachShader( iProgramID, iPixelShaderID );
 
 		// Create the attribute link points
-		for ( uint i = 0; i < sizeof(renderer::AttributeNames)/sizeof(renderer::attributeReservedName_t); ++i )
+		for ( uint i = 0; i < sizeof(renderer::AttributeNames)/sizeof(renderer::rrAttributeReservedName); ++i )
 		{
 			glBindAttribLocation( iProgramID, renderer::AttributeNames[i].id, renderer::AttributeNames[i].token );
 		}
@@ -607,7 +621,17 @@ void RrShader::compile_shader ( void )
 		glGetProgramiv( iProgramID, GL_LINK_STATUS, &linked );
 		if ( !linked )
 		{
-			cout << "Error in shader program link.\n";
+			std::cout << "Error in shader program link.\n";
+			glGetProgramiv( iProgramID, GL_INFO_LOG_LENGTH , &blen ); 
+			if ( blen > 1 )
+			{
+				GLchar* linker_log = (GLchar*)malloc(blen);
+				glGetProgramInfoLog( iProgramID, blen, &slen, linker_log );
+				std::cout << "Filename: " << sShaderFilename << "\n";
+				debug::Console->PrintError( "program linker_log:\n" );
+				debug::Console->PrintError( linker_log );
+				free( linker_log );
+			}
 			bHasCompileError = true;
 			iCompileResult |= SCE_PROGRAM;
 		}   
@@ -649,5 +673,23 @@ void RrShader::compile_shader ( void )
 			// End if
 		}
 		// End loop
+	}
+	
+	// Got this far. Let's update bindings.
+	createConstantBufferBindings();
+}
+
+//	createConstantBufferBindings() : Internal post-compile step, grab engine refs.
+// Locates constant buffer bindings and links them to their index
+void RrShader::createConstantBufferBindings ( void )
+{
+	auto kEntryCount = sizeof(renderer::CBufferNames) / sizeof(renderer::rrCBufferReservedName);
+	for (unsigned i = 0; i < kEntryCount; ++i)
+	{
+		int uboIndex = getUniformBlockLocation( renderer::CBufferNames[i].token );
+		if (uboIndex >= 0)
+		{
+			glUniformBlockBinding( get_program(), uboIndex, (GLuint)renderer::CBufferNames[i].id );
+		}
 	}
 }

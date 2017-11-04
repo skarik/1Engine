@@ -1,7 +1,5 @@
-
-#ifndef _C_DUSK_GUI_H_
-#define _C_DUSK_GUI_H_
-
+#ifndef C_DUSK_GUI_H_
+#define C_DUSK_GUI_H_
 
 #include "core/system/Screen.h"
 #include "core/system/System.h"
@@ -10,6 +8,7 @@
 
 #include "engine/behavior/CGameBehavior.h"
 #include "renderer/object/CRenderableObject.h"
+#include "renderer/object/immediate/immediate.h"
 
 // Include Draw stuff
 class RrMaterial;
@@ -93,28 +92,29 @@ private:
 	friend Dusk::DialogueColorpicker;
 public:
 	// Constructor+Destructor
-	ENGCOM_API CDuskGUI ( void );
-	ENGCOM_API ~CDuskGUI ( void );
+	ENGCOM_API explicit		CDuskGUI ( CBitmapFont* font );
+	ENGCOM_API				~CDuskGUI ( void );
 
 	// == Stepping Functions ==
 	// Update
-	void Update ( void );
+	void	Update ( void ) override;
 	// Render
-	bool Render ( const char pass );
+	bool	PreRender ( void ) override;
+	bool	Render ( const char pass ) override;
 
 private:
 
-	void Render_SetupMaterial ( RrMaterial* );
-	void RenderUI ( void );
+	//void	Render_SetupMaterial ( RrMaterial* );
+	void	RenderUI ( void );
 
 public:
 
 	// == Setters ==
 	// Set materials
 	ENGCOM_API void SetDefaultMaterial	( RrMaterial* );
-	ENGCOM_API void SetHoverMaterial	( RrMaterial* );
-	ENGCOM_API void SetDownMaterial	( RrMaterial* );
-	ENGCOM_API void SetFontMaterial	( RrMaterial* );
+	//ENGCOM_API void SetHoverMaterial	( RrMaterial* );
+	//ENGCOM_API void SetDownMaterial	( RrMaterial* );
+	//ENGCOM_API void SetFontMaterial	( RrMaterial* );
 	ENGCOM_API void SetDefaultFont		( CBitmapFont* );
 	// Set pixel mode
 	ENGCOM_API void SetPixelMode ( bool enabled=false );
@@ -264,17 +264,17 @@ private:
 	// Materials used in drawing
 	RrMaterial*	matScreenCopy;
 	RrMaterial*	matDefault;
-	RrMaterial*	matHover;
+	/*RrMaterial*	matHover;
 	RrMaterial*	matDown;
-	RrMaterial* matFont;
+	RrMaterial* matFont;*/
 	CBitmapFont*	fntDefault;
 
 	// Static default values
-	static RrMaterial*	matDefDefault;
+	/*static RrMaterial*	matDefDefault;
 	static RrMaterial*	matDefHover;
 	static RrMaterial*	matDefDown;
 	static RrMaterial*	matDefFont;
-	static CBitmapFont*	fntDefDefault;
+	static CBitmapFont*	fntDefDefault;*/
 
 	// Rendering state
 	CRenderTexture* renderBuffer;
@@ -365,10 +365,12 @@ private:
 	std::vector<Vector2d> offsetList;
 
 	// Drawing queue
-	std::vector<arModelVertex>	modelSolidMeshList;
-	std::vector<arModelVertex>	modelLineMeshList;
+	//std::vector<arModelVertex>	modelSolidMeshList;
+	//std::vector<arModelVertex>	modelLineMeshList;
+	//std::vector<textRequest_t>	modelTextRequestList;
 
-	std::vector<textRequest_t>	modelTextRequestList;
+	// Immediate mode renderer:
+	rrTextBuilder2D*	m_builder;
 };
 
 typedef CDuskGUI DuskGUI;
@@ -384,4 +386,4 @@ void CDuskGUI::AddPropertyOption ( const Handle& handle, const string& option, t
 	pvl->propertyList[pvl->propertyList.size()-1].target = value;
 }
 
-#endif
+#endif//C_DUSK_GUI_H_

@@ -5,7 +5,8 @@
 #include <algorithm>
 
 RrPassDeferred::RrPassDeferred ( void )
-	: m_blend_mode(renderer::BM_NONE), m_transparency_mode(renderer::ALPHAMODE_NONE),
+	: m_dirty(true),
+	/*m_blend_mode(renderer::BM_NONE),*/ m_transparency_mode(renderer::ALPHAMODE_NONE),
 	/*m_lighting_mode(renderer::LI_NORMAL), m_diffuse_method(renderer::Deferred::DIFFUSE_DEFAULT),*/
 	m_rimlight_strength(0.2f),
 	m_ready(false), shader(NULL)
@@ -14,7 +15,8 @@ RrPassDeferred::RrPassDeferred ( void )
 }
 RrPassDeferred::~RrPassDeferred( void )
 {
-	if ( shader ) {
+	if ( shader )
+	{
 		shader->ReleaseReference();
 	}
 }
@@ -37,12 +39,12 @@ void RrMaterial::deferred_shader_build( uchar pass )
 	// Build a shader based on the dpass.
 
 	std::string				t_shaderName;
-	renderer::shader_tag_t	t_shaderTag;
+	renderer::rrShaderTag	t_shaderTag;
 
 	// Generate shader name based on settings
 	t_shaderName = ".game/.dfshaders/shader";
 	//t_shaderName += ".df" + std::to_string((uint)dpass.m_diffuse_method);
-	t_shaderName += (dpass.m_blend_mode==renderer::BM_ADD) ? ".bm_a" : ( (dpass.m_blend_mode==renderer::BM_SOFT_ADD) ? ".bm_s" : "" );
+	//t_shaderName += (dpass.m_blend_mode==renderer::BM_ADD) ? ".bm_a" : ( (dpass.m_blend_mode==renderer::BM_SOFT_ADD) ? ".bm_s" : "" );
 	t_shaderName += ".am" + std::to_string((uint)dpass.m_transparency_mode);
 	t_shaderName += m_isSkinnedShader ? ".skinning" : "";
 

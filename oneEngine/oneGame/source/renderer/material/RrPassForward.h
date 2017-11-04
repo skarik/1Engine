@@ -29,14 +29,23 @@ public:
 	RrPassForward& operator= ( RrPassForward&& other );
 
 public:
+	bool						m_dirty;
+
 	renderer::eAlphaMode		m_transparency_mode;
 	Real						f_alphatest_value;
 	bool						b_depthmask;
+	bool						b_depthtest;
 
 	renderer::eDrawBlendMode	m_blend_mode;
 	renderer::eDrawLightingMode	m_lighting_mode;
 
 	renderer::eDrawFaceMode		m_face_mode;
+
+public:
+	
+	//	set2DCommon () : Sets internal settings to common values for 2D/UI rendering.
+	// Depth masking and testing disabled, no lighting, alpha blending, backface culling disabled.
+	void	set2DCommon ( void );
 
 
 public:

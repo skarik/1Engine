@@ -107,12 +107,13 @@ MapEditor::MapEditor ( void )
 	// Create gizmo renderer
 	{
 		m_gizmo_renderer = new M04::GizmoRenderer();
-		m_area_renderer->transform.world.position.z = -100;
+		m_gizmo_renderer->transform.world.position.z = -100;
 	}
 	// Build Dusk Gui
 	{
-		dusk = new CDuskGUI();
-		dusk->SetDefaultFont( new CBitmapFont( "YanoneKaffeesatz-R.otf", 16 ) );
+		dusk = new CDuskGUI(
+			new CBitmapFont( "YanoneKaffeesatz-R.otf", 16 )
+		);
 		dusk->SetPixelMode(true);
 
 		uiCreate();

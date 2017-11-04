@@ -13,7 +13,8 @@ public:
 	RENDER_API CBillboard ( void );
 	RENDER_API ~CBillboard ( void );
 
-	RENDER_API bool Render ( const char pass );
+	RENDER_API bool PreRender ( void ) override;
+	RENDER_API bool Render ( const char pass ) override;
 
 	//void SetMaterial ( RrMaterial* );
 

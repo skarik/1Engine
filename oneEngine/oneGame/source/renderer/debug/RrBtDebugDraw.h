@@ -13,13 +13,17 @@ public:
 	RENDER_API explicit		RrBtDebugDraw ( PrWorld* associated_world );
 	RENDER_API				~RrBtDebugDraw ( void );
 
-	//		PostRender()
-	// Push the current model information to the GPU.
-	RENDER_API bool			EndRender ( void ) override;
+	//		PreRender()
+	// Push the model's uniform up up.
+	RENDER_API bool			PreRender ( void ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style
 	RENDER_API bool			Render ( const char pass ) override;
+
+	//		PostRender()
+	// Push the current model information to the GPU.
+	RENDER_API bool			EndRender ( void ) override;
 
 public:
 	// Bullet interface:

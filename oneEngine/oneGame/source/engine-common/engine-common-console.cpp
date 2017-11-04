@@ -16,3 +16,17 @@ int EngineCommon::DebugToggleTimeProfilerUI ( const std::string& )
 	}
 	return 0;
 }
+
+//	CommandClient()
+// Performs a debug client command
+int EngineCommon::CommandClient ( const std::string& )
+{
+	return 0;
+}
+
+//	CommandClient()
+// Performs a debug server command
+int EngineCommon::CommandServer ( const std::string& )
+{
+	return 0;
+}

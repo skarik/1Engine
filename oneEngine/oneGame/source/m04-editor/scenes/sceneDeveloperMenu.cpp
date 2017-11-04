@@ -11,23 +11,33 @@
 #include "engine-common/entities/CRenderCameraHolder.h"
 // Include developer menu
 #include "m04-editor/standalone/DeveloperMenu.h"
+// Include loading screen
+#include "engine-common/entities/CLoadingScreen.h"
 
 void sceneDeveloperMenu::LoadScene ( void )
 {
 	debug::Console->PrintMessage( "Loading M04 developer menu...\n" );
 
+	CLoadingScreen* loadScreen = new CLoadingScreen();
+	loadScreen->loadStep();
+
 	// Create the menu
 	{
 		M04::DeveloperMenu* menu = new M04::DeveloperMenu();
 		menu->RemoveReference();
-	}
+	} loadScreen->loadStep();
+	
 
 	// Create camera to render
 	{
 		CRenderCameraHolder* holder = new CRenderCameraHolder(new CCamera());
 		holder->RemoveReference();
-	}
+	} loadScreen->loadStep();
 
 	// Print a prompt
 	debug::Console->PrintMessage( "You are running a debug build of M04.\n" );
+
+	// Finish load screen.
+	loadScreen->loadSetDone();
+	loadScreen->RemoveReference();
 }

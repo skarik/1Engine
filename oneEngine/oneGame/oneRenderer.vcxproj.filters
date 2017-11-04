@@ -49,9 +49,6 @@
     <Filter Include="SOURCE\Renderer\Object\Model">
       <UniqueIdentifier>{926f2d88-0b6e-41a1-a501-1337916082b5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\Renderer\Object\Sprite">
-      <UniqueIdentifier>{ab0caa54-7e17-4e28-971c-89c4069719b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SOURCE\Renderer\Object\Util">
       <UniqueIdentifier>{9e2b2cc6-54ce-4b56-8916-f15efd92366a}</UniqueIdentifier>
     </Filter>
@@ -103,30 +100,15 @@
     <Filter Include="SOURCE\Renderer\Particle">
       <UniqueIdentifier>{5ff5d927-5930-4dd0-b76f-22606cb99959}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Renderer\Object\Immediate">
+      <UniqueIdentifier>{7e9475da-58a6-416f-83ad-d917a56d253b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\renderer\system\glDrawing.cpp">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\system\glDrawing_primitives.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\system\glMainSystem.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem_buffers.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem_matrix.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem_frame.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem_screen_pixels.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem_textures.cpp">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\camera\CCamera.cpp">
@@ -142,12 +124,6 @@
       <Filter>SOURCE\Renderer\Camera</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\state\CRenderState.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\state\CRenderState_Render.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\state\CRenderState_Sorters.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\state\Settings.cpp">
@@ -186,32 +162,8 @@
     <ClCompile Include="source\renderer\object\shapes\CBillboard.cpp">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CCubeRenderablePrimitive.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CIsosphere.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CRenderablePrimitive.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CRenderPlane.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CRotBoxRPrimitive.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\CMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\sprite\CSprite.cpp">
-      <Filter>SOURCE\Renderer\Object\Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\sprite\CSpriteContainer.cpp">
-      <Filter>SOURCE\Renderer\Object\Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\sprite\CSprite_CheckFunctions.cpp">
-      <Filter>SOURCE\Renderer\Object\Sprite</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp">
       <Filter>SOURCE\Renderer\Object\Util</Filter>
@@ -300,9 +252,6 @@
     <ClCompile Include="source\renderer\ogl\gl_core_3_3.c">
       <Filter>SOURCE\Renderer\OGL</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem_state.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\screen\CGlowObject.cpp">
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
     </ClCompile>
@@ -336,12 +285,6 @@
     <ClCompile Include="source\renderer\material\RrMaterial.cpp">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\material\RrMaterial_External.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrMaterial_Utility.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\material\RrPassForward.cpp">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClCompile>
@@ -363,6 +306,72 @@
     <ClCompile Include="source\renderer\debug\RrBtDebugDraw.cpp">
       <Filter>SOURCE\Renderer\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Buffers.ConstantBuffer.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Buffers.VertexBuffer.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.Constants.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\utils\IrrMeshBuilder.cpp">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\utils\rrMeshBuilder2D.cpp">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\immediate\RrScopedMeshRenderer.cpp">
+      <Filter>SOURCE\Renderer\Object\Immediate</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\utils\rrTextBuilder2D.cpp">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\CPrimitiveCube.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\CPrimitiveIsosphere.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\CPrimitivePlane.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\CStreamedRenderable3D.cpp">
+      <Filter>SOURCE\Renderer\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\CRenderable3D.cpp">
+      <Filter>SOURCE\Renderer\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.External.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.Utility.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.buffers.cpp">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.frame.cpp">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.matrix.cpp">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.screen_pixels.cpp">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.state.cpp">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.textures.cpp">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\CRenderState.Render.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\CRenderState.Sorters.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\ogl\GLCommon.h">
@@ -372,9 +381,6 @@
       <Filter>SOURCE\Renderer\System</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\system\glMainSystem.h">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\system\glVBufferStreaming.h">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\system\glSystem.h">
@@ -431,21 +437,6 @@
     <ClInclude Include="source\renderer\object\shapes\CBillboard.h">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CCubeRenderablePrimitive.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CIsosphere.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CRenderablePrimitive.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CRenderPlane.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CRotBoxRPrimitive.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\CMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClInclude>
@@ -454,12 +445,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\object\model\SkinnedModel.h">
       <Filter>SOURCE\Renderer\Object\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\sprite\CSprite.h">
-      <Filter>SOURCE\Renderer\Object\Sprite</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\sprite\CSpriteContainer.h">
-      <Filter>SOURCE\Renderer\Object\Sprite</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\util\CLoadScreenInjector.h">
       <Filter>SOURCE\Renderer\Object\Util</Filter>
@@ -640,6 +625,54 @@
     </ClInclude>
     <ClInclude Include="source\renderer\debug\RrBtDebugDraw.h">
       <Filter>SOURCE\Renderer\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Buffers.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Transfer.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\system\rrVBufferStreaming.h">
+      <Filter>SOURCE\Renderer\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\immediate\immediate.h">
+      <Filter>SOURCE\Renderer\Object\Immediate</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\utils\IrrMeshBuilder.h">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\utils\rrMeshBuilder2D.h">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\utils\rrMeshBuilder.h">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\immediate\IRrRenderableStreamedMesh.h">
+      <Filter>SOURCE\Renderer\Object\Immediate</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\immediate\RrScopedMeshRenderer.h">
+      <Filter>SOURCE\Renderer\Object\Immediate</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\renderModes.h">
+      <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\utils\rrTextBuilder2D.h">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\CPrimitiveCube.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\CPrimitiveIsosphere.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\CPrimitivePlane.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\CStreamedRenderable3D.h">
+      <Filter>SOURCE\Renderer\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\CRenderable3D.h">
+      <Filter>SOURCE\Renderer\Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

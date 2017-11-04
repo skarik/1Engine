@@ -12,8 +12,6 @@ in vec2 v2f_texcoord0;
 // Samplers
 layout(location = 20) uniform sampler2D textureSampler0;
 
-uniform vec4 sys_SinTime;
-
 void main ( void )
 {
 	vec4 diffuseColor = texture( textureSampler0, v2f_texcoord0 );
