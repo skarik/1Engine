@@ -13,3 +13,5 @@
 .vs
 /oneEngine/oneGame/obj
 *.bpd
+/oneEngine/DebugClang_Win32
+/oneEngine/DebugClang_x64
