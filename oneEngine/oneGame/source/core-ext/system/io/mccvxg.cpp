@@ -1,14 +1,9 @@
-
 #include "mccvxg.h"
 
-// Include default system IO
 #include "stdio.h"
 #include "stdlib.h"
-// Include string
 #include "string.h"
-// Include ZLib
 #include "zlib.h"
-
 
 // IO general
 mccVXG_file_infop	mccvxg_begin_io ( FILE* in_file )
@@ -215,7 +210,7 @@ void	mccvxg_write_image ( mccVXG_file_infop file_info, void* inimagedata )
 	}
 
 	// Compress data
-	z_result = compress( file_info->buffer, &compress_size, inimagedata, final_data_size );
+	z_result = compress( (Bytef*)file_info->buffer, &compress_size, (Bytef*)inimagedata, final_data_size );
 	switch( z_result )
 	{
 	case Z_OK:

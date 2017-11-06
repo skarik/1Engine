@@ -147,6 +147,12 @@
     <ClCompile Include="source\core-ext\system\shell\Status.cpp">
       <Filter>SOURCE\Core-ext\System\Shell</Filter>
     </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\mccosf.cpp">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\mccvxg.cpp">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -235,6 +241,12 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\shell\Status.h">
       <Filter>SOURCE\Core-ext\System\Shell</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\mccosf.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\mccvxg.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

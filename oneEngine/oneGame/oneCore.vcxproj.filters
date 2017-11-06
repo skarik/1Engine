@@ -352,12 +352,6 @@
     <ClInclude Include="source\core-ext\animation\Types.h">
       <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClInclude>
-    <ClInclude Include="source\core-ext\system\io\mccosf.h">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\system\io\mccvxg.h">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\system\io\serializer.h">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClInclude>
@@ -464,12 +458,6 @@
     </ClCompile>
     <ClCompile Include="source\core\system\io\CBinaryFile.cpp">
       <Filter>SOURCE\Core\System\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core-ext\system\io\mccosf.cpp">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core-ext\system\io\mccvxg.c">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClCompile>
     <ClCompile Include="source\core-ext\system\io\serializer\ISerialBinary.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
