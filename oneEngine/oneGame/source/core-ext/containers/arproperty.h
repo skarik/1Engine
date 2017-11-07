@@ -1,6 +1,13 @@
-
-#ifndef _C_AR_PROPERTY_H_
-#define _C_AR_PROPERTY_H_
+//===============================================================================================//
+//
+//		arproperty
+//
+// Class that mimics get/set of C#. Can be used as a basis for a "safe" accessor.
+// Usage is not recommended.
+//
+//===============================================================================================//
+#ifndef CORE_CONTAINER_AR_PROPERTY_H_
+#define CORE_CONTAINER_AR_PROPERTY_H_
 
 //	class arproperty
 // Wraps a read-only property
@@ -32,4 +39,4 @@ public:
 	}
 };
 
-#endif//_C_AR_PROPERTY_H_
+#endif//CORE_CONTAINER_AR_PROPERTY_H_

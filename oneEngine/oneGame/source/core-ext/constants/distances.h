@@ -1,7 +1,10 @@
+//===============================================================================================//
 //
-//	distances.h
+//		distances.h
+//
 // Provides conversion to feet from other units
 //
+//===============================================================================================//
 #ifndef CORE_EXT_DISTANCES_H_
 #define CORE_EXT_DISTANCES_H_
 

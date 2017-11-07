@@ -1,41 +1,47 @@
-
-#ifndef _C_ANIMATION_EVENTS_H_
-#define _C_ANIMATION_EVENTS_H_
+//===============================================================================================//
+//
+//		core-ext/animation/CAnimationEvents.h
+//
+// Contains animation event information.
+//
+//===============================================================================================//
+#ifndef CORE_ANIMATIONS_ANIMATION_EVENTS_H_
+#define CORE_ANIMATIONS_ANIMATION_EVENTS_H_
 
 #include "core/types/types.h"
 
 namespace animation
 {
-	enum eAnimSystemEvent : uint16_t
+	enum arAnimSystemEvent : uint16_t
 	{
-		Event_Attack,
-		Event_Footstep,
-		Event_Footstep_Left,
-		Event_Footstep_Right,
-		Event_ClangCheck,
+		kAnimEventAttack,
+		kAnimEventFootstep,
+		kAnimEventFootstepLeft,
+		kAnimEventFootstepRight,
+		kAnimEventClangCheck,
 
-		Event_Slide,
-		Event_SlideStart,
-		Event_SlideEnd,
+		kAnimEventSlide,
+		kAnimEventSlideStart,
+		kAnimEventSlideEnd,
 
-		Event_INVALID = 0xFFFF
+		kAnimEventINVALID = 0xFFFF
 	};
 	
-	typedef uint32_t tag_t;
-	enum eAnimEventTags : tag_t
+	typedef uint16_t arTag;
+	enum arAnimEventTags : arTag
 	{
-		EventTag_NoTag = tag_t(-1),
-		EventTag_Default = 0,
+		kAnimEventTagNone		= arTag(-1),
+		kAnimEventTagDefault	= 0,
 	};
 
 	// Event class definition
 	class ActionEvent
 	{
 	public:
-		eAnimSystemEvent	type;
-		tag_t				data;
+		arAnimSystemEvent	type;
+		arTag				data;
 		Real				frame;
 	};
 };
 
-#endif//_C_ANIMATION_EVENTS_H_
+#endif//CORE_ANIMATIONS_ANIMATION_EVENTS_H_

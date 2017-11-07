@@ -28,8 +28,8 @@ namespace Engine2D
 	{
 		// User management values:
 
-		uint8_t				userid;		// User set ID for additional management
-		animation::types_t	type;		// Animation type
+		uint8_t					userid;		// User set ID for additional management
+		animation::arAnimType	type;		// Animation type
 
 		// Animation storage:
 
@@ -64,7 +64,7 @@ namespace Engine2D
 	public:
 		//		AddFromFile
 		// Adds a new animation to this object, either reading from file or using cached texture info
-		ENGINE2D_API uint32_t AddFromFile ( const animation::types_t n_anim_type, const uint8_t n_userid, const char* n_filename );
+		ENGINE2D_API uint32_t AddFromFile ( const animation::arAnimType n_anim_type, const uint8_t n_userid, const char* n_filename );
 
 
 		//		operator[]

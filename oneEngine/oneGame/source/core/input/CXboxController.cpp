@@ -1,4 +1,3 @@
-
 #include "CXBOXController.h"
 
 using namespace InputControl;

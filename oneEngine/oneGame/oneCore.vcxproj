@@ -179,6 +179,7 @@
     <ClInclude Include="source\core\callbacks\Events.h" />
     <ClInclude Include="source\core\callback_basics.h" />
     <ClInclude Include="source\core\common.h" />
+    <ClInclude Include="source\core\containers\arring.h" />
     <ClInclude Include="source\core\containers\arsingleton.h" />
     <ClInclude Include="source\core\containers\arstring.h" />
     <ClInclude Include="source\core\containers\arvector.h" />

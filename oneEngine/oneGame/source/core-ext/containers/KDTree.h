@@ -1,6 +1,12 @@
-
-#ifndef _CONTAINER_KDTREE_H_
-#define _CONTAINER_KDTREE_H_
+//===============================================================================================//
+//
+//		KDTree
+//
+// C# KDTree implementation stole from somewhere.
+//
+//===============================================================================================//
+#ifndef CORE_CONTAINER_KDTREE_H_
+#define CORE_CONTAINER_KDTREE_H_
 
 #include "core/math/Vector3d.h"
 #include <vector>
@@ -13,8 +19,8 @@ public:
 	int pivotIndex;
 	int axis;
 	
-//	Change this value to 2 if you only need two-dimensional X,Y points. The search will
-//	be quicker in two dimensions.
+	//	Change this value to 2 if you only need two-dimensional X,Y points. The search will
+	//	be quicker in two dimensions.
 	static const int numDims = 3;
 	
 	
@@ -25,14 +31,14 @@ public:
 	}
 	
 
-//	Make a new tree from a list of points.
+	//	Make a new tree from a list of points.
 	static KDTree* MakeFromPoints( std::vector<Vector3d>& points) {
 		int* indices = Iota(points.size());
 		return MakeFromPointsInner(0, 0, points.size() - 1, points, indices);
 	}
 	
 
-//	Recursively build a tree by separating points at plane boundaries.
+	//	Recursively build a tree by separating points at plane boundaries.
 	static KDTree* MakeFromPointsInner(
 					int depth,
 					int stIndex, int enIndex,
@@ -70,7 +76,7 @@ public:
 	}
 	
 
-//	Simple "median of three" heuristic to find a reasonable splitting plane.
+	//	Simple "median of three" heuristic to find a reasonable splitting plane.
 	static int FindSplitPoint(std::vector<Vector3d>& points, int* inds, int stIndex, int enIndex, int axis) {
 		float a = points[inds[stIndex]][axis];
 		float b = points[inds[enIndex]][axis];
@@ -101,8 +107,8 @@ public:
 	}
 	
 
-//	Find a new pivot index from the range by splitting the points that fall either side
-//	of its plane.
+	//	Find a new pivot index from the range by splitting the points that fall either side
+	//	of its plane.
 	static int FindPivotIndex(std::vector<Vector3d>& points, int* inds, int stIndex, int enIndex, int axis) {
 		int splitPoint = FindSplitPoint(points, inds, stIndex, enIndex, axis);
 		// int splitPoint = Random.Range(stIndex, enIndex);
@@ -140,7 +146,7 @@ public:
 	}
 	
 	
-//	Find the nearest point in the set to the supplied point.
+	//	Find the nearest point in the set to the supplied point.
 	int FindNearest(Vector3d pt) {
 		float bestSqDist = 1000000000.0f;
 		int bestIndex = -1;
@@ -151,7 +157,7 @@ public:
 	}
 	
 
-//	Recursively search the tree.
+	//	Recursively search the tree.
 	void Search(Vector3d pt, float& bestSqSoFar, int& bestIndex) {
 		float mySqDist = (pivot - pt).sqrMagnitude();
 		
@@ -178,15 +184,15 @@ public:
 	}
 	
 
-//	Get a point's distance from an axis-aligned plane.
+	//	Get a point's distance from an axis-aligned plane.
 	float DistFromSplitPlane(Vector3d pt, Vector3d planePt, int axis) {
 		return pt[axis] - planePt[axis];
 	}
 	
 
-//	Simple output of tree structure - mainly useful for getting a rough
-//	idea of how deep the tree is (and therefore how well the splitting
-//	heuristic is performing).
+	//	Simple output of tree structure - mainly useful for getting a rough
+	//	idea of how deep the tree is (and therefore how well the splitting
+	//	heuristic is performing).
 	/*string Dump(int level) {
 		string result = pivotIndex.ToString().PadLeft(level) + "\n";
 		
@@ -203,4 +209,4 @@ public:
 };
 
 
-#endif//_CONTAINER_KDTREE_H_
+#endif//CORE_CONTAINER_KDTREE_H_

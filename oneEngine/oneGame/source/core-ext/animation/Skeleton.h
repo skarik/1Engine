@@ -1,8 +1,11 @@
+//===============================================================================================//
 //
-//	Skeleton.h
+//		Skeleton.h
+//
 // Storage for skeletal animation information.
 // Attempts to be as minimal as required - only information that is needed is stored here. See class for more info.
 //
+//===============================================================================================//
 #ifndef CORE_ANIMATION_SKELETON_H_
 #define CORE_ANIMATION_SKELETON_H_
 

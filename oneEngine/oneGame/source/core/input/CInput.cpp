@@ -1,32 +1,7 @@
-// Includes
 #include "CInput.h"
 #include "CXboxController.h"
-
 #include "core/system/Screen.h"
 #include "core/settings/CGameSettings.h"
-
-// Static variable declaration
-/*bool	CInput::key[256];
-bool	CInput::keyup[256];
-bool	CInput::keydown[256];
-float	CInput::mouseX = 200;
-float	CInput::mouseY = 200;
-int		CInput::sysMouseX = 0;
-int		CInput::sysMouseY = 0;
-//float	CInput::prevMouseX = 0;
-//float	CInput::prevMouseY = 0;
-float	CInput::deltaMouseX = 0;
-float	CInput::deltaMouseY = 0;
-int		CInput::rawDeltaMouseX = 0;
-int		CInput::rawDeltaMouseY = 0;
-int		CInput::prevRawDeltaMouseX = 0;
-int		CInput::prevRawDeltaMouseY = 0;
-int		CInput::currMouseW = 0;
-int		CInput::deltaMouseW = 0;
-bool	CInput::mouse[4];
-bool	CInput::mousedown[4];
-bool	CInput::mouseup[4];
-int		CInput::prevMouseW = 0;*/
 
 InputControl::CXBoxController* CInput::xboxControl = NULL;
 CInput* CInput::Active = NULL;
@@ -74,13 +49,8 @@ void CInput::Free ( void )
 
 void CInput::PreUpdate ( void )
 {
-	//prevRawDeltaMouseX = 0;
-		Active->rawDeltaMouseX = 0;
-	//	deltaMouseX = 0.0f;
-
-	//prevRawDeltaMouseY = 0;
-		Active->rawDeltaMouseY = 0;
-	//	deltaMouseY = 0.0f;
+	Active->rawDeltaMouseX = 0;
+	Active->rawDeltaMouseY = 0;
 }
 
 // Static function declare
@@ -114,33 +84,15 @@ void CInput::_Update ( void )
 		}
 	}
 
-	//deltaMouseX = mouseX-prevMouseX;
-	//deltaMouseY = mouseY-prevMouseY;
-	//prevMouseX = mouseX;
-	//prevMouseY = mouseY;
-
-	//if ( prevRawDeltaMouseX != rawDeltaMouseX )
 	{
 		prevRawDeltaMouseX = rawDeltaMouseX;
 		deltaMouseX = rawDeltaMouseX * CGameSettings::Active()->f_cl_MouseSensitivity;
 	}
-	/*else
-	{
-		prevRawDeltaMouseX = 0;
-		rawDeltaMouseX = 0;
-		deltaMouseX = 0.0f;
-	}*/
-	//if ( prevRawDeltaMouseY != rawDeltaMouseY )
+
 	{
 		prevRawDeltaMouseY = rawDeltaMouseY;
 		deltaMouseY = rawDeltaMouseY * CGameSettings::Active()->f_cl_MouseSensitivity;
 	}
-	/*else
-	{
-		prevRawDeltaMouseY = 0;
-		rawDeltaMouseY = 0;
-		deltaMouseY = 0.0f;
-	}*/
 	
 	// offset them real mouse posses, limiting to window
 	mouseX += deltaMouseX * mouseSensitivityX;
@@ -221,10 +173,6 @@ bool CInput::KeyupAny ( void )
 
 unsigned char CInput::GetTypeChar ( void )
 {
-	/*for ( unsigned char i = 'A'; i <= 'Z'; ++i )
-	{
-		
-	}*/
 	/// First get the key pressed
 	unsigned char kc = 0;
 	for ( unsigned short i = 0; i < 256; ++i ) {

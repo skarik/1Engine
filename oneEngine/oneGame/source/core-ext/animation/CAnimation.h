@@ -106,8 +106,8 @@ public:
 	CORE_API const Vector3d&	GetExtrapolatedMotion ( void );
 	CORE_API void			ResetExtrapolatedMotion ( void );
 
-	CORE_API void			AddIKInfo ( const ikinfo_t& );
-	CORE_API ikinfo_t&		GetIKInfo ( const string& );
+	CORE_API void			AddIKInfo ( const animation::arIKInfo& );
+	CORE_API animation::arIKInfo&	GetIKInfo ( const string& );
 
 	CORE_API static const unsigned char	maxLayers; // 6 Max Layers
 	CORE_API static const bool			useHavok;
@@ -137,7 +137,7 @@ protected:
 	std::vector<animation::BoneMapper>	sampleMappingTrack;
 
 	// IK info
-	std::vector<ikinfo_t>	ikList;
+	std::vector<animation::arIKInfo>	ikList;
 
 	// Animations to fade out next
 	std::vector<std::pair<CAnimAction*,Real>>	fadeOutList;

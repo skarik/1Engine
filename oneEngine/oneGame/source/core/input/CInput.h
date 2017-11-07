@@ -1,7 +1,13 @@
-
-
-#ifndef _C_GAME_KEYBOARD_MOUSE_INPUT_
-#define _C_GAME_KEYBOARD_MOUSE_INPUT_
+//===============================================================================================//
+//
+//		CInput - Input backend
+//
+// Input backend. Forwards input that is captured from the OS's message loop.
+// On Windows, mouse input is hardware based. It does not correspond to the system cursor.
+//
+//===============================================================================================//
+#ifndef CORE_INPUT_H_
+#define CORE_INPUT_H_
 
 #include "core/types.h"
 
@@ -190,4 +196,4 @@ public:
 };
 extern CKeys Keys;
 
-#endif
+#endif//CORE_INPUT_H_

@@ -57,7 +57,7 @@ void CAnimation::AddAction ( CAnimAction& newAction )
 	mAnimations[newAction.GetName()] = newAction;
 	//cout << "Anim: " << newAction.actionName << " S: " << newAction.start << " E: " << newAction.end << " L: " << newAction.loop << endl;
 }
-void CAnimation::AddIKInfo ( const ikinfo_t& ik )
+void CAnimation::AddIKInfo ( const animation::arIKInfo& ik )
 {
 	ikList.push_back( ik );
 }
@@ -233,11 +233,12 @@ CAnimAction* CAnimation::FindAction ( const char* animName )
 	}
 }
 
-ikinfo_t& CAnimation::GetIKInfo ( const string& chainName )
+animation::arIKInfo& CAnimation::GetIKInfo ( const string& chainName )
 {
 	for ( uint i = 0; i < ikList.size(); ++i )
 	{
-		if ( chainName == ikList[i].name ) {
+		if ( ikList[i].name.compare(chainName.c_str()) )
+		{
 			return ikList[i];
 		}
 	}

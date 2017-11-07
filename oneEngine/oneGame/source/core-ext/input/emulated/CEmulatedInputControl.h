@@ -1,6 +1,12 @@
-
-#ifndef _C_EMULATED_INPUT_CONTROL_H_
-#define _C_EMULATED_INPUT_CONTROL_H_
+//===============================================================================================//
+//
+//		CEmulatedInputControl
+//
+// Input control that allows for simulation of input.
+//
+//===============================================================================================//
+#ifndef C_EMULATED_INPUT_CONTROL_H_
+#define C_EMULATED_INPUT_CONTROL_H_
 
 #include "core-ext/input/CInputControl.h"
 
@@ -78,4 +84,4 @@ private:
 	Real	keypress_timer [MAX_INPUT_COUNT];
 };
 
-#endif//_C_EMULATED_INPUT_CONTROL_H_
+#endif//C_EMULATED_INPUT_CONTROL_H_

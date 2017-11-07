@@ -1,6 +1,13 @@
-
-#ifndef _XBOX_CONTROLLER_H_
-#define _XBOX_CONTROLLER_H_
+//===============================================================================================//
+//
+//		CXboxController
+//
+// Simple layer between XInput and CInput.
+//
+//===============================================================================================//
+#ifndef XBOX_CONTROLLER_H_
+#define XBOX_CONTROLLER_H_
+#ifdef WIN32
 
 // We need the Windows Header and the XInput Header
 #include "core/os.h"
@@ -31,4 +38,6 @@ namespace InputControl
 	};
 
 }
-#endif//_XBOX_CONTROLLER_H_
+
+#endif
+#endif//XBOX_CONTROLLER_H_

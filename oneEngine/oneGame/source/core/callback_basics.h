@@ -1,6 +1,12 @@
-
-#ifndef _THE_WON_ENGINE_CALLBACKS_
-#define _THE_WON_ENGINE_CALLBACKS_
+//===============================================================================================//
+//
+//		core/callback_basics.h
+//
+// Forgot where this was going
+//
+//===============================================================================================//
+#ifndef CORE_ENGINE_CALLBACKS_
+#define CORE_ENGINE_CALLBACKS_
 
 // == CALLBACK DEFINITION ==
 typedef int (*arCallback_Void)( void );
@@ -17,4 +23,4 @@ class CCallbackObserver
 typedef int (CCallbackObserver::*arCallback_Clb_Void)( void );
 typedef int (CCallbackObserver::*arCallback_Clb_Ptr)( void* );
 
-#endif//_THE_WON_ENGINE_CALLBACKS_
+#endif//CORE_ENGINE_CALLBACKS_

@@ -1,6 +1,11 @@
+//===============================================================================================//
+//
+//		CInputControl
+//
 // Lovely interface to toss control here and there and everywhere
-// Creates a layer between input system 
-
+// Creates a layer between input system and gameplay controllers
+//
+//===============================================================================================//
 #ifndef C_INPUT_CONTROL_H_
 #define C_INPUT_CONTROL_H_
 

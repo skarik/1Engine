@@ -1,8 +1,12 @@
-// linkerfix_legacy.h
-// This header is for allowing legacy VC++ 2012 and below to run on above.
-
-#ifndef _LINKER_FIX_LEGACY_H_
-#define _LINKER_FIX_LEGACY_H_
+//===============================================================================================//
+//
+//		linkerfix_legacy.h
+//
+// This header is for allowing legacy VC++ 2012 libraries and below to run on VC++ 2013 and up.
+//
+//===============================================================================================//
+#ifndef LINKER_FIX_LEGACY_H_
+#define LINKER_FIX_LEGACY_H_
 
 // Fix for compiling 1700 and below libraries with 1800 and up
 #if _MSC_VER > 1700
@@ -16,4 +20,4 @@ extern "C" FILE*  __iob_func(void)
 
 #endif
 
-#endif // _LINKER_FIX_LEGACY_H_
+#endif // LINKER_FIX_LEGACY_H_

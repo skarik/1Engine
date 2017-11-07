@@ -1,11 +1,12 @@
 //===============================================================================================//
-// ExtendibleMap2D
+//
+//		ExtendibleMap2D
 //
 // 2D data set that extends to enclose any set values out of range.
+//
 //===============================================================================================//
-
-#ifndef _C_AR_EXTENDIBLE_MAP_2D_
-#define _C_AR_EXTENDIBLE_MAP_2D_
+#ifndef AR_EXTENDIBLE_MAP_2D_
+#define AR_EXTENDIBLE_MAP_2D_
 
 #include "core/types/types.h"
 #include "core/exceptions/exceptions.h"
@@ -126,4 +127,4 @@ namespace core
 	};
 }
 
-#endif//_C_AR_EXTENDIBLE_MAP_2D_
+#endif//AR_EXTENDIBLE_MAP_2D_

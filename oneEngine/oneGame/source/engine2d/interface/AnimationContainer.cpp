@@ -128,7 +128,7 @@ bool AnimationContainer::IsPlaying ( const uint32_t animation_index ) const
 
 //		AddFromFile
 // Adds a new animation to this object, either reading from file or using cached texture info
-uint32_t AnimationContainer::AddFromFile ( const animation::types_t n_anim_type, const uint8_t n_userid, const char* n_sprite_filename )
+uint32_t AnimationContainer::AddFromFile ( const animation::arAnimType n_anim_type, const uint8_t n_userid, const char* n_sprite_filename )
 {
 	// Create empty entry:
 	animation_entry_t* entry = new animation_entry_t();

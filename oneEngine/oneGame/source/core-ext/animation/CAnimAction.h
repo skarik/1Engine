@@ -130,7 +130,7 @@ public:
 	void AddEvent ( const animation::ActionEvent & new_event ) {
 		eventList.push_back( new_event );
 	}
-	int GetEvent ( const animation::eAnimSystemEvent & new_event ) {
+	int GetEvent ( const animation::arAnimSystemEvent & new_event ) {
 		//auto result = find( eventList.begin(), eventList.end(), new_event );
 		auto result = eventList.begin();
 		while ( result != eventList.end() ) {
