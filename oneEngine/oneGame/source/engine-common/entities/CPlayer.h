@@ -1,20 +1,7 @@
+#ifndef C_PLAYER_H_
+#define C_PLAYER_H_
 
-#ifndef _C_PLAYER_H_
-#define _C_PLAYER_H_
-
-// Includes
 #include "CActor.h"
-//#include "CCamera.h"
-//#include "CLight.h"
-
-// testosterone
-//#include "CCapsuleCollider.h"
-//#include "CCylinderCollider.h"
-//#include "CRigidbody.h"
-
-// estrogen
-//#include "CInventory.h"
-//#include "CPlayerHud.h"
 
 class CAudioListener;
 class CInputControl;
@@ -22,19 +9,19 @@ class CCharacterMotion;
 
 class CCamera;
 class CLight;
-/*
+
 // Enumeration
 enum ePlayerObjectType
 {
-	// PL_TYPE_GENERAL refers to the base class CPlayer
+	// kPlayerTypeGeneral refers to the base class CPlayer
 	// Has very minimal functionality, only linked to the CCharacter.
 	// Often can be used for spectator camera.
-	PL_TYPE_GENERAL = 0,
+	kPlayerTypeGeneral = 0,
 
-	// PL_TYPE_REALCHAR refers to the class CMccPlayer.
+	// kPlayerTypeAFTER refers to the class CMccPlayer.
 	// CMccPlayer is the main player object for AFTER.
-	PL_TYPE_REALCHAR = 1
-};*/
+	kPlayerTypeAFTER = 1
+};
 
 //===============================================================================================//
 // Basic Player Class
@@ -325,4 +312,4 @@ public:
 
 };
 */
-#endif
+#endif//C_PLAYER_H_

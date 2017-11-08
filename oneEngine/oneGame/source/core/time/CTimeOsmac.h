@@ -1,19 +1,17 @@
-// CTime class
-// controls shiz
+//===============================================================================================//
+//
+//		CTime : Timer class, MacOS
+//
+//===============================================================================================//
+#if (__APPLE__ && TARGET_OS_MAC)
 
-#ifdef __APPLE__
-	#ifdef TARGET_OS_MAC
+#ifndef C_TIME_
+#define C_TIME_
 
-#ifndef _C_TIME_
-#define _C_TIME_
+#include "core/os.h"
+#include "core/types/types.h"
+#include "core/types/float.h"
 
-// Include
-#include <ctime>
-#include "floattype.h"
-
-// Namespace for the lulz
-
-// Class Definition
 class CTime
 {
 public:
@@ -37,7 +35,5 @@ private:
 
 typedef CTime Time;
 
-#endif
-
-	#endif
+#endif//C_TIME_
 #endif

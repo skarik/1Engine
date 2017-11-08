@@ -1,10 +1,8 @@
-
-// Includes
 #include "CGameSettings.h"
 
 #ifdef _WIN32
 	#include "core/os.h"
-#elif __linux
+#elif (__linux || __unix__ || BSD)
 	#include <sys/dir.h>
 	#include <sys/stat.h>
 #elif __APPLE__
@@ -26,7 +24,7 @@ void CGameSettings::MakeDirectory ( const char *directory )
 {
 #ifdef _WIN32
 	CreateDirectory( directory, NULL );
-#elif __linux
+#elif (__linux || __unix__ || BSD)
 	//mkdir( directory, S_IRWXU );
 	mkdir( directory, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH ); //Todo: Find documentation on these damn permissions
 #elif __APPLE__

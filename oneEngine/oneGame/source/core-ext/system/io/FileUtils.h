@@ -1,6 +1,5 @@
-
-#ifndef _IO_FILE_UTILS_EXT_H_
-#define _IO_FILE_UTILS_EXT_H_
+#ifndef CORE_EXT_IO_FILE_UTILS_EXT_H_
+#define CORE_EXT_IO_FILE_UTILS_EXT_H_
 
 #include <string>
 
@@ -13,4 +12,4 @@ namespace IO
 	CORE_API bool ModelExists ( const std::string& n_filename );
 }
 
-#endif//_IO_FILE_UTILS_EXT_H_
+#endif//CORE_EXT_IO_FILE_UTILS_EXT_H_

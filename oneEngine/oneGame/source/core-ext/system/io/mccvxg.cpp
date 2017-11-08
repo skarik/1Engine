@@ -1,14 +1,9 @@
-
 #include "mccvxg.h"
 
-// Include default system IO
 #include "stdio.h"
 #include "stdlib.h"
-// Include string
 #include "string.h"
-// Include ZLib
 #include "zlib.h"
-
 
 // IO general
 mccVXG_file_infop	mccvxg_begin_io ( FILE* in_file )
@@ -124,7 +119,7 @@ int		mccvxg_read_image ( mccVXG_file_infop file_info, void* outimagedata )
 	fread( file_info->buffer, ((file_info->datasize+3)/4)*4,1, file_info->file );
 	
 	// Uncompress the data
-	z_result = uncompress( (char*)outimagedata, &final_data_size, (char*)file_info->buffer, file_info->datasize );
+	z_result = uncompress( (Bytef*)outimagedata, &final_data_size, (Bytef*)file_info->buffer, file_info->datasize );
 	switch( z_result )
 	{
 	case Z_OK:
@@ -215,7 +210,7 @@ void	mccvxg_write_image ( mccVXG_file_infop file_info, void* inimagedata )
 	}
 
 	// Compress data
-	z_result = compress( file_info->buffer, &compress_size, inimagedata, final_data_size );
+	z_result = compress( (Bytef*)file_info->buffer, &compress_size, (Bytef*)inimagedata, final_data_size );
 	switch( z_result )
 	{
 	case Z_OK:

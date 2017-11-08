@@ -1,17 +1,12 @@
-#ifndef _MCC_VXG_IO_H_
-#define _MCC_VXG_IO_H_
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // =============================================================
 //					  MCC VXG File Interface
 // Interface for reading and writing mcc.VXG files
 // Implementation (C) 2013 by EpicHouse Studios and Joshua Boren
 // =============================================================
+#ifndef CORE_VXG_IO_H_
+#define CORE_VXG_IO_H_
 
-// Include default system IO
+#include "core/types/types.h"
 #include "stdio.h"
 #include "stdlib.h"
 
@@ -57,8 +52,4 @@ void	mccvxg_write_bit_depth ( mccVXG_file_infop file_info, int bitdepth );
 void	mccvxg_write_info ( mccVXG_file_infop file_info );
 void	mccvxg_write_image ( mccVXG_file_infop file_info, void* inimagedata );
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif//_MCC_VXG_IO_H_
+#endif//CORE_VXG_IO_H_

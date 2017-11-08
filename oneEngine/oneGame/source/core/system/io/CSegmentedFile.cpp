@@ -387,7 +387,7 @@ bool CSegmentedFile::WriteData ( void )
 		// Copy the data over
 		size_t count;
 		char buf [256];
-		while ( count = fread( buf, sizeof(char), 256, ifile ) ) {
+		while ( (count = fread( buf, sizeof(char), 256, ifile )) ) {
 			fwrite( buf, sizeof(char), count, ofile );
 		}
 

@@ -1,9 +1,12 @@
-// CMappedBinaryFile
-// Memory-mapped binary file IO.
+//===============================================================================================//
+//
+//		CMappedBinaryFile - Memory-mapped binary file IO
+//
 // The current implementation does not use mmap.
-
-#ifndef _C_MAPPED_BINARY_FILE_H_
-#define _C_MAPPED_BINARY_FILE_H_
+//
+//===============================================================================================//
+#ifndef C_MAPPED_BINARY_FILE_H_
+#define C_MAPPED_BINARY_FILE_H_
 
 #include "core/types/types.h"
 #include "core/containers/arstring.h"
@@ -28,7 +31,7 @@ public:
 
 	// Seeks to the given location.
 	// Will expand the file as necessary.
-	void		SeekTo ( const size_t n_pos );
+	void		SeekTo ( const long n_pos );
 
 	// Returns a stream for manual I/O. May return NULL if manual I/O is not supported.
 	FILE*		GetStream ( void );
@@ -40,9 +43,9 @@ private:
 	arstring<256>	m_filename;
 
 private:
-	size_t		TellPos ( void );
-	size_t		TellSize( void );
+	long		TellPos ( void );
+	long		TellSize( void );
 
 };
 
-#endif//_C_MAPPED_BINARY_FILE_H_
+#endif//C_MAPPED_BINARY_FILE_H_

@@ -1,4 +1,11 @@
-
+//===============================================================================================//
+//
+//		Event.h - Legacy Event System
+//
+// Legacy event system that was used for callback within AFTER's game code, especially with delays.
+// Kept as a possibly useful resource.
+//
+//===============================================================================================//
 #ifndef CORE_1ENGINE_EVENTS_H_
 #define CORE_1ENGINE_EVENTS_H_
 

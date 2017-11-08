@@ -1,6 +1,10 @@
-
-#ifndef _ENGINE_SCREEN_H_
-#define _ENGINE_SCREEN_H_
+//===============================================================================================//
+//
+//		core/system/Screeen.h : Global screen information.
+//
+//===============================================================================================//
+#ifndef ENGINE_SCREEN_H_
+#define ENGINE_SCREEN_H_
 
 #include "core/types/types.h"
 
@@ -22,4 +26,4 @@ namespace Screen
 };
 
 
-#endif//_ENGINE_SCREEN_H_
+#endif//ENGINE_SCREEN_H_

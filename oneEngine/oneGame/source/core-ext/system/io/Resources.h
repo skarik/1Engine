@@ -1,12 +1,13 @@
 //===============================================================================================//
-//	resources.h
+//
+//		resources.h
 //
 // Contains definition for Resources class, which should be used for all game-content loading
 // Resources stores the all the plugin directories for additional loading
+//
 //===============================================================================================//
-
-#ifndef _CORE_RESOURCE_SEARCHER_
-#define _CORE_RESOURCE_SEARCHER_
+#ifndef CORE_EXT_RESOURCE_SEARCHER_
+#define CORE_EXT_RESOURCE_SEARCHER_
 
 #include <string>
 #include <vector>
@@ -73,4 +74,4 @@ namespace core
 	};
 }
 
-#endif//_CORE_RESOURCE_SEARCHER_
+#endif//CORE_EXT_RESOURCE_SEARCHER_

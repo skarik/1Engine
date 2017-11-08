@@ -1,9 +1,15 @@
-// CBinaryFile
-// Wrapper for C file IO functions that takes into account threads.
-// Has functions for locks and stores a thread-safe list of open files.
-
-#ifndef _C_BINARY_FILE_
-#define _C_BINARY_FILE_
+//===============================================================================================//
+//
+//		CBinaryFile - Wrapper for C file IO functions.
+//
+// Takes threads into account - to an extent. Due to static linkage, it only watches from the same
+//	module. This will not change unless (rare chance) 1Engine becomes a true multithreaded engine.
+//  Note that the behavior is slightly different on different platforms. Assume worst case.
+// The class has functions for locks and stores a statically linked thread-safe list of open files.
+//
+//===============================================================================================//
+#ifndef C_BINARY_FILE_
+#define C_BINARY_FILE_
 
 #include "core/types/types.h"
 

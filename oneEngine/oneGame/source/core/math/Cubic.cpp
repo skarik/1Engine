@@ -90,8 +90,8 @@ Frustum Cubic::GetFrustum ( Vector3d const& casterPosition )
 	// So gotta find closests vertex to camera
 	Real mindist = -1.0;
 	Real currentdist;
-	char sm_vertex = -1;
-	for ( char i = 0; i < 8; i += 1 )
+	int sm_vertex = -1;
+	for ( int i = 0; i < 8; i += 1 )
 	{
 		// Get current dist
 		currentdist = ( places[i]-casterPosition ).sqrMagnitude();
@@ -104,7 +104,7 @@ Frustum Cubic::GetFrustum ( Vector3d const& casterPosition )
 	}
 	
 	Frustum result;
-	for ( char i = 0; i < 5; i += 1 )
+	for ( int i = 0; i < 5; i += 1 )
 	{
 		result.plane[i].ConstructFromPoints( casterPosition, places[cube_lookup[sm_vertex][i]],places[cube_lookup[sm_vertex][i+1]] );
 	}

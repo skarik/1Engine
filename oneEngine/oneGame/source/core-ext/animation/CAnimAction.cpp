@@ -6,7 +6,7 @@
 
 // constructor
 CAnimAction::CAnimAction( void )
-	: weight(0), autoFadeSpeed(4.0F), isPlaying(false), end_behavior(END_STOP_PLAYING), reset_on_stop(true), mirrored(false), tag(TAG_NORMAL),
+	: isPlaying(false), weight(0), autoFadeSpeed(4.0F), reset_on_stop(true), end_behavior(END_STOP_PLAYING), mirrored(false), tag(TAG_NORMAL),
 	sampleSource(0), sampleMapping(0),
 	owner(NULL)
 {
@@ -26,7 +26,7 @@ CAnimAction::CAnimAction( void )
 	enableMotionExtrapolation[2] = true;
 }
 CAnimAction::CAnimAction( const char* name )
-	: weight(0), autoFadeSpeed(4.0F), isPlaying(false), end_behavior(END_STOP_PLAYING), reset_on_stop(true), mirrored(false), tag(TAG_NORMAL),
+	: isPlaying(false), weight(0), autoFadeSpeed(4.0F), reset_on_stop(true), end_behavior(END_STOP_PLAYING), mirrored(false), tag(TAG_NORMAL),
 	sampleSource(0), sampleMapping(0),
 	owner(NULL)
 {

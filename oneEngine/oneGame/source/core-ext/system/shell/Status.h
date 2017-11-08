@@ -1,11 +1,12 @@
 //===============================================================================================//
-//	core-ext/system/shell/Status.h
+//
+//		core-ext/system/shell/Status.h
 //
 // Contains shell-specific feature interfaces
+//
 //===============================================================================================//
-
-#ifndef _CORE_EXT_SYSTEM_SHELL_STATUS_H_
-#define _CORE_EXT_SYSTEM_SHELL_STATUS_H_
+#ifndef CORE_EXT_SYSTEM_SHELL_STATUS_H_
+#define CORE_EXT_SYSTEM_SHELL_STATUS_H_
 
 #include "core/types/types.h"
 
@@ -38,4 +39,4 @@ namespace core
 	}
 }
 
-#endif//_CORE_EXT_SYSTEM_SHELL_STATUS_H_
+#endif//CORE_EXT_SYSTEM_SHELL_STATUS_H_
