@@ -231,7 +231,7 @@ namespace renderer
 
 		struct rrPerCamera
 		{
-			Matrix4x4	viewProjection;
+			Matrix4x4	viewProjection; // todo: add inverse
 			Vector4f	worldCameraPosition;
 			Vector4f	viewportInfo;
 			Vector2f	screenSize;

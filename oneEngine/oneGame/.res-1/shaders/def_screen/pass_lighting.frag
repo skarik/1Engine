@@ -1,6 +1,9 @@
 #version 330
+#extension GL_ARB_explicit_attrib_location : require
+#extension GL_ARB_explicit_uniform_location : require
 
-#define DEBUG_OUTPUT
+//#define DEBUG_OUTPUT
+//#ifdef ENABLE_LIGHTING
 
 // Output to screen
 layout(location = 0) out vec4 FragColor;
@@ -10,13 +13,12 @@ in vec4 v2f_position;
 in vec2 v2f_texcoord0;
 
 // Samplers
-uniform sampler2D textureSampler0;	// Diffuse
-uniform sampler2D textureSampler1;	// Normals
-//uniform sampler2D textureSampler2;	// Position (not anymore, now it shall be WARP...maybe)
-//uniform sampler2D textureSampler2;  // Warp
-uniform sampler2D textureSampler2;	// Lighting Properties
-uniform sampler2D textureSampler3;	// Glow (for now)
-uniform sampler2D textureSampler4;	// Depth
+layout(location = 20) uniform sampler2D textureSampler0;	// Diffuse
+layout(location = 21) uniform sampler2D textureSampler1;	// Normals
+layout(location = 22) uniform sampler2D textureSampler2;	// Lighting Properties
+layout(location = 23) uniform sampler2D textureSampler3;	// Glow (for now)
+layout(location = 24) uniform sampler2D textureSampler4;	// Depth
+
 /*
 // Lighting samplers
 uniform samplerBuffer textureLightBuffer;
@@ -29,38 +31,74 @@ uniform sampler2D textureShadow1;
 uniform sampler2D textureShadow2;
 */
 // Lighting and Shadows
-uniform samplerBuffer textureLightBuffer;
-uniform int sys_LightNumber;
-uniform vec4 sys_LightAmbient;
-/*layout(std140) uniform sys_LightingInfo
+layout(location = 44) uniform samplerBuffer textureLightBuffer;
+layout(std140) uniform sys_cbuffer_PerPass
 {
-	vec4 sys_LightColor[8];
-	vec4 sys_LightPosition[8];
-	vec4 sys_LightProperties[8];
-	vec4 sys_LightShadowInfo[8];
-	mat4 sys_LightMatrix[8];
-};*/
-uniform mat4 sys_ModelViewProjectionMatrix;
-uniform mat4 sys_ModelViewProjectionMatrixInverse;
+    vec4    sys_LightAmbient;
+    int     sys_LightNumber;
+    int     rr__unused0;
+    int     rr__unused1;
+    int     rr__unused2;
+};
+
+/*
+textureLightBuffer layout:
+offset 0
+    float red;
+    float green;
+    float blue;
+    float specular;
+offset 1
+    float range;
+    float falloff;
+    float passthrough;
+    float hasshadow;
+offset 2
+    float x;
+    float y;
+    float z;
+    float directional;
+offset 3
+    float dx;
+    float dy;
+    float dz;
+    float dw;
+*/
+
+//uniform mat4 sys_ModelViewProjectionMatrix;
+//uniform mat4 sys_ModelViewProjectionMatrixInverse;
 //uniform vec3 sys_CameraRange;
 
 layout(std140) uniform def_LightingInfo
 {
 	mat4 def_LightMatrix0[4];
 };
-uniform samplerBuffer textureLightMatrixBuffer;
-uniform sampler2D textureShadow0;
-uniform sampler2D textureShadow1;
-uniform sampler2D textureShadow2;
+layout(location = 45) uniform samplerBuffer textureLightMatrixBuffer;
+layout(location = 32) uniform sampler2D textureShadow0;
+layout(location = 33) uniform sampler2D textureShadow1;
+layout(location = 34) uniform sampler2D textureShadow2;
 
 vec4 v2f_lightcoord [8];
 
 // System inputs
-uniform vec3 sys_WorldCameraPos;
+//uniform vec3 sys_WorldCameraPos;
 
-// Fog
-layout(std140) uniform sys_Fog
+layout(std140) uniform sys_cbuffer_PerCamera
 {
+    mat4 sys_ViewProjectionMatrix;
+    vec4 sys_WorldCameraPos;
+    vec4 sys_ViewportInfo;
+    vec2 sys_ScreenSize;
+    vec2 sys_PixelRatio;
+};
+layout(std140) uniform sys_cbuffer_PerFrame
+{
+    // Time inputs
+    vec4    sys_SinTime;
+    vec4    sys_CosTime;
+    vec4    sys_Time;
+
+    // Fog
 	vec4	sys_FogColor;
 	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
@@ -191,7 +229,7 @@ float shadowCalculate ( /*vec4 lightCoords,*/ in float s_strength, sampler2D tex
 
 			//float spread;
 			//spread = sqrt(0.02/bias)*2;
-			coord.xy = random( vec3(v2f_texcoord0.xy,i)+sys_WorldCameraPos )*(1-cspd)*0.12;
+			coord.xy = random( vec3(v2f_texcoord0.xy,i)+sys_WorldCameraPos.xyz )*(1-cspd)*0.12;
 			//coord.xy = vec2(0,0);
 			coord.z = 0;
 			coord.xy += vec2( SmoothTriangleWave(i*0.25),SmoothTriangleWave(i*0.25+0.25) )*(1-cspd)*0.12;//*spread;
@@ -269,7 +307,8 @@ void main ( void )
 	vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1),pixelDepth,1.0 );
 	{
 		pixelPosition.z = ( pixelPosition.z*2 - 1 );
-		pixelPosition = sys_ModelViewProjectionMatrixInverse * vec4( pixelPosition.xyz, 1.0 );
+		//pixelPosition = sys_ModelViewProjectionMatrixInverse * vec4( pixelPosition.xyz, 1.0 );
+        pixelPosition = inverse(sys_ViewProjectionMatrix) * vec4( pixelPosition.xyz, 1.0 );
 		pixelPosition.xyzw /= pixelPosition.w;
 	}
 
@@ -281,26 +320,40 @@ void main ( void )
 	// rgb	surface normal
 	// a	unused
 	vec4 pixelNormal		= texture( textureSampler1, v2f_texcoord0 );
-	// pixelLightProperty
-	// r	lighting effect (0 is fullbright, 1 is normal)
-	// g	specular add (from uniform)
-	// b	specular power (from unifrom)
-	// a	rim lighting strength
+    // pixelLightProperty
+    // rgb  specular color
+    // a	smoothness
 	vec4 pixelLightProperty	= texture( textureSampler2, v2f_texcoord0 );
 	// pixelGlow
 	// rgb	surface glow
-	// a	backside lighting to add
+	// a	rim lighting strength
 	vec4 pixelGlow			= texture( textureSampler3, v2f_texcoord0 );
 
-	//vec4 pixelPosition = vec4( v2f_texcoord0.x,v2f_texcoord0.y,pixelNormal.w,pixelNormal.w );
+    // temp hack:
+    pixelNormal.rgb = -pixelNormal.rgb;
+
+    // ==Perform lighting==
 
 	vec4 n_cameraVector;
-	n_cameraVector.xyz = sys_WorldCameraPos - pixelPosition.xyz;
+	n_cameraVector.xyz = sys_WorldCameraPos.xyz - pixelPosition.xyz;
 	n_cameraVector.w = length( n_cameraVector.xyz );
 	vec3 n_cameraDir = n_cameraVector.xyz / n_cameraVector.w;
 
-	float n_rimValue = max(1-dot( pixelNormal.xyz, n_cameraDir ),0.0);
+    // Generate general rim-light value
+	float n_rimValue = max(1.0 - dot( pixelNormal.xyz, n_cameraDir ), 0.0);
 
+#ifdef ENABLE_LIGHTING
+
+    vec3 specularMask = pixelLightProperty.rgb;
+
+    vec3 diffuseColor = lighting_mix(
+        pixelDiffuse.xyz,
+        pixelNormal.xyz, pixelPosition.xyz, specularMask, pixelLightProperty.a
+    );
+
+    float lightingStrength = 0.0;
+
+/*
 	v2f_lightcoord[0] = pixelPosition * def_LightMatrix0[0];
 	v2f_lightcoord[1] = pixelPosition * def_LightMatrix0[1];
 	v2f_lightcoord[2] = pixelPosition * def_LightMatrix0[2];
@@ -357,19 +410,36 @@ void main ( void )
 
 	// Create color diffuse*lighting result
 	diffuseColor.rgb = diffuseColor*luminColor;
+*/
+
+#else
+
+    //pixelNormal.rgb = pixelNormal.rgb;
+    //pixelNormal.rb = vec2(0,0);
+
+    pixelDiffuse.rgb = vec3(0.43,0.4,0.5);
+    pixelDiffuse.r += length(pixelPosition) * 0.05;
+    pixelDiffuse.rg -= 0.1 - length(pixelPosition.xy) * 0.02;
+
+    float lightDir = dot(vec3(-0.1,0.6,0.8), pixelNormal.rgb);
+    float light = 0.3 + pow(n_rimValue, 6) * 0.5 * max(0.0, lightDir - 0.3) + max(0.0, lightDir) * 0.6;
+
+    //vec3 diffuseColor = pixelNormal.rgb * 0.5 + 0.5;
+    //vec3 diffuseColor = vec3(1,1,1) * n_rimValue * 0.5;
+    vec3 diffuseColor = pixelDiffuse.rgb * max(0.0, light);
+    diffuseColor.rgb += vec3(0.3,0.25,0.25) * (0.5 + min(1.0, pow(n_rimValue, 2) * 7)) * max(0.0, -lightDir);
+
+    float lightingStrength = 0.0;
+
+#endif
 
 	// ==Perform fog==
 	float n_fogDensity = clamp( (sys_FogEnd - n_cameraVector.w) * sys_FogScale, 0, 1 );
-	n_fogDensity = mix( 1, n_fogDensity, lightingStrength );
-	//FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb * sys_DiffuseColor.rgb * lightColor, v2f_fogdensity );
+	n_fogDensity = mix( 1, n_fogDensity, lightingStrength ); // TODO: Reimplement
+
 	// Mix output with fog
-
-	// Output fog mix
 	FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb, n_fogDensity );
-	//mix( pixelDiffuse.rgb, diffuseColor*luminColor, clamp( (pixelLightProperty.r-0.4)/0.6, 0, 1 ) );
 	FragColor.a = pixelDiffuse.a;
-	//FragColor.a = 0;
-
 
 	//FragColor.rgb = pixelGlow.rgb * pixelLightProperty.r;//luminColor.rgb*0.5;//vec3(1,1,1) * pixelGlow.a;
 	//+ dot( n_cameraDir, pixelNormal.xyz );

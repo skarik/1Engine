@@ -1,6 +1,5 @@
-
-#ifndef _TEST_STRING_OPERATIONS_
-#define _TEST_STRING_OPERATIONS_
+#ifndef TEST_STRING_OPERATIONS_
+#define TEST_STRING_OPERATIONS_
 
 #include "engine/state/CGameScene.h"
 
@@ -10,4 +9,4 @@ protected:
 	ENGCOM_API void LoadScene(void);
 };
 
-#endif//_TEST_STRING_OPERATIONS_
+#endif//TEST_STRING_OPERATIONS_

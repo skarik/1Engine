@@ -1,6 +1,5 @@
-
-#ifndef _TEST_COLOR_CONVERSIONS_
-#define _TEST_COLOR_CONVERSIONS_
+#ifndef TEST_COLOR_CONVERSIONS_
+#define TEST_COLOR_CONVERSIONS_
 
 #include "engine/state/CGameScene.h"
 
@@ -10,4 +9,4 @@ protected:
 	ENGCOM_API void LoadScene(void);
 };
 
-#endif//_TEST_COLOR_CONVERSIONS_
+#endif//TEST_COLOR_CONVERSIONS_

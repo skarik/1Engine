@@ -122,4 +122,6 @@ void CPrimitiveCube::setSize ( Real width, Real depth, Real height )
 	
 	delete[] m_modeldata.vertices;
 	delete[] m_modeldata.triangles;
+	m_modeldata.vertices = NULL;
+	m_modeldata.triangles= NULL;
 }

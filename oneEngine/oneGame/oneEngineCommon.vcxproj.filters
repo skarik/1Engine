@@ -79,6 +79,9 @@
     <Filter Include="SOURCE\Engine-Common\Dialogue">
       <UniqueIdentifier>{87e283ed-aa34-4c9a-a134-702228a24caa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Engine-Common\Scenes\Demos">
+      <UniqueIdentifier>{f85bb74d-6d9a-4b6a-8817-fac02539fddf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\engine-common\engine-common.h">
@@ -324,6 +327,9 @@
     <ClInclude Include="source\engine-common\entities\CLoadingScreen.h">
       <Filter>SOURCE\Engine-Common\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\scenes\demos\demosceneModelLoader.h">
+      <Filter>SOURCE\Engine-Common\Scenes\Demos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -514,6 +520,9 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\entities\CLoadingScreen.cpp">
       <Filter>SOURCE\Engine-Common\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\scenes\demos\demosceneModelLoader.cpp">
+      <Filter>SOURCE\Engine-Common\Scenes\Demos</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

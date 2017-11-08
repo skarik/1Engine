@@ -421,7 +421,7 @@ bool ModelLoader::ConvertFile ( const char* n_filename )
 		{
 #		ifdef _WIN32
 			string command;
-			command = "_devtools/FBXtoPAD.exe " + targetFilename + ".FBX " + targetFilename + ".PAD";
+			command = "_devtools/FBXtoPAD.exe \"" + targetFilename + ".FBX\" \"" + targetFilename + ".PAD\"";
 
 			LPTSTR lpCommandLine = new CHAR [1024];
 			strcpy( lpCommandLine, command.c_str() );

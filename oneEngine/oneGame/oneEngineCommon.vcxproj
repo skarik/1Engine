@@ -168,6 +168,7 @@
     <ClInclude Include="source\engine-common\physics\wind\physExplosion.h" />
     <ClInclude Include="source\engine-common\scenes\benchmark\benchmarkMatrices.h" />
     <ClInclude Include="source\engine-common\scenes\benchmark\benchmarkSemaphores.h" />
+    <ClInclude Include="source\engine-common\scenes\demos\demosceneModelLoader.h" />
     <ClInclude Include="source\engine-common\scenes\gmsceneFromFile.h" />
     <ClInclude Include="source\engine-common\scenes\gmsceneSystemBuilder.h" />
     <ClInclude Include="source\engine-common\scenes\gmsceneSystemLoader.h" />
@@ -268,6 +269,7 @@
     <ClCompile Include="source\engine-common\physics\wind\physExplosion.cpp" />
     <ClCompile Include="source\engine-common\scenes\benchmark\benchmarkMatrices.cpp" />
     <ClCompile Include="source\engine-common\scenes\benchmark\benchmarkSemaphores.cpp" />
+    <ClCompile Include="source\engine-common\scenes\demos\demosceneModelLoader.cpp" />
     <ClCompile Include="source\engine-common\scenes\gmsceneSystemBuilder.cpp" />
     <ClCompile Include="source\engine-common\scenes\gmsceneSystemLoader.cpp" />
     <ClCompile Include="source\engine-common\scenes\tests\testColorConversion.cpp" />

@@ -6,9 +6,24 @@ RrShaderManager ShaderManager;
 // REKOMPILE
 void RrShaderManager::RecompileAll ( void )
 {
-	for ( std::vector<RrShader*>::iterator it = vShaderList.begin(); it != vShaderList.end(); it++ )
+	InvalidateAll();
+	for ( RrShader* shader : vShaderList )
 	{
-		(*it)->recompile();
+		shader->recompile();
+	}
+}
+void RrShaderManager::InvalidateAll ( void )
+{
+	for ( RrShader* shader : vShaderList )
+	{	// Invalidate shader program
+		if ( !shader->bIsReference )
+		{
+			shader->iVertexShaderID = 0;
+			shader->iPixelShaderID = 0;
+			shader->iProgramID = 0;
+			// TODO: Properly clean up leaked shaders.
+		}
+		shader->primed = false;
 	}
 }
 

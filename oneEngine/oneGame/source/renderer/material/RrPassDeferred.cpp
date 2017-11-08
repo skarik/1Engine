@@ -58,8 +58,18 @@ void RrMaterial::deferred_shader_build( uchar pass )
 	// ============================
 	// Build the vertex shader
 	{
-		std::string shader = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/surface_default.vert").c_str() );
+		std::string shader;
 		size_t pos;
+
+		std::string t_fnPrimaryShader = "shaders/def_alt/surface_default.vert";
+		if (IO::FileExists( core::Resources::GetPrimaryResourcePath() + t_fnPrimaryShader ))
+		{
+			shader = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + t_fnPrimaryShader).c_str() );
+		}
+		else
+		{
+			shader = IO::ReadFileToString( core::Resources::PathTo(t_fnPrimaryShader).c_str() );
+		}
 
 		// Remove macro at the top
 		pos = shader.find("#define VERTEX_PROCESSOR");
@@ -75,9 +85,9 @@ void RrMaterial::deferred_shader_build( uchar pass )
 			shader.erase(pos, sizeof("VERTEX_PROCESSOR"));
 			std::string stub;
 			if ( t_shaderTag == renderer::SHADER_TAG_SKINNING )
-				stub = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/vertex_proccessing.skinning.vert.stub").c_str() );
+				stub = IO::ReadFileToString( core::Resources::PathTo("shaders/def_alt/vertex_proccessing.skinning.vert.stub").c_str() );
 			else if ( t_shaderTag == renderer::SHADER_TAG_DEFAULT )
-				stub = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/vertex_proccessing.vert.stub").c_str() );
+				stub = IO::ReadFileToString( core::Resources::PathTo("shaders/def_alt/vertex_proccessing.vert.stub").c_str() );
 			shader.insert(pos, stub);
 		}
 
@@ -89,7 +99,17 @@ void RrMaterial::deferred_shader_build( uchar pass )
 	// ============================
 	// Build the pixel shader
 	{
-		std::string shader = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + "shaders/def_alt/surface_default.frag").c_str() );
+		std::string shader;
+
+		std::string t_fnPrimaryShader = "shaders/def_alt/surface_default.frag";
+		if (IO::FileExists( core::Resources::GetPrimaryResourcePath() + t_fnPrimaryShader ))
+		{
+			shader = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + t_fnPrimaryShader).c_str() );
+		}
+		else
+		{
+			shader = IO::ReadFileToString( core::Resources::PathTo(t_fnPrimaryShader).c_str() );
+		}
 
 		std::string t_shaderNameFrag = t_shaderName+".frag";
 		IO::ClearFile( t_shaderNameFrag.c_str() );

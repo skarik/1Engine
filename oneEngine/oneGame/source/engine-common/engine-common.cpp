@@ -20,6 +20,7 @@
 #include "engine-common/scenes/tests/testColorConversion.h"
 #include "engine-common/scenes/tests/testComparisons.h"
 #include "engine-common/scenes/tests/testStringOperations.h"
+#include "engine-common/scenes/demos/demosceneModelLoader.h"
 
 //===============================================================================================//
 //	EngineCommonInitialize
@@ -40,6 +41,8 @@ int EngineCommonInitialize ( void )
 	EngineCommon::RegisterScene<testComparisons>( "test_cmp" );
 	EngineCommon::RegisterScene<testStringOperations>( "test_string" );
 	EngineCommon::RegisterScene<testColorConversion>("test_color_conversion");
+
+	EngineCommon::RegisterScene<demosceneModelLoader>("demoscene0");
 
 	// Lua
 	//engine::Console->AddConsoleFunc( "lua",	Lua::con_execLua );

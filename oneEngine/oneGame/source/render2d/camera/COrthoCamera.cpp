@@ -1,8 +1,8 @@
-
 #include "core/system/Screen.h"
 #include "renderer/texture/CRenderTexture.h"
 #include "renderer/state/CRenderState.h"
 #include "renderer/material/RrMaterial.h"
+#include "renderer/material/RrShaderManager.h"
 
 #include "render2d/state/WorldPalette.h"
 
@@ -76,7 +76,11 @@ void COrthoCamera::RenderSet ( void )
 	// Remove filtering on the upscaling pass
 	SceneRenderer->GetDeferredBuffer()->SetFilter( SamplingPoint );
 
-	RrMaterial::special_mode = renderer::SP_MODE_2DPALETTE;
+	if (RrMaterial::special_mode != renderer::SP_MODE_2DPALETTE)
+	{
+		ShaderManager.InvalidateAll();
+		RrMaterial::special_mode = renderer::SP_MODE_2DPALETTE;
+	}
 
 	// Set up the camera normally
 	CCamera::RenderSet();

@@ -74,8 +74,9 @@ public:
 	// Current material count
 	RENDER_API static uint			current_sampler_slot;
 
-	// Current material special mode
-	// The value of this will drastically change the rest of the program. These are hard-coded special effects.
+	// Current material special mode. These are hard-coded special effects.
+	// Controls the current main rendering path of the program.
+	// Changing this may completely invalidate the rendering state. Set with caution.
 	RENDER_API static uchar		special_mode;
 public:
 	RENDER_API void			bindPass ( uchar pass );

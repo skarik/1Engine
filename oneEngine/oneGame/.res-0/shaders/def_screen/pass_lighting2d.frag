@@ -38,8 +38,6 @@ uniform sampler2D textureShadow2;
 */
 // Lighting and Shadows
 layout(location = 44) uniform samplerBuffer textureLightBuffer;
-/*layout(location = 11) uniform int sys_LightNumber;
-layout(location = 10) uniform vec4 sys_LightAmbient;*/
 layout(std140) uniform sys_cbuffer_PerPass
 {
     vec4    sys_LightAmbient;

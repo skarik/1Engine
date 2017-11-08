@@ -1,6 +1,5 @@
-
-#ifndef _TEST_COMPARISONS_
-#define _TEST_COMPARISONS_
+#ifndef TEST_COMPARISONS_
+#define TEST_COMPARISONS_
 
 #include "engine/state/CGameScene.h"
 
@@ -10,4 +9,4 @@ protected:
 	ENGCOM_API void LoadScene(void);
 };
 
-#endif//_TEST_COMPARISONS_
+#endif//TEST_COMPARISONS_

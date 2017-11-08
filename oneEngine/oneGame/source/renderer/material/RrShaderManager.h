@@ -10,7 +10,9 @@ class RrShaderManager
 {
 	//static RrShader* pShaderList;
 public:
-	void RecompileAll ( void );
+	RENDER_API void RecompileAll ( void );
+	RENDER_API void InvalidateAll ( void );
+
 	void AddShader ( RrShader* );
 	bool RemoveShader ( RrShader* );
 	RrShader* ShaderExists ( const std::string& a_sShaderName, const renderer::rrShaderTag a_nShaderTag );
@@ -19,6 +21,6 @@ private:
 };
 
 // Global Class
-extern RrShaderManager ShaderManager;
+RENDER_API extern RrShaderManager ShaderManager;
 
 #endif

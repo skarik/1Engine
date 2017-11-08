@@ -764,6 +764,15 @@ void RrMaterial::bindPassDeferred ( uchar pass )
 		deferredinfo[pass].m_ready = true;
 		deferred_shader_build( pass );
 	}
+#	ifdef _ENGINE_DEBUG
+	else
+	{
+		if ( deferredinfo[pass].shader->get_program() == 0 )
+		{
+			deferred_shader_build( pass );
+		}
+	}
+#	endif//_ENGINE_DEBUG
 
 	// Bind shader
 	TimeProfiler.BeginTimeProfile( "rs_mat_bindshader" );
@@ -901,7 +910,7 @@ void RrMaterial::prepareShaderConstants ( const core::Transform& n_transform )
 	modelRS = n_transform.WorldRotation();
 
 	// Update matrix constants
-	pushConstantsPerObject(!modelTRS, modelRS);
+	pushConstantsPerObject(!modelTRS, !modelRS);
 }
 void RrMaterial::prepareShaderConstants ( const XrTransform& n_transform )
 {	
@@ -909,7 +918,7 @@ void RrMaterial::prepareShaderConstants ( const XrTransform& n_transform )
 	core::TransformUtility::TRSToMatrix4x4(n_transform, modelTRS, modelRS);
 
 	// Update matrix constants
-	pushConstantsPerObject(!modelTRS, modelRS);
+	pushConstantsPerObject(!modelTRS, !modelRS);
 }
 
 void	RrMaterial::bindPassAtrribs ( void )
