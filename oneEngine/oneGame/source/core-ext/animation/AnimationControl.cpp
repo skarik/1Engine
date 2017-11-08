@@ -1,26 +1,26 @@
 // Includes
-#include "CAnimation.h"
+#include "AnimationControl.h"
 #include "core/utils/StringUtils.h"
 
 using std::cout;
 using std::endl;
 
 // Class Constants
-const unsigned char CAnimation::maxLayers = 6;
-const bool			CAnimation::useHavok = true;
+const unsigned char AnimationControl::maxLayers = 6;
+const bool			AnimationControl::useHavok = true;
 
-CAnimAction			CAnimation::deadAction ( "" );
+AnimationAction			AnimationControl::deadAction ( "" );
 
 // Class static listing
-std::vector<CAnimation*>	CAnimation::_AnimationInstances;
+std::vector<AnimationControl*>	AnimationControl::_AnimationInstances;
 // Exported instance list
-const std::vector<CAnimation*>& CAnimation::Instances ( void )
+const std::vector<AnimationControl*>& AnimationControl::Instances ( void )
 {
 	return _AnimationInstances;
 }
 
 // Constructors
-CAnimation::CAnimation ( const animation::Skeleton& n_skeleton )
+AnimationControl::AnimationControl ( const animation::Skeleton& n_skeleton )
 	: bIsValid(false), bEventsRead(false)
 {
 	skeleton = n_skeleton;
@@ -28,7 +28,7 @@ CAnimation::CAnimation ( const animation::Skeleton& n_skeleton )
 
 	_AnimationInstances.push_back(this);
 }
-CAnimation::CAnimation ( CAnimation* pFoundReference )
+AnimationControl::AnimationControl ( AnimationControl* pFoundReference )
 	: bIsValid(false), bEventsRead(false)
 {
 	if ( pFoundReference != NULL )
@@ -47,28 +47,28 @@ CAnimation::CAnimation ( CAnimation* pFoundReference )
 }
 
 // Destructor
-CAnimation::~CAnimation ( void )
+AnimationControl::~AnimationControl ( void )
 {
 	_AnimationInstances.erase( std::find(_AnimationInstances.begin(), _AnimationInstances.end(), this ) );
 }
 
-void CAnimation::AddAction ( CAnimAction& newAction )
+void AnimationControl::AddAction ( AnimationAction& newAction )
 {
 	mAnimations[newAction.GetName()] = newAction;
 	//cout << "Anim: " << newAction.actionName << " S: " << newAction.start << " E: " << newAction.end << " L: " << newAction.loop << endl;
 }
-void CAnimation::AddIKInfo ( const animation::arIKInfo& ik )
+void AnimationControl::AddIKInfo ( const animation::arIKInfo& ik )
 {
 	ikList.push_back( ik );
 }
 
 // Copy from existing reference (pointer)
-CAnimation& CAnimation::operator= ( CAnimation* pRight )
+AnimationControl& AnimationControl::operator= ( AnimationControl* pRight )
 {
 	return ((*this) = (*pRight));
 }
 // Copy from existing refernece
-CAnimation&	CAnimation::operator= ( CAnimation const& sourceAnimRef )
+AnimationControl&	AnimationControl::operator= ( AnimationControl const& sourceAnimRef )
 {
 	// Copy the skeleton
 	skeleton = sourceAnimRef.skeleton;
@@ -95,7 +95,7 @@ CAnimation&	CAnimation::operator= ( CAnimation const& sourceAnimRef )
 }
 
 
-void CAnimation::Play ( const char* animName )
+void AnimationControl::Play ( const char* animName )
 {
 	// Find animation with name
 	auto it = mAnimations.find( arstring128(animName) );
@@ -108,7 +108,7 @@ void CAnimation::Play ( const char* animName )
 		it->second.Play( 1.0f );
 	}
 }
-void CAnimation::PlaySmoothed ( const char* animName, Real const smoothTime )
+void AnimationControl::PlaySmoothed ( const char* animName, Real const smoothTime )
 {
 	// Find animation with name
 	auto it = mAnimations.find( arstring128(animName) );
@@ -121,7 +121,7 @@ void CAnimation::PlaySmoothed ( const char* animName, Real const smoothTime )
 		it->second.Play( 1.0f, smoothTime );
 	}
 }
-void CAnimation::Stop ( const char* animName )
+void AnimationControl::Stop ( const char* animName )
 {
 	// Find animation with name
 	auto it = mAnimations.find( arstring128(animName) );
@@ -134,7 +134,7 @@ void CAnimation::Stop ( const char* animName )
 		it->second.Stop();
 	}
 }
-void CAnimation::StopSmoothed ( const char* animName, Real const smoothTime )
+void AnimationControl::StopSmoothed ( const char* animName, Real const smoothTime )
 {
 	// Find animation with name
 	auto anim = mAnimations.find( arstring128(animName) );
@@ -153,12 +153,12 @@ void CAnimation::StopSmoothed ( const char* animName, Real const smoothTime )
 			}
 		}
 		// here, entry not exists
-		std::pair<CAnimAction*,Real> newFade ( &(anim->second), smoothTime );
+		std::pair<AnimationAction*,Real> newFade ( &(anim->second), smoothTime );
 		fadeOutList.push_back( newFade );
 	}
 }
 
-void CAnimation::Normalize ( const uchar layer )
+void AnimationControl::Normalize ( const uchar layer )
 {
 	Real weightCount = 0;
 	for ( auto anim = mAnimations.begin(); anim != mAnimations.end(); ++anim )
@@ -181,7 +181,7 @@ void CAnimation::Normalize ( const uchar layer )
 }
 
 
-CAnimAction& CAnimation::operator [] ( const char* animName )
+AnimationAction& AnimationControl::operator [] ( const char* animName )
 {
 	// Find animation with name
 	auto it = mAnimations.find( arstring128( animName ) );
@@ -200,7 +200,7 @@ CAnimAction& CAnimation::operator [] ( const char* animName )
 	// return reference to it
 	return it->second;
 }
-CAnimAction& CAnimation::operator [] ( const int & animIndex )
+AnimationAction& AnimationControl::operator [] ( const int & animIndex )
 {
 	auto it = mAnimations.begin();
 	while ( it != mAnimations.end() && it->second.index != animIndex ) {
@@ -220,7 +220,7 @@ CAnimAction& CAnimation::operator [] ( const int & animIndex )
 	}
 	return it->second;
 }
-CAnimAction* CAnimation::FindAction ( const char* animName )
+AnimationAction* AnimationControl::FindAction ( const char* animName )
 {
 	// Find animation with name
 	auto it = mAnimations.find( arstring128( animName ) );
@@ -233,7 +233,7 @@ CAnimAction* CAnimation::FindAction ( const char* animName )
 	}
 }
 
-animation::arIKInfo& CAnimation::GetIKInfo ( const string& chainName )
+animation::arIKInfo& AnimationControl::GetIKInfo ( const string& chainName )
 {
 	for ( uint i = 0; i < ikList.size(); ++i )
 	{
@@ -248,13 +248,13 @@ animation::arIKInfo& CAnimation::GetIKInfo ( const string& chainName )
 
 
 // Copy reference list
-bool CAnimation::AddOutput ( animation::Skeleton* output )
+bool AnimationControl::AddOutput ( animation::Skeleton* output )
 {
 	animation::BoneMapper mapping;
 	animation::BoneMapper::CreateFromNameMatching( skeleton, *output, mapping, false );
 	return AddOutput( output, mapping );
 }
-bool CAnimation::AddOutput ( animation::Skeleton* output, animation::BoneMapper& manual_mapping )
+bool AnimationControl::AddOutput ( animation::Skeleton* output, animation::BoneMapper& manual_mapping )
 {
 	// Search for existing entry
 	for ( auto output_itr = vOutputs.begin(); output_itr != vOutputs.end(); ++output_itr )
@@ -275,7 +275,7 @@ bool CAnimation::AddOutput ( animation::Skeleton* output, animation::BoneMapper&
 }
 
 // Update
-void CAnimation::Update ( const Real deltaTime )
+void AnimationControl::Update ( const Real deltaTime )
 {
 	// Before sampling actions, need to check events
 	if ( bEventsRead ) {
@@ -304,7 +304,7 @@ void CAnimation::Update ( const Real deltaTime )
 		auto it = mAnimations.begin();
 		do
 		{
-			CAnimAction& currentAction = it->second;
+			AnimationAction& currentAction = it->second;
 			// First, check if the animation is 
 			// First, check the animation layer
 			// Check for a layer limit
@@ -338,12 +338,12 @@ void CAnimation::Update ( const Real deltaTime )
 }
 
 
-void CAnimation::PushFrameEvent ( const animation::ActionEvent & a_event )
+void AnimationControl::PushFrameEvent ( const animation::ActionEvent & a_event )
 {
 	vEvents.push_back( a_event );
 }
 
-void CAnimation::GetEvents ( std::vector<animation::ActionEvent>& events, unsigned int & event_count )
+void AnimationControl::GetEvents ( std::vector<animation::ActionEvent>& events, unsigned int & event_count )
 {
 	events.clear();
 	events = vEvents;
@@ -353,11 +353,11 @@ void CAnimation::GetEvents ( std::vector<animation::ActionEvent>& events, unsign
 }
 
 
-const Vector3d&	CAnimation::GetExtrapolatedMotion ( void )
+const Vector3d&	AnimationControl::GetExtrapolatedMotion ( void )
 {
 	return vModelMotion;
 }
-void CAnimation::ResetExtrapolatedMotion ( void )
+void AnimationControl::ResetExtrapolatedMotion ( void )
 {
 	vModelMotion = Vector3d(0,0,0);
 }

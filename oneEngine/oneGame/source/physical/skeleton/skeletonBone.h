@@ -21,7 +21,7 @@ public:
 		}
 		transform.active = false;
 		transform.owner = (void*)(this);
-		transform.ownerType = Transform::TYPE_RENDERER_GLBONE;
+		transform.ownerType = Transform::kOwnerTypeBone_Deprecated;
 		transform.name = this->name;
 
 		tempMatx = Matrix4x4();

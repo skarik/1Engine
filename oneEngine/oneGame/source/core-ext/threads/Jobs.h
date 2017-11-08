@@ -36,27 +36,27 @@ namespace Jobs
 		}
 	};
 
-	enum jobType_t : uint8_t
+	enum jobTypeBits : uint8_t
 	{
-		JOBTYPE_DEFAULT		= 0x01,
-		JOBTYPE_PHYSICS		= 0x02,
-		JOBTYPE_ENGINE		= 0x04,
-		JOBTYPE_RENDERSTEP	= 0x08,
-		JOBTYPE_TERRAIN		= 0x10,
+		kJobTypeDefault		= 0x01,
+		kJobTypePhysics		= 0x02,
+		kJobTypeEngine		= 0x04,
+		kJobTypeRenderStep	= 0x08,
+		kJobTypeTerrain		= 0x10,
 
-		JOBTYPE_ALL = 0xFF
+		kJobTypeALL = 0xFF
 	};
 
 	class jobRequest_t
 	{
 	public:
-		jobType_t				type;
+		jobTypeBits				type;
 		std::function<void()>	function;
 	};
 	class jobTask_t
 	{
 	public:
-		jobType_t				type;
+		jobTypeBits				type;
 		uint8_t					worker_index;
 	};
 	class jobState_t
@@ -100,182 +100,182 @@ namespace Jobs
 		struct Current
 		{
 		public:
-			//	AddJobRequest ( jobType, Fn&& function, Args... args )
+			//	AddJobRequest ( jobTypeBits, Fn&& function, Args... args )
 			// Adds a job request with the given type to the Current system. It may begin execution before this function returns.
 			template <typename Fn, typename... Args>
-			static void AddJobRequest ( jobType_t jobType, Fn&& function, Args...args )
+			static void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function, Args...args )
 			{
-				Active->AddJobRequest( jobType, function, args... );
+				Active->AddJobRequest( jobTypeBits, function, args... );
 			}
 			//	AddJobRequest ( Fn&& function, Args... args )
 			// Adds a job request to the Current system. It may begin execution before this function returns.
-			// Defaults to a JOBTYPE_DEFAULT type.
+			// Defaults to a kJobTypeDefault type.
 			template <typename Fn, typename... Args>
 			static void AddJobRequest ( Fn&& function, Args...args )
 			{
 				Active->AddJobRequest( function, args... );
 			}	
 			//	Perform ()
-			// Calls WaitForJobs( JOBTYPE_ALL ). Will stop until all jobs are done.
+			// Calls WaitForJobs( kJobTypeALL ). Will stop until all jobs are done.
 			static void Perform ( void )
 			{
 				Active->Perform();
 			}
-			//	WaitForJobs ( jobType )
+			//	WaitForJobs ( jobTypeBits )
 			// Waits for the given jobs in the group are all finished. 
-			static void WaitForJobs ( const jobType_t jobType )
+			static void WaitForJobs ( const jobTypeBits jobTypeBits )
 			{
-				Active->WaitForJobs( jobType );
+				Active->WaitForJobs( jobTypeBits );
 			}
 		};
 
-		//	AddJobRequest ( jobType, Fn&& function, Args... args )
+		//	AddJobRequest ( jobTypeBits, Fn&& function, Args... args )
 		// Adds a job request with the given type to the internal list. It may begin execution before this function returns.
 		template <typename Fn, typename... Args>
-		void AddJobRequest ( jobType_t jobType, Fn&& function, Args...args )
+		void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function, Args...args )
 		{
 			jobRequest_t newJob;
-			newJob.type = jobType;
+			newJob.type = jobTypeBits;
 			newJob.function = std::bind(function,args...);
 			this->_internal_AddJob( newJob );
 		}
 		//	AddJobRequest ( Fn&& function, Args... args )
 		// Adds a job request to the internal list. It may begin execution before this function returns.
-		// Defaults to a JOBTYPE_DEFAULT type.
+		// Defaults to a kJobTypeDefault type.
 		template <typename Fn, typename... Args>
 		void AddJobRequest ( Fn&& function, Args...args )
 		{
-			this->AddJobRequest( JOBTYPE_DEFAULT, function, args... );
+			this->AddJobRequest( kJobTypeDefault, function, args... );
 		}
 #else
-		//	AddJobRequest ( jobType, Fn&& function, Args... args )
+		//	AddJobRequest ( jobTypeBits, Fn&& function, Args... args )
 		// Adds a job request to the internal list with the given type. It may begin execution before this function returns.
 		template <typename Fn>
-		static void AddJobRequest ( jobType_t jobType, Fn&& function ) {
-			jobRequest_t newJob = {jobType,std::bind(function)};
+		static void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function ) {
+			jobRequest_t newJob = {jobTypeBits,std::bind(function)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1>
-		static void AddJobRequest ( jobType_t jobType, Fn&& function, V1 v1 ) {
-			jobRequest_t newJob = {jobType,std::bind(function,v1)};
+		static void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function, V1 v1 ) {
+			jobRequest_t newJob = {jobTypeBits,std::bind(function,v1)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2>
-		static void AddJobRequest ( jobType_t jobType, Fn&& function, V1 v1, V2 v2 ) {
-			jobRequest_t newJob = {jobType,std::bind(function,v1,v2)};
+		static void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function, V1 v1, V2 v2 ) {
+			jobRequest_t newJob = {jobTypeBits,std::bind(function,v1,v2)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3>
-		static void AddJobRequest ( jobType_t jobType, Fn&& function, V1 v1, V2 v2, V3 v3 ) {
-			jobRequest_t newJob = {jobType,std::bind(function,v1,v2,v3)};
+		static void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function, V1 v1, V2 v2, V3 v3 ) {
+			jobRequest_t newJob = {jobTypeBits,std::bind(function,v1,v2,v3)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4>
-		static void AddJobRequest ( jobType_t jobType, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4 ) {
-			jobRequest_t newJob = {jobType,std::bind(function,v1,v2,v3,v4)};
+		static void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4 ) {
+			jobRequest_t newJob = {jobTypeBits,std::bind(function,v1,v2,v3,v4)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4, typename V5>
-		static void AddJobRequest ( jobType_t jobType, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5 ) {
-			jobRequest_t newJob = {jobType,std::bind(function,v1,v2,v3,v4,v5)};
+		static void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5 ) {
+			jobRequest_t newJob = {jobTypeBits,std::bind(function,v1,v2,v3,v4,v5)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4, typename V5, typename V6>
-		static void AddJobRequest ( jobType_t jobType, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6 ) {
-			jobRequest_t newJob = {jobType,std::bind(function,v1,v2,v3,v4,v5,v6)};
+		static void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6 ) {
+			jobRequest_t newJob = {jobTypeBits,std::bind(function,v1,v2,v3,v4,v5,v6)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4, typename V5, typename V6, typename V7>
-		static void AddJobRequest ( jobType_t jobType, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6, V7 v7 ) {
-			jobRequest_t newJob = {jobType,std::bind(function,v1,v2,v3,v4,v5,v6,v7)};
+		static void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6, V7 v7 ) {
+			jobRequest_t newJob = {jobTypeBits,std::bind(function,v1,v2,v3,v4,v5,v6,v7)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4, typename V5, typename V6, typename V7, typename V8>
-		static void AddJobRequest ( jobType_t jobType, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6, V7 v7, V8 v8 ) {
-			jobRequest_t newJob = {jobType,std::bind(function,v1,v2,v3,v4,v5,v6,v7,v8)};
+		static void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6, V7 v7, V8 v8 ) {
+			jobRequest_t newJob = {jobTypeBits,std::bind(function,v1,v2,v3,v4,v5,v6,v7,v8)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4, typename V5, typename V6, typename V7, typename V8, typename V9>
-		static void AddJobRequest ( jobType_t jobType, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6, V7 v7, V8 v8, V9 v9 ) {
-			jobRequest_t newJob = {jobType,std::bind(function,v1,v2,v3,v4,v5,v6,v7,v8,v9)};
+		static void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6, V7 v7, V8 v8, V9 v9 ) {
+			jobRequest_t newJob = {jobTypeBits,std::bind(function,v1,v2,v3,v4,v5,v6,v7,v8,v9)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4, typename V5, typename V6, typename V7, typename V8, typename V9, typename V10>
-		static void AddJobRequest ( jobType_t jobType, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6, V7 v7, V8 v8, V9 v9, V10 v10 ) {
-			jobRequest_t newJob = {jobType,std::bind(function,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10)};
+		static void AddJobRequest ( jobTypeBits jobTypeBits, Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6, V7 v7, V8 v8, V9 v9, V10 v10 ) {
+			jobRequest_t newJob = {jobTypeBits,std::bind(function,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10)};
 			Active->_internal_AddJob( newJob );
 		}
 		//	AddJobRequest ( Fn&& function, Args... args )
 		// Adds a job request to the internal list. It may begin execution before this function returns.
-		// Defaults to a JOBTYPE_DEFAULT type.
+		// Defaults to a kJobTypeDefault type.
 		template <typename Fn>
 		static void AddJobRequest ( Fn&& function ) {
-			jobRequest_t newJob = {JOBTYPE_DEFAULT,std::bind(function)};
+			jobRequest_t newJob = {kJobTypeDefault,std::bind(function)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1>
 		static void AddJobRequest ( Fn&& function, V1 v1 ) {
-			jobRequest_t newJob = {JOBTYPE_DEFAULT,std::bind(function,v1)};
+			jobRequest_t newJob = {kJobTypeDefault,std::bind(function,v1)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2>
 		static void AddJobRequest ( Fn&& function, V1 v1, V2 v2 ) {
-			jobRequest_t newJob = {JOBTYPE_DEFAULT,std::bind(function,v1,v2)};
+			jobRequest_t newJob = {kJobTypeDefault,std::bind(function,v1,v2)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3>
 		static void AddJobRequest ( Fn&& function, V1 v1, V2 v2, V3 v3 ) {
-			jobRequest_t newJob = {JOBTYPE_DEFAULT,std::bind(function,v1,v2,v3)};
+			jobRequest_t newJob = {kJobTypeDefault,std::bind(function,v1,v2,v3)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4>
 		static void AddJobRequest ( Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4 ) {
-			jobRequest_t newJob = {JOBTYPE_DEFAULT,std::bind(function,v1,v2,v3,v4)};
+			jobRequest_t newJob = {kJobTypeDefault,std::bind(function,v1,v2,v3,v4)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4, typename V5>
 		static void AddJobRequest ( Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5 ) {
-			jobRequest_t newJob = {JOBTYPE_DEFAULT,std::bind(function,v1,v2,v3,v4,v5)};
+			jobRequest_t newJob = {kJobTypeDefault,std::bind(function,v1,v2,v3,v4,v5)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4, typename V5, typename V6>
 		static void AddJobRequest ( Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6 ) {
-			jobRequest_t newJob = {JOBTYPE_DEFAULT,std::bind(function,v1,v2,v3,v4,v5,v6)};
+			jobRequest_t newJob = {kJobTypeDefault,std::bind(function,v1,v2,v3,v4,v5,v6)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4, typename V5, typename V6, typename V7>
 		static void AddJobRequest ( Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6, V7 v7 ) {
-			jobRequest_t newJob = {JOBTYPE_DEFAULT,std::bind(function,v1,v2,v3,v4,v5,v6,v7)};
+			jobRequest_t newJob = {kJobTypeDefault,std::bind(function,v1,v2,v3,v4,v5,v6,v7)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4, typename V5, typename V6, typename V7, typename V8>
 		static void AddJobRequest ( Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6, V7 v7, V8 v8 ) {
-			jobRequest_t newJob = {JOBTYPE_DEFAULT,std::bind(function,v1,v2,v3,v4,v5,v6,v7,v8)};
+			jobRequest_t newJob = {kJobTypeDefault,std::bind(function,v1,v2,v3,v4,v5,v6,v7,v8)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4, typename V5, typename V6, typename V7, typename V8, typename V9>
 		static void AddJobRequest ( Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6, V7 v7, V8 v8, V9 v9 ) {
-			jobRequest_t newJob = {JOBTYPE_DEFAULT,std::bind(function,v1,v2,v3,v4,v5,v6,v7,v8,v9)};
+			jobRequest_t newJob = {kJobTypeDefault,std::bind(function,v1,v2,v3,v4,v5,v6,v7,v8,v9)};
 			Active->_internal_AddJob( newJob );
 		}
 		template <typename Fn, typename V1, typename V2, typename V3, typename V4, typename V5, typename V6, typename V7, typename V8, typename V9, typename V10>
 		static void AddJobRequest ( Fn&& function, V1 v1, V2 v2, V3 v3, V4 v4, V5 v5, V6 v6, V7 v7, V8 v8, V9 v9, V10 v10 ) {
-			jobRequest_t newJob = {JOBTYPE_DEFAULT,std::bind(function,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10)};
+			jobRequest_t newJob = {kJobTypeDefault,std::bind(function,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10)};
 			Active->_internal_AddJob( newJob );
 		}
 #endif
 
 		//	Perform ()
-		// Calls WaitForJobs( JOBTYPE_ALL ). Will stop until all jobs are done.
+		// Calls WaitForJobs( kJobTypeALL ). Will stop until all jobs are done.
 		CORE_API void Perform ( void )
 		{
-			WaitForJobs( JOBTYPE_ALL );
+			WaitForJobs( kJobTypeALL );
 		}
-		//	WaitForJobs ( jobType )
+		//	WaitForJobs ( jobTypeBits )
 		// Waits for the given jobs in the group are all finished. 
-		CORE_API void WaitForJobs ( const jobType_t jobType )
+		CORE_API void WaitForJobs ( const jobTypeBits jobTypeBits )
 		{
-			this->_internal_WaitForJobs( jobType );
+			this->_internal_WaitForJobs( jobTypeBits );
 		}
 
 	private:
@@ -284,7 +284,7 @@ namespace Jobs
 		CORE_API void _internal_AddJob ( const jobRequest_t& jobToAdd );
 		//	_internal_WaitForJobs
 		// Waits for the given job type
-		CORE_API void _internal_WaitForJobs ( const jobType_t jobType );
+		CORE_API void _internal_WaitForJobs ( const jobTypeBits jobTypeBits );
 		
 		//	_internal_JobCycle
 		// Job distribution loop.

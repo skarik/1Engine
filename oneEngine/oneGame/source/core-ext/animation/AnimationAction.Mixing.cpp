@@ -1,12 +1,12 @@
 
-#include "CAnimation.h"
-#include "CAnimAction.h"
+#include "AnimationControl.h"
+#include "AnimationAction.h"
 //#include "CSkinnedModel.h"
 
 // Vertex skinned models ONLY!
 		// Searches for the given transform in the skeleton and adds it to the mix list.
-//void CAnimAction::AddMixingTransform ( string const& transformName, bool recursive )
-void CAnimAction::AddMixingTransform ( const uint32_t skippedIndex )
+//void AnimationAction::AddMixingTransform ( string const& transformName, bool recursive )
+void AnimationAction::AddMixingTransform ( const uint32_t skippedIndex )
 {
 	// First, need to get to the model
 	/*CSkinnedModel* model = (CSkinnedModel*)owner->pOwner;

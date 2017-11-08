@@ -72,7 +72,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	// Set shell status (loading engine)
 	core::shell::SetTaskbarProgressHandle(aWindow.GetShellHandle());
 	core::shell::SetTaskbarProgressValue(NIL, 100, 100);
-	core::shell::SetTaskbarProgressState(NIL, core::shell::TBP_INDETERMINATE);
+	core::shell::SetTaskbarProgressState(NIL, core::shell::kTaskbarStateIndeterminate);
 
 	// Create Renderstate
 	CRenderState aRenderer (NULL); // passing null creates default resource manager

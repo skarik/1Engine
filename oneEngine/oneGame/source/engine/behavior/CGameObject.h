@@ -16,7 +16,7 @@ public:
 	CGameObject ( void ) : CGameBehavior ()
 	{
 		//transform.owner = this;
-		//transform.ownerType = Transform::TYPE_BEHAVIOR;
+		//transform.ownerType = Transform::kOwnerTypeBehavior;
 		//transform.name = this->name;
 	};
 	~CGameObject ( void ) {

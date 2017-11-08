@@ -1,5 +1,5 @@
 #include "ResourceManager.h"
-#include "core-ext/animation/set/CAnimationSet.h"
+#include "core-ext/animation/set/AnimationSet.h"
 #include "physical/physics/shapes/PrMesh.h"
 
 ARSINGLETON_CPP_DEF(PhysicalResources);
@@ -14,7 +14,7 @@ ARSINGLETON_CPP_DEF(PhysicalResources);
 		itr->second.refCount--; return; \
 	} throw core::NullReferenceException();
 
-void PhysicalResources::AddAnimationSet ( const char* filename, CAnimationSet* animSet )
+void PhysicalResources::AddAnimationSet ( const char* filename, AnimationSet* animSet )
 {
 	HANDLE_REFERENCE_FIND(animSets) throw core::InvalidCallException();
 	animationset_reference_t ref;
@@ -53,7 +53,7 @@ void PhysicalResources::AddHitboxSet ( const char* filename, std::vector<sHitbox
 //	GetAnimationSet ( filename )
 // Returns the animation set saved previously, and increments the reference count.
 // Returns NULL if no reference is found.
-const CAnimationSet* PhysicalResources::GetAnimationSet ( const char* filename )
+const AnimationSet* PhysicalResources::GetAnimationSet ( const char* filename )
 {
 	HANDLE_REFERENCE_FIND(animSets)
 	{

@@ -1,12 +1,12 @@
 
 #include "core/time.h"
 
-#include "CAnimation.h"
-#include "CAnimAction.h"
+#include "AnimationControl.h"
+#include "AnimationAction.h"
 
 // constructor
-CAnimAction::CAnimAction( void )
-	: isPlaying(false), weight(0), autoFadeSpeed(4.0F), reset_on_stop(true), end_behavior(END_STOP_PLAYING), mirrored(false), tag(TAG_NORMAL),
+AnimationAction::AnimationAction( void )
+	: isPlaying(false), weight(0), autoFadeSpeed(4.0F), reset_on_stop(true), end_behavior(kOnEndStopPlaying), mirrored(false), tag(kTagNormal),
 	sampleSource(0), sampleMapping(0),
 	owner(NULL)
 {
@@ -25,8 +25,8 @@ CAnimAction::CAnimAction( void )
 	enableMotionExtrapolation[1] = true;
 	enableMotionExtrapolation[2] = true;
 }
-CAnimAction::CAnimAction( const char* name )
-	: isPlaying(false), weight(0), autoFadeSpeed(4.0F), reset_on_stop(true), end_behavior(END_STOP_PLAYING), mirrored(false), tag(TAG_NORMAL),
+AnimationAction::AnimationAction( const char* name )
+	: isPlaying(false), weight(0), autoFadeSpeed(4.0F), reset_on_stop(true), end_behavior(kOnEndStopPlaying), mirrored(false), tag(kTagNormal),
 	sampleSource(0), sampleMapping(0),
 	owner(NULL)
 {
@@ -48,7 +48,7 @@ CAnimAction::CAnimAction( const char* name )
 
 
 // sample
-/*void CAnimAction::Sample ( CAnimationSet* pAnimSet, std::vector<XTransform> const& animRefs )
+/*void AnimationAction::Sample ( AnimationSet* pAnimSet, std::vector<XTransform> const& animRefs )
 {
 	// Loop through all the animations, sample at the current time
 	Real currentTime;
@@ -77,7 +77,7 @@ CAnimAction::CAnimAction( const char* name )
 }*/
 
 // Update frame values
-void CAnimAction::Update ( const Real n_deltaTime, const Real n_frameOverride )
+void AnimationAction::Update ( const Real n_deltaTime, const Real n_frameOverride )
 {
 	if ( isPlaying )
 	{
@@ -137,10 +137,10 @@ void CAnimAction::Update ( const Real n_deltaTime, const Real n_frameOverride )
 			{
 				isPlaying = false;
 				frame = length; // set the frame to the last frame
-				if ( end_behavior == END_STOP_PLAYING ) {
+				if ( end_behavior == kOnEndStopPlaying ) {
 					weight = 0.0f;
 				}
-				else if ( end_behavior == END_HOLD_END || end_behavior == END_HOLD_END_AND_FADE ) {
+				else if ( end_behavior == kOnEndHoldEnd || end_behavior == kOnEndHoldEndAndFade ) {
 					//weight = 1.0f; // Do not modify weights at the end!
 				}
 			}
@@ -149,7 +149,7 @@ void CAnimAction::Update ( const Real n_deltaTime, const Real n_frameOverride )
 	else
 	{
 		// Do end behaviors
-		if ( end_behavior == END_HOLD_END_AND_FADE )
+		if ( end_behavior == kOnEndHoldEndAndFade )
 		{
 			weight -= autoFadeSpeed * n_deltaTime;
 			if ( weight <= 0 ) {
@@ -160,7 +160,7 @@ void CAnimAction::Update ( const Real n_deltaTime, const Real n_frameOverride )
 }
 
 // Set the range
-void CAnimAction::SetRange( Real fStart, Real fEnd )
+void AnimationAction::SetRange( Real fStart, Real fEnd )
 {
 	if ( fStart <= fEnd )
 	{
@@ -184,7 +184,7 @@ void CAnimAction::SetRange( Real fStart, Real fEnd )
 }
 
 // Play the action
-void CAnimAction::Play ( const Real n_deltaTime, const Real n_playSpeed, const Real n_blendTime )
+void AnimationAction::Play ( const Real n_deltaTime, const Real n_playSpeed, const Real n_blendTime )
 {
 	if ( !owner )
 	{
@@ -282,13 +282,13 @@ void CAnimAction::Play ( const Real n_deltaTime, const Real n_playSpeed, const R
 	}
 }
 
-void CAnimAction::Stop ( void )
+void AnimationAction::Stop ( void )
 {
 	Reset();
 }
 
 // Reset the action
-void CAnimAction::Reset ( void )
+void AnimationAction::Reset ( void )
 {
 	isPlaying = false;
 	playSpeed = 1.0f;

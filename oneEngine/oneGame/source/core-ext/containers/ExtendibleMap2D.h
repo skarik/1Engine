@@ -3,6 +3,7 @@
 //		ExtendibleMap2D
 //
 // 2D data set that extends to enclose any set values out of range.
+// Used for procedurally building towns and building layouts in AFTER.
 //
 //===============================================================================================//
 #ifndef AR_EXTENDIBLE_MAP_2D_

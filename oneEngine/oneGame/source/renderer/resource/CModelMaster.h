@@ -5,7 +5,7 @@
 // Includes
 //#include "rrMesh.h"
 //#include "physMesh.h"
-//#include "CAnimation.h"
+//#include "AnimationControl.h"
 //#include "CMorpher.h"
 //#include "sHitbox.h"
 #include "core/types/types.h"
@@ -19,7 +19,7 @@ struct sHitbox;
 
 class rrMesh;
 class physMesh;
-class CAnimation;
+class AnimationControl;
 class CMorpher;
 
 // Storage Class Definition
@@ -40,7 +40,7 @@ class AnimSetReference
 {
 public:
 	unsigned int referenceCount;
-	CAnimation*	pAnimSet;
+	AnimationControl*	pAnimSet;
 };
 class MorphSetReference
 {
@@ -58,7 +58,7 @@ public:
 
 	void AddReference ( const string& filename, std::vector<rrMesh*>& meshes, std::vector<sHitbox>& hitboxes );
 	void AddReference ( const string& filename, std::vector<physMesh*>& meshes );
-	void AddReference ( const string& filename, CAnimation* animSet );
+	void AddReference ( const string& filename, AnimationControl* animSet );
 	void AddReference ( const string& filename, CMorpher* animSet );
 
 	void RemoveReference ( const string& filename );
@@ -69,7 +69,7 @@ public:
 	const std::vector<rrMesh*>*		GetReference ( const string& filename );
 	const std::vector<physMesh*>*	GetCollisionReference ( const string& filename );
 	const std::vector<sHitbox>*		GetHitboxReference ( const string& filename );
-	CAnimation*					GetAnimationReference ( const string& filename );
+	AnimationControl*					GetAnimationReference ( const string& filename );
 	CMorpher*					GetMorpherReference ( const string& filename );
 
 	void Cleanup ( void );

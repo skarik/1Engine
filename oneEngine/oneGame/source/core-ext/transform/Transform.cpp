@@ -28,7 +28,7 @@ CTransform CTransform::root;
 
 // Constructor
 CTransform::CTransform ( void )
-	: owner(NULL), ownerType(TYPE_INVALID), active(true), name("Transform"), _parent( NULL )
+	: owner(NULL), ownerType(kOwnerTypeInvalid), active(true), name("Transform"), _parent( NULL )
 {
 	position = Vector3d( 0,0,0 );
 	scale = Vector3d( 1,1,1 );
@@ -634,11 +634,11 @@ void CTransform::PropogateTransforms ( void )
 	// Create a job for each base-level transform to update
 	for ( auto t_tr = CTransform::root.children.begin(); t_tr != CTransform::root.children.end(); ++t_tr )
 	{
-		Jobs::System::Current::AddJobRequest( Jobs::JOBTYPE_ENGINE, PropogateSub, *t_tr );
+		Jobs::System::Current::AddJobRequest( Jobs::kJobTypeEngine, PropogateSub, *t_tr );
 	}
 
 	// Wait for the transforms to propogate before continuing.
-	Jobs::System::Current::WaitForJobs( Jobs::JOBTYPE_ENGINE );
+	Jobs::System::Current::WaitForJobs( Jobs::kJobTypeEngine );
 #endif
 }
 #endif

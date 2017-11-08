@@ -69,9 +69,6 @@
     <ClCompile Include="source\core\settings\CGameSettings.cpp">
       <Filter>SOURCE\Core\Settings</Filter>
     </ClCompile>
-    <ClCompile Include="source\core\settings\CGameSettingsDirs.cpp">
-      <Filter>SOURCE\Core\Settings</Filter>
-    </ClCompile>
     <ClCompile Include="source\core-ext\threads\Jobs.cpp">
       <Filter>SOURCE\Core-ext\Threads</Filter>
     </ClCompile>
@@ -87,9 +84,6 @@
     <ClCompile Include="source\core\input\CInput.cpp">
       <Filter>SOURCE\Core\Input</Filter>
     </ClCompile>
-    <ClCompile Include="source\core\input\CInputTable.cpp">
-      <Filter>SOURCE\Core\Input</Filter>
-    </ClCompile>
     <ClCompile Include="source\core\input\CXboxController.cpp">
       <Filter>SOURCE\Core\Input</Filter>
     </ClCompile>
@@ -101,9 +95,6 @@
     </ClCompile>
     <ClCompile Include="source\core\system\Screen.cpp">
       <Filter>SOURCE\Core\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core-ext\animation\CAnimation.cpp">
-      <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClCompile>
     <ClCompile Include="source\core-ext\profiler\CTimeProfiler.cpp">
       <Filter>SOURCE\Core-ext\Profiler</Filter>
@@ -120,9 +111,6 @@
     <ClCompile Include="source\core-ext\system\io\assets\ModelLoader.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="source\core-ext\animation\set\CAnimationSet.cpp">
-      <Filter>SOURCE\Core-ext\Animation\Set</Filter>
-    </ClCompile>
     <ClCompile Include="source\core-ext\transform\TransformUtility.cpp">
       <Filter>SOURCE\Core-ext\Transform</Filter>
     </ClCompile>
@@ -131,12 +119,6 @@
     </ClCompile>
     <ClCompile Include="source\core\system\io\CSegmentedFile.cpp">
       <Filter>SOURCE\Core\System\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core-ext\animation\CAnimAction.cpp">
-      <Filter>SOURCE\Core-ext\Animation</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core-ext\animation\CAnimActionMixing.cpp">
-      <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClCompile>
     <ClCompile Include="source\core-ext\transform\Transform.cpp">
       <Filter>SOURCE\Core-ext\Transform</Filter>
@@ -152,6 +134,24 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\system\io\mccvxg.cpp">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\input\CInput.Table.cpp">
+      <Filter>SOURCE\Core\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\settings\CGameSettings.Dirs.cpp">
+      <Filter>SOURCE\Core\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\animation\AnimationAction.cpp">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\animation\AnimationAction.Mixing.cpp">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\animation\AnimationControl.cpp">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\animation\set\AnimationSet.cpp">
+      <Filter>SOURCE\Core-ext\Animation\Set</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -191,12 +191,6 @@
     <ClInclude Include="source\core\system\Screen.h">
       <Filter>SOURCE\Core\System</Filter>
     </ClInclude>
-    <ClInclude Include="source\core-ext\animation\CAnimation.h">
-      <Filter>SOURCE\Core-ext\Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\animation\CAnimationCommon.h">
-      <Filter>SOURCE\Core-ext\Animation</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\profiler\CTimeProfiler.h">
       <Filter>SOURCE\Core-ext\Profiler</Filter>
     </ClInclude>
@@ -221,17 +215,11 @@
     <ClInclude Include="source\core-ext\system\io\assets\ModelLoader.h">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="source\core-ext\animation\set\CAnimationSet.h">
-      <Filter>SOURCE\Core-ext\Animation\Set</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\transform\TransformUtility.h">
       <Filter>SOURCE\Core-ext\Transform</Filter>
     </ClInclude>
     <ClInclude Include="source\core\system\io\CSegmentedFile.h">
       <Filter>SOURCE\Core\System\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\animation\CAnimAction.h">
-      <Filter>SOURCE\Core-ext\Animation</Filter>
     </ClInclude>
     <ClInclude Include="source\core-ext\transform\Transform.h">
       <Filter>SOURCE\Core-ext\Transform</Filter>
@@ -247,6 +235,18 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\io\mccvxg.h">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\AnimationAction.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\AnimationControl.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\Common.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\set\AnimationSet.h">
+      <Filter>SOURCE\Core-ext\Animation\Set</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

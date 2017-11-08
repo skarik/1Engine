@@ -2,7 +2,7 @@
 #include "CModel.h"
 
 #include "core/time/time.h"
-#include "core-ext/animation/CAnimation.h"
+#include "core-ext/animation/AnimationControl.h"
 
 #include "core-ext/system/io/FileUtils.h"
 #include "core-ext/system/io/Resources.h"
@@ -68,9 +68,9 @@ CModel::CModel ( const char* sFilename )
 		LoadModel( myModelFilename );
 		// We don't want to use the animation reference we just created, so we make another
 		// Look for the reference and copy it
-		CAnimation* pFoundReference = ModelMaster.GetAnimationReference( myModelFilename );
+		AnimationControl* pFoundReference = ModelMaster.GetAnimationReference( myModelFilename );
 		if ( pFoundReference != NULL && pFoundReference->IsValid() ) {
-			pMyAnimation = new CAnimation( myModelFilename, pFoundReference );
+			pMyAnimation = new AnimationControl( myModelFilename, pFoundReference );
 			pMyAnimation->SetOwner( this );	// Set this as the owner
 			ModelMaster.AddReference( myModelFilename, pMyAnimation );
 		}
@@ -80,9 +80,9 @@ CModel::CModel ( const char* sFilename )
 		m_glMeshlist = *pMeshSetReference;
 		vHitboxes = *ModelMaster.GetHitboxReference( myModelFilename );
 		// Also create a new animation, with a reference that we found ourself
-		CAnimation* pFoundReference = ModelMaster.GetAnimationReference( myModelFilename );
+		AnimationControl* pFoundReference = ModelMaster.GetAnimationReference( myModelFilename );
 		if ( pFoundReference != NULL && pFoundReference->IsValid() ) {
-			pMyAnimation = new CAnimation( myModelFilename, pFoundReference );
+			pMyAnimation = new AnimationControl( myModelFilename, pFoundReference );
 			pMyAnimation->SetOwner( this ); // Set this model as the owner
 			ModelMaster.AddReference( myModelFilename, pMyAnimation );
 		}
@@ -189,7 +189,7 @@ CModel::CModel ( arModelData& mdInModelData, const char* sModelName )
 	ModelMaster.AddReference( sModelName, m_physMeshlist );
 
 	// Add animation reference
-	CAnimation* pAnimSetReference = ModelMaster.GetAnimationReference( sModelName );
+	AnimationControl* pAnimSetReference = ModelMaster.GetAnimationReference( sModelName );
 	ModelMaster.AddReference( sModelName, pAnimSetReference );*/
 
 	// Create mesh list

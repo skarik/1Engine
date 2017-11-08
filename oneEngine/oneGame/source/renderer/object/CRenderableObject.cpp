@@ -19,7 +19,7 @@ CRenderableObject::CRenderableObject ( void )
 	: m_material(NULL), m_vao_info(NULL), m_vao_count(0), m_vao_maxcount(0)
 {
 	/*transform.owner = this;
-	transform.ownerType = Transform::TYPE_RENDERER_OBJECT;
+	transform.ownerType = Transform::kOwnerTypeRendererObject;
 	transform.name = "Transform(Renderable)";*/
 	//transform.name = this->name; // TODO: ADD NAME
 

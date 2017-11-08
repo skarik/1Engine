@@ -64,7 +64,7 @@ Jobs::System::~System ( void )
 	m_jobTaskLock.clear(); // Clear read lock on the list
 
 	// Finish up all jobs
-	_internal_WaitForJobs( JOBTYPE_ALL );
+	_internal_WaitForJobs( kJobTypeALL );
 	// Join the worker thread to stop any dangling execution
 	m_managerThread.join();
 	for ( uint i = 0; i < m_jobThreads.size(); ++i ) {
@@ -89,14 +89,14 @@ void Jobs::System::_internal_AddJob ( const jobRequest_t& jobToAdd )
 }
 //	_internal_WaitForJobs
 // Waits for the given job type
-void Jobs::System::_internal_WaitForJobs ( const jobType_t jobType )
+void Jobs::System::_internal_WaitForJobs ( const jobTypeBits jobTypeBits )
 {
 	// Ignore invalid calls
-	if ( (jobType & JOBTYPE_ALL) == 0 ) {
+	if ( (jobTypeBits & kJobTypeALL) == 0 ) {
 		return;
 	}
 	// Set priority flag
-	m_highPriorityFlag = jobType;
+	m_highPriorityFlag = jobTypeBits;
 
 	bool hasJob;
 	CHECK_JOBS:
@@ -106,7 +106,7 @@ void Jobs::System::_internal_WaitForJobs ( const jobType_t jobType )
 		while ( m_jobRequestLock.test_and_set() ) {;} // Wait for read lock on the list
 		for ( auto job = m_jobRequests.begin(); job != m_jobRequests.end(); ++job )
 		{
-			if ( job->type & jobType ) { // Check for jobtype match
+			if ( job->type & jobTypeBits ) { // Check for jobtype match
 				hasJob = true;
 				break;
 			}
@@ -123,7 +123,7 @@ void Jobs::System::_internal_WaitForJobs ( const jobType_t jobType )
 		while ( m_jobTaskLock.test_and_set() ) {;} // Wait for read lock on the list
 		for ( auto job = m_jobTasks.begin(); job != m_jobTasks.end(); ++job )
 		{
-			if ( job->type & jobType ) { // Check for jobtype match
+			if ( job->type & jobTypeBits ) { // Check for jobtype match
 				hasJob = true;
 				break;
 			}

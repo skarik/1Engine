@@ -4,9 +4,9 @@
 
 #include "physical/physics/CPhysicsCommon.h"
 #include "core-ext/animation/CAnimationCommon.h"
-#include "core-ext/animation/set/CAnimationSet.h"
+#include "core-ext/animation/set/AnimationSet.h"
 
-class CHKAnimationSet : public CAnimationSet
+class CHKAnimationSet : public AnimationSet
 {
 
 public:

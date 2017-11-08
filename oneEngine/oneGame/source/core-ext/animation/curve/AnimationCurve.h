@@ -1,17 +1,17 @@
 #ifndef CORE_EXT_ANIMATION_CURVE_
 #define CORE_EXT_ANIMATION_CURVE_
 
-#include "CAnimationCurveBase.h"
+#include "AnimationCurveBase.h"
 #include "core/math/matrix/CMatrix.h"
 #include "core/math/XTransform.h"
 
 // Class Definition
 template <typename CurveType>
-class CAnimationCurve : public CAnimationCurveBase
+class AnimationCurve : public AnimationCurveBase
 {
 public:
-	CAnimationCurve ( void ) {;};
-	virtual ~CAnimationCurve ( void ) {;};
+	AnimationCurve ( void ) {;};
+	virtual ~AnimationCurve ( void ) {;};
 	
 	virtual CurveType GetResult ( void )
 	{
@@ -20,7 +20,7 @@ public:
 		return temp;
 	};
 
-	eCurveType GetType ( void );
+	ECurveType GetType ( void );
 
 	CurveType currentValue;
 	CurveType zeroValue;
@@ -29,14 +29,14 @@ public:
 
 // Specific shiz
 template <>
-inline CAnimationCurveBase::eCurveType CAnimationCurve<Matrix4x4>::GetType ( void )
+inline AnimationCurveBase::ECurveType AnimationCurve<Matrix4x4>::GetType ( void )
 {
-	return CT_MATRIX4;
+	return kCurveTypeMatrix4;
 }
 template <>
-inline CAnimationCurveBase::eCurveType CAnimationCurve<XTransform>::GetType ( void )
+inline AnimationCurveBase::ECurveType AnimationCurve<XTransform>::GetType ( void )
 {
-	return CT_XTRANSFORM;
+	return kCurveTypeXTransform;
 }
 
 #endif//CORE_EXT_ANIMATION_CURVE_

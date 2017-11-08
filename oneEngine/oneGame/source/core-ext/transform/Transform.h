@@ -162,13 +162,13 @@ private:
 public:
 	string name;
 	bool active;
-	enum eOwnerType_t {
-		TYPE_INVALID,
-		TYPE_BEHAVIOR,
-		TYPE_RENDERER_OBJECT,
-		TYPE_RENDERER_LOGIC,
-		TYPE_RENDERER_GLBONE,
-		TYPE_RENDERER_CAMERA,
+	enum eOwnerType {
+		kOwnerTypeInvalid,
+		kOwnerTypeBehavior,
+		kOwnerTypeRendererObject,
+		kOwnerTypeRendererLogic,
+		kOwnerTypeBone_Deprecated,
+		kOwnerTypeRendererCamera,
 	} ownerType;
 	void*	owner;
 

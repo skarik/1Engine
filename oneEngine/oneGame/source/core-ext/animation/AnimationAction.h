@@ -1,5 +1,5 @@
 //
-//	CAnimAction.h
+//	AnimationAction.h
 // Animation action information.
 //
 #ifndef _C_ANIM_ACTION_H_
@@ -9,32 +9,32 @@
 #include "core/types/types.h"
 #include "core/types/float.h"
 #include "core/containers/arstring.h"
-#include "core-ext/animation/CAnimationEvents.h"
+#include "core-ext/animation/AnimationEvents.h"
 #include <vector>
 
-class CAnimation;
-class CAnimationSet;
+class AnimationControl;
+class AnimationSet;
 
-//	class CAnimAction
+//	class AnimationAction
 // Storage class for animation states.
 // Each "action" represents the state for a single animation.
-class CAnimAction
+class AnimationAction
 {
 public:
-	enum tagType_t : uint8_t
+	enum ETagType : uint8_t
 	{
-		TAG_NORMAL,
-		TAG_ITEM,
-		TAG_FIDGET
+		kTagNormal,
+		kTagItem,
+		kTagFidget
 	};
-	enum endType_t : uint8_t
+	enum EOnEndType : uint8_t
 	{
 		// 0 is for default behavior (set weight to zero and isPlaying to false)
-		END_STOP_PLAYING		= 0,
+		kOnEndStopPlaying		= 0,
 		// 1 is for hold end frame
-		END_HOLD_END			= 1,
+		kOnEndHoldEnd			= 1,
 		// 2 is for hold end frame and fade out
-		END_HOLD_END_AND_FADE	= 2
+		kOnEndHoldEndAndFade	= 2
 	};
 public:
 	// Is animation playing
@@ -64,16 +64,16 @@ public:
 	// Reset animation to initial state when not playing. (defaults true)
 	bool	reset_on_stop;
 	// Ending behavior for when loop is false.
-	endType_t	end_behavior;
+	EOnEndType	end_behavior;
 	// Tag for identification and IK settings
-	tagType_t 	tag;
+	ETagType 	tag;
 	// Motion extrapolation settings
 	bool	extrapolateMotion [3];
 	bool	enableMotionExtrapolation [3];
 
 	// Constructor
-	CORE_API CAnimAction ( const char* name );
-	CORE_API CAnimAction ( void );
+	CORE_API AnimationAction ( const char* name );
+	CORE_API AnimationAction ( void );
 
 	// == Setters ==
 	CORE_API void SetRange ( Real fStart, Real fEnd );
@@ -82,7 +82,7 @@ public:
 	CORE_API void Reset ( void );
 	CORE_API void Play ( const Real n_deltaTime, const Real n_playSpeed=1.0F, const Real n_blendTime=0.0F );
 	CORE_API void Stop ( void );
-	//void Sample ( CAnimationSet*, std::vector<XTransform> const& );
+	//void Sample ( AnimationSet*, std::vector<XTransform> const& );
 
 		// Vertex skinned models ONLY!
 		// Searches for the given transform in the skeleton and adds it to the mix list.
@@ -157,8 +157,8 @@ public:
 	}
 
 private:
-	friend CAnimation;
-	friend CAnimationSet;
+	friend AnimationControl;
+	friend AnimationSet;
 
 	arstring128	actionName;
 	int8_t sampleSource;
@@ -166,7 +166,7 @@ private:
 	// Animation index in the sample source
 	uint16_t		index;
 
-	CAnimation*		owner;
+	AnimationControl*		owner;
 
 	// First frame of the animation
 	Real			start;

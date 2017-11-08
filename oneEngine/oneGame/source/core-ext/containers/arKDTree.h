@@ -1,8 +1,8 @@
 //===============================================================================================//
 //
-//		KDTree
+//		arKDTree
 //
-// C# KDTree implementation stole from somewhere.
+// C# arKDTree implementation stole from somewhere.
 //
 //===============================================================================================//
 #ifndef CORE_CONTAINER_KDTREE_H_
@@ -11,10 +11,10 @@
 #include "core/math/Vector3d.h"
 #include <vector>
 
-class KDTree
+class arKDTree
 {
 public:
-	std::vector<KDTree*> lr;
+	std::vector<arKDTree*> lr;
 	Vector3d pivot;
 	int pivotIndex;
 	int axis;
@@ -24,29 +24,29 @@ public:
 	static const int numDims = 3;
 	
 	
-	KDTree() {
-		//lr = new KDTree[2];
+	arKDTree() {
+		//lr = new arKDTree[2];
 		lr.push_back( NULL );
 		lr.push_back( NULL );
 	}
 	
 
 	//	Make a new tree from a list of points.
-	static KDTree* MakeFromPoints( std::vector<Vector3d>& points) {
+	static arKDTree* MakeFromPoints( std::vector<Vector3d>& points) {
 		int* indices = Iota(points.size());
 		return MakeFromPointsInner(0, 0, points.size() - 1, points, indices);
 	}
 	
 
 	//	Recursively build a tree by separating points at plane boundaries.
-	static KDTree* MakeFromPointsInner(
+	static arKDTree* MakeFromPointsInner(
 					int depth,
 					int stIndex, int enIndex,
 					std::vector<Vector3d>& points,
 					int* inds
 					) {
 		
-		KDTree* root = new KDTree();
+		arKDTree* root = new arKDTree();
 		root->axis = depth % numDims;
 		int splitPoint = FindPivotIndex(points, inds, stIndex, enIndex, root->axis);
 

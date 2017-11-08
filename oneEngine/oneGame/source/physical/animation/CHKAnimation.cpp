@@ -264,14 +264,14 @@ void CHKAnimation::Update ( const Real deltaTime )
 //	}
 //
 //	// First, loop through all the animations to setup sync tracks and the event system.
-//	CAnimAction*	syncMaxers [5] = {0,0,0,0,0};
+//	AnimationAction*	syncMaxers [5] = {0,0,0,0,0};
 //	Real			syncFrames [5] = {0,0,0,0,0};
-//	CAnimAction*	eventMaster = NULL;
+//	AnimationAction*	eventMaster = NULL;
 //	{
-//		std::map<string,CAnimAction>::iterator it = mAnimations.begin(); // Loop thru all the actions
+//		std::map<string,AnimationAction>::iterator it = mAnimations.begin(); // Loop thru all the actions
 //		while ( it != mAnimations.end() )
 //		{
-//			CAnimAction& currentAction = it->second;
+//			AnimationAction& currentAction = it->second;
 //			
 //			// Setup sync-tracks
 //			if ( currentAction.sync_track )
@@ -312,10 +312,10 @@ void CHKAnimation::Update ( const Real deltaTime )
 //	//{
 //		for ( unsigned char layer = 0; layer < maxLayers; layer++ )
 //		{
-//			std::map<string,CAnimAction>::iterator it = mAnimations.begin(); // Loop thru all the actions
+//			std::map<string,AnimationAction>::iterator it = mAnimations.begin(); // Loop thru all the actions
 //			do
 //			{
-//				CAnimAction& currentAction = it->second;
+//				AnimationAction& currentAction = it->second;
 //
 //				// Check for a layer limit
 //				if ( currentAction.layer >= maxLayers )
@@ -342,7 +342,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //							currentAction.weight = 1;
 //						}
 //						// Increase the aimr weight to full and copy over the pose if this is the first aimr transform to be sampled
-//						if ( currentAction.tag == CAnimAction::TAG_ITEM ) {
+//						if ( currentAction.tag == AnimationAction::TAG_ITEM ) {
 //							fAimrWeight = currentAction.weight;
 //							if ( !bHasAimr ) {
 //								// Set weight to full
@@ -368,7 +368,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //							for ( int i = 0; i < tempTransforms.getSize(); ++i )
 //							{
 //								// Aimer IK
-//								if ( currentAction.tag == CAnimAction::TAG_ITEM ) {
+//								if ( currentAction.tag == AnimationAction::TAG_ITEM ) {
 //									aimrTransforms[i].setInterpolate4( aimrTransforms[i], tempTransforms[i], fAimrWeight );
 //									fAimrBlend += fAimrWeight;
 //								}
@@ -408,7 +408,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //								index = (*pMixingList)[i];
 //								nextTransforms[index].setInterpolate4( nextTransforms[index], tempTransforms[index], currentAction.weight );
 //								// Aimer IK
-//								if ( currentAction.tag == CAnimAction::TAG_ITEM ) {
+//								if ( currentAction.tag == AnimationAction::TAG_ITEM ) {
 //									aimrTransforms[index].setInterpolate4( aimrTransforms[index], tempTransforms[index], fAimrWeight );
 //								}
 //								// Motion extrapolation
@@ -426,7 +426,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //							}
 //						}
 //
-//						if ( currentAction.tag == CAnimAction::TAG_ITEM && bFirstAimr ) {
+//						if ( currentAction.tag == AnimationAction::TAG_ITEM && bFirstAimr ) {
 //							// Mix into the entire list
 //							for ( int i = 0; i < tempTransforms.getSize(); ++i )
 //							{
@@ -569,12 +569,12 @@ void CHKAnimation::Update ( const Real deltaTime )
 //	{
 //		switch ( ikList[i].type )
 //		{
-//		case IK_LOOKAT:
+//		case kModelIkLookAt:
 //			headBone = ikList[i].bone[0];
 //			leyeBone = ikList[i].bone[1];
 //			reyeBone = ikList[i].bone[2];
 //			break;
-//		case IK_FOOTSTEP:
+//		case kModelIkFootstep:
 //			{
 //				// Perform ankle changes (lift up the character, because of digitgrade feet)
 //				if ( ikList[i].subinfo[0] > FTYPE_PRECISION )
@@ -602,7 +602,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //	{
 //		switch ( ikList[i].type )
 //		{
-//		case IK_LOOKAT:
+//		case kModelIkLookAt:
 //			if ( ikList[i].enabled )
 //			{
 //				// Apply first transform based on old model rotation
@@ -677,7 +677,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //				ikList[i].subinfo[3] = feedback.getComponent<3>();
 //			}
 //			break;
-//		case IK_AIMING:
+//		case kModelIkAiming:
 //			if ( true /*bHasAimr && ikList[i].enabled*/ )
 //			{
 //				// Do AIMING IK
@@ -896,7 +896,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //			}
 //		}
 //			break;
-//		case IK_FOOTSTEP:
+//		case kModelIkFootstep:
 //			if ( ikList[i].enabled )
 //			{
 //				// subinfo0 is the amount of offset ankles
@@ -987,7 +987,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //			}
 //			t_footIK_count += 1;
 //			break;
-//		case IK_PROPS:
+//		case kModelIkProps:
 //			//if ( ikList[i].enabled )
 //			{
 //				animLerper		lerpHelp(deltaTime);
@@ -1139,7 +1139,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //	// Do IK
 //	for ( uint i = 0; i < ikList.size(); ++i )
 //	{
-//		if ( bHasAimr && (ikList[i].type == IK_AIMING) )
+//		if ( bHasAimr && (ikList[i].type == kModelIkAiming) )
 //		{
 //			// Do AIMING IK
 //			//hkaPose aimrPose ( hkaPose::LOCAL_SPACE, mSkelly, aimrTransforms );

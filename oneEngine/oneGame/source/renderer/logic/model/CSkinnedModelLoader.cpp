@@ -9,12 +9,12 @@
 #include "core-ext/system/io/assets/ModelLoader.h"
 #include "core-ext/transform/TransformUtility.h"
 
-#include "core-ext/animation/set/CAnimationSet.h"
-#include "core-ext/animation/curve/CArrayAnimationCurve.h"
+#include "core-ext/animation/set/AnimationSet.h"
+#include "core-ext/animation/curve/ArrayAnimationCurve.h"
 //#include "physical/animation/set/CHKAnimationSet.h"
 
-#include "core-ext/animation/CAnimation.h"
-#include "core-ext/animation/CAnimAction.h"
+#include "core-ext/animation/AnimationControl.h"
+#include "core-ext/animation/AnimationAction.h"
 //#include "physical/animation/CHKAnimation.h"
 
 #include "core/utils/StringUtils.h"
@@ -300,9 +300,9 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //
 //		//===============================
 //		//==Prepare animations==
-//		CAnimationSet*	newAnimSet;
+//		AnimationSet*	newAnimSet;
 //#ifdef PHYSICS_USING_BOX2D
-//		newAnimSet = new CAnimationSet();
+//		newAnimSet = new AnimationSet();
 //#elif defined(PHYSICS_USING_HAVOK)
 //		newAnimSet = new CHKAnimationSet( iBoneNum, iFrameNum );
 //#else
@@ -313,7 +313,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //
 //		//===============================
 //		//==Prepare animations==
-//		CAnimation* newAnimation = new CAnimation( sFilename, newAnimSet );
+//		AnimationControl* newAnimation = new AnimationControl( sFilename, newAnimSet );
 //		{
 //			// First, search for an action block
 //			uint32_t iEventNum = 0;
@@ -359,7 +359,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //					sin.read( (char*)(&iOptionsFlag), sizeof( char ) );
 //
 //					// Create new action
-//					CAnimAction newAction ( StringUtils::ToLower( sAnimName ).c_str() );
+//					AnimationAction newAction ( StringUtils::ToLower( sAnimName ).c_str() );
 //					newAction.SetRange( (Real)(iStartFrame), (Real)(iEndFrame) );
 //					newAction.framesPerSecond = 30.0f;
 //					newAction.index = iCurAction;
@@ -448,7 +448,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //			{
 //				/*debug::Console->PrintWarning( "No animation action chunk found. Adding default ref.\n" );
 //				// Since there's no action block, we just create one for the entire animation
-//				CAnimAction newAction ( "ref" );
+//				AnimationAction newAction ( "ref" );
 //				newAction.SetRange( 0, (Real)(iFrameNum) );
 //				newAction.framesPerSecond = 30.0f;
 //				newAction.index = 0;
@@ -472,7 +472,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //		}
 //		newAnimation->AssignReferenceList( voidMap );*/
 //		// Update animation set now
-//		if ( CAnimation::useHavok )
+//		if ( AnimationControl::useHavok )
 //		{
 //			// Loop through the actions of the system. Get their index, create animation from that.
 //			auto actionMap = newAnimation->GetActionMap();
@@ -597,9 +597,9 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //				vSkeleton.push_back( newBone );
 //
 //				// ===== Create a new track for the current bone =====
-//				if ( !CAnimation::useHavok )
+//				if ( !AnimationControl::useHavok )
 //				{
-//					CArrayAnimationCurve<XTransform>* newCurve = new CArrayAnimationCurve<XTransform>();
+//					ArrayAnimationCurve<XTransform>* newCurve = new ArrayAnimationCurve<XTransform>();
 //
 //					//[float][16][f] transformation matrix of the bone for animation in local space. If animated via skinning, f set for numframes
 //					for ( uint32_t frame = 0; frame < iFrameNum; frame++ )
@@ -647,7 +647,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //				}
 //			} // -End Bone Chunk-
 //		}
-//		if ( CAnimation::useHavok )
+//		if ( AnimationControl::useHavok )
 //		{
 //			((CHKAnimationSet*)newAnimSet)->OrderizeValues();	// Reorders values in memory to work with Havok
 //			((CHKAnimationSet*)newAnimSet)->Initialize();		// Sends values to Havok
@@ -978,7 +978,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //		//==Read in the IK Block==
 //		{
 //			// First, search for an IK block
-//			if ( CAnimation::useHavok && inputFile->GetSectionData( string("$_IK"), sOutput ) )
+//			if ( AnimationControl::useHavok && inputFile->GetSectionData( string("$_IK"), sOutput ) )
 //			{
 //				// Move the data to a stream
 //				sin.seekg( 0, ios::beg );
@@ -986,7 +986,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //				sin.seekg( 0, ios::beg );
 //
 //				// newAnimation is the object we want to copy the IK info to.
-//				// when CAnimation is copied, it shall copy its chains as well
+//				// when AnimationControl is copied, it shall copy its chains as well
 //
 //				//============================================================================
 //				//[uint32] ik num

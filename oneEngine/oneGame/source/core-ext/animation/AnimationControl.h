@@ -1,18 +1,17 @@
-
-#ifndef _C_ANIMATION_H_
-#define _C_ANIMATION_H_
+#ifndef C_ANIMATION_CONTROL_H_
+#define C_ANIMATION_CONTROL_H_
 
 // == Includes ==
 // Animation common
 #include "core/types/types.h"
-#include "core-ext/animation/CAnimationCommon.h"
-#include "core-ext/animation/CAnimationEvents.h"
-#include "core-ext/animation/set/CAnimationSet.h"
+#include "core-ext/animation/Common.h"
+#include "core-ext/animation/AnimationEvents.h"
+#include "core-ext/animation/set/AnimationSet.h"
 
 // Include actions
-#include "core-ext/animation/CAnimAction.h"
+#include "core-ext/animation/AnimationAction.h"
 // Include IK
-#include "core-ext/animation/CAnimIK.h"
+#include "core-ext/animation/AnimIK.h"
 // Include skeleton and mapping
 #include "core-ext/animation/Skeleton.h"
 #include "core-ext/animation/BoneMapper.h"
@@ -26,17 +25,17 @@ class CModel;
 class CSkinnedModel;
 
 // Class Definition
-class CAnimation
+class AnimationControl
 {
 public:
-	CORE_API explicit		CAnimation ( const animation::Skeleton& n_skeleton );
-	CORE_API explicit		CAnimation ( CAnimation* );		// Construct by reference
-	//CORE_API explicit		CAnimation ( string const&, CAnimationSet* );	// Construct by set
+	CORE_API explicit		AnimationControl ( const animation::Skeleton& n_skeleton );
+	CORE_API explicit		AnimationControl ( AnimationControl* );		// Construct by reference
+	//CORE_API explicit		AnimationControl ( string const&, AnimationSet* );	// Construct by set
 
-	CORE_API CAnimation&	operator= ( CAnimation const& );
-	CORE_API CAnimation&	operator= ( CAnimation* );
+	CORE_API AnimationControl&	operator= ( AnimationControl const& );
+	CORE_API AnimationControl&	operator= ( AnimationControl* );
 
-	CORE_API virtual		~CAnimation ( void );
+	CORE_API virtual		~AnimationControl ( void );
 
 	CORE_API virtual void	Update ( const Real deltaTime );
 
@@ -59,16 +58,16 @@ public:
 
 	CORE_API void Normalize ( const uchar layer );
 
-	CORE_API CAnimAction&	operator[] ( const int & animIndex );
+	CORE_API AnimationAction&	operator[] ( const int & animIndex );
 
-	         CAnimAction&	operator[] ( const string& animName ) { return this->operator[](animName.c_str()); }
-	CORE_API CAnimAction&	operator[] ( const char* animName );
-	         CAnimAction*	FindAction ( const string& animName ) { return this->FindAction(animName.c_str()); }
-	CORE_API CAnimAction*	FindAction ( const char* animName );
+	         AnimationAction&	operator[] ( const string& animName ) { return this->operator[](animName.c_str()); }
+	CORE_API AnimationAction&	operator[] ( const char* animName );
+	         AnimationAction*	FindAction ( const string& animName ) { return this->FindAction(animName.c_str()); }
+	CORE_API AnimationAction*	FindAction ( const char* animName );
 
 	CORE_API void			LoadActions ( const char* );
-	CORE_API void			AddAction ( CAnimAction& );
-	const std::map<arstring128,CAnimAction>& GetActionMap ( void ) const {
+	CORE_API void			AddAction ( AnimationAction& );
+	const std::map<arstring128,AnimationAction>& GetActionMap ( void ) const {
 		return mAnimations;
 	}
 
@@ -79,10 +78,10 @@ public:
 	CORE_API bool			AddOutput ( animation::Skeleton* output );
 	CORE_API bool			AddOutput ( animation::Skeleton* output, animation::BoneMapper& manual_mapping );
 
-	/*CAnimationSet*	GetAnimationSet ( void ) {
+	/*AnimationSet*	GetAnimationSet ( void ) {
 		return pAnimationSet;
 	}*/
-	std::vector<CAnimationSet*>& GetAnimationSource ( void ) {
+	std::vector<AnimationSet*>& GetAnimationSource ( void ) {
 		return sampleSource;
 	}
 	bool	IsValid ( void ) {
@@ -112,9 +111,9 @@ public:
 	CORE_API static const unsigned char	maxLayers; // 6 Max Layers
 	CORE_API static const bool			useHavok;
 
-	CORE_API static CAnimAction	deadAction;
+	CORE_API static AnimationAction	deadAction;
 protected:
-	friend CAnimAction;
+	friend AnimationAction;
 	friend CModel;
 	friend CSkinnedModel;
 
@@ -125,14 +124,14 @@ protected:
 	//CModel*					pOwner; 
 
 	// List of actions
-	std::map<arstring128,CAnimAction>	mAnimations;
+	std::map<arstring128,AnimationAction>	mAnimations;
 	// Filename the animations are sourced from - invalid for multiple animation sets
 	string					sFilename;
 	// Skeleton used to save animations in the interim
 	animation::Skeleton		skeleton;
 
 	// Sampling source
-	std::vector<CAnimationSet*>			sampleSource;
+	std::vector<AnimationSet*>			sampleSource;
 	// Mapping tracks used by animation sets for sampling to the internal skeleton
 	std::vector<animation::BoneMapper>	sampleMappingTrack;
 
@@ -140,7 +139,7 @@ protected:
 	std::vector<animation::arIKInfo>	ikList;
 
 	// Animations to fade out next
-	std::vector<std::pair<CAnimAction*,Real>>	fadeOutList;
+	std::vector<std::pair<AnimationAction*,Real>>	fadeOutList;
 
 	// Event sampling information
 	CORE_API void			PushFrameEvent ( const animation::ActionEvent & );
@@ -162,10 +161,10 @@ protected:
 
 private:
 	// Static list of all animation instances for use in updating during physics step
-	static std::vector<CAnimation*>	_AnimationInstances;
+	static std::vector<AnimationControl*>	_AnimationInstances;
 public:
 	// Updating is handled in the oneGame module. Thus, the instance list is exported.
-	CORE_API static const std::vector<CAnimation*>& Instances ( void );
+	CORE_API static const std::vector<AnimationControl*>& Instances ( void );
 };
 
-#endif
+#endif//C_ANIMATION_CONTROL_H_

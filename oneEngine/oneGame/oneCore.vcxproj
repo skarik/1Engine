@@ -151,16 +151,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="source\core-ext\animation\AnimationEvents.h" />
-    <ClInclude Include="source\core-ext\animation\CAnimationEvents.h" />
-    <ClInclude Include="source\core-ext\animation\CAnimIK.h" />
-    <ClInclude Include="source\core-ext\animation\curve\CAnimationCurve.h" />
-    <ClInclude Include="source\core-ext\animation\curve\CAnimationCurveBase.h" />
-    <ClInclude Include="source\core-ext\animation\curve\CArrayAnimationCurve.h" />
+    <ClInclude Include="source\core-ext\animation\AnimIK.h" />
+    <ClInclude Include="source\core-ext\animation\curve\AnimationCurve.h" />
+    <ClInclude Include="source\core-ext\animation\curve\AnimationCurveBase.h" />
+    <ClInclude Include="source\core-ext\animation\curve\ArrayAnimationCurve.h" />
     <ClInclude Include="source\core-ext\animation\Types.h" />
     <ClInclude Include="source\core-ext\constants\distances.h" />
     <ClInclude Include="source\core-ext\containers\arproperty.h" />
     <ClInclude Include="source\core-ext\containers\ExtendibleMap2D.h" />
-    <ClInclude Include="source\core-ext\containers\KDTree.h" />
+    <ClInclude Include="source\core-ext\containers\arKDTree.h" />
     <ClInclude Include="source\core-ext\math\MathQEF.h" />
     <ClInclude Include="source\core-ext\math\noise\MidpointNoiseBuffer.h" />
     <ClInclude Include="source\core-ext\system\io\serializer.h" />

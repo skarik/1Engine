@@ -14,21 +14,21 @@ namespace core
 {
 	namespace shell
 	{
-		enum ETaskbarState_t
+		enum ETaskbarState
 		{
 			// Stops displaying progress and returns display to normal state
-			TBP_NO_PROGRESS,
-			TBP_INDETERMINATE,
-			TBP_NORMAL,
-			TBP_ERROR,
-			TBP_PAUSED,
+			kTaskbarStateNoProgress,
+			kTaskbarStateIndeterminate,
+			kTaskbarStateNormal,
+			kTaskbarStateError,
+			kTaskbarStatePaused,
 		};
 
 		//		SetTaskbarProgressHandle ( ) : changes default taskbar handle
 		CORE_API void SetTaskbarProgressHandle ( intptr_t shellhandle );
 		//		SetTaskbarProgressState ( ) : changes current taskbar state
 		// If shellhandle is NIL, it uses the last set shell handle.
-		CORE_API void SetTaskbarProgressState ( intptr_t shellhandle, const ETaskbarState_t state );
+		CORE_API void SetTaskbarProgressState ( intptr_t shellhandle, const ETaskbarState state );
 		//		SetTaskbarProgressValue ( ) : changes current taskbar completion value
 		// If shellhandle is NIL, it uses the last set shell handle.
 		CORE_API void SetTaskbarProgressValue ( intptr_t shellhandle, const uint64_t& ullcurrent, const uint64_t& ulltotal );

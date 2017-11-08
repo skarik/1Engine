@@ -1,11 +1,15 @@
+//===============================================================================================//
 //
 //	ModelLoader.h
+//
 // Definitions for the SegmentedFile model format. 
 //
+//===============================================================================================//
 #ifndef CORE_IO_ASSETS_MODEL_LOADER_
 #define CORE_IO_ASSETS_MODEL_LOADER_
 
 #include "core/types.h"
+#include "core/containers/arstring.h"
 #include "core/math/Math3d.h"
 #include "core/math/XTransform.h"
 #include "core/types/ModelData.h"
@@ -129,25 +133,25 @@ namespace core
 	static_assert(sizeof(modelFmtActionEntry_t)		== 140,					"Invalid structure size");
 	static_assert(sizeof(modelFmtFxEntry_t)			== 384,					"Invalid structure size");
 
-	enum modelFxCodes_t : uint8_t
+	enum EModelFxCodes : uint8_t
 	{
-		FX_DEFAULT	= 0,
+		kModelFxDefault					= 0,
 
-		FX_SOFTBODY	= 101,
+		kModelFxSoftbody				= 101,
 
-		FX_JIGGLEBONE_TEST			= 11,
-		FX_JIGGLEBONE_BREAST		= 12,
-		FX_JIGGLEBONE_TAILWAGGLE	= 25,
-		FX_JIGGLEBONE_GENERAL		= 35,
+		kModelFxJigglebone_Test			= 11,
+		kModelFxJigglebone_Breast		= 12,
+		kModelFxJigglebone_TailWaggle	= 25,
+		kModelFxJigglebone_General		= 35,
 	};
-	enum modelIkCodes_t : uint8_t
+	enum EModelIkCodes : uint8_t
 	{
-		IK_DEFAULT	= 255,
+		kModelIkDefault		= 255,
 
-		IK_LOOKAT		= 0,
-		IK_FOOTSTEP		= 1,
-		IK_AIMING		= 2,
-		IK_PROPS		= 3,
+		kModelIkLookAt		= 0,
+		kModelIkFootstep	= 1,
+		kModelIkAiming		= 2,
+		kModelIkProps		= 3,
 	};
 
 	static const char* AD_KEY_ACTIONS		= "$actions";
@@ -162,10 +166,10 @@ namespace core
 	static const char* AD_KEY_JIGGLE		= "$jiggle";
 	static const char* AD_KEY_SOFTBODY		= "$softbody";
 
-	static const char* AD_KEY_IK_LOOKAT		= "IK_LOOKAT";
-	static const char* AD_KEY_IK_FOOTSTEP	= "IK_FOOTSTEP";
-	static const char* AD_KEY_IK_AIMING		= "IK_AIMING";
-	static const char* AD_KEY_IK_PROPS		= "IK_PROPS";
+	static const char* AD_KEY_IK_LOOKAT		= "kModelIkLookAt";
+	static const char* AD_KEY_IK_FOOTSTEP	= "kModelIkFootstep";
+	static const char* AD_KEY_IK_AIMING		= "kModelIkAiming";
+	static const char* AD_KEY_IK_PROPS		= "kModelIkProps";
 
 	//	class ModelLoader
 	// Use to read model data from the disk. Set flags, hit LoadModel, and let it rip.

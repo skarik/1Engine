@@ -15,7 +15,7 @@ class CEmulatedInputControl
 public:
 	explicit CEmulatedInputControl ( void )
 	{
-		for ( int i = 0; i < MAX_INPUT_COUNT; ++i )
+		for ( int i = 0; i < kControlInputMAXCOUNT; ++i )
 		{
 			axes._total[i].Zero();
 			keypress_timer[i] = -0.1f;
@@ -30,7 +30,7 @@ public:
 
 	void Update ( float deltatime )
 	{
-		for ( int i = 0; i < MAX_INPUT_COUNT; ++i )
+		for ( int i = 0; i < kControlInputMAXCOUNT; ++i )
 		{
 			axes._total[i].Update( keypress_timer[i] >= 0 );
 			if ( keypress_timer[i] >= 0 ) {
@@ -42,19 +42,19 @@ public:
 public:
 	typedef CInputControl::ControlValue ControlValue;
 
-	enum ControlEnum
+	enum EControlId
 	{
-		InputCrouch = 0,
-		InputJump,
-		InputPrimary,
-		InputSecondary,
-		InputSprint,
-		InputProne,
-		InputDefend,
-		InputUse,
-		InputTertiary,
+		kControlInputCrouch = 0,
+		kControlInputJump,
+		kControlInputPrimary,
+		kControlInputSecondary,
+		kControlInputSprint,
+		kControlInputProne,
+		kControlInputDefend,
+		kControlInputUse,
+		kControlInputTertiary,
 
-		MAX_INPUT_COUNT
+		kControlInputMAXCOUNT
 	};
 
 public:
@@ -74,14 +74,14 @@ public:
 			ControlValue use;
 			ControlValue tertiary;
 		};
-		ControlValue _total [MAX_INPUT_COUNT];
+		ControlValue _total [kControlInputMAXCOUNT];
 	} axes_t;
 
 	axes_t axes;
 
 private:
 	
-	Real	keypress_timer [MAX_INPUT_COUNT];
+	Real	keypress_timer [kControlInputMAXCOUNT];
 };
 
 #endif//C_EMULATED_INPUT_CONTROL_H_

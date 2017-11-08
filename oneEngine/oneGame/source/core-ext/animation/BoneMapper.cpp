@@ -9,7 +9,7 @@ void animation::BoneMapper::CreateFromNameMatching(const Skeleton& source, const
 	{
 		size_t worst_match = 128;
 		size_t best_match = 0;
-		uint8_t best_match_index = INVALID_BONE;
+		uint8_t best_match_index = kSpecialBoneTypeINVALID;
 		// Check all bones
 		for ( uint8_t j = 0; j < target.names.size(); ++j )
 		{
@@ -38,7 +38,7 @@ void animation::BoneMapper::CreateFromNameMatching(const Skeleton& source, const
 			}
 		}
 		// Is there a good match that is better than the worst match?
-		if ( best_match > worst_match && best_match_index != INVALID_BONE )
+		if ( best_match > worst_match && best_match_index != kSpecialBoneTypeINVALID )
 		{
 			o_mapper.mapping.push_back( boneMapEntry_t( i, best_match_index ) );
 		}

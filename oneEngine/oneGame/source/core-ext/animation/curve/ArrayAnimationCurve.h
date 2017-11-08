@@ -2,7 +2,7 @@
 #ifndef _C_ANIMATION_CURVE_ARRAY_
 #define _C_ANIMATION_CURVE_ARRAY_
 
-#include "CAnimationCurve.h"
+#include "AnimationCurve.h"
 
 // Uses vector
 #include <vector>
@@ -10,14 +10,14 @@
 
 // Class Definition
 template <typename CurveType>
-class CArrayAnimationCurve : public CAnimationCurve<CurveType>
+class ArrayAnimationCurve : public AnimationCurve<CurveType>
 {
 public:
-	CArrayAnimationCurve ( void )
+	ArrayAnimationCurve ( void )
 	{
 		//zeroValue = vData[0];
 	};
-	~CArrayAnimationCurve ( void )
+	~ArrayAnimationCurve ( void )
 	{
 		vData.clear();	
 	};
@@ -38,13 +38,13 @@ private:
 };
 
 // Specifics
-/*inline CAnimationCurveBase::eCurveType CAnimationCurve<Matrix4x4>::GetType ( void )
+/*inline AnimationCurveBase::eCurveType AnimationCurve<Matrix4x4>::GetType ( void )
 {
 	return CT_MATRIX4;
 }*/
 
 // Sample At
-inline void CArrayAnimationCurve<Matrix4x4>::SampleAt( Real time, Real weight, bool additive )
+inline void ArrayAnimationCurve<Matrix4x4>::SampleAt( Real time, Real weight, bool additive )
 {
 	Matrix4x4	targetMatx;
 
@@ -68,7 +68,7 @@ inline void CArrayAnimationCurve<Matrix4x4>::SampleAt( Real time, Real weight, b
 }
 
 // Sample At
-inline void CArrayAnimationCurve<XTransform>::SampleAt( Real time, Real weight, bool additive )
+inline void ArrayAnimationCurve<XTransform>::SampleAt( Real time, Real weight, bool additive )
 {
 	XTransform	trans1;
 

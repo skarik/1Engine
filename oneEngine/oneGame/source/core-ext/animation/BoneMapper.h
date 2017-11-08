@@ -12,9 +12,9 @@
 namespace animation
 {
 	//	Bone index constants
-	enum eSpecialBoneTypes_t : uint8_t
+	enum ESpecialBoneTypes : uint8_t
 	{
-		INVALID_BONE = 255
+		kSpecialBoneTypeINVALID = 255
 	};
 
 	//	struct boneMapEntry_t
@@ -34,7 +34,7 @@ namespace animation
 		}
 		// Default construction: hold invalid values
 		boneMapEntry_t(void)
-			: source(INVALID_BONE), target(INVALID_BONE)
+			: source(kSpecialBoneTypeINVALID), target(kSpecialBoneTypeINVALID)
 		{
 			;
 		}

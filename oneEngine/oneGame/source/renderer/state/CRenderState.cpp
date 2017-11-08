@@ -348,7 +348,7 @@ unsigned int CRenderState::AddLO ( CLogicObject * pLO )
 void CRenderState::RemoveLO ( unsigned int id )
 {
 	// TODO: Optimize this
-	Jobs::System::Current::WaitForJobs( Jobs::JOBTYPE_RENDERSTEP );
+	Jobs::System::Current::WaitForJobs( Jobs::kJobTypeRenderStep );
 
 	// Now set to null now that the object is pretty much gone
 	mLogicObjects[id] = NULL;

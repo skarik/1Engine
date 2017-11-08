@@ -1,6 +1,5 @@
-
-#ifndef _C_ANIMATION_COMMON_
-#define _C_ANIMATION_COMMON_
+#ifndef ANIMATION_COMMON_
+#define ANIMATION_COMMON_
 
 // Include Game Base
 #include "core-ext/transform/Transform.h"
@@ -16,4 +15,4 @@
 #include "core/math/Rotator.h"
 #include "core/math/XTransform.h"
 
-#endif
+#endif//ANIMATION_COMMON_

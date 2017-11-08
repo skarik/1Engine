@@ -19,7 +19,7 @@ CCamera::CCamera ( void )
 	// Set up camera renderer
 	/*transform.name = "Camera Transform";
 	transform.owner = this;
-	transform.ownerType = CTransform::TYPE_RENDERER_CAMERA;*/
+	transform.ownerType = CTransform::kOwnerTypeRendererCamera;*/
 
 	zNear = 0.1f;
 	zFar = CGameSettings::Active()->f_ro_DefaultCameraRange;

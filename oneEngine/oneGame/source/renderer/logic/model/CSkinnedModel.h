@@ -46,7 +46,7 @@ public:
 	// Get the morpher
 	RENDER_API CMorpher*	GetMorpher ( void );
 	//	GetSkeleton ( ) : Return the skeleton internally used
-	// Pass this pointer into CAnimation instances to add a sampling target.
+	// Pass this pointer into AnimationControl instances to add a sampling target.
 	RENDER_API animation::Skeleton*	GetSkeleton ( void );
 
 	// == SETTERS ==

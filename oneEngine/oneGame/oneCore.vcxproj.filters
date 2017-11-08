@@ -283,24 +283,6 @@
     <ClInclude Include="source\core-ext\types\sHitbox.h">
       <Filter>SOURCE\Core-ext\Types</Filter>
     </ClInclude>
-    <ClInclude Include="source\core-ext\animation\AnimationEvents.h">
-      <Filter>SOURCE\Core-ext\Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\animation\CAnimationEvents.h">
-      <Filter>SOURCE\Core-ext\Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\animation\CAnimIK.h">
-      <Filter>SOURCE\Core-ext\Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\animation\curve\CAnimationCurve.h">
-      <Filter>SOURCE\Core-ext\Animation\Curve</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\animation\curve\CAnimationCurveBase.h">
-      <Filter>SOURCE\Core-ext\Animation\Curve</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\animation\curve\CArrayAnimationCurve.h">
-      <Filter>SOURCE\Core-ext\Animation\Curve</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\math\MathQEF.h">
       <Filter>SOURCE\Core-ext\Math</Filter>
     </ClInclude>
@@ -321,9 +303,6 @@
     </ClInclude>
     <ClInclude Include="source\core\math\Math3d.h">
       <Filter>SOURCE\Core\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core-ext\containers\KDTree.h">
-      <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClInclude>
     <ClInclude Include="source\core-ext\threads\semaphore.h">
       <Filter>SOURCE\Core-ext\Threads</Filter>
@@ -378,6 +357,24 @@
     </ClInclude>
     <ClInclude Include="source\core\containers\arring.h">
       <Filter>SOURCE\Core\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\AnimationEvents.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\AnimIK.h">
+      <Filter>SOURCE\Core-ext\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\curve\AnimationCurveBase.h">
+      <Filter>SOURCE\Core-ext\Animation\Curve</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\curve\AnimationCurve.h">
+      <Filter>SOURCE\Core-ext\Animation\Curve</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\animation\curve\ArrayAnimationCurve.h">
+      <Filter>SOURCE\Core-ext\Animation\Curve</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\containers\arKDTree.h">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

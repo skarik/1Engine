@@ -1,6 +1,6 @@
 #include "core/time.h"
 #include "core-ext/transform/Transform.h"
-#include "core-ext/animation/CAnimation.h"
+#include "core-ext/animation/AnimationControl.h"
 #include "engine/state/CGameState.h"
 
 //#include "physical/physics/CPhysics.h"
@@ -347,11 +347,11 @@ void CGameState::FixedUpdate ( void )
 
 	// Loop through all animation instances
 	//	Update them.
-	for ( i = 0; i < CAnimation::Instances().size(); ++i )
+	for ( i = 0; i < AnimationControl::Instances().size(); ++i )
 	{
-		if ( CAnimation::Instances()[i] != NULL )
+		if ( AnimationControl::Instances()[i] != NULL )
 		{
-			CAnimation::Instances()[i]->Update( Time::deltaTime );
+			AnimationControl::Instances()[i]->Update( Time::deltaTime );
 		}
 	}
 }

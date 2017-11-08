@@ -13,7 +13,7 @@
 
 
 class CMesh;
-class CAnimation;
+class AnimationControl;
 class rrMesh;
 class physMesh;
 
@@ -36,8 +36,8 @@ class physMesh;
 
 #include "BoundingBox.h"
 
-#include "CAnimationSet.h"
-#include "CAnimation.h"
+#include "AnimationSet.h"
+#include "AnimationControl.h"
 
 #include "sHitbox.h"
 
@@ -182,7 +182,7 @@ public:
 	RENDER_API RrMaterial*	FindMaterial ( const char* n_name, const int n_offset=0 ) const;
 
 	// Get the animation reference
-	/*CAnimation*	GetAnimation ( void ) {
+	/*AnimationControl*	GetAnimation ( void ) {
 		return pMyAnimation;
 	}*/
 	// Get the hitbox list
@@ -216,8 +216,8 @@ protected:
 	std::vector<sHitbox>			vHitboxes;
 
 	// Animation data
-	CAnimation*				pMyAnimation;
-	CAnimation*				pReferencedAnimation;
+	AnimationControl*				pMyAnimation;
+	AnimationControl*				pReferencedAnimation;
 	bool					bReferenceAnimation;
 	AnimRefType				eRefMode;
 

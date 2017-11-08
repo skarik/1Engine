@@ -334,7 +334,7 @@ void CRigidbody::PushTransform ( void )
 //#if 0
 //	else if ( target_transform )
 //	{
-//		if ( target_transform->owner && target_transform->ownerType == Transform::TYPE_BEHAVIOR )
+//		if ( target_transform->owner && target_transform->ownerType == Transform::kOwnerTypeBehavior )
 //		{
 //			return (CGameBehavior*)target_transform->owner;
 //		}

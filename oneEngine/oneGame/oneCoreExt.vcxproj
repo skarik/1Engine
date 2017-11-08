@@ -39,11 +39,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\core-ext\animation\CAnimAction.cpp" />
-    <ClCompile Include="source\core-ext\animation\CAnimActionMixing.cpp" />
-    <ClCompile Include="source\core-ext\animation\CAnimation.cpp" />
+    <ClCompile Include="source\core-ext\animation\AnimationAction.cpp" />
+    <ClCompile Include="source\core-ext\animation\AnimationAction.Mixing.cpp" />
+    <ClCompile Include="source\core-ext\animation\AnimationControl.cpp" />
     <ClCompile Include="source\core-ext\animation\BoneMapper.cpp" />
-    <ClCompile Include="source\core-ext\animation\set\CAnimationSet.cpp" />
+    <ClCompile Include="source\core-ext\animation\set\AnimationSet.cpp" />
     <ClCompile Include="source\core-ext\animation\Skeleton.cpp" />
     <ClCompile Include="source\core-ext\input\CInputControl.cpp" />
     <ClCompile Include="source\core-ext\profiler\CTimeProfiler.cpp" />
@@ -59,10 +59,10 @@
     <ClCompile Include="source\core-ext\utils\MeshBuilder.cpp" />
     <ClCompile Include="source\core\debug\CDebugConsole.cpp" />
     <ClCompile Include="source\core\input\CInput.cpp" />
-    <ClCompile Include="source\core\input\CInputTable.cpp" />
+    <ClCompile Include="source\core\input\CInput.Table.cpp" />
     <ClCompile Include="source\core\input\CXboxController.cpp" />
     <ClCompile Include="source\core\settings\CGameSettings.cpp" />
-    <ClCompile Include="source\core\settings\CGameSettingsDirs.cpp" />
+    <ClCompile Include="source\core\settings\CGameSettings.Dirs.cpp" />
     <ClCompile Include="source\core\system\io\CSegmentedFile.cpp" />
     <ClCompile Include="source\core\system\Screen.cpp" />
     <ClCompile Include="source\core\time\CTime.cpp" />
@@ -70,11 +70,11 @@
     <ClCompile Include="source\core\time\CTimeWin32.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\core-ext\animation\CAnimAction.h" />
-    <ClInclude Include="source\core-ext\animation\CAnimation.h" />
-    <ClInclude Include="source\core-ext\animation\CAnimationCommon.h" />
+    <ClInclude Include="source\core-ext\animation\AnimationAction.h" />
+    <ClInclude Include="source\core-ext\animation\AnimationControl.h" />
+    <ClInclude Include="source\core-ext\animation\Common.h" />
     <ClInclude Include="source\core-ext\animation\BoneMapper.h" />
-    <ClInclude Include="source\core-ext\animation\set\CAnimationSet.h" />
+    <ClInclude Include="source\core-ext\animation\set\AnimationSet.h" />
     <ClInclude Include="source\core-ext\animation\Skeleton.h" />
     <ClInclude Include="source\core-ext\input\CInputControl.h" />
     <ClInclude Include="source\core-ext\input\emulated\CEmulatedInputControl.h" />

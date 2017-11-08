@@ -1,46 +1,45 @@
-
-#include "CAnimationSet.h"
+#include "AnimationSet.h"
 #include "core/utils/StringUtils.h"
-#include "core-ext/animation/CAnimAction.h"
-#include "core-ext/animation/curve/CAnimationCurve.h"
-#include "core-ext/animation/CAnimation.h"
+#include "core-ext/animation/AnimationAction.h"
+#include "core-ext/animation/curve/AnimationCurve.h"
+#include "core-ext/animation/AnimationControl.h"
 #include "core-ext/system/io/assets/ModelLoader.h"
 
 // Constructor
-CAnimationSet::CAnimationSet ( void )
+AnimationSet::AnimationSet ( void )
 	: framerate(30.0F), filename("")
 {}
 // Destructor
-CAnimationSet::~CAnimationSet ( void )
+AnimationSet::~AnimationSet ( void )
 {}
 
 
 // Export animation to targets
-void CAnimationSet::Export ( std::vector<void*> & referenceList )
+void AnimationSet::Export ( std::vector<void*> & referenceList )
 {
 	throw core::DeprecatedCallException();
 	/*
 	for ( unsigned int i = 0; i < referenceList.size(); i++ )
 	{
-		CAnimationCurveBase* currentCurve = animMap[i];
-		CAnimationCurveBase::eCurveType curveType = currentCurve->GetType();
+		AnimationCurveBase* currentCurve = animMap[i];
+		AnimationCurveBase::eCurveType curveType = currentCurve->GetType();
 
-		if ( curveType == CAnimationCurveBase::CT_XTRANSFORM )
+		if ( curveType == AnimationCurveBase::CT_XTRANSFORM )
 		{
-			//((CArrayAnimationCurve<Matrix4x4>*)(currentCurve))->;
-			(*((XTransform*)(referenceList[i]))) = ((CAnimationCurve<XTransform>*)(currentCurve))->GetResult();
+			//((ArrayAnimationCurve<Matrix4x4>*)(currentCurve))->;
+			(*((XTransform*)(referenceList[i]))) = ((AnimationCurve<XTransform>*)(currentCurve))->GetResult();
 		}
-		else if ( curveType == CAnimationCurveBase::CT_MATRIX4 )
+		else if ( curveType == AnimationCurveBase::CT_MATRIX4 )
 		{
-			//((CArrayAnimationCurve<Matrix4x4>*)(currentCurve))->;
-			(*((Matrix4x4*)(referenceList[i]))) = ((CAnimationCurve<Matrix4x4>*)(currentCurve))->GetResult();
+			//((ArrayAnimationCurve<Matrix4x4>*)(currentCurve))->;
+			(*((Matrix4x4*)(referenceList[i]))) = ((AnimationCurve<Matrix4x4>*)(currentCurve))->GetResult();
 		}
 	}
 	*/
 }
 
-// Ownership of the calling CAnimationSet is not transferred. This is why this function exists here and not in CAnimation.
-void CAnimationSet::AddActions ( CAnimation* target )
+// Ownership of the calling AnimationSet is not transferred. This is why this function exists here and not in AnimationControl.
+void AnimationSet::AddActions ( AnimationControl* target )
 {
 	// Load up the model file first
 	core::ModelLoader loader;
@@ -65,7 +64,7 @@ void CAnimationSet::AddActions ( CAnimation* target )
 	for ( auto action = loader.actions.begin(); action != loader.actions.end(); ++action )
 	{	
 		// Create new action
-		CAnimAction new_action ( StringUtils::ToLower( action->name.c_str() ).c_str() );
+		AnimationAction new_action ( StringUtils::ToLower( action->name.c_str() ).c_str() );
 
 		new_action.SetRange( (Real)(action->start), (Real)(action->end) );
 		new_action.framesPerSecond = this->framerate;

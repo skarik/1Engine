@@ -11,7 +11,7 @@
 #include <map>
 
 class PrMesh;
-class CAnimationSet;
+class AnimationSet;
 
 class PhysicalResources
 {
@@ -20,7 +20,7 @@ class PhysicalResources
 	ARSINGLETON_H_ACCESS(PhysicalResources)
 
 public:
-	PHYS_API void AddAnimationSet ( const char* filename, CAnimationSet* animSet );
+	PHYS_API void AddAnimationSet ( const char* filename, AnimationSet* animSet );
 	PHYS_API void AddSkeleton ( const char* filename, animation::Skeleton& skeleton );
 	PHYS_API void AddPhysMeshSet ( const char* filename, std::vector<PrMesh*>& meshSet );
 	PHYS_API void AddHitboxSet ( const char* filename, std::vector<sHitbox>& hitboxSet );
@@ -28,7 +28,7 @@ public:
 	//	GetAnimationSet ( filename )
 	// Returns the animation set saved previously, and increments the reference count.
 	// Returns NULL if no reference is found.
-	PHYS_API const CAnimationSet*			GetAnimationSet ( const char* filename );
+	PHYS_API const AnimationSet*			GetAnimationSet ( const char* filename );
 
 	//	GetSkeleton ( filename )
 	// Returns the skeleton saved previously, and increments the reference count.
@@ -58,7 +58,7 @@ private:
 	struct animationset_reference_t
 	{
 		uint16_t refCount;
-		CAnimationSet* set;
+		AnimationSet* set;
 	};
 	struct skelly_reference_t
 	{

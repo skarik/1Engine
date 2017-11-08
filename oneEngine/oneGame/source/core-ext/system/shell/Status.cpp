@@ -86,7 +86,7 @@ void core::shell::SetTaskbarProgressHandle ( intptr_t shellhandle )
 	}
 }
 //		SetTaskbarProgressState ( ) : changes current taskbar state
-void core::shell::SetTaskbarProgressState ( intptr_t shellhandle, const ETaskbarState_t state )
+void core::shell::SetTaskbarProgressState ( intptr_t shellhandle, const ETaskbarState state )
 {
 	if ( progress == NULL ) progress = new Win7TaskbarProgress;
 
@@ -96,19 +96,19 @@ void core::shell::SetTaskbarProgressState ( intptr_t shellhandle, const ETaskbar
 
 	switch (state)
 	{
-	case TBP_NO_PROGRESS:
+	case kTaskbarStateNoProgress:
 		progress->SetProgressState(handle, TBPF_NOPROGRESS);
 		break;
-	case TBP_INDETERMINATE:
+	case kTaskbarStateIndeterminate:
 		progress->SetProgressState(handle, TBPF_INDETERMINATE);
 		break;
-	case TBP_NORMAL:
+	case kTaskbarStateNormal:
 		progress->SetProgressState(handle, TBPF_NORMAL);
 		break;
-	case TBP_ERROR:
+	case kTaskbarStateError:
 		progress->SetProgressState(handle, TBPF_ERROR);
 		break;
-	case TBP_PAUSED:
+	case kTaskbarStatePaused:
 		progress->SetProgressState(handle, TBPF_PAUSED);
 		break;
 	}
@@ -149,7 +149,7 @@ void core::shell::SetTaskbarProgressHandle ( intptr_t shellhandle )
 {
 }
 //		SetTaskbarProgressState ( ) : changes current taskbar state
-void core::shell::SetTaskbarProgressState ( intptr_t shellhandle, const ETaskbarState_t state )
+void core::shell::SetTaskbarProgressState ( intptr_t shellhandle, const ETaskbarState state )
 {
 }
 //		SetTaskbarProgressValue ( ) : changes current taskbar completion value

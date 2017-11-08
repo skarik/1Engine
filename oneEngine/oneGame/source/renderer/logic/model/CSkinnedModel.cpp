@@ -10,7 +10,7 @@
 
 #include "core-ext/profiler/CTimeProfiler.h"
 
-#include "core-ext/animation/CAnimation.h"
+#include "core-ext/animation/AnimationControl.h"
 //#include "physical/animation/CHKAnimation.h"
 #include "physical/resource/ResourceManager.h"
 

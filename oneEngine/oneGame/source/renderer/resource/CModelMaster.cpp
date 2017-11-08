@@ -2,7 +2,7 @@
 #include "CModelMaster.h"
 #include "core/system/io/FileUtils.h"
 
-#include "core-ext/animation/CAnimation.h"
+#include "core-ext/animation/AnimationControl.h"
 #include "renderer/logic/model/morpher/CMorpher.h"
 #include "renderer/resource/CModelMaster.h"
 
@@ -181,7 +181,7 @@ void CModelMaster::AddReference ( const string& filename, vector<physMesh*>& mes
 		it->second.referenceCount += 1;
 	}
 }
-void CModelMaster::AddReference ( const string& filename, CAnimation* animSet )
+void CModelMaster::AddReference ( const string& filename, AnimationControl* animSet )
 {
 	// First look for it
 	map<string,AnimSetReference>::iterator it;
@@ -398,7 +398,7 @@ const vector<physMesh*>*	CModelMaster::GetCollisionReference ( const string& fil
 
 
 
-CAnimation*			CModelMaster::GetAnimationReference ( const string& filename )
+AnimationControl*			CModelMaster::GetAnimationReference ( const string& filename )
 {
 	// First look for it
 	map<string,AnimSetReference>::iterator it;

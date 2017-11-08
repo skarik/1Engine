@@ -45,7 +45,7 @@ void CGameScene::SceneGoto ( CGameScene* pNewScene )
 void CGameScene::Load ( void )
 {
 	// Show user that we are currently loading
-	core::shell::SetTaskbarProgressState(NIL, core::shell::TBP_INDETERMINATE);
+	core::shell::SetTaskbarProgressState(NIL, core::shell::kTaskbarStateIndeterminate);
 
 	// Load scene and set current scene to this
 	LoadScene();

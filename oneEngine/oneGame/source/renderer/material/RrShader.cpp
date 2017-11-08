@@ -212,7 +212,7 @@ void RrShader::begin ( void )
 	else
 	{
 		// Alert user that a shader compile failed, especially if we're working in silent mode
-		core::shell::SetTaskbarProgressState(NIL, core::shell::TBP_ERROR);
+		core::shell::SetTaskbarProgressState(NIL, core::shell::kTaskbarStateError);
 
 		// Bind default program
 		glUseProgram( 0 );
@@ -641,7 +641,7 @@ void RrShader::compile_shader ( void )
 	if ( bHasCompileError )
 	{
 		// Alert user that a shader compile failed, especially if we're working in silent mode
-		core::shell::SetTaskbarProgressState(NIL, core::shell::TBP_ERROR);
+		core::shell::SetTaskbarProgressState(NIL, core::shell::kTaskbarStateError);
 		core::shell::FlashTray(NIL, 5);
 
 		// Print out failure

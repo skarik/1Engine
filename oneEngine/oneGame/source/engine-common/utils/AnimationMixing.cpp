@@ -2,12 +2,12 @@
 
 #include "AnimationMixing.h"
 
-#include "core-ext/animation/CAnimation.h"
-#include "core-ext/animation/CAnimAction.h"
+#include "core-ext/animation/AnimationControl.h"
+#include "core-ext/animation/AnimationAction.h"
 #include "physical/skeleton/skeletonBone.h"
 #include "renderer/logic/model/CSkinnedModel.h"
 
-int animation::AddMixingTransform ( CAnimation& anim, CAnimAction& action, const char* boneName, bool recursive )
+int animation::AddMixingTransform ( AnimationControl& anim, AnimationAction& action, const char* boneName, bool recursive )
 {
 	//anim["idle_relaxed_hover_02"].AddMixingTransform( "Bip001", false ); // Old syntax
 

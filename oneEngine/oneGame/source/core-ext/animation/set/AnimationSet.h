@@ -1,36 +1,35 @@
-
 #ifndef CORE_ANIMATION_SET_
 #define CORE_ANIMATION_SET_
 
 #include "core/containers/arstring.h"
-#include "core-ext/animation/CAnimationCommon.h"
-#include "core-ext/animation/curve/CAnimationCurveBase.h"
-#include "core-ext/animation/curve/CAnimationCurve.h"
+#include "core-ext/animation/Common.h"
+#include "core-ext/animation/curve/AnimationCurveBase.h"
+#include "core-ext/animation/curve/AnimationCurve.h"
 
 #include <vector>
 #include <map>
 
-class CAnimation;
+class AnimationControl;
 
-//	class CAnimationSet
+//	class AnimationSet
 // Base class for storage for raw animation data and action definitions.
 // Animation sets should be expected to be accessed when the animation is sampled.
-class CAnimationSet
+class AnimationSet
 {
 public:
-	CORE_API explicit CAnimationSet ( void );
-	CORE_API virtual ~CAnimationSet ( void );
+	CORE_API explicit AnimationSet ( void );
+	CORE_API virtual ~AnimationSet ( void );
 	
-	void Add ( CAnimationCurve<Matrix4x4>* newCurve )
+	void Add ( AnimationCurve<Matrix4x4>* newCurve )
 	{
 		throw core::DeprecatedCallException();
 		//animMap.push_back( newCurve );
 	}
-	void Add ( CAnimationCurve<Matrix2x2>* );
-	void Add ( CAnimationCurve<Vector3d>* );
-	void Add ( CAnimationCurve<Vector2d>* );
-	void Add ( CAnimationCurve<Real>* );
-	void Add ( CAnimationCurve<XTransform>* newCurve )
+	void Add ( AnimationCurve<Matrix2x2>* );
+	void Add ( AnimationCurve<Vector3d>* );
+	void Add ( AnimationCurve<Vector2d>* );
+	void Add ( AnimationCurve<Real>* );
+	void Add ( AnimationCurve<XTransform>* newCurve )
 	{
 		throw core::DeprecatedCallException();
 		//animMap.push_back( newCurve );
@@ -41,17 +40,17 @@ public:
 	/*struct sCurveReference
 	{
 		void*	targetObject;
-		CAnimationCurveBase*	baseCurve;
+		AnimationCurveBase*	baseCurve;
 	};*/
 
 	//vector<sCurveReference>	animMap;
-	//std::vector<CAnimationCurveBase*>	animMap;
+	//std::vector<AnimationCurveBase*>	animMap;
 
 	//	AddActions ( target ) : [SLOW] Adds this animation set's associated actions to the given Animation object 
 	// Finds the filename for the animation, and loads in the listing of the animation.
 	// This function reads from the disk, so is fairly slow. This should be kept in mind when reading in the data.
-	// Ownership of the calling CAnimationSet is not transferred.
-	CORE_API virtual void AddActions ( CAnimation* target );
+	// Ownership of the calling AnimationSet is not transferred.
+	CORE_API virtual void AddActions ( AnimationControl* target );
 
 	Real	Framerate ( void ) const
 	{

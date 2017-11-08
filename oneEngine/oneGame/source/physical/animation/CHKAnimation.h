@@ -4,34 +4,34 @@
 
 #include "physical/physics/CPhysicsCommon.h"
 #include "core-ext/animation/CAnimationCommon.h"
-#include "core-ext/animation/CAnimation.h"
+#include "core-ext/animation/AnimationControl.h"
 #include "physical/animation/Injectors.h"
 
 class glhkSkeleton;
 class skeletonBone_t;
 
 #pragma warning( disable : 4351 ) // Disable default C++11 array initialization warning
-class CHKAnimation : public CAnimation
+class CHKAnimation : public AnimationControl
 {
 public:
 	// Constructors
 	//explicit CHKAnimation ( glhkSkeleton * );
 	PHYS_API explicit CHKAnimation ( const animation::Skeleton& n_skeleton )
-		: CAnimation( n_skeleton ),
+		: AnimationControl( n_skeleton ),
 		mSkelly(NULL), mAnimSkelly(NULL), //mMirrorSkelly(NULL), mMirrorAnim(NULL),
 		mSpineBlends(), mPropBlends()
 	{
 		SkeletonToHkaSkeleton();
 	}
-	PHYS_API explicit CHKAnimation ( CAnimation* pFoundReference )
-		: CAnimation( pFoundReference ),
+	PHYS_API explicit CHKAnimation ( AnimationControl* pFoundReference )
+		: AnimationControl( pFoundReference ),
 		mSkelly(NULL), mAnimSkelly(NULL), //mMirrorSkelly(NULL), mMirrorAnim(NULL),
 		mSpineBlends(), mPropBlends()
 	{
 		SkeletonToHkaSkeleton();
 	}
-	/*PHYS_API explicit CHKAnimation ( string const& sInFilename, CAnimationSet* pInSet )
-	: CAnimation( sInFilename, pInSet ),
+	/*PHYS_API explicit CHKAnimation ( string const& sInFilename, AnimationSet* pInSet )
+	: AnimationControl( sInFilename, pInSet ),
 	bHKready(false), mMirrorSkelly(NULL), mAnimBinding(NULL),
 	mSpineBlends(), mPropBlends()
 	{

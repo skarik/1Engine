@@ -105,7 +105,7 @@ public:
 	//static int prevMouseX;
 	//static int prevMouseY;
 
-	enum eMB_PRESS_TYPES : int
+	enum EMB_PRESS_TYPES : int
 	{
 		MBLeft	= 0,
 		MBRight	= 1,

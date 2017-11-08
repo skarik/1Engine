@@ -4,12 +4,12 @@
 
 #include "core/types.h"
 
-class CAnimation;
-class CAnimAction;
+class AnimationControl;
+class AnimationAction;
 
 namespace animation
 {
-	ENGCOM_API int AddMixingTransform ( CAnimation& anim, CAnimAction& action, const char* boneName, bool recursive=false );
+	ENGCOM_API int AddMixingTransform ( AnimationControl& anim, AnimationAction& action, const char* boneName, bool recursive=false );
 
 };
 
