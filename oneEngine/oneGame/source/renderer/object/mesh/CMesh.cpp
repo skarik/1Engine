@@ -54,6 +54,9 @@ void CMesh::CalculateBoundingBox ( void )
 
 bool CMesh::PreRender ( void )
 {
+	// disable frustum culling:
+	bUseFrustumCulling = false;
+
 	// Culling check routine
 	if ( bUseFrustumCulling )
 	{

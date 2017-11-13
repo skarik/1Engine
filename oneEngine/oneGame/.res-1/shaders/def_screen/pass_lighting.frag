@@ -329,9 +329,6 @@ void main ( void )
 	// a	rim lighting strength
 	vec4 pixelGlow			= texture( textureSampler3, v2f_texcoord0 );
 
-    // temp hack:
-    pixelNormal.rgb = -pixelNormal.rgb;
-
     // ==Perform lighting==
 
 	vec4 n_cameraVector;
@@ -422,12 +419,12 @@ void main ( void )
     pixelDiffuse.rg -= 0.1 - length(pixelPosition.xy) * 0.02;
 
     float lightDir = dot(vec3(-0.1,0.6,0.8), pixelNormal.rgb);
-    float light = 0.3 + pow(n_rimValue, 6) * 0.5 * max(0.0, lightDir - 0.3) + max(0.0, lightDir) * 0.6;
+    float light = 0.3 + pow(n_rimValue, 4) * 2.5 * max(0.0, lightDir - 0.3) + max(0.0, lightDir) * 0.6;
 
     //vec3 diffuseColor = pixelNormal.rgb * 0.5 + 0.5;
     //vec3 diffuseColor = vec3(1,1,1) * n_rimValue * 0.5;
     vec3 diffuseColor = pixelDiffuse.rgb * max(0.0, light);
-    diffuseColor.rgb += vec3(0.3,0.25,0.25) * (0.5 + min(1.0, pow(n_rimValue, 2) * 7)) * max(0.0, -lightDir);
+    diffuseColor.rgb += pixelDiffuse.rgb * vec3(0.3,0.25,0.25) * (0.5 + min(1.0, pow(n_rimValue, 2) * 7)) * max(0.0, -lightDir) * 2.0;
 
     float lightingStrength = 0.0;
 
