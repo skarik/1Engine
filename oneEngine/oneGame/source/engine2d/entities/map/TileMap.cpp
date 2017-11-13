@@ -358,8 +358,6 @@ void TileMap::Rebuild ( void )
 		return;
 	}
 
-	printf( "TileMap::Rebuild called.\n" );
-
 	if ( m_tiles.empty() )
 	{
 		// Clear out the render layers that are currently there
@@ -429,8 +427,6 @@ void TileMap::Rebuild ( void )
 	m_render_layers.resize( m_meshstorage.size(), NULL );
 	for ( uint i = 0; i < m_meshstorage.size(); ++i )
 	{
-		printf( " +Creating layer ???\n" );
-
 		renderer::TileMapLayer* render_layer = new renderer::TileMapLayer (); // This needs to be stored and deleted.
 		render_layer->SetSpriteFile( m_sprite_file );
 		render_layer->SetLayer( &m_meshstorage[i] );
@@ -438,8 +434,6 @@ void TileMap::Rebuild ( void )
 
 		m_render_layers.push_back( render_layer );
 	}
-
-	printf( " +Rebuild finished.\n" );
 }
 
 void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_count )

@@ -22,11 +22,12 @@ void RrShaderManager::InvalidateAll ( void )
 			shader->iPixelShaderID = 0;
 			shader->iProgramID = 0;
 			// TODO: Properly clean up leaked shaders.
+			throw core::MemoryLeakException();
 		}
 		shader->primed = false;
 	}
+	throw core::MissingDataException(); // Forward & Forward+ shaders will never refresh.
 }
-
 
 void RrShaderManager::AddShader ( RrShader * pNewShader )
 {

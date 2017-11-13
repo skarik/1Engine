@@ -15,3 +15,4 @@
 *.bpd
 /oneEngine/DebugClang_Win32
 /oneEngine/DebugClang_x64
+*.PAD

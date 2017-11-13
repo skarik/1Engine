@@ -78,7 +78,7 @@ void COrthoCamera::RenderSet ( void )
 
 	if (RrMaterial::special_mode != renderer::SP_MODE_2DPALETTE)
 	{
-		ShaderManager.InvalidateAll();
+		//ShaderManager.InvalidateAll();
 		RrMaterial::special_mode = renderer::SP_MODE_2DPALETTE;
 	}
 

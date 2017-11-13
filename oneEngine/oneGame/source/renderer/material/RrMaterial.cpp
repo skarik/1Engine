@@ -836,29 +836,17 @@ void RrMaterial::shader_bind_samplers ( RrShader* shader )
 	{
 		if ( m_samplers[i] )
 		{
-			// Get the uniform location
-			//char uniformname_sh1 [] = "textureSamplerX"; // TODO: Cache the texture sampler and other uniform locations in shader class
-			//uniformname_sh1[14] = '0' + i;
-			//uniformLocation = shader->get_uniform_location( uniformname_sh1 );
-			// If the spot exists, then use it
-			//if ( uniformLocation >= 0 )
-			//{
-				glUniform1i( renderer::UNI_SAMPLER_0 + i, current_sampler_slot );
-				glActiveTexture( GL_TEXTURE0+current_sampler_slot );
-				CTexture::Unbind(0);
-				//m_samplers[i]->Bind();
-				glBindTexture( m_sampler_targets[i], m_samplers[i] );
+			glUniform1i( renderer::UNI_SAMPLER_0 + i, current_sampler_slot );
+			glActiveTexture( GL_TEXTURE0+current_sampler_slot );
+			CTexture::Unbind(0);
+			glBindTexture( m_sampler_targets[i], m_samplers[i] );
 
-				// Increment used texture count
-				current_sampler_slot += 1;
+			// Increment used texture count
+			current_sampler_slot += 1;
 
-				if ( m_highlevel_storage[i] && m_highlevel_storage[i]->GetIsFont() ) {
-					((CBitmapFont*)(m_highlevel_storage[i]))->Set();
-				}
-			//}
-			/*else {
-				CTexture::Unbind(0);
-			}*/
+			if ( m_highlevel_storage[i] && m_highlevel_storage[i]->GetIsFont() ) {
+				((CBitmapFont*)(m_highlevel_storage[i]))->Set();
+			}
 		}
 	}
 
