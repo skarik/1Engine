@@ -447,7 +447,7 @@ void CModel::SetVisibility ( const bool n_visibility ) {
 	}
 }
 // Hides or shows all of the child meshes
-void CModel::SetRenderType ( const renderer::RenderingType n_type ) {
+void CModel::SetRenderType ( const renderer::eRenderLayer n_type ) {
 	for ( uint i = 0; i < m_meshes.size(); ++i ) {
 		m_meshes[i]->renderType = n_type;
 	}

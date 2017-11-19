@@ -65,19 +65,14 @@ public:
 	RENDER_API RrMaterial*	copy ( void );
 
 	// Current material active and bound
-	//RENDER_API static RrMaterial*	current;
 	RENDER_API static RrMaterial*	Default;
 	RENDER_API static RrMaterial*	Copy;
 	RENDER_API static RrMaterial*	Fallback;
-	// Current pass being bound
-	//RENDER_API static uchar		current_pass;
-	// Current material count
-	RENDER_API static uint			current_sampler_slot;
 
 	// Current material special mode. These are hard-coded special effects.
 	// Controls the current main rendering path of the program.
 	// Changing this may completely invalidate the rendering state. Set with caution.
-	RENDER_API static uchar		special_mode;
+	//RENDER_API static uchar		special_mode;
 public:
 	RENDER_API void			bindPass ( uchar pass );
 	RENDER_API void			bindPassAtrribs ( void );
@@ -89,8 +84,6 @@ public:
 	RENDER_API void			prepareShaderConstants ( void );
 	RENDER_API void			prepareShaderConstants ( const core::Transform& n_transform );
 	RENDER_API void			prepareShaderConstants ( const XrTransform& n_transform );
-	//RENDER_API void			prepareShaderConstants ( CRenderableObject* source_object, const bool n_force_identity=false );
-	//RENDER_API void			setShaderConstants ( CRenderableObject* source_object, const bool n_force_identity=false );
 
 	RENDER_API void			bindPassForward ( uchar pass );
 	RENDER_API void			bindPassDeferred( uchar pass );
@@ -210,10 +203,6 @@ public:
 	RENDER_API static void	pushConstantsPerCamera ( void );
 
 	RENDER_API void			pushConstantsPerObject ( const Matrix4x4& modelTRS, const Matrix4x4& modelRS );
-
-//private:
-//	// Current update state
-//	static int	m_currentShaderState;
 
 public:
 	//=========================================//

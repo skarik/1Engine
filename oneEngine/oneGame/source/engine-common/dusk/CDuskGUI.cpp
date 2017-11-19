@@ -38,7 +38,7 @@ CDuskGUI::CDuskGUI ( CBitmapFont* font )
 	: CGameBehavior(), CRenderableObject()
 {
 	// Sys drawing
-	renderType = renderer::V2D;
+	renderType = renderer::kRLV2D;
 
 	// Mat init
 	fntDefault = font;

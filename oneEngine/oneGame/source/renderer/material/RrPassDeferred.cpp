@@ -43,8 +43,6 @@ void RrMaterial::deferred_shader_build( uchar pass )
 
 	// Generate shader name based on settings
 	t_shaderName = ".game/.dfshaders/shader";
-	//t_shaderName += ".df" + std::to_string((uint)dpass.m_diffuse_method);
-	//t_shaderName += (dpass.m_blend_mode==renderer::BM_ADD) ? ".bm_a" : ( (dpass.m_blend_mode==renderer::BM_SOFT_ADD) ? ".bm_s" : "" );
 	t_shaderName += ".am" + std::to_string((uint)dpass.m_transparency_mode);
 	t_shaderName += m_isSkinnedShader ? ".skinning" : "";
 

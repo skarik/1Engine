@@ -108,13 +108,17 @@ public:
 	RENDER_API void RenderSingleObject ( CRenderableObject* objectToRender );
 	// RenderObjectArray() renders a null terminated list of objects, assuming the projection has been already set up.
 	RENDER_API void RenderObjectArray ( CRenderableObject** objectsToRender );
+	//	SetPipelineMode - Sets new pipeline mode.
+	// Calling this has the potential to be very slow and completely invalidate rendering state.
+	// This should be called as soon as possible to avoid any slowdown.
+	RENDER_API void SetPipelineMode ( renderer::ePipelineMode newPipelineMode );
 
 
 	// Rendering configuration
 	// ================================
 
 	// Returns the material used for rendering a screen's pass in the given effect
-	RENDER_API RrMaterial* GetScreenMaterial ( const eRenderMode mode, const renderer::eSpecialModes mode_type );
+	RENDER_API RrMaterial* GetScreenMaterial ( const eRenderMode mode, const renderer::ePipelineMode mode_type );
 
 
 	// Settings and query
@@ -122,6 +126,12 @@ public:
 
 	// Returns internal settings that govern the current render setup
 	RENDER_API const renderer::internalSettings_t& GetSettings ( void ) const;
+	// Returns if shadows are enabled for the renderer or not.
+	RENDER_API const bool GetShadowsEnabled ( void ) const;
+	// Returns current pipeline information
+	RENDER_API const eRenderMode GetRenderMode ( void ) const;
+	// Returns current pipeline mode (previously, special render type)
+	RENDER_API const renderer::ePipelineMode GetPipelineMode ( void ) const;
 
 private:
 	bool bSpecialRender_ResetLights;
@@ -129,7 +139,7 @@ private:
 
 public:
 	// Public active instance pointer
-	static CRenderState* Active;
+	RENDER_API static CRenderState* Active;
 	// Resource manager
 	CResourceManager*	mResourceManager;
 
@@ -173,27 +183,24 @@ private:
 
 	// Render state
 	// ================================
-	CCamera*	mainBufferCamera;
+	CCamera*				mainBufferCamera;
+	bool					bufferedMode;
+	bool					shadowMode;
+	eRenderMode				renderMode;
+	renderer::ePipelineMode	pipelineMode;
 
 	// Logic list
 	// ================================
-	std::vector<CLogicObject*> mLogicObjects;
-	unsigned int mLoCurrentIndex;
-	unsigned int mLoListSize;
+	std::vector<CLogicObject*>	mLogicObjects;
+	unsigned int				mLoCurrentIndex;
+	unsigned int				mLoListSize;
 
 	// Internal setup state
 	// ================================
-	renderer::internalSettings_t	internal_settings;
+	renderer::internalSettings_t		internal_settings;
 	std::vector<rrInternalBufferChain>	internal_chain_list;
 	rrInternalBufferChain*				internal_chain_current;
 	uint								internal_chain_index;
-
-	/*glHandle						internal_buffer_depth;
-	glHandle						internal_buffer_stencil;
-	CRenderTexture*					internal_buffer_forward_rt;
-
-	CMRTTexture*					internal_buffer_deferred_mrt;
-	CRenderTexture*					internal_buffer_deferred_rt;*/
 
 	// Deferred pass materials
 	// ================================

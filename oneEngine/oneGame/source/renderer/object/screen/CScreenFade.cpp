@@ -20,7 +20,7 @@ CScreenFade::CScreenFade ( bool inbFadeIn, float infFadeTime, float infFadeDelay
 
 	pTargetCamera = CCamera::activeCamera;
 
-	renderType	= renderer::V2D;
+	renderType	= renderer::kRLV2D;
 
 	fCurrentTime = 0;
 	if ( bFadeIn )

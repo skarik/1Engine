@@ -12,7 +12,7 @@
 CBloomShader::CBloomShader ( void )
 	: CScreenShader()
 {
-	renderSettings.renderHints = RL_WORLD;
+	renderSettings.renderHints = kRenderHintWorld;
 
 	RrMaterial *shaderMaterial = new RrMaterial;
 	shaderMaterial->m_isScreenShader = true;
@@ -22,7 +22,7 @@ CBloomShader::CBloomShader ( void )
 	shaderMaterial->removeReference();
 	SetMaterial( shaderMaterial );
 	
-	renderType = renderer::Foreground;
+	renderType = renderer::kRLForeground;
 
 	half_buf = NULL;
 	buf_4th = NULL;

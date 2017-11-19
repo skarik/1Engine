@@ -1,12 +1,9 @@
-
 #include "CTestViewShader.h"
 
 //#include "DayAndNightCycle.h"
 
+#include "renderer/state/CRenderState.h"
 #include "renderer/camera/CRTCamera.h"
-
-#include "core/settings/CGameSettings.h"
-
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
@@ -14,11 +11,11 @@
 CTestViewShader::CTestViewShader ( void )
 	: CScreenShader()
 {
-	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_DEFERRED ) {
+	if ( CRenderState::Active->GetRenderMode() == kRenderModeDeferred ) {
 		throw std::exception();
 	}
 
-	renderSettings.renderHints = RL_WORLD;
+	renderSettings.renderHints = kRenderHintWorld;
 
 	RrMaterial *shaderMaterial = new RrMaterial;
 	shaderMaterial->m_isScreenShader = true;
@@ -30,12 +27,12 @@ CTestViewShader::CTestViewShader ( void )
 	SetMaterial( shaderMaterial );
 
 	m_rtcam = new CRTCamera;
-	m_rtcam->layerVisibility[renderer::Background]	= true;
-	m_rtcam->layerVisibility[renderer::Secondary]	= false;
-	m_rtcam->layerVisibility[renderer::World]		= true;
-	m_rtcam->layerVisibility[renderer::Foreground]	= false;
-	m_rtcam->layerVisibility[renderer::V2D]			= false;
-	m_rtcam->enabledHints = RL_SKYGLOW;
+	m_rtcam->layerVisibility[renderer::kRLBackground]	= true;
+	m_rtcam->layerVisibility[renderer::kRLSecondary]	= false;
+	m_rtcam->layerVisibility[renderer::kRLWorld]		= true;
+	m_rtcam->layerVisibility[renderer::kRLForeground]	= false;
+	m_rtcam->layerVisibility[renderer::kRLV2D]			= false;
+	m_rtcam->enabledHints = kRenderHintSkyglow;
 
 	m_rttex = NULL;
 	m_rtcam->SetTarget( NULL );

@@ -1,7 +1,5 @@
-// The struct controlling 
-
-#ifndef _OBJECT_RENDER_SETTINGS_H_
-#define _OBJECT_RENDER_SETTINGS_H_
+#ifndef RENDERER_OBJECT_RENDER_SETTINGS_H_
+#define RENDERER_OBJECT_RENDER_SETTINGS_H_
 
 // Includes
 #include "core/types/types.h"
@@ -9,28 +7,31 @@
 
 class RrMaterial;
 
+//	eRenderMode - current high level pipeline in use.
 // Renderer info
 enum eRenderMode : int32_t
 {
-	RENDER_MODE_FORWARD		= 0x1,
-	RENDER_MODE_DEFERRED	= 0x2
+	// Forward renderer mode. Used as part of deferred passes.
+	kRenderModeForward		= 0x1,
+
+	// Default renderer mode for 2D.
+	kRenderModeDeferred		= 0x2
 };
 
-// Layer definition
+//	eRenderHint - Sublayer bitmask.
+// Defines specific layers to render.
 enum eRenderHint : uint32_t
 {
-	RL_ALL		= 0xFFFFFFFF,
+	kRenderHintALL		= 0xFFFFFFFF,
 
-	RL_WORLD	= 0x1,
-	RL_WARP		= 0x2,
-	RL_GLOW		= 0x4,
-	RL_SKYGLOW	= 0x8,
-	RL_FOG		= 0x10,
+	kRenderHintWorld	= 0x1,
+	kRenderHintWarp		= 0x2,
+	kRenderHintGlow		= 0x4,
+	kRenderHintSkyglow	= 0x8,
+	kRenderHintFog		= 0x10,
+	kRenderHintShadowColor = 0x20,
 
-	RL_SHADOW_COLOR = 0x20,
-
-
-	RL_LAYER_COUNT = 6
+	kRenderHintCOUNT = 6
 };
 
 namespace renderer
@@ -42,13 +43,17 @@ namespace renderer
 	};
 
 	// Enumeration for rendering type
-	enum RenderingType
+	enum eRenderLayer
 	{
-		Background=0,
-		Secondary,
-		World,
-		Foreground,
-		V2D
+		kRL_BEGIN		= 0,
+
+		kRLBackground	= 0,
+		kRLSecondary	= 1,
+		kRLWorld		= 2,
+		kRLForeground	= 3,
+		kRLV2D			= 4,
+
+		kRL_MAX,
 	};
 	// Struct for pass info
 	struct passinfo_t
@@ -63,12 +68,14 @@ namespace renderer
 		uint32_t	vaoObject;
 	};
 
-	enum eClearType : uint16_t
+	//	eClearType - buffer clear type
+	// Is not used as certain hard-coded clear types in certain cases have better GPU performance.
+	enum eClearType : uint8_t
 	{
-		CLEAR_NONE			= 0,
-		CLEAR_COLOR			= 1,
-		CLEAR_DEPTH			= 2,
-		CLEAR_DEPTH_COLOR	= 3,
+		kClearNone			= 0x00,
+		kClearColor			= 0x01,
+		kClearDepth			= 0x02,
+		kClearDepthAndColor	= 0x01 | 0x02,
 	};
 
 	enum eAlphaMode : uint8_t
@@ -101,59 +108,41 @@ namespace renderer
 		FM_FRONTANDBACK
 	};
 
-	/*namespace Deferred
-	{
-		enum eDiffuseMethod : uint8_t
-		{
-			DIFFUSE_DEFAULT,
-			
-			// Special shaders
-			DIFFUSE_TERRAIN,
-			DIFFUSE_SKIN, // applies tattoos and shadow darken
-			DIFFUSE_EYES,
-			DIFFUSE_SKYSPHERE,
-			DIFFUSE_CLOUDSPHERE,
-			DIFFUSE_TREESYS,
-			DIFFUSE_LIGHT_BILLBOARD,
-			DIFFUSE_ALPHA_ADDITIVE,
-			DIFFUSE_HAIR // slight change w/ alpha and glow
-		};
-
-	};*/
-
-	enum eSpecialModes : uint8_t
+	//	ePipelineMode - Current sublevel pipeline in use.
+	// These modes have the power to override the current RenderMode
+	enum ePipelineMode : uint8_t
 	{
 		// Default rendering pipeline. Eat a cock.
-		SP_MODE_NORMAL,
+		kPipelineModeNormal,
 
 		// Pulls information from the attached audio engine.
 		// The entirety of the audio list is shoved into the light list.
 		// Albedo is dropped. Instead, approximated sound reflections are rendered.
-		SP_MODE_ECHO,
+		kPipelineModeEcho,
 		
 		// Imagination mode. Doesn't actually render.
-		SP_MODE_AETHER,
+		kPipelineModeAether,
 
 		// Insprited by Studio SHAFT animation style (particularly Nisemonogatari)
-		// Mostly the same as SP_MODE_NORMAL, however:
+		// Mostly the same as kPipelineModeNormal, however:
 		//	* Shadows are fucking dithered
 		//	* Sometimes the color palette changes
 		//	* Sometimes the scene is flatshaded
-		SP_MODE_SHAFT,
+		kPipelineModeShaft,
 
 		// Default 2D rendering pipeline, with orthographic optimizations.
 		// Requires 2D extension to function properly.
-		SP_MODE_2DPALETTE 
+		kPipelineMode2DPaletted 
 	};
 
 	struct _n_hint_rendering_information
 	{
-		RrMaterial*		mats_default		[RL_LAYER_COUNT];
-		RrMaterial*		mats_default_skin	[RL_LAYER_COUNT];
-		RrMaterial*		mats_transparent	[RL_LAYER_COUNT];
-		RrMaterial*		mats_transparent_skin[RL_LAYER_COUNT];
-		eClearType		clear_type			[RL_LAYER_COUNT];
-		Color			clear_color			[RL_LAYER_COUNT];
+		RrMaterial*		mats_default		[kRenderHintCOUNT];
+		RrMaterial*		mats_default_skin	[kRenderHintCOUNT];
+		RrMaterial*		mats_transparent	[kRenderHintCOUNT];
+		RrMaterial*		mats_transparent_skin[kRenderHintCOUNT];
+		eClearType		clear_type			[kRenderHintCOUNT];
+		Color			clear_color			[kRenderHintCOUNT];
 
 		_n_hint_rendering_information ( void );
 	}; //m_default_hint_options; // needs to be initialized when CRenderState is created, so to create default replacement materials.
@@ -161,4 +150,4 @@ namespace renderer
 };
 
 
-#endif
+#endif//RENDERER_OBJECT_RENDER_SETTINGS_H_

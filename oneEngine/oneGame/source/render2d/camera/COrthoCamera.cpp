@@ -70,17 +70,15 @@ void COrthoCamera::UpdateMatrix ( void )
 // Update parameters needed for 2D rendering
 void COrthoCamera::RenderSet ( void )
 {
-	RrMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( RENDER_MODE_DEFERRED, renderer::SP_MODE_2DPALETTE );
+	RrMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( kRenderModeDeferred, renderer::kPipelineMode2DPaletted );
 	palette_pass_material->setTexture(TEX_SLOT5, (CTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
 	palette_pass_material->setTexture(TEX_SLOT6, (CTexture*)Render2D::WorldPalette::Active()->GetTexture3D());	// Set 3D lookup
+
 	// Remove filtering on the upscaling pass
 	SceneRenderer->GetDeferredBuffer()->SetFilter( SamplingPoint );
 
-	if (RrMaterial::special_mode != renderer::SP_MODE_2DPALETTE)
-	{
-		//ShaderManager.InvalidateAll();
-		RrMaterial::special_mode = renderer::SP_MODE_2DPALETTE;
-	}
+	// Set the 2D pipeline mode
+	CRenderState::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
 
 	// Set up the camera normally
 	CCamera::RenderSet();

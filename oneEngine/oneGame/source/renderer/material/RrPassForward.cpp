@@ -12,7 +12,7 @@ RrPassForward::RrPassForward ( void )
 	m_blend_mode(renderer::BM_NORMAL), m_lighting_mode(renderer::LI_NORMAL),
 	m_face_mode(renderer::FM_FRONT),
 	m_procedural(false),
-	m_delay(0), m_hint(RL_WORLD), shader(NULL)
+	m_delay(0), m_hint(kRenderHintWorld), shader(NULL)
 {
 
 }

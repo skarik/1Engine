@@ -3,7 +3,7 @@
 
 #include "core/system/Screen.h"
 #include "core/math/Math.h"
-#include "core/settings/CGameSettings.h"
+//#include "core/settings/CGameSettings.h"
 
 #include "renderer/light/CLight.h"
 #include "renderer/types/ObjectSettings.h"
@@ -21,9 +21,9 @@ CCamera::CCamera ( void )
 	transform.owner = this;
 	transform.ownerType = CTransform::kOwnerTypeRendererCamera;*/
 
-	zNear = 0.1f;
-	zFar = CGameSettings::Active()->f_ro_DefaultCameraRange;
-	fov = 100.0f;
+	zNear	= 0.1F;
+	zFar	= 200.0F;//CGameSettings::Active()->f_ro_DefaultCameraRange;
+	fov		= 100.0F;
 
 	up = Vector3d( 0,0,1 );
 	forward = Vector3d::forward;
@@ -49,7 +49,7 @@ CCamera::CCamera ( void )
 	//clearDepthAfterLayer = true;
 
 	// Set default render layer mode
-	for ( uint i = 0; i <= renderer::V2D; ++i ) {
+	for ( uint i = 0; i <= renderer::kRLV2D; ++i ) {
 		layerVisibility[i] = true;
 	}
 
@@ -62,17 +62,17 @@ CCamera::CCamera ( void )
 	// Set default layer mode
 	/*for ( char i = 0; i < 16; ++i )
 		layers[i] = false;
-	layers[RL_WORLD] = true;*/
+	layers[kRenderHintWorld] = true;*/
 
 	// The following modes are the hints that will be rendered. All other hints will be ignored.
 	enabledHints = 0;
-	enabledHints |= RL_WORLD;
+	enabledHints |= kRenderHintWorld;
 
-	//enabledHints |= RL_SHADOW_COLOR;
-	/*enabledHints |= RL_WARP;
-	enabledHints |= RL_GLOW;
-	enabledHints |= RL_SKYGLOW;
-	enabledHints |= RL_WARP;*/
+	//enabledHints |= kRenderHintShadowColor;
+	/*enabledHints |= kRenderHintWarp;
+	enabledHints |= kRenderHintGlow;
+	enabledHints |= kRenderHintSkyglow;
+	enabledHints |= kRenderHintWarp;*/
 	
 	// Set default ignore mode
 	/*ignoreMode = false;
@@ -224,11 +224,12 @@ void CCamera::RenderScene ( void )
 	render_scale = math::clamp( render_scale, 0.1F, 1.0F );
 
 	// Perform rendering
-	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
+	auto renderMode = CRenderState::Active->GetRenderMode();
+	if ( renderMode == kRenderModeForward )
 	{
 		SceneRenderer->RenderSceneForward(enabledHints);
 	}
-	else if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_DEFERRED )
+	else if ( renderMode == kRenderModeDeferred )
 	{
 		SceneRenderer->RenderSceneDeferred(enabledHints);
 	}

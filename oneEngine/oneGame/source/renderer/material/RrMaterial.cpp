@@ -1,11 +1,11 @@
-
 #include "RrMaterial.h"
 
 #include "core/time/time.h"
-#include "core/settings/CGameSettings.h"
+//#include "core/settings/CGameSettings.h"
 #include "core/types/ModelData.h"
 #include "core-ext/transform/TransformUtility.h"
 
+#include "renderer/state/CRenderState.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/object/CRenderableObject.h"
 #include "renderer/light/CLight.h"
@@ -24,15 +24,13 @@
 
 #include <map>
 
-//RrMaterial* RrMaterial::current	= NULL;
 RrMaterial*	RrMaterial::Default = NULL;
 RrMaterial*	RrMaterial::Copy	= NULL;
 RrMaterial*	RrMaterial::Fallback= NULL;
-uint		RrMaterial::current_sampler_slot = 0;
 
 // Current material special mode.
 // The value of this will drastically change the rest of the program. These are hard-coded special effects.
-uchar		RrMaterial::special_mode = renderer::SP_MODE_NORMAL;
+//uchar		RrMaterial::special_mode = renderer::kPipelineModeNormal;
 
 // Current material world sampler state
 CTexture*	RrMaterial::m_sampler_reflection = NULL;
@@ -111,7 +109,7 @@ RrMaterial*	RrMaterial::copy ( void )
 
 uchar RrMaterial::getPassCount ( void )
 {
-	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
+	if ( CRenderState::Active->GetRenderMode() == kRenderModeForward )
 	{
 		return (uchar)passinfo.size();
 	}
@@ -175,8 +173,8 @@ void RrMaterial::updateStaticUBO ( void )
 	//	glBindBuffer( GL_UNIFORM_BUFFER, m_ubo_foginfo );
 	//	glBufferSubData( GL_UNIFORM_BUFFER, 0, sizeof(_fogInfo_t), &t_fogInfo );
 	//}
-
-	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD )
+	auto renderMode = CRenderState::Active->GetRenderMode();
+	if ( renderMode == kRenderModeForward )
 	{
 		if ( renderer::Settings.maxLights <= 0 ) throw core::NullReferenceException(); // Null data passed to shader
 
@@ -206,7 +204,7 @@ void RrMaterial::updateStaticUBO ( void )
 			t_lightingInfo.LightColor[i].z = (*lightList)[i]->diffuseColor.blue;
 			t_lightingInfo.LightColor[i].w = (*lightList)[i]->diffuseColor.alpha;
 			// Set shadow casting info
-			if ( CGameSettings::Active()->b_ro_EnableShadows )
+			if ( CRenderState::Active->GetShadowsEnabled() )
 			{
 				// No shadows, send dead shadow info
 				if ( !(*lightList)[i]->generateShadows )
@@ -276,7 +274,7 @@ void RrMaterial::updateStaticUBO ( void )
 		glBufferSubData( GL_UNIFORM_BUFFER, 0, sizeof(_lightingInfo_t), &t_lightingInfo );
 	}
 
-	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD && m_sampler_reflection )
+	if ( renderMode == kRenderModeForward && m_sampler_reflection )
 	{
 		_reflectInfo_t t_reflectInfo;
 		// Create reflect information
@@ -359,7 +357,10 @@ void RrMaterial::updateLightTBO ( void )
 		glTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA32F, m_tex_shadowinfo ); 
 		glBindTexture( GL_TEXTURE_BUFFER, 0 );
 	}*/
-	if ( special_mode == renderer::SP_MODE_NORMAL || special_mode == renderer::SP_MODE_SHAFT || special_mode == renderer::SP_MODE_2DPALETTE )
+	renderer::ePipelineMode pipelineMode = CRenderState::Active->GetPipelineMode();
+	if ( pipelineMode == renderer::kPipelineModeNormal ||
+		 pipelineMode == renderer::kPipelineModeShaft ||
+		 pipelineMode == renderer::kPipelineMode2DPaletted )
 	{
 		// Go through all the lights and add them to this list
 		_lightInfo_t lightProperties [32];
@@ -437,7 +438,7 @@ void RrMaterial::updateLightTBO ( void )
 			glBindTexture( GL_TEXTURE_BUFFER, 0 );*/
 		}
 	}
-	else if ( special_mode == renderer::SP_MODE_ECHO )
+	else if ( pipelineMode == renderer::kPipelineModeEcho )
 	{
 		static std::map<unsigned int,_lightInfo_t> echomap;
 		std::vector<CAudioSource*> currentSounds = *CAudioMaster::GetCurrent()->GetSources();//Audio.GetCurrentSources();
@@ -559,11 +560,12 @@ void RrMaterial::bindPass ( uchar pass )
 	TimeProfiler.BeginTimeProfile( "rs_mat_bindpass" );
 
 	// Forward binding
-	if ( /*GL.inOrtho() ||*/ CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_FORWARD || deferredinfo.empty() )
+	auto renderMode = CRenderState::Active->GetRenderMode();
+	if ( /*GL.inOrtho() ||*/ renderMode == kRenderModeForward || deferredinfo.empty() )
 	{
 		bindPassForward( pass );
 	}
-	else if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_DEFERRED || passinfo.empty() )
+	else if ( renderMode == kRenderModeDeferred || passinfo.empty() )
 	{
 		bindPassDeferred( pass );
 	}
@@ -703,7 +705,6 @@ void RrMaterial::bindPassForward ( uchar pass )
 	TimeProfiler.BeginTimeProfile( "rs_mat_binduniforms" );
 
 	TimeProfiler.BeginTimeProfile( "rs_mat_uni_sampler" );
-	current_sampler_slot = 0;
 	shader_bind_samplers(state.shader);
 	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_sampler" );
 
@@ -804,7 +805,6 @@ void RrMaterial::bindPassDeferred ( uchar pass )
 	TimeProfiler.BeginTimeProfile( "rs_mat_binduniforms" );
 
 	TimeProfiler.BeginTimeProfile( "rs_mat_uni_sampler" );
-	current_sampler_slot = 0;
 	shader_bind_samplers(deferredinfo[pass].shader);
 	TimeProfiler.EndAddTimeProfile( "rs_mat_uni_sampler" );
 
@@ -830,8 +830,8 @@ void RrMaterial::bindPassDeferred ( uchar pass )
 
 void RrMaterial::shader_bind_samplers ( RrShader* shader )
 {
-	//int uniformLocation;
-	//CTexture*	m_samplers [8];
+	uint current_sampler_slot = 0;
+
 	for ( uint i = 0; i < 12; ++i )
 	{
 		if ( m_samplers[i] )

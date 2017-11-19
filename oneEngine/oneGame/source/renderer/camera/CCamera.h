@@ -134,8 +134,8 @@ public:
 
 	// Drawn layers (will skip objects with layers that don't match)
 	// Not matching is somewhat of a misleading description.
-	// A camera may have only RL_WORLD, but will still render objects only if RL_ALL and RL_WORLD are on the object.
-	// If a camera has RL_ALL, then EVERYTHING gets rendered.
+	// A camera may have only kRenderHintWorld, but will still render objects only if kRenderHintALL and kRenderHintWorld are on the object.
+	// If a camera has kRenderHintALL, then EVERYTHING gets rendered.
 	//bitset<32>	layers;
 	//bitset<32>	hin
 

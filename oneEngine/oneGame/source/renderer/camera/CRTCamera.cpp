@@ -27,10 +27,10 @@ CRTCamera::CRTCamera (
 	//clearColor = false;
 
 	// Set default render layer mode
-	for ( uint i = 0; i <= renderer::V2D; ++i ) {
+	for ( uint i = 0; i <= renderer::kRLV2D; ++i ) {
 		layerVisibility[i] = false;
 	}
-	layerVisibility[renderer::World] = true;
+	layerVisibility[renderer::kRLWorld] = true;
 
 	// Set RT camera specific settings
 	m_renderTexture		= targetTexture;

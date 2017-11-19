@@ -11,8 +11,8 @@ using namespace debug;
 CTimeProfilerUI::CTimeProfilerUI ( void )
 	: CRenderableObject()
 {
-	renderSettings.renderHints = RL_WORLD;
-	renderType = renderer::V2D;
+	renderSettings.renderHints = kRenderHintWorld;
+	renderType = renderer::kRLV2D;
 
 	fntDebug	= new CBitmapFont ( "YanoneKaffeesatz-R.otf", 12, FW_BOLD );
 	matFntDebug = new RrMaterial;

@@ -17,7 +17,7 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 {
 	ActiveConsoleUI = this;
 
-	renderType = renderer::V2D;
+	renderType = renderer::kRLV2D;
 
 	fntMenu	= new CBitmapFont ( "monofonto.ttf", 16, FW_BOLD );
 	matfntMenu = new RrMaterial;
@@ -129,7 +129,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 
 	transform.world.position.z = -44;
 
-	renderType = renderer::V2D;
+	renderType = renderer::kRLV2D;
 
 	texCursor = new CTexture( "textures/system/cursor.png" );
 	matCursor = new RrMaterial;

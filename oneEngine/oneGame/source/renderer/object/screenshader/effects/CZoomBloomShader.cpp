@@ -9,13 +9,13 @@
 CZoomBloomShader::CZoomBloomShader ( void )
 	: CScreenShader()
 {
-	renderSettings.renderHints = RL_WORLD;
+	renderSettings.renderHints = kRenderHintWorld;
 	/*vMaterials[0]->setShader( new RrShader( ".res/shaders/screen/zoombloom.glsl" ) );
 	vMaterials[0]->isScreenShader = true;*/
 	//vMaterials[0]->isTransparent = true;
 	//vMaterials[0]->iBlendMode = RrMaterial::BM_ADD;
 
-	//renderType = renderer::Foreground;
+	//renderType = renderer::kRLForeground;
 
 	RrMaterial *shaderMaterial = new RrMaterial;
 	shaderMaterial->m_isScreenShader = true;

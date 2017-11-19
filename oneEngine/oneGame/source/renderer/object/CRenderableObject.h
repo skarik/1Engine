@@ -42,7 +42,7 @@ class RrPassDeferred;
 class CRenderableObject
 {
 public:
-		typedef renderer::RenderingType RenderingType;
+		typedef renderer::eRenderLayer eRenderLayer;
 private:
 	// No copying with "="
 	CRenderableObject & operator= (const CRenderableObject & other);
@@ -82,7 +82,7 @@ public:
 	// Give the ownership of the material to this mesh if the materials have been "released"
 	RENDER_API virtual void			SetMaterial		( RrMaterial* n_pNewMaterial );
 	// Change the object's render type
-	RENDER_API void					SetRenderType	( RenderingType );
+	RENDER_API void					SetRenderType	( eRenderLayer );
 	// Change visible state
 	RENDER_API virtual void			SetVisible ( const bool nextState ) {
 		visible = nextState;
@@ -122,7 +122,7 @@ private:
 	// Generated data needed for sorting, namely distance from the camera. Is not fast.
 	void UpdateRenderInfo ( void )
 	{
-		if ( renderType == renderer::V2D )
+		if ( renderType == renderer::kRLV2D )
 		{
 			renderDistance = ( transform.world.position.z * 50.0f ) + ( ( _activeCameraPosition - transform.world.position ).sqrMagnitude() * 0.005f );
 		}
@@ -142,7 +142,7 @@ public:
 
 protected:
 	// Rendering States
-	RenderingType			renderType;
+	eRenderLayer			renderType;
 	//vector<RrMaterial*>	vMaterials;
 protected:
 	RrMaterial*					m_material;

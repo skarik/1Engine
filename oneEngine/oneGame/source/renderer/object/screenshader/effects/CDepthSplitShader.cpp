@@ -9,7 +9,7 @@
 CDepthSplitShader::CDepthSplitShader ( void )
 	: CScreenShader()
 {
-	renderSettings.renderHints = RL_WORLD;
+	renderSettings.renderHints = kRenderHintWorld;
 
 	RrMaterial *shaderMaterial = new RrMaterial;
 	shaderMaterial->setTexture( TEX_SLOT2, new CTexture( "textures/hud/overlay_goggles_warp.jpg" ) );

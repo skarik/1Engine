@@ -3,6 +3,7 @@
 #include "CRenderState.h"
 #include "Settings.h"
 
+#include "core/settings/CGameSettings.h"
 #include "core/system/Screen.h"
 #include "core-ext/threads/Jobs.h"
 #include "core/debug/console.h"
@@ -60,6 +61,14 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	{
 		mResourceManager = new CResourceManager;
 		mResourceManager->m_renderStateOwned = true;
+	}
+
+	// Set up reandering options
+	{
+		bufferedMode	= CGameSettings::Active()->b_ro_UseBufferModel ? true : false;
+		shadowMode		= CGameSettings::Active()->b_ro_EnableShadows ? true : false;
+		renderMode		= (eRenderMode)CGameSettings::Active()->i_ro_RendererMode;
+		pipelineMode	= renderer::kPipelineModeNormal;
 	}
 	
 	// Set up arrays
@@ -359,20 +368,33 @@ void CRenderState::RemoveLO ( unsigned int id )
 // ================================
 
 // Returns the material used for rendering a screen's pass in the given effect
-RrMaterial* CRenderState::GetScreenMaterial ( const eRenderMode mode, const renderer::eSpecialModes mode_type )
+RrMaterial* CRenderState::GetScreenMaterial ( const eRenderMode mode, const renderer::ePipelineMode mode_type )
 {
-	if ( mode == RENDER_MODE_DEFERRED )
+	if ( mode == kRenderModeDeferred )
 	{
 		switch (mode_type)
 		{
-		case renderer::SP_MODE_NORMAL: return LightingPass;
-		case renderer::SP_MODE_ECHO: return EchoPass;
-		case renderer::SP_MODE_SHAFT: return ShaftPass;
-		case renderer::SP_MODE_2DPALETTE: return Lighting2DPass;
+		case renderer::kPipelineModeNormal:	return LightingPass;
+		case renderer::kPipelineModeEcho:	return EchoPass;
+		case renderer::kPipelineModeShaft:	return ShaftPass;
+		case renderer::kPipelineMode2DPaletted:	return Lighting2DPass;
 		}
 	}
 	return NULL;
 }
+
+//	SetPipelineMode - Sets new pipeline mode.
+// Calling this has the potential to be very slow and completely invalidate rendering state.
+// This should be called as soon as possible to avoid any slowdown.
+void CRenderState::SetPipelineMode ( renderer::ePipelineMode newPipelineMode )
+{
+	if ( pipelineMode != newPipelineMode )
+	{
+		pipelineMode = newPipelineMode;
+		// TODO: Invalidate shader resources.
+	}
+}
+
 
 // Settings and query
 // ================================
@@ -382,6 +404,26 @@ const renderer::internalSettings_t& CRenderState::GetSettings ( void ) const
 {
 	return internal_settings;
 }
+
+// Returns if shadows are enabled for the renderer or not.
+const bool CRenderState::GetShadowsEnabled ( void ) const
+{
+	return shadowMode;
+}
+// Returns current pipeline information
+const eRenderMode CRenderState::GetRenderMode ( void ) const
+{
+	return renderMode;
+}
+// Returns current pipeline mode (previously, special render type)
+const renderer::ePipelineMode CRenderState::GetPipelineMode ( void ) const
+{
+	return pipelineMode;
+}
+
+
+// Internal buffer handling
+// ================================
 
 // Returns true if settings dropped. False otherwise.
 static bool _DropSettings (renderer::internalSettings_t& io_settings)

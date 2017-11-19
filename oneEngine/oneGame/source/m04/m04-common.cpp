@@ -15,6 +15,7 @@
 #include "after/physics/water/Water.h"
 #include "after/physics/wind/WindMotion.h"
 */
+#include "renderer/state/CRenderState.h"
 #include "renderer/state/Options.h"
 
 #include "physical/physics/PrPhysics.h"
@@ -36,6 +37,9 @@ int GameInitialize ( void )
 {
 	// Engine
 	EngineCommonInitialize();
+
+	// Set to 2D mode
+	CRenderState::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
 
 	// Create physics world
 	{

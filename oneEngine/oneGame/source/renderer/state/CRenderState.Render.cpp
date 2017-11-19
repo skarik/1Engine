@@ -6,7 +6,7 @@ using std::sort;
 // Includes
 #include "CRenderState.h"
 #include "renderer/state/Settings.h"
-#include "core/settings/CGameSettings.h"
+//#include "core/settings/CGameSettings.h"
 #include "core/math/Math.h"
 #include "core-ext/profiler/CTimeProfiler.h"
 #include "core/system/Screen.h"
@@ -184,7 +184,7 @@ void CRenderState::Render ( void )
 
 	// Are we in buffer mode? (This should always be true)
 	TimeProfiler.BeginTimeProfile( "rs_buffer_push" );
-	if ( CGameSettings::Active()->b_ro_UseBufferModel )
+	if ( bufferedMode )
 	{
 		// Render the current result to the screen
 		GL.setupViewport(0, 0, internal_chain_current->buffer_forward_rt->GetWidth(), internal_chain_current->buffer_forward_rt->GetHeight());
@@ -272,9 +272,9 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 
 	GL_ACCESS GLd_ACCESS
 	// Save current mode
-	int t_currentRenderMode = CGameSettings::Active()->i_ro_RendererMode;
+	eRenderMode t_currentRenderMode = renderMode;
 	// Override it with forward
-	CGameSettings::Active()->i_ro_RendererMode = RENDER_MODE_FORWARD;
+	renderMode = kRenderModeForward;
 
 	CRenderableObject * pRO;
 	tRenderRequest	renderRQ;
@@ -283,7 +283,7 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 	CCamera* currentCamera = CCamera::activeCamera;
 
 	// Loop through each hint (reverse mode)
-	for ( uint currentLayer = 1<<RL_LAYER_COUNT; currentLayer != 0; currentLayer >>= 1 )
+	for ( uint currentLayer = 1<<kRenderHintCOUNT; currentLayer != 0; currentLayer >>= 1 )
 	{
 		int layer = math::log2( currentLayer );
 		// Skip non-drawn hints
@@ -291,8 +291,8 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 			continue;
 		}
 		// Skip non-world if no buffer model
-		if ( !CGameSettings::Active()->b_ro_UseBufferModel ) {
-			if ( currentLayer != RL_WORLD ) {
+		if ( !bufferedMode ) {
+			if ( currentLayer != kRenderHintWorld ) {
 				continue;
 			}
 		}
@@ -342,10 +342,10 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 		std::sort( sortedRenderList.begin(), sortedRenderList.end(), OrderComparatorForward ); 
 
 		// If using buffer model
-		if ( CGameSettings::Active()->b_ro_UseBufferModel )
+		if ( bufferedMode )
 		{
 			// For the final camera, render to a buffer
-			if ( currentLayer == RL_WORLD && currentCamera == mainBufferCamera )
+			if ( currentLayer == kRenderHintWorld && currentCamera == mainBufferCamera )
 			{
 				CRenderTexture* currentMainRenderTarget = GL.GetMainScreenBuffer();
 				currentMainRenderTarget->BindBuffer();
@@ -376,7 +376,7 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 		}
 
 		// Then work on the actual render
-		for ( int rt = Background; rt <= V2D; rt += 1 )
+		for ( int rt = kRL_BEGIN; rt < kRL_MAX; rt += 1 )
 		{
 			if ( !currentCamera->layerVisibility[rt] ) { // move to renderer generator
 				continue;
@@ -411,10 +411,10 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 		// End render loop
 
 		// Unbind fbo when done rendering
-		if ( CGameSettings::Active()->b_ro_UseBufferModel )
+		if ( bufferedMode )
 		{
 			// For the final camera, render to a buffer
-			if ( currentLayer == RL_WORLD && currentCamera == mainBufferCamera )
+			if ( currentLayer == kRenderHintWorld && currentCamera == mainBufferCamera )
 			{
 				GL.GetMainScreenBuffer()->UnbindBuffer();
 			}
@@ -427,7 +427,7 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 	}
 
 	// Restore render mode
-	CGameSettings::Active()->i_ro_RendererMode = t_currentRenderMode;
+	renderMode = t_currentRenderMode;
 }
 
 // Some debug compiler flags
@@ -457,7 +457,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 		{
 #ifdef SKIP_NON_WORLD_STUFF
 			// Only add 2D or world objects for now
-			if ( pRO->renderType != renderer::World && pRO->renderType != renderer::V2D ) { 
+			if ( pRO->renderType != renderer::kRLWorld && pRO->renderType != renderer::kRLV2D ) { 
 				continue;
 			}
 #endif
@@ -490,7 +490,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 					if ( pRO->GetMaterial() && pRO->GetMaterial()->passinfo.size() )
 					{
 						RrPassForward* pass = pRO->GetPass(0);
-						if ( pass->m_hint & RL_WORLD )
+						if ( pass->m_hint & kRenderHintWorld )
 						{
 							// Check for depth writing
 							bool depthmask = (pass->m_transparency_mode!=ALPHAMODE_TRANSLUCENT)&&(pass->b_depthmask);
@@ -517,7 +517,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 		} //
 	}
 	// Perform the sorting
-	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_DEFERRED )
+	if ( renderMode == kRenderModeDeferred )
 		std::sort( sortedRenderList.begin(), sortedRenderList.end(), OrderComparatorDeferred ); 
 	else
 		throw std::exception( "Inside RenderSceneDeferred() when not in Deferred-2!" );
@@ -590,7 +590,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 		{
 			// First object can never be forward - so we make a fake deferred object:
 			renderRQ_current.obj = NULL;
-			renderRQ_current.renderType = Background;
+			renderRQ_current.renderType = kRL_BEGIN;
 			renderRQ_current.forward = false;
 			renderRQ_current.screenshader = false;
 			renderRQ_current.pass = 0;
@@ -635,7 +635,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 		// Check for layer state changes:
 		
 		// Check if should perform deferred pass on everything that was currently rendered:
-		if ( ( i >= 0 ) && ( rendered ) && ( renderRQ_current.renderType == World ) && ( 
+		if ( ( i >= 0 ) && ( rendered ) && ( renderRQ_current.renderType == kRLWorld ) && ( 
 			// Render out if this will be the last deferred object period:
 			  ( renderRQ_next.obj == NULL ) ||
 			// Render out if this is last deferred object on this list or layer:
@@ -651,15 +651,15 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 
 			// Choose lighting pass to use
 			RrMaterial* targetPass = LightingPass;
-			switch ( RrMaterial::special_mode )
+			switch ( pipelineMode )
 			{
-			case renderer::SP_MODE_ECHO:
+			case renderer::kPipelineModeEcho:
 				targetPass = EchoPass;
 				break;
-			case renderer::SP_MODE_SHAFT:
+			case renderer::kPipelineModeShaft:
 				targetPass = ShaftPass;
 				break;
-			case renderer::SP_MODE_2DPALETTE:
+			case renderer::kPipelineMode2DPaletted:
 				targetPass = Lighting2DPass;
 				break;
 			}
@@ -711,7 +711,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			// The forward and deferred buffers share their depth and stencil, so we can continue render without copying anything:
 
 			// Set to forward mode
-			CGameSettings::Active()->i_ro_RendererMode = RENDER_MODE_FORWARD;
+			renderMode = kRenderModeForward;
 			bool renderForward = true;
 			while ( renderForward )
 			{
@@ -726,8 +726,8 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				}
 				// Render the object
 				if ( renderRQ_current.obj->visible && renderRQ_current.forward )
-					/*( (RrMaterial::special_mode == renderer::SP_MODE_NORMAL || RrMaterial::special_mode == renderer::SP_MODE_SHAFT || RrMaterial::special_mode == renderer::SP_MODE_2DPALETTE) && renderRQ_current.forward )
-					||( RrMaterial::special_mode == renderer::SP_MODE_ECHO && renderRQ_current.forward  && renderRQ_current.renderType == V2D ) // (unless echopass, then only do v2d)
+					/*( (RrMaterial::special_mode == renderer::kPipelineModeNormal || RrMaterial::special_mode == renderer::kPipelineModeShaft || RrMaterial::special_mode == renderer::kPipelineMode2DPaletted) && renderRQ_current.forward )
+					||( RrMaterial::special_mode == renderer::kPipelineModeEcho && renderRQ_current.forward  && renderRQ_current.renderType == V2D ) // (unless echopass, then only do v2d)
 					))*/
 				{
 					if ( !renderRQ_current.obj->Render( renderRQ_current.pass ) ) {
@@ -756,7 +756,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			}
 
 			// Switch back to deferred renderer
-			CGameSettings::Active()->i_ro_RendererMode = RENDER_MODE_DEFERRED;
+			renderMode = kRenderModeDeferred;
 
 			// Go back to deferred buffer
 			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
@@ -807,7 +807,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
 
 			// Reset render size in subsequent targets
-			if ( renderRQ_next.renderType != World )
+			if ( renderRQ_next.renderType != kRLWorld )
 			{
 				// Reset render scale-down after the main layer
 				currentRenderSize = unscaledRenderSize;
@@ -852,7 +852,7 @@ void CRenderState::RenderSingleObject ( CRenderableObject* objectToRender )
 	char maxPass = objectToRender->GetPassNumber();
 	for ( char pass = 0; pass < maxPass; ++pass )
 	{
-		if ( objectToRender->GetPass( pass )->m_hint & RL_WORLD )
+		if ( objectToRender->GetPass( pass )->m_hint & kRenderHintWorld )
 		{
 			//GL.prepareDraw();
 			objectToRender->Render( pass );

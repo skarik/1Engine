@@ -158,7 +158,7 @@ public:
 	// Hides or shows all of the child meshes
 	RENDER_API void SetVisibility ( const bool n_visibility );
 	// Sets child mesh render types
-	RENDER_API void SetRenderType ( const renderer::RenderingType n_type );
+	RENDER_API void SetRenderType ( const renderer::eRenderLayer n_type );
 
 	//======================================================//
 	// GETTERS / FINDERS

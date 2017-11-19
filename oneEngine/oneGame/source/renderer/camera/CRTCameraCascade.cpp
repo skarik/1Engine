@@ -23,7 +23,7 @@ void CRTCameraCascade::RenderScene ( void )
 	glClear( GL_DEPTH_BUFFER_BIT );
 
 	// Replace w/ default hints (only render shadow layer)
-	enabledHints = 0 | RL_SHADOW_COLOR;
+	enabledHints = 0 | kRenderHintShadowColor;
 
 	// Render all the cascades
 	Vector2d old_ortho_size = ortho_size;

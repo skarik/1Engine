@@ -8,7 +8,7 @@
 CColorFilterShader::CColorFilterShader ( void )
 	: CScreenShader()
 {
-	renderSettings.renderHints = RL_WORLD;
+	renderSettings.renderHints = kRenderHintWorld;
 	//vMaterials[0]->isTransparent = true;
 	//vMaterials[0]->iBlendMode = RrMaterial::BM_ADD;
 	RrMaterial *shaderMaterial = new RrMaterial;
@@ -19,7 +19,7 @@ CColorFilterShader::CColorFilterShader ( void )
 	shaderMaterial->removeReference();
 	SetMaterial( shaderMaterial );
 
-	//renderType = renderer::Foreground;
+	//renderType = renderer::kRLForeground;
 
 	m_midtone_blend		= Color( 1,1,1,-0.05 );
 	m_highlight_blend	= Color( 1,1,1,0.05 ); 

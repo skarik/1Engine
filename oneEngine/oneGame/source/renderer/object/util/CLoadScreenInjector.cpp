@@ -46,8 +46,8 @@ void CLoadScreenInjector::setAlpha ( Real new_alpha )
 CLoadScreenInjector::CLoadScreenInjector ( void )
 	: CRenderableObject (  )
 {
-	renderSettings.renderHints = RL_WORLD;
-	renderType	= renderer::V2D;
+	renderSettings.renderHints = kRenderHintWorld;
+	renderType	= renderer::kRLV2D;
 
 	m_fntNotifier	= new CBitmapFont ( "YanoneKaffeesatz-B.otf", 72, FW_NORMAL );
 	m_fntNotifier->RemoveReference();

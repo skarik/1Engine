@@ -17,7 +17,7 @@ CDebugRTInspector* debug::RTInspector = NULL;
 CDebugRTInspector::CDebugRTInspector ( void )
 	: CRenderableObject ()
 {
-	renderType = renderer::V2D;
+	renderType = renderer::kRLV2D;
 	debug::RTInspector = this;
 
 	bDrawRTs = true;

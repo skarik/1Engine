@@ -27,7 +27,7 @@ bool CRenderState::render_forward_comparator_t::operator() ( CRenderState::tRend
 		return i.obj->renderType < j.obj->renderType;
 	}
 
-	if ( i.obj->renderType == V2D )
+	if ( i.obj->renderType == kRLV2D )
 	{	// Render back-to-front on 2D
 		return (i.obj->renderDistance) > (j.obj->renderDistance);
 	}
@@ -131,7 +131,7 @@ bool CRenderState::render_deferred_comparator_t::operator() ( CRenderState::tRen
 	if ( i.forward != j.forward ) {
 		return j.forward; // i comes first if j is forward
 	}
-	if ( i.obj->renderType == V2D )
+	if ( i.obj->renderType == kRLV2D )
 	{	// Render back-to-front on 2D
 		return (i.obj->renderDistance) > (j.obj->renderDistance);
 	}

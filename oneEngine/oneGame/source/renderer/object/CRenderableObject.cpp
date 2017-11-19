@@ -1,6 +1,6 @@
 
 // == Includes ==
-#include "core/settings/CGameSettings.h"
+//#include "core/settings/CGameSettings.h"
 #include "renderer/exceptions/exceptions.h"
 #include "renderer/state/CRenderState.h"
 #include "renderer/material/RrMaterial.h"
@@ -18,23 +18,18 @@ Vector3d CRenderableObject::_activeCameraPosition = Vector3d::zero;
 CRenderableObject::CRenderableObject ( void )
 	: m_material(NULL), m_vao_info(NULL), m_vao_count(0), m_vao_maxcount(0)
 {
-	/*transform.owner = this;
-	transform.ownerType = Transform::kOwnerTypeRendererObject;
-	transform.name = "Transform(Renderable)";*/
-	//transform.name = this->name; // TODO: ADD NAME
-
 	// Set default render settings
 	//renderSettings.fOutlineWidth = -1;
 	// Set default layer mode
 	/*for ( char i = 0; i < 16; ++i )
 		renderSettings.layers[i] = false;
-	renderSettings.layers[RL_ALL] = true;*/
-	renderSettings.renderHints = RL_ALL;
+	renderSettings.layers[kRenderHintALL] = true;*/
+	renderSettings.renderHints = kRenderHintALL;
 
 	//InitMaterials();
 	CRenderableObject::SetMaterial( RrMaterial::Default );
 
-	renderType = renderer::World;
+	renderType = renderer::kRLWorld;
 	id = CRenderState::Active->AddRO( this );
 	visible = true;
 }
@@ -59,7 +54,7 @@ void CRenderableObject::SetId( unsigned int nId )
 
 // == Public Setters ==
 // Set the rendering type to change draw order and stuff
-void CRenderableObject::SetRenderType ( RenderingType newRenderType )
+void CRenderableObject::SetRenderType ( eRenderLayer newRenderType )
 {
 	renderType = newRenderType;
 }
@@ -104,7 +99,7 @@ void CRenderableObject::SetMaterial ( RrMaterial* n_pNewMaterial )
 	if ( m_material )
 	{
 		m_material->addReference();
-		//if ( CGameSettings::Active()->i_ro_RendererMode /*== RENDER_MODE_FORWARD*/ )
+		//if ( CGameSettings::Active()->i_ro_RendererMode /*== kRenderModeForward*/ )
 		//{
 		// Check for a valid pass count
 		if ( m_material->passinfo.size() > 16 || m_material->deferredinfo.size() > 16 ) {
@@ -118,7 +113,7 @@ void CRenderableObject::SetMaterial ( RrMaterial* n_pNewMaterial )
 			}
 		}
 		// Match up passes to the replacement system
-		for ( uint layer = 0; layer < RL_LAYER_COUNT; layer += 1 )
+		for ( uint layer = 0; layer < kRenderHintCOUNT; layer += 1 )
 		{
 			// Make sure this object renders to the layer
 			if ( !(renderSettings.renderHints & (1<<layer)) ) {
@@ -273,7 +268,7 @@ RrPassDeferred* CRenderableObject::GetPassDeferred ( const uchar pass ) {
 bool CRenderableObject::BindVAO ( const uchar pass, const uint vbo, const uint eab, const bool userDefinedAttribs )
 {
 	uint t_targetPass = pass;
-	if ( CGameSettings::Active()->i_ro_RendererMode == RENDER_MODE_DEFERRED ) {
+	if ( CRenderState::Active->GetRenderMode() == kRenderModeDeferred ) {
 		t_targetPass += m_material->getPassCountForward();
 	}
 	if ( t_targetPass >= m_vao_maxcount ) {
@@ -281,9 +276,6 @@ bool CRenderableObject::BindVAO ( const uchar pass, const uint vbo, const uint e
 	}
 	if ( m_vao_info[t_targetPass] == 0 )
 	{
-//#ifdef _ENGINE_DEBUG
-//		std::cout << "generating VAO for " << this << " on pass " << ((int)pass) << std::endl;
-//#endif//_ENGINE_DEBUG
 		// If there's no VAO, generate it
 		glGenVertexArrays( 1, &(m_vao_info[t_targetPass]) );
 		glBindVertexArray( m_vao_info[t_targetPass] );

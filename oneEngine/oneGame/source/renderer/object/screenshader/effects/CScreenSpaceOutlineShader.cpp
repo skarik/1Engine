@@ -12,7 +12,7 @@ CScreenSpaceOutlineShader::CScreenSpaceOutlineShader ( void )
 	vMaterials[0]->isScreenShader = false;
 	vMaterials[0]->isTransparent = true;*/
 
-	renderSettings.renderHints = RL_WORLD;
+	renderSettings.renderHints = kRenderHintWorld;
 
 	RrMaterial *shaderMaterial = new RrMaterial;
 	shaderMaterial->m_isScreenShader = true;
