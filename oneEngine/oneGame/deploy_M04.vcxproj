@@ -48,7 +48,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{084AB1E3-647C-4670-B529-CABAD9ECB295}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
-    <ProjectName>M04</ProjectName>
+    <ProjectName>M04 Deployment</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -81,7 +81,7 @@
   <!-- Directory Rules -->
   <PropertyGroup>
     <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
-    <TargetName>$(ProjectName)</TargetName>
+    <TargetName>M04</TargetName>
     <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>

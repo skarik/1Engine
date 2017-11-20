@@ -8,9 +8,15 @@
 
 #include "core/types/types.h"
 #include "renderer/types/ObjectSettings.h"
+#include "renderer/types/ShaderSettings.h"
 
 class RrShader;
 class RrMaterial;
+
+namespace renderer
+{
+	extern rrDeferredShaderSettings gDefferedShaderSettings;
+}
 
 //=========================================//
 // RrPassDeferred - entire storage class exported

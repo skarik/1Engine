@@ -122,10 +122,9 @@
     <ClCompile Include="source\m04\scenes\sceneTilesetTest.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>oneGame</ProjectName>
+    <ProjectName>M04 Game</ProjectName>
     <ProjectGuid>{410E2926-EC32-401C-A45B-DCBBB8342517}</ProjectGuid>
-    <RootNamespace>OpenGlTest</RootNamespace>
-    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>oneCore</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -158,7 +157,7 @@
   <!-- Directory Rules -->
   <PropertyGroup>
     <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
-    <TargetName>$(ProjectName)</TargetName>
+    <TargetName>M04</TargetName>
     <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>

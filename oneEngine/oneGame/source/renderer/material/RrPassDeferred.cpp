@@ -1,8 +1,12 @@
-
 #include "RrShader.h"
 #include "RrPassDeferred.h"
 #include "renderer/types/ObjectSettings.h"
 #include <algorithm>
+
+namespace renderer
+{
+	extern rrDeferredShaderSettings gDefferedShaderSettings = rrDeferredShaderSettings();
+}
 
 RrPassDeferred::RrPassDeferred ( void )
 	: m_dirty(true),
@@ -46,6 +50,9 @@ void RrMaterial::deferred_shader_build( uchar pass )
 	t_shaderName += ".am" + std::to_string((uint)dpass.m_transparency_mode);
 	t_shaderName += m_isSkinnedShader ? ".skinning" : "";
 
+	// there are 6 variations:
+	int variation = (int)dpass.m_transparency_mode + 3 * (m_isSkinnedShader?1:0);
+
 	// Change shader tags
 	t_shaderTag = renderer::SHADER_TAG_DEFAULT;
 	if ( m_isSkinnedShader )
@@ -59,7 +66,7 @@ void RrMaterial::deferred_shader_build( uchar pass )
 		std::string shader;
 		size_t pos;
 
-		std::string t_fnPrimaryShader = "shaders/def_alt/surface_default.vert";
+		std::string t_fnPrimaryShader = renderer::gDefferedShaderSettings.filenamePrimaryVertexShader;
 		if (IO::FileExists( core::Resources::GetPrimaryResourcePath() + t_fnPrimaryShader ))
 		{
 			shader = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + t_fnPrimaryShader).c_str() );
@@ -83,9 +90,9 @@ void RrMaterial::deferred_shader_build( uchar pass )
 			shader.erase(pos, sizeof("VERTEX_PROCESSOR"));
 			std::string stub;
 			if ( t_shaderTag == renderer::SHADER_TAG_SKINNING )
-				stub = IO::ReadFileToString( core::Resources::PathTo("shaders/def_alt/vertex_proccessing.skinning.vert.stub").c_str() );
+				stub = IO::ReadFileToString( core::Resources::PathTo(renderer::gDefferedShaderSettings.filenameStubVertexSkinnedProcessor).c_str() );
 			else if ( t_shaderTag == renderer::SHADER_TAG_DEFAULT )
-				stub = IO::ReadFileToString( core::Resources::PathTo("shaders/def_alt/vertex_proccessing.vert.stub").c_str() );
+				stub = IO::ReadFileToString( core::Resources::PathTo(renderer::gDefferedShaderSettings.filenameStubVertexNormalProcessor).c_str() );
 			shader.insert(pos, stub);
 		}
 
@@ -99,7 +106,7 @@ void RrMaterial::deferred_shader_build( uchar pass )
 	{
 		std::string shader;
 
-		std::string t_fnPrimaryShader = "shaders/def_alt/surface_default.frag";
+		std::string t_fnPrimaryShader = renderer::gDefferedShaderSettings.filenamePrimaryPixelShader;
 		if (IO::FileExists( core::Resources::GetPrimaryResourcePath() + t_fnPrimaryShader ))
 		{
 			shader = IO::ReadFileToString( (core::Resources::GetPrimaryResourcePath() + t_fnPrimaryShader).c_str() );

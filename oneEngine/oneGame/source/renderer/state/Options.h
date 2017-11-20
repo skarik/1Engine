@@ -1,9 +1,10 @@
-
-#ifndef _RENDERER_OPTIONS_H_
-#define _RENDERER_OPTIONS_H_
+#ifndef RENDERER_OPTIONS_H_
+#define RENDERER_OPTIONS_H_
 
 #include "core/types/types.h"
 #include "core/types/float.h"
+
+#include "renderer/types/ShaderSettings.h"
 
 namespace renderer
 {
@@ -11,8 +12,8 @@ namespace renderer
 	{
 	public:
 		RENDER_API static void TextureStreaming ( const bool enabled );
+		RENDER_API static void DeferredShaders ( const rrDeferredShaderSettings& shaderInfo );
 	};
 }
 
-
-#endif//_RENDERER_OPTIONS_H_
+#endif//RENDERER_OPTIONS_H_

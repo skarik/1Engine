@@ -59,12 +59,12 @@ void gmsceneSystemLoader::LoadScene ( void )
 		}
 		engine::Console->RunCommand( currentcmd ); // Run the last command as well.
 	}
-	// Check the final command line option
-	{
-		if ( !CGameSettings::Active()->sysprop_default_cmd.empty() ) {
-			engine::Console->RunCommand( CGameSettings::Active()->sysprop_default_cmd );
-		}
-	}
+	// Check the final external values configuration. This can be used to override settings.
+	//{
+	//	if ( !CGameSettings::Active()->sysprop_default_cmd.empty() ) {
+	//		engine::Console->RunCommand( CGameSettings::Active()->sysprop_default_cmd );
+	//	}
+	//} // Disabling for now. Making it hard-coded in the game's *-common.
 
 	// Check that they don't want to stay in the console
 	bool wantsConsole = false;

@@ -226,6 +226,7 @@
     <ClInclude Include="source\renderer\types\ModelStructures.h" />
     <ClInclude Include="source\renderer\types\ObjectSettings.h" />
     <ClInclude Include="source\renderer\types\pixelFormat.h" />
+    <ClInclude Include="source\renderer\types\ShaderSettings.h" />
     <ClInclude Include="source\renderer\types\textureFormats.h" />
     <ClInclude Include="source\renderer\types\textureStructures.h" />
     <ClInclude Include="source\renderer\types\types.h" />

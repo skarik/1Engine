@@ -674,5 +674,8 @@
     <ClInclude Include="source\renderer\object\CRenderable3D.h">
       <Filter>SOURCE\Renderer\Object</Filter>
     </ClInclude>
+    <ClInclude Include="source\renderer\types\ShaderSettings.h">
+      <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

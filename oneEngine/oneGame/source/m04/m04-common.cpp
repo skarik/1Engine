@@ -1,20 +1,10 @@
-
-#include "physical/liscensing.cxx" // Include liscense info
-
 #include "engine/utils/CDeveloperConsole.h"
 #include "engine-common/lua/LuaSys.h"
 #include "engine-common/lua/Lua_Console.h"
 #include "engine-common/engine-common.h"
 #include "engine-common/engine-common-scenes.h"
 #include "m04-common.h"
-/*
-#include "after/scenes/gmsceneCharacterViewer.h"
-#include "after-editor/scenes/gmsceneParticleEditor.h"
-#include "after-editor/scenes/gmsceneLipsyncEditor.h"
 
-#include "after/physics/water/Water.h"
-#include "after/physics/wind/WindMotion.h"
-*/
 #include "renderer/state/CRenderState.h"
 #include "renderer/state/Options.h"
 
@@ -26,6 +16,19 @@
 #include "m04-editor/scenes/sceneEditorMain.h"
 #include "m04-editor/scenes/sceneDeveloperMenu.h"
 
+
+//	listen() - Called by game engine when all system setup is done.
+static int listen ( std::string const& )
+{
+#ifdef _ENGINE_DEBUG
+	engine::Console->RunCommand( "scene m04devmenu" );
+#else
+	engine::Console->RunCommand( "scene game_luvppl" );
+#endif
+	return 0;
+}
+
+
 //===============================================================================================//
 //	GameInitialize
 //
@@ -35,11 +38,12 @@
 //===============================================================================================//
 int GameInitialize ( void )
 {
-	// Engine
+	// Engine. Must always be called else features are not initialized!
 	EngineCommonInitialize();
 
-	// Set to 2D mode
-	CRenderState::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
+	//===============================================================================================//
+	// PLACE YOUR CUSTOM ENGINE MODULES BELOW HERE
+	//===============================================================================================//
 
 	// Create physics world
 	{
@@ -55,14 +59,17 @@ int GameInitialize ( void )
 	//EngineCommon::RegisterScene<gmsceneParticleEditor>( "pce" );
 	//EngineCommon::RegisterScene<gmsceneLipsyncEditor>( "lse" );
 
-	//===============================================================================================//
-	// PLACE YOUR CUSTOM ENGINE MODULES BELOW HERE
-	//===============================================================================================//
+	// Set renderer options:
+	renderer::rrDeferredShaderSettings shaderSettings;
+	shaderSettings.filenamePrimaryVertexShader = "shaders/def_alt/surface_default_2d.vert";
+	shaderSettings.filenamePrimaryPixelShader  = "shaders/def_alt/surface_default_2d.frag";
 
-	// create testers
-	//new CAfterWaterTester();
-	//new CWindMotion();
+	renderer::Options::DeferredShaders( shaderSettings );
 	renderer::Options::TextureStreaming( false );
+	CRenderState::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
+
+	// Register game start command
+	engine::Console->AddConsoleFunc( "listen", listen );
 
 	return 0;
 }
