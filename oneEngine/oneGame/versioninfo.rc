@@ -55,9 +55,9 @@ VS_VERSION_INFO VERSIONINFO
  PRODUCTVERSION 1,0,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
- FILEFLAGS 0xbL
+ FILEFLAGS 0x3L
 #else
- FILEFLAGS 0xaL
+ FILEFLAGS 0x2L
 #endif
  FILEOS 0x40004L
  FILETYPE 0x1L
@@ -68,12 +68,12 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "CompanyName", "EpicHouse Studios LLC"
-            VALUE "FileDescription", "M04 Runner"
+            VALUE "FileDescription", "Tool Suite Runner"
             VALUE "FileVersion", "0, 0, 5, XX"
-            VALUE "InternalName", "1Engine Runner"
+            VALUE "InternalName", "1Engine_ToolSuite"
             VALUE "LegalCopyright", "Copyright (C) 2015-2017"
-            VALUE "OriginalFilename", "M04.exe"
-            VALUE "ProductName", "M04 Runner"
+            VALUE "OriginalFilename", "Tool Suite.exe"
+            VALUE "ProductName", "1Engine Tool Suite"
             VALUE "ProductVersion", "0, 0, 5, XX"
         END
     END
@@ -91,7 +91,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON2               ICON                    "icon2.ico"
+IDI_ICON1               ICON                    "icon1.ico"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////

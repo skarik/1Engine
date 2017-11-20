@@ -1,5 +1,5 @@
-#ifndef M04_M04_COMMON_H_
-#define M04_M04_COMMON_H_
+#ifndef TOOL_SUITE_COMMON_H_
+#define TOOL_SUITE_COMMON_H_
 
 #include "core/types/types.h"
 
@@ -17,4 +17,4 @@
 GAME_API int GameInitialize ( void );
 
 
-#endif//M04_M04_COMMON_H_
+#endif//TOOL_SUITE_COMMON_H_

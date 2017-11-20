@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{e9ddf854-1414-40ad-869a-b3629cda3807}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Tool Suite">
+      <UniqueIdentifier>{ec96c1d1-c3c8-4369-a331-d85d943537fb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\tool-suite\tool-suite-common.h">
+      <Filter>SOURCE\Tool Suite</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\tool-suite\tool-suite-common.cpp">
+      <Filter>SOURCE\Tool Suite</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
