@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "M04 Game", "oneGame\oneGame.vcxproj", "{410E2926-EC32-401C-A45B-DCBBB8342517}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "M04 Game", "oneGame\M04game.vcxproj", "{410E2926-EC32-401C-A45B-DCBBB8342517}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneCore", "oneGame\oneCore.vcxproj", "{55249828-4343-423D-91D7-C5F5765EB240}"
 EndProject
@@ -37,7 +37,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneRenderer2DExt", "oneGame
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneEngineCommon2DExt", "oneGame\oneEngine2D.vcxproj", "{28A5770A-6C98-4CA8-B812-3596C58E621F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "M04 Deployment", "oneGame\deploy_M04.vcxproj", "{084AB1E3-647C-4670-B529-CABAD9ECB295}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "M04 Deployment", "oneGame\M04deploy.vcxproj", "{084AB1E3-647C-4670-B529-CABAD9ECB295}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1Engine", "1Engine", "{A43FD140-8C51-4B8B-A3FB-585023C75DC5}"
 EndProject

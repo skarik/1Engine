@@ -29,7 +29,7 @@
   </ItemGroup>
   <!-- Dependancies -->
   <ItemGroup>
-    <ProjectReference Include="oneGame.vcxproj">
+    <ProjectReference Include="M04game.vcxproj">
       <Project>{410e2926-ec32-401c-a45b-dcbbb8342517}</Project>
     </ProjectReference>
     <ProjectReference Include="oneCore.vcxproj">
