@@ -10,9 +10,6 @@
     <Filter Include="SOURCE\deploy\unit">
       <UniqueIdentifier>{c9676fa4-ac12-4a46-b4fa-0a4a9efeae1a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\deploy\game">
-      <UniqueIdentifier>{41caccf9-8aeb-4bda-a0f7-21d9f59ae1c8}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\deploy\unit\enginecore.cpp">
@@ -24,16 +21,10 @@
     <ClCompile Include="source\deploy\unit\enginecommon.cpp">
       <Filter>SOURCE\deploy\unit</Filter>
     </ClCompile>
-    <ClCompile Include="source\deploy\game\game.cpp">
-      <Filter>SOURCE\deploy\game</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\deploy\unit\unit.h">
       <Filter>SOURCE\deploy\unit</Filter>
-    </ClInclude>
-    <ClInclude Include="source\deploy\game\game.h">
-      <Filter>SOURCE\deploy\game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

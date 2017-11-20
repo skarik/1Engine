@@ -60,13 +60,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\deploy\game\game.cpp" />
     <ClCompile Include="source\deploy\liscensing.cpp" />
     <ClCompile Include="source\deploy\unit\enginecommon.cpp" />
     <ClCompile Include="source\deploy\unit\enginecore.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\deploy\game\game.h" />
     <ClInclude Include="source\deploy\unit\unit.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

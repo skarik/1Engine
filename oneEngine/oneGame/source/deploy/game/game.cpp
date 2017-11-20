@@ -1,5 +1,3 @@
-//#include "physical/liscensing.cxx" // Include liscense info
-
 #include "deploy/game/game.h"
 
 // System Includes
@@ -34,17 +32,14 @@
 #include "renderer/utils/glScreenshot.h"
 
 // Include engine-common
-//#include "engine-common/engine-common.h"
-//#include "engine-common/utils/CDeveloperConsoleUI.h"
 #include "engine-common/lua/CLuaController.h"
 #include "engine-common/scenes/gmsceneSystemLoader.h"
-
-//#include "m04/m04-common.h"
-//#include "renderer/debug/CDebugDrawer.h"
 
 // Steam Include
 #include "steam/steam_api.h"
 
+// Point at the game setup:
+AR_IMPORT int GameInitialize ( void );
 
 DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 {	_ARUNIT_BUILD_CMDLINE

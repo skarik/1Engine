@@ -1,6 +1,5 @@
-
-#ifndef _DEPLOY_GAME_H_
-#define _DEPLOY_GAME_H_
+#ifndef DEPLOY_GAME_H_
+#define DEPLOY_GAME_H_
 
 #include "core/types/types.h"
 
@@ -19,4 +18,4 @@ namespace Deploy
 	DEPLOY_API int _ARUNIT_CALL Game ( _ARUNIT_ARGS );
 };
 
-#endif//_DEPLOY_GAME_H_
+#endif//DEPLOY_GAME_H_

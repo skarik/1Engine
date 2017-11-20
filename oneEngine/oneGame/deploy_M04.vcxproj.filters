@@ -13,15 +13,24 @@
     <Filter Include="Resource Files">
       <UniqueIdentifier>{8eee619e-8756-432b-b56b-1669385b7055}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\deploy\game">
+      <UniqueIdentifier>{1b97143b-961d-4151-a51b-656b2958bdc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\deploy\deploy\M04.cpp">
       <Filter>SOURCE\deploy\deploy</Filter>
     </ClCompile>
+    <ClCompile Include="source\deploy\game\game.cpp">
+      <Filter>SOURCE\deploy\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\deploy\game\game.h">
+      <Filter>SOURCE\deploy\game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -157,7 +157,7 @@
   <!-- Directory Rules -->
   <PropertyGroup>
     <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
-    <TargetName>M04</TargetName>
+    <TargetName>M04_en</TargetName>
     <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>

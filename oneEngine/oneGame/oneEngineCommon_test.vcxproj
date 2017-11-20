@@ -19,11 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="oneDeploy.vcxproj">
-      <Project>{d2aad99b-ee7b-4426-ad3e-e4ff587d82cc}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="source\deploy\deploy\testOneEngineCommon.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
