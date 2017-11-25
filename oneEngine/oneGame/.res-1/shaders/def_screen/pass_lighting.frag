@@ -415,8 +415,8 @@ void main ( void )
     //pixelNormal.rb = vec2(0,0);
 
     pixelDiffuse.rgb = vec3(0.43,0.4,0.5);
-    pixelDiffuse.r += length(pixelPosition) * 0.05;
-    pixelDiffuse.rg -= 0.1 - length(pixelPosition.xy) * 0.02;
+    //pixelDiffuse.r += length(pixelPosition) * 0.05;
+    //pixelDiffuse.rg -= 0.1 - length(pixelPosition.xy) * 0.02;
 
     float lightDir = dot(vec3(-0.1,0.6,0.8), pixelNormal.rgb);
     float light = 0.3 + pow(n_rimValue, 4) * 2.5 * max(0.0, lightDir - 0.3) + max(0.0, lightDir) * 0.6;

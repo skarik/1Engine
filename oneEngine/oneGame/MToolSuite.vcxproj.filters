@@ -7,15 +7,33 @@
     <Filter Include="SOURCE\Tool Suite">
       <UniqueIdentifier>{ec96c1d1-c3c8-4369-a331-d85d943537fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Tool Suite\Scenes">
+      <UniqueIdentifier>{12c5bf48-1900-4e46-8221-57ff3a495f12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Tool Suite\Standalone">
+      <UniqueIdentifier>{eadf83b6-f50f-488a-9fef-470c2f7b6df8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\tool-suite\tool-suite-common.h">
       <Filter>SOURCE\Tool Suite</Filter>
     </ClInclude>
+    <ClInclude Include="source\tool-suite\scenes\toolsceneModelViewer.h">
+      <Filter>SOURCE\Tool Suite\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tool-suite\standalone\ModelViewer.h">
+      <Filter>SOURCE\Tool Suite\Standalone</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\tool-suite\tool-suite-common.cpp">
       <Filter>SOURCE\Tool Suite</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tool-suite\scenes\toolsceneModelViewer.cpp">
+      <Filter>SOURCE\Tool Suite\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tool-suite\standalone\ModelViewer.cpp">
+      <Filter>SOURCE\Tool Suite\Standalone</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

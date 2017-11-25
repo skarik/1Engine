@@ -63,9 +63,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\tool-suite\scenes\toolsceneModelViewer.h" />
+    <ClInclude Include="source\tool-suite\standalone\ModelViewer.h" />
     <ClInclude Include="source\tool-suite\tool-suite-common.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\tool-suite\scenes\toolsceneModelViewer.cpp" />
+    <ClCompile Include="source\tool-suite\standalone\ModelViewer.cpp" />
     <ClCompile Include="source\tool-suite\tool-suite-common.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

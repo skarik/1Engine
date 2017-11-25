@@ -29,7 +29,7 @@ void CInput::Initialize ( void )
 	}
 	SetMouseSensitivity( 1.0F );
 
-	xboxControl = new InputControl::CXBoxController(1);
+	xboxControl = new InputControl::CXBoxController(0);
 }
 void CInput::Reset ( void )
 {

@@ -1,4 +1,3 @@
-
 #include "CInputControl.h"
 
 #include "core/input/CInput.h"
@@ -10,7 +9,6 @@
 #include "core/math/Math.h"
 
 #include <algorithm>
-
 
 std::list<CInputControl*>	CInputControl::m_inputs;
 
@@ -74,43 +72,29 @@ void CInputControl::Release ( void )
 
 void CInputControl::Update ( void* owner, float deltaTime )
 {
+	// Update xbox controller:
+	Input::xboxControl->UpdateState();
+
 	// Get inputs from style
 	if ( CGameSettings::Active()->i_cl_KeyboardStyle == 0 )
 	{
+		Vector2d controllerInput;
+
 		// Get directional input
 		// First clip controller input
-		Vector2d controllerInput;
-		Real controllerStickMagnitude;
-		controllerInput = Vector2d ( Input::xboxControl->GetState().Gamepad.sThumbLY, Input::xboxControl->GetState().Gamepad.sThumbLX );
-		controllerStickMagnitude = controllerInput.magnitude();
-		if ( controllerStickMagnitude < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ) {
-			controllerInput = Vector2d(0,0);
-		}
-		else {
-			controllerStickMagnitude -= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
-			controllerStickMagnitude /= (32768.0-XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
-			controllerInput = controllerInput.normal() * controllerStickMagnitude;
-		}
+		controllerInput = Input::xboxControl->GetAnalog(InputControl::kAnalogIndexLeftStick);
 		// Now perform the rest of the inputs
 		vDirInput.x		= (float)Input::Key('W') - (float)Input::Key('S');
-			vDirInput.x+= controllerInput.x;
+			vDirInput.x+= controllerInput.y;
 		vDirInput.y		= (float)Input::Key('A') - (float)Input::Key('D');
-			vDirInput.y-= controllerInput.y;
+			vDirInput.y-= controllerInput.x;
 		vDirInput.z		= (float)Input::Key(Keys.Space) - (float)Input::Key(Keys.Control) - (float)Input::Key('C');
 			vDirInput.z+= ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_A)?1:0);
 			vDirInput.z-= ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)?1:0);
-		// Get turnint input
+		
+		// Get turning input
 		// First clicp controller input
-		controllerInput = Vector2d ( Input::xboxControl->GetState().Gamepad.sThumbRX, Input::xboxControl->GetState().Gamepad.sThumbRY );
-		controllerStickMagnitude = controllerInput.magnitude();
-		if ( controllerStickMagnitude < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ) {
-			controllerInput = Vector2d(0,0);
-		}
-		else {
-			controllerStickMagnitude -= XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE;
-			controllerStickMagnitude /= (32768.0-XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE);
-			controllerInput = controllerInput.normal() * controllerStickMagnitude;
-		}
+		controllerInput = Input::xboxControl->GetAnalog(InputControl::kAnalogIndexRightStick);
 		// Now perform the rest of the inputs
 		vMouseInput.x	= (float)CInput::DeltaMouseX()*0.5f;
 			vMouseInput.x+= (controllerInput.x * deltaTime) * 160.0f;
@@ -121,12 +105,13 @@ void CInputControl::Update ( void* owner, float deltaTime )
 			vMouseInput.z-= ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)?1:0);
 			
 		// Get the keydown input
+		controllerInput = Input::xboxControl->GetAnalog(InputControl::kAnalogIndexTriggers);
 		//axes.crouch.Update			( (float)Input::Key(Keys.Control) + (float)Input::Key('C') );
 		axes.crouch.Update			( -math::clamp<Real>(vDirInput.z,-1,0) );
 		//axes.jump.Update			( (float)Input::Key(Keys.Space) );
 		axes.jump.Update			( math::clamp<Real>(vDirInput.z,0,1) );
-		axes.primary.Update			( (float)CInput::Mouse(CInput::MBLeft) + ((Input::xboxControl->GetState().Gamepad.bRightTrigger-XINPUT_GAMEPAD_TRIGGER_THRESHOLD)/(255.0f-XINPUT_GAMEPAD_TRIGGER_THRESHOLD)) );
-		axes.secondary.Update		( (float)CInput::Mouse(CInput::MBRight) + ((Input::xboxControl->GetState().Gamepad.bLeftTrigger-XINPUT_GAMEPAD_TRIGGER_THRESHOLD)/(255.0f-XINPUT_GAMEPAD_TRIGGER_THRESHOLD)) );
+		axes.primary.Update			( (float)CInput::Mouse(CInput::MBLeft)  + controllerInput.y );
+		axes.secondary.Update		( (float)CInput::Mouse(CInput::MBRight) + controllerInput.x );
 		//axes.sprint.Update			( (float)Input::Key(Keys.Shift) );
 		axes.sprint.Update			( (float)Input::Key(Keys.Shift) + ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)?1:0) );
 		axes.prone.Update			( (float)Input::Keydown('Z') );
