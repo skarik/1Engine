@@ -5,6 +5,8 @@
 #include "core-ext/system/io/mccosf.h"
 #include "core-ext/system/io/Resources.h"
 
+#include "core/system/io/FileUtils.h"
+
 #include <fstream>
 using std::fstream;
 using std::ifstream;
@@ -129,6 +131,24 @@ CGameSettings::CGameSettings ( char** command_line )
 
 void CGameSettings::Initialize ( void )
 {
+#	ifdef _WIN32
+	// Fix the working directory:
+	if (!IO::FileExists("./oneEngine.dll") && !IO::FileExists("./.res-0/system/properties.txt"))
+	{
+		char path [512];
+		GetModuleFileName(NULL, path, sizeof(path));
+		for (int i = sizeof(path)-1; i > 0; --i)
+		{
+			if (path[i] == '\\' || path[i] == '/')
+			{
+				path[i] = 0;
+				break;
+			}
+		}
+		SetCurrentDirectory(path);
+	}
+#	endif
+
 	m_target_file_world		= "terra";
 	m_target_file_realm		= "_lucra";
 	m_target_file_player	= "_default";

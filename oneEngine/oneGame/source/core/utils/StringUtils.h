@@ -17,7 +17,7 @@ namespace StringUtils
 	using std::string;
 
 	//	GetFileStemLeaf ( filename )
-	// Returns the file without the extension. Not gaurenteed to work with a missing extension.
+	// Returns the file without the extension. Not gauranteed to work with a missing extension.
 	string					GetFileStemLeaf( const string& filename );
 	//	GetFileExtension ( filename )
 	// Returns the file's last extension.

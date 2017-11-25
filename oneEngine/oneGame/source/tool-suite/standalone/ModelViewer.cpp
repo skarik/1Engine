@@ -5,6 +5,8 @@
 #include "core-ext/system/io/Resources.h"
 #include "core/input/CInput.h"
 #include "core/input/CXboxController.h"
+#include "core/system/io/FileUtils.h"
+#include "core/utils/StringUtils.h"
 
 #include "engine/utils/CDeveloperConsole.h"
 
@@ -28,19 +30,38 @@ toolsuite::ModelViewer::ModelViewer ( void )
 		(new CRendererHolder(cube))->RemoveReference();
 	}
 
+	for (std::string cmd : CGameSettings::Active()->m_cmd)
+	{
+		printf("\"%s\"\n", cmd.c_str());
+	}
+
+	// Load in command line
+	string filename = "models/demos/female elf.fbx";
+	auto& cmd_list = CGameSettings::Active()->m_cmd;
+	if ( !cmd_list.empty() )
+	{
+		string temp_filename = IO::FilenameStandardize(cmd_list[0]);
+		temp_filename = temp_filename.substr(temp_filename.find_last_of("/"));
+		temp_filename = temp_filename.substr(0, temp_filename.find_last_of("."));
+		temp_filename = ".game/" + temp_filename + ".fbx";
+		if ( IO::CopyFileTo(temp_filename.c_str(), cmd_list[0].c_str()) )
+		{
+			filename = temp_filename;
+		}
+		else
+		{
+			debug::Console->PrintError("Could not copy file to temporary directory.");
+		}
+	}
+
 	// Create character model
 	{
-		model = new CModel("models/demos/female elf.fbx");
+		model = new CModel( filename.c_str() );
 		model->transform.scale = Vector3d(1,1,1) / 304.8F * 2.7F;
 		//model->transform.rotation = Vector3d(0.0F, 0, 135.0F);
 		//model->transform.position = Vector3d(-1.0F, +1.0F, -1.3F);
 		model->transform.position = Vector3d(0.0F, 0.0F, 0.0F);
 		//(new CRenderLogicHolder(model))->RemoveReference();
-	}
-	//printf("\"%s\"\n", CGameSettings::Active()->s_cmd.c_str());
-	for (std::string cmd : CGameSettings::Active()->m_cmd)
-	{
-		printf("\"%s\"\n", cmd.c_str());
 	}
 
 	ResetCameraOrientation();

@@ -25,6 +25,12 @@ namespace IO
 
 	// Big fat tiles
 	std::string ReadFileToString ( const char* n_filename );
+
+	// Copy files
+	bool CopyFileTo ( const char* n_destination, const char* n_source );
+
+	// Remove files
+	bool RemoveFile ( const char* n_filename );
 };
 
 #endif//CORE_IO_FILE_UTILS_H_

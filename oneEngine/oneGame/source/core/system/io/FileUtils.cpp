@@ -108,3 +108,28 @@ std::string IO::ReadFileToString ( const char* n_filename )
 						 (std::istreambuf_iterator<char>()    ) );
 	return content;
 }
+
+bool IO::CopyFileTo ( const char* n_destination, const char* n_source )
+{
+#	ifdef _WIN32
+	BOOL result = CopyFile( n_source, n_destination, FALSE );
+	if (result != 0)
+	{
+		return true;
+	}
+	return false;
+#	endif
+}
+
+// Remove files
+bool IO::RemoveFile ( const char* n_filename )
+{
+#	ifdef _WIN32
+	BOOL result = DeleteFile( n_filename );
+	if (result != 0)
+	{
+		return true;
+	}
+	return false;
+#	endif
+}

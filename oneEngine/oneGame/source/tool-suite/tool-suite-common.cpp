@@ -1,3 +1,6 @@
+#include "core/settings/CGameSettings.h"
+#include "core/utils/StringUtils.h"
+
 #include "engine/utils/CDeveloperConsole.h"
 #include "engine-common/lua/LuaSys.h"
 #include "engine-common/lua/Lua_Console.h"
@@ -17,7 +20,16 @@
 //	listen() - Called by game engine when all system setup is done.
 static int listen ( std::string const& )
 {
-	engine::Console->RunCommand( "scene modelviewer" );
+	// Check first argument to find a matching file extension.
+	auto& cmd_list = CGameSettings::Active()->m_cmd;
+	if ( !cmd_list.empty() )
+	{
+		string extension = StringUtils::ToLower(StringUtils::GetFileExtension(cmd_list[0]));
+		if ( extension == "fbx" )
+		{
+			engine::Console->RunCommand( "scene modelviewer" );
+		}
+	}
 	return 0;
 }
 

@@ -21,7 +21,7 @@
 
 namespace StringUtils
 {
-	//	GetFileStemLeaf ( filename ) : Returns the file without the extension. Not gaurenteed to work with a missing extension.
+	//	GetFileStemLeaf ( filename ) : Returns the file without the extension. Not gauranteed to work with a missing extension.
 	string GetFileStemLeaf( const string& filename )
 	{
 		return filename.substr(0, filename.find_last_of("."));
