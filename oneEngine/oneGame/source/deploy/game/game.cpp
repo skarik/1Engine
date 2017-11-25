@@ -45,8 +45,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 {	_ARUNIT_BUILD_CMDLINE
 
 	// Load window settings
-	CGameSettings gameSettings;
-	gameSettings.s_cmd = lpCmdLine;
+	CGameSettings gameSettings ( (string)lpCmdLine );
 	if ( CGameSettings::Active()->b_ro_Enable30Steroscopic )
 	{
 		std::cerr << "Stereoscopic 3D mode either currently cascades into memory hell or isn't implemented." << std::endl;

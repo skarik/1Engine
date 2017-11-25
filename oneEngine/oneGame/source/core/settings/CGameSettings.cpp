@@ -13,6 +13,8 @@ using std::ofstream;
 #include <sstream>
 using std::stringstream;
 
+#include <cctype>
+
 // Static Variable Declarations
 CGameSettings* CGameSettings::pActive = NULL;
 
@@ -29,10 +31,104 @@ void CGameSettings::SetActive ( CGameSettings* instance )
 }
 
 // == Constructor ==
-CGameSettings::CGameSettings ( void )
+CGameSettings::CGameSettings ( string& command_line )
 {
 	pActive = this;
+	Initialize();
 
+	s_cmd = command_line;
+
+	bool in_arg = false;
+	bool in_quote = false;
+	int i_start;
+	int i = 0;
+	while ( i < (int)command_line.length() )
+	{
+		// Looking for arg:
+		if ( !in_arg )
+		{
+			if ( !std::isspace(command_line[i]) )
+			{
+				i_start = i;
+				in_arg = true;
+
+				if ( command_line[i] == '"' )
+				{
+					in_quote = true;
+				}
+			}
+
+			i += 1;
+		}
+		// Found arg:
+		else
+		{
+			if ( !in_quote && std::isspace(command_line[i]) )
+			{
+				in_arg = false;
+				m_cmd.push_back(command_line.substr(i_start, i - i_start));
+			}
+			else if ( in_quote && command_line[i] == '"' )
+			{
+				in_quote = false;
+			}
+			else if ( !in_quote && command_line[i] == '"' )
+			{
+				in_quote = true;
+			}
+
+			i += 1;
+		}
+	}
+	// Add the last one:
+	if (in_arg)
+	{
+		m_cmd.push_back(command_line.substr(i_start, i - i_start));
+	}
+	// Strip quotes on settings:
+	for (size_t str_i = 0; str_i < m_cmd.size(); ++str_i)
+	{
+		if (std::count(m_cmd[str_i].begin(), m_cmd[str_i].end(), '"') == 2)
+		{
+			if (m_cmd[str_i][0] == '"' && m_cmd[str_i][m_cmd[str_i].length() - 1] == '"')
+			{
+				m_cmd[str_i] = m_cmd[str_i].substr(1, m_cmd[str_i].length() - 2);
+			}
+		}
+	}
+}
+
+// == Constructor ==
+CGameSettings::CGameSettings ( char** command_line )
+{
+	pActive = this;
+	Initialize();
+
+	// Add command line to the list:
+	s_cmd = command_line[0];
+	int str_i = 0;
+	char* str = command_line[str_i];
+	while (str != NULL)
+	{
+		m_cmd.push_back(str);
+		++str_i;
+		str = command_line[str_i];
+	}
+	// Strip quotes on settings:
+	for (size_t str_i = 0; str_i < m_cmd.size(); ++str_i)
+	{
+		if (std::count(m_cmd[str_i].begin(), m_cmd[str_i].end(), '"') == 2)
+		{
+			if (m_cmd[str_i][0] == '"' && m_cmd[str_i][m_cmd[str_i].length() - 1] == '"')
+			{
+				m_cmd[str_i] = m_cmd[str_i].substr(1, m_cmd[str_i].length() - 2);
+			}
+		}
+	}
+}
+
+void CGameSettings::Initialize ( void )
+{
 	m_target_file_world		= "terra";
 	m_target_file_realm		= "_lucra";
 	m_target_file_player	= "_default";

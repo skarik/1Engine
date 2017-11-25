@@ -39,10 +39,13 @@ private:
 	// Current active game settings
 	static CGameSettings* pActive;
 
+
+	void Initialize ( void );
 public:
 	// == Constructor ==
 	// Creates default directories and loads options.
-	CORE_API CGameSettings ( void );
+	CORE_API explicit CGameSettings ( string& command_line );
+	CORE_API explicit CGameSettings ( char** command_line );
 
 	//=========================================//
 	// Settings system
@@ -173,6 +176,7 @@ public: // Members that are edited by outside objects often are put here, as a g
 	//=========================================//
 
 	string	s_cmd;	// command line options
+	std::vector<string> m_cmd; // parsed
 
 	//=========================================//
 	// System Properties
