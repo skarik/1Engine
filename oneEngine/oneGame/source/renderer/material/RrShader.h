@@ -309,16 +309,10 @@ public:
 		else
 			return pParentShader->get_program();
 	}
-	// Get Uniform location
-	//int	get_uniform_location ( const char* name );
 	// get uniform block location
 	int getUniformBlockLocation ( const char* name );
-	// Get Vertex Attribute location
-	//int get_attrib_location ( const char* name );
 
 	// Memory management functions
-	//void AddReference ( void );
-	//void DecrementReference ( void );
 	void GrabReference ( void );
 	void ReleaseReference ( void );
 	unsigned int ReferenceCount ( void );
@@ -338,8 +332,6 @@ protected:
 	renderer::rrShaderTag	stTag;
 
 	// Shader properties
-	//string sVertexShader;
-	//string sPixelShader;
 	char * sVertexShader;
 	int iVertexShaderLength;
 	char * sPixelShader;
@@ -370,9 +362,6 @@ protected:
 	// Has this shader been used before?
 	bool	primed;
 
-	// Uniform map
-	//std::unordered_map<arstring<128>,int> mUniformMap;
-
 protected:
 	// This loads the shader from the file and into the sRawShader string
 	void open_shader ( void );
@@ -384,13 +373,6 @@ protected:
 	//	createConstantBufferBindings() : Internal post-compile step, grab engine refs.
 	// Locates constant buffer bindings and links them to their index
 	void createConstantBufferBindings ( void );
-
-	// Shader parsers
-	void ParseShader_ASM ( void );
-	void ParseShader_GLSL ( void );
-	void ParseSplit ( void );
-	void ParseDefines ( void );
-	void ParseIncludes ( void );
 
 private:
 	// Memory management

@@ -237,7 +237,7 @@ void M04::MapIO::Load ( void )
 		}
 
 		// Do something with the buffer based on the given information
-		printf( "\t+Read in \"%s\"\n", topper.name );
+		/*printf( "\t+Read in \"%s\"\n", topper.name );*/
 
 		// Check for M04::MapInformation structure
 		if ( strcmp( topper.name, "M04::MapInformation" ) == 0 )

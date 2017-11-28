@@ -1,18 +1,18 @@
-
 #include "CMRTTexture.h"
+#include "core/containers/arstring.h"
 #include "core/debug/CDebugConsole.h"
-#include "renderer/system/glMainSystem.h"
 
+#include "renderer/system/glMainSystem.h"
 #include "renderer/gpuw/Textures.h"
 
-// Stringstream for unique string id generation
-#include <sstream>
+// For debug logging of MRT.
+//#define MRT_DEBUG
 
-using std::stringstream;
 using std::cout;
 using std::endl;
 
-void printFramebufferLimits()
+#ifdef MRT_DEBUG
+static void printFramebufferLimits()
 {
 	int res;
 	glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &res);
@@ -31,6 +31,7 @@ void printFramebufferLimits()
 	printf("Max Framebuffer Layers: %d\n", res);*/
 	return;
 }
+#endif
 
 CMRTTexture::CMRTTexture ( 
 	unsigned int	requestedWidth,
@@ -48,7 +49,9 @@ CMRTTexture::CMRTTexture (
 {
 	GL_ACCESS;
 
+#	ifdef MRT_DEBUG
 	printFramebufferLimits();
+#	endif
 
 	// Check for NPOT texture support, and modify texture size accordingly.
 	if ( !GL.NPOTsAvailable )
@@ -99,12 +102,14 @@ CMRTTexture::CMRTTexture (
 	mrtInfo.stencilAttachment	= 0;
 
 	// Generate an id
-	stringstream tempstream;
-	tempstream << "__hx_rt_M_" << (void*)this << "_" << info.width << "_" << info.height; 
-	rtUniqueSId = string( tempstream.str() );
+	arstring256 tempString;
+	sprintf(tempString.data, "__hx_rt_M_%p_%u_%u", (void*)this, info.width, info.height);
+	rtUniqueSId = tempString;
 
 	// Print out infos
+#	ifdef MRT_DEBUG
 	cout << "New render texture: " << rtUniqueSId << endl;
+#	endif
 
 	// Generate the texture information for the colors
 	for ( uint i = 0; i < rgbRequestListSize; ++i )
@@ -349,7 +354,9 @@ void CMRTTexture::GenerateFramebuffer ( void )
 		// Otherwise, then we can loop through the render targets
 		for ( int8_t i = 0; i < mrtInfo.colorAttachments; ++i )
 		{
+#			ifdef MRT_DEBUG
 			cout << " + Attaching color texture " << (int)i << endl;
+#			endif
 			// attach the texture to FBO color attachment point
 			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+i, GL_TEXTURE_2D, mrtInfo.texture[i], 0 );
 		}
@@ -357,24 +364,32 @@ void CMRTTexture::GenerateFramebuffer ( void )
 		// Bind the render buffer
 		if ( rtInfo.depthRBO != 0 )
 		{
+#			ifdef MRT_DEBUG
 			cout << " + Attaching depth RBO." << endl;
+#			endif
 			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rtInfo.depthRBO );
 		}
 		else if ( rtInfo.depthtex != 0 )
 		{
+#			ifdef MRT_DEBUG
 			cout << " + Attaching depth texture." << endl;
+#			endif
 			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, rtInfo.depthtex, 0 );
 		}
 
 		// Bind the stencil buffer
 		if ( rtInfo.stencilRBO != 0 )
 		{
+#			ifdef MRT_DEBUG
 			cout << " + Attaching stencil RBO." << endl;
+#			endif
 			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rtInfo.stencilRBO );
 		}
 		else if ( rtInfo.stenciltex != 0 )
 		{
+#			ifdef MRT_DEBUG
 			cout << " + Attaching stencil texture." << endl;
+#			endif
 			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, rtInfo.stenciltex, 0 );
 		}
 

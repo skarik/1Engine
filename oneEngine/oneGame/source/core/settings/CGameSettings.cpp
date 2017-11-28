@@ -6,6 +6,7 @@
 #include "core-ext/system/io/Resources.h"
 
 #include "core/system/io/FileUtils.h"
+#include "core/os.h"
 
 #include <fstream>
 using std::fstream;

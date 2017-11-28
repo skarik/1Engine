@@ -1,4 +1,3 @@
-
 #include "core/settings/CGameSettings.h"
 #include "core/debug/CDebugConsole.h"
 
@@ -12,9 +11,7 @@
 
 using namespace std;
 
-// == Constructor ==
 // takes a shader filename or system built-in as an argument
-//RrShader::RrShader ( const string& a_sShaderName, bool a_bCompileOnDemand )
 RrShader::RrShader ( const char* a_sShaderName, const renderer::rrShaderTag a_nShaderTag, const bool a_bCompileOnDemand )
 {
 	sShaderFilename = a_sShaderName;
@@ -76,7 +73,6 @@ RrShader::RrShader ( const char* a_sShaderName, const renderer::rrShaderTag a_nS
 	}
 }
 
-// == Destructor ==
 // Yeah, not sure.
 RrShader::~RrShader ( void )
 {
@@ -91,64 +87,11 @@ RrShader::~RrShader ( void )
 	}
 }
 
-// == Uniform Grabbing ==
-//int	RrShader::get_uniform_location ( const char* name )
-//{
-//	if ( !bIsReference )
-//	{
-//		/*if ( mUniformMap.count( name ) )
-//		{
-//			return mUniformMap[name];
-//		}
-//		else*/
-//		arstring<128> cname ( name );
-//		unordered_map<arstring<128>,int>::iterator result = mUniformMap.find( cname );
-//		if ( result != mUniformMap.end() )
-//		{
-//			return result->second;
-//		}
-//		else
-//		{
-//			int uniformLocation = glGetUniformLocation( iProgramID, name );
-//			mUniformMap[cname] = uniformLocation;
-//			if ( uniformLocation < 0 && CGameSettings::Active()->b_dbg_ro_ShowMissingLinks )
-//			{
-//#ifdef _ENGINE_DEBUG
-//				cout << "Warning in: " << this << ": can't find shader uniform '" << name << "'" << endl;
-//#endif
-//			}
-//			return uniformLocation;
-//		}
-//	}
-//	else
-//	{
-//		return pParentShader->get_uniform_location( name );
-//	}
-//}
 // Get Uniform Block location
 int RrShader::getUniformBlockLocation ( const char* name )
 {
 	if ( !bIsReference )
 	{
-/*		arstring<128> cname ( name );
-		unordered_map<arstring<128>,int>::iterator result = mUniformMap.find( cname );
-		if ( result != mUniformMap.end() )
-		{
-			return result->second;
-		}
-		else
-		{
-			int uniformLocation = glGetUniformBlockIndex( iProgramID, name );
-			mUniformMap[cname] = uniformLocation;
-			if ( uniformLocation < 0 && CGameSettings::Active()->b_dbg_ro_ShowMissingLinks )
-			{
-#ifdef _ENGINE_DEBUG
-				cout << "Warning in: " << this << ": can't find shader uniform block '" << name << "'" << endl;
-#endif
-			}
-			return uniformLocation;
-		}*/
-
 		int uniformLocation = glGetUniformBlockIndex( iProgramID, name );
 		return uniformLocation;
 	}
@@ -157,36 +100,6 @@ int RrShader::getUniformBlockLocation ( const char* name )
 		return pParentShader->getUniformBlockLocation( name );
 	}
 }
-
-// Vertex Attribute grabbing
-/*int	RrShader::get_attrib_location ( const char* name )
-{
-	if ( !bIsReference )
-	{
-		arstring<128> cname ( name );
-		unordered_map<arstring<128>,int>::iterator result = mUniformMap.find( cname );
-		if ( result != mUniformMap.end() )
-		{
-			return result->second;
-		}
-		else
-		{
-			int uniformLocation = glGetAttribLocation( iProgramID, name );
-			mUniformMap[cname] = uniformLocation;
-			if ( uniformLocation < 0 && CGameSettings::Active()->b_dbg_ro_ShowMissingLinks )
-			{
-#ifdef _ENGINE_DEBUG
-				cout << "Warning in: " << this << ": can't find shader attribute '" << name << "'" << endl;
-#endif
-			}
-			return uniformLocation;
-		}
-	}
-	else
-	{
-		return pParentShader->get_attrib_location( name );
-	}
-}*/
 
 // == Drawing Program Controls ==
 void RrShader::begin ( void )
@@ -245,7 +158,8 @@ void RrShader::AddReference ( void )
 // Decrement number of references
 void RrShader::DecrementReference ( void )
 {
-	if ( !bIsReference ) {
+	if ( !bIsReference )
+	{
 		if ( iRefNumber == 0 )
 		{
 			cout << "DECREMENTING BELOW ZERO. THIS IS IMPOSSIBLE. (" << bIsReference << ") " << endl;
@@ -253,7 +167,8 @@ void RrShader::DecrementReference ( void )
 		}
 		iRefNumber--;
 	}
-	else {
+	else
+	{
 		pParentShader->DecrementReference();
 	}
 }
@@ -267,8 +182,13 @@ void RrShader::ReleaseReference ( void )
 {
 	DecrementReference();
 	bool result = ShaderManager.RemoveShader( this );
+
+#	ifdef _ENGINE_DEBUG
 	if ( result )
+	{
 		cout << " -parent shader is destroyed." << endl;
+	}
+#	endif
 }
 // Increament number of references
 void RrShader::GrabReference ( void )
@@ -321,7 +241,7 @@ bool RrShader::recompile ( void )
 }
 
 #include <sys/stat.h>
-long GetFileSize(std::string filename)
+static long GetFileSize(std::string filename)
 {
     struct stat stat_buf;
     int rc = stat(filename.c_str(), &stat_buf);

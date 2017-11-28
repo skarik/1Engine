@@ -1,15 +1,14 @@
-
-// == Includes ==
 #include "CRenderTexture.h"
+#include "core/containers/arstring.h"
 #include "core/debug/CDebugConsole.h"
+
 #include "renderer/system/glMainSystem.h"
 #include "renderer/exceptions.h"
 #include "renderer/gpuw/Textures.h"
 
-// Stringstream for unique string id generation
-#include <sstream>
+// For debug logging of RT.
+//#define RT_DEBUG
 
-using std::stringstream;
 using std::cout;
 using std::endl;
 
@@ -17,9 +16,8 @@ using std::endl;
 std::stack<unsigned int> CRenderTexture::buffer_stack;
 
 // == Constructor + Destructor ==
+
 // Explicit Constructor
-
-
 CRenderTexture::CRenderTexture (
 	unsigned int	requestedWidth,
 	unsigned int	requestedHeight,
@@ -95,18 +93,21 @@ CRenderTexture::CRenderTexture (
 	rtInfo.active		= false;
 
 	// Generate an id
-	stringstream tempstream;
-	tempstream << "__hx_rt_" << (void*)this << "_" << info.width << "_" << info.height; 
-	rtUniqueSId = string( tempstream.str() );
-	// Thing is, this ID isn't really needed, as the way render textures work is much different.
+	arstring256 tempString;
+	sprintf(tempString.data, "__hx_rt_%p_%u_%u", (void*)this, info.width, info.height);
+	rtUniqueSId = tempString;
 
 	// Print out infos
+#	ifdef RT_DEBUG
 	cout << "New render texture: " << rtUniqueSId << endl;
+#	endif
 
 	// Generate the data
 	if ( rtInfo.fetchcolor )
 	{
+#		ifdef RT_DEBUG
 		cout << " + Fetch color enabled." << endl;
+#		endif
 
 		// Create a new color texture and set it up
 		info.index = gpu::TextureAllocate( Texture2D, requestedColor, info.width, info.height );
@@ -124,7 +125,9 @@ CRenderTexture::CRenderTexture (
 	// Do the same if there's a renderbuffer
 	if ( depthFetch )
 	{
+#		ifdef RT_DEBUG
 		cout << " + Fetch depth enabled." << endl;
+#		endif
 
 		if ( depthRequest.texture == 0 )
 		{
@@ -165,7 +168,9 @@ CRenderTexture::CRenderTexture (
 	// Do the same if there's a stencilbuffer
 	if ( stencilFetch )
 	{
+#		ifdef RT_DEBUG
 		cout << " + Fetch stencil enabled." << endl;
+#		endif
 
 		if ( stencilRequest.texture == 0 )
 		{
@@ -341,7 +346,9 @@ void CRenderTexture::GenerateFramebuffer ( void )
 
 		if ( rtInfo.fetchcolor )
 		{
+#			ifdef RT_DEBUG
 			cout << " + Attaching color texture." << endl;
+#			endif
 			// attach the texture to FBO color attachment point
 			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, info.index, 0 );
 		}
@@ -363,24 +370,32 @@ void CRenderTexture::GenerateFramebuffer ( void )
 		// Bind the render buffer
 		if ( rtInfo.depthRBO != 0 )
 		{
+#			ifdef RT_DEBUG
 			cout << " + Attaching depth RBO." << endl;
+#			endif
 			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rtInfo.depthRBO );
 		}
 		else if ( rtInfo.depthtex != 0 )
 		{
+#			ifdef RT_DEBUG
 			cout << " + Attaching depth texture." << endl;
+#			endif
 			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, rtInfo.depthtex, 0 );
 		}
 
 		// Bind the stencil buffer
 		if ( rtInfo.stencilRBO != 0 )
 		{
+#			ifdef RT_DEBUG
 			cout << " + Attaching stencil RBO." << endl;
+#			endif
 			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rtInfo.stencilRBO );
 		}
 		else if ( rtInfo.stenciltex != 0 )
 		{
+#			ifdef RT_DEBUG
 			cout << " + Attaching stencil texture." << endl;
+#			endif
 			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, rtInfo.stenciltex, 0 );
 		}
 
