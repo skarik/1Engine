@@ -1,4 +1,3 @@
-
 #include "MapEditor.h"
 
 #include "core/input/CInput.h"
@@ -286,18 +285,27 @@ void MapEditor::doTileEditing ( void )
 {
 	if ( !m_navigation_busy )
 	{
-		// Stop rebuild
-		m_tilemap->ProcessPause();
-		// Build div count needed 
-		int divsNeeded = int(Vector2d( Input::DeltaMouseX(),Input::DeltaMouseY() ).magnitude() / std::min( m_tilemap->m_tileset->tilesize_x,m_tilemap->m_tileset->tilesize_y )) + 1;
-		for ( int i = 0; i <= divsNeeded; ++i )
+		if ( m_current_submode == SubMode::TilesVisual )
 		{
-			// Do tile editing across the entire range to compensate for lower framerates
-			float percent = i / (float)divsNeeded;
-			_doTileEditingSub( Input::MouseX() - Input::DeltaMouseX() * percent, Input::MouseY() - Input::DeltaMouseY() * percent );
+			// Stop rebuild
+			m_tilemap->ProcessPause();
+			// Build div count needed 
+			int divsNeeded = int(Vector2d( Input::DeltaMouseX(),Input::DeltaMouseY() ).magnitude() / std::min( m_tilemap->m_tileset->tilesize_x,m_tilemap->m_tileset->tilesize_y )) + 1;
+			for ( int i = 0; i <= divsNeeded; ++i )
+			{
+				// Do tile editing across the entire range to compensate for lower framerates
+				float percent = i / (float)divsNeeded;
+				_doTileEditingSub( Input::MouseX() - Input::DeltaMouseX() * percent, Input::MouseY() - Input::DeltaMouseY() * percent );
+			}
+			// Resume rebuild
+			m_tilemap->ProcessResume();
 		}
-		// Resume rebuild
-		m_tilemap->ProcessResume();
+		else if ( m_current_submode == SubMode::TilesCollision )
+		{
+		}
+		else if ( m_current_submode == SubMode::TilesHeight )
+		{
+		}
 	}
 }
 void MapEditor::_doTileEditingSub ( float mousex, float mousey )

@@ -428,7 +428,7 @@ void TileMap::Rebuild ( void )
 	for ( uint i = 0; i < m_meshstorage.size(); ++i )
 	{
 		renderer::TileMapLayer* render_layer = new renderer::TileMapLayer (); // This needs to be stored and deleted.
-		render_layer->SetSpriteFile( m_sprite_file );
+		render_layer->SetSpriteFile( m_sprite_file ); // TODO: Use the previous layer's sprite file.
 		render_layer->SetLayer( &m_meshstorage[i] );
 		render_layer->source_layer_id = m_meshstorage_layer[i];
 

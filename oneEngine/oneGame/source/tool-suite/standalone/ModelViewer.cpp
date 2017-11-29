@@ -26,7 +26,7 @@ toolsuite::ModelViewer::ModelViewer ( void )
 
 	// Create temp cube
 	{
-		CPrimitiveCube* cube = new CPrimitiveCube(0.5F, 0.5F, 0.5F);
+		CPrimitiveCube* cube = new CPrimitiveCube(1.0F, 1.0F, 1.0F);
 		(new CRendererHolder(cube))->RemoveReference();
 	}
 
@@ -57,7 +57,7 @@ toolsuite::ModelViewer::ModelViewer ( void )
 	// Create character model
 	{
 		model = new CModel( filename.c_str() );
-		model->transform.scale = Vector3d(1,1,1) / 304.8F * 3.2F;
+		model->transform.scale = Vector3d(1,1,1);// / 304.8F * 3.2F;
 		//model->transform.rotation = Vector3d(0.0F, 0, 135.0F);
 		//model->transform.position = Vector3d(-1.0F, +1.0F, -1.3F);
 		model->transform.position = Vector3d(0.0F, 0.0F, 0.0F);
