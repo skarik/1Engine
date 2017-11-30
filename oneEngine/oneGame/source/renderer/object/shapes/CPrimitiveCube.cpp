@@ -23,6 +23,9 @@ void CPrimitiveCube::buildCube ( Real x, Real y, Real z )
 		{-kHS.x, -kHS.y, -kHS.z}, {+kHS.x, -kHS.y, -kHS.z}, {+kHS.x, +kHS.y, -kHS.z}, {-kHS.x, +kHS.y, -kHS.z},
 		{-kHS.x, -kHS.y, +kHS.z}, {+kHS.x, -kHS.y, +kHS.z}, {+kHS.x, +kHS.y, +kHS.z}, {-kHS.x, +kHS.y, +kHS.z}
 	};
+	const Vector3f kTexCoords [4] = {
+		Vector3f(0,0,0), Vector3f(1,0,0), Vector3f(1,1,0), Vector3f(0,1,0)
+	};
 
 	m_modeldata.vertices = new arModelVertex [24];
 	m_modeldata.vertexNum = 24;
@@ -98,7 +101,7 @@ void CPrimitiveCube::buildCube ( Real x, Real y, Real z )
 	for (uint i = 0; i < 24; ++i)
 	{
 		m_modeldata.vertices[i].color = Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
-		m_modeldata.vertices[i].texcoord0 = Vector3f(0.5F,0.5F,0.5F);
+		m_modeldata.vertices[i].texcoord0 = kTexCoords[i % 4];
 	}
 
 	// Set triangles:

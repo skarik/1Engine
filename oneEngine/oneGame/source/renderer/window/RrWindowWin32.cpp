@@ -1,4 +1,3 @@
-
 #include "core/types/types.h"
 #include "core/settings/CGameSettings.h"
 #include "core/system/Screen.h"
@@ -17,6 +16,9 @@
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
+#include "core/os.h"
+#include "core-ext/system/shell/DragAndDrop.h"
+#include <shellapi.h>
 
 //bool	active;		// Window Active Flag Set To TRUE By Default
 bool	fullscreen;	// Fullscreen Flag Set To Fullscreen Mode By Default
@@ -569,6 +571,8 @@ RrWindow::eReturnStatus RrWindow::CreateGLWindow(char* title, int width, int hei
 	}
 	// init touch input
 	RegisterTouchWindow( hWnd, 0 );
+	// set drag and drop
+	DragAcceptFiles( hWnd, TRUE );
 
 	// If not fullscreen, start the window in the center of the screen (or where it was last set to)
 	if ( !fullscreen )
@@ -782,8 +786,11 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 			return 0;
 		}
 		case WM_KILLFOCUS:
+		{
 			RrWindow::pActive->focused = false;	// Program is no longer focused
 			return 0;
+		}
+		// Window move
 		case WM_MOVE:
 		{
 			if ( RrWindow::pActive->focused )
@@ -798,23 +805,57 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 			}
 			return 0;
 		}
-
-		case WM_SYSCOMMAND:							// Intercept System Commands
+		// Intercept System Commands
+		case WM_SYSCOMMAND:
 		{
-			switch (wParam)							// Check System Calls
+			switch (wParam)
 			{
-				case SC_SCREENSAVE:					// Screensaver Trying To Start?
-				case SC_MONITORPOWER:				// Monitor Trying To Enter Powersave?
-				case SC_KEYMENU:					// ALT-Key nonsense?
-				return 0;							// Prevent From Happening
+				case SC_SCREENSAVE:		// Screensaver Trying To Start?
+				case SC_MONITORPOWER:	// Monitor Trying To Enter Powersave?
+				case SC_KEYMENU:		// ALT-Key nonsense?
+				return 0;	// Prevent From Happening
 			}
-			break;									// Exit
+			// Otherwise, we want to let windows handle it:
+			break;
+		}
+		// Window close button
+		case WM_CLOSE:
+		{
+			PostQuitMessage(0);
+			return 0;
 		}
 
-		case WM_CLOSE:								// Did We Receive A Close Message?
+		// Window resize
+		case WM_SIZE:
 		{
-			PostQuitMessage(0);						// Send A Quit Message
+			hiddencursor = false;
+			RrWindow::ReSizeGLScene(LOWORD(lParam),HIWORD(lParam));  // LoWord=Width, HiWord=Height
 			return 0;								// Jump Back
+		}
+
+		// File drag & drop
+		case WM_DROPFILES:
+		{
+			TCHAR lpszFile[MAX_PATH] = {0};
+			UINT uFile = 0;
+			HDROP hDrop = (HDROP)wParam;
+
+			uFile = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, NIL);
+			for (UINT i = 0; i < uFile; ++i)
+			{
+				POINT point = {0};
+				DragQueryFile(hDrop, i, lpszFile, MAX_PATH);
+				DragQueryPoint(hDrop, &point);
+				printf("file %d: \"%s\" @ %d, %d\n", i, lpszFile, point.x, point.y);
+
+				core::shell::arDragAndDropEntry dndEntry;
+				dndEntry.filename = lpszFile;
+				dndEntry.point = Vector2i(point.x, point.y);
+				core::shell::AddDragAndDropEntry(dndEntry);
+			}
+
+			DragFinish(hDrop);
+			return 0;
 		}
 		
 		// Mouse movement
@@ -962,7 +1003,18 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 			CInput::_currMouseW( GET_WHEEL_DELTA_WPARAM(wParam) );
 			return 0;
 		}
+		case WM_HSCROLL:
+		{
+			debug::Console->PrintWarning( "HScroll message\n" );
+			return 0;
+		}
+		case WM_VSCROLL:
+		{
+			debug::Console->PrintWarning( "VScroll message\n" );
+			return 0;
+		}
 
+		// Touchscreen support (nonfunctional)
 		case WM_TOUCH:
 		{
 			debug::Console->PrintWarning( "Touch message\n" );
@@ -978,24 +1030,6 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
 			debug::Console->PrintWarning( "Gesture message\n" );
 			return 0;
 		}
-		case WM_HSCROLL:
-		{
-			debug::Console->PrintWarning( "HScroll message\n" );
-			return 0;
-		}
-		case WM_VSCROLL:
-		{
-			debug::Console->PrintWarning( "VScroll message\n" );
-			return 0;
-		}
-
-		case WM_SIZE:								// Resize The OpenGL Window
-		{
-			hiddencursor = false;
-			RrWindow::ReSizeGLScene(LOWORD(lParam),HIWORD(lParam));  // LoWord=Width, HiWord=Height
-			return 0;								// Jump Back
-		}
-		
 	}
 
 	// Pass All Unhandled Messages To DefWindowProc

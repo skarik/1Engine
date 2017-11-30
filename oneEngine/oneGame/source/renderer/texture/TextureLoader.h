@@ -78,6 +78,7 @@ namespace Textures
 
 	// Actual conversions
 	RENDER_API pixel_t* loadTGA ( const std::string& n_inputfile, timgInfo& o_info );
+	RENDER_API pixel_t* loadBMP ( const std::string& n_inputfile, timgInfo& o_info );
 	RENDER_API pixel_t* loadJPG ( const std::string& n_inputfile, timgInfo& o_info );
 	RENDER_API pixel_t* loadPNG ( const std::string& n_inputfile, timgInfo& o_info );
 	RENDER_API pixel_t* loadBPD ( const std::string& n_inputfile, timgInfo& o_info, const int level );

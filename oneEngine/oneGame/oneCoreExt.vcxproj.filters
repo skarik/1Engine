@@ -153,6 +153,9 @@
     <ClCompile Include="source\core-ext\animation\set\AnimationSet.cpp">
       <Filter>SOURCE\Core-ext\Animation\Set</Filter>
     </ClCompile>
+    <ClCompile Include="source\core-ext\system\shell\DragAndDrop.cpp">
+      <Filter>SOURCE\Core-ext\System\Shell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -247,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\animation\set\AnimationSet.h">
       <Filter>SOURCE\Core-ext\Animation\Set</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\shell\DragAndDrop.h">
+      <Filter>SOURCE\Core-ext\System\Shell</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

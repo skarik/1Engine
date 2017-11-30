@@ -30,6 +30,10 @@ tPixel* Textures::LoadRawImageData ( const std::string& n_inputfile, timgInfo& o
 	{
 		return loadTGA(n_inputfile, o_info);
 	}
+	else if ( sExtension == "bmp" )
+	{
+		return loadBMP(n_inputfile, o_info);
+	}
 	else if ( sExtension == "png" )
 	{
 		return loadPNG(n_inputfile, o_info);
@@ -186,6 +190,118 @@ tPixel* Textures::loadTGA ( const std::string& n_inputfile, timgInfo& o_info )
 	{
 		// Throw error if data is invalid
 		fprintf( stderr, "Could not read TGA file \"%s\"\n", n_inputfile.c_str() );
+		// Give a default texture
+		return loadDefault(o_info);
+	}
+}
+
+//=========================================//
+//		BMP Loader
+//=========================================//
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+tPixel* Textures::loadBMP ( const std::string& n_inputfile, timgInfo& o_info )
+{
+	GL_ACCESS; // Using the glMainSystem accessor
+	int calcW, calcH, calcBPP;
+	unsigned char * pixelData = NULL;
+	tPixel* pData = NULL;
+
+	pixelData = stbi_load( n_inputfile.c_str(), &calcW, &calcH, &calcBPP, 4 );
+
+	// If the data is valid
+	if ( pixelData != NULL )
+	{
+		int iResX = 1;
+		int iResY = 1;
+		// Check for maximum size limits
+		if (( calcW < (signed)o_info.width )||( calcH < (signed)o_info.height ))
+		{
+			iResX = std::max<uint>( o_info.width/calcW, 1 );
+			iResY = std::max<uint>( o_info.height/calcH, 1 );
+		}
+		// Do oldstyle texture loading if power of two loading mandatory 
+		if ( !GL.NPOTsAvailable )
+		{
+			// Set the new texture size
+			o_info.width = 1;
+			while (( o_info.width < (unsigned)calcW )&&( o_info.width < (unsigned)GL.MaxTextureSize ))
+				o_info.width *= 2;	
+			o_info.height = 1;
+			while (( o_info.height < (unsigned)calcH )&&( o_info.height < (unsigned)GL.MaxTextureSize ))
+				o_info.height *= 2;
+			// Check and set the bitdepth
+			if ( calcBPP == 3 )
+				o_info.internalFormat = RGB8;
+			else if ( calcBPP == 4 )
+				o_info.internalFormat = RGBA8;
+			// Create the pixel data
+			pData = new tPixel [ o_info.width * o_info.height ];
+			// Go through the stored data and save it to the texture pixel data
+			unsigned int iTarget;
+			unsigned int iSource;
+			for ( unsigned int ix = 0; ix < o_info.width; ix += 1 )
+			{
+				for ( unsigned int iy = 0; iy < o_info.height; iy += 1 )
+				{
+					iTarget = ix+((o_info.height-iy-1)*o_info.width);
+					iSource = ( int((ix/float(o_info.width))*calcW) + int((int((1-(iy/float(o_info.height)))*calcH)-1)*o_info.width) )*calcBPP;
+					pData[ iTarget ].r = pixelData[ iSource+2 ];
+					pData[ iTarget ].g = pixelData[ iSource+1 ];
+					pData[ iTarget ].b = pixelData[ iSource+0 ];
+					if ( calcBPP == 4 ) {
+						pData[ iTarget ].a = pixelData[ iSource+3 ];
+					}
+					else {
+						pData[ iTarget ].a = 255;
+					}
+				}
+			}
+		}
+		else // Use the texture size if NPOT textures are available
+		{
+			// Set the new texture size
+			o_info.width = calcW;
+			o_info.height = calcH;
+			// Check and set the bitdepth
+			if ( calcBPP == 3 )
+				o_info.internalFormat = RGB8;
+			else if ( calcBPP == 4 )
+				o_info.internalFormat = RGBA8;
+			// Create the pixel data
+			pData = new tPixel [ o_info.width * o_info.height ];
+			// Go through the stored data and save it to the texture pixel data
+			unsigned int iTarget;
+			unsigned int iSource;
+			for ( unsigned int ix = 0; ix < o_info.width; ix += 1 )
+			{
+				for ( unsigned int iy = 0; iy < o_info.height; iy += 1 )
+				{
+					iTarget = ix+((o_info.height-iy-1)*o_info.width);
+					iSource = (ix+((o_info.height-iy-1)*o_info.width))*calcBPP;
+					pData[ iTarget ].r = pixelData[ iSource+2 ];
+					pData[ iTarget ].g = pixelData[ iSource+1 ];
+					pData[ iTarget ].b = pixelData[ iSource+0 ];
+					if ( calcBPP == 4 ) {
+						pData[ iTarget ].a = pixelData[ iSource+3 ];
+					}
+					else {
+						pData[ iTarget ].a = 255;
+					}
+				}
+			}
+		}
+		// Delete the source data
+		//delete [] pixelData;
+		stbi_image_free(pixelData);
+		// Return final data
+		return pData;
+	}
+	else
+	{
+		// Throw error if data is invalid
+		fprintf( stderr, "Could not read BMP file \"%s\"\n", n_inputfile.c_str() );
 		// Give a default texture
 		return loadDefault(o_info);
 	}

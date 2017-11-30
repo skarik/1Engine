@@ -2,9 +2,12 @@
 #define TOOL_SUITE_STANDALONE_MODEL_VIEWER_H_
 
 #include "engine/behavior/CGameBehavior.h"
+#include "engine-common/dusk/CDuskGUIHandle.h"
 
 class CCamera;
 class CModel;
+class CRenderableObject;
+class CDuskGUI;
 
 namespace toolsuite
 {
@@ -22,9 +25,19 @@ namespace toolsuite
 
 		void			ResetCameraOrientation ( void );
 
+		//		uiCreate () : create the dusk UI
+		// create entirety of the dusk gui shit
+		void			uiCreate ( void );
+
+		//		uiUpdate () : dusk UI logic
+		// performs input & other toggle logic
+		void			uiUpdate ( void );
+
 	private:
 		CCamera*		camera;
 		CModel*			model;
+		CRenderableObject*	cube;
+		CDuskGUI*		dusk;
 
 		// Position camera orbits around.
 		Vector3d		cameraCenter;
@@ -34,6 +47,11 @@ namespace toolsuite
 		Rotator			cameraRotation;
 		// Camera's persistent velocity for mouse input.
 		Vector3d		cameraRotationVelocity;
+
+	private:
+		// Dusk UI Elements:
+
+		Dusk::Handle	ui_lbl_startHint;
 	};
 }
 

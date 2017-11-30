@@ -1,7 +1,5 @@
-
-
-#ifndef _COGL_WINDOW_WIN_32_
-#define _COGL_WINDOW_WIN_32_
+#ifndef RENDERER_WINDOW_H_
+#define RENDERER_WINDOW_H_
 
 // Includes
 #include "core/os.h"
@@ -142,6 +140,4 @@ private:
 	//CRenderTexture*	pSbuf;	// Main screen buffer owned by the window
 };
 
-
-
-#endif
+#endif//RENDERER_WINDOW_H_

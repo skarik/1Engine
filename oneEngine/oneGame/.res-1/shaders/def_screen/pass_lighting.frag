@@ -414,7 +414,7 @@ void main ( void )
     //pixelNormal.rgb = pixelNormal.rgb;
     //pixelNormal.rb = vec2(0,0);
 
-    pixelDiffuse.rgb = vec3(0.43,0.4,0.5);
+    //pixelDiffuse.rgb = vec3(0.43,0.4,0.5);
     //pixelDiffuse.r += length(pixelPosition) * 0.05;
     //pixelDiffuse.rg -= 0.1 - length(pixelPosition.xy) * 0.02;
 

@@ -30,6 +30,10 @@ static int listen ( std::string const& )
 			engine::Console->RunCommand( "scene modelviewer" );
 		}
 	}
+	else
+	{	// Run modelviewer by default
+		engine::Console->RunCommand( "scene modelviewer" );
+	}
 	return 0;
 }
 

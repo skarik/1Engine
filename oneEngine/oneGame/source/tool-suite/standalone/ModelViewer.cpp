@@ -2,20 +2,26 @@
 
 #include "core/settings/CGameSettings.h"
 #include "core/debug/CDebugConsole.h"
-#include "core-ext/system/io/Resources.h"
+#include "core/math/Math.h"
 #include "core/input/CInput.h"
 #include "core/input/CXboxController.h"
 #include "core/system/io/FileUtils.h"
 #include "core/utils/StringUtils.h"
+
+#include "core-ext/system/io/Resources.h"
+#include "core-ext/system/shell/DragAndDrop.h"
 
 #include "engine/utils/CDeveloperConsole.h"
 
 #include "renderer/camera/CCamera.h"
 #include "renderer/object/shapes/CPrimitiveCube.h"
 #include "renderer/object/model/Model.h"
-#include "engine-common/entities/CRendererHolder.h"
+#include "renderer/material/RrMaterial.h"
+#include "renderer/texture/CTexture.h"
+#include "renderer/texture/CBitmapFont.h"
 
-#include "core/math/Math.h"
+#include "engine-common/entities/CRendererHolder.h"
+#include "engine-common/dusk/CDuskGUI.h"
 
 toolsuite::ModelViewer::ModelViewer ( void )
 	: CGameBehavior()
@@ -26,8 +32,10 @@ toolsuite::ModelViewer::ModelViewer ( void )
 
 	// Create temp cube
 	{
-		CPrimitiveCube* cube = new CPrimitiveCube(1.0F, 1.0F, 1.0F);
-		(new CRendererHolder(cube))->RemoveReference();
+		cube = new CPrimitiveCube(1.0F, 1.0F, 1.0F);
+		RrMaterial* mat = RrMaterial::Default->copy();
+		cube->SetMaterial(mat);
+		mat->removeReference();
 	}
 
 	for (std::string cmd : CGameSettings::Active()->m_cmd)
@@ -36,7 +44,7 @@ toolsuite::ModelViewer::ModelViewer ( void )
 	}
 
 	// Load in command line
-	string filename = "models/demos/female elf.fbx";
+	string filename = "";//"models/demos/female elf.fbx";
 	auto& cmd_list = CGameSettings::Active()->m_cmd;
 	if ( !cmd_list.empty() )
 	{
@@ -55,13 +63,24 @@ toolsuite::ModelViewer::ModelViewer ( void )
 	}
 
 	// Create character model
+	if (filename.length() > 1)
 	{
 		model = new CModel( filename.c_str() );
-		model->transform.scale = Vector3d(1,1,1);// / 304.8F * 3.2F;
-		//model->transform.rotation = Vector3d(0.0F, 0, 135.0F);
-		//model->transform.position = Vector3d(-1.0F, +1.0F, -1.3F);
+		model->transform.scale = Vector3d(1,1,1);
 		model->transform.position = Vector3d(0.0F, 0.0F, 0.0F);
-		//(new CRenderLogicHolder(model))->RemoveReference();
+	}
+	else
+	{
+		model = NULL;
+	}
+
+	// Create UI
+	{
+		dusk = new DuskGUI(
+			new CBitmapFont( "YanoneKaffeesatz-R.otf", 21 )
+		);
+		dusk->SetPixelMode(true);
+		uiCreate();
 	}
 
 	ResetCameraOrientation();
@@ -70,6 +89,9 @@ toolsuite::ModelViewer::ModelViewer ( void )
 toolsuite::ModelViewer::~ModelViewer ( void )
 {
 	delete_safe(camera);
+	delete_safe(model);
+	delete_safe(cube);
+	delete_safe_decrement(dusk);
 }
 
 void toolsuite::ModelViewer::Update ( void )
@@ -83,6 +105,16 @@ void toolsuite::ModelViewer::Update ( void )
 	// Set final location
 	camera->transform.position = cameraCenter + cameraRotation * cameraPanning;
 	camera->transform.rotation = cameraRotation;
+
+	core::shell::arDragAndDropEntry dndEntry;
+	while (core::shell::PopDragAndDropEntry(dndEntry))
+	{
+		CTexture* tex = new CTexture(dndEntry.filename.c_str());
+		cube->GetMaterial()->setTexture(TEX_DIFFUSE, core::Orphan(tex));
+	}
+
+	// Update UI:
+	uiUpdate();
 }
 
 void toolsuite::ModelViewer::UpdateControlsAnalog ( void )
@@ -173,4 +205,16 @@ void toolsuite::ModelViewer::ResetCameraOrientation ( void )
 	{
 		cameraCenter = model->GetBoundingBox().GetCenterPoint().mulComponents(model->transform.scale);
 	}
+}
+
+
+void toolsuite::ModelViewer::uiCreate ( void )
+{
+	ui_lbl_startHint = dusk->CreateText(-1, "To get started, drag an FBX or PAD file in.");
+	ui_lbl_startHint.SetRect( Rect( (Screen::Info.width - 256) * 0.5F, Screen::Info.height * 0.75F, 256, 24 ) );
+}
+
+void toolsuite::ModelViewer::uiUpdate ( void )
+{
+
 }
