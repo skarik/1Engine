@@ -194,10 +194,57 @@ void rrMeshBuilder2D::addRectTex ( const Rect& rect, const Rect& tex, const Colo
 // The "line" is actually a very thin quad, with a width of what is calculated to be one pixel.
 void rrMeshBuilder2D::addLine ( const Vector2f& point1, const Vector2f& point2, const Color& color )
 {
-	const Vector2d pos1 = point1.mulComponents(m_multiplier) + m_offset;
-	const Vector2d pos2 = point2.mulComponents(m_multiplier) + m_offset;
+	const Vector2d dir = (point2 - point1).normal();
+	const Vector2d pos1 = (point1 - dir*0.47F).mulComponents(m_multiplier) + m_offset;
+	const Vector2d pos2 = (point2 + dir*0.47F).mulComponents(m_multiplier) + m_offset;
 
-	const Vector2d pixel_offset (point1.y - point2.y, point2.x - point1.x);
+	const Vector2d pixel_offset = Vector2d(
+		-dir.y * 1.0F / (Real)Screen::Info.width,
+		+dir.x * 1.0F / (Real)Screen::Info.height);
+
+	expand(m_vertexCount + 4);
+	expandTri(m_triangleCount + 2);
+
+	{
+		const uint16_t index = m_vertexCount;
+		const uint16_t tri_index = m_triangleCount;
+
+		memset(m_model->vertices + index, 0, sizeof(arModelVertex) * 4);
+
+		// Layout: 0 2
+		//         1 3
+
+		m_model->vertices[index + 0].position = pos1 - pixel_offset;
+		m_model->vertices[index + 1].position = pos2 - pixel_offset;
+		m_model->vertices[index + 2].position = pos1 + pixel_offset;
+		m_model->vertices[index + 3].position = pos2 + pixel_offset;
+
+		m_model->vertices[index + 0].texcoord0 = Vector2f(0.5F, 0.5F);
+		m_model->vertices[index + 1].texcoord0 = Vector2f(0.5F, 0.5F);
+		m_model->vertices[index + 2].texcoord0 = Vector2f(0.5F, 0.5F);
+		m_model->vertices[index + 3].texcoord0 = Vector2f(0.5F, 0.5F);
+
+		m_model->vertices[index + 0].color = Vector4f(color.raw);
+		m_model->vertices[index + 1].color = Vector4f(color.raw);
+		m_model->vertices[index + 2].color = Vector4f(color.raw);
+		m_model->vertices[index + 3].color = Vector4f(color.raw);
+
+		m_model->vertices[index + 0].position.z = 0.5F;
+		m_model->vertices[index + 1].position.z = 0.5F;
+		m_model->vertices[index + 2].position.z = 0.5F;
+		m_model->vertices[index + 3].position.z = 0.5F;
+
+		m_model->triangles[tri_index + 0].vert[0] = index + 0;
+		m_model->triangles[tri_index + 0].vert[1] = index + 1;
+		m_model->triangles[tri_index + 0].vert[2] = index + 2;
+
+		m_model->triangles[tri_index + 1].vert[0] = index + 2;
+		m_model->triangles[tri_index + 1].vert[1] = index + 1;
+		m_model->triangles[tri_index + 1].vert[2] = index + 3;
+	}
+
+	m_vertexCount += 4;
+	m_triangleCount += 2;
 }
 
 //	addCircle (center, radius, color, divs, outline) : Adds a circle to draw.
@@ -221,7 +268,7 @@ void rrMeshBuilder2D::addCircle ( const Vector2f& center, const Real radius, con
 
 		m_model->vertices[index + 0].position = pos_center;
 		m_model->vertices[index + 0].position.z = 0.5F;
-		m_model->vertices[index + 0].texcoord0 = Vector2f(0.5F ,0.5F);
+		m_model->vertices[index + 0].texcoord0 = Vector2f(0.5F, 0.5F);
 		m_model->vertices[index + 0].color = Vector4f(color.raw);
 
 		for (int i = 0; i < divs; ++i)

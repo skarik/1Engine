@@ -1,5 +1,7 @@
 #include "sceneGameLuvPpl.h"
 
+#include "m04/m04-common.h"
+
 // Include game settings
 #include "core/settings/CGameSettings.h"
 
@@ -93,7 +95,7 @@ void sceneGameLuvPpl::LoadScene ( void )
 	M04::MapInformation* m_mapinfo = new M04::MapInformation;
 
 	// Open the file
-	FILE* fp = core::Resources::Open("maps/test1.m04", "rb");
+	FILE* fp = core::Resources::Open(M04::m04NextLevelToLoad.c_str(), "rb");
 	if ( fp == NULL )
 		throw core::NullReferenceException();
 
@@ -125,7 +127,7 @@ void sceneGameLuvPpl::LoadScene ( void )
 		params.shape = shape;
 		params.owner = NULL;
 		params.ownerType = core::kBasetypeVoidPointer;
-		params.group = physical::layer::PHYS_CHARACTER;
+		params.group = physical::layer::PHYS_LANDSCAPE;
 		params.mass = 0.0F;
 
 		CRigidbody* bod = new CRigidbody(params);

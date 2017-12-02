@@ -24,6 +24,8 @@ namespace M04
 
 	public:
 		Engine2D::CollisionMap*	m_collision;
+		bool					m_drawSolids;
+		bool					m_drawWireframe;
 
 	private:
 		uint32_t	m_max_vertex;

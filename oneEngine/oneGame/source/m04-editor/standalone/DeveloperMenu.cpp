@@ -1,4 +1,3 @@
-
 #include "DeveloperMenu.h"
 
 #include "core/input/CInput.h"
@@ -96,7 +95,7 @@ void DeveloperMenu::uiStepMainPanel ( void )
 {
 	if ( ui_main_editor.GetButtonClicked() )
 	{
-		engine::Console->RunCommand( "scene test1" );
+		engine::Console->RunCommand( "scene editorm04" );
 	}
 	else if ( ui_main_testg.GetButtonClicked() )
 	{

@@ -13,7 +13,7 @@
 using namespace M04;
 
 CollisionMapRenderer::CollisionMapRenderer ( void )
-	: CStreamedRenderable3D()
+	: CStreamedRenderable3D(), m_drawSolids(true), m_drawWireframe(true)
 {
 	memset( &m_modeldata, 0, sizeof(arModelData) );
 	m_max_vertex = 0;
@@ -86,8 +86,15 @@ bool CollisionMapRenderer::PreRender ( void )
 // Render the model using the 2D engine's style
 bool CollisionMapRenderer::Render ( const char pass )
 {
-	gpu::DeviceSetFillMode( NULL, gpu::kFillModeWireframe );
-	CStreamedRenderable3D::Render(pass);
-	gpu::DeviceSetFillMode( NULL, gpu::kFillModeSolid );
-	return CStreamedRenderable3D::Render(pass);
+	if (m_drawWireframe)
+	{
+		gpu::DeviceSetFillMode( NULL, gpu::kFillModeWireframe );
+		CStreamedRenderable3D::Render(pass);
+		gpu::DeviceSetFillMode( NULL, gpu::kFillModeSolid );
+	}
+	if (m_drawSolids)
+	{
+		CStreamedRenderable3D::Render(pass);
+	}
+	return true;
 }

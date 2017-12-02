@@ -22,6 +22,9 @@ void sceneEditorMain::LoadScene ( void )
 {
 	debug::Console->PrintMessage( "Loading scene: editor.\n" );
 
+	// Enable cursor
+	ActiveCursor->SetVisible(true);
+
 	CLoadingScreen* loadScreen = new CLoadingScreen();
 	loadScreen->loadStep();
 

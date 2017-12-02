@@ -29,7 +29,12 @@ TileMap::TileMap ( void )
 }
 TileMap::~TileMap ( void )
 {
-	;
+	// Clear out the render layers that are currently there
+	for ( uint i = 0; i < m_render_layers.size(); ++i )
+	{
+		delete m_render_layers[i];
+	}
+	m_render_layers.clear();
 }
 void TileMap::Update ( void )
 {

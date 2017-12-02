@@ -1,6 +1,5 @@
-
-#ifndef _GAME_SCENE_GAME_LUV_PPL_TEST_
-#define _GAME_SCENE_GAME_LUV_PPL_TEST_
+#ifndef GAME_SCENE_GAME_LUV_PPL_TEST_
+#define GAME_SCENE_GAME_LUV_PPL_TEST_
 
 #include "engine/state/CGameScene.h"
 
@@ -10,4 +9,4 @@ protected:
 	GAME_API void LoadScene ( void );
 };
 
-#endif//_GAME_SCENE_SYSTEM_LOADER_
+#endif//GAME_SCENE_SYSTEM_LOADER_

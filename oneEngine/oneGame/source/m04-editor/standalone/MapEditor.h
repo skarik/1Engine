@@ -36,6 +36,12 @@ namespace M04
 
 namespace M04
 {
+	struct grEditorPersistentOptions
+	{
+		arstring256	current_file;
+		Vector4f	camera_position;
+	};
+
 	class MapEditor : public CGameBehavior
 	{
 	public:
@@ -45,6 +51,13 @@ namespace M04
 		void		Update ( void ) override;
 
 	protected:
+		//		statusLoad () : load status from file
+		// opens .game/.editorpersistent, loads options
+		void		statusLoad ( void );
+		//		statusSave () : saves status to file
+		// saves options to .game/.editorpersistent
+		void		statusSave ( void );
+
 		//		uiCreate () : create the dusk UI
 		// create entirety of the dusk gui shit
 		void		uiCreate ( void );
@@ -195,8 +208,10 @@ namespace M04
 		Dusk::Handle	ui_mode_utils;
 		Dusk::Handle	ui_toolbox_cutscene;
 		Dusk::Handle	ui_toolbox_global;
+		Dusk::Handle	ui_toolbox_playtest;
 		Dusk::Handle	ui_mode_preferences;
 
+		Dusk::Handle	ui_lbl_file;
 		Dusk::Handle	ui_lbl_mode;
 		Dusk::Handle	ui_lbl_mousex;
 		Dusk::Handle	ui_lbl_mousey;

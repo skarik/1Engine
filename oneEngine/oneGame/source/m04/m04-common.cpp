@@ -16,6 +16,10 @@
 #include "m04-editor/scenes/sceneEditorMain.h"
 #include "m04-editor/scenes/sceneDeveloperMenu.h"
 
+namespace M04
+{
+	arstring<256>	m04NextLevelToLoad;
+}
 
 //	listen() - Called by game engine when all system setup is done.
 static int listen ( std::string const& )
@@ -38,6 +42,8 @@ static int listen ( std::string const& )
 //===============================================================================================//
 int GameInitialize ( void )
 {
+	M04::m04NextLevelToLoad = "maps/test1.m04";
+
 	// Engine. Must always be called else features are not initialized!
 	EngineCommonInitialize();
 
@@ -53,7 +59,8 @@ int GameInitialize ( void )
 
 	// Scene registration
 	EngineCommon::RegisterScene<sceneTilesetTest>( "test0" );
-	EngineCommon::RegisterScene<sceneEditorMain>( "test1" );
+	EngineCommon::RegisterScene<sceneEditorMain>( "editorm04" );
+	EngineCommon::RegisterScene<sceneDeveloperMenu>( "menu" );
 	EngineCommon::RegisterScene<sceneDeveloperMenu>( "m04devmenu" );
 	EngineCommon::RegisterScene<sceneGameLuvPpl>( "game_luvppl" );
 	//EngineCommon::RegisterScene<gmsceneParticleEditor>( "pce" );

@@ -181,12 +181,12 @@ Dusk::DialogueFileSelector::DialogueFileSelector ( const int moverride )
 void Dusk::DialogueFileSelector::Update ( void )
 {
 	// Set proper cursor position for the situation
-	Vector2d old_cursor_pos = cursor_pos;
-	cursor_pos = Vector2d( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
+	//Vector2d old_cursor_pos = cursor_pos;
+	//cursor_pos = Vector2d( CInput::MouseX(), CInput::MouseY() );
 
 	// Set the constant Rect size (40% of the screen)
-	const Real margin = 0.015f;
-	rect = Rect( margin,margin, 0.4f-margin, 1-margin*2 );
+	const Real margin = 10.0F;
+	rect = Rect( margin, margin, 512 - margin, 720 - margin * 2 );
 
 	// Set up the subparts
 
@@ -245,7 +245,7 @@ void Dusk::DialogueFileSelector::Update ( void )
 	m_mouseover = -1;
 	for ( uint f = 0; f < m_filelist.size(); ++f )
 	{
-		if ( Rect( rect.pos.x + 0.047f, rect.pos.y + 0.06f + 0.03f*f, 0.31f, 0.026f ).Contains( cursor_pos ) )
+		if ( Rect( rect.pos.x + 60, rect.pos.y + 40 + 20*f, 400, 18 ).Contains( cursor_pos ) )
 		{
 			m_mouseover = (int)f;
 		}
@@ -254,11 +254,11 @@ void Dusk::DialogueFileSelector::Update ( void )
 	m_button_mouseover = -1;
 	if ( m_mouseover == -1 )
 	{
-		if ( Rect( rect.pos.x + 0.03f, rect.pos.y + 0.85f, 0.09f, 0.035f ).Contains( cursor_pos ) )
+		if ( Rect( rect.pos.x + 40, rect.pos.y + 615, 115, 25 ).Contains( cursor_pos ) )
 		{
 			m_button_mouseover = 1;
 		}
-		else if ( m_context_showsave && Rect( rect.pos.x + 0.13f, rect.pos.y + 0.85f, 0.09f, 0.035f ).Contains( cursor_pos ) )
+		else if ( m_context_showsave && Rect( rect.pos.x + 160, rect.pos.y + 615, 115, 25 ).Contains( cursor_pos ) )
 		{
 			m_button_mouseover = 2;
 		}
@@ -301,7 +301,7 @@ void Dusk::DialogueFileSelector::Update ( void )
 			}
 		}
 		// Check if clicked in name box. If in name box, need to give namebox focus.
-		if ( Rect( rect.pos.x + 0.07f, rect.pos.y + 0.71f, 0.19f, 0.035f ).Contains( cursor_pos ) )
+		if ( Rect( rect.pos.x + 90, rect.pos.y + 515, 250, 25 ).Contains( cursor_pos ) )
 		{
 			m_namebox_focus = true;
 		}
@@ -378,26 +378,26 @@ void Dusk::DialogueFileSelector::Update ( void )
 		{
 			m_context_nameconflict = false;
 			m_context_exists = false;
-			m_context_showsave = true;
+			m_context_showsave = (io_mode==1);
 		}
 	}
 
 	// Restore old stuff
-	cursor_pos = old_cursor_pos;
+	//cursor_pos = old_cursor_pos;
 }
 void Dusk::DialogueFileSelector::Render ( void )
 {
-	bool pixelMode = activeGUI->bInPixelMode;
-	Screen::_screen_info_t oldinfo = Screen::Info;
+	//bool pixelMode = activeGUI->bInPixelMode;
+	//Screen::_screen_info_t oldinfo = Screen::Info;
 	//Screen::Info.width = 1.0F;
 	//Screen::Info.height = 1.0F;
-	activeGUI->bInPixelMode = false;
+	//activeGUI->bInPixelMode = false;
 
 	// Render the background
 	setDrawDefault();
 	setSubdrawDefault();
-	setSubdrawOverrideColor( Color(0,0,0,0.3f) );
-	drawRect( Rect(0,0,1,1) );
+	setSubdrawOverrideColor( Color(0,0,0,0.3F) );
+	drawRect( Rect(0, 0, (Real)Screen::Info.width, (Real)Screen::Info.height) );
 
 	// Render the main panel
 	setDrawDefault();
@@ -406,14 +406,14 @@ void Dusk::DialogueFileSelector::Render ( void )
 	drawRectWire( rect );
 
 	// Draw the prompt text
-	drawText( rect.pos.x + 0.01f, rect.pos.y + 0.03f, label.c_str() );
+	drawText( rect.pos.x + 10, rect.pos.y + 20, label.c_str() );
 
 	// Create the file list background
 	setDrawDefault();
 	setSubdrawDefault();
-	setDrawDown();
+	//setDrawDown();
 	//drawRect( Rect( rect.pos.x + 0.03f, rect.pos.y + 0.05f, 0.33f, 0.7f ) );
-	drawRectWire( Rect( rect.pos.x + 0.03f, rect.pos.y + 0.05f, 0.33f, 0.65f ) );
+	drawRectWire( Rect( rect.pos.x + 40, rect.pos.y + 37, 420, 470 ) );
 
 	// Draw the file list
 	for ( uint f = 0; f < m_filelist.size(); ++f )
@@ -423,51 +423,51 @@ void Dusk::DialogueFileSelector::Render ( void )
 		if ( m_selected == f ) {
 			setDrawDown();
 		}
-		drawRect( Rect( rect.pos.x + 0.047f, rect.pos.y + 0.06f + 0.03f*f, 0.31f, 0.026f ) );
+		drawRect( Rect( rect.pos.x + 60, rect.pos.y + 40 + 20*f, 398, 18 ) );
 		if ( m_mouseover == f ) {
 			setDrawHover();
-			drawRectWire( Rect( rect.pos.x + 0.047f, rect.pos.y + 0.06f + 0.03f*f, 0.31f, 0.026f ) );
+			drawRectWire( Rect( rect.pos.x + 60, rect.pos.y + 40 + 20*f, 398, 18 ) );
 		}
-		drawText( rect.pos.x + 0.05f, rect.pos.y + 0.08f + 0.03f*f, m_filelist[f].filename.c_str() );
+		drawText( rect.pos.x + 65, rect.pos.y + 55 + 20*f, m_filelist[f].filename.c_str() );
 		if ( m_filelist[f].isFolder ) {
-			drawText( rect.pos.x + 0.31f, rect.pos.y + 0.08f + 0.03f*f, "DIR" );
+			drawText( rect.pos.x + 400, rect.pos.y + 55 + 20*f, "DIR" );
 			setDrawDefault();
 			setSubdrawDefault();
 			setDrawHover();
-			drawLine( rect.pos.x + 0.035f, rect.pos.y + 0.072f + 0.03f*f, rect.pos.x + 0.045f, rect.pos.y + 0.072f + 0.03f*f );
-			drawLine( rect.pos.x + 0.04f, rect.pos.y + 0.064f + 0.03f*f, rect.pos.x + 0.04f, rect.pos.y + 0.080f + 0.03f*f );
+			drawLine( rect.pos.x + 45, rect.pos.y + ((f==0)?37:30) + 20*f, rect.pos.x + 45, rect.pos.y + 50 + 20*f );
+			drawLine( rect.pos.x + 45, rect.pos.y + 50 + 20*f, rect.pos.x + 60, rect.pos.y + 50 + 20*f );
 		}
 	}
 
 	// Draw the namebox
 	setDrawDefault();
 	setSubdrawDefault();
-	drawRectWire( Rect( rect.pos.x + 0.07f, rect.pos.y + 0.71f, 0.19f, 0.035f ) );
+	drawRectWire( Rect( rect.pos.x + 90, rect.pos.y + 515, 250, 25 ) );
 	if ( m_namebox_focus ) {
 		setDrawDown();
 	}
-	drawRect( Rect( rect.pos.x + 0.07f, rect.pos.y + 0.71f, 0.19f, 0.035f ) );
-	drawText( rect.pos.x + 0.033f, rect.pos.y + 0.734f, "Filename:" );
-	drawText( rect.pos.x + 0.074f, rect.pos.y + 0.734f, m_namebox_value.c_str() );
+	drawRect( Rect( rect.pos.x + 90, rect.pos.y + 515, 250, 25 ) );
+	drawText( rect.pos.x + 40, rect.pos.y + 535, "Filename:" );
+	drawText( rect.pos.x + 95, rect.pos.y + 535, m_namebox_value.c_str() );
 
 	// Draw the conflict information
-	if ( m_context_exists ) {
+	if ( (io_mode == 0 && !m_context_exists) || (io_mode == 1 && m_context_exists) ) {
 		setDrawDefault();
 		setSubdrawDefault();
 		setSubdrawOverrideColor( Color( 1,1,0,0.3f ) );
-		drawRectWire( Rect( rect.pos.x + 0.07f, rect.pos.y + 0.75f, 0.09f, 0.035f ) );
+		drawRectWire( Rect( rect.pos.x + 90, rect.pos.y + 545, 115, 25 ) );
 		setSubdrawPulse();
-		drawRect( Rect( rect.pos.x + 0.07f, rect.pos.y + 0.75f, 0.09f, 0.035f ) );
-		drawText( rect.pos.x + 0.074f, rect.pos.y + 0.774f, "File exists" );
+		drawRect( Rect( rect.pos.x + 90, rect.pos.y + 545, 115, 25 ) );
+		drawText( rect.pos.x + 95, rect.pos.y + 563, (io_mode==1)?"File exists":"File not found" );
 	}
 	if ( m_context_nameconflict ) {
 		setDrawDefault();
 		setSubdrawDefault();
 		setSubdrawOverrideColor( Color( 1,0,0,0.3f ) );
-		drawRectWire( Rect( rect.pos.x + 0.17f, rect.pos.y + 0.75f, 0.09f, 0.035f ) );
+		drawRectWire( Rect( rect.pos.x + 210, rect.pos.y + 545, 115, 25 ) );
 		setSubdrawPulse();
-		drawRect( Rect( rect.pos.x + 0.17f, rect.pos.y + 0.75f, 0.09f, 0.035f ) );
-		drawText( rect.pos.x + 0.174f, rect.pos.y + 0.774f, "Conflict" );
+		drawRect( Rect( rect.pos.x + 210, rect.pos.y + 545, 115, 25 ) );
+		drawText( rect.pos.x + 215, rect.pos.y + 563, "Conflict" );
 	}
 
 	// Draw the buttons
@@ -476,22 +476,22 @@ void Dusk::DialogueFileSelector::Render ( void )
 	if ( m_button_mouseover == 1 ) {
 		if ( m_button_mousedown ) setDrawDown(); else setDrawHover();
 	}
-	drawRect( Rect( rect.pos.x + 0.03f, rect.pos.y + 0.85f, 0.09f, 0.035f ) );
-	drawRectWire( Rect( rect.pos.x + 0.03f, rect.pos.y + 0.85f, 0.09f, 0.035f ) );
-	drawText( rect.pos.x + 0.034f, rect.pos.y + 0.874f, "Cancel" );
+	drawRect( Rect( rect.pos.x + 40, rect.pos.y + 615, 115, 25 ) );
+	drawRectWire( Rect( rect.pos.x + 40, rect.pos.y + 615, 115, 25 ) );
+	drawText( rect.pos.x + 45, rect.pos.y + 633, "Cancel" );
 
-	if ( m_context_showsave )
-	{
-		setDrawDefault();
-		setSubdrawDefault();
-		if ( m_button_mouseover == 2 ) {
-			if ( m_button_mousedown ) setDrawDown(); else setDrawHover();
-		}
-		drawRect( Rect( rect.pos.x + 0.13f, rect.pos.y + 0.85f, 0.09f, 0.035f ) );
-		drawRectWire( Rect( rect.pos.x + 0.13f, rect.pos.y + 0.85f, 0.09f, 0.035f ) );
-		drawText( rect.pos.x + 0.134f, rect.pos.y + 0.874f, (io_mode==1)?"Save":"Open" );
+	setDrawDefault();
+	setSubdrawDefault();
+	if ( m_context_showsave && m_button_mouseover == 2 ) {
+		if ( m_button_mousedown ) setDrawDown(); else setDrawHover();
 	}
+	if (!m_context_showsave)
+		setSubdrawOverrideColor( Color( 0.6F,0.1F,0.1F,0.5F ) );
+	drawRect( Rect( rect.pos.x + 160, rect.pos.y + 615, 115, 25 ) );
+	drawRectWire( Rect( rect.pos.x + 160, rect.pos.y + 615, 115, 25 ) );
+	setSubdrawDefault();
+	drawText( rect.pos.x + 165, rect.pos.y + 633, (io_mode==1)?"Save":"Open" );
 
-	Screen::Info = oldinfo;
-	activeGUI->bInPixelMode = pixelMode;
+	//Screen::Info = oldinfo;
+	//activeGUI->bInPixelMode = pixelMode;
 }
