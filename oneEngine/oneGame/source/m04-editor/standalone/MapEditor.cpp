@@ -22,6 +22,7 @@
 #include "./mapeditor/TileSelector.h"
 
 #include "engine2d/entities/map/TileMap.h"
+#include "engine2d/entities/map/CollisionMap.h"
 #include "engine2d/entities/Area2DBase.h"
 #include "engine2d/entities/AreaTeleport.h"
 #include "engine2d/entities/AreaTrigger.h"
@@ -37,6 +38,7 @@
 #include "m04-editor/standalone/mapeditor/EditorObject.h"
 
 #include "m04-editor/renderer/object/AreaRenderer.h"
+#include "m04-editor/renderer/object/CollisionMapRenderer.h"
 #include "m04-editor/renderer/object/GizmoRenderer.h"
 
 using namespace M04;
@@ -127,6 +129,23 @@ MapEditor::MapEditor ( void )
 		// Rebuild the map visuals
 		m_tilemap->Rebuild();
 	}
+	// Create the collision and rebuild
+	{
+		m_collisionmap = new Engine2D::CollisionMap();
+		m_collisionmap->RemoveReference(); // So it can be destroyed when the game quits
+
+		// Point at the tilemap
+		m_collisionmap->m_tilemap = m_tilemap;
+
+		// Rebuild it now
+		m_collisionmap->Rebuild();
+	}
+	// Create the collision visualizer
+	{
+		m_tile_collision_renderer = new M04::CollisionMapRenderer();
+		m_tile_collision_renderer->m_collision = m_collisionmap;
+		m_tile_collision_renderer->transform.world.position.z = -99;
+	}
 }
 
 MapEditor::~MapEditor ( void )
@@ -140,6 +159,8 @@ MapEditor::~MapEditor ( void )
 	delete_safe(m_listing);
 	delete_safe_decrement(m_drag_handle);
 	delete_safe_decrement(m_light_handle);
+
+	delete_safe(m_tile_collision_renderer);
 }
 
 //===============================================================================================//
@@ -299,6 +320,10 @@ void MapEditor::doTileEditing ( void )
 			}
 			// Resume rebuild
 			m_tilemap->ProcessResume();
+
+			// Rebuild the collision map
+			m_collisionmap->m_tilemap = m_tilemap;
+			m_collisionmap->Rebuild();
 		}
 		else if ( m_current_submode == SubMode::TilesCollision )
 		{

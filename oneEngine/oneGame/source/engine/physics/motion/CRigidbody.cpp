@@ -156,7 +156,15 @@ CRigidbody ::CRigidbody ( const prRigidbodyCreateParams& params )
 	
 	// Make the body
 	body = IPrRigidBody::NewRigidBody(lcInfo);
-	SetMotionType( physical::motion::kMotionDynamic );
+	if (params.mass > FLOAT_PRECISION)
+	{
+		params.shape->ApiShape()->calculateLocalInertia(params.mass, btVector3(0, 0, 0));
+		SetMotionType( physical::motion::kMotionDynamic );
+	}
+	else
+	{
+		SetMotionType( physical::motion::kMotionStatic );
+	}
 
 	// Set this rigidbody as the object that RX's and TX's motion.
 	body->setMotionState(this);

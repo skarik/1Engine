@@ -1,6 +1,5 @@
-
-#ifndef _ENGINE2D_INTERFACE_TILESET_
-#define _ENGINE2D_INTERFACE_TILESET_
+#ifndef ENGINE2D_INTERFACE_TILESET_
+#define ENGINE2D_INTERFACE_TILESET_
 
 #include "core/types/types.h"
 #include "engine2d/types/MapTile.h"
@@ -32,4 +31,4 @@ namespace Engine2D
 	};
 }
 
-#endif//_ENGINE2D_INTERFACE_TILESET_
+#endif//ENGINE2D_INTERFACE_TILESET_

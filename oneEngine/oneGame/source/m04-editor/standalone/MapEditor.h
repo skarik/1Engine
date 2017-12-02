@@ -13,6 +13,7 @@ class CDuskGUI;
 namespace Engine2D
 {
 	class TileMap;
+	class CollisionMap;
 	class Tileset;
 	class Area2DBase;
 }
@@ -20,6 +21,7 @@ namespace M04
 {
 	class MapInformation;
 	class AreaRenderer;
+	class CollisionMapRenderer;
 	class TileSelector;
 	class ObjectEditorListing;
 	class UIDragHandle;
@@ -151,6 +153,7 @@ namespace M04
 
 		CDuskGUI*	dusk;
 		TileSelector*	m_tile_selector;
+		CollisionMapRenderer*	m_tile_collision_renderer;
 		AreaRenderer*	m_area_renderer;
 		GizmoRenderer*	m_gizmo_renderer;
 
@@ -173,6 +176,7 @@ namespace M04
 
 		M04::MapInformation*	m_mapinfo;
 		Engine2D::TileMap*		m_tilemap;
+		Engine2D::CollisionMap*	m_collisionmap;
 
 		string		m_current_savetarget;
 

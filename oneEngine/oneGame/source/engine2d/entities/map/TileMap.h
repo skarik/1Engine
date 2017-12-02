@@ -1,6 +1,5 @@
-
-#ifndef _ENGINE2D_TILEMAP_H_
-#define _ENGINE2D_TILEMAP_H_
+#ifndef ENGINE2D_TILEMAP_H_
+#define ENGINE2D_TILEMAP_H_
 
 #include <vector>
 #include <mutex>
@@ -98,4 +97,4 @@ namespace Engine2D
 	};
 };
 
-#endif//_ENGINE2D_TILEMAP_H_
+#endif//ENGINE2D_TILEMAP_H_

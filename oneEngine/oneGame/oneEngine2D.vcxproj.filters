@@ -45,6 +45,9 @@
     <ClInclude Include="source\engine2d\interface\AnimationContainer.h">
       <Filter>SOURCE\Engine2D\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine2d\entities\map\CollisionMap.h">
+      <Filter>SOURCE\Engine2D\Entities\Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine2d\entities\map\TileMap.cpp">
@@ -61,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="source\engine2d\interface\AnimationContainer.cpp">
       <Filter>SOURCE\Engine2D\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine2d\entities\map\CollisionMap.cpp">
+      <Filter>SOURCE\Engine2D\Entities\Map</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

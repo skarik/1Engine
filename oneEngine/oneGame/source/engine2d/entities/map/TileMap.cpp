@@ -1,4 +1,3 @@
-
 #include <algorithm>
 #include <thread>
 #include <map>
@@ -149,13 +148,14 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 			{
 				loader.GoInto( entry );
 				// Create new tiletype
-				tilesetEntry_t tiletype;
+				tilesetEntry_t tiletype = {};
 				// Set default values
 				tiletype.atlas_x = 0;
 				tiletype.atlas_y = 0;
 				tiletype.atlas_w = 1;
 				tiletype.atlas_h = 1;
 				tiletype.type = TILE_DEFAULT;
+				tiletype.collision = kTileCollisionTypeNone;
 				// Load in the tile object
 				do
 				{
@@ -193,7 +193,8 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 						// Modify wanted collision for the tileset
 						else if ( key.compare("collision") )
 						{
-							//
+							if ( strcmp(entry.value,"impassable") == 0 || strcmp(entry.value,"impassible") == 0 )
+								tiletype.collision = kTileCollisionTypeImpassable;
 						}
 						// End normal entry check
 					}
@@ -336,7 +337,7 @@ void TileMap::SetDebugTileMap ( const uint n_map_w, const uint n_map_h )
 		{
 			for ( uint iy = 0; iy < n_map_h; ++iy )
 			{
-				mapTile_t tile;
+				mapTile_t tile = {0};
 				tile.type = 0;//rand() % ( m_tileset->tiles.size() );
 				tile.x = ix * m_tileset->tilesize_x;
 				tile.y = iy * m_tileset->tilesize_y;

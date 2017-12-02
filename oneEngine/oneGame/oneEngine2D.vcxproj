@@ -63,6 +63,7 @@
     <ClInclude Include="source\engine2d\entities\Area2DBase.h" />
     <ClInclude Include="source\engine2d\entities\AreaTeleport.h" />
     <ClInclude Include="source\engine2d\entities\AreaTrigger.h" />
+    <ClInclude Include="source\engine2d\entities\map\CollisionMap.h" />
     <ClInclude Include="source\engine2d\entities\map\TileMap.h" />
     <ClInclude Include="source\engine2d\interface\AnimationContainer.h" />
     <ClInclude Include="source\engine2d\interface\SpriteContainer.h" />
@@ -71,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine2d\entities\Area2DBase.cpp" />
+    <ClCompile Include="source\engine2d\entities\map\CollisionMap.cpp" />
     <ClCompile Include="source\engine2d\entities\map\TileMap.cpp" />
     <ClCompile Include="source\engine2d\interface\AnimationContainer.cpp" />
     <ClCompile Include="source\engine2d\interface\SpriteContainer.cpp" />

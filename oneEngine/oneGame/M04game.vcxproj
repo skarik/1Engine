@@ -66,6 +66,7 @@
     <ClInclude Include="source\m04-editor\entities\UIDragHandle.h" />
     <ClInclude Include="source\m04-editor\entities\UILightHandle.h" />
     <ClInclude Include="source\m04-editor\renderer\object\AreaRenderer.h" />
+    <ClInclude Include="source\m04-editor\renderer\object\CollisionMapRenderer.h" />
     <ClInclude Include="source\m04-editor\renderer\object\GizmoRenderer.h" />
     <ClInclude Include="source\m04-editor\renderer\object\UIDragHandleRenderer.h" />
     <ClInclude Include="source\m04-editor\renderer\object\UILightHandleRenderer.h" />
@@ -97,6 +98,7 @@
     <ClCompile Include="source\m04-editor\entities\UIDragHandle.cpp" />
     <ClCompile Include="source\m04-editor\entities\UILightHandle.cpp" />
     <ClCompile Include="source\m04-editor\renderer\object\AreaRenderer.cpp" />
+    <ClCompile Include="source\m04-editor\renderer\object\CollisionMapRenderer.cpp" />
     <ClCompile Include="source\m04-editor\renderer\object\GizmoRenderer.cpp" />
     <ClCompile Include="source\m04-editor\renderer\object\UIDragHandleRenderer.cpp" />
     <ClCompile Include="source\m04-editor\renderer\object\UILightHandleRenderer.cpp" />
