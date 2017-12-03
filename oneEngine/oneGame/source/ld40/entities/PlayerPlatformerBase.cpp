@@ -19,7 +19,8 @@ using namespace M04;
 DECLARE_OBJECT_REGISTRAR(player_platformer_base,M04::PlayerPlatformerBase);
 
 PlayerPlatformerBase::PlayerPlatformerBase ( void )
-	: CGameBehavior()//, Engine2D::SpriteContainer(&position, NULL, &flipstate)
+	: CGameBehavior(), Engine2D::SpriteContainer(&display_position, NULL, &flipstate)
+	//, Engine2D::SpriteContainer(&display_position, NULL, &flipstate)
 	//: CGameBehavior(), Engine2D::AnimationContainer(&position, NULL, &flipstate)
 {
 	// Create the input
@@ -41,6 +42,17 @@ PlayerPlatformerBase::PlayerPlatformerBase ( void )
 		camera->m_camera = cam; // Camera now belongs to the controller
 		camera->m_tracked_position = &display_position;
 		camera->m_tracked_velocity = &velocity;
+	}
+
+	// Set up the sprite
+	{
+		flipstate = Vector3d(1,1,1);
+
+		m_sprite->SpriteGenParams().normal_default = Vector3d(0, 0, 1.0F).normal();
+		m_sprite->SetSpriteFile("sprites/ld40/Mage.gal");
+		m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y / 2 );
+
+		//this->AddFromFile(animation::kTypeIdle, 0, "sprites/ld40/Mage.gal");
 	}
 }
 
@@ -84,8 +96,18 @@ void PlayerPlatformerBase::Update ( void )
 
 void PlayerPlatformerBase::FixedUpdate ( void )
 {
-	display_position = position - motion->m_acculated_offset;
 	motion->PhysicsStep();
+
+	display_position = position - motion->m_acculated_offset;
+	display_position.x = (Real)math::round(display_position.x);
+	display_position.y = (Real)math::round(display_position.y);
+
+	if (velocity.x < 0) {
+		flipstate.x = -1;
+	}
+	else if (velocity.x > 0) {
+		flipstate.x = +1;
+	}
 }
 
 void PlayerPlatformerBase::PostFixedUpdate ( void )

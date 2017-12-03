@@ -4,7 +4,7 @@
 #include "core/math/Math3d.h"
 #include "core/containers/arstring.h"
 #include "engine/behavior/CGameBehavior.h"
-//#include "engine2d/interface/AnimationContainer.h"
+#include "engine2d/interface/AnimationContainer.h"
 
 class CInputControl;
 class COrthoCamera;
@@ -18,7 +18,7 @@ namespace M04
 
 	//		PlayerPlatformerBase
 	// Basic platformer player.
-	class PlayerPlatformerBase : public CGameBehavior/*, public Engine2D::SpriteContainer*/
+	class PlayerPlatformerBase : public CGameBehavior, public Engine2D::SpriteContainer
 	{
 	public:
 		explicit		PlayerPlatformerBase ( void );
@@ -54,8 +54,8 @@ namespace M04
 
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::PlayerPlatformerBase);
-		DEFINE_DISPLAY(DISPLAY_BOX,"1");
-		//DEFINE_DISPLAY(DISPLAY_2D_SPRITE,"sprites/leo.gal");
+		//DEFINE_DISPLAY(DISPLAY_BOX,"1");
+		DEFINE_DISPLAY(DISPLAY_2D_SPRITE,"sprites/ld40/Mage.gal");
 		DEFINE_VALUE(position,Vector3d,FIELD_POSITION);
 		END_OBJECT_DESC();
 	};

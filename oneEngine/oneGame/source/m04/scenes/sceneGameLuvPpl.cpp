@@ -33,6 +33,7 @@
 #include "engine/physics/motion/CRigidbody.h"
 #include "physical/physics/shapes/PrMesh.h"
 
+#include "render2d/object/Background2D.h"
 
 void sceneGameLuvPpl::LoadScene ( void )
 {
