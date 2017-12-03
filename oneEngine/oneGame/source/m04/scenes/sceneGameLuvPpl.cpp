@@ -119,6 +119,7 @@ void sceneGameLuvPpl::LoadScene ( void )
 	// Create collision from world
 	Engine2D::CollisionMap* m_collision = new Engine2D::CollisionMap; m_collision->RemoveReference();
 	m_collision->m_tilemap = m_tilemap; m_collision->Rebuild();
+	if (m_collision->m_mesh.triangleNum > 0)
 	{
 		PrMesh* shape = new PrMesh();
 		shape->Initialize(&m_collision->m_mesh, true);

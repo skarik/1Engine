@@ -737,10 +737,10 @@ void MapEditor::doObjectEditing ( void )
 				// Snap to half-tile
 				objpos.x = (Real) math::round( objpos.x * 2 / m_tilemap->m_tileset->tilesize_x ) * m_tilemap->m_tileset->tilesize_x * 0.5F;
 				objpos.y = (Real) math::round( objpos.y * 2 / m_tilemap->m_tileset->tilesize_y ) * m_tilemap->m_tileset->tilesize_y * 0.5F;
-				objpos.z = -495.0F;
 				// Set positions to snapped values
 				m_object_target->position = objpos;
-				m_drag_handle->SetRenderPosition( objpos );
+				m_drag_handle->SetRenderPosition( Vector3d(objpos.x, objpos.y, -495.0F) );
+				//m_drag_handle->SetRenderPosition( Vector3d(objpos.x, objpos.y, objpos.z) );
 			}
 			else
 			{	// Reset snapping of tool
