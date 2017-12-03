@@ -10,6 +10,7 @@
 
 #include "engine/physics/motion/CRigidbody.h"
 
+#define USE_KINEMATIC_LOGIC
 
 M04::CharacterControllerPlatformer::CharacterControllerPlatformer ( void* owner )
 	: m_owner(owner),
@@ -24,6 +25,8 @@ M04::CharacterControllerPlatformer::~CharacterControllerPlatformer ( void )
 {
 	delete_safe_decrement(m_body);
 	delete_safe(m_hullShape);
+	delete_safe(m_hullShapeHorizonalCheck);
+	delete_safe(m_hullShapeVerticalCheck);
 }
 
 void M04::CharacterControllerPlatformer::InitCollision ( Vector2f hullSize )
@@ -33,9 +36,14 @@ void M04::CharacterControllerPlatformer::InitCollision ( Vector2f hullSize )
 		throw core::InvalidCallException();
 	}
 
-	PrShape* box = new PrShapeBox( hullSize ); 
-	m_hullShape = box;
+	// Create the hulls needed for different checks (due to pixel precision)
+	m_hullShapeHorizonalCheck = new PrShapeBox( Vector2f(hullSize.x, hullSize.y - 2) );
+	m_hullShapeVerticalCheck = new PrShapeBox( Vector2f(hullSize.x - 2, hullSize.y) );
 
+	// Create shape for the rigidbody
+	m_hullShape = new PrShapeBox( hullSize ); 
+
+	// Make the rigidbody:
 	prRigidbodyCreateParams params = {0};
 	params.shape = m_hullShape;
 	params.owner = m_owner;
@@ -54,6 +62,10 @@ void M04::CharacterControllerPlatformer::InitCollision ( Vector2f hullSize )
 	// Disable rotation & Z motion
 	m_body->ApiBody()->setAngularFactor(btVector3(0,0,0));
 	m_body->ApiBody()->setLinearFactor(btVector3(1,1,0));
+
+#	ifdef USE_KINEMATIC_LOGIC
+	m_body->SetMotionType( physical::motion::kMotionKinematic );
+#	endif
 }
 
 void M04::CharacterControllerPlatformer::Step ( void )
@@ -85,6 +97,11 @@ void M04::CharacterControllerPlatformer::PhysicsStep ( void )
 			m_motionStatePrevious = prevState;
 			m_motionState = nextState;
 		}
+		// Move the character:
+#		ifdef USE_KINEMATIC_LOGIC
+		*m_tracked_position += *m_tracked_velocity * Time::deltaTime;
+#		endif
+
 	}
 	m_inputConsumed = true;
 }
@@ -92,10 +109,8 @@ void M04::CharacterControllerPlatformer::PhysicsStep ( void )
 
 void M04::CharacterControllerPlatformer::COMCheckGround ( void )
 {
-	m_onGround = false;
-
 	prShapecastQuery query = {0};
-	query.shape		= m_hullShape;
+	query.shape		= m_hullShapeVerticalCheck;
 	query.start		= XrTransform(*m_tracked_position);
 	query.end		= XrTransform(*m_tracked_position + Vector3f(0, 2, 0));
 	query.collision	= physical::prCollisionMask(physical::layer::MASK_CHARACTER | physical::layer::MASK_LANDSCAPE, 0, 0);
@@ -104,10 +119,31 @@ void M04::CharacterControllerPlatformer::COMCheckGround ( void )
 	query.ignore	= m_body;
 	query.maxHits	= 1;
 	
-	// Cast.
-	if (PrCast(query))
+	PrCast cast(query);
+	if (cast)
 	{
-		m_onGround = true;
+		if (!m_onGround)
+		{
+			m_onGround = true;
+			if ( m_tracked_velocity->y > FLOAT_PRECISION )
+			{
+				// Push along the cast
+				m_tracked_velocity->y = 0;
+				// Move to contact
+				Real new_y = math::lerp(cast.HitFraction<0>(), query.start.position.y, query.end.position.y) - math::sgn(m_tracked_velocity->y);
+#			ifdef USE_KINEMATIC_LOGIC
+				m_tracked_position->y = new_y;
+#			else
+				btVector3 origin = m_body->ApiBody()->getWorldTransform().getOrigin();
+				origin.setY( new_y );
+				m_body->ApiBody()->getWorldTransform().setOrigin(origin);
+#			endif
+			}
+		}
+	}
+	else
+	{
+		m_onGround = false;
 	}
 }
 
@@ -117,7 +153,7 @@ void M04::CharacterControllerPlatformer::COMCollideY ( void )
 	if ( fabsf(m_tracked_velocity->y) > FLOAT_PRECISION )
 	{
 		prShapecastQuery query = {0};
-		query.shape		= m_hullShape;
+		query.shape		= m_hullShapeVerticalCheck;
 		query.start		= XrTransform(*m_tracked_position);
 		query.end		= XrTransform(*m_tracked_position + Vector3f(0, m_tracked_velocity->y * Time::deltaTime, 0));
 		query.collision	= physical::prCollisionMask(physical::layer::MASK_CHARACTER | physical::layer::MASK_LANDSCAPE, 0, 0);
@@ -132,9 +168,14 @@ void M04::CharacterControllerPlatformer::COMCollideY ( void )
 			// Push along the cast
 			m_tracked_velocity->y = 0;
 			// Move to contact
+			Real new_y = math::lerp(cast.HitFraction<0>(), query.start.position.y, query.end.position.y) - math::sgn(m_tracked_velocity->y);
+#			ifdef USE_KINEMATIC_LOGIC
+			m_tracked_position->y = new_y;
+#			else
 			btVector3 origin = m_body->ApiBody()->getWorldTransform().getOrigin();
-			origin.setY( math::lerp(cast.HitFraction<0>(), query.start.position.y, query.end.position.y) );
+			origin.setY( new_y );
 			m_body->ApiBody()->getWorldTransform().setOrigin(origin);
+#			endif
 		}
 	}
 }
@@ -144,9 +185,9 @@ void M04::CharacterControllerPlatformer::COMCollideX ( void )
 	if ( fabsf(m_tracked_velocity->x) > FLOAT_PRECISION )
 	{
 		prShapecastQuery query = {0};
-		query.shape		= m_hullShape;
+		query.shape		= m_hullShapeHorizonalCheck;
 		query.start		= XrTransform(*m_tracked_position);
-		query.end		= XrTransform(*m_tracked_position + Vector3f(m_tracked_velocity->x * Time::deltaTime, 0, 0));
+		query.end		= XrTransform(*m_tracked_position + Vector3f(m_tracked_velocity->x * Time::deltaTime + math::sgn(m_tracked_velocity->x), 0, 0));
 		query.collision	= physical::prCollisionMask(physical::layer::MASK_CHARACTER | physical::layer::MASK_LANDSCAPE, 0, 0);
 		query.owner		= m_owner;
 		query.ownerType	= core::kBasetypeGameBehavior;
@@ -159,9 +200,14 @@ void M04::CharacterControllerPlatformer::COMCollideX ( void )
 			// Push along the cast
 			m_tracked_velocity->x = 0;
 			// Move to contact
+			Real new_x = math::lerp(cast.HitFraction<0>(), query.start.position.x, query.end.position.x) - math::sgn(m_tracked_velocity->x);
+#			ifdef USE_KINEMATIC_LOGIC
+			m_tracked_position->x = new_x;
+#			else
 			btVector3 origin = m_body->ApiBody()->getWorldTransform().getOrigin();
-			origin.setX( math::lerp(cast.HitFraction<0>(), query.start.position.x, query.end.position.x) );
+			origin.setX( new_x );
 			m_body->ApiBody()->getWorldTransform().setOrigin(origin);
+#			endif
 		}
 	}
 }
@@ -169,8 +215,10 @@ void M04::CharacterControllerPlatformer::COMCollideX ( void )
 M04::grPlatformerMotionState M04::CharacterControllerPlatformer::MSDefault ( void )
 {
 	// Update velocity first:
+#	ifndef USE_KINEMATIC_LOGIC
 	btVector3 bt_velocity = m_body->ApiBody()->getLinearVelocity();
 	*m_tracked_velocity = physical::ar(bt_velocity);
+#	endif
 
 	// Perform vertical common:
 	COMCheckGround();
@@ -219,7 +267,9 @@ M04::grPlatformerMotionState M04::CharacterControllerPlatformer::MSDefault ( voi
 	COMCollideX();
 
 	// Update physics end
+#	ifndef USE_KINEMATIC_LOGIC
 	m_body->ApiBody()->setLinearVelocity( physical::bt(*m_tracked_velocity) );
+#	endif
 
 	return kPMotionStateDefault;
 }

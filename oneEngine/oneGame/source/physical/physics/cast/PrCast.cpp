@@ -64,7 +64,8 @@ PrCast::PrCast ( const prShapecastQuery& query )
 			(btConvexShape*)query.shape->ApiShape(),
 			physical::bt(query.start),
 			physical::bt(query.end),
-			collisionCollector
+			collisionCollector,
+			query.allowedPenetration
 		);
 
 		// If we have a single hit, save it.

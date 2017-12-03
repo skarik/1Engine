@@ -69,6 +69,9 @@ namespace M04
 		PrShape*	m_hullShape;
 		CRigidbody*	m_body;
 
+		PrShape*	m_hullShapeHorizonalCheck;
+		PrShape*	m_hullShapeVerticalCheck;
+
 		bool		m_inputConsumed;
 
 		bool		m_onGround;

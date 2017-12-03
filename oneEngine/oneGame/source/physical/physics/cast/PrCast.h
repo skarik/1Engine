@@ -38,6 +38,7 @@ struct prShapecastQuery
 	// Defines both start and end
 	XrTransform					start;
 	XrTransform					end;
+	Real						allowedPenetration;
 	// Collision mask for filtering possible collisions
 	physical::prCollisionMask	collision;
 	// Object that the cast is originating from
