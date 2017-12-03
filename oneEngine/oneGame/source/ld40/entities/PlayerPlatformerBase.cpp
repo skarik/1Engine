@@ -19,7 +19,7 @@ using namespace M04;
 DECLARE_OBJECT_REGISTRAR(player_platformer_base,M04::PlayerPlatformerBase);
 
 PlayerPlatformerBase::PlayerPlatformerBase ( void )
-	: CGameBehavior(), Engine2D::SpriteContainer(&display_position, NULL, &flipstate)
+	: CGameBehavior(), Engine2D::AnimationContainer(&display_position, NULL, &flipstate)
 	//, Engine2D::SpriteContainer(&display_position, NULL, &flipstate)
 	//: CGameBehavior(), Engine2D::AnimationContainer(&position, NULL, &flipstate)
 {
@@ -48,11 +48,9 @@ PlayerPlatformerBase::PlayerPlatformerBase ( void )
 	{
 		flipstate = Vector3d(1,1,1);
 
-		m_sprite->SpriteGenParams().normal_default = Vector3d(0, 0, 1.0F).normal();
-		m_sprite->SetSpriteFile("sprites/ld40/Mage.gal");
-		m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y / 2 );
-
-		//this->AddFromFile(animation::kTypeIdle, 0, "sprites/ld40/Mage.gal");
+		this->SetupDepthOffset(0.0F, 0.0F);
+		this->AddFromFile(animation::kTypeIdle, 0, "sprites/ld40/Mage.gal");
+		this->m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y / 2 );
 	}
 }
 

@@ -766,6 +766,11 @@ tPixel* Textures::loadBPD ( const std::string& n_inputfile, timgInfo& o_info, co
 		o_info.height = bpdHeader.height / divisor;
 		o_info.internalFormat = RGBA8;
 
+		// Copy over animation information
+		o_info.framecount = bpdHeader.frames;
+		o_info.xdivs = bpdHeader.xdivs;
+		o_info.ydivs = bpdHeader.ydivs;
+
 		// Create the pixel data
 		pData = new tPixel [ o_info.width * o_info.height ];
 

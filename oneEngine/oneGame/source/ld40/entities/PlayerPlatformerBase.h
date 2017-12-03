@@ -18,7 +18,7 @@ namespace M04
 
 	//		PlayerPlatformerBase
 	// Basic platformer player.
-	class PlayerPlatformerBase : public CGameBehavior, public Engine2D::SpriteContainer
+	class PlayerPlatformerBase : public CGameBehavior, public Engine2D::AnimationContainer
 	{
 	public:
 		explicit		PlayerPlatformerBase ( void );

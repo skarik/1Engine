@@ -675,6 +675,10 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				//targetPass->prepareShaderConstants();
 				targetPass->bindPassForward(0);
 
+				// TODO: Make the following configurable. (This can likely be used for some of the game-driving of later effects).
+				//glUniform4f(renderer::UNI_LIGHTING_PARAM_HACK, 0.5F, 1.0F, 1.0F, 1.0F); // luvppl
+				glUniform4f(renderer::UNI_LIGHTING_PARAM_HACK, 1.0F, 1.0F, 0.0F, 1.0F); // otherwise.
+
 				// Disable alpha blending
 				glDisable( GL_BLEND );
 				glBlendFunc( GL_ONE, GL_ZERO );

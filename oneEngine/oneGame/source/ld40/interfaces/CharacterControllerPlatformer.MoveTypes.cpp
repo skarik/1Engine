@@ -139,11 +139,11 @@ M04::grPlatformerMotionState M04::CharacterControllerPlatformer::MSAutoVault ( v
 
 	// Set vertical velocity
 	{
-		Real target_y_velocity = (m_autovaultTarget.y - m_autovaultReference.y) / referenceTiming * 1.15F;
+		Real target_y_velocity = (m_autovaultTarget.y - m_autovaultReference.y) / referenceTiming * 1.5F;
 		// Stop going up if we're too high
-		if (m_tracked_position->y < m_autovaultTarget.y + 8)
+		if (m_tracked_position->y < (m_autovaultTarget.y + m_autovaultReference.y) * 0.5F)
 		{
-			target_y_velocity = 0;
+			target_y_velocity = (m_tracked_position->y < m_autovaultTarget.y) ? 0.0F : -8.0F;
 		}
 		// Perform normal delta towards target
 		Real delta = target_y_velocity - m_tracked_velocity->y;
@@ -187,7 +187,7 @@ M04::grPlatformerMotionState M04::CharacterControllerPlatformer::MSAutoVault ( v
 	// If input is opposite of current motion
 	if ( fabsf(m_input->vDirInput.x) > FLOAT_PRECISION )
 	{
-		if ( math::sgn(m_input->vDirInput.x) != math::sgn(m_autovaultReference.x - m_autovaultTarget.x) )
+		if ( math::sgn(m_input->vDirInput.x) != math::sgn(m_autovaultTarget.x - m_autovaultReference.x) )
 		{
 			return kPMotionStateDefault;
 		}
