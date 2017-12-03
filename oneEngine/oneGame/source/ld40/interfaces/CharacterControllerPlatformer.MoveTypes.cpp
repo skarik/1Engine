@@ -47,8 +47,15 @@ M04::grPlatformerMotionState M04::CharacterControllerPlatformer::MSDefault ( voi
 		{
 			if ( SUBCheckWallStickStart(m_input->vDirInput.x) )
 			{
-				SUBWallStickStart(m_input->vDirInput.x);
 				return kPMotionStateWallStick;
+			}
+		}
+		// Do autovaulting if on the ground
+		if ( m_onGround )
+		{
+			if ( SUBCheckAutoVaultStart(m_input->vDirInput.x) )
+			{
+				return kPMotionStateAutoVault;
 			}
 		}
 	}
@@ -92,15 +99,19 @@ M04::grPlatformerMotionState M04::CharacterControllerPlatformer::MSWallStick ( v
 	m_onGround = false;
 
 	// Move X to the target gradually:
-	m_tracked_position->x = m_wallstickReference.x;
+	Real delta_x = m_wallstickReference.x - m_tracked_position->x;
+	m_tracked_position->x += delta_x;
+	m_acculated_offset.x += delta_x;
 
 	// Y is statck.
-	m_tracked_position->y = m_wallstickReference.y;
+	Real delta_y = m_wallstickReference.y - m_tracked_position->y;
+	m_tracked_position->y += delta_y;
+	m_acculated_offset.y += delta_y;
 
 	// If we jump, we want to push off!
 	if ( m_input->axes.jump.pressed() )
 	{
-		m_tracked_velocity->y = -m_opt.jumpSpeed;
+		m_tracked_velocity->y = m_opt.jumpSpeed * std::max(-1.0F, -m_input->vDirInput.y - 1.0F);
 		m_jumpBegin = true;
 
 		if ( m_wallstickNormal.x > 0 )
@@ -116,4 +127,80 @@ M04::grPlatformerMotionState M04::CharacterControllerPlatformer::MSWallStick ( v
 	}
 
 	return kPMotionStateWallStick;
+}
+
+M04::grPlatformerMotionState M04::CharacterControllerPlatformer::MSAutoVault ( void )
+{
+	// Set velocity to move torwards the autovault target.
+	m_onGround = true;
+
+	// Get how long it should take to vault this.
+	const Real referenceTiming = (m_autovaultReference - m_autovaultTarget).magnitude() / m_opt.runSpeed;
+
+	// Set vertical velocity
+	{
+		Real target_y_velocity = (m_autovaultTarget.y - m_autovaultReference.y) / referenceTiming * 1.15F;
+		// Stop going up if we're too high
+		if (m_tracked_position->y < m_autovaultTarget.y + 8)
+		{
+			target_y_velocity = 0;
+		}
+		// Perform normal delta towards target
+		Real delta = target_y_velocity - m_tracked_velocity->y;
+		Real delta_speed = m_opt.runAcceleration * Time::deltaTime;
+		if ( fabsf(delta) > delta_speed )
+			m_tracked_velocity->y += math::sgn(delta) * delta_speed;
+		else
+			m_tracked_velocity->y += delta;
+	}
+	// Set horizontal velocity
+	{
+		Real target_x_velocity = (m_autovaultTarget.x - m_autovaultReference.x) / referenceTiming;
+		// Perform normal delta towards target
+		Real delta = target_x_velocity - m_tracked_velocity->x;
+		Real delta_speed = m_opt.runAcceleration * Time::deltaTime;
+		if ( fabsf(delta) > delta_speed )
+			m_tracked_velocity->x += math::sgn(delta) * delta_speed;
+		else
+			m_tracked_velocity->x += delta;
+	}
+
+	// Check if past the target:
+	if (m_tracked_position->y < m_autovaultTarget.y)
+	{
+		if (m_autovaultReference.x < m_autovaultTarget.x)
+		{
+			if (m_tracked_position->x > m_autovaultTarget.x - m_hullSize.x * 0.5F)
+			{
+				return kPMotionStateDefault;
+			}
+		}
+		else if (m_autovaultReference.x > m_autovaultTarget.x)
+		{
+			if (m_tracked_position->x < m_autovaultTarget.x + m_hullSize.x * 0.5F)
+			{
+				return kPMotionStateDefault;
+			}
+		}
+	}
+
+	// If input is opposite of current motion
+	if ( fabsf(m_input->vDirInput.x) > FLOAT_PRECISION )
+	{
+		if ( math::sgn(m_input->vDirInput.x) != math::sgn(m_autovaultReference.x - m_autovaultTarget.x) )
+		{
+			return kPMotionStateDefault;
+		}
+	}
+
+	// If we jump, we want to interrupt and jump instead!
+	if ( m_input->axes.jump.pressed() )
+	{
+		m_tracked_velocity->y = -m_opt.jumpSpeed;
+		m_jumpBegin = true;
+		m_onGround = false;
+		return kPMotionStateDefault;
+	}
+
+	return kPMotionStateAutoVault;
 }

@@ -39,7 +39,7 @@ PlayerPlatformerBase::PlayerPlatformerBase ( void )
 		// Create camera controller:
 		camera = new CameraControllerPlatformer(this);
 		camera->m_camera = cam; // Camera now belongs to the controller
-		camera->m_tracked_position = &position;
+		camera->m_tracked_position = &display_position;
 		camera->m_tracked_velocity = &velocity;
 	}
 }
@@ -84,6 +84,7 @@ void PlayerPlatformerBase::Update ( void )
 
 void PlayerPlatformerBase::FixedUpdate ( void )
 {
+	display_position = position - motion->m_acculated_offset;
 	motion->PhysicsStep();
 }
 

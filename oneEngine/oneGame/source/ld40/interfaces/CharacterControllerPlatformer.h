@@ -14,6 +14,7 @@ namespace M04
 	{
 		kPMotionStateDefault,
 		kPMotionStateWallStick,
+		kPMotionStateAutoVault,
 	};
 	
 	struct grPlatformControllerOptions
@@ -51,8 +52,9 @@ namespace M04
 		void*			m_owner;
 		CInputControl*	m_input;
 
-		Vector3d*	m_tracked_position;
-		Vector3d*	m_tracked_velocity;
+		Vector3f*	m_tracked_position;
+		Vector3f*	m_tracked_velocity;
+		Vector3f	m_acculated_offset;
 
 		grPlatformControllerOptions	m_opt;
 
@@ -77,11 +79,13 @@ namespace M04
 		//	SUBCheckWallStickStart () : Check for wall stick.
 		// Checks wall stick collision in the given X direction. If returns true, then wall stick is valid.
 		bool		SUBCheckWallStickStart ( Real checkDirection );
-		//	SUBWallStickStart () : Starts the wall stick.
-		void		SUBWallStickStart ( Real checkDirection );
+		//	SUBCheckAutoVaultStart () : Check for autovault.
+		// Checks autovault in the given X direction. If returns true, then autovault is valid and ready.
+		bool		SUBCheckAutoVaultStart ( Real checkDirection );
 		
 		grPlatformerMotionState	MSDefault ( void );
 		grPlatformerMotionState	MSWallStick ( void );
+		grPlatformerMotionState	MSAutoVault ( void );
 
 	protected:
 		PrShape*	m_hullShape;
@@ -99,6 +103,9 @@ namespace M04
 
 		Vector2f	m_wallstickReference;
 		Vector2f	m_wallstickNormal;
+
+		Vector2f	m_autovaultReference;
+		Vector2f	m_autovaultTarget;
 	};
 }
 

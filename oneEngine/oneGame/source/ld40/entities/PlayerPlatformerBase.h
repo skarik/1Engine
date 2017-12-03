@@ -38,6 +38,8 @@ namespace M04
 		Vector3d position;
 		Vector3d velocity;
 
+		Vector3d display_position;
+
 	protected:
 
 		// Components:

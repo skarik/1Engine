@@ -87,7 +87,7 @@ void CInputControl::Update ( void* owner, float deltaTime )
 		vDirInput.x		= (float)Input::Key('D') - (float)Input::Key('A');
 			vDirInput.x+= controllerInput.x;
 		vDirInput.y		= (float)Input::Key('W') - (float)Input::Key('S');
-			vDirInput.y-= controllerInput.y;
+			vDirInput.y+= controllerInput.y;
 		vDirInput.z		= (float)Input::Key(Keys.Space) - (float)Input::Key(Keys.Control) - (float)Input::Key('C');
 			vDirInput.z+= ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_A)?1:0);
 			vDirInput.z-= ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)?1:0);

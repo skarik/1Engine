@@ -85,6 +85,18 @@ void M04::CharacterControllerPlatformer::Step ( void )
 
 void M04::CharacterControllerPlatformer::PhysicsStep ( void )
 {
+	// Zero out the offset
+	{
+		Real zeroing_speed = Time::deltaTime * m_opt.jumpSpeed;
+		for (int i = 0; i < 3; ++i)
+		{
+			if ( fabsf(m_acculated_offset[i]) > zeroing_speed )
+				m_acculated_offset[i] -= math::sgn(m_acculated_offset[i]) * zeroing_speed;
+			else
+				m_acculated_offset[i] = 0.0F;
+		}
+	}
+
 	if (m_body != NULL)
 	{
 		// Update motion:
@@ -95,6 +107,8 @@ void M04::CharacterControllerPlatformer::PhysicsStep ( void )
 		case kPMotionStateDefault:		nextState = MSDefault();
 			break;
 		case kPMotionStateWallStick:	nextState = MSWallStick();
+			break;
+		case kPMotionStateAutoVault:	nextState = MSAutoVault();
 			break;
 		default:
 			throw core::InvalidCallException();
@@ -212,26 +226,87 @@ void M04::CharacterControllerPlatformer::COMCollideX ( void )
 {
 	if ( fabsf(m_tracked_velocity->x) > FLOAT_PRECISION )
 	{
-		prShapecastQuery query = {0};
-		query.shape		= m_hullShapeHorizonalCheck;
-		query.start		= XrTransform(*m_tracked_position);
-		query.end		= XrTransform(*m_tracked_position + Vector3f(m_tracked_velocity->x * Time::deltaTime + math::sgn(m_tracked_velocity->x), 0, 0));
-		query.collision	= physical::prCollisionMask(physical::layer::MASK_CHARACTER | physical::layer::MASK_LANDSCAPE, 0, 0);
-		query.owner		= m_owner;
-		query.ownerType	= core::kBasetypeGameBehavior;
-		query.ignore	= m_body;
-		query.maxHits	= 1;
-
-		PrCast cast(query);
-		if (cast)
+		bool move_free = false; // Has an open spot been found?
+		
+		const int maxStairHeight = 23;
+		const int minStairHeight = -23;
+		
+		// Check for stairs
+		if ( m_input->vDirInput.y < 0.707F )
 		{
-			// Push along the cast
-			m_tracked_velocity->x = 0;
-			// Move to contact
-			UTILMoveContactX(cast, query, (Real)-math::sgn(m_tracked_velocity->x));
-		}
+			for (int i = 0; i < maxStairHeight; ++i)
+			{
+				prShapecastQuery query = {0};
+				query.shape		= m_hullShapeHorizonalCheck;
+				query.start		= XrTransform(*m_tracked_position + Vector3f(0, -(Real)i, 0));
+				query.end		= XrTransform(*m_tracked_position + Vector3f(m_tracked_velocity->x * Time::deltaTime + math::sgn(m_tracked_velocity->x), -(Real)i, 0));
+				query.collision	= physical::prCollisionMask(physical::layer::MASK_CHARACTER | physical::layer::MASK_LANDSCAPE, 0, 0);
+				query.owner		= m_owner;
+				query.ownerType	= core::kBasetypeGameBehavior;
+				query.ignore	= m_body;
+				query.maxHits	= 1;
 
-		// TODO: Stair collision.
+				PrCast cast(query);
+				if (cast == false)
+				{
+					move_free = true;
+					m_tracked_position->y -= (Real)i;
+					m_acculated_offset.y -= (Real)i;
+					break;
+				}
+			}
+		}
+		// Check for down stairs
+		if ( m_onGround && m_tracked_velocity->y > -FLOAT_PRECISION )
+		{
+			for (int i = 1; i > minStairHeight; --i)
+			{
+				prShapecastQuery query = {0};
+				query.shape		= m_hullShapeHorizonalCheck;
+				query.start		= XrTransform(*m_tracked_position + Vector3f(0, -(Real)i, 0));
+				query.end		= XrTransform(*m_tracked_position + Vector3f(m_tracked_velocity->x * Time::deltaTime + math::sgn(m_tracked_velocity->x), -(Real)i, 0));
+				query.collision	= physical::prCollisionMask(physical::layer::MASK_CHARACTER | physical::layer::MASK_LANDSCAPE, 0, 0);
+				query.owner		= m_owner;
+				query.ownerType	= core::kBasetypeGameBehavior;
+				query.ignore	= m_body;
+				query.maxHits	= 1;
+
+				PrCast cast(query);
+				if (cast == false)
+				{
+					move_free = true;
+					m_tracked_position->y -= ((Real)i) - 1.0F;
+					m_acculated_offset.y -= ((Real)i) - 1.0F;
+					break;
+				}
+			}
+		}
+		// If no open spot, stop
+		if ( !move_free )
+		{
+			prShapecastQuery query = {0};
+			query.shape		= m_hullShapeHorizonalCheck;
+			query.start		= XrTransform(*m_tracked_position + Vector3f(0, 0, 0));
+			query.end		= XrTransform(*m_tracked_position + Vector3f(m_tracked_velocity->x * Time::deltaTime + math::sgn(m_tracked_velocity->x), 0, 0));
+			query.collision	= physical::prCollisionMask(physical::layer::MASK_CHARACTER | physical::layer::MASK_LANDSCAPE, 0, 0);
+			query.owner		= m_owner;
+			query.ownerType	= core::kBasetypeGameBehavior;
+			query.ignore	= m_body;
+			query.maxHits	= 1;
+
+			PrCast cast(query);
+			if (cast)
+			{
+				// Push along the cast
+				m_tracked_velocity->x = 0;
+				// Move to contact
+				UTILMoveContactX(cast, query, (Real)-math::sgn(m_tracked_velocity->x));
+			}
+			else
+			{
+				printf("Possible invalid state found in the character X collision routine.\n");
+			}
+		}
 	}
 }
 
@@ -277,10 +352,40 @@ bool M04::CharacterControllerPlatformer::SUBCheckWallStickStart ( Real checkDire
 	return false;
 }
 
-//	SUBWallStickStart () : Starts the wall stick.
-void M04::CharacterControllerPlatformer::SUBWallStickStart ( Real checkDirection )
+//	SUBCheckAutoVaultStart () : Check for autovault.
+// Checks autovault in the given X direction. If returns true, then autovault is valid and ready.
+bool M04::CharacterControllerPlatformer::SUBCheckAutoVaultStart ( Real checkDirection )
 {
 	checkDirection = (Real)math::sgn<Real>(checkDirection);
 
-	// Move to the wall? Nah. Fuck it, all the work is already done. :)
+	// Create repeated query options.
+	prShapecastQuery query = {0};
+	query.collision	= physical::prCollisionMask(physical::layer::MASK_CHARACTER | physical::layer::MASK_LANDSCAPE, 0, 0);
+	query.owner		= m_owner;
+	query.ownerType	= core::kBasetypeGameBehavior;
+	query.ignore	= m_body;
+	query.maxHits	= 1;
+
+	// Need to first check for blocked forward motion
+	query.shape		= m_hullShapeHorizonalCheck;
+	query.start		= XrTransform(*m_tracked_position + Vector3f( 0 * checkDirection, 0, 0));
+	query.end		= XrTransform(*m_tracked_position + Vector3f(16 * checkDirection, 0, 0));
+
+	if (PrCast(query))
+	{
+		// Need to then check for clear forward area
+		query.shape		= m_hullShapeHalfvertCheck;
+		query.start		= XrTransform(*m_tracked_position + Vector3f( 0 * checkDirection, -m_hullSize.y * 0.25F - 2, 0));
+		query.end		= XrTransform(*m_tracked_position + Vector3f(32 * checkDirection, -m_hullSize.y * 0.25F - 2, 0));
+
+		PrCast clearCast(query);
+		if (clearCast == false)
+		{
+			m_autovaultReference = *m_tracked_position;
+			m_autovaultTarget = *m_tracked_position + Vector3f(32 * checkDirection, -32.0F, 0);
+			return true;
+		}
+	}
+
+	return false;
 }
