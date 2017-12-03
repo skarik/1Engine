@@ -232,7 +232,7 @@ void M04::CharacterControllerPlatformer::COMCollideX ( void )
 		const int minStairHeight = -23;
 		
 		// Check for stairs
-		if ( m_input->vDirInput.y < 0.707F )
+		if ( m_input->vDirInput.y > -0.707F )
 		{
 			for (int i = 0; i < maxStairHeight; ++i)
 			{

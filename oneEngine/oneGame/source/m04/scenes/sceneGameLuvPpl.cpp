@@ -139,6 +139,13 @@ void sceneGameLuvPpl::LoadScene ( void )
 		bod->RemoveReference();
 	}
 
+	// Create background
+	{
+		CRenderable2D* bg = new renderer::Background2D();
+		//bg->SetRenderType( renderer::kRLBackground );
+		(new CRendererHolder (bg))->RemoveReference();
+	}
+
 	// Create debugger
 	auto debug_holder = new CRendererHolder( new RrBtDebugDraw(NULL) );
 	debug_holder->RemoveReference();

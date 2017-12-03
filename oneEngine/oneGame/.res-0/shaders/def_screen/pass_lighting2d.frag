@@ -358,16 +358,21 @@ void main ( void )
 	float pixelDepth   = texture( textureSampler4, v2f_texcoord0 ).r;
     //vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1), pixelDepth, 1.0 );
 	//vec4 pixelPosition = vec4( (v2f_texcoord0.x*2 - 0.5),(v2f_texcoord0.y*2 - 0.5), pixelDepth, 1.0 );
-    vec4 pixelPosition = vec4( v2f_texcoord1.xy, pixelDepth, 1.0 );
+    vec4 pixelPosition = vec4( v2f_texcoord1.x, -v2f_texcoord1.y, pixelDepth, 1.0 );
 	/*{
 		pixelPosition.z = ( pixelPosition.z*2 - 1 );
         pixelPosition = sys_ModelViewProjectionMatrixInverse * vec4( pixelPosition.xyz, 1.0 );
 		pixelPosition.xyzw /= pixelPosition.w;
 	}*/
-    pixelPosition.x *= sys_ViewportInfo.z;
-    pixelPosition.y *= -sys_ViewportInfo.w;
-    pixelPosition.z *= (pixelPosition.z - 0.5) * -1000;
+    pixelPosition.xy *= sys_ScreenSize.xy * sys_PixelRatio.xy;
     pixelPosition.xy += sys_WorldCameraPos.xy;
+    //pixelPosition.x *= sys_ViewportInfo.z;
+    //pixelPosition.y *= -sys_ViewportInfo.w;
+    pixelPosition.z *= (pixelPosition.z - 0.5) * -1000;
+
+    //pixelPosition.xy += sys_WorldCameraPos.xy * (sys_ViewportInfo.zw / sys_ScreenSize.xy);
+    //pixelPosition.xy *= 0.5;
+    //pixelPosition.xy /= (sys_ViewportInfo.zw / sys_ScreenSize.xy);
 
 	// pixelLookup
 	// xy	palette lookup
@@ -444,6 +449,9 @@ void main ( void )
 
 	//FragColor.rgb = pixelGlow.rgb * pixelLightProperty.r;//luminColor.rgb*0.5;//vec3(1,1,1) * pixelGlow.a;
 	//+ dot( n_cameraDir, pixelNormal.xyz );
+
+    /*FragColor.rgb = pixelPosition.rgb / 32;
+    FragColor.b = 0;*/
 
 #ifdef DEBUG_OUTPUT
 	// 4X Debug Output

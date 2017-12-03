@@ -89,8 +89,8 @@ void	RrMaterial::pushConstantsPerCamera ( void )
 		(Real32)Screen::Info.width,
 		(Real32)Screen::Info.height);
 	perCamera.pixelRatio = Vector2f(
-		(Real32)CCamera::activeCamera->ortho_size.x / Screen::Info.width / CCamera::activeCamera->render_scale,
-		(Real32)CCamera::activeCamera->ortho_size.x / Screen::Info.width / CCamera::activeCamera->render_scale);
+		(Real32)CCamera::activeCamera->ortho_size.x / Screen::Info.width,
+		(Real32)CCamera::activeCamera->ortho_size.x / Screen::Info.width);
 
 	// Upload the constant buffer
 	l_cbufPerCamera.upload(&perCamera, sizeof(perCamera), gpu::kTransferStream);
