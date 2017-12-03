@@ -17,15 +17,14 @@ struct RaycastHit
 	bool		hit;
 	Vector3d	hitPos;
 	Vector3d	hitNormal;
-	Real		distance;
-	//CGameBehavior*	pHitBehavior;
-	//physRigidBody*	pHitBody;
+	// Range from 0 to 1 along the case the hit occurred.
+	Real		fraction;
 	btRigidBody*		hitBody;
 	void*				hitObject;
 	core::arBaseType	hitType;
 
 	RaycastHit ( void ) 
-		: hit(false), distance(0),
+		: hit(false), fraction(1.0F),
 		hitBody(NULL), hitObject(NULL), hitType(core::kBasetypeVoidPointer)
 	{
 		;

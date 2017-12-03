@@ -122,8 +122,12 @@ void CGameState::Update ( void )
 	// Call OnCreate on all new instances
 	while ( !vCreationList.empty() )
 	{
-		vCreationList.back()->OnCreate();
-		vCreationList.pop_back();
+		size_t list_size = vCreationList.size();
+		for (size_t i = 0; i < list_size; ++i)
+		{
+			vCreationList[i]->OnCreate();
+		}
+		vCreationList.erase( vCreationList.begin(), vCreationList.begin() + list_size );
 	}
 
 	// Loop through all instances
@@ -339,9 +343,9 @@ void CGameState::FixedUpdate ( void )
 		pBehavior = pBehaviors[i];
 		if (( pBehavior != NULL )&&( pBehavior->active ))
 		{
-			EXCEPTION_CATCH_BEGIN
+			//EXCEPTION_CATCH_BEGIN
 			pBehavior->FixedUpdate();
-			EXCEPTION_CATCH_END
+			//EXCEPTION_CATCH_END
 		}
 	}
 

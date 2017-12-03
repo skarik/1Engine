@@ -45,6 +45,7 @@ bool CollisionMapRenderer::PreRender ( void )
 		m_collision->m_mesh.vertexNum == 0 ||
 		m_collision->m_mesh.triangleNum == 0)
 	{
+		m_model_tricount = 0; // Dont render any mesh.
 		return true;
 	}
 

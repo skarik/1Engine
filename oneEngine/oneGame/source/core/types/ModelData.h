@@ -130,10 +130,12 @@ struct arParticleVertex
 
 // Index structures:
 
+// 32-bit index holder
 struct arModelTriangle
 {
 	uint32_t vert [3];
 };
+// 16-bit index holder
 struct arModelQuad
 {
 	uint16_t vert [4];

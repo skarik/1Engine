@@ -2,13 +2,16 @@
 #define PHYSICS_RP_CAST_H_
 
 #include "core/math/Ray.h"
+#include "core/math/XTransform.h"
 #include "core-ext/types/baseType.h"
 #include "physical/types/collisionMask.h"
 #include "physical/physics/cast/RaycastHit.h"
 
 class PrWorld;
+class PrShape;
+class IPrRigidBody;
 
-//	struct rpRaycastQuery : input options for a raycast request
+//	struct prRaycastQuery : input options for a raycast request
 struct prRaycastQuery
 {
 	// World to cast into
@@ -25,9 +28,26 @@ struct prRaycastQuery
 	unsigned int				maxHits;
 
 };
+//	struct prShapecastQuery : input options for a raycast request
 struct prShapecastQuery
 {
-	PrWorld*	world;
+	// World to cast into
+	PrWorld*					world;
+	// Shape to cast
+	PrShape*					shape;
+	// Defines both start and end
+	XrTransform					start;
+	XrTransform					end;
+	// Collision mask for filtering possible collisions
+	physical::prCollisionMask	collision;
+	// Object that the cast is originating from
+	void*						owner;
+	core::arBaseType			ownerType;
+	// Rigidbody to ignore
+	IPrRigidBody*				ignore;
+	// Maximum number of hits the cast can store
+	// 0 refers to no limit. 1 will find the closest case.
+	unsigned int				maxHits;
 };
 
 //	class PrCast : Physics casting interface.
@@ -65,6 +85,12 @@ public:
 	btRigidBody*			HitRigidBody ( void )
 	{
 		return m_hits[N].hitBody;
+	}
+
+	template <int N>
+	Real					HitFraction ( void )
+	{
+		return m_hits[N].fraction;
 	}
 
 

@@ -63,6 +63,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\ld40\entities\PlayerPlatformerBase.h" />
+    <ClInclude Include="source\ld40\interfaces\CameraControllerPlatformer.h" />
+    <ClInclude Include="source\ld40\interfaces\CharacterControllerPlatformer.h" />
     <ClInclude Include="source\m04-editor\entities\UIDragHandle.h" />
     <ClInclude Include="source\m04-editor\entities\UILightHandle.h" />
     <ClInclude Include="source\m04-editor\renderer\object\AreaRenderer.h" />
@@ -95,6 +98,9 @@
     <ClInclude Include="source\m04\states\MapInformation.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\ld40\entities\PlayerPlatformerBase.cpp" />
+    <ClCompile Include="source\ld40\interfaces\CameraControllerPlatformer.cpp" />
+    <ClCompile Include="source\ld40\interfaces\CharacterControllerPlatformer.cpp" />
     <ClCompile Include="source\m04-editor\entities\UIDragHandle.cpp" />
     <ClCompile Include="source\m04-editor\entities\UILightHandle.cpp" />
     <ClCompile Include="source\m04-editor\renderer\object\AreaRenderer.cpp" />

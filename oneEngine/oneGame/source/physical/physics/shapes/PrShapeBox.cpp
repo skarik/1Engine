@@ -11,7 +11,7 @@ PrShapeBox::PrShapeBox ( const Vector3d& centered_box_size )
 	}
 	else
 	{
-		shape = new btBoxShape( physical::bt(Vector3d(centered_box_size.x, centered_box_size.y, 100) * 0.5F) );
+		shape = new btBoxShape( physical::bt(Vector3d(centered_box_size.x, centered_box_size.y, 32) * 0.5F) );
 	}
 }
 

@@ -99,8 +99,10 @@ class CRagdollCollision;
 CRigidbody ::CRigidbody ( const prRigidbodyCreateParams& params )
 	: CMotion(params.owner, params.ownerType),
 	target_transform(NULL), target_position(NULL),
-	body(NULL), bGravityEnabled(true)
+	bGravityEnabled(true)
 {
+	body = NULL;
+
 	// Set the layer
 	layer = physical::layer::Rigidbody;
 
@@ -276,12 +278,6 @@ void CRigidbody::RigidbodyUpdate ( Real interpolation )
 	{
 		// Disable rigidbody
 	}
-}
-
-
-btRigidBody* CRigidbody::ApiBody ( void )
-{
-	return body;
 }
 
 //btTransform m_transformTemp;

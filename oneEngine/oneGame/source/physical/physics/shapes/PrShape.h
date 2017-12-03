@@ -8,7 +8,7 @@ class btCollisionShape;
 class PrShape
 {
 public:
-	ENGINE_API btCollisionShape*	ApiShape ( void )
+	PHYS_API btCollisionShape*	ApiShape ( void )
 	{
 		return shape;
 	}

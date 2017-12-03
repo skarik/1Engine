@@ -24,7 +24,7 @@ PrMesh::~PrMesh ( void )
 // Init
 void PrMesh::Initialize ( arModelPhysicsData* const pNewModelData, const bool force2Dunoptimized )
 {
-	if (!force2Dunoptimized)
+	if (!force2Dunoptimized || true)
 	{
 		btTriangleIndexVertexArray* meshInterface = new btTriangleIndexVertexArray();
 		btIndexedMesh part;
@@ -35,9 +35,8 @@ void PrMesh::Initialize ( arModelPhysicsData* const pNewModelData, const bool fo
 		part.m_triangleIndexBase = (const unsigned char*)pNewModelData->triangles;
 		part.m_triangleIndexStride = sizeof(arModelTriangle);
 		part.m_numTriangles = pNewModelData->triangleNum;
-		part.m_indexType = PHY_SHORT;
 
-		meshInterface->addIndexedMesh(part, PHY_SHORT);
+		meshInterface->addIndexedMesh(part, PHY_INTEGER);
 
 		bool useQuantizedAabbCompression = true;
 		btBvhTriangleMeshShape* trimeshShape = new btBvhTriangleMeshShape(meshInterface, useQuantizedAabbCompression);

@@ -917,6 +917,7 @@ void MapEditor::doNewMap ( void )
 	try
 	{
 		m_tilemap->Rebuild();
+		m_collisionmap->Rebuild();
 	}
 	catch (core::InvalidCallException&) {}
 }
@@ -1352,6 +1353,13 @@ void MapEditor::uiStepTopEdge ( void )
 	if ( ui_file_new.GetButtonClicked() )
 	{
 		doNewMap();
+
+		// Clear save target (so not overwrite on accident)
+		m_current_savetarget = "";
+		// Reset camera
+		m_target_camera_position.x = 0;
+		m_target_camera_position.y = 0;
+
 		try {
 			m_tilemap->Rebuild();
 		}
