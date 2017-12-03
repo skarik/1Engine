@@ -101,6 +101,7 @@
     <ClCompile Include="source\ld40\entities\PlayerPlatformerBase.cpp" />
     <ClCompile Include="source\ld40\interfaces\CameraControllerPlatformer.cpp" />
     <ClCompile Include="source\ld40\interfaces\CharacterControllerPlatformer.cpp" />
+    <ClCompile Include="source\ld40\interfaces\CharacterControllerPlatformer.MoveTypes.cpp" />
     <ClCompile Include="source\m04-editor\entities\UIDragHandle.cpp" />
     <ClCompile Include="source\m04-editor\entities\UILightHandle.cpp" />
     <ClCompile Include="source\m04-editor\renderer\object\AreaRenderer.cpp" />

@@ -25,6 +25,7 @@ namespace M04
 static int listen ( std::string const& )
 {
 #ifdef _ENGINE_DEBUG
+	//engine::Console->RunCommand( "scene game_luvppl" );
 	engine::Console->RunCommand( "scene m04devmenu" );
 #else
 	engine::Console->RunCommand( "scene game_luvppl" );
@@ -42,7 +43,7 @@ static int listen ( std::string const& )
 //===============================================================================================//
 int GameInitialize ( void )
 {
-	M04::m04NextLevelToLoad = "maps/test1.m04";
+	M04::m04NextLevelToLoad = "maps/test2.m04";
 
 	// Engine. Must always be called else features are not initialized!
 	EngineCommonInitialize();

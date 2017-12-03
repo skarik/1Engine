@@ -2,6 +2,7 @@
 #define M04_INTERFACES_CHARACTER_CONTROLLER_PLATFORMER_H_
 
 #include "core/math/Math3d.h"
+#include "physical/physics/cast/PrCast.h"
 
 class PrShape;
 class CRigidbody;
@@ -12,6 +13,7 @@ namespace M04
 	enum grPlatformerMotionState
 	{
 		kPMotionStateDefault,
+		kPMotionStateWallStick,
 	};
 	
 	struct grPlatformControllerOptions
@@ -27,7 +29,10 @@ namespace M04
 		float airAcceleration;
 		float airDecceleration;
 	};
-	
+
+	// This macro controls how the motion in the platform controller is performed.
+	// Kinematic is very stable, but the interaction with physics objects can be seen, in a way, as undesirable.
+#	define M04_KINEMATIC_PLATFORM_CONTROLLER
 
 	class CharacterControllerPlatformer
 	{
@@ -56,25 +61,44 @@ namespace M04
 
 	protected:
 
+		//	UTILMoveContactY () : Moves in Y direction to the position of the collision (until contact)
+		void		UTILMoveContactY ( PrCast& cast, prShapecastQuery& query, Real contactOffset );
+		//	UTILMoveContactY () : Moves in X direction to the position of the collision  (until contact)
+		void		UTILMoveContactX ( PrCast& cast, prShapecastQuery& query, Real contactOffset );
+
 		//	COMCheckGround () : Common check for ground. Updates m_onGround.
+		// Also will moveContactY() with the ground when falling, for additional stability.
 		void		COMCheckGround ( void );
 		//	COMCollideY () : Common check for y-collision. 
 		void		COMCollideY ( void );
 		//	COMCollideX () : Common check for x-collision.
 		void		COMCollideX ( void );
 
+		//	SUBCheckWallStickStart () : Check for wall stick.
+		// Checks wall stick collision in the given X direction. If returns true, then wall stick is valid.
+		bool		SUBCheckWallStickStart ( Real checkDirection );
+		//	SUBWallStickStart () : Starts the wall stick.
+		void		SUBWallStickStart ( Real checkDirection );
+		
 		grPlatformerMotionState	MSDefault ( void );
+		grPlatformerMotionState	MSWallStick ( void );
 
 	protected:
 		PrShape*	m_hullShape;
 		CRigidbody*	m_body;
 
+		Vector2f	m_hullSize;
 		PrShape*	m_hullShapeHorizonalCheck;
 		PrShape*	m_hullShapeVerticalCheck;
+		PrShape*	m_hullShapeHalfvertCheck;
 
 		bool		m_inputConsumed;
 
 		bool		m_onGround;
+		bool		m_jumpBegin;
+
+		Vector2f	m_wallstickReference;
+		Vector2f	m_wallstickNormal;
 	};
 }
 

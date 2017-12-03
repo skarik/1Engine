@@ -257,5 +257,8 @@
     <ClCompile Include="source\ld40\entities\PlayerPlatformerBase.cpp">
       <Filter>SOURCE\LD40\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="source\ld40\interfaces\CharacterControllerPlatformer.MoveTypes.cpp">
+      <Filter>SOURCE\LD40\Interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

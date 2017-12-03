@@ -1,6 +1,7 @@
 #include "CharacterControllerPlatformer.h"
 
 #include "core/math/Math.h"
+#include "core/time/Time.h"
 #include "core-ext/input/CInputControl.h"
 
 #include "physical/interface/tobt.h"
@@ -9,8 +10,6 @@
 #include "physical/physics/cast/PrCast.h"
 
 #include "engine/physics/motion/CRigidbody.h"
-
-#define USE_KINEMATIC_LOGIC
 
 M04::CharacterControllerPlatformer::CharacterControllerPlatformer ( void* owner )
 	: m_owner(owner),
@@ -27,6 +26,7 @@ M04::CharacterControllerPlatformer::~CharacterControllerPlatformer ( void )
 	delete_safe(m_hullShape);
 	delete_safe(m_hullShapeHorizonalCheck);
 	delete_safe(m_hullShapeVerticalCheck);
+	delete_safe(m_hullShapeHalfvertCheck);
 }
 
 void M04::CharacterControllerPlatformer::InitCollision ( Vector2f hullSize )
@@ -36,9 +36,12 @@ void M04::CharacterControllerPlatformer::InitCollision ( Vector2f hullSize )
 		throw core::InvalidCallException();
 	}
 
+	m_hullSize = hullSize;
+
 	// Create the hulls needed for different checks (due to pixel precision)
 	m_hullShapeHorizonalCheck = new PrShapeBox( Vector2f(hullSize.x, hullSize.y - 2) );
 	m_hullShapeVerticalCheck = new PrShapeBox( Vector2f(hullSize.x - 2, hullSize.y) );
+	m_hullShapeHalfvertCheck = new PrShapeBox( Vector2f(hullSize.x - 2, hullSize.y * 0.5F) );
 
 	// Create shape for the rigidbody
 	m_hullShape = new PrShapeBox( hullSize ); 
@@ -63,10 +66,13 @@ void M04::CharacterControllerPlatformer::InitCollision ( Vector2f hullSize )
 	m_body->ApiBody()->setAngularFactor(btVector3(0,0,0));
 	m_body->ApiBody()->setLinearFactor(btVector3(1,1,0));
 
-#	ifdef USE_KINEMATIC_LOGIC
+#	ifdef M04_KINEMATIC_PLATFORM_CONTROLLER
 	m_body->SetMotionType( physical::motion::kMotionKinematic );
 #	endif
 }
+
+//===============================================================================================//
+// STEPPING THRU GAME LOOP
 
 void M04::CharacterControllerPlatformer::Step ( void )
 {
@@ -86,7 +92,9 @@ void M04::CharacterControllerPlatformer::PhysicsStep ( void )
 		grPlatformerMotionState nextState = m_motionState;
 		switch (m_motionState)
 		{
-		case kPMotionStateDefault:	nextState = MSDefault();
+		case kPMotionStateDefault:		nextState = MSDefault();
+			break;
+		case kPMotionStateWallStick:	nextState = MSWallStick();
 			break;
 		default:
 			throw core::InvalidCallException();
@@ -98,7 +106,7 @@ void M04::CharacterControllerPlatformer::PhysicsStep ( void )
 			m_motionState = nextState;
 		}
 		// Move the character:
-#		ifdef USE_KINEMATIC_LOGIC
+#		ifdef M04_KINEMATIC_PLATFORM_CONTROLLER
 		*m_tracked_position += *m_tracked_velocity * Time::deltaTime;
 #		endif
 
@@ -106,7 +114,40 @@ void M04::CharacterControllerPlatformer::PhysicsStep ( void )
 	m_inputConsumed = true;
 }
 
+//===============================================================================================//
+// UTILITIES
 
+//	UTILMoveContactY () : Moves in Y direction to the position of the collision (until contact)
+void M04::CharacterControllerPlatformer::UTILMoveContactY ( PrCast& cast, prShapecastQuery& query, Real contactOffset )
+{
+	Real new_y = math::lerp(cast.HitFraction<0>(), query.start.position.y, query.end.position.y) + contactOffset;
+#	ifdef M04_KINEMATIC_PLATFORM_CONTROLLER
+	m_tracked_position->y = new_y;
+#	else
+	btVector3 origin = m_body->ApiBody()->getWorldTransform().getOrigin();
+	origin.setY( new_y );
+	m_body->ApiBody()->getWorldTransform().setOrigin(origin);
+#	endif
+}
+
+//	UTILMoveContactY () : Moves in X direction to the position of the collision  (until contact)
+void M04::CharacterControllerPlatformer::UTILMoveContactX ( PrCast& cast, prShapecastQuery& query, Real contactOffset )
+{
+	Real new_x = math::lerp(cast.HitFraction<0>(), query.start.position.x, query.end.position.x) + contactOffset;
+#	ifdef M04_KINEMATIC_PLATFORM_CONTROLLER
+	m_tracked_position->x = new_x;
+#	else
+	btVector3 origin = m_body->ApiBody()->getWorldTransform().getOrigin();
+	origin.setX( new_x );
+	m_body->ApiBody()->getWorldTransform().setOrigin(origin);
+#	endif
+}
+
+//===============================================================================================//
+// COMMON ROUTINES
+
+//	COMCheckGround () : Common check for ground. Updates m_onGround.
+// Also will moveContactY() with the ground when falling, for additional stability.
 void M04::CharacterControllerPlatformer::COMCheckGround ( void )
 {
 	prShapecastQuery query = {0};
@@ -130,14 +171,7 @@ void M04::CharacterControllerPlatformer::COMCheckGround ( void )
 				// Push along the cast
 				m_tracked_velocity->y = 0;
 				// Move to contact
-				Real new_y = math::lerp(cast.HitFraction<0>(), query.start.position.y, query.end.position.y) - math::sgn(m_tracked_velocity->y);
-#			ifdef USE_KINEMATIC_LOGIC
-				m_tracked_position->y = new_y;
-#			else
-				btVector3 origin = m_body->ApiBody()->getWorldTransform().getOrigin();
-				origin.setY( new_y );
-				m_body->ApiBody()->getWorldTransform().setOrigin(origin);
-#			endif
+				UTILMoveContactY(cast, query, (Real)-math::sgn(m_tracked_velocity->y));
 			}
 		}
 	}
@@ -147,7 +181,7 @@ void M04::CharacterControllerPlatformer::COMCheckGround ( void )
 	}
 }
 
-
+//	COMCollideY () : Common check for y-collision. 
 void M04::CharacterControllerPlatformer::COMCollideY ( void )
 {
 	if ( fabsf(m_tracked_velocity->y) > FLOAT_PRECISION )
@@ -168,18 +202,12 @@ void M04::CharacterControllerPlatformer::COMCollideY ( void )
 			// Push along the cast
 			m_tracked_velocity->y = 0;
 			// Move to contact
-			Real new_y = math::lerp(cast.HitFraction<0>(), query.start.position.y, query.end.position.y) - math::sgn(m_tracked_velocity->y);
-#			ifdef USE_KINEMATIC_LOGIC
-			m_tracked_position->y = new_y;
-#			else
-			btVector3 origin = m_body->ApiBody()->getWorldTransform().getOrigin();
-			origin.setY( new_y );
-			m_body->ApiBody()->getWorldTransform().setOrigin(origin);
-#			endif
+			UTILMoveContactY(cast, query, (Real)-math::sgn(m_tracked_velocity->y));
 		}
 	}
 }
 
+//	COMCollideX () : Common check for x-collision.
 void M04::CharacterControllerPlatformer::COMCollideX ( void )
 {
 	if ( fabsf(m_tracked_velocity->x) > FLOAT_PRECISION )
@@ -200,76 +228,59 @@ void M04::CharacterControllerPlatformer::COMCollideX ( void )
 			// Push along the cast
 			m_tracked_velocity->x = 0;
 			// Move to contact
-			Real new_x = math::lerp(cast.HitFraction<0>(), query.start.position.x, query.end.position.x) - math::sgn(m_tracked_velocity->x);
-#			ifdef USE_KINEMATIC_LOGIC
-			m_tracked_position->x = new_x;
-#			else
-			btVector3 origin = m_body->ApiBody()->getWorldTransform().getOrigin();
-			origin.setX( new_x );
-			m_body->ApiBody()->getWorldTransform().setOrigin(origin);
-#			endif
+			UTILMoveContactX(cast, query, (Real)-math::sgn(m_tracked_velocity->x));
 		}
+
+		// TODO: Stair collision.
 	}
 }
 
-M04::grPlatformerMotionState M04::CharacterControllerPlatformer::MSDefault ( void )
+//===============================================================================================//
+// SUBROUTINE CHECKS
+
+//	SUBCheckWallStickStart () : Check for wall stick.
+// Checks wall stick collision in the given X direction. If returns true, then wall stick is valid.
+bool M04::CharacterControllerPlatformer::SUBCheckWallStickStart ( Real checkDirection )
 {
-	// Update velocity first:
-#	ifndef USE_KINEMATIC_LOGIC
-	btVector3 bt_velocity = m_body->ApiBody()->getLinearVelocity();
-	*m_tracked_velocity = physical::ar(bt_velocity);
-#	endif
+	checkDirection = (Real)math::sgn<Real>(checkDirection);
 
-	// Perform vertical common:
-	COMCheckGround();
+	// Create repeated query options.
+	prShapecastQuery query = {0};
+	query.collision	= physical::prCollisionMask(physical::layer::MASK_CHARACTER | physical::layer::MASK_LANDSCAPE, 0, 0);
+	query.owner		= m_owner;
+	query.ownerType	= core::kBasetypeGameBehavior;
+	query.ignore	= m_body;
+	query.maxHits	= 1;
 
-	// Apply gravity
-	if ( !m_onGround )
+	// We need a bit of wall at our head:
+	query.shape		= m_hullShapeHalfvertCheck;
+	query.start		= XrTransform(*m_tracked_position + Vector3f(0 * checkDirection, -m_hullSize.y * 0.75F + 2, 0));
+	query.end		= XrTransform(*m_tracked_position + Vector3f(4 * checkDirection, -m_hullSize.y * 0.75F + 2, 0));
+	
+	if (PrCast(query))
 	{
-		m_tracked_velocity->y += Time::deltaTime * m_opt.gravity;
-	}
+		query.shape		= m_hullShapeHalfvertCheck;
+		query.start		= XrTransform(*m_tracked_position + Vector3f(0 * checkDirection, 0, 0));
+		query.end		= XrTransform(*m_tracked_position + Vector3f(4 * checkDirection, 0, 0));
 
-	// Apply horizontal acceleration
-	if ( fabsf(m_input->vDirInput.x) > FLOAT_PRECISION )
-	{
-		// Move left n right
-		float move_accel = m_onGround ? m_opt.runAcceleration : m_opt.airAcceleration;
-		if ( m_input->vDirInput.x < 0 )
+		PrCast wallCast(query);
+		if (wallCast)
 		{
-			m_tracked_velocity->x = std::max( m_tracked_velocity->x - move_accel * Time::deltaTime, -m_opt.runSpeed );
-		}
-		else if ( m_input->vDirInput.x > 0 )
-		{
-			m_tracked_velocity->x = std::min( m_tracked_velocity->x + move_accel * Time::deltaTime, +m_opt.runSpeed );
-		}
-	}
-	// Apply horizontal decceleration
-	else
-	{
-		float move_deccel = m_onGround ? m_opt.runDecceleration : m_opt.airDecceleration;
-		// Stop movement
-		m_tracked_velocity->x = std::max( fabsf(m_tracked_velocity->x) - move_deccel * Time::deltaTime, 0.0F ) * math::sgn( m_tracked_velocity->x );
-	}
-
-	// Perform jumping
-	if ( m_onGround )
-	{
-		if ( m_input->axes.jump.pressed() )
-		{
-			m_onGround = false;
-			m_tracked_velocity->y = -m_opt.jumpSpeed;
+			m_wallstickReference.y = m_tracked_position->y;
+			m_wallstickReference.x = math::lerp(wallCast.HitFraction<0>(), query.start.position.x, query.end.position.x);
+			m_wallstickNormal.y = 0;
+			m_wallstickNormal.x = -checkDirection;
+			return true;
 		}
 	}
 
-	// Perform collision for Y
-	COMCollideY();
-	// Perform horizonal collision
-	COMCollideX();
+	return false;
+}
 
-	// Update physics end
-#	ifndef USE_KINEMATIC_LOGIC
-	m_body->ApiBody()->setLinearVelocity( physical::bt(*m_tracked_velocity) );
-#	endif
+//	SUBWallStickStart () : Starts the wall stick.
+void M04::CharacterControllerPlatformer::SUBWallStickStart ( Real checkDirection )
+{
+	checkDirection = (Real)math::sgn<Real>(checkDirection);
 
-	return kPMotionStateDefault;
+	// Move to the wall? Nah. Fuck it, all the work is already done. :)
 }

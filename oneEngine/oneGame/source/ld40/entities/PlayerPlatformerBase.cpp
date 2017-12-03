@@ -60,9 +60,9 @@ void PlayerPlatformerBase::OnCreate ( void )
 		// Set up Withstand's motion parameters as a baseline.
 		grPlatformControllerOptions opt;
 		opt.gravity = 720;
-		opt.runSpeed = 120;
-		opt.runAcceleration = 720;
-		opt.runDecceleration = 1440;
+		opt.runSpeed = 120 * 1.5F;
+		opt.runAcceleration = 720 * 1.3F;
+		opt.runDecceleration = 1440 * 1.3F;
 		opt.airAcceleration = 720;
 		opt.airDecceleration = 180;
 		opt.jumpSpeed = 278;
