@@ -96,7 +96,7 @@ MapEditor::MapEditor ( void )
 		tilemap->RemoveReference(); // So it can be destroyed when the game quits
 
 		// Set the tileset sprite
-		tilemap->SetTilesetFile( "tileset/default.txt" );
+		tilemap->SetTilesetFile( "tileset/ld40.txt" );
 
 		// Set map data
 		tilemap->SetDebugTileMap(
@@ -1359,6 +1359,9 @@ void MapEditor::uiStepTopEdge ( void )
 		// Reset camera
 		m_target_camera_position.x = 0;
 		m_target_camera_position.y = 0;
+
+		// Set default tileset TODO: Add a UI for this.
+		//m_tilemap->SetTilesetFile( "tileset/ld40.txt" );
 
 		try {
 			m_tilemap->Rebuild();

@@ -1,0 +1,42 @@
+// only a single sprite for entire game
+sprite
+{
+	file "sprites/ld40/tileset_snowstone.gal"
+	index 0
+}
+// set information for the atlas
+atlas
+{
+	index 0
+	size	256 256
+	count	8 8
+	tilesize 32 32
+}
+
+// basic stone type
+tile "Stone"
+{
+	type autotile
+    collision	impassable
+	atlas 1 2
+	// autotile 4 should always be set
+	autotile
+	{
+		0 0 3
+		1 1 2
+		1 2 2
+		2 1 3
+		3 3 1
+		4 1 1
+		4 2 1
+		5 0 1
+		6 0 4
+		7 1 0
+		7 2 0
+		8 1 4
+		9 0 0
+		10 3 0
+		11 0 2
+		12 3 2
+	}
+}

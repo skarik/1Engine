@@ -49,6 +49,11 @@ namespace M04
 		void		PhysicsStep ( void );
 
 	public:
+
+		bool		CheckIsOnGround ( void )
+			{ return m_onGround; }
+
+	public:
 		void*			m_owner;
 		CInputControl*	m_input;
 

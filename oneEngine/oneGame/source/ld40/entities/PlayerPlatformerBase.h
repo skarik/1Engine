@@ -46,16 +46,11 @@ namespace M04
 
 		CameraControllerPlatformer*		camera;
 		CharacterControllerPlatformer*	motion;
-
-		CInputControl* input;
-		//COrthoCamera* camera;
-		CLight* light;
-		CRigidbody* bod;
+		CInputControl*					input;
 
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::PlayerPlatformerBase);
-		//DEFINE_DISPLAY(DISPLAY_BOX,"1");
-		DEFINE_DISPLAY(DISPLAY_2D_SPRITE,"sprites/ld40/Mage.gal");
+		DEFINE_DISPLAY(DISPLAY_BOX,"1");
 		DEFINE_VALUE(position,Vector3d,FIELD_POSITION);
 		END_OBJECT_DESC();
 	};

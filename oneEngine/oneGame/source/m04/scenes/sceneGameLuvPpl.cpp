@@ -34,6 +34,7 @@
 #include "physical/physics/shapes/PrMesh.h"
 
 #include "render2d/object/Background2D.h"
+#include "renderer/material/RrMaterial.h"
 
 void sceneGameLuvPpl::LoadScene ( void )
 {
@@ -142,7 +143,8 @@ void sceneGameLuvPpl::LoadScene ( void )
 	// Create background
 	{
 		CRenderable2D* bg = new renderer::Background2D();
-		//bg->SetRenderType( renderer::kRLBackground );
+		bg->SetSpriteFile("textures/white.jpg");
+		bg->GetMaterial()->m_diffuse = Color(0.5F,0.5F,0.5F);
 		(new CRendererHolder (bg))->RemoveReference();
 	}
 

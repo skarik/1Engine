@@ -85,6 +85,9 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 		m_tileset = new Engine2D::Tileset ();
 	}
 
+	// Clear out existing data:
+	m_tileset->tiles.clear();
+
 	// Save filename
 	m_tileset_file = n_tileset_file;
 

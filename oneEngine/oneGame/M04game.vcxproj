@@ -63,6 +63,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\ld40\entities\PlayerMage.h" />
     <ClInclude Include="source\ld40\entities\PlayerPlatformerBase.h" />
     <ClInclude Include="source\ld40\interfaces\CameraControllerPlatformer.h" />
     <ClInclude Include="source\ld40\interfaces\CharacterControllerPlatformer.h" />
@@ -98,6 +99,7 @@
     <ClInclude Include="source\m04\states\MapInformation.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\ld40\entities\PlayerMage.cpp" />
     <ClCompile Include="source\ld40\entities\PlayerPlatformerBase.cpp" />
     <ClCompile Include="source\ld40\interfaces\CameraControllerPlatformer.cpp" />
     <ClCompile Include="source\ld40\interfaces\CharacterControllerPlatformer.cpp" />

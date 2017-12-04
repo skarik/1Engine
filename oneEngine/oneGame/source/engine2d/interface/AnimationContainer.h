@@ -63,8 +63,9 @@ namespace Engine2D
 
 	public:
 		//		AddFromFile
-		// Adds a new animation to this object, either reading from file or using cached texture info
-		ENGINE2D_API uint32_t AddFromFile ( const animation::arAnimType n_anim_type, const uint8_t n_userid, const char* n_filename );
+		// Adds a new animation to this object, either reading from file or using cached texture info.
+		// Returns the index of the new animation, which can be used to play it manually.
+		ENGINE2D_API uint32_t AddFromFile ( const animation::arAnimType n_anim_type, const uint8_t n_userid, const char* n_filename, const char* n_palette_filename = NULL );
 
 
 		//		operator[]

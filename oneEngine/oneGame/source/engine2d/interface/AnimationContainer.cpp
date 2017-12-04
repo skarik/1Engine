@@ -128,7 +128,8 @@ bool AnimationContainer::IsPlaying ( const uint32_t animation_index ) const
 
 //		AddFromFile
 // Adds a new animation to this object, either reading from file or using cached texture info
-uint32_t AnimationContainer::AddFromFile ( const animation::arAnimType n_anim_type, const uint8_t n_userid, const char* n_sprite_filename )
+// Returns the index of the new animation, which can be used to play it manually.
+uint32_t AnimationContainer::AddFromFile ( const animation::arAnimType n_anim_type, const uint8_t n_userid, const char* n_sprite_filename, const char* n_palette_filename )
 {
 	// Create empty entry:
 	animation_entry_t* entry = new animation_entry_t();
@@ -137,7 +138,7 @@ uint32_t AnimationContainer::AddFromFile ( const animation::arAnimType n_anim_ty
 	// Load the sprite
 	Textures::timgInfo img_info;
 	Real* img_frametimes = NULL;
-	m_sprite->SetSpriteFileAnimated( n_sprite_filename, &img_info, &img_frametimes );
+	m_sprite->SetSpriteFileAnimated( n_sprite_filename, n_palette_filename, &img_info, &img_frametimes );
 
 	// Create the entry frame size needed for streaming texture offsets
 	entry->frame_count = img_info.framecount;

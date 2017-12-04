@@ -165,6 +165,9 @@
     <ClInclude Include="source\ld40\entities\PlayerPlatformerBase.h">
       <Filter>SOURCE\LD40\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="source\ld40\entities\PlayerMage.h">
+      <Filter>SOURCE\LD40\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -259,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="source\ld40\interfaces\CharacterControllerPlatformer.MoveTypes.cpp">
       <Filter>SOURCE\LD40\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ld40\entities\PlayerMage.cpp">
+      <Filter>SOURCE\LD40\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
