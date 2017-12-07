@@ -45,9 +45,9 @@ layout(std140) uniform sys_cbuffer_PerPass
 {
     vec4    sys_LightAmbient;
     int     sys_LightNumber;
-    int     rr__unused0;
-    int     rr__unused1;
-    int     rr__unused2;
+    int     rr_unused0;
+    int     rr_unused1;
+    int     rr_unused2;
 };
 
 /*
