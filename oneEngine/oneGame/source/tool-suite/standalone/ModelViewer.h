@@ -24,6 +24,7 @@ namespace toolsuite
 		void			UpdateControlsKeyboard ( void );
 
 		void			ResetCameraOrientation ( void );
+		void			ResetCameraCentering ( void );
 
 		//		uiCreate () : create the dusk UI
 		// create entirety of the dusk gui shit

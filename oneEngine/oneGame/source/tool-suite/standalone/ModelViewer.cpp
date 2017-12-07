@@ -109,8 +109,24 @@ void toolsuite::ModelViewer::Update ( void )
 	core::shell::arDragAndDropEntry dndEntry;
 	while (core::shell::PopDragAndDropEntry(dndEntry))
 	{
-		CTexture* tex = new CTexture(dndEntry.filename.c_str());
-		cube->GetMaterial()->setTexture(TEX_DIFFUSE, core::Orphan(tex));
+		string extension = StringUtils::ToLower(StringUtils::GetFileExtension(dndEntry.filename.c_str()));
+		if (extension == "fbx" || extension == "pad")
+		{
+			// Load up new model (move to separate function w/ hotspots)
+			delete_safe(model);
+			model = new CModel(dndEntry.filename.c_str());
+			model->transform.scale = Vector3d(1,1,1);
+			model->transform.position = Vector3d(0.0F, 0.0F, 0.0F);
+
+			// Reset camera to center without changing rotation
+			ResetCameraCentering();
+		}
+		else
+		{
+			// Load up new texture (move to separate function w/ hotspots)
+			CTexture* tex = new CTexture(dndEntry.filename.c_str());
+			cube->GetMaterial()->setTexture(TEX_DIFFUSE, core::Orphan(tex));
+		}
 	}
 
 	// Update UI:
@@ -201,6 +217,11 @@ void toolsuite::ModelViewer::ResetCameraOrientation ( void )
 	cameraRotationVelocity = Vector3d();
 
 	// Move the camera center back to the model's center.
+	ResetCameraCentering();
+}
+
+void toolsuite::ModelViewer::ResetCameraCentering ( void )
+{
 	if (model != NULL)
 	{
 		cameraCenter = model->GetBoundingBox().GetCenterPoint().mulComponents(model->transform.scale);
