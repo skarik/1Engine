@@ -16,6 +16,7 @@
 #include "renderer/camera/CCamera.h"
 #include "renderer/object/shapes/CPrimitiveCube.h"
 #include "renderer/object/model/Model.h"
+#include "renderer/object/mesh/CMesh.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/texture/CTexture.h"
 #include "renderer/texture/CBitmapFont.h"
@@ -126,6 +127,11 @@ void toolsuite::ModelViewer::Update ( void )
 			// Load up new texture (move to separate function w/ hotspots)
 			CTexture* tex = new CTexture(dndEntry.filename.c_str());
 			cube->GetMaterial()->setTexture(TEX_DIFFUSE, core::Orphan(tex));
+
+			for (uint i = 0; i < model->GetMeshCount(); ++i)
+			{
+				model->GetMesh(i)->GetMaterial()->setTexture(TEX_DIFFUSE, tex);
+			}
 		}
 	}
 
@@ -233,9 +239,73 @@ void toolsuite::ModelViewer::uiCreate ( void )
 {
 	ui_lbl_startHint = dusk->CreateText(-1, "To get started, drag an FBX or PAD file in.");
 	ui_lbl_startHint.SetRect( Rect( (Screen::Info.width - 256) * 0.5F, Screen::Info.height * 0.75F, 256, 24 ) );
+
+	ui_meshblocks = NULL;
+	ui_meshblocksCount = 0;
 }
 
 void toolsuite::ModelViewer::uiUpdate ( void )
 {
+	if (model != NULL)
+	{
+		// Hide the hint:
+		ui_lbl_startHint.SetVisible(false);
 
+		// Create the needed mesh blocks for the UI:
+		if (ui_meshblocksCount != model->GetMeshCount())
+		{
+			UIBlockMesh* new_listing = new UIBlockMesh[model->GetMeshCount()];
+			uint copy_count = std::min<uint>(ui_meshblocksCount, model->GetMeshCount());
+			uint create_count = model->GetMeshCount();
+			for (uint i = 0; i < copy_count; ++i)
+			{
+				new_listing[i] = ui_meshblocks[i];
+			}
+			for (uint i = copy_count; i < create_count; ++i)
+			{
+				new_listing[i].lbl_meshName = dusk->CreateText(-1, "temp");
+				new_listing[i].btn_texDiffuse = dusk->CreateButton(-1);
+				new_listing[i].btn_texNormals = dusk->CreateButton(-1);
+				new_listing[i].btn_texOverlay = dusk->CreateButton(-1);
+				new_listing[i].btn_texSurface = dusk->CreateButton(-1);
+			}
+			for (uint i = create_count; i < ui_meshblocksCount; ++i)
+			{
+				dusk->DeleteElement(ui_meshblocks[i].lbl_meshName);
+				dusk->DeleteElement(ui_meshblocks[i].btn_texDiffuse);
+				dusk->DeleteElement(ui_meshblocks[i].btn_texNormals);
+				dusk->DeleteElement(ui_meshblocks[i].btn_texOverlay);
+				dusk->DeleteElement(ui_meshblocks[i].btn_texSurface);
+			}
+			delete[] ui_meshblocks;
+			ui_meshblocks = new_listing;
+			ui_meshblocksCount = model->GetMeshCount();
+		}
+
+		// Set the blocks:
+		for (uint i = 0; i < ui_meshblocksCount; ++i)
+		{
+			float ybase = 20.0F + 100.0F * i;
+
+			ui_meshblocks[i].lbl_meshName.SetText( model->GetMesh(i)->GetName() );
+			ui_meshblocks[i].lbl_meshName.SetRect( Rect( 10.0F, ybase - 6.0F, 256.0F, 18.0F ) );
+
+			ui_meshblocks[i].btn_texDiffuse.SetText( "Diffuse" );
+			ui_meshblocks[i].btn_texDiffuse.SetRect( Rect( 10.0F, ybase + 20.0F, 75.0F, 75.0F ) );
+
+			ui_meshblocks[i].btn_texNormals.SetText( "Normals" );
+			ui_meshblocks[i].btn_texNormals.SetRect( Rect( 10.0F + 80.0F, ybase + 20.0F, 75.0F, 75.0F ) );
+
+			ui_meshblocks[i].btn_texOverlay.SetText( "Overlay" );
+			ui_meshblocks[i].btn_texOverlay.SetRect( Rect( 10.0F + 80.0F*2, ybase + 20.0F, 75.0F, 75.0F ) );
+
+			ui_meshblocks[i].btn_texSurface.SetText( "Surface" );
+			ui_meshblocks[i].btn_texSurface.SetRect( Rect( 10.0F + 80.0F*3, ybase + 20.0F, 75.0F, 75.0F ) );
+		}
+	}
+	else
+	{
+		// Show the hint:
+		ui_lbl_startHint.SetVisible(true);
+	}
 }

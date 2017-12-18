@@ -38,13 +38,13 @@ public:
 	// Recalculates the normals per-triangle.
 	RENDER_API void	RecalculateNormals ( void );
 	// Smooths the normals
-	void			SmoothNormals ( float val );
+	RENDER_API void	SmoothNormals ( float val );
 
 	// Render the mesh out
 	//virtual void	Render ( void );
 
 	// Getters of R-O data
-	const string&	GetName ( void ) const;
+	RENDER_API const string&	GetName ( void ) const;
 
 protected:
 	// Frees up the GPU data used by the object

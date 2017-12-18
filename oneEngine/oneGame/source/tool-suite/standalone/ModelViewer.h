@@ -53,6 +53,18 @@ namespace toolsuite
 		// Dusk UI Elements:
 
 		Dusk::Handle	ui_lbl_startHint;
+
+		struct UIBlockMesh
+		{
+			Dusk::Handle	lbl_meshName;
+			Dusk::Handle	btn_texDiffuse;
+			Dusk::Handle	btn_texNormals;
+			Dusk::Handle	btn_texSurface;
+			Dusk::Handle	btn_texOverlay;
+		};
+
+		UIBlockMesh*	ui_meshblocks;
+		uint			ui_meshblocksCount;
 	};
 }
 

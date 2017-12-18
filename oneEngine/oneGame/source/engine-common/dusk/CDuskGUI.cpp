@@ -51,9 +51,12 @@ CDuskGUI::CDuskGUI ( CBitmapFont* font )
 	//SetMaterial( matDefault );
 
 	// Set default colors and mat settings
-	m_basecolor			= Color( 0.25f,0.25f,0.35f, 0.7f );
+	/*m_basecolor			= Color( 0.25f,0.25f,0.35f, 0.7f );
 	m_basecolor_hover	= Color( 0.50f,0.50f,0.60f, 0.7f );
-	m_basecolor_down	= Color( 0.05f,0.05f,0.15f, 0.8f );
+	m_basecolor_down	= Color( 0.05f,0.05f,0.15f, 0.8f );*/
+	m_basecolor			= Color( 0.30F,0.30F,0.75F, 0.70F );
+	m_basecolor_hover	= Color( 0.60F,0.60F,1.00F, 0.80F );
+	m_basecolor_down	= Color( 0.05F,0.05F,0.15F, 0.90F );
 
 	// Handle init
 	hCurrentElement = -1;
