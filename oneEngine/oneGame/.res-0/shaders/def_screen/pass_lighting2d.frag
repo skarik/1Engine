@@ -17,6 +17,9 @@ in vec4 v2f_position;
 in vec2 v2f_texcoord0;
 in vec2 v2f_texcoord1;
 
+// Lighitng hack!
+layout(location = 12) uniform vec4 sys_LightParamHack;
+
 // Samplers
 layout(location = 20) uniform sampler2D textureSampler0;	// Diffuse
 layout(location = 21) uniform sampler2D textureSampler1;	// Normals
@@ -42,9 +45,9 @@ layout(std140) uniform sys_cbuffer_PerPass
 {
     vec4    sys_LightAmbient;
     int     sys_LightNumber;
-    int     rr__unused0;
-    int     rr__unused1;
-    int     rr__unused2;
+    int     rr_unused0;
+    int     rr_unused1;
+    int     rr_unused2;
 };
 
 /*
@@ -193,11 +196,9 @@ void lighting_collect ( out vec3 diffuseFactor, out vec3 specularFactor, in vec3
 		// Get direction of surface to light
 		vec4 surface_to_light;
 		surface_to_light.xyz = lightPosition.xyz - surfacePosition.xyz;
-        //surface_to_light.z += 0.3 / lightProperties.x;
-        //surface_to_light.x *= 0.5;
         surface_to_light.z = -surface_to_light.z;
-        surface_to_light.x *= 0.5;
-        surface_to_light.y *= 1.0 - (surfaceNormal.y * 0.33);
+        surface_to_light.xy *= sys_LightParamHack.xy;
+        surface_to_light.y *= 1.0 - (surfaceNormal.y * 0.33) * sys_LightParamHack.z;
 		surface_to_light.w = max(0.01, length(surface_to_light.xyz));
 
         // Calculate diffuse
@@ -358,16 +359,21 @@ void main ( void )
 	float pixelDepth   = texture( textureSampler4, v2f_texcoord0 ).r;
     //vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1), pixelDepth, 1.0 );
 	//vec4 pixelPosition = vec4( (v2f_texcoord0.x*2 - 0.5),(v2f_texcoord0.y*2 - 0.5), pixelDepth, 1.0 );
-    vec4 pixelPosition = vec4( v2f_texcoord1.xy, pixelDepth, 1.0 );
+    vec4 pixelPosition = vec4( v2f_texcoord1.x, -v2f_texcoord1.y, pixelDepth, 1.0 );
 	/*{
 		pixelPosition.z = ( pixelPosition.z*2 - 1 );
         pixelPosition = sys_ModelViewProjectionMatrixInverse * vec4( pixelPosition.xyz, 1.0 );
 		pixelPosition.xyzw /= pixelPosition.w;
 	}*/
-    pixelPosition.x *= sys_ViewportInfo.z;
-    pixelPosition.y *= -sys_ViewportInfo.w;
-    pixelPosition.z *= (pixelPosition.z - 0.5) * -1000;
+    pixelPosition.xy *= sys_ScreenSize.xy * sys_PixelRatio.xy;
     pixelPosition.xy += sys_WorldCameraPos.xy;
+    //pixelPosition.x *= sys_ViewportInfo.z;
+    //pixelPosition.y *= -sys_ViewportInfo.w;
+    pixelPosition.z *= (pixelPosition.z - 0.5) * -1000;
+
+    //pixelPosition.xy += sys_WorldCameraPos.xy * (sys_ViewportInfo.zw / sys_ScreenSize.xy);
+    //pixelPosition.xy *= 0.5;
+    //pixelPosition.xy /= (sys_ViewportInfo.zw / sys_ScreenSize.xy);
 
 	// pixelLookup
 	// xy	palette lookup
@@ -444,6 +450,9 @@ void main ( void )
 
 	//FragColor.rgb = pixelGlow.rgb * pixelLightProperty.r;//luminColor.rgb*0.5;//vec3(1,1,1) * pixelGlow.a;
 	//+ dot( n_cameraDir, pixelNormal.xyz );
+
+    /*FragColor.rgb = pixelPosition.rgb / 32;
+    FragColor.b = 0;*/
 
 #ifdef DEBUG_OUTPUT
 	// 4X Debug Output

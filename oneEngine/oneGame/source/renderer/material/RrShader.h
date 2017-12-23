@@ -2,7 +2,6 @@
 // Because of how FUCKING ANNOYING THEY ARE, memory management of RrShader objects is handled AUTOMATICALLY.
 // All RrShader objects MUST be created via new, and they must be 'destroyed' with ReleaseReference()!!
 
-
 #ifndef _GL_SHADER_H_
 #define _GL_SHADER_H_
 
@@ -20,25 +19,11 @@ needs to check at the top to see what kind of shader it is
 
 */
 
-// Includes
-//#include "renderer/system/glMainSystem.h"
-//#include "CTexture.h"
-//#include "Color.h"
-//#include "Vector4d.h"
-//#include "Vector3d.h"
-//#include "Vector2d.h"
-//#include "Quaternion.h"
-//#include "CMatrix.h"
 #include "core/types/types.h"
 #include "core/containers/arstring.h"
-
 #include "core/math/Math3d.h"
 
-//#include <fstream>
-//using std::ifstream;
 #include <string>
-//#include <map>
-//using std::map;
 #include <unordered_map>
 
 class RrShaderManager;
@@ -102,6 +87,8 @@ namespace renderer
 
 		UNI_LIGHTING_AMBIENT		= 10,
 		UNI_LIGHTING_COUNT			= 11,
+
+		UNI_LIGHTING_PARAM_HACK		= 12,
 
 		UNI_SAMPLER_0				= 20,
 		UNI_SAMPLER_1				= 21,

@@ -372,6 +372,9 @@
     <ClCompile Include="source\renderer\state\CRenderState.Sorters.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Device.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\ogl\GLCommon.h">
@@ -676,6 +679,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\types\ShaderSettings.h">
       <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Device.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

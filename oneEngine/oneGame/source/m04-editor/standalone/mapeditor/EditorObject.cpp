@@ -93,8 +93,8 @@ void EditorObject::Update ( void )
 	if ( light != NULL )
 	{
 		light->position = position;
+		light->position.z = light->range * -0.3F;
 	}
-	position.z = -495;
 	
 	// Update metadata entries if we have the entries to pull/save them from
 	WorldToMetadata();

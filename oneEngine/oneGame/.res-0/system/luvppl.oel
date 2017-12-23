@@ -31,6 +31,14 @@ entity npc_rioter
 	default
 }
 
+entity player_mage
+{
+	default
+}
+entity player_platformer_base
+{
+	default
+}
 
 entity prop_chinese_lamp
 {

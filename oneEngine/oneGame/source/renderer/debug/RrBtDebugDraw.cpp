@@ -140,20 +140,19 @@ void RrBtDebugDraw::drawLine(const btVector3& from,const btVector3& to,const btV
 		m_haveNewUpload = true;
 	}
 
-	// Add vertex data
+	// Add vertex data & index data
 	arModelVertex vert;
 	memset(vert.rawbytes, 0, sizeof(arModelVertex));
 	vert.color = physical::ar(color);
 	vert.color.w = 1.0F;
 
 	vert.position = physical::ar(from);
-	m_vertexData.push_back(vert);
-	vert.position = physical::ar(to);
+	m_indexData.push_back(m_vertexData.size());
 	m_vertexData.push_back(vert);
 
-	// Add index data
-	m_indexData.push_back(m_indexData.size());
-	m_indexData.push_back(m_indexData.size());
+	vert.position = physical::ar(to);
+	m_indexData.push_back(m_vertexData.size());
+	m_vertexData.push_back(vert);
 }
 
 void RrBtDebugDraw::drawContactPoint(const btVector3& PointOnB,const btVector3& normalOnB,btScalar distance,int lifeTime,const btVector3& color)

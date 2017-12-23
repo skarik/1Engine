@@ -95,6 +95,14 @@ RrMaterial*	RrMaterial::copy ( void )
 	memcpy( newMaterial->m_samplers, m_samplers, sizeof(glHandle) * 12 );
 	memcpy( newMaterial->m_sampler_targets, m_sampler_targets, sizeof(glHandle) * 12 );
 
+	// Add references to valid high level storage:
+	for (CTexture*& texture : m_highlevel_storage)
+	{
+		if (texture != NULL) {
+			texture->AddReference();
+		}
+	}
+
 	newMaterial->passinfo = passinfo;
 	newMaterial->deferredinfo = deferredinfo;
 

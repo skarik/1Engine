@@ -97,7 +97,7 @@ void PlayerLeyo::Update ( void )
 
 	input->Update(this, Time::deltaTime);
 
-	Vector3d motion_input (-input->vDirInput.y, -input->vDirInput.x, 0);
+	Vector3d motion_input (input->vDirInput.x, -input->vDirInput.y, 0);
 
 	const float acceleration = 512.0F;
 	const float maxSpeed = 128.0F;

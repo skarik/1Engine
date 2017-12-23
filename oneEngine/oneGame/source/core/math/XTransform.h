@@ -10,6 +10,7 @@
 
 #include "Vector3d.h"
 #include "Quaternion.h"
+#include "Rotator.h"
 
 //	XTransform : 10 Float Structure for animation
 struct XTransform

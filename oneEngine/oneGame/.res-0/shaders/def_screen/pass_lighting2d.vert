@@ -27,7 +27,8 @@ void main ( void )
 
 	v2f_position	= vec4( mdl_Vertex, 1.0 );
     v2f_texcoord0	= mdl_TexCoord.xy;
-    v2f_texcoord1   = (mdl_TexCoord.xy - vec2(0.5, 0.5)) * sys_PixelRatio;
+    vec2 render_scale = sys_ViewportInfo.zw / sys_ScreenSize.xy;
+    v2f_texcoord1   = (mdl_TexCoord.xy - vec2(0.5, 0.5) * render_scale) / render_scale;
 
 	gl_Position = v_screenPos;
 }

@@ -41,6 +41,13 @@ void	Dusk::Handle::ToggleVisibility ( void )
 {
 	activeGUI->ToggleElementVisible( *this );
 }
+
+Rect	Dusk::Handle::GetRect ( void )
+{
+	//vElements[int(handle)]->rect = rect;
+	//return activeGUI->GetEleme
+	return activeGUI->vElements[int(*this)]->rect;
+}
 bool	Dusk::Handle::GetClicked ( void )
 {
 	return activeGUI->GetClicked( *this );

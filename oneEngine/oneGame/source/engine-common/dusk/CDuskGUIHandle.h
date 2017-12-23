@@ -44,6 +44,7 @@ namespace Dusk
 		ENGCOM_API void	SetParent ( const Handle& );
 		ENGCOM_API void	ToggleVisibility ( void );
 
+		ENGCOM_API Rect	GetRect ( void );
 		ENGCOM_API bool	GetClicked ( void );
 		ENGCOM_API bool	GetMouseOver ( void );
 		ENGCOM_API bool	GetButtonClicked ( void );

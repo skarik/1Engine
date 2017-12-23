@@ -13,6 +13,7 @@ class CDuskGUI;
 namespace Engine2D
 {
 	class TileMap;
+	class CollisionMap;
 	class Tileset;
 	class Area2DBase;
 }
@@ -20,6 +21,7 @@ namespace M04
 {
 	class MapInformation;
 	class AreaRenderer;
+	class CollisionMapRenderer;
 	class TileSelector;
 	class ObjectEditorListing;
 	class UIDragHandle;
@@ -34,6 +36,12 @@ namespace M04
 
 namespace M04
 {
+	struct grEditorPersistentOptions
+	{
+		arstring256	current_file;
+		Vector4f	camera_position;
+	};
+
 	class MapEditor : public CGameBehavior
 	{
 	public:
@@ -43,6 +51,13 @@ namespace M04
 		void		Update ( void ) override;
 
 	protected:
+		//		statusLoad () : load status from file
+		// opens .game/.editorpersistent, loads options
+		void		statusLoad ( void );
+		//		statusSave () : saves status to file
+		// saves options to .game/.editorpersistent
+		void		statusSave ( void );
+
 		//		uiCreate () : create the dusk UI
 		// create entirety of the dusk gui shit
 		void		uiCreate ( void );
@@ -151,6 +166,7 @@ namespace M04
 
 		CDuskGUI*	dusk;
 		TileSelector*	m_tile_selector;
+		CollisionMapRenderer*	m_tile_collision_renderer;
 		AreaRenderer*	m_area_renderer;
 		GizmoRenderer*	m_gizmo_renderer;
 
@@ -173,6 +189,7 @@ namespace M04
 
 		M04::MapInformation*	m_mapinfo;
 		Engine2D::TileMap*		m_tilemap;
+		Engine2D::CollisionMap*	m_collisionmap;
 
 		string		m_current_savetarget;
 
@@ -191,8 +208,10 @@ namespace M04
 		Dusk::Handle	ui_mode_utils;
 		Dusk::Handle	ui_toolbox_cutscene;
 		Dusk::Handle	ui_toolbox_global;
+		Dusk::Handle	ui_toolbox_playtest;
 		Dusk::Handle	ui_mode_preferences;
 
+		Dusk::Handle	ui_lbl_file;
 		Dusk::Handle	ui_lbl_mode;
 		Dusk::Handle	ui_lbl_mousex;
 		Dusk::Handle	ui_lbl_mousey;

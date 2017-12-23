@@ -3,8 +3,11 @@
 #include "core/input/CInput.h"
 #include "core/math/Math.h"
 #include "core/settings/CGameSettings.h"
+#include "core/system/io/FileUtils.h"
 
 #include <map>
+
+#include "engine/utils/CDeveloperConsole.h"
 
 #include "engine-common/dusk/CDuskGUI.h"
 #include "engine-common/entities/CRendererHolder.h"
@@ -19,13 +22,14 @@
 #include "render2d/object/Background2D.h"
 #include "render2d/object/TileMapLayer.h"
 
-#include "./mapeditor/TileSelector.h"
-
 #include "engine2d/entities/map/TileMap.h"
+#include "engine2d/entities/map/CollisionMap.h"
 #include "engine2d/entities/Area2DBase.h"
 #include "engine2d/entities/AreaTeleport.h"
 #include "engine2d/entities/AreaTrigger.h"
 #include "engine2d/entities/AreaPlayerSpawn.h"
+
+#include "m04/m04-common.h"
 
 #include "m04/states/MapInformation.h"
 #include "m04/interfaces/MapIO.h"
@@ -34,9 +38,11 @@
 #include "m04-editor/entities/UIDragHandle.h"
 #include "m04-editor/entities/UILightHandle.h"
 
+#include "m04-editor/standalone/mapeditor/TileSelector.h"
 #include "m04-editor/standalone/mapeditor/EditorObject.h"
 
 #include "m04-editor/renderer/object/AreaRenderer.h"
+#include "m04-editor/renderer/object/CollisionMapRenderer.h"
 #include "m04-editor/renderer/object/GizmoRenderer.h"
 
 using namespace M04;
@@ -48,6 +54,27 @@ MapEditor::MapEditor ( void )
 	m_drag_handle(NULL),
 	m_area_target(NULL), m_object_target(NULL)
 {
+	// Create orthographic camera
+	{
+		COrthoCamera* cam = new COrthoCamera();
+		// Set camera options
+		cam->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
+		cam->viewport_target.size = Vector2d( 1280,720 ) * 0.5f;
+		cam->SetActive(); // Mark it as the main camera to use IMMEDIATELY
+						  // Use this new camera as our main camera
+		m_target_camera = cam;
+	}
+	// Create background
+	{
+		CRenderable2D* bg = new renderer::Background2D();
+		(new CRendererHolder (bg))->RemoveReference();
+	}
+
+	// Load up the options file
+	{
+		statusLoad();
+	}
+
 	// Load editor listing
 	{
 		m_listing = new M04::ObjectEditorListing ();
@@ -69,7 +96,7 @@ MapEditor::MapEditor ( void )
 		tilemap->RemoveReference(); // So it can be destroyed when the game quits
 
 		// Set the tileset sprite
-		tilemap->SetTilesetFile( "tileset/default.txt" );
+		tilemap->SetTilesetFile( "tileset/ld40.txt" );
 
 		// Set map data
 		tilemap->SetDebugTileMap(
@@ -83,21 +110,6 @@ MapEditor::MapEditor ( void )
 		m_tilemap = tilemap;
 	}
 
-	// Create orthographic camera
-	{
-		COrthoCamera* cam = new COrthoCamera();
-		// Set camera options
-		cam->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
-		cam->viewport_target.size = Vector2d( 1280,720 ) * 0.5f;
-		cam->SetActive(); // Mark it as the main camera to use IMMEDIATELY
-		// Use this new camera as our main camera
-		m_target_camera = cam;
-	}
-	// Create background
-	{
-		CRenderable2D* bg = new renderer::Background2D();
-		(new CRendererHolder (bg))->RemoveReference();
-	}
 	// Create area renderer
 	{
 		m_area_renderer = new M04::AreaRenderer();
@@ -127,10 +139,42 @@ MapEditor::MapEditor ( void )
 		// Rebuild the map visuals
 		m_tilemap->Rebuild();
 	}
+	// Create the collision and rebuild
+	{
+		m_collisionmap = new Engine2D::CollisionMap();
+		m_collisionmap->RemoveReference(); // So it can be destroyed when the game quits
+
+		// Point at the tilemap
+		m_collisionmap->m_tilemap = m_tilemap;
+
+		// Rebuild it now
+		m_collisionmap->Rebuild();
+	}
+	// Create the collision visualizer
+	{
+		m_tile_collision_renderer = new M04::CollisionMapRenderer();
+		m_tile_collision_renderer->m_collision = m_collisionmap;
+		m_tile_collision_renderer->transform.world.position.z = -99;
+		m_tile_collision_renderer->m_drawSolids = false;
+		m_tile_collision_renderer->m_drawWireframe = true;
+	}
+
+	// Load up the level (if it's there)
+	if (!m_current_savetarget.empty())
+	{
+		FILE* fp = fopen(m_current_savetarget.c_str(), "rb");
+		if (fp != NULL)
+		{
+			fclose(fp);
+			doIOLoading();
+		}
+	}
 }
 
 MapEditor::~MapEditor ( void )
 {
+	statusSave();
+
 	delete_safe(m_target_camera);
 	delete_safe_decrement(dusk);
 	delete_safe(m_tile_selector);
@@ -140,6 +184,48 @@ MapEditor::~MapEditor ( void )
 	delete_safe(m_listing);
 	delete_safe_decrement(m_drag_handle);
 	delete_safe_decrement(m_light_handle);
+
+	delete_safe(m_tile_collision_renderer);
+}
+
+//===============================================================================================//
+// Option Subroutines
+//===============================================================================================//
+
+//		statusLoad () : load status from file
+// opens .game/.editorpersistent, loads options
+void MapEditor::statusLoad ( void )
+{
+	FILE* fp = fopen(".game/.editorpersistent", "rb");
+	if ( fp != NULL )
+	{
+		grEditorPersistentOptions options;
+		size_t readSize = fread(&options, sizeof(grEditorPersistentOptions), 1, fp);
+		if (readSize == 1)
+		{
+			// Load up the target
+			m_current_savetarget = options.current_file.c_str();
+			// Load up the prev camera position
+			m_target_camera_position.x = options.camera_position.x;
+			m_target_camera_position.y = options.camera_position.y;
+		}
+		fclose(fp);
+	}
+}
+//		statusSave () : saves status to file
+// saves options to .game/.editorpersistent
+void MapEditor::statusSave ( void )
+{
+	FILE* fp = fopen(".game/.editorpersistent", "wb");
+	if ( fp != NULL )
+	{
+		grEditorPersistentOptions options;
+		options.current_file = m_current_savetarget.c_str();
+		options.camera_position = m_target_camera_position;
+
+		fwrite(&options, sizeof(grEditorPersistentOptions), 1, fp);
+		fclose(fp);
+	}
 }
 
 //===============================================================================================//
@@ -299,9 +385,20 @@ void MapEditor::doTileEditing ( void )
 			}
 			// Resume rebuild
 			m_tilemap->ProcessResume();
+
+			// Rebuild the collision map
+			m_collisionmap->m_tilemap = m_tilemap;
+			m_collisionmap->Rebuild();
+			
+			// Draw only wireframe
+			m_tile_collision_renderer->m_drawSolids = false;
+			m_tile_collision_renderer->m_drawWireframe = true;
 		}
 		else if ( m_current_submode == SubMode::TilesCollision )
 		{
+			// Draw solids for easier view
+			m_tile_collision_renderer->m_drawSolids = true;
+			m_tile_collision_renderer->m_drawWireframe = true;
 		}
 		else if ( m_current_submode == SubMode::TilesHeight )
 		{
@@ -640,10 +737,10 @@ void MapEditor::doObjectEditing ( void )
 				// Snap to half-tile
 				objpos.x = (Real) math::round( objpos.x * 2 / m_tilemap->m_tileset->tilesize_x ) * m_tilemap->m_tileset->tilesize_x * 0.5F;
 				objpos.y = (Real) math::round( objpos.y * 2 / m_tilemap->m_tileset->tilesize_y ) * m_tilemap->m_tileset->tilesize_y * 0.5F;
-				objpos.z = -495.0F;
 				// Set positions to snapped values
 				m_object_target->position = objpos;
-				m_drag_handle->SetRenderPosition( objpos );
+				m_drag_handle->SetRenderPosition( Vector3d(objpos.x, objpos.y, -495.0F) );
+				//m_drag_handle->SetRenderPosition( Vector3d(objpos.x, objpos.y, objpos.z) );
 			}
 			else
 			{	// Reset snapping of tool
@@ -820,6 +917,7 @@ void MapEditor::doNewMap ( void )
 	try
 	{
 		m_tilemap->Rebuild();
+		m_collisionmap->Rebuild();
 	}
 	catch (core::InvalidCallException&) {}
 }
@@ -911,6 +1009,11 @@ void MapEditor::uiCreate ( void )
 		ui_toolbox_global = button;
 
 		button = dusk->CreateButton( panel );
+		button.SetText("Playtest");
+		button.SetRect(Rect(1080,5,95,30));
+		ui_toolbox_playtest = button;
+
+		button = dusk->CreateButton( panel );
 		button.SetText("Preferences...");
 		button.SetRect(Rect(1180,5,95,30));
 		ui_mode_preferences = button;
@@ -930,7 +1033,10 @@ void MapEditor::uiCreate ( void )
 		label.SetRect(Rect(10,1,0,0));
 		ui_lbl_mode = label;
 
-		// Create labels
+		label = dusk->CreateText( panel, "" );
+		label.SetRect(Rect(400,1,0,0));
+		ui_lbl_file = label;
+
 		label = dusk->CreateText( panel, "X: ???" );
 		label.SetRect(Rect(200,1,0,0));
 		ui_lbl_mousex = label;
@@ -1247,6 +1353,16 @@ void MapEditor::uiStepTopEdge ( void )
 	if ( ui_file_new.GetButtonClicked() )
 	{
 		doNewMap();
+
+		// Clear save target (so not overwrite on accident)
+		m_current_savetarget = "";
+		// Reset camera
+		m_target_camera_position.x = 0;
+		m_target_camera_position.y = 0;
+
+		// Set default tileset TODO: Add a UI for this.
+		//m_tilemap->SetTilesetFile( "tileset/ld40.txt" );
+
 		try {
 			m_tilemap->Rebuild();
 		}
@@ -1305,6 +1421,17 @@ void MapEditor::uiStepTopEdge ( void )
 	if ( ui_toolbox_global.GetButtonClicked() )
 	{
 		m_current_mode = Mode::Toolbox;
+	}
+	if ( ui_toolbox_playtest.GetButtonClicked() )
+	{
+		std::string filename = IO::FilenameStandardize(m_current_savetarget).c_str();
+		auto res_pos = filename.find_first_of(".res-");
+		if (res_pos != string::npos)
+		{
+			filename = filename.substr(res_pos + 9);
+		}
+		M04::m04NextLevelToLoad = filename.c_str();
+		engine::Console->RunCommand( "scene game_luvppl" );
 	}
 
 	if ( ui_mode_preferences.GetButtonClicked() )
@@ -1456,10 +1583,16 @@ void MapEditor::uiStepTilePanel ( void )
 	if ( ui_btn_tile_mode_visual.GetButtonClicked() )
 	{
 		m_current_submode = SubMode::TilesVisual;
+		// Draw only wireframe
+		m_tile_collision_renderer->m_drawSolids = false;
+		m_tile_collision_renderer->m_drawWireframe = true;
 	}
 	if ( ui_btn_tile_mode_collision.GetButtonClicked() )
 	{
 		m_current_submode = SubMode::TilesCollision;
+		// Draw solids and wireframe
+		m_tile_collision_renderer->m_drawSolids = true;
+		m_tile_collision_renderer->m_drawWireframe = true;
 	}
 	if ( ui_btn_tile_mode_height.GetButtonClicked() )
 	{
@@ -1771,6 +1904,8 @@ void MapEditor::uiStepBottomEdge ( void )
 	default:				ui_lbl_mode.SetText("Ready.");
 		break;
 	}
+
+	ui_lbl_file.SetText(m_current_savetarget);
 	
 	if ( !dusk->GetMouseInGUI() )
 	{

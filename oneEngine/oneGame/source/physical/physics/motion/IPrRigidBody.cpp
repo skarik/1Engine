@@ -13,3 +13,8 @@ void IPrRigidBody::DeleteRigidBody( btRigidBody** rigidBodyPointer )
 		*rigidBodyPointer = NULL;
 	}
 }
+
+btRigidBody* IPrRigidBody::ApiBody ( void )
+{
+	return body;
+}

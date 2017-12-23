@@ -2,30 +2,20 @@
 #define PHYSICAL_PHYSICS_MESH_
 
 #include "core/types/ModelData.h"
-#include <string>
+#include "physical/physics/shapes/PrShape.h"
 
-// Class Definition
-class PrMesh
+class PrMesh : public PrShape
 {
 public:
-	// Constructor
-	PHYS_API PrMesh ( void );
-	// Destructor
-	PHYS_API ~PrMesh ( void );
+	PHYS_API explicit	PrMesh ( void );
+	PHYS_API			~PrMesh ( void );
 
-	// 
-	PHYS_API void Initialize ( arModelPhysicsData* const pNewModelData );
+	//	Initialize(shapeData) : Actually creates the mesh data.
+	// Will not clear previous data.
+	PHYS_API void Initialize ( arModelPhysicsData* const pNewModelData, const bool force2Dunoptimized );
 
-	// 
-	//PHYS_API physShape* GetShape ( void );
-
-private:
-	bool	bReady;
-
-	arModelPhysicsData* pmData;
-	unsigned int meshNum;
-
-	//physShape* pConvexShape;
+	// TODO:
+	//PHYS_API void Free ( void );
 };
 
 #endif

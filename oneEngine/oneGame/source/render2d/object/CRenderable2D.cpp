@@ -69,19 +69,24 @@ CRenderable2D::~CRenderable2D ()
 
 //		SetSpriteFile ( c-string sprite filename )
 // Sets the sprite filename to load or convert. Uses resource manager to cache data.
-void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename )
+void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename, const char* n_palette_filename )
 {
-	SetSpriteFileAnimated( n_sprite_filename, NULL, NULL );
+	SetSpriteFileAnimated( n_sprite_filename, n_palette_filename, NULL, NULL );
 }
 //		SetSpriteFileAnimated ( c-string sprite filename )
 // Sets the sprite filename to load and possibly convert, but provides returns for additional information.
-void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, Textures::timgInfo* o_img_info, Real** o_img_frametimes )
+void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const char* n_palette_filename, Textures::timgInfo* o_img_info, Real** o_img_frametimes )
 {
-	// Create the filename for the palette.
+	// Create the filename for the files.
 	std::string filename_palette = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_pal";
 	std::string filename_sprite	 = StringUtils::GetFileStemLeaf(n_sprite_filename);
 	std::string filename_normals = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_normal";
 	std::string filename_surface = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_surface";
+
+	if (n_palette_filename != NULL)
+	{
+		filename_palette = StringUtils::GetFileStemLeaf(n_palette_filename);
+	}
 
 	std::string resource_palette;
 	std::string resource_sprite;

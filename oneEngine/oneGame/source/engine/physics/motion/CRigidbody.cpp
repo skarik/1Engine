@@ -99,8 +99,10 @@ class CRagdollCollision;
 CRigidbody ::CRigidbody ( const prRigidbodyCreateParams& params )
 	: CMotion(params.owner, params.ownerType),
 	target_transform(NULL), target_position(NULL),
-	body(NULL), bGravityEnabled(true)
+	bGravityEnabled(true)
 {
+	body = NULL;
+
 	// Set the layer
 	layer = physical::layer::Rigidbody;
 
@@ -156,7 +158,15 @@ CRigidbody ::CRigidbody ( const prRigidbodyCreateParams& params )
 	
 	// Make the body
 	body = IPrRigidBody::NewRigidBody(lcInfo);
-	SetMotionType( physical::motion::kMotionDynamic );
+	if (params.mass > FLOAT_PRECISION)
+	{
+		params.shape->ApiShape()->calculateLocalInertia(params.mass, btVector3(0, 0, 0));
+		SetMotionType( physical::motion::kMotionDynamic );
+	}
+	else
+	{
+		SetMotionType( physical::motion::kMotionStatic );
+	}
 
 	// Set this rigidbody as the object that RX's and TX's motion.
 	body->setMotionState(this);
@@ -234,15 +244,16 @@ void CRigidbody::RigidbodyUpdate ( Real interpolation )
 			break;
 		case physical::motion::kMotionKinematic:
 			// Keyframed? Pull data from the target.
-			//if ( target_transform != NULL )
-			//{
-			//	body->SetTransform( target_transform );
-			//}
-			//else if ( target_position != NULL )
-			//{
-			//	body->setPosition( *target_position );
-			//}
-			//break;
+			if ( target_transform != NULL )
+			{
+				world_transform = *target_position;
+			}
+			else if ( target_position != NULL )
+			{
+				world_transform.position  = *target_position;
+			}
+			PushTransform();
+			break;
 		default:
 			// Otherwise, data goes from rigidbody to target.
 			if ( target_transform != NULL )
@@ -268,12 +279,6 @@ void CRigidbody::RigidbodyUpdate ( Real interpolation )
 	{
 		// Disable rigidbody
 	}
-}
-
-
-btRigidBody* CRigidbody::ApiBody ( void )
-{
-	return body;
 }
 
 //btTransform m_transformTemp;

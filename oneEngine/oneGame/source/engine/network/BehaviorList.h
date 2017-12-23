@@ -57,6 +57,8 @@ enum valuetype_t : uint32_t
 
 enum fielddisplay_t : uint32_t
 {
+	// Draw box as a display in editor.
+	// The second argument is a string number that scales a 32x32x32 block.
 	DISPLAY_BOX,
 	DISPLAY_2D_SPRITE,
 	DISPLAY_3D_MODEL,

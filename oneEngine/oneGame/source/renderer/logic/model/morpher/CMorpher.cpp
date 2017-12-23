@@ -136,8 +136,8 @@ CMorphAction* CMorpher::FindAction ( const char* animName )
 void	CMorpher::PerformMorph ( rrSkinnedMesh* sourceMesh, rrSkinnedMesh* targetMesh )
 {
 	// First, grab the stream to work on
-	arModelData* pStreamData = targetMesh->pmData;
-	memcpy( pStreamData->vertices, sourceMesh->pmData->vertices, sizeof(arModelVertex) * sourceMesh->pmData->vertexNum );
+	arModelData* pStreamData = targetMesh->modeldata;
+	memcpy( pStreamData->vertices, sourceMesh->modeldata->vertices, sizeof(arModelVertex) * sourceMesh->modeldata->vertexNum );
 
 	// Loop through all the actions and perform auto blending
 	auto it = mActions.begin();

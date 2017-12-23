@@ -1,5 +1,7 @@
 #include "sceneGameLuvPpl.h"
 
+#include "m04/m04-common.h"
+
 // Include game settings
 #include "core/settings/CGameSettings.h"
 
@@ -12,6 +14,7 @@
 //#include "render2d/camera/COrthoCamera.h"
 // Include tileset system
 #include "engine2d/entities/map/TileMap.h"
+#include "engine2d/entities/map/CollisionMap.h"
 #include "m04/states/MapInformation.h"
 
 // Include resource system in case want to muck around with manual tileset loading
@@ -26,6 +29,12 @@
 #include "renderer/debug/RrBtDebugDraw.h"
 
 #include "renderer/state/Settings.h"
+
+#include "engine/physics/motion/CRigidbody.h"
+#include "physical/physics/shapes/PrMesh.h"
+
+#include "render2d/object/Background2D.h"
+#include "renderer/material/RrMaterial.h"
 
 void sceneGameLuvPpl::LoadScene ( void )
 {
@@ -88,7 +97,7 @@ void sceneGameLuvPpl::LoadScene ( void )
 	M04::MapInformation* m_mapinfo = new M04::MapInformation;
 
 	// Open the file
-	FILE* fp = core::Resources::Open("maps/test1.m04", "rb");
+	FILE* fp = core::Resources::Open(M04::m04NextLevelToLoad.c_str(), "rb");
 	if ( fp == NULL )
 		throw core::NullReferenceException();
 
@@ -108,6 +117,36 @@ void sceneGameLuvPpl::LoadScene ( void )
 
 	// Update the world
 	renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
+
+	// Create collision from world
+	Engine2D::CollisionMap* m_collision = new Engine2D::CollisionMap; m_collision->RemoveReference();
+	m_collision->m_tilemap = m_tilemap; m_collision->Rebuild();
+	if (m_collision->m_mesh.triangleNum > 0)
+	{
+		PrMesh* shape = new PrMesh();
+		shape->Initialize(&m_collision->m_mesh, true);
+
+		prRigidbodyCreateParams params = {0};
+		params.shape = shape;
+		params.owner = NULL;
+		params.ownerType = core::kBasetypeVoidPointer;
+		params.group = physical::layer::PHYS_LANDSCAPE;
+		params.mass = 0.0F;
+
+		CRigidbody* bod = new CRigidbody(params);
+		bod->ApiBody()->setLinearFactor(btVector3(0,0,0));
+		bod->ApiBody()->setAngularFactor(btVector3(0,0,0));
+		bod->PushTransform();
+		bod->RemoveReference();
+	}
+
+	// Create background
+	{
+		CRenderable2D* bg = new renderer::Background2D();
+		bg->SetSpriteFile("textures/white.jpg");
+		bg->GetMaterial()->m_diffuse = Color(0.5F,0.5F,0.5F);
+		(new CRendererHolder (bg))->RemoveReference();
+	}
 
 	// Create debugger
 	auto debug_holder = new CRendererHolder( new RrBtDebugDraw(NULL) );

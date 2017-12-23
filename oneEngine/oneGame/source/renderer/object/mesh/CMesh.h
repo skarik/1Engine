@@ -17,8 +17,8 @@ public:
 public:
 	//	GetName ()
 	// Return my mesh's name
-	const string& GetName ( void )
-		{ return m_glMesh->GetName(); }
+	const char* GetName ( void )
+		{ return m_mesh->GetName(); }
 
 	//	GetBoundingBox ()
 	// Gets the bounding box of the mesh
@@ -43,7 +43,7 @@ protected:
 	void CalculateBoundingBox ( void );
 
 public:
-	rrMesh*		m_glMesh;
+	rrMesh*		m_mesh;
 	CModel*		m_parent;
 
 protected:

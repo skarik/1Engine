@@ -100,11 +100,12 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 				RrMaterial* newMat = new RrMaterial;
 				newMat->m_isSkinnedShader = true;
 				newMat->loadFromFile( loader.materials[loader.meshes[i].material_index].filename );
-				newMesh->pmMat = newMat;
+				//newMesh->pmMat = newMat;
+				throw core::NotYetImplementedException();
 			}
 			else
 			{
-				newMesh->pmMat = RrMaterial::Default;
+				//newMesh->pmMat = RrMaterial::Default;
 			}
 
 			// Put the mesh into the render list

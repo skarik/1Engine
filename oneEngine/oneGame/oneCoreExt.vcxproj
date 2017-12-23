@@ -57,6 +57,7 @@
     <ClCompile Include="source\core-ext\threads\Jobs.cpp" />
     <ClCompile Include="source\core-ext\transform\Transform.cpp" />
     <ClCompile Include="source\core-ext\transform\TransformUtility.cpp" />
+    <ClCompile Include="source\core-ext\utils\MeshAttributes.cpp" />
     <ClCompile Include="source\core-ext\utils\MeshBuilder.cpp" />
     <ClCompile Include="source\core\debug\CDebugConsole.cpp" />
     <ClCompile Include="source\core\input\CInput.cpp" />
@@ -92,6 +93,7 @@
     <ClInclude Include="source\core-ext\threads\Jobs.h" />
     <ClInclude Include="source\core-ext\transform\Transform.h" />
     <ClInclude Include="source\core-ext\transform\TransformUtility.h" />
+    <ClInclude Include="source\core-ext\utils\MeshAttributes.h" />
     <ClInclude Include="source\core-ext\utils\MeshBuilder.h" />
     <ClInclude Include="source\core\debug\CDebugConsole.h" />
     <ClInclude Include="source\core\debug\console.h" />

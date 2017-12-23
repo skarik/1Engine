@@ -25,6 +25,10 @@ pixel_t* Textures::loadGAL ( const std::string& n_inputfile, timgInfo& o_info )
 		return NULL;
 	}
 
+	// Get the background color
+	LONG bg_color_composite = ggGetFrameInfo( t_file, 0, 1 );
+	uint8_t* bg_color = (uint8_t*)&bg_color_composite;
+
 	// Set image sizes
 	o_info.width	= (uint16_t)oBitmap.bmWidth;
 	o_info.height	= (uint16_t)oBitmap.bmHeight;
@@ -52,7 +56,7 @@ pixel_t* Textures::loadGAL ( const std::string& n_inputfile, timgInfo& o_info )
 				image[dest].g = *(((uchar*)oBitmap.bmBits) + source_offset + 1);
 				image[dest].b = *(((uchar*)oBitmap.bmBits) + source_offset + 0);
 
-				if (image[dest].r == 255 && image[dest].g == 255 && image[dest].b == 255)
+				if (image[dest].r == bg_color[0] && image[dest].g == bg_color[1] && image[dest].b == bg_color[2])
 					image[dest].a = 0;
 				else
 					image[dest].a = 255;
@@ -109,6 +113,10 @@ pixel_t* Textures::loadGAL_Layer ( const std::string& n_inputfile, const std::st
 		return NULL;
 	}
 
+	// Get the background color
+	LONG bg_color_composite = ggGetFrameInfo( t_file, 0, 1 );
+	uint8_t* bg_color = (uint8_t*)&bg_color_composite;
+
 	// Set image sizes
 	o_info.width	= (uint16_t)oBitmap.bmWidth;
 	o_info.height	= (uint16_t)oBitmap.bmHeight;
@@ -135,7 +143,11 @@ pixel_t* Textures::loadGAL_Layer ( const std::string& n_inputfile, const std::st
 				image[dest].r = *(((uchar*)oBitmap.bmBits) + source_offset + 2);
 				image[dest].g = *(((uchar*)oBitmap.bmBits) + source_offset + 1);
 				image[dest].b = *(((uchar*)oBitmap.bmBits) + source_offset + 0);
-				image[dest].a = 255;
+
+				if (image[dest].r == bg_color[0] && image[dest].g == bg_color[1] && image[dest].b == bg_color[2])
+					image[dest].a = 0;
+				else
+					image[dest].a = 255;
 			}
 		}
 	}
@@ -164,6 +176,10 @@ pixel_t* Textures::loadGAL_Animation ( const std::string& n_inputfile, timgInfo&
 	DWORD frame_count = ggGetFrameCount( t_file );
 	HBITMAP hBitmap;
 	BITMAP oBitmap;
+
+	// Get the background color
+	LONG bg_color_composite = ggGetFrameInfo( t_file, 0, 1 );
+	uint8_t* bg_color = (uint8_t*)&bg_color_composite;
 
 	// Get a combined bitmap from the GAL file
 	hBitmap = ggGetBitmap(t_file, 0, -1);
@@ -273,8 +289,7 @@ pixel_t* Textures::loadGAL_Animation ( const std::string& n_inputfile, timgInfo&
 					image[dest].g = *(((uchar*)oBitmap.bmBits) + source_offset + 1);
 					image[dest].b = *(((uchar*)oBitmap.bmBits) + source_offset + 0);
 					
-
-					if (image[dest].r == 255 && image[dest].g == 255 && image[dest].b == 255)
+					if (image[dest].r == bg_color[0] && image[dest].g == bg_color[1] && image[dest].b == bg_color[2])
 						image[dest].a = 0;
 					else
 						image[dest].a = 255;

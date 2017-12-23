@@ -2,6 +2,13 @@
 #define M04_M04_COMMON_H_
 
 #include "core/types/types.h"
+#include "core/containers/arstring.h"
+
+namespace M04
+{
+	// Global, providing next level that will be loaded by the scene scenGameLuvPpl/sceneGameLevelLoader.
+	extern arstring<256>	m04NextLevelToLoad;
+}
 
 //===============================================================================================//
 //	GAME INITIALIZATION

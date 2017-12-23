@@ -64,10 +64,12 @@ layout(std140) uniform sys_cbuffer_PerObjectExt
 };
 
 // Vertex Outputs
-out vec4 v2f_normals;
 out vec4 v2f_colors;
 out vec4 v2f_position;
 out vec3 v2f_texcoord;
+out vec4 v2f_normals;
+out vec4 v2f_binorms;
+out vec4 v2f_tangents;
 
 void main ( void )
 {
@@ -82,6 +84,8 @@ void main ( void )
 
     gl_Position = v_screenPosition;
     v2f_normals = v_worldNormal;
+    v2f_binorms = sys_ModelRS * vec4(mdl_Tangents, 1.0);
+    v2f_tangents= sys_ModelRS * vec4(mdl_Binormals, 1.0);
     v2f_colors	= mdl_Color;
     v2f_position= v_worldPosition;
     v2f_texcoord= mdl_TexCoord * sys_TextureScale.xyz + sys_TextureOffset.xyz;

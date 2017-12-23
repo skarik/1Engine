@@ -646,8 +646,8 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 
 			// Bind the MRT's temporary results area in order to render the deferred result to it
 			internal_chain_current->buffer_deferred_rt->BindBuffer();
-			// Set up viewport. Deferred renderer runs at the same size as the source material
-			GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
+			// Set up viewport. Deferred renderer runs need to hit the entire buffer, so we give it the entire screen.
+			GL.setupViewport( 0, 0, unscaledRenderSize.x, unscaledRenderSize.y );
 
 			// Choose lighting pass to use
 			RrMaterial* targetPass = LightingPass;
@@ -674,6 +674,10 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 				targetPass->setSampler( TEX_SLOT4, internal_chain_current->buffer_deferred_mrt->GetDepthSampler(), GL.Enum(Texture2D) );
 				//targetPass->prepareShaderConstants();
 				targetPass->bindPassForward(0);
+
+				// TODO: Make the following configurable. (This can likely be used for some of the game-driving of later effects).
+				//glUniform4f(renderer::UNI_LIGHTING_PARAM_HACK, 0.5F, 1.0F, 1.0F, 1.0F); // luvppl
+				glUniform4f(renderer::UNI_LIGHTING_PARAM_HACK, 1.0F, 1.0F, 0.0F, 1.0F); // otherwise.
 
 				// Disable alpha blending
 				glDisable( GL_BLEND );
@@ -705,7 +709,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 
 			// Copy over the depth to use when drawing in forward mode
 			internal_chain_current->buffer_deferred_rt->BindBuffer();
-			// Set up viewport. Current pass of the renderer again renders at the same size as the previous stage.
+			// Set up viewport. Forward geometry pass of the renderer again renders at the same size as the deferred geometry pass.
 			GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
 
 			// The forward and deferred buffers share their depth and stencil, so we can continue render without copying anything:
@@ -773,6 +777,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			// Copy the layer over alpha-blended
 			render_target->BindBuffer();
 			{
+				// Set up the viewport to copy to the entire screen:
 				GL.setupViewport(0, 0, render_target->GetWidth(), render_target->GetHeight());
 				{
 					// Set the current main screen buffer as the texture
@@ -807,16 +812,22 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
 
 			// Reset render size in subsequent targets
-			if ( renderRQ_next.renderType != kRLWorld )
-			{
-				// Reset render scale-down after the main layer
-				currentRenderSize = unscaledRenderSize;
-			}
+			//if ( renderRQ_next.renderType > kRLWorld )
+			//{
+			//	// Reset render scale-down after the main layer
+			//	currentRenderSize = unscaledRenderSize;
+			//} // TODO: May want this to be configurable.
+
+			// Reset the viewport for the next deferred geometry stage
+			GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
 		}
 
 		// Go to the next job
 		i += 1;
 	}
+
+	// Set up the viewport to copy to the entire screen:
+	GL.setupViewport(0, 0, render_target->GetWidth(), render_target->GetHeight());
 
 	// Finally, work on postrender
 	for ( i = 0; i < (int)sortSinglePassList.size(); ++i )

@@ -63,9 +63,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\ld40\entities\PlayerMage.h" />
+    <ClInclude Include="source\ld40\entities\PlayerPlatformerBase.h" />
+    <ClInclude Include="source\ld40\interfaces\CameraControllerPlatformer.h" />
+    <ClInclude Include="source\ld40\interfaces\CharacterControllerPlatformer.h" />
     <ClInclude Include="source\m04-editor\entities\UIDragHandle.h" />
     <ClInclude Include="source\m04-editor\entities\UILightHandle.h" />
     <ClInclude Include="source\m04-editor\renderer\object\AreaRenderer.h" />
+    <ClInclude Include="source\m04-editor\renderer\object\CollisionMapRenderer.h" />
     <ClInclude Include="source\m04-editor\renderer\object\GizmoRenderer.h" />
     <ClInclude Include="source\m04-editor\renderer\object\UIDragHandleRenderer.h" />
     <ClInclude Include="source\m04-editor\renderer\object\UILightHandleRenderer.h" />
@@ -94,9 +99,15 @@
     <ClInclude Include="source\m04\states\MapInformation.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\ld40\entities\PlayerMage.cpp" />
+    <ClCompile Include="source\ld40\entities\PlayerPlatformerBase.cpp" />
+    <ClCompile Include="source\ld40\interfaces\CameraControllerPlatformer.cpp" />
+    <ClCompile Include="source\ld40\interfaces\CharacterControllerPlatformer.cpp" />
+    <ClCompile Include="source\ld40\interfaces\CharacterControllerPlatformer.MoveTypes.cpp" />
     <ClCompile Include="source\m04-editor\entities\UIDragHandle.cpp" />
     <ClCompile Include="source\m04-editor\entities\UILightHandle.cpp" />
     <ClCompile Include="source\m04-editor\renderer\object\AreaRenderer.cpp" />
+    <ClCompile Include="source\m04-editor\renderer\object\CollisionMapRenderer.cpp" />
     <ClCompile Include="source\m04-editor\renderer\object\GizmoRenderer.cpp" />
     <ClCompile Include="source\m04-editor\renderer\object\UIDragHandleRenderer.cpp" />
     <ClCompile Include="source\m04-editor\renderer\object\UILightHandleRenderer.cpp" />

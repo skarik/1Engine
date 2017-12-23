@@ -148,9 +148,7 @@ public:
 	//// Accessors
 	//ENGINE_API physRigidBody* GetBody ( void ) override;
 
-	// ApiBody() : Returns the underlying physics engine Rigidbody implementation.
-	//	Touchy the physics!
-	ENGINE_API btRigidBody*	ApiBody ( void );
+	
 
 public:
 	// Listener class used to forward collision events to the engine
@@ -165,7 +163,6 @@ protected:
 	physical::motion::prMotionTypes	motionType;
 
 	// Components
-	btRigidBody*	body;
 	//CCollider*		pCollider;
 	//PrShape*		m_shape;
 	Vector3d		vCenterOfMass;
