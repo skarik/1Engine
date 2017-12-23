@@ -69,6 +69,17 @@ toolsuite::ModelViewer::ModelViewer ( void )
 		model = new CModel( filename.c_str() );
 		model->transform.scale = Vector3d(1,1,1);
 		model->transform.position = Vector3d(0.0F, 0.0F, 0.0F);
+
+		// Create a material for each mesh
+		for (uint i = 0; i < model->GetMeshCount(); ++i)
+		{
+			RrMaterial* material = RrMaterial::Default->copy();
+
+			model->GetMesh(i)->SetMaterial(NULL);
+			model->GetMesh(i)->SetMaterial(material);
+
+			material->removeReference();
+		}
 	}
 	else
 	{
@@ -118,20 +129,59 @@ void toolsuite::ModelViewer::Update ( void )
 			model = new CModel(dndEntry.filename.c_str());
 			model->transform.scale = Vector3d(1,1,1);
 			model->transform.position = Vector3d(0.0F, 0.0F, 0.0F);
+			
+			// Create a material for each mesh
+			for (uint i = 0; i < model->GetMeshCount(); ++i)
+			{
+				RrMaterial* material = RrMaterial::Default->copy();
+
+				model->GetMesh(i)->SetMaterial(NULL);
+				model->GetMesh(i)->SetMaterial(material);
+
+				material->removeReference();
+			}
 
 			// Reset camera to center without changing rotation
 			ResetCameraCentering();
 		}
-		else
+		else if (extension == "png" || extension == "jpg" || extension == "jpeg" || extension == "bpd")
 		{
 			// Load up new texture (move to separate function w/ hotspots)
-			CTexture* tex = new CTexture(dndEntry.filename.c_str());
+			/*CTexture* tex = new CTexture(dndEntry.filename.c_str());
 			cube->GetMaterial()->setTexture(TEX_DIFFUSE, core::Orphan(tex));
 
 			for (uint i = 0; i < model->GetMeshCount(); ++i)
 			{
 				model->GetMesh(i)->GetMaterial()->setTexture(TEX_DIFFUSE, tex);
+			}*/
+
+			if (model != NULL)
+			{
+				// If it's a texture, check positioning, and loop through the UI elements
+				for (uint i = 0; i < model->GetMeshCount(); ++i)
+				{
+					CTexture* tex = new CTexture(dndEntry.filename.c_str());
+					Vector2d mouse_pos ((Real)dndEntry.point.x, (Real)dndEntry.point.y);
+
+					if (ui_meshblocks[i].btn_texDiffuse.GetRect().Contains(mouse_pos))
+					{
+						model->GetMesh(i)->GetMaterial()->setTexture(TEX_DIFFUSE, core::Orphan(tex));
+					}
+					if (ui_meshblocks[i].btn_texNormals.GetRect().Contains(mouse_pos))
+					{
+						model->GetMesh(i)->GetMaterial()->setTexture(TEX_NORMALS, core::Orphan(tex));
+					}
+					if (ui_meshblocks[i].btn_texSurface.GetRect().Contains(mouse_pos))
+					{
+						model->GetMesh(i)->GetMaterial()->setTexture(TEX_SURFACE, core::Orphan(tex));
+					}
+					if (ui_meshblocks[i].btn_texOverlay.GetRect().Contains(mouse_pos))
+					{
+						model->GetMesh(i)->GetMaterial()->setTexture(TEX_OVERLAY, core::Orphan(tex));
+					}
+				}
 			}
+			//
 		}
 	}
 

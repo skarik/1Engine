@@ -63,7 +63,7 @@ void CInstancedMesh::SetInstanceCount ( int instance_count )
 // Render the mesh
 bool CInstancedMesh::Render ( const char pass )
 {
-	if ( !bCanRender || m_glMesh == NULL || uploaded_data_count <= 0 )
+	if ( !bCanRender || m_mesh == NULL || uploaded_data_count <= 0 )
 		return true; // Only render when have a valid mesh and rendering enabled
 	GL_ACCESS;
 
@@ -80,8 +80,8 @@ bool CInstancedMesh::Render ( const char pass )
 	// Set up material properties before mesh is bound
 	if ( bUseSkinning && false )
 	{	// Mesh MUST be a rrSkinnedMesh instance, otherwise crashes will result.
-		m_material->m_bufferSkeletonSize		= ((rrSkinnedMesh*)m_glMesh)->skinning_data.bonecount;
-		m_material->m_bufferMatricesSkinning	= ((rrSkinnedMesh*)m_glMesh)->skinning_data.textureBufferData;
+		m_material->m_bufferSkeletonSize		= ((rrSkinnedMesh*)m_mesh)->skinning_data.bonecount;
+		m_material->m_bufferMatricesSkinning	= ((rrSkinnedMesh*)m_mesh)->skinning_data.textureBufferData;
 	}
 	else
 	{
@@ -100,12 +100,12 @@ bool CInstancedMesh::Render ( const char pass )
 	//GL.CheckError();
 
 	// Bind the current mesh
-	BindVAO( pass, m_glMesh->GetVBOverts(), m_glMesh->GetVBOfaces() );
+	BindVAO( pass, m_mesh->GetVBOverts(), m_mesh->GetVBOfaces() );
 	GL.CheckError();
 
 	// Render the mesh
 	//glDrawElements( GL_TRIANGLES, m_glMesh->pmData->triangleNum*3, GL_UNSIGNED_INT, 0 );
-	glDrawElementsInstanced( GL_TRIANGLES, m_glMesh->pmData->triangleNum*3, GL_UNSIGNED_INT, 0, uploaded_data_count );
+	glDrawElementsInstanced( GL_TRIANGLES, m_mesh->modeldata->triangleNum*3, GL_UNSIGNED_INT, 0, uploaded_data_count );
 	GL.CheckError();
 
 	// Successful rendering

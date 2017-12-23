@@ -9,12 +9,12 @@
 
 CMesh::CMesh ( rrMesh* nMesh, bool n_enableSkinning )
 	: CRenderableObject(),
-	m_glMesh( nMesh ), m_parent(NULL),
+	m_mesh( nMesh ), m_parent(NULL),
 	bUseFrustumCulling(true), bCanRender(true), bUseSkinning(n_enableSkinning)
 {
-	if ( m_glMesh != NULL )
+	if ( m_mesh != NULL )
 	{
-		SetMaterial( m_glMesh->pmMat );
+		//SetMaterial( m_glMesh->pmMat );
 		CalculateBoundingBox();
 	}
 }
@@ -28,11 +28,10 @@ void CMesh::CalculateBoundingBox ( void )
 {
 	Vector3d minPos, maxPos;
 
-	//for ( unsigned int i = 0; i < vMeshes.size(); i++ )
-	arModelData* pmData = m_glMesh->pmData;
-	for ( unsigned int v = 0; v < pmData->vertexNum; v++ )
+	arModelData* modeldata = m_mesh->modeldata;
+	for ( unsigned int v = 0; v < modeldata->vertexNum; v++ )
 	{
-		arModelVertex* vert = &(pmData->vertices[v]);
+		arModelVertex* vert = &(modeldata->vertices[v]);
 		minPos.x = std::min<Real>( minPos.x, vert->x );
 		minPos.y = std::min<Real>( minPos.y, vert->y );
 		minPos.z = std::min<Real>( minPos.z, vert->z );
@@ -108,7 +107,7 @@ bool CMesh::PreRender ( void )
 // Render the mesh
 bool CMesh::Render ( const char pass )
 {
-	if ( !bCanRender || m_glMesh == NULL )
+	if ( !bCanRender || m_mesh == NULL )
 		return true; // Only render when have a valid mesh and rendering enabled
 	GL_ACCESS;
 
@@ -121,8 +120,8 @@ bool CMesh::Render ( const char pass )
 	// Set up material properties before mesh is bound
 	if ( bUseSkinning )
 	{	// Mesh MUST be a rrSkinnedMesh instance, otherwise crashes will result.
-		m_material->m_bufferSkeletonSize		= ((rrSkinnedMesh*)m_glMesh)->skinning_data.bonecount;
-		m_material->m_bufferMatricesSkinning	= ((rrSkinnedMesh*)m_glMesh)->skinning_data.textureBufferData;
+		m_material->m_bufferSkeletonSize		= ((rrSkinnedMesh*)m_mesh)->skinning_data.bonecount;
+		m_material->m_bufferMatricesSkinning	= ((rrSkinnedMesh*)m_mesh)->skinning_data.textureBufferData;
 	}
 	else
 	{
@@ -138,10 +137,10 @@ bool CMesh::Render ( const char pass )
 	//if ( m_parent ) m_parent->SendShaderUniforms();
 
 	// Bind the current mesh
-	BindVAO( pass, m_glMesh->GetVBOverts(), m_glMesh->GetVBOfaces() );
+	BindVAO( pass, m_mesh->GetVBOverts(), m_mesh->GetVBOfaces() );
 
 	// Render the mesh
-	glDrawElements( GL_TRIANGLES, m_glMesh->pmData->triangleNum*3, GL_UNSIGNED_INT, 0 );
+	glDrawElements( GL_TRIANGLES, m_mesh->modeldata->triangleNum*3, GL_UNSIGNED_INT, 0 );
 
 
 	// Successful rendering

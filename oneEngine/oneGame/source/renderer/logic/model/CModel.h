@@ -1,8 +1,6 @@
+#ifndef RENDERER_C_MODEL_
+#define RENDERER_C_MODEL_
 
-#ifndef _C_MODEL_
-#define _C_MODEL_
-
-// Includes
 #include "core/types/ModelData.h"
 #include "core/math/BoundingBox.h"
 
@@ -11,46 +9,11 @@
 #include "renderer/logic/CLogicObject.h"
 #include "renderer/types/ModelStructures.h"
 
-
 class CMesh;
 class AnimationControl;
 class rrMesh;
 class physMesh;
 
-//#include "renderer/object/mesh/CMesh.h"
-/*
-#include "arModelData.h"
-#include "CRenderableObject.h"
-#include "RrMaterial.h"
-#include <vector>
-//using std::vector;
-
-#include "rrMesh.h"
-#include "physMesh.h"
-
-#include "CSegmentedFile.h"
-
-#include "StringUtils.h"
-
-#include "CModelMaster.h"
-
-#include "BoundingBox.h"
-
-#include "AnimationSet.h"
-#include "AnimationControl.h"
-
-#include "sHitbox.h"
-
-#include "CMesh.h"*/
-
-// Include hash tables
-/*#if __cplusplus > 199711L
-	#include <unordered_map>
-	using std::unordered_map;
-#else
-	#include <unordered_map>
-	using std::tr1::unordered_map;
-#endif*/
 #include <unordered_map>
 
 // Class Definition
@@ -242,4 +205,4 @@ private:
 	
 };
 
-#endif
+#endif//RENDERER_C_MODEL_

@@ -59,12 +59,16 @@ void CModel::LoadModel ( const string& sFilename )
 				RrMaterial* newMat = new RrMaterial;
 				newMat->m_isSkinnedShader = true;
 				newMat->loadFromFile( loader.materials[loader.meshes[i].material_index].filename );
-				newMesh->pmMat = newMat;
+				//newMesh->pmMat = newMat;
+				throw core::NotYetImplementedException();
 			}
 			else
 			{
-				newMesh->pmMat = RrMaterial::Default;
+				//newMesh->pmMat = RrMaterial::Default;
 			}
+
+			// Update mesh's data
+			newMesh->RecalculateTangents(); // TODO: Move to model conversion
 
 			// Put the mesh into the render list
 			meshList.push_back(newMesh);

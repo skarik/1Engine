@@ -16,13 +16,13 @@ CStreamedMesh::CStreamedMesh ( void )
 
 CStreamedMesh::~CStreamedMesh ( void )
 {
-	delete_safe( m_glMesh );
+	delete_safe( m_mesh );
 }
 
 // Return access to model data
 arModelData* CStreamedMesh::GetModelData ( void )
 {
-	if ( m_glMesh == NULL )
+	if ( m_mesh == NULL )
 	{
 		arModelData* modeldata = new arModelData;
 		modeldata->triangleNum = 0;
@@ -30,11 +30,11 @@ arModelData* CStreamedMesh::GetModelData ( void )
 		modeldata->vertexNum = 0;
 		modeldata->vertices = NULL;
 
-		m_glMesh = new rrMesh;
-		m_glMesh->Initialize( "Stream mesh instance", modeldata, 1, true );
+		m_mesh = new rrMesh;
+		m_mesh->Initialize( "Stream mesh instance", modeldata, 1, true );
 	}
 	// Return mesh data directly
-	return m_glMesh->pmData;
+	return m_mesh->modeldata;
 }
 
 // Push the current stuff in model data to GPU.
@@ -46,8 +46,8 @@ void CStreamedMesh::StreamLockModelData ( void )
 // Push mesh
 void CStreamedMesh::PushModeldata ( void )
 {
-	if ( m_glMesh )
+	if ( m_mesh )
 	{
-		m_glMesh->Restream();
+		m_mesh->Restream();
 	}
 }

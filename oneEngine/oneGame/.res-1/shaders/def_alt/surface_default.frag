@@ -58,10 +58,12 @@ layout(location = 22) uniform sampler2D textureSampler2; // Ambient Occlusion R,
 layout(location = 23) uniform sampler2D textureSampler3; // Overlay RGB, Blend Style A (0 for MUL-BIAS, 1 for LERP)
 
 // Vertex Outputs
-in vec4 v2f_normals;
 in vec4 v2f_colors;
 in vec4 v2f_position;
 in vec3 v2f_texcoord;
+in vec4 v2f_normals;
+in vec4 v2f_binorms;
+in vec4 v2f_tangents;
 
 vec4 mainDiffuse ( vec4 colorDiffuse, vec4 colorOverlay, vec4 surfaceProperties )
 {
@@ -105,12 +107,15 @@ vec4 mainNormals ( vec4 colorNormals, vec4 colorSurface )
     // rgb	surface normal
     // a	ambient occlusion
 
-    vec4 baseNormal = vec4( v2f_normals.xyz, 1.0 );
+    //vec4 baseNormal = vec4( v2f_normals.xyz, 1.0 );
+    //return vec4(baseNormal.xyz, colorSurface.r);
     // TODO: Use normal map properly
     //baseNormal.xyz = colorNormals.xyz * 2.0 - 1.0;
     //vec4 transformedNormal = sys_ModelRS * vec4(baseNormal.xyz, 1.0);
 
-    return vec4(baseNormal.xyz, colorSurface.r);
+    vec3 baseNormal = colorNormals.xyz * 2.0 - 1.0;
+    vec3 transformedNormal = mat3( v2f_tangents.xyz, v2f_binorms.xyz, v2f_normals.xyz ) * baseNormal;
+    return vec4(transformedNormal.xyz, colorSurface.r);
 }
 
 void main ( void )

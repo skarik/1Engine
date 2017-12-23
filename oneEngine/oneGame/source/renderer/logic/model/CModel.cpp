@@ -302,10 +302,10 @@ void CModel::CalculateBoundingBox ( void )
 
 	for ( unsigned int i = 0; i < m_glMeshlist.size(); i++ )
 	{
-		arModelData* pmData = m_glMeshlist[i]->pmData;
-		for ( unsigned int v = 0; v < pmData->vertexNum; v++ )
+		arModelData* modeldata = m_glMeshlist[i]->modeldata;
+		for ( unsigned int v = 0; v < modeldata->vertexNum; v++ )
 		{
-			arModelVertex* vert = &(pmData->vertices[v]);
+			arModelVertex* vert = &(modeldata->vertices[v]);
 			minPos.x = std::min<Real>( minPos.x, vert->x );
 			minPos.y = std::min<Real>( minPos.y, vert->y );
 			minPos.z = std::min<Real>( minPos.z, vert->z );
@@ -471,7 +471,7 @@ CMesh* CModel::GetMesh ( const uint n_index ) const
 CMesh* CModel::GetMesh ( const char* n_name ) const
 {
 	for ( uint i = 0; i < m_meshes.size(); ++i ) {
-		if ( m_meshes[i]->GetName().find( n_name ) != string::npos ) {
+		if ( strstr( m_meshes[i]->GetName(), n_name ) != NULL ) {
 			return m_meshes[i];
 		}
 	}
@@ -481,10 +481,9 @@ CMesh* CModel::GetMesh ( const char* n_name ) const
 // Gets the indicated mesh data in the array
 arModelData* CModel::GetModelData ( int iMeshIndex ) const
 {
-	//return (vMeshes[iMeshIndex]->pmData);
 	CMesh* mesh = GetMesh( iMeshIndex );
 	if ( mesh ) {
-		return mesh->m_glMesh->pmData;
+		return mesh->m_mesh->modeldata;
 	}
 	return NULL;
 }
@@ -494,7 +493,7 @@ arModelData* CModel::GetModelDataByName ( const char* nNameMatch ) const
 {
 	CMesh* mesh = GetMesh( nNameMatch );
 	if ( mesh ) {
-		return mesh->m_glMesh->pmData;
+		return mesh->m_mesh->modeldata;
 	}
 	return NULL;
 }

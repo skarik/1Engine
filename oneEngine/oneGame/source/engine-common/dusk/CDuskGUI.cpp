@@ -26,13 +26,6 @@
 
 using namespace std;
 
-// Static variables
-//RrMaterial*		CDuskGUI::matDefDefault	= NULL;
-//RrMaterial*		CDuskGUI::matDefHover	= NULL;
-//RrMaterial*		CDuskGUI::matDefDown	= NULL;
-//RrMaterial*		CDuskGUI::matDefFont	= NULL;
-//CBitmapFont*	CDuskGUI::fntDefDefault	= NULL;
-
 // Constructor
 CDuskGUI::CDuskGUI ( CBitmapFont* font )
 	: CGameBehavior(), CRenderableObject()
@@ -43,12 +36,6 @@ CDuskGUI::CDuskGUI ( CBitmapFont* font )
 	// Mat init
 	fntDefault = font;
 	InitializeDefaultMaterials();
-	//matDefault	= matDefDefault;
-	//matHover	= matDefHover;
-	//matDown		= matDefDown;
-	//matFont		= matDefFont;
-	//fntDefault	= fntDefDefault;
-	//SetMaterial( matDefault );
 
 	// Set default colors and mat settings
 	/*m_basecolor			= Color( 0.25f,0.25f,0.35f, 0.7f );
@@ -90,23 +77,6 @@ CDuskGUI::CDuskGUI ( CBitmapFont* font )
 // Destructor
 CDuskGUI::~CDuskGUI ( void )
 {
-	// Clear the materials if they're not the default ones
-	/*if (( matDefault != NULL )&&( matDefault != matDefDefault ))
-		delete matDefault;
-	matDefault = NULL;
-	if (( matHover != NULL )&&( matHover != matDefHover ))
-		delete matHover;
-	matHover = NULL;
-	if (( matDown != NULL )&&( matDown != matDefDown ))
-		delete matDown;
-	matDown = NULL;
-	if (( matFont != NULL )&&( matFont != matDefFont ))
-		delete matFont;
-	matFont = NULL;
-	if (( fntDefault != NULL )&&( fntDefault != fntDefDefault ))
-		delete fntDefault;
-	fntDefault = NULL;*/
-
 	matDefault->removeReference();
 
 	// Delete all the buttons and things we have
@@ -118,46 +88,12 @@ CDuskGUI::~CDuskGUI ( void )
 	}
 
 	// Remove this GUI from active state
-	//if ( Dusk::activeGUI == this ) {
-		Dusk::activeGUI = NULL;
-	//}
+	Dusk::activeGUI = NULL;
 }
 
 // Initializing default materials
 void CDuskGUI::InitializeDefaultMaterials ( void )
 {
-	//if ( matDefDefault != NULL ) {
-	//	return;
-	//}
-	//matDefDefault	= new RrMaterial ();
-	//matDefDefault->setStaticResource();
-
-	//matDefFont		= new RrMaterial ();
-	//matDefFont->setStaticResource();
-	////fntDefDefault	= new CBitmapFont ( "Calibri", 16, FW_NORMAL );
-	//fntDefDefault	= new CBitmapFont ( "ComicNeue-Bold.ttf", 16, FW_NORMAL );
-	////fntDefDefault	= new CBitmapFont ( "monofonto.ttf", 16, FW_NORMAL );
-
-	//// Set default colors and mat settings
-	//m_basecolor			= Color( 0.4f,0.4f,0.5f, 0.6f );
-	//m_basecolor_hover	= Color( 0.5f,0.5f,0.6f, 0.6f );;
-	//m_basecolor_down	= Color( 0.2f,0.2f,0.4f, 0.7f );
-
-	//matDefDefault->m_diffuse = Color( 1,1,1,1 );
-	////matDefDefault->setTexture( 0, new CTexture("textures/hud/dusk_element.png") );
-	//matDefDefault->setTexture( TEX_MAIN, new CTexture("null") );
-	//matDefDefault->passinfo.push_back( RrPassForward() );
-	//matDefDefault->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
-	//matDefDefault->passinfo[0].set2DCommon();
-	//matDefDefault->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-
-	//matDefFont->m_diffuse = Color( 1,1,1,1 );
-	//matDefFont->setTexture( TEX_MAIN, fntDefDefault );
-	//matDefFont->passinfo.push_back( RrPassForward() );
-	//matDefFont->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
-	//matDefFont->passinfo[0].set2DCommon();
-	//matDefFont->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-
 	if (fntDefault == NULL)
 	{
 		fntDefault	= new CBitmapFont ( "ComicNeue-Bold.ttf", 16, FW_NORMAL );
