@@ -29,8 +29,13 @@
   </ItemGroup>
   <!-- Dependencies -->
   <ItemGroup>
-    <ProjectReference Include="MToolSuite.vcxproj">
-      <Project>{410e2926-ec32-401c-a45b-dcbbb8342517}</Project>
+    <ProjectReference Include="oneAudio.vcxproj">
+      <Project>{6d8ba09c-513f-4030-8428-0d8797f7264c}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
     <ProjectReference Include="oneCore.vcxproj">
       <Project>{55249828-4343-423d-91d7-c5f5765eb240}</Project>
@@ -43,40 +48,14 @@
     <ProjectReference Include="oneCoreExt.vcxproj">
       <Project>{3f16b475-b8c7-4e8a-9678-f368cd0de5c3}</Project>
     </ProjectReference>
-    <ProjectReference Include="oneAudio.vcxproj">
-      <Project>{6d8ba09c-513f-4030-8428-0d8797f7264c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="oneEngine.vcxproj">
-      <Project>{5cc6093b-cb43-4cdc-817a-002246731bc9}</Project>
-    </ProjectReference>
-    <ProjectReference Include="oneEngineCommon.vcxproj">
-      <Project>{32bc2667-0024-48a2-a1c4-f7f995e5ef9b}</Project>
-    </ProjectReference>
-    <ProjectReference Include="onePhysical.vcxproj">
-      <Project>{4fdb8acd-7078-4806-b6b0-04c5351f3f87}</Project>
-    </ProjectReference>
-    <ProjectReference Include="oneRenderer.vcxproj">
-      <Project>{c1bc5440-9ce1-4a7e-89dd-dcd57005426a}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\deploy\deploy\M04.cpp" />
-    <ClCompile Include="source\deploy\game\game.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="source\deploy\game\game.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="versioninfo.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="icon1.ico" />
+    <ClCompile Include="source\deploy\unit\audio.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{084AB1E3-647C-4670-B529-CABAD9ECB295}</ProjectGuid>
+    <ProjectGuid>{F630F5A9-217B-40E5-9557-6227163544C9}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
-    <ProjectName>Tool Suite Deployment</ProjectName>
+    <ProjectName>test_oneAudio</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -109,7 +88,7 @@
   <!-- Directory Rules -->
   <PropertyGroup>
     <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
-    <TargetName>ToolSuite</TargetName>
+    <TargetName>unit_$(ProjectName)</TargetName>
     <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>

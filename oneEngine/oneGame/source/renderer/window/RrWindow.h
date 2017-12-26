@@ -1,6 +1,5 @@
-
-#ifndef _COGL_WINDOW_BASE_
-#define _COGL_WINDOW_BASE_
+#ifndef RR_WINDOW_BASE_
+#define RR_WINDOW_BASE_
 
 #ifdef _WIN32
 
@@ -30,4 +29,4 @@
 	#endif
 #endif
 
-#endif
+#endif//RR_WINDOW_BASE_

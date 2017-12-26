@@ -20,6 +20,23 @@
 #include "core-ext/system/shell/DragAndDrop.h"
 #include <shellapi.h>
 
+namespace window
+{
+	//	ShowErrorMessage(string) : Shows an error message, creating a message window with the OS.
+	void ShowErrorMessage ( const char* fmt, ... )
+	{
+		const int kBufferSize = 1024 * 16;
+		char buffer[kBufferSize];
+
+		va_list argptr;
+		va_start(argptr, fmt);
+		vsnprintf(buffer, kBufferSize, fmt, argptr);
+		va_end(argptr);
+
+		MessageBox(NULL, buffer, "Error", MB_OK | MB_ICONEXCLAMATION);
+	}
+}
+
 //bool	active;		// Window Active Flag Set To TRUE By Default
 bool	fullscreen;	// Fullscreen Flag Set To Fullscreen Mode By Default
 
@@ -136,7 +153,7 @@ bool RrWindow::createWindow ( void )
 
 RrWindow::eReturnStatus RrWindow::ErrorOut ( const char* message )
 {
-	MessageBox ( NULL,message,"ERROR",MB_OK | MB_ICONEXCLAMATION );
+	window::ShowErrorMessage(message);
 	return status_FAILED;
 }
 
@@ -230,7 +247,7 @@ GLvoid RrWindow::ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Ini
 	pActive->iHeight= height;
 }
 
-int RrWindow::InitGL(GLvoid)										// All Setup For OpenGL Goes Here
+int RrWindow::InitGL( void )
 {
 	// Get GL context:
 	const uchar* vendor		= glGetString(GL_VENDOR);
@@ -262,7 +279,7 @@ int RrWindow::InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 }
 
 // Draws the actual scene by calling into the renderer
-int RrWindow::DrawScene(GLvoid)
+int RrWindow::DrawScene( void )
 {
 	GL_ACCESS;
 
@@ -420,7 +437,7 @@ RrWindow::eReturnStatus RrWindow::CreateGLWindow(char* title, int width, int hei
 
 	hInstance			= GetModuleHandle(NULL);				// Grab An Instance For Our Window
 	wc.style			= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;	// Redraw On Size, And Own DC For Window.
-	wc.lpfnWndProc		= (WNDPROC) WndProc;					// WndProc Handles Messages
+	wc.lpfnWndProc		= (WNDPROC)MessageUpdate;				// WndProc Handles Messages
 	wc.cbClsExtra		= 0;									// No Extra Window Data
 	wc.cbWndExtra		= 0;									// No Extra Window Data
 	wc.hInstance		= hInstance;							// Set The Instance
@@ -451,7 +468,7 @@ RrWindow::eReturnStatus RrWindow::CreateGLWindow(char* title, int width, int hei
 		// Try To Set Selected Mode And Get Results.  NOTE: CDS_FULLSCREEN Gets Rid Of Start Bar.
 		if (ChangeDisplaySettings(&dmScreenSettings,CDS_FULLSCREEN)!=DISP_CHANGE_SUCCESSFUL)
 		{
-			MessageBox(NULL,"The Requested Fullscreen Mode Is Not Supported By\nYour Video Card.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+			window::ShowErrorMessage("The Requested Fullscreen Mode Is Not Supported By\nYour Video Card.");
 			fullscreen = false;		// Windowed Mode Selected.  Fullscreen = FALSE
 			return status_FAILED;
 		}
@@ -486,7 +503,7 @@ RrWindow::eReturnStatus RrWindow::CreateGLWindow(char* title, int width, int hei
 								NULL)))								// Dont Pass Anything To WM_CREATE
 	{
 		KillGLWindow();								// Reset The Display
-		MessageBox(NULL,"Window Creation Error.","ERROR",MB_OK|MB_ICONEXCLAMATION);
+		window::ShowErrorMessage("Window Creation Error.");
 		return status_FAILED;						// Return FALSE
 	}
 
@@ -757,10 +774,11 @@ void WndSetMouseClip ( HWND	hWnd, bool & hiddencursor )
 	}
 }
 
-LRESULT CALLBACK WndProc(	HWND	hWnd,			// Handle For This Window
-							UINT	uMsg,			// Message For This Window
-							WPARAM	wParam,			// Additional Message Information
-							LPARAM	lParam)			// Additional Message Information
+LRESULT CALLBACK MessageUpdate(
+	HWND	hWnd,	// Handle For This Window
+	UINT	uMsg,	// Message For This Window
+	WPARAM	wParam,	// Additional Message Information
+	LPARAM	lParam)	// Additional Message Information
 {
 	static bool hiddencursor = false;
 	switch (uMsg)									// Check For Windows Messages

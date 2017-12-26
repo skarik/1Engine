@@ -1,6 +1,3 @@
-
-
-
 #include "deploy/unit/unit.h"
 #ifdef _WIN32
 #include "conio.h"
@@ -24,22 +21,35 @@
 int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 {	ARUNIT_BUILD_CMDLINE
 
+	// Load window settings
+	CGameSettings gameSettings( (string)lpCmdLine );
+
+	// Initialize input
+	CInput::Initialize();
+
+	// Create debug console
+	debug::CDebugConsole::Init();
+
 	// In core, need to ensure that the conversions are working properly.
-	{ // Test matrix math
+	{	// Test matrix math
 		Matrix4x4 mat;
 		mat.setRotation( 10,20,30 );
-		for ( int i = 0; i < 16; ++i ) {
+		for ( int i = 0; i < 16; ++i )
+		{
 			std::cout << mat.pData[i] << ' ';
-			if ( i%4==3) std::cout << std::endl;
+			if (i % 4 == 3)
+				std::cout << std::endl;
 		}
 
 		Quaternion quat (mat.getEulerAngles());
 		std::cout << quat << std::endl;
 
 		mat.setRotation( quat );
-		for ( int i = 0; i < 16; ++i ) {
+		for ( int i = 0; i < 16; ++i )
+		{
 			std::cout << mat.pData[i] << ' ';
-			if ( i%4==3) std::cout << std::endl;
+			if (i % 4 == 3)
+				std::cout << std::endl;
 		}
 
 		quat = Quaternion (mat.getEulerAngles());
@@ -47,7 +57,6 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 
 		std::cout << "done" << std::endl;
 	}
-
 
 	// Set randomizer based on current CPU time
 	{	// This gets reset as soon as a Perlin noice class is added.
@@ -58,20 +67,6 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 
 		Random.Seed( (uint32_t)i_rand.QuadPart );
 	}
-
-	// Load window settings
-	CGameSettings gameSettings;
-	gameSettings.s_cmd = lpCmdLine;
-	if ( CGameSettings::Active()->b_ro_Enable30Steroscopic ) {
-		MessageBox( NULL, "Stereoscopic 3D mode either currently cascades into memory hell or isn't implemented.", "Invalid system setting", 0 );
-		return 0;
-	}
-
-	// Initialize input
-	CInput::Initialize();
-
-	// Create debug console
-	debug::CDebugConsole::Init();
 
 	// Create Window
 	debug::Console->PrintMessage( "Main system initialized properly. I think.\n" );

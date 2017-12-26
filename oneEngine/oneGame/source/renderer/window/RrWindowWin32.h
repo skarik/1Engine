@@ -1,7 +1,6 @@
 #ifndef RENDERER_WINDOW_H_
 #define RENDERER_WINDOW_H_
 
-// Includes
 #include "core/os.h"
 #include "core/types/types.h"
 #include "renderer/ogl/GLCommon.h" // includes windows headers and Win32
@@ -27,6 +26,12 @@ class CRenderTexture;
 //void createBuffer ( void );
 //void drawBuffer ( void );
 
+namespace window
+{
+	//	ShowErrorMessage(string) : Shows an error message, creating a message window with the OS.
+	void ShowErrorMessage ( const char* fmt, ... );
+}
+
 // Class Definition
 class RrWindow
 {
@@ -40,8 +45,7 @@ public:
 					int			innCmdShow);
 	RENDER_API ~RrWindow ( void );
 
-	friend LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-	int TestMain( void );
+	friend LRESULT	CALLBACK MessageUpdate(HWND, UINT, WPARAM, LPARAM);
 
 	RENDER_API bool createWindow ( void );
 	// Is this window still valid for executing (no WinAPI end messages)
@@ -61,8 +65,6 @@ public:
 	// Does this window have focus?
 	RENDER_API bool isActive ( void );
 
-	GLdouble getAspect ( void );
-
 	// Return window handles
 	HDC	getDevicePointer ( void ) {
 		return hDC;
@@ -74,11 +76,6 @@ public:
 	intptr_t GetShellHandle ( void ) {
 		return (intptr_t)hWnd;
 	}
-
-	// Return screen buffer
-	/*CRenderTexture* getScreenBuffer ( void ) {
-		return pSbuf;
-	}*/
 
 private:
 	enum eReturnStatus {

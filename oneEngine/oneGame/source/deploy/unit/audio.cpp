@@ -20,24 +20,8 @@
 // Program entry point
 int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 {	ARUNIT_BUILD_CMDLINE
-
-	// Set randomizer based on current CPU time
-	{	// This gets reset as soon as a Perlin noice class is added.
-		LARGE_INTEGER i_rand;
-		QueryPerformanceCounter( &i_rand );
-		srand( (uint32_t)i_rand.QuadPart );
-		rand();
-
-		Random.Seed( (uint32_t)i_rand.QuadPart );
-	}
-
 	// Load window settings
-	CGameSettings gameSettings;
-	gameSettings.s_cmd = lpCmdLine;
-	if ( CGameSettings::Active()->b_ro_Enable30Steroscopic ) {
-		MessageBox( NULL, "Stereoscopic 3D mode either currently cascades into memory hell or isn't implemented.", "Invalid system setting", 0 );
-		return 0;
-	}
+	CGameSettings gameSettings ( (string)lpCmdLine );
 
 	// Initialize input
 	CInput::Initialize();

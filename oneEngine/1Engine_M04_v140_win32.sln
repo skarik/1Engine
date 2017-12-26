@@ -7,14 +7,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "M04 Game", "oneGame\M04game
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneCore", "oneGame\oneCore.vcxproj", "{55249828-4343-423D-91D7-C5F5765EB240}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_oneCore", "oneGame\oneCore_test.vcxproj", "{17D36E91-579B-4BD9-9309-F65AAC7007D7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_oneCore", "oneGame\test_oneCore.vcxproj", "{17D36E91-579B-4BD9-9309-F65AAC7007D7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3F16B475-B8C7-4E8A-9678-F368CD0DE5C3} = {3F16B475-B8C7-4E8A-9678-F368CD0DE5C3}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneAudio", "oneGame\oneAudio.vcxproj", "{6D8BA09C-513F-4030-8428-0D8797F7264C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_oneAudio", "oneGame\oneAudio_test.vcxproj", "{F630F5A9-217B-40E5-9557-6227163544C9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_oneAudio", "oneGame\test_oneAudio.vcxproj", "{F630F5A9-217B-40E5-9557-6227163544C9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3F16B475-B8C7-4E8A-9678-F368CD0DE5C3} = {3F16B475-B8C7-4E8A-9678-F368CD0DE5C3}
 	EndProjectSection
@@ -27,11 +27,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneRenderer", "oneGame\oneR
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneEngineCommon", "oneGame\oneEngineCommon.vcxproj", "{32BC2667-0024-48A2-A1C4-F7F995E5EF9B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_oneEngineCore", "oneGame\oneEngineCore_test.vcxproj", "{4692E5CF-9EBE-4127-8A81-A283E9F7005F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_oneEngineCore", "oneGame\test_oneEngineCore.vcxproj", "{4692E5CF-9EBE-4127-8A81-A283E9F7005F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneCoreExt", "oneGame\oneCoreExt.vcxproj", "{3F16B475-B8C7-4E8A-9678-F368CD0DE5C3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_oneEngineCommon", "oneGame\oneEngineCommon_test.vcxproj", "{F7A35433-2C8A-487F-B021-C7AD4F20671C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_oneEngineCommon", "oneGame\test_oneEngineCommon.vcxproj", "{F7A35433-2C8A-487F-B021-C7AD4F20671C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneRenderer2DExt", "oneGame\oneRendererExt2D.vcxproj", "{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}"
 EndProject
@@ -101,6 +101,7 @@ Global
 		{17D36E91-579B-4BD9-9309-F65AAC7007D7}.2D_Debug|Windows_x86.ActiveCfg = Debug|Win32
 		{17D36E91-579B-4BD9-9309-F65AAC7007D7}.Debug|Windows_x64.ActiveCfg = Debug|x64
 		{17D36E91-579B-4BD9-9309-F65AAC7007D7}.Debug|Windows_x86.ActiveCfg = Debug|Win32
+		{17D36E91-579B-4BD9-9309-F65AAC7007D7}.Debug|Windows_x86.Build.0 = Debug|Win32
 		{17D36E91-579B-4BD9-9309-F65AAC7007D7}.DebugClang|Windows_x64.ActiveCfg = Debug|x64
 		{17D36E91-579B-4BD9-9309-F65AAC7007D7}.DebugClang|Windows_x86.ActiveCfg = Debug|Win32
 		{17D36E91-579B-4BD9-9309-F65AAC7007D7}.Optimized Release|Windows_x64.ActiveCfg = Unoptimized|x64
@@ -132,6 +133,7 @@ Global
 		{F630F5A9-217B-40E5-9557-6227163544C9}.2D_Debug|Windows_x86.ActiveCfg = Debug|Win32
 		{F630F5A9-217B-40E5-9557-6227163544C9}.Debug|Windows_x64.ActiveCfg = Debug|x64
 		{F630F5A9-217B-40E5-9557-6227163544C9}.Debug|Windows_x86.ActiveCfg = Debug|Win32
+		{F630F5A9-217B-40E5-9557-6227163544C9}.Debug|Windows_x86.Build.0 = Debug|Win32
 		{F630F5A9-217B-40E5-9557-6227163544C9}.DebugClang|Windows_x64.ActiveCfg = Debug|x64
 		{F630F5A9-217B-40E5-9557-6227163544C9}.DebugClang|Windows_x86.ActiveCfg = Debug|Win32
 		{F630F5A9-217B-40E5-9557-6227163544C9}.Optimized Release|Windows_x64.ActiveCfg = Unoptimized|x64
@@ -261,6 +263,7 @@ Global
 		{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}.2D_Debug|Windows_x86.Build.0 = Debug|Win32
 		{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}.Debug|Windows_x64.ActiveCfg = Debug|x64
 		{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}.Debug|Windows_x86.ActiveCfg = Debug|Win32
+		{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}.Debug|Windows_x86.Build.0 = Debug|Win32
 		{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}.DebugClang|Windows_x64.ActiveCfg = Debug|x64
 		{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}.DebugClang|Windows_x86.ActiveCfg = DebugClang|Win32
 		{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}.DebugClang|Windows_x86.Build.0 = DebugClang|Win32
