@@ -1,9 +1,8 @@
-
-#include "CAudioMaster.h"
-#include "CAudioListener.h"
-#include "CAudioSource.h"
-#include "CSoundManager.h"
-#include "CAudioSound.h"
+#include "audio/AudioMaster.h"
+#include "audio/Listener.h"
+#include "audio/Source.h"
+#include "audio/BufferManager.h"
+#include "audio/Buffer.h"
 
 using std::cout;
 using std::endl;
@@ -12,14 +11,14 @@ using std::string;
 using std::find;
 
 // Static variable defines
-CAudioMaster*	CAudioMaster::pActiveAudioMaster = NULL;
+audio::Master*	audio::Master::pActiveAudioMaster = NULL;
 
 // CAudioMaster function definitions
-CAudioMaster::CAudioMaster ( void )
+audio::Master::Master ( void )
 {
 	pActiveAudioMaster = this;
 	// Create sound master
-	CSoundManager::Active = new CSoundManager();
+	BufferManager::Active();
 
 	next_sound_id = 0;
 
@@ -33,49 +32,56 @@ CAudioMaster::CAudioMaster ( void )
 		cout << "Error in creating OpenAL device..." << endl;
 }
 
-CAudioMaster::~CAudioMaster ( void )
+audio::Master::~Master ( void )
 {
 	FreeSystem();
 
-	delete CSoundManager::Active;
-	CSoundManager::Active = NULL;
+	delete BufferManager::m_Active;
+	BufferManager::m_Active = NULL;
 
 	if ( pActiveAudioMaster == this )
 		pActiveAudioMaster = NULL;
 }
 
 // Update
-void CAudioMaster::Update ( void )
+void audio::Master::Update ( void )
 {
 	if ( !Active() )
 		return;
 
+	// Update the buffer manager
+	BufferManager::Active()->Tick( Time::deltaTime );
+
 	// Go through the listeners and update them
-	for ( vector<CAudioListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it )
+	for ( vector<Listener*>::iterator it = listeners.begin(); it != listeners.end(); )
 	{
-		if ( !(*it)->queue_destruction )
+		Listener* current = *it;
+		if ( current && !current->queue_destruction )
 		{
-			(*it)->Update();
+			current->Update();
+			++it;
 		}
 		else
 		{
-			delete (*it);
-			break;
+			delete current;
+			it = listeners.erase(it);
 		}
 	}
 
 
 	// Go through the sources and update them
-	for ( vector<CAudioSource*>::iterator it = sources.begin(); it != sources.end(); ++it )
+	for ( vector<Source*>::iterator it = sources.begin(); it != sources.end(); )
 	{
-		if ( !(*it)->queue_destruction )
+		Source* current = *it;
+		if ( current && !current->queue_destruction )
 		{
-			(*it)->Update();
+			current->Update();
+			++it;
 		}
 		else
 		{
-			delete (*it);
-			break;
+			delete current;
+			it = sources.erase(it);
 		}
 	}
 
@@ -87,7 +93,7 @@ void CAudioMaster::Update ( void )
 
 
 // OpenAL starting
-void CAudioMaster::InitSystem ( void )
+void audio::Master::InitSystem ( void )
 {
 	// Number of channels
 	const int c_voices = 128;
@@ -203,7 +209,7 @@ void CAudioMaster::InitSystem ( void )
 }
 
 // OpenAL starting
-void CAudioMaster::FreeSystem ( void )
+void audio::Master::FreeSystem ( void )
 {
 	if ( !Active() )
 		return;
@@ -219,13 +225,13 @@ void CAudioMaster::FreeSystem ( void )
 
 
 // Adding and removing objects
-void CAudioMaster::AddListener ( CAudioListener* listener )
+void audio::Master::AddListener ( Listener* listener )
 {
 	listeners.push_back( listener );
 }
-void CAudioMaster::RemoveListener ( CAudioListener* listener )
+void audio::Master::RemoveListener ( Listener* listener )
 {
-	vector<CAudioListener*>::iterator it;
+	vector<Listener*>::iterator it;
 	it = find( listeners.begin(), listeners.end(), listener );
 	if ( it == listeners.end() )
 	{
@@ -236,14 +242,14 @@ void CAudioMaster::RemoveListener ( CAudioListener* listener )
 		listeners.erase( it );
 	}
 }
-unsigned int CAudioMaster::AddSource ( CAudioSource* source )
+unsigned int audio::Master::AddSource ( Source* source )
 {
 	sources.push_back( source );
 	return next_sound_id++;
 }
-void CAudioMaster::RemoveSource ( CAudioSource* source )
+void audio::Master::RemoveSource ( Source* source )
 {
-	vector<CAudioSource*>::iterator it;
+	vector<Source*>::iterator it;
 	it = find( sources.begin(), sources.end(), source );
 	if ( it == sources.end() )
 	{
@@ -255,11 +261,11 @@ void CAudioMaster::RemoveSource ( CAudioSource* source )
 	}
 }
 
-CAudioMaster* CAudioMaster::GetCurrent ( void )
+audio::Master* audio::Master::GetCurrent ( void )
 {
 	return pActiveAudioMaster;
 }
-bool CAudioMaster::Active ( void ) 
+bool audio::Master::Active ( void ) 
 {
 	return pActiveAudioMaster->active;
 }

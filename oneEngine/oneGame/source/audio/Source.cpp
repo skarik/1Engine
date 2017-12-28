@@ -1,17 +1,10 @@
+#include "audio/Source.h"
+#include "audio/Buffer.h"
+#include "audio/BufferStreamed.h"
+#include "audio/types/AudioStructs.h"
 
-#include "CAudioSource.h"
-#include "CAudioSound.h"
-#include "CAudioSoundStreamed.h"
-
-#include "AudioStructs.h"
-
-CAudioSource::CAudioSource( CAudioSound * pInSound )
-	:  sound(NULL),
-#ifndef _AUDIO_FMOD_
-	iSource(0)
-#else
-	m_instance(NULL)
-#endif
+audio::Source::Source( Buffer* pInSound )
+	:  sound(NULL), instance(HANDLE_NULL)
 {
 	queue_destruction = false;
 
@@ -35,22 +28,25 @@ CAudioSource::CAudioSource( CAudioSound * pInSound )
 	}
 	// Create the source and perform initialization
 	sound->AddReference();
-	sound_id = CAudioMaster::GetCurrent()->AddSource( this );
-	if ( CAudioMaster::Active() )
+	sound_id = audio::Master::GetCurrent()->AddSource( this );
+	if ( audio::Master::Active() )
 	{
 #ifndef _AUDIO_FMOD_
-		alGenSources( 1, &iSource );
-		if ( !iSource ) {
+		alGenSources( 1, &instance );
+		if ( !instance )
+		{
 			sound->RemoveReference();
 			sound = NULL;
 			std::cout << "Warning: source not created successfully!" << std::endl;
 			return;
 		}
-		if ( !sound->IsStreamed() ) {
-			alSourcei( iSource, AL_BUFFER, sound->GetBuffer() );
+		if ( !sound->IsStreamed() )
+		{
+			alSourcei( instance, AL_BUFFER, sound->GetBuffer() );
 		}
-		else {
-			CAudioSoundStreamed* ssound = (CAudioSoundStreamed*)sound;
+		else
+		{
+			audio::BufferStreamed* ssound = (audio::BufferStreamed*)sound;
 			ALuint buffer0, buffer1;
 			// Get the open buffers
 			for ( int i = 0; i < 8; ++i ) {
@@ -71,8 +67,8 @@ CAudioSource::CAudioSource( CAudioSound * pInSound )
 			ssound->Stream( buffer0, playbacktime );
 			ssound->Stream( buffer1, playbacktime );
 			// Queue buffers to source
-			alSourceQueueBuffers( iSource, 1, &buffer0 );
-			alSourceQueueBuffers( iSource, 1, &buffer1 );
+			alSourceQueueBuffers( instance, 1, &buffer0 );
+			alSourceQueueBuffers( instance, 1, &buffer1 );
 			// Set that did initial setup
 			initial_setup = true;
 		}
@@ -81,9 +77,9 @@ CAudioSource::CAudioSource( CAudioSound * pInSound )
 		if ( m_instance ) {
 			initial_setup = true;
 		}
-		FMOD::FMOD_Channel_SetLoopCount( m_instance, 0 ); 
+		FMOD::FMOD_Channel_SetLoopCount( instance, 0 ); 
 
-		FMOD::FMOD_Channel_Set3DPanLevel( m_instance, 1 ); 
+		FMOD::FMOD_Channel_Set3DPanLevel( instance, 1 ); 
 		//FMOD::FMOD_Channel_Set3DPanLevel( m_instance, 1 ); 
 		// Channels are groups.
 #endif
@@ -93,7 +89,7 @@ CAudioSource::CAudioSource( CAudioSound * pInSound )
 	Update();
 }
 
-CAudioSource::~CAudioSource ( void )
+audio::Source::~Source ( void )
 {
 	if ( sound ) {
 		sound->RemoveReference();
@@ -101,12 +97,12 @@ CAudioSource::~CAudioSource ( void )
 	else {
 		return;
 	}
-	CAudioMaster::GetCurrent()->RemoveSource( this );
-	if ( CAudioMaster::Active() )
+	audio::Master::GetCurrent()->RemoveSource( this );
+	if ( audio::Master::Active() )
 	{
 #ifndef _AUDIO_FMOD_
-		if ( iSource ) {
-			alDeleteSources( 1, &iSource );
+		if ( instance ) {
+			alDeleteSources( 1, &instance );
 		}
 #else
 		FMOD::FMOD_Channel_Stop( m_instance );
@@ -114,9 +110,9 @@ CAudioSource::~CAudioSource ( void )
 	}
 }
 
-void CAudioSource::SetChannelProperties ( const int& n_channel )
+void audio::Source::SetChannelProperties ( const audio::eSoundScriptChannel n_channel )
 {
-	AudioStructs::soundScript_channel channel = (AudioStructs::soundScript_channel)n_channel;
+	audio::eSoundScriptChannel channel = (audio::eSoundScriptChannel)n_channel;
 #ifndef _AUDIO_FMOD_
 
 #else
@@ -140,7 +136,7 @@ void CAudioSource::SetChannelProperties ( const int& n_channel )
 #endif
 }
 
-void CAudioSource::Update ( void )
+void audio::Source::Update ( void )
 {
 	if ( !sound ) {
 		return;
@@ -152,27 +148,27 @@ void CAudioSource::Update ( void )
 		// Check for an invalid stop
 		if ( !IsPlaying() ) {
 			if ( targets_playing ) {
-				alSourcePlay( iSource );
+				alSourcePlay( instance );
 			}
 		}
 		// Otherwise update the sound playing
 		if ( targets_playing )
 		{
 			// Update the buffer
-			CAudioSoundStreamed* ssound = (CAudioSoundStreamed*)sound;
-			bool sound_valid = ssound->Sample( iSource, playbacktime, options.looped );
+			BufferStreamed* ssound = (BufferStreamed*)sound;
+			bool sound_valid = ssound->Sample( instance, playbacktime, options.looped );
 			if ( !sound_valid ) {
-				alSourceStop( iSource );
+				alSourceStop( instance );
 				targets_playing = false;
 			}
 
 			// Update the source
-			alSourcef( iSource, AL_PITCH, options.pitch);
-			alSourcef( iSource, AL_GAIN, options.gain);
-			alSource3f(iSource, AL_POSITION, position.x, position.y, position.z);
-			alSource3f(iSource, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
-			alSourcei( iSource, AL_LOOPING, false );
-			alSourcef( iSource, AL_ROLLOFF_FACTOR, options.rolloff );
+			alSourcef( instance, AL_PITCH, options.pitch);
+			alSourcef( instance, AL_GAIN, options.gain);
+			alSource3f(instance, AL_POSITION, position.x, position.y, position.z);
+			alSource3f(instance, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+			alSourcei( instance, AL_LOOPING, false );
+			alSourcef( instance, AL_ROLLOFF_FACTOR, options.rolloff );
 		}
 	}
 	else
@@ -180,7 +176,7 @@ void CAudioSource::Update ( void )
 		if ( IsPlaying() ) {
 			// Get playback position
 			ALfloat sample_time;
-			alGetSourcef( iSource, AL_SEC_OFFSET, &sample_time );
+			alGetSourcef( instance, AL_SEC_OFFSET, &sample_time );
 			playbacktime = sample_time;
 		}
 		else {
@@ -188,12 +184,12 @@ void CAudioSource::Update ( void )
 		}
 
 		// Update the source
-		alSourcef( iSource, AL_PITCH, options.pitch);
-		alSourcef( iSource, AL_GAIN, options.gain);
-		alSource3f(iSource, AL_POSITION, position.x, position.y, position.z);
-		alSource3f(iSource, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
-		alSourcei( iSource, AL_LOOPING, options.looped);
-		alSourcef( iSource, AL_ROLLOFF_FACTOR, options.rolloff );
+		alSourcef( instance, AL_PITCH, options.pitch);
+		alSourcef( instance, AL_GAIN, options.gain);
+		alSource3f(instance, AL_POSITION, position.x, position.y, position.z);
+		alSource3f(instance, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+		alSourcei( instance, AL_LOOPING, options.looped);
+		alSourcef( instance, AL_ROLLOFF_FACTOR, options.rolloff );
 	}
 #else
 	// Update the instance options
@@ -215,7 +211,7 @@ void CAudioSource::Update ( void )
 #endif
 }
 
-void CAudioSource::Play ( bool reset )
+void audio::Source::Play ( bool reset )
 {
 	if ( !sound ) {
 		return;
@@ -226,14 +222,14 @@ void CAudioSource::Play ( bool reset )
 	{
 		targets_playing = true;
 		if ( !sound->IsStreamed() ) {
-			alSourcePlay( iSource );
+			alSourcePlay( instance );
 		}
 		else {
 			if ( !IsPlaying() ) {
 				if ( !initial_setup ) {
 					playbacktime = 0;
 				}
-				alSourcePlay( iSource );
+				alSourcePlay( instance );
 			}
 		}
 		initial_setup = false;
@@ -241,43 +237,43 @@ void CAudioSource::Play ( bool reset )
 	else
 	{
 		targets_playing = true;
-		alSourcePlay( iSource );
+		alSourcePlay( instance );
 		initial_setup = false;
 	}
 #else
 	FMOD::FMOD_Channel_SetPaused( m_instance, false );
 #endif
 }
-void CAudioSource::Pause ( void )
+void audio::Source::Pause ( void )
 {
 #ifndef _AUDIO_FMOD_
 	targets_playing = false;
-	alSourcePause( iSource );
+	alSourcePause( instance );
 #else
 	FMOD::FMOD_Channel_SetPaused( m_instance, true );
 #endif
 }
-void CAudioSource::Stop ( void )
+void audio::Source::Stop ( void )
 {
 #ifndef _AUDIO_FMOD_
 	targets_playing = false;
-	alSourceStop( iSource );
+	alSourceStop( instance );
 #else
 	FMOD::FMOD_Channel_SetPaused( m_instance, true );
 	FMOD::FMOD_Channel_SetPosition( m_instance, 0, FMOD_TIMEUNIT_MS );
 #endif
 }
 
-void CAudioSource::Destroy ( void )
+void audio::Source::Destroy ( void )
 {
 	queue_destruction = true;
 }
 
-bool CAudioSource::IsPlaying ( void )
+bool audio::Source::IsPlaying ( void )
 {
 #ifndef _AUDIO_FMOD_
 	ALint state;
-	alGetSourcei( iSource, AL_SOURCE_STATE, &state );
+	alGetSourcei( instance, AL_SOURCE_STATE, &state );
 	return state == AL_PLAYING;
 #else
 	int isPlaying;
@@ -289,11 +285,11 @@ bool CAudioSource::IsPlaying ( void )
 	return isPlaying!=0;
 #endif
 }
-bool CAudioSource::Played ( void )
+bool audio::Source::Played ( void )
 {
 #ifndef _AUDIO_FMOD_
 	ALint state;
-	alGetSourcei( iSource, AL_SOURCE_STATE, &state );
+	alGetSourcei( instance, AL_SOURCE_STATE, &state );
 	return (state == AL_STOPPED)&&(playbacktime>=sound->GetLength());
 #else
 	int isPlaying;
@@ -302,11 +298,11 @@ bool CAudioSource::Played ( void )
 #endif
 }
 
-void CAudioSource::SetPlaybackTime ( double target_time )
+void audio::Source::SetPlaybackTime ( double target_time )
 {
 #ifndef _AUDIO_FMOD_
 	if ( !sound->IsStreamed() ) {
-		alSourcef( iSource, AL_SEC_OFFSET, (ALfloat)target_time );
+		alSourcef( instance, AL_SEC_OFFSET, (ALfloat)target_time );
 		playbacktime = target_time;
 	}
 	else {
@@ -316,7 +312,7 @@ void CAudioSource::SetPlaybackTime ( double target_time )
 	FMOD::FMOD_Channel_SetPosition( m_instance, (unsigned int)(target_time*1000), FMOD_TIMEUNIT_MS );
 #endif
 }
-double CAudioSource::GetPlaybackTime ( void )
+double audio::Source::GetPlaybackTime ( void )
 {
 #ifndef _AUDIO_FMOD_
 	return playbacktime;
@@ -326,18 +322,22 @@ double CAudioSource::GetPlaybackTime ( void )
 	return result_time/1000.0;
 #endif
 }
-double CAudioSource::GetSoundLength ( void )
+double audio::Source::GetSoundLength ( void )
 {
 	return sound->GetLength();
 }
 
-double CAudioSource::GetCurrentMagnitude ( void )
+double audio::Source::GetCurrentMagnitude ( void )
 {
+#ifndef _AUDIO_FMOD_
+	return 0.0;
+#else
 	float wavearray[8];
-	FMOD::FMOD_Channel_GetWaveData( m_instance, wavearray, 8, 0 );
+	FMOD::FMOD_Channel_GetWaveData( instance, wavearray, 8, 0 );
 	double result = 0;
 	for ( int i = 0; i < 8; ++i ) {
 		result += fabs(wavearray[i]);
 	}
 	return result/8.0;
+#endif
 }

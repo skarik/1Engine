@@ -124,40 +124,46 @@ void debug::CDebugConsole::Free ( void )
 
 
 // Output functions
-void debug::CDebugConsole::PrintMessage ( const string& sOut )
+void debug::CDebugConsole::PrintMessage ( const char* fmt, ... )
 {
 #ifdef _WIN32
 	HANDLE lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute( lStdHandle, 15 );
 
-	if ( bOutputEnabled )
-		std::cout << sOut;
+	va_list argptr;
+	va_start(argptr, fmt);
+	vprintf(fmt, argptr);
+	va_end(argptr);
 
 	SetConsoleTextAttribute( lStdHandle, 7 );
 #endif
 }
 
-void debug::CDebugConsole::PrintWarning ( const string& sOut )
+void debug::CDebugConsole::PrintWarning ( const char* fmt, ... )
 {
 #ifdef _WIN32
 	HANDLE lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute( lStdHandle, 14 );
 
-	if ( bOutputEnabled )
-		std::cout << sOut;
+	va_list argptr;
+	va_start(argptr, fmt);
+	vprintf(fmt, argptr);
+	va_end(argptr);
 
 	SetConsoleTextAttribute( lStdHandle, 7 );
 #endif
 }
 
-void debug::CDebugConsole::PrintError ( const string& sOut )
+void debug::CDebugConsole::PrintError ( const char* fmt, ... )
 {
 #ifdef _WIN32
 	HANDLE lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute( lStdHandle, 12 );
 
-	if ( bOutputEnabled )
-		std::cout << sOut;
+	va_list argptr;
+	va_start(argptr, fmt);
+	vprintf(fmt, argptr);
+	va_end(argptr);
 
 	SetConsoleTextAttribute( lStdHandle, 7 );
 #endif

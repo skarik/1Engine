@@ -5,8 +5,8 @@
 //	Basic reference counted base class, used for keeping track of objects and memory leakage.
 //
 //===============================================================================================//
-#ifndef _C_AR_BASE_OBJECT_H_
-#define _C_AR_BASE_OBJECT_H_
+#ifndef AR_BASE_OBJECT_H_
+#define AR_BASE_OBJECT_H_
 
 #include "core/types/types.h"
 #include "core/exceptions/exceptions.h"
@@ -61,4 +61,4 @@ namespace core
 	}
 }
 
-#endif//_C_AR_BASE_OOBJECT_H_
+#endif//AR_BASE_OBJECT_H_

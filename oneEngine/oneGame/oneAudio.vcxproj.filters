@@ -7,30 +7,33 @@
     <Filter Include="SOURCE\Audio">
       <UniqueIdentifier>{b84fd792-c7c1-47e6-88b0-0dc4766dc557}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Audio\types">
+      <UniqueIdentifier>{8c7f1e2f-778e-4b12-8866-9bdd5a655d6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\audio\CAudioListener.cpp">
+    <ClCompile Include="source\audio\Buffer.cpp">
       <Filter>SOURCE\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="source\audio\CAudioMaster.cpp">
+    <ClCompile Include="source\audio\WaveformLoader.cpp">
       <Filter>SOURCE\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="source\audio\CAudioSound.cpp">
+    <ClCompile Include="source\audio\AudioMaster.cpp">
       <Filter>SOURCE\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="source\audio\CAudioSoundLoader.cpp">
+    <ClCompile Include="source\audio\BufferManager.cpp">
       <Filter>SOURCE\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="source\audio\CAudioSoundLoaderOgg.cpp">
+    <ClCompile Include="source\audio\Source.cpp">
       <Filter>SOURCE\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="source\audio\CAudioSoundStreamed.cpp">
+    <ClCompile Include="source\audio\BufferStreamed.cpp">
       <Filter>SOURCE\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="source\audio\CAudioSource.cpp">
+    <ClCompile Include="source\audio\WaveformLoader.Ogg.cpp">
       <Filter>SOURCE\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="source\audio\CSoundManager.cpp">
+    <ClCompile Include="source\audio\Listener.cpp">
       <Filter>SOURCE\Audio</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,28 +41,31 @@
     <ClInclude Include="source\audio\AudioHeaders.h">
       <Filter>SOURCE\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="source\audio\AudioStructs.h">
+    <ClInclude Include="source\audio\Buffer.h">
       <Filter>SOURCE\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="source\audio\CAudioListener.h">
+    <ClInclude Include="source\audio\WaveformLoader.h">
       <Filter>SOURCE\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="source\audio\CAudioMaster.h">
+    <ClInclude Include="source\audio\AudioMaster.h">
       <Filter>SOURCE\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="source\audio\CAudioSound.h">
+    <ClInclude Include="source\audio\types\AudioStructs.h">
+      <Filter>SOURCE\Audio\types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\types\handles.h">
+      <Filter>SOURCE\Audio\types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\BufferManager.h">
       <Filter>SOURCE\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="source\audio\CAudioSoundLoader.h">
+    <ClInclude Include="source\audio\Source.h">
       <Filter>SOURCE\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="source\audio\CAudioSoundStreamed.h">
+    <ClInclude Include="source\audio\BufferStreamed.h">
       <Filter>SOURCE\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="source\audio\CAudioSource.h">
-      <Filter>SOURCE\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="source\audio\CSoundManager.h">
+    <ClInclude Include="source\audio\Listener.h">
       <Filter>SOURCE\Audio</Filter>
     </ClInclude>
   </ItemGroup>

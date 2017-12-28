@@ -42,12 +42,9 @@ namespace debug
 		CORE_API static void Init ( void );
 		CORE_API static void Free ( void );
 
-		// TODO: Make a const char* variant to avoid the copy
-		CORE_API static void PrintMessage ( const string& ); 
-		// TODO: Make a const char* variant to avoid the copy
-		CORE_API static void PrintWarning ( const string& );
-		// TODO: Make a const char* variant to avoid the copy
-		CORE_API static void PrintError ( const string& );
+		CORE_API static void PrintMessage ( const char* fmt, ... ); 
+		CORE_API static void PrintWarning ( const char* fmt, ... );
+		CORE_API static void PrintError ( const char* fmt, ... );
 
 		CORE_API static void DisableOutput ( void );
 		CORE_API static void EnableOutput ( void );

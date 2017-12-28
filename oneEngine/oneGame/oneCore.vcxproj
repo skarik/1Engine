@@ -158,6 +158,7 @@
     <ClInclude Include="source\core-ext\animation\Types.h" />
     <ClInclude Include="source\core-ext\constants\distances.h" />
     <ClInclude Include="source\core-ext\containers\arproperty.h" />
+    <ClInclude Include="source\core-ext\containers\arresource.h" />
     <ClInclude Include="source\core-ext\containers\ExtendibleMap2D.h" />
     <ClInclude Include="source\core-ext\containers\arKDTree.h" />
     <ClInclude Include="source\core-ext\math\MathQEF.h" />
@@ -236,6 +237,7 @@
     <ClInclude Include="source\core\time.h" />
     <ClInclude Include="source\core\types.h" />
     <ClInclude Include="source\core\types\arBaseObject.h" />
+    <ClInclude Include="source\core\types\arBaseObjectMacro.h" />
     <ClInclude Include="source\core\types\exports.h" />
     <ClInclude Include="source\core\types\float.h" />
     <ClInclude Include="source\core\types\float_fn.h" />

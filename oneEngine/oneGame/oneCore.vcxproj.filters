@@ -376,6 +376,12 @@
     <ClInclude Include="source\core-ext\containers\arKDTree.h">
       <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\types\arBaseObjectMacro.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\containers\arresource.h">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">

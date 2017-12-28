@@ -1,25 +1,24 @@
-
-#include "CAudioSoundStreamed.h"
-#include "CAudioSoundLoader.h"
+#include "BufferStreamed.h"
+#include "WaveformLoader.h"
 
 #include "core/debug/console.h"
 
 using std::string;
 
-CAudioSoundStreamed::CAudioSoundStreamed ( const string& sFileName, const int nPositional )
-	: CAudioSound()
+audio::BufferStreamed::BufferStreamed ( const char* filename, const int nPositional )
+	: Buffer()
 {
-	positional = (nPositional>0);
+	m_positional = (nPositional>0);
 #ifndef _AUDIO_FMOD_
 	for ( int i = 0; i < 8; ++i ) {
 		buffers[i] = 0;
 	}
 #endif
-	streamed = true;
-	InitStream( sFileName );
+	m_streamed = true;
+	InitStream( filename );
 }
 
-CAudioSoundStreamed::~CAudioSoundStreamed ( void )
+audio::BufferStreamed::~BufferStreamed ( void )
 {
 	FreeStream();
 }
@@ -43,13 +42,13 @@ string errorString(int code)
     }
 }
 
-void CAudioSoundStreamed::InitStream ( const string& sFileName )
+void audio::BufferStreamed::InitStream ( const char* filename )
 {
 #ifndef _AUDIO_FMOD_
 	int result;
 
 	// Open OGG file
-	oggFile = fopen( sFileName.c_str(), "rb" );
+	oggFile = fopen( filename, "rb" );
 	if ( !oggFile ) {
 		throw string("Could not open Ogg file.");
 	}
@@ -96,7 +95,7 @@ void CAudioSoundStreamed::InitStream ( const string& sFileName )
 #endif
 }
 
-void CAudioSoundStreamed::FreeStream ( void )
+void audio::BufferStreamed::FreeStream ( void )
 {
 #ifndef _AUDIO_FMOD_
     alDeleteBuffers( 8, buffers );
@@ -107,7 +106,7 @@ void CAudioSoundStreamed::FreeStream ( void )
 }
 
 #ifndef _AUDIO_FMOD_
-void CAudioSoundStreamed::FreeBuffers ( ALuint source )
+void audio::BufferStreamed::FreeBuffers ( ALuint source )
 {
 	ALuint buffer;
 	ALint queued;
@@ -128,7 +127,7 @@ void CAudioSoundStreamed::FreeBuffers ( ALuint source )
 }
 
 
-bool CAudioSoundStreamed::Sample ( ALuint source, double& rawtime, bool loop )
+bool audio::BufferStreamed::Sample ( ALuint source, double& rawtime, bool loop )
 {
     ALint processed_count;
     ALuint buffer;
@@ -148,7 +147,7 @@ bool CAudioSoundStreamed::Sample ( ALuint source, double& rawtime, bool loop )
     return active;
 }
 
-bool CAudioSoundStreamed::Stream ( ALuint buffer, double& rawtime, bool loop )
+bool audio::BufferStreamed::Stream ( ALuint buffer, double& rawtime, bool loop )
 {
 #define BUFFER_SIZE (4096 * 16)
 
@@ -194,7 +193,7 @@ bool CAudioSoundStreamed::Stream ( ALuint buffer, double& rawtime, bool loop )
     return true;
 }
 
-double CAudioSoundStreamed::GetLength ( void )
+double audio::BufferStreamed::GetLength ( void )
 {
 	return ov_time_total( &oggStream, -1 );
 }

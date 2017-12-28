@@ -314,7 +314,7 @@ void RrMaterial::updateStaticUBO ( void )
 
 // Light VBO specific to deferred renderer
 //#include "engine/audio/CAudioInterface.h"
-#include "audio/CAudioSource.h"
+#include "audio/Source.h"
 GLuint	RrMaterial::m_ubo_deflightinginfo = 0;
 GLuint	RrMaterial::m_tbo_lightinfo = 0;
 GLuint	RrMaterial::m_tex_lightinfo = 0;

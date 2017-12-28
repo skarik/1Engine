@@ -1,7 +1,12 @@
-
 #include "deploy/unit/unit.h"
+
 #ifdef _WIN32
-#include "conio.h"
+#	include "conio.h"
+#	define GETC _getch
+#	define KBHIT _kbhit
+#else
+#	define GETC getc
+#	define KBHIT kbhit
 #endif
 
 // System Includes
@@ -12,10 +17,15 @@
 #include "core/debug/console.h"
 
 // Include audio
-#include "audio/CAudioMaster.h"
+#include "audio/AudioMaster.h"
 
 // Steam Include
 #include "steam/steam_api.h"
+
+// Classes for audio test
+#include "audio/Listener.h"
+#include "audio/BufferManager.h"
+#include "audio/Source.h"
 
 // Program entry point
 int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
@@ -34,8 +44,9 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	std::cout << "Win32 Build (" << __DATE__ << ") Prealpha" << std::endl;
 
 	// Create Audio
-	CAudioMaster aMaster;
-	
+	audio::Master aMaster;
+	debug::Console->PrintMessage( "Audio master created.\n" );
+
 	// Inialize steam
 	bool bSteamy = SteamAPI_Init();
 	debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
@@ -46,6 +57,14 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 		HANDLE currentThread = GetCurrentThread();
 		SetThreadPriority( currentThread, THREAD_PRIORITY_HIGHEST );
 	}
+
+	// Create a listener
+	audio::Listener* l_listener = new audio::Listener();
+
+	// Create the music track to loop
+	audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop.ogg");
+	audio::Source* l_musicSource = new audio::Source(l_musicBuffer);
+	l_musicSource->Play(true);
 
 	// Start off the clock timer
 	Time::Init();
@@ -66,15 +85,31 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 		CInput::PreUpdate();
 
 		// Check for escape
-#ifdef _WIN32
-		int kbhit = _getch();
-#else
-		int kbhit = getc();
-#endif
-		if ( kbhit == CKeys::Escape ) {
+		int kbkey = NIL;
+		if (KBHIT())
+		{
+			kbkey = GETC();
+			if ( kbkey == CKeys::Escape ) {
+				break;
+			}
+		}
+
+		// Check for other characters:
+
+		switch (kbkey)
+		{
+		case ' ': {
+				// Play a sound
+				audio::Buffer* sound = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/menu/click.wav");
+				audio::Source* source = new audio::Source(sound);
+				source->Play(true);
+			}
 			break;
 		}
 	}
+
+	// Clean up audio
+	delete l_listener;
 
 	// Save all app data
 	gameSettings.SaveSettings();

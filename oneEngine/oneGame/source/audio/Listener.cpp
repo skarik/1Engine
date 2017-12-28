@@ -1,15 +1,13 @@
+#include "audio/AudioMaster.h"
+#include "audio/Listener.h"
 
-#include "CAudioMaster.h"
-#include "CAudioListener.h"
-
-CAudioListener::CAudioListener( void )
+audio::Listener::Listener( void )
 {
 	queue_destruction = false;
 
-	CAudioMaster::GetCurrent()->AddListener( this );
-	if ( CAudioMaster::Active() )
+	if ( audio::Master::Active() )
 	{
-		//alGenSources( 1, &iSource );
+		audio::Master::GetCurrent()->AddListener( this );
 	}
 
 	// Set initial options
@@ -20,16 +18,15 @@ CAudioListener::CAudioListener( void )
 	orient_up = Vector3d( 0,0,1 );
 }
 
-CAudioListener::~CAudioListener ( void )
+audio::Listener::~Listener ( void )
 {
-	CAudioMaster::GetCurrent()->RemoveListener( this );
-	if ( CAudioMaster::Active() )
+	if ( audio::Master::Active() )
 	{
-		//alDeleteSources( 1, &iSource );
+		audio::Master::GetCurrent()->RemoveListener( this );
 	}
 }
 
-void CAudioListener::Update ( void )
+void audio::Listener::Update ( void )
 {
 	velocity = (position_prev - position);
 	position_prev = position;
@@ -72,7 +69,7 @@ void CAudioListener::Update ( void )
 #endif
 }
 
-void CAudioListener::Destroy ( void )
+void audio::Listener::Destroy ( void )
 {
-	// TODO
+	queue_destruction = true;
 }

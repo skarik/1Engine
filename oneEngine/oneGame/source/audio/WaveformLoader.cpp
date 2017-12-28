@@ -1,31 +1,47 @@
-
-#include "CAudioSoundLoader.h"
+#include "WaveformLoader.h"
 #include "core/utils/StringUtils.h"
 
 using namespace std;
 
-#ifndef _AUDIO_FMOD_
-
-ALuint CAudioSoundLoader::LoadFile ( const string& sFilename )
+audio::arBufferHandle audio::WaveformLoader::LoadFile ( const char* sFilename, bool positional )
 {
+#ifndef _AUDIO_FMOD_
 	string sFileExtension = StringUtils::ToLower( StringUtils::GetFileExtension( sFilename ) );
 
 	if ( sFileExtension == "wav" )
 	{
-		return LoadWave( sFilename.c_str() );
+		return LoadWave( sFilename );
 	}
 	else if ( sFileExtension == "ogg" )
 	{
-		return LoadOGG( sFilename.c_str() );
+		return LoadOGG( sFilename );
 	}
 	else
 	{
 		cout << __FILE__ << "(" << __LINE__ << ") don't recognize extension " << sFileExtension << endl;
 	}
-	return 0;
+	return BUFFER_NULL;
+#else
+	FMOD::FMOD_RESULT result = FMOD::FMOD_OK;
+	arBufferHandle result = BUFFER_NULL;
+
+	if ( positional ) {
+		result = FMOD::FMOD_System_CreateSound( CAudioMaster::System(), sFilename, FMOD_DEFAULT | FMOD_3D, 0, &result );
+	}
+	else {
+		result = FMOD::FMOD_System_CreateSound( CAudioMaster::System(), sFilename, FMOD_DEFAULT, 0, &result );
+	}
+
+	// Check to see if it loaded properly
+	if ( result != FMOD::FMOD_OK ) {
+		debug::Console->PrintError("FMOD could not open the file \"" + sFileName + "\"");
+		result = BUFFER_NULL;
+	}
+	return result;
+#endif
 }
 
-ALuint CAudioSoundLoader::Error ( const char* message )
+audio::arReturnCode audio::WaveformLoader::Error ( const char* message )
 {
 	cout << message << endl;
 	return 0;
@@ -33,7 +49,7 @@ ALuint CAudioSoundLoader::Error ( const char* message )
 
 
 // Load WAV file
-ALuint CAudioSoundLoader::LoadWave ( const char* sFilename )
+audio::arBufferHandle audio::WaveformLoader::LoadWave ( const char* sFilename )
 {
 	FILE* soundFile;
 	WAVE_Format	wave_format;
@@ -125,5 +141,3 @@ ALuint CAudioSoundLoader::LoadWave ( const char* sFilename )
 	// Return the buffer
 	return buffer;
 }
-
-#endif
