@@ -18,6 +18,7 @@ You can compile and run without these with generous applications of self-inflict
 Currently supported platforms:
 * Windows x86 MSVC
 * Windows x86 MSClang
+* Windows x64 MSVC (Compiles but renderer module does not link)
 
 ## Branches
 
@@ -40,7 +41,7 @@ Large game projects are mostly the same, but instead are prefixed by the game in
 	* ``source`` game and engine source code (this is where the magic happens)
       * ``core`` ``core-ext`` common code for all 1Engine support
 	  * ``engine`` game engine backend
-	  * ``audio`` audio engine backend. uses FMOD
+	  * ``audio`` audio engine backend. uses OpenAL Soft, limited optional FMOD support
 	  * ``physical`` animation and physics backend
       * ``renderer`` opengl 4 renderer support
 	  * ``engine-common`` simple game framework

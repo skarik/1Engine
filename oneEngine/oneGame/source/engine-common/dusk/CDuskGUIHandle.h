@@ -33,8 +33,10 @@ namespace Dusk
 		ENGCOM_API bool operator<= ( Handle const &rhs ) { return index<=rhs.index; }
 		ENGCOM_API bool operator> ( Handle const &rhs ) { return index>rhs.index; }
 		ENGCOM_API bool operator< ( Handle const &rhs ) { return index<rhs.index; }
-		ENGCOM_API operator const int() const { return index; }
-		ENGCOM_API operator const unsigned int() const { return (unsigned int)index; }
+		ENGCOM_API operator const int32_t() const { return (int32_t)index; }
+		ENGCOM_API operator const uint32_t() const { return (uint32_t)index; }
+		ENGCOM_API operator const int64_t() const { return (int64_t)index; }
+		ENGCOM_API operator const uint64_t() const { return (uint64_t)index; }
 		ENGCOM_API CDuskGUIElement* operator*() const;
 		ENGCOM_API CDuskGUIElement* operator->() const;
 
