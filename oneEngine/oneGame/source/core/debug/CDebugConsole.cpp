@@ -169,6 +169,19 @@ void debug::CDebugConsole::PrintError ( const char* fmt, ... )
 #endif
 }
 
+void debug::CDebugConsole::PrintMessage ( const std::string& str )
+{
+	PrintMessage(str.c_str());
+}
+void debug::CDebugConsole::PrintWarning ( const std::string& str )
+{
+	PrintWarning(str.c_str());
+}
+void debug::CDebugConsole::PrintError ( const std::string& str )
+{
+	PrintError(str.c_str());
+}
+
 
 void debug::CDebugConsole::DisableOutput ( void )
 {

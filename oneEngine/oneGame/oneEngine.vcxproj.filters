@@ -93,32 +93,8 @@
     <ClInclude Include="source\engine\network\GameNetworking.h">
       <Filter>SOURCE\Engine\Network</Filter>
     </ClInclude>
-    <ClInclude Include="source\engine\physics\raycast\Raycaster.h">
-      <Filter>SOURCE\Engine\Physics\Raycast</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine\physics\collider\CCollider.h">
-      <Filter>SOURCE\Engine\Physics\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine\physics\collider\CCollider.hpp">
-      <Filter>SOURCE\Engine\Physics\Collider</Filter>
-    </ClInclude>
     <ClInclude Include="source\engine\physics\collider\sCollision.h">
       <Filter>SOURCE\Engine\Physics\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine\physics\collider\types\CBoxCollider.h">
-      <Filter>SOURCE\Engine\Physics\Collider\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine\physics\collider\types\CCapsuleCollider.h">
-      <Filter>SOURCE\Engine\Physics\Collider\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine\physics\collider\types\CConvexCollider.h">
-      <Filter>SOURCE\Engine\Physics\Collider\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine\physics\collider\types\CCylinderCollider.h">
-      <Filter>SOURCE\Engine\Physics\Collider\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine\physics\collider\types\CStaticMeshCollider.h">
-      <Filter>SOURCE\Engine\Physics\Collider\Types</Filter>
     </ClInclude>
     <ClInclude Include="source\engine\physics\motion\CRigidbody.h">
       <Filter>SOURCE\Engine\Physics\Motion</Filter>
@@ -134,12 +110,6 @@
     </ClInclude>
     <ClInclude Include="source\engine\physics\volumes\CWaterVolume.h">
       <Filter>SOURCE\Engine\Physics\Volumes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine\audio\CAudioInterface.h">
-      <Filter>SOURCE\Engine\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine\audio\CSoundBehavior.h">
-      <Filter>SOURCE\Engine\Audio</Filter>
     </ClInclude>
     <ClInclude Include="source\engine\utils\CDeveloperConsole.h">
       <Filter>SOURCE\Engine\Utils</Filter>
@@ -165,9 +135,6 @@
     <ClInclude Include="source\engine\types.h">
       <Filter>SOURCE\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="source\engine\physics\phantom\hkArDefaultDistributor.h">
-      <Filter>SOURCE\Engine\Physics\Phantom</Filter>
-    </ClInclude>
     <ClInclude Include="source\engine\network\CDataTable.h">
       <Filter>SOURCE\Engine\Network</Filter>
     </ClInclude>
@@ -176,6 +143,12 @@
     </ClInclude>
     <ClInclude Include="source\engine\network\BehaviorList.h">
       <Filter>SOURCE\Engine\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine\audio\AudioInterface.h">
+      <Filter>SOURCE\Engine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine\audio\Sound.h">
+      <Filter>SOURCE\Engine\Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -194,27 +167,6 @@
     <ClCompile Include="source\engine\system\CGameMessenger.cpp">
       <Filter>SOURCE\Engine\System</Filter>
     </ClCompile>
-    <ClCompile Include="source\engine\physics\raycast\Raycaster.cpp">
-      <Filter>SOURCE\Engine\Physics\Raycast</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine\physics\collider\CCollider.cpp">
-      <Filter>SOURCE\Engine\Physics\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine\physics\collider\types\CBoxCollider.cpp">
-      <Filter>SOURCE\Engine\Physics\Collider\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine\physics\collider\types\CCapsuleCollider.cpp">
-      <Filter>SOURCE\Engine\Physics\Collider\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine\physics\collider\types\CConvexCollider.cpp">
-      <Filter>SOURCE\Engine\Physics\Collider\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine\physics\collider\types\CCylinderCollider.cpp">
-      <Filter>SOURCE\Engine\Physics\Collider\Types</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine\physics\collider\types\CStaticMeshCollider.cpp">
-      <Filter>SOURCE\Engine\Physics\Collider\Types</Filter>
-    </ClCompile>
     <ClCompile Include="source\engine\physics\motion\CRigidbody.cpp">
       <Filter>SOURCE\Engine\Physics\Motion</Filter>
     </ClCompile>
@@ -229,12 +181,6 @@
     </ClCompile>
     <ClCompile Include="source\engine\physics\volumes\CWaterVolume.cpp">
       <Filter>SOURCE\Engine\Physics\Volumes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine\audio\CAudioInterface.cpp">
-      <Filter>SOURCE\Engine\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine\audio\CSoundBehavior.cpp">
-      <Filter>SOURCE\Engine\Audio</Filter>
     </ClCompile>
     <ClCompile Include="source\engine\utils\CDeveloperConsole.cpp">
       <Filter>SOURCE\Engine\Utils</Filter>
@@ -254,14 +200,17 @@
     <ClCompile Include="source\engine\client.cpp">
       <Filter>SOURCE\Engine\MPlayer %28Filter only%29</Filter>
     </ClCompile>
-    <ClCompile Include="source\engine\physics\phantom\hkArDefaultDistributor.cpp">
-      <Filter>SOURCE\Engine\Physics\Phantom</Filter>
-    </ClCompile>
     <ClCompile Include="source\engine\network\BehaviorList.cpp">
       <Filter>SOURCE\Engine\Network</Filter>
     </ClCompile>
     <ClCompile Include="source\engine\physics\motion\CMotion.cpp">
       <Filter>SOURCE\Engine\Physics\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine\audio\AudioInterface.cpp">
+      <Filter>SOURCE\Engine\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine\audio\Sound.cpp">
+      <Filter>SOURCE\Engine\Audio</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

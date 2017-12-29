@@ -1,16 +1,12 @@
-
-#include "CSoundBehavior.h"
-#include "audio/CAudioSource.h"
 #include "core-ext/transform/Transform.h"
-
-using std::vector;
+#include "audio/Source.h"
+#include "engine/audio/Sound.h"
 
 // Define static sound list
-vector<CSoundBehavior*>	CSoundBehavior::soundList;
+std::vector<engine::Sound*>	engine::Sound::soundList;
 
-CSoundBehavior::CSoundBehavior ( void ) : CGameBehavior()
+engine::Sound::Sound ( void ) : CGameBehavior()
 {
-	// Initialize default values
 	mySource		= NULL;
 	deleteWhenDone	= false;
 	position		= Vector3d();
@@ -21,21 +17,21 @@ CSoundBehavior::CSoundBehavior ( void ) : CGameBehavior()
 	soundList.push_back( this );
 }
 
-CSoundBehavior::~CSoundBehavior ( void )
+engine::Sound::~Sound ( void )
 {
 	if ( mySource ) {
 		delete mySource;
 	}
 	mySource = NULL;
 
-	vector<CSoundBehavior*>::iterator findResult;
-	findResult = find( soundList.begin(), soundList.end(), this );
-	if ( findResult != soundList.end() ) {
+	auto findResult = find( soundList.begin(), soundList.end(), this );
+	if ( findResult != soundList.end() )
+	{
 		soundList.erase( findResult );
 	}
 }
 
-void CSoundBehavior::Update ( void )
+void engine::Sound::Update ( void )
 {
 	if ( !mySource ) {
 		return;
@@ -56,31 +52,31 @@ void CSoundBehavior::Update ( void )
 		}
 	}
 }
-void CSoundBehavior::Play ( void )
+void engine::Sound::Play ( void )
 {
 	mySource->Play();
 }
-void CSoundBehavior::Stop ( void )
+void engine::Sound::Stop ( void )
 {
 	mySource->Stop();
 }
-void CSoundBehavior::SetLooped ( bool b_loop )
+void engine::Sound::SetLooped ( bool b_loop )
 {
 	mySource->options.looped = b_loop;
 }
 
-void CSoundBehavior::SetGain ( float f_gain )
+void engine::Sound::SetGain ( float f_gain )
 {
 	mySource->options.gain = f_gain;
 	mySource->Update();
 }
-void CSoundBehavior::SetPitch ( float f_pitch )
+void engine::Sound::SetPitch ( float f_pitch )
 {
 	mySource->options.pitch = f_pitch;
 	mySource->Update();
 }
 
-const std::vector<CSoundBehavior*> & CSoundBehavior::GetSoundList ( void )
+const std::vector<engine::Sound*> & engine::Sound::GetSoundList ( void )
 {
 	return soundList;
 }

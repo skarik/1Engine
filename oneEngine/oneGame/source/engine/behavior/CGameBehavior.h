@@ -115,13 +115,14 @@ public:
 	// Memory Management : Reference counting
 	//===============================================================================================//
 
-	ENGINE_API void RemoveReference ( void ) {
+	ENGINE_API CGameBehavior* RemoveReference ( void ) {
 		if ( referenceCount > 0 )
 			referenceCount--;
 		else
 			throw core::InvalidCallException();
+		return this;
 	}
-	ENGINE_API void AddReference ( void ) { referenceCount++; }
+	ENGINE_API CGameBehavior* AddReference ( void ) { referenceCount++; return this; }
 	ENGINE_API bool HasReference ( void ) { return (referenceCount != 0); }
 
 	//===============================================================================================//

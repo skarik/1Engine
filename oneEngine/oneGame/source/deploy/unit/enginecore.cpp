@@ -1,8 +1,3 @@
-
-#ifdef _WIN32
-
-//#include "physical/liscensing.cxx" // Include liscense info
-
 #include "deploy/unit/unit.h"
 
 // System Includes
@@ -11,12 +6,13 @@
 #include "core/settings/CGameSettings.h"
 #include "core/input/CInput.h"
 #include "core/debug/console.h"
+#include "core/types/arBaseObject.h"
 
 #include "core-ext/profiler/CTimeProfiler.h"
 #include "core-ext/threads/Jobs.h"
 
 // Include audio
-#include "audio/CAudioMaster.h"
+#include "audio/AudioMaster.h"
 
 // Include physics
 #include "physical/module_physical.h"
@@ -36,15 +32,13 @@
 // Steam Include
 #include "steam/steam_api.h"
 
-DEPLOY_API int ARUNIT_CALL Unit::Test_EngineCore ( ARUNIT_ARGS )
+// Classes for engine test
+#include "engine/audio/AudioInterface.h"
+
+int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 {	ARUNIT_BUILD_CMDLINE
 	// Load window settings
-	CGameSettings gameSettings;
-	gameSettings.s_cmd = lpCmdLine;
-	if ( CGameSettings::Active()->b_ro_Enable30Steroscopic ) {
-		MessageBox( NULL, "Stereoscopic 3D mode either currently cascades into memory hell or isn't implemented.", "Invalid system setting", 0 );
-		return 0;
-	}
+	CGameSettings gameSettings ( (string)lpCmdLine );
 
 	// Create jobs system
 	Jobs::System jobSystem (4);
@@ -64,23 +58,19 @@ DEPLOY_API int ARUNIT_CALL Unit::Test_EngineCore ( ARUNIT_ARGS )
 	aWindow.mRenderer = &aRenderer; // Set the window's renderer (multiple possible render states)
 	// Create Gamestate
 	CGameState aGameState;
+
 	// Create Audio
-	CAudioMaster aMaster;
-	
+	audio::Master aMaster;
+	debug::Console->PrintMessage( "Audio master created.\n" );
+
 	// Inialize steam
 	bool bSteamy = SteamAPI_Init();
 	debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
 
-	// Create the debug drawers
-	//debug::CDebugDrawer debugDrawer;
-	//debug::CDebugRTInspector debugRTInspector;
-	// Create the sprite drawer
-	//CSpriteContainer spriteContainer;
-
 	// Create the game scene
-	//CGameScene* pNewScene = CGameScene::NewScene<gmsceneSystemLoader> ();
-	//CGameScene::SceneGoto( pNewScene );
-	CCamera* cam = new CCamera;
+	CCamera* l_cam = new CCamera;
+	engine::Sound* l_music = core::Orphan(engine::Audio.PlaySound("Music.MainMenu"));
+	l_music->SetLooped(true);
 
 	// Start off the clock timer
 	Time::Init();
@@ -133,7 +123,8 @@ DEPLOY_API int ARUNIT_CALL Unit::Test_EngineCore ( ARUNIT_ARGS )
 		}
 	}
 
-	delete cam;
+	// Free up the game scene created
+	delete l_cam;
 
 	// Save all app data
 	gameSettings.SaveSettings();
@@ -149,5 +140,3 @@ DEPLOY_API int ARUNIT_CALL Unit::Test_EngineCore ( ARUNIT_ARGS )
 
 	return 0;
 }
-
-#endif

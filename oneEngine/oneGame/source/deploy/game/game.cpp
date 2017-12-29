@@ -12,7 +12,7 @@
 #include "core-ext/system/shell/Status.h"
 
 // Include audio
-#include "audio/CAudioMaster.h"
+#include "audio/AudioMaster.h"
 
 // Include physics
 #include "physical/module_physical.h"
@@ -73,7 +73,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	CGameState aGameState;
 
 	// Create Audio
-	CAudioMaster aMaster;
+	audio::Master aMaster;
 	
 	// Inialize steam
 	bool bSteamy = false;

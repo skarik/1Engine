@@ -3,10 +3,12 @@
 
 #include "CActor.h"
 
-class CAudioListener;
+namespace audio
+{
+	class Listener;
+}
 class CInputControl;
 class CCharacterMotion;
-
 class CCamera;
 class CLight;
 
@@ -86,8 +88,8 @@ protected: // PROTECTED FIELDS and ROUTINES
 	// Attached objects
 	//===============================================================================================//
 
-	CCamera*	pCamera;	// Attached camera
-	CAudioListener*	pListener;	// Attached listener
+	CCamera*		pCamera;	// Attached camera
+	audio::Listener*pListener;	// Attached listener
 
 	//===============================================================================================//
 	// Location state 

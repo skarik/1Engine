@@ -449,7 +449,8 @@ void RrMaterial::updateLightTBO ( void )
 	else if ( pipelineMode == renderer::kPipelineModeEcho )
 	{
 		static std::map<unsigned int,_lightInfo_t> echomap;
-		std::vector<CAudioSource*> currentSounds = *CAudioMaster::GetCurrent()->GetSources();//Audio.GetCurrentSources();
+		//std::vector<audio::Source*> currentSounds = *audio::Master::GetCurrent()->GetSources();//Audio.GetCurrentSources();
+		const auto& currentSounds = *audio::Master::GetCurrent()->GetSources();
 		for ( uint i = 0; i < currentSounds.size(); ++i )
 		{
 			auto echomap_find = echomap.find( currentSounds[i]->GetID() );

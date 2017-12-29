@@ -48,8 +48,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\engine\audio\CAudioInterface.h" />
-    <ClInclude Include="source\engine\audio\CSoundBehavior.h" />
+    <ClInclude Include="source\engine\audio\AudioInterface.h" />
+    <ClInclude Include="source\engine\audio\Sound.h" />
     <ClInclude Include="source\engine\behavior\CGameBehavior.h" />
     <ClInclude Include="source\engine\behavior\CGameHandle.h" />
     <ClInclude Include="source\engine\behavior\CGameObject.h" />
@@ -80,8 +80,8 @@
     <ClInclude Include="source\engine\utils\CDeveloperConsole.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\engine\audio\CAudioInterface.cpp" />
-    <ClCompile Include="source\engine\audio\CSoundBehavior.cpp" />
+    <ClCompile Include="source\engine\audio\AudioInterface.cpp" />
+    <ClCompile Include="source\engine\audio\Sound.cpp" />
     <ClCompile Include="source\engine\behavior\CGameBehavior.cpp" />
     <ClCompile Include="source\engine\behavior\CGameHandle.cpp" />
     <ClCompile Include="source\engine\behavior\gbbool.cpp" />

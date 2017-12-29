@@ -43,8 +43,11 @@ namespace debug
 		CORE_API static void Free ( void );
 
 		CORE_API static void PrintMessage ( const char* fmt, ... ); 
+		CORE_API static void PrintMessage ( const std::string& str ); 
 		CORE_API static void PrintWarning ( const char* fmt, ... );
+		CORE_API static void PrintWarning ( const std::string& str ); 
 		CORE_API static void PrintError ( const char* fmt, ... );
+		CORE_API static void PrintError ( const std::string& str ); 
 
 		CORE_API static void DisableOutput ( void );
 		CORE_API static void EnableOutput ( void );

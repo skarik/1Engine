@@ -6,7 +6,7 @@
 
 namespace audio
 {
-	enum eSoundScriptChannel
+	enum eSoundScriptChannel : uint8_t
 	{
 		kChannelDefault = 0,
 		kChannelPhysics,
@@ -15,29 +15,50 @@ namespace audio
 		kChannelBackground,
 		kChannelMusic,
 	};
-	enum eSoundScriptAIAlert
+
+	enum eSoundScriptAIAlert : uint8_t
 	{
 		kAIAlertIgnore = 0,
 		kAIAlertSmall,
 		kAIAlertSpeech,
 		kAIAlertNotice,
 	};
+
+	enum eSoundScriptSet : uint8_t
+	{
+		kSetStandard	= 0,
+		kSetEnvironment	= 1,
+		kSetMusic		= 2,
+		kSetVoice		= 3,
+		kSetPerLevel	= 4,
+
+		kSoundScriptSet_MAX	= 4
+	};
+
+	//	arSoundScript
+	// Contains audio script definitions.
 	struct arSoundScript
 	{
-		eSoundScriptChannel	ai_alert_amount;
 		float				pitch;
 		float				attenuation;
 		float				gain;
-		eSoundScriptAIAlert	channel;
+
+		eSoundScriptChannel	channel;
+		eSoundScriptAIAlert	ai_alert_amount;
 		char				loop;
+
+		char				sound_count;
 		arstring256			sounds [4];
 		char				sound_usage [4];
-		char				count;
 	};
+
+	//	arSoundIndex
+	// Stores the position of a sound script within a soundscript file.
+	// Used to avoid searching files for a definition during runtime.
 	struct arSoundIndex
 	{
-		uint32_t pos;
-		char	 set;
+		uint32_t			pos;
+		eSoundScriptSet		set;
 	};
 }
 

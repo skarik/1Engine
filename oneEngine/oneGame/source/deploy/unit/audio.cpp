@@ -63,7 +63,9 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 
 	// Create the music track to loop
 	audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop.ogg");
+	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/Theme07-snippet.ogg");
 	audio::Source* l_musicSource = new audio::Source(l_musicBuffer);
+	l_musicSource->options.looped = true;
 	l_musicSource->Play(true);
 
 	// Start off the clock timer

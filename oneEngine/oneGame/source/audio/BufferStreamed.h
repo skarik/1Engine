@@ -20,24 +20,25 @@ namespace audio
 
 	public:
 	#ifndef _AUDIO_FMOD_
-		bool Sample ( ALuint source, double& rawtime, bool loop = false );
-		bool Stream ( ALuint buffer, double& rawtime, bool loop = false );
+		bool Sample ( arSourceHandle source, double& rawtime, bool loop = false );
+		bool Stream ( arBufferHandle buffer, double& rawtime, bool loop = false );
 
 		void FreeBuffers ( ALuint source );
 
 		virtual double GetLength ( void );
 
-		ALuint buffers [8];
-		bool buffer_usage [8];
+		arBufferHandle	m_buffers [8];
+		bool			m_buffer_usage [8];
 	#endif
 
 	protected:
 	#ifndef _AUDIO_FMOD_
-		FILE*			oggFile;
-		OggVorbis_File	oggStream;
-		vorbis_info*	vorbisInfo;
-		vorbis_comment*	vorbisComment;
-		ALenum			format;
+		FILE*			m_file;
+		OggVorbis_File	m_oggStream;
+		vorbis_info*	m_vorbisInfo;
+		vorbis_comment*	m_vorbisComment;
+
+		ALenum			m_format;
 	#endif
 
 		void InitStream ( const char* filename );

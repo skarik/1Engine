@@ -1,82 +1,83 @@
-
+#include "core/debug/console.h"
 #include "core-ext/system/io/Resources.h"
-#include "CAudioInterface.h"
-#include "audio/CAudioMaster.h"
-#include "audio/CAudioListener.h"
-#include "audio/CAudioSource.h"
-#include "audio/CAudioSound.h"
-#include "audio/CSoundManager.h"
 
-using namespace AudioStructs;
-using namespace std;
+#include "audio/AudioMaster.h"
+#include "audio/Listener.h"
+#include "audio/Source.h"
+#include "audio/Buffer.h"
+#include "audio/BufferManager.h"
 
-CAudioInterface Audio;
+#include "AudioInterface.h"
 
-vector<CAudioSource*> CAudioInterface::GetCurrentSources ( void )
+#include <stdio.h>
+#include <ctype.h>
+
+engine::AudioInterface engine::Audio;
+
+std::vector<audio::Source*> engine::AudioInterface::GetCurrentSources ( void )
 {
-	return *CAudioMaster::GetCurrent()->GetSources();
+	return *audio::Master::GetCurrent()->GetSources();
 }
 
-CAudioListener* CAudioInterface::CreateListener ( void )
+audio::Listener* engine::AudioInterface::CreateListener ( void )
 {
-	return new CAudioListener();
+	return new audio::Listener();
 }
 
-CAudioSource* CAudioInterface::PlayWaveFile ( const char* wavname )
+audio::Source* engine::AudioInterface::PlayWaveFile ( const char* filename )
 {
 	// First create the sound
-	CAudioSound* newSound = CSoundManager::GetActive()->GetSound( wavname );
+	audio::Buffer* newSound = audio::BufferManager::Active()->GetSound( filename );
 	if ( !newSound ) {
 		return NULL;
 	}
 
 	// Create a source playing it
-	CAudioSource* newSource = new CAudioSource( newSound );
+	audio::Source* newSource = new audio::Source( newSound );
 	newSource->options.looped = false;
 	newSource->Play();
 	return newSource;
 }
 
-CAudioSource* CAudioInterface::LoopMusicFile ( const char* fukebane )
+audio::Source* engine::AudioInterface::LoopMusicFile ( const char* filename )
 {
 	// Create the sound
-	CAudioSound* newSound = CSoundManager::GetActive()->GetSound( fukebane );
+	audio::Buffer* newSound = audio::BufferManager::Active()->GetSound( filename );
 	if ( !newSound ) {
 		return NULL;
 	}
 
 	// Create the source playing it
-	CAudioSource* newSource = new CAudioSource( newSound );
+	audio::Source* newSource = new audio::Source( newSound );
 	newSource->options.looped = true;
 	newSource->Play();
 	return newSource;
 }
 
-#include <stdio.h>
-#include <ctype.h>
-//#include "CSoundBehavior.h"
-
-CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
+//	PlaySound( soundscript ) : Creates a sound behavior from given soundscript.
+// Sound behaviors are engine wrappers for audio::Source.
+engine::Sound* engine::AudioInterface::PlaySound ( const char* soundscriptName )
 {
 	// Build file index map
 	if ( scriptFileIndex.size() <= 0 ) {
 		BuildIndexMap();
 	} // End building index map
 
-	arstring<128> ar_soundName ( soundName );
+	arstring128 ar_soundName ( soundscriptName );
 
 	// Find entry
-	unordered_map<arstring<128>, soundIndex_t>::iterator findResult = scriptFileIndex.find( ar_soundName );
+	auto findResult = scriptFileIndex.find( ar_soundName );
 
-	if ( findResult == scriptFileIndex.end() ) { 
-		cout << "Could not find sound entry \"" << soundName << "\"" << endl;
+	if ( findResult == scriptFileIndex.end() )
+	{
+		debug::Console->PrintWarning("Could not find sound entry `%s`\n", soundscriptName);
 	}
-	else {
-		//cout << "Found sound entry \"" << soundName << "\"" << endl;
-
-		unordered_map<arstring<128>, soundScript_t>::iterator scriptResult = scriptList.find( ar_soundName );
-		if ( scriptResult == scriptList.end() ) {
-			LoadEntry( soundName, findResult->second );
+	else
+	{
+		auto scriptResult = scriptList.find( ar_soundName );
+		if ( scriptResult == scriptList.end() )
+		{
+			LoadEntry( soundscriptName, findResult->second );
 		}
 
 		scriptResult = scriptList.find( ar_soundName );
@@ -104,14 +105,14 @@ CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
 		int chosen_sound_index = -1;
 
 		// Do randomizer code to choose a sound to play
-		if ( scriptResult->second.count > 1 )
+		if ( scriptResult->second.sound_count > 1 )
 		{
 			// Playing the sound
 			int choice, current_index, chosen = 0, maxchoice;
 
 			// Get max count of choices
 			maxchoice = 0;
-			for ( int i = 0; i < scriptResult->second.count; ++i ) {
+			for ( int i = 0; i < scriptResult->second.sound_count; ++i ) {
 				if ( scriptResult->second.sound_usage[i] == 0 ) {
 					maxchoice += 1;
 				}
@@ -129,7 +130,7 @@ CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
 
 			// Convert choice to sound index
 			current_index = 0;
-			for ( int i = 0; i < scriptResult->second.count; ++i ) {
+			for ( int i = 0; i < scriptResult->second.sound_count; ++i ) {
 				if ( scriptResult->second.sound_usage[i] == 0 ) {
 					current_index += 1;
 					if ( current_index == choice ) {
@@ -147,14 +148,14 @@ CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
 			// Set choice to used
 			if ( maxchoice == 1 ) {
 				// If only 1 choice, reset
-				for ( int i = 0; i < scriptResult->second.count; ++i ) {
+				for ( int i = 0; i < scriptResult->second.sound_count; ++i ) {
 					scriptResult->second.sound_usage[i] = 0;
 				}
 				scriptResult->second.sound_usage[chosen] = 2; // Set chosen to skip next run
 			}
 			else {
 				// If only 1 choice, reset
-				for ( int i = 0; i < scriptResult->second.count; ++i ) {
+				for ( int i = 0; i < scriptResult->second.sound_count; ++i ) {
 					if ( scriptResult->second.sound_usage[i] == 2 ) { // Reset the skips
 						scriptResult->second.sound_usage[i] = 0;
 					}
@@ -174,16 +175,16 @@ CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
 		{
 			// Create the sound
 			string soundfilename =  core::Resources::PathTo( string("sounds/") + scriptResult->second.sounds[chosen_sound_index].c_str() );
-			CAudioSound* newSound = CSoundManager::GetActive()->GetSound( soundfilename.c_str() );
+			audio::Buffer* newSound = audio::BufferManager::Active()->GetSound( soundfilename.c_str() );
 
 			// If sound driver is FUBAR, don't crash. Just warn about it.
 			if ( newSound == NULL )
 			{
-				cout << "Warning: sound engine could not load sound file! (is the device being whored?)" << endl;
+				debug::Console->PrintWarning("Warning: sound engine could not load sound file! (is the device being whored?)\n");
 			}
 			
 			// Create the source playing it
-			CAudioSource* newSource = new CAudioSource( newSound );
+			audio::Source* newSource = new audio::Source( newSound );
 			newSource->options.looped	= (scriptResult->second.loop != 0);
 			newSource->options.pitch	= scriptResult->second.pitch;
 			newSource->options.rolloff	= scriptResult->second.attenuation * 4.5f;
@@ -192,12 +193,11 @@ CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
 			newSource->Play();
 
 			// Create the behavior holding it
-			CSoundBehavior* newSndef = new CSoundBehavior();
-			newSndef->mySource = newSource;
+			engine::Sound* newSndef = new engine::Sound();
+			newSndef->mySource			= newSource;
 			newSndef->ai_alert_amount	= scriptResult->second.ai_alert_amount;
 			newSndef->channel			= scriptResult->second.channel;
 			newSndef->deleteWhenDone	= true;
-			newSndef->filename			= soundfilename;
 
 			return newSndef;
 		}
@@ -207,9 +207,28 @@ CSoundBehavior* CAudioInterface::playSound ( const char* soundName )
 }
 
 
-void CAudioInterface::BuildIndexMap ( void )
+//	OpenSoundscriptListing( set ) : Opens a soundscript listing.
+// Searches directories for a proper soundscript listing.
+// Result should be closed with fclose().
+FILE* engine::AudioInterface::OpenSoundscriptListing( audio::eSoundScriptSet set )
 {
-	for ( char i = 0; i < 4; ++i )
+	FILE* fp = NULL;
+
+	// Open proper file
+	switch ( set )
+	{
+		case audio::kSetStandard:		fp = core::Resources::Open( "sounds/_def_standard.txt", "rb" ); break;
+		case audio::kSetEnvironment:	fp = core::Resources::Open( "sounds/_def_environment.txt", "rb" ); break;
+		case audio::kSetMusic:			fp = core::Resources::Open( "sounds/_def_music.txt", "rb" ); break;
+		case audio::kSetVoice:			fp = core::Resources::Open( "sounds/_def_voice.txt", "rb" ); break;
+		default:						fp = core::Resources::Open( "sounds/level_list.txt", "rb" ); break;
+	}
+	return fp;
+}
+
+void engine::AudioInterface::BuildIndexMap ( void )
+{
+	for ( uint8_t i = 0; i < audio::kSoundScriptSet_MAX; ++i )
 	{
 		// Load the default sound entry files
 		FILE* fp = NULL;
@@ -221,14 +240,7 @@ void CAudioInterface::BuildIndexMap ( void )
 		int buffer_size;
 
 		// Open proper file
-		switch ( i )
-		{
-			case 0:		fp = core::Resources::Open( "sounds/_def_standard.txt", "rb" ); break;
-			case 1:		fp = core::Resources::Open( "sounds/_def_environment.txt", "rb" ); break;
-			case 2:		fp = core::Resources::Open( "sounds/_def_music.txt", "rb" ); break;
-			case 3:		fp = core::Resources::Open( "sounds/_def_voice.txt", "rb" ); break;
-			default:	fp = core::Resources::Open( "sounds/level_list.txt", "rb" ); break;
-		}
+		fp = OpenSoundscriptListing( (audio::eSoundScriptSet)i );
 
 		if ( fp )
 		{
@@ -275,10 +287,10 @@ void CAudioInterface::BuildIndexMap ( void )
 						}
 						else {
 							// Save position and set in map
-							soundIndex_t index;
+							audio::arSoundIndex index;
 							index.pos = ftell( fp ) - buffer_size + buffer_pos;
-							index.set = i;
-							scriptFileIndex[arstring<128>(s_cur_read.c_str())] = index;
+							index.set = (audio::eSoundScriptSet)i;
+							scriptFileIndex[arstring128(s_cur_read.c_str())] = index;
 
 							// Go to next read mode
 							read_mode = 2;
@@ -320,55 +332,52 @@ void CAudioInterface::BuildIndexMap ( void )
 		}
 	}
 }
-void CAudioInterface::LoadEntry ( const char* soundName, const soundIndex_t& indexInfo )
+void engine::AudioInterface::LoadEntry ( const char* soundName, const audio::arSoundIndex& indexInfo )
 {
-	cout << "Could not find entry saved, caching." << endl;
+	debug::Console->PrintMessage("Caching sound entry \"%s\"\n", soundName);
 
-	soundScript_t newScript;
-	FILE* fp;
+	FILE* fp = NULL;
+	audio::arSoundScript newScript = {0};
 
 	// Set default options
-	newScript.pitch = 1.0f;
-	newScript.count = 0;
-	newScript.loop = 0;
-	newScript.gain = 1.0f;
-	newScript.attenuation = 0.8F;
-	memset( newScript.sound_usage, 0, 4 );
-	memset( newScript.sounds, 0, 256*4 );
+	newScript.pitch			= 1.0F;
+	newScript.sound_count	= 0;
+	newScript.loop			= 0;
+	newScript.gain			= 1.0F;
+	newScript.attenuation	= 0.8F;
+
 	switch ( indexInfo.set )
 	{
-	case 0:
+	case audio::kSetStandard:
 	default:
-		newScript.channel			= CHAN_DEFAULT;
-		newScript.ai_alert_amount	= AI_SMALL;
+		newScript.channel			= audio::kChannelDefault;
+		newScript.ai_alert_amount	= audio::kAIAlertSmall;
 		newScript.attenuation		= 0.8f;
 		break;
-	case 1:
-		newScript.channel			= CHAN_BACKGROUND;
-		newScript.ai_alert_amount	= AI_IGNORE;
+	case audio::kSetEnvironment:
+		newScript.channel			= audio::kChannelBackground;
+		newScript.ai_alert_amount	= audio::kAIAlertIgnore;
 		newScript.attenuation		= 1.0f;
 		break;
-	case 2:
-		newScript.channel			= CHAN_MUSIC;
-		newScript.ai_alert_amount	= AI_IGNORE;
+	case audio::kSetMusic:
+		newScript.channel			= audio::kChannelMusic;
+		newScript.ai_alert_amount	= audio::kAIAlertIgnore;
 		newScript.attenuation		= 0.0f;
 		break;
-	case 3:
-		newScript.channel			= CHAN_SPEECH;
-		newScript.ai_alert_amount	= AI_IGNORE;
+	case audio::kSetVoice:
+		newScript.channel			= audio::kChannelSpeech;
+		newScript.ai_alert_amount	= audio::kAIAlertIgnore;
 		newScript.attenuation		= 0.0f;
 		break;
 	}
 	
 	// Open proper file
-	switch ( indexInfo.set )
+	fp = OpenSoundscriptListing( indexInfo.set );
+	if (!fp)
 	{
-		case 0:		fp = core::Resources::Open( "sounds/_def_standard.txt", "rb" ); break;
-		case 1:		fp = core::Resources::Open( "sounds/_def_environment.txt", "rb" ); break;
-		case 2:		fp = core::Resources::Open( "sounds/_def_music.txt", "rb" ); break;
-		case 3:		fp = core::Resources::Open( "sounds/_def_voice.txt", "rb" ); break;
-		default:	fp = core::Resources::Open( "sounds/level_list.txt", "rb" ); break;
+		debug::Console->PrintError("Could not open soundscript listing for set %d!\n", indexInfo.set);
 	}
+
 	// Go to pos in file
 	fseek( fp, indexInfo.pos + 1, SEEK_SET );
 
@@ -399,7 +408,7 @@ void CAudioInterface::LoadEntry ( const char* soundName, const soundIndex_t& ind
 					if ( s_cur_read.length() > 0 ) {
 						// If valid name, found key, read value
 						read_mode = 1;
-						cout << "key: -" << s_cur_read << "- ";
+						printf("key: `%s` ", s_cur_read.c_str());
 						s_cur_key = s_cur_read;
 						s_cur_read = "";
 					}
@@ -428,7 +437,7 @@ void CAudioInterface::LoadEntry ( const char* soundName, const soundIndex_t& ind
 						if ( s_cur_read.length() > 0 ) {
 							// If valid name, found value, go back to reading key
 							read_mode = 0;
-							cout << "value: -" << s_cur_read << "- " << endl;
+							printf("value: `%s` \n", s_cur_read.c_str());
 							// Edit soundscript
 							EditSoundScript( newScript, s_cur_key, s_cur_read );
 							// Reset read
@@ -475,46 +484,46 @@ void CAudioInterface::LoadEntry ( const char* soundName, const soundIndex_t& ind
 	scriptList[arstring<128>(soundName)] = newScript;
 }
 
-void CAudioInterface::EditSoundScript ( soundScript_t & script, const string& key, const string& value )
+void engine::AudioInterface::EditSoundScript ( audio::arSoundScript& script, const string& key, const string& value )
 {
 	if ( key == "channel" ) {
 		if ( value == "voice" || value == "speech" ) {
-			script.channel = CHAN_SPEECH;
-			script.ai_alert_amount = AI_SPEECH;
+			script.channel = audio::kChannelSpeech;
+			script.ai_alert_amount = audio::kAIAlertSpeech;
 		}
 		else if ( value == "physics" ) {
-			script.channel = CHAN_PHYSICS;
-			script.ai_alert_amount = AI_SMALL;
+			script.channel = audio::kChannelPhysics;
+			script.ai_alert_amount = audio::kAIAlertSmall;
 		}
 		else if ( value == "heavy" ) {
-			script.channel = CHAN_HEAVY;
-			script.ai_alert_amount = AI_NOTICE;
+			script.channel = audio::kChannelHeavy;
+			script.ai_alert_amount = audio::kAIAlertNotice;
 		}
 		else if ( value == "default" ) {
-			script.channel = CHAN_DEFAULT;
-			script.ai_alert_amount = AI_SMALL;
+			script.channel = audio::kChannelDefault;
+			script.ai_alert_amount = audio::kAIAlertSmall;
 		}
 		else if ( value == "background" ) {
-			script.channel = CHAN_BACKGROUND;
-			script.ai_alert_amount = AI_IGNORE;
+			script.channel = audio::kChannelBackground;
+			script.ai_alert_amount = audio::kAIAlertIgnore;
 		}
 		else if ( value == "music" ) {
-			script.channel = CHAN_MUSIC;
-			script.ai_alert_amount = AI_IGNORE;
+			script.channel = audio::kChannelMusic;
+			script.ai_alert_amount = audio::kAIAlertIgnore;
 		}
 	}
 	else if ( key == "ai" ) {
 		if ( value == "3" ) {
-			script.ai_alert_amount = AI_NOTICE;
+			script.ai_alert_amount = audio::kAIAlertNotice;
 		}
 		else if ( value == "2" ) {
-			script.ai_alert_amount = AI_SPEECH;
+			script.ai_alert_amount = audio::kAIAlertSpeech;
 		}
 		else if ( value == "1" ) {
-			script.ai_alert_amount = AI_SMALL;
+			script.ai_alert_amount = audio::kAIAlertSmall;
 		}
 		else if ( value == "0" ) {
-			script.ai_alert_amount = AI_IGNORE;
+			script.ai_alert_amount = audio::kAIAlertIgnore;
 		}
 	}
 	else if ( key == "volume" ) {
@@ -524,9 +533,9 @@ void CAudioInterface::EditSoundScript ( soundScript_t & script, const string& ke
 	}
 	else if ( key == "wave" ) {
 		// Push back onto wave list
-		if ( script.count < 4 ) {
-			strcpy( script.sounds[script.count], value.c_str() );
-			script.count += 1;
+		if ( script.sound_count < 4 ) {
+			strcpy( script.sounds[script.sound_count], value.c_str() );
+			script.sound_count += 1;
 		}
 	}
 	else if ( key == "loop" ) {

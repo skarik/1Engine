@@ -1,10 +1,8 @@
-
 #include "CFXMaterialHit.h"
 
+#include "engine/audio/AudioInterface.h"
 #include "engine-common/entities/CParticleSystem.h"
 #include "renderer/logic/particle/CParticleEmitter.h"
-
-#include "engine/audio/CAudioInterface.h"
 
 CFXMaterialHit::CFXMaterialHit ( const physMaterial& hitMat, const RaycastHit& hitResult, const EHitType hitType )
 	: CGameBehavior()
@@ -88,7 +86,7 @@ CFXMaterialHit::CFXMaterialHit ( const physMaterial& hitMat, const RaycastHit& h
 	// Play sound
 	if ( soundSystemName.length() > 0 )
 	{
-		CSoundBehavior* snd_hit_effect = Audio.playSound( soundSystemName.c_str() );
+		engine::Sound* snd_hit_effect = engine::Audio.PlaySound( soundSystemName.c_str() );
 		if ( snd_hit_effect )
 		{
 			snd_hit_effect->position = hitResult.hitPos;

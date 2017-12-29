@@ -1,9 +1,7 @@
-
-// Includes
 #include "CPlayer.h"
 #include "core-ext/input/CInputControl.h"
 #include "renderer/camera/CCamera.h"
-#include "engine/audio/CAudioInterface.h"
+#include "engine/audio/AudioInterface.h"
 
 // ==Constructor and Destructor==
 CPlayer::CPlayer ( void )
@@ -27,7 +25,7 @@ CPlayer::CPlayer ( void )
 	fTurnSensitivity	= 1;
 
 	// ===Audio===
-	pListener = Audio.CreateListener();
+	pListener = engine::Audio.CreateListener();
 }
 CPlayer::~CPlayer ( void )
 {
