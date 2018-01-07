@@ -23,11 +23,11 @@ public:
 
 	//		PreRender()
 	// Push the uniform properties
-	bool					PreRender ( void ) override;
+	RENDER_API bool			PreRender ( void ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style
-	bool					Render ( const char pass ) override;
+	RENDER_API bool			Render ( const char pass ) override;
 
 protected:
 

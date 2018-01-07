@@ -1,5 +1,5 @@
-#ifndef _M04_EDITOR_MAP_EDITOR_
-#define _M04_EDITOR_MAP_EDITOR_
+#ifndef M04_EDITOR_MAP_EDITOR_
+#define M04_EDITOR_MAP_EDITOR_
 
 #include "engine/behavior/CGameBehavior.h"
 #include "engine-common/dusk/CDuskGUIHandle.h"
@@ -254,4 +254,4 @@ namespace M04
 	};
 }
 
-#endif//_M04_EDITOR_MAP_EDITOR_
+#endif//M04_EDITOR_MAP_EDITOR_

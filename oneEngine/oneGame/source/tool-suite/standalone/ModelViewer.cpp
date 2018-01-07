@@ -32,12 +32,12 @@ toolsuite::ModelViewer::ModelViewer ( void )
 	camera->transform.rotation = Rotator();
 
 	// Create temp cube
-	{
+	/*{
 		cube = new CPrimitiveCube(1.0F, 1.0F, 1.0F);
 		RrMaterial* mat = RrMaterial::Default->copy();
 		cube->SetMaterial(mat);
 		mat->removeReference();
-	}
+	}*/
 
 	for (std::string cmd : CGameSettings::Active()->m_cmd)
 	{
@@ -102,7 +102,7 @@ toolsuite::ModelViewer::~ModelViewer ( void )
 {
 	delete_safe(camera);
 	delete_safe(model);
-	delete_safe(cube);
+	//delete_safe(cube);
 	delete_safe_decrement(dusk);
 }
 
@@ -268,7 +268,7 @@ void toolsuite::ModelViewer::UpdateControlsKeyboard ( void )
 void toolsuite::ModelViewer::ResetCameraOrientation ( void )
 {
 	cameraCenter = Vector3d(0,0,0);
-	cameraPanning = Vector3d(-3,0,0);
+	cameraPanning = Vector3d(-4,0,0);
 	cameraRotation = Rotator();
 	cameraRotationVelocity = Vector3d();
 

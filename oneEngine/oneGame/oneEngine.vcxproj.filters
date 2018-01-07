@@ -58,6 +58,9 @@
     <Filter Include="SOURCE\Engine\Scripting">
       <UniqueIdentifier>{1070774f-9d62-48fa-bcee-fd14f7d3342e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Engine\Cutscene">
+      <UniqueIdentifier>{1457d136-a367-47de-87cd-46268d6cfd4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\engine\behavior\CGameBehavior.h">
@@ -149,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="source\engine\audio\Sound.h">
       <Filter>SOURCE\Engine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine\cutscene\Node.h">
+      <Filter>SOURCE\Engine\Cutscene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

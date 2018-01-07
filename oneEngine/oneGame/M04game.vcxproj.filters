@@ -168,6 +168,12 @@
     <ClInclude Include="source\ld40\entities\PlayerMage.h">
       <Filter>SOURCE\LD40\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\CutsceneEditor.h">
+      <Filter>SOURCE\M04-Editor\Standalone</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\scenes\sceneEditorCutscene.h">
+      <Filter>SOURCE\M04-Editor\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -265,6 +271,12 @@
     </ClCompile>
     <ClCompile Include="source\ld40\entities\PlayerMage.cpp">
       <Filter>SOURCE\LD40\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\CutsceneEditor.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\scenes\sceneEditorCutscene.cpp">
+      <Filter>SOURCE\M04-Editor\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

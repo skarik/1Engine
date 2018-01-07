@@ -15,6 +15,7 @@
 #include "m04/scenes/sceneGameLuvPpl.h"
 #include "m04-editor/scenes/sceneEditorMain.h"
 #include "m04-editor/scenes/sceneDeveloperMenu.h"
+#include "m04-editor/scenes/sceneEditorCutscene.h"
 
 namespace M04
 {
@@ -26,7 +27,8 @@ static int listen ( std::string const& )
 {
 #ifdef _ENGINE_DEBUG
 	//engine::Console->RunCommand( "scene game_luvppl" );
-	engine::Console->RunCommand( "scene m04devmenu" );
+	//engine::Console->RunCommand( "scene m04devmenu" );
+	engine::Console->RunCommand( "scene editorcts" );
 #else
 	engine::Console->RunCommand( "scene game_luvppl" );
 #endif
@@ -61,6 +63,7 @@ int GameInitialize ( void )
 	// Scene registration
 	EngineCommon::RegisterScene<sceneTilesetTest>( "test0" );
 	EngineCommon::RegisterScene<sceneEditorMain>( "editorm04" );
+	EngineCommon::RegisterScene<sceneEditorCutscene>( "editorcts" );
 	EngineCommon::RegisterScene<sceneDeveloperMenu>( "menu" );
 	EngineCommon::RegisterScene<sceneDeveloperMenu>( "m04devmenu" );
 	EngineCommon::RegisterScene<sceneGameLuvPpl>( "game_luvppl" );
