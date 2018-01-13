@@ -129,9 +129,6 @@
     <ClCompile Include="source\core-ext\system\shell\Status.cpp">
       <Filter>SOURCE\Core-ext\System\Shell</Filter>
     </ClCompile>
-    <ClCompile Include="source\core-ext\system\io\mccosf.cpp">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
-    </ClCompile>
     <ClCompile Include="source\core-ext\system\io\mccvxg.cpp">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClCompile>
@@ -158,6 +155,9 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\utils\MeshAttributes.cpp">
       <Filter>SOURCE\Core-ext\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\osf.cpp">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,9 +236,6 @@
     <ClInclude Include="source\core-ext\system\shell\Status.h">
       <Filter>SOURCE\Core-ext\System\Shell</Filter>
     </ClInclude>
-    <ClInclude Include="source\core-ext\system\io\mccosf.h">
-      <Filter>SOURCE\Core-ext\System\IO</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\system\io\mccvxg.h">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClInclude>
@@ -259,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\utils\MeshAttributes.h">
       <Filter>SOURCE\Core-ext\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\osf.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

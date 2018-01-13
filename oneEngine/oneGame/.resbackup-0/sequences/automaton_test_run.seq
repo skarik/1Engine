@@ -4,7 +4,7 @@
 	blend 0.25s
 }
 
-3:lua
+3:lua $lua
 {
 	--math.random() w/o arguments renturns a number between 0 and 1
 	if ( math.random() < 0.5 ) then
@@ -18,7 +18,7 @@
 	run2_02
 	blend 0.25s
 }
-7:lua
+7:lua $lua
 {
 	--math.random() w/o arguments renturns a number between 0 and 1
 	if ( math.random() < 0.5 ) then

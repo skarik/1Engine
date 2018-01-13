@@ -1,6 +1,6 @@
 
 #include "ObjectEditorListing.h"
-#include "core-ext/system/io/mccosf.h"
+#include "core-ext/system/io/osf.h"
 #include "core-ext/system/io/Resources.h"
 
 using namespace M04;
@@ -24,14 +24,14 @@ void ObjectEditorListing::LoadListing ( const char* n_filename )
 	{
 		throw core::MissingFileException();
 	}
-	COSF_Loader osf( file );
+	io::OSFReader osf( file );
 
 	// With the loader active, loop through every entry.
-	mccOSF_entry_info_t entry;
+	io::OSFEntryInfo entry;
 	do
 	{
 		osf.GetNext( entry );
-		if ( entry.type == MCCOSF_ENTRY_NORMAL )
+		if ( entry.type == io::kOSFEntryTypeNormal )
 		{
 			// Add an abridge entity
 			if ( streq(entry.name,"entity") )
@@ -62,7 +62,7 @@ void ObjectEditorListing::LoadListing ( const char* n_filename )
 			}
 		}
 	}
-	while ( entry.type != MCCOSF_ENTRY_EOF );
+	while ( entry.type != io::kOSFEntryTypeEoF );
 
 	// Close the file
 	fclose(file);

@@ -1,10 +1,9 @@
 #ifndef _C_DIALOGUE_LOADER_H_
 #define _C_DIALOGUE_LOADER_H_
 
-#include "core-ext/system/io/mccosf.h"
+#include "core-ext/system/io/osf.h"
 #include <string>
 #include <vector>
-//#include "after/entities/character/CCharacter.h"
 
 using std::string;
 class CActor;
@@ -86,8 +85,8 @@ public:
 	short sDialogueState;
 private:
 	FILE* pFile;
-	COSF_Loader* lCurrentDialogue;
-	mccOSF_entry_info_t sCurrentEntry;
+	io::OSFReader* lCurrentDialogue;
+	io::OSFEntryInfo sCurrentEntry;
 	//File name that we're currently working with
 	string mDialogue;
 	//Where the dialogue is at in the file

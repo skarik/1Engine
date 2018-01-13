@@ -48,7 +48,7 @@ goto segmentSTANDUP
 #segmentIGNORE
 lines
 {
-	1 
+	1
 }
 
 #segmentCOMMAND_HELP
@@ -61,13 +61,13 @@ lines
 }
 
 #segmentHELPUP
-lua
+lua $lua
 {
 	local actor1 = Game.GetCompanion();
 	actor1.SyncAnimationPartner( Game.GetPlayer() );
 	actor1.PlayAnimation( "HelpPlayerUp" );
 }
-lua
+lua $lua
 {
 	local actor1 = Game.GetCompanion();
 	if ( action1.GetAnimationPlaying( "HelpPlayerUp" ) ) then
@@ -77,7 +77,7 @@ lua
 goto segmentHELPED_UP
 
 #segmentSTANDUP
-lua
+lua $lua
 {
 	local player = Game.GetPlayer();
 	if ( player.GetMovetype() != NPC.MoveTypes.OnGround ) then

@@ -9,7 +9,7 @@
 
 #include "core/system/io/CBinaryFile.h"
 #include "core-ext/system/io/Resources.h"
-#include "core-ext/system/io/mccosf.h"
+#include "core-ext/system/io/osf.h"
 #include "core-ext/transform/Transform.h"
 
 #include "renderer/debug/CDebugDrawer.h"
@@ -94,13 +94,13 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 	// Open the resources
 	FILE* p_tilsetfile = core::Resources::Open( n_tileset_file, "rb" );
 	CBinaryFile tileset_file ( p_tilsetfile ); // Will close the file when exits scope
-	COSF_Loader loader ( p_tilsetfile ); // Create the OSF loader and begin on the merry excursion through the tileset file
+	io::OSFReader loader ( p_tilsetfile ); // Create the OSF loader and begin on the merry excursion through the tileset file
 
-	mccOSF_entry_info_t entry;
+	io::OSFEntryInfo entry;
 	do
 	{
 		loader.GetNext( entry );
-		if ( entry.type == MCCOSF_ENTRY_OBJECT )
+		if ( entry.type == io::kOSFEntryTypeObject )
 		{
 			arstring<64> base_key ( entry.name );
 			if ( base_key.compare("sprite") )
@@ -111,7 +111,7 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 				{
 					loader.GetNext( entry );
 					// Grab all the entry
-					if ( entry.type == MCCOSF_ENTRY_NORMAL )
+					if ( entry.type == io::kOSFEntryTypeNormal )
 					{
 						arstring<64> key ( entry.name );
 						if ( key.compare("file") )
@@ -120,7 +120,7 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 						}
 					}
 				}
-				while ( entry.type != MCCOSF_ENTRY_END );
+				while ( entry.type != io::kOSFEntryTypeEnd );
 			}
 			else if ( base_key.compare("atlas") )
 			{
@@ -130,7 +130,7 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 				{
 					loader.GetNext( entry );
 					// Grab all the entry
-					if ( entry.type == MCCOSF_ENTRY_NORMAL )
+					if ( entry.type == io::kOSFEntryTypeNormal )
 					{
 						arstring<64> key ( entry.name );
 						// Load in the full size of the sprite
@@ -150,7 +150,7 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 						}
 					}
 				}
-				while ( entry.type != MCCOSF_ENTRY_END );
+				while ( entry.type != io::kOSFEntryTypeEnd );
 			}
 			else if ( base_key.compare("tile") )
 			{
@@ -169,7 +169,7 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 				{
 					loader.GetNext( entry );
 					// Grab all the regular entries
-					if ( entry.type == MCCOSF_ENTRY_NORMAL )
+					if ( entry.type == io::kOSFEntryTypeNormal )
 					{
 						arstring<64> key ( entry.name );
 						// Set new tile type
@@ -207,7 +207,7 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 						// End normal entry check
 					}
 					// Grab all the compound entries
-					else if ( entry.type == MCCOSF_ENTRY_OBJECT )
+					else if ( entry.type == io::kOSFEntryTypeObject )
 					{
 						arstring<64> key ( entry.name );
 						// Autotile entry? Need to set autotile information
@@ -226,7 +226,7 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 							{
 								loader.GetNext( entry );
 								// Grab all the entries available
-								if ( entry.type == MCCOSF_ENTRY_NORMAL )
+								if ( entry.type == io::kOSFEntryTypeNormal )
 								{
 									key = entry.name;
 									uint entry_lookup = (uint)atoi(key); // Convert the name into the index in the table
@@ -236,7 +236,7 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 									}
 								}
 							}
-							while ( entry.type != MCCOSF_ENTRY_END );
+							while ( entry.type != io::kOSFEntryTypeEnd );
 
 							// End by setting all unused autotile information to autotile4
 							for ( int i = 0; i < 16; ++i ) {
@@ -259,7 +259,7 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 							{
 								loader.GetNext( entry );
 								// Grab all the entries available
-								if ( entry.type == MCCOSF_ENTRY_NORMAL )
+								if ( entry.type == io::kOSFEntryTypeNormal )
 								{
 									key = entry.name;
 									uint entry_count = (uint)atoi(key); // Convert the name into the duplicates count
@@ -272,7 +272,7 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 									}
 								}
 							}
-							while ( entry.type != MCCOSF_ENTRY_END );
+							while ( entry.type != io::kOSFEntryTypeEnd );
 						}
 						// Prop entry? Need to load in the pieces for the prop
 						else if ( key.compare("pieces") )
@@ -289,7 +289,7 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 							{
 								loader.GetNext( entry );
 								// Grab all the entries available
-								if ( entry.type == MCCOSF_ENTRY_NORMAL )
+								if ( entry.type == io::kOSFEntryTypeNormal )
 								{
 									key = entry.name;
 									uint entry_lookup = (uint)atoi(key); // Convert the name into the index in the table
@@ -299,18 +299,18 @@ void TileMap::SetTilesetFile ( const char* n_tileset_file )
 									}
 								}
 							}
-							while ( entry.type != MCCOSF_ENTRY_END );
+							while ( entry.type != io::kOSFEntryTypeEnd );
 						}
 						// End compound entry check
 					}
 					// End loader
 				}
-				while ( entry.type != MCCOSF_ENTRY_END );
+				while ( entry.type != io::kOSFEntryTypeEnd );
 				m_tileset->tiles.push_back( tiletype );
 			}
 		}
 	}
-	while ( entry.type != MCCOSF_ENTRY_EOF );
+	while ( entry.type != io::kOSFEntryTypeEoF );
 }
 
 //===============================================================================================//

@@ -22,7 +22,7 @@ struct DialogueNode
 	int length;
 	int character;
 	int Parent; //Index of the parent node for backtracking
-	std::vector<int> Next; //Contains the indexes of the children nodes.
+	std::vector<uint> Next; //Contains the indexes of the children nodes.
 	std::vector<std::string> Lines;
 	std::string motion;
 	std::string sound;
@@ -52,7 +52,7 @@ public:
 	//Go to the next line of dialogue
 	void AdvanceDialogue (void);
 	//Report the player's choice. Should be 0-indexed. -1 or (void) to use default choice
-	int ReportChoice (int choice = -1);
+	int ReportChoice (uint choice = (uint)-1);
 	//Go back one line of dialogue
 	int Backtrack (void);
 

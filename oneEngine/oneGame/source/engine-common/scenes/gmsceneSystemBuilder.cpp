@@ -14,7 +14,7 @@
 #include "core/utils/StringUtils.h"
 
 // Include OSF IO
-#include "core-ext/system/io/mccosf.h"
+#include "core-ext/system/io/osf.h"
 #include "core-ext/system/io/Resources.h"
 
 void gmsceneSystemBuilder::LoadScene ( void )
@@ -54,12 +54,12 @@ int EngineCommon::BuildToTarget ( const std::string& n_cmd )
 	// Using the OSF system, load up /system/buildtargets.txt
 	// Need to locate the matching object
 	FILE* fp_loader = fopen( core::Resources::PathTo("system/buildtargets.txt").c_str(), "rb" );
-	COSF_Loader osf_loader ( fp_loader );
+	io::OSFReader osf_loader ( fp_loader );
 
 	// Read in entries until we hit the end or until we hit a match
-	mccOSF_entry_info_t entry;
+	io::OSFEntryInfo entry;
 	osf_loader.GetNext( entry );
-	while ( entry.type != mccOSF_entrytype_enum::MCCOSF_ENTRY_EOF )
+	while ( entry.type != io::kOSFEntryTypeEoF )
 	{
 		if ( strcmp( entry.name, n_cmd.c_str() ) == 0 )
 		{
@@ -72,7 +72,7 @@ int EngineCommon::BuildToTarget ( const std::string& n_cmd )
 			// Found it, load this one
 			osf_loader.GoInto( entry );
 			osf_loader.GetNext( entry );
-			while ( entry.type != mccOSF_entrytype_enum::MCCOSF_ENTRY_END && entry.type != mccOSF_entrytype_enum::MCCOSF_ENTRY_EOF )
+			while ( entry.type != io::kOSFEntryTypeEnd && entry.type != io::kOSFEntryTypeEoF )
 			{
 				// Read in the project types
 				arstring<256> key ( entry.name );
@@ -107,6 +107,7 @@ int EngineCommon::BuildToTarget ( const std::string& n_cmd )
 
 			// Close the file we opened to write
 			fclose( fp_loader );
+			fp_loader = NULL;
 
 			// Begin the actual builder
 			BuildWithInformation( m_builddir.c_str(), m_buildmode, m_rebuildtargets );
@@ -116,6 +117,11 @@ int EngineCommon::BuildToTarget ( const std::string& n_cmd )
 		}
 		// Read next
 		osf_loader.GetNext( entry );
+	}
+	// Close file
+	if (fp_loader != NULL)
+	{
+		fclose(fp_loader);
 	}
 	// Here? We could not find it. Try again later.
 	debug::Console->PrintWarning( "Could not find build target \"" + n_cmd + "\"\n" );

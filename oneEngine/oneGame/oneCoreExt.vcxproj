@@ -49,7 +49,7 @@
     <ClCompile Include="source\core-ext\profiler\CTimeProfiler.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\ModelLoader.cpp" />
     <ClCompile Include="source\core-ext\system\io\FileUtils.cpp" />
-    <ClCompile Include="source\core-ext\system\io\mccosf.cpp" />
+    <ClCompile Include="source\core-ext\system\io\osf.cpp" />
     <ClCompile Include="source\core-ext\system\io\mccvxg.cpp" />
     <ClCompile Include="source\core-ext\system\io\Resources.cpp" />
     <ClCompile Include="source\core-ext\system\shell\DragAndDrop.cpp" />
@@ -85,7 +85,7 @@
     <ClInclude Include="source\core-ext\system\io\assets\ResourceHandler.h" />
     <ClInclude Include="source\core-ext\system\io\assets\ModelLoader.h" />
     <ClInclude Include="source\core-ext\system\io\FileUtils.h" />
-    <ClInclude Include="source\core-ext\system\io\mccosf.h" />
+    <ClInclude Include="source\core-ext\system\io\osf.h" />
     <ClInclude Include="source\core-ext\system\io\mccvxg.h" />
     <ClInclude Include="source\core-ext\system\io\Resources.h" />
     <ClInclude Include="source\core-ext\system\shell\DragAndDrop.h" />

@@ -137,7 +137,7 @@ void CDialogueTree::CreateTree (char * file)
 			//ignore length here
 			currentChoice->Choices = pLoader->GetChoices();
 			
-			for (int i = 0; i < currentChoice->Choices.size(); i++)
+			for (size_t i = 0; i < currentChoice->Choices.size(); i++)
 			{
 				currentChoice->Lines.push_back(currentChoice->Choices[i].choice);
 				mBranches.push(currentChoice->Choices[i]);
@@ -162,7 +162,7 @@ void CDialogueTree::CreateTree (char * file)
 //This creates the links between the choices and the branches
 void CDialogueTree::CreateLinks (void)
 {
-	int index = 0;
+	size_t index = 0;
 
 	for (; index < mTree.size(); index++)
 	{
@@ -171,10 +171,10 @@ void CDialogueTree::CreateLinks (void)
 			ChoiceNode *current = (ChoiceNode *)(mTree[index]);
 
 			//Make a link for each choice
-			for (int i = 0; i < current->Choices.size(); i++)
+			for (size_t i = 0; i < current->Choices.size(); i++)
 			{
 				//Search the rest of the dialogue tree for the branch
-				for (int j = index + 1; j < mTree.size(); j++)
+				for (size_t j = index + 1; j < mTree.size(); j++)
 				{
 					if (current->Choices[i].address.empty()) //Go to next node if the address for this one is empty
 					{
@@ -201,7 +201,7 @@ void CDialogueTree::CreateNode (void)
 
 void CDialogueTree::DestroyTree (void)
 {
-	for (int i = 0; i < mTree.size(); i++)
+	for (size_t i = 0; i < mTree.size(); i++)
 	{
 		if (mTree[i])
 			free(mTree[i]);
@@ -243,11 +243,11 @@ void CDialogueTree::AdvanceDialogue (void)
 }
 
 //Choice reported should be 0-indexed.
-int CDialogueTree::ReportChoice (int choice)
+int CDialogueTree::ReportChoice (uint choice)
 {
 	if ((choice < mTree[mCurrent]->Next.size() && choice >= 0) || choice == -1)
 	{
-		if (choice == -1)
+		if (choice == (uint)-1)
 			choice = ((ChoiceNode *)mTree[mCurrent])->defaultChoice;
 		mCurrent = mTree[mCurrent]->Next[choice];
 	}
@@ -332,7 +332,7 @@ int CDialogueTree::GetLength (void)
 
 void CDialogueTree::PrintTree (void)
 {
-	for (int i = 0; i < mTree.size(); i++)
+	for (size_t i = 0; i < mTree.size(); i++)
 	{
 		if (mTree[i]->type == DIALOGUE_LINE)
 		{
@@ -351,10 +351,10 @@ void CDialogueTree::PrintTree (void)
 			std::cout << "ID: " << current->ID << " " << "Character: " << current->character << '\n';
 			std::cout << "Address: " << current->address << " Flags: " << current->flags << '\n';
 			std::cout << "Lines:\n";
-			for (int j = 0; j < current->Lines.size(); j++)
+			for (size_t j = 0; j < current->Lines.size(); j++)
 				std::cout << current->Lines[j] << '\n';
 			std::cout << "Parent: " << current->Parent << "\nNext:\n";
-			for (int k = 0; k < current->Next.size(); k++)
+			for (size_t k = 0; k < current->Next.size(); k++)
 				std::cout << current->Next[k] << '\n';
 			std::cout << "Sound: " << current->sound << '\n';
 			std::cout << "Motion: " << current->motion << '\n';

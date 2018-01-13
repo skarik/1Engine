@@ -2,7 +2,7 @@
 #include "core/containers/arstring.h"
 #include "core/utils/StringUtils.h"
 #include "core/exceptions/exceptions.h"
-#include "core-ext/system/io/mccosf.h"
+#include "core-ext/system/io/osf.h"
 #include "core-ext/system/io/Resources.h"
 
 #include "core/system/io/FileUtils.h"
@@ -310,15 +310,15 @@ void CGameSettings::LoadSettings ( void )
 	FILE* fp_file = core::Resources::Open("system/properties.txt","rb");
 	if ( fp_file != NULL )
 	{
-		COSF_Loader loader ( fp_file );
-		mccOSF_entry_info_t entry;
+		io::OSFReader loader ( fp_file );
+		io::OSFEntryInfo entry;
 		
 		// Loop through all the entries
 		do
 		{
 			// Get next entry
 			loader.GetNext( entry );
-			if ( entry.type == MCCOSF_ENTRY_NORMAL || entry.type == MCCOSF_ENTRY_END )
+			if ( entry.type == io::kOSFEntryTypeNormal || entry.type == io::kOSFEntryTypeEnd )
 			{
 				// Check the key
 				if ( strcmp( entry.name, "developerstring" ) == 0 )
@@ -335,7 +335,7 @@ void CGameSettings::LoadSettings ( void )
 				}
 			}
 		}
-		while ( entry.type != MCCOSF_ENTRY_EOF );
+		while ( entry.type != io::kOSFEntryTypeEoF );
 
 		// Close the file
 		fclose( fp_file );

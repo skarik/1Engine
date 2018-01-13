@@ -238,8 +238,8 @@ void CBitmapFont::LoadFontAsTexture ( void )
 		pCharPositions[i] = bitmap_pen;
 
 		// Copy bitmap over
-		for ( int y = 0; y < face->glyph->bitmap.rows; ++y ) {
-			for ( int x = 0; x < face->glyph->bitmap.width; ++x ) {
+		for ( unsigned int y = 0; y < face->glyph->bitmap.rows; ++y ) {
+			for ( unsigned int x = 0; x < face->glyph->bitmap.width; ++x ) {
 				unsigned int bmapIndex = (unsigned int)((bitmap_pen.x + x) + (bitmap_pen.y + y)*max_width);
 				grayBitmap[bmapIndex] = face->glyph->bitmap.buffer[x + y*face->glyph->bitmap.width];
 			}

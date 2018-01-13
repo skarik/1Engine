@@ -36,11 +36,11 @@ void CDialogueLoader::Construct ( const char* filename, std::vector<CActor*> cha
 {
 	//pFile = fopen (filename, "rb");
 	pFile = core::Resources::Open (filename, "rb");
-	lCurrentDialogue = new COSF_Loader (pFile);
+	lCurrentDialogue = new io::OSFReader (pFile);
 
 	sIndex = "0";
 	sCurrentEntry.level = 0;
-	sCurrentEntry.type = mccOSF_entrytype_enum::MCCOSF_ENTRY_NORMAL;
+	sCurrentEntry.type = io::kOSFEntryTypeNormal;
 	sCurrentEntry.nextchar = 0;
 	sCurrentLine = "";
 	sDialogueState = -1;
@@ -127,7 +127,7 @@ void CDialogueLoader::MakeLines (void)
 	bool firstLine = true;
 
 	// Read in the entire entry
-	while (sCurrentEntry.type != mccOSF_entrytype_enum::MCCOSF_ENTRY_END)
+	while (sCurrentEntry.type != io::kOSFEntryTypeEnd)
 	{
 		// Audio input
 		if (strstr (sCurrentEntry.name, "audio") != NULL)
@@ -207,7 +207,7 @@ void CDialogueLoader::MakeChoices (void)
 	do 
 	{
 		// Found a regular entry
-		if (sCurrentEntry.type == mccOSF_entrytype_enum::MCCOSF_ENTRY_NORMAL)
+		if (sCurrentEntry.type == io::kOSFEntryTypeNormal)
 		{
 			// Check for property values
 			if ( strcmp( sCurrentEntry.name, "timer" ) == 0 )
@@ -228,7 +228,7 @@ void CDialogueLoader::MakeChoices (void)
 				blank.choice = "";
 			}
 		}
-		else if (sCurrentEntry.type == mccOSF_entrytype_enum::MCCOSF_ENTRY_OBJECT)
+		else if (sCurrentEntry.type == io::kOSFEntryTypeObject)
 		{
 			blank.choice = sCurrentEntry.value;
 			lCurrentDialogue->GoInto (sCurrentEntry);
@@ -253,9 +253,9 @@ void CDialogueLoader::NextObject (void)
 {
 	// Look for the first object
 	//lCurrentDialogue->GetNext( sCurrentEntry, m_luaCode );
-	while (sCurrentEntry.type != mccOSF_entrytype_enum::MCCOSF_ENTRY_OBJECT)
+	while (sCurrentEntry.type != io::kOSFEntryTypeObject)
 	{
-		if (strcmp (sCurrentEntry.name, "#ended") == 0 || sCurrentEntry.type == mccOSF_entrytype_enum::MCCOSF_ENTRY_EOF)
+		if (strcmp (sCurrentEntry.name, "#ended") == 0 || sCurrentEntry.type == io::kOSFEntryTypeEoF)
 		{
 			sDialogueState = DIALOGUE_STATE_ENDED;
 			break;
@@ -270,7 +270,7 @@ void CDialogueLoader::NextObject (void)
 		
 		lCurrentDialogue->GetNext( sCurrentEntry, m_luaCode );
 	}
-	if (sCurrentEntry.type == mccOSF_entrytype_enum::MCCOSF_ENTRY_MARKER)// && strcmp (sCurrentEntry.name, "#ended") != 0 )
+	if (sCurrentEntry.type == io::kOSFEntryTypeMarker)// && strcmp (sCurrentEntry.name, "#ended") != 0 )
 	{
 		sDialogueState = DIALOGUE_STATE_ADDRESS;
 	}
