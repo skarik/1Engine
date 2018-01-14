@@ -6,14 +6,13 @@
 #include <string.h>
 #include <stdint.h>
 
+//===============================================================================================//
+
 io::OSFReader::OSFReader ( FILE* file )
 	: m_file(file), m_currentline(0), m_currentchar(0), m_level(0)
-{
-	
-}
+{}
 io::OSFReader::~OSFReader ( void )
-{
-}
+{}
 
 bool io::OSFReader::GetNext ( OSFEntryInfo& nextEntry, char* output_value, const size_t output_value_len )
 {
@@ -310,4 +309,171 @@ bool io::OSFReader::SearchToMarker ( const char* name )
 		}
 	} while ( entry.type != kOSFEntryTypeEoF );
 	return false;
+}
+
+//===============================================================================================//
+
+io::OSFWriter::OSFWriter ( FILE* file, eOSFWriteMode writeMode )
+	: m_file(file), m_level(0), m_mode(writeMode)
+{}
+io::OSFWriter::~OSFWriter ( void )
+{}
+
+bool io::OSFWriter::WriteEntry ( const OSFEntryInfo& entry, char* output_value, const size_t output_value_len )
+{
+	// Validate the type of entries we can write
+	if ( entry.type == kOSFEntryTypeObject
+		|| entry.type == kOSFEntryTypeEnd
+		|| entry.type == kOSFEntryTypeEoF
+		|| entry.type == kOSFEntryTypeUnknown )
+	{
+		return false;
+	}
+
+	// Validate the value for kOSFEntryTypeSource entries
+	if ( entry.type == kOSFEntryTypeSource )
+	{
+		if (   !strncmp(entry.value, "$code", 6)
+			|| !strncmp(entry.value, "$lua", 5)
+			|| !strncmp(entry.value, "$js", 4)
+			|| !strncmp(entry.value, "$c", 3))
+		{
+			return false;
+		}
+	}
+
+	size_t l_fieldw = strlen(entry.name);
+	if ( l_fieldw == 0 )
+	{	// Make sure the name exists. We cannot have a key-less value!
+		return false;
+	}
+
+	size_t l_linepos = 0;
+	char l_linebuffer[kLineBufferLen] = {0};
+
+	// Add the tab characters
+	for ( int i = 0; i < m_level; ++i )
+	{
+		l_linebuffer[l_linepos++] = '\t';
+	}
+
+	// Marker/macro objects need a leading # or $
+	if ( entry.type == kOSFEntryTypeMarker ) 
+	{
+		if ( entry.name[0] != '#' && entry.name[0] != '$' )
+		{
+			l_linebuffer[l_linepos++] = '#';
+		}
+	}
+	// Copy the name over
+	for ( size_t i = 0; i < l_fieldw; ++i )
+	{
+		l_linebuffer[l_linepos++] = entry.name[i];
+	}
+
+	// Check for the value now:
+	l_fieldw = strlen(entry.value);
+	if ( l_fieldw != 0 )
+	{
+		// Add a space
+		l_linebuffer[l_linepos++] = ' ';
+
+		// Copy the field over
+		for ( size_t i = 0; i < l_fieldw; ++i )
+		{
+			l_linebuffer[l_linepos++] = entry.value[i];
+		}
+	}
+	// Add the final newlines
+	l_linebuffer[l_linepos++] = '\r';
+	l_linebuffer[l_linepos++] = '\n';
+
+	// Write to file
+	fwrite(l_linebuffer, 1, l_linepos, m_file);
+
+	// Now, if it's a source object, we need also write out the contents of output_value.
+	if ( entry.type == kOSFEntryTypeSource )
+	{
+		// Opening bracket:
+		l_linepos = 0;
+		for ( int i = 0; i < m_level; ++i )
+		{
+			l_linebuffer[l_linepos++] = '\t';
+		}
+		l_linebuffer[l_linepos++] = '{';
+		l_linebuffer[l_linepos++] = '\r';
+		l_linebuffer[l_linepos++] = '\n';
+		fwrite(l_linebuffer, 1, l_linepos, m_file);
+
+		// Output the source:
+		fwrite(output_value, 1, output_value_len, m_file);
+
+		// Closing bracket:
+		l_linepos = 0;
+		for ( int i = 0; i < m_level; ++i )
+		{
+			l_linebuffer[l_linepos++] = '\t';
+		}
+		l_linebuffer[l_linepos++] = '}';
+		l_linebuffer[l_linepos++] = '\r';
+		l_linebuffer[l_linepos++] = '\n';
+		fwrite(l_linebuffer, 1, l_linepos, m_file);
+	}
+
+	return true; // Success! Nothing blew up!
+}
+
+bool io::OSFWriter::WriteObjectBegin ( const OSFEntryInfo& object_entry )
+{
+	if ( object_entry.type != kOSFEntryTypeObject )
+	{
+		return false;
+	}
+
+	// Create a temp type of object to write the beginning entry:
+	OSFEntryInfo temp_entry = object_entry;
+	temp_entry.type = kOSFEntryTypeNormal;
+	WriteEntry(temp_entry);
+
+	// Now write the object start
+	size_t l_linepos = 0;
+	char l_linebuffer[32] = {0};
+	for ( int i = 0; i < m_level; ++i )
+	{
+		l_linebuffer[l_linepos++] = '\t';
+	}
+	l_linebuffer[l_linepos++] = '{';
+	l_linebuffer[l_linepos++] = '\r';
+	l_linebuffer[l_linepos++] = '\n';
+	fwrite(l_linebuffer, 1, l_linepos, m_file);
+
+	// Increment the level now
+	m_level += 1;
+
+	return true;
+}
+
+bool io::OSFWriter::WriteObjectEnd ( void )
+{
+	if (m_level <= 0)
+	{
+		return false;
+	}
+
+	// Decrement the level now
+	m_level -= 1;
+
+	// Now write the object ending
+	size_t l_linepos = 0;
+	char l_linebuffer[32] = {0};
+	for ( int i = 0; i < m_level; ++i )
+	{
+		l_linebuffer[l_linepos++] = '\t';
+	}
+	l_linebuffer[l_linepos++] = '}';
+	l_linebuffer[l_linepos++] = '\r';
+	l_linebuffer[l_linepos++] = '\n';
+	fwrite(l_linebuffer, 1, l_linepos, m_file);
+
+	return true;
 }

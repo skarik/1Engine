@@ -97,13 +97,13 @@ namespace io
 		CORE_API bool			SearchToMarker ( const char* name );
 
 	private:
-		const int		kLineBufferLen = 1024;
+		static const int	kLineBufferLen = 1024;
 
-		FILE*			m_file;
-		unsigned long	m_currentline;
-		unsigned long	m_currentchar;
-		char			m_linebuffer [1024];
-		int				m_level;
+		FILE*				m_file;
+		unsigned long		m_currentline;
+		unsigned long		m_currentchar;
+		char				m_linebuffer [1024];
+		int					m_level;
 	};
 
 
@@ -129,11 +129,32 @@ namespace io
 		CORE_API				~OSFWriter( void );
 
 	public:
-
+		//		WriteEntry( entry ) : Writes the given entry in the current object.
+		// Indenting is done with 4-space tab characters.
+		// This cannot write object entries. Those must be done with WriteObjectBegin and WriteObjectEnd.
+		// Arguments:
+		//	entry:				entry to write
+		//	output_value:		buffer to write, used when entry is kOSFEntryTypeSource
+		//	output_value_len:	length of the buffer. ignored if output_value is null
+		// Returns:
+		//	bool: true when written.
+		CORE_API bool			WriteEntry ( const OSFEntryInfo& entry, char* output_value = NULL, const size_t output_value_len = 0 );
+		//		WriteObjectBegin( entry ) : Writes the given entry as the start of an object.
+		// The entry is written normally, with a following { character. The scope is incremented.
+		// Returns:
+		//	bool: true when written.
+		CORE_API bool			WriteObjectBegin ( const OSFEntryInfo& object_entry );
+		//		WriteObjectEnd( entry ) : Writes end of an arbitrary object `}` and decrements scope.
+		// Returns:
+		//	bool: true when written. false if there are scope issues.
+		CORE_API bool			WriteObjectEnd ( void );
 
 	private:
-		FILE*			m_file;
-		int				m_level;
+		static const int	kLineBufferLen = 1024;
+
+		FILE*				m_file;
+		int					m_level;
+		eOSFWriteMode		m_mode;
 	};
 }
 
