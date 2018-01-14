@@ -28,10 +28,12 @@ namespace cts
 	class Node
 	{
 	protected:
-		ENGINE_API explicit			Node ( void );
-		ENGINE_API virtual			~Node ( void );
+		explicit					Node ( void ) {}
 
 	public:
+		virtual						~Node ( void ) {}
+
+		ENGINE_API virtual eNodeType	GetNodeType ( void ) =0;
 		ENGINE_API virtual int		GetOutputNodeCount ( void ) =0;
 		ENGINE_API virtual Node*	GetOutputNode ( const int index ) =0;
 

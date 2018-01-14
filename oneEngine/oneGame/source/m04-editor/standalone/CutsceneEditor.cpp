@@ -8,6 +8,11 @@
 #include "core/system/Screen.h"
 
 #include "engine/cutscene/Node.h"
+#include "engine/cutscene/NodeChoicebox.h"
+#include "engine/cutscene/NodeEnd.h"
+#include "engine/cutscene/NodeMoveCharacterM04.h"
+#include "engine/cutscene/NodeTalkbox.h"
+#include "engine/cutscene/NodeWait.h"
 
 #include "renderer/camera/CCamera.h"
 
@@ -23,7 +28,34 @@
 
 using namespace M04;
 
-class CutsceneEditor::CLargeTextRenderer : public CRenderable3D
+static const char* _GetNodeEnumString ( engine::cts::eNodeType node_type )
+{
+	switch (node_type)
+	{
+	case engine::cts::kNodeTypeTalkbox:
+		return "Talkbox";
+	case engine::cts::kNodeTypeChoicebox:
+		return "Choicebox";
+	case engine::cts::kNodeTypeWait:
+		return "Wait";
+	case engine::cts::kNodeTypeMoveCharacterM04:
+		return "Move Character (M04)";
+	case engine::cts::kNodeTypeEnd:
+		return "End";
+
+	default: return "Invalid";
+	}
+}
+
+static Vector2d _PixelRoundPosition ( const Vector2d vect )
+{
+	return Vector2d(
+		1.0F * math::round( vect.x ),
+		1.0F * math::round( vect.y )
+	);
+}
+
+class CutsceneEditor::CLargeTextRenderer : public CStreamedRenderable3D
 {
 private:
 	CutsceneEditor*		m_owner;
@@ -31,7 +63,7 @@ private:
 
 public:
 	explicit CLargeTextRenderer ( CutsceneEditor* owner )
-		: m_owner(owner), CRenderable3D()
+		: m_owner(owner), CStreamedRenderable3D()
 	{
 		m_font_texture = new CBitmapFont("YanoneKaffeesatz-R.otf", 24, FW_BOLD);
 		m_font_texture->SetFilter( SamplingLinear );
@@ -88,30 +120,11 @@ public:
 			"Cutscene Editor" );
 
 		// Now with the mesh built, push it to the modeldata :)
-		PushModeldata();
+		this->StreamLockModelData();
 	}
 };
 
-static const char* _GetNodeEnumString ( engine::cts::eNodeType node_type )
-{
-	switch (node_type)
-	{
-	case engine::cts::kNodeTypeTalkbox:
-		return "Talkbox";
-	case engine::cts::kNodeTypeChoicebox:
-		return "Choicebox";
-	case engine::cts::kNodeTypeWait:
-		return "Wait";
-	case engine::cts::kNodeTypeMoveCharacterM04:
-		return "Move Character (M04)";
-	case engine::cts::kNodeTypeEnd:
-		return "End";
-
-	default: return "Invalid";
-	}
-}
-
-class CutsceneEditor::CNormalTextRenderer : public CRenderable3D
+class CutsceneEditor::CNormalTextRenderer : public CStreamedRenderable3D
 {
 private:
 	CutsceneEditor*		m_owner;
@@ -119,7 +132,7 @@ private:
 
 public:
 	explicit CNormalTextRenderer ( CutsceneEditor* owner )
-		: m_owner(owner), CRenderable3D()
+		: m_owner(owner), CStreamedRenderable3D()
 	{
 		m_font_texture = new CBitmapFont("YanoneKaffeesatz-R.otf", 18, FW_BOLD);
 		m_font_texture->SetFilter( SamplingLinear );
@@ -182,20 +195,49 @@ public:
 				engine::cts::eNodeType nodeType = engine::cts::kNodeType_INVALID;
 				if (nodes.node != NULL)
 				{
-					;
+					nodeType = nodes.node->GetNodeType();
 				}
 				const char* l_strNodeType = _GetNodeEnumString(nodeType);
 
 				// Display node type
 				builder.addText(
-					m_owner->m_target_camera_position + generalMargins + nodes.position,
+					_PixelRoundPosition(generalMargins + nodes.position - m_owner->m_target_camera_position),
 					Color(1.0F, 1.0F, 1.0F, 1.0F),
 					l_strNodeType );
 			}
 		}
 
+		// Draw the context menu
+		if ( m_owner->m_contextMenu_visible )
+		{
+			if ( m_owner->m_contextMenu_type == kContextMenuNewNode )
+			{
+				for ( int i = 1; i < engine::cts::kNodeType_MAX; ++i )
+				{
+					builder.addText(_PixelRoundPosition(
+						m_owner->m_contextMenu_position
+						+ Vector2d(0, m_owner->m_contextMenu_spacing + m_owner->m_contextMenu_spacing * (i-1))
+						- m_owner->m_target_camera_position),
+						Color(1.0F, 1.0F, 1.0F, 1.0F),
+						_GetNodeEnumString((engine::cts::eNodeType)i));
+				}
+			}
+			else if ( m_owner->m_contextMenu_type == kContextMenuEditNode )
+			{
+				for ( int i = 0; i < 1; ++i )
+				{
+					builder.addText(_PixelRoundPosition(
+						m_owner->m_contextMenu_position
+						+ Vector2d(0, m_owner->m_contextMenu_spacing + m_owner->m_contextMenu_spacing * i)
+						- m_owner->m_target_camera_position),
+						Color(1.0F, 1.0F, 1.0F, 1.0F),
+						"Delete Node");
+				}
+			}
+		}
+
 		// Now with the mesh built, push it to the modeldata :)
-		PushModeldata();
+		this->StreamLockModelData();
 	}
 };
 
@@ -210,8 +252,8 @@ CutsceneEditor::CutsceneEditor ( void )
 	m_largeTextRenderer = new CLargeTextRenderer(this);
 	m_normalTextRenderer = new CNormalTextRenderer(this);
 
-	m_nodes.push_back(EditorNode({NULL, Vector2d(0,0)}));
-	m_nodes.push_back(EditorNode({NULL, Vector2d(0,128)}));
+	//m_nodes.push_back(EditorNode({NULL, Vector2d(0,0)}));
+	//m_nodes.push_back(EditorNode({NULL, Vector2d(0,128)}));
 }
 
 CutsceneEditor::~CutsceneEditor ( void )
@@ -223,6 +265,9 @@ CutsceneEditor::~CutsceneEditor ( void )
 void CutsceneEditor::Update ( void )
 {
 	doViewNavigationDrag();
+	doEditorUpdateMouseOver(); // the following rely on the mouseover state
+	doEditorDragNodes();
+	doEditorContextMenu();
 
 	m_largeTextRenderer->UpdateMesh();
 	m_normalTextRenderer->UpdateMesh();
@@ -254,5 +299,156 @@ void CutsceneEditor::doViewNavigationDrag ( void )
 
 		// Update camera position
 		//m_target_camera->transform.position = m_target_camera_position;
+	}
+}
+
+Vector3d CutsceneEditor::uiGetCurrentMouse ( void )
+{
+	return Vector3d( Input::MouseX(), Input::MouseY(), 0.0F )
+		+ m_target_camera_position
+		- Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, 0.0F) * 0.5F;
+}
+
+void CutsceneEditor::doEditorUpdateMouseOver ( void )
+{
+	if ( m_contextMenu_visible == false )
+	{
+		// Reset node state
+		m_mouseover_node = false;
+
+		// Perform mousepos checks
+		Vector3d l_mousepos = uiGetCurrentMouse();
+
+		for (size_t i = 0; i < m_nodes.size(); ++i)
+		{
+			// Check if mouse is in the node
+			if (Rect(m_nodes[i].position, Vector2d(128, 32)).Contains(l_mousepos))
+			{
+				// We have found a node!
+				m_mouseover_node = true;
+				m_mouseover_index = i;
+				break;
+			}
+		}
+	}
+}
+
+void CutsceneEditor::doEditorDragNodes ( void )
+{
+	if ( m_contextMenu_visible ) return;
+
+	if ( !m_dragging_node )
+	{
+		// Check for begin drag
+		if ( m_mouseover_node && Input::MouseDown(Input::MBLeft) )
+		{
+			m_dragging_node = true;
+			m_dragging_index = m_mouseover_index;
+			m_dragging_reference = uiGetCurrentMouse();
+			m_dragging_startpos = m_nodes[m_dragging_index].position;
+		}
+	}
+	else
+	{
+		// Update drag
+		m_nodes[m_dragging_index].position = 
+			m_dragging_startpos + uiGetCurrentMouse() - m_dragging_reference;
+
+		// Release drag
+		if ( Input::MouseUp(Input::MBLeft) )
+		{
+			m_dragging_node = false;
+		}
+	}
+}
+
+void CutsceneEditor::doEditorContextMenu ( void )
+{
+	if ( Input::MouseDown( Input::MBRight ) )
+	{
+		// Force mouseover update if pressing right click while menu is already up.
+		if ( m_contextMenu_visible )
+		{
+			doEditorUpdateMouseOver();
+		}
+
+		// Stop dragging on right click
+		m_dragging_node = false; 
+
+		// Set menu type
+		if (!m_mouseover_node)
+		{
+			m_contextMenu_type = kContextMenuNewNode;
+		}
+		else
+		{
+			m_contextMenu_type = kContextMenuEditNode;
+		}
+
+		// Bring up the context menu
+		m_contextMenu_visible = true;
+		m_contextMenu_position = uiGetCurrentMouse();
+
+		m_contextMenu_spacing = 18.0F;
+		m_contextMenu_size = Vector3d(128, m_contextMenu_spacing * (engine::cts::kNodeType_MAX - 1), 0.0F);
+	}
+
+	if ( m_contextMenu_visible )
+	{
+		if ( Input::MouseDown( Input::MBLeft ) )
+		{
+			Vector3d l_mousepos = uiGetCurrentMouse();
+
+			if (Rect(m_contextMenu_position, m_contextMenu_size).Contains(l_mousepos))
+			{
+				// Otherwise get the index that was clicked
+				int l_clickedindex = (int)((l_mousepos.y - m_contextMenu_position.y) / m_contextMenu_spacing);
+
+				if ( m_contextMenu_type == kContextMenuNewNode )
+				{
+					// Get type of node clicked on
+					engine::cts::eNodeType l_nodeType = (engine::cts::eNodeType)(l_clickedindex + 1);
+				
+					EditorNode newnode = {NULL, m_contextMenu_position};
+
+					switch (l_nodeType)
+					{
+					case engine::cts::kNodeTypeTalkbox:
+						newnode.node = new engine::cts::NodeTalkbox();
+						break;
+					case engine::cts::kNodeTypeChoicebox:
+						newnode.node = new engine::cts::NodeChoicebox();
+						break;
+					case engine::cts::kNodeTypeWait:
+						newnode.node = new engine::cts::NodeWait();
+						break;
+					case engine::cts::kNodeTypeMoveCharacterM04:
+						newnode.node = new engine::cts::NodeMoveCharacterM04();
+						break;
+					case engine::cts::kNodeTypeEnd:
+						newnode.node = new engine::cts::NodeEnd();
+						break;
+					}
+					m_nodes.push_back(newnode);
+				}
+				else if ( m_contextMenu_type == kContextMenuEditNode )
+				{
+					if ( l_clickedindex == 0 && m_mouseover_node )
+					{
+						EditorNode to_remove = m_nodes[m_mouseover_index];
+						m_nodes.erase(m_nodes.begin() + m_mouseover_index);
+						delete to_remove.node;
+					}
+				}
+
+				// Hide menu after click
+				m_contextMenu_visible = false;	
+			}
+			else
+			{
+				// Hide menu if click outside
+				m_contextMenu_visible = false;
+			}
+		}
 	}
 }

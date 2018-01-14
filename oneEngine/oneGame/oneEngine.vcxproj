@@ -57,6 +57,11 @@
     <ClInclude Include="source\engine\behavior\gbbool.h" />
     <ClInclude Include="source\engine\client.h" />
     <ClInclude Include="source\engine\cutscene\Node.h" />
+    <ClInclude Include="source\engine\cutscene\NodeChoicebox.h" />
+    <ClInclude Include="source\engine\cutscene\NodeEnd.h" />
+    <ClInclude Include="source\engine\cutscene\NodeMoveCharacterM04.h" />
+    <ClInclude Include="source\engine\cutscene\NodeTalkbox.h" />
+    <ClInclude Include="source\engine\cutscene\NodeWait.h" />
     <ClInclude Include="source\engine\module_engine.h" />
     <ClInclude Include="source\engine\network\BehaviorList.h" />
     <ClInclude Include="source\engine\network\CDataTable.h" />

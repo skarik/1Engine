@@ -156,6 +156,21 @@
     <ClInclude Include="source\engine\cutscene\Node.h">
       <Filter>SOURCE\Engine\Cutscene</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine\cutscene\NodeEnd.h">
+      <Filter>SOURCE\Engine\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine\cutscene\NodeMoveCharacterM04.h">
+      <Filter>SOURCE\Engine\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine\cutscene\NodeTalkbox.h">
+      <Filter>SOURCE\Engine\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine\cutscene\NodeWait.h">
+      <Filter>SOURCE\Engine\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine\cutscene\NodeChoicebox.h">
+      <Filter>SOURCE\Engine\Cutscene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine\behavior\CGameBehavior.cpp">
