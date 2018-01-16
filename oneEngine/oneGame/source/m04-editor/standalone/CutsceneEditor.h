@@ -9,11 +9,12 @@
 // Prototypes
 //=========================================//
 
-namespace engine
+namespace common
 {
 	namespace cts
 	{
 		class Node;
+		class EditorNode;
 	}
 }
 
@@ -23,12 +24,6 @@ namespace engine
 
 namespace M04
 {
-	struct EditorNode 
-	{
-		engine::cts::Node*	node;
-		Vector2d			position;
-	};
-
 	class CutsceneEditor : public CGameBehavior
 	{
 		class CLargeTextRenderer;
@@ -89,7 +84,7 @@ namespace M04
 		CLargeTextRenderer*		m_largeTextRenderer;
 		CNormalTextRenderer*	m_normalTextRenderer;
 
-		std::vector<EditorNode>	m_nodes;
+		std::vector<common::cts::EditorNode>	m_nodes;
 	};
 }
 

@@ -110,7 +110,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 	buffer = segment_file->GetSectionStream( MODELFMT_HEADER );
 	if ( buffer.Valid() )
 	{
-		buffer.ReadData( (char*) &header, sizeof(modelFmtHeader_t) );
+		buffer.ReadData( (char*) &header, sizeof(modelFmtHeader) );
 	}
 	else
 	{
@@ -128,7 +128,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			buffer = segment_file->GetSectionStream( MODELFMT_MATERIAL_PREFIX + std::to_string(n) );
 			if ( buffer.Valid() )
 			{
-				modelFmtMaterialEntry_t entry;
+				modelFmtMaterialEntry entry;
 
 				buffer.ReadString( entry.name.data );
 				entry.referenced = buffer.ReadChar();
@@ -138,7 +138,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			}
 			else
 			{
-				materials.push_back( modelFmtMaterialEntry_t() );
+				materials.push_back( modelFmtMaterialEntry() );
 				debug::Console->PrintError( "ModelLoader::LoadModel : could not load find material segment!\n" );
 			}
 		}
@@ -154,7 +154,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			uint32_t actionCount = buffer.ReadUInt32();
 			for ( uint32_t n = 0; n < actionCount; ++n )
 			{
-				modelFmtActionEntry_t entry;
+				modelFmtActionEntry entry;
 
 				entry.start	= buffer.ReadUInt32();
 				entry.end	= buffer.ReadUInt32();
@@ -175,7 +175,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			buffer = segment_file->GetSectionStream( MODELFMT_BONE_PREFIX + std::to_string(n), 1024 ); // Read in 1K for the first block. Hope to heaven that it's enough.
 			if ( buffer.Valid() )
 			{
-				modelFmtBoneEntry_t entry;
+				modelFmtBoneEntry entry;
 
 				buffer.ReadString( entry.name.data );
 				entry.parent = buffer.ReadInt32();
@@ -186,7 +186,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			}
 			else
 			{
-				skeleton.push_back( modelFmtBoneEntry_t() );
+				skeleton.push_back( modelFmtBoneEntry() );
 				debug::Console->PrintError( "ModelLoader::LoadModel : could not load find bone segment!\n" );
 			}
 		}
@@ -201,7 +201,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			buffer = segment_file->GetSectionStream( MODELFMT_BONE_PREFIX + std::to_string(n) );
 			if ( buffer.Valid() )
 			{
-				modelFmtBoneEntry_t entry;
+				modelFmtBoneEntry entry;
 				buffer.ReadString( entry.name.data );
 				entry.parent = buffer.ReadInt32();
 				buffer.ReadData( (char*)(&entry.world_transform), sizeof(float)*10 );
@@ -234,7 +234,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			buffer = segment_file->GetSectionStream( MODELFMT_MESH_PREFIX + std::to_string(n) );
 			if ( buffer.Valid() )
 			{
-				modelFmtMeshEntry_t entry;
+				modelFmtMeshEntry entry;
 
 				buffer.ReadString( entry.name.data );
 				entry.apv				= buffer.ReadChar();
@@ -256,7 +256,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			}
 			else
 			{
-				meshes.push_back( modelFmtMeshEntry_t() );
+				meshes.push_back( modelFmtMeshEntry() );
 				debug::Console->PrintError( "ModelLoader::LoadModel : could not find mesh to load!\n" );
 			}
 		}
@@ -273,7 +273,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 				buffer = segment_file->GetSectionStream( MODELFMT_PHYSMESH_PREFIX + std::to_string(meshes[n].collision_index) );
 				if ( buffer.Valid() )
 				{
-					modelFmtCollisionEntry_t entry;
+					modelFmtCollisionEntry entry;
 
 					buffer.ReadString( entry.name.data );
 					buffer.ReadData( (char*)(&entry.transform), sizeof(float)*16 );
@@ -290,7 +290,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 				}
 				else
 				{
-					collisions.push_back( modelFmtCollisionEntry_t() );
+					collisions.push_back( modelFmtCollisionEntry() );
 					debug::Console->PrintError( "ModelLoader::LoadModel : could not find collision entry to load!\n" );
 				}
 			}
@@ -306,7 +306,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			buffer = segment_file->GetSectionStream( MODELFMT_MORPH_PREFIX + std::to_string(n) );
 			if ( buffer.Valid() )
 			{
-				modelFmtMorphEntry_t entry;
+				modelFmtMorphEntry entry;
 
 				buffer.ReadString( entry.name.data );
 				entry.vertices	= new arModelVertex [meshes[header.morphmesh].model.vertexNum];
@@ -316,7 +316,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			}
 			else
 			{
-				morphs.push_back( modelFmtMorphEntry_t() );
+				morphs.push_back( modelFmtMorphEntry() );
 				debug::Console->PrintError( "ModelLoader::LoadModel : could not find morph to load!\n" );
 			}
 		}
@@ -332,7 +332,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			uint32_t ikCount = buffer.ReadUInt32();
 			for ( uint32_t n = 0; n < ikCount; ++n )
 			{
-				modelFmtIkEntry_t entry;
+				modelFmtIkEntry entry;
 
 				entry.type		= buffer.ReadUInt32();
 				buffer.ReadString( entry.name.data );
@@ -357,7 +357,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			uint32_t hitboxCount = buffer.ReadUInt32();
 			for ( uint32_t n = 0; n < hitboxCount; ++n )
 			{
-				modelFmtHitboxEntry_t entry;
+				modelFmtHitboxEntry entry;
 
 				entry.bone			= buffer.ReadChar();
 				entry.parentbone	= buffer.ReadChar();
@@ -379,15 +379,15 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 			buffer = segment_file->GetSectionStream( MODELFMT_FX_PREFIX + std::to_string(n) );
 			if ( buffer.Valid() )
 			{
-				modelFmtFxEntry_t entry;
+				modelFmtFxEntry entry;
 
-				buffer.ReadData( (char*)(&entry),  sizeof(modelFmtFxEntry_t) );
+				buffer.ReadData( (char*)(&entry),  sizeof(modelFmtFxEntry) );
 
 				effects.push_back( entry );
 			}
 			else
 			{
-				effects.push_back( modelFmtFxEntry_t() );
+				effects.push_back( modelFmtFxEntry() );
 				debug::Console->PrintError( "ModelLoader::LoadModel : could not find FX to load!\n" );
 			}
 		}

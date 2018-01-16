@@ -29,7 +29,7 @@ namespace core
 	static const char* MODELFMT_FX_PREFIX		= "$_FX";
 	static const char* MODELFMT_MISC_PREFIX		= "$_MISC";
 
-	struct modelFmtHeader_t
+	struct modelFmtHeader
 	{
 		// Date of creation/conversion
 		uint64_t datetime;
@@ -59,20 +59,20 @@ namespace core
 		// Number of FX in the model
 		uint32_t fxnum;
 	};
-	struct modelFmtMaterialEntry_t
+	struct modelFmtMaterialEntry
 	{
 		arstring128	name;
 		uint8_t		referenced;
 		arstring128	filename;
 	};
-	struct modelFmtActionEntry_t
+	struct modelFmtActionEntry
 	{
 		uint32_t	start;
 		uint32_t	end;
 		arstring128	name;
 		uint8_t		flags;
 	};
-	struct modelFmtBoneEntry_t
+	struct modelFmtBoneEntry
 	{
 		arstring128	name;
 		// Parent node. -1 for root.
@@ -80,7 +80,7 @@ namespace core
 		XTransform	world_transform;
 		XTransform	firstframe_transform;
 	};
-	struct modelFmtMeshEntry_t
+	struct modelFmtMeshEntry
 	{
 		arstring128	name;
 		// Animated per vertex. It should always be false.
@@ -92,25 +92,25 @@ namespace core
 		// Parent node. "_is_root_" for no parent.
 		arstring128	parent;
 	};
-	struct modelFmtCollisionEntry_t
+	struct modelFmtCollisionEntry
 	{
 		arstring128	name;
 		Matrix4x4	transform;
 		arModelPhysicsData	model;
 	};
-	struct modelFmtMorphEntry_t
+	struct modelFmtMorphEntry
 	{
 		arstring128		name;
 		arModelVertex*	vertices;
 	};
-	struct modelFmtIkEntry_t
+	struct modelFmtIkEntry
 	{
 		uint32_t		type;
 		arstring128		name;
 		uint32_t		datacount;
 		arstring128		data [5];
 	};
-	struct modelFmtHitboxEntry_t
+	struct modelFmtHitboxEntry
 	{
 		uint8_t			bone;
 		uint8_t			parentbone;
@@ -118,7 +118,7 @@ namespace core
 		Vector3d		extents;
 		arstring128		name;
 	};
-	struct modelFmtFxEntry_t
+	struct modelFmtFxEntry
 	{
 		//arstring128		name;
 		char __padding [127];
@@ -128,10 +128,10 @@ namespace core
 	};
 	typedef std::vector<XTransform> modelFmtAnimationList_t;
 
-	static_assert(sizeof(modelFmtHeader_t)			== sizeof(uint32_t)*16,	"Invalid structure size");
-	static_assert(sizeof(modelFmtMaterialEntry_t)	== 257,					"Invalid structure size");
-	static_assert(sizeof(modelFmtActionEntry_t)		== 140,					"Invalid structure size");
-	static_assert(sizeof(modelFmtFxEntry_t)			== 384,					"Invalid structure size");
+	static_assert(sizeof(modelFmtHeader)		== sizeof(uint32_t)*16,	"Invalid structure size");
+	static_assert(sizeof(modelFmtMaterialEntry)	== 257,					"Invalid structure size");
+	static_assert(sizeof(modelFmtActionEntry)	== 140,					"Invalid structure size");
+	static_assert(sizeof(modelFmtFxEntry)		== 384,					"Invalid structure size");
 
 	enum EModelFxCodes : uint8_t
 	{
@@ -200,16 +200,16 @@ namespace core
 
 		//	Loaded data:
 
-		modelFmtHeader_t						header;
-		std::vector<modelFmtMaterialEntry_t>	materials;
-		std::vector<modelFmtActionEntry_t>		actions;
-		std::vector<modelFmtBoneEntry_t>		skeleton;
-		std::vector<modelFmtMeshEntry_t>		meshes;
-		std::vector<modelFmtCollisionEntry_t>	collisions;
-		std::vector<modelFmtMorphEntry_t>		morphs;
-		std::vector<modelFmtIkEntry_t>			ik;
-		std::vector<modelFmtHitboxEntry_t>		hitboxes;
-		std::vector<modelFmtFxEntry_t>			effects;
+		modelFmtHeader							header;
+		std::vector<modelFmtMaterialEntry>		materials;
+		std::vector<modelFmtActionEntry>		actions;
+		std::vector<modelFmtBoneEntry>			skeleton;
+		std::vector<modelFmtMeshEntry>			meshes;
+		std::vector<modelFmtCollisionEntry>		collisions;
+		std::vector<modelFmtMorphEntry>			morphs;
+		std::vector<modelFmtIkEntry>			ik;
+		std::vector<modelFmtHitboxEntry>		hitboxes;
+		std::vector<modelFmtFxEntry>			effects;
 
 		std::vector<modelFmtAnimationList_t>	animation;
 

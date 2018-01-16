@@ -7,12 +7,13 @@
 
 #include "core/system/Screen.h"
 
-#include "engine/cutscene/Node.h"
-#include "engine/cutscene/NodeChoicebox.h"
-#include "engine/cutscene/NodeEnd.h"
-#include "engine/cutscene/NodeMoveCharacterM04.h"
-#include "engine/cutscene/NodeTalkbox.h"
-#include "engine/cutscene/NodeWait.h"
+#include "engine-common/cutscene/EditorNode.h"
+#include "engine-common/cutscene/Node.h"
+#include "engine-common/cutscene/NodeChoicebox.h"
+#include "engine-common/cutscene/NodeEnd.h"
+#include "engine-common/cutscene/NodeMoveCharacterM04.h"
+#include "engine-common/cutscene/NodeTalkbox.h"
+#include "engine-common/cutscene/NodeWait.h"
 
 #include "renderer/camera/CCamera.h"
 
@@ -28,19 +29,19 @@
 
 using namespace M04;
 
-static const char* _GetNodeEnumString ( engine::cts::eNodeType node_type )
+static const char* _GetNodeEnumString ( common::cts::ENodeType node_type )
 {
 	switch (node_type)
 	{
-	case engine::cts::kNodeTypeTalkbox:
+	case common::cts::kNodeTypeTalkbox:
 		return "Talkbox";
-	case engine::cts::kNodeTypeChoicebox:
+	case common::cts::kNodeTypeChoicebox:
 		return "Choicebox";
-	case engine::cts::kNodeTypeWait:
+	case common::cts::kNodeTypeWait:
 		return "Wait";
-	case engine::cts::kNodeTypeMoveCharacterM04:
+	case common::cts::kNodeTypeMoveCharacterM04:
 		return "Move Character (M04)";
-	case engine::cts::kNodeTypeEnd:
+	case common::cts::kNodeTypeEnd:
 		return "End";
 
 	default: return "Invalid";
@@ -192,7 +193,7 @@ public:
 			// Loop through all the nodes
 			for (auto& nodes : m_owner->m_nodes)
 			{
-				engine::cts::eNodeType nodeType = engine::cts::kNodeType_INVALID;
+				common::cts::ENodeType nodeType = common::cts::kNodeType_INVALID;
 				if (nodes.node != NULL)
 				{
 					nodeType = nodes.node->GetNodeType();
@@ -212,14 +213,14 @@ public:
 		{
 			if ( m_owner->m_contextMenu_type == kContextMenuNewNode )
 			{
-				for ( int i = 1; i < engine::cts::kNodeType_MAX; ++i )
+				for ( int i = 1; i < common::cts::kNodeType_MAX; ++i )
 				{
 					builder.addText(_PixelRoundPosition(
 						m_owner->m_contextMenu_position
 						+ Vector2d(0, m_owner->m_contextMenu_spacing + m_owner->m_contextMenu_spacing * (i-1))
 						- m_owner->m_target_camera_position),
 						Color(1.0F, 1.0F, 1.0F, 1.0F),
-						_GetNodeEnumString((engine::cts::eNodeType)i));
+						_GetNodeEnumString((common::cts::ENodeType)i));
 				}
 			}
 			else if ( m_owner->m_contextMenu_type == kContextMenuEditNode )
@@ -390,7 +391,7 @@ void CutsceneEditor::doEditorContextMenu ( void )
 		m_contextMenu_position = uiGetCurrentMouse();
 
 		m_contextMenu_spacing = 18.0F;
-		m_contextMenu_size = Vector3d(128, m_contextMenu_spacing * (engine::cts::kNodeType_MAX - 1), 0.0F);
+		m_contextMenu_size = Vector3d(128, m_contextMenu_spacing * (common::cts::kNodeType_MAX - 1), 0.0F);
 	}
 
 	if ( m_contextMenu_visible )
@@ -407,26 +408,26 @@ void CutsceneEditor::doEditorContextMenu ( void )
 				if ( m_contextMenu_type == kContextMenuNewNode )
 				{
 					// Get type of node clicked on
-					engine::cts::eNodeType l_nodeType = (engine::cts::eNodeType)(l_clickedindex + 1);
+					common::cts::ENodeType l_nodeType = (common::cts::ENodeType)(l_clickedindex + 1);
 				
-					EditorNode newnode = {NULL, m_contextMenu_position};
+					common::cts::EditorNode newnode = {NULL, m_contextMenu_position};
 
 					switch (l_nodeType)
 					{
-					case engine::cts::kNodeTypeTalkbox:
-						newnode.node = new engine::cts::NodeTalkbox();
+					case common::cts::kNodeTypeTalkbox:
+						newnode.node = new common::cts::NodeTalkbox();
 						break;
-					case engine::cts::kNodeTypeChoicebox:
-						newnode.node = new engine::cts::NodeChoicebox();
+					case common::cts::kNodeTypeChoicebox:
+						newnode.node = new common::cts::NodeChoicebox();
 						break;
-					case engine::cts::kNodeTypeWait:
-						newnode.node = new engine::cts::NodeWait();
+					case common::cts::kNodeTypeWait:
+						newnode.node = new common::cts::NodeWait();
 						break;
-					case engine::cts::kNodeTypeMoveCharacterM04:
-						newnode.node = new engine::cts::NodeMoveCharacterM04();
+					case common::cts::kNodeTypeMoveCharacterM04:
+						newnode.node = new common::cts::NodeMoveCharacterM04();
 						break;
-					case engine::cts::kNodeTypeEnd:
-						newnode.node = new engine::cts::NodeEnd();
+					case common::cts::kNodeTypeEnd:
+						newnode.node = new common::cts::NodeEnd();
 						break;
 					}
 					m_nodes.push_back(newnode);
@@ -435,7 +436,7 @@ void CutsceneEditor::doEditorContextMenu ( void )
 				{
 					if ( l_clickedindex == 0 && m_mouseover_node )
 					{
-						EditorNode to_remove = m_nodes[m_mouseover_index];
+						common::cts::EditorNode to_remove = m_nodes[m_mouseover_index];
 						m_nodes.erase(m_nodes.begin() + m_mouseover_index);
 						delete to_remove.node;
 					}

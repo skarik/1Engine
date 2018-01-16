@@ -82,6 +82,9 @@
     <Filter Include="SOURCE\Engine-Common\Scenes\Demos">
       <UniqueIdentifier>{f85bb74d-6d9a-4b6a-8817-fac02539fddf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Engine-Common\Cutscene">
+      <UniqueIdentifier>{7119a76e-cda2-4746-9e6a-98aae633d20d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\engine-common\engine-common.h">
@@ -330,6 +333,30 @@
     <ClInclude Include="source\engine-common\scenes\demos\demosceneModelLoader.h">
       <Filter>SOURCE\Engine-Common\Scenes\Demos</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\cutscene\NodeEnd.h">
+      <Filter>SOURCE\Engine-Common\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\cutscene\NodeMoveCharacterM04.h">
+      <Filter>SOURCE\Engine-Common\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\cutscene\NodeTalkbox.h">
+      <Filter>SOURCE\Engine-Common\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\cutscene\NodeWait.h">
+      <Filter>SOURCE\Engine-Common\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\cutscene\Node.h">
+      <Filter>SOURCE\Engine-Common\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\cutscene\NodeChoicebox.h">
+      <Filter>SOURCE\Engine-Common\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\cutscene\EditorNode.h">
+      <Filter>SOURCE\Engine-Common\Cutscene</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\cutscene\Loader.h">
+      <Filter>SOURCE\Engine-Common\Cutscene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -523,6 +550,12 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\scenes\demos\demosceneModelLoader.cpp">
       <Filter>SOURCE\Engine-Common\Scenes\Demos</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\cutscene\Node.cpp">
+      <Filter>SOURCE\Engine-Common\Cutscene</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\cutscene\Loader.cpp">
+      <Filter>SOURCE\Engine-Common\Cutscene</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

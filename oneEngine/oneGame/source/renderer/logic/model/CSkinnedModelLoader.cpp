@@ -48,7 +48,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 		std::vector<core::TransformLite> stored_transforms;
 		for ( size_t i = 0; i < loader.skeleton.size(); ++i )
 		{
-			core::modelFmtBoneEntry_t& bone = loader.skeleton[i];
+			core::modelFmtBoneEntry& bone = loader.skeleton[i];
 
 			// Create the correct values needed for bind pose information
 			stored_transforms.push_back(core::TransformLite());

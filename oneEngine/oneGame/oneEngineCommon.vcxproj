@@ -54,6 +54,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\engine-common\cutscene\EditorNode.h" />
+    <ClInclude Include="source\engine-common\cutscene\Loader.h" />
+    <ClInclude Include="source\engine-common\cutscene\Node.h" />
+    <ClInclude Include="source\engine-common\cutscene\NodeChoicebox.h" />
+    <ClInclude Include="source\engine-common\cutscene\NodeEnd.h" />
+    <ClInclude Include="source\engine-common\cutscene\NodeMoveCharacterM04.h" />
+    <ClInclude Include="source\engine-common\cutscene\NodeTalkbox.h" />
+    <ClInclude Include="source\engine-common\cutscene\NodeWait.h" />
     <ClInclude Include="source\engine-common\dawn\DawnGUI.h" />
     <ClInclude Include="source\engine-common\debug\AllTools.h" />
     <ClInclude Include="source\engine-common\debug\CTimeProfilerUI.h" />
@@ -183,6 +191,8 @@
     <ClInclude Include="source\engine-common\utils\CDeveloperConsoleUI.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\engine-common\cutscene\Loader.cpp" />
+    <ClCompile Include="source\engine-common\cutscene\Node.cpp" />
     <ClCompile Include="source\engine-common\debug\CTimeProfilerUI.cpp" />
     <ClCompile Include="source\engine-common\dialogue\CDialogueLoader.cpp" />
     <ClCompile Include="source\engine-common\dialogue\CDialogueTree.cpp" />
