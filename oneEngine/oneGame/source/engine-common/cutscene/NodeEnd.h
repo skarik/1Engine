@@ -6,7 +6,7 @@
 namespace common {
 namespace cts
 {
-	//	Node - basis for actions in the cutscene system
+	//	NodeEnd - ending node action that signals the cutscene system should rpobably end.
 	class NodeEnd : public Node
 	{
 	public:
@@ -21,6 +21,13 @@ namespace cts
 			{ return 0; }
 		virtual Node*	GetOutputNode ( const int index ) 
 			{ return NULL; }
+
+	public:
+		//	IOSetOutputNode( IGNORED, IGNORED ) : Sets the output node in the output node list at index.
+		// Ignored for Ending nodes
+		void			IOSetOutputNode ( const int, Node* ) override
+			{}
+
 	};
 
 }}

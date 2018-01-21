@@ -12,6 +12,10 @@ namespace cts
 	{
 		kNodeType_INVALID = 0,
 
+		// The start point of cutscene system.
+		// At least one of these must exist per cutscene.
+		// Necessary due to the nonlinearness of things.
+		kNodeTypeStart,
 		// It talks
 		kNodeTypeTalkbox,
 		// It choices
@@ -35,6 +39,7 @@ namespace cts
 	static const nodeTypeInfo kNodeTypeInfo [kNodeType_MAX] =
 	{
 		{"INVALID",				"Invalid"},
+		{"start",				"Start"},
 		{"talkbox",				"Talkbox"},
 		{"choicebox",			"Choicebox"},
 		{"wait",				"Wait"},
@@ -67,7 +72,6 @@ namespace cts
 		ENodeKeyType	key;
 		arstring256		value;
 	};
-
 	
 	//	Node - basis for actions in the cutscene system
 	class Node
@@ -95,7 +99,7 @@ namespace cts
 		ENGCOM_API virtual int		IOGetKeys ( nodeKeyValue* keyValueArray );
 		//	IOSetOutputNodeCount( count ) : Sets number of output nodes.
 		// This call may possibly be ignored by the implementation.
-		ENGCOM_API virtual void		IOSetOutputNodeCount ( const int count ) =0;
+		ENGCOM_API virtual void		IOSetOutputNodeCount ( const int count ) {}
 		//	IOSetOutputNode( index, node ) : Sets the output node in the output node list at index.
 		// If there is only one output node available, the first argument is ignored.
 		// Output node is also known as "the node that comes after this."

@@ -357,6 +357,9 @@
     <ClInclude Include="source\engine-common\cutscene\Loader.h">
       <Filter>SOURCE\Engine-Common\Cutscene</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\cutscene\NodeStart.h">
+      <Filter>SOURCE\Engine-Common\Cutscene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -555,6 +558,9 @@
       <Filter>SOURCE\Engine-Common\Cutscene</Filter>
     </ClCompile>
     <ClCompile Include="source\engine-common\cutscene\Loader.cpp">
+      <Filter>SOURCE\Engine-Common\Cutscene</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\cutscene\NodeChoicebox.cpp">
       <Filter>SOURCE\Engine-Common\Cutscene</Filter>
     </ClCompile>
   </ItemGroup>

@@ -60,6 +60,7 @@
     <ClInclude Include="source\engine-common\cutscene\NodeChoicebox.h" />
     <ClInclude Include="source\engine-common\cutscene\NodeEnd.h" />
     <ClInclude Include="source\engine-common\cutscene\NodeMoveCharacterM04.h" />
+    <ClInclude Include="source\engine-common\cutscene\NodeStart.h" />
     <ClInclude Include="source\engine-common\cutscene\NodeTalkbox.h" />
     <ClInclude Include="source\engine-common\cutscene\NodeWait.h" />
     <ClInclude Include="source\engine-common\dawn\DawnGUI.h" />
@@ -193,6 +194,7 @@
   <ItemGroup>
     <ClCompile Include="source\engine-common\cutscene\Loader.cpp" />
     <ClCompile Include="source\engine-common\cutscene\Node.cpp" />
+    <ClCompile Include="source\engine-common\cutscene\NodeChoicebox.cpp" />
     <ClCompile Include="source\engine-common\debug\CTimeProfilerUI.cpp" />
     <ClCompile Include="source\engine-common\dialogue\CDialogueLoader.cpp" />
     <ClCompile Include="source\engine-common\dialogue\CDialogueTree.cpp" />

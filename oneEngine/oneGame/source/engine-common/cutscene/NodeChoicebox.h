@@ -10,17 +10,29 @@ namespace cts
 	class NodeChoicebox : public Node
 	{
 	public:
-		explicit			NodeChoicebox ( void )
-			: Node() {}
-		virtual			~NodeChoicebox ( void )
+		ENGCOM_API explicit	NodeChoicebox ( void );
+		virtual				~NodeChoicebox ( void )
 			{}
 
-		virtual ENodeType	GetNodeType ( void ) 
+		ENodeType			GetNodeType ( void ) override
 			{ return kNodeTypeChoicebox; }
-		virtual int		GetOutputNodeCount ( void )
+		int					GetOutputNodeCount ( void ) override
 			{ return 4; }
-		virtual Node*	GetOutputNode ( const int index ) 
-			{ return NULL; }
+		Node*				GetOutputNode ( const int index ) override
+			{ return m_outputNodes[index]; }
+
+	public:
+		//	IOSetOutputNodeCount( count ) : Sets number of output nodes.
+		// Count must be in the range of 0 to 3 (inclusive)
+		ENGCOM_API void		IOSetOutputNodeCount ( const int count ) override;
+		//	IOSetOutputNode( index, node ) : Sets the output node in the output node list at index.
+		// Index must be in the range of 0 to 3 (inclusive)
+		void				IOSetOutputNode ( const int index, Node* node ) override
+			{ m_outputNodes[index] = node; }
+
+	protected:
+		int		m_outputNodeCount;
+		Node*	m_outputNodes [4];
 	};
 
 }}

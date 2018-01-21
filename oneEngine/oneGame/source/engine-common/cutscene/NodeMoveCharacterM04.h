@@ -17,10 +17,18 @@ namespace cts
 
 		virtual ENodeType	GetNodeType ( void ) 
 			{ return kNodeTypeMoveCharacterM04; }
-		virtual int		GetOutputNodeCount ( void )
+		int				GetOutputNodeCount ( void ) override
 			{ return 1; }
-		virtual Node*	GetOutputNode ( const int index ) 
-			{ return NULL; }
+		Node*			GetOutputNode ( const int index ) override
+			{ return m_outputNode; }
+
+	public:
+		//	IOSetOutputNode( IGNORED, node ) : Sets the output node in the output node list at index.
+		void			IOSetOutputNode ( const int index, Node* node ) override
+			{ m_outputNode = node; }
+
+	protected:
+		Node*		m_outputNode;
 	};
 
 }}

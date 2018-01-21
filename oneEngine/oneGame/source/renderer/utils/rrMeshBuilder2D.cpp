@@ -125,7 +125,8 @@ void rrMeshBuilder2D::addRectTex ( const Rect& rect, const Rect& tex, const Colo
 	}
 	else
 	{
-		const Vector2d pixelSize ( 2.0F/(Real)Screen::Info.width * math::sgn(m_multiplier.x), 2.0F/(Real)Screen::Info.height * math::sgn(m_multiplier.y) );
+		//const Vector2d pixelSize ( 2.0F/(Real)Screen::Info.width * math::sgn(m_multiplier.x), 2.0F/(Real)Screen::Info.height * math::sgn(m_multiplier.y) );
+		const Vector2d pixelSize ( 1.4F * m_multiplier.x, 1.4F * m_multiplier.y );
 		const Vector2d pos_min_inside = (fixedRect.pos).mulComponents(m_multiplier) + m_offset + pixelSize;
 		const Vector2d pos_max_inside = (fixedRect.pos + fixedRect.size).mulComponents(m_multiplier) + m_offset - pixelSize;
 
@@ -199,8 +200,10 @@ void rrMeshBuilder2D::addLine ( const Vector2f& point1, const Vector2f& point2, 
 	const Vector2d pos2 = (point2 + dir*0.47F).mulComponents(m_multiplier) + m_offset;
 
 	const Vector2d pixel_offset = Vector2d(
-		-dir.y * 1.0F / (Real)Screen::Info.width,
-		+dir.x * 1.0F / (Real)Screen::Info.height);
+		//-dir.y * 1.0F / (Real)Screen::Info.width,
+		-dir.y * 0.51F * m_multiplier.x,
+		//+dir.x * 1.0F / (Real)Screen::Info.height);
+		+dir.x * 0.51F * m_multiplier.y);
 
 	expand(m_vertexCount + 4);
 	expandTri(m_triangleCount + 2);
@@ -290,6 +293,13 @@ void rrMeshBuilder2D::addCircle ( const Vector2f& center, const Real radius, con
 	}
 	else
 	{
+		for (int i = 0; i < divs; ++i)
+		{
+			addLine(
+				center + Vector2f(cosf(kAngleDiv * (i+0)), sinf(kAngleDiv * (i+0))) * radius,
+				center + Vector2f(cosf(kAngleDiv * (i+1)), sinf(kAngleDiv * (i+1))) * radius,
+				color);
+		}
 	}
 }
 

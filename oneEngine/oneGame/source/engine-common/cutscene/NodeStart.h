@@ -1,5 +1,5 @@
-#ifndef ENGINE_CUTSCENE_NODE_WAIT_H_
-#define ENGINE_CUTSCENE_NODE_WAIT_H_
+#ifndef ENGINE_CUTSCENE_NODE_START_H_
+#define ENGINE_CUTSCENE_NODE_START_H_
 
 #include "engine-common/cutscene/Node.h"
 
@@ -7,16 +7,16 @@ namespace common {
 namespace cts
 {
 	//	Node - basis for actions in the cutscene system
-	class NodeWait : public Node
+	class NodeStart : public Node
 	{
 	public:
-		explicit		NodeWait ( void )
+		explicit		NodeStart ( void )
 			: Node() {}
-		virtual			~NodeWait ( void )
+		virtual			~NodeStart ( void )
 			{}
 
 		ENodeType		GetNodeType ( void ) override
-			{ return kNodeTypeWait; }
+			{ return kNodeTypeStart; }
 		int				GetOutputNodeCount ( void ) override
 			{ return 1; }
 		Node*			GetOutputNode ( const int index ) override
@@ -33,4 +33,4 @@ namespace cts
 
 }}
 
-#endif//ENGINE_CUTSCENE_NODE_WAIT_H_
+#endif//ENGINE_CUTSCENE_NODE_END_H_

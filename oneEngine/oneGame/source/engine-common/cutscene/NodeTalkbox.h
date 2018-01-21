@@ -10,17 +10,25 @@ namespace cts
 	class NodeTalkbox : public Node
 	{
 	public:
-		explicit			NodeTalkbox ( void )
+		explicit		NodeTalkbox ( void )
 			: Node() {}
 		virtual			~NodeTalkbox ( void )
 			{}
 
-		virtual ENodeType	GetNodeType ( void ) 
+		ENodeType		GetNodeType ( void ) override
 			{ return kNodeTypeTalkbox; }
-		virtual int		GetOutputNodeCount ( void )
+		int				GetOutputNodeCount ( void ) override
 			{ return 1; }
-		virtual Node*	GetOutputNode ( const int index ) 
-			{ return NULL; }
+		Node*			GetOutputNode ( const int index ) override
+			{ return m_outputNode; }
+
+	public:
+		//	IOSetOutputNode( IGNORED, node ) : Sets the output node in the output node list at index.
+		void			IOSetOutputNode ( const int index, Node* node ) override
+			{ m_outputNode = node; }
+
+	protected:
+		Node*		m_outputNode;
 	};
 
 }}
