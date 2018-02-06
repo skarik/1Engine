@@ -54,6 +54,7 @@ CutsceneEditor::CLargeTextRenderer::CLargeTextRenderer ( CutsceneEditor* owner )
 	m_material->passinfo[0].m_lighting_mode = renderer::LI_NONE;
 	m_material->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
 	m_material->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
+	m_material->passinfo[0].m_delay = 2;
 
 	m_material->setTexture( TEX_DIFFUSE, m_font_texture );
 	m_font_texture->RemoveReference();
@@ -116,6 +117,7 @@ CutsceneEditor::CNormalTextRenderer::CNormalTextRenderer ( CutsceneEditor* owner
 	m_material->passinfo[0].m_lighting_mode = renderer::LI_NONE;
 	m_material->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
 	m_material->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
+	m_material->passinfo[0].m_delay = 1;
 
 	m_material->setTexture( TEX_DIFFUSE, m_font_texture );
 	m_font_texture->RemoveReference();
@@ -212,6 +214,7 @@ CutsceneEditor::CGeometryRenderer::CGeometryRenderer ( CutsceneEditor* owner )
 	m_material->passinfo[0].m_lighting_mode = renderer::LI_NONE;
 	m_material->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
 	m_material->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
+	m_material->passinfo[0].m_delay = 0;
 
 	m_material->setTexture( TEX_DIFFUSE, m_texture );
 	//m_texture->RemoveReference(); // TODO: Check if need remove this ref

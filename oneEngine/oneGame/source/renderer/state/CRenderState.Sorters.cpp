@@ -82,20 +82,21 @@ bool CRenderState::render_forward_comparator_t::operator() ( CRenderState::tRend
 			}
 			else
 			{
-				// If the objects are the same, sort through increasing delay and increasing pass number
+				// Sort through render delay first
+				if ( imat->m_delay != jmat->m_delay )
+				{
+					return imat->m_delay < jmat->m_delay;
+				}
+
+				// If the objects are the same, sort through increasing pass number
 				if ( i.obj == j.obj )
 				{
-					if ( imat->m_delay != jmat->m_delay ) {
-						return imat->m_delay < jmat->m_delay;
-					}
-					else {
-						return i.pass < j.pass;
-					}
+					return i.pass < j.pass;
 				}
 				else
 				{
 					// Render Back-to-front on transparent
-					if ( fabs((i.obj->renderDistance)-(j.obj->renderDistance)) > FTYPE_PRECISION ) {
+					if ( fabs((i.obj->renderDistance)-(j.obj->renderDistance)) > FLOAT_PRECISION ) {
 						return ( (i.obj->renderDistance) > (j.obj->renderDistance) );
 					}
 					else {
@@ -192,20 +193,21 @@ bool CRenderState::render_deferred_comparator_t::operator() ( CRenderState::tRen
 			}
 			else
 			{
-				// If the objects are the same, sort through increasing delay and increasing pass number
+				// Sort through render delay first
+				if ( imat->m_delay != jmat->m_delay )
+				{
+					return imat->m_delay < jmat->m_delay;
+				}
+
+				// If the objects are the same, sort through increasing pass number
 				if ( i.obj == j.obj )
 				{
-					if ( imat->m_delay != jmat->m_delay ) {
-						return imat->m_delay < jmat->m_delay;
-					}
-					else {
-						return i.pass < j.pass;
-					}
+					return i.pass < j.pass;
 				}
 				else
 				{
 					// Render Back-to-front on transparent
-					if ( fabs((i.obj->renderDistance)-(j.obj->renderDistance)) > FTYPE_PRECISION ) {
+					if ( fabs((i.obj->renderDistance)-(j.obj->renderDistance)) > FLOAT_PRECISION ) {
 						return ( (i.obj->renderDistance) > (j.obj->renderDistance) );
 					}
 					else {
