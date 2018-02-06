@@ -78,11 +78,33 @@ namespace M04
 		// Will take the node position and rect into account.
 		Vector3d	uiGetNodeInputPosition ( common::cts::EditorNode* node );
 
+		//		breakConnectionsTo ( EditorNode* node ) : Breaks all connections to this node.
+		void		breakConnectionsTo( common::cts::EditorNode* node );
+		//		breakConnectionFrom ( EditorNode* node, int index ) : Breaks one connections from this node.
+		void		breakConnectionFrom( common::cts::EditorNode* node, const int index );
+		//		breakAllConnectionsFrom ( EditorNode* node ) : Breaks all connections from this node.
+		void		breakAllConnectionsFrom( common::cts::EditorNode* node );
+
 	public:
 		enum eContextMenu
 		{
 			kContextMenuNewNode,
 			kContextMenuEditNode,
+			kContextMenuConnectionInput,
+			kContextMenuConnectionOutput,
+		};
+		struct grContextPair
+		{
+			arstring64 label;
+			int value;
+
+			grContextPair(const char* str, int val) 
+				: label(str), value(val) {}
+		};
+		enum eContextValues : int
+		{
+			kContextValueDeleteNode,
+			kContextValueBreakConnection,
 		};
 
 		static const size_t		kInvalidIndex = (size_t)(-1);
@@ -97,6 +119,7 @@ namespace M04
 		bool					m_mouseover_connector_input;
 		size_t					m_mouseover_index; // node index
 		size_t					m_mouseover_connectorindex;
+		size_t					m_mouseover_context_prev;
 
 		bool					m_dragging_node;
 		size_t					m_dragging_index; // node index
@@ -113,6 +136,8 @@ namespace M04
 		Vector3d				m_contextMenu_size;
 		Real					m_contextMenu_spacing;
 		eContextMenu			m_contextMenu_type;
+		std::vector<grContextPair>
+								m_contextMenu_entries;
 
 		CLargeTextRenderer*		m_largeTextRenderer;
 		CNormalTextRenderer*	m_normalTextRenderer;

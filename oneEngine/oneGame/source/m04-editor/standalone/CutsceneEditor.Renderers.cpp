@@ -179,29 +179,14 @@ void CutsceneEditor::CNormalTextRenderer::UpdateMesh ( void )
 	// Draw the context menu
 	if ( m_owner->m_contextMenu_visible )
 	{
-		if ( m_owner->m_contextMenu_type == kContextMenuNewNode )
+		for ( size_t i = 0; i < m_owner->m_contextMenu_entries.size(); ++i )
 		{
-			for ( int i = 1; i < common::cts::kNodeType_MAX; ++i )
-			{
-				builder.addText(_PixelRoundPosition(
-					m_owner->m_contextMenu_position
-					+ Vector2d(0, m_owner->m_contextMenu_spacing + m_owner->m_contextMenu_spacing * (i-1))
-					- m_owner->m_target_camera_position),
-					Color(1.0F, 1.0F, 1.0F, 1.0F),
-					common::cts::kNodeTypeInfo[(common::cts::ENodeType)i].readable);
-			}
-		}
-		else if ( m_owner->m_contextMenu_type == kContextMenuEditNode )
-		{
-			for ( int i = 0; i < 1; ++i )
-			{
-				builder.addText(_PixelRoundPosition(
-					m_owner->m_contextMenu_position
-					+ Vector2d(0, m_owner->m_contextMenu_spacing + m_owner->m_contextMenu_spacing * i)
-					- m_owner->m_target_camera_position),
-					Color(1.0F, 1.0F, 1.0F, 1.0F),
-					"Delete Node");
-			}
+			builder.addText(_PixelRoundPosition(
+				m_owner->m_contextMenu_position
+				+ Vector2d(0, m_owner->m_contextMenu_spacing + m_owner->m_contextMenu_spacing * i)
+				- m_owner->m_target_camera_position),
+				(i == m_owner->m_mouseover_context_prev) ? Color(1.0F, 1.0F, 1.0F, 1.0F) : Color(0.5F, 0.5F, 0.5F, 1.0F),
+				m_owner->m_contextMenu_entries[i].label.c_str());
 		}
 	}
 

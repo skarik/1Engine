@@ -317,14 +317,31 @@ void CutsceneEditor::doEditorContextMenu ( void )
 		m_dragging_node = false;
 		m_connecting_node = false;
 
-		// Set menu type
-		if (!m_mouseover_node)
+		// Set menu type & build menu
+		m_contextMenu_entries.clear();
+		if (m_mouseover_connector_input)
 		{
-			m_contextMenu_type = kContextMenuNewNode;
+			m_contextMenu_type = kContextMenuConnectionInput;
+			m_contextMenu_entries.push_back(grContextPair("Break All", kContextValueBreakConnection));
+		}
+		else if (m_mouseover_connector_output)
+		{
+			m_contextMenu_type = kContextMenuConnectionOutput;
+			m_contextMenu_entries.push_back(grContextPair("Break", kContextValueBreakConnection));
+		}
+		else if (m_mouseover_node)
+		{
+			m_contextMenu_type = kContextMenuEditNode;
+			m_contextMenu_entries.push_back(grContextPair("Delete Node", kContextValueDeleteNode));
+			m_contextMenu_entries.push_back(grContextPair("Break All", kContextValueBreakConnection));
 		}
 		else
 		{
-			m_contextMenu_type = kContextMenuEditNode;
+			m_contextMenu_type = kContextMenuNewNode;
+			for ( int i = 1; i < common::cts::kNodeType_MAX; ++i )
+			{
+				m_contextMenu_entries.push_back(grContextPair(common::cts::kNodeTypeInfo[(common::cts::ENodeType)i].readable, i));
+			}
 		}
 
 		// Bring up the context menu
@@ -337,19 +354,33 @@ void CutsceneEditor::doEditorContextMenu ( void )
 
 	if ( m_contextMenu_visible )
 	{
+		// Update the clicked index:
+		Vector3d l_mousepos = uiGetCurrentMouse();
+		// Get the index that was clicked
+		int l_clickedindex = (int)((l_mousepos.y - m_contextMenu_position.y) / m_contextMenu_spacing);
+	
+		// Update the mouseover the for menu
+		if (l_clickedindex >= 0 &&
+			l_clickedindex < (int)m_contextMenu_entries.size())
+		{
+			m_mouseover_context_prev = (size_t)l_clickedindex;
+		}
+		else
+		{
+			m_mouseover_context_prev = kInvalidIndex;
+		}
+
 		if ( Input::MouseDown( Input::MBLeft ) )
 		{
-			Vector3d l_mousepos = uiGetCurrentMouse();
-
-			if (Rect(m_contextMenu_position, m_contextMenu_size).Contains(l_mousepos))
+			// Is the mouse even in range?
+			if (m_mouseover_context_prev != kInvalidIndex
+				&& Rect(m_contextMenu_position, m_contextMenu_size).Contains(l_mousepos))
 			{
-				// Otherwise get the index that was clicked
-				int l_clickedindex = (int)((l_mousepos.y - m_contextMenu_position.y) / m_contextMenu_spacing);
-
+				// Perform menu logic:
 				if ( m_contextMenu_type == kContextMenuNewNode )
 				{
 					// Get type of node clicked on
-					common::cts::ENodeType l_nodeType = (common::cts::ENodeType)(l_clickedindex + 1);
+					common::cts::ENodeType l_nodeType = (common::cts::ENodeType)(m_contextMenu_entries[l_clickedindex].value);
 				
 					common::cts::EditorNode newnode = {NULL, m_contextMenu_position};
 
@@ -376,13 +407,35 @@ void CutsceneEditor::doEditorContextMenu ( void )
 					}
 					m_nodes.push_back(newnode);
 				}
-				else if ( m_contextMenu_type == kContextMenuEditNode )
+				else if ( m_contextMenu_type == kContextMenuEditNode && m_mouseover_node )
 				{
-					if ( l_clickedindex == 0 && m_mouseover_node )
+					int menu_value = m_contextMenu_entries[l_clickedindex].value;
+					if ( menu_value == kContextValueDeleteNode )
 					{
 						common::cts::EditorNode to_remove = m_nodes[m_mouseover_index];
 						m_nodes.erase(m_nodes.begin() + m_mouseover_index);
 						delete to_remove.node;
+					}
+					else if ( menu_value == kContextValueBreakConnection )
+					{
+						breakAllConnectionsFrom(&m_nodes[m_mouseover_index]);
+						breakConnectionsTo(&m_nodes[m_mouseover_index]);
+					}
+				}
+				else if ( m_contextMenu_type == kContextMenuConnectionInput )
+				{
+					int menu_value = m_contextMenu_entries[l_clickedindex].value;
+					if ( menu_value == kContextValueBreakConnection && m_mouseover_connector_input )
+					{
+						breakConnectionsTo(&m_nodes[m_mouseover_index]);
+					}
+				}
+				else if ( m_contextMenu_type == kContextMenuConnectionOutput )
+				{
+					int menu_value = m_contextMenu_entries[l_clickedindex].value;
+					if ( menu_value == kContextValueBreakConnection && m_mouseover_connector_output )
+					{
+						breakConnectionFrom(&m_nodes[m_mouseover_index], m_mouseover_connectorindex);
 					}
 				}
 
@@ -394,6 +447,56 @@ void CutsceneEditor::doEditorContextMenu ( void )
 				// Hide menu if click outside
 				m_contextMenu_visible = false;
 			}
+		}
+	}
+}
+
+
+//		breakConnectionsTo ( EditorNode* node ) : Breaks all connections to this node.
+void CutsceneEditor::breakConnectionsTo( common::cts::EditorNode* node )
+{
+	// Don't waste time on invalid connection breaking.
+	if (node->node == NULL)
+	{
+		return;
+	}
+
+	// Loop through all the editor nodes:
+	for (auto& node_itr : m_nodes)
+	{
+		if (node_itr.node != NULL)
+		{
+			const int connect_count = node_itr.node->GetOutputNodeCount();
+			for (int connecti = 0; connecti < connect_count; ++connecti)
+			{
+				// Get the node we're connected to:
+				if (node_itr.node->GetOutputNode(connecti) == node->node)
+				{	// If it's the one we're trying to orphan, then orphan it!
+					node_itr.node->IOSetOutputNode(connecti, NULL);
+				}
+			}
+		}
+	}
+}
+//		breakConnectionFrom ( EditorNode* node, int index ) : Breaks one connections from this node.
+void CutsceneEditor::breakConnectionFrom( common::cts::EditorNode* node, const int index )
+{
+	// Don't waste time on invalid connection breaking.
+	if (node->node != NULL)
+	{
+		node->node->IOSetOutputNode(index, NULL);
+	}
+}
+//		breakConnectionsFrom ( EditorNode* node ) : Breaks all connections from this node.
+void CutsceneEditor::breakAllConnectionsFrom( common::cts::EditorNode* node )
+{
+	// Don't waste time on invalid connection breaking.
+	if (node->node != NULL)
+	{
+		const int connect_count = node->node->GetOutputNodeCount();
+		for (int connecti = 0; connecti < connect_count; ++connecti)
+		{
+			node->node->IOSetOutputNode(connecti, NULL);
 		}
 	}
 }
