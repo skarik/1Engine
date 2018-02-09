@@ -31,6 +31,8 @@ static glHandle m_pboForce;
 static Textures::tbpdHeader m_textureHeader;
 static uchar* m_textureBuffer;
 
+static const int kMaxTextureDimensions = 4096;
+
 CResourceManager::CResourceManager ( void )
 	: m_renderStateOwned(false)
 {
@@ -41,15 +43,15 @@ CResourceManager::CResourceManager ( void )
 
 	// Upload empty buffer to prevent stall later
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_pbo1 );
-	glBufferData(GL_PIXEL_UNPACK_BUFFER, 4096*4096*4, NULL, GL_STATIC_DRAW );
+	glBufferData(GL_PIXEL_UNPACK_BUFFER, kMaxTextureDimensions * kMaxTextureDimensions * 4, NULL, GL_STATIC_DRAW );
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_pbo2 );
-	glBufferData(GL_PIXEL_UNPACK_BUFFER, 4096*4096*4, NULL, GL_STATIC_DRAW );
+	glBufferData(GL_PIXEL_UNPACK_BUFFER, kMaxTextureDimensions * kMaxTextureDimensions * 4, NULL, GL_STATIC_DRAW );
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, m_pboForce );
-	glBufferData(GL_PIXEL_UNPACK_BUFFER, 4096*4096*4, NULL, GL_STATIC_DRAW );
+	glBufferData(GL_PIXEL_UNPACK_BUFFER, kMaxTextureDimensions * kMaxTextureDimensions * 4, NULL, GL_STATIC_DRAW );
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0 );
 
 	// Create buffer for texture data
-	m_textureBuffer = new uchar [4096*4096*4];
+	m_textureBuffer = new uchar [kMaxTextureDimensions * kMaxTextureDimensions * 4 * 4];
 }
 
 CResourceManager::~CResourceManager ( void )
