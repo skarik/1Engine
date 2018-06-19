@@ -3,7 +3,7 @@
 
 EHS internal engine. This the **primary repo** with all code that is able to be legally public.
 
-**For those with low bandwidth: this will use more than 500 MB of bandwidth to download. This will eventually change as ancient 3rd party binaries are removed from the history.**
+**For those with low bandwidth: this will use more than 200 MB of bandwidth to download. This will eventually change as ancient 3rd party binaries are removed from the history.**
 
 1Engine is a simple single-thread engine meant for extremely simple 2D games and overly complicated 3D games. Cross-platform support is planned.
 
@@ -57,7 +57,7 @@ Large game projects are mostly the same, but instead are prefixed by the game in
 ## Repos
 
 * ``primary`` you're looking at it. public.
-* ``experimental`` scripting language, networking, other rendering pipelines. ask for access.
+* ``experimental`` scripting language, networking, other rendering pipelines (like consoles and stuff). ask for access, as bunch of the stuff legally cannot be on github.
 
 ## Legal Info
 
@@ -65,4 +65,5 @@ You're welcome to download and mess around. If you want to filch code, please as
 
 You're welcome to try to make your own games or projects with this, as long as you don't make a considerable profit from them. We're talking, "puts food on the table" profit. We want you to starve.
 
-TODO: eventually, put license stuff in LICENSE.md. **stuff that doesnt belong to me doesnt belong to me**
+Also, stuff that doesn't belong to us doesn't belong to us. We use a lot of 3rd party code, which we will eventually list here and give credit where credit is due.
+Also, it's entirely possible that there is some code or code history in here by mistake. If that is the case, please contact us immediately and we will remove it.
