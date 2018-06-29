@@ -1,5 +1,5 @@
 #include "AnimationSet.h"
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 #include "core-ext/animation/AnimationAction.h"
 #include "core-ext/animation/curve/AnimationCurve.h"
 #include "core-ext/animation/AnimationControl.h"
@@ -64,7 +64,7 @@ void AnimationSet::AddActions ( AnimationControl* target )
 	for ( auto action = loader.actions.begin(); action != loader.actions.end(); ++action )
 	{	
 		// Create new action
-		AnimationAction new_action ( StringUtils::ToLower( action->name.c_str() ).c_str() );
+		AnimationAction new_action ( core::utils::string::GetLower( action->name.c_str() ).c_str() );
 
 		new_action.SetRange( (Real)(action->start), (Real)(action->end) );
 		new_action.framesPerSecond = this->framerate;

@@ -10,7 +10,7 @@
 #include "png/png.h"
 #include "zlib/zlib.h"
 
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 
 #include <iostream>
 using std::cout;
@@ -25,7 +25,7 @@ tPixel* Textures::LoadRawImageData ( const std::string& n_inputfile, timgInfo& o
 	// Blame us for working with DirectDraw for the majority of our lives.
 
 	// Detect the type of image
-	std::string sExtension = StringUtils::ToLower( StringUtils::GetFileExtension( n_inputfile ) );
+	std::string sExtension = core::utils::string::GetLower( core::utils::string::GetFileExtension( n_inputfile ) );
 	if ( sExtension == "tga" )
 	{
 		return loadTGA(n_inputfile, o_info);

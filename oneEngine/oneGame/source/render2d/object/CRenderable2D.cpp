@@ -1,7 +1,7 @@
 
 #include "CRenderable2D.h"
 
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 #include "core-ext/system/io/Resources.h"
 
 #include "renderer/material/RrShader.h"
@@ -78,14 +78,14 @@ void CRenderable2D::SetSpriteFile ( const char* n_sprite_filename, const char* n
 void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const char* n_palette_filename, Textures::timgInfo* o_img_info, Real** o_img_frametimes )
 {
 	// Create the filename for the files.
-	std::string filename_palette = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_pal";
-	std::string filename_sprite	 = StringUtils::GetFileStemLeaf(n_sprite_filename);
-	std::string filename_normals = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_normal";
-	std::string filename_surface = StringUtils::GetFileStemLeaf(n_sprite_filename) + "_surface";
+	std::string filename_palette = core::utils::string::GetFileStemLeaf(n_sprite_filename) + "_pal";
+	std::string filename_sprite	 = core::utils::string::GetFileStemLeaf(n_sprite_filename);
+	std::string filename_normals = core::utils::string::GetFileStemLeaf(n_sprite_filename) + "_normal";
+	std::string filename_surface = core::utils::string::GetFileStemLeaf(n_sprite_filename) + "_surface";
 
 	if (n_palette_filename != NULL)
 	{
-		filename_palette = StringUtils::GetFileStemLeaf(n_palette_filename);
+		filename_palette = core::utils::string::GetFileStemLeaf(n_palette_filename);
 	}
 
 	std::string resource_palette;
@@ -99,7 +99,7 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const
 		// Convert the resource files to engine's format (if the JPGs exist)
 		if ( core::Resources::MakePathTo(filename_sprite + ".jpg", resource_sprite) )
 		{
-			Textures::ConvertFile(resource_sprite, StringUtils::GetFileStemLeaf(resource_sprite) + ".bpd");
+			Textures::ConvertFile(resource_sprite, core::utils::string::GetFileStemLeaf(resource_sprite) + ".bpd");
 		}
 	}
 	// Check for the PNGs:
@@ -107,19 +107,19 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const
 		// Convert the resource files to engine's format (if the PNGs exist)
 		if ( core::Resources::MakePathTo(filename_sprite + ".png", resource_sprite) )
 		{
-			Textures::ConvertFile(resource_sprite, StringUtils::GetFileStemLeaf(resource_sprite) + ".bpd");
+			Textures::ConvertFile(resource_sprite, core::utils::string::GetFileStemLeaf(resource_sprite) + ".bpd");
 		}
 		if ( core::Resources::MakePathTo(filename_palette + ".png", resource_palette) )
 		{
-			Textures::ConvertFile(resource_palette, StringUtils::GetFileStemLeaf(resource_palette)  + ".bpd");
+			Textures::ConvertFile(resource_palette, core::utils::string::GetFileStemLeaf(resource_palette)  + ".bpd");
 		}
 		if ( core::Resources::MakePathTo(filename_normals + ".png", resource_normals) )
 		{
-			Textures::ConvertFile(resource_normals, StringUtils::GetFileStemLeaf(resource_normals)  + ".bpd");
+			Textures::ConvertFile(resource_normals, core::utils::string::GetFileStemLeaf(resource_normals)  + ".bpd");
 		}
 		if ( core::Resources::MakePathTo(filename_surface + ".png", resource_surface) )
 		{
-			Textures::ConvertFile(resource_surface, StringUtils::GetFileStemLeaf(resource_surface)  + ".bpd");
+			Textures::ConvertFile(resource_surface, core::utils::string::GetFileStemLeaf(resource_surface)  + ".bpd");
 		}
 	}
 	// Check for the GALs:
@@ -133,20 +133,20 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const
 				image = Textures::loadGAL_Animation(resource_sprite, image_info, NULL); 
 			else
 				image = Textures::loadGAL(resource_sprite, image_info); 
-			Textures::ConvertData(image, &image_info, StringUtils::GetFileStemLeaf(resource_sprite) + ".bpd");
+			Textures::ConvertData(image, &image_info, core::utils::string::GetFileStemLeaf(resource_sprite) + ".bpd");
 			delete [] image;
 
 			image = Textures::loadGAL_Layer(resource_sprite, "normals", image_info);
 			if (image != NULL)
 			{
-				Textures::ConvertData(image, &image_info, StringUtils::GetFileStemLeaf(resource_sprite) + "_normal.bpd");
+				Textures::ConvertData(image, &image_info, core::utils::string::GetFileStemLeaf(resource_sprite) + "_normal.bpd");
 				delete [] image;
 			}
 
 			image = Textures::loadGAL_Layer(resource_sprite, "surface", image_info);
 			if (image != NULL)
 			{
-				Textures::ConvertData(image, &image_info, StringUtils::GetFileStemLeaf(resource_sprite) + "_surface.bpd");
+				Textures::ConvertData(image, &image_info, core::utils::string::GetFileStemLeaf(resource_sprite) + "_surface.bpd");
 				delete [] image;
 			}
 		}
@@ -154,7 +154,7 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const
 		{
 			Textures::timgInfo image_info;
 			pixel_t* image = Textures::loadGAL(resource_palette, image_info); 
-			Textures::ConvertData(image, &image_info, StringUtils::GetFileStemLeaf(resource_palette) + ".bpd");
+			Textures::ConvertData(image, &image_info, core::utils::string::GetFileStemLeaf(resource_palette) + ".bpd");
 			delete [] image;
 		}
 	}

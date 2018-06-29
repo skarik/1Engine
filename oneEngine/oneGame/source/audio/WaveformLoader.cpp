@@ -1,12 +1,13 @@
 #include "WaveformLoader.h"
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 
 using namespace std;
 
 audio::arBufferHandle audio::WaveformLoader::LoadFile ( const char* sFilename, bool positional )
 {
 #ifndef _AUDIO_FMOD_
-	string sFileExtension = StringUtils::ToLower( StringUtils::GetFileExtension( sFilename ) );
+	string sFileRezname = sFilename;
+	string sFileExtension = core::utils::string::GetLower( core::utils::string::GetFileExtension( sFileRezname ) );
 
 	if ( sFileExtension == "wav" )
 	{

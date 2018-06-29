@@ -1,6 +1,6 @@
 /*
 // Includes
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 //#include "CRenderState.h"
 #include "CTexture.h"
 #include "CTextureMaster.h"
@@ -21,7 +21,7 @@ void CTexture::LoadImageInfo ( void )
 	// Blame us for working with DirectDraw for the majority of our lives.
 
 	// Detect the type of image
-	string sExtension = StringUtils::ToLower( StringUtils::GetFileExtension( sFilename ) );
+	string sExtension = core::utils::string::GetLower( core::utils::string::GetFileExtension( sFilename ) );
 	if ( sExtension == "tga" )
 	{
 		loadTGA();

@@ -247,7 +247,8 @@
     <ClInclude Include="source\core\types\string_extension.h" />
     <ClInclude Include="source\core\types\types.h" />
     <ClInclude Include="source\core\utils\armodule.h" />
-    <ClInclude Include="source\core\utils\StringUtils.h" />
+    <ClInclude Include="source\core\utils\string.h" />
+    <ClInclude Include="source\core\utils\string.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core-ext\math\MathQEF.cpp" />
@@ -278,7 +279,7 @@
     <ClCompile Include="source\core\system\io\CMappedBinaryFile.cpp" />
     <ClCompile Include="source\core\system\io\FileUtils.cpp" />
     <ClCompile Include="source\core\system\System.cpp" />
-    <ClCompile Include="source\core\utils\StringUtils.cpp" />
+    <ClCompile Include="source\core\utils\string.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

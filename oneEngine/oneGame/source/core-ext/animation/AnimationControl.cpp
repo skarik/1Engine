@@ -1,6 +1,6 @@
 // Includes
 #include "AnimationControl.h"
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 
 using std::cout;
 using std::endl;

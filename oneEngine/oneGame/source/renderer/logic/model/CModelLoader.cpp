@@ -4,7 +4,7 @@
 
 #include "core-ext/system/io/assets/ModelLoader.h"
 
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 #include "core/system/io/CSegmentedFile.h"
 #include "core/debug/CDebugConsole.h"
 #include "core-ext/system/io/Resources.h"
@@ -81,7 +81,7 @@ void CModel::LoadModel ( const string& sFilename )
 //
 //	// First check for needed file conversion!
 //	string sTargetFilename = sFilename;//core::Resources::PathTo( sFilename );
-//	string sFileExtention = StringUtils::ToLower( StringUtils::GetFileExtension( sTargetFilename ) );
+//	string sFileExtention = core::utils::string::GetLower( core::utils::string::GetFileExtension( sTargetFilename ) );
 //	//cout << sFileExtention << endl;
 //
 //	if ( sFileExtention == "fbx" )

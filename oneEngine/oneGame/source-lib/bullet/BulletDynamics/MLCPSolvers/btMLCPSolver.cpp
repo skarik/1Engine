@@ -442,7 +442,7 @@ void btMLCPSolver::createMLCPFast(const btContactSolverInfo& infoGlobal)
 	///fill the upper triangle of the matrix, to make it symmetric
 	{
 		BT_PROFILE("fill the upper triangle ");
-		m_A.copyLowerToUpperTriangle();
+		m_A.copyLowerGetUpperTriangle();
 	}
 
 	{

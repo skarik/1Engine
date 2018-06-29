@@ -1,6 +1,6 @@
 
 #include "BoneMapper.h"
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 
 void animation::BoneMapper::CreateFromNameMatching(const Skeleton& source, const Skeleton& target, BoneMapper& o_mapper, const bool true_match)
 {
@@ -27,7 +27,7 @@ void animation::BoneMapper::CreateFromNameMatching(const Skeleton& source, const
 			else
 			{
 				// Find the largest and best match
-				size_t match_size = StringUtils::LargestCommonSubstringLength( source.names[i].c_str(), target.names[j].c_str() );
+				size_t match_size = core::utils::string::LargestCommonSubstringLength( source.names[i].c_str(), target.names[j].c_str() );
 				match_size = std::min( match_size, worst_match );
 				// Is this match better? Store it as such.
 				if ( match_size > best_match )

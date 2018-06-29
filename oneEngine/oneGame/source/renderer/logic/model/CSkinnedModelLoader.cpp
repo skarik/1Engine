@@ -17,7 +17,7 @@
 #include "core-ext/animation/AnimationAction.h"
 //#include "physical/animation/CHKAnimation.h"
 
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 #include "core/system/io/CSegmentedFile.h"
 #include "core/debug/CDebugConsole.h"
 #include "core-ext/system/io/Resources.h"
@@ -139,7 +139,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //
 //	// First check for needed file conversion.
 //	string sTargetFilename = sFilename;
-//	string sFileExtension = StringUtils::ToLower( StringUtils::GetFileExtension( sTargetFilename ) );
+//	string sFileExtension = core::utils::string::GetLower( core::utils::string::GetFileExtension( sTargetFilename ) );
 //	// FBX and BLEND require file conversion
 //	if ( sFileExtension == "fbx" || sFileExtension = "blend" )
 //	{
@@ -360,7 +360,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //					sin.read( (char*)(&iOptionsFlag), sizeof( char ) );
 //
 //					// Create new action
-//					AnimationAction newAction ( StringUtils::ToLower( sAnimName ).c_str() );
+//					AnimationAction newAction ( core::utils::string::GetLower( sAnimName ).c_str() );
 //					newAction.SetRange( (Real)(iStartFrame), (Real)(iEndFrame) );
 //					newAction.framesPerSecond = 30.0f;
 //					newAction.index = iCurAction;
@@ -1229,7 +1229,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //						else if ( typeName.find( "general" ) != string::npos )
 //						{
 //							// Parse the typeName to provide additional properties
-//							auto m_parameters = StringUtils::Split( typeName, " ", false );
+//							auto m_parameters = core::utils::string::Split( typeName, " ", false );
 //							for ( uint param = 0; param < 9; ++param )
 //							{
 //								// If input valid, then grab the input parameter

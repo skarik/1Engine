@@ -3,7 +3,7 @@
 
 #include "core/time/Time.h"
 #include "core/math/Math.h"
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 
 #include "core-ext/system/io/Resources.h"
 

@@ -11,7 +11,7 @@
 // Include camera for rendering
 #include "renderer/Camera/CCamera.h"
 // Include some tools
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 
 // Include OSF IO
 #include "core-ext/system/io/osf.h"
@@ -234,7 +234,7 @@ void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_b
 							printf( "found file: %s\n", resource_name.c_str() );
 
 							// Check the file extension
-							string resource_extension = StringUtils::ToLower( StringUtils::GetFileExtension( resource_name ) );
+							string resource_extension = core::utils::string::GetLower( core::utils::string::GetFileExtension( resource_name ) );
 							if (   resource_extension == "bpd" || resource_extension == "pad" || resource_extension == "pcf"
 								                               || resource_extension == "seq" || resource_extension == "mph"
 															   || resource_extension == "pgm" || resource_extension == "vxg"

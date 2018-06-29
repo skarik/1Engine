@@ -1,6 +1,6 @@
 #include "CGameSettings.h"
 #include "core/containers/arstring.h"
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 #include "core/exceptions/exceptions.h"
 #include "core-ext/system/io/osf.h"
 #include "core-ext/system/io/Resources.h"
@@ -257,7 +257,7 @@ void CGameSettings::LoadSettings ( void )
 
 			string sCommand;
 			ss >> sCommand;
-			sCommand = StringUtils::ToLower( sCommand );
+			sCommand = core::utils::string::GetLower( sCommand );
 
 			// Is it a valid command string?
 			if ( sCommand.length() > 1 )
@@ -448,7 +448,7 @@ void CGameSettings::SaveSettings ( void )
 		size_t tPosition;
 
 		// Get command to compare to
-		sComparative = StringUtils::ToLower( s_id );
+		sComparative = core::utils::string::GetLower( s_id );
 
 		while ( !fs_gameSettings.eof() )
 		{
@@ -457,7 +457,7 @@ void CGameSettings::SaveSettings ( void )
 			ss.str( string( inputLine ) );
 
 			ss >> sCommand;
-			sCommand = StringUtils::ToLower( sCommand );
+			sCommand = core::utils::string::GetLower( sCommand );
 			if ( sCommand == sComparative )
 			{
 				// match, so output edited line
@@ -507,7 +507,7 @@ const vector<CGameSettings::resolution_t> & CGameSettings::GetResolutionList ( v
 // Adds a variable to the list to be updated from and to the current gameoptions.cfg file
 void CGameSettings::LinkSettingVariable ( int& variable, const char * s_id )
 {
-	string t_actual_name = StringUtils::ToLower( s_id );
+	string t_actual_name = core::utils::string::GetLower( s_id );
 	if ( m_settings_pint.find(t_actual_name) == m_settings_pint.end() )
 	{
 		m_settings_pint[t_actual_name] = &variable;
@@ -519,7 +519,7 @@ void CGameSettings::LinkSettingVariable ( int& variable, const char * s_id )
 }
 void CGameSettings::LinkSettingVariable ( Real& variable, const char * s_id )
 {
-	string t_actual_name = StringUtils::ToLower( s_id );
+	string t_actual_name = core::utils::string::GetLower( s_id );
 	if ( m_settings_preal.find(t_actual_name) == m_settings_preal.end() )
 	{
 		m_settings_preal[t_actual_name] = &variable;
@@ -534,7 +534,7 @@ void CGameSettings::LinkSettingVariable ( Real& variable, const char * s_id )
 // Either adds a new setting or changes an existing setting in the corresponding list.
 void CGameSettings::EditSetting ( const char * s_id, const int value )
 {
-	string t_actual_name = StringUtils::ToLower( s_id );
+	string t_actual_name = core::utils::string::GetLower( s_id );
 	// Remove the value from the other two lists
 	auto t_cmd0 = m_settings_real.find( t_actual_name );
 	if ( t_cmd0 != m_settings_real.end() )
@@ -547,7 +547,7 @@ void CGameSettings::EditSetting ( const char * s_id, const int value )
 }
 void CGameSettings::EditSetting ( const char * s_id, const Real value )
 {
-	string t_actual_name = StringUtils::ToLower( s_id );
+	string t_actual_name = core::utils::string::GetLower( s_id );
 	// Remove the value from the other two lists
 	auto t_cmd0 = m_settings_int.find( t_actual_name );
 	if ( t_cmd0 != m_settings_int.end() )
@@ -560,7 +560,7 @@ void CGameSettings::EditSetting ( const char * s_id, const Real value )
 }
 void CGameSettings::EditSetting ( const char * s_id, const char* value )
 {
-	string t_actual_name = StringUtils::ToLower( s_id );
+	string t_actual_name = core::utils::string::GetLower( s_id );
 	// Remove the value from the other two lists
 	auto t_cmd0 = m_settings_int.find( t_actual_name );
 	if ( t_cmd0 != m_settings_int.end() )
@@ -576,7 +576,7 @@ void CGameSettings::EditSetting ( const char * s_id, const char* value )
 // Returns if the setting with the given name exists
 bool CGameSettings::GetSettingExists ( const char * s_id )
 {
-	string t_actual_name = StringUtils::ToLower( s_id );
+	string t_actual_name = core::utils::string::GetLower( s_id );
 	// Search all lists for the value
 	if ( m_settings_pint.find(t_actual_name) != m_settings_pint.end() ) return true;
 	if ( m_settings_preal.find(t_actual_name) != m_settings_preal.end() ) return true;
@@ -591,7 +591,7 @@ bool CGameSettings::GetSettingExists ( const char * s_id )
 // Grabs a setting from the key-value list.
 const int CGameSettings::GetSettingAsInt ( const char * s_id )
 {
-	string t_actual_name = StringUtils::ToLower( s_id );
+	string t_actual_name = core::utils::string::GetLower( s_id );
 #ifdef _ENGINE_DEBUG
 	if ( t_actual_name.length() < 1 ) throw core::InvalidArgumentException();
 #endif
@@ -608,7 +608,7 @@ const int CGameSettings::GetSettingAsInt ( const char * s_id )
 }
 const Real CGameSettings::GetSettingAsReal ( const char * s_id )
 {
-	string t_actual_name = StringUtils::ToLower( s_id );
+	string t_actual_name = core::utils::string::GetLower( s_id );
 #ifdef _ENGINE_DEBUG
 	if ( t_actual_name.length() < 1 ) throw core::InvalidArgumentException();
 #endif
@@ -625,7 +625,7 @@ const Real CGameSettings::GetSettingAsReal ( const char * s_id )
 }
 const string CGameSettings::GetSettingAsString ( const char * s_id )
 {
-	string t_actual_name = StringUtils::ToLower( s_id );
+	string t_actual_name = core::utils::string::GetLower( s_id );
 #ifdef _ENGINE_DEBUG
 	if ( t_actual_name.length() < 1 ) throw core::InvalidArgumentException();
 #endif

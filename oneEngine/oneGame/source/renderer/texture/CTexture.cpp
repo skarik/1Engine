@@ -1,7 +1,7 @@
 
 // Includes
 #include "core/system/io/FileUtils.h"
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 #include "core-ext/system/io/Resources.h"
 
 #include "renderer/state/CRenderState.h"

@@ -265,9 +265,6 @@
     <ClInclude Include="source\core\system\io\FileUtils.h">
       <Filter>SOURCE\Core\System\IO</Filter>
     </ClInclude>
-    <ClInclude Include="source\core\utils\StringUtils.h">
-      <Filter>SOURCE\Core\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\constants\distances.h">
       <Filter>SOURCE\Core-ext\Constants</Filter>
     </ClInclude>
@@ -382,6 +379,12 @@
     <ClInclude Include="source\core-ext\containers\arresource.h">
       <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\utils\string.h">
+      <Filter>SOURCE\Core\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\utils\string.hpp">
+      <Filter>SOURCE\Core\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">
@@ -453,9 +456,6 @@
     <ClCompile Include="source\core\system\io\FileUtils.cpp">
       <Filter>SOURCE\Core\System\IO</Filter>
     </ClCompile>
-    <ClCompile Include="source\core\utils\StringUtils.cpp">
-      <Filter>SOURCE\Core\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="source\core-ext\math\MathQEF.cpp">
       <Filter>SOURCE\Core-ext\Math</Filter>
     </ClCompile>
@@ -470,6 +470,9 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\system\io\serializer\OSerialBinary.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\utils\string.cpp">
+      <Filter>SOURCE\Core\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -43,16 +43,19 @@ Large game projects are mostly the same, but instead are prefixed by the game in
 	  * ``engine`` game engine backend
 	  * ``audio`` audio engine backend. uses OpenAL Soft, limited optional FMOD support
 	  * ``physical`` animation and physics backend
-      * ``renderer`` opengl 4 renderer support
+      * ``renderer`` opengl 4.6 api support & hybrid forward renderer
 	  * ``engine-common`` simple game framework
+	  * ``engine2d`` ``render2d`` 2d game framework extensions & 2d deferred renderer
 	  * ``deploy`` backend for creating executables
-	* ``_devtools`` programs & code for tools needed for development
+	  * ``tool`` backend for IPC tools needed for development. replaces ``_devtools``
+	  * ``after`` ``after-editor`` ``ld40`` ``m04`` ``m04-editor`` ``tool-suite`` game and tool projects
+	* ``_devtools`` programs & code for tools needed for development. **This will be phasing out**
     * ``.res-1`` engine common resources
 	* ``.res-0`` base game resources
 	* ``.res+N`` where N is any integer, nondestructive file replacement support
 	* ``addons`` plugin support folder
-* ``/oneEngine-render-vk`` vulkan 1 renderer support
-* ``/oneEngine-render-11`` directX 11 renderer support
+* ``/oneEngine-render-vk`` vulkan 1 renderer support. doesnt work yet
+* ``/oneEngine-render-11`` directX 11 renderer support. doesnt exist yet
 
 ## Repos
 

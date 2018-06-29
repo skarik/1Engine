@@ -247,13 +247,13 @@ static long GetFileSize(std::string filename)
     int rc = stat(filename.c_str(), &stat_buf);
     return rc == 0 ? stat_buf.st_size : -1;
 }
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 #include "core/system/io/FileUtils.h"
 // This loads the shader from the file and into the sRawShader string
 void RrShader::open_shader ( void )
 {
 	// Based on the file extention, get the shader type.
-	string sExtension = StringUtils::ToLower( StringUtils::GetFileExtension( sShaderFilename ) );
+	string sExtension = core::utils::string::GetLower( core::utils::string::GetFileExtension( sShaderFilename ) );
 
 	if (( sExtension == "glsl" )||( sExtension == "frag" )||( sExtension == "vert" )||( sExtension == "fp" )||
 		( sExtension == "vp" )||( sExtension == "geom" )||( sExtension == "gl" ))

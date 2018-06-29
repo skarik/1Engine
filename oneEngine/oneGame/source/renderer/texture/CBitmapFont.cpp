@@ -1,6 +1,6 @@
 
 #include "core/debug/console.h"
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 #include "core/system/io/FileUtils.h"
 #include "core-ext/system/io/Resources.h"
 // Include class and structure definition
@@ -60,7 +60,7 @@ CBitmapFont::CBitmapFont ( string sInFontname,
 	fontInfo.italic = bItalic;
 	fontInfo.underline = bUnderline;
 	
-	fontInfo.name = StringUtils::ToLower(sInFontname);
+	fontInfo.name = core::utils::string::GetLower(sInFontname);
 
 	fontInfo.isTexture = false;
 

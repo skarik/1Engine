@@ -1,7 +1,7 @@
 
 #include "core/system/System.h"
 #include "core/system/io/FileUtils.h"
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 #include "core/debug/console.h"
 
 #include "core/os.h"
@@ -63,7 +63,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 	string model_rezname = n_resourcename;
 	string model_filename = model_rezname;
 	{
-		string file_extension = StringUtils::ToLower( StringUtils::GetFileExtension( n_resourcename ) );
+		string file_extension = core::utils::string::GetLower( core::utils::string::GetFileExtension( model_rezname ) );
 		string fbx_rezname = model_rezname;
 		if ( file_extension == "" )
 		{
@@ -409,7 +409,7 @@ bool ModelLoader::ConvertFile ( const char* n_filename )
 
 	// Check filename's extension to see if should convert
 	string targetFilename = n_filename;
-	string file_extension = StringUtils::ToLower( StringUtils::GetFileExtension( targetFilename ) );
+	string file_extension = core::utils::string::GetLower( core::utils::string::GetFileExtension( targetFilename ) );
 
 	if ( file_extension == "fbx" )
 	{

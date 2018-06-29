@@ -159,6 +159,9 @@
     <ClCompile Include="source\core-ext\system\io\osf.cpp">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\assets\Conversion.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -259,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\io\osf.h">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\Conversion.h">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

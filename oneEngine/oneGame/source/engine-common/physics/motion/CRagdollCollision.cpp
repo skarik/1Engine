@@ -300,13 +300,13 @@ void CRagdollCollision::CreateJoints ( std::vector<core::TransformLite>& pose_mo
 }
 
 //#include <boost/algorithm/string.hpp>
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 int boneNameCompare ( const char * bone1, const char * bone2 )
 {
 	string sbone1 (bone1);
 	string sbone2 (bone2);
-	sbone1 = StringUtils::ToLower(sbone1);
-	sbone2 = StringUtils::ToLower(sbone2);
+	sbone1 = core::utils::string::GetLower(sbone1);
+	sbone2 = core::utils::string::GetLower(sbone2);
 	if ( sbone1.find(sbone2) != string::npos ) {
 		return 0;
 	}
