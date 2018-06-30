@@ -64,6 +64,12 @@
     <Filter Include="SOURCE\Core-ext\System\Shell">
       <UniqueIdentifier>{32f2eed7-aaae-4748-8305-baf6de4cc4b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Core\Gfx">
+      <UniqueIdentifier>{47d9e154-6946-47fd-9169-48ea48c7f1e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Gfx">
+      <UniqueIdentifier>{271f1c1b-ca67-4573-ae4d-6a6ce9d60161}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\settings\CGameSettings.cpp">
@@ -160,6 +166,12 @@
       <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClCompile>
     <ClCompile Include="source\core-ext\system\io\assets\Conversion.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\assets\TextureLoader.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\assets\TextureConverter.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClCompile>
   </ItemGroup>
@@ -264,6 +276,9 @@
       <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClInclude>
     <ClInclude Include="source\core-ext\system\io\assets\Conversion.h">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\TextureLoader.h">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClInclude>
   </ItemGroup>

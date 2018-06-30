@@ -49,6 +49,8 @@
     <ClCompile Include="source\core-ext\profiler\CTimeProfiler.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\Conversion.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\ModelLoader.cpp" />
+    <ClCompile Include="source\core-ext\system\io\assets\TextureConverter.cpp" />
+    <ClCompile Include="source\core-ext\system\io\assets\TextureLoader.cpp" />
     <ClCompile Include="source\core-ext\system\io\FileUtils.cpp" />
     <ClCompile Include="source\core-ext\system\io\osf.cpp" />
     <ClCompile Include="source\core-ext\system\io\mccvxg.cpp" />
@@ -86,6 +88,7 @@
     <ClInclude Include="source\core-ext\system\io\assets\ResourceAnimLoader.h" />
     <ClInclude Include="source\core-ext\system\io\assets\ResourceHandler.h" />
     <ClInclude Include="source\core-ext\system\io\assets\ModelLoader.h" />
+    <ClInclude Include="source\core-ext\system\io\assets\TextureLoader.h" />
     <ClInclude Include="source\core-ext\system\io\FileUtils.h" />
     <ClInclude Include="source\core-ext\system\io\osf.h" />
     <ClInclude Include="source\core-ext\system\io\mccvxg.h" />

@@ -240,9 +240,6 @@
     <ClCompile Include="source\renderer\resource\CResourceManager.cpp">
       <Filter>SOURCE\Renderer\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\texture\TextureLoader.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\module_renderer.cpp">
       <Filter>SOURCE\Renderer</Filter>
     </ClCompile>
@@ -257,9 +254,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\renderer-console.cpp">
       <Filter>SOURCE\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\TextureConverter.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\state\Options.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
@@ -524,15 +518,6 @@
     <ClInclude Include="source\renderer\resource\CResourceManager.h">
       <Filter>SOURCE\Renderer\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\types\textureFormats.h">
-      <Filter>SOURCE\Renderer\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\types\pixelFormat.h">
-      <Filter>SOURCE\Renderer\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\TextureLoader.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\module_renderer.h">
       <Filter>SOURCE\Renderer</Filter>
     </ClInclude>
@@ -583,9 +568,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\types\textureStructures.h">
-      <Filter>SOURCE\Renderer\Types</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\types\RrGpuTexture.h">
       <Filter>SOURCE\Renderer\Types</Filter>
