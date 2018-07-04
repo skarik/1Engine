@@ -88,6 +88,11 @@
     <ClInclude Include="source\core-ext\system\io\assets\ResourceAnimLoader.h" />
     <ClInclude Include="source\core-ext\system\io\assets\ResourceHandler.h" />
     <ClInclude Include="source\core-ext\system\io\assets\ModelLoader.h" />
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\bmp.hpp" />
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\bpd.hpp" />
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\jpg.hpp" />
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\png.hpp" />
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\tga.hpp" />
     <ClInclude Include="source\core-ext\system\io\assets\TextureLoader.h" />
     <ClInclude Include="source\core-ext\system\io\FileUtils.h" />
     <ClInclude Include="source\core-ext\system\io\osf.h" />

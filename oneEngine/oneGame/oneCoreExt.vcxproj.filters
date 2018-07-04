@@ -70,6 +70,9 @@
     <Filter Include="SOURCE\Core-ext\Gfx">
       <UniqueIdentifier>{271f1c1b-ca67-4573-ae4d-6a6ce9d60161}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Core-ext\System\IO\Assets\TexLoader">
+      <UniqueIdentifier>{6f5969ed-bb74-43f7-af84-6d3b2b8e028d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\settings\CGameSettings.cpp">
@@ -280,6 +283,21 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\io\assets\TextureLoader.h">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\bmp.hpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\bpd.hpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\jpg.hpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\png.hpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\tga.hpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

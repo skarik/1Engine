@@ -60,7 +60,6 @@ namespace core
 		IMG_FORMAT_PALLETTE	= 0x05	// Palletted GIF
 	};
 
-	//enum alphaLoadMode_t
 	enum ETextureLoadMode
 	{
 		ALPHA_LOAD_MODE_DEFAULT	= 0x00,
@@ -80,25 +79,77 @@ namespace core
 	static_assert(sizeof(textureFmtHeader)	== sizeof(uint32_t)*8,	"Invalid structure size");
 	static_assert(sizeof(textureFmtLevel)	== sizeof(uint32_t)*4,	"Invalid structure size");
 
-	// == FUNCTIONS ==
 	// Converts a given file
-	CORE_API void ConvertFile ( const std::string& n_inputfile, const std::string& n_outputfile, const bool n_override=false );
+	//CORE_API void ConvertFile ( const std::string& n_inputfile, const std::string& n_outputfile, const bool n_override=false );
+	
 	// Converts given bitmap data
-	CORE_API void ConvertData ( const gfx::arPixel* n_inputimg, const gfx::tex::arImageInfo* n_inputimg_info, const std::string& n_outputfile, const uint64_t n_timewrite=0 );
+	//CORE_API void ConvertData ( const gfx::arPixel* n_inputimg, const gfx::tex::arImageInfo* n_inputimg_info, const std::string& n_outputfile, const uint64_t n_timewrite=0 );
 
-	// Given a file, will try to use the proper converter
-	CORE_API gfx::arPixel* LoadRawImageData ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info );
+	//	class BpdLoader
+	// Loads up a BPD and given levels based on configuration.
+	class BpdLoader
+	{
+	public:
+		CORE_API bool LoadBpd ( const char* n_resourcename );
 
-	// Creates a default XOR texture
-	CORE_API gfx::arPixel* loadDefault ( gfx::tex::arImageInfo& o_info );
+	};
 
-	// Actual conversions
-	CORE_API gfx::arPixel* loadTGA ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info );
-	CORE_API gfx::arPixel* loadBMP ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info );
-	CORE_API gfx::arPixel* loadJPG ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info );
-	CORE_API gfx::arPixel* loadPNG ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info );
-	CORE_API gfx::arPixel* loadBPD ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info, const int level );
+	//	class BpdWriter
+	// Given the input data, will generate mipmaps/palettes, and whatnot for the bpd.
+	class BpdWriter
+	{
+	public:
+		CORE_API bool WriteBpd ( const char* n_newfilename );
+	};
 
+	namespace texture
+	{
+		// Given a file, will try to use the proper loader:
+
+		static gfx::arPixel* loadImage ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info )
+		{
+
+		}
+
+		// Creates a default XOR texture:
+
+		static gfx::arPixel* genXOR ( gfx::tex::arImageInfo& o_info, const uint16_t width = 64, const uint16_t height = 64 )
+		{
+			// Set the new texture size
+			o_info.width = width;
+			o_info.height = height;
+
+			// Set the internal format to just RGB8
+			o_info.internalFormat = gfx::tex::kColorFormatRGB8;
+
+			// Create the pixel data
+			gfx::arPixel * pData = new gfx::arPixel [ o_info.width * o_info.height ];
+
+			// Create the data
+			unsigned int iTarget;
+			unsigned short int c;
+			for ( unsigned int ix = 0; ix < o_info.width; ix += 1 )
+			{
+				for ( unsigned int iy = 0; iy < o_info.height; iy += 1 )
+				{
+					iTarget = ix+(iy*o_info.width);
+					c = (ix^iy)*4;
+					pData[iTarget].r = char(c);
+					pData[iTarget].g = char(c);
+					pData[iTarget].b = char(c);
+					pData[iTarget].a = char(c);
+				}
+			}
+			return pData;
+		}
+
+		// Actual conversions:
+
+		static gfx::arPixel* loadTGA ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info );
+		static gfx::arPixel* loadBMP ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info );
+		static gfx::arPixel* loadJPG ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info );
+		static gfx::arPixel* loadPNG ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info );
+	}
 };
 
 
