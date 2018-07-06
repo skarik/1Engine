@@ -1,4 +1,3 @@
-
 #include "core/system/System.h"
 #include "core/system/io/FileUtils.h"
 #include "core/utils/string.h"

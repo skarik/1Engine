@@ -13,14 +13,14 @@
 namespace core {
 namespace texture
 {
-	static gfx::arPixel* loadJPG ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info )
+	static gfx::arPixel* loadJPG ( const char* const n_inputfile, gfx::tex::arImageInfo& o_info )
 	{
 		int calcW, calcH, calcBPP;
 		unsigned char * pixelData = NULL;
 		gfx::arPixel* pData = NULL;
 
 		// Read in the data
-		FILE* file = fopen( n_inputfile.c_str(), "rb");  //open the file
+		FILE* file = fopen( n_inputfile, "rb");  //open the file
 
 		// Structures needed for info
 		struct jpeg_decompress_struct info_jpg; 
@@ -79,10 +79,10 @@ namespace texture
 			o_info.height = calcH;
 
 			// Check and set the bitdepth
-			if ( calcBPP == 3 )
+			/*if ( calcBPP == 3 )
 				o_info.internalFormat = gfx::tex::kColorFormatRGB8;
 			else if ( calcBPP == 4 )
-				o_info.internalFormat = gfx::tex::kColorFormatRGBA8;
+				o_info.internalFormat = gfx::tex::kColorFormatRGBA8;*/
 			// Create the pixel data
 			pData = new gfx::arPixel [ o_info.width * o_info.height ];
 
@@ -115,7 +115,7 @@ namespace texture
 		else
 		{
 			// Print error if data is invalid
-			fprintf( stderr, "Could not read JPG file \"%s\"\n", n_inputfile.c_str() );
+			fprintf( stderr, "Could not read JPG file \"%s\"\n", n_inputfile );
 			// Return no data read
 			return NULL;
 		}

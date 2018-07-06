@@ -1,3 +1,5 @@
+#if 0
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -317,3 +319,5 @@ void Textures::ConvertData ( const pixel_t* n_inputimg, const timgInfo* n_inputi
 	// Close the file
 	fclose( t_outFile );
 }
+
+#endif

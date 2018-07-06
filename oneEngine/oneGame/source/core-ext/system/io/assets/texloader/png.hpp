@@ -13,7 +13,7 @@
 namespace core {
 namespace texture
 {
-	static gfx::arPixel* loadPNG ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info )
+	static gfx::arPixel* loadPNG ( const char* const n_inputfile, gfx::tex::arImageInfo& o_info )
 	{
 		int calcW, calcH, calcBPP;
 		unsigned char * pixelData = NULL;
@@ -24,11 +24,11 @@ namespace texture
 		gfx::arPixel* pTransTable = NULL;
 
 		// Read in the data
-		FILE* file = fopen( n_inputfile.c_str(), "rb");  //open the file
+		FILE* file = fopen( n_inputfile, "rb");  //open the file
 
 		if ( !file )
 		{
-			fprintf( stderr, "Could not open PNG file \"%s\"\n", n_inputfile.c_str() );
+			fprintf( stderr, "Could not open PNG file \"%s\"\n", n_inputfile );
 			pixelData = NULL;
 		}
 		else
@@ -36,7 +36,7 @@ namespace texture
 			unsigned char header[8];    // 8 is the maximum size that can be checked
 			fread( header, 1, 8, file );
 			if ( png_sig_cmp( header, 0, 8 ) )
-				fprintf( stderr, "File %s is not recognized as a PNG file", n_inputfile.c_str() );
+				fprintf( stderr, "File %s is not recognized as a PNG file", n_inputfile );
 
 			// Define needed vars
 			png_structp	png_ptr;
@@ -165,7 +165,7 @@ namespace texture
 		if ( pixelData != NULL )
 		{
 			// Check and set the bitdepth
-			if ( calcBPP == 3 ) {
+			/*if ( calcBPP == 3 ) {
 				if ( alphaMode == ALPHA_LOAD_MODE_DEFAULT ) {
 					o_info.internalFormat = gfx::tex::kColorFormatRGB8;
 				}
@@ -175,7 +175,7 @@ namespace texture
 			}
 			else if ( calcBPP == 4 ) {
 				o_info.internalFormat = gfx::tex::kColorFormatRGBA8;
-			}
+			}*/
 		
 			// Set the new texture size
 			o_info.width = calcW;
@@ -222,7 +222,7 @@ namespace texture
 		else
 		{
 			// Print error if data is invalid
-			fprintf( stderr, "Could not read PNG file \"%s\"\n", n_inputfile.c_str() );
+			fprintf( stderr, "Could not read PNG file \"%s\"\n", n_inputfile );
 			// Return no data read
 			return NULL;
 		}

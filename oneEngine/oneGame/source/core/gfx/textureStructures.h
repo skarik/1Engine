@@ -15,8 +15,6 @@ namespace tex {
 	// Texture info struct
 	struct arTextureInfo
 	{	
-		//glHandle		index;
-
 		arTextureType	type;
 		arColorFormat	internalFormat;
 		arMipmapGenerationStyle	mipmapStyle;
@@ -31,7 +29,7 @@ namespace tex {
 		arWrappingType	repeatY;
 		arWrappingType	repeatZ;
 
-		// TODO: Implement:
+		// TODO: Implement flip, or deprecate and remove.
 		arOrientation	flipX;
 		arOrientation	flipY;
 
@@ -39,33 +37,30 @@ namespace tex {
 		void*		userpdata;
 
 		arTextureInfo ( void )
-			//: index(0)
-		{
-			;
-		}
+			{ ; }
 	};
 
 	// Texture state struct
 	struct arTextureState
 	{
+		// current starting mipmap level
 		uint32_t	level_base;
+		// current max mipmap level
 		uint32_t	level_max;
 	};
 
 	// IMAGE INFO
-	//struct timgInfo
 	struct arImageInfo
 	{
 		// Image size format information:
 
 		uint16_t	width;
 		uint16_t	height;
-
-		uint32_t	internalFormat;
+		uint16_t	depth; // usually 1
 
 		// Specific for getting and setting animation data:
 
-		uint8_t		framecount;
+		uint16_t	framecount;
 		uint8_t		xdivs;	
 		uint8_t		ydivs;
 	};

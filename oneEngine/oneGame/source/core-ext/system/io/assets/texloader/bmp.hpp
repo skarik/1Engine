@@ -12,14 +12,14 @@
 namespace core {
 namespace texture
 {
-	static gfx::arPixel* loadBMP ( const std::string& n_inputfile, gfx::tex::arImageInfo& o_info )
+	static gfx::arPixel* loadBMP ( const char* const n_inputfile, gfx::tex::arImageInfo& o_info )
 	{
 		int calcW, calcH, calcBPP;
 		unsigned char * pixelData = NULL;
 		gfx::arPixel* pData = NULL;
 
 		// Read in the data
-		pixelData = stbi_load( n_inputfile.c_str(), &calcW, &calcH, &calcBPP, 4 );
+		pixelData = stbi_load( n_inputfile, &calcW, &calcH, &calcBPP, 4 );
 
 		// If the data is valid
 		if ( pixelData != NULL )
@@ -29,10 +29,10 @@ namespace texture
 			o_info.height = calcH;
 
 			// Check and set the bitdepth
-			if ( calcBPP == 3 )
+			/*if ( calcBPP == 3 )
 				o_info.internalFormat = gfx::tex::kColorFormatRGB8;
 			else if ( calcBPP == 4 )
-				o_info.internalFormat = gfx::tex::kColorFormatRGBA8;
+				o_info.internalFormat = gfx::tex::kColorFormatRGBA8;*/
 			// Create the pixel data
 			pData = new gfx::arPixel [ o_info.width * o_info.height ];
 
@@ -65,7 +65,7 @@ namespace texture
 		else
 		{
 			// Print error if data is invalid
-			fprintf( stderr, "Could not read BMP file \"%s\"\n", n_inputfile.c_str() );
+			fprintf( stderr, "Could not read BMP file \"%s\"\n", n_inputfile );
 			// Return no data read
 			return NULL;
 		}
