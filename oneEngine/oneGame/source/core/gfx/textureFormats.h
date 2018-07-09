@@ -17,6 +17,8 @@ namespace tex {
 		//Texture2Darray = GL_TEXTURE_2D_ARRAY,
 		TextureCube = GL_TEXTURE_CUBE_MAP
 		*/
+		kTextureTypeNone,
+
 		kTextureType1D,
 		kTextureType2D,
 		kTextureType3D,

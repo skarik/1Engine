@@ -2,6 +2,20 @@
 #include "renderer/system/glMainSystem.h"
 #include "renderer/gpuw/Textures.h"
 
+gpu::Texture::Texture ( void )
+{
+	m_texture = 0;
+	m_type = core::gfx::tex::kTextureTypeNone;
+}
+gpu::Texture::~Texture ( void )
+{
+	// Free texture on death
+	if (m_texture != 0)
+	{
+		
+	}
+}
+
 glHandle gpu::TextureAllocate(
 	const glEnum textureType,
 	const glEnum textureFormat, 

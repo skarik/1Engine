@@ -3,14 +3,14 @@
 
 #include "core/types/types.h"
 #include "renderer/types/types.h"
-#include "renderer/types/textureFormats.h"
+#include "core/gfx/textureFormats.h"
 
 namespace gpu
 {
 	// Create a read/write buffer
-	RENDER_API glHandle TextureAllocate(
-		const glEnum textureType,
-		const glEnum textureFormat, 
+	RENDER_API gpuHandle TextureAllocate(
+		const core::gfx::tex::arTextureType textureType,
+		const core::gfx::tex::arColorFormat textureFormat, 
 		const uint width = 0, const uint height = 0, const uint depth = 0
 	);
 	RENDER_API int TextureSampleSettings(
@@ -34,6 +34,40 @@ namespace gpu
 	RENDER_API int TextureBufferFree(
 		const glHandle texture
 	);
+
+
+	class Texture
+	{
+	public:
+		//	Constructor : creates uninitalized GPU wrapper object.
+		RENDER_API explicit		Texture ( void );
+		//	Destructor : destroys any allocated texture, if existing.
+		RENDER_API				~Texture ( void );
+
+		//	valid() : is this texture valid to be used?
+		// If the texture has not been created, it will be removed.
+		RENDER_API bool			valid ( void );
+		//	nativePtr() : returns native index or pointer to the resource.
+		gpuHandle				nativePtr ( void );
+
+		RENDER_API void allocate (
+			const core::gfx::tex::arTextureType textureType,
+			const core::gfx::tex::arColorFormat textureFormat, 
+			const uint width = 0, const uint height = 0, const uint depth = 0
+		);
+
+		// Sampler is in a different object.
+
+		RENDER_API void free ( void );
+
+	public:
+		gpuHandle						m_texture;
+		core::gfx::tex::arTextureType	m_type;
+	};
+
+	class WOFrameAttachment : public Texture
+	{
+	};
 }
 
 #endif//_GPU_WRAPPER_TEXTURES_H_

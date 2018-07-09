@@ -101,8 +101,8 @@
     <ClCompile Include="source\renderer\object\shapes\CPrimitiveIsosphere.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CPrimitivePlane.cpp" />
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp" />
-    <ClCompile Include="source\renderer\ogl\gl_core_3_3.c" />
-    <ClCompile Include="source\renderer\ogl\wgl_core_3_3.c" />
+    <ClCompile Include="source\renderer\ogl\glcorearb_impl.c" />
+    <ClCompile Include="source\renderer\ogl\wgl_impl.c" />
     <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp" />
     <ClCompile Include="source\renderer\renderer-console.cpp" />
     <ClCompile Include="source\renderer\resource\CModelMaster.cpp" />
@@ -195,8 +195,11 @@
     <ClInclude Include="source\renderer\object\shapes\CPrimitivePlane.h" />
     <ClInclude Include="source\renderer\object\util\CLoadScreenInjector.h" />
     <ClInclude Include="source\renderer\ogl\GLCommon.h" />
-    <ClInclude Include="source\renderer\ogl\gl_core_3_3.h" />
-    <ClInclude Include="source\renderer\ogl\wgl_core_3_3.h" />
+    <ClInclude Include="source\renderer\ogl\glcorearb.h" />
+    <ClInclude Include="source\renderer\ogl\glcorearb_impl.h" />
+    <ClInclude Include="source\renderer\ogl\glxext.h" />
+    <ClInclude Include="source\renderer\ogl\wgl.h" />
+    <ClInclude Include="source\renderer\ogl\wgl_impl.h" />
     <ClInclude Include="source\renderer\particle\motion.h" />
     <ClInclude Include="source\renderer\particle\RrParticleSystem.h" />
     <ClInclude Include="source\renderer\renderer-console.h" />

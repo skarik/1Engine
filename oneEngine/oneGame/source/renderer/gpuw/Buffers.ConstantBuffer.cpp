@@ -12,6 +12,7 @@ gpu::ConstantBuffer::~ConstantBuffer( void )
 	if (m_buffer != 0)
 	{
 		glDeleteBuffers(1, &m_buffer);
+		m_buffer = 0;
 	}
 }
 
