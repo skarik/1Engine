@@ -9,9 +9,9 @@
 #include "core/types/types.h"
 #include "core/system/io/FileUtils.h"
 #include "core-ext/system/io/Resources.h"
-//#include "CTexture.h" // used for RGBA8 enum
-#include "renderer/types/pixelFormat.h"
-#include "renderer/types/textureFormats.h"
+//#include "RrTexture.h" // used for RGBA8 enum
+#include "core/gfx/pixelFormat.h"
+#include "core/gfx/textureFormats.h"
 #include "TextureIO.h"
 
 #include "zlib/zlib.h" // used to compress data

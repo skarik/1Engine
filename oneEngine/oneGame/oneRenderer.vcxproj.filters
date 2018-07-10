@@ -103,6 +103,9 @@
     <Filter Include="SOURCE\Renderer\Object\Immediate">
       <UniqueIdentifier>{7e9475da-58a6-416f-83ad-d917a56d253b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Renderer\GPU Wrapper\Internal">
+      <UniqueIdentifier>{25475de9-81a0-49ee-baec-d7cd5382ee06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\renderer\system\glDrawing.cpp">
@@ -192,9 +195,6 @@
     <ClCompile Include="source\renderer\texture\CRenderTextureCube.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\texture\CTexture.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\texture\CTexture3D.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
@@ -242,12 +242,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\module_renderer.cpp">
       <Filter>SOURCE\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\ogl\wgl_core_3_3.c">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\ogl\gl_core_3_3.c">
-      <Filter>SOURCE\Renderer\OGL</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\screen\CGlowObject.cpp">
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
@@ -369,11 +363,26 @@
     <ClCompile Include="source\renderer\gpuw\Device.cpp">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\ogl\glcorearb_impl.c">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\ogl\wgl_impl.c">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\InputLayout.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\RenderTargets.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTexture.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\rrSamplerState.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\renderer\ogl\GLCommon.h">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\system\glDrawing.h">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClInclude>
@@ -473,9 +482,6 @@
     <ClInclude Include="source\renderer\texture\CRenderTextureCube.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\texture\CTexture.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\texture\CTexture3D.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
@@ -520,12 +526,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\module_renderer.h">
       <Filter>SOURCE\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\ogl\wgl_core_3_3.h">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\ogl\gl_core_3_3.h">
-      <Filter>SOURCE\Renderer\OGL</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\screen\CGlowObject.h">
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
@@ -664,6 +664,42 @@
     </ClInclude>
     <ClInclude Include="source\renderer\gpuw\Device.h">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\ogl\GLCommon.h">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\ogl\glcorearb.h">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\ogl\glcorearb_impl.h">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\ogl\glxext.h">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\ogl\wgl.h">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\ogl\wgl_impl.h">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Internal\Enums.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Error.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\InputLayout.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\RenderTargets.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrTexture.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\rrSamplerState.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

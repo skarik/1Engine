@@ -5,7 +5,7 @@
 #include "physical/interface/tobt.h"
 
 #include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CTexture.h"
+#include "renderer/texture/RrTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/debug/CDebugDrawer.h"
 
@@ -34,7 +34,7 @@ RrBtDebugDraw::RrBtDebugDraw ( PrWorld* associated_world )
 	// Create a forward pass material (see CDebugDrawer for reference)
 	RrMaterial* defaultMat = new RrMaterial;
 	defaultMat->m_diffuse = Color( 1,1,1,1 );
-	defaultMat->setTexture( TEX_DIFFUSE, new CTexture( "textures/white.jpg" ) );
+	defaultMat->setTexture( TEX_DIFFUSE, new RrTexture( "textures/white.jpg" ) );
 	defaultMat->passinfo.push_back( RrPassForward() );
 	defaultMat->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
 	defaultMat->passinfo[0].set2DCommon();

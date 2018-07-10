@@ -11,7 +11,7 @@
 
 #include "core/types/ModelData.h"
 #include "renderer/object/CRenderableObject.h"
-#include "renderer/types/textureStructures.h"
+#include "core/gfx/textureStructures.h"
 #include "render2d/types/spriteInfo.h"
 
 struct spriteGenParams2D_t

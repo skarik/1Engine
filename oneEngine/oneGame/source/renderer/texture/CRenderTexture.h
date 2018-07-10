@@ -3,8 +3,8 @@
 #define _C_RENDER_TEXTURE_
 
 // ==Includes==
-// CTexture class
-#include "CTexture.h"
+// RrTexture class
+#include "RrTexture.h"
 // Request structure
 #include "renderer/types/RrGpuTexture.h"
 // Stack for buffer stack
@@ -33,12 +33,12 @@ struct tRenderTargetInfo
 };
 // ===CLASS===
 // Class definition
-class CRenderTexture : public CTexture
+class CRenderTexture : public RrTexture
 {
 	TextureType( TextureClassRenderTarget );
 protected:
 	explicit CRenderTexture ( const string& sInFilename )
-		: CTexture( sInFilename )
+		: RrTexture( sInFilename )
 	{
 		;
 	}

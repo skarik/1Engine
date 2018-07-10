@@ -3,7 +3,7 @@
 #include "m04-editor/entities/UIDragHandle.h"
 #include "m04-editor/standalone/mapeditor/EditorObject.h"
 
-#include "renderer/texture/CTexture.h"
+#include "renderer/texture/RrTexture.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glDrawing.h"
 
@@ -20,7 +20,7 @@ GizmoRenderer::GizmoRenderer ( void )
 	// Set the default white material
 	RrMaterial* defaultMat = new RrMaterial;
 	defaultMat->m_diffuse = Color( 1,1,1,1 );
-	defaultMat->setTexture( TEX_MAIN, new CTexture( "textures/white.jpg" ) );
+	defaultMat->setTexture( TEX_MAIN, new RrTexture( "textures/white.jpg" ) );
 	defaultMat->passinfo.push_back( RrPassForward() );
 	defaultMat->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
 	defaultMat->passinfo[0].m_lighting_mode = renderer::LI_NONE;

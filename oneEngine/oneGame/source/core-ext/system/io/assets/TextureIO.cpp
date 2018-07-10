@@ -1,6 +1,6 @@
 //#include "renderer/state/CRenderState.h"
 //#include "renderer/system/glMainSystem.h"
-//#include "renderer/types/textureFormats.h"
+//#include "core/gfx/textureFormats.h"
 #include "TextureIO.h"
 // Image libraries
 /*#include "tga/tga_loader.h"

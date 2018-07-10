@@ -29,7 +29,7 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 
 	matMenu = new RrMaterial;
 	matMenu->m_diffuse = Color( 1.0F,1,1 );
-	matMenu->setTexture( TEX_MAIN, new CTexture("null") );
+	matMenu->setTexture( TEX_MAIN, new RrTexture("null") );
 	matMenu->passinfo.push_back( RrPassForward() );
 	matMenu->passinfo[0].set2DCommon();
 	matMenu->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
@@ -131,7 +131,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 
 	renderType = renderer::kRLV2D;
 
-	texCursor = new CTexture( "textures/system/cursor.png" );
+	texCursor = new RrTexture( "textures/system/cursor.png" );
 	matCursor = new RrMaterial;
 	matCursor->m_diffuse = Color( 1.0F,1,1 );
 	matCursor->setTexture( TEX_MAIN, texCursor );

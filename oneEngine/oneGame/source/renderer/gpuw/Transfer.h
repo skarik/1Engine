@@ -3,7 +3,6 @@
 
 #include "core/types/types.h"
 #include "renderer/types/types.h"
-#include "renderer/types/textureFormats.h"
 
 namespace gpu
 {

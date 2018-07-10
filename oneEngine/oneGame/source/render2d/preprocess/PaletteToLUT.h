@@ -2,7 +2,7 @@
 #define _RENDER2D_PALETTE_TO_LUT_H_
 
 #include "core/types.h"
-#include "renderer/types/pixelFormat.h"
+#include "core/gfx/pixelFormat.h"
 
 namespace Render2D
 {

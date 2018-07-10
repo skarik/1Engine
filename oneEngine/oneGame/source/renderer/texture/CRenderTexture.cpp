@@ -48,7 +48,7 @@ CRenderTexture::CRenderTexture (
 	bool			depthFetch,
 	RrGpuTexture		stencilRequest,
 	bool			stencilFetch )
-	: CTexture ( "_hx_SYSTEM_RENDERTEXTURE" )
+	: RrTexture ( "_hx_SYSTEM_RENDERTEXTURE" )
 {
 	GL_ACCESS; // Using the glMainSystem accessor
 

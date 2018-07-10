@@ -1,7 +1,11 @@
-#ifndef RENDERER_TYPES_GL_HANDLE_H_
-#define RENDERER_TYPES_GL_HANDLE_H_
+#ifndef RENDERER_TYPES_H_
+#define RENDERER_TYPES_H_
 
-typedef unsigned int glHandle;
-typedef unsigned int glEnum;
+#include <stdint.h>
 
-#endif//RENDERER_TYPES_GL_HANDLE_H_
+typedef uint64_t gpuHandle;
+typedef unsigned int gpuEnum;
+
+static_assert(sizeof(gpuHandle) == sizeof(uintptr_t), "Invalid type size.");
+
+#endif//RENDERER_TYPES_H_

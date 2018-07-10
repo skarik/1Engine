@@ -33,7 +33,7 @@ RrMaterial*	RrMaterial::Fallback= NULL;
 //uchar		RrMaterial::special_mode = renderer::kPipelineModeNormal;
 
 // Current material world sampler state
-CTexture*	RrMaterial::m_sampler_reflection = NULL;
+RrTexture*	RrMaterial::m_sampler_reflection = NULL;
 
 // =====================================
 
@@ -45,7 +45,7 @@ RrMaterial::RrMaterial ( void )
 	m_bufferMatricesSkinning(0), /*m_bufferMatricesSoftbody(0),*/ m_bufferSkeletonSize(0),
 	referenceCount(1), staticResource(false)
 {
-	memset( m_highlevel_storage, 0, sizeof(CTexture*) * 12 );
+	memset( m_highlevel_storage, 0, sizeof(RrTexture*) * 12 );
 	memset( m_samplers,			 0, sizeof(glHandle) * 12 );
 	memset( m_sampler_targets,	 0, sizeof(glHandle) * 12 );
 }
@@ -91,12 +91,12 @@ RrMaterial*	RrMaterial::copy ( void )
 	newMaterial->m_bufferMatricesSkinning	= m_bufferMatricesSkinning;
 	//newMaterial->m_bufferMatricesSoftbody	= m_bufferMatricesSoftbody;
 
-	memcpy( newMaterial->m_highlevel_storage, m_highlevel_storage, sizeof(CTexture*) * 12 );
+	memcpy( newMaterial->m_highlevel_storage, m_highlevel_storage, sizeof(RrTexture*) * 12 );
 	memcpy( newMaterial->m_samplers, m_samplers, sizeof(glHandle) * 12 );
 	memcpy( newMaterial->m_sampler_targets, m_sampler_targets, sizeof(glHandle) * 12 );
 
 	// Add references to valid high level storage:
-	for (CTexture*& texture : m_highlevel_storage)
+	for (RrTexture*& texture : m_highlevel_storage)
 	{
 		if (texture != NULL) {
 			texture->AddReference();
@@ -847,7 +847,7 @@ void RrMaterial::shader_bind_samplers ( RrShader* shader )
 		{
 			glUniform1i( renderer::UNI_SAMPLER_0 + i, current_sampler_slot );
 			glActiveTexture( GL_TEXTURE0+current_sampler_slot );
-			CTexture::Unbind(0);
+			RrTexture::Unbind(0);
 			glBindTexture( m_sampler_targets[i], m_samplers[i] );
 
 			// Increment used texture count
@@ -883,13 +883,13 @@ void RrMaterial::shader_bind_samplers ( RrShader* shader )
 
 	glUniform1i( renderer::UNI_SAMPLER_LIGHT_BUFFER_0, current_sampler_slot );
 	glActiveTexture( GL_TEXTURE0+current_sampler_slot );
-	CTexture::Unbind(0);
+	RrTexture::Unbind(0);
 	glBindTexture( GL_TEXTURE_BUFFER, m_tex_lightinfo );
 	current_sampler_slot += 1;
 
 	glUniform1i( renderer::UNI_SAMPLER_INSTANCE_BUFFER_0, current_sampler_slot );
 	glActiveTexture( GL_TEXTURE0+current_sampler_slot );
-	CTexture::Unbind(0);
+	RrTexture::Unbind(0);
 	glBindTexture( GL_TEXTURE_BUFFER, m_tex_instancedinfo );
 	current_sampler_slot += 1;
 }

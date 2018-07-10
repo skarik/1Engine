@@ -10,7 +10,7 @@
 #include "renderer/object/CRenderableObject.h"
 //#include "rendererCBitmapFont.h"
 class CBitmapFont;
-class CTexture;
+class RrTexture;
 
 using std::string;
 
@@ -46,7 +46,7 @@ public:
 
 private:
 	RrMaterial*		matCursor;
-	CTexture*		texCursor;
+	RrTexture*		texCursor;
 };
 
 ENGCOM_API extern CDeveloperConsoleUI*	ActiveConsoleUI;

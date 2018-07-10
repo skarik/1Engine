@@ -4,7 +4,7 @@
 
 // Includes
 //#include "CRenderState.h"
-#include "CTexture.h"
+#include "RrTexture.h"
 #include <vector>
 #include <map>
 #include <string>
@@ -27,20 +27,20 @@ struct TexmapSetReference
 };
 
 // Class definition
-class CTextureMaster
+class RrTextureMaster
 {
 public:
-	CTextureMaster ( void );
-	~CTextureMaster ( void );
+	RrTextureMaster ( void );
+	~RrTextureMaster ( void );
 
-	textureEntry_t* AddReference ( CTexture* ptex );
-	textureEntry_t* AddReference ( string texMapSId, CTexture* ptex );
+	textureEntry_t* AddReference ( RrTexture* ptex );
+	textureEntry_t* AddReference ( string texMapSId, RrTexture* ptex );
 
-	void RemoveReference ( CTexture* ptex );
-	void RemoveReference ( string texMapSId, CTexture* ptex );
+	void RemoveReference ( RrTexture* ptex );
+	void RemoveReference ( string texMapSId, RrTexture* ptex );
 
-	const textureEntry_t* GetReference ( CTexture* ptex );
-	const textureEntry_t* GetReference ( string texMapSId, CTexture* ptex );
+	const textureEntry_t* GetReference ( RrTexture* ptex );
+	const textureEntry_t* GetReference ( string texMapSId, RrTexture* ptex );
 
 	void ReloadAll ( void );
 
@@ -49,10 +49,10 @@ public:
 	void UpdateTextureIndex ( const uint n_old, const uint n_new );
 private:
 	std::map<string,TexmapSetReference> textureMap;
-	std::vector<std::pair<CTexture*,uint>>	textureList;
+	std::vector<std::pair<RrTexture*,uint>>	textureList;
 };
 
 // Global Class
-extern CTextureMaster TextureMaster;
+extern RrTextureMaster TextureMaster;
 
 #endif

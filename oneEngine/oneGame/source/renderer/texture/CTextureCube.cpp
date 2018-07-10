@@ -2,20 +2,20 @@
 // Includes
 #include "core/system/io/FileUtils.h"
 #include "renderer/state/CRenderState.h"
-#include "CTextureCube.h"
-#include "CTextureMaster.h"
+#include "RrTextureCube.h"
+#include "RrTextureMaster.h"
 #include "renderer/system/glMainSystem.h"
 #include "core-ext/system/io/Resources.h"
 
 // === Constructor ===
-CTextureCube::CTextureCube ( const string &sInIdentifier,
+RrTextureCube::RrTextureCube ( const string &sInIdentifier,
 		const string& sInFilenameXPos, const string& sInFilenameXNeg,
 		const string& sInFilenameYPos, const string& sInFilenameYNeg,
 		const string& sInFilenameZPos, const string& sInFilenameZNeg,
 		eTextureType	textureType,
 		eColorFormat	format,
 		eMipmapGenerationStyle	mipmapGeneration
-		) : CTexture( "_hx_SYSTEM_SKIP" )
+		) : RrTexture( "_hx_SYSTEM_SKIP" )
 {
 	GL_ACCESS; // Require access to the GL system.
 

@@ -3,14 +3,14 @@
 #define _C_TEXTURE_CUBE_H_
 
 // ==Includes==
-#include "CTexture.h"
+#include "RrTexture.h"
 
 // ===CLASS===
-class CTextureCube : public CTexture
+class RrTextureCube : public RrTexture
 {
 	TextureType( TextureClassCube );
 public:
-	explicit CTextureCube ( const string &sInIdentifier,
+	explicit RrTextureCube ( const string &sInIdentifier,
 		const string& sInFilenameXPos, const string& sInFilenameXNeg,
 		const string& sInFilenameYPos, const string& sInFilenameYNeg,
 		const string& sInFilenameZPos, const string& sInFilenameZNeg,
@@ -18,7 +18,7 @@ public:
 		eColorFormat	format			= RGBA8,
 		eMipmapGenerationStyle	mipmapGeneration = MipmapNone
 		);
-	~CTextureCube ( void );
+	~RrTextureCube ( void );
 
 	//void GenerateMipmap3D ( eMipmapGenerationStyle generationStyle=MipmapNone );
 protected:

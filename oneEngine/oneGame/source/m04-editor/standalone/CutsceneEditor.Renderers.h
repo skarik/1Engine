@@ -10,7 +10,7 @@
 // Prototypes
 //=========================================//
 
-class CTexture;
+class RrTexture;
 class CBitmapFont;
 
 //=========================================//
@@ -49,7 +49,7 @@ namespace M04
 	{
 	private:
 		CutsceneEditor*		m_owner;
-		CTexture*			m_texture;
+		RrTexture*			m_texture;
 
 	public:
 		explicit	CGeometryRenderer ( CutsceneEditor* owner );

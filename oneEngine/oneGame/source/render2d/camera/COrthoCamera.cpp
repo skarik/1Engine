@@ -71,8 +71,8 @@ void COrthoCamera::UpdateMatrix ( void )
 void COrthoCamera::RenderSet ( void )
 {
 	RrMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( kRenderModeDeferred, renderer::kPipelineMode2DPaletted );
-	palette_pass_material->setTexture(TEX_SLOT5, (CTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
-	palette_pass_material->setTexture(TEX_SLOT6, (CTexture*)Render2D::WorldPalette::Active()->GetTexture3D());	// Set 3D lookup
+	palette_pass_material->setTexture(TEX_SLOT5, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
+	palette_pass_material->setTexture(TEX_SLOT6, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture3D());	// Set 3D lookup
 
 	// Remove filtering on the upscaling pass
 	SceneRenderer->GetDeferredBuffer()->SetFilter( SamplingPoint );

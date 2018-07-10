@@ -46,7 +46,7 @@ CutsceneEditor::CLargeTextRenderer::CLargeTextRenderer ( CutsceneEditor* owner )
 
 	// Use a default 2D material
 	m_material = new RrMaterial();
-	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new CTexture("null")) );
+	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new RrTexture("null")) );
 	m_material->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
 
 	m_material->passinfo.push_back( RrPassForward() );
@@ -109,7 +109,7 @@ CutsceneEditor::CNormalTextRenderer::CNormalTextRenderer ( CutsceneEditor* owner
 
 	// Use a default 2D material
 	m_material = new RrMaterial();
-	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new CTexture("null")) );
+	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new RrTexture("null")) );
 	m_material->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
 
 	m_material->passinfo.push_back( RrPassForward() );
@@ -206,7 +206,7 @@ CutsceneEditor::CGeometryRenderer::CGeometryRenderer ( CutsceneEditor* owner )
 
 	// Use a default 2D material
 	m_material = new RrMaterial();
-	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new CTexture("null")) );
+	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new RrTexture("null")) );
 	m_material->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
 
 	m_material->passinfo.push_back( RrPassForward() );
