@@ -7,11 +7,11 @@
 #include "renderer/material/RrShader.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/texture/CTexture.h"
-#include "renderer/texture/TextureLoader.h"
+#include "renderer/texture/TextureIO.h"
 
 #include "renderer/resource/CResourceManager.h"
 
-#include "render2d/texture/TextureLoader.h"
+#include "render2d/texture/TextureIO.h"
 
 #include "renderer/system/glMainSystem.h"
 

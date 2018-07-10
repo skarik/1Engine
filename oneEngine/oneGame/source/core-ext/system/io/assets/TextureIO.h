@@ -1,12 +1,12 @@
 //===============================================================================================//
 //
-//	TextureLoader.h
+//	TextureIO.h
 //
 // Definitions for the Bit Pixel Data (BPD) format. 
 //
 //===============================================================================================//
-#ifndef CORE_ASSETS_TEXTURE_LOADER_H_
-#define CORE_ASSETS_TEXTURE_LOADER_H_
+#ifndef CORE_ASSETS_TEXTURE_IO_H_
+#define CORE_ASSETS_TEXTURE_IO_H_
 
 #include <string>
 #include <stdint.h>
@@ -163,15 +163,28 @@ namespace core
 		bool			m_generateMipmaps;
 		// Controls if image is converted to the the palette given before saved. This will prevent mipmaps from being generated.
 		bool			m_convertAndEmbedPalette;
+		// 
 
 		//	Save data:
 
-		gfx::arPixel*	rawImage;
-		gfx::arPixel*	palette;
-		gfx::arPixel*	mipmaps [16];
-		int				mipmapCount;
+		gfx::arPixel*			rawImage;
+		gfx::arPixel*			palette;
+		gfx::arPixel*			mipmaps [16];
+		int						mipmapCount;
 
-		uint64_t		datetime;
+		gfx::tex::arImageInfo	info;
+		uint16_t*				frame_times;
+
+		uint64_t				datetime;
+
+	private:
+		bool			writeHeader ( void );
+		bool			writeLevelData ( void );
+
+		uint32_t		calculateLevelSize ( int );
+
+	private:
+		FILE*			m_file;
 	};
 
 	namespace texture
@@ -255,4 +268,4 @@ namespace core
 };
 
 
-#endif//CORE_ASSETS_TEXTURE_LOADER_H_
+#endif//CORE_ASSETS_TEXTURE_IO_H_

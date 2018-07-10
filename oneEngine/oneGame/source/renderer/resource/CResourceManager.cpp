@@ -12,7 +12,7 @@
 #include "renderer/material/RrMaterial.h"
 #include "renderer/material/RrShader.h"
 
-#include "renderer/texture/TextureLoader.h"
+#include "renderer/texture/TextureIO.h"
 #include "core/math/Math.h"
 #include "renderer/texture/CTextureMaster.h"
 

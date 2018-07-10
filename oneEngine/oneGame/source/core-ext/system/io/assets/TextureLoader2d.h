@@ -2,7 +2,7 @@
 #ifndef _RENDER2D_TEXTURE_LOADER_H_
 #define _RENDER2D_TEXTURE_LOADER_H_
 
-#include "renderer/texture/TextureLoader.h"
+#include "renderer/texture/TextureIO.h"
 
 namespace Textures
 {

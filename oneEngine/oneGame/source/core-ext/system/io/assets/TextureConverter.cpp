@@ -12,7 +12,7 @@
 //#include "CTexture.h" // used for RGBA8 enum
 #include "renderer/types/pixelFormat.h"
 #include "renderer/types/textureFormats.h"
-#include "TextureLoader.h"
+#include "TextureIO.h"
 
 #include "zlib/zlib.h" // used to compress data
 

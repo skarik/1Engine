@@ -3,9 +3,9 @@
 
 #include "tool/converter/TrConverterBase.h"
 
-#include "renderer/types/pixelFormat.h"
-#include "renderer/types/textureStructures.h"
-#include "renderer/types/textureFormats.h"
+#include "core/gfx/pixelFormat.h"
+#include "core/gfx/textureStructures.h"
+#include "core/gfx/textureFormats.h"
 
 class TrConverter32GraphicsGale : public TrConverterBase
 {

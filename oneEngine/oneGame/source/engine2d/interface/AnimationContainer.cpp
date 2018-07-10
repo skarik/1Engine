@@ -13,7 +13,7 @@
 #include "renderer/resource/CResourceManager.h"
 
 #include "render2d/object/sprite/CEditableRenderable2D.h"
-#include "render2d/texture/TextureLoader.h"
+#include "render2d/texture/TextureIO.h"
 
 using namespace Engine2D;
 

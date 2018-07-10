@@ -171,10 +171,10 @@
     <ClCompile Include="source\core-ext\system\io\assets\Conversion.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="source\core-ext\system\io\assets\TextureLoader.cpp">
+    <ClCompile Include="source\core-ext\system\io\assets\TextureConverter.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="source\core-ext\system\io\assets\TextureConverter.cpp">
+    <ClCompile Include="source\core-ext\system\io\assets\TextureIO.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClCompile>
   </ItemGroup>
@@ -281,9 +281,6 @@
     <ClInclude Include="source\core-ext\system\io\assets\Conversion.h">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="source\core-ext\system\io\assets\TextureLoader.h">
-      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
-    </ClInclude>
     <ClInclude Include="source\core-ext\system\io\assets\texloader\bmp.hpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
     </ClInclude>
@@ -298,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\io\assets\texloader\tga.hpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\TextureIO.h">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

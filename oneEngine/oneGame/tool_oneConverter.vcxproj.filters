@@ -21,12 +21,36 @@
     <ClCompile Include="source\tool\converter\TrConverterForwardTo32.cpp">
       <Filter>SOURCE\Tool\Converter</Filter>
     </ClCompile>
+    <ClCompile Include="source\tool\converter\TrConverterPNG.cpp">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tool\converter\TrConverterJPG.cpp">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tool\converter\TrConverterTGA.cpp">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tool\converter\TrConverterBMP.cpp">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\tool\converter\TrConverterBase.h">
       <Filter>SOURCE\Tool\Converter</Filter>
     </ClInclude>
     <ClInclude Include="source\tool\converter\TrConverterForwardTo32.h">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tool\converter\TrConverterPNG.h">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tool\converter\TrConverterJPG.h">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tool\converter\TrConverterTGA.h">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tool\converter\TrConverterBMP.h">
       <Filter>SOURCE\Tool\Converter</Filter>
     </ClInclude>
   </ItemGroup>

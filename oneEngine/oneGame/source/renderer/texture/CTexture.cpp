@@ -8,7 +8,7 @@
 #include "renderer/resource/CResourceManager.h"
 #include "CTexture.h"
 #include "CTextureMaster.h"
-#include "TextureLoader.h"
+#include "TextureIO.h"
 
 #include "renderer/system/glMainSystem.h"
 

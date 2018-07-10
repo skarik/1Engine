@@ -1,7 +1,7 @@
 //#include "renderer/state/CRenderState.h"
 //#include "renderer/system/glMainSystem.h"
 //#include "renderer/types/textureFormats.h"
-#include "TextureLoader.h"
+#include "TextureIO.h"
 // Image libraries
 /*#include "tga/tga_loader.h"
 #include "jpeg/jpeglib.h"
@@ -10,6 +10,9 @@
 #include "zlib/zlib.h"*/
 
 #include "core/utils/string.h"
+
+#include "core/system/io/CBinaryFile.h"
+#include "core/math/Math.h"
 
 //#include <iostream>
 //using std::cout;
@@ -850,7 +853,79 @@ core::BpdWriter::~BpdWriter()
 
 bool core::BpdWriter::WriteBpd ( const char* n_resourcename )
 {
+	if (datetime == 0)
+	{
+		// Get the time of the input file
+		struct stat f_buf;
+		//stat( t_inputName.c_str(), &f_buf );
+		datetime = (uint64_t)f_buf.st_mtime;
+	}
+
+	FILE* file = NULL;
+
+	if (file == NULL)
+	{
+		return false;
+	}
+	m_file = file;
+
+	// Begin with writing the header
+	if (!writeHeader() ||
+		!writeLevelData())
+	{
+		fclose(file);
+		return false;
+	}
+
+	// Write the extra fun times at the end:
+	const char l_idString[] = "END OF THE LINE, ASSHOLE";
+	fwrite(l_idString, sizeof(l_idString), 1, file);
+
+	// Close the file
+	fclose(file);
+
 	return false;
+}
+
+bool core::BpdWriter::writeHeader ( void )
+{
+	textureFmtHeader l_header = {};
+	l_header.head[0] = kTextureFormat_Header[0];
+	l_header.head[1] = kTextureFormat_Header[1];
+	l_header.head[2] = kTextureFormat_Header[2];
+	l_header.head[3] = kTextureFormat_Header[3];
+	l_header.version[0] = kTextureFormat_VersionMajor;
+	l_header.version[1] = kTextureFormat_VersionMinor;
+	l_header.datetime	= datetime;
+
+	l_header.flags = 0;
+	// Byte 0: Format
+	l_header.flags		|= IMG_FORMAT_RGBA8 & 0x000000FF;
+	// Byte 1: Transparency & load modes
+	l_header.flags		|= (ALPHA_LOAD_MODE_DEFAULT << 8) & 0x0000FF00;
+	// Byte 2: Type of texture (animated?)
+	l_header.flags		|= (((frame_times == NULL && info.framecount == 0) ? 0 : 1) << 16) & 0x00FF0000;
+
+	l_header.width		= info.width;
+	l_header.height		= info.height;
+	l_header.levels		= (uint16_t) std::max<int>( 1, math::log2( std::min<uint>(info.width, info.height) )-3 ); // -3 for 16, -4 for 32
+
+	l_header.levelsOffset = sizeof(textureFmtHeader);
+	l_header.postLevelsOffset = l_header.levelsOffset;
+	// Add up the size of the levels:
+	for (uint16_t i = 0; i < l_header.levels; ++i) {
+		l_header.postLevelsOffset += calculateLevelSize(i);
+	}
+
+	// Write the header:
+	fwrite(&l_header, sizeof(l_header), 1, m_file);
+
+	return true;
+}
+
+bool core::BpdWriter::writeLevelData ( void )
+{
+	return true;
 }
 
 //=========================================//

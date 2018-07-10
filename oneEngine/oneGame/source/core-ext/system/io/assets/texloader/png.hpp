@@ -6,7 +6,7 @@
 
 #include "core/gfx/pixelFormat.h"
 #include "core/gfx/textureStructures.h"
-#include "core-ext/system/io/assets/TextureLoader.h"
+#include "core-ext/system/io/assets/TextureIO.h"
 
 #include "png/png.h"
 

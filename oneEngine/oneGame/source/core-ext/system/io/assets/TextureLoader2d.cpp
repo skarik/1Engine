@@ -1,6 +1,6 @@
 
 #include "renderer/types/textureFormats.h"
-#include "render2d/texture/TextureLoader.h"
+#include "render2d/texture/TextureIO.h"
 
 #ifndef _ENGINE_RELEASE
 #include "gale/galefile.h"

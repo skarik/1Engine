@@ -4,6 +4,8 @@
 #include "core/utils/string.h"
 #include "core-ext/system/io/FileUtils.h"
 
+#include "gale/galefile.h"
+
 #include <vector>
 
 enum trImageDataUsage
