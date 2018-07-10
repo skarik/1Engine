@@ -4,8 +4,8 @@
 
 // ==Includes==
 #include "core/math/Vector2d.h"
-// CTexture class
-#include "CTexture.h"
+// RrTexture class
+#include "RrTexture.h"
 // Stringstream for unique string id generation
 //#include <sstream>
 //using std::stringstream;
@@ -66,7 +66,7 @@ struct tBitmapFontInfo
 
 // ===CLASS===
 // Class definition
-class CBitmapFont : public CTexture
+class CBitmapFont : public RrTexture
 {
 	TextureType( TextureClassBitmapFont );
 public:

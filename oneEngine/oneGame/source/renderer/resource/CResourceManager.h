@@ -17,7 +17,7 @@
 #include <atomic>
 
 class CRenderState;
-class CTexture;
+class RrTexture;
 
 //	struct resourceManagerSettings_t
 // Settings structure for configuring behavior of the resource manager.
@@ -61,14 +61,14 @@ public:
 	// Mark resources. Based on what?
 	// How to interact with model manager, shader manager, and texture manager? Should we mess with them?
 	// Idea: leave previous managers. Use this resource manager to set timings for the other manager update systems.
-	void AddResource ( CTexture* );
+	void AddResource ( RrTexture* );
 	// removes from the source lsit
-	void RemoveResource ( CTexture* );
+	void RemoveResource ( RrTexture* );
 
 	// Force load resources
-	void ForceLoadResource ( CTexture* );
+	void ForceLoadResource ( RrTexture* );
 	// Finish load resource
-	void FinishAddResource ( CTexture* );
+	void FinishAddResource ( RrTexture* );
 
 public:
 	//=========================================//
@@ -147,20 +147,20 @@ namespace renderer
 	class Resources
 	{
 	public:
-		RENDER_API static CTexture*	GetTexture ( const std::string& identifier )
+		RENDER_API static RrTexture*	GetTexture ( const std::string& identifier )
 		{
 			return GetTexture( identifier.c_str() );
 		}
-		RENDER_API static CTexture*	GetTexture ( const char* identifier );
+		RENDER_API static RrTexture*	GetTexture ( const char* identifier );
 
-		RENDER_API static void		AddTexture ( const std::string& identifier, CTexture* texture = (CTexture*)0xF33D )
+		RENDER_API static void		AddTexture ( const std::string& identifier, RrTexture* texture = (RrTexture*)0xF33D )
 		{
 			return AddTexture( identifier.c_str(), texture );
 		}
-		RENDER_API static void		AddTexture ( const char* identifier, CTexture* texture = (CTexture*)0xF33D );
+		RENDER_API static void		AddTexture ( const char* identifier, RrTexture* texture = (RrTexture*)0xF33D );
 
 	protected:
-		static std::map<arstring128, CTexture*> textureMap;
+		static std::map<arstring128, RrTexture*> textureMap;
 	};
 }
 

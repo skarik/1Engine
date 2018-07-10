@@ -1,9 +1,9 @@
-#ifndef _GL_TEXTURE_STRUCTURE_H_
+/*#ifndef _GL_TEXTURE_STRUCTURE_H_
 #define _GL_TEXTURE_STRUCTURE_H_
 
 #include "core/types/types.h"
 #include "renderer/types/types.h"
-#include "renderer/types/textureFormats.h"
+#include "core/gfx/textureFormats.h"
 
 struct RrGpuTexture
 {
@@ -20,4 +20,4 @@ struct RrGpuTexture
 
 // make a function/class/whatever to generate a color, depth, or stencil texture
 
-#endif
+#endif*/

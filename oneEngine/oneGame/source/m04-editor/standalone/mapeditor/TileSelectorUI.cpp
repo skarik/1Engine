@@ -4,7 +4,7 @@
 
 #include "core/system/Screen.h"
 #include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CTexture.h"
+#include "renderer/texture/RrTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 #include "renderer/object/immediate/immediate.h"
@@ -22,7 +22,7 @@ TileSelectorUI::TileSelectorUI ( void )
 	// Mat init
 	RrMaterial* draw_mat = new RrMaterial;
 	draw_mat->m_diffuse = Color( 1,1,1,1 );
-	draw_mat->setTexture( TEX_DIFFUSE, new CTexture("null") );
+	draw_mat->setTexture( TEX_DIFFUSE, new RrTexture("null") );
 	draw_mat->passinfo.push_back( RrPassForward() );
 	draw_mat->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
 	draw_mat->passinfo[0].set2DCommon();
@@ -31,7 +31,7 @@ TileSelectorUI::TileSelectorUI ( void )
 
 	RrMaterial* ui_mat = new RrMaterial;
 	ui_mat->m_diffuse = Color( 1,1,1,1 );
-	ui_mat->setTexture( TEX_DIFFUSE, new CTexture( "textures/white.jpg" ) );
+	ui_mat->setTexture( TEX_DIFFUSE, new RrTexture( "textures/white.jpg" ) );
 	ui_mat->passinfo.push_back( RrPassForward() );
 	ui_mat->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
 	ui_mat->passinfo[0].set2DCommon();
@@ -58,7 +58,7 @@ void TileSelectorUI::SetTileMap ( Engine2D::TileMap* target )
 	// TODO: Convert the texture. For now, set the material based on the input file.
 	m_material->setTexture(
 		TEX_MAIN,
-		new CTexture (
+		new RrTexture (
 			target->m_sprite_file.c_str(), 
 			Texture2D, RGBA8,
 			1024,1024, Clamp,Clamp,

@@ -2,14 +2,14 @@
 // Includes
 //#include "CRenderState.h"
 #include "renderer/system/glSystem.h"
-#include "CTexture3D.h"
-#include "CTextureMaster.h"
+#include "RrTexture3D.h"
+#include "RrTextureMaster.h"
 
 #include "core/system/io/FileUtils.h"
 #include "core-ext/system/io/Resources.h"
 
 // === Constructor ===
-CTexture3D::CTexture3D ( string sInFilename,
+RrTexture3D::RrTexture3D ( string sInFilename,
 		eTextureType	textureType,
 		eColorFormat	format,
 		unsigned int	atlasSizeX,
@@ -18,7 +18,7 @@ CTexture3D::CTexture3D ( string sInFilename,
 		eWrappingType	repeatY,
 		eWrappingType	repeatZ,
 		eMipmapGenerationStyle	mipmapGeneration
-		) : CTexture( "_hx_SYSTEM_SKIP" )
+		) : RrTexture( "_hx_SYSTEM_SKIP" )
 {
 	GL_ACCESS; // Using the glMainSystem accessor
 
@@ -105,7 +105,7 @@ CTexture3D::CTexture3D ( string sInFilename,
 }
 
 // Converting 2D atlas into a 3D texture
-void CTexture3D::Load3DImageInfoFromAtlas ( const unsigned int atlasSizeX, const unsigned int atlasSizeY )
+void RrTexture3D::Load3DImageInfoFromAtlas ( const unsigned int atlasSizeX, const unsigned int atlasSizeY )
 {
 	// Load the image normally
 	LoadImageInfo();
@@ -140,7 +140,7 @@ void CTexture3D::Load3DImageInfoFromAtlas ( const unsigned int atlasSizeX, const
 
 //=========================================//
 // === Manual Upload ===
-void CTexture3D::Upload (
+void RrTexture3D::Upload (
 	pixel_t* data,
 	uint width,
 	uint height,
@@ -197,7 +197,7 @@ void CTexture3D::Upload (
 }
 
 // === Mipmap Generation ===
-void CTexture3D::GenerateMipmap3D ( eMipmapGenerationStyle generationStyle )
+void RrTexture3D::GenerateMipmap3D ( eMipmapGenerationStyle generationStyle )
 {
 	switch ( generationStyle ) {
 	case MipmapNone:

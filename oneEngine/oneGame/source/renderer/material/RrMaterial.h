@@ -46,7 +46,7 @@ enum textureslot_t : uint8_t
 
 // Prototype
 class CRenderableObject;
-class CTexture;
+class RrTexture;
 class CRenderTexture;
 class CRenderState;
 
@@ -144,11 +144,11 @@ public:
 	//	setTexture ( slot, texture ) : Sets material texture.
 	// Material is given ownership of the texture (to an extent).
 	// Do not delete the texture directly, use RemoveReference.
-	RENDER_API void			setTexture ( const textureslot_t n_index, CTexture* n_texture );
+	RENDER_API void			setTexture ( const textureslot_t n_index, RrTexture* n_texture );
 	//	setSampler ( slot, texture ) : Sets material texture with raw GPU handles.
 	RENDER_API void			setSampler ( const textureslot_t n_index, const glHandle n_sampler, const glEnum n_sampler_target=0 );
 	//	getTexture ( slot ) : Returns texture object set to slot
-	RENDER_API CTexture*	getTexture ( const textureslot_t n_index );
+	RENDER_API RrTexture*	getTexture ( const textureslot_t n_index );
 
 private:
 	// Current state:
@@ -165,7 +165,7 @@ private:
 	rrCmdBufferBuildstate	m_buildState;
 
 	// Textures (samplers)
-	CTexture*	m_highlevel_storage [12];
+	RrTexture*	m_highlevel_storage [12];
 	glHandle	m_samplers [12];
 	glEnum		m_sampler_targets [12];
 
@@ -181,7 +181,7 @@ public:
 	glHandle	m_tex_instancedinfo;
 
 	// Textures (global properties)
-	RENDER_API static CTexture*	m_sampler_reflection;
+	RENDER_API static RrTexture*	m_sampler_reflection;
 
 private:
 	// Static UBOs

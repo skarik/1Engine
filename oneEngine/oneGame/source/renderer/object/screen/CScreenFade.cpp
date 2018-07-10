@@ -1,7 +1,7 @@
 #include "CScreenFade.h"
 #include "core/time/time.h"
 
-#include "renderer/texture/CTexture.h"
+#include "renderer/texture/RrTexture.h"
 #include "renderer/camera/CCamera.h"
 #include "renderer/material/RrMaterial.h"
 
@@ -30,7 +30,7 @@ CScreenFade::CScreenFade ( bool inbFadeIn, float infFadeTime, float infFadeDelay
 
 	screenMaterial = new RrMaterial();
 	screenMaterial->m_diffuse = cFadeColor;
-	screenMaterial->setTexture( TEX_DIFFUSE, new CTexture("textures/white.jpg") );
+	screenMaterial->setTexture( TEX_DIFFUSE, new RrTexture("textures/white.jpg") );
 	screenMaterial->passinfo.push_back( RrPassForward() );
 	screenMaterial->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
 	screenMaterial->passinfo[0].set2DCommon();

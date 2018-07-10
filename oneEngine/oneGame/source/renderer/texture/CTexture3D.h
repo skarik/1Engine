@@ -3,14 +3,14 @@
 #define _C_TEXTURE_3D_H_
 
 // ==Includes==
-#include "CTexture.h"
+#include "RrTexture.h"
 
 // ===CLASS===
-class CTexture3D : public CTexture
+class RrTexture3D : public RrTexture
 {
 	TextureType( TextureClass3D );
 public:
-	RENDER_API explicit CTexture3D ( string sInFilename,
+	RENDER_API explicit RrTexture3D ( string sInFilename,
 		eTextureType	textureType		= Texture3D,
 		eColorFormat	format			= RGBA8,
 		unsigned int	atlasSizeX		= 4,
@@ -20,7 +20,7 @@ public:
 		eWrappingType	repeatZ			= Repeat,
 		eMipmapGenerationStyle	mipmapGeneration = MipmapNone
 		);
-	RENDER_API ~CTexture3D ( void );
+	RENDER_API ~RrTexture3D ( void );
 
 	RENDER_API void GenerateMipmap3D ( eMipmapGenerationStyle generationStyle=MipmapNone );
 

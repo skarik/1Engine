@@ -12,7 +12,7 @@ CDepthSplitShader::CDepthSplitShader ( void )
 	renderSettings.renderHints = kRenderHintWorld;
 
 	RrMaterial *shaderMaterial = new RrMaterial;
-	shaderMaterial->setTexture( TEX_SLOT2, new CTexture( "textures/hud/overlay_goggles_warp.jpg" ) );
+	shaderMaterial->setTexture( TEX_SLOT2, new RrTexture( "textures/hud/overlay_goggles_warp.jpg" ) );
 	shaderMaterial->m_isScreenShader = true;
 	shaderMaterial->passinfo.push_back( RrPassForward() );
 	shaderMaterial->passinfo[0].shader = new RrShader( "shaders/screen/depth_split.glsl" );

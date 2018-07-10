@@ -9,7 +9,7 @@
 using namespace std;
 
 //Texture set
-void		RrMaterial::setTexture ( const textureslot_t n_index, CTexture* n_texture )
+void		RrMaterial::setTexture ( const textureslot_t n_index, RrTexture* n_texture )
 {
 	GL_ACCESS;
 	// Check doubly set texture
@@ -60,7 +60,7 @@ void		RrMaterial::setSampler ( const textureslot_t n_index, const uint n_sampler
 	m_samplers[n_index]			= n_sampler;
 	m_sampler_targets[n_index]	= n_sampler_target;
 }
-CTexture*	RrMaterial::getTexture ( const textureslot_t n_index )
+RrTexture*	RrMaterial::getTexture ( const textureslot_t n_index )
 {
 	return m_highlevel_storage[n_index];
 }

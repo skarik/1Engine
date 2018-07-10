@@ -1,7 +1,7 @@
 
 #include "WorldPalette.h"
-#include "renderer/texture/CTexture.h"
-#include "renderer/texture/CTexture3D.h"
+#include "renderer/texture/RrTexture.h"
+#include "renderer/texture/RrTexture3D.h"
 #include "render2d/preprocess/PaletteToLUT.h"
 
 using namespace Render2D;
@@ -36,12 +36,12 @@ void WorldPalette::Reset ( void )
 }
 
 //	GetTexture () : Returns render texture with the current palette. Will update it on request if needed.
-CTexture* WorldPalette::GetTexture ( void )
+RrTexture* WorldPalette::GetTexture ( void )
 {
 	if ( palette_texture == NULL )
 	{
-		palette_texture = new CTexture("_hx_SYSTEM_SKIP");
-		palette3d_texture = new CTexture3D("_hx_SYSTEM_SKIP");
+		palette_texture = new RrTexture("_hx_SYSTEM_SKIP");
+		palette3d_texture = new RrTexture3D("_hx_SYSTEM_SKIP");
 		palette_texture_needs_update = true;
 	}
 	if ( palette_texture_needs_update )
@@ -56,7 +56,7 @@ CTexture* WorldPalette::GetTexture ( void )
 //	GetTexture3D ()
 // Returns 3D texture which is a distance-matched RGB lookup with current palette.
 // Will update it on request if needed.
-CTexture3D* WorldPalette::GetTexture3D ( void )
+RrTexture3D* WorldPalette::GetTexture3D ( void )
 {
 	GetTexture(); // Force update
 	return palette3d_texture;

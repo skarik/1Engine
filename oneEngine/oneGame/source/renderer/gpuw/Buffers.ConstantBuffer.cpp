@@ -2,19 +2,19 @@
 
 #include "renderer/system/glMainSystem.h"
 
-gpu::ConstantBuffer::ConstantBuffer( void )
-{
-	m_buffer = 0;
-}
-gpu::ConstantBuffer::~ConstantBuffer( void )
-{
-	// Free the buffer on death.
-	if (m_buffer != 0)
-	{
-		glDeleteBuffers(1, &m_buffer);
-		m_buffer = 0;
-	}
-}
+//gpu::ConstantBuffer::ConstantBuffer( void )
+//{
+//	m_buffer = 0;
+//}
+//gpu::ConstantBuffer::~ConstantBuffer( void )
+//{
+//	// Free the buffer on death.
+//	if (m_buffer != 0)
+//	{
+//		glDeleteBuffers(1, &m_buffer);
+//		m_buffer = 0;
+//	}
+//}
 
 //	valid () : is this buffer valid to be used?
 // If the buffer has not been created, it will be removed.
@@ -23,27 +23,30 @@ bool gpu::ConstantBuffer::valid ( void )
 	return m_buffer != 0;
 }
 //	getGlIndex() : returns index of resource in OpenGL
-glHandle gpu::ConstantBuffer::getGlIndex ( void )
+gpuHandle gpu::ConstantBuffer::nativePtr ( void )
 {
-	return m_buffer;
+	return (gpuHandle)m_buffer;
 }
 
-static void _AllocateBufferSize ( const uint64_t data_size, const gpu::TransferStyle style )
+static void _AllocateCBufferSize ( const GLuint buffer, const uint64_t data_size, const gpu::TransferStyle style )
 {
 	if (style == gpu::kTransferStatic)
-		glBufferData( GL_UNIFORM_BUFFER, (GLsizeiptr)data_size, NULL, GL_STATIC_DRAW );
+		glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_MAP_WRITE_BIT);
+		//glBufferData( GL_UNIFORM_BUFFER, (GLsizeiptr)data_size, NULL, GL_STATIC_DRAW );
 	else if (style == gpu::kTransferDynamic)
-		glBufferData( GL_UNIFORM_BUFFER, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_DRAW );
+		glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
+		//glBufferData( GL_UNIFORM_BUFFER, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_DRAW );
 	else if (style == gpu::kTransferStream)
-		glBufferData( GL_UNIFORM_BUFFER, (GLsizeiptr)data_size, NULL, GL_STREAM_DRAW );
+		glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
+		//glBufferData( GL_UNIFORM_BUFFER, (GLsizeiptr)data_size, NULL, GL_STREAM_DRAW );
 }
 
 //	init ( data ) : initializes a constant buffer with data
 int	gpu::ConstantBuffer::init ( void* data, const uint64_t data_size, const TransferStyle style )
 {
-	glGenBuffers( 1, &m_buffer );
-	glBindBuffer( GL_UNIFORM_BUFFER, m_buffer );
-	_AllocateBufferSize(data_size, style);
+	glCreateBuffers(1, &m_buffer);
+	//glBindBuffer( GL_UNIFORM_BUFFER, m_buffer );
+	_AllocateCBufferSize(m_buffer, data_size, style);
 
 	if (data != NULL)
 	{
@@ -62,11 +65,12 @@ int	gpu::ConstantBuffer::upload ( void* data, const uint64_t data_size, const Tr
 	}
 	else
 	{
-		glBindBuffer( GL_UNIFORM_BUFFER, m_buffer );
-		_AllocateBufferSize(data_size, style);
+		//glBindBuffer( GL_UNIFORM_BUFFER, m_buffer );
+		_AllocateCBufferSize(m_buffer, data_size, style);
 	}
 
-	glBufferSubData( GL_UNIFORM_BUFFER, 0, (GLsizeiptr)data_size, data );
+	//glBufferSubData( GL_UNIFORM_BUFFER, 0, (GLsizeiptr)data_size, data );
+	glNamedBufferSubData(m_buffer, 0, (GLsizeiptr)data_size, data);
 
 	return 0;
 }

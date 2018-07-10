@@ -9,7 +9,7 @@
 
 #include "renderer/material/RrShader.h"
 #include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CTexture.h"
+#include "renderer/texture/RrTexture.h"
 #include "renderer/resource/CResourceManager.h"
 
 #include "render2d/object/sprite/CEditableRenderable2D.h"

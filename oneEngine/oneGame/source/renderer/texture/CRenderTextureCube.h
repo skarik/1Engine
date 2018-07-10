@@ -6,8 +6,8 @@
 #include "core/math/Vector3d.h"
 // CRenderTexture class
 #include "CRenderTexture.h"
-// CTextureCube class
-#include "CTextureCube.h"
+// RrTextureCube class
+#include "RrTextureCube.h"
 
 // ===CLASS===
 // Class definition

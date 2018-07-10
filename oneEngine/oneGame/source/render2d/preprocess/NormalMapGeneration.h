@@ -3,7 +3,7 @@
 
 #include "core/types.h"
 #include "core/math/Math3d.h"
-#include "renderer/types/pixelFormat.h"
+#include "core/gfx/pixelFormat.h"
 
 namespace Render2D
 {

@@ -10,24 +10,25 @@ namespace tex {
 	// Enumerations for the texture type
 	enum arTextureType : uint8_t
 	{
-		/*
-		Texture2D = GL_TEXTURE_2D,
-		//Texture1Darray = GL_TEXTURE_1D_ARRAY,
-		Texture3D = GL_TEXTURE_3D,
-		//Texture2Darray = GL_TEXTURE_2D_ARRAY,
-		TextureCube = GL_TEXTURE_CUBE_MAP
-		*/
 		kTextureTypeNone,
 
 		kTextureType1D,
 		kTextureType2D,
 		kTextureType3D,
 		kTextureTypeCube,
+
+		// Odd, not quite supported formats:
+		kTextureType1DArray,
+		kTextureType2DArray,
+		kTextureTypeCubeArray,
 	};
 
 	// Enumerations for the internal format
 	enum arColorFormat : uint8_t
 	{
+		//
+		// RGBA Color formats:
+
 		kColorFormatNone = 0,
 
 		__COLOR_FORMAT_RGB_MIN,
@@ -42,25 +43,39 @@ namespace tex {
 		kColorFormatRGBA16,
 		__COLOR_FORMAT_RGBA_MAX,
 
-		__COLOR_FORMAT_MAX
-	};
+		__COLOR_FORMAT_RG_MIN,
+		kColorFormatRG8,
+		kColorFormatRG16F,
+		kColorFormatRG16,
+		__COLOR_FORMAT_RG_MAX,
 
-	// Enumerations for the depth type
-	enum arDepthFormat
-	{
+		__COLOR_FORMAT_R_MIN,
+		kColorFormatR8,
+		kColorFormatR16F,
+		kColorFormatR16,
+		kColorFormatR32F,
+		kColorFormatR32,
+		__COLOR_FORMAT_R_MAX,
+
+		__COLOR_FORMAT_MAX,
+
+		//
+		// Depth formats:
+
 		kDepthFormatNone = __COLOR_FORMAT_MAX,
 
 		kDepthFormat16,
 		kDepthFormat24,
 		kDepthFormat32,
+		// What is even the difference between this and 32?
+		kDepthFormat32F,
 
-		__DEPTH_FORMAT_MAX
-	};
+		__DEPTH_FORMAT_MAX,
 
-	// Enumerations for the stencil type
-	enum arStencilFormat : uint8_t
-	{
-		KStencilFormatNone = __DEPTH_FORMAT_MAX,
+		//
+		// Stencil formats:
+
+		kStencilFormatNone = __DEPTH_FORMAT_MAX,
 
 		// Unsupported on textures
 		KStencilFormatIndex1,
@@ -71,7 +86,7 @@ namespace tex {
 		// Unsupported on textures
 		KStencilFormatIndex16,
 
-		__STENCIL_FORMAT_MAX
+		__STENCIL_FORMAT_MAX,
 	};
 
 	// Enumerations for the texture wrap

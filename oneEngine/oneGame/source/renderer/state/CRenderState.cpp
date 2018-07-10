@@ -1,5 +1,3 @@
-
-// Includes
 #include "CRenderState.h"
 #include "Settings.h"
 
@@ -12,7 +10,7 @@
 #include "renderer/logic/CLogicObject.h"
 
 #include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CTexture.h"
+#include "renderer/texture/RrTexture.h"
 #include "renderer/texture/CRenderTexture.h"
 #include "renderer/texture/CMRTTexture.h"
 
@@ -23,6 +21,7 @@
 #include "renderer/resource/CResourceManager.h"
 
 #include "renderer/gpuw/Textures.h"
+#include "renderer/gpuw/RenderTargets.h"
 
 //===Class static member data===
 
@@ -43,9 +42,9 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	// Set up default rendering targets
 	{
 		internal_settings.mainColorAttachmentCount = 4;
-		internal_settings.mainColorAttachmentFormat = RGBA16F;
-		internal_settings.mainDepthFormat = Depth32;
-		internal_settings.mainStencilFormat = StencilIndex16;
+		internal_settings.mainColorAttachmentFormat = core::gfx::tex::kColorFormatRGBA16F;
+		internal_settings.mainDepthFormat = core::gfx::tex::kDepthFormat32;
+		internal_settings.mainStencilFormat = core::gfx::tex::KStencilFormatIndex16;
 	}
 	// Set initial rendertarget states
 	{
@@ -82,38 +81,33 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 
 	// Create default textures
 	{
-		CTexture* white_texture = new CTexture("");
+		RrTexture* white_texture = RrTexture::CreateUnitialized("white"); //new RrTexture("");
 		{
-			pixel_t white;
-			white.r = 255;
-			white.g = 255;
-			white.b = 255;
-			white.a = 255;
-			white_texture->Upload( &white, 1,1, Repeat, Repeat, MipmapNone, SamplingPoint );
+			core::gfx::arPixel white (255, 255, 255, 255);
+			white_texture->Upload(
+				&white, 1,1,
+				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
+				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
 		renderer::Resources::AddTexture(renderer::TextureWhite, white_texture);
 		white_texture->RemoveReference();
 
-		CTexture* black_texture = new CTexture("");
+		RrTexture* black_texture = RrTexture::CreateUnitialized("black");
 		{
-			pixel_t black;
-			black.r = 0;
-			black.g = 0;
-			black.b = 0;
-			black.a = 255;
-			black_texture->Upload( &black, 1,1, Repeat, Repeat, MipmapNone, SamplingPoint );
+			core::gfx::arPixel black (0, 0, 0, 255);
+			black_texture->Upload( &black, 1,1,
+				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
+				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
 		renderer::Resources::AddTexture(renderer::TextureBlack, black_texture);
 		black_texture->RemoveReference();
 
-		CTexture* gray0_texture = new CTexture("");
+		RrTexture* gray0_texture = RrTexture::CreateUnitialized("gray0");
 		{
-			pixel_t gray0;
-			gray0.r = 127;
-			gray0.g = 127;
-			gray0.b = 127;
-			gray0.a = 0;
-			gray0_texture->Upload( &gray0, 1,1, Repeat, Repeat, MipmapNone, SamplingPoint );
+			core::gfx::arPixel gray0 (127, 127, 127, 0);
+			gray0_texture->Upload( &gray0, 1,1,
+				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
+				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
 		renderer::Resources::AddTexture(renderer::TextureGrayA0, gray0_texture);
 		gray0_texture->RemoveReference();
@@ -126,7 +120,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		// This to provide compatibility with the default system implementation. (A lot of early engine code is implemented lazily)
 		RrMaterial::Default = new RrMaterial;
 		RrMaterial::Default->setTexture( TEX_DIFFUSE, renderer::Resources::GetTexture(renderer::TextureWhite) );
-		RrMaterial::Default->setTexture( TEX_NORMALS, new CTexture( "textures/default_normals.jpg" ) );
+		RrMaterial::Default->setTexture( TEX_NORMALS, RrTexture::Load( "textures/default_normals.jpg" ) );
 		RrMaterial::Default->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
 		RrMaterial::Default->setTexture( TEX_OVERLAY, renderer::Resources::GetTexture(renderer::TextureGrayA0) );
 		// Setup forward pass
@@ -197,7 +191,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		ShaftPass->passinfo[0].shader = new RrShader( "shaders/def_screen/pass_lighting_shaft.glsl" );
 		ShaftPass->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 		// Set effect textures
-		ShaftPass->setTexture( TEX_SLOT5, new CTexture( "textures/ditherdots.jpg" ) );
+		ShaftPass->setTexture( TEX_SLOT5, RrTexture::Load( "textures/ditherdots.jpg" ) );
 	}
 	{
 		Lighting2DPass = new RrMaterial();
@@ -428,24 +422,25 @@ const renderer::ePipelineMode CRenderState::GetPipelineMode ( void ) const
 // Returns true if settings dropped. False otherwise.
 static bool _DropSettings (renderer::internalSettings_t& io_settings)
 {
-	if (io_settings.mainStencilFormat == StencilIndex16) 
+	using namespace core::gfx::tex;
+	if (io_settings.mainStencilFormat == KStencilFormatIndex16) 
 	{
 		debug::Console->PrintError("Dropping Stencil16 to Stencil8.");
-		io_settings.mainStencilFormat = StencilIndex8;
+		io_settings.mainStencilFormat = KStencilFormatIndex8;
 		return true;
 	}
 
-	if (io_settings.mainDepthFormat == Depth32) 
+	if (io_settings.mainDepthFormat == kDepthFormat32) 
 	{
 		debug::Console->PrintError("Dropping Depth32 to Depth16.");
-		io_settings.mainDepthFormat = Depth16;
+		io_settings.mainDepthFormat = kDepthFormat16;
 		return true;
 	}
 
-	if (io_settings.mainStencilFormat == StencilIndex8) 
+	if (io_settings.mainStencilFormat == KStencilFormatIndex8) 
 	{
 		debug::Console->PrintError("Dropping Stencil8 to None. (This may cause visual artifacts!)");
-		io_settings.mainStencilFormat = StencilNone;
+		io_settings.mainStencilFormat = kStencilFormatNone;
 		return true;
 	}
 
@@ -459,7 +454,7 @@ void CRenderState::CreateTargetBuffers ( void )
 {
 	if (internal_chain_list.empty())
 	{
-		rrInternalBufferChain chain = {0};
+		rrInternalBufferChain chain = {};
 		// Three backbuffers
 		internal_chain_list.push_back(chain);
 		internal_chain_list.push_back(chain);
@@ -491,59 +486,82 @@ void CRenderState::CreateTargetBuffers ( void )
 }
 bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain )
 {
-	// Delete forward buffers
-	if ( bufferChain.buffer_forward_rt != NULL )
+	// Delete shared buffers
 	{
-		delete bufferChain.buffer_forward_rt;
+		bufferChain.buffer_color.free();
+		bufferChain.buffer_depth.free();
+		bufferChain.buffer_stencil.free();
+
+		for (int i = 0; i < kMRTColorAttachmentCount; ++i)
+			bufferChain.buffer_deferred_color[i].free();
+	}
+	// Delete forward buffers
+	if ( bufferChain.buffer_forward_rt.empty() == false )
+	{
+		/*delete bufferChain.buffer_forward_rt;
 		bufferChain.buffer_forward_rt = NULL;
 
-		gpu::TextureFree( bufferChain.buffer_depth );
+		//gpu::TextureFree( bufferChain.buffer_depth );
+		delete bufferChain.buffer_depth;
 		bufferChain.buffer_depth = 0;
 
-		gpu::TextureBufferFree( bufferChain.buffer_stencil );
-		bufferChain.buffer_stencil = 0;
+		//gpu::TextureBufferFree( bufferChain.buffer_stencil );
+		delete bufferChain.buffer_stencil;
+		bufferChain.buffer_stencil = 0;*/
+		bufferChain.buffer_forward_rt.free();
 	}
 	// Delete deferred buffers
-	if ( bufferChain.buffer_deferred_mrt != NULL )
+	if ( bufferChain.buffer_deferred_mrt.empty() == false )
 	{
-		delete bufferChain.buffer_deferred_mrt;
+		/*delete bufferChain.buffer_deferred_mrt;
 		bufferChain.buffer_deferred_mrt = NULL;
 
 		delete bufferChain.buffer_deferred_rt;
-		bufferChain.buffer_deferred_rt = NULL;
+		bufferChain.buffer_deferred_rt = NULL;*/
+		bufferChain.buffer_deferred_mrt.free();
+		bufferChain.buffer_deferred_rt.free();
 	}
 
 	// Create forward buffers
-	if ( bufferChain.buffer_forward_rt == NULL )
+	if ( bufferChain.buffer_forward_rt.empty() )
 	{
+		// Generate unique color buffer
+		bufferChain.buffer_color.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainColorAttachmentFormat, Screen::Info.width, Screen::Info.height);
 		// Generate shared depth and stencil buffers
-		if ( internal_settings.mainDepthFormat != DepthNone )
+		if ( internal_settings.mainDepthFormat != core::gfx::tex::kDepthFormatNone )
 		{
-			bufferChain.buffer_depth	= gpu::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
-			gpu::TextureSampleSettings( Texture2D, bufferChain.buffer_depth, Clamp, Clamp, Clamp, SamplingPoint, SamplingPoint );
+			//bufferChain.buffer_depth	= gpu::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
+			//gpu::TextureSampleSettings( Texture2D, bufferChain.buffer_depth, Clamp, Clamp, Clamp, SamplingPoint, SamplingPoint );
+			bufferChain.buffer_depth.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height);
 		}
-		if ( internal_settings.mainStencilFormat != StencilNone )
-			bufferChain.buffer_stencil	= gpu::TextureBufferAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
+		if ( internal_settings.mainStencilFormat != core::gfx::tex::kStencilFormatNone )
+			//bufferChain.buffer_stencil	= gpu::TextureBufferAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
+			bufferChain.buffer_stencil.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height);
 
-		bufferChain.buffer_forward_rt = new CRenderTexture(
+		/*bufferChain.buffer_forward_rt = new CRenderTexture(
 			Screen::Info.width, Screen::Info.height,
 			Clamp, Clamp,
 			internal_settings.mainColorAttachmentFormat,
 			RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
 			RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat), false
-		);
+		);*/
+		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotColor0, &bufferChain.buffer_color);
+		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotDepth, &bufferChain.buffer_depth);
+		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &bufferChain.buffer_stencil);
+		// "Compile" the render target.
+		bufferChain.buffer_forward_rt.compile();
 
 		// Check to make sure buffer is valid.
-		if (!bufferChain.buffer_forward_rt->IsValid())
+		if (!bufferChain.buffer_forward_rt.valid())
 		{
 			return false;
 		}
 	}
 	// Create deferred buffers
-	if ( bufferChain.buffer_deferred_mrt == NULL )
+	if ( bufferChain.buffer_deferred_mrt.empty() )
 	{
 		// Create the internal stage color render target (uses shared forward buffers)
-		bufferChain.buffer_deferred_rt = new CRenderTexture(
+		/*bufferChain.buffer_deferred_rt = new CRenderTexture(
 			Screen::Info.width, Screen::Info.height,
 			Clamp, Clamp,
 			internal_settings.mainColorAttachmentFormat,
@@ -552,27 +570,51 @@ bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain 
 		);
 
 		RrGpuTexture		depthTexture = RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat);
-		RrGpuTexture		stencilTexture = RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat);
+		RrGpuTexture		stencilTexture = RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat);*/
+
+		// Generate unique color buffer
+		bufferChain.buffer_deferred_color_composite.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainColorAttachmentFormat, Screen::Info.width, Screen::Info.height);
+
+		// Put the buffer together
+		bufferChain.buffer_deferred_rt.attach(gpu::kRenderTargetSlotColor0, &bufferChain.buffer_color);
+		bufferChain.buffer_deferred_rt.attach(gpu::kRenderTargetSlotDepth, &bufferChain.buffer_depth);
+		bufferChain.buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &bufferChain.buffer_stencil);
+		// "Compile" the render target.
+		bufferChain.buffer_deferred_rt.compile();
 
 		// TODO: Make configurable
-		RrGpuTexture textureRequests [4];
+		/*RrGpuTexture textureRequests [4];
 		memset( textureRequests, 0, sizeof(RrGpuTexture) * 4 );
 		textureRequests[0].format = RGBA8;
 		textureRequests[1].format = RGBA16F;
 		textureRequests[2].format = RGBA8;
-		textureRequests[3].format = RGBA8;
+		textureRequests[3].format = RGBA8;*/
+
+		// TODO: Make configurable
+		bufferChain.buffer_deferred_color[0].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, Screen::Info.width, Screen::Info.height);
+		bufferChain.buffer_deferred_color[1].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA16F, Screen::Info.width, Screen::Info.height);
+		bufferChain.buffer_deferred_color[2].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, Screen::Info.width, Screen::Info.height);
+		bufferChain.buffer_deferred_color[3].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, Screen::Info.width, Screen::Info.height);
 
 		// Create the MRT to be used by the rendering pipeline
-		bufferChain.buffer_deferred_mrt = new CMRTTexture(
+		/*bufferChain.buffer_deferred_mrt = new CMRTTexture(
 			Screen::Info.width, Screen::Info.height,
 			Clamp, Clamp,
 			textureRequests + 0, 4,
 			&depthTexture, depthTexture.format != DepthNone,
 			&stencilTexture, false
-		);
+		);*/
+		// Attach shared guys
+		for (int i = 0; i < kMRTColorAttachmentCount; ++i)
+			bufferChain.buffer_deferred_mrt.attach(gpu::kRenderTargetSlotColor0 + i, &bufferChain.buffer_deferred_color[i]);
+		// Add the deoth
+		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotDepth, &bufferChain.buffer_depth);
+		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &bufferChain.buffer_stencil);
+		// "Compile" the render target.
+		bufferChain.buffer_forward_rt.compile();
 
 		// Check to make sure buffer is valid.
-		if (!bufferChain.buffer_deferred_mrt->IsValid())
+		if (!bufferChain.buffer_deferred_mrt.valid())
 		{
 			return false;
 		}
@@ -581,28 +623,28 @@ bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain 
 	return true;
 }
 
-CRenderTexture* CRenderState::GetForwardBuffer ( void )
+gpu::RenderTarget* CRenderState::GetForwardBuffer ( void )
 {
 	if (internal_chain_current)
-		return internal_chain_current->buffer_forward_rt;
+		return &internal_chain_current->buffer_forward_rt;
 	return NULL;
 }
-CRenderTexture* CRenderState::GetDeferredBuffer ( void )
+gpu::RenderTarget* CRenderState::GetDeferredBuffer ( void )
 {
 	if (internal_chain_current)
-		return internal_chain_current->buffer_deferred_rt;
+		return &internal_chain_current->buffer_deferred_rt;
 	return NULL;
 }
 
-RrGpuTexture CRenderState::GetDepthTexture ( void )
+gpu::Texture* CRenderState::GetDepthTexture ( void )
 {
 	if (internal_chain_current)
-		return RrGpuTexture( internal_chain_current->buffer_depth, internal_settings.mainDepthFormat );
-	return RrGpuTexture();
+		return &internal_chain_current->buffer_depth;
+	return NULL;
 }
-RrGpuTexture CRenderState::GetStencilTexture ( void )
+gpu::WOFrameAttachment* CRenderState::GetStencilTexture ( void )
 {
 	if (internal_chain_current)
-		return RrGpuTexture( internal_chain_current->buffer_stencil, internal_settings.mainStencilFormat );
-	return RrGpuTexture();
+		return &internal_chain_current->buffer_stencil;
+	return NULL;
 }

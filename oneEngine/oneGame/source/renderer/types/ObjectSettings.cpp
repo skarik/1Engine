@@ -1,7 +1,7 @@
 
 #include "core/math/Math.h"
 #include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CTexture.h"
+#include "renderer/texture/RrTexture.h"
 #include "ObjectSettings.h"
 
 renderer::_n_hint_rendering_information* renderer::m_default_hint_options;
@@ -25,7 +25,7 @@ renderer::_n_hint_rendering_information::_n_hint_rendering_information ( void )
 	// Setup shadow shader renderer replacement. (Will replace any material with no shadow pass)
 	layer = math::log2(kRenderHintShadowColor);
 	mats_default[layer]	= new RrMaterial;
-	mats_default[layer]->setTexture( TEX_MAIN, new CTexture("null") );
+	mats_default[layer]->setTexture( TEX_MAIN, new RrTexture("null") );
 	mats_default[layer]->m_diffuse = Color( 0,0,0, 1.0f );
 	mats_default[layer]->passinfo.push_back( RrPassForward() );
 	mats_default[layer]->passinfo[0].m_lighting_mode = renderer::LI_NONE;
@@ -33,7 +33,7 @@ renderer::_n_hint_rendering_information::_n_hint_rendering_information ( void )
 
 	mats_default_skin[layer]	= new RrMaterial;
 	mats_default_skin[layer]->m_isSkinnedShader = true;
-	mats_default_skin[layer]->setTexture( TEX_MAIN, new CTexture("null") );
+	mats_default_skin[layer]->setTexture( TEX_MAIN, new RrTexture("null") );
 	mats_default_skin[layer]->m_diffuse = Color( 0,0,0, 1.0f );
 	mats_default_skin[layer]->passinfo.push_back( RrPassForward() );
 	mats_default_skin[layer]->passinfo[0].m_lighting_mode = renderer::LI_NONE;
@@ -45,7 +45,7 @@ renderer::_n_hint_rendering_information::_n_hint_rendering_information ( void )
 	// Setup sky glow render shader replacement. (Will replace any material with no shadow pass)
 	layer = math::log2(kRenderHintSkyglow);
 	mats_default[layer]	= new RrMaterial;
-	mats_default[layer]->setTexture( TEX_MAIN, new CTexture("null") );
+	mats_default[layer]->setTexture( TEX_MAIN, new RrTexture("null") );
 	mats_default[layer]->m_diffuse = Color( 0,0,0, 1.0f );
 	mats_default[layer]->passinfo.push_back( RrPassForward() );
 	mats_default[layer]->passinfo[0].m_lighting_mode = renderer::LI_NONE;
@@ -53,7 +53,7 @@ renderer::_n_hint_rendering_information::_n_hint_rendering_information ( void )
 
 	mats_default_skin[layer]	= new RrMaterial;
 	mats_default_skin[layer]->m_isSkinnedShader = true;
-	mats_default_skin[layer]->setTexture( TEX_MAIN, new CTexture("null") );
+	mats_default_skin[layer]->setTexture( TEX_MAIN, new RrTexture("null") );
 	mats_default_skin[layer]->m_diffuse = Color( 0,0,0, 1.0f );
 	mats_default_skin[layer]->passinfo.push_back( RrPassForward() );
 	mats_default_skin[layer]->passinfo[0].m_lighting_mode = renderer::LI_NONE;

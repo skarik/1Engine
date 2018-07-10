@@ -10,7 +10,7 @@
 // Include the material definition for the font conversion code
 #include "renderer/material/RrMaterial.h"
 // Include texture master class calls
-#include "CTextureMaster.h"
+#include "RrTextureMaster.h"
 
 #include "renderer/system/glMainSystem.h"
 
@@ -37,7 +37,7 @@ CBitmapFont::CBitmapFont ( string sInFontname,
 		unsigned long iCharacterSet,
 		unsigned int iStartCharacter,
 		unsigned int iCharacterNum )
-	: CTexture ( "_hx_SYSTEM_FONTLOAD" )
+	: RrTexture ( "_hx_SYSTEM_FONTLOAD" )
 {
 	if ( library == NULL ) {
 		int error;
@@ -130,7 +130,7 @@ void CBitmapFont::Bind ( void )
 {
 	if ( fontInfo.isTexture ) {
 		pActiveFont = this;
-		CTexture::Bind();
+		RrTexture::Bind();
 	}
 	else {
 		cout << "Warning, fool: Cannot use " << (void*)this << " as a texture...is system generated font.\n";

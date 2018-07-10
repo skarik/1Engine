@@ -6,8 +6,8 @@
 
 #include "renderer/state/CRenderState.h"
 #include "renderer/resource/CResourceManager.h"
-#include "CTexture.h"
-#include "CTextureMaster.h"
+#include "RrTexture.h"
+#include "RrTextureMaster.h"
 #include "TextureLoader.h"
 
 #include "renderer/system/glMainSystem.h"
@@ -16,7 +16,7 @@ using std::cout;
 using std::endl;
 
 // === Constructor ===
-CTexture::CTexture ( string sInFilename,
+RrTexture::RrTexture ( string sInFilename,
 		eTextureType	textureType,
 		eColorFormat	format,
 		unsigned int	maxTextureWidth,
@@ -140,7 +140,7 @@ CTexture::CTexture ( string sInFilename,
 	}
 }
 // === Destructor ===
-CTexture::~CTexture ( void )
+RrTexture::~RrTexture ( void )
 {
 	// Check for system overrides here
 	if ( info.index == 0 ||  sFilename == "_hx_SYSTEM_FONTLOAD" || sFilename == "_hx_SYSTEM_RENDERTEXTURE" )
@@ -154,7 +154,7 @@ CTexture::~CTexture ( void )
 }
 
 // === Bind and Unbind ===
-void CTexture::Bind ( void )
+void RrTexture::Bind ( void )
 {
 	if ( info.type == Texture2D ) {
 		glDisable( GL_TEXTURE_3D );
@@ -173,7 +173,7 @@ void CTexture::Bind ( void )
 		glBindTexture( GL_TEXTURE_CUBE_MAP, info.index );
 	}
 }
-void CTexture::Unbind ( void )
+void RrTexture::Unbind ( void )
 {
 	if ( info.type == Texture2D ) {
 		//glDisable( GL_TEXTURE_2D );
@@ -188,7 +188,7 @@ void CTexture::Unbind ( void )
 		glBindTexture( GL_TEXTURE_CUBE_MAP, 0 );
 	}
 }
-void CTexture::Unbind ( char a )
+void RrTexture::Unbind ( char a )
 {
 	glBindTexture( GL_TEXTURE_2D, 0 );
 	glBindTexture( GL_TEXTURE_3D, 0 );
@@ -198,7 +198,7 @@ void CTexture::Unbind ( char a )
 
 //=========================================//
 // === Reloading ===
-void CTexture::Reload ( void )
+void RrTexture::Reload ( void )
 {
 	GL_ACCESS;
 
@@ -231,7 +231,7 @@ void CTexture::Reload ( void )
 
 //=========================================//
 // === Manual Upload ===
-void CTexture::Upload (
+void RrTexture::Upload (
 	pixel_t* data,
 	uint width,
 	uint height,
@@ -284,7 +284,7 @@ void CTexture::Upload (
 
 //=========================================//
 // === Mipmap Generation ===
-void CTexture::GenerateMipmap ( eMipmapGenerationStyle generationStyle )
+void RrTexture::GenerateMipmap ( eMipmapGenerationStyle generationStyle )
 {
 	GL_ACCESS;
 
@@ -344,7 +344,7 @@ void CTexture::GenerateMipmap ( eMipmapGenerationStyle generationStyle )
 
 //=========================================//
 // === Loader ===
-void CTexture::LoadImageInfo ( void )
+void RrTexture::LoadImageInfo ( void )
 {
 	Textures::timgInfo t_info;
 	pData = Textures::LoadRawImageData( sFilename, t_info );
@@ -356,7 +356,7 @@ void CTexture::LoadImageInfo ( void )
 
 //=========================================//
 // === Setters ===
-void CTexture::SetFilter ( eSamplingFilter filter )
+void RrTexture::SetFilter ( eSamplingFilter filter )
 {
 	GL_ACCESS;
 	// Update value

@@ -9,7 +9,7 @@
 // Needs the OpenGL functions
 #include "renderer/ogl/GLCommon.h"
 #include "renderer/types/types.h"
-#include "renderer/types/textureFormats.h"
+#include "core/gfx/textureFormats.h"
 #include "renderer/types/blendModes.h"
 //#include "renderer/state/Settings.h"
 
@@ -141,24 +141,24 @@ public:
 	// FORMATS (specific to openGL)
 	//==============================================================================================//
 
-	RENDER_API glEnum		Enum ( const eColorFormat );
+	/*RENDER_API glEnum		Enum ( const eColorFormat );
 	RENDER_API glEnum		Enum ( const eTextureType );
 	RENDER_API glEnum		Enum ( const eDepthFormat );
 	RENDER_API glEnum		Enum ( const eStencilFormat );
 	RENDER_API glEnum		Enum ( const eWrappingType );
-	RENDER_API glEnum		Enum ( const eSamplingFilter );
+	RENDER_API glEnum		Enum ( const eSamplingFilter );*/
 
 	//==============================================================================================//
 	// BUFFERS
 	//==============================================================================================//
 
-	RENDER_API void			CreateBuffer ( uint* index, uint count = 1 );
+	/*RENDER_API void			CreateBuffer ( uint* index, uint count = 1 );
 	RENDER_API void			FreeBuffer ( uint* index, uint count = 1 );
 	RENDER_API void			BindBuffer ( uint target, uint index );
 	RENDER_API void			UploadBuffer ( uint target, uint size, void* data, uint usage );
 	RENDER_API void			UnbindBuffer ( uint target );
 
-	RENDER_API void			BindVertexArray ( uint target );
+	RENDER_API void			BindVertexArray ( uint target );*/
 
 	//==============================================================================================//
 	// RENDERING FROM BUFFER

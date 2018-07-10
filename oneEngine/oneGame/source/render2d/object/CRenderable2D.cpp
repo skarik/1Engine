@@ -6,7 +6,7 @@
 
 #include "renderer/material/RrShader.h"
 #include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CTexture.h"
+#include "renderer/texture/RrTexture.h"
 #include "renderer/texture/TextureLoader.h"
 
 #include "renderer/resource/CResourceManager.h"
@@ -28,7 +28,7 @@ CRenderable2D::CRenderable2D ( void )
 
 	// Use a default 2D material
 	m_material = new RrMaterial();
-	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new CTexture("null")) );
+	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new RrTexture("null")) );
 	m_material->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
 
 	m_material->passinfo.push_back( RrPassForward() );
@@ -173,9 +173,9 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const
 		m_material->deferredinfo.clear();
 
 		// Load up the texture
-		CTexture* new_texture = RESOURCE_GET_TEXTURE(
+		RrTexture* new_texture = RESOURCE_GET_TEXTURE(
 			n_sprite_filename,
-			new CTexture (
+			new RrTexture (
 				n_sprite_filename, 
 				Texture2D, RGBA8,
 				1024,1024, Clamp,Clamp,
@@ -204,10 +204,10 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const
 	}
 
 	// Check for paletted textures:
-	CTexture* loaded_palette	= renderer::Resources::GetTexture(filename_palette);
-	CTexture* loaded_sprite		= renderer::Resources::GetTexture(filename_sprite);
-	CTexture* loaded_normals	= renderer::Resources::GetTexture(filename_normals);
-	CTexture* loaded_surface	= renderer::Resources::GetTexture(filename_surface);
+	RrTexture* loaded_palette	= renderer::Resources::GetTexture(filename_palette);
+	RrTexture* loaded_sprite		= renderer::Resources::GetTexture(filename_sprite);
+	RrTexture* loaded_normals	= renderer::Resources::GetTexture(filename_normals);
+	RrTexture* loaded_surface	= renderer::Resources::GetTexture(filename_surface);
 
 	if ( loaded_palette == NULL )
 	{
@@ -246,7 +246,7 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const
 			Render2D::WorldPalette::Active()->palette_data, Render2D::WorldPalette::MAX_HEIGHT, Render2D::WorldPalette::Active()->palette_width);
 
 		// Create empty texture to upload data into
-		CTexture* new_texture = new CTexture("");
+		RrTexture* new_texture = new RrTexture("");
 
 		// Upload the data
 		new_texture->Upload(
@@ -276,7 +276,7 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const
 		// Create normal map texture
 		if ( core::Resources::MakePathTo(filename_normals + ".bpd", resource_normals) )
 		{
-			CTexture* new_texture = new CTexture (
+			RrTexture* new_texture = new RrTexture (
 				resource_normals, 
 				Texture2D, RGBA8,
 				1024,1024, Clamp,Clamp,
@@ -293,7 +293,7 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const
 		}
 		else
 		{
-			CTexture* new_texture = new CTexture("");
+			RrTexture* new_texture = new RrTexture("");
 
 			// Generate a normal map based on input parameters
 			pixel_t* raw_normalmap = new pixel_t [imginfo_sprite.width * imginfo_sprite.height];
@@ -328,7 +328,7 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const
 		// Create surface map texture
 		if ( core::Resources::MakePathTo(filename_surface + ".bpd", resource_surface) )
 		{
-			CTexture* new_texture = new CTexture (
+			RrTexture* new_texture = new RrTexture (
 				resource_surface, 
 				Texture2D, RGBA8,
 				1024,1024, Clamp,Clamp,
@@ -348,7 +348,7 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_filename, const
 	}
 	else
 	{
-		CTexture* new_texture = loaded_sprite;
+		RrTexture* new_texture = loaded_sprite;
 
 		// Set sprite info
 		m_spriteInfo.fullsize.x = new_texture->GetWidth();

@@ -1,25 +1,25 @@
 
 // Includes
-#include "CTextureMaster.h"
+#include "RrTextureMaster.h"
 #include "core/debug/console.h"
 
 // Instance Define
-CTextureMaster TextureMaster;
+RrTextureMaster TextureMaster;
 
 // Constructor
-CTextureMaster::CTextureMaster ( void )
+RrTextureMaster::RrTextureMaster ( void )
 {
 
 }
 
 // Destructor
-CTextureMaster::~CTextureMaster ( void )
+RrTextureMaster::~RrTextureMaster ( void )
 {
 
 }
 
 // Add a reference to a mesh set
-textureEntry_t* CTextureMaster::AddReference ( CTexture* ptex )
+textureEntry_t* RrTextureMaster::AddReference ( RrTexture* ptex )
 {
 	// First look for it
 	std::map<string,TexmapSetReference>::iterator it;
@@ -59,11 +59,11 @@ textureEntry_t* CTextureMaster::AddReference ( CTexture* ptex )
 		++lit;
 	}
 	if ( lit == textureList.end() ) {
-		textureList.push_back( std::pair<CTexture*,uint>(ptex,ptex->info.index) );
+		textureList.push_back( std::pair<RrTexture*,uint>(ptex,ptex->info.index) );
 	}
 
 }
-textureEntry_t* CTextureMaster::AddReference ( string texMapSId, CTexture* ptex )
+textureEntry_t* RrTextureMaster::AddReference ( string texMapSId, RrTexture* ptex )
 {
 	// First look for it
 	std::map<string,TexmapSetReference>::iterator it;
@@ -103,12 +103,12 @@ textureEntry_t* CTextureMaster::AddReference ( string texMapSId, CTexture* ptex 
 		++lit;
 	}
 	if ( lit == textureList.end() ) {
-		textureList.push_back( std::pair<CTexture*,uint>(ptex,ptex->info.index) );
+		textureList.push_back( std::pair<RrTexture*,uint>(ptex,ptex->info.index) );
 	}
 }
 
 // Decrement the target reference
-void CTextureMaster::RemoveReference ( CTexture* ptex )
+void RrTextureMaster::RemoveReference ( RrTexture* ptex )
 {
 	// First look for it
 	std::map<string,TexmapSetReference>::iterator it;
@@ -139,7 +139,7 @@ void CTextureMaster::RemoveReference ( CTexture* ptex )
 	}
 }
 // Decrement the target reference
-void CTextureMaster::RemoveReference ( string texMapSId, CTexture* ptex )
+void RrTextureMaster::RemoveReference ( string texMapSId, RrTexture* ptex )
 {
 	// First look for it
 	std::map<string,TexmapSetReference>::iterator it;
@@ -169,7 +169,7 @@ void CTextureMaster::RemoveReference ( string texMapSId, CTexture* ptex )
 }
 
 // Returns a pointer to the wanted model data, null if not found
-const textureEntry_t* CTextureMaster::GetReference ( CTexture* ptex )
+const textureEntry_t* RrTextureMaster::GetReference ( RrTexture* ptex )
 {
 	// First look for it
 	std::map<string,TexmapSetReference>::iterator it;
@@ -187,7 +187,7 @@ const textureEntry_t* CTextureMaster::GetReference ( CTexture* ptex )
 	}
 }
 // Returns a pointer to the wanted model data, null if not found
-const textureEntry_t* CTextureMaster::GetReference ( string texMapSId, CTexture* ptex )
+const textureEntry_t* RrTextureMaster::GetReference ( string texMapSId, RrTexture* ptex )
 {
 	// First look for it
 	std::map<string,TexmapSetReference>::iterator it;
@@ -207,11 +207,11 @@ const textureEntry_t* CTextureMaster::GetReference ( string texMapSId, CTexture*
 
 
 // Reload all textures that are loaded
-void CTextureMaster::ReloadAll ( void )
+void RrTextureMaster::ReloadAll ( void )
 {
 	std::map<string,TexmapSetReference>::iterator it;
 
-	CTexture* tempTexture;
+	RrTexture* tempTexture;
 	string tempName;
 	for ( it = textureMap.begin(); it != textureMap.end(); ++it )
 	{
@@ -220,7 +220,7 @@ void CTextureMaster::ReloadAll ( void )
 			continue;	// Skip system textures
 		}
 
-		tempTexture = new CTexture( tempName,
+		tempTexture = new RrTexture( tempName,
 			it->second.texture.info.type, it->second.texture.info.internalFormat,
 			1024,1024, it->second.texture.info.repeatX, it->second.texture.info.repeatY );
 		tempTexture->Reload();
@@ -229,7 +229,7 @@ void CTextureMaster::ReloadAll ( void )
 }
 
 // Change all matching texture indices
-void CTextureMaster::UpdateTextureIndex ( const uint n_old, const uint n_new )
+void RrTextureMaster::UpdateTextureIndex ( const uint n_old, const uint n_new )
 {
 	if ( n_old == n_new ) return;
 

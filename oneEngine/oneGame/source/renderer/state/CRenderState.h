@@ -11,6 +11,9 @@
 #include "renderer/types/RrGpuTexture.h"
 #include "renderer/state/InternalSettings.h"
 
+#include "renderer/gpuw/Textures.h"
+#include "renderer/gpuw/RenderTargets.h"
+
 #include <vector>
 
 class CRenderableObject;
@@ -53,15 +56,28 @@ public:
 		RrMaterial*		materialToUse;
 	};
 
+	enum rrConstants : int
+	{
+		kMRTColorAttachmentCount = 4,
+	};
+
 	//	rrInternalBufferChain : internal storage of buffers used for rendering
 	struct rrInternalBufferChain
 	{
-		glHandle		buffer_depth;
-		glHandle		buffer_stencil;
-		CRenderTexture*	buffer_forward_rt;
+		//glHandle		buffer_depth;
+		//glHandle		buffer_stencil;
+		gpu::Texture	buffer_depth;
+		gpu::WOFrameAttachment	buffer_stencil;
+		//CRenderTexture*	buffer_forward_rt;
+		gpu::Texture		buffer_color;
+		gpu::RenderTarget	buffer_forward_rt;
 
-		CMRTTexture*	buffer_deferred_mrt;
-		CRenderTexture*	buffer_deferred_rt;
+		//CMRTTexture*	buffer_deferred_mrt;
+		//CRenderTexture*	buffer_deferred_rt;
+		gpu::Texture		buffer_deferred_color_composite;
+		gpu::Texture		buffer_deferred_color[kMRTColorAttachmentCount];
+		gpu::RenderTarget	buffer_deferred_mrt;
+		gpu::RenderTarget	buffer_deferred_rt;
 	};
 
 public:
@@ -79,10 +95,10 @@ public:
 	RENDER_API void CreateTargetBuffers ( void );
 	// Recreates buffers for the given chain. Returns success.
 	RENDER_API bool CreateTargetBufferChain ( rrInternalBufferChain& bufferChain );
-	RENDER_API CRenderTexture* GetForwardBuffer ( void );
-	RENDER_API CRenderTexture* GetDeferredBuffer ( void );
-	RENDER_API RrGpuTexture GetDepthTexture ( void );
-	RENDER_API RrGpuTexture GetStencilTexture ( void );
+	RENDER_API gpu::RenderTarget* GetForwardBuffer ( void );
+	RENDER_API gpu::RenderTarget* GetDeferredBuffer ( void );
+	RENDER_API gpu::Texture* GetDepthTexture ( void );
+	RENDER_API gpu::WOFrameAttachment* GetStencilTexture ( void );
 
 
 	// Public Render routine
