@@ -400,6 +400,9 @@
     <ClInclude Include="source\core\gfx\textureStructures.h">
       <Filter>SOURCE\Core\Gfx</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\math\hash.h">
+      <Filter>SOURCE\Core\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">

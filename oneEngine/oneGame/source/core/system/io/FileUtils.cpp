@@ -23,7 +23,7 @@ bool IO::FileExists ( const char* n_filename )
 	}
 }
 
-std::string IO::FilenameStandardize ( const std::string& n_filename )
+/*std::string IO::FilenameStandardize ( const std::string& n_filename )
 {
 	std::string t_resultName = n_filename;
 	for ( unsigned int i = 0; i < t_resultName.length(); ++i ) {
@@ -35,7 +35,7 @@ std::string IO::FilenameStandardize ( const std::string& n_filename )
 		}
 	}
 	return t_resultName;
-}
+}*/
 
 bool IO::ClearFile ( const char* n_filename )
 {

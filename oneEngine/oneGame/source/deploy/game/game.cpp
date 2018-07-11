@@ -9,6 +9,7 @@
 
 #include "core-ext/profiler/CTimeProfiler.h"
 #include "core-ext/threads/Jobs.h"
+#include "core-ext/resources/ResourceManager.h"
 #include "core-ext/system/shell/Status.h"
 
 // Include audio
@@ -49,6 +50,9 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 
 	// Create jobs system
 	Jobs::System jobSystem (4);
+
+	// Create resource system
+	core::ArResourceManager::Active()->Initialize();
 
 	// Initialize input
 	CInput::Initialize();
@@ -166,6 +170,8 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	PrPhysics::FreeInstance();
 	// Free input
 	CInput::Free();
+	// Free resources
+	core::ArResourceManager::FreeInstance();
 
 	return 0;
 }

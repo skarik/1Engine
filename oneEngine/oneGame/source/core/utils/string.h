@@ -30,6 +30,9 @@ namespace core
 			//	GetFileExtension(filename) : Returns the file's last extension.
 			static std::string			GetFileExtension( const std::string& filename );
 			static arstring256			GetFileExtension( const char* filename, size_t len = 0 );
+			//	GetPathStandard(filename) : Returns a standardized version of the path.
+			static std::string			GetPathStandard( const std::string& filename );
+			static arstring256			GetPathStandard( const char* filename, size_t len = 0 );
 
 			static std::string			GetLower( const std::string& input );
 			static std::string			GetUpper( const std::string& input );
@@ -51,6 +54,9 @@ namespace core
 
 			static void					ToLower( char* inout_string, size_t len = 0 );
 			static void					ToUpper( char* inout_string, size_t len = 0 );
+
+			static void					ToPathStandard( char* inout_string, size_t len = 0 );
+			static void					ToResourceName( char* inout_string, size_t len = 0 );
 
 			//===============================================================================================//
 			// misc

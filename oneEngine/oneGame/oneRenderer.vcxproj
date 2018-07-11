@@ -131,7 +131,9 @@
     <ClCompile Include="source\renderer\texture\CTexture3D.cpp" />
     <ClCompile Include="source\renderer\texture\CTextureCube.cpp" />
     <ClCompile Include="source\renderer\texture\CTextureLoader.cpp" />
-    <ClCompile Include="source\renderer\texture\CTextureMaster.cpp" />
+    <ClCompile Include="source\renderer\texture\RrTexture.Streaming.cpp" />
+    <ClCompile Include="source\renderer\texture\RrTextureMaster.cpp" />
+    <ClCompile Include="source\renderer\texture\RrTextureMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\types\ObjectSettings.cpp" />
     <ClCompile Include="source\renderer\utils\glScreenshot.cpp" />
     <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp" />
@@ -228,7 +230,8 @@
     <ClInclude Include="source\renderer\texture\RrTexture.h" />
     <ClInclude Include="source\renderer\texture\CTexture3D.h" />
     <ClInclude Include="source\renderer\texture\CTextureCube.h" />
-    <ClInclude Include="source\renderer\texture\CTextureMaster.h" />
+    <ClInclude Include="source\renderer\texture\RrTextureMaster.h" />
+    <ClInclude Include="source\renderer\texture\RrTextureMasterSubsystem.h" />
     <ClInclude Include="source\renderer\types\blendModes.h" />
     <ClInclude Include="source\renderer\types\renderModes.h" />
     <ClInclude Include="source\renderer\types\RrObjectMaterialProperties.h" />

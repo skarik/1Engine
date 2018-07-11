@@ -35,6 +35,14 @@ namespace gpu
 	private:
 		GLuint	m_buffer;
 	};
+
+	class Buffer
+	{
+	public:
+		RENDER_API int			allocate ( const uint64_t data_size, const TransferStyle style );
+		RENDER_API int			map ( const TransferStyle style );
+		RENDER_API int			unmap ( void );
+	};
 }
 
 #endif//GPU_WRAPPER_BUFFERS_H_

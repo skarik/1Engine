@@ -18,6 +18,9 @@
 #include "renderer/debug/CDebugRTInspector.h"
 //#include "renderer/object/sprite/CSpriteContainer.h"
 
+#include "core-ext/resources/ResourceManager.h"
+#include "renderer/texture/RrTextureMasterSubsystem.h"
+
 #include "renderer/resource/CResourceManager.h"
 
 #include "renderer/gpuw/Textures.h"
@@ -56,11 +59,17 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	}
 
 	// Create resource manager
-	if ( mResourceManager == NULL )
+	/*if ( mResourceManager == NULL )
 	{
 		mResourceManager = new CResourceManager;
 		mResourceManager->m_renderStateOwned = true;
-	}
+	}*/
+	// Set up resource manangers
+	auto resourceManager = core::ArResourceManager::Active();
+	if (resourceManager->GetSubsystem(core::kResourceTypeRrTexture) == NULL)
+		resourceManager->SetSubsystem(core::kResourceTypeRrTexture, new RrTextureMasterSubsystem());
+	//if (resourceManager->GetSubsystem(core::kResourceTypeRrShader) == NULL)
+	//	resourceManager->SetSubsystem(core::kResourceTypeRrShader, new RrShaderMasterSubsystem());
 
 	// Set up reandering options
 	{
@@ -84,8 +93,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		RrTexture* white_texture = RrTexture::CreateUnitialized("white"); //new RrTexture("");
 		{
 			core::gfx::arPixel white (255, 255, 255, 255);
-			white_texture->Upload(
-				&white, 1,1,
+			white_texture->Upload( false, &white, 1,1,
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
@@ -95,7 +103,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		RrTexture* black_texture = RrTexture::CreateUnitialized("black");
 		{
 			core::gfx::arPixel black (0, 0, 0, 255);
-			black_texture->Upload( &black, 1,1,
+			black_texture->Upload( false, &black, 1,1,
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
@@ -105,7 +113,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		RrTexture* gray0_texture = RrTexture::CreateUnitialized("gray0");
 		{
 			core::gfx::arPixel gray0 (127, 127, 127, 0);
-			gray0_texture->Upload( &gray0, 1,1,
+			gray0_texture->Upload( false, &gray0, 1,1,
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}

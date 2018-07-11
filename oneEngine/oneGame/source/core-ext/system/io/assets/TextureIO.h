@@ -125,6 +125,8 @@ namespace core
 	public:
 		//	Load options:
 
+		// Do we want to load the superlow?
+		bool			m_loadSuperlow;
 		// Bitmask of which mipmap levels to load. To only load raw, set it to 0x01.
 		uint16_t		m_loadMipmapMask;
 		// Should the palette be loaded (if there is one?)

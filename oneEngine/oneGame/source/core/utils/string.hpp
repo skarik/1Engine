@@ -30,9 +30,12 @@ namespace string
 		arstring256 result (filename);
 		if (len == 0)
 			len = result.length();
-		for (size_t pos = 0; pos < len; ++pos) {
+		for (size_t pos = len - 1; pos > 0; --pos) {
 			if (result[pos] == '.') {
 				result[pos] = 0;
+				break;
+			}
+			else if (result[pos] == '/' || result[pos] == '\\') {
 				break;
 			}
 		}
@@ -59,6 +62,31 @@ namespace string
 		}
 		while (pos != 0);
 		return arstring256();
+	}
+
+	//	GetPathStandard(filename) : Returns a standardized version of the path.
+	std::string GetPathStandard( const std::string& filename )
+	{
+		std::string result = GetLower(filename);
+		for ( unsigned int i = 0; i < result.length(); ++i ) {
+			if ( result[i] == '\\' ) {
+				result[i] = '/';
+			}
+		}
+		return result;
+	}
+	arstring256 GetPathStandard( const char* filename, size_t len = 0 )
+	{
+		if (len == 0)
+			len = strlen(filename);
+		arstring256 result (filename);
+		ToLower(result, len);
+		for ( unsigned int i = 0; i < len; ++i ) {
+			if ( result[i] == '\\' ) {
+				result[i] = '/';
+			}
+		}
+		return result;
 	}
 
 	std::string GetLower( const std::string& input )
@@ -197,9 +225,15 @@ namespace string
 	{
 		if (len == 0)
 			len = strlen(inout_string);
-		for (size_t pos = 0; pos < len; ++pos) {
-			if (inout_string[pos] == '.') {
+		for (size_t pos = len - 1; pos > 0; --pos)
+		{
+			if (inout_string[pos] == '.')
+			{
 				inout_string[pos] = 0;
+				break;
+			}
+			else if (inout_string[pos] == '/' || inout_string[pos] == '\\')
+			{
 				break;
 			}
 		}
@@ -242,6 +276,25 @@ namespace string
 		for (size_t pos = 0; pos < len; ++pos) {
 			inout_string[pos] = ::toupper(inout_string[pos]);
 		}
+	}
+
+	void ToPathStandard( char* inout_string, size_t len = 0 )
+	{
+		if (len == 0)
+			len = strlen(inout_string);
+		ToLower(inout_string, len);
+		for (size_t pos = 0; pos < len; ++pos) {
+			if (inout_string[pos] == '\\') {
+				inout_string[pos] = '/';
+			}
+		}
+	}
+	void ToResourceName( char* inout_string, size_t len = 0 )
+	{
+		if (len == 0)
+			len = strlen(inout_string);
+		ToPathStandard(inout_string, len);
+		ToFileStemLeaf(inout_string, len);
 	}
 
 	//===============================================================================================//

@@ -1,4 +1,4 @@
-
+/*
 #ifndef _C_TEXTURE_MASTER_H_
 #define _C_TEXTURE_MASTER_H_
 
@@ -55,4 +55,4 @@ private:
 // Global Class
 extern RrTextureMaster TextureMaster;
 
-#endif
+#endif*/

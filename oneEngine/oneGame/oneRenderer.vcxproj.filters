@@ -204,9 +204,6 @@
     <ClCompile Include="source\renderer\texture\CTextureLoader.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\texture\CTextureMaster.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\logic\CLogicObject.cpp">
       <Filter>SOURCE\Renderer\Logic</Filter>
     </ClCompile>
@@ -381,6 +378,15 @@
     <ClCompile Include="source\renderer\texture\rrSamplerState.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTextureMaster.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTextureMasterSubsystem.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTexture.Streaming.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -486,9 +492,6 @@
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\texture\CTextureCube.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\CTextureMaster.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\logic\CLogicObject.h">
@@ -699,6 +702,12 @@
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\texture\rrSamplerState.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrTextureMaster.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrTextureMasterSubsystem.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
   </ItemGroup>

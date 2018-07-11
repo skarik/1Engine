@@ -73,6 +73,9 @@
     <Filter Include="SOURCE\Core-ext\System\IO\Assets\TexLoader">
       <UniqueIdentifier>{6f5969ed-bb74-43f7-af84-6d3b2b8e028d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Core-ext\Resources">
+      <UniqueIdentifier>{55b2ccba-8172-44c2-9858-0ccc8db7aef6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\settings\CGameSettings.cpp">
@@ -176,6 +179,15 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\system\io\assets\TextureIO.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\resources\ResourceManager.cpp">
+      <Filter>SOURCE\Core-ext\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\resources\IArResource.cpp">
+      <Filter>SOURCE\Core-ext\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\resources\IArResourceSubsystem.cpp">
+      <Filter>SOURCE\Core-ext\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +310,15 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\io\assets\TextureIO.h">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\resources\ResourceManager.h">
+      <Filter>SOURCE\Core-ext\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\resources\IArResource.h">
+      <Filter>SOURCE\Core-ext\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\resources\IArResourceSubsystem.h">
+      <Filter>SOURCE\Core-ext\Resources</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

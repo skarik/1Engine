@@ -733,7 +733,7 @@
 //}
 
 core::BpdLoader::BpdLoader()
-	: m_loadMipmapMask(0), m_loadPalette(false), m_keepMipmapsLive(false), m_keepPaletteLive(false),
+	: m_loadMipmapMask(0), m_loadSuperlow(false), m_loadPalette(false), m_keepMipmapsLive(false), m_keepPaletteLive(false),
 	mipmaps(), mipmapCount(0), palette(NULL)
 {
 	;

@@ -195,6 +195,7 @@
     <ClInclude Include="source\core\math\Cubic.h" />
     <ClInclude Include="source\core\math\Easing.h" />
     <ClInclude Include="source\core\math\Frustum.h" />
+    <ClInclude Include="source\core\math\hash.h" />
     <ClInclude Include="source\core\math\Line.h" />
     <ClInclude Include="source\core\math\Math.h" />
     <ClInclude Include="source\core\math\Math3d.h" />

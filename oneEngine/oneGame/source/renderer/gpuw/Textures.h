@@ -2,8 +2,8 @@
 #define _GPU_WRAPPER_TEXTURES_H_
 
 #include "core/types/types.h"
-#include "renderer/types/types.h"
 #include "core/gfx/textureFormats.h"
+#include "renderer/types/types.h"
 #include "renderer/ogl/GLCommon.h"
 
 namespace gpu
@@ -62,6 +62,9 @@ namespace gpu
 
 		//	free() : destroys any allocated texture, if existing.
 		RENDER_API int			free ( void );
+
+		//	upload() : uploads data to the texture from a buffer
+		RENDER_API int			upload ( gpu::Buffer& buffer, const uint level );
 
 	private:
 		GLuint							m_texture;

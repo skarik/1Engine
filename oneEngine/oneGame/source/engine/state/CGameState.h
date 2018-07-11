@@ -20,7 +20,11 @@
 #include <mutex>
 
 // Prototypes
-class CResourceManager;
+//class CResourceManager;
+namespace core
+{
+	class ArResourceManager;
+}
 
 // Deletion Struct Definition
 struct sObjectICounter
@@ -110,7 +114,7 @@ public:
 	// Public messenger
 	CGameMessenger	messenger;
 	// Public resource manager
-	CResourceManager*	mResourceManager;
+	core::ArResourceManager*	mResourceManager;
 
 private:
 	// Give base GameBehavior access.

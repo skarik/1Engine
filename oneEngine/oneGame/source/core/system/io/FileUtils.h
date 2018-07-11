@@ -1,7 +1,8 @@
 #ifndef CORE_IO_FILE_UTILS_H_
 #define CORE_IO_FILE_UTILS_H_
 
-#include "core/types/types.h"
+#include "core/types.h"
+#include "core/common.h"
 #include <string>
 
 namespace IO
@@ -10,8 +11,9 @@ namespace IO
 	bool FileExists ( const char* n_filename );
 	bool FileExists ( const std::string& n_filename );
 
-	// Name edit
-	std::string FilenameStandardize ( const std::string& n_filename );
+	// Name edit.
+	// Deprecated, use core::utils::string::ToPathStandard instead
+	//DEPRECATED( std::string FilenameStandardize ( const std::string& n_filename ) );
 
 	// File edit
 	bool ClearFile ( const char* n_filename );

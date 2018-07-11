@@ -35,7 +35,7 @@ struct tRenderTargetInfo
 // Class definition
 class CRenderTexture : public RrTexture
 {
-	TextureType( TextureClassRenderTarget );
+	TextureType( core::gfx::tex::kTextureClassRenderTarget );
 protected:
 	explicit CRenderTexture ( const string& sInFilename )
 		: RrTexture( sInFilename )
