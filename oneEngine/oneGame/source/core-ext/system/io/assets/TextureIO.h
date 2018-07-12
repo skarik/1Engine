@@ -29,6 +29,7 @@ namespace core
 	static const char*	kTextureFormat_HeadPalette	= "PAL\0";
 	static const char*	kTextureFormat_HeadMisc		= "MSC\0";
 
+	static const int	kTextureFormat_SuperlowWidth= 16;
 	static const int	kTextureFormat_SuperlowSize	= 16 * 16;
 
 	struct textureFmtHeader
@@ -92,6 +93,15 @@ namespace core
 		uint16_t	duration;
 	};
 
+	struct textureFmtPalette
+	{
+		char		head[4];	// Always "PAL\0"
+		uint8_t		rows;
+		uint8_t		depth;
+
+		uint16_t	unused0;
+	};
+
 	enum ETextureFormatTypes
 	{
 		IMG_FORMAT_RGBA8	= 0x00,	// RGBA8 (Default)
@@ -113,6 +123,7 @@ namespace core
 	static_assert(sizeof(textureFmtLevel)		== sizeof(uint32_t)*4,	"Invalid structure size");
 	static_assert(sizeof(textureFmtAnimation)	== sizeof(uint32_t)*4,	"Invalid structure size");
 	static_assert(sizeof(textureFmtFrame)		== sizeof(uint32_t)*1,	"Invalid structure size");
+	static_assert(sizeof(textureFmtPalette)		== sizeof(uint32_t)*2,	"Invalid structure size");
 
 	//	class BpdLoader
 	// Loads up a BPD and given levels based on configuration.
@@ -142,26 +153,26 @@ namespace core
 		uint16_t		m_loadMipmapMask;
 		// Should the palette be loaded (if there is one?)
 		bool			m_loadPalette;
-		// Should the memory allocated for the textures be freed when done?
-		//bool			m_keepMipmapsLive;
-		//bool			m_keepPaletteLive;
+		// Load the animation?
+		bool			m_loadAnimation;
 
 		//	Load targets:
 
-		gfx::arPixel*					m_buffer_Superlow;
-		gfx::arPixel*					m_buffer_Mipmaps [16];
+		gfx::arPixel*	m_buffer_Superlow;
+		gfx::arPixel*	m_buffer_Mipmaps [16];
 
 		//	Load outputs:
 
-		uint8_t							mipmapCount;
-
-		//gfx::arPixel*					mipmaps [16];
-		//int								mipmapCount;
-		//gfx::arPixel*					palette;
-
-		gfx::tex::arImageInfo			info;
-		textureFmtAnimation				animation;
-		std::vector<textureFmtFrame>	frames;
+		uint8_t			mipmapCount;
+		gfx::tex::arImageInfo
+						info;
+		gfx::tex::arAnimationInfo
+						animation;
+		std::vector<textureFmtFrame>
+						frames;
+		std::vector<gfx::arPixel>
+						palette;
+		uint8_t			paletteWidth;
 
 	protected:
 		FILE*			m_liveFile;
@@ -179,7 +190,7 @@ namespace core
 		CORE_API				~BpdWriter ( void );
 
 		//	LoadBpd(resource name)
-		// Attempts to save new BPD with given resource name. Takes into account input data.
+		// Attempts to save new BPD with given file name.
 		CORE_API bool			WriteBpd ( const char* n_newfilename );
 
 	public:
@@ -187,30 +198,52 @@ namespace core
 
 		// Should mipmaps be generated as we save?
 		bool			m_generateMipmaps;
+		// Controls if animation should be written.
+		bool			m_writeAnimation;
 		// Controls if image is converted to the the palette given before saved. This will prevent mipmaps from being generated.
 		bool			m_convertAndEmbedPalette;
 		// 
 
 		//	Save data:
 
-		gfx::arPixel*			rawImage;
-		gfx::arPixel*			palette;
-		gfx::arPixel*			mipmaps [16];
-		int						mipmapCount;
+		gfx::arPixel*	rawImage;
+		gfx::arPixel*	mipmaps [16];
+		int				mipmapCount;
+		gfx::arPixel*	palette;
+		int				paletteRows;
+		int				paletteDepth;
 
-		gfx::tex::arImageInfo	info;
-		uint16_t*				frame_times;
+		gfx::tex::arImageInfo
+						info;
+		gfx::tex::arAnimationInfo
+						animationInfo;
+		uint16_t*		frame_times;
 
-		uint64_t				datetime;
+		uint64_t		datetime;
 
 	private:
+		//	writeHeader() : writes header
 		bool					writeHeader ( void );
+		//	writeSuperlow() : generates & writes the superlow texture variant
+		bool					writeSuperlow ( void );
+		//	writeLevelData() : writes all the mipmapped levels. possibly generates them.
 		bool					writeLevelData ( void );
-
-		uint32_t				calculateLevelSize ( int );
+		//	writeAnimation() : writes animation needed
+		bool					writeAnimation ( void );
+		//	writePalette() : writes palette needed
+		bool					writePalette ( void );
+		//	patchHeader() : fixes up the data in the header
+		bool					patchHeader( void );
+		//	patchLevels() : fixes up the data in the level data
+		bool					patchLevels( void );
 
 	private:
-		FILE*			m_file;
+		void*			m_file;
+		uint32_t		m_offsetLevels;
+		std::vector<textureFmtLevel>
+						m_levels;
+		uint32_t		m_offsetAnimation;
+		uint32_t		m_offsetPalette;
 	};
 
 	namespace texture

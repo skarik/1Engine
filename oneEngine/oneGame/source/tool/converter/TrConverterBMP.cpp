@@ -23,6 +23,11 @@ bool TrConverterBMP::Convert(const char* inputFilename, const char* outputFilena
 		writer.rawImage = pixel;
 		writer.info = imageInfo;
 
+		// Get the time of the input file
+		struct stat f_buf;
+		stat(inputFilename, &f_buf);
+		writer.datetime = (uint64_t)f_buf.st_mtime;
+
 		// Write the new BPD to the disk.
 		return writer.WriteBpd(outputFilename);
 	}

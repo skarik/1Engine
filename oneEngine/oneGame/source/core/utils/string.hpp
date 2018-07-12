@@ -75,7 +75,7 @@ namespace string
 		}
 		return result;
 	}
-	arstring256 GetPathStandard( const char* filename, size_t len = 0 )
+	arstring256 GetPathStandard( const char* filename, size_t len )
 	{
 		if (len == 0)
 			len = strlen(filename);
@@ -278,7 +278,7 @@ namespace string
 		}
 	}
 
-	void ToPathStandard( char* inout_string, size_t len = 0 )
+	void ToPathStandard( char* inout_string, size_t len )
 	{
 		if (len == 0)
 			len = strlen(inout_string);
@@ -289,7 +289,7 @@ namespace string
 			}
 		}
 	}
-	void ToResourceName( char* inout_string, size_t len = 0 )
+	void ToResourceName( char* inout_string, size_t len )
 	{
 		if (len == 0)
 			len = strlen(inout_string);

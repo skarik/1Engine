@@ -27,6 +27,12 @@ CMappedBinaryFile::~CMappedBinaryFile ( void )
 	}
 }
 
+// Returns if the file is ready to be worked on.
+bool CMappedBinaryFile::GetReady ( void )
+{
+	return m_file != NULL;
+}
+
 void CMappedBinaryFile::SyncToDisk ( void )
 {
 	// Get cursor
@@ -64,7 +70,8 @@ size_t CMappedBinaryFile::ReadBuffer ( void* n_buffer, const size_t n_buffer_siz
 // Expands file as necessary.
 size_t CMappedBinaryFile::WriteBuffer ( const void* n_buffer, const size_t n_buffer_size )
 {
-	return fwrite( n_buffer, 1, n_buffer_size, m_file );
+	return fwrite( n_buffer, n_buffer_size, 1, m_file ) * n_buffer_size;
+	//return fwrite( n_buffer, 1, n_buffer_size, m_file );
 }
 
 // Returns a stream for manual I/O. May return NULL if manual I/O is not supported.
@@ -72,6 +79,17 @@ FILE* CMappedBinaryFile::GetStream ( void )
 {
 	return m_file;
 }
+// Returns current size of the mapped buffer. May not be 100% correct.
+long CMappedBinaryFile::GetSize ( void )
+{
+	return TellSize();
+}
+// Returns the current virtual memory cursor.
+long CMappedBinaryFile::GetCursor ( void )
+{
+	return TellPos();
+}
+
 
 long CMappedBinaryFile::TellPos ( void )
 {

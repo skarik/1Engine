@@ -57,12 +57,23 @@ namespace tex {
 		uint16_t	width;
 		uint16_t	height;
 		uint16_t	depth; // usually 1
+		uint8_t		levels;
 
 		// Specific for getting and setting animation data:
 
+		/*uint16_t	framecount;
+		uint8_t		xdivs;	
+		uint8_t		ydivs;*/
+	};
+
+	// Image animation info
+	struct arAnimationInfo
+	{
 		uint16_t	framecount;
 		uint8_t		xdivs;	
 		uint8_t		ydivs;
+
+		uint16_t	framerate;	// Base framerate. If 0, assumes 60.
 	};
 
 }}}

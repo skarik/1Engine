@@ -12,8 +12,8 @@ namespace IO
 	bool FileExists ( const std::string& n_filename );
 
 	// Name edit.
-	// Deprecated, use core::utils::string::ToPathStandard instead
-	//DEPRECATED( std::string FilenameStandardize ( const std::string& n_filename ) );
+	//DEPRECATED("Use core::utils::string::ToPathStandard instead")
+	//std::string FilenameStandardize ( const std::string& n_filename );
 
 	// File edit
 	bool ClearFile ( const char* n_filename );

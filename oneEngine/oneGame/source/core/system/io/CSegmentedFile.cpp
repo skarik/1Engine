@@ -116,9 +116,9 @@ bool CSegmentedFile::FindSegmentStart ( FILE* fp )
 		}
 		// Otherwise read shit
 		char tempBuffer [1024];
-		uint readAmount = fread( tempBuffer, 1, 1024, fp );
-		uint matchpoint = 0;
-		uint offset = 0;
+		size_t readAmount = fread( tempBuffer, 1, 1024, fp );
+		size_t matchpoint = 0;
+		size_t offset = 0;
 		for ( uint i = 0; i < readAmount; ++i )
 		{
 			if ( tempBuffer[i] == matchBuffer[matchpoint] )
@@ -146,7 +146,7 @@ bool CSegmentedFile::FindSegmentStart ( FILE* fp )
 		// Now check match
 		if ( matchpoint == 7 )
 		{
-			long seekpos = ftell(fp)-(readAmount-offset-1);
+			long seekpos = (long)(ftell(fp)-(readAmount-offset-1));
 			//printf( "Seeking to position %d for new segment found\n", seekpos );
 			fseek( fp, seekpos, SEEK_SET );
 			sCurrentData = "<<begin";
@@ -356,7 +356,7 @@ CBufferIO CSegmentedFile::GetSectionStream ( const std::string& sSection, const 
 		// Set size to actually read
 		if ( iMaxSize != 0 )
 		{
-			datasize = std::min<size_t>( datasize, iMaxSize );
+			datasize = (uint32_t)std::min<size_t>( datasize, iMaxSize );
 		}
 
 		// Read in contents to a string
@@ -467,7 +467,7 @@ void CSegmentedFile::WriteSector( string& sName, string& sData )
 		{
 			// Write the size of the data as a 32 bit integer
 			uint32_t datasize;
-			datasize = sData.length();
+			datasize = (uint32_t)sData.length();
 			fwrite( &datasize, sizeof(uint32_t), 1, fp_output );
 				
 			// Write out the actual data
