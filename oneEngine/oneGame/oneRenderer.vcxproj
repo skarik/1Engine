@@ -58,6 +58,7 @@
     <ClCompile Include="source\renderer\gpuw\Buffers.ConstantBuffer.cpp" />
     <ClCompile Include="source\renderer\gpuw\Buffers.VertexBuffer.cpp" />
     <ClCompile Include="source\renderer\gpuw\Device.cpp" />
+    <ClCompile Include="source\renderer\gpuw\Fence.cpp" />
     <ClCompile Include="source\renderer\gpuw\InputLayout.cpp" />
     <ClCompile Include="source\renderer\gpuw\RenderTargets.cpp" />
     <ClCompile Include="source\renderer\gpuw\Textures.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="source\renderer\gpuw\Buffers.h" />
     <ClInclude Include="source\renderer\gpuw\Device.h" />
     <ClInclude Include="source\renderer\gpuw\Error.h" />
+    <ClInclude Include="source\renderer\gpuw\Fence.h" />
     <ClInclude Include="source\renderer\gpuw\InputLayout.h" />
     <ClInclude Include="source\renderer\gpuw\Internal\Enums.h" />
     <ClInclude Include="source\renderer\gpuw\RenderTargets.h" />

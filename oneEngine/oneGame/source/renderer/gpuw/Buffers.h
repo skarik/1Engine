@@ -42,6 +42,7 @@ namespace gpu
 		RENDER_API int			allocate ( const uint64_t data_size, const TransferStyle style );
 		RENDER_API int			map ( const TransferStyle style );
 		RENDER_API int			unmap ( void );
+		RENDER_API int			free ( void );
 	};
 }
 

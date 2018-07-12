@@ -387,6 +387,9 @@
     <ClCompile Include="source\renderer\texture\RrTexture.Streaming.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Fence.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -709,6 +712,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\texture\RrTextureMasterSubsystem.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Fence.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,8 +4,6 @@
 #include "renderer/gpuw/Device.h"
 #include "renderer/gpuw/Fence.h"
 
-static const int kSuperlowWidth = 16;
-
 //	StreamingReset() : Resets streaming state.
 void RrTexture::StreamingReset ( void )
 {
@@ -48,7 +46,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 		{
 			// Create a buffer to upload the texture data
 			gpu::Buffer pixelBuffer;
-			pixelBuffer.allocate(sizeof(core::gfx::arPixel) * kSuperlowWidth * kSuperlowWidth, gpu::kTransferStatic);
+			pixelBuffer.allocate(sizeof(core::gfx::arPixel) * core::kTextureFormat_SuperlowSize, gpu::kTransferStatic);
 			core::gfx::arPixel* target = (core::gfx::arPixel*)pixelBuffer.map(gpu::kTransferStatic);
 
 			// Load the data in:

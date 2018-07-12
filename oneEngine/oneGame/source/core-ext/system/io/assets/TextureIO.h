@@ -29,6 +29,8 @@ namespace core
 	static const char*	kTextureFormat_HeadPalette	= "PAL\0";
 	static const char*	kTextureFormat_HeadMisc		= "MSC\0";
 
+	static const int	kTextureFormat_SuperlowSize	= 16 * 16;
+
 	struct textureFmtHeader
 	{
 		char		head[4];	// Always "BPD\0"
@@ -54,7 +56,9 @@ namespace core
 		// byte offset of where level info begins
 		uint32_t	levelsOffset;
 		// byte offset
-		uint32_t	postLevelsOffset;
+		uint32_t	animationOffset;
+		// byte offset
+		uint32_t	paletteOffset;
 	};
 
 	struct textureFmtLevel
@@ -115,35 +119,55 @@ namespace core
 	class BpdLoader
 	{
 	public:
-		CORE_API explicit BpdLoader ( void );
-		CORE_API		 ~BpdLoader ( void );
+		CORE_API explicit		BpdLoader ( void );
+		CORE_API				~BpdLoader ( void );
 
 		//	LoadBpd ( resource name )
 		// Attempts to load BPD with given resource name.
-		CORE_API bool LoadBpd ( const char* n_resourcename );
+		// If the file could not be loaded, will return false.
+		CORE_API bool			LoadBpd ( const char* n_resourcename );
+
+		//	LoadBpd() : Continues loading.
+		// Continues to load the live BPD file initially opened with LoadBpd.
+		CORE_API bool			LoadBpd ( void );
 
 	public:
 		//	Load options:
 
 		// Do we want to load the superlow?
-		bool			m_loadSuperlow;
+		bool			m_loadOnlySuperlow;
+		// Load the image info?
+		bool			m_loadImageInfo;
 		// Bitmask of which mipmap levels to load. To only load raw, set it to 0x01.
 		uint16_t		m_loadMipmapMask;
 		// Should the palette be loaded (if there is one?)
 		bool			m_loadPalette;
 		// Should the memory allocated for the textures be freed when done?
-		bool			m_keepMipmapsLive;
-		bool			m_keepPaletteLive;
+		//bool			m_keepMipmapsLive;
+		//bool			m_keepPaletteLive;
 
-		//	Loaded data:
+		//	Load targets:
 
-		gfx::arPixel*					mipmaps [16];
-		int								mipmapCount;
-		gfx::arPixel*					palette;
+		gfx::arPixel*					m_buffer_Superlow;
+		gfx::arPixel*					m_buffer_Mipmaps [16];
+
+		//	Load outputs:
+
+		uint8_t							mipmapCount;
+
+		//gfx::arPixel*					mipmaps [16];
+		//int								mipmapCount;
+		//gfx::arPixel*					palette;
 
 		gfx::tex::arImageInfo			info;
 		textureFmtAnimation				animation;
 		std::vector<textureFmtFrame>	frames;
+
+	protected:
+		FILE*			m_liveFile;
+
+		//	loadBpdCommon() : loads BPD file
+		bool					loadBpdCommon ( void );
 	};
 
 	//	class BpdWriter
@@ -151,12 +175,12 @@ namespace core
 	class BpdWriter
 	{
 	public:
-		CORE_API explicit BpdWriter ( void );
-		CORE_API		 ~BpdWriter ( void );
+		CORE_API explicit		BpdWriter ( void );
+		CORE_API				~BpdWriter ( void );
 
 		//	LoadBpd(resource name)
 		// Attempts to save new BPD with given resource name. Takes into account input data.
-		CORE_API bool WriteBpd ( const char* n_newfilename );
+		CORE_API bool			WriteBpd ( const char* n_newfilename );
 
 	public:
 		//	Save options:
@@ -180,10 +204,10 @@ namespace core
 		uint64_t				datetime;
 
 	private:
-		bool			writeHeader ( void );
-		bool			writeLevelData ( void );
+		bool					writeHeader ( void );
+		bool					writeLevelData ( void );
 
-		uint32_t		calculateLevelSize ( int );
+		uint32_t				calculateLevelSize ( int );
 
 	private:
 		FILE*			m_file;
