@@ -22,6 +22,8 @@
 
 #include "renderer/system/glMainSystem.h"
 
+#include "renderer/gpuw/Device.h"
+
 #include <map>
 
 RrMaterial*	RrMaterial::Default = NULL;
@@ -608,6 +610,8 @@ static struct _pass_deferred_state {
 
 void RrMaterial::bindPassForward ( uchar pass )
 {
+	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
 	// Reset deferred state
 	df_state.shader = NULL;
 
@@ -616,75 +620,112 @@ void RrMaterial::bindPassForward ( uchar pass )
 	m_currentPass = pass;
 	m_currentPassForward = true;
 
+	gpu::RasterizerState raster_state;
+	gpu::BlendState blend_state;
+	gpu::DepthStencilState ds_state;
+
 	// Set face mode
 	switch ( passinfo[pass].m_face_mode )
 	{
 	case renderer::FM_FRONT:
-		glEnable( GL_CULL_FACE );
-		glCullFace( GL_BACK );
+		//glEnable( GL_CULL_FACE );
+		//glCullFace( GL_BACK );
+		raster_state.cullmode = gpu::kCullModeBack;
 		break;
 	case renderer::FM_BACK:
-		glEnable( GL_CULL_FACE );
-		glCullFace( GL_FRONT );
+		//glEnable( GL_CULL_FACE );
+		//glCullFace( GL_FRONT );
+		raster_state.cullmode = gpu::kCullModeFront;
 		break;
 	case renderer::FM_FRONTANDBACK:
-		glDisable( GL_CULL_FACE );
+		//glDisable( GL_CULL_FACE );
+		raster_state.cullmode = gpu::kCullModeNone;
 		break;
 	}
 	// Set blend mode
-	glEnable( GL_BLEND );
+	//glEnable( GL_BLEND );
 	switch ( passinfo[pass].m_blend_mode )
 	{
 	case renderer::BM_NORMAL:
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		//glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeSrcAlpha;
+		blend_state.dst = gpu::kBlendModeInvSrcAlpha;
 		break;
 	case renderer::BM_ADD:
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+		//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeSrcAlpha;
+		blend_state.dst = gpu::kBlendModeOne;
 		break;
 	case renderer::BM_SOFT_ADD:
-		glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+		//glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeOne;
+		blend_state.dst = gpu::kBlendModeInvSrcAlpha;
 		break;
 	case renderer::BM_INV_MULTIPLY:
-		glBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_COLOR );
+		//glBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_COLOR );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeZero;
+		blend_state.dst = gpu::kBlendModeInvSrcColor;
 		break;
 	case renderer::BM_MULTIPLY:
-		glBlendFunc( GL_DST_COLOR, GL_ZERO );
+		//glBlendFunc( GL_DST_COLOR, GL_ZERO );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeDstColor;
+		blend_state.dst = gpu::kBlendModeZero;
 		break;
 	case renderer::BM_MULTIPLY_X2:
-		glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
+		//glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeDstColor;
+		blend_state.dst = gpu::kBlendModeSrcColor;
 		break;
 	case renderer::BM_NONE:
-		glDisable( GL_BLEND );
-		glBlendFunc( GL_ONE, GL_ZERO );
+		//glDisable( GL_BLEND );
+		//glBlendFunc( GL_ONE, GL_ZERO );
+		blend_state.enable = false;
 		break;
 	}
 
 	// Set transparency mode
 	if ( passinfo[pass].b_depthtest )
 	{
-		glEnable( GL_DEPTH_TEST );
-		glDepthFunc( GL_LEQUAL );
+		//glEnable( GL_DEPTH_TEST );
+		//glDepthFunc( GL_LEQUAL );
+		ds_state.depthTestEnabled = true;
+		ds_state.depthFunc = gpu::kCompareOpLess;
 	}
 	else
 	{
-		glDisable( GL_DEPTH_TEST );
+		//glDisable( GL_DEPTH_TEST );
+		ds_state.depthTestEnabled = false;
 	}
 	if ( !passinfo[pass].b_depthmask )
 	{
-		glDepthMask( GL_FALSE );
+		//glDepthMask( GL_FALSE );
+		ds_state.depthWriteEnabled = false;
 	}
 	else
 	{
 		if (passinfo[pass].m_transparency_mode == renderer::ALPHAMODE_NONE ||
 			passinfo[pass].m_transparency_mode == renderer::ALPHAMODE_ALPHATEST)
 		{
-			glDepthMask( GL_TRUE );
+			//glDepthMask( GL_TRUE );
+			ds_state.depthWriteEnabled = true;
 		}
 		else
 		{
-			glDepthMask( GL_FALSE );
+			//glDepthMask( GL_FALSE );
+			ds_state.depthWriteEnabled = false;
 		}
 	}
+
+	// Set blend & rasterizer state
+	gfx->setRasterizerState(raster_state);
+	gfx->setBlendState(blend_state);
+	gfx->setDepthStencilState(ds_state);
 
 	// Bind shader
 	TimeProfiler.BeginTimeProfile( "rs_mat_bindshader" );

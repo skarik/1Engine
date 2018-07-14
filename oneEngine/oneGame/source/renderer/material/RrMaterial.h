@@ -1,6 +1,5 @@
-
-#ifndef _GL_MATERIAL_H_
-#define _GL_MATERIAL_H_
+#ifndef RENDERER_MATERIAL_H_
+#define RENDERER_MATERIAL_H_
 
 #include "core/types/types.h"
 #include "core/math/Color.h"
@@ -11,6 +10,7 @@
 
 #include "renderer/types/types.h"
 #include "renderer/gpuw/Buffers.h"
+#include "renderer/gpuw/Textures.h"
 
 #include "RrShader.h"
 #include "RrPassForward.h"
@@ -50,6 +50,9 @@ class RrTexture;
 class RrRenderTexture;
 class CRenderState;
 
+//	class RrMaterial : Utility structure to wrap a collection of shaders, layouts, and textures.
+// This is a higher level construct, which is used to sort objects in a way to minimize context changes.
+// In order to sort properly, most rendering options are set in this class.
 class RrMaterial
 {
 	friend CRenderState;
@@ -146,7 +149,9 @@ public:
 	// Do not delete the texture directly, use RemoveReference.
 	RENDER_API void			setTexture ( const textureslot_t n_index, RrTexture* n_texture );
 	//	setSampler ( slot, texture ) : Sets material texture with raw GPU handles.
-	RENDER_API void			setSampler ( const textureslot_t n_index, const glHandle n_sampler, const glEnum n_sampler_target=0 );
+	// To be used only in an immediate use-case, ex. post-processing or compositing.
+	//RENDER_API void			setSampler ( const textureslot_t n_index, const glHandle n_sampler, const glEnum n_sampler_target=0 );
+	RENDER_API void			setSampler ( const textureslot_t n_index, gpu::Texture& n_texture );
 	//	getTexture ( slot ) : Returns texture object set to slot
 	RENDER_API RrTexture*	getTexture ( const textureslot_t n_index );
 
@@ -165,35 +170,37 @@ private:
 	rrCmdBufferBuildstate	m_buildState;
 
 	// Textures (samplers)
-	RrTexture*	m_highlevel_storage [12];
-	glHandle	m_samplers [12];
-	glEnum		m_sampler_targets [12];
+	RrTexture*		m_highlevel_storage [12];
+	gpu::Texture	m_samplers [12];
+	//glEnum			m_sampler_targets [12];
 
 	// Constant Buffers
 	gpu::ConstantBuffer	m_cbufPerObject;
 
 public:
 	// Textures (buffers)
-	glHandle	m_bufferMatricesSkinning;
+	gpu::Buffer			m_bufferMatricesSkinning;
 	//GLuint		m_bufferMatricesSoftbody;
-	glHandle	m_bufferSkeletonSize;
+	//glHandle	m_bufferSkeletonSize;
+	gpu::Buffer			m_bufferSkeletonSize;
 
-	glHandle	m_tex_instancedinfo;
+	//glHandle	m_tex_instancedinfo;
+	gpu::Buffer			m_tex_instancedinfo;
 
 	// Textures (global properties)
 	RENDER_API static RrTexture*	m_sampler_reflection;
 
 private:
 	// Static UBOs
-	static glHandle	m_ubo_foginfo;
-	static glHandle	m_ubo_lightinginfo;
-	static glHandle	m_ubo_reflectinfo;
+	static gpu::Buffer	m_ubo_foginfo;
+	static gpu::Buffer	m_ubo_lightinginfo;
+	static gpu::Buffer	m_ubo_reflectinfo;
 
-	static glHandle	m_ubo_deflightinginfo;
-	static glHandle	m_tbo_lightinfo;
-	static glHandle	m_tex_lightinfo;
-	static glHandle	m_tex_shadowinfo;
-	static glHandle	m_lightCount;
+	static gpu::Buffer	m_ubo_deflightinginfo;
+	static gpu::Buffer	m_tbo_lightinfo;
+	static gpu::Buffer	m_tex_lightinfo;
+	static gpu::Buffer	m_tex_shadowinfo;
+	static gpu::Buffer	m_lightCount;
 public:
 	RENDER_API static void	updateStaticUBO ( void );
 	RENDER_API static void	updateLightTBO ( void );
@@ -247,4 +254,4 @@ private:
 	arstring<256>	m_filename;
 };
 
-#endif//_GL_MATERIAL_H_
+#endif//RENDERER_MATERIAL_H_
