@@ -10,6 +10,7 @@
 
 namespace gpu
 {
+	class Device;
 	class ConstantBuffer
 	{
 	public:
@@ -26,11 +27,11 @@ namespace gpu
 		RENDER_API gpuHandle	nativePtr ( void );
 
 		//	init( data, data_size, transfer ) : initializes a constant buffer with data
-		RENDER_API int			init ( void* data, const  uint64_t data_size, const TransferStyle style );
+		RENDER_API int			init ( Device* device, void* data, const  uint64_t data_size, const TransferStyle style );
 		//	upload( data, data_size, transfer ) : initializes and upload a constant buffer with data
-		RENDER_API int			upload ( void* data, const  uint64_t data_size, const TransferStyle style );
+		RENDER_API int			upload ( Device* device, void* data, const  uint64_t data_size, const TransferStyle style );
 		//	free() : destroys any allocated buffer, if existing.
-		RENDER_API int			free ( void );
+		RENDER_API int			free ( Device* device = NULL );
 
 	private:
 		GLuint	m_buffer;
@@ -39,10 +40,13 @@ namespace gpu
 	class Buffer
 	{
 	public:
-		RENDER_API int			allocate ( const uint64_t data_size, const TransferStyle style );
-		RENDER_API int			map ( const TransferStyle style );
-		RENDER_API int			unmap ( void );
-		RENDER_API int			free ( void );
+		RENDER_API int			allocate ( Device* device, const uint64_t data_size, const TransferStyle style );
+		RENDER_API void*		map ( Device* device, const TransferStyle style );
+		RENDER_API int			unmap ( Device* device );
+		RENDER_API int			free ( Device* device );
+
+		//	nativePtr() : returns native index or pointer to the resource.
+		RENDER_API gpuHandle	nativePtr ( void );
 	};
 }
 

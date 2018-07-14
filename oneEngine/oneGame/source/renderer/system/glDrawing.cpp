@@ -3,7 +3,7 @@
 #include "core/system/Screen.h"
 
 #include "renderer/system/glMainSystem.h"
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/state/Settings.h"
 

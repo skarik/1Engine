@@ -47,7 +47,7 @@ enum textureslot_t : uint8_t
 // Prototype
 class CRenderableObject;
 class RrTexture;
-class CRenderTexture;
+class RrRenderTexture;
 class CRenderState;
 
 class RrMaterial

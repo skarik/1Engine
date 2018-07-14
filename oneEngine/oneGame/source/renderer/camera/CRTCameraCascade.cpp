@@ -2,7 +2,7 @@
 #include "CRTCameraCascade.h"
 #include "renderer/state/CRenderState.h"
 #include "renderer/types/ObjectSettings.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/material/RrMaterial.h"
 

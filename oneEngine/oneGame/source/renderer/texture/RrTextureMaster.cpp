@@ -1,4 +1,4 @@
-
+#if 0
 // Includes
 #include "RrTextureMaster.h"
 #include "core/debug/console.h"
@@ -242,3 +242,4 @@ void RrTextureMaster::UpdateTextureIndex ( const uint n_old, const uint n_new )
 		++lit;
 	}
 }
+#endif

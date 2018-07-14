@@ -62,30 +62,30 @@ void CBloomShader::UpdateBuffer ( void )
 	// Create halfsize buffer
 	/*if ( half_buf == NULL )
 	{
-		half_buf = new CRenderTexture( RGB16F, m_buf->GetWidth()/2, m_buf->GetHeight()/2, Clamp, Clamp, Texture2D, Depth16 );
+		half_buf = new RrRenderTexture( RGB16F, m_buf->GetWidth()/2, m_buf->GetHeight()/2, Clamp, Clamp, Texture2D, Depth16 );
 	}
 	else if (( half_buf->GetWidth() != m_buf->GetWidth()/2 )||( half_buf->GetHeight() != m_buf->GetHeight()/2 ))
 	{
 		delete half_buf;
-		half_buf = new CRenderTexture( RGB16F, m_buf->GetWidth()/2, m_buf->GetHeight()/2, Clamp, Clamp, Texture2D, Depth16 );
+		half_buf = new RrRenderTexture( RGB16F, m_buf->GetWidth()/2, m_buf->GetHeight()/2, Clamp, Clamp, Texture2D, Depth16 );
 	}*/
 	// Create other small buffers
 	if ( buf_4th == NULL ) {
-		buf_4th = new CRenderTexture( m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, m_buf->GetInternalFormat(), DepthNone, StencilNone );
+		buf_4th = new RrRenderTexture( m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, m_buf->GetInternalFormat(), DepthNone, StencilNone );
 	}
 	else if (( buf_4th->GetWidth() != m_buf->GetWidth()/4 )||( buf_4th->GetHeight() != m_buf->GetHeight()/4 ))
 	{
 		delete buf_4th;
-		buf_4th = new CRenderTexture( m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, m_buf->GetInternalFormat(), DepthNone, StencilNone );
+		buf_4th = new RrRenderTexture( m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, m_buf->GetInternalFormat(), DepthNone, StencilNone );
 	}
 
 	/*if ( buf_16th == NULL ) {
-		buf_16th = new CRenderTexture( RGB16F, m_buf->GetWidth()/16, m_buf->GetHeight()/16, Clamp, Clamp, Texture2D, Depth16 );
+		buf_16th = new RrRenderTexture( RGB16F, m_buf->GetWidth()/16, m_buf->GetHeight()/16, Clamp, Clamp, Texture2D, Depth16 );
 	}
 	else if (( buf_16th->GetWidth() != m_buf->GetWidth()/16 )||( buf_16th->GetHeight() != m_buf->GetHeight()/16 ))
 	{
 		delete buf_16th;
-		buf_16th = new CRenderTexture( RGB16F, m_buf->GetWidth()/16, m_buf->GetHeight()/16, Clamp, Clamp, Texture2D, Depth16 );
+		buf_16th = new RrRenderTexture( RGB16F, m_buf->GetWidth()/16, m_buf->GetHeight()/16, Clamp, Clamp, Texture2D, Depth16 );
 	}*/
 }
 
@@ -94,7 +94,7 @@ void CBloomShader::Copy ( void )
 	GL_ACCESS GLd_ACCESS
 
 	// Generate sum shit
-	CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	if ( s_buf == NULL )
 		return;
 
@@ -161,7 +161,7 @@ void CBloomShader::DrawOutput ( void )
 	throw core::NotYetImplementedException();
 
 	// Generate sum shit
-	//CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	//RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	//{
 	//	// Copy buffer down to half size texture
 	//	//Copy();

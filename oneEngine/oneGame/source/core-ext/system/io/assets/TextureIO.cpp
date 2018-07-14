@@ -389,9 +389,9 @@ bool core::BpdWriter::writeSuperlow ( void )
 	uint32_t	pixelIndex;
 	set_w = std::max<uint>( info.width / kTextureFormat_SuperlowWidth, 1 );
 	set_h = std::max<uint>( info.height/ kTextureFormat_SuperlowWidth, 1 );
-	for ( uint x = 0; x < 16; x += 1 )
+	for ( uint x = 0; x < kTextureFormat_SuperlowWidth; x += 1 )
 	{
-		for ( uint y = 0; y < 16; y += 1 )
+		for ( uint y = 0; y < kTextureFormat_SuperlowWidth; y += 1 )
 		{
 			aggregate_r = 0;
 			aggregate_g = 0;
@@ -426,10 +426,10 @@ bool core::BpdWriter::writeSuperlow ( void )
 			aggregate_b /= set_w*set_h;
 			aggregate_a /= set_w*set_h;
 
-			lowQuality[x+y*16].r = std::min<uint>( aggregate_r, 255 );
-			lowQuality[x+y*16].g = std::min<uint>( aggregate_g, 255 );
-			lowQuality[x+y*16].b = std::min<uint>( aggregate_b, 255 );
-			lowQuality[x+y*16].a = std::min<uint>( aggregate_a, 255 );
+			lowQuality[x+y*kTextureFormat_SuperlowWidth].r = std::min<uint>( aggregate_r, 255 );
+			lowQuality[x+y*kTextureFormat_SuperlowWidth].g = std::min<uint>( aggregate_g, 255 );
+			lowQuality[x+y*kTextureFormat_SuperlowWidth].b = std::min<uint>( aggregate_b, 255 );
+			lowQuality[x+y*kTextureFormat_SuperlowWidth].a = std::min<uint>( aggregate_a, 255 );
 			/*if ( n_inputimg_info->internalFormat == RGB8 ) {
 				lowQuality[x+y*16].a = 255;
 			}*/
@@ -466,7 +466,7 @@ bool core::BpdWriter::writeLevelData ( void )
 	uchar*			compressBuffer = new uchar [compressBufferLen + 1];
 
 	// Write the levels:
-	for (int level = level_count - 1; level > 0; --level) 
+	for (int level = level_count - 1; level >= 0; --level) 
 	{	// Looping from smallest level to the raw:
 		uint32_t	t_blocks = math::exp2(level);
 		uint32_t	t_width  = info.width  / t_blocks;

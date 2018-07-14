@@ -30,7 +30,7 @@ void CScreenSpaceOutlineShader::DrawOutput ( void )
 	throw core::NotYetImplementedException();
 
 	//// Generate sum shit
-	//CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	//RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	//{
 	//	// Draw screen with given material
 	//	m_material->setSampler( TEX_SLOT0, s_buf->GetColorSampler(), GL.Enum(Texture2D) );

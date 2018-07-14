@@ -9,7 +9,7 @@
 #include "renderer/camera/CCamera.h"
 #include "renderer/object/CRenderable3D.h"
 #include "renderer/object/CStreamedRenderable3D.h"
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/utils/rrMeshBuilder2D.h"
 #include "renderer/utils/rrTextBuilder2D.h"
@@ -41,7 +41,7 @@ static Vector2d _PixelRoundPosition ( const Vector2d vect )
 CutsceneEditor::CLargeTextRenderer::CLargeTextRenderer ( CutsceneEditor* owner )
 	: m_owner(owner), CStreamedRenderable3D()
 {
-	m_font_texture = new CBitmapFont("YanoneKaffeesatz-B.otf", 24, FW_BOLD);
+	m_font_texture = new RrFontTexture("YanoneKaffeesatz-B.otf", 24, FW_BOLD);
 	m_font_texture->SetFilter( SamplingLinear );
 
 	// Use a default 2D material
@@ -104,7 +104,7 @@ void CutsceneEditor::CLargeTextRenderer::UpdateMesh ( void )
 CutsceneEditor::CNormalTextRenderer::CNormalTextRenderer ( CutsceneEditor* owner )
 		: m_owner(owner), CStreamedRenderable3D()
 {
-	m_font_texture = new CBitmapFont("YanoneKaffeesatz-B.otf", 18, FW_BOLD);
+	m_font_texture = new RrFontTexture("YanoneKaffeesatz-B.otf", 18, FW_BOLD);
 	m_font_texture->SetFilter( SamplingLinear );
 
 	// Use a default 2D material

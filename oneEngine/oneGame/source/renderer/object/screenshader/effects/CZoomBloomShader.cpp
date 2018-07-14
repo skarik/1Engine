@@ -33,7 +33,7 @@ void CZoomBloomShader::DrawOutput ( void )
 	throw core::NotYetImplementedException();
 
 	//// Generate sum shit
-	//CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	//RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	//{
 	//	// Draw screen with given material
 	//	m_material->setTexture( TEX_MAIN, s_buf );

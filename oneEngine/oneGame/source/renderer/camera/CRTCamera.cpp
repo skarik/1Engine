@@ -3,11 +3,11 @@
 #include "core/time/time.h"
 #include "renderer/state/Settings.h"
 #include "renderer/types/ObjectSettings.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 
 // Constructor
 CRTCamera::CRTCamera (
-		CRenderTexture*	targetTexture,
+		RrRenderTexture*	targetTexture,
 		Real			renderFramerate,
 		bool			autoRender
 		)
@@ -113,7 +113,7 @@ void CRTCamera::RenderUnset ( void )
 	if ( m_renderTexture )
 		m_renderTexture->UnbindBuffer();
 	//else
-	//	CRenderTexture::UnbindBuffer( 0 );
+	//	RrRenderTexture::UnbindBuffer( 0 );
 }
 
 // Update Camera Matrix
@@ -176,7 +176,7 @@ void CRTCamera::UpdateTextureMatrix ( void )
 }
 
 
-void CRTCamera::SetTarget ( CRenderTexture* n_rt )
+void CRTCamera::SetTarget ( RrRenderTexture* n_rt )
 {
 	m_renderTexture = n_rt;
 }

@@ -183,16 +183,7 @@
     <ClCompile Include="source\renderer\utils\glScreenshot.cpp">
       <Filter>SOURCE\Renderer\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\texture\CBitmapFont.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\texture\CMRTTexture.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\CRenderTexture.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\CRenderTextureCube.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\texture\CTexture3D.cpp">
@@ -390,6 +381,21 @@
     <ClCompile Include="source\renderer\gpuw\Fence.cpp">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrRenderTexture.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrRenderTextureCube.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\GraphicsContext.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\ComputeContext.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrFontTexture.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -479,16 +485,7 @@
     <ClInclude Include="source\renderer\utils\glScreenshot.h">
       <Filter>SOURCE\Renderer\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\texture\CBitmapFont.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\texture\CMRTTexture.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\CRenderTexture.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\CRenderTextureCube.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\texture\CTexture3D.h">
@@ -715,6 +712,21 @@
     </ClInclude>
     <ClInclude Include="source\renderer\gpuw\Fence.h">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrRenderTexture.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrRenderTextureCube.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\GraphicsContext.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\ComputeContext.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrFontTexture.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

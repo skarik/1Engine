@@ -41,6 +41,19 @@ enum rrTextureLoadState
 	kTextureLoadState_Done,
 };
 
+//	rrTextureLoadInfo
+// Structure for current loading state
+struct rrTextureLoadInfo;
+
+//	rrTextureUploadInfo
+// Structure for texture upload request
+struct rrTextureUploadInfo
+{
+	core::gfx::arPixel*	data;
+	uint16_t			width;
+	uint16_t			height;
+};
+
 //	class RrTexture : Base resource-aware texture class.
 // Instantiate with either RrTexture::Load or RrTexture::CreateUnitialized.
 class RrTexture : public arBaseObject, public IArResource
@@ -54,17 +67,17 @@ protected:
 
 	//	Constructor.
 	// Pass in an empty string for the filename to just initialize a texture instance without any data.
-	RENDER_API explicit		RrTexture (
-		const char* sInFilename,
-		core::gfx::tex::arTextureType	textureType		= core::gfx::tex::kTextureType2D,
-		core::gfx::tex::arColorFormat	format			= core::gfx::tex::kColorFormatRGBA8,
-		uint16_t						maxTextureWidth	= 1024,
-		uint16_t						maxTextureHeight= 1024,
-		core::gfx::tex::arWrappingType	repeatX			= core::gfx::tex::kWrappingRepeat,
-		core::gfx::tex::arWrappingType	repeatY			= core::gfx::tex::kWrappingRepeat,
-		core::gfx::tex::arMipmapGenerationStyle	mipmapGeneration = core::gfx::tex::kMipmapGenerationNormal,
-		core::gfx::tex::arSamplingFilter	/*ignored*/	= core::gfx::tex::kSamplingLinear
-		);
+	//RENDER_API explicit		RrTexture (
+	//	const char* sInFilename,
+	//	core::gfx::tex::arTextureType	textureType		= core::gfx::tex::kTextureType2D,
+	//	core::gfx::tex::arColorFormat	format			= core::gfx::tex::kColorFormatRGBA8,
+	//	uint16_t						maxTextureWidth	= 1024,
+	//	uint16_t						maxTextureHeight= 1024,
+	//	core::gfx::tex::arWrappingType	repeatX			= core::gfx::tex::kWrappingRepeat,
+	//	core::gfx::tex::arWrappingType	repeatY			= core::gfx::tex::kWrappingRepeat,
+	//	core::gfx::tex::arMipmapGenerationStyle	mipmapGeneration = core::gfx::tex::kMipmapGenerationNormal,
+	//	core::gfx::tex::arSamplingFilter	/*ignored*/	= core::gfx::tex::kSamplingLinear
+	//	);
 	RENDER_API virtual		~RrTexture ( void );
 
 public: // Creation Interface
@@ -106,9 +119,9 @@ public: // Resource Interface
 
 public: // Kitchen Sink Interface
 
-	RENDER_API void			Bind ( void );
+	/*RENDER_API void			Bind ( void );
 	RENDER_API void			Unbind ( void );
-	RENDER_API static void	Unbind ( char );
+	RENDER_API static void	Unbind ( char );*/
 
 	RENDER_API unsigned int	GetWidth ( void ) { return info.width; };
 	RENDER_API unsigned int	GetHeight( void ) { return info.height; };
@@ -124,10 +137,8 @@ public: // Kitchen Sink Interface
 		return info.type;
 	}*/
 	RENDER_API virtual bool	GetIsFont ( void ) { return false; }
-
 	RENDER_API const core::gfx::tex::arImageInfo&
 							GetIOImgInfo ( void ) const { return io_imginfo; }
-
 	RENDER_API virtual bool GetIsProcedural ( void ) { return procedural; }
 
 	//	Reload() : Forces resource system to add self back into the streaming list.
@@ -136,6 +147,8 @@ public: // Kitchen Sink Interface
 	//	GenerateMipmap( gen_style ) : Generates mipmaps for the texture.
 	// Call will be ignored if not actually needed.
 	//RENDER_API void			GenerateMipmap ( core::gfx::tex::arMipmapGenerationStyle generationStyle = core::gfx::tex::kMipmapGenerationNormal );
+	RENDER_API gpu::Texture&
+							GetTexture ( void ) { return m_texture; } 
 
 	//	Upload(...) : Upload data to the texture, initializing it.
 	// Use for procedural textures.
@@ -160,6 +173,7 @@ protected:
 
 	// procedurally created by either cpu or gpu
 	bool							procedural;
+	// is this texture streamed and loaded over a period of time, or loaded immediately?
 	bool							streamed;
 
 	gpu::Texture					m_texture;
@@ -170,19 +184,22 @@ protected:
 	core::gfx::tex::arTextureState	state;
 	rrSamplerState					defaultSamplerState;
 
-	core::gfx::arPixel*				pData;
+	// temp pointer for data that is provided by Upload()
+	rrTextureUploadInfo*			upload_request;
+
+	//core::gfx::arPixel*				pData;
 
 	core::gfx::tex::arImageInfo		io_imginfo;
 	
 protected:
-	RENDER_API void			LoadImageInfo ( void );
+	//RENDER_API void			LoadImageInfo ( void );
 
 	//	StreamingReset() : Resets streaming state.
 	RENDER_API void			StreamingReset ( void );
 
 	rrTextureLoadState	loadState;
-	arstring256			loadResourceFilename;
-	int					loadLevel;
+	rrTextureLoadInfo*	loadInfo;
+	arstring256			resourceFilename;
 
 	/*
 	void loadTGA ( void );

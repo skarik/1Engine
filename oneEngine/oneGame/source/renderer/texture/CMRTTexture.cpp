@@ -45,7 +45,7 @@ CMRTTexture::CMRTTexture (
 	RrGpuTexture*		stencilRequest,
 	bool			stencilFetch
 )
-	: CRenderTexture ( "_hx_SYSTEM_RENDERTEXTURE" )
+	: RrRenderTexture ( "_hx_SYSTEM_RENDERTEXTURE" )
 {
 	GL_ACCESS;
 
@@ -248,7 +248,7 @@ CMRTTexture::CMRTTexture (
 
 CMRTTexture::~CMRTTexture ( void )
 {
-	// Don't let CRenderTexture delete the textures
+	// Don't let RrRenderTexture delete the textures
 	info.index = 0;
 	rtInfo.depthtex = 0;
 	rtInfo.stenciltex = 0;

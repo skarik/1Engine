@@ -11,7 +11,7 @@
 #include "rrWindowWin32.h"
 #include "renderer/state/Settings.h"
 #include "renderer/state/CRenderState.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
@@ -724,12 +724,12 @@ RrWindow::eReturnStatus	RrWindow::CreateGLContext ( void )
 //	{
 //		/*if ( iColorDepth == 8 )
 //		{
-//			pSbuf = new CRenderTexture( RGB8, Screen::Info.width, Screen::Info.height, Clamp,Clamp, Texture2D, Depth16, true, false );
+//			pSbuf = new RrRenderTexture( RGB8, Screen::Info.width, Screen::Info.height, Clamp,Clamp, Texture2D, Depth16, true, false );
 //		}
 //		else if ( iColorDepth == 16 )
 //		{
-//			pSbuf = new CRenderTexture( RGB16F, Screen::Info.width, Screen::Info.height, Clamp,Clamp, Texture2D, Depth32, true, false );
-//			//pSbuf = new CRenderTexture( RGB16, iWidth, iHeight, Clamp,Clamp, Texture2D, Depth32, true,false );
+//			pSbuf = new RrRenderTexture( RGB16F, Screen::Info.width, Screen::Info.height, Clamp,Clamp, Texture2D, Depth32, true, false );
+//			//pSbuf = new RrRenderTexture( RGB16, iWidth, iHeight, Clamp,Clamp, Texture2D, Depth32, true,false );
 //		}
 //		else {
 //			throw core::NotYetImplementedException();
@@ -740,7 +740,7 @@ RrWindow::eReturnStatus	RrWindow::CreateGLContext ( void )
 //		eStencilFormat	stencilMode	= SceneRenderer->GetSettings().mainStencilFormat;
 //		uint			colorCount	= SceneRenderer->GetSettings().mainColorAttachmentCount;
 //
-//		pSbuf = new CRenderTexture(
+//		pSbuf = new RrRenderTexture(
 //			colorMode,
 //			Screen::Info.width, Screen::Info.height, Clamp,Clamp, Texture2D,
 //			depthMode,		(depthMode == DepthNone) ? false : true,

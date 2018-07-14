@@ -11,8 +11,11 @@
 #include "renderer/types/RrGpuTexture.h"
 #include "renderer/state/InternalSettings.h"
 
+//Todo: make following prototypes
 #include "renderer/gpuw/Textures.h"
 #include "renderer/gpuw/RenderTargets.h"
+#include "renderer/gpuw/Device.h"
+#include "renderer/gpuw/GraphicsContext.h"
 
 #include <vector>
 
@@ -22,7 +25,7 @@ class CLight;
 class CCamera;
 class CResourceManager;
 class RrMaterial;
-class CRenderTexture;
+class RrRenderTexture;
 class CMRTTexture;
 
 //	CRenderState : main render state & swapchain manager class
@@ -68,12 +71,12 @@ public:
 		//glHandle		buffer_stencil;
 		gpu::Texture	buffer_depth;
 		gpu::WOFrameAttachment	buffer_stencil;
-		//CRenderTexture*	buffer_forward_rt;
+		//RrRenderTexture*	buffer_forward_rt;
 		gpu::Texture		buffer_color;
 		gpu::RenderTarget	buffer_forward_rt;
 
 		//CMRTTexture*	buffer_deferred_mrt;
-		//CRenderTexture*	buffer_deferred_rt;
+		//RrRenderTexture*	buffer_deferred_rt;
 		gpu::Texture		buffer_deferred_color_composite;
 		gpu::Texture		buffer_deferred_color[kMRTColorAttachmentCount];
 		gpu::RenderTarget	buffer_deferred_mrt;
@@ -158,6 +161,11 @@ public:
 	RENDER_API static CRenderState* Active;
 	// Resource manager
 	CResourceManager*	mResourceManager;
+
+	// Device & context
+	gpu::Device*			mDevice;
+	gpu::GraphicsContext*	mGfxContext;
+	gpu::ComputeContext*	mComputeContext;
 
 private:
 	// Renderable object access and management

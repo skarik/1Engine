@@ -9,7 +9,7 @@
 #include "renderer/camera/CRTCameraCascade.h"
 
 #include "renderer/system/glMainSystem.h"
-//#include "CRenderTexture.h"
+//#include "RrRenderTexture.h"
 
 // Constructor
 DirectionalLight::DirectionalLight ( void )

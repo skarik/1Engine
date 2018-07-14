@@ -3,7 +3,7 @@
 #include "renderer/state/CRenderState.h"
 #include "renderer/state/Settings.h"
 #include "renderer/types/ObjectSettings.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/debug/CDebugRTInspector.h"
 #include "renderer/material/RrMaterial.h"
 
@@ -18,7 +18,7 @@ void CRTCameraCube::RenderScene ( void )
 	
 	// Bind the frame buffer
 	//m_renderTexture->BindBuffer();
-	CRenderTextureCube* m_cubeRT = (CRenderTextureCube*)m_renderTexture;
+	RrRenderTextureCube* m_cubeRT = (RrRenderTextureCube*)m_renderTexture;
 	m_cubeRT->m_renderPosition = transform.position;
 
 	// Replace w/ default hints (only render shadow layer)

@@ -16,7 +16,7 @@ using std::sort;
 
 #include "renderer/camera/CCamera.h"
 #include "renderer/light/CLight.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/texture/CMRTTexture.h"
 
 #include "renderer/material/RrMaterial.h"
@@ -347,7 +347,7 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 			// For the final camera, render to a buffer
 			if ( currentLayer == kRenderHintWorld && currentCamera == mainBufferCamera )
 			{
-				CRenderTexture* currentMainRenderTarget = GL.GetMainScreenBuffer();
+				RrRenderTexture* currentMainRenderTarget = GL.GetMainScreenBuffer();
 				currentMainRenderTarget->BindBuffer();
 				GL.setupViewport(0,0,currentMainRenderTarget->GetWidth(),currentMainRenderTarget->GetHeight());
 				GL.CheckError();
@@ -550,7 +550,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 	bool rendered = false;					// Holds if an object has been rendered in the current stage.
 
 	// Get the current main buffer to render to, as well as the size.
-	CRenderTexture* render_target = currentCamera->GetRenderTexture();
+	RrRenderTexture* render_target = currentCamera->GetRenderTexture();
 	if ( render_target == NULL )
 	{	// If not a render-camera, bind to the internal common buffer
 		render_target = internal_chain_current->buffer_forward_rt;

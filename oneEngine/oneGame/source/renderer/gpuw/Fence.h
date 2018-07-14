@@ -12,6 +12,9 @@ namespace gpu
 
 		RENDER_API bool			signaled ( void );
 
+		RENDER_API bool			create ( Device* device );
+		RENDER_API bool			destroy ( Device* device );
+
 	};
 }
 

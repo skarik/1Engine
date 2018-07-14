@@ -26,9 +26,9 @@ protected:
 
 	void Copy ( void );
 
-	CRenderTexture* half_buf;
-	CRenderTexture* buf_4th;
-	CRenderTexture* buf_16th;
+	RrRenderTexture* half_buf;
+	RrRenderTexture* buf_4th;
+	RrRenderTexture* buf_16th;
 
 	Real m_threshold;
 	Real m_gradient;

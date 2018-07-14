@@ -30,7 +30,7 @@ void CScreenShader::UpdateBuffer ( void )
 {
 	GL_ACCESS
 	// Generate sum shit
-	CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	if ( s_buf == NULL ) {
 		return;
 	}
@@ -84,7 +84,7 @@ bool CScreenShader::Render ( const char pass )
 	GL.CheckError();
 
 	// Generate sum shit
-	CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	if ( s_buf == NULL ) {
 		m_readyrendercount = 0;
 		return true;
@@ -147,7 +147,7 @@ void CScreenShader::DrawOutput ( void )
 {
 	GL_ACCESS GLd_ACCESS
 	// Generate sum shit
-	CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	if ( s_buf == NULL )
 		return;
 	{
@@ -169,7 +169,7 @@ void CScreenShader::CopyResult ( void )
 {
 	GL_ACCESS GLd_ACCESS
 	// Generate sum shit
-	CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	if ( s_buf == NULL )
 		return;
 

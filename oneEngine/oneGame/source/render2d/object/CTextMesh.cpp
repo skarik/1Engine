@@ -4,7 +4,7 @@
 
 #include "render2d/object/CTextMesh.h"
 
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/material/RrMaterial.h"
 
 #include <cctype>
@@ -39,7 +39,7 @@ CTextMesh::~CTextMesh ( void )
 // Loads a font as a texture for use with this text mesh
 void CTextMesh::SetFont ( const char* fontFile, int fontSize, int fontWeight )
 {
-	m_font_texture = new CBitmapFont( fontFile, fontSize, fontWeight );
+	m_font_texture = new RrFontTexture( fontFile, fontSize, fontWeight );
 	m_font_texture->SetFilter( SamplingPoint );
 
 	m_material->setTexture( TEX_DIFFUSE, m_font_texture );

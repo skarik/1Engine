@@ -1,6 +1,6 @@
 #include "CDebugRTInspector.h"
 #include "core/math/Color.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/material/RrMaterial.h"
 
 #include "renderer/system/glMainSystem.h"
@@ -100,16 +100,16 @@ bool CDebugRTInspector::Render ( const char pass )
 	return true;
 }
 
-void CDebugRTInspector::AddWatch ( CRenderTexture* rtToWatch )
+void CDebugRTInspector::AddWatch ( RrRenderTexture* rtToWatch )
 {
-	std::vector<CRenderTexture*>::iterator findResult = find( rtList.begin(), rtList.end(), rtToWatch );
+	std::vector<RrRenderTexture*>::iterator findResult = find( rtList.begin(), rtList.end(), rtToWatch );
 	if ( findResult == rtList.end() ) {
 		rtList.push_back( rtToWatch );
 	}
 }
-void CDebugRTInspector::RemoveWatch ( CRenderTexture* rtToUnwatch )
+void CDebugRTInspector::RemoveWatch ( RrRenderTexture* rtToUnwatch )
 {
-	std::vector<CRenderTexture*>::iterator findResult = find( rtList.begin(), rtList.end(), rtToUnwatch );
+	std::vector<RrRenderTexture*>::iterator findResult = find( rtList.begin(), rtList.end(), rtToUnwatch );
 	if ( findResult != rtList.end() ) {
 		rtList.erase( findResult );
 	}

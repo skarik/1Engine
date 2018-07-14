@@ -24,7 +24,7 @@
 
 #define GL_ACCESS glMainSystem& GL = *glMainSystem::ActiveReference();
 
-class CRenderTexture;
+class RrRenderTexture;
 
 class glMainSystem
 {
@@ -78,7 +78,7 @@ public:
 	//==============================================================================================//
 
 	// Get the current main screen buffer
-	RENDER_API CRenderTexture* GetMainScreenBuffer ( void );
+	RENDER_API RrRenderTexture* GetMainScreenBuffer ( void );
 	// Tell the entire system to restart
 	RENDER_API void		FullRedraw ( void );
 
@@ -100,8 +100,10 @@ public:
 	// VIEWPORT AND PROJECTION SETUP
 	//==============================================================================================//
 
-	RENDER_API void		setupViewport ( int x, int y, int width, int height );
-	RENDER_API void		scissorViewport ( int x, int y, int width, int height );
+	//DEPRECATED("Use gpu::getDevice()->getContext()->setViewport() instead.")
+	//RENDER_API void		setupViewport ( int x, int y, int width, int height );
+	//DEPRECATED("Use gpu::getDevice()->getContext()->setScissor() instead.")
+	//RENDER_API void		scissorViewport ( int x, int y, int width, int height );
 
 #ifdef _ENGINE_RELEASE
 	RENDER_API FORCE_INLINE void CheckError ( void ) {}

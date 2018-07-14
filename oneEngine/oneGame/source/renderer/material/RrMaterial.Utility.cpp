@@ -3,7 +3,7 @@
 #include "core/math/Vector3d.h"
 #include "core/settings/CGameSettings.h"
 
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/system/glMainSystem.h"
 
 using namespace std;

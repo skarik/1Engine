@@ -1,5 +1,5 @@
 #include "core/system/Screen.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/state/CRenderState.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/material/RrShaderManager.h"

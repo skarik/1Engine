@@ -26,7 +26,7 @@ using std::priority_queue;*/
 class CLight;
 class CCamera;
 class CRTCamera;
-class CRenderTexture;
+class RrRenderTexture;
 class CBillboard;
 
 // == Comparison Structs ==
@@ -66,7 +66,7 @@ public:
 
 	// Get the shadow camera and texture
 	CRTCamera*		GetShadowCamera ( void ) { return shadowCamera; };
-	CRenderTexture*	GetShadowTexture ( void ) { return shadowTexture; };
+	RrRenderTexture*	GetShadowTexture ( void ) { return shadowTexture; };
 
 	// Get light list
 	static std::vector<CLight*>* GetLightList ( void )
@@ -117,7 +117,7 @@ protected:
 
 	// Shadow instances
 	CRTCamera*		shadowCamera;
-	CRenderTexture*	shadowTexture;
+	RrRenderTexture*	shadowTexture;
 	// Virtual function for specific shadow camera code
 	virtual void UpdateShadowCamera ( void );
 	// Creation of render targets

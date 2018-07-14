@@ -36,6 +36,8 @@ namespace gpu
 		const glHandle texture
 	);*/
 
+	class Buffer;
+
 	// Create a read/write texture.
 	class Texture
 	{

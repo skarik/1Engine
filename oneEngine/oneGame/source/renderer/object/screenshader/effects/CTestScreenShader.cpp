@@ -28,7 +28,7 @@ void CTestScreenShader::DrawOutput ( void )
 	throw core::NotYetImplementedException();
 
 	//// Generate sum shit
-	//CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	//RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	//{
 	//	// Draw screen with given material
 	//	m_material->setTexture( TEX_SLOT0, s_buf );

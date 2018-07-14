@@ -3,7 +3,7 @@
 
 #include "renderer/object/CRenderableObject.h"
 
-class CBitmapFont;
+class RrFontTexture;
 
 class CLoadScreenInjector : public CRenderableObject
 {
@@ -20,7 +20,7 @@ public:
 	bool PreRender ( void ) override;
 	bool Render ( const char pass ) override;
 private:
-	CBitmapFont*	m_fntNotifier;
+	RrFontTexture*	m_fntNotifier;
 	Real			m_currentAlpha;
 };
 

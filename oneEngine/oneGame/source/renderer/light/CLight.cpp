@@ -6,7 +6,7 @@
 
 #include "renderer/camera/CRTCamera.h"
 #include "renderer/camera/CRTCameraCascade.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/system/glMainSystem.h"
 
 // Render settings
@@ -289,7 +289,7 @@ void CLight::UpdateShadows ( void )
 		{
 			if ( isDirectional )
 			{
-				shadowTexture = new CRenderTexture(
+				shadowTexture = new RrRenderTexture(
 					(unsigned int)(shadowResolution*2), (unsigned int)(shadowResolution/2), 
 					Clamp, Clamp,
 					RGBA8,
@@ -298,7 +298,7 @@ void CLight::UpdateShadows ( void )
 			}
 			else
 			{
-				shadowTexture = new CRenderTexture(
+				shadowTexture = new RrRenderTexture(
 					(unsigned int)(shadowResolution), (unsigned int)(shadowResolution), 
 					Clamp, Clamp,
 					RGBA8,
@@ -306,7 +306,7 @@ void CLight::UpdateShadows ( void )
 					RrGpuTexture(), false );
 			}
 		}
-			//shadowTexture = new CRenderTexture( RGBA8, (unsigned int)shadowResolution, (unsigned int)shadowResolution, Clamp, Clamp, Texture2D, Depth16,true,true );
+			//shadowTexture = new RrRenderTexture( RGBA8, (unsigned int)shadowResolution, (unsigned int)shadowResolution, Clamp, Clamp, Texture2D, Depth16,true,true );
 		if ( !shadowCamera )
 		{
 			if ( isDirectional ) {

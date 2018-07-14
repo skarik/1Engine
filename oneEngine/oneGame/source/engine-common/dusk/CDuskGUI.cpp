@@ -16,8 +16,8 @@
 
 // Renderer bits
 #include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CBitmapFont.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrFontTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
@@ -27,7 +27,7 @@
 using namespace std;
 
 // Constructor
-CDuskGUI::CDuskGUI ( CBitmapFont* font )
+CDuskGUI::CDuskGUI ( RrFontTexture* font )
 	: CGameBehavior(), CRenderableObject()
 {
 	// Sys drawing
@@ -96,7 +96,7 @@ void CDuskGUI::InitializeDefaultMaterials ( void )
 {
 	if (fntDefault == NULL)
 	{
-		fntDefault	= new CBitmapFont ( "ComicNeue-Bold.ttf", 16, FW_NORMAL );
+		fntDefault	= new RrFontTexture ( "ComicNeue-Bold.ttf", 16, FW_NORMAL );
 	}
 	if (matDefault == NULL)
 	{
@@ -288,7 +288,7 @@ void CDuskGUI::RenderUI ( void )
 	}
 	if ( renderBuffer == NULL )
 	{
-		renderBuffer = new CRenderTexture( Screen::Info.width, Screen::Info.height, Clamp, Clamp, RGBA8, DepthNone, StencilNone );
+		renderBuffer = new RrRenderTexture( Screen::Info.width, Screen::Info.height, Clamp, Clamp, RGBA8, DepthNone, StencilNone );
 	}
 	// Update material options
 	/*Render_SetupMaterial(matDefault);
@@ -631,7 +631,7 @@ void CDuskGUI::SetDefaultMaterial	( RrMaterial* newmat )
 //{
 //	matFont = newmat;
 //}
-void CDuskGUI::SetDefaultFont	( CBitmapFont* newfnt )
+void CDuskGUI::SetDefaultFont	( RrFontTexture* newfnt )
 {
 	if (fntDefault != NULL && fntDefault != newfnt)
 	{

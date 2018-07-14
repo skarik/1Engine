@@ -205,7 +205,7 @@ void CCamera::LateUpdate ( void )
 
 #include "renderer/state/CRenderState.h"
 #include "renderer/system/glMainSystem.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/texture/CMRTTexture.h"
 #include "renderer/material/RrMaterial.h"
 

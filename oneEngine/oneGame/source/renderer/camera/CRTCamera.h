@@ -3,8 +3,8 @@
 #define _C_RT_CAMERA_H_
 
 #include "CCamera.h"
-//#include "CRenderTexture.h"
-class CRenderTexture;
+//#include "RrRenderTexture.h"
+class RrRenderTexture;
 
 class CRTCamera : public CCamera
 {
@@ -13,7 +13,7 @@ class CRTCamera : public CCamera
 public:
 	// Constructor/destructor
 	explicit CRTCamera (
-		CRenderTexture*	targetTexture	= NULL,
+		RrRenderTexture*	targetTexture	= NULL,
 		Real			renderFramerate	= 30.0f,
 		bool			autoRender		= false
 		);
@@ -30,7 +30,7 @@ public:
 	void UpdateMatrix ( void ) override;
 
 	// == Public Setters ==
-	void SetTarget ( CRenderTexture* );
+	void SetTarget ( RrRenderTexture* );
 	void SetAutorender ( bool=true );
 	void SetUpdateFPS ( Real=30.0f );
 

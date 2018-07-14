@@ -12,8 +12,8 @@
 
 // Include Draw stuff
 class RrMaterial;
-class CBitmapFont;
-class CRenderTexture;
+class RrFontTexture;
+class RrRenderTexture;
 
 #include <string>
 #include <vector>
@@ -92,7 +92,7 @@ private:
 	friend Dusk::DialogueColorpicker;
 public:
 	// Constructor+Destructor
-	ENGCOM_API explicit		CDuskGUI ( CBitmapFont* font );
+	ENGCOM_API explicit		CDuskGUI ( RrFontTexture* font );
 	ENGCOM_API				~CDuskGUI ( void );
 
 	// == Stepping Functions ==
@@ -115,7 +115,7 @@ public:
 	//ENGCOM_API void SetHoverMaterial	( RrMaterial* );
 	//ENGCOM_API void SetDownMaterial	( RrMaterial* );
 	//ENGCOM_API void SetFontMaterial	( RrMaterial* );
-	ENGCOM_API void SetDefaultFont		( CBitmapFont* );
+	ENGCOM_API void SetDefaultFont		( RrFontTexture* );
 	// Set pixel mode
 	ENGCOM_API void SetPixelMode ( bool enabled=false );
 	// Set element properties
@@ -267,17 +267,17 @@ private:
 	/*RrMaterial*	matHover;
 	RrMaterial*	matDown;
 	RrMaterial* matFont;*/
-	CBitmapFont*	fntDefault;
+	RrFontTexture*	fntDefault;
 
 	// Static default values
 	/*static RrMaterial*	matDefDefault;
 	static RrMaterial*	matDefHover;
 	static RrMaterial*	matDefDown;
 	static RrMaterial*	matDefFont;
-	static CBitmapFont*	fntDefDefault;*/
+	static RrFontTexture*	fntDefDefault;*/
 
 	// Rendering state
-	CRenderTexture* renderBuffer;
+	RrRenderTexture* renderBuffer;
 
 	// Element information and handles
 	std::vector<CDuskGUIElement*>	vElements;

@@ -13,7 +13,7 @@
 #include "engine-common/entities/CRendererHolder.h"
 
 #include "renderer/state/Settings.h"
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/camera/CCamera.h"
 #include "renderer/debug/CDebugDrawer.h"
 #include "renderer/light/CLight.h"
@@ -123,7 +123,7 @@ MapEditor::MapEditor ( void )
 	// Build Dusk Gui
 	{
 		dusk = new CDuskGUI(
-			new CBitmapFont( "YanoneKaffeesatz-R.otf", 16 )
+			new RrFontTexture( "YanoneKaffeesatz-R.otf", 16 )
 		);
 		dusk->SetPixelMode(true);
 

@@ -1,27 +1,26 @@
-
-#ifndef _C_RENDER_TEXTURE_CUBE_
-#define _C_RENDER_TEXTURE_CUBE_
+#ifndef RENDERER_RENDER_TEXTURE_CUBE_H_
+#define RENDERER_RENDER_TEXTURE_CUBE_H_
 
 // ==Includes==
 #include "core/math/Vector3d.h"
-// CRenderTexture class
-#include "CRenderTexture.h"
+// RrRenderTexture class
+#include "RrRenderTexture.h"
 // RrTextureCube class
 #include "RrTextureCube.h"
 
 // ===CLASS===
 // Class definition
-class CRenderTextureCube : public CRenderTexture
+class RrRenderTextureCube : public RrRenderTexture
 {
 	TextureType( TextureClassRenderTarget_Cube );
 protected:
-	explicit CRenderTextureCube ( const string& sInFilename )
-		: CRenderTexture( sInFilename )
+	explicit RrRenderTextureCube ( const string& sInFilename )
+		: RrRenderTexture( sInFilename )
 	{
 		;
 	}
 public:
-	explicit CRenderTextureCube ( 
+	explicit RrRenderTextureCube ( 
 		eTextureType	textureType		= TextureCube,
 		eColorFormat	format			= RGBA8,
 		unsigned int	maxTextureWidth	= 1024,
@@ -32,7 +31,7 @@ public:
 		eStencilFormat	stencilType		= StencilNone,
 		bool			stencilFetch	= false
 		);
-	~CRenderTextureCube ( void );
+	~RrRenderTextureCube ( void );
 
 	// BindBufferFace ( face ) : Bind face to render to texture
 	//  Because of the way cubemaps work, only one cubemap binding should be on the stack at the same time.
@@ -58,7 +57,7 @@ public:
 	}*/
 
 	// Public copy generation
-	CRenderTexture* GenerateCopy ( void ) override;
+	RrRenderTexture* GenerateCopy ( void ) override;
 
 	void Reload ( void ) override {
 		;
@@ -88,4 +87,4 @@ protected:
 	//static std::stack<unsigned int> buffer_stack;
 };
 
-#endif//_C_RENDER_TEXTURE_CUBE_
+#endif//RENDERER_RENDER_TEXTURE_CUBE_H_

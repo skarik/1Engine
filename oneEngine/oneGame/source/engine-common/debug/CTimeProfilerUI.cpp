@@ -1,7 +1,7 @@
 
 #include "CTimeProfilerUI.h"
 #include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 #include "renderer/object/immediate/immediate.h"
@@ -14,7 +14,7 @@ CTimeProfilerUI::CTimeProfilerUI ( void )
 	renderSettings.renderHints = kRenderHintWorld;
 	renderType = renderer::kRLV2D;
 
-	fntDebug	= new CBitmapFont ( "YanoneKaffeesatz-R.otf", 12, FW_BOLD );
+	fntDebug	= new RrFontTexture ( "YanoneKaffeesatz-R.otf", 12, FW_BOLD );
 	matFntDebug = new RrMaterial;
 	matFntDebug->m_diffuse = Color( 0.2f,0.0f,0.4f );
 	matFntDebug->setTexture( TEX_MAIN, fntDebug );

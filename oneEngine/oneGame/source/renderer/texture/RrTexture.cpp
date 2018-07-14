@@ -72,10 +72,12 @@ RrTexture::RrTexture (
 	{
 		procedural = true;
 		streamed = false;
+		upload_request = NULL;
 	}
 	else
 	{
 		procedural = false;
+		upload_request = NULL;
 
 		// Update stream state based on resource path
 		if (strstr(s_resourcePath, "textures/hud") != NULL
@@ -90,7 +92,7 @@ RrTexture::RrTexture (
 		}
 
 		// Set resource name
-		loadResourceFilename = s_resourcePath;
+		resourceFilename = s_resourcePath;
 	}
 }
 
@@ -102,10 +104,10 @@ RrTexture::Upload (
 	core::gfx::arPixel*				data,
 	uint16_t						width,
 	uint16_t						height,
-	core::gfx::tex::arWrappingType	repeatX			= core::gfx::tex::kWrappingRepeat,
-	core::gfx::tex::arWrappingType	repeatY			= core::gfx::tex::kWrappingRepeat,
-	core::gfx::tex::arMipmapGenerationStyle	mipmapGeneration = core::gfx::tex::kMipmapGenerationNormal,
-	core::gfx::tex::arSamplingFilter	/*ignored*/	= core::gfx::tex::kSamplingLinear
+	core::gfx::tex::arWrappingType	repeatX,
+	core::gfx::tex::arWrappingType	repeatY,
+	core::gfx::tex::arMipmapGenerationStyle	mipmapGeneration,
+	core::gfx::tex::arSamplingFilter	/*ignored*/
 )
 {
 	auto resm = core::ArResourceManager::Active();
@@ -115,6 +117,13 @@ RrTexture::Upload (
 		debug::Console->PrintError("RrTexture.cpp : trying to upload on nonproc texture");
 		return;
 	}
+
+	if (upload_request == NULL) {
+		upload_request = new rrTextureUploadInfo();
+	}
+	upload_request->data = data;
+	upload_request->width = width;
+	upload_request->height = height;
 
 	// Set streamed setting before adding self to resource system.
 	this->streamed = streamed;
@@ -136,6 +145,8 @@ RrTexture::~RrTexture ( void )
 	TextureMaster.RemoveReference( this );
 	if ( CRenderState::Active )
 		CRenderState::Active->mResourceManager->RemoveResource( this );*/
+
+	m_texture.free();
 }
 
 //

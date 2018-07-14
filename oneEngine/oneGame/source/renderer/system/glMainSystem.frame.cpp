@@ -39,7 +39,7 @@ void glMainSystem::EndFrame ( void )
 
 
 // Get the current main screen buffer
-CRenderTexture* glMainSystem::GetMainScreenBuffer ( void )
+RrRenderTexture* glMainSystem::GetMainScreenBuffer ( void )
 {
 	//return RrWindow::pActive->getScreenBuffer();
 	return SceneRenderer->GetForwardBuffer();

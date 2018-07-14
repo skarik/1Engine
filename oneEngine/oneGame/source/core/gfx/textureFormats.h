@@ -119,7 +119,7 @@ namespace tex {
 	{
 		kTextureClassBase,
 		kTextureClass3D,
-		kTextureClassBitmapFont,
+		kTextureClassFont,
 		kTextureClassCube,
 		kTextureClassRenderTarget,
 		kTextureClassRenderTarget_Cube,

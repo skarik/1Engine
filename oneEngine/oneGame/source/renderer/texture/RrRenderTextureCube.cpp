@@ -1,6 +1,6 @@
 
 // == Includes ==
-#include "CRenderTextureCube.h"
+#include "RrRenderTextureCube.h"
 #include "core/debug/CDebugConsole.h"
 #include "renderer/system/glMainSystem.h"
 
@@ -13,7 +13,7 @@ using std::endl;
 
 // == Constructor + Destructor ==
 // Explicit Constructor
-CRenderTextureCube::CRenderTextureCube ( 
+RrRenderTextureCube::RrRenderTextureCube ( 
 		eTextureType	textureType,
 		eColorFormat	format,
 		unsigned int	maxTextureWidth,
@@ -23,7 +23,7 @@ CRenderTextureCube::CRenderTextureCube (
 		bool			ignoreRGB,
 		eStencilFormat	stencilType,
 		bool			stencilFetch )
-	: CRenderTexture ( "_hx_SYSTEM_RENDERTEXTURE" )
+	: RrRenderTexture ( "_hx_SYSTEM_RENDERTEXTURE" )
 {
 	GL_ACCESS; // Using the glMainSystem accessor
 
@@ -197,7 +197,7 @@ CRenderTextureCube::CRenderTextureCube (
 }
 
 // Destructor
-CRenderTextureCube::~CRenderTextureCube ( void )
+RrRenderTextureCube::~RrRenderTextureCube ( void )
 {
 	// Free framebuffer
 	if ( rtInfo.findex )
@@ -226,22 +226,22 @@ CRenderTextureCube::~CRenderTextureCube ( void )
 
 // == Generating Identical-sized Buffers ==
 // Public copy generation
-CRenderTexture* CRenderTextureCube::GenerateCopy ( void )
+RrRenderTexture* RrRenderTextureCube::GenerateCopy ( void )
 {
-	return new CRenderTextureCube(
+	return new RrRenderTextureCube(
 		info.type, info.internalFormat,
 		info.width, info.height,
 		rtInfo.depth, rtInfo.fetchdepth, !rtInfo.fetchcolor, rtInfo.stencil, rtInfo.fetchstencil );
 }
 /*
 // == Texture binding ==
-void CRenderTextureCube::BindDepth ( void )
+void RrRenderTextureCube::BindDepth ( void )
 {
 	//if ( !glIsTexture( rtInfo.depthtex ) )
 	//	cout << "Bad depthtex!" << endl;
 	glBindTexture( GL_TEXTURE_2D, rtInfo.depthtex );
 }
-void CRenderTextureCube::BindStencil ( void )
+void RrRenderTextureCube::BindStencil ( void )
 {
 	//if ( !glIsTexture( rtInfo.stenciltex ) )
 	//	cout << "Bad depthtex!" << endl;
@@ -250,7 +250,7 @@ void CRenderTextureCube::BindStencil ( void )
 */
 // == Public Bind and Unbind ==
 // Bind buffer to this guy's FBO
-void CRenderTextureCube::BindBufferFace ( const GLuint n_face )
+void RrRenderTextureCube::BindBufferFace ( const GLuint n_face )
 {
 	if ( rtInfo.active )
 	{
@@ -287,7 +287,7 @@ void CRenderTextureCube::BindBufferFace ( const GLuint n_face )
 }
 
 // Unbind, meaning bind buffer back to default
-void CRenderTextureCube::UnbindBufferFace ( const GLuint n_face )
+void RrRenderTextureCube::UnbindBufferFace ( const GLuint n_face )
 {
 	// Bind buffer back to default
 	if ( !buffer_stack.empty() )
@@ -321,7 +321,7 @@ void CRenderTextureCube::UnbindBufferFace ( const GLuint n_face )
 	//cout << buffer_stack.size() << endl;
 }
 // Global Unbind
-/*void CRenderTextureCube::UnbindBuffer ( char )
+/*void RrRenderTextureCube::UnbindBuffer ( char )
 {
 	// Bind buffer back to default
 	if ( !buffer_stack.empty() ) {
@@ -337,7 +337,7 @@ void CRenderTextureCube::UnbindBufferFace ( const GLuint n_face )
 
 // == Private Routines ==
 // Generate framebuffer. This checks if the current framebuffer is valid. If not, it'll create a new framebuffer.
-void CRenderTextureCube::GenerateFramebuffer ( void )
+void RrRenderTextureCube::GenerateFramebuffer ( void )
 {
 	GL_ACCESS; // Using the glMainSystem accessor
 

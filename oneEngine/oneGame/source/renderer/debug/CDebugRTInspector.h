@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "renderer/object/CRenderableObject.h"
-class CRenderTexture;
+class RrRenderTexture;
 
 namespace debug
 {
@@ -23,12 +23,12 @@ namespace debug
 		bool		Render ( const char pass ) override;
 
 	public:
-		RENDER_API void AddWatch ( CRenderTexture* rtToWatch );
-		RENDER_API void RemoveWatch ( CRenderTexture* rtToUnwatch );
+		RENDER_API void AddWatch ( RrRenderTexture* rtToWatch );
+		RENDER_API void RemoveWatch ( RrRenderTexture* rtToUnwatch );
 
 	private:
 		bool bDrawRTs;
-		std::vector<CRenderTexture*>  rtList;
+		std::vector<RrRenderTexture*>  rtList;
 	};
 
 	// Publicly available RTInspector~

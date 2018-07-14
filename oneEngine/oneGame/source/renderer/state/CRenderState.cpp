@@ -11,7 +11,7 @@
 
 #include "renderer/material/RrMaterial.h"
 #include "renderer/texture/RrTexture.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/texture/CMRTTexture.h"
 
 #include "renderer/debug/CDebugDrawer.h"
@@ -25,6 +25,8 @@
 
 #include "renderer/gpuw/Textures.h"
 #include "renderer/gpuw/RenderTargets.h"
+
+#include "renderer/window/RrWindow.h"
 
 //===Class static member data===
 
@@ -41,6 +43,13 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 {
 	Active = this;
 	SceneRenderer = this;
+
+	// Let's pull the device from the current window:
+	//mDevice = RrWindow::pActive->getDevicePointer();
+	mDevice = RrWindow::pActive->getGPUDevice();
+	// And pull out a graphics queue from the rendering device:
+	mGfxContext		= mDevice->getContext();
+	mComputeContext	= mDevice->getComputeContext();
 
 	// Set up default rendering targets
 	{
@@ -516,7 +525,7 @@ bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain 
 		//gpu::TextureBufferFree( bufferChain.buffer_stencil );
 		delete bufferChain.buffer_stencil;
 		bufferChain.buffer_stencil = 0;*/
-		bufferChain.buffer_forward_rt.free();
+		bufferChain.buffer_forward_rt.destroy(NULL);
 	}
 	// Delete deferred buffers
 	if ( bufferChain.buffer_deferred_mrt.empty() == false )
@@ -526,8 +535,8 @@ bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain 
 
 		delete bufferChain.buffer_deferred_rt;
 		bufferChain.buffer_deferred_rt = NULL;*/
-		bufferChain.buffer_deferred_mrt.free();
-		bufferChain.buffer_deferred_rt.free();
+		bufferChain.buffer_deferred_mrt.destroy(NULL);
+		bufferChain.buffer_deferred_rt.destroy(NULL);
 	}
 
 	// Create forward buffers
@@ -546,7 +555,7 @@ bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain 
 			//bufferChain.buffer_stencil	= gpu::TextureBufferAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
 			bufferChain.buffer_stencil.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height);
 
-		/*bufferChain.buffer_forward_rt = new CRenderTexture(
+		/*bufferChain.buffer_forward_rt = new RrRenderTexture(
 			Screen::Info.width, Screen::Info.height,
 			Clamp, Clamp,
 			internal_settings.mainColorAttachmentFormat,
@@ -569,7 +578,7 @@ bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain 
 	if ( bufferChain.buffer_deferred_mrt.empty() )
 	{
 		// Create the internal stage color render target (uses shared forward buffers)
-		/*bufferChain.buffer_deferred_rt = new CRenderTexture(
+		/*bufferChain.buffer_deferred_rt = new RrRenderTexture(
 			Screen::Info.width, Screen::Info.height,
 			Clamp, Clamp,
 			internal_settings.mainColorAttachmentFormat,

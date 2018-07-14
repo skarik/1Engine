@@ -6,7 +6,7 @@
 #define _C_RT_CAMERA_CUBE_H_
 
 #include "CRTCamera.h"
-#include "renderer/texture/CRenderTextureCube.h"
+#include "renderer/texture/RrRenderTextureCube.h"
 
 class CRTCameraCube : public CRTCamera
 {
@@ -15,7 +15,7 @@ class CRTCameraCube : public CRTCamera
 public:
 	// Constructor/destructor
 	explicit		CRTCameraCube (
-		CRenderTextureCube*	targetTexture	= NULL,
+		RrRenderTextureCube*	targetTexture	= NULL,
 		Real			renderFramerate	= 30.0f,
 		bool			autoRender		= true,
 		bool			staggerRender	= true

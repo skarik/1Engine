@@ -3,6 +3,7 @@
 #include "renderer/gpuw/Textures.h"
 #include "renderer/gpuw/Internal/Enums.h"
 #include "renderer/gpuw/Error.h"
+#include "renderer/gpuw/Buffers.h"
 
 #include "core/math/Math.h"
 
@@ -59,15 +60,13 @@ int gpu::Texture::allocate (
 				break;
 			case core::gfx::tex::kTextureType1DArray:
 			case core::gfx::tex::kTextureType2D:
+			case core::gfx::tex::kTextureTypeCube:
 				glTextureStorage2D(m_texture, allocatedLevels, gpu::internal::ArEnumToGL(textureFormat), width, height);
 				break;
 			case core::gfx::tex::kTextureType2DArray:
 			case core::gfx::tex::kTextureType3D:
-				glTextureStorage3D(m_texture, allocatedLevels, gpu::internal::ArEnumToGL(textureFormat), width, height, depth);
-				break;
 			case core::gfx::tex::kTextureTypeCubeArray:
-			case core::gfx::tex::kTextureTypeCube:
-				glTextureStorage2D(m_texture, allocatedLevels, gpu::internal::ArEnumToGL(textureFormat), width, height);
+				glTextureStorage3D(m_texture, allocatedLevels, gpu::internal::ArEnumToGL(textureFormat), width, height, depth);
 				break;
 			}
 		}
@@ -89,6 +88,16 @@ int gpu::Texture::free ( void )
 	return gpu::kError_SUCCESS;
 }
 
+int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level )
+{
+
+
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, buffer.nativePtr());
+	glTextureSubImage2D(m_texture, level, 0, 0, ??, ??, ??, ??, NULL);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB,0);
+
+	return gpu::kError_SUCCESS;
+}
 
 gpu::WOFrameAttachment::WOFrameAttachment ( void )
 {

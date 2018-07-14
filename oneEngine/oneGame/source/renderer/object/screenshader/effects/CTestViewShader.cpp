@@ -64,12 +64,12 @@ void CTestViewShader::UpdateBuffer ( void )
 
 	if ( m_rttex == NULL )
 	{
-		m_rttex = new CRenderTexture( m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, m_buf->GetInternalFormat(), Depth16, StencilNone );
+		m_rttex = new RrRenderTexture( m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, m_buf->GetInternalFormat(), Depth16, StencilNone );
 	}
 	else if (( m_rttex->GetWidth() != m_buf->GetWidth()/4 )||( m_rttex->GetHeight() != m_buf->GetHeight()/4 ))
 	{
 		delete m_rttex;
-		m_rttex = new CRenderTexture( m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, m_buf->GetInternalFormat(), Depth16, StencilNone );
+		m_rttex = new RrRenderTexture( m_buf->GetWidth()/4, m_buf->GetHeight()/4, Clamp, Clamp, m_buf->GetInternalFormat(), Depth16, StencilNone );
 	}
 
 	m_rtcam->SetTarget( m_rttex );
@@ -82,7 +82,7 @@ void CTestViewShader::DrawOutput ( void )
 	throw core::NotYetImplementedException();
 
 	//// Generate sum shit
-	//CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	//RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	//{
 	//	// Draw screen with given material
 	//	m_material->setTexture( TEX_SLOT0, s_buf );
@@ -115,7 +115,7 @@ void CTestViewShader::DrawOutput ( void )
 	//}
 	/*
 		// Generate sum shit
-	CRenderTexture* s_buf = GL.GetMainScreenBuffer();
+	RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	{
 		// Draw screen with given material
 		m_material->setTexture( 0, s_buf );

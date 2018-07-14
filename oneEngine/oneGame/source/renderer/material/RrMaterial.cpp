@@ -16,9 +16,9 @@
 #include "renderer/camera/CRTCamera.h"
 #include "renderer/camera/CRTCameraCascade.h"
 
-#include "renderer/texture/CRenderTexture.h"
-#include "renderer/texture/CBitmapFont.h"
-#include "renderer/texture/CRenderTextureCube.h"
+#include "renderer/texture/RrRenderTexture.h"
+#include "renderer/texture/RrFontTexture.h"
+#include "renderer/texture/RrRenderTextureCube.h"
 
 #include "renderer/system/glMainSystem.h"
 
@@ -288,7 +288,7 @@ void RrMaterial::updateStaticUBO ( void )
 		// Create reflect information
 		if ( m_sampler_reflection->ClassType() == TextureClassRenderTarget_Cube ) 
 		{
-			CRenderTextureCube* t_cubeTexture = (CRenderTextureCube*)m_sampler_reflection;
+			RrRenderTextureCube* t_cubeTexture = (RrRenderTextureCube*)m_sampler_reflection;
 			t_reflectInfo.ReflectSource = t_cubeTexture->m_renderPosition;
 			t_reflectInfo.ReflectMaxBox = t_reflectInfo.ReflectSource + Vector4d( 1000,1000,1000 );
 			t_reflectInfo.ReflectMinBox = t_reflectInfo.ReflectSource - Vector4d( 1000,1000,1000 );
@@ -854,7 +854,7 @@ void RrMaterial::shader_bind_samplers ( RrShader* shader )
 			current_sampler_slot += 1;
 
 			if ( m_highlevel_storage[i] && m_highlevel_storage[i]->GetIsFont() ) {
-				((CBitmapFont*)(m_highlevel_storage[i]))->Set();
+				((RrFontTexture*)(m_highlevel_storage[i]))->Set();
 			}
 		}
 	}

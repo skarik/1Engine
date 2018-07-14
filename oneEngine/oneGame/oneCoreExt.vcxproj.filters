@@ -174,9 +174,6 @@
     <ClCompile Include="source\core-ext\system\io\assets\Conversion.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="source\core-ext\system\io\assets\TextureConverter.cpp">
-      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
-    </ClCompile>
     <ClCompile Include="source\core-ext\system\io\assets\TextureIO.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClCompile>

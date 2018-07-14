@@ -20,7 +20,7 @@
 //#include <bitset>
 //using std::bitset;
 
-class CRenderTexture;
+class RrRenderTexture;
 
 // Enumeration for type of camera
 enum eCameraClassType
@@ -97,7 +97,7 @@ public:
 	RENDER_API Vector3d	ScreenToWorldPos ( const Vector2d & ) const;
 
 	// == Public Getters
-	RENDER_API CRenderTexture* GetRenderTexture ( void ) { return m_renderTexture; }
+	RENDER_API RrRenderTexture* GetRenderTexture ( void ) { return m_renderTexture; }
 
 	//eCameraClassType	GetType ( void ) { return m_type; }
 private:
@@ -175,7 +175,7 @@ protected:
 	bool	bNeedsUpdate;
 
 	// == Camera RT (since engine is default buffered) ==
-	CRenderTexture*	m_renderTexture;
+	RrRenderTexture*	m_renderTexture;
 
 protected:
 	//eCameraClassType	m_type;

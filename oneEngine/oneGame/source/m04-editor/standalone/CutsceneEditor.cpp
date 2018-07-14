@@ -10,7 +10,7 @@
 #include "renderer/camera/CCamera.h"
 #include "renderer/object/CRenderable3D.h"
 #include "renderer/object/CStreamedRenderable3D.h"
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/utils/rrMeshBuilder2D.h"
 #include "renderer/utils/rrTextBuilder2D.h"

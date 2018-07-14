@@ -1,7 +1,7 @@
 #include "core/time.h"
 #include "core/math/Math.h"
 #include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 #include "renderer/object/immediate/immediate.h"

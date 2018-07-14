@@ -2,8 +2,8 @@
 #define _C_MULTIPLE_RENDER_TARGET_TEXTURE_H_
 
 // ==Includes==
-// CRenderTexture class
-#include "CRenderTexture.h"
+// RrRenderTexture class
+#include "RrRenderTexture.h"
 // Request structure
 #include "renderer/types/RrGpuTexture.h"
 
@@ -21,7 +21,7 @@ struct tMRTInfo
 	int8_t	stencilAttachment;
 };
 
-class CMRTTexture : public CRenderTexture
+class CMRTTexture : public RrRenderTexture
 {
 	TextureType( TextureClassRenderTarget_MRT );
 public:

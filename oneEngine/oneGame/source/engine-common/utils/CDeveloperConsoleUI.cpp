@@ -2,7 +2,7 @@
 #include "CDeveloperConsoleUI.h"
 #include "core/input/CInput.h"
 #include "core/settings/CGameSettings.h"
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
@@ -19,7 +19,7 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 
 	renderType = renderer::kRLV2D;
 
-	fntMenu	= new CBitmapFont ( "monofonto.ttf", 16, FW_BOLD );
+	fntMenu	= new RrFontTexture ( "monofonto.ttf", 16, FW_BOLD );
 	matfntMenu = new RrMaterial;
 	matfntMenu->m_diffuse = Color( 1.0F,1,1 );
 	matfntMenu->setTexture( TEX_MAIN, fntMenu );

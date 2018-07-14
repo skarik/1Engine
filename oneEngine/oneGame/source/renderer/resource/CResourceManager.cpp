@@ -8,7 +8,7 @@
 
 #include "renderer/logic/model/CModel.h"
 #include "renderer/texture/RrTexture.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/material/RrShader.h"
 

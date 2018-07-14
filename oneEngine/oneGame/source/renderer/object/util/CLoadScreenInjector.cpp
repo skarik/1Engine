@@ -2,7 +2,7 @@
 
 #include "core/time/time.h"
 #include "CLoadScreenInjector.h"
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/camera/CCamera.h"
 #include "renderer/state/Settings.h"
@@ -49,7 +49,7 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 	renderSettings.renderHints = kRenderHintWorld;
 	renderType	= renderer::kRLV2D;
 
-	m_fntNotifier	= new CBitmapFont ( "YanoneKaffeesatz-B.otf", 72, FW_NORMAL );
+	m_fntNotifier	= new RrFontTexture ( "YanoneKaffeesatz-B.otf", 72, FW_NORMAL );
 	m_fntNotifier->RemoveReference();
 
 	m_currentAlpha	= 1.0F;

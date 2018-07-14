@@ -8,8 +8,8 @@
 #include <map>
 
 #include "renderer/object/CRenderableObject.h"
-//#include "rendererCBitmapFont.h"
-class CBitmapFont;
+//#include "rendererRrFontTexture.h"
+class RrFontTexture;
 class RrTexture;
 
 using std::string;
@@ -29,7 +29,7 @@ public:
 	bool			Render ( const char pass ) override;
 
 private:
-	CBitmapFont*	fntMenu;
+	RrFontTexture*	fntMenu;
 	RrMaterial*		matfntMenu;
 	RrMaterial*		matMenu;
 };

@@ -3,7 +3,7 @@
 #define _C_SCREEN_SHADER_H_
 
 #include "../CRenderableObject.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 
 class CCamera;
 
@@ -39,7 +39,7 @@ protected:
 	// Copies what's in m_buf to s_buf, but only drawing the color
 	virtual void CopyResult ( void );
 
-	CRenderTexture* m_buf;
+	RrRenderTexture* m_buf;
 
 	//RrMaterial	m_copymat;
 

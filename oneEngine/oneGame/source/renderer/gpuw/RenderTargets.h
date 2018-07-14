@@ -11,24 +11,32 @@ namespace gpu
 		kRenderTargetSlotDepth = -1,
 		kRenderTargetSlotStencil = -2,
 	};
-
+	class Device;
 	class RenderTarget
 	{
 	public:
 		RENDER_API explicit		RenderTarget ( void );
 		RENDER_API				~RenderTarget ( void );
 
+		RENDER_API int			create ( Device* device );
+
 		RENDER_API int			attach ( int slot, Texture* texture );
 		RENDER_API int			attach ( int slot, WOFrameAttachment* buffer );
 
-		RENDER_API int			free ( void );
+		RENDER_API int			destroy ( Device* device );
 
 		RENDER_API bool			empty ( void );
 		RENDER_API bool			valid ( void );
 
 		RENDER_API gpuHandle	nativePtr ( void );
 
+		// validates
 		RENDER_API bool			compile ( void );
+
+	private:
+		GLuint							m_framebuffer;
+		void*							m_attachments [18];
+		//core::gfx::tex::arTextureType	m_type;
 	};
 };
 

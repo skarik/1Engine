@@ -4,7 +4,7 @@
 
 #include "CRenderable2D.h"
 
-class CBitmapFont;
+class RrFontTexture;
 
 class CTextMesh : public CRenderable2D
 {
@@ -29,7 +29,7 @@ public:
 	float			m_max_width;
 
 protected:
-	CBitmapFont*	m_font_texture;
+	RrFontTexture*	m_font_texture;
 	size_t			m_text_triangle_count;
 };
 

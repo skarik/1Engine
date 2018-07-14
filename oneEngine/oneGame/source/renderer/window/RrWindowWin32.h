@@ -15,7 +15,7 @@
 #include "CDebugConsole.h"*/
 
 class CRenderState;
-class CRenderTexture;
+class RrRenderTexture;
 
 // Function definition
 //LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -134,7 +134,7 @@ private:
 	bool	focused;
 
 	// Rendering
-	//CRenderTexture*	pSbuf;	// Main screen buffer owned by the window
+	//RrRenderTexture*	pSbuf;	// Main screen buffer owned by the window
 };
 
 #endif//RENDERER_WINDOW_H_
