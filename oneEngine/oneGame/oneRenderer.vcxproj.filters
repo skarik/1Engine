@@ -396,6 +396,9 @@
     <ClCompile Include="source\renderer\texture\RrFontTexture.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Shader.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -727,6 +730,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\texture\RrFontTexture.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Shader.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -63,6 +63,7 @@
     <ClCompile Include="source\renderer\gpuw\GraphicsContext.cpp" />
     <ClCompile Include="source\renderer\gpuw\InputLayout.cpp" />
     <ClCompile Include="source\renderer\gpuw\RenderTargets.cpp" />
+    <ClCompile Include="source\renderer\gpuw\Shader.cpp" />
     <ClCompile Include="source\renderer\gpuw\Textures.cpp" />
     <ClCompile Include="source\renderer\light\CLight.cpp" />
     <ClCompile Include="source\renderer\light\DirectionalLight.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="source\renderer\gpuw\InputLayout.h" />
     <ClInclude Include="source\renderer\gpuw\Internal\Enums.h" />
     <ClInclude Include="source\renderer\gpuw\RenderTargets.h" />
+    <ClInclude Include="source\renderer\gpuw\Shader.h" />
     <ClInclude Include="source\renderer\gpuw\Textures.h" />
     <ClInclude Include="source\renderer\gpuw\Transfer.h" />
     <ClInclude Include="source\renderer\light\CLight.h" />
