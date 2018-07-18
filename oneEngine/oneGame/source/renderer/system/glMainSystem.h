@@ -7,7 +7,7 @@
 #include "core/math/Color.h"
 #include "core-ext/transform/Transform.h"
 // Needs the OpenGL functions
-#include "renderer/ogl/GLCommon.h"
+//#include "renderer/ogl/GLCommon.h"
 #include "renderer/types/types.h"
 #include "core/gfx/textureFormats.h"
 #include "renderer/types/blendModes.h"

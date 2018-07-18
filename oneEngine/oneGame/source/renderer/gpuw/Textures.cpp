@@ -7,6 +7,8 @@
 
 #include "core/math/Math.h"
 
+#include "renderer/ogl/GLCommon.h"
+
 gpu::Texture::Texture ( void )
 {
 	m_texture = 0;

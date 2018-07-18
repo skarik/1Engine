@@ -215,6 +215,7 @@ namespace renderer
 			uint		textureSampler6;
 			uint		textureSampler7;
 		};
+		static_assert(sizeof(rrPerObjectSamplers) == 32, "Alignment of rrPerObjectSamplers incorrect for the GPU.");
 
 		struct rrPerCamera
 		{
@@ -223,7 +224,10 @@ namespace renderer
 			Vector4f	viewportInfo;
 			Vector2f	screenSize;
 			Vector2f	pixelRatio;
+
+			Vector4f	rr_padding [1];
 		};
+		static_assert(sizeof(rrPerCamera) == 128, "Alignment of rrPerCamera incorrect for the GPU.");
 
 		struct rrPerFrame
 		{
@@ -235,7 +239,10 @@ namespace renderer
 			Vector4f	atmoColor;
 			Real32		fogEnd;
 			Real32		fogScale;
+
+			Vector2f	rr_padding [5];
 		};
+		static_assert(sizeof(rrPerFrame) == 128, "Alignment of rrPerFrame incorrect for the GPU.");
 
 		struct rrPerPassLightingInfo
 		{
@@ -245,6 +252,7 @@ namespace renderer
 			int32_t : 32;
 			int32_t : 32;
 		};
+		static_assert(sizeof(rrPerPassLightingInfo) == 32, "Alignment of rrPerPassLightingInfo incorrect for the GPU.");
 	}
 }
 

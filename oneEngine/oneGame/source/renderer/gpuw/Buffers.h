@@ -6,10 +6,18 @@
 
 #include "renderer/types/types.h"
 #include "renderer/gpuw/Transfer.h"
-#include "renderer/ogl/GLCommon.h"
 
 namespace gpu
 {
+
+	enum CBufferHint
+	{
+		kCBufferHintNone,
+		// Use for small buffers that are updated often.
+		// This will attempt to allocate data from the command buffer rather than the main memory.
+		kCBufferHintPushConstant,
+	};
+
 	class Device;
 	class ConstantBuffer
 	{
@@ -34,7 +42,7 @@ namespace gpu
 		RENDER_API int			free ( Device* device = NULL );
 
 	private:
-		GLuint	m_buffer;
+		unsigned int	m_buffer;
 	};
 
 	class Buffer

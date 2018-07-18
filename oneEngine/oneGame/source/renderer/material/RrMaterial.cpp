@@ -48,8 +48,8 @@ RrMaterial::RrMaterial ( void )
 	referenceCount(1), staticResource(false)
 {
 	memset( m_highlevel_storage, 0, sizeof(RrTexture*) * 12 );
-	memset( m_samplers,			 0, sizeof(glHandle) * 12 );
-	memset( m_sampler_targets,	 0, sizeof(glHandle) * 12 );
+	memset( m_samplers,			 0, sizeof(gpuHandle) * 12 );
+	memset( m_sampler_targets,	 0, sizeof(gpuHandle) * 12 );
 }
 
 RrMaterial::~RrMaterial ( void ) throw(...)
@@ -628,63 +628,49 @@ void RrMaterial::bindPassForward ( uchar pass )
 	switch ( passinfo[pass].m_face_mode )
 	{
 	case renderer::FM_FRONT:
-		//glEnable( GL_CULL_FACE );
-		//glCullFace( GL_BACK );
 		raster_state.cullmode = gpu::kCullModeBack;
 		break;
 	case renderer::FM_BACK:
-		//glEnable( GL_CULL_FACE );
-		//glCullFace( GL_FRONT );
 		raster_state.cullmode = gpu::kCullModeFront;
 		break;
 	case renderer::FM_FRONTANDBACK:
-		//glDisable( GL_CULL_FACE );
 		raster_state.cullmode = gpu::kCullModeNone;
 		break;
 	}
 	// Set blend mode
-	//glEnable( GL_BLEND );
 	switch ( passinfo[pass].m_blend_mode )
 	{
 	case renderer::BM_NORMAL:
-		//glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 		blend_state.enable = true;
 		blend_state.src = gpu::kBlendModeSrcAlpha;
 		blend_state.dst = gpu::kBlendModeInvSrcAlpha;
 		break;
 	case renderer::BM_ADD:
-		//glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 		blend_state.enable = true;
 		blend_state.src = gpu::kBlendModeSrcAlpha;
 		blend_state.dst = gpu::kBlendModeOne;
 		break;
 	case renderer::BM_SOFT_ADD:
-		//glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
 		blend_state.enable = true;
 		blend_state.src = gpu::kBlendModeOne;
 		blend_state.dst = gpu::kBlendModeInvSrcAlpha;
 		break;
 	case renderer::BM_INV_MULTIPLY:
-		//glBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_COLOR );
 		blend_state.enable = true;
 		blend_state.src = gpu::kBlendModeZero;
 		blend_state.dst = gpu::kBlendModeInvSrcColor;
 		break;
 	case renderer::BM_MULTIPLY:
-		//glBlendFunc( GL_DST_COLOR, GL_ZERO );
 		blend_state.enable = true;
 		blend_state.src = gpu::kBlendModeDstColor;
 		blend_state.dst = gpu::kBlendModeZero;
 		break;
 	case renderer::BM_MULTIPLY_X2:
-		//glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
 		blend_state.enable = true;
 		blend_state.src = gpu::kBlendModeDstColor;
 		blend_state.dst = gpu::kBlendModeSrcColor;
 		break;
 	case renderer::BM_NONE:
-		//glDisable( GL_BLEND );
-		//glBlendFunc( GL_ONE, GL_ZERO );
 		blend_state.enable = false;
 		break;
 	}
@@ -692,19 +678,15 @@ void RrMaterial::bindPassForward ( uchar pass )
 	// Set transparency mode
 	if ( passinfo[pass].b_depthtest )
 	{
-		//glEnable( GL_DEPTH_TEST );
-		//glDepthFunc( GL_LEQUAL );
 		ds_state.depthTestEnabled = true;
 		ds_state.depthFunc = gpu::kCompareOpLess;
 	}
 	else
 	{
-		//glDisable( GL_DEPTH_TEST );
 		ds_state.depthTestEnabled = false;
 	}
 	if ( !passinfo[pass].b_depthmask )
 	{
-		//glDepthMask( GL_FALSE );
 		ds_state.depthWriteEnabled = false;
 	}
 	else
@@ -712,12 +694,10 @@ void RrMaterial::bindPassForward ( uchar pass )
 		if (passinfo[pass].m_transparency_mode == renderer::ALPHAMODE_NONE ||
 			passinfo[pass].m_transparency_mode == renderer::ALPHAMODE_ALPHATEST)
 		{
-			//glDepthMask( GL_TRUE );
 			ds_state.depthWriteEnabled = true;
 		}
 		else
 		{
-			//glDepthMask( GL_FALSE );
 			ds_state.depthWriteEnabled = false;
 		}
 	}
@@ -768,6 +748,8 @@ void RrMaterial::bindPassForward ( uchar pass )
 
 void RrMaterial::bindPassDeferred ( uchar pass )
 {
+	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
 	// Reset forward state
 	state.shader = NULL;
 
@@ -776,38 +758,49 @@ void RrMaterial::bindPassDeferred ( uchar pass )
 	m_currentPass = pass;
 	m_currentPassForward = false;
 
+	gpu::RasterizerState raster_state;
+	gpu::BlendState blend_state;
+	gpu::DepthStencilState ds_state;
+
 	// Set face mode
 	if (0) // TODO: Fix this.
 	{
-		glEnable( GL_CULL_FACE );
-		glCullFace( GL_BACK );
+		raster_state.cullmode = gpu::kCullModeBack;
 	}
 	else
 	{
-		glDisable( GL_CULL_FACE );
+		raster_state.cullmode = gpu::kCullModeNone;
 	}
 
 	// Set transparency mode
-	glEnable( GL_DEPTH_TEST );
-	glDepthFunc( GL_LEQUAL );
+	ds_state.depthTestEnabled = true;
+	ds_state.depthFunc = gpu::kCompareOpLess;
 	switch ( deferredinfo[pass].m_transparency_mode )
 	{
 	case renderer::ALPHAMODE_NONE:
-		glDisable( GL_BLEND );
-		glBlendFunc( GL_ONE, GL_ZERO );
-		glDepthMask( GL_TRUE );
+		blend_state.enable = false;
+		blend_state.src = gpu::kBlendModeOne;
+		blend_state.dst = gpu::kBlendModeZero;
+		ds_state.depthWriteEnabled = true;
 		break;
 	case renderer::ALPHAMODE_ALPHATEST:
-		glDisable( GL_BLEND );
-		glBlendFunc( GL_ONE, GL_ZERO );
-		glDepthMask( GL_TRUE );
+		blend_state.enable = false;
+		blend_state.src = gpu::kBlendModeOne;
+		blend_state.dst = gpu::kBlendModeZero;
+		ds_state.depthWriteEnabled = true;
 		break;
 	case renderer::ALPHAMODE_TRANSLUCENT:
-		glEnable( GL_BLEND );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glDepthMask( GL_FALSE );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeSrcAlpha;
+		blend_state.dst = gpu::kBlendModeInvSrcAlpha;
+		ds_state.depthWriteEnabled = false;
 		break;
 	}
+
+	// Set blend & rasterizer state
+	gfx->setRasterizerState(raster_state);
+	gfx->setBlendState(blend_state);
+	gfx->setDepthStencilState(ds_state);
 
 	// Do first-time initialization checks
 	if ( !deferredinfo[pass].m_ready )
@@ -975,6 +968,20 @@ void	RrMaterial::bindPassAtrribs ( void )
 }
 void RrMaterial::bindAttribute ( int attributeIndex, const uint vec_size, const uint vec_type, const bool normalize, const int struct_size, const void* struct_offset )
 {
+	/*void glBindVertexBuffer(GLuint bindingindex?, GLuint buffer?, GLintptr offset?, GLintptr stride?);
+	void glVertexBindingDivisor(GLuint bindingindex?, GLuint divisor?);
+
+	void glVertexAttribFormat(GLuint attribindex?, GLint size?, GLenum type?, GLboolean normalized?, GLuint relativeoffset?);
+	void glVertexAttribIFormat(GLuint attribindex?, GLint size?, GLenum type?, GLuint relativeoffset?);
+	void glVertexAttribLFormat(GLuint attribindex?, GLint size?, GLenum type?, GLuint relativeoffset?);
+	
+	void glVertexAttribBinding(GLuint attribindex?, GLuint bindingindex?);*/
+	glEnableVertexAttribArray(index);
+	glBindVertexBuffer(bindex, 0, offset, stride);
+	glVertexBindingDivisor(bindex, 0);
+	glVertexAttribFormat(index, 4, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(index, bindex);
+
 	RrPassForward::enabled_attributes[attributeIndex] = true;
 	glEnableVertexAttribArray( attributeIndex );
 	glVertexAttribPointer( attributeIndex,

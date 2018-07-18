@@ -1,11 +1,10 @@
-
-// == Includes ==
-//#include "core/settings/CGameSettings.h"
 #include "renderer/exceptions/exceptions.h"
 #include "renderer/state/CRenderState.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "CRenderableObject.h"
+
+#include "renderer/gpuw/Pipeline.h"
 
 // ==Static Members
 //bool CRenderableObject::bStaticMaterialsInit = false;
@@ -99,8 +98,6 @@ void CRenderableObject::SetMaterial ( RrMaterial* n_pNewMaterial )
 	if ( m_material )
 	{
 		m_material->addReference();
-		//if ( CGameSettings::Active()->i_ro_RendererMode /*== kRenderModeForward*/ )
-		//{
 		// Check for a valid pass count
 		if ( m_material->passinfo.size() > 16 || m_material->deferredinfo.size() > 16 ) {
 			throw renderer::TooManyPassesException();
@@ -123,10 +120,13 @@ void CRenderableObject::SetMaterial ( RrMaterial* n_pNewMaterial )
 			bool hasPass = false;
 			for ( uint pass = 0; pass < m_material->passinfo.size(); ++pass )
 			{
-				if ( m_material->passinfo[pass].m_hint & (1<<layer) ) {
+				if ( m_material->getPassForward(pass).m_hint & (1 << layer) )
+				{
 					hasPass = true;
+					break;
 				}
 			}
+			// If this material does have a pass for this layer, we want to actually cache that.
 			if ( !hasPass ) // TODO: Search for ALL matching passes. (That actually won't work, but don't care right now.)
 			{
 				RrPassForward* pass = &(m_material->passinfo[0]);
@@ -184,7 +184,7 @@ void CRenderableObject::SetMaterial ( RrMaterial* n_pNewMaterial )
 			// End has pass
 		}
 		// End for loop
-		//}
+
 		// Clear pass info
 		PassinfoRegenerate();
 	}

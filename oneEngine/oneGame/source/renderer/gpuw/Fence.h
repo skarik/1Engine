@@ -6,15 +6,21 @@
 
 namespace gpu
 {
+	class GraphicsContext;
+	class ComputeContext;
+
 	class Fence
 	{
 	public:
-
 		RENDER_API bool			signaled ( void );
 
 		RENDER_API bool			create ( Device* device );
 		RENDER_API bool			destroy ( Device* device );
 
+	private:
+		unsigned int		m_syncId;
+		GraphicsContext*	m_gfxc;
+		ComputeContext*		m_compute;
 	};
 }
 

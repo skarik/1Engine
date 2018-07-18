@@ -31,7 +31,7 @@ namespace gpu
 		bool		scissorEnabled;
 
 		RasterizerState()
-			: fillmode(kFillModeSolid), cullmode(kCullModeBack), frontface(kFrontFaceClockwise),
+			: fillmode(kFillModeSolid), cullmode(kCullModeBack), frontface(kFrontFaceCounterClockwise),
 			scissorEnabled(true)
 		{}
 	};
@@ -142,7 +142,17 @@ namespace gpu
 			{}
 	};
 
+	enum IndexFormat
+	{
+		kIndexFormatUnsigned16,
+		kIndexFormatUnsigned32,
+	};
+
+	class ShaderPipeline;
+	class Pipeline;
 	class Fence;
+	class VertexBuffer;
+
 	class GraphicsContext
 	{
 	public:
@@ -163,10 +173,25 @@ namespace gpu
 		RENDER_API int			setViewport ( uint32_t left, uint32_t top, uint32_t right, uint32_t bottom );
 		RENDER_API int			setScissor ( uint32_t left, uint32_t top, uint32_t right, uint32_t bottom );
 
+		RENDER_API int			setPipeline ( Pipeline* pipeline );
+		RENDER_API int			setVertexBuffer ( VertexBuffer* buffer );
+
+		RENDER_API int			draw ( const uint32_t vertexCount, const uint32_t startVertex );
+		RENDER_API int			drawIndexed ( const uint32_t indexCount, const uint32_t startIndex );
+		RENDER_API int			drawIndirect ( void );
+
 		RENDER_API int			sync ( Fence* fence );
 
 	private:
-		RasterizerState		m_rasterState;
+		RasterizerState			m_rasterState;
+		BlendCollectiveState	m_blendCollectState;
+		DepthStencilState		m_depthStencilState;
+
+		Pipeline*				m_pipeline;
+		bool					m_pipelineBound;
+		bool					m_pipelineDataBound;
+
+		int						drawPreparePipeline ( void );
 	};
 }
 

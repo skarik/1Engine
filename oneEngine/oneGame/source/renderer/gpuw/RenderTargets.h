@@ -31,10 +31,10 @@ namespace gpu
 		RENDER_API gpuHandle	nativePtr ( void );
 
 		// validates
-		RENDER_API bool			compile ( void );
+		RENDER_API int			assemble ( void );
 
 	private:
-		GLuint							m_framebuffer;
+		unsigned int					m_framebuffer;
 		void*							m_attachments [18];
 		//core::gfx::tex::arTextureType	m_type;
 	};

@@ -4,7 +4,6 @@
 #include "core/types/types.h"
 #include "core/gfx/textureFormats.h"
 #include "renderer/types/types.h"
-#include "renderer/ogl/GLCommon.h"
 
 namespace gpu
 {
@@ -69,7 +68,7 @@ namespace gpu
 		RENDER_API int			upload ( gpu::Buffer& buffer, const uint level );
 
 	private:
-		GLuint							m_texture;
+		unsigned int					m_texture;
 		core::gfx::tex::arTextureType	m_type;
 	};
 
@@ -99,7 +98,7 @@ namespace gpu
 		RENDER_API int			free ( void );
 
 	private:
-		GLuint							m_texture;
+		unsigned int					m_texture;
 		core::gfx::tex::arTextureType	m_type;
 	};
 }

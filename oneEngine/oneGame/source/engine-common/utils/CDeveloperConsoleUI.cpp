@@ -19,20 +19,20 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 
 	renderType = renderer::kRLV2D;
 
-	fntMenu	= new RrFontTexture ( "monofonto.ttf", 16, FW_BOLD );
+	fntMenu	= RrFontTexture::Load( "monofonto.ttf", 16, kFW_Bold );
 	matfntMenu = new RrMaterial;
 	matfntMenu->m_diffuse = Color( 1.0F,1,1 );
 	matfntMenu->setTexture( TEX_MAIN, fntMenu );
-	matfntMenu->passinfo.push_back( RrPassForward() );
-	matfntMenu->passinfo[0].set2DCommon();
-	matfntMenu->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
+	matfntMenu->enablePassForward<0>(true);
+	matfntMenu->getPassForward<0>().set2DCommon();
+	matfntMenu->getPassForward<0>().m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
 
 	matMenu = new RrMaterial;
 	matMenu->m_diffuse = Color( 1.0F,1,1 );
-	matMenu->setTexture( TEX_MAIN, new RrTexture("null") );
-	matMenu->passinfo.push_back( RrPassForward() );
-	matMenu->passinfo[0].set2DCommon();
-	matMenu->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
+	matMenu->setTexture( TEX_MAIN, core::Orphan(RrTexture::Load("null")) );
+	matMenu->enablePassForward<0>(true);
+	matMenu->getPassForward<0>().set2DCommon();
+	matMenu->getPassForward<0>().m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
 
 	SetMaterial( matfntMenu );
 
@@ -45,9 +45,10 @@ CDeveloperConsoleUI::~CDeveloperConsoleUI ( void )
 		ActiveConsoleUI = NULL;
 	}
 
-	delete fntMenu;
+	//delete fntMenu;
+	fntMenu->RemoveReference();
 	matMenu->removeReference();
-	matfntMenu->removeReference();
+	//matfntMenu->removeReference();
 	// matfntMenu is the main material, and deallocated automagically.
 }
 
@@ -131,14 +132,14 @@ CDeveloperCursor::CDeveloperCursor ( void )
 
 	renderType = renderer::kRLV2D;
 
-	texCursor = new RrTexture( "textures/system/cursor.png" );
+	texCursor = RrTexture::Load( "textures/system/cursor.png" );
 	matCursor = new RrMaterial;
 	matCursor->m_diffuse = Color( 1.0F,1,1 );
 	matCursor->setTexture( TEX_MAIN, texCursor );
-	matCursor->passinfo.push_back( RrPassForward() );
-	matCursor->passinfo[0].set2DCommon();
-	matCursor->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
-	matCursor->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
+	matCursor->enablePassForward<0>(true);
+	matCursor->getPassForward<0>().set2DCommon();
+	matCursor->getPassForward<0>().m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
+	matCursor->getPassForward<0>().m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
 	matCursor->removeReference();
 	SetMaterial( matCursor );
 }
@@ -147,7 +148,7 @@ CDeveloperCursor::~CDeveloperCursor ( void )
 	if ( ActiveCursor == this ) {
 		ActiveCursor = NULL;
 	}
-	delete texCursor;
+	texCursor->RemoveReference();
 }
 bool CDeveloperCursor::PreRender ( void )
 {

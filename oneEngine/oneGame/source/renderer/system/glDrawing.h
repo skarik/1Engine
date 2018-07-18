@@ -6,7 +6,7 @@
 #include "core-ext/transform/Transform.h"
 #include "core/math/Color.h"
 // Needs the OpenGL functions
-#include "renderer/ogl/GLCommon.h"
+//#include "renderer/ogl/GLCommon.h"
 
 // Streaming mesh data class
 #include "rrVBufferStreaming.h"

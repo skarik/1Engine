@@ -20,18 +20,22 @@ enum eRenderMode : int32_t
 
 //	eRenderHint - Sublayer bitmask.
 // Defines specific layers to render.
-enum eRenderHint : uint32_t
+enum eRenderHintBitmask : uint32_t
 {
-	kRenderHintALL		= 0xFFFFFFFF,
+	kRenderHintBitmaskALL		= 0xFFFFFFFF,
 
-	kRenderHintWorld	= 0x1,
-	kRenderHintWarp		= 0x2,
-	kRenderHintGlow		= 0x4,
-	kRenderHintSkyglow	= 0x8,
-	kRenderHintFog		= 0x10,
-	kRenderHintShadowColor = 0x20,
-
-	kRenderHintCOUNT = 6
+	kRenderHintBitmaskWorld		= 0x1,
+	kRenderHintBitmaskWarp		= 0x2,
+	kRenderHintBitmaskGlow		= 0x4,
+	kRenderHintBitmaskSkyglow	= 0x8,
+	kRenderHintBitmaskFog		= 0x10,
+	kRenderHintBitmaskShadowColor = 0x20,
+};
+//	eRenderHint - Sublayer bitmask.
+// Defines specific layers to render.
+enum eRenderHintBitmask : uint8_t
+{
+	kRenderHintCOUNT = 6,
 };
 
 namespace renderer

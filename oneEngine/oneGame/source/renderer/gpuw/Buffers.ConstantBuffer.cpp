@@ -2,6 +2,8 @@
 
 #include "renderer/system/glMainSystem.h"
 
+#include "renderer/ogl/GLCommon.h"
+
 //gpu::ConstantBuffer::ConstantBuffer( void )
 //{
 //	m_buffer = 0;

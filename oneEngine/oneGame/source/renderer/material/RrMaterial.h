@@ -13,6 +13,7 @@
 #include "renderer/gpuw/Textures.h"
 
 #include "RrShader.h"
+#include "RrShaderProgram.h"
 #include "RrPassForward.h"
 #include "RrPassDeferred.h"
 
@@ -42,6 +43,17 @@ enum textureslot_t : uint8_t
 	TEX_OVERLAY = 3,
 
 	TEX_PALETTE = 0,
+};
+
+enum RrPassType
+{
+	kPassForward,
+	kPassDeferred,
+};
+
+enum RrMaterialConstants
+{
+	kMaterial_MaxPassCount = 4,
 };
 
 // Prototype
@@ -113,9 +125,74 @@ private:
 
 public:
 	// List of forward rendered passes
-	std::vector<RrPassForward>	passinfo;
+	//std::vector<RrPassForward>	passinfo;
+	//std::vector<RrPassForward>	forwardpasses;
+	RrPassForward		m_passesForward [kMaterial_MaxPassCount];
+	bool				m_passesForwardEnabled [kMaterial_MaxPassCount];
 	// Deferred rendering information
-	std::vector<RrPassDeferred>	deferredinfo;
+	//std::vector<RrPassDeferred>	deferredinfo;
+	RrPassDeferred		m_passesDeferred [kMaterial_MaxPassCount];
+	bool				m_passesDeferredEnabled [kMaterial_MaxPassCount];
+
+	//RENDER_API bool			enablePass ( RrPassType pass_type, int slot );
+
+	// enables pass
+	RENDER_API bool			enablePassForward ( int slot, bool enabled )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		m_passesForwardEnabled[slot] = enabled;
+	}
+	// enables pass. but fast!
+	template <int slot>
+	RENDER_API bool			enablePassForward ( bool enabled )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		m_passesForwardEnabled[slot] = enabled;
+	}
+	// gets pass
+	RENDER_API RrPassForward&
+							getPassForward ( int slot )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		return m_passesForward[slot];
+	}
+	// gets pass. but fast!
+	template <int slot>
+	RENDER_API RrPassForward&
+							getPassForward ( void )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		return m_passesForward[slot];
+	}
+
+	// enables pass
+	RENDER_API bool			enablePassDeferred ( int slot, bool enabled )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		m_passesDeferredEnabled[slot] = enabled;
+	}
+	// enables pass. but fast!
+	template <int slot>
+	RENDER_API bool			enablePassDeferred ( bool enabled )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		m_passesDeferredEnabled[slot] = enabled;
+	}
+	// gets pass
+	RENDER_API RrPassDeferred&
+							getPassDeferred ( int slot )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		return m_passesDeferred[slot];
+	}
+	// gets pass. but fast!
+	template <int slot>
+	RENDER_API RrPassDeferred&
+							getPassDeferred ( void )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		return m_passesDeferred[slot];
+	}
 
 	// Global options
 	bool	m_isScreenShader;
@@ -162,12 +239,12 @@ private:
 	bool		m_currentPassForward;
 
 	// Command buffer buildstate:
-	struct rrCmdBufferBuildstate
+	/*struct rrCmdBufferBuildstate
 	{
 		uint	cmdbuffer_index : 4;
 		bool	track_state : 1;
 	};
-	rrCmdBufferBuildstate	m_buildState;
+	rrCmdBufferBuildstate	m_buildState;*/
 
 	// Textures (samplers)
 	RrTexture*		m_highlevel_storage [12];

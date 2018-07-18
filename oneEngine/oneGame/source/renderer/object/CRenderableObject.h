@@ -134,19 +134,20 @@ private:
 
 public:
 	// Positional transform
-	core::Transform	transform;
-	// Rendering states
-	//bool						visible;			// if object should be drawn or not
-	renderer::objectSettings	renderSettings;		// miscelleneous render settings
-	RrObjectMaterialProperties			shaderConstants;
+	core::Transform			transform;
+	// miscelleneous render settings
+	renderer::objectSettings
+							renderSettings;		
+	RrObjectMaterialProperties
+							shaderConstants;
 
 protected:
 	// Rendering States
 	eRenderLayer			renderType;
 	//vector<RrMaterial*>	vMaterials;
 protected:
-	RrMaterial*					m_material;
-	bool						visible;
+	RrMaterial*				m_material;
+	bool					visible;
 private:
 	//vector<renderer::new_passinfo_t>	m_passinfo;	
 	uint*		m_vao_info;

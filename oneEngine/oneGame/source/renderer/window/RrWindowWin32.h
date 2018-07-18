@@ -3,7 +3,7 @@
 
 #include "core/os.h"
 #include "core/types/types.h"
-#include "renderer/ogl/GLCommon.h" // includes windows headers and Win32
+//#include "renderer/ogl/GLCommon.h" // includes windows headers and Win32
 
 #include <stdlib.h>
 #include <string.h>
