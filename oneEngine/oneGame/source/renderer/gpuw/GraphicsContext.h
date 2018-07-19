@@ -3,26 +3,10 @@
 
 #include "core/types.h"
 #include <stdint.h>
+#include "renderer/gpuw/Public/Enums.h"
 
 namespace gpu
 {
-	enum FillMode
-	{
-		kFillModeSolid,
-		kFillModeWireframe,
-	};
-	enum CullMode
-	{
-		kCullModeBack,
-		kCullModeFront,
-		kCullModeNone,
-	};
-	enum FrontFace
-	{
-		kFrontFaceCounterClockwise,
-		kFrontFaceClockwise,
-	};
-
 	struct RasterizerState
 	{
 		FillMode	fillmode;
@@ -34,36 +18,6 @@ namespace gpu
 			: fillmode(kFillModeSolid), cullmode(kCullModeBack), frontface(kFrontFaceCounterClockwise),
 			scissorEnabled(true)
 		{}
-	};
-
-
-	enum BlendMode
-	{
-		kBlendModeZero,
-		kBlendModeOne,
-		kBlendModeSrcColor,
-		kBlendModeInvSrcColor,
-		kBlendModeSrcAlpha,
-		kBlendModeInvSrcAlpha,
-		kBlendModeDstColor,
-		kBlendModeInvDstColor,
-		kBlendModeDstAlpha,
-		kBlendModeInvDstAlpha,
-		kBlendModeSrcAlphaSat,
-		kBlendModeBlendFactor,
-		kBlendModeInvBlendFactor,
-		kBlendModeSrc1Color,
-		kBlendModeInvSrc1Color,
-		kBlendModeSrc1Alpha,
-		kBlendModeInvSrc1Alpha,
-	};
-	enum BlendOp
-	{
-		kBlendOpAdd,
-		kBlendOpSubtract,
-		kBlendOpRevSubtract,
-		kBlendOpMin,
-		kBlendOpMax,
 	};
 
 	struct BlendState
@@ -87,29 +41,6 @@ namespace gpu
 	struct BlendCollectiveState
 	{
 		BlendState	blend [16];
-	};
-
-	enum CompareOp
-	{
-		kCompareOpNever,
-		kCompareOpLess,
-		kCompareOpEqual,
-		kCompareOpLessEqual,
-		kCompareOpGreater,
-		kCompareOpNotEqual,
-		kCompareOpGreaterEqual,
-		kCompareOpAlways
-	};
-	enum StencilOp
-	{
-		kStencilOpKeep,
-		kStencilOpZero,
-		kStencilOpReplace,
-		kStencilOpIncrementSaturate,
-		kStencilOpDecrementSaturate,
-		kStencilOpInvert,
-		kStencilOpIncrement,
-		kStencilOpDecrement,
 	};
 
 	struct StencilOpInfo
@@ -140,12 +71,6 @@ namespace gpu
 			stencilTestEnabled(false), stencilReadMask(0xFF), stencilWriteMask(0xFF),
 			stencilOpFrontface(), stencilOpBackface()
 			{}
-	};
-
-	enum IndexFormat
-	{
-		kIndexFormatUnsigned16,
-		kIndexFormatUnsigned32,
 	};
 
 	class ShaderPipeline;

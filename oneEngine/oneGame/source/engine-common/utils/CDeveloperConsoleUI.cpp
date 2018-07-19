@@ -3,7 +3,9 @@
 #include "core/input/CInput.h"
 #include "core/settings/CGameSettings.h"
 #include "renderer/texture/RrFontTexture.h"
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/material/RrMaterial.h"
+#include "renderer/material/RrPass.h"
+#include "renderer/material/RrShaderProgram.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 #include "renderer/camera/CCamera.h"
@@ -19,22 +21,39 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 
 	renderType = renderer::kRLV2D;
 
+	//fntMenu	= RrFontTexture::Load( "monofonto.ttf", 16, kFW_Bold );
+	//matfntMenu = new RrMaterial;
+	//matfntMenu->m_diffuse = Color( 1.0F,1,1 );
+	//matfntMenu->setTexture( TEX_MAIN, fntMenu );
+	//matfntMenu->enablePassForward<0>(true);
+	//matfntMenu->getPassForward<0>().set2DCommon();
+	//matfntMenu->getPassForward<0>().m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+
+	//matMenu = new RrMaterial;
+	//matMenu->m_diffuse = Color( 1.0F,1,1 );
+	//matMenu->setTexture( TEX_MAIN, core::Orphan(RrTexture::Load("null")) );
+	//matMenu->enablePassForward<0>(true);
+	//matMenu->getPassForward<0>().set2DCommon();
+	//matMenu->getPassForward<0>().m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+
+	//SetMaterial( matfntMenu );
+
 	fntMenu	= RrFontTexture::Load( "monofonto.ttf", 16, kFW_Bold );
-	matfntMenu = new RrMaterial;
-	matfntMenu->m_diffuse = Color( 1.0F,1,1 );
-	matfntMenu->setTexture( TEX_MAIN, fntMenu );
-	matfntMenu->enablePassForward<0>(true);
-	matfntMenu->getPassForward<0>().set2DCommon();
-	matfntMenu->getPassForward<0>().m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+	RrPass fontPass;
+	fontPass.m_type = kPassTypeForward;
+	fontPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
+	fontPass.setTexture( TEX_MAIN, fntMenu );
+	fontPass.utilSetupAs2D();
+	fontPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+	PassInitWithInput(1, &fontPass);
 
-	matMenu = new RrMaterial;
-	matMenu->m_diffuse = Color( 1.0F,1,1 );
-	matMenu->setTexture( TEX_MAIN, core::Orphan(RrTexture::Load("null")) );
-	matMenu->enablePassForward<0>(true);
-	matMenu->getPassForward<0>().set2DCommon();
-	matMenu->getPassForward<0>().m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
-
-	SetMaterial( matfntMenu );
+	RrPass shapesPass;
+	shapesPass.m_type = kPassTypeForward;
+	shapesPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
+	shapesPass.setTexture( TEX_MAIN, core::Orphan(RrTexture::Load("null")) );
+	shapesPass.utilSetupAs2D();
+	shapesPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+	PassInitWithInput(0, &shapesPass);
 
 	transform.world.position.z = -35;
 }
@@ -47,7 +66,7 @@ CDeveloperConsoleUI::~CDeveloperConsoleUI ( void )
 
 	//delete fntMenu;
 	fntMenu->RemoveReference();
-	matMenu->removeReference();
+	//matMenu->removeReference();
 	//matfntMenu->removeReference();
 	// matfntMenu is the main material, and deallocated automagically.
 }
@@ -132,16 +151,27 @@ CDeveloperCursor::CDeveloperCursor ( void )
 
 	renderType = renderer::kRLV2D;
 
+	//texCursor = RrTexture::Load( "textures/system/cursor.png" );
+	//matCursor = new RrMaterial;
+	//matCursor->m_diffuse = Color( 1.0F,1,1 );
+	//matCursor->setTexture( TEX_MAIN, texCursor );
+	//matCursor->enablePassForward<0>(true);
+	//matCursor->getPassForward<0>().set2DCommon();
+	//matCursor->getPassForward<0>().m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
+	//matCursor->getPassForward<0>().m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+	//matCursor->removeReference();
+	//SetMaterial( matCursor );
+
 	texCursor = RrTexture::Load( "textures/system/cursor.png" );
-	matCursor = new RrMaterial;
-	matCursor->m_diffuse = Color( 1.0F,1,1 );
-	matCursor->setTexture( TEX_MAIN, texCursor );
-	matCursor->enablePassForward<0>(true);
-	matCursor->getPassForward<0>().set2DCommon();
-	matCursor->getPassForward<0>().m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
-	matCursor->getPassForward<0>().m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
-	matCursor->removeReference();
-	SetMaterial( matCursor );
+	RrPass cursorPass;
+	cursorPass.m_type = kPassTypeForward;
+	cursorPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
+	cursorPass.setTexture( TEX_MAIN, texCursor );
+	cursorPass.utilSetupAs2D();
+	cursorPass.m_alphaMode = renderer::kAlphaModeAlphatest;
+	cursorPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+	PassInitWithInput(0, &cursorPass);
+
 }
 CDeveloperCursor::~CDeveloperCursor ( void )
 {

@@ -1,6 +1,5 @@
-
-#ifndef _C_DEVELOPER_CONSOLE_UI_H_
-#define _C_DEVELOPER_CONSOLE_UI_H_
+#ifndef ENGINE_COMMON_UTIL_DEVELOPER_CONSOLE_UI_H_
+#define ENGINE_COMMON_UTIL_DEVELOPER_CONSOLE_UI_H_
 
 #include <iostream>
 #include <string>
@@ -30,8 +29,8 @@ public:
 
 private:
 	RrFontTexture*	fntMenu;
-	RrMaterial*		matfntMenu;
-	RrMaterial*		matMenu;
+	//RrMaterial*		matfntMenu;
+	//RrMaterial*		matMenu;
 };
 
 class CDeveloperCursor : public CRenderableObject
@@ -45,11 +44,11 @@ public:
 	bool			Render ( const char pass ) override;;
 
 private:
-	RrMaterial*		matCursor;
+	//RrMaterial*		matCursor;
 	RrTexture*		texCursor;
 };
 
 ENGCOM_API extern CDeveloperConsoleUI*	ActiveConsoleUI;
 ENGCOM_API extern CDeveloperCursor*	ActiveCursor;
 
-#endif//_C_DEVELOPER_CONSOLE_UI_H_
+#endif//ENGINE_COMMON_UTIL_DEVELOPER_CONSOLE_UI_H_

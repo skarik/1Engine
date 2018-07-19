@@ -20,9 +20,10 @@
 
 // Class prototypes
 class CRenderState;
-class RrMaterial;
-class RrPassForward;
-class RrPassDeferred;
+//class RrMaterial;
+//class RrPassForward;
+//class RrPassDeferred;
+class RrPass;
 
 // Defines
 #ifndef RegisterRenderClassName
@@ -48,8 +49,8 @@ private:
 	CRenderableObject & operator= (const CRenderableObject & other);
 
 public:
-	RENDER_API explicit				CRenderableObject ( void );
-	RENDER_API virtual				~CRenderableObject ( void );
+	RENDER_API explicit		CRenderableObject ( void );
+	RENDER_API virtual		~CRenderableObject ( void );
 
 protected:
 	// Returns of material placement can be edited
@@ -63,40 +64,49 @@ public:
 
 	//	PreRender() : Called before the internal render-loop executes.
 	// Can be called multiple times per frame.
-	RENDER_API virtual bool			PreRender ( void )
+	RENDER_API virtual bool	PreRender ( void )
 		{ return true; }
 	//	Render(const int pass) : Current pass
-	RENDER_API virtual bool			Render ( const char pass ) =0;
+	RENDER_API virtual bool	Render ( const char pass ) =0;
 	//	PostRender() : Called after the render-loop executes.
 	// Can be called multiple times per frame.
-	RENDER_API virtual bool			PostRender ( void )
+	RENDER_API virtual bool	PostRender ( void )
 		{ return true; }
 
-	RENDER_API virtual bool			BeginRender ( void )
+	RENDER_API virtual bool	BeginRender ( void )
 		{ return true; }
-	RENDER_API virtual bool			EndRender ( void )
+	RENDER_API virtual bool	EndRender ( void )
 		{ return true; }
 
 	// == Setters ==
 	// Change the material the given material array thing.
 	// Give the ownership of the material to this mesh if the materials have been "released"
-	RENDER_API virtual void			SetMaterial		( RrMaterial* n_pNewMaterial );
+	//RENDER_API virtual void			SetMaterial		( RrMaterial* n_pNewMaterial );
 	// Change the object's render type
-	RENDER_API void					SetRenderType	( eRenderLayer );
+	RENDER_API void			SetRenderType	( eRenderLayer );
 	// Change visible state
-	RENDER_API virtual void			SetVisible ( const bool nextState ) {
+	RENDER_API virtual void	SetVisible ( const bool nextState ) {
 		visible = nextState;
 	}
 	// == Getters ==
 	// Searches for the first material with the string in its name
 	//RrMaterial*				FindMaterial( const string & strToFind, int skipAmount=0 );
-	RENDER_API virtual RrMaterial*	GetMaterial ( void ) {
-		return m_material;
-	}
+	//RENDER_API virtual RrMaterial*	GetMaterial ( void ) {
+	//	return m_material;
+	//}
 	// Returns visible state
-	RENDER_API virtual bool			GetVisible ( void ) const {
+	RENDER_API virtual bool	GetVisible ( void ) const {
 		return visible;
 	}
+
+	// == Object Passes ==
+	
+	//	PassInitWithInput(pass, passData) : Sets up a new pass on the given slot.
+	// Creates a copy of passData without changing reference counts.
+	RENDER_API void			PassInitWithInput ( int pass, RrPass* passData );
+	RENDER_API void			PassFree ( int pass );
+	RENDER_API renderer::cbuffer::rrPerObjectSurface&
+							PassGetSurface ( int pass );
 
 	// == Culling/Prerendering Prototypes ==
 
@@ -105,13 +115,16 @@ public:
 	// When implementing your own overrides, only return the amount of passes for one pipeline.
 	// If there is both a deferred and a forward set of shaders, but the pipeline is deferred, only the deferred pass will be used.
 	// If this returns zero, the renderer will instead pull directly from the forward pass list in the material.
-	RENDER_API virtual uchar				GetPassNumber ( void );
+	/*RENDER_API virtual uchar
+							GetPassNumber ( void );
 	//	GetPass : Return forward pass info
 	// Returns the associated pass. This is used for ordering.
-	RENDER_API virtual RrPassForward*		GetPass ( const uchar pass );
+	RENDER_API virtual RrPassForward*
+							GetPass ( const uchar pass );
 	//	GetPassDeferred : Return deferred pass info
 	// Returns the associated deferred rendering pass. This is used for ordering.
-	RENDER_API virtual RrPassDeferred*		GetPassDeferred ( const uchar pass );
+	RENDER_API virtual RrPassDeferred*
+							GetPassDeferred ( const uchar pass );*/
 
 
 private:
@@ -146,9 +159,11 @@ protected:
 	eRenderLayer			renderType;
 	//vector<RrMaterial*>	vMaterials;
 protected:
-	RrMaterial*				m_material;
+	//RrMaterial*				m_material;
 	bool					visible;
 private:
+	RrPass					m_passes [kPass_MaxPassCount];
+
 	//vector<renderer::new_passinfo_t>	m_passinfo;	
 	uint*		m_vao_info;
 	uint		m_vao_count;

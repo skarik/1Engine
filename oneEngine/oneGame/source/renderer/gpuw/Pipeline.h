@@ -3,6 +3,7 @@
 
 #include "core/types/types.h"
 #include "renderer/types/types.h"
+#include "renderer/gpuw/Public/Formats.h"
 
 namespace gpu
 {
@@ -12,23 +13,6 @@ namespace gpu
 	{
 		kInputRatePerVertex,
 		kInputRatePerInstance,
-	};
-
-	enum Format
-	{
-		kFormatUndefined,
-		kFormatR8UInteger,
-		kFormatR8G8UInteger,
-		kFormatR8G8B8UInteger,
-		kFormatR8G8B8A8UInteger,
-		kFormatR16UInteger,
-		kFormatR16G16UInteger,
-		kFormatR16G16B16UInteger,
-		kFormatR16G16B16A16UInteger,
-		kFormatR32SFloat,
-		kFormatR32G32SFloat,
-		kFormatR32G32B32SFloat,
-		kFormatR32G32B32A32SFloat,
 	};
 
 	struct VertexInputBindingDescription

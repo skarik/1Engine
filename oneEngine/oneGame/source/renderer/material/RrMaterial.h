@@ -19,32 +19,6 @@
 
 #include <vector>
 
-// todo: move elsewhere
-enum textureslot_t : uint8_t
-{
-	TEX_MAIN = 0,
-
-	TEX_SLOT0 = 0,
-	TEX_SLOT1 = 1,
-	TEX_SLOT2 = 2,
-	TEX_SLOT3 = 3,
-	TEX_SLOT4 = 4,
-	TEX_SLOT5 = 5,
-	TEX_SLOT6 = 6,
-	TEX_SLOT7 = 7,
-	TEX_SLOT8 = 8,
-	TEX_SLOT9 = 9,
-	TEX_SLOT10 = 10,
-	TEX_SLOT11 = 11,
-
-	TEX_DIFFUSE = 0,
-	TEX_NORMALS = 1,
-	TEX_SURFACE = 2,
-	TEX_OVERLAY = 3,
-
-	TEX_PALETTE = 0,
-};
-
 enum RrPassType
 {
 	kPassForward,

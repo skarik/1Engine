@@ -60,7 +60,7 @@ namespace renderer
 		kRL_MAX,
 	};
 	// Struct for pass info
-	struct passinfo_t
+	/*struct passinfo_t
 	{
 		unsigned char pass;
 		unsigned char userpass;
@@ -70,11 +70,11 @@ namespace renderer
 	{
 		uint8_t		pass;
 		uint32_t	vaoObject;
-	};
+	};*/
 
 	//	eClearType - buffer clear type
 	// Is not used as certain hard-coded clear types in certain cases have better GPU performance.
-	enum eClearType : uint8_t
+	enum rrClearType : uint8_t
 	{
 		kClearNone			= 0x00,
 		kClearColor			= 0x01,
@@ -82,34 +82,39 @@ namespace renderer
 		kClearDepthAndColor	= 0x01 | 0x02,
 	};
 
-	enum eAlphaMode : uint8_t
+	enum rrAlphaMode : uint8_t
 	{
-		ALPHAMODE_NONE		= 0,
-		ALPHAMODE_ALPHATEST	= 1,
-		ALPHAMODE_TRANSLUCENT=2
+		kAlphaModeNone			= 0x00,
+		kAlphaModeAlphatest		= 0x01,
+		kAlphaModeTranslucent	= 0x02,
 	};
 
-	enum eDrawBlendMode : uint8_t
+	enum rrHLBlendMode : uint8_t
 	{
-		BM_NORMAL = 0,
-		BM_ADD,
-		BM_INV_MULTIPLY,
-		BM_MULTIPLY,
-		BM_MULTIPLY_X2,
-		BM_SOFT_ADD,
-		BM_NONE
+		kHLBlendModeNone		= 0xFF,
+		kHLBlendModeNormal		= 0x00,
+		kHLBlendModeAdd,
+		kHLBlendModeInvMultiply,
+		kHLBlendModeMultiply,
+		kHLBlendModeMultiplyX2,
+		kHLBlendModeSoftAdd,
 	};
-	enum eDrawLightingMode : uint8_t
+	enum rrHLLightMode : uint8_t
 	{
-		LI_NONE = uchar(-1),
-		LI_NORMAL = 0,
-		LI_SKIN
+		kHLLightModeNone	= 0xFF,
+		kHLLightModeNormal	= 0x00,
 	};
-	enum eDrawFaceMode : uint8_t
+	/*enum eDrawFaceMode : uint8_t
 	{
 		FM_FRONT = 0,
 		FM_BACK,
 		FM_FRONTANDBACK
+	};*/
+	enum rrCullMode : uint8_t
+	{
+		kCullNone			= 0x00,
+		kCullBackface		= 0x01,
+		kCullFrontface		= 0x02,
 	};
 
 	//	ePipelineMode - Current sublevel pipeline in use.
@@ -145,7 +150,7 @@ namespace renderer
 		RrMaterial*		mats_default_skin	[kRenderHintCOUNT];
 		RrMaterial*		mats_transparent	[kRenderHintCOUNT];
 		RrMaterial*		mats_transparent_skin[kRenderHintCOUNT];
-		eClearType		clear_type			[kRenderHintCOUNT];
+		rrClearType		clear_type			[kRenderHintCOUNT];
 		Color			clear_color			[kRenderHintCOUNT];
 
 		_n_hint_rendering_information ( void );
