@@ -186,6 +186,9 @@
     <ClCompile Include="source\core-ext\resources\IArResourceSubsystem.cpp">
       <Filter>SOURCE\Core-ext\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="source\core-ext\system\shell\Message.cpp">
+      <Filter>SOURCE\Core-ext\System\Shell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -316,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\resources\IArResourceSubsystem.h">
       <Filter>SOURCE\Core-ext\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\shell\Message.h">
+      <Filter>SOURCE\Core-ext\System\Shell</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

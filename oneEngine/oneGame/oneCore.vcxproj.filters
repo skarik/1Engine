@@ -403,6 +403,12 @@
     <ClInclude Include="source\core\math\hash.h">
       <Filter>SOURCE\Core\Math</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\math\vect4d_template.h">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\mem.h">
+      <Filter>SOURCE\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">
@@ -491,6 +497,9 @@
     </ClCompile>
     <ClCompile Include="source\core\utils\string.cpp">
       <Filter>SOURCE\Core\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\vect4d_template.cpp">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

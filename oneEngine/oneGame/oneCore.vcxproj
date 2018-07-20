@@ -226,10 +226,12 @@
     <ClInclude Include="source\core\math\Rotator.h" />
     <ClInclude Include="source\core\math\vect2d_template.h" />
     <ClInclude Include="source\core\math\vect3d_template.h" />
+    <ClInclude Include="source\core\math\vect4d_template.h" />
     <ClInclude Include="source\core\math\Vector2d.h" />
     <ClInclude Include="source\core\math\Vector3d.h" />
     <ClInclude Include="source\core\math\Vector4d.h" />
     <ClInclude Include="source\core\math\XTransform.h" />
+    <ClInclude Include="source\core\mem.h" />
     <ClInclude Include="source\core\os.h" />
     <ClInclude Include="source\core\system\CMemoryMonitor.h" />
     <ClInclude Include="source\core\system\CMemoryMonitorWin32.h" />
@@ -275,6 +277,7 @@
     <ClCompile Include="source\core\math\Rotator.cpp" />
     <ClCompile Include="source\core\math\vect2d_template.cpp" />
     <ClCompile Include="source\core\math\vect3d_template.cpp" />
+    <ClCompile Include="source\core\math\vect4d_template.cpp" />
     <ClCompile Include="source\core\math\Vector2d.cpp" />
     <ClCompile Include="source\core\math\Vector3d.cpp" />
     <ClCompile Include="source\core\math\Vector4d.cpp" />

@@ -17,7 +17,6 @@
 
 // Include physics
 #include "physical/module_physical.h"
-//#include "physical/physics/CPhysics.h"
 #include "physical/physics/PrPhysics.h"
 
 // Include gamestate
@@ -28,7 +27,7 @@
 // Include renderer
 #include "renderer/camera/CCamera.h"
 #include "renderer/module_renderer.h"
-#include "renderer/window/RrWindow.h"
+#include "renderer/windowing/RrWindow.h"
 #include "renderer/state/CRenderState.h"
 #include "renderer/utils/glScreenshot.h"
 
@@ -58,18 +57,24 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	CInput::Initialize();
 
 	// Create Window
-	RrWindow aWindow( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
+	RrWindow aWindow ( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
+	if (!aWindow.Show())
+	{
+		debug::Console->PrintError( "Could not show windowing system.\n" );
+		abort();
+	}
 	debug::Console->PrintMessage( "Windowing system initialized.\n" );
 	std::cout << __OS_STRING_NAME__ " Build (" __DATE__ ") Indev" << std::endl;
-	
+
 	// Set shell status (loading engine)
-	core::shell::SetTaskbarProgressHandle(aWindow.GetShellHandle());
+	core::shell::SetTaskbarProgressHandle(aWindow.OsShellHandle());
 	core::shell::SetTaskbarProgressValue(NIL, 100, 100);
 	core::shell::SetTaskbarProgressState(NIL, core::shell::kTaskbarStateIndeterminate);
 
 	// Create Renderstate
-	CRenderState aRenderer (NULL); // passing null creates default resource manager
-	aWindow.mRenderer = &aRenderer; // Set the window's renderer (multiple possible render states)
+	CRenderState* aRenderer = new CRenderState(NULL); // passing null creates default resource manager
+	//aWindow.mRenderer = &aRenderer; // Set the window's renderer (multiple possible render states)
+	aWindow.AttachRenderer(aRenderer); // Set the window's renderer (multiple possible render states)
 
 	// Init Physics
 	PrPhysics::Active()->Initialize();
@@ -172,6 +177,10 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	CInput::Free();
 	// Free resources
 	core::ArResourceManager::FreeInstance();
+
+	// Free the renderer last now
+	delete aRenderer;
+	aWindow.Close();
 
 	return 0;
 }

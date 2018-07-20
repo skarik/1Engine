@@ -58,6 +58,7 @@
     <ClCompile Include="source\core-ext\system\io\mccvxg.cpp" />
     <ClCompile Include="source\core-ext\system\io\Resources.cpp" />
     <ClCompile Include="source\core-ext\system\shell\DragAndDrop.cpp" />
+    <ClCompile Include="source\core-ext\system\shell\Message.cpp" />
     <ClCompile Include="source\core-ext\system\shell\Status.cpp" />
     <ClCompile Include="source\core-ext\threads\Jobs.cpp" />
     <ClCompile Include="source\core-ext\transform\Transform.cpp" />
@@ -104,6 +105,7 @@
     <ClInclude Include="source\core-ext\system\io\mccvxg.h" />
     <ClInclude Include="source\core-ext\system\io\Resources.h" />
     <ClInclude Include="source\core-ext\system\shell\DragAndDrop.h" />
+    <ClInclude Include="source\core-ext\system\shell\Message.h" />
     <ClInclude Include="source\core-ext\system\shell\Status.h" />
     <ClInclude Include="source\core-ext\threads\Jobs.h" />
     <ClInclude Include="source\core-ext\transform\Transform.h" />

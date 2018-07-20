@@ -16,6 +16,9 @@
 #include "renderer/types/RrObjectMaterialProperties.h"
 #include "renderer/types/ObjectSettings.h"
 
+#include "renderer/material/RrPass.h"
+#include "renderer/gpuw/Pipeline.h"
+
 //#include "CCamera.h"
 
 // Class prototypes
@@ -163,26 +166,32 @@ protected:
 	bool					visible;
 private:
 	RrPass					m_passes [kPass_MaxPassCount];
+	bool					m_passEnabled [kPass_MaxPassCount];
 
 	//vector<renderer::new_passinfo_t>	m_passinfo;	
-	uint*		m_vao_info;
+	/*uint*		m_vao_info;
 	uint		m_vao_count;
 	uint		m_vao_maxcount;
 
 	RENDER_API void PassinfoClear ( void );
 	RENDER_API void PassinfoGenerate ( void );
+	
+	RENDER_API void PassinfoRegenerate ( void );*/
 
-	RENDER_API void PassinfoRegenerate ( void );
+	gpu::Pipeline			m_pipelines [kPass_MaxPassCount];
+	bool					m_pipelineReady [kPass_MaxPassCount];
 
 protected:
 	// ==Render Setup==
 	
 	// BindVAO()
 	// Must be called after the vertex buffer is bound, as will bind materials to render.
-	RENDER_API bool BindVAO ( const uchar pass, const uint vbo, const uint eab=0, const bool userDefinedAttribs=false );
+	//RENDER_API bool BindVAO ( const uchar pass, const uint vbo, const uint eab=0, const bool userDefinedAttribs=false );
+	RENDER_API gpu::Pipeline*
+							GetPipeline ( const uchar pass );
 
 	// ==Render Status==
-	RENDER_API float GetRenderDistance ( void );
+	RENDER_API float		GetRenderDistance ( void );
 
 	// ==Materials==
 	// Clears up the entire material list.

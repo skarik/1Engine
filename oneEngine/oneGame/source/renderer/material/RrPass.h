@@ -10,9 +10,18 @@
 
 enum rrPassType
 {
+	// World pass, forward rendered.
 	kPassTypeForward,
+	// World pass, deferred rendered.
 	kPassTypeDeferred,
-	kPassTypeShaderColorOverride,
+	// World pass, volume fog. 
+	// Uses the depth prepass to set up.
+	kPassTypeVolumeFog,
+	// World pass, warp.
+	// Uses the depth prepass to set up.
+	kPassTypeWarp,
+	// System pass, lighting shadows, forward rendered.
+	kPassTypeShadowColorOverride,
 };
 
 class RrShaderProgram;
