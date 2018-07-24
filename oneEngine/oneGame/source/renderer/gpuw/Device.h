@@ -12,14 +12,20 @@ namespace gpu
 {
 	class Fence;
 	class ComputeContext;
+	class OutputSurface;
 
 	class Device
 	{
 	public:
 		// Non-exposed API for creating device.
-		explicit				Device ( void );
+		explicit				Device ( intptr_t module_handle, intptr_t module_window );
 		// Non-exposed API for destroying device.
 								~Device ( void );
+
+		// Non-exposed API for initializing the device.
+		int						create ( void );
+		// Non-exposed API for refreshing the device
+		int						refresh ( intptr_t module_handle, intptr_t module_window );
 
 		//	DeviceSetFillMode( device, fillMode ) : Set device's fill mode.
 		// Controls how to fill polygons for given device. (glPolygonMode in OpenGL)
@@ -30,6 +36,13 @@ namespace gpu
 		RENDER_API GraphicsContext*	getContext ( void );
 
 		RENDER_API ComputeContext*	getComputeContext ( void );
+
+	private:
+		friend OutputSurface;
+		intptr_t	mw_module;
+		intptr_t	mw_window;
+		intptr_t	mw_deviceContext;
+		intptr_t	mw_renderContext;
 	};
 
 	RENDER_API Device* getDevice ( void );

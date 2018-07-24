@@ -62,6 +62,7 @@
     <ClCompile Include="source\renderer\gpuw\Fence.cpp" />
     <ClCompile Include="source\renderer\gpuw\GraphicsContext.cpp" />
     <ClCompile Include="source\renderer\gpuw\GraphicsContext.draw.cpp" />
+    <ClCompile Include="source\renderer\gpuw\OutputSurface.cpp" />
     <ClCompile Include="source\renderer\gpuw\Pipeline.cpp" />
     <ClCompile Include="source\renderer\gpuw\RenderTargets.cpp" />
     <ClCompile Include="source\renderer\gpuw\Shader.cpp" />

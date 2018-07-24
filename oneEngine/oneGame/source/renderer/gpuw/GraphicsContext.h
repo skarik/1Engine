@@ -2,8 +2,9 @@
 #define GPU_WRAPPER_GRAPHICS_CONTEXT_H_
 
 #include "core/types.h"
-#include <stdint.h>
 #include "renderer/gpuw/Public/Enums.h"
+#include "renderer/gpuw/Public/ShaderTypes.h"
+#include <stdint.h>
 
 namespace gpu
 {
@@ -77,6 +78,11 @@ namespace gpu
 	class Pipeline;
 	class Fence;
 	class VertexBuffer;
+	class ConstantBuffer;
+	class Sampler;
+	class Texture;
+	class Buffer;
+	class RenderTarget;
 
 	class GraphicsContext
 	{
@@ -84,6 +90,8 @@ namespace gpu
 		RENDER_API int			reset ( void );
 
 		RENDER_API int			submit ( void );
+
+		RENDER_API int			validate ( void );
 
 		//	DeviceSetFillMode( device, fillMode ) : Set device's fill mode.
 		// Controls how to fill polygons for given device. (glPolygonMode in OpenGL)
@@ -98,12 +106,23 @@ namespace gpu
 		RENDER_API int			setViewport ( uint32_t left, uint32_t top, uint32_t right, uint32_t bottom );
 		RENDER_API int			setScissor ( uint32_t left, uint32_t top, uint32_t right, uint32_t bottom );
 
+		RENDER_API int			setRenderTarget ( RenderTarget* renderTarget );
+
 		RENDER_API int			setPipeline ( Pipeline* pipeline );
 		RENDER_API int			setVertexBuffer ( VertexBuffer* buffer );
+		RENDER_API int			setShaderCBuffer ( ShaderStage stage, ConstantBuffer* buffer );
+		RENDER_API int			setShaderSampler ( ShaderStage stage, Sampler* buffer );
+		RENDER_API int			setShaderSamplerAuto ( ShaderStage stage, Texture* buffer );
+		RENDER_API int			setShaderResource ( ShaderStage stage, Buffer* buffer );
+
+		RENDER_API int			setPrimitiveTopology ( PrimitiveTopology topology );
 
 		RENDER_API int			draw ( const uint32_t vertexCount, const uint32_t startVertex );
 		RENDER_API int			drawIndexed ( const uint32_t indexCount, const uint32_t startIndex );
 		RENDER_API int			drawIndirect ( void );
+
+		RENDER_API int			clearDepthStencil ( bool clearDepth, float depth, bool clearStencil, uint8_t stencil );
+		RENDER_API int			clearColor ( float* rgbaColor );
 
 		RENDER_API int			sync ( Fence* fence );
 
@@ -111,6 +130,7 @@ namespace gpu
 		RasterizerState			m_rasterState;
 		BlendCollectiveState	m_blendCollectState;
 		DepthStencilState		m_depthStencilState;
+		PrimitiveTopology		m_primitiveType;
 
 		Pipeline*				m_pipeline;
 		bool					m_pipelineBound;

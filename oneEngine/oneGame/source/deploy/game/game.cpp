@@ -73,7 +73,6 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 
 	// Create Renderstate
 	CRenderState* aRenderer = new CRenderState(NULL); // passing null creates default resource manager
-	//aWindow.mRenderer = &aRenderer; // Set the window's renderer (multiple possible render states)
 	aWindow.AttachRenderer(aRenderer); // Set the window's renderer (multiple possible render states)
 
 	// Init Physics
@@ -101,10 +100,6 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	// Set up engine component - GameInitialized is declared in OneGame and is game-specific.
 	GameInitialize();
 
-	// Create the debug drawers
-	//debug::CDebugDrawer debugDrawer;
-	//debug::CDebugRTInspector debugRTInspector;
-
 	// Create the game scene
 	CGameScene* pNewScene = CGameScene::NewScene<gmsceneSystemLoader>();
 	CGameScene::SceneGoto( pNewScene );
@@ -116,7 +111,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	// Start off the clock timer
 	Time::Init();
 	// Run main loop
-	while ( aWindow.canContinue() )
+	while ( !aWindow.IsDone() )
 	{
 		// Only update when all the messages have been looked at
 		if ( aWindow.UpdateMessages() ) // (this returns true when messages done)
@@ -129,7 +124,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 			}
 			// Toggle fullscreen
 			if ( Input::Keydown( Keys.F4 ) ) {
-				aWindow.toggleFullscren();
+				aWindow.SetFullscreen(!aWindow.IsFullscreen());
 			}
 			// Take screenshot
 			if ( Input::Keydown( Keys.F11 ) ) {
@@ -149,17 +144,18 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 			TimeProfiler.EndTimeProfile( "MN_audio" );
 			// Redraw window
 			TimeProfiler.BeginTimeProfile( "MN_renderer" );
-			aWindow.Redraw();
+			//aWindow.Redraw();
+			aRenderer->Render();
 			TimeProfiler.EndTimeProfile( "MN_renderer" );
 			// Clear all inputs
 			Input::PreUpdate();
 		}
 		// Check for exiting type of input
-		if ( aWindow.isActive() )
+		if ( aWindow.IsActive() )
 		{
 			if ( ( aGameState.EndingGame() ) || ( Input::Key( Keys.Alt ) && Input::Keydown( Keys.F4 ) ) )
 			{
-				aWindow.sendEndMessage();
+				aWindow.PostEndMessage();
 			}
 		}
 	}

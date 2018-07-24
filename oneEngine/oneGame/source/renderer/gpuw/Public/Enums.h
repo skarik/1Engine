@@ -74,6 +74,21 @@ namespace gpu
 		kStencilOpIncrement,
 		kStencilOpDecrement,
 	};
+
+	enum PrimitiveTopology
+	{
+		kPrimitiveTopologyPointList,
+		kPrimitiveTopologyLineList,
+		kPrimitiveTopologyLineStrip,
+		kPrimitiveTopologyTriangleList,
+		kPrimitiveTopologyTriangleStrip,
+		kPrimitiveTopologyTriangleFan,
+		//kPrimitiveTopologyLineListAdjacency,
+		//kPrimitiveTopologyLineStripAdjacency,
+		//kPrimitiveTopologyTriangleListAdjacency,
+		//kPrimitiveTopologyTriangleStripAdjacency,
+		kPrimitiveTopologyLinePatchList,
+	};
 }
 
 #endif//GPU_WRAPPER_PUBLIC_ENUMS_H_

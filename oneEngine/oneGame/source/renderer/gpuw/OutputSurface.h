@@ -7,11 +7,15 @@
 
 namespace gpu
 {
+	class Device;
+	class RenderTarget;
 	class OutputSurface
 	{
 	public:
-		RENDER_API int			create ( void );
+		RENDER_API int			create ( Device* device );
 		RENDER_API int			destroy ( void );
+		RENDER_API RenderTarget*
+								getRenderTarget ( void );
 	};
 }
 

@@ -44,29 +44,6 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	Active = this;
 	SceneRenderer = this;
 
-	// Let's pull the device from the current window:
-	//mDevice = RrWindow::pActive->getDevicePointer();
-	mDevice = RrWindow::pActive->getGPUDevice();
-	// And pull out a graphics queue from the rendering device:
-	mGfxContext		= mDevice->getContext();
-	mComputeContext	= mDevice->getComputeContext();
-
-	// Set up default rendering targets
-	{
-		internal_settings.mainColorAttachmentCount = 4;
-		internal_settings.mainColorAttachmentFormat = core::gfx::tex::kColorFormatRGBA16F;
-		internal_settings.mainDepthFormat = core::gfx::tex::kDepthFormat32;
-		internal_settings.mainStencilFormat = core::gfx::tex::KStencilFormatIndex16;
-	}
-	// Set initial rendertarget states
-	{
-		/*internal_buffer_forward_rt = NULL;
-		internal_buffer_depth = 0;
-		internal_buffer_stencil = 0;*/
-		internal_chain_current = NULL;
-		internal_chain_index = 0;
-	}
-
 	// Create resource manager
 	/*if ( mResourceManager == NULL )
 	{
@@ -96,6 +73,35 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	mLoListSize		= 50; // Start with 50 logic slots
 	mLoCurrentIndex	= 0;
 	mLogicObjects.resize( mLoListSize, NULL );
+}
+
+void CRenderState::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::OutputSurface* surface )
+{
+	// Let's pull the device from the current window:
+	//mDevice = RrWindow::pActive->getDevicePointer();
+	//mDevice = RrWindow::pActive->getGPUDevice();
+	mDevice = device;
+	// Grab the surface
+	mOutputSurface	= surface;
+	// And pull out a graphics queue from the rendering device:
+	mGfxContext		= mDevice->getContext();
+	mComputeContext	= mDevice->getComputeContext();
+
+	// Set up default rendering targets
+	{
+		internal_settings.mainColorAttachmentCount = 4;
+		internal_settings.mainColorAttachmentFormat = core::gfx::tex::kColorFormatRGBA16F;
+		internal_settings.mainDepthFormat = core::gfx::tex::kDepthFormat32;
+		internal_settings.mainStencilFormat = core::gfx::tex::KStencilFormatIndex16;
+	}
+	// Set initial rendertarget states
+	{
+		/*internal_buffer_forward_rt = NULL;
+		internal_buffer_depth = 0;
+		internal_buffer_stencil = 0;*/
+		internal_chain_current = NULL;
+		internal_chain_index = 0;
+	}
 
 	// Create default textures
 	{
@@ -129,7 +135,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		renderer::Resources::AddTexture(renderer::TextureGrayA0, gray0_texture);
 		gray0_texture->RemoveReference();
 	}
-	
+
 	// Create the default material
 	if ( RrMaterial::Default == NULL )
 	{
@@ -180,12 +186,6 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		CopyScaled->passinfo[0].b_depthtest = false;
 	}
 
-	bSpecialRender_ResetLights = false;
-
-	// Create the debug tools
-	new debug::CDebugDrawer;
-	new debug::CDebugRTInspector;
-
 	// Create the passes for rendering the screen:
 	{
 		LightingPass = new RrMaterial();
@@ -218,7 +218,13 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 		Lighting2DPass->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
 	}
 
+	bSpecialRender_ResetLights = false;
+
+	// Create the debug tools
+	new debug::CDebugDrawer;
+	new debug::CDebugRTInspector;
 }
+
 
 // Class destructor
 //  sets pActive pointer to null
@@ -566,7 +572,7 @@ bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain 
 		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotDepth, &bufferChain.buffer_depth);
 		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &bufferChain.buffer_stencil);
 		// "Compile" the render target.
-		bufferChain.buffer_forward_rt.compile();
+		bufferChain.buffer_forward_rt.assemble();
 
 		// Check to make sure buffer is valid.
 		if (!bufferChain.buffer_forward_rt.valid())
@@ -597,7 +603,7 @@ bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain 
 		bufferChain.buffer_deferred_rt.attach(gpu::kRenderTargetSlotDepth, &bufferChain.buffer_depth);
 		bufferChain.buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &bufferChain.buffer_stencil);
 		// "Compile" the render target.
-		bufferChain.buffer_deferred_rt.compile();
+		bufferChain.buffer_deferred_rt.assemble();
 
 		// TODO: Make configurable
 		/*RrGpuTexture textureRequests [4];
@@ -628,7 +634,7 @@ bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain 
 		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotDepth, &bufferChain.buffer_depth);
 		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &bufferChain.buffer_stencil);
 		// "Compile" the render target.
-		bufferChain.buffer_forward_rt.compile();
+		bufferChain.buffer_forward_rt.assemble();
 
 		// Check to make sure buffer is valid.
 		if (!bufferChain.buffer_deferred_mrt.valid())

@@ -12,6 +12,11 @@ namespace gpu
 		kErrorOutOfMemory,
 		kErrorNullReference,
 		kErrorBadArgument,
+		kErrorInvalidDevice,
+		kErrorInvalidModule,
+		kErrorModuleUnsupported,
+		kErrorFormatUnsupported,
+		kErrorDeviceError,
 	};
 
 };

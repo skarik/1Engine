@@ -4,6 +4,7 @@
 #include "core/types/types.h"
 #include "renderer/types/types.h"
 #include "renderer/gpuw/Public/Formats.h"
+#include "renderer/gpuw/Public/Enums.h"
 
 namespace gpu
 {
@@ -28,21 +29,6 @@ namespace gpu
 		uint32_t    binding;
 		Format		format;
 		uint32_t    offset;
-	};
-
-	enum PrimitiveTopology
-	{
-		kPrimitiveTopologyPointList,
-		kPrimitiveTopologyLineList,
-		kPrimitiveTopologyLineStrip,
-		kPrimitiveTopologyTriangleList,
-		kPrimitiveTopologyTriangleStrip,
-		kPrimitiveTopologyTriangleFan,
-		//kPrimitiveTopologyLineListAdjacency,
-		//kPrimitiveTopologyLineStripAdjacency,
-		//kPrimitiveTopologyTriangleListAdjacency,
-		//kPrimitiveTopologyTriangleStripAdjacency,
-		kPrimitiveTopologyLinePatchList,
 	};
 	
 	struct PipelineCreationDescription

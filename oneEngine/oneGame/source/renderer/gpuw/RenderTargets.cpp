@@ -1,5 +1,6 @@
 #include "renderer/gpuw/RenderTargets.h"
 #include "renderer/gpuw/Error.h"
+#include "renderer/ogl/GLCommon.h"
 
 int gpu::RenderTarget::create ( Device* device )
 {
@@ -59,7 +60,7 @@ int gpu::RenderTarget::attach ( int slot, WOFrameAttachment* buffer )
 	return 0;
 }
 
-bool gpu::RenderTarget::compile ( void )
+bool gpu::RenderTarget::assemble ( void )
 {
 	GLenum status = glCheckNamedFramebufferStatus( m_framebuffer );
 	if (status != GL_FRAMEBUFFER_COMPLETE)

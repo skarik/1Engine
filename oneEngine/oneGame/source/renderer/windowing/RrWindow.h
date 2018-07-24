@@ -4,6 +4,7 @@
 #include "core/os.h"
 #include "core/types.h"
 #include "core/math/vect2d_template.h"
+#include "renderer/gpuw/Device.h"
 #include "renderer/gpuw/OutputSurface.h"
 #include <vector>
 
@@ -41,23 +42,52 @@ public:
 
 	// Does this window have focus?
 	RENDER_API bool isActive ( void );*/
+	
+	// Setup
+	// ================================
+
 	RENDER_API bool			Show ( void );
 	RENDER_API bool			Close ( void );
-
-
 	RENDER_API bool			AttachRenderer ( CRenderState* renderer );
+	RENDER_API bool			Resize ( int width, int height );
+
+	RENDER_API bool			SetFullscreen ( bool fullscreen );
+	RENDER_API bool			IsFullscreen ( void );
+
+
+	// State update
+	// ================================
+
+	RENDER_API bool			UpdateMessages ( void );
+	RENDER_API bool			IsDone ( void );
+	RENDER_API bool			IsActive ( void );
+
+	RENDER_API void			PostEndMessage ( void );
+	RENDER_API void			PostRedrawMessage ( void );
+
+
+	// Platform specific getters
+	// ================================
 
 	//	OsHasFocus() : Does this window have focus?
 	RENDER_API bool			OsHasFocus ( void );
 
 	//	OsShellHandle() : Returns the OS handle of this window representation
 	RENDER_API intptr_t		OsShellHandle ( void )
-		{ return (intptr_t)hWnd; }
+		{ return (intptr_t)mw_window; }
 
 	//	OsDevice() : Returns the OS handle of the device this window is on
-	RENDER_API intptr_t		OsDevice ( void )
-		{ return (intptr_t)hDC; }
+	//RENDER_API intptr_t		OsDevice ( void )
+	//	{ return (intptr_t)mw_devicecontext; }
 
+	//	GpuDevice() : Returns the GPU device this renderer is using.
+	RENDER_API gpu::Device*	GpuDevice ( void )
+		{ return m_device; }
+
+
+	// Static Calls
+	// ================================
+	
 	//	List() : Returns list of active windows.
 	RENDER_API static std::vector<RrWindow*>
 							List ( void )
@@ -81,15 +111,15 @@ private:
 	void					CreateConsole ( void );
 	void					RegisterInput ( void ); // windows thing where we register input devices
 
-	void CreateGfxInstance ( void );
-	void CreateGfxSurface ( void );
-	void CreateGfxSwapchain ( void );
+	void					CreateGfxInstance ( void );
+	void					CreateGfxSurface ( void );
+	void					CreateGfxSwapchain ( void );
 
-	void DestroyScreen ( void );
-	void DestroyGfxInstance ( void );
-	void DestroyGfxSurface ( void );
+	void					DestroyScreen ( void );
+	void					DestroyGfxInstance ( void );
+	void					DestroyGfxSurface ( void );
 
-	static void ReSizeGLScene( GLsizei width, GLsizei height );
+	/*static void ReSizeGLScene( GLsizei width, GLsizei height );
 
 	int InitGL( void );
 
@@ -107,7 +137,7 @@ private:
 	//eReturnStatus	CreateBuffer ( void );
 
 
-	eReturnStatus	ErrorOut( const char* message );
+	eReturnStatus	ErrorOut( const char* message );*/
 	//void showFailureMessage ( char* message );
 private:
 	static std::vector<RrWindow*>	m_windows;
@@ -131,8 +161,8 @@ private:
 	int			mw_cmdshow;
 
 	HWND		mw_window;
-	HDC			mw_devicecontext;
-	HGLRC		mw_rendercontext;
+	//HDC			mw_devicecontext;
+	//HGLRC		mw_rendercontext;
 
 	// OS:
 
@@ -148,6 +178,7 @@ private:
 	// Gfx:
 
 	CRenderState*		m_renderer;
+	gpu::Device*		m_device;
 	gpu::OutputSurface	m_surface;
 
 	// Windows Message Loop
@@ -155,6 +186,7 @@ private:
 	bool	done;
 	bool	active;
 	bool	focused;
+	bool	hiddencursor;
 
 	// Rendering
 	//RrRenderTexture*	pSbuf;	// Main screen buffer owned by the window

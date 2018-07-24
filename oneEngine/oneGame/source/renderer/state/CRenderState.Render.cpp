@@ -1,4 +1,3 @@
-
 // Std Libary (render sorting)
 #include <algorithm>
 using std::sort;
@@ -22,10 +21,13 @@ using std::sort;
 #include "renderer/material/RrMaterial.h"
 #include "renderer/object/CRenderableObject.h"
 
-#include "renderer/resource/CResourceManager.h"
+#include "renderer/gpuw/Pipeline.h"
+#include "renderer/gpuw/ShaderPipeline.h"
+#include "renderer/gpuw/OutputSurface.h"
+#include "renderer/material/RrPass.h"
+#include "renderer/material/RrShaderProgram.h"
 
-#include "renderer/system/glMainSystem.h"
-#include "renderer/system/glDrawing.h"
+#include "renderer/resource/CResourceManager.h"
 
 using namespace renderer;
 
@@ -33,10 +35,8 @@ using namespace renderer;
 // CRenderState: Rendering
 //===============================================================================================//
 
-// Called during the window's rendering routine.
-void CRenderState::Render ( void )
+void CRenderState::StepPreRender ( void )
 {
-	GL_ACCESS GLd_ACCESS
 	unsigned int i;
 
 	// Begin the logic jobs
@@ -65,12 +65,127 @@ void CRenderState::Render ( void )
 	for ( i = 0; i < CCamera::vCameraList.size(); ++i )
 	{
 		CCamera* currentCamera = CCamera::vCameraList[i];
-		if ( currentCamera != NULL ) {
+		if ( currentCamera != NULL )
+		{
 			CCamera::vCameraList[i]->LateUpdate();
 		}
 	}
+}
+
+void CRenderState::StepPostRender ( void )
+{
+	unsigned int i;
+
+	// Call end render
+	TimeProfiler.BeginTimeProfile( "rs_end_render" );
+	for ( i = 0; i < iCurrentIndex; i += 1 )
+	{
+		if ( pRenderableObjects[i] ) {
+			pRenderableObjects[i]->EndRender();
+		}
+	}
+	TimeProfiler.EndTimeProfile( "rs_end_render" );
+
+	// Begin the post-step render jobs
+	for ( i = 0; i < mLoCurrentIndex; ++i ) {
+		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
+			Jobs::System::Current::AddJobRequest( Jobs::kJobTypeRenderStep, &(CLogicObject::PostStep), mLogicObjects[i] );
+		}
+	}
+	// Perform the synchronous logic jobs
+	for ( i = 0; i < mLoCurrentIndex; ++i ) {
+		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
+			mLogicObjects[i]->PostStepSynchronus();
+		}
+	}
+}
+
+void CRenderState::StepBufferPush ( void )
+{
+	gpu::GraphicsContext* gfx = mGfxContext;
+
+	// Are we in buffer mode? (This should always be true)
+	TimeProfiler.BeginTimeProfile( "rs_buffer_push" );
+	if ( bufferedMode )
+	{
+		// Render the current result to the screen
+		gfx->setRenderTarget(mOutputSurface->getRenderTarget());
+		gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
+		//GL.setupViewport(0, 0, internal_chain_current->buffer_forward_rt->GetWidth(), internal_chain_current->buffer_forward_rt->GetHeight());
+		{
+			/*
+			// Set the current main screen buffer as the texture
+			RrMaterial::Copy->setTexture( TEX_MAIN, internal_chain_current->buffer_forward_rt );
+			//RrMaterial::Copy->prepareShaderConstants(NULL);
+			RrMaterial::Copy->bindPassForward(0);
+
+			// Set up an always-rendered
+			glStencilMask( GL_FALSE );
+			glDepthMask( GL_FALSE );
+
+			glDisable( GL_STENCIL_TEST );
+			glDisable( GL_DEPTH_TEST );
+
+			glDisable( GL_BLEND );
+			glBlendFunc( GL_ONE, GL_ZERO );
+
+			GLd.DrawScreenQuad(RrMaterial::Copy);
+			*/
+
+			gpu::DepthStencilState ds;
+			ds.depthTestEnabled = false;
+			ds.depthWriteEnabled = false;
+			ds.stencilTestEnabled = false;
+			ds.stencilWriteMask = 0x00;
+			gfx->setDepthStencilState(ds);
+
+			gpu::BlendState bs;
+			bs.enable = false;
+			bs.src = gpu::kBlendModeOne;
+			bs.dst = gpu::kBlendModeZero;
+			bs.srcAlpha = gpu::kBlendModeOne;
+			bs.dstAlpha = gpu::kBlendModeZero;
+			gfx->setBlendState(bs);
+
+			gfx->setPipeline(m_pipelineScreenQuad);
+			gfx->setVertexBuffer(m_bufferScreenQuad);
+			//gfx->setShaderResource(gpu::kShaderStagePs, internal_chain_current->buffer_forward_rt);
+			gfx->setShaderSamplerAuto(gpu::kShaderStagePs, internal_chain_current->buffer_forward_rt.getAttachment(gpu::kRenderTargetSlotColor0));
+			gfx->setPrimitiveTopology(gpu::kPrimitiveTopologyTriangleStrip);
+			gfx->draw(4, 0);
+		}
+		//GL.popModelMatrix();
+
+		// Clear out the buffer now that we no longer need it.
+		/*internal_chain_current->buffer_forward_rt->BindBuffer();
+		{
+			glStencilMask( GL_TRUE );
+			glDepthMask( GL_TRUE );
+			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+		}
+		internal_chain_current->buffer_forward_rt->UnbindBuffer();*/
+
+		gfx->setRenderTarget(&internal_chain_current->buffer_forward_rt);
+		gfx->clearDepthStencil(true, 1.0F, true, 0x00);
+		float clearColor[] = {0,0,0,0};
+		gfx->clearColor(clearColor);
+
+	}
+	TimeProfiler.EndTimeProfile( "rs_buffer_push" );
+}
+
+// Called during the window's rendering routine.
+void CRenderState::Render ( void )
+{
+	gpu::GraphicsContext* gfx = mGfxContext;
+	unsigned int i;
+
+	// Update pre-render steps.
+	StepPreRender();
+
 	// Check for a main camera to work with
-	if ( CCamera::activeCamera == NULL ) {
+	if ( CCamera::activeCamera == NULL )
+	{
 		return; // Don't render if there's no camera to render with...
 	}
 	mainBufferCamera = CCamera::activeCamera;
@@ -118,10 +233,9 @@ void CRenderState::Render ( void )
 
 	// Prepare frame
 	TimeProfiler.BeginTimeProfile( "rs_present" );
-	GL.BeginFrame();
+	//GL.BeginFrame();
+	gfx->reset();
 	TimeProfiler.EndTimeProfile( "rs_present" );
-	// Clear Screen And Depth Buffer
-	//GL.ClearBuffer();	
 	
 	// Loop through all cameras (todo: sort render order for each camera)
 	TimeProfiler.BeginTimeProfile( "rs_camera_matrix" );
@@ -130,7 +244,8 @@ void CRenderState::Render ( void )
 	{
 		CCamera* currentCamera = *it;
 		// Update the camera positions and matrices
-		if ( currentCamera->GetRender() ) {
+		if ( currentCamera->GetRender() )
+		{
 			currentCamera->UpdateMatrix();
 		}
 	}
@@ -141,11 +256,13 @@ void CRenderState::Render ( void )
 		// Meaning, resort the camera list
 		for ( auto it = CCamera::vCameraList.begin(); it != CCamera::vCameraList.end(); )
 		{
-			if ( *it == prevActiveCam ) {
+			if ( *it == prevActiveCam )
+			{
 				it = CCamera::vCameraList.erase(it);
 				CCamera::vCameraList.insert( CCamera::vCameraList.begin(), prevActiveCam );
 			}
-			else {
+			else
+			{
 				++it;
 			}
 		}
@@ -153,7 +270,6 @@ void CRenderState::Render ( void )
 	}
 	TimeProfiler.EndTimeProfile( "rs_camera_matrix" );
 	
-
 	// Loop through all cameras:
 	TimeProfiler.BeginTimeProfile( "rs_render" );
 	for ( std::vector<CCamera*>::reverse_iterator it = CCamera::vCameraList.rbegin(); it != CCamera::vCameraList.rend(); ++it )
@@ -166,14 +282,15 @@ void CRenderState::Render ( void )
 			// Perform sorting now
 			for ( i = 0; i < iCurrentIndex; i += 1 )
 			{	// Put into it's own loop, since it's the same calculation across all objects
-				if ( pRenderableObjects[i] ) { 
+				if ( pRenderableObjects[i] )
+				{ 
 					pRenderableObjects[i]->UpdateRenderInfo();
 				}
 			}
 
 			// Render from camera
 			CCamera::activeCamera = currentCamera;
-			currentCamera->RenderScene();
+			currentCamera->RenderScene(); //todo: remove
 		}
 	}
 	TimeProfiler.EndTimeProfile( "rs_render" );
@@ -181,63 +298,19 @@ void CRenderState::Render ( void )
 	// Set active camera back to default
 	CCamera::activeCamera = prevActiveCam;
 
-
-	// Are we in buffer mode? (This should always be true)
-	TimeProfiler.BeginTimeProfile( "rs_buffer_push" );
-	if ( bufferedMode )
-	{
-		// Render the current result to the screen
-		GL.setupViewport(0, 0, internal_chain_current->buffer_forward_rt->GetWidth(), internal_chain_current->buffer_forward_rt->GetHeight());
-		//GL.pushModelMatrix( Matrix4x4() );
-		{
-			// Set the current main screen buffer as the texture
-			RrMaterial::Copy->setTexture( TEX_MAIN, internal_chain_current->buffer_forward_rt );
-			//RrMaterial::Copy->prepareShaderConstants(NULL);
-			RrMaterial::Copy->bindPassForward(0);
-
-			// Set up an always-rendered
-			glStencilMask( GL_FALSE );
-			glDepthMask( GL_FALSE );
-		
-			glDisable( GL_STENCIL_TEST );
-			glDisable( GL_DEPTH_TEST );
-
-			glDisable( GL_BLEND );
-			glBlendFunc( GL_ONE, GL_ZERO );
-
-			GLd.DrawScreenQuad(RrMaterial::Copy);
-		}
-		//GL.popModelMatrix();
-
-		// Clear out the buffer now that we no longer need it.
-		internal_chain_current->buffer_forward_rt->BindBuffer();
-		{
-			glStencilMask( GL_TRUE );
-			glDepthMask( GL_TRUE );
-			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-		}
-		internal_chain_current->buffer_forward_rt->UnbindBuffer();
-	}
-	TimeProfiler.EndTimeProfile( "rs_buffer_push" );
-
-
-	// Call end render
-	TimeProfiler.BeginTimeProfile( "rs_end_render" );
-	for ( i = 0; i < iCurrentIndex; i += 1 )
-	{
-		if ( pRenderableObjects[i] ) {
-			pRenderableObjects[i]->EndRender();
-		}
-	}
-	TimeProfiler.EndTimeProfile( "rs_end_render" );
-
+	// Push buffer to screen
+	StepBufferPush();
 
 	// Signal frame ended
-	GL.EndFrame();
+	//GL.EndFrame();
+	gfx->submit();
 
 	// Clear Screen And Depth Buffer
-	GL.ClearBuffer();
+	//GL.ClearBuffer();
 
+	// Call post-render and start up new jobs
+	StepPostRender();
+	
 	// Cycle the draw inputs
 	{
 		// Go to next input
@@ -246,23 +319,13 @@ void CRenderState::Render ( void )
 		internal_chain_current = &internal_chain_list[internal_chain_index];
 	}
 
-	// Begin the post-step render jobs
-	for ( i = 0; i < mLoCurrentIndex; ++i ) {
-		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
-			Jobs::System::Current::AddJobRequest( Jobs::kJobTypeRenderStep, &(CLogicObject::PostStep), mLogicObjects[i] );
-		}
-	}
-	// Perform the synchronous logic jobs
-	for ( i = 0; i < mLoCurrentIndex; ++i ) {
-		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
-			mLogicObjects[i]->PostStepSynchronus();
-		}
-	}
-
 	// Do error check at this point
-	if ( RrMaterial::Default->passinfo.size() > 16 ) throw std::exception();
-	GL.CheckError();
+	//if ( RrMaterial::Default->passinfo.size() > 16 ) throw std::exception();
+	//GL.CheckError();
+	gfx->validate();
 }
+
+
 
 // Normal rendering routine. Called by a camera. Camera passes in its render hint.
 // This function will render to the scene targets needed.

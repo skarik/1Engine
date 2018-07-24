@@ -706,6 +706,7 @@ void RrMaterial::bindPassForward ( uchar pass )
 	gfx->setRasterizerState(raster_state);
 	gfx->setBlendState(blend_state);
 	gfx->setDepthStencilState(ds_state);
+	gfx->setPipeline(passinfo[pass].m_pipeline);
 
 	// Bind shader
 	TimeProfiler.BeginTimeProfile( "rs_mat_bindshader" );

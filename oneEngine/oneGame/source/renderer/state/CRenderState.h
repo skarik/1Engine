@@ -84,12 +84,13 @@ public:
 	};
 
 public:
-	// Constructor and Destructor
+	// Constructor, Destructor, and Initialization
 	// ================================
 
-	RENDER_API CRenderState ( CResourceManager* nResourceManager );
-	RENDER_API ~CRenderState ( void );
+	RENDER_API explicit		CRenderState ( CResourceManager* nResourceManager );
+	RENDER_API				~CRenderState ( void );
 
+	void					InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::OutputSurface* surface );
 
 	// Buffer management
 	// ================================
@@ -107,7 +108,13 @@ public:
 	// Public Render routine
 	// ================================
 
+	// Performs internal render loop
 	RENDER_API void Render ( void );
+
+	// object state update
+	void StepPreRender ( void );
+	void StepBufferPush ( void );
+	void StepPostRender ( void );
 
 
 	// Full Scene Rendering Routines
@@ -164,6 +171,7 @@ public:
 
 	// Device & context
 	gpu::Device*			mDevice;
+	gpu::OutputSurface*		mOutputSurface;
 	gpu::GraphicsContext*	mGfxContext;
 	gpu::ComputeContext*	mComputeContext;
 

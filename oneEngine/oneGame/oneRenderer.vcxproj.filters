@@ -420,6 +420,9 @@
     <ClCompile Include="source\renderer\_window\RrWindowWin32.cpp">
       <Filter>SOURCE\Renderer\Window</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\OutputSurface.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
