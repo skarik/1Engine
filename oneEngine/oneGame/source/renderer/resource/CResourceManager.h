@@ -1,7 +1,7 @@
 //===============================================================================================//
 //	class CResourceManager
 // Class that performs main loading operations of renderer-used resources.
-// The current active one may be accessed with "CRenderState::Active->mResourceManager"
+// The current active one may be accessed with "RrRenderer::Active->mResourceManager"
 //===============================================================================================//
 
 #ifndef _C_RESOURCE_MANAGER_H_
@@ -16,7 +16,7 @@
 #include <thread>
 #include <atomic>
 
-class CRenderState;
+class RrRenderer;
 class RrTexture;
 
 //	struct resourceManagerSettings_t
@@ -37,7 +37,7 @@ struct resourceManagerSettings_t
 
 //	CResourceManager
 // Class that performs main loading operations of renderer-used resources.
-// The current active one may be accessed with "CRenderState::Active->mResourceManager"
+// The current active one may be accessed with "RrRenderer::Active->mResourceManager"
 class CResourceManager
 {
 public:
@@ -81,7 +81,7 @@ public:
 
 private:
 	// Allow the current rendering system to access this
-	friend CRenderState;
+	friend RrRenderer;
 	bool	m_renderStateOwned;
 	
 	//	struct resourceInfo_t

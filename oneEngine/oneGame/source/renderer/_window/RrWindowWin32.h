@@ -9,12 +9,12 @@
 #include <string.h>
 #include <tchar.h>
 
-/*#include "CRenderState.h"
+/*#include "RrRenderer.h"
 #include "CInput.h"
 #include "core/time.h"
 #include "CDebugConsole.h"*/
 
-class CRenderState;
+class RrRenderer;
 class RrRenderTexture;
 
 // Function definition
@@ -107,7 +107,7 @@ public:
 	static RrWindow* pActive;
 	static bool	keys[256];			// Array Used For The Keyboard Routine
 
-	CRenderState*	mRenderer;
+	RrRenderer*	mRenderer;
 
 
 private:

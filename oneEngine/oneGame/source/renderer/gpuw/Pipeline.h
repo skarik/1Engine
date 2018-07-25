@@ -18,16 +18,25 @@ namespace gpu
 
 	struct VertexInputBindingDescription
 	{
+		// binding index, the vbuffer goes here
 		uint32_t    binding;
+		// byte offset to the next element
 		uint32_t	stride;
+		// input increment rate for the element
 		InputRate	inputRate;
 	};
 
 	struct VertexInputAttributeDescription
 	{
+		// location in the shader to bind to
 		uint32_t    location;
+		// binding index, the vbuffer goes here
 		uint32_t    binding;
+		// attribute format.
+		// extra values will be ignored
+		// missing values will be padded GBA -> 0,0,1
 		Format		format;
+		// byte offset of the data
 		uint32_t    offset;
 	};
 	

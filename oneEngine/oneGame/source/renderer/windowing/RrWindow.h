@@ -10,7 +10,7 @@
 
 #ifdef _WIN32
 
-class CRenderState;
+class RrRenderer;
 
 // Class Definition
 class RrWindow
@@ -48,7 +48,7 @@ public:
 
 	RENDER_API bool			Show ( void );
 	RENDER_API bool			Close ( void );
-	RENDER_API bool			AttachRenderer ( CRenderState* renderer );
+	RENDER_API bool			AttachRenderer ( RrRenderer* renderer );
 	RENDER_API bool			Resize ( int width, int height );
 
 	RENDER_API bool			SetFullscreen ( bool fullscreen );
@@ -144,7 +144,7 @@ private:
 	//static RrWindow* pActive;
 	//static bool	keys[256];			// Array Used For The Keyboard Routine
 
-	//CRenderState*	mRenderer;
+	//RrRenderer*	mRenderer;
 
 private:
 	friend LRESULT CALLBACK MessageUpdate(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -177,7 +177,7 @@ private:
 
 	// Gfx:
 
-	CRenderState*		m_renderer;
+	RrRenderer*		m_renderer;
 	gpu::Device*		m_device;
 	gpu::OutputSurface	m_surface;
 

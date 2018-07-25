@@ -12,6 +12,7 @@ namespace gpu
 		kRenderTargetSlotStencil = -2,
 	};
 	class Device;
+	class Texture;
 	class RenderTarget
 	{
 	public:
@@ -29,6 +30,10 @@ namespace gpu
 		RENDER_API bool			valid ( void );
 
 		RENDER_API gpuHandle	nativePtr ( void );
+
+		RENDER_API Texture*		getAttachment ( int slot );
+		RENDER_API WOFrameAttachment*
+								getWOAttachment ( int slot );
 
 		// validates
 		RENDER_API int			assemble ( void );

@@ -6,7 +6,7 @@
 #include "core/math/Color.h"
 #include "core/gfx/textureFormats.h"
 
-class CRenderState;
+class RrRenderer;
 class RrMaterial;
 
 namespace renderer

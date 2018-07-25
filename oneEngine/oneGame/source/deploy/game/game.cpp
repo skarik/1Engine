@@ -28,7 +28,7 @@
 #include "renderer/camera/CCamera.h"
 #include "renderer/module_renderer.h"
 #include "renderer/windowing/RrWindow.h"
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/utils/glScreenshot.h"
 
 // Include engine-common
@@ -72,7 +72,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	core::shell::SetTaskbarProgressState(NIL, core::shell::kTaskbarStateIndeterminate);
 
 	// Create Renderstate
-	CRenderState* aRenderer = new CRenderState(NULL); // passing null creates default resource manager
+	RrRenderer* aRenderer = new RrRenderer(NULL); // passing null creates default resource manager
 	aWindow.AttachRenderer(aRenderer); // Set the window's renderer (multiple possible render states)
 
 	// Init Physics

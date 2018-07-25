@@ -132,9 +132,6 @@
     <ClCompile Include="source\renderer\camera\CRTCameraCube.cpp">
       <Filter>SOURCE\Renderer\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\state\CRenderState.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\state\Settings.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
@@ -345,12 +342,6 @@
     <ClCompile Include="source\renderer\system\glMainSystem.textures.cpp">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\state\CRenderState.Render.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\state\CRenderState.Sorters.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\gpuw\Device.cpp">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
@@ -423,6 +414,21 @@
     <ClCompile Include="source\renderer\gpuw\OutputSurface.cpp">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\material\RrPass.Presets.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\RrPipelinePasses.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\RrRenderer.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\RrRenderer.Sorters.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\RrRenderer.Render.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -445,9 +451,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\camera\CRTCameraCube.h">
       <Filter>SOURCE\Renderer\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\state\CRenderState.h">
-      <Filter>SOURCE\Renderer\State</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\state\Settings.h">
       <Filter>SOURCE\Renderer\State</Filter>
@@ -790,6 +793,15 @@
     </ClInclude>
     <ClInclude Include="source\renderer\gpuw\OutputSurface.h">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrPass.Presets.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\RrPipelinePasses.h">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\RrRenderer.h">
+      <Filter>SOURCE\Renderer\State</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

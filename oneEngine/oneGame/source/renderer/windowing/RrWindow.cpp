@@ -4,7 +4,7 @@
 #include "core/settings/CGameSettings.h"
 #include "core-ext/system/shell/Message.h"
 #include "core-ext/system/shell/DragAndDrop.h"
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/windowing/RrWindow.h"
 
 #include <shellapi.h>
@@ -280,10 +280,10 @@ void RrWindow::CreateGfxSurface ( void )
 void RrWindow::CreateGfxSwapchain ( void )
 {}
 
-bool RrWindow::AttachRenderer ( CRenderState* renderer )
+bool RrWindow::AttachRenderer ( RrRenderer* renderer )
 {
 	m_renderer = renderer;
-	m_renderer->InitializeWithDevice( this->m_device );
+	m_renderer->InitializeWithDeviceAndSurface( this->m_device, &this->m_surface );
 }
 
 

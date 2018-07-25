@@ -10,7 +10,7 @@
 
 #include "rrWindowWin32.h"
 #include "renderer/state/Settings.h"
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/texture/RrRenderTexture.h"
 
 #include "renderer/system/glMainSystem.h"
@@ -237,7 +237,7 @@ GLvoid RrWindow::ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Ini
 	Screen::Info.scale = height/720.0f;
 	Screen::Info.Update();
 
-	glViewport(0,0,Screen::Info.width,Screen::Info.height);			// Reset The Current Viewport (RUNS SEPARATE OGL INSTANCE FROM CRenderState_Render.cpp)
+	glViewport(0,0,Screen::Info.width,Screen::Info.height);			// Reset The Current Viewport (RUNS SEPARATE OGL INSTANCE FROM RrRenderer_Render.cpp)
 	printf( "vp: %x\n", wglGetCurrentContext() );
 
 	pActive->CreateBuffer();							// Reset the buffer

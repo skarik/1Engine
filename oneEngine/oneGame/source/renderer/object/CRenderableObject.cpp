@@ -1,5 +1,5 @@
 #include "renderer/exceptions/exceptions.h"
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "CRenderableObject.h"
@@ -12,7 +12,7 @@
 Vector3d CRenderableObject::_activeCameraPosition = Vector3d::zero;
 
 // ==Constructor
-//  adds render object to the list of RO in CRenderState
+//  adds render object to the list of RO in RrRenderer
 //  sets visibility to true
 CRenderableObject::CRenderableObject ( void )
 	: m_material(NULL), m_vao_info(NULL), m_vao_count(0), m_vao_maxcount(0)
@@ -29,11 +29,11 @@ CRenderableObject::CRenderableObject ( void )
 	CRenderableObject::SetMaterial( RrMaterial::Default );
 
 	renderType = renderer::kRLWorld;
-	id = CRenderState::Active->AddRO( this );
+	id = RrRenderer::Active->AddRO( this );
 	visible = true;
 }
 // ==Destructor
-//  removes render object from the list of RO in CRenderState
+//  removes render object from the list of RO in RrRenderer
 CRenderableObject::~CRenderableObject ( void )
 {
 	// Remove material reference
@@ -41,7 +41,7 @@ CRenderableObject::~CRenderableObject ( void )
 	// Remove VAOs
 	PassinfoClear();
 	//transform.RemoveReference();
-	CRenderState::Active->RemoveRO( id );
+	RrRenderer::Active->RemoveRO( id );
 }
 
 // == Private Setters ==
@@ -268,7 +268,7 @@ RrPassDeferred* CRenderableObject::GetPassDeferred ( const uchar pass ) {
 bool CRenderableObject::BindVAO ( const uchar pass, const uint vbo, const uint eab, const bool userDefinedAttribs )
 {
 	uint t_targetPass = pass;
-	if ( CRenderState::Active->GetRenderMode() == kRenderModeDeferred ) {
+	if ( RrRenderer::Active->GetRenderMode() == kRenderModeDeferred ) {
 		t_targetPass += m_material->getPassCountForward();
 	}
 	if ( t_targetPass >= m_vao_maxcount ) {

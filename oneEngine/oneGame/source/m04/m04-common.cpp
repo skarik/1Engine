@@ -5,7 +5,7 @@
 #include "engine-common/engine-common-scenes.h"
 #include "m04-common.h"
 
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/state/Options.h"
 
 #include "physical/physics/PrPhysics.h"
@@ -77,7 +77,7 @@ int GameInitialize ( void )
 
 	renderer::Options::DeferredShaders( shaderSettings );
 	renderer::Options::TextureStreaming( false );
-	CRenderState::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
+	RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
 
 	// Register game start command
 	engine::Console->AddConsoleFunc( "listen", listen );

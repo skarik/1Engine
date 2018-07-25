@@ -5,7 +5,7 @@
 #include "core/types/float.h"
 #include "core/math/Color.h"
 
-class CRenderState;
+class RrRenderer;
 class RrMaterial;
 
 namespace renderer
@@ -24,7 +24,7 @@ namespace renderer
 		Color	fogColor;
 		bool	fogEnabled;	
 	private:
-		friend CRenderState;
+		friend RrRenderer;
 		friend RrMaterial;
 
 		Real	fogScale;

@@ -203,8 +203,8 @@ void CCamera::LateUpdate ( void )
 	viewport.size.y = viewport_percent.size.y * Screen::Info.height;
 }
 
-#include "renderer/state/CRenderState.h"
-#include "renderer/system/glMainSystem.h"
+#include "renderer/state/RrRenderer.h"
+//#include "renderer/system/glMainSystem.h"
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/texture/CMRTTexture.h"
 #include "renderer/material/RrMaterial.h"
@@ -224,7 +224,7 @@ void CCamera::RenderScene ( void )
 	render_scale = math::clamp( render_scale, 0.1F, 1.0F );
 
 	// Perform rendering
-	auto renderMode = CRenderState::Active->GetRenderMode();
+	auto renderMode = RrRenderer::Active->GetRenderMode();
 	if ( renderMode == kRenderModeForward )
 	{
 		SceneRenderer->RenderSceneForward(enabledHints);

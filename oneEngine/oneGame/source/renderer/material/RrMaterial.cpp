@@ -5,7 +5,7 @@
 #include "core/types/ModelData.h"
 #include "core-ext/transform/TransformUtility.h"
 
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/object/CRenderableObject.h"
 #include "renderer/light/CLight.h"
@@ -119,7 +119,7 @@ RrMaterial*	RrMaterial::copy ( void )
 
 uchar RrMaterial::getPassCount ( void )
 {
-	if ( CRenderState::Active->GetRenderMode() == kRenderModeForward )
+	if ( RrRenderer::Active->GetRenderMode() == kRenderModeForward )
 	{
 		return (uchar)passinfo.size();
 	}
@@ -183,7 +183,7 @@ void RrMaterial::updateStaticUBO ( void )
 	//	glBindBuffer( GL_UNIFORM_BUFFER, m_ubo_foginfo );
 	//	glBufferSubData( GL_UNIFORM_BUFFER, 0, sizeof(_fogInfo_t), &t_fogInfo );
 	//}
-	auto renderMode = CRenderState::Active->GetRenderMode();
+	auto renderMode = RrRenderer::Active->GetRenderMode();
 	if ( renderMode == kRenderModeForward )
 	{
 		if ( renderer::Settings.maxLights <= 0 ) throw core::NullReferenceException(); // Null data passed to shader
@@ -214,7 +214,7 @@ void RrMaterial::updateStaticUBO ( void )
 			t_lightingInfo.LightColor[i].z = (*lightList)[i]->diffuseColor.blue;
 			t_lightingInfo.LightColor[i].w = (*lightList)[i]->diffuseColor.alpha;
 			// Set shadow casting info
-			if ( CRenderState::Active->GetShadowsEnabled() )
+			if ( RrRenderer::Active->GetShadowsEnabled() )
 			{
 				// No shadows, send dead shadow info
 				if ( !(*lightList)[i]->generateShadows )
@@ -367,7 +367,7 @@ void RrMaterial::updateLightTBO ( void )
 		glTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA32F, m_tex_shadowinfo ); 
 		glBindTexture( GL_TEXTURE_BUFFER, 0 );
 	}*/
-	renderer::ePipelineMode pipelineMode = CRenderState::Active->GetPipelineMode();
+	renderer::ePipelineMode pipelineMode = RrRenderer::Active->GetPipelineMode();
 	if ( pipelineMode == renderer::kPipelineModeNormal ||
 		 pipelineMode == renderer::kPipelineModeShaft ||
 		 pipelineMode == renderer::kPipelineMode2DPaletted )
@@ -571,7 +571,7 @@ void RrMaterial::bindPass ( uchar pass )
 	TimeProfiler.BeginTimeProfile( "rs_mat_bindpass" );
 
 	// Forward binding
-	auto renderMode = CRenderState::Active->GetRenderMode();
+	auto renderMode = RrRenderer::Active->GetRenderMode();
 	if ( /*GL.inOrtho() ||*/ renderMode == kRenderModeForward || deferredinfo.empty() )
 	{
 		bindPassForward( pass );

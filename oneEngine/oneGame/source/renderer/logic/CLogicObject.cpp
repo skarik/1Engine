@@ -1,11 +1,11 @@
 
 // == Includes ==
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "CLogicObject.h"
 
 
 // ==Constructor
-//  adds render object to the list of RO in CRenderState
+//  adds render object to the list of RO in RrRenderer
 //  sets visibility to true
 CLogicObject::CLogicObject ( void )
 {
@@ -14,13 +14,13 @@ CLogicObject::CLogicObject ( void )
 	transform.name = "Transform(RenderLogic)";*/
 	//transform.name = this->name; // TODO: ADD NAME
 
-	id = CRenderState::Active->AddLO( this );
+	id = RrRenderer::Active->AddLO( this );
 	active = true;
 }
 // ==Destructor
-//  removes render object from the list of RO in CRenderState
+//  removes render object from the list of RO in RrRenderer
 CLogicObject::~CLogicObject ( void )
 {
 	active = false;
-	CRenderState::Active->RemoveLO( id );
+	RrRenderer::Active->RemoveLO( id );
 }

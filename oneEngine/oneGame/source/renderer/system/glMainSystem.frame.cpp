@@ -2,7 +2,7 @@
 #include "glDrawing.h"
 
 #include "renderer/window/RrWindow.h"
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 
 #include <thread>
 #include <atomic>

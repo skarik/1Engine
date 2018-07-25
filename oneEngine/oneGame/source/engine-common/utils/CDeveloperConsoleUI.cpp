@@ -44,15 +44,15 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 	fontPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
 	fontPass.setTexture( TEX_MAIN, fntMenu );
 	fontPass.utilSetupAs2D();
-	fontPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+	fontPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
 	PassInitWithInput(1, &fontPass);
 
 	RrPass shapesPass;
 	shapesPass.m_type = kPassTypeForward;
 	shapesPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
-	shapesPass.setTexture( TEX_MAIN, core::Orphan(RrTexture::Load("null")) );
+	shapesPass.setTexture( TEX_MAIN, RrTexture::Load("null") );
+	shapesPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
 	shapesPass.utilSetupAs2D();
-	shapesPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
 	PassInitWithInput(0, &shapesPass);
 
 	transform.world.position.z = -35;
@@ -163,6 +163,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	//SetMaterial( matCursor );
 
 	texCursor = RrTexture::Load( "textures/system/cursor.png" );
+	texCursor->AddReference();
 	RrPass cursorPass;
 	cursorPass.m_type = kPassTypeForward;
 	cursorPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );

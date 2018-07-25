@@ -1,8 +1,5 @@
-// Game Renderer class
-// Does not take pointer ownership of renderable objects
-
-#ifndef _C_TO_BE_SEEN_H_
-#define _C_TO_BE_SEEN_H_
+#ifndef RENDERER_RENDER_STATE_SYSTEM_H_
+#define RENDERER_RENDER_STATE_SYSTEM_H_
 
 #include "core/types/types.h"
 #include "core/containers/arstring.h"
@@ -24,12 +21,19 @@ class CLogicObject;
 class CLight;
 class CCamera;
 class CResourceManager;
-class RrMaterial;
+class RrPass;
 class RrRenderTexture;
 class CMRTTexture;
+namespace renderer
+{
+	namespace pipeline
+	{
+		class RrPipelinePasses;
+	}
+}
 
-//	CRenderState : main render state & swapchain manager class
-class CRenderState
+//	RrRenderer : main render state & swapchain manager class
+class RrRenderer
 {
 public:
 	// Structure Definitions
@@ -87,8 +91,8 @@ public:
 	// Constructor, Destructor, and Initialization
 	// ================================
 
-	RENDER_API explicit		CRenderState ( CResourceManager* nResourceManager );
-	RENDER_API				~CRenderState ( void );
+	RENDER_API explicit		RrRenderer ( CResourceManager* nResourceManager );
+	RENDER_API				~RrRenderer ( void );
 
 	void					InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::OutputSurface* surface );
 
@@ -144,7 +148,7 @@ public:
 	// ================================
 
 	// Returns the material used for rendering a screen's pass in the given effect
-	RENDER_API RrMaterial* GetScreenMaterial ( const eRenderMode mode, const renderer::ePipelineMode mode_type );
+	RENDER_API RrPass* GetScreenMaterial ( const eRenderMode mode, const renderer::ePipelineMode mode_type );
 
 
 	// Settings and query
@@ -165,9 +169,9 @@ private:
 
 public:
 	// Public active instance pointer
-	RENDER_API static CRenderState* Active;
+	RENDER_API static RrRenderer* Active;
 	// Resource manager
-	CResourceManager*	mResourceManager;
+	//CResourceManager*	mResourceManager;
 
 	// Device & context
 	gpu::Device*			mDevice;
@@ -236,14 +240,12 @@ private:
 
 	// Deferred pass materials
 	// ================================
-	RrMaterial*	CopyScaled;
-	RrMaterial* LightingPass;
-	RrMaterial* EchoPass;
-	RrMaterial* ShaftPass;
-	RrMaterial* Lighting2DPass;
+	renderer::pipeline::RrPipelinePasses*
+							pipelinePasses;
+
 };
 
-// Global instance
-RENDER_API extern CRenderState* SceneRenderer;
+// Global active instance
+RENDER_API extern RrRenderer* SceneRenderer;
 
-#endif//_C_TO_BE_SEEN_H_
+#endif//RENDERER_RENDER_STATE_SYSTEM_H_

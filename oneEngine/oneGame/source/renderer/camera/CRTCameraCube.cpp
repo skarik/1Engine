@@ -1,6 +1,6 @@
 
 #include "CRTCameraCube.h"
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/state/Settings.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/texture/RrRenderTexture.h"

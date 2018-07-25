@@ -6,6 +6,7 @@
 
 #include "renderer/types/types.h"
 #include "renderer/gpuw/Transfer.h"
+#include "renderer/gpuw/Public/Formats.h"
 
 namespace gpu
 {
@@ -51,6 +52,16 @@ namespace gpu
 		RENDER_API int			allocate ( Device* device, const uint64_t data_size, const TransferStyle style );
 		RENDER_API void*		map ( Device* device, const TransferStyle style );
 		RENDER_API int			unmap ( Device* device );
+		RENDER_API int			free ( Device* device );
+
+		//	nativePtr() : returns native index or pointer to the resource.
+		RENDER_API gpuHandle	nativePtr ( void );
+	};
+
+	class VertexBuffer
+	{
+	public:
+		RENDER_API int			init ( Device* device, void* data, Format format, const uint64_t element_count );
 		RENDER_API int			free ( Device* device );
 
 		//	nativePtr() : returns native index or pointer to the resource.

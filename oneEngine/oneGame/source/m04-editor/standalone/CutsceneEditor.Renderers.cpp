@@ -14,7 +14,7 @@
 #include "renderer/utils/rrMeshBuilder2D.h"
 #include "renderer/utils/rrTextBuilder2D.h"
 
-#include "renderer/resource/CResourceManager.h"
+//#include "renderer/resource/CResourceManager.h"
 
 #include "engine-common/cutscene/EditorNode.h"
 #include "engine-common/cutscene/Node.h"

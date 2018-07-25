@@ -1,7 +1,7 @@
 
 // Includes
 #include "core/system/io/FileUtils.h"
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "RrTextureCube.h"
 #include "RrTextureMaster.h"
 #include "renderer/system/glMainSystem.h"

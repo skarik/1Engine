@@ -1,12 +1,11 @@
-
-#include "CRenderState.h"
-#include "renderer/material/RrMaterial.h"
+#include "RrRenderer.h"
+#include "renderer/material/RrPass.h"
 #include "renderer/object/CRenderableObject.h"
 
 using namespace renderer;
 
 // Render order control
-bool CRenderState::render_forward_comparator_t::operator() ( CRenderState::tRenderRequest& i, CRenderState::tRenderRequest& j )
+bool RrRenderer::render_forward_comparator_t::operator() ( RrRenderer::tRenderRequest& i, RrRenderer::tRenderRequest& j )
 {
 	if ( j.obj == NULL ) {
 		throw std::invalid_argument("Null renderRequest");
@@ -15,7 +14,7 @@ bool CRenderState::render_forward_comparator_t::operator() ( CRenderState::tRend
 		throw std::invalid_argument("Null renderRequest");
 	}
 
-	RrPassForward* imat, * jmat;
+	RrPass* imat, * jmat;
 	imat = i.obj->GetPass( i.pass );
 	jmat = j.obj->GetPass( j.pass );
 
@@ -108,7 +107,7 @@ bool CRenderState::render_forward_comparator_t::operator() ( CRenderState::tRend
 	}
 }
 // Render order control
-bool CRenderState::render_deferred_comparator_t::operator() ( CRenderState::tRenderRequest& i, CRenderState::tRenderRequest& j )
+bool RrRenderer::render_deferred_comparator_t::operator() ( RrRenderer::tRenderRequest& i, RrRenderer::tRenderRequest& j )
 {
 	if ( j.obj == NULL ) {
 		throw std::invalid_argument("Null renderRequest");

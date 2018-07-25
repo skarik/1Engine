@@ -54,6 +54,14 @@ struct rrTextureUploadInfo
 	uint16_t			height;
 };
 
+// constants: move these elsewhere later
+namespace renderer
+{
+	static const char* kTextureBlack = "black";
+	static const char* kTextureWhite = "white";
+	static const char* kTextureGrayA0 = "graya0";
+}
+
 //	class RrTexture : Base resource-aware texture class.
 // Instantiate with either RrTexture::Load or RrTexture::CreateUnitialized.
 class RrTexture : public arBaseObject, public IArResource
@@ -84,10 +92,12 @@ public: // Creation Interface
 
 	//	Load ( filename ) : Loads a texture from the disk.
 	// May return a previously loaded instance of the texture.
+	// The reference count of the returned instance will not be incremented.
 	RENDER_API static RrTexture*
 							Load ( const char* resource_name );
 	//	CreateUnitialized ( name ) : Creates an uninitialized texture object.
 	// Can be used for procedural textures, with Upload(...) later.
+	// The reference count of the returned instance will not be incremented.
 	RENDER_API static RrTexture*
 							CreateUnitialized ( const char* name );
 
@@ -152,6 +162,7 @@ public: // Kitchen Sink Interface
 
 	//	Upload(...) : Upload data to the texture, initializing it.
 	// Use for procedural textures.
+	// This will add the object to the resource manager, but will NOT add to the object's reference count.
 	RENDER_API void			Upload (
 		bool							streamed,
 		core::gfx::arPixel*				data,

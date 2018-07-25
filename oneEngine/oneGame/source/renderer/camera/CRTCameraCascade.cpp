@@ -1,6 +1,6 @@
 
 #include "CRTCameraCascade.h"
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/system/glMainSystem.h"

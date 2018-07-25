@@ -1,7 +1,7 @@
 /*
 // Includes
 #include "core/utils/string.h"
-//#include "CRenderState.h"
+//#include "RrRenderer.h"
 #include "RrTexture.h"
 #include "RrTextureMaster.h"
 #include "renderer/system/glMainSystem.h"

@@ -9,7 +9,7 @@
 #include "renderer/texture/RrTexture.h"
 #include "renderer/texture/TextureIO.h"
 
-#include "renderer/resource/CResourceManager.h"
+//#include "renderer/resource/CResourceManager.h"
 
 #include "render2d/texture/TextureIO.h"
 

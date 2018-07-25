@@ -2,7 +2,7 @@
 
 //#include "DayAndNightCycle.h"
 
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/camera/CRTCamera.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
@@ -11,7 +11,7 @@
 CTestViewShader::CTestViewShader ( void )
 	: CScreenShader()
 {
-	if ( CRenderState::Active->GetRenderMode() == kRenderModeDeferred ) {
+	if ( RrRenderer::Active->GetRenderMode() == kRenderModeDeferred ) {
 		throw std::exception();
 	}
 

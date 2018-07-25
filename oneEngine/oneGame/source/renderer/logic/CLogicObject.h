@@ -18,7 +18,7 @@
 #include "renderer/types/ObjectSettings.h"
 
 // Class prototypes
-class CRenderState;
+class RrRenderer;
 class RrMaterial;
 class RrPassForward;
 class RrPassDeferred;
@@ -97,7 +97,7 @@ private:
 	uint32_t id;
 	void SetId ( unsigned int );
 	// Give storage class access to SetId
-	friend CRenderState;
+	friend RrRenderer;
 };
 
 // typedef for persons coming from Unity

@@ -82,6 +82,7 @@
     <ClCompile Include="source\renderer\material\RrMaterial.External.cpp" />
     <ClCompile Include="source\renderer\material\RrMaterial.Utility.cpp" />
     <ClCompile Include="source\renderer\material\RrPass.cpp" />
+    <ClCompile Include="source\renderer\material\RrPass.Presets.cpp" />
     <ClCompile Include="source\renderer\material\RrPassForward.cpp" />
     <ClCompile Include="source\renderer\material\RrPassDeferred.cpp" />
     <ClCompile Include="source\renderer\material\RrShader.cpp" />
@@ -118,10 +119,11 @@
     <ClCompile Include="source\renderer\renderer-console.cpp" />
     <ClCompile Include="source\renderer\resource\CModelMaster.cpp" />
     <ClCompile Include="source\renderer\resource\CResourceManager.cpp" />
-    <ClCompile Include="source\renderer\state\CRenderState.cpp" />
-    <ClCompile Include="source\renderer\state\CRenderState.Render.cpp" />
-    <ClCompile Include="source\renderer\state\CRenderState.Sorters.cpp" />
+    <ClCompile Include="source\renderer\state\RrRenderer.cpp" />
+    <ClCompile Include="source\renderer\state\RrRenderer.Render.cpp" />
+    <ClCompile Include="source\renderer\state\RrRenderer.Sorters.cpp" />
     <ClCompile Include="source\renderer\state\Options.cpp" />
+    <ClCompile Include="source\renderer\state\RrPipelinePasses.cpp" />
     <ClCompile Include="source\renderer\state\Settings.cpp" />
     <ClCompile Include="source\renderer\system\glDrawing.cpp" />
     <ClCompile Include="source\renderer\system\glMainSystem.cpp" />
@@ -191,6 +193,7 @@
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpherSet.h" />
     <ClInclude Include="source\renderer\material\RrMaterial.h" />
     <ClInclude Include="source\renderer\material\RrPass.h" />
+    <ClInclude Include="source\renderer\material\RrPass.Presets.h" />
     <ClInclude Include="source\renderer\material\RrPassForward.h" />
     <ClInclude Include="source\renderer\material\RrPassDeferred.h" />
     <ClInclude Include="source\renderer\material\RrShader.cbuffers.h" />
@@ -238,9 +241,10 @@
     <ClInclude Include="source\renderer\renderer-console.h" />
     <ClInclude Include="source\renderer\resource\CModelMaster.h" />
     <ClInclude Include="source\renderer\resource\CResourceManager.h" />
-    <ClInclude Include="source\renderer\state\CRenderState.h" />
+    <ClInclude Include="source\renderer\state\RrRenderer.h" />
     <ClInclude Include="source\renderer\state\InternalSettings.h" />
     <ClInclude Include="source\renderer\state\Options.h" />
+    <ClInclude Include="source\renderer\state\RrPipelinePasses.h" />
     <ClInclude Include="source\renderer\state\Settings.h" />
     <ClInclude Include="source\renderer\system\glDrawing.h" />
     <ClInclude Include="source\renderer\system\glMainSystem.h" />

@@ -3,7 +3,7 @@
 #include "core/debug/console.h"
 #include "core-ext/system/io/Resources.h"
 
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 //#include "renderer/resource/CResourceManager.h"
 #include "RrTexture.h"
 #include "RrTextureMaster.h"
@@ -64,6 +64,8 @@ RrTexture::RrTexture (
 	: arBaseObject(),
 	m_texture()
 {
+	RemoveReference(); // Start with 0 reference count.
+
 	resourceName = s_resourceId;
 	// Reset load state:
 	StreamingReset();
@@ -143,8 +145,8 @@ RrTexture::~RrTexture ( void )
 	}
 
 	TextureMaster.RemoveReference( this );
-	if ( CRenderState::Active )
-		CRenderState::Active->mResourceManager->RemoveResource( this );*/
+	if ( RrRenderer::Active )
+		RrRenderer::Active->mResourceManager->RemoveResource( this );*/
 
 	m_texture.free();
 }
@@ -232,25 +234,25 @@ RrTexture::~RrTexture ( void )
 //		glBindTexture( GL_TEXTURE_2D, 0 );
 //
 //		// Load the actual data in
-//		if ( !CRenderState::Active->mResourceManager->settings.streamTextures )
+//		if ( !RrRenderer::Active->mResourceManager->settings.streamTextures )
 //		{
 //			// If streaming disabled, then force load
-//			CRenderState::Active->mResourceManager->AddResource( this );
-//			CRenderState::Active->mResourceManager->ForceLoadResource( this );
+//			RrRenderer::Active->mResourceManager->AddResource( this );
+//			RrRenderer::Active->mResourceManager->ForceLoadResource( this );
 //		}
 //		else
 //		{
 //			// Disable streaming on certain objects
 //			if ( sFilename.find( "textures/hud" ) != string::npos || sFilename.find( "textures/system" ) != string::npos || sFilename.find( "textures/tats" ) != string::npos )
 //			{
-//				CRenderState::Active->mResourceManager->AddResource( this );
-//				CRenderState::Active->mResourceManager->ForceLoadResource( this );
+//				RrRenderer::Active->mResourceManager->AddResource( this );
+//				RrRenderer::Active->mResourceManager->ForceLoadResource( this );
 //			}
 //			// Otherwise, stream the texture
 //			else
 //			{
-//				CRenderState::Active->mResourceManager->FinishAddResource( this );
-//				CRenderState::Active->mResourceManager->AddResource( this );
+//				RrRenderer::Active->mResourceManager->FinishAddResource( this );
+//				RrRenderer::Active->mResourceManager->AddResource( this );
 //			}
 //		}
 //
@@ -271,7 +273,7 @@ RrTexture::~RrTexture ( void )
 //
 //		// Add a reference to the data
 //		TextureMaster.AddReference( this );
-//		CRenderState::Active->mResourceManager->AddResource( this );
+//		RrRenderer::Active->mResourceManager->AddResource( this );
 //	}
 //}
 //// === Destructor ===
@@ -284,8 +286,8 @@ RrTexture::~RrTexture ( void )
 //	}
 //
 //	TextureMaster.RemoveReference( this );
-//	if ( CRenderState::Active )
-//		CRenderState::Active->mResourceManager->RemoveResource( this );
+//	if ( RrRenderer::Active )
+//		RrRenderer::Active->mResourceManager->RemoveResource( this );
 //}
 //
 //// === Bind and Unbind ===

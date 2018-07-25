@@ -34,14 +34,14 @@ enum RrMaterialConstants
 class CRenderableObject;
 class RrTexture;
 class RrRenderTexture;
-class CRenderState;
+class RrRenderer;
 
 //	class RrMaterial : Utility structure to wrap a collection of shaders, layouts, and textures.
 // This is a higher level construct, which is used to sort objects in a way to minimize context changes.
 // In order to sort properly, most rendering options are set in this class.
 class RrMaterial
 {
-	friend CRenderState;
+	friend RrRenderer;
 public:
 	RENDER_API				RrMaterial ( void );
 	RENDER_API				~RrMaterial ( void ) throw(...);

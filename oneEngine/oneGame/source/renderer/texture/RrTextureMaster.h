@@ -3,7 +3,7 @@
 #define _C_TEXTURE_MASTER_H_
 
 // Includes
-//#include "CRenderState.h"
+//#include "RrRenderer.h"
 #include "RrTexture.h"
 #include <vector>
 #include <map>

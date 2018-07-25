@@ -19,13 +19,13 @@ void RrTextureMasterSubsystem::Update ( void )
 void RrTextureMasterSubsystem::OnAdd(IArResource* resource)
 {
 	RrTexture* texture = (RrTexture*)resource;
-	texture->AddReference();
+	//texture->AddReference();
 }
 
 void RrTextureMasterSubsystem::OnRemove(IArResource* resource)
 {
 	RrTexture* texture = (RrTexture*)resource;
-	texture->RemoveReference();
+	//texture->RemoveReference();
 }
 
 void RrTextureMasterSubsystem::Reload ( void )

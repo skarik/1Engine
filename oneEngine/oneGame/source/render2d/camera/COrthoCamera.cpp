@@ -1,6 +1,6 @@
 #include "core/system/Screen.h"
 #include "renderer/texture/RrRenderTexture.h"
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/material/RrShaderManager.h"
 
@@ -78,7 +78,7 @@ void COrthoCamera::RenderSet ( void )
 	SceneRenderer->GetDeferredBuffer()->SetFilter( SamplingPoint );
 
 	// Set the 2D pipeline mode
-	CRenderState::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
+	RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
 
 	// Set up the camera normally
 	CCamera::RenderSet();

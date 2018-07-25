@@ -1,4 +1,4 @@
-#include "CRenderState.h"
+#include "RrRenderer.h"
 #include "Settings.h"
 
 #include "core/settings/CGameSettings.h"
@@ -9,10 +9,10 @@
 #include "renderer/object/CRenderableObject.h"
 #include "renderer/logic/CLogicObject.h"
 
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/RrTexture.h"
 #include "renderer/texture/RrRenderTexture.h"
-#include "renderer/texture/CMRTTexture.h"
+//#include "renderer/texture/CMRTTexture.h"
 
 #include "renderer/debug/CDebugDrawer.h"
 #include "renderer/debug/CDebugRTInspector.h"
@@ -21,25 +21,31 @@
 #include "core-ext/resources/ResourceManager.h"
 #include "renderer/texture/RrTextureMasterSubsystem.h"
 
-#include "renderer/resource/CResourceManager.h"
+//#include "renderer/resource/CResourceManager.h"
 
 #include "renderer/gpuw/Textures.h"
 #include "renderer/gpuw/RenderTargets.h"
 
-#include "renderer/window/RrWindow.h"
+#include "renderer/windowing/RrWindow.h"
+
+#include "renderer/material/RrPass.h"
+#include "renderer/material/RrPass.Presets.h"
+#include "renderer/material/RrShaderProgram.h"
+
+#include "renderer/state/RrPipelinePasses.h"
 
 //===Class static member data===
 
-CRenderState* CRenderState::Active	= NULL;
-CRenderState* SceneRenderer			= NULL;
+RrRenderer* RrRenderer::Active	= NULL;
+RrRenderer* SceneRenderer			= NULL;
 
 //===Class functions===
 
 // Class constructor
 //  saves current instance into pActive
 //  initializes list of renderers
-CRenderState::CRenderState ( CResourceManager* nResourceManager )
-	: mResourceManager(nResourceManager)
+RrRenderer::RrRenderer ( CResourceManager* nResourceManager )
+	//: mResourceManager(nResourceManager)
 {
 	Active = this;
 	SceneRenderer = this;
@@ -75,7 +81,7 @@ CRenderState::CRenderState ( CResourceManager* nResourceManager )
 	mLogicObjects.resize( mLoListSize, NULL );
 }
 
-void CRenderState::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::OutputSurface* surface )
+void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::OutputSurface* surface )
 {
 	// Let's pull the device from the current window:
 	//mDevice = RrWindow::pActive->getDevicePointer();
@@ -105,70 +111,75 @@ void CRenderState::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Ou
 
 	// Create default textures
 	{
-		RrTexture* white_texture = RrTexture::CreateUnitialized("white"); //new RrTexture("");
+		RrTexture* white_texture = RrTexture::CreateUnitialized(renderer::kTextureWhite); //new RrTexture("");
 		{
 			core::gfx::arPixel white (255, 255, 255, 255);
 			white_texture->Upload( false, &white, 1,1,
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
-		renderer::Resources::AddTexture(renderer::TextureWhite, white_texture);
-		white_texture->RemoveReference();
+		//renderer::Resources::AddTexture(renderer::TextureWhite, white_texture);
 
-		RrTexture* black_texture = RrTexture::CreateUnitialized("black");
+		RrTexture* black_texture = RrTexture::CreateUnitialized(renderer::kTextureBlack);
 		{
 			core::gfx::arPixel black (0, 0, 0, 255);
 			black_texture->Upload( false, &black, 1,1,
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
-		renderer::Resources::AddTexture(renderer::TextureBlack, black_texture);
-		black_texture->RemoveReference();
+		//renderer::Resources::AddTexture(renderer::TextureBlack, black_texture);
 
-		RrTexture* gray0_texture = RrTexture::CreateUnitialized("gray0");
+		RrTexture* gray0_texture = RrTexture::CreateUnitialized(renderer::kTextureGrayA0);
 		{
 			core::gfx::arPixel gray0 (127, 127, 127, 0);
 			gray0_texture->Upload( false, &gray0, 1,1,
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
-		renderer::Resources::AddTexture(renderer::TextureGrayA0, gray0_texture);
-		gray0_texture->RemoveReference();
+		//renderer::Resources::AddTexture(renderer::TextureGrayA0, gray0_texture);
 	}
 
 	// Create the default material
-	if ( RrMaterial::Default == NULL )
+	if ( renderer::pass::Default == NULL )
 	{
 		// The default material must be a single pass in both modes.
 		// This to provide compatibility with the default system implementation. (A lot of early engine code is implemented lazily)
-		RrMaterial::Default = new RrMaterial;
-		RrMaterial::Default->setTexture( TEX_DIFFUSE, renderer::Resources::GetTexture(renderer::TextureWhite) );
-		RrMaterial::Default->setTexture( TEX_NORMALS, RrTexture::Load( "textures/default_normals.jpg" ) );
-		RrMaterial::Default->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
-		RrMaterial::Default->setTexture( TEX_OVERLAY, renderer::Resources::GetTexture(renderer::TextureGrayA0) );
+		renderer::pass::Default = new RrPass;
+		renderer::pass::Default->setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
+		renderer::pass::Default->setTexture( TEX_NORMALS, RrTexture::Load( "textures/default_normals.jpg" ) );
+		renderer::pass::Default->setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureBlack) );
+		renderer::pass::Default->setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
 		// Setup forward pass
-		RrMaterial::Default->passinfo.push_back( RrPassForward() );
-		RrMaterial::Default->passinfo[0].shader = new RrShader( "shaders/d/diffuse.glsl" );
+		renderer::pass::Default->m_type = kPassTypeForward;
+		renderer::pass::Default->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/d/diffuse_vv.spv", "shaders/d/diffuse_p.spv"});
+		//renderer::Default->passinfo.push_back( RrPassForward() );
+		//renderer::Default->passinfo[0].shader = new RrShader( "shaders/d/diffuse.glsl" );
 		// Setup deferred pass
-		RrMaterial::Default->deferredinfo.push_back( RrPassDeferred() );
+		//renderer::Default->deferredinfo.push_back( RrPassDeferred() );
 	}
-	if ( RrMaterial::Copy == NULL )
+	if ( renderer::pass::Copy == NULL )
 	{
-		RrMaterial::Copy = new RrMaterial;
+		renderer::pass::Copy = new RrPass;
 		// Setup forward pass
-		RrMaterial::Copy->passinfo.push_back( RrPassForward() );
-		RrMaterial::Copy->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer.glsl" );
-		RrMaterial::Copy->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-		RrMaterial::Copy->passinfo[0].b_depthtest = false;
+		renderer::pass::Copy->m_type = kPassTypeForward;
+		renderer::pass::Copy->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/copy_buffer_vv.spv", "shaders/sys/copy_buffer_p.spv"});
+		renderer::pass::Copy->m_depthTest = gpu::kCompareOpAlways;
+		renderer::pass::Copy->m_cullMode = gpu::kCullModeNone;
+		//renderer::Copy->passinfo.push_back( RrPassForward() );
+		//renderer::Copy->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer.glsl" );
+		//renderer::Copy->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
+		//renderer::Copy->passinfo[0].b_depthtest = false;
 		// No deferred pass.
 	}
 	// Create the fallback shader
-	if ( RrMaterial::Fallback == NULL )
+	if ( renderer::pass::Fullbright == NULL )
 	{
-		RrMaterial::Fallback = new RrMaterial;
+		renderer::pass::Fullbright = new RrPass;
 		// Setup forward pass
-		RrMaterial::Fallback->passinfo.push_back( RrPassForward() );
-		RrMaterial::Fallback->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
+		renderer::pass::Fullbright->m_type = kPassTypeForward;
+		renderer::pass::Fullbright->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"});
+		//renderer::Fallback->passinfo.push_back( RrPassForward() );
+		//renderer::Fallback->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
 		// No deferred pass.
 	}
 	// Create the default hint options
@@ -176,47 +187,9 @@ void CRenderState::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Ou
 	{
 		renderer::m_default_hint_options = new renderer::_n_hint_rendering_information();
 	}
-	// Create the render copy upscaling shader
-	{
-		CopyScaled = new RrMaterial();
-		// Setup forward pass
-		CopyScaled->passinfo.push_back( RrPassForward() );
-		CopyScaled->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer_scaled.glsl" );
-		CopyScaled->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-		CopyScaled->passinfo[0].b_depthtest = false;
-	}
 
-	// Create the passes for rendering the screen:
-	{
-		LightingPass = new RrMaterial();
-		// Setup forward pass
-		LightingPass->passinfo.push_back( RrPassForward() );
-		LightingPass->passinfo[0].shader = new RrShader( "shaders/def_screen/pass_lighting.glsl" );
-		LightingPass->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-	}
-	{
-		EchoPass = new RrMaterial();
-		// Setup forward pass
-		EchoPass->passinfo.push_back( RrPassForward() );
-		EchoPass->passinfo[0].shader = new RrShader( "shaders/def_screen/pass_lighting_echo.glsl" );
-		EchoPass->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-	}
-	{
-		ShaftPass = new RrMaterial();
-		// Setup forward pass
-		ShaftPass->passinfo.push_back( RrPassForward() );
-		ShaftPass->passinfo[0].shader = new RrShader( "shaders/def_screen/pass_lighting_shaft.glsl" );
-		ShaftPass->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-		// Set effect textures
-		ShaftPass->setTexture( TEX_SLOT5, RrTexture::Load( "textures/ditherdots.jpg" ) );
-	}
-	{
-		Lighting2DPass = new RrMaterial();
-		// Setup forward pass
-		Lighting2DPass->passinfo.push_back( RrPassForward() );
-		Lighting2DPass->passinfo[0].shader = new RrShader( "shaders/def_screen/pass_lighting2d.glsl" );
-		Lighting2DPass->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-	}
+	// Create the pipeline utils
+	pipelinePasses = new renderer::pipeline::RrPipelinePasses();
 
 	bSpecialRender_ResetLights = false;
 
@@ -229,7 +202,7 @@ void CRenderState::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Ou
 // Class destructor
 //  sets pActive pointer to null
 //  frees list of renderers, but not the renderers
-CRenderState::~CRenderState ( void )
+RrRenderer::~RrRenderer ( void )
 {
 	// Delete the debug tools
 	delete debug::Drawer;
@@ -244,37 +217,20 @@ CRenderState::~CRenderState ( void )
 	iListSize = 0;
 
 	// Free system default material
-	while ( RrMaterial::Default->hasReference() ) 
-		RrMaterial::Default->removeReference();
-	delete RrMaterial::Default;
-	RrMaterial::Default = NULL;
-
-	RrMaterial::Copy->removeReference();
-	delete RrMaterial::Copy;
-	RrMaterial::Copy = NULL;
-
-	RrMaterial::Fallback->removeReference();
-	delete RrMaterial::Fallback;
-	RrMaterial::Fallback = NULL;
+	delete_safe(renderer::pass::Default);
+	delete_safe(renderer::pass::Copy);
+	delete_safe(renderer::pass::Fullbright);
 
 	// Free the other materials
-	CopyScaled->removeReference();
-	delete_safe(CopyScaled);
-	LightingPass->removeReference();
-	delete_safe(LightingPass);
-	EchoPass->removeReference();
-	delete_safe(EchoPass);
-	ShaftPass->removeReference();
-	delete_safe(ShaftPass);
-	Lighting2DPass->removeReference();
-	delete_safe(Lighting2DPass);
+	delete_safe(pipelinePasses);
 
 	// Stop the resource manager
-	if ( mResourceManager && mResourceManager->m_renderStateOwned ) {
+	/*if ( mResourceManager && mResourceManager->m_renderStateOwned ) {
 		mResourceManager->m_renderStateOwned = false;
 		delete mResourceManager;
 		mResourceManager = NULL;
-	}
+	}*/
+	// TODO
 }
 
 
@@ -283,7 +239,7 @@ CRenderState::~CRenderState ( void )
 // AddRO ( pointer to new RO )
 //  adds an RO to be drawn and returns the index
 //  used only by the RO constructor
-unsigned int CRenderState::AddRO ( CRenderableObject * pRO )
+unsigned int RrRenderer::AddRO ( CRenderableObject * pRO )
 {
 	// Randomly reshift the renderable objects
 	if ( (rand()%10) == 0 )
@@ -323,7 +279,7 @@ unsigned int CRenderState::AddRO ( CRenderableObject * pRO )
 // RemoveRO ( RO index given by AddRO )
 //  sets the specified index to NULL (which the cleaner will see later)
 //  only to be used by RO destructor
-void CRenderState::RemoveRO ( unsigned int id )
+void RrRenderer::RemoveRO ( unsigned int id )
 {
 	pRenderableObjects[id] = NULL;
 }
@@ -331,7 +287,7 @@ void CRenderState::RemoveRO ( unsigned int id )
 // AddLO ( pointer to new RO )
 //  adds an LO to be drawn and returns the index
 //  used only by the LO constructor
-unsigned int CRenderState::AddLO ( CLogicObject * pLO )
+unsigned int RrRenderer::AddLO ( CLogicObject * pLO )
 {
 	// Randomly reshift the logic objects
 	if ( (rand()%10) == 0 )
@@ -371,7 +327,7 @@ unsigned int CRenderState::AddLO ( CLogicObject * pLO )
 // RemoveLO ( RO index given by AddRO )
 //  sets the specified index to NULL (which the cleaner will see later)
 //  only to be used by RO destructor
-void CRenderState::RemoveLO ( unsigned int id )
+void RrRenderer::RemoveLO ( unsigned int id )
 {
 	// TODO: Optimize this
 	Jobs::System::Current::WaitForJobs( Jobs::kJobTypeRenderStep );
@@ -385,16 +341,16 @@ void CRenderState::RemoveLO ( unsigned int id )
 // ================================
 
 // Returns the material used for rendering a screen's pass in the given effect
-RrMaterial* CRenderState::GetScreenMaterial ( const eRenderMode mode, const renderer::ePipelineMode mode_type )
+RrPass* RrRenderer::GetScreenMaterial ( const eRenderMode mode, const renderer::ePipelineMode mode_type )
 {
 	if ( mode == kRenderModeDeferred )
 	{
 		switch (mode_type)
 		{
-		case renderer::kPipelineModeNormal:	return LightingPass;
-		case renderer::kPipelineModeEcho:	return EchoPass;
-		case renderer::kPipelineModeShaft:	return ShaftPass;
-		case renderer::kPipelineMode2DPaletted:	return Lighting2DPass;
+		case renderer::kPipelineModeNormal:	return pipelinePasses->LightingPass;
+		case renderer::kPipelineModeEcho:	return pipelinePasses->EchoPass;
+		case renderer::kPipelineModeShaft:	return pipelinePasses->ShaftPass;
+		case renderer::kPipelineMode2DPaletted:	return pipelinePasses->Lighting2DPass;
 		}
 	}
 	return NULL;
@@ -403,7 +359,7 @@ RrMaterial* CRenderState::GetScreenMaterial ( const eRenderMode mode, const rend
 //	SetPipelineMode - Sets new pipeline mode.
 // Calling this has the potential to be very slow and completely invalidate rendering state.
 // This should be called as soon as possible to avoid any slowdown.
-void CRenderState::SetPipelineMode ( renderer::ePipelineMode newPipelineMode )
+void RrRenderer::SetPipelineMode ( renderer::ePipelineMode newPipelineMode )
 {
 	if ( pipelineMode != newPipelineMode )
 	{
@@ -417,23 +373,23 @@ void CRenderState::SetPipelineMode ( renderer::ePipelineMode newPipelineMode )
 // ================================
 
 // Returns internal settings that govern the current render setup
-const renderer::internalSettings_t& CRenderState::GetSettings ( void ) const
+const renderer::internalSettings_t& RrRenderer::GetSettings ( void ) const
 {
 	return internal_settings;
 }
 
 // Returns if shadows are enabled for the renderer or not.
-const bool CRenderState::GetShadowsEnabled ( void ) const
+const bool RrRenderer::GetShadowsEnabled ( void ) const
 {
 	return shadowMode;
 }
 // Returns current pipeline information
-const eRenderMode CRenderState::GetRenderMode ( void ) const
+const eRenderMode RrRenderer::GetRenderMode ( void ) const
 {
 	return renderMode;
 }
 // Returns current pipeline mode (previously, special render type)
-const renderer::ePipelineMode CRenderState::GetPipelineMode ( void ) const
+const renderer::ePipelineMode RrRenderer::GetPipelineMode ( void ) const
 {
 	return pipelineMode;
 }
@@ -473,7 +429,7 @@ static bool _DropSettings (renderer::internalSettings_t& io_settings)
 	return false;
 }
 
-void CRenderState::CreateTargetBuffers ( void )
+void RrRenderer::CreateTargetBuffers ( void )
 {
 	if (internal_chain_list.empty())
 	{
@@ -507,7 +463,7 @@ void CRenderState::CreateTargetBuffers ( void )
 		}
 	}
 }
-bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain )
+bool RrRenderer::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain )
 {
 	// Delete shared buffers
 	{
@@ -646,26 +602,26 @@ bool CRenderState::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain 
 	return true;
 }
 
-gpu::RenderTarget* CRenderState::GetForwardBuffer ( void )
+gpu::RenderTarget* RrRenderer::GetForwardBuffer ( void )
 {
 	if (internal_chain_current)
 		return &internal_chain_current->buffer_forward_rt;
 	return NULL;
 }
-gpu::RenderTarget* CRenderState::GetDeferredBuffer ( void )
+gpu::RenderTarget* RrRenderer::GetDeferredBuffer ( void )
 {
 	if (internal_chain_current)
 		return &internal_chain_current->buffer_deferred_rt;
 	return NULL;
 }
 
-gpu::Texture* CRenderState::GetDepthTexture ( void )
+gpu::Texture* RrRenderer::GetDepthTexture ( void )
 {
 	if (internal_chain_current)
 		return &internal_chain_current->buffer_depth;
 	return NULL;
 }
-gpu::WOFrameAttachment* CRenderState::GetStencilTexture ( void )
+gpu::WOFrameAttachment* RrRenderer::GetStencilTexture ( void )
 {
 	if (internal_chain_current)
 		return &internal_chain_current->buffer_stencil;

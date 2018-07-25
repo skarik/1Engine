@@ -26,6 +26,10 @@ enum rrPassType
 
 class RrShaderProgram;
 class RrTexture;
+namespace gpu
+{
+	class Texture;
+}
 
 enum rrPassConstants
 {
@@ -33,36 +37,46 @@ enum rrPassConstants
 	kPass_MaxTextureSlots = 7,
 };
 
+// 
 class RrPass
 {
 public:
 	RENDER_API				RrPass ( void );
 	//RENDER_API				RrPass ( const RrPass& other );
+	// will release references of owned textures & shaders
 	RENDER_API				~RrPass ( void );
 
 	//	setTexture ( slot, texture ) : Sets material texture.
-	// Material is given ownership of the texture (to an extent).
+	// Material is given ownership of the texture.
 	// Do not delete the texture directly, use RemoveReference.
 	RENDER_API void			setTexture ( const rrTextureSlot slot, RrTexture* texture );
 	//	setTexture ( slot, texture ) : Sets material texture with raw GPU handles.
 	// To be used only in an immediate use-case, ex. post-processing or compositing.
 	RENDER_API void			setTexture ( const rrTextureSlot slot, gpu::Texture& n_texture );
 
+	//	setProgram ( program ) : Sets shader program.
+	// Pass is given ownership of the program.
+	// Do not delete the program directly, use RemoveReference.
+	RENDER_API void			setProgram ( RrShaderProgram* program );
+
 	RENDER_API bool			validate ( void );
 
+	//	utilSetupAs2D () : Sets properties of the pass to what all 2D passes typically use.
+	// In detail: depth write off, depth test always, no face culling, transparency on, lighting hinted off.
 	RENDER_API void			utilSetupAs2D ( void );
 
 public:
 	rrPassType			m_type;
-	RrShaderProgram*	m_program;
+	RrShaderProgram*	m_program;		// Shader program. This pass has ownership.
 
 	// General material-like settings:
 	renderer::cbuffer::rrPerObjectSurface
 						m_surface;
+	gpu::CullMode		m_cullMode;
 
 	// Textures:
 	RrTexture*			m_textures[kPass_MaxTextureSlots];
-	gpu::Texture		m_texturesRaw[kPass_MaxTextureSlots];
+	gpu::Texture*		m_texturesRaw[kPass_MaxTextureSlots];
 
 	// Alpha settings:
 	renderer::rrAlphaMode

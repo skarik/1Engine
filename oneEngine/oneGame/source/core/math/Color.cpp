@@ -1,7 +1,16 @@
-
+#include "Vector2d.h"
+#include "Vector3d.h"
+#include "Vector4d.h"
+#include "Quaternion.h"
+#include "core/math/random/Random.h"
 
 #include "Color.h"
-#include "core/math/random/Random.h"
+
+// Implicit cast to Vector4.
+Color::operator Vector4d()
+{
+	return Vector4d(x, y, z, w);
+}
 
 //Randomize the color
 void Color::randomize (void)

@@ -8,7 +8,6 @@
 #include <iostream>
 #include <cmath>
 
-// Declare class usage
 class Matrix4x4;
 
 class Vector2d;

@@ -3,13 +3,14 @@
 using std::sort;
 
 // Includes
-#include "CRenderState.h"
+#include "RrRenderer.h"
 #include "renderer/state/Settings.h"
 //#include "core/settings/CGameSettings.h"
 #include "core/math/Math.h"
 #include "core-ext/profiler/CTimeProfiler.h"
 #include "core/system/Screen.h"
 #include "core-ext/threads/Jobs.h"
+#include "core-ext/resources/ResourceManager.h"
 
 #include "renderer/exceptions/exceptions.h"
 
@@ -26,16 +27,17 @@ using std::sort;
 #include "renderer/gpuw/OutputSurface.h"
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
+#include "renderer/state/RrPipelinePasses.h"
 
-#include "renderer/resource/CResourceManager.h"
+//#include "renderer/resource/CResourceManager.h"
 
 using namespace renderer;
 
 //===============================================================================================//
-// CRenderState: Rendering
+// RrRenderer: Rendering
 //===============================================================================================//
 
-void CRenderState::StepPreRender ( void )
+void RrRenderer::StepPreRender ( void )
 {
 	unsigned int i;
 
@@ -54,9 +56,12 @@ void CRenderState::StepPreRender ( void )
 	}
 
 	// Update the streamed loading system
-	if ( mResourceManager ) {
-		mResourceManager->RenderUpdate();
-	}
+	//if ( mResourceManager ) {
+	//	mResourceManager->RenderUpdate();
+	//}
+	// TODO:
+	auto resourceManager = core::ArResourceManager::Active();
+	resourceManager->Update();
 
 	// Call to step all the render jobs
 	Jobs::System::Current::WaitForJobs( Jobs::kJobTypeRenderStep );
@@ -72,7 +77,7 @@ void CRenderState::StepPreRender ( void )
 	}
 }
 
-void CRenderState::StepPostRender ( void )
+void RrRenderer::StepPostRender ( void )
 {
 	unsigned int i;
 
@@ -100,7 +105,7 @@ void CRenderState::StepPostRender ( void )
 	}
 }
 
-void CRenderState::StepBufferPush ( void )
+void RrRenderer::StepBufferPush ( void )
 {
 	gpu::GraphicsContext* gfx = mGfxContext;
 
@@ -111,27 +116,7 @@ void CRenderState::StepBufferPush ( void )
 		// Render the current result to the screen
 		gfx->setRenderTarget(mOutputSurface->getRenderTarget());
 		gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
-		//GL.setupViewport(0, 0, internal_chain_current->buffer_forward_rt->GetWidth(), internal_chain_current->buffer_forward_rt->GetHeight());
 		{
-			/*
-			// Set the current main screen buffer as the texture
-			RrMaterial::Copy->setTexture( TEX_MAIN, internal_chain_current->buffer_forward_rt );
-			//RrMaterial::Copy->prepareShaderConstants(NULL);
-			RrMaterial::Copy->bindPassForward(0);
-
-			// Set up an always-rendered
-			glStencilMask( GL_FALSE );
-			glDepthMask( GL_FALSE );
-
-			glDisable( GL_STENCIL_TEST );
-			glDisable( GL_DEPTH_TEST );
-
-			glDisable( GL_BLEND );
-			glBlendFunc( GL_ONE, GL_ZERO );
-
-			GLd.DrawScreenQuad(RrMaterial::Copy);
-			*/
-
 			gpu::DepthStencilState ds;
 			ds.depthTestEnabled = false;
 			ds.depthWriteEnabled = false;
@@ -147,35 +132,24 @@ void CRenderState::StepBufferPush ( void )
 			bs.dstAlpha = gpu::kBlendModeZero;
 			gfx->setBlendState(bs);
 
-			gfx->setPipeline(m_pipelineScreenQuad);
-			gfx->setVertexBuffer(m_bufferScreenQuad);
-			//gfx->setShaderResource(gpu::kShaderStagePs, internal_chain_current->buffer_forward_rt);
-			gfx->setShaderSamplerAuto(gpu::kShaderStagePs, internal_chain_current->buffer_forward_rt.getAttachment(gpu::kRenderTargetSlotColor0));
-			gfx->setPrimitiveTopology(gpu::kPrimitiveTopologyTriangleStrip);
+			gfx->setPipeline(&pipelinePasses->m_pipelineScreenQuadCopy);
+			gfx->setVertexBuffer(0, &pipelinePasses->m_vbufScreenQuad, 0); // see RrPipelinePasses.cpp
+			gfx->setVertexBuffer(1, &pipelinePasses->m_vbufScreenQuad, 0); // there are two binding slots defined with different stride
+			gfx->setShaderSamplerAuto(gpu::kShaderStagePs,
+				                      internal_chain_current->buffer_forward_rt.getAttachment(gpu::kRenderTargetSlotColor0));
 			gfx->draw(4, 0);
 		}
-		//GL.popModelMatrix();
-
-		// Clear out the buffer now that we no longer need it.
-		/*internal_chain_current->buffer_forward_rt->BindBuffer();
-		{
-			glStencilMask( GL_TRUE );
-			glDepthMask( GL_TRUE );
-			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-		}
-		internal_chain_current->buffer_forward_rt->UnbindBuffer();*/
 
 		gfx->setRenderTarget(&internal_chain_current->buffer_forward_rt);
 		gfx->clearDepthStencil(true, 1.0F, true, 0x00);
 		float clearColor[] = {0,0,0,0};
 		gfx->clearColor(clearColor);
-
 	}
 	TimeProfiler.EndTimeProfile( "rs_buffer_push" );
 }
 
 // Called during the window's rendering routine.
-void CRenderState::Render ( void )
+void RrRenderer::Render ( void )
 {
 	gpu::GraphicsContext* gfx = mGfxContext;
 	unsigned int i;
@@ -329,7 +303,7 @@ void CRenderState::Render ( void )
 
 // Normal rendering routine. Called by a camera. Camera passes in its render hint.
 // This function will render to the scene targets needed.
-void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
+void RrRenderer::RenderSceneForward ( const uint32_t n_renderHint )
 {
 	// TODO: FIX ALL THIS
 
@@ -499,7 +473,7 @@ void CRenderState::RenderSceneForward ( const uint32_t n_renderHint )
 //#define ENABLE_RUNTIME_BLIT_TEST
 
 // Deferred rendering routine.
-void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
+void RrRenderer::RenderSceneDeferred ( const uint32_t n_renderHint )
 {
 	GL_ACCESS GLd_ACCESS
 	CRenderableObject * pRO;
@@ -906,7 +880,7 @@ void CRenderState::RenderSceneDeferred ( const uint32_t n_renderHint )
 
 
 // Specialized Rendering Routines
-void CRenderState::PreRenderSetLighting ( std::vector<CLight*> & lightsToUse )
+void RrRenderer::PreRenderSetLighting ( std::vector<CLight*> & lightsToUse )
 {
 	//vSpecialRender_LightList = lightsToUse;
 	vSpecialRender_LightList = *CLight::GetLightList();
@@ -920,7 +894,7 @@ void CRenderState::PreRenderSetLighting ( std::vector<CLight*> & lightsToUse )
 	RrMaterial::updateStaticUBO();
 }
 // RenderSingleObject renders an object, assuming the projection has been already set up.
-void CRenderState::RenderSingleObject ( CRenderableObject* objectToRender )
+void RrRenderer::RenderSingleObject ( CRenderableObject* objectToRender )
 {
 	GL_ACCESS;
 	char maxPass = objectToRender->GetPassNumber();
@@ -940,7 +914,7 @@ void CRenderState::RenderSingleObject ( CRenderableObject* objectToRender )
 	}
 }
 // RenderObjectArray() renders a null terminated list of objects, assuming the projection has been already set up.
-void CRenderState::RenderObjectArray ( CRenderableObject** objectsToRender )
+void RrRenderer::RenderObjectArray ( CRenderableObject** objectsToRender )
 {
 	GL_ACCESS;
 	int i = 0;

@@ -26,7 +26,7 @@
 #include "renderer/camera/CCamera.h"
 #include "renderer/module_renderer.h"
 #include "renderer/window/RrWindow.h"
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/utils/glScreenshot.h"
 
 // Steam Include
@@ -54,7 +54,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	// Init Physics
 	PrPhysics::Active()->Initialize();
 	// Create Renderstate
-	CRenderState aRenderer (NULL); // passing null creates default resource manager
+	RrRenderer aRenderer (NULL); // passing null creates default resource manager
 	aWindow.mRenderer = &aRenderer; // Set the window's renderer (multiple possible render states)
 	// Create Gamestate
 	CGameState aGameState;

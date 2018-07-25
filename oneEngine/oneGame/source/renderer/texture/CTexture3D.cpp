@@ -1,6 +1,6 @@
 
 // Includes
-//#include "CRenderState.h"
+//#include "RrRenderer.h"
 #include "renderer/system/glSystem.h"
 #include "RrTexture3D.h"
 #include "RrTextureMaster.h"

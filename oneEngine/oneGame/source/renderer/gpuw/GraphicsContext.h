@@ -93,7 +93,7 @@ namespace gpu
 
 		RENDER_API int			validate ( void );
 
-		//	DeviceSetFillMode( device, fillMode ) : Set device's fill mode.
+		//	setFillMode( fillMode ) : Set device's fill mode.
 		// Controls how to fill polygons for given device. (glPolygonMode in OpenGL)
 		// NULL device sets for current active device.
 		RENDER_API int			setFillMode( const FillMode fillMode );
@@ -108,14 +108,16 @@ namespace gpu
 
 		RENDER_API int			setRenderTarget ( RenderTarget* renderTarget );
 
+		//	setPipeline( pipeline ) : Sets current pipeline.
+		// Combination set for shader pipeline, vertex attributes, and primitive topology.
 		RENDER_API int			setPipeline ( Pipeline* pipeline );
-		RENDER_API int			setVertexBuffer ( VertexBuffer* buffer );
+		RENDER_API int			setVertexBuffer ( int slot, VertexBuffer* buffer, uint32_t offset );
 		RENDER_API int			setShaderCBuffer ( ShaderStage stage, ConstantBuffer* buffer );
 		RENDER_API int			setShaderSampler ( ShaderStage stage, Sampler* buffer );
 		RENDER_API int			setShaderSamplerAuto ( ShaderStage stage, Texture* buffer );
 		RENDER_API int			setShaderResource ( ShaderStage stage, Buffer* buffer );
 
-		RENDER_API int			setPrimitiveTopology ( PrimitiveTopology topology );
+		//RENDER_API int			setPrimitiveTopology ( PrimitiveTopology topology );
 
 		RENDER_API int			draw ( const uint32_t vertexCount, const uint32_t startVertex );
 		RENDER_API int			drawIndexed ( const uint32_t indexCount, const uint32_t startIndex );

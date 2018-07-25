@@ -18,7 +18,7 @@ enum eRenderMode : int32_t
 	kRenderModeDeferred		= 0x2
 };
 
-//	eRenderHint - Sublayer bitmask.
+//	eRenderHintBitmask - Sublayer bitmask.
 // Defines specific layers to render.
 enum eRenderHintBitmask : uint32_t
 {
@@ -33,7 +33,7 @@ enum eRenderHintBitmask : uint32_t
 };
 //	eRenderHint - Sublayer bitmask.
 // Defines specific layers to render.
-enum eRenderHintBitmask : uint8_t
+enum eRenderHint : uint8_t
 {
 	kRenderHintCOUNT = 6,
 };
@@ -154,7 +154,7 @@ namespace renderer
 		Color			clear_color			[kRenderHintCOUNT];
 
 		_n_hint_rendering_information ( void );
-	}; //m_default_hint_options; // needs to be initialized when CRenderState is created, so to create default replacement materials.
+	}; //m_default_hint_options; // needs to be initialized when RrRenderer is created, so to create default replacement materials.
 	extern _n_hint_rendering_information* m_default_hint_options;
 };
 
