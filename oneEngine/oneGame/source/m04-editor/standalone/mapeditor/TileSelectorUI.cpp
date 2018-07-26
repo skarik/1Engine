@@ -17,7 +17,7 @@ TileSelectorUI::TileSelectorUI ( void )
 	: CRenderableObject(), m_tileset(NULL)
 {
 	// Sys drawing
-	renderType = renderer::kRLV2D;
+	renderLayer = renderer::kRLV2D;
 
 	// Mat init
 	RrMaterial* draw_mat = new RrMaterial;

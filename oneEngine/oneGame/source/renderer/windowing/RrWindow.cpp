@@ -270,7 +270,7 @@ void RrWindow::CreateGfxSurface ( void )
 		ERROR_OUT("Window is not created. Cannot create surface.");
 	}
 
-	if (m_surface.create(m_device) != 0)
+	if (m_surface.create(m_device, gpu::kPresentModeImmediate) != 0)
 	{
 		DestroyScreen();
 		ERROR_OUT("Gfx surface creation error.");
@@ -350,7 +350,7 @@ bool RrWindow::Resize ( int width, int height )
 
 		// Refresh the surface
 		m_surface.destroy();
-		m_surface.create(m_device);
+		m_surface.create(m_device, gpu::kPresentModeImmediate);
 	}
 	return true;
 }

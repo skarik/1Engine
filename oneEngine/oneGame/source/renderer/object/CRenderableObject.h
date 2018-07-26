@@ -138,7 +138,7 @@ private:
 	// Generated data needed for sorting, namely distance from the camera. Is not fast.
 	void UpdateRenderInfo ( void )
 	{
-		if ( renderType == renderer::kRLV2D )
+		if ( renderLayer == renderer::kRLV2D )
 		{
 			renderDistance = ( transform.world.position.z * 50.0f ) + ( ( _activeCameraPosition - transform.world.position ).sqrMagnitude() * 0.005f );
 		}
@@ -159,7 +159,7 @@ public:
 
 protected:
 	// Rendering States
-	eRenderLayer			renderType;
+	eRenderLayer			renderLayer;
 	//vector<RrMaterial*>	vMaterials;
 protected:
 	//RrMaterial*				m_material;

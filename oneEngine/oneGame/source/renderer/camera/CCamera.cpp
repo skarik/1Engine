@@ -212,10 +212,8 @@ void CCamera::LateUpdate ( void )
 // == Main Render Routine ==
 void CCamera::RenderScene ( void )
 {
-	GL_ACCESS;
-
 	// Bind camera
-	RenderSet();
+	RenderBegin();
 	//GL.pushProjection( viewTransform * projTransform );
 	camera_VP = viewTransform * projTransform;
 	RrMaterial::pushConstantsPerCamera();
@@ -240,13 +238,20 @@ void CCamera::RenderScene ( void )
 
 	// Unbind camera
 	//GL.popProjection();
-	RenderUnset();
+	RenderEnd();
 }
 
 
-void CCamera::RenderSet ( void )
+void CCamera::RenderBegin ( void )
 {
-	GL_ACCESS GL.setupViewport( (int)viewport.pos.x, (int)viewport.pos.y, (int)viewport.size.x, (int)viewport.size.y );
+	auto gfx = gpu::getDevice()->getContext();
+
+	gfx->setViewport(
+		(uint32_t)math::round(viewport.pos.x),
+		(uint32_t)math::round(viewport.pos.y),
+		(uint32_t)math::round(viewport.pos.x + viewport.size.x), 
+		(uint32_t)math::round(viewport.pos.y + viewport.size.y)); 
+	//GL.setupViewport( (int)viewport.pos.x, (int)viewport.pos.y, (int)viewport.size.x, (int)viewport.size.y );
 
 	//CameraUpdate();
 	UpdateFrustum();

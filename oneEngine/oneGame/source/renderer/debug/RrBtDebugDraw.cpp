@@ -29,7 +29,7 @@ RrBtDebugDraw::RrBtDebugDraw ( PrWorld* associated_world )
 	}
 
 	// Set the layer to the final overlay layer
-	this->renderType = renderer::kRLV2D;
+	this->renderLayer = renderer::kRLV2D;
 
 	// Create a forward pass material (see CDebugDrawer for reference)
 	RrMaterial* defaultMat = new RrMaterial;

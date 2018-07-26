@@ -19,7 +19,7 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 {
 	ActiveConsoleUI = this;
 
-	renderType = renderer::kRLV2D;
+	renderLayer = renderer::kRLV2D;
 
 	//fntMenu	= RrFontTexture::Load( "monofonto.ttf", 16, kFW_Bold );
 	//matfntMenu = new RrMaterial;
@@ -149,7 +149,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 
 	transform.world.position.z = -44;
 
-	renderType = renderer::kRLV2D;
+	renderLayer = renderer::kRLV2D;
 
 	//texCursor = RrTexture::Load( "textures/system/cursor.png" );
 	//matCursor = new RrMaterial;

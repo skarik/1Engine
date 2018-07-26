@@ -42,8 +42,8 @@ class CCamera// : public CLogicObject// : public CGameObject
 	CameraType( CAMERA_TYPE_NORMAL );
 public:
 	// Constructor/Destructor
-	RENDER_API		CCamera ( void );
-	RENDER_API		~CCamera ( void );
+	RENDER_API explicit		CCamera ( void );
+	RENDER_API virtual		~CCamera ( void );
 
 	// Update Last
 	RENDER_API virtual void	LateUpdate ( void );
@@ -57,8 +57,8 @@ public:
 
 	// == Set Render Position ==
 	RENDER_API virtual void	UpdateMatrix ( void );
-	RENDER_API virtual void	RenderSet ( void );
-	RENDER_API virtual void	RenderUnset ( void ) {}
+	RENDER_API virtual void	RenderBegin ( void );
+	RENDER_API virtual void	RenderEnd ( void ) {}
 	
 	// == Property Setters ==
 	// Sets active camera.

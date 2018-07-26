@@ -6,7 +6,7 @@
 #include "core/os.h"
 #include <stdio.h>
 
-int gpu::OutputSurface::create ( Device* device )
+int gpu::OutputSurface::create ( Device* device, PresentMode presentMode )
 {
 	PIXELFORMATDESCRIPTOR pfd = {};
 	pfd.nSize		= sizeof(PIXELFORMATDESCRIPTOR);
@@ -31,10 +31,20 @@ int gpu::OutputSurface::create ( Device* device )
 		return gpu::kErrorFormatUnsupported;
 	}
 
+	// TODO: VSync settings with presentMode.
+
+	// Save the context:
+	mw_deviceContext = device->mw_deviceContext;
+
 	return 0;
 }
 
 int gpu::OutputSurface::destroy ( void )
 {
 	return 0;
+}
+
+int gpu::OutputSurface::present ( void )
+{
+	SwapBuffers((HDC)mw_deviceContext);
 }

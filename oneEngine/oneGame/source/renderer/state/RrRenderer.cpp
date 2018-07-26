@@ -20,6 +20,7 @@
 
 #include "core-ext/resources/ResourceManager.h"
 #include "renderer/texture/RrTextureMasterSubsystem.h"
+#include "renderer/material/RrShaderMasterSubsystem.h"
 
 //#include "renderer/resource/CResourceManager.h"
 
@@ -45,7 +46,6 @@ RrRenderer* SceneRenderer			= NULL;
 //  saves current instance into pActive
 //  initializes list of renderers
 RrRenderer::RrRenderer ( CResourceManager* nResourceManager )
-	//: mResourceManager(nResourceManager)
 {
 	Active = this;
 	SceneRenderer = this;
@@ -60,8 +60,8 @@ RrRenderer::RrRenderer ( CResourceManager* nResourceManager )
 	auto resourceManager = core::ArResourceManager::Active();
 	if (resourceManager->GetSubsystem(core::kResourceTypeRrTexture) == NULL)
 		resourceManager->SetSubsystem(core::kResourceTypeRrTexture, new RrTextureMasterSubsystem());
-	//if (resourceManager->GetSubsystem(core::kResourceTypeRrShader) == NULL)
-	//	resourceManager->SetSubsystem(core::kResourceTypeRrShader, new RrShaderMasterSubsystem());
+	if (resourceManager->GetSubsystem(core::kResourceTypeRrShader) == NULL)
+		resourceManager->SetSubsystem(core::kResourceTypeRrShader, new RrShaderMasterSubsystem());
 
 	// Set up reandering options
 	{
@@ -83,11 +83,9 @@ RrRenderer::RrRenderer ( CResourceManager* nResourceManager )
 
 void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::OutputSurface* surface )
 {
-	// Let's pull the device from the current window:
-	//mDevice = RrWindow::pActive->getDevicePointer();
-	//mDevice = RrWindow::pActive->getGPUDevice();
+	// Grab that device!
 	mDevice = device;
-	// Grab the surface
+	// Grab the surface!
 	mOutputSurface	= surface;
 	// And pull out a graphics queue from the rendering device:
 	mGfxContext		= mDevice->getContext();
@@ -102,9 +100,6 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 	}
 	// Set initial rendertarget states
 	{
-		/*internal_buffer_forward_rt = NULL;
-		internal_buffer_depth = 0;
-		internal_buffer_stencil = 0;*/
 		internal_chain_current = NULL;
 		internal_chain_index = 0;
 	}
@@ -149,38 +144,25 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 		renderer::pass::Default->setTexture( TEX_NORMALS, RrTexture::Load( "textures/default_normals.jpg" ) );
 		renderer::pass::Default->setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureBlack) );
 		renderer::pass::Default->setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
-		// Setup forward pass
 		renderer::pass::Default->m_type = kPassTypeForward;
 		renderer::pass::Default->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/d/diffuse_vv.spv", "shaders/d/diffuse_p.spv"});
-		//renderer::Default->passinfo.push_back( RrPassForward() );
-		//renderer::Default->passinfo[0].shader = new RrShader( "shaders/d/diffuse.glsl" );
 		// Setup deferred pass
-		//renderer::Default->deferredinfo.push_back( RrPassDeferred() );
+		// todo?
 	}
 	if ( renderer::pass::Copy == NULL )
 	{
 		renderer::pass::Copy = new RrPass;
-		// Setup forward pass
 		renderer::pass::Copy->m_type = kPassTypeForward;
 		renderer::pass::Copy->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/copy_buffer_vv.spv", "shaders/sys/copy_buffer_p.spv"});
 		renderer::pass::Copy->m_depthTest = gpu::kCompareOpAlways;
 		renderer::pass::Copy->m_cullMode = gpu::kCullModeNone;
-		//renderer::Copy->passinfo.push_back( RrPassForward() );
-		//renderer::Copy->passinfo[0].shader = new RrShader( "shaders/sys/copy_buffer.glsl" );
-		//renderer::Copy->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-		//renderer::Copy->passinfo[0].b_depthtest = false;
-		// No deferred pass.
 	}
 	// Create the fallback shader
 	if ( renderer::pass::Fullbright == NULL )
 	{
 		renderer::pass::Fullbright = new RrPass;
-		// Setup forward pass
 		renderer::pass::Fullbright->m_type = kPassTypeForward;
 		renderer::pass::Fullbright->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"});
-		//renderer::Fallback->passinfo.push_back( RrPassForward() );
-		//renderer::Fallback->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
-		// No deferred pass.
 	}
 	// Create the default hint options
 	if ( renderer::m_default_hint_options == NULL )
@@ -365,6 +347,9 @@ void RrRenderer::SetPipelineMode ( renderer::ePipelineMode newPipelineMode )
 	{
 		pipelineMode = newPipelineMode;
 		// TODO: Invalidate shader resources.
+		// NOTE: Do we need to invalidate anything?
+		// Games must support switching between different pipelines on demand.
+		// Invalidating shaders will make that "on demand" take a hella hot minute.
 	}
 }
 
@@ -384,10 +369,10 @@ const bool RrRenderer::GetShadowsEnabled ( void ) const
 	return shadowMode;
 }
 // Returns current pipeline information
-const eRenderMode RrRenderer::GetRenderMode ( void ) const
-{
-	return renderMode;
-}
+//const eRenderMode RrRenderer::GetRenderMode ( void ) const
+//{
+//	return renderMode;
+//}
 // Returns current pipeline mode (previously, special render type)
 const renderer::ePipelineMode RrRenderer::GetPipelineMode ( void ) const
 {

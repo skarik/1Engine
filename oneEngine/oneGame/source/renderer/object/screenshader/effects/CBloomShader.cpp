@@ -22,7 +22,7 @@ CBloomShader::CBloomShader ( void )
 	shaderMaterial->removeReference();
 	SetMaterial( shaderMaterial );
 	
-	renderType = renderer::kRLForeground;
+	renderLayer = renderer::kRLForeground;
 
 	half_buf = NULL;
 	buf_4th = NULL;

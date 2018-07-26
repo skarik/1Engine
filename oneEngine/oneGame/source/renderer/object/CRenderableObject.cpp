@@ -28,7 +28,7 @@ CRenderableObject::CRenderableObject ( void )
 	//InitMaterials();
 	CRenderableObject::SetMaterial( RrMaterial::Default );
 
-	renderType = renderer::kRLWorld;
+	renderLayer = renderer::kRLWorld;
 	id = RrRenderer::Active->AddRO( this );
 	visible = true;
 }
@@ -55,7 +55,7 @@ void CRenderableObject::SetId( unsigned int nId )
 // Set the rendering type to change draw order and stuff
 void CRenderableObject::SetRenderType ( eRenderLayer newRenderType )
 {
-	renderType = newRenderType;
+	renderLayer = newRenderType;
 }
 // Set Materials
 void CRenderableObject::SetMaterial ( RrMaterial* n_pNewMaterial )

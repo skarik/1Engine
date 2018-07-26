@@ -84,6 +84,11 @@ public:
 	RENDER_API gpu::Device*	GpuDevice ( void )
 		{ return m_device; }
 
+	//	GpuSurface() : Returns the surface the renderer is currently using.
+	RENDER_API gpu::OutputSurface*
+							GpuSurface ( void )
+		{ return &m_surface; }
+
 
 	// Static Calls
 	// ================================
@@ -177,7 +182,7 @@ private:
 
 	// Gfx:
 
-	RrRenderer*		m_renderer;
+	RrRenderer*			m_renderer;
 	gpu::Device*		m_device;
 	gpu::OutputSurface	m_surface;
 

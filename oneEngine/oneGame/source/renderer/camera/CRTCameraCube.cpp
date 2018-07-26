@@ -61,16 +61,16 @@ void CRTCameraCube::RenderScene ( void )
 		glDepthMask( GL_TRUE );
 		glClear( GL_DEPTH_BUFFER_BIT );
 
-		//RenderSet();
+		//RenderBegin();
 		GL_ACCESS;
 		CCamera::UpdateMatrix();
-		CCamera::RenderSet();
+		CCamera::RenderBegin();
 		//GL.pushProjection( viewTransform * projTransform );
 		camera_VP = viewTransform * projTransform;
 		RrMaterial::pushConstantsPerCamera();
 		SceneRenderer->RenderSceneForward( enabledHints );
 		//GL.popProjection();
-		CCamera::RenderUnset();
+		CCamera::RenderEnd();
 
 		// Unbind the frame buffer
 		m_cubeRT->UnbindBufferFace( t_renderList[i] );
@@ -82,15 +82,15 @@ void CRTCameraCube::RenderScene ( void )
 
 	//debug::RTInspector->AddWatch( myRenderTexture );
 
-	/*RenderSet();
+	/*RenderBegin();
 	SceneRenderer->RenderScene();
-	RenderUnset();*/
+	RenderEnd();*/
 
 }
 /*
 
 // Render set
-void CRTCamera::RenderSet ( void )
+void CRTCamera::RenderBegin ( void )
 {
 	// Set viewport percents
 	if ( m_renderTexture )
@@ -117,7 +117,7 @@ void CRTCamera::RenderSet ( void )
 	}
 
 	// Call the parent one
-	CCamera::RenderSet();
+	CCamera::RenderBegin();
 
 	// Update the texture matrix
 	//UpdateTextureMatrix();

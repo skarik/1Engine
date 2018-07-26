@@ -68,7 +68,7 @@ void COrthoCamera::UpdateMatrix ( void )
 }
 
 // Update parameters needed for 2D rendering
-void COrthoCamera::RenderSet ( void )
+void COrthoCamera::RenderBegin ( void )
 {
 	RrMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( kRenderModeDeferred, renderer::kPipelineMode2DPaletted );
 	palette_pass_material->setTexture(TEX_SLOT5, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
@@ -81,5 +81,5 @@ void COrthoCamera::RenderSet ( void )
 	RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
 
 	// Set up the camera normally
-	CCamera::RenderSet();
+	CCamera::RenderBegin();
 }

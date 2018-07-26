@@ -47,7 +47,7 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 	: CRenderableObject (  )
 {
 	renderSettings.renderHints = kRenderHintWorld;
-	renderType	= renderer::kRLV2D;
+	renderLayer	= renderer::kRLV2D;
 
 	m_fntNotifier	= new RrFontTexture ( "YanoneKaffeesatz-B.otf", 72, FW_NORMAL );
 	m_fntNotifier->RemoveReference();

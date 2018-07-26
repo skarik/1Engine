@@ -31,10 +31,17 @@ namespace gpu
 	class Texture;
 }
 
-enum rrPassConstants
+enum rrPassConstants : int
 {
-	kPass_MaxPassCount = 4,
-	kPass_MaxTextureSlots = 7,
+	kPass_MaxPassCount		= 4,
+	kPass_MaxTextureSlots	= 7,
+};
+
+enum rrPassOrderConstants : int
+{
+	kPassOrder_Step					= 10,
+	kPassOrder_DepthMaskDisabled	= 1000,
+	kPassOrder_PostProcess			= 2000,
 };
 
 // 
@@ -68,6 +75,7 @@ public:
 public:
 	rrPassType			m_type;
 	RrShaderProgram*	m_program;		// Shader program. This pass has ownership.
+	int					m_orderOffset;	// order offset. see rrPassOrderConstants for util values. lower is earlier
 
 	// General material-like settings:
 	renderer::cbuffer::rrPerObjectSurface

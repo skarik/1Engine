@@ -23,9 +23,9 @@ public:
 	void LateUpdate ( void ) override;
 
 	// Set Render Position + Render State
-	void RenderSet ( void ) override;
+	void RenderBegin ( void ) override;
 	// Reset render position + render state
-	void RenderUnset ( void ) override;
+	void RenderEnd ( void ) override;
 	// Update camera matrices
 	void UpdateMatrix ( void ) override;
 

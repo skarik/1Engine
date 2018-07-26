@@ -39,19 +39,19 @@ public:
 	// Structure Definitions
 	// ================================
 
-	//	tRenderRequest : Render request
-	struct tRenderRequest
+	//	rrRenderRequest : Render request
+	struct rrRenderRequest
 	{
 		CRenderableObject*	obj;
 		char				pass;
-		bool				transparent;
-		bool				forward;
-		bool				screenshader;
-		uchar				renderType;
+		//bool				transparent;
+		//bool				forward;
+		//bool				screenshader;
+		//uchar				renderLayer;
 
 		// Default constructor
-		tRenderRequest ( void ) :
-			obj(NULL), pass(0), transparent(false), forward(true), screenshader(false), renderType(2)
+		rrRenderRequest ( void ) :
+			obj(NULL), pass(0)//, transparent(false), forward(true), screenshader(false), renderLayer(2)
 		{ ; }
 	};
 
@@ -59,8 +59,8 @@ public:
 	// Material settings must be done before the Render() call
 	struct tReplacementRule
 	{
-		arstring<32>	hintToReplace;
-		RrMaterial*		materialToUse;
+		arstring<32>		hintToReplace;
+		RrMaterial*			materialToUse;
 	};
 
 	enum rrConstants : int
@@ -73,8 +73,9 @@ public:
 	{
 		//glHandle		buffer_depth;
 		//glHandle		buffer_stencil;
-		gpu::Texture	buffer_depth;
-		gpu::WOFrameAttachment	buffer_stencil;
+		gpu::Texture		buffer_depth;
+		gpu::WOFrameAttachment
+							buffer_stencil;
 		//RrRenderTexture*	buffer_forward_rt;
 		gpu::Texture		buffer_color;
 		gpu::RenderTarget	buffer_forward_rt;
@@ -100,68 +101,89 @@ public:
 	// ================================
 
 	// Creates buffers for rendering to.
-	RENDER_API void CreateTargetBuffers ( void );
+	RENDER_API void			CreateTargetBuffers ( void );
 	// Recreates buffers for the given chain. Returns success.
-	RENDER_API bool CreateTargetBufferChain ( rrInternalBufferChain& bufferChain );
-	RENDER_API gpu::RenderTarget* GetForwardBuffer ( void );
-	RENDER_API gpu::RenderTarget* GetDeferredBuffer ( void );
-	RENDER_API gpu::Texture* GetDepthTexture ( void );
-	RENDER_API gpu::WOFrameAttachment* GetStencilTexture ( void );
+	RENDER_API bool			CreateTargetBufferChain ( rrInternalBufferChain& bufferChain );
+	RENDER_API gpu::RenderTarget*
+							GetForwardBuffer ( void );
+	RENDER_API gpu::RenderTarget*
+							GetDeferredBuffer ( void );
+	RENDER_API gpu::Texture*
+							GetDepthTexture ( void );
+	RENDER_API gpu::WOFrameAttachment*
+							GetStencilTexture ( void );
 
 
 	// Public Render routine
 	// ================================
 
 	// Performs internal render loop
-	RENDER_API void Render ( void );
+	RENDER_API void			Render ( void );
 
 	// object state update
-	void StepPreRender ( void );
-	void StepBufferPush ( void );
-	void StepPostRender ( void );
+	void					StepPreRender ( void );
+	void					StepBufferPush ( void );
+	void					StepPostRender ( void );
 
 
 	// Full Scene Rendering Routines
 	// ================================
 
 	// Normal rendering routine.
-	RENDER_API void RenderSceneForward ( const uint32_t n_renderHint );
+	//void RenderSceneForward ( const uint32_t n_renderHint );
 	// Deferred rendering routine.
-	RENDER_API void RenderSceneDeferred ( const uint32_t n_renderHint );
+	//void RenderSceneDeferred ( const uint32_t n_renderHint );
 
+	//	RenderScene () : Renders the main scene from the given camera with DeferredForward+.
+	void					RenderScene ( const uint32_t renderHint, CCamera* camera );
 
 	// Specialized Rendering Routines
 	// ================================
 
-	RENDER_API void PreRenderSetLighting ( std::vector<CLight*> & lightsToUse );
-	// RenderSingleObject renders an object, assuming the projection has been already set up.
-	RENDER_API void RenderSingleObject ( CRenderableObject* objectToRender );
-	// RenderObjectArray() renders a null terminated list of objects, assuming the projection has been already set up.
-	RENDER_API void RenderObjectArray ( CRenderableObject** objectsToRender );
+	//	PreRenderBeginLighting() : Sets up rendering with the given light list.
+	// Think very carefully if this should be used, versus scheduling draws directly on the GPU.
+	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
+	RENDER_API void			PreRenderBeginLighting ( std::vector<CLight*> & lightsToUse );
+	//	RenderSingleObject() : renders an object, assuming the projection has been already set up.
+	// Think very carefully if this should be used, versus scheduling draws directly on the GPU.
+	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
+	// This call adds setting up the cbuffers, forcing a certain set of lights.
+	// It should be noted the DeferredForward+ pipeline will not work without a Forward RrPass.
+	RENDER_API void			RenderSingleObject ( CRenderableObject* objectToRender );
+	//	RenderObjectArray() : renders a null terminated list of objects, assuming the projection has been already set up.
+	// Think very carefully if this should be used, versus scheduling draws directly on the GPU.
+	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
+	// This call adds setting up the cbuffers, forcing a certain set of lights.
+	// It should be noted the DeferredForward+ pipeline will not work without a Forward RrPass.
+	RENDER_API void			RenderObjectArray ( CRenderableObject** objectsToRender );
+
 	//	SetPipelineMode - Sets new pipeline mode.
 	// Calling this has the potential to be very slow and completely invalidate rendering state.
-	// This should be called as soon as possible to avoid any slowdown.
-	RENDER_API void SetPipelineMode ( renderer::ePipelineMode newPipelineMode );
+	// This should be only be called from the GameState, when the pipeline is at no risk of being corrupted.
+	RENDER_API void			SetPipelineMode ( renderer::ePipelineMode newPipelineMode );
 
 
 	// Rendering configuration
 	// ================================
 
 	// Returns the material used for rendering a screen's pass in the given effect
-	RENDER_API RrPass* GetScreenMaterial ( const eRenderMode mode, const renderer::ePipelineMode mode_type );
+	RENDER_API RrPass*		GetScreenMaterial ( const eRenderMode mode, const renderer::ePipelineMode mode_type );
 
 
 	// Settings and query
 	// ================================
 
 	// Returns internal settings that govern the current render setup
-	RENDER_API const renderer::internalSettings_t& GetSettings ( void ) const;
+	RENDER_API const renderer::internalSettings_t&
+							GetSettings ( void ) const;
 	// Returns if shadows are enabled for the renderer or not.
-	RENDER_API const bool GetShadowsEnabled ( void ) const;
+	RENDER_API const bool	GetShadowsEnabled ( void ) const;
 	// Returns current pipeline information
-	RENDER_API const eRenderMode GetRenderMode ( void ) const;
+	//RENDER_API const eRenderMode
+	//						GetRenderMode ( void ) const;
 	// Returns current pipeline mode (previously, special render type)
-	RENDER_API const renderer::ePipelineMode GetPipelineMode ( void ) const;
+	RENDER_API const renderer::ePipelineMode
+							GetPipelineMode ( void ) const;
 
 private:
 	bool bSpecialRender_ResetLights;
@@ -170,8 +192,6 @@ private:
 public:
 	// Public active instance pointer
 	RENDER_API static RrRenderer* Active;
-	// Resource manager
-	//CResourceManager*	mResourceManager;
 
 	// Device & context
 	gpu::Device*			mDevice;
@@ -207,7 +227,7 @@ private:
 
 	// Render list sorting
 	// ================================
-	struct structRenderComparison_old {
+	/*struct structRenderComparison_old {
 		bool operator() ( CRenderableObject* i, CRenderableObject* j);
 	} RenderOrderComparison_old;
 	struct render_forward_comparator_t {
@@ -215,14 +235,20 @@ private:
 	} OrderComparatorForward;
 	struct render_deferred_comparator_t {
 		bool operator() ( tRenderRequest& i, tRenderRequest& j);
-	} OrderComparatorDeferred;
+	} OrderComparatorDeferred;*/
+
+	struct rrRenderRequestSorter
+	{
+		bool operator() ( rrRenderRequest& i, rrRenderRequest& j );
+	}
+	RenderRequestSorter;
 
 	// Render state
 	// ================================
 	CCamera*				mainBufferCamera;
 	bool					bufferedMode;
 	bool					shadowMode;
-	eRenderMode				renderMode;
+	//eRenderMode				renderMode;
 	renderer::ePipelineMode	pipelineMode;
 
 	// Logic list

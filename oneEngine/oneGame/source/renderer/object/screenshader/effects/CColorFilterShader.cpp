@@ -19,7 +19,7 @@ CColorFilterShader::CColorFilterShader ( void )
 	shaderMaterial->removeReference();
 	SetMaterial( shaderMaterial );
 
-	//renderType = renderer::kRLForeground;
+	//renderLayer = renderer::kRLForeground;
 
 	m_midtone_blend		= Color( 1,1,1,-0.05 );
 	m_highlight_blend	= Color( 1,1,1,0.05 ); 

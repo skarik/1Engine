@@ -89,7 +89,7 @@ RrWindow::RrWindow(
 	renderer::Settings.swapIntervals = 0;
 	renderer::Settings.maxLights = 8; // Forward rendering light count (still used)
 
-	//RenderSettings.ambientColor = Color( 0.2f,0.15f,0.3f, 1 );
+	//RenderBegintings.ambientColor = Color( 0.2f,0.15f,0.3f, 1 );
 	renderer::Settings.ambientColor = Color( 0.02f,0.015f,0.03f, 1 );
 
 	renderer::Settings.fogEnabled = true;

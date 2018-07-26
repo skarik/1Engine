@@ -31,7 +31,7 @@ CDuskGUI::CDuskGUI ( RrFontTexture* font )
 	: CGameBehavior(), CRenderableObject()
 {
 	// Sys drawing
-	renderType = renderer::kRLV2D;
+	renderLayer = renderer::kRLV2D;
 
 	// Mat init
 	fntDefault = font;

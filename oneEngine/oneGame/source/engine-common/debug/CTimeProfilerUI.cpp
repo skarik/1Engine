@@ -12,7 +12,7 @@ CTimeProfilerUI::CTimeProfilerUI ( void )
 	: CRenderableObject()
 {
 	renderSettings.renderHints = kRenderHintWorld;
-	renderType = renderer::kRLV2D;
+	renderLayer = renderer::kRLV2D;
 
 	fntDebug	= new RrFontTexture ( "YanoneKaffeesatz-R.otf", 12, FW_BOLD );
 	matFntDebug = new RrMaterial;

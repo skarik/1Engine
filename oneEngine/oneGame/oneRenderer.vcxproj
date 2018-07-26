@@ -87,6 +87,7 @@
     <ClCompile Include="source\renderer\material\RrPassDeferred.cpp" />
     <ClCompile Include="source\renderer\material\RrShader.cpp" />
     <ClCompile Include="source\renderer\material\RrShaderManager.cpp" />
+    <ClCompile Include="source\renderer\material\RrShaderMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\material\RrShaderProgram.cpp" />
     <ClCompile Include="source\renderer\module_renderer.cpp" />
     <ClCompile Include="source\renderer\object\CRenderableObject.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="source\renderer\material\RrShader.cbuffers.h" />
     <ClInclude Include="source\renderer\material\RrShader.h" />
     <ClInclude Include="source\renderer\material\RrShaderManager.h" />
+    <ClInclude Include="source\renderer\material\RrShaderMasterSubsystem.h" />
     <ClInclude Include="source\renderer\material\RrShaderProgram.h" />
     <ClInclude Include="source\renderer\material\ShaderSlots.h" />
     <ClInclude Include="source\renderer\module_renderer.h" />

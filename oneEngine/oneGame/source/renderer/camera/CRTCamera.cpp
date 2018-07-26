@@ -68,7 +68,7 @@ void CRTCamera::LateUpdate ( void )
 }
 
 // Render set
-void CRTCamera::RenderSet ( void )
+void CRTCamera::RenderBegin ( void )
 {
 	// Set viewport percents
 	if ( m_renderTexture )
@@ -95,7 +95,7 @@ void CRTCamera::RenderSet ( void )
 	}
 
 	// Call the parent one
-	CCamera::RenderSet();
+	CCamera::RenderBegin();
 
 	// Update the texture matrix
 	//UpdateTextureMatrix();
@@ -107,7 +107,7 @@ void CRTCamera::RenderSet ( void )
 }
 
 // Render clean
-void CRTCamera::RenderUnset ( void )
+void CRTCamera::RenderEnd ( void )
 {
 	// Unbind framebuffer
 	if ( m_renderTexture )

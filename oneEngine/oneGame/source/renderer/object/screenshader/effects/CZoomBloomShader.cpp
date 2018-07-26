@@ -15,7 +15,7 @@ CZoomBloomShader::CZoomBloomShader ( void )
 	//vMaterials[0]->isTransparent = true;
 	//vMaterials[0]->iBlendMode = RrMaterial::BM_ADD;
 
-	//renderType = renderer::kRLForeground;
+	//renderLayer = renderer::kRLForeground;
 
 	RrMaterial *shaderMaterial = new RrMaterial;
 	shaderMaterial->m_isScreenShader = true;

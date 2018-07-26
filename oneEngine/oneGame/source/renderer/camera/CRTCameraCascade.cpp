@@ -41,13 +41,13 @@ void CRTCameraCascade::RenderScene ( void )
 		{
 			CRTCamera::UpdateMatrix();
 			m_renderMatrices[i] = textureMatrix;
-			CCamera::RenderSet();
+			CCamera::RenderBegin();
 			//GL.pushProjection( viewTransform * projTransform );
 			camera_VP = viewTransform * projTransform;
 			RrMaterial::pushConstantsPerCamera();
 			SceneRenderer->RenderSceneForward( enabledHints );
 			//GL.popProjection();
-			CCamera::RenderUnset();
+			CCamera::RenderEnd();
 		}
 
 		// Make the ortho smaller
@@ -63,7 +63,7 @@ void CRTCameraCascade::RenderScene ( void )
 
 	//debug::RTInspector->AddWatch( myRenderTexture );
 
-	/*RenderSet();
+	/*RenderBegin();
 	SceneRenderer->RenderScene();
-	RenderUnset();*/
+	RenderEnd();*/
 }
