@@ -6,7 +6,7 @@
 
 #include "engine/utils/CDeveloperConsole.h"
 
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/object/shapes/CPrimitiveCube.h"
 #include "renderer/object/model/Model.h"
 
@@ -23,7 +23,7 @@ void demosceneModelLoader::LoadScene ( void )
 
 	// Create camera
 	/*{
-		CCamera* cam = new CCamera();
+		RrCamera* cam = new RrCamera();
 		cam->transform.position = Vector3d(-3.0F, +3.0F, 1.0F);
 		cam->transform.rotation = Rotator(Vector3d(0, -10.0F, 45.0F));
 		cam->SetActive();

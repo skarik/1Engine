@@ -25,7 +25,7 @@
 #include "engine/utils/CDeveloperConsole.h"
 
 // Include renderer
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/module_renderer.h"
 #include "renderer/windowing/RrWindow.h"
 #include "renderer/state/RrRenderer.h"

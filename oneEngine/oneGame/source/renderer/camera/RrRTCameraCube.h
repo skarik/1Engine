@@ -1,25 +1,25 @@
 
-// CRTCameraCube
+// RrRTCameraCube
 // Specialized render method to render the scene multiple times at different viewports to the same camera cube.
 
-#ifndef _C_RT_CAMERA_CUBE_H_
-#define _C_RT_CAMERA_CUBE_H_
+#ifndef RENDERER_RENDER_TARGET_CAMERA_CUBE_H_
+#define RENDERER_RENDER_TARGET_CAMERA_CUBE_H_
 
-#include "CRTCamera.h"
+#include "RrRTCamera.h"
 #include "renderer/texture/RrRenderTextureCube.h"
 
-class CRTCameraCube : public CRTCamera
+class RrRTCameraCube : public RrRTCamera
 {
-	CameraType( CAMERA_TYPE_RT_CUBE );
+	CameraType( kCameraClassRTCube );
 	//ClassName( "CameraRTCube" );
 public:
 	// Constructor/destructor
-	explicit		CRTCameraCube (
+	explicit		RrRTCameraCube (
 		RrRenderTextureCube*	targetTexture	= NULL,
 		Real			renderFramerate	= 30.0f,
 		bool			autoRender		= true,
 		bool			staggerRender	= true
-		) : CRTCamera( targetTexture, renderFramerate, autoRender ), m_staggerRender(staggerRender), m_staggerTarget(0)
+		) : RrRTCamera( targetTexture, renderFramerate, autoRender ), m_staggerRender(staggerRender), m_staggerTarget(0)
 	{
 		;//m_type = CAMERA_TYPE_RT_CUBE;
 	}
@@ -35,4 +35,4 @@ public:
 	uchar	m_staggerTarget;
 };
 
-#endif//_C_RT_CAMERA_CUBE_H_
+#endif//RENDERER_RENDER_TARGET_CAMERA_CUBE_H_

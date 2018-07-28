@@ -3,7 +3,7 @@
 //#include "DayAndNightCycle.h"
 
 #include "renderer/state/RrRenderer.h"
-#include "renderer/camera/CRTCamera.h"
+#include "renderer/camera/RrRTCamera.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
@@ -26,7 +26,7 @@ CTestViewShader::CTestViewShader ( void )
 	shaderMaterial->removeReference();
 	SetMaterial( shaderMaterial );
 
-	m_rtcam = new CRTCamera;
+	m_rtcam = new RrRTCamera;
 	m_rtcam->layerVisibility[renderer::kRLBackground]	= true;
 	m_rtcam->layerVisibility[renderer::kRLSecondary]	= false;
 	m_rtcam->layerVisibility[renderer::kRLWorld]		= true;
@@ -48,16 +48,16 @@ CTestViewShader::~CTestViewShader ( void )
 void CTestViewShader::UpdateBuffer ( void )
 {
 	// Copy over!
-	if ( CCamera::activeCamera )
+	if ( RrCamera::activeCamera )
 	{
-		/*if ( m_rtcam->transform.GetParent() != &CCamera::activeCamera->transform ) {
-			m_rtcam->transform.Get( CCamera::activeCamera->transform );
-			m_rtcam->transform.SetParent( &CCamera::activeCamera->transform );
+		/*if ( m_rtcam->transform.GetParent() != &RrCamera::activeCamera->transform ) {
+			m_rtcam->transform.Get( RrCamera::activeCamera->transform );
+			m_rtcam->transform.SetParent( &RrCamera::activeCamera->transform );
 		}*/
-		m_rtcam->transform = CCamera::activeCamera->transform;
-		m_rtcam->fov = CCamera::activeCamera->fov;
-		m_rtcam->zNear = CCamera::activeCamera->zNear*2;
-		m_rtcam->zFar = CCamera::activeCamera->zFar;
+		m_rtcam->transform = RrCamera::activeCamera->transform;
+		m_rtcam->fov = RrCamera::activeCamera->fov;
+		m_rtcam->zNear = RrCamera::activeCamera->zNear*2;
+		m_rtcam->zFar = RrCamera::activeCamera->zFar;
 	}
 
 	CScreenShader::UpdateBuffer();
@@ -90,10 +90,10 @@ void CTestViewShader::DrawOutput ( void )
 	//	m_material->bindPass(0);
 	//	m_material->setShaderConstants( this );
 	//	//vMaterials[0]->bindDepth( s_buf, "textureDepth" );
-	//	//vMaterials[0]->setUniform( "zNear", CCamera::activeCamera->zNear );
-	//	//vMaterials[0]->setUniform( "zFar", CCamera::activeCamera->zFar );
+	//	//vMaterials[0]->setUniform( "zNear", RrCamera::activeCamera->zNear );
+	//	//vMaterials[0]->setUniform( "zFar", RrCamera::activeCamera->zFar );
 	//	/*if ( Daycycle::DominantCycle ) {
-	//		Vector3d pos = Daycycle::DominantCycle->GetSunPosition( CCamera::activeCamera );
+	//		Vector3d pos = Daycycle::DominantCycle->GetSunPosition( RrCamera::activeCamera );
 	//		m_material->setUniform( "gm_SunScreenPosition", Vector3d(pos.x,1-pos.y,pos.z) );
 	//		m_material->setUniform( "gm_ZoomColorStrength", std::min<Real>( 1.0f, Daycycle::DominantCycle->GetSkyobjectDiffuse().red*3 ) );
 	//	}
@@ -122,10 +122,10 @@ void CTestViewShader::DrawOutput ( void )
 		m_material->bindPass(0);
 		m_material->setShaderConstants( this );
 		//vMaterials[0]->bindDepth( s_buf, "textureDepth" );
-		//vMaterials[0]->setUniform( "zNear", CCamera::activeCamera->zNear );
-		//vMaterials[0]->setUniform( "zFar", CCamera::activeCamera->zFar );
+		//vMaterials[0]->setUniform( "zNear", RrCamera::activeCamera->zNear );
+		//vMaterials[0]->setUniform( "zFar", RrCamera::activeCamera->zFar );
 		if ( Daycycle::DominantCycle ) {
-			Vector3d pos = Daycycle::DominantCycle->GetSunPosition( CCamera::activeCamera );
+			Vector3d pos = Daycycle::DominantCycle->GetSunPosition( RrCamera::activeCamera );
 			m_material->setUniform( "gm_SunScreenPosition", Vector3d(pos.x,1-pos.y,pos.z) );
 			m_material->setUniform( "gm_ZoomColorStrength", std::min<Real>( 1.0f, Daycycle::DominantCycle->GetSkyobjectDiffuse().red*3 ) );
 		}

@@ -5,8 +5,8 @@
 #include "core/settings/CGameSettings.h"
 
 #include "renderer/state/Settings.h"
-#include "renderer/camera/CRTCamera.h"
-#include "renderer/camera/CRTCameraCascade.h"
+#include "renderer/camera/RrRTCamera.h"
+#include "renderer/camera/RrRTCameraCascade.h"
 
 #include "renderer/system/glMainSystem.h"
 //#include "RrRenderTexture.h"
@@ -28,12 +28,12 @@ DirectionalLight::DirectionalLight ( void )
 {
 	CLight::Update();
 
-	if ( CCamera::activeCamera != NULL )
+	if ( RrCamera::activeCamera != NULL )
 	{
 		// Set position to the main scene's camera
-		transform.position = CCamera::activeCamera->transform.position;
+		transform.position = RrCamera::activeCamera->transform.position;
 		// Offset by the focal distance (to a point)
-		transform.position += CCamera::activeCamera->transform.Forward() * std::min<Real>( CCamera::activeCamera->focalDistance*0.4f, shadowRange*0.15f );
+		transform.position += RrCamera::activeCamera->transform.Forward() * std::min<Real>( RrCamera::activeCamera->focalDistance*0.4f, shadowRange*0.15f );
 	}
 	else
 	{
@@ -51,12 +51,12 @@ void DirectionalLight::PreStepSynchronus ( void )
 {
 	CLight::PreStepSynchronus();
 
-	if ( CCamera::activeCamera != NULL )
+	if ( RrCamera::activeCamera != NULL )
 	{
 		// Set position to the main scene's camera
-		position = CCamera::activeCamera->transform.position;
+		position = RrCamera::activeCamera->transform.position;
 		// Offset by the focal distance (to a point)
-		position += CCamera::activeCamera->transform.rotation * Vector3d::forward * std::min<Real>( CCamera::activeCamera->focalDistance*0.4f, shadowRange*0.15f );
+		position += RrCamera::activeCamera->transform.rotation * Vector3d::forward * std::min<Real>( RrCamera::activeCamera->focalDistance*0.4f, shadowRange*0.15f );
 	}
 	else
 	{
@@ -114,19 +114,19 @@ void DirectionalLight::UpdateShadowCamera ( void )
 	ds = -ds;
 
 	// Now, generate the positions of the shadow cascades
-	Vector3d offsetDirection = CCamera::activeCamera->transform.rotation * Vector3d::forward;
+	Vector3d offsetDirection = RrCamera::activeCamera->transform.rotation * Vector3d::forward;
 	Real cascadeDistance;
 	cascadeDistance = (shadowRange/64.0F) * 0.433f;
-	cascadeDistance += std::min<Real>( cascadeDistance*0.5f, std::max<Real>( CCamera::activeCamera->focalDistance-3.0f, 0 ) );
-	((CRTCameraCascade*)shadowCamera)->m_renderPositions[3] = CCamera::activeCamera->transform.position + offsetDirection*cascadeDistance + ds*shadowRange*1.5f;
+	cascadeDistance += std::min<Real>( cascadeDistance*0.5f, std::max<Real>( RrCamera::activeCamera->focalDistance-3.0f, 0 ) );
+	((RrRTCameraCascade*)shadowCamera)->m_renderPositions[3] = RrCamera::activeCamera->transform.position + offsetDirection*cascadeDistance + ds*shadowRange*1.5f;
 	cascadeDistance += (shadowRange/16.0F) * 0.433f;
-	((CRTCameraCascade*)shadowCamera)->m_renderPositions[2] = CCamera::activeCamera->transform.position + offsetDirection*cascadeDistance + ds*shadowRange*1.5f;
+	((RrRTCameraCascade*)shadowCamera)->m_renderPositions[2] = RrCamera::activeCamera->transform.position + offsetDirection*cascadeDistance + ds*shadowRange*1.5f;
 	cascadeDistance += (shadowRange/4.0F) * 0.433f;
-	((CRTCameraCascade*)shadowCamera)->m_renderPositions[1] = CCamera::activeCamera->transform.position + offsetDirection*cascadeDistance + ds*shadowRange*1.5f;
+	((RrRTCameraCascade*)shadowCamera)->m_renderPositions[1] = RrCamera::activeCamera->transform.position + offsetDirection*cascadeDistance + ds*shadowRange*1.5f;
 	cascadeDistance += (shadowRange/1.0F) * 0.433f;
-	((CRTCameraCascade*)shadowCamera)->m_renderPositions[0] = CCamera::activeCamera->transform.position + offsetDirection*cascadeDistance + ds*shadowRange*1.5f;
+	((RrRTCameraCascade*)shadowCamera)->m_renderPositions[0] = RrCamera::activeCamera->transform.position + offsetDirection*cascadeDistance + ds*shadowRange*1.5f;
 
-	shadowCamera->transform.position = ((CRTCameraCascade*)shadowCamera)->m_renderPositions[3];
+	shadowCamera->transform.position = ((RrRTCameraCascade*)shadowCamera)->m_renderPositions[3];
 
 	// Lock the texels on the shadow map
 	/*Vector3d pos = shadowCamera->transform.position;
@@ -142,7 +142,7 @@ void DirectionalLight::UpdateShadowCamera ( void )
 	shadowCamera->transform.position -= pos;*/
 	/*for ( uint i = 0; i < 4; ++i ) 
 	{
-		Vector3d t_pos = ((CRTCameraCascade*)shadowCamera)->m_renderPositions[i];
+		Vector3d t_pos = ((RrRTCameraCascade*)shadowCamera)->m_renderPositions[i];
 		t_pos = (!shadowCamera->transform.rotation) * t_pos; 
 
 		Real worldTexelSize = ((shadowRange/pow(4,i)) / shadowResolution);
@@ -152,6 +152,6 @@ void DirectionalLight::UpdateShadowCamera ( void )
 
 		t_pos = (shadowCamera->transform.rotation) * t_pos;
 
-		((CRTCameraCascade*)shadowCamera)->m_renderPositions[i] -= t_pos;
+		((RrRTCameraCascade*)shadowCamera)->m_renderPositions[i] -= t_pos;
 	}*/
 }

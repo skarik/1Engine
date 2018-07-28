@@ -1,11 +1,11 @@
 
 // == Includes ==
 #include "CLight.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 //#include "CRenderableObject.h"
 
-#include "renderer/camera/CRTCamera.h"
-#include "renderer/camera/CRTCameraCascade.h"
+#include "renderer/camera/RrRTCamera.h"
+#include "renderer/camera/RrRTCameraCascade.h"
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/system/glMainSystem.h"
 
@@ -202,7 +202,7 @@ void CLight::UpdateLightList ( void )
 	{
 		CLight* pTarget;
 		bListReset = false;
-		vCameraPos = CCamera::activeCamera->transform.position;
+		vCameraPos = RrCamera::activeCamera->transform.position;
 
 		if ( !CGameSettings::Active()->b_ro_EnableShaders ) {
 			for ( int i = 0; i < (renderer::Settings.maxLights-1); i += 1 ) {
@@ -310,12 +310,12 @@ void CLight::UpdateShadows ( void )
 		if ( !shadowCamera )
 		{
 			if ( isDirectional ) {
-				shadowCamera = new CRTCameraCascade ( shadowTexture, 48.0f, true );
+				shadowCamera = new RrRTCameraCascade ( shadowTexture, 48.0f, true );
 			}
 			else {
-				shadowCamera = new CRTCamera ( shadowTexture, 48.0f, true );
+				shadowCamera = new RrRTCamera ( shadowTexture, 48.0f, true );
 			}
-			//shadowCamera = new CRTCamera ( shadowTexture, 2.0f, true );
+			//shadowCamera = new RrRTCamera ( shadowTexture, 2.0f, true );
 			/*shadowCamera->ignoreMode = true;
 			shadowCamera->drawOnlySolid = true;
 			shadowCamera->drawOnlyWorld = true;

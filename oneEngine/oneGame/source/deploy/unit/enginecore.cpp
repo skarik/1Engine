@@ -23,7 +23,7 @@
 #include "engine/state/CGameState.h"
 
 // Include renderer
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/module_renderer.h"
 #include "renderer/window/RrWindow.h"
 #include "renderer/state/RrRenderer.h"
@@ -68,7 +68,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
 
 	// Create the game scene
-	CCamera* l_cam = new CCamera;
+	RrCamera* l_cam = new RrCamera;
 	engine::Sound* l_music = core::Orphan(engine::Audio.PlaySound("Music.MainMenu"));
 	l_music->SetLooped(true);
 

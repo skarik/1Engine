@@ -6,7 +6,7 @@
 #include "core/system/io/FileUtils.h"
 #include "core/system/Screen.h"
 
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/object/CRenderable3D.h"
 #include "renderer/object/CStreamedRenderable3D.h"
 #include "renderer/texture/RrFontTexture.h"
@@ -75,10 +75,10 @@ void CutsceneEditor::CLargeTextRenderer::UpdateMesh ( void )
 	screenMapping.position.y = 1.0F;
 	screenMapping.size.y = -2.0F;
 
-	if ( CCamera::activeCamera )
+	if ( RrCamera::activeCamera )
 	{	// Modify console size based on render scale so it is always legible!
 		screenMapping.position += screenMapping.size * 0.5F;
-		screenMapping.size *= CCamera::activeCamera->render_scale;
+		screenMapping.size *= RrCamera::activeCamera->render_scale;
 		screenMapping.position -= screenMapping.size * 0.5F;
 	}
 
@@ -138,10 +138,10 @@ void CutsceneEditor::CNormalTextRenderer::UpdateMesh ( void )
 	screenMapping.position.y = 1.0F;
 	screenMapping.size.y = -2.0F;
 
-	if ( CCamera::activeCamera )
+	if ( RrCamera::activeCamera )
 	{	// Modify console size based on render scale so it is always legible!
 		screenMapping.position += screenMapping.size * 0.5F;
-		screenMapping.size *= CCamera::activeCamera->render_scale;
+		screenMapping.size *= RrCamera::activeCamera->render_scale;
 		screenMapping.position -= screenMapping.size * 0.5F;
 	}
 

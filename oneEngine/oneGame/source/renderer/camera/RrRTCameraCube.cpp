@@ -1,5 +1,5 @@
 
-#include "CRTCameraCube.h"
+#include "RrRTCameraCube.h"
 #include "renderer/state/RrRenderer.h"
 #include "renderer/state/Settings.h"
 #include "renderer/types/ObjectSettings.h"
@@ -9,7 +9,7 @@
 
 #include "renderer/system/glMainSystem.h"
 
-void CRTCameraCube::RenderScene ( void )
+void RrRTCameraCube::RenderScene ( void )
 {
 	if ( !m_renderTexture ) {
 		return;
@@ -63,14 +63,14 @@ void CRTCameraCube::RenderScene ( void )
 
 		//RenderBegin();
 		GL_ACCESS;
-		CCamera::UpdateMatrix();
-		CCamera::RenderBegin();
+		RrCamera::UpdateMatrix();
+		RrCamera::RenderBegin();
 		//GL.pushProjection( viewTransform * projTransform );
 		camera_VP = viewTransform * projTransform;
 		RrMaterial::pushConstantsPerCamera();
 		SceneRenderer->RenderSceneForward( enabledHints );
 		//GL.popProjection();
-		CCamera::RenderEnd();
+		RrCamera::RenderEnd();
 
 		// Unbind the frame buffer
 		m_cubeRT->UnbindBufferFace( t_renderList[i] );
@@ -90,7 +90,7 @@ void CRTCameraCube::RenderScene ( void )
 /*
 
 // Render set
-void CRTCamera::RenderBegin ( void )
+void RrRTCamera::RenderBegin ( void )
 {
 	// Set viewport percents
 	if ( m_renderTexture )
@@ -117,7 +117,7 @@ void CRTCamera::RenderBegin ( void )
 	}
 
 	// Call the parent one
-	CCamera::RenderBegin();
+	RrCamera::RenderBegin();
 
 	// Update the texture matrix
 	//UpdateTextureMatrix();

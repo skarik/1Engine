@@ -1,6 +1,6 @@
 #include "CPlayer.h"
 #include "core-ext/input/CInputControl.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "engine/audio/AudioInterface.h"
 
 // ==Constructor and Destructor==
@@ -19,7 +19,7 @@ CPlayer::CPlayer ( void )
 
 	// ===Camera===
 	//m_cameraUpdateType	= (stateFunc_t)&CPlayer::camDefault;
-	pCamera	= new CCamera ();
+	pCamera	= new RrCamera ();
 	pCamera->SetActive();
 	
 	fTurnSensitivity	= 1;
@@ -226,7 +226,7 @@ CPlayer::CPlayer ( void )
 
 	// ===Camera===
 	m_cameraUpdateType	= (stateFunc_t)&CPlayer::camDefault;
-	pCamera	= new CCamera ();
+	pCamera	= new RrCamera ();
 	pCamera->SetActive();
 	
 	vPlayerRotation		= Vector3d( 0,0,0 );

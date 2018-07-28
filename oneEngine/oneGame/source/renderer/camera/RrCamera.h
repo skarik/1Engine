@@ -1,8 +1,8 @@
 // This will eventually be the base camera, and all crazy stuff (like input) will be done elsewhere
 // But for now, it's for dicking around
 
-#ifndef _C_CAMERA_
-#define _C_CAMERA_
+#ifndef RENDERER_CAMERA_H_
+#define RENDERER_CAMERA_H_
 
 // Includes
 //#include "CGameObject.h"
@@ -23,27 +23,55 @@
 class RrRenderTexture;
 
 // Enumeration for type of camera
-enum eCameraClassType
+enum rrCameraClassType
 {
-	CAMERA_TYPE_NORMAL,
-	CAMERA_TYPE_RT,
-	CAMERA_TYPE_RT_CASCADE,
-	CAMERA_TYPE_RT_CUBE
+	kCameraClassNormal,
+	kCameraClassRTNormal,
+	kCameraClassRTCascade,
+	kCameraClassRTCube
+};
+
+enum rrCameraRenderType
+{
+	// Will run the 5x5 forward+deferred hybrid renderer
+	kCameraRenderWorld,
+	
+	// Will run the forward+ shadow color renderer
+	kCameraRenderShadow,
+};
+
+class RrHybridBufferChain;
+
+struct rrCameraPass
+{
+	// How does this camera act for this given pass?
+	rrCameraRenderType	m_passType;
+
+	// target viewport rendering to
+	Rect				m_viewport;
+
+	// NULL to use the main engine's buffer chain.
+	// Otherwise, points to the buffer chain to use for rendering.
+	// An RT camera will properly create their own buffer chain
+	RrHybridBufferChain*m_bufferChain;
+
+	Matrix4x4			m_viewTransform;
+	Matrix4x4			m_projTransform;
 };
 
 // ==Defines==
 // A define to allow for a function to differentiate between different kinds of cameras
-#define CameraType(a) public: virtual eCameraClassType GetType ( void ) { return a; };
+#define CameraType(a) public: virtual rrCameraClassType GetType ( void ) { return a; };
 
 // Class Definition
-class CCamera// : public CLogicObject// : public CGameObject
+class RrCamera// : public CLogicObject// : public CGameObject
 {
 	//ClassName( "CameraBase" );
-	CameraType( CAMERA_TYPE_NORMAL );
+	CameraType( kCameraClassNormal );
 public:
 	// Constructor/Destructor
-	RENDER_API explicit		CCamera ( void );
-	RENDER_API virtual		~CCamera ( void );
+	RENDER_API explicit		RrCamera ( void );
+	RENDER_API virtual		~RrCamera ( void );
 
 	// Update Last
 	RENDER_API virtual void	LateUpdate ( void );
@@ -51,9 +79,12 @@ public:
 	// ======
 	// === Rendering Queries ===
 	// ======
+
+	RENDER_API virtual int	PassCount ( void );
+	RENDER_API virtual void	PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses );
 	
 	// == Main Render Routine ==
-	RENDER_API virtual void	RenderScene ( void );
+	//RENDER_API virtual void	RenderScene ( void );
 
 	// == Set Render Position ==
 	RENDER_API virtual void	UpdateMatrix ( void );
@@ -77,7 +108,7 @@ public:
 	// Get if is RT camera. Yes, all cameras are technically RT cameras.
 	// If a camera returns true to this query, then are not permitted to the final screen output,
 	// and may only render to their target render texture.
-	RENDER_API bool	IsRTCamera ( void ) { return bIsRTcamera; }
+	//RENDER_API bool	IsRTCamera ( void ) { return bIsRTcamera; }
 
 	// ======
 	// === Mathematical + Game Queries ===
@@ -153,10 +184,10 @@ public:
 	// == Static Values ==
 	// During Render, is the current active rendering camera
 	// During Update, is the renderer of the main viewport
-	RENDER_API static CCamera* activeCamera;
+	RENDER_API static RrCamera* activeCamera;
 
 	// Vector of active cameras
-	RENDER_API static std::vector<CCamera*>	vCameraList;
+	RENDER_API static std::vector<RrCamera*>	vCameraList;
 
 protected:
 	// == Camera resultant properties ==
@@ -171,7 +202,7 @@ protected:
 	core::math::Frustum frustum;
 
 	// == Camera type properties ==
-	bool	bIsRTcamera;
+	//bool	bIsRTcamera;
 	bool	bNeedsUpdate;
 
 	// == Camera RT (since engine is default buffered) ==
@@ -186,4 +217,4 @@ private:
 
 };
 
-#endif
+#endif//RENDERER_CAMERA_H_

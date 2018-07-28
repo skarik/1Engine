@@ -7,6 +7,7 @@
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/types/RrGpuTexture.h"
 #include "renderer/state/InternalSettings.h"
+#include "renderer/state/RrHybridBufferChain.h"
 
 //Todo: make following prototypes
 #include "renderer/gpuw/Textures.h"
@@ -19,11 +20,12 @@
 class CRenderableObject;
 class CLogicObject;
 class CLight;
-class CCamera;
+class RrCamera;
 class CResourceManager;
 class RrPass;
 class RrRenderTexture;
 class CMRTTexture;
+struct rrCameraPass;
 namespace renderer
 {
 	namespace pipeline
@@ -43,16 +45,16 @@ public:
 	struct rrRenderRequest
 	{
 		CRenderableObject*	obj;
-		char				pass;
+		uint8_t				pass;
 		//bool				transparent;
 		//bool				forward;
 		//bool				screenshader;
 		//uchar				renderLayer;
 
 		// Default constructor
-		rrRenderRequest ( void ) :
+		/*rrRenderRequest ( void ) :
 			obj(NULL), pass(0)//, transparent(false), forward(true), screenshader(false), renderLayer(2)
-		{ ; }
+		{ ; }*/
 	};
 
 	//	tReplacementRule : Render material replacement rule
@@ -63,7 +65,7 @@ public:
 		RrMaterial*			materialToUse;
 	};
 
-	enum rrConstants : int
+	/*enum rrConstants : int
 	{
 		kMRTColorAttachmentCount = 4,
 	};
@@ -86,7 +88,7 @@ public:
 		gpu::Texture		buffer_deferred_color[kMRTColorAttachmentCount];
 		gpu::RenderTarget	buffer_deferred_mrt;
 		gpu::RenderTarget	buffer_deferred_rt;
-	};
+	};*/
 
 public:
 	// Constructor, Destructor, and Initialization
@@ -103,7 +105,7 @@ public:
 	// Creates buffers for rendering to.
 	RENDER_API void			CreateTargetBuffers ( void );
 	// Recreates buffers for the given chain. Returns success.
-	RENDER_API bool			CreateTargetBufferChain ( rrInternalBufferChain& bufferChain );
+	//RENDER_API bool			CreateTargetBufferChain ( rrInternalBufferChain& bufferChain );
 	RENDER_API gpu::RenderTarget*
 							GetForwardBuffer ( void );
 	RENDER_API gpu::RenderTarget*
@@ -135,7 +137,13 @@ public:
 	//void RenderSceneDeferred ( const uint32_t n_renderHint );
 
 	//	RenderScene () : Renders the main scene from the given camera with DeferredForward+.
-	void					RenderScene ( const uint32_t renderHint, CCamera* camera );
+	// Is shorthand for ``RenderObjectList(m_renderableObjects)``.
+	RENDER_API void			RenderScene ( RrCamera* camera );
+	//	RenderObjectList () : Renders the object list from the given camera with DeferredForward+.
+	RENDER_API void			RenderObjectList ( RrCamera* camera, CRenderableObject** objectsToRender, const uint32_t objectCount );
+
+	RENDER_API void			RenderObjectListWorld ( rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount );
+	RENDER_API void			RenderObjectListShadows ( rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount );
 
 	// Specialized Rendering Routines
 	// ================================
@@ -143,7 +151,7 @@ public:
 	//	PreRenderBeginLighting() : Sets up rendering with the given light list.
 	// Think very carefully if this should be used, versus scheduling draws directly on the GPU.
 	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
-	RENDER_API void			PreRenderBeginLighting ( std::vector<CLight*> & lightsToUse );
+	/*RENDER_API void			PreRenderBeginLighting ( std::vector<CLight*> & lightsToUse );
 	//	RenderSingleObject() : renders an object, assuming the projection has been already set up.
 	// Think very carefully if this should be used, versus scheduling draws directly on the GPU.
 	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
@@ -155,7 +163,7 @@ public:
 	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
 	// This call adds setting up the cbuffers, forcing a certain set of lights.
 	// It should be noted the DeferredForward+ pipeline will not work without a Forward RrPass.
-	RENDER_API void			RenderObjectArray ( CRenderableObject** objectsToRender );
+	RENDER_API void			RenderObjectArray ( CRenderableObject** objectsToRender );*/
 
 	//	SetPipelineMode - Sets new pipeline mode.
 	// Calling this has the potential to be very slow and completely invalidate rendering state.
@@ -245,7 +253,7 @@ private:
 
 	// Render state
 	// ================================
-	CCamera*				mainBufferCamera;
+	RrCamera*				mainBufferCamera;
 	bool					bufferedMode;
 	bool					shadowMode;
 	//eRenderMode				renderMode;
@@ -260,8 +268,10 @@ private:
 	// Internal setup state
 	// ================================
 	renderer::internalSettings_t		internal_settings;
-	std::vector<rrInternalBufferChain>	internal_chain_list;
-	rrInternalBufferChain*				internal_chain_current;
+	//std::vector<rrInternalBufferChain>	internal_chain_list;
+	//rrInternalBufferChain*				internal_chain_current;
+	std::vector<RrHybridBufferChain>	internal_chain_list;
+	RrHybridBufferChain*				internal_chain_current;
 	uint								internal_chain_index;
 
 	// Deferred pass materials

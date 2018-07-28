@@ -19,7 +19,7 @@
 #include "renderer/material/RrPass.h"
 #include "renderer/gpuw/Pipeline.h"
 
-//#include "CCamera.h"
+//#include "RrCamera.h"
 
 // Class prototypes
 class RrRenderer;

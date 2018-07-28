@@ -1,6 +1,6 @@
 
 #include "CColorFilterShader.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"

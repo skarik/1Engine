@@ -3,7 +3,7 @@
 #include "renderer/logic/model/CSkinnedModel.h"
 #include "renderer/object/mesh/system/rrMesh.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 
@@ -63,7 +63,7 @@ bool CMesh::PreRender ( void )
 
 		if ( !bUseSkinning )
 		{
-			if ( CCamera::activeCamera->SphereIsVisible(
+			if ( RrCamera::activeCamera->SphereIsVisible(
 				transform.WorldMatrix() * vCheckRenderPos,
 				fCheckRenderDist * (transform.world.scale.x+transform.world.scale.y+transform.world.scale.z) * 0.4f ) )
 			{
@@ -77,7 +77,7 @@ bool CMesh::PreRender ( void )
 			modelOrigin = ((CSkinnedModel*)m_parent)->GetSkeleton()->current_transform[1].WorldMatrix() * vCheckRenderPos;
 			modelOrigin = transform.WorldMatrix() * modelOrigin;
 			//modelOrigin += transform.GetTransformMatrix() * vCheckRenderPos
-			if ( CCamera::activeCamera->SphereIsVisible(
+			if ( RrCamera::activeCamera->SphereIsVisible(
 				modelOrigin, 
 				fCheckRenderDist * (transform.world.scale.x+transform.world.scale.y+transform.world.scale.z) * 0.6f ) )
 			{

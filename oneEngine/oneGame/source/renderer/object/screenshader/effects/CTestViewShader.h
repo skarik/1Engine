@@ -4,7 +4,7 @@
 
 #include "../CScreenShader.h"
 
-class CRTCamera;
+class RrRTCamera;
 class RrRenderTexture;
 
 class CTestViewShader : public CScreenShader
@@ -19,7 +19,7 @@ protected:
 	void UpdateBuffer ( void );
 	void DrawOutput ( void );
 
-	CRTCamera*		m_rtcam;
+	RrRTCamera*		m_rtcam;
 	RrRenderTexture*	m_rttex;
 
 };

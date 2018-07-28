@@ -3,14 +3,14 @@
 #include "core/system/Screen.h"
 #include "core/settings/CGameSettings.h"
 
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
 #include "renderer/object/immediate/immediate.h"
 
-CScreenShader::CScreenShader ( CCamera* pCam )
+CScreenShader::CScreenShader ( RrCamera* pCam )
 	: CRenderableObject(), m_targetcam( pCam )
 {
 	m_buf = NULL;
@@ -52,18 +52,18 @@ bool CScreenShader::Render ( const char pass )
 	// Only render with the main scene or designated camera
 	if ( m_targetcam == NULL ) {
 		// Skip shadow cameras, and only link to cameras that can render this shader.
-		if ( (CCamera::activeCamera->shadowCamera == false) && (CCamera::activeCamera->enabledHints & renderSettings.renderHints) ) {
-			m_targetcam = CCamera::activeCamera; // This camera seems jiffy!
+		if ( (RrCamera::activeCamera->shadowCamera == false) && (RrCamera::activeCamera->enabledHints & renderSettings.renderHints) ) {
+			m_targetcam = RrCamera::activeCamera; // This camera seems jiffy!
 		}
 	}
 	if ( m_targetcam == NULL ) {
 		return true;
 	}
-	if ( m_targetcam != CCamera::activeCamera )
+	if ( m_targetcam != RrCamera::activeCamera )
 	{
 		// We can't check any options on m_targetcam, since it might refer to a deleted camera.
 		m_failrendercount += 1;	// If it can't render, though, then reset the target camera
-		if ( m_failrendercount > (short)(CCamera::vCameraList.size()+2) )
+		if ( m_failrendercount > (short)(RrCamera::vCameraList.size()+2) )
 		{
 			m_failrendercount = 0;
 			m_targetcam = NULL;
@@ -74,12 +74,12 @@ bool CScreenShader::Render ( const char pass )
 			return Render(pass);
 		}
 		// If the target camera is still lame, skip this shader for now.
-		else if ( m_targetcam != CCamera::activeCamera ) {
+		else if ( m_targetcam != RrCamera::activeCamera ) {
 			return true;
 		}
 	}
 
-	transform.world.position = CCamera::activeCamera->transform.position;
+	transform.world.position = RrCamera::activeCamera->transform.position;
 
 	GL.CheckError();
 
@@ -91,7 +91,7 @@ bool CScreenShader::Render ( const char pass )
 	}
 
 	// Don't make buffers until completely ready.
-	if ( m_readyrendercount < (short)(CCamera::vCameraList.size()+2) ) {
+	if ( m_readyrendercount < (short)(RrCamera::vCameraList.size()+2) ) {
 		m_readyrendercount += 1;
 		return true;
 	}

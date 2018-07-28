@@ -7,7 +7,7 @@
 #include "core/system/io/FileUtils.h"
 #include "core/system/Screen.h"
 
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/object/CRenderable3D.h"
 #include "renderer/object/CStreamedRenderable3D.h"
 #include "renderer/texture/RrFontTexture.h"

@@ -1,17 +1,17 @@
 
-#include "CRTCamera.h"
+#include "RrRTCamera.h"
 #include "core/time/time.h"
 #include "renderer/state/Settings.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/texture/RrRenderTexture.h"
 
 // Constructor
-CRTCamera::CRTCamera (
+RrRTCamera::RrRTCamera (
 		RrRenderTexture*	targetTexture,
 		Real			renderFramerate,
 		bool			autoRender
 		)
-		: CCamera (), fRenderCounter(0)
+		: RrCamera (), fRenderCounter(0)
 {
 	//m_type = CAMERA_TYPE_RT;
 	//transform.name = "RTCamera Transform";
@@ -39,13 +39,13 @@ CRTCamera::CRTCamera (
 }
 
 // Destructor
-CRTCamera::~CRTCamera ( void )
+RrRTCamera::~RrRTCamera ( void )
 {
 	// Not sure yet.
 }
 
 // Update
-void CRTCamera::LateUpdate ( void )
+void RrRTCamera::LateUpdate ( void )
 {
 	// If autorender, then tell scene to update at given framerate
 	if ( bAutoRender )
@@ -68,7 +68,7 @@ void CRTCamera::LateUpdate ( void )
 }
 
 // Render set
-void CRTCamera::RenderBegin ( void )
+void RrRTCamera::RenderBegin ( void )
 {
 	// Set viewport percents
 	if ( m_renderTexture )
@@ -95,7 +95,7 @@ void CRTCamera::RenderBegin ( void )
 	}
 
 	// Call the parent one
-	CCamera::RenderBegin();
+	RrCamera::RenderBegin();
 
 	// Update the texture matrix
 	//UpdateTextureMatrix();
@@ -107,7 +107,7 @@ void CRTCamera::RenderBegin ( void )
 }
 
 // Render clean
-void CRTCamera::RenderEnd ( void )
+void RrRTCamera::RenderEnd ( void )
 {
 	// Unbind framebuffer
 	if ( m_renderTexture )
@@ -117,16 +117,16 @@ void CRTCamera::RenderEnd ( void )
 }
 
 // Update Camera Matrix
-void CRTCamera::UpdateMatrix ( void )
+void RrRTCamera::UpdateMatrix ( void )
 {
-	CCamera::UpdateMatrix();
+	RrCamera::UpdateMatrix();
 
 	// Update the texture matrix
 	UpdateTextureMatrix();
 }
 
 // Update Texture Matrix
-void CRTCamera::UpdateTextureMatrix ( void )
+void RrRTCamera::UpdateTextureMatrix ( void )
 {
 	/*static double modelView[16];
 	static double projection[16];
@@ -176,15 +176,15 @@ void CRTCamera::UpdateTextureMatrix ( void )
 }
 
 
-void CRTCamera::SetTarget ( RrRenderTexture* n_rt )
+void RrRTCamera::SetTarget ( RrRenderTexture* n_rt )
 {
 	m_renderTexture = n_rt;
 }
-void CRTCamera::SetAutorender ( bool n_autorender )
+void RrRTCamera::SetAutorender ( bool n_autorender )
 {
 	bAutoRender = n_autorender;
 }
-void CRTCamera::SetUpdateFPS ( Real n_updatefps )
+void RrRTCamera::SetUpdateFPS ( Real n_updatefps )
 {
 	fRenderFramerate = n_updatefps;
 }

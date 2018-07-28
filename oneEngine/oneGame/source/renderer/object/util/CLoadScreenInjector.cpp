@@ -4,7 +4,7 @@
 #include "CLoadScreenInjector.h"
 #include "renderer/texture/RrFontTexture.h"
 #include "renderer/material/RrMaterial.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/state/Settings.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
@@ -15,10 +15,10 @@ void CLoadScreenInjector::StepScreen ( void )
 	GL_ACCESS;
 	
 	// Create camera to render with:
-	CCamera* mCamera = NULL;
-	if ( CCamera::activeCamera == NULL )
+	RrCamera* mCamera = NULL;
+	if ( RrCamera::activeCamera == NULL )
 	{
-		mCamera = new CCamera;
+		mCamera = new RrCamera;
 		mCamera->SetActive();
 		mCamera->LateUpdate();
 	}
@@ -33,7 +33,7 @@ void CLoadScreenInjector::StepScreen ( void )
 	// Clear up camera used to render
 	if ( mCamera )
 	{
-		CCamera::activeCamera = NULL;
+		RrCamera::activeCamera = NULL;
 		delete mCamera;
 	}
 }

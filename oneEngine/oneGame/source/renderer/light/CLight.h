@@ -11,7 +11,7 @@
 
 #include "renderer/logic/CLogicObject.h"
 
-//#include "CCamera.h"
+//#include "RrCamera.h"
 
 // == Includes ==
 #include <vector>
@@ -24,8 +24,8 @@ using std::priority_queue;*/
 
 // Class predefinition
 class CLight;
-class CCamera;
-class CRTCamera;
+class RrCamera;
+class RrRTCamera;
 class RrRenderTexture;
 class CBillboard;
 
@@ -65,7 +65,7 @@ public:
 	virtual Color GetSendVector ( void );
 
 	// Get the shadow camera and texture
-	CRTCamera*		GetShadowCamera ( void ) { return shadowCamera; };
+	RrRTCamera*		GetShadowCamera ( void ) { return shadowCamera; };
 	RrRenderTexture*	GetShadowTexture ( void ) { return shadowTexture; };
 
 	// Get light list
@@ -116,7 +116,7 @@ protected:
 	char lightIndex;
 
 	// Shadow instances
-	CRTCamera*		shadowCamera;
+	RrRTCamera*		shadowCamera;
 	RrRenderTexture*	shadowTexture;
 	// Virtual function for specific shadow camera code
 	virtual void UpdateShadowCamera ( void );

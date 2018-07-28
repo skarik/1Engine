@@ -12,7 +12,7 @@
 
 // Include camera for rendering
 #include "engine-common/entities/CRendererHolder.h"
-#include "renderer/Camera/CCamera.h"
+#include "renderer/Camera/RrCamera.h"
 
 // Include different scenes
 /*#include "after/scenes/gmsceneMainGame.h"
@@ -89,7 +89,7 @@ void gmsceneSystemLoader::LoadScene ( void )
 	else
 	{
 		// If they want to stay in the console, a camera needs to be added so the output can be rendered
-		CCamera* aCamera = new CCamera;
+		RrCamera* aCamera = new RrCamera;
 		CRenderCameraHolder* holder = new CRenderCameraHolder( aCamera );
 		holder->RemoveReference();
 		//aCamera->RemoveReference();

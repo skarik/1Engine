@@ -14,7 +14,7 @@ using std::sort;
 
 #include "renderer/exceptions/exceptions.h"
 
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/light/CLight.h"
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/texture/CMRTTexture.h"
@@ -41,8 +41,10 @@ void RrRenderer::StepPreRender ( void )
 {
 	unsigned int i;
 
-	// Begin the logic jobs
+	// Wait for the PostStep to finish:
 	Jobs::System::Current::WaitForJobs( Jobs::kJobTypeRenderStep );
+
+	// Begin the logic jobs
 	for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
 			Jobs::System::Current::AddJobRequest( Jobs::kJobTypeRenderStep, &(CLogicObject::PreStep), mLogicObjects[i] );
@@ -63,16 +65,16 @@ void RrRenderer::StepPreRender ( void )
 	auto resourceManager = core::ArResourceManager::Active();
 	resourceManager->Update();
 
-	// Call to step all the render jobs
+	// Wait for all the PreStep to finish:
 	Jobs::System::Current::WaitForJobs( Jobs::kJobTypeRenderStep );
 
 	// Update the camera system
-	for ( i = 0; i < CCamera::vCameraList.size(); ++i )
+	for ( i = 0; i < RrCamera::vCameraList.size(); ++i )
 	{
-		CCamera* currentCamera = CCamera::vCameraList[i];
+		RrCamera* currentCamera = RrCamera::vCameraList[i];
 		if ( currentCamera != NULL )
 		{
-			CCamera::vCameraList[i]->LateUpdate();
+			RrCamera::vCameraList[i]->LateUpdate();
 		}
 	}
 }
@@ -158,11 +160,11 @@ void RrRenderer::Render ( void )
 	StepPreRender();
 
 	// Check for a main camera to work with
-	if ( CCamera::activeCamera == NULL )
+	if ( RrCamera::activeCamera == NULL )
 	{
 		return; // Don't render if there's no camera to render with...
 	}
-	mainBufferCamera = CCamera::activeCamera;
+	mainBufferCamera = RrCamera::activeCamera;
 
 	{
 		// Update all aggregate counters
@@ -213,10 +215,10 @@ void RrRenderer::Render ( void )
 	
 	// Loop through all cameras (todo: sort render order for each camera)
 	TimeProfiler.BeginTimeProfile( "rs_camera_matrix" );
-	CCamera* prevActiveCam = CCamera::activeCamera;
-	for ( std::vector<CCamera*>::iterator it = CCamera::vCameraList.begin(); it != CCamera::vCameraList.end(); ++it )
+	RrCamera* prevActiveCam = RrCamera::activeCamera;
+	for ( std::vector<RrCamera*>::iterator it = RrCamera::vCameraList.begin(); it != RrCamera::vCameraList.end(); ++it )
 	{
-		CCamera* currentCamera = *it;
+		RrCamera* currentCamera = *it;
 		// Update the camera positions and matrices
 		if ( currentCamera->GetRender() )
 		{
@@ -224,16 +226,16 @@ void RrRenderer::Render ( void )
 		}
 	}
 	// Double check to make sure the zero camera is the active camera
-	if ( CCamera::vCameraList[0] != prevActiveCam )
+	if ( RrCamera::vCameraList[0] != prevActiveCam )
 	{
 		std::cout << "Error in rendering: invalid zero index camera! (Seriously, this CAN'T happen)" << std::endl;
 		// Meaning, resort the camera list
-		for ( auto it = CCamera::vCameraList.begin(); it != CCamera::vCameraList.end(); )
+		for ( auto it = RrCamera::vCameraList.begin(); it != RrCamera::vCameraList.end(); )
 		{
 			if ( *it == prevActiveCam )
 			{
-				it = CCamera::vCameraList.erase(it);
-				CCamera::vCameraList.insert( CCamera::vCameraList.begin(), prevActiveCam );
+				it = RrCamera::vCameraList.erase(it);
+				RrCamera::vCameraList.insert( RrCamera::vCameraList.begin(), prevActiveCam );
 			}
 			else
 			{
@@ -246,9 +248,9 @@ void RrRenderer::Render ( void )
 	
 	// Loop through all cameras:
 	TimeProfiler.BeginTimeProfile( "rs_render" );
-	for ( std::vector<CCamera*>::reverse_iterator it = CCamera::vCameraList.rbegin(); it != CCamera::vCameraList.rend(); ++it )
+	for ( std::vector<RrCamera*>::reverse_iterator it = RrCamera::vCameraList.rbegin(); it != RrCamera::vCameraList.rend(); ++it )
 	{
-		CCamera* currentCamera = *it;
+		RrCamera* currentCamera = *it;
 
 		// Only render with current camera if should be rendering
 		if ( currentCamera->GetRender() )
@@ -263,14 +265,17 @@ void RrRenderer::Render ( void )
 			}
 
 			// Render from camera
-			CCamera::activeCamera = currentCamera;
-			currentCamera->RenderScene(); //todo: remove
+			RrCamera::activeCamera = currentCamera;
+			//currentCamera->RenderScene(); //todo: remove
+			// get current camera's passes
+			RenderScene(currentCamera);
+
 		}
 	}
 	TimeProfiler.EndTimeProfile( "rs_render" );
 	
 	// Set active camera back to default
-	CCamera::activeCamera = prevActiveCam;
+	RrCamera::activeCamera = prevActiveCam;
 
 	// Push buffer to screen
 	StepBufferPush();
@@ -317,7 +322,7 @@ void RrRenderer::Render ( void )
 //	tRenderRequest	renderRQ;
 //	int i;
 //	unsigned char passCount;
-//	CCamera* currentCamera = CCamera::activeCamera;
+//	RrCamera* currentCamera = RrCamera::activeCamera;
 //
 //	// Loop through each hint (reverse mode)
 //	for ( uint currentLayer = 1<<kRenderHintCOUNT; currentLayer != 0; currentLayer >>= 1 )
@@ -472,14 +477,142 @@ void RrRenderer::Render ( void )
 #define FORCE_BUFFER_CLEAR
 //#define ENABLE_RUNTIME_BLIT_TEST
 
+void RrRenderer::RenderScene ( RrCamera* camera )
+{
+	RenderObjectList(camera, pRenderableObjects.data(), iCurrentIndex);
+}
+
+//	RenderObjectList () : Renders the object list from the given camera with DeferredForward+.
+void RrRenderer::RenderObjectList ( RrCamera* camera, CRenderableObject** objectsToRender, const uint32_t objectCount )
+{
+	// Get a pass list from the camera
+	const int kMaxCameraPasses = 8;
+	rrCameraPass cameraPasses [kMaxCameraPasses];
+
+	int passCount = camera->PassCount();
+	camera->PassRetrieve(cameraPasses, kMaxCameraPasses);
+
+	// Loop through each pass and render with them:
+	for (int iCameraPass = 0; iCameraPass < passCount; ++iCameraPass)
+	{
+		if (cameraPasses[iCameraPass].m_passType == kCameraRenderWorld)
+		{
+			RenderObjectListWorld(&cameraPasses[iCameraPass], objectsToRender, objectCount);
+		}
+		else if (cameraPasses[iCameraPass].m_passType == kCameraRenderShadow)
+		{
+			RenderObjectListShadows(&cameraPasses[iCameraPass], objectsToRender, objectCount);
+		}
+	}
+}
+
+void RrRenderer::RenderObjectListWorld ( rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount )
+{
+	std::vector<rrRenderRequest> l_4rDepthPrepass;
+	std::vector<rrRenderRequest> l_4rDeferred;
+	std::vector<rrRenderRequest> l_4rForward;
+	std::vector<rrRenderRequest> l_4rFog;
+	std::vector<rrRenderRequest> l_4rWarp;
+
+	for (uint32_t iObject = 0; iObject < objectCount; ++iObject)
+	{
+		CRenderableObject* renderable = objectsToRender[iObject];
+		if (renderable != NULL)
+		{
+#			ifdef SKIP_NON_WORLD_STUFF
+			// Only add 2D or world objects for now
+			if (renderable->renderLayer != renderer::kRLWorld
+				&& renderable->renderLayer != renderer::kRLV2D)
+				continue;
+#			endif
+
+			// Loop through each pass to place them in the render lists.
+			for (int iPass = 0; iPass < kPass_MaxPassCount; ++iPass)
+			{
+				if (renderable->m_passEnabled[iPass])
+				{
+					RrPass* pass = &renderable->m_passes[iPass];
+
+					// If part of the world...
+					if (pass->m_type == kPassTypeForward || pass->m_type == kPassTypeDeferred)
+					{
+						if (pass->m_depthWrite)
+						{	// Add opaque objects to the prepass list:
+							l_4rDepthPrepass.push_back(rrRenderRequest{renderable, iPass});
+						}
+						// Add the other objects to the deferred or forward pass
+						if (pass->m_type == kPassTypeDeferred)
+							l_4rDeferred.push_back(rrRenderRequest{renderable, iPass});
+						else
+							l_4rForward.push_back(rrRenderRequest{renderable, iPass});
+					}
+					// If part of fog effects...
+					else if (pass->m_type == kPassTypeVolumeFog)
+					{
+						l_4rFog.push_back(rrRenderRequest{renderable, iPass});
+					}
+					// If part of warp effects...
+					else if (pass->m_type == kPassTypeWarp)
+					{
+						l_4rWarp.push_back(rrRenderRequest{renderable, iPass});
+					}
+				}
+			}
+		}
+	}
+
+	// immidiately sort the depth pre-pass:
+	std::sort(l_4rDepthPrepass.begin(), l_4rDepthPrepass.end(), RenderRequestSorter); 
+
+	// but sort the rest in side-threads:
+	auto sorter_4rDeferred = std::thread([&](){
+		std::sort(l_4rDeferred.begin(), l_4rDeferred.end(), RenderRequestSorter);
+	});
+	auto sorter_4rForward = std::thread([&](){
+		std::sort(l_4rForward.begin(), l_4rForward.end(), RenderRequestSorter);
+	});
+	auto sorter_4rFogAndWarp = std::thread([&](){
+		std::sort(l_4rFog.begin(), l_4rFog.end(), RenderRequestSorter);
+		std::sort(l_4rWarp.begin(), l_4rWarp.end(), RenderRequestSorter);
+	});
+
+	// Do depth pre-pass:
+
+	
+	
+	// wait for the deferred sorter
+	sorter_4rDeferred.join();
+
+
+	// run a composite pass if deferred is dirty
+	if (dirty_deferred)
+	{
+		// Mark forward as dirty so output will happen even without a forward object.
+		dirty_forward = true;
+	}
+
+	// wait for the forward sorter
+	sorter_4rForward.join();
+
+	// run another composite if forward is dirty
+	if (dirty_forward)
+	{
+	}
+
+
+	// at the end, copy the aggregate forward RT onto the render target (do that outside of this function!)
+
+}
+
+
 // Deferred rendering routine.
-void RrRenderer::RenderScene ( const uint32_t renderHint, CCamera* camera )
+void RrRenderer::RenderScene ( const uint32_t renderHint, RrCamera* camera )
 {
 	GL_ACCESS GLd_ACCESS
 		CRenderableObject * pRO;
 	int i;
 	unsigned char passCount;
-	CCamera* currentCamera = CCamera::activeCamera;
+	RrCamera* currentCamera = RrCamera::activeCamera;
 	bool firstRender = true;
 
 	// Create a sorted render list:
@@ -884,7 +1017,7 @@ void RrRenderer::RenderScene ( const uint32_t renderHint, CCamera* camera )
 //	CRenderableObject * pRO;
 //	int i;
 //	unsigned char passCount;
-//	CCamera* currentCamera = CCamera::activeCamera;
+//	RrCamera* currentCamera = RrCamera::activeCamera;
 //	bool firstRender = true;
 //
 //	// Create a sorted render list:

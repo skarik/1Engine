@@ -67,7 +67,7 @@ RrRenderer::RrRenderer ( CResourceManager* nResourceManager )
 	{
 		bufferedMode	= CGameSettings::Active()->b_ro_UseBufferModel ? true : false;
 		shadowMode		= CGameSettings::Active()->b_ro_EnableShadows ? true : false;
-		renderMode		= (eRenderMode)CGameSettings::Active()->i_ro_RendererMode;
+		//renderMode		= (eRenderMode)CGameSettings::Active()->i_ro_RendererMode;
 		pipelineMode	= renderer::kPipelineModeNormal;
 	}
 	
@@ -382,43 +382,43 @@ const renderer::ePipelineMode RrRenderer::GetPipelineMode ( void ) const
 
 // Internal buffer handling
 // ================================
-
-// Returns true if settings dropped. False otherwise.
-static bool _DropSettings (renderer::internalSettings_t& io_settings)
-{
-	using namespace core::gfx::tex;
-	if (io_settings.mainStencilFormat == KStencilFormatIndex16) 
-	{
-		debug::Console->PrintError("Dropping Stencil16 to Stencil8.");
-		io_settings.mainStencilFormat = KStencilFormatIndex8;
-		return true;
-	}
-
-	if (io_settings.mainDepthFormat == kDepthFormat32) 
-	{
-		debug::Console->PrintError("Dropping Depth32 to Depth16.");
-		io_settings.mainDepthFormat = kDepthFormat16;
-		return true;
-	}
-
-	if (io_settings.mainStencilFormat == KStencilFormatIndex8) 
-	{
-		debug::Console->PrintError("Dropping Stencil8 to None. (This may cause visual artifacts!)");
-		io_settings.mainStencilFormat = kStencilFormatNone;
-		return true;
-	}
-
-	debug::Console->PrintError("Could not downgrade screen buffer settings.");
-
-	// Couldn't drop any settings.
-	return false;
-}
+//
+//// Returns true if settings dropped. False otherwise.
+//static bool _DropSettings (renderer::internalSettings_t& io_settings)
+//{
+//	using namespace core::gfx::tex;
+//	if (io_settings.mainStencilFormat == KStencilFormatIndex16) 
+//	{
+//		debug::Console->PrintError("Dropping Stencil16 to Stencil8.");
+//		io_settings.mainStencilFormat = KStencilFormatIndex8;
+//		return true;
+//	}
+//
+//	if (io_settings.mainDepthFormat == kDepthFormat32) 
+//	{
+//		debug::Console->PrintError("Dropping Depth32 to Depth16.");
+//		io_settings.mainDepthFormat = kDepthFormat16;
+//		return true;
+//	}
+//
+//	if (io_settings.mainStencilFormat == KStencilFormatIndex8) 
+//	{
+//		debug::Console->PrintError("Dropping Stencil8 to None. (This may cause visual artifacts!)");
+//		io_settings.mainStencilFormat = kStencilFormatNone;
+//		return true;
+//	}
+//
+//	debug::Console->PrintError("Could not downgrade screen buffer settings.");
+//
+//	// Couldn't drop any settings.
+//	return false;
+//}
 
 void RrRenderer::CreateTargetBuffers ( void )
 {
 	if (internal_chain_list.empty())
 	{
-		rrInternalBufferChain chain = {};
+		RrHybridBufferChain chain = {};
 		// Three backbuffers
 		internal_chain_list.push_back(chain);
 		internal_chain_list.push_back(chain);
@@ -426,13 +426,13 @@ void RrRenderer::CreateTargetBuffers ( void )
 		// Set current buffer to first
 		internal_chain_current = &internal_chain_list[0];
 	}
-	for (rrInternalBufferChain& chain : internal_chain_list)
+	for (RrHybridBufferChain& chain : internal_chain_list)
 	{
-		bool status = CreateTargetBufferChain(chain);
+		bool status = chain.CreateTargetBufferChain(internal_settings, Vector2i(Screen::Info.width, Screen::Info.height));
 		if (status == false)
 		{
 			// There was an error in creating the target buffer chain. We need to break, try another set of formats, then continue.
-			if (_DropSettings(internal_settings))
+			/*if (_DropSettings(internal_settings))
 			{
 				debug::Console->PrintError("Screen buffer formats not supported. Dropping settings and attempting again.");
 				// Attempt to create again.
@@ -444,148 +444,150 @@ void RrRenderer::CreateTargetBuffers ( void )
 			{
 				debug::Console->PrintError("Screen buffer formats not supported. Throwing an unsupported error.");
 				throw core::DeprecatedFeatureException();
-			}
+			}*/
+			debug::Console->PrintError("Screen buffer formats not supported. Throwing an unsupported error.");
+			throw core::DeprecatedFeatureException();
 		}
 	}
 }
-bool RrRenderer::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain )
-{
-	// Delete shared buffers
-	{
-		bufferChain.buffer_color.free();
-		bufferChain.buffer_depth.free();
-		bufferChain.buffer_stencil.free();
-
-		for (int i = 0; i < kMRTColorAttachmentCount; ++i)
-			bufferChain.buffer_deferred_color[i].free();
-	}
-	// Delete forward buffers
-	if ( bufferChain.buffer_forward_rt.empty() == false )
-	{
-		/*delete bufferChain.buffer_forward_rt;
-		bufferChain.buffer_forward_rt = NULL;
-
-		//gpu::TextureFree( bufferChain.buffer_depth );
-		delete bufferChain.buffer_depth;
-		bufferChain.buffer_depth = 0;
-
-		//gpu::TextureBufferFree( bufferChain.buffer_stencil );
-		delete bufferChain.buffer_stencil;
-		bufferChain.buffer_stencil = 0;*/
-		bufferChain.buffer_forward_rt.destroy(NULL);
-	}
-	// Delete deferred buffers
-	if ( bufferChain.buffer_deferred_mrt.empty() == false )
-	{
-		/*delete bufferChain.buffer_deferred_mrt;
-		bufferChain.buffer_deferred_mrt = NULL;
-
-		delete bufferChain.buffer_deferred_rt;
-		bufferChain.buffer_deferred_rt = NULL;*/
-		bufferChain.buffer_deferred_mrt.destroy(NULL);
-		bufferChain.buffer_deferred_rt.destroy(NULL);
-	}
-
-	// Create forward buffers
-	if ( bufferChain.buffer_forward_rt.empty() )
-	{
-		// Generate unique color buffer
-		bufferChain.buffer_color.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainColorAttachmentFormat, Screen::Info.width, Screen::Info.height);
-		// Generate shared depth and stencil buffers
-		if ( internal_settings.mainDepthFormat != core::gfx::tex::kDepthFormatNone )
-		{
-			//bufferChain.buffer_depth	= gpu::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
-			//gpu::TextureSampleSettings( Texture2D, bufferChain.buffer_depth, Clamp, Clamp, Clamp, SamplingPoint, SamplingPoint );
-			bufferChain.buffer_depth.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height);
-		}
-		if ( internal_settings.mainStencilFormat != core::gfx::tex::kStencilFormatNone )
-			//bufferChain.buffer_stencil	= gpu::TextureBufferAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
-			bufferChain.buffer_stencil.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height);
-
-		/*bufferChain.buffer_forward_rt = new RrRenderTexture(
-			Screen::Info.width, Screen::Info.height,
-			Clamp, Clamp,
-			internal_settings.mainColorAttachmentFormat,
-			RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
-			RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat), false
-		);*/
-		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotColor0, &bufferChain.buffer_color);
-		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotDepth, &bufferChain.buffer_depth);
-		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &bufferChain.buffer_stencil);
-		// "Compile" the render target.
-		bufferChain.buffer_forward_rt.assemble();
-
-		// Check to make sure buffer is valid.
-		if (!bufferChain.buffer_forward_rt.valid())
-		{
-			return false;
-		}
-	}
-	// Create deferred buffers
-	if ( bufferChain.buffer_deferred_mrt.empty() )
-	{
-		// Create the internal stage color render target (uses shared forward buffers)
-		/*bufferChain.buffer_deferred_rt = new RrRenderTexture(
-			Screen::Info.width, Screen::Info.height,
-			Clamp, Clamp,
-			internal_settings.mainColorAttachmentFormat,
-			RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
-			RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat), false
-		);
-
-		RrGpuTexture		depthTexture = RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat);
-		RrGpuTexture		stencilTexture = RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat);*/
-
-		// Generate unique color buffer
-		bufferChain.buffer_deferred_color_composite.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainColorAttachmentFormat, Screen::Info.width, Screen::Info.height);
-
-		// Put the buffer together
-		bufferChain.buffer_deferred_rt.attach(gpu::kRenderTargetSlotColor0, &bufferChain.buffer_color);
-		bufferChain.buffer_deferred_rt.attach(gpu::kRenderTargetSlotDepth, &bufferChain.buffer_depth);
-		bufferChain.buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &bufferChain.buffer_stencil);
-		// "Compile" the render target.
-		bufferChain.buffer_deferred_rt.assemble();
-
-		// TODO: Make configurable
-		/*RrGpuTexture textureRequests [4];
-		memset( textureRequests, 0, sizeof(RrGpuTexture) * 4 );
-		textureRequests[0].format = RGBA8;
-		textureRequests[1].format = RGBA16F;
-		textureRequests[2].format = RGBA8;
-		textureRequests[3].format = RGBA8;*/
-
-		// TODO: Make configurable
-		bufferChain.buffer_deferred_color[0].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, Screen::Info.width, Screen::Info.height);
-		bufferChain.buffer_deferred_color[1].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA16F, Screen::Info.width, Screen::Info.height);
-		bufferChain.buffer_deferred_color[2].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, Screen::Info.width, Screen::Info.height);
-		bufferChain.buffer_deferred_color[3].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, Screen::Info.width, Screen::Info.height);
-
-		// Create the MRT to be used by the rendering pipeline
-		/*bufferChain.buffer_deferred_mrt = new CMRTTexture(
-			Screen::Info.width, Screen::Info.height,
-			Clamp, Clamp,
-			textureRequests + 0, 4,
-			&depthTexture, depthTexture.format != DepthNone,
-			&stencilTexture, false
-		);*/
-		// Attach shared guys
-		for (int i = 0; i < kMRTColorAttachmentCount; ++i)
-			bufferChain.buffer_deferred_mrt.attach(gpu::kRenderTargetSlotColor0 + i, &bufferChain.buffer_deferred_color[i]);
-		// Add the deoth
-		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotDepth, &bufferChain.buffer_depth);
-		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &bufferChain.buffer_stencil);
-		// "Compile" the render target.
-		bufferChain.buffer_forward_rt.assemble();
-
-		// Check to make sure buffer is valid.
-		if (!bufferChain.buffer_deferred_mrt.valid())
-		{
-			return false;
-		}
-	}
-	// Made it here, so return success.
-	return true;
-}
+//bool RrRenderer::CreateTargetBufferChain ( rrInternalBufferChain& bufferChain )
+//{
+//	// Delete shared buffers
+//	{
+//		bufferChain.buffer_color.free();
+//		bufferChain.buffer_depth.free();
+//		bufferChain.buffer_stencil.free();
+//
+//		for (int i = 0; i < kMRTColorAttachmentCount; ++i)
+//			bufferChain.buffer_deferred_color[i].free();
+//	}
+//	// Delete forward buffers
+//	if ( bufferChain.buffer_forward_rt.empty() == false )
+//	{
+//		/*delete bufferChain.buffer_forward_rt;
+//		bufferChain.buffer_forward_rt = NULL;
+//
+//		//gpu::TextureFree( bufferChain.buffer_depth );
+//		delete bufferChain.buffer_depth;
+//		bufferChain.buffer_depth = 0;
+//
+//		//gpu::TextureBufferFree( bufferChain.buffer_stencil );
+//		delete bufferChain.buffer_stencil;
+//		bufferChain.buffer_stencil = 0;*/
+//		bufferChain.buffer_forward_rt.destroy(NULL);
+//	}
+//	// Delete deferred buffers
+//	if ( bufferChain.buffer_deferred_mrt.empty() == false )
+//	{
+//		/*delete bufferChain.buffer_deferred_mrt;
+//		bufferChain.buffer_deferred_mrt = NULL;
+//
+//		delete bufferChain.buffer_deferred_rt;
+//		bufferChain.buffer_deferred_rt = NULL;*/
+//		bufferChain.buffer_deferred_mrt.destroy(NULL);
+//		bufferChain.buffer_deferred_rt.destroy(NULL);
+//	}
+//
+//	// Create forward buffers
+//	if ( bufferChain.buffer_forward_rt.empty() )
+//	{
+//		// Generate unique color buffer
+//		bufferChain.buffer_color.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainColorAttachmentFormat, Screen::Info.width, Screen::Info.height);
+//		// Generate shared depth and stencil buffers
+//		if ( internal_settings.mainDepthFormat != core::gfx::tex::kDepthFormatNone )
+//		{
+//			//bufferChain.buffer_depth	= gpu::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
+//			//gpu::TextureSampleSettings( Texture2D, bufferChain.buffer_depth, Clamp, Clamp, Clamp, SamplingPoint, SamplingPoint );
+//			bufferChain.buffer_depth.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height);
+//		}
+//		if ( internal_settings.mainStencilFormat != core::gfx::tex::kStencilFormatNone )
+//			//bufferChain.buffer_stencil	= gpu::TextureBufferAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
+//			bufferChain.buffer_stencil.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height);
+//
+//		/*bufferChain.buffer_forward_rt = new RrRenderTexture(
+//			Screen::Info.width, Screen::Info.height,
+//			Clamp, Clamp,
+//			internal_settings.mainColorAttachmentFormat,
+//			RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
+//			RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat), false
+//		);*/
+//		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotColor0, &bufferChain.buffer_color);
+//		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotDepth, &bufferChain.buffer_depth);
+//		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &bufferChain.buffer_stencil);
+//		// "Compile" the render target.
+//		bufferChain.buffer_forward_rt.assemble();
+//
+//		// Check to make sure buffer is valid.
+//		if (!bufferChain.buffer_forward_rt.valid())
+//		{
+//			return false;
+//		}
+//	}
+//	// Create deferred buffers
+//	if ( bufferChain.buffer_deferred_mrt.empty() )
+//	{
+//		// Create the internal stage color render target (uses shared forward buffers)
+//		/*bufferChain.buffer_deferred_rt = new RrRenderTexture(
+//			Screen::Info.width, Screen::Info.height,
+//			Clamp, Clamp,
+//			internal_settings.mainColorAttachmentFormat,
+//			RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat), internal_settings.mainDepthFormat != DepthNone,
+//			RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat), false
+//		);
+//
+//		RrGpuTexture		depthTexture = RrGpuTexture(bufferChain.buffer_depth, internal_settings.mainDepthFormat);
+//		RrGpuTexture		stencilTexture = RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat);*/
+//
+//		// Generate unique color buffer
+//		bufferChain.buffer_deferred_color_composite.allocate(core::gfx::tex::kTextureType2D, internal_settings.mainColorAttachmentFormat, Screen::Info.width, Screen::Info.height);
+//
+//		// Put the buffer together
+//		bufferChain.buffer_deferred_rt.attach(gpu::kRenderTargetSlotColor0, &bufferChain.buffer_color);
+//		bufferChain.buffer_deferred_rt.attach(gpu::kRenderTargetSlotDepth, &bufferChain.buffer_depth);
+//		bufferChain.buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &bufferChain.buffer_stencil);
+//		// "Compile" the render target.
+//		bufferChain.buffer_deferred_rt.assemble();
+//
+//		// TODO: Make configurable
+//		/*RrGpuTexture textureRequests [4];
+//		memset( textureRequests, 0, sizeof(RrGpuTexture) * 4 );
+//		textureRequests[0].format = RGBA8;
+//		textureRequests[1].format = RGBA16F;
+//		textureRequests[2].format = RGBA8;
+//		textureRequests[3].format = RGBA8;*/
+//
+//		// TODO: Make configurable
+//		bufferChain.buffer_deferred_color[0].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, Screen::Info.width, Screen::Info.height);
+//		bufferChain.buffer_deferred_color[1].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA16F, Screen::Info.width, Screen::Info.height);
+//		bufferChain.buffer_deferred_color[2].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, Screen::Info.width, Screen::Info.height);
+//		bufferChain.buffer_deferred_color[3].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, Screen::Info.width, Screen::Info.height);
+//
+//		// Create the MRT to be used by the rendering pipeline
+//		/*bufferChain.buffer_deferred_mrt = new CMRTTexture(
+//			Screen::Info.width, Screen::Info.height,
+//			Clamp, Clamp,
+//			textureRequests + 0, 4,
+//			&depthTexture, depthTexture.format != DepthNone,
+//			&stencilTexture, false
+//		);*/
+//		// Attach shared guys
+//		for (int i = 0; i < kMRTColorAttachmentCount; ++i)
+//			bufferChain.buffer_deferred_mrt.attach(gpu::kRenderTargetSlotColor0 + i, &bufferChain.buffer_deferred_color[i]);
+//		// Add the deoth
+//		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotDepth, &bufferChain.buffer_depth);
+//		bufferChain.buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &bufferChain.buffer_stencil);
+//		// "Compile" the render target.
+//		bufferChain.buffer_forward_rt.assemble();
+//
+//		// Check to make sure buffer is valid.
+//		if (!bufferChain.buffer_deferred_mrt.valid())
+//		{
+//			return false;
+//		}
+//	}
+//	// Made it here, so return success.
+//	return true;
+//}
 
 gpu::RenderTarget* RrRenderer::GetForwardBuffer ( void )
 {

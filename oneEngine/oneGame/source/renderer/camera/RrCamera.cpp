@@ -8,12 +8,12 @@
 #include "renderer/light/CLight.h"
 #include "renderer/types/ObjectSettings.h"
 
-#include "CCamera.h"
+#include "RrCamera.h"
 
-CCamera*				CCamera::activeCamera	= NULL;
-std::vector<CCamera*>	CCamera::vCameraList;
+RrCamera*				RrCamera::activeCamera	= NULL;
+std::vector<RrCamera*>	RrCamera::vCameraList;
 
-CCamera::CCamera ( void )
+RrCamera::RrCamera ( void )
 	: active(true), render_scale(1.0F)
 {
 	// Set up camera renderer
@@ -105,7 +105,7 @@ CCamera::CCamera ( void )
 	{
 		if ( vCameraList[i] == activeCamera )
 		{
-			CCamera* temp = vCameraList[0];
+			RrCamera* temp = vCameraList[0];
 			vCameraList[0] = activeCamera;
 			vCameraList[i] = temp;
 		}
@@ -119,7 +119,7 @@ CCamera::CCamera ( void )
 	std::cout << "New camera with index " << cameraIndex << " created. Main scene: " << ((activeCamera==this) ? "yes" : "no") << std::endl;
 
 }
-CCamera::~CCamera ( void )
+RrCamera::~RrCamera ( void )
 {
 	// Reset active camera
 	if ( activeCamera == this ) {
@@ -127,7 +127,7 @@ CCamera::~CCamera ( void )
 	}
 
 	// Remove camera from the list
-	for ( std::vector<CCamera*>::iterator it = vCameraList.begin(); it != vCameraList.end();  )
+	for ( std::vector<RrCamera*>::iterator it = vCameraList.begin(); it != vCameraList.end();  )
 	{
 		if ( (*it) == this )
 		{
@@ -141,14 +141,14 @@ CCamera::~CCamera ( void )
 	}
 }
 
-void CCamera::SetActive ( void )
+void RrCamera::SetActive ( void )
 {
 	if ( activeCamera != this ) {
 		activeCamera = this;
 	}
 }
 
-void CCamera::SetRotation ( const Rotator& newRotation )
+void RrCamera::SetRotation ( const Rotator& newRotation )
 {
 	transform.rotation = newRotation;
 }
@@ -156,7 +156,7 @@ void CCamera::SetRotation ( const Rotator& newRotation )
 //#include "CDebugDrawer.h"
 //#include "CVoxelTerrain.h"
 
-void CCamera::LateUpdate ( void )
+void RrCamera::LateUpdate ( void )
 {
 	// Update the main active camera (meaning, look through the camera pointers if the current value is invalid)
 	if ( ( activeCamera == NULL ) || (( activeCamera != NULL )&&(( !activeCamera->active )||( activeCamera->bIsRTcamera ))) )
@@ -209,8 +209,24 @@ void CCamera::LateUpdate ( void )
 #include "renderer/texture/CMRTTexture.h"
 #include "renderer/material/RrMaterial.h"
 
+int RrCamera::PassCount ( void )
+{
+	return 1;
+}
+void RrCamera::PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses )
+{
+	if (maxPasses > 0)
+	{
+		passList[0].m_bufferChain	= NULL;
+		passList[0].m_passType		= kCameraRenderWorld;
+		passList[0].m_viewport		= viewport;
+		passList[0].m_viewTransform	= viewTransform;
+		passList[0].m_projTransform	= projTransform;
+	}
+}
+
 // == Main Render Routine ==
-void CCamera::RenderScene ( void )
+void RrCamera::RenderScene ( void )
 {
 	// Bind camera
 	RenderBegin();
@@ -242,7 +258,7 @@ void CCamera::RenderScene ( void )
 }
 
 
-void CCamera::RenderBegin ( void )
+void RrCamera::RenderBegin ( void )
 {
 	auto gfx = gpu::getDevice()->getContext();
 
@@ -260,7 +276,7 @@ void CCamera::RenderBegin ( void )
 	//glGetError();// clear error
 }
 
-void CCamera::UpdateMatrix ( void )
+void RrCamera::UpdateMatrix ( void )
 {
 	if ( orthographic )
 	{
@@ -368,7 +384,7 @@ void CCamera::UpdateMatrix ( void )
 	viewTransform = (!translation) * viewTransform;
 }
 
-void CCamera::CameraUpdate ( void )
+void RrCamera::CameraUpdate ( void )
 {
 	/*glPopMatrix();
 	glPopMatrix();
@@ -394,7 +410,7 @@ void CCamera::CameraUpdate ( void )
 	// TODO: SET UP VIEWTRANSFORM
 }
 
-void CCamera::UpdateFrustum ( void )
+void RrCamera::UpdateFrustum ( void )
 {
 	//glPushMatrix();
 	//glLoadIdentity();
@@ -451,7 +467,7 @@ void CCamera::UpdateFrustum ( void )
 	frustum.plane[5].d = projection[15] - projection[14];
 }
 
-bool CCamera::PointIsVisible ( Vector3d const& point )
+bool RrCamera::PointIsVisible ( Vector3d const& point )
 {
 	// various distances
 	float fDistance;
@@ -472,7 +488,7 @@ bool CCamera::PointIsVisible ( Vector3d const& point )
 }
 
 // tests if a sphere is within the frustrum
-char CCamera::SphereIsVisible( Vector3d const& point, Real radius )
+char RrCamera::SphereIsVisible( Vector3d const& point, Real radius )
 {
 	// various distances
 	float fDistance;
@@ -496,7 +512,7 @@ char CCamera::SphereIsVisible( Vector3d const& point, Real radius )
 	return 2;
 }
 
-bool CCamera::BoundingBoxIsVisible ( BoundingBox& bbox )
+bool RrCamera::BoundingBoxIsVisible ( BoundingBox& bbox )
 {
 	bool bboxBehind;
 	// calculate our collisions to each of the planes
@@ -514,7 +530,7 @@ bool CCamera::BoundingBoxIsVisible ( BoundingBox& bbox )
 
 // Coverts world coordinates to screen coordinates of this camera
 // Z coordinate indicates depth
-Vector3d CCamera::WorldToScreenPos ( const Vector3d & worldPos ) const
+Vector3d RrCamera::WorldToScreenPos ( const Vector3d & worldPos ) const
 {
 	//Matrix4x4 temp = (viewTransform * projTransform);
 	/*Matrix4x4 temp = viewTransform;
@@ -534,7 +550,7 @@ Vector3d CCamera::WorldToScreenPos ( const Vector3d & worldPos ) const
 }
 
 // Converts screen coordinates to a direction to the point on the screen.
-Vector3d CCamera::ScreenToWorldDir ( const Vector2d & screenPos ) const
+Vector3d RrCamera::ScreenToWorldDir ( const Vector2d & screenPos ) const
 {
 	// TODO: Test if this still works.
 
@@ -550,7 +566,7 @@ Vector3d CCamera::ScreenToWorldDir ( const Vector2d & screenPos ) const
 }
 
 // Converts screen coordinates to the point on the screen the mouse is over.
-Vector3d CCamera::ScreenToWorldPos ( const Vector2d & screenPos ) const
+Vector3d RrCamera::ScreenToWorldPos ( const Vector2d & screenPos ) const
 {
 	// TODO: Test if this still works.
 

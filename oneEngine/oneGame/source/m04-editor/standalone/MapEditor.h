@@ -8,7 +8,7 @@
 // Prototypes
 //=========================================//
 
-class CCamera;
+class RrCamera;
 class CDuskGUI;
 namespace Engine2D
 {
@@ -159,7 +159,7 @@ namespace M04
 		Mode		m_current_mode;
 		SubMode		m_current_submode;
 
-		CCamera*	m_target_camera;
+		RrCamera*	m_target_camera;
 		Vector3d	m_target_camera_position;
 		bool		m_navigation_busy;
 		bool		m_preclude_navigation;	// Stop the navigation

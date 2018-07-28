@@ -12,9 +12,9 @@
 
 #include "renderer/state/Settings.h"
 
-#include "renderer/camera/CCamera.h"
-#include "renderer/camera/CRTCamera.h"
-#include "renderer/camera/CRTCameraCascade.h"
+#include "renderer/camera/RrCamera.h"
+#include "renderer/camera/RrRTCamera.h"
+#include "renderer/camera/RrRTCameraCascade.h"
 
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/texture/RrFontTexture.h"
@@ -236,7 +236,7 @@ void RrMaterial::updateStaticUBO ( void )
 					// Set shadow matrix
 					if ( lightList->at(i)->GetShadowCamera() && lightList->at(i)->GetShadowCamera()->GetType() == CAMERA_TYPE_RT_CASCADE ) { 
 						//t_lightingInfo.LightMatrix[i] = lightList->at(i)->GetShadowCamera()->textureMatrix.transpose();
-						CRTCameraCascade* t_cascadeCamera = (CRTCameraCascade*)lightList->at(i)->GetShadowCamera();
+						RrRTCameraCascade* t_cascadeCamera = (RrRTCameraCascade*)lightList->at(i)->GetShadowCamera();
 						t_lightingInfo.LightMatrix[0] = t_cascadeCamera->m_renderMatrices[0].transpose();
 						t_lightingInfo.LightMatrix[1] = t_cascadeCamera->m_renderMatrices[1].transpose();
 						t_lightingInfo.LightMatrix[2] = t_cascadeCamera->m_renderMatrices[2].transpose();
@@ -297,7 +297,7 @@ void RrMaterial::updateStaticUBO ( void )
 		}
 		else
 		{
-			t_reflectInfo.ReflectSource = CCamera::activeCamera->transform.position;
+			t_reflectInfo.ReflectSource = RrCamera::activeCamera->transform.position;
 			t_reflectInfo.ReflectMaxBox = t_reflectInfo.ReflectSource + Vector4d( 1000,1000,1000 );
 			t_reflectInfo.ReflectMinBox = t_reflectInfo.ReflectSource - Vector4d( 1000,1000,1000 );
 		}
@@ -410,7 +410,7 @@ void RrMaterial::updateLightTBO ( void )
 		if ( !lightList->empty() && lightList->at(0)->isDirectional )
 		{
 			_shadowMatrix_t	shadowMatrices [1];
-			CRTCameraCascade* t_cascadeCamera = (CRTCameraCascade*)lightList->at(0)->GetShadowCamera();
+			RrRTCameraCascade* t_cascadeCamera = (RrRTCameraCascade*)lightList->at(0)->GetShadowCamera();
 			if ( t_cascadeCamera )
 			{
 				shadowMatrices[0].shadowCascade[0] = t_cascadeCamera->m_renderMatrices[0].transpose();
@@ -496,9 +496,9 @@ void RrMaterial::updateLightTBO ( void )
 		m_lightCount = 0;
 
 		{	// Create a little sound near camera
-			lightProperties[0].x = CCamera::activeCamera->transform.position.x;
-			lightProperties[0].y = CCamera::activeCamera->transform.position.y;
-			lightProperties[0].z = CCamera::activeCamera->transform.position.z + 0.1f;
+			lightProperties[0].x = RrCamera::activeCamera->transform.position.x;
+			lightProperties[0].y = RrCamera::activeCamera->transform.position.y;
+			lightProperties[0].z = RrCamera::activeCamera->transform.position.z + 0.1f;
 
 			// Set color
 			lightProperties[0].red		= 0.5f;
@@ -512,7 +512,7 @@ void RrMaterial::updateLightTBO ( void )
 			lightProperties[0].directional		= 1;
 			lightProperties[0].falloff			= 1;
 			lightProperties[0].passthrough		= 0.4f;
-			lightProperties[0].range		= 1/(4.0f);//1/(std::max<Real>( 3.0f, std::min<Real>( 12.0f, CCamera::activeCamera->focalDistance )));
+			lightProperties[0].range		= 1/(4.0f);//1/(std::max<Real>( 3.0f, std::min<Real>( 12.0f, RrCamera::activeCamera->focalDistance )));
 
 			m_lightCount += 1;
 		}

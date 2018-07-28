@@ -9,7 +9,7 @@
 #include "engine/utils/CDeveloperConsole.h"
 #include "engine-common/utils/CDeveloperConsoleUI.h"
 // Include camera for rendering
-#include "renderer/Camera/CCamera.h"
+#include "renderer/Camera/RrCamera.h"
 // Include some tools
 #include "core/utils/string.h"
 

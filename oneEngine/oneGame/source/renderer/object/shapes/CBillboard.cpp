@@ -2,7 +2,7 @@
 #include "core/types/ModelData.h"
 
 #include "CBillboard.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 
 #include "renderer/system/glMainSystem.h"
 
@@ -38,16 +38,16 @@ bool CBillboard::Render ( const char pass )
 	// Get the active camera and take its transform
 	Vector3d lookPos (0,0,0);
 	Vector3d vRight (0,1,0), vUp(0,0,1);
-	if ( CCamera::activeCamera )
+	if ( RrCamera::activeCamera )
 	{
 		if ( m_curvetowards ) {
-			lookPos = (CCamera::activeCamera->transform.position - transform.world.position).normal();
+			lookPos = (RrCamera::activeCamera->transform.position - transform.world.position).normal();
 		}
 		else {
-			lookPos = CCamera::activeCamera->transform.rotation * Vector3d::forward;
+			lookPos = RrCamera::activeCamera->transform.rotation * Vector3d::forward;
 		}
 		transform.world.rotation = Vector3d(0,0,0);
-		vRight = CCamera::activeCamera->GetUp().cross( lookPos );
+		vRight = RrCamera::activeCamera->GetUp().cross( lookPos );
 		vUp = lookPos.cross( vRight );
 	}
 	vRight *= m_size;

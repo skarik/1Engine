@@ -3,7 +3,7 @@
 #define _RENDER2D_C_ORTHO_CAMERA_H_
 
 // Include base renderer engine's camera
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 
 // Enumeration for type of camera scaling
 enum orthographicScaleMode_t
@@ -23,7 +23,7 @@ enum orthographicScaleMode_t
 };
 
 // Class Definition
-class COrthoCamera : public CCamera
+class COrthoCamera : public RrCamera
 {
 	CameraType( CAMERA_TYPE_NORMAL );
 public:

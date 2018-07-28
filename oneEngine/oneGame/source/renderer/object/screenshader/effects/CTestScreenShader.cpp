@@ -1,6 +1,6 @@
 
 #include "CTestScreenShader.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
@@ -36,8 +36,8 @@ void CTestScreenShader::DrawOutput ( void )
 	//	m_material->setSampler( TEX_SLOT1, s_buf->GetDepthSampler(), GL.Enum(Texture2D) );
 	//	m_material->bindPass(0);
 	//	m_material->setShaderConstants( this );
-	//	m_material->setUniform( "zNear", CCamera::activeCamera->zNear );
-	//	m_material->setUniform( "zFar", CCamera::activeCamera->zFar );
+	//	m_material->setUniform( "zNear", RrCamera::activeCamera->zNear );
+	//	m_material->setUniform( "zFar", RrCamera::activeCamera->zFar );
 	//	{
 	//		glDepthMask( false );
 	//		glDepthFunc( GL_ALWAYS );

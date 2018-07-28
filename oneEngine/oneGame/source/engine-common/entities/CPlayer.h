@@ -9,7 +9,7 @@ namespace audio
 }
 class CInputControl;
 class CCharacterMotion;
-class CCamera;
+class RrCamera;
 class CLight;
 
 // Enumeration
@@ -88,7 +88,7 @@ protected: // PROTECTED FIELDS and ROUTINES
 	// Attached objects
 	//===============================================================================================//
 
-	CCamera*		pCamera;	// Attached camera
+	RrCamera*		pCamera;	// Attached camera
 	audio::Listener*pListener;	// Attached listener
 
 	//===============================================================================================//
@@ -239,7 +239,7 @@ protected:
 	CAudioListener*	pListener;
 
 	// ===Camera===
-	CCamera* pCamera;
+	RrCamera* pCamera;
 	stateFunc_t	m_cameraUpdateType;
 	void*	updateCameraState ( stateFunc_t );
 

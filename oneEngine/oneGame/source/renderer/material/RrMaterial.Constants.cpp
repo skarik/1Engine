@@ -5,7 +5,7 @@
 #include "renderer/gpuw/Buffers.h"
 #include "renderer/system/glSystem.h"
 #include "renderer/state/Settings.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 
 #include "RrMaterial.h"
 
@@ -78,19 +78,19 @@ void	RrMaterial::pushConstantsPerCamera ( void )
 
 	// Set camera constants
 	GL_ACCESS;
-	perCamera.viewProjection = CCamera::activeCamera->camera_VP; //GL.getProjection();
-	perCamera.worldCameraPosition = CCamera::activeCamera->transform.position;
+	perCamera.viewProjection = RrCamera::activeCamera->camera_VP; //GL.getProjection();
+	perCamera.worldCameraPosition = RrCamera::activeCamera->transform.position;
 	perCamera.viewportInfo = Vector4f(
 		0.0F,
 		0.0F,
-		(Real32)Screen::Info.width * CCamera::activeCamera->render_scale,
-		(Real32)Screen::Info.height * CCamera::activeCamera->render_scale);
+		(Real32)Screen::Info.width * RrCamera::activeCamera->render_scale,
+		(Real32)Screen::Info.height * RrCamera::activeCamera->render_scale);
 	perCamera.screenSize = Vector2f(
 		(Real32)Screen::Info.width,
 		(Real32)Screen::Info.height);
 	perCamera.pixelRatio = Vector2f(
-		(Real32)CCamera::activeCamera->ortho_size.x / Screen::Info.width,
-		(Real32)CCamera::activeCamera->ortho_size.x / Screen::Info.width);
+		(Real32)RrCamera::activeCamera->ortho_size.x / Screen::Info.width,
+		(Real32)RrCamera::activeCamera->ortho_size.x / Screen::Info.width);
 
 	// Upload the constant buffer
 	l_cbufPerCamera.upload(&perCamera, sizeof(perCamera), gpu::kTransferStream);
@@ -109,7 +109,7 @@ void RrMaterial::pushConstantsPerObject ( const Matrix4x4& modelTRS, const Matri
 	GL_ACCESS;
 	perObject.matrices.modelTRS = modelTRS;
 	perObject.matrices.modelRS = modelRS;
-	perObject.matrices.modelViewProjection = modelTRS * CCamera::activeCamera->camera_VP; //GL.getProjection();
+	perObject.matrices.modelViewProjection = modelTRS * RrCamera::activeCamera->camera_VP; //GL.getProjection();
 	perObject.matrices.modelViewProjectionInverse = perObject.matrices.modelViewProjection.inverse();
 
 	// Todo: optimize update via the passinfo[i].m_dirty and deferredinfo[i].m_dirty flags.

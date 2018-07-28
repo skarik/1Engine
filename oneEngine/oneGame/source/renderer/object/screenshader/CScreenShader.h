@@ -5,7 +5,7 @@
 #include "../CRenderableObject.h"
 #include "renderer/texture/RrRenderTexture.h"
 
-class CCamera;
+class RrCamera;
 
 class CScreenShader : public CRenderableObject
 {
@@ -13,7 +13,7 @@ class CScreenShader : public CRenderableObject
 	RegisterRenderBaseClass( "CScreenShader" );
 public:
 	// Constructor. Passing NULL or no argument will make the screen effect find the first valid camera to render in.
-	RENDER_API explicit CScreenShader ( CCamera* pCam = NULL );
+	RENDER_API explicit CScreenShader ( RrCamera* pCam = NULL );
 	RENDER_API virtual ~CScreenShader ( void );
 
 	// Prepares general uniform buffers
@@ -22,7 +22,7 @@ public:
 	bool Render ( const char pass );
 
 	// Set the camera to apply the screen effect to
-	void SetTargetCamera ( CCamera* pCam ) { m_targetcam = pCam; };
+	void SetTargetCamera ( RrCamera* pCam ) { m_targetcam = pCam; };
 
 protected:
 	// Checks the buffer for any change in the main buffer
@@ -44,7 +44,7 @@ protected:
 	//RrMaterial	m_copymat;
 
 protected:
-	CCamera*	m_targetcam;
+	RrCamera*	m_targetcam;
 	short		m_failrendercount;
 	short		m_readyrendercount;
 };

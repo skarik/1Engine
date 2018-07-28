@@ -40,10 +40,10 @@ void CZoomBloomShader::DrawOutput ( void )
 	//	m_material->bindPass(0);
 	//	m_material->setShaderConstants( this );
 	//	//vMaterials[0]->bindDepth( s_buf, "textureDepth" );
-	//	//vMaterials[0]->setUniform( "zNear", CCamera::activeCamera->zNear );
-	//	//vMaterials[0]->setUniform( "zFar", CCamera::activeCamera->zFar );
+	//	//vMaterials[0]->setUniform( "zNear", RrCamera::activeCamera->zNear );
+	//	//vMaterials[0]->setUniform( "zFar", RrCamera::activeCamera->zFar );
 	//	/*if ( Daycycle::DominantCycle ) {
-	//		Vector3d pos = Daycycle::DominantCycle->GetSunPosition( CCamera::activeCamera );
+	//		Vector3d pos = Daycycle::DominantCycle->GetSunPosition( RrCamera::activeCamera );
 	//		m_material->setUniform( "gm_SunScreenPosition", Vector3d(pos.x,1-pos.y,pos.z) );
 	//		m_material->setUniform( "gm_ZoomColorStrength", std::min<Real>( 1.0f, Daycycle::DominantCycle->GetSkyobjectDiffuse().red*3 ) );
 	//	}

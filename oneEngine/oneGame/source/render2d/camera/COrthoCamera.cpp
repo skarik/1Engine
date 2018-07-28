@@ -10,7 +10,7 @@
 
 // Construct orthographic camera
 COrthoCamera::COrthoCamera ( void )
-	: CCamera()
+	: RrCamera()
 {
 	pixel_scale_aspect_ratio= (Real)Screen::Info.width/(Real)Screen::Info.height;
 	pixel_scale_mode		= ORTHOSCALE_MODE_CONSTANT;
@@ -64,7 +64,7 @@ void COrthoCamera::UpdateMatrix ( void )
 	}
 
 	// After projection parameters has been modified, perform orthographic view normally.
-	CCamera::UpdateMatrix();
+	RrCamera::UpdateMatrix();
 }
 
 // Update parameters needed for 2D rendering
@@ -81,5 +81,5 @@ void COrthoCamera::RenderBegin ( void )
 	RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
 
 	// Set up the camera normally
-	CCamera::RenderBegin();
+	RrCamera::RenderBegin();
 }

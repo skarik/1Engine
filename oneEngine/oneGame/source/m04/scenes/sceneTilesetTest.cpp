@@ -29,7 +29,7 @@ void sceneTilesetTest::LoadScene ( void )
 
 	// Create normal orthographic camera
 	/*{
-		CCamera* cam = new CCamera();
+		RrCamera* cam = new RrCamera();
 		cam->orthographic = true;
 		cam->transform.rotation = Rotator( 0,45,45 );
 

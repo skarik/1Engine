@@ -1,23 +1,22 @@
+#ifndef RENDERER_RENDER_TARGET_CAMERA_H_
+#define RENDERER_RENDER_TARGET_CAMERA_H_
 
-#ifndef _C_RT_CAMERA_H_
-#define _C_RT_CAMERA_H_
-
-#include "CCamera.h"
+#include "RrCamera.h"
 //#include "RrRenderTexture.h"
 class RrRenderTexture;
 
-class CRTCamera : public CCamera
+class RrRTCamera : public RrCamera
 {
-	CameraType( CAMERA_TYPE_RT );
+	CameraType( kCameraClassRTNormal );
 	//ClassName( "CameraRT" );
 public:
 	// Constructor/destructor
-	explicit CRTCamera (
+	explicit RrRTCamera (
 		RrRenderTexture*	targetTexture	= NULL,
 		Real			renderFramerate	= 30.0f,
 		bool			autoRender		= false
 		);
-	~CRTCamera ( void );
+	~RrRTCamera ( void );
 
 	// Update
 	void LateUpdate ( void ) override;
@@ -47,4 +46,4 @@ protected:
 };
 
 
-#endif
+#endif//RENDERER_RENDER_TARGET_CAMERA_H_

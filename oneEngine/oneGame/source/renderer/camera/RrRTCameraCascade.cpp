@@ -1,12 +1,12 @@
 
-#include "CRTCameraCascade.h"
+#include "RrRTCameraCascade.h"
 #include "renderer/state/RrRenderer.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/material/RrMaterial.h"
 
-void CRTCameraCascade::RenderScene ( void )
+void RrRTCameraCascade::RenderScene ( void )
 {
 	if ( !m_renderTexture ) {
 		return;
@@ -39,15 +39,15 @@ void CRTCameraCascade::RenderScene ( void )
 
 		//if ( i == 3 )
 		{
-			CRTCamera::UpdateMatrix();
+			RrRTCamera::UpdateMatrix();
 			m_renderMatrices[i] = textureMatrix;
-			CCamera::RenderBegin();
+			RrCamera::RenderBegin();
 			//GL.pushProjection( viewTransform * projTransform );
 			camera_VP = viewTransform * projTransform;
 			RrMaterial::pushConstantsPerCamera();
 			SceneRenderer->RenderSceneForward( enabledHints );
 			//GL.popProjection();
-			CCamera::RenderEnd();
+			RrCamera::RenderEnd();
 		}
 
 		// Make the ortho smaller

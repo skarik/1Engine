@@ -8,7 +8,7 @@
 #include "renderer/material/RrShaderProgram.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/object/immediate/immediate.h"
 
 CDeveloperConsoleUI*	ActiveConsoleUI = NULL;
@@ -83,9 +83,9 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 	const Real kLineHeight = (Real)fntMenu->GetFontInfo().height + 3.0F;
 	const Real kBottomMargin = 5.0F;
 
-	if ( CCamera::activeCamera )
+	if ( RrCamera::activeCamera )
 	{	// Modify console size based on render scale so it is always legible!
-		screenSize *= CCamera::activeCamera->render_scale;
+		screenSize *= RrCamera::activeCamera->render_scale;
 	}
 	core::math::Cubic screenMapping = core::math::Cubic::FromPosition(
 		Vector3f(0, 0, -45.0F),

@@ -2,7 +2,7 @@
 #include "core/time/time.h"
 
 #include "renderer/texture/RrTexture.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/material/RrMaterial.h"
 
 #include "renderer/system/glMainSystem.h"
@@ -18,7 +18,7 @@ CScreenFade::CScreenFade ( bool inbFadeIn, float infFadeTime, float infFadeDelay
 	fFadeDelay	= infFadeDelay;
 	cFadeColor	= incFadeColor;
 
-	pTargetCamera = CCamera::activeCamera;
+	pTargetCamera = RrCamera::activeCamera;
 
 	renderLayer	= renderer::kRLV2D;
 

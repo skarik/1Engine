@@ -14,7 +14,7 @@
 
 #include "renderer/state/Settings.h"
 #include "renderer/texture/RrFontTexture.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/debug/CDebugDrawer.h"
 #include "renderer/light/CLight.h"
 #include "renderer/material/RrMaterial.h"

@@ -7,7 +7,7 @@
 #include "engine/utils/CDeveloperConsole.h"
 #include "engine-common/utils/CDeveloperConsoleUI.h"
 // Include camera
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "engine-common/entities/CRenderCameraHolder.h"
 // Include developer menu
 #include "m04-editor/standalone/DeveloperMenu.h"
@@ -30,7 +30,7 @@ void sceneDeveloperMenu::LoadScene ( void )
 
 	// Create camera to render
 	{
-		CRenderCameraHolder* holder = new CRenderCameraHolder(new CCamera());
+		CRenderCameraHolder* holder = new CRenderCameraHolder(new RrCamera());
 		holder->RemoveReference();
 	} loadScreen->loadStep();
 

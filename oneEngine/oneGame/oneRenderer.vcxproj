@@ -48,10 +48,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\renderer\camera\CCamera.cpp" />
-    <ClCompile Include="source\renderer\camera\CRTCamera.cpp" />
-    <ClCompile Include="source\renderer\camera\CRTCameraCascade.cpp" />
-    <ClCompile Include="source\renderer\camera\CRTCameraCube.cpp" />
+    <ClCompile Include="source\renderer\camera\RrCamera.cpp" />
+    <ClCompile Include="source\renderer\camera\RrRTCamera.cpp" />
+    <ClCompile Include="source\renderer\camera\RrRTCameraCascade.cpp" />
+    <ClCompile Include="source\renderer\camera\RrRTCameraCube.cpp" />
     <ClCompile Include="source\renderer\debug\CDebugDrawer.cpp" />
     <ClCompile Include="source\renderer\debug\CDebugRTInspector.cpp" />
     <ClCompile Include="source\renderer\debug\RrBtDebugDraw.cpp" />
@@ -120,6 +120,7 @@
     <ClCompile Include="source\renderer\renderer-console.cpp" />
     <ClCompile Include="source\renderer\resource\CModelMaster.cpp" />
     <ClCompile Include="source\renderer\resource\CResourceManager.cpp" />
+    <ClCompile Include="source\renderer\state\RrHybridBufferChain.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Render.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Sorters.cpp" />
@@ -156,10 +157,10 @@
     <ClCompile Include="source\renderer\_window\RrWindowWin32.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\renderer\camera\CCamera.h" />
-    <ClInclude Include="source\renderer\camera\CRTCamera.h" />
-    <ClInclude Include="source\renderer\camera\CRTCameraCascade.h" />
-    <ClInclude Include="source\renderer\camera\CRTCameraCube.h" />
+    <ClInclude Include="source\renderer\camera\RrCamera.h" />
+    <ClInclude Include="source\renderer\camera\RrRTCamera.h" />
+    <ClInclude Include="source\renderer\camera\RrRTCameraCascade.h" />
+    <ClInclude Include="source\renderer\camera\RrRTCameraCube.h" />
     <ClInclude Include="source\renderer\debug\CDebugDrawer.h" />
     <ClInclude Include="source\renderer\debug\CDebugRTInspector.h" />
     <ClInclude Include="source\renderer\debug\RrBtDebugDraw.h" />
@@ -243,6 +244,7 @@
     <ClInclude Include="source\renderer\renderer-console.h" />
     <ClInclude Include="source\renderer\resource\CModelMaster.h" />
     <ClInclude Include="source\renderer\resource\CResourceManager.h" />
+    <ClInclude Include="source\renderer\state\RrHybridBufferChain.h" />
     <ClInclude Include="source\renderer\state\RrRenderer.h" />
     <ClInclude Include="source\renderer\state\InternalSettings.h" />
     <ClInclude Include="source\renderer\state\Options.h" />

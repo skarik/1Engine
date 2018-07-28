@@ -7,7 +7,7 @@
 #include "renderer/logic/CLogicObject.h"
 #include "renderer/object/CRenderableObject.h"
 
-class CCamera;
+class RrCamera;
 
 class CScreenFade : public CRenderableObject, public CLogicObject
 {
@@ -23,7 +23,7 @@ private:
 	bool		bFadeIn;	// Fade in starts the alpha at 1. Fade out starts the alpha at 0
 	float		fFadeDelay;
 	float		fFadeTime;
-	CCamera*	pTargetCamera;
+	RrCamera*	pTargetCamera;
 	Color		cFadeColor;
 
 	float		fCurrentTime;
