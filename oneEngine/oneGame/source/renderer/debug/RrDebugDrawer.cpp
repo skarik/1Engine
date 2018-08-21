@@ -4,12 +4,9 @@
 #include "core/math/Color.h"
 #include "core/debug/console.h"
 
-//#include "renderer/material/RrMaterial.h"
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
 #include "renderer/texture/RrTexture.h"
-//#include "renderer/system/glMainSystem.h"
-//#include "renderer/system/glDrawing.h"
 
 using namespace debug;
 

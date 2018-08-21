@@ -138,14 +138,30 @@
     <ClCompile Include="source\renderer\state\Options.cpp" />
     <ClCompile Include="source\renderer\state\RrPipelinePasses.cpp" />
     <ClCompile Include="source\renderer\state\Settings.cpp" />
-    <ClCompile Include="source\renderer\system\glDrawing.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.buffers.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.frame.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.matrix.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.screen_pixels.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.state.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.textures.cpp" />
+    <ClCompile Include="source\renderer\system\glDrawing.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.buffers.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.frame.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.matrix.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.screen_pixels.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.state.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.textures.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\texture\RrFontTexture.cpp" />
     <ClCompile Include="source\renderer\texture\CMRTTexture.cpp" />
     <ClCompile Include="source\renderer\texture\RrRenderTexture.cpp" />
@@ -156,7 +172,9 @@
     <ClCompile Include="source\renderer\texture\CTextureCube.cpp" />
     <ClCompile Include="source\renderer\texture\CTextureLoader.cpp" />
     <ClCompile Include="source\renderer\texture\RrTexture.Streaming.cpp" />
-    <ClCompile Include="source\renderer\texture\RrTextureMaster.cpp" />
+    <ClCompile Include="source\renderer\texture\RrTextureMaster.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\texture\RrTextureMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\types\ObjectSettings.cpp" />
     <ClCompile Include="source\renderer\utils\glScreenshot.cpp" />
@@ -165,7 +183,9 @@
     <ClCompile Include="source\renderer\utils\rrMeshBuilder2D.cpp" />
     <ClCompile Include="source\renderer\utils\rrTextBuilder2D.cpp" />
     <ClCompile Include="source\renderer\windowing\RrWindow.cpp" />
-    <ClCompile Include="source\renderer\_window\RrWindowWin32.cpp" />
+    <ClCompile Include="source\renderer\_window\RrWindowWin32.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\camera\RrCamera.h" />
@@ -266,10 +286,18 @@
     <ClInclude Include="source\renderer\state\Options.h" />
     <ClInclude Include="source\renderer\state\RrPipelinePasses.h" />
     <ClInclude Include="source\renderer\state\Settings.h" />
-    <ClInclude Include="source\renderer\system\glDrawing.h" />
-    <ClInclude Include="source\renderer\system\glMainSystem.h" />
-    <ClInclude Include="source\renderer\system\glSystem.h" />
-    <ClInclude Include="source\renderer\system\rrVBufferStreaming.h" />
+    <ClInclude Include="source\renderer\system\glDrawing.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\system\glMainSystem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\system\glSystem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\system\rrVBufferStreaming.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\texture\RrFontTexture.h" />
     <ClInclude Include="source\renderer\texture\CMRTTexture.h" />
     <ClInclude Include="source\renderer\texture\RrRenderTexture.h" />
@@ -278,7 +306,9 @@
     <ClInclude Include="source\renderer\texture\RrTexture.h" />
     <ClInclude Include="source\renderer\texture\CTexture3D.h" />
     <ClInclude Include="source\renderer\texture\CTextureCube.h" />
-    <ClInclude Include="source\renderer\texture\RrTextureMaster.h" />
+    <ClInclude Include="source\renderer\texture\RrTextureMaster.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\texture\RrTextureMasterSubsystem.h" />
     <ClInclude Include="source\renderer\types\blendModes.h" />
     <ClInclude Include="source\renderer\types\renderModes.h" />
@@ -295,10 +325,18 @@
     <ClInclude Include="source\renderer\utils\rrMeshBuilder2D.h" />
     <ClInclude Include="source\renderer\utils\rrTextBuilder2D.h" />
     <ClInclude Include="source\renderer\windowing\RrWindow.h" />
-    <ClInclude Include="source\renderer\_window\RrWindow.h" />
-    <ClInclude Include="source\renderer\_window\RrWindowLinux.h" />
-    <ClInclude Include="source\renderer\_window\RrWindowOsmac.h" />
-    <ClInclude Include="source\renderer\_window\RrWindowWin32.h" />
+    <ClInclude Include="source\renderer\_window\RrWindow.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\_window\RrWindowLinux.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\_window\RrWindowOsmac.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\_window\RrWindowWin32.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C1BC5440-9CE1-4A7E-89DD-DCD57005426A}</ProjectGuid>

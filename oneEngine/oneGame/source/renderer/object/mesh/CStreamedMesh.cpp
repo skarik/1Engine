@@ -1,11 +1,10 @@
-
 #include "CStreamedMesh.h"
 #include "renderer/logic/model/CModel.h"
 #include "renderer/logic/model/CSkinnedModel.h"
 #include "renderer/object/mesh/system/rrMesh.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 #include "renderer/camera/RrCamera.h"
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 
 CStreamedMesh::CStreamedMesh ( void )

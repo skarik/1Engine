@@ -1,10 +1,6 @@
 #include "RrDebugRTInspector.h"
 #include "core/math/Color.h"
 #include "renderer/texture/RrRenderTexture.h"
-//#include "renderer/material/RrMaterial.h"
-
-//#include "renderer/system/glMainSystem.h"
-//#include "renderer/system/glDrawing.h"
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
 

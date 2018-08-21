@@ -1,4 +1,3 @@
-
 #include "CModel.h"
 
 #include "core/time/time.h"
@@ -7,7 +6,6 @@
 #include "core-ext/system/io/FileUtils.h"
 #include "core-ext/system/io/Resources.h"
 
-#include "renderer/material/RrMaterial.h"
 #include "renderer/object/mesh/CMesh.h"
 #include "renderer/resource/CModelMaster.h"
 

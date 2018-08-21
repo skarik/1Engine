@@ -2,8 +2,8 @@
 #define _C_BILLBOARD_H_
 
 // Includes
-#include "../CRenderableObject.h"
-#include "renderer/material/RrMaterial.h"
+#include "renderer/object/CRenderableObject.h"
+//#include "renderer/material/RrMaterial.h"
 #include <vector>
 
 // Class Definition

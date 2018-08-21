@@ -207,7 +207,7 @@ void RrCamera::LateUpdate ( void )
 //#include "renderer/system/glMainSystem.h"
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/texture/CMRTTexture.h"
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/material/RrMaterial.h"
 
 int RrCamera::PassCount ( void )
 {

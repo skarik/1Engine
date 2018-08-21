@@ -3,10 +3,10 @@
 
 #include "renderer/texture/RrTexture.h"
 #include "renderer/camera/RrCamera.h"
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/material/RrMaterial.h"
 
-#include "renderer/system/glMainSystem.h"
-#include "renderer/system/glDrawing.h"
+//#include "renderer/system/glMainSystem.h"
+//#include "renderer/system/glDrawing.h"
 
 #include "renderer/object/immediate/immediate.h"
 

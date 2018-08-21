@@ -26,7 +26,7 @@
 #include "physical/resource/ResourceManager.h"
 #include "renderer/resource/CModelMaster.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/material/RrMaterial.h"
 #include "renderer/logic/model/morpher/CMorpher.h"
 
 void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
