@@ -9,8 +9,8 @@ struct skinningData_t
 {
 	uint32_t	bonecount;
 	//glHandle	textureBuffer;
-	glHandle	textureBufferData;
-	glHandle	textureBufferData_Swap;
+	gpuHandle	textureBufferData;
+	gpuHandle	textureBufferData_Swap;
 	//glHandle	textureSoftBuffer;
 	//glHandle	textureSoftBufferData;
 	//glHandle	textureSoftBufferData_Swap;

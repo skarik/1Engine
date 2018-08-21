@@ -6,7 +6,7 @@
 
 #include <map>
 
-class CLight;
+class RrLight;
 
 namespace M04
 {
@@ -37,7 +37,7 @@ namespace M04
 		char*		m_data_storage_buffer;
 
 	public:
-		CLight*		light;
+		RrLight*		light;
 
 	public:
 		//=========================================//

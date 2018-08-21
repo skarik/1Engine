@@ -25,7 +25,7 @@ int gpu::GraphicsContext::setPipeline ( Pipeline* pipeline )
 
 	return kError_SUCCESS;
 }
-int gpu::GraphicsContext::setVertexBuffer ( VertexBuffer* buffer )
+int gpu::GraphicsContext::setVertexBuffer ( int slot, VertexBuffer* buffer, uint32_t offset )
 {
 	return kError_SUCCESS;
 }
@@ -44,10 +44,10 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 	return 0;
 }
 
-int gpu::GraphicsContext::setPrimitiveTopology ( PrimitiveTopology topology )
-{
-	m_primitiveType = topology;
-}
+//int gpu::GraphicsContext::setPrimitiveTopology ( PrimitiveTopology topology )
+//{
+//	m_primitiveType = topology;
+//}
 
 int gpu::GraphicsContext::draw ( const uint32_t vertexCount, const uint32_t startVertex )
 {

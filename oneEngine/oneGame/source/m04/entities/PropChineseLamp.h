@@ -6,7 +6,7 @@
 #include "engine/behavior/CGameBehavior.h"
 #include "engine2d/interface/SpriteContainer.h"
 
-class CLight;
+class RrLight;
 
 namespace M04
 {
@@ -24,7 +24,7 @@ namespace M04
 		float height;
 		Color color;
 
-		CLight*	m_light;
+		RrLight*	m_light;
 		float m_angle;
 
 		// Expose values to the editor and serializer

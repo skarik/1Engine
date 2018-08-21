@@ -1,6 +1,6 @@
 
 #include "PropChineseLamp.h"
-#include "renderer/light/CLight.h"
+#include "renderer/light/RrLight.h"
 
 #include "render2d/object/sprite/CEditableRenderable2D.h"
 
@@ -32,7 +32,7 @@ void PropChineseLamp::Update ( void )
 
 	if (m_light == NULL)
 	{
-		m_light = new CLight();
+		m_light = new RrLight();
 		m_light->diffuseColor = color;
 		m_light->hdrColor = color;
 		m_light->range = 256.0F;

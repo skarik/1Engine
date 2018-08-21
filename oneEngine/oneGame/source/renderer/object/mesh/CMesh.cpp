@@ -33,7 +33,8 @@ void CMesh::CalculateBoundingBox ( void )
 	arModelData* modeldata = m_mesh->modeldata;
 	for ( unsigned int v = 0; v < modeldata->vertexNum; v++ )
 	{
-		arModelVertex* vert = &(modeldata->vertices[v]);
+		//arModelVertex* vert = &(modeldata->vertices[v]);
+		Vector3f* vert = &(modeldata->position[v]);
 		minPos.x = std::min<Real>( minPos.x, vert->x );
 		minPos.y = std::min<Real>( minPos.y, vert->y );
 		minPos.z = std::min<Real>( minPos.z, vert->z );
@@ -109,36 +110,36 @@ bool CMesh::PreRender ( void )
 // Render the mesh
 bool CMesh::Render ( const char pass )
 {
-	{
-		if ( !bCanRender || m_mesh == NULL )
-			return true; // Only render when have a valid mesh and rendering enabled
-		GL_ACCESS;
+	//{
+	//	if ( !bCanRender || m_mesh == NULL )
+	//		return true; // Only render when have a valid mesh and rendering enabled
+	//	GL_ACCESS;
 
-		// Set up material properties before mesh is bound
-		if ( bUseSkinning )
-		{	// Mesh MUST be a rrSkinnedMesh instance, otherwise crashes will result.
-			m_material->m_bufferSkeletonSize		= ((rrSkinnedMesh*)m_mesh)->skinning_data.bonecount;
-			m_material->m_bufferMatricesSkinning	= ((rrSkinnedMesh*)m_mesh)->skinning_data.textureBufferData;
-		}
-		else
-		{
-			m_material->m_bufferSkeletonSize = 0;
-			m_material->m_bufferMatricesSkinning = 0;
-		}
+	//	// Set up material properties before mesh is bound
+	//	if ( bUseSkinning )
+	//	{	// Mesh MUST be a rrSkinnedMesh instance, otherwise crashes will result.
+	//		m_material->m_bufferSkeletonSize		= ((rrSkinnedMesh*)m_mesh)->skinning_data.bonecount;
+	//		m_material->m_bufferMatricesSkinning	= ((rrSkinnedMesh*)m_mesh)->skinning_data.textureBufferData;
+	//	}
+	//	else
+	//	{
+	//		m_material->m_bufferSkeletonSize = 0;
+	//		m_material->m_bufferMatricesSkinning = 0;
+	//	}
 
-		// Set up the material now
-		m_material->bindPass(pass);
+	//	// Set up the material now
+	//	m_material->bindPass(pass);
 
-		// Pass in shader constant now that the pass has been bound
-		//RrMaterial::current->setShaderConstants( this );
-		//if ( m_parent ) m_parent->SendShaderUniforms();
+	//	// Pass in shader constant now that the pass has been bound
+	//	//RrMaterial::current->setShaderConstants( this );
+	//	//if ( m_parent ) m_parent->SendShaderUniforms();
 
-		// Bind the current mesh
-		BindVAO( pass, m_mesh->GetVBOverts(), m_mesh->GetVBOfaces() );
+	//	// Bind the current mesh
+	//	BindVAO( pass, m_mesh->GetVBOverts(), m_mesh->GetVBOfaces() );
 
-		// Render the mesh
-		glDrawElements( GL_TRIANGLES, m_mesh->modeldata->triangleNum*3, GL_UNSIGNED_INT, 0 );
-	}
+	//	// Render the mesh
+	//	glDrawElements( GL_TRIANGLES, m_mesh->modeldata->triangleNum*3, GL_UNSIGNED_INT, 0 );
+	//}
 
 	{
 		if ( !bCanRender || m_mesh == NULL )

@@ -18,8 +18,8 @@
 #include <vector>
 
 class CRenderableObject;
-class CLogicObject;
-class CLight;
+class RrLogicObject;
+class RrLight;
 class RrCamera;
 class CResourceManager;
 class RrPass;
@@ -151,7 +151,7 @@ public:
 	//	PreRenderBeginLighting() : Sets up rendering with the given light list.
 	// Think very carefully if this should be used, versus scheduling draws directly on the GPU.
 	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
-	/*RENDER_API void			PreRenderBeginLighting ( std::vector<CLight*> & lightsToUse );
+	/*RENDER_API void			PreRenderBeginLighting ( std::vector<RrLight*> & lightsToUse );
 	//	RenderSingleObject() : renders an object, assuming the projection has been already set up.
 	// Think very carefully if this should be used, versus scheduling draws directly on the GPU.
 	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
@@ -195,7 +195,7 @@ public:
 
 private:
 	bool bSpecialRender_ResetLights;
-	std::vector<CLight*> vSpecialRender_LightList;
+	std::vector<RrLight*> vSpecialRender_LightList;
 
 public:
 	// Public active instance pointer
@@ -221,9 +221,9 @@ private:
 	void ReorderList ( void );
 
 	// Give RO constructor and destructor access to adding and removing
-	friend CLogicObject;
+	friend RrLogicObject;
 	// Adding and removing renderable objects
-	unsigned int AddLO ( CLogicObject* );
+	unsigned int AddLO ( RrLogicObject* );
 	void RemoveLO ( unsigned int );
 
 private:
@@ -261,7 +261,7 @@ private:
 
 	// Logic list
 	// ================================
-	std::vector<CLogicObject*>	mLogicObjects;
+	std::vector<RrLogicObject*>	mLogicObjects;
 	unsigned int				mLoCurrentIndex;
 	unsigned int				mLoListSize;
 

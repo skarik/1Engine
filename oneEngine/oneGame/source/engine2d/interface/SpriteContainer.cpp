@@ -8,7 +8,7 @@ using namespace Engine2D;
 
 
 SpriteContainer::SpriteContainer ( Vector3d* position, Real* angle, Vector3d* scale )
-	: CLogicObject(),
+	: RrLogicObject(),
 	m_sourcePosition(position), m_sourceAngle(angle), m_sourceScale(scale),
 	m_sprite(NULL),
 	m_requireRestream(false)

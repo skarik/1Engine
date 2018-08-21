@@ -124,7 +124,7 @@ bool Cubic::PointIsInside ( Vector3d const& point )
 	if ( point.z > position.z+size.z ) return false;
 	return true;
 }
-/*#include "../CDebugDrawer.h"
+/*#include "../RrDebugDrawer.h"
 void Cubic::DrawDebug ( void )
 {
 	debug::Drawer->DrawLine( position+Vector3d( 0,0,0 ), position+Vector3d( size.x,0,0 ) );

@@ -38,19 +38,19 @@ class RrPassDeferred;
 #endif
 
 // Base class, virtual/abstract
-class CLogicObject
+class RrLogicObject
 {
 private:
 	// No copying with "="
-	CLogicObject & operator= (const CLogicObject & other) = delete;
+	RrLogicObject & operator= (const RrLogicObject & other) = delete;
 
 public:
-	//	CLogicObject (Constructor)
+	//	RrLogicObject (Constructor)
 	// Calls to the RenderState to add set and get assigned an ID.
-	RENDER_API explicit				CLogicObject ( void );
-	//	~CLogicObject (Destructor)
+	RENDER_API explicit				RrLogicObject ( void );
+	//	~RrLogicObject (Destructor)
 	// Calls to the RenderState to force any threaded operation to stop.
-	RENDER_API virtual				~CLogicObject ( void );
+	RENDER_API virtual				~RrLogicObject ( void );
 
 	// == Step Prototypes ==
 
@@ -101,6 +101,6 @@ private:
 };
 
 // typedef for persons coming from Unity
-typedef CLogicObject LogicObject;
+typedef RrLogicObject LogicObject;
 
 #endif//_C_RENDERER_LOGIC_OBJECT_

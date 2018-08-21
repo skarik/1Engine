@@ -15,7 +15,7 @@
 #include "physical/skeleton/skeletonBone.h"
 #include "physical/physics/CPhysics.h"
 
-//#include "CDebugDrawer.h"
+//#include "RrDebugDrawer.h"
 
 Vector3d CHKAnimation::defaultJointVector (0,0,-1);
 

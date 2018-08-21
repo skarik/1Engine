@@ -10,7 +10,7 @@ namespace audio
 class CInputControl;
 class CCharacterMotion;
 class RrCamera;
-class CLight;
+class RrLight;
 
 // Enumeration
 enum ePlayerObjectType
@@ -225,7 +225,7 @@ protected:
 
 	// ===Function Where Shit Happens==
 	virtual void DoPlayerActions ( void );
-	//CLight*		pMyLight;
+	//RrLight*		pMyLight;
 	virtual void DoLookAtCommands ( void );
 	CGameBehavior*	pCurrentLookedAt;
 	float	fMaxUseDistance;

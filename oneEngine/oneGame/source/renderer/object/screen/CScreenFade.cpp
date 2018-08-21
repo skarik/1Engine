@@ -11,7 +11,7 @@
 #include "renderer/object/immediate/immediate.h"
 
 CScreenFade::CScreenFade ( bool inbFadeIn, float infFadeTime, float infFadeDelay, Color incFadeColor )
-	: CRenderableObject(), CLogicObject()
+	: CRenderableObject(), RrLogicObject()
 {
 	bFadeIn		= inbFadeIn;
 	fFadeTime	= infFadeTime;

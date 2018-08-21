@@ -15,7 +15,7 @@ using namespace std;
 
 // Constructor, taking model object
 CModel::CModel ( const char* sFilename )
-	: CLogicObject()
+	: RrLogicObject()
 {
 	// Create filename
 	myModelFilename = sFilename;
@@ -129,7 +129,7 @@ CModel::CModel ( const char* sFilename )
 
 // Constructor, taking model info struct (nice for procedural generation)
 CModel::CModel ( arModelData& mdInModelData, const char* sModelName )
-	: CLogicObject()
+	: RrLogicObject()
 {
 	// Start out setting the model name
 	myModelFilename = sModelName;
@@ -294,7 +294,7 @@ void CModel::PostStepSynchronus ( void )
 }
 
 
-//#include "renderer/debug/CDebugDrawer.h"
+//#include "renderer/debug/RrDebugDrawer.h"
 
 void CModel::CalculateBoundingBox ( void )
 {

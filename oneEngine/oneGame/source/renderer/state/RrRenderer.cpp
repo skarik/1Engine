@@ -7,15 +7,15 @@
 #include "core/debug/console.h"
 
 #include "renderer/object/CRenderableObject.h"
-#include "renderer/logic/CLogicObject.h"
+#include "renderer/logic/RrLogicObject.h"
 
 //#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/RrTexture.h"
 #include "renderer/texture/RrRenderTexture.h"
 //#include "renderer/texture/CMRTTexture.h"
 
-#include "renderer/debug/CDebugDrawer.h"
-#include "renderer/debug/CDebugRTInspector.h"
+#include "renderer/debug/RrDebugDrawer.h"
+#include "renderer/debug/RrDebugRTInspector.h"
 //#include "renderer/object/sprite/CSpriteContainer.h"
 
 #include "core-ext/resources/ResourceManager.h"
@@ -176,8 +176,8 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 	bSpecialRender_ResetLights = false;
 
 	// Create the debug tools
-	new debug::CDebugDrawer;
-	new debug::CDebugRTInspector;
+	new debug::RrDebugDrawer;
+	new debug::RrDebugRTInspector;
 }
 
 
@@ -269,12 +269,12 @@ void RrRenderer::RemoveRO ( unsigned int id )
 // AddLO ( pointer to new RO )
 //  adds an LO to be drawn and returns the index
 //  used only by the LO constructor
-unsigned int RrRenderer::AddLO ( CLogicObject * pLO )
+unsigned int RrRenderer::AddLO ( RrLogicObject * pLO )
 {
 	// Randomly reshift the logic objects
 	if ( (rand()%10) == 0 )
 	{
-		CLogicObject* tmpLO;
+		RrLogicObject* tmpLO;
 		// Shift them suckers
 		unsigned int newIndex = 0;
 		for ( unsigned int i = 0; i < mLoCurrentIndex; i += 1 )

@@ -317,7 +317,7 @@ void CPlayer::FixedUpdate ( void )
 	//mvtPhaseFlying();
 }
 
-#include "CDebugDrawer.h"
+#include "RrDebugDrawer.h"
 
 
 #include "COctreeTerrain.h"

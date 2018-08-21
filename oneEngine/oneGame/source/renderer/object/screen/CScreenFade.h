@@ -4,12 +4,12 @@
 
 //#include "CRenderableObject.h"
 //#include "CGameBehavior.h"
-#include "renderer/logic/CLogicObject.h"
+#include "renderer/logic/RrLogicObject.h"
 #include "renderer/object/CRenderableObject.h"
 
 class RrCamera;
 
-class CScreenFade : public CRenderableObject, public CLogicObject
+class CScreenFade : public CRenderableObject, public RrLogicObject
 {
 public:
 	RENDER_API explicit		CScreenFade ( bool inbFadeIn, float infFadeTime = 1.0f, float infFadeDelay = 0.0f, Color incFadeColor = Color(0.0f,0,0) );

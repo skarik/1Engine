@@ -2,7 +2,7 @@
 #include "EditorObject.h"
 #include "render2d/object/sprite/CEditableRenderable2D.h"
 
-#include "renderer/light/CLight.h"
+#include "renderer/light/RrLight.h"
 
 using namespace M04;
 
@@ -50,7 +50,7 @@ EditorObject::EditorObject ( const char* object_name )
 		case DISPLAY_LIGHT:
 			m_sprite->SetSpriteFile( file_key );
 			m_spriteOrigin = m_sprite->GetSpriteInfo().fullsize / 2;
-			light = new CLight;
+			light = new RrLight;
 			light->range = 128.0F;
 			break;
 		}

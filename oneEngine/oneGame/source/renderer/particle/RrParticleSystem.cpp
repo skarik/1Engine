@@ -3,7 +3,7 @@
 #include "RrParticleSystem.h"
 
 RrParticleSystem::RrParticleSystem ( void )
-	: CLogicObject()
+	: RrLogicObject()
 {
 	;
 }

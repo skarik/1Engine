@@ -5,7 +5,7 @@
 #include "core/math/Math.h"
 //#include "core/settings/CGameSettings.h"
 
-#include "renderer/light/CLight.h"
+#include "renderer/light/RrLight.h"
 #include "renderer/types/ObjectSettings.h"
 
 #include "RrCamera.h"
@@ -153,7 +153,7 @@ void RrCamera::SetRotation ( const Rotator& newRotation )
 	transform.rotation = newRotation;
 }
 
-//#include "CDebugDrawer.h"
+//#include "RrDebugDrawer.h"
 //#include "CVoxelTerrain.h"
 
 void RrCamera::LateUpdate ( void )
@@ -272,7 +272,7 @@ void RrCamera::RenderBegin ( void )
 	//CameraUpdate();
 	UpdateFrustum();
 
-	CLight::UpdateLights();
+	RrLight::UpdateLights(this);
 	//glGetError();// clear error
 }
 

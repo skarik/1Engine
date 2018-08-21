@@ -4,7 +4,7 @@
 #include "renderer/state/Settings.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/texture/RrRenderTexture.h"
-#include "renderer/debug/CDebugRTInspector.h"
+#include "renderer/debug/RrDebugRTInspector.h"
 #include "renderer/material/RrMaterial.h"
 
 #include "renderer/system/glMainSystem.h"

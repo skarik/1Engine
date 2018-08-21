@@ -13,7 +13,7 @@
 
 #include "core-ext/transform/Transform.h"
 
-//#include "renderer/logic/CLogicObject.h"
+//#include "renderer/logic/RrLogicObject.h"
 
 //#include "GLCommon.h"
 
@@ -64,7 +64,7 @@ struct rrCameraPass
 #define CameraType(a) public: virtual rrCameraClassType GetType ( void ) { return a; };
 
 // Class Definition
-class RrCamera// : public CLogicObject// : public CGameObject
+class RrCamera// : public RrLogicObject// : public CGameObject
 {
 	//ClassName( "CameraBase" );
 	CameraType( kCameraClassNormal );

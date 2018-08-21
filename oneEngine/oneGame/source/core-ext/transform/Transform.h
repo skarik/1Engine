@@ -61,7 +61,7 @@ namespace core
 // Prototypes
 class CGameBehavior;		// Engine
 class CRenderableObject;	// Renderer
-class CLogicObject;			// Renderer
+class RrLogicObject;			// Renderer
 
 // Using
 using std::string;

@@ -12,7 +12,7 @@
 #include "core-ext/system/io/osf.h"
 #include "core-ext/transform/Transform.h"
 
-#include "renderer/debug/CDebugDrawer.h"
+#include "renderer/debug/RrDebugDrawer.h"
 
 #include "render2d/object/TileMapLayer.h"
 

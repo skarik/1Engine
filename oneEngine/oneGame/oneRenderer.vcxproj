@@ -52,8 +52,8 @@
     <ClCompile Include="source\renderer\camera\RrRTCamera.cpp" />
     <ClCompile Include="source\renderer\camera\RrRTCameraCascade.cpp" />
     <ClCompile Include="source\renderer\camera\RrRTCameraCube.cpp" />
-    <ClCompile Include="source\renderer\debug\CDebugDrawer.cpp" />
-    <ClCompile Include="source\renderer\debug\CDebugRTInspector.cpp" />
+    <ClCompile Include="source\renderer\debug\RrDebugDrawer.cpp" />
+    <ClCompile Include="source\renderer\debug\RrDebugRTInspector.cpp" />
     <ClCompile Include="source\renderer\debug\RrBtDebugDraw.cpp" />
     <ClCompile Include="source\renderer\gpuw\Buffers.ConstantBuffer.cpp" />
     <ClCompile Include="source\renderer\gpuw\Buffers.VertexBuffer.cpp" />
@@ -68,23 +68,34 @@
     <ClCompile Include="source\renderer\gpuw\Shader.cpp" />
     <ClCompile Include="source\renderer\gpuw\ShaderPipeline.cpp" />
     <ClCompile Include="source\renderer\gpuw\Textures.cpp" />
-    <ClCompile Include="source\renderer\light\CLight.cpp" />
-    <ClCompile Include="source\renderer\light\DirectionalLight.cpp" />
-    <ClCompile Include="source\renderer\logic\CLogicObject.cpp" />
+    <ClCompile Include="source\renderer\light\RrLight.cpp" />
+    <ClCompile Include="source\renderer\logic\RrLogicObject.cpp" />
     <ClCompile Include="source\renderer\logic\model\CModel.cpp" />
     <ClCompile Include="source\renderer\logic\model\CModelLoader.cpp" />
     <ClCompile Include="source\renderer\logic\model\CSkinnedModel.cpp" />
     <ClCompile Include="source\renderer\logic\model\CSkinnedModelLoader.cpp" />
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpher.cpp" />
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpherSet.cpp" />
-    <ClCompile Include="source\renderer\material\RrMaterial.Constants.cpp" />
-    <ClCompile Include="source\renderer\material\RrMaterial.cpp" />
-    <ClCompile Include="source\renderer\material\RrMaterial.External.cpp" />
-    <ClCompile Include="source\renderer\material\RrMaterial.Utility.cpp" />
+    <ClCompile Include="source\renderer\material\RrMaterial.Constants.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.External.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.Utility.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\material\RrPass.cpp" />
     <ClCompile Include="source\renderer\material\RrPass.Presets.cpp" />
-    <ClCompile Include="source\renderer\material\RrPassForward.cpp" />
-    <ClCompile Include="source\renderer\material\RrPassDeferred.cpp" />
+    <ClCompile Include="source\renderer\material\RrPassForward.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrPassDeferred.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\material\RrShader.cpp" />
     <ClCompile Include="source\renderer\material\RrShaderManager.cpp" />
     <ClCompile Include="source\renderer\material\RrShaderMasterSubsystem.cpp" />
@@ -161,8 +172,8 @@
     <ClInclude Include="source\renderer\camera\RrRTCamera.h" />
     <ClInclude Include="source\renderer\camera\RrRTCameraCascade.h" />
     <ClInclude Include="source\renderer\camera\RrRTCameraCube.h" />
-    <ClInclude Include="source\renderer\debug\CDebugDrawer.h" />
-    <ClInclude Include="source\renderer\debug\CDebugRTInspector.h" />
+    <ClInclude Include="source\renderer\debug\RrDebugDrawer.h" />
+    <ClInclude Include="source\renderer\debug\RrDebugRTInspector.h" />
     <ClInclude Include="source\renderer\debug\RrBtDebugDraw.h" />
     <ClInclude Include="source\renderer\exceptions.h" />
     <ClInclude Include="source\renderer\exceptions\exceptions.h" />
@@ -184,20 +195,25 @@
     <ClInclude Include="source\renderer\gpuw\ShaderPipeline.h" />
     <ClInclude Include="source\renderer\gpuw\Textures.h" />
     <ClInclude Include="source\renderer\gpuw\Transfer.h" />
-    <ClInclude Include="source\renderer\light\CLight.h" />
-    <ClInclude Include="source\renderer\light\DirectionalLight.h" />
-    <ClInclude Include="source\renderer\logic\CLogicObject.h" />
+    <ClInclude Include="source\renderer\light\RrLight.h" />
+    <ClInclude Include="source\renderer\logic\RrLogicObject.h" />
     <ClInclude Include="source\renderer\logic\model\CModel.h" />
     <ClInclude Include="source\renderer\logic\model\CModelLoader.h" />
     <ClInclude Include="source\renderer\logic\model\CSkinnedModel.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorphAction.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpher.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpherSet.h" />
-    <ClInclude Include="source\renderer\material\RrMaterial.h" />
+    <ClInclude Include="source\renderer\material\RrMaterial.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\material\RrPass.h" />
     <ClInclude Include="source\renderer\material\RrPass.Presets.h" />
-    <ClInclude Include="source\renderer\material\RrPassForward.h" />
-    <ClInclude Include="source\renderer\material\RrPassDeferred.h" />
+    <ClInclude Include="source\renderer\material\RrPassForward.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrPassDeferred.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\material\RrShader.cbuffers.h" />
     <ClInclude Include="source\renderer\material\RrShader.h" />
     <ClInclude Include="source\renderer\material\RrShaderManager.h" />

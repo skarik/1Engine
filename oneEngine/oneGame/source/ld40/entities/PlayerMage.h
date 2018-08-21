@@ -5,7 +5,7 @@
 
 class CInputControl;
 class COrthoCamera;
-class CLight;
+class RrLight;
 class CRigidbody;
 
 namespace M04

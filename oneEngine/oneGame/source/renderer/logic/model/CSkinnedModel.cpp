@@ -22,7 +22,7 @@
 
 #include "renderer/logic/model/morpher/CMorpher.h"
 
-#include "renderer/debug/CDebugDrawer.h"
+#include "renderer/debug/RrDebugDrawer.h"
 
 // Constructor
 CSkinnedModel::CSkinnedModel( const string &sFilename )
@@ -359,7 +359,7 @@ void CSkinnedModel::PassBoneMatrices ( RrMaterial* mat )
 	delete [] sys_BoneMatrix;
 }
 */
-//#include "CDebugDrawer.h"
+//#include "RrDebugDrawer.h"
 
 void CSkinnedModel::DebugRenderSkeleton ( void )
 {
@@ -368,10 +368,10 @@ void CSkinnedModel::DebugRenderSkeleton ( void )
 		//if ( bone->transform.GetParent() != NULL )
 		if ( skeleton.parent[i] >= 0 )
 		{
-			//CDebugDrawer::DrawLine( bone->transform.position + transform.position, bone->transform.GetParent()->position + transform.position );
+			//RrDebugDrawer::DrawLine( bone->transform.position + transform.position, bone->transform.GetParent()->position + transform.position );
 			//if (( bone->transform.scale.x < 0 )||( bone->transform.scale.y < 0 )||( bone->transform.scale.z < 0 ))
-			//	CDebugDrawer::DrawLine( bone->transform.position + transform.position, transform.position );
-			//CDebugDrawer::DrawLine( bone->transform.position + transform.position, bone->transform.position + transform.position + bone->transform.Forward()*0.3f );
+			//	RrDebugDrawer::DrawLine( bone->transform.position + transform.position, transform.position );
+			//RrDebugDrawer::DrawLine( bone->transform.position + transform.position, bone->transform.position + transform.position + bone->transform.Forward()*0.3f );
 		}
 		Color t_drawColor ( 1,1,0,1 );
 		string bone_name = skeleton.names[i];

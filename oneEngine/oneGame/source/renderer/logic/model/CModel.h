@@ -6,7 +6,7 @@
 
 #include "core-ext/types/sHitbox.h"
 
-#include "renderer/logic/CLogicObject.h"
+#include "renderer/logic/RrLogicObject.h"
 #include "renderer/types/ModelStructures.h"
 
 class CMesh;
@@ -17,7 +17,7 @@ class physMesh;
 #include <unordered_map>
 
 // Class Definition
-class CModel : public CLogicObject
+class CModel : public RrLogicObject
 {
 public:
 	// Constructor
@@ -27,7 +27,7 @@ public:
 	// Load up model data struct
 	RENDER_API explicit CModel ( arModelData& mdInModelData, const char* sModelName = "_sys_override_" );
 	// Create empty model
-	RENDER_API explicit CModel ( void ) : CLogicObject() {
+	RENDER_API explicit CModel ( void ) : RrLogicObject() {
 		// Clear out uniform lists
 		//uniformMapFloat = NULL;
 		//uniformMapVect2d = NULL;

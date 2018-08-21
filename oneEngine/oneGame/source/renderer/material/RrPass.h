@@ -8,6 +8,13 @@
 #include "renderer/gpuw/Public/Enums.h"
 #include "renderer/material/ShaderSlots.h"
 
+class RrShaderProgram;
+class RrTexture;
+namespace gpu
+{
+	class Texture;
+}
+
 enum rrPassType
 {
 	// World pass, forward rendered.
@@ -23,13 +30,6 @@ enum rrPassType
 	// System pass, lighting shadows, forward rendered.
 	kPassTypeShadowColorOverride,
 };
-
-class RrShaderProgram;
-class RrTexture;
-namespace gpu
-{
-	class Texture;
-}
 
 enum rrPassConstants : int
 {

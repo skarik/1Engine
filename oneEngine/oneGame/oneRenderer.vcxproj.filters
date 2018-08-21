@@ -165,12 +165,6 @@
     <ClCompile Include="source\renderer\types\ObjectSettings.cpp">
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\light\CLight.cpp">
-      <Filter>SOURCE\Renderer\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\light\DirectionalLight.cpp">
-      <Filter>SOURCE\Renderer\Light</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\utils\glScreenshot.cpp">
       <Filter>SOURCE\Renderer\Utils</Filter>
     </ClCompile>
@@ -185,9 +179,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\texture\CTextureLoader.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\logic\CLogicObject.cpp">
-      <Filter>SOURCE\Renderer\Logic</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\logic\model\CModel.cpp">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
@@ -206,12 +197,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpherSet.cpp">
       <Filter>SOURCE\Renderer\Logic\Model\Morpher</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\debug\CDebugDrawer.cpp">
-      <Filter>SOURCE\Renderer\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\debug\CDebugRTInspector.cpp">
-      <Filter>SOURCE\Renderer\Debug</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\resource\CModelMaster.cpp">
       <Filter>SOURCE\Renderer\Resource</Filter>
@@ -435,6 +420,18 @@
     <ClCompile Include="source\renderer\camera\RrRTCameraCube.cpp">
       <Filter>SOURCE\Renderer\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\debug\RrDebugDrawer.cpp">
+      <Filter>SOURCE\Renderer\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\debug\RrDebugRTInspector.cpp">
+      <Filter>SOURCE\Renderer\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\light\RrLight.cpp">
+      <Filter>SOURCE\Renderer\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\logic\RrLogicObject.cpp">
+      <Filter>SOURCE\Renderer\Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -500,12 +497,6 @@
     <ClInclude Include="source\renderer\types\ObjectSettings.h">
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\light\CLight.h">
-      <Filter>SOURCE\Renderer\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\light\DirectionalLight.h">
-      <Filter>SOURCE\Renderer\Light</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\utils\glScreenshot.h">
       <Filter>SOURCE\Renderer\Utils</Filter>
     </ClInclude>
@@ -517,9 +508,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\texture\CTextureCube.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\CLogicObject.h">
-      <Filter>SOURCE\Renderer\Logic</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\logic\model\CModel.h">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
@@ -538,12 +526,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpherSet.h">
       <Filter>SOURCE\Renderer\Logic\Model\Morpher</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\debug\CDebugDrawer.h">
-      <Filter>SOURCE\Renderer\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\debug\CDebugRTInspector.h">
-      <Filter>SOURCE\Renderer\Debug</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\resource\CModelMaster.h">
       <Filter>SOURCE\Renderer\Resource</Filter>
@@ -814,6 +796,18 @@
     </ClInclude>
     <ClInclude Include="source\renderer\camera\RrRTCameraCube.h">
       <Filter>SOURCE\Renderer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\debug\RrDebugDrawer.h">
+      <Filter>SOURCE\Renderer\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\debug\RrDebugRTInspector.h">
+      <Filter>SOURCE\Renderer\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\light\RrLight.h">
+      <Filter>SOURCE\Renderer\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\logic\RrLogicObject.h">
+      <Filter>SOURCE\Renderer\Logic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

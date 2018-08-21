@@ -1,13 +1,13 @@
 
 // == Includes ==
 #include "renderer/state/RrRenderer.h"
-#include "CLogicObject.h"
+#include "RrLogicObject.h"
 
 
 // ==Constructor
 //  adds render object to the list of RO in RrRenderer
 //  sets visibility to true
-CLogicObject::CLogicObject ( void )
+RrLogicObject::RrLogicObject ( void )
 {
 	/*transform.owner = this;
 	transform.ownerType = Transform::kOwnerTypeRendererLogic;
@@ -19,7 +19,7 @@ CLogicObject::CLogicObject ( void )
 }
 // ==Destructor
 //  removes render object from the list of RO in RrRenderer
-CLogicObject::~CLogicObject ( void )
+RrLogicObject::~RrLogicObject ( void )
 {
 	active = false;
 	RrRenderer::Active->RemoveLO( id );

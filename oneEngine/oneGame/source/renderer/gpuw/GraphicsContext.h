@@ -3,6 +3,7 @@
 
 #include "core/types.h"
 #include "renderer/gpuw/Public/Enums.h"
+#include "renderer/gpuw/Public/Formats.h"
 #include "renderer/gpuw/Public/ShaderTypes.h"
 #include <stdint.h>
 
@@ -111,13 +112,14 @@ namespace gpu
 		//	setPipeline( pipeline ) : Sets current pipeline.
 		// Combination set for shader pipeline, vertex attributes, and primitive topology.
 		RENDER_API int			setPipeline ( Pipeline* pipeline );
+		RENDER_API int			setIndexBuffer ( Buffer* buffer, Format format );
 		RENDER_API int			setVertexBuffer ( int slot, VertexBuffer* buffer, uint32_t offset );
 		RENDER_API int			setShaderCBuffer ( ShaderStage stage, ConstantBuffer* buffer );
 		RENDER_API int			setShaderSampler ( ShaderStage stage, Sampler* buffer );
 		RENDER_API int			setShaderSamplerAuto ( ShaderStage stage, Texture* buffer );
 		RENDER_API int			setShaderResource ( ShaderStage stage, Buffer* buffer );
 
-		//RENDER_API int			setPrimitiveTopology ( PrimitiveTopology topology );
+		//RENDER_API int			setPrimitiveTopology ( PrimitiveTopology topology ); // handled inside pipeline
 
 		RENDER_API int			draw ( const uint32_t vertexCount, const uint32_t startVertex );
 		RENDER_API int			drawIndexed ( const uint32_t indexCount, const uint32_t startIndex );

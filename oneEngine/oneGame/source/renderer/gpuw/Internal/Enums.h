@@ -5,6 +5,8 @@
 #include "renderer/types/types.h"
 #include "core/gfx/textureFormats.h"
 
+#include "renderer/ogl/GLCommon.h"
+
 namespace gpu {
 namespace internal {
 

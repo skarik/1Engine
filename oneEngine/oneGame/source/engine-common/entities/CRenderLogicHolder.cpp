@@ -1,8 +1,8 @@
 
-#include "renderer/logic/CLogicObject.h"
+#include "renderer/logic/RrLogicObject.h"
 #include "CRendererHolder.h"
 
-CRenderLogicHolder::CRenderLogicHolder ( CLogicObject* renderer )
+CRenderLogicHolder::CRenderLogicHolder ( RrLogicObject* renderer )
 	: CGameBehavior(), m_renderer( renderer )
 {
 	;
@@ -20,6 +20,6 @@ void CRenderLogicHolder::Update ( void )
 	;
 }
 
-CLogicObject*	CRenderLogicHolder::GetRenderer ( void ) {
+RrLogicObject*	CRenderLogicHolder::GetRenderer ( void ) {
 	return m_renderer;
 }

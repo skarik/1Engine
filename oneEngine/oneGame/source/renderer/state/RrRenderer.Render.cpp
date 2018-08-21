@@ -15,7 +15,7 @@ using std::sort;
 #include "renderer/exceptions/exceptions.h"
 
 #include "renderer/camera/RrCamera.h"
-#include "renderer/light/CLight.h"
+#include "renderer/light/RrLight.h"
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/texture/CMRTTexture.h"
 
@@ -47,7 +47,7 @@ void RrRenderer::StepPreRender ( void )
 	// Begin the logic jobs
 	for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
-			Jobs::System::Current::AddJobRequest( Jobs::kJobTypeRenderStep, &(CLogicObject::PreStep), mLogicObjects[i] );
+			Jobs::System::Current::AddJobRequest( Jobs::kJobTypeRenderStep, &(RrLogicObject::PreStep), mLogicObjects[i] );
 		}
 	}
 	// Perform the synchronous logic jobs
@@ -96,7 +96,7 @@ void RrRenderer::StepPostRender ( void )
 	// Begin the post-step render jobs
 	for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
-			Jobs::System::Current::AddJobRequest( Jobs::kJobTypeRenderStep, &(CLogicObject::PostStep), mLogicObjects[i] );
+			Jobs::System::Current::AddJobRequest( Jobs::kJobTypeRenderStep, &(RrLogicObject::PostStep), mLogicObjects[i] );
 		}
 	}
 	// Perform the synchronous logic jobs
@@ -1418,11 +1418,11 @@ void RrRenderer::RenderScene ( const uint32_t renderHint, RrCamera* camera )
 
 
 // Specialized Rendering Routines
-void RrRenderer::PreRenderBeginLighting ( std::vector<CLight*> & lightsToUse )
+void RrRenderer::PreRenderBeginLighting ( std::vector<RrLight*> & lightsToUse )
 {
 	//vSpecialRender_LightList = lightsToUse;
-	vSpecialRender_LightList = *CLight::GetLightList();
-	*CLight::GetLightList() = lightsToUse;
+	vSpecialRender_LightList = *RrLight::GetLightList();
+	*RrLight::GetLightList() = lightsToUse;
 
 	bSpecialRender_ResetLights = true;
 
@@ -1447,7 +1447,7 @@ void RrRenderer::RenderSingleObject ( CRenderableObject* objectToRender )
 	}
 
 	if ( bSpecialRender_ResetLights ) {
-		*CLight::GetLightList() = vSpecialRender_LightList;
+		*RrLight::GetLightList() = vSpecialRender_LightList;
 		bSpecialRender_ResetLights = false;
 	}
 }
@@ -1467,7 +1467,7 @@ void RrRenderer::RenderObjectArray ( CRenderableObject** objectsToRender )
 	}
 
 	if ( bSpecialRender_ResetLights ) {
-		*CLight::GetLightList() = vSpecialRender_LightList;
+		*RrLight::GetLightList() = vSpecialRender_LightList;
 		bSpecialRender_ResetLights = false;
 	}
 }

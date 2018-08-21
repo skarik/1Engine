@@ -5,13 +5,13 @@
 #include "core/math/Math2d.h"
 #include "core/math/Math3d.h"
 #include "core/math/vect2d_template.h"
-#include "renderer/logic/CLogicObject.h"
+#include "renderer/logic/RrLogicObject.h"
 
 class CEditableRenderable2D;
 
 namespace Engine2D
 {
-	class SpriteContainer : private CLogicObject
+	class SpriteContainer : private RrLogicObject
 	{
 	protected:
 		//		SpriteContainer (Constructor)

@@ -8,7 +8,7 @@
 #include "renderer/state/RrRenderer.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/object/CRenderableObject.h"
-#include "renderer/light/CLight.h"
+#include "renderer/light/RrLight.h"
 
 #include "renderer/state/Settings.h"
 
@@ -190,7 +190,7 @@ void RrMaterial::updateStaticUBO ( void )
 
 		_lightingInfo_t t_lightingInfo;
 		// Get the light list
-		std::vector<CLight*>* lightList = CLight::GetActiveLightList();
+		std::vector<RrLight*>* lightList = RrLight::GetActiveLightList();
 		// Set the maximum value to iterate through
 		uint t_maxLights = std::min<uint>( (uint)(renderer::Settings.maxLights-1), HARD_MAX );
 		uint maxVal = lightList->size();
@@ -377,10 +377,10 @@ void RrMaterial::updateLightTBO ( void )
 		m_lightCount = 0;
 
 		// Get the light list
-		std::vector<CLight*>* lightList = CLight::GetActiveLightList(); 
+		std::vector<RrLight*>* lightList = RrLight::GetActiveLightList(); 
 		for ( uint li = 0; li < lightList->size(); ++li )
 		{
-			CLight* light = lightList->at(li);
+			RrLight* light = lightList->at(li);
 			lightProperties[li].red		= light->diffuseColor.red;
 			lightProperties[li].green	= light->diffuseColor.green;
 			lightProperties[li].blue	= light->diffuseColor.blue;

@@ -8,7 +8,7 @@
 
 class CInputControl;
 class COrthoCamera;
-class CLight;
+class RrLight;
 class CRigidbody;
 
 namespace M04
@@ -54,7 +54,7 @@ namespace M04
 		
 		CInputControl* input;
 		COrthoCamera* camera;
-		CLight* light;
+		RrLight* light;
 		CRigidbody* bod;
 		UILuvPpl* ui;
 

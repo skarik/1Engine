@@ -3,7 +3,7 @@
 #include "core/math/Math.h"
 #include "core/math/Easing.h"
 #include "core-ext/input/CInputControl.h"
-#include "renderer/light/CLight.h"
+#include "renderer/light/RrLight.h"
 #include "render2d/camera/COrthoCamera.h"
 #include "render2d/object/sprite/CEditableRenderable2D.h"
 

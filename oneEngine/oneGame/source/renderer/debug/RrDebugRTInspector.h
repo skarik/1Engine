@@ -1,6 +1,5 @@
-
-#ifndef _C_DEBUG_RT_INSPECTOR_H_
-#define _C_DEBUG_RT_INSPECTOR_H_
+#ifndef RENDERER_DEBUG_RT_INSPECTOR_H_
+#define RENDERER_DEBUG_RT_INSPECTOR_H_
 
 // Includes
 #include <vector>
@@ -10,12 +9,12 @@ class RrRenderTexture;
 
 namespace debug
 {
-	class CDebugRTInspector : public CRenderableObject
+	class RrDebugRTInspector : public CRenderableObject
 	{
 	public:
 		// Constructor and destructor
-		RENDER_API explicit	CDebugRTInspector ( void );
-		RENDER_API			~CDebugRTInspector ( void );
+		RENDER_API explicit	RrDebugRTInspector ( void );
+		RENDER_API			~RrDebugRTInspector ( void );
 	public:
 		bool		BeginRender ( void ) override;
 
@@ -32,7 +31,7 @@ namespace debug
 	};
 
 	// Publicly available RTInspector~
-	RENDER_API extern CDebugRTInspector* RTInspector;
+	RENDER_API extern RrDebugRTInspector* RTInspector;
 };
 
 #endif
