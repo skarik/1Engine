@@ -44,7 +44,7 @@ static void _AllocateCBufferSize ( const GLuint buffer, const uint64_t data_size
 }
 
 //	init ( data ) : initializes a constant buffer with data
-int	gpu::ConstantBuffer::init ( void* data, const uint64_t data_size, const TransferStyle style )
+int	gpu::ConstantBuffer::init ( Device* device, void* data, const  uint64_t data_size, const TransferStyle style )
 {
 	glCreateBuffers(1, &m_buffer);
 	//glBindBuffer( GL_UNIFORM_BUFFER, m_buffer );
@@ -52,18 +52,18 @@ int	gpu::ConstantBuffer::init ( void* data, const uint64_t data_size, const Tran
 
 	if (data != NULL)
 	{
-		upload(data, data_size, style);
+		upload(device, data, data_size, style);
 	}
 	
 	return 0;
 }
 
 //	upload( data, data_size, transfer ) : initializes and upload a constant buffer with data
-int	gpu::ConstantBuffer::upload ( void* data, const uint64_t data_size, const TransferStyle style )
+int	gpu::ConstantBuffer::upload ( Device* device, void* data, const  uint64_t data_size, const TransferStyle style )
 {
 	if (m_buffer == 0)
 	{
-		init(data, data_size, style);
+		init(device, data, data_size, style);
 	}
 	else
 	{
@@ -78,7 +78,7 @@ int	gpu::ConstantBuffer::upload ( void* data, const uint64_t data_size, const Tr
 }
 
 //	free() : destroys any allocated buffer, if existing.
-int	gpu::ConstantBuffer::free ( void )
+int	gpu::ConstantBuffer::free ( Device* device )
 {
 	glDeleteBuffers(1, &m_buffer);
 	m_buffer = 0;

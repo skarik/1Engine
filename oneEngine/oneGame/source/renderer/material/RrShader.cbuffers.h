@@ -24,6 +24,8 @@ namespace renderer
 		ATTRIB_TEXCOORD2	= 8,
 		ATTRIB_TEXCOORD3	= 9,
 		ATTRIB_TEXCOORD4	= 10,
+
+		kAttributeMaxCount	= 11,
 	};
 
 	struct rrAttributeReservedName

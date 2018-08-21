@@ -6,6 +6,8 @@
 #include "renderer/camera/RrCamera.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
+#include "renderer/gpuw/Device.h"
+#include "renderer/gpuw/GraphicsContext.h"
 
 CMesh::CMesh ( rrMesh* nMesh, bool n_enableSkinning )
 	: CRenderableObject(),
@@ -107,41 +109,54 @@ bool CMesh::PreRender ( void )
 // Render the mesh
 bool CMesh::Render ( const char pass )
 {
-	if ( !bCanRender || m_mesh == NULL )
-		return true; // Only render when have a valid mesh and rendering enabled
-	GL_ACCESS;
-
-	// Set up transformation for the mesh
-	//if ( m_parent )
-	//	GL.Transform( &m_parent->transform );
-	//else
-	//	GL.Transform( &this->transform.world );
-	
-	// Set up material properties before mesh is bound
-	if ( bUseSkinning )
-	{	// Mesh MUST be a rrSkinnedMesh instance, otherwise crashes will result.
-		m_material->m_bufferSkeletonSize		= ((rrSkinnedMesh*)m_mesh)->skinning_data.bonecount;
-		m_material->m_bufferMatricesSkinning	= ((rrSkinnedMesh*)m_mesh)->skinning_data.textureBufferData;
-	}
-	else
 	{
-		m_material->m_bufferSkeletonSize = 0;
-		m_material->m_bufferMatricesSkinning = 0;
+		if ( !bCanRender || m_mesh == NULL )
+			return true; // Only render when have a valid mesh and rendering enabled
+		GL_ACCESS;
+
+		// Set up material properties before mesh is bound
+		if ( bUseSkinning )
+		{	// Mesh MUST be a rrSkinnedMesh instance, otherwise crashes will result.
+			m_material->m_bufferSkeletonSize		= ((rrSkinnedMesh*)m_mesh)->skinning_data.bonecount;
+			m_material->m_bufferMatricesSkinning	= ((rrSkinnedMesh*)m_mesh)->skinning_data.textureBufferData;
+		}
+		else
+		{
+			m_material->m_bufferSkeletonSize = 0;
+			m_material->m_bufferMatricesSkinning = 0;
+		}
+
+		// Set up the material now
+		m_material->bindPass(pass);
+
+		// Pass in shader constant now that the pass has been bound
+		//RrMaterial::current->setShaderConstants( this );
+		//if ( m_parent ) m_parent->SendShaderUniforms();
+
+		// Bind the current mesh
+		BindVAO( pass, m_mesh->GetVBOverts(), m_mesh->GetVBOfaces() );
+
+		// Render the mesh
+		glDrawElements( GL_TRIANGLES, m_mesh->modeldata->triangleNum*3, GL_UNSIGNED_INT, 0 );
 	}
 
-	// Set up the material now
-	m_material->bindPass(pass);
+	{
+		if ( !bCanRender || m_mesh == NULL )
+			return true; // Only render when have a valid mesh and rendering enabled
 
-	// Pass in shader constant now that the pass has been bound
-	//RrMaterial::current->setShaderConstants( this );
-	//if ( m_parent ) m_parent->SendShaderUniforms();
+		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
 
-	// Bind the current mesh
-	BindVAO( pass, m_mesh->GetVBOverts(), m_mesh->GetVBOfaces() );
-
-	// Render the mesh
-	glDrawElements( GL_TRIANGLES, m_mesh->modeldata->triangleNum*3, GL_UNSIGNED_INT, 0 );
-
+		gpu::Pipeline* pipeline = GetPipeline( pass );
+		gfx->setPipeline(pipeline);
+		// bind the vertex buffers
+		for (int i = 0; i < renderer::kAttributeMaxCount; ++i)
+			if (m_mesh->m_bufferEnabled[i])
+				gfx->setVertexBuffer(i, &m_mesh->m_buffer[i], 0);
+		// bind the cbuffers
+		// TODO:
+		// draw now
+		gfx->drawIndexed(m_mesh->modeldata->indexNum, 0);
+	}
 
 	// Successful rendering
 	return true;
