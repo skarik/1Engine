@@ -1,19 +1,20 @@
 //===============================================================================================//
 //
-//		Renderable Primitive
+//		Renderable 3D
 //
-// The renderable primitive is not primitive, but renders a given mode definition.
+// A simple class that renders a given model definition.
 // To render using this class, derive from this class, create a model, then call PushModelData.
 // ``The 2D equivalent is CRenderable2D.``
 //
 //===============================================================================================//
 
-#ifndef C_RENDERABLE_PRIMITIVE_
-#define C_RENDERABLE_PRIMITIVE_
+#ifndef C_RENDERABLE_3D_
+#define C_RENDERABLE_3D_
 
 #include "core/types/ModelData.h"
 #include "core/math/Vector3d.h"
 #include "renderer/object/CRenderableObject.h"
+#include "renderer/object/mesh/system/rrMeshBuffer.h"
 
 class CRenderable3D : public CRenderableObject
 {
@@ -38,8 +39,9 @@ protected:
 	//	Mesh information
 	arModelData				m_modeldata;
 	//	GPU information
-	uint					m_buffer_verts;
-	uint					m_buffer_tris;
+	rrMeshBuffer			m_meshBuffer;
+	//uint					m_buffer_verts;
+	//uint					m_buffer_tris;
 };
 
 #endif//C_RENDERABLE_PRIMITIVE_

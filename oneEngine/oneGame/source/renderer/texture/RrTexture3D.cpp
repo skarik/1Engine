@@ -1,4 +1,3 @@
-
 // Includes
 //#include "RrRenderer.h"
 #include "renderer/system/glSystem.h"

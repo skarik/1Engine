@@ -8,8 +8,72 @@
 #include "renderer/material/RrShader.cbuffers.h"
 #include "renderer/gpuw/Buffers.h"
 
+/*enum rrMeshBufferType
+{
+	kMeshBuffer_Normal,
+	kMeshBuffer_Skinned,
+};*/
+
+// Skinning information
+/*struct rrMeshSkinningData
+{
+	uint32_t	bonecount;
+	//glHandle	textureBuffer;
+	gpuHandle	textureBufferData;
+	gpuHandle	textureBufferData_Swap;
+	//glHandle	textureSoftBuffer;
+	//glHandle	textureSoftBufferData;
+	//glHandle	textureSoftBufferData_Swap;
+};*/
+
+class rrMeshBuffer
+{
+public:
+	RENDER_API				rrMeshBuffer ( void );
+	RENDER_API				~rrMeshBuffer ( void );
+
+	//
+	// Setters:
+
+	//	InitIdentifier( name )
+	//RENDER_API void			InitParameters ( const char* identifierName );
+	//	InitMeshBuffers( mesh ) : Creates mesh buffers based on the model data.
+	// Will call FreeMeshBuffers() if there is already a mesh loaded up.
+	// Will hold onto the input model data.
+	RENDER_API void			InitMeshBuffers ( arModelData* const modelData );
+	//	FreeMeshBuffers() : Frees mesh buffers
+	RENDER_API void			FreeMeshBuffers ( void );
+
+	//
+	// Getters:
+
+	//	GetName() : Returns the identifier
+	//RENDER_API const char*	GetName ( void ) const
+	//	{ return m_name.c_str(); }
+
+public:
+	gpu::VertexBuffer	m_buffer [renderer::kAttributeMaxCount];
+	bool				m_bufferEnabled [renderer::kAttributeMaxCount];
+	gpu::Buffer			m_indexBuffer;
+
+	//uint16_t			m_boneCount;
+	//gpu::Buffer			m_boneBuffer;
+
+	arModelData*		m_modeldata;
+
+	bool				m_mesh_uploaded;
+
+protected:
+	
+	//bool				m_mesh_uploaded;
+	//arstring64			m_name;
+
+};
+
+#if 0
 // will translate an input arModelData structure into a collection of vertex buffers
 // stores which vertex buffer attributes are valid and whatnot
+// rrMesh's are shared between CMesh's
 class rrMesh
 {
 public:
@@ -76,5 +140,6 @@ protected:
 
 	arstring64	name;
 };
+#endif
 
 #endif//RR_MESH_H_

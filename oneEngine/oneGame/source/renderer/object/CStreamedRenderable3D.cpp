@@ -1,7 +1,7 @@
 #include "renderer/object/CStreamedRenderable3D.h"
 
-#include "renderer/material/RrMaterial.h"
-#include "renderer/system/glMainSystem.h"
+//#include "renderer/material/RrMaterial.h"
+//#include "renderer/system/glMainSystem.h"
 
 CStreamedRenderable3D::CStreamedRenderable3D ( void )
 	: CRenderable3D(), m_wants_swap(false)

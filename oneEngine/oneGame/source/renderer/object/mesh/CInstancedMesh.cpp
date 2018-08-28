@@ -5,8 +5,8 @@
 #include "renderer/object/mesh/system/rrMesh.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 #include "renderer/camera/RrCamera.h"
-#include "renderer/material/RrMaterial.h"
-#include "renderer/system/glMainSystem.h"
+//#include "renderer/material/RrMaterial.h"
+//#include "renderer/system/glMainSystem.h"
 
 CInstancedMesh::CInstancedMesh ( rrMesh* mesh )
 	: CMesh(mesh, false),

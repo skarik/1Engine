@@ -108,7 +108,7 @@
     <ClCompile Include="source\renderer\object\mesh\CInstancedMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\CMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\CStreamedMesh.cpp" />
-    <ClCompile Include="source\renderer\object\mesh\system\rrMesh.cpp" />
+    <ClCompile Include="source\renderer\object\mesh\system\rrMeshBuffer.cpp" />
     <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp" />
     <ClCompile Include="source\renderer\object\screenshader\CScreenShader.cpp" />
     <ClCompile Include="source\renderer\object\screenshader\effects\CBloomShader.cpp" />
@@ -168,8 +168,8 @@
     <ClCompile Include="source\renderer\texture\RrRenderTextureCube.cpp" />
     <ClCompile Include="source\renderer\texture\rrSamplerState.cpp" />
     <ClCompile Include="source\renderer\texture\RrTexture.cpp" />
-    <ClCompile Include="source\renderer\texture\CTexture3D.cpp" />
-    <ClCompile Include="source\renderer\texture\CTextureCube.cpp" />
+    <ClCompile Include="source\renderer\texture\RrTexture3D.cpp" />
+    <ClCompile Include="source\renderer\texture\RrTextureCube.cpp" />
     <ClCompile Include="source\renderer\texture\CTextureLoader.cpp" />
     <ClCompile Include="source\renderer\texture\RrTexture.Streaming.cpp" />
     <ClCompile Include="source\renderer\texture\RrTextureMaster.cpp">
@@ -177,8 +177,10 @@
     </ClCompile>
     <ClCompile Include="source\renderer\texture\RrTextureMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\types\ObjectSettings.cpp" />
-    <ClCompile Include="source\renderer\utils\glScreenshot.cpp" />
-    <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp" />
+    <ClCompile Include="source\renderer\utils\RrScreenshot.cpp" />
+    <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\utils\IrrMeshBuilder.cpp" />
     <ClCompile Include="source\renderer\utils\rrMeshBuilder2D.cpp" />
     <ClCompile Include="source\renderer\utils\rrTextBuilder2D.cpp" />
@@ -250,7 +252,7 @@
     <ClInclude Include="source\renderer\object\mesh\CInstancedMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\CMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\CStreamedMesh.h" />
-    <ClInclude Include="source\renderer\object\mesh\system\rrMesh.h" />
+    <ClInclude Include="source\renderer\object\mesh\system\rrMeshBuffer.h" />
     <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h" />
     <ClInclude Include="source\renderer\object\model\Model.h" />
     <ClInclude Include="source\renderer\object\model\SkinnedModel.h" />
@@ -304,8 +306,8 @@
     <ClInclude Include="source\renderer\texture\RrRenderTextureCube.h" />
     <ClInclude Include="source\renderer\texture\rrSamplerState.h" />
     <ClInclude Include="source\renderer\texture\RrTexture.h" />
-    <ClInclude Include="source\renderer\texture\CTexture3D.h" />
-    <ClInclude Include="source\renderer\texture\CTextureCube.h" />
+    <ClInclude Include="source\renderer\texture\RrTexture3D.h" />
+    <ClInclude Include="source\renderer\texture\RrTextureCube.h" />
     <ClInclude Include="source\renderer\texture\RrTextureMaster.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -318,8 +320,10 @@
     <ClInclude Include="source\renderer\types\ObjectSettings.h" />
     <ClInclude Include="source\renderer\types\ShaderSettings.h" />
     <ClInclude Include="source\renderer\types\types.h" />
-    <ClInclude Include="source\renderer\utils\glScreenshot.h" />
-    <ClInclude Include="source\renderer\utils\glTMeshContainer.h" />
+    <ClInclude Include="source\renderer\utils\RrScreenshot.h" />
+    <ClInclude Include="source\renderer\utils\glTMeshContainer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\utils\IrrMeshBuilder.h" />
     <ClInclude Include="source\renderer\utils\rrMeshBuilder.h" />
     <ClInclude Include="source\renderer\utils\rrMeshBuilder2D.h" />

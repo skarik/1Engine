@@ -1,11 +1,10 @@
-// Helper class for taking screenshots.
-
-#ifndef _GL_SCREENSHOT_H_
-#define _GL_SCREENSHOT_H_
+#ifndef RR_SCREENSHOT_H_
+#define RR_SCREENSHOT_H_
 
 #include "core/containers/arstring.h"
 
-class glScreenshot
+// Helper class for taking screenshots.
+class RrScreenshot
 {
 public:
 	RENDER_API void SaveTimestampedToPNG ( void );
@@ -13,4 +12,4 @@ public:
 };
 
 
-#endif//_GL_SCREENSHOT_H_
+#endif//RR_SCREENSHOT_H_

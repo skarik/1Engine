@@ -4,61 +4,66 @@
 #include "core/math/BoundingBox.h"
 
 #include "renderer/object/CRenderableObject.h"
-#include "renderer/object/mesh/system/rrMesh.h"
+#include "renderer/object/mesh/system/rrMeshBuffer.h"
 
 class CModel;
+class rrMeshBuffer;
 
+//	class CMesh
+// A CMesh provides a mechanism to draw a single rrMesh.
 class CMesh : public CRenderableObject
 {
 public:
-	RENDER_API explicit	CMesh ( rrMesh*, bool n_enableSkinning=false );
-	RENDER_API virtual ~CMesh ( void );
+	RENDER_API explicit		CMesh ( rrMeshBuffer*, bool n_enableSkinning=false );
+	RENDER_API virtual		~CMesh ( void );
 
 public:
 	//	GetName ()
 	// Return my mesh's name
-	const char* GetName ( void )
-		{ return m_mesh->GetName(); }
+	RENDER_API const char* const
+							GetName ( void ) const
+		{ return m_name.c_str(); }
 
 	//	GetBoundingBox ()
 	// Gets the bounding box of the mesh
-	BoundingBox	GetBoundingBox ( void ) const
+	RENDER_API BoundingBox	GetBoundingBox ( void ) const
 		{ return bbCheckRenderBox; }
 
 	//	GetCanRender ()
 	// Get if frustum culling hides this mesh
-	const bool	GetCanRender ( void ) const
+	RENDER_API const bool	GetCanRender ( void ) const
 		{ return bCanRender; }
 
 	//		PreRender
 	// Frustum culling & material Cbuffer update.
-	RENDER_API bool	PreRender ( void ) override;
+	RENDER_API bool			PreRender ( void ) override;
 
 	//		Render
 	// Called during engine render pass.
-	RENDER_API bool	Render ( const char pass ) override;
+	RENDER_API bool			Render ( const char pass ) override;
 
 protected:
 	// Get the mesh bounding box
-	void CalculateBoundingBox ( void );
+	void					CalculateBoundingBox ( void );
 
 public:
-	rrMesh*		m_mesh;
-	CModel*		m_parent;
+	rrMeshBuffer*		m_mesh;
+	CModel*				m_parent;
 
 protected:
 	friend CModel;
-	bool		bUseFrustumCulling;
-	bool		bCanRender;
-	bool		bUseSkinning;
+	bool				bUseFrustumCulling;
+	bool				bCanRender;
+	bool				bUseSkinning;
 
 	// Frustum Culling
-	Vector3d	vCheckRenderPos;
-	float		fCheckRenderDist;
-	Vector3d	vMinExtents;
-	Vector3d	vMaxExtents;
-	BoundingBox bbCheckRenderBox;
+	Vector3d			vCheckRenderPos;
+	float				fCheckRenderDist;
+	Vector3d			vMinExtents;
+	Vector3d			vMaxExtents;
+	BoundingBox			bbCheckRenderBox;
 
+	arstring64			m_name;
 };
 
 #endif//RENDERER_OBJECT_C_MESH_H_

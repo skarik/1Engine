@@ -1,5 +1,5 @@
 #include "rrSkinnedMesh.h"
-#include "renderer/system/glMainSystem.h"
+//#include "renderer/system/glMainSystem.h"
 
 // Constructor
 rrSkinnedMesh::rrSkinnedMesh ( void )

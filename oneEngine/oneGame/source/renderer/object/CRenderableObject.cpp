@@ -1,7 +1,9 @@
 #include "renderer/exceptions/exceptions.h"
 #include "renderer/state/RrRenderer.h"
-#include "renderer/material/RrMaterial.h"
-#include "renderer/system/glMainSystem.h"
+//#include "renderer/material/RrMaterial.h"
+#include "renderer/material/RrPass.h"
+#include "renderer/material/RrShaderProgram.h"
+//#include "renderer/system/glMainSystem.h"
 #include "CRenderableObject.h"
 
 #include "renderer/gpuw/Pipeline.h"
@@ -32,19 +34,26 @@ CRenderableObject::CRenderableObject ( void )
 	id = RrRenderer::Active->AddRO( this );
 	visible = true;
 }
+
 // ==Destructor
+
 //  removes render object from the list of RO in RrRenderer
 CRenderableObject::~CRenderableObject ( void )
 {
+	// Remove the object from the list immediately
+	RrRenderer::Active->RemoveRO( id );
+
 	// Remove material reference
 	SetMaterial( NULL );
+
 	// Remove VAOs
-	PassinfoClear();
+	//PassinfoClear();
 	//transform.RemoveReference();
-	RrRenderer::Active->RemoveRO( id );
+	FreePipelines();
 }
 
 // == Private Setters ==
+
 // Private ID 'safe' set
 void CRenderableObject::SetId( unsigned int nId )
 {
@@ -52,11 +61,13 @@ void CRenderableObject::SetId( unsigned int nId )
 }
 
 // == Public Setters ==
-// Set the rendering type to change draw order and stuff
-void CRenderableObject::SetRenderType ( eRenderLayer newRenderType )
-{
-	renderLayer = newRenderType;
-}
+
+//// Set the rendering type to change draw order and stuff
+//void CRenderableObject::SetRenderType ( eRenderLayer newRenderType )
+//{
+//	renderLayer = newRenderType;
+//}
+
 // Set Materials
 void CRenderableObject::SetMaterial ( RrMaterial* n_pNewMaterial )
 {
@@ -297,6 +308,23 @@ bool CRenderableObject::BindVAO ( const uchar pass, const uint vbo, const uint e
 		GL_ACCESS GL.CheckError();
 		return false;
 	}
+}
+
+void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform )
+{
+	Matrix4x4 modelTRS, modelRS;
+	core::TransformUtility::TRSToMatrix4x4(worldTransform, modelTRS, modelRS);
+
+	//// Update matrix constants
+	//pushConstantsPerObject(!modelTRS, !modelRS);
+	modelTRS = !modelTRS;
+	modelRS  = !modelRS;
+
+	renderer::cbuffer::rrPerObjectMatrices matrices;
+	matrices.modelTRS = modelTRS;
+	matrices.modelRS  = modelRS;
+	matrices.modelViewProjection = modelTRS * RrCamera::activeCamera->camera_VP;
+	matrices.modelViewProjectionInverse = matrices.modelViewProjection.inverse();
 }
 
 //===============================================================================================//

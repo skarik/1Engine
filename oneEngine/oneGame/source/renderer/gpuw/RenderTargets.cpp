@@ -60,7 +60,7 @@ int gpu::RenderTarget::attach ( int slot, WOFrameAttachment* buffer )
 	return 0;
 }
 
-bool gpu::RenderTarget::assemble ( void )
+int gpu::RenderTarget::assemble ( void )
 {
 	GLenum status = glCheckNamedFramebufferStatus( m_framebuffer );
 	if (status != GL_FRAMEBUFFER_COMPLETE)
@@ -84,7 +84,7 @@ bool gpu::RenderTarget::assemble ( void )
 		//case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
 		//	cout << "   bufferStatus: GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS" << endl; break;
 		//}
-		return false;
+		return 1;
 	}
-	return true;
+	return 0;
 }

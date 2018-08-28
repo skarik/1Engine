@@ -4,6 +4,7 @@
 #include "core/types/types.h"
 #include "renderer/types/types.h"
 #include "core/gfx/textureFormats.h"
+#include "core/exceptions.h"
 
 #include "renderer/ogl/GLCommon.h"
 

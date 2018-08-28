@@ -1,6 +1,6 @@
 #include "CPrimitiveIsosphere.h"
-#include "renderer/system/glMainSystem.h"
-#include "renderer/system/glDrawing.h"
+//#include "renderer/system/glMainSystem.h"
+//#include "renderer/system/glDrawing.h"
 #include "renderer/camera/RrCamera.h"
 #include <math.h>
 

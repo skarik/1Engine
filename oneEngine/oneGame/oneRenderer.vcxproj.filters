@@ -165,16 +165,7 @@
     <ClCompile Include="source\renderer\types\ObjectSettings.cpp">
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\utils\glScreenshot.cpp">
-      <Filter>SOURCE\Renderer\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\texture\CMRTTexture.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\CTexture3D.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\CTextureCube.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\texture\CTextureLoader.cpp">
@@ -227,9 +218,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\gpuw\Textures.cpp">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\mesh\system\rrMesh.cpp">
-      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
@@ -432,6 +420,18 @@
     <ClCompile Include="source\renderer\logic\RrLogicObject.cpp">
       <Filter>SOURCE\Renderer\Logic</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\system\rrMeshBuffer.cpp">
+      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\utils\RrScreenshot.cpp">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTexture3D.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTextureCube.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -497,16 +497,7 @@
     <ClInclude Include="source\renderer\types\ObjectSettings.h">
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\utils\glScreenshot.h">
-      <Filter>SOURCE\Renderer\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\texture\CMRTTexture.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\CTexture3D.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\CTextureCube.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\logic\model\CModel.h">
@@ -571,9 +562,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\gpuw\Textures.h">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\mesh\system\rrMesh.h">
-      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
@@ -808,6 +796,18 @@
     </ClInclude>
     <ClInclude Include="source\renderer\logic\RrLogicObject.h">
       <Filter>SOURCE\Renderer\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\system\rrMeshBuffer.h">
+      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\utils\RrScreenshot.h">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrTexture3D.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrTextureCube.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
 
 #include "core/types/arBaseObject.h"
 #include "core/math/vect2d_template.h"
+#include "core/math/vect3d_template.h"
 #include "core/containers/arstring.h"
 #include "core/gfx/textureFormats.h"
 #include "core/gfx/textureStructures.h"
@@ -73,19 +74,6 @@ protected:
 		const char* s_resourcePath
 		);
 
-	//	Constructor.
-	// Pass in an empty string for the filename to just initialize a texture instance without any data.
-	//RENDER_API explicit		RrTexture (
-	//	const char* sInFilename,
-	//	core::gfx::tex::arTextureType	textureType		= core::gfx::tex::kTextureType2D,
-	//	core::gfx::tex::arColorFormat	format			= core::gfx::tex::kColorFormatRGBA8,
-	//	uint16_t						maxTextureWidth	= 1024,
-	//	uint16_t						maxTextureHeight= 1024,
-	//	core::gfx::tex::arWrappingType	repeatX			= core::gfx::tex::kWrappingRepeat,
-	//	core::gfx::tex::arWrappingType	repeatY			= core::gfx::tex::kWrappingRepeat,
-	//	core::gfx::tex::arMipmapGenerationStyle	mipmapGeneration = core::gfx::tex::kMipmapGenerationNormal,
-	//	core::gfx::tex::arSamplingFilter	/*ignored*/	= core::gfx::tex::kSamplingLinear
-	//	);
 	RENDER_API virtual		~RrTexture ( void );
 
 public: // Creation Interface
@@ -135,8 +123,8 @@ public: // Kitchen Sink Interface
 
 	RENDER_API unsigned int	GetWidth ( void ) { return info.width; };
 	RENDER_API unsigned int	GetHeight( void ) { return info.height; };
-	RENDER_API Vector2i		GetSize ( void ) { return Vector2i((int32_t)info.width, (int32_t)info.height); }
 	RENDER_API unsigned int	GetDepth ( void ) { return info.depth; };
+	RENDER_API Vector3i		GetSize ( void ) { return Vector3i((int32_t)info.width, (int32_t)info.height, (int32_t)info.depth); }
 	RENDER_API core::gfx::tex::arTextureType
 							GetType ( void ) { return info.type; };
 
@@ -183,24 +171,28 @@ protected:
 	friend RrTextureMasterSubsystem;
 
 	// procedurally created by either cpu or gpu
-	bool							procedural;
+	bool				procedural;
 	// is this texture streamed and loaded over a period of time, or loaded immediately?
-	bool							streamed;
+	bool				streamed;
 
-	gpu::Texture					m_texture;
+	gpu::Texture		m_texture;
 
 	//string			sFilename;	
-	arstring256						resourceName;
-	core::gfx::tex::arTextureInfo	info;
-	core::gfx::tex::arTextureState	state;
-	rrSamplerState					defaultSamplerState;
+	arstring256			resourceName;
+	core::gfx::tex::arTextureInfo
+						info;
+	core::gfx::tex::arTextureState
+						state;
+	rrSamplerState		defaultSamplerState;
 
 	// temp pointer for data that is provided by Upload()
-	rrTextureUploadInfo*			upload_request;
+	rrTextureUploadInfo*
+						upload_request;
 
 	//core::gfx::arPixel*				pData;
 
-	core::gfx::tex::arImageInfo		io_imginfo;
+	core::gfx::tex::arImageInfo
+						io_imginfo;
 	
 protected:
 	//RENDER_API void			LoadImageInfo ( void );

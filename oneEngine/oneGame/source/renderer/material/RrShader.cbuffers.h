@@ -155,7 +155,15 @@ namespace renderer
 
 	namespace cbuffer
 	{
+		/*LAYOUT_PACK_TIGHTLY
+		struct rrPerObjectPassSurface
+		{
+		};
+		LAYOUT_PACK_END*/
+		//static_assert(sizeof(rrPerObjectPassSurface) == 256, "Alignment of rrPerObjectPassSurface incorrect for the GPU.");
+
 		// store per-model on the gpu
+		LAYOUT_PACK_TIGHTLY
 		struct rrPerObjectMatrices
 		{
 			Matrix4x4	modelTRS;
@@ -163,6 +171,7 @@ namespace renderer
 			Matrix4x4	modelViewProjection;
 			Matrix4x4	modelViewProjectionInverse;
 		};
+		LAYOUT_PACK_END
 		static_assert(sizeof(rrPerObjectMatrices) == 256, "Alignment of rrPerObjectSurface incorrect for the GPU.");
 
 		LAYOUT_PACK_TIGHTLY

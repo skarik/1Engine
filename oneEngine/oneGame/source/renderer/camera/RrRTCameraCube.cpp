@@ -5,9 +5,9 @@
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/debug/RrDebugRTInspector.h"
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/material/RrMaterial.h"
 
-#include "renderer/system/glMainSystem.h"
+//#include "renderer/system/glMainSystem.h"
 
 void RrRTCameraCube::RenderScene ( void )
 {

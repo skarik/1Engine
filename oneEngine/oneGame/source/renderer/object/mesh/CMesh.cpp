@@ -1,7 +1,7 @@
 #include "CMesh.h"
 #include "renderer/logic/model/CModel.h"
 #include "renderer/logic/model/CSkinnedModel.h"
-#include "renderer/object/mesh/system/rrMesh.h"
+#include "renderer/object/mesh/system/rrMeshBuffer.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 #include "renderer/camera/RrCamera.h"
 //#include "renderer/material/RrMaterial.h"
@@ -9,9 +9,9 @@
 #include "renderer/gpuw/Device.h"
 #include "renderer/gpuw/GraphicsContext.h"
 
-CMesh::CMesh ( rrMesh* nMesh, bool n_enableSkinning )
+CMesh::CMesh ( rrMeshBuffer* nMesh, bool n_enableSkinning )
 	: CRenderableObject(),
-	m_mesh( nMesh ), m_parent(NULL),
+	m_mesh(nMesh), m_parent(NULL),
 	bUseFrustumCulling(true), bCanRender(true), bUseSkinning(n_enableSkinning)
 {
 	if ( m_mesh != NULL )
@@ -30,7 +30,7 @@ void CMesh::CalculateBoundingBox ( void )
 {
 	Vector3d minPos, maxPos;
 
-	arModelData* modeldata = m_mesh->modeldata;
+	arModelData* modeldata = m_mesh->m_modeldata;
 	for ( unsigned int v = 0; v < modeldata->vertexNum; v++ )
 	{
 		//arModelVertex* vert = &(modeldata->vertices[v]);
@@ -156,7 +156,7 @@ bool CMesh::Render ( const char pass )
 		// bind the cbuffers
 		// TODO:
 		// draw now
-		gfx->drawIndexed(m_mesh->modeldata->indexNum, 0);
+		gfx->drawIndexed(m_mesh->m_modeldata->indexNum, 0);
 	}
 
 	// Successful rendering

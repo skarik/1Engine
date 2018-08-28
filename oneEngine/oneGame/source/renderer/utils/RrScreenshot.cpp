@@ -1,6 +1,5 @@
-
-#include "renderer/system/glMainSystem.h"
-#include "glScreenshot.h"
+//#include "renderer/system/glMainSystem.h"
+#include "RrScreenshot.h"
 #include "core/system/Screen.h"
 #include "core/system/io/FileUtils.h"
 
@@ -10,7 +9,7 @@
 #include "png/png.h"
 #include "zlib/zlib.h"
 
-void glScreenshot::SaveTimestampedToPNG ( void )
+void RrScreenshot::SaveTimestampedToPNG ( void )
 {
 	arstring<256> filename;
 	struct tm*	timeinfo;
@@ -36,8 +35,8 @@ void glScreenshot::SaveTimestampedToPNG ( void )
 	SaveToPNG( filename );
 }
 
-void glScreenshot::SaveToPNG( const arstring<256> & filename )
-{	GL_ACCESS
+void RrScreenshot::SaveToPNG( const arstring<256> & filename )
+{	//GL_ACCESS
 	float* raw_pixelVals = GL.GetPixels( 0,0, Screen::Info.width,Screen::Info.height );
 	uchar* rgb_pixelVals = new uchar [Screen::Info.width*Screen::Info.height*3];
 	{

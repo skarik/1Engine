@@ -11,7 +11,7 @@
 // Include texture master class calls
 //#include "RrTextureMaster.h"
 
-#include "renderer/system/glMainSystem.h"
+//#include "renderer/system/glMainSystem.h"
 #include "core-ext/resources/ResourceManager.h"
 #include "core/math/Math.h"
 //#include <stringstream>

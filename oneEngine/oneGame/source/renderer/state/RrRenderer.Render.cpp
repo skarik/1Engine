@@ -17,9 +17,9 @@ using std::sort;
 #include "renderer/camera/RrCamera.h"
 #include "renderer/light/RrLight.h"
 #include "renderer/texture/RrRenderTexture.h"
-#include "renderer/texture/CMRTTexture.h"
+//#include "renderer/texture/CMRTTexture.h"
 
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/material/RrMaterial.h"
 #include "renderer/object/CRenderableObject.h"
 
 #include "renderer/gpuw/Pipeline.h"
@@ -120,10 +120,10 @@ void RrRenderer::StepBufferPush ( void )
 		gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
 		{
 			gpu::DepthStencilState ds;
-			ds.depthTestEnabled = false;
-			ds.depthWriteEnabled = false;
+			ds.depthTestEnabled   = false;
+			ds.depthWriteEnabled  = false;
 			ds.stencilTestEnabled = false;
-			ds.stencilWriteMask = 0x00;
+			ds.stencilWriteMask   = 0x00;
 			gfx->setDepthStencilState(ds);
 
 			gpu::BlendState bs;
@@ -255,12 +255,13 @@ void RrRenderer::Render ( void )
 		// Only render with current camera if should be rendering
 		if ( currentCamera->GetRender() )
 		{
-			// Perform sorting now
+			// Update the render distance of objects against this camera:
 			for ( i = 0; i < iCurrentIndex; i += 1 )
 			{	// Put into it's own loop, since it's the same calculation across all objects
 				if ( pRenderableObjects[i] )
 				{ 
-					pRenderableObjects[i]->UpdateRenderInfo();
+					// TODO: Handle 2D mode properly. Postprocess is entirely sorted by transform.position.z Should this be made more consistent?
+					pRenderableObjects[i]->renderDistance = (currentCamera->transform.position - pRenderableObjects[i]->transform.world.position).sqrMagnitude();
 				}
 			}
 

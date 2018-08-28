@@ -27,7 +27,7 @@
 #include "renderer/module_renderer.h"
 #include "renderer/window/RrWindow.h"
 #include "renderer/state/RrRenderer.h"
-#include "renderer/utils/glScreenshot.h"
+#include "renderer/utils/RrScreenshot.h"
 
 // Steam Include
 #include "steam/steam_api.h"
@@ -92,7 +92,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			}
 			// Take screenshot
 			if ( Input::Keydown( Keys.F11 ) ) {
-				glScreenshot ss;
+				RrScreenshot ss;
 				ss.SaveTimestampedToPNG();
 			}
 			// Update game

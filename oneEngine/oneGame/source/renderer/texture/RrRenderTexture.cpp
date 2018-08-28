@@ -2,7 +2,7 @@
 #include "core/containers/arstring.h"
 #include "core/debug/CDebugConsole.h"
 
-#include "renderer/system/glMainSystem.h"
+//#include "renderer/system/glMainSystem.h"
 #include "renderer/exceptions.h"
 #include "renderer/gpuw/Textures.h"
 #include "renderer/gpuw/Error.h"
@@ -137,7 +137,7 @@ bool RrRenderTexture::Attach ( int slot, gpu::WOFrameAttachment* wof )
 
 bool RrRenderTexture::Validate ( void )
 {
-	return m_rt.compile() && m_rt.valid();
+	return m_rt.assemble() && m_rt.valid();
 }
 
 //

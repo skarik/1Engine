@@ -6,7 +6,7 @@
 // RrRenderTexture class
 #include "RrRenderTexture.h"
 // RrTextureCube class
-#include "RrTextureCube.h"
+//#include "RrTextureCube.h"
 
 // ===CLASS===
 // Class definition

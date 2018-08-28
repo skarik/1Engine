@@ -29,7 +29,7 @@
 #include "renderer/module_renderer.h"
 #include "renderer/windowing/RrWindow.h"
 #include "renderer/state/RrRenderer.h"
-#include "renderer/utils/glScreenshot.h"
+#include "renderer/utils/RrScreenshot.h"
 
 // Include engine-common
 #include "engine-common/lua/CLuaController.h"
@@ -128,7 +128,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 			}
 			// Take screenshot
 			if ( Input::Keydown( Keys.F11 ) ) {
-				glScreenshot ss;
+				RrScreenshot ss;
 				ss.SaveTimestampedToPNG();
 			}
 			// Update game

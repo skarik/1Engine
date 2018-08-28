@@ -4,7 +4,7 @@
 #include "CBillboard.h"
 #include "renderer/camera/RrCamera.h"
 
-#include "renderer/system/glMainSystem.h"
+//#include "renderer/system/glMainSystem.h"
 
 //GLuint CBillboard::m_vbo	=0;
 

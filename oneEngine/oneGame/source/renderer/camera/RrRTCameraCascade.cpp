@@ -1,10 +1,9 @@
-
 #include "RrRTCameraCascade.h"
 #include "renderer/state/RrRenderer.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/texture/RrRenderTexture.h"
-#include "renderer/system/glMainSystem.h"
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/system/glMainSystem.h"
+//#include "renderer/material/RrMaterial.h"
 
 void RrRTCameraCascade::RenderScene ( void )
 {

@@ -1,8 +1,13 @@
-// Renderable Object class
+//===============================================================================================//
+//
+//	class CRenderableObject
+//
 // base class for all objects that need to be rendered by the device
+//
+//===============================================================================================//
 
-#ifndef _C_RENDERABLE_OBJECT_
-#define _C_RENDERABLE_OBJECT_
+#ifndef C_RENDERABLE_OBJECT_
+#define C_RENDERABLE_OBJECT_
 
 // Includes
 #include "core/types/types.h"
@@ -18,6 +23,7 @@
 
 #include "renderer/material/RrPass.h"
 #include "renderer/gpuw/Pipeline.h"
+#include "renderer/gpuw/Buffers.h"
 
 //#include "RrCamera.h"
 
@@ -67,40 +73,45 @@ public:
 
 	//	PreRender() : Called before the internal render-loop executes.
 	// Can be called multiple times per frame.
-	RENDER_API virtual bool	PreRender ( void )
+	RENDER_API virtual bool	PreRender ( RrCamera* camera )
 		{ return true; }
 	//	Render(const int pass) : Current pass
 	RENDER_API virtual bool	Render ( const char pass ) =0;
 	//	PostRender() : Called after the render-loop executes.
 	// Can be called multiple times per frame.
-	RENDER_API virtual bool	PostRender ( void )
+	RENDER_API virtual bool	PostRender ( RrCamera* camera )
 		{ return true; }
-
+	//	BeginRender() : Called before the render-loop executes.
+	// Called once per frame.
 	RENDER_API virtual bool	BeginRender ( void )
 		{ return true; }
+	//	EndRender() : Called after the render-loop executes.
+	// Called once per frame.
 	RENDER_API virtual bool	EndRender ( void )
 		{ return true; }
 
 	// == Setters ==
+
 	// Change the material the given material array thing.
 	// Give the ownership of the material to this mesh if the materials have been "released"
 	//RENDER_API virtual void			SetMaterial		( RrMaterial* n_pNewMaterial );
 	// Change the object's render type
-	RENDER_API void			SetRenderType	( eRenderLayer );
+	RENDER_API void			SetRenderType ( eRenderLayer newRenderType )
+		{ renderLayer = newRenderType; }
 	// Change visible state
-	RENDER_API virtual void	SetVisible ( const bool nextState ) {
-		visible = nextState;
-	}
+	RENDER_API virtual void	SetVisible ( const bool nextState )
+		{ visible = nextState; }
+
 	// == Getters ==
+
 	// Searches for the first material with the string in its name
 	//RrMaterial*				FindMaterial( const string & strToFind, int skipAmount=0 );
 	//RENDER_API virtual RrMaterial*	GetMaterial ( void ) {
 	//	return m_material;
 	//}
 	// Returns visible state
-	RENDER_API virtual bool	GetVisible ( void ) const {
-		return visible;
-	}
+	RENDER_API virtual bool	GetVisible ( void ) const
+		{ return visible; }
 
 	// == Object Passes ==
 	
@@ -134,19 +145,19 @@ private:
 	// == Update Prototypes ==
 
 
-	//	UpdateRenderInfo : generate data needed for sorting
+	//	UpdateRenderOrderToCamera : generate data needed for sorting
 	// Generated data needed for sorting, namely distance from the camera. Is not fast.
-	void UpdateRenderInfo ( void )
+	/*void					UpdateRenderOrderToCamera ( RrCamera* camera )
 	{
 		if ( renderLayer == renderer::kRLV2D )
 		{
-			renderDistance = ( transform.world.position.z * 50.0f ) + ( ( _activeCameraPosition - transform.world.position ).sqrMagnitude() * 0.005f );
+			renderDistance = ( transform.world.position.z * 50.0f ) + ( ( camera->transform.position - transform.world.position ).sqrMagnitude() * 0.005f );
 		}
 		else
 		{
-			renderDistance = ( _activeCameraPosition - transform.world.position ).sqrMagnitude();
+			renderDistance = ( camera->transform.position - transform.world.position ).sqrMagnitude();
 		}
-	};
+	};*/
 
 public:
 	// Positional transform
@@ -181,6 +192,8 @@ private:
 	gpu::Pipeline			m_pipelines [kPass_MaxPassCount];
 	bool					m_pipelineReady [kPass_MaxPassCount];
 
+	gpu::ConstantBuffer		m_cbufPerObjectMatrices;
+
 protected:
 	// ==Render Setup==
 	
@@ -189,6 +202,11 @@ protected:
 	//RENDER_API bool BindVAO ( const uchar pass, const uint vbo, const uint eab=0, const bool userDefinedAttribs=false );
 	RENDER_API gpu::Pipeline*
 							GetPipeline ( const uchar pass );
+
+	RENDER_API void			FreePipelines ( void );
+
+
+	RENDER_API void			PushCbufferPerObject ( const XrTransform& worldTransform );
 
 	// ==Render Status==
 	RENDER_API float		GetRenderDistance ( void );
@@ -212,8 +230,8 @@ protected:
 			bStaticMaterialsInit = true;
 		}
 	};*/
-	static Vector3d _activeCameraPosition;
-	static Rotator	_activeCameraRotation;
+	//static Vector3d _activeCameraPosition;
+	//static Rotator	_activeCameraRotation;
 
 private:
 	// Distance from the render pivot
@@ -228,4 +246,4 @@ private:
 // typedef for persons coming from Unity
 typedef CRenderableObject RenderObject;
 
-#endif
+#endif//C_RENDERABLE_OBJECT_

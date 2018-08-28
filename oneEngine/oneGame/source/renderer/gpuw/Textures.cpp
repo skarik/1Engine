@@ -1,27 +1,28 @@
-#include "renderer/system/glSystem.h"
-#include "renderer/system/glMainSystem.h"
+//#include "renderer/system/glSystem.h"
+//#include "renderer/system/glMainSystem.h"
 #include "renderer/gpuw/Textures.h"
 #include "renderer/gpuw/Internal/Enums.h"
 #include "renderer/gpuw/Error.h"
 #include "renderer/gpuw/Buffers.h"
 
+#include "core/exceptions.h"
 #include "core/math/Math.h"
 
 #include "renderer/ogl/GLCommon.h"
 
-gpu::Texture::Texture ( void )
-{
-	m_texture = 0;
-	m_type = core::gfx::tex::kTextureTypeNone;
-}
-gpu::Texture::~Texture ( void )
-{
-	// Free texture on death
-	if (m_texture != 0)
-	{
-		glDeleteTextures(1, &m_texture);
-	}
-}
+//gpu::Texture::Texture ( void )
+//{
+//	m_texture = 0;
+//	m_type = core::gfx::tex::kTextureTypeNone;
+//}
+//gpu::Texture::~Texture ( void )
+//{
+//	// Free texture on death
+//	if (m_texture != 0)
+//	{
+//		glDeleteTextures(1, &m_texture);
+//	}
+//}
 
 bool gpu::Texture::valid ( void )
 {

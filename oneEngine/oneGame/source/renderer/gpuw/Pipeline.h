@@ -31,6 +31,7 @@ namespace gpu
 		// location in the shader to bind to
 		uint32_t    location;
 		// binding index, the vbuffer goes here
+		// corresponds to a binding desc
 		uint32_t    binding;
 		// attribute format.
 		// extra values will be ignored

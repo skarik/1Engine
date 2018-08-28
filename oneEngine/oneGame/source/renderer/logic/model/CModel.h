@@ -16,14 +16,22 @@ class physMesh;
 
 #include <unordered_map>
 
+enum rrAnimReferenceType
+{
+	kAnimRefNone,
+	kAnimRefDirect,
+	kAnimRefMatch,
+};
+
 // Class Definition
 class CModel : public RrLogicObject
 {
 public:
 	// Constructor
+	RENDER_API explicit		CModel ( void );
 
 	// Loads up model file
-	RENDER_API explicit CModel ( const char* sFilename );	
+	/*RENDER_API explicit CModel ( const char* sFilename );	
 	// Load up model data struct
 	RENDER_API explicit CModel ( arModelData& mdInModelData, const char* sModelName = "_sys_override_" );
 	// Create empty model
@@ -35,20 +43,22 @@ public:
 		//uniformMapColor = NULL;
 	};
 	// Destructor
-	RENDER_API virtual ~CModel ( );
+	RENDER_API virtual ~CModel ( );*/
 
-	enum AnimRefType {
-		ANIM_REF_NONE = 0,
-		ANIM_REF_DIRECT = 1,
-		ANIM_REF_MATCH = 2
-	};
+public:
+	static RENDER_API CModel*
+							LoadFile ( const char* sFilename );
+
+	static RENDER_API CModel*
+							Upload ( arModelData& model_data, const char* model_name = "_sys_override_" );
+
 private:
 	// Load some shit
-	void LoadModel ( const string& sFilename );
+	void					LoadModel ( const string& sFilename );
 
 protected:
 	// Get the model bounding box
-	void CalculateBoundingBox ( void );
+	void					CalculateBoundingBox ( void );
 
 public:
 	// == RENDERABLE OBJECT INTERFACE ==
@@ -67,9 +77,9 @@ public:
 	//RENDER_API void SendShaderUniforms ( void );
 
 	// Begin render
-	void PreStep ( void ) override;
+	void					PreStep ( void ) override;
 	// End render
-	void PostStepSynchronus ( void ) override;
+	void					PostStepSynchronus ( void ) override;
 
 	// Frustom Culling Check
 	//bool PreRender ( const char pass );
@@ -82,26 +92,26 @@ public:
 
 	// Recalcuate normals on all owned meshes. Normally not wanted, unless you're creating
 	// procedural meshes.
-	RENDER_API void RecalculateNormals ( void );
+	RENDER_API void			RecalculateNormals ( void );
 	// Duplicates the mesh materials to a local copy.
 	// This prevents results from GetPassMaterial from affecting the original mesh.
-	RENDER_API void DuplicateMaterials ( void );
+	RENDER_API void			DuplicateMaterials ( void );
 
 	// Change the material the given material array thing.
 	// Give the ownership of the material to this mesh if the materials have been "released"
-	RENDER_API void SetMaterial ( RrMaterial* n_pNewMaterial );
+	RENDER_API void			SetMaterial ( RrMaterial* n_pNewMaterial );
 
 	// Returns material of mesh, or throws error if has multiple submeshes
-	RENDER_API RrMaterial* GetMaterial ( void );
+	RENDER_API RrMaterial*	GetMaterial ( void );
 
 	//======================================================//
 	// SETTERS
 	//======================================================//
 
 	// Set if to use frustum culling or not
-	RENDER_API void SetFrustumCulling ( bool useCulling = true );
+	RENDER_API void			SetFrustumCulling ( bool useCulling = true );
 	// Forces the model to be drawn the next frame
-	RENDER_API void SetForcedDraw ( void );
+	RENDER_API void			SetForcedDraw ( void );
 	// Adds an entry to the uniform list to be set on render
 	//RENDER_API void SetShaderUniform ( const char*, float const );
 	//RENDER_API void SetShaderUniform ( const char*, Vector2d const& );
@@ -116,31 +126,29 @@ public:
 	// This mode will save memory, but will completely copy the referenced animation
 	//  with no ability to change this model's animation.
 	// If the referenced model is deleted, unexpected behavior will occur.
-	RENDER_API void SetReferencedAnimationMode ( CModel*, const AnimRefType = ANIM_REF_DIRECT );
+	RENDER_API void			SetReferencedAnimationMode ( CModel*, const rrAnimReferenceType = kAnimRefDirect );
 
 	// Hides or shows all of the child meshes
-	RENDER_API void SetVisibility ( const bool n_visibility );
+	RENDER_API void			SetVisibility ( const bool n_visibility );
 	// Sets child mesh render types
-	RENDER_API void SetRenderType ( const renderer::eRenderLayer n_type );
+	RENDER_API void			SetRenderType ( const renderer::eRenderLayer n_type );
 
 	//======================================================//
 	// GETTERS / FINDERS
 	//======================================================//
 
 	// Get the number of meshes this model manages
-	RENDER_API uint	GetMeshCount ( void ) const;
+	RENDER_API uint			GetMeshCount ( void ) const;
 	// Gets the mesh with the index
-	RENDER_API CMesh*	GetMesh ( const uint n_index ) const;
+	RENDER_API CMesh*		GetMesh ( const uint n_index ) const;
 	// Gets the mesh with the name
-	RENDER_API CMesh*	GetMesh ( const char* n_name ) const;
+	RENDER_API CMesh*		GetMesh ( const char* n_name ) const;
 	// Gets the filename of the model
-	string GetFilename ( void ) {
-		return myModelFilename;
-	}
+	string					GetFilename ( void ) { return myModelFilename; }
 	// Gets the indicated mesh data in the array
-	RENDER_API arModelData* GetModelData ( int iMeshIndex ) const;
+	RENDER_API arModelData*	GetModelData ( int iMeshIndex ) const;
 	// Returns the first matching mesh with the given name in the array
-	RENDER_API arModelData* GetModelDataByName ( const char* nNameMatch ) const;
+	RENDER_API arModelData*	GetModelDataByName ( const char* nNameMatch ) const;
 	// Return the first matching material
 	RENDER_API RrMaterial*	FindMaterial ( const char* n_name, const int n_offset=0 ) const;
 
@@ -148,59 +156,59 @@ public:
 	/*AnimationControl*	GetAnimation ( void ) {
 		return pMyAnimation;
 	}*/
+
 	// Get the hitbox list
-	std::vector<sHitbox>*	GetHitboxes ( void ) {
-		return &vHitboxes;
-	}
+	std::vector<sHitbox>*	GetHitboxes ( void ) { return &vHitboxes; }
 	// Gets the bounding box of the model
-	BoundingBox GetBoundingBox ( void ) const {
-		return bbCheckRenderBox;
-	}
+	BoundingBox				GetBoundingBox ( void ) const { return bbCheckRenderBox; }
 
 	// Gets if any of the meshes are being rendered
-	RENDER_API bool GetVisibility ( void );
+	RENDER_API bool			GetVisibility ( void );
 
 public:
-	XrTransform transform;
+	XrTransform			transform;
 
 protected:
 	// Rendering Options
-	bool					bUseFrustumCulling;
-	//bool					bUseSeparateMaterialBatches;
-	//bool					bCanRender;
+	bool				bUseFrustumCulling;
+	//bool				bUseSeparateMaterialBatches;
+	//bool				bCanRender;
 
 	// Mesh Data
-	//vector<rrMesh*>			vMeshes;
-	//vector<physMesh*>		vPhysMeshes;
-	std::vector<CMesh*>			m_meshes;
-	std::vector<rrMesh*>		m_glMeshlist;
-	std::vector<physMesh*>		m_physMeshlist;
+	//vector<rrMesh*>	vMeshes;
+	//vector<physMesh*>	vPhysMeshes;
+	std::vector<CMesh*>	m_meshes;
+	std::vector<rrMesh*>
+						m_glMeshlist;
+	std::vector<physMesh*>
+						m_physMeshlist;
 	// Collision data
-	std::vector<sHitbox>			vHitboxes;
+	std::vector<sHitbox>
+						vHitboxes;
 
 	// Animation data
-	AnimationControl*				pMyAnimation;
-	AnimationControl*				pReferencedAnimation;
-	bool					bReferenceAnimation;
-	AnimRefType				eRefMode;
+	AnimationControl*	pMyAnimation;
+	AnimationControl*	pReferencedAnimation;
+	bool				bReferenceAnimation;
+	rrAnimReferenceType	eRefMode;
 
 	// File Info
 	string				myModelFilename;
 
 	// Frustum Culling
-	Vector3d	vCheckRenderPos;
-	float		fCheckRenderDist;
-	Vector3d	vMinExtents;
-	Vector3d	vMaxExtents;
-	BoundingBox bbCheckRenderBox;
+	Vector3d			vCheckRenderPos;
+	float				fCheckRenderDist;
+	Vector3d			vMinExtents;
+	Vector3d			vMaxExtents;
+	BoundingBox			bbCheckRenderBox;
 
 	// Shader uniforms
-	//std::unordered_map<arstring128,float>*			uniformMapFloat;
-	//std::unordered_map<arstring128,Vector2d>*		uniformMapVect2d;
-	//std::unordered_map<arstring128,Vector3d>*		uniformMapVect3d;
-	//std::unordered_map<arstring128,Color>*			uniformMapColor;
+	//std::unordered_map<arstring128,float>*	uniformMapFloat;
+	//std::unordered_map<arstring128,Vector2d>*	uniformMapVect2d;
+	//std::unordered_map<arstring128,Vector3d>*	uniformMapVect3d;
+	//std::unordered_map<arstring128,Color>*	uniformMapColor;
 
-private:
+//private:
 	//bool bUseBoneVertexBlending;
 	
 };

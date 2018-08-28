@@ -1,8 +1,116 @@
-#include "rrMesh.h"
+#include "rrMeshBuffer.h"
 #include "core-ext/utils/MeshAttributes.h"
-#include "renderer/material/RrMaterial.h"
-#include "renderer/system/glMainSystem.h"
+//#include "renderer/material/RrMaterial.h"
+//#include "renderer/system/glMainSystem.h"
 
+rrMeshBuffer::rrMeshBuffer ( void )
+	: m_bufferEnabled(), /*m_boneCount(0),*/ m_modeldata(NULL), 
+	m_mesh_uploaded(false)/*, m_name()*/
+{
+	;
+}
+rrMeshBuffer::~rrMeshBuffer ( void )
+{
+	// Free any previous mesh
+	if (m_mesh_uploaded)
+	{
+		FreeMeshBuffers();
+	}
+}
+
+//void rrMeshBuffer::InitParameters ( const char* identifierName )
+//{
+//	m_name = identifierName;
+//}
+
+void rrMeshBuffer::InitMeshBuffers ( arModelData* const modelData )
+{
+	// Free any previous mesh
+	if (m_mesh_uploaded)
+	{
+		FreeMeshBuffers();
+	}
+
+	// assign model data!
+	m_modeldata = modelData;
+
+	// upload needed buffers:
+
+	if (m_modeldata->position) {
+		m_buffer[renderer::ATTRIB_VERTEX].init(NULL, m_modeldata->position, gpu::kFormatR32G32B32SFloat, m_modeldata->vertexNum);
+		m_bufferEnabled[renderer::ATTRIB_VERTEX] = true;
+	}
+	if (m_modeldata->texcoord0) {
+		m_buffer[renderer::ATTRIB_TEXCOORD0].init(NULL, m_modeldata->texcoord0, gpu::kFormatR32G32B32SFloat, m_modeldata->vertexNum);
+		m_bufferEnabled[renderer::ATTRIB_TEXCOORD0] = true;
+	}
+	if (m_modeldata->color) {
+		m_buffer[renderer::ATTRIB_COLOR].init(NULL, m_modeldata->color, gpu::kFormatR32G32B32A32SFloat, m_modeldata->vertexNum);
+		m_bufferEnabled[renderer::ATTRIB_COLOR] = true;
+	}
+	if (m_modeldata->normal) {
+		m_buffer[renderer::ATTRIB_NORMAL].init(NULL, m_modeldata->normal, gpu::kFormatR32G32B32SFloat, m_modeldata->vertexNum);
+		m_bufferEnabled[renderer::ATTRIB_NORMAL] = true;
+	}
+	if (m_modeldata->tangent) {
+		m_buffer[renderer::ATTRIB_TANGENTS].init(NULL, m_modeldata->tangent, gpu::kFormatR32G32B32SFloat, m_modeldata->vertexNum);
+		m_bufferEnabled[renderer::ATTRIB_TANGENTS] = true;
+	}
+	if (m_modeldata->binormal) {
+		m_buffer[renderer::ATTRIB_BINORMALS].init(NULL, m_modeldata->binormal, gpu::kFormatR32G32B32SFloat, m_modeldata->vertexNum);
+		m_bufferEnabled[renderer::ATTRIB_BINORMALS] = true;
+	}
+	if (m_modeldata->weight) {
+		m_buffer[renderer::ATTRIB_BONEWEIGHTS].init(NULL, m_modeldata->weight, gpu::kFormatR32G32B32A32SFloat, m_modeldata->vertexNum);
+		m_bufferEnabled[renderer::ATTRIB_BONEWEIGHTS] = true;
+	}
+	if (m_modeldata->bone) {
+		m_buffer[renderer::ATTRIB_BONEINDICES].init(NULL, m_modeldata->bone, gpu::kFormatR8G8B8A8UInteger, m_modeldata->vertexNum);
+		m_bufferEnabled[renderer::ATTRIB_BONEINDICES] = true;
+	}
+	if (m_modeldata->texcoord2) {
+		m_buffer[renderer::ATTRIB_TEXCOORD2].init(NULL, m_modeldata->texcoord2, gpu::kFormatR32G32SFloat, m_modeldata->vertexNum);
+		m_bufferEnabled[renderer::ATTRIB_TEXCOORD2] = true;
+	}
+	if (m_modeldata->texcoord3) {
+		m_buffer[renderer::ATTRIB_TEXCOORD3].init(NULL, m_modeldata->texcoord3, gpu::kFormatR32G32SFloat, m_modeldata->vertexNum);
+		m_bufferEnabled[renderer::ATTRIB_TEXCOORD3] = true;
+	}
+	if (m_modeldata->texcoord4) {
+		m_buffer[renderer::ATTRIB_TEXCOORD4].init(NULL, m_modeldata->texcoord4, gpu::kFormatR32G32SFloat, m_modeldata->vertexNum);
+		m_bufferEnabled[renderer::ATTRIB_TEXCOORD4] = true;
+	}
+
+	// upload index buffer:
+
+	{
+		size_t buffer_size = sizeof(uint16_t) * m_modeldata->indexNum;
+		m_indexBuffer.allocate(NULL, buffer_size, gpu::kTransferStatic);
+		void* buffer = m_indexBuffer.map(NULL, gpu::kTransferStatic);
+		if (buffer != NULL)
+		{
+			memcpy(buffer, m_modeldata->indices, buffer_size);
+			m_indexBuffer.unmap(NULL);
+		}
+	}
+
+	// we have a fuckin mesh
+	m_mesh_uploaded = true;
+}
+
+void rrMeshBuffer::FreeMeshBuffers ( void )
+{
+	for (int i = 0; i < renderer::kAttributeMaxCount; ++i)
+	{
+		m_buffer[i].free(NULL);
+		m_bufferEnabled[i] = false;
+	}
+
+	// we no longer have a fuckin mesh
+	m_mesh_uploaded = false;
+}
+
+#if 0
 // Constructor
 rrMesh::rrMesh ( void )
 	: name("unnamed")
@@ -177,3 +285,4 @@ void rrMesh::FreeRAMData ( void )
 		modeldata = NULL;
 	}
 }
+#endif

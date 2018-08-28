@@ -1,6 +1,6 @@
 #include "CPrimitiveCube.h"
-#include "renderer/system/glMainSystem.h"
-#include "renderer/system/glDrawing.h"
+//#include "renderer/system/glMainSystem.h"
+//#include "renderer/system/glDrawing.h"
 
 // Constructor
 //  sets values to unit cube, generate vertices
