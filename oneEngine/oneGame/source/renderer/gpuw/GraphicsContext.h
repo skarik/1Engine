@@ -114,10 +114,10 @@ namespace gpu
 		RENDER_API int			setPipeline ( Pipeline* pipeline );
 		RENDER_API int			setIndexBuffer ( Buffer* buffer, Format format );
 		RENDER_API int			setVertexBuffer ( int slot, VertexBuffer* buffer, uint32_t offset );
-		RENDER_API int			setShaderCBuffer ( ShaderStage stage, ConstantBuffer* buffer );
-		RENDER_API int			setShaderSampler ( ShaderStage stage, Sampler* buffer );
-		RENDER_API int			setShaderSamplerAuto ( ShaderStage stage, Texture* buffer );
-		RENDER_API int			setShaderResource ( ShaderStage stage, Buffer* buffer );
+		RENDER_API int			setShaderCBuffer ( ShaderStage stage, int slot, ConstantBuffer* buffer );
+		RENDER_API int			setShaderSampler ( ShaderStage stage, int slot, Sampler* buffer );
+		RENDER_API int			setShaderSamplerAuto ( ShaderStage stage, int slot, Texture* buffer );
+		RENDER_API int			setShaderResource ( ShaderStage stage, int slot, Buffer* buffer );
 
 		//RENDER_API int			setPrimitiveTopology ( PrimitiveTopology topology ); // handled inside pipeline
 

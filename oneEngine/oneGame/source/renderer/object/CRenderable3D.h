@@ -24,7 +24,7 @@ public:
 
 	//		PreRender()
 	// Push the uniform properties
-	RENDER_API bool			PreRender ( void ) override;
+	RENDER_API bool			PreRender ( RrCamera* camera ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style

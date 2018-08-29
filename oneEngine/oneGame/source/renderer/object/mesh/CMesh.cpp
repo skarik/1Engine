@@ -54,7 +54,7 @@ void CMesh::CalculateBoundingBox ( void )
 
 // == RENDERABLE OBJECT INTERFACE ==
 
-bool CMesh::PreRender ( void )
+bool CMesh::PreRender ( RrCamera* camera )
 {
 	// disable frustum culling:
 	bUseFrustumCulling = false;
@@ -66,7 +66,7 @@ bool CMesh::PreRender ( void )
 
 		if ( !bUseSkinning )
 		{
-			if ( RrCamera::activeCamera->SphereIsVisible(
+			if ( camera->SphereIsVisible(
 				transform.WorldMatrix() * vCheckRenderPos,
 				fCheckRenderDist * (transform.world.scale.x+transform.world.scale.y+transform.world.scale.z) * 0.4f ) )
 			{
@@ -80,7 +80,7 @@ bool CMesh::PreRender ( void )
 			modelOrigin = ((CSkinnedModel*)m_parent)->GetSkeleton()->current_transform[1].WorldMatrix() * vCheckRenderPos;
 			modelOrigin = transform.WorldMatrix() * modelOrigin;
 			//modelOrigin += transform.GetTransformMatrix() * vCheckRenderPos
-			if ( RrCamera::activeCamera->SphereIsVisible(
+			if ( camera->SphereIsVisible(
 				modelOrigin, 
 				fCheckRenderDist * (transform.world.scale.x+transform.world.scale.y+transform.world.scale.z) * 0.6f ) )
 			{
@@ -98,9 +98,9 @@ bool CMesh::PreRender ( void )
 	{
 		// Set up transformation for the mesh
 		if ( m_parent )
-			m_material->prepareShaderConstants(m_parent->transform);
+			PushCbufferPerObject(m_parent->transform, camera);
 		else
-			m_material->prepareShaderConstants(this->transform.world);
+			PushCbufferPerObject(this->transform.world, camera);
 	}
 
 	// 
@@ -153,8 +153,15 @@ bool CMesh::Render ( const char pass )
 		for (int i = 0; i < renderer::kAttributeMaxCount; ++i)
 			if (m_mesh->m_bufferEnabled[i])
 				gfx->setVertexBuffer(i, &m_mesh->m_buffer[i], 0);
-		// bind the cbuffers
-		// TODO:
+		// bind the index buffer
+		gfx->setIndexBuffer(&m_mesh->m_indexBuffer, gpu::kFormatR16UInteger);
+		// bind the cbuffers: TODO
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
+		if ( m_parent != NULL )
+		{
+			if ( m_parent->m_xbufSkinningMajor )
+				gfx->setShaderXBuffer(gpu::kShaderStageVs, renderer::XBUFFER_SKINNING_MAJOR, &m_parent->m_xbufSkinningMajor);
+		}
 		// draw now
 		gfx->drawIndexed(m_mesh->m_modeldata->indexNum, 0);
 	}

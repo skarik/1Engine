@@ -5,6 +5,7 @@
 #include "renderer/material/RrShaderProgram.h"
 //#include "renderer/system/glMainSystem.h"
 #include "CRenderableObject.h"
+#include "renderer/camera/RrCamera.h"
 
 #include "renderer/gpuw/Pipeline.h"
 
@@ -310,7 +311,7 @@ bool CRenderableObject::BindVAO ( const uchar pass, const uint vbo, const uint e
 	}
 }
 
-void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform )
+void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform, const RrCamera* camera )
 {
 	Matrix4x4 modelTRS, modelRS;
 	core::TransformUtility::TRSToMatrix4x4(worldTransform, modelTRS, modelRS);
@@ -323,7 +324,7 @@ void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform
 	renderer::cbuffer::rrPerObjectMatrices matrices;
 	matrices.modelTRS = modelTRS;
 	matrices.modelRS  = modelRS;
-	matrices.modelViewProjection = modelTRS * RrCamera::activeCamera->camera_VP;
+	matrices.modelViewProjection = modelTRS * camera->camera_VP;
 	matrices.modelViewProjectionInverse = matrices.modelViewProjection.inverse();
 }
 

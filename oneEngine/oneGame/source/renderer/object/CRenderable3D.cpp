@@ -38,10 +38,9 @@ void CRenderable3D::PushModeldata ( void )
 
 //		PreRender()
 // Push the uniform properties
-bool CRenderable3D::PreRender ( void )
+bool CRenderable3D::PreRender ( RrCamera* camera )
 {
-	//m_material->prepareShaderConstants(transform.world);
-	PushCbufferPerObject(transform.world);
+	PushCbufferPerObject(transform.world, camera);
 	return true;
 }
 
@@ -49,7 +48,6 @@ bool CRenderable3D::PreRender ( void )
 // Render the model using the 2D engine's style
 bool CRenderable3D::Render ( const char pass )
 { 
-	//GL_ACCESS
 	//// Do not render if no buffer to render with
 	//if ( m_buffer_verts == 0 || m_buffer_tris == 0 )
 	//{
@@ -60,10 +58,8 @@ bool CRenderable3D::Render ( const char pass )
 	//m_material->m_bufferSkeletonSize = 0;
 	//m_material->m_bufferMatricesSkinning = 0;
 	//m_material->bindPass(pass);
-	////parent->SendShaderUniforms(this);
 	//BindVAO( pass, m_buffer_verts, m_buffer_tris );
 	//GL.DrawElements( GL_TRIANGLES, m_modeldata.triangleNum*3, GL_UNSIGNED_INT, 0 );
-
 
 	// otherwise we will render the same way 3d meshes render
 	{
@@ -78,13 +74,14 @@ bool CRenderable3D::Render ( const char pass )
 		for (int i = 0; i < renderer::kAttributeMaxCount; ++i)
 			if (m_meshBuffer.m_bufferEnabled[i])
 				gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
+		// bind the index buffer
+		gfx->setIndexBuffer(&m_meshBuffer.m_indexBuffer, gpu::kFormatR16UInteger);
 		// bind the cbuffers
 		// TODO:
 		// draw now
 		gfx->drawIndexed(m_modeldata.indexNum, 0);
 	}
 
-	//GL.endOrtho();
 	// Success!
 	return true;
 }

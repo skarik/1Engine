@@ -36,7 +36,7 @@ public:
 
 	//		PreRender
 	// Frustum culling & material Cbuffer update.
-	RENDER_API bool			PreRender ( void ) override;
+	RENDER_API bool			PreRender ( RrCamera* camera ) override;
 
 	//		Render
 	// Called during engine render pass.

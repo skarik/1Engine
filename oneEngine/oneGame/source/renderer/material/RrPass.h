@@ -81,6 +81,8 @@ public:
 	renderer::cbuffer::rrPerObjectSurface
 						m_surface;
 	gpu::CullMode		m_cullMode;
+	gpu::PrimitiveTopology
+						m_primitiveType;
 
 	// Textures:
 	RrTexture*			m_textures[kPass_MaxTextureSlots];

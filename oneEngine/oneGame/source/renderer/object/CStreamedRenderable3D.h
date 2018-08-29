@@ -29,7 +29,7 @@ public:
 
 	//		PreRender()
 	// Push the uniform properties
-	RENDER_API bool			PreRender ( void ) override;
+	RENDER_API bool			PreRender ( RrCamera* camera ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style
@@ -43,11 +43,18 @@ protected:
 	//	State
 	bool					m_wants_swap;
 	//	Mesh information
-	uint					m_model_tricount;
+	/*uint					m_model_tricount;
 	uint					m_next_model_tricount;
 	//	GPU information
 	uint					m_next_buffer_verts;
-	uint					m_next_buffer_tris;
+	uint					m_next_buffer_tris;*/
+
+	//	Mesh information
+	uint					m_model_indexcount;
+	uint					m_next_model_indexcount;
+	//	GPU information
+	rrMeshBuffer			m_meshBufferAux;
+	rrMeshBuffer*			m_currentMeshBuffer;
 };
 
 #endif//RENDER_C_STREAMED_RENDERABLE_3D_H_

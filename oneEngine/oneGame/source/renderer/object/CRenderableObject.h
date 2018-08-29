@@ -33,6 +33,7 @@ class RrRenderer;
 //class RrPassForward;
 //class RrPassDeferred;
 class RrPass;
+class RrCamera;
 
 // Defines
 #ifndef RegisterRenderClassName
@@ -206,7 +207,7 @@ protected:
 	RENDER_API void			FreePipelines ( void );
 
 
-	RENDER_API void			PushCbufferPerObject ( const XrTransform& worldTransform );
+	RENDER_API void			PushCbufferPerObject ( const XrTransform& worldTransform, const RrCamera* camera );
 
 	// ==Render Status==
 	RENDER_API float		GetRenderDistance ( void );
