@@ -3,6 +3,9 @@
 #include "core/system/Screen.h"
 #include "core/system/io/FileUtils.h"
 
+#include "renderer/gpuw/Device.h"
+#include "renderer/gpuw/GraphicsContext.h"
+
 #include <stdio.h>
 #include <time.h>
 
@@ -36,8 +39,11 @@ void RrScreenshot::SaveTimestampedToPNG ( void )
 }
 
 void RrScreenshot::SaveToPNG( const arstring<256> & filename )
-{	//GL_ACCESS
-	float* raw_pixelVals = GL.GetPixels( 0,0, Screen::Info.width,Screen::Info.height );
+{	
+	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
+	//float* raw_pixelVals = GL.GetPixels( 0,0, Screen::Info.width,Screen::Info.height );
+	float* raw_pixelVals = gfx->getScreenPixels();
 	uchar* rgb_pixelVals = new uchar [Screen::Info.width*Screen::Info.height*3];
 	{
 		for ( uint i = 0; i < Screen::Info.width*Screen::Info.height*3; ++i ) {

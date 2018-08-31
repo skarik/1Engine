@@ -67,17 +67,17 @@ FORCE_INLINE void rrAddTri ( int* vindex, int* tindex, arModelData* md, Vector3f
 		}
 
 		// Add a triangle:
-		md->vertices[*vindex + 0].position = a;
-		md->vertices[*vindex + 1].position = b;
-		md->vertices[*vindex + 2].position = c;
+		md->position[*vindex + 0] = a;
+		md->position[*vindex + 1] = b;
+		md->position[*vindex + 2] = c;
 
-		md->vertices[*vindex + 0].normal = a;
-		md->vertices[*vindex + 1].normal = b;
-		md->vertices[*vindex + 2].normal = c;
+		md->normal[*vindex + 0] = a;
+		md->normal[*vindex + 1] = b;
+		md->normal[*vindex + 2] = c;
 
-		md->vertices[*vindex + 0].texcoord0 = Vector2f((a[1]+1)*0.5f, ay);
-		md->vertices[*vindex + 1].texcoord0 = Vector2f((b[1]+1)*0.5f, by);
-		md->vertices[*vindex + 2].texcoord0 = Vector2f((c[1]+1)*0.5f, cy);
+		md->texcoord0[*vindex + 0] = Vector2f((a[1]+1)*0.5f, ay);
+		md->texcoord0[*vindex + 1] = Vector2f((b[1]+1)*0.5f, by);
+		md->texcoord0[*vindex + 2] = Vector2f((c[1]+1)*0.5f, cy);
 
 		md->triangles[*tindex].vert[0] = *vindex + 0;
 		md->triangles[*tindex].vert[1] = *vindex + 1;

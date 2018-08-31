@@ -9,21 +9,21 @@
 #include "renderer/logic/RrLogicObject.h"
 #include "renderer/types/ModelStructures.h"
 
-#include "renderer/logic/model/CAnimatedMeshGroup.h"
+#include "renderer/logic/model/RrAnimatedMeshGroup.h"
 
 class CMesh;
 class AnimationControl;
 class rrMeshBuffer;
 class physMesh;
-class CAnimatedMeshGroup;
+class RrAnimatedMeshGroup;
 
 #include <unordered_map>
 
 enum rrAnimReferenceType
 {
-	kAnimRefNone,
-	kAnimRefDirect,
-	kAnimRefMatch,
+	kAnimReferenceNone,
+	kAnimReferenceDirect,
+	kAnimReferenceMatch,
 };
 
 // Class Definition
@@ -49,14 +49,16 @@ public:
 	RENDER_API virtual ~CModel ( );*/
 
 public:
+	//	LoadFile ( filename )
 	static RENDER_API CModel*
 							LoadFile ( const char* sFilename );
 
+	//	Upload ( data, id )
 	static RENDER_API CModel*
 							Upload ( arModelData& model_data, const char* model_name = "_sys_override_" );
 
 private:
-	// Load some shit
+	//	LoadModel ( filename ) : Load some shit
 	void					LoadModel ( const string& sFilename );
 
 protected:
@@ -161,9 +163,9 @@ public:
 	}*/
 
 	// Get the hitbox list
-	std::vector<sHitbox>*	GetHitboxes ( void ) { return &vHitboxes; }
+	std::vector<sHitbox>*	GetHitboxes ( void ) { return &m_physHitboxes; }
 	// Gets the bounding box of the model
-	BoundingBox				GetBoundingBox ( void ) const { return bbCheckRenderBox; }
+	BoundingBox				GetBoundingBox ( void ) const { return m_renderBoundingBox; }
 
 	// Gets if any of the meshes are being rendered
 	RENDER_API bool			GetVisibility ( void );
@@ -181,22 +183,23 @@ protected:
 	//vector<rrMesh*>	vMeshes;
 	//vector<physMesh*>	vPhysMeshes;
 	std::vector<CMesh*>	m_meshes;
-	std::vector<rrMesh*>
-						m_glMeshlist;
+	//std::vector<rrMesh*>
+	//					m_glMeshlist;
 	std::vector<physMesh*>
 						m_physMeshlist;
 	// Collision data
 	std::vector<sHitbox>
-						vHitboxes;
+						m_physHitboxes;
 
 	// 
-	CAnimatedMeshGroup*	m_meshGroup;
+	RrAnimatedMeshGroup*
+						m_meshGroup;
 
 	// Animation data
 	AnimationControl*	pMyAnimation;
 	AnimationControl*	pReferencedAnimation;
 	bool				bReferenceAnimation;
-	rrAnimReferenceType	eRefMode;
+	rrAnimReferenceType	m_animRefMode;
 
 	// File Info
 	string				myModelFilename;
@@ -206,7 +209,7 @@ protected:
 	float				fCheckRenderDist;
 	Vector3d			vMinExtents;
 	Vector3d			vMaxExtents;
-	BoundingBox			bbCheckRenderBox;
+	BoundingBox			m_renderBoundingBox;
 
 	// Shader uniforms
 	//std::unordered_map<arstring128,float>*	uniformMapFloat;

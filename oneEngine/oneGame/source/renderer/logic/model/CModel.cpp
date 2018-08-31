@@ -7,6 +7,7 @@
 #include "core-ext/system/io/Resources.h"
 
 #include "renderer/object/mesh/CMesh.h"
+#include "renderer/logic/model/RrAnimatedMeshGroup.h"
 #include "renderer/resource/CModelMaster.h"
 
 CModel*
@@ -21,210 +22,215 @@ CModel::Upload ( arModelData& model_data, const char* model_name = "_sys_overrid
 	return NULL;
 }
 
-
-// Constructor, taking model object
-CModel::CModel ( const char* sFilename )
-	: RrLogicObject()
+CModel::CModel ( void )
+	: RrLogicObject(),
+	m_animRefMode(kAnimRefNone)
 {
-	// Create filename
-	myModelFilename = sFilename;
-	// Standardize the filename
-	myModelFilename = IO::FilenameStandardize( myModelFilename );
-	// Look for the valid resource to load
-	myModelFilename = core::Resources::PathTo( myModelFilename );
-#ifndef _ENGINE_DEBUG
-	throw core::NotYetImplementedException();
-#endif
-
-	// Clear out uniform lists
-	//uniformMapFloat = NULL;
-	//uniformMapVect2d = NULL;
-	//uniformMapVect3d = NULL;
-	//uniformMapColor = NULL;
-
-	// Clear out the material list
-	//vMaterials.clear();
-	// Initialize animation to null
-	pMyAnimation = NULL;
-
-	// Set basic properties
-	bUseFrustumCulling = true;
-	//bCelShadingEnabled = false;
-	//bUseSeparateMaterialBatches = false;
-	//visible = false;
-	
-	// Set animation properties
-	pReferencedAnimation = NULL;
-	bReferenceAnimation = false;
-	eRefMode = ANIM_REF_NONE;
-
-	// First look for the model in the model master
-	//const vector<rrMesh*> * pMeshSetReference = ModelMaster.GetReference( myModelFilename );
-	auto t_meshSet = RenderResources::Active()->GetMesh( myModelFilename.c_str() );
-	// If there's no reference, then load it
-	if ( t_meshSet == NULL )
-	{
-		LoadModel( myModelFilename );
-		t_meshSet = RenderResources::Active()->GetMesh( myModelFilename.c_str() );
-	}
-	if ( t_meshSet )
-	{
-		m_glMeshlist = *t_meshSet;	// Copy the meshes to local list
-		debug::Console->PrintMessage( " +Has mesh set\n" );
-	}
-	/*if ( pMeshSetReference == NULL )
-	{
-		LoadModel( myModelFilename );
-		// We don't want to use the animation reference we just created, so we make another
-		// Look for the reference and copy it
-		AnimationControl* pFoundReference = ModelMaster.GetAnimationReference( myModelFilename );
-		if ( pFoundReference != NULL && pFoundReference->IsValid() ) {
-			pMyAnimation = new AnimationControl( myModelFilename, pFoundReference );
-			pMyAnimation->SetOwner( this );	// Set this as the owner
-			ModelMaster.AddReference( myModelFilename, pMyAnimation );
-		}
-	}
-	else // If there is a reference, copy the data
-	{
-		m_glMeshlist = *pMeshSetReference;
-		vHitboxes = *ModelMaster.GetHitboxReference( myModelFilename );
-		// Also create a new animation, with a reference that we found ourself
-		AnimationControl* pFoundReference = ModelMaster.GetAnimationReference( myModelFilename );
-		if ( pFoundReference != NULL && pFoundReference->IsValid() ) {
-			pMyAnimation = new AnimationControl( myModelFilename, pFoundReference );
-			pMyAnimation->SetOwner( this ); // Set this model as the owner
-			ModelMaster.AddReference( myModelFilename, pMyAnimation );
-		}
-	}
-	// Add to the reference of the model
-	ModelMaster.AddReference( myModelFilename, m_glMeshlist, vHitboxes );
-	ModelMaster.AddReference( myModelFilename, m_physMeshlist );*/
-	
-	// Create mesh list
-	for ( uint i = 0; i < m_glMeshlist.size(); ++i ) 
-	{
-		m_meshes.push_back( new CMesh( m_glMeshlist[i] ) );
-		m_meshes[i]->m_parent = this;
-	}
-	
-
-	// Check for a valid animation
-	if ( pMyAnimation != NULL && !pMyAnimation->IsValid() )
-	{
-		delete pMyAnimation;
-		pMyAnimation = NULL;
-	}
-
-	// Create default list of materials
-	/*while ( vMaterials.size() < vMeshes.size() )
-	{
-		vMaterials.push_back( NULL );
-	}
-	vMaterials[0] = vMeshes[0]->pmMat;*/
-
-	// Get the bounding box
-	//CalculateBoundingBox();
-	/*for ( uint i = 0; i < m_meshes.size(); ++i ) {
-		//m_meshes[i]->CalculateBoundingBox(); // calculated
-		CalculateBoundingBox();
-	}*/
-	CalculateBoundingBox();
-	// Force render
-	//bCanRender = true;
-
-	// Check errors
-	//GL.CheckError();
 }
-
-// Constructor, taking model info struct (nice for procedural generation)
-CModel::CModel ( arModelData& mdInModelData, const char* sModelName )
-	: RrLogicObject()
-{
-	// Start out setting the model name
-	myModelFilename = sModelName;
-
-	// Clear out uniform lists
-	//uniformMapFloat = NULL;
-	//uniformMapVect2d = NULL;
-	//uniformMapVect3d = NULL;
-	//uniformMapColor = NULL;
-
-	// Clear out the material list
-	//vMaterials.clear();
-	// Initialize animation to null
-	pMyAnimation = NULL;
-
-	// Set basic properties
-	bUseFrustumCulling = true;
-	//bCelShadingEnabled = false;
-	//bUseSeparateMaterialBatches = false;
-	//visible = false;
-
-	// First look for the model in the model master
-	//const vector<rrMesh*> * pMeshSetReference = ModelMaster.GetReference( sModelName );
-	auto t_meshSet = RenderResources::Active()->GetMesh( myModelFilename.c_str() );
-	// If there's no reference, then load it
-	if ( t_meshSet == NULL || myModelFilename == "_sys_override_" )
-	{
-		arModelData* mdModelData = new arModelData();
-		(*mdModelData) = mdInModelData;
-
-		// Create new mesh with the model data
-		rrMesh* newMesh = new rrMesh ();
-		newMesh->Initialize( "procedural mesh", mdModelData );
-
-		// Put the mesh into the render list
-		m_glMeshlist.push_back( newMesh );
-		
-		// Create a new name
-		if ( sModelName == "_sys_override_" )
-		{
-			char t_newName [64];
-			sprintf( t_newName, "_sys_override_%x", (uint32_t)(this) );
-			myModelFilename = t_newName;
-		}
-
-		debug::Console->PrintMessage( " +Adding data for procedural mesh...\n" );
-		debug::Console->PrintMessage( " +Has mesh set\n" );
-	}
-	else // If there is a reference, copy the data
-	{
-		m_glMeshlist = *t_meshSet;	// Copy the meshes to local list
-		debug::Console->PrintMessage( " +Has mesh set\n" );
-	}
-	
-	// Add to the reference of the model
-	/*ModelMaster.AddReference( sModelName, m_glMeshlist, vHitboxes );
-	ModelMaster.AddReference( sModelName, m_physMeshlist );
-
-	// Add animation reference
-	AnimationControl* pAnimSetReference = ModelMaster.GetAnimationReference( sModelName );
-	ModelMaster.AddReference( sModelName, pAnimSetReference );*/
-
-	// Create mesh list
-	for ( uint i = 0; i < m_glMeshlist.size(); ++i ) 
-	{
-		m_meshes.push_back( new CMesh( m_glMeshlist[i] ) );
-		m_meshes[i]->m_parent = this;
-	}
-
-	// Set the default white material
-	/*RrMaterial* defaultMat = new RrMaterial;
-	defaultMat->releaseOwnership();
-	vMaterials.push_back( defaultMat );
-
-	// Set the texture ref list to NULL
-	pvMaterials = NULL;*/
-
-	// Get the bounding box
-	//CalculateBoundingBox();
-	CalculateBoundingBox();
-	// Force render
-	//bCanRender = true;
-
-	// Check errors
-	//GL.CheckError();
-}
+//
+//// Constructor, taking model object
+//CModel::CModel ( const char* sFilename )
+//	: RrLogicObject()
+//{
+//	// Create filename
+//	myModelFilename = sFilename;
+//	// Standardize the filename
+//	myModelFilename = IO::FilenameStandardize( myModelFilename );
+//	// Look for the valid resource to load
+//	myModelFilename = core::Resources::PathTo( myModelFilename );
+//#ifndef _ENGINE_DEBUG
+//	throw core::NotYetImplementedException();
+//#endif
+//
+//	// Clear out uniform lists
+//	//uniformMapFloat = NULL;
+//	//uniformMapVect2d = NULL;
+//	//uniformMapVect3d = NULL;
+//	//uniformMapColor = NULL;
+//
+//	// Clear out the material list
+//	//vMaterials.clear();
+//	// Initialize animation to null
+//	pMyAnimation = NULL;
+//
+//	// Set basic properties
+//	bUseFrustumCulling = true;
+//	//bCelShadingEnabled = false;
+//	//bUseSeparateMaterialBatches = false;
+//	//visible = false;
+//	
+//	// Set animation properties
+//	pReferencedAnimation = NULL;
+//	bReferenceAnimation = false;
+//	eRefMode = ANIM_REF_NONE;
+//
+//	// First look for the model in the model master
+//	//const vector<rrMesh*> * pMeshSetReference = ModelMaster.GetReference( myModelFilename );
+//	auto t_meshSet = RenderResources::Active()->GetMesh( myModelFilename.c_str() );
+//	// If there's no reference, then load it
+//	if ( t_meshSet == NULL )
+//	{
+//		LoadModel( myModelFilename );
+//		t_meshSet = RenderResources::Active()->GetMesh( myModelFilename.c_str() );
+//	}
+//	if ( t_meshSet )
+//	{
+//		m_glMeshlist = *t_meshSet;	// Copy the meshes to local list
+//		debug::Console->PrintMessage( " +Has mesh set\n" );
+//	}
+//	/*if ( pMeshSetReference == NULL )
+//	{
+//		LoadModel( myModelFilename );
+//		// We don't want to use the animation reference we just created, so we make another
+//		// Look for the reference and copy it
+//		AnimationControl* pFoundReference = ModelMaster.GetAnimationReference( myModelFilename );
+//		if ( pFoundReference != NULL && pFoundReference->IsValid() ) {
+//			pMyAnimation = new AnimationControl( myModelFilename, pFoundReference );
+//			pMyAnimation->SetOwner( this );	// Set this as the owner
+//			ModelMaster.AddReference( myModelFilename, pMyAnimation );
+//		}
+//	}
+//	else // If there is a reference, copy the data
+//	{
+//		m_glMeshlist = *pMeshSetReference;
+//		vHitboxes = *ModelMaster.GetHitboxReference( myModelFilename );
+//		// Also create a new animation, with a reference that we found ourself
+//		AnimationControl* pFoundReference = ModelMaster.GetAnimationReference( myModelFilename );
+//		if ( pFoundReference != NULL && pFoundReference->IsValid() ) {
+//			pMyAnimation = new AnimationControl( myModelFilename, pFoundReference );
+//			pMyAnimation->SetOwner( this ); // Set this model as the owner
+//			ModelMaster.AddReference( myModelFilename, pMyAnimation );
+//		}
+//	}
+//	// Add to the reference of the model
+//	ModelMaster.AddReference( myModelFilename, m_glMeshlist, vHitboxes );
+//	ModelMaster.AddReference( myModelFilename, m_physMeshlist );*/
+//	
+//	// Create mesh list
+//	for ( uint i = 0; i < m_glMeshlist.size(); ++i ) 
+//	{
+//		m_meshes.push_back( new CMesh( m_glMeshlist[i] ) );
+//		m_meshes[i]->m_parent = this;
+//	}
+//	
+//
+//	// Check for a valid animation
+//	if ( pMyAnimation != NULL && !pMyAnimation->IsValid() )
+//	{
+//		delete pMyAnimation;
+//		pMyAnimation = NULL;
+//	}
+//
+//	// Create default list of materials
+//	/*while ( vMaterials.size() < vMeshes.size() )
+//	{
+//		vMaterials.push_back( NULL );
+//	}
+//	vMaterials[0] = vMeshes[0]->pmMat;*/
+//
+//	// Get the bounding box
+//	//CalculateBoundingBox();
+//	/*for ( uint i = 0; i < m_meshes.size(); ++i ) {
+//		//m_meshes[i]->CalculateBoundingBox(); // calculated
+//		CalculateBoundingBox();
+//	}*/
+//	CalculateBoundingBox();
+//	// Force render
+//	//bCanRender = true;
+//
+//	// Check errors
+//	//GL.CheckError();
+//}
+//
+//// Constructor, taking model info struct (nice for procedural generation)
+//CModel::CModel ( arModelData& mdInModelData, const char* sModelName )
+//	: RrLogicObject()
+//{
+//	// Start out setting the model name
+//	myModelFilename = sModelName;
+//
+//	// Clear out uniform lists
+//	//uniformMapFloat = NULL;
+//	//uniformMapVect2d = NULL;
+//	//uniformMapVect3d = NULL;
+//	//uniformMapColor = NULL;
+//
+//	// Clear out the material list
+//	//vMaterials.clear();
+//	// Initialize animation to null
+//	pMyAnimation = NULL;
+//
+//	// Set basic properties
+//	bUseFrustumCulling = true;
+//	//bCelShadingEnabled = false;
+//	//bUseSeparateMaterialBatches = false;
+//	//visible = false;
+//
+//	// First look for the model in the model master
+//	//const vector<rrMesh*> * pMeshSetReference = ModelMaster.GetReference( sModelName );
+//	auto t_meshSet = RenderResources::Active()->GetMesh( myModelFilename.c_str() );
+//	// If there's no reference, then load it
+//	if ( t_meshSet == NULL || myModelFilename == "_sys_override_" )
+//	{
+//		arModelData* mdModelData = new arModelData();
+//		(*mdModelData) = mdInModelData;
+//
+//		// Create new mesh with the model data
+//		rrMesh* newMesh = new rrMesh ();
+//		newMesh->Initialize( "procedural mesh", mdModelData );
+//
+//		// Put the mesh into the render list
+//		m_glMeshlist.push_back( newMesh );
+//		
+//		// Create a new name
+//		if ( sModelName == "_sys_override_" )
+//		{
+//			char t_newName [64];
+//			sprintf( t_newName, "_sys_override_%x", (uint32_t)(this) );
+//			myModelFilename = t_newName;
+//		}
+//
+//		debug::Console->PrintMessage( " +Adding data for procedural mesh...\n" );
+//		debug::Console->PrintMessage( " +Has mesh set\n" );
+//	}
+//	else // If there is a reference, copy the data
+//	{
+//		m_glMeshlist = *t_meshSet;	// Copy the meshes to local list
+//		debug::Console->PrintMessage( " +Has mesh set\n" );
+//	}
+//	
+//	// Add to the reference of the model
+//	/*ModelMaster.AddReference( sModelName, m_glMeshlist, vHitboxes );
+//	ModelMaster.AddReference( sModelName, m_physMeshlist );
+//
+//	// Add animation reference
+//	AnimationControl* pAnimSetReference = ModelMaster.GetAnimationReference( sModelName );
+//	ModelMaster.AddReference( sModelName, pAnimSetReference );*/
+//
+//	// Create mesh list
+//	for ( uint i = 0; i < m_glMeshlist.size(); ++i ) 
+//	{
+//		m_meshes.push_back( new CMesh( m_glMeshlist[i] ) );
+//		m_meshes[i]->m_parent = this;
+//	}
+//
+//	// Set the default white material
+//	/*RrMaterial* defaultMat = new RrMaterial;
+//	defaultMat->releaseOwnership();
+//	vMaterials.push_back( defaultMat );
+//
+//	// Set the texture ref list to NULL
+//	pvMaterials = NULL;*/
+//
+//	// Get the bounding box
+//	//CalculateBoundingBox();
+//	CalculateBoundingBox();
+//	// Force render
+//	//bCanRender = true;
+//
+//	// Check errors
+//	//GL.CheckError();
+//}
 
 
 // Destructor
@@ -291,7 +297,7 @@ void CModel::PostStepSynchronus ( void )
 		}
 		else
 		{
-			if ( eRefMode == ANIM_REF_DIRECT )
+			if ( m_animRefMode == kAnimRefDirect )
 			{
 				// Directly copy the transforms
 				//pReferencedAnimation->GetAnimationSet
@@ -309,12 +315,13 @@ void CModel::CalculateBoundingBox ( void )
 {
 	Vector3d minPos, maxPos;
 
-	for ( unsigned int i = 0; i < m_glMeshlist.size(); i++ )
+	for ( size_t i = 0; i < m_meshGroup->m_meshCount; i++ )
 	{
-		arModelData* modeldata = m_glMeshlist[i]->modeldata;
-		for ( unsigned int v = 0; v < modeldata->vertexNum; v++ )
+		arModelData* modeldata = m_meshGroup->m_meshes[i]->m_mesh->m_modeldata;
+		for ( size_t v = 0; v < modeldata->vertexNum; v++ )
 		{
-			arModelVertex* vert = &(modeldata->vertices[v]);
+			//arModelVertex* vert = &(modeldata->vertices[v]);
+			Vector3f* vert = &(modeldata->position[v]);
 			minPos.x = std::min<Real>( minPos.x, vert->x );
 			minPos.y = std::min<Real>( minPos.y, vert->y );
 			minPos.z = std::min<Real>( minPos.z, vert->z );
@@ -329,7 +336,7 @@ void CModel::CalculateBoundingBox ( void )
 	vCheckRenderPos = (minPos+maxPos)/2;
 	fCheckRenderDist = (( maxPos-minPos )/2).magnitude();
 	//bbCheckRenderBox.Set( transform.GetTransformMatrix(), vMinExtents, vMaxExtents );
-	bbCheckRenderBox.Set( Matrix4x4(), vMinExtents, vMaxExtents );
+	m_renderBoundingBox.Set( Matrix4x4(), vMinExtents, vMaxExtents );
 	//bbCheckRenderBox.Set( transform.GetTransformMatrix(), Vector3d( -0.1f,-0.1f,-0.1f ), Vector3d( 0.1f,0.1f,0.1f ) );
 }
 
@@ -441,7 +448,7 @@ void CModel::SetForcedDraw ( void ) {
 // This mode will save memory, but will completely copy the referenced animation
 //  with no ability to change this model's animation.
 // If the referenced model is deleted, unexpected behavior will occur.
-void CModel::SetReferencedAnimationMode ( CModel* pReference, const AnimRefType ref_type )
+void CModel::SetReferencedAnimationMode ( CModel* pReference, const rrAnimReferenceType ref_type )
 {
 	throw core::DeprecatedCallException();
 	//pReferencedAnimation = pReference->GetAnimation();

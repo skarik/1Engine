@@ -5,10 +5,10 @@
 #include "core-ext/resources/IArResource.h"
 #include "core-ext/animation/Skeleton.h"
 
-class RrMesh;
+class CMesh;
 class CMorpherSet;
 
-class CAnimatedMeshGroup : public IArResource
+class RrAnimatedMeshGroup : public IArResource
 {
 public:
 	//	virtual ResourceType() : What type of resource is this?
@@ -23,8 +23,10 @@ public:
 		{ return m_name.c_str(); }
 
 public:
-	RrMesh**				m_meshes;
-	CMorpherSet**			m_meshMorphs;
+	size_t					m_meshCount;
+	CMesh**				m_meshes;
+	size_t					m_morphCount;
+	CMorpherSet**			m_morphs;
 	animation::SkeletonBinding*
 							m_skeleton;
 

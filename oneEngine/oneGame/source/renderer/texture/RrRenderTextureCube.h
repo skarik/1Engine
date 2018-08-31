@@ -1,3 +1,4 @@
+#if 0
 #ifndef RENDERER_RENDER_TEXTURE_CUBE_H_
 #define RENDERER_RENDER_TEXTURE_CUBE_H_
 
@@ -88,3 +89,4 @@ protected:
 };
 
 #endif//RENDERER_RENDER_TEXTURE_CUBE_H_
+#endif

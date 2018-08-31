@@ -815,7 +815,7 @@
     <ClInclude Include="source\renderer\logic\model\RrModelMasterSubsystem.h">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\logic\model\CAnimatedMeshGroup.h">
+    <ClInclude Include="source\renderer\logic\model\RrAnimatedMeshGroup.h">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClInclude>
   </ItemGroup>

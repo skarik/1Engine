@@ -1,4 +1,4 @@
-
+#if 0
 // == Includes ==
 #include "RrRenderTextureCube.h"
 #include "core/debug/CDebugConsole.h"
@@ -466,3 +466,4 @@ bool checkFramebufferStatus()
         return false;
     }
 }*/
+#endif

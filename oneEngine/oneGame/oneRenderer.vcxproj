@@ -237,7 +237,7 @@
     <ClInclude Include="source\renderer\gpuw\Textures.h" />
     <ClInclude Include="source\renderer\gpuw\Transfer.h" />
     <ClInclude Include="source\renderer\light\RrLight.h" />
-    <ClInclude Include="source\renderer\logic\model\CAnimatedMeshGroup.h" />
+    <ClInclude Include="source\renderer\logic\model\RrAnimatedMeshGroup.h" />
     <ClInclude Include="source\renderer\logic\model\RrModelMasterSubsystem.h" />
     <ClInclude Include="source\renderer\logic\RrLogicObject.h" />
     <ClInclude Include="source\renderer\logic\model\CModel.h" />

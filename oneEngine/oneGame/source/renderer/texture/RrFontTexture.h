@@ -147,6 +147,16 @@ public:
 //public:
 //	RENDER_API static RrFontTexture* pActiveFont;
 
+	RENDER_API rrFontTextureInfo*
+							GetFontInfo ( void )
+		{ return &fontInfo; }
+	RENDER_API uint32_t*	GetFontGlyphLookup ( void )
+		{ return m_glyphLookup; }
+	RENDER_API uint32_t		GetFontGlyphStart ( void )
+		{ return m_glyphStart; }
+	RENDER_API uint32_t		GetFontGlyphCount ( void )
+		{ return m_glyphCount; }
+
 protected:
 	/*void LoadFont ( void );
 	void LoadFontAsTexture ( void );

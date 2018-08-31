@@ -1,5 +1,5 @@
 #include "renderer/logic/model/RrModelMasterSubsystem.h"
-#include "renderer/logic/model/CAnimatedMeshGroup.h"
+#include "renderer/logic/model/RrAnimatedMeshGroup.h"
 #include "core/debug/console.h"
 
 RrModelMasterSubsystem::RrModelMasterSubsystem ( void )
@@ -18,13 +18,13 @@ void RrModelMasterSubsystem::Update ( void )
 
 void RrModelMasterSubsystem::OnAdd(IArResource* resource)
 {
-	CAnimatedMeshGroup* texture = (CAnimatedMeshGroup*)resource;
+	RrAnimatedMeshGroup* texture = (RrAnimatedMeshGroup*)resource;
 	//texture->AddReference();
 }
 
 void RrModelMasterSubsystem::OnRemove(IArResource* resource)
 {
-	CAnimatedMeshGroup* texture = (CAnimatedMeshGroup*)resource;
+	RrAnimatedMeshGroup* texture = (RrAnimatedMeshGroup*)resource;
 	//texture->RemoveReference();
 }
 

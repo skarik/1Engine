@@ -5,6 +5,8 @@
 #include "renderer/camera/RrCamera.h"
 #include "renderer/state/Settings.h"
 #include "renderer/state/RrRenderer.h"
+#include "renderer/material/RrPass.h"
+#include "renderer/material/RrShaderProgram.h"
 //#include "renderer/system/glMainSystem.h"
 //#include "renderer/system/glDrawing.h"
 #include "renderer/object/immediate/immediate.h"
@@ -58,14 +60,22 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 
 	m_currentAlpha	= 1.0F;
 
-	RrMaterial* matNotifierDrawer = new RrMaterial;
-	matNotifierDrawer->m_diffuse = Color(1.0F, 1.0F, 1.0F, 1.0F);
-	matNotifierDrawer->setTexture( TEX_MAIN, m_fntNotifier );
-	matNotifierDrawer->passinfo.push_back( RrPassForward() );
-	matNotifierDrawer->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
-	matNotifierDrawer->passinfo[0].set2DCommon();
-	SetMaterial( matNotifierDrawer );
-	matNotifierDrawer->removeReference();
+	//RrMaterial* matNotifierDrawer = new RrMaterial;
+	//matNotifierDrawer->m_diffuse = Color(1.0F, 1.0F, 1.0F, 1.0F);
+	//matNotifierDrawer->setTexture( TEX_MAIN, m_fntNotifier );
+	//matNotifierDrawer->passinfo.push_back( RrPassForward() );
+	//matNotifierDrawer->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
+	//matNotifierDrawer->passinfo[0].set2DCommon();
+	//SetMaterial( matNotifierDrawer );
+	//matNotifierDrawer->removeReference();
+
+	RrPass notifierPass;
+	notifierPass.m_type = kPassTypeForward;
+	notifierPass.utilSetupAs2D();
+	notifierPass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+	notifierPass.setTexture( TEX_MAIN, RrTexture::Load("null") );
+	notifierPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
+	PassInitWithInput(0, &notifierPass);
 }
 
 CLoadScreenInjector::~CLoadScreenInjector ( void )
