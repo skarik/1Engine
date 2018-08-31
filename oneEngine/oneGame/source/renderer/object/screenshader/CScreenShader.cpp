@@ -9,6 +9,8 @@
 
 #include "renderer/object/immediate/immediate.h"
 
+#include "renderer/gpuw/Device.h"
+
 CScreenShader::CScreenShader ( RrCamera* pCam )
 	: CRenderableObject(), m_targetcam( pCam )
 {
@@ -27,7 +29,7 @@ CScreenShader::~CScreenShader ( void )
 //  Default implementation copies main buffer over (well, it would, except there's no way to copy depth proper)
 void CScreenShader::UpdateBuffer ( void )
 {
-	GL_ACCESS
+	//GL_ACCESS
 	// Generate sum shit
 	RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	if ( s_buf == NULL ) {
@@ -47,7 +49,7 @@ void CScreenShader::UpdateBuffer ( void )
 //   Where the magic should be happening
 bool CScreenShader::Render ( const char pass )
 {
-	GL_ACCESS
+	//GL_ACCESS
 	// Only render with the main scene or designated camera
 	if ( m_targetcam == NULL ) {
 		// Skip shadow cameras, and only link to cameras that can render this shader.
@@ -144,7 +146,7 @@ bool CScreenShader::PreRender ( void )
 // Draws the output quad to m_buf
 void CScreenShader::DrawOutput ( void )
 {
-	GL_ACCESS GLd_ACCESS
+	//GL_ACCESS GLd_ACCESS
 	// Generate sum shit
 	RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	if ( s_buf == NULL )
@@ -166,7 +168,9 @@ void CScreenShader::DrawOutput ( void )
 // Copies what's in m_buf to s_buf, but only drawing the color
 void CScreenShader::CopyResult ( void )
 {
-	GL_ACCESS GLd_ACCESS
+	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
+	//GL_ACCESS GLd_ACCESS
 	// Generate sum shit
 	RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
 	if ( s_buf == NULL )
@@ -175,16 +179,28 @@ void CScreenShader::CopyResult ( void )
 	// Start drawing to s_buf
 	if ( CGameSettings::Active()->b_ro_Enable30Blit )
 	{
-		glBindFramebuffer( GL_READ_FRAMEBUFFER, m_buf->GetRTInfo().findex );
+		/*glBindFramebuffer( GL_READ_FRAMEBUFFER, m_buf->GetRTInfo().findex );
 		glBindFramebuffer( GL_DRAW_FRAMEBUFFER, s_buf->GetRTInfo().findex );
 		glBlitFramebuffer(
 			0,0,Screen::Info.width,Screen::Info.height,
 			0,0,Screen::Info.width,Screen::Info.height,
-			GL_COLOR_BUFFER_BIT, GL_NEAREST );
+			GL_COLOR_BUFFER_BIT, GL_NEAREST );*/
+
+		gpu::BlitTarget l_source;
+		l_source.renderTarget = m_buf->GetRenderTarget();
+		l_source.target = gpu::kRenderTargetSlotColor0;
+		l_source.rect = Rect(0, 0, Screen::Info.width, Screen::Info.height);
+
+		gpu::BlitTarget l_target;
+		l_target.renderTarget = s_buf->GetRenderTarget();
+		l_target.target = gpu::kRenderTargetSlotColor0;
+		l_target.rect = Rect(0, 0, Screen::Info.width, Screen::Info.height);
+
+		gfx->blit(l_source, l_target);
 	}
 	else
 	{
-		s_buf->BindBuffer();
+		/*s_buf->BindBuffer();
 		RrMaterial::Copy->setTexture( TEX_SLOT0, m_buf );
 		RrMaterial::Copy->bindPass(0);
 		
@@ -192,6 +208,34 @@ void CScreenShader::CopyResult ( void )
 		glDepthFunc( GL_ALWAYS );
 			GLd.DrawScreenQuad(RrMaterial::Copy);
 		glDepthFunc( GL_LEQUAL );
-		s_buf->UnbindBuffer();
+		s_buf->UnbindBuffer();*/
+
+		// Render the current result to the screen
+		gfx->setRenderTarget(s_buf->getRenderTarget());
+		gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
+		{
+			gpu::DepthStencilState ds;
+			ds.depthTestEnabled   = false;
+			ds.depthWriteEnabled  = false;
+			ds.stencilTestEnabled = false;
+			ds.stencilWriteMask   = 0x00;
+			gfx->setDepthStencilState(ds);
+
+			gpu::BlendState bs;
+			bs.enable = false;
+			bs.src = gpu::kBlendModeOne;
+			bs.dst = gpu::kBlendModeZero;
+			bs.srcAlpha = gpu::kBlendModeOne;
+			bs.dstAlpha = gpu::kBlendModeZero;
+			gfx->setBlendState(bs);
+
+			gfx->setPipeline(&pipelinePasses->m_pipelineScreenQuadCopy);
+			gfx->setVertexBuffer(0, &pipelinePasses->m_vbufScreenQuad, 0); // see RrPipelinePasses.cpp
+			gfx->setVertexBuffer(1, &pipelinePasses->m_vbufScreenQuad, 0); // there are two binding slots defined with different stride
+			gfx->setShaderSamplerAuto(gpu::kShaderStagePs, 0,
+				m_buf->getRenderTarget()->getAttachment(gpu::kRenderTargetSlotColor0));
+			gfx->draw(4, 0);
+		}
+
 	}
 }

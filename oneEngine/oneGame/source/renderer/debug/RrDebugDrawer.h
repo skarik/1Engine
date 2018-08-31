@@ -15,7 +15,7 @@ namespace debug
 		explicit	RrDebugDrawer ( void );
 					~RrDebugDrawer ( void );
 
-		bool		PreRender ( void ) override;
+		bool		PreRender ( RrCamera* camera ) override;
 
 	public:
 		RENDER_API static void DrawLine ( const Line&, const Color& = Color(1,1,0,1) );

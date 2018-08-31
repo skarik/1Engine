@@ -64,7 +64,7 @@ RrDebugDrawer::~RrDebugDrawer ( void )
 	}
 }
 
-bool RrDebugDrawer::PreRender ( void )
+bool RrDebugDrawer::PreRender ( RrCamera* camera )
 {
 	// Make sure line size is smol enough.
 	if (avLineList.size() >= ((1 << 16) / 6))

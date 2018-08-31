@@ -179,8 +179,8 @@ struct arModelData
 	Vector3f*	tangent;
 	Vector3f*	binormal;
 	Vector4f*	color;
-	// 253 bones are supported. Bone 0 and 255 have special meaning.
-	Vector4u8*	bone;
+	// 65534 bones are supported. Bone 0 and 65535 have special meaning.
+	Vector4u16*	bone;
 	Vector4f*	weight;
 	Vector2f*	texcoord2;
 	Vector2f*	texcoord3;
@@ -199,6 +199,5 @@ struct arModelPhysicsData
 	Vector3f*	position;
 	Vector3f*	normal;
 };
-
 
 #endif//CORE_MODEL_DATA_

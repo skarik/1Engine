@@ -6,7 +6,7 @@
 #include "core/math/Color.h"
 
 class RrRenderer;
-class RrMaterial;
+//class RrMaterial;
 
 namespace renderer
 {
@@ -25,7 +25,7 @@ namespace renderer
 		bool	fogEnabled;	
 	private:
 		friend RrRenderer;
-		friend RrMaterial;
+		//friend RrMaterial;
 
 		Real	fogScale;
 	};

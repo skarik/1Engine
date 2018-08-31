@@ -65,7 +65,7 @@ void rrMeshBuffer::InitMeshBuffers ( arModelData* const modelData )
 		m_bufferEnabled[renderer::ATTRIB_BONEWEIGHTS] = true;
 	}
 	if (m_modeldata->bone) {
-		m_buffer[renderer::ATTRIB_BONEINDICES].init(NULL, m_modeldata->bone, gpu::kFormatR8G8B8A8UInteger, m_modeldata->vertexNum);
+		m_buffer[renderer::ATTRIB_BONEINDICES].init(NULL, m_modeldata->bone, gpu::kFormatR16G16B16A16UInteger, m_modeldata->vertexNum);
 		m_bufferEnabled[renderer::ATTRIB_BONEINDICES] = true;
 	}
 	if (m_modeldata->texcoord2) {

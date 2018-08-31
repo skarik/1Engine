@@ -30,6 +30,22 @@
 
 namespace animation
 {
+	//	class SkeletonBinding
+	class SkeletonBinding
+	{
+		// Bone structure information:
+
+		std::vector<arstring128>
+								names;
+		std::vector<int32_t>	parent;
+		
+		// Pose information for basic animation:
+
+		// Bind pose
+		std::vector<Matrix4x4>	inv_bind_pose;
+		std::vector<XTransform>	bind_xpose;
+	};
+
 	//	class Skeleton
 	// Container for skeleton information used for simulation, animation, and display.
 	// If any list is empty, then that list is not used. This minimizes memory impact.
@@ -41,39 +57,41 @@ namespace animation
 
 		// Bone structure information:
 
-		std::vector<arstring128>	names;
-		std::vector<int32_t>		parent;
+		std::vector<arstring128>
+								names;
+		std::vector<int32_t>	parent;
 
 		// Pose information for basic animation:
 
 		// Bind pose
-		std::vector<Matrix4x4>		inv_bind_pose;
+		std::vector<Matrix4x4>	inv_bind_pose;
 		//std::vector<Matrix4x4>		bind_pose;
-		std::vector<XTransform>		bind_xpose;
+		std::vector<XTransform>	bind_xpose;
 
 		// Animation source (in bone local-space)
-		std::vector<XTransform>		reference_xpose;
+		std::vector<XTransform>	reference_xpose;
 
 		// Animation result (in bone-bind-space)
 		//std::vector<Matrix4x4>		animation_pose;
 		// Animation result (in bone local-space)
-		std::vector<XTransform>		animation_xpose;
+		std::vector<XTransform>	animation_xpose;
 
 		// Current skeleton transform storage
-		std::vector<core::TransformLite>	current_transform;
+		std::vector<core::TransformLite>
+								current_transform;
 		// Current skeleton pose for OpenGL (in bone-bind-space)
-		std::vector<Matrix4x4>		current_pose;
+		std::vector<Matrix4x4>	current_pose;
 
 		// Extra pose information for effects:
 
 		// Previous iteration's pose
-		std::vector<Matrix4x4>		ext_previous_pose;
+		std::vector<Matrix4x4>	ext_previous_pose;
 		// Velocity used for jiggle/cloth
-		std::vector<Matrix4x4>		ext_pose_velocity;
+		std::vector<Matrix4x4>	ext_pose_velocity;
 		// Temporary storage used for jiggle/cloth
-		std::vector<Matrix4x4>		ext_pose_information;
+		std::vector<Matrix4x4>	ext_pose_information;
 		// Strength of ragdoll/physics simulation
-		std::vector<Real>			ext_physics_strength;
+		std::vector<Real>		ext_physics_strength;
 
 	public:
 		//	GenerationAnimationTransforms ( void ) : generates matrices in current_transform

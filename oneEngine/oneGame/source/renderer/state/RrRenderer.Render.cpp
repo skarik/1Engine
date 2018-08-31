@@ -137,7 +137,7 @@ void RrRenderer::StepBufferPush ( void )
 			gfx->setPipeline(&pipelinePasses->m_pipelineScreenQuadCopy);
 			gfx->setVertexBuffer(0, &pipelinePasses->m_vbufScreenQuad, 0); // see RrPipelinePasses.cpp
 			gfx->setVertexBuffer(1, &pipelinePasses->m_vbufScreenQuad, 0); // there are two binding slots defined with different stride
-			gfx->setShaderSamplerAuto(gpu::kShaderStagePs,
+			gfx->setShaderSamplerAuto(gpu::kShaderStagePs, 0,
 				                      internal_chain_current->buffer_forward_rt.getAttachment(gpu::kRenderTargetSlotColor0));
 			gfx->draw(4, 0);
 		}
@@ -610,7 +610,7 @@ void RrRenderer::RenderObjectListWorld ( rrCameraPass* cameraPass, CRenderableOb
 void RrRenderer::RenderScene ( const uint32_t renderHint, RrCamera* camera )
 {
 	GL_ACCESS GLd_ACCESS
-		CRenderableObject * pRO;
+	CRenderableObject * pRO;
 	int i;
 	unsigned char passCount;
 	RrCamera* currentCamera = RrCamera::activeCamera;

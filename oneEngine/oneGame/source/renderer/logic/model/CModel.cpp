@@ -9,7 +9,18 @@
 #include "renderer/object/mesh/CMesh.h"
 #include "renderer/resource/CModelMaster.h"
 
-using namespace std;
+CModel*
+CModel::LoadFile ( const char* sFilename )
+{
+	return NULL;
+}
+
+CModel*
+CModel::Upload ( arModelData& model_data, const char* model_name = "_sys_override_" )
+{
+	return NULL;
+}
+
 
 // Constructor, taking model object
 CModel::CModel ( const char* sFilename )

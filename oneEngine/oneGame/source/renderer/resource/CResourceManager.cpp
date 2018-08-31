@@ -1,4 +1,4 @@
-﻿
+﻿#if 0
 #include "CResourceManager.h"
 
 #include "core/debug/CDebugConsole.h"
@@ -850,3 +850,4 @@ namespace renderer
 		}
 	}
 }
+#endif

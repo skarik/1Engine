@@ -1,7 +1,7 @@
 #include "RrScopedMeshRenderer.h"
 
-#include "renderer/system/glSystem.h"
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/system/glSystem.h"
+//#include "renderer/material/RrMaterial.h"
 
 RrScopedMeshRenderer::RrScopedMeshRenderer ( void )
 {

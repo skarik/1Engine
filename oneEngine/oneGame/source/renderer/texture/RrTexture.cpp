@@ -10,7 +10,7 @@
 //#include "TextureIO.h"
 #include "core-ext/resources/ResourceManager.h"
 
-#include "renderer/system/glMainSystem.h"
+//#include "renderer/system/glMainSystem.h"
 
 //	Load ( filename ) : Loads a texture from the disk.
 // May return a previously loaded instance of the texture.

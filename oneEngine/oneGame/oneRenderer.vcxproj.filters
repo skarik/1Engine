@@ -432,6 +432,9 @@
     <ClCompile Include="source\renderer\texture\RrTextureCube.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\logic\model\RrModelMasterSubsystem.cpp">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -808,6 +811,12 @@
     </ClInclude>
     <ClInclude Include="source\renderer\texture\RrTextureCube.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\logic\model\RrModelMasterSubsystem.h">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\logic\model\CAnimatedMeshGroup.h">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

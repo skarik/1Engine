@@ -9,10 +9,13 @@
 #include "renderer/logic/RrLogicObject.h"
 #include "renderer/types/ModelStructures.h"
 
+#include "renderer/logic/model/CAnimatedMeshGroup.h"
+
 class CMesh;
 class AnimationControl;
-class rrMesh;
+class rrMeshBuffer;
 class physMesh;
+class CAnimatedMeshGroup;
 
 #include <unordered_map>
 
@@ -185,6 +188,9 @@ protected:
 	// Collision data
 	std::vector<sHitbox>
 						vHitboxes;
+
+	// 
+	CAnimatedMeshGroup*	m_meshGroup;
 
 	// Animation data
 	AnimationControl*	pMyAnimation;

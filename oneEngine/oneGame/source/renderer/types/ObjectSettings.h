@@ -5,7 +5,7 @@
 #include "core/types/types.h"
 #include "core/math/Color.h"
 
-class RrMaterial;
+//class RrMaterial;
 
 //	eRenderMode - current high level pipeline in use.
 // Renderer info
@@ -144,7 +144,7 @@ namespace renderer
 		kPipelineMode2DPaletted 
 	};
 
-	struct _n_hint_rendering_information
+	/*struct _n_hint_rendering_information
 	{
 		RrMaterial*		mats_default		[kRenderHintCOUNT];
 		RrMaterial*		mats_default_skin	[kRenderHintCOUNT];
@@ -155,7 +155,7 @@ namespace renderer
 
 		_n_hint_rendering_information ( void );
 	}; //m_default_hint_options; // needs to be initialized when RrRenderer is created, so to create default replacement materials.
-	extern _n_hint_rendering_information* m_default_hint_options;
+	extern _n_hint_rendering_information* m_default_hint_options;*/
 };
 
 

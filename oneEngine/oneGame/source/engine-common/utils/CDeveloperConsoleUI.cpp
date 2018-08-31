@@ -71,7 +71,7 @@ CDeveloperConsoleUI::~CDeveloperConsoleUI ( void )
 	// matfntMenu is the main material, and deallocated automagically.
 }
 
-bool CDeveloperConsoleUI::PreRender ( void )
+bool CDeveloperConsoleUI::PreRender ( RrCamera* camera )
 {
 	matMenu->prepareShaderConstants();
 	matfntMenu->prepareShaderConstants();
@@ -181,7 +181,7 @@ CDeveloperCursor::~CDeveloperCursor ( void )
 	}
 	texCursor->RemoveReference();
 }
-bool CDeveloperCursor::PreRender ( void )
+bool CDeveloperCursor::PreRender ( RrCamera* camera )
 {
 	matCursor->prepareShaderConstants();
 	return true;

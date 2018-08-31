@@ -70,12 +70,14 @@ namespace core
 	};
 
 	typedef vect4d_template<double> Vector4d_d;
-	typedef vect4d_template<int32_t> Vector4i;
+	typedef vect4d_template<int32_t> Vector4i32;
 	typedef vect4d_template<uint8_t> Vector4u8;
+	typedef vect4d_template<uint16_t> Vector4u16;
 };
 
-typedef core::Vector4d_d Vector4d_d;
-typedef core::Vector4i Vector4i;
-typedef core::Vector4u8 Vector4u8;
+typedef core::Vector4d_d	Vector4d_d;
+typedef core::Vector4i32	Vector4i;
+typedef core::Vector4u8		Vector4u8;
+typedef core::Vector4u16	Vector4u16;
 
 #endif//ENGINE_VECTOR_4D_TEMPLATE_H_

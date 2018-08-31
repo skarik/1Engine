@@ -1,18 +1,17 @@
-
-
 #include "core/time/time.h"
 #include "CLoadScreenInjector.h"
 #include "renderer/texture/RrFontTexture.h"
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/material/RrMaterial.h"
 #include "renderer/camera/RrCamera.h"
 #include "renderer/state/Settings.h"
-#include "renderer/system/glMainSystem.h"
-#include "renderer/system/glDrawing.h"
+#include "renderer/state/RrRenderer.h"
+//#include "renderer/system/glMainSystem.h"
+//#include "renderer/system/glDrawing.h"
 #include "renderer/object/immediate/immediate.h"
 
 void CLoadScreenInjector::StepScreen ( void )
 {
-	GL_ACCESS;
+	//GL_ACCESS;
 	
 	// Create camera to render with:
 	RrCamera* mCamera = NULL;
@@ -23,12 +22,16 @@ void CLoadScreenInjector::StepScreen ( void )
 		mCamera->LateUpdate();
 	}
 
+	CRenderableObject* l_renderList[] = {this};
+	//RrRenderer::Active->RenderObjectList(mCamera, l_renderList, 1);
+	RrRenderer::Active->Render();
+
 	// Have to render twice because of the double buffering
-	GL.FullRedraw();
+	//GL.FullRedraw();
 	// Update timer
 	Time::Tick();
 	// Render second time
-	GL.FullRedraw();
+	//GL.FullRedraw();
 
 	// Clear up camera used to render
 	if ( mCamera )
@@ -46,10 +49,11 @@ void CLoadScreenInjector::setAlpha ( Real new_alpha )
 CLoadScreenInjector::CLoadScreenInjector ( void )
 	: CRenderableObject (  )
 {
-	renderSettings.renderHints = kRenderHintWorld;
+	renderSettings.renderHints = 0 | kRenderHintBitmaskWorld;
 	renderLayer	= renderer::kRLV2D;
 
-	m_fntNotifier	= new RrFontTexture ( "YanoneKaffeesatz-B.otf", 72, FW_NORMAL );
+	//m_fntNotifier	= new RrFontTexture ( "YanoneKaffeesatz-B.otf", 72, FW_NORMAL );
+	m_fntNotifier	= RrFontTexture::Load( "YanoneKaffeesatz-B.otf", 72, kFW_Normal );
 	m_fntNotifier->RemoveReference();
 
 	m_currentAlpha	= 1.0F;
@@ -69,9 +73,10 @@ CLoadScreenInjector::~CLoadScreenInjector ( void )
 	;
 }
 
-bool CLoadScreenInjector::PreRender ( void )
+bool CLoadScreenInjector::PreRender ( RrCamera* camera )
 {
-	m_material->prepareShaderConstants();
+	//m_material->prepareShaderConstants();
+	PushCbufferPerObject(XrTransform(), NULL); 
 	return true;
 }
 bool CLoadScreenInjector::Render ( const char pass )

@@ -54,7 +54,7 @@ bool RrDebugRTInspector::BeginRender ( void )
 	return visible;
 }
 
-bool RrDebugRTInspector::PreRender ( void )
+bool RrDebugRTInspector::PreRender ( RrCamera* camera )
 {
 	m_material->prepareShaderConstants();
 	return true;

@@ -35,17 +35,17 @@ void CPrimitivePlane::buildPlane ( Real hxsize, Real hysize )
 		m_modeldata.vertices = new arModelVertex [m_modeldata.vertexNum];
 		m_modeldata.triangles = new arModelTriangle [2];
 
-		memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * m_modeldata.vertexNum);
+		//memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * m_modeldata.vertexNum);
 		for ( uint i = 0; i < m_modeldata.vertexNum; i += 1 )
 		{
-			m_modeldata.vertices[i].normal = Vector3f(0, 0, -1.0F);
+			m_modeldata.normal[i] = Vector3f(0, 0, -1.0F);
 		}
 
 		// Set UVs:
-		m_modeldata.vertices[0].texcoord0 = Vector2f(0,0);
-		m_modeldata.vertices[1].texcoord0 = Vector2f(1,0);
-		m_modeldata.vertices[2].texcoord0 = Vector2f(0,1);
-		m_modeldata.vertices[3].texcoord0 = Vector2f(1,1);
+		m_modeldata.texcoord0[0] = Vector2f(0,0);
+		m_modeldata.texcoord0[1] = Vector2f(1,0);
+		m_modeldata.texcoord0[2] = Vector2f(0,1);
+		m_modeldata.texcoord0[3] = Vector2f(1,1);
 
 		// Set triangles:
 		m_modeldata.triangles[0].vert[0] = 0;
@@ -58,8 +58,8 @@ void CPrimitivePlane::buildPlane ( Real hxsize, Real hysize )
 	}
 
 	// Set new positions
-	m_modeldata.vertices[0].position = Vector2f(-hxsize, -hysize);
-	m_modeldata.vertices[1].position = Vector2f( hxsize, -hysize);
-	m_modeldata.vertices[2].position = Vector2f(-hxsize,  hysize);
-	m_modeldata.vertices[3].position = Vector2f( hxsize,  hysize);
+	m_modeldata.position[0] = Vector2f(-hxsize, -hysize);
+	m_modeldata.position[1] = Vector2f( hxsize, -hysize);
+	m_modeldata.position[2] = Vector2f(-hxsize,  hysize);
+	m_modeldata.position[3] = Vector2f( hxsize,  hysize);
 }

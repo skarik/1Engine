@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <algorithm>
 
-//static arModelData l_modelDataTemp = {};
 struct rrModelDataEntry
 {
 	arModelData data;
@@ -15,7 +14,7 @@ static rrModelDataEntry l_modelDatas [4] = {};
 // Pulls a model from the the pool that has at least the estimated input size.
 // If the estimation is incorrect, the data will be resized.
 IrrMeshBuilder::IrrMeshBuilder ( const uint16_t estimatedVertexCount )
-	: m_vertexCount(0), m_triangleCount(0), m_model(NULL), m_model_isFromPool(true)
+	: m_vertexCount(0), m_indexCount(0), m_model(NULL), m_model_isFromPool(true)
 {
 	// Loop through the pool to find an unused model.
 
@@ -31,13 +30,13 @@ IrrMeshBuilder::IrrMeshBuilder ( const uint16_t estimatedVertexCount )
 	m_model_isFromPool = true;
 
 	expand(estimatedVertexCount);
-	expandTri(estimatedVertexCount / 2);
+	expandIndices((estimatedVertexCount * 3) / 2);
 }
 //	Constructor (existing data)
 // Sets up model, using the input data.
 // As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
 IrrMeshBuilder::IrrMeshBuilder ( arModelData* preallocatedModelData )
-	: m_vertexCount(0), m_triangleCount(0), m_model(preallocatedModelData), m_model_isFromPool(false)
+	: m_vertexCount(0), m_indexCount(0), m_model(preallocatedModelData), m_model_isFromPool(false)
 {
 	; // Nothing needed to be done here. :)
 }
@@ -66,7 +65,7 @@ arModelData IrrMeshBuilder::getModelData ( void ) const
 {
 	arModelData newData = *m_model;
 	newData.vertexNum = m_vertexCount;
-	newData.triangleNum = m_triangleCount;
+	newData.indexNum  = m_indexCount;
 	return newData;
 }
 
@@ -120,49 +119,49 @@ void IrrMeshBuilder::reallocateConservative ( uint16_t targetSize )
 
 
 //	expandTri ( new vertex count ) : Ensure storage is large enough to hold the count of triangles
-void IrrMeshBuilder::expandTri ( const uint16_t triangleCount )
+void IrrMeshBuilder::expandIndices ( const uint16_t indiciesCount )
 {
-	if (m_model->triangleNum < triangleCount)
+	if (m_model->indexNum < indiciesCount)
 	{
 		if (m_model_isFromPool) {
-			reallocateTriGreedy(triangleCount);
+			reallocateIndicesGreedy(indiciesCount);
 		}
 		else {
-			reallocateTriConservative(triangleCount);
+			reallocateIndicesConservative(indiciesCount);
 		}
 	}
 }
 
 //	reallocateTriGreedy ( new size ) : Expands triangle storage in a greedy way
-void IrrMeshBuilder::reallocateTriGreedy ( uint16_t targetSize )
+void IrrMeshBuilder::reallocateIndicesGreedy ( uint16_t targetSize )
 {
-	uint16_t old_count = m_model->triangleNum;
-	arModelTriangle* old_triangles = m_model->triangles;
+	uint16_t old_count = m_model->indexNum;
+	uint16_t* old_indices = m_model->indices;
 
 	// Increase the size by 150%.
-	while (m_model->triangleNum < targetSize)
+	while (m_model->indexNum < targetSize)
 	{
-		m_model->triangleNum = (uint16_t)std::min<Real>(m_model->triangleNum * 1.5F + 1.0F, 65535.0F);
+		m_model->indexNum = (uint16_t)std::min<Real>(m_model->indexNum * 1.5F + 1.0F, 65535.0F);
 	}
 
-	m_model->triangles = new arModelTriangle[m_model->triangleNum];
-	memcpy(m_model->triangles, old_triangles, old_count * sizeof(arModelTriangle));
-	delete[] old_triangles;
+	m_model->indices = new uint16_t[m_model->indexNum];
+	memcpy(m_model->indices, old_indices, sizeof(uint16_t) * old_count);
+	delete[] old_indices;
 }
 
 //	reallocateTriWild ( new size ) : Expands triangle storage in a conservative way
-void IrrMeshBuilder::reallocateTriConservative ( uint16_t targetSize )
+void IrrMeshBuilder::reallocateIndicesConservative ( uint16_t targetSize )
 {
-	uint16_t old_count = m_model->triangleNum;
-	arModelTriangle* old_triangles = m_model->triangles;
+	uint16_t old_count = m_model->indexNum;
+	uint16_t* old_indices = m_model->indices;
 
 	// Increase the size to just above the target.
-	while (m_model->triangleNum < targetSize)
+	while (m_model->indexNum < targetSize)
 	{
-		m_model->triangleNum = targetSize + m_model->triangleNum / 1024 + 1;
+		m_model->indexNum = targetSize + m_model->indexNum / 1024 + 1;
 	}
 
-	m_model->triangles = new arModelTriangle[m_model->triangleNum];
-	memcpy(m_model->triangles, old_triangles, old_count * sizeof(arModelTriangle));
-	delete[] old_triangles;
+	m_model->indices = new uint16_t[m_model->indexNum];
+	memcpy(m_model->indices, old_indices, sizeof(uint16_t) * old_count);
+	delete[] old_indices;
 }

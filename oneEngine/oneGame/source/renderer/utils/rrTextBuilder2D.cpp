@@ -52,7 +52,7 @@ void rrTextBuilder2D::addText ( const Vector2d& position, const Color& color, co
 	const int maxLength = (int)strlen(str);
 
 	expand(m_vertexCount + maxLength * 4);
-	expandTri(m_triangleCount + maxLength * 2);
+	expandIndices(m_indexCount + maxLength * 5);
 
 	// Get the font info:
 
@@ -62,8 +62,8 @@ void rrTextBuilder2D::addText ( const Vector2d& position, const Color& color, co
 	// Set up information for the text passes:
 
 	Vector2d pen (0,0);
-	uint16_t vertex_index = m_vertexCount;
-	uint16_t triangle_index = m_triangleCount;
+	uint16_t vert_index = m_vertexCount;
+	uint16_t inde_index = m_indexCount;
 	int c_lookup;
 	// Always use 'M' as the base case font size, because it's huge
 	Vector2d font_max_size = fontInfo.fontSizes['M' - fontInfo.startCharacter];	
@@ -143,50 +143,55 @@ void rrTextBuilder2D::addText ( const Vector2d& position, const Color& color, co
 		drawPos.x = (Real)math::round( drawPos.x );
 		drawPos.y = (Real)math::round( drawPos.y );
 
-		memset(m_model->vertices + vertex_index, 0, sizeof(arModelVertex) * 4);
+		//memset(m_model->vertices + vertex_index, 0, sizeof(arModelVertex) * 4);
 
-		m_model->vertices[vertex_index + 0].position = _transformVertexPosition(position + drawPos, m_multiplier, m_offset);
-		m_model->vertices[vertex_index + 1].position = _transformVertexPosition(position + Vector2f(drawPos.x, drawPos.y + uv.size.y * baseScale), m_multiplier, m_offset);
-		m_model->vertices[vertex_index + 2].position = _transformVertexPosition(position + Vector2f(drawPos.x + uv.size.x * baseScale, drawPos.y + uv.size.y * baseScale), m_multiplier, m_offset);
-		m_model->vertices[vertex_index + 3].position = _transformVertexPosition(position + Vector2f(drawPos.x + uv.size.x * baseScale, drawPos.y), m_multiplier, m_offset);
+		m_model->position[vert_index + 0] = _transformVertexPosition(position + drawPos, m_multiplier, m_offset);
+		m_model->position[vert_index + 1] = _transformVertexPosition(position + Vector2f(drawPos.x, drawPos.y + uv.size.y * baseScale), m_multiplier, m_offset);
+		m_model->position[vert_index + 2] = _transformVertexPosition(position + Vector2f(drawPos.x + uv.size.x * baseScale, drawPos.y + uv.size.y * baseScale), m_multiplier, m_offset);
+		m_model->position[vert_index + 3] = _transformVertexPosition(position + Vector2f(drawPos.x + uv.size.x * baseScale, drawPos.y), m_multiplier, m_offset);
 
-		m_model->vertices[vertex_index + 0].texcoord0 = uv.pos;
-		m_model->vertices[vertex_index + 1].texcoord0 = Vector2f(uv.pos.x, uv.pos.y + uv.size.y);
-		m_model->vertices[vertex_index + 2].texcoord0 = Vector2f(uv.pos.x + uv.size.x, uv.pos.y + uv.size.y);
-		m_model->vertices[vertex_index + 3].texcoord0 = Vector2f(uv.pos.x + uv.size.x, uv.pos.y);
+		m_model->texcoord0[vert_index + 0] = uv.pos;
+		m_model->texcoord0[vert_index + 1] = Vector2f(uv.pos.x, uv.pos.y + uv.size.y);
+		m_model->texcoord0[vert_index + 2] = Vector2f(uv.pos.x + uv.size.x, uv.pos.y + uv.size.y);
+		m_model->texcoord0[vert_index + 3] = Vector2f(uv.pos.x + uv.size.x, uv.pos.y);
 
-		m_model->vertices[vertex_index + 0].normal = Vector3f(-1, -1, uv.size.y / uv.size.x);
-		m_model->vertices[vertex_index + 1].normal = Vector3f(-1, +1, uv.size.y / uv.size.x);
-		m_model->vertices[vertex_index + 2].normal = Vector3f(+1, +1, uv.size.y / uv.size.x);
-		m_model->vertices[vertex_index + 3].normal = Vector3f(+1, -1, uv.size.y / uv.size.x);
+		m_model->normal[vert_index + 0] = Vector3f(-1, -1, uv.size.y / uv.size.x);
+		m_model->normal[vert_index + 1] = Vector3f(-1, +1, uv.size.y / uv.size.x);
+		m_model->normal[vert_index + 2] = Vector3f(+1, +1, uv.size.y / uv.size.x);
+		m_model->normal[vert_index + 3] = Vector3f(+1, -1, uv.size.y / uv.size.x);
 
-		m_model->vertices[vertex_index + 0].color = Vector4f(&color.x);
-		m_model->vertices[vertex_index + 1].color = Vector4f(&color.x);
-		m_model->vertices[vertex_index + 2].color = Vector4f(&color.x);
-		m_model->vertices[vertex_index + 3].color = Vector4f(&color.x);
+		m_model->color[vert_index + 0] = Vector4f(&color.x);
+		m_model->color[vert_index + 1] = Vector4f(&color.x);
+		m_model->color[vert_index + 2] = Vector4f(&color.x);
+		m_model->color[vert_index + 3] = Vector4f(&color.x);
 
-		m_model->vertices[vertex_index + 0].position.z = 0.5F;
-		m_model->vertices[vertex_index + 1].position.z = 0.5F;
-		m_model->vertices[vertex_index + 2].position.z = 0.5F;
-		m_model->vertices[vertex_index + 3].position.z = 0.5F;
+		m_model->position[vert_index + 0].z = 0.5F;
+		m_model->position[vert_index + 1].z = 0.5F;
+		m_model->position[vert_index + 2].z = 0.5F;
+		m_model->position[vert_index + 3].z = 0.5F;
 
-		m_model->triangles[triangle_index + 0].vert[0] = vertex_index + 0;
+		/*m_model->triangles[triangle_index + 0].vert[0] = vertex_index + 0;
 		m_model->triangles[triangle_index + 0].vert[1] = vertex_index + 1;
 		m_model->triangles[triangle_index + 0].vert[2] = vertex_index + 2;
 
 		m_model->triangles[triangle_index + 1].vert[0] = vertex_index + 0;
 		m_model->triangles[triangle_index + 1].vert[1] = vertex_index + 2;
-		m_model->triangles[triangle_index + 1].vert[2] = vertex_index + 3;
+		m_model->triangles[triangle_index + 1].vert[2] = vertex_index + 3;*/
+		m_model->indices[inde_index + 0] = vert_index + 0;
+		m_model->indices[inde_index + 1] = vert_index + 1;
+		m_model->indices[inde_index + 2] = vert_index + 2;
+		m_model->indices[inde_index + 3] = vert_index + 3;
+		m_model->indices[inde_index + 4] = 0xFFFF;
 
 		// Move the array indices along
-		vertex_index += 4;
-		triangle_index += 2;
+		vert_index += 4;
+		inde_index += 5;
 
 		// Move the pen along
 		pen += fontInfo.fontOffsets[c_lookup];
 	}
 
 	// Update vertex and triangle count
-	m_vertexCount = vertex_index;
-	m_triangleCount = triangle_index;
+	m_vertexCount = vert_index;
+	m_indexCount  = inde_index;
 }

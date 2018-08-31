@@ -84,44 +84,50 @@ void rrMeshBuilder2D::addRectTex ( const Rect& rect, const Rect& tex, const Colo
 	if (!outline)
 	{
 		expand(m_vertexCount + 4);
-		expandTri(m_triangleCount + 2);
-		const uint16_t index = m_vertexCount;
-		const uint16_t tri_index = m_triangleCount;
+		expandIndices(m_indexCount + 5);
+		const uint16_t vert_index = m_vertexCount;
+		const uint16_t inde_index = m_indexCount;
 
-		memset(m_model->vertices + index, 0, sizeof(arModelVertex) * 4);
+		//memset(m_model->vertices + index, 0, sizeof(arModelVertex) * 4);
 
 		// Add the quad:
 
-		m_model->vertices[index + 0].position = pos_min;
-		m_model->vertices[index + 1].position = Vector2f(pos_min.x, pos_max.y);
-		m_model->vertices[index + 2].position = Vector2f(pos_max.x, pos_min.y);
-		m_model->vertices[index + 3].position = pos_max;
+		m_model->position[vert_index + 0] = pos_min;
+		m_model->position[vert_index + 1] = Vector2f(pos_min.x, pos_max.y);
+		m_model->position[vert_index + 2] = Vector2f(pos_max.x, pos_min.y);
+		m_model->position[vert_index + 3] = pos_max;
 
-		m_model->vertices[index + 0].texcoord0 = tex_min;
-		m_model->vertices[index + 1].texcoord0 = Vector2f(tex_min.x, tex_max.y);
-		m_model->vertices[index + 2].texcoord0 = Vector2f(tex_max.x, tex_min.y);
-		m_model->vertices[index + 3].texcoord0 = tex_max;
+		m_model->texcoord0[vert_index + 0] = tex_min;
+		m_model->texcoord0[vert_index + 1] = Vector2f(tex_min.x, tex_max.y);
+		m_model->texcoord0[vert_index + 2] = Vector2f(tex_max.x, tex_min.y);
+		m_model->texcoord0[vert_index + 3] = tex_max;
 
-		m_model->vertices[index + 0].color = Vector4f(color.raw);
-		m_model->vertices[index + 1].color = Vector4f(color.raw);
-		m_model->vertices[index + 2].color = Vector4f(color.raw);
-		m_model->vertices[index + 3].color = Vector4f(color.raw);
+		m_model->color[vert_index + 0] = Vector4f(color.raw);
+		m_model->color[vert_index + 1] = Vector4f(color.raw);
+		m_model->color[vert_index + 2] = Vector4f(color.raw);
+		m_model->color[vert_index + 3] = Vector4f(color.raw);
 
-		m_model->vertices[index + 0].position.z = 0.5F;
-		m_model->vertices[index + 1].position.z = 0.5F;
-		m_model->vertices[index + 2].position.z = 0.5F;
-		m_model->vertices[index + 3].position.z = 0.5F;
+		m_model->position[vert_index + 0].z = 0.5F;
+		m_model->position[vert_index + 1].z = 0.5F;
+		m_model->position[vert_index + 2].z = 0.5F;
+		m_model->position[vert_index + 3].z = 0.5F;
 
-		m_model->triangles[tri_index + 0].vert[0] = index + 0;
-		m_model->triangles[tri_index + 0].vert[1] = index + 1;
-		m_model->triangles[tri_index + 0].vert[2] = index + 2;
+		/*m_model->indices[inde_index + 0] = index + 0;
+		m_model->indices[inde_index + 1] = index + 1;
+		m_model->indices[inde_index + 2] = index + 2;
 
-		m_model->triangles[tri_index + 1].vert[0] = index + 2;
-		m_model->triangles[tri_index + 1].vert[1] = index + 1;
-		m_model->triangles[tri_index + 1].vert[2] = index + 3;
+		m_model->indices[inde_index + 3] = index + 2;
+		m_model->indices[inde_index + 4] = index + 1;
+		m_model->indices[inde_index + 5] = index + 3;*/
+
+		m_model->indices[inde_index + 0] = vert_index + 0;
+		m_model->indices[inde_index + 1] = vert_index + 1;
+		m_model->indices[inde_index + 2] = vert_index + 2;
+		m_model->indices[inde_index + 3] = vert_index + 3;
+		m_model->indices[inde_index + 4] = 0xFFFF;
 
 		m_vertexCount += 4;
-		m_triangleCount += 2;
+		m_indexCount += 5;
 	}
 	else
 	{
@@ -131,51 +137,52 @@ void rrMeshBuilder2D::addRectTex ( const Rect& rect, const Rect& tex, const Colo
 		const Vector2d pos_max_inside = (fixedRect.pos + fixedRect.size).mulComponents(m_multiplier) + m_offset - pixelSize;
 
 		expand(m_vertexCount + 8);
-		expandTri(m_triangleCount + 8);
-		const uint16_t index = m_vertexCount;
-		const uint16_t tri_index = m_triangleCount;
+		//expandTri(m_triangleCount + 8);
+		expandIndices(m_indexCount + 11);
+		const uint16_t vert_index = m_vertexCount;
+		const uint16_t inde_index = m_indexCount;
 
-		memset(m_model->vertices + index, 0, sizeof(arModelVertex) * 8);
+		//memset(m_model->vertices + index, 0, sizeof(arModelVertex) * 8);
 
 		// Add the outline quad:
 
-		m_model->vertices[index + 0].position = pos_min;
-		m_model->vertices[index + 1].position = pos_min_inside;
-		m_model->vertices[index + 2].position = Vector2f(pos_min.x, pos_max.y);
-		m_model->vertices[index + 3].position = Vector2f(pos_min_inside.x, pos_max_inside.y);
-		m_model->vertices[index + 4].position = pos_max;
-		m_model->vertices[index + 5].position = pos_max_inside;
-		m_model->vertices[index + 6].position = Vector2f(pos_max.x, pos_min.y);
-		m_model->vertices[index + 7].position = Vector2f(pos_max_inside.x, pos_min_inside.y);
+		m_model->position[vert_index + 0] = pos_min;
+		m_model->position[vert_index + 1] = pos_min_inside;
+		m_model->position[vert_index + 2] = Vector2f(pos_min.x, pos_max.y);
+		m_model->position[vert_index + 3] = Vector2f(pos_min_inside.x, pos_max_inside.y);
+		m_model->position[vert_index + 4] = pos_max;
+		m_model->position[vert_index + 5] = pos_max_inside;
+		m_model->position[vert_index + 6] = Vector2f(pos_max.x, pos_min.y);
+		m_model->position[vert_index + 7] = Vector2f(pos_max_inside.x, pos_min_inside.y);
 
-		m_model->vertices[index + 0].texcoord0 = tex_min;
-		m_model->vertices[index + 1].texcoord0 = tex_min;
-		m_model->vertices[index + 2].texcoord0 = Vector2f(tex_min.x,tex_max.y);
-		m_model->vertices[index + 3].texcoord0 = Vector2f(tex_min.x,tex_max.y);
-		m_model->vertices[index + 4].texcoord0 = tex_max;
-		m_model->vertices[index + 5].texcoord0 = tex_max;
-		m_model->vertices[index + 6].texcoord0 = Vector2f(tex_max.x,tex_min.y);
-		m_model->vertices[index + 7].texcoord0 = Vector2f(tex_max.x,tex_min.y);
+		m_model->texcoord0[vert_index + 0] = tex_min;
+		m_model->texcoord0[vert_index + 1] = tex_min;
+		m_model->texcoord0[vert_index + 2] = Vector2f(tex_min.x,tex_max.y);
+		m_model->texcoord0[vert_index + 3] = Vector2f(tex_min.x,tex_max.y);
+		m_model->texcoord0[vert_index + 4] = tex_max;
+		m_model->texcoord0[vert_index + 5] = tex_max;
+		m_model->texcoord0[vert_index + 6] = Vector2f(tex_max.x,tex_min.y);
+		m_model->texcoord0[vert_index + 7] = Vector2f(tex_max.x,tex_min.y);
 
-		m_model->vertices[index + 0].color = Vector4f(color.raw);
-		m_model->vertices[index + 1].color = Vector4f(color.raw);
-		m_model->vertices[index + 2].color = Vector4f(color.raw);
-		m_model->vertices[index + 3].color = Vector4f(color.raw);
-		m_model->vertices[index + 4].color = Vector4f(color.raw);
-		m_model->vertices[index + 5].color = Vector4f(color.raw);
-		m_model->vertices[index + 6].color = Vector4f(color.raw);
-		m_model->vertices[index + 7].color = Vector4f(color.raw);
+		m_model->color[vert_index + 0] = Vector4f(color.raw);
+		m_model->color[vert_index + 1] = Vector4f(color.raw);
+		m_model->color[vert_index + 2] = Vector4f(color.raw);
+		m_model->color[vert_index + 3] = Vector4f(color.raw);
+		m_model->color[vert_index + 4] = Vector4f(color.raw);
+		m_model->color[vert_index + 5] = Vector4f(color.raw);
+		m_model->color[vert_index + 6] = Vector4f(color.raw);
+		m_model->color[vert_index + 7] = Vector4f(color.raw);
 
-		m_model->vertices[index + 0].position.z = 0.5F;
-		m_model->vertices[index + 1].position.z = 0.5F;
-		m_model->vertices[index + 2].position.z = 0.5F;
-		m_model->vertices[index + 3].position.z = 0.5F;
-		m_model->vertices[index + 4].position.z = 0.5F;
-		m_model->vertices[index + 5].position.z = 0.5F;
-		m_model->vertices[index + 6].position.z = 0.5F;
-		m_model->vertices[index + 7].position.z = 0.5F;
+		m_model->position[vert_index + 0].z = 0.5F;
+		m_model->position[vert_index + 1].z = 0.5F;
+		m_model->position[vert_index + 2].z = 0.5F;
+		m_model->position[vert_index + 3].z = 0.5F;
+		m_model->position[vert_index + 4].z = 0.5F;
+		m_model->position[vert_index + 5].z = 0.5F;
+		m_model->position[vert_index + 6].z = 0.5F;
+		m_model->position[vert_index + 7].z = 0.5F;
 
-		for (uint i = 0; i < 4; ++i)
+		/*for (uint i = 0; i < 4; ++i)
 		{
 			m_model->triangles[tri_index + 0 + i * 2].vert[0] = index + (0 + i * 2) % 8;
 			m_model->triangles[tri_index + 0 + i * 2].vert[1] = index + (1 + i * 2) % 8;
@@ -184,10 +191,23 @@ void rrMeshBuilder2D::addRectTex ( const Rect& rect, const Rect& tex, const Colo
 			m_model->triangles[tri_index + 1 + i * 2].vert[0] = index + (2 + i * 2) % 8;
 			m_model->triangles[tri_index + 1 + i * 2].vert[1] = index + (1 + i * 2) % 8;
 			m_model->triangles[tri_index + 1 + i * 2].vert[2] = index + (3 + i * 2) % 8;
-		}
+		}*/
+
+		m_model->indices[inde_index +  0] = vert_index + 0;
+		m_model->indices[inde_index +  1] = vert_index + 1;
+		m_model->indices[inde_index +  2] = vert_index + 2;
+		m_model->indices[inde_index +  3] = vert_index + 3;
+		m_model->indices[inde_index +  4] = vert_index + 4;
+		m_model->indices[inde_index +  5] = vert_index + 5;
+		m_model->indices[inde_index +  6] = vert_index + 6;
+		m_model->indices[inde_index +  7] = vert_index + 7;
+		m_model->indices[inde_index +  8] = vert_index + 0;
+		m_model->indices[inde_index +  9] = vert_index + 1;
+		m_model->indices[inde_index + 10] = 0xFFFF;
 
 		m_vertexCount += 8;
-		m_triangleCount += 8;
+		//m_triangleCount += 8;
+		m_indexCount += 11;
 	}
 }
 
@@ -206,48 +226,56 @@ void rrMeshBuilder2D::addLine ( const Vector2f& point1, const Vector2f& point2, 
 		+dir.x * 0.51F * m_multiplier.y);
 
 	expand(m_vertexCount + 4);
-	expandTri(m_triangleCount + 2);
+	//expandTri(m_triangleCount + 2);
+	expandIndices(m_indexCount + 5);
 
 	{
-		const uint16_t index = m_vertexCount;
-		const uint16_t tri_index = m_triangleCount;
+		const uint16_t vert_index = m_vertexCount;
+		const uint16_t inde_index = m_indexCount;
 
-		memset(m_model->vertices + index, 0, sizeof(arModelVertex) * 4);
+		//memset(m_model->vertices + index, 0, sizeof(arModelVertex) * 4);
 
 		// Layout: 0 2
 		//         1 3
 
-		m_model->vertices[index + 0].position = pos1 - pixel_offset;
-		m_model->vertices[index + 1].position = pos2 - pixel_offset;
-		m_model->vertices[index + 2].position = pos1 + pixel_offset;
-		m_model->vertices[index + 3].position = pos2 + pixel_offset;
+		m_model->position[vert_index + 0] = pos1 - pixel_offset;
+		m_model->position[vert_index + 1] = pos2 - pixel_offset;
+		m_model->position[vert_index + 2] = pos1 + pixel_offset;
+		m_model->position[vert_index + 3] = pos2 + pixel_offset;
 
-		m_model->vertices[index + 0].texcoord0 = Vector2f(0.5F, 0.5F);
-		m_model->vertices[index + 1].texcoord0 = Vector2f(0.5F, 0.5F);
-		m_model->vertices[index + 2].texcoord0 = Vector2f(0.5F, 0.5F);
-		m_model->vertices[index + 3].texcoord0 = Vector2f(0.5F, 0.5F);
+		m_model->texcoord0[vert_index + 0] = Vector2f(0.5F, 0.5F);
+		m_model->texcoord0[vert_index + 1] = Vector2f(0.5F, 0.5F);
+		m_model->texcoord0[vert_index + 2] = Vector2f(0.5F, 0.5F);
+		m_model->texcoord0[vert_index + 3] = Vector2f(0.5F, 0.5F);
 
-		m_model->vertices[index + 0].color = Vector4f(color.raw);
-		m_model->vertices[index + 1].color = Vector4f(color.raw);
-		m_model->vertices[index + 2].color = Vector4f(color.raw);
-		m_model->vertices[index + 3].color = Vector4f(color.raw);
+		m_model->color[vert_index + 0] = Vector4f(color.raw);
+		m_model->color[vert_index + 1] = Vector4f(color.raw);
+		m_model->color[vert_index + 2] = Vector4f(color.raw);
+		m_model->color[vert_index + 3] = Vector4f(color.raw);
 
-		m_model->vertices[index + 0].position.z = 0.5F;
-		m_model->vertices[index + 1].position.z = 0.5F;
-		m_model->vertices[index + 2].position.z = 0.5F;
-		m_model->vertices[index + 3].position.z = 0.5F;
+		m_model->position[vert_index + 0].z = 0.5F;
+		m_model->position[vert_index + 1].z = 0.5F;
+		m_model->position[vert_index + 2].z = 0.5F;
+		m_model->position[vert_index + 3].z = 0.5F;
 
-		m_model->triangles[tri_index + 0].vert[0] = index + 0;
+		/*m_model->triangles[tri_index + 0].vert[0] = index + 0;
 		m_model->triangles[tri_index + 0].vert[1] = index + 1;
 		m_model->triangles[tri_index + 0].vert[2] = index + 2;
 
 		m_model->triangles[tri_index + 1].vert[0] = index + 2;
 		m_model->triangles[tri_index + 1].vert[1] = index + 1;
-		m_model->triangles[tri_index + 1].vert[2] = index + 3;
+		m_model->triangles[tri_index + 1].vert[2] = index + 3;*/
+
+		m_model->indices[inde_index + 0] = vert_index + 0;
+		m_model->indices[inde_index + 1] = vert_index + 1;
+		m_model->indices[inde_index + 2] = vert_index + 2;
+		m_model->indices[inde_index + 3] = vert_index + 3;
+		m_model->indices[inde_index + 4] = 0xFFFF;
 	}
 
 	m_vertexCount += 4;
-	m_triangleCount += 2;
+	//m_triangleCount += 2;
+	m_indexCount += 5;
 }
 
 //	addCircle (center, radius, color, divs, outline) : Adds a circle to draw.
@@ -263,33 +291,33 @@ void rrMeshBuilder2D::addCircle ( const Vector2f& center, const Real radius, con
 	if (!outline)
 	{
 		expand(m_vertexCount + divs + 1);
-		expandTri(m_triangleCount + divs);
-		const uint16_t index = m_vertexCount;
-		const uint16_t tri_index = m_triangleCount;
+		expandIndices(m_indexCount + (divs + 1) * 2 + 1);
+		const uint16_t vert_index = m_vertexCount;
+		const uint16_t inde_index = m_indexCount;
 
-		memset(m_model->vertices + index, 0, sizeof(arModelVertex) * (divs + 1));
+		//memset(m_model->vertices + index, 0, sizeof(arModelVertex) * (divs + 1));
 
-		m_model->vertices[index + 0].position = pos_center;
-		m_model->vertices[index + 0].position.z = 0.5F;
-		m_model->vertices[index + 0].texcoord0 = Vector2f(0.5F, 0.5F);
-		m_model->vertices[index + 0].color = Vector4f(color.raw);
+		m_model->position[vert_index + 0] = pos_center;
+		m_model->position[vert_index + 0].z = 0.5F;
+		m_model->texcoord0[vert_index + 0] = Vector2f(0.5F, 0.5F);
+		m_model->color[vert_index + 0] = Vector4f(color.raw);
 
 		for (int i = 0; i < divs; ++i)
 		{
-			m_model->vertices[index + 1 + i].texcoord0 = Vector2f(cosf(kAngleDiv * i), sinf(kAngleDiv * i));
+			m_model->texcoord0[vert_index + 1 + i] = Vector2f(cosf(kAngleDiv * i), sinf(kAngleDiv * i));
 
-			m_model->vertices[index + 1 + i].position = pos_center + m_model->vertices[index + 1 + i].texcoord0.mulComponents(size);
-			m_model->vertices[index + 1 + i].position.z = 0.5F;
+			m_model->position[vert_index + 1 + i] = pos_center + m_model->texcoord0[vert_index + 1 + i].mulComponents(size);
+			m_model->position[vert_index + 1 + i].z = 0.5F;
 
-			m_model->vertices[index + 1 + i].color = Vector4f(color.raw);
+			m_model->color[vert_index + 1 + i] = Vector4f(color.raw);
 
-			m_model->triangles[tri_index + i].vert[0] = index;
-			m_model->triangles[tri_index + i].vert[1] = index + i % divs + 1;
-			m_model->triangles[tri_index + i].vert[2] = index + (i + 1) % divs + 1;
+			m_model->indices[inde_index + i + 0] = vert_index;
+			m_model->indices[inde_index + i + 1] = vert_index + i % divs + 1;
+			m_model->indices[inde_index + i + 2] = vert_index + (i + 1) % divs + 1;
 		}
 
 		m_vertexCount += divs + 1;
-		m_triangleCount += divs;
+		m_indexCount += (divs + 1) * 2 + 1;
 	}
 	else
 	{
@@ -310,28 +338,33 @@ void rrMeshBuilder2D::addQuad ( const arModelVertex* vertices, bool outline )
 	if (!outline)
 	{
 		expand(m_vertexCount + 4);
-		expandTri(m_triangleCount + 2);
-		const uint16_t index = m_vertexCount;
-		const uint16_t tri_index = m_triangleCount;
+		expandIndices(m_indexCount + 5);
+		const uint16_t vert_index = m_vertexCount;
+		const uint16_t inde_index = m_indexCount;
 
-		memcpy(m_model->vertices + index, vertices, sizeof(arModelVertex) * 4);
+		//memcpy(m_model->vertices + index, vertices, sizeof(arModelVertex) * 4);
 
 		for (uint i = 0; i < 4; ++i)
 		{	// Update positions:
-			m_model->vertices[index + i].position = m_model->vertices[index + i].position.mulComponents(m_multiplier) + m_offset;
-			m_model->vertices[index + i].position.z = 0.5F;
+			m_model->position[vert_index + i] = m_model->position[vert_index + i].mulComponents(m_multiplier) + m_offset;
+			m_model->position[vert_index + i].z = 0.5F;
 		}
 
-		m_model->triangles[tri_index + 0].vert[0] = index + 0;
-		m_model->triangles[tri_index + 0].vert[1] = index + 1;
-		m_model->triangles[tri_index + 0].vert[2] = index + 2;
+		/*m_model->indices[inde_index + 0].vert[0] = index + 0;
+		m_model->indices[inde_index + 0].vert[1] = index + 1;
+		m_model->indices[inde_index + 0].vert[2] = index + 2;
 
-		m_model->triangles[tri_index + 1].vert[0] = index + 2;
-		m_model->triangles[tri_index + 1].vert[1] = index + 1;
-		m_model->triangles[tri_index + 1].vert[2] = index + 3;
+		m_model->indices[inde_index + 1].vert[0] = index + 2;
+		m_model->indices[inde_index + 1].vert[1] = index + 1;
+		m_model->indices[inde_index + 1].vert[2] = index + 3;*/
+		m_model->indices[inde_index + 0] = vert_index + 0;
+		m_model->indices[inde_index + 1] = vert_index + 1;
+		m_model->indices[inde_index + 2] = vert_index + 2;
+		m_model->indices[inde_index + 3] = vert_index + 3;
+		m_model->indices[inde_index + 4] = 0xFFFF;
 
 		m_vertexCount += 4;
-		m_triangleCount += 2;
+		m_indexCount += 5;
 	}
 	else
 	{

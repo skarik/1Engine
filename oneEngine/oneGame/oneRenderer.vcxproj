@@ -69,6 +69,7 @@
     <ClCompile Include="source\renderer\gpuw\ShaderPipeline.cpp" />
     <ClCompile Include="source\renderer\gpuw\Textures.cpp" />
     <ClCompile Include="source\renderer\light\RrLight.cpp" />
+    <ClCompile Include="source\renderer\logic\model\RrModelMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\logic\RrLogicObject.cpp" />
     <ClCompile Include="source\renderer\logic\model\CModel.cpp" />
     <ClCompile Include="source\renderer\logic\model\CModelLoader.cpp" />
@@ -104,20 +105,38 @@
     <ClCompile Include="source\renderer\object\CRenderableObject.cpp" />
     <ClCompile Include="source\renderer\object\CRenderable3D.cpp" />
     <ClCompile Include="source\renderer\object\CStreamedRenderable3D.cpp" />
-    <ClCompile Include="source\renderer\object\immediate\RrScopedMeshRenderer.cpp" />
+    <ClCompile Include="source\renderer\object\immediate\RrScopedMeshRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\CInstancedMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\CMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\CStreamedMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\system\rrMeshBuffer.cpp" />
-    <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp" />
+    <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\object\screenshader\CScreenShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CBloomShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CColorFilterShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CDepthSplitShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CScreenSpaceOutlineShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CTestScreenShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CTestViewShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CZoomBloomShader.cpp" />
+    <ClCompile Include="source\renderer\object\screenshader\effects\CBloomShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\screenshader\effects\CColorFilterShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\screenshader\effects\CDepthSplitShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\screenshader\effects\CScreenSpaceOutlineShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\screenshader\effects\CTestScreenShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\screenshader\effects\CTestViewShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\screenshader\effects\CZoomBloomShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\object\screen\CGlowObject.cpp" />
     <ClCompile Include="source\renderer\object\screen\CScreenFade.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CBillboard.cpp" />
@@ -218,6 +237,8 @@
     <ClInclude Include="source\renderer\gpuw\Textures.h" />
     <ClInclude Include="source\renderer\gpuw\Transfer.h" />
     <ClInclude Include="source\renderer\light\RrLight.h" />
+    <ClInclude Include="source\renderer\logic\model\CAnimatedMeshGroup.h" />
+    <ClInclude Include="source\renderer\logic\model\RrModelMasterSubsystem.h" />
     <ClInclude Include="source\renderer\logic\RrLogicObject.h" />
     <ClInclude Include="source\renderer\logic\model\CModel.h" />
     <ClInclude Include="source\renderer\logic\model\CModelLoader.h" />
@@ -248,22 +269,40 @@
     <ClInclude Include="source\renderer\object\CStreamedRenderable3D.h" />
     <ClInclude Include="source\renderer\object\immediate\immediate.h" />
     <ClInclude Include="source\renderer\object\immediate\IRrRenderableStreamedMesh.h" />
-    <ClInclude Include="source\renderer\object\immediate\RrScopedMeshRenderer.h" />
+    <ClInclude Include="source\renderer\object\immediate\RrScopedMeshRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\CInstancedMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\CMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\CStreamedMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\system\rrMeshBuffer.h" />
-    <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h" />
+    <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\object\model\Model.h" />
     <ClInclude Include="source\renderer\object\model\SkinnedModel.h" />
     <ClInclude Include="source\renderer\object\screenshader\CScreenShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CBloomShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CColorFilterShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CDepthSplitShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CScreenSpaceOutlineShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CTestScreenShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CTestViewShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CZoomBloomShader.h" />
+    <ClInclude Include="source\renderer\object\screenshader\effects\CBloomShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\screenshader\effects\CColorFilterShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\screenshader\effects\CDepthSplitShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\screenshader\effects\CScreenSpaceOutlineShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\screenshader\effects\CTestScreenShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\screenshader\effects\CTestViewShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\screenshader\effects\CZoomBloomShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\object\screen\CGlowObject.h" />
     <ClInclude Include="source\renderer\object\screen\CScreenFade.h" />
     <ClInclude Include="source\renderer\object\shapes\CBillboard.h" />

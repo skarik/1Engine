@@ -38,18 +38,18 @@ protected:
 	//	reallocateWild ( new size ) : Expands vertex storage in a conservative way
 	RENDER_API void			reallocateConservative ( uint16_t targetSize );
 
-	//	expandTri ( new triangle count ) : Ensure storage is large enough to hold the count
-	RENDER_API void			expandTri ( const uint16_t triangleCount );
-	//	reallocateTriGreedy ( new size ) : Expands triangle storage in a greedy way
-	RENDER_API void			reallocateTriGreedy ( uint16_t targetSize );
-	//	reallocateTriWild ( new size ) : Expands triangle storage in a conservative way
-	RENDER_API void			reallocateTriConservative ( uint16_t targetSize );
+	//	expandIndices ( new triangle count ) : Ensure storage is large enough to hold the count
+	RENDER_API void			expandIndices ( const uint16_t indiciesCount );
+	//	reallocateIndicesGreedy ( new size ) : Expands triangle storage in a greedy way
+	RENDER_API void			reallocateIndicesGreedy ( uint16_t targetSize );
+	//	reallocateIndicesConservative ( new size ) : Expands triangle storage in a conservative way
+	RENDER_API void			reallocateIndicesConservative ( uint16_t targetSize );
 
 protected:
 	// Current vertex count of the model.
 	uint16_t		m_vertexCount;
-	// Current triangle count of the model.
-	uint16_t		m_triangleCount;
+	// Current index count of the model.
+	uint16_t		m_indexCount;
 	// Pointer to the model structure and the array sizes.
 	arModelData*	m_model;
 	// Did the model come from outside or from the internal model pool?
