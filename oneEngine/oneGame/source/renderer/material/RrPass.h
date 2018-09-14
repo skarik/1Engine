@@ -68,6 +68,9 @@ public:
 
 	RENDER_API bool			validate ( void );
 
+	//	utilSetupAsDefault () : Sets proprties of the pass to what the default 3D pass usually is.
+	// In detail: depth write on, depth test, face culling, transparency off, world layer
+	RENDER_API void			utilSetupAsDefault ( void );
 	//	utilSetupAs2D () : Sets properties of the pass to what all 2D passes typically use.
 	// In detail: depth write off, depth test always, no face culling, transparency on, lighting hinted off.
 	RENDER_API void			utilSetupAs2D ( void );
@@ -95,6 +98,10 @@ public:
 	// Depth settings:
 	bool				m_depthWrite;
 	gpu::CompareOp		m_depthTest;
+
+	// World settings:
+	renderer::rrRenderLayer
+						m_layer;		// Render layer
 };
 
 #endif//RENDERER_MATERIAL_PASS_H_

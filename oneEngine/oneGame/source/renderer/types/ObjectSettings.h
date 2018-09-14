@@ -47,17 +47,17 @@ namespace renderer
 	};
 
 	// Enumeration for rendering type
-	enum eRenderLayer
+	enum rrRenderLayer
 	{
-		kRL_BEGIN		= 0,
+		kRenderLayer_BEGIN		= 0,
 
-		kRLBackground	= 0,
-		kRLSecondary	= 1,
-		kRLWorld		= 2,
-		kRLForeground	= 3,
-		kRLV2D			= 4,
+		kRenderLayerBackground	= 0,
+		kRenderLayerSecondary	= 1,
+		kRenderLayerWorld		= 2,
+		kRenderLayerForeground	= 3,
+		kRenderLayerV2D			= 4,
 
-		kRL_MAX,
+		kRenderLayer_MAX,
 	};
 	// Struct for pass info
 	/*struct passinfo_t

@@ -52,8 +52,6 @@ class RrCamera;
 // Base class, virtual/abstract
 class CRenderableObject
 {
-public:
-		typedef renderer::eRenderLayer eRenderLayer;
 private:
 	// No copying with "="
 	CRenderableObject & operator= (const CRenderableObject & other);
@@ -97,8 +95,8 @@ public:
 	// Give the ownership of the material to this mesh if the materials have been "released"
 	//RENDER_API virtual void			SetMaterial		( RrMaterial* n_pNewMaterial );
 	// Change the object's render type
-	RENDER_API void			SetRenderType ( eRenderLayer newRenderType )
-		{ renderLayer = newRenderType; }
+	//RENDER_API void			SetRenderType ( eRenderLayer newRenderType )
+	//	{ renderLayer = newRenderType; }
 	// Change visible state
 	RENDER_API virtual void	SetVisible ( const bool nextState )
 		{ visible = nextState; }
@@ -171,7 +169,7 @@ public:
 
 protected:
 	// Rendering States
-	eRenderLayer			renderLayer;
+	//eRenderLayer			renderLayer;
 	//vector<RrMaterial*>	vMaterials;
 protected:
 	//RrMaterial*				m_material;
