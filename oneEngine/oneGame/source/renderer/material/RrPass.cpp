@@ -1,7 +1,7 @@
 #include "renderer/material/RrPass.h"
 
 RrPass::RrPass ( void )
-	: m_textures(), m_texturesRaw()
+	: m_program(NULL), m_textures(), m_texturesRaw()
 {
 	utilSetupAsDefault();
 }

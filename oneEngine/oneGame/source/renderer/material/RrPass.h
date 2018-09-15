@@ -59,7 +59,8 @@ public:
 	RENDER_API void			setTexture ( const rrTextureSlot slot, RrTexture* texture );
 	//	setTexture ( slot, texture ) : Sets material texture with raw GPU handles.
 	// To be used only in an immediate use-case, ex. post-processing or compositing.
-	RENDER_API void			setTexture ( const rrTextureSlot slot, gpu::Texture& n_texture );
+	// Do not ever use for normal objects due to memory considerations.
+	RENDER_API void			setTexture ( const rrTextureSlot slot, gpu::Texture* n_texture );
 
 	//	setProgram ( program ) : Sets shader program.
 	// Pass is given ownership of the program.

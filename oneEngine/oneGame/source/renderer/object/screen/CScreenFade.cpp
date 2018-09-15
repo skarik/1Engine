@@ -76,7 +76,8 @@ bool CScreenFade::PreRender ( rrCameraPass* cameraPass )
 	//screenMaterial->m_diffuse.alpha = std::min<Real>( fAlpha, 1.0F );
 	//screenMaterial->prepareShaderConstants();
 
-	m_passes[0].m_surface.diffuseColor[3] = std::min<Real>( fAlpha, 1.0F );
+	//m_passes[0].m_surface.diffuseColor[3] = std::min<Real>( fAlpha, 1.0F );
+	PassGetSurface(0).diffuseColor[3] = std::min<Real>( fAlpha, 1.0F );
 
 	PushCbufferPerObject(XrTransform(), cameraPass);
 	

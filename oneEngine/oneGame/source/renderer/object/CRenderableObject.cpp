@@ -3,6 +3,7 @@
 //#include "renderer/material/RrMaterial.h"
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
+#include "renderer/texture/RrTexture.h"
 //#include "renderer/system/glMainSystem.h"
 #include "renderer/camera/RrCamera.h"
 #include "renderer/gpuw/Pipeline.h"
@@ -329,6 +330,96 @@ void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform
 
 	// TODO: Create the buffer & push it
 }
+
+//	PassInitWithInput(pass, passData) : Sets up a new pass on the given slot.
+// Creates a copy of passData without changing reference counts.
+void CRenderableObject::PassInitWithInput ( int pass, RrPass* passData )
+{
+	if (pass < 0 || pass >= kPass_MaxPassCount)
+	{
+		throw core::InvalidArgumentException();
+	}
+
+	// Free up the given pass
+	PassFree(pass);
+	
+	// Copy the pass over
+	m_passes[pass] = *passData;
+	m_passEnabled[pass] = true;
+}
+
+void CRenderableObject::PassFree ( int pass )
+{
+	if (pass < 0 || pass >= kPass_MaxPassCount)
+	{
+		throw core::InvalidArgumentException();
+	} 
+
+	// Remove the previous pass, and decrement references then.
+	if (m_passEnabled[pass])
+	{
+		if (m_passes[pass].m_program != NULL)
+		{
+			m_passes[pass].m_program->RemoveReference();
+			m_passes[pass].m_program = NULL;
+		}
+
+		for (int i = 0; i < kPass_MaxTextureSlots; ++i)
+		{
+			m_passes[pass].setTexture((rrTextureSlot)(TEX_SLOT0 + i), (RrTexture*)NULL);
+		}
+	}
+
+	// Disable the pass now
+	m_passEnabled[pass] = false;
+}
+
+renderer::cbuffer::rrPerObjectSurface& CRenderableObject::PassGetSurface ( int pass )
+{
+	if (pass < 0 || pass >= kPass_MaxPassCount)
+	{
+		throw core::InvalidArgumentException();
+	} 
+	return m_passes[pass].m_surface;
+}
+
+//===============================================================================================//
+// Pipeline management
+//===============================================================================================//
+
+gpu::Pipeline* CRenderableObject::GetPipeline ( const uchar pass )
+{
+	if (!m_pipelineReady[pass])
+	{
+		gpu::PipelineCreationDescription pipeline_desc = {};
+		pipeline_desc.ia_primitiveRestartEnable = true;
+		pipeline_desc.ia_topology = m_passes[pass].m_primitiveType;
+
+		pipeline_desc.shader_pipeline = &m_passes[pass].m_program->GetShaderPipeline();
+
+		pipeline_desc.vv_inputAttributes = &m_passes[pass].m_program->GetShaderPipeline();
+
+		m_pipelines[pass].create(&pipeline_desc);
+	}
+	else
+	{
+	}
+
+	return &m_pipelines[pass];
+}
+
+void CRenderableObject::FreePipelines ( void )
+{
+	for (int i = 0; i < kPass_MaxPassCount; ++i)
+	{
+		if (m_pipelineReady[i] || m_pipelines[i].isValid())
+		{
+			m_pipelines[i].destroy();
+			m_pipelineReady[i] = false;
+		}
+	}
+}
+
 
 //===============================================================================================//
 // Render Status
