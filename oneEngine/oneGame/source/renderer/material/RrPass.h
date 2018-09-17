@@ -59,7 +59,8 @@ public:
 	RENDER_API void			setTexture ( const rrTextureSlot slot, RrTexture* texture );
 	//	setTexture ( slot, texture ) : Sets material texture with raw GPU handles.
 	// To be used only in an immediate use-case, ex. post-processing or compositing.
-	RENDER_API void			setTexture ( const rrTextureSlot slot, gpu::Texture& n_texture );
+	// Do not ever use for normal objects due to memory considerations.
+	RENDER_API void			setTexture ( const rrTextureSlot slot, gpu::Texture* n_texture );
 
 	//	setProgram ( program ) : Sets shader program.
 	// Pass is given ownership of the program.
@@ -68,6 +69,9 @@ public:
 
 	RENDER_API bool			validate ( void );
 
+	//	utilSetupAsDefault () : Sets proprties of the pass to what the default 3D pass usually is.
+	// In detail: depth write on, depth test, face culling, transparency off, world layer
+	RENDER_API void			utilSetupAsDefault ( void );
 	//	utilSetupAs2D () : Sets properties of the pass to what all 2D passes typically use.
 	// In detail: depth write off, depth test always, no face culling, transparency on, lighting hinted off.
 	RENDER_API void			utilSetupAs2D ( void );
@@ -95,6 +99,10 @@ public:
 	// Depth settings:
 	bool				m_depthWrite;
 	gpu::CompareOp		m_depthTest;
+
+	// World settings:
+	renderer::rrRenderLayer
+						m_layer;		// Render layer
 };
 
 #endif//RENDERER_MATERIAL_PASS_H_
