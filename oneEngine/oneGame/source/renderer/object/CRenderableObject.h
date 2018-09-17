@@ -34,6 +34,7 @@ class RrRenderer;
 //class RrPassDeferred;
 class RrPass;
 class RrCamera;
+struct rrCameraPass;
 
 // Defines
 #ifndef RegisterRenderClassName
@@ -69,19 +70,20 @@ protected:
 	virtual RrMaterial**	GetPassMaterialPosition ( const char pass ) { return &(vMaterials[pass]); }*/
 
 public:
-	// == Rendering Prototypes ==
+	// 
+	// Rendering Prototypes
 	// If any of the rendering functions return false, the renderer will throw an exception.
 
 	//	PreRender() : Called before the internal render-loop executes.
-	// Can be called multiple times per frame.
-	RENDER_API virtual bool	PreRender ( RrCamera* camera )
+	// Can be called multiple times per frame, but generally only once per camera.
+	RENDER_API virtual bool	PreRender ( rrCameraPass* cameraPass )
 		{ return true; }
 	//	Render(const int pass) : Current pass
 	RENDER_API virtual bool	Render ( const char pass ) =0;
 	//	PostRender() : Called after the render-loop executes.
 	// Can be called multiple times per frame.
-	RENDER_API virtual bool	PostRender ( RrCamera* camera )
-		{ return true; }
+	//RENDER_API virtual bool	PostRender ( rrCameraPass* cameraPass )
+	//	{ return true; }
 	//	BeginRender() : Called before the render-loop executes.
 	// Called once per frame.
 	RENDER_API virtual bool	BeginRender ( void )
@@ -91,11 +93,13 @@ public:
 	RENDER_API virtual bool	EndRender ( void )
 		{ return true; }
 
-	// == Setters ==
+	// 
+	// Setters
 
 	// Change the material the given material array thing.
 	// Give the ownership of the material to this mesh if the materials have been "released"
 	//RENDER_API virtual void			SetMaterial		( RrMaterial* n_pNewMaterial );
+
 	// Change the object's render type
 	RENDER_API void			SetRenderType ( eRenderLayer newRenderType )
 		{ renderLayer = newRenderType; }
@@ -103,7 +107,8 @@ public:
 	RENDER_API virtual void	SetVisible ( const bool nextState )
 		{ visible = nextState; }
 
-	// == Getters ==
+	//
+	// Getters
 
 	// Searches for the first material with the string in its name
 	//RrMaterial*				FindMaterial( const string & strToFind, int skipAmount=0 );
@@ -114,7 +119,8 @@ public:
 	RENDER_API virtual bool	GetVisible ( void ) const
 		{ return visible; }
 
-	// == Object Passes ==
+	//
+	// Object Passes
 	
 	//	PassInitWithInput(pass, passData) : Sets up a new pass on the given slot.
 	// Creates a copy of passData without changing reference counts.
@@ -123,7 +129,8 @@ public:
 	RENDER_API renderer::cbuffer::rrPerObjectSurface&
 							PassGetSurface ( int pass );
 
-	// == Culling/Prerendering Prototypes ==
+	// 
+	// Culling/Prerendering Prototypes
 
 	//	GetPassNumber : number of passes to add to render list
 	// Get the number of passes required to render the model in the current pipeline.

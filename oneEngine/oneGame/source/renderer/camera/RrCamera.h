@@ -1,24 +1,12 @@
-// This will eventually be the base camera, and all crazy stuff (like input) will be done elsewhere
-// But for now, it's for dicking around
-
 #ifndef RENDERER_CAMERA_H_
 #define RENDERER_CAMERA_H_
 
-// Includes
-//#include "CGameObject.h"
 #include "core/math/Frustum.h"
 #include "core/math/Rect.h"
 #include "core/math/BoundingBox.h"
 #include "core/math/matrix/CMatrix.h"
-
 #include "core-ext/transform/Transform.h"
-
-//#include "renderer/logic/RrLogicObject.h"
-
-//#include "GLCommon.h"
-
-//#include <bitset>
-//using std::bitset;
+#include "renderer/types/ObjectSettings.h"
 
 class RrRenderTexture;
 
@@ -59,161 +47,170 @@ struct rrCameraPass
 	Matrix4x4			m_projTransform;
 };
 
-// ==Defines==
-// A define to allow for a function to differentiate between different kinds of cameras
+// Macros
+
 #define CameraType(a) public: virtual rrCameraClassType GetType ( void ) { return a; };
 
-// Class Definition
-class RrCamera// : public RrLogicObject// : public CGameObject
+// Base camera class for points to render the current state from.
+class RrCamera
 {
-	//ClassName( "CameraBase" );
 	CameraType( kCameraClassNormal );
+protected:
+	// List of current cameras.
+	static std::vector<RrCamera*>
+						m_CameraList;
+
 public:
-	// Constructor/Destructor
+
+	// In the Renderer, set to either the current active rendering camera, or main viewport renderer.
+	// In the Engine, set to the renderer of the main viewport.
+	RENDER_API static RrCamera*
+						activeCamera;
+
+	//	CameraList() : Returns a list of all the currently active cameras.
+	RENDER_API static const std::vector<RrCamera*>&
+							CameraList ( void )
+		{ return m_CameraList; }
+
+
+public:
 	RENDER_API explicit		RrCamera ( void );
 	RENDER_API virtual		~RrCamera ( void );
 
-	// Update Last
+	//	LateUpdate() : Pre-render update
+	// Updates active camera, viewports, and matrices.
+	// Called just before any sorting or rendering is done.
 	RENDER_API virtual void	LateUpdate ( void );
 
-	// ======
-	// === Rendering Queries ===
-	// ======
+	// 
+	// Rendering Queries:
 
-	RENDER_API virtual int	PassCount ( void );
-	RENDER_API virtual void	PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses );
-	
-	// == Main Render Routine ==
-	//RENDER_API virtual void	RenderScene ( void );
-
-	// == Set Render Position ==
+	//	UpdateMatrix() : Updates the camera matrices.
 	RENDER_API virtual void	UpdateMatrix ( void );
+
+	//	PassCount() : Returns number of passes this camera will render
+	// Must be 1 or greater in order to render.
+	RENDER_API virtual int	PassCount ( void );
+	//	PassRetrieve(array, array_size) : Writes pass information into the array given in
+	// Will write either PassCount() or maxPasses passes, whatever is smaller.
+	RENDER_API virtual void	PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses );
+
+	//	RenderBegin() : Begins rendering, pushing the current camera params.
 	RENDER_API virtual void	RenderBegin ( void );
-	RENDER_API virtual void	RenderEnd ( void ) {}
+	//	RenderEnd() : Called at the end of render, cleans up any camera-specific objects.
+	RENDER_API virtual void	RenderEnd ( void );
 	
-	// == Property Setters ==
+	//	SetActive() : sets camera as active
 	// Sets active camera.
 	// Note that set active is only valid if the camera is not an RT camera.
-	RENDER_API void	SetActive ( void );
+	RENDER_API void			SetActive ( void );
 	// Sets the rotation.
 	// Since cameras in OpenGL do things via a ZYX rotation, this function takes care of the dirty bits.
 	// Takes angles where X is roll, Y is pitch, and Z is yaw.
-	RENDER_API void	SetRotation ( const Rotator& );
+	RENDER_API void			SetRotation ( const Rotator& );
 
-	// == Property Queries ==
+	//
+	// Property & State queries:
+
 	// Grab privately generated camera index
-	RENDER_API short GetCameraIndex ( void ) { return cameraIndex; }
+	RENDER_API int8_t		GetCameraIndex ( void )
+		{ return m_cameraIndex; }
+
 	// Get if should render with camera or not
-	RENDER_API bool	GetRender ( void ) { return (bNeedsUpdate&&active); }
-	// Get if is RT camera. Yes, all cameras are technically RT cameras.
-	// If a camera returns true to this query, then are not permitted to the final screen output,
-	// and may only render to their target render texture.
-	//RENDER_API bool	IsRTCamera ( void ) { return bIsRTcamera; }
+	RENDER_API bool			GetRender ( void )
+		{ return m_needsNewPasses && active; }
 
-	// ======
-	// === Mathematical + Game Queries ===
-	// ======
+	// Return the current render texture
+	RENDER_API RrRenderTexture*
+							GetRenderTexture ( void )
+		{ return m_renderTexture; }
 
-	// == Visibility Queries ==
-	RENDER_API bool	PointIsVisible ( Vector3d const& );
-	RENDER_API char	SphereIsVisible ( Vector3d const&, Real );
-	RENDER_API bool	BoundingBoxIsVisible ( BoundingBox& );
+	// 
+	// Mathematical & Game Queries:
+
+	// Visibility:
+
+	// PointIsVisible( point ) : Can this camera see the given point
+	RENDER_API bool			PointIsVisible ( Vector3d const& );
+	// SphereIsVisible( center, radius ) : Can this camera see the given sphere
+	RENDER_API char			SphereIsVisible ( Vector3d const&, Real );
+	// BoundingBoxIsVisible( bbox ) : Can this camera see the given bounding box
+	RENDER_API bool			BoundingBoxIsVisible ( BoundingBox& );
 
 	// == Transform Queries ==
-	RENDER_API Vector3d	GetUp ( void ) { return up; };
+	RENDER_API Vector3d		GetUp ( void ) { return up; };
 
 	// == Coordinate Queries ==
-	RENDER_API Vector3d	WorldToScreenPos ( const Vector3d & ) const;
-	RENDER_API Vector3d	ScreenToWorldDir ( const Vector2d & ) const;
-	RENDER_API Vector3d	ScreenToWorldPos ( const Vector2d & ) const;
+	RENDER_API Vector3d		WorldToScreenPos ( const Vector3d & ) const;
+	RENDER_API Vector3d		ScreenToWorldDir ( const Vector2d & ) const;
+	RENDER_API Vector3d		ScreenToWorldPos ( const Vector2d & ) const;
 
-	// == Public Getters
-	RENDER_API RrRenderTexture* GetRenderTexture ( void ) { return m_renderTexture; }
 
-	//eCameraClassType	GetType ( void ) { return m_type; }
+
 private:
-	// == Camera Updating ==
-	// Private routines
-	void			CameraUpdate ( void );
-	void			UpdateFrustum ( void );
+
+	//void					CameraUpdate ( void );
+
+	void					UpdateFrustum ( void );
 
 public:
-	// == Public Options ==
-	bool		active;
-	XrTransform	transform;
+	// is the camera available for rendering
+	bool				active;
+	// current camera position & rotation to render from
+	XrTransform			transform;
 	// Render options
-	Real		zNear;
-	Real		zFar;
-	Real		fov;
-	Real		render_scale;
+	Real				zNear;
+	Real				zFar;
 	// Viewport options
-	Rect		viewport_percent;
-	bool		mirror_view;
+	Real				renderScale;
+	Rect				viewportPercent;
+	bool				mirrorView;
 	// Orthographic options
-	bool		orthographic;
-	Vector2d	ortho_size;
+	bool				orthographic;
+	Vector2d			orthoSize;
+	// Physical options
+	Real				fieldOfView;
+	Real				focalDistance;
+	Real				focalRange;
 
-	// Draw modes
-	bool		shadowCamera;
-	//bool		clearColor;
-	//bool		clearDepthAfterLayer;
+	// Override the target this camera is rendering to.
+	RrRenderTexture*	m_renderTexture;
 
-	bool		layerVisibility [5];
-
-	// External states
-	Real		focalDistance;
-
-	// Drawn layers (will skip objects with layers that don't match)
-	// Not matching is somewhat of a misleading description.
-	// A camera may have only kRenderHintWorld, but will still render objects only if kRenderHintALL and kRenderHintWorld are on the object.
-	// If a camera has kRenderHintALL, then EVERYTHING gets rendered.
-	//bitset<32>	layers;
-	//bitset<32>	hin
-
+	// World layers to enable
+	bool				layerVisibility [renderer::kRL_MAX];
 	// Set bit means to enable a layer. By default, most layers are on.
-	uint32_t		enabledHints;
-
-	// Current camera transform
-	Matrix4x4 viewTransform;
-	Matrix4x4 projTransform;
-	Matrix4x4 textureMatrix;
-
-	// Calculated camera transform
-	Matrix4x4 camera_VP;
-
-	// == Static Values ==
-	// During Render, is the current active rendering camera
-	// During Update, is the renderer of the main viewport
-	RENDER_API static RrCamera* activeCamera;
-
-	// Vector of active cameras
-	RENDER_API static std::vector<RrCamera*>	vCameraList;
+	uint32_t			enabledHints;
 
 protected:
-	// == Camera resultant properties ==
+	//
+	// Camera resultant properties:
+
 	// Face vectors
-	Vector3d up;
-	Vector3d forward;
+	Vector3d			up;
+	Vector3d			forward;
 	// Viewport options
-	Rect viewport;
+	Rect				viewport;
 
 	// Camera frustum
 	//core::math::Plane frustum [6];
-	core::math::Frustum frustum;
+	core::math::Frustum	frustum;
 
-	// == Camera type properties ==
-	//bool	bIsRTcamera;
-	bool	bNeedsUpdate;
+	// Current camera transform
+	Matrix4x4			viewTransform;
+	Matrix4x4			projTransform;
+	//Matrix4x4			textureMatrix;
 
-	// == Camera RT (since engine is default buffered) ==
-	RrRenderTexture*	m_renderTexture;
+	// Calculated camera transform
+	Matrix4x4			viewprojMatrix;
 
-protected:
-	//eCameraClassType	m_type;
+	// Needs a new frame render? True when we should render a new frame from this camera.
+	// Is normally always true for the base camera class.
+	bool				m_needsNewPasses;
 
 private:
-	// == Private states ==
-	short cameraIndex;
+	// Camera index given by the system.
+	// Gauranteed to be unique within the camera listing.
+	int8_t				m_cameraIndex;
 
 };
 

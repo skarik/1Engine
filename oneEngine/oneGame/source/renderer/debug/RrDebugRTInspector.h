@@ -18,7 +18,7 @@ namespace debug
 	public:
 		bool		BeginRender ( void ) override;
 
-		bool		PreRender ( RrCamera* camera ) override;
+		bool		PreRender ( rrCameraPass* camera ) override;
 		bool		Render ( const char pass ) override;
 
 	public:

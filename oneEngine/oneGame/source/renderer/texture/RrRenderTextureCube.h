@@ -1,7 +1,11 @@
-#if 0
 #ifndef RENDERER_RENDER_TEXTURE_CUBE_H_
 #define RENDERER_RENDER_TEXTURE_CUBE_H_
 
+class RrRenderTextureCube : public RrRenderTexture
+{
+};
+
+#if 0
 // ==Includes==
 #include "core/math/Vector3d.h"
 // RrRenderTexture class
@@ -87,6 +91,5 @@ protected:
 protected:
 	//static std::stack<unsigned int> buffer_stack;
 };
-
-#endif//RENDERER_RENDER_TEXTURE_CUBE_H_
 #endif
+#endif//RENDERER_RENDER_TEXTURE_CUBE_H_

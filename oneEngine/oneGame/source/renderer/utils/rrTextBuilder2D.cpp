@@ -136,7 +136,7 @@ void rrTextBuilder2D::addText ( const Vector2d& position, const Color& color, co
 		}*/
 
 		// Grab the UV rect of the character
-		Rect uv ( fontInfo->glyphTexelPosition[c_lookup] / baseScale, fontInfo.fontSizes[c_lookup] / baseScale );
+		Rect uv ( fontInfo->glyphTexelPosition[c_lookup] / baseScale, fontInfo->glyphSize[c_lookup] / baseScale );
 
 		
 		// Create the quad for the character:

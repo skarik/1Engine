@@ -1,4 +1,3 @@
-// Std Libary (render sorting)
 #include <algorithm>
 using std::sort;
 
@@ -44,6 +43,17 @@ void RrRenderer::StepPreRender ( void )
 	// Wait for the PostStep to finish:
 	Jobs::System::Current::WaitForJobs( Jobs::kJobTypeRenderStep );
 
+	// Update the camera system for the next frame
+	auto l_cameraList = RrCamera::CameraList();
+	for ( i = 0; i < l_cameraList.size(); ++i )
+	{
+		RrCamera* currentCamera = l_cameraList[i];
+		if ( currentCamera != NULL )
+		{
+			currentCamera->LateUpdate();
+		}
+	}
+
 	// Begin the logic jobs
 	for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
@@ -67,16 +77,6 @@ void RrRenderer::StepPreRender ( void )
 
 	// Wait for all the PreStep to finish:
 	Jobs::System::Current::WaitForJobs( Jobs::kJobTypeRenderStep );
-
-	// Update the camera system
-	for ( i = 0; i < RrCamera::vCameraList.size(); ++i )
-	{
-		RrCamera* currentCamera = RrCamera::vCameraList[i];
-		if ( currentCamera != NULL )
-		{
-			RrCamera::vCameraList[i]->LateUpdate();
-		}
-	}
 }
 
 void RrRenderer::StepPostRender ( void )
@@ -156,8 +156,12 @@ void RrRenderer::Render ( void )
 	gpu::GraphicsContext* gfx = mGfxContext;
 	unsigned int i;
 
-	// Update pre-render steps.
-	StepPreRender();
+	// Update pre-render steps:
+	//	- RrLogicObject::PostStep finish
+	//	- RrCamera::LateUpdate
+	//	- RrLogicObject::PreStep, RrLogicObject::PreStepSynchronous
+	//	- ResourceManager::update
+	StepPreRender(); 
 
 	// Check for a main camera to work with
 	if ( RrCamera::activeCamera == NULL )
@@ -216,21 +220,22 @@ void RrRenderer::Render ( void )
 	// Loop through all cameras (todo: sort render order for each camera)
 	TimeProfiler.BeginTimeProfile( "rs_camera_matrix" );
 	RrCamera* prevActiveCam = RrCamera::activeCamera;
-	for ( std::vector<RrCamera*>::iterator it = RrCamera::vCameraList.begin(); it != RrCamera::vCameraList.end(); ++it )
+	auto l_cameraList = RrCamera::CameraList();
+	for ( i = 0; i < l_cameraList.size(); ++i )
 	{
-		RrCamera* currentCamera = *it;
+		RrCamera* currentCamera = l_cameraList[i];
 		// Update the camera positions and matrices
-		if ( currentCamera->GetRender() )
+		if ( currentCamera != NULL && currentCamera->GetRender() )
 		{
 			currentCamera->UpdateMatrix();
 		}
 	}
 	// Double check to make sure the zero camera is the active camera
-	if ( RrCamera::vCameraList[0] != prevActiveCam )
+	if ( l_cameraList[0] != prevActiveCam )
 	{
 		std::cout << "Error in rendering: invalid zero index camera! (Seriously, this CAN'T happen)" << std::endl;
 		// Meaning, resort the camera list
-		for ( auto it = RrCamera::vCameraList.begin(); it != RrCamera::vCameraList.end(); )
+		/*for ( auto it = RrCamera::vCameraList.begin(); it != RrCamera::vCameraList.end(); )
 		{
 			if ( *it == prevActiveCam )
 			{
@@ -241,14 +246,14 @@ void RrRenderer::Render ( void )
 			{
 				++it;
 			}
-		}
+		}*/
 		return; // Don't render past here, then.
 	}
 	TimeProfiler.EndTimeProfile( "rs_camera_matrix" );
 	
 	// Loop through all cameras:
 	TimeProfiler.BeginTimeProfile( "rs_render" );
-	for ( std::vector<RrCamera*>::reverse_iterator it = RrCamera::vCameraList.rbegin(); it != RrCamera::vCameraList.rend(); ++it )
+	for ( std::vector<RrCamera*>::reverse_iterator it = l_cameraList.rbegin(); it != l_cameraList.rend(); ++it )
 	{
 		RrCamera* currentCamera = *it;
 
@@ -267,10 +272,7 @@ void RrRenderer::Render ( void )
 
 			// Render from camera
 			RrCamera::activeCamera = currentCamera;
-			//currentCamera->RenderScene(); //todo: remove
-			// get current camera's passes
 			RenderScene(currentCamera);
-
 		}
 	}
 	TimeProfiler.EndTimeProfile( "rs_render" );
@@ -493,6 +495,9 @@ void RrRenderer::RenderObjectList ( RrCamera* camera, CRenderableObject** object
 	int passCount = camera->PassCount();
 	camera->PassRetrieve(cameraPasses, kMaxCameraPasses);
 
+	// Begin rendering now
+	camera->RenderBegin();
+
 	// Loop through each pass and render with them:
 	for (int iCameraPass = 0; iCameraPass < passCount; ++iCameraPass)
 	{
@@ -505,101 +510,320 @@ void RrRenderer::RenderObjectList ( RrCamera* camera, CRenderableObject** object
 			RenderObjectListShadows(&cameraPasses[iCameraPass], objectsToRender, objectCount);
 		}
 	}
+
+	// Finish up the rendering
+	camera->RenderEnd();
 }
 
 void RrRenderer::RenderObjectListWorld ( rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount )
 {
-	std::vector<rrRenderRequest> l_4rDepthPrepass;
-	std::vector<rrRenderRequest> l_4rDeferred;
-	std::vector<rrRenderRequest> l_4rForward;
-	std::vector<rrRenderRequest> l_4rFog;
-	std::vector<rrRenderRequest> l_4rWarp;
-
-	for (uint32_t iObject = 0; iObject < objectCount; ++iObject)
+	struct rrRenderRequestGroup
 	{
-		CRenderableObject* renderable = objectsToRender[iObject];
-		if (renderable != NULL)
+		bool m_enabled;
+		std::vector<rrRenderRequest> m_4rDepthPrepass;
+		std::vector<rrRenderRequest> m_4rDeferred;
+		std::vector<rrRenderRequest> m_4rForward;
+		std::vector<rrRenderRequest> m_4rFog;
+		std::vector<rrRenderRequest> m_4rWarp;
+	};
+	rrRenderRequestGroup	l_4rGroup [renderer::kRL_MAX];
+	std::thread				l_4rThread [renderer::kRL_MAX];
+
+Pass_Groups:
+
+	for (uint8_t iLayer = renderer::kRL_BEGIN; iLayer < renderer::kRL_MAX; ++iLayer)
+	{
+#	ifdef SKIP_NON_WORLD_STUFF
+		// Only add 2D or world objects for now
+		if (iLayer != renderer::kRLWorld
+			&& iLayer != renderer::kRLV2D)
+			continue;
+#	endif
+		l_4rGroup[iLayer].m_enabled = false;
+
+		// Create the thread that puts objects into the layer.
+		l_4rThread[iLayer] = std::thread([&]()
 		{
-#			ifdef SKIP_NON_WORLD_STUFF
-			// Only add 2D or world objects for now
-			if (renderable->renderLayer != renderer::kRLWorld
-				&& renderable->renderLayer != renderer::kRLV2D)
-				continue;
-#			endif
 
-			// Loop through each pass to place them in the render lists.
-			for (int iPass = 0; iPass < kPass_MaxPassCount; ++iPass)
+		Pass_Collection:
+
+			for (uint32_t iObject = 0; iObject < objectCount; ++iObject)
 			{
-				if (renderable->m_passEnabled[iPass])
+				CRenderableObject* renderable = objectsToRender[iObject];
+				if (renderable != NULL)
 				{
-					RrPass* pass = &renderable->m_passes[iPass];
+					bool l_hasPass = false;
 
-					// If part of the world...
-					if (pass->m_type == kPassTypeForward || pass->m_type == kPassTypeDeferred)
+					// Loop through each pass to place them in the render lists.
+					for (uint8_t iPass = 0; iPass < kPass_MaxPassCount; ++iPass)
 					{
-						if (pass->m_depthWrite)
-						{	// Add opaque objects to the prepass list:
-							l_4rDepthPrepass.push_back(rrRenderRequest{renderable, iPass});
+						if (renderable->m_passEnabled[iPass] && renderable->m_passes[iPass].m_layer == iLayer)
+						{
+							RrPass* pass = &renderable->m_passes[iPass];
+
+							// If part of the world...
+							if (pass->m_type == kPassTypeForward || pass->m_type == kPassTypeDeferred)
+							{
+								if (pass->m_depthWrite)
+								{	// Add opaque objects to the prepass list:
+									l_4rGroup[iLayer].m_4rDepthPrepass.push_back(rrRenderRequest{renderable, iPass});
+								}
+								// Add the other objects to the deferred or forward pass
+								if (pass->m_type == kPassTypeDeferred)
+									l_4rGroup[iLayer].m_4rDeferred.push_back(rrRenderRequest{renderable, iPass});
+								else
+									l_4rGroup[iLayer].m_4rForward.push_back(rrRenderRequest{renderable, iPass});
+							}
+							// If part of fog effects...
+							else if (pass->m_type == kPassTypeVolumeFog)
+							{
+								l_4rGroup[iLayer].m_4rFog.push_back(rrRenderRequest{renderable, iPass});
+							}
+							// If part of warp effects...
+							else if (pass->m_type == kPassTypeWarp)
+							{
+								l_4rGroup[iLayer].m_4rWarp.push_back(rrRenderRequest{renderable, iPass});
+							}
+
+							l_hasPass = true;
 						}
-						// Add the other objects to the deferred or forward pass
-						if (pass->m_type == kPassTypeDeferred)
-							l_4rDeferred.push_back(rrRenderRequest{renderable, iPass});
-						else
-							l_4rForward.push_back(rrRenderRequest{renderable, iPass});
 					}
-					// If part of fog effects...
-					else if (pass->m_type == kPassTypeVolumeFog)
+
+					// If there is an enabled pass, we want to call PreRender on the object & enable the layer for rendering.
+					if (l_hasPass)
 					{
-						l_4rFog.push_back(rrRenderRequest{renderable, iPass});
-					}
-					// If part of warp effects...
-					else if (pass->m_type == kPassTypeWarp)
-					{
-						l_4rWarp.push_back(rrRenderRequest{renderable, iPass});
+						renderable->PreRender(cameraPass);
+						l_4rGroup[iLayer].m_enabled = true;
 					}
 				}
 			}
+
+		Object_Sorting:
+
+			// immidiately sort the depth pre-pass:
+			std::sort(l_4rGroup[iLayer].m_4rDepthPrepass.begin(), l_4rGroup[iLayer].m_4rDepthPrepass.end(), RenderRequestSorter); 
+
+			// sort the rest:
+			std::sort(l_4rGroup[iLayer].m_4rDeferred.begin(), l_4rGroup[iLayer].m_4rDeferred.end(), RenderRequestSorter); 
+			std::sort(l_4rGroup[iLayer].m_4rForward.begin(), l_4rGroup[iLayer].m_4rForward.end(), RenderRequestSorter); 
+			std::sort(l_4rGroup[iLayer].m_4rFog.begin(), l_4rGroup[iLayer].m_4rFog.end(), RenderRequestSorter); 
+			std::sort(l_4rGroup[iLayer].m_4rWarp.begin(), l_4rGroup[iLayer].m_4rWarp.end(), RenderRequestSorter); 
+		});
+	}
+
+Render_Groups:
+
+	for (uint8_t iLayer = renderer::kRL_BEGIN; iLayer < renderer::kRL_MAX; ++iLayer)
+	{
+		if (!l_4rThread[iLayer].joinable())
+			continue;
+
+		// wait for the sorting of this layer to finish:
+		l_4rThread[iLayer].join();
+
+	Rendering:
+
+		bool dirty_deferred = false;
+		bool dirty_forward = false;
+
+		// Do depth pre-pass:
+		//for (size_t iObject = 0; iObject < l_4rDepthPrepass.size(); ++iObject)
+		//{
+		// TODO: Fiddle with the rasterization rules so we only write to the depth.
+		//const rrRenderRequest const&  l_4r = l_4rDepthPrepass[iObject];
+		//CRenderableObject* renderable = l_4r.obj;
+		//renderable->Render(l_4r.pass);
+		//}
+
+		// wait for the deferred sorter
+		//sorter_4rDeferred.join();
+
+		// Do the deferred pass:
+		for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rDeferred.size(); ++iObject)
+		{
+			const rrRenderRequest const&  l_4r = l_4rGroup[iLayer].m_4rDeferred[iObject];
+			CRenderableObject* renderable = l_4r.obj;
+			renderable->Render(l_4r.pass);
+		}
+		// check if rendered anything, mark screen dirty if so.
+		if (!l_4rGroup[iLayer].m_4rDeferred.empty())
+			dirty_deferred = true;
+
+		// run a composite pass if deferred is dirty
+		if (dirty_deferred)
+		{
+			// Mark forward as dirty so output will happen even without a forward object.
+			dirty_forward = true;
+		}
+
+		// wait for the forward sorter
+		//sorter_4rForward.join();
+
+		// Do the forward pass:
+		for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rForward.size(); ++iObject)
+		{
+			const rrRenderRequest const&  l_4r = l_4rGroup[iLayer].m_4rForward[iObject];
+			CRenderableObject* renderable = l_4r.obj;
+			renderable->Render(l_4r.pass);
+		}
+		// check if rendered anything, mark screen dirty if so.
+		if (!l_4rGroup[iLayer].m_4rForward.empty())
+			dirty_forward = true;
+
+		// run another composite if forward is dirty
+		if (dirty_forward)
+		{
 		}
 	}
 
-	// immidiately sort the depth pre-pass:
-	std::sort(l_4rDepthPrepass.begin(), l_4rDepthPrepass.end(), RenderRequestSorter); 
+	//std::vector<rrRenderRequest> l_4rDepthPrepass;
 
-	// but sort the rest in side-threads:
-	auto sorter_4rDeferred = std::thread([&](){
-		std::sort(l_4rDeferred.begin(), l_4rDeferred.end(), RenderRequestSorter);
-	});
-	auto sorter_4rForward = std::thread([&](){
-		std::sort(l_4rForward.begin(), l_4rForward.end(), RenderRequestSorter);
-	});
-	auto sorter_4rFogAndWarp = std::thread([&](){
-		std::sort(l_4rFog.begin(), l_4rFog.end(), RenderRequestSorter);
-		std::sort(l_4rWarp.begin(), l_4rWarp.end(), RenderRequestSorter);
-	});
+	//for (uint8_t iLayer = renderer::kRL_BEGIN; iLayer < renderer::kRL_MAX; ++iLayer)
+	//{
+	//	std::vector<rrRenderRequest> l_4rDepthPrepass;
+	//	std::vector<rrRenderRequest> l_4rDeferred;
+	//	std::vector<rrRenderRequest> l_4rForward;
+	//	std::vector<rrRenderRequest> l_4rFog;
+	//	std::vector<rrRenderRequest> l_4rWarp;
 
-	// Do depth pre-pass:
+	//Pass_Collection:
 
-	
-	
-	// wait for the deferred sorter
-	sorter_4rDeferred.join();
+	//	bool dirty_layer = true;
 
+	//	for (uint32_t iObject = 0; iObject < objectCount; ++iObject)
+	//	{
+	//		CRenderableObject* renderable = objectsToRender[iObject];
+	//		if (renderable != NULL)
+	//		{
+	//#			ifdef SKIP_NON_WORLD_STUFF
+	//			// Only add 2D or world objects for now
+	//			if (renderable->renderLayer != renderer::kRLWorld
+	//				&& renderable->renderLayer != renderer::kRLV2D)
+	//				continue;
+	//#			endif
 
-	// run a composite pass if deferred is dirty
-	if (dirty_deferred)
-	{
-		// Mark forward as dirty so output will happen even without a forward object.
-		dirty_forward = true;
-	}
+	//			bool l_hasPass = false;
 
-	// wait for the forward sorter
-	sorter_4rForward.join();
+	//			// Loop through each pass to place them in the render lists.
+	//			for (uint8_t iPass = 0; iPass < kPass_MaxPassCount; ++iPass)
+	//			{
+	//				if (renderable->m_passEnabled[iPass])
+	//				{
+	//					RrPass* pass = &renderable->m_passes[iPass];
 
-	// run another composite if forward is dirty
-	if (dirty_forward)
-	{
-	}
+	//					// If part of the world...
+	//					if (pass->m_type == kPassTypeForward || pass->m_type == kPassTypeDeferred)
+	//					{
+	//						if (pass->m_depthWrite)
+	//						{	// Add opaque objects to the prepass list:
+	//							l_4rDepthPrepass.push_back(rrRenderRequest{renderable, iPass});
+	//						}
+	//						// Add the other objects to the deferred or forward pass
+	//						if (pass->m_type == kPassTypeDeferred)
+	//							l_4rDeferred.push_back(rrRenderRequest{renderable, iPass});
+	//						else
+	//							l_4rForward.push_back(rrRenderRequest{renderable, iPass});
+	//					}
+	//					// If part of fog effects...
+	//					else if (pass->m_type == kPassTypeVolumeFog)
+	//					{
+	//						l_4rFog.push_back(rrRenderRequest{renderable, iPass});
+	//					}
+	//					// If part of warp effects...
+	//					else if (pass->m_type == kPassTypeWarp)
+	//					{
+	//						l_4rWarp.push_back(rrRenderRequest{renderable, iPass});
+	//					}
 
+	//					l_hasPass = true;
+	//				}
+	//			}
+
+	//			// If there is an enabled pass, we want to call PreRender on the object.
+	//			if (l_hasPass)
+	//			{
+	//				renderable->PreRender(cameraPass);
+	//			}
+	//		}
+	//	}
+
+	//	if (l_4rForward.empty() && l_4rDeferred.empty())
+	//	{
+	//		dirty_layer = false;
+	//	}
+
+	//Object_Sorting:
+
+	//	// immidiately sort the depth pre-pass:
+	//	std::sort(l_4rDepthPrepass.begin(), l_4rDepthPrepass.end(), RenderRequestSorter); 
+
+	//	// but sort the rest in side-threads:
+	//	auto sorter_4rDeferred = std::thread([&](){
+	//		std::sort(l_4rDeferred.begin(), l_4rDeferred.end(), RenderRequestSorter);
+	//	});
+	//	auto sorter_4rForward = std::thread([&](){
+	//		std::sort(l_4rForward.begin(), l_4rForward.end(), RenderRequestSorter);
+	//	});
+	//	auto sorter_4rFogAndWarp = std::thread([&](){
+	//		std::sort(l_4rFog.begin(), l_4rFog.end(), RenderRequestSorter);
+	//		std::sort(l_4rWarp.begin(), l_4rWarp.end(), RenderRequestSorter);
+	//	});
+
+	//Rendering:
+
+	//	bool dirty_deferred = false;
+	//	bool dirty_forward = false;
+
+	//	// Do depth pre-pass:
+	//	//for (size_t iObject = 0; iObject < l_4rDepthPrepass.size(); ++iObject)
+	//	//{
+	//		// TODO: Fiddle with the rasterization rules so we only write to the depth.
+	//		//const rrRenderRequest const&  l_4r = l_4rDepthPrepass[iObject];
+	//		//CRenderableObject* renderable = l_4r.obj;
+	//		//renderable->Render(l_4r.pass);
+	//	//}
+	//
+	//	// wait for the deferred sorter
+	//	sorter_4rDeferred.join();
+	//
+	//	// Do the deferred pass:
+	//	for (size_t iObject = 0; iObject < l_4rDeferred.size(); ++iObject)
+	//	{
+	//		const rrRenderRequest const&  l_4r = l_4rDeferred[iObject];
+	//		CRenderableObject* renderable = l_4r.obj;
+	//		renderable->Render(l_4r.pass);
+	//	}
+	//	// check if rendered anything, mark screen dirty if so.
+	//	if (!l_4rDeferred.empty())
+	//		dirty_deferred = true;
+
+	//	// run a composite pass if deferred is dirty
+	//	if (dirty_deferred)
+	//	{
+	//		// Mark forward as dirty so output will happen even without a forward object.
+	//		dirty_forward = true;
+	//	}
+
+	//	// wait for the forward sorter
+	//	sorter_4rForward.join();
+
+	//	// Do the forward pass:
+	//	for (size_t iObject = 0; iObject < l_4rForward.size(); ++iObject)
+	//	{
+	//		const rrRenderRequest const&  l_4r = l_4rForward[iObject];
+	//		CRenderableObject* renderable = l_4r.obj;
+	//		renderable->Render(l_4r.pass);
+	//	}
+	//	// check if rendered anything, mark screen dirty if so.
+	//	if (!l_4rForward.empty())
+	//		dirty_forward = true;
+
+	//	// run another composite if forward is dirty
+	//	if (dirty_forward)
+	//	{
+	//	}
+
+	//}
 
 	// at the end, copy the aggregate forward RT onto the render target (do that outside of this function!)
 

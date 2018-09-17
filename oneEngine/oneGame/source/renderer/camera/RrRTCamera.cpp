@@ -1,41 +1,25 @@
-
-#include "RrRTCamera.h"
 #include "core/time/time.h"
 #include "renderer/state/Settings.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/texture/RrRenderTexture.h"
 
+#include "RrRTCamera.h"
+
 // Constructor
 RrRTCamera::RrRTCamera (
 		RrRenderTexture*	targetTexture,
-		Real			renderFramerate,
-		bool			autoRender
-		)
-		: RrCamera (), fRenderCounter(0)
+		Real				renderFramerate,
+		bool				autoRender
+		) : RrCamera (),
+	m_renderCounter(0),
+	m_renderStepTime(1.0F / renderFramerate),
+	m_autoRender(autoRender)
 {
-	//m_type = CAMERA_TYPE_RT;
-	//transform.name = "RTCamera Transform";
+	layerVisibility[renderer::kRLSecondary] = false;
+	layerVisibility[renderer::kRLV2D] = false;
 
-	zNear = 0.1f;
-	zFar = 1000.0f;
-
-	// On Default,  this is an RT camera
-	bIsRTcamera = true;
-	// And on default, do not update
-	bNeedsUpdate = false;
-	// Also, don't clear
-	//clearColor = false;
-
-	// Set default render layer mode
-	for ( uint i = 0; i <= renderer::kRLV2D; ++i ) {
-		layerVisibility[i] = false;
-	}
-	layerVisibility[renderer::kRLWorld] = true;
-
-	// Set RT camera specific settings
+	// Set render texture immediately
 	m_renderTexture		= targetTexture;
-	fRenderFramerate	= renderFramerate;
-	bAutoRender			= autoRender;
 }
 
 // Destructor
@@ -48,30 +32,33 @@ RrRTCamera::~RrRTCamera ( void )
 void RrRTCamera::LateUpdate ( void )
 {
 	// If autorender, then tell scene to update at given framerate
-	if ( bAutoRender )
+	if ( m_autoRender )
 	{
-		if ( bNeedsUpdate ) {
-			bNeedsUpdate = false;
+		if ( m_needsNewPasses ) {
+			m_needsNewPasses = false;
 		}
-		fRenderCounter += CTime::deltaTime;
-		if ( fRenderCounter > 1/fRenderFramerate )
+		m_renderCounter += CTime::deltaTime;
+		if ( m_renderCounter > m_renderStepTime )
 		{
-			fRenderCounter = 0;
-			bNeedsUpdate = true;
+			m_renderCounter = 0;
+			m_needsNewPasses = true;
 		}
 	}
 	// However, if there's not a valid render target, turn rendering off
 	if ( m_renderTexture == NULL )
 	{
-		bNeedsUpdate = false;
+		m_needsNewPasses = false;
 	}
+
+	// Perform late update
+	RrCamera::LateUpdate();
 }
 
 // Render set
 void RrRTCamera::RenderBegin ( void )
 {
 	// Set viewport percents
-	if ( m_renderTexture )
+	/*if ( m_renderTexture )
 	{
 		unsigned int iPixelWidth;
 		unsigned int iPixelHeight;
@@ -81,10 +68,10 @@ void RrRTCamera::RenderBegin ( void )
 		iPixelHeight= m_renderTexture->GetHeight();
 
 		// Update viewport
-		viewport.pos.x = viewport_percent.pos.x * iPixelWidth;
-		viewport.pos.y = viewport_percent.pos.y * iPixelHeight;
-		viewport.size.x = viewport_percent.size.x * iPixelWidth;
-		viewport.size.y = viewport_percent.size.y * iPixelHeight;
+		viewport.pos.x = viewportPercent.pos.x * iPixelWidth;
+		viewport.pos.y = viewportPercent.pos.y * iPixelHeight;
+		viewport.size.x = viewportPercent.size.x * iPixelWidth;
+		viewport.size.y = viewportPercent.size.y * iPixelHeight;
 
 		// Bind frame buffer
 		m_renderTexture->BindBuffer();
@@ -92,99 +79,51 @@ void RrRTCamera::RenderBegin ( void )
 	else
 	{
 		std::cout << "Rendering with no RT on RTCamera " << this << std::endl;
-	}
+	}*/
 
 	// Call the parent one
 	RrCamera::RenderBegin();
 
-	// Update the texture matrix
-	//UpdateTextureMatrix();
-
-	// Bind frame buffer
-	//if ( myRenderTexture )
-	//	myRenderTexture->BindBuffer();
-
+	// bind to m_renderTexture ???
+	// todo
 }
 
 // Render clean
 void RrRTCamera::RenderEnd ( void )
 {
 	// Unbind framebuffer
-	if ( m_renderTexture )
-		m_renderTexture->UnbindBuffer();
-	//else
-	//	RrRenderTexture::UnbindBuffer( 0 );
+	//if ( m_renderTexture )
+	//	m_renderTexture->UnbindBuffer();
 }
 
 // Update Camera Matrix
 void RrRTCamera::UpdateMatrix ( void )
 {
 	RrCamera::UpdateMatrix();
-
-	// Update the texture matrix
+	// Update the texture matrix after the camera matrix is updated
 	UpdateTextureMatrix();
 }
 
 // Update Texture Matrix
 void RrRTCamera::UpdateTextureMatrix ( void )
 {
-	/*static double modelView[16];
-	static double projection[16];
-	
-	// Moving from unit cube [-1,1] to [0,1]  
-	const GLdouble bias[16] = {	
-		0.5, 0.0, 0.0, 0.0, 
-		0.0, 0.5, 0.0, 0.0,
-		0.0, 0.0, 0.5, 0.0,
-		0.5, 0.5, 0.5, 1.0
-	};
-	
-	// Grab modelview and transformation matrices
-	//glGetDoublev(GL_MODELVIEW_MATRIX, modelView);
-	//glGetDoublev(GL_PROJECTION_MATRIX, projection); // SO ARE THESE MATRICES UP HERE CORRECT?
-	memcpy( modelView,  this->viewTransform.pData, sizeof(Real)*16 );
-	memcpy( projection, this->projTransform.pData, sizeof(Real)*16 );
-
-	// THIS COULD BE WRONG
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glPushMatrix();
-
-	glLoadIdentity(); // BUT I LOAD IDENTITY HERE
-	glLoadMatrixd (bias);
-	// concatating all matrices into one.
-	glMultMatrixd (projection);	// IS THIS PROJECTION NEEDED? (hint: YES IT IS.)
-	glMultMatrixd (modelView);
-
-	float currentProjection[16];
-	glGetFloatv(GL_MODELVIEW_MATRIX, currentProjection);
-	textureMatrix = Matrix4x4( currentProjection );
-	//textureMatrix = textureMatrix.inverse();
-
-	glPopMatrix();
-	glPopMatrix();*/
-	//glMatrixMode(GL_MODELVIEW);
-
 	const Real bias[16] = {	
 		0.5, 0.0, 0.0, 0.0, 
 		0.0, 0.5, 0.0, 0.0,
 		0.0, 0.0, 0.5, 0.0,
 		0.5, 0.5, 0.5, 1.0
 	};
+
 	const Matrix4x4 biasMatrix ( bias );
 	textureMatrix = viewTransform * projTransform * biasMatrix;
 }
 
-
-void RrRTCamera::SetTarget ( RrRenderTexture* n_rt )
-{
-	m_renderTexture = n_rt;
-}
 void RrRTCamera::SetAutorender ( bool n_autorender )
 {
-	bAutoRender = n_autorender;
+	m_autoRender = n_autorender;
 }
+
 void RrRTCamera::SetUpdateFPS ( Real n_updatefps )
 {
-	fRenderFramerate = n_updatefps;
+	m_renderStepTime = 1.0F / n_updatefps;
 }
