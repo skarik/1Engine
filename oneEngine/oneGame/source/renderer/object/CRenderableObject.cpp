@@ -397,12 +397,17 @@ gpu::Pipeline* CRenderableObject::GetPipeline ( const uchar pass )
 
 		pipeline_desc.shader_pipeline = &m_passes[pass].m_program->GetShaderPipeline();
 
-		pipeline_desc.vv_inputAttributes = &m_passes[pass].m_program->GetShaderPipeline();
+		//pipeline_desc.vv_inputAttributes = &m_passes[pass].m_program->GetShaderPipeline();
+		// TODO: proper handling of pipelines & topology. this may need to be handled at runtime
 
 		m_pipelines[pass].create(&pipeline_desc);
 	}
 	else
 	{
+		// check for changes with the current state.
+
+		// pipeline should be a dummy object for current state?
+		// renderer::pipeline should be an on-demand created object as another layer?
 	}
 
 	return &m_pipelines[pass];
@@ -412,7 +417,7 @@ void CRenderableObject::FreePipelines ( void )
 {
 	for (int i = 0; i < kPass_MaxPassCount; ++i)
 	{
-		if (m_pipelineReady[i] || m_pipelines[i].isValid())
+		if (m_pipelineReady[i] || m_pipelines[i].valid())
 		{
 			m_pipelines[i].destroy();
 			m_pipelineReady[i] = false;

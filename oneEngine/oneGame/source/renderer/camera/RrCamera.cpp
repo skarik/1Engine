@@ -29,7 +29,7 @@ RrCamera::RrCamera ( void )
 	forward = Vector3d::forward;
 
 	// Set all layers visible by defeault.
-	for ( size_t i = 0; i <= renderer::kRL_MAX; ++i )
+	for ( size_t i = 0; i <= renderer::kRenderLayer_MAX; ++i )
 	{
 		layerVisibility[i] = true;
 	}

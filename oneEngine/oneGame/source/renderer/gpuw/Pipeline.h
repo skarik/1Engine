@@ -31,7 +31,7 @@ namespace gpu
 		// location in the shader to bind to
 		uint32_t    location;
 		// binding index, the vbuffer goes here
-		// corresponds to a binding desc
+		// corresponds to a binding description
 		uint32_t    binding;
 		// attribute format.
 		// extra values will be ignored
@@ -78,9 +78,13 @@ namespace gpu
 		//RENDER_API int			setShaderPipeline ( ShaderPipeline* pipeline );
 
 		//RENDER_API bool			assemble ( void );
-		RENDER_API int			create ( const PipelineCreationDescription& params );
+		RENDER_API int			create ( const PipelineCreationDescription* params );
 
 		RENDER_API int			destroy ( void );
+
+		//	valid() : is this pipeline valid to be used?
+		// If the pipeline failed to be created or doesnt exist, this will be false
+		RENDER_API bool			valid ( void );
 
 	private:
 		

@@ -177,7 +177,7 @@ public:
 	RrRenderTexture*	m_renderTexture;
 
 	// World layers to enable
-	bool				layerVisibility [renderer::kRL_MAX];
+	bool				layerVisibility [renderer::kRenderLayer_MAX];
 	// Set bit means to enable a layer. By default, most layers are on.
 	uint32_t			enabledHints;
 

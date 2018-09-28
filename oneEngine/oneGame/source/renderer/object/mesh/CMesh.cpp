@@ -54,7 +54,7 @@ void CMesh::CalculateBoundingBox ( void )
 
 // == RENDERABLE OBJECT INTERFACE ==
 
-bool CMesh::PreRender ( RrCamera* camera )
+bool CMesh::PreRender ( rrCameraPass* cameraPass )
 {
 	// disable frustum culling:
 	bUseFrustumCulling = false;

@@ -421,7 +421,7 @@ void RrRenderer::Render ( void )
 //		}
 //
 //		// Then work on the actual render
-//		for ( int rt = kRL_BEGIN; rt < kRL_MAX; rt += 1 )
+//		for ( int rt = kRenderLayer_BEGIN; rt < kRenderLayer_MAX; rt += 1 )
 //		{
 //			if ( !currentCamera->layerVisibility[rt] ) { // move to renderer generator
 //				continue;
@@ -526,12 +526,12 @@ void RrRenderer::RenderObjectListWorld ( rrCameraPass* cameraPass, CRenderableOb
 		std::vector<rrRenderRequest> m_4rFog;
 		std::vector<rrRenderRequest> m_4rWarp;
 	};
-	rrRenderRequestGroup	l_4rGroup [renderer::kRL_MAX];
-	std::thread				l_4rThread [renderer::kRL_MAX];
+	rrRenderRequestGroup	l_4rGroup [renderer::kRenderLayer_MAX];
+	std::thread				l_4rThread [renderer::kRenderLayer_MAX];
 
 Pass_Groups:
 
-	for (uint8_t iLayer = renderer::kRL_BEGIN; iLayer < renderer::kRL_MAX; ++iLayer)
+	for (uint8_t iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
 	{
 #	ifdef SKIP_NON_WORLD_STUFF
 		// Only add 2D or world objects for now
@@ -613,7 +613,7 @@ Pass_Groups:
 
 Render_Groups:
 
-	for (uint8_t iLayer = renderer::kRL_BEGIN; iLayer < renderer::kRL_MAX; ++iLayer)
+	for (uint8_t iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
 	{
 		if (!l_4rThread[iLayer].joinable())
 			continue;
@@ -678,7 +678,7 @@ Render_Groups:
 
 	//std::vector<rrRenderRequest> l_4rDepthPrepass;
 
-	//for (uint8_t iLayer = renderer::kRL_BEGIN; iLayer < renderer::kRL_MAX; ++iLayer)
+	//for (uint8_t iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
 	//{
 	//	std::vector<rrRenderRequest> l_4rDepthPrepass;
 	//	std::vector<rrRenderRequest> l_4rDeferred;
@@ -985,7 +985,7 @@ void RrRenderer::RenderScene ( const uint32_t renderHint, RrCamera* camera )
 		{
 			// First object can never be forward - so we make a fake deferred object:
 			renderRQ_current.obj = NULL;
-			renderRQ_current.renderLayer = kRL_BEGIN;
+			renderRQ_current.renderLayer = kRenderLayer_BEGIN;
 			renderRQ_current.forward = false;
 			renderRQ_current.screenshader = false;
 			renderRQ_current.pass = 0;
@@ -1390,7 +1390,7 @@ void RrRenderer::RenderScene ( const uint32_t renderHint, RrCamera* camera )
 //		{
 //			// First object can never be forward - so we make a fake deferred object:
 //			renderRQ_current.obj = NULL;
-//			renderRQ_current.renderLayer = kRL_BEGIN;
+//			renderRQ_current.renderLayer = kRenderLayer_BEGIN;
 //			renderRQ_current.forward = false;
 //			renderRQ_current.screenshader = false;
 //			renderRQ_current.pass = 0;
