@@ -818,5 +818,8 @@
     <ClInclude Include="source\renderer\logic\model\RrAnimatedMeshGroup.h">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClInclude>
+    <ClInclude Include="source\renderer\material\VertexAttribute.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
