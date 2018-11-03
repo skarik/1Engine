@@ -13,6 +13,8 @@ namespace renderer
 		// Unique shaders are welcome to define their own Location type.
 		enum class Location : uint32_t
 		{
+			kIgnore = 0xFFFFFFFF,
+			kInvalid = 0xFFFFFFFD,
 			kPosition = 0,
 			kUV0 = 1,
 			kColor = 2,

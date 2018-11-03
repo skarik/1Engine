@@ -7,6 +7,7 @@
 #include "renderer/material/RrShader.cbuffers.h"
 #include "renderer/gpuw/Public/Enums.h"
 #include "renderer/material/ShaderSlots.h"
+#include "renderer/material/VertexAttribute.h"
 
 class RrShaderProgram;
 class RrTexture;
@@ -89,7 +90,8 @@ public:
 	// Vertex shader settings:
 	gpu::PrimitiveTopology
 						m_primitiveType;
-	void**				m_vertexSpecification;
+	renderer::shader::VertexAttribute*
+						m_vertexSpecification;
 
 	// Textures:
 	RrTexture*			m_textures[kPass_MaxTextureSlots];

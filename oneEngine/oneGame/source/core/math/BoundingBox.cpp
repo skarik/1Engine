@@ -129,11 +129,11 @@ bool BoundingBox::IsLineInBox( const Vector3d& L1, const Vector3d& L2 ) const
 //
 // Returns a 3x3 rotation matrix as vectors
 //
-inline void BoundingBox::GetInvRot( Vector3d *pvRot )
+inline void Get3x3Rot( const Matrix4x4& matrix, Vector3d* outRotation )
 {
-	pvRot[0] = Vector3d( m_M.pData[0], m_M.pData[1], m_M.pData[2] );
-	pvRot[1] = Vector3d( m_M.pData[4], m_M.pData[5], m_M.pData[6] );
-	pvRot[2] = Vector3d( m_M.pData[8], m_M.pData[9], m_M.pData[10] );
+	outRotation[0] = Vector3d( matrix.pData[0], matrix.pData[1], matrix.pData[2] );
+	outRotation[1] = Vector3d( matrix.pData[4], matrix.pData[5], matrix.pData[6] );
+	outRotation[2] = Vector3d( matrix.pData[8], matrix.pData[9], matrix.pData[10] );
 }
 
 //
@@ -145,8 +145,8 @@ bool BoundingBox::IsBoxInBox( BoundingBox &BBox ) const
 	Vector3d SizeA = m_Extent;
 	Vector3d SizeB = BBox.m_Extent;
 	Vector3d RotA[3], RotB[3];	
-	GetInvRot( RotA );
-	BBox.GetInvRot( RotB );
+	Get3x3Rot( m_M, RotA );
+	Get3x3Rot( BBox.m_M, RotB );
 
     float R[3][3];  // Rotation from B to A
     float AR[3][3]; // absolute values of R matrix, to use with box extents

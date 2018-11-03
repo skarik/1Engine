@@ -20,16 +20,14 @@ RrDebugRTInspector::RrDebugRTInspector ( void )
 	bDrawRTs = true;
 
 	// Example code:
-	gpu::VertexInputAttributeDescription t_vspec [2];
+	renderer::shader::VertexAttribute t_vspec [2] = {};
 	t_vspec[0].location = renderer::shader::Location::kPosition;
-	t_vspec[0].format = gpu::kFormatR32G32B32SFloat;
+	t_vspec[0].dataFormat = gpu::kFormatR32G32B32SFloat;
 	t_vspec[0].binding = renderer::shader::kBinding0;
-	t_vspec[0].offset = 0;
 
 	t_vspec[1].location = renderer::shader::Location::kUV0;
-	t_vspec[1].format = gpu::kFormatR32G32SFloat;
+	t_vspec[1].dataFormat = gpu::kFormatR32G32SFloat;
 	t_vspec[1].binding = renderer::shader::kBinding1;
-	t_vspec[1].offset = 0;
 
 	RrPass rtPass;
 	rtPass.m_layer = renderer::kRenderLayerV2D;

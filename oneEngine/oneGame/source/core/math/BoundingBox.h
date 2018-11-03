@@ -49,7 +49,6 @@ namespace core
 			Vector3d GetCenterPoint() const
 				{ return m_M.getTranslation(); }
 				//{ return m_M.GetTranslate(); }		
-			void GetInvRot( Vector3d *pvRot );
 	
 			bool IsPointInBox( const Vector3d& P ) const;
 			bool IsBoxInBox( BoundingBox &BBox ) const;
