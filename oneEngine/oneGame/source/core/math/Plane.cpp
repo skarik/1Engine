@@ -1,5 +1,3 @@
-
-// Include
 #include "Plane.h"
 
 using namespace core::math;

@@ -26,7 +26,8 @@ public:
 
 	//	GetBoundingBox ()
 	// Gets the bounding box of the mesh
-	RENDER_API BoundingBox	GetBoundingBox ( void ) const
+	RENDER_API core::math::BoundingBox
+							GetBoundingBox ( void ) const
 		{ return bbCheckRenderBox; }
 
 	//	GetCanRender ()
@@ -61,7 +62,8 @@ protected:
 	float				fCheckRenderDist;
 	Vector3d			vMinExtents;
 	Vector3d			vMaxExtents;
-	BoundingBox			bbCheckRenderBox;
+	core::math::BoundingBox
+						bbCheckRenderBox;
 
 	arstring64			m_name;
 };

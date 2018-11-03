@@ -66,9 +66,9 @@ bool CMesh::PreRender ( rrCameraPass* cameraPass )
 
 		if ( !bUseSkinning )
 		{
-			if ( camera->SphereIsVisible(
+			if ( cameraPass->m_frustum.SphereIsInside(
 				transform.WorldMatrix() * vCheckRenderPos,
-				fCheckRenderDist * (transform.world.scale.x+transform.world.scale.y+transform.world.scale.z) * 0.4f ) )
+				fCheckRenderDist * (transform.world.scale.x+transform.world.scale.y+transform.world.scale.z) * 0.4f ) != core::math::kShapeCheckResultOutside )
 			{
 				bCanRender = true;
 			}
@@ -80,9 +80,9 @@ bool CMesh::PreRender ( rrCameraPass* cameraPass )
 			modelOrigin = ((CSkinnedModel*)m_parent)->GetSkeleton()->current_transform[1].WorldMatrix() * vCheckRenderPos;
 			modelOrigin = transform.WorldMatrix() * modelOrigin;
 			//modelOrigin += transform.GetTransformMatrix() * vCheckRenderPos
-			if ( camera->SphereIsVisible(
+			if ( cameraPass->m_frustum.SphereIsInside(
 				modelOrigin, 
-				fCheckRenderDist * (transform.world.scale.x+transform.world.scale.y+transform.world.scale.z) * 0.6f ) )
+				fCheckRenderDist * (transform.world.scale.x+transform.world.scale.y+transform.world.scale.z) * 0.6f ) != core::math::kShapeCheckResultOutside )
 			{
 				bCanRender = true;
 			}
@@ -98,9 +98,9 @@ bool CMesh::PreRender ( rrCameraPass* cameraPass )
 	{
 		// Set up transformation for the mesh
 		if ( m_parent )
-			PushCbufferPerObject(m_parent->transform, camera);
+			PushCbufferPerObject(m_parent->transform, cameraPass);
 		else
-			PushCbufferPerObject(this->transform.world, camera);
+			PushCbufferPerObject(this->transform.world, cameraPass);
 	}
 
 	// 

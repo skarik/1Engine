@@ -5,6 +5,10 @@
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/texture/RrRenderTexture.h"
 
+#include "renderer/state/RrRenderer.h"
+#include "renderer/texture/RrRenderTexture.h"
+#include "renderer/texture/CMRTTexture.h"
+
 #include "RrCamera.h"
 
 #include <cmath>
@@ -166,12 +170,6 @@ void RrCamera::LateUpdate ( void )
 	}
 }
 
-#include "renderer/state/RrRenderer.h"
-//#include "renderer/system/glMainSystem.h"
-#include "renderer/texture/RrRenderTexture.h"
-#include "renderer/texture/CMRTTexture.h"
-//#include "renderer/material/RrMaterial.h"
-
 int RrCamera::PassCount ( void )
 {
 	return 1;
@@ -185,6 +183,7 @@ void RrCamera::PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses )
 		passList[0].m_viewport		= viewport;
 		passList[0].m_viewTransform	= viewTransform;
 		passList[0].m_projTransform	= projTransform;
+		passList[0].m_viewprojTransform	= viewprojMatrix;
 	}
 }
 
@@ -385,17 +384,7 @@ void RrCamera::UpdateMatrix ( void )
 
 void RrCamera::UpdateFrustum ( void )
 {
-	//glPushMatrix();
-	//glLoadIdentity();
-	
-	float projection[16];
-	/*float MV[16];
-	glGetFloatv(GL_MODELVIEW_MATRIX, MV);
-	float PM[16];
-	glGetFloatv(GL_PROJECTION_MATRIX, PM);
-	glPopMatrix();	*/
-
-	//Matrix4x4 result = viewTransform * projTransform;
+	/*float projection[16];
 
 	for ( char i = 0; i < 16; i += 1 )
 		projection[i] = viewprojMatrix.pData[i];
@@ -434,11 +423,14 @@ void RrCamera::UpdateFrustum ( void )
 	frustum.plane[5].n.x = projection[3] - projection[2];
 	frustum.plane[5].n.y = projection[7] - projection[6];
 	frustum.plane[5].n.z = projection[11] - projection[10];
-	frustum.plane[5].d = projection[15] - projection[14];
+	frustum.plane[5].d = projection[15] - projection[14];*/
+
+	frustum = core::math::Frustum::BuildFromProjectionMatrix(viewprojMatrix);
 }
 
 bool RrCamera::PointIsVisible ( Vector3d const& point )
 {
+	/*
 	// various distances
 	float fDistance;
 
@@ -454,14 +446,15 @@ bool RrCamera::PointIsVisible ( Vector3d const& point )
 			return false;
 	}
 
-	return true;
+	return true;*/
+	return frustum.PointIsInside(point) != core::math::kShapeCheckResultOutside;
 }
 
 // tests if a sphere is within the frustrum
-char RrCamera::SphereIsVisible( Vector3d const& point, Real radius )
+bool RrCamera::SphereIsVisible( const Vector3d& center, const Real radius )
 {
 	// various distances
-	float fDistance;
+	/*float fDistance;
 
 	// calculate our distances to each of the planes
 	for ( int i = 0; i < 6; ++i )
@@ -479,12 +472,13 @@ char RrCamera::SphereIsVisible( Vector3d const& point, Real radius )
 	}
 
 	// otherwise we are fully in view
-	return 2;
+	return 2;*/
+	return frustum.SphereIsInside(center, radius) != core::math::kShapeCheckResultOutside;
 }
 
-bool RrCamera::BoundingBoxIsVisible ( BoundingBox& bbox )
+bool RrCamera::BoundingBoxIsVisible ( const core::math::BoundingBox& bbox )
 {
-	bool bboxBehind;
+	/*bool bboxBehind;
 	// calculate our collisions to each of the planes
 	for ( int i = 0; i < 6; ++i )
 	{
@@ -495,7 +489,8 @@ bool RrCamera::BoundingBoxIsVisible ( BoundingBox& bbox )
 		if ( bboxBehind )
 			return false;
 	}
-	return true;
+	return true;*/
+	return frustum.BoundingBoxIsInside(bbox) != core::math::kShapeCheckResultOutside;
 }
 
 // Coverts world coordinates to screen coordinates of this camera

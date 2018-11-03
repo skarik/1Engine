@@ -22,7 +22,7 @@ PlayerLeyo* PlayerLeyo::active = NULL;
 
 PlayerLeyo::PlayerLeyo ( void )
 	: CGameBehavior(), Engine2D::SpriteContainer(&position, NULL, &flipstate)
-	//: CGameBehavior(), Engine2D::AnimationContainer(&position, NULL, &flipstate)
+	//: CGameBehavior(), Engine2D::AnimationContainer(&position, NULL, &flipstate) // use this line when finally animated!
 {
 	active = this;
 
@@ -33,7 +33,7 @@ PlayerLeyo::PlayerLeyo ( void )
 	// Set camera options
 	camera->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
 	camera->viewport_target.size = Vector2d( 1280,720 ) * 0.5f;
-	camera->render_scale = 0.5F;
+	camera->pixel_scale_factor = 0.5F;
 	camera->SetActive(); // Mark it as the main camera to use IMMEDIATELY
 	// Start camera in follow mode
 	camera_mode = 1;
@@ -44,13 +44,13 @@ PlayerLeyo::PlayerLeyo ( void )
 	m_sprite->SetSpriteFile("sprites/leo.gal");
 	m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y - 8 );
 	
-	//this->AddFromFile(animation::TYPE_IDLE, 0, "sprites/tests/demon-run.gal");
+	//this->AddFromFile(animation::TYPE_IDLE, 0, "sprites/tests/demon-run.gal"); // silent sky animation test
 	//this->AddFromFile(animation::TYPE_IDLE, 0, "sprites/leo.gal");
 	//m_spriteOrigin = Vector2i( m_spriteSize.x / 2, m_spriteSize.y );
 
 	light = new RrLight;
-	light->diffuseColor = Color(0.4,0.4,0.4) * 0.0F;
-	light->range = 128;
+	light->color = Color(0.4,0.4,0.4) * 0.0F;
+	light->falloff_range = 128;
 
 	bod = NULL;
 

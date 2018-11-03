@@ -5,6 +5,8 @@
 // --------------------------
 #include "BoundingBox.h"
 
+using namespace core::math;
+
 // Expand ( BoundingBox& )
 // Combines the hulls of two bounding boxes by creating another bounding box that encompasses both of them
 // Note that this only really works proper if both bounding boxes have only been transformed through a translation.
@@ -38,7 +40,7 @@ BoundingBox BoundingBox::Expand ( const BoundingBox& BB )
 //
 // Check if a point is in this bounding box
 //
-bool BoundingBox::IsPointInBox(const Vector3d &InP)
+bool BoundingBox::IsPointInBox(const Vector3d &InP) const
 {
 	// Rotate the point into the box's coordinates
 	Vector3d P = m_M.inverse() * InP;
@@ -53,7 +55,7 @@ bool BoundingBox::IsPointInBox(const Vector3d &InP)
 //
 // Check if a sphere overlaps any part of this bounding box
 //
-bool BoundingBox::IsSphereInBox( const Vector3d &InP, float fRadius)
+bool BoundingBox::IsSphereInBox( const Vector3d &InP, float fRadius) const
 {
 	float fDist;
 	float fDistSq = 0;
@@ -75,7 +77,7 @@ bool BoundingBox::IsSphereInBox( const Vector3d &InP, float fRadius)
 //
 // Check if the bounding box is completely behind a plane( defined by a normal and a point )
 //
-bool BoundingBox::BoxOutsidePlane( const Vector3d &InNorm, const Vector3d &InP )
+bool BoundingBox::BoxOutsidePlane( const Vector3d &InNorm, const Vector3d &InP ) const
 {
 	// Plane Normal in Box Space
 	//Vector3d Norm = InNorm.RotByMatrix( m_M.InvertSimple().mf ); // RotByMatrix only uses rotation portion of matrix
@@ -99,7 +101,7 @@ bool BoundingBox::BoxOutsidePlane( const Vector3d &InNorm, const Vector3d &InP )
 //
 // Does the Line (L1, L2) intersect the Box?
 //
-bool BoundingBox::IsLineInBox( const Vector3d& L1, const Vector3d& L2 )
+bool BoundingBox::IsLineInBox( const Vector3d& L1, const Vector3d& L2 ) const
 {	
 	// Put line in box space
 	Matrix4x4 MInv = m_M.inverse();
@@ -138,7 +140,7 @@ inline void BoundingBox::GetInvRot( Vector3d *pvRot )
 // Check if any part of a box is inside any part of another box
 // Uses the separating axis test.
 //
-bool BoundingBox::IsBoxInBox( BoundingBox &BBox )
+bool BoundingBox::IsBoxInBox( BoundingBox &BBox ) const
 {
 	Vector3d SizeA = m_Extent;
 	Vector3d SizeB = BBox.m_Extent;

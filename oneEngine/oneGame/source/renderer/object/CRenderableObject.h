@@ -213,7 +213,7 @@ protected:
 	RENDER_API void			FreePipelines ( void );
 
 
-	RENDER_API void			PushCbufferPerObject ( const XrTransform& worldTransform, const RrCamera* camera );
+	RENDER_API void			PushCbufferPerObject ( const XrTransform& worldTransform, const rrCameraPass* cameraPass );
 
 	// ==Render Status==
 	RENDER_API float		GetRenderDistance ( void );

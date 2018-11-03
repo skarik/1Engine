@@ -312,7 +312,7 @@ void CRenderableObject::SetId( unsigned int nId )
 //	}
 //}
 
-void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform, const RrCamera* camera )
+void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform, const rrCameraPass* cameraPass )
 {
 	Matrix4x4 modelTRS, modelRS;
 	core::TransformUtility::TRSToMatrix4x4(worldTransform, modelTRS, modelRS);
@@ -325,7 +325,7 @@ void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform
 	renderer::cbuffer::rrPerObjectMatrices matrices;
 	matrices.modelTRS = modelTRS;
 	matrices.modelRS  = modelRS;
-	matrices.modelViewProjection = (camera != NULL) ? (modelTRS * camera->camera_VP) : (modelTRS);
+	matrices.modelViewProjection = (cameraPass != NULL) ? (modelTRS * cameraPass->m_viewprojTransform) : (modelTRS);
 	matrices.modelViewProjectionInverse = matrices.modelViewProjection.inverse();
 
 	// TODO: Create the buffer & push it
@@ -339,6 +339,9 @@ void CRenderableObject::PassInitWithInput ( int pass, RrPass* passData )
 	{
 		throw core::InvalidArgumentException();
 	}
+
+	// Ensure vertex data exists
+	ARCORE_ASSERT_MSG(passData->m_vertexSpecification, "Cannot initialize a pass without setting the vertex specification.");
 
 	// Free up the given pass
 	PassFree(pass);

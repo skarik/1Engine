@@ -43,8 +43,11 @@ struct rrCameraPass
 	// An RT camera will properly create their own buffer chain
 	RrHybridBufferChain*m_bufferChain;
 
+	// rendering properties
 	Matrix4x4			m_viewTransform;
 	Matrix4x4			m_projTransform;
+	Matrix4x4			m_viewprojTransform;
+	core::math::Frustum	m_frustum;
 };
 
 // Macros
@@ -131,11 +134,11 @@ public:
 	// Visibility:
 
 	// PointIsVisible( point ) : Can this camera see the given point
-	RENDER_API bool			PointIsVisible ( Vector3d const& );
+	RENDER_API bool			PointIsVisible ( const Vector3d& point );
 	// SphereIsVisible( center, radius ) : Can this camera see the given sphere
-	RENDER_API char			SphereIsVisible ( Vector3d const&, Real );
+	RENDER_API bool			SphereIsVisible ( const Vector3d& center, const Real radius);
 	// BoundingBoxIsVisible( bbox ) : Can this camera see the given bounding box
-	RENDER_API bool			BoundingBoxIsVisible ( BoundingBox& );
+	RENDER_API bool			BoundingBoxIsVisible ( const core::math::BoundingBox& bbox );
 
 	// == Transform Queries ==
 	RENDER_API Vector3d		GetUp ( void ) { return up; };

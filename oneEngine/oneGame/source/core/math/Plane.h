@@ -1,5 +1,5 @@
-#ifndef _C_PLANE_
-#define _C_PLANE_
+#ifndef CORE_MATH_PLANE_
+#define CORE_MATH_PLANE_
 
 // Includes
 #include "core/types/float.h"
@@ -26,4 +26,4 @@ namespace core
 	}
 }
 
-#endif
+#endif CORE_MATH_PLANE_

@@ -85,8 +85,11 @@ public:
 	renderer::cbuffer::rrPerObjectSurface
 						m_surface;
 	gpu::CullMode		m_cullMode;
+
+	// Vertex shader settings:
 	gpu::PrimitiveTopology
 						m_primitiveType;
+	void**				m_vertexSpecification;
 
 	// Textures:
 	RrTexture*			m_textures[kPass_MaxTextureSlots];

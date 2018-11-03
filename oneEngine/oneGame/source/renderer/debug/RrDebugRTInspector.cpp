@@ -15,17 +15,31 @@ RrDebugRTInspector* debug::RTInspector = NULL;
 RrDebugRTInspector::RrDebugRTInspector ( void )
 	: CRenderableObject ()
 {
-	renderLayer = renderer::kRLV2D;
 	debug::RTInspector = this;
 
 	bDrawRTs = true;
 
+	// Example code:
+	gpu::VertexInputAttributeDescription t_vspec [2];
+	t_vspec[0].location = renderer::shader::Location::kPosition;
+	t_vspec[0].format = gpu::kFormatR32G32B32SFloat;
+	t_vspec[0].binding = renderer::shader::kBinding0;
+	t_vspec[0].offset = 0;
+
+	t_vspec[1].location = renderer::shader::Location::kUV0;
+	t_vspec[1].format = gpu::kFormatR32G32SFloat;
+	t_vspec[1].binding = renderer::shader::kBinding1;
+	t_vspec[1].offset = 0;
+
 	RrPass rtPass;
+	rtPass.m_layer = renderer::kRenderLayerV2D;
 	rtPass.m_type = kPassTypeForward;
 	rtPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
+	rtPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
 	rtPass.setTexture( TEX_MAIN, RrTexture::Load("null") );
 	rtPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
 	rtPass.utilSetupAs2D();
+	rtPass.setVertexSpecification( &t_vspec, 2 );
 	PassInitWithInput(0, &rtPass);
 
 	//// Set the default white material
@@ -54,9 +68,10 @@ bool RrDebugRTInspector::BeginRender ( void )
 	return visible;
 }
 
-bool RrDebugRTInspector::PreRender ( RrCamera* camera )
+bool RrDebugRTInspector::PreRender ( rrCameraPass* cameraPass )
 {
-	m_material->prepareShaderConstants();
+	//m_material->prepareShaderConstants();
+	PushCbufferPerObject(XrTransform(), cameraPass);
 	return true;
 }
 bool RrDebugRTInspector::Render ( const char pass )

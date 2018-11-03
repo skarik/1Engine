@@ -183,6 +183,7 @@
     <ClInclude Include="source\core\containers\arsingleton.h" />
     <ClInclude Include="source\core\containers\arstring.h" />
     <ClInclude Include="source\core\containers\arvector.h" />
+    <ClInclude Include="source\core\debug.h" />
     <ClInclude Include="source\core\exceptions.h" />
     <ClInclude Include="source\core\exceptions\exceptions.h" />
     <ClInclude Include="source\core\gfx\pixelFormat.h" />
@@ -265,6 +266,7 @@
     <ClCompile Include="source\core\math\BoundingBox.cpp" />
     <ClCompile Include="source\core\math\Color.cpp" />
     <ClCompile Include="source\core\math\Cubic.cpp" />
+    <ClCompile Include="source\core\math\Frustum.cpp" />
     <ClCompile Include="source\core\math\Math.cpp" />
     <ClCompile Include="source\core\math\noise\Perlin.cpp" />
     <ClCompile Include="source\core\math\noise\SimplexNoise.cpp" />

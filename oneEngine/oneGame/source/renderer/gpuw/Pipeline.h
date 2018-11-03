@@ -35,7 +35,7 @@ namespace gpu
 		uint32_t    binding;
 		// attribute format.
 		// extra values will be ignored
-		// missing values will be padded GBA -> 0,0,1
+		// missing values in VS stage will be padded GBA -> 0,0,1
 		Format		format;
 		// byte offset of the data
 		uint32_t    offset;
