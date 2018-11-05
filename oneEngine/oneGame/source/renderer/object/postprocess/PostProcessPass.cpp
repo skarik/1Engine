@@ -1,4 +1,4 @@
-#include "CScreenShader.h"
+#include "PostProcessPass.h"
 #include "core/system/Screen.h"
 #include "core/settings/CGameSettings.h"
 
@@ -11,7 +11,7 @@
 
 #include "renderer/gpuw/Device.h"
 
-CScreenShader::CScreenShader ( RrCamera* pCam )
+RrPostProcessPass::RrPostProcessPass ( RrCamera* pCam )
 	: CRenderableObject(), m_targetcam( pCam )
 {
 	m_buf = NULL;
@@ -19,7 +19,7 @@ CScreenShader::CScreenShader ( RrCamera* pCam )
 	m_failrendercount = 0;
 	m_readyrendercount = 0;
 }
-CScreenShader::~CScreenShader ( void )
+RrPostProcessPass::~RrPostProcessPass ( void )
 {
 	delete_safe( m_buf );
 }
@@ -27,7 +27,7 @@ CScreenShader::~CScreenShader ( void )
 // CheckBuffer()
 //  Checks for any change in the main source buffer
 //  Default implementation copies main buffer over (well, it would, except there's no way to copy depth proper)
-void CScreenShader::UpdateBuffer ( void )
+void RrPostProcessPass::UpdateBuffer ( void )
 {
 	//GL_ACCESS
 	// Generate sum shit
@@ -47,7 +47,7 @@ void CScreenShader::UpdateBuffer ( void )
 
 // Render()
 //   Where the magic should be happening
-bool CScreenShader::Render ( const char pass )
+bool RrPostProcessPass::Render ( const char pass )
 {
 	//GL_ACCESS
 	// Only render with the main scene or designated camera
@@ -138,13 +138,13 @@ bool CScreenShader::Render ( const char pass )
 }
 
 // Prepares general uniform buffers
-bool CScreenShader::PreRender ( void )
+bool RrPostProcessPass::PreRender ( void )
 {
 	m_material->prepareShaderConstants();
 	return true;
 }
 // Draws the output quad to m_buf
-void CScreenShader::DrawOutput ( void )
+void RrPostProcessPass::DrawOutput ( void )
 {
 	//GL_ACCESS GLd_ACCESS
 	// Generate sum shit
@@ -166,7 +166,7 @@ void CScreenShader::DrawOutput ( void )
 }
 
 // Copies what's in m_buf to s_buf, but only drawing the color
-void CScreenShader::CopyResult ( void )
+void RrPostProcessPass::CopyResult ( void )
 {
 	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
 

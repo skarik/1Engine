@@ -25,12 +25,6 @@
     <Filter Include="SOURCE\Renderer\Object">
       <UniqueIdentifier>{47accf67-7029-4360-b035-3e96081a1dec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\Renderer\Object\Screen Shader">
-      <UniqueIdentifier>{536696c9-9668-4605-9d31-da9f02b4ccba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SOURCE\Renderer\Object\Screen Shader\Effects">
-      <UniqueIdentifier>{db8cb2cb-5783-4cc4-90f7-33f55605df18}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SOURCE\Renderer\Object\Screen">
       <UniqueIdentifier>{b95a3838-686a-4560-a81e-0a76bf76ef70}</UniqueIdentifier>
     </Filter>
@@ -112,6 +106,12 @@
     <Filter Include="SOURCE\Renderer\Windowing">
       <UniqueIdentifier>{28a0fe17-f1a9-4a9d-b96a-ba78af8f2942}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Renderer\Object\Post Process">
+      <UniqueIdentifier>{536696c9-9668-4605-9d31-da9f02b4ccba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Renderer\Object\Post Process\Effects">
+      <UniqueIdentifier>{db8cb2cb-5783-4cc4-90f7-33f55605df18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\renderer\system\glDrawing.cpp">
@@ -125,30 +125,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\object\CRenderableObject.cpp">
       <Filter>SOURCE\Renderer\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\CScreenShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CBloomShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CColorFilterShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CDepthSplitShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CScreenSpaceOutlineShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CTestScreenShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CTestViewShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CZoomBloomShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\screen\CScreenFade.cpp">
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
@@ -435,6 +411,9 @@
     <ClCompile Include="source\renderer\logic\model\RrModelMasterSubsystem.cpp">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\object\postprocess\PostProcessPass.cpp">
+      <Filter>SOURCE\Renderer\Object\Post Process</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -451,30 +430,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\object\CRenderableObject.h">
       <Filter>SOURCE\Renderer\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\CScreenShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CBloomShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CColorFilterShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CDepthSplitShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CScreenSpaceOutlineShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CTestScreenShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CTestViewShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CZoomBloomShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\screen\CScreenFade.h">
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
@@ -820,6 +775,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\material\VertexAttribute.h">
       <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\postprocess\PostProcessPass.h">
+      <Filter>SOURCE\Renderer\Object\Post Process</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

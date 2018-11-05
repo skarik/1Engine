@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "renderer/material/RrShader.cbuffers.h"
+#include "renderer/gpuw/Pipeline.h" // TODO?
 #include "renderer/gpuw/Public/Enums.h"
 
 namespace renderer

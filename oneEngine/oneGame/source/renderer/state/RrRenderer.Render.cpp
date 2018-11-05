@@ -613,6 +613,8 @@ Pass_Groups:
 
 Render_Groups:
 
+	gpu::GraphicsContext* gfx = mGfxContext;
+
 	for (uint8_t iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
 	{
 		if (!l_4rThread[iLayer].joinable())
@@ -626,6 +628,24 @@ Render_Groups:
 		bool dirty_deferred = false;
 		bool dirty_forward = false;
 
+		// Set up depth & color draw for pre-pass mode. Draw all opaques.
+		{
+			gpu::DepthStencilState ds;
+			ds.depthTestEnabled   = true;
+			ds.depthWriteEnabled  = true;
+			ds.depthFunc = gpu::kCompareOpLessEqual;
+			ds.stencilTestEnabled = false;
+			gfx->setDepthStencilState(ds);
+
+			gpu::BlendState bs;
+			bs.channelMask = 0x00; // Disable color masking.
+			bs.enable = false;
+			gfx->setBlendState(bs);
+		}
+		
+		// Clear depth:
+		gfx->clearDepthStencil(true, 1.0F, false, 0x00);
+		
 		// Do depth pre-pass:
 		//for (size_t iObject = 0; iObject < l_4rDepthPrepass.size(); ++iObject)
 		//{
@@ -635,8 +655,20 @@ Render_Groups:
 		//renderable->Render(l_4r.pass);
 		//}
 
-		// wait for the deferred sorter
-		//sorter_4rDeferred.join();
+		// Set up depth & color draw for deferred mode. Depth-equal only.
+		{
+			gpu::DepthStencilState ds;
+			ds.depthTestEnabled   = true;
+			ds.depthWriteEnabled  = false;
+			ds.depthFunc = gpu::kCompareOpEqual;
+			ds.stencilTestEnabled = false;
+			gfx->setDepthStencilState(ds);
+
+			gpu::BlendState bs;
+			bs.channelMask = 0xFF; // Enable color masking.
+			bs.enable = false;
+			gfx->setBlendState(bs);
+		}
 
 		// Do the deferred pass:
 		for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rDeferred.size(); ++iObject)
@@ -656,8 +688,20 @@ Render_Groups:
 			dirty_forward = true;
 		}
 
-		// wait for the forward sorter
-		//sorter_4rForward.join();
+		// Set up depth & color draw for forward mode. Draw normally.
+		{
+			gpu::DepthStencilState ds;
+			ds.depthTestEnabled   = true;
+			ds.depthWriteEnabled  = true;
+			ds.depthFunc = gpu::kCompareOpLessEqual;
+			ds.stencilTestEnabled = false;
+			gfx->setDepthStencilState(ds);
+
+			gpu::BlendState bs;
+			bs.channelMask = 0x00; // Disable color masking.
+			bs.enable = false;
+			gfx->setBlendState(bs);
+		}
 
 		// Do the forward pass:
 		for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rForward.size(); ++iObject)
@@ -673,567 +717,421 @@ Render_Groups:
 		// run another composite if forward is dirty
 		if (dirty_forward)
 		{
+			// TODO
 		}
 	}
-
-	//std::vector<rrRenderRequest> l_4rDepthPrepass;
-
-	//for (uint8_t iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
-	//{
-	//	std::vector<rrRenderRequest> l_4rDepthPrepass;
-	//	std::vector<rrRenderRequest> l_4rDeferred;
-	//	std::vector<rrRenderRequest> l_4rForward;
-	//	std::vector<rrRenderRequest> l_4rFog;
-	//	std::vector<rrRenderRequest> l_4rWarp;
-
-	//Pass_Collection:
-
-	//	bool dirty_layer = true;
-
-	//	for (uint32_t iObject = 0; iObject < objectCount; ++iObject)
-	//	{
-	//		CRenderableObject* renderable = objectsToRender[iObject];
-	//		if (renderable != NULL)
-	//		{
-	//#			ifdef SKIP_NON_WORLD_STUFF
-	//			// Only add 2D or world objects for now
-	//			if (renderable->renderLayer != renderer::kRLWorld
-	//				&& renderable->renderLayer != renderer::kRLV2D)
-	//				continue;
-	//#			endif
-
-	//			bool l_hasPass = false;
-
-	//			// Loop through each pass to place them in the render lists.
-	//			for (uint8_t iPass = 0; iPass < kPass_MaxPassCount; ++iPass)
-	//			{
-	//				if (renderable->m_passEnabled[iPass])
-	//				{
-	//					RrPass* pass = &renderable->m_passes[iPass];
-
-	//					// If part of the world...
-	//					if (pass->m_type == kPassTypeForward || pass->m_type == kPassTypeDeferred)
-	//					{
-	//						if (pass->m_depthWrite)
-	//						{	// Add opaque objects to the prepass list:
-	//							l_4rDepthPrepass.push_back(rrRenderRequest{renderable, iPass});
-	//						}
-	//						// Add the other objects to the deferred or forward pass
-	//						if (pass->m_type == kPassTypeDeferred)
-	//							l_4rDeferred.push_back(rrRenderRequest{renderable, iPass});
-	//						else
-	//							l_4rForward.push_back(rrRenderRequest{renderable, iPass});
-	//					}
-	//					// If part of fog effects...
-	//					else if (pass->m_type == kPassTypeVolumeFog)
-	//					{
-	//						l_4rFog.push_back(rrRenderRequest{renderable, iPass});
-	//					}
-	//					// If part of warp effects...
-	//					else if (pass->m_type == kPassTypeWarp)
-	//					{
-	//						l_4rWarp.push_back(rrRenderRequest{renderable, iPass});
-	//					}
-
-	//					l_hasPass = true;
-	//				}
-	//			}
-
-	//			// If there is an enabled pass, we want to call PreRender on the object.
-	//			if (l_hasPass)
-	//			{
-	//				renderable->PreRender(cameraPass);
-	//			}
-	//		}
-	//	}
-
-	//	if (l_4rForward.empty() && l_4rDeferred.empty())
-	//	{
-	//		dirty_layer = false;
-	//	}
-
-	//Object_Sorting:
-
-	//	// immidiately sort the depth pre-pass:
-	//	std::sort(l_4rDepthPrepass.begin(), l_4rDepthPrepass.end(), RenderRequestSorter); 
-
-	//	// but sort the rest in side-threads:
-	//	auto sorter_4rDeferred = std::thread([&](){
-	//		std::sort(l_4rDeferred.begin(), l_4rDeferred.end(), RenderRequestSorter);
-	//	});
-	//	auto sorter_4rForward = std::thread([&](){
-	//		std::sort(l_4rForward.begin(), l_4rForward.end(), RenderRequestSorter);
-	//	});
-	//	auto sorter_4rFogAndWarp = std::thread([&](){
-	//		std::sort(l_4rFog.begin(), l_4rFog.end(), RenderRequestSorter);
-	//		std::sort(l_4rWarp.begin(), l_4rWarp.end(), RenderRequestSorter);
-	//	});
-
-	//Rendering:
-
-	//	bool dirty_deferred = false;
-	//	bool dirty_forward = false;
-
-	//	// Do depth pre-pass:
-	//	//for (size_t iObject = 0; iObject < l_4rDepthPrepass.size(); ++iObject)
-	//	//{
-	//		// TODO: Fiddle with the rasterization rules so we only write to the depth.
-	//		//const rrRenderRequest const&  l_4r = l_4rDepthPrepass[iObject];
-	//		//CRenderableObject* renderable = l_4r.obj;
-	//		//renderable->Render(l_4r.pass);
-	//	//}
-	//
-	//	// wait for the deferred sorter
-	//	sorter_4rDeferred.join();
-	//
-	//	// Do the deferred pass:
-	//	for (size_t iObject = 0; iObject < l_4rDeferred.size(); ++iObject)
-	//	{
-	//		const rrRenderRequest const&  l_4r = l_4rDeferred[iObject];
-	//		CRenderableObject* renderable = l_4r.obj;
-	//		renderable->Render(l_4r.pass);
-	//	}
-	//	// check if rendered anything, mark screen dirty if so.
-	//	if (!l_4rDeferred.empty())
-	//		dirty_deferred = true;
-
-	//	// run a composite pass if deferred is dirty
-	//	if (dirty_deferred)
-	//	{
-	//		// Mark forward as dirty so output will happen even without a forward object.
-	//		dirty_forward = true;
-	//	}
-
-	//	// wait for the forward sorter
-	//	sorter_4rForward.join();
-
-	//	// Do the forward pass:
-	//	for (size_t iObject = 0; iObject < l_4rForward.size(); ++iObject)
-	//	{
-	//		const rrRenderRequest const&  l_4r = l_4rForward[iObject];
-	//		CRenderableObject* renderable = l_4r.obj;
-	//		renderable->Render(l_4r.pass);
-	//	}
-	//	// check if rendered anything, mark screen dirty if so.
-	//	if (!l_4rForward.empty())
-	//		dirty_forward = true;
-
-	//	// run another composite if forward is dirty
-	//	if (dirty_forward)
-	//	{
-	//	}
-
-	//}
 
 	// at the end, copy the aggregate forward RT onto the render target (do that outside of this function!)
 
 }
 
+//
+//// Deferred rendering routine.
+//void RrRenderer::RenderScene ( const uint32_t renderHint, RrCamera* camera )
+//{
+//	GL_ACCESS GLd_ACCESS
+//	CRenderableObject * pRO;
+//	int i;
+//	unsigned char passCount;
+//	RrCamera* currentCamera = RrCamera::activeCamera;
+//	bool firstRender = true;
+//
+//	// Create a sorted render list:
+//	TimeProfiler.BeginTimeProfile( "rs_render_makelist" );
+//	// Build the unsorted data
+//	std::vector<tRenderRequest> sortedRenderList;
+//	std::vector<CRenderableObject*> sortSinglePassList;
+//	for ( i = 0; i < (int)iCurrentIndex; i += 1 )
+//	{
+//		pRO = pRenderableObjects[i];
+//		if ( pRO )
+//		{
+//#ifdef SKIP_NON_WORLD_STUFF
+//			// Only add 2D or world objects for now
+//			if ( pRO->renderLayer != renderer::kRLWorld && pRO->renderLayer != renderer::kRLV2D ) { 
+//				continue;
+//			}
+//#endif
+//			// Only add to list if visible in this hint.
+//			if ( pRO->renderSettings.renderHints & n_renderHint )
+//			{
+//				bool added = false;
+//
+//				// Add each pass to the render list
+//				passCount = pRO->GetPassNumber();
+//				for ( unsigned char p = 0; p < passCount; ++p )
+//				{
+//					RrPassDeferred* pass = pRO->GetPassDeferred(p);
+//					// Mask the render hint (multipass across multiple targets)
+//					//if ( pass->m_hint & currentLayer )
+//					{
+//						tRenderRequest newRequest;
+//						newRequest.obj  = pRO;
+//						newRequest.pass = p;
+//						newRequest.forward = false;
+//						newRequest.renderLayer = pRO->renderLayer;
+//						newRequest.transparent = false;
+//						newRequest.screenshader = false;
+//						sortedRenderList.push_back( newRequest );
+//						added = true;
+//					}
+//				}
+//				if ( passCount == 0 ) // No deferred passes? Must be a world object.
+//				{
+//					if ( pRO->GetMaterial() && pRO->GetMaterial()->passinfo.size() )
+//					{
+//						RrPassForward* pass = pRO->GetPass(0);
+//						if ( pass->m_hint & kRenderHintWorld )
+//						{
+//							// Check for depth writing
+//							bool depthmask = (pass->m_transparency_mode!=ALPHAMODE_TRANSLUCENT)&&(pass->b_depthmask);
+//
+//							tRenderRequest newRequest;
+//							newRequest.obj  = pRO;
+//							newRequest.pass = 0;
+//							newRequest.forward = true;
+//							newRequest.renderLayer = pRO->renderLayer;
+//							newRequest.transparent = !depthmask;
+//							newRequest.screenshader = pRO->m_material->m_isScreenShader;
+//							sortedRenderList.push_back( newRequest );
+//							added = true;
+//						}
+//					}
+//				}
+//
+//				// Add the single-pass object to the listing.
+//				if (added)
+//				{
+//					sortSinglePassList.push_back(pRO);
+//				}
+//			}
+//		} //
+//	}
+//	// Perform the sorting
+//	if ( renderMode == kRenderModeDeferred )
+//		std::sort( sortedRenderList.begin(), sortedRenderList.end(), OrderComparatorDeferred ); 
+//	else
+//		throw std::exception( "Inside RenderSceneDeferred() when not in Deferred-2!" );
+//	TimeProfiler.EndAddTimeProfile( "rs_render_makelist" );
+//
+//	// Calculate pass globals
+//	renderer::Settings.fogScale = 1.0f / (renderer::Settings.fogEnd - renderer::Settings.fogStart);//currentCamera->zFar
+//																								   // Update UBOs
+//	RrMaterial::updateStaticUBO();
+//	RrMaterial::updateLightTBO();
+//	RrMaterial::pushConstantsPerPass();
+//	RrMaterial::pushConstantsPerFrame();
+//	GL.CheckError();
+//
+//	int sortedListSize = sortedRenderList.size();
+//
+//	// First work on prerender
+//	TimeProfiler.BeginTimeProfile( "rs_render_pre" );
+//	for ( i = 0; i < (int)sortSinglePassList.size(); ++i )
+//	{
+//		sortSinglePassList[i]->PreRender();
+//	}
+//	TimeProfiler.EndAddTimeProfile( "rs_render_pre" );
+//	GL.CheckError();
+//
+//	// Then work on the actual render:
+//
+//	tRenderRequest	renderRQ_current;		// Current object rendering.
+//	tRenderRequest	renderRQ_next;			// Next object rendering. Used to check for changing render states
+//	bool rendered = false;					// Holds if an object has been rendered in the current stage.
+//
+//											// Get the current main buffer to render to, as well as the size.
+//	RrRenderTexture* render_target = currentCamera->GetRenderTexture();
+//	if ( render_target == NULL )
+//	{	// If not a render-camera, bind to the internal common buffer
+//		render_target = internal_chain_current->buffer_forward_rt;
+//	}
+//
+//	// Get the size of the viewport we should render at
+//	Vector2i unscaledRenderSize;
+//	Vector2i currentRenderSize;
+//	if ( render_target != NULL )
+//	{	
+//		// Scaled target only enabled when screen copy enabled
+//		unscaledRenderSize = render_target->GetSize();
+//		currentRenderSize = Vector2i(
+//			(int)(render_target->GetWidth()  * currentCamera->render_scale),
+//			(int)(render_target->GetHeight() * currentCamera->render_scale)
+//		);
+//	}
+//	else
+//	{
+//		unscaledRenderSize = internal_chain_current->buffer_deferred_rt->GetSize();
+//		currentRenderSize = Vector2i(
+//			(int)(internal_chain_current->buffer_deferred_rt->GetWidth()  * currentCamera->render_scale),
+//			(int)(internal_chain_current->buffer_deferred_rt->GetHeight() * currentCamera->render_scale)
+//		);
+//	}
+//	// Set up viewport
+//	GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
+//
+//	// Bind the MRT to render to
+//	internal_chain_current->buffer_deferred_mrt->BindBuffer();
+//
+//	i = -1;	// Starts at -1 in case first object requires forward renderer
+//	while ( i < sortedListSize )
+//	{
+//		// Grab the next two render objects
+//		if ( i < 0 )
+//		{
+//			// First object can never be forward - so we make a fake deferred object:
+//			renderRQ_current.obj = NULL;
+//			renderRQ_current.renderLayer = kRenderLayer_BEGIN;
+//			renderRQ_current.forward = false;
+//			renderRQ_current.screenshader = false;
+//			renderRQ_current.pass = 0;
+//		}
+//		else
+//		{
+//			renderRQ_current = sortedRenderList[i];
+//		}
+//		if ( i < sortedListSize-1 )
+//		{
+//			renderRQ_next = sortedRenderList[i+1];
+//		}
+//		else
+//		{
+//			renderRQ_next.obj = NULL;
+//		}
+//
+//		// Render the object
+//		if ( !renderRQ_current.forward && renderRQ_current.obj && renderRQ_current.obj->visible )
+//		{
+//			if ( renderRQ_current.transparent )
+//			{	// There should be no transparent objects in the deferred pass.
+//				throw std::exception();
+//			}
+//			else
+//			{
+//				//GL.prepareDraw();
+//				if ( !renderRQ_current.obj->Render( renderRQ_current.pass ) )
+//				{
+//					throw std::exception();
+//				}
+//				GL.CheckError();
+//				//GL.cleanupDraw();
+//				rendered = true;
+//			}
+//		}
+//		else if ( renderRQ_current.forward )
+//		{	// There should be no forward objects in the deferred pass.
+//			throw std::exception();
+//		}
+//
+//		// Check for layer state changes:
+//
+//		// Check if should perform deferred pass on everything that was currently rendered:
+//		if ( ( i >= 0 ) && ( rendered ) && ( renderRQ_current.renderLayer == kRLWorld ) && ( 
+//			// Render out if this will be the last deferred object period:
+//			( renderRQ_next.obj == NULL ) ||
+//			// Render out if this is last deferred object on this list or layer:
+//			( !renderRQ_current.forward && (renderRQ_next.forward || renderRQ_current.renderLayer != renderRQ_next.renderLayer) ) 
+//			))
+//		{
+//			TimeProfiler.BeginTimeProfile( "rs_render_lightpush" );
+//
+//			// Bind the MRT's temporary results area in order to render the deferred result to it
+//			internal_chain_current->buffer_deferred_rt->BindBuffer();
+//			// Set up viewport. Deferred renderer runs need to hit the entire buffer, so we give it the entire screen.
+//			GL.setupViewport( 0, 0, unscaledRenderSize.x, unscaledRenderSize.y );
+//
+//			// Choose lighting pass to use
+//			RrMaterial* targetPass = LightingPass;
+//			switch ( pipelineMode )
+//			{
+//			case renderer::kPipelineModeEcho:
+//				targetPass = EchoPass;
+//				break;
+//			case renderer::kPipelineModeShaft:
+//				targetPass = ShaftPass;
+//				break;
+//			case renderer::kPipelineMode2DPaletted:
+//				targetPass = Lighting2DPass;
+//				break;
+//			}
+//
+//			// Change the projection to identity-type 2D (similar to orthographic)
+//			{
+//				// Perform a lighting pass
+//				targetPass->setSampler( TEX_SLOT0, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(0), GL.Enum(Texture2D) );
+//				targetPass->setSampler( TEX_SLOT1, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(1), GL.Enum(Texture2D) );
+//				targetPass->setSampler( TEX_SLOT2, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(2), GL.Enum(Texture2D) );
+//				targetPass->setSampler( TEX_SLOT3, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(3), GL.Enum(Texture2D) );
+//				targetPass->setSampler( TEX_SLOT4, internal_chain_current->buffer_deferred_mrt->GetDepthSampler(), GL.Enum(Texture2D) );
+//				//targetPass->prepareShaderConstants();
+//				targetPass->bindPassForward(0);
+//
+//				// TODO: Make the following configurable. (This can likely be used for some of the game-driving of later effects).
+//				//glUniform4f(renderer::UNI_LIGHTING_PARAM_HACK, 0.5F, 1.0F, 1.0F, 1.0F); // luvppl
+//				glUniform4f(renderer::UNI_LIGHTING_PARAM_HACK, 1.0F, 1.0F, 0.0F, 1.0F); // otherwise.
+//
+//																						// Disable alpha blending
+//				glDisable( GL_BLEND );
+//				glBlendFunc( GL_ONE, GL_ZERO );
+//				// Disable writing to depth and stencil
+//				glStencilMask( GL_FALSE );
+//				glDepthMask( GL_FALSE );
+//				// Disable tests
+//				glDisable( GL_STENCIL_TEST );
+//				glDisable( GL_DEPTH_TEST );
+//				// Draw the screen quad
+//				GLd.DrawScreenQuad(targetPass);
+//			}
+//			// Finish rendering
+//
+//			// Pop the main buffer off the render stack, returning to the MRT target
+//			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
+//
+//			// Clear the MRT's color results now that we no longer need them
+//			glClear( GL_COLOR_BUFFER_BIT );
+//
+//			TimeProfiler.EndAddTimeProfile( "rs_render_lightpush" );
+//		}
+//
+//		// Check if should temporarily switch to forward mode
+//		if ( renderRQ_next.obj && renderRQ_current.forward == false && renderRQ_next.forward == true ) // Last deferred object, switch to forward mode
+//		{
+//			rendered = false;
+//
+//			// Copy over the depth to use when drawing in forward mode
+//			internal_chain_current->buffer_deferred_rt->BindBuffer();
+//			// Set up viewport. Forward geometry pass of the renderer again renders at the same size as the deferred geometry pass.
+//			GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
+//
+//			// The forward and deferred buffers share their depth and stencil, so we can continue render without copying anything:
+//
+//			// Set to forward mode
+//			renderMode = kRenderModeForward;
+//			bool renderForward = true;
+//			while ( renderForward )
+//			{
+//				i += 1;
+//				// Grab the next two render objects
+//				renderRQ_current = sortedRenderList[i];
+//				if ( i < sortedListSize-1 ) {
+//					renderRQ_next = sortedRenderList[i+1];
+//				}
+//				else {
+//					renderRQ_next.obj = NULL;
+//				}
+//				// Render the object
+//				if ( renderRQ_current.obj->visible && renderRQ_current.forward )
+//					/*( (RrMaterial::special_mode == renderer::kPipelineModeNormal || RrMaterial::special_mode == renderer::kPipelineModeShaft || RrMaterial::special_mode == renderer::kPipelineMode2DPaletted) && renderRQ_current.forward )
+//					||( RrMaterial::special_mode == renderer::kPipelineModeEcho && renderRQ_current.forward  && renderRQ_current.renderLayer == V2D ) // (unless echopass, then only do v2d)
+//					))*/
+//				{
+//					if ( !renderRQ_current.obj->Render( renderRQ_current.pass ) ) {
+//						throw std::exception();
+//					}
+//					GL.CheckError();
+//				}
+//				else if ( !renderRQ_current.forward ) 
+//				{	// Shouldn't be rendering a deferred object here.
+//					throw std::exception();
+//				}
+//				// Check the next object to see if should keep rendering
+//				if ( renderRQ_next.obj == NULL || // No next object
+//					!renderRQ_next.forward ) // Next object is not forward
+//				{	// Stop rendering forward mode
+//					renderForward = false;
+//				}
+//				// If next object is on another layer, clear depth
+//				else if ( renderRQ_current.renderLayer != renderRQ_next.renderLayer )
+//				{
+//					// Clear depth between layers
+//					glStencilMask( GL_TRUE );
+//					glDepthMask( GL_TRUE );
+//					glClear( GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+//				}
+//			}
+//
+//			// Switch back to deferred renderer
+//			renderMode = kRenderModeDeferred;
+//
+//			// Go back to deferred buffer
+//			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
+//		}
+//
+//		// Check for main layer switch (rendering is ending, or new layer)
+//		if ( renderRQ_next.obj == NULL || renderRQ_current.renderLayer != renderRQ_next.renderLayer )
+//		{
+//			// Clear data between layers
+//			glStencilMask( GL_TRUE );
+//			glDepthMask( GL_TRUE );
+//			glClear( GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+//
+//			// Copy the layer over alpha-blended
+//			render_target->BindBuffer();
+//			{
+//				// Set up the viewport to copy to the entire screen:
+//				GL.setupViewport(0, 0, render_target->GetWidth(), render_target->GetHeight());
+//				{
+//					// Set the current main screen buffer as the texture
+//					CopyScaled->setTexture( TEX_MAIN, internal_chain_current->buffer_deferred_rt );
+//					CopyScaled->m_diffuse[0] = currentRenderSize.x / (Real)unscaledRenderSize.x;
+//					CopyScaled->m_diffuse[1] = currentRenderSize.y / (Real)unscaledRenderSize.y;
+//					CopyScaled->prepareShaderConstants();
+//					CopyScaled->bindPassForward(0);
+//
+//					// Set up an always-rendered
+//					glStencilMask( GL_FALSE );
+//					glDepthMask( GL_FALSE );
+//
+//					glDisable( GL_STENCIL_TEST );
+//					glDisable( GL_DEPTH_TEST );
+//
+//					glEnable( GL_BLEND );
+//					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//
+//					GLd.DrawScreenQuad(CopyScaled);
+//				}
+//			}
+//			render_target->UnbindBuffer();
+//
+//			// Clear out the buffer now that we no longer need it.
+//			internal_chain_current->buffer_deferred_rt->BindBuffer();
+//			{
+//				glStencilMask( GL_TRUE );
+//				glDepthMask( GL_TRUE );
+//				glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+//			}
+//			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
+//
+//			// Reset render size in subsequent targets
+//			//if ( renderRQ_next.renderLayer > kRLWorld )
+//			//{
+//			//	// Reset render scale-down after the main layer
+//			//	currentRenderSize = unscaledRenderSize;
+//			//} // TODO: May want this to be configurable.
+//
+//			// Reset the viewport for the next deferred geometry stage
+//			GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
+//		}
+//
+//		// Go to the next job
+//		i += 1;
+//	}
+//
+//	// Set up the viewport to copy to the entire screen:
+//	GL.setupViewport(0, 0, render_target->GetWidth(), render_target->GetHeight());
+//
+//	// Finally, work on postrender
+//	for ( i = 0; i < (int)sortSinglePassList.size(); ++i )
+//	{
+//		sortSinglePassList[i]->PostRender();
+//	}
+//	// End render loop
+//
+//	// Unbind fbo when done rendering
+//	internal_chain_current->buffer_deferred_mrt->UnbindBuffer();
+//}
 
-// Deferred rendering routine.
-void RrRenderer::RenderScene ( const uint32_t renderHint, RrCamera* camera )
-{
-	GL_ACCESS GLd_ACCESS
-	CRenderableObject * pRO;
-	int i;
-	unsigned char passCount;
-	RrCamera* currentCamera = RrCamera::activeCamera;
-	bool firstRender = true;
 
-	// Create a sorted render list:
-	TimeProfiler.BeginTimeProfile( "rs_render_makelist" );
-	// Build the unsorted data
-	std::vector<tRenderRequest> sortedRenderList;
-	std::vector<CRenderableObject*> sortSinglePassList;
-	for ( i = 0; i < (int)iCurrentIndex; i += 1 )
-	{
-		pRO = pRenderableObjects[i];
-		if ( pRO )
-		{
-#ifdef SKIP_NON_WORLD_STUFF
-			// Only add 2D or world objects for now
-			if ( pRO->renderLayer != renderer::kRLWorld && pRO->renderLayer != renderer::kRLV2D ) { 
-				continue;
-			}
-#endif
-			// Only add to list if visible in this hint.
-			if ( pRO->renderSettings.renderHints & n_renderHint )
-			{
-				bool added = false;
-
-				// Add each pass to the render list
-				passCount = pRO->GetPassNumber();
-				for ( unsigned char p = 0; p < passCount; ++p )
-				{
-					RrPassDeferred* pass = pRO->GetPassDeferred(p);
-					// Mask the render hint (multipass across multiple targets)
-					//if ( pass->m_hint & currentLayer )
-					{
-						tRenderRequest newRequest;
-						newRequest.obj  = pRO;
-						newRequest.pass = p;
-						newRequest.forward = false;
-						newRequest.renderLayer = pRO->renderLayer;
-						newRequest.transparent = false;
-						newRequest.screenshader = false;
-						sortedRenderList.push_back( newRequest );
-						added = true;
-					}
-				}
-				if ( passCount == 0 ) // No deferred passes? Must be a world object.
-				{
-					if ( pRO->GetMaterial() && pRO->GetMaterial()->passinfo.size() )
-					{
-						RrPassForward* pass = pRO->GetPass(0);
-						if ( pass->m_hint & kRenderHintWorld )
-						{
-							// Check for depth writing
-							bool depthmask = (pass->m_transparency_mode!=ALPHAMODE_TRANSLUCENT)&&(pass->b_depthmask);
-
-							tRenderRequest newRequest;
-							newRequest.obj  = pRO;
-							newRequest.pass = 0;
-							newRequest.forward = true;
-							newRequest.renderLayer = pRO->renderLayer;
-							newRequest.transparent = !depthmask;
-							newRequest.screenshader = pRO->m_material->m_isScreenShader;
-							sortedRenderList.push_back( newRequest );
-							added = true;
-						}
-					}
-				}
-
-				// Add the single-pass object to the listing.
-				if (added)
-				{
-					sortSinglePassList.push_back(pRO);
-				}
-			}
-		} //
-	}
-	// Perform the sorting
-	if ( renderMode == kRenderModeDeferred )
-		std::sort( sortedRenderList.begin(), sortedRenderList.end(), OrderComparatorDeferred ); 
-	else
-		throw std::exception( "Inside RenderSceneDeferred() when not in Deferred-2!" );
-	TimeProfiler.EndAddTimeProfile( "rs_render_makelist" );
-
-	// Calculate pass globals
-	renderer::Settings.fogScale = 1.0f / (renderer::Settings.fogEnd - renderer::Settings.fogStart);//currentCamera->zFar
-																								   // Update UBOs
-	RrMaterial::updateStaticUBO();
-	RrMaterial::updateLightTBO();
-	RrMaterial::pushConstantsPerPass();
-	RrMaterial::pushConstantsPerFrame();
-	GL.CheckError();
-
-	int sortedListSize = sortedRenderList.size();
-
-	// First work on prerender
-	TimeProfiler.BeginTimeProfile( "rs_render_pre" );
-	for ( i = 0; i < (int)sortSinglePassList.size(); ++i )
-	{
-		sortSinglePassList[i]->PreRender();
-	}
-	TimeProfiler.EndAddTimeProfile( "rs_render_pre" );
-	GL.CheckError();
-
-	// Then work on the actual render:
-
-	tRenderRequest	renderRQ_current;		// Current object rendering.
-	tRenderRequest	renderRQ_next;			// Next object rendering. Used to check for changing render states
-	bool rendered = false;					// Holds if an object has been rendered in the current stage.
-
-											// Get the current main buffer to render to, as well as the size.
-	RrRenderTexture* render_target = currentCamera->GetRenderTexture();
-	if ( render_target == NULL )
-	{	// If not a render-camera, bind to the internal common buffer
-		render_target = internal_chain_current->buffer_forward_rt;
-	}
-
-	// Get the size of the viewport we should render at
-	Vector2i unscaledRenderSize;
-	Vector2i currentRenderSize;
-	if ( render_target != NULL )
-	{	
-		// Scaled target only enabled when screen copy enabled
-		unscaledRenderSize = render_target->GetSize();
-		currentRenderSize = Vector2i(
-			(int)(render_target->GetWidth()  * currentCamera->render_scale),
-			(int)(render_target->GetHeight() * currentCamera->render_scale)
-		);
-	}
-	else
-	{
-		unscaledRenderSize = internal_chain_current->buffer_deferred_rt->GetSize();
-		currentRenderSize = Vector2i(
-			(int)(internal_chain_current->buffer_deferred_rt->GetWidth()  * currentCamera->render_scale),
-			(int)(internal_chain_current->buffer_deferred_rt->GetHeight() * currentCamera->render_scale)
-		);
-	}
-	// Set up viewport
-	GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
-
-	// Bind the MRT to render to
-	internal_chain_current->buffer_deferred_mrt->BindBuffer();
-
-	i = -1;	// Starts at -1 in case first object requires forward renderer
-	while ( i < sortedListSize )
-	{
-		// Grab the next two render objects
-		if ( i < 0 )
-		{
-			// First object can never be forward - so we make a fake deferred object:
-			renderRQ_current.obj = NULL;
-			renderRQ_current.renderLayer = kRenderLayer_BEGIN;
-			renderRQ_current.forward = false;
-			renderRQ_current.screenshader = false;
-			renderRQ_current.pass = 0;
-		}
-		else
-		{
-			renderRQ_current = sortedRenderList[i];
-		}
-		if ( i < sortedListSize-1 )
-		{
-			renderRQ_next = sortedRenderList[i+1];
-		}
-		else
-		{
-			renderRQ_next.obj = NULL;
-		}
-
-		// Render the object
-		if ( !renderRQ_current.forward && renderRQ_current.obj && renderRQ_current.obj->visible )
-		{
-			if ( renderRQ_current.transparent )
-			{	// There should be no transparent objects in the deferred pass.
-				throw std::exception();
-			}
-			else
-			{
-				//GL.prepareDraw();
-				if ( !renderRQ_current.obj->Render( renderRQ_current.pass ) )
-				{
-					throw std::exception();
-				}
-				GL.CheckError();
-				//GL.cleanupDraw();
-				rendered = true;
-			}
-		}
-		else if ( renderRQ_current.forward )
-		{	// There should be no forward objects in the deferred pass.
-			throw std::exception();
-		}
-
-		// Check for layer state changes:
-
-		// Check if should perform deferred pass on everything that was currently rendered:
-		if ( ( i >= 0 ) && ( rendered ) && ( renderRQ_current.renderLayer == kRLWorld ) && ( 
-			// Render out if this will be the last deferred object period:
-			( renderRQ_next.obj == NULL ) ||
-			// Render out if this is last deferred object on this list or layer:
-			( !renderRQ_current.forward && (renderRQ_next.forward || renderRQ_current.renderLayer != renderRQ_next.renderLayer) ) 
-			))
-		{
-			TimeProfiler.BeginTimeProfile( "rs_render_lightpush" );
-
-			// Bind the MRT's temporary results area in order to render the deferred result to it
-			internal_chain_current->buffer_deferred_rt->BindBuffer();
-			// Set up viewport. Deferred renderer runs need to hit the entire buffer, so we give it the entire screen.
-			GL.setupViewport( 0, 0, unscaledRenderSize.x, unscaledRenderSize.y );
-
-			// Choose lighting pass to use
-			RrMaterial* targetPass = LightingPass;
-			switch ( pipelineMode )
-			{
-			case renderer::kPipelineModeEcho:
-				targetPass = EchoPass;
-				break;
-			case renderer::kPipelineModeShaft:
-				targetPass = ShaftPass;
-				break;
-			case renderer::kPipelineMode2DPaletted:
-				targetPass = Lighting2DPass;
-				break;
-			}
-
-			// Change the projection to identity-type 2D (similar to orthographic)
-			{
-				// Perform a lighting pass
-				targetPass->setSampler( TEX_SLOT0, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(0), GL.Enum(Texture2D) );
-				targetPass->setSampler( TEX_SLOT1, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(1), GL.Enum(Texture2D) );
-				targetPass->setSampler( TEX_SLOT2, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(2), GL.Enum(Texture2D) );
-				targetPass->setSampler( TEX_SLOT3, internal_chain_current->buffer_deferred_mrt->GetBufferTexture(3), GL.Enum(Texture2D) );
-				targetPass->setSampler( TEX_SLOT4, internal_chain_current->buffer_deferred_mrt->GetDepthSampler(), GL.Enum(Texture2D) );
-				//targetPass->prepareShaderConstants();
-				targetPass->bindPassForward(0);
-
-				// TODO: Make the following configurable. (This can likely be used for some of the game-driving of later effects).
-				//glUniform4f(renderer::UNI_LIGHTING_PARAM_HACK, 0.5F, 1.0F, 1.0F, 1.0F); // luvppl
-				glUniform4f(renderer::UNI_LIGHTING_PARAM_HACK, 1.0F, 1.0F, 0.0F, 1.0F); // otherwise.
-
-																						// Disable alpha blending
-				glDisable( GL_BLEND );
-				glBlendFunc( GL_ONE, GL_ZERO );
-				// Disable writing to depth and stencil
-				glStencilMask( GL_FALSE );
-				glDepthMask( GL_FALSE );
-				// Disable tests
-				glDisable( GL_STENCIL_TEST );
-				glDisable( GL_DEPTH_TEST );
-				// Draw the screen quad
-				GLd.DrawScreenQuad(targetPass);
-			}
-			// Finish rendering
-
-			// Pop the main buffer off the render stack, returning to the MRT target
-			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
-
-			// Clear the MRT's color results now that we no longer need them
-			glClear( GL_COLOR_BUFFER_BIT );
-
-			TimeProfiler.EndAddTimeProfile( "rs_render_lightpush" );
-		}
-
-		// Check if should temporarily switch to forward mode
-		if ( renderRQ_next.obj && renderRQ_current.forward == false && renderRQ_next.forward == true ) // Last deferred object, switch to forward mode
-		{
-			rendered = false;
-
-			// Copy over the depth to use when drawing in forward mode
-			internal_chain_current->buffer_deferred_rt->BindBuffer();
-			// Set up viewport. Forward geometry pass of the renderer again renders at the same size as the deferred geometry pass.
-			GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
-
-			// The forward and deferred buffers share their depth and stencil, so we can continue render without copying anything:
-
-			// Set to forward mode
-			renderMode = kRenderModeForward;
-			bool renderForward = true;
-			while ( renderForward )
-			{
-				i += 1;
-				// Grab the next two render objects
-				renderRQ_current = sortedRenderList[i];
-				if ( i < sortedListSize-1 ) {
-					renderRQ_next = sortedRenderList[i+1];
-				}
-				else {
-					renderRQ_next.obj = NULL;
-				}
-				// Render the object
-				if ( renderRQ_current.obj->visible && renderRQ_current.forward )
-					/*( (RrMaterial::special_mode == renderer::kPipelineModeNormal || RrMaterial::special_mode == renderer::kPipelineModeShaft || RrMaterial::special_mode == renderer::kPipelineMode2DPaletted) && renderRQ_current.forward )
-					||( RrMaterial::special_mode == renderer::kPipelineModeEcho && renderRQ_current.forward  && renderRQ_current.renderLayer == V2D ) // (unless echopass, then only do v2d)
-					))*/
-				{
-					if ( !renderRQ_current.obj->Render( renderRQ_current.pass ) ) {
-						throw std::exception();
-					}
-					GL.CheckError();
-				}
-				else if ( !renderRQ_current.forward ) 
-				{	// Shouldn't be rendering a deferred object here.
-					throw std::exception();
-				}
-				// Check the next object to see if should keep rendering
-				if ( renderRQ_next.obj == NULL || // No next object
-					!renderRQ_next.forward ) // Next object is not forward
-				{	// Stop rendering forward mode
-					renderForward = false;
-				}
-				// If next object is on another layer, clear depth
-				else if ( renderRQ_current.renderLayer != renderRQ_next.renderLayer )
-				{
-					// Clear depth between layers
-					glStencilMask( GL_TRUE );
-					glDepthMask( GL_TRUE );
-					glClear( GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-				}
-			}
-
-			// Switch back to deferred renderer
-			renderMode = kRenderModeDeferred;
-
-			// Go back to deferred buffer
-			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
-		}
-
-		// Check for main layer switch (rendering is ending, or new layer)
-		if ( renderRQ_next.obj == NULL || renderRQ_current.renderLayer != renderRQ_next.renderLayer )
-		{
-			// Clear data between layers
-			glStencilMask( GL_TRUE );
-			glDepthMask( GL_TRUE );
-			glClear( GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-
-			// Copy the layer over alpha-blended
-			render_target->BindBuffer();
-			{
-				// Set up the viewport to copy to the entire screen:
-				GL.setupViewport(0, 0, render_target->GetWidth(), render_target->GetHeight());
-				{
-					// Set the current main screen buffer as the texture
-					CopyScaled->setTexture( TEX_MAIN, internal_chain_current->buffer_deferred_rt );
-					CopyScaled->m_diffuse[0] = currentRenderSize.x / (Real)unscaledRenderSize.x;
-					CopyScaled->m_diffuse[1] = currentRenderSize.y / (Real)unscaledRenderSize.y;
-					CopyScaled->prepareShaderConstants();
-					CopyScaled->bindPassForward(0);
-
-					// Set up an always-rendered
-					glStencilMask( GL_FALSE );
-					glDepthMask( GL_FALSE );
-
-					glDisable( GL_STENCIL_TEST );
-					glDisable( GL_DEPTH_TEST );
-
-					glEnable( GL_BLEND );
-					glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-					GLd.DrawScreenQuad(CopyScaled);
-				}
-			}
-			render_target->UnbindBuffer();
-
-			// Clear out the buffer now that we no longer need it.
-			internal_chain_current->buffer_deferred_rt->BindBuffer();
-			{
-				glStencilMask( GL_TRUE );
-				glDepthMask( GL_TRUE );
-				glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-			}
-			internal_chain_current->buffer_deferred_rt->UnbindBuffer();
-
-			// Reset render size in subsequent targets
-			//if ( renderRQ_next.renderLayer > kRLWorld )
-			//{
-			//	// Reset render scale-down after the main layer
-			//	currentRenderSize = unscaledRenderSize;
-			//} // TODO: May want this to be configurable.
-
-			// Reset the viewport for the next deferred geometry stage
-			GL.setupViewport( 0, 0, currentRenderSize.x, currentRenderSize.y );
-		}
-
-		// Go to the next job
-		i += 1;
-	}
-
-	// Set up the viewport to copy to the entire screen:
-	GL.setupViewport(0, 0, render_target->GetWidth(), render_target->GetHeight());
-
-	// Finally, work on postrender
-	for ( i = 0; i < (int)sortSinglePassList.size(); ++i )
-	{
-		sortSinglePassList[i]->PostRender();
-	}
-	// End render loop
-
-	// Unbind fbo when done rendering
-	internal_chain_current->buffer_deferred_mrt->UnbindBuffer();
-}
 
 //// Deferred rendering routine.
 //void RrRenderer::RenderSceneDeferred ( const uint32_t n_renderHint )
@@ -1640,59 +1538,59 @@ void RrRenderer::RenderScene ( const uint32_t renderHint, RrCamera* camera )
 //	internal_chain_current->buffer_deferred_mrt->UnbindBuffer();
 //}
 
-
-
-// Specialized Rendering Routines
-void RrRenderer::PreRenderBeginLighting ( std::vector<RrLight*> & lightsToUse )
-{
-	//vSpecialRender_LightList = lightsToUse;
-	vSpecialRender_LightList = *RrLight::GetLightList();
-	*RrLight::GetLightList() = lightsToUse;
-
-	bSpecialRender_ResetLights = true;
-
-	// Calculate pass globals
-	renderer::Settings.fogScale = 1.0f / (renderer::Settings.fogEnd - renderer::Settings.fogStart);//currentCamera->zFar
-	// Update UBOs
-	RrMaterial::updateStaticUBO();
-}
-// RenderSingleObject renders an object, assuming the projection has been already set up.
-void RrRenderer::RenderSingleObject ( CRenderableObject* objectToRender )
-{
-	GL_ACCESS;
-	char maxPass = objectToRender->GetPassNumber();
-	for ( char pass = 0; pass < maxPass; ++pass )
-	{
-		if ( objectToRender->GetPass( pass )->m_hint & kRenderHintWorld )
-		{
-			//GL.prepareDraw();
-			objectToRender->Render( pass );
-			//GL.cleanupDraw();
-		}
-	}
-
-	if ( bSpecialRender_ResetLights ) {
-		*RrLight::GetLightList() = vSpecialRender_LightList;
-		bSpecialRender_ResetLights = false;
-	}
-}
-// RenderObjectArray() renders a null terminated list of objects, assuming the projection has been already set up.
-void RrRenderer::RenderObjectArray ( CRenderableObject** objectsToRender )
-{
-	GL_ACCESS;
-	int i = 0;
-	while ( objectsToRender[i] != NULL ) {
-		char maxPass = objectsToRender[i]->GetPassNumber();
-		for ( char pass = 0; pass < maxPass; ++pass )
-		{
-			//GL.prepareDraw();
-			objectsToRender[i]->Render( pass );
-			//GL.cleanupDraw();
-		}
-	}
-
-	if ( bSpecialRender_ResetLights ) {
-		*RrLight::GetLightList() = vSpecialRender_LightList;
-		bSpecialRender_ResetLights = false;
-	}
-}
+//
+//
+//// Specialized Rendering Routines
+//void RrRenderer::PreRenderBeginLighting ( std::vector<RrLight*> & lightsToUse )
+//{
+//	//vSpecialRender_LightList = lightsToUse;
+//	vSpecialRender_LightList = *RrLight::GetLightList();
+//	*RrLight::GetLightList() = lightsToUse;
+//
+//	bSpecialRender_ResetLights = true;
+//
+//	// Calculate pass globals
+//	renderer::Settings.fogScale = 1.0f / (renderer::Settings.fogEnd - renderer::Settings.fogStart);//currentCamera->zFar
+//	// Update UBOs
+//	RrMaterial::updateStaticUBO();
+//}
+//// RenderSingleObject renders an object, assuming the projection has been already set up.
+//void RrRenderer::RenderSingleObject ( CRenderableObject* objectToRender )
+//{
+//	GL_ACCESS;
+//	char maxPass = objectToRender->GetPassNumber();
+//	for ( char pass = 0; pass < maxPass; ++pass )
+//	{
+//		if ( objectToRender->GetPass( pass )->m_hint & kRenderHintWorld )
+//		{
+//			//GL.prepareDraw();
+//			objectToRender->Render( pass );
+//			//GL.cleanupDraw();
+//		}
+//	}
+//
+//	if ( bSpecialRender_ResetLights ) {
+//		*RrLight::GetLightList() = vSpecialRender_LightList;
+//		bSpecialRender_ResetLights = false;
+//	}
+//}
+//// RenderObjectArray() renders a null terminated list of objects, assuming the projection has been already set up.
+//void RrRenderer::RenderObjectArray ( CRenderableObject** objectsToRender )
+//{
+//	GL_ACCESS;
+//	int i = 0;
+//	while ( objectsToRender[i] != NULL ) {
+//		char maxPass = objectsToRender[i]->GetPassNumber();
+//		for ( char pass = 0; pass < maxPass; ++pass )
+//		{
+//			//GL.prepareDraw();
+//			objectsToRender[i]->Render( pass );
+//			//GL.cleanupDraw();
+//		}
+//	}
+//
+//	if ( bSpecialRender_ResetLights ) {
+//		*RrLight::GetLightList() = vSpecialRender_LightList;
+//		bSpecialRender_ResetLights = false;
+//	}
+//}

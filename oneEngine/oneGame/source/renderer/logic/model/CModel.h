@@ -131,12 +131,12 @@ public:
 	// This mode will save memory, but will completely copy the referenced animation
 	//  with no ability to change this model's animation.
 	// If the referenced model is deleted, unexpected behavior will occur.
-	RENDER_API void			SetReferencedAnimationMode ( CModel*, const rrAnimReferenceType = kAnimRefDirect );
+	RENDER_API void			SetReferencedAnimationMode ( CModel*, const rrAnimReferenceType = kAnimReferenceDirect );
 
 	// Hides or shows all of the child meshes
 	RENDER_API void			SetVisibility ( const bool n_visibility );
 	// Sets child mesh render types
-	RENDER_API void			SetRenderType ( const renderer::eRenderLayer n_type );
+	RENDER_API void			SetRenderType ( const renderer::rrRenderLayer n_type );
 
 	//======================================================//
 	// GETTERS / FINDERS
@@ -165,7 +165,7 @@ public:
 	// Get the hitbox list
 	std::vector<sHitbox>*	GetHitboxes ( void ) { return &m_physHitboxes; }
 	// Gets the bounding box of the model
-	BoundingBox				GetBoundingBox ( void ) const { return m_renderBoundingBox; }
+	core::math::BoundingBox	GetBoundingBox ( void ) const { return m_renderBoundingBox; }
 
 	// Gets if any of the meshes are being rendered
 	RENDER_API bool			GetVisibility ( void );
@@ -209,7 +209,8 @@ protected:
 	float				fCheckRenderDist;
 	Vector3d			vMinExtents;
 	Vector3d			vMaxExtents;
-	BoundingBox			m_renderBoundingBox;
+	core::math::BoundingBox
+						m_renderBoundingBox;
 
 	// Shader uniforms
 	//std::unordered_map<arstring128,float>*	uniformMapFloat;
