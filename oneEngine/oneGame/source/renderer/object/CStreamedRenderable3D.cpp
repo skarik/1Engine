@@ -62,7 +62,7 @@ void CStreamedRenderable3D::StreamLockModelData ( void )
 
 //		Render()
 // Render the model using the 2D engine's style
-bool CStreamedRenderable3D::Render ( const char pass )
+bool CStreamedRenderable3D::Render ( const rrRenderParams* params )
 { 
 	// otherwise we will render the same way 3d meshes render
 	{
@@ -71,7 +71,7 @@ bool CStreamedRenderable3D::Render ( const char pass )
 
 		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
 
-		gpu::Pipeline* pipeline = GetPipeline( pass );
+		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
 		// bind the vertex buffers
 		for (int i = 0; i < renderer::kAttributeMaxCount; ++i)

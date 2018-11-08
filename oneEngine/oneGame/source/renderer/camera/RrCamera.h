@@ -7,6 +7,7 @@
 #include "core/math/matrix/CMatrix.h"
 #include "core-ext/transform/Transform.h"
 #include "renderer/types/ObjectSettings.h"
+#include "renderer/camera/CameraPass.h"
 
 class RrRenderTexture;
 
@@ -17,37 +18,6 @@ enum rrCameraClassType
 	kCameraClassRTNormal,
 	kCameraClassRTCascade,
 	kCameraClassRTCube
-};
-
-enum rrCameraRenderType
-{
-	// Will run the 5x5 forward+deferred hybrid renderer
-	kCameraRenderWorld,
-	
-	// Will run the forward+ shadow color renderer
-	kCameraRenderShadow,
-};
-
-class RrHybridBufferChain;
-
-struct rrCameraPass
-{
-	// How does this camera act for this given pass?
-	rrCameraRenderType	m_passType;
-
-	// target viewport rendering to
-	Rect				m_viewport;
-
-	// NULL to use the main engine's buffer chain.
-	// Otherwise, points to the buffer chain to use for rendering.
-	// An RT camera will properly create their own buffer chain
-	RrHybridBufferChain*m_bufferChain;
-
-	// rendering properties
-	Matrix4x4			m_viewTransform;
-	Matrix4x4			m_projTransform;
-	Matrix4x4			m_viewprojTransform;
-	core::math::Frustum	m_frustum;
 };
 
 // Macros

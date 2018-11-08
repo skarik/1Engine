@@ -68,6 +68,10 @@ public:
 	// Do not delete the program directly, use RemoveReference.
 	RENDER_API void			setProgram ( RrShaderProgram* program );
 
+	//	setVertexSpecification ( ... )
+	RENDER_API void			setVertexSpecification ( renderer::shader::VertexAttribute* attributes, const size_t attribute_count );
+
+	//	validate ( ... ) 
 	RENDER_API bool			validate ( void );
 
 	//	utilSetupAsDefault () : Sets proprties of the pass to what the default 3D pass usually is.

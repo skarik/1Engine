@@ -18,6 +18,8 @@
 //#include "glMainSystem.h"
 //#include "renderer/material/RrMaterial.h"
 
+#include "renderer/camera/CameraPass.h"
+
 #include "renderer/types/RrObjectMaterialProperties.h"
 #include "renderer/types/ObjectSettings.h"
 
@@ -34,7 +36,7 @@ class RrRenderer;
 //class RrPassDeferred;
 class RrPass;
 class RrCamera;
-struct rrCameraPass;
+//struct rrCameraPass;
 
 // Defines
 #ifndef RegisterRenderClassName
@@ -53,9 +55,21 @@ struct rrCameraPass;
 // Base class, virtual/abstract
 class CRenderableObject
 {
+public:
+
+	//	rrRenderParams
+	// Provided as input to all functions render routine.
+	struct rrRenderParams
+	{
+		int8_t pass;
+		gpu::ConstantBuffer*	cbuf_perPass;
+		gpu::ConstantBuffer*	cbuf_perFrame;
+		gpu::ConstantBuffer*	cbuf_perCamera;
+	};
+
 private:
 	// No copying with "="
-	CRenderableObject & operator= (const CRenderableObject & other);
+	CRenderableObject & operator= (const CRenderableObject & other) =delete;
 
 public:
 	RENDER_API explicit		CRenderableObject ( void );
@@ -70,18 +84,15 @@ protected:
 public:
 	// 
 	// Rendering Prototypes
-	// If any of the rendering functions return false, the renderer will throw an exception.
+	// If any of the rendering functions return false, the renderer will either throw an exception to attempt to debug break.
 
 	//	PreRender() : Called before the internal render-loop executes.
 	// Can be called multiple times per frame, but generally only once per camera.
+	// Use to calculate transformation matrices w/ the given camera before sending to the GPU.
 	RENDER_API virtual bool	PreRender ( rrCameraPass* cameraPass )
 		{ return true; }
-	//	Render(const int pass) : Current pass
-	RENDER_API virtual bool	Render ( const char pass ) =0;
-	//	PostRender() : Called after the render-loop executes.
-	// Can be called multiple times per frame.
-	//RENDER_API virtual bool	PostRender ( rrCameraPass* cameraPass )
-	//	{ return true; }
+	//	Render(const rrRenderParams* params) : Current pass
+	RENDER_API virtual bool	Render ( const rrRenderParams* params ) =0;
 	//	BeginRender() : Called before the render-loop executes.
 	// Called once per frame.
 	RENDER_API virtual bool	BeginRender ( void )
@@ -125,8 +136,13 @@ public:
 	RENDER_API void			PassInitWithInput ( int pass, RrPass* passData );
 	//	PassFree(pass) : Cleans up and removes resources used by a pass.
 	RENDER_API void			PassFree ( int pass );
+	//	PassGetSurface(pass) : Get the writable surface options.
+	// This marks the surface as edited, which forces the cbuffer to update next frame.
 	RENDER_API renderer::cbuffer::rrPerObjectSurface&
 							PassGetSurface ( int pass );
+
+	//	PassesFree() : Cleans up and removes resources used by all passes.
+	RENDER_API void			PassesFree ( void );
 
 	// 
 	// Culling/Prerendering Prototypes
@@ -185,6 +201,7 @@ protected:
 private:
 	RrPass					m_passes [kPass_MaxPassCount];
 	bool					m_passEnabled [kPass_MaxPassCount];
+	bool					m_passSurfaceSynced [kPass_MaxPassCount];
 
 	//vector<renderer::new_passinfo_t>	m_passinfo;	
 	/*uint*		m_vao_info;
@@ -200,6 +217,7 @@ private:
 	bool					m_pipelineReady [kPass_MaxPassCount];
 
 	gpu::ConstantBuffer		m_cbufPerObjectMatrices;
+	gpu::ConstantBuffer		m_cbufPerObjectSurfaces [kPass_MaxPassCount];
 
 protected:
 	// ==Render Setup==
@@ -207,9 +225,12 @@ protected:
 	// BindVAO()
 	// Must be called after the vertex buffer is bound, as will bind materials to render.
 	//RENDER_API bool BindVAO ( const uchar pass, const uint vbo, const uint eab=0, const bool userDefinedAttribs=false );
+
+	//	GetPipeline(pass) : Creates a pipeline if needed, and returns it.
+	// The engine attempts to track some pass changes, and will recreate a pipeline if needed. Generally, this is not recommended.
 	RENDER_API gpu::Pipeline*
 							GetPipeline ( const uchar pass );
-
+	//	FreePipelines() : Frees all allocated pipelines.
 	RENDER_API void			FreePipelines ( void );
 
 

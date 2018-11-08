@@ -1,5 +1,5 @@
-#ifndef RENDERER_C_MODEL_
-#define RENDERER_C_MODEL_
+#ifndef RENDERER_LOGIC_MODEL_CONTAINER_
+#define RENDERER_LOGIC_MODEL_CONTAINER_
 
 #include "core/types/ModelData.h"
 #include "core/math/BoundingBox.h"
@@ -9,9 +9,12 @@
 #include "renderer/logic/RrLogicObject.h"
 #include "renderer/types/ModelStructures.h"
 
-#include "renderer/logic/model/RrAnimatedMeshGroup.h"
+//#include "renderer/logic/model/RrAnimatedMeshGroup.h"
 
-class CMesh;
+namespace renderer
+{
+	class Mesh;
+}
 class AnimationControl;
 class rrMeshBuffer;
 class physMesh;
@@ -26,40 +29,49 @@ enum rrAnimReferenceType
 	kAnimReferenceMatch,
 };
 
-// Class Definition
+//	rrModelLoadParams : Parameter struct for loading models.
+// Used for when only parts of the model data is needed.
+struct rrModelLoadParams
+{
+	const char*	resource_name;
+	bool	morphs;
+	bool	animation;
+	bool	hitboxes;
+	bool	collision;
+};
+
+//	CModel : Container for handling animated and static meshes.
+// Is the basis of the "Mesh Trio," which are:
+//	* CModel : This class
+//	* RrAnimatedMeshGroup : The "raw" container, managed by resource system.
+//	* 
 class CModel : public RrLogicObject
 {
-public:
-	// Constructor
-	RENDER_API explicit		CModel ( void );
+protected:
+	// Constructor. Creates model.
+	explicit				CModel ( void );
 
-	// Loads up model file
-	/*RENDER_API explicit CModel ( const char* sFilename );	
-	// Load up model data struct
-	RENDER_API explicit CModel ( arModelData& mdInModelData, const char* sModelName = "_sys_override_" );
-	// Create empty model
-	RENDER_API explicit CModel ( void ) : RrLogicObject() {
-		// Clear out uniform lists
-		//uniformMapFloat = NULL;
-		//uniformMapVect2d = NULL;
-		//uniformMapVect3d = NULL;
-		//uniformMapColor = NULL;
-	};
-	// Destructor
-	RENDER_API virtual ~CModel ( );*/
+public: // Creation Interface
 
-public:
-	//	LoadFile ( filename )
+	//	LoadFile ( filename ) : Creates a model loaded from file, and returns it.
+	// May create a model using previously loaded data.
+	// The model is automatically added to the active objects list.
+	// Physics and animation data will also be added to the resource system.
 	static RENDER_API CModel*
-							LoadFile ( const char* sFilename );
+							Load ( const char* resource_name );
+	//	LoadFilePartial ( filename, ...options... ) : Creates a model loaded from file, and returns it.
+	// 
+	// LoadFile(...) calls this with all options enabled.
+	static RENDER_API CModel*
+							Load ( const rrModelLoadParams& load_params );
 
 	//	Upload ( data, id )
 	static RENDER_API CModel*
-							Upload ( arModelData& model_data, const char* model_name = "_sys_override_" );
+							Upload ( arModelData& model_data );
 
 private:
 	//	LoadModel ( filename ) : Load some shit
-	void					LoadModel ( const string& sFilename );
+	//void					LoadModel ( const char* resource_name );
 
 protected:
 	// Get the model bounding box
@@ -78,12 +90,15 @@ protected:
 	virtual RrMaterial**	GetPassMaterialPosition ( const char pass );*/
 
 public:
+	//	Destructor : Frees used references.
+	RENDER_API virtual		~CModel ( void );
+
 	// Send shader uniform list
 	//RENDER_API void SendShaderUniforms ( void );
 
-	// Begin render
+	// Executed before the renderer starts. Is guaranteed to be called and finish before any PreRender call.
 	void					PreStep ( void ) override;
-	// End render
+	// Executed after PostStep jobs requests are started (after EndRender).
 	void					PostStepSynchronus ( void ) override;
 
 	// Frustom Culling Check
@@ -97,17 +112,17 @@ public:
 
 	// Recalcuate normals on all owned meshes. Normally not wanted, unless you're creating
 	// procedural meshes.
-	RENDER_API void			RecalculateNormals ( void );
+	//RENDER_API void			RecalculateNormals ( void );
 	// Duplicates the mesh materials to a local copy.
 	// This prevents results from GetPassMaterial from affecting the original mesh.
-	RENDER_API void			DuplicateMaterials ( void );
+	//RENDER_API void			DuplicateMaterials ( void );
 
 	// Change the material the given material array thing.
 	// Give the ownership of the material to this mesh if the materials have been "released"
-	RENDER_API void			SetMaterial ( RrMaterial* n_pNewMaterial );
+	//RENDER_API void			SetMaterial ( RrMaterial* n_pNewMaterial );
 
 	// Returns material of mesh, or throws error if has multiple submeshes
-	RENDER_API RrMaterial*	GetMaterial ( void );
+	//RENDER_API RrMaterial*	GetMaterial ( void );
 
 	//======================================================//
 	// SETTERS
@@ -136,26 +151,29 @@ public:
 	// Hides or shows all of the child meshes
 	RENDER_API void			SetVisibility ( const bool n_visibility );
 	// Sets child mesh render types
-	RENDER_API void			SetRenderType ( const renderer::rrRenderLayer n_type );
+	//RENDER_API void			SetRenderType ( const renderer::rrRenderLayer n_type );
 
 	//======================================================//
 	// GETTERS / FINDERS
 	//======================================================//
 
 	// Get the number of meshes this model manages
-	RENDER_API uint			GetMeshCount ( void ) const;
+	RENDER_API size_t		GetMeshCount ( void ) const;
 	// Gets the mesh with the index
-	RENDER_API CMesh*		GetMesh ( const uint n_index ) const;
+	RENDER_API renderer::Mesh*
+							GetMesh ( const uint n_index ) const;
 	// Gets the mesh with the name
-	RENDER_API CMesh*		GetMesh ( const char* n_name ) const;
+	RENDER_API renderer::Mesh*
+							GetMesh ( const char* n_name ) const;
 	// Gets the filename of the model
-	string					GetFilename ( void ) { return myModelFilename; }
+	//string					GetFilename ( void )
+	//	{ return myModelFilename; }
 	// Gets the indicated mesh data in the array
 	RENDER_API arModelData*	GetModelData ( int iMeshIndex ) const;
 	// Returns the first matching mesh with the given name in the array
 	RENDER_API arModelData*	GetModelDataByName ( const char* nNameMatch ) const;
 	// Return the first matching material
-	RENDER_API RrMaterial*	FindMaterial ( const char* n_name, const int n_offset=0 ) const;
+	//RENDER_API RrMaterial*	FindMaterial ( const char* n_name, const int n_offset=0 ) const;
 
 	// Get the animation reference
 	/*AnimationControl*	GetAnimation ( void ) {
@@ -163,9 +181,11 @@ public:
 	}*/
 
 	// Get the hitbox list
-	std::vector<sHitbox>*	GetHitboxes ( void ) { return &m_physHitboxes; }
+	//std::vector<sHitbox>*	GetHitboxes ( void )
+	//	{ return &m_physHitboxes; }
 	// Gets the bounding box of the model
-	core::math::BoundingBox	GetBoundingBox ( void ) const { return m_renderBoundingBox; }
+	core::math::BoundingBox	GetBoundingBox ( void ) const
+		{ return m_renderBoundingBox; }
 
 	// Gets if any of the meshes are being rendered
 	RENDER_API bool			GetVisibility ( void );
@@ -182,18 +202,22 @@ protected:
 	// Mesh Data
 	//vector<rrMesh*>	vMeshes;
 	//vector<physMesh*>	vPhysMeshes;
-	std::vector<CMesh*>	m_meshes;
+	std::vector<renderer::Mesh*>
+						m_meshes;
 	//std::vector<rrMesh*>
 	//					m_glMeshlist;
-	std::vector<physMesh*>
-						m_physMeshlist;
-	// Collision data
-	std::vector<sHitbox>
-						m_physHitboxes;
 
-	// 
+	// physmesh listing
+	/*std::vector<physMesh*>
+						m_physMeshlist;
+	std::vector<sHitbox>
+						m_physHitboxes;*/
+
+	// mesh data
 	RrAnimatedMeshGroup*
 						m_meshGroup;
+	// procedurally created by either cpu or gpu
+	bool				m_procedural;
 
 	// Animation data
 	AnimationControl*	pMyAnimation;
@@ -202,7 +226,7 @@ protected:
 	rrAnimReferenceType	m_animRefMode;
 
 	// File Info
-	string				myModelFilename;
+	arstring128			m_resourceName;
 
 	// Frustum Culling
 	Vector3d			vCheckRenderPos;
@@ -223,4 +247,4 @@ protected:
 	
 };
 
-#endif//RENDERER_C_MODEL_
+#endif//RENDERER_LOGIC_MODEL_CONTAINER_

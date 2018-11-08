@@ -17,7 +17,7 @@ public:
 
 	//		PreRender()
 	// Push the model's uniform up up.
-	RENDER_API bool			PreRender ( void ) override;
+	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style

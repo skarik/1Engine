@@ -1,15 +1,14 @@
-#include "CMesh.h"
+#include "Mesh.h"
 #include "renderer/logic/model/CModel.h"
 #include "renderer/logic/model/CSkinnedModel.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 #include "renderer/camera/RrCamera.h"
-//#include "renderer/material/RrMaterial.h"
-//#include "renderer/system/glMainSystem.h"
+#include "renderer/material/Material.h"
 #include "renderer/gpuw/Device.h"
 #include "renderer/gpuw/GraphicsContext.h"
 
-CMesh::CMesh ( rrMeshBuffer* nMesh, bool n_enableSkinning )
+renderer::Mesh::Mesh ( rrMeshBuffer* nMesh, bool n_enableSkinning )
 	: CRenderableObject(),
 	m_mesh(nMesh), m_parent(NULL),
 	bUseFrustumCulling(true), bCanRender(true), bUseSkinning(n_enableSkinning)
@@ -21,12 +20,12 @@ CMesh::CMesh ( rrMeshBuffer* nMesh, bool n_enableSkinning )
 	}
 }
 
-CMesh::~CMesh ( void )
+renderer::Mesh::~Mesh ( void )
 {
-
+	// CMesh does not manage the input meshes, only wrangles buffers and renders them.
 }
 
-void CMesh::CalculateBoundingBox ( void )
+void renderer::Mesh::CalculateBoundingBox ( void )
 {
 	Vector3d minPos, maxPos;
 
@@ -54,7 +53,7 @@ void CMesh::CalculateBoundingBox ( void )
 
 // == RENDERABLE OBJECT INTERFACE ==
 
-bool CMesh::PreRender ( rrCameraPass* cameraPass )
+bool renderer::Mesh::PreRender ( rrCameraPass* cameraPass )
 {
 	// disable frustum culling:
 	bUseFrustumCulling = false;
@@ -108,7 +107,7 @@ bool CMesh::PreRender ( rrCameraPass* cameraPass )
 }
 
 // Render the mesh
-bool CMesh::Render ( const char pass )
+bool renderer::Mesh::Render ( const rrRenderParams* params )
 {
 	//{
 	//	if ( !bCanRender || m_mesh == NULL )
@@ -147,7 +146,7 @@ bool CMesh::Render ( const char pass )
 
 		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
 
-		gpu::Pipeline* pipeline = GetPipeline( pass );
+		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
 		// bind the vertex buffers
 		for (int i = 0; i < renderer::kAttributeMaxCount; ++i)
@@ -157,6 +156,10 @@ bool CMesh::Render ( const char pass )
 		gfx->setIndexBuffer(&m_mesh->m_indexBuffer, gpu::kFormatR16UInteger);
 		// bind the cbuffers: TODO
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurface);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
 		if ( m_parent != NULL )
 		{
 			if ( m_parent->m_xbufSkinningMajor )
@@ -165,6 +168,30 @@ bool CMesh::Render ( const char pass )
 		// draw now
 		gfx->drawIndexed(m_mesh->m_modeldata->indexNum, 0);
 	}
+
+	/*{
+		if ( !bCanRender || m_mesh == NULL )
+			return true; // Only render when have a valid mesh and rendering enabled
+
+		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
+		renderer::Material* material = renderer::Material::Begin(gfx, params, this);
+		// bind the vertex buffers
+		for (int i = 0; i < renderer::kAttributeMaxCount; ++i)
+			if (m_mesh->m_bufferEnabled[i])
+				gfx->setVertexBuffer(i, &m_mesh->m_buffer[i], 0);
+		// bind the index buffer
+		gfx->setIndexBuffer(&m_mesh->m_indexBuffer, gpu::kFormatR16UInteger);
+		// bind the cbuffers: TODO
+		material->SetShaderCBuffers(gfx, params, this);
+		if ( m_parent != NULL )
+		{
+			if ( m_parent->m_xbufSkinningMajor )
+				gfx->setShaderXBuffer(gpu::kShaderStageVs, renderer::XBUFFER_SKINNING_MAJOR, &m_parent->m_xbufSkinningMajor);
+		}
+		// draw now
+		gfx->drawIndexed(m_mesh->m_modeldata->indexNum, 0);
+	}*/
 
 	// Successful rendering
 	return true;

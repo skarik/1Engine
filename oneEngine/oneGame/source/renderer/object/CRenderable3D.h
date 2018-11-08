@@ -24,11 +24,11 @@ public:
 
 	//		PreRender()
 	// Push the uniform properties
-	RENDER_API bool			PreRender ( RrCamera* camera ) override;
+	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style
-	RENDER_API bool			Render ( const char pass ) override;
+	RENDER_API bool			Render ( const rrRenderParams* params ) override;
 
 protected:
 

@@ -19,7 +19,7 @@ namespace debug
 		bool		BeginRender ( void ) override;
 
 		bool		PreRender ( rrCameraPass* camera ) override;
-		bool		Render ( const char pass ) override;
+		bool		Render ( const rrRenderParams* params ) override;
 
 	public:
 		RENDER_API void AddWatch ( RrRenderTexture* rtToWatch );

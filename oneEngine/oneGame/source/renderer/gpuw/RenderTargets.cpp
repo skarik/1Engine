@@ -62,7 +62,7 @@ int gpu::RenderTarget::attach ( int slot, WOFrameAttachment* buffer )
 
 int gpu::RenderTarget::assemble ( void )
 {
-	GLenum status = glCheckNamedFramebufferStatus( m_framebuffer );
+	GLenum status = glCheckNamedFramebufferStatus( m_framebuffer, GL_FRAMEBUFFER );
 	if (status != GL_FRAMEBUFFER_COMPLETE)
 	{
 		//switch ( status )

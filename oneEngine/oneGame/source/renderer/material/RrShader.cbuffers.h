@@ -26,6 +26,22 @@ namespace renderer
 			kBoneIndices = 8,
 		};
 
+		//	VBufferSlot
+		// Typed vertex buffer slot description. May be removed later.
+		// Unique shaders are welcome to define their own Location type.
+		enum VBufferSlot : uint32_t
+		{
+			kVBufferSlotPosition = (uint32_t)Location::kPosition,
+			kVBufferSlotUV0 = (uint32_t)Location::kUV0,
+			kVBufferSlotColor = (uint32_t)Location::kColor,
+			kVBufferSlotNormal = (uint32_t)Location::kNormal,
+			kVBufferSlotTangent = (uint32_t)Location::kTangent,
+			kVBufferSlotBinormal = (uint32_t)Location::kBinormal,
+			kVBufferSlotUV1 = (uint32_t)Location::kUV1,
+			kVBufferSlotBoneWeight = (uint32_t)Location::kBoneWeight,
+			kVBufferSlotBoneIndices = (uint32_t)Location::kBoneIndices,
+		};
+
 		//	rrBinding
 		// Describes slot to bind resource to. Is not actually needed.
 		enum rrBinding : uint32_t

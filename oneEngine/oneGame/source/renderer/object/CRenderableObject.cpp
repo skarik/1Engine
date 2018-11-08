@@ -10,29 +10,20 @@
 
 #include "CRenderableObject.h"
 
-// ==Static Members
-//bool CRenderableObject::bStaticMaterialsInit = false;
-//RrMaterial* CRenderableObject::GLoutlineMaterial = NULL;
-//Vector3d CRenderableObject::_activeCameraPosition = Vector3d::zero;
-
 // ==Constructor
 //  adds render object to the list of RO in RrRenderer
 //  sets visibility to true
 CRenderableObject::CRenderableObject ( void )
 	/*: m_material(NULL), m_vao_info(NULL), m_vao_count(0), m_vao_maxcount(0)*/
+	: m_passEnabled(), m_pipelineReady()
 {
-	// Set default render settings
-	//renderSettings.fOutlineWidth = -1;
 	// Set default layer mode
-	/*for ( char i = 0; i < 16; ++i )
-		renderSettings.layers[i] = false;
-	renderSettings.layers[kRenderHintALL] = true;*/
 	renderSettings.renderHints = kRenderHintBitmaskALL;
 
 	//InitMaterials();
 	CRenderableObject::SetMaterial( RrMaterial::Default );
 
-	renderLayer = renderer::kRLWorld;
+	//renderLayer = renderer::kRLWorld;
 	id = RrRenderer::Active->AddRO( this );
 	visible = true;
 }
@@ -46,7 +37,8 @@ CRenderableObject::~CRenderableObject ( void )
 	RrRenderer::Active->RemoveRO( id );
 
 	// Remove material reference
-	SetMaterial( NULL );
+	//SetMaterial( NULL );
+	PassesFree();
 
 	// Remove VAOs
 	//PassinfoClear();
@@ -314,21 +306,46 @@ void CRenderableObject::SetId( unsigned int nId )
 
 void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform, const rrCameraPass* cameraPass )
 {
-	Matrix4x4 modelTRS, modelRS;
-	core::TransformUtility::TRSToMatrix4x4(worldTransform, modelTRS, modelRS);
+	// Update matrix constants
+	{
+		Matrix4x4 modelTRS, modelRS;
+		core::TransformUtility::TRSToMatrix4x4(worldTransform, modelTRS, modelRS);
 
-	//// Update matrix constants
-	//pushConstantsPerObject(!modelTRS, !modelRS);
-	modelTRS = !modelTRS;
-	modelRS  = !modelRS;
+		//pushConstantsPerObject(!modelTRS, !modelRS);
+		modelTRS = !modelTRS;
+		modelRS  = !modelRS;
 
-	renderer::cbuffer::rrPerObjectMatrices matrices;
-	matrices.modelTRS = modelTRS;
-	matrices.modelRS  = modelRS;
-	matrices.modelViewProjection = (cameraPass != NULL) ? (modelTRS * cameraPass->m_viewprojTransform) : (modelTRS);
-	matrices.modelViewProjectionInverse = matrices.modelViewProjection.inverse();
+		renderer::cbuffer::rrPerObjectMatrices matrices;
+		matrices.modelTRS = modelTRS;
+		matrices.modelRS  = modelRS;
+		matrices.modelViewProjection = (cameraPass != NULL) ? (modelTRS * cameraPass->m_viewprojTransform) : (modelTRS);
+		matrices.modelViewProjectionInverse = matrices.modelViewProjection.inverse();
 
-	// TODO: Create the buffer & push it
+		// TODO: Create a "m_isStatic" flag for if MVP should be calculated in the vertex shader.
+
+		// TODO: Create the buffer & push it
+		if (!m_cbufPerObjectMatrices.valid())
+			m_cbufPerObjectMatrices.init(NULL, &matrices, sizeof(matrices), gpu::TransferStyle::kTransferStream);
+		m_cbufPerObjectMatrices.upload(NULL, &matrices, sizeof(matrices), gpu::TransferStyle::kTransferStream);
+	}
+
+	// Update surface constants
+	{
+		renderer::cbuffer::rrPerObjectSurface surface [kPass_MaxPassCount];
+		
+		for (int i = 0; i < kPass_MaxPassCount; ++i)
+		{
+			// If pass is enabled & the pass surface needs sync:
+			if (m_passEnabled[i] && !m_passSurfaceSynced[i])
+			{
+				if (!m_cbufPerObjectSurfaces[i].valid())
+					m_cbufPerObjectSurfaces[i].init(NULL, &m_passes[i].m_surface, sizeof(m_passes[i].m_surface), gpu::TransferStyle::kTransferDynamic);
+				m_cbufPerObjectSurfaces[i].upload(NULL, &m_passes[i].m_surface, sizeof(m_passes[i].m_surface), gpu::TransferStyle::kTransferDynamic);
+
+				m_passSurfaceSynced[i] = true; // Mark as synced so we don't upload again.
+			}
+		}
+	}
 }
 
 //	PassInitWithInput(pass, passData) : Sets up a new pass on the given slot.
@@ -349,6 +366,7 @@ void CRenderableObject::PassInitWithInput ( int pass, RrPass* passData )
 	// Copy the pass over
 	m_passes[pass] = *passData;
 	m_passEnabled[pass] = true;
+	m_passSurfaceSynced[pass] = false;
 }
 
 void CRenderableObject::PassFree ( int pass )
@@ -383,7 +401,18 @@ renderer::cbuffer::rrPerObjectSurface& CRenderableObject::PassGetSurface ( int p
 	{
 		throw core::InvalidArgumentException();
 	} 
+	m_passSurfaceSynced[pass] = false;
 	return m_passes[pass].m_surface;
+}
+
+void CRenderableObject::PassesFree ( void )
+{
+	for (int i = 0; i < kPass_MaxPassCount; ++i)
+	{
+		if (m_passEnabled[i]) {
+			PassFree(i);
+		}
+	}
 }
 
 //===============================================================================================//

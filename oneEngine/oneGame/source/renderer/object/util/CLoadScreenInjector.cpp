@@ -52,7 +52,6 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 	: CRenderableObject (  )
 {
 	renderSettings.renderHints = 0 | kRenderHintBitmaskWorld;
-	renderLayer	= renderer::kRLV2D;
 
 	//m_fntNotifier	= new RrFontTexture ( "YanoneKaffeesatz-B.otf", 72, FW_NORMAL );
 	m_fntNotifier	= RrFontTexture::Load( "YanoneKaffeesatz-B.otf", 72, kFW_Normal );
@@ -71,6 +70,7 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 
 	RrPass notifierPass;
 	notifierPass.m_type = kPassTypeForward;
+	notifierPass.m_layer = renderer::kRenderLayerV2D;
 	notifierPass.utilSetupAs2D();
 	notifierPass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
 	notifierPass.setTexture( TEX_MAIN, RrTexture::Load("null") );

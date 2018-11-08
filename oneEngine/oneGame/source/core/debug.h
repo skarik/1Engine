@@ -29,13 +29,15 @@
 
 #define AR_ERROR_IMPL(fmt, ...) \
 	do { \
-		printf(__FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__); \
+		printf("%s (%d): In %s\n", __FILE__, __LINE__, __FUNCTION__); \
+		printf(fmt, ##__VA_ARGS__); \
 		AR_DEBUG_BREAK(); \
 	} while(0);
 #define AR_ASSERT_MSG_IMPL(cond, fmt, ...) \
 	do { \
 		if (!(cond)) { \
-			printf(__FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__); \
+			printf("%s (%d): In %s\n", __FILE__, __LINE__, __FUNCTION__); \
+			printf(fmt, ##__VA_ARGS__); \
 			AR_DEBUG_BREAK(); \
 		} \
 	} while(0);
@@ -46,8 +48,8 @@
 #	define ARCORE_ERROR(cond, fmt, ...)			assert(1)
 #	define ARCORE_ASSERT_MSG(cond, fmt, ...)	assert((cond))
 #elif ARCORE_ENABLE_ASSERTS
-#	define ARCORE_ERROR(fmt, ...)				AR_ERROR_IMPL(fmt, ## __VA_ARGS__)
-#	define ARCORE_ASSERT_MSG(cond, fmt, ...)	AR_ASSERT_MSG_IMPL(cond, fmt, ## __VA_ARGS__)
+#	define ARCORE_ERROR(fmt, ...)				AR_ERROR_IMPL(fmt, ##__VA_ARGS__)
+#	define ARCORE_ASSERT_MSG(cond, fmt, ...)	AR_ASSERT_MSG_IMPL(cond, fmt, ##__VA_ARGS__)
 #else
 #	define ARCORE_ERROR(fmt, ...)				AR_ERROR_DEAD(fmt, ## __VA_ARGS__)
 #	define ARCORE_ASSERT_MSG(cond, fmt, ...)	AR_ASSERT_MSG_DEAD(cond, fmt, ## __VA_ARGS__)

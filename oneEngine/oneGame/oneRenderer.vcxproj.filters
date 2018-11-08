@@ -132,9 +132,6 @@
     <ClCompile Include="source\renderer\object\shapes\CBillboard.cpp">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\object\mesh\CMesh.cpp">
-      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp">
       <Filter>SOURCE\Renderer\Object\Util</Filter>
     </ClCompile>
@@ -174,9 +171,6 @@
     <ClCompile Include="source\renderer\module_renderer.cpp">
       <Filter>SOURCE\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\object\screen\CGlowObject.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\renderer-console.cpp">
       <Filter>SOURCE\Renderer</Filter>
     </ClCompile>
@@ -187,9 +181,6 @@
       <Filter>SOURCE\Renderer\Utils</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\CStreamedMesh.cpp">
-      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\mesh\CInstancedMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\gpuw\Textures.cpp">
@@ -414,6 +405,12 @@
     <ClCompile Include="source\renderer\object\postprocess\PostProcessPass.cpp">
       <Filter>SOURCE\Renderer\Object\Post Process</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\Mesh.cpp">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\InstancedMesh.cpp">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -436,9 +433,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\object\shapes\CBillboard.h">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\mesh\CMesh.h">
-      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\model\Model.h">
       <Filter>SOURCE\Renderer\Object\Model</Filter>
@@ -485,9 +479,6 @@
     <ClInclude Include="source\renderer\module_renderer.h">
       <Filter>SOURCE\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\object\screen\CGlowObject.h">
-      <Filter>SOURCE\Renderer\Object\Screen</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\types\blendModes.h">
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClInclude>
@@ -510,9 +501,6 @@
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\CStreamedMesh.h">
-      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\mesh\CInstancedMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\state\InternalSettings.h">
@@ -778,6 +766,18 @@
     </ClInclude>
     <ClInclude Include="source\renderer\object\postprocess\PostProcessPass.h">
       <Filter>SOURCE\Renderer\Object\Post Process</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\camera\CameraPass.h">
+      <Filter>SOURCE\Renderer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\Material.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\Mesh.h">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\InstancedMesh.h">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

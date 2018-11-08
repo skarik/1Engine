@@ -1,30 +1,66 @@
 #include "CModel.h"
 
 #include "core/time/time.h"
+#include "core/utils/string.h"
 #include "core-ext/animation/AnimationControl.h"
 
 #include "core-ext/system/io/FileUtils.h"
 #include "core-ext/system/io/Resources.h"
+#include "core-ext/resources/ResourceManager.h"
 
-#include "renderer/object/mesh/CMesh.h"
+#include "renderer/object/mesh/Mesh.h"
 #include "renderer/logic/model/RrAnimatedMeshGroup.h"
-#include "renderer/resource/CModelMaster.h"
+//#include "renderer/resource/CModelMaster.h"
+#include "renderer/logic/model/RrModelMasterSubsystem.h"
 
 CModel*
-CModel::LoadFile ( const char* sFilename )
+CModel::Load ( const char* resource_name )
 {
+	rrModelLoadParams mlparams;
+	mlparams.resource_name = resource_name;
+	mlparams.morphs = true;
+	mlparams.animation = true;
+	mlparams.hitboxes = true;
+	mlparams.collision = true;
+
+	return Load(mlparams);
+}
+
+CModel*
+CModel::Load ( const rrModelLoadParams& load_params )
+{
+	auto resm = core::ArResourceManager::Active();
+
+	// Generate the resource name from the filename:
+	arstring256 resource_str_id (load_params.resource_name);
+	core::utils::string::ToResourceName(resource_str_id);
+
+	// First, find the model in the resource system:
+	IArResource* existingResource = resm->Find(core::kResourceTypeRrMeshGroup, resource_str_id);
+	if (existingResource != NULL)
+	{
+		// Found it! Add a reference and return it.
+		RrAnimatedMeshGroup* existingMeshGroup = (RrAnimatedMeshGroup*)existingResource;
+		existingMeshGroup->AddReference();
+
+		ARCORE_ERROR(0, "Unimplemented CModel instantiation.");
+		return NULL;
+	}
+
+	ARCORE_ASSERT_MSG(0, "Unimplemented CModel loader.");
+
 	return NULL;
 }
 
 CModel*
-CModel::Upload ( arModelData& model_data, const char* model_name = "_sys_override_" )
+CModel::Upload ( arModelData& model_data )
 {
 	return NULL;
 }
 
 CModel::CModel ( void )
 	: RrLogicObject(),
-	m_animRefMode(kAnimRefNone)
+	m_animRefMode(kAnimReferenceNone)
 {
 }
 //
@@ -248,8 +284,8 @@ CModel::~CModel ( void )
 	}
 	m_meshes.clear();
 
-	if ( !m_glMeshlist.empty() )
-		RenderResources::Active()->ReleaseMeshSet( myModelFilename.c_str() );
+	//if ( !m_glMeshlist.empty() )
+	//	RenderResources::Active()->ReleaseMeshSet( myModelFilename.c_str() );
 	//ModelMaster.RemoveReference( myModelFilename );
 	//ModelMaster.RemovePhysReference( myModelFilename );
 	// TODO delete materials with no reference
@@ -297,7 +333,7 @@ void CModel::PostStepSynchronus ( void )
 		}
 		else
 		{
-			if ( m_animRefMode == kAnimRefDirect )
+			if ( m_animRefMode == kAnimReferenceDirect )
 			{
 				// Directly copy the transforms
 				//pReferencedAnimation->GetAnimationSet
@@ -317,7 +353,7 @@ void CModel::CalculateBoundingBox ( void )
 
 	for ( size_t i = 0; i < m_meshGroup->m_meshCount; i++ )
 	{
-		arModelData* modeldata = m_meshGroup->m_meshes[i]->m_mesh->m_modeldata;
+		arModelData* modeldata = m_meshGroup->m_meshes[i]->m_modeldata;
 		for ( size_t v = 0; v < modeldata->vertexNum; v++ )
 		{
 			//arModelVertex* vert = &(modeldata->vertices[v]);
@@ -392,45 +428,45 @@ void CModel::CalculateBoundingBox ( void )
 //}
 
 // Set material for meshes
-void CModel::SetMaterial ( RrMaterial* n_pNewMaterial )
-{
-	if ( m_meshes.size() == 1 ) {
-		m_meshes[0]->SetMaterial( n_pNewMaterial );
-	}
-	else {
-		throw std::exception();
-	}
-}
-// Get material for meshes
-RrMaterial* CModel::GetMaterial ( void )
-{
-	if ( m_meshes.size() == 1 ) {
-		return m_meshes[0]->GetMaterial();
-	}
-	else {
-		//throw std::exception();
-		return NULL;
-	}
-}
+//void CModel::SetMaterial ( RrMaterial* n_pNewMaterial )
+//{
+//	if ( m_meshes.size() == 1 ) {
+//		m_meshes[0]->SetMaterial( n_pNewMaterial );
+//	}
+//	else {
+//		throw std::exception();
+//	}
+//}
+//// Get material for meshes
+//RrMaterial* CModel::GetMaterial ( void )
+//{
+//	if ( m_meshes.size() == 1 ) {
+//		return m_meshes[0]->GetMaterial();
+//	}
+//	else {
+//		//throw std::exception();
+//		return NULL;
+//	}
+//}
 
 // Recalculate normals
-void CModel::RecalculateNormals ( void )
-{
-	for ( uint i = 0; i < m_meshes.size(); ++i )
-	{
-		m_glMeshlist[i]->RecalculateNormals();
-	}
-}
+//void CModel::RecalculateNormals ( void )
+//{
+//	for ( uint i = 0; i < m_meshes.size(); ++i )
+//	{
+//		m_meshes[i]->RecalculateNormals();
+//	}
+//}
 
 // Duplicate materials to a local copy
-void CModel::DuplicateMaterials ( void )
+/*void CModel::DuplicateMaterials ( void )
 {
 	for ( uint i = 0; i < m_meshes.size(); ++i )
 	{
 		m_meshes[i]->m_material->removeReference();
 		m_meshes[i]->m_material = m_meshes[i]->m_material->copy();
 	}
-}
+}*/
 
 // Set if to use frustum culling or not
 void CModel::SetFrustumCulling ( bool useCulling ) {
@@ -463,28 +499,28 @@ void CModel::SetVisibility ( const bool n_visibility ) {
 	}
 }
 // Hides or shows all of the child meshes
-void CModel::SetRenderType ( const renderer::eRenderLayer n_type ) {
-	for ( uint i = 0; i < m_meshes.size(); ++i ) {
-		m_meshes[i]->renderLayer = n_type;
-	}
-}
+//void CModel::SetRenderType ( const renderer::eRenderLayer n_type ) {
+//	for ( uint i = 0; i < m_meshes.size(); ++i ) {
+//		m_meshes[i]->renderLayer = n_type;
+//	}
+//}
 
 //======================================================//
 // GETTERS / FINDERS
 //======================================================//
 
 // Get the number of meshes this model manages
-uint CModel::GetMeshCount ( void ) const
+size_t CModel::GetMeshCount ( void ) const
 {
 	return m_meshes.size();
 }
 // Gets the mesh with the index
-CMesh* CModel::GetMesh ( const uint n_index ) const
+renderer::Mesh* CModel::GetMesh ( const uint n_index ) const
 {
 	return m_meshes[n_index];
 }
 // Gets the mesh with the name
-CMesh* CModel::GetMesh ( const char* n_name ) const
+renderer::Mesh* CModel::GetMesh ( const char* n_name ) const
 {
 	for ( uint i = 0; i < m_meshes.size(); ++i ) {
 		if ( strstr( m_meshes[i]->GetName(), n_name ) != NULL ) {
@@ -497,9 +533,9 @@ CMesh* CModel::GetMesh ( const char* n_name ) const
 // Gets the indicated mesh data in the array
 arModelData* CModel::GetModelData ( int iMeshIndex ) const
 {
-	CMesh* mesh = GetMesh( iMeshIndex );
+	renderer::Mesh* mesh = GetMesh( iMeshIndex );
 	if ( mesh ) {
-		return mesh->m_mesh->modeldata;
+		return mesh->m_mesh->m_modeldata;
 	}
 	return NULL;
 }
@@ -507,27 +543,27 @@ arModelData* CModel::GetModelData ( int iMeshIndex ) const
 // Returns the first matching mesh with the given name in the array
 arModelData* CModel::GetModelDataByName ( const char* nNameMatch ) const 
 {
-	CMesh* mesh = GetMesh( nNameMatch );
+	renderer::Mesh* mesh = GetMesh( nNameMatch );
 	if ( mesh ) {
-		return mesh->m_mesh->modeldata;
+		return mesh->m_mesh->m_modeldata;
 	}
 	return NULL;
 }
 
 // Return the first matching material
-RrMaterial*	CModel::FindMaterial ( const char* n_name, const int n_offset ) const
-{
-	int foundCount = 0;
-	for ( uint i = 0; i < m_meshes.size(); ++i ) {
-		if ( string(m_meshes[i]->GetMaterial()->getName()).find( n_name ) != string::npos ) {
-			foundCount += 1;
-			if ( foundCount > n_offset ) {
-				return m_meshes[i]->GetMaterial();
-			}
-		}
-	}
-	return NULL;
-}
+//RrMaterial*	CModel::FindMaterial ( const char* n_name, const int n_offset ) const
+//{
+//	int foundCount = 0;
+//	for ( uint i = 0; i < m_meshes.size(); ++i ) {
+//		if ( string(m_meshes[i]->GetMaterial()->getName()).find( n_name ) != string::npos ) {
+//			foundCount += 1;
+//			if ( foundCount > n_offset ) {
+//				return m_meshes[i]->GetMaterial();
+//			}
+//		}
+//	}
+//	return NULL;
+//}
 
 // Gets if any of the meshes are being rendered
 bool CModel::GetVisibility ( void )

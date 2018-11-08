@@ -97,8 +97,12 @@
     <ClCompile Include="source\renderer\material\RrPassDeferred.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="source\renderer\material\RrShader.cpp" />
-    <ClCompile Include="source\renderer\material\RrShaderManager.cpp" />
+    <ClCompile Include="source\renderer\material\RrShader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrShaderManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\material\RrShaderMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\material\RrShaderProgram.cpp" />
     <ClCompile Include="source\renderer\module_renderer.cpp" />
@@ -108,15 +112,14 @@
     <ClCompile Include="source\renderer\object\immediate\RrScopedMeshRenderer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="source\renderer\object\mesh\CInstancedMesh.cpp" />
-    <ClCompile Include="source\renderer\object\mesh\CMesh.cpp" />
+    <ClCompile Include="source\renderer\object\mesh\InstancedMesh.cpp" />
+    <ClCompile Include="source\renderer\object\mesh\Mesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\CStreamedMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\system\rrMeshBuffer.cpp" />
     <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\renderer\object\postprocess\PostProcessPass.cpp" />
-    <ClCompile Include="source\renderer\object\screen\CGlowObject.cpp" />
     <ClCompile Include="source\renderer\object\screen\CScreenFade.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CBillboard.cpp" />
     <ClCompile Include="source\renderer\object\shapes\CPrimitiveCube.cpp" />
@@ -127,8 +130,12 @@
     <ClCompile Include="source\renderer\ogl\wgl_impl.c" />
     <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp" />
     <ClCompile Include="source\renderer\renderer-console.cpp" />
-    <ClCompile Include="source\renderer\resource\CModelMaster.cpp" />
-    <ClCompile Include="source\renderer\resource\CResourceManager.cpp" />
+    <ClCompile Include="source\renderer\resource\CModelMaster.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\resource\CResourceManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\state\RrHybridBufferChain.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Render.cpp" />
@@ -188,6 +195,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\renderer\camera\CameraPass.h" />
     <ClInclude Include="source\renderer\camera\RrCamera.h" />
     <ClInclude Include="source\renderer\camera\RrRTCamera.h" />
     <ClInclude Include="source\renderer\camera\RrRTCameraCascade.h" />
@@ -225,6 +233,7 @@
     <ClInclude Include="source\renderer\logic\model\morpher\CMorphAction.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpher.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpherSet.h" />
+    <ClInclude Include="source\renderer\material\Material.h" />
     <ClInclude Include="source\renderer\material\RrMaterial.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -237,8 +246,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\renderer\material\RrShader.cbuffers.h" />
-    <ClInclude Include="source\renderer\material\RrShader.h" />
-    <ClInclude Include="source\renderer\material\RrShaderManager.h" />
+    <ClInclude Include="source\renderer\material\RrShader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrShaderManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\material\RrShaderMasterSubsystem.h" />
     <ClInclude Include="source\renderer\material\RrShaderProgram.h" />
     <ClInclude Include="source\renderer\material\ShaderSlots.h" />
@@ -252,8 +265,8 @@
     <ClInclude Include="source\renderer\object\immediate\RrScopedMeshRenderer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="source\renderer\object\mesh\CInstancedMesh.h" />
-    <ClInclude Include="source\renderer\object\mesh\CMesh.h" />
+    <ClInclude Include="source\renderer\object\mesh\InstancedMesh.h" />
+    <ClInclude Include="source\renderer\object\mesh\Mesh.h" />
     <ClInclude Include="source\renderer\object\mesh\CStreamedMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\system\rrMeshBuffer.h" />
     <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h">
@@ -262,7 +275,6 @@
     <ClInclude Include="source\renderer\object\model\Model.h" />
     <ClInclude Include="source\renderer\object\model\SkinnedModel.h" />
     <ClInclude Include="source\renderer\object\postprocess\PostProcessPass.h" />
-    <ClInclude Include="source\renderer\object\screen\CGlowObject.h" />
     <ClInclude Include="source\renderer\object\screen\CScreenFade.h" />
     <ClInclude Include="source\renderer\object\shapes\CBillboard.h" />
     <ClInclude Include="source\renderer\object\shapes\CPrimitiveCube.h" />
@@ -278,8 +290,12 @@
     <ClInclude Include="source\renderer\particle\motion.h" />
     <ClInclude Include="source\renderer\particle\RrParticleSystem.h" />
     <ClInclude Include="source\renderer\renderer-console.h" />
-    <ClInclude Include="source\renderer\resource\CModelMaster.h" />
-    <ClInclude Include="source\renderer\resource\CResourceManager.h" />
+    <ClInclude Include="source\renderer\resource\CModelMaster.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\resource\CResourceManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\state\RrHybridBufferChain.h" />
     <ClInclude Include="source\renderer\state\RrRenderer.h" />
     <ClInclude Include="source\renderer\state\InternalSettings.h" />

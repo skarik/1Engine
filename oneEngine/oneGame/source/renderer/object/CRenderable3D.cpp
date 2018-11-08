@@ -38,15 +38,15 @@ void CRenderable3D::PushModeldata ( void )
 
 //		PreRender()
 // Push the uniform properties
-bool CRenderable3D::PreRender ( RrCamera* camera )
+bool CRenderable3D::PreRender ( rrCameraPass* cameraPass )
 {
-	PushCbufferPerObject(transform.world, camera);
+	PushCbufferPerObject(transform.world, cameraPass);
 	return true;
 }
 
 //		Render()
 // Render the model using the 2D engine's style
-bool CRenderable3D::Render ( const char pass )
+bool CRenderable3D::Render ( const rrRenderParams* params )
 { 
 	//// Do not render if no buffer to render with
 	//if ( m_buffer_verts == 0 || m_buffer_tris == 0 )
@@ -68,7 +68,7 @@ bool CRenderable3D::Render ( const char pass )
 
 		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
 
-		gpu::Pipeline* pipeline = GetPipeline( pass );
+		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
 		// bind the vertex buffers
 		for (int i = 0; i < renderer::kAttributeMaxCount; ++i)

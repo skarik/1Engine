@@ -1,20 +1,20 @@
-
-#include "CInstancedMesh.h"
+#include "InstancedMesh.h"
 #include "renderer/logic/model/CModel.h"
 #include "renderer/logic/model/CSkinnedModel.h"
-#include "renderer/object/mesh/system/rrMesh.h"
+#include "renderer/object/mesh/system/rrMeshBuffer.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 #include "renderer/camera/RrCamera.h"
 //#include "renderer/material/RrMaterial.h"
 //#include "renderer/system/glMainSystem.h"
 
-CInstancedMesh::CInstancedMesh ( rrMesh* mesh )
-	: CMesh(mesh, false),
+renderer::InstancedMesh::InstancedMesh ( rrMeshBuffer* mesh, bool n_enableSkinning )
+	: Mesh(mesh, n_enableSkinning),
 	data_count(0), uploaded_data_count(0)
 {
 	bUseFrustumCulling = false; // Disable frustum culling
 
-	GL_ACCESS
+	m_buffer.allocate(NULL, sizeof(float) * 2048, gpu::kTransferStream);
+	/*GL_ACCESS
 	{
 		glGenBuffers( 1, &m_tbo_buffer );
 		glBindBuffer( GL_TEXTURE_BUFFER, m_tbo_buffer );
@@ -25,11 +25,12 @@ CInstancedMesh::CInstancedMesh ( rrMesh* mesh )
 		glBindTexture( GL_TEXTURE_BUFFER, m_tex_buffer );
 		glTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA32F, m_tbo_buffer ); 
 		glBindTexture( GL_TEXTURE_BUFFER, 0 );
-	}
+	}*/
 }
-CInstancedMesh::~CInstancedMesh ( void )
+renderer::InstancedMesh::~InstancedMesh ( void )
 {
-	GL_ACCESS
+	m_buffer.free(NULL);
+	/*GL_ACCESS
 	if ( m_tbo_buffer != 0 )
 	{
 		glDeleteBuffers( 1, &m_tbo_buffer );
@@ -39,19 +40,19 @@ CInstancedMesh::~CInstancedMesh ( void )
 	{
 		glDeleteTextures( 1, &m_tex_buffer );
 		m_tex_buffer = 0;
-	}
+	}*/
 }
 
-void CInstancedMesh::SetInstancePosition ( int instance_id, const Vector3d& position )
+void renderer::InstancedMesh::SetInstancePosition ( int instance_id, const Vector3d& position )
 {
 	data[instance_id].position = position;
 }
-void CInstancedMesh::SetInstanceRotation ( int instance_id, const Quaternion& rotation )
+void renderer::InstancedMesh::SetInstanceRotation ( int instance_id, const Quaternion& rotation )
 {
 	data[instance_id].rotation = Vector4d( &rotation.x );
 }
 
-void CInstancedMesh::SetInstanceCount ( int instance_count )
+void renderer::InstancedMesh::SetInstanceCount ( int instance_count )
 {
 	if ( (signed)data.size() < instance_count )
 	{
@@ -61,7 +62,7 @@ void CInstancedMesh::SetInstanceCount ( int instance_count )
 }
 
 // Render the mesh
-bool CInstancedMesh::Render ( const char pass )
+bool renderer::InstancedMesh::Render ( const rrRenderParams* params )
 {
 	if ( !bCanRender || m_mesh == NULL || uploaded_data_count <= 0 )
 		return true; // Only render when have a valid mesh and rendering enabled
@@ -112,19 +113,22 @@ bool CInstancedMesh::Render ( const char pass )
 	return true;
 }
 
-bool CInstancedMesh::EndRender ( void )
+bool renderer::InstancedMesh::EndRender ( void )
 {
 	if ( data_count > 0 )
 	{
 		size_t data_size = sizeof(instanceData_t)*data_count;
-		glBindBuffer( GL_TEXTURE_BUFFER, m_tbo_buffer );
-		glBufferData( GL_TEXTURE_BUFFER, data_size, NULL, GL_STREAM_DRAW ); //orphan old data
+		//glBindBuffer( GL_TEXTURE_BUFFER, m_tbo_buffer );
+		//glBufferData( GL_TEXTURE_BUFFER, data_size, NULL, GL_STREAM_DRAW ); //orphan old data
 
-		GLvoid* p = glMapBufferRange( GL_TEXTURE_BUFFER, 0, data_size, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_BUFFER_BIT|GL_MAP_UNSYNCHRONIZED_BIT );
+		//GLvoid* p = glMapBufferRange( GL_TEXTURE_BUFFER, 0, data_size, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_BUFFER_BIT|GL_MAP_UNSYNCHRONIZED_BIT );
+		//GLvoid* p = glMapBufferRange( GL_TEXTURE_BUFFER, 0, data_size, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_BUFFER_BIT|GL_MAP_UNSYNCHRONIZED_BIT );
+		void* p = m_buffer.map(NULL, gpu::kTransferStream); // TODO: Synchronization bits.
 		if ( p )
 		{
 			memcpy( p, &data[0], data_size );
-			glUnmapBuffer( GL_TEXTURE_BUFFER );
+			//glUnmapBuffer( GL_TEXTURE_BUFFER );
+			m_buffer.unmap(NULL);
 		}
 	}
 	// Set amount of data count now

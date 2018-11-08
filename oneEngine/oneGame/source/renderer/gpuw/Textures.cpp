@@ -10,6 +10,8 @@
 
 #include "renderer/ogl/GLCommon.h"
 
+#include <algorithm>
+
 //gpu::Texture::Texture ( void )
 //{
 //	m_texture = 0;
@@ -36,7 +38,7 @@ gpuHandle gpu::Texture::nativePtr ( void )
 int gpu::Texture::allocate (
 	const core::gfx::tex::arTextureType textureType,
 	const core::gfx::tex::arColorFormat textureFormat, 
-	const uint width = 0, const uint height = 0, const uint depth = 0, const uint levels = 0
+	const uint width, const uint height, const uint depth, const uint levels
 )
 {
 	uint allocatedLevels = levels;

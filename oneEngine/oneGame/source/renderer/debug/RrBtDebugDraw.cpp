@@ -31,7 +31,7 @@ RrBtDebugDraw::RrBtDebugDraw ( PrWorld* associated_world )
 	}
 
 	// Set the layer to the final overlay layer
-	this->renderLayer = renderer::kRLV2D;
+	//this->renderLayer = renderer::kRenderLayerV2D;
 
 	// Create a forward pass material (see RrDebugDrawer for reference)
 	//RrMaterial* defaultMat = new RrMaterial;
@@ -56,6 +56,7 @@ RrBtDebugDraw::RrBtDebugDraw ( PrWorld* associated_world )
 	linePass.m_primitiveType = gpu::kPrimitiveTopologyLineList;
 	linePass.setTexture( TEX_MAIN, RrTexture::Load("null") );
 	linePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"}) );
+	linePass.m_layer = renderer::kRenderLayerV2D;
 	PassInitWithInput(0, &linePass);
 }
 
@@ -132,7 +133,7 @@ bool RrBtDebugDraw::EndRender ( void )
 
 //		PreRender()
 // Push the model's uniform up up.
-bool RrBtDebugDraw::PreRender ( void )
+bool RrBtDebugDraw::PreRender ( rrCameraPass* cameraPass )
 {
 	//m_material->prepareShaderConstants( transform.world );
 	m_material->prepareShaderConstants();
@@ -166,9 +167,10 @@ bool RrBtDebugDraw::Render ( const char pass )
 	// set the pipeline
 	gfx->setPipeline(pipeline);
 	// bind the vertex buffers
-	gfx->setVertexBuffer(renderer::ATTRIB_VERTEX, &m_buffer_vertPositions, 0);
-	gfx->setVertexBuffer(renderer::ATTRIB_COLOR, &m_buffer_vertColors, 0);
+	gfx->setVertexBuffer(renderer::shader::kVBufferSlotPosition, &m_buffer_vertPositions, 0);
+	gfx->setVertexBuffer(renderer::shader::kVBufferSlotColor, &m_buffer_vertColors, 0);
 	// bind the cbuffers
+	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
 	// TODO:
 	// bind the index buffer
 	gfx->setIndexBuffer(&m_buffer_indices, gpu::kFormatR16UInteger);

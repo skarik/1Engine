@@ -28,7 +28,7 @@ public:
 	// ======
 	
 	// == Main Render Routine ==
-	void			RenderScene ( void ) override;	// only one needing editing
+	//void			RenderScene ( void ) override;	// only one needing editing
 
 public:
 	Vector3d		m_renderPositions [4];

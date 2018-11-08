@@ -21,6 +21,7 @@
 #include "core-ext/resources/ResourceManager.h"
 #include "renderer/texture/RrTextureMasterSubsystem.h"
 #include "renderer/material/RrShaderMasterSubsystem.h"
+#include "renderer/logic/model/RrModelMasterSubsystem.h"
 
 //#include "renderer/resource/CResourceManager.h"
 
@@ -62,6 +63,8 @@ RrRenderer::RrRenderer ( CResourceManager* nResourceManager )
 		resourceManager->SetSubsystem(core::kResourceTypeRrTexture, new RrTextureMasterSubsystem());
 	if (resourceManager->GetSubsystem(core::kResourceTypeRrShader) == NULL)
 		resourceManager->SetSubsystem(core::kResourceTypeRrShader, new RrShaderMasterSubsystem());
+	if (resourceManager->GetSubsystem(core::kResourceTypeRrMeshGroup) == NULL)
+		resourceManager->SetSubsystem(core::kResourceTypeRrMeshGroup, new RrModelMasterSubsystem());
 
 	// Set up reandering options
 	{
@@ -164,11 +167,11 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 		renderer::pass::Fullbright->m_type = kPassTypeForward;
 		renderer::pass::Fullbright->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"});
 	}
-	// Create the default hint options
-	if ( renderer::m_default_hint_options == NULL )
-	{
-		renderer::m_default_hint_options = new renderer::_n_hint_rendering_information();
-	}
+	//// Create the default hint options
+	//if ( renderer::m_default_hint_options == NULL )
+	//{
+	//	renderer::m_default_hint_options = new renderer::_n_hint_rendering_information();
+	//}
 
 	// Create the pipeline utils
 	pipelinePasses = new renderer::pipeline::RrPipelinePasses();

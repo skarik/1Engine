@@ -72,7 +72,7 @@ bool RrDebugRTInspector::PreRender ( rrCameraPass* cameraPass )
 	PushCbufferPerObject(XrTransform(), cameraPass);
 	return true;
 }
-bool RrDebugRTInspector::Render ( const char pass )
+bool RrDebugRTInspector::Render ( const rrRenderParams* params )
 { //GL_ACCESS;
 	int currentX = 0, currentY = 0;
 

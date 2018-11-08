@@ -33,7 +33,7 @@ public:
 
 	//		Render()
 	// Render the model using the 2D engine's style
-	RENDER_API bool			Render ( const char pass ) override;
+	RENDER_API bool			Render ( const rrRenderParams* params ) override;
 
 	//		EndRender()
 	// Called after the frame is being rendered. Swaps the currently used buffers
