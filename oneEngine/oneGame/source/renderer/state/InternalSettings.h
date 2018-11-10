@@ -12,7 +12,7 @@ class RrMaterial;
 namespace renderer
 {
 	// Struct
-	struct internalSettings_t
+	struct rrInternalSettings
 	{
 		core::gfx::tex::arColorFormat	mainColorAttachmentFormat;
 		uint8_t							mainColorAttachmentCount;

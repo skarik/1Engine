@@ -27,7 +27,8 @@ struct rrCameraPass
 	// NULL to use the main engine's buffer chain.
 	// Otherwise, points to the buffer chain to use for rendering.
 	// An RT camera will properly create their own buffer chain
-	RrHybridBufferChain*m_bufferChain;
+	RrHybridBufferChain*
+						m_bufferChain;
 
 	// rendering properties
 	Matrix4x4			m_viewTransform;

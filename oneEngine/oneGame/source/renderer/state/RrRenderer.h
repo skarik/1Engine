@@ -182,7 +182,7 @@ public:
 	// ================================
 
 	// Returns internal settings that govern the current render setup
-	RENDER_API const renderer::internalSettings_t&
+	RENDER_API const renderer::rrInternalSettings&
 							GetSettings ( void ) const;
 	// Returns if shadows are enabled for the renderer or not.
 	RENDER_API const bool	GetShadowsEnabled ( void ) const;
@@ -267,7 +267,7 @@ private:
 
 	// Internal setup state
 	// ================================
-	renderer::internalSettings_t		internal_settings;
+	renderer::rrInternalSettings		internal_settings;
 	//std::vector<rrInternalBufferChain>	internal_chain_list;
 	//rrInternalBufferChain*				internal_chain_current;
 	std::vector<RrHybridBufferChain>	internal_chain_list;

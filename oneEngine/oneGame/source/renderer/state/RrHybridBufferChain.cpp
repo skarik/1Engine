@@ -6,27 +6,27 @@
 // ================================
 
 // Returns true if settings dropped. False otherwise.
-static bool _DropSettings (renderer::internalSettings_t& io_settings)
+static bool _DropSettings (renderer::rrInternalSettings* io_settings)
 {
 	using namespace core::gfx::tex;
-	if (io_settings.mainStencilFormat == KStencilFormatIndex16) 
+	if (io_settings->mainStencilFormat == KStencilFormatIndex16) 
 	{
 		debug::Console->PrintError("Dropping Stencil16 to Stencil8.");
-		io_settings.mainStencilFormat = KStencilFormatIndex8;
+		io_settings->mainStencilFormat = KStencilFormatIndex8;
 		return true;
 	}
 
-	if (io_settings.mainDepthFormat == kDepthFormat32) 
+	if (io_settings->mainDepthFormat == kDepthFormat32) 
 	{
 		debug::Console->PrintError("Dropping Depth32 to Depth16.");
-		io_settings.mainDepthFormat = kDepthFormat16;
+		io_settings->mainDepthFormat = kDepthFormat16;
 		return true;
 	}
 
-	if (io_settings.mainStencilFormat == KStencilFormatIndex8) 
+	if (io_settings->mainStencilFormat == KStencilFormatIndex8) 
 	{
 		debug::Console->PrintError("Dropping Stencil8 to None. (This may cause visual artifacts!)");
-		io_settings.mainStencilFormat = kStencilFormatNone;
+		io_settings->mainStencilFormat = kStencilFormatNone;
 		return true;
 	}
 
@@ -70,16 +70,16 @@ void RrHybridBufferChain::CreateTargetBuffers ( void )
 		}
 	}
 }*/
-bool RrHybridBufferChain::CreateTargetBufferChain ( renderer::internalSettings_t settings, const Vector2i& size )
+gpu::ErrorCode RrHybridBufferChain::CreateTargetBufferChain ( renderer::rrInternalSettings* io_settings, const Vector2i& size )
 {
 	bool status;
 	do
 	{
-		status = CreateTargetBufferChain_Internal(settings, size);
+		status = CreateTargetBufferChain_Internal(io_settings, size);
 		if (status == false)
 		{
 			// There was an error in creating the target buffer chain. We need to break, try another set of formats, then continue.
-			if (_DropSettings(settings))
+			if (_DropSettings(io_settings))
 			{
 				debug::Console->PrintError("Screen buffer formats not supported. Dropping settings and attempting again.");
 				// Attempt to create again.
@@ -89,15 +89,15 @@ bool RrHybridBufferChain::CreateTargetBufferChain ( renderer::internalSettings_t
 			{
 				debug::Console->PrintError("Screen buffer formats not supported. Throwing an unsupported error.");
 				throw core::DeprecatedFeatureException();
-				return false;
+				return gpu::kErrorFormatUnsupported;
 			}
 		}
 	}
 	while (status == false);
 
-	return true;
+	return gpu::kError_SUCCESS;
 }
-bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::internalSettings_t& settings, const Vector2i& size )
+bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::rrInternalSettings* settings, const Vector2i& size )
 {
 	// Delete shared buffers
 	{
@@ -139,17 +139,17 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::int
 	if ( buffer_forward_rt.empty() )
 	{
 		// Generate unique color buffer
-		buffer_color.allocate(core::gfx::tex::kTextureType2D, settings.mainColorAttachmentFormat, size.x, size.y);
+		buffer_color.allocate(core::gfx::tex::kTextureType2D, settings->mainColorAttachmentFormat, size.x, size.y);
 		// Generate shared depth and stencil buffers
-		if ( settings.mainDepthFormat != core::gfx::tex::kDepthFormatNone )
+		if ( settings->mainDepthFormat != core::gfx::tex::kDepthFormatNone )
 		{
 			//bufferChain.buffer_depth	= gpu::TextureAllocate( Texture2D, internal_settings.mainDepthFormat, Screen::Info.width, Screen::Info.height );
 			//gpu::TextureSampleSettings( Texture2D, bufferChain.buffer_depth, Clamp, Clamp, Clamp, SamplingPoint, SamplingPoint );
-			buffer_depth.allocate(core::gfx::tex::kTextureType2D, settings.mainDepthFormat, size.x, size.y);
+			buffer_depth.allocate(core::gfx::tex::kTextureType2D, settings->mainDepthFormat, size.x, size.y);
 		}
-		if ( settings.mainStencilFormat != core::gfx::tex::kStencilFormatNone )
+		if ( settings->mainStencilFormat != core::gfx::tex::kStencilFormatNone )
 			//bufferChain.buffer_stencil	= gpu::TextureBufferAllocate( Texture2D, internal_settings.mainStencilFormat, Screen::Info.width, Screen::Info.height );
-			buffer_stencil.allocate(core::gfx::tex::kTextureType2D, settings.mainStencilFormat, size.x, size.y);
+			buffer_stencil.allocate(core::gfx::tex::kTextureType2D, settings->mainStencilFormat, size.x, size.y);
 
 		/*bufferChain.buffer_forward_rt = new RrRenderTexture(
 		Screen::Info.width, Screen::Info.height,
@@ -186,7 +186,7 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::int
 		RrGpuTexture		stencilTexture = RrGpuTexture(bufferChain.buffer_stencil, internal_settings.mainStencilFormat);*/
 
 		// Generate unique color buffer
-		buffer_deferred_color_composite.allocate(core::gfx::tex::kTextureType2D, settings.mainColorAttachmentFormat, size.x, size.y);
+		buffer_deferred_color_composite.allocate(core::gfx::tex::kTextureType2D, settings->mainColorAttachmentFormat, size.x, size.y);
 
 		// Put the buffer together
 		buffer_deferred_rt.attach(gpu::kRenderTargetSlotColor0, &buffer_color);

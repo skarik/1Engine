@@ -122,8 +122,6 @@ public:
 
 private:
 
-	//void					CameraUpdate ( void );
-
 	void					UpdateFrustum ( void );
 
 public:
@@ -145,9 +143,6 @@ public:
 	Real				fieldOfView;
 	Real				focalDistance;
 	Real				focalRange;
-
-	// Override the target this camera is rendering to.
-	RrRenderTexture*	m_renderTexture;
 
 	// World layers to enable
 	bool				layerVisibility [renderer::kRenderLayer_MAX];

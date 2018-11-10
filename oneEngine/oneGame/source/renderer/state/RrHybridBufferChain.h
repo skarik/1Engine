@@ -3,6 +3,7 @@
 
 #include "core/math/Math3d.h"
 #include "core/math/vect2d_template.h"
+#include "renderer/gpuw/Error.h"
 #include "renderer/gpuw/Textures.h"
 #include "renderer/gpuw/RenderTargets.h"
 #include "renderer/state/InternalSettings.h"
@@ -12,9 +13,19 @@ class RrHybridBufferChain
 public:
 	// Creates buffers for rendering to.
 	//RENDER_API void			CreateTargetBuffers ( void );
-	// Recreates buffers for the given chain. Returns success.
-	RENDER_API bool			CreateTargetBufferChain ( renderer::internalSettings_t settings, const Vector2i& size );
-	bool					CreateTargetBufferChain_Internal ( const renderer::internalSettings_t& settings, const Vector2i& size );
+	//
+
+	//	CreateTargetBufferChain(io_settings, size) : Recreates buffers for the given chain.
+	// Will create new buffers using the options given in io_settings, dropping options until creation works.
+	// Arguments:
+	//	io_settings:	Input settings. Will be changed by the call to reflect what was actually created.
+	//	size:			Size in pixels of buffer to be created.
+	// Returns:
+	//	ErrorCode: Describes success or failure of the call.
+	RENDER_API gpu::ErrorCode
+							CreateTargetBufferChain ( renderer::rrInternalSettings* io_settings, const Vector2i& size );
+	bool					CreateTargetBufferChain_Internal ( const renderer::rrInternalSettings* settings, const Vector2i& size );
+
 	/*RENDER_API gpu::RenderTarget*
 							GetForwardBuffer ( void );
 	RENDER_API gpu::RenderTarget*
@@ -23,6 +34,8 @@ public:
 							GetDepthTexture ( void );
 	RENDER_API gpu::WOFrameAttachment*
 							GetStencilTexture ( void );*/
+
+	bool					FreeTargetBufferChain ( void );
 
 public:
 	enum rrConstants : int

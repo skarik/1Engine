@@ -2,30 +2,49 @@
 #include "renderer/state/Settings.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/texture/RrRenderTexture.h"
+#include "renderer/state/RrHybridBufferChain.h"
 
 #include "RrRTCamera.h"
 
-// Constructor
 RrRTCamera::RrRTCamera (
-		RrRenderTexture*	targetTexture,
-		Real				renderFramerate,
-		bool				autoRender
-		) : RrCamera (),
+	renderer::rrInternalSettings* const targetSettings,
+	Vector2i& const targetSize,
+	Real renderFramerate,
+	bool autoRender
+	) : RrCamera (),
 	m_renderCounter(0),
 	m_renderStepTime(1.0F / renderFramerate),
 	m_autoRender(autoRender)
 {
-	layerVisibility[renderer::kRLSecondary] = false;
-	layerVisibility[renderer::kRLV2D] = false;
+	layerVisibility[renderer::kRenderLayerSecondary] = false;
+	layerVisibility[renderer::kRenderLayerV2D] = false;
 
 	// Set render texture immediately
-	m_renderTexture		= targetTexture;
+	//m_renderTexture		= targetTexture;
+
+	// Create the buffer chain immediately.
+	SetTargetInfo(targetSettings, targetSize);
 }
 
-// Destructor
 RrRTCamera::~RrRTCamera ( void )
 {
-	// Not sure yet.
+	;
+}
+
+//	SetTargetInfo(settings, size) : Sets up render target for the camera.
+// Will free previously created buffers.
+// Returns true on successful creation.
+bool RrRTCamera::SetTargetInfo ( renderer::rrInternalSettings* const settings, Vector2i& const size )
+{
+	m_usedTargetSettings = *settings;
+	m_targetSize = size;
+
+	m_chain.CreateTargetBufferChain(&m_usedTargetSettings, size);
+}
+//	FreeTarget() : Frees up the render target.
+bool RrRTCamera::FreeTarget ( void )
+{
+	m_chain.FreeTargetBufferChain();
 }
 
 // Update
@@ -37,69 +56,36 @@ void RrRTCamera::LateUpdate ( void )
 		if ( m_needsNewPasses ) {
 			m_needsNewPasses = false;
 		}
-		m_renderCounter += CTime::deltaTime;
+		m_renderCounter += Time::deltaTime;
 		if ( m_renderCounter > m_renderStepTime )
 		{
-			m_renderCounter = 0;
+			m_renderCounter = 0.0F; // TODO: why not a subtract+limit
 			m_needsNewPasses = true;
 		}
 	}
 	// However, if there's not a valid render target, turn rendering off
-	if ( m_renderTexture == NULL )
+	//if ( m_renderTexture == NULL )
+	if ( !active )
 	{
 		m_needsNewPasses = false;
 	}
 
-	// Perform late update
+	// Perform late update, which will update the viewport size to an incorrect value:
 	RrCamera::LateUpdate();
-}
 
-// Render set
-void RrRTCamera::RenderBegin ( void )
-{
-	// Set viewport percents
-	/*if ( m_renderTexture )
-	{
-		unsigned int iPixelWidth;
-		unsigned int iPixelHeight;
-
-		// Grab render target sizes
-		iPixelWidth	= m_renderTexture->GetWidth();
-		iPixelHeight= m_renderTexture->GetHeight();
-
-		// Update viewport
-		viewport.pos.x = viewportPercent.pos.x * iPixelWidth;
-		viewport.pos.y = viewportPercent.pos.y * iPixelHeight;
-		viewport.size.x = viewportPercent.size.x * iPixelWidth;
-		viewport.size.y = viewportPercent.size.y * iPixelHeight;
-
-		// Bind frame buffer
-		m_renderTexture->BindBuffer();
-	}
-	else
-	{
-		std::cout << "Rendering with no RT on RTCamera " << this << std::endl;
-	}*/
-
-	// Call the parent one
-	RrCamera::RenderBegin();
-
-	// bind to m_renderTexture ???
-	// todo
-}
-
-// Render clean
-void RrRTCamera::RenderEnd ( void )
-{
-	// Unbind framebuffer
-	//if ( m_renderTexture )
-	//	m_renderTexture->UnbindBuffer();
+	// So we set the proper viewport now:
+	viewport.pos.x  = viewportPercent.pos.x * m_targetSize.x;
+	viewport.pos.y  = viewportPercent.pos.y * m_targetSize.y;
+	viewport.size.x = viewportPercent.size.x * m_targetSize.x;
+	viewport.size.y = viewportPercent.size.y * m_targetSize.y;
 }
 
 // Update Camera Matrix
 void RrRTCamera::UpdateMatrix ( void )
 {
+	// Update the projection matrix normally.
 	RrCamera::UpdateMatrix();
+
 	// Update the texture matrix after the camera matrix is updated
 	UpdateTextureMatrix();
 }
@@ -108,22 +94,45 @@ void RrRTCamera::UpdateMatrix ( void )
 void RrRTCamera::UpdateTextureMatrix ( void )
 {
 	const Real bias[16] = {	
-		0.5, 0.0, 0.0, 0.0, 
-		0.0, 0.5, 0.0, 0.0,
-		0.0, 0.0, 0.5, 0.0,
-		0.5, 0.5, 0.5, 1.0
+		0.5F, 0.0F, 0.0F, 0.0F, 
+		0.0F, 0.5F, 0.0F, 0.0F,
+		0.0F, 0.0F, 0.5F, 0.0F,
+		0.5F, 0.5F, 0.5F, 1.0F
 	};
 
 	const Matrix4x4 biasMatrix ( bias );
-	textureMatrix = viewTransform * projTransform * biasMatrix;
+	//textureMatrix = viewTransform * projTransform * biasMatrix;
+	textureMatrix = viewprojMatrix * biasMatrix;
 }
 
-void RrRTCamera::SetAutorender ( bool n_autorender )
+//	PassCount() : Returns number of passes this camera will render
+// Must be 1 or greater in order to render.
+int RrRTCamera::PassCount ( void )
 {
-	m_autoRender = n_autorender;
+	return 1;
+}
+//	PassRetrieve(array, array_size) : Writes pass information into the array given in
+// Will write either PassCount() or maxPasses passes, whatever is smaller.
+void RrRTCamera::PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses )
+{
+	RrCamera::PassRetrieve(passList, maxPasses); // TODO: Proper buffer chain!
+	if (maxPasses > 0)
+	{
+		passList[0].m_bufferChain = &m_chain;
+	}
 }
 
-void RrRTCamera::SetUpdateFPS ( Real n_updatefps )
+void RrRTCamera::RenderBegin ( void )
 {
-	m_renderStepTime = 1.0F / n_updatefps;
+	// Call the parent one
+	RrCamera::RenderBegin();
+
+	// bind to m_renderTexture ???
+	// todo
 }
+
+void RrRTCamera::RenderEnd ( void )
+{
+	RrCamera::RenderEnd();
+}
+

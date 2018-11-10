@@ -111,20 +111,20 @@ void RrCamera::SetRotation ( const Rotator& newRotation )
 void RrCamera::LateUpdate ( void )
 {
 	// Update the main active camera (meaning, look through the camera pointers if the current value is invalid)
-	if ( activeCamera == NULL || !activeCamera->active || activeCamera->m_renderTexture != NULL )
+	if ( activeCamera == NULL || !activeCamera->active || activeCamera->GetType() != kCameraClassNormal /*activeCamera->m_renderTexture != NULL*/ )
 	{
 		// Start off attempting to set this first camera as active camera.
 		activeCamera = this;
 
 		// Is this not a valid camera?
-		if ( !activeCamera->active || activeCamera->m_renderTexture != NULL )
+		if ( !activeCamera->active || activeCamera->GetType() != kCameraClassNormal /*activeCamera->m_renderTexture != NULL*/ )
 		{
 			activeCamera = NULL; // Go back to invalid camera.
 			// Loop through all the cameras and find the first valid one
 			for ( unsigned int i = 0; i < m_CameraList.size(); ++i )
 			{
 				RrCamera* potentialCamera = m_CameraList[i];
-				if ( potentialCamera == NULL || !potentialCamera->active || potentialCamera->m_renderTexture != NULL )
+				if ( potentialCamera == NULL || !potentialCamera->active || potentialCamera->GetType() != kCameraClassNormal /*potentialCamera->m_renderTexture != NULL*/ )
 					{}
 				else
 				{
@@ -154,20 +154,20 @@ void RrCamera::LateUpdate ( void )
 	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
 	// Update viewport
-	if (m_renderTexture == NULL)
+	//if (m_renderTexture == NULL)
 	{
 		viewport.pos.x  = viewportPercent.pos.x * Screen::Info.width;
 		viewport.pos.y  = viewportPercent.pos.y * Screen::Info.height;
 		viewport.size.x = viewportPercent.size.x * Screen::Info.width;
 		viewport.size.y = viewportPercent.size.y * Screen::Info.height;
 	}
-	else
+	/*else
 	{
 		viewport.pos.x  = viewportPercent.pos.x * m_renderTexture->GetWidth();
 		viewport.pos.y  = viewportPercent.pos.y * m_renderTexture->GetHeight();
 		viewport.size.x = viewportPercent.size.x * m_renderTexture->GetWidth();
 		viewport.size.y = viewportPercent.size.y * m_renderTexture->GetHeight();
-	}
+	}*/
 }
 
 int RrCamera::PassCount ( void )
@@ -178,7 +178,7 @@ void RrCamera::PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses )
 {
 	if (maxPasses > 0)
 	{
-		passList[0].m_bufferChain	= NULL;
+		passList[0].m_bufferChain	= NULL; // Use the default buffer chain for rendering.
 		passList[0].m_passType		= kCameraRenderWorld;
 		passList[0].m_viewport		= viewport;
 		passList[0].m_viewTransform	= viewTransform;

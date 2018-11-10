@@ -361,7 +361,7 @@ void RrRenderer::SetPipelineMode ( renderer::ePipelineMode newPipelineMode )
 // ================================
 
 // Returns internal settings that govern the current render setup
-const renderer::internalSettings_t& RrRenderer::GetSettings ( void ) const
+const renderer::rrInternalSettings& RrRenderer::GetSettings ( void ) const
 {
 	return internal_settings;
 }
@@ -387,7 +387,7 @@ const renderer::ePipelineMode RrRenderer::GetPipelineMode ( void ) const
 // ================================
 //
 //// Returns true if settings dropped. False otherwise.
-//static bool _DropSettings (renderer::internalSettings_t& io_settings)
+//static bool _DropSettings (renderer::rrInternalSettings& io_settings)
 //{
 //	using namespace core::gfx::tex;
 //	if (io_settings.mainStencilFormat == KStencilFormatIndex16) 
@@ -431,7 +431,8 @@ void RrRenderer::CreateTargetBuffers ( void )
 	}
 	for (RrHybridBufferChain& chain : internal_chain_list)
 	{
-		bool status = chain.CreateTargetBufferChain(internal_settings, Vector2i(Screen::Info.width, Screen::Info.height));
+		renderer::rrInternalSettings settings = internal_settings;
+		bool status = chain.CreateTargetBufferChain(&settings, Vector2i(Screen::Info.width, Screen::Info.height));
 		if (status == false)
 		{
 			// There was an error in creating the target buffer chain. We need to break, try another set of formats, then continue.
