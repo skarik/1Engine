@@ -136,7 +136,8 @@ bool RrBtDebugDraw::EndRender ( void )
 bool RrBtDebugDraw::PreRender ( rrCameraPass* cameraPass )
 {
 	//m_material->prepareShaderConstants( transform.world );
-	m_material->prepareShaderConstants();
+	//m_material->prepareShaderConstants();
+	PushCbufferPerObject( XrTransform(), cameraPass );
 	return true;
 }
 

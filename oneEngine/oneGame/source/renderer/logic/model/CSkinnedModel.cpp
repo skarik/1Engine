@@ -16,7 +16,7 @@
 
 #include "renderer/system/glMainSystem.h"
 
-#include "renderer/resource/CModelMaster.h"
+#include "renderer/resource/RrCModelMaster.h"
 #include "renderer/object/mesh/CMesh.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 
@@ -26,7 +26,7 @@
 
 // Constructor
 CSkinnedModel::CSkinnedModel( const string &sFilename )
-	: CModel()
+	: RrCModel()
 {
 	debug::Console->PrintMessage( "Loading model \"" + sFilename + "\"\n" );
 	// Set model name to input filename
@@ -146,7 +146,7 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 CSkinnedModel::~CSkinnedModel ( void )
 {
 	// RenderResources::Active()->ReleaseMeshSet( myModelFilename.c_str() );
-	// The model references should decrement automatically from CModel's destructor, thus no need for ReleaseMeshSet
+	// The model references should decrement automatically from RrCModel's destructor, thus no need for ReleaseMeshSet
 	if ( pMorpher != NULL ) {
 		RenderResources::Active()->ReleaseMorphSet( myModelFilename.c_str() );
 		pMorpher = NULL;
@@ -171,7 +171,7 @@ CSkinnedModel::~CSkinnedModel ( void )
 void CSkinnedModel::PreStep ( void )
 {
 	// Update the mesh objects
-	CModel::PreStep();
+	RrCModel::PreStep();
 
 	// If not referenced perfectly, convert the pose into a GL compatible form
 	if ( referenceToCopySkeletonFrom != NULL )

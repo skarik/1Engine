@@ -1,6 +1,5 @@
-
-#include "CModel.h"
-#include "CModelLoader.h"
+#include "RrCModel.h"
+#include "ModelLoader.h"
 
 #include "core-ext/system/io/assets/ModelLoader.h"
 
@@ -13,69 +12,70 @@
 //#include "physical/physics/shapes/physMesh.h"
 #include "physical/physics/shapes/PrMesh.h"
 
-#include "renderer/resource/CModelMaster.h"
+//#include "renderer/resource/RrCModelMaster.h"
 //#include "renderer/material/RrMaterial.h"
-#include "renderer/object/mesh/system/rrMesh.h"
+#include "renderer/object/mesh/Mesh.h"
+#include "renderer/object/mesh/system/rrMeshBuffer.h"
 
 #include <sstream>
 
 #include "core/os.h"
 
-
-void CModel::LoadModel ( const string& sFilename )
-{
-	// Create loader and set options for the load
-	core::ModelLoader loader;
-	loader.m_loadMesh = true;
-	loader.m_loadSkeleton = true;
-
-	// Attempt load
-	if ( !loader.LoadModel( sFilename.c_str() ) )
-	{
-		throw core::MissingFileException();
-	}
-	else
-	{
-		// Model needs the mesh loaded. We need to create a std::vector<rrMesh*> and pass it in
-		std::vector<rrMesh*> meshList;
-		for ( size_t i = 0; i < loader.meshes.size(); ++i )
-		{
-			// Create Mesh
-			rrMesh* newMesh = new rrMesh ();
-
-			// Create the mesh object
-			arModelData* modeldata = new arModelData();
-			*modeldata = loader.meshes[i].model;	// Shallow copy the data over
-			// Ownership of pointers are now in modeldata
-			loader.meshes[i].model.triangles = NULL;
-			loader.meshes[i].model.vertices = NULL;
-
-			// Init mesh with new model data
-			newMesh->Initialize( loader.meshes[i].name.c_str(), modeldata );
-
-			// Load material for this new mesh
-			if ( loader.meshes[i].material_index < loader.materials.size() )
-			{
-				RrMaterial* newMat = new RrMaterial;
-				newMat->m_isSkinnedShader = true;
-				newMat->loadFromFile( loader.materials[loader.meshes[i].material_index].filename );
-				//newMesh->pmMat = newMat;
-				throw core::NotYetImplementedException();
-			}
-			else
-			{
-				//newMesh->pmMat = RrMaterial::Default;
-			}
-
-			// Update mesh's data
-			newMesh->RecalculateTangents(); // TODO: Move to model conversion
-
-			// Put the mesh into the render list
-			meshList.push_back(newMesh);
-		}
-		RenderResources::Active()->AddMeshSet( sFilename.c_str(), meshList );
-	}
-}
+//
+//void RrCModel::LoadModel ( const string& sFilename )
+//{
+//	// Create loader and set options for the load
+//	core::ModelLoader loader;
+//	loader.m_loadMesh = true;
+//	loader.m_loadSkeleton = true;
+//
+//	// Attempt load
+//	if ( !loader.LoadModel( sFilename.c_str() ) )
+//	{
+//		throw core::MissingFileException();
+//	}
+//	else
+//	{
+//		// Model needs the mesh loaded. We need to create a std::vector<rrMesh*> and pass it in
+//		std::vector<rrMeshBuffer*> meshList;
+//		for ( size_t i = 0; i < loader.meshes.size(); ++i )
+//		{
+//			// Create Mesh
+//			rrMeshBuffer* newMesh = new rrMeshBuffer ();
+//
+//			// Create the mesh object
+//			arModelData* modeldata = new arModelData();
+//			*modeldata = loader.meshes[i].model;	// Shallow copy the data over
+//			// Ownership of pointers are now in modeldata
+//			loader.meshes[i].model.triangles = NULL;
+//			loader.meshes[i].model.vertices = NULL;
+//
+//			// Init mesh with new model data
+//			newMesh->Initialize( loader.meshes[i].name.c_str(), modeldata );
+//
+//			// Load material for this new mesh
+//			if ( loader.meshes[i].material_index < loader.materials.size() )
+//			{
+//				/*RrMaterial* newMat = new RrMaterial;
+//				newMat->m_isSkinnedShader = true;
+//				newMat->loadFromFile( loader.materials[loader.meshes[i].material_index].filename );*/
+//				//newMesh->pmMat = newMat;
+//				throw core::NotYetImplementedException();
+//			}
+//			else
+//			{
+//				//newMesh->pmMat = RrMaterial::Default;
+//			}
+//
+//			// Update mesh's data
+//			newMesh->RecalculateTangents(); // TODO: Move to model conversion
+//
+//			// Put the mesh into the render list
+//			meshList.push_back(newMesh);
+//		}
+//		RenderResources::Active()->AddMeshSet( sFilename.c_str(), meshList );
+//	}
+//}
 
 //	bool haveConverter = IO::FileExists("_devtools/FBXtoPAD.exe");
 //

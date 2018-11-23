@@ -14,7 +14,7 @@
 #include "CMorphAction.h"
 
 // Prototypes
-class CModel;
+class RrCModel;
 class CSkinnedModel;
 //class rrSkinnedMesh;
 class rrMeshBuffer;
@@ -46,7 +46,7 @@ public:
 		return bIsValid;
 	}
 
-	void SetOwner ( CModel* model ) {
+	void SetOwner ( RrCModel* model ) {
 		pOwner = model;
 	}
 
@@ -57,7 +57,7 @@ protected:
 
 protected:
 	friend CMorphAction;
-	friend CModel;
+	friend RrCModel;
 	friend CSkinnedModel;
 
 	std::map<arstring<128>,CMorphAction>	mActions;
@@ -66,7 +66,7 @@ protected:
 
 	bool					bIsValid;
 
-	CModel*					pOwner;
+	RrCModel*					pOwner;
 };
 
 #endif//_C_MORPHER_H_

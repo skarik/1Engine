@@ -10,6 +10,7 @@
 #include "renderer/types/ModelStructures.h"
 
 //#include "renderer/logic/model/RrAnimatedMeshGroup.h"
+//#include <unordered_map>
 
 namespace renderer
 {
@@ -19,8 +20,6 @@ class AnimationControl;
 class rrMeshBuffer;
 class physMesh;
 class RrAnimatedMeshGroup;
-
-#include <unordered_map>
 
 enum rrAnimReferenceType
 {
@@ -40,33 +39,33 @@ struct rrModelLoadParams
 	bool	collision;
 };
 
-//	CModel : Container for handling animated and static meshes.
+//	RrCModel : Container for handling animated and static meshes.
 // Is the basis of the "Mesh Trio," which are:
-//	* CModel : This class
+//	* RrCModel : This class which loads the data and links renderable and animation systems.
 //	* RrAnimatedMeshGroup : The "raw" container, managed by resource system.
-//	* 
-class CModel : public RrLogicObject
+//	* renderer::Mesh : The actual renderable for the model.
+class RrCModel : public RrLogicObject
 {
 protected:
 	// Constructor. Creates model.
-	explicit				CModel ( void );
+	explicit				RrCModel ( RrAnimatedMeshGroup* mesh_group, const rrModelLoadParams& params );
 
 public: // Creation Interface
 
-	//	LoadFile ( filename ) : Creates a model loaded from file, and returns it.
+	//	Load ( filename ), full : Creates a model loaded from file, and returns it.
 	// May create a model using previously loaded data.
 	// The model is automatically added to the active objects list.
 	// Physics and animation data will also be added to the resource system.
-	static RENDER_API CModel*
+	static RENDER_API RrCModel*
 							Load ( const char* resource_name );
-	//	LoadFilePartial ( filename, ...options... ) : Creates a model loaded from file, and returns it.
+	//	Load ( options ), partial : Creates a model loaded from file, and returns it.
 	// 
-	// LoadFile(...) calls this with all options enabled.
-	static RENDER_API CModel*
+	// Load(filename), full, calls this with all options enabled.
+	static RENDER_API RrCModel*
 							Load ( const rrModelLoadParams& load_params );
 
 	//	Upload ( data, id )
-	static RENDER_API CModel*
+	static RENDER_API RrCModel*
 							Upload ( arModelData& model_data );
 
 private:
@@ -91,7 +90,7 @@ protected:
 
 public:
 	//	Destructor : Frees used references.
-	RENDER_API virtual		~CModel ( void );
+	RENDER_API virtual		~RrCModel ( void );
 
 	// Send shader uniform list
 	//RENDER_API void SendShaderUniforms ( void );
@@ -146,7 +145,7 @@ public:
 	// This mode will save memory, but will completely copy the referenced animation
 	//  with no ability to change this model's animation.
 	// If the referenced model is deleted, unexpected behavior will occur.
-	RENDER_API void			SetReferencedAnimationMode ( CModel*, const rrAnimReferenceType = kAnimReferenceDirect );
+	RENDER_API void			SetReferencedAnimationMode ( RrCModel*, const rrAnimReferenceType = kAnimReferenceDirect );
 
 	// Hides or shows all of the child meshes
 	RENDER_API void			SetVisibility ( const bool n_visibility );

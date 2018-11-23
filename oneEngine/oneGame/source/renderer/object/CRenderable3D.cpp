@@ -76,8 +76,12 @@ bool CRenderable3D::Render ( const rrRenderParams* params )
 				gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
 		// bind the index buffer
 		gfx->setIndexBuffer(&m_meshBuffer.m_indexBuffer, gpu::kFormatR16UInteger);
-		// bind the cbuffers
-		// TODO:
+		// bind the cbuffers: TODO
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurface);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
 		// draw now
 		gfx->drawIndexed(m_modeldata.indexNum, 0);
 	}

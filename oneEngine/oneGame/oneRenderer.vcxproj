@@ -71,10 +71,15 @@
     <ClCompile Include="source\renderer\light\RrLight.cpp" />
     <ClCompile Include="source\renderer\logic\model\RrModelMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\logic\RrLogicObject.cpp" />
-    <ClCompile Include="source\renderer\logic\model\CModel.cpp" />
-    <ClCompile Include="source\renderer\logic\model\CModelLoader.cpp" />
+    <ClCompile Include="source\renderer\logic\model\RrCModel.cpp" />
+    <ClCompile Include="source\renderer\logic\model\ModelLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\logic\model\CSkinnedModel.cpp" />
-    <ClCompile Include="source\renderer\logic\model\CSkinnedModelLoader.cpp" />
+    <ClCompile Include="source\renderer\logic\model\CSkinnedModelLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpher.cpp" />
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpherSet.cpp" />
     <ClCompile Include="source\renderer\material\RrMaterial.Constants.cpp">
@@ -121,10 +126,10 @@
     </ClCompile>
     <ClCompile Include="source\renderer\object\postprocess\PostProcessPass.cpp" />
     <ClCompile Include="source\renderer\object\screen\CScreenFade.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CBillboard.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CPrimitiveCube.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CPrimitiveIsosphere.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CPrimitivePlane.cpp" />
+    <ClCompile Include="source\renderer\object\shapes\RrBillboard.cpp" />
+    <ClCompile Include="source\renderer\object\shapes\RrShapeCube.cpp" />
+    <ClCompile Include="source\renderer\object\shapes\RrShapeIsosphere.cpp" />
+    <ClCompile Include="source\renderer\object\shapes\RrShapePlane.cpp" />
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp" />
     <ClCompile Include="source\renderer\ogl\glcorearb_impl.c" />
     <ClCompile Include="source\renderer\ogl\wgl_impl.c" />
@@ -227,8 +232,11 @@
     <ClInclude Include="source\renderer\logic\model\RrAnimatedMeshGroup.h" />
     <ClInclude Include="source\renderer\logic\model\RrModelMasterSubsystem.h" />
     <ClInclude Include="source\renderer\logic\RrLogicObject.h" />
-    <ClInclude Include="source\renderer\logic\model\CModel.h" />
-    <ClInclude Include="source\renderer\logic\model\CModelLoader.h" />
+    <ClInclude Include="source\renderer\logic\model\RrCModel.h" />
+    <ClInclude Include="source\renderer\logic\model\ModelLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\logic\model\CSkinnedModel.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorphAction.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpher.h" />
@@ -276,10 +284,10 @@
     <ClInclude Include="source\renderer\object\model\SkinnedModel.h" />
     <ClInclude Include="source\renderer\object\postprocess\PostProcessPass.h" />
     <ClInclude Include="source\renderer\object\screen\CScreenFade.h" />
-    <ClInclude Include="source\renderer\object\shapes\CBillboard.h" />
-    <ClInclude Include="source\renderer\object\shapes\CPrimitiveCube.h" />
-    <ClInclude Include="source\renderer\object\shapes\CPrimitiveIsosphere.h" />
-    <ClInclude Include="source\renderer\object\shapes\CPrimitivePlane.h" />
+    <ClInclude Include="source\renderer\object\shapes\RrBillboard.h" />
+    <ClInclude Include="source\renderer\object\shapes\RrShapeCube.h" />
+    <ClInclude Include="source\renderer\object\shapes\RrShapeIsosphere.h" />
+    <ClInclude Include="source\renderer\object\shapes\RrShapePlane.h" />
     <ClInclude Include="source\renderer\object\util\CLoadScreenInjector.h" />
     <ClInclude Include="source\renderer\ogl\GLCommon.h" />
     <ClInclude Include="source\renderer\ogl\glcorearb.h" />

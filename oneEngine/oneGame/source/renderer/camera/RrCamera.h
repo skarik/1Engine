@@ -94,9 +94,9 @@ public:
 		{ return m_needsNewPasses && active; }
 
 	// Return the current render texture
-	RENDER_API RrRenderTexture*
+	/*RENDER_API RrRenderTexture*
 							GetRenderTexture ( void )
-		{ return m_renderTexture; }
+		{ return m_renderTexture; }*/
 
 	// 
 	// Mathematical & Game Queries:

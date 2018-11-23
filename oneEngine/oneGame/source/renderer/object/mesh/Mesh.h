@@ -6,7 +6,7 @@
 #include "renderer/object/CRenderableObject.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 
-class CModel;
+class RrCModel;
 class rrMeshBuffer;
 
 namespace renderer
@@ -51,10 +51,10 @@ namespace renderer
 
 	public:
 		rrMeshBuffer*		m_mesh;
-		CModel*				m_parent;
+		RrCModel*				m_parent;
 
 	protected:
-		friend CModel;
+		friend RrCModel;
 		bool				bUseFrustumCulling;
 		bool				bCanRender;
 		bool				bUseSkinning;

@@ -64,7 +64,7 @@ RrDebugDrawer::~RrDebugDrawer ( void )
 	}
 }
 
-bool RrDebugDrawer::PreRender ( RrCamera* camera )
+bool RrDebugDrawer::PreRender ( rrCameraPass* cameraPass )
 {
 	// Make sure line size is smol enough.
 	if (avLineList.size() >= ((1 << 16) / 6))
@@ -180,7 +180,7 @@ bool RrDebugDrawer::PreRender ( RrCamera* camera )
 	StreamLockModelData();
 
 	// Push at the end
-	return CStreamedRenderable3D::PreRender();
+	return CStreamedRenderable3D::PreRender(cameraPass);
 }
 
 void RrDebugDrawer::DrawLine ( const Line& newLine, const Color& color )

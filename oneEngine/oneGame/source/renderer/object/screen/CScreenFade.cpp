@@ -83,7 +83,7 @@ bool CScreenFade::PreRender ( rrCameraPass* cameraPass )
 	
 	return true;
 }
-bool CScreenFade::Render ( const char pass )
+bool CScreenFade::Render ( const rrRenderParams* params )
 { /*GLd_ACCESS;
 	if ( fAlpha > 0.0F )
 	{

@@ -1,5 +1,5 @@
 #include "Mesh.h"
-#include "renderer/logic/model/CModel.h"
+#include "renderer/logic/model/RrCModel.h"
 #include "renderer/logic/model/CSkinnedModel.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"

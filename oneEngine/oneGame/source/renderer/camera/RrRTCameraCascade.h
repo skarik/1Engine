@@ -13,14 +13,14 @@ class RrRTCameraCascade : public RrRTCamera
 	CameraType( kCameraClassRTCascade );
 public:
 	// Constructor/destructor
-	explicit		RrRTCameraCascade (
+	/*explicit		RrRTCameraCascade (
 		RrRenderTexture*	targetTexture	= NULL,
 		Real			renderFramerate	= 30.0f,
 		bool			autoRender		= false
 		) : RrRTCamera( targetTexture, renderFramerate, autoRender )
 	{
 		;//m_type = CAMERA_TYPE_RT_CASCADE;
-	}
+	}*/
 	//				~RrRTCameraCascade ( void );
 
 	// ======

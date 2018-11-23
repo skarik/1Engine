@@ -1,4 +1,4 @@
-#include "CModel.h"
+#include "RrCModel.h"
 
 #include "core/time/time.h"
 #include "core/utils/string.h"
@@ -10,11 +10,13 @@
 
 #include "renderer/object/mesh/Mesh.h"
 #include "renderer/logic/model/RrAnimatedMeshGroup.h"
-//#include "renderer/resource/CModelMaster.h"
+//#include "renderer/resource/RrCModelMaster.h"
 #include "renderer/logic/model/RrModelMasterSubsystem.h"
 
-CModel*
-CModel::Load ( const char* resource_name )
+#include "core-ext/system/io/assets/ModelLoader.h"
+
+RrCModel*
+RrCModel::Load ( const char* resource_name )
 {
 	rrModelLoadParams mlparams;
 	mlparams.resource_name = resource_name;
@@ -26,8 +28,8 @@ CModel::Load ( const char* resource_name )
 	return Load(mlparams);
 }
 
-CModel*
-CModel::Load ( const rrModelLoadParams& load_params )
+RrCModel*
+RrCModel::Load ( const rrModelLoadParams& load_params )
 {
 	auto resm = core::ArResourceManager::Active();
 
@@ -43,29 +45,85 @@ CModel::Load ( const rrModelLoadParams& load_params )
 		RrAnimatedMeshGroup* existingMeshGroup = (RrAnimatedMeshGroup*)existingResource;
 		existingMeshGroup->AddReference();
 
-		ARCORE_ERROR(0, "Unimplemented CModel instantiation.");
-		return NULL;
+		// Check what is loaded in the mesh group, and load up the rest:
+		core::ModelLoader loader;
+
+		if (load_params.morphs && existingMeshGroup->m_morphs == NULL)
+		{
+			loader.m_loadMorphs = true;
+		}
+		if ((load_params.hitboxes) && existingMeshGroup->m_skeleton == NULL)
+		{
+			loader.m_loadSkeleton = true;
+		}
+
+		// Load model
+		bool model_loaded = loader.LoadModel(load_params.resource_name);
+		if (model_loaded == false)
+		{
+			debug::Console->PrintError("Could not load model resource \"%s\".\n", load_params.resource_name);
+			return NULL;
+		}
+
+		// Create a new RrCModel with the given RrAnimatedMeshGroup.
+		RrCModel* model = new RrCModel(existingMeshGroup, load_params);
+
+		return model;
 	}
+	else
+	{
+		// No model. We need to load up a new mesh group.
 
-	ARCORE_ASSERT_MSG(0, "Unimplemented CModel loader.");
+		// Create a new RrAnimatedMeshGroup.
+		core::ModelLoader loader;
+		loader.m_loadMesh = true;
+		loader.m_loadMorphs = load_params.morphs;
+		loader.m_loadAnimation = load_params.animation;
+		loader.m_loadActions = load_params.animation;
+		loader.m_loadSkeleton = load_params.animation | load_params.hitboxes;
 
-	return NULL;
+		// Load model
+		bool model_loaded = loader.LoadModel(load_params.resource_name);
+		if (model_loaded == false)
+		{
+			//ARCORE_ERROR(0, "Unimplemented RrCModel instantiation.");
+			debug::Console->PrintError("Could not load model resource \"%s\".\n", load_params.resource_name);
+			return NULL;
+		}
+
+		// Create a mesh group that holds the information:
+		RrAnimatedMeshGroup* meshGroup = new RrAnimatedMeshGroup();
+		{
+			ARCORE_ERROR(0, "Unimplemented RrCModel instantiation.");
+			return NULL;
+		}
+
+		// Add self to the resource system:
+		if (resm->Contains(meshGroup) == false)
+			resm->Add(meshGroup);
+
+		// Create a new RrCModel with the given RrAnimatedMeshGroup.
+		RrCModel* model = new RrCModel(meshGroup, load_params);
+
+		return model;
+	}
 }
 
-CModel*
-CModel::Upload ( arModelData& model_data )
+RrCModel*
+RrCModel::Upload ( arModelData& model_data )
 {
 	return NULL;
 }
 
-CModel::CModel ( void )
+RrCModel::RrCModel ( RrAnimatedMeshGroup* mesh_group, const rrModelLoadParams& params )
 	: RrLogicObject(),
 	m_animRefMode(kAnimReferenceNone)
 {
+	;
 }
 //
 //// Constructor, taking model object
-//CModel::CModel ( const char* sFilename )
+//RrCModel::RrCModel ( const char* sFilename )
 //	: RrLogicObject()
 //{
 //	// Create filename
@@ -179,7 +237,7 @@ CModel::CModel ( void )
 //}
 //
 //// Constructor, taking model info struct (nice for procedural generation)
-//CModel::CModel ( arModelData& mdInModelData, const char* sModelName )
+//RrCModel::RrCModel ( arModelData& mdInModelData, const char* sModelName )
 //	: RrLogicObject()
 //{
 //	// Start out setting the model name
@@ -270,7 +328,7 @@ CModel::CModel ( void )
 
 
 // Destructor
-CModel::~CModel ( void )
+RrCModel::~RrCModel ( void )
 {
 	/*for ( unsigned int n = 0; n < vMaterials.size(); ++n )
 	{
@@ -304,7 +362,7 @@ CModel::~CModel ( void )
 
 
 // Begin render
-void CModel::PreStep ( void ) 
+void RrCModel::PreStep ( void ) 
 {
 	for ( uint i = 0; i < m_meshes.size(); ++i )
 	{
@@ -322,7 +380,7 @@ void CModel::PreStep ( void )
 	}*/
 }
 // End render
-void CModel::PostStepSynchronus ( void ) 
+void RrCModel::PostStepSynchronus ( void ) 
 {
 	if ( pMyAnimation )
 	{
@@ -347,7 +405,7 @@ void CModel::PostStepSynchronus ( void )
 
 //#include "renderer/debug/RrDebugDrawer.h"
 
-void CModel::CalculateBoundingBox ( void )
+void RrCModel::CalculateBoundingBox ( void )
 {
 	Vector3d minPos, maxPos;
 
@@ -377,7 +435,7 @@ void CModel::CalculateBoundingBox ( void )
 }
 
 // ==Shader interface==
-//void CModel::SetShaderUniform ( const char* sUniformName, float const fInput )
+//void RrCModel::SetShaderUniform ( const char* sUniformName, float const fInput )
 //{
 //	/*if ( !CGameSettings::Active()->b_ro_EnableShaders ) {
 //		return; // TODO
@@ -385,23 +443,23 @@ void CModel::CalculateBoundingBox ( void )
 //	if ( !uniformMapFloat ) uniformMapFloat = new unordered_map<arstring128,float>;
 //	(*uniformMapFloat)[arstring128(sUniformName)] = fInput;
 //}
-//void CModel::SetShaderUniform ( const char* sUniformName, const Vector2d& fInput )
+//void RrCModel::SetShaderUniform ( const char* sUniformName, const Vector2d& fInput )
 //{
 //	if ( !uniformMapVect2d ) uniformMapVect2d = new unordered_map<arstring128,Vector2d>;
 //	(*uniformMapVect2d)[arstring128(sUniformName)] = fInput;
 //}
-//void CModel::SetShaderUniform ( const char* sUniformName, const Vector3d& fInput )
+//void RrCModel::SetShaderUniform ( const char* sUniformName, const Vector3d& fInput )
 //{
 //	if ( !uniformMapVect3d ) uniformMapVect3d = new unordered_map<arstring128,Vector3d>;
 //	(*uniformMapVect3d)[arstring128(sUniformName)] = fInput;
 //}
-//void CModel::SetShaderUniform ( const char* sUniformName, const Color& fInput )
+//void RrCModel::SetShaderUniform ( const char* sUniformName, const Color& fInput )
 //{
 //	if ( !uniformMapColor ) uniformMapColor = new unordered_map<arstring128,Color>;
 //	(*uniformMapColor)[arstring128(sUniformName)] = fInput;
 //}
 
-//void CModel::SendShaderUniforms ( void )
+//void RrCModel::SendShaderUniforms ( void )
 //{
 //	if ( RrMaterial::current->getUsingShader() ) {
 //		if ( uniformMapFloat ) {
@@ -428,7 +486,7 @@ void CModel::CalculateBoundingBox ( void )
 //}
 
 // Set material for meshes
-//void CModel::SetMaterial ( RrMaterial* n_pNewMaterial )
+//void RrCModel::SetMaterial ( RrMaterial* n_pNewMaterial )
 //{
 //	if ( m_meshes.size() == 1 ) {
 //		m_meshes[0]->SetMaterial( n_pNewMaterial );
@@ -438,7 +496,7 @@ void CModel::CalculateBoundingBox ( void )
 //	}
 //}
 //// Get material for meshes
-//RrMaterial* CModel::GetMaterial ( void )
+//RrMaterial* RrCModel::GetMaterial ( void )
 //{
 //	if ( m_meshes.size() == 1 ) {
 //		return m_meshes[0]->GetMaterial();
@@ -450,7 +508,7 @@ void CModel::CalculateBoundingBox ( void )
 //}
 
 // Recalculate normals
-//void CModel::RecalculateNormals ( void )
+//void RrCModel::RecalculateNormals ( void )
 //{
 //	for ( uint i = 0; i < m_meshes.size(); ++i )
 //	{
@@ -459,7 +517,7 @@ void CModel::CalculateBoundingBox ( void )
 //}
 
 // Duplicate materials to a local copy
-/*void CModel::DuplicateMaterials ( void )
+/*void RrCModel::DuplicateMaterials ( void )
 {
 	for ( uint i = 0; i < m_meshes.size(); ++i )
 	{
@@ -469,11 +527,11 @@ void CModel::CalculateBoundingBox ( void )
 }*/
 
 // Set if to use frustum culling or not
-void CModel::SetFrustumCulling ( bool useCulling ) {
+void RrCModel::SetFrustumCulling ( bool useCulling ) {
 	bUseFrustumCulling = useCulling;
 }
 // Forces the model to be drawn the next frame
-void CModel::SetForcedDraw ( void ) {
+void RrCModel::SetForcedDraw ( void ) {
 	//bCanRender = true;
 	for ( uint i = 0; i < m_meshes.size(); ++i ) {
 		m_meshes[i]->bCanRender = true;
@@ -484,7 +542,7 @@ void CModel::SetForcedDraw ( void ) {
 // This mode will save memory, but will completely copy the referenced animation
 //  with no ability to change this model's animation.
 // If the referenced model is deleted, unexpected behavior will occur.
-void CModel::SetReferencedAnimationMode ( CModel* pReference, const rrAnimReferenceType ref_type )
+void RrCModel::SetReferencedAnimationMode ( RrCModel* pReference, const rrAnimReferenceType ref_type )
 {
 	throw core::DeprecatedCallException();
 	//pReferencedAnimation = pReference->GetAnimation();
@@ -493,13 +551,13 @@ void CModel::SetReferencedAnimationMode ( CModel* pReference, const rrAnimRefere
 }
 
 // Hides or shows all of the child meshes
-void CModel::SetVisibility ( const bool n_visibility ) {
+void RrCModel::SetVisibility ( const bool n_visibility ) {
 	for ( uint i = 0; i < m_meshes.size(); ++i ) {
 		m_meshes[i]->visible = n_visibility;
 	}
 }
 // Hides or shows all of the child meshes
-//void CModel::SetRenderType ( const renderer::eRenderLayer n_type ) {
+//void RrCModel::SetRenderType ( const renderer::eRenderLayer n_type ) {
 //	for ( uint i = 0; i < m_meshes.size(); ++i ) {
 //		m_meshes[i]->renderLayer = n_type;
 //	}
@@ -510,17 +568,17 @@ void CModel::SetVisibility ( const bool n_visibility ) {
 //======================================================//
 
 // Get the number of meshes this model manages
-size_t CModel::GetMeshCount ( void ) const
+size_t RrCModel::GetMeshCount ( void ) const
 {
 	return m_meshes.size();
 }
 // Gets the mesh with the index
-renderer::Mesh* CModel::GetMesh ( const uint n_index ) const
+renderer::Mesh* RrCModel::GetMesh ( const uint n_index ) const
 {
 	return m_meshes[n_index];
 }
 // Gets the mesh with the name
-renderer::Mesh* CModel::GetMesh ( const char* n_name ) const
+renderer::Mesh* RrCModel::GetMesh ( const char* n_name ) const
 {
 	for ( uint i = 0; i < m_meshes.size(); ++i ) {
 		if ( strstr( m_meshes[i]->GetName(), n_name ) != NULL ) {
@@ -531,7 +589,7 @@ renderer::Mesh* CModel::GetMesh ( const char* n_name ) const
 }
 
 // Gets the indicated mesh data in the array
-arModelData* CModel::GetModelData ( int iMeshIndex ) const
+arModelData* RrCModel::GetModelData ( int iMeshIndex ) const
 {
 	renderer::Mesh* mesh = GetMesh( iMeshIndex );
 	if ( mesh ) {
@@ -541,7 +599,7 @@ arModelData* CModel::GetModelData ( int iMeshIndex ) const
 }
 
 // Returns the first matching mesh with the given name in the array
-arModelData* CModel::GetModelDataByName ( const char* nNameMatch ) const 
+arModelData* RrCModel::GetModelDataByName ( const char* nNameMatch ) const 
 {
 	renderer::Mesh* mesh = GetMesh( nNameMatch );
 	if ( mesh ) {
@@ -551,7 +609,7 @@ arModelData* CModel::GetModelDataByName ( const char* nNameMatch ) const
 }
 
 // Return the first matching material
-//RrMaterial*	CModel::FindMaterial ( const char* n_name, const int n_offset ) const
+//RrMaterial*	RrCModel::FindMaterial ( const char* n_name, const int n_offset ) const
 //{
 //	int foundCount = 0;
 //	for ( uint i = 0; i < m_meshes.size(); ++i ) {
@@ -566,7 +624,7 @@ arModelData* CModel::GetModelDataByName ( const char* nNameMatch ) const
 //}
 
 // Gets if any of the meshes are being rendered
-bool CModel::GetVisibility ( void )
+bool RrCModel::GetVisibility ( void )
 {
 	for ( uint i = 0; i < m_meshes.size(); ++i ) {
 		if ( m_meshes[i]->GetVisible() ) {

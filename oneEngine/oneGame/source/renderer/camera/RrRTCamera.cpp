@@ -8,7 +8,7 @@
 
 RrRTCamera::RrRTCamera (
 	renderer::rrInternalSettings* const targetSettings,
-	Vector2i& const targetSize,
+	Vector2i const& targetSize,
 	Real renderFramerate,
 	bool autoRender
 	) : RrCamera (),
@@ -34,17 +34,19 @@ RrRTCamera::~RrRTCamera ( void )
 //	SetTargetInfo(settings, size) : Sets up render target for the camera.
 // Will free previously created buffers.
 // Returns true on successful creation.
-bool RrRTCamera::SetTargetInfo ( renderer::rrInternalSettings* const settings, Vector2i& const size )
+bool RrRTCamera::SetTargetInfo ( renderer::rrInternalSettings* const settings, Vector2i const& size )
 {
 	m_usedTargetSettings = *settings;
 	m_targetSize = size;
 
-	m_chain.CreateTargetBufferChain(&m_usedTargetSettings, size);
+	gpu::ErrorCode status = m_chain.CreateTargetBufferChain(&m_usedTargetSettings, size);
+	return status == gpu::kError_SUCCESS;
 }
 //	FreeTarget() : Frees up the render target.
 bool RrRTCamera::FreeTarget ( void )
 {
-	m_chain.FreeTargetBufferChain();
+	bool status = m_chain.FreeTargetBufferChain();
+	return status;
 }
 
 // Update

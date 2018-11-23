@@ -1,6 +1,5 @@
-
 #include "CSkinnedModel.h"
-#include "CModelLoader.h"
+#include "ModelLoader.h"
 
 #include "physical/skeleton/skeletonBone.h"
 //#include "physical/physics/shapes/physMesh.h"
@@ -24,7 +23,7 @@
 #include "core-ext/system/io/FileUtils.h"
 
 #include "physical/resource/ResourceManager.h"
-#include "renderer/resource/CModelMaster.h"
+#include "renderer/resource/RrCModelMaster.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 //#include "renderer/material/RrMaterial.h"
 #include "renderer/logic/model/morpher/CMorpher.h"

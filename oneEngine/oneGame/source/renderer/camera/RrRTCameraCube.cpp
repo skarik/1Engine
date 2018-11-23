@@ -11,12 +11,12 @@
 
 // Constructor/destructor
 RrRTCameraCube::RrRTCameraCube (
-	RrRenderTextureCube*
-						targetTexture,
-	Real				renderFramerate,
-	bool				autoRender,
-	bool				staggerRender
-	) : RrRTCamera( targetTexture, renderFramerate, autoRender ),
+	renderer::rrInternalSettings* const targetSettings,
+	Vector2i const& targetSize,
+	Real renderFramerate,
+	bool autoRender,
+	bool staggerRender
+	) : RrRTCamera( targetSettings, targetSize, renderFramerate, autoRender ),
 	m_rendered(false),
 	m_staggerRender(staggerRender), m_staggerTarget(0)
 {
@@ -85,36 +85,38 @@ void RrRTCameraCube::LateUpdate ( void )
 //	UpdateMatrix() : Updates the camera matrices.
 void RrRTCameraCube::UpdateMatrix ( void ) 
 {
-	auto t_textureHeight = m_renderTexture->GetHeight();
-	auto t_baseRotation = transform.rotation;
-	//const glEnum t_renderList [6] = { // Y and Z are flipped from cube map to engine
-	//	GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
-	//	GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z
+	throw core::NotYetImplementedException();
+	//
+	//auto t_textureHeight = m_renderTexture->GetHeight();
+	//auto t_baseRotation = transform.rotation;
+	////const glEnum t_renderList [6] = { // Y and Z are flipped from cube map to engine
+	////	GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
+	////	GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z
+	////};
+	//const Rotator t_rotatorList [6] = {
+	//	Rotator( 0,0,0 ),	Rotator( 90,90,0 ),		Rotator( 0,0,-90 ),
+	//	Rotator( 0,0,180 ),	Rotator( -90,-90,0 ),	Rotator( 0,0,90 )
 	//};
-	const Rotator t_rotatorList [6] = {
-		Rotator( 0,0,0 ),	Rotator( 90,90,0 ),		Rotator( 0,0,-90 ),
-		Rotator( 0,0,180 ),	Rotator( -90,-90,0 ),	Rotator( 0,0,90 )
-	};
-	
-	// Update parameters for generating the matrices needed.
-	fieldOfView = (Real)(2.0 * radtodeg( atan( t_textureHeight / (t_textureHeight-0.5) ) ));
-	mirrorView = true;
+	//
+	//// Update parameters for generating the matrices needed.
+	//fieldOfView = (Real)(2.0 * radtodeg( atan( t_textureHeight / (t_textureHeight-0.5) ) ));
+	//mirrorView = true;
 
-	// Loop through all the matrices we need updated...
-	for ( int i = (m_staggerRender ? m_staggerTarget : 0); i < (m_staggerRender ? m_staggerTarget+1 : 6); ++i )
-	{
-		transform.rotation = t_baseRotation * t_rotatorList[i];
+	//// Loop through all the matrices we need updated...
+	//for ( int i = (m_staggerRender ? m_staggerTarget : 0); i < (m_staggerRender ? m_staggerTarget+1 : 6); ++i )
+	//{
+	//	transform.rotation = t_baseRotation * t_rotatorList[i];
 
-		RrRTCamera::UpdateMatrix();
+	//	RrRTCamera::UpdateMatrix();
 
-		// Save the matrices we're going to render with:
-		viewCubeMatrices[i] = viewTransform;
-		projCubeMatrices[i] = projTransform;
-		viewprojCubeMatrices[i] = viewprojMatrix;
-	}
+	//	// Save the matrices we're going to render with:
+	//	viewCubeMatrices[i] = viewTransform;
+	//	projCubeMatrices[i] = projTransform;
+	//	viewprojCubeMatrices[i] = viewprojMatrix;
+	//}
 
-	// Restore the rotation...
-	transform.rotation = t_baseRotation;
+	//// Restore the rotation...
+	//transform.rotation = t_baseRotation;
 }
 
 //void RrRTCameraCube::RenderScene ( void )

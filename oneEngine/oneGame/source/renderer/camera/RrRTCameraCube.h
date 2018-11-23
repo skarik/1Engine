@@ -13,11 +13,11 @@ class RrRTCameraCube : public RrRTCamera
 public:
 	// Constructor/destructor
 	explicit				RrRTCameraCube (
-		RrRenderTextureCube*
-						targetTexture	= NULL,
-		Real			renderFramerate	= 30.0f,
-		bool			autoRender		= true,
-		bool			staggerRender	= false);
+		renderer::rrInternalSettings* const targetSettings,
+		Vector2i const& targetSize,
+		Real renderFramerate = 30.0f,
+		bool autoRender = true,
+		bool staggerRender = false);
 
 	//	PassCount() : Returns number of passes this camera will render
 	// Must be 1 or greater in order to render.

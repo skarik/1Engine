@@ -129,9 +129,6 @@
     <ClCompile Include="source\renderer\object\screen\CScreenFade.cpp">
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CBillboard.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp">
       <Filter>SOURCE\Renderer\Object\Util</Filter>
     </ClCompile>
@@ -143,12 +140,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\texture\CTextureLoader.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\logic\model\CModel.cpp">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\logic\model\CModelLoader.cpp">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\logic\model\CSkinnedModel.cpp">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
@@ -230,15 +221,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\utils\rrTextBuilder2D.cpp">
       <Filter>SOURCE\Renderer\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CPrimitiveCube.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CPrimitiveIsosphere.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CPrimitivePlane.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\CStreamedRenderable3D.cpp">
       <Filter>SOURCE\Renderer\Object</Filter>
@@ -411,6 +393,24 @@
     <ClCompile Include="source\renderer\object\mesh\InstancedMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\logic\model\ModelLoader.cpp">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\RrBillboard.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\RrShapeCube.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\RrShapePlane.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\RrShapeIsosphere.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\logic\model\RrCModel.cpp">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -431,9 +431,6 @@
     <ClInclude Include="source\renderer\object\screen\CScreenFade.h">
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CBillboard.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\object\model\Model.h">
       <Filter>SOURCE\Renderer\Object\Model</Filter>
     </ClInclude>
@@ -451,12 +448,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\texture\CMRTTexture.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\model\CModel.h">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\model\CModelLoader.h">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\logic\model\CSkinnedModel.h">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
@@ -574,15 +565,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\utils\rrTextBuilder2D.h">
       <Filter>SOURCE\Renderer\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CPrimitiveCube.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CPrimitiveIsosphere.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CPrimitivePlane.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\CStreamedRenderable3D.h">
       <Filter>SOURCE\Renderer\Object</Filter>
@@ -778,6 +760,24 @@
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\InstancedMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\logic\model\ModelLoader.h">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\RrBillboard.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\RrShapeCube.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\RrShapePlane.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\RrShapeIsosphere.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\logic\model\RrCModel.h">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

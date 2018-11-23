@@ -46,7 +46,7 @@ void demosceneModelLoader::LoadScene ( void )
 
 	// Create acorn
 	{
-		CModel* model = new CModel("models/demos/female elf.fbx");
+		RrCModel* model = new RrCModel("models/demos/female elf.fbx");
 		model->transform.scale = Vector3d(1,1,1) / 304.8F * 2.7F;
 		model->transform.rotation = Vector3d(0.0F, 0, 135.0F);
 		//model->transform.position = Vector3d(-1.0F, +1.0F, -1.3F);

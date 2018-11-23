@@ -25,9 +25,9 @@ RrCamera::RrCamera ( void )
 	renderScale(1.0F), viewportPercent(Rect(0.0F, 0.0F, 1.0F, 1.0F)), mirrorView(false),
 	orthographic(false), orthoSize(512.0F, 512.0F),
 	// default physical options
-	fieldOfView(100.0F), focalDistance(10.0F), focalRange(100.0F),
+	fieldOfView(100.0F), focalDistance(10.0F), focalRange(100.0F)
 	// default Rt options
-	m_renderTexture(NULL)
+	//m_renderTexture(NULL)
 {
 	up = Vector3d(0, 0, 1);
 	forward = Vector3d::forward;

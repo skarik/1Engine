@@ -17,7 +17,7 @@ public:
 
 	RENDER_API void			PreStepSynchronus ( void ) override;
 	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
-	RENDER_API bool			Render ( const char pass ) override;
+	RENDER_API bool			Render ( const rrRenderParams* params ) override;
 
 private:
 	bool				bFadeIn;	// Fade in starts the alpha at 1. Fade out starts the alpha at 0

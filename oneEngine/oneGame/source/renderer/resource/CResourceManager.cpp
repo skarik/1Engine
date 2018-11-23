@@ -6,7 +6,7 @@
 #include "core-ext/system/io/FileUtils.h"
 #include "core-ext/system/io/Resources.h"
 
-#include "renderer/logic/model/CModel.h"
+#include "renderer/logic/model/RrCModel.h"
 #include "renderer/texture/RrTexture.h"
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/material/RrMaterial.h"

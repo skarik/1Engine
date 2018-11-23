@@ -3,6 +3,7 @@
 
 #include "RrCamera.h"
 #include "renderer/state/InternalSettings.h"
+#include "renderer/state/RrHybridBufferChain.h"
 
 // Camera class with various changes to provide common techniques to optimize rendering to texture.
 class RrRTCamera : public RrCamera
@@ -11,7 +12,7 @@ class RrRTCamera : public RrCamera
 public:
 	RENDER_API explicit		RrRTCamera (
 		renderer::rrInternalSettings* const targetSettings,
-		Vector2i& const targetSize,
+		Vector2i const& targetSize,
 		Real renderFramerate = 30.0f,
 		bool autoRender = false
 		);
@@ -39,7 +40,7 @@ public:
 	//	SetTargetInfo(settings, size) : Sets up render target for the camera.
 	// Will free previously created buffers.
 	// Returns true on successful creation.
-	RENDER_API bool			SetTargetInfo ( renderer::rrInternalSettings* const settings, Vector2i& const size );
+	RENDER_API bool			SetTargetInfo ( renderer::rrInternalSettings* const settings, Vector2i const& size );
 	//	FreeTarget() : Frees up the render target.
 	RENDER_API bool			FreeTarget ( void );
 
