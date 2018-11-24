@@ -224,6 +224,7 @@
     <ClInclude Include="source\renderer\gpuw\Internal\Enums.h" />
     <ClInclude Include="source\renderer\gpuw\Public\Enums.h" />
     <ClInclude Include="source\renderer\gpuw\Public\Formats.h" />
+    <ClInclude Include="source\renderer\gpuw\Public\Rect2.h" />
     <ClInclude Include="source\renderer\gpuw\Public\ShaderTypes.h" />
     <ClInclude Include="source\renderer\gpuw\Public\Slots.h" />
     <ClInclude Include="source\renderer\gpuw\RenderTargets.h" />
@@ -258,7 +259,6 @@
     <ClInclude Include="source\renderer\material\RrPassDeferred.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="source\renderer\material\RrShader.cbuffers.h" />
     <ClInclude Include="source\renderer\material\RrShader.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -348,6 +348,10 @@
     <ClInclude Include="source\renderer\types\ModelStructures.h" />
     <ClInclude Include="source\renderer\types\ObjectSettings.h" />
     <ClInclude Include="source\renderer\types\ShaderSettings.h" />
+    <ClInclude Include="source\renderer\types\shaders\cbuffers.h" />
+    <ClInclude Include="source\renderer\types\shaders\legacy.h" />
+    <ClInclude Include="source\renderer\types\shaders\sbuffers.h" />
+    <ClInclude Include="source\renderer\types\shaders\vattribs.h" />
     <ClInclude Include="source\renderer\types\types.h" />
     <ClInclude Include="source\renderer\utils\RrScreenshot.h" />
     <ClInclude Include="source\renderer\utils\glTMeshContainer.h">

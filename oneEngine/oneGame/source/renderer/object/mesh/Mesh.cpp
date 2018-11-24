@@ -5,6 +5,7 @@
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 #include "renderer/camera/RrCamera.h"
 #include "renderer/material/Material.h"
+#include "renderer/types/shaders/sbuffers.h"
 #include "renderer/gpuw/Device.h"
 #include "renderer/gpuw/GraphicsContext.h"
 
@@ -75,10 +76,8 @@ bool renderer::Mesh::PreRender ( rrCameraPass* cameraPass )
 		else
 		{
 			Vector3d modelOrigin;
-			//modelOrigin = ((CSkinnedModel*)m_parent)->GetSkeletonList()->at(1)->transform.WorldMatrix() * vCheckRenderPos;
-			modelOrigin = ((CSkinnedModel*)m_parent)->GetSkeleton()->current_transform[1].WorldMatrix() * vCheckRenderPos;
+			//modelOrigin = ((CSkinnedModel*)m_parent)->GetSkeleton()->current_transform[1].WorldMatrix() * vCheckRenderPos;
 			modelOrigin = transform.WorldMatrix() * modelOrigin;
-			//modelOrigin += transform.GetTransformMatrix() * vCheckRenderPos
 			if ( cameraPass->m_frustum.SphereIsInside(
 				modelOrigin, 
 				fCheckRenderDist * (transform.world.scale.x+transform.world.scale.y+transform.world.scale.z) * 0.6f ) != core::math::kShapeCheckResultOutside )
@@ -149,7 +148,7 @@ bool renderer::Mesh::Render ( const rrRenderParams* params )
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
 		// bind the vertex buffers
-		for (int i = 0; i < renderer::kAttributeMaxCount; ++i)
+		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
 			if (m_mesh->m_bufferEnabled[i])
 				gfx->setVertexBuffer(i, &m_mesh->m_buffer[i], 0);
 		// bind the vertex buffers for the morpher: TODO
@@ -157,14 +156,14 @@ bool renderer::Mesh::Render ( const rrRenderParams* params )
 		gfx->setIndexBuffer(&m_mesh->m_indexBuffer, gpu::kFormatR16UInteger);
 		// bind the cbuffers: TODO
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
-		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurface);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
 		if ( m_parent != NULL )
 		{
-			if ( m_parent->m_xbufSkinningMajor )
-				gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::SBUFFER_SKINNING_MAJOR, &m_parent->m_xbufSkinningMajor);
+			if ( m_parent->GetBuffers().m_sbufSkinningMajorValid )
+				gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::SBUFFER_SKINNING_MAJOR, &m_parent->GetBuffers().m_sbufSkinningMajor);
 		}
 		// draw now
 		gfx->drawIndexed(m_mesh->m_modeldata->indexNum, 0);

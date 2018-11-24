@@ -42,8 +42,8 @@ CutsceneEditor::CutsceneEditor ( void )
 	m_largeTextRenderer		= new CLargeTextRenderer(this);
 	m_normalTextRenderer	= new CNormalTextRenderer(this);
 
-	//m_nodes.push_back(EditorNode({NULL, Vector2d(0,0)}));
-	//m_nodes.push_back(EditorNode({NULL, Vector2d(0,128)}));
+	//m_nodes.push_back(EditorNode({NULL, Vector2f(0,0)}));
+	//m_nodes.push_back(EditorNode({NULL, Vector2f(0,128)}));
 }
 
 CutsceneEditor::~CutsceneEditor ( void )
@@ -76,7 +76,7 @@ void CutsceneEditor::doViewNavigationDrag ( void )
 		if ( Input::Mouse( Input::MBMiddle ) || ( Input::Mouse( Input::MBRight ) && Input::Key( Keys.Control ) ) )
 		{
 			m_navigation_busy = true;
-			m_target_camera_position -= Vector2d(
+			m_target_camera_position -= Vector2f(
 				Input::DeltaMouseX(), Input::DeltaMouseY()
 			);
 		}
@@ -106,7 +106,7 @@ Vector3d CutsceneEditor::uiGetCurrentMouse ( void )
 Rect CutsceneEditor::uiGetNodeRect( common::cts::EditorNode* node )
 {
 	// For now, let's just use some constant size for all nodes!
-	return Rect(node->position, Vector2d(128, 32));
+	return Rect(node->position, Vector2f(128, 32));
 }
 //		uiGetNodeOutputPosition ( EditorNode* node, int index ) : Gets node output pos
 Vector3d CutsceneEditor::uiGetNodeOutputPosition ( common::cts::EditorNode* node, const int index )
@@ -124,11 +124,11 @@ Vector3d CutsceneEditor::uiGetNodeOutputPosition ( common::cts::EditorNode* node
 		const Real div_x = (kConnectorRadius * 2.0F) + kConnectorSpacing;
 		const Real start_x = center_x - div_x * ((Real)connect_count - 1.0F) * 0.5F;
 
-		return Vector2d(
+		return Vector2f(
 			start_x + div_x * index,
 			draw_rect.pos.y + draw_rect.size.y);
 	}
-	return Vector2d(center_x, draw_rect.pos.y + draw_rect.size.y);
+	return Vector2f(center_x, draw_rect.pos.y + draw_rect.size.y);
 }
 //		uiGetNodeInputPosition ( EditorNode* node, int index ) : Gets node input pos
 Vector3d CutsceneEditor::uiGetNodeInputPosition ( common::cts::EditorNode* node )
@@ -140,7 +140,7 @@ Vector3d CutsceneEditor::uiGetNodeInputPosition ( common::cts::EditorNode* node 
 	Real center_x = draw_rect.pos.x + draw_rect.size.x * 0.5F;
 	center_x = std::min(center_x, draw_rect.pos.x + 64.0F); // Limit center_x for hella wide nodes
 
-	return Vector2d(center_x, draw_rect.pos.y);
+	return Vector2f(center_x, draw_rect.pos.y);
 }
 
 
@@ -164,8 +164,8 @@ void CutsceneEditor::doEditorUpdateMouseOver ( void )
 
 			Rect node_rect = uiGetNodeRect(&node);
 			Rect expanded_node_rect = Rect(
-				node_rect.pos - Vector2d(kConnectorRadius, kConnectorRadius),
-				node_rect.size + Vector2d(kConnectorRadius, kConnectorRadius) * 2.0F);
+				node_rect.pos - Vector2f(kConnectorRadius, kConnectorRadius),
+				node_rect.size + Vector2f(kConnectorRadius, kConnectorRadius) * 2.0F);
 
 			// Check if mosue in the area of the node
 			if (expanded_node_rect.Contains(l_mousepos))
@@ -173,7 +173,7 @@ void CutsceneEditor::doEditorUpdateMouseOver ( void )
 				if (node.node != NULL)
 				{
 					// Check if mouse in the input connector
-					Vector2d delta_input = uiGetNodeInputPosition(&node) - l_mousepos;
+					Vector2f delta_input = uiGetNodeInputPosition(&node) - l_mousepos;
 					if (node.node->GetNodeType() != common::cts::kNodeTypeStart
 						&& (delta_input).sqrMagnitude() < kConnectorRadius * kConnectorRadius)
 					{
@@ -185,7 +185,7 @@ void CutsceneEditor::doEditorUpdateMouseOver ( void )
 					const int connect_count = node.node->GetOutputNodeCount();
 					for (int connecti = 0; connecti < connect_count; ++connecti)
 					{
-						Vector2d delta_output = uiGetNodeOutputPosition(&node, connecti) - l_mousepos;
+						Vector2f delta_output = uiGetNodeOutputPosition(&node, connecti) - l_mousepos;
 						if ((delta_output).sqrMagnitude() < kConnectorRadius * kConnectorRadius)
 						{
 							m_mouseover_connector_output = true;

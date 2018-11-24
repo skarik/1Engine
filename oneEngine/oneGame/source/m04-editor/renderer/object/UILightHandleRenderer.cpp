@@ -64,30 +64,30 @@ bool UILightHandleRenderer::PreRender ( void )
 		// Draw box for range (on X)
 		l_currentColor = Color( 0.0F, (m_ui->m_drag_axis==UILightHandle::Axis::Range) ? 1.0F : 0.75F, 0.0F, (m_ui->m_drag_axis_hover==UILightHandle::Axis::Range) ? 1.0F : 0.5F );
 
-		meshpoints[0] = Vector2d( ui_position.x - m_ui->m_range - 4.0F, ui_position.y - 4.0F );
-		meshpoints[1] = Vector2d( ui_position.x - m_ui->m_range + 4.0F, ui_position.y - 4.0F );
-		meshpoints[2] = Vector2d( ui_position.x - m_ui->m_range + 4.0F, ui_position.y + 4.0F );
-		meshpoints[3] = Vector2d( ui_position.x - m_ui->m_range - 4.0F, ui_position.y + 4.0F );
+		meshpoints[0] = Vector2f( ui_position.x - m_ui->m_range - 4.0F, ui_position.y - 4.0F );
+		meshpoints[1] = Vector2f( ui_position.x - m_ui->m_range + 4.0F, ui_position.y - 4.0F );
+		meshpoints[2] = Vector2f( ui_position.x - m_ui->m_range + 4.0F, ui_position.y + 4.0F );
+		meshpoints[3] = Vector2f( ui_position.x - m_ui->m_range - 4.0F, ui_position.y + 4.0F );
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
-		meshpoints[0] = Vector2d( ui_position.x + m_ui->m_range - 4.0F, ui_position.y - 4.0F );
-		meshpoints[1] = Vector2d( ui_position.x + m_ui->m_range + 4.0F, ui_position.y - 4.0F );
-		meshpoints[2] = Vector2d( ui_position.x + m_ui->m_range + 4.0F, ui_position.y + 4.0F );
-		meshpoints[3] = Vector2d( ui_position.x + m_ui->m_range - 4.0F, ui_position.y + 4.0F );
+		meshpoints[0] = Vector2f( ui_position.x + m_ui->m_range - 4.0F, ui_position.y - 4.0F );
+		meshpoints[1] = Vector2f( ui_position.x + m_ui->m_range + 4.0F, ui_position.y - 4.0F );
+		meshpoints[2] = Vector2f( ui_position.x + m_ui->m_range + 4.0F, ui_position.y + 4.0F );
+		meshpoints[3] = Vector2f( ui_position.x + m_ui->m_range - 4.0F, ui_position.y + 4.0F );
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 
 		// Draw box for power (on Y)
 		l_currentColor = Color( (m_ui->m_drag_axis==UILightHandle::Axis::Power) ? 1.0F : 0.75F, 0.0F, 0.0F, (m_ui->m_drag_axis_hover==UILightHandle::Axis::Power) ? 1.0F : 0.5F );
 
 		float power_pos = m_ui->m_range / m_ui->m_power;
-		meshpoints[0] = Vector2d( ui_position.x - 4.0F, ui_position.y - power_pos - 4.0F );
-		meshpoints[1] = Vector2d( ui_position.x + 4.0F, ui_position.y - power_pos - 4.0F );
-		meshpoints[2] = Vector2d( ui_position.x + 4.0F, ui_position.y - power_pos + 4.0F );
-		meshpoints[3] = Vector2d( ui_position.x - 4.0F, ui_position.y - power_pos + 4.0F );
+		meshpoints[0] = Vector2f( ui_position.x - 4.0F, ui_position.y - power_pos - 4.0F );
+		meshpoints[1] = Vector2f( ui_position.x + 4.0F, ui_position.y - power_pos - 4.0F );
+		meshpoints[2] = Vector2f( ui_position.x + 4.0F, ui_position.y - power_pos + 4.0F );
+		meshpoints[3] = Vector2f( ui_position.x - 4.0F, ui_position.y - power_pos + 4.0F );
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
-		meshpoints[0] = Vector2d( ui_position.x - 4.0F, ui_position.y + power_pos - 4.0F );
-		meshpoints[1] = Vector2d( ui_position.x + 4.0F, ui_position.y + power_pos - 4.0F );
-		meshpoints[2] = Vector2d( ui_position.x + 4.0F, ui_position.y + power_pos + 4.0F );
-		meshpoints[3] = Vector2d( ui_position.x - 4.0F, ui_position.y + power_pos + 4.0F );
+		meshpoints[0] = Vector2f( ui_position.x - 4.0F, ui_position.y + power_pos - 4.0F );
+		meshpoints[1] = Vector2f( ui_position.x + 4.0F, ui_position.y + power_pos - 4.0F );
+		meshpoints[2] = Vector2f( ui_position.x + 4.0F, ui_position.y + power_pos + 4.0F );
+		meshpoints[3] = Vector2f( ui_position.x - 4.0F, ui_position.y + power_pos + 4.0F );
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 	}
 

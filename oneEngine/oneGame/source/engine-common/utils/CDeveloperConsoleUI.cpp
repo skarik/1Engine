@@ -79,7 +79,7 @@ bool CDeveloperConsoleUI::PreRender ( RrCamera* camera )
 }
 bool CDeveloperConsoleUI::Render ( const char pass )
 {
-	Vector2d screenSize ((Real)Screen::Info.width, (Real)Screen::Info.height);
+	Vector2f screenSize ((Real)Screen::Info.width, (Real)Screen::Info.height);
 	const Real kLineHeight = (Real)fntMenu->GetFontInfo().height + 3.0F;
 	const Real kBottomMargin = 5.0F;
 
@@ -114,7 +114,7 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 		
 		// Draw the current command:
 		builder_text.addText(
-			Vector2d(2.0F, screenSize.y - kBottomMargin),
+			Vector2f(2.0F, screenSize.y - kBottomMargin),
 			Color( 0.0F, 0.5F, 1.0F, 1.0F ),
 			(">" + engine::Console->GetCommandString() + "_").c_str() );
 
@@ -122,7 +122,7 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 		for ( uint i = 0; i < engine::Console->GetMatchingCommands().size(); ++i )
 		{	// Draw command list
 			builder_text.addText(
-				Vector2d(18.0F, screenSize.y - kLineHeight - kBottomMargin * 3.0F - kLineHeight * i),
+				Vector2f(18.0F, screenSize.y - kLineHeight - kBottomMargin * 3.0F - kLineHeight * i),
 				Color( 0.0F, 0.5F, 1.0F, 1.0F ),
 				engine::Console->GetMatchingCommands()[i].c_str() );
 		}
@@ -130,7 +130,7 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 
 	// Draw the developer string in the upper-left corner.
 	builder_text.addText(
-		Vector2d(4.0F, (Real)fntMenu->GetFontInfo().height + 2.0F),
+		Vector2f(4.0F, (Real)fntMenu->GetFontInfo().height + 2.0F),
 		Color( 1.0F, 1.0F, 1.0F, 0.5F ),
 		CGameSettings::Active()->sysprop_developerstring.c_str() );
 

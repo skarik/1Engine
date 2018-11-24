@@ -13,7 +13,7 @@ valuetype_t Network::ValueTypeFromName ( const char* n_typename )
 	{
 		return VALUE_FLOAT;
 	}
-	if ( strcmp(n_typename, "Vector2d") == 0 )
+	if ( strcmp(n_typename, "Vector2f") == 0 )
 	{
 		return VALUE_FLOAT2;
 	}

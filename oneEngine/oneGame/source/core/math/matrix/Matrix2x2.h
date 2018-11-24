@@ -11,27 +11,27 @@ public:
 
 	// Setters - Translation
 	FORCE_INLINE bool setTranslation ( const Real = 0, const Real = 0 );
-	FORCE_INLINE bool setTranslation ( const Vector2d& );
+	FORCE_INLINE bool setTranslation ( const Vector2f& );
 
 	// Setters - Scaling
 	FORCE_INLINE bool setScale ( const Real = 0, const Real = 0 );
-	FORCE_INLINE bool setScale ( const Vector2d& );
+	FORCE_INLINE bool setScale ( const Vector2f& );
 
 	// Setters - Rotation
 	FORCE_INLINE bool setRotation ( const Real = 0 );
 
 	// Modders
-	FORCE_INLINE void translate ( const Vector2d& );
-	FORCE_INLINE void scale ( const Vector2d& );
+	FORCE_INLINE void translate ( const Vector2f& );
+	FORCE_INLINE void scale ( const Vector2f& );
 
 	// Getters - Translation
-	FORCE_INLINE Vector2d	getTranslation ( void ) const;
+	FORCE_INLINE Vector2f	getTranslation ( void ) const;
 
 	// Getters - Rotation
 	FORCE_INLINE Real		getEulerAngle ( void ) const;
 
 	// Getters - Scale
-	FORCE_INLINE Vector2d	getScaling ( void ) const;
+	FORCE_INLINE Vector2f	getScaling ( void ) const;
 
 	// Operations
 	FORCE_INLINE Matrix2x2 transpose ( void ) const;
@@ -49,7 +49,7 @@ public:
 	FORCE_INLINE Matrix2x2 operator+ ( Matrix2x2 const& ) const;
 	FORCE_INLINE Matrix2x2 operator+=( Matrix2x2 const& );
 
-	FORCE_INLINE Vector2d operator* ( Vector2d const& ) const;
+	FORCE_INLINE Vector2f operator* ( Vector2f const& ) const;
 
 	// Transpose
 	FORCE_INLINE Matrix2x2 operator! ( void ) const;

@@ -12,7 +12,7 @@
 class Matrix3x3;
 class Matrix4x4;
 
-class Vector2d;
+class Vector2f;
 class Vector4d;
 
 class Vector3d 
@@ -23,7 +23,7 @@ public:
 	//Default constructor
 	FORCE_INLINE Vector3d ( void );
 	//Appending constructor
-	Vector3d (Vector2d const& old, Real const new_z=0);
+	Vector3d (Vector2f const& old, Real const new_z=0);
 	//Copy constructor
 	FORCE_INLINE Vector3d (Vector3d const& old);
 	//Truncating constructor

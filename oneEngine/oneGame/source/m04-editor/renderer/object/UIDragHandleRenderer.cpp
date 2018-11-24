@@ -68,40 +68,40 @@ bool UIDragHandleRenderer::PreRender ( void )
 		float _all_color = (m_ui->m_drag_axis==UIDragHandle::Axis::All) ? 0.75F : 0.5F;
 		l_currentColor =  Color( _all_color, _all_color, _all_color*0.5F, (m_ui->m_drag_axis_hover==UIDragHandle::Axis::All) ? 0.75F : 0.35F );
 
-		meshpoints[0] = Vector2d( ui_position.x - 1.0F, ui_position.y + 1.0F );
-		meshpoints[1] = Vector2d( ui_position.x + 16.0F, ui_position.y + 1.0F );
-		meshpoints[2] = Vector2d( ui_position.x + 16.0F, ui_position.y - 16.0F );
-		meshpoints[3] = Vector2d( ui_position.x - 1.0F, ui_position.y - 16.0F );
+		meshpoints[0] = Vector2f( ui_position.x - 1.0F, ui_position.y + 1.0F );
+		meshpoints[1] = Vector2f( ui_position.x + 16.0F, ui_position.y + 1.0F );
+		meshpoints[2] = Vector2f( ui_position.x + 16.0F, ui_position.y - 16.0F );
+		meshpoints[3] = Vector2f( ui_position.x - 1.0F, ui_position.y - 16.0F );
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 
 		// Draw X arrow axis
 		l_currentColor =  Color( (m_ui->m_drag_axis==UIDragHandle::Axis::X) ? 1.0F : 0.75F, 0.0F, 0.0F, (m_ui->m_drag_axis_hover==UIDragHandle::Axis::X) ? 1.0F : 0.5F );
 
-		meshpoints[0] = Vector2d( ui_position.x, ui_position.y + 1.0F );
-		meshpoints[1] = Vector2d( ui_position.x, ui_position.y - 1.0F );
-		meshpoints[2] = Vector2d( ui_position.x + 64.0F, ui_position.y - 1.0F );
-		meshpoints[3] = Vector2d( ui_position.x + 64.0F, ui_position.y + 1.0F );
+		meshpoints[0] = Vector2f( ui_position.x, ui_position.y + 1.0F );
+		meshpoints[1] = Vector2f( ui_position.x, ui_position.y - 1.0F );
+		meshpoints[2] = Vector2f( ui_position.x + 64.0F, ui_position.y - 1.0F );
+		meshpoints[3] = Vector2f( ui_position.x + 64.0F, ui_position.y + 1.0F );
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 
-		meshpoints[0] = Vector2d( ui_position.x + 64.0F, ui_position.y );
-		meshpoints[1] = Vector2d( ui_position.x + 64.0F, ui_position.y + 4.0F );
-		meshpoints[2] = Vector2d( ui_position.x + 80.0F, ui_position.y );
-		meshpoints[3] = Vector2d( ui_position.x + 64.0F, ui_position.y - 4.0F );
+		meshpoints[0] = Vector2f( ui_position.x + 64.0F, ui_position.y );
+		meshpoints[1] = Vector2f( ui_position.x + 64.0F, ui_position.y + 4.0F );
+		meshpoints[2] = Vector2f( ui_position.x + 80.0F, ui_position.y );
+		meshpoints[3] = Vector2f( ui_position.x + 64.0F, ui_position.y - 4.0F );
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 
 		// Draw Y arrow axis
 		l_currentColor =  Color( 0.0F, (m_ui->m_drag_axis==UIDragHandle::Axis::Y) ? 0.75F : 0.5F, 0.0F, (m_ui->m_drag_axis_hover==UIDragHandle::Axis::Y) ? 1.0F : 0.5F );
 
-		meshpoints[0] = Vector2d( ui_position.x + 1.0F, ui_position.y );
-		meshpoints[1] = Vector2d( ui_position.x - 1.0F, ui_position.y );
-		meshpoints[2] = Vector2d( ui_position.x - 1.0F, ui_position.y - 64.0F );
-		meshpoints[3] = Vector2d( ui_position.x + 1.0F, ui_position.y - 64.0F );
+		meshpoints[0] = Vector2f( ui_position.x + 1.0F, ui_position.y );
+		meshpoints[1] = Vector2f( ui_position.x - 1.0F, ui_position.y );
+		meshpoints[2] = Vector2f( ui_position.x - 1.0F, ui_position.y - 64.0F );
+		meshpoints[3] = Vector2f( ui_position.x + 1.0F, ui_position.y - 64.0F );
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 
-		meshpoints[0] = Vector2d( ui_position.x, ui_position.y - 64.0F );
-		meshpoints[1] = Vector2d( ui_position.x + 4.0F, ui_position.y - 64.0F );
-		meshpoints[2] = Vector2d( ui_position.x, ui_position.y - 80.0F );
-		meshpoints[3] = Vector2d( ui_position.x - 4.0F, ui_position.y - 64.0F );
+		meshpoints[0] = Vector2f( ui_position.x, ui_position.y - 64.0F );
+		meshpoints[1] = Vector2f( ui_position.x + 4.0F, ui_position.y - 64.0F );
+		meshpoints[2] = Vector2f( ui_position.x, ui_position.y - 80.0F );
+		meshpoints[3] = Vector2f( ui_position.x - 4.0F, ui_position.y - 64.0F );
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 	}
 

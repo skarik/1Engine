@@ -35,9 +35,9 @@ ModelLoader::~ModelLoader ( void )
 		delete_safe_array(meshes[i].model.color);
 		delete_safe_array(meshes[i].model.bone);
 		delete_safe_array(meshes[i].model.weight);
+		delete_safe_array(meshes[i].model.texcoord1);
 		delete_safe_array(meshes[i].model.texcoord2);
 		delete_safe_array(meshes[i].model.texcoord3);
-		delete_safe_array(meshes[i].model.texcoord4);
 	}
 	for ( size_t i = 0; i < collisions.size(); ++i )
 	{

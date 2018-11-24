@@ -527,7 +527,7 @@ Vector3d RrCamera::WorldToScreenPos ( const Vector3d & worldPos ) const
 }
 
 // Converts screen coordinates to a direction to the point on the screen.
-Vector3d RrCamera::ScreenToWorldDir ( const Vector2d & screenPos ) const
+Vector3d RrCamera::ScreenToWorldDir ( const Vector2f & screenPos ) const
 {
 	// TODO: Test if this still works.
 
@@ -543,7 +543,7 @@ Vector3d RrCamera::ScreenToWorldDir ( const Vector2d & screenPos ) const
 }
 
 // Converts screen coordinates to the point on the screen the mouse is over.
-Vector3d RrCamera::ScreenToWorldPos ( const Vector2d & screenPos ) const
+Vector3d RrCamera::ScreenToWorldPos ( const Vector2f & screenPos ) const
 {
 	// TODO: Test if this still works.
 

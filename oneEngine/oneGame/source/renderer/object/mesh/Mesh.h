@@ -51,7 +51,7 @@ namespace renderer
 
 	public:
 		rrMeshBuffer*		m_mesh;
-		RrCModel*				m_parent;
+		RrCModel*			m_parent;
 
 	protected:
 		friend RrCModel;

@@ -96,13 +96,13 @@ void Dusk::DialogueColorpicker::Update ( void )
 	// Update drag logic
 	if ( dragging )
 	{
-		drag_now = Vector2d( Input::MouseX(), Input::MouseY() );
+		drag_now = Vector2f( Input::MouseX(), Input::MouseY() );
 	}
 
 	// Update hover mode or drag logic
 	current_mode_hover = Mode::None;
-	updateColorSliders( Vector2d(rect.pos.x + 30, rect.pos.y + 300) );
-	if ( current_mode_hover == Mode::None && !rect.Contains(Vector2d( Input::MouseX(), Input::MouseY() )) )
+	updateColorSliders( Vector2f(rect.pos.x + 30, rect.pos.y + 300) );
+	if ( current_mode_hover == Mode::None && !rect.Contains(Vector2f( Input::MouseX(), Input::MouseY() )) )
 	{
 		current_mode_hover = Mode::Outside;
 	}
@@ -115,7 +115,7 @@ void Dusk::DialogueColorpicker::Update ( void )
 		{
 			// Set start points
 			color_start = m_currentColor;
-			drag_start = Vector2d( Input::MouseX(), Input::MouseY() );
+			drag_start = Vector2f( Input::MouseX(), Input::MouseY() );
 			drag_now = drag_start;
 			// Start dragging
 			current_mode = current_mode_hover;
@@ -168,15 +168,15 @@ void Dusk::DialogueColorpicker::Render ( void )
 	drawText( rect.pos.x + 8, rect.pos.y + 24, label.c_str() );
 
 	// Draw the color wheel
-	drawColorWheel( Vector2d(rect.pos.x + 150, rect.pos.y + 150) );
+	drawColorWheel( Vector2f(rect.pos.x + 150, rect.pos.y + 150) );
 	// Draw color sliders
-	drawColorSliders( Vector2d(rect.pos.x + 30, rect.pos.y + 300) );
+	drawColorSliders( Vector2f(rect.pos.x + 30, rect.pos.y + 300) );
 
 	activeGUI->bInPixelMode = pixelMode;
 }
 
 
-void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
+void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2f& position )
 {
 	GL_ACCESS GLd_ACCESS;
 
@@ -187,8 +187,8 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 		const float circle_radius_inner = 50.0F;
 		const float circle_radius_outer = 120.0F;
 
-		Vector2d popos1, popos2;
-		Vector2d dopos1, dopos2;
+		Vector2f popos1, popos2;
+		Vector2f dopos1, dopos2;
 		Color pcolor1, pcolor2;
 		Color dcolor1, dcolor2;
 		int modColor;
@@ -253,8 +253,8 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 		const float circle_radius_outer = 40.0F;
 		const float circle_radius_inner = 20.0F;
 
-		Vector2d popos1, popos2;
-		Vector2d dopos1, dopos2;
+		Vector2f popos1, popos2;
+		Vector2f dopos1, dopos2;
 
 		for ( int i = 0; i <= 360; i += 5 )
 		{
@@ -290,12 +290,12 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2d& position )
 	}
 }
 
-void Dusk::DialogueColorpicker::updateColorSliders ( const Vector2d& position )
+void Dusk::DialogueColorpicker::updateColorSliders ( const Vector2f& position )
 {
 	// Update hover based on mouse position
 	if (!dragging)
 	{
-		Vector2d mousepos = Vector2d( Input::MouseX(), Input::MouseY() );
+		Vector2f mousepos = Vector2f( Input::MouseX(), Input::MouseY() );
 
 		// Select the RGB mouse over
 		{
@@ -359,7 +359,7 @@ void Dusk::DialogueColorpicker::updateColorSliders ( const Vector2d& position )
 		}
 	}
 }
-void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2d& position )
+void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2f& position )
 {
 	GL_ACCESS GLd_ACCESS;
 

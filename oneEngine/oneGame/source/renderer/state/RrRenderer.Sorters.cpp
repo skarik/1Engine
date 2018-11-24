@@ -39,9 +39,13 @@ bool RrRenderer::rrRenderRequestSorter::operator() ( RrRenderer::rrRenderRequest
 	// Returning false means j comes first.
 
 	// Sort first based on layers
-	if (i.obj->renderLayer != j.obj->renderLayer)
+	/*if (i.obj->renderLayer != j.obj->renderLayer)
 	{
 		return i.obj->renderLayer < j.obj->renderLayer;
+	}*/
+	if (i.obj->m_passes[i.pass].m_layer != j.obj->m_passes[j.pass].m_layer)
+	{
+		return i.obj->m_passes[i.pass].m_layer < j.obj->m_passes[j.pass].m_layer;
 	}
 
 	/*if ( i.obj->renderLayer == kRLV2D )

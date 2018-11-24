@@ -84,7 +84,7 @@ void CDuskGUISlider::Update ( void )
 		{
 			Rect screen = activeGUI->GetScreenRect();
 			Real valPercent = (value.mCurVal-value.mMinVal)/(value.mMaxVal-value.mMinVal); 
-			Vector2d vDeltaPoint = Vector2d( Input::DeltaMouseX()/(Real)Screen::Info.width * screen.size.x, Input::DeltaMouseY()/(Real)Screen::Info.height * screen.size.y );
+			Vector2f vDeltaPoint = Vector2f( Input::DeltaMouseX()/(Real)Screen::Info.width * screen.size.x, Input::DeltaMouseY()/(Real)Screen::Info.height * screen.size.y );
 
 			valPercent += ( vDeltaPoint.x / rect.size.x ) * 1.04f;
 			valPercent = math::saturate(valPercent);

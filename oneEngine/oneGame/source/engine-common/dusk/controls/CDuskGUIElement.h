@@ -66,7 +66,7 @@ public:
 	const int m_type;
 
 public:
-	static Vector2d cursor_pos;
+	static Vector2f cursor_pos;
 	static CDuskGUI* activeGUI;
 
 protected:

@@ -27,7 +27,7 @@ public:
 	}
 	void Add ( AnimationCurve<Matrix2x2>* );
 	void Add ( AnimationCurve<Vector3d>* );
-	void Add ( AnimationCurve<Vector2d>* );
+	void Add ( AnimationCurve<Vector2f>* );
 	void Add ( AnimationCurve<Real>* );
 	void Add ( AnimationCurve<XTransform>* newCurve )
 	{

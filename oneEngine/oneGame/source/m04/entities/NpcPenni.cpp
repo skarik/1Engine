@@ -43,7 +43,7 @@ void NpcPenni::Update ( void )
 
 	if ( bod == NULL )
 	{
-		PrShape* box = new PrShapeBox( Vector2d(24, 16) ); 
+		PrShape* box = new PrShapeBox( Vector2f(24, 16) ); 
 
 		prRigidbodyCreateParams params = {0};
 		params.shape = box;

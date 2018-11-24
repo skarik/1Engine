@@ -39,8 +39,8 @@ TileSelectorUI::TileSelectorUI ( void )
 
 	// ui value setup
 	ui_columns = 4;
-	ui_scale = Vector2d( 32,32 );
-	ui_base_offset = Vector2d( 0,40 );
+	ui_scale = Vector2f( 32,32 );
+	ui_base_offset = Vector2f( 0,40 );
 }
 
 TileSelectorUI::~TileSelectorUI ( void )
@@ -69,7 +69,7 @@ void TileSelectorUI::SetTileMap ( Engine2D::TileMap* target )
 	// ui value setup
 	ui_columns = 5;
 	ui_spacing = 2;
-	ui_scale = Vector2d( (Real)m_tileset->tilesize_x, (Real)m_tileset->tilesize_y );
+	ui_scale = Vector2f( (Real)m_tileset->tilesize_x, (Real)m_tileset->tilesize_y );
 }
 //		SetTileset ( )
 // Sets the tileset to pull data from
@@ -83,7 +83,7 @@ void TileSelectorUI::SetTileset ( Engine2D::Tileset* target )
 // Returns negative value when below 
 int TileSelectorUI::UIMouseoverTiletype ( void )
 {
-	Vector2d t_mousepos ( Input::MouseX(), Input::MouseY() );
+	Vector2f t_mousepos ( Input::MouseX(), Input::MouseY() );
 
 	int ix = (int)( (t_mousepos.x-ui_base_offset.x) / (m_tileset->tilesize_x+ui_spacing) );
 	int iy = (int)( (t_mousepos.y-ui_base_offset.y) / (m_tileset->tilesize_y+ui_spacing) );
@@ -121,10 +121,10 @@ bool TileSelectorUI::Render ( const char pass )
 	// render the selection shit
 	{
 		// Get background width
-		Vector2d ui_size ( (Real) m_tileset->tilesize_x+ui_spacing, (Real) m_tileset->tilesize_y+ui_spacing );
+		Vector2f ui_size ( (Real) m_tileset->tilesize_x+ui_spacing, (Real) m_tileset->tilesize_y+ui_spacing );
 		ui_size.x *= ui_columns;
 		ui_size.y *= std::ceilf( (m_tileset->tiles.size() / (Real)ui_columns) );
-		Vector2d ui_offset = ui_base_offset;
+		Vector2f ui_offset = ui_base_offset;
 
 		// Draw the background for the selection box
 		builder.addRectTex(
@@ -139,11 +139,11 @@ bool TileSelectorUI::Render ( const char pass )
 		const tilesetEntry_t& tile = m_tileset->tiles[i];
 		
 		// Generate position to put the tile
-		Vector2d ui_offset = Vector2d( (Real) (i%ui_columns) * (m_tileset->tilesize_x+ui_spacing), (Real) (i/ui_columns) * (m_tileset->tilesize_y+ui_spacing) ) + ui_base_offset;
+		Vector2f ui_offset = Vector2f( (Real) (i%ui_columns) * (m_tileset->tilesize_x+ui_spacing), (Real) (i/ui_columns) * (m_tileset->tilesize_y+ui_spacing) ) + ui_base_offset;
 
 		// Generate the UV coordinate basics
-		Vector2d tile_scale ( 1.0f / m_tileset->tilecount_x, 1.0f / m_tileset->tilecount_y );
-		Vector2d tile_offset = Vector2d( tile.atlas_x, tile.atlas_y ).mulComponents(tile_scale);
+		Vector2f tile_scale ( 1.0f / m_tileset->tilecount_x, 1.0f / m_tileset->tilecount_y );
+		Vector2f tile_offset = Vector2f( tile.atlas_x, tile.atlas_y ).mulComponents(tile_scale);
 
 		builder.addRectTex(
 			Rect(ui_offset, Vector2f(tile.atlas_w, tile.atlas_h).mulComponents(ui_scale)),
@@ -160,7 +160,7 @@ bool TileSelectorUI::Render ( const char pass )
 		int i = ui_mouseover;
 
 		// Generate position to put the tile
-		Vector2d ui_offset = Vector2d( (Real) (i%ui_columns) * (m_tileset->tilesize_x+ui_spacing), (Real) (i/ui_columns) * (m_tileset->tilesize_y+ui_spacing) ) + ui_base_offset;
+		Vector2f ui_offset = Vector2f( (Real) (i%ui_columns) * (m_tileset->tilesize_x+ui_spacing), (Real) (i/ui_columns) * (m_tileset->tilesize_y+ui_spacing) ) + ui_base_offset;
 
 		// Create border value
 		const Real f = 1.0F / m_tileset->tilesize_x;

@@ -30,9 +30,9 @@
 
 using namespace M04;
 
-static Vector2d _PixelRoundPosition ( const Vector2d vect )
+static Vector2f _PixelRoundPosition ( const Vector2f vect )
 {
-	return Vector2d(
+	return Vector2f(
 		1.0F * math::round( vect.x ),
 		1.0F * math::round( vect.y )
 	);
@@ -88,11 +88,11 @@ void CutsceneEditor::CLargeTextRenderer::UpdateMesh ( void )
 	m_modeldata.vertexNum = 0;
 
 	// Create the visual text
-	Vector2d screenOrigin (-640,-360 + 20);
-	Vector2d generalMargins (4, 4);
+	Vector2f screenOrigin (-640,-360 + 20);
+	Vector2f generalMargins (4, 4);
 
 	builder.addText(
-		screenOrigin + Vector2d(10,10),
+		screenOrigin + Vector2f(10,10),
 		Color(1.0F, 1.0F, 1.0F, 1.0F),
 		"Cutscene Editor" );
 
@@ -152,11 +152,11 @@ void CutsceneEditor::CNormalTextRenderer::UpdateMesh ( void )
 
 	// Create the visual text
 	{
-		Vector2d screenOrigin (-640,-360 + 20);
-		Vector2d generalMargins (4, 4);
+		Vector2f screenOrigin (-640,-360 + 20);
+		Vector2f generalMargins (4, 4);
 
 		builder.addText(
-			screenOrigin + Vector2d(10, 40),
+			screenOrigin + Vector2f(10, 40),
 			Color(1.0F, 1.0F, 1.0F, 1.0F),
 			"node count: %d" );
 
@@ -185,7 +185,7 @@ void CutsceneEditor::CNormalTextRenderer::UpdateMesh ( void )
 		{
 			builder.addText(_PixelRoundPosition(
 				m_owner->m_contextMenu_position
-				+ Vector2d(0, m_owner->m_contextMenu_spacing + m_owner->m_contextMenu_spacing * i)
+				+ Vector2f(0, m_owner->m_contextMenu_spacing + m_owner->m_contextMenu_spacing * i)
 				- m_owner->m_target_camera_position),
 				(i == m_owner->m_mouseover_context_prev) ? Color(1.0F, 1.0F, 1.0F, 1.0F) : Color(0.5F, 0.5F, 0.5F, 1.0F),
 				m_owner->m_contextMenu_entries[i].label.c_str());
@@ -254,7 +254,7 @@ void CutsceneEditor::CGeometryRenderer::UpdateMesh ( void )
 	// Create all the geometry for nodes!
 	{
 		Rect		draw_rect;
-		Vector2d	draw_pos;
+		Vector2f	draw_pos;
 
 		// Loop through all the nodes to draw connections
 		// TODO: Precache these links so as to make it not slow as fuck
@@ -276,8 +276,8 @@ void CutsceneEditor::CGeometryRenderer::UpdateMesh ( void )
 						if (dest_node.node == node_output)
 						{
 							// Draw from node to this node
-							Vector2d source_pos = m_owner->uiGetNodeOutputPosition(&node, connecti);
-							Vector2d dest_pos = m_owner->uiGetNodeInputPosition(&dest_node);
+							Vector2f source_pos = m_owner->uiGetNodeOutputPosition(&node, connecti);
+							Vector2f dest_pos = m_owner->uiGetNodeInputPosition(&dest_node);
 
 							source_pos = _PixelRoundPosition(source_pos - m_owner->m_target_camera_position);
 							dest_pos = _PixelRoundPosition(dest_pos - m_owner->m_target_camera_position);

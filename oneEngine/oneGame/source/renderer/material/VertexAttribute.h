@@ -2,7 +2,7 @@
 #define RENDERER_SHADER_VERTEX_ATTRIBUTE_H_
 
 #include <stdint.h>
-#include "renderer/material/RrShader.cbuffers.h"
+#include "renderer/types/shaders/vattribs.h"
 #include "renderer/gpuw/Pipeline.h" // TODO?
 #include "renderer/gpuw/Public/Enums.h"
 

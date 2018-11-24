@@ -43,8 +43,8 @@ namespace M04
 
 		int					ui_columns;
 		int					ui_spacing;
-		Vector2d			ui_scale;
-		Vector2d			ui_base_offset;
+		Vector2f			ui_scale;
+		Vector2f			ui_base_offset;
 
 		int					ui_mouseover;
 	};

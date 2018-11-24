@@ -116,8 +116,8 @@ public:
 
 	// == Coordinate Queries ==
 	RENDER_API Vector3d		WorldToScreenPos ( const Vector3d & ) const;
-	RENDER_API Vector3d		ScreenToWorldDir ( const Vector2d & ) const;
-	RENDER_API Vector3d		ScreenToWorldPos ( const Vector2d & ) const;
+	RENDER_API Vector3d		ScreenToWorldDir ( const Vector2f & ) const;
+	RENDER_API Vector3d		ScreenToWorldPos ( const Vector2f & ) const;
 
 
 
@@ -139,7 +139,7 @@ public:
 	bool				mirrorView;
 	// Orthographic options
 	bool				orthographic;
-	Vector2d			orthoSize;
+	Vector2f			orthoSize;
 	// Physical options
 	Real				fieldOfView;
 	Real				focalDistance;

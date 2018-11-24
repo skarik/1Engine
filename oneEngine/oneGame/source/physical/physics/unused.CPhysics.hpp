@@ -24,7 +24,7 @@ FORCE_INLINE PHYS_API Vector3d Physics::GetWorldGravity ( void )
 	//hkVector4 gravity = Physics::World()->getGravity();
 	//return Vector3d( gravity.getComponent<0>(), gravity.getComponent<1>(), gravity.getComponent<2>() );
 	b2Vec2 gravity = World()->GetGravity();
-	return Vector2d( gravity.x, gravity.y );
+	return Vector2f( gravity.x, gravity.y );
 }
 
 

@@ -42,7 +42,7 @@ public:
 
 	//	addText ( position, color, str ) : Adds text to draw.
 	// Uses the font to generate a mesh.
-	RENDER_API void			addText ( const Vector2d& position, const Color& color, const char* str );
+	RENDER_API void			addText ( const Vector2f& position, const Color& color, const char* str );
 
 protected:
 	RrFontTexture*	m_font_texture;

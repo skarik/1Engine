@@ -200,13 +200,13 @@ void RrBtDebugDraw::drawLine(const btVector3& from,const btVector3& to,const btV
 	vert.color.w = 1.0F;*/
 
 	//vert.position = physical::ar(from);
-	m_indexData.push_back(m_vertexPositions.size());
+	m_indexData.push_back((uint16_t)m_vertexPositions.size());
 	m_vertexPositions.push_back(physical::ar(from));
 	m_vertexColors.push_back(physical::ar(color));
 	//m_vertexData.push_back(vert);
 
 	//vert.position = physical::ar(to);
-	m_indexData.push_back(m_vertexPositions.size());
+	m_indexData.push_back((uint16_t)m_vertexPositions.size());
 	m_vertexPositions.push_back(physical::ar(to));
 	m_vertexColors.push_back(physical::ar(color));
 	//m_vertexData.push_back(vert);

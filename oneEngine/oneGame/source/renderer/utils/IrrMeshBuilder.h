@@ -4,6 +4,7 @@
 #include "core/types/types.h"
 #include "core/types/ModelData.h"
 #include "renderer/types/renderModes.h"
+#include "renderer/types/shaders/vattribs.h"
 
 class IrrMeshBuilder
 {
@@ -31,6 +32,9 @@ public:
 							getPrimitiveMode ( void ) const = 0;
 
 protected:
+	//	enableAttribute ( attrib ) : Enables storage for the given attribute
+	RENDER_API void			enableAttribute( renderer::shader::VBufferSlot attrib );
+
 	//	expand ( new vertex count ) : Ensure storage is large enough to hold the count
 	RENDER_API void			expand ( const uint16_t vertexCount );
 	//	reallocateGreedy ( new size ) : Expands vertex storage in a greedy way
@@ -54,6 +58,9 @@ protected:
 	arModelData*	m_model;
 	// Did the model come from outside or from the internal model pool?
 	bool			m_model_isFromPool;
+
+	// Enabled attributes:
+	bool			m_enabledAttribs [renderer::shader::kVBufferSlotMaxCount];
 };
 
 #endif//RENDERER_UTILS_I_RR_MESH_BUILDER_H_

@@ -3,7 +3,7 @@
 
 #include "core/types/types.h"
 #include "core/math/Color.h"
-#include "core/math/Vector2d.h"
+#include "core/math/Vector2f.h"
 #include "core/math/Vector4d.h"
 #include "core/containers/arstring.h"
 #include "core-ext/transform/Transform.h"

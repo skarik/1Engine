@@ -17,7 +17,7 @@
 
 #include "core/common.h"
 #include "core/types/float.h"
-#include "core/math/Vector2d.h"
+#include "core/math/Vector2f.h"
 #include "core/math/Vector3d.h"
 #include "core/math/Vector4d.h"
 #include "core/math/vect2d_template.h"
@@ -49,7 +49,7 @@ namespace core
 
 #include "core/common.h"
 #include "core/types/float.h"
-#include "core/math/Vector2d.h"
+#include "core/math/Vector2f.h"
 #include "core/math/Vector3d.h"
 #include "core/math/Vector4d.h"
 #include "core/math/Quaternion.h"

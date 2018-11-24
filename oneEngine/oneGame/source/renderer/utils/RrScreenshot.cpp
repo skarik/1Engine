@@ -43,7 +43,9 @@ void RrScreenshot::SaveToPNG( const arstring<256> & filename )
 	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
 
 	//float* raw_pixelVals = GL.GetPixels( 0,0, Screen::Info.width,Screen::Info.height );
-	float* raw_pixelVals = gfx->getScreenPixels();
+	//float* raw_pixelVals = gfx->getScreenPixels();
+	float* raw_pixelVals = NULL; // TODO: Grab from the RrRenderer's main buffer, as a texture.
+	ARCORE_ASSERT(raw_pixelVals != NULL);
 	uchar* rgb_pixelVals = new uchar [Screen::Info.width*Screen::Info.height*3];
 	{
 		for ( uint i = 0; i < Screen::Info.width*Screen::Info.height*3; ++i ) {

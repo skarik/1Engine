@@ -95,24 +95,24 @@ bool GizmoRenderer::PreRender ( void )
 		// Draw the four quads around the edge of the area
 		meshpoints[0] = points[0];
 		meshpoints[1] = points[1];
-		meshpoints[2] = points[1]+Vector2d(0,2);
-		meshpoints[3] = points[0]+Vector2d(0,2);
+		meshpoints[2] = points[1]+Vector2f(0,2);
+		meshpoints[3] = points[0]+Vector2f(0,2);
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 
-		meshpoints[0] = points[3]-Vector2d(0,2);
-		meshpoints[1] = points[2]-Vector2d(0,2);
+		meshpoints[0] = points[3]-Vector2f(0,2);
+		meshpoints[1] = points[2]-Vector2f(0,2);
 		meshpoints[2] = points[2];
 		meshpoints[3] = points[3];
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 
 		meshpoints[0] = points[0];
 		meshpoints[1] = points[3];
-		meshpoints[2] = points[3]+Vector2d(2,0);
-		meshpoints[3] = points[0]+Vector2d(2,0);
+		meshpoints[2] = points[3]+Vector2f(2,0);
+		meshpoints[3] = points[0]+Vector2f(2,0);
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());
 
-		meshpoints[0] = points[1]-Vector2d(2,0);
-		meshpoints[1] = points[2]-Vector2d(2,0);
+		meshpoints[0] = points[1]-Vector2f(2,0);
+		meshpoints[1] = points[2]-Vector2f(2,0);
 		meshpoints[2] = points[2];
 		meshpoints[3] = points[1];
 		core::meshbuilder::Quad(&m_modeldata, meshpoints, l_currentColor, Rect());

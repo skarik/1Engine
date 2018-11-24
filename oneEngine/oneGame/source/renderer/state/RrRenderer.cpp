@@ -432,8 +432,8 @@ void RrRenderer::CreateTargetBuffers ( void )
 	for (RrHybridBufferChain& chain : internal_chain_list)
 	{
 		renderer::rrInternalSettings settings = internal_settings;
-		bool status = chain.CreateTargetBufferChain(&settings, Vector2i(Screen::Info.width, Screen::Info.height));
-		if (status == false)
+		gpu::ErrorCode status = chain.CreateTargetBufferChain(&settings, Vector2i(Screen::Info.width, Screen::Info.height));
+		if (status != gpu::kError_SUCCESS)
 		{
 			// There was an error in creating the target buffer chain. We need to break, try another set of formats, then continue.
 			/*if (_DropSettings(internal_settings))

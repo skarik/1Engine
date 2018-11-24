@@ -10,7 +10,7 @@
 
 #include <algorithm>
 #include "core/types/float.h"
-#include "Vector2d.h"
+#include "Vector2f.h"
 #include "Vector3d.h"
 #include "Vector4d.h"
 #include "Quaternion.h"

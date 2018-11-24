@@ -25,7 +25,7 @@
 //	enabledHints = 0 | kRenderHintShadowColor;
 //
 //	// Render all the cascades
-//	Vector2d old_ortho_size = ortho_size;
+//	Vector2f old_ortho_size = ortho_size;
 //	for ( uint i = 0; i < 4; ++i )
 //	{
 //		// Update viewport

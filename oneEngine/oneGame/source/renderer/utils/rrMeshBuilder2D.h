@@ -63,8 +63,8 @@ public:
 	RENDER_API void			addQuad ( const arModelVertex* vertices, bool outline );
 
 protected:
-	Vector2d	m_multiplier;
-	Vector2d	m_offset;
+	Vector2f	m_multiplier;
+	Vector2f	m_offset;
 };
 
 #endif//RENDERER_UTILS_RR_MESH_BUILDER_2D_H_

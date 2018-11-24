@@ -3,14 +3,10 @@
 
 #include "core/types/ModelData.h"
 #include "core/math/BoundingBox.h"
-
 #include "core-ext/types/sHitbox.h"
-
 #include "renderer/logic/RrLogicObject.h"
 #include "renderer/types/ModelStructures.h"
-
-//#include "renderer/logic/model/RrAnimatedMeshGroup.h"
-//#include <unordered_map>
+#include "renderer/gpuw/Buffers.h"
 
 namespace renderer
 {
@@ -21,6 +17,8 @@ class rrMeshBuffer;
 class physMesh;
 class RrAnimatedMeshGroup;
 
+//	rrAnimReferenceType : Animation referencing mode.
+// Used for when copying skeletons over to the model.
 enum rrAnimReferenceType
 {
 	kAnimReferenceNone,
@@ -37,6 +35,19 @@ struct rrModelLoadParams
 	bool	animation;
 	bool	hitboxes;
 	bool	collision;
+};
+
+//	rrCModelBuffers : Structure holding buffers created by the model and their status.
+struct rrCModelBuffers
+{
+	bool				m_sbufSkinningMajorValid;
+	gpu::Buffer			m_sbufSkinningMajor;
+	bool				m_sbufSkinningMinorValid;
+	gpu::Buffer			m_sbufSkinningMinor;
+
+	rrCModelBuffers ( void )
+		: m_sbufSkinningMajorValid(false), m_sbufSkinningMinorValid(false)
+		{}
 };
 
 //	RrCModel : Container for handling animated and static meshes.
@@ -133,7 +144,7 @@ public:
 	RENDER_API void			SetForcedDraw ( void );
 	// Adds an entry to the uniform list to be set on render
 	//RENDER_API void SetShaderUniform ( const char*, float const );
-	//RENDER_API void SetShaderUniform ( const char*, Vector2d const& );
+	//RENDER_API void SetShaderUniform ( const char*, Vector2f const& );
 	//RENDER_API void SetShaderUniform ( const char*, Vector3d const& );
 	//RENDER_API void SetShaderUniform ( const char*, Color const& );
 	//RENDER_API void SetShaderUniform ( const char*, Matrix4x4 const& );
@@ -189,6 +200,11 @@ public:
 	// Gets if any of the meshes are being rendered
 	RENDER_API bool			GetVisibility ( void );
 
+	//	GetBuffers() : Returns internal buffer structure for access & binding.
+	// Contains the skinning buffers & other data.
+	rrCModelBuffers&		GetBuffers ( void )
+		{ return m_buffers; }
+
 public:
 	XrTransform			transform;
 
@@ -235,9 +251,16 @@ protected:
 	core::math::BoundingBox
 						m_renderBoundingBox;
 
+protected:
+	// gpu info:
+	rrCModelBuffers		m_buffers;
+
+	//gpu::Buffer			m_sbufSkinningMajor;
+	//gpu::Buffer			m_sbufSkinningMinor;
+
 	// Shader uniforms
 	//std::unordered_map<arstring128,float>*	uniformMapFloat;
-	//std::unordered_map<arstring128,Vector2d>*	uniformMapVect2d;
+	//std::unordered_map<arstring128,Vector2f>*	uniformMapVect2d;
 	//std::unordered_map<arstring128,Vector3d>*	uniformMapVect3d;
 	//std::unordered_map<arstring128,Color>*	uniformMapColor;
 

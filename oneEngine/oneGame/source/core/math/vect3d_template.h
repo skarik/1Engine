@@ -12,7 +12,7 @@ namespace core
 	{
 	public:
 		vect3d_template ();												//Default constructor
-		//vect3d_template (Vector2d const& old, REAL const new_z=0);
+		//vect3d_template (Vector2f const& old, REAL const new_z=0);
 		//vect3d_template (Vector3d const& old);								//Copy constructor
 		//vect3d_template (Vector4d const& old);								//Copy constructor
 		vect3d_template (vect3d_template<REAL> const& old );

@@ -12,7 +12,7 @@ public:
 	void Update ( void );
 	void Render ( void );
 	bool isDragging;
-	//Vector2d vSourcePoint;
+	//Vector2f vSourcePoint;
 };
 
 #endif//_C_DUSK_GUI_DRAGGABLE_PANEL_H_

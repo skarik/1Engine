@@ -4,7 +4,7 @@
 #include "core/types/types.h"
 #include "renderer/types/types.h"
 #include "renderer/types/ObjectSettings.h"
-#include "renderer/material/RrShader.cbuffers.h"
+#include "renderer/types/shaders/cbuffers.h"
 #include "renderer/gpuw/Public/Enums.h"
 #include "renderer/material/ShaderSlots.h"
 #include "renderer/material/VertexAttribute.h"

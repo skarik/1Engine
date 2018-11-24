@@ -13,7 +13,7 @@
 
 #include "core/types/types.h"
 
-#include "core/math/Vector2d.h"
+#include "core/math/Vector2f.h"
 #include "core/math/Vector3d.h"
 #include "core/math/Color.h"
 
@@ -68,7 +68,7 @@ public:
 	void	WriteFloat ( float );
 	void	WriteDouble ( double );
 	void	WriteString ( const std::string & );
-	void	WriteVector2d ( const Vector2d & );
+	void	WriteVector2f ( const Vector2f & );
 	void	WriteVector3d ( const Vector3d & );
 	void	WriteColor ( const Color & );
 
@@ -87,7 +87,7 @@ public:
 	float	ReadFloat ( void );
 	double	ReadDouble ( void );
 	std::string	ReadString ( int=0 );
-	Vector2d	ReadVector2d ( void );
+	Vector2f	ReadVector2f ( void );
 	Vector3d	ReadVector3d ( void );
 	Color	ReadColor ( void );
 

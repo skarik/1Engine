@@ -88,15 +88,15 @@ renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 	gpu::VertexInputAttributeDescription attrib_desc [3];
 	attrib_desc[0].binding = 0;
 	attrib_desc[0].offset = 0;
-	attrib_desc[0].location = renderer::ATTRIB_VERTEX;
+	attrib_desc[0].location = (uint32_t)renderer::shader::Location::kPosition;
 	attrib_desc[0].format = gpu::kFormatR32G32B32SFloat;
 	attrib_desc[1].binding = 0;
 	attrib_desc[1].offset = sizeof(Vector4f) * 4;
-	attrib_desc[1].location = renderer::ATTRIB_TEXCOORD0;
+	attrib_desc[1].location = (uint32_t)renderer::shader::Location::kUV0;
 	attrib_desc[1].format = gpu::kFormatR32G32SFloat;
 	attrib_desc[2].binding = 1; // uses the binding w/o any stride
 	attrib_desc[2].offset = sizeof(Vector4f) * 8;
-	attrib_desc[2].location = renderer::ATTRIB_COLOR;
+	attrib_desc[2].location = (uint32_t)renderer::shader::Location::kColor;
 	attrib_desc[2].format = gpu::kFormatR32G32B32A32SFloat;
 
 	gpu::PipelineCreationDescription desc;

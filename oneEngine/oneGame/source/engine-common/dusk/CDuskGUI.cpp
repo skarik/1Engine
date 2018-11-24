@@ -135,10 +135,10 @@ void CDuskGUI::Update ( void )
 	// Set pixel + screen parameters + current GUI
 	Screen::_screen_info_t prevInfo = Screen::Info;
 	if ( !bInPixelMode ) {
-		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
+		CDuskGUIElement::cursor_pos = Vector2f( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
 	}
 	else {
-		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX(), CInput::MouseY() );
+		CDuskGUIElement::cursor_pos = Vector2f( CInput::MouseX(), CInput::MouseY() );
 		/*Screen::Info.width = 1;
 		Screen::Info.height = 1;
 		Screen::Info.scale = 1;*/
@@ -166,8 +166,8 @@ void CDuskGUI::Update ( void )
 	if ( hCurrentDialogue == -1 )
 	{
 		// Reset offset
-		parenting_offset = Vector2d(0,0);
-		offsetList.resize( vElements.size(), Vector2d(0,0) );
+		parenting_offset = Vector2f(0,0);
+		offsetList.resize( vElements.size(), Vector2f(0,0) );
 
 		// Iterate through all the components
 		for ( unsigned int i = 0; i < vElements.size(); ++i )
@@ -231,7 +231,7 @@ void CDuskGUI::Update ( void )
 	else
 	{
 		// Reset offset
-		parenting_offset = Vector2d(0,0);
+		parenting_offset = Vector2f(0,0);
 		// Fix the focus
 		hCurrentElement = hCurrentDialogue;
 		hCurrentFocus = hCurrentDialogue;
@@ -305,11 +305,11 @@ void CDuskGUI::RenderUI ( void )
 	if ( !bInPixelMode )
 	{
 		throw core::DeprecatedCallException();
-		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
+		CDuskGUIElement::cursor_pos = Vector2f( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
 	}
 	else
 	{
-		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX(), CInput::MouseY() );
+		CDuskGUIElement::cursor_pos = Vector2f( CInput::MouseX(), CInput::MouseY() );
 	}
 	CDuskGUIElement::activeGUI = this;
 
@@ -318,7 +318,7 @@ void CDuskGUI::RenderUI ( void )
 
 	// Create drawn last list
 	bool* t_element_handled = new bool [vElements.size()];
-	Vector2d* t_element_reference_position = new Vector2d [vElements.size()];
+	Vector2f* t_element_reference_position = new Vector2f [vElements.size()];
 
 	// Check for last element drawn
 	Handle currentElement = 0;
@@ -329,9 +329,9 @@ void CDuskGUI::RenderUI ( void )
 	std::vector<Handle> t_finalDrawList;
 
 	// Reset offset
-	parenting_offset = Vector2d(0,0);
-	offsetList.resize( vElements.size(), Vector2d(0,0) );
-	offsetList.assign( vElements.size(), Vector2d(0,0) );
+	parenting_offset = Vector2f(0,0);
+	offsetList.resize( vElements.size(), Vector2f(0,0) );
+	offsetList.assign( vElements.size(), Vector2f(0,0) );
 
 	// Create base update rect
 	Rect update_rect;

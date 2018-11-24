@@ -112,6 +112,9 @@
     <Filter Include="SOURCE\Renderer\Object\Post Process\Effects">
       <UniqueIdentifier>{db8cb2cb-5783-4cc4-90f7-33f55605df18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Renderer\Types\shaders">
+      <UniqueIdentifier>{2abe2f40-a4f9-4cd8-93e4-8d79cd9b4c53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\renderer\system\glDrawing.cpp">
@@ -656,9 +659,6 @@
     <ClInclude Include="source\renderer\material\RrPass.h">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\material\RrShader.cbuffers.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\gpuw\Public\Enums.h">
       <Filter>SOURCE\Renderer\GPU Wrapper\Public</Filter>
     </ClInclude>
@@ -781,6 +781,21 @@
     </ClInclude>
     <ClInclude Include="source\renderer\gpuw\Public\Slots.h">
       <Filter>SOURCE\Renderer\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Public\Rect2.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\shaders\sbuffers.h">
+      <Filter>SOURCE\Renderer\Types\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\shaders\vattribs.h">
+      <Filter>SOURCE\Renderer\Types\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\shaders\cbuffers.h">
+      <Filter>SOURCE\Renderer\Types\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\shaders\legacy.h">
+      <Filter>SOURCE\Renderer\Types\shaders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

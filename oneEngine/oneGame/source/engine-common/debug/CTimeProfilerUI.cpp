@@ -46,7 +46,7 @@ bool CTimeProfilerUI::Render ( const char pass )
 	//core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 	//GLd.DrawSet2DScaleMode();
 
-	//Vector2d drawPos;
+	//Vector2f drawPos;
 	//drawPos.x =  0.02f;
 	//drawPos.y =  0.42f;
 

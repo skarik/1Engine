@@ -2,7 +2,7 @@
 #define CORE_MODEL_DATA_
 
 #include "core/types/types.h"
-#include "core/math/Vector2d.h"
+#include "core/math/Vector2f.h"
 #include "core/math/Vector3d.h"
 #include "core/math/Vector4d.h"
 #include "core/math/vect4d_template.h"
@@ -182,9 +182,9 @@ struct arModelData
 	// 65534 bones are supported. Bone 0 and 65535 have special meaning.
 	Vector4u16*	bone;
 	Vector4f*	weight;
-	Vector2f*	texcoord2;
-	Vector2f*	texcoord3;
-	Vector2f*	texcoord4;
+	Vector3f*	texcoord1;
+	Vector3f*	texcoord2;
+	Vector3f*	texcoord3;
 };
 
 //	Default model data storage class.

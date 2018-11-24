@@ -4,7 +4,7 @@
 Polygon::Polygon ( const int nvertices )
 	: m_num_verts ( nvertices )
 {
-	m_vertices = new Vector2d [m_num_verts];
+	m_vertices = new Vector2f [m_num_verts];
 
 }
 Polygon::~Polygon( void )
@@ -31,7 +31,7 @@ int Polygon::VertexCount ( void )
 }
 
 
-Vector2d&		Polygon::operator[] ( const int index )
+Vector2f&		Polygon::operator[] ( const int index )
 {
 	if ( index < 0 ) {
 		return m_vertices[0];
@@ -43,7 +43,7 @@ Vector2d&		Polygon::operator[] ( const int index )
 		return m_vertices[m_num_verts-1];
 	}
 }
-const Vector2d& Polygon::operator[] ( const int index ) const
+const Vector2f& Polygon::operator[] ( const int index ) const
 {
 	if ( index < 0 ) {
 		return m_vertices[0];

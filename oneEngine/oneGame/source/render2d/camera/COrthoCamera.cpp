@@ -15,8 +15,8 @@ COrthoCamera::COrthoCamera ( void )
 	pixel_scale_aspect_ratio= (Real)Screen::Info.width/(Real)Screen::Info.height;
 	pixel_scale_mode		= ORTHOSCALE_MODE_CONSTANT;
 	pixel_scale_factor		= 1.0f;
-	viewport_target.pos		= Vector2d( 0,0 );
-	viewport_target.size	= Vector2d( (Real)Screen::Info.width, (Real)Screen::Info.height );
+	viewport_target.pos		= Vector2f( 0,0 );
+	viewport_target.size	= Vector2f( (Real)Screen::Info.width, (Real)Screen::Info.height );
 	view_roll = 0;
 }
 

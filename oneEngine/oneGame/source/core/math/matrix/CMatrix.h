@@ -25,12 +25,12 @@
 //#include "floattype.h"
 #include "core/types/types.h"
 
-#include "../Vector2d.h"
+#include "../Vector2f.h"
 #include "../Vector3d.h"
 #include "../Vector4d.h"
 #include "../Quaternion.h"
 
-class Vector2d;
+class Vector2f;
 class Vector3d;
 class Vector4d;
 class Quaternion;
@@ -58,13 +58,13 @@ public:
 	// Setters - Translation
 	bool setTranslation ( Real const = 0, Real const = 0, Real const = 0 );
 	bool setTranslation ( Real * );
-	bool setTranslation ( Vector2d const& );
+	bool setTranslation ( Vector2f const& );
 	bool setTranslation ( Vector3d const& );
 
 	// Setters - Scaling
 	bool setScale ( Real const = 0, Real const = 0, Real const = 0 );
 	bool setScale ( Real * );
-	bool setScale ( Vector2d const& );
+	bool setScale ( Vector2f const& );
 	bool setScale ( Vector3d const& );
 
 	// Setters - Rotation

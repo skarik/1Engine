@@ -96,8 +96,8 @@ void SpriteContainer::SetSpriteSize ( const Vector2i size )
 Rect SpriteContainer::GetSpriteRect ( void )
 {
 	Rect rect;
-	rect.pos = Vector2d( (Real)-m_spriteOrigin.x, (Real)-m_spriteOrigin.y );
-	rect.size = Vector2d( (Real)m_spriteSize.x, (Real)m_spriteSize.y );
+	rect.pos = Vector2f( (Real)-m_spriteOrigin.x, (Real)-m_spriteOrigin.y );
+	rect.size = Vector2f( (Real)m_spriteSize.x, (Real)m_spriteSize.y );
 	return rect;
 }
 

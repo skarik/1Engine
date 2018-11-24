@@ -1,6 +1,6 @@
 
 #include "Random.h"
-#include "core/math/Vector2d.h"
+#include "core/math/Vector2f.h"
 #include "core/math/Vector3d.h"
 #include <cmath>
 
@@ -31,11 +31,11 @@ Vector3d CRandom::PointInUnitSphere ( void )
 	return ( PointOnUnitSphere() * Range(0,1) );
 }
 
-Vector2d CRandom::PointOnUnitCircle ( void )
+Vector2f CRandom::PointOnUnitCircle ( void )
 {
 	Real angle = Range( 0, (Real) (2*PI) );
 	
-	Vector2d result;
+	Vector2f result;
 	result.x = sin( angle );
 	result.y = cos( angle );
 

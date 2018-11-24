@@ -26,7 +26,7 @@ FORCE_INLINE bool Matrix2x2::setTranslation ( const Real x, const Real y )
 	return true;
 }
 // Settin the translation via Vector2D
-FORCE_INLINE bool Matrix2x2::setTranslation ( const Vector2d& v )
+FORCE_INLINE bool Matrix2x2::setTranslation ( const Vector2f& v )
 {
 	pData[1] = v.x;
 	pData[3] = v.y;
@@ -40,7 +40,7 @@ FORCE_INLINE bool Matrix2x2::setScale ( const Real x, const Real y )
 	return true;
 }
 // Settin the scaling via Vector3D
-FORCE_INLINE bool Matrix2x2::setScale ( const Vector2d& vect )
+FORCE_INLINE bool Matrix2x2::setScale ( const Vector2f& vect )
 {
 	pData[0] = vect.x;
 	pData[3] = vect.y;
@@ -68,9 +68,9 @@ FORCE_INLINE bool Matrix2x2::setRotation ( const Real angle )
 }
 
 // Getters - Translation
-FORCE_INLINE Vector2d Matrix2x2::getTranslation ( void ) const
+FORCE_INLINE Vector2f Matrix2x2::getTranslation ( void ) const
 {
-	Vector2d position;
+	Vector2f position;
 
 	position.x = pData[0];
 	position.y = pData[3];
@@ -79,7 +79,7 @@ FORCE_INLINE Vector2d Matrix2x2::getTranslation ( void ) const
 }
 
 // Modders - Translation
-FORCE_INLINE void Matrix2x2::translate ( Vector2d const& v )
+FORCE_INLINE void Matrix2x2::translate ( Vector2f const& v )
 {
 	pData[0] += v.x;
 	pData[3] += v.y;
@@ -178,9 +178,9 @@ FORCE_INLINE Matrix2x2 Matrix2x2::operator*=( const Matrix2x2& right )
 	return (*this);
 }
 
-FORCE_INLINE Vector2d Matrix2x2::operator* ( const Vector2d& vect ) const
+FORCE_INLINE Vector2f Matrix2x2::operator* ( const Vector2f& vect ) const
 {
-	return Vector2d(
+	return Vector2f(
 		pData[0]*vect.x+pData[1]*vect.y,
 		pData[2]*vect.x+pData[3]*vect.y
 		);

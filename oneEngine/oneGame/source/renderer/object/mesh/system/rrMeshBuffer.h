@@ -5,7 +5,7 @@
 #include "core/containers/arstring.h"
 #include "renderer/types/types.h"
 #include "renderer/types/ModelStructures.h"
-#include "renderer/material/RrShader.cbuffers.h"
+#include "renderer/types/shaders/vattribs.h"
 #include "renderer/gpuw/Buffers.h"
 
 /*enum rrMeshBufferType
@@ -52,8 +52,8 @@ public:
 	//	{ return m_name.c_str(); }
 
 public:
-	gpu::VertexBuffer	m_buffer [renderer::kAttributeMaxCount];
-	bool				m_bufferEnabled [renderer::kAttributeMaxCount];
+	gpu::VertexBuffer	m_buffer [renderer::shader::kVBufferSlotMaxCount];
+	bool				m_bufferEnabled [renderer::shader::kVBufferSlotMaxCount];
 	gpu::Buffer			m_indexBuffer;
 
 	//uint16_t			m_boneCount;

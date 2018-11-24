@@ -42,7 +42,7 @@ namespace core
 		const REAL& operator[] ( const int ) const;			// 6/4/13
 
 		//vect2d_template<REAL> operator* ( Matrix2x2 const& right ) const;	//Matrix multiplication added: 6/4/13		
-		//Vector2d rvrMultMatx ( Matrix2x2 const& right ) const;
+		//Vector2f rvrMultMatx ( Matrix2x2 const& right ) const;
 
 		bool operator== (vect2d_template<REAL> const& right) const;			//Equal comparison
 		bool operator!= (vect2d_template<REAL> const& right) const;			//Not equal comparison
@@ -53,11 +53,11 @@ namespace core
 
 	};
 
-	typedef vect2d_template<double> Vector2d_d;
+	typedef vect2d_template<double> Vector2f_d;
 	typedef vect2d_template<int32_t> Vector2i;
 };
 
-typedef core::Vector2d_d Vector2d_d;
+typedef core::Vector2f_d Vector2f_d;
 typedef core::Vector2i Vector2i;
 
 #endif//_ENGINE_VECT2D_TEMPLATE_H_

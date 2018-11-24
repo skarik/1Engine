@@ -121,14 +121,14 @@ bool RrBillboard::Render ( const rrRenderParams* params )
 	gpu::Pipeline* pipeline = GetPipeline( params->pass );
 	gfx->setPipeline(pipeline);
 	// bind the vertex buffers
-	for (int i = 0; i < renderer::kAttributeMaxCount; ++i)
+	for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
 		if (m_MeshBuffer.m_bufferEnabled[i])
 			gfx->setVertexBuffer(i, &m_MeshBuffer.m_buffer[i], 0);
 	// bind the index buffer
 	gfx->setIndexBuffer(&m_MeshBuffer.m_indexBuffer, gpu::kFormatR16UInteger);
 	// bind the cbuffers: TODO
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
-	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurface);
+	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);

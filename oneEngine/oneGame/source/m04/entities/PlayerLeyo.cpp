@@ -32,7 +32,7 @@ PlayerLeyo::PlayerLeyo ( void )
 	camera = new COrthoCamera();
 	// Set camera options
 	camera->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
-	camera->viewport_target.size = Vector2d( 1280,720 ) * 0.5f;
+	camera->viewport_target.size = Vector2f( 1280,720 ) * 0.5f;
 	camera->pixel_scale_factor = 0.5F;
 	camera->SetActive(); // Mark it as the main camera to use IMMEDIATELY
 	// Start camera in follow mode
@@ -78,7 +78,7 @@ void PlayerLeyo::Update ( void )
 
 	if ( bod == NULL )
 	{
-		PrShape* box = new PrShapeBox( Vector2d(24, 16) ); 
+		PrShape* box = new PrShapeBox( Vector2f(24, 16) ); 
 
 		prRigidbodyCreateParams params = {0};
 		params.shape = box;

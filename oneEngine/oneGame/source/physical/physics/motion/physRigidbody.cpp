@@ -166,7 +166,7 @@ _FORCE_INLINE_ PHYS_API const Vector3d physRigidBody::getPosition ( void ) const
 	//Vector3d result;
 	//body->getPosition().store3( &(result.x) );
 	b2Vec2 pos = body->GetPosition();
-	return Vector2d( pos.x, pos.y ).divComponents( Physics::WorldScaling() );
+	return Vector2f( pos.x, pos.y ).divComponents( Physics::WorldScaling() );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setRotation ( const Quaternion& newRotation )
 {
@@ -197,7 +197,7 @@ _FORCE_INLINE_ PHYS_API const Vector3d physRigidBody::getLinearVelocity ( void )
 	//Vector3d result;
 	//body->getLinearVelocity().store3( &(result.x) );
 	b2Vec2 velocity = body->GetLinearVelocity();
-	return Vector2d( velocity.x, velocity.y ).divComponents( Physics::WorldScaling() );
+	return Vector2f( velocity.x, velocity.y ).divComponents( Physics::WorldScaling() );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setAngularVelocity ( const Vector4d& newVelocity )
 {
@@ -227,7 +227,7 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::removeContactListener ( physContactL
 _FORCE_INLINE_ PHYS_API void physRigidBody::SetTransform ( core::Transform* transform )
 {
 	//Physics::SetRigidBodyTransform( body, transform );
-	Vector2d position = transform->world.position.mulComponents( Physics::WorldScaling() );
+	Vector2f position = transform->world.position.mulComponents( Physics::WorldScaling() );
 	Real32 rotation = transform->world.rotation.getEulerAngles().z;
 	body->SetTransform( b2Vec2(position.x,position.y), rotation );
 }
@@ -240,7 +240,7 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::GetTranslation ( core::Transform* tr
 {
 	//Physics::GetRigidBodyTranslation( body, transform );
 	b2Vec2 position = body->GetPosition();
-	transform->world.position = Vector2d( position.x, position.y ).divComponents( Physics::WorldScaling() );
+	transform->world.position = Vector2f( position.x, position.y ).divComponents( Physics::WorldScaling() );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::ForcePropertyUpdate ( void )
 {

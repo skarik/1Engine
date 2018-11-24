@@ -13,7 +13,7 @@
 #include <boost/random/mersenne_twister.hpp>*/
 #include <random>
 
-class Vector2d;
+class Vector2f;
 class Vector3d;
 
 #ifdef min
@@ -42,7 +42,7 @@ public:
 	static Vector3d PointOnUnitSphere ( void );
 	static Vector3d PointInUnitSphere ( void );
 
-	static Vector2d PointOnUnitCircle ( void );
+	static Vector2f PointOnUnitCircle ( void );
 
 	void Seed ( uint32_t seed )
 	{

@@ -74,7 +74,7 @@ bool CStreamedRenderable3D::Render ( const rrRenderParams* params )
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
 		// bind the vertex buffers
-		for (int i = 0; i < renderer::kAttributeMaxCount; ++i)
+		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
 			if (m_currentMeshBuffer->m_bufferEnabled[i])
 				gfx->setVertexBuffer(i, &m_currentMeshBuffer->m_buffer[i], 0);
 		// bind the index buffer

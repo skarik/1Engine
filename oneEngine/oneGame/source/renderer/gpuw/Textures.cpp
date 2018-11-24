@@ -44,7 +44,7 @@ int gpu::Texture::allocate (
 	uint allocatedLevels = levels;
 	if (allocatedLevels == 0) {
 		// Generate correct number of mipmaps down to 1x1:
-		allocatedLevels = (uint16_t) std::max<int>( 1, math::log2( std::max<uint>(width, height, depth) ) + 1 );
+		allocatedLevels = (uint16_t) std::max<int>( 1, math::log2( std::max<uint>(width, std::max<uint>(height, depth)) ) + 1 );
 	}
 
 	GLenum target = GL_INVALID_ENUM;
@@ -130,7 +130,7 @@ gpuHandle gpu::WOFrameAttachment::nativePtr ( void )
 int gpu::WOFrameAttachment::allocate (
 	const core::gfx::tex::arTextureType textureType,
 	const core::gfx::tex::arColorFormat textureFormat, 
-	const uint width = 0, const uint height = 0, const uint depth = 0, const uint levels = 0
+	const uint width, const uint height, const uint depth, const uint levels
 )
 {
 	if (textureType != core::gfx::tex::kTextureType2D)

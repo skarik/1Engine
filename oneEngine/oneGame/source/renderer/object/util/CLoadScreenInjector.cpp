@@ -83,13 +83,13 @@ CLoadScreenInjector::~CLoadScreenInjector ( void )
 	;
 }
 
-bool CLoadScreenInjector::PreRender ( RrCamera* camera )
+bool CLoadScreenInjector::PreRender ( rrCameraPass* pass )
 {
 	//m_material->prepareShaderConstants();
 	PushCbufferPerObject(XrTransform(), NULL); 
 	return true;
 }
-bool CLoadScreenInjector::Render ( const char pass )
+bool CLoadScreenInjector::Render ( const rrRenderParams* params )
 {
 	const char* kScreenMessage = "LOADING";
 	const int   kScreenMessageLen = strlen(kScreenMessage);

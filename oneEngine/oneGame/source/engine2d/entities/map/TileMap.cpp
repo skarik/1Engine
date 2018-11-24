@@ -455,13 +455,13 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 	model.triangleNum = 0;
 
 	// Set up constant tables
-	const Vector2d position_offsets [4] = {
-		Vector2d(0,0),
-		Vector2d(1,0),
-		Vector2d(0,1),
-		Vector2d(1,1),
+	const Vector2f position_offsets [4] = {
+		Vector2f(0,0),
+		Vector2f(1,0),
+		Vector2f(0,1),
+		Vector2f(1,1),
 	};
-	const Vector2d tile_size_reference = Vector2d( (Real)m_tileset->tilesize_x, (Real)m_tileset->tilesize_y );
+	const Vector2f tile_size_reference = Vector2f( (Real)m_tileset->tilesize_x, (Real)m_tileset->tilesize_y );
 
 #	define FULL_SPEED_AHEAD
 #	ifdef  FULL_SPEED_AHEAD

@@ -301,9 +301,9 @@ namespace string
 	// misc
 	//===============================================================================================//
 
-	/*template<> inline Vector2d ToObject ( const char* t )
+	/*template<> inline Vector2f ToObject ( const char* t )
 	{
-		Vector2d result;
+		Vector2f result;
 		char* pos;
 		result.x = (Real)strtod( t, &pos );
 		result.y = (Real)strtod( pos, NULL );

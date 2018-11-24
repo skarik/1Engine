@@ -181,8 +181,8 @@ Dusk::DialogueFileSelector::DialogueFileSelector ( const int moverride )
 void Dusk::DialogueFileSelector::Update ( void )
 {
 	// Set proper cursor position for the situation
-	//Vector2d old_cursor_pos = cursor_pos;
-	//cursor_pos = Vector2d( CInput::MouseX(), CInput::MouseY() );
+	//Vector2f old_cursor_pos = cursor_pos;
+	//cursor_pos = Vector2f( CInput::MouseX(), CInput::MouseY() );
 
 	// Set the constant Rect size (40% of the screen)
 	const Real margin = 10.0F;

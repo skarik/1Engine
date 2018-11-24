@@ -35,7 +35,7 @@ public:
 		}
 	}
 
-	void GenerateMesh ( const Vector2d& size )
+	void GenerateMesh ( const Vector2f& size )
 	{
 		// Estimate needed amount of vertices for the text:
 
@@ -168,7 +168,7 @@ public:
 		}
 	}
 
-	void GenerateMesh ( const Vector2d& size )
+	void GenerateMesh ( const Vector2f& size )
 	{
 		// Estimate needed amount of vertices for the text:
 
@@ -351,13 +351,13 @@ void TalkerBox::Update ( void )
 	}
 
 	// Lerp in the box
-	Vector2d estimatedSize;
+	Vector2f estimatedSize;
 	estimatedSize.x = math::lerp( easing::back_out(m_fadeLerpX), 16, width + 14 );
 	estimatedSize.y = math::lerp( easing::back_out(m_fadeLerpY), 16, 10 + m_textmesh->GetLineHeight() * (Real)math::round(0.5F + text.length() / 23.0F)  );
 
 	// Update box size
 	if (m_boxbackground)		m_boxbackground->GenerateMesh( estimatedSize );
-	if (m_boxbackgroundblend)	m_boxbackgroundblend->GenerateMesh( estimatedSize - Vector2d(2,2) );
+	if (m_boxbackgroundblend)	m_boxbackgroundblend->GenerateMesh( estimatedSize - Vector2f(2,2) );
 
 	// Update text position
 	m_textmesh->transform.world.position	= Vector3d( position.x, position.y, -100 );

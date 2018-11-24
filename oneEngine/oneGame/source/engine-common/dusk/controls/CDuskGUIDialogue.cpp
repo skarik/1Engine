@@ -9,8 +9,8 @@ void CDuskGUIDialogue::Update ( void )
 	if ( inDialogueMode )
 	{
 		for ( unsigned int i = 0; i < buttonList.size(); ++i ) {
-			buttonList[i]->rect.pos = rect.pos + Vector2d( rect.size.x*0.05f + rect.size.x*0.2f*i, rect.size.y*0.75f );
-			buttonList[i]->rect.size = Vector2d( rect.size.x * 0.12f, rect.size.y * 0.21f );
+			buttonList[i]->rect.pos = rect.pos + Vector2f( rect.size.x*0.05f + rect.size.x*0.2f*i, rect.size.y*0.75f );
+			buttonList[i]->rect.size = Vector2f( rect.size.x * 0.12f, rect.size.y * 0.21f );
 			buttonList[i]->Update();
 		}
 	}

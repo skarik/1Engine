@@ -356,13 +356,13 @@ private:
 	struct textRequest_t
 	{
 		string		text;
-		Vector2d	position;
+		Vector2f	position;
 		Real		width;
 		char		mode;
 	};
 
-	Vector2d parenting_offset;
-	std::vector<Vector2d> offsetList;
+	Vector2f parenting_offset;
+	std::vector<Vector2f> offsetList;
 
 	// Drawing queue
 	//std::vector<arModelVertex>	modelSolidMeshList;

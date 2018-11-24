@@ -1,5 +1,5 @@
 
-#include "Vector2d.h"
+#include "Vector2f.h"
 #include "Vector3d.h"
 #include "Vector4d.h"
 #include "Quaternion.h"
@@ -34,7 +34,7 @@ Vector4d::Vector4d (const Real* arr)
 	z = arr[2];
 	w = arr[3];
 }
-Vector4d::Vector4d (const Vector2d& part1, const Vector2d& part2)
+Vector4d::Vector4d (const Vector2f& part1, const Vector2f& part2)
 {
 	x = part1.x;
 	y = part1.y;

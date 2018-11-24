@@ -14,5 +14,6 @@ void renderer::Options::TextureStreaming ( const bool enabled )
 
 void renderer::Options::DeferredShaders ( const rrDeferredShaderSettings& shaderInfo )
 {
-	renderer::gDefferedShaderSettings = shaderInfo;
+	//renderer::gDefferedShaderSettings = shaderInfo;
+	ARCORE_ERROR("Not yet implemented");
 }

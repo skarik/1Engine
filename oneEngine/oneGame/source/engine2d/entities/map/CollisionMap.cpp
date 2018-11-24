@@ -82,13 +82,13 @@ void CollisionMap::Rebuild ( void )
 	int vert_count = 0;
 
 	// Set up constant tables
-	const Vector2d position_offsets [4] = {
-		Vector2d(0,0),
-		Vector2d(1,0),
-		Vector2d(0,1),
-		Vector2d(1,1),
+	const Vector2f position_offsets [4] = {
+		Vector2f(0,0),
+		Vector2f(1,0),
+		Vector2f(0,1),
+		Vector2f(1,1),
 	};
-	const Vector2d tile_size_reference = Vector2d( (Real)m_tilemap->m_tileset->tilesize_x, (Real)m_tilemap->m_tileset->tilesize_y );
+	const Vector2f tile_size_reference = Vector2f( (Real)m_tilemap->m_tileset->tilesize_x, (Real)m_tilemap->m_tileset->tilesize_y );
 
 	for ( uint i = 0; i < m_tilemap->m_tiles.size(); ++i )
 	{

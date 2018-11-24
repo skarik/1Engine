@@ -102,12 +102,12 @@ void CDuskGUIColorpicker::Update ( void )
 			if ( CInput::Mouse(CInput::MBLeft) )
 			{
 				bool hasChange = false;
-				Vector2d dpos, delta;
+				Vector2f dpos, delta;
 				Real dl, dist;
-				Vector2d mouse_coords;
+				Vector2f mouse_coords;
 				
 				// Get proper mouse coords
-				mouse_coords = Vector2d( cursor_pos.x * Screen::Info.width, cursor_pos.y * Screen::Info.height );
+				mouse_coords = Vector2f( cursor_pos.x * Screen::Info.width, cursor_pos.y * Screen::Info.height );
 
 				// Get center pos to work from
 				dpos.x = (rect.pos.x+(rect.size.x*0.5f))*Screen::Info.width;
@@ -323,13 +323,13 @@ void CDuskGUIColorpicker::Render ( void )
 
 		{
 			// Now, draw the color wheel
-			Vector2d dpos;
+			Vector2f dpos;
 			float dl;
 			dpos.x = (rect.pos.x+(rect.size.x*0.5f))*Screen::Info.width;
 			dpos.y = (rect.pos.y+(rect.size.y*0.5f))*Screen::Info.height;
 			dl = std::min<Real>( (rect.size.x*0.4f*Screen::Info.width), (rect.size.y*0.4f*Screen::Info.height) );
-			Vector2d popos1, popos2;
-			Vector2d dopos1, dopos2;
+			Vector2f popos1, popos2;
+			Vector2f dopos1, dopos2;
 			Color pcolor1;
 			Color dcolor1;
 			int modColor;

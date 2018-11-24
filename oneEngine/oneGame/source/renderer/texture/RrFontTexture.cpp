@@ -253,12 +253,12 @@ RrFontTexture::LoadFreetype ( const rrFontTextureLoadParams& params, uint16_t* o
 
 	/*const unsigned int	max_width = (unsigned int)pow(2, ceil(log( fontInfo.height * 16.0f )/log(2.0f))); //(unsigned int)(fontInfo.height * 1.5f);
 	unsigned char* grayBitmap;
-	Vector2d bitmap_pen = Vector2d( 1,1 );
+	Vector2f bitmap_pen = Vector2f( 1,1 );
 	unsigned int max_font_height = 0;
-			 pCharPositions	= new Vector2d [fontInfo.setLength];	// UV char positions
-	Vector2d* pCharSizes	= new Vector2d [fontInfo.setLength];	// UV char sizes
-	Vector2d* pCharOffsets	= new Vector2d [fontInfo.setLength];	// Distance from UV char position to character origin
-	Vector2d* pCharAdvance	= new Vector2d [fontInfo.setLength];	// The distance to advance the text cursor
+			 pCharPositions	= new Vector2f [fontInfo.setLength];	// UV char positions
+	Vector2f* pCharSizes	= new Vector2f [fontInfo.setLength];	// UV char sizes
+	Vector2f* pCharOffsets	= new Vector2f [fontInfo.setLength];	// Distance from UV char position to character origin
+	Vector2f* pCharAdvance	= new Vector2f [fontInfo.setLength];	// The distance to advance the text cursor
 
 	// ============================================
 	// == Load font to *grayBitmap with Freetype ==
@@ -480,12 +480,12 @@ RrFontTexture::LoadFreetype ( const rrFontTextureLoadParams& params, uint16_t* o
 //
 //	const unsigned int	max_width = (unsigned int)pow(2, ceil(log( fontInfo.height * 16.0f )/log(2.0f))); //(unsigned int)(fontInfo.height * 1.5f);
 //	unsigned char* grayBitmap;
-//	Vector2d bitmap_pen = Vector2d( 1,1 );
+//	Vector2f bitmap_pen = Vector2f( 1,1 );
 //	unsigned int max_font_height = 0;
-//			 pCharPositions	= new Vector2d [fontInfo.setLength];	// UV char positions
-//	Vector2d* pCharSizes	= new Vector2d [fontInfo.setLength];	// UV char sizes
-//	Vector2d* pCharOffsets	= new Vector2d [fontInfo.setLength];	// Distance from UV char position to character origin
-//	Vector2d* pCharAdvance	= new Vector2d [fontInfo.setLength];	// The distance to advance the text cursor
+//			 pCharPositions	= new Vector2f [fontInfo.setLength];	// UV char positions
+//	Vector2f* pCharSizes	= new Vector2f [fontInfo.setLength];	// UV char sizes
+//	Vector2f* pCharOffsets	= new Vector2f [fontInfo.setLength];	// Distance from UV char position to character origin
+//	Vector2f* pCharAdvance	= new Vector2f [fontInfo.setLength];	// The distance to advance the text cursor
 //
 //	// ============================================
 //	// == Load font to *grayBitmap with Freetype ==
@@ -642,14 +642,14 @@ RrFontTexture::LoadFreetype ( const rrFontTextureLoadParams& params, uint16_t* o
 //	for ( unsigned char c = fontInfo.startCharacter; c < fontInfo.startCharacter+fontInfo.setLength; c += 1 )
 //	{
 //		unsigned char curChar = c-fontInfo.startCharacter;
-//		//Vector2d uvPos = (pCharPositions[curChar]) * (1.0f/max_width);
-//		//Vector2d uvSize = (pFontSizes[curChar]) * (1.0f/max_width);
+//		//Vector2f uvPos = (pCharPositions[curChar]) * (1.0f/max_width);
+//		//Vector2f uvSize = (pFontSizes[curChar]) * (1.0f/max_width);
 //		//pCharPositions[curChar] *= (1.0f/max_width);
 //		//pFontSizes[curChar] *= (1.0f/max_width);
 //		//glTranslatef( ,0);
 //		//glTranslatef( .x+pFontOrigins[curChar].x,pFontOffsets[curChar].y+pFontOrigins[curChar].y,0);
-//		Vector2d xyDrawOffset = pFontOrigins[curChar] * -1;
-//		Vector2d xyPenOffset = pFontOffsets[curChar];
+//		Vector2f xyDrawOffset = pFontOrigins[curChar] * -1;
+//		Vector2f xyPenOffset = pFontOffsets[curChar];
 //	}
 //
 //	fontInfo.fontSizes		= pFontSizes;

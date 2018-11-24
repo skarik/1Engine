@@ -7,7 +7,7 @@
 #include "CDuskGUITextfield.h"
 #include "CDuskGUIColorpicker.h"
 #include "CDuskGUIVector3dPicker.h"
-//#include "CDuskGUIVector2dPicker.h"
+//#include "CDuskGUIVector2fPicker.h"
 #include "CDuskGUIDropdownList_GO.h"
 
 #include "engine/state/CGameState.h"
@@ -147,7 +147,7 @@ template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( RangeValue<Real>* 
 	ListElement_t newProp;
 	newProp.type = 6;
 	//newProp.element = activeGUI->CreateCheckbox( activeGUI->GetFromPointer( this ) );
-	// Use Vector2d picker
+	// Use Vector2f picker
 	propertyList.push_back( newProp );
 }
 template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( CParticleEmitter** value )

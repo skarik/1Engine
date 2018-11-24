@@ -1,4 +1,4 @@
-#include "Vector2d.h"
+#include "Vector2f.h"
 #include "Vector3d.h"
 #include "Vector4d.h"
 #include "Quaternion.h"
@@ -12,7 +12,7 @@ const Vector3d Vector3d::up			= Vector3d( 0,0,1 );
 const Vector3d Vector3d::left		= Vector3d( 0,1,0 );
 
 //Copy constructor
-Vector3d::Vector3d (Vector2d const& old, Real const new_z): x(old.x), y(old.y), z(new_z)
+Vector3d::Vector3d (Vector2f const& old, Real const new_z): x(old.x), y(old.y), z(new_z)
 {}
 Vector3d::Vector3d (Vector4d const& old): x(old.x), y(old.y), z(old.z)
 {}

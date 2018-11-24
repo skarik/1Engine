@@ -59,7 +59,7 @@ bool CMatrix<W,H>::setTranslation ( Real * pInVector )
 }
 
 // Settin the translation via Vector2D
-template<> inline bool Matrix2x2::setTranslation ( Vector2d const& v )
+template<> inline bool Matrix2x2::setTranslation ( Vector2f const& v )
 {
 	pData[1] = v.x;
 	pData[3] = v.y;

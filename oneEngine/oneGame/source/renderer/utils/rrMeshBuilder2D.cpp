@@ -16,6 +16,10 @@ rrMeshBuilder2D::rrMeshBuilder2D ( const uint16_t estimatedVertexCount )
 			Vector3d(0, 0, -45.0F),
 			Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) )
 	);
+
+	enableAttribute(renderer::shader::kVBufferSlotPosition);
+	enableAttribute(renderer::shader::kVBufferSlotUV0);
+	enableAttribute(renderer::shader::kVBufferSlotColor);
 }
 //	Constructor (existing data)
 // Sets up model, using the input data.
@@ -29,6 +33,10 @@ rrMeshBuilder2D::rrMeshBuilder2D ( arModelData* preallocatedModelData )
 			Vector3d(0, 0, -45.0F),
 			Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) )
 	);
+
+	enableAttribute(renderer::shader::kVBufferSlotPosition);
+	enableAttribute(renderer::shader::kVBufferSlotUV0);
+	enableAttribute(renderer::shader::kVBufferSlotColor);
 }
 //	Constructor (cubic, new data)
 // Pulls a model from the the pool that has at least the estimated input size.
@@ -37,6 +45,10 @@ rrMeshBuilder2D::rrMeshBuilder2D ( const core::math::Cubic& screenMapping, const
 	: IrrMeshBuilder(estimatedVertexCount)
 {
 	setScreenMapping(screenMapping);
+
+	enableAttribute(renderer::shader::kVBufferSlotPosition);
+	enableAttribute(renderer::shader::kVBufferSlotUV0);
+	enableAttribute(renderer::shader::kVBufferSlotColor);
 }
 //	Constructor (cubic, existing data)
 // Sets up model, using the input data.
@@ -45,6 +57,10 @@ rrMeshBuilder2D::rrMeshBuilder2D ( const core::math::Cubic& screenMapping, arMod
 	: IrrMeshBuilder(preallocatedModelData)
 {
 	setScreenMapping(screenMapping);
+
+	enableAttribute(renderer::shader::kVBufferSlotPosition);
+	enableAttribute(renderer::shader::kVBufferSlotUV0);
+	enableAttribute(renderer::shader::kVBufferSlotColor);
 }
 
 //	setScreenMapping (cubic) : Sets the mapping of the Rect coordinates to the screen.
@@ -131,10 +147,10 @@ void rrMeshBuilder2D::addRectTex ( const Rect& rect, const Rect& tex, const Colo
 	}
 	else
 	{
-		//const Vector2d pixelSize ( 2.0F/(Real)Screen::Info.width * math::sgn(m_multiplier.x), 2.0F/(Real)Screen::Info.height * math::sgn(m_multiplier.y) );
-		const Vector2d pixelSize ( 1.4F * m_multiplier.x, 1.4F * m_multiplier.y );
-		const Vector2d pos_min_inside = (fixedRect.pos).mulComponents(m_multiplier) + m_offset + pixelSize;
-		const Vector2d pos_max_inside = (fixedRect.pos + fixedRect.size).mulComponents(m_multiplier) + m_offset - pixelSize;
+		//const Vector2f pixelSize ( 2.0F/(Real)Screen::Info.width * math::sgn(m_multiplier.x), 2.0F/(Real)Screen::Info.height * math::sgn(m_multiplier.y) );
+		const Vector2f pixelSize ( 1.4F * m_multiplier.x, 1.4F * m_multiplier.y );
+		const Vector2f pos_min_inside = (fixedRect.pos).mulComponents(m_multiplier) + m_offset + pixelSize;
+		const Vector2f pos_max_inside = (fixedRect.pos + fixedRect.size).mulComponents(m_multiplier) + m_offset - pixelSize;
 
 		expand(m_vertexCount + 8);
 		//expandTri(m_triangleCount + 8);
@@ -215,11 +231,11 @@ void rrMeshBuilder2D::addRectTex ( const Rect& rect, const Rect& tex, const Colo
 // The "line" is actually a very thin quad, with a width of what is calculated to be one pixel.
 void rrMeshBuilder2D::addLine ( const Vector2f& point1, const Vector2f& point2, const Color& color )
 {
-	const Vector2d dir = (point2 - point1).normal();
-	const Vector2d pos1 = (point1 - dir*0.47F).mulComponents(m_multiplier) + m_offset;
-	const Vector2d pos2 = (point2 + dir*0.47F).mulComponents(m_multiplier) + m_offset;
+	const Vector2f dir = (point2 - point1).normal();
+	const Vector2f pos1 = (point1 - dir*0.47F).mulComponents(m_multiplier) + m_offset;
+	const Vector2f pos2 = (point2 + dir*0.47F).mulComponents(m_multiplier) + m_offset;
 
-	const Vector2d pixel_offset = Vector2d(
+	const Vector2f pixel_offset = Vector2f(
 		//-dir.y * 1.0F / (Real)Screen::Info.width,
 		-dir.y * 0.51F * m_multiplier.x,
 		//+dir.x * 1.0F / (Real)Screen::Info.height);

@@ -13,6 +13,10 @@
 rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const uint16_t estimatedVertexCount )
 	: rrMeshBuilder2D(estimatedVertexCount), m_font_texture(font)
 {
+	enableAttribute(renderer::shader::kVBufferSlotPosition);
+	enableAttribute(renderer::shader::kVBufferSlotUV0);
+	enableAttribute(renderer::shader::kVBufferSlotColor);
+	enableAttribute(renderer::shader::kVBufferSlotNormal);
 }
 //	Constructor (existing data)
 // Sets up model, using the input data.
@@ -21,6 +25,10 @@ rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const uint16_t estimated
 rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, arModelData* preallocatedModelData )
 	: rrMeshBuilder2D(preallocatedModelData), m_font_texture(font)
 {
+	enableAttribute(renderer::shader::kVBufferSlotPosition);
+	enableAttribute(renderer::shader::kVBufferSlotUV0);
+	enableAttribute(renderer::shader::kVBufferSlotColor);
+	enableAttribute(renderer::shader::kVBufferSlotNormal);
 }
 //	Constructor (cubic, new data)
 // Pulls a model from the the pool that has at least the estimated input size.
@@ -28,6 +36,10 @@ rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, arModelData* preallocate
 rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const core::math::Cubic& screenMapping, const uint16_t estimatedVertexCount )
 	: rrMeshBuilder2D(screenMapping, estimatedVertexCount), m_font_texture(font)
 {
+	enableAttribute(renderer::shader::kVBufferSlotPosition);
+	enableAttribute(renderer::shader::kVBufferSlotUV0);
+	enableAttribute(renderer::shader::kVBufferSlotColor);
+	enableAttribute(renderer::shader::kVBufferSlotNormal);
 }
 //	Constructor (cubic, existing data)
 // Sets up model, using the input data.
@@ -35,15 +47,19 @@ rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const core::math::Cubic&
 rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const core::math::Cubic& screenMapping, arModelData* preallocatedModelData )
 	: rrMeshBuilder2D(screenMapping, preallocatedModelData), m_font_texture(font)
 {
+	enableAttribute(renderer::shader::kVBufferSlotPosition);
+	enableAttribute(renderer::shader::kVBufferSlotUV0);
+	enableAttribute(renderer::shader::kVBufferSlotColor);
+	enableAttribute(renderer::shader::kVBufferSlotNormal);
 }
 
-static Vector2d _transformVertexPosition ( const Vector2d& position, const Vector2d& multiplier, const Vector2d& offset)
+static Vector2f _transformVertexPosition ( const Vector2f& position, const Vector2f& multiplier, const Vector2f& offset)
 {
 	return position.mulComponents(multiplier) + offset;
 }
 
 //	addText ( position, color, str ) : Adds text to draw.
-void rrTextBuilder2D::addText ( const Vector2d& position, const Color& color, const char* str )
+void rrTextBuilder2D::addText ( const Vector2f& position, const Color& color, const char* str )
 {
 	// Estimate needed amount of vertices for the text:
 
@@ -63,7 +79,7 @@ void rrTextBuilder2D::addText ( const Vector2d& position, const Color& color, co
 
 	// Set up information for the text passes:
 
-	Vector2d pen (0,0);
+	Vector2f pen (0,0);
 	uint16_t vert_index = m_vertexCount;
 	uint16_t inde_index = m_indexCount;
 	int c_lookup;
@@ -142,7 +158,7 @@ void rrTextBuilder2D::addText ( const Vector2d& position, const Color& color, co
 		// Create the quad for the character:
 
 		// Set up final drawing position
-		Vector2d drawPos = pen - (Vector2f)fontInfo->glyphOrigin[c_lookup];
+		Vector2f drawPos = pen - (Vector2f)fontInfo->glyphOrigin[c_lookup];
 		drawPos.x = (Real)math::round( drawPos.x );
 		drawPos.y = (Real)math::round( drawPos.y );
 

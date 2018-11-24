@@ -2,7 +2,7 @@
 #ifndef _POLYGON_H_
 #define _POLYGON_H_
 
-#include "Vector2d.h"
+#include "Vector2f.h"
 
 class Polygon
 {
@@ -16,11 +16,11 @@ public:
 	int				VertexCount ( void );
 
 
-	Vector2d&		operator[] ( const int index );
-	const Vector2d& operator[] ( const int index ) const;
+	Vector2f&		operator[] ( const int index );
+	const Vector2f& operator[] ( const int index ) const;
 
 private:
-	Vector2d*	m_vertices;
+	Vector2f*	m_vertices;
 	int			m_num_verts;
 };
 

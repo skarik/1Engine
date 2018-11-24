@@ -6,6 +6,7 @@
 //#include "renderer/camera/RrCamera.h"
 //#include "renderer/material/RrMaterial.h"
 //#include "renderer/system/glMainSystem.h"
+#include "renderer/types/shaders/sbuffers.h"
 #include "renderer/gpuw/Device.h"
 #include "renderer/gpuw/GraphicsContext.h"
 
@@ -159,7 +160,7 @@ bool renderer::InstancedMesh::Render ( const rrRenderParams* params )
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
 		// bind the vertex buffers
-		for (int i = 0; i < renderer::kAttributeMaxCount; ++i)
+		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
 			if (m_mesh->m_bufferEnabled[i])
 				gfx->setVertexBuffer(i, &m_mesh->m_buffer[i], 0);
 		// bind the vertex buffers for the morpher: TODO
@@ -167,18 +168,18 @@ bool renderer::InstancedMesh::Render ( const rrRenderParams* params )
 		gfx->setIndexBuffer(&m_mesh->m_indexBuffer, gpu::kFormatR16UInteger);
 		// bind the cbuffers: TODO
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
-		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurface);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
 		if ( m_parent != NULL )
 		{
-			if ( m_parent->m_xbufSkinningMajor )
-				gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::SBUFFER_SKINNING_MAJOR, &m_parent->m_xbufSkinningMajor);
+			if ( m_parent->GetBuffers().m_sbufSkinningMajorValid )
+				gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::SBUFFER_SKINNING_MAJOR, &m_parent->GetBuffers().m_sbufSkinningMajor);
 		}
 		gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION + 1, &m_buffer);
 		// draw now
-		gfx->drawIndexed(m_mesh->m_modeldata->indexNum, 0);
+		gfx->drawIndexedInstanced(m_mesh->m_modeldata->indexNum, m_instanceCount, 0);
 	}
 
 	// Successful rendering

@@ -4,7 +4,7 @@
 #include "CDuskGUIElement.h"
 
 // Static variable declaration
-Vector2d CDuskGUIElement::cursor_pos = Vector2d();
+Vector2f CDuskGUIElement::cursor_pos = Vector2f();
 CDuskGUI* CDuskGUIElement::activeGUI = NULL;
 
 
@@ -12,7 +12,7 @@ CDuskGUI* CDuskGUIElement::activeGUI = NULL;
 // Base code that simply checks for mouse in rect
 void CDuskGUIElement::Update ( void )
 {
-	Vector2d offset_cursor = cursor_pos - activeGUI->parenting_offset;
+	Vector2f offset_cursor = cursor_pos - activeGUI->parenting_offset;
 	if (( offset_cursor.x > rect.pos.x )&&
 		( offset_cursor.y > rect.pos.y )&&
 		( offset_cursor.x < rect.pos.x+rect.size.x )&&

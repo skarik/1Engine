@@ -4,12 +4,23 @@
 #include "core/types.h"
 #include "renderer/gpuw/Public/Enums.h"
 #include "renderer/gpuw/Public/Formats.h"
+#include "renderer/gpuw/Public/Rect2.h"
 #include "renderer/gpuw/Public/ShaderTypes.h"
 #include "renderer/gpuw/Public/Slots.h"
 #include <stdint.h>
 
 namespace gpu
 {
+	class ShaderPipeline;
+	class Pipeline;
+	class Fence;
+	class VertexBuffer;
+	class ConstantBuffer;
+	class Sampler;
+	class Texture;
+	class Buffer;
+	class RenderTarget;
+
 	struct RasterizerState
 	{
 		FillMode	fillmode;
@@ -81,22 +92,12 @@ namespace gpu
 		RenderTarget*	renderTarget;
 		RenderTargetSlot
 						target;
-		Rect			rect;
+		Rect2			rect;
 
 		BlitTarget()
 			: renderTarget(NULL), target(gpu::kRenderTargetSlotColor0), rect(0,0,0,0)
 			{}
 	};
-
-	class ShaderPipeline;
-	class Pipeline;
-	class Fence;
-	class VertexBuffer;
-	class ConstantBuffer;
-	class Sampler;
-	class Texture;
-	class Buffer;
-	class RenderTarget;
 
 	class GraphicsContext
 	{
@@ -142,6 +143,7 @@ namespace gpu
 
 		RENDER_API int			draw ( const uint32_t vertexCount, const uint32_t startVertex );
 		RENDER_API int			drawIndexed ( const uint32_t indexCount, const uint32_t startIndex );
+		RENDER_API int			drawIndexedInstanced ( const uint32_t indexCount, const uint32_t instanceCount, const uint32_t startIndex );
 		RENDER_API int			drawIndirect ( void );
 
 		RENDER_API int			clearDepthStencil ( bool clearDepth, float depth, bool clearStencil, uint8_t stencil );

@@ -1,7 +1,7 @@
 #include "core/utils/string.h"
 
 #include "core/types/types.h"
-#include "core/math/Vector2d.h"
+#include "core/math/Vector2f.h"
 #include "core/math/Vector3d.h"
 #include "core/math/Vector4d.h"
 #include "core/math/Quaternion.h"
@@ -26,9 +26,9 @@ namespace string
 	// misc
 	//===============================================================================================//
 
-	template<> inline Vector2d ToObject ( const char* t )
+	template<> inline Vector2f ToObject ( const char* t )
 	{
-		Vector2d result;
+		Vector2f result;
 		char* pos;
 		result.x = (Real)strtod( t, &pos );
 		result.y = (Real)strtod( pos, NULL );

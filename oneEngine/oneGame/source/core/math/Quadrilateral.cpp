@@ -2,7 +2,7 @@
 #include "Quadrilateral.h"
 #include "Ray2d.h"
 
-Quadrilateral::Quadrilateral ( const Vector2d& a, const Vector2d& b, const Vector2d& c, const Vector2d& d )
+Quadrilateral::Quadrilateral ( const Vector2f& a, const Vector2f& b, const Vector2f& c, const Vector2f& d )
 {
 	m_corners[0] = a;
 	m_corners[1] = b;
@@ -11,10 +11,10 @@ Quadrilateral::Quadrilateral ( const Vector2d& a, const Vector2d& b, const Vecto
 }
 Quadrilateral::Quadrilateral ( void )
 {
-	m_corners[0] = Vector2d(0,0);
-	m_corners[1] = Vector2d(0,0);
-	m_corners[2] = Vector2d(0,0);
-	m_corners[3] = Vector2d(0,0);
+	m_corners[0] = Vector2f(0,0);
+	m_corners[1] = Vector2f(0,0);
+	m_corners[2] = Vector2f(0,0);
+	m_corners[3] = Vector2f(0,0);
 }
 
 
@@ -25,7 +25,7 @@ Real Quadrilateral::Area ( void ) const
 	return fabs(area);
 }
 
-Vector2d&		Quadrilateral::operator[] ( const int index )
+Vector2f&		Quadrilateral::operator[] ( const int index )
 {
 	if ( index < 0 ) {
 		return m_corners[0];
@@ -37,7 +37,7 @@ Vector2d&		Quadrilateral::operator[] ( const int index )
 		return m_corners[3];
 	}
 }
-const Vector2d& Quadrilateral::operator[] ( const int index ) const
+const Vector2f& Quadrilateral::operator[] ( const int index ) const
 {
 	if ( index < 0 ) {
 		return m_corners[0];
@@ -51,7 +51,7 @@ const Vector2d& Quadrilateral::operator[] ( const int index ) const
 }
 
 
-int Quadrilateral::Slice ( const Vector2d& ray_pos, const Vector2d& ray_dir, Quadrilateral& out_quad1, Quadrilateral& out_quad2 ) const
+int Quadrilateral::Slice ( const Vector2f& ray_pos, const Vector2f& ray_dir, Quadrilateral& out_quad1, Quadrilateral& out_quad2 ) const
 {
 	return 1;
 }

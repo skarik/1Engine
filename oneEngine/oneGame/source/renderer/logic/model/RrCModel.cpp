@@ -443,9 +443,9 @@ void RrCModel::CalculateBoundingBox ( void )
 //	if ( !uniformMapFloat ) uniformMapFloat = new unordered_map<arstring128,float>;
 //	(*uniformMapFloat)[arstring128(sUniformName)] = fInput;
 //}
-//void RrCModel::SetShaderUniform ( const char* sUniformName, const Vector2d& fInput )
+//void RrCModel::SetShaderUniform ( const char* sUniformName, const Vector2f& fInput )
 //{
-//	if ( !uniformMapVect2d ) uniformMapVect2d = new unordered_map<arstring128,Vector2d>;
+//	if ( !uniformMapVect2d ) uniformMapVect2d = new unordered_map<arstring128,Vector2f>;
 //	(*uniformMapVect2d)[arstring128(sUniformName)] = fInput;
 //}
 //void RrCModel::SetShaderUniform ( const char* sUniformName, const Vector3d& fInput )

@@ -2,7 +2,7 @@
 #define RENDERER_FONT_TEXTURE_H_
 
 // ==Includes==
-#include "core/math/Vector2d.h"
+#include "core/math/Vector2f.h"
 // RrTexture class
 #include "RrTexture.h"
 // Stringstream for unique string id generation
@@ -69,7 +69,7 @@ struct rrFontTextureInfo
 	//string		name;
 	//bool isTexture;
 
-	//Vector2d*	letterSizes;
+	//Vector2f*	letterSizes;
 	Vector2i*	glyphSize;		// Sizes of characters for converting fonts to bitmaps and for governing UVs
 	Vector2i*	glyphOrigin;
 	Vector2i*	glyphAdvance;
@@ -181,10 +181,10 @@ private:
 	uint32_t		m_glyphStart;
 	uint32_t		m_glyphCount;
 
-	/*Vector2d*	pFontSizes;		// Sizes of characters for converting fonts to bitmaps and for governing UVs
-	Vector2d*	pFontOrigins;
-	Vector2d*	pFontOffsets;
-	Vector2d*	pCharPositions; // Positions of characters UV wise
+	/*Vector2f*	pFontSizes;		// Sizes of characters for converting fonts to bitmaps and for governing UVs
+	Vector2f*	pFontOrigins;
+	Vector2f*	pFontOffsets;
+	Vector2f*	pCharPositions; // Positions of characters UV wise
 	*/
 };
 

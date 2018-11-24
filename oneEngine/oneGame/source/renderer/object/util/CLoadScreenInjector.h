@@ -17,8 +17,8 @@ public:
 	// Used for fading the screen out smoothly.
 	RENDER_API void			setAlpha ( Real new_alpha );
 
-	bool PreRender ( RrCamera* camera ) override;
-	bool Render ( const char pass ) override;
+	bool PreRender ( rrCameraPass* pass ) override;
+	bool Render ( const rrRenderParams* params ) override;
 private:
 	RrFontTexture*	m_fntNotifier;
 	Real			m_currentAlpha;

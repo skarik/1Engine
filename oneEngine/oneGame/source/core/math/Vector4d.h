@@ -10,7 +10,7 @@
 
 class Matrix4x4;
 
-class Vector2d;
+class Vector2f;
 class Vector3d;
 
 class Vector4d 
@@ -23,7 +23,7 @@ public:
 	Vector4d (Real const& new_x, Real const& new_y, Real const& new_z, Real const& new_w=0);
 	Vector4d (const Real* arr);
 	Vector4d (Vector3d const& old);
-	Vector4d (const Vector2d& part1, const Vector2d& part2);
+	Vector4d (const Vector2f& part1, const Vector2f& part2);
 
 	Vector4d operator+ (Vector4d const& right) const;
 	void operator+= (Vector4d const& right);				//Addition shorthand overload	

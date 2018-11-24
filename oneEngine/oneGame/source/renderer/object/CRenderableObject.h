@@ -191,34 +191,19 @@ public:
 	RrObjectMaterialProperties
 							shaderConstants;
 
-protected:
-	// Rendering States
-	//eRenderLayer			renderLayer;
-	//vector<RrMaterial*>	vMaterials;
-protected:
-	//RrMaterial*				m_material;
-	bool					visible;
 private:
 	RrPass					m_passes [kPass_MaxPassCount];
 	bool					m_passEnabled [kPass_MaxPassCount];
 	bool					m_passSurfaceSynced [kPass_MaxPassCount];
 
-	//vector<renderer::new_passinfo_t>	m_passinfo;	
-	/*uint*		m_vao_info;
-	uint		m_vao_count;
-	uint		m_vao_maxcount;
-
-	RENDER_API void PassinfoClear ( void );
-	RENDER_API void PassinfoGenerate ( void );
-	
-	RENDER_API void PassinfoRegenerate ( void );*/
-
 	gpu::Pipeline			m_pipelines [kPass_MaxPassCount];
 	bool					m_pipelineReady [kPass_MaxPassCount];
 
+protected:
+	bool					visible;
+
 	gpu::ConstantBuffer		m_cbufPerObjectMatrices;
 	gpu::ConstantBuffer		m_cbufPerObjectSurfaces [kPass_MaxPassCount];
-
 protected:
 	// ==Render Setup==
 	
