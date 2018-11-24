@@ -9,20 +9,24 @@ class RrCamera;
 // TODO: PostProcessPass should not be a CRenderableObject, but something hooked into cameras.
 // It should be more akin to a live gameobject-type resource that can be referenced by multiple cameras.
 
-class RrPostProcessPass : public CRenderableObject
+class RrPostProcessPass
 {
 	RegisterRenderClassName( "RrPostProcessPass" );
 	RegisterRenderBaseClass( "RrPostProcessPass" );
 public:
-	// Constructor. Passing NULL or no argument will make the screen effect find the first valid camera to render in.
-	RENDER_API explicit		RrPostProcessPass ( RrCamera* pCam = NULL );
+	RENDER_API explicit		RrPostProcessPass ( void );
 	RENDER_API virtual		~RrPostProcessPass ( void );
 
 	// Prepares general uniform buffers
-	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
-	// Renders the screen up
-	RENDER_API bool			Render ( const char pass );
+	//RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
+	RENDER_API virtual bool	RenderBegin ( RrCamera* camera );
 
+	// Renders the screen up
+	RENDER_API virtual bool	Render ( RrCamera* camera );
+
+	// Renders the screen up
+	RENDER_API virtual bool	RenderEnd ( RrCamera* camera );
+	
 	// Set the camera to apply the screen effect to
 	RENDER_API void			SetTargetCamera ( RrCamera* pCam )
 		{ m_targetcam = pCam; };

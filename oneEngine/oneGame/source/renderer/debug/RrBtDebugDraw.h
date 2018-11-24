@@ -21,7 +21,7 @@ public:
 
 	//		Render()
 	// Render the model using the 2D engine's style
-	RENDER_API bool			Render ( const char pass ) override;
+	RENDER_API bool			Render ( const rrRenderParams* params ) override;
 
 	//		PostRender()
 	// Push the current model information to the GPU.

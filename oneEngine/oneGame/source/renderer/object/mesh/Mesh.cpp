@@ -1,6 +1,6 @@
 #include "Mesh.h"
 #include "renderer/logic/model/RrCModel.h"
-#include "renderer/logic/model/CSkinnedModel.h"
+//#include "renderer/logic/model/CSkinnedModel.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 #include "renderer/camera/RrCamera.h"
@@ -152,6 +152,7 @@ bool renderer::Mesh::Render ( const rrRenderParams* params )
 		for (int i = 0; i < renderer::kAttributeMaxCount; ++i)
 			if (m_mesh->m_bufferEnabled[i])
 				gfx->setVertexBuffer(i, &m_mesh->m_buffer[i], 0);
+		// bind the vertex buffers for the morpher: TODO
 		// bind the index buffer
 		gfx->setIndexBuffer(&m_mesh->m_indexBuffer, gpu::kFormatR16UInteger);
 		// bind the cbuffers: TODO
@@ -163,7 +164,7 @@ bool renderer::Mesh::Render ( const rrRenderParams* params )
 		if ( m_parent != NULL )
 		{
 			if ( m_parent->m_xbufSkinningMajor )
-				gfx->setShaderXBuffer(gpu::kShaderStageVs, renderer::XBUFFER_SKINNING_MAJOR, &m_parent->m_xbufSkinningMajor);
+				gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::SBUFFER_SKINNING_MAJOR, &m_parent->m_xbufSkinningMajor);
 		}
 		// draw now
 		gfx->drawIndexed(m_mesh->m_modeldata->indexNum, 0);

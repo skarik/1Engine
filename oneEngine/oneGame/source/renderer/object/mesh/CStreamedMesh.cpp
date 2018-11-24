@@ -1,6 +1,6 @@
 #include "CStreamedMesh.h"
 #include "renderer/logic/model/RrCModel.h"
-#include "renderer/logic/model/CSkinnedModel.h"
+//#include "renderer/logic/model/CSkinnedModel.h"
 #include "renderer/object/mesh/system/rrMesh.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 #include "renderer/camera/RrCamera.h"

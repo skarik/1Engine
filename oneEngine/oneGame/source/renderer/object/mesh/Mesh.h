@@ -11,8 +11,8 @@ class rrMeshBuffer;
 
 namespace renderer
 {
-	//	class CMesh
-	// A CMesh provides a mechanism to draw a single rrMesh.
+	//	class Mesh
+	// A Mesh provides a mechanism to draw a single rrMesh.
 	class Mesh : public CRenderableObject
 	{
 	public:

@@ -6,8 +6,8 @@
 #include "core-ext/resources/IArResource.h"
 #include "core-ext/animation/Skeleton.h"
 
-//class CMesh;
 class CMorpherSet;
+class rrMeshBuffer;
 
 class RrAnimatedMeshGroup : public arBaseObject, public IArResource
 {

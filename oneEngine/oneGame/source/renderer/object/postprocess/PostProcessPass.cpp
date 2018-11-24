@@ -11,8 +11,7 @@
 
 #include "renderer/gpuw/Device.h"
 
-RrPostProcessPass::RrPostProcessPass ( RrCamera* pCam )
-	: CRenderableObject(), m_targetcam( pCam )
+RrPostProcessPass::RrPostProcessPass ( void )
 {
 	m_buf = NULL;
 
@@ -45,9 +44,16 @@ void RrPostProcessPass::UpdateBuffer ( void )
 	}
 }
 
+// Prepares general uniform buffers
+bool RrPostProcessPass::RenderBegin ( RrCamera* camera )
+{
+	//m_material->prepareShaderConstants();
+	return true;
+}
+
 // Render()
 //   Where the magic should be happening
-bool RrPostProcessPass::Render ( const char pass )
+bool RrPostProcessPass::Render ( RrCamera* camera )
 {
 	//GL_ACCESS
 	// Only render with the main scene or designated camera
@@ -80,9 +86,9 @@ bool RrPostProcessPass::Render ( const char pass )
 		}
 	}
 
-	transform.world.position = RrCamera::activeCamera->transform.position;
+	//transform.world.position = RrCamera::activeCamera->transform.position;
 
-	GL.CheckError();
+	//GL.CheckError();
 
 	// Generate sum shit
 	RrRenderTexture* s_buf = GL.GetMainScreenBuffer();
@@ -138,11 +144,12 @@ bool RrPostProcessPass::Render ( const char pass )
 }
 
 // Prepares general uniform buffers
-bool RrPostProcessPass::PreRender ( void )
+bool RrPostProcessPass::RenderEnd ( RrCamera* camera )
 {
-	m_material->prepareShaderConstants();
+	//m_material->prepareShaderConstants();
 	return true;
 }
+
 // Draws the output quad to m_buf
 void RrPostProcessPass::DrawOutput ( void )
 {
@@ -187,12 +194,12 @@ void RrPostProcessPass::CopyResult ( void )
 			GL_COLOR_BUFFER_BIT, GL_NEAREST );*/
 
 		gpu::BlitTarget l_source;
-		l_source.renderTarget = m_buf->GetRenderTarget();
+		l_source.renderTarget = &m_buf->GetRenderTarget();
 		l_source.target = gpu::kRenderTargetSlotColor0;
 		l_source.rect = Rect(0, 0, Screen::Info.width, Screen::Info.height);
 
 		gpu::BlitTarget l_target;
-		l_target.renderTarget = s_buf->GetRenderTarget();
+		l_target.renderTarget = &s_buf->GetRenderTarget();
 		l_target.target = gpu::kRenderTargetSlotColor0;
 		l_target.rect = Rect(0, 0, Screen::Info.width, Screen::Info.height);
 

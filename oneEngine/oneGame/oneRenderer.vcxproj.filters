@@ -779,5 +779,8 @@
     <ClInclude Include="source\renderer\logic\model\RrCModel.h">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Public\Slots.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\Public</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

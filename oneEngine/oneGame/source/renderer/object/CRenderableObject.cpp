@@ -21,7 +21,9 @@ CRenderableObject::CRenderableObject ( void )
 	renderSettings.renderHints = kRenderHintBitmaskALL;
 
 	//InitMaterials();
-	CRenderableObject::SetMaterial( RrMaterial::Default );
+	//CRenderableObject::SetMaterial( RrMaterial::Default );
+
+	// TODO: Should renderables get a default forward pass?
 
 	//renderLayer = renderer::kRLWorld;
 	id = RrRenderer::Active->AddRO( this );

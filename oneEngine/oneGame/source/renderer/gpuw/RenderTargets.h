@@ -2,15 +2,10 @@
 #define GPU_WRAPPER_RENDER_TEXTURES_H_
 
 #include "renderer/gpuw/Textures.h"
+#include "renderer/gpuw/Public/Slots.h"
 
 namespace gpu
 {
-	enum RenderTargetSlot
-	{
-		kRenderTargetSlotColor0 = 0,
-		kRenderTargetSlotDepth = -1,
-		kRenderTargetSlotStencil = -2,
-	};
 	class Device;
 	class Texture;
 	class RenderTarget

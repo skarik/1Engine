@@ -37,7 +37,7 @@ RrDebugRTInspector::RrDebugRTInspector ( void )
 	rtPass.setTexture( TEX_MAIN, RrTexture::Load("null") );
 	rtPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
 	rtPass.utilSetupAs2D();
-	rtPass.setVertexSpecification( &t_vspec, 2 );
+	rtPass.setVertexSpecification( t_vspec, 2 );
 	PassInitWithInput(0, &rtPass);
 
 	//// Set the default white material

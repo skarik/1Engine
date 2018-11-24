@@ -7,7 +7,7 @@
 #include "core-ext/types/sHitbox.h"
 #include "physical/skeleton/skeletonBone.h"
 
-#include "renderer/logic/model/CSkinnedModel.h"
+//#include "renderer/logic/model/CSkinnedModel.h"
 
 //#include "physical/physics/motion/physRigidbody.h"
 //#include "physical/physics/shapes/physBoxShape.h"

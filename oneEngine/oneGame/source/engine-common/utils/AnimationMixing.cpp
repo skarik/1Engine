@@ -5,7 +5,7 @@
 #include "core-ext/animation/AnimationControl.h"
 #include "core-ext/animation/AnimationAction.h"
 #include "physical/skeleton/skeletonBone.h"
-#include "renderer/logic/model/CSkinnedModel.h"
+//#include "renderer/logic/model/CSkinnedModel.h"
 
 int animation::AddMixingTransform ( AnimationControl& anim, AnimationAction& action, const char* boneName, bool recursive )
 {

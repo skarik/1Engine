@@ -5,6 +5,7 @@
 #include "renderer/gpuw/Public/Enums.h"
 #include "renderer/gpuw/Public/Formats.h"
 #include "renderer/gpuw/Public/ShaderTypes.h"
+#include "renderer/gpuw/Public/Slots.h"
 #include <stdint.h>
 
 namespace gpu
@@ -75,6 +76,18 @@ namespace gpu
 			{}
 	};
 
+	struct BlitTarget
+	{
+		RenderTarget*	renderTarget;
+		RenderTargetSlot
+						target;
+		Rect			rect;
+
+		BlitTarget()
+			: renderTarget(NULL), target(gpu::kRenderTargetSlotColor0), rect(0,0,0,0)
+			{}
+	};
+
 	class ShaderPipeline;
 	class Pipeline;
 	class Fence;
@@ -114,7 +127,13 @@ namespace gpu
 		RENDER_API int			setPipeline ( Pipeline* pipeline );
 		RENDER_API int			setIndexBuffer ( Buffer* buffer, Format format );
 		RENDER_API int			setVertexBuffer ( int slot, VertexBuffer* buffer, uint32_t offset );
+		//	setShaderCBuffer( stage, slot, buffer ) : Sets buffer to given slot, as a ConstantBuffer.
+		// Size is limited to 4kb on some platforms.
 		RENDER_API int			setShaderCBuffer ( ShaderStage stage, int slot, ConstantBuffer* buffer );
+		//	setShaderSBuffer( stage, slot, buffer ) : Sets buffer to given slot, as a StructuredBuffer.
+		// Size must be at least 1kb on some platforms.
+		// For compute stages, acts as a fast alias for setShaderResource.
+		RENDER_API int			setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer );
 		RENDER_API int			setShaderSampler ( ShaderStage stage, int slot, Sampler* buffer );
 		RENDER_API int			setShaderSamplerAuto ( ShaderStage stage, int slot, Texture* buffer );
 		RENDER_API int			setShaderResource ( ShaderStage stage, int slot, Buffer* buffer );
@@ -129,6 +148,9 @@ namespace gpu
 		RENDER_API int			clearColor ( float* rgbaColor );
 
 		RENDER_API int			sync ( Fence* fence );
+
+		RENDER_API int			blit ( const BlitTarget& source, const BlitTarget& target );
+		RENDER_API int			blitResolve ( const BlitTarget& source, const BlitTarget& target );
 
 	private:
 		RasterizerState			m_rasterState;

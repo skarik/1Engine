@@ -76,7 +76,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="source\renderer\logic\model\CSkinnedModel.cpp" />
+    <ClCompile Include="source\renderer\logic\model\CSkinnedModel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\logic\model\CSkinnedModelLoader.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -223,6 +225,7 @@
     <ClInclude Include="source\renderer\gpuw\Public\Enums.h" />
     <ClInclude Include="source\renderer\gpuw\Public\Formats.h" />
     <ClInclude Include="source\renderer\gpuw\Public\ShaderTypes.h" />
+    <ClInclude Include="source\renderer\gpuw\Public\Slots.h" />
     <ClInclude Include="source\renderer\gpuw\RenderTargets.h" />
     <ClInclude Include="source\renderer\gpuw\Shader.h" />
     <ClInclude Include="source\renderer\gpuw\ShaderPipeline.h" />
@@ -237,7 +240,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="source\renderer\logic\model\CSkinnedModel.h" />
+    <ClInclude Include="source\renderer\logic\model\CSkinnedModel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\logic\model\morpher\CMorphAction.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpher.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpherSet.h" />
@@ -281,7 +286,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\renderer\object\model\Model.h" />
-    <ClInclude Include="source\renderer\object\model\SkinnedModel.h" />
+    <ClInclude Include="source\renderer\object\model\SkinnedModel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\object\postprocess\PostProcessPass.h" />
     <ClInclude Include="source\renderer\object\screen\CScreenFade.h" />
     <ClInclude Include="source\renderer\object\shapes\RrBillboard.h" />

@@ -1,15 +1,17 @@
 #include "InstancedMesh.h"
 #include "renderer/logic/model/RrCModel.h"
-#include "renderer/logic/model/CSkinnedModel.h"
+//#include "renderer/logic/model/CSkinnedModel.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
-#include "renderer/camera/RrCamera.h"
+//#include "renderer/camera/RrCamera.h"
 //#include "renderer/material/RrMaterial.h"
 //#include "renderer/system/glMainSystem.h"
+#include "renderer/gpuw/Device.h"
+#include "renderer/gpuw/GraphicsContext.h"
 
 renderer::InstancedMesh::InstancedMesh ( rrMeshBuffer* mesh, bool n_enableSkinning )
 	: Mesh(mesh, n_enableSkinning),
-	data_count(0), uploaded_data_count(0)
+	m_instanceCount(0), m_data(NULL), m_dataSize(0)
 {
 	bUseFrustumCulling = false; // Disable frustum culling
 
@@ -42,7 +44,7 @@ renderer::InstancedMesh::~InstancedMesh ( void )
 		m_tex_buffer = 0;
 	}*/
 }
-
+/*
 void renderer::InstancedMesh::SetInstancePosition ( int instance_id, const Vector3d& position )
 {
 	data[instance_id].position = position;
@@ -50,69 +52,139 @@ void renderer::InstancedMesh::SetInstancePosition ( int instance_id, const Vecto
 void renderer::InstancedMesh::SetInstanceRotation ( int instance_id, const Quaternion& rotation )
 {
 	data[instance_id].rotation = Vector4d( &rotation.x );
+}*/
+
+void renderer::InstancedMesh::SetInstanceData ( void* instanceData, const size_t dataSize )
+{
+	m_data = instanceData;
+	m_dataSize = dataSize;
+	m_newData = true;
 }
+
 
 void renderer::InstancedMesh::SetInstanceCount ( int instance_count )
 {
-	if ( (signed)data.size() < instance_count )
+	/*if ( (signed)data.size() < instance_count )
 	{
 		data.resize( instance_count );
 	}
-	data_count = instance_count;
+	data_count = instance_count;*/
+	m_instanceCount = instance_count;
+	ARCORE_ASSERT_MSG((m_dataSize % m_instanceCount) == 0, "Bad alignment or size of input data.");
+}
+
+bool renderer::InstancedMesh::PreRender ( rrCameraPass* cameraPass ) 
+{
+	// disable frustum culling:
+	bUseFrustumCulling = false;
+
+	// update the instance information
+	if ( m_newData && m_data != NULL && m_dataSize > 0 )
+	{
+		// Reallocate space if we don't have enough
+		if (m_dataSizeAllocated < m_dataSize)
+		{
+			m_dataSizeAllocated = m_dataSize;
+			m_buffer.allocate(NULL, m_dataSizeAllocated, gpu::kTransferStream);
+		}
+
+		// Copy the data to the GPU.
+		void* p = m_buffer.map(NULL, gpu::kTransferStream); // TODO: Synchronization bits.
+		ARCORE_ASSERT(p != NULL);
+		if ( p )
+		{
+			memcpy( p, &m_data, m_dataSize );
+			m_buffer.unmap(NULL);
+		}
+		m_newData = false;
+	}
+
+	return renderer::Mesh::PreRender(cameraPass);
 }
 
 // Render the mesh
 bool renderer::InstancedMesh::Render ( const rrRenderParams* params )
 {
-	if ( !bCanRender || m_mesh == NULL || uploaded_data_count <= 0 )
-		return true; // Only render when have a valid mesh and rendering enabled
-	GL_ACCESS;
+	//if ( !bCanRender || m_mesh == NULL || uploaded_data_count <= 0 )
+	//	return true; // Only render when have a valid mesh and rendering enabled
+	//GL_ACCESS;
 
-	// Get rid of any transforms
-	transform.world.position = Vector3d::zero;
-	transform.local.position = Vector3d::zero;
+	//// Get rid of any transforms
+	//transform.world.position = Vector3d::zero;
+	//transform.local.position = Vector3d::zero;
 
-	// Set up transformation for the mesh
-	//if ( m_parent )
-	//	GL.Transform( &m_parent->transform );
+	//// Set up transformation for the mesh
+	////if ( m_parent )
+	////	GL.Transform( &m_parent->transform );
+	////else
+	////	GL.Transform( &this->transform.world );
+
+	//// Set up material properties before mesh is bound
+	//if ( bUseSkinning && false )
+	//{	// Mesh MUST be a rrSkinnedMesh instance, otherwise crashes will result.
+	//	m_material->m_bufferSkeletonSize		= ((rrSkinnedMesh*)m_mesh)->skinning_data.bonecount;
+	//	m_material->m_bufferMatricesSkinning	= ((rrSkinnedMesh*)m_mesh)->skinning_data.textureBufferData;
+	//}
 	//else
-	//	GL.Transform( &this->transform.world );
+	//{
+	//	m_material->m_bufferSkeletonSize = 0;
+	//	m_material->m_bufferMatricesSkinning = 0;
+	//}
+	//m_material->m_tex_instancedinfo = m_tex_buffer;
+	//GL.CheckError();
+	//
+	//// Set up the material now
+	//m_material->bindPass(pass);
+	//GL.CheckError();
+	//// Pass in shader constant now that the pass has been bound
+	////RrMaterial::current->setShaderConstants( this );
+	////if ( m_parent ) m_parent->SendShaderUniforms();
+	////GL.CheckError();
 
-	// Set up material properties before mesh is bound
-	if ( bUseSkinning && false )
-	{	// Mesh MUST be a rrSkinnedMesh instance, otherwise crashes will result.
-		m_material->m_bufferSkeletonSize		= ((rrSkinnedMesh*)m_mesh)->skinning_data.bonecount;
-		m_material->m_bufferMatricesSkinning	= ((rrSkinnedMesh*)m_mesh)->skinning_data.textureBufferData;
-	}
-	else
-	{
-		m_material->m_bufferSkeletonSize = 0;
-		m_material->m_bufferMatricesSkinning = 0;
-	}
-	m_material->m_tex_instancedinfo = m_tex_buffer;
-	GL.CheckError();
-	
-	// Set up the material now
-	m_material->bindPass(pass);
-	GL.CheckError();
-	// Pass in shader constant now that the pass has been bound
-	//RrMaterial::current->setShaderConstants( this );
-	//if ( m_parent ) m_parent->SendShaderUniforms();
+	//// Bind the current mesh
+	//BindVAO( pass, m_mesh->GetVBOverts(), m_mesh->GetVBOfaces() );
 	//GL.CheckError();
 
-	// Bind the current mesh
-	BindVAO( pass, m_mesh->GetVBOverts(), m_mesh->GetVBOfaces() );
-	GL.CheckError();
+	//// Render the mesh
+	////glDrawElements( GL_TRIANGLES, m_glMesh->pmData->triangleNum*3, GL_UNSIGNED_INT, 0 );
+	//glDrawElementsInstanced( GL_TRIANGLES, m_mesh->modeldata->triangleNum*3, GL_UNSIGNED_INT, 0, uploaded_data_count );
+	//GL.CheckError();
 
-	// Render the mesh
-	//glDrawElements( GL_TRIANGLES, m_glMesh->pmData->triangleNum*3, GL_UNSIGNED_INT, 0 );
-	glDrawElementsInstanced( GL_TRIANGLES, m_mesh->modeldata->triangleNum*3, GL_UNSIGNED_INT, 0, uploaded_data_count );
-	GL.CheckError();
+	{
+		if ( !bCanRender || m_mesh == NULL )
+			return true; // Only render when have a valid mesh and rendering enabled
+
+		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
+		gpu::Pipeline* pipeline = GetPipeline( params->pass );
+		gfx->setPipeline(pipeline);
+		// bind the vertex buffers
+		for (int i = 0; i < renderer::kAttributeMaxCount; ++i)
+			if (m_mesh->m_bufferEnabled[i])
+				gfx->setVertexBuffer(i, &m_mesh->m_buffer[i], 0);
+		// bind the vertex buffers for the morpher: TODO
+		// bind the index buffer
+		gfx->setIndexBuffer(&m_mesh->m_indexBuffer, gpu::kFormatR16UInteger);
+		// bind the cbuffers: TODO
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurface);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
+		if ( m_parent != NULL )
+		{
+			if ( m_parent->m_xbufSkinningMajor )
+				gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::SBUFFER_SKINNING_MAJOR, &m_parent->m_xbufSkinningMajor);
+		}
+		gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION + 1, &m_buffer);
+		// draw now
+		gfx->drawIndexed(m_mesh->m_modeldata->indexNum, 0);
+	}
 
 	// Successful rendering
 	return true;
 }
-
+/*
 bool renderer::InstancedMesh::EndRender ( void )
 {
 	if ( data_count > 0 )
@@ -136,4 +208,4 @@ bool renderer::InstancedMesh::EndRender ( void )
 
 	// Return success
 	return true;
-}
+}*/

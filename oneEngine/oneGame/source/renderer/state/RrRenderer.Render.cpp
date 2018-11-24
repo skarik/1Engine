@@ -1,13 +1,10 @@
-#include <algorithm>
-using std::sort;
-
-// Includes
 #include "RrRenderer.h"
 #include "renderer/state/Settings.h"
 //#include "core/settings/CGameSettings.h"
 #include "core/math/Math.h"
 #include "core-ext/profiler/CTimeProfiler.h"
 #include "core/system/Screen.h"
+#include "core/debug/console.h"
 #include "core-ext/threads/Jobs.h"
 #include "core-ext/resources/ResourceManager.h"
 
@@ -27,6 +24,8 @@ using std::sort;
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
 #include "renderer/state/RrPipelinePasses.h"
+
+#include <algorithm>
 
 //#include "renderer/resource/CResourceManager.h"
 
@@ -594,6 +593,12 @@ Pass_Groups:
 					{
 						renderable->PreRender(cameraPass);
 						l_4rGroup[iLayer].m_enabled = true;
+					}
+					else
+					{
+						// For now, display an error that there is no pass:
+						debug::Console->PrintWarning("An object has no enabled passes!\n");
+						ARCORE_ERROR("An object has no passes. It's possible this is not a mistake. Please review and revise as necessary.");
 					}
 				}
 			}

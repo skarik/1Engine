@@ -10,6 +10,7 @@
 #include "renderer/camera/CameraPass.h"
 
 class RrRenderTexture;
+class RrPostProcessPass;
 
 // Enumeration for type of camera
 enum rrCameraClassType
@@ -148,6 +149,10 @@ public:
 	bool				layerVisibility [renderer::kRenderLayer_MAX];
 	// Set bit means to enable a layer. By default, most layers are on.
 	uint32_t			enabledHints;
+
+	// Current post-process stack
+	std::vector<RrPostProcessPass*>
+						postProcessStack;
 
 protected:
 	//

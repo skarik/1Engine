@@ -143,7 +143,7 @@ bool RrBtDebugDraw::PreRender ( rrCameraPass* cameraPass )
 
 //		Render()
 // Render the model using the 2D engine's style
-bool RrBtDebugDraw::Render ( const char pass ) 
+bool RrBtDebugDraw::Render ( const rrRenderParams* params ) 
 {// GL_ACCESS
 	// Do not render if no buffer to render with
 	//if ( m_buffer_verts == 0 || m_buffer_tris == 0 || m_gpuIndexCount == 0 )
@@ -163,7 +163,7 @@ bool RrBtDebugDraw::Render ( const char pass )
 	//BindVAO( pass, m_buffer_verts, m_buffer_tris );
 	//GL.DrawElements( GL_LINES, m_gpuIndexCount, GL_UNSIGNED_INT, 0 );
 
-	gpu::Pipeline* pipeline = GetPipeline( pass );
+	gpu::Pipeline* pipeline = GetPipeline( params->pass );
 
 	// set the pipeline
 	gfx->setPipeline(pipeline);

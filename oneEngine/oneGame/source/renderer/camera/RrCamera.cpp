@@ -9,6 +9,8 @@
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/texture/CMRTTexture.h"
 
+#include "renderer/object/postprocess/PostProcessPass.h"
+
 #include "RrCamera.h"
 
 #include <cmath>
@@ -237,10 +239,20 @@ void RrCamera::RenderBegin ( void )
 	RrLight::UpdateLights(this);
 
 	// TODO: Push camera constants now.
+
+	// TODO: Loop through postporcess stack
+	for (size_t i = 0; i < postProcessStack.size(); ++i)
+	{
+		postProcessStack[i]->RenderBegin(this);
+	}
 }
 void RrCamera::RenderEnd ( void )
 {
-	; // Nothing for this one.
+	// Loop through postporcess stack and call end render.
+	for (size_t i = 0; i < postProcessStack.size(); ++i)
+	{
+		postProcessStack[i]->RenderEnd(this);
+	}
 }
 
 void RrCamera::UpdateMatrix ( void )

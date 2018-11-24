@@ -229,9 +229,10 @@ private:
 private:
 	// Render list
 	// ================================
-	std::vector<CRenderableObject*> pRenderableObjects;
-	unsigned int iCurrentIndex;
-	unsigned int iListSize;
+	std::vector<CRenderableObject*>
+							pRenderableObjects;
+	unsigned int			iCurrentIndex;
+	unsigned int			iListSize;
 
 	// Render list sorting
 	// ================================
@@ -261,18 +262,21 @@ private:
 
 	// Logic list
 	// ================================
-	std::vector<RrLogicObject*>	mLogicObjects;
-	unsigned int				mLoCurrentIndex;
-	unsigned int				mLoListSize;
+	std::vector<RrLogicObject*>
+							mLogicObjects;
+	unsigned int			mLoCurrentIndex;
+	unsigned int			mLoListSize;
 
 	// Internal setup state
 	// ================================
-	renderer::rrInternalSettings		internal_settings;
+	renderer::rrInternalSettings
+							internal_settings;
 	//std::vector<rrInternalBufferChain>	internal_chain_list;
 	//rrInternalBufferChain*				internal_chain_current;
-	std::vector<RrHybridBufferChain>	internal_chain_list;
-	RrHybridBufferChain*				internal_chain_current;
-	uint								internal_chain_index;
+	std::vector<RrHybridBufferChain>
+							internal_chain_list;
+	RrHybridBufferChain*	internal_chain_current;
+	uint					internal_chain_index;
 
 	// Deferred pass materials
 	// ================================
