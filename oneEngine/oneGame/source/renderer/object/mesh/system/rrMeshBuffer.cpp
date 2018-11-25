@@ -110,6 +110,11 @@ void rrMeshBuffer::FreeMeshBuffers ( void )
 	m_mesh_uploaded = false;
 }
 
+void rrMeshBuffer::StreamMeshBuffers ( arModelData* const modelData )
+{
+	InitMeshBuffers(modelData);
+}
+
 #if 0
 // Constructor
 rrMesh::rrMesh ( void )

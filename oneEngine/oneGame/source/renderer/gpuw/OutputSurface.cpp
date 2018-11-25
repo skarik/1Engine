@@ -46,5 +46,6 @@ int gpu::OutputSurface::destroy ( void )
 
 int gpu::OutputSurface::present ( void )
 {
-	SwapBuffers((HDC)mw_deviceContext);
+	BOOL result = SwapBuffers((HDC)mw_deviceContext);
+	return (result == TRUE);
 }

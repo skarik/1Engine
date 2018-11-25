@@ -121,7 +121,9 @@
     </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\InstancedMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\Mesh.cpp" />
-    <ClCompile Include="source\renderer\object\mesh\CStreamedMesh.cpp" />
+    <ClCompile Include="source\renderer\object\mesh\StreamedMesh.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\system\rrMeshBuffer.cpp" />
     <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -280,7 +282,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\InstancedMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\Mesh.h" />
-    <ClInclude Include="source\renderer\object\mesh\CStreamedMesh.h" />
+    <ClInclude Include="source\renderer\object\mesh\StreamedMesh.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\system\rrMeshBuffer.h" />
     <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

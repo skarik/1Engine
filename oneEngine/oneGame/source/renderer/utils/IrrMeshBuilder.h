@@ -23,7 +23,8 @@ public:
 	RENDER_API virtual		~IrrMeshBuilder ( void );
 
 	//	getModelData () : Returns the current model data.
-	// The sizes in the model data are filled
+	// The sizes in the model data are filled with the correct sizes.
+	// The model data itself still belongs to the mesh builder, so should not be freed by the user.
 	RENDER_API arModelData	getModelData ( void ) const;
 
 	//	getPrimitiveMode () : returns the primitive mode this mesh builder would like to render in.

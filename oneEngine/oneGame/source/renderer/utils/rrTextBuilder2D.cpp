@@ -182,10 +182,10 @@ void rrTextBuilder2D::addText ( const Vector2f& position, const Color& color, co
 		m_model->normal[vert_index + 2] = Vector3f(+1, +1, uv.size.y / uv.size.x);
 		m_model->normal[vert_index + 3] = Vector3f(+1, -1, uv.size.y / uv.size.x);
 
-		m_model->color[vert_index + 0] = Vector4f(&color.x);
-		m_model->color[vert_index + 1] = Vector4f(&color.x);
-		m_model->color[vert_index + 2] = Vector4f(&color.x);
-		m_model->color[vert_index + 3] = Vector4f(&color.x);
+		m_model->color[vert_index + 0] = Vector4f(color.raw);
+		m_model->color[vert_index + 1] = Vector4f(color.raw);
+		m_model->color[vert_index + 2] = Vector4f(color.raw);
+		m_model->color[vert_index + 3] = Vector4f(color.raw);
 
 		m_model->position[vert_index + 0].z = 0.5F;
 		m_model->position[vert_index + 1].z = 0.5F;

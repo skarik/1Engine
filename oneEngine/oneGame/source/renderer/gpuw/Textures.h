@@ -70,6 +70,13 @@ namespace gpu
 	private:
 		unsigned int					m_texture;
 		core::gfx::tex::arTextureType	m_type;
+
+		unsigned int					m_width;
+		unsigned int					m_height;
+		unsigned int					m_depth;
+		unsigned int					m_levels;
+		gpuEnum							m_glformat;
+		gpuEnum							m_gltype;
 	};
 
 	// Create a write-only texture.

@@ -7,19 +7,19 @@
 //#include "renderer/material/RrMaterial.h"
 #include "renderer/system/glMainSystem.h"
 
-CStreamedMesh::CStreamedMesh ( void )
-	: CMesh( NULL, false )
+renderer::StreamedMesh::StreamedMesh( void )
+	: Mesh( NULL, false )
 {
 	bUseFrustumCulling = false; // Disable frustum culling on default for streaming meshes
 }
 
-CStreamedMesh::~CStreamedMesh ( void )
+renderer::StreamedMesh::~StreamedMesh ( void )
 {
 	delete_safe( m_mesh );
 }
 
 // Return access to model data
-arModelData* CStreamedMesh::GetModelData ( void )
+arModelData* renderer::StreamedMesh::GetModelData ( void )
 {
 	if ( m_mesh == NULL )
 	{
@@ -37,16 +37,16 @@ arModelData* CStreamedMesh::GetModelData ( void )
 }
 
 // Push the current stuff in model data to GPU.
-void CStreamedMesh::StreamLockModelData ( void )
+void renderer::StreamedMesh::StreamLockModelData ( void )
 {
 	PushModeldata();
 }
 
 // Push mesh
-void CStreamedMesh::PushModeldata ( void )
+void renderer::StreamedMesh::PushModeldata ( void )
 {
 	if ( m_mesh )
 	{
-		m_mesh->Restream();
+		m_mesh->StreamMeshBuffers(modeldata);
 	}
 }

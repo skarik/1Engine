@@ -37,12 +37,19 @@ public:
 
 	//	InitIdentifier( name )
 	//RENDER_API void			InitParameters ( const char* identifierName );
+
 	//	InitMeshBuffers( mesh ) : Creates mesh buffers based on the model data.
 	// Will call FreeMeshBuffers() if there is already a mesh loaded up.
 	// Will hold onto the input model data.
 	RENDER_API void			InitMeshBuffers ( arModelData* const modelData );
+	
 	//	FreeMeshBuffers() : Frees mesh buffers
 	RENDER_API void			FreeMeshBuffers ( void );
+	
+	//	StreamMeshBuffers( mesh ) : Updates contents of mesh buffers based the model data.
+	// Performs similar actions to InitMeshBuffers, but is optimized for per-frame streaming..
+	// Will hold onto the input model data, as it may not be finished when the function exits.
+	RENDER_API void			StreamMeshBuffers ( arModelData* const modelData );
 
 	//
 	// Getters:

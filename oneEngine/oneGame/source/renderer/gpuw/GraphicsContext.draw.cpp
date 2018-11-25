@@ -39,7 +39,7 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 {
 	if (m_pipelineBound == false)
 	{
-		glBindVertexArray(m_pipeline->m_vao);
+		//glBindVertexArray(m_pipeline->m_vao);
 	}
 	return 0;
 }

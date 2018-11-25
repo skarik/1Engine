@@ -62,16 +62,34 @@ int gpu::Texture::allocate (
 			{
 			case core::gfx::tex::kTextureType1D:
 				glTextureStorage1D(m_texture, allocatedLevels, gpu::internal::ArEnumToGL(textureFormat), width);
+				m_width = width;
+				m_height = 1;
+				m_depth = 1;
+				m_levels = allocatedLevels;
+				m_glformat = gpu::internal::ArEnumToGL(textureFormat);
+				m_gltype = gpu::internal::ArColorFormatToGlDataType(textureFormat);
 				break;
 			case core::gfx::tex::kTextureType1DArray:
 			case core::gfx::tex::kTextureType2D:
 			case core::gfx::tex::kTextureTypeCube:
 				glTextureStorage2D(m_texture, allocatedLevels, gpu::internal::ArEnumToGL(textureFormat), width, height);
+				m_width = width;
+				m_height = height;
+				m_depth = 1;
+				m_levels = allocatedLevels;
+				m_glformat = gpu::internal::ArEnumToGL(textureFormat);
+				m_gltype = gpu::internal::ArColorFormatToGlDataType(textureFormat);
 				break;
 			case core::gfx::tex::kTextureType2DArray:
 			case core::gfx::tex::kTextureType3D:
 			case core::gfx::tex::kTextureTypeCubeArray:
 				glTextureStorage3D(m_texture, allocatedLevels, gpu::internal::ArEnumToGL(textureFormat), width, height, depth);
+				m_width = width;
+				m_height = height;
+				m_depth = depth;
+				m_levels = allocatedLevels;
+				m_glformat = gpu::internal::ArEnumToGL(textureFormat);
+				m_gltype = gpu::internal::ArColorFormatToGlDataType(textureFormat);
 				break;
 			}
 		}
@@ -95,28 +113,26 @@ int gpu::Texture::free ( void )
 
 int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level )
 {
-
-
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, buffer.nativePtr());
-	glTextureSubImage2D(m_texture, level, 0, 0, ??, ??, ??, ??, NULL);
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB,0);
+	glTextureSubImage2D(m_texture, level, 0, 0, m_width, m_height, m_glformat, m_gltype, NULL);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 
 	return gpu::kError_SUCCESS;
 }
 
-gpu::WOFrameAttachment::WOFrameAttachment ( void )
-{
-	m_texture = 0;
-	m_type = core::gfx::tex::kTextureTypeNone;
-}
-gpu::WOFrameAttachment::~WOFrameAttachment ( void )
-{
-	// Free texture on death
-	if (m_texture != 0)
-	{
-		glDeleteRenderbuffers(1, &m_texture);
-	}
-}
+//gpu::WOFrameAttachment::WOFrameAttachment ( void )
+//{
+//	m_texture = 0;
+//	m_type = core::gfx::tex::kTextureTypeNone;
+//}
+//gpu::WOFrameAttachment::~WOFrameAttachment ( void )
+//{
+//	// Free texture on death
+//	if (m_texture != 0)
+//	{
+//		glDeleteRenderbuffers(1, &m_texture);
+//	}
+//}
 
 bool gpu::WOFrameAttachment::valid ( void )
 {

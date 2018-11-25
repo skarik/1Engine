@@ -174,9 +174,6 @@
     <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp">
       <Filter>SOURCE\Renderer\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\object\mesh\CStreamedMesh.cpp">
-      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\gpuw\Textures.cpp">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
@@ -414,6 +411,9 @@
     <ClCompile Include="source\renderer\logic\model\RrCModel.cpp">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\StreamedMesh.cpp">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -493,9 +493,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\types\ModelStructures.h">
       <Filter>SOURCE\Renderer\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\mesh\CStreamedMesh.h">
-      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\state\InternalSettings.h">
       <Filter>SOURCE\Renderer\State</Filter>
@@ -796,6 +793,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\types\shaders\legacy.h">
       <Filter>SOURCE\Renderer\Types\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\StreamedMesh.h">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
