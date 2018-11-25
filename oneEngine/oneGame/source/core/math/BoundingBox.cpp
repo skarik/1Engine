@@ -12,9 +12,9 @@ using namespace core::math;
 // Note that this only really works proper if both bounding boxes have only been transformed through a translation.
 BoundingBox BoundingBox::Expand ( const BoundingBox& BB )
 {
-	Vector3d minPosA, maxPosA;
-	Vector3d minPosB, maxPosB;
-	Vector3d curCenter;
+	Vector3f minPosA, maxPosA;
+	Vector3f minPosB, maxPosB;
+	Vector3f curCenter;
 	
 	// Calculate min and max pos for first bbox
 	curCenter = GetCenterPoint();
@@ -40,10 +40,10 @@ BoundingBox BoundingBox::Expand ( const BoundingBox& BB )
 //
 // Check if a point is in this bounding box
 //
-bool BoundingBox::IsPointInBox(const Vector3d &InP) const
+bool BoundingBox::IsPointInBox(const Vector3f &InP) const
 {
 	// Rotate the point into the box's coordinates
-	Vector3d P = m_M.inverse() * InP;
+	Vector3f P = m_M.inverse() * InP;
 	
 	// Now just use an axis-aligned check
 	if ( fabs(P.x) < m_Extent.x && fabs(P.y) < m_Extent.y && fabs(P.z) < m_Extent.z ) 
@@ -55,12 +55,12 @@ bool BoundingBox::IsPointInBox(const Vector3d &InP) const
 //
 // Check if a sphere overlaps any part of this bounding box
 //
-bool BoundingBox::IsSphereInBox( const Vector3d &InP, float fRadius) const
+bool BoundingBox::IsSphereInBox( const Vector3f &InP, float fRadius) const
 {
 	float fDist;
 	float fDistSq = 0;
-	//Vector3d P = m_M.InvertSimple() * InP;
-	Vector3d P = m_M.inverse() * InP;
+	//Vector3f P = m_M.InvertSimple() * InP;
+	Vector3f P = m_M.inverse() * InP;
 	
 	// Add distance squared from sphere centerpoint to box for each axis
 	for ( int i = 0; i < 3; i++ )
@@ -77,15 +77,15 @@ bool BoundingBox::IsSphereInBox( const Vector3d &InP, float fRadius) const
 //
 // Check if the bounding box is completely behind a plane( defined by a normal and a point )
 //
-bool BoundingBox::BoxOutsidePlane( const Vector3d &InNorm, const Vector3d &InP ) const
+bool BoundingBox::BoxOutsidePlane( const Vector3f &InNorm, const Vector3f &InP ) const
 {
 	// Plane Normal in Box Space
-	//Vector3d Norm = InNorm.RotByMatrix( m_M.InvertSimple().mf ); // RotByMatrix only uses rotation portion of matrix
+	//Vector3f Norm = InNorm.RotByMatrix( m_M.InvertSimple().mf ); // RotByMatrix only uses rotation portion of matrix
 	Matrix4x4 rotMatrix;
 	rotMatrix.setRotation( m_M.getEulerAngles() );
-	Vector3d Norm = rotMatrix.inverse() * InNorm;
+	Vector3f Norm = rotMatrix.inverse() * InNorm;
 
-	Norm = Vector3d( fabs( Norm.x ), fabs( Norm.y ), fabs( Norm.z ) );
+	Norm = Vector3f( fabs( Norm.x ), fabs( Norm.y ), fabs( Norm.z ) );
 
 	//cout << GetCenterPoint();
 	
@@ -101,17 +101,17 @@ bool BoundingBox::BoxOutsidePlane( const Vector3d &InNorm, const Vector3d &InP )
 //
 // Does the Line (L1, L2) intersect the Box?
 //
-bool BoundingBox::IsLineInBox( const Vector3d& L1, const Vector3d& L2 ) const
+bool BoundingBox::IsLineInBox( const Vector3f& L1, const Vector3f& L2 ) const
 {	
 	// Put line in box space
 	Matrix4x4 MInv = m_M.inverse();
-	Vector3d LB1 = MInv * L1;
-	Vector3d LB2 = MInv * L2;
+	Vector3f LB1 = MInv * L1;
+	Vector3f LB2 = MInv * L2;
 
 	// Get line midpoint and extent
-	Vector3d LMid = (LB1 + LB2) * 0.5f; 
-	Vector3d L = (LB1 - LMid);
-	Vector3d LExt = Vector3d( fabs(L.x), fabs(L.y), fabs(L.z) );
+	Vector3f LMid = (LB1 + LB2) * 0.5f; 
+	Vector3f L = (LB1 - LMid);
+	Vector3f LExt = Vector3f( fabs(L.x), fabs(L.y), fabs(L.z) );
 
 	// Use Separating Axis Test
 	// Separation vector from box center to line center is LMid, since the line is in box space
@@ -129,11 +129,11 @@ bool BoundingBox::IsLineInBox( const Vector3d& L1, const Vector3d& L2 ) const
 //
 // Returns a 3x3 rotation matrix as vectors
 //
-inline void Get3x3Rot( const Matrix4x4& matrix, Vector3d* outRotation )
+inline void Get3x3Rot( const Matrix4x4& matrix, Vector3f* outRotation )
 {
-	outRotation[0] = Vector3d( matrix.pData[0], matrix.pData[1], matrix.pData[2] );
-	outRotation[1] = Vector3d( matrix.pData[4], matrix.pData[5], matrix.pData[6] );
-	outRotation[2] = Vector3d( matrix.pData[8], matrix.pData[9], matrix.pData[10] );
+	outRotation[0] = Vector3f( matrix.pData[0], matrix.pData[1], matrix.pData[2] );
+	outRotation[1] = Vector3f( matrix.pData[4], matrix.pData[5], matrix.pData[6] );
+	outRotation[2] = Vector3f( matrix.pData[8], matrix.pData[9], matrix.pData[10] );
 }
 
 //
@@ -142,9 +142,9 @@ inline void Get3x3Rot( const Matrix4x4& matrix, Vector3d* outRotation )
 //
 bool BoundingBox::IsBoxInBox( BoundingBox &BBox ) const
 {
-	Vector3d SizeA = m_Extent;
-	Vector3d SizeB = BBox.m_Extent;
-	Vector3d RotA[3], RotB[3];	
+	Vector3f SizeA = m_Extent;
+	Vector3f SizeB = BBox.m_Extent;
+	Vector3f RotA[3], RotB[3];	
 	Get3x3Rot( m_M, RotA );
 	Get3x3Rot( BBox.m_M, RotB );
 
@@ -164,15 +164,15 @@ bool BoundingBox::IsBoxInBox( BoundingBox &BBox ) const
 	}
             
     // Vector separating the centers of Box B and of Box A	
-    Vector3d vSepWS = BBox.GetCenterPoint() - GetCenterPoint();
+    Vector3f vSepWS = BBox.GetCenterPoint() - GetCenterPoint();
     // Rotated into Box A's coordinates
-    Vector3d vSepA( vSepWS.dot(RotA[0]), vSepWS.dot(RotA[1]), vSepWS.dot(RotA[2]) );            
+    Vector3f vSepA( vSepWS.dot(RotA[0]), vSepWS.dot(RotA[1]), vSepWS.dot(RotA[2]) );            
 
      // Test if any of A's basis vectors separate the box
 	for( i = 0; i < 3; i++ )
 	{
 		ExtentA = SizeA[i];
-		ExtentB = SizeB.dot( Vector3d( AR[i][0], AR[i][1], AR[i][2] ) );
+		ExtentB = SizeB.dot( Vector3f( AR[i][0], AR[i][1], AR[i][2] ) );
 		Separation = fabs( vSepA[i] );
 
 		if( Separation > ExtentA + ExtentB ) return false;
@@ -181,9 +181,9 @@ bool BoundingBox::IsBoxInBox( BoundingBox &BBox ) const
 	// Test if any of B's basis vectors separate the box
 	for( k = 0; k < 3; k++ )
 	{
-		ExtentA = SizeA.dot( Vector3d( AR[0][k], AR[1][k], AR[2][k] ) );
+		ExtentA = SizeA.dot( Vector3f( AR[0][k], AR[1][k], AR[2][k] ) );
 		ExtentB = SizeB[k];
-		Separation = fabs( vSepA.dot( Vector3d(R[0][k],R[1][k],R[2][k]) ) );
+		Separation = fabs( vSepA.dot( Vector3f(R[0][k],R[1][k],R[2][k]) ) );
 
 		if( Separation > ExtentA + ExtentB ) return false;
 	}

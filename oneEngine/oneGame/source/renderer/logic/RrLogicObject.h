@@ -7,7 +7,7 @@
 
 // Includes
 #include "core/types/types.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "core-ext/transform/Transform.h"
 
 //#include "GLCommon.h"

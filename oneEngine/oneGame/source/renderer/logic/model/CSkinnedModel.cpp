@@ -381,12 +381,12 @@ void CSkinnedModel::DebugRenderSkeleton ( void )
 		else if ( bone_name.find( "Bip001 L" ) != string::npos ) {
 			t_drawColor = Color( 0,0,1,1 );
 		}
-		//Vector3d t_bonePosition = bone->transform.position + transform.position;
-		Vector3d t_bonePosition = skeleton.current_transform[i].world.position + transform.position;
+		//Vector3f t_bonePosition = bone->transform.position + transform.position;
+		Vector3f t_bonePosition = skeleton.current_transform[i].world.position + transform.position;
 		Rotator& t_rotation = skeleton.current_transform[i].world.rotation;
-		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3d::forward * 0.2f, t_drawColor );
-		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3d(0,0,1) * 0.2f, t_drawColor );
-		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3d(0,1,0) * 0.2f, t_drawColor );
+		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3f::forward * 0.2f, t_drawColor );
+		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3f(0,0,1) * 0.2f, t_drawColor );
+		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3f(0,1,0) * 0.2f, t_drawColor );
 		// loop through children
 		/*for ( std::vector<Transform*>::iterator it = bone->transform.children.begin(); it != bone->transform.children.end(); it++ )
 		{

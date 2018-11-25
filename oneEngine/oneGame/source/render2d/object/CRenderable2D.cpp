@@ -24,7 +24,7 @@ CRenderable2D::CRenderable2D ( void )
 {
 	// Set up default parameters
 	m_spriteGenerationInfo = spriteGenParams2D_t();
-	m_spriteGenerationInfo.normal_default = Vector3d(0, 0, 1.0F);
+	m_spriteGenerationInfo.normal_default = Vector3f(0, 0, 1.0F);
 
 	// Use a default 2D material
 	m_material = new RrMaterial();

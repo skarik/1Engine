@@ -19,7 +19,7 @@ namespace debug
 
 	public:
 		RENDER_API static void DrawLine ( const Line&, const Color& = Color(1,1,0,1) );
-		RENDER_API static void DrawLine ( const Vector3d&, const Vector3d&, const Color& = Color(1,1,0,1) );
+		RENDER_API static void DrawLine ( const Vector3f&, const Vector3f&, const Color& = Color(1,1,0,1) );
 		RENDER_API static void DrawRay ( const Ray&, const Color& = Color(1,1,0,1) );
 
 	private:

@@ -48,7 +48,7 @@ namespace Engine2D
 	{
 	protected:
 		//		SpriteContainer (Constructor)
-		ENGINE2D_API explicit		AnimationContainer ( Vector3d* position, Real* angle = NULL, Vector3d* scale = NULL );
+		ENGINE2D_API explicit		AnimationContainer ( Vector3f* position, Real* angle = NULL, Vector3f* scale = NULL );
 		//		SpriteContinaer (Destructor)
 		ENGINE2D_API				~AnimationContainer ( void );
 

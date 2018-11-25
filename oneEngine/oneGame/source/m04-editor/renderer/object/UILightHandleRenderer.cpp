@@ -54,10 +54,10 @@ bool UILightHandleRenderer::PreRender ( void )
 	m_modeldata.triangleNum = 0;
 	m_modeldata.vertexNum = 0;
 
-	Vector3d meshpoints [4];
+	Vector3f meshpoints [4];
 	Color l_currentColor;
 
-	Vector3d ui_position = m_ui->m_position;
+	Vector3f ui_position = m_ui->m_position;
 
 	if ( m_ui->m_style == UILightHandle::DrawStyle::s2D )
 	{

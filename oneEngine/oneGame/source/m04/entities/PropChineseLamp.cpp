@@ -15,7 +15,7 @@ PropChineseLamp::PropChineseLamp ( void )
 	m_angle = 0;
 
 	SetupDepthOffset( -1.0F, 0.0F );
-	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 2.0F, 1.0F).normal();
+	m_sprite->SpriteGenParams().normal_default = Vector3f(0, 2.0F, 1.0F).normal();
 	m_sprite->SetSpriteFile("sprites/props/chinese_lamp.gal");
 	m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, 0 );
 }

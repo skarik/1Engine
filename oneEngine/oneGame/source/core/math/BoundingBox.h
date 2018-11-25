@@ -10,9 +10,9 @@
 
 #include <algorithm>
 #include "core/types/float.h"
-#include "Vector2f.h"
-#include "Vector3d.h"
-#include "Vector4d.h"
+#include "Vector2.h"
+#include "Vector3.h"
+#include "Vector4.h"
 #include "Quaternion.h"
 #include "Matrix/CMatrix.h"
 
@@ -24,18 +24,18 @@ namespace core
 		{
 		public:
 			BoundingBox() {}
-			BoundingBox( const Matrix4x4 &M, const Vector3d &Extent ) 
+			BoundingBox( const Matrix4x4 &M, const Vector3f &Extent ) 
 				{ Set( M, Extent );	}
 			// BL = Low values corner point, BH = High values corner point
-			BoundingBox( const Matrix4x4 &M, const Vector3d &BL, const Vector3d &BH ) 
+			BoundingBox( const Matrix4x4 &M, const Vector3f &BL, const Vector3f &BH ) 
 				{ Set( M, BL, BH );	}
 	
-			void Set( const Matrix4x4 &M, const Vector3d &Extent )
+			void Set( const Matrix4x4 &M, const Vector3f &Extent )
 			{
 			 m_M = M;
 			 m_Extent = Extent;
 			}	
-			void Set( const Matrix4x4 &M, const Vector3d &BL, const Vector3d &BH )
+			void Set( const Matrix4x4 &M, const Vector3f &BL, const Vector3f &BH )
 			{
 			 m_M = M;
 			 m_M.translate( (BH + BL) * 0.5f );
@@ -44,22 +44,22 @@ namespace core
 
 			BoundingBox Expand ( const BoundingBox& BB );
 	
-			Vector3d GetSize() const 
+			Vector3f GetSize() const 
 				{ return m_Extent * 2.0f; }
-			Vector3d GetCenterPoint() const
+			Vector3f GetCenterPoint() const
 				{ return m_M.getTranslation(); }
 				//{ return m_M.GetTranslate(); }		
 	
-			bool IsPointInBox( const Vector3d& P ) const;
+			bool IsPointInBox( const Vector3f& P ) const;
 			bool IsBoxInBox( BoundingBox &BBox ) const;
-			bool IsSphereInBox( const Vector3d& P, float fRadius ) const;
-			bool IsLineInBox( const Vector3d& L1, const Vector3d& L2 ) const;
-			bool BoxOutsidePlane( const Vector3d &Norm, const Vector3d &P ) const;
+			bool IsSphereInBox( const Vector3f& P, float fRadius ) const;
+			bool IsLineInBox( const Vector3f& L1, const Vector3f& L2 ) const;
+			bool BoxOutsidePlane( const Vector3f &Norm, const Vector3f &P ) const;
 	
 		private:
 			// Data
 			Matrix4x4 m_M;
-			Vector3d m_Extent;	
+			Vector3f m_Extent;	
 		};
 	}
 }

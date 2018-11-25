@@ -27,7 +27,7 @@ namespace M04
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::NpcPenni);
 		DEFINE_DISPLAY(DISPLAY_2D_SPRITE,"sprites/penni.gal");
-		DEFINE_VALUE(position,Vector3d,FIELD_POSITION);
+		DEFINE_VALUE(position,Vector3f,FIELD_POSITION);
 		END_OBJECT_DESC();
 	};
 }

@@ -17,7 +17,7 @@
 
 //#include "RrDebugDrawer.h"
 
-Vector3d CHKAnimation::defaultJointVector (0,0,-1);
+Vector3f CHKAnimation::defaultJointVector (0,0,-1);
 
 // class hkWorldCaster
 // Class used by the IK to check collisions against the world.
@@ -95,7 +95,7 @@ void CHKAnimation::GetRagdollPose( skeletonBone_t* rootBone, std::vector<skeleto
 	//for ( int i = 0; i < nextTransforms.getSize(); ++i )
 	//{
 	//	XTransform localTransform;
-	//	localTransform.position = Vector3d(
+	//	localTransform.position = Vector3f(
 	//		nextTransforms[i].m_translation.getComponent<0>(),
 	//		nextTransforms[i].m_translation.getComponent<1>(),
 	//		nextTransforms[i].m_translation.getComponent<2>() );
@@ -104,7 +104,7 @@ void CHKAnimation::GetRagdollPose( skeletonBone_t* rootBone, std::vector<skeleto
 	//		nextTransforms[i].m_rotation.m_vec.getComponent<1>(),
 	//		nextTransforms[i].m_rotation.m_vec.getComponent<2>(),
 	//		nextTransforms[i].m_rotation.m_vec.getComponent<3>() );
-	//	localTransform.scale = Vector3d(
+	//	localTransform.scale = Vector3f(
 	//		nextTransforms[i].m_scale.getComponent<0>(),
 	//		nextTransforms[i].m_scale.getComponent<1>(),
 	//		nextTransforms[i].m_scale.getComponent<2>() );
@@ -213,7 +213,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //
 //		for ( int i = 0; i < nextTransforms.getSize(); ++i )
 //		{
-//			((XTransform*)animRefs[i])->position = Vector3d(
+//			((XTransform*)animRefs[i])->position = Vector3f(
 //				nextTransforms[i].m_translation.getComponent<0>(),
 //				nextTransforms[i].m_translation.getComponent<1>(),
 //				nextTransforms[i].m_translation.getComponent<2>() );
@@ -222,7 +222,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //				nextTransforms[i].m_rotation.m_vec.getComponent<1>(),
 //				nextTransforms[i].m_rotation.m_vec.getComponent<2>(),
 //				nextTransforms[i].m_rotation.m_vec.getComponent<3>() );
-//			((XTransform*)animRefs[i])->scale = Vector3d(
+//			((XTransform*)animRefs[i])->scale = Vector3f(
 //				nextTransforms[i].m_scale.getComponent<0>(),
 //				nextTransforms[i].m_scale.getComponent<1>(),
 //				nextTransforms[i].m_scale.getComponent<2>() );
@@ -241,7 +241,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //		bEventsRead = false;
 //	}
 //	// Reset model motion
-//	vModelMotion = Vector3d(0,0,0);
+//	vModelMotion = Vector3f(0,0,0);
 //
 //	// Need to update smooth faders
 //	for ( auto it = fadeOutList.begin(); it != fadeOutList.end(); )
@@ -849,10 +849,10 @@ void CHKAnimation::Update ( const Real deltaTime )
 //#ifdef _ENGINE_DEBUG	// Draw the wrist positions
 //					hkVector4 targetWorldPosition;
 //					targetWorldPosition.setTransformedPos( modelToWorld, targetPosition );
-//					Vector3d result ( targetWorldPosition.getComponent<0>(), targetWorldPosition.getComponent<1>(), targetWorldPosition.getComponent<2>() );
-//					debug::Drawer->DrawLine( result-Vector3d(0,0.5f,0), result+Vector3d(0,0.5f,0), Color(1,0,1,1) );
-//					debug::Drawer->DrawLine( result-Vector3d(0,0,0.5f), result+Vector3d(0,0,0.5f), Color(1,0,1,1) );
-//					debug::Drawer->DrawLine( result-Vector3d(0.5f,0,0), result+Vector3d(0.5f,0,0), Color(1,0,1,1) );
+//					Vector3f result ( targetWorldPosition.getComponent<0>(), targetWorldPosition.getComponent<1>(), targetWorldPosition.getComponent<2>() );
+//					debug::Drawer->DrawLine( result-Vector3f(0,0.5f,0), result+Vector3f(0,0.5f,0), Color(1,0,1,1) );
+//					debug::Drawer->DrawLine( result-Vector3f(0,0,0.5f), result+Vector3f(0,0,0.5f), Color(1,0,1,1) );
+//					debug::Drawer->DrawLine( result-Vector3f(0.5f,0,0), result+Vector3f(0.5f,0,0), Color(1,0,1,1) );
 //#endif
 //*/
 //					// Generate the target rotation
@@ -968,10 +968,10 @@ void CHKAnimation::Update ( const Real deltaTime )
 //						groundPosition.setInterpolate( fromPosition, toPosition, resultFraction );
 ///*
 //#ifdef _ENGINE_DEBUG	// Draw the toe positions
-//						Vector3d result ( toeWorldSpace.getComponent<0>(), toeWorldSpace.getComponent<1>(), toeWorldSpace.getComponent<2>() );
-//						debug::Drawer->DrawLine( result-Vector3d(0,0.5f,0), result+Vector3d(0,0.5f,0), Color(1,0,1,1) );
-//						debug::Drawer->DrawLine( result-Vector3d(0,0,0.5f), result+Vector3d(0,0,0.5f), Color(1,0,1,1) );
-//						debug::Drawer->DrawLine( result-Vector3d(0.5f,0,0), result+Vector3d(0.5f,0,0), Color(1,0,1,1) );
+//						Vector3f result ( toeWorldSpace.getComponent<0>(), toeWorldSpace.getComponent<1>(), toeWorldSpace.getComponent<2>() );
+//						debug::Drawer->DrawLine( result-Vector3f(0,0.5f,0), result+Vector3f(0,0.5f,0), Color(1,0,1,1) );
+//						debug::Drawer->DrawLine( result-Vector3f(0,0,0.5f), result+Vector3f(0,0,0.5f), Color(1,0,1,1) );
+//						debug::Drawer->DrawLine( result-Vector3f(0.5f,0,0), result+Vector3f(0.5f,0,0), Color(1,0,1,1) );
 //#endif*/
 //						// Z is the ground. Compare with parent model Z=0
 //						hkVector4 targetPosition = toeWorldSpace;
@@ -1184,7 +1184,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //		{
 //			//mhkAnim->
 //			/*int t = mAnimBinding->m_transformTrackToBoneIndices[i];
-//			((XTransform*)animRefs[t])->position = Vector3d(
+//			((XTransform*)animRefs[t])->position = Vector3f(
 //				nextTransforms[i].m_translation.getComponent<0>(),
 //				nextTransforms[i].m_translation.getComponent<1>(),
 //				nextTransforms[i].m_translation.getComponent<2>() );
@@ -1193,12 +1193,12 @@ void CHKAnimation::Update ( const Real deltaTime )
 //				nextTransforms[i].m_rotation.m_vec.getComponent<1>(),
 //				nextTransforms[i].m_rotation.m_vec.getComponent<2>(),
 //				nextTransforms[i].m_rotation.m_vec.getComponent<3>() );
-//			((XTransform*)animRefs[t])->scale = Vector3d(
+//			((XTransform*)animRefs[t])->scale = Vector3f(
 //				nextTransforms[i].m_scale.getComponent<0>(),
 //				nextTransforms[i].m_scale.getComponent<1>(),
 //				nextTransforms[i].m_scale.getComponent<2>() );*/
 //			int16_t t_indexer = mAnimBinding->findTrackIndexFromBoneIndex(i);
-//			((XTransform*)animRefs[i])->position = Vector3d(
+//			((XTransform*)animRefs[i])->position = Vector3f(
 //				nextTransforms[t_indexer].m_translation.getComponent<0>(),
 //				nextTransforms[t_indexer].m_translation.getComponent<1>(),
 //				nextTransforms[t_indexer].m_translation.getComponent<2>() );
@@ -1207,7 +1207,7 @@ void CHKAnimation::Update ( const Real deltaTime )
 //				nextTransforms[t_indexer].m_rotation.m_vec.getComponent<1>(),
 //				nextTransforms[t_indexer].m_rotation.m_vec.getComponent<2>(),
 //				nextTransforms[t_indexer].m_rotation.m_vec.getComponent<3>() );
-//			((XTransform*)animRefs[i])->scale = Vector3d(
+//			((XTransform*)animRefs[i])->scale = Vector3f(
 //				nextTransforms[t_indexer].m_scale.getComponent<0>(),
 //				nextTransforms[t_indexer].m_scale.getComponent<1>(),
 //				nextTransforms[t_indexer].m_scale.getComponent<2>() );

@@ -2,7 +2,7 @@
 #ifndef _MATH_QEF_H_
 #define _MATH_QEF_H_
 
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 
 namespace Maths {
 
@@ -20,7 +20,7 @@ class QEF
 public:
     static void evaluate(
         double mat[][3], double *vec, int rows,
-        Vector3d *point);
+        Vector3f *point);
     
     // compute svd
 

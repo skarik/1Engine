@@ -33,12 +33,12 @@ namespace M04
 	public:
 		// Current state:
 
-		Vector3d flipstate;
+		Vector3f flipstate;
 
-		Vector3d position;
-		Vector3d velocity;
+		Vector3f position;
+		Vector3f velocity;
 
-		Vector3d display_position;
+		Vector3f display_position;
 
 	protected:
 
@@ -51,7 +51,7 @@ namespace M04
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::PlayerPlatformerBase);
 		DEFINE_DISPLAY(DISPLAY_BOX,"1");
-		DEFINE_VALUE(position,Vector3d,FIELD_POSITION);
+		DEFINE_VALUE(position,Vector3f,FIELD_POSITION);
 		END_OBJECT_DESC();
 	};
 };

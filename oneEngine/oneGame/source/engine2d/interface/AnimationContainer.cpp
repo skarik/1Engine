@@ -18,7 +18,7 @@
 using namespace Engine2D;
 
 
-AnimationContainer::AnimationContainer ( Vector3d* position, Real* angle, Vector3d* scale )
+AnimationContainer::AnimationContainer ( Vector3f* position, Real* angle, Vector3f* scale )
 	: SpriteContainer(position, angle, scale), 
 	m_current_animation(0)
 {
@@ -41,11 +41,11 @@ void AnimationContainer::PreStep ( void )
 	animation_entry_t* entry = m_animations[m_current_animation].first;
 	AnimationContainerSubstate* state = m_animations[m_current_animation].second;
 
-	m_sprite->GetMaterial()->m_texcoordOffset = Vector4d(
+	m_sprite->GetMaterial()->m_texcoordOffset = Vector4f(
 		(state->m_frame % entry->texture.frame_count.x) / (Real)entry->texture.frame_count.x,
 		(state->m_frame / entry->texture.frame_count.x) / (Real)entry->texture.frame_count.y,
 		0,0);
-	m_sprite->GetMaterial()->m_texcoordScaling = Vector4d(
+	m_sprite->GetMaterial()->m_texcoordScaling = Vector4f(
 		1.0F / (Real)entry->texture.frame_count.x,
 		1.0F / (Real)entry->texture.frame_count.y,
 		0,0);

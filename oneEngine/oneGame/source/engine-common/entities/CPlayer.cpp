@@ -56,8 +56,8 @@ void CPlayer::LateUpdate ( void )
 	// Update listener position
 	pListener->velocity = pCamera->transform.position - pListener->position;
 	pListener->position = pCamera->transform.position;
-	pListener->orient_forward = pCamera->transform.rotation * Vector3d::forward;
-	pListener->orient_up = pCamera->transform.rotation * Vector3d(0,0,1);
+	pListener->orient_forward = pCamera->transform.rotation * Vector3f::forward;
+	pListener->orient_up = pCamera->transform.rotation * Vector3f(0,0,1);
 }
 
 //LateUpdate for updating the current movement
@@ -85,8 +85,8 @@ void CPlayer::GrabInput ( void )
 		if ( !bOverrideInput )
 		{
 			//input->ZeroValues( this );
-			vDirInput	= Vector3d( 0,0,0 );
-			vTurnInput	= Vector3d( 0,0,0 );
+			vDirInput	= Vector3f( 0,0,0 );
+			vTurnInput	= Vector3f( 0,0,0 );
 
 			input->axes.prone.Value				= input->axes.prone.PreviousValue;
 			input->axes.prone.PreviousValue		= 0.0f;
@@ -128,7 +128,7 @@ void CPlayer::GrabInput ( void )
 			vTurnInput	+= input->vMouseInput;
 		}
 		else {
-			vTurnInput	= Vector3d( 0,0,0 );
+			vTurnInput	= Vector3f( 0,0,0 );
 		}
 	}
 }
@@ -167,7 +167,7 @@ void*	CPlayer::mvtPhaseFlying ( void )
 	vPlayerRotation.z += vTurnInput.x;
 	vTurnInput.x = 0.0f;
 
-	Vector3d moveVector(0,0,0);
+	Vector3f moveVector(0,0,0);
 	moveVector = vDirInput;
 	moveVector.z = 0;
 
@@ -229,10 +229,10 @@ CPlayer::CPlayer ( void )
 	pCamera	= new RrCamera ();
 	pCamera->SetActive();
 	
-	vPlayerRotation		= Vector3d( 0,0,0 );
-	vCameraRotation		= Vector3d( 0,0,0 );
-	vCameraAnimOffsetRotation = Vector3d( 0,0,0 );
-	vViewBob			= Vector3d( 0,0,0 );
+	vPlayerRotation		= Vector3f( 0,0,0 );
+	vCameraRotation		= Vector3f( 0,0,0 );
+	vCameraAnimOffsetRotation = Vector3f( 0,0,0 );
+	vViewBob			= Vector3f( 0,0,0 );
 	fViewBobTimer		= 0;
 	fViewBobSpeed		= 0;
 	fViewBobAmount		= 0;
@@ -243,8 +243,8 @@ CPlayer::CPlayer ( void )
 	fViewAnglePTarget	= 0;
 	fViewRollOffset		= 0;
 	fViewRollTarget		= 0;
-	vViewPunch			= Vector3d( 0,0,0 );
-	vViewPunchVelocity	= Vector3d( 0,0,0 );
+	vViewPunch			= Vector3f( 0,0,0 );
+	vViewPunchVelocity	= Vector3f( 0,0,0 );
 
 	fTurnSensitivity	= 1;
 
@@ -337,7 +337,7 @@ void CPlayer::DoPlayerActions ( void )
 			rhLookAtResult.hitPos.x = (Real)Math.Round( rhLookAtResult.hitPos.x );
 			rhLookAtResult.hitPos.y = (Real)Math.Round( rhLookAtResult.hitPos.y );
 			rhLookAtResult.hitPos.z = (Real)Math.Round( rhLookAtResult.hitPos.z );
-			COctreeTerrain::GetActive()->CSG_AddBlock( rhLookAtResult.hitPos, Vector3d(1,1,1)*4 );
+			COctreeTerrain::GetActive()->CSG_AddBlock( rhLookAtResult.hitPos, Vector3f(1,1,1)*4 );
 			COctreeTerrain::GetActive()->TerrainUpdate();
 		}
 	}
@@ -347,7 +347,7 @@ void CPlayer::DoPlayerActions ( void )
 			rhLookAtResult.hitPos.x = (Real)Math.Round( rhLookAtResult.hitPos.x );
 			rhLookAtResult.hitPos.y = (Real)Math.Round( rhLookAtResult.hitPos.y );
 			rhLookAtResult.hitPos.z = (Real)Math.Round( rhLookAtResult.hitPos.z );
-			COctreeTerrain::GetActive()->CSG_AddBlock( rhLookAtResult.hitPos, Vector3d(1,1,1) );
+			COctreeTerrain::GetActive()->CSG_AddBlock( rhLookAtResult.hitPos, Vector3f(1,1,1) );
 			COctreeTerrain::GetActive()->TerrainUpdate();
 		}
 	}
@@ -383,7 +383,7 @@ void CPlayer::DoLookAtCommands ( void )
 	Raytracer.Raycast( viewRay, pCamera->zFar, &rhLookAtResult, &block, Physics::GetCollisionFilter(Layers::PHYS_BULLET_TRACE,0,31), this );
 	RaycastHit result = rhLookAtResult;
 	// Do the raycast
-	Vector3d weightedDistance = rhLookAtResult.hitPos - viewRay.pos;
+	Vector3f weightedDistance = rhLookAtResult.hitPos - viewRay.pos;
 	weightedDistance.z *= 0.5f;
 	//if ( Raytracer.Raycast( viewRay, fMaxUseDistance, &result, &block, 1|2|4 ) )
 	if (( rhLookAtResult.hit )&&( rhLookAtResult.distance <= fMaxUseDistance || weightedDistance.magnitude() <= fMaxUseDistance ))
@@ -490,8 +490,8 @@ void CPlayer::GrabInput ( void )
 		if ( !bOverrideInput )
 		{
 			//input->ZeroValues( this );
-			vDirInput	= Vector3d( 0,0,0 );
-			vTurnInput	= Vector3d( 0,0,0 );
+			vDirInput	= Vector3f( 0,0,0 );
+			vTurnInput	= Vector3f( 0,0,0 );
 
 			input->axes.prone.Value				= input->axes.prone.PreviousValue;
 			input->axes.prone.PreviousValue		= 0.0f;
@@ -533,7 +533,7 @@ void CPlayer::GrabInput ( void )
 			vTurnInput	+= input->vMouseInput;
 		}
 		else {
-			vTurnInput	= Vector3d( 0,0,0 );
+			vTurnInput	= Vector3f( 0,0,0 );
 		}
 	}
 }

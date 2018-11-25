@@ -11,7 +11,7 @@
 
 // Includes
 #include "core/types/types.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "core-ext/transform/Transform.h"
 
 //#include "GLCommon.h"
@@ -243,7 +243,7 @@ protected:
 			bStaticMaterialsInit = true;
 		}
 	};*/
-	//static Vector3d _activeCameraPosition;
+	//static Vector3f _activeCameraPosition;
 	//static Rotator	_activeCameraRotation;
 
 private:

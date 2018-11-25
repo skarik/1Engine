@@ -12,20 +12,20 @@ void core::mesh::RecalculateNormals ( arModelData* md )
 	// num_indices is number of indices
 	// each face of the mesh is made up of three vertices.
 
-	/*std::vector<Vector3d>* normal_buffer = new std::vector<Vector3d> [md->vertexNum];
+	/*std::vector<Vector3f>* normal_buffer = new std::vector<Vector3f> [md->vertexNum];
 
 	//for( int i = 0; i < modelData->vertexNum; i += 3 )
 	for ( unsigned int i = 0; i < md->triangleNum; i += 1 )
 	{
 		// get the three vertices that make the face
-		Vector3d p1 = Vector3d( &md->vertices[md->triangles[i].vert[0]].x );
-		Vector3d p2 = Vector3d( &md->vertices[md->triangles[i].vert[1]].y );
-		Vector3d p3 = Vector3d( &md->vertices[md->triangles[i].vert[2]].z );
+		Vector3f p1 = Vector3f( &md->vertices[md->triangles[i].vert[0]].x );
+		Vector3f p2 = Vector3f( &md->vertices[md->triangles[i].vert[1]].y );
+		Vector3f p3 = Vector3f( &md->vertices[md->triangles[i].vert[2]].z );
 
 		// Calculate the face normal
-		Vector3d v1 = p2 - p1;
-		Vector3d v2 = p3 - p1;
-		Vector3d normal = v1.cross( v2 );
+		Vector3f v1 = p2 - p1;
+		Vector3f v2 = p3 - p1;
+		Vector3f normal = v1.cross( v2 );
 
 		normal = normal.normal();
 
@@ -38,7 +38,7 @@ void core::mesh::RecalculateNormals ( arModelData* md )
 	// Now loop through each vertex vector, and avarage out all the normals stored.
 	for( unsigned int i = 0; i < md->vertexNum; ++i )
 	{
-		Vector3d normalResult ( 0,0,0 );
+		Vector3f normalResult ( 0,0,0 );
 		for( unsigned int j = 0; j < normal_buffer[i].size(); ++j )
 		{
 			normalResult += normal_buffer[i][j];
@@ -63,14 +63,14 @@ void core::mesh::RecalculateNormals ( arModelData* md )
 	for (uint16_t index = 0; index < md->indexNum; index += 3)
 	{
 		// get the three vertices that make the face
-		Vector3d p1 = md->position[md->indices[index + 0]];
-		Vector3d p2 = md->position[md->indices[index + 1]];
-		Vector3d p3 = md->position[md->indices[index + 2]];
+		Vector3f p1 = md->position[md->indices[index + 0]];
+		Vector3f p2 = md->position[md->indices[index + 1]];
+		Vector3f p3 = md->position[md->indices[index + 2]];
 
 		// Calculate the face normal
-		Vector3d v1 = p2 - p1;
-		Vector3d v2 = p3 - p1;
-		Vector3d normal = v1.cross( v2 );
+		Vector3f v1 = p2 - p1;
+		Vector3f v2 = p3 - p1;
+		Vector3f normal = v1.cross( v2 );
 
 		// Don't normalize it: the larger the face, the more dominant this normal should be.
 
@@ -97,7 +97,7 @@ void core::mesh::RecalculateTangents ( arModelData* md )
 
 	Vector3f* tangent1 = new Vector3f[md->vertexNum * 2];
 	Vector3f* tangent2 = tangent1 + md->vertexNum;
-	memset(tangent1, 0, md->vertexNum * sizeof(Vector3d) * 2);
+	memset(tangent1, 0, md->vertexNum * sizeof(Vector3f) * 2);
 
 	// Allocate tangents & binormals
 	if (md->tangent == NULL)

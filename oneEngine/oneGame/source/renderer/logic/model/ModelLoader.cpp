@@ -311,7 +311,7 @@
 //				// Convert the vertex coordinates
 //				for ( uint32_t vert = 0; vert < vertexNum; vert += 1 )
 //				{
-//					Vector3d vPos = Vector3d( newModelData->vertices[vert].x, newModelData->vertices[vert].y, newModelData->vertices[vert].z );
+//					Vector3f vPos = Vector3f( newModelData->vertices[vert].x, newModelData->vertices[vert].y, newModelData->vertices[vert].z );
 //					Matrix4x4 mTransform = Matrix4x4( transformMatx );
 //					vPos = mTransform * vPos;
 //					newModelData->vertices[vert].x = vPos.x;
@@ -422,7 +422,7 @@
 //					// Convert the vertex coordinates
 //					for ( uint32_t vert = 0; vert < vertexNum; vert += 1 )
 //					{
-//						Vector3d vPos = Vector3d( newPhysData->vertices[vert].x, newPhysData->vertices[vert].y, newPhysData->vertices[vert].z );
+//						Vector3f vPos = Vector3f( newPhysData->vertices[vert].x, newPhysData->vertices[vert].y, newPhysData->vertices[vert].z );
 //						Matrix4x4 mTransform = Matrix4x4( transformMatx );
 //						vPos = mTransform * vPos;
 //						newPhysData->vertices[vert].x = vPos.x;
@@ -468,9 +468,9 @@
 //				sin.read( (char*)(&hitbox.indexLink), sizeof(uchar) );
 //				// [uchar] parentbone
 //				sin.read( (char*)(&hitbox.parentIndex), sizeof(uchar) );
-//				// [Vector3d] center
+//				// [Vector3f] center
 //				sin.read( (char*)(&hitbox.center.x), sizeof(Real)*3 );
-//				// [Vector3d] extents
+//				// [Vector3f] extents
 //				sin.read( (char*)(&hitbox.extents.x), sizeof(Real)*3 );
 //				// [string] hitbox name
 //				uint namei = 0;

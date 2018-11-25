@@ -76,15 +76,15 @@ RrBillboard::~RrBillboard ( void )
 bool RrBillboard::PreRender ( rrCameraPass* cameraPass )
 {
 	// Get the active camera and take its transform
-	Vector3d lookPos (0,0,0);
-	Vector3d vRight (0,1,0), vUp(0,0,1);
+	Vector3f lookPos (0,0,0);
+	Vector3f vRight (0,1,0), vUp(0,0,1);
 	if ( RrCamera::activeCamera )
 	{
 		if ( pointAtCamera )
 			lookPos = (RrCamera::activeCamera->transform.position - transform.world.position).normal();
 		else
-			lookPos = RrCamera::activeCamera->transform.rotation * Vector3d::forward;
-		transform.world.rotation = Vector3d(0,0,0);
+			lookPos = RrCamera::activeCamera->transform.rotation * Vector3f::forward;
+		transform.world.rotation = Vector3f(0,0,0);
 		vRight = RrCamera::activeCamera->GetUp().cross( lookPos );
 		vUp = lookPos.cross( vRight );
 	}
@@ -106,7 +106,7 @@ bool RrBillboard::PreRender ( rrCameraPass* cameraPass )
 		transform.world.rotation.pData[5] = vUp.y;
 		transform.world.rotation.pData[8] = vUp.z;
 
-		transform.world.scale = Vector3d( 1,1,1 );
+		transform.world.scale = Vector3f( 1,1,1 );
 	}
 
 	// Set up transformation for the mesh
@@ -139,17 +139,17 @@ bool RrBillboard::Render ( const rrRenderParams* params )
 
 	//GL_ACCESS;
 	//// Get the active camera and take its transform
-	//Vector3d lookPos (0,0,0);
-	//Vector3d vRight (0,1,0), vUp(0,0,1);
+	//Vector3f lookPos (0,0,0);
+	//Vector3f vRight (0,1,0), vUp(0,0,1);
 	//if ( RrCamera::activeCamera )
 	//{
 	//	if ( m_curvetowards ) {
 	//		lookPos = (RrCamera::activeCamera->transform.position - transform.world.position).normal();
 	//	}
 	//	else {
-	//		lookPos = RrCamera::activeCamera->transform.rotation * Vector3d::forward;
+	//		lookPos = RrCamera::activeCamera->transform.rotation * Vector3f::forward;
 	//	}
-	//	transform.world.rotation = Vector3d(0,0,0);
+	//	transform.world.rotation = Vector3f(0,0,0);
 	//	vRight = RrCamera::activeCamera->GetUp().cross( lookPos );
 	//	vUp = lookPos.cross( vRight );
 	//}
@@ -171,7 +171,7 @@ bool RrBillboard::Render ( const rrRenderParams* params )
 	//	transform.world.rotation.pData[5] = vUp.y;
 	//	transform.world.rotation.pData[8] = vUp.z;
 
-	//	transform.world.scale = Vector3d( 1,1,1 );
+	//	transform.world.scale = Vector3f( 1,1,1 );
 	//}
 
 	//// Genereate the mesh if it doesn't exist

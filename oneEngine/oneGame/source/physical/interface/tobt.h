@@ -10,7 +10,7 @@
 #define PHYSICAL_INTERFACE_TO_BULLET_H_
 
 #include "core/types.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "core/math/Quaternion.h"
 #include "core/math/Rotator.h"
 #include "core/math/XTransform.h"

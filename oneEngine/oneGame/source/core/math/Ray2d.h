@@ -1,7 +1,7 @@
 #ifndef _RAY_2D_H_
 #define _RAY_2D_H_
 
-#include "Vector2f.h"
+#include "Vector2.h"
 
 class Ray2d
 {

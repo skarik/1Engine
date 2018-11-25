@@ -14,17 +14,17 @@ public:
 	}
 
 	// Returns true if the position is in fluid
-	bool		PositionInside	( Vector3d const& pos ) override {
+	bool		PositionInside	( Vector3f const& pos ) override {
 		return false;
 	}
 	// Returns the fluid velocity at the given position
-	Vector3d	GetFlowField	( Vector3d const& pos ) override {
-		return Vector3d::zero;
+	Vector3f	GetFlowField	( Vector3f const& pos ) override {
+		return Vector3f::zero;
 	}
 
 	//== Sea and Storm Compatibility==
 	// Grabs the height of the ocean at the current XY position.
-	float		OceanHeight ( Vector3d const& pos ) override {
+	float		OceanHeight ( Vector3f const& pos ) override {
 		return 0.0f;
 	}
 

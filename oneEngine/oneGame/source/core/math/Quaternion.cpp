@@ -14,7 +14,7 @@ Quaternion& Quaternion::SwitchBasis ( void )
 	return *this;
 }
 // Gets euler angles from the quaternion
-Vector3d Quaternion::GetEulerAngles ( void ) const
+Vector3f Quaternion::GetEulerAngles ( void ) const
 {
 	return Rotator( *this ).getEulerAngles();
 }

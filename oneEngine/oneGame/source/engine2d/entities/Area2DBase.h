@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "core/math/Rect.h"
 #include "core/containers/arstring.h"
 #include "engine/behavior/CGameBehavior.h"

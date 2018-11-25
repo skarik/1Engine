@@ -34,7 +34,7 @@ using namespace M04;
 CutsceneEditor::CutsceneEditor ( void )
 	: CGameBehavior()
 {
-	m_target_camera_position = Vector3d(0, 0, -10);
+	m_target_camera_position = Vector3f(0, 0, -10);
 	m_preclude_navigation = false;
 	m_navigation_busy = false;
 
@@ -96,11 +96,11 @@ void CutsceneEditor::doViewNavigationDrag ( void )
 }
 
 //		uiGetCurrentMouse() : Get vmouse position
-Vector3d CutsceneEditor::uiGetCurrentMouse ( void )
+Vector3f CutsceneEditor::uiGetCurrentMouse ( void )
 {
-	return Vector3d( Input::MouseX(), Input::MouseY(), 0.0F )
+	return Vector3f( Input::MouseX(), Input::MouseY(), 0.0F )
 		+ m_target_camera_position
-		- Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, 0.0F) * 0.5F;
+		- Vector3f((Real)Screen::Info.width, (Real)Screen::Info.height, 0.0F) * 0.5F;
 }
 //		uiGetNodeRect ( EditorNode* node ) : Gets node rect
 Rect CutsceneEditor::uiGetNodeRect( common::cts::EditorNode* node )
@@ -109,7 +109,7 @@ Rect CutsceneEditor::uiGetNodeRect( common::cts::EditorNode* node )
 	return Rect(node->position, Vector2f(128, 32));
 }
 //		uiGetNodeOutputPosition ( EditorNode* node, int index ) : Gets node output pos
-Vector3d CutsceneEditor::uiGetNodeOutputPosition ( common::cts::EditorNode* node, const int index )
+Vector3f CutsceneEditor::uiGetNodeOutputPosition ( common::cts::EditorNode* node, const int index )
 {
 	const Real	kConnectorRadius	(8.0F);
 	const Real	kConnectorSpacing	(12.0F);
@@ -131,7 +131,7 @@ Vector3d CutsceneEditor::uiGetNodeOutputPosition ( common::cts::EditorNode* node
 	return Vector2f(center_x, draw_rect.pos.y + draw_rect.size.y);
 }
 //		uiGetNodeInputPosition ( EditorNode* node, int index ) : Gets node input pos
-Vector3d CutsceneEditor::uiGetNodeInputPosition ( common::cts::EditorNode* node )
+Vector3f CutsceneEditor::uiGetNodeInputPosition ( common::cts::EditorNode* node )
 {
 	const Real	kConnectorRadius	(8.0F);
 	const Real	kConnectorSpacing	(12.0F);
@@ -156,7 +156,7 @@ void CutsceneEditor::doEditorUpdateMouseOver ( void )
 		m_mouseover_connector_output = false;
 
 		// Perform mousepos checks
-		Vector3d l_mousepos = uiGetCurrentMouse();
+		Vector3f l_mousepos = uiGetCurrentMouse();
 
 		for (size_t i = 0; i < m_nodes.size(); ++i)
 		{
@@ -349,13 +349,13 @@ void CutsceneEditor::doEditorContextMenu ( void )
 		m_contextMenu_position = uiGetCurrentMouse();
 
 		m_contextMenu_spacing = 18.0F;
-		m_contextMenu_size = Vector3d(128, m_contextMenu_spacing * (common::cts::kNodeType_MAX - 1), 0.0F);
+		m_contextMenu_size = Vector3f(128, m_contextMenu_spacing * (common::cts::kNodeType_MAX - 1), 0.0F);
 	}
 
 	if ( m_contextMenu_visible )
 	{
 		// Update the clicked index:
-		Vector3d l_mousepos = uiGetCurrentMouse();
+		Vector3f l_mousepos = uiGetCurrentMouse();
 		// Get the index that was clicked
 		int l_clickedindex = (int)((l_mousepos.y - m_contextMenu_position.y) / m_contextMenu_spacing);
 	

@@ -407,7 +407,7 @@ void RrCModel::PostStepSynchronus ( void )
 
 void RrCModel::CalculateBoundingBox ( void )
 {
-	Vector3d minPos, maxPos;
+	Vector3f minPos, maxPos;
 
 	for ( size_t i = 0; i < m_meshGroup->m_meshCount; i++ )
 	{
@@ -431,7 +431,7 @@ void RrCModel::CalculateBoundingBox ( void )
 	fCheckRenderDist = (( maxPos-minPos )/2).magnitude();
 	//bbCheckRenderBox.Set( transform.GetTransformMatrix(), vMinExtents, vMaxExtents );
 	m_renderBoundingBox.Set( Matrix4x4(), vMinExtents, vMaxExtents );
-	//bbCheckRenderBox.Set( transform.GetTransformMatrix(), Vector3d( -0.1f,-0.1f,-0.1f ), Vector3d( 0.1f,0.1f,0.1f ) );
+	//bbCheckRenderBox.Set( transform.GetTransformMatrix(), Vector3f( -0.1f,-0.1f,-0.1f ), Vector3f( 0.1f,0.1f,0.1f ) );
 }
 
 // ==Shader interface==
@@ -448,9 +448,9 @@ void RrCModel::CalculateBoundingBox ( void )
 //	if ( !uniformMapVect2d ) uniformMapVect2d = new unordered_map<arstring128,Vector2f>;
 //	(*uniformMapVect2d)[arstring128(sUniformName)] = fInput;
 //}
-//void RrCModel::SetShaderUniform ( const char* sUniformName, const Vector3d& fInput )
+//void RrCModel::SetShaderUniform ( const char* sUniformName, const Vector3f& fInput )
 //{
-//	if ( !uniformMapVect3d ) uniformMapVect3d = new unordered_map<arstring128,Vector3d>;
+//	if ( !uniformMapVect3d ) uniformMapVect3d = new unordered_map<arstring128,Vector3f>;
 //	(*uniformMapVect3d)[arstring128(sUniformName)] = fInput;
 //}
 //void RrCModel::SetShaderUniform ( const char* sUniformName, const Color& fInput )

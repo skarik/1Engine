@@ -143,10 +143,10 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::activate ( void )
 	//body->activate();
 	body->SetAwake(true);
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::applyForce ( const Real32 delta, const Vector3d& vect )
+_FORCE_INLINE_ PHYS_API void physRigidBody::applyForce ( const Real32 delta, const Vector3f& vect )
 {
 	//body->applyForce( delta, hkVector4( vect.x,vect.y,vect.z ) );
-	Vector3d force = vect.mulComponents( Physics::WorldScaling() );
+	Vector3f force = vect.mulComponents( Physics::WorldScaling() );
 	body->ApplyForceToCenter( b2Vec2(force.x,force.y), true );
 }
 _FORCE_INLINE_ PHYS_API void physRigidBody::setIdentityRotation ( void )
@@ -155,15 +155,15 @@ _FORCE_INLINE_ PHYS_API void physRigidBody::setIdentityRotation ( void )
 	body->SetTransform( body->GetPosition(), 0 );
 }
 
-_FORCE_INLINE_ PHYS_API void physRigidBody::setPosition ( const Vector3d& newPosition )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setPosition ( const Vector3f& newPosition )
 {
 	//body->setPosition( hkVector4( newPosition.x, newPosition.y, newPosition.z ) );
-	Vector3d position = newPosition.mulComponents( Physics::WorldScaling() );
+	Vector3f position = newPosition.mulComponents( Physics::WorldScaling() );
 	body->SetTransform( b2Vec2(position.x,position.y), body->GetAngle() );
 }
-_FORCE_INLINE_ PHYS_API const Vector3d physRigidBody::getPosition ( void ) const
+_FORCE_INLINE_ PHYS_API const Vector3f physRigidBody::getPosition ( void ) const
 {
-	//Vector3d result;
+	//Vector3f result;
 	//body->getPosition().store3( &(result.x) );
 	b2Vec2 pos = body->GetPosition();
 	return Vector2f( pos.x, pos.y ).divComponents( Physics::WorldScaling() );
@@ -181,31 +181,31 @@ _FORCE_INLINE_ PHYS_API const Quaternion physRigidBody::getRotation ( void ) con
 	return result;*/
 	throw core::NotYetImplementedException();
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setPositionAndRotation ( const Vector3d& position, const Quaternion& rotation )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setPositionAndRotation ( const Vector3f& position, const Quaternion& rotation )
 {
 	setPosition( position );
 	setRotation( rotation );
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setLinearVelocity ( const Vector3d& newVelocity )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setLinearVelocity ( const Vector3f& newVelocity )
 {
 	//body->setLinearVelocity( hkVector4( newVelocity.x, newVelocity.y, newVelocity.z ) );
-	Vector3d velocity = newVelocity.mulComponents( Physics::WorldScaling() );
+	Vector3f velocity = newVelocity.mulComponents( Physics::WorldScaling() );
 	body->SetLinearVelocity( b2Vec2( velocity.x, velocity.y ) );
 }
-_FORCE_INLINE_ PHYS_API const Vector3d physRigidBody::getLinearVelocity ( void ) const
+_FORCE_INLINE_ PHYS_API const Vector3f physRigidBody::getLinearVelocity ( void ) const
 {
-	//Vector3d result;
+	//Vector3f result;
 	//body->getLinearVelocity().store3( &(result.x) );
 	b2Vec2 velocity = body->GetLinearVelocity();
 	return Vector2f( velocity.x, velocity.y ).divComponents( Physics::WorldScaling() );
 }
-_FORCE_INLINE_ PHYS_API void physRigidBody::setAngularVelocity ( const Vector4d& newVelocity )
+_FORCE_INLINE_ PHYS_API void physRigidBody::setAngularVelocity ( const Vector4f& newVelocity )
 {
 	//body->setAngularVelocity( hkVector4( newVelocity.x,newVelocity.y,newVelocity.z,newVelocity.w ) );
 }
-_FORCE_INLINE_ PHYS_API const Vector4d physRigidBody::getAngularVelocity ( void ) const
+_FORCE_INLINE_ PHYS_API const Vector4f physRigidBody::getAngularVelocity ( void ) const
 {
-	/*Vector4d result;
+	/*Vector4f result;
 	body->getAngularVelocity().store4( &(result.x) );
 	return result;*/
 	throw core::NotYetImplementedException();

@@ -1,22 +1,22 @@
 
 // Include stuph
 #include "../CDuskGUI.h"
-#include "CDuskGUIVector3dPicker.h"
+#include "CDuskGUIVector3fPicker.h"
 #include "core/system/Screen.h" // Include screen properties
 //#include "renderer/system/glMainSystem.h" // Include the main system
 
 // A vector3d picker
-CDuskGUI::Handle CDuskGUI::CreateVector3dPicker ( const Handle& parent, const Vector3d& vect )
+CDuskGUI::Handle CDuskGUI::CreateVector3fPicker ( const Handle& parent, const Vector3f& vect )
 {
-	vElements.push_back( new CDuskGUIVector3dPicker() );
+	vElements.push_back( new CDuskGUIVector3fPicker() );
 	vElements.back()->parent = parent;
-	((CDuskGUIVector3dPicker*)vElements.back())->colorValue = vect;
+	((CDuskGUIVector3fPicker*)vElements.back())->colorValue = vect;
 	return Handle(vElements.size()-1);
 }
-// Update Vector3d picker
-void CDuskGUI::UpdateVector3dPicker ( const Handle& handle, Vector3d & inOutVectorVal )
+// Update Vector3f picker
+void CDuskGUI::UpdateVector3fPicker ( const Handle& handle, Vector3f & inOutVectorVal )
 {
-	CDuskGUIVector3dPicker* cp = (CDuskGUIVector3dPicker*)vElements[int(handle)];
+	CDuskGUIVector3fPicker* cp = (CDuskGUIVector3fPicker*)vElements[int(handle)];
 	if ( cp->hVecX == -1 )
 	{
 		if (( fabs(cp->lastColorValue.x-inOutVectorVal.x) > FTYPE_PRECISION )
@@ -52,13 +52,13 @@ void CDuskGUI::UpdateVector3dPicker ( const Handle& handle, Vector3d & inOutVect
 		}
 	}
 }
-void CDuskGUI::SetVector3dPicker ( const Handle & handle, Vector3d & inVectorVal )
+void CDuskGUI::SetVector3fPicker ( const Handle & handle, Vector3f & inVectorVal )
 {
-	CDuskGUIVector3dPicker* cp = (CDuskGUIVector3dPicker*)vElements[int(handle)];
+	CDuskGUIVector3fPicker* cp = (CDuskGUIVector3fPicker*)vElements[int(handle)];
 	cp->SetVector( inVectorVal );
 }
 
-CDuskGUIVector3dPicker::CDuskGUIVector3dPicker ( void )
+CDuskGUIVector3fPicker::CDuskGUIVector3fPicker ( void )
 	: CDuskGUIButton(), inDialogueMode(false), homeRect(rect)
 {
 	/*hVecX = activeGUI->CreateFloatfield( activeGUI->GetFromPointer( this ), colorValue.x );
@@ -66,20 +66,20 @@ CDuskGUIVector3dPicker::CDuskGUIVector3dPicker ( void )
 	hVecZ = activeGUI->CreateFloatfield( activeGUI->GetFromPointer( this ), colorValue.z );*/
 	hVecX = -1;
 }
-CDuskGUIVector3dPicker::~CDuskGUIVector3dPicker ( void )
+CDuskGUIVector3fPicker::~CDuskGUIVector3fPicker ( void )
 {
 	activeGUI->DeleteElement( hVecX );
 	activeGUI->DeleteElement( hVecY );
 	activeGUI->DeleteElement( hVecZ );
 }
 
-void CDuskGUIVector3dPicker::SetVector ( Vector3d& v )
+void CDuskGUIVector3fPicker::SetVector ( Vector3f& v )
 {
 	lastColorValue = v;
 	colorValue = v;
 }
 
-void CDuskGUIVector3dPicker::Update ( void )
+void CDuskGUIVector3fPicker::Update ( void )
 {
 	if ( hVecX == -1 )
 	{
@@ -143,7 +143,7 @@ void CDuskGUIVector3dPicker::Update ( void )
 	}*/
 }
 
-void CDuskGUIVector3dPicker::Render ( void )
+void CDuskGUIVector3fPicker::Render ( void )
 {
 	Rect temp = rect;
 	rect = homeRect;

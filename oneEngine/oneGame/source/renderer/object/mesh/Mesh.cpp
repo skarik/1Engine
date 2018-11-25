@@ -28,7 +28,7 @@ renderer::Mesh::~Mesh ( void )
 
 void renderer::Mesh::CalculateBoundingBox ( void )
 {
-	Vector3d minPos, maxPos;
+	Vector3f minPos, maxPos;
 
 	arModelData* modeldata = m_mesh->m_modeldata;
 	for ( unsigned int v = 0; v < modeldata->vertexNum; v++ )
@@ -49,7 +49,7 @@ void renderer::Mesh::CalculateBoundingBox ( void )
 	fCheckRenderDist = (( maxPos-minPos )/2).magnitude();
 	//bbCheckRenderBox.Set( transform.GetTransformMatrix(), vMinExtents, vMaxExtents );
 	bbCheckRenderBox.Set( Matrix4x4(), vMinExtents, vMaxExtents );
-	//bbCheckRenderBox.Set( transform.GetTransformMatrix(), Vector3d( -0.1f,-0.1f,-0.1f ), Vector3d( 0.1f,0.1f,0.1f ) );
+	//bbCheckRenderBox.Set( transform.GetTransformMatrix(), Vector3f( -0.1f,-0.1f,-0.1f ), Vector3f( 0.1f,0.1f,0.1f ) );
 }
 
 // == RENDERABLE OBJECT INTERFACE ==
@@ -75,7 +75,7 @@ bool renderer::Mesh::PreRender ( rrCameraPass* cameraPass )
 		}
 		else
 		{
-			Vector3d modelOrigin;
+			Vector3f modelOrigin;
 			//modelOrigin = ((CSkinnedModel*)m_parent)->GetSkeleton()->current_transform[1].WorldMatrix() * vCheckRenderPos;
 			modelOrigin = transform.WorldMatrix() * modelOrigin;
 			if ( cameraPass->m_frustum.SphereIsInside(

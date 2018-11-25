@@ -43,12 +43,12 @@ public:
 	//=========================================//
 	// Modifying the Physics World
 	//=========================================//
-	FORCE_INLINE PHYS_API static Vector3d WorldScaling ( void );
+	FORCE_INLINE PHYS_API static Vector3f WorldScaling ( void );
 
-	FORCE_INLINE PHYS_API static void ShiftWorld ( Vector3d vShift );
-	FORCE_INLINE PHYS_API static void GetWorldCenter ( Vector3d& vWorldPosition );
+	FORCE_INLINE PHYS_API static void ShiftWorld ( Vector3f vShift );
+	FORCE_INLINE PHYS_API static void GetWorldCenter ( Vector3f& vWorldPosition );
 
-	FORCE_INLINE PHYS_API static Vector3d GetWorldGravity ( void );
+	FORCE_INLINE PHYS_API static Vector3f GetWorldGravity ( void );
 
 	//=========================================//
 	// World Update
@@ -62,17 +62,17 @@ public:
 	// Collision Shapes
 	//=========================================//
 	// Creation of shapes for collision
-	FORCE_INLINE PHYS_API static physShape* CreateBoxShape ( Vector3d vHalfExtents );
-	FORCE_INLINE PHYS_API static physShape* CreateBoxShape ( Vector3d vHalfExtents, Vector3d vCenterOffset );
-	FORCE_INLINE PHYS_API static physShape* CreateCapsuleShape ( Vector3d vStart, Vector3d vEnd, float fRadius );
-	FORCE_INLINE PHYS_API static physShape* CreateCylinderShape ( Vector3d vStart, Vector3d vEnd, float fRadius, float fConvexRadius=0.01f );
+	FORCE_INLINE PHYS_API static physShape* CreateBoxShape ( Vector3f vHalfExtents );
+	FORCE_INLINE PHYS_API static physShape* CreateBoxShape ( Vector3f vHalfExtents, Vector3f vCenterOffset );
+	FORCE_INLINE PHYS_API static physShape* CreateCapsuleShape ( Vector3f vStart, Vector3f vEnd, float fRadius );
+	FORCE_INLINE PHYS_API static physShape* CreateCylinderShape ( Vector3f vStart, Vector3f vEnd, float fRadius, float fConvexRadius=0.01f );
 	FORCE_INLINE PHYS_API static physShape* CreateSphereShape ( float fRadius );
-	FORCE_INLINE PHYS_API static physShape* CreateTriangleShape ( Vector3d* vpPositions, float fExtrusion=0.01f );
+	FORCE_INLINE PHYS_API static physShape* CreateTriangleShape ( Vector3f* vpPositions, float fExtrusion=0.01f );
 	FORCE_INLINE PHYS_API static physShape* CreateConvMeshShape ( arModelPhysicsData* pMesh );
 	FORCE_INLINE PHYS_API static physShape* CreateMeshShape ( arModelPhysicsData* pMesh );
 	FORCE_INLINE PHYS_API static physShape* CreateMeshShape ( arTerrainVertex* pVertices, arModelQuad* pQuads, unsigned short vertexCount, unsigned short faceCount );
 	FORCE_INLINE PHYS_API static physShape* CreateMeshShape ( arModelData const* pMesh );
-	FORCE_INLINE PHYS_API static physShape* CreateFastMeshShape ( Vector3d* pVertices, arModelTriangle* pTris, unsigned short vertexCount, unsigned short faceCount );
+	FORCE_INLINE PHYS_API static physShape* CreateFastMeshShape ( Vector3f* pVertices, arModelTriangle* pTris, unsigned short vertexCount, unsigned short faceCount );
 	// Creation of static meshes
 	//inline static int CreateMeshConcave ( arModelPhysicsData const&, CTransform const& );
 	FORCE_INLINE PHYS_API static physShape* CreateEMesh ( arPhysicsVertex* pMesh, core::Transform const* );
@@ -184,10 +184,10 @@ private:
 	b2Draw*				pWorldDebugger;
 
 	// World Properties
-	Vector3d			vWorldCenter;
+	Vector3f			vWorldCenter;
 
 
-	Vector3d			worldScaling;
+	Vector3f			worldScaling;
 
 	Real				targetTime;
 	Real				worldTime;

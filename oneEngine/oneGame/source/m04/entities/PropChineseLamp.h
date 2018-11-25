@@ -20,7 +20,7 @@ namespace M04
 
 		void			Update ( void ) override;
 	protected:
-		Vector3d position;
+		Vector3f position;
 		float height;
 		Color color;
 
@@ -30,7 +30,7 @@ namespace M04
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::PropChineseLamp);
 		DEFINE_DISPLAY(DISPLAY_LIGHT,"sprites/props/chinese_lamp.gal");
-		DEFINE_VALUE(position,Vector3d,FIELD_POSITION);
+		DEFINE_VALUE(position,Vector3f,FIELD_POSITION);
 		DEFINE_VALUE(height,float,FIELD_DEFAULT);
 		DEFINE_VALUE(color,Color,FIELD_COLOR);	
 		END_OBJECT_DESC();

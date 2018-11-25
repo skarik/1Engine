@@ -2,7 +2,7 @@
 #include "OSerialBinary.h"
 
 #include "core/system/io/CBinaryFile.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "core/math/Quaternion.h"
 #include "core/math/Rotator.h"
 #include "core/math/Color.h"
@@ -84,7 +84,7 @@ Serializer&	OSerialBinary::operator&	( string & str )
 	return *this;
 }
 
-Serializer&	OSerialBinary::operator&	( Vector3d & vec )
+Serializer&	OSerialBinary::operator&	( Vector3f & vec )
 {
 	m_file->WriteFloat( vec.x );
 	m_file->WriteFloat( vec.y );

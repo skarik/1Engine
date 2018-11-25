@@ -46,13 +46,13 @@ renderer::InstancedMesh::~InstancedMesh ( void )
 	}*/
 }
 /*
-void renderer::InstancedMesh::SetInstancePosition ( int instance_id, const Vector3d& position )
+void renderer::InstancedMesh::SetInstancePosition ( int instance_id, const Vector3f& position )
 {
 	data[instance_id].position = position;
 }
 void renderer::InstancedMesh::SetInstanceRotation ( int instance_id, const Quaternion& rotation )
 {
-	data[instance_id].rotation = Vector4d( &rotation.x );
+	data[instance_id].rotation = Vector4f( &rotation.x );
 }*/
 
 void renderer::InstancedMesh::SetInstanceData ( void* instanceData, const size_t dataSize )
@@ -111,8 +111,8 @@ bool renderer::InstancedMesh::Render ( const rrRenderParams* params )
 	//GL_ACCESS;
 
 	//// Get rid of any transforms
-	//transform.world.position = Vector3d::zero;
-	//transform.local.position = Vector3d::zero;
+	//transform.world.position = Vector3f::zero;
+	//transform.local.position = Vector3f::zero;
 
 	//// Set up transformation for the mesh
 	////if ( m_parent )

@@ -12,7 +12,7 @@
 #ifndef ENGINE_AUDIO_SOUND_H_
 #define ENGINE_AUDIO_SOUND_H_
 
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "engine/behavior/CGameBehavior.h"
 #include "audio/types/AudioStructs.h"
 #include <vector>
@@ -46,13 +46,13 @@ namespace engine
 	public:
 		audio::Source*	mySource;
 		bool			deleteWhenDone;
-		Vector3d		position;
-		Vector3d		velocity;
+		Vector3f		position;
+		Vector3f		velocity;
 
 		audio::eSoundScriptAIAlert	ai_alert_amount;
 		audio::eSoundScriptChannel	channel;
 
-		Vector3d*		source_position;
+		Vector3f*		source_position;
 
 	private:
 		static std::vector<Sound*>	soundList;

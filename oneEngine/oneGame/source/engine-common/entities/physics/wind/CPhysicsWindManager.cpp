@@ -58,7 +58,7 @@ CPhysicsWindManager::~CPhysicsWindManager ( void )
 void CPhysicsWindManager::FixedUpdate ( void )
 {
 	//m_phantom->setAabb
-	Vector3d vCenter;
+	Vector3f vCenter;
 	Physics::GetWorldCenter( vCenter );
 	//m_aabb = hkAabb ( hkVector4( vCenter.x-90,vCenter.y-90,vCenter.z-90 ), hkVector4( vCenter.x+90,vCenter.y+90,vCenter.z+90 ) );
 	m_aabb.m_min.set( vCenter.x-90,vCenter.y-90,vCenter.z-90 );

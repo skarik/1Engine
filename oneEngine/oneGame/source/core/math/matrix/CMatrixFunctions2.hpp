@@ -55,7 +55,7 @@ inline bool Matrix3x3::setRotation ( Real const angle_x, Real const angle_y, Rea
 }
 
 // Setting the rotation of a 3d matrix via 3d vector
-inline bool Matrix3x3::setRotation ( Vector3d const& vect )
+inline bool Matrix3x3::setRotation ( Vector3f const& vect )
 {
 	return setRotation( vect.x, vect.y, vect.z );
 }
@@ -97,10 +97,10 @@ inline bool Matrix3x3::setRotation ( Quaternion const& quat )
 	return true;
 }
 // Getters - Rotation
-inline Vector3d Matrix3x3::getEulerAngles ( void ) const
+inline Vector3f Matrix3x3::getEulerAngles ( void ) const
 {
 	float tr_x, tr_y, D,C;
-	Vector3d angle;
+	Vector3f angle;
 
 	angle.y = D =  asin( min<Real>(max<Real>(pData[2],-1.0f),1.0f) );        /* Calculate Y-axis angle */
     C           =  cos( angle.y );
@@ -179,24 +179,24 @@ inline Quaternion Matrix3x3::getQuaternion ( void ) const
 }
 
 // Multiply by a vector
-inline Vector3d Matrix3x3::operator* ( Vector3d const& vect ) const
+inline Vector3f Matrix3x3::operator* ( Vector3f const& vect ) const
 {
-	/*return Vector3d(
+	/*return Vector3f(
 		pData[0]*vect.x+pData[1]*vect.y+pData[2]*vect.z+pData[3],
 		pData[4]*vect.x+pData[5]*vect.y+pData[6]*vect.z+pData[7],
 		pData[8]*vect.x+pData[9]*vect.y+pData[10]*vect.z+pData[11]
 		);*/
-	/*return Vector3d(
+	/*return Vector3f(
 		pData[0]*vect.x+pData[4]*vect.y+pData[8]*vect.z+pData[3],
 		pData[1]*vect.x+pData[5]*vect.y+pData[9]*vect.z+pData[7],
 		pData[2]*vect.x+pData[6]*vect.y+pData[10]*vect.z+pData[11]
 		);*/
-	return Vector3d(
+	return Vector3f(
 		pData[0]*vect.x+pData[3]*vect.y+pData[6]*vect.z,
 		pData[1]*vect.x+pData[4]*vect.y+pData[7]*vect.z,
 		pData[2]*vect.x+pData[5]*vect.y+pData[8]*vect.z
 		);
-	/*return Vector3d(
+	/*return Vector3f(
 		pData[0]*vect.x+pData[4]*vect.y+pData[8]*vect.z+pData[12],
 		pData[1]*vect.x+pData[5]*vect.y+pData[9]*vect.z+pData[13],
 		pData[2]*vect.x+pData[6]*vect.y+pData[10]*vect.z+pData[14]

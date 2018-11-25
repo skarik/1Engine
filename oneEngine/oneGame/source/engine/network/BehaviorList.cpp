@@ -17,11 +17,11 @@ valuetype_t Network::ValueTypeFromName ( const char* n_typename )
 	{
 		return VALUE_FLOAT2;
 	}
-	if ( strcmp(n_typename, "Vector3d") == 0 )
+	if ( strcmp(n_typename, "Vector3f") == 0 )
 	{
 		return VALUE_FLOAT3;
 	}
-	if ( strcmp(n_typename, "Vector4d") == 0 )
+	if ( strcmp(n_typename, "Vector4f") == 0 )
 	{
 		return VALUE_FLOAT4;
 	}

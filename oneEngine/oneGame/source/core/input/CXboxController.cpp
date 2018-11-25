@@ -71,7 +71,7 @@ void CXBoxController::Vibrate(int leftVal, int rightVal)
 //	GetAnalog( axis_group ) : Returns the analog input of given group.
 // Inputs are normalized to the -1 to +1 range.
 // Triggers are normally only in the 0 to +1 range.
-Vector3d CXBoxController::GetAnalog ( const arAnalogIndex analogIndex )
+Vector3f CXBoxController::GetAnalog ( const arAnalogIndex analogIndex )
 {
 	if ( analogIndex == kAnalogIndexLeftStick )
 	{

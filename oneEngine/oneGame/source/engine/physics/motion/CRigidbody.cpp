@@ -40,8 +40,8 @@ class CRagdollCollision;
 //		sCollision n_collision;
 //		physVector4 t_hitPos = m_event.m_contactPoint->getPosition();
 //		physVector4 t_hitNorm = m_event.m_contactPoint->getNormal();
-//		n_collision.m_hit.pos = Vector3d( t_hitPos.getComponent<0>(),t_hitPos.getComponent<1>(),t_hitPos.getComponent<2>() );
-//		n_collision.m_hit.dir = Vector3d( t_hitNorm.getComponent<0>(),t_hitNorm.getComponent<1>(),t_hitNorm.getComponent<2>() );
+//		n_collision.m_hit.pos = Vector3f( t_hitPos.getComponent<0>(),t_hitPos.getComponent<1>(),t_hitPos.getComponent<2>() );
+//		n_collision.m_hit.dir = Vector3f( t_hitNorm.getComponent<0>(),t_hitNorm.getComponent<1>(),t_hitNorm.getComponent<2>() );
 //
 //		n_collision.m_collider_Other	= NULL;
 //		n_collision.m_hit_Other			= NULL;
@@ -359,22 +359,22 @@ void CRigidbody::PushTransform ( void )
 //}
 //
 //// Changes the instantaneous velocity of the rigidbody
-//void CRigidbody::SetVelocity ( Vector3d newVelocity )
+//void CRigidbody::SetVelocity ( Vector3f newVelocity )
 //{
 //	pBody->setLinearVelocity( newVelocity );
 //}
 //// Returns the current velocity of the rigidbody
-//Vector3d CRigidbody::GetVelocity ( void )
+//Vector3f CRigidbody::GetVelocity ( void )
 //{
 //	return pBody->getLinearVelocity();
 //}
-//void CRigidbody::SetAcceleration ( Vector3d )
+//void CRigidbody::SetAcceleration ( Vector3f )
 //{
 //	//pBody->set
 //}
-//Vector3d CRigidbody::GetAcceleration ( void )
+//Vector3f CRigidbody::GetAcceleration ( void )
 //{
-//	return Vector3d::zero;
+//	return Vector3f::zero;
 //}
 //// Enables or disables gravity
 //void CRigidbody::SetGravity ( bool bIn )
@@ -389,24 +389,24 @@ void CRigidbody::PushTransform ( void )
 //	return ( pBody->getGravityFactor() > 0.05f );
 //}
 //// Sets the current position of the rigidbody
-//void CRigidbody::SetPosition ( Vector3d newPosition )
+//void CRigidbody::SetPosition ( Vector3f newPosition )
 //{
 //	pBody->setPosition( newPosition );
 //}
 //// Returns the current position of the rigidbody
-//Vector3d CRigidbody::GetPosition ( void )
+//Vector3f CRigidbody::GetPosition ( void )
 //{
 //	return pBody->getPosition();
 //}
 //// Adds the given vector to the current position and then returns the new position
-//Vector3d CRigidbody::AddToPosition ( Vector3d posAdd )
+//Vector3f CRigidbody::AddToPosition ( Vector3f posAdd )
 //{
-//	/*Vector3d result;
+//	/*Vector3f result;
 //	pBody->getPosition().store3( &(result.x) );
 //	result += posAdd;
 //	pBody->setPosition( hkVector4( result.x, result.y, result.z ) );
 //	return result;*/
-//	Vector3d result = pBody->getPosition() + posAdd;
+//	Vector3f result = pBody->getPosition() + posAdd;
 //	pBody->setPosition( result );
 //	return result;
 //}
@@ -444,7 +444,7 @@ void CRigidbody::PushTransform ( void )
 //}
 //// This adds an impulse with the current deltaTime.
 //// This needs to be tested to make sure the current timestep works and lag doesn't change the size of the impulse.
-//void CRigidbody::ApplyForce ( Vector3d push )
+//void CRigidbody::ApplyForce ( Vector3f push )
 //{
 //	//pBody->applyForce( Time::deltaTime, hkVector4( push.x,push.y,push.z ) );
 //	pBody->applyForce( Time::fixedTime*10.0f, push );

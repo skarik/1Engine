@@ -1,6 +1,6 @@
 #include "RrMaterial.h"
 
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "core/settings/CGameSettings.h"
 
 #include "renderer/texture/RrRenderTexture.h"

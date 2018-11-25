@@ -7,7 +7,7 @@
 class physVector4
 {
 public:
-	Vector4d storage;
+	Vector4f storage;
 
 	FORCE_INLINE physVector4 ( void )
 	{

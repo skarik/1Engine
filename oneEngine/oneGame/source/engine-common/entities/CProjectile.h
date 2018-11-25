@@ -42,10 +42,10 @@ public:
 	ENGCOM_API void SetDamping ( Real fInDamping = 0.02f, Real fInDropPoint = 0.7f, Real fInMaxRange = 500.0f );
 	ENGCOM_API void SetDamage ( const Damage & );
 	// ==Movement Set==
-	ENGCOM_API void SetHeading ( const Vector3d& newHeading );
+	ENGCOM_API void SetHeading ( const Vector3f& newHeading );
 
 	// ==Movement Get==
-	ENGCOM_API Vector3d GetHeading ( void );
+	ENGCOM_API Vector3f GetHeading ( void );
 	// ==Property Get==
 	ENGCOM_API Real GetWidth ( void );
 
@@ -61,7 +61,7 @@ protected:
 	CCollider*	mProjectileCollider;
 	Real		fShapeRadius;
 
-	Vector3d	vStartPosition;
+	Vector3f	vStartPosition;
 
 	// Motion properties
 	Real	fDamping;
@@ -75,8 +75,8 @@ protected:
 
 	// Motion States
 	bool		bPerformDrop;
-	Vector3d	vVelocity;
-	Vector3d	vPreviousPosition;
+	Vector3f	vVelocity;
+	Vector3f	vPreviousPosition;
 	bool		bInWater;
 
 	// Bullet states

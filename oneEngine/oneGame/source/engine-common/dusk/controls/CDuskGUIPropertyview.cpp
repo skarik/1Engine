@@ -6,7 +6,7 @@
 #include "CDuskGUIFloatfield.h"
 #include "CDuskGUITextfield.h"
 #include "CDuskGUIColorpicker.h"
-#include "CDuskGUIVector3dPicker.h"
+#include "CDuskGUIVector3fPicker.h"
 //#include "CDuskGUIVector2fPicker.h"
 #include "CDuskGUIDropdownList_GO.h"
 
@@ -107,13 +107,13 @@ template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( Real* value )
 	newProp.element = activeGUI->CreateFloatfield( activeGUI->GetFromPointer( this ), *value );
 	propertyList.push_back( newProp );
 }
-template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( Vector3d* value )
+template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( Vector3f* value )
 {
 	ListElement_t newProp;
-	Set<Vector3d>( newProp.value, *value );
-	Set<Vector3d>( newProp.previous, *value );
+	Set<Vector3f>( newProp.value, *value );
+	Set<Vector3f>( newProp.previous, *value );
 	newProp.type = 2;
-	newProp.element = activeGUI->CreateVector3dPicker( activeGUI->GetFromPointer( this ), *value );
+	newProp.element = activeGUI->CreateVector3fPicker( activeGUI->GetFromPointer( this ), *value );
 	propertyList.push_back( newProp );
 }
 template <> ENGCOM_API void CDuskGUIPropertyview::AddToList ( Color* value )
@@ -206,8 +206,8 @@ void CDuskGUIPropertyview::Update ( void )
 			case 1: // Float
 				activeGUI->UpdateFloatfield( propertyList[i].element, *((Real*)propertyList[i].target) );
 				break;
-			case 2: // Vector3d
-				activeGUI->UpdateVector3dPicker( propertyList[i].element, *((Vector3d*)propertyList[i].target) );
+			case 2: // Vector3f
+				activeGUI->UpdateVector3fPicker( propertyList[i].element, *((Vector3f*)propertyList[i].target) );
 				break;
 			case 3: // Color
 				activeGUI->UpdateColorPicker( propertyList[i].element, *((Color*)propertyList[i].target) );

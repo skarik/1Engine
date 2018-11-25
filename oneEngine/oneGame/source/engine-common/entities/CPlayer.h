@@ -95,15 +95,15 @@ protected: // PROTECTED FIELDS and ROUTINES
 	// Location state 
 	//===============================================================================================//
 
-	Vector3d	vPlayerRotation;
-	Vector3d	vCameraRotation;
+	Vector3f	vPlayerRotation;
+	Vector3f	vCameraRotation;
 
 	//===============================================================================================//
 	// Input 
 	//===============================================================================================//
 
-	Vector3d	vDirInput;
-	Vector3d	vTurnInput;
+	Vector3f	vDirInput;
+	Vector3f	vTurnInput;
 	Real		fTurnSensitivity;
 	CInputControl*	input;
 
@@ -152,7 +152,7 @@ public:
 	// ===Player Specific Functions==
 	// 'Punches' or temporarily offset the view with the given offset.
 	// This can be used for hurt effects, gun firing, and other single 'punch' camera effects.
-	void	PunchView ( Vector3d const& );
+	void	PunchView ( Vector3f const& );
 
 	// ===Common Getters===
 	// Get eye ray. Commonly used for raycasts.
@@ -169,7 +169,7 @@ public:
 		return pCamera->transform.rotation;
 	}
 	// Get aim ray. Used for off-center weapon projectiles.
-	Ray		GetAimRay ( const Vector3d & inPos ) override
+	Ray		GetAimRay ( const Vector3f & inPos ) override
 	{
 		Ray newRay;
 		if ( rhLookAtResult.hit )
@@ -244,12 +244,12 @@ protected:
 	void*	updateCameraState ( stateFunc_t );
 
 	// Player Camera State Information
-	Vector3d	vPlayerRotation;
-	Vector3d	vCameraRotation;
-	Vector3d	vCameraAnimOffsetRotation;
-	Vector3d	vViewBob;
-	Vector3d	vViewPunch;
-	Vector3d	vViewPunchVelocity;
+	Vector3f	vPlayerRotation;
+	Vector3f	vCameraRotation;
+	Vector3f	vCameraAnimOffsetRotation;
+	Vector3f	vViewBob;
+	Vector3f	vViewPunch;
+	Vector3f	vViewPunchVelocity;
 	float		fViewBobTimer;
 	float		fViewBobSpeed;
 	float		fViewBobAmount;
@@ -301,8 +301,8 @@ protected:
 	// ===Input===
 	//bool	bCanUpdate;
 
-	Vector3d	vDirInput;
-	Vector3d	vTurnInput;
+	Vector3f	vDirInput;
+	Vector3f	vTurnInput;
 
 	CInputControl*	input;
 

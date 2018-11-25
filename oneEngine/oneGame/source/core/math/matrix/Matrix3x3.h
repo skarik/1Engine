@@ -11,22 +11,22 @@ public:
 
 	// Setters - Scaling
 	FORCE_INLINE void setScale ( const Real = 0, const Real = 0, const Real = 0 );
-	FORCE_INLINE void setScale ( const Vector3d& );
+	FORCE_INLINE void setScale ( const Vector3f& );
 
 	// Setters - Rotation
 	FORCE_INLINE void setRotation ( const Real = 0, const Real = 0, const Real = 0 );
-	FORCE_INLINE void setRotation ( const Vector3d& );
+	FORCE_INLINE void setRotation ( const Vector3f& );
 	FORCE_INLINE void setRotation ( const Quaternion& );
 	FORCE_INLINE void setRotation ( const Matrix3x3& );
 
 	FORCE_INLINE void setRotationZYX ( const Real = 0, const Real = 0, const Real = 0 );
 
 	// Getters - Rotation
-	FORCE_INLINE Vector3d	getEulerAngles ( void ) const;
+	FORCE_INLINE Vector3f	getEulerAngles ( void ) const;
 	FORCE_INLINE Quaternion	getQuaternion ( void ) const;
 
 	// Getters - Scale
-	FORCE_INLINE Vector3d	getScaling ( void ) const;
+	FORCE_INLINE Vector3f	getScaling ( void ) const;
 
 	// Operations
 	FORCE_INLINE Matrix3x3 transpose ( void ) const;
@@ -46,7 +46,7 @@ public:
 	FORCE_INLINE Matrix3x3 operator+ ( Matrix3x3 const& ) const;
 	FORCE_INLINE Matrix3x3 operator+=( Matrix3x3 const& );
 
-	FORCE_INLINE Vector3d operator* ( Vector3d const& ) const;
+	FORCE_INLINE Vector3f operator* ( Vector3f const& ) const;
 
 	// Transpose
 	FORCE_INLINE Matrix3x3 operator! ( void ) const;

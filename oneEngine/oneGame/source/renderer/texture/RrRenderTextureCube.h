@@ -7,7 +7,7 @@ class RrRenderTextureCube : public RrRenderTexture
 
 #if 0
 // ==Includes==
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 // RrRenderTexture class
 #include "RrRenderTexture.h"
 // RrTextureCube class
@@ -78,7 +78,7 @@ public:
 	}*/
 public:
 	// Is set to the position of rendering when used as an RT.
-	Vector3d m_renderPosition;
+	Vector3f m_renderPosition;
 
 protected:
 	// Private routines

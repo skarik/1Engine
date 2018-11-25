@@ -681,7 +681,15 @@ Render_Groups:
 		{
 			const rrRenderRequest const&  l_4r = l_4rGroup[iLayer].m_4rDeferred[iObject];
 			CRenderableObject* renderable = l_4r.obj;
-			renderable->Render(l_4r.pass);
+
+			CRenderableObject::rrRenderParams params;
+			params.pass = l_4r.pass;
+			params.cbuf_perCamera = NULL; // TODO
+			params.cbuf_perFrame = NULL; // TODO
+			params.cbuf_perPass = NULL; // TODO
+			ARCORE_ERROR("Need to implement the cbuffer");
+			
+			renderable->Render(&params);
 		}
 		// check if rendered anything, mark screen dirty if so.
 		if (!l_4rGroup[iLayer].m_4rDeferred.empty())
@@ -714,7 +722,15 @@ Render_Groups:
 		{
 			const rrRenderRequest const&  l_4r = l_4rGroup[iLayer].m_4rForward[iObject];
 			CRenderableObject* renderable = l_4r.obj;
-			renderable->Render(l_4r.pass);
+
+			CRenderableObject::rrRenderParams params;
+			params.pass = l_4r.pass;
+			params.cbuf_perCamera = NULL; // TODO
+			params.cbuf_perFrame = NULL; // TODO
+			params.cbuf_perPass = NULL; // TODO
+			ARCORE_ERROR("Need to implement the cbuffer");
+
+			renderable->Render(&params);
 		}
 		// check if rendered anything, mark screen dirty if so.
 		if (!l_4rGroup[iLayer].m_4rForward.empty())

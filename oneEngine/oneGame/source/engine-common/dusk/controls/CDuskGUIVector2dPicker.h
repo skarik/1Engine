@@ -8,7 +8,7 @@
 #define _C_DUSK_GUI_VECTOR_2D_PICKER_H_
 
 #include "CDuskGUIButton.h"
-#include "Vector2f.h"
+#include "Vector2.h"
 
 class CDuskGUIVector2fPicker : public CDuskGUIButton
 {

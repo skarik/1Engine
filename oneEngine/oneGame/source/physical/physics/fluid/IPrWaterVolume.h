@@ -2,7 +2,7 @@
 #define PHYSICAL_PHYSICS_FLUID_I_PR_WATER_VOLUME_H_
 
 #include "core/types/types.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "physical/physics/motion/IPrVolume.h"
 
 class IPrWaterVolume : public IPrVolume

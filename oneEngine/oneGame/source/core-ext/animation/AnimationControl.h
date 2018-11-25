@@ -102,7 +102,7 @@ public:
 
 	CORE_API void			GetEvents ( std::vector<animation::ActionEvent>& events, unsigned int & event_count );
 
-	CORE_API const Vector3d&	GetExtrapolatedMotion ( void );
+	CORE_API const Vector3f&	GetExtrapolatedMotion ( void );
 	CORE_API void			ResetExtrapolatedMotion ( void );
 
 	CORE_API void			AddIKInfo ( const animation::arIKInfo& );
@@ -147,7 +147,7 @@ protected:
 	bool					bEventsRead;
 
 	// Extrapolated motion
-	Vector3d				vModelMotion;
+	Vector3f				vModelMotion;
 	// TODO: ???
 	XTransform				mModelTransform;
 

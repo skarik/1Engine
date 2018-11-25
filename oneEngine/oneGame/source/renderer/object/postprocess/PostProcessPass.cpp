@@ -112,7 +112,7 @@ bool RrPostProcessPass::Render ( RrCamera* camera )
 	//// Change the projection to orthographic
 	//{
 	//	//GL.beginOrtho(-1,-1,2,2,-1,1,false);
-	//	core::math::Cubic::FromPosition( Vector3d(-1,-1,-1), Vector3d(+1,+1,+1) );
+	//	core::math::Cubic::FromPosition( Vector3f(-1,-1,-1), Vector3f(+1,+1,+1) );
 	//}
 
 	//// Predraw output

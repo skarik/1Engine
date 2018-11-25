@@ -1,9 +1,9 @@
 #include "core/utils/string.h"
 
 #include "core/types/types.h"
-#include "core/math/Vector2f.h"
-#include "core/math/Vector3d.h"
-#include "core/math/Vector4d.h"
+#include "core/math/Vector2.h"
+#include "core/math/Vector3.h"
+#include "core/math/Vector4.h"
 #include "core/math/Quaternion.h"
 #include "core/math/matrix/CMatrix.h"
 #include "core/math/Rotator.h"
@@ -34,18 +34,18 @@ namespace string
 		result.y = (Real)strtod( pos, NULL );
 		return result;
 	}
-	template<> inline Vector3d ToObject ( const char* t )
+	template<> inline Vector3f ToObject ( const char* t )
 	{
-		Vector3d result;
+		Vector3f result;
 		char* pos;
 		result.x = (Real)strtod( t, &pos );
 		result.y = (Real)strtod( pos, &pos );
 		result.z = (Real)strtod( pos, NULL );
 		return result;
 	}
-	template<> inline Vector4d ToObject ( const char* t )
+	template<> inline Vector4f ToObject ( const char* t )
 	{
-		Vector4d result;
+		Vector4f result;
 		char* pos;
 		result.x = (Real)strtod( t, &pos );
 		result.y = (Real)strtod( pos, &pos );

@@ -31,7 +31,7 @@ public:
 	//void			RenderScene ( void ) override;	// only one needing editing
 
 public:
-	Vector3d		m_renderPositions [4];
+	Vector3f		m_renderPositions [4];
 	Matrix4x4		m_renderMatrices [4];
 };
 

@@ -1,6 +1,6 @@
 #include "TransformUtility.h"
 
-void core::TransformUtility::WorldToLocal(const Matrix4x4 & parent_inv, const Rotator & parent_rot_inv, const Vector3d & parent_scale, const Vector3d & position, const Rotator & rotation, const Vector3d & scale, Vector3d & local_position, Rotator & local_rotation, Vector3d & local_scale)
+void core::TransformUtility::WorldToLocal(const Matrix4x4 & parent_inv, const Rotator & parent_rot_inv, const Vector3f & parent_scale, const Vector3f & position, const Rotator & rotation, const Vector3f & scale, Vector3f & local_position, Rotator & local_rotation, Vector3f & local_scale)
 {
 	// Convert position,rotation,scaling into local coordinates
 	{
@@ -13,7 +13,7 @@ void core::TransformUtility::WorldToLocal(const Matrix4x4 & parent_inv, const Ro
 	}
 }
 
-void core::TransformUtility::TRSToMatrix4x4(const Vector3d & position, const Rotator & rotation, const Vector3d & scale, Matrix4x4 & transform, Matrix4x4 & transform_rot)
+void core::TransformUtility::TRSToMatrix4x4(const Vector3f & position, const Rotator & rotation, const Vector3f & scale, Matrix4x4 & transform, Matrix4x4 & transform_rot)
 {
 	// Generate the component matrices (this can be optimized)
 	Matrix4x4 transMatrix;

@@ -54,10 +54,10 @@ bool UIDragHandleRenderer::PreRender ( void )
 	m_modeldata.triangleNum = 0;
 	m_modeldata.vertexNum = 0;
 
-	Vector3d meshpoints [4];
+	Vector3f meshpoints [4];
 	Color l_currentColor;
 
-	Vector3d ui_position = m_ui->m_position;
+	Vector3f ui_position = m_ui->m_position;
 	if ( m_ui->m_position_snap.x > 0.1F ) ui_position.x = math::round( ui_position.x / m_ui->m_position_snap.x ) * m_ui->m_position_snap.x;
 	if ( m_ui->m_position_snap.y > 0.1F ) ui_position.y = math::round( ui_position.y / m_ui->m_position_snap.y ) * m_ui->m_position_snap.y;
 	if ( m_ui->m_position_snap.z > 0.1F ) ui_position.z = math::round( ui_position.z / m_ui->m_position_snap.z ) * m_ui->m_position_snap.z;

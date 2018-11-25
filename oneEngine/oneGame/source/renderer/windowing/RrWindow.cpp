@@ -284,6 +284,7 @@ bool RrWindow::AttachRenderer ( RrRenderer* renderer )
 {
 	m_renderer = renderer;
 	m_renderer->InitializeWithDeviceAndSurface( this->m_device, &this->m_surface );
+	return true;
 }
 
 

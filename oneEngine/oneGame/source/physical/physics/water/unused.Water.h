@@ -5,7 +5,7 @@
 
 // Includes
 #include "core/types/types.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 
 // Class Definition
 class CBaseWaterTester
@@ -18,13 +18,13 @@ public:
 	PHYS_API static CBaseWaterTester* Get ( void );
 
 	// Returns true if the position is in fluid
-	PHYS_API virtual bool		PositionInside	( Vector3d const& pos ) =0;
+	PHYS_API virtual bool		PositionInside	( Vector3f const& pos ) =0;
 	// Returns the fluid velocity at the given position
-	PHYS_API virtual Vector3d	GetFlowField	( Vector3d const& pos ) =0;
+	PHYS_API virtual Vector3f	GetFlowField	( Vector3f const& pos ) =0;
 
 	//== Sea and Storm Compatibility==
 	// Grabs the height of the ocean at the current XY position.
-	PHYS_API virtual float		OceanHeight ( Vector3d const& pos ) =0;
+	PHYS_API virtual float		OceanHeight ( Vector3f const& pos ) =0;
 };
 
 typedef CBaseWaterTester WaterTester; 

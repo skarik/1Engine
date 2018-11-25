@@ -15,7 +15,7 @@ PHYS_API hkJobThreadPool*		Physics::threadPool;
 PHYS_API hkJobQueue*			Physics::jobQueue;
 PHYS_API int					Physics::totalNumThreadsUsed;
 
-PHYS_API Vector3d				Physics::vWorldCenter = Vector3d( 0,0,0 );
+PHYS_API Vector3f				Physics::vWorldCenter = Vector3f( 0,0,0 );
 
 // Debugger
 #ifdef _HAVOK_VISUAL_DEBUGGER_

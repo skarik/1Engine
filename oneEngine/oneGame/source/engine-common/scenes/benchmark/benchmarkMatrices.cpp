@@ -25,8 +25,8 @@ void benchmarkMatrices::LoadScene ( void )
 		auto start_time = chrono::high_resolution_clock::now();
 		{
 			Matrix4x4 a, b, c;
-			a.setTranslation( Vector3d(1,1,1) );
-			b.setTranslation( Vector3d(-1,-1,-1) );
+			a.setTranslation( Vector3f(1,1,1) );
+			b.setTranslation( Vector3f(-1,-1,-1) );
 			for ( uint64_t i = 0; i < ITERATION_COUNT; ++i )
 			{
 				c = a*b;

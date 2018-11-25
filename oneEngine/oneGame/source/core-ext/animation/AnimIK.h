@@ -9,7 +9,7 @@
 #define CORE_ANIMATIONS_ANIM_IK_H_
 
 #include "core/types/types.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "core/containers/arstring.h"
 #include "core-ext/animation/Types.h"
 
@@ -47,9 +47,9 @@ namespace animation
 		arAnimIKType	type;
 		arstring64		name;
 		bool			enabled;
-		Vector3d		input;
-		Vector3d		subinput0;
-		Vector3d		subinput1;
+		Vector3f		input;
+		Vector3f		subinput0;
+		Vector3f		subinput1;
 		Real			subinfo[4];
 		uint16_t		bone [5];
 	};

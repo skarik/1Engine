@@ -2,7 +2,7 @@
 #include "ISerialBinary.h"
 
 #include "core/system/io/CBinaryFile.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "core/math/Quaternion.h"
 #include "core/math/Rotator.h"
 #include "core/math/Color.h"
@@ -86,7 +86,7 @@ Serializer&	ISerialBinary::operator&	( string & str )
 	return *this;
 }
 
-Serializer&	ISerialBinary::operator&	( Vector3d & vec )
+Serializer&	ISerialBinary::operator&	( Vector3f & vec )
 {
 	vec.x = m_file->ReadFloat();
 	vec.y = m_file->ReadFloat();

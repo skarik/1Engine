@@ -191,7 +191,7 @@ void RrDebugDrawer::DrawLine ( const Line& newLine, const Color& color )
 		mActive->avColorList.push_back( color );
 	}
 }
-void RrDebugDrawer::DrawLine ( const Vector3d& p1, const Vector3d& p2, const Color& color )
+void RrDebugDrawer::DrawLine ( const Vector3f& p1, const Vector3f& p2, const Color& color )
 {
 	if ( mActive != NULL )
 	{

@@ -43,7 +43,7 @@ private:
 		int				boneIndex;
 		int				hitboxIndex;
 		
-		Vector3d		impulse;
+		Vector3f		impulse;
 		XTransform		start;
 
 		arstring<64>	name;

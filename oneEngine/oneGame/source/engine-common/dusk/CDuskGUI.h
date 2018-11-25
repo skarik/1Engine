@@ -41,7 +41,7 @@ class CDuskGUIListview;
 class CDuskGUIPropertyview;
 class CDuskGUITabview;
 class CDuskGUIDraggablePanel;
-class CDuskGUIVector3dPicker;
+class CDuskGUIVector3fPicker;
 class CDuskGUIDropdownList_GO;
 class CDuskGUIMaterialField;
 class CDuskGUIMaterialPicker;
@@ -82,7 +82,7 @@ private:
 	friend CDuskGUIPropertyview;
 	friend CDuskGUITabview;
 	friend CDuskGUIDraggablePanel;
-	friend CDuskGUIVector3dPicker;
+	friend CDuskGUIVector3fPicker;
 	friend CDuskGUIDropdownList_GO;
 	friend CDuskGUIMaterialField;
 	friend CDuskGUIMaterialPicker;
@@ -167,10 +167,10 @@ public:
 	// A color picker w/ io
 	ENGCOM_API Handle CreateColorPicker( const Handle& =-1, const Color& color=Color(1.0f,1.0f,1.0f,1.0f) );
 	// A vector3d picker
-	ENGCOM_API Handle CreateVector3dPicker ( const Handle& =-1, const Vector3d& vect=Vector3d( 0,0,0 ) );
-		// Update Vector3d picker
-		ENGCOM_API void UpdateVector3dPicker ( const Handle&, Vector3d & inOutVectorVal );
-		ENGCOM_API void SetVector3dPicker ( const Handle &, Vector3d & inVectorVal );
+	ENGCOM_API Handle CreateVector3fPicker ( const Handle& =-1, const Vector3f& vect=Vector3f( 0,0,0 ) );
+		// Update Vector3f picker
+		ENGCOM_API void UpdateVector3fPicker ( const Handle&, Vector3f & inOutVectorVal );
+		ENGCOM_API void SetVector3fPicker ( const Handle &, Vector3f & inVectorVal );
 	// A floatfield w/ io
 	ENGCOM_API Handle CreateFloatfield ( const Handle& =-1, const float =0 );
 	// A textfield w/ io

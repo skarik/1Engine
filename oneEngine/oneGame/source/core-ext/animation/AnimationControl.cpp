@@ -283,7 +283,7 @@ void AnimationControl::Update ( const Real deltaTime )
 		bEventsRead = false;
 	}
 	// Reset model motion
-	vModelMotion = Vector3d(0,0,0);
+	vModelMotion = Vector3f(0,0,0);
 	
 	// Need to update smooth faders
 	for ( auto it = fadeOutList.begin(); it != fadeOutList.end(); )
@@ -353,11 +353,11 @@ void AnimationControl::GetEvents ( std::vector<animation::ActionEvent>& events, 
 }
 
 
-const Vector3d&	AnimationControl::GetExtrapolatedMotion ( void )
+const Vector3f&	AnimationControl::GetExtrapolatedMotion ( void )
 {
 	return vModelMotion;
 }
 void AnimationControl::ResetExtrapolatedMotion ( void )
 {
-	vModelMotion = Vector3d(0,0,0);
+	vModelMotion = Vector3f(0,0,0);
 }

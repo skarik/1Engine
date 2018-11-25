@@ -1,7 +1,7 @@
 #ifndef AUDIO_SOURCE_H_
 #define AUDIO_SOURCE_H_
 
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "audio/AudioMaster.h"
 #include "audio/types/handles.h"
 #include "audio/types/AudioStructs.h"
@@ -43,8 +43,8 @@ namespace audio
 		arSourceHandle	instance;
 
 	public:
-		Vector3d position;
-		Vector3d velocity;
+		Vector3f position;
+		Vector3f velocity;
 
 		struct sPlaybackOptions
 		{

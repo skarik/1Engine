@@ -1,7 +1,7 @@
 #ifndef ENGCOM_CUTSCENE_EDITOR_NODE_H_
 #define ENGCOM_CUTSCENE_EDITOR_NODE_H_
 
-#include "core/math/Vector2f.h"
+#include "core/math/Vector2.h"
 #include "engine-common/cutscene/Node.h"
 
 namespace common

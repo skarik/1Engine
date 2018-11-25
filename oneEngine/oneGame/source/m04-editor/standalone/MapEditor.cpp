@@ -408,7 +408,7 @@ void MapEditor::doTileEditing ( void )
 void MapEditor::_doTileEditingSub ( float mousex, float mousey )
 {
 	// Grab mouse position in the world
-	Vector3d worldpos = m_target_camera->ScreenToWorldPos( Vector2f( mousex/(Real)Screen::Info.width, mousey/(Real)Screen::Info.height ) );
+	Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( mousex/(Real)Screen::Info.width, mousey/(Real)Screen::Info.height ) );
 	// convert worldpos to indexes
 	int ix = (int) (worldpos.x / m_tilemap->m_tileset->tilesize_x); ix *= m_tilemap->m_tileset->tilesize_x;
 	int iy = (int) (worldpos.y / m_tilemap->m_tileset->tilesize_y); iy *= m_tilemap->m_tileset->tilesize_y;
@@ -490,7 +490,7 @@ void MapEditor::doAreaEditing ( void )
 	if ( !m_navigation_busy )
 	{
 		// Grab mouse position in the world
-		Vector3d worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
 
 		Engine2D::Area2D* t_area_selection = NULL;
 		int t_corner_selection = -1;
@@ -666,7 +666,7 @@ void MapEditor::doObjectEditing ( void )
 	if ( !m_navigation_busy )
 	{
 		// Grab mouse position in the world
-		Vector3d worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
 		worldpos.z = 0;
 
 		M04::EditorObject* t_object_selection = NULL;
@@ -733,14 +733,14 @@ void MapEditor::doObjectEditing ( void )
 			{
 				// Set visual snapping
 				m_drag_handle->SetSnapping( Vector2f( m_tilemap->m_tileset->tilesize_x * 0.5F, m_tilemap->m_tileset->tilesize_y * 0.5F ) );
-				Vector3d objpos = m_object_target->position;
+				Vector3f objpos = m_object_target->position;
 				// Snap to half-tile
 				objpos.x = (Real) math::round( objpos.x * 2 / m_tilemap->m_tileset->tilesize_x ) * m_tilemap->m_tileset->tilesize_x * 0.5F;
 				objpos.y = (Real) math::round( objpos.y * 2 / m_tilemap->m_tileset->tilesize_y ) * m_tilemap->m_tileset->tilesize_y * 0.5F;
 				// Set positions to snapped values
 				m_object_target->position = objpos;
-				m_drag_handle->SetRenderPosition( Vector3d(objpos.x, objpos.y, -495.0F) );
-				//m_drag_handle->SetRenderPosition( Vector3d(objpos.x, objpos.y, objpos.z) );
+				m_drag_handle->SetRenderPosition( Vector3f(objpos.x, objpos.y, -495.0F) );
+				//m_drag_handle->SetRenderPosition( Vector3f(objpos.x, objpos.y, objpos.z) );
 			}
 			else
 			{	// Reset snapping of tool
@@ -1910,7 +1910,7 @@ void MapEditor::uiStepBottomEdge ( void )
 	if ( !dusk->GetMouseInGUI() )
 	{
 		// Update mouse position on the GUI
-		Vector3d worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
 
 		// Round the position to half-tile if ALT is held down
 		if ( !Input::Key( Keys.Alt ) )

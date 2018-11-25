@@ -4,15 +4,15 @@
 
 #include "core/types/types.h"
 #include "core/containers/arstring.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 
 struct sHitbox
 {
 	uchar			indexLink;
 	uchar			parentIndex;
 	arstring<64>	name;
-	Vector3d		center;
-	Vector3d		extents;
+	Vector3f		center;
+	Vector3f		extents;
 };
 
 

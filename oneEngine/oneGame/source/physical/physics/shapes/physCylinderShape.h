@@ -10,12 +10,12 @@
 class physCylinderShape : public physShape
 {
 public:
-	explicit physCylinderShape ( const Vector3d& n_min, const Vector3d& n_max, const Real radius )
+	explicit physCylinderShape ( const Vector3f& n_min, const Vector3f& n_max, const Real radius )
 	{
 		throw core::NotYetImplementedException();
 	}
 
-	void setVertex ( const int vertex, const Vector3d& position )
+	void setVertex ( const int vertex, const Vector3f& position )
 	{
 		throw core::NotYetImplementedException();
 	}

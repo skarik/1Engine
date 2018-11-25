@@ -3,7 +3,7 @@
 
 // Includes
 #include "core/types/types.h"
-#include "Vector2f.h"
+#include "Vector2.h"
 
 // Class
 class Rect

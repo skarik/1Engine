@@ -105,19 +105,19 @@ public:
 	// Visibility:
 
 	// PointIsVisible( point ) : Can this camera see the given point
-	RENDER_API bool			PointIsVisible ( const Vector3d& point );
+	RENDER_API bool			PointIsVisible ( const Vector3f& point );
 	// SphereIsVisible( center, radius ) : Can this camera see the given sphere
-	RENDER_API bool			SphereIsVisible ( const Vector3d& center, const Real radius);
+	RENDER_API bool			SphereIsVisible ( const Vector3f& center, const Real radius);
 	// BoundingBoxIsVisible( bbox ) : Can this camera see the given bounding box
 	RENDER_API bool			BoundingBoxIsVisible ( const core::math::BoundingBox& bbox );
 
 	// == Transform Queries ==
-	RENDER_API Vector3d		GetUp ( void ) { return up; };
+	RENDER_API Vector3f		GetUp ( void ) { return up; };
 
 	// == Coordinate Queries ==
-	RENDER_API Vector3d		WorldToScreenPos ( const Vector3d & ) const;
-	RENDER_API Vector3d		ScreenToWorldDir ( const Vector2f & ) const;
-	RENDER_API Vector3d		ScreenToWorldPos ( const Vector2f & ) const;
+	RENDER_API Vector3f		WorldToScreenPos ( const Vector3f & ) const;
+	RENDER_API Vector3f		ScreenToWorldDir ( const Vector2f & ) const;
+	RENDER_API Vector3f		ScreenToWorldPos ( const Vector2f & ) const;
 
 
 
@@ -159,8 +159,8 @@ protected:
 	// Camera resultant properties:
 
 	// Face vectors
-	Vector3d			up;
-	Vector3d			forward;
+	Vector3f			up;
+	Vector3f			forward;
 	// Viewport options
 	Rect				viewport;
 

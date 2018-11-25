@@ -228,9 +228,9 @@
     <ClInclude Include="source\core\math\vect2d_template.h" />
     <ClInclude Include="source\core\math\vect3d_template.h" />
     <ClInclude Include="source\core\math\vect4d_template.h" />
-    <ClInclude Include="source\core\math\Vector2d.h" />
-    <ClInclude Include="source\core\math\Vector3d.h" />
-    <ClInclude Include="source\core\math\Vector4d.h" />
+    <ClInclude Include="source\core\math\Vector2.h" />
+    <ClInclude Include="source\core\math\Vector3.h" />
+    <ClInclude Include="source\core\math\Vector4.h" />
     <ClInclude Include="source\core\math\XTransform.h" />
     <ClInclude Include="source\core\mem.h" />
     <ClInclude Include="source\core\os.h" />
@@ -280,9 +280,9 @@
     <ClCompile Include="source\core\math\vect2d_template.cpp" />
     <ClCompile Include="source\core\math\vect3d_template.cpp" />
     <ClCompile Include="source\core\math\vect4d_template.cpp" />
-    <ClCompile Include="source\core\math\Vector2d.cpp" />
-    <ClCompile Include="source\core\math\Vector3d.cpp" />
-    <ClCompile Include="source\core\math\Vector4d.cpp" />
+    <ClCompile Include="source\core\math\Vector2.cpp" />
+    <ClCompile Include="source\core\math\Vector3.cpp" />
+    <ClCompile Include="source\core\math\Vector4.cpp" />
     <ClCompile Include="source\core\system\CMemoryMonitorWin32.cpp" />
     <ClCompile Include="source\core\system\io\CBinaryFile.cpp" />
     <ClCompile Include="source\core\system\io\CMappedBinaryFile.cpp" />

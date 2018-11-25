@@ -2,9 +2,9 @@
 #define CORE_MODEL_DATA_
 
 #include "core/types/types.h"
-#include "core/math/Vector2f.h"
-#include "core/math/Vector3d.h"
-#include "core/math/Vector4d.h"
+#include "core/math/Vector2.h"
+#include "core/math/Vector3.h"
+#include "core/math/Vector4.h"
 #include "core/math/vect4d_template.h"
 
 // Vertex structures:

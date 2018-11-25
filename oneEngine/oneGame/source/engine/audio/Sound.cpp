@@ -9,8 +9,8 @@ engine::Sound::Sound ( void ) : CGameBehavior()
 {
 	mySource		= NULL;
 	deleteWhenDone	= false;
-	position		= Vector3d();
-	velocity		= Vector3d();
+	position		= Vector3f();
+	velocity		= Vector3f();
 
 	source_position	= NULL;
 

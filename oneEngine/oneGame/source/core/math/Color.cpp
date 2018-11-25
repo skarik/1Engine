@@ -1,15 +1,15 @@
-#include "Vector2f.h"
-#include "Vector3d.h"
-#include "Vector4d.h"
+#include "Vector2.h"
+#include "Vector3.h"
+#include "Vector4.h"
 #include "Quaternion.h"
 #include "core/math/random/Random.h"
 
 #include "Color.h"
 
 // Implicit cast to Vector4.
-Color::operator Vector4d()
+Color::operator Vector4f()
 {
-	return Vector4d(x, y, z, w);
+	return Vector4f(x, y, z, w);
 }
 
 //Randomize the color

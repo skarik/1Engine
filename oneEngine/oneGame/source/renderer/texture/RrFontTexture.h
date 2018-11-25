@@ -2,7 +2,7 @@
 #define RENDERER_FONT_TEXTURE_H_
 
 // ==Includes==
-#include "core/math/Vector2f.h"
+#include "core/math/Vector2.h"
 // RrTexture class
 #include "RrTexture.h"
 // Stringstream for unique string id generation

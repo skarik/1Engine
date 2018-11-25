@@ -40,7 +40,7 @@ PlayerLeyo::PlayerLeyo ( void )
 	camera_lerp_mode = 1.0F;
 
 	SetupDepthOffset( -1.0F, 0.0F );
-	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 2.0F, 1.0F).normal();
+	m_sprite->SpriteGenParams().normal_default = Vector3f(0, 2.0F, 1.0F).normal();
 	m_sprite->SetSpriteFile("sprites/leo.gal");
 	m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y - 8 );
 	
@@ -54,7 +54,7 @@ PlayerLeyo::PlayerLeyo ( void )
 
 	bod = NULL;
 
-	flipstate = Vector3d(1,1,1);
+	flipstate = Vector3f(1,1,1);
 
 	ui = new UILuvPpl();
 }
@@ -97,7 +97,7 @@ void PlayerLeyo::Update ( void )
 
 	input->Update(this, Time::deltaTime);
 
-	Vector3d motion_input (input->vDirInput.x, -input->vDirInput.y, 0);
+	Vector3f motion_input (input->vDirInput.x, -input->vDirInput.y, 0);
 
 	const float acceleration = 512.0F;
 	const float maxSpeed = 128.0F;
@@ -150,7 +150,7 @@ void PlayerLeyo::PostFixedUpdate ( void )
 void PlayerLeyo::CameraUpdate ( void )
 {
 	// Create limited camera position
-	Vector3d cam_pos_limited = position + Vector3d(0, -16, 0);
+	Vector3f cam_pos_limited = position + Vector3f(0, -16, 0);
 	cam_pos_limited.x = math::clamp<Real>(cam_pos_limited.x, camera->ortho_size.x * 0.5F, 100000);
 	cam_pos_limited.y = math::clamp<Real>(cam_pos_limited.y, camera->ortho_size.y * 0.5F, 100000);
 

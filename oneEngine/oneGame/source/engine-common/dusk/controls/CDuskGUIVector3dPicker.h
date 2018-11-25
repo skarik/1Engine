@@ -7,23 +7,23 @@
 #define _C_DUSK_GUI_VECTOR_3D_PICKER_H_
 
 #include "CDuskGUIButton.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 
-class CDuskGUIVector3dPicker : public CDuskGUIButton
+class CDuskGUIVector3fPicker : public CDuskGUIButton
 {
 public:
-	CDuskGUIVector3dPicker ( void );
-	~CDuskGUIVector3dPicker ( void );
+	CDuskGUIVector3fPicker ( void );
+	~CDuskGUIVector3fPicker ( void );
 
 	// Overridable update
 	void Update ( void );
 	void Render ( void );
 
-	void SetVector ( Vector3d& );
+	void SetVector ( Vector3f& );
 
 public:
-	Vector3d colorValue;
-	Vector3d lastColorValue;
+	Vector3f colorValue;
+	Vector3f lastColorValue;
 
 	bool inDialogueMode;
 

@@ -152,13 +152,16 @@ void rrTextBuilder2D::addText ( const Vector2f& position, const Color& color, co
 		}*/
 
 		// Grab the UV rect of the character
-		Rect uv ( fontInfo->glyphTexelPosition[c_lookup] / baseScale, fontInfo->glyphSize[c_lookup] / baseScale );
+		//Rect uv ( fontInfo->glyphTexelPosition[c_lookup] / baseScale, fontInfo->glyphSize[c_lookup] / baseScale );
+		Rect uv ( 
+			Vector2f(fontInfo->glyphTexelPosition[c_lookup].x, fontInfo->glyphTexelPosition[c_lookup].y) / baseScale,
+			Vector2f(fontInfo->glyphSize[c_lookup].x, fontInfo->glyphSize[c_lookup].y) / baseScale );
 
 		
 		// Create the quad for the character:
 
 		// Set up final drawing position
-		Vector2f drawPos = pen - (Vector2f)fontInfo->glyphOrigin[c_lookup];
+		Vector2f drawPos = pen - Vector2f(fontInfo->glyphOrigin[c_lookup].x, fontInfo->glyphOrigin[c_lookup].y);
 		drawPos.x = (Real)math::round( drawPos.x );
 		drawPos.y = (Real)math::round( drawPos.y );
 

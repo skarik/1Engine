@@ -151,17 +151,17 @@ glHandle	RrMaterial::m_ubo_reflectinfo = 0;
 #define HARD_MAX 8
 struct _lightingInfo_t
 {
-	Vector4d LightColor[HARD_MAX];
-	Vector4d LightPosition[HARD_MAX];
-	Vector4d LightProperties[HARD_MAX];
-	Vector4d LightShadowInfo[HARD_MAX];
+	Vector4f LightColor[HARD_MAX];
+	Vector4f LightPosition[HARD_MAX];
+	Vector4f LightProperties[HARD_MAX];
+	Vector4f LightShadowInfo[HARD_MAX];
 	Matrix4x4 LightMatrix[HARD_MAX];
 };
 struct _reflectInfo_t
 {
-	Vector4d ReflectMinBox;
-	Vector4d ReflectMaxBox;
-	Vector4d ReflectSource;
+	Vector4f ReflectMinBox;
+	Vector4f ReflectMaxBox;
+	Vector4f ReflectSource;
 };
 void RrMaterial::updateStaticUBO ( void )
 {
@@ -292,14 +292,14 @@ void RrMaterial::updateStaticUBO ( void )
 		{
 			RrRenderTextureCube* t_cubeTexture = (RrRenderTextureCube*)m_sampler_reflection;
 			t_reflectInfo.ReflectSource = t_cubeTexture->m_renderPosition;
-			t_reflectInfo.ReflectMaxBox = t_reflectInfo.ReflectSource + Vector4d( 1000,1000,1000 );
-			t_reflectInfo.ReflectMinBox = t_reflectInfo.ReflectSource - Vector4d( 1000,1000,1000 );
+			t_reflectInfo.ReflectMaxBox = t_reflectInfo.ReflectSource + Vector4f( 1000,1000,1000 );
+			t_reflectInfo.ReflectMinBox = t_reflectInfo.ReflectSource - Vector4f( 1000,1000,1000 );
 		}
 		else
 		{
 			t_reflectInfo.ReflectSource = RrCamera::activeCamera->transform.position;
-			t_reflectInfo.ReflectMaxBox = t_reflectInfo.ReflectSource + Vector4d( 1000,1000,1000 );
-			t_reflectInfo.ReflectMinBox = t_reflectInfo.ReflectSource - Vector4d( 1000,1000,1000 );
+			t_reflectInfo.ReflectMaxBox = t_reflectInfo.ReflectSource + Vector4f( 1000,1000,1000 );
+			t_reflectInfo.ReflectMinBox = t_reflectInfo.ReflectSource - Vector4f( 1000,1000,1000 );
 		}
 		// Send it to video card
 		if ( m_ubo_reflectinfo == 0 )

@@ -114,7 +114,7 @@ void EditorObject::WorldToMetadata ( void )
 		switch ( metadata->data_field[i].second )
 		{
 		case FIELD_POSITION:
-			memcpy( m_data_storage_buffer + kv_offset, &position, sizeof(Vector3d) );
+			memcpy( m_data_storage_buffer + kv_offset, &position, sizeof(Vector3f) );
 			break;
 
 		case FIELD_ROTATION:
@@ -122,7 +122,7 @@ void EditorObject::WorldToMetadata ( void )
 			break;
 
 		case FIELD_SCALE:
-			memcpy( m_data_storage_buffer + kv_offset, &scale, sizeof(Vector3d) );
+			memcpy( m_data_storage_buffer + kv_offset, &scale, sizeof(Vector3f) );
 			break;
 
 		case FIELD_COLOR:
@@ -159,7 +159,7 @@ void EditorObject::MetadataToWorld ( void )
 		switch ( metadata->data_field[i].second )
 		{
 		case FIELD_POSITION:
-			memcpy( &position, m_data_storage_buffer + kv_offset, sizeof(Vector3d) );
+			memcpy( &position, m_data_storage_buffer + kv_offset, sizeof(Vector3f) );
 			break;
 
 		case FIELD_ROTATION:
@@ -167,7 +167,7 @@ void EditorObject::MetadataToWorld ( void )
 			break;
 
 		case FIELD_SCALE:
-			memcpy( &scale, m_data_storage_buffer + kv_offset, sizeof(Vector3d) );
+			memcpy( &scale, m_data_storage_buffer + kv_offset, sizeof(Vector3f) );
 			break;
 
 		case FIELD_COLOR:

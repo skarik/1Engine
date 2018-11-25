@@ -29,9 +29,9 @@ namespace M04
 		engine::ObjectBase*	m_object;
 
 	public:
-		Vector3d	position;
+		Vector3f	position;
 		float		angle;
-		Vector3d	scale;
+		Vector3f	scale;
 
 		uint32_t	m_data_storage_buffer_size;
 		char*		m_data_storage_buffer;

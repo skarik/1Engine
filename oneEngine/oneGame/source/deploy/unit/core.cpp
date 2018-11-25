@@ -10,7 +10,7 @@
 #include "core/input/CInput.h"
 #include "core/debug/console.h"
 
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "core/math/Quaternion.h"
 #include "core/math/matrix/CMatrix.h"
 

@@ -2,7 +2,7 @@
 #ifndef _QUADRILATERAL_H_
 #define _QUADRILATERAL_H_
 
-#include "Vector2f.h"
+#include "Vector2.h"
 
 class Quadrilateral
 {

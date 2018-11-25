@@ -23,10 +23,10 @@ namespace core
 
 			//	PointIsInside() : Check if the point lies within the frustum.
 			FORCE_INLINE arShapeCheckResult
-									PointIsInside ( const Vector3d& point );
+									PointIsInside ( const Vector3f& point );
 			//	SphereIsInside() : Checks if the sphere lies within the frustum.
 			FORCE_INLINE arShapeCheckResult
-									SphereIsInside ( const Vector3d& center, const Real radius );
+									SphereIsInside ( const Vector3f& center, const Real radius );
 			//	BoundingBoxIsInside() : Checks if bounding box is inside the frustum.
 			// NOTE: Currently this only will return Partial or Outside.
 			FORCE_INLINE arShapeCheckResult

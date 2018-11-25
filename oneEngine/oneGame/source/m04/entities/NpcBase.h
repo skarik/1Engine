@@ -22,8 +22,8 @@ namespace M04
 	protected:
 		// Current state:
 
-		Vector3d position;
-		Vector3d velocity;
+		Vector3f position;
+		Vector3f velocity;
 
 		// Components:
 

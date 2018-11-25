@@ -44,7 +44,7 @@ PlayerPlatformerBase::PlayerPlatformerBase ( void )
 
 	// Set up the sprite
 	{
-		flipstate = Vector3d(1,1,1);
+		flipstate = Vector3f(1,1,1);
 	}
 }
 

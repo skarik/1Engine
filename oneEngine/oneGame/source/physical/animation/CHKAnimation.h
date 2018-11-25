@@ -51,7 +51,7 @@ public:
 	PHYS_API virtual void GetRagdollPose ( skeletonBone_t*, std::vector<skeletonBone_t*>& );
 
 	//	TODO: Document
-	static Vector3d defaultJointVector;
+	static Vector3f defaultJointVector;
 
 	//	Injector for modifying motion based on aiming
 	// Do not edit values during physics step.

@@ -19,8 +19,8 @@ namespace M04
 		void*		m_owner;
 		RrCamera*	m_camera;
 
-		Vector3d*	m_tracked_position;
-		Vector3d*	m_tracked_velocity;
+		Vector3f*	m_tracked_position;
+		Vector3f*	m_tracked_velocity;
 	};
 }
 

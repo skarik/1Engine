@@ -3,7 +3,7 @@
 #define _STRUCT_RAYCAST_HIT_H_
 
 // Includes
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "core-ext/types/baseType.h"
 //#include "physical/physics/shapes/physShape.h"
 
@@ -15,8 +15,8 @@ class btRigidBody;
 struct RaycastHit
 {
 	bool		hit;
-	Vector3d	hitPos;
-	Vector3d	hitNormal;
+	Vector3f	hitPos;
+	Vector3f	hitNormal;
 	// Range from 0 to 1 along the case the hit occurred.
 	Real		fraction;
 	btRigidBody*		hitBody;

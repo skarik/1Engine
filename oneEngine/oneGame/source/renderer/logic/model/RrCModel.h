@@ -145,12 +145,12 @@ public:
 	// Adds an entry to the uniform list to be set on render
 	//RENDER_API void SetShaderUniform ( const char*, float const );
 	//RENDER_API void SetShaderUniform ( const char*, Vector2f const& );
-	//RENDER_API void SetShaderUniform ( const char*, Vector3d const& );
+	//RENDER_API void SetShaderUniform ( const char*, Vector3f const& );
 	//RENDER_API void SetShaderUniform ( const char*, Color const& );
 	//RENDER_API void SetShaderUniform ( const char*, Matrix4x4 const& );
 	//RENDER_API void SetShaderUniformV ( const char*, unsigned int, const Matrix4x4* );
 	//RENDER_API void SetShaderUniformV ( const char*, unsigned int, const Matrix3x3* );
-	//RENDER_API void SetShaderUniformV ( const char*, unsigned int, const Vector3d* );
+	//RENDER_API void SetShaderUniformV ( const char*, unsigned int, const Vector3f* );
 
 	// Change the animation mode to reference another model's animation.
 	// This mode will save memory, but will completely copy the referenced animation
@@ -244,10 +244,10 @@ protected:
 	arstring128			m_resourceName;
 
 	// Frustum Culling
-	Vector3d			vCheckRenderPos;
+	Vector3f			vCheckRenderPos;
 	float				fCheckRenderDist;
-	Vector3d			vMinExtents;
-	Vector3d			vMaxExtents;
+	Vector3f			vMinExtents;
+	Vector3f			vMaxExtents;
 	core::math::BoundingBox
 						m_renderBoundingBox;
 
@@ -261,7 +261,7 @@ protected:
 	// Shader uniforms
 	//std::unordered_map<arstring128,float>*	uniformMapFloat;
 	//std::unordered_map<arstring128,Vector2f>*	uniformMapVect2d;
-	//std::unordered_map<arstring128,Vector3d>*	uniformMapVect3d;
+	//std::unordered_map<arstring128,Vector3f>*	uniformMapVect3d;
 	//std::unordered_map<arstring128,Color>*	uniformMapColor;
 
 //private:

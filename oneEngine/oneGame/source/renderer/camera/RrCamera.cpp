@@ -31,8 +31,8 @@ RrCamera::RrCamera ( void )
 	// default Rt options
 	//m_renderTexture(NULL)
 {
-	up = Vector3d(0, 0, 1);
-	forward = Vector3d::forward;
+	up = Vector3f(0, 0, 1);
+	forward = Vector3f::forward;
 
 	// Set all layers visible by defeault.
 	for ( size_t i = 0; i <= renderer::kRenderLayer_MAX; ++i )
@@ -145,12 +145,12 @@ void RrCamera::LateUpdate ( void )
 	rotMatrix.setRotation( transform.rotation );
 
 	// Rotate the move vector to match the camera
-	forward = rotMatrix * Vector3d::forward;
+	forward = rotMatrix * Vector3f::forward;
 
 	/*up.z = cos( (Real)degtorad( transform.rotation.y ) );
 	up.x = -cos( (Real)degtorad( transform.rotation.z ) ) * sin( (Real)degtorad( transform.rotation.y ) );
 	up.y = -sin( (Real)degtorad( transform.rotation.z ) ) * sin( (Real)degtorad( transform.rotation.y ) );*/
-	up = rotMatrix * Vector3d(0, 0, 1);
+	up = rotMatrix * Vector3f(0, 0, 1);
 	
 	// Wireframe mode
 	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -330,10 +330,10 @@ void RrCamera::UpdateMatrix ( void )
 		rotMatrix.setRotation( transform.rotation );
 
 		// Rotate the move vector to match the camera
-		forward = rotMatrix * Vector3d::forward;
-		up = rotMatrix * Vector3d(0,0,1);
+		forward = rotMatrix * Vector3f::forward;
+		up = rotMatrix * Vector3f(0,0,1);
 	}
-	Vector3d side = forward.cross(up);
+	Vector3f side = forward.cross(up);
 
 	// Build the view transform matrix
 	viewTransform[0][0] = side.x;
@@ -440,7 +440,7 @@ void RrCamera::UpdateFrustum ( void )
 	frustum = core::math::Frustum::BuildFromProjectionMatrix(viewprojMatrix);
 }
 
-bool RrCamera::PointIsVisible ( Vector3d const& point )
+bool RrCamera::PointIsVisible ( Vector3f const& point )
 {
 	/*
 	// various distances
@@ -463,7 +463,7 @@ bool RrCamera::PointIsVisible ( Vector3d const& point )
 }
 
 // tests if a sphere is within the frustrum
-bool RrCamera::SphereIsVisible( const Vector3d& center, const Real radius )
+bool RrCamera::SphereIsVisible( const Vector3f& center, const Real radius )
 {
 	// various distances
 	/*float fDistance;
@@ -496,7 +496,7 @@ bool RrCamera::BoundingBoxIsVisible ( const core::math::BoundingBox& bbox )
 	{
 		// find the distance to this plane
 		//fDistance = frustum[i].n.dot( point ) + frustum[i].d;
-		bboxBehind = bbox.BoxOutsidePlane( frustum.plane[i].n, Vector3d( 0,0, -frustum.plane[i].d ) );
+		bboxBehind = bbox.BoxOutsidePlane( frustum.plane[i].n, Vector3f( 0,0, -frustum.plane[i].d ) );
 
 		if ( bboxBehind )
 			return false;
@@ -507,15 +507,15 @@ bool RrCamera::BoundingBoxIsVisible ( const core::math::BoundingBox& bbox )
 
 // Coverts world coordinates to screen coordinates of this camera
 // Z coordinate indicates depth
-Vector3d RrCamera::WorldToScreenPos ( const Vector3d & worldPos ) const
+Vector3f RrCamera::WorldToScreenPos ( const Vector3f & worldPos ) const
 {
 	//Matrix4x4 temp = (viewTransform * projTransform);
 	/*Matrix4x4 temp = viewTransform;
 	temp *= projTransform;
-	Vector4d screen = Vector4d( worldPos ) * temp;*/
-	//Vector4d screen = projTransform * ( viewTransform * Vector4d( worldPos ) );
-	//Vector4d screen = (!(projTransform * viewTransform)  * Vector4d( worldPos );
-	Vector4d screen = Vector4d( worldPos ).rvrMultMatx( viewTransform * projTransform );
+	Vector4f screen = Vector4f( worldPos ) * temp;*/
+	//Vector4f screen = projTransform * ( viewTransform * Vector4f( worldPos ) );
+	//Vector4f screen = (!(projTransform * viewTransform)  * Vector4f( worldPos );
+	Vector4f screen = Vector4f( worldPos ).rvrMultMatx( viewTransform * projTransform );
 	screen /= screen.w;
 
 	//cout << screen << endl;
@@ -523,58 +523,58 @@ Vector3d RrCamera::WorldToScreenPos ( const Vector3d & worldPos ) const
 	screen.x =  screen.x * 0.5f + 0.5f;
 	screen.y = -screen.y * 0.5f + 0.5f;
 
-	return Vector3d( screen );
+	return Vector3f( screen );
 }
 
 // Converts screen coordinates to a direction to the point on the screen.
-Vector3d RrCamera::ScreenToWorldDir ( const Vector2f & screenPos ) const
+Vector3f RrCamera::ScreenToWorldDir ( const Vector2f & screenPos ) const
 {
 	// TODO: Test if this still works.
 
 	// last, rotate vector by current camera rotation
-	Vector4d screen = Vector4d( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
+	Vector4f screen = Vector4f( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
 	//screen = ( screen * viewTransform.inverse() ) * projTransform.inverse();
 	//screen = viewTransform.inverse() * ( projTransform.inverse() * screen );
 	screen = (!viewTransform).inverse() * ( (!projTransform).inverse() * screen );
 	//screen = !viewTransform * ( !projTransform * screen );
 	screen /= screen.w;
 
-	return (Vector3d( screen.x,screen.y,screen.z ) - transform.position).normal();
+	return (Vector3f( screen.x,screen.y,screen.z ) - transform.position).normal();
 }
 
 // Converts screen coordinates to the point on the screen the mouse is over.
-Vector3d RrCamera::ScreenToWorldPos ( const Vector2f & screenPos ) const
+Vector3f RrCamera::ScreenToWorldPos ( const Vector2f & screenPos ) const
 {
 	// TODO: Test if this still works.
 
 	// last, rotate vector by current camera rotation
-	/*Vector4d screen = Vector4d( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
+	/*Vector4f screen = Vector4f( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
 	//screen = ( screen * viewTransform.inverse() ) * projTransform.inverse();
 	//screen = viewTransform.inverse() * ( projTransform.inverse() * screen );
 	screen = (!viewTransform).inverse() * ( (!projTransform).inverse() * screen );
 	//screen = !viewTransform * ( !projTransform * screen );
 	//screen /= screen.w;
 
-	return Vector3d( screen.x,screen.y,screen.z );*/
+	return Vector3f( screen.x,screen.y,screen.z );*/
 
-	/*Vector4d screen = Vector4d( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
-	//Vector4d worldPos = screen.rvrMultMatx( (viewTransform * projTransform).inverse() );
-	Vector4d worldPos = (viewTransform * projTransform).inverse() * screen;
+	/*Vector4f screen = Vector4f( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
+	//Vector4f worldPos = screen.rvrMultMatx( (viewTransform * projTransform).inverse() );
+	Vector4f worldPos = (viewTransform * projTransform).inverse() * screen;
 
-	return Vector3d( worldPos.x,worldPos.y,worldPos.z );*/
+	return Vector3f( worldPos.x,worldPos.y,worldPos.z );*/
 
 	if (!orthographic)
 	{
-		Vector4d screen = Vector4d( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
-		//Vector4d worldPos = screen.rvrMultMatx( (viewTransform * projTransform).inverse() );
-		Vector4d worldPos = (viewTransform * projTransform).inverse() * screen;
+		Vector4f screen = Vector4f( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
+		//Vector4f worldPos = screen.rvrMultMatx( (viewTransform * projTransform).inverse() );
+		Vector4f worldPos = (viewTransform * projTransform).inverse() * screen;
 
-		return Vector3d( worldPos.x,worldPos.y,worldPos.z );
+		return Vector3f( worldPos.x,worldPos.y,worldPos.z );
 	}
 	else
 	{
-		Vector4d screen = Vector4d( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
-		Vector3d world ( screen.x * orthoSize.x * 0.5F, -screen.y * orthoSize.y * 0.5F, 0.0F );
+		Vector4f screen = Vector4f( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );
+		Vector3f world ( screen.x * orthoSize.x * 0.5F, -screen.y * orthoSize.y * 0.5F, 0.0F );
 		return world + transform.position;
 	}
 }

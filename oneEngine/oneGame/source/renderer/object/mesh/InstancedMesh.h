@@ -8,8 +8,8 @@ namespace renderer
 	// Example structure that can be used with InstacedMeshes.
 	struct rrInstanceDataSimple
 	{
-		Vector4d position;
-		Vector4d rotation;
+		Vector4f position;
+		Vector4f rotation;
 	};
 
 	//	class InstancedMesh
@@ -21,7 +21,7 @@ namespace renderer
 		RENDER_API virtual		~InstancedMesh ( void );
 
 	public:
-		//RENDER_API void			SetInstancePosition ( int instance_id, const Vector3d& position );
+		//RENDER_API void			SetInstancePosition ( int instance_id, const Vector3f& position );
 		//RENDER_API void			SetInstanceRotation ( int instance_id, const Quaternion& rotation );
 		//RENDER_API void			SetInstanceCount ( int instance_count );
 

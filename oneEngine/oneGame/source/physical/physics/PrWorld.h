@@ -2,7 +2,7 @@
 #define PHYSICS_PR_WORLD_H_
 
 #include "core/types/types.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 
 #include "bullet/BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
 #include "bullet/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"

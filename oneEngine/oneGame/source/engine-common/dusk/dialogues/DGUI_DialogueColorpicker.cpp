@@ -180,7 +180,7 @@ void Dusk::DialogueColorpicker::drawColorWheel ( const Vector2f& position )
 {
 	GL_ACCESS GLd_ACCESS;
 
-	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	core::math::Cubic::FromPosition( Vector3f(0, 0, -45.0F), Vector3f((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 
 	// Draw the color circle
 	{
@@ -363,7 +363,7 @@ void Dusk::DialogueColorpicker::drawColorSliders ( const Vector2f& position )
 {
 	GL_ACCESS GLd_ACCESS;
 
-	core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	core::math::Cubic::FromPosition( Vector3f(0, 0, -45.0F), Vector3f((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 
 	// Draw the RGB bars
 	{

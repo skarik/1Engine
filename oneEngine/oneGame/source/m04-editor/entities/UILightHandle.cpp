@@ -21,8 +21,8 @@ M04::UILightHandle::UILightHandle ( DrawStyle style )
 	m_dragging		= false;
 	m_drag_axis		= Axis::None;
 	m_drag_axis_hover	= Axis::None;
-	//m_position		= Vector3d::zero;
-	//m_position_snap	= Vector3d::zero;
+	//m_position		= Vector3f::zero;
+	//m_position_snap	= Vector3f::zero;
 }
 
 M04::UILightHandle::~UILightHandle ( void )
@@ -38,7 +38,7 @@ void M04::UILightHandle::Update ( void )
 		// Grab mouse position in the world to get hover area
 		if ( m_style == DrawStyle::s2D )
 		{
-			Vector3d worldpos = RrCamera::activeCamera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+			Vector3f worldpos = RrCamera::activeCamera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
 			Rect check_rect;
 
 			// Reset hovers
@@ -96,7 +96,7 @@ void M04::UILightHandle::Update ( void )
 	{
 		// Perform the dragging
 		m_drag_end = Vector2f( Input::MouseX(), Input::MouseY() );
-		Vector3d t_drag_delta = m_drag_end - m_drag_start;
+		Vector3f t_drag_delta = m_drag_end - m_drag_start;
 
 		// Different modes have different behavior
 		if ( m_style == DrawStyle::s2D )
@@ -131,7 +131,7 @@ void M04::UILightHandle::Update ( void )
 
 //		SetRenderPosition
 // Sets the position that being rendered at
-void M04::UILightHandle::SetRenderPosition ( const Vector3d& n_newPosition )
+void M04::UILightHandle::SetRenderPosition ( const Vector3f& n_newPosition )
 {
 	m_position = n_newPosition;
 }

@@ -62,8 +62,8 @@ void	CPlayer::FreeMovement ( void )
 //	// Raytrace upwards to check if can uncrouch
 //	RaycastHit upHitResult;
 //	Ray ray;
-//	ray.pos = transform.position + Vector3d( 0,0,1 );
-//	ray.dir = Vector3d(0,0,1);
+//	ray.pos = transform.position + Vector3f( 0,0,1 );
+//	ray.dir = Vector3f(0,0,1);
 //	Raytracer.Raycast( ray, 6.0f, &upHitResult, Physics::GetCollisionFilter(Layers::PHYS_WORLD_TRACE) ); 
 //	if ( upHitResult.hit )
 //	{
@@ -97,7 +97,7 @@ void	CPlayer::FreeMovement ( void )
 //		//transform.position.z += deltaHeight;
 //		//transform.SetDirty();
 //		//pMainRigidBody->
-//		pMainRigidBody->AddToPosition( Vector3d( 0,0,-deltaHeight ) );
+//		pMainRigidBody->AddToPosition( Vector3f( 0,0,-deltaHeight ) );
 //	}
 //	else
 //	{
@@ -106,7 +106,7 @@ void	CPlayer::FreeMovement ( void )
 //		fPlayerHeight += deltaHeight;
 //		//transform.position.z += deltaHeight;
 //		//transform.SetDirty();
-//		//pMainRigidBody->AddToPosition( Vector3d( 0,0,deltaHeight ) );
+//		//pMainRigidBody->AddToPosition( Vector3f( 0,0,deltaHeight ) );
 //	}
 //	// Set the height
 //	pPlayerCollision->SetHeight( fPlayerHeight );*/
@@ -164,7 +164,7 @@ void	CPlayer::FreeMovement ( void )
 //	{
 //		//deltaHeight = (fnPlayerHeight-fPlayerHeight)*Time::TrainerFactor( 0.4f );
 //		//fPlayerHeight += deltaHeight;
-//		pMainRigidBody->AddToPosition( Vector3d( 0,0,-deltaHeight ) );
+//		pMainRigidBody->AddToPosition( Vector3f( 0,0,-deltaHeight ) );
 //	}
 //	// Set the height
 //	pPlayerCollision->SetHeight( fPlayerHeight );
@@ -188,10 +188,10 @@ void	CPlayer::FreeMovement ( void )
 //		if ( deltaHeight > 0 ) {
 //			RaycastHit upHitResult;
 //			Ray ray;
-//			ray.pos = transform.position + Vector3d( 0,0,fPlayerHeight );
-//			ray.dir = Vector3d( 0,0,1 );
+//			ray.pos = transform.position + Vector3f( 0,0,fPlayerHeight );
+//			ray.dir = Vector3f( 0,0,1 );
 //			if ( Raytracer.Raycast( ray, deltaHeight*2.0f, &upHitResult, Physics::GetCollisionFilter(Layers::PHYS_WORLD_TRACE) ) ) {
-//				pMainRigidBody->AddToPosition( Vector3d( 0,0,-deltaHeight ) );
+//				pMainRigidBody->AddToPosition( Vector3f( 0,0,-deltaHeight ) );
 //			}
 //		}
 //	}
@@ -224,20 +224,20 @@ void	CPlayer::FreeMovement ( void )
 	//const static Real playerWidth = 1.5f;
 	// First check for the ground
 	Ray ray;
-	ray.dir = Vector3d(0,0,-1);
+	ray.dir = Vector3f(0,0,-1);
 	for ( short i = 0; i < 5; i += 1 )
 	{
 		switch ( i )
 		{
-		case 0:	ray.pos = transform.position+Vector3d(0,0,maxStepHeight);
+		case 0:	ray.pos = transform.position+Vector3f(0,0,maxStepHeight);
 			break;
-		case 1: ray.pos = transform.position+Vector3d(fPlayerRadius*0.95f,0,maxStepHeight);
+		case 1: ray.pos = transform.position+Vector3f(fPlayerRadius*0.95f,0,maxStepHeight);
 			break;
-		case 2: ray.pos = transform.position+Vector3d(-fPlayerRadius*0.95f,0,maxStepHeight);
+		case 2: ray.pos = transform.position+Vector3f(-fPlayerRadius*0.95f,0,maxStepHeight);
 			break;
-		case 3: ray.pos = transform.position+Vector3d(0,fPlayerRadius*0.95f,maxStepHeight);
+		case 3: ray.pos = transform.position+Vector3f(0,fPlayerRadius*0.95f,maxStepHeight);
 			break;
-		case 4: ray.pos = transform.position+Vector3d(0,-fPlayerRadius*0.95f,maxStepHeight);
+		case 4: ray.pos = transform.position+Vector3f(0,-fPlayerRadius*0.95f,maxStepHeight);
 			break;
 		}
 
@@ -269,7 +269,7 @@ void	CPlayer::FreeMovement ( void )
 			if ( outGroundDistance < -0.1f )
 			{
 				//transform.position.z -= outGroundDistance;
-				//pMainRigidBody->SetPosition( pMainRigidBody->GetPosition() + Vector3d( 0,0,-outGroundDistance ) );
+				//pMainRigidBody->SetPosition( pMainRigidBody->GetPosition() + Vector3f( 0,0,-outGroundDistance ) );
 				outGroundDistance = 0;
 			}
 		}
@@ -281,19 +281,19 @@ void	CPlayer::FreeMovement ( void )
 	return onGround;
 }*/
 // Attempt to move to a position
-/*bool CPlayer::AttemptMoveToPosition ( Vector3d targetPos )
+/*bool CPlayer::AttemptMoveToPosition ( Vector3f targetPos )
 {
 	const static Real playerWidth = 1.5f;
 	const static Real halfPlayerWidth = 0.75f;
 
-	Vector3d vDist = targetPos-transform.position;
+	Vector3f vDist = targetPos-transform.position;
 	Real maxDist = vDist.magnitude();
 	if ( maxDist <= 0 )
 		return true;
 	
 	Ray moveRay;
 	moveRay.dir = vDist.normal();
-	Vector3d offsetDir ( moveRay.dir.y, moveRay.dir.x, 0 );
+	Vector3f offsetDir ( moveRay.dir.y, moveRay.dir.x, 0 );
 	offsetDir = offsetDir.normal();
 
 	Real currentDist = maxDist;
@@ -302,7 +302,7 @@ void	CPlayer::FreeMovement ( void )
 
 	for ( short i = 0; i < (int)(fPlayerHeight-0.1f)*3; i += 1 )
 	{
-		moveRay.pos = transform.position+Vector3d( 0,0,0.1f+Real(i/3) )-(offsetDir*Real(1-i%3)*halfPlayerWidth);
+		moveRay.pos = transform.position+Vector3f( 0,0,0.1f+Real(i/3) )-(offsetDir*Real(1-i%3)*halfPlayerWidth);
 		if ( Raytracer.Raycast( moveRay, maxDist, &hitResult,NULL, 1|2|4 ) )
 		{
 			if (( hitResult.distance > 0 )&&( hitResult.distance < currentDist ))
@@ -333,7 +333,7 @@ void	CPlayer::FreeMovement ( void )
 	vTurnInput.x = 0.0f;
 
 	// In Water
-	if ( Water.PositionInside( transform.position+Vector3d( 0,0,2.5f ) ) )
+	if ( Water.PositionInside( transform.position+Vector3f( 0,0,2.5f ) ) )
 	{
 		return mvtQuickReturn( mvtSwimmingInWater );
 	}
@@ -343,9 +343,9 @@ void	CPlayer::FreeMovement ( void )
 	if ( onGround )
 	{
 		// Punch the camera based on the vertical speed
-		//PunchView( Vector3d( 0,vMoveVelocity.sqrMagnitude()*0.002f*8.0f,0 ) );
+		//PunchView( Vector3f( 0,vMoveVelocity.sqrMagnitude()*0.002f*8.0f,0 ) );
 		float punchAmt = sqr(vMoveVelocity.z);
-		PunchView( Vector3d( random_range(-0.0015f,0.0015f)*punchAmt,-punchAmt*0.0030f,random_range(-0.0010f,0.0010f)*punchAmt ) );
+		PunchView( Vector3f( random_range(-0.0015f,0.0015f)*punchAmt,-punchAmt*0.0030f,random_range(-0.0010f,0.0010f)*punchAmt ) );
 
 		// Check for fall damage and all that
 		if ( punchAmt*0.0060f > 3.4f )
@@ -360,7 +360,7 @@ void	CPlayer::FreeMovement ( void )
 		return mvtQuickReturn( mvtWalkingOnGround );
 	}
 
-	Vector3d moveVector(0,0,0);
+	Vector3f moveVector(0,0,0);
 	moveVector = vDirInput;
 	moveVector.z = 0;
 
@@ -372,7 +372,7 @@ void	CPlayer::FreeMovement ( void )
 	vMoveVelocity = pMainRigidBody->GetVelocity();
 
 	// Limit the horizontal acceleration
-	Vector3d testCase = Vector3d( vMoveVelocity.x, vMoveVelocity.y, 0 );
+	Vector3f testCase = Vector3f( vMoveVelocity.x, vMoveVelocity.y, 0 );
 	if ( testCase.magnitude() <= fRunSpeed*1.5f )
 	{
 		vMoveVelocity += moveVector * Time::deltaTime * fAirAccelBase;
@@ -384,7 +384,7 @@ void	CPlayer::FreeMovement ( void )
 		// Raytrace forward
 		RaycastHit hitResult;
 		Ray ray;
-		ray.pos = transform.position + Vector3d( 0,0,1 );
+		ray.pos = transform.position + Vector3f( 0,0,1 );
 		ray.dir = testCase.normal();
 		if ( Raytracer.Raycast( ray, 3.0f, &hitResult, 1|2|4 ) )
 		{
@@ -431,12 +431,12 @@ void*	CPlayer::mvtWalkingOnGround ( void )
 		vTurnInput.x = 0.0f;
 
 		// In Water
-		if ( Water.PositionInside( transform.position+Vector3d( 0,0,2.5f ) ) )
+		if ( Water.PositionInside( transform.position+Vector3f( 0,0,2.5f ) ) )
 		{
 			return mvtQuickReturn( mvtSwimmingInWater );
 		}
 
-		Vector3d moveVector(0,0,0);
+		Vector3f moveVector(0,0,0);
 		moveVector = vDirInput;
 		moveVector.z = 0;
 
@@ -447,7 +447,7 @@ void*	CPlayer::mvtWalkingOnGround ( void )
 
 		// Slow down movement
 		if ( moveVector.sqrMagnitude() < 0.1f )
-			vMoveVelocity += (Vector3d(0,0,0) - vMoveVelocity) * Time::TrainerFactor( 0.5f );
+			vMoveVelocity += (Vector3f(0,0,0) - vMoveVelocity) * Time::TrainerFactor( 0.5f );
 		// Add to move velocity
 		else
 			vMoveVelocity += moveVector * Time::deltaTime * fGroundAccelBase;
@@ -463,7 +463,7 @@ void*	CPlayer::mvtWalkingOnGround ( void )
 		
 		limit *= 0.7f;
 		// Limit the xy movement while moving
-		Vector3d testCase = Vector3d( vMoveVelocity.x, vMoveVelocity.y, 0 );
+		Vector3f testCase = Vector3f( vMoveVelocity.x, vMoveVelocity.y, 0 );
 		if ( testCase.magnitude() > limit )
 		{
 			testCase = testCase.normal() * limit;
@@ -482,7 +482,7 @@ void*	CPlayer::mvtWalkingOnGround ( void )
 			// Raytrace forward
 			RaycastHit hitResult;
 			Ray ray;
-			ray.pos = transform.position + Vector3d( 0,0,1 );
+			ray.pos = transform.position + Vector3f( 0,0,1 );
 			ray.dir = testCase.normal();
 			if ( Raytracer.Raycast( ray, 3.0f, &hitResult, 1|2|4 ) )
 			{
@@ -528,7 +528,7 @@ void*	CPlayer::mvtSwimmingInWater ( void )
 	camRollSetOffset( 0 );
 
 	// In Water
-	if ( !Water.PositionInside( transform.position+Vector3d( 0,0,2.5f ) ) )
+	if ( !Water.PositionInside( transform.position+Vector3f( 0,0,2.5f ) ) )
 	{
 		// Set the gravity to true
 		pMainRigidBody->SetGravity( true );
@@ -550,7 +550,7 @@ void*	CPlayer::mvtSwimmingInWater ( void )
 		vPlayerRotation.z += vTurnInput.x;
 		vTurnInput.x = 0.0f;
 
-		Vector3d moveVector(0,0,0);
+		Vector3f moveVector(0,0,0);
 		moveVector = vDirInput;
 		moveVector.z = 0;
 
@@ -558,12 +558,12 @@ void*	CPlayer::mvtSwimmingInWater ( void )
 		Matrix4x4 rotMatrix;
 		//rotMatrix.setRotation( transform.rotation );
 		//rotMatrix.setRotation( pCamera->transform.rotation );
-		rotMatrix.setRotation( Vector3d( 0,vCameraRotation.y,vPlayerRotation.z ) );
+		rotMatrix.setRotation( Vector3f( 0,vCameraRotation.y,vPlayerRotation.z ) );
 		moveVector = rotMatrix*moveVector;
 
 		// Slow down movement
 		if ( moveVector.sqrMagnitude() < 0.1f )
-			vMoveVelocity += (Vector3d(0,0,-1.0f) - vMoveVelocity) * Time::TrainerFactor( 0.2f );
+			vMoveVelocity += (Vector3f(0,0,-1.0f) - vMoveVelocity) * Time::TrainerFactor( 0.2f );
 		// Add to move velocity
 		else
 			vMoveVelocity += moveVector * Time::deltaTime * fWaterAccelBase;
@@ -585,7 +585,7 @@ void*	CPlayer::mvtSwimmingInWater ( void )
 		
 		limit *= 0.7f;
 		// Limit the xyz movement while moving
-		Vector3d testCase = Vector3d( vMoveVelocity.x, vMoveVelocity.y, vMoveVelocity.z );
+		Vector3f testCase = Vector3f( vMoveVelocity.x, vMoveVelocity.y, vMoveVelocity.z );
 		if ( testCase.magnitude() > limit )
 		{
 			testCase = testCase.normal() * limit;
@@ -613,10 +613,10 @@ void*	CPlayer::mvtCombatSlide ( void )
 {
 	
 	// Get the move vector from the current direction
-	Vector3d moveVector(0,0,0);
+	Vector3f moveVector(0,0,0);
 	moveVector = pMainRigidBody->GetVelocity();
 
-	Vector3d testCase = moveVector;
+	Vector3f testCase = moveVector;
 	testCase.z = 0;
 
 	// Check for if we hit a wall in front of us
@@ -624,7 +624,7 @@ void*	CPlayer::mvtCombatSlide ( void )
 	bool hitWall = false;
 	Ray ray;
 	ray.dir = testCase.normal();
-	ray.pos = transform.position + Vector3d( 0,0,1 );
+	ray.pos = transform.position + Vector3f( 0,0,1 );
 	RaycastHit result;
 	if ( Raytracer.Raycast( ray, 4.0f, &result, 1|2|4 ) )
 	{
@@ -699,7 +699,7 @@ void*	CPlayer::mvtPhaseFlying ( void )
 	vPlayerRotation.z += vTurnInput.x;
 	vTurnInput.x = 0.0f;
 
-	Vector3d moveVector(0,0,0);
+	Vector3f moveVector(0,0,0);
 	moveVector = vDirInput;
 	moveVector.z = 0;
 
@@ -725,7 +725,7 @@ void*	CPlayer::mvtPhaseFlying ( void )
 
 	//pMainRigidBody->SetPosition( transform.position );
 
-	//pMainRigidBody->SetVelocity( Vector3d::zero );
+	//pMainRigidBody->SetVelocity( Vector3f::zero );
 
 	//cout << transform.position << endl;
 

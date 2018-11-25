@@ -488,7 +488,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //
 //		//===============================
 //		//==Read in the Bone Block==
-//		Vector3d bone_rootScaling;
+//		Vector3f bone_rootScaling;
 //		for ( uint32_t i = 0; i < iBoneNum; i += 1 )
 //		{
 //			// Create Bone Data
@@ -557,22 +557,22 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //
 //				// Set the bone's transform (bind pose)
 //				if ( boneParent == "_is_root_" ) {
-//					bone_rootScaling = Vector3d(dataArrT[7],dataArrT[8],dataArrT[9]);
+//					bone_rootScaling = Vector3f(dataArrT[7],dataArrT[8],dataArrT[9]);
 //				}
 //
 //				newBone->transform.SetTransform(		// This is in world space
-//					Vector3d(dataArrT[0],dataArrT[1],dataArrT[2]),
+//					Vector3f(dataArrT[0],dataArrT[1],dataArrT[2]),
 //					Quaternion(dataArrT[3],dataArrT[4],dataArrT[5],dataArrT[6]),
-//					Vector3d(dataArrT[7],dataArrT[8],dataArrT[9]) );
+//					Vector3f(dataArrT[7],dataArrT[8],dataArrT[9]) );
 //				newBone->transform.LateUpdate();
 //				newBone->xBindPose = XTransform(
 //					newBone->transform.localPosition,
 //					Quaternion(newBone->transform.localRotation),
 //					newBone->transform.localScale );
 //				newBone->xBindPoseModel = XTransform(
-//					Vector3d(dataArrT[0],dataArrT[1],dataArrT[2]),
+//					Vector3f(dataArrT[0],dataArrT[1],dataArrT[2]),
 //					Quaternion(dataArrT[3],dataArrT[4],dataArrT[5],dataArrT[6]),
-//					Vector3d(dataArrT[7],dataArrT[8],dataArrT[9]) );
+//					Vector3f(dataArrT[7],dataArrT[8],dataArrT[9]) );
 //
 //				// Find its parent
 //				if ( boneParent != "_is_root_" )
@@ -608,9 +608,9 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //						sin.read( (char*)(dataArr), sizeof( float )*10 );
 //
 //						XTransform fMatx;
-//						fMatx.position = Vector3d( dataArr[0], dataArr[1], dataArr[2] );
+//						fMatx.position = Vector3f( dataArr[0], dataArr[1], dataArr[2] );
 //						fMatx.rotation = Quaternion( dataArr[3], dataArr[4], dataArr[5], dataArr[6] );
-//						fMatx.scale	   = Vector3d( dataArr[7], dataArr[8], dataArr[9] );
+//						fMatx.scale	   = Vector3f( dataArr[7], dataArr[8], dataArr[9] );
 //
 //						newCurve->AddValue( fMatx );
 //					}
@@ -749,7 +749,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //				// Convert the vertex coordinates
 //				for ( uint32_t vert = 0; vert < vertexNum; vert += 1 )
 //				{
-//					Vector3d vPos = Vector3d( newModelData->vertices[vert].x, newModelData->vertices[vert].y, newModelData->vertices[vert].z );
+//					Vector3f vPos = Vector3f( newModelData->vertices[vert].x, newModelData->vertices[vert].y, newModelData->vertices[vert].z );
 //					Matrix4x4 mTransform = Matrix4x4( transformMatx );
 //					mTransform = mTransform.transpose(); // TODO OPTIMIZE
 //					vPos = mTransform * vPos;
@@ -888,7 +888,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //					// Convert the vertex coordinates
 //					for ( uint32_t vert = 0; vert < vertexNum; vert += 1 )
 //					{
-//						Vector3d vPos = Vector3d( newPhysData->vertices[vert].x, newPhysData->vertices[vert].y, newPhysData->vertices[vert].z );
+//						Vector3f vPos = Vector3f( newPhysData->vertices[vert].x, newPhysData->vertices[vert].y, newPhysData->vertices[vert].z );
 //						Matrix4x4 mTransform = Matrix4x4( transformMatx );
 //						vPos = mTransform * vPos;
 //						newPhysData->vertices[vert].x = vPos.x;
@@ -1063,7 +1063,7 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //						(*newAnimation)[iTargetAction].AddEvent( newEvent );*/
 //						newIK.type = (eAnimIKType)iIKType;
 //						newIK.enabled = false;
-//						newIK.input = Vector3d(0,0,0);
+//						newIK.input = Vector3f(0,0,0);
 //						newIK.name = sChainName;
 //
 //						newAnimation->AddIKInfo( newIK );
@@ -1099,9 +1099,9 @@ void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 //				sin.read( (char*)(&hitbox.indexLink), sizeof(uchar) );
 //				// [uchar] parentbone
 //				sin.read( (char*)(&hitbox.parentIndex), sizeof(uchar) );
-//				// [Vector3d] center
+//				// [Vector3f] center
 //				sin.read( (char*)(&hitbox.center.x), sizeof(Real)*3 );
-//				// [Vector3d] extents
+//				// [Vector3f] extents
 //				sin.read( (char*)(&hitbox.extents.x), sizeof(Real)*3 );
 //
 //				//cout << "aa: " << hitbox.center << "  " << hitbox.extents << endl;

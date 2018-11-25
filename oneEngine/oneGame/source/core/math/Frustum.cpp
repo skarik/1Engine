@@ -3,7 +3,7 @@
 #include "core/math/Frustum.h"
 
 core::math::arShapeCheckResult
-core::math::Frustum::PointIsInside ( const Vector3d& point )
+core::math::Frustum::PointIsInside ( const Vector3f& point )
 {
 	// various distances
 	float fDistance;
@@ -23,7 +23,7 @@ core::math::Frustum::PointIsInside ( const Vector3d& point )
 }
 
 core::math::arShapeCheckResult
-core::math::Frustum::SphereIsInside ( const Vector3d& center, const Real radius )
+core::math::Frustum::SphereIsInside ( const Vector3f& center, const Real radius )
 {
 	// various distances
 	float fDistance;
@@ -55,7 +55,7 @@ core::math::Frustum::BoundingBoxIsInside ( const BoundingBox& box )
 	for ( int i = 0; i < 6; ++i )
 	{
 		// find the distance to this plane
-		bboxBehind = box.BoxOutsidePlane( plane[i].n, Vector3d( 0,0, -plane[i].d ) );
+		bboxBehind = box.BoxOutsidePlane( plane[i].n, Vector3f( 0,0, -plane[i].d ) );
 
 		if ( bboxBehind )
 			return kShapeCheckResultOutside;

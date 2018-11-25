@@ -8,14 +8,14 @@
 #ifndef CORE_CONTAINER_KDTREE_H_
 #define CORE_CONTAINER_KDTREE_H_
 
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include <vector>
 
 class arKDTree
 {
 public:
 	std::vector<arKDTree*> lr;
-	Vector3d pivot;
+	Vector3f pivot;
 	int pivotIndex;
 	int axis;
 	
@@ -32,7 +32,7 @@ public:
 	
 
 	//	Make a new tree from a list of points.
-	static arKDTree* MakeFromPoints( std::vector<Vector3d>& points) {
+	static arKDTree* MakeFromPoints( std::vector<Vector3f>& points) {
 		int* indices = Iota(points.size());
 		return MakeFromPointsInner(0, 0, points.size() - 1, points, indices);
 	}
@@ -42,7 +42,7 @@ public:
 	static arKDTree* MakeFromPointsInner(
 					int depth,
 					int stIndex, int enIndex,
-					std::vector<Vector3d>& points,
+					std::vector<Vector3f>& points,
 					int* inds
 					) {
 		
@@ -77,7 +77,7 @@ public:
 	
 
 	//	Simple "median of three" heuristic to find a reasonable splitting plane.
-	static int FindSplitPoint(std::vector<Vector3d>& points, int* inds, int stIndex, int enIndex, int axis) {
+	static int FindSplitPoint(std::vector<Vector3f>& points, int* inds, int stIndex, int enIndex, int axis) {
 		float a = points[inds[stIndex]][axis];
 		float b = points[inds[enIndex]][axis];
 		int midIndex = (stIndex + enIndex) / 2;
@@ -109,18 +109,18 @@ public:
 
 	//	Find a new pivot index from the range by splitting the points that fall either side
 	//	of its plane.
-	static int FindPivotIndex(std::vector<Vector3d>& points, int* inds, int stIndex, int enIndex, int axis) {
+	static int FindPivotIndex(std::vector<Vector3f>& points, int* inds, int stIndex, int enIndex, int axis) {
 		int splitPoint = FindSplitPoint(points, inds, stIndex, enIndex, axis);
 		// int splitPoint = Random.Range(stIndex, enIndex);
 
-		Vector3d pivot = points[inds[splitPoint]];
+		Vector3f pivot = points[inds[splitPoint]];
 		SwapElements(inds, stIndex, splitPoint);
 
 		int currPt = stIndex + 1;
 		int endPt = enIndex;
 		
 		while (currPt <= endPt) {
-			Vector3d curr = points[inds[currPt]];
+			Vector3f curr = points[inds[currPt]];
 			
 			if ((curr[axis] > pivot[axis])) {
 				SwapElements(inds, currPt, endPt);
@@ -147,7 +147,7 @@ public:
 	
 	
 	//	Find the nearest point in the set to the supplied point.
-	int FindNearest(Vector3d pt) {
+	int FindNearest(Vector3f pt) {
 		float bestSqDist = 1000000000.0f;
 		int bestIndex = -1;
 		
@@ -158,7 +158,7 @@ public:
 	
 
 	//	Recursively search the tree.
-	void Search(Vector3d pt, float& bestSqSoFar, int& bestIndex) {
+	void Search(Vector3f pt, float& bestSqSoFar, int& bestIndex) {
 		float mySqDist = (pivot - pt).sqrMagnitude();
 		
 		if (mySqDist < bestSqSoFar) {
@@ -185,7 +185,7 @@ public:
 	
 
 	//	Get a point's distance from an axis-aligned plane.
-	float DistFromSplitPlane(Vector3d pt, Vector3d planePt, int axis) {
+	float DistFromSplitPlane(Vector3f pt, Vector3f planePt, int axis) {
 		return pt[axis] - planePt[axis];
 	}
 	

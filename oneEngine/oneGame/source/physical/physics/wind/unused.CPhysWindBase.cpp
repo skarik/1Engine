@@ -72,9 +72,9 @@ void physWindManager::getWindVector ( const physVector4& pos, physVector4& windO
 {
 	windOut.setZero4(); // Reset wind
 
-	Vector3d vWindOut;
-	Vector3d vWindValue;
-	Vector3d vPos ( pos.getComponent<0>(),pos.getComponent<1>(),pos.getComponent<2>() );
+	Vector3f vWindOut;
+	Vector3f vWindValue;
+	Vector3f vPos ( pos.getComponent<0>(),pos.getComponent<1>(),pos.getComponent<2>() );
 	auto m_winds = CPhysWindBase::Listing();
 	//const int numWinds = m_winds.getSize();
 	const int numWinds = m_winds.size();

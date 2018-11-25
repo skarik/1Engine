@@ -2,7 +2,7 @@
 #define RENDERER_LIGHT_H_
 
 #include "core/math/Color.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "renderer/logic/RrLogicObject.h"
 #include <vector>
 #include <queue>

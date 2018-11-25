@@ -5,7 +5,7 @@
 
 #include "core/settings/CGameSettings.h"
 
-#include "core/math/Vector2f.h"
+#include "core/math/Vector2.h"
 #include "core/math/Math.h"
 
 #include <algorithm>

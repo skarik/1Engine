@@ -2,7 +2,7 @@
 #ifndef _POLYGON_H_
 #define _POLYGON_H_
 
-#include "Vector2f.h"
+#include "Vector2.h"
 
 class Polygon
 {

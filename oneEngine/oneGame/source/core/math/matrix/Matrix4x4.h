@@ -11,33 +11,33 @@ public:
 
 	// Setters - Translation
 	FORCE_INLINE bool setTranslation ( const Real = 0, const Real = 0, const Real = 0 );
-	FORCE_INLINE bool setTranslation ( const Vector3d& );
+	FORCE_INLINE bool setTranslation ( const Vector3f& );
 
 	// Setters - Scaling
 	FORCE_INLINE bool setScale ( const Real = 0, const Real = 0, const Real = 0 );
-	FORCE_INLINE bool setScale ( const Vector3d& );
+	FORCE_INLINE bool setScale ( const Vector3f& );
 
 	// Setters - Rotation
 	FORCE_INLINE bool setRotation ( const Real = 0, const Real = 0, const Real = 0 );
-	FORCE_INLINE bool setRotation ( const Vector3d& );
+	FORCE_INLINE bool setRotation ( const Vector3f& );
 	FORCE_INLINE bool setRotation ( const Quaternion& );
 	FORCE_INLINE bool setRotation ( const Matrix3x3& );
 
 	FORCE_INLINE bool setRotationZYX ( const Real = 0, const Real = 0, const Real = 0 );
 
 	// Modders
-	FORCE_INLINE void translate ( const Vector3d& );
+	FORCE_INLINE void translate ( const Vector3f& );
 
 	// Getters - Translation
-	FORCE_INLINE Vector3d	getTranslation ( void ) const;
+	FORCE_INLINE Vector3f	getTranslation ( void ) const;
 
 	// Getters - Rotation
-	FORCE_INLINE Vector3d	getEulerAngles ( void ) const;
+	FORCE_INLINE Vector3f	getEulerAngles ( void ) const;
 	FORCE_INLINE Quaternion	getQuaternion ( void ) const;
 	FORCE_INLINE Matrix3x3	getRotator ( void ) const;
 
 	// Getters - Scale
-	FORCE_INLINE Vector3d	getScaling ( void ) const;
+	FORCE_INLINE Vector3f	getScaling ( void ) const;
 
 	// Operations
 	FORCE_INLINE Matrix4x4 transpose ( void ) const;
@@ -57,8 +57,8 @@ public:
 	FORCE_INLINE Matrix4x4 operator+ ( Matrix4x4 const& ) const;
 	FORCE_INLINE Matrix4x4 operator+=( Matrix4x4 const& );
 
-	FORCE_INLINE Vector3d operator* ( Vector3d const& ) const;
-	FORCE_INLINE Vector4d operator* ( Vector4d const& ) const;
+	FORCE_INLINE Vector3f operator* ( Vector3f const& ) const;
+	FORCE_INLINE Vector4f operator* ( Vector4f const& ) const;
 
 	// Transpose
 	FORCE_INLINE Matrix4x4 operator! ( void ) const;

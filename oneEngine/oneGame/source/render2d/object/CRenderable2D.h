@@ -16,7 +16,7 @@
 
 struct spriteGenParams2D_t
 {
-	Vector3d normal_default;
+	Vector3f normal_default;
 };
 
 class CRenderable2D : public CRenderableObject

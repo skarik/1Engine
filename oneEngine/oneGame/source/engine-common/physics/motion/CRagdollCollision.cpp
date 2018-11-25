@@ -39,8 +39,8 @@ CRagdollCollision::CRagdollCollision ( const prRigidbodyCreateParams& params, CS
 		//glBone* targetBone = m_skinnedmodel->GetSkeletonList()->at(0);
 
 		physShape* tCollider;
-		//tCollider = Physics::CreateBoxShape( Vector3d(0.17f,0.17f,0.17f) );
-		tCollider = new physBoxShape( Vector3d(0.17f,0.17f,0.17f) );
+		//tCollider = Physics::CreateBoxShape( Vector3f(0.17f,0.17f,0.17f) );
+		tCollider = new physBoxShape( Vector3f(0.17f,0.17f,0.17f) );
 
 		physRigidBodyInfo tInfo;
 		tInfo.m_mass = 3.0f;
@@ -48,8 +48,8 @@ CRagdollCollision::CRagdollCollision ( const prRigidbodyCreateParams& params, CS
 		tInfo.m_centerOfMass = physVector4( 0,0,0 );
 		tInfo.m_friction = 0.5f;
 		tInfo.m_motionType = physMotion::MOTION_DYNAMIC;
-		//Vector3d targetPosition = targetBone->xRagdollPoseModel.position;//targetBone->transform.position;
-		Vector3d targetPosition = pose_model[0].world.position;
+		//Vector3f targetPosition = targetBone->xRagdollPoseModel.position;//targetBone->transform.position;
+		Vector3f targetPosition = pose_model[0].world.position;
 		tInfo.m_position = physVector4( targetPosition.x, targetPosition.y, targetPosition.z );
 		//Quaternion targetRotation = targetBone->xRagdollPoseModel.rotation;//targetBone->transform.rotation.getQuaternion();
 		Quaternion targetRotation = pose_model[0].world.rotation;
@@ -63,7 +63,7 @@ CRagdollCollision::CRagdollCollision ( const prRigidbodyCreateParams& params, CS
 		thb.rigidbody = new physRigidBody( &tInfo );
 		thb.rigidbody->setUserData( GetId() ); // Give the rigidbody this ragoll's ID.
 
-		thb.impulse = Vector3d(0,0,0);
+		thb.impulse = Vector3f(0,0,0);
 		thb.boneIndex = 0;//targetBone->index;
 		thb.hitboxIndex = 0;
 		thb.name = "Root";
@@ -88,8 +88,8 @@ CRagdollCollision::CRagdollCollision ( const prRigidbodyCreateParams& params, CS
 		tInfo.m_centerOfMass = physVector4( 0,0,0 );
 		tInfo.m_friction = 0.5f;
 		tInfo.m_motionType = physMotion::MOTION_DYNAMIC;
-		//Vector3d targetPosition = targetBone->xRagdollPoseModel.position;//targetBone->transform.position;
-		Vector3d targetPosition = pose_model[boneIndex].world.position;
+		//Vector3f targetPosition = targetBone->xRagdollPoseModel.position;//targetBone->transform.position;
+		Vector3f targetPosition = pose_model[boneIndex].world.position;
 		tInfo.m_position = physVector4( targetPosition.x, targetPosition.y, targetPosition.z );
 		//Quaternion targetRotation = targetBone->xRagdollPoseModel.rotation;// targetBone->transform.rotation.getQuaternion();
 		Quaternion targetRotation = pose_model[boneIndex].world.rotation;
@@ -103,7 +103,7 @@ CRagdollCollision::CRagdollCollision ( const prRigidbodyCreateParams& params, CS
 		thb.rigidbody = new physRigidBody( &tInfo );
 		thb.rigidbody->setUserData( GetId() ); // Give the rigidbody this ragoll's ID.
 
-		thb.impulse = Vector3d(0,0,0);
+		thb.impulse = Vector3f(0,0,0);
 		thb.boneIndex = boneIndex;
 		thb.hitboxIndex = m_hitboxList.size();
 		thb.name = mdl_hitboxes->at(i).name;
@@ -225,7 +225,7 @@ void CRagdollCollision::CreateJoints ( std::vector<core::TransformLite>& pose_mo
 			if ( (targetBone->name.find( "Calf" ) != string::npos) || (targetBone->name.find( "Forearm" ) != string::npos) )
 			{
 				//targetBone->transform.Up();
-				Vector3d axisUp = targetBone->xRagdollPoseModel.rotation * Vector3d::up;
+				Vector3f axisUp = targetBone->xRagdollPoseModel.rotation * Vector3f::up;
 
 				hkpLimitedHingeConstraintData* hc;
 				hc = new hkpLimitedHingeConstraintData();
@@ -252,9 +252,9 @@ void CRagdollCollision::CreateJoints ( std::vector<core::TransformLite>& pose_mo
 			}
 			else
 			{
-				Vector3d axisUp = targetBone->xRagdollPoseModel.rotation * Vector3d::up;
-				Vector3d axisSide = targetBone->xRagdollPoseModel.rotation * Vector3d::left;
-				Vector3d axisForward = targetBone->xRagdollPoseModel.rotation * Vector3d::forward;
+				Vector3f axisUp = targetBone->xRagdollPoseModel.rotation * Vector3f::up;
+				Vector3f axisSide = targetBone->xRagdollPoseModel.rotation * Vector3f::left;
+				Vector3f axisForward = targetBone->xRagdollPoseModel.rotation * Vector3f::forward;
 
 				hkpRagdollConstraintData* rdc;
 				
@@ -479,13 +479,13 @@ void CRagdollCollision::RigidbodyUpdate ( Real interpolation )
 	// Need a Ragdoll to Animation conversion here
 	for ( auto hb = m_hitboxList.begin(); hb != m_hitboxList.end(); ++hb )
 	{	// TODO: apply impulse and continue
-		hb->impulse = Vector3d(0,0,0);
+		hb->impulse = Vector3f(0,0,0);
 
 		// If the ragdoll strength is high with this one, take the output from the physics
 		/*glBone* targetBone = m_skinnedmodel->GetSkeletonList()->at(hb->boneIndex);
 		if ( targetBone->ragdollStrength > FTYPE_PRECISION )
 		{
-			Vector3d nextPosition = hb->rigidbody->getPosition();
+			Vector3f nextPosition = hb->rigidbody->getPosition();
 			nextPosition -= m_skinnedmodel->transform.position;
 			nextPosition = m_skinnedmodel->transform.rotation.inverse() * nextPosition;
 			targetBone->transform.position = targetBone->transform.position.lerp(nextPosition,targetBone->ragdollStrength);
@@ -515,15 +515,15 @@ void CRagdollCollision::FixedUpdate ( void )
 		core::TransformLite* bone_transform = &skeleton->current_transform[hb->boneIndex]; 
 		Real bone_strength = skeleton->ext_physics_strength[hb->boneIndex];
 
-		Vector3d targetPosition = m_skinnedmodel->transform.rotation * bone_transform->world.position + m_skinnedmodel->transform.position;
+		Vector3f targetPosition = m_skinnedmodel->transform.rotation * bone_transform->world.position + m_skinnedmodel->transform.position;
 		Quaternion targetRotation = ( m_skinnedmodel->transform.rotation * bone_transform->world.rotation ).getQuaternion();
 
-		Vector3d linearVelocity = hb->rigidbody->getLinearVelocity();
-		Vector4d angularVelocity = hb->rigidbody->getAngularVelocity();
+		Vector3f linearVelocity = hb->rigidbody->getLinearVelocity();
+		Vector4f angularVelocity = hb->rigidbody->getAngularVelocity();
 		linearVelocity *= bone_strength;
 		angularVelocity *= bone_strength;
-		Vector3d currentPosition = hb->rigidbody->getPosition();
-		Vector3d deltaPosition = targetPosition - currentPosition;
+		Vector3f currentPosition = hb->rigidbody->getPosition();
+		Vector3f deltaPosition = targetPosition - currentPosition;
 		//currentPosition.setInterpolate( hkVector4(targetPosition.x,targetPosition.y,targetPosition.z), currentPosition, targetBone->ragdollStrength );
 		currentPosition = targetPosition.lerp( currentPosition, bone_strength );
 		Quaternion currentRotation = hb->rigidbody->getRotation();
@@ -546,7 +546,7 @@ void CRagdollCollision::FixedUpdate ( void )
 		linearVelocity += deltaPosition;
 		//deltaRotation.setSlerp( deltaRotation, hkQuaternion::getIdentity(), targetBone->ragdollStrength );
 		deltaRotation = deltaRotation.Slerp( Quaternion(), bone_strength );
-		angularVelocity += Vector4d( &deltaRotation.x );
+		angularVelocity += Vector4f( &deltaRotation.x );
 		
 		// set velocities and position
 		hb->rigidbody->setLinearVelocity( linearVelocity );
@@ -563,7 +563,7 @@ void CRagdollCollision::FixedUpdate ( void )
 	for ( uint i = 0; i < skeletonModel->m_bones.getSize(); ++i )
 	{
 		glBone* bone = m_skinnedmodel->GetSkeletonList()->at(i);
-		Vector3d position = bone->transform.position;
+		Vector3f position = bone->transform.position;
 		tempTransforms[i].m_translation = hkVector4( position.x, position.y, position.z );
 		Quaternion rotation = bone->transform.rotation;
 		tempTransforms[i].m_rotation = hkQuaternion( rotation.x, rotation.y, rotation.z, rotation.w );

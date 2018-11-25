@@ -15,7 +15,7 @@ namespace Render2D
 		RENDER2D_API void GenerateNormalMap (
 			const pixel_t* i_pixel_data, pixel_t* o_normal_map, 
 			const uint n_image_width, const uint n_image_height,
-			const Vector3d& n_default_normal = Vector3d(0,0,1)
+			const Vector3f& n_default_normal = Vector3f(0,0,1)
 		);
 	};
 };

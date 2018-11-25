@@ -15,7 +15,7 @@ namespace Engine2D
 	{
 	protected:
 		//		SpriteContainer (Constructor)
-		ENGINE2D_API explicit		SpriteContainer ( Vector3d* position, Real* angle = NULL, Vector3d* scale = NULL );
+		ENGINE2D_API explicit		SpriteContainer ( Vector3f* position, Real* angle = NULL, Vector3f* scale = NULL );
 		//		SpriteContinaer (Destructor)
 		ENGINE2D_API				~SpriteContainer ( void );
 
@@ -72,9 +72,9 @@ namespace Engine2D
 	private:
 		// Source transform pointers:
 
-		Vector3d const*				m_sourcePosition;
+		Vector3f const*				m_sourcePosition;
 		Real const*					m_sourceAngle;
-		Vector3d const*				m_sourceScale;
+		Vector3f const*				m_sourceScale;
 
 		// Depth offset used when building mesh:
 

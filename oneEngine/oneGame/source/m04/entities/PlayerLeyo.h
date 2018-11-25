@@ -32,16 +32,16 @@ namespace M04
 	public:
 		// Current state:
 
-		Vector3d flipstate;
+		Vector3f flipstate;
 		
-		Vector3d position;
-		Vector3d velocity;
+		Vector3f position;
+		Vector3f velocity;
 
 		int		camera_mode;
 		float	camera_lerp_mode;
 		float	camera_stuck_time;
-		Vector3d camera_position;
-		Vector3d camera_lockposition;
+		Vector3f camera_position;
+		Vector3f camera_lockposition;
 
 	protected:
 
@@ -61,7 +61,7 @@ namespace M04
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::PlayerLeyo);
 		DEFINE_DISPLAY(DISPLAY_2D_SPRITE,"sprites/leo.gal");
-		DEFINE_VALUE(position,Vector3d,FIELD_POSITION);
+		DEFINE_VALUE(position,Vector3f,FIELD_POSITION);
 		END_OBJECT_DESC();
 	};
 }

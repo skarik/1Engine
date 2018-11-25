@@ -3,7 +3,7 @@
 #ifndef _S_COLLISION_
 #define _S_COLLISION_
 
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "core/math/Ray.h"
 
 class CCollider;
@@ -19,7 +19,7 @@ struct sCollision
 
 	CGameBehavior*	m_hit_Other;
 	CGameBehavior*	m_hit_This;
-	//Vector3d	vPos;
+	//Vector3f	vPos;
 	Ray			m_hit;
 };
 

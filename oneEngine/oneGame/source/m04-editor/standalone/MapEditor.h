@@ -160,7 +160,7 @@ namespace M04
 		SubMode		m_current_submode;
 
 		RrCamera*	m_target_camera;
-		Vector3d	m_target_camera_position;
+		Vector3f	m_target_camera_position;
 		bool		m_navigation_busy;
 		bool		m_preclude_navigation;	// Stop the navigation
 
@@ -178,9 +178,9 @@ namespace M04
 		// M04::EditorObjectProxy*	m_actor_selection;
 		// Engine2D::ObjectProxy*	m_actor_info_selection;
 		// so it'll be a Engine2D::SpriteContainer which is an interface with only a sprite.
-		// constructor of it will be explicit, taking a Vector3d pointer, which will be draw pos
+		// constructor of it will be explicit, taking a Vector3f pointer, which will be draw pos
 		//										  and a float pointer, which will be angle
-		//										  and a Vector3d pointer, for scale
+		//										  and a Vector3f pointer, for scale
 		M04::EditorObject*	m_object_target;
 
 		ObjectEditorListing*	m_listing;

@@ -13,8 +13,8 @@ rrMeshBuilder2D::rrMeshBuilder2D ( const uint16_t estimatedVertexCount )
 {
 	setScreenMapping(
 		core::math::Cubic::FromPosition(
-			Vector3d(0, 0, -45.0F),
-			Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) )
+			Vector3f(0, 0, -45.0F),
+			Vector3f((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) )
 	);
 
 	enableAttribute(renderer::shader::kVBufferSlotPosition);
@@ -30,8 +30,8 @@ rrMeshBuilder2D::rrMeshBuilder2D ( arModelData* preallocatedModelData )
 {
 	setScreenMapping(
 		core::math::Cubic::FromPosition(
-			Vector3d(0, 0, -45.0F),
-			Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) )
+			Vector3f(0, 0, -45.0F),
+			Vector3f((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) )
 	);
 
 	enableAttribute(renderer::shader::kVBufferSlotPosition);

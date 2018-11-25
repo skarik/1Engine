@@ -175,7 +175,7 @@ void	glMainSystem::setupAmbient ( void )
 //	glLoadIdentity();
 //
 //	glTranslatef( pTransform->position.x,pTransform->position.y,pTransform->position.z );
-//	//Vector3d rotEuler = pTransform->rotation.getEulerAngles();
+//	//Vector3f rotEuler = pTransform->rotation.getEulerAngles();
 //	//glRotatef( rotEuler.z, 0,0,1 );
 //	//glRotatef( rotEuler.y, 0,1,0 );
 //	//glRotatef( rotEuler.x, 1,0,0 );
@@ -211,7 +211,7 @@ void	glMainSystem::setupAmbient ( void )
 //}
 //
 //
-//void	glMainSystem::Translate ( Vector3d const& vPosition )
+//void	glMainSystem::Translate ( Vector3f const& vPosition )
 //{
 //	if ( !hasModelMatrix() )
 //	{

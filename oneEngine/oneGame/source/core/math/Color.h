@@ -12,8 +12,7 @@
 #include <algorithm>
 #include "core/types/types.h"
 #include "core/types/float.h"
-
-class Vector4d;
+#include "core/math/Vector4.h"
 
 class Color
 {
@@ -34,7 +33,7 @@ public:
 	FORCE_INLINE Color (T0 r, T1 g, T2 b, T3 a);
 
 	// Implicit cast to Vector4.
-	operator Vector4d();
+	operator Vector4f();
 
 	// Linear interpolation
 	FORCE_INLINE static Color Lerp (Color const c_one, Color const c_two, Real t);

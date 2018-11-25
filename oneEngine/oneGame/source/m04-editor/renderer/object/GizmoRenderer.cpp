@@ -75,11 +75,11 @@ bool GizmoRenderer::PreRender ( void )
 	{
 		Rect rect = (*object)->GetSpriteRect();
 		rect.pos += (*object)->position;
-		Vector3d points [4];
-		points[0] = rect.pos + Vector3d( 0,0,transform.world.position.z );
-		points[2] = rect.pos + rect.size + Vector3d( 0,0,transform.world.position.z );
-		points[1] = Vector3d( points[2].x, points[0].y, points[0].z );
-		points[3] = Vector3d( points[0].x, points[2].y, points[0].z );
+		Vector3f points [4];
+		points[0] = rect.pos + Vector3f( 0,0,transform.world.position.z );
+		points[2] = rect.pos + rect.size + Vector3f( 0,0,transform.world.position.z );
+		points[1] = Vector3f( points[2].x, points[0].y, points[0].z );
+		points[3] = Vector3f( points[0].x, points[2].y, points[0].z );
 
 		l_typeColor = Color( 1.0F,1.0F,1.0F, 1.0F );
 
@@ -90,7 +90,7 @@ bool GizmoRenderer::PreRender ( void )
 		else
 			continue;
 
-		Vector3d meshpoints [4];
+		Vector3f meshpoints [4];
 
 		// Draw the four quads around the edge of the area
 		meshpoints[0] = points[0];

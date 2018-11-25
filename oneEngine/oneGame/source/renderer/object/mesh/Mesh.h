@@ -60,10 +60,10 @@ namespace renderer
 		bool				bUseSkinning;
 
 		// Frustum Culling
-		Vector3d			vCheckRenderPos;
+		Vector3f			vCheckRenderPos;
 		float				fCheckRenderDist;
-		Vector3d			vMinExtents;
-		Vector3d			vMaxExtents;
+		Vector3f			vMinExtents;
+		Vector3f			vMaxExtents;
 		core::math::BoundingBox
 							bbCheckRenderBox;
 

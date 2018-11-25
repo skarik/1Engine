@@ -2,7 +2,7 @@
 #define RENDERER_RENDERABLE_SHAPE_CUBE_H_
 
 #include "core/types/ModelData.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "renderer/object/CRenderableObject.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 

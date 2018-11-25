@@ -3,7 +3,7 @@
 #include "core/math/Math.h"
 #include "engine-common/physics/wind/physExplosion.h"
 
-CPhysExplosion::CPhysExplosion( Vector3d &vPos, Real fMagnitude, Real fPhysicsMultiplier )
+CPhysExplosion::CPhysExplosion( Vector3f &vPos, Real fMagnitude, Real fPhysicsMultiplier )
 	: CGameObject()
 {
 	transform.world.position = vPos;

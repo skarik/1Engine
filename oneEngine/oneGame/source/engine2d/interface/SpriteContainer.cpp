@@ -7,7 +7,7 @@
 using namespace Engine2D;
 
 
-SpriteContainer::SpriteContainer ( Vector3d* position, Real* angle, Vector3d* scale )
+SpriteContainer::SpriteContainer ( Vector3f* position, Real* angle, Vector3f* scale )
 	: RrLogicObject(),
 	m_sourcePosition(position), m_sourceAngle(angle), m_sourceScale(scale),
 	m_sprite(NULL),
@@ -46,7 +46,7 @@ void SpriteContainer::PreStep ( void )
 			m_sprite->transform.world.position.y = (Real)math::round(m_sprite->transform.world.position.y);
 		}
 		if ( m_sourceAngle != NULL ) {
-			m_sprite->transform.world.rotation = Quaternion::CreateAxisAngle( Vector3d::up , *m_sourceAngle );
+			m_sprite->transform.world.rotation = Quaternion::CreateAxisAngle( Vector3f::up , *m_sourceAngle );
 		}
 		if ( m_sourceScale != NULL ) {
 			m_sprite->transform.world.scale = *m_sourceScale;

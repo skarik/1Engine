@@ -3,8 +3,8 @@
 
 #include "core/types/types.h"
 #include "core/math/Color.h"
-#include "core/math/Vector2f.h"
-#include "core/math/Vector4d.h"
+#include "core/math/Vector2.h"
+#include "core/math/Vector4.h"
 #include "core/containers/arstring.h"
 #include "core-ext/transform/Transform.h"
 
@@ -182,11 +182,11 @@ public:
 	Color		m_emissive;
 
 	// Contants (Coordinates)
-	Vector4d	m_texcoordScaling;
-	Vector4d	m_texcoordOffset;
+	Vector4f	m_texcoordScaling;
+	Vector4f	m_texcoordOffset;
 
 	// Constants (Other)
-	Vector4d	gm_WindDirection;
+	Vector4f	gm_WindDirection;
 	Real		gm_FadeValue;
 	Real		gm_HalfScale;
 

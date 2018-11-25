@@ -11,7 +11,7 @@ _FORCE_INLINE_ PHYS_API physCharacter::physCharacter( hkpCharacterRigidBodyCinfo
 }
 
 
-_FORCE_INLINE_ PHYS_API void physCharacter::setLinearVelocity ( const Vector3d& newVel, const Real32 timestep )
+_FORCE_INLINE_ PHYS_API void physCharacter::setLinearVelocity ( const Vector3f& newVel, const Real32 timestep )
 {
 	/*if ( controller ) {
 		controller->setLinearVelocity( hkVector4( newVel.x, newVel.y, newVel.z ), timestep );
@@ -21,10 +21,10 @@ _FORCE_INLINE_ PHYS_API void physCharacter::setLinearVelocity ( const Vector3d& 
 	}*/
 	throw core::NotYetImplementedException();
 }
-_FORCE_INLINE_ PHYS_API Vector3d physCharacter::getLinearVelocity ( void )
+_FORCE_INLINE_ PHYS_API Vector3f physCharacter::getLinearVelocity ( void )
 {
 	/*if ( controller ) {
-		Vector3d result;
+		Vector3f result;
 		controller->getLinearVelocity().store3( &(result.x) );
 		return result;
 	}

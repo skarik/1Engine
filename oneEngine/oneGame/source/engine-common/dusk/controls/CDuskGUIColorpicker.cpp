@@ -314,7 +314,7 @@ void CDuskGUIColorpicker::Render ( void )
 		//GL.prepareDraw();
 
 		//GL.beginOrtho( 0,0, 1,1, -45,45 );
-		core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+		core::math::Cubic::FromPosition( Vector3f(0, 0, -45.0F), Vector3f((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 		//GL.beginOrtho();
 		//GLd.DrawSet2DScaleMode();
 
