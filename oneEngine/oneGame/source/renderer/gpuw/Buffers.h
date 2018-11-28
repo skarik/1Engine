@@ -66,6 +66,10 @@ namespace gpu
 
 		//	nativePtr() : returns native index or pointer to the resource.
 		RENDER_API gpuHandle	nativePtr ( void );
+
+	private:
+		unsigned int	m_buffer;
+		Format			m_format;
 	};
 }
 

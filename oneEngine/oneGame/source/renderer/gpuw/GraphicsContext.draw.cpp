@@ -3,6 +3,7 @@
 
 #include "renderer/gpuw/Pipeline.h"
 #include "renderer/gpuw/ShaderPipeline.h"
+#include "renderer/gpuw/Buffers.h"
 
 #include "renderer/ogl/GLCommon.h"
 
@@ -27,6 +28,14 @@ int gpu::GraphicsContext::setPipeline ( Pipeline* pipeline )
 }
 int gpu::GraphicsContext::setVertexBuffer ( int slot, VertexBuffer* buffer, uint32_t offset )
 {
+
+	// todo: ensure pipeline exists
+	glVertexArrayVertexBuffer(m_pipeline->nativePtr(),
+							  slot,
+							  buffer->nativePtr(),
+							  offset,
+							  gpu::FormatByteWidth(buffer->m_format));
+
 	return kError_SUCCESS;
 }
 
@@ -40,6 +49,10 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 	if (m_pipelineBound == false)
 	{
 		//glBindVertexArray(m_pipeline->m_vao);
+
+		//if (m_pipeline->
+
+		// loop through the vertex buffers
 	}
 	return 0;
 }

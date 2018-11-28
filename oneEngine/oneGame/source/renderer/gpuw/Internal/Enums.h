@@ -6,6 +6,8 @@
 #include "core/gfx/textureFormats.h"
 #include "core/exceptions.h"
 
+#include "renderer/gpuw/Public/Formats.h"
+
 #include "renderer/ogl/GLCommon.h"
 
 namespace gpu {
@@ -112,6 +114,29 @@ namespace internal {
 		case KStencilFormatIndex4:	return GL_UNSIGNED_BYTE;
 		case KStencilFormatIndex8:	return GL_UNSIGNED_BYTE;
 		case KStencilFormatIndex16:	return GL_UNSIGNED_SHORT;
+		}
+		throw core::InvalidArgumentException();
+		return GL_INVALID_ENUM;
+	}
+
+	gpuEnum ArFormatToGlDataType ( const gpu::Format format )
+	{
+		switch ( format ) {
+			// Byte formats
+		case kFormatR8UInteger:
+		case kFormatR8G8UInteger:
+		case kFormatR8G8B8UInteger:
+		case kFormatR8G8B8A8UInteger:		return GL_UNSIGNED_BYTE;
+			// Short formats
+		case kFormatR16UInteger:
+		case kFormatR16G16UInteger:
+		case kFormatR16G16B16UInteger:
+		case kFormatR16G16B16A16UInteger:	return GL_UNSIGNED_SHORT;
+			// Float formats
+		case kFormatR32SFloat:
+		case kFormatR32G32SFloat:
+		case kFormatR32G32B32SFloat:
+		case kFormatR32G32B32A32SFloat:		return GL_FLOAT;
 		}
 		throw core::InvalidArgumentException();
 		return GL_INVALID_ENUM;

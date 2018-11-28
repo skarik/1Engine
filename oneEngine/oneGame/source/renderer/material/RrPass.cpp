@@ -1,5 +1,8 @@
 #include "renderer/material/RrPass.h"
 
+#include "renderer/texture/RrTexture.h"
+#include "renderer/material/RrShaderProgram.h"
+
 RrPass::RrPass ( void )
 	: m_program(NULL), m_textures(), m_texturesRaw()
 {
@@ -30,4 +33,21 @@ void RrPass::utilSetupAs2D ( void )
 	m_cullMode = gpu::kCullModeNone;
 	m_depthWrite = false;
 	m_depthTest = gpu::kCompareOpAlways;
+}
+
+// Destructor for the pass attempts to release references to all objects in use.
+// This should only include Rr Textures & Shader programs.
+RrPass::~RrPass ( void )
+{
+	for (size_t i = 0; i < kPass_MaxTextureSlots; ++i)
+	{
+		if (m_textures[i] != NULL)
+		{
+			m_textures[i]->RemoveReference();
+		}
+	}
+	if (m_program != NULL)
+	{
+		m_program->RemoveReference();
+	}
 }

@@ -85,6 +85,8 @@ namespace gpu
 		//	valid() : is this pipeline valid to be used?
 		// If the pipeline failed to be created or doesnt exist, this will be false
 		RENDER_API bool			valid ( void );
+		//	nativePtr() : returns native index or pointer to the resource.
+		RENDER_API gpuHandle	nativePtr ( void );
 
 	private:
 		
