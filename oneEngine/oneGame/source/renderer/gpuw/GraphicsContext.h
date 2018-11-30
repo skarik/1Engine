@@ -149,7 +149,12 @@ namespace gpu
 		RENDER_API int			clearDepthStencil ( bool clearDepth, float depth, bool clearStencil, uint8_t stencil );
 		RENDER_API int			clearColor ( float* rgbaColor );
 
-		RENDER_API int			sync ( Fence* fence );
+		//	signal( fence ) : Inserts a command into the command buffer to signal the given fence.
+		// This can be used to make either the CPU or GPU wait on a command buffer to reach a certain point.
+		RENDER_API int			signal ( Fence* fence );
+		//	waitOnSignal( fence ): Inserts a command into the command buffer to stall the command stream until the given fence is signaled.
+		// This can be used to wait on either a CPU or GPU signal.
+		RENDER_API int			waitOnSignal ( Fence* fence );
 
 		RENDER_API int			blit ( const BlitTarget& source, const BlitTarget& target );
 		RENDER_API int			blitResolve ( const BlitTarget& source, const BlitTarget& target );
@@ -163,6 +168,9 @@ namespace gpu
 		Pipeline*				m_pipeline;
 		bool					m_pipelineBound;
 		bool					m_pipelineDataBound;
+
+		Format					m_indexFormat;
+		Buffer*					m_indexBuffer;
 
 		int						drawPreparePipeline ( void );
 	};

@@ -52,7 +52,7 @@ namespace gpu
 		return 0;
 	}
 
-	intptr_t FormatByteWidth ( const gpu::Format format );
+	intptr_t FormatGetByteStride ( const gpu::Format format );
 }
 
 #endif//GPU_WRAPPER_PUBLIC_FORMATS_H_

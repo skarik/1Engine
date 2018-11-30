@@ -20,12 +20,16 @@ int gpu::Pipeline::create ( const PipelineCreationDescription* params )
 		GLenum type = gpu::internal::ArFormatToGlDataType(params->vv_inputAttributes[i].format);
 		GLboolean normalized = GL_FALSE;
 
+		glEnableVertexArrayAttrib(m_vao,
+								  params->vv_inputAttributes[i].location);
+
 		glVertexArrayAttribFormat(m_vao,
 								  params->vv_inputAttributes[i].location,
 								  size,
 								  type,
 								  normalized, 
 								  params->vv_inputAttributes[i].offset);
+
 		glVertexArrayAttribBinding(m_vao,
 								   params->vv_inputAttributes[i].location,
 								   params->vv_inputAttributes[i].binding);

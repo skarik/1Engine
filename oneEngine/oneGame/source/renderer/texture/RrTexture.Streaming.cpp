@@ -76,7 +76,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 				m_texture.upload(loadInfo->pixelBuffer[0], 0);
 
 				// Create a signal to wait on
-				gfx->sync(&loadInfo->pixelSync);
+				gfx->signal(&loadInfo->pixelSync);
 
 				// And we next want to wait on the load.
 				loadState = kTextureLoadState_GPUImage;
@@ -161,7 +161,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 				m_texture.upload(loadInfo->pixelBuffer[0], 15);
 
 				// Create a signal to wait on
-				gfx->sync(&loadInfo->pixelSync);
+				gfx->signal(&loadInfo->pixelSync);
 
 				// And we next want to wait on the load.
 				loadState = kTextureLoadState_GPUSuperlow;
@@ -217,7 +217,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 					if (!sync_client)
 					{
 						// Create a signal to wait on
-						gfx->sync(&loadInfo->pixelSync);
+						gfx->signal(&loadInfo->pixelSync);
 						loadInfo->uploading = true;
 						return OnStreamStep(sync_client);
 					}
@@ -228,7 +228,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 						if (loadInfo->level == -1) // Finished the last level...
 						{
 							// Create signal to wait on
-							gfx->sync(&loadInfo->pixelSync);
+							gfx->signal(&loadInfo->pixelSync);
 							loadInfo->uploading = true; 
 							// Mark done here
 							loadState = kTextureLoadState_GPUImage;

@@ -67,6 +67,10 @@ namespace gpu
 		//	nativePtr() : returns native index or pointer to the resource.
 		RENDER_API gpuHandle	nativePtr ( void );
 
+		//	getFormat() : returns underlying format of the data, if applicable.
+		// For constant buffers, regular buffers, and structured buffers, this will always be kFormatUndefined.
+		RENDER_API Format		getFormat ( void );
+
 	private:
 		unsigned int	m_buffer;
 		Format			m_format;

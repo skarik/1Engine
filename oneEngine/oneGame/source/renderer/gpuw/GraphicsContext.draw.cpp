@@ -1,9 +1,13 @@
 #include "GraphicsContext.h"
 #include "Error.h"
 
+#include "core/debug.h"
+
 #include "renderer/gpuw/Pipeline.h"
 #include "renderer/gpuw/ShaderPipeline.h"
 #include "renderer/gpuw/Buffers.h"
+
+#include "renderer/gpuw/Internal/Enums.h"
 
 #include "renderer/ogl/GLCommon.h"
 
@@ -34,13 +38,19 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, VertexBuffer* buffer, uint
 							  slot,
 							  buffer->nativePtr(),
 							  offset,
-							  gpu::FormatByteWidth(buffer->m_format));
+							  (GLsizei)gpu::FormatGetByteStride(buffer->getFormat()));
 
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::sync ( Fence* fence )
+int gpu::GraphicsContext::signal ( Fence* fence )
 {
+	ARCORE_ERROR("not implemented");
+	return kError_SUCCESS;
+}
+int gpu::GraphicsContext::waitOnSignal ( Fence* fence )
+{
+	ARCORE_ERROR("not implemented");
 	return kError_SUCCESS;
 }
 
@@ -48,13 +58,17 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 {
 	if (m_pipelineBound == false)
 	{
-		//glBindVertexArray(m_pipeline->m_vao);
-
-		//if (m_pipeline->
-
-		// loop through the vertex buffers
+		if (m_pipeline->m_boundIndexBuffer != m_indexBuffer)
+		{
+			glVertexArrayElementBuffer(m_pipeline->nativePtr(), m_indexBuffer->nativePtr());
+			m_pipeline->m_boundIndexBuffer = m_indexBuffer;
+		}
+		// TODO: loop through the vertex buffers & make sure the pipeline is setup properly.
+		//		 dx11 has proper error handling for this case, but opengl does not as it forces a driver restart
+		m_pipelineBound = true;
+		return kError_SUCCESS;
 	}
-	return 0;
+	return kError_SUCCESS;
 }
 
 //int gpu::GraphicsContext::setPrimitiveTopology ( PrimitiveTopology topology )
@@ -66,6 +80,11 @@ int gpu::GraphicsContext::draw ( const uint32_t vertexCount, const uint32_t star
 {
 	if (drawPreparePipeline() == kError_SUCCESS)
 	{
+		glBindVertexArray(m_pipeline->nativePtr());
+		glDrawArrays(gpu::internal::ArEnumToGL(m_primitiveType),
+					 (GLint)startVertex,
+					 (GLsizei)vertexCount);
+		ARCORE_ASSERT(validate() == 0);
 		return 0;
 	}
 	return kErrorBadArgument;
@@ -74,6 +93,12 @@ int gpu::GraphicsContext::drawIndexed ( const uint32_t indexCount, const uint32_
 {
 	if (drawPreparePipeline() == kError_SUCCESS)
 	{
+		glBindVertexArray(m_pipeline->nativePtr());
+		glDrawElements(gpu::internal::ArEnumToGL(m_primitiveType),
+					   indexCount,
+					   gpu::internal::ArEnumToGL(m_indexFormat),
+					   (intptr_t)0);
+		ARCORE_ASSERT(validate() == 0);
 		return 0;
 	}
 	return kErrorBadArgument;
@@ -82,6 +107,12 @@ int gpu::GraphicsContext::drawIndirect ( void )
 {
 	if (drawPreparePipeline() == kError_SUCCESS)
 	{
+		//GL_DRAW_INDIRECT_BUFFER
+		glBindVertexArray(m_pipeline->nativePtr());
+		glDrawElementsIndirect(gpu::internal::ArEnumToGL(m_primitiveType),
+							   gpu::internal::ArEnumToGL(m_indexFormat),
+							   (intptr_t)0);
+		ARCORE_ASSERT(validate() == 0);
 		return 0;
 	}
 	return kErrorBadArgument;
