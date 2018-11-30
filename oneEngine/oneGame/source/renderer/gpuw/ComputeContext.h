@@ -10,7 +10,8 @@ namespace gpu
 	public:
 		RENDER_API int			dispatch ( void );
 
-		RENDER_API int			sync ( Fence* fence );
+		RENDER_API int			signal ( Fence* fence );
+		RENDER_API int			waitOnSignal ( Fence* fence );
 	};
 }
 

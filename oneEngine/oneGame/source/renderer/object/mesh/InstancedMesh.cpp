@@ -165,7 +165,7 @@ bool renderer::InstancedMesh::Render ( const rrRenderParams* params )
 				gfx->setVertexBuffer(i, &m_mesh->m_buffer[i], 0);
 		// bind the vertex buffers for the morpher: TODO
 		// bind the index buffer
-		gfx->setIndexBuffer(&m_mesh->m_indexBuffer, gpu::kFormatR16UInteger);
+		gfx->setIndexBuffer(&m_mesh->m_indexBuffer, gpu::kIndexFormatUnsigned16);
 		// bind the cbuffers: TODO
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);

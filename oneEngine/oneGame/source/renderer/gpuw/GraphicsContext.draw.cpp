@@ -6,6 +6,7 @@
 #include "renderer/gpuw/Pipeline.h"
 #include "renderer/gpuw/ShaderPipeline.h"
 #include "renderer/gpuw/Buffers.h"
+#include "renderer/gpuw/Fence.h"
 
 #include "renderer/gpuw/Internal/Enums.h"
 
@@ -34,10 +35,10 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, VertexBuffer* buffer, uint
 {
 
 	// todo: ensure pipeline exists
-	glVertexArrayVertexBuffer(m_pipeline->nativePtr(),
-							  slot,
-							  buffer->nativePtr(),
-							  offset,
+	glVertexArrayVertexBuffer((GLuint)m_pipeline->nativePtr(),
+							  (GLuint)slot,
+							  (GLuint)buffer->nativePtr(),
+							  (GLintptr)offset,
 							  (GLsizei)gpu::FormatGetByteStride(buffer->getFormat()));
 
 	return kError_SUCCESS;
@@ -46,11 +47,35 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, VertexBuffer* buffer, uint
 int gpu::GraphicsContext::signal ( Fence* fence )
 {
 	ARCORE_ERROR("not implemented");
-	return kError_SUCCESS;
+
+	ARCORE_ASSERT(fence->m_syncId == NULL);
+	ARCORE_ASSERT(fence->m_gfxc == NULL);
+	
+	// Create the sync the only way OpenGL allows
+	fence->m_syncId = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
+	// Tag this context in the fence
+	fence->m_gfxc = this;
+
+	// If the fence was created, flush the buffer now:
+	if (fence->m_syncId != NULL) {
+		glFlush();
+	}
+
+	// Return that it's not a nullptr.
+	return (fence->m_syncId != NULL) ? kError_SUCCESS : kErrorNullReference;
 }
 int gpu::GraphicsContext::waitOnSignal ( Fence* fence )
 {
-	ARCORE_ERROR("not implemented");
+	ARCORE_ASSERT(fence->m_syncId != NULL);
+	ARCORE_ASSERT(fence->m_gfxc != NULL || fence->m_compute != NULL);
+
+	// The sync is already created, so we just wait on it:
+	glWaitSync((GLsync)fence->m_syncId, 0, GL_TIMEOUT_IGNORED);
+
+	// Tag this context in the fence
+	fence->m_gfxc = this;
+
 	return kError_SUCCESS;
 }
 
@@ -60,7 +85,7 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 	{
 		if (m_pipeline->m_boundIndexBuffer != m_indexBuffer)
 		{
-			glVertexArrayElementBuffer(m_pipeline->nativePtr(), m_indexBuffer->nativePtr());
+			glVertexArrayElementBuffer((GLuint)m_pipeline->nativePtr(), (GLuint)m_indexBuffer->nativePtr());
 			m_pipeline->m_boundIndexBuffer = m_indexBuffer;
 		}
 		// TODO: loop through the vertex buffers & make sure the pipeline is setup properly.
@@ -71,16 +96,11 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 	return kError_SUCCESS;
 }
 
-//int gpu::GraphicsContext::setPrimitiveTopology ( PrimitiveTopology topology )
-//{
-//	m_primitiveType = topology;
-//}
-
 int gpu::GraphicsContext::draw ( const uint32_t vertexCount, const uint32_t startVertex )
 {
 	if (drawPreparePipeline() == kError_SUCCESS)
 	{
-		glBindVertexArray(m_pipeline->nativePtr());
+		glBindVertexArray((GLuint)m_pipeline->nativePtr());
 		glDrawArrays(gpu::internal::ArEnumToGL(m_primitiveType),
 					 (GLint)startVertex,
 					 (GLsizei)vertexCount);
@@ -93,7 +113,7 @@ int gpu::GraphicsContext::drawIndexed ( const uint32_t indexCount, const uint32_
 {
 	if (drawPreparePipeline() == kError_SUCCESS)
 	{
-		glBindVertexArray(m_pipeline->nativePtr());
+		glBindVertexArray((GLuint)m_pipeline->nativePtr());
 		glDrawElements(gpu::internal::ArEnumToGL(m_primitiveType),
 					   indexCount,
 					   gpu::internal::ArEnumToGL(m_indexFormat),
@@ -108,7 +128,7 @@ int gpu::GraphicsContext::drawIndirect ( void )
 	if (drawPreparePipeline() == kError_SUCCESS)
 	{
 		//GL_DRAW_INDIRECT_BUFFER
-		glBindVertexArray(m_pipeline->nativePtr());
+		glBindVertexArray((GLuint)m_pipeline->nativePtr());
 		glDrawElementsIndirect(gpu::internal::ArEnumToGL(m_primitiveType),
 							   gpu::internal::ArEnumToGL(m_indexFormat),
 							   (intptr_t)0);

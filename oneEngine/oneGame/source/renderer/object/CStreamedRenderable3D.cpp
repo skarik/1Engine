@@ -78,7 +78,7 @@ bool CStreamedRenderable3D::Render ( const rrRenderParams* params )
 			if (m_currentMeshBuffer->m_bufferEnabled[i])
 				gfx->setVertexBuffer(i, &m_currentMeshBuffer->m_buffer[i], 0);
 		// bind the index buffer
-		gfx->setIndexBuffer(&m_currentMeshBuffer->m_indexBuffer, gpu::kFormatR16UInteger);
+		gfx->setIndexBuffer(&m_currentMeshBuffer->m_indexBuffer, gpu::kIndexFormatUnsigned16);
 		// bind the cbuffers
 		// TODO:
 		// draw now

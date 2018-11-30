@@ -8,8 +8,16 @@
 
 #include <stdio.h>
 
+static gpu::Device* m_TargetDisplayDevice = NULL;
+
+gpu::Device* gpu::getDevice ( void )
+{
+	return m_TargetDisplayDevice;
+}
+
 gpu::Device::Device ( intptr_t module_handle, intptr_t module_window )
-	: mw_module(module_handle), mw_window(module_window)
+	: mw_module(module_handle), mw_window(module_window),
+	m_graphicsContext(NULL), m_computeContext(NULL)
 {}
 gpu::Device::~Device ( void )
 {
@@ -132,6 +140,9 @@ int gpu::Device::create ( void )
 	const uchar* renderer	= glGetString(GL_RENDERER);
 	printf("device vendor: %s\n", vendor);
 	printf("     renderer: %s\n", renderer);
+
+	// Update the target device:
+	m_TargetDisplayDevice = this;
 }
 
 int gpu::Device::refresh ( intptr_t module_handle, intptr_t module_window )
@@ -165,4 +176,20 @@ int gpu::Device::refresh ( intptr_t module_handle, intptr_t module_window )
 		printf("Could not make new context current.\n");
 		return gpu::kErrorInvalidModule;
 	}
+}
+
+gpu::GraphicsContext* gpu::Device::getContext ( void )
+{
+	if (m_graphicsContext == NULL) {
+		m_graphicsContext = new gpu::GraphicsContext();
+	}
+	return m_graphicsContext;
+}
+
+gpu::ComputeContext* gpu::Device::getComputeContext ( void )
+{
+	if (m_computeContext == NULL) {
+		m_computeContext = new gpu::ComputeContext();
+	}
+	return m_computeContext;
 }

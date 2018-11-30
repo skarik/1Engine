@@ -83,10 +83,10 @@ namespace gpu
 		kPrimitiveTopologyTriangleList,
 		kPrimitiveTopologyTriangleStrip,
 		kPrimitiveTopologyTriangleFan,
-		//kPrimitiveTopologyLineListAdjacency,
-		//kPrimitiveTopologyLineStripAdjacency,
-		//kPrimitiveTopologyTriangleListAdjacency,
-		//kPrimitiveTopologyTriangleStripAdjacency,
+		kPrimitiveTopologyLineListAdjacency,
+		kPrimitiveTopologyLineStripAdjacency,
+		kPrimitiveTopologyTriangleListAdjacency,
+		kPrimitiveTopologyTriangleStripAdjacency,
 		kPrimitiveTopologyLinePatchList,
 	};
 }

@@ -126,7 +126,7 @@ namespace gpu
 		//	setPipeline( pipeline ) : Sets current pipeline.
 		// Combination set for shader pipeline, vertex attributes, and primitive topology.
 		RENDER_API int			setPipeline ( Pipeline* pipeline );
-		RENDER_API int			setIndexBuffer ( Buffer* buffer, Format format );
+		RENDER_API int			setIndexBuffer ( Buffer* buffer, IndexFormat format );
 		RENDER_API int			setVertexBuffer ( int slot, VertexBuffer* buffer, uint32_t offset );
 		//	setShaderCBuffer( stage, slot, buffer ) : Sets buffer to given slot, as a ConstantBuffer.
 		// Size is limited to 4kb on some platforms.
@@ -169,7 +169,7 @@ namespace gpu
 		bool					m_pipelineBound;
 		bool					m_pipelineDataBound;
 
-		Format					m_indexFormat;
+		IndexFormat				m_indexFormat;
 		Buffer*					m_indexBuffer;
 
 		int						drawPreparePipeline ( void );

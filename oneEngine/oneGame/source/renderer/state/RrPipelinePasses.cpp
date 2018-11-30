@@ -120,5 +120,5 @@ renderer::pipeline::RrPipelinePasses::~RrPipelinePasses ( void )
 	delete_safe(Lighting2DPass);
 
 	m_vbufScreenQuad.free(NULL);
-	m_pipelineScreenQuadCopy.destroy();
+	m_pipelineScreenQuadCopy.destroy(NULL);
 }

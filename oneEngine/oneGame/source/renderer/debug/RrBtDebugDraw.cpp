@@ -174,7 +174,7 @@ bool RrBtDebugDraw::Render ( const rrRenderParams* params )
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
 	// TODO:
 	// bind the index buffer
-	gfx->setIndexBuffer(&m_buffer_indices, gpu::kFormatR16UInteger);
+	gfx->setIndexBuffer(&m_buffer_indices, gpu::kIndexFormatUnsigned16);
 	// draw now
 	gfx->drawIndexed(m_gpuIndexCount, 0);
 

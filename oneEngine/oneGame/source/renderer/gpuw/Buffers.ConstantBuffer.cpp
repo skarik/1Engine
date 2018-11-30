@@ -43,6 +43,8 @@ static void _AllocateCBufferSize ( const GLuint buffer, const uint64_t data_size
 		//glBufferData( GL_UNIFORM_BUFFER, (GLsizeiptr)data_size, NULL, GL_STREAM_DRAW );
 }
 
+// TODO: Fix the loop between init and upload. They should be either duplicates or unique.
+
 //	init ( data ) : initializes a constant buffer with data
 int	gpu::ConstantBuffer::init ( Device* device, void* data, const  uint64_t data_size, const TransferStyle style )
 {
@@ -63,7 +65,7 @@ int	gpu::ConstantBuffer::upload ( Device* device, void* data, const  uint64_t da
 {
 	if (m_buffer == 0)
 	{
-		init(device, data, data_size, style);
+		init(device, NULL, data_size, style);
 	}
 	else
 	{

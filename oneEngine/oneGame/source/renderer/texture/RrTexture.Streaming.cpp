@@ -217,6 +217,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 					if (!sync_client)
 					{
 						// Create a signal to wait on
+						loadInfo->pixelSync.init();
 						gfx->signal(&loadInfo->pixelSync);
 						loadInfo->uploading = true;
 						return OnStreamStep(sync_client);
@@ -228,6 +229,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 						if (loadInfo->level == -1) // Finished the last level...
 						{
 							// Create signal to wait on
+							loadInfo->pixelSync.init();
 							gfx->signal(&loadInfo->pixelSync);
 							loadInfo->uploading = true; 
 							// Mark done here

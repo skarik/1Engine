@@ -27,22 +27,22 @@ namespace gpu
 		// Non-exposed API for refreshing the device
 		int						refresh ( intptr_t module_handle, intptr_t module_window );
 
-		//	DeviceSetFillMode( device, fillMode ) : Set device's fill mode.
-		// Controls how to fill polygons for given device. (glPolygonMode in OpenGL)
-		// NULL device sets for current active device.
-		//RENDER_API void			setFillMode( const FillMode fillMode );
-
-		//RENDER_API void			sync ( Fence* fence );
-		RENDER_API GraphicsContext*	getContext ( void );
-
-		RENDER_API ComputeContext*	getComputeContext ( void );
+		// Grabs the graphics context for the device.
+		RENDER_API GraphicsContext*
+								getContext ( void );
+		// Grabs the first compute-enabled context for the device.
+		RENDER_API ComputeContext*
+								getComputeContext ( void );
 
 	private:
 		friend OutputSurface;
-		intptr_t	mw_module;
-		intptr_t	mw_window;
-		intptr_t	mw_deviceContext;
-		intptr_t	mw_renderContext;
+		intptr_t			mw_module;
+		intptr_t			mw_window;
+		intptr_t			mw_deviceContext;
+		intptr_t			mw_renderContext;
+
+		GraphicsContext*	m_graphicsContext;
+		ComputeContext*		m_computeContext;
 	};
 
 	RENDER_API Device* getDevice ( void );

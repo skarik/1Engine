@@ -453,7 +453,7 @@ void CRenderableObject::FreePipelines ( void )
 	{
 		if (m_pipelineReady[i] || m_pipelines[i].valid())
 		{
-			m_pipelines[i].destroy();
+			m_pipelines[i].destroy(NULL);
 			m_pipelineReady[i] = false;
 		}
 	}

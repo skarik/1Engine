@@ -9,6 +9,10 @@
 namespace gpu
 {
 	class ShaderPipeline;
+	class Device;
+	class GraphicsContext;
+	class ComputeContext;
+	class Buffer;
 
 	enum InputRate
 	{
@@ -43,6 +47,7 @@ namespace gpu
 	
 	struct PipelineCreationDescription
 	{
+		Device*				device;
 		// Shader pipeline to be used with this pipeline.
 		ShaderPipeline*		shader_pipeline;
 		// Vertex shader inputs
@@ -80,7 +85,7 @@ namespace gpu
 		//RENDER_API bool			assemble ( void );
 		RENDER_API int			create ( const PipelineCreationDescription* params );
 
-		RENDER_API int			destroy ( void );
+		RENDER_API int			destroy ( Device* device );
 
 		//	valid() : is this pipeline valid to be used?
 		// If the pipeline failed to be created or doesnt exist, this will be false
@@ -89,10 +94,12 @@ namespace gpu
 		RENDER_API gpuHandle	nativePtr ( void );
 
 	private:
-		
+		friend GraphicsContext;
+		friend ComputeContext;
+
 		unsigned int		m_vao;
 		ShaderPipeline*		m_pipeline;
-
+		Buffer*				m_boundIndexBuffer;
 	};
 }
 

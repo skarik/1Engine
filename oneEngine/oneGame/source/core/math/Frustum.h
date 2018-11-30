@@ -22,15 +22,12 @@ namespace core
 			Plane plane [6];
 
 			//	PointIsInside() : Check if the point lies within the frustum.
-			FORCE_INLINE arShapeCheckResult
-									PointIsInside ( const Vector3f& point );
+			arShapeCheckResult		PointIsInside ( const Vector3f& point );
 			//	SphereIsInside() : Checks if the sphere lies within the frustum.
-			FORCE_INLINE arShapeCheckResult
-									SphereIsInside ( const Vector3f& center, const Real radius );
+			arShapeCheckResult		SphereIsInside ( const Vector3f& center, const Real radius );
 			//	BoundingBoxIsInside() : Checks if bounding box is inside the frustum.
 			// NOTE: Currently this only will return Partial or Outside.
-			FORCE_INLINE arShapeCheckResult
-									BoundingBoxIsInside ( const BoundingBox& box );
+			arShapeCheckResult		BoundingBoxIsInside ( const BoundingBox& box );
 
 		public:
 			//	BuildFromProjectionMatrix() : Creates a frustum from the input view-projection matrix.

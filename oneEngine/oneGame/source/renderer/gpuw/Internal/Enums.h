@@ -2,10 +2,10 @@
 #define GPU_WRAPPER_INTERNAL_ENUMS_H_
 
 #include "core/types/types.h"
-#include "renderer/types/types.h"
-#include "core/gfx/textureFormats.h"
 #include "core/exceptions.h"
-
+#include "core/gfx/textureFormats.h"
+#include "renderer/types/types.h"
+#include "renderer/gpuw/Public/Enums.h"
 #include "renderer/gpuw/Public/Formats.h"
 
 #include "renderer/ogl/GLCommon.h"
@@ -13,7 +13,7 @@
 namespace gpu {
 namespace internal {
 
-	gpuEnum ArEnumToGL ( const core::gfx::tex::arTextureType format )
+	static FORCE_INLINE gpuEnum ArEnumToGL ( const core::gfx::tex::arTextureType format )
 	{
 		using namespace core::gfx::tex;
 		switch ( format ) {
@@ -29,7 +29,7 @@ namespace internal {
 		return GL_INVALID_ENUM;
 	}
 	
-	gpuEnum ArEnumToGL ( const core::gfx::tex::arColorFormat format )
+	static FORCE_INLINE gpuEnum ArEnumToGL ( const core::gfx::tex::arColorFormat format )
 	{
 		using namespace core::gfx::tex;
 		switch ( format ) {
@@ -74,7 +74,7 @@ namespace internal {
 		return GL_INVALID_ENUM;
 	}
 
-	gpuEnum ArColorFormatToGlDataType ( const core::gfx::tex::arColorFormat format )
+	static FORCE_INLINE gpuEnum ArColorFormatToGlDataType ( const core::gfx::tex::arColorFormat format )
 	{
 		using namespace core::gfx::tex;
 		switch ( format ) {
@@ -119,7 +119,7 @@ namespace internal {
 		return GL_INVALID_ENUM;
 	}
 
-	gpuEnum ArFormatToGlDataType ( const gpu::Format format )
+	static FORCE_INLINE gpuEnum ArFormatToGlDataType ( const gpu::Format format )
 	{
 		switch ( format ) {
 			// Byte formats
@@ -142,6 +142,39 @@ namespace internal {
 		return GL_INVALID_ENUM;
 	}
 
+	static FORCE_INLINE gpuEnum ArEnumToGL ( const gpu::PrimitiveTopology type )
+	{
+		switch ( type ) {
+			// Points
+		case kPrimitiveTopologyPointList:			return GL_POINTS;
+			// Lines
+		case kPrimitiveTopologyLineList:			return GL_LINES;
+		case kPrimitiveTopologyLineStrip:			return GL_LINE_STRIP;
+			// Triangles
+		case kPrimitiveTopologyTriangleList:		return GL_TRIANGLES;
+		case kPrimitiveTopologyTriangleStrip:		return GL_TRIANGLE_STRIP;
+		case kPrimitiveTopologyTriangleFan:			return GL_TRIANGLE_FAN;
+			// GS types
+		case kPrimitiveTopologyLineListAdjacency:	return GL_LINES_ADJACENCY;
+		case kPrimitiveTopologyLineStripAdjacency:	return GL_LINE_STRIP_ADJACENCY;
+		case kPrimitiveTopologyTriangleListAdjacency:
+													return GL_LINE_STRIP_ADJACENCY;
+		case kPrimitiveTopologyTriangleStripAdjacency:
+													return GL_LINE_STRIP_ADJACENCY;
+			// HS types
+		case kPrimitiveTopologyLinePatchList:		return GL_PATCHES;
+		}
+		return GL_INVALID_ENUM;
+	}
+
+	static FORCE_INLINE gpuEnum ArEnumToGL ( const gpu::IndexFormat format )
+	{
+		switch ( format ) {
+		case kIndexFormatUnsigned16:	return GL_UNSIGNED_SHORT;
+		case kIndexFormatUnsigned32:	return GL_UNSIGNED_INT;
+		}
+		return GL_INVALID_ENUM;
+	}
 }}
 
 #endif//GPU_WRAPPER_INTERNAL_ENUMS_H_

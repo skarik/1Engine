@@ -244,6 +244,7 @@ namespace core
 	template class vect4d_template<float>;
 	template class vect4d_template<double>;
 	template class vect4d_template<int32_t>;
+	template class vect4d_template<uint16_t>;
 	template class vect4d_template<uint8_t>;
 
 }
