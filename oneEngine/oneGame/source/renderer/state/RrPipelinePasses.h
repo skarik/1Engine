@@ -25,7 +25,7 @@ namespace pipeline
 		RrPass*				Lighting2DPass;
 
 		gpu::Pipeline		m_pipelineScreenQuadCopy;
-		gpu::VertexBuffer	m_vbufScreenQuad;
+		gpu::Buffer			m_vbufScreenQuad;
 	};
 }}
 

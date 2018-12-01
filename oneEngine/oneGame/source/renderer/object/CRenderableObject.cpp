@@ -327,7 +327,7 @@ void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform
 
 		// TODO: Create the buffer & push it
 		if (!m_cbufPerObjectMatrices.valid())
-			m_cbufPerObjectMatrices.init(NULL, &matrices, sizeof(matrices), gpu::TransferStyle::kTransferStream);
+			m_cbufPerObjectMatrices.initAsConstantBuffer(NULL, &matrices, sizeof(matrices), gpu::TransferStyle::kTransferStream);
 		m_cbufPerObjectMatrices.upload(NULL, &matrices, sizeof(matrices), gpu::TransferStyle::kTransferStream);
 	}
 
@@ -341,8 +341,8 @@ void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform
 			if (m_passEnabled[i] && !m_passSurfaceSynced[i])
 			{
 				if (!m_cbufPerObjectSurfaces[i].valid())
-					m_cbufPerObjectSurfaces[i].init(NULL, &m_passes[i].m_surface, sizeof(m_passes[i].m_surface), gpu::TransferStyle::kTransferDynamic);
-				m_cbufPerObjectSurfaces[i].upload(NULL, &m_passes[i].m_surface, sizeof(m_passes[i].m_surface), gpu::TransferStyle::kTransferDynamic);
+					m_cbufPerObjectSurfaces[i].initAsConstantBuffer(NULL, &m_passes[i].m_surface, sizeof(m_passes[i].m_surface), gpu::TransferStyle::kTransferStream);
+				m_cbufPerObjectSurfaces[i].upload(NULL, &m_passes[i].m_surface, sizeof(m_passes[i].m_surface), gpu::TransferStyle::kTransferStream);
 
 				m_passSurfaceSynced[i] = true; // Mark as synced so we don't upload again.
 			}

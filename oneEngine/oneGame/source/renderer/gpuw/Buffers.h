@@ -10,17 +10,29 @@
 
 namespace gpu
 {
-	/*enum CBufferHint
-	{
-		kCBufferHintNone,
-		// Use for small buffers that are updated often.
-		// This will attempt to allocate data from the command buffer rather than the main memory.
-		kCBufferHintPushConstant,
-	};*/
-
 	class Device;
+	class GraphicsContext;
+	class ComputeContext;
 
-	class ConstantBuffer
+	enum BufferType
+	{
+		// General use buffer.
+		// Cannot be used with shaders, use one of the other types.
+		kBufferTypeGeneralUse,
+		// Constant buffer. 
+		// Corresponds to a cbuffer type in shaders.
+		// Uses at minimum 1KB and at most 4KB on certain platforms.
+		kBufferTypeConstant,
+		// Structured buffer.
+		// Corresponds to a StructuredBuffer type in shaders, RegularBuffer? (TODO) on other platforms.
+		// Uses at minimum 4KB and at most 65MB on certain platforms.
+		kBufferTypeStructured,
+		// Vertex buffer.
+		// Meant to be used as a vertex stream into to a vertex shader.
+		kBufferTypeVertex,
+	};
+
+	/*class ConstantBuffer
 	{
 	public:
 		//	valid() : is this buffer valid to be used?
@@ -38,21 +50,52 @@ namespace gpu
 
 	private:
 		unsigned int	m_buffer;
-	};
+	};*/
 
 	class Buffer
 	{
 	public:
-		RENDER_API int			allocate ( Device* device, const uint64_t data_size, const TransferStyle style );
+		//	initAsData( device, data_size ) : Initializes as a data buffer.
+		// Data is uploaded separately through map/unmap or upload.
+		RENDER_API int			initAsData ( Device* device, const uint64_t data_size );
+		
+		//	initAsVertexBuffer( device, format, element_count ) : Initializes as a vertex buffer.
+		// Data is uploaded separately through map/unmap or upload.
+		RENDER_API int			initAsVertexBuffer ( Device* device, Format format, const uint64_t element_count );
+
+		//RENDER_API int			allocate ( Device* device, const uint64_t data_size, const TransferStyle style );
 		RENDER_API void*		map ( Device* device, const TransferStyle style );
 		RENDER_API int			unmap ( Device* device );
+
+		//	upload()
+		RENDER_API int			upload ( Device* device, void* data, const uint64_t data_size, const TransferStyle style );
+
 		RENDER_API int			free ( Device* device );
+
+		//	valid() : is this buffer valid to be used?
+		// If the buffer has not been created, it will be removed.
+		RENDER_API bool			valid ( void );
 
 		//	nativePtr() : returns native index or pointer to the resource.
 		RENDER_API gpuHandle	nativePtr ( void );
+
+		//	getFormat() : returns underlying format of the data, if applicable.
+		// For constant buffers, regular buffers, and structured buffers, this will always be kFormatUndefined.
+		RENDER_API Format		getFormat ( void );
+
+		//	getBufferType() : returns the buffer type.
+		RENDER_API BufferType	getBufferType ( void );
+
+	private:
+		friend GraphicsContext;
+		friend ComputeContext;
+
+		BufferType		m_bufferType;
+		unsigned int	m_buffer;
+		Format			m_format;
 	};
 
-	class VertexBuffer
+	/*class VertexBuffer
 	{
 	public:
 		RENDER_API int			init ( Device* device, void* data, Format format, const uint64_t element_count );
@@ -68,7 +111,7 @@ namespace gpu
 	private:
 		unsigned int	m_buffer;
 		Format			m_format;
-	};
+	};*/
 }
 
 #endif//GPU_WRAPPER_BUFFERS_H_

@@ -59,7 +59,7 @@ public:
 	//	{ return m_name.c_str(); }
 
 public:
-	gpu::VertexBuffer	m_buffer [renderer::shader::kVBufferSlotMaxCount];
+	gpu::Buffer			m_buffer [renderer::shader::kVBufferSlotMaxCount];
 	bool				m_bufferEnabled [renderer::shader::kVBufferSlotMaxCount];
 	gpu::Buffer			m_indexBuffer;
 

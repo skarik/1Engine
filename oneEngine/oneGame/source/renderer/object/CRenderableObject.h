@@ -62,9 +62,9 @@ public:
 	struct rrRenderParams
 	{
 		int8_t pass;
-		gpu::ConstantBuffer*	cbuf_perPass;
-		gpu::ConstantBuffer*	cbuf_perFrame;
-		gpu::ConstantBuffer*	cbuf_perCamera;
+		gpu::Buffer*	cbuf_perPass;
+		gpu::Buffer*	cbuf_perFrame;
+		gpu::Buffer*	cbuf_perCamera;
 	};
 
 private:
@@ -202,8 +202,8 @@ private:
 protected:
 	bool					visible;
 
-	gpu::ConstantBuffer		m_cbufPerObjectMatrices;
-	gpu::ConstantBuffer		m_cbufPerObjectSurfaces [kPass_MaxPassCount];
+	gpu::Buffer				m_cbufPerObjectMatrices;
+	gpu::Buffer				m_cbufPerObjectSurfaces [kPass_MaxPassCount];
 protected:
 	// ==Render Setup==
 	
