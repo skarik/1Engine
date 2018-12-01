@@ -16,7 +16,7 @@ renderer::InstancedMesh::InstancedMesh ( rrMeshBuffer* mesh, bool n_enableSkinni
 {
 	bUseFrustumCulling = false; // Disable frustum culling
 
-	m_buffer.allocate(NULL, sizeof(float) * 2048, gpu::kTransferStream);
+	m_buffer.initAsStructuredBuffer(NULL, sizeof(float) * 2048);
 	/*GL_ACCESS
 	{
 		glGenBuffers( 1, &m_tbo_buffer );
@@ -86,7 +86,8 @@ bool renderer::InstancedMesh::PreRender ( rrCameraPass* cameraPass )
 		if (m_dataSizeAllocated < m_dataSize)
 		{
 			m_dataSizeAllocated = m_dataSize;
-			m_buffer.allocate(NULL, m_dataSizeAllocated, gpu::kTransferStream);
+			m_buffer.free(NULL);
+			m_buffer.initAsStructuredBuffer(NULL, m_dataSizeAllocated);
 		}
 
 		// Copy the data to the GPU.

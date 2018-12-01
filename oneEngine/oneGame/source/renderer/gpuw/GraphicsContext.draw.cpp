@@ -31,8 +31,22 @@ int gpu::GraphicsContext::setPipeline ( Pipeline* pipeline )
 
 	return kError_SUCCESS;
 }
-int gpu::GraphicsContext::setVertexBuffer ( int slot, VertexBuffer* buffer, uint32_t offset )
+
+int gpu::GraphicsContext::setIndexBuffer ( Buffer* buffer, IndexFormat format )
 {
+	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeIndex);
+
+	// TODO:
+
+	m_indexBuffer = buffer;
+	m_indexFormat = format;
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setVertexBuffer ( int slot, Buffer* buffer, uint32_t offset )
+{
+	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeVertex);
 
 	// todo: ensure pipeline exists
 	glVertexArrayVertexBuffer((GLuint)m_pipeline->nativePtr(),
@@ -41,6 +55,20 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, VertexBuffer* buffer, uint
 							  (GLintptr)offset,
 							  (GLsizei)gpu::FormatGetByteStride(buffer->getFormat()));
 
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, Buffer* buffer )
+{
+	ARCORE_ERROR("not implemented");
+	// todo: bind
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer )
+{
+	ARCORE_ERROR("not implemented");
+	// todo: bind
 	return kError_SUCCESS;
 }
 

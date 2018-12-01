@@ -132,6 +132,8 @@ namespace internal {
 		case kFormatR16G16UInteger:
 		case kFormatR16G16B16UInteger:
 		case kFormatR16G16B16A16UInteger:	return GL_UNSIGNED_SHORT;
+			// Int formats
+		case kFormatR32UInteger:			return GL_UNSIGNED_INT;
 			// Float formats
 		case kFormatR32SFloat:
 		case kFormatR32G32SFloat:

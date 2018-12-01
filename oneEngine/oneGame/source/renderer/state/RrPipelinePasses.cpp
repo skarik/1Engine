@@ -74,7 +74,8 @@ renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 		Vector4f(1, 1, 1, 1),
 	};
 
-	m_vbufScreenQuad.init(NULL, screenquad, gpu::kFormatR32G32B32A32SFloat, sizeof(screenquad)/sizeof(Vector4f));
+	m_vbufScreenQuad.initAsVertexBuffer(NULL, gpu::kFormatR32G32B32A32SFloat, sizeof(screenquad)/sizeof(Vector4f));
+	m_vbufScreenQuad.upload(NULL, screenquad, sizeof(screenquad), gpu::kTransferStatic);
 
 	// create the pipeline
 	gpu::VertexInputBindingDescription binding_desc [2];

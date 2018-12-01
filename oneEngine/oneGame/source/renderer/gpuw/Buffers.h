@@ -16,6 +16,7 @@ namespace gpu
 
 	enum BufferType
 	{
+		kBufferTypeUnknown,
 		// General use buffer.
 		// Cannot be used with shaders, use one of the other types.
 		kBufferTypeGeneralUse,
@@ -30,6 +31,9 @@ namespace gpu
 		// Vertex buffer.
 		// Meant to be used as a vertex stream into to a vertex shader.
 		kBufferTypeVertex,
+		// Index buffer.
+		// Meant to be used as a index stream for the inputs to a vs/gs shader.
+		kBufferTypeIndex,
 	};
 
 	/*class ConstantBuffer
@@ -63,17 +67,30 @@ namespace gpu
 		// Data is uploaded separately through map/unmap or upload.
 		RENDER_API int			initAsVertexBuffer ( Device* device, Format format, const uint64_t element_count );
 
+		//	initAsIndexBuffer( device, format, element_count ) : Initializes as an index buffer.
+		// Data is uploaded separately through map/unmap or upload.
+		RENDER_API int			initAsIndexBuffer ( Device* device, IndexFormat format, const uint64_t element_count );
+
+		//	initAsData( device, data_size ) : Initializes as a constant buffer.
+		// Data is uploaded separately through map/unmap or upload.
+		RENDER_API int			initAsConstantBuffer ( Device* device, const uint64_t data_size );
+
+		//	initAsStructuredBuffer( device, data_size ) : Initializes as a data buffer.
+		// Data is uploaded separately through map/unmap or upload.
+		RENDER_API int			initAsStructuredBuffer ( Device* device, const uint64_t data_size );
+
 		//RENDER_API int			allocate ( Device* device, const uint64_t data_size, const TransferStyle style );
 		RENDER_API void*		map ( Device* device, const TransferStyle style );
 		RENDER_API int			unmap ( Device* device );
 
-		//	upload()
+		//	upload( data, data_size, transfer ) : upload a buffer with data
 		RENDER_API int			upload ( Device* device, void* data, const uint64_t data_size, const TransferStyle style );
+		//	uploadElements()
+		RENDER_API int			uploadElements ( Device* device, void* data, const uint64_t element_count, const TransferStyle style );
 
 		RENDER_API int			free ( Device* device );
 
 		//	valid() : is this buffer valid to be used?
-		// If the buffer has not been created, it will be removed.
 		RENDER_API bool			valid ( void );
 
 		//	nativePtr() : returns native index or pointer to the resource.
@@ -92,6 +109,7 @@ namespace gpu
 
 		BufferType		m_bufferType;
 		unsigned int	m_buffer;
+		unsigned int	m_elementSize;
 		Format			m_format;
 	};
 

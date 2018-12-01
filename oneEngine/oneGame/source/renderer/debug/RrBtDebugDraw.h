@@ -62,8 +62,8 @@ private:
 	//uint					m_buffer_verts;
 	//uint					m_buffer_tris;
 	gpu::Buffer				m_buffer_indices;
-	gpu::VertexBuffer		m_buffer_vertPositions;
-	gpu::VertexBuffer		m_buffer_vertColors;
+	gpu::Buffer				m_buffer_vertPositions;
+	gpu::Buffer				m_buffer_vertColors;
 };
 
 #endif//RENDERER_DEBUG_RR_BT_DEBUG_DRAW_H_

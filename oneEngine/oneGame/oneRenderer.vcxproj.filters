@@ -201,12 +201,6 @@
     <ClCompile Include="source\renderer\debug\RrBtDebugDraw.cpp">
       <Filter>SOURCE\Renderer\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\gpuw\Buffers.ConstantBuffer.cpp">
-      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\gpuw\Buffers.VertexBuffer.cpp">
-      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\material\RrMaterial.Constants.cpp">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClCompile>
@@ -413,6 +407,9 @@
     </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\StreamedMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Buffers.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

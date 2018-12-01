@@ -76,9 +76,9 @@ bool RrBtDebugDraw::EndRender ( void )
 	if (m_haveNewUpload)
 	{
 		// copy over the indicies
-		size_t sz_bufferIndices = sizeof(uint32_t) * m_indexData.size();
+		size_t sz_bufferIndices = sizeof(uint16_t) * m_indexData.size();
 		m_buffer_indices.free(NULL);
-		m_buffer_indices.allocate(NULL, sz_bufferIndices, gpu::kTransferStream);
+		m_buffer_indices.initAsIndexBuffer(NULL, gpu::kIndexFormatUnsigned16, m_indexData.size());
 		void* data = m_buffer_indices.map(NULL, gpu::kTransferStream);
 		if (data != NULL)
 		{
@@ -88,9 +88,11 @@ bool RrBtDebugDraw::EndRender ( void )
 
 		// copy over the vertices
 		m_buffer_vertPositions.free(NULL);
-		m_buffer_vertPositions.init(NULL, m_vertexPositions.data(), gpu::kFormatR32G32B32SFloat, m_vertexPositions.size());
+		m_buffer_vertPositions.initAsVertexBuffer(NULL, gpu::kFormatR32G32B32SFloat, m_vertexPositions.size());
+		m_buffer_vertPositions.uploadElements(NULL, m_vertexPositions.data(), m_vertexPositions.size(), gpu::kTransferStream);
 		m_buffer_vertColors.free(NULL);
-		m_buffer_vertColors.init(NULL, m_vertexColors.data(), gpu::kFormatR32G32B32A32SFloat, m_vertexColors.size());
+		m_buffer_vertColors.initAsVertexBuffer(NULL, gpu::kFormatR32G32B32A32SFloat, m_vertexColors.size());
+		m_buffer_vertColors.uploadElements(NULL, m_vertexColors.data(), m_vertexColors.size(), gpu::kTransferStream);
 	}
 
 	// Success!

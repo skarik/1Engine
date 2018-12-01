@@ -23,6 +23,7 @@ namespace gpu
 		kFormatR16G16UInteger,
 		kFormatR16G16B16UInteger,
 		kFormatR16G16B16A16UInteger,
+		kFormatR32UInteger,
 		kFormatR32SFloat,
 		kFormatR32G32SFloat,
 		kFormatR32G32B32SFloat,
@@ -35,6 +36,7 @@ namespace gpu
 		{
 		case kFormatR8UInteger:
 		case kFormatR16UInteger:
+		case kFormatR32UInteger:
 		case kFormatR32SFloat:			return 1;
 
 		case kFormatR8G8UInteger:
@@ -65,6 +67,7 @@ namespace gpu
 
 		case kFormatR8G8B8A8UInteger:
 		case kFormatR16G16UInteger:
+		case kFormatR32UInteger:
 		case kFormatR32SFloat:			return 4;
 
 		case kFormatR16G16B16UInteger:	return 6;

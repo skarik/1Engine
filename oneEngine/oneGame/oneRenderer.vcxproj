@@ -55,8 +55,7 @@
     <ClCompile Include="source\renderer\debug\RrDebugDrawer.cpp" />
     <ClCompile Include="source\renderer\debug\RrDebugRTInspector.cpp" />
     <ClCompile Include="source\renderer\debug\RrBtDebugDraw.cpp" />
-    <ClCompile Include="source\renderer\gpuw\Buffers.ConstantBuffer.cpp" />
-    <ClCompile Include="source\renderer\gpuw\Buffers.VertexBuffer.cpp" />
+    <ClCompile Include="source\renderer\gpuw\Buffers.cpp" />
     <ClCompile Include="source\renderer\gpuw\ComputeContext.cpp" />
     <ClCompile Include="source\renderer\gpuw\Device.cpp" />
     <ClCompile Include="source\renderer\gpuw\Fence.cpp" />
