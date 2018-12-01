@@ -7,7 +7,6 @@
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
 #include "renderer/texture/RrTexture.h"
-//#include "renderer/system/glMainSystem.h"
 #include "renderer/debug/RrDebugDrawer.h"
 #include "renderer/gpuw/Buffers.h"
 #include "renderer/gpuw/Device.h"
@@ -76,33 +75,6 @@ bool RrBtDebugDraw::EndRender ( void )
 
 	if (m_haveNewUpload)
 	{
-		//// Make sure we don't destroy an existing VAO with the GL_ELEMENT_ARRAY_BUFFER binding.
-		//GL.BindVertexArray( 0 ); 
-
-		//// Create new buffers
-		//if ( m_buffer_verts == NIL )
-		//	GL.CreateBuffer( &m_buffer_verts );
-		//if ( m_buffer_tris == NIL )
-		//	GL.CreateBuffer( &m_buffer_tris );
-
-		//// Bind to some buffer objects
-		//GL.BindBuffer( GL_ARRAY_BUFFER,			m_buffer_verts ); // for vertex coordinates
-		//GL.BindBuffer( GL_ELEMENT_ARRAY_BUFFER,	m_buffer_tris ); // for face vertex indexes
-
-		//// Copy data to the buffer
-		//GL.UploadBuffer( GL_ARRAY_BUFFER,
-		//	sizeof(arModelVertex) * m_vertexData.size(),
-		//	m_vertexData.data(),
-		//	GL_STREAM_DRAW );
-		//GL.UploadBuffer( GL_ELEMENT_ARRAY_BUFFER,
-		//	sizeof(uint32_t) * m_indexData.size(),
-		//	m_indexData.data(),
-		//	GL_STREAM_DRAW );
-
-		//// bind with 0, so, switch back to normal pointer operation
-		//GL.UnbindBuffer( GL_ARRAY_BUFFER );
-		//GL.UnbindBuffer( GL_ELEMENT_ARRAY_BUFFER );
-
 		// copy over the indicies
 		size_t sz_bufferIndices = sizeof(uint32_t) * m_indexData.size();
 		m_buffer_indices.free(NULL);
@@ -119,12 +91,6 @@ bool RrBtDebugDraw::EndRender ( void )
 		m_buffer_vertPositions.init(NULL, m_vertexPositions.data(), gpu::kFormatR32G32B32SFloat, m_vertexPositions.size());
 		m_buffer_vertColors.free(NULL);
 		m_buffer_vertColors.init(NULL, m_vertexColors.data(), gpu::kFormatR32G32B32A32SFloat, m_vertexColors.size());
-
-		//// update gpu index count
-		//m_gpuIndexCount = m_indexData.size();
-
-		//// no new upload
-		//m_haveNewUpload = false;
 	}
 
 	// Success!
@@ -135,8 +101,6 @@ bool RrBtDebugDraw::EndRender ( void )
 // Push the model's uniform up up.
 bool RrBtDebugDraw::PreRender ( rrCameraPass* cameraPass )
 {
-	//m_material->prepareShaderConstants( transform.world );
-	//m_material->prepareShaderConstants();
 	PushCbufferPerObject( XrTransform(), cameraPass );
 	return true;
 }
@@ -144,9 +108,8 @@ bool RrBtDebugDraw::PreRender ( rrCameraPass* cameraPass )
 //		Render()
 // Render the model using the 2D engine's style
 bool RrBtDebugDraw::Render ( const rrRenderParams* params ) 
-{// GL_ACCESS
+{
 	// Do not render if no buffer to render with
-	//if ( m_buffer_verts == 0 || m_buffer_tris == 0 || m_gpuIndexCount == 0 )
 	if (m_gpuIndexCount <= 0)
 	{
 		return true;

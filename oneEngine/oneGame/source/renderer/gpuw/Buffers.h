@@ -10,25 +10,19 @@
 
 namespace gpu
 {
-
-	enum CBufferHint
+	/*enum CBufferHint
 	{
 		kCBufferHintNone,
 		// Use for small buffers that are updated often.
 		// This will attempt to allocate data from the command buffer rather than the main memory.
 		kCBufferHintPushConstant,
-	};
+	};*/
 
 	class Device;
+
 	class ConstantBuffer
 	{
 	public:
-		////	Constructor : creates uninitalized GPU wrapper object.
-		//RENDER_API explicit		ConstantBuffer ( void );
-		////	Destructor : destroys any allocated buffer, if existing.
-		//// does nothing
-		//RENDER_API 				~ConstantBuffer ( void );
-
 		//	valid() : is this buffer valid to be used?
 		// If the buffer has not been created, it will be removed.
 		RENDER_API bool			valid ( void );

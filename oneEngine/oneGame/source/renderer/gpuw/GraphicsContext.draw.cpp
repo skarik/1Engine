@@ -105,7 +105,7 @@ int gpu::GraphicsContext::draw ( const uint32_t vertexCount, const uint32_t star
 					 (GLint)startVertex,
 					 (GLsizei)vertexCount);
 		ARCORE_ASSERT(validate() == 0);
-		return 0;
+		return kError_SUCCESS;
 	}
 	return kErrorBadArgument;
 }
@@ -119,21 +119,39 @@ int gpu::GraphicsContext::drawIndexed ( const uint32_t indexCount, const uint32_
 					   gpu::internal::ArEnumToGL(m_indexFormat),
 					   (intptr_t)0);
 		ARCORE_ASSERT(validate() == 0);
-		return 0;
+		return kError_SUCCESS;
 	}
 	return kErrorBadArgument;
 }
+
+int gpu::GraphicsContext::drawIndexedInstanced ( const uint32_t indexCount, const uint32_t instanceCount, const uint32_t startIndex )
+{
+	if (drawPreparePipeline() == kError_SUCCESS)
+	{
+		glBindVertexArray((GLuint)m_pipeline->nativePtr());
+		glDrawElementsInstanced(gpu::internal::ArEnumToGL(m_primitiveType),
+								indexCount,
+								gpu::internal::ArEnumToGL(m_indexFormat),
+								(intptr_t)0,
+								instanceCount);
+		ARCORE_ASSERT(validate() == 0);
+		return kError_SUCCESS;
+	}
+	return kErrorBadArgument;
+}
+
 int gpu::GraphicsContext::drawIndirect ( void )
 {
 	if (drawPreparePipeline() == kError_SUCCESS)
 	{
+		ARCORE_ERROR("Not implemented");
 		//GL_DRAW_INDIRECT_BUFFER
 		glBindVertexArray((GLuint)m_pipeline->nativePtr());
 		glDrawElementsIndirect(gpu::internal::ArEnumToGL(m_primitiveType),
 							   gpu::internal::ArEnumToGL(m_indexFormat),
 							   (intptr_t)0);
 		ARCORE_ASSERT(validate() == 0);
-		return 0;
+		return kError_SUCCESS;
 	}
 	return kErrorBadArgument;
 }
