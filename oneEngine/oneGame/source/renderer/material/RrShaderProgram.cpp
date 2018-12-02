@@ -107,3 +107,41 @@
 //// Always detach shaders after a successful link.
 //glDetachShader(program, vertexShader);
 //glDetachShader(program, fragmentShader);
+#include "RrShaderProgram.h"
+#include "RrShaderMasterSubsystem.h"
+
+#include "renderer/gpuw/ShaderPipeline.h"
+#include "renderer/gpuw/Shader.h"
+
+RrShaderProgram*
+RrShaderProgram::Load ( const rrShaderProgramVsPs& params )
+{
+
+	return NULL;
+}
+
+
+RrShaderProgram::RrShaderProgram (
+	const char* s_resourceId,
+	gpu::Shader* vvs,
+	gpu::Shader* hs,
+	gpu::Shader* ds,
+	gpu::Shader* gs,
+	gpu::Shader* ps,
+	gpu::Shader* cs
+)
+{
+	if (vvs)
+		m_pipeline.attach(vvs, "main");
+	if (hs)
+		m_pipeline.attach(hs, "main");
+	if (ds)
+		m_pipeline.attach(ds, "main");
+	if (gs)
+		m_pipeline.attach(gs, "main");
+	if (ps)
+		m_pipeline.attach(ps, "main");
+	if (cs)
+		m_pipeline.attach(cs, "main");
+	m_pipeline.assemble();
+}

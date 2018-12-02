@@ -60,14 +60,24 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, Buffer* buffer, uint32_t o
 
 int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, Buffer* buffer )
 {
-	ARCORE_ERROR("not implemented");
+	ARCORE_ERROR("untested behavior with unbound vao");
+
+	glBindBufferBase(GL_UNIFORM_BUFFER,
+					 (GLuint)slot,
+					 buffer->m_buffer);
+
 	// todo: bind
 	return kError_SUCCESS;
 }
 
 int gpu::GraphicsContext::setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer )
 {
-	ARCORE_ERROR("not implemented");
+	ARCORE_ERROR("untested behavior with unbound vao");
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER,
+					 (GLuint)slot,
+					 buffer->m_buffer);
+
 	// todo: bind
 	return kError_SUCCESS;
 }

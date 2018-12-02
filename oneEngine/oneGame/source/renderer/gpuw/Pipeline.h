@@ -47,7 +47,6 @@ namespace gpu
 	
 	struct PipelineCreationDescription
 	{
-		Device*				device;
 		// Shader pipeline to be used with this pipeline.
 		ShaderPipeline*		shader_pipeline;
 		// Vertex shader inputs
@@ -83,7 +82,7 @@ namespace gpu
 		//RENDER_API int			setShaderPipeline ( ShaderPipeline* pipeline );
 
 		//RENDER_API bool			assemble ( void );
-		RENDER_API int			create ( const PipelineCreationDescription* params );
+		RENDER_API int			create ( Device* device, const PipelineCreationDescription* params );
 
 		RENDER_API int			destroy ( Device* device );
 

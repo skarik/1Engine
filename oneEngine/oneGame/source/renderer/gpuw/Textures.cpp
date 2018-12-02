@@ -113,9 +113,9 @@ int gpu::Texture::free ( void )
 
 int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level )
 {
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, (GLuint)buffer.nativePtr());
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, (GLuint)buffer.nativePtr());
 	glTextureSubImage2D(m_texture, level, 0, 0, m_width, m_height, m_glformat, m_gltype, NULL);
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
 	return gpu::kError_SUCCESS;
 }

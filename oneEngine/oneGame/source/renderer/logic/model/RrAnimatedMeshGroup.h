@@ -14,13 +14,13 @@ class RrAnimatedMeshGroup : public arBaseObject, public IArResource
 public:
 	//	virtual ResourceType() : What type of resource is this?
 	// Identifies the type of resource this is.
-	CORE_API virtual core::arResourceType
-							ResourceType ( void )
+	RENDER_API core::arResourceType 
+							ResourceType ( void ) override
 		{ return core::kResourceTypeRrMeshGroup; }
 	//	virtual ResourceName() : Returns the resource name.
 	// This is used to search for the resource. The smaller, the better.
-	CORE_API virtual const char* const
-							ResourceName ( void )
+	RENDER_API const char* const
+							ResourceName ( void ) override
 		{ return m_name.c_str(); }
 
 public:

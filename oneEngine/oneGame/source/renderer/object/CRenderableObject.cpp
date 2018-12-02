@@ -434,7 +434,7 @@ gpu::Pipeline* CRenderableObject::GetPipeline ( const uchar pass )
 		//pipeline_desc.vv_inputAttributes = &m_passes[pass].m_program->GetShaderPipeline();
 		// TODO: proper handling of pipelines & topology. this may need to be handled at runtime
 
-		m_pipelines[pass].create(&pipeline_desc);
+		m_pipelines[pass].create(NULL, &pipeline_desc);
 	}
 	else
 	{

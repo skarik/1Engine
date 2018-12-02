@@ -3,7 +3,7 @@
 #include "renderer/gpuw/Internal/Enums.h"
 #include "renderer/ogl/GLCommon.h"
 
-int gpu::Pipeline::create ( const PipelineCreationDescription* params )
+int gpu::Pipeline::create ( Device* device, const PipelineCreationDescription* params )
 {
 	if (m_vao != 0)
 	{
@@ -36,4 +36,17 @@ int gpu::Pipeline::create ( const PipelineCreationDescription* params )
 	}
 
 	return kError_SUCCESS;
+}
+
+int gpu::Pipeline::destroy ( Device* device )
+{
+	glDeleteVertexArrays(1, &m_vao);
+	m_vao = 0;
+	return kError_SUCCESS;
+}
+
+//	nativePtr() : returns native index or pointer to the resource.
+gpuHandle gpu::Pipeline::nativePtr ( void )
+{
+	return m_vao;
 }

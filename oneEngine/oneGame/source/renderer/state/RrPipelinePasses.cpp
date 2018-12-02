@@ -108,7 +108,7 @@ renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 	desc.vv_inputAttributesCount = 3;
 	desc.ia_topology = gpu::kPrimitiveTopologyTriangleStrip;
 	desc.ia_primitiveRestartEnable = false;
-	m_pipelineScreenQuadCopy.create(&desc);
+	m_pipelineScreenQuadCopy.create(NULL, &desc);
 }
 
 renderer::pipeline::RrPipelinePasses::~RrPipelinePasses ( void )
