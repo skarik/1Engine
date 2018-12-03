@@ -45,7 +45,7 @@ class RrShaderProgram : public arBaseObject, public IArResource
 protected:
 	RENDER_API explicit		RrShaderProgram (
 		const char* s_resourceId,
-		gpu::Shader* vvs,
+		gpu::Shader* vs,
 		gpu::Shader* hs,
 		gpu::Shader* ds,
 		gpu::Shader* gs,
@@ -64,12 +64,23 @@ public:
 	RENDER_API static RrShaderProgram*
 							Load ( const rrShaderProgramVsHsDsGsPs& params );
 
+private:
+	struct rrStageToLoad
+	{
+		gpu::ShaderStage	stage;
+		const char*			filename;
+	};
+
+	RENDER_API static RrShaderProgram*
+							LoadShaderProgramFromDisk ( const char* s_resourceId, const rrStageToLoad* stages, const int stageCount );
+
 public: // Resource interface
 
 	//	virtual ResourceType() : What type of resource is this?
 	// Identifies the type of resource this is.
 	RENDER_API core::arResourceType
-							ResourceType ( void ) override { return core::kResourceTypeRrShader; }
+							ResourceType ( void ) override
+		{ return core::kResourceTypeRrShader; }
 
 	//	virtual ResourceName() : Returns the resource name.
 	// This is used to search for the resource. The smaller, the better.

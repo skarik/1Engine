@@ -39,7 +39,7 @@ RrTexture::Load ( const char* resource_name )
 	// Add it to the resource system:
 	resm->Add(texture);
 
-	return NULL;
+	return texture;
 }
 //	CreateUnitialized ( name ) : Creates an uninitialized texture object.
 // Can be used for procedural textures, with Upload(...) later.

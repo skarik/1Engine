@@ -63,7 +63,7 @@ namespace core
 			//===============================================================================================//
 
 			template<class object>
-			object					ToObject ( const char* t );
+			object						ToObject ( const char* t );
 		}
 	}
 }
