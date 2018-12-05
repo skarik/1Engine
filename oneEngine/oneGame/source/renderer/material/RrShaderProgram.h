@@ -2,6 +2,7 @@
 #define RENDERER_SHADER_PROGRAM_H_
 
 #include "core/types/arBaseObject.h"
+#include "core/containers/arstring.h"
 #include "core-ext/resources/IArResource.h"
 #include "renderer/gpuw/ShaderPipeline.h"
 
@@ -84,8 +85,9 @@ public: // Resource interface
 
 	//	virtual ResourceName() : Returns the resource name.
 	// This is used to search for the resource. The smaller, the better.
-	RENDER_API virtual const char* const
-							ResourceName ( void ) override;
+	RENDER_API const char* const
+							ResourceName ( void ) override
+		{ return m_resourceName.c_str(); }
 
 public:
 	RENDER_API gpu::ShaderPipeline&
@@ -93,6 +95,7 @@ public:
 
 private:
 	gpu::ShaderPipeline		m_pipeline;
+	arstring256				m_resourceName;
 };
 
 #endif//RENDERER_SHADER_PROGRAM_H_

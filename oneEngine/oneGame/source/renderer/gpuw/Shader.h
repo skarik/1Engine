@@ -6,6 +6,8 @@
 
 namespace gpu
 {
+	class ShaderPipeline;
+
 	class Shader
 	{
 	public:
@@ -14,6 +16,7 @@ namespace gpu
 		RENDER_API int			destroy ( void );
 
 	private:
+		friend ShaderPipeline;
 		unsigned int	m_handle;
 		ShaderStage		m_type;
 	};

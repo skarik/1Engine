@@ -112,6 +112,7 @@
 
 #include "renderer/gpuw/ShaderPipeline.h"
 #include "renderer/gpuw/Shader.h"
+#include "renderer/gpuw/Error.h"
 
 #include "core/containers/arstring.h"
 #include "core/utils/string.h"
@@ -138,7 +139,7 @@ RrShaderProgram::Load ( const rrShaderProgramVsPs& params )
 	if (existingResource != NULL)
 	{
 		// Found it! Add a reference and return it.
-		RrShaderProgram* existingShader = (RrShaderProgram*)existingShader;
+		RrShaderProgram* existingShader = (RrShaderProgram*)existingResource;
 		existingShader->AddReference();
 		return existingShader;
 	}
@@ -159,49 +160,42 @@ RrShaderProgram::Load ( const rrShaderProgramVsPs& params )
 RrShaderProgram*
 RrShaderProgram::LoadShaderProgramFromDisk ( const char* s_resourceId, const rrStageToLoad* stages, const int stageCount )
 {
-	RrShaderProgram* shaderProgram;
+	gpu::Shader* shaderStages [8] = {};
 
+	// Loop through all the input stages and load them one-by-one.
+	// We will save each stage into the array "shaderStages[]" then pass all into the RrShaderProgram constructor.
 	for (int i = 0; i < stageCount; ++i)
 	{
-		// Generate the actual filenames from the input parameters:
-		/*arstring256 filename_vs (params.file_vv);
-		core
-		// Loop through and try to find the matching filename:
-		bool raw_exists = false;
-		for (size_t i = 0; i < image_extensions_len; ++i)
-		{
-		raw_filename = image_rezname + image_extensions[i];
-		// Find the file to source data from:
-		if (core::Resources::MakePathTo(raw_filename.c_str(), raw_filename))
-		{
-		raw_exists = true;
-		break;
-		}
-		}*/
-
-		std::string raw_filename = stages[i].filename;
-
-		// Try to find the matching filename:
-		bool raw_exists = false;
+		std::string sb_filename = stages[i].filename;
 
 		// Find the file to source data from:
-		if (core::Resources::MakePathTo(raw_filename.c_str(), raw_filename))
-		{
-			raw_exists = true;
-			break;
-		}
+		bool file_found = core::Resources::MakePathTo(sb_filename.c_str(), sb_filename);
+		ARCORE_ASSERT(file_found);
 
+		if (file_found)
+		{
+			// Create and load the shader from disk.
+			gpu::Shader* shader = new gpu::Shader;
+			int ret = shader->createFromFile(stages[i].stage, sb_filename.c_str());
+			ARCORE_ASSERT(ret ==  gpu::kError_SUCCESS);
+
+			// Save the shader for now.
+			shaderStages[stages[i].stage] = shader;
+		}
 	}
 
-	/*
-	gpu::Shader* vs = new gpu::Shader;
-	gpu::Shader* ps = new gpu::Shader;
+	// Create the shader program
+	RrShaderProgram* shaderProgram;
+	shaderProgram = new RrShaderProgram(s_resourceId,
+		shaderStages[gpu::kShaderStageVs],
+		shaderStages[gpu::kShaderStageHs],
+		shaderStages[gpu::kShaderStageDs],
+		shaderStages[gpu::kShaderStageGs],
+		shaderStages[gpu::kShaderStagePs],
+		shaderStages[gpu::kShaderStageCs]
+	);
 
-	vs->createFromFile(gpu::kShaderStageVs, params.file_vv);
-	ps->createFromFile(gpu::kShaderStagePs, params.file_p);
-
-	shaderProgram = new RrShaderProgram("", vs, NULL, NULL, NULL, ps, NULL);*/
-
+	return shaderProgram;
 }
 
 
@@ -215,6 +209,10 @@ RrShaderProgram::RrShaderProgram (
 	gpu::Shader* cs
 )
 {
+	// Assign resource name
+	m_resourceName = s_resourceId;
+
+	// Attach all valid inputs to the shader
 	if (vs)
 		m_pipeline.attach(vs, "main");
 	if (hs)
@@ -227,5 +225,10 @@ RrShaderProgram::RrShaderProgram (
 		m_pipeline.attach(ps, "main");
 	if (cs)
 		m_pipeline.attach(cs, "main");
-	m_pipeline.assemble();
+
+	// Assemble the shader pipeline now that everything has been added to it.
+	int ret = m_pipeline.assemble();
+
+	ARCORE_ASSERT(ret == gpu::kError_SUCCESS);
+	ARCORE_ASSERT(m_pipeline.valid());
 }
