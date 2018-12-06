@@ -10,6 +10,8 @@
 
 #include "core-ext/profiler/CTimeProfiler.h"
 #include "core-ext/threads/Jobs.h"
+#include "core-ext/resources/ResourceManager.h"
+#include "core-ext/system/shell/Status.h"
 
 // Include audio
 #include "audio/AudioMaster.h"
@@ -25,7 +27,7 @@
 // Include renderer
 #include "renderer/camera/RrCamera.h"
 #include "renderer/module_renderer.h"
-#include "renderer/window/RrWindow.h"
+#include "renderer/windowing/RrWindow.h"
 #include "renderer/state/RrRenderer.h"
 #include "renderer/utils/RrScreenshot.h"
 
@@ -37,25 +39,40 @@
 
 int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 {	ARUNIT_BUILD_CMDLINE
+	
 	// Load window settings
 	CGameSettings gameSettings ( (string)lpCmdLine );
 
 	// Create jobs system
 	Jobs::System jobSystem (4);
 
+	// Create resource system
+	core::ArResourceManager::Active()->Initialize();
+
 	// Initialize input
 	CInput::Initialize();
 
 	// Create Window
-	RrWindow aWindow( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
-	debug::Console->PrintMessage( "Main system initialized properly. I think.\n" );
-	std::cout << "Win32 Build (" << __DATE__ << ") Prealpha" << std::endl;
+	RrWindow aWindow ( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
+	if (!aWindow.Show())
+	{
+		debug::Console->PrintError( "Could not show windowing system.\n" );
+		abort();
+	}
+	debug::Console->PrintMessage( "Windowing system initialized.\n" );
+	std::cout << __OS_STRING_NAME__ " Build (" __DATE__ ") Indev" << std::endl;
+
+	// Set shell status (loading engine)
+	core::shell::SetTaskbarProgressHandle(aWindow.OsShellHandle());
+	core::shell::SetTaskbarProgressValue(NIL, 100, 100);
+	core::shell::SetTaskbarProgressState(NIL, core::shell::kTaskbarStateIndeterminate);
+
+	// Create Renderstate
+	RrRenderer* aRenderer = new RrRenderer(NULL); // passing null creates default resource manager
+	aWindow.AttachRenderer(aRenderer); // Set the window's renderer (multiple possible render states)
 
 	// Init Physics
 	PrPhysics::Active()->Initialize();
-	// Create Renderstate
-	RrRenderer aRenderer (NULL); // passing null creates default resource manager
-	aWindow.mRenderer = &aRenderer; // Set the window's renderer (multiple possible render states)
 	// Create Gamestate
 	CGameState aGameState;
 
@@ -75,7 +92,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	// Start off the clock timer
 	Time::Init();
 	// Run main loop
-	while ( aWindow.canContinue() )
+	while ( !aWindow.IsDone() )
 	{
 		// Only update when all the messages have been looked at
 		if ( aWindow.UpdateMessages() ) // (this returns true when messages done)
@@ -88,7 +105,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			}
 			// Toggle fullscreen
 			if ( Input::Keydown( Keys.F4 ) ) {
-				aWindow.toggleFullscren();
+				aWindow.SetFullscreen(!aWindow.IsFullscreen());
 			}
 			// Take screenshot
 			if ( Input::Keydown( Keys.F11 ) ) {
@@ -108,17 +125,17 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			TimeProfiler.EndTimeProfile( "MN_audio" );
 			// Redraw window
 			TimeProfiler.BeginTimeProfile( "MN_renderer" );
-			aWindow.Redraw();
+			aRenderer->Render();
 			TimeProfiler.EndTimeProfile( "MN_renderer" );
 			// Clear all inputs
 			Input::PreUpdate();
 		}
 		// Check for exiting type of input
-		if ( aWindow.isActive() )
+		if ( aWindow.IsActive() )
 		{
 			if ( ( aGameState.EndingGame() ) || ( Input::Key( Keys.Alt ) && Input::Keydown( Keys.F4 ) ) )
 			{
-				aWindow.sendEndMessage();
+				aWindow.PostEndMessage();
 			}
 		}
 	}

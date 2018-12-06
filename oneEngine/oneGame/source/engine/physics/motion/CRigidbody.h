@@ -8,7 +8,6 @@
 #include "physical/types/layers.h"
 #include "physical/types/motion.h"
 #include "physical/physics/motion/IPrRigidBody.h"
-#include "engine/physics/collider/CCollider.h"
 #include "engine/behavior/CGameBehavior.h"
 #include "engine/physics/material/physMaterial.h"
 #include "engine/physics/motion/CMotion.h"

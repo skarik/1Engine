@@ -506,7 +506,8 @@ void RrRenderer::RenderObjectList ( RrCamera* camera, CRenderableObject** object
 		}
 		else if (cameraPasses[iCameraPass].m_passType == kCameraRenderShadow)
 		{
-			RenderObjectListShadows(&cameraPasses[iCameraPass], objectsToRender, objectCount);
+			//RenderObjectListShadows(&cameraPasses[iCameraPass], objectsToRender, objectCount);
+			ARCORE_ERROR("Shadow pass not yet implemented.");
 		}
 	}
 

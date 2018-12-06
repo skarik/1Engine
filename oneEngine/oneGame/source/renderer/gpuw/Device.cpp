@@ -43,8 +43,18 @@ int gpu::Device::create ( void )
 		return gpu::kErrorInvalidDevice;
 	}
 
+	return gpu::kError_SUCCESS;
+}
+
+int gpu::Device::initialize ( void )
+{
 	// Create temporary OpenGL context:
 	HGLRC tempContext = wglCreateContext((HDC)mw_deviceContext);
+	if (tempContext == NULL)
+	{
+		printf("Could not create an OpenGL context: Error code %x.\n", GetLastError());
+		return gpu::kErrorInvalidDevice;
+	}
 	wglMakeCurrent((HDC)mw_deviceContext, tempContext);
 
 	// Attempt to load up Windows OGL extensions
@@ -81,11 +91,11 @@ int gpu::Device::create ( void )
 		// Create the new context
 		mw_renderContext = (intptr_t)wglCreateContextAttribsARB((HDC)mw_deviceContext, 0, attribs);	
 
-		// Downgrade version to 4.3 only.
+		// Downgrade version to 4.5 only.
 		if (mw_renderContext == NIL)
 		{
 			target_minor -= 1;
-			if (target_minor < 3) {
+			if (target_minor < 5) {
 				return gpu::kErrorModuleUnsupported;
 			}
 		}
@@ -97,9 +107,9 @@ int gpu::Device::create ( void )
 	wglDeleteContext(tempContext);
 
 	// Set up the render context
-	if (wglMakeCurrent((HDC)mw_deviceContext, (HGLRC)mw_renderContext) != 0)
+	if (wglMakeCurrent((HDC)mw_deviceContext, (HGLRC)mw_renderContext) == FALSE)
 	{
-		printf("Could not make new context current.\n");
+		printf("Could not make new context current. Error code %x.\n", GetLastError());
 		return gpu::kErrorInvalidModule;
 	}
 
@@ -143,6 +153,8 @@ int gpu::Device::create ( void )
 
 	// Update the target device:
 	m_TargetDisplayDevice = this;
+
+	return gpu::kError_SUCCESS;
 }
 
 int gpu::Device::refresh ( intptr_t module_handle, intptr_t module_window )
@@ -176,6 +188,8 @@ int gpu::Device::refresh ( intptr_t module_handle, intptr_t module_window )
 		printf("Could not make new context current.\n");
 		return gpu::kErrorInvalidModule;
 	}
+
+	return gpu::kError_SUCCESS;
 }
 
 gpu::GraphicsContext* gpu::Device::getContext ( void )

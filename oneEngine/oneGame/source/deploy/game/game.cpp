@@ -144,7 +144,6 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 			TimeProfiler.EndTimeProfile( "MN_audio" );
 			// Redraw window
 			TimeProfiler.BeginTimeProfile( "MN_renderer" );
-			//aWindow.Redraw();
 			aRenderer->Render();
 			TimeProfiler.EndTimeProfile( "MN_renderer" );
 			// Clear all inputs

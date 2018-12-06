@@ -56,7 +56,7 @@ RrWindow::RrWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	CGameSettings::Active()->LoadSettings();
 
 	// Register class
-	WNDCLASS	wc;						// Windows Class Structure
+	WNDCLASS	wc; // Windows Class Structure
 	wc.style			= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;	// Redraw On Size, And Own DC For Window.
 	wc.lpfnWndProc		= (WNDPROC) MessageUpdate;				// WndProc Handles Messages
 	wc.cbClsExtra		= 0;									// No Extra Window Data
@@ -74,6 +74,9 @@ RrWindow::RrWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ERROR_OUT("Failed To Register The Window Class. (Has the class already been registered?)\n");
 	}
 
+	// Add self to the window list:
+	m_windows.push_back(this);
+
 	// Create everything!
 	CreateScreen();
 	RegisterInput();
@@ -87,6 +90,11 @@ RrWindow::~RrWindow ( void )
 	DestroyGfxSurface();
 	DestroyGfxInstance();
 	DestroyScreen();
+
+	// Remove this from the list of windows
+	auto this_window = std::find(m_windows.begin(), m_windows.end(), this);
+	if (this_window != m_windows.end())
+		m_windows.erase(this_window);
 }
 
 
@@ -115,7 +123,7 @@ bool RrWindow::Close ( void )
 	// Unregister class
 	if (UnregisterClass(kWindowClass, mw_instance) != 0)
 	{
-		core::shell::ShowErrorMessage("Could Not Unregister Class.");
+		core::shell::ShowErrorMessage("Could not unregister class.");
 		return false;
 	}
 	return true;
@@ -152,7 +160,7 @@ void RrWindow::CreateScreen ( void )
 		if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
 		{
 			mw_window = NIL;
-			ERROR_OUT("The Requested Fullscreen Mode Is Not Supported By\nYour Video Card.");
+			ERROR_OUT("The requested fullscreen mode is not supported by your video card.\n");
 		}
 
 		// Set window style
@@ -185,7 +193,7 @@ void RrWindow::CreateScreen ( void )
 	);
 	if ( mw_window == NIL )
 	{
-		ERROR_OUT("Window Creation Error.");
+		ERROR_OUT("Window Creation Error.\n");
 	}
 
 	// If not fullscreen, start the window in the center of the screen (or where it was last set to)
@@ -217,7 +225,7 @@ void RrWindow::RegisterInput ( void )
 {
 	if (mw_window == NIL)
 	{
-		ERROR_OUT("Window is not created. Cannot register input.");
+		ERROR_OUT("Window is not created. Cannot register input.\n");
 	}
 
 	// init raw mouse input
@@ -250,7 +258,7 @@ void RrWindow::CreateGfxInstance ( void )
 {
 	if (mw_window == NIL)
 	{
-		ERROR_OUT("Window is not created. Cannot create device.");
+		ERROR_OUT("Window is not created. Cannot create device.\n");
 	}
 
 	m_device = new gpu::Device((intptr_t)mw_instance, (intptr_t)mw_window);
@@ -258,7 +266,7 @@ void RrWindow::CreateGfxInstance ( void )
 	{
 		delete m_device;
 		DestroyScreen();
-		ERROR_OUT("Gfx instance creation error.");
+		ERROR_OUT("Gfx instance creation error.\n");
 	}
 }
 
@@ -267,13 +275,21 @@ void RrWindow::CreateGfxSurface ( void )
 {
 	if (mw_window == NIL)
 	{
-		ERROR_OUT("Window is not created. Cannot create surface.");
+		ERROR_OUT("Window is not created. Cannot create surface.\n");
 	}
 
 	if (m_surface.create(m_device, gpu::kPresentModeImmediate) != 0)
 	{
 		DestroyScreen();
-		ERROR_OUT("Gfx surface creation error.");
+		ERROR_OUT("Gfx surface creation error.\n");
+	}
+
+	if (m_device->initialize() != 0)
+	{
+		delete m_device;
+		DestroyScreen();
+		core::shell::ShowErrorMessage("Your video card does not support the minimum required OpenGL version.\nOpenGL 4.5 is required. Please update your drivers.");
+		ERROR_OUT("Gfx instance creation error.\n");
 	}
 }
 

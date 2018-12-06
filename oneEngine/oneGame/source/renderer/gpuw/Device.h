@@ -22,8 +22,10 @@ namespace gpu
 		// Non-exposed API for destroying device.
 								~Device ( void );
 
-		// Non-exposed API for initializing the device.
+		// Non-exposed API for initializing the device. (before OutputSurface ready)
 		int						create ( void );
+		// Non-exposed API for starting up the device. (after OutputSurface ready)
+		int						initialize ( void );
 		// Non-exposed API for refreshing the device
 		int						refresh ( intptr_t module_handle, intptr_t module_window );
 
