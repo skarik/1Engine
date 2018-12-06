@@ -45,7 +45,8 @@ enum rrPassOrderConstants : int
 	kPassOrder_PostProcess			= 2000,
 };
 
-// 
+// RrPass, defines a single pass for any object.
+// An RrPass stores information used to generate a gpu::Pipeline by the renderer.
 class RrPass
 {
 public:
@@ -96,6 +97,7 @@ public:
 						m_primitiveType;
 	renderer::shader::VertexAttribute*
 						m_vertexSpecification;
+	int					m_vertexSpecificationCount;
 
 	// Textures:
 	RrTexture*			m_textures[kPass_MaxTextureSlots];

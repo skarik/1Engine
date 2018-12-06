@@ -1,6 +1,15 @@
-#include "renderer/gpuw/RenderTargets.h"
+#include "renderer/gpuw/RenderTarget.h"
 #include "renderer/gpuw/Error.h"
 #include "renderer/ogl/GLCommon.h"
+
+gpu::RenderTarget::RenderTarget ( void )
+	:
+	m_framebuffer(0), m_attachments(),
+	m_assembled(false)
+{}
+
+gpu::RenderTarget::~RenderTarget ( void )
+{}
 
 int gpu::RenderTarget::create ( Device* device )
 {
@@ -22,15 +31,19 @@ int gpu::RenderTarget::attach ( int slot, Texture* texture )
 {
 	if (slot == kRenderTargetSlotDepth)
 	{
-		glNamedFramebufferTexture(m_framebuffer, GL_DEPTH_ATTACHMENT, texture->nativePtr(), 0);
+		glNamedFramebufferTexture(m_framebuffer, GL_DEPTH_ATTACHMENT, (GLuint)texture->nativePtr(), 0);
+		m_attachmentDepth = texture;
 	}
 	else if (slot == kRenderTargetSlotStencil)
 	{
-		glNamedFramebufferTexture(m_framebuffer, GL_STENCIL_ATTACHMENT, texture->nativePtr(), 0);
+		glNamedFramebufferTexture(m_framebuffer, GL_STENCIL_ATTACHMENT, (GLuint)texture->nativePtr(), 0);
+		m_attachmentStencil = texture;
 	}
 	else if (slot >= kRenderTargetSlotColor0)
 	{
-		glNamedFramebufferTexture(m_framebuffer, GL_COLOR_ATTACHMENT0 + (slot - kRenderTargetSlotColor0), texture->nativePtr(), 0);
+		glNamedFramebufferTexture(m_framebuffer, GL_COLOR_ATTACHMENT0 + (slot - kRenderTargetSlotColor0), (GLuint)texture->nativePtr(), 0);
+		m_attachments[slot] = texture;
+		m_attachmentIsTexture[slot] = true;
 	}
 	else
 	{
@@ -43,26 +56,30 @@ int gpu::RenderTarget::attach ( int slot, WOFrameAttachment* buffer )
 {
 	if (slot == kRenderTargetSlotDepth)
 	{
-		glNamedFramebufferRenderbuffer(m_framebuffer, GL_DEPTH_ATTACHMENT,  GL_RENDERBUFFER, buffer->nativePtr());
+		glNamedFramebufferRenderbuffer(m_framebuffer, GL_DEPTH_ATTACHMENT,  GL_RENDERBUFFER, (GLuint)buffer->nativePtr());
+		m_attachmentDepth = buffer;
 	}
 	else if (slot == kRenderTargetSlotStencil)
 	{
-		glNamedFramebufferTexture(m_framebuffer, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, buffer->nativePtr());
+		glNamedFramebufferTexture(m_framebuffer, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, (GLuint)buffer->nativePtr());
+		m_attachmentStencil = buffer;
 	}
 	else if (slot >= kRenderTargetSlotColor0)
 	{
-		glNamedFramebufferTexture(m_framebuffer, GL_COLOR_ATTACHMENT0 + (slot - kRenderTargetSlotColor0), GL_RENDERBUFFER, buffer->nativePtr());
+		glNamedFramebufferTexture(m_framebuffer, GL_COLOR_ATTACHMENT0 + (slot - kRenderTargetSlotColor0), GL_RENDERBUFFER, (GLuint)buffer->nativePtr());
+		m_attachments[slot] = buffer;
+		m_attachmentIsTexture[slot] = false;
 	}
 	else 
 	{
 		return kErrorBadArgument;
 	}
-	return 0;
+	return kError_SUCCESS;
 }
 
 int gpu::RenderTarget::assemble ( void )
 {
-	GLenum status = glCheckNamedFramebufferStatus( m_framebuffer, GL_FRAMEBUFFER );
+	GLenum status = glCheckNamedFramebufferStatus(m_framebuffer, GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
 	{
 		//switch ( status )
@@ -84,7 +101,34 @@ int gpu::RenderTarget::assemble ( void )
 		//case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
 		//	cout << "   bufferStatus: GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS" << endl; break;
 		//}
-		return 1;
+		m_assembled = false;
+		return kErrorCreationFailed;
 	}
-	return 0;
+
+	m_assembled = true;
+	return kError_SUCCESS;
+}
+
+bool gpu::RenderTarget::empty ( void )
+{
+	return m_framebuffer != 0 && m_assembled;
+}
+bool gpu::RenderTarget::valid ( void )
+{
+	return m_framebuffer != 0 && m_assembled;
+}
+
+gpuHandle gpu::RenderTarget::nativePtr ( void )
+{
+	return m_framebuffer;
+}
+
+gpu::Texture* gpu::RenderTarget::getAttachment ( int slot )
+{
+	return (gpu::Texture*)m_attachments[slot];
+}
+
+gpu::WOFrameAttachment* gpu::RenderTarget::getWOAttachment ( int slot )
+{
+	return (gpu::WOFrameAttachment*)m_attachments[slot];
 }

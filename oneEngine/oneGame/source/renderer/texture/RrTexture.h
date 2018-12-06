@@ -11,7 +11,7 @@
 #include "core-ext/resources/IArResource.h"
 #include "renderer/types/types.h"
 #include "renderer/texture/rrSamplerState.h"
-#include "renderer/gpuw/Textures.h"
+#include "renderer/gpuw/Texture.h"
 
 #include <stdio.h>
 #include <string>

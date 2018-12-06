@@ -4,7 +4,9 @@
 #include "renderer/material/RrShaderProgram.h"
 
 RrPass::RrPass ( void )
-	: m_program(NULL), m_textures(), m_texturesRaw()
+	:
+	m_program(NULL), m_textures(), m_texturesRaw(),
+	m_vertexSpecification(NULL), m_vertexSpecificationCount(0)
 {
 	utilSetupAsDefault();
 }
@@ -50,4 +52,65 @@ RrPass::~RrPass ( void )
 	{
 		m_program->RemoveReference();
 	}
+}
+
+//	setTexture ( slot, texture ) : Sets material texture.
+// Material is given ownership of the texture.
+// Do not delete the texture directly, use RemoveReference.
+void RrPass::setTexture ( const rrTextureSlot slot, RrTexture* texture )
+{
+	if (m_textures[slot] != texture)
+	{
+		// Free the slot.
+		if (m_textures[slot] != NULL)
+			m_textures[slot]->RemoveReference();
+
+		// Assign the slot.
+		m_textures[slot] = texture;
+		if (m_textures[slot] != NULL)
+			m_textures[slot]->AddReference();
+
+		// Null out the direct mode slot
+		m_texturesRaw[slot] = NULL;
+	}
+}
+
+//	setTexture ( slot, texture ) : Sets material texture with raw GPU handles.
+// To be used only in an immediate use-case, ex. post-processing or compositing.
+// Do not ever use for normal objects due to memory considerations.
+void RrPass::setTexture ( const rrTextureSlot slot, gpu::Texture* n_texture )
+{
+	m_texturesRaw[slot] = n_texture;
+}
+
+//	setProgram ( program ) : Sets shader program.
+// Pass is given ownership of the program.
+// Do not delete the program directly, use RemoveReference.
+void RrPass::setProgram ( RrShaderProgram* program )
+{
+	if (m_program != program)
+	{
+		// Free the program
+		if (m_program != NULL)
+			m_program->RemoveReference();
+
+		// Assign the slot.
+		m_program = program;
+		if (m_program != NULL)
+			m_program->AddReference();
+	}
+}
+
+//	setVertexSpecification ( ... )
+void RrPass::setVertexSpecification ( renderer::shader::VertexAttribute* attributes, const size_t attribute_count )
+{
+	m_vertexSpecification = new renderer::shader::VertexAttribute[attribute_count];
+	memcpy(m_vertexSpecification, attributes, sizeof(renderer::shader::VertexAttribute) * attribute_count);
+	m_vertexSpecificationCount = (int)attribute_count;
+}
+
+//	validate ( ... ) 
+bool RrPass::validate ( void )
+{
+	return m_vertexSpecification != NULL && m_program != NULL;
 }

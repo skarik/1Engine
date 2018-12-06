@@ -2,6 +2,7 @@
 #define GPU_WRAPPER_SHADER_PIPELINE_H_
 
 #include "core/types.h"
+#include "renderer/types/types.h"
 #include "renderer/gpuw/Public/ShaderTypes.h"
 
 namespace gpu
@@ -11,6 +12,8 @@ namespace gpu
 	class ShaderPipeline
 	{
 	public:
+		RENDER_API				ShaderPipeline ( void );
+
 		RENDER_API int			attach ( Shader* shader, const char* entrypoint_symbol );
 		
 		RENDER_API int			assemble ( void );
@@ -19,11 +22,19 @@ namespace gpu
 		RENDER_API bool			valid ( void );
 
 	private:
-		Shader*	m_shaderVs;
-		Shader*	m_shaderHs;
-		Shader*	m_shaderDs;
-		Shader*	m_shaderGs;
-		Shader*	m_shaderPs;
+		Shader*		m_shaderVs;
+		Shader*		m_shaderHs;
+		Shader*		m_shaderDs;
+		Shader*		m_shaderGs;
+		Shader*		m_shaderPs;
+
+		gpuHandle	m_vs;
+		gpuHandle	m_hs;
+		gpuHandle	m_ds;
+		gpuHandle	m_gs;
+		gpuHandle	m_ps;
+
+		gpuHandle	m_program;
 	};
 }
 

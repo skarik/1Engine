@@ -4,8 +4,8 @@
 #include "core/math/Math3d.h"
 #include "core/math/vect2d_template.h"
 #include "renderer/gpuw/Error.h"
-#include "renderer/gpuw/Textures.h"
-#include "renderer/gpuw/RenderTargets.h"
+#include "renderer/gpuw/Texture.h"
+#include "renderer/gpuw/RenderTarget.h"
 #include "renderer/state/InternalSettings.h"
 
 class RrHybridBufferChain

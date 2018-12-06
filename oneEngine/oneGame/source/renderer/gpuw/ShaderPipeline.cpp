@@ -1,83 +1,165 @@
 #include "renderer/gpuw/ShaderPipeline.h"
 #include "renderer/gpuw/Shader.h"
 #include "renderer/gpuw/Error.h"
-
+#include "renderer/gpuw/Internal/Enums.h"
 #include "renderer/ogl/GLCommon.h"
 
-#include <vector>
+#include "core/debug/console.h"
 
+gpu::ShaderPipeline::ShaderPipeline ( void )
+	:
+	m_shaderVs(NULL), m_shaderHs(NULL), m_shaderDs(NULL), m_shaderGs(NULL), m_shaderPs(NULL),
+	m_vs(0), m_hs(0), m_ds(0), m_gs(0), m_ps(0),
+	m_program(0)
+{}
 
 int gpu::ShaderPipeline::attach ( Shader* shader, const char* entrypoint_symbol )
 {
-	glSpecializeShader(shader->m_handle, entrypoint_symbol, 0, nullptr, nullptr);
+	ARCORE_ASSERT(shader->m_type != kShaderStageCs);
+
+	// Create the shader
+	GLuint shaderHandle = glCreateShader( gpu::internal::ArEnumToGL(shader->m_type) );
+
+	// Apply the shader SPIR-V to the shader object.
+	glShaderBinary(1, &shaderHandle, GL_SHADER_BINARY_FORMAT_SPIR_V, shader->m_shaderBytes, (GLsizei)shader->m_shaderLength);
+
+	// Specialize the shader.
+	glSpecializeShader(shaderHandle, entrypoint_symbol, 0, nullptr, nullptr);
 
 	// Specialization is equivalent to compilation.
 	GLint isCompiled = 0;
-	glGetShaderiv(shader->m_handle, GL_COMPILE_STATUS, &isCompiled);
+	glGetShaderiv(shaderHandle, GL_COMPILE_STATUS, &isCompiled);
+
+	// Check compile state:
 	if (isCompiled == GL_FALSE)
 	{
-		GLint maxLength = 0;
-		glGetShaderiv(shader->m_handle, GL_INFO_LOG_LENGTH, &maxLength);
-	
-		// The maxLength includes the NULL character
-		std::vector<GLchar> infoLog(maxLength); // TODO: remove this?????
-		glGetShaderInfoLog(shader->m_handle, maxLength, &maxLength, &infoLog[0]);
-	
+		// Grab the output log:
+		GLint infoLogLength = 0;
+		glGetShaderiv(shaderHandle, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		GLchar* infoLog = new GLchar [infoLogLength];
+		glGetShaderInfoLog(shaderHandle, infoLogLength, &infoLogLength, infoLog);
+
+		// Print out the error log:
+		const char* l_shaderReadableId [] = {
+			"kShaderStageVs", "kShaderStageHs", "kShaderStageDs", "kShaderStageGs", "kShaderStagePs", "kShaderStageCs"
+		};
+		debug::Console->PrintError("Compile error in %s with ShaderPipeline. Log follows:\n", l_shaderReadableId[shader->m_type]);
+		debug::Console->PrintError( infoLog );
+
+		delete[] infoLog;
+
 		// We don't need the shader anymore.
-		//glDeleteShader(shader->m_handle);
-	
-		// Use the infoLog as you see fit.
-	
-		// In this simple program, we'll just leave
-		return;
+		glDeleteShader(shaderHandle);
+
+		return kErrorCreationFailed;
 	}
+
+	// Save the shader into our list of shaders:
+	switch (shader->m_type)
+	{
+	case kShaderStageVs:
+		m_vs = shaderHandle;
+		m_shaderVs = shader;
+		break;
+	case kShaderStageHs:
+		m_hs = shaderHandle;
+		m_shaderHs = shader;
+		break;
+	case kShaderStageDs:
+		m_ds = shaderHandle;
+		m_shaderDs = shader;
+		break;
+	case kShaderStageGs:
+		m_gs = shaderHandle;
+		m_shaderGs = shader;
+		break;
+	case kShaderStagePs:
+		m_ps = shaderHandle;
+		m_shaderPs = shader;
+		break;
+	case kShaderStageCs:
+		// We don't need the invalid shader, actually
+		glDeleteShader(shaderHandle);
+		return kErrorBadArgument; // Compute shaders are not accepted in a call.
+	}
+
+	return kError_SUCCESS;
 }
 
 int gpu::ShaderPipeline::assemble ( void )
 {
-	// Vertex and fragment shaders are successfully compiled.
-	// Now time to link them together into a program.
-	// Get a program object.
-	GLuint program = glCreateProgram();
+	// Now it's time to link all the compiled shaders!
+	// Get a new program object:
+	m_program = glCreateProgram();
 	
 	// Attach our shaders to our program
-	glAttachShader(program, m_vs);
-	glAttachShader(program, m_ps);
+	if (m_shaderVs != NULL) glAttachShader((GLuint)m_program, (GLuint)m_vs);
+	if (m_shaderHs != NULL) glAttachShader((GLuint)m_program, (GLuint)m_hs);
+	if (m_shaderDs != NULL) glAttachShader((GLuint)m_program, (GLuint)m_ds);
+	if (m_shaderGs != NULL) glAttachShader((GLuint)m_program, (GLuint)m_gs);
+	if (m_shaderPs != NULL) glAttachShader((GLuint)m_program, (GLuint)m_ps);
 	
 	// Link our program
-	glLinkProgram(program);
+	glLinkProgram((GLuint)m_program);
 	
-	// Note the different functions here: glGetProgram* instead of glGetShader*.
+	// We need to make sure linking was successful.
 	GLint isLinked = 0;
-	glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
+	glGetProgramiv((GLuint)m_program, GL_LINK_STATUS, (int *)&isLinked);
+
 	if (isLinked == GL_FALSE)
 	{
-		GLint maxLength = 0;
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+		// Grab the output log:
+		GLint infoLogLength = 0;
+		glGetProgramiv((GLuint)m_program, GL_INFO_LOG_LENGTH, &infoLogLength);
 	
-		// The maxLength includes the NULL character
-		std::vector<GLchar> infoLog(maxLength);
-		glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+		GLchar* infoLog = new GLchar [infoLogLength];
+		glGetProgramInfoLog((GLuint)m_program, infoLogLength, &infoLogLength, infoLog);
+
+		// Print out the error log:
+		debug::Console->PrintError("Linking error in ShaderPipeline:\n");
+		debug::Console->PrintError( infoLog );
+
+		delete[] infoLog;
 	
 		// We don't need the program anymore.
-		glDeleteProgram(program);
+		glDeleteProgram((GLuint)m_program);
 
-		// Don't leak shaders either.
-		glDeleteShader(m_vs);
-		glDeleteShader(m_ps);
+		// Don't leak shaders.
+		if (m_shaderVs != NULL) glDeleteShader((GLuint)m_vs);
+		if (m_shaderHs != NULL) glDeleteShader((GLuint)m_hs);
+		if (m_shaderDs != NULL) glDeleteShader((GLuint)m_ds);
+		if (m_shaderGs != NULL) glDeleteShader((GLuint)m_gs);
+		if (m_shaderPs != NULL) glDeleteShader((GLuint)m_ps);
 	
-		// Use the infoLog as you see fit.
-	
-		// In this simple program, we'll just leave
-		return;
+		return kErrorCreationFailed;
 	}
+
+	// Detach the shaders now that we're linked
+	if (m_shaderVs != NULL) glDetachShader((GLuint)m_program, (GLuint)m_vs);
+	if (m_shaderHs != NULL) glDetachShader((GLuint)m_program, (GLuint)m_hs);
+	if (m_shaderDs != NULL) glDetachShader((GLuint)m_program, (GLuint)m_ds);
+	if (m_shaderGs != NULL) glDetachShader((GLuint)m_program, (GLuint)m_gs);
+	if (m_shaderPs != NULL) glDetachShader((GLuint)m_program, (GLuint)m_ps);
+
+	// Destroy the shaders now that they're floating unused
+	if (m_shaderVs != NULL) glDeleteShader((GLuint)m_vs);
+	if (m_shaderHs != NULL) glDeleteShader((GLuint)m_hs);
+	if (m_shaderDs != NULL) glDeleteShader((GLuint)m_ds);
+	if (m_shaderGs != NULL) glDeleteShader((GLuint)m_gs);
+	if (m_shaderPs != NULL) glDeleteShader((GLuint)m_ps);
+
+	return kError_SUCCESS;
 }
 
 int gpu::ShaderPipeline::destroy ( void )
 {
+	glDeleteProgram((GLuint)m_program);
+	m_program = 0;
+	return kError_SUCCESS;
 }
 
 bool gpu::ShaderPipeline::valid ( void )
 {
-	return false;
+	return m_program != 0;
 }

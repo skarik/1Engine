@@ -10,8 +10,8 @@
 #include "renderer/state/RrHybridBufferChain.h"
 
 //Todo: make following prototypes
-#include "renderer/gpuw/Textures.h"
-#include "renderer/gpuw/RenderTargets.h"
+#include "renderer/gpuw/Texture.h"
+#include "renderer/gpuw/RenderTarget.h"
 #include "renderer/gpuw/Device.h"
 #include "renderer/gpuw/GraphicsContext.h"
 

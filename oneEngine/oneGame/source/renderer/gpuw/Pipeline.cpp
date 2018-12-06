@@ -50,3 +50,10 @@ gpuHandle gpu::Pipeline::nativePtr ( void )
 {
 	return m_vao;
 }
+
+//	valid() : is this pipeline valid to be used?
+// If the pipeline failed to be created or doesnt exist, this will be false
+bool gpu::Pipeline::valid ( void )
+{
+	return m_vao != 0 && m_pipeline != NULL;
+}

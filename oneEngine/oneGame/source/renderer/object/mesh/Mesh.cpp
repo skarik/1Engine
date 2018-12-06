@@ -151,6 +151,7 @@ bool renderer::Mesh::Render ( const rrRenderParams* params )
 		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
 			if (m_mesh->m_bufferEnabled[i])
 				gfx->setVertexBuffer(i, &m_mesh->m_buffer[i], 0);
+		// bind the samplers & textures: TODO
 		// bind the vertex buffers for the morpher: TODO
 		// bind the index buffer
 		gfx->setIndexBuffer(&m_mesh->m_indexBuffer, gpu::kIndexFormatUnsigned16);

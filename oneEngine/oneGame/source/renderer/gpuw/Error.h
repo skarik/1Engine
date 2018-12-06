@@ -17,6 +17,7 @@ namespace gpu
 		kErrorModuleUnsupported,
 		kErrorFormatUnsupported,
 		kErrorDeviceError,
+		kErrorCreationFailed,
 	};
 
 };

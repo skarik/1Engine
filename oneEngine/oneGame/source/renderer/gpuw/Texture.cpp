@@ -1,6 +1,6 @@
 //#include "renderer/system/glSystem.h"
 //#include "renderer/system/glMainSystem.h"
-#include "renderer/gpuw/Textures.h"
+#include "renderer/gpuw/Texture.h"
 #include "renderer/gpuw/Internal/Enums.h"
 #include "renderer/gpuw/Error.h"
 #include "renderer/gpuw/Buffers.h"

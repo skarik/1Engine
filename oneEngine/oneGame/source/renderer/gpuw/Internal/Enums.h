@@ -7,6 +7,7 @@
 #include "renderer/types/types.h"
 #include "renderer/gpuw/Public/Enums.h"
 #include "renderer/gpuw/Public/Formats.h"
+#include "renderer/gpuw/Public/ShaderTypes.h"
 
 #include "renderer/ogl/GLCommon.h"
 
@@ -174,6 +175,23 @@ namespace internal {
 		switch ( format ) {
 		case kIndexFormatUnsigned16:	return GL_UNSIGNED_SHORT;
 		case kIndexFormatUnsigned32:	return GL_UNSIGNED_INT;
+		}
+		return GL_INVALID_ENUM;
+	}
+
+	static FORCE_INLINE gpuEnum ArEnumToGL ( const gpu::ShaderStage stage )
+	{
+		switch ( stage ) {
+			// Normal GFX Pipeline
+		case kShaderStageVs:	return GL_VERTEX_SHADER;
+		case kShaderStageHs:	return GL_TESS_CONTROL_SHADER;
+		case kShaderStageDs:	return GL_TESS_EVALUATION_SHADER;
+		case kShaderStageGs:	return GL_GEOMETRY_SHADER;
+		case kShaderStagePs:	return GL_FRAGMENT_SHADER;
+			// Vega+ pipeline todo???
+		// none
+			// Compute
+		case kShaderStageCs:	return GL_COMPUTE_SHADER;
 		}
 		return GL_INVALID_ENUM;
 	}

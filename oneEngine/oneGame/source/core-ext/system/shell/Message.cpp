@@ -1,4 +1,5 @@
 #include "core/os.h"
+#include "core-ext/system/shell/Message.h"
 #include <varargs.h>
 #include <stdio.h>
 

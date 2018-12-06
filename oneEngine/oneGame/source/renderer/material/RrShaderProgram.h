@@ -91,7 +91,8 @@ public: // Resource interface
 
 public:
 	RENDER_API gpu::ShaderPipeline&
-							GetShaderPipeline ( void );
+							GetShaderPipeline ( void )
+		{ return m_pipeline; }
 
 private:
 	gpu::ShaderPipeline		m_pipeline;

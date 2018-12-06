@@ -1,13 +1,16 @@
-#ifndef GPU_WRAPPER_RENDER_TEXTURES_H_
-#define GPU_WRAPPER_RENDER_TEXTURES_H_
+#ifndef GPU_WRAPPER_RENDER_TARGET_H_
+#define GPU_WRAPPER_RENDER_TARGET_H_
 
-#include "renderer/gpuw/Textures.h"
+#include "renderer/gpuw/Texture.h"
 #include "renderer/gpuw/Public/Slots.h"
 
 namespace gpu
 {
 	class Device;
 	class Texture;
+	class GraphicsContext;
+	class OutputSurface;
+
 	class RenderTarget
 	{
 	public:
@@ -34,8 +37,15 @@ namespace gpu
 		RENDER_API int			assemble ( void );
 
 	private:
+		friend GraphicsContext;
+		friend OutputSurface;
+
 		unsigned int					m_framebuffer;
-		void*							m_attachments [18];
+		void*							m_attachments [16];
+		void*							m_attachmentDepth;
+		void*							m_attachmentStencil;
+		bool							m_attachmentIsTexture [16];
+		bool							m_assembled;
 		//core::gfx::tex::arTextureType	m_type;
 	};
 };

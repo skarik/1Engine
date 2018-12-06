@@ -174,9 +174,6 @@
     <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp">
       <Filter>SOURCE\Renderer\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\gpuw\Textures.cpp">
-      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
     </ClCompile>
@@ -254,9 +251,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\ogl\wgl_impl.c">
       <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\gpuw\RenderTargets.cpp">
-      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\texture\RrTexture.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
@@ -411,6 +405,18 @@
     <ClCompile Include="source\renderer\gpuw\Buffers.cpp">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\GraphicsContext.sync.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Sampler.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\RenderTarget.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Texture.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glDrawing.h">
@@ -493,9 +499,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\state\InternalSettings.h">
       <Filter>SOURCE\Renderer\State</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\gpuw\Textures.h">
-      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
@@ -597,9 +600,6 @@
       <Filter>SOURCE\Renderer\GPU Wrapper\Internal</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\gpuw\Error.h">
-      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\gpuw\RenderTargets.h">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\texture\RrTexture.h">
@@ -793,6 +793,15 @@
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\StreamedMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Sampler.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\RenderTarget.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Texture.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

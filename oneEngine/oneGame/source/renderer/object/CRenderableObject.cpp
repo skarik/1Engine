@@ -369,6 +369,9 @@ void CRenderableObject::PassInitWithInput ( int pass, RrPass* passData )
 	m_passes[pass] = *passData;
 	m_passEnabled[pass] = true;
 	m_passSurfaceSynced[pass] = false;
+
+	// Verify the pass is valid
+	ARCORE_ASSERT(m_passes[pass].validate());
 }
 
 void CRenderableObject::PassFree ( int pass )

@@ -17,8 +17,9 @@ namespace gpu
 
 	private:
 		friend ShaderPipeline;
-		unsigned int	m_handle;
 		ShaderStage		m_type;
+		char*			m_shaderBytes;
+		uint64_t		m_shaderLength;
 	};
 }
 

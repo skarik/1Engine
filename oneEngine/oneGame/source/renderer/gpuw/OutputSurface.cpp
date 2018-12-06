@@ -1,4 +1,5 @@
 #include "renderer/gpuw/OutputSurface.h"
+#include "renderer/gpuw/RenderTarget.h"
 #include "renderer/gpuw/Device.h"
 #include "renderer/gpuw/Error.h"
 #include "renderer/ogl/GLCommon.h"
@@ -48,4 +49,12 @@ int gpu::OutputSurface::present ( void )
 {
 	BOOL result = SwapBuffers((HDC)mw_deviceContext);
 	return (result == TRUE);
+}
+
+gpu::RenderTarget* gpu::OutputSurface::getRenderTarget ( void )
+{
+	static RenderTarget rt;
+	rt.m_framebuffer = 0;
+	rt.m_assembled = true;
+	return &rt;
 }

@@ -3,7 +3,7 @@
 //#include "core/debug/CDebugConsole.h"
 //
 //#include "renderer/system/glMainSystem.h"
-//#include "renderer/gpuw/Textures.h"
+//#include "renderer/gpuw/Texture.h"
 //
 //// For debug logging of MRT.
 ////#define MRT_DEBUG
