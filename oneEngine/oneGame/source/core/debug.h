@@ -37,7 +37,7 @@
 	do { \
 		if (!(cond)) { \
 			printf("%s (%d): In %s\n", __FILE__, __LINE__, __FUNCTION__); \
-			printf(fmt, ##__VA_ARGS__); \
+			printf(fmt "\n", ##__VA_ARGS__); \
 			AR_DEBUG_BREAK(); \
 		} \
 	} while(0);

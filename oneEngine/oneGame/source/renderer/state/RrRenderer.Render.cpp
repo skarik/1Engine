@@ -680,7 +680,7 @@ Render_Groups:
 		// Do the deferred pass:
 		for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rDeferred.size(); ++iObject)
 		{
-			const rrRenderRequest const&  l_4r = l_4rGroup[iLayer].m_4rDeferred[iObject];
+			const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rDeferred[iObject];
 			CRenderableObject* renderable = l_4r.obj;
 
 			CRenderableObject::rrRenderParams params;
@@ -721,7 +721,7 @@ Render_Groups:
 		// Do the forward pass:
 		for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rForward.size(); ++iObject)
 		{
-			const rrRenderRequest const&  l_4r = l_4rGroup[iLayer].m_4rForward[iObject];
+			const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rForward[iObject];
 			CRenderableObject* renderable = l_4r.obj;
 
 			CRenderableObject::rrRenderParams params;
