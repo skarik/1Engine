@@ -1,4 +1,8 @@
-in vec3 mdl_Vertex;
+// sys/error
+// Simple shader meant for use when actual target shader has an error.
+#version 430
+
+layout(location = 0) in vec3 mdl_Vertex;
 
 // System inputs
 layout(std140) uniform sys_cbuffer_PerObject
