@@ -3,6 +3,13 @@
 #include "renderer/ogl/GLCommon.h"
 #include "core/debug.h"
 
+gpu::Buffer::Buffer ( void ) :
+	m_bufferType(kBufferTypeUnknown),
+	m_buffer(0),
+	m_elementSize(0),
+	m_format(kFormatUndefined)
+{}
+
 //	valid () : is this buffer valid to be used?
 bool gpu::Buffer::valid ( void )
 {

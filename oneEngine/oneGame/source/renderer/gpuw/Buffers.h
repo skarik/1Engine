@@ -59,6 +59,8 @@ namespace gpu
 	class Buffer
 	{
 	public:
+		RENDER_API				Buffer ( void );
+
 		//	initAsData( device, data_size ) : Initializes as a data buffer.
 		// Data is uploaded separately through map/unmap or upload.
 		RENDER_API int			initAsData ( Device* device, const uint64_t data_size );

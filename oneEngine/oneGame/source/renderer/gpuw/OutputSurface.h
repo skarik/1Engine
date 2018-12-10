@@ -27,15 +27,20 @@ namespace gpu
 	class OutputSurface
 	{
 	public:
-		RENDER_API int			create ( Device* device, PresentMode presentMode );
+		RENDER_API int			create ( Device* device, PresentMode presentMode, uint32_t width, uint32_t height );
 		RENDER_API int			destroy ( void );
 		RENDER_API RenderTarget*
 								getRenderTarget ( void );
 
 		RENDER_API int			present ( void );
 
+		RENDER_API uint32_t		getWidth ( void );
+		RENDER_API uint32_t		getHeight ( void );
+
 	private:
 		intptr_t			mw_deviceContext;
+		uint32_t			m_width;
+		uint32_t			m_height;
 	};
 }
 

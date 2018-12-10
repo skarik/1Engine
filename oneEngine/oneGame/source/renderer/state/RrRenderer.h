@@ -98,6 +98,7 @@ public:
 	RENDER_API				~RrRenderer ( void );
 
 	void					InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::OutputSurface* surface );
+	void					ResizeSurface ( void );
 
 	// Buffer management
 	// ================================

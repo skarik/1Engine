@@ -107,6 +107,9 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 		internal_chain_index = 0;
 	}
 
+	// Create the rendertargets now
+	ResizeSurface(); // Will create the new sized render targets.
+
 	// Create default textures
 	{
 		RrTexture* white_texture = RrTexture::CreateUnitialized(renderer::kTextureWhite); //new RrTexture("");
@@ -416,6 +419,16 @@ const renderer::ePipelineMode RrRenderer::GetPipelineMode ( void ) const
 //	// Couldn't drop any settings.
 //	return false;
 //}
+
+void RrRenderer::ResizeSurface ( void )
+{
+	// update Screen::Info.width and Screen::Info.height from the OutputSurface
+	Screen::Info.width  = mOutputSurface->getWidth();
+	Screen::Info.height = mOutputSurface->getHeight();
+
+	// Force buffers to update
+	CreateTargetBuffers();
+}
 
 void RrRenderer::CreateTargetBuffers ( void )
 {

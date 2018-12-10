@@ -278,7 +278,7 @@ void RrWindow::CreateGfxSurface ( void )
 		ERROR_OUT("Window is not created. Cannot create surface.\n");
 	}
 
-	if (m_surface.create(m_device, gpu::kPresentModeImmediate) != 0)
+	if (m_surface.create(m_device, gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y) != 0)
 	{
 		DestroyScreen();
 		ERROR_OUT("Gfx surface creation error.\n");
@@ -367,7 +367,11 @@ bool RrWindow::Resize ( int width, int height )
 
 		// Refresh the surface
 		m_surface.destroy();
-		m_surface.create(m_device, gpu::kPresentModeImmediate);
+		m_surface.create(m_device, gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y);
+
+		// Resize the renderer
+		if (m_renderer != NULL)
+			m_renderer->ResizeSurface();
 	}
 	return true;
 }
@@ -437,25 +441,31 @@ void RrWindow::PostRedrawMessage ( void )
 // WINDOWS MESSAGE LOOP:
 //===============================================================================================//
 
-void WndSetMouseClip ( HWND	hWnd, bool & hiddencursor )
+void RrWindow::UpdateMouseClipping ( void )
 {
-	if (   ( CInput::SysMouseX() == std::min<long>( std::max<long>( CInput::SysMouseX(), 0 ), Screen::Info.width ) )
-		&& ( CInput::SysMouseY() == std::min<long>( std::max<long>( CInput::SysMouseY(), 0 ), Screen::Info.height ) ))
+	if (   ( CInput::SysMouseX() == std::min<long>( std::max<long>( CInput::SysMouseX(), 0 ), m_resolution.x ) )
+		&& ( CInput::SysMouseY() == std::min<long>( std::max<long>( CInput::SysMouseY(), 0 ), m_resolution.y ) ))
 	{
 		hiddencursor = false;
+
+		// Get the window's rect
 		RECT rc;
-		GetClientRect( hWnd, &rc );
+		GetClientRect( mw_window, &rc );
 		POINT xy, wh;
 		xy.x = rc.left;
 		xy.y = rc.top;
 		wh.x = rc.right;
 		wh.y = rc.bottom;
-		ClientToScreen( hWnd, &xy );
-		ClientToScreen( hWnd, &wh );
+		
+		// Get the window rect in screen-space
+		ClientToScreen( mw_window, &xy );
+		ClientToScreen( mw_window, &wh );
 		rc.left = xy.x;
 		rc.top = xy.y;
 		rc.right = wh.x;
 		rc.bottom = wh.y;
+
+		// Clip cursor against that
 		ClipCursor( &rc );
 	}
 }
@@ -496,7 +506,7 @@ LRESULT CALLBACK MessageUpdate(
 	case WM_SETFOCUS:
 	{
 		rrWindow->focused = true;	// Program is no longer focused
-		WndSetMouseClip( hWnd, rrWindow->hiddencursor );
+		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_KILLFOCUS:
@@ -515,7 +525,7 @@ LRESULT CALLBACK MessageUpdate(
 			ScreenToClient( hWnd, &pt );
 			CInput::_sysMouseX( pt.x );
 			CInput::_sysMouseY( pt.y );
-			WndSetMouseClip( hWnd, rrWindow->hiddencursor );
+			rrWindow->UpdateMouseClipping();
 		}
 		return 0;
 	}
@@ -659,7 +669,7 @@ LRESULT CALLBACK MessageUpdate(
 		CInput::_mousedown(CInput::MBLeft,true);
 		CInput::_mouse(CInput::MBLeft,true);
 
-		WndSetMouseClip( hWnd, rrWindow->hiddencursor );
+		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_LBUTTONUP:
@@ -673,7 +683,7 @@ LRESULT CALLBACK MessageUpdate(
 		CInput::_mousedown(CInput::MBRight,true);
 		CInput::_mouse(CInput::MBRight,true);
 
-		WndSetMouseClip( hWnd, rrWindow->hiddencursor );
+		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_RBUTTONUP:
@@ -687,7 +697,7 @@ LRESULT CALLBACK MessageUpdate(
 		CInput::_mousedown(CInput::MBMiddle,true);
 		CInput::_mouse(CInput::MBMiddle,true);
 
-		WndSetMouseClip( hWnd, rrWindow->hiddencursor );
+		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_MBUTTONUP:
@@ -701,7 +711,7 @@ LRESULT CALLBACK MessageUpdate(
 		CInput::_mousedown(CInput::MBXtra,true);
 		CInput::_mouse(CInput::MBXtra,true);
 
-		WndSetMouseClip( hWnd, rrWindow->hiddencursor );
+		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_XBUTTONUP:

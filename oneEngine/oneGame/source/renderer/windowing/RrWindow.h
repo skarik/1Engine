@@ -124,6 +124,8 @@ private:
 	void					DestroyGfxInstance ( void );
 	void					DestroyGfxSurface ( void );
 
+	void					UpdateMouseClipping ( void );
+
 	/*static void ReSizeGLScene( GLsizei width, GLsizei height );
 
 	int InitGL( void );

@@ -529,6 +529,37 @@ void RrRenderer::RenderObjectListWorld ( rrCameraPass* cameraPass, CRenderableOb
 	rrRenderRequestGroup	l_4rGroup [renderer::kRenderLayer_MAX];
 	std::thread				l_4rThread [renderer::kRenderLayer_MAX];
 
+Prerender_Pass:
+
+	// Now we loop through all the objects, check if they have an enabled pass, and call Pre-Render on them.
+	for (uint8_t iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
+	{
+		for (uint32_t iObject = 0; iObject < objectCount; ++iObject)
+		{
+			CRenderableObject* renderable = objectsToRender[iObject];
+			if (renderable != NULL)
+			{
+				bool l_hasPass = false;
+
+				// Loop through each pass to place them in the render lists.
+				for (uint8_t iPass = 0; iPass < kPass_MaxPassCount; ++iPass)
+				{
+					if (renderable->m_passEnabled[iPass] && renderable->m_passes[iPass].m_layer == iLayer)
+					{
+						l_hasPass = true;
+						break;
+					}
+				}
+
+				// If there is an enabled pass, we want to call PreRender on the object & enable the layer for rendering.
+				if (l_hasPass)
+				{
+					renderable->PreRender(cameraPass);
+				}
+			}
+		}
+	}
+
 Pass_Groups:
 
 	for (uint8_t iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
@@ -542,7 +573,7 @@ Pass_Groups:
 		l_4rGroup[iLayer].m_enabled = false;
 
 		// Create the thread that puts objects into the layer.
-		l_4rThread[iLayer] = std::thread([&]()
+		l_4rThread[iLayer] = std::thread([=, &l_4rGroup]()
 		{
 
 		Pass_Collection:
@@ -592,15 +623,15 @@ Pass_Groups:
 					// If there is an enabled pass, we want to call PreRender on the object & enable the layer for rendering.
 					if (l_hasPass)
 					{
-						renderable->PreRender(cameraPass);
+						//renderable->PreRender(cameraPass);
 						l_4rGroup[iLayer].m_enabled = true;
 					}
-					else
+					/*else
 					{
 						// For now, display an error that there is no pass:
 						debug::Console->PrintWarning("An object has no enabled passes!\n");
 						ARCORE_ERROR("An object has no passes. It's possible this is not a mistake. Please review and revise as necessary.");
-					}
+					}*/
 				}
 			}
 
@@ -620,8 +651,16 @@ Pass_Groups:
 Render_Groups:
 	gpu::GraphicsContext* gfx = mGfxContext;
 
-	ARCORE_ASSERT(cameraPass->m_bufferChain != NULL);
-	gfx->setRenderTarget(&cameraPass->m_bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
+	// select buffer chain we work with
+	RrHybridBufferChain* bufferChain = cameraPass->m_bufferChain;
+	if (bufferChain == NULL)
+	{
+		bufferChain = &internal_chain_list[internal_chain_index];
+	}
+	ARCORE_ASSERT(bufferChain != NULL);
+
+	// target proper buffer
+	gfx->setRenderTarget(&bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
 
 	for (uint8_t iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
 	{

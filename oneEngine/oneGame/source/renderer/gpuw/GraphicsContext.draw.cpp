@@ -109,8 +109,13 @@ int gpu::GraphicsContext::setShaderSBuffer ( ShaderStage stage, int slot, Buffer
 
 int gpu::GraphicsContext::setShaderSamplerAuto ( ShaderStage stage, int slot, Texture* buffer )
 {
+	ARCORE_ASSERT(buffer != NULL);
+
 	//todo: proper sampler handling
-	glBindTextureUnit(slot, (GLuint)buffer->nativePtr());
+	if (buffer != NULL)
+		glBindTextureUnit(slot, (GLuint)buffer->nativePtr());
+	else
+		glBindTextureUnit(slot, 0);
 
 	return kError_SUCCESS;
 }
