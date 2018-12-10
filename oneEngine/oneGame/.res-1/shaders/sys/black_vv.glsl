@@ -1,25 +1,23 @@
 // sys/black
 // Draws a purely black object.
-#version 330
-#extension GL_ARB_explicit_attrib_location : require
-#extension GL_ARB_explicit_uniform_location : require
+#version 430
 
 // Inputs
-in vec3 mdl_Vertex;
-in vec3 mdl_TexCoord;
+layout(location = 0) in vec3 mdl_Vertex;
+layout(location = 1) in vec3 mdl_TexCoord;
 
 // Outputs to fragment shader
-out vec2 v2f_texcoord0;
+layout(location = 0) out vec2 v2f_texcoord0;
 
 // System inputs
-layout(std140) uniform sys_cbuffer_PerObject
+layout(binding = 0, std140) uniform sys_cbuffer_PerObject
 {
     mat4 sys_ModelTRS;
     mat4 sys_ModelRS;
     mat4 sys_ModelViewProjectionMatrix;
     mat4 sys_ModelViewProjectionMatrixInverse;
 };
-layout(std140) uniform sys_cbuffer_PerObjectExt
+layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
 {
     vec4    sys_DiffuseColor;
     vec4    sys_SpecularColor;

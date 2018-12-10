@@ -1,23 +1,19 @@
-// v2d/duskui_default
-// Default shader for DuskUI - has a special hack to enable swapping between untextured and textured mode.
-// Skips the alpha cutoff as well. In texture mode, sqrt's the alpha to counteract the effects of Dusk's double blend.
-#version 330
-#extension GL_ARB_explicit_attrib_location : require
-#extension GL_ARB_explicit_uniform_location : require
+// v2d/default
+// Default shader for 2D GUI elements.
+#version 430
 
-in vec3 mdl_Vertex;
-in vec3 mdl_TexCoord;
-in vec4 mdl_Color;
-in vec3 mdl_Normal;
+layout(location = 0) in vec3 mdl_Vertex;
+layout(location = 1) in vec3 mdl_TexCoord;
+layout(location = 2) in vec4 mdl_Color;
+layout(location = 3) in vec3 mdl_Normal;
 
 // Outputs to fragment shader
-out vec4 v2f_colors;
-out vec4 v2f_position;
-out vec2 v2f_texcoord0;
-out float v2f_textureStrength;
+layout(location = 0) out vec4 v2f_colors;
+layout(location = 1) out vec4 v2f_position;
+layout(location = 2) out vec2 v2f_texcoord0;
 
 // Inputs
-layout(std140) uniform sys_cbuffer_PerObjectExt
+layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
 {
     vec4    sys_DiffuseColor;
     vec4    sys_SpecularColor;
@@ -28,7 +24,7 @@ layout(std140) uniform sys_cbuffer_PerObjectExt
     vec4    sys_TextureScale;
     vec4    sys_TextureOffset;
 };
-layout(std140) uniform sys_cbuffer_PerFrame
+layout(binding = 3, std140) uniform sys_cbuffer_PerFrame
 {
     // Time inputs
     vec4    sys_SinTime;
@@ -51,8 +47,6 @@ void main ( void )
 	v2f_colors		= mdl_Color;
 	v2f_position	= v_localPos;
 	v2f_texcoord0   = mdl_TexCoord.xy * sys_TextureScale.xy + sys_TextureOffset.xy;
-
-    v2f_textureStrength = min(1.0, abs(mdl_Normal.x) + abs(mdl_Normal.y));
 
 	gl_Position = v_screenPos;
 }

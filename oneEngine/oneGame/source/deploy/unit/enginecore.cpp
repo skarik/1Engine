@@ -86,7 +86,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 
 	// Create the game scene
 	RrCamera* l_cam = new RrCamera;
-	engine::Sound* l_music = core::Orphan(engine::Audio.PlaySound("Music.MainMenu"));
+	engine::Sound* l_music = core::Orphan(engine::Audio.PlaySound("Music.TestAudio"));
 	l_music->SetLooped(true);
 
 	// Start off the clock timer

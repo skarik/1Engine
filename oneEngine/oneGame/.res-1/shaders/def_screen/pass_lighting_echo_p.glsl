@@ -1,38 +1,76 @@
-#version 140
+#version 430
+
+// Output to screen
+layout(location = 0) out vec4 FragColor;
 
 // Inputs from vertex shader
-varying vec4 v2f_position;
-varying vec2 v2f_texcoord0;
+layout(location = 0) in vec4 v2f_position;
+layout(location = 1) in vec2 v2f_texcoord0;
 
 // Samplers
-uniform sampler2D textureSampler0;	// Diffuse
-uniform sampler2D textureSampler1;	// Normals
-//uniform sampler2D textureSampler2;	// Position
-uniform sampler2D textureSampler2;	// Lighting Properties
-uniform sampler2D textureSampler4;	// Depth
-
-// Lighting and Shadows
+layout(binding = 0, location = 20) uniform sampler2D textureSampler0;	// Diffuse
+layout(binding = 1, location = 21) uniform sampler2D textureSampler1;	// Normals
+layout(binding = 2, location = 22) uniform sampler2D textureSampler2;	// Lighting Properties
+layout(binding = 3, location = 23) uniform sampler2D textureSampler3;	// Glow (for now)
+layout(binding = 4, location = 24) uniform sampler2D textureSampler4;	// Depth
+layout(binding = 5, location = 25) uniform sampler2D textureSampler5; 	// Dithering dots
+/*
+// Lighting samplers
 uniform samplerBuffer textureLightBuffer;
 uniform int sys_LightNumber;
 uniform vec4 sys_LightAmbient;
-layout(std140) uniform sys_LightingInfo
-{
-	vec4 sys_LightColor[8];
-	vec4 sys_LightPosition[8];
-	vec4 sys_LightProperties[8];
-	vec4 sys_LightShadowInfo[8];
-	mat4 sys_LightMatrix[8];
-};
-
+// Shadows
+uniform mat4 sys_LightMatrix[3];
 uniform sampler2D textureShadow0;
 uniform sampler2D textureShadow1;
 uniform sampler2D textureShadow2;
+*/
+// Lighting and Shadows
+layout(binding = 24, location = 44) uniform samplerBuffer textureLightBuffer;
+layout(binding = 4, std140) uniform sys_cbuffer_PerPass
+{
+	vec4    sys_LightAmbient;
+	int     sys_LightNumber;
+	int     rr_unused0;
+	int     rr_unused1;
+	int     rr_unused2;
+	vec4	sys_LightParamHack;
+	vec4	rr_unused3;
+};
+
+layout(binding = 5, std140) uniform def_LightingInfo
+{
+	mat4 def_LightMatrix0[4];
+};
+layout(binding = 25, location = 45) uniform samplerBuffer textureLightMatrixBuffer;
+layout(binding = 12, location = 32) uniform sampler2D textureShadow0;
+layout(binding = 13, location = 33) uniform sampler2D textureShadow1;
+layout(binding = 14, location = 34) uniform sampler2D textureShadow2;
+
+vec4 v2f_lightcoord [8];
 
 // System inputs
-uniform vec3 sys_WorldCameraPos;
+layout(binding = 2, std140) uniform sys_cbuffer_PerCamera
+{
+	mat4 sys_ViewProjectionMatrix;
+	vec4 sys_WorldCameraPos;
+	vec4 sys_ViewportInfo;
+	vec2 sys_ScreenSize;
+	vec2 sys_PixelRatio;
+};
+layout(binding = 3, std140) uniform sys_cbuffer_PerFrame
+{
+	// Time inputs
+	vec4    sys_SinTime;
+	vec4    sys_CosTime;
+	vec4    sys_Time;
 
-uniform mat4 sys_ModelViewProjectionMatrix;
-uniform mat4 sys_ModelViewProjectionMatrixInverse;
+	// Fog
+	vec4	sys_FogColor;
+	vec4	sys_AtmoColor;
+	float 	sys_FogEnd;
+	float 	sys_FogScale;
+};
 
 // 0 for normal lighting, 1 for full wraparound lighting
 const float mixthrough = 0.2;
@@ -114,17 +152,23 @@ vec3 echoLighting ( vec4 lightPosition, vec4 lightProperties, vec4 lightColor, i
 	return resultColor;
 }
 
-uniform vec4 sys_Time;
-
 void main ( void )  
 {
+	// Use depth to generate the world position
 	float pixelDepth 		= texture( textureSampler4, v2f_texcoord0 ).r;
-
 	vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1),pixelDepth,1.0 );
+	{
+		pixelPosition.z = ( pixelPosition.z*2 - 1 );
+		//pixelPosition = sys_ModelViewProjectionMatrixInverse * vec4( pixelPosition.xyz, 1.0 );
+		pixelPosition = inverse(sys_ViewProjectionMatrix) * vec4( pixelPosition.xyz, 1.0 );
+		pixelPosition.xyzw /= pixelPosition.w;
+	}
+
+	/*vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1),pixelDepth,1.0 );
 	pixelPosition.z = ( pixelPosition.z*2 - 1 );
 	
 	pixelPosition = sys_ModelViewProjectionMatrixInverse * vec4( pixelPosition.xyz, 1.0 );
-	pixelPosition.xyzw /= pixelPosition.w;
+	pixelPosition.xyzw /= pixelPosition.w;*/
 
 	vec4 pixelDiffuse		= texture( textureSampler0, v2f_texcoord0 );
 	//vec4 pixelPosition		= texture( textureSampler2, v2f_texcoord0 );	
@@ -133,7 +177,7 @@ void main ( void )
 	//vec4 pixelLightProperty	= texture( textureSampler3, v2f_texcoord0 );
 	vec4 pixelLightProperty = vec4( 1,1,1,1 );
 	
-	vec4 n_cameraVector = vec4( sys_WorldCameraPos - pixelPosition.xyz, 0 );
+	vec4 n_cameraVector = vec4( sys_WorldCameraPos.xyz - pixelPosition.xyz, 0 );
 	n_cameraVector.w = length( n_cameraVector.xyz );
 	vec3 n_cameraDir = n_cameraVector.xyz / n_cameraVector.w;
 	
@@ -190,27 +234,27 @@ void main ( void )
 	lightingStrength = (pixelDiffuse.a + 1.0)*0.5;
 	
 	// Output final color
-	gl_FragColor.rgb = mix( vec3(0,0,0), luminColor, lightingStrength ); 
+	FragColor.rgb = mix( vec3(0,0,0), luminColor, lightingStrength ); 
 	//mix( pixelDiffuse.rgb, diffuseColor*luminColor, clamp( (pixelLightProperty.r-0.4)/0.6, 0, 1 ) ); 
-	gl_FragColor.a = lightingStrength;
+	FragColor.a = lightingStrength;
 
 	//+ dot( n_cameraDir, pixelNormal.xyz );
 	
 	/*
 	// 4X Debug Output
 	if ( v2f_texcoord0.x < 0.5 && v2f_texcoord0.y < 0.5 ) {
-		gl_FragColor = texture( textureSampler0, v2f_texcoord0*2 );
+		FragColor = texture( textureSampler0, v2f_texcoord0*2 );
 	}
 	else if ( v2f_texcoord0.x > 0.5 && v2f_texcoord0.y < 0.5 ) {
-		gl_FragColor = texture( textureSampler1, v2f_texcoord0*2 - vec2(1,0) );
+		FragColor = texture( textureSampler1, v2f_texcoord0*2 - vec2(1,0) );
 	}
 	else if ( v2f_texcoord0.x < 0.5 && v2f_texcoord0.y > 0.5 ) {
-		gl_FragColor = texture( textureSampler2, v2f_texcoord0*2 - vec2(0,1) );
+		FragColor = texture( textureSampler2, v2f_texcoord0*2 - vec2(0,1) );
 	}
 	else if ( v2f_texcoord0.x > 0.5 && v2f_texcoord0.y > 0.5 ) {
-		gl_FragColor = texture( textureSampler3, v2f_texcoord0*2 - vec2(1,1) );
+		FragColor = texture( textureSampler3, v2f_texcoord0*2 - vec2(1,1) );
 	}
-	gl_FragColor.a = clamp( gl_FragColor.a , 0 , 1 );*/
+	FragColor.a = clamp( FragColor.a , 0 , 1 );*/
 	
 	
 }

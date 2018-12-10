@@ -19,10 +19,6 @@ RrDebugDrawer::RrDebugDrawer ( void )
 	mActive = this;
 	debug::Drawer = this;
 
-	// Reserve data for the lines
-	//m_vertices.reserve(1024);
-	//m_tris.reserve(512);
-
 	// Reset model data
 	memset( &m_modeldata, 0, sizeof(arModelData) );
 	m_modeldata.indexNum = 0;
@@ -40,20 +36,12 @@ RrDebugDrawer::RrDebugDrawer ( void )
 	linePass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
 	linePass.setTexture( TEX_MAIN, RrTexture::Load("null") );
 	linePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/debug_lines_vv.spv", "shaders/sys/debug_lines_p.spv"}) );
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor,
+											renderer::shader::Location::kNormal};
+	linePass.setVertexSpecificationByCommonList(t_vspec, 4);
 	PassInitWithInput(0, &linePass);
-
-	// Set the default white material
-	//RrMaterial* defaultMat = new RrMaterial;
-	//defaultMat->m_diffuse = Color( 1,1,1,1 );
-	//defaultMat->setTexture( TEX_DIFFUSE, new RrTexture( "textures/white.jpg" ) );
-	//defaultMat->passinfo.push_back( RrPassForward() );
-	//defaultMat->passinfo[0].shader = new RrShader( "shaders/sys/debug_lines.glsl" );
-	//defaultMat->passinfo[0].m_lighting_mode = renderer::LI_NONE;
-	//defaultMat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	//defaultMat->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-	//defaultMat->passinfo[0].b_depthmask = true;
-	//SetMaterial( defaultMat );
-	//defaultMat->removeReference();
 }
 RrDebugDrawer::~RrDebugDrawer ( void )
 {

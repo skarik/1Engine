@@ -29,8 +29,8 @@ renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 	LightingPass->m_type = kPassTypeForward;
 	LightingPass->m_cullMode = gpu::kCullModeNone;
 	LightingPass->setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{
-		"shaders/def_screen/pass_lighting_vv.spv",
-		"shaders/def_screen/pass_lighting_p.spv"}) );
+		"shaders/def_screen/pass_lighting_world_vv.spv",
+		"shaders/def_screen/pass_lighting_world_p.spv"}) );
 
 	EchoPass = new RrPass();
 	// Setup forward pass

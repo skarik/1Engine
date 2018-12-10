@@ -1,28 +1,26 @@
 // sys/debug_lines
 // Renders object without lighting, only diffuse multiply blending.
 // Specifically for rendering debug lines, using the normals & texcoords for offsets.
-#version 330
-#extension GL_ARB_explicit_attrib_location : require
-#extension GL_ARB_explicit_uniform_location : require
+#version 430
 
-in vec3 mdl_Vertex;
-in vec3 mdl_Normal;     // Direction of the line from start to end.
-in vec3 mdl_TexCoord;   // X: screen offset sign.
-in vec4 mdl_Color;
+layout(location = 0) in vec3 mdl_Vertex;
+layout(location = 3) in vec3 mdl_Normal;     // Direction of the line from start to end.
+layout(location = 1) in vec3 mdl_TexCoord;   // X: screen offset sign.
+layout(location = 2) in vec4 mdl_Color;
 
 // Outputs to fragment shader
-out vec4 v2f_colors;
-out vec2 v2f_texcoord0;
+layout(location = 0) out vec4 v2f_colors;
+layout(location = 1) out vec2 v2f_texcoord0;
 
 // System inputs
-layout(std140) uniform sys_cbuffer_PerObject
+layout(binding = 0, std140) uniform sys_cbuffer_PerObject
 {
     mat4 sys_ModelTRS;
     mat4 sys_ModelRS;
     mat4 sys_ModelViewProjectionMatrix;
     mat4 sys_ModelViewProjectionMatrixInverse;
 };
-layout(std140) uniform sys_cbuffer_PerObjectExt
+layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
 {
     vec4    sys_DiffuseColor;
     vec4    sys_SpecularColor;
@@ -32,7 +30,7 @@ layout(std140) uniform sys_cbuffer_PerObjectExt
     vec4    sys_TextureScale;
     vec4    sys_TextureOffset;
 };
-layout(std140) uniform sys_cbuffer_PerCamera
+layout(binding = 2, std140) uniform sys_cbuffer_PerCamera
 {
     mat4 sys_ViewProjectionMatrix;
     vec4 sys_WorldCameraPos;

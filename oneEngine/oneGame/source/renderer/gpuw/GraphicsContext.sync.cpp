@@ -8,7 +8,7 @@
 
 int gpu::GraphicsContext::signal ( Fence* fence )
 {
-	ARCORE_ERROR("not implemented");
+	//ARCORE_ERROR("not implemented");
 
 	ARCORE_ASSERT(fence->m_syncId == NULL);
 	ARCORE_ASSERT(fence->m_gfxc == NULL);

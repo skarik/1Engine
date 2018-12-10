@@ -11,14 +11,14 @@ layout(location = 0) out vec4 v2f_colors;
 layout(location = 1) out vec2 v2f_texcoord0;
 
 // System inputs
-layout(std140) uniform sys_cbuffer_PerObject
+layout(binding = 0, std140) uniform sys_cbuffer_PerObject
 {
     mat4 sys_ModelTRS;
     mat4 sys_ModelRS;
     mat4 sys_ModelViewProjectionMatrix;
     mat4 sys_ModelViewProjectionMatrixInverse;
 };
-layout(std140) uniform sys_cbuffer_PerObjectExt
+layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
 {
     vec4    sys_DiffuseColor;
     vec4    sys_SpecularColor;

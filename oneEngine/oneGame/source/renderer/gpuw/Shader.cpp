@@ -5,6 +5,12 @@
 
 #include <stdio.h>
 
+gpu::Shader::Shader ( void ) :
+	m_shaderBytes(0),
+	m_shaderLength(0)
+{}
+
+
 int gpu::Shader::createFromFile ( ShaderStage shaderType, const char* file )
 {
 	char* l_bytes = NULL;

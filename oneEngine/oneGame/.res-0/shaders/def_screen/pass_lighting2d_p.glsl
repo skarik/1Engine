@@ -11,21 +11,21 @@
 layout(location = 0) out vec4 FragColor;
 
 // Inputs from vertex shader
-in vec4 v2f_position;
-in vec2 v2f_texcoord0;
-in vec2 v2f_texcoord1;
+layout(location = 0) in vec4 v2f_position;
+layout(location = 1) in vec2 v2f_texcoord0;
+layout(location = 2) in vec2 v2f_texcoord1;
 
 // Lighitng hack!
-layout(location = 12) uniform vec4 sys_LightParamHack;
+//layout(location = 12) uniform vec4 sys_LightParamHack;
 
 // Samplers
-layout(location = 20) uniform sampler2D textureSampler0;	// Diffuse
-layout(location = 21) uniform sampler2D textureSampler1;	// Normals
-layout(location = 22) uniform sampler2D textureSampler2;	// Lighting Properties
-layout(location = 23) uniform sampler2D textureSampler3;	// Glow (for now)
-layout(location = 24) uniform sampler2D textureSampler4;	// Depth
-layout(location = 25) uniform sampler2D textureSampler5;  // Palette
-layout(location = 26) uniform sampler3D textureSampler6;  // 3D Palette
+layout(binding = 0, location = 20) uniform sampler2D textureSampler0;	// Diffuse
+layout(binding = 1, location = 21) uniform sampler2D textureSampler1;	// Normals
+layout(binding = 2, location = 22) uniform sampler2D textureSampler2;	// Lighting Properties
+layout(binding = 3, location = 23) uniform sampler2D textureSampler3;	// Glow (for now)
+layout(binding = 4, location = 24) uniform sampler2D textureSampler4;	// Depth
+layout(binding = 5, location = 25) uniform sampler2D textureSampler5;	// Palette
+layout(binding = 6, location = 26) uniform sampler3D textureSampler6;	// 3D Palette
 /*
 // Lighting samplers
 uniform samplerBuffer textureLightBuffer;
@@ -38,14 +38,16 @@ uniform sampler2D textureShadow1;
 uniform sampler2D textureShadow2;
 */
 // Lighting and Shadows
-layout(location = 44) uniform samplerBuffer textureLightBuffer;
-layout(std140) uniform sys_cbuffer_PerPass
+layout(binding = 24, location = 44) uniform samplerBuffer textureLightBuffer;
+layout(binding = 4, std140) uniform sys_cbuffer_PerPass
 {
     vec4    sys_LightAmbient;
     int     sys_LightNumber;
     int     rr_unused0;
     int     rr_unused1;
     int     rr_unused2;
+	vec4	sys_LightParamHack;
+	vec4	rr_unused3;
 };
 
 /*
@@ -88,10 +90,10 @@ layout(location = 129) uniform mat4 sys_ModelViewProjectionMatrixInverse;*/
 {
 	mat4 def_LightMatrix0[4];
 };*/
-layout(location = 45) uniform samplerBuffer textureLightMatrixBuffer;
-layout(location = 32) uniform sampler2D textureShadow0;
-layout(location = 33) uniform sampler2D textureShadow1;
-layout(location = 34) uniform sampler2D textureShadow2;
+layout(binding = 25, location = 45) uniform samplerBuffer textureLightMatrixBuffer;
+layout(binding = 12, location = 32) uniform sampler2D textureShadow0;
+layout(binding = 13, location = 33) uniform sampler2D textureShadow1;
+layout(binding = 14, location = 34) uniform sampler2D textureShadow2;
 
 //vec4 v2f_lightcoord [8];
 
@@ -107,22 +109,22 @@ layout(std140) uniform sys_Fog
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
 };*/
-layout(std140) uniform sys_cbuffer_PerCamera
+layout(binding = 2, std140) uniform sys_cbuffer_PerCamera
 {
-    mat4 sys_ViewProjectionMatrix;
-    vec4 sys_WorldCameraPos;
-    vec4 sys_ViewportInfo;
-    vec2 sys_ScreenSize;
-    vec2 sys_PixelRatio;
+	mat4 sys_ViewProjectionMatrix;
+	vec4 sys_WorldCameraPos;
+	vec4 sys_ViewportInfo;
+	vec2 sys_ScreenSize;
+	vec2 sys_PixelRatio;
 };
-layout(std140) uniform sys_cbuffer_PerFrame
+layout(binding = 3, std140) uniform sys_cbuffer_PerFrame
 {
-    // Time inputs
-    vec4    sys_SinTime;
-    vec4    sys_CosTime;
-    vec4    sys_Time;
+	// Time inputs
+	vec4    sys_SinTime;
+	vec4    sys_CosTime;
+	vec4    sys_Time;
 
-    // Fog
+	// Fog
 	vec4	sys_FogColor;
 	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;

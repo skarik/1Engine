@@ -620,6 +620,7 @@ Pass_Groups:
 Render_Groups:
 	gpu::GraphicsContext* gfx = mGfxContext;
 
+	ARCORE_ASSERT(cameraPass->m_bufferChain != NULL);
 	gfx->setRenderTarget(&cameraPass->m_bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
 
 	for (uint8_t iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)

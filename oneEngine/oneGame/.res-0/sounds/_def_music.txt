@@ -1,0 +1,9 @@
+# sounds in this folder default to the music channel
+# defaults to 0 volume (no attenuation)
+
+Music.TestAudio
+{
+	wave	music/TestAudio.ogg
+	loop	1
+	gain	1
+}

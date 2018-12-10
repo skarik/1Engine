@@ -11,6 +11,8 @@ namespace gpu
 	class Shader
 	{
 	public:
+		RENDER_API Shader ( void );
+
 		RENDER_API int			createFromFile ( ShaderStage shaderType, const char* file );
 		RENDER_API int			createFromBytes ( ShaderStage shaderType, const void* buffer, const size_t len );
 		RENDER_API int			destroy ( void );

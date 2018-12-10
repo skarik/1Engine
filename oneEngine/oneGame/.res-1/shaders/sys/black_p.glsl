@@ -1,14 +1,16 @@
 // sys/black
 // Draws a purely black object.
-#version 330
-#extension GL_ARB_explicit_attrib_location : require
-#extension GL_ARB_explicit_uniform_location : require
+#version 430
 
 // Inputs from vertex shader
-in vec2 v2f_texcoord0;
+layout(location = 0) in vec2 v2f_texcoord0;
 
 // Samplers
-layout(location = 20) uniform sampler2D textureSampler0;
+layout(binding = 0, location = 20) uniform sampler2D textureSampler0;
+
+// Outputs
+layout(location = 0) out vec4 FragDiffuse;
+
 // External constants
 layout(std140) uniform sys_cbuffer_PerObjectExt
 {
@@ -24,5 +26,5 @@ layout(std140) uniform sys_cbuffer_PerObjectExt
 
 void main ( void )
 {
-	gl_FragColor = vec4( 0,0,0, sys_DiffuseColor.a * texture(textureSampler0,v2f_texcoord0).a );
+	FragDiffuse = vec4( 0,0,0, sys_DiffuseColor.a * texture(textureSampler0, v2f_texcoord0).a );
 }

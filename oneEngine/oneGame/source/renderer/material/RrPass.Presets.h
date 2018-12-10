@@ -8,7 +8,7 @@ class RrPass;
 namespace renderer {
 namespace pass
 {
-	extern RENDER_API RrPass*	Default;
+	//extern RENDER_API RrPass*	Default;
 	extern RENDER_API RrPass*	Copy;
 	extern RENDER_API RrPass*	Fullbright;
 }}

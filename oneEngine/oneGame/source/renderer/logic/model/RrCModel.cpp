@@ -94,7 +94,7 @@ RrCModel::Load ( const rrModelLoadParams& load_params )
 		// Create a mesh group that holds the information:
 		RrAnimatedMeshGroup* meshGroup = new RrAnimatedMeshGroup();
 		{
-			ARCORE_ERROR(0, "Unimplemented RrCModel instantiation.");
+			ARCORE_ERROR("Unimplemented RrCModel instantiation.");
 			return NULL;
 		}
 

@@ -1,26 +1,28 @@
 // sys/black
 // Draws a purely black object.
-#version 330
-#extension GL_ARB_explicit_attrib_location : require
-#extension GL_ARB_explicit_uniform_location : require
+#version 430
 
-in vec3 mdl_Vertex;
-in vec3 mdl_TexCoord;
-in vec4 mdl_Color;
+layout(location = 0) in vec3 mdl_Vertex;
+layout(location = 1) in vec3 mdl_TexCoord;
+layout(location = 2) in vec4 mdl_Color;
 
-in vec4 mdl_BoneWeights;
-in uvec4 mdl_BoneIndices;
+layout(location = 7) in vec4 mdl_BoneWeights;
+layout(location = 8) in uvec4 mdl_BoneIndices;
 
 // Outputs to fragment shader
-out vec2 v2f_texcoord0;
+layout(location = 0) out vec2 v2f_texcoord0;
 
 // System inputs
-uniform mat4 sys_ModelTRS;
-uniform mat4 sys_ModelRS;
-uniform mat4 sys_ModelViewProjectionMatrix;
+layout(binding = 0, std140) uniform sys_cbuffer_PerObject
+{
+	mat4 sys_ModelTRS;
+	mat4 sys_ModelRS;
+	mat4 sys_ModelViewProjectionMatrix;
+	mat4 sys_ModelViewProjectionMatrixInverse;
+};
 
 // Skinning
-layout(std140) uniform sys_SkinningDataMajor
+layout(binding = 10, std140) uniform sys_SkinningDataMajor
 {
 	mat4 majorSkinning [256];
 };

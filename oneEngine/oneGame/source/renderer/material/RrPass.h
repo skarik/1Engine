@@ -71,6 +71,8 @@ public:
 
 	//	setVertexSpecification ( ... )
 	RENDER_API void			setVertexSpecification ( renderer::shader::VertexAttribute* attributes, const size_t attribute_count );
+	//	setVertexSpecificationByCommonList ( ... )
+	RENDER_API void			setVertexSpecificationByCommonList ( renderer::shader::Location* locations, const size_t attribute_count );
 
 	//	validate ( ... ) 
 	RENDER_API bool			validate ( void );

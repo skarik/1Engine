@@ -24,7 +24,10 @@ int gpu::ShaderPipeline::attach ( Shader* shader, const char* entrypoint_symbol 
 	glShaderBinary(1, &shaderHandle, GL_SHADER_BINARY_FORMAT_SPIR_V, shader->m_shaderBytes, (GLsizei)shader->m_shaderLength);
 
 	// Specialize the shader.
-	glSpecializeShader(shaderHandle, entrypoint_symbol, 0, nullptr, nullptr);
+	if (glSpecializeShader)
+		glSpecializeShader(shaderHandle, entrypoint_symbol, 0, nullptr, nullptr);
+	else
+		glSpecializeShaderARB(shaderHandle, entrypoint_symbol, 0, nullptr, nullptr);
 
 	// Specialization is equivalent to compilation.
 	GLint isCompiled = 0;

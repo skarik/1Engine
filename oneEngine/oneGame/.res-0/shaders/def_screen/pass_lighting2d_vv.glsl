@@ -1,16 +1,16 @@
 #version 430
 
-in vec3 mdl_Vertex;
-in vec3 mdl_TexCoord;
+layout(location = 0) in vec3 mdl_Vertex;
+layout(location = 1) in vec3 mdl_TexCoord;
 
 // Outputs to fragment shader
-varying vec4 v2f_position;
-varying vec2 v2f_texcoord0;
-varying vec2 v2f_texcoord1;
+layout(location = 0) out vec4 v2f_position;
+layout(location = 1) out vec2 v2f_texcoord0;
+layout(location = 2) out vec2 v2f_texcoord1;
 
 // System inputs
 //layout(location = 140) uniform float sys_PixelRatio;
-layout(std140) uniform sys_cbuffer_PerCamera
+layout(binding = 2, std140) uniform sys_cbuffer_PerCamera
 {
     mat4 sys_ViewProjectionMatrix;
     vec4 sys_WorldCameraPos;

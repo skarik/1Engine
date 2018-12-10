@@ -109,6 +109,64 @@ void RrPass::setVertexSpecification ( renderer::shader::VertexAttribute* attribu
 	m_vertexSpecificationCount = (int)attribute_count;
 }
 
+//	setVertexSpecificationByCommonList ( ... )
+void RrPass::setVertexSpecificationByCommonList ( renderer::shader::Location* locations, const size_t attribute_count )
+{
+	m_vertexSpecification = new renderer::shader::VertexAttribute[attribute_count];
+	for (size_t i = 0; i < attribute_count; ++i)
+	{
+		m_vertexSpecification[i] = renderer::shader::VertexAttribute();
+		m_vertexSpecification[i].location = locations[i];
+		switch (locations[i])
+		{
+		case renderer::shader::Location::kPosition:
+			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32SFloat;
+			m_vertexSpecification[i].binding = renderer::shader::kBinding0;
+			break;
+		case renderer::shader::Location::kUV0:
+			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32SFloat;
+			m_vertexSpecification[i].binding = renderer::shader::kBinding1;
+			break;
+		case renderer::shader::Location::kColor:
+			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32A32SFloat;
+			m_vertexSpecification[i].binding = renderer::shader::kBinding2;
+			break;
+		case renderer::shader::Location::kNormal:
+			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32SFloat;
+			m_vertexSpecification[i].binding = renderer::shader::kBinding3;
+			break;
+		case renderer::shader::Location::kTangent:
+			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32SFloat;
+			m_vertexSpecification[i].binding = renderer::shader::kBinding4;
+			break;
+		case renderer::shader::Location::kBinormal:
+			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32SFloat;
+			m_vertexSpecification[i].binding = renderer::shader::kBinding5;
+			break;
+		case renderer::shader::Location::kUV1:
+			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32SFloat;
+			m_vertexSpecification[i].binding = renderer::shader::kBinding6;
+			break;
+		case renderer::shader::Location::kBoneWeight:
+			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32A32SFloat;
+			m_vertexSpecification[i].binding = renderer::shader::kBinding7;
+			break;
+		case renderer::shader::Location::kBoneIndices:
+			m_vertexSpecification[i].dataFormat = gpu::kFormatR16G16B16A16UInteger;
+			m_vertexSpecification[i].binding = renderer::shader::kBinding8;
+			break;
+		case renderer::shader::Location::kIgnore:
+		case renderer::shader::Location::kInvalid:
+			ARCORE_ERROR("Invalid vertex attribute location specified!");
+			break;
+		default:
+			ARCORE_ERROR("Unsupported vertex attribute location specified!");
+			break;
+		}
+	}
+	m_vertexSpecificationCount = (int)attribute_count;
+}
+
 //	validate ( ... ) 
 bool RrPass::validate ( void )
 {

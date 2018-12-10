@@ -29,14 +29,14 @@
 
 #define AR_ERROR_IMPL(fmt, ...) \
 	do { \
-		printf("%s (%d): In %s\n", __FILE__, __LINE__, __FUNCTION__); \
-		printf(fmt, ##__VA_ARGS__); \
+		printf("AR_ERROR: %s (%d): In %s\n", __FILE__, __LINE__, __FUNCTION__); \
+		printf(fmt "\n", ##__VA_ARGS__); \
 		AR_DEBUG_BREAK(); \
 	} while(0);
 #define AR_ASSERT_MSG_IMPL(cond, fmt, ...) \
 	do { \
 		if (!(cond)) { \
-			printf("%s (%d): In %s\n", __FILE__, __LINE__, __FUNCTION__); \
+			printf("AR_ASSERT: %s (%d): In %s\n", __FILE__, __LINE__, __FUNCTION__); \
 			printf(fmt "\n", ##__VA_ARGS__); \
 			AR_DEBUG_BREAK(); \
 		} \

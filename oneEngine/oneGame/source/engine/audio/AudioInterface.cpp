@@ -328,7 +328,7 @@ void engine::AudioInterface::BuildIndexMap ( void )
 		}
 		else
 		{
-			throw core::NullReferenceException();
+			debug::Console->PrintError("Could not open soundscript listing %d.\n", i);
 		}
 	}
 }

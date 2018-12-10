@@ -115,8 +115,13 @@ namespace renderer
 			int32_t : 32;
 			int32_t : 32;
 			int32_t : 32;
+			Vector4f	lightParamHack;
+			int32_t : 32;
+			int32_t : 32;
+			int32_t : 32;
+			int32_t : 32;
 		};
-		static_assert(sizeof(rrPerPassLightingInfo) == 32, "Alignment of rrPerPassLightingInfo incorrect for the GPU.");
+		static_assert(sizeof(rrPerPassLightingInfo) == 64, "Alignment of rrPerPassLightingInfo incorrect for the GPU.");
 	}
 }
 

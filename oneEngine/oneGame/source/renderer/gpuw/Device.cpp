@@ -70,9 +70,9 @@ int gpu::Device::initialize ( void )
 		return gpu::kErrorModuleUnsupported;
 	}
 
-	// Set target attributes to load OpenGL 4.6
+	// Set target attributes to load OpenGL 4.7
 	int target_major = 4;
-	int target_minor = 6;
+	int target_minor = 7;
 
 	// Load up the correct version of OpenGL
 	mw_renderContext = NIL;

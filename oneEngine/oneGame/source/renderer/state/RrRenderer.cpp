@@ -138,25 +138,25 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 	}
 
 	// Create the default material
-	if ( renderer::pass::Default == NULL )
-	{
-		// The default material must be a single pass in both modes.
-		// This to provide compatibility with the default system implementation. (A lot of early engine code is implemented lazily)
-		renderer::pass::Default = new RrPass;
-		renderer::pass::Default->setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
-		renderer::pass::Default->setTexture( TEX_NORMALS, RrTexture::Load( "textures/default_normals.jpg" ) );
-		renderer::pass::Default->setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureBlack) );
-		renderer::pass::Default->setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
-		renderer::pass::Default->m_type = kPassTypeForward;
-		renderer::pass::Default->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/d/diffuse_vv.spv", "shaders/d/diffuse_p.spv"});
-		// Setup deferred pass
-		// todo?
-	}
+	//if ( renderer::pass::Default == NULL )
+	//{
+	//	// The default material must be a single pass in both modes.
+	//	// This to provide compatibility with the default system implementation. (A lot of early engine code is implemented lazily)
+	//	renderer::pass::Default = new RrPass;
+	//	renderer::pass::Default->setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
+	//	renderer::pass::Default->setTexture( TEX_NORMALS, RrTexture::Load( "textures/default_normals.jpg" ) );
+	//	renderer::pass::Default->setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureBlack) );
+	//	renderer::pass::Default->setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
+	//	renderer::pass::Default->m_type = kPassTypeForward;
+	//	renderer::pass::Default->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/d/diffuse_vv.spv", "shaders/d/diffuse_p.spv"});
+	//	// Setup deferred pass
+	//	// todo?
+	//}
 	if ( renderer::pass::Copy == NULL )
 	{
 		renderer::pass::Copy = new RrPass;
 		renderer::pass::Copy->m_type = kPassTypeForward;
-		renderer::pass::Copy->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/copy_buffer_vv.spv", "shaders/sys/copy_buffer_p.spv"});
+		renderer::pass::Copy->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/copy_buffer_simple_vv.spv", "shaders/sys/copy_buffer_simple_p.spv"});
 		renderer::pass::Copy->m_depthTest = gpu::kCompareOpAlways;
 		renderer::pass::Copy->m_cullMode = gpu::kCullModeNone;
 	}
@@ -202,7 +202,7 @@ RrRenderer::~RrRenderer ( void )
 	iListSize = 0;
 
 	// Free system default material
-	delete_safe(renderer::pass::Default);
+	//delete_safe(renderer::pass::Default);
 	delete_safe(renderer::pass::Copy);
 	delete_safe(renderer::pass::Fullbright);
 
