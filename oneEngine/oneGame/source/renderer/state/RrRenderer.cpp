@@ -94,6 +94,8 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 	mGfxContext		= mDevice->getContext();
 	mComputeContext	= mDevice->getComputeContext();
 
+	ARCORE_ASSERT(mGfxContext->validate() == 0);
+
 	// Set up default rendering targets
 	{
 		internal_settings.mainColorAttachmentCount = 4;
@@ -109,22 +111,34 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 
 	// Create the rendertargets now
 	ResizeSurface(); // Will create the new sized render targets.
+	ARCORE_ASSERT(mGfxContext->validate() == 0);
+
+	// Create the cbuffers relying on the surface counts
+	internal_cbuffers_frames.resize(internal_chain_list.size());
+	internal_cbuffers_passes.resize(internal_chain_list.size() * renderer::kRenderLayer_MAX);
+	for (gpu::Buffer& buffer : internal_cbuffers_frames)
+		buffer.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerFrame));
+	for (gpu::Buffer& buffer : internal_cbuffers_passes)
+		buffer.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerPassLightingInfo));
+
+	ARCORE_ASSERT(mGfxContext->validate() == 0);
 
 	// Create default textures
 	{
 		RrTexture* white_texture = RrTexture::CreateUnitialized(renderer::kTextureWhite); //new RrTexture("");
 		{
 			core::gfx::arPixel white (255, 255, 255, 255);
-			white_texture->Upload( false, &white, 1,1,
+			white_texture->Upload( false, &white, 1,1, core::gfx::tex::kColorFormatRGBA8,
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
 		//renderer::Resources::AddTexture(renderer::TextureWhite, white_texture);
+		ARCORE_ASSERT(mGfxContext->validate() == 0);
 
 		RrTexture* black_texture = RrTexture::CreateUnitialized(renderer::kTextureBlack);
 		{
 			core::gfx::arPixel black (0, 0, 0, 255);
-			black_texture->Upload( false, &black, 1,1,
+			black_texture->Upload( false, &black, 1,1, core::gfx::tex::kColorFormatRGBA8,
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
@@ -133,12 +147,13 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 		RrTexture* gray0_texture = RrTexture::CreateUnitialized(renderer::kTextureGrayA0);
 		{
 			core::gfx::arPixel gray0 (127, 127, 127, 0);
-			gray0_texture->Upload( false, &gray0, 1,1,
+			gray0_texture->Upload( false, &gray0, 1,1, core::gfx::tex::kColorFormatRGBA8,
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
 		//renderer::Resources::AddTexture(renderer::TextureGrayA0, gray0_texture);
 	}
+	ARCORE_ASSERT(mGfxContext->validate() == 0);
 
 	// Create the default material
 	//if ( renderer::pass::Default == NULL )
@@ -175,6 +190,7 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 	//{
 	//	renderer::m_default_hint_options = new renderer::_n_hint_rendering_information();
 	//}
+	ARCORE_ASSERT(mGfxContext->validate() == 0);
 
 	// Create the pipeline utils
 	pipelinePasses = new renderer::pipeline::RrPipelinePasses();
@@ -184,6 +200,8 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 	// Create the debug tools
 	new debug::RrDebugDrawer;
 	new debug::RrDebugRTInspector;
+
+	ARCORE_ASSERT(mGfxContext->validate() == 0);
 }
 
 

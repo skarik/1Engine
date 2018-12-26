@@ -53,6 +53,32 @@ void RrRenderer::StepPreRender ( void )
 		}
 	}
 
+	// Update the per-frame constant buffer data:
+	{
+		renderer::cbuffer::rrPerFrame frameInfo = {};
+		// Set up time constants:
+		frameInfo.time		= Vector4f(Time::currentTime / 2.0F, Time::currentTime, Time::currentTime * 2.0F, Time::currentTime * 3.0F);
+		frameInfo.sinTime	= Vector4f(sinf(Time::currentTime / 8.0F), sinf(Time::currentTime / 4.0F), sinf(Time::currentTime / 2.0F), sinf(Time::currentTime));
+		frameInfo.cosTime	= Vector4f(cosf(Time::currentTime / 8.0F), cosf(Time::currentTime / 4.0F), cosf(Time::currentTime / 2.0F), cosf(Time::currentTime));
+		// Set up simple distance fog constants:
+		frameInfo.fogColor	= Vector4f(Vector3f(renderer::Settings.fogColor.raw), 1.0F);
+		Color t_atmoColor = Color::Lerp(renderer::Settings.fogColor, renderer::Settings.ambientColor, 0.5F) * Color(0.9F, 0.9F, 1.1F); // Hack for AFTER
+		frameInfo.atmoColor = Vector4f(Vector3f(t_atmoColor.raw), 1.0F);
+		frameInfo.fogEnd = renderer::Settings.fogEnd;
+		frameInfo.fogScale = renderer::Settings.fogScale; // These fog values likely won't see actual use in more modern rendering pipelines.
+		// Push to GPU:
+		internal_cbuffers_frames[internal_chain_index].upload(NULL, &frameInfo, sizeof(renderer::cbuffer::rrPerFrame), gpu::kTransferStream);
+	}
+
+	// Update the per-pass constant buffer data:
+	for (int iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
+	{
+		renderer::cbuffer::rrPerPassLightingInfo passInfo = {}; // Unused. May want to remove later...
+
+		internal_cbuffers_passes[internal_chain_index * renderer::kRenderLayer_MAX + iLayer]
+			.upload(NULL, &passInfo, sizeof(renderer::cbuffer::rrPerPassLightingInfo), gpu::kTransferStream);
+	}
+
 	// Begin the logic jobs
 	for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
@@ -490,9 +516,13 @@ void RrRenderer::RenderObjectList ( RrCamera* camera, CRenderableObject** object
 	// Get a pass list from the camera
 	const int kMaxCameraPasses = 8;
 	rrCameraPass cameraPasses [kMaxCameraPasses];
+	rrCameraPassInput cameraPassInput;
+	cameraPassInput.m_maxPasses = kMaxCameraPasses;
+	cameraPassInput.m_bufferingCount = internal_chain_list.size();
+	cameraPassInput.m_bufferingIndex = internal_chain_index;
 
 	int passCount = camera->PassCount();
-	camera->PassRetrieve(cameraPasses, kMaxCameraPasses);
+	camera->PassRetrieve(&cameraPassInput, cameraPasses);
 
 	// Begin rendering now
 	camera->RenderBegin();
@@ -672,6 +702,8 @@ Render_Groups:
 
 	Rendering:
 
+		int l_cbuffer_pass_index = internal_chain_index * renderer::kRenderLayer_MAX + iLayer;
+
 		bool dirty_deferred = false;
 		bool dirty_forward = false;
 
@@ -725,10 +757,9 @@ Render_Groups:
 
 			CRenderableObject::rrRenderParams params;
 			params.pass = l_4r.pass;
-			params.cbuf_perCamera = NULL; // TODO
-			params.cbuf_perFrame = NULL; // TODO
-			params.cbuf_perPass = NULL; // TODO
-			ARCORE_ERROR("Need to implement the cbuffer");
+			params.cbuf_perCamera = cameraPass->m_cbuffer;
+			params.cbuf_perFrame = &internal_cbuffers_frames[internal_chain_index];
+			params.cbuf_perPass = &internal_cbuffers_passes[l_cbuffer_pass_index];
 			
 			renderable->Render(&params);
 		}
@@ -766,10 +797,9 @@ Render_Groups:
 
 			CRenderableObject::rrRenderParams params;
 			params.pass = l_4r.pass;
-			params.cbuf_perCamera = NULL; // TODO
-			params.cbuf_perFrame = NULL; // TODO
-			params.cbuf_perPass = NULL; // TODO
-			ARCORE_ERROR("Need to implement the cbuffer");
+			params.cbuf_perCamera = cameraPass->m_cbuffer;
+			params.cbuf_perFrame = &internal_cbuffers_frames[internal_chain_index];
+			params.cbuf_perPass = &internal_cbuffers_passes[l_cbuffer_pass_index];
 
 			renderable->Render(&params);
 		}

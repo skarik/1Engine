@@ -31,17 +31,22 @@ int RrRTCameraCube::PassCount ( void )
 }
 //	PassRetrieve(array, array_size) : Writes pass information into the array given in
 // Will write either PassCount() or maxPasses passes, whatever is smaller.
-void RrRTCameraCube::PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses )
+void RrRTCameraCube::PassRetrieve ( const rrCameraPassInput* input, rrCameraPass* passList )
 {
 	if (!m_staggerRender)
 	{
-		for (int i = 0; i < std::min<int>(6, maxPasses); ++i)
+		for (int i = 0; i < std::min<int>(6, input->m_maxPasses); ++i)
 		{
 			passList[i].m_bufferChain	= NULL;
 			passList[i].m_passType		= kCameraRenderWorld;
 			passList[i].m_viewport		= viewport;
 			passList[i].m_viewTransform	= viewCubeMatrices[i];
 			passList[i].m_projTransform	= projCubeMatrices[i];
+			passList[i].m_viewprojTransform	= viewprojCubeMatrices[i];
+
+			int cbuffer_index = i + input->m_bufferingIndex * 6;
+			UpdateCBuffer(cbuffer_index, input->m_bufferingCount * 6, &passList[i]);
+			passList[i].m_cbuffer = &m_cbuffers[cbuffer_index];
 		}
 	}
 	else
@@ -51,6 +56,11 @@ void RrRTCameraCube::PassRetrieve ( rrCameraPass* passList, const uint32_t maxPa
 		passList[0].m_viewport		= viewport;
 		passList[0].m_viewTransform	= viewCubeMatrices[m_staggerTarget];
 		passList[0].m_projTransform	= projCubeMatrices[m_staggerTarget];
+		passList[0].m_viewprojTransform	= viewprojCubeMatrices[m_staggerTarget];
+
+		int cbuffer_index = input->m_bufferingIndex;
+		UpdateCBuffer(cbuffer_index, input->m_bufferingCount, &passList[0]);
+		passList[0].m_cbuffer = &m_cbuffers[cbuffer_index];
 	}
 }
 

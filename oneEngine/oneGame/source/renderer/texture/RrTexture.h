@@ -50,9 +50,13 @@ struct rrTextureLoadInfo;
 // Structure for texture upload request
 struct rrTextureUploadInfo
 {
+	core::gfx::tex::arTextureType
+						type;
 	core::gfx::arPixel*	data;
 	uint16_t			width;
 	uint16_t			height;
+	core::gfx::tex::arColorFormat
+						format;
 };
 
 // constants: move these elsewhere later
@@ -156,10 +160,11 @@ public: // Kitchen Sink Interface
 		core::gfx::arPixel*				data,
 		uint16_t						width,
 		uint16_t						height,
+		core::gfx::tex::arColorFormat	format,
 		core::gfx::tex::arWrappingType	repeatX			= core::gfx::tex::kWrappingRepeat,
 		core::gfx::tex::arWrappingType	repeatY			= core::gfx::tex::kWrappingRepeat,
 		core::gfx::tex::arMipmapGenerationStyle	mipmapGeneration = core::gfx::tex::kMipmapGenerationNormal,
-		core::gfx::tex::arSamplingFilter	/*ignored*/	= core::gfx::tex::kSamplingLinear
+		core::gfx::tex::arSamplingFilter	defaultSamplerFilter = core::gfx::tex::kSamplingLinear
 		);
 
 	//RENDER_API virtual void SetFilter ( core::gfx::tex::arSamplingFilter filter );
@@ -175,14 +180,18 @@ protected:
 	// is this texture streamed and loaded over a period of time, or loaded immediately?
 	bool				streamed;
 
+	// gpu Texture object
 	gpu::Texture		m_texture;
 
-	//string			sFilename;	
+	// texture resource named used for resource management & pointing to file
 	arstring256			resourceName;
+	// texture general information
 	core::gfx::tex::arTextureInfo
 						info;
+	// texture state, containing mips that can be bound
 	core::gfx::tex::arTextureState
 						state;
+	// default sampler information
 	rrSamplerState		defaultSamplerState;
 
 	// temp pointer for data that is provided by Upload()

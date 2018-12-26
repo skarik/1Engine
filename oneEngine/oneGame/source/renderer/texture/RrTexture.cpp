@@ -106,10 +106,11 @@ RrTexture::Upload (
 	core::gfx::arPixel*				data,
 	uint16_t						width,
 	uint16_t						height,
+	core::gfx::tex::arColorFormat	format,
 	core::gfx::tex::arWrappingType	repeatX,
 	core::gfx::tex::arWrappingType	repeatY,
 	core::gfx::tex::arMipmapGenerationStyle	mipmapGeneration,
-	core::gfx::tex::arSamplingFilter	/*ignored*/
+	core::gfx::tex::arSamplingFilter defaultSamplerFilter
 )
 {
 	auto resm = core::ArResourceManager::Active();
@@ -123,9 +124,17 @@ RrTexture::Upload (
 	if (upload_request == NULL) {
 		upload_request = new rrTextureUploadInfo();
 	}
+	upload_request->type = core::gfx::tex::kTextureType2D;
 	upload_request->data = data;
 	upload_request->width = width;
 	upload_request->height = height;
+	upload_request->format = format;
+
+	// Update the info with the input params
+	info.repeatX = repeatX;
+	info.repeatY = repeatY;
+	info.mipmapStyle = mipmapGeneration;
+	info.filter = defaultSamplerFilter;
 
 	// Set streamed setting before adding self to resource system.
 	this->streamed = streamed;

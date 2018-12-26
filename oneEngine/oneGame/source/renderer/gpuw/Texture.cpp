@@ -1,5 +1,3 @@
-//#include "renderer/system/glSystem.h"
-//#include "renderer/system/glMainSystem.h"
 #include "renderer/gpuw/Texture.h"
 #include "renderer/gpuw/Internal/Enums.h"
 #include "renderer/gpuw/Error.h"
@@ -12,19 +10,6 @@
 
 #include <algorithm>
 
-//gpu::Texture::Texture ( void )
-//{
-//	m_texture = 0;
-//	m_type = core::gfx::tex::kTextureTypeNone;
-//}
-//gpu::Texture::~Texture ( void )
-//{
-//	// Free texture on death
-//	if (m_texture != 0)
-//	{
-//		glDeleteTextures(1, &m_texture);
-//	}
-//}
 
 bool gpu::Texture::valid ( void )
 {
@@ -66,7 +51,7 @@ int gpu::Texture::allocate (
 				m_height = 1;
 				m_depth = 1;
 				m_levels = allocatedLevels;
-				m_glformat = gpu::internal::ArEnumToGL(textureFormat);
+				m_glcomponent = gpu::internal::ArColorFormatToGlComponentType(textureFormat);
 				m_gltype = gpu::internal::ArColorFormatToGlDataType(textureFormat);
 				break;
 			case core::gfx::tex::kTextureType1DArray:
@@ -77,7 +62,7 @@ int gpu::Texture::allocate (
 				m_height = height;
 				m_depth = 1;
 				m_levels = allocatedLevels;
-				m_glformat = gpu::internal::ArEnumToGL(textureFormat);
+				m_glcomponent = gpu::internal::ArColorFormatToGlComponentType(textureFormat);
 				m_gltype = gpu::internal::ArColorFormatToGlDataType(textureFormat);
 				break;
 			case core::gfx::tex::kTextureType2DArray:
@@ -88,7 +73,7 @@ int gpu::Texture::allocate (
 				m_height = height;
 				m_depth = depth;
 				m_levels = allocatedLevels;
-				m_glformat = gpu::internal::ArEnumToGL(textureFormat);
+				m_glcomponent = gpu::internal::ArColorFormatToGlComponentType(textureFormat);
 				m_gltype = gpu::internal::ArColorFormatToGlDataType(textureFormat);
 				break;
 			}
@@ -99,6 +84,10 @@ int gpu::Texture::allocate (
 			return gpu::kErrorOutOfMemory;
 		}
 	}
+
+	// Lot of things can go wrong with textures, doesn't hurt to check status here.
+	ARCORE_ASSERT(glGetError() == GLenum(0));
+
 	return gpu::kError_SUCCESS;
 }
 
@@ -113,26 +102,18 @@ int gpu::Texture::free ( void )
 
 int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level )
 {
+	ARCORE_ASSERT(glGetError() == GLenum(0));
+
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, (GLuint)buffer.nativePtr());
-	glTextureSubImage2D(m_texture, level, 0, 0, m_width, m_height, m_glformat, m_gltype, NULL);
+	glTextureSubImage2D(m_texture, level, 0, 0, m_width, m_height, m_glcomponent, m_gltype, NULL);
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
+	// Lot of things can go wrong with textures, and this is a slow process here. It doesn't hurt to check status here.
+	ARCORE_ASSERT(glGetError() == GLenum(0));
 
 	return gpu::kError_SUCCESS;
 }
 
-//gpu::WOFrameAttachment::WOFrameAttachment ( void )
-//{
-//	m_texture = 0;
-//	m_type = core::gfx::tex::kTextureTypeNone;
-//}
-//gpu::WOFrameAttachment::~WOFrameAttachment ( void )
-//{
-//	// Free texture on death
-//	if (m_texture != 0)
-//	{
-//		glDeleteRenderbuffers(1, &m_texture);
-//	}
-//}
 
 bool gpu::WOFrameAttachment::valid ( void )
 {
@@ -182,102 +163,3 @@ int gpu::WOFrameAttachment::free ( void )
 
 	return gpu::kError_SUCCESS;
 }
-//
-//
-//glHandle gpu::TextureAllocate(
-//	const glEnum textureType,
-//	const glEnum textureFormat, 
-//	const uint width, const uint height, const uint depth
-//)
-//{
-//	GL_ACCESS;
-//	glHandle texture = 0;
-//
-//	glGenTextures( 1, &texture );
-//
-//	if ( textureType == Texture2D )
-//	{
-//		// Bind the texture object
-//		glBindTexture( GL_TEXTURE_2D, texture );
-//		if ( textureFormat > __COLOR_FORMAT_RGB_MIN && textureFormat < __COLOR_FORMAT_RGB_MAX )
-//			glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum((eColorFormat)textureFormat), width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0 );
-//		else if ( textureFormat > __COLOR_FORMAT_RGBA_MIN && textureFormat < __COLOR_FORMAT_RGBA_MAX )
-//			glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum((eColorFormat)textureFormat), width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
-//		else if ( textureFormat > DepthNone && textureFormat < __DEPTH_FORMAT_MAX )
-//			glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum((eDepthFormat)textureFormat), width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0 );
-//		else if ( textureFormat > StencilNone && textureFormat < __STENCIL_FORMAT_MAX )
-//			glTexImage2D( GL_TEXTURE_2D, 0, GL.Enum((eStencilFormat)textureFormat), width, height, 0, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, 0 );
-//	}
-//
-//	return texture;
-//}
-//int gpu::TextureSampleSettings(
-//	const glEnum textureType,
-//	const glHandle texture,
-//	const glEnum repeatX, const glEnum repeatY, const glEnum repeatZ,
-//	const glEnum sampleMinify, const glEnum sampleMagnify
-//)
-//{
-//	GL_ACCESS;
-//
-//	if ( textureType == Texture2D )
-//	{
-//		// Bind the texture object
-//		glBindTexture( GL_TEXTURE_2D, texture );
-//		// Change the texture repeat
-//		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL.Enum((eWrappingType)repeatX) );
-//		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL.Enum((eWrappingType)repeatY) );
-//		// Change the filtering
-//		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL.Enum((eSamplingFilter)sampleMinify) );
-//		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL.Enum((eSamplingFilter)sampleMagnify) );
-//	}
-//
-//	return 0;
-//}
-//int gpu::TextureFree(
-//	const glHandle texture
-//)
-//{
-//	glHandle tex = texture;
-//	glDeleteTextures( 1, &tex );
-//
-//	return 0;
-//}
-//
-//// Create a write-only buffer
-//glHandle gpu::TextureBufferAllocate(
-//	const glEnum textureType,
-//	const glEnum textureFormat, 
-//	const uint width, const uint height, const uint depth
-//)
-//{
-//	GL_ACCESS;
-//	glHandle buffer = 0;
-//
-//	glGenRenderbuffers( 1, &buffer );
-//
-//	if ( textureType == Texture2D )
-//	{
-//		glBindRenderbuffer( GL_RENDERBUFFER, buffer );
-//
-//		if ( textureFormat > ColorNone && textureFormat < __COLOR_FORMAT_MAX )
-//			glRenderbufferStorage( GL_RENDERBUFFER, GL.Enum((eColorFormat)textureFormat), width, height );
-//		else if ( textureFormat > DepthNone && textureFormat < __DEPTH_FORMAT_MAX )
-//			glRenderbufferStorage( GL_RENDERBUFFER, GL.Enum((eDepthFormat)textureFormat), width, height );
-//		else if ( textureFormat > StencilNone && textureFormat < __STENCIL_FORMAT_MAX )
-//			glRenderbufferStorage( GL_RENDERBUFFER, GL.Enum((eStencilFormat)textureFormat), width, height );
-//
-//	}
-//
-//	return buffer;
-//}
-//// Free write-only buffer
-//int gpu::TextureBufferFree(
-//	const glHandle texture
-//)
-//{
-//	glHandle tex = texture;
-//	glDeleteRenderbuffers( 1, &tex );
-//
-//	return 0;
-//}

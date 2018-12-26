@@ -18,11 +18,6 @@ rrMeshBuffer::~rrMeshBuffer ( void )
 	}
 }
 
-//void rrMeshBuffer::InitParameters ( const char* identifierName )
-//{
-//	m_name = identifierName;
-//}
-
 void rrMeshBuffer::InitMeshBuffers ( arModelData* const modelData )
 {
 	// Free any previous mesh
@@ -94,6 +89,7 @@ void rrMeshBuffer::InitMeshBuffers ( arModelData* const modelData )
 
 	// upload index buffer:
 
+	if (m_modeldata->indexNum > 0)
 	{
 		size_t buffer_size = sizeof(uint16_t) * m_modeldata->indexNum;
 		m_indexBuffer.initAsIndexBuffer(NULL, gpu::kIndexFormatUnsigned16, m_modeldata->indexNum);
@@ -116,6 +112,7 @@ void rrMeshBuffer::FreeMeshBuffers ( void )
 		m_buffer[i].free(NULL);
 		m_bufferEnabled[i] = false;
 	}
+	m_indexBuffer.free(NULL);
 
 	// we no longer have a fuckin mesh
 	m_mesh_uploaded = false;

@@ -22,9 +22,9 @@ public:
 	//	PassCount() : Returns number of passes this camera will render
 	// Must be 1 or greater in order to render.
 	RENDER_API int			PassCount ( void ) override;
-	//	PassRetrieve(array, array_size) : Writes pass information into the array given in
+	//	PassRetrieve(params, array) : Writes pass information into the array given in
 	// Will write either PassCount() or maxPasses passes, whatever is smaller.
-	RENDER_API void			PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses ) override;
+	RENDER_API void			PassRetrieve ( const rrCameraPassInput* input, rrCameraPass* passList ) override;
 
 	//	RenderBegin() : Begins rendering, pushing the current camera params.
 	RENDER_API void			RenderBegin ( void ) override;

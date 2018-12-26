@@ -90,7 +90,7 @@ RrFontTexture::Load ( const char* resource_name, const rrFontTextureLoadParams& 
 	bitmap = texture->LoadFreetype(params, &bitmapWidth, &bitmapHeight);
 
 	// Upload data, which will add it to the resource system.
-	texture->Upload(false, bitmap, bitmapWidth, bitmapHeight);
+	texture->Upload(false, bitmap, bitmapWidth, bitmapHeight, core::gfx::tex::kColorFormatRGBA8);
 
 	// We're done with the bitmap now. Add it to the resource system:
 	resm->Add(texture);

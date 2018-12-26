@@ -14,6 +14,11 @@ namespace gpu
 	class ComputeContext;
 	class OutputSurface;
 
+	enum DeviceLayer
+	{
+		kDeviceLayerDebug,
+	};
+
 	class Device
 	{
 	public:
@@ -25,7 +30,7 @@ namespace gpu
 		// Non-exposed API for initializing the device. (before OutputSurface ready)
 		int						create ( void );
 		// Non-exposed API for starting up the device. (after OutputSurface ready)
-		int						initialize ( void );
+		int						initialize ( DeviceLayer* layers, uint32_t layerCount );
 		// Non-exposed API for refreshing the device
 		int						refresh ( intptr_t module_handle, intptr_t module_window );
 

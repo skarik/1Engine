@@ -115,10 +115,10 @@ int RrRTCamera::PassCount ( void )
 }
 //	PassRetrieve(array, array_size) : Writes pass information into the array given in
 // Will write either PassCount() or maxPasses passes, whatever is smaller.
-void RrRTCamera::PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses )
+void RrRTCamera::PassRetrieve ( const rrCameraPassInput* input, rrCameraPass* passList )
 {
-	RrCamera::PassRetrieve(passList, maxPasses); // TODO: Proper buffer chain!
-	if (maxPasses > 0)
+	RrCamera::PassRetrieve(input, passList); // TODO: Proper buffer chain!
+	if (input->m_maxPasses > 0)
 	{
 		passList[0].m_bufferChain = &m_chain;
 	}

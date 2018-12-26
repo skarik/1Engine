@@ -85,7 +85,8 @@ namespace renderer
 		{
 			Matrix4x4	viewProjection; // todo: add inverse
 			Vector4f	worldCameraPosition;
-			Vector4f	viewportInfo;
+			Vector2f	unused;
+			Vector2f	screenSizeScaled;
 			Vector2f	screenSize;
 			Vector2f	pixelRatio;
 
@@ -95,8 +96,11 @@ namespace renderer
 
 		struct rrPerFrame
 		{
+			// Vector of time, containing ``(t/20, t, t*2, t*3)``
 			Vector4f	time;
+			// Vector of sin(time), containing ``sin(t/8, t/4, t/2, t)``
 			Vector4f	sinTime;
+			// Vector of cos(time), containing ``cos(t/8, t/4, t/2, t)``
 			Vector4f	cosTime;
 
 			Vector4f	fogColor;

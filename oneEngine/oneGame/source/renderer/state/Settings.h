@@ -30,7 +30,7 @@ namespace renderer
 		Real	fogScale;
 	};
 
-	// Bleh
+	// Global state of current renderer options.
 	RENDER_API extern renderSettings_t Settings;
 }
 

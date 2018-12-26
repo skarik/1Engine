@@ -1,6 +1,7 @@
 #include "renderer/gpuw/RenderTarget.h"
 #include "renderer/gpuw/Error.h"
 #include "renderer/ogl/GLCommon.h"
+#include "core/debug.h"
 
 gpu::RenderTarget::RenderTarget ( void )
 	:
@@ -49,6 +50,7 @@ int gpu::RenderTarget::attach ( int slot, Texture* texture )
 	{
 		return kErrorBadArgument;
 	}
+
 	return 0;
 }
 
@@ -61,12 +63,12 @@ int gpu::RenderTarget::attach ( int slot, WOFrameAttachment* buffer )
 	}
 	else if (slot == kRenderTargetSlotStencil)
 	{
-		glNamedFramebufferTexture(m_framebuffer, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, (GLuint)buffer->nativePtr());
+		glNamedFramebufferRenderbuffer(m_framebuffer, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, (GLuint)buffer->nativePtr());
 		m_attachmentStencil = buffer;
 	}
 	else if (slot >= kRenderTargetSlotColor0)
 	{
-		glNamedFramebufferTexture(m_framebuffer, GL_COLOR_ATTACHMENT0 + (slot - kRenderTargetSlotColor0), GL_RENDERBUFFER, (GLuint)buffer->nativePtr());
+		glNamedFramebufferRenderbuffer(m_framebuffer, GL_COLOR_ATTACHMENT0 + (slot - kRenderTargetSlotColor0), GL_RENDERBUFFER, (GLuint)buffer->nativePtr());
 		m_attachments[slot] = buffer;
 		m_attachmentIsTexture[slot] = false;
 	}
@@ -74,6 +76,7 @@ int gpu::RenderTarget::attach ( int slot, WOFrameAttachment* buffer )
 	{
 		return kErrorBadArgument;
 	}
+
 	return kError_SUCCESS;
 }
 
@@ -111,7 +114,8 @@ int gpu::RenderTarget::assemble ( void )
 
 bool gpu::RenderTarget::empty ( void )
 {
-	return m_framebuffer != 0 && m_assembled;
+	// TODO: Should check the attached stuff to make sure it's not empty
+	return m_framebuffer == 0 || !m_assembled;
 }
 bool gpu::RenderTarget::valid ( void )
 {

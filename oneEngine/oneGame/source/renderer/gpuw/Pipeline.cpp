@@ -5,7 +5,7 @@
 
 int gpu::Pipeline::create ( Device* device, const PipelineCreationDescription* params )
 {
-	if (m_vao != 0)
+	if (m_vao == 0)
 	{
 		glCreateVertexArrays(1, &m_vao);
 	}

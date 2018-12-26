@@ -1,12 +1,16 @@
-#include "renderer/gpuw/Device.h"
+﻿#include "renderer/gpuw/Device.h"
 #include "renderer/gpuw/GraphicsContext.h"
 #include "renderer/gpuw/ComputeContext.h"
 #include "renderer/gpuw/Error.h"
 #include "renderer/types/types.h"
 #include "renderer/ogl/GLCommon.h"
 #include "core/os.h"
+#include "core/debug.h"
 
 #include <stdio.h>
+
+//typedef void (APIENTRY  *GLDEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
+void APIENTRY DebugCallback(GLenum source​, GLenum type​, GLuint id​, GLenum severity​, GLsizei length​, const GLchar* message​, const void* userParam​);
 
 static gpu::Device* m_TargetDisplayDevice = NULL;
 
@@ -46,7 +50,7 @@ int gpu::Device::create ( void )
 	return gpu::kError_SUCCESS;
 }
 
-int gpu::Device::initialize ( void )
+int gpu::Device::initialize ( DeviceLayer* layers, uint32_t layerCount )
 {
 	// Create temporary OpenGL context:
 	HGLRC tempContext = wglCreateContext((HDC)mw_deviceContext);
@@ -83,10 +87,19 @@ int gpu::Device::initialize ( void )
 		{
 			WGL_CONTEXT_MAJOR_VERSION_ARB, target_major,
 			WGL_CONTEXT_MINOR_VERSION_ARB, target_minor,
-			//WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
 			WGL_CONTEXT_FLAGS_ARB, 0,
 			0
 		};
+
+		// Set up attribs based on input options
+		attribs[5] = 0;
+		for (uint32_t i = 0; i < layerCount; ++i)
+		{
+			if (layers[i] == gpu::kDeviceLayerDebug)
+			{	// Enable debug context if a debug "layer" is requested.
+				attribs[5] |= WGL_CONTEXT_DEBUG_BIT_ARB;
+			}
+		}
 
 		// Create the new context
 		mw_renderContext = (intptr_t)wglCreateContextAttribsARB((HDC)mw_deviceContext, 0, attribs);	
@@ -154,6 +167,15 @@ int gpu::Device::initialize ( void )
 	// Update the target device:
 	m_TargetDisplayDevice = this;
 
+	// Enable debug "layer"
+	for (uint32_t i = 0; i < layerCount; ++i)
+	{
+		if (layers[i] == gpu::kDeviceLayerDebug)
+		{	
+			glDebugMessageCallback(DebugCallback, this);
+		}
+	}
+
 	return gpu::kError_SUCCESS;
 }
 
@@ -206,4 +228,12 @@ gpu::ComputeContext* gpu::Device::getComputeContext ( void )
 		m_computeContext = new gpu::ComputeContext();
 	}
 	return m_computeContext;
+}
+
+void APIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+	ARCORE_ASSERT(type != GL_DEBUG_TYPE_ERROR);
+	if (type == GL_DEBUG_TYPE_ERROR)
+	{
+	}
 }

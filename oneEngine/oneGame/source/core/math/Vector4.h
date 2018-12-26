@@ -51,7 +51,7 @@ namespace core
 			}
 		}
 		template <typename FloatOther>
-								Vector4_T (Vector3_T<FloatOther> const& old); // Defined in CPP.
+								Vector4_T (Vector3_T<FloatOther> const& old, FloatOther const& new_w = 0); // Defined in CPP.
 
 		template <typename FloatOther>
 								Vector4_T (const Vector2_T<FloatOther>& part1, const Vector2_T<FloatOther>& part2 = Vector2_T<FloatOther>()); // Defined in CPP.

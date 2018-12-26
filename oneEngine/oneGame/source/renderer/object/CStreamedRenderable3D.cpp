@@ -34,24 +34,14 @@ bool CStreamedRenderable3D::PreRender ( rrCameraPass* cameraPass )
 // Push the current stuff in model data to GPU.
 void CStreamedRenderable3D::StreamLockModelData ( void )
 {
-	// Temporarily swap so we are working on the "next" buffer data
-	/*std::swap( m_buffer_verts, m_next_buffer_verts );
-	std::swap( m_buffer_tris, m_next_buffer_tris );
-	std::swap( m_model_tricount, m_next_model_tricount );*/
-
 	// Push the model data to the GPU
-	//PushModeldata();
-	if (m_currentMeshBuffer != &m_meshBuffer)
-		m_meshBuffer.InitMeshBuffers(&m_modeldata);
-	else
-		m_meshBufferAux.InitMeshBuffers(&m_modeldata);
-	// Pull the new tricount
-	//m_model_tricount = m_modeldata.triangleNum;
-
-	// Swap back to the previous frame's mesh
-	/*std::swap( m_buffer_verts, m_next_buffer_verts );
-	std::swap( m_buffer_tris, m_next_buffer_tris );
-	std::swap( m_model_tricount, m_next_model_tricount );*/
+	if (m_modeldata.vertexNum > 0 || m_modeldata.indexNum > 0)
+	{
+		if (m_currentMeshBuffer != &m_meshBuffer)
+			m_meshBuffer.InitMeshBuffers(&m_modeldata);
+		else
+			m_meshBufferAux.InitMeshBuffers(&m_modeldata);
+	}
 
 	// Pull the new index count
 	m_next_model_indexcount = m_modeldata.indexNum;

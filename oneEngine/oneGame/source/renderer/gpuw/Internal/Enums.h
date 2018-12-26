@@ -75,6 +75,51 @@ namespace internal {
 		return GL_INVALID_ENUM;
 	}
 
+	static FORCE_INLINE gpuEnum ArColorFormatToGlComponentType ( const core::gfx::tex::arColorFormat format )
+	{
+		using namespace core::gfx::tex;
+		switch ( format ) {
+			// Color formats:
+		case kColorFormatRGB8:
+		case kColorFormatRGB16:
+		case kColorFormatRGB16F:
+		case kColorFormatRGB32:
+		case kColorFormatRGB32F:	return GL_RGB;
+
+		case kColorFormatRGBA8:
+		case kColorFormatRGBA16:
+		case kColorFormatRGBA16F:
+		case kColorFormatRGBA32:
+		case kColorFormatRGBA32F:	return GL_RGBA;
+
+		case kColorFormatRG8:
+		case kColorFormatRG16:
+		case kColorFormatRG16F:
+		case kColorFormatRG32:
+		case kColorFormatRG32F:		return GL_RG;
+
+		case kColorFormatR8:
+		case kColorFormatR16:
+		case kColorFormatR16F:
+		case kColorFormatR32:
+		case kColorFormatR32F:		return GL_RED;
+
+			// Depth formats:
+		case kDepthFormat16:
+		case kDepthFormat24:
+		case kDepthFormat32:
+		case kDepthFormat32F:		return GL_DEPTH_COMPONENT;
+
+			// Stencil formats:
+		case KStencilFormatIndex1:
+		case KStencilFormatIndex4:
+		case KStencilFormatIndex8:
+		case KStencilFormatIndex16:	return GL_STENCIL_INDEX;
+		}
+		throw core::InvalidArgumentException();
+		return GL_INVALID_ENUM;
+	}
+
 	static FORCE_INLINE gpuEnum ArColorFormatToGlDataType ( const core::gfx::tex::arColorFormat format )
 	{
 		using namespace core::gfx::tex;

@@ -75,7 +75,7 @@ namespace gpu
 		unsigned int					m_height;
 		unsigned int					m_depth;
 		unsigned int					m_levels;
-		gpuEnum							m_glformat;
+		gpuEnum							m_glcomponent;
 		gpuEnum							m_gltype;
 	};
 

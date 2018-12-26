@@ -34,6 +34,8 @@ static void _AllocateBufferSize ( const GLuint buffer, const uint64_t data_size,
 //	init ( data ) : initializes a constant buffer with data
 int	gpu::Buffer::initAsData ( Device* device, const uint64_t data_size )
 {
+	ARCORE_ASSERT(data_size > 0);
+
 	m_bufferType = kBufferTypeGeneralUse;
 	m_format = kFormatUndefined;
 
@@ -47,6 +49,8 @@ int	gpu::Buffer::initAsData ( Device* device, const uint64_t data_size )
 //	initAsVertexBuffer( device, format, element_count ) : Initializes as a vertex buffer.
 int gpu::Buffer::initAsVertexBuffer ( Device* device, Format format, const uint64_t element_count )
 {
+	ARCORE_ASSERT(element_count > 0);
+
 	m_bufferType = kBufferTypeVertex;
 	m_elementSize = (unsigned int)gpu::FormatGetByteStride(format);
 	m_format = format;
@@ -61,6 +65,8 @@ int gpu::Buffer::initAsVertexBuffer ( Device* device, Format format, const uint6
 //	initAsIndexBuffer( device, format, element_count ) : Initializes as an index buffer.
 int gpu::Buffer::initAsIndexBuffer ( Device* device, IndexFormat format, const uint64_t element_count )
 {
+	ARCORE_ASSERT(element_count > 0);
+
 	m_bufferType = kBufferTypeIndex;
 	m_elementSize = (format == kIndexFormatUnsigned16) ? 2 : 4;
 	m_format = (format == kIndexFormatUnsigned16) ? kFormatR16UInteger : kFormatR32UInteger;
@@ -75,6 +81,8 @@ int gpu::Buffer::initAsIndexBuffer ( Device* device, IndexFormat format, const u
 //	initAsData( device, data_size ) : Initializes as a constant buffer.
 int gpu::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size )
 {
+	ARCORE_ASSERT(data_size > 0);
+
 	m_bufferType = kBufferTypeConstant;
 	m_format = kFormatUndefined;
 	
@@ -89,6 +97,8 @@ int gpu::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size
 // Data is uploaded separately through map/unmap or upload.
 int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_size )
 {
+	ARCORE_ASSERT(data_size > 0);
+
 	m_bufferType = kBufferTypeStructured;
 	m_format = kFormatUndefined;
 

@@ -57,6 +57,14 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 				// Create the sync
 				loadInfo->pixelSync.create(NULL);
 
+				// Set up the image info for procedural textures:
+				info.type = upload_request->type;
+				info.width = upload_request->width;
+				info.height = upload_request->height;
+				info.depth = 1;
+				info.internalFormat = upload_request->format;
+				info.levels = 1;
+
 				// Go to next state
 				loadState = kTextureLoadState_LoadImage;
 			}
@@ -73,6 +81,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 
 				// Unmap and upload
 				loadInfo->pixelBuffer[0].unmap(NULL);
+				m_texture.allocate(info.type, info.internalFormat, info.width, info.height, info.depth, info.levels);
 				m_texture.upload(loadInfo->pixelBuffer[0], 0);
 
 				// Create a signal to wait on
@@ -158,7 +167,8 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 
 				// Unmap and upload
 				loadInfo->pixelBuffer[0].unmap(NULL);
-				m_texture.upload(loadInfo->pixelBuffer[0], 15);
+				m_texture.allocate(info.type, info.internalFormat, info.width, info.height, info.depth, info.levels);
+				m_texture.upload(loadInfo->pixelBuffer[0], info.levels - 1);
 
 				// Create a signal to wait on
 				gfx->signal(&loadInfo->pixelSync);

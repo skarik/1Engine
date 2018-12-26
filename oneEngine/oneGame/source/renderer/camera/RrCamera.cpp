@@ -176,9 +176,9 @@ int RrCamera::PassCount ( void )
 {
 	return 1;
 }
-void RrCamera::PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses )
+void RrCamera::PassRetrieve ( const rrCameraPassInput* input, rrCameraPass* passList )
 {
-	if (maxPasses > 0)
+	if (input->m_maxPasses > 0)
 	{
 		passList[0].m_bufferChain	= NULL; // Use the default buffer chain for rendering.
 		passList[0].m_passType		= kCameraRenderWorld;
@@ -186,8 +186,34 @@ void RrCamera::PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses )
 		passList[0].m_viewTransform	= viewTransform;
 		passList[0].m_projTransform	= projTransform;
 		passList[0].m_viewprojTransform	= viewprojMatrix;
+
+		int cbuffer_index = input->m_bufferingIndex;
+		UpdateCBuffer(cbuffer_index, input->m_bufferingCount, &passList[0]);
+		passList[0].m_cbuffer = &m_cbuffers[cbuffer_index];
 	}
 }
+
+void RrCamera::UpdateCBuffer ( const uint index, const uint predictedMax, const rrCameraPass* passinfo )
+{
+	if (m_cbuffers.size() < predictedMax) {
+		m_cbuffers.resize(predictedMax);
+	}
+	if (!m_cbuffers[index].valid()) {
+		m_cbuffers[index].initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerCamera));
+	}
+
+	// Generate structure information to shunt to the GPU...
+	renderer::cbuffer::rrPerCamera cameraData = {};
+	cameraData.viewProjection = passinfo[0].m_viewprojTransform;
+	cameraData.worldCameraPosition = transform.position;
+	cameraData.screenSizeScaled = passinfo->m_viewport.size * renderScale;
+	cameraData.screenSize = passinfo->m_viewport.size;
+	cameraData.pixelRatio = Vector2f(1, 1) * (orthoSize.x / passinfo->m_viewport.size.x);
+
+	// And shunt it to the GPU!
+	m_cbuffers[index].upload(NULL, &cameraData, sizeof(renderer::cbuffer::rrPerCamera), gpu::kTransferStream);
+}
+
 
 //// == Main Render Routine ==
 //void RrCamera::RenderScene ( void )
@@ -240,7 +266,7 @@ void RrCamera::RenderBegin ( void )
 
 	// TODO: Push camera constants now.
 
-	// TODO: Loop through postporcess stack
+	// TODO: Loop through postprocess stack (properly)
 	for (size_t i = 0; i < postProcessStack.size(); ++i)
 	{
 		postProcessStack[i]->RenderBegin(this);
@@ -248,7 +274,7 @@ void RrCamera::RenderBegin ( void )
 }
 void RrCamera::RenderEnd ( void )
 {
-	// Loop through postporcess stack and call end render.
+	// Loop through postprocess stack and call end render.
 	for (size_t i = 0; i < postProcessStack.size(); ++i)
 	{
 		postProcessStack[i]->RenderEnd(this);

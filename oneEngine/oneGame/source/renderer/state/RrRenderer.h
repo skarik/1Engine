@@ -272,12 +272,24 @@ private:
 	// ================================
 	renderer::rrInternalSettings
 							internal_settings;
-	//std::vector<rrInternalBufferChain>	internal_chain_list;
-	//rrInternalBufferChain*				internal_chain_current;
+	// List of buffer targets that are used to render to.
 	std::vector<RrHybridBufferChain>
 							internal_chain_list;
+	// Current buffer target being recorded/rendered to.
 	RrHybridBufferChain*	internal_chain_current;
+	// Index of the buffer target being recorded/rendered to.
 	uint					internal_chain_index;
+
+	// Per-frame constant buffers. See renderer::cbuffer::rrPerFrame.
+	// Each index refers directly to a buffer target of internal_chain_list.
+	// Ex: If the engine is using triple (3) buffering, there will be three (3) cbuffers.
+	std::vector<gpu::Buffer>
+							internal_cbuffers_frames;
+	// Per-pass constant buffers. See renderer::cbuffer:rrPerPass.
+	// Each group of kRenderLayer_MAX refers to a layer used in a buffer target of internal_chain_list.
+	// Ex: If kRenderLayer_MAX is 7, and the engine is using triple (3) buffering, there will be 21 cbuffers.
+	std::vector<gpu::Buffer>
+							internal_cbuffers_passes;
 
 	// Deferred pass materials
 	// ================================

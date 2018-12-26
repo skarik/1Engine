@@ -18,25 +18,26 @@ namespace tex {
 		arTextureType	type;
 		arColorFormat	internalFormat;
 		arMipmapGenerationStyle	mipmapStyle;
-		arSamplingFilter	filter;
+		arSamplingFilter	filter; // filter for the texture's default sampler (can be overridden by other filter objects)
 
 		uint32_t	width;
 		uint32_t	height;
 		uint32_t	depth;
-		uint32_t	levels;	// mipmap levels
+		uint32_t	levels;	// mipmap levels, often mirrors in arTextureState
 
 		arWrappingType	repeatX;
 		arWrappingType	repeatY;
 		arWrappingType	repeatZ;
 
-		// TODO: Implement flip, or deprecate and remove.
-		arOrientation	flipX;
-		arOrientation	flipY;
-
 		uint32_t	userdata;
 		void*		userpdata;
 
 		arTextureInfo ( void )
+			:
+			type(kTextureTypeNone), internalFormat(kColorFormatNone), mipmapStyle(kMipmapGenerationNone), filter(kSamplingLinear),
+			width(0), height(0), depth(0), levels(0),
+			repeatX(kWrappingRepeat), repeatY(kWrappingRepeat), repeatZ(kWrappingRepeat),
+			userdata(0), userpdata(NULL)
 			{ ; }
 	};
 

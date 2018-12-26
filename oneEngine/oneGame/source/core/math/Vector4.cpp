@@ -7,8 +7,8 @@
 namespace core
 {
 	template <typename Float> template <typename FloatOther>
-	Vector4_T<Float>::Vector4_T (Vector3_T<FloatOther> const& old)
-		: x((Float)old.x), y((Float)old.y), z((Float)old.x), w(0)
+	Vector4_T<Float>::Vector4_T (Vector3_T<FloatOther> const& old, FloatOther const& new_w = 0)
+		: x((Float)old.x), y((Float)old.y), z((Float)old.x), w((Float)new_w)
 		{}
 
 	template <typename Float> template <typename FloatOther>
@@ -40,10 +40,10 @@ namespace core
 	template class Vector4_T<Real32>;
 	template class Vector4_T<Real64>;
 
-	template Vector4_T<Real32>::Vector4_T(Vector3_T<Real32> const& old);
-	template Vector4_T<Real32>::Vector4_T(Vector3_T<Real64> const& old);
-	template Vector4_T<Real64>::Vector4_T(Vector3_T<Real32> const& old);
-	template Vector4_T<Real64>::Vector4_T(Vector3_T<Real64> const& old);
+	template Vector4_T<Real32>::Vector4_T(Vector3_T<Real32> const& old, Real32 const& new_w);
+	template Vector4_T<Real32>::Vector4_T(Vector3_T<Real64> const& old, Real64 const& new_w);
+	template Vector4_T<Real64>::Vector4_T(Vector3_T<Real32> const& old, Real32 const& new_w);
+	template Vector4_T<Real64>::Vector4_T(Vector3_T<Real64> const& old, Real64 const& new_w);
 
 	template Vector4_T<Real32>::Vector4_T(const Vector2_T<Real32>& part1, const Vector2_T<Real32>& part2);
 	template Vector4_T<Real32>::Vector4_T(const Vector2_T<Real64>& part1, const Vector2_T<Real64>& part2);

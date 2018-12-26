@@ -65,11 +65,13 @@ public:
 	//	PassCount() : Returns number of passes this camera will render
 	// Must be 1 or greater in order to render.
 	RENDER_API virtual int	PassCount ( void );
-	//	PassRetrieve(array, array_size) : Writes pass information into the array given in
+	//	PassRetrieve(params, array) : Generates and writes pass information into the given array.
 	// Will write either PassCount() or maxPasses passes, whatever is smaller.
-	RENDER_API virtual void	PassRetrieve ( rrCameraPass* passList, const uint32_t maxPasses );
+	// For the returned constant buffers, it will create a constant buffer if needed, then update it with the camera's parameters.
+	RENDER_API virtual void	PassRetrieve ( const rrCameraPassInput* input, rrCameraPass* passList );
 
 	//	RenderBegin() : Begins rendering, pushing the current camera params.
+	// Should be called after PassRetrieve or immediately before PassRetrieve to ensure constant buffer values are correct.
 	RENDER_API virtual void	RenderBegin ( void );
 	//	RenderEnd() : Called at the end of render, cleans up any camera-specific objects.
 	RENDER_API virtual void	RenderEnd ( void );
@@ -119,10 +121,12 @@ public:
 	RENDER_API Vector3f		ScreenToWorldDir ( const Vector2f & ) const;
 	RENDER_API Vector3f		ScreenToWorldPos ( const Vector2f & ) const;
 
-
+protected:
+	//	UpdateCBuffer(index) : creates if needed and updates given cbuffer in the list.
+	void					UpdateCBuffer ( const uint index, const uint predictedMax, const rrCameraPass* passinfo );
 
 private:
-
+	//	UpdateFrustum() : recalculates view frustum based on the currently set state.
 	void					UpdateFrustum ( void );
 
 public:
@@ -175,6 +179,13 @@ protected:
 
 	// Calculated camera transform
 	Matrix4x4			viewprojMatrix;
+
+	// Cbuffers for camera passes. Count corresponds to the buffering mode of the engine.
+	// Ex: If the engine is triple (3) buffered, there will be three (3) cbuffers here.
+	// For inheriting classes, the number of cbuffers may be a multiple.
+	// Ex: Cubemap renderers will have 24 cbuffers for the same case (6 per frame).
+	std::vector<gpu::Buffer>
+						m_cbuffers;
 
 	// Needs a new frame render? True when we should render a new frame from this camera.
 	// Is normally always true for the base camera class.
