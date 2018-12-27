@@ -27,7 +27,7 @@ int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
 	ARCORE_ASSERT(renderTarget != NULL);
 
 	// We through the attachments on the render target to generate the list of actual targets.
-	// TODO: This could be pregenerated on the RenderTarget themselves on their assembly.
+	// TODO: This could be pregenerated on the RenderTarget themselves on their assembly. This would also allow removing the awful 0xFFFFFFFF hack.
 	GLsizei attachmentCount = 0;
 	GLuint attachments [16] = {};
 	
@@ -39,8 +39,20 @@ int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
 		}
 	}
 
-	// Set the framebuffer as the given target.
-	glNamedFramebufferDrawBuffers(renderTarget->m_framebuffer, attachmentCount, attachments);
+	if (renderTarget->m_framebuffer != 0xFFFFFFFF)
+	{
+		// Set the framebuffer as the given target.
+		glBindFramebuffer(GL_FRAMEBUFFER, renderTarget->m_framebuffer);
+		glNamedFramebufferDrawBuffers(renderTarget->m_framebuffer, attachmentCount, attachments);
+		//glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	}
+	else
+	{
+		// Set the framebuffer to the screen's target.
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//glNamedFramebufferDrawBuffer(0, GL_FRONT);
+		glDrawBuffer(GL_FRONT_LEFT);
+	}
 
 	return kError_SUCCESS;
 }
@@ -124,11 +136,28 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 {
 	if (m_pipelineBound == false)
 	{
+		glUseProgram(m_pipeline->m_pipeline->m_program);
+
 		if (m_pipeline->m_boundIndexBuffer != m_indexBuffer)
 		{
 			glVertexArrayElementBuffer((GLuint)m_pipeline->nativePtr(), (GLuint)m_indexBuffer->nativePtr());
 			m_pipeline->m_boundIndexBuffer = m_indexBuffer;
 		}
+		
+		// Set up the prim restart (TODO: make this a context state to avoid extra GL calls)
+		if (m_pipeline->ia_primitiveRestartEnable)
+		{
+			glEnable(GL_PRIMITIVE_RESTART);
+			glPrimitiveRestartIndex((m_indexBuffer->getFormat() == kFormatR16UInteger) ? 0xFFFF : 0xFFFFFFFF);
+		}
+		else
+		{
+			glDisable(GL_PRIMITIVE_RESTART);
+		}
+
+		// Update topology
+		m_primitiveType = m_pipeline->ia_topology;
+
 		// TODO: loop through the vertex buffers & make sure the pipeline is setup properly.
 		//		 dx11 has proper error handling for this case, but opengl does not as it forces a driver restart
 		m_pipelineBound = true;

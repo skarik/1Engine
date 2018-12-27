@@ -58,7 +58,7 @@ int gpu::OutputSurface::present ( void )
 gpu::RenderTarget* gpu::OutputSurface::getRenderTarget ( void )
 {
 	static RenderTarget rt;
-	rt.m_framebuffer = 0;
+	rt.m_framebuffer = 0xFFFFFFFF;
 	rt.m_assembled = true;
 	return &rt;
 }

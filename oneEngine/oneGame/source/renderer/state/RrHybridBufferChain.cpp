@@ -125,13 +125,13 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::rrI
 	if ( buffer_forward_rt.empty() )
 	{
 		// Generate unique color buffer
-		buffer_color.allocate(core::gfx::tex::kTextureType2D, settings->mainColorAttachmentFormat, size.x, size.y);
+		buffer_color.allocate(core::gfx::tex::kTextureType2D, settings->mainColorAttachmentFormat, size.x, size.y, 1, 1);
 
 		// Generate shared depth and stencil buffers (these are also used by the MRT)
 		if ( settings->mainDepthFormat != core::gfx::tex::kDepthFormatNone )
-			buffer_depth.allocate(core::gfx::tex::kTextureType2D, settings->mainDepthFormat, size.x, size.y);
+			buffer_depth.allocate(core::gfx::tex::kTextureType2D, settings->mainDepthFormat, size.x, size.y, 1, 1);
 		if ( settings->mainStencilFormat != core::gfx::tex::kStencilFormatNone )
-			buffer_stencil.allocate(core::gfx::tex::kTextureType2D, settings->mainStencilFormat, size.x, size.y);
+			buffer_stencil.allocate(core::gfx::tex::kTextureType2D, settings->mainStencilFormat, size.x, size.y, 1, 1);
 
 		buffer_forward_rt.create(NULL);
 		// Put the buffer together
@@ -151,7 +151,7 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::rrI
 	if ( buffer_deferred_mrt.empty() )
 	{
 		// Generate unique color buffer
-		buffer_deferred_color_composite.allocate(core::gfx::tex::kTextureType2D, settings->mainColorAttachmentFormat, size.x, size.y);
+		buffer_deferred_color_composite.allocate(core::gfx::tex::kTextureType2D, settings->mainColorAttachmentFormat, size.x, size.y, 1, 1);
 
 		buffer_deferred_rt.create(NULL);
 		// Put the buffer together
@@ -162,10 +162,10 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::rrI
 		buffer_deferred_rt.assemble();
 
 		// TODO: Make configurable
-		buffer_deferred_color[0].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, size.x, size.y);
-		buffer_deferred_color[1].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA16F, size.x, size.y);
-		buffer_deferred_color[2].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, size.x, size.y);
-		buffer_deferred_color[3].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, size.x, size.y);
+		buffer_deferred_color[0].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, size.x, size.y, 1, 1);
+		buffer_deferred_color[1].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA16F, size.x, size.y, 1, 1);
+		buffer_deferred_color[2].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, size.x, size.y, 1, 1);
+		buffer_deferred_color[3].allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, size.x, size.y, 1, 1);
 
 		buffer_deferred_mrt.create(NULL);
 		// Attach the color buffers for the MRT

@@ -10,9 +10,10 @@ int gpu::Pipeline::create ( Device* device, const PipelineCreationDescription* p
 		glCreateVertexArrays(1, &m_vao);
 	}
 
-	//glVertexArrayVertexBuffer
-	//glVertexArrayAttribBinding();
-	//glVertexArrayVertexBuffer();
+	m_pipeline = params->shader_pipeline;
+
+	ia_topology = params->ia_topology;
+	ia_primitiveRestartEnable = params->ia_primitiveRestartEnable;
 
 	for (uint32_t i = 0; i < params->vv_inputAttributesCount; ++i)
 	{

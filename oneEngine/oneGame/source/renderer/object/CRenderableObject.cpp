@@ -313,7 +313,6 @@ void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform
 		Matrix4x4 modelTRS, modelRS;
 		core::TransformUtility::TRSToMatrix4x4(worldTransform, modelTRS, modelRS);
 
-		//pushConstantsPerObject(!modelTRS, !modelRS);
 		modelTRS = !modelTRS;
 		modelRS  = !modelRS;
 
@@ -428,14 +427,38 @@ gpu::Pipeline* CRenderableObject::GetPipeline ( const uchar pass )
 {
 	if (!m_pipelineReady[pass])
 	{
+		RrPass* rp = &m_passes[pass];
+
 		gpu::PipelineCreationDescription pipeline_desc = {};
 		pipeline_desc.ia_primitiveRestartEnable = true;
-		pipeline_desc.ia_topology = m_passes[pass].m_primitiveType;
+		pipeline_desc.ia_topology = rp->m_primitiveType;
 
-		pipeline_desc.shader_pipeline = &m_passes[pass].m_program->GetShaderPipeline();
+		pipeline_desc.shader_pipeline = &rp->m_program->GetShaderPipeline();
 
-		//pipeline_desc.vv_inputAttributes = &m_passes[pass].m_program->GetShaderPipeline();
 		// TODO: proper handling of pipelines & topology. this may need to be handled at runtime
+
+		// set up the vertex attributes:
+		gpu::VertexInputBindingDescription binding_desc [16];
+		gpu::VertexInputAttributeDescription attrib_desc [16];
+
+		pipeline_desc.vv_inputBindingsCount = rp->m_vertexSpecificationCount;
+		pipeline_desc.vv_inputBindings = binding_desc;
+		pipeline_desc.vv_inputAttributesCount = rp->m_vertexSpecificationCount;
+		pipeline_desc.vv_inputAttributes = attrib_desc;
+	
+		for (int i = 0; i < rp->m_vertexSpecificationCount; ++i)
+		{
+			// set up the binding
+			binding_desc[i].binding = rp->m_vertexSpecification[i].binding;
+			binding_desc[i].inputRate = (gpu::InputRate)rp->m_vertexSpecification[i].dataInputRate;
+			binding_desc[i].stride = rp->m_vertexSpecification[i].dataStride;
+
+			// set up the attribs
+			attrib_desc[i].binding = rp->m_vertexSpecification[i].binding;
+			attrib_desc[i].location = (uint32_t)rp->m_vertexSpecification[i].location;
+			attrib_desc[i].format = rp->m_vertexSpecification[i].dataFormat;
+			attrib_desc[i].offset = rp->m_vertexSpecification[i].dataOffset;
+		}
 
 		m_pipelines[pass].create(NULL, &pipeline_desc);
 	}

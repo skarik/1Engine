@@ -30,6 +30,7 @@
 #include "renderer/windowing/RrWindow.h"
 #include "renderer/state/RrRenderer.h"
 #include "renderer/utils/RrScreenshot.h"
+#include "renderer/debug/RrDebugDrawer.h"
 
 // Steam Include
 #include "steam/steam_api.h"
@@ -123,6 +124,10 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			TimeProfiler.BeginTimeProfile( "MN_audio" );
 			aMaster.Update();
 			TimeProfiler.EndTimeProfile( "MN_audio" );
+			// Perform the debug rendering test:
+			{
+				debug::Drawer->DrawLine(Vector3f(-100, -100, -100), Vector3f(+100, +100, +100), Color(1, 1, 0, 1));
+			}
 			// Redraw window
 			TimeProfiler.BeginTimeProfile( "MN_renderer" );
 			aRenderer->Render();

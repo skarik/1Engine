@@ -8,6 +8,8 @@
 namespace gpu
 {
 	class Shader;
+	class GraphicsContext;
+	class ComputeContext;
 
 	class ShaderPipeline
 	{
@@ -22,6 +24,9 @@ namespace gpu
 		RENDER_API bool			valid ( void );
 
 	private:
+		friend GraphicsContext;
+		friend ComputeContext;
+
 		Shader*		m_shaderVs;
 		Shader*		m_shaderHs;
 		Shader*		m_shaderDs;

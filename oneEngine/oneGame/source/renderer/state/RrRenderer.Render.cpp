@@ -144,6 +144,9 @@ void RrRenderer::StepBufferPush ( void )
 		gfx->setRenderTarget(mOutputSurface->getRenderTarget());
 		gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
 		{
+			float clearColor[] = {1,0,0,0};
+			gfx->clearColor(clearColor);
+
 			gpu::DepthStencilState ds;
 			ds.depthTestEnabled   = false;
 			ds.depthWriteEnabled  = false;
@@ -167,9 +170,11 @@ void RrRenderer::StepBufferPush ( void )
 			gfx->draw(4, 0);
 		}
 
+		// Clear the buffer after we're done with it.
 		gfx->setRenderTarget(&internal_chain_current->buffer_forward_rt);
+		gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
 		gfx->clearDepthStencil(true, 1.0F, true, 0x00);
-		float clearColor[] = {0,0,0,0};
+		float clearColor[] = {0.0F, 0.0F, 1.0F, 1.0F};
 		gfx->clearColor(clearColor);
 	}
 	TimeProfiler.EndTimeProfile( "rs_buffer_push" );

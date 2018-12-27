@@ -66,11 +66,6 @@ namespace gpu
 	class Pipeline
 	{
 	public:
-		//	Constructor : creates uninitalized GPU wrapper object.
-		//RENDER_API explicit		Pipeline ( void );
-		//	Destructor : destroys any allocated VAO/Layout, if existing.
-		//RENDER_API 				~Pipeline ( void );
-
 		// Sets up with default values
 		RENDER_API explicit		Pipeline ( void )
 		{
@@ -78,10 +73,6 @@ namespace gpu
 			m_pipeline = NULL;
 		}
 
-		//RENDER_API void			setShaderPipeline
-		//RENDER_API int			setShaderPipeline ( ShaderPipeline* pipeline );
-
-		//RENDER_API bool			assemble ( void );
 		RENDER_API int			create ( Device* device, const PipelineCreationDescription* params );
 
 		RENDER_API int			destroy ( Device* device );
@@ -99,6 +90,10 @@ namespace gpu
 		unsigned int		m_vao;
 		ShaderPipeline*		m_pipeline;
 		Buffer*				m_boundIndexBuffer;
+
+		// Input assembler outputs
+		PrimitiveTopology	ia_topology;
+		bool				ia_primitiveRestartEnable;
 	};
 }
 
