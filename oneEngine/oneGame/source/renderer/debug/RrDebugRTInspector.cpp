@@ -19,7 +19,6 @@ RrDebugRTInspector::RrDebugRTInspector ( void )
 
 	bDrawRTs = true;
 
-	// Example code:
 	renderer::shader::VertexAttribute t_vspec [2] = {};
 	t_vspec[0].location = renderer::shader::Location::kPosition;
 	t_vspec[0].dataFormat = gpu::kFormatR32G32B32SFloat;
@@ -34,22 +33,11 @@ RrDebugRTInspector::RrDebugRTInspector ( void )
 	rtPass.m_type = kPassTypeForward;
 	rtPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
 	rtPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
-	rtPass.setTexture( TEX_MAIN, RrTexture::Load("null") );
+	rtPass.setTexture( TEX_MAIN, RrTexture::Load(renderer::kTextureWhite) );
 	rtPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
 	rtPass.utilSetupAs2D();
 	rtPass.setVertexSpecification( t_vspec, 2 );
 	PassInitWithInput(0, &rtPass);
-
-	//// Set the default white material
-	//RrMaterial* defaultMat = new RrMaterial;
-	//defaultMat->passinfo.push_back( RrPassForward() );
-	//defaultMat->passinfo[0].m_lighting_mode = renderer::LI_NONE;
-	//defaultMat->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-	//defaultMat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	//defaultMat->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
-	//defaultMat->setTexture( TEX_DIFFUSE, new RrTexture( "textures/white.jpg" ) );
-	//SetMaterial( defaultMat );
-	//defaultMat->removeReference();
 }
 // Destructor
 RrDebugRTInspector::~RrDebugRTInspector ( void )

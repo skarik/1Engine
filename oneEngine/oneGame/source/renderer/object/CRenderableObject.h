@@ -31,12 +31,12 @@
 
 // Class prototypes
 class RrRenderer;
-//class RrMaterial;
-//class RrPassForward;
-//class RrPassDeferred;
 class RrPass;
 class RrCamera;
-//struct rrCameraPass;
+namespace renderer
+{
+	class Material;
+}
 
 // Defines
 #ifndef RegisterRenderClassName
@@ -200,6 +200,8 @@ private:
 	bool					m_pipelineReady [kPass_MaxPassCount];
 
 protected:
+	friend renderer::Material; // Give access to the utility binding class. TODO: Improve this hack.
+
 	bool					visible;
 
 	gpu::Buffer				m_cbufPerObjectMatrices;

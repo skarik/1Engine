@@ -134,9 +134,13 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 		case kTextureLoadState_Verfication:
 			{
 				// Double check parameters are correct:
+				loadInfo->resourceFilename = resourceFilename;
+
+				// Load the BPD's superlow:
 				loadInfo->loader.m_loadOnlySuperlow = true;
-				loadInfo->loader.LoadBpd(loadInfo->resourceFilename); // open bpd now
+				auto loadStatus = loadInfo->loader.LoadBpd(loadInfo->resourceFilename); // open bpd now
 				loadInfo->loader.m_loadOnlySuperlow = false;
+				ARCORE_ASSERT(loadStatus);
 
 				// Create the sync
 				loadInfo->pixelSync.create(NULL);

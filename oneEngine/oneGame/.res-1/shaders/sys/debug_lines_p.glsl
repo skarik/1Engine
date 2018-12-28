@@ -27,6 +27,12 @@ layout(location = 0) out vec4 FragDiffuse;
 
 void main ( void )
 {
+    // Get the width of the line so to pair it down.
+    float d = fwidth(v2f_texcoord0.x);
+    float a = smoothstep(0.0, d * 1.5, abs(0.5 - v2f_texcoord0.x));
+    //if (a > 0.2) discard;
+
 	vec4 diffuseColor = texture( textureSampler0, v2f_texcoord0 );
 	FragDiffuse = diffuseColor * v2f_colors;
+    FragDiffuse.a = mix(1.0, 0.0, a);
 }

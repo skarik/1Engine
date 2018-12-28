@@ -61,10 +61,10 @@ renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 	// Create the quad
 	Vector4f screenquad [] = {
 		// positions
-		Vector2f(1, 1) * 0.95,
-		Vector2f(-1, 1) * 0.95,
-		Vector2f(1, -1) * 0.95,
-		Vector2f(-1, -1) * 0.95,
+		Vector2f(1, 1),
+		Vector2f(-1, 1),
+		Vector2f(1, -1),
+		Vector2f(-1, -1),
 		// uvs
 		Vector2f(1, 1),
 		Vector2f(0, 1),

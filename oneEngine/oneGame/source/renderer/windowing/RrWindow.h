@@ -54,6 +54,7 @@ public:
 	RENDER_API bool			SetFullscreen ( bool fullscreen );
 	RENDER_API bool			IsFullscreen ( void );
 
+	RENDER_API bool			SetTitle ( const char* title );
 
 	// State update
 	// ================================
@@ -168,19 +169,6 @@ private:
 	int			mw_cmdshow;
 
 	HWND		mw_window;
-	//HDC			mw_devicecontext;
-	//HGLRC		mw_rendercontext;
-
-	// OS:
-
-	//HDC			hDC;		// Private GDI Device Context
-							//HGLRC		hRC;		// Permanent Rendering Context
-	//HGLRC		hRenderContext;
-	//HWND		hWnd;		// Holds Our Window Handle
-	//HINSTANCE	hInstance;		// Holds The Instance Of The Application
-	//HINSTANCE	hPrevInstance;
-	//LPSTR		lpCmdLine;
-	//int			nCmdShow;
 
 	// Gfx:
 
@@ -188,15 +176,13 @@ private:
 	gpu::Device*		m_device;
 	gpu::OutputSurface	m_surface;
 
-	// Windows Message Loop
+	// Windows Message Loop:
+
 	MSG		msg;
 	bool	done;
 	bool	active;
 	bool	focused;
 	bool	hiddencursor;
-
-	// Rendering
-	//RrRenderTexture*	pSbuf;	// Main screen buffer owned by the window
 };
 
 #endif//_WIN32

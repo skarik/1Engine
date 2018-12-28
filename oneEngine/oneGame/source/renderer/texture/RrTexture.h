@@ -62,9 +62,9 @@ struct rrTextureUploadInfo
 // constants: move these elsewhere later
 namespace renderer
 {
-	static const char* kTextureBlack = "black";
-	static const char* kTextureWhite = "white";
-	static const char* kTextureGrayA0 = "graya0";
+	static const char* kTextureBlack = "rr_black";
+	static const char* kTextureWhite = "rr_white";
+	static const char* kTextureGrayA0 = "rr_graya0";
 }
 
 //	class RrTexture : Base resource-aware texture class.

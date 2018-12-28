@@ -43,18 +43,27 @@ void main ( void )
 {
 	vec4 v_localPos = vec4( mdl_Vertex, 1.0 );
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
+    float perspective_w = v_screenPos.w;
+    v_screenPos.xy /= perspective_w; // Perform divide now to avoid distortion
+    // Clamp XY to screen range
+    //v_screenPos.xy = clamp(v_screenPos.xy, -1.0, 1.0);
 
     // Create the delta:
 	vec4 v_screenDelta = sys_ModelViewProjectionMatrix * vec4(mdl_Vertex + mdl_Normal, 1.0);
-    v_screenDelta -= v_screenPos;
+    v_screenDelta.xy /= perspective_w; // Perform divide now to avoid distortion
+    // Clamp XY to screen range
+    //v_screenDelta.xy = clamp(v_screenDelta.xy, -1.0, 1.0);
+    // Create the delta pointing
+    v_screenDelta.xy -= v_screenPos.xy;
 
     // Offset the screne position now:
     vec2 l_offset = normalize(vec2(v_screenDelta.y, -v_screenDelta.x)) / sys_ViewportInfo.zw;
-    v_screenPos.xy += l_offset * mdl_TexCoord.x * 1.5;
+    v_screenPos.xy += l_offset * mdl_TexCoord.x * 1.5 * 2;
 
     // Continue normally
 	v2f_colors		= mdl_Color * sys_DiffuseColor;
 	v2f_texcoord0	= mdl_TexCoord.xy;
 
+    v_screenPos.xy *= perspective_w;
 	gl_Position = v_screenPos;
 }

@@ -31,10 +31,11 @@ RrDebugDrawer::RrDebugDrawer ( void )
 	linePass.m_type = kPassTypeForward;
 	linePass.m_alphaMode = renderer::kAlphaModeTranslucent;
 	linePass.m_cullMode = gpu::kCullModeNone;
+	linePass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
 	linePass.m_depthWrite = true;
 	linePass.m_depthTest = gpu::kCompareOpAlways;
 	linePass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
-	linePass.setTexture( TEX_MAIN, RrTexture::Load("null") );
+	linePass.setTexture( TEX_MAIN, RrTexture::Load(renderer::kTextureWhite) );
 	linePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/debug_lines_vv.spv", "shaders/sys/debug_lines_p.spv"}) );
 	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
 											renderer::shader::Location::kUV0,
@@ -96,23 +97,9 @@ bool RrDebugDrawer::PreRender ( rrCameraPass* cameraPass )
 		m_modeldata.indices[iIndex + 0] = iVertex + 0;
 		m_modeldata.indices[iIndex + 1] = iVertex + 1;
 		m_modeldata.indices[iIndex + 2] = iVertex + 2;
-		m_modeldata.indices[iIndex + 3] = iVertex + 0;
+		m_modeldata.indices[iIndex + 3] = iVertex + 1;
 		m_modeldata.indices[iIndex + 4] = iVertex + 2;
 		m_modeldata.indices[iIndex + 5] = iVertex + 3;
-
-		//// Add triangle data
-		//tri.vert[0] = m_vertices.size() + 0;
-		//tri.vert[1] = m_vertices.size() + 1;
-		//tri.vert[2] = m_vertices.size() + 2;
-		//m_tris.push_back(tri);
-		//tri.vert[0] = m_vertices.size() + 0;
-		//tri.vert[1] = m_vertices.size() + 2;
-		//tri.vert[2] = m_vertices.size() + 3;
-		//m_tris.push_back(tri);
-
-		//// Set line color and world-space offset
-		//vert.color = Vector4f(avColorList[i].raw);
-		//vert.normal = avLineList[i].start - avLineList[i].end;
 
 		// Set line color and world-space offset
 		m_modeldata.color[iVertex + 0] = (Vector4f)avColorList[i];
@@ -125,38 +112,20 @@ bool RrDebugDrawer::PreRender ( rrCameraPass* cameraPass )
 		m_modeldata.normal[iVertex + 3] = avLineList[i].start - avLineList[i].end;
 
 		// Line Start
-		//vert.position = avLineList[i].start;
-
-		//vert.texcoord0 = Vector2f(1.0F, 0.0F);
-		//m_vertices.push_back(vert);
-		//vert.texcoord0 = Vector2f(-1.0F, 0.0F);
-		//m_vertices.push_back(vert);
-
 		m_modeldata.position[iVertex + 0] = avLineList[i].start;
 		m_modeldata.position[iVertex + 1] = avLineList[i].start;
 		m_modeldata.texcoord0[iVertex + 0] = Vector2f(1.0F, 0.0F);
 		m_modeldata.texcoord0[iVertex + 1] = Vector2f(-1.0F, 0.0F);
 
 		// Line Ending
-		//vert.position = avLineList[i].end;
-
-		//vert.texcoord0 = Vector2f(1.0F, 0.0F);
-		//m_vertices.push_back(vert);
-		//vert.texcoord0 = Vector2f(-1.0F, 0.0F);
-		//m_vertices.push_back(vert);
-
 		m_modeldata.position[iVertex + 2] = avLineList[i].end;
 		m_modeldata.position[iVertex + 3] = avLineList[i].end;
-		m_modeldata.texcoord0[iVertex + 2] = Vector2f(1.0F, 0.0F);
-		m_modeldata.texcoord0[iVertex + 3] = Vector2f(-1.0F, 0.0F);
+		m_modeldata.texcoord0[iVertex + 2] = Vector2f(1.0F, 1.0F);
+		m_modeldata.texcoord0[iVertex + 3] = Vector2f(-1.0F, 1.0F);
 
 	} // Offsets are handled within the vertex shader.
 
 	// Update model
-	/*m_modeldata.triangleNum	= (uint16_t)m_tris.size();
-	m_modeldata.triangles	= m_tris.data();
-	m_modeldata.vertexNum	= (uint16_t)m_vertices.size();
-	m_modeldata.vertices	= m_vertices.data();*/
 	m_modeldata.indexNum = l_requestedIndexCount;
 	m_modeldata.vertexNum = l_requestedVertexCount;
 

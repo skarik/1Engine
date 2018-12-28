@@ -161,6 +161,15 @@ int gpu::GraphicsContext::setRasterizerState ( const RasterizerState& state )
 int gpu::GraphicsContext::setBlendState ( const BlendState& state )
 {
 	bool changed = false;
+	// change the blend state
+	if (state.enable != m_blendCollectState.blend[0].enable)
+	{
+		if (state.enable)
+			glEnable(GL_BLEND);
+		else
+			glDisable(GL_BLEND);
+		changed = true;
+	}
 	// change the blend function
 	if (state.src != m_blendCollectState.blend[0].src
 		|| state.dst != m_blendCollectState.blend[0].dst
@@ -192,6 +201,15 @@ int gpu::GraphicsContext::setBlendCollectiveState ( const BlendCollectiveState& 
 	bool changed = false;
 	for (int i = 0; i < 16; ++i)
 	{
+		// change the blend state
+		if (state.blend[i].enable != m_blendCollectState.blend[i].enable)
+		{
+			if (state.blend[i].enable)
+				glEnablei(GL_BLEND, i);
+			else
+				glDisablei(GL_BLEND, i);
+			changed = true;
+		}
 		// change the blend function
 		if (state.blend[i].src != m_blendCollectState.blend[i].src
 			|| state.blend[i].dst != m_blendCollectState.blend[i].dst

@@ -67,6 +67,9 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	core::shell::SetTaskbarProgressHandle(aWindow.OsShellHandle());
 	core::shell::SetTaskbarProgressValue(NIL, 100, 100);
 	core::shell::SetTaskbarProgressState(NIL, core::shell::kTaskbarStateIndeterminate);
+	
+	// Set the window title
+	aWindow.SetTitle("1Engine Test: Core Modules");
 
 	// Create Renderstate
 	RrRenderer* aRenderer = new RrRenderer(NULL); // passing null creates default resource manager
@@ -126,7 +129,26 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			TimeProfiler.EndTimeProfile( "MN_audio" );
 			// Perform the debug rendering test:
 			{
-				debug::Drawer->DrawLine(Vector3f(-100, -100, -100), Vector3f(+100, +100, +100), Color(1, 1, 0, 1));
+				// Draw the world grid
+				const int maxDivs = 40;
+				const float divSize = 2.0F;
+				const float gridDistance = maxDivs * divSize;
+				for (int i = -maxDivs; i <= maxDivs; ++i)
+				{
+					debug::Drawer->DrawLine(Vector3f(i * divSize, -gridDistance, 0), Vector3f(i * divSize, +gridDistance, 0), Color(0.25F, 0.25F, 0.25F, 0.5F));
+					debug::Drawer->DrawLine(Vector3f(-gridDistance, i * divSize, 0), Vector3f(+gridDistance, i * divSize, 0), Color(0.25F, 0.25F, 0.25F, 0.5F));
+				}
+				// Create the seesaw line test
+				Vector3f pointA = Vector3f(20, -10, 10 * sinf(Time::currentTime * 1.3F));
+				Vector3f pointB = Vector3f(20, +10, 10 * cosf(Time::currentTime * 1.5F));
+				debug::Drawer->DrawLine(pointA, Vector3f(pointA.x, pointA.y, 0), Color(1, 0, 0, 1));
+				debug::Drawer->DrawLine(pointB, Vector3f(pointB.x, pointB.y, 0), Color(1, 0, 0, 1));
+				debug::Drawer->DrawLine(pointA, pointB, Color(1, 1, 0, 1));
+				
+				// Move camera above a bit
+				l_cam->transform.position.z = 4.0F;
+				// Rotate camera a bit
+				l_cam->transform.rotation = Rotator(0, 0, sinf(Time::currentTime) * 30.0F);
 			}
 			// Redraw window
 			TimeProfiler.BeginTimeProfile( "MN_renderer" );
@@ -134,6 +156,10 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			TimeProfiler.EndTimeProfile( "MN_renderer" );
 			// Clear all inputs
 			Input::PreUpdate();
+			// Update the title with the framerate
+			char szTitle[512] = {0};
+			sprintf(szTitle, "1Engine Test: Core Modules, (FPS: %d) (FT: %d ms)", int(1.0F / Time::smoothDeltaTime), int(Time::smoothDeltaTime * 1000.0F));
+			aWindow.SetTitle(szTitle);
 		}
 		// Check for exiting type of input
 		if ( aWindow.IsActive() )

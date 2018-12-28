@@ -1,5 +1,6 @@
 #include "renderer/object/CStreamedRenderable3D.h"
 #include "renderer/gpuw/Device.h"
+#include "renderer/material/Material.h"
 
 CStreamedRenderable3D::CStreamedRenderable3D ( void )
 	: CRenderable3D(), m_wants_swap(false)
@@ -63,6 +64,13 @@ bool CStreamedRenderable3D::Render ( const rrRenderParams* params )
 
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
+		// Set up the material helper...
+		renderer::Material(this, gfx, params->pass, pipeline)
+		// set the depth & blend state registers
+			.setDepthStencilState()
+		// bind the samplers & textures
+			.setBlendState()
+			.setTextures();
 		// bind the vertex buffers
 		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
 			if (m_currentMeshBuffer->m_bufferEnabled[i])
@@ -70,29 +78,14 @@ bool CStreamedRenderable3D::Render ( const rrRenderParams* params )
 		// bind the index buffer
 		gfx->setIndexBuffer(&m_currentMeshBuffer->m_indexBuffer, gpu::kIndexFormatUnsigned16);
 		// bind the cbuffers
-		// TODO:
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
 		// draw now
 		gfx->drawIndexed(m_model_indexcount, 0);
 	}
-
-	//// Do not render if no buffer to render with
-	//if ( m_buffer_verts == 0 || m_buffer_tris == 0 )
-	//{
-	//	return true;
-	//}// TODO: Double check that per-object uniforms are sent to the videocard.
-
-	// // For now, we will render the same way as the 3d meshes render
-	//m_material->m_bufferSkeletonSize = 0;
-	//m_material->m_bufferMatricesSkinning = 0;
-	//m_material->bindPass(pass);
-	//BindVAO( pass, m_buffer_verts, m_buffer_tris );
-	//{// TODO: fix this hot mess
-	// // Bind target buffers
-	//	GL.BindBuffer( GL_ARRAY_BUFFER, m_buffer_verts );
-	//	GL.BindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_buffer_tris );
-	//	m_material->bindPassAtrribs();
-	//}
-	//GL.DrawElements( GL_TRIANGLES, m_model_tricount * 3, GL_UNSIGNED_INT, 0 );
 
 	// Success!
 	return true;
@@ -104,10 +97,6 @@ bool CStreamedRenderable3D::EndRender ( void )
 {
 	if ( m_wants_swap )
 	{
-		//std::swap( m_buffer_verts, m_next_buffer_verts );
-		//std::swap( m_buffer_tris, m_next_buffer_tris );
-		//std::swap( m_model_tricount, m_next_model_tricount );
-
 		// swap the targeted mesh
 		if (m_currentMeshBuffer != &m_meshBuffer)
 			m_currentMeshBuffer = &m_meshBuffer;

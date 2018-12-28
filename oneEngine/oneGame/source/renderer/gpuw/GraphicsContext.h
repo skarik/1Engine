@@ -121,6 +121,8 @@ namespace gpu
 		RENDER_API int			setViewport ( uint32_t left, uint32_t top, uint32_t right, uint32_t bottom );
 		RENDER_API int			setScissor ( uint32_t left, uint32_t top, uint32_t right, uint32_t bottom );
 
+		//	setRenderTarget( renderTarget ) : Sets input render target as the current pixel shader output.
+		// MRT pixel shader outputs are set through RenderTarget setup and Pipeline setup.
 		RENDER_API int			setRenderTarget ( RenderTarget* renderTarget );
 
 		//	setPipeline( pipeline ) : Sets current pipeline.
@@ -136,10 +138,9 @@ namespace gpu
 		// For compute stages, acts as a fast alias for setShaderResource.
 		RENDER_API int			setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer );
 		RENDER_API int			setShaderSampler ( ShaderStage stage, int slot, Sampler* buffer );
+		//	setShaderSamplerAuto( stage, slot, texture ) : Sets texture to given slot using an automatically generated sampler.
 		RENDER_API int			setShaderSamplerAuto ( ShaderStage stage, int slot, Texture* buffer );
 		RENDER_API int			setShaderResource ( ShaderStage stage, int slot, Buffer* buffer );
-
-		//RENDER_API int			setPrimitiveTopology ( PrimitiveTopology topology ); // handled inside pipeline
 
 		RENDER_API int			draw ( const uint32_t vertexCount, const uint32_t startVertex );
 		RENDER_API int			drawIndexed ( const uint32_t indexCount, const uint32_t startIndex );

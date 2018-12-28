@@ -46,8 +46,7 @@ RrTexture::Load ( const char* resource_name )
 RrTexture*
 RrTexture::CreateUnitialized ( const char* name )
 {
-	arstring256 resource_str_id ("_hx_");
-	resource_str_id += name;
+	arstring256 resource_str_id (name);
 
 	// We need to create a new texture:
 	RrTexture* texture = new RrTexture(resource_str_id, NULL);

@@ -97,7 +97,7 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, Buffer* buffer, uint32_t o
 
 int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, Buffer* buffer )
 {
-	ARCORE_ERROR("untested behavior with unbound vao");
+	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeConstant);
 
 	glBindBufferBase(GL_UNIFORM_BUFFER,
 					 (GLuint)slot,
@@ -109,7 +109,7 @@ int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, Buffer
 
 int gpu::GraphicsContext::setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer )
 {
-	ARCORE_ERROR("untested behavior with unbound vao");
+	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeStructured);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER,
 					 (GLuint)slot,
@@ -136,7 +136,7 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 {
 	if (m_pipelineBound == false)
 	{
-		glUseProgram(m_pipeline->m_pipeline->m_program);
+		glUseProgram((GLuint)m_pipeline->m_pipeline->m_program);
 
 		if (m_pipeline->m_boundIndexBuffer != m_indexBuffer)
 		{

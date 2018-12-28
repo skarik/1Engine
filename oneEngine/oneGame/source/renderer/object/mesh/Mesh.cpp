@@ -4,10 +4,10 @@
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 #include "renderer/camera/RrCamera.h"
-#include "renderer/material/Material.h"
 #include "renderer/types/shaders/sbuffers.h"
 #include "renderer/gpuw/Device.h"
 #include "renderer/gpuw/GraphicsContext.h"
+#include "renderer/material/Material.h"
 
 renderer::Mesh::Mesh ( rrMeshBuffer* nMesh, bool n_enableSkinning )
 	: CRenderableObject(),

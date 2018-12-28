@@ -144,7 +144,7 @@ void RrRenderer::StepBufferPush ( void )
 		gfx->setRenderTarget(mOutputSurface->getRenderTarget());
 		gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
 		{
-			float clearColor[] = {1,0,0,0};
+			float clearColor[] = {1, 1, 1, 0};
 			gfx->clearColor(clearColor);
 
 			gpu::DepthStencilState ds;
@@ -174,7 +174,7 @@ void RrRenderer::StepBufferPush ( void )
 		gfx->setRenderTarget(&internal_chain_current->buffer_forward_rt);
 		gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
 		gfx->clearDepthStencil(true, 1.0F, true, 0x00);
-		float clearColor[] = {0.0F, 0.0F, 1.0F, 1.0F};
+		float clearColor[] = {0.0F, 0.0F, 0.0F, 0.0F};
 		gfx->clearColor(clearColor);
 	}
 	TimeProfiler.EndTimeProfile( "rs_buffer_push" );
@@ -185,6 +185,18 @@ void RrRenderer::Render ( void )
 {
 	gpu::GraphicsContext* gfx = mGfxContext;
 	unsigned int i;
+
+#define _ENGINE_LIMIT_FRAMES // TODO: Move this block somewhere else.
+#ifdef _ENGINE_LIMIT_FRAMES
+	// Slow down the framerate if it's too fast.
+	// Incredibly high framerates can cause massive issues with various window managers (DWM and and Xlib both have frozen).
+	// To alleviate this, we sleep for 0.1 ms if we ever get too fast, so we top off around 500 to 1000 FPS.
+	int fps = int(1.0F / Time::smoothDeltaTime);
+	if (fps > 600)
+	{
+		std::this_thread::sleep_for(std::chrono::microseconds(100));
+	}
+#endif
 
 	// Update pre-render steps:
 	//	- RrLogicObject::PostStep finish
@@ -523,7 +535,7 @@ void RrRenderer::RenderObjectList ( RrCamera* camera, CRenderableObject** object
 	rrCameraPass cameraPasses [kMaxCameraPasses];
 	rrCameraPassInput cameraPassInput;
 	cameraPassInput.m_maxPasses = kMaxCameraPasses;
-	cameraPassInput.m_bufferingCount = internal_chain_list.size();
+	cameraPassInput.m_bufferingCount = (uint16_t)std::min<size_t>(internal_chain_list.size(), 0xFFFF);
 	cameraPassInput.m_bufferingIndex = internal_chain_index;
 
 	int passCount = camera->PassCount();
@@ -689,13 +701,15 @@ Render_Groups:
 	// select buffer chain we work with
 	RrHybridBufferChain* bufferChain = cameraPass->m_bufferChain;
 	if (bufferChain == NULL)
-	{
-		bufferChain = &internal_chain_list[internal_chain_index];
+	{	// Select the main buffer chain if no RT is defined.
+		bufferChain = internal_chain_current;
 	}
 	ARCORE_ASSERT(bufferChain != NULL);
 
 	// target proper buffer
 	gfx->setRenderTarget(&bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
+	
+	// verified: target set properly here
 
 	for (uint8_t iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
 	{
@@ -789,7 +803,7 @@ Render_Groups:
 			gfx->setDepthStencilState(ds);
 
 			gpu::BlendState bs;
-			bs.channelMask = 0x00; // Disable color masking.
+			bs.channelMask = 0xFF; // Enable color masking.
 			bs.enable = false;
 			gfx->setBlendState(bs);
 		}

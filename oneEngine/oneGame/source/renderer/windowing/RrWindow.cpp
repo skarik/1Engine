@@ -404,6 +404,16 @@ bool RrWindow::IsFullscreen ( void )
 	return m_fullscreen;
 }
 
+bool RrWindow::SetTitle ( const char* title )
+{
+	if (mw_window != NIL)
+	{
+		SetWindowTextA(mw_window, title);
+		return true;
+	}
+	return false;
+}
+
 
 bool RrWindow::UpdateMessages ( void )
 {
