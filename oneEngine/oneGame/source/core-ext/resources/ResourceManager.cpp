@@ -71,7 +71,7 @@ void core::ArResourceManager::Update ( void )
 			size_t i_max = m_resourceLoadLists[i_resourceType].size();
 			for (int i = 0; i < i_max; ++i)
 			{
-				IArResource* resource = m_resourceLists[i_resourceType][i];
+				IArResource* resource = m_resourceLoadLists[i_resourceType][i];
 				if (resource != NULL)
 				{
 					// Step the streamed loader:
@@ -88,7 +88,7 @@ void core::ArResourceManager::Update ( void )
 					// Remove from load list when done:
 					if (doneLoading)
 					{
-						m_resourceLists[i_resourceType][i] = NULL;
+						m_resourceLoadLists[i_resourceType][i] = NULL;
 						m_resourceLoadCounts[i_resourceType] -= 1;
 					}
 				}

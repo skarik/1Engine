@@ -45,11 +45,17 @@ bool core::BpdLoader::LoadBpd ( const char* n_resourcename )
 	std::string image_filename = image_rezname;
 	{
 		arstring256 file_extension = core::utils::string::GetFileExtension(image_rezname);
-		std::string raw_filename = image_rezname;
+		std::string raw_filename;
+
 		core::utils::string::ToLower(file_extension, file_extension.length());
 		if (file_extension.compare(""))
 		{
 			image_filename += ".bpd";
+		}
+		else
+		{	// Remove the extension
+			raw_filename = image_rezname;
+			image_rezname = raw_filename.substr(0, raw_filename.length() - (file_extension.length() + 1)).c_str();
 		}
 
 		const char* const image_extensions[] = {
@@ -78,6 +84,9 @@ bool core::BpdLoader::LoadBpd ( const char* n_resourcename )
 				debug::Console->PrintError( "BpdLoader::LoadBpd : Error occurred in core::Converter::ConvertFile call\n" );
 			}
 		}
+
+		// Select the BPD filename after conversion:
+		image_filename = image_rezname + ".bpd";
 
 		// Find the file to open...
 		if (!core::Resources::MakePathTo(image_filename.c_str(), image_filename))
@@ -136,6 +145,7 @@ bool core::BpdLoader::loadBpdCommon ( void )
 			info.width	= header.width;
 			info.height	= header.height;
 			info.depth	= header.depth;
+			info.levels	= header.levels;
 		}
 
 		// Check format
@@ -299,6 +309,14 @@ bool core::BpdWriter::WriteBpd ( const char* n_newfilename )
 		return false;
 	}
 
+	// Check the data
+	{
+		if (info.depth == 0) {
+			info.depth = 1;
+		}
+	}
+
+	// Open up the file
 	CMappedBinaryFile mappedfile = CMappedBinaryFile(n_newfilename);
 	if (!mappedfile.GetReady())
 	{
@@ -312,7 +330,8 @@ bool core::BpdWriter::WriteBpd ( const char* n_newfilename )
 		!writeLevelData() ||
 		!writeAnimation() ||
 		!writePalette() ||
-		!patchHeader())
+		!patchHeader() ||
+		!patchLevels())
 	{
 		mappedfile.SyncToDisk();
 		return false;
@@ -437,7 +456,6 @@ bool core::BpdWriter::writeSuperlow ( void )
 	}
 
 	// Write out the low-quality guys
-	//fwrite( lowQuality, sizeof(tPixel)*16*16, 1, t_outFile );
 	mappedfile->WriteBuffer(lowQuality, sizeof(gfx::arPixel) * kTextureFormat_SuperlowSize);
 
 	// Remove the LQ data

@@ -27,6 +27,7 @@ namespace texture
 			// Set the new texture size
 			o_info.width = calcW;
 			o_info.height = calcH;
+			o_info.depth = 1;
 
 			// Check and set the bitdepth
 			/*if ( calcBPP == 3 )

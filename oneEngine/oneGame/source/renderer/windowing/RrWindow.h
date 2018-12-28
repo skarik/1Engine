@@ -23,26 +23,6 @@ public:
 		int			nCmdShow );
 	RENDER_API virtual		~RrWindow ( void );
 
-	//friend LRESULT	CALLBACK MessageUpdate(HWND, UINT, WPARAM, LPARAM);
-	/*
-	RENDER_API bool createWindow ( void );
-	// Is this window still valid for executing (no WinAPI end messages)
-	RENDER_API bool canContinue ( void );
-
-	// Update WinAPI messages in the queue
-	RENDER_API bool UpdateMessages ( void );
-	// Render out the next frame
-	RENDER_API bool Redraw ( void );
-
-	// Toggle this window being fullscreen
-	RENDER_API void toggleFullscren ( void );
-
-	// Manually send the WinAPI end message
-	RENDER_API void sendEndMessage ( void );
-
-	// Does this window have focus?
-	RENDER_API bool isActive ( void );*/
-	
 	// Setup
 	// ================================
 
@@ -77,10 +57,6 @@ public:
 	RENDER_API intptr_t		OsShellHandle ( void )
 		{ return (intptr_t)mw_window; }
 
-	//	OsDevice() : Returns the OS handle of the device this window is on
-	//RENDER_API intptr_t		OsDevice ( void )
-	//	{ return (intptr_t)mw_devicecontext; }
-
 	//	GpuDevice() : Returns the GPU device this renderer is using.
 	RENDER_API gpu::Device*	GpuDevice ( void )
 		{ return m_device; }
@@ -109,10 +85,7 @@ public:
 	}
 
 private:
-	/*enum eReturnStatus {
-		status_FAILED		= 0,
-		status_SUCCESSFUL	= 1
-	};*/
+	
 	void					CreateScreen ( void );
 	void					CreateConsole ( void );
 	void					RegisterInput ( void ); // windows thing where we register input devices
@@ -127,32 +100,8 @@ private:
 
 	void					UpdateMouseClipping ( void );
 
-	/*static void ReSizeGLScene( GLsizei width, GLsizei height );
-
-	int InitGL( void );
-
-	int DrawScene( void );
-
-	// Delete the window
-	void KillGLWindow( bool releaseRenderContext=true );
-
-	// Create the window
-	eReturnStatus	CreateGLWindow( char* title, int width, int height, int bits, bool fullscreenflag );
-	// Create the context
-	eReturnStatus	CreateGLContext ( void );
-
-	// Creates screen buffer to render to
-	//eReturnStatus	CreateBuffer ( void );
-
-
-	eReturnStatus	ErrorOut( const char* message );*/
-	//void showFailureMessage ( char* message );
 private:
 	static std::vector<RrWindow*>	m_windows;
-	//static RrWindow* pActive;
-	//static bool	keys[256];			// Array Used For The Keyboard Routine
-
-	//RrRenderer*	mRenderer;
 
 private:
 	friend LRESULT CALLBACK MessageUpdate(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

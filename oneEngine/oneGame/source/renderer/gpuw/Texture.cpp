@@ -104,8 +104,28 @@ int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level )
 {
 	ARCORE_ASSERT(glGetError() == GLenum(0));
 
+	const uint level_divisor = (1 << level);
+	GLsizei upload_width, upload_height;
+
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, (GLuint)buffer.nativePtr());
-	glTextureSubImage2D(m_texture, level, 0, 0, m_width, m_height, m_glcomponent, m_gltype, NULL);
+	switch (m_type)
+	{
+	case core::gfx::tex::kTextureType1D:
+		ARCORE_ERROR("Not implemented");
+		break;
+	case core::gfx::tex::kTextureType1DArray:
+	case core::gfx::tex::kTextureType2D:
+	case core::gfx::tex::kTextureTypeCube:
+		upload_width  = std::max<GLsizei>(1, m_width / level_divisor);
+		upload_height = std::max<GLsizei>(1, m_height / level_divisor);
+		glTextureSubImage2D(m_texture, level, 0, 0, upload_width, upload_height, m_glcomponent, m_gltype, NULL);
+		break;
+	case core::gfx::tex::kTextureType2DArray:
+	case core::gfx::tex::kTextureType3D:
+	case core::gfx::tex::kTextureTypeCubeArray:
+		ARCORE_ERROR("Not implemented");
+		break;
+	}
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
 	// Lot of things can go wrong with textures, and this is a slow process here. It doesn't hurt to check status here.

@@ -28,7 +28,7 @@ int main ( int argc, char **argv )
 	std::vector<trConversionEntry> l_conversionTable;
 	l_conversionTable.push_back(trConversionEntry("fbx",  core::converter::kEngineModelFileExtension, NULL));
 	l_conversionTable.push_back(trConversionEntry("gltf", core::converter::kEngineModelFileExtension, NULL));
-	//l_conversionTable.push_back(trConversionEntry("gal",  core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterForwardTo32, TrConverterBase>));
+	l_conversionTable.push_back(trConversionEntry("gal",  core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterForwardTo32, TrConverterBase>));
 	l_conversionTable.push_back(trConversionEntry("png",  core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterPNG, TrConverterBase>));
 	l_conversionTable.push_back(trConversionEntry("jpg",  core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterJPG, TrConverterBase>));
 	l_conversionTable.push_back(trConversionEntry("jpeg", core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterJPG, TrConverterBase>));
@@ -42,6 +42,8 @@ int main ( int argc, char **argv )
 
 	std::string l_inputExtension = core::utils::string::GetLower(core::utils::string::GetFileExtension(l_inputFilename));
 	std::string l_outputExtension = core::utils::string::GetLower(core::utils::string::GetFileExtension(l_outputFilename));
+
+	// TODO: Compare file dates.
 
 	// Find matching entry in the table
 	for (const trConversionEntry& entry : l_conversionTable)

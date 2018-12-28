@@ -134,9 +134,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">xcopy /C/R/Y/Q $(OutDir)$(TargetName).exe $(OutDir)..\Debug_x64\
+      <Command>
+xcopy /C/R/Y/Q $(OutDir)$(TargetName).exe $(OutDir)..\Debug_x64\
 xcopy /C/R/Y/Q $(OutDir)$(TargetName).pdb $(OutDir)..\Debug_x64\
-exit 0</Command>
+if not exist "$(ProjectDir).tools" mkdir "$(ProjectDir).tools"
+xcopy /C/R/Y/Q $(OutDir)$(TargetName).exe "$(ProjectDir).tools"
+xcopy /C/R/Y/Q $(OutDir)$(TargetName).pdb "$(ProjectDir).tools"
+exit 0
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='DebugClang'">

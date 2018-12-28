@@ -25,8 +25,8 @@ namespace core
 	{
 		if (!m_initialized)
 		{
-			m_haveConverter		= IO::FileExists("dev_tool_oneConverter.exe");
-			m_haveConverter32	= IO::FileExists("dev_tool_oneConverter32.exe");
+			m_haveConverter		= IO::FileExists(".tools/dev_tool_oneConverter.exe");
+			m_haveConverter32	= IO::FileExists(".tools/dev_tool_oneConverter32.exe");
 
 			m_initialized = true;
 		}
@@ -57,6 +57,7 @@ namespace core
 			if (l_inputFileext.compare(core::converter::g_convertableTable[i].source))
 			{
 				l_outputFileext = core::converter::g_convertableTable[i].target;
+				l_outputFilename = strncat(l_outputFilename, ".", 2);
 				l_outputFilename = strncat(l_outputFilename, l_outputFileext, 256);
 				break;
 			}

@@ -180,6 +180,7 @@ namespace texture
 			// Set the new texture size
 			o_info.width = calcW;
 			o_info.height = calcH;
+			o_info.depth = 1;
 
 			// Create the pixel data
 			pData = new gfx::arPixel [ o_info.width * o_info.height ];

@@ -136,11 +136,21 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 				// Double check parameters are correct:
 				loadInfo->resourceFilename = resourceFilename;
 
-				// Load the BPD's superlow:
-				loadInfo->loader.m_loadOnlySuperlow = true;
+				// Hit the LoadBpd to verify the resource converted and file exists:
+				loadInfo->loader.m_loadImageInfo = true;
 				auto loadStatus = loadInfo->loader.LoadBpd(loadInfo->resourceFilename); // open bpd now
-				loadInfo->loader.m_loadOnlySuperlow = false;
+				loadInfo->loader.m_loadImageInfo = false;
 				ARCORE_ASSERT(loadStatus);
+
+				// Set up the image info for allocating data down the line:
+				// BPDs are always 2D 8-bit RGBA for now.
+				info.type = core::gfx::tex::kTextureType2D; 
+				info.internalFormat = core::gfx::tex::kColorFormatRGBA8;
+				// The rest of the information will be available in the loader.
+				info.width = loadInfo->loader.info.width;
+				info.height = loadInfo->loader.info.height;
+				info.depth = loadInfo->loader.info.depth;
+				info.levels = loadInfo->loader.info.levels;
 
 				// Create the sync
 				loadInfo->pixelSync.create(NULL);
