@@ -184,7 +184,7 @@ int gpu::Device::refresh ( intptr_t module_handle, intptr_t module_window )
 	// Destroy the device context
 	if (mw_deviceContext != NIL)
 	{
-		if (ReleaseDC((HWND)mw_window, (HDC)mw_deviceContext) != 0)
+		if (ReleaseDC((HWND)mw_window, (HDC)mw_deviceContext) != 1)
 		{
 			printf("Release Device Context Failed.\n");
 			return gpu::kErrorInvalidDevice;
@@ -205,7 +205,7 @@ int gpu::Device::refresh ( intptr_t module_handle, intptr_t module_window )
 	}
 
 	// Set up the render context
-	if (wglMakeCurrent((HDC)mw_deviceContext, (HGLRC)mw_renderContext) != 0)
+	if (wglMakeCurrent((HDC)mw_deviceContext, (HGLRC)mw_renderContext) != TRUE)
 	{
 		printf("Could not make new context current.\n");
 		return gpu::kErrorInvalidModule;

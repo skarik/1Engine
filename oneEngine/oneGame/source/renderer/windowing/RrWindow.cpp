@@ -366,10 +366,6 @@ bool RrWindow::Resize ( int width, int height )
 		m_resolution.x = width;
 		m_resolution.y = height;
 
-		// Recreate the window:
-		DestroyScreen();
-		CreateScreen();
-
 		// Refresh the device
 		m_device->refresh((intptr_t)mw_instance, (intptr_t)mw_window);
 
