@@ -198,8 +198,6 @@ protected:
 	rrTextureUploadInfo*
 						upload_request;
 
-	//core::gfx::arPixel*				pData;
-
 	core::gfx::tex::arImageInfo
 						io_imginfo;
 	

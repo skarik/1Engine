@@ -292,7 +292,8 @@ bool core::BpdLoader::loadBpdCommon ( void )
 core::BpdWriter::BpdWriter()
 	: m_generateMipmaps(false), m_writeAnimation(false), m_convertAndEmbedPalette(false),
 	// Inputs:
-	rawImage(NULL), mipmaps(), mipmapCount(0), palette(NULL), paletteRows(0), paletteDepth(0),
+	rawImageFormat(IMG_FORMAT_RGBA8), rawImage(NULL), mipmaps(), mipmapCount(0),
+	palette(NULL), paletteRows(0), paletteDepth(0),
 	info(), animationInfo(), frame_times(), datetime(0)
 {
 	;
@@ -374,7 +375,7 @@ bool core::BpdWriter::patchHeader( void )
 
 	l_header.flags = 0;
 	// Byte 0: Format
-	l_header.flags		|= IMG_FORMAT_RGBA8 & 0x000000FF;
+	l_header.flags		|= rawImageFormat & 0x000000FF;
 	// Byte 1: Transparency & load modes
 	l_header.flags		|= (ALPHA_LOAD_MODE_DEFAULT << 8) & 0x0000FF00;
 	// Byte 2: Type of texture (animated, paletted?)

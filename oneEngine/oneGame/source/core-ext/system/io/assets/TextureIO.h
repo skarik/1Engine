@@ -22,7 +22,7 @@ namespace core
 	static const char*	kTextureFormat_Header		= "BPD\0";
 
 	static const int	kTextureFormat_VersionMajor	= 2;
-	static const int	kTextureFormat_VersionMinor	= 0;
+	static const int	kTextureFormat_VersionMinor	= 1;
 
 	static const char*	kTextureFormat_HeadLevel	= "TEX\0";
 	static const char*	kTextureFormat_HeadAnimation= "ANM\0";
@@ -104,12 +104,12 @@ namespace core
 
 	enum ETextureFormatTypes
 	{
-		IMG_FORMAT_RGBA8	= 0x00,	// RGBA8 (Default)
+		IMG_FORMAT_RGBA8	= 0x00,	// RGBA8 (Default).
 		IMG_FORMAT_DXT3		= 0x01,	// DXT3 compression
 		IMG_FORMAT_DXT5		= 0x02,	// DXT5 compression
 		IMG_FORMAT_RGBA16	= 0x03,	// HDR Integer
 		IMG_FORMAT_RGBA16F	= 0x04,	// HDR Floating Point
-		IMG_FORMAT_PALLETTE	= 0x05	// Palletted GIF
+		IMG_FORMAT_PALLETTE	= 0x05	// Palletted format. XY8/RG8.
 	};
 
 	enum ETextureLoadMode
@@ -206,6 +206,8 @@ namespace core
 
 		//	Save data:
 
+		ETextureFormatTypes
+						rawImageFormat;
 		gfx::arPixel*	rawImage;
 		gfx::arPixel*	mipmaps [16];
 		int				mipmapCount;

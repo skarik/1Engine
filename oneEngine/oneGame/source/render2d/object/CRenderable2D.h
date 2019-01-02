@@ -27,10 +27,10 @@ public:
 
 	//		SetSpriteFile ( c-string sprite filename )
 	// Sets the sprite filename to load and possibly convert.
-	RENDER2D_API void		SetSpriteFile ( const char* n_sprite_filename, const char* n_palette_filename = NULL );
+	RENDER2D_API void		SetSpriteFile ( const char* n_sprite_resname );
 	//		SetSpriteFileAnimated ( c-string sprite filename )
 	// Sets the sprite filename to load and possibly convert, but provides returns for additional information.
-	RENDER2D_API void		SetSpriteFileAnimated ( const char* n_sprite_filename, const char* n_palette_filename, Textures::timgInfo* o_img_info, Real** o_img_frametimes );
+	RENDER2D_API void		SetSpriteFileAnimated ( const char* n_sprite_resname, core::gfx::tex::arSpriteInfo* o_sprite_info );
 
 	//		GetSpriteInfo ()
 	// Returns read-only reference to the current sprite information structure.

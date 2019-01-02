@@ -359,7 +359,7 @@ void CRenderableObject::PassInitWithInput ( int pass, RrPass* passData )
 	}
 
 	// Ensure vertex data exists
-	ARCORE_ASSERT_MSG(passData->m_vertexSpecification, "Cannot initialize a pass without setting the vertex specification.");
+	ARCORE_ASSERT_MSG(passData->m_vertexSpecification != NULL, "Cannot initialize a pass without setting the vertex specification.");
 
 	// Free up the given pass
 	PassFree(pass);

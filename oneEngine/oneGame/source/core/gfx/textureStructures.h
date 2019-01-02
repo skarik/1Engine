@@ -77,6 +77,15 @@ namespace tex {
 		uint16_t	framerate;	// Base framerate. If 0, assumes 60.
 	};
 
+	// Sprite info
+	struct arSpriteInfo
+	{
+		arImageInfo	info;
+		arAnimationInfo
+					animationInfo;
+		uint16_t*	frame_times;
+	}
+
 }}}
 
 #endif//CORE_GFX_TEXTURE_STRUCTURES_H_

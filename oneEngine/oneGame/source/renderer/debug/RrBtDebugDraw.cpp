@@ -29,21 +29,6 @@ RrBtDebugDraw::RrBtDebugDraw ( PrWorld* associated_world )
 		m_world->ApiWorld()->setDebugDrawer(this);
 	}
 
-	// Set the layer to the final overlay layer
-	//this->renderLayer = renderer::kRenderLayerV2D;
-
-	// Create a forward pass material (see RrDebugDrawer for reference)
-	//RrMaterial* defaultMat = new RrMaterial;
-	//defaultMat->m_diffuse = Color( 1,1,1,1 );
-	//defaultMat->setTexture( TEX_DIFFUSE, new RrTexture( "textures/white.jpg" ) );
-	//defaultMat->passinfo.push_back( RrPassForward() );
-	//defaultMat->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
-	//defaultMat->passinfo[0].set2DCommon();
-	//defaultMat->passinfo[0].b_depthmask = true;
-	//defaultMat->passinfo[0].b_depthtest = false;
-	//SetMaterial( defaultMat );
-	//defaultMat->removeReference();
-
 	// Set up the default white lines
 	RrPass linePass;
 	linePass.m_type = kPassTypeForward;
@@ -56,6 +41,11 @@ RrBtDebugDraw::RrBtDebugDraw ( PrWorld* associated_world )
 	linePass.setTexture( TEX_MAIN, RrTexture::Load("null") );
 	linePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"}) );
 	linePass.m_layer = renderer::kRenderLayerV2D;
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor,
+											renderer::shader::Location::kNormal};
+	linePass.setVertexSpecificationByCommonList(t_vspec, 4);
 	PassInitWithInput(0, &linePass);
 }
 
