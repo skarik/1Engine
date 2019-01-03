@@ -84,7 +84,7 @@ namespace tex {
 		arAnimationInfo
 					animationInfo;
 		uint16_t*	frame_times;
-	}
+	};
 
 }}}
 

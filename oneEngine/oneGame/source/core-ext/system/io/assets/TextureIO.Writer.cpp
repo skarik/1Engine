@@ -12,283 +12,6 @@
 
 #include "zlib/zlib.h"
 
-core::BpdLoader::BpdLoader()
-	: m_loadOnlySuperlow(false), m_loadImageInfo(false), m_loadMipmapMask(0), m_loadPalette(false), m_loadAnimation(false),
-	// Buffer Outputs:
-	m_buffer_Superlow(NULL), m_buffer_Mipmaps(),
-	// Outputs:
-	mipmapCount(0), info(), animation(), frames(), palette(), paletteWidth(0),
-	// Internal state:
-	m_liveFile(NULL)
-{
-	;
-}
-core::BpdLoader::~BpdLoader()
-{
-	// Close any live file:
-	if (m_liveFile != NULL) {
-		fclose(m_liveFile);
-		m_liveFile = NULL;
-	}
-}
-
-bool core::BpdLoader::LoadBpd ( const char* n_resourcename )
-{
-	// Close any live file:
-	if (m_liveFile != NULL) {
-		fclose(m_liveFile);
-		m_liveFile = NULL;
-	}
-
-	// Create the resource name
-	arstring256 image_rezname  (n_resourcename);
-	std::string image_filename = image_rezname;
-	{
-		arstring256 file_extension = core::utils::string::GetFileExtension(image_rezname);
-		std::string raw_filename;
-
-		core::utils::string::ToLower(file_extension, file_extension.length());
-		if (file_extension.compare(""))
-		{
-			image_filename += ".bpd";
-		}
-		else
-		{	// Remove the extension
-			raw_filename = image_rezname;
-			image_rezname = raw_filename.substr(0, raw_filename.length() - (file_extension.length() + 1)).c_str();
-		}
-
-		const char* const image_extensions[] = {
-			".png", ".jpg", ".jpeg", ".gif", ".tga", ".bmp"
-		};
-		const size_t image_extensions_len = sizeof(image_extensions) / sizeof(const char* const);
-
-		// Loop through and try to find the matching filename:
-		bool raw_exists = false;
-		for (size_t i = 0; i < image_extensions_len; ++i)
-		{
-			raw_filename = image_rezname + image_extensions[i];
-			// Find the file to source data from:
-			if (core::Resources::MakePathTo(raw_filename.c_str(), raw_filename))
-			{
-				raw_exists = true;
-				break;
-			}
-		}
-
-		// Convert file
-		if (raw_exists)
-		{
-			if (core::Converter::ConvertFile(raw_filename.c_str()) == false)
-			{
-				debug::Console->PrintError( "BpdLoader::LoadBpd : Error occurred in core::Converter::ConvertFile call\n" );
-			}
-		}
-
-		// Select the BPD filename after conversion:
-		image_filename = image_rezname + ".bpd";
-
-		// Find the file to open...
-		if (!core::Resources::MakePathTo(image_filename.c_str(), image_filename))
-		{
-			debug::Console->PrintError( "BpdLoader::LoadBpd : Could not find image file in the resources.\n" );
-			return false;
-		}
-	}
-
-	// Open the new file:
-	m_liveFile = fopen(image_filename.c_str(), "rb");
-	if (m_liveFile != NULL)
-	{
-		return loadBpdCommon();
-	}
-
-	return false;
-}
-
-//	LoadBpd() : Continues loading.
-// Continues to load the live BPD file initially opened with LoadBpd.
-bool core::BpdLoader::LoadBpd ( void )
-{
-	if (m_liveFile != NULL)
-	{
-		return loadBpdCommon();
-	}
-	return false;
-}
-
-//	LoadBpdCommon() : loads BPD file
-bool core::BpdLoader::loadBpdCommon ( void )
-{
-	fseek(m_liveFile, 0, SEEK_SET);
-
-	bool read_header = false;
-
-	//===============================
-	// Read in the header
-
-	textureFmtHeader header;
-	if (!m_loadOnlySuperlow)
-	{
-		fread(&header, sizeof(header), 1, m_liveFile);
-		read_header = true; 
-
-		if (strcmp(header.head, kTextureFormat_Header) != 0)
-		{
-			throw core::CorruptedDataException();
-			return false;
-		}
-
-		// Save new image info
-		if (m_loadImageInfo)
-		{
-			info.width	= header.width;
-			info.height	= header.height;
-			info.depth	= header.depth;
-			info.levels	= header.levels;
-		}
-
-		// Check format
-		if ((header.flags & 0x000000FF) != IMG_FORMAT_RGBA8)
-		{
-			debug::Console->PrintError("BpdLoader::loadBpdCommon : unsupported pixel format. only rgba8 supported at this time\n");
-			throw core::YouSuckException();
-			return false;
-		}
-	}
-
-	// Based on that data, read in the other segments
-
-	//===============================
-	// Read in the superlow (doesnt need the header)
-
-	if (m_buffer_Superlow)
-	{
-		fseek(m_liveFile, sizeof(textureFmtHeader), SEEK_SET);
-		fread(m_buffer_Superlow, sizeof(gfx::arPixel) * kTextureFormat_SuperlowSize, 1, m_liveFile);
-	}
-
-	//===============================
-	// Read in texture levels
-
-	if (read_header)
-	{
-		for (int i = 0; i < header.levels; ++i)
-		{
-			if (m_buffer_Mipmaps[i] && (m_loadMipmapMask & (1 << i)))
-			{
-				textureFmtLevel levelInfo;
-
-				// Read in the level info first
-				fseek(m_liveFile, header.levelsOffset + sizeof(textureFmtLevel) * i, SEEK_SET);
-				fread(&levelInfo, sizeof(levelInfo), 1, m_liveFile);
-			
-				// Ensure data is correct
-				if (strcmp(levelInfo.head, kTextureFormat_HeadLevel) != 0)
-				{
-					throw core::CorruptedDataException();
-					return false;
-				}
-				if (levelInfo.level != i)
-				{
-					debug::Console->PrintError( "BpdLoader::loadBpdCommon : Mismatch in mipmap ids, wanted %d got %d.\n", i, levelInfo.level );
-					return false;
-				}
-
-				// Seek to the actual level data
-				fseek(m_liveFile, levelInfo.offset, SEEK_SET);
-
-				// Read in the data to a temp buffer
-				uchar* t_sideBuffer = new uchar [levelInfo.size];
-				fread(t_sideBuffer, levelInfo.size, 1, m_liveFile);
-			
-				// Decompress the data directly into target pointer:
-				unsigned long t_effectiveWidth	= std::max<unsigned long>(1, header.width / math::exp2(i));
-				unsigned long t_effectiveHeight	= std::max<unsigned long>(1, header.height / math::exp2(i));
-				unsigned long t_mipmapByteCount	= sizeof(gfx::arPixel) * t_effectiveWidth * t_effectiveHeight;
-				int z_result = uncompress( (uchar*)m_buffer_Mipmaps[i], &t_mipmapByteCount, (uchar*)t_sideBuffer, levelInfo.size );
-
-				// Delete the side buffer
-				delete [] t_sideBuffer;
-
-				// Check decompress result
-				switch( z_result )
-				{
-				case Z_OK:
-					break;
-				case Z_MEM_ERROR:
-					debug::Console->PrintError("BpdLoader::loadBpdCommon : zlib : out of memory\n");
-					break;
-				case Z_BUF_ERROR:
-					debug::Console->PrintError("BpdLoader::loadBpdCommon : zlib : output buffer wasn't large enough\n");
-					break;
-				case Z_DATA_ERROR:
-					debug::Console->PrintError("BpdLoader::loadBpdCommon : zlib : corrupted data\n");
-					break;
-				}
-			}
-		}
-	}
-
-	//===============================
-	// Read in animation info
-
-	if (m_loadAnimation && read_header && header.animationOffset != 0)
-	{
-		fseek(m_liveFile, header.animationOffset, SEEK_SET);
-		
-		// Read in animation header
-		textureFmtAnimation animation;
-		fread(&animation, sizeof(animation), 1, m_liveFile);
-
-		// Ensure data is correct
-		if (strcmp(animation.head, kTextureFormat_HeadAnimation) != 0)
-		{
-			throw core::CorruptedDataException();
-			return false;
-		}
-
-		// Set data
-		this->animation.framecount	= animation.frames;
-		this->animation.xdivs		= animation.xdivs;
-		this->animation.ydivs		= animation.ydivs;
-		this->animation.framerate	= (animation.framerate == 0) ? 60 : animation.framerate;
-
-		// Read in all the frames too
-		frames.resize(animation.frames);
-		fread(frames.data(), sizeof(textureFmtFrame) * animation.frames, 1, m_liveFile);
-	}
-
-	//===============================
-	// Read in palette info
-
-	if (m_loadPalette && read_header && header.paletteOffset != 0)
-	{
-		fseek(m_liveFile, header.paletteOffset, SEEK_SET);
-
-		// Read in palette header
-		textureFmtPalette palette_info;
-		fread(&palette_info, sizeof(palette_info), 1, m_liveFile);
-
-		// Ensure data is correct
-		if (strcmp(palette_info.head, kTextureFormat_HeadPalette) != 0)
-		{
-			throw core::CorruptedDataException();
-			return false;
-		}
-
-		// Set data
-		paletteWidth = palette_info.depth;
-
-		// Read in entire palette
-		palette.resize(palette_info.rows * palette_info.depth);
-		fread(palette.data(), sizeof(gfx::arPixel) * palette_info.rows * palette_info.depth, 1, m_liveFile);
-	}
-
-	return true;
-}
-
-
 core::BpdWriter::BpdWriter()
 	: m_generateMipmaps(false), m_writeAnimation(false), m_convertAndEmbedPalette(false),
 	// Inputs:
@@ -402,65 +125,142 @@ bool core::BpdWriter::patchHeader( void )
 bool core::BpdWriter::writeSuperlow ( void )
 {
 	CMappedBinaryFile* mappedfile = (CMappedBinaryFile*)m_file;
+	
+	ARCORE_ASSERT(rawImage != NULL);
+	ARCORE_ASSERT((rawImageFormat == IMG_FORMAT_RGBA8)
+		|| (rawImageFormat == IMG_FORMAT_RGBA16)
+		|| (rawImageFormat == IMG_FORMAT_RGBA16F)
+		|| (rawImageFormat == IMG_FORMAT_PALLETTE)); // Only RGB formats are supported so far
 
-	gfx::arPixel* lowQuality = new gfx::arPixel [kTextureFormat_SuperlowSize];
-	uint32_t	aggregate_r, aggregate_g, aggregate_b, aggregate_a;
+	uint32_t formatFlags = 0;
+	formatFlags = (0xFF & rawImageFormat);
+
+	// Allocate room for the LQ data
+	char* lowQuality = new char [kTextureFormat_SuperlowByteSize];
+	memset(lowQuality, 0, kTextureFormat_SuperlowByteSize);
+
+	uint64_t	aggregate_r, aggregate_g, aggregate_b, aggregate_a;
 	uint32_t	set_w, set_h;
 	uint32_t	pixelIndex;
+	// Calculate amount of pixels we have to downscale over
 	set_w = std::max<uint>( info.width / kTextureFormat_SuperlowWidth, 1 );
 	set_h = std::max<uint>( info.height/ kTextureFormat_SuperlowWidth, 1 );
+	// Loop through the image, scaling downward and sampling to get all the correct information.
 	for ( uint x = 0; x < kTextureFormat_SuperlowWidth; x += 1 )
 	{
 		for ( uint y = 0; y < kTextureFormat_SuperlowWidth; y += 1 )
 		{
-			aggregate_r = 0;
-			aggregate_g = 0;
-			aggregate_b = 0;
-			aggregate_a = 0;
+			// Reset aggregates
+			aggregate_r = 0; aggregate_g = 0; aggregate_b = 0; aggregate_a = 0;
 			for ( uint sx = set_w * x; sx < set_w * (x + 1); sx += 1 )
 			{
 				for ( uint sy = set_h * y; sy < set_h * (y + 1); sy += 1 )
 				{
 					pixelIndex = sx + sy * info.width;
-					if ( set_w != 1 ) {
+					// Set the column
+					if ( set_w != 1 ) 
 						pixelIndex = sx;
-					}
-					else {
+					else 
 						pixelIndex = x / (kTextureFormat_SuperlowWidth / info.width);
-					}
-					if ( set_h != 1 ) {
+					// Add the row
+					if ( set_h != 1 ) 
 						pixelIndex += sy * info.width;
-					}
-					else {
+					else
 						pixelIndex += (y / (kTextureFormat_SuperlowWidth / info.height)) * info.width;
-					}
+					// Clamp the position
 					pixelIndex = std::min<uint32_t>( pixelIndex, (uint32_t)(info.width * info.height) - 1 );
-					aggregate_r += rawImage[pixelIndex].r;
-					aggregate_g += rawImage[pixelIndex].g;
-					aggregate_b += rawImage[pixelIndex].b;
-					aggregate_a += rawImage[pixelIndex].a;
+					// Collect the colors
+					if (rawImageFormat == IMG_FORMAT_RGBA8)
+					{
+						gfx::tex::vecRGBA8* rawImageRgba = static_cast<gfx::tex::vecRGBA8*>(rawImage);
+						aggregate_r += rawImageRgba[pixelIndex].r;
+						aggregate_g += rawImageRgba[pixelIndex].g;
+						aggregate_b += rawImageRgba[pixelIndex].b;
+						aggregate_a += rawImageRgba[pixelIndex].a;
+					}
+					else if (rawImageFormat == IMG_FORMAT_RGB8)
+					{
+						gfx::tex::vecRGB8* rawImageRgb = static_cast<gfx::tex::vecRGB8*>(rawImage);
+						aggregate_r += rawImageRgb[pixelIndex].r;
+						aggregate_g += rawImageRgb[pixelIndex].g;
+						aggregate_b += rawImageRgb[pixelIndex].b;
+						aggregate_a += 255;
+					}
+					else if (rawImageFormat == IMG_FORMAT_PALLETTE)
+					{
+						gfx::tex::vecXY8* rawImageXy = static_cast<gfx::tex::vecXY8*>(rawImage);
+						if (rawImageXy[pixelIndex].x != 255 && rawImageXy[pixelIndex].y != 255)
+						{
+							aggregate_r += rawImageXy[pixelIndex].x;
+							aggregate_g += rawImageXy[pixelIndex].y;
+							aggregate_b += 255;
+							aggregate_a += 255;
+						}
+						else
+						{
+							float aggregate_ratio = (1 + sx + sy * set_w);
+							aggregate_r += aggregate_r / aggregate_ratio;
+							aggregate_g += aggregate_g / aggregate_ratio;
+						}
+					}
+					else
+					{
+						ARCORE_ERROR("Unsupported format");
+					}
 				}
 			}
-			aggregate_r /= set_w*set_h;
-			aggregate_g /= set_w*set_h;
-			aggregate_b /= set_w*set_h;
-			aggregate_a /= set_w*set_h;
+			// Average the colors
+			const int set_sz = set_w * set_h;
+			aggregate_r /= set_sz;
+			aggregate_g /= set_sz;
+			aggregate_b /= set_sz;
+			aggregate_a /= set_sz;
 
-			lowQuality[x+y*kTextureFormat_SuperlowWidth].r = std::min<uint>( aggregate_r, 255 );
-			lowQuality[x+y*kTextureFormat_SuperlowWidth].g = std::min<uint>( aggregate_g, 255 );
-			lowQuality[x+y*kTextureFormat_SuperlowWidth].b = std::min<uint>( aggregate_b, 255 );
-			lowQuality[x+y*kTextureFormat_SuperlowWidth].a = std::min<uint>( aggregate_a, 255 );
-			/*if ( n_inputimg_info->internalFormat == RGB8 ) {
-				lowQuality[x+y*16].a = 255;
-			}*/
+			// Output onto the superlow buffer
+			const int outputIndx = x + y * kTextureFormat_SuperlowWidth;
+			if (rawImageFormat == IMG_FORMAT_RGBA8)
+			{
+				gfx::tex::vecRGBA8* lowQualityRgba = static_cast<gfx::tex::vecRGBA8*>((void*)lowQuality);
+				lowQualityRgba[outputIndx].r = (uint8_t)std::min<uint64_t>( aggregate_r, 255 );
+				lowQualityRgba[outputIndx].g = (uint8_t)std::min<uint64_t>( aggregate_g, 255 );
+				lowQualityRgba[outputIndx].b = (uint8_t)std::min<uint64_t>( aggregate_b, 255 );
+				lowQualityRgba[outputIndx].a = (uint8_t)std::min<uint64_t>( aggregate_a, 255 );
+			}
+			else if (rawImageFormat == IMG_FORMAT_RGB8)
+			{
+				gfx::tex::vecRGB8* lowQualityRgba = static_cast<gfx::tex::vecRGB8*>((void*)lowQuality);
+				lowQualityRgba[outputIndx].r = (uint8_t)std::min<uint64_t>( aggregate_r, 255 );
+				lowQualityRgba[outputIndx].g = (uint8_t)std::min<uint64_t>( aggregate_g, 255 );
+				lowQualityRgba[outputIndx].b = (uint8_t)std::min<uint64_t>( aggregate_b, 255 );
+			}
+			else if (rawImageFormat == IMG_FORMAT_PALLETTE)
+			{
+				gfx::tex::vecXY8* lowQualityXy = static_cast<gfx::tex::vecXY8*>((void*)lowQuality);
+				if (aggregate_a >= 127)
+				{
+					lowQualityXy[outputIndx].x = (uint8_t)std::min<uint64_t>( aggregate_r, 255 );
+					lowQualityXy[outputIndx].y = (uint8_t)std::min<uint64_t>( aggregate_g, 255 );
+				}
+				else
+				{
+					lowQualityXy[outputIndx].x = 255;
+					lowQualityXy[outputIndx].y = 255;
+				}
+			}
+			else
+			{
+				ARCORE_ERROR("Unsupported format");
+			}
 		}
 	}
 
+	// Write out the format flags
+	mappedfile->WriteBuffer(&formatFlags, sizeof(uint32_t));
 	// Write out the low-quality guys
-	mappedfile->WriteBuffer(lowQuality, sizeof(gfx::arPixel) * kTextureFormat_SuperlowSize);
+	mappedfile->WriteBuffer(lowQuality, kTextureFormat_SuperlowByteSize);
 
 	// Remove the LQ data
-	delete [] lowQuality;
+	delete[] lowQuality;
 
 	return true;
 }
@@ -480,7 +280,7 @@ bool core::BpdWriter::writeLevelData ( void )
 	mappedfile->WriteBuffer(m_levels.data(), sizeof(textureFmtLevel) * m_levels.size());
 
 	// Now, allocate the compression and conversion buffers:
-	gfx::arPixel*	imageDataResample = m_generateMipmaps ? new gfx::arPixel [info.width * info.height] : NULL;
+	//gfx::arPixel*	imageDataResample = m_generateMipmaps ? new gfx::arPixel [info.width * info.height] : NULL;
 	uint32_t		compressBufferLen = compressBound(sizeof(gfx::arPixel) * info.width * info.height);
 	uchar*			compressBuffer = new uchar [compressBufferLen + 1];
 
@@ -500,10 +300,9 @@ bool core::BpdWriter::writeLevelData ( void )
 			{
 				for ( uint y = 0; y < t_height; y += 1 )
 				{
-					aggregate_r = 0;
-					aggregate_g = 0;
-					aggregate_b = 0;
-					aggregate_a = 0;
+					// Reset aggregates
+					aggregate_r = 0; aggregate_g = 0; aggregate_b = 0; aggregate_a = 0;
+					// Collect the colors
 					for ( uint sx = 0; sx < t_blocks; sx += 1 )
 					{
 						for ( uint sy = 0; sy < t_blocks; sy += 1 )
@@ -515,19 +314,18 @@ bool core::BpdWriter::writeLevelData ( void )
 							aggregate_a += rawImage[pixelTarget].a;
 						}
 					}
-					aggregate_r /= sqr(t_blocks);
-					aggregate_g /= sqr(t_blocks);
-					aggregate_b /= sqr(t_blocks);
-					aggregate_a /= sqr(t_blocks);
+					// Average the colors
+					const uint32_t block_sz = t_blocks * t_blocks;
+					aggregate_r /= block_sz;
+					aggregate_g /= block_sz;
+					aggregate_b /= block_sz;
+					aggregate_a /= block_sz;
 
 					pixelTarget = x+y*t_width;
 					imageDataResample[pixelTarget].r = std::min<uint>( aggregate_r, 255 );
 					imageDataResample[pixelTarget].g = std::min<uint>( aggregate_g, 255 );
 					imageDataResample[pixelTarget].b = std::min<uint>( aggregate_b, 255 );
 					imageDataResample[pixelTarget].a = std::min<uint>( aggregate_a, 255 );
-					/*if ( info.internalFormat == RGB8 ) {
-						imageDataResample[pixelTarget].a = 255;
-					}*/
 				}
 			}
 		}

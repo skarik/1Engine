@@ -2,7 +2,7 @@
 //
 //		mem.h
 // 
-// Includes macros and common functions dealing with mem
+// Includes macros and common functions dealing with mem (short for memory)
 //
 //===============================================================================================//
 #ifndef CORE_MEM_

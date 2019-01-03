@@ -52,7 +52,8 @@
     <ClCompile Include="source\core-ext\resources\ResourceManager.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\Conversion.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\ModelLoader.cpp" />
-    <ClCompile Include="source\core-ext\system\io\assets\TextureIO.cpp" />
+    <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Reader.cpp" />
+    <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Writer.cpp" />
     <ClCompile Include="source\core-ext\system\io\FileUtils.cpp" />
     <ClCompile Include="source\core-ext\system\io\osf.cpp" />
     <ClCompile Include="source\core-ext\system\io\mccvxg.cpp" />

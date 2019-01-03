@@ -174,9 +174,6 @@
     <ClCompile Include="source\core-ext\system\io\assets\Conversion.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="source\core-ext\system\io\assets\TextureIO.cpp">
-      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
-    </ClCompile>
     <ClCompile Include="source\core-ext\resources\ResourceManager.cpp">
       <Filter>SOURCE\Core-ext\Resources</Filter>
     </ClCompile>
@@ -188,6 +185,12 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\system\shell\Message.cpp">
       <Filter>SOURCE\Core-ext\System\Shell</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Reader.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Writer.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

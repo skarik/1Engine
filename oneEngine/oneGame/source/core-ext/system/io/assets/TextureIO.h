@@ -29,11 +29,50 @@ namespace core
 	static const char*	kTextureFormat_HeadPalette	= "PAL\0";
 	static const char*	kTextureFormat_HeadMisc		= "MSC\0";
 
-	static const int	kTextureFormat_SuperlowWidth= 16;
-	static const int	kTextureFormat_SuperlowSize	= 16 * 16;
+	static const int	kTextureFormat_SuperlowWidth	= 16;
+	static const int	kTextureFormat_SuperlowCount	= 16 * 16;
+	static const int	kTextureFormat_SuperlowByteSize	= 4 * 16 * 16;
+
+	// Texture formats. In BPDs, these are read from both the header and the superlow segment.
+	// They can be queried from the header.
+	enum ETextureFormatTypes
+	{
+		IMG_FORMAT_RGBA8	= 0x00 | 0x00,	// RGBA8 (Default).
+		IMG_FORMAT_RGB8		= 0x00 | 0x10,	// RGB8.
+		IMG_FORMAT_RGBA16	= 0x01 | 0x00,	// HDR Integer
+		IMG_FORMAT_RGBA16F	= 0x02 | 0x00,	// HDR Floating Point
+		IMG_FORMAT_DXT3		= 0x03 | 0x00,	// DXT3 compression
+		IMG_FORMAT_DXT5		= 0x03 | 0x10,	// DXT5 compression
+		IMG_FORMAT_ASTC		= 0x03 | 0x20,	// DXT5 compression
+		IMG_FORMAT_PALLETTE	= 0x04 | 0x00,	// Palletted format. XY8/RG8.
+	};
+
+	enum ETextureLoadMode
+	{
+		ALPHA_LOAD_MODE_DEFAULT	= 0x00,
+		ALPHA_LOAD_MODE_INDEXED	= 0x01,
+		ALPHA_LOAD_MODE_KEYED	= 0x02
+	};
+
+	//	getTextureFormatByteSize(type) : Given a format, returns the byte width of a single texel.
+	static size_t getTextureFormatByteSize (ETextureFormatTypes type)
+	{
+		switch (type)
+		{
+		case IMG_FORMAT_RGBA8:		return 4;
+		case IMG_FORMAT_RGB8:		return 3;
+		case IMG_FORMAT_RGBA16:		return 8;
+		case IMG_FORMAT_RGBA16F:	return 8;
+
+		case IMG_FORMAT_PALLETTE:	return 2;
+		}
+		ARCORE_ERROR("Invalid or unsupported type passed.");
+		return 0;
+	}
 
 	struct textureFmtHeader
 	{
+	public:
 		char		head[4];	// Always "BPD\0"
 		uint16_t	version[2];	// version
 		//	CONVERSION TIME
@@ -60,7 +99,11 @@ namespace core
 		uint32_t	animationOffset;
 		// byte offset
 		uint32_t	paletteOffset;
+
+	public:
+		//void setTextureType
 	};
+	static const int sz = sizeof(textureFmtHeader);
 
 	struct textureFmtLevel
 	{
@@ -102,28 +145,36 @@ namespace core
 		uint16_t	unused0;
 	};
 
-	enum ETextureFormatTypes
-	{
-		IMG_FORMAT_RGBA8	= 0x00,	// RGBA8 (Default).
-		IMG_FORMAT_DXT3		= 0x01,	// DXT3 compression
-		IMG_FORMAT_DXT5		= 0x02,	// DXT5 compression
-		IMG_FORMAT_RGBA16	= 0x03,	// HDR Integer
-		IMG_FORMAT_RGBA16F	= 0x04,	// HDR Floating Point
-		IMG_FORMAT_PALLETTE	= 0x05	// Palletted format. XY8/RG8.
-	};
-
-	enum ETextureLoadMode
-	{
-		ALPHA_LOAD_MODE_DEFAULT	= 0x00,
-		ALPHA_LOAD_MODE_INDEXED	= 0x01,
-		ALPHA_LOAD_MODE_KEYED	= 0x02
-	};
-
 	static_assert(sizeof(textureFmtHeader)		== sizeof(uint32_t)*10,	"Invalid structure size");
 	static_assert(sizeof(textureFmtLevel)		== sizeof(uint32_t)*4,	"Invalid structure size");
 	static_assert(sizeof(textureFmtAnimation)	== sizeof(uint32_t)*4,	"Invalid structure size");
 	static_assert(sizeof(textureFmtFrame)		== sizeof(uint32_t)*1,	"Invalid structure size");
 	static_assert(sizeof(textureFmtPalette)		== sizeof(uint32_t)*2,	"Invalid structure size");
+
+	namespace gfx
+	{
+		namespace tex
+		{
+			struct vecRGBA8
+			{
+				uint8_t r;
+				uint8_t g;
+				uint8_t b;
+				uint8_t a;
+			};
+			struct vecRGB8
+			{
+				uint8_t r;
+				uint8_t g;
+				uint8_t b;
+			};
+			struct vecXY8
+			{
+				uint8_t x;
+				uint8_t y;
+			};
+		}
+	}
 
 	//	class BpdLoader
 	// Loads up a BPD and given levels based on configuration.
@@ -158,11 +209,17 @@ namespace core
 
 		//	Load targets:
 
-		gfx::arPixel*	m_buffer_Superlow;
-		gfx::arPixel*	m_buffer_Mipmaps [16];
+		// Superlow load target. If not null, should point to a buffer of at least size kTextureFormat_SuperlowByteSize.
+		void*			m_buffer_Superlow;
+		// Mipmap load targets. If not null, should point to buffers of correct size for the texture.
+		void*			m_buffer_Mipmaps [16];
 
 		//	Load outputs:
 
+		// Loaded data's format
+		ETextureFormatTypes
+						format;
+		// Number of mipmaps.
 		uint8_t			mipmapCount;
 		gfx::tex::arImageInfo
 						info;
@@ -170,6 +227,7 @@ namespace core
 						animation;
 		std::vector<textureFmtFrame>
 						frames;
+		// Loaded palette. Always 8-bit color.
 		std::vector<gfx::arPixel>
 						palette;
 		uint8_t			paletteWidth;
@@ -208,8 +266,8 @@ namespace core
 
 		ETextureFormatTypes
 						rawImageFormat;
-		gfx::arPixel*	rawImage;
-		gfx::arPixel*	mipmaps [16];
+		void*			rawImage;
+		void*			mipmaps [16];
 		int				mipmapCount;
 		gfx::arPixel*	palette;
 		int				paletteRows;

@@ -4,12 +4,12 @@
 
 #include "MathQEF.h"
 
-using namespace Maths;
+using namespace core::math;
 
 //----------------------------------------------------------------------------
 
-#define MAXROWS 12
-#define EPSILON 1e-5
+auto constexpr MAXROWS = 12;
+auto constexpr EPSILON = 1e-5;
 
 //----------------------------------------------------------------------------
 
