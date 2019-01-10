@@ -11,26 +11,26 @@ static bool _DropSettings (renderer::rrInternalSettings* io_settings)
 	using namespace core::gfx::tex;
 	if (io_settings->mainStencilFormat == KStencilFormatIndex16) 
 	{
-		debug::Console->PrintError("Dropping Stencil16 to Stencil8.");
+		debug::Console->PrintError("Dropping Stencil16 to Stencil8.\n");
 		io_settings->mainStencilFormat = KStencilFormatIndex8;
 		return true;
 	}
 
 	if (io_settings->mainDepthFormat == kDepthFormat32) 
 	{
-		debug::Console->PrintError("Dropping Depth32 to Depth16.");
+		debug::Console->PrintError("Dropping Depth32 to Depth16.\n");
 		io_settings->mainDepthFormat = kDepthFormat16;
 		return true;
 	}
 
 	if (io_settings->mainStencilFormat == KStencilFormatIndex8) 
 	{
-		debug::Console->PrintError("Dropping Stencil8 to None. (This may cause visual artifacts!)");
+		debug::Console->PrintError("Dropping Stencil8 to None. (This may cause visual artifacts!)\n");
 		io_settings->mainStencilFormat = kStencilFormatNone;
 		return true;
 	}
 
-	debug::Console->PrintError("Could not downgrade screen buffer settings.");
+	debug::Console->PrintError("Could not downgrade screen buffer settings.\n");
 
 	// Couldn't drop any settings.
 	return false;
@@ -81,13 +81,13 @@ gpu::ErrorCode RrHybridBufferChain::CreateTargetBufferChain ( renderer::rrIntern
 			// There was an error in creating the target buffer chain. We need to break, try another set of formats, then continue.
 			if (_DropSettings(io_settings))
 			{
-				debug::Console->PrintError("Screen buffer formats not supported. Dropping settings and attempting again.");
+				debug::Console->PrintError("Screen buffer formats not supported. Dropping settings and attempting again.\n");
 				// Attempt to create again.
 				continue;
 			}
 			else
 			{
-				debug::Console->PrintError("Screen buffer formats not supported. Throwing an unsupported error.");
+				debug::Console->PrintError("Screen buffer formats not supported. Throwing an unsupported error.\n");
 				throw core::DeprecatedFeatureException();
 				return gpu::kErrorFormatUnsupported;
 			}
