@@ -466,20 +466,6 @@ void RrRenderer::CreateTargetBuffers ( void )
 		gpu::ErrorCode status = chain.CreateTargetBufferChain(&settings, Vector2i(Screen::Info.width, Screen::Info.height));
 		if (status != gpu::kError_SUCCESS)
 		{
-			// There was an error in creating the target buffer chain. We need to break, try another set of formats, then continue.
-			/*if (_DropSettings(internal_settings))
-			{
-				debug::Console->PrintError("Screen buffer formats not supported. Dropping settings and attempting again.");
-				// Attempt to create again.
-				CreateTargetBuffers();
-				// Stop the loop.
-				break; 
-			}
-			else
-			{
-				debug::Console->PrintError("Screen buffer formats not supported. Throwing an unsupported error.");
-				throw core::DeprecatedFeatureException();
-			}*/
 			debug::Console->PrintError("Screen buffer formats not supported. Throwing an unsupported error.");
 			throw core::DeprecatedFeatureException();
 		}

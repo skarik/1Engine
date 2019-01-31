@@ -83,14 +83,13 @@ namespace tex {
 
 		kStencilFormatNone = __DEPTH_FORMAT_MAX,
 
-		// Unsupported on textures
 		KStencilFormatIndex1,
-		// Unsupported on textures
 		KStencilFormatIndex4,
-		// This is the only supported value on textures
-		KStencilFormatIndex8,
-		// Unsupported on textures
+		KStencilFormatIndex8, // This is the only supported value on textures
 		KStencilFormatIndex16,
+
+		kDepthFormat32FStencil8,
+		kDepthFormat24Stencil8,
 
 		__STENCIL_FORMAT_MAX,
 	};

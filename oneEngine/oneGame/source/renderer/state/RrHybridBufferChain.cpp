@@ -16,9 +16,33 @@ static bool _DropSettings (renderer::rrInternalSettings* io_settings)
 		return true;
 	}
 
-	if (io_settings->mainDepthFormat == kDepthFormat32) 
+	// First, attempt packed format
+	if (io_settings->mainStencilFormat == KStencilFormatIndex8 && (io_settings->mainDepthFormat == kDepthFormat32 || io_settings->mainDepthFormat == kDepthFormat32F))
 	{
-		debug::Console->PrintError("Dropping Depth32 to Depth16.\n");
+		debug::Console->PrintError("Dropping separate stencil, trying Depth32F+Stencil8.\n");
+		io_settings->mainDepthFormat = kDepthFormat32FStencil8;
+		io_settings->mainStencilFormat = kStencilFormatNone;
+		return true;
+	}
+	// Then attempt lower packed format
+	if (io_settings->mainDepthFormat == kDepthFormat32FStencil8)
+	{
+		debug::Console->PrintError("Dropping Depth32F+Stencil8 to Depth24+Stencil8.\n");
+		io_settings->mainDepthFormat = kDepthFormat24Stencil8;
+		return true;
+	}
+	// Then go back to separate formats
+	if (io_settings->mainDepthFormat == kDepthFormat24Stencil8)
+	{
+		debug::Console->PrintError("Dropping packed Depth24+Stencil8, trying Depth24 and Stencil8.\n");
+		io_settings->mainDepthFormat = kDepthFormat24;
+		io_settings->mainStencilFormat = KStencilFormatIndex8;
+		return true;
+	}
+
+	if (io_settings->mainDepthFormat == kDepthFormat24) 
+	{
+		debug::Console->PrintError("Dropping Depth24 to Depth16.\n");
 		io_settings->mainDepthFormat = kDepthFormat16;
 		return true;
 	}
@@ -35,41 +59,7 @@ static bool _DropSettings (renderer::rrInternalSettings* io_settings)
 	// Couldn't drop any settings.
 	return false;
 }
-/*
-void RrHybridBufferChain::CreateTargetBuffers ( void )
-{
-	if (internal_chain_list.empty())
-	{
-		rrInternalBufferChain chain = {};
-		// Three backbuffers
-		internal_chain_list.push_back(chain);
-		internal_chain_list.push_back(chain);
-		internal_chain_list.push_back(chain);
-		// Set current buffer to first
-		internal_chain_current = &internal_chain_list[0];
-	}
-	for (rrInternalBufferChain& chain : internal_chain_list)
-	{
-		bool status = CreateTargetBufferChain(chain);
-		if (status == false)
-		{
-			// There was an error in creating the target buffer chain. We need to break, try another set of formats, then continue.
-			if (_DropSettings(internal_settings))
-			{
-				debug::Console->PrintError("Screen buffer formats not supported. Dropping settings and attempting again.");
-				// Attempt to create again.
-				CreateTargetBuffers();
-				// Stop the loop.
-				break; 
-			}
-			else
-			{
-				debug::Console->PrintError("Screen buffer formats not supported. Throwing an unsupported error.");
-				throw core::DeprecatedFeatureException();
-			}
-		}
-	}
-}*/
+
 gpu::ErrorCode RrHybridBufferChain::CreateTargetBufferChain ( renderer::rrInternalSettings* io_settings, const Vector2i& size )
 {
 	bool status;
@@ -138,6 +128,9 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::rrI
 		buffer_forward_rt.attach(gpu::kRenderTargetSlotColor0, &buffer_color);
 		buffer_forward_rt.attach(gpu::kRenderTargetSlotDepth, &buffer_depth);
 		buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_stencil);
+		// Override for the combined formats (TODO: Check if this is valid)
+		if (settings->mainDepthFormat == core::gfx::tex::kDepthFormat32FStencil8 || settings->mainDepthFormat == core::gfx::tex::kDepthFormat24Stencil8)
+			buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_depth);
 		// "Compile" the render target.
 		buffer_forward_rt.assemble();
 
@@ -158,6 +151,9 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::rrI
 		buffer_deferred_rt.attach(gpu::kRenderTargetSlotColor0, &buffer_deferred_color_composite);
 		buffer_deferred_rt.attach(gpu::kRenderTargetSlotDepth, &buffer_depth);
 		buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_stencil);
+		// Override for the combined formats (TODO: Check if this is valid)
+		if (settings->mainDepthFormat == core::gfx::tex::kDepthFormat32FStencil8 || settings->mainDepthFormat == core::gfx::tex::kDepthFormat24Stencil8)
+			buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_depth);
 		// "Compile" the render target.
 		buffer_deferred_rt.assemble();
 
@@ -174,6 +170,9 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::rrI
 		// Add the shared depth & stencil
 		buffer_deferred_mrt.attach(gpu::kRenderTargetSlotDepth, &buffer_depth);
 		buffer_deferred_mrt.attach(gpu::kRenderTargetSlotStencil, &buffer_stencil);
+		// Override for the combined formats (TODO: Check if this is valid)
+		if (settings->mainDepthFormat == core::gfx::tex::kDepthFormat32FStencil8 || settings->mainDepthFormat == core::gfx::tex::kDepthFormat24Stencil8)
+			buffer_deferred_mrt.attach(gpu::kRenderTargetSlotStencil, &buffer_depth);
 		// "Compile" the render target.
 		buffer_deferred_mrt.assemble();
 

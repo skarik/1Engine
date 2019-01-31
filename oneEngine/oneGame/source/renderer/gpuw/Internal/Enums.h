@@ -70,6 +70,10 @@ namespace internal {
 		case KStencilFormatIndex4:	return GL_STENCIL_INDEX4;
 		case KStencilFormatIndex8:	return GL_STENCIL_INDEX8;
 		case KStencilFormatIndex16:	return GL_STENCIL_INDEX16;
+
+			// Packed Depth+Stencil formats:
+		case kDepthFormat32FStencil8:	return GL_DEPTH32F_STENCIL8;
+		case kDepthFormat24Stencil8:	return GL_DEPTH24_STENCIL8;
 		}
 		throw core::InvalidArgumentException();
 		return GL_INVALID_ENUM;
@@ -115,6 +119,10 @@ namespace internal {
 		case KStencilFormatIndex4:
 		case KStencilFormatIndex8:
 		case KStencilFormatIndex16:	return GL_STENCIL_INDEX;
+
+			// Packed depth+stencil formats
+		case kDepthFormat24Stencil8:
+		case kDepthFormat32FStencil8: return GL_DEPTH_COMPONENT; // Default, return the depth when used as a texture.
 		}
 		throw core::InvalidArgumentException();
 		return GL_INVALID_ENUM;
@@ -160,6 +168,10 @@ namespace internal {
 		case KStencilFormatIndex4:	return GL_UNSIGNED_BYTE;
 		case KStencilFormatIndex8:	return GL_UNSIGNED_BYTE;
 		case KStencilFormatIndex16:	return GL_UNSIGNED_SHORT;
+
+			// Packed depth+stencil formats
+		case kDepthFormat24Stencil8:	return GL_UNSIGNED_INT; // Treat as depth target
+		case kDepthFormat32FStencil8:	return GL_FLOAT; // Treat as depth target
 		}
 		throw core::InvalidArgumentException();
 		return GL_INVALID_ENUM;
