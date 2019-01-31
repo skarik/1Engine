@@ -8,6 +8,8 @@ bool TrConverterJPG::Convert(const char* inputFilename, const char* outputFilena
 {
 	core::gfx::tex::arImageInfo imageInfo = {};
 	
+	// TODO: replace all this shit with arTextureInfo to get the proper bitdepth
+
 	// Open the PNG and read the data:
 	core::gfx::arPixel* pixel = core::texture::loadJPG(inputFilename, imageInfo);
 	
@@ -19,6 +21,7 @@ bool TrConverterJPG::Convert(const char* inputFilename, const char* outputFilena
 		writer.m_generateMipmaps = true;
 		writer.rawImage = pixel;
 		writer.info = imageInfo;
+		writer.rawImageFormat = core::IMG_FORMAT_RGBA8;
 
 		// Get the time of the input file
 		struct stat f_buf;

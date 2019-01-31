@@ -143,7 +143,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 				ARCORE_ASSERT(loadStatus);
 
 				// Set up the image info for allocating data down the line:
-				// BPDs are always 2D 8-bit RGBA for now.
+				// BPDs default to 2D 8-bit RGBA for now.
 				info.type = core::gfx::tex::kTextureType2D; 
 				info.internalFormat = core::gfx::tex::kColorFormatRGBA8;
 				// The rest of the information will be available in the loader.
@@ -151,6 +151,9 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 				info.height = loadInfo->loader.info.height;
 				info.depth = loadInfo->loader.info.depth;
 				info.levels = loadInfo->loader.info.levels;
+
+				// Update the format
+				info.internalFormat = core::getColorFormatFromTextureFormat(loadInfo->loader.format);
 
 				// Create the sync
 				loadInfo->pixelSync.create(NULL);
@@ -169,11 +172,11 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 		case kTextureLoadState_LoadSuperlow:
 			{
 				// Create a buffer to upload the texture data
-				loadInfo->pixelBuffer[0].initAsData(NULL, sizeof(core::gfx::arPixel) * core::kTextureFormat_SuperlowSize);
+				loadInfo->pixelBuffer[0].initAsData(NULL, core::kTextureFormat_SuperlowByteSize); // TODO: Take format into account.
 				core::gfx::arPixel* target = (core::gfx::arPixel*)loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferStatic);
 
 				// Load the data in:
-				loadInfo->loader.m_buffer_Superlow = target;
+				loadInfo->loader.m_buffer_Superlow = target; // Target set here
 				loadInfo->loader.m_loadOnlySuperlow = true;
 				loadInfo->loader.LoadBpd();
 				loadInfo->loader.m_buffer_Superlow = NULL;
@@ -224,7 +227,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 					uint16_t level_width	= std::max<uint16_t>(1, loadInfo->loader.info.width / math::exp2(loadInfo->level));
 					uint16_t level_height	= std::max<uint16_t>(1, loadInfo->loader.info.height / math::exp2(loadInfo->level));
 
-					loadInfo->pixelBuffer[loadInfo->level].initAsData(NULL, sizeof(core::gfx::arPixel) * level_width * level_height);
+					loadInfo->pixelBuffer[loadInfo->level].initAsData(NULL, core::getTextureFormatByteSize(loadInfo->loader.format) * level_width * level_height);
 					core::gfx::arPixel* target = (core::gfx::arPixel*)loadInfo->pixelBuffer[loadInfo->level].map(NULL, gpu::kTransferStatic);
 
 					// Load the data in

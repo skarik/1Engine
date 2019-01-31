@@ -17,7 +17,7 @@ core::BpdLoader::BpdLoader()
 	// Buffer Outputs:
 	m_buffer_Superlow(NULL), m_buffer_Mipmaps(),
 	// Outputs:
-	mipmapCount(0), info(), animation(), frames(), palette(), paletteWidth(0),
+	format(IMG_FORMAT_INVALID), mipmapCount(0), info(), animation(), frames(), palette(), paletteWidth(0),
 	// Internal state:
 	m_liveFile(NULL)
 {
@@ -145,11 +145,13 @@ bool core::BpdLoader::loadBpdCommon ( void )
 			info.width	= header.width;
 			info.height	= header.height;
 			info.depth	= header.depth;
-			info.levels	= (uint8_t)std::min<uint16_t>(255, header.levels);
+			info.levels	= (uint8_t)std::min<uint16_t>(255, header.levels);	
+
+			format		= (ETextureFormatTypes)(header.flags & 0x000000FF);
 		}
 
 		// Check format
-		if ((header.flags & 0x000000FF) != IMG_FORMAT_RGBA8)
+		if (format == IMG_FORMAT_DXT3 || format == IMG_FORMAT_DXT5 || format == IMG_FORMAT_ASTC)
 		{
 			debug::Console->PrintError("BpdLoader::loadBpdCommon : unsupported pixel format. only rgba8 supported at this time\n");
 			throw core::YouSuckException();
@@ -216,7 +218,7 @@ bool core::BpdLoader::loadBpdCommon ( void )
 				// Decompress the data directly into target pointer:
 				unsigned long t_effectiveWidth	= std::max<unsigned long>(1, header.width / math::exp2(i));
 				unsigned long t_effectiveHeight	= std::max<unsigned long>(1, header.height / math::exp2(i));
-				unsigned long t_mipmapByteCount	= sizeof(gfx::arPixel) * t_effectiveWidth * t_effectiveHeight;
+				unsigned long t_mipmapByteCount	= (uint32_t)core::getTextureFormatByteSize(format) * t_effectiveWidth * t_effectiveHeight;
 				int z_result = uncompress( (uchar*)m_buffer_Mipmaps[i], &t_mipmapByteCount, (uchar*)t_sideBuffer, levelInfo.size );
 
 				// Delete the side buffer

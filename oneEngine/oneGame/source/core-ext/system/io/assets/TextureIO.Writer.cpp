@@ -198,9 +198,9 @@ bool core::BpdWriter::writeSuperlow ( void )
 						}
 						else
 						{
-							float aggregate_ratio = (1 + sx + sy * set_w);
-							aggregate_r += aggregate_r / aggregate_ratio;
-							aggregate_g += aggregate_g / aggregate_ratio;
+							float aggregate_ratio = (float)(1 + sx + sy * set_w);
+							aggregate_r += (uint64_t)(aggregate_r / aggregate_ratio);
+							aggregate_g += (uint64_t)(aggregate_g / aggregate_ratio);
 						}
 					}
 					else
@@ -280,8 +280,8 @@ bool core::BpdWriter::writeLevelData ( void )
 	mappedfile->WriteBuffer(m_levels.data(), sizeof(textureFmtLevel) * m_levels.size());
 
 	// Now, allocate the compression and conversion buffers:
-	//gfx::arPixel*	imageDataResample = m_generateMipmaps ? new gfx::arPixel [info.width * info.height] : NULL;
-	uint32_t		compressBufferLen = compressBound(sizeof(gfx::arPixel) * info.width * info.height);
+	void*			mipmapBuffer = m_generateMipmaps ? new char [getTextureFormatByteSize(rawImageFormat) * info.width * info.height] : NULL;
+	uint32_t		compressBufferLen = compressBound((uint32_t)(getTextureFormatByteSize(rawImageFormat) * info.width * info.height));
 	uchar*			compressBuffer = new uchar [compressBufferLen + 1];
 
 	// Write the levels:
@@ -293,9 +293,10 @@ bool core::BpdWriter::writeLevelData ( void )
 
 		if (m_generateMipmaps)
 		{
-			// Downsample the image
 			uint32_t	aggregate_r, aggregate_g, aggregate_b, aggregate_a;
-			uint32_t	pixelTarget;
+			uint32_t	pixelIndex;
+
+			// Downsample the image
 			for ( uint x = 0; x < t_width; x += 1 )
 			{
 				for ( uint y = 0; y < t_height; y += 1 )
@@ -307,13 +308,47 @@ bool core::BpdWriter::writeLevelData ( void )
 					{
 						for ( uint sy = 0; sy < t_blocks; sy += 1 )
 						{
-							pixelTarget = (x * t_blocks + sx) + (y * t_blocks + sy) * info.width;
-							aggregate_r += rawImage[pixelTarget].r;
-							aggregate_g += rawImage[pixelTarget].g;
-							aggregate_b += rawImage[pixelTarget].b;
-							aggregate_a += rawImage[pixelTarget].a;
+							pixelIndex = (x * t_blocks + sx) + (y * t_blocks + sy) * info.width;
+							if (rawImageFormat == IMG_FORMAT_RGBA8)
+							{
+								gfx::tex::vecRGBA8* rawImageRgba = static_cast<gfx::tex::vecRGBA8*>(rawImage);
+								aggregate_r += rawImageRgba[pixelIndex].r;
+								aggregate_g += rawImageRgba[pixelIndex].g;
+								aggregate_b += rawImageRgba[pixelIndex].b;
+								aggregate_a += rawImageRgba[pixelIndex].a;
+							}
+							else if (rawImageFormat == IMG_FORMAT_RGB8)
+							{
+								gfx::tex::vecRGB8* rawImageRgb = static_cast<gfx::tex::vecRGB8*>(rawImage);
+								aggregate_r += rawImageRgb[pixelIndex].r;
+								aggregate_g += rawImageRgb[pixelIndex].g;
+								aggregate_b += rawImageRgb[pixelIndex].b;
+								aggregate_a += 255;
+							}
+							else if (rawImageFormat == IMG_FORMAT_PALLETTE)
+							{
+								gfx::tex::vecXY8* rawImageXy = static_cast<gfx::tex::vecXY8*>(rawImage);
+								if (rawImageXy[pixelIndex].x != 255 && rawImageXy[pixelIndex].y != 255)
+								{
+									aggregate_r += rawImageXy[pixelIndex].x;
+									aggregate_g += rawImageXy[pixelIndex].y;
+									aggregate_b += 255;
+									aggregate_a += 255;
+								}
+								else
+								{
+									float aggregate_ratio = (float)(1 + sx + sy * t_blocks);
+									aggregate_r += (uint64_t)(aggregate_r / aggregate_ratio);
+									aggregate_g += (uint64_t)(aggregate_g / aggregate_ratio);
+								}
+							}
+							else
+							{
+								ARCORE_ERROR("Unsupported format");
+							}
 						}
 					}
+
 					// Average the colors
 					const uint32_t block_sz = t_blocks * t_blocks;
 					aggregate_r /= block_sz;
@@ -321,21 +356,49 @@ bool core::BpdWriter::writeLevelData ( void )
 					aggregate_b /= block_sz;
 					aggregate_a /= block_sz;
 
-					pixelTarget = x+y*t_width;
-					imageDataResample[pixelTarget].r = std::min<uint>( aggregate_r, 255 );
-					imageDataResample[pixelTarget].g = std::min<uint>( aggregate_g, 255 );
-					imageDataResample[pixelTarget].b = std::min<uint>( aggregate_b, 255 );
-					imageDataResample[pixelTarget].a = std::min<uint>( aggregate_a, 255 );
+					// Output into the mipmap buffer
+					const uint32_t outputIndx = x + y * t_width;
+					if (rawImageFormat == IMG_FORMAT_RGBA8)
+					{
+						gfx::tex::vecRGBA8* mipmapBufferRgba = static_cast<gfx::tex::vecRGBA8*>((void*)mipmapBuffer);
+						mipmapBufferRgba[outputIndx].r = (uint8_t)std::min<uint64_t>( aggregate_r, 255 );
+						mipmapBufferRgba[outputIndx].g = (uint8_t)std::min<uint64_t>( aggregate_g, 255 );
+						mipmapBufferRgba[outputIndx].b = (uint8_t)std::min<uint64_t>( aggregate_b, 255 );
+						mipmapBufferRgba[outputIndx].a = (uint8_t)std::min<uint64_t>( aggregate_a, 255 );
+					}
+					else if (rawImageFormat == IMG_FORMAT_RGB8)
+					{
+						gfx::tex::vecRGB8* mipmapBufferRgba = static_cast<gfx::tex::vecRGB8*>((void*)mipmapBuffer);
+						mipmapBufferRgba[outputIndx].r = (uint8_t)std::min<uint64_t>( aggregate_r, 255 );
+						mipmapBufferRgba[outputIndx].g = (uint8_t)std::min<uint64_t>( aggregate_g, 255 );
+						mipmapBufferRgba[outputIndx].b = (uint8_t)std::min<uint64_t>( aggregate_b, 255 );
+					}
+					else if (rawImageFormat == IMG_FORMAT_PALLETTE)
+					{
+						gfx::tex::vecXY8* mipmapBufferXy = static_cast<gfx::tex::vecXY8*>((void*)mipmapBuffer);
+						if (aggregate_a >= 127)
+						{
+							mipmapBufferXy[outputIndx].x = (uint8_t)std::min<uint64_t>( aggregate_r, 255 );
+							mipmapBufferXy[outputIndx].y = (uint8_t)std::min<uint64_t>( aggregate_g, 255 );
+						}
+						else
+						{
+							mipmapBufferXy[outputIndx].x = 255;
+							mipmapBufferXy[outputIndx].y = 255;
+						}
+					}
+					else
+					{
+						ARCORE_ERROR("Unsupported format");
+					}
 				}
 			}
-		}
+		} // End downsampling
 
 		// Compress the data into side buffer
 		unsigned long compressedSize = compressBufferLen;
-		int z_result = compress(
-			compressBuffer, &compressedSize,
-			(uchar*)(m_generateMipmaps ? imageDataResample : mipmaps[level]),
-			sizeof(gfx::arPixel) * t_width * t_height);
+		size_t uncompressedSize = getTextureFormatByteSize(rawImageFormat) * t_width * t_height;
+		int z_result = compress(compressBuffer, &compressedSize, (uchar*)(m_generateMipmaps ? mipmapBuffer : mipmaps[level]), (uint32_t)(uncompressedSize));
 
 		// Check the compress result
 		switch( z_result )
@@ -362,7 +425,7 @@ bool core::BpdWriter::writeLevelData ( void )
 	}
 
 	// Free temp info:
-	delete[] imageDataResample;
+	delete[] mipmapBuffer;
 	delete[] compressBuffer;
 
 	return true;

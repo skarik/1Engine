@@ -45,6 +45,8 @@ namespace core
 		IMG_FORMAT_DXT5		= 0x03 | 0x10,	// DXT5 compression
 		IMG_FORMAT_ASTC		= 0x03 | 0x20,	// DXT5 compression
 		IMG_FORMAT_PALLETTE	= 0x04 | 0x00,	// Palletted format. XY8/RG8.
+
+		IMG_FORMAT_INVALID	= 0xFF,
 	};
 
 	enum ETextureLoadMode
@@ -68,6 +70,22 @@ namespace core
 		}
 		ARCORE_ERROR("Invalid or unsupported type passed.");
 		return 0;
+	}
+
+	//	getColorFormatFromTextureFormat(type) : Given a texture format, returns a matching GFX format.
+	static core::gfx::tex::arColorFormat getColorFormatFromTextureFormat (ETextureFormatTypes type)
+	{
+		switch (type)
+		{
+		case IMG_FORMAT_RGBA8:		return core::gfx::tex::kColorFormatRGBA8;
+		case IMG_FORMAT_RGB8:		return core::gfx::tex::kColorFormatRGB8;
+		case IMG_FORMAT_RGBA16:		return core::gfx::tex::kColorFormatRGBA16;
+		case IMG_FORMAT_RGBA16F:	return core::gfx::tex::kColorFormatRGBA16F;
+
+		case IMG_FORMAT_PALLETTE:	return core::gfx::tex::kColorFormatRG8;
+		}
+		ARCORE_ERROR("Invalid or unsupported type passed.");
+		return core::gfx::tex::kColorFormatNone;
 	}
 
 	struct textureFmtHeader
