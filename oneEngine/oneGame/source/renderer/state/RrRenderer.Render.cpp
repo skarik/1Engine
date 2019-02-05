@@ -174,7 +174,7 @@ void RrRenderer::StepBufferPush ( void )
 		gfx->setRenderTarget(&internal_chain_current->buffer_forward_rt);
 		gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
 		gfx->clearDepthStencil(true, 1.0F, true, 0x00);
-		float clearColor[] = {0.0F, 0.0F, 0.0F, 0.0F};
+		float clearColor[] = {0, 0, 0, 0};
 		gfx->clearColor(clearColor);
 	}
 	TimeProfiler.EndTimeProfile( "rs_buffer_push" );
@@ -347,6 +347,9 @@ void RrRenderer::Render ( void )
 	//if ( RrMaterial::Default->passinfo.size() > 16 ) throw std::exception();
 	//GL.CheckError();
 	gfx->validate();
+
+	// Present the output buffer
+	mOutputSurface->present(); // TODO: On Vulkan and other platforms, this will likely need a fence.
 }
 
 

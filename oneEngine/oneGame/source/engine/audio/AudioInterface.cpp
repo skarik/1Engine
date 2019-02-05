@@ -236,8 +236,8 @@ void engine::AudioInterface::BuildIndexMap ( void )
 		string s_cur_read = "";
 		int next_char;
 		char buffer[256];
-		int buffer_pos;
-		int buffer_size;
+		int64_t buffer_pos;
+		int64_t buffer_size;
 
 		// Open proper file
 		fp = OpenSoundscriptListing( (audio::eSoundScriptSet)i );
@@ -288,7 +288,7 @@ void engine::AudioInterface::BuildIndexMap ( void )
 						else {
 							// Save position and set in map
 							audio::arSoundIndex index;
-							index.pos = ftell( fp ) - buffer_size + buffer_pos;
+							index.pos = (uint32_t)(ftell( fp ) - buffer_size + buffer_pos);
 							index.set = (audio::eSoundScriptSet)i;
 							scriptFileIndex[arstring128(s_cur_read.c_str())] = index;
 
@@ -312,7 +312,7 @@ void engine::AudioInterface::BuildIndexMap ( void )
 							// Go back to name reading mode
 							read_mode = 0;
 							s_cur_read = "";
-							fseek( fp, -(buffer_size-1) + buffer_pos, SEEK_CUR ); // Go back to after the paren
+							fseek( fp, (long)(-(buffer_size-1) + buffer_pos), SEEK_CUR ); // Go back to after the paren
 						}
 					}
 				}

@@ -17,6 +17,7 @@ int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32
 	pfd.cColorBits	= 32; // todo
 	pfd.cDepthBits	= 0;
 	pfd.cStencilBits= 0;
+	pfd.iLayerType  = PFD_MAIN_PLANE;
 
 	// Did Windows Find A Matching Pixel Format?
 	int PixelFormat = ChoosePixelFormat((HDC)device->mw_deviceContext, &pfd);

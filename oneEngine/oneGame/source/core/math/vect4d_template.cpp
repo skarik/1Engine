@@ -139,7 +139,7 @@ namespace core
 		if ( fabs(invMagnitude) <= 1.0e-7 ) {
 			return vect4d_template<REAL>(0,0,0,0);
 		}
-		invMagnitude = 1.0f / invMagnitude;
+		invMagnitude = (REAL)(1.0 / invMagnitude);
 		return (*this)*invMagnitude;
 	}
 	template <typename REAL>
