@@ -186,12 +186,6 @@
     <ClCompile Include="source\renderer\material\RrPassDeferred.cpp">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\material\RrShader.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrShaderManager.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp">
       <Filter>SOURCE\Renderer\Particle</Filter>
     </ClCompile>
@@ -516,12 +510,6 @@
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\material\RrPassDeferred.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\material\RrShader.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\material\RrShaderManager.h">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\particle\RrParticleSystem.h">

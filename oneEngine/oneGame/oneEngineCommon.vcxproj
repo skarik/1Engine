@@ -69,7 +69,6 @@
     <ClInclude Include="source\engine-common\dialogue\CDialogueLoader.h" />
     <ClInclude Include="source\engine-common\dialogue\CDialogueTree.h" />
     <ClInclude Include="source\engine-common\dusk\CDuskGUI.h" />
-    <ClInclude Include="source\engine-common\dusk\CDuskGUIHandle.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIButton.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUICheckbox.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIColorpicker.h" />
@@ -82,7 +81,6 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_LO.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_RO.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIEdgePanel.h" />
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIElement.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUILabel.h" />
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIListview.h" />
@@ -98,6 +96,11 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.h" />
     <ClInclude Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.h" />
     <ClInclude Include="source\engine-common\dusk\dialogues\DGUI_DialogueFileSelector.h" />
+    <ClInclude Include="source\engine-common\dusk\Dusk.h" />
+    <ClInclude Include="source\engine-common\dusk\Element.h" />
+    <ClInclude Include="source\engine-common\dusk\Handle.h" />
+    <ClInclude Include="source\engine-common\dusk\UI.h" />
+    <ClInclude Include="source\engine-common\dusk\UIRenderer.h" />
     <ClInclude Include="source\engine-common\engine-common-console.h" />
     <ClInclude Include="source\engine-common\engine-common-scenes.h" />
     <ClInclude Include="source\engine-common\engine-common.h" />
@@ -199,7 +202,6 @@
     <ClCompile Include="source\engine-common\dialogue\CDialogueLoader.cpp" />
     <ClCompile Include="source\engine-common\dialogue\CDialogueTree.cpp" />
     <ClCompile Include="source\engine-common\dusk\CDuskGUI.cpp" />
-    <ClCompile Include="source\engine-common\dusk\CDuskGUIHandle.cpp" />
     <ClCompile Include="source\engine-common\dusk\CDuskGUI_Drawer.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIButton.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUICheckbox.cpp" />
@@ -211,7 +213,6 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_GO.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_LO.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIEdgePanel.cpp" />
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIElement.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUILabel.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIListview.cpp" />
@@ -224,6 +225,10 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.cpp" />
     <ClCompile Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.cpp" />
     <ClCompile Include="source\engine-common\dusk\dialogues\DGUI_DialogueFileSelector.cpp" />
+    <ClCompile Include="source\engine-common\dusk\Element.cpp" />
+    <ClCompile Include="source\engine-common\dusk\Handle.cpp" />
+    <ClCompile Include="source\engine-common\dusk\UI.cpp" />
+    <ClCompile Include="source\engine-common\dusk\UIRenderer.cpp" />
     <ClCompile Include="source\engine-common\engine-common-console.cpp" />
     <ClCompile Include="source\engine-common\engine-common.cpp" />
     <ClCompile Include="source\engine-common\entities\CLoadingScreen.cpp" />
