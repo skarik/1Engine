@@ -10,8 +10,8 @@
 void Dusk::Element::Update ( void )
 {
 	// TODO: move this to a common function
-	Vector2f offset_cursor = m_interface->cursor_pos - m_interface->parenting_offset;
-	if (m_visible && m_localRect.Contains(offset_cursor))
+	Vector2f offset_cursor = m_interface->cursor_pos;
+	if (m_visible && m_absoluteRect.Contains(offset_cursor))
 	{
 		m_isMouseIn = true;
 	}

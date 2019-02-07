@@ -13,11 +13,15 @@
 
 namespace Dusk
 {
+	class UserInterface;
+
 	class UIRenderer : public CRenderableObject
 	{
 	public:
-
+		explicit				UIRenderer (UserInterface* ui);
 	private:
+
+		UserInterface*		m_interface;
 	};
 }
 

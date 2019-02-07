@@ -56,9 +56,14 @@ namespace Dusk
 		bool				m_isFocused;
 		// Element was drawn last frame
 		bool				m_wasDrawn;
+		// Element is active and not locked
+		bool				m_isEnabled;
 
 	protected:
 		friend UserInterface;
+		
+		// Result actual rect
+		Rect				m_absoluteRect;
 
 		// The GUI system that this element is associated with
 		UserInterface*		m_interface;
@@ -103,7 +108,11 @@ namespace Dusk
 
 	private:
 
-		Rect last_visible_rect;
+		//Rect last_visible_rect;
+		Rect				m_lastRenderedRect;
+		//bool				m_lastRenderedFrame;
+
+		uint32_t			m_index;
 
 	};
 };

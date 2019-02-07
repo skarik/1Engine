@@ -17,6 +17,21 @@ namespace Dusk
 	class UIRenderer;
 	class Element;
 
+	struct ElementCreationDescription
+	{
+		Element*	parent;
+		Rect		localRect;
+
+		ElementCreationDescription()
+			: parent(NULL), localRect()
+			{}
+	};
+
+	enum ElementHandleConstants
+	{
+		kElementHandleInvalid = 0xFFFFFFFF,
+	};
+
 	class UserInterface : public CGameBehavior
 	{
 		ClassName( "DuskGUI" );
@@ -36,17 +51,62 @@ namespace Dusk
 								ElementList ( void )
 			{ return m_elements; }
 
+		//	Add() : Adds a new element of the given type.
+		template <class ElementType>
+		ENGCOM_API ElementType*	Add ( ElementCreationDescription& const desc )
+		{
+			ElementType* item = new ElementType();
+			AddInitialize(item, desc);
+			m_elements.push_back(item);
+			ARCORE_ASSERT(AddInitializeCheckValid(item));
+			return item;
+		}
+
+		//	EnterDialogue(element) : Enters the element as a dialogue.
+		ENGCOM_API void			EnterDialogue ( Element* element );
+
+		//	ExitDialogue(element) : Exit dialogue mode of the system.
+		ENGCOM_API void			ExitDialogue ( Element* element );
+
+	private:
+
+		//	AddInitialize(element, desc) : Initializes the element with the given description.
+		// Used after an element is instantiated, applies the given parameters.
+		Element*				AddInitialize ( Element* element, ElementCreationDescription& const desc );
+
+		//	AddInitializeCheckValid(element) : Checks the given element has the correct index.
+		// To be used as part of an assertion check.
+		bool					AddInitializeCheckValid ( Element* element );
+
+		//	DestroyElement() : Destroys the element with the given index/handle.
+		// Used internally to remove elements.
+		void					DestroyElement ( const size_t handle );
+
+
+		void					UpdateMouseOver ( void );
+		void					UpdateFocus ( void );
+		void					UpdateElements ( void );
+
+	public:
+
+		Vector2f			m_cursor; // accessible publicly? 
+		//Vector2f( CInput::MouseX(), CInput::MouseY() );
+		// offsets: set the element's true position?
+
 	private:
 		// List of elements
 		std::vector<Element*>
 							m_elements;
-		Handle				m_currentElement;
-		Handle				m_currentDialogue;
-		Handle				m_currentMouseover;
-		Handle				m_currentFocus;
+		uint32_t			m_currentElement;
+		uint32_t			m_currentDialogue;
+		uint32_t			m_currentMouseover;
+		uint32_t			m_currentFocus;
 
 		// List of rects that must be updated & re-rendered.
-		std::vector<Rect>	m_forceUpdateRects;
+		std::vector<Rect>	m_forcedUpdateAreas;
+
+		//std::vector<Vector2f> offsetList;
+
 
 	private:
 		UIRenderer*			m_renderer;

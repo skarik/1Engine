@@ -65,6 +65,15 @@ namespace core
 		}
 	};
 
+	class InvalidReferenceException : public std::runtime_error
+	{
+	public:
+		InvalidReferenceException ( void ) : runtime_error( "Invalid pointer reference" )
+		{
+			;
+		}
+	};
+
 	class InvalidCallException : public std::runtime_error
 	{
 	public:
