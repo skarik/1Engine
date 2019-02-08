@@ -74,6 +74,13 @@ arModelData IrrMeshBuilder::getModelData ( void ) const
 	return newData;
 }
 
+//	getModelDataVertexCount () : Returns the current vertex count.
+// This is the value that would fill in for the vertex count in getModelData().
+uint16_t IrrMeshBuilder::getModelDataVertexCount ( void ) const
+{
+	return m_vertexCount;
+}
+
 //	enableAttribute ( attrib ) : Enables storage for the given attribute
 void IrrMeshBuilder::enableAttribute( renderer::shader::VBufferSlot attrib )
 {

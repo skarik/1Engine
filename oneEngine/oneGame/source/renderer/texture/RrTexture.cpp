@@ -31,7 +31,7 @@ RrTexture::Load ( const char* resource_name )
 	{
 		// Found it! Add a reference and return it.
 		RrTexture* existingTexture = (RrTexture*)existingResource;
-		existingTexture->AddReference();
+		existingTexture->AddReference(); // TODO: the docs say this doesn't happen. Evaluate and remove this.
 		return existingTexture;
 	}
 

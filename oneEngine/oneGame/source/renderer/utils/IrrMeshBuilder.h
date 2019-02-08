@@ -26,16 +26,20 @@ public:
 	// The sizes in the model data are filled with the correct sizes.
 	// The model data itself still belongs to the mesh builder, so should not be freed by the user.
 	RENDER_API arModelData	getModelData ( void ) const;
+	//	getModelDataVertexCount () : Returns the current vertex count.
+	// This is the value that would fill in for the vertex count in getModelData().
+	// The vertex count can be useful for patching in data that is not written by the builder.
+	RENDER_API uint16_t		getModelDataVertexCount ( void ) const;
 
 	//	getPrimitiveMode () : returns the primitive mode this mesh builder would like to render in.
 	// Must be implemented by child classes.
 	RENDER_API virtual renderer::rrPrimitiveMode
 							getPrimitiveMode ( void ) const = 0;
 
-protected:
 	//	enableAttribute ( attrib ) : Enables storage for the given attribute
 	RENDER_API void			enableAttribute( renderer::shader::VBufferSlot attrib );
 
+protected:
 	//	expand ( new vertex count ) : Ensure storage is large enough to hold the count
 	RENDER_API void			expand ( const uint16_t vertexCount );
 	//	reallocateGreedy ( new size ) : Expands vertex storage in a greedy way

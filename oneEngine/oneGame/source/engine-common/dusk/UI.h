@@ -107,8 +107,12 @@ namespace Dusk
 
 		//std::vector<Vector2f> offsetList;
 
+		std::vector<Vector2f>
+							m_updateOffsets;
+
 
 	private:
+		friend UIRenderer; // Give UI renderer dangerous access to sidestep creating accessors for only one class.
 		UIRenderer*			m_renderer;
 	};
 }

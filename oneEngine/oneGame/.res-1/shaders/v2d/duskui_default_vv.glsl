@@ -26,19 +26,6 @@ layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
     vec4    sys_TextureScale;
     vec4    sys_TextureOffset;
 };
-layout(binding = 3, std140) uniform sys_cbuffer_PerFrame
-{
-    // Time inputs
-    vec4    sys_SinTime;
-    vec4    sys_CosTime;
-    vec4    sys_Time;
-
-    // Fog
-	vec4	sys_FogColor;
-	vec4	sys_AtmoColor;
-	float 	sys_FogEnd;
-	float 	sys_FogScale;
-};
 
 
 void main ( void )

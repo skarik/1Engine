@@ -9,6 +9,7 @@
 namespace Dusk
 {
 	class UserInterface;
+	class UIRenderer;
 
 	class Element
 	{
@@ -28,8 +29,9 @@ namespace Dusk
 		// Default behavior is to update value of m_isMouseIn.
 		virtual void Update ( void );
 		//	Render() : Renders the element.
+		// This does not actually directly render anything, but create meshes through the interface provided in UIRenderer.
 		// Default behavior is to not render anything.
-		virtual void Render ( void )
+		virtual void Render ( UIRenderer* uir )
 			{}
 
 	public:
@@ -61,6 +63,7 @@ namespace Dusk
 
 	protected:
 		friend UserInterface;
+		friend UIRenderer;
 		
 		// Result actual rect
 		Rect				m_absoluteRect;

@@ -461,6 +461,9 @@ gpu::Pipeline* CRenderableObject::GetPipeline ( const uchar pass )
 		}
 
 		m_pipelines[pass].create(NULL, &pipeline_desc);
+
+		// Mark pipeline as ready
+		m_pipelineReady[pass] = true;
 	}
 	else
 	{

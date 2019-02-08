@@ -58,6 +58,10 @@ namespace renderer
 		kRenderLayerV2D			= 4,
 
 		kRenderLayer_MAX,
+
+		// Skipped layer, will not appear in the normal rendering loop.
+		// Used for storing pipelines for off-screen rendering that must occur out of the main loop.
+		kRenderLayerSkip		= 0xFF,
 	};
 	// Struct for pass info
 	/*struct passinfo_t

@@ -7,7 +7,7 @@
 #include <map>
 
 #include "renderer/object/CRenderableObject.h"
-//#include "rendererRrFontTexture.h"
+
 class RrFontTexture;
 class RrTexture;
 
@@ -24,13 +24,11 @@ public:
 	ENGCOM_API		CDeveloperConsoleUI ( void );
 	ENGCOM_API		~CDeveloperConsoleUI ( void );
 
-	bool			PreRender ( RrCamera* camera ) override;
-	bool			Render ( const char pass ) override;
+	bool			PreRender ( rrCameraPass* cameraPass ) override;
+	bool			Render ( const rrRenderParams* params ) override;
 
 private:
 	RrFontTexture*	fntMenu;
-	//RrMaterial*		matfntMenu;
-	//RrMaterial*		matMenu;
 };
 
 class CDeveloperCursor : public CRenderableObject
@@ -40,11 +38,10 @@ public:
 	ENGCOM_API		CDeveloperCursor ( void );
 	ENGCOM_API		~CDeveloperCursor ( void );
 
-	bool			PreRender ( RrCamera* camera ) override;
-	bool			Render ( const char pass ) override;;
+	bool			PreRender ( rrCameraPass* cameraPass ) override;
+	bool			Render ( const rrRenderParams* params ) override;;
 
 private:
-	//RrMaterial*		matCursor;
 	RrTexture*		texCursor;
 };
 

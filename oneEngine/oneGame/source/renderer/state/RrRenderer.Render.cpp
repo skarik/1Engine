@@ -326,15 +326,8 @@ void RrRenderer::Render ( void )
 	StepBufferPush();
 
 	// Signal frame ended
-	//GL.EndFrame();
 	gfx->submit();
 
-	// Clear Screen And Depth Buffer
-	//GL.ClearBuffer();
-
-	// Call post-render and start up new jobs
-	StepPostRender();
-	
 	// Cycle the draw inputs
 	{
 		// Go to next input
@@ -350,6 +343,9 @@ void RrRenderer::Render ( void )
 
 	// Present the output buffer
 	mOutputSurface->present(); // TODO: On Vulkan and other platforms, this will likely need a fence.
+
+	// Call post-render and start up new jobs
+	StepPostRender();
 }
 
 
