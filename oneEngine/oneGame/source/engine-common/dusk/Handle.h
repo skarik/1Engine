@@ -3,7 +3,7 @@
 
 #include "core/math/Rect.h"
 
-namespace Dusk
+namespace dusk
 {
 	class Element;
 	class UserInterface;

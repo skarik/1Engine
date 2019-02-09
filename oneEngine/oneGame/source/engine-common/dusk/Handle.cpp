@@ -1,6 +1,6 @@
 #include "engine-common/dusk/Dusk.h"
 
-Dusk::Element* Dusk::Handle::updateElement( Dusk::UserInterface* ui )
+dusk::Element* dusk::Handle::updateElement( dusk::UserInterface* ui )
 {
 	m_element = NULL;
 
@@ -19,7 +19,7 @@ Dusk::Element* Dusk::Handle::updateElement( Dusk::UserInterface* ui )
 }
 
 
-Dusk::Element* Dusk::Handle::operator*()
+dusk::Element* dusk::Handle::operator*()
 {
 	updateElement(NULL);
 	if (m_element != NULL)
@@ -32,7 +32,7 @@ Dusk::Element* Dusk::Handle::operator*()
 		return NULL;
 	}
 }
-Dusk::Element* Dusk::Handle::operator->()
+dusk::Element* dusk::Handle::operator->()
 {
 	updateElement(NULL);
 	if (m_element != NULL)

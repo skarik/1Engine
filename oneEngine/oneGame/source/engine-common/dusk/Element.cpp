@@ -7,7 +7,7 @@
 
 // Update
 // Base code that simply checks for mouse in rect
-void Dusk::Element::Update ( void )
+void dusk::Element::Update ( void )
 {
 	// TODO: move this to a common function
 	Vector2f offset_cursor = m_interface->cursor_pos;

@@ -71,8 +71,8 @@
     <ClInclude Include="source\engine-common\dusk\CDuskGUI.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIButton.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <ClInclude Include="source\engine-common\dusk\controls\Button.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUICheckbox.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -110,8 +110,8 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUILabel.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <ClInclude Include="source\engine-common\dusk\controls\Label.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIListview.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -122,8 +122,8 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIMaterialPicker.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIPanel.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <ClInclude Include="source\engine-common\dusk\controls\Panel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIParagraph.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -263,8 +263,8 @@
     <ClCompile Include="source\engine-common\dusk\CDuskGUI_Drawer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIButton.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <ClCompile Include="source\engine-common\dusk\controls\Button.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUICheckbox.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -296,8 +296,8 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUILabel.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <ClCompile Include="source\engine-common\dusk\controls\Label.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIListview.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -305,8 +305,8 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIMaterialField.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIPanel.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <ClCompile Include="source\engine-common\dusk\controls\Panel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIParagraph.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -333,6 +333,7 @@
     <ClCompile Include="source\engine-common\dusk\Handle.cpp" />
     <ClCompile Include="source\engine-common\dusk\UI.cpp" />
     <ClCompile Include="source\engine-common\dusk\UIRenderer.cpp" />
+    <ClCompile Include="source\engine-common\dusk\UIRendererContext.cpp" />
     <ClCompile Include="source\engine-common\engine-common-console.cpp" />
     <ClCompile Include="source\engine-common\engine-common.cpp" />
     <ClCompile Include="source\engine-common\entities\CLoadingScreen.cpp" />

@@ -6,32 +6,34 @@
 #include "engine-common/dusk/Handle.h"
 #include <string>
 
-namespace Dusk
+namespace dusk
 {
 	class UserInterface;
 	class UIRenderer;
+	class UIRendererContext;
 
 	class Element
 	{
 	public:
 		// Constructor for defaul val
-		explicit Element ( void ) :
+		explicit				Element ( void ) :
 			m_destructionRequested( false ),
-			m_parent(NULL), m_parentHandle(-1, NULL),
+			m_parent(NULL),
 			m_contents(""), m_tooltip(""),
 			m_visible(true), m_canFocus(true),
-			m_isMouseIn(false), m_isFocused(false), m_wasDrawn(false)
+			m_isMouseIn(false), m_isFocused(false), m_isEnabled(true), m_isActivated(false),
+			m_wasDrawn(false)
 			{}
-		virtual ~Element ( void )
+		virtual					~Element ( void )
 			{}
 
 		//	Update() : Called every frame by the UI system.
 		// Default behavior is to update value of m_isMouseIn.
-		virtual void Update ( void );
+		virtual void			Update ( void );
 		//	Render() : Renders the element.
 		// This does not actually directly render anything, but create meshes through the interface provided in UIRenderer.
 		// Default behavior is to not render anything.
-		virtual void Render ( UIRenderer* uir )
+		virtual void			Render ( UIRendererContext* uir )
 			{}
 
 	public:
@@ -41,8 +43,7 @@ namespace Dusk
 		// Local rect for positioning
 		Rect				m_localRect;
 		// Reference to parent.
-		Dusk::Element*		m_parent;
-		Dusk::Handle		m_parentHandle;
+		dusk::Element*		m_parent;
 		// String for contents, often a label.
 		std::string			m_contents;
 		// String for tooltip, shown when mouse hovers over the element rect.
@@ -56,14 +57,17 @@ namespace Dusk
 		bool				m_isMouseIn;
 		// Element has focus
 		bool				m_isFocused;
-		// Element was drawn last frame
-		bool				m_wasDrawn;
 		// Element is active and not locked
 		bool				m_isEnabled;
+		// Element was activated this frame (ie clicked, used)?
+		bool				m_isActivated;
+		// Element was drawn last frame
+		bool				m_wasDrawn;
 
 	protected:
 		friend UserInterface;
 		friend UIRenderer;
+		friend UIRendererContext;
 		
 		// Result actual rect
 		Rect				m_absoluteRect;
@@ -117,6 +121,7 @@ namespace Dusk
 
 		uint32_t			m_index;
 
+		Vector4f			m_rendererData;
 	};
 };
 

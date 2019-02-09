@@ -8,7 +8,7 @@
 
 //	AddInitialize(element, desc) : Initializes the element with the given description.
 // Used after an element is instantiated, applies the given parameters.
-Dusk::Element* Dusk::UserInterface::AddInitialize ( Element* element, ElementCreationDescription& const desc )
+dusk::Element* dusk::UserInterface::AddInitialize ( Element* element, const ElementCreationDescription& desc )
 {
 	element->m_interface = this; // Take ownership of this element
 
@@ -26,7 +26,7 @@ Dusk::Element* Dusk::UserInterface::AddInitialize ( Element* element, ElementCre
 	if (parentIndex != 0xFFFFFFFF)
 	{
 		element->m_parent = desc.parent;
-		element->m_parentHandle = Dusk::Handle(parentIndex, this);
+		//element->m_parentHandle = dusk::Handle(parentIndex, this);
 	}
 	else
 	{
@@ -41,12 +41,12 @@ Dusk::Element* Dusk::UserInterface::AddInitialize ( Element* element, ElementCre
 
 //	AddInitializeCheckValid(element) : Checks the given element has the correct index.
 // To be used as part of an assertion check.
-bool Dusk::UserInterface::AddInitializeCheckValid ( Element* element )
+bool dusk::UserInterface::AddInitializeCheckValid ( Element* element )
 {
 	return m_elements[element->m_index] == element;
 }
 
-Dusk::UserInterface::UserInterface ( void )
+dusk::UserInterface::UserInterface ( void )
 	: CGameBehavior()
 {
 	m_renderer = new UIRenderer(this);
@@ -58,7 +58,7 @@ Dusk::UserInterface::UserInterface ( void )
 	m_currentFocus = kElementHandleInvalid;
 }
 
-Dusk::UserInterface::~UserInterface ( void )
+dusk::UserInterface::~UserInterface ( void )
 {
 	// Remove all the elements
 	for (size_t i = 0; i < m_elements.size(); ++i)
@@ -76,7 +76,7 @@ Dusk::UserInterface::~UserInterface ( void )
 //	Update() : Called by engine.
 // Performs per-frame behavior updates of the UI, generates layouts, and sets up information
 // needed for display.
-void Dusk::UserInterface::Update ( void )
+void dusk::UserInterface::Update ( void )
 {
 	// Delete objects that need to be deleted
 	{
@@ -100,7 +100,7 @@ void Dusk::UserInterface::Update ( void )
 }
 
 
-void Dusk::UserInterface::UpdateMouseOver ( void )
+void dusk::UserInterface::UpdateMouseOver ( void )
 {
 	// Reset mouseover
 	m_currentMouseover = kElementHandleInvalid;
@@ -128,7 +128,7 @@ void Dusk::UserInterface::UpdateMouseOver ( void )
 	// Add in the entire parent tree
 	for ( unsigned int i = 0; i < mouseoverList.size(); ++i )
 	{
-		Dusk::Element* currentParent = m_elements[mouseoverList[i]]->m_parent;
+		dusk::Element* currentParent = m_elements[mouseoverList[i]]->m_parent;
 		if (currentParent != NULL)
 		{
 			// First check that it's not in already
@@ -146,7 +146,7 @@ void Dusk::UserInterface::UpdateMouseOver ( void )
 	{
 		for ( unsigned int j = 0; j < mouseoverListFinal.size(); ++j )
 		{
-			Dusk::Element* currentParent = m_elements[mouseoverList[i]]->m_parent;
+			dusk::Element* currentParent = m_elements[mouseoverList[i]]->m_parent;
 			if ( currentParent != NULL && currentParent->m_index == mouseoverListFinal[j] )
 			{
 				mouseoverListFinal.erase( mouseoverListFinal.begin()+j );
@@ -162,7 +162,7 @@ void Dusk::UserInterface::UpdateMouseOver ( void )
 	}
 }
 
-void Dusk::UserInterface::UpdateFocus ( void )
+void dusk::UserInterface::UpdateFocus ( void )
 {
 	// On mouse click, focus the item the mouse is over.
 	if ( Input::MouseDown(Input::MBLeft) )
@@ -278,7 +278,7 @@ void Dusk::UserInterface::UpdateFocus ( void )
 	}
 }
 
-void Dusk::UserInterface::UpdateElements ( void )
+void dusk::UserInterface::UpdateElements ( void )
 {
 	if ( m_currentDialogue == kElementHandleInvalid )
 	{
@@ -367,7 +367,7 @@ void Dusk::UserInterface::UpdateElements ( void )
 
 //	DestroyElement() : Destroys the element with the given index/handle.
 // Used internally to remove elements.
-void Dusk::UserInterface::DestroyElement ( const size_t handle )
+void dusk::UserInterface::DestroyElement ( const size_t handle )
 {
 	if ( handle >= m_elements.size() )
 	{
@@ -390,7 +390,7 @@ void Dusk::UserInterface::DestroyElement ( const size_t handle )
 }
 
 //	EnterDialogue(element) : Enters the element as a dialogue.
-void Dusk::UserInterface::EnterDialogue ( Element* element )
+void dusk::UserInterface::EnterDialogue ( Element* element )
 {
 	ARCORE_ASSERT(m_elements[element->m_index] == element);
 
@@ -409,7 +409,7 @@ void Dusk::UserInterface::EnterDialogue ( Element* element )
 }
 
 //	ExitDialogue(element) : Exit dialogue mode of the system.
-void Dusk::UserInterface::ExitDialogue ( Element* element )
+void dusk::UserInterface::ExitDialogue ( Element* element )
 {
 	ARCORE_ASSERT(m_elements[element->m_index] == element);
 	ARCORE_ASSERT(m_currentDialogue == element->m_index);

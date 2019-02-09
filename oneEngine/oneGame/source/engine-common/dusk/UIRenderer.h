@@ -14,13 +14,13 @@
 
 class RrFontTexture;
 class rrMeshBuffer;
-/*namespace gpu
+namespace gpu
 {
 	class RenderTarget;
 	class Texture;
-}*/
+}
 
-namespace Dusk
+namespace dusk
 {
 	class UserInterface;
 	class Element;
@@ -55,13 +55,13 @@ namespace Dusk
 		bool					ERUpdateRenderTarget ( void );
 
 		//	ERRenderElements() : Renders the elements to buffer.
-		void					ERRenderElements ( std::vector<Element*>& const renderList, Rect& const scissorArea );
+		void					ERRenderElements ( const std::vector<Element*>& renderList, const Rect& scissorArea );
 
 	private:
 
 		// Rendering state
-		gpu::RenderTarget	m_renderTarget;
-		gpu::Texture		m_renderTargetTexture;
+		gpu::RenderTarget*	m_renderTarget;
+		gpu::Texture*		m_renderTargetTexture;
 		Vector2i			m_renderTargetSize;
 
 		UserInterface*		m_interface;
@@ -70,6 +70,89 @@ namespace Dusk
 		arModelData			m_modeldata;
 		rrMeshBuffer		m_meshBuffer;
 
+	};
+
+	enum ColorStyle : uint8_t
+	{
+		kColorStyleBackground	= 0x01,
+		kColorStyleElement		= 0x02,
+		kColorStyleLabel		= 0x03,
+	};
+
+	enum FocusStyle : uint8_t
+	{
+		// Automatic style, pulls from the calling element properties
+		kFocusStyleAutomatic	= 0x00,
+		// Active style, default look
+		kFocusStyleActive		= 0x10,
+		// Disabled style, ensure the element cannot be used
+		kFocusStyleDisabled		= 0x20,
+		// Focused style, has been tabbed to. Make the element have a glowing outline.
+		kFocusStyleFocused		= 0x30,
+		// Hovered style, mouse is over. Makes the element itself slightly glow.
+		kFocusStyleHovered		= 0x40,
+
+		// Special style, for notice elements. Element pulses and glows.
+		kFocusStyleNotice		= 0x80,
+	};
+
+	enum TextAlignStyleHorizontal
+	{
+		kTextAlignLeft,
+		kTextAlignCenter,
+		kTextAlignRight,
+	};
+	enum TextAlignStyleVertical
+	{
+		kTextAlignTop,
+		kTextAlignMiddle,
+		kTextAlignBottom,
+	};
+
+	enum TextFontStyle
+	{
+		kTextFontTitle,
+		kTextFontButton,
+		kTextFontParagraphs,
+	};
+
+	struct TextStyleSettings
+	{
+		TextFontStyle				font;
+		TextAlignStyleHorizontal	align_horizontal;
+		TextAlignStyleVertical		align_vertical;
+	};
+
+	class UIRendererContext
+	{
+	public:
+		ENGCOM_API void			setFocus ( FocusStyle style );
+		ENGCOM_API void			setColor ( ColorStyle style );
+		ENGCOM_API void			setTextSettings ( TextStyleSettings settings );
+
+		ENGCOM_API float		getTextHeight ( TextFontStyle font );
+
+		ENGCOM_API void			drawRectangle ( Element* source, const Rect& rectangle );
+		ENGCOM_API void			drawText ( Element* source, const Vector2f& position, const char* str );
+
+	private:
+		
+		void					generateColor( Element* source );
+		void					generateDrawState( Element* source );
+
+	private:
+		FocusStyle			m_focusType;
+		ColorStyle			m_colorType;
+		TextStyleSettings	m_textType;
+
+		bool				m_dsDrawBackground;
+		Color				m_dsColorBackground;
+		bool				m_dsDrawOutline;
+		Color				m_dsColorOutline;
+		bool				m_dsDrawGlow;
+		Color				m_dsColorGlow;
+
+		UIRenderer*			m_uir;
 	};
 }
 

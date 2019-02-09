@@ -12,7 +12,7 @@
 #include "engine/behavior/CGameBehavior.h"
 #include "engine-common/dusk/Handle.h"
 
-namespace Dusk
+namespace dusk
 {
 	class UIRenderer;
 	class Element;
@@ -47,13 +47,13 @@ namespace Dusk
 
 		//	ElementList() : Get the current list of elements.
 		// Returns list of all the active elements.
-		ENGCOM_API std::vector<Element*>& const
+		ENGCOM_API const std::vector<Element*>&
 								ElementList ( void )
 			{ return m_elements; }
 
 		//	Add() : Adds a new element of the given type.
 		template <class ElementType>
-		ENGCOM_API ElementType*	Add ( ElementCreationDescription& const desc )
+		ENGCOM_API ElementType*	Add ( const ElementCreationDescription& desc )
 		{
 			ElementType* item = new ElementType();
 			AddInitialize(item, desc);
@@ -72,7 +72,7 @@ namespace Dusk
 
 		//	AddInitialize(element, desc) : Initializes the element with the given description.
 		// Used after an element is instantiated, applies the given parameters.
-		Element*				AddInitialize ( Element* element, ElementCreationDescription& const desc );
+		Element*				AddInitialize ( Element* element, const ElementCreationDescription& desc );
 
 		//	AddInitializeCheckValid(element) : Checks the given element has the correct index.
 		// To be used as part of an assertion check.
