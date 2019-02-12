@@ -10,15 +10,15 @@ EHS internal engine. This the **primary repo** with all code that is able to be 
 ## Prerequisites
 
 For Windows, the following are required:
-* Visual Studio 2015 or later (2017 is fine, but expect some wierdness with msvc 141).
-* Some version of the DirectX SDK (Windows 8 SDK is fine).
+* Visual Studio 2015 or later.
+* Some version of the DirectX SDK (used for Xbox controller support).
+* Relevant SDK for the rendering API being used (except OpenGL, that just magically works).
 
 You can compile and run without these with generous applications of self-inflicted pain and suffering, but it is not recommended.
 
 Currently supported platforms:
-* Windows x86 MSVC
-* Windows x86 MSClang
-* Windows x64 MSVC (Compiles but renderer module does not link)
+* Windows x64 MSVC (In progress...)
+* Windows x64 MSClang (In progress...)
 
 ## Branches
 
