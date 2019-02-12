@@ -1,15 +1,13 @@
-// Includes
 #include "CMorpher.h"
-//#include "CModelMaster.h"
 #include "core/time/time.h"
 #include "core/math/Math.h"
-
+#include "core/debug/console.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
+#include "renderer/gpuw/Device.h"
+#include "renderer/gpuw/GraphicsContext.h"
 
-// Class Constants
-CMorphAction		CMorpher::deadAction ( "" );
+CMorphAction CMorpher::m_DeadAction ( "" );
 
-// Constructors
 CMorpher::CMorpher ( string const& sInFilename, const  CMorpher* pFoundReference )
 {
 	pMorphSet = NULL;
@@ -32,6 +30,7 @@ CMorpher::CMorpher ( string const& sInFilename, const  CMorpher* pFoundReference
 		bIsValid = false;
 	}
 }
+
 CMorpher::CMorpher ( string const& sInFilename, const CMorpherSet* pInSet )
 {
 	pMorphSet = pInSet;
@@ -61,6 +60,8 @@ CMorpher& CMorpher::operator= ( const CMorpher* pRight )
 // Copy from existing refernece
 CMorpher&	CMorpher::operator= ( CMorpher const& sourceAnimRef )
 {
+	printf("Copying CMorpher instance.\n");
+
 	// Copy the animation set
 	pMorphSet = sourceAnimRef.pMorphSet;
 	// Copy the action map
@@ -68,12 +69,14 @@ CMorpher&	CMorpher::operator= ( CMorpher const& sourceAnimRef )
 	// Set all of the animation actions' owners to this, and reset them all
 	for ( auto it = mActions.begin(); it != mActions.end(); it++ )
 	{
-		std::cout << "copied action: :" << it->second.GetName() << ":" << std::endl;
+		printf(" - copied action: \"%s\"\n", it->second.GetName().c_str());
 	}
 	// Set the first action to active
 	//mAnimations.begin()->second.Play();
 	// Copy the IK list
 	//ikList = sourceAnimRef.ikList;
+
+	printf(" + Done.\n");
 
 	// Return this
 	return (*this);
@@ -89,9 +92,9 @@ CMorphAction& CMorpher::operator [] ( const char* animName )
 		//throw std::out_of_range( "Bad animation" );
 #endif
 		//deadAction.isPlaying = false;
-		deadAction.weight = 0;
+		m_DeadAction.weight = 0;
 		//deadAction.frame = 0;
-		return deadAction;
+		return m_DeadAction;
 	}
 
 	// return reference to it
@@ -109,13 +112,13 @@ CMorphAction& CMorpher::operator [] ( const int & animIndex )
 	if ( it == mActions.end() )
 	{
 #ifdef _ENGINE_DEBUG
-		std::cout << "WARNING: Could not find index numbered \"" << animIndex << "\" in list!\n";
+		debug::Console->PrintWarning("WARNING: Could not find index numbered \"%d\" in list!\n", animIndex);
 		//throw std::out_of_range( "Bad animation" );
 #endif
 		//deadAction.isPlaying = false;
-		deadAction.weight = 0;
+		m_DeadAction.weight = 0;
 		//deadAction.frame = 0;
-		return deadAction;
+		return m_DeadAction;
 	}
 	return it->second;
 }
@@ -132,8 +135,9 @@ CMorphAction* CMorpher::FindAction ( const char* animName )
 	}
 }
 
+/*
 // Perform the morphs. Only affect positions and normals of the mesh's stream.
-void	CMorpher::PerformMorph ( rrSkinnedMesh* sourceMesh, rrSkinnedMesh* targetMesh )
+void	CMorpher::PerformMorph ( rrMeshBuffer* sourceMesh, rrMeshBuffer* targetMesh )
 {
 	// First, grab the stream to work on
 	arModelData* pStreamData = targetMesh->modeldata;
@@ -179,4 +183,27 @@ void	CMorpher::PerformMorph ( rrSkinnedMesh* sourceMesh, rrSkinnedMesh* targetMe
 		}
 		++it;
 	}
+}
+*/
+
+//	FrameUpdate()
+// Updates the morph cbuffers and parameters needed for rendering.
+// This must be called every frame by the renderer.
+void CMorpher::FrameUpdate ( void )
+{
+	// TODO: Select the 4 vertex buffers with the biggest weights.
+	// Calculate the final weights, and save them for the following two functions.
+}
+
+//	SetVertexBuffers( gfx context, start slot )
+// Throws in used vertex buffers into given slot.
+void CMorpher::SetVertexBuffers( gpu::GraphicsContext* gfx, int startSlot )
+{
+	// TODO
+}
+//	SetBlendCBuffers ( gfx context, cbuffer slot )
+// Throws in previously generated blend cbuffer into given slot.
+void CMorpher::SetBlendCBuffers ( gpu::GraphicsContext* gfx, int cbufferSlot )
+{
+	// TODO 
 }

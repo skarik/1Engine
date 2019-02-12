@@ -1,5 +1,5 @@
 #include "Background2D.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/material/RrMaterial.h"
 
 renderer::Background2D::Background2D ( void )
@@ -52,11 +52,11 @@ renderer::Background2D::~Background2D ( void )
 bool renderer::Background2D::PreRender ( void )
 {
 	// Set the position to follow the camera
-	transform.world.position = CCamera::activeCamera->transform.position;
+	transform.world.position = RrCamera::activeCamera->transform.position;
 	transform.world.position.z = 495;
 	// Set the scale to fill the screen
-	transform.world.scale.x = CCamera::activeCamera->ortho_size.x;
-	transform.world.scale.y = CCamera::activeCamera->ortho_size.y;
+	transform.world.scale.x = RrCamera::activeCamera->ortho_size.x;
+	transform.world.scale.y = RrCamera::activeCamera->ortho_size.y;
 
 	return CRenderable2D::PreRender();
 }

@@ -48,200 +48,326 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\renderer\camera\CCamera.cpp" />
-    <ClCompile Include="source\renderer\camera\CRTCamera.cpp" />
-    <ClCompile Include="source\renderer\camera\CRTCameraCascade.cpp" />
-    <ClCompile Include="source\renderer\camera\CRTCameraCube.cpp" />
-    <ClCompile Include="source\renderer\debug\CDebugDrawer.cpp" />
-    <ClCompile Include="source\renderer\debug\CDebugRTInspector.cpp" />
+    <ClCompile Include="source\renderer\camera\RrCamera.cpp" />
+    <ClCompile Include="source\renderer\camera\RrRTCamera.cpp" />
+    <ClCompile Include="source\renderer\camera\RrRTCameraCascade.cpp" />
+    <ClCompile Include="source\renderer\camera\RrRTCameraCube.cpp" />
+    <ClCompile Include="source\renderer\debug\RrDebugDrawer.cpp" />
+    <ClCompile Include="source\renderer\debug\RrDebugRTInspector.cpp" />
     <ClCompile Include="source\renderer\debug\RrBtDebugDraw.cpp" />
-    <ClCompile Include="source\renderer\gpuw\Buffers.ConstantBuffer.cpp" />
-    <ClCompile Include="source\renderer\gpuw\Buffers.VertexBuffer.cpp" />
+    <ClCompile Include="source\renderer\gpuw\Buffers.cpp" />
+    <ClCompile Include="source\renderer\gpuw\ComputeContext.cpp" />
     <ClCompile Include="source\renderer\gpuw\Device.cpp" />
-    <ClCompile Include="source\renderer\gpuw\Textures.cpp" />
-    <ClCompile Include="source\renderer\light\CLight.cpp" />
-    <ClCompile Include="source\renderer\light\DirectionalLight.cpp" />
-    <ClCompile Include="source\renderer\logic\CLogicObject.cpp" />
-    <ClCompile Include="source\renderer\logic\model\CModel.cpp" />
-    <ClCompile Include="source\renderer\logic\model\CModelLoader.cpp" />
-    <ClCompile Include="source\renderer\logic\model\CSkinnedModel.cpp" />
-    <ClCompile Include="source\renderer\logic\model\CSkinnedModelLoader.cpp" />
+    <ClCompile Include="source\renderer\gpuw\Fence.cpp" />
+    <ClCompile Include="source\renderer\gpuw\GraphicsContext.cpp" />
+    <ClCompile Include="source\renderer\gpuw\GraphicsContext.draw.cpp" />
+    <ClCompile Include="source\renderer\gpuw\GraphicsContext.sync.cpp" />
+    <ClCompile Include="source\renderer\gpuw\OutputSurface.cpp" />
+    <ClCompile Include="source\renderer\gpuw\Pipeline.cpp" />
+    <ClCompile Include="source\renderer\gpuw\RenderTarget.cpp" />
+    <ClCompile Include="source\renderer\gpuw\Sampler.cpp" />
+    <ClCompile Include="source\renderer\gpuw\Shader.cpp" />
+    <ClCompile Include="source\renderer\gpuw\ShaderPipeline.cpp" />
+    <ClCompile Include="source\renderer\gpuw\Texture.cpp" />
+    <ClCompile Include="source\renderer\light\RrLight.cpp" />
+    <ClCompile Include="source\renderer\logic\model\RrModelMasterSubsystem.cpp" />
+    <ClCompile Include="source\renderer\logic\RrLogicObject.cpp" />
+    <ClCompile Include="source\renderer\logic\model\RrCModel.cpp" />
+    <ClCompile Include="source\renderer\logic\model\ModelLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\logic\model\CSkinnedModel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\logic\model\CSkinnedModelLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpher.cpp" />
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpherSet.cpp" />
-    <ClCompile Include="source\renderer\material\RrMaterial.Constants.cpp" />
-    <ClCompile Include="source\renderer\material\RrMaterial.cpp" />
-    <ClCompile Include="source\renderer\material\RrMaterial.External.cpp" />
-    <ClCompile Include="source\renderer\material\RrMaterial.Utility.cpp" />
-    <ClCompile Include="source\renderer\material\RrPassForward.cpp" />
-    <ClCompile Include="source\renderer\material\RrPassDeferred.cpp" />
-    <ClCompile Include="source\renderer\material\RrShader.cpp" />
-    <ClCompile Include="source\renderer\material\RrShaderManager.cpp" />
+    <ClCompile Include="source\renderer\material\RrMaterial.Constants.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.External.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrMaterial.Utility.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrPass.cpp" />
+    <ClCompile Include="source\renderer\material\RrPass.Presets.cpp" />
+    <ClCompile Include="source\renderer\material\RrPassForward.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrPassDeferred.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrShaderMasterSubsystem.cpp" />
+    <ClCompile Include="source\renderer\material\RrShaderProgram.cpp" />
     <ClCompile Include="source\renderer\module_renderer.cpp" />
     <ClCompile Include="source\renderer\object\CRenderableObject.cpp" />
     <ClCompile Include="source\renderer\object\CRenderable3D.cpp" />
     <ClCompile Include="source\renderer\object\CStreamedRenderable3D.cpp" />
-    <ClCompile Include="source\renderer\object\immediate\RrScopedMeshRenderer.cpp" />
-    <ClCompile Include="source\renderer\object\mesh\CInstancedMesh.cpp" />
-    <ClCompile Include="source\renderer\object\mesh\CMesh.cpp" />
-    <ClCompile Include="source\renderer\object\mesh\CStreamedMesh.cpp" />
-    <ClCompile Include="source\renderer\object\mesh\system\rrMesh.cpp" />
-    <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\CScreenShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CBloomShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CColorFilterShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CDepthSplitShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CScreenSpaceOutlineShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CTestScreenShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CTestViewShader.cpp" />
-    <ClCompile Include="source\renderer\object\screenshader\effects\CZoomBloomShader.cpp" />
-    <ClCompile Include="source\renderer\object\screen\CGlowObject.cpp" />
+    <ClCompile Include="source\renderer\object\immediate\RrScopedMeshRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\InstancedMesh.cpp" />
+    <ClCompile Include="source\renderer\object\mesh\Mesh.cpp" />
+    <ClCompile Include="source\renderer\object\mesh\StreamedMesh.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\system\rrMeshBuffer.cpp" />
+    <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\postprocess\PostProcessPass.cpp" />
     <ClCompile Include="source\renderer\object\screen\CScreenFade.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CBillboard.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CPrimitiveCube.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CPrimitiveIsosphere.cpp" />
-    <ClCompile Include="source\renderer\object\shapes\CPrimitivePlane.cpp" />
+    <ClCompile Include="source\renderer\object\shapes\RrBillboard.cpp" />
+    <ClCompile Include="source\renderer\object\shapes\RrShapeCube.cpp" />
+    <ClCompile Include="source\renderer\object\shapes\RrShapeIsosphere.cpp" />
+    <ClCompile Include="source\renderer\object\shapes\RrShapePlane.cpp" />
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp" />
-    <ClCompile Include="source\renderer\ogl\gl_core_3_3.c" />
-    <ClCompile Include="source\renderer\ogl\wgl_core_3_3.c" />
+    <ClCompile Include="source\renderer\ogl\glcorearb_impl.c" />
+    <ClCompile Include="source\renderer\ogl\wgl_impl.c" />
     <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp" />
     <ClCompile Include="source\renderer\renderer-console.cpp" />
-    <ClCompile Include="source\renderer\resource\CModelMaster.cpp" />
-    <ClCompile Include="source\renderer\resource\CResourceManager.cpp" />
-    <ClCompile Include="source\renderer\state\CRenderState.cpp" />
-    <ClCompile Include="source\renderer\state\CRenderState.Render.cpp" />
-    <ClCompile Include="source\renderer\state\CRenderState.Sorters.cpp" />
+    <ClCompile Include="source\renderer\resource\CModelMaster.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\resource\CResourceManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\RrHybridBufferChain.cpp" />
+    <ClCompile Include="source\renderer\state\RrRenderer.cpp" />
+    <ClCompile Include="source\renderer\state\RrRenderer.Render.cpp" />
+    <ClCompile Include="source\renderer\state\RrRenderer.Sorters.cpp" />
     <ClCompile Include="source\renderer\state\Options.cpp" />
+    <ClCompile Include="source\renderer\state\RrPipelinePasses.cpp" />
     <ClCompile Include="source\renderer\state\Settings.cpp" />
-    <ClCompile Include="source\renderer\system\glDrawing.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.buffers.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.frame.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.matrix.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.screen_pixels.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.state.cpp" />
-    <ClCompile Include="source\renderer\system\glMainSystem.textures.cpp" />
-    <ClCompile Include="source\renderer\texture\CBitmapFont.cpp" />
+    <ClCompile Include="source\renderer\system\glDrawing.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.buffers.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.frame.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.matrix.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.screen_pixels.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.state.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\system\glMainSystem.textures.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrFontTexture.cpp" />
     <ClCompile Include="source\renderer\texture\CMRTTexture.cpp" />
-    <ClCompile Include="source\renderer\texture\CRenderTexture.cpp" />
-    <ClCompile Include="source\renderer\texture\CRenderTextureCube.cpp" />
-    <ClCompile Include="source\renderer\texture\CTexture.cpp" />
-    <ClCompile Include="source\renderer\texture\CTexture3D.cpp" />
-    <ClCompile Include="source\renderer\texture\TextureConverter.cpp" />
-    <ClCompile Include="source\renderer\texture\CTextureCube.cpp" />
+    <ClCompile Include="source\renderer\texture\RrRenderTexture.cpp" />
+    <ClCompile Include="source\renderer\texture\RrRenderTextureCube.cpp" />
+    <ClCompile Include="source\renderer\texture\rrSamplerState.cpp" />
+    <ClCompile Include="source\renderer\texture\RrTexture.cpp" />
+    <ClCompile Include="source\renderer\texture\RrTexture3D.cpp" />
+    <ClCompile Include="source\renderer\texture\RrTextureCube.cpp" />
     <ClCompile Include="source\renderer\texture\CTextureLoader.cpp" />
-    <ClCompile Include="source\renderer\texture\TextureLoader.cpp" />
-    <ClCompile Include="source\renderer\texture\CTextureMaster.cpp" />
+    <ClCompile Include="source\renderer\texture\RrTexture.Streaming.cpp" />
+    <ClCompile Include="source\renderer\texture\RrTextureMaster.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTextureMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\types\ObjectSettings.cpp" />
-    <ClCompile Include="source\renderer\utils\glScreenshot.cpp" />
-    <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp" />
+    <ClCompile Include="source\renderer\utils\RrScreenshot.cpp" />
+    <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\renderer\utils\IrrMeshBuilder.cpp" />
     <ClCompile Include="source\renderer\utils\rrMeshBuilder2D.cpp" />
     <ClCompile Include="source\renderer\utils\rrTextBuilder2D.cpp" />
-    <ClCompile Include="source\renderer\window\RrWindowWin32.cpp" />
+    <ClCompile Include="source\renderer\windowing\RrWindow.cpp" />
+    <ClCompile Include="source\renderer\_window\RrWindowWin32.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\renderer\camera\CCamera.h" />
-    <ClInclude Include="source\renderer\camera\CRTCamera.h" />
-    <ClInclude Include="source\renderer\camera\CRTCameraCascade.h" />
-    <ClInclude Include="source\renderer\camera\CRTCameraCube.h" />
-    <ClInclude Include="source\renderer\debug\CDebugDrawer.h" />
-    <ClInclude Include="source\renderer\debug\CDebugRTInspector.h" />
+    <ClInclude Include="source\renderer\camera\CameraPass.h" />
+    <ClInclude Include="source\renderer\camera\RrCamera.h" />
+    <ClInclude Include="source\renderer\camera\RrRTCamera.h" />
+    <ClInclude Include="source\renderer\camera\RrRTCameraCascade.h" />
+    <ClInclude Include="source\renderer\camera\RrRTCameraCube.h" />
+    <ClInclude Include="source\renderer\debug\RrDebugDrawer.h" />
+    <ClInclude Include="source\renderer\debug\RrDebugRTInspector.h" />
     <ClInclude Include="source\renderer\debug\RrBtDebugDraw.h" />
     <ClInclude Include="source\renderer\exceptions.h" />
     <ClInclude Include="source\renderer\exceptions\exceptions.h" />
+    <ClInclude Include="source\renderer\gpuw\1docs.gpwu.style.h" />
     <ClInclude Include="source\renderer\gpuw\Buffers.h" />
+    <ClInclude Include="source\renderer\gpuw\ComputeContext.h" />
     <ClInclude Include="source\renderer\gpuw\Device.h" />
-    <ClInclude Include="source\renderer\gpuw\Textures.h" />
+    <ClInclude Include="source\renderer\gpuw\Error.h" />
+    <ClInclude Include="source\renderer\gpuw\Fence.h" />
+    <ClInclude Include="source\renderer\gpuw\GraphicsContext.h" />
+    <ClInclude Include="source\renderer\gpuw\OutputSurface.h" />
+    <ClInclude Include="source\renderer\gpuw\Pipeline.h" />
+    <ClInclude Include="source\renderer\gpuw\Internal\Enums.h" />
+    <ClInclude Include="source\renderer\gpuw\Public\Enums.h" />
+    <ClInclude Include="source\renderer\gpuw\Public\Formats.h" />
+    <ClInclude Include="source\renderer\gpuw\Public\Rect2.h" />
+    <ClInclude Include="source\renderer\gpuw\Public\ShaderTypes.h" />
+    <ClInclude Include="source\renderer\gpuw\Public\Slots.h" />
+    <ClInclude Include="source\renderer\gpuw\RenderTarget.h" />
+    <ClInclude Include="source\renderer\gpuw\Sampler.h" />
+    <ClInclude Include="source\renderer\gpuw\Shader.h" />
+    <ClInclude Include="source\renderer\gpuw\ShaderPipeline.h" />
+    <ClInclude Include="source\renderer\gpuw\Texture.h" />
     <ClInclude Include="source\renderer\gpuw\Transfer.h" />
-    <ClInclude Include="source\renderer\light\CLight.h" />
-    <ClInclude Include="source\renderer\light\DirectionalLight.h" />
-    <ClInclude Include="source\renderer\logic\CLogicObject.h" />
-    <ClInclude Include="source\renderer\logic\model\CModel.h" />
-    <ClInclude Include="source\renderer\logic\model\CModelLoader.h" />
-    <ClInclude Include="source\renderer\logic\model\CSkinnedModel.h" />
+    <ClInclude Include="source\renderer\light\RrLight.h" />
+    <ClInclude Include="source\renderer\logic\model\RrAnimatedMeshGroup.h" />
+    <ClInclude Include="source\renderer\logic\model\RrModelMasterSubsystem.h" />
+    <ClInclude Include="source\renderer\logic\RrLogicObject.h" />
+    <ClInclude Include="source\renderer\logic\model\RrCModel.h" />
+    <ClInclude Include="source\renderer\logic\model\ModelLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\logic\model\CSkinnedModel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\logic\model\morpher\CMorphAction.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpher.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpherSet.h" />
-    <ClInclude Include="source\renderer\material\RrMaterial.h" />
-    <ClInclude Include="source\renderer\material\RrPassForward.h" />
-    <ClInclude Include="source\renderer\material\RrPassDeferred.h" />
-    <ClInclude Include="source\renderer\material\RrShader.h" />
-    <ClInclude Include="source\renderer\material\RrShaderManager.h" />
+    <ClInclude Include="source\renderer\material\Material.h" />
+    <ClInclude Include="source\renderer\material\RrMaterial.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrPass.h" />
+    <ClInclude Include="source\renderer\material\RrPass.Presets.h" />
+    <ClInclude Include="source\renderer\material\RrPassForward.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrPassDeferred.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrShaderMasterSubsystem.h" />
+    <ClInclude Include="source\renderer\material\RrShaderProgram.h" />
+    <ClInclude Include="source\renderer\material\ShaderSlots.h" />
+    <ClInclude Include="source\renderer\material\VertexAttribute.h" />
     <ClInclude Include="source\renderer\module_renderer.h" />
     <ClInclude Include="source\renderer\object\CRenderableObject.h" />
     <ClInclude Include="source\renderer\object\CRenderable3D.h" />
     <ClInclude Include="source\renderer\object\CStreamedRenderable3D.h" />
     <ClInclude Include="source\renderer\object\immediate\immediate.h" />
     <ClInclude Include="source\renderer\object\immediate\IRrRenderableStreamedMesh.h" />
-    <ClInclude Include="source\renderer\object\immediate\RrScopedMeshRenderer.h" />
-    <ClInclude Include="source\renderer\object\mesh\CInstancedMesh.h" />
-    <ClInclude Include="source\renderer\object\mesh\CMesh.h" />
-    <ClInclude Include="source\renderer\object\mesh\CStreamedMesh.h" />
-    <ClInclude Include="source\renderer\object\mesh\system\rrMesh.h" />
-    <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h" />
+    <ClInclude Include="source\renderer\object\immediate\RrScopedMeshRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\InstancedMesh.h" />
+    <ClInclude Include="source\renderer\object\mesh\Mesh.h" />
+    <ClInclude Include="source\renderer\object\mesh\StreamedMesh.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\system\rrMeshBuffer.h" />
+    <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\object\model\Model.h" />
-    <ClInclude Include="source\renderer\object\model\SkinnedModel.h" />
-    <ClInclude Include="source\renderer\object\screenshader\CScreenShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CBloomShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CColorFilterShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CDepthSplitShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CScreenSpaceOutlineShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CTestScreenShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CTestViewShader.h" />
-    <ClInclude Include="source\renderer\object\screenshader\effects\CZoomBloomShader.h" />
-    <ClInclude Include="source\renderer\object\screen\CGlowObject.h" />
+    <ClInclude Include="source\renderer\object\model\SkinnedModel.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\postprocess\PostProcessPass.h" />
     <ClInclude Include="source\renderer\object\screen\CScreenFade.h" />
-    <ClInclude Include="source\renderer\object\shapes\CBillboard.h" />
-    <ClInclude Include="source\renderer\object\shapes\CPrimitiveCube.h" />
-    <ClInclude Include="source\renderer\object\shapes\CPrimitiveIsosphere.h" />
-    <ClInclude Include="source\renderer\object\shapes\CPrimitivePlane.h" />
+    <ClInclude Include="source\renderer\object\shapes\RrBillboard.h" />
+    <ClInclude Include="source\renderer\object\shapes\RrShapeCube.h" />
+    <ClInclude Include="source\renderer\object\shapes\RrShapeIsosphere.h" />
+    <ClInclude Include="source\renderer\object\shapes\RrShapePlane.h" />
     <ClInclude Include="source\renderer\object\util\CLoadScreenInjector.h" />
     <ClInclude Include="source\renderer\ogl\GLCommon.h" />
-    <ClInclude Include="source\renderer\ogl\gl_core_3_3.h" />
-    <ClInclude Include="source\renderer\ogl\wgl_core_3_3.h" />
+    <ClInclude Include="source\renderer\ogl\glcorearb.h" />
+    <ClInclude Include="source\renderer\ogl\glcorearb_impl.h" />
+    <ClInclude Include="source\renderer\ogl\glxext.h" />
+    <ClInclude Include="source\renderer\ogl\wgl.h" />
+    <ClInclude Include="source\renderer\ogl\wgl_impl.h" />
     <ClInclude Include="source\renderer\particle\motion.h" />
     <ClInclude Include="source\renderer\particle\RrParticleSystem.h" />
     <ClInclude Include="source\renderer\renderer-console.h" />
-    <ClInclude Include="source\renderer\resource\CModelMaster.h" />
-    <ClInclude Include="source\renderer\resource\CResourceManager.h" />
-    <ClInclude Include="source\renderer\state\CRenderState.h" />
+    <ClInclude Include="source\renderer\resource\CModelMaster.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\resource\CResourceManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\RrHybridBufferChain.h" />
+    <ClInclude Include="source\renderer\state\RrRenderer.h" />
     <ClInclude Include="source\renderer\state\InternalSettings.h" />
     <ClInclude Include="source\renderer\state\Options.h" />
+    <ClInclude Include="source\renderer\state\RrPipelinePasses.h" />
     <ClInclude Include="source\renderer\state\Settings.h" />
-    <ClInclude Include="source\renderer\system\glDrawing.h" />
-    <ClInclude Include="source\renderer\system\glMainSystem.h" />
-    <ClInclude Include="source\renderer\system\glSystem.h" />
-    <ClInclude Include="source\renderer\system\rrVBufferStreaming.h" />
-    <ClInclude Include="source\renderer\texture\CBitmapFont.h" />
+    <ClInclude Include="source\renderer\system\glDrawing.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\system\glMainSystem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\system\glSystem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\system\rrVBufferStreaming.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrFontTexture.h" />
     <ClInclude Include="source\renderer\texture\CMRTTexture.h" />
-    <ClInclude Include="source\renderer\texture\CRenderTexture.h" />
-    <ClInclude Include="source\renderer\texture\CRenderTextureCube.h" />
-    <ClInclude Include="source\renderer\texture\CTexture.h" />
-    <ClInclude Include="source\renderer\texture\CTexture3D.h" />
-    <ClInclude Include="source\renderer\texture\CTextureCube.h" />
-    <ClInclude Include="source\renderer\texture\TextureLoader.h" />
-    <ClInclude Include="source\renderer\texture\CTextureMaster.h" />
+    <ClInclude Include="source\renderer\texture\RrRenderTexture.h" />
+    <ClInclude Include="source\renderer\texture\RrRenderTextureCube.h" />
+    <ClInclude Include="source\renderer\texture\rrSamplerState.h" />
+    <ClInclude Include="source\renderer\texture\RrTexture.h" />
+    <ClInclude Include="source\renderer\texture\RrTexture3D.h" />
+    <ClInclude Include="source\renderer\texture\RrTextureCube.h" />
+    <ClInclude Include="source\renderer\texture\RrTextureMaster.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrTextureMasterSubsystem.h" />
     <ClInclude Include="source\renderer\types\blendModes.h" />
     <ClInclude Include="source\renderer\types\renderModes.h" />
     <ClInclude Include="source\renderer\types\RrObjectMaterialProperties.h" />
     <ClInclude Include="source\renderer\types\RrGpuTexture.h" />
     <ClInclude Include="source\renderer\types\ModelStructures.h" />
     <ClInclude Include="source\renderer\types\ObjectSettings.h" />
-    <ClInclude Include="source\renderer\types\pixelFormat.h" />
     <ClInclude Include="source\renderer\types\ShaderSettings.h" />
-    <ClInclude Include="source\renderer\types\textureFormats.h" />
-    <ClInclude Include="source\renderer\types\textureStructures.h" />
+    <ClInclude Include="source\renderer\types\shaders\cbuffers.h" />
+    <ClInclude Include="source\renderer\types\shaders\legacy.h" />
+    <ClInclude Include="source\renderer\types\shaders\sbuffers.h" />
+    <ClInclude Include="source\renderer\types\shaders\vattribs.h" />
     <ClInclude Include="source\renderer\types\types.h" />
-    <ClInclude Include="source\renderer\utils\glScreenshot.h" />
-    <ClInclude Include="source\renderer\utils\glTMeshContainer.h" />
+    <ClInclude Include="source\renderer\utils\RrScreenshot.h" />
+    <ClInclude Include="source\renderer\utils\glTMeshContainer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\renderer\utils\IrrMeshBuilder.h" />
     <ClInclude Include="source\renderer\utils\rrMeshBuilder.h" />
     <ClInclude Include="source\renderer\utils\rrMeshBuilder2D.h" />
     <ClInclude Include="source\renderer\utils\rrTextBuilder2D.h" />
-    <ClInclude Include="source\renderer\window\RrWindow.h" />
-    <ClInclude Include="source\renderer\window\RrWindowLinux.h" />
-    <ClInclude Include="source\renderer\window\RrWindowOsmac.h" />
-    <ClInclude Include="source\renderer\window\RrWindowWin32.h" />
+    <ClInclude Include="source\renderer\windowing\RrWindow.h" />
+    <ClInclude Include="source\renderer\_window\RrWindow.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\_window\RrWindowLinux.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\_window\RrWindowOsmac.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="source\renderer\_window\RrWindowWin32.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C1BC5440-9CE1-4A7E-89DD-DCD57005426A}</ProjectGuid>

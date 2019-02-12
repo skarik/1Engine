@@ -3,7 +3,7 @@
 
 #include "core/math/Math3d.h"
 
-class CCamera;
+class RrCamera;
 
 namespace M04
 {
@@ -17,10 +17,10 @@ namespace M04
 
 	public:
 		void*		m_owner;
-		CCamera*	m_camera;
+		RrCamera*	m_camera;
 
-		Vector3d*	m_tracked_position;
-		Vector3d*	m_tracked_velocity;
+		Vector3f*	m_tracked_position;
+		Vector3f*	m_tracked_velocity;
 	};
 }
 

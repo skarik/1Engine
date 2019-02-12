@@ -183,8 +183,12 @@
     <ClInclude Include="source\core\containers\arsingleton.h" />
     <ClInclude Include="source\core\containers\arstring.h" />
     <ClInclude Include="source\core\containers\arvector.h" />
+    <ClInclude Include="source\core\debug.h" />
     <ClInclude Include="source\core\exceptions.h" />
     <ClInclude Include="source\core\exceptions\exceptions.h" />
+    <ClInclude Include="source\core\gfx\pixelFormat.h" />
+    <ClInclude Include="source\core\gfx\textureFormats.h" />
+    <ClInclude Include="source\core\gfx\textureStructures.h" />
     <ClInclude Include="source\core\legacy\linkerfix_legacy.h" />
     <ClInclude Include="source\core\math\blend_vector.h" />
     <ClInclude Include="source\core\math\BoundingBox.h" />
@@ -192,6 +196,7 @@
     <ClInclude Include="source\core\math\Cubic.h" />
     <ClInclude Include="source\core\math\Easing.h" />
     <ClInclude Include="source\core\math\Frustum.h" />
+    <ClInclude Include="source\core\math\hash.h" />
     <ClInclude Include="source\core\math\Line.h" />
     <ClInclude Include="source\core\math\Math.h" />
     <ClInclude Include="source\core\math\Math3d.h" />
@@ -222,10 +227,12 @@
     <ClInclude Include="source\core\math\Rotator.h" />
     <ClInclude Include="source\core\math\vect2d_template.h" />
     <ClInclude Include="source\core\math\vect3d_template.h" />
-    <ClInclude Include="source\core\math\Vector2d.h" />
-    <ClInclude Include="source\core\math\Vector3d.h" />
-    <ClInclude Include="source\core\math\Vector4d.h" />
+    <ClInclude Include="source\core\math\vect4d_template.h" />
+    <ClInclude Include="source\core\math\Vector2.h" />
+    <ClInclude Include="source\core\math\Vector3.h" />
+    <ClInclude Include="source\core\math\Vector4.h" />
     <ClInclude Include="source\core\math\XTransform.h" />
+    <ClInclude Include="source\core\mem.h" />
     <ClInclude Include="source\core\os.h" />
     <ClInclude Include="source\core\system\CMemoryMonitor.h" />
     <ClInclude Include="source\core\system\CMemoryMonitorWin32.h" />
@@ -247,7 +254,8 @@
     <ClInclude Include="source\core\types\string_extension.h" />
     <ClInclude Include="source\core\types\types.h" />
     <ClInclude Include="source\core\utils\armodule.h" />
-    <ClInclude Include="source\core\utils\StringUtils.h" />
+    <ClInclude Include="source\core\utils\string.h" />
+    <ClInclude Include="source\core\utils\string.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core-ext\math\MathQEF.cpp" />
@@ -258,6 +266,7 @@
     <ClCompile Include="source\core\math\BoundingBox.cpp" />
     <ClCompile Include="source\core\math\Color.cpp" />
     <ClCompile Include="source\core\math\Cubic.cpp" />
+    <ClCompile Include="source\core\math\Frustum.cpp" />
     <ClCompile Include="source\core\math\Math.cpp" />
     <ClCompile Include="source\core\math\noise\Perlin.cpp" />
     <ClCompile Include="source\core\math\noise\SimplexNoise.cpp" />
@@ -270,15 +279,16 @@
     <ClCompile Include="source\core\math\Rotator.cpp" />
     <ClCompile Include="source\core\math\vect2d_template.cpp" />
     <ClCompile Include="source\core\math\vect3d_template.cpp" />
-    <ClCompile Include="source\core\math\Vector2d.cpp" />
-    <ClCompile Include="source\core\math\Vector3d.cpp" />
-    <ClCompile Include="source\core\math\Vector4d.cpp" />
+    <ClCompile Include="source\core\math\vect4d_template.cpp" />
+    <ClCompile Include="source\core\math\Vector2.cpp" />
+    <ClCompile Include="source\core\math\Vector3.cpp" />
+    <ClCompile Include="source\core\math\Vector4.cpp" />
     <ClCompile Include="source\core\system\CMemoryMonitorWin32.cpp" />
     <ClCompile Include="source\core\system\io\CBinaryFile.cpp" />
     <ClCompile Include="source\core\system\io\CMappedBinaryFile.cpp" />
     <ClCompile Include="source\core\system\io\FileUtils.cpp" />
     <ClCompile Include="source\core\system\System.cpp" />
-    <ClCompile Include="source\core\utils\StringUtils.cpp" />
+    <ClCompile Include="source\core\utils\string.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

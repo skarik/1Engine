@@ -11,7 +11,7 @@
 
 #include "core/types/types.h"
 #include "core/types/float.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include <list>
 
 class CEmulatedInputControl;
@@ -70,8 +70,8 @@ public:
 		bool		_released;
 	};
 public:
-	Vector3d	vDirInput;
-	Vector3d	vMouseInput;
+	Vector3f	vDirInput;
+	Vector3f	vMouseInput;
 
 	typedef union
 	{

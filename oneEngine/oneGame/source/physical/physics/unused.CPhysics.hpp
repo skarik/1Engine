@@ -1,30 +1,30 @@
 
 //==Physics Worlds==
-FORCE_INLINE PHYS_API Vector3d Physics::WorldScaling ( void )
+FORCE_INLINE PHYS_API Vector3f Physics::WorldScaling ( void )
 {
 	return Active()->worldScaling;
 }
 
-FORCE_INLINE PHYS_API void Physics::ShiftWorld ( Vector3d vShift )
+FORCE_INLINE PHYS_API void Physics::ShiftWorld ( Vector3f vShift )
 {
 	/*hkVector4 effectiveShift;
 	hkVector4 requestedShift ( vShift.x, vShift.y, vShift.z );
 	World()->shiftBroadPhase( requestedShift, effectiveShift, hkpWorld::SHIFT_BROADPHASE_UPDATE_ENTITY_AABBS );*/
-	Vector3d actualShift = vShift.mulComponents( Active()->worldScaling );
+	Vector3f actualShift = vShift.mulComponents( Active()->worldScaling );
 	World()->ShiftOrigin( b2Vec2( actualShift.x,actualShift.y ) );
 	
 	Active()->vWorldCenter += vShift;
 }
-FORCE_INLINE PHYS_API void Physics::GetWorldCenter ( Vector3d& vWorldPosition )
+FORCE_INLINE PHYS_API void Physics::GetWorldCenter ( Vector3f& vWorldPosition )
 {
 	vWorldPosition = Active()->vWorldCenter;
 }
-FORCE_INLINE PHYS_API Vector3d Physics::GetWorldGravity ( void )
+FORCE_INLINE PHYS_API Vector3f Physics::GetWorldGravity ( void )
 {
 	//hkVector4 gravity = Physics::World()->getGravity();
-	//return Vector3d( gravity.getComponent<0>(), gravity.getComponent<1>(), gravity.getComponent<2>() );
+	//return Vector3f( gravity.getComponent<0>(), gravity.getComponent<1>(), gravity.getComponent<2>() );
 	b2Vec2 gravity = World()->GetGravity();
-	return Vector2d( gravity.x, gravity.y );
+	return Vector2f( gravity.x, gravity.y );
 }
 
 
@@ -66,7 +66,7 @@ FORCE_INLINE PHYS_API bool Physics::SimulationAtSubstep ( void )
 
 //==Collision Shapes==
 // Creation of shapes for collision
-FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents )
+FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3f vHalfExtents )
 {
 	//hkVector4 halfExtent( vHalfExtents.x, vHalfExtents.y, vHalfExtents.z );
 	/*hkVector4 halfExtent;
@@ -81,7 +81,7 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents
 
 	throw core::DeprecatedCallException();
 }
-FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents, Vector3d vCenterOffset )
+FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3f vHalfExtents, Vector3f vCenterOffset )
 {
 	/*hkVector4 halfExtent;
 	halfExtent.set( vHalfExtents.x, vHalfExtents.y, vHalfExtents.z );
@@ -101,7 +101,7 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateBoxShape ( Vector3d vHalfExtents
 	throw core::DeprecatedCallException();
 }
 // Create a capsule shape
-FORCE_INLINE PHYS_API physShape* Physics::CreateCapsuleShape ( Vector3d vStart, Vector3d vEnd, float fRadius )
+FORCE_INLINE PHYS_API physShape* Physics::CreateCapsuleShape ( Vector3f vStart, Vector3f vEnd, float fRadius )
 {
 	/*hkVector4 start( vStart.x, vStart.y, vStart.z );
 	hkVector4 end  ( vEnd.x, vEnd.y, vEnd.z );
@@ -120,7 +120,7 @@ FORCE_INLINE PHYS_API physShape* Physics::CreateSphereShape ( float fRadius )
 	throw core::DeprecatedCallException();
 }
 // Create a cylinder shape
-FORCE_INLINE PHYS_API physShape* Physics::CreateCylinderShape ( Vector3d vStart, Vector3d vEnd, float fRadius, float fConvexRadius )
+FORCE_INLINE PHYS_API physShape* Physics::CreateCylinderShape ( Vector3f vStart, Vector3f vEnd, float fRadius, float fConvexRadius )
 {
 	/*hkVector4 start( vStart.x, vStart.y, vStart.z );
 	hkVector4 end  ( vEnd.x, vEnd.y, vEnd.z );
@@ -268,7 +268,7 @@ FORCE_INLINE PHYS_API physShape*	Physics::CreateMeshShape ( arModelData const* p
 	throw core::NotYetImplementedException();
 }
 // Creates a faster, but RAM eating mesh shape from the given data. Should be used for larger objects that change often
-FORCE_INLINE PHYS_API physShape* Physics::CreateFastMeshShape ( Vector3d* pVertices, arModelTriangle* pTris, unsigned short vertexCount, unsigned short faceCount )
+FORCE_INLINE PHYS_API physShape* Physics::CreateFastMeshShape ( Vector3f* pVertices, arModelTriangle* pTris, unsigned short vertexCount, unsigned short faceCount )
 {
 	// BLEH
 	/*hkpExtendedMeshShape* meshShape = new hkpExtendedMeshShape ();
@@ -279,7 +279,7 @@ FORCE_INLINE PHYS_API physShape* Physics::CreateFastMeshShape ( Vector3d* pVerti
 	// set vertices
 	part.m_numVertices = vertexCount;
 	part.m_vertexBase = &(pVertices[0].x);
-	part.m_vertexStriding = sizeof(Vector3d);
+	part.m_vertexStriding = sizeof(Vector3f);
 
 	// set triangles
 	part.m_indexBase = &(pTris[0].vert[0]);
@@ -398,11 +398,11 @@ FORCE_INLINE PHYS_API void Physics::FreeRigidBody ( b2Body* pRigidBody )
 //
 //	// translation
 //	hkVector4 tempVect = pRigidBody->getTransform().getTranslation();
-//	//pTargetTransform->position = Vector3d( tempVect, tempVect.y, tempVect.z );
+//	//pTargetTransform->position = Vector3f( tempVect, tempVect.y, tempVect.z );
 //	tempVect.store3( &(pTargetTransform->position.x) );
 //
 //	// now, get offset of the object by the center of mass
-//	Vector3d temp3Vect;
+//	Vector3f temp3Vect;
 //	pRigidBody->getCenterOfMassLocal().store3( &(temp3Vect.x) );
 //	tempMatrix = Matrix4x4();
 //	tempMatrix.setRotation( pTargetTransform->rotation );

@@ -6,7 +6,7 @@
 #include "engine-common/utils/CDeveloperConsoleUI.h"
 // Needed includes
 #include "testStringOperations.h"
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 
 #include <iostream>
 #include <chrono>
@@ -19,7 +19,7 @@ void testStringOperations::LoadScene(void)
 	cout << "Beginning string operation tests.\n" << endl;
 
 	//=========================================//
-	cout << "\nTest 1: StringUtils::LargestCommonSubstringLength" << endl;
+	cout << "\nTest 1: core::utils::string::LargestCommonSubstringLength" << endl;
 	//=========================================//
 	{
 		auto start_time = chrono::high_resolution_clock::now();
@@ -30,7 +30,7 @@ void testStringOperations::LoadScene(void)
 		auto showResults = [&]( const char* description )
 		{
 			// Do test now
-			cm = StringUtils::LargestCommonSubstringLength( a,b );
+			cm = core::utils::string::LargestCommonSubstringLength( a,b );
 			// Print test info
 			cout << "TEST: " << description << endl
 				 << "Input A: \"" << a << "\"" << endl

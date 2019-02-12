@@ -1,9 +1,9 @@
 /*
 // Includes
-#include "core/utils/StringUtils.h"
-//#include "CRenderState.h"
-#include "CTexture.h"
-#include "CTextureMaster.h"
+#include "core/utils/string.h"
+//#include "RrRenderer.h"
+#include "RrTexture.h"
+#include "RrTextureMaster.h"
 #include "renderer/system/glMainSystem.h"
 // Image libraries
 #include "tga/tga_loader.h"
@@ -15,13 +15,13 @@ using std::cout;
 using std::endl;
 
 // === File Loader ===
-void CTexture::LoadImageInfo ( void )
+void RrTexture::LoadImageInfo ( void )
 {
 	// Note that in OpenGL, we load the textures upside down to keep DirectX compatible UV's.
 	// Blame us for working with DirectDraw for the majority of our lives.
 
 	// Detect the type of image
-	string sExtension = StringUtils::ToLower( StringUtils::GetFileExtension( sFilename ) );
+	string sExtension = core::utils::string::GetLower( core::utils::string::GetFileExtension( sFilename ) );
 	if ( sExtension == "tga" )
 	{
 		loadTGA();
@@ -43,7 +43,7 @@ void CTexture::LoadImageInfo ( void )
 }
 
 // ==DEFAULT XOR TEXTURE==
-void CTexture::loadDefault ( void )
+void RrTexture::loadDefault ( void )
 {
 	// Set the new texture size
 	info.width = 64;
@@ -70,7 +70,7 @@ void CTexture::loadDefault ( void )
 }
 
 // =TGA LOADING=
-void CTexture::loadTGA ( void )
+void RrTexture::loadTGA ( void )
 {
 	GL_ACCESS; // Using the glMainSystem accessor
 
@@ -174,7 +174,7 @@ void CTexture::loadTGA ( void )
 	}
 }
 // =JPG LOADING=
-void CTexture::loadJPG ( void )
+void RrTexture::loadJPG ( void )
 {
 	GL_ACCESS; // Using the glMainSystem accessor
 
@@ -327,7 +327,7 @@ void CTexture::loadJPG ( void )
 
 
 // =PNG LOADING=
-void CTexture::loadPNG ( void )
+void RrTexture::loadPNG ( void )
 {
 	GL_ACCESS; // Using the glMainSystem accessor
 

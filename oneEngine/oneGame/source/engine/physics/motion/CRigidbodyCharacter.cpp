@@ -210,7 +210,7 @@ void CRigidBodyCharacter::RigidbodyUpdate ( void )
 			else {
 				//Physics::GetRigidBodyTransform( pBody, pTargetTransform );
 				pTargetTransform->rotation = Matrix3x3();
-				/*Vector3d temp3Vect;
+				/*Vector3f temp3Vect;
 				mCharController->getPosition().store3( &(temp3Vect.x) );
 				pTargetTransform->position = temp3Vect;*/
 				pTargetTransform->position = mCharController->getPosition();
@@ -232,12 +232,12 @@ void CRigidBodyCharacter::FixedUpdate ( void )
 		{
 			/*hkVector4 preVelocity = mCharController->getLinearVelocity();
 			//hkVector4 gravity = Physics::World()->getGravity();
-			Vector3d vgravity = Physics::GetWorldGravity();
+			Vector3f vgravity = Physics::GetWorldGravity();
 			hkVector4 gravity ( vgravity.x, vgravity.y, vgravity.z );
 			gravity.mul( Time::deltaTime );
 			preVelocity.add( gravity );
 			mCharController->setLinearVelocity( preVelocity, Time::deltaTime );*/
-			Vector3d velocity = mCharController->getLinearVelocity();
+			Vector3f velocity = mCharController->getLinearVelocity();
 			velocity += Physics::GetWorldGravity() * Time::deltaTime;
 			mCharController->setLinearVelocity( velocity, Time::deltaTime );
 		}
@@ -246,7 +246,7 @@ void CRigidBodyCharacter::FixedUpdate ( void )
 
 
 // Setters
-void		CRigidBodyCharacter::SetVelocity ( Vector3d nvelo )
+void		CRigidBodyCharacter::SetVelocity ( Vector3f nvelo )
 {
 	if ( mCharController ) {
 		//mCharController->setLinearVelocity( hkVector4( nvelo.x, nvelo.y, nvelo.z ), Time::deltaTime );
@@ -256,7 +256,7 @@ void		CRigidBodyCharacter::SetVelocity ( Vector3d nvelo )
 		CRigidbody::SetVelocity( nvelo );
 	}
 }
-Vector3d	CRigidBodyCharacter::GetVelocity ( void )
+Vector3f	CRigidBodyCharacter::GetVelocity ( void )
 {
 	if ( mCharController ) {
 		return mCharController->getLinearVelocity();

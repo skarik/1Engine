@@ -86,6 +86,12 @@
     <Filter Include="SOURCE\Core-ext\System\IO\Serializer">
       <UniqueIdentifier>{cedf24a4-7d14-439a-8f50-04496883162f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Core\Gfx">
+      <UniqueIdentifier>{9d31a2fa-ae5e-4d4f-bcd7-df1c60d8c22b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Gfx">
+      <UniqueIdentifier>{1b7533b8-0491-43a2-884e-2d56b5d04110}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\callback_basics.h">
@@ -199,15 +205,6 @@
     <ClInclude Include="source\core\math\vect3d_template.h">
       <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
     </ClInclude>
-    <ClInclude Include="source\core\math\Vector2d.h">
-      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core\math\Vector3d.h">
-      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core\math\Vector4d.h">
-      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
-    </ClInclude>
     <ClInclude Include="source\core\math\random\Random.h">
       <Filter>SOURCE\Core\Math\Random</Filter>
     </ClInclude>
@@ -264,9 +261,6 @@
     </ClInclude>
     <ClInclude Include="source\core\system\io\FileUtils.h">
       <Filter>SOURCE\Core\System\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core\utils\StringUtils.h">
-      <Filter>SOURCE\Core\Utils</Filter>
     </ClInclude>
     <ClInclude Include="source\core-ext\constants\distances.h">
       <Filter>SOURCE\Core-ext\Constants</Filter>
@@ -382,6 +376,42 @@
     <ClInclude Include="source\core-ext\containers\arresource.h">
       <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\utils\string.h">
+      <Filter>SOURCE\Core\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\utils\string.hpp">
+      <Filter>SOURCE\Core\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\gfx\pixelFormat.h">
+      <Filter>SOURCE\Core\Gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\gfx\textureFormats.h">
+      <Filter>SOURCE\Core\Gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\gfx\textureStructures.h">
+      <Filter>SOURCE\Core\Gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\hash.h">
+      <Filter>SOURCE\Core\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\vect4d_template.h">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\mem.h">
+      <Filter>SOURCE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\debug.h">
+      <Filter>SOURCE\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Vector2.h">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Vector3.h">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\Vector4.h">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">
@@ -426,15 +456,6 @@
     <ClCompile Include="source\core\math\vect3d_template.cpp">
       <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
     </ClCompile>
-    <ClCompile Include="source\core\math\Vector2d.cpp">
-      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core\math\Vector3d.cpp">
-      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core\math\Vector4d.cpp">
-      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
-    </ClCompile>
     <ClCompile Include="source\core\math\random\Random.cpp">
       <Filter>SOURCE\Core\Math\Random</Filter>
     </ClCompile>
@@ -453,9 +474,6 @@
     <ClCompile Include="source\core\system\io\FileUtils.cpp">
       <Filter>SOURCE\Core\System\IO</Filter>
     </ClCompile>
-    <ClCompile Include="source\core\utils\StringUtils.cpp">
-      <Filter>SOURCE\Core\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="source\core-ext\math\MathQEF.cpp">
       <Filter>SOURCE\Core-ext\Math</Filter>
     </ClCompile>
@@ -470,6 +488,24 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\system\io\serializer\OSerialBinary.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Serializer</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\utils\string.cpp">
+      <Filter>SOURCE\Core\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\vect4d_template.cpp">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Frustum.cpp">
+      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Vector2.cpp">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Vector3.cpp">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\Vector4.cpp">
+      <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

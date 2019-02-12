@@ -12,6 +12,7 @@
 #include <algorithm>
 #include "core/types/types.h"
 #include "core/types/float.h"
+#include "core/math/Vector4.h"
 
 class Color
 {
@@ -30,6 +31,9 @@ public:
 	// Construct color from templated RGBA inputs:
 	template <typename T0, typename T1, typename T2, typename T3>
 	FORCE_INLINE Color (T0 r, T1 g, T2 b, T3 a);
+
+	// Implicit cast to Vector4.
+	operator Vector4f();
 
 	// Linear interpolation
 	FORCE_INLINE static Color Lerp (Color const c_one, Color const c_two, Real t);

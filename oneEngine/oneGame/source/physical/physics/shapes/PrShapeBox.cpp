@@ -3,7 +3,7 @@
 #include "BulletCollision/CollisionShapes/btBoxShape.h"
 #include "BulletCollision/CollisionShapes/btBox2dShape.h"
 
-PrShapeBox::PrShapeBox ( const Vector3d& centered_box_size )
+PrShapeBox::PrShapeBox ( const Vector3f& centered_box_size )
 {
 	if (centered_box_size.z > FLOAT_PRECISION)
 	{
@@ -11,7 +11,7 @@ PrShapeBox::PrShapeBox ( const Vector3d& centered_box_size )
 	}
 	else
 	{
-		shape = new btBoxShape( physical::bt(Vector3d(centered_box_size.x, centered_box_size.y, 32) * 0.5F) );
+		shape = new btBoxShape( physical::bt(Vector3f(centered_box_size.x, centered_box_size.y, 32) * 0.5F) );
 	}
 }
 

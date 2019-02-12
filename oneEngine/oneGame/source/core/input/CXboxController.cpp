@@ -71,19 +71,19 @@ void CXBoxController::Vibrate(int leftVal, int rightVal)
 //	GetAnalog( axis_group ) : Returns the analog input of given group.
 // Inputs are normalized to the -1 to +1 range.
 // Triggers are normally only in the 0 to +1 range.
-Vector3d CXBoxController::GetAnalog ( const arAnalogIndex analogIndex )
+Vector3f CXBoxController::GetAnalog ( const arAnalogIndex analogIndex )
 {
 	if ( analogIndex == kAnalogIndexLeftStick )
 	{
-		Vector2d controllerInput;
+		Vector2f controllerInput;
 		Real controllerStickMagnitude;
 
-		controllerInput = Vector2d ( GetState().Gamepad.sThumbLX, GetState().Gamepad.sThumbLY );
+		controllerInput = Vector2f ( GetState().Gamepad.sThumbLX, GetState().Gamepad.sThumbLY );
 		controllerStickMagnitude = controllerInput.magnitude();
 		// If within deadzone, zero out the input
 		if ( controllerStickMagnitude < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE )
 		{
-			controllerInput = Vector2d(0,0);
+			controllerInput = Vector2f(0,0);
 		}
 		// Else, we normalize the input.
 		else
@@ -99,15 +99,15 @@ Vector3d CXBoxController::GetAnalog ( const arAnalogIndex analogIndex )
 	}
 	else if ( analogIndex == kAnalogIndexRightStick )
 	{
-		Vector2d controllerInput;
+		Vector2f controllerInput;
 		Real controllerStickMagnitude;
 
-		controllerInput = Vector2d ( GetState().Gamepad.sThumbRX, GetState().Gamepad.sThumbRY );
+		controllerInput = Vector2f ( GetState().Gamepad.sThumbRX, GetState().Gamepad.sThumbRY );
 		controllerStickMagnitude = controllerInput.magnitude();
 		// If within deadzone, zero out the input
 		if ( controllerStickMagnitude < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE )
 		{
-			controllerInput = Vector2d(0,0);
+			controllerInput = Vector2f(0,0);
 		}
 		// Else, we normalize the input.
 		else
@@ -123,7 +123,7 @@ Vector3d CXBoxController::GetAnalog ( const arAnalogIndex analogIndex )
 	}
 	else if ( analogIndex == kAnalogIndexTriggers )
 	{
-		Vector2d controllerInput;
+		Vector2f controllerInput;
 
 		controllerInput.x = (Real)(GetState().Gamepad.bLeftTrigger - XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
 		controllerInput.x /= 255.0F - XINPUT_GAMEPAD_TRIGGER_THRESHOLD;

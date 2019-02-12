@@ -1,6 +1,6 @@
 #include "Skeleton.h"
 #include "core-ext/transform/TransformUtility.h"
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 
 void animation::Skeleton::GenerationAnimationTransforms ( Skeleton & n_skeleton )
 {
@@ -52,7 +52,7 @@ int32_t animation::Skeleton::FindInSkeleton ( const Skeleton& n_skeleton, const 
 	// Loop through all names
 	for ( size_t i = 0; i < n_skeleton.names.size(); ++i )
 	{
-		size_t current_match = StringUtils::LargestCommonSubstringLength( comparison, n_skeleton.names[i].c_str() );
+		size_t current_match = core::utils::string::LargestCommonSubstringLength( comparison, n_skeleton.names[i].c_str() );
 		if ( current_match > largest_match )
 		{
 			current_match = largest_match;

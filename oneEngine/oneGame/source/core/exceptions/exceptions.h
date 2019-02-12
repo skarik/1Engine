@@ -12,13 +12,14 @@
 #include "core/types/types.h"
 #include <exception>
 #include <stdexcept>
+#include "core/debug.h"
 
 #if !defined(_ENGINE_DEBUG)
 #	define	EXCEPTION_CATCH_BEGIN
 #	define	EXCEPTION_CATCH_END
 #else
 #	define	EXCEPTION_CATCH_BEGIN try {
-#	define	EXCEPTION_CATCH_END } catch ( const std::exception& e ) { debug::Console->PrintWarning( e.what() ); __debugbreak(); }
+#	define	EXCEPTION_CATCH_END } catch ( const std::exception& e ) { debug::Console->PrintWarning( e.what() ); AR_DEBUG_BREAK(); }
 #endif
 
 namespace core
@@ -59,6 +60,15 @@ namespace core
 	{
 	public:
 		NullReferenceException ( void ) : runtime_error( "Null pointer reference" )
+		{
+			;
+		}
+	};
+
+	class InvalidReferenceException : public std::runtime_error
+	{
+	public:
+		InvalidReferenceException ( void ) : runtime_error( "Invalid pointer reference" )
 		{
 			;
 		}

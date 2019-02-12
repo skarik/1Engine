@@ -1,15 +1,15 @@
 #ifndef _RAY_2D_H_
 #define _RAY_2D_H_
 
-#include "Vector2d.h"
+#include "Vector2.h"
 
 class Ray2d
 {
 public:
-	Ray2d ( const Vector2d& npos, const Vector2d& ndir ) : pos(npos), dir(ndir) {}
+	Ray2d ( const Vector2f& npos, const Vector2f& ndir ) : pos(npos), dir(ndir) {}
 	Ray2d ( void ) : pos(0,0), dir(0,0) {}
 
-	static Ray2d FromSegment ( const Vector2d& source, const Vector2d& target )
+	static Ray2d FromSegment ( const Vector2f& source, const Vector2f& target )
 	{
 		return Ray2d( source, target-source );
 	}
@@ -19,7 +19,7 @@ public:
 	{
 		//Real dx = bs.x - as.x
 		//Real dy = bs.y - as.y
-		Vector2d delta = other.pos - pos;
+		Vector2f delta = other.pos - pos;
 		//det = bd.x * ad.y - bd.y * ad.x
 		Real det = other.dir.cross(dir);
 		//u = (dy * bd.x - dx * bd.y) / det
@@ -28,8 +28,8 @@ public:
 	}
 
 public:
-	Vector2d pos;
-	Vector2d dir;
+	Vector2f pos;
+	Vector2f dir;
 };
 
 

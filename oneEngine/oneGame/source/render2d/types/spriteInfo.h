@@ -10,7 +10,7 @@
 #include "core/types/float.h"
 #include "core/math/vect2d_template.h"
 
-class CTexture;
+class RrTexture;
 
 struct spriteInfo_t
 {
@@ -19,8 +19,8 @@ struct spriteInfo_t
 
 	Vector2i	fullsize;
 
-	CTexture*	tex_sprite;
-	CTexture*	tex_lookup;
+	RrTexture*	tex_sprite;
+	RrTexture*	tex_lookup;
 
 public:
 	spriteInfo_t ( void )

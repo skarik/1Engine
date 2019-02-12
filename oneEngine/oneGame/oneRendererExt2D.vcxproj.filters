@@ -57,9 +57,6 @@
     <ClCompile Include="source\render2d\state\WorldPalette.cpp">
       <Filter>SOURCE\Render2D\State</Filter>
     </ClCompile>
-    <ClCompile Include="source\render2d\texture\TextureLoader.cpp">
-      <Filter>SOURCE\Render2D\Texture</Filter>
-    </ClCompile>
     <ClCompile Include="source\render2d\object\CTextMesh.cpp">
       <Filter>SOURCE\Render2D\Object</Filter>
     </ClCompile>
@@ -97,9 +94,6 @@
     </ClInclude>
     <ClInclude Include="source\render2d\state\WorldPalette.h">
       <Filter>SOURCE\Render2D\State</Filter>
-    </ClInclude>
-    <ClInclude Include="source\render2d\texture\TextureLoader.h">
-      <Filter>SOURCE\Render2D\Texture</Filter>
     </ClInclude>
     <ClInclude Include="source\render2d\object\CTextMesh.h">
       <Filter>SOURCE\Render2D\Object</Filter>

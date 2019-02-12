@@ -9,7 +9,7 @@
 #include "engine-common/dusk/CDuskGUI.h"
 #include "engine-common/entities/CRendererHolder.h"
 
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "render2d/object/Background2D.h"
 
 using namespace M04;
@@ -25,7 +25,7 @@ DeveloperMenu::DeveloperMenu ( void )
 	// Build Dusk Gui
 	{
 		dusk = new CDuskGUI(
-			new CBitmapFont( "YanoneKaffeesatz-R.otf", 16 )
+			new RrFontTexture( "YanoneKaffeesatz-R.otf", 16 )
 		);
 		dusk->SetPixelMode(true);
 

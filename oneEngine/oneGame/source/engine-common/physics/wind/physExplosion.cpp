@@ -1,7 +1,7 @@
 #include "physExplosion.h"
 #include "physical/physics/fluid/IPrWindVolume.h"
 
-physExplosion::physExplosion ( const Vector3d& center, const Real magnitude, const Real range, const Real speed )
+physExplosion::physExplosion ( const Vector3f& center, const Real magnitude, const Real range, const Real speed )
 	: IPrWind()
 {
 	m_center	= center;
@@ -33,9 +33,9 @@ void physExplosion::Update ( Real deltaTime )
 	currentRadius += m_speed * deltaTime;
 }
 
-void physExplosion::GetWindVector ( const Vector3d& pos, Vector3d& windOut ) const
+void physExplosion::GetWindVector ( const Vector3f& pos, Vector3f& windOut ) const
 {
-	Vector3d difVect = pos - m_center;
+	Vector3f difVect = pos - m_center;
 
 	Real dist = difVect.magnitude();
 	if ( dist < sqr(currentRadius) )
@@ -44,6 +44,6 @@ void physExplosion::GetWindVector ( const Vector3d& pos, Vector3d& windOut ) con
 	}
 	else
 	{
-		windOut = Vector3d( 0,0,0 );
+		windOut = Vector3f( 0,0,0 );
 	}
 }

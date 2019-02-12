@@ -41,18 +41,18 @@ public:
 	_FORCE_INLINE_ PHYS_API Real32		getMaxAngularVelocity ( void ) const;
 
 	_FORCE_INLINE_ PHYS_API void			activate ( void );
-	_FORCE_INLINE_ PHYS_API void			applyForce ( const Real32 delta, const Vector3d& vect );
+	_FORCE_INLINE_ PHYS_API void			applyForce ( const Real32 delta, const Vector3f& vect );
 	_FORCE_INLINE_ PHYS_API void			setIdentityRotation ( void );
 
-	_FORCE_INLINE_ PHYS_API void			setPosition ( const Vector3d& );
-	_FORCE_INLINE_ PHYS_API const Vector3d getPosition ( void ) const;
+	_FORCE_INLINE_ PHYS_API void			setPosition ( const Vector3f& );
+	_FORCE_INLINE_ PHYS_API const Vector3f getPosition ( void ) const;
 	_FORCE_INLINE_ PHYS_API void			setRotation ( const Quaternion& );
 	_FORCE_INLINE_ PHYS_API const Quaternion getRotation ( void ) const;
-	_FORCE_INLINE_ PHYS_API void			setPositionAndRotation ( const Vector3d&, const Quaternion& );
-	_FORCE_INLINE_ PHYS_API void			setLinearVelocity ( const Vector3d& );
-	_FORCE_INLINE_ PHYS_API const Vector3d getLinearVelocity ( void ) const;
-	_FORCE_INLINE_ PHYS_API void			setAngularVelocity ( const Vector4d& );
-	_FORCE_INLINE_ PHYS_API const Vector4d getAngularVelocity ( void ) const;
+	_FORCE_INLINE_ PHYS_API void			setPositionAndRotation ( const Vector3f&, const Quaternion& );
+	_FORCE_INLINE_ PHYS_API void			setLinearVelocity ( const Vector3f& );
+	_FORCE_INLINE_ PHYS_API const Vector3f getLinearVelocity ( void ) const;
+	_FORCE_INLINE_ PHYS_API void			setAngularVelocity ( const Vector4f& );
+	_FORCE_INLINE_ PHYS_API const Vector4f getAngularVelocity ( void ) const;
 
 	_FORCE_INLINE_ PHYS_API void			addContactListener ( physContactListener* );
 	_FORCE_INLINE_ PHYS_API void			removeContactListener ( physContactListener* );

@@ -138,15 +138,15 @@ static void __cdecl errorReport( const char* msg, void* userContext )
 		MotionFixed,
 		MotionKeyframed
 	} motionType;
-	Vector3d position;
+	Vector3f position;
 	//Quaternion rotation;
 	float friction;
 	float restitution;
 
 	//==Mass Properties==
 	float mass;
-	Vector3d centerOfMass;
-	//Vector3d inertialTensor;
+	Vector3f centerOfMass;
+	//Vector3f inertialTensor;
 
 	//==Collision Properties==
 	physShape* shape;

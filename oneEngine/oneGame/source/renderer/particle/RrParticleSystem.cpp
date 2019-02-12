@@ -3,7 +3,7 @@
 #include "RrParticleSystem.h"
 
 RrParticleSystem::RrParticleSystem ( void )
-	: CLogicObject()
+	: RrLogicObject()
 {
 	;
 }
@@ -39,6 +39,6 @@ void RrParticleSystem::SetParticleSize ( const size_t size )
 {
 	particle_stride = size * 4;
 
-	int temp_power = math::log2(particle_stride);
-	particle_stride = 1 << temp_power; // TODO: Verify this result
+	uint32_t temp_power = math::log2((uint32_t)particle_stride);
+	particle_stride = 1Ui64 << temp_power; // TODO: Verify this result
 }

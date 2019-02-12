@@ -15,9 +15,9 @@ namespace animation
 	// Aiming information
 	struct injectorAimer_t
 	{
-		Vector3d rotation_spine;
-		Vector3d rotation_neck;
-		Vector3d rotation_head;
+		Vector3f rotation_spine;
+		Vector3f rotation_neck;
+		Vector3f rotation_head;
 		// Controls if shoulder spin is used to split spine rotation.
 		bool spine_split_to_last;
 		// Controls what table is used to pull split values

@@ -9,7 +9,7 @@
 void Render2D::Preprocess::GenerateNormalMap (
 	const pixel_t* i_pixel_data, pixel_t* o_normal_map, 
 	const uint n_image_width, const uint n_image_height,
-	const Vector3d& n_default_normal
+	const Vector3f& n_default_normal
 )
 {
 	const int filter_radius = 3;
@@ -21,12 +21,12 @@ void Render2D::Preprocess::GenerateNormalMap (
 	int xt, yt;
 	const int max_x = (int)n_image_width;
 	const int max_y = (int)n_image_height;
-	const Vector3d n_normal_up		= Vector3d(n_default_normal.x, n_default_normal.y - 1.0F, n_default_normal.z * 0.5F).normal();
-	const Vector3d n_normal_down	= Vector3d(n_default_normal.x, n_default_normal.y + 1.0F, n_default_normal.z * 0.5F).normal();
-	const Vector3d n_normal_left	= Vector3d(n_default_normal.x - 1.0F, n_default_normal.y, n_default_normal.z * 0.5F).normal();
-	const Vector3d n_normal_right	= Vector3d(n_default_normal.x + 1.0F, n_default_normal.y, n_default_normal.z * 0.5F).normal();
-	Vector3d current_normal;
-	Vector3d target_normal;
+	const Vector3f n_normal_up		= Vector3f(n_default_normal.x, n_default_normal.y - 1.0F, n_default_normal.z * 0.5F).normal();
+	const Vector3f n_normal_down	= Vector3f(n_default_normal.x, n_default_normal.y + 1.0F, n_default_normal.z * 0.5F).normal();
+	const Vector3f n_normal_left	= Vector3f(n_default_normal.x - 1.0F, n_default_normal.y, n_default_normal.z * 0.5F).normal();
+	const Vector3f n_normal_right	= Vector3f(n_default_normal.x + 1.0F, n_default_normal.y, n_default_normal.z * 0.5F).normal();
+	Vector3f current_normal;
+	Vector3f target_normal;
 	Vector2i current_aggregate;
 
 	for ( y = 0; y < max_y; ++y )
@@ -69,7 +69,7 @@ void Render2D::Preprocess::GenerateNormalMap (
 			float strength_y = math::saturate( dist_y / (float)filter_radius ) * math::sgn( current_aggregate.y );
 
 			// Create the normal
-			target_normal = Vector3d();
+			target_normal = Vector3f();
 			
 			if ( strength_x >= 0 )
 				target_normal += n_normal_right * strength_x;

@@ -1,20 +1,12 @@
-
 #ifndef _RANDOM_H_
 #define _RANDOM_H_
 
 #include "core/types/types.h"
 #include "core/types/float.h"
+#include "core/math/Vector2.h"
+#include "core/math/Vector3.h"
 
-/*#include <boost/random/linear_congruential.hpp>
-#include <boost/random/uniform_int.hpp>
-#include <boost/random/uniform_real.hpp>
-#include <boost/random/variate_generator.hpp>
-#include <boost/generator_iterator.hpp>
-#include <boost/random/mersenne_twister.hpp>*/
 #include <random>
-
-class Vector2d;
-class Vector3d;
 
 #ifdef min
 	#undef min
@@ -39,10 +31,10 @@ private:
 public:
 	static Real Range ( Real min, Real max );
 
-	static Vector3d PointOnUnitSphere ( void );
-	static Vector3d PointInUnitSphere ( void );
+	static Vector3f PointOnUnitSphere ( void );
+	static Vector3f PointInUnitSphere ( void );
 
-	static Vector2d PointOnUnitCircle ( void );
+	static Vector2f PointOnUnitCircle ( void );
 
 	void Seed ( uint32_t seed )
 	{

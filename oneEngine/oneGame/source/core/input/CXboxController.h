@@ -51,7 +51,7 @@ namespace InputControl
 		//	GetAnalog( axis_group ) : Returns the analog input of given group.
 		// Inputs are normalized to the -1 to +1 range.
 		// Triggers are normally only in the 0 to +1 range.
-		CORE_API Vector3d				GetAnalog ( const arAnalogIndex analogIndex );
+		CORE_API Vector3f				GetAnalog ( const arAnalogIndex analogIndex );
 	};
 
 }

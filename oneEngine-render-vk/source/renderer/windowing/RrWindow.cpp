@@ -29,6 +29,10 @@ RrWindow::RrWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	m_height = 720;
 	m_fullscreen = false;
 
+	// Load window options 
+	CGameSettings::Active()->LoadSettings();
+
+	// Create everything!
 	CreateScreen();
 	CreateConsole();
 	CreateGfxInstance();

@@ -2,7 +2,7 @@
 #include "glDrawing.h"
 
 #include "renderer/window/RrWindow.h"
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 
 #include <thread>
 #include <atomic>
@@ -39,7 +39,7 @@ void glMainSystem::EndFrame ( void )
 
 
 // Get the current main screen buffer
-CRenderTexture* glMainSystem::GetMainScreenBuffer ( void )
+RrRenderTexture* glMainSystem::GetMainScreenBuffer ( void )
 {
 	//return RrWindow::pActive->getScreenBuffer();
 	return SceneRenderer->GetForwardBuffer();

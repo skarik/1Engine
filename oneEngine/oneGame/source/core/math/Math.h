@@ -16,7 +16,7 @@
 
 #include "core/types/types.h"
 #include "core/types/float.h"
-#include "Vector3d.h"
+#include "Vector3.h"
 
 #include <cmath>
 #ifdef _MSC_VER
@@ -150,7 +150,7 @@ namespace math
 	// pointsOnSphere ( int NumberOfPoints )
 	// Generates a list of equidistant points on a sphere. Usable for explosive ideas.
 	// Gives away ownership of the returned array. Remember to delete it.
-	Vector3d* points_on_sphere ( int N );
+	Vector3f* points_on_sphere ( int N );
 
 };
 

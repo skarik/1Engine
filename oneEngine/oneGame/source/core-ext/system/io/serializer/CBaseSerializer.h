@@ -1,13 +1,12 @@
-
-#ifndef _C_BASE_SERIALIZER_H_
-#define _C_BASE_SERIALIZER_H_
+#ifndef C_BASE_SERIALIZER_H_
+#define C_BASE_SERIALIZER_H_
 
 #include "core/types/types.h"
 #include "core/containers/arstring.h"
+#include "core/math/Vector3.h"
 #include <string>
 #include <vector>
 
-class Vector3d;
 class Quaternion;
 class Rotator;
 class Color;
@@ -31,7 +30,7 @@ public:
 	virtual CBaseSerializer&	operator&	( uint64_t & ) { return *this; };
 	virtual CBaseSerializer&	operator&	( std::string & ) { return *this; };
 
-	virtual CBaseSerializer&	operator&	( Vector3d & ) { return *this; };
+	virtual CBaseSerializer&	operator&	( Vector3f & ) { return *this; };
 	virtual CBaseSerializer&	operator&	( Quaternion & ) { return *this; };
 	virtual CBaseSerializer&	operator&	( Rotator & ) { return *this; };
 	virtual CBaseSerializer&	operator&	( Color & ) { return *this; };
@@ -57,4 +56,4 @@ protected:
 
 typedef CBaseSerializer Serializer;
 
-#endif//_C_BASE_SERIALIZER_H_
+#endif//C_BASE_SERIALIZER_H_

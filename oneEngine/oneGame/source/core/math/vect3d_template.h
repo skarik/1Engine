@@ -12,9 +12,9 @@ namespace core
 	{
 	public:
 		vect3d_template ();												//Default constructor
-		//vect3d_template (Vector2d const& old, REAL const new_z=0);
-		//vect3d_template (Vector3d const& old);								//Copy constructor
-		//vect3d_template (Vector4d const& old);								//Copy constructor
+		//vect3d_template (Vector2f const& old, REAL const new_z=0);
+		//vect3d_template (Vector3f const& old);								//Copy constructor
+		//vect3d_template (Vector4f const& old);								//Copy constructor
 		vect3d_template (vect3d_template<REAL> const& old );
 		vect3d_template (REAL const& new_x, REAL const& new_y, REAL const& new_z);		//Component input constructor
 		vect3d_template (const REAL* arr);							// Array input constructor Added: 8/30/12
@@ -46,8 +46,8 @@ namespace core
 
 		//vect3d_template<REAL> toEulerAngles ( void ) const;					//returns a euler angle vector from a direction vector Added: 7/6/12
 
-		//Vector3d operator* ( Matrix4x4 const& right ) const;	//Matrix multiplication added: 7/9/12
-		//Vector3d operator* ( Matrix3x3 const& right ) const;		//Rotator multiplication added: 1/5/13
+		//Vector3f operator* ( Matrix4x4 const& right ) const;	//Matrix multiplication added: 7/9/12
+		//Vector3f operator* ( Matrix3x3 const& right ) const;		//Rotator multiplication added: 1/5/13
 		//vect3d_template<REAL> rvrMultMatx ( Matrix4x4 const& right ) const;
 		//vect3d_template<REAL> rvrMultMatx ( Matrix3x3 const& right ) const;
 
@@ -62,11 +62,11 @@ namespace core
 
 	};
 
-	typedef vect3d_template<double> Vector3d_d;
+	typedef vect3d_template<double> Vector3f_d;
 	typedef vect3d_template<int32_t> Vector3i;
 };
 
-typedef core::Vector3d_d Vector3d_d;
+typedef core::Vector3f_d Vector3f_d;
 typedef core::Vector3i Vector3i;
 
 #endif//_ENGINE_VECT3D_TEMPLATE_H_

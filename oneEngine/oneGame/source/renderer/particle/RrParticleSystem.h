@@ -2,7 +2,7 @@
 #define _RENDERER_PARTICLE_PARTICLE_SYSTEM_H_
 
 #include "core/types/types.h"
-#include "renderer/logic/CLogicObject.h"
+#include "renderer/logic/RrLogicObject.h"
 
 #define PARTICLE_CONFIG_MAX_SIZE 256
 #define PARTICLE_CONFIG_VERIFY(config) static_assert(sizeof(config) < PARTICLE_CONFIG_MAX_SIZE, "Configuration out of size range");
@@ -18,7 +18,7 @@ namespace renderer
 	}
 }
 
-class RrParticleSystem : public CLogicObject
+class RrParticleSystem : public RrLogicObject
 {
 public:
 	RENDER_API explicit		RrParticleSystem ( void );

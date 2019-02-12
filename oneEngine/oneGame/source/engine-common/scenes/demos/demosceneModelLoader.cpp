@@ -6,7 +6,7 @@
 
 #include "engine/utils/CDeveloperConsole.h"
 
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/object/shapes/CPrimitiveCube.h"
 #include "renderer/object/model/Model.h"
 
@@ -23,9 +23,9 @@ void demosceneModelLoader::LoadScene ( void )
 
 	// Create camera
 	/*{
-		CCamera* cam = new CCamera();
-		cam->transform.position = Vector3d(-3.0F, +3.0F, 1.0F);
-		cam->transform.rotation = Rotator(Vector3d(0, -10.0F, 45.0F));
+		RrCamera* cam = new RrCamera();
+		cam->transform.position = Vector3f(-3.0F, +3.0F, 1.0F);
+		cam->transform.rotation = Rotator(Vector3f(0, -10.0F, 45.0F));
 		cam->SetActive();
 		(new CRenderCameraHolder(cam))->RemoveReference();
 	}*/
@@ -33,8 +33,8 @@ void demosceneModelLoader::LoadScene ( void )
 	// Create player
 	{
 		CPlayer* player = new CPlayer();
-		player->transform.world.position = Vector3d(-3.0F, +3.0F, 1.0F);
-		player->transform.world.rotation = Rotator(Vector3d(0, -10.0F, 45.0F));
+		player->transform.world.position = Vector3f(-3.0F, +3.0F, 1.0F);
+		player->transform.world.rotation = Rotator(Vector3f(0, -10.0F, 45.0F));
 		player->RemoveReference();
 	}
 
@@ -46,11 +46,11 @@ void demosceneModelLoader::LoadScene ( void )
 
 	// Create acorn
 	{
-		CModel* model = new CModel("models/demos/female elf.fbx");
-		model->transform.scale = Vector3d(1,1,1) / 304.8F * 2.7F;
-		model->transform.rotation = Vector3d(0.0F, 0, 135.0F);
-		//model->transform.position = Vector3d(-1.0F, +1.0F, -1.3F);
-		model->transform.position = Vector3d(0.0F, 0.0F, 0.0F);
+		RrCModel* model = new RrCModel("models/demos/female elf.fbx");
+		model->transform.scale = Vector3f(1,1,1) / 304.8F * 2.7F;
+		model->transform.rotation = Vector3f(0.0F, 0, 135.0F);
+		//model->transform.position = Vector3f(-1.0F, +1.0F, -1.3F);
+		model->transform.position = Vector3f(0.0F, 0.0F, 0.0F);
 		(new CRenderLogicHolder(model))->RemoveReference();
 	}
 

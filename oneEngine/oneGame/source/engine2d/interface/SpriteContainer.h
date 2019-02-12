@@ -5,17 +5,17 @@
 #include "core/math/Math2d.h"
 #include "core/math/Math3d.h"
 #include "core/math/vect2d_template.h"
-#include "renderer/logic/CLogicObject.h"
+#include "renderer/logic/RrLogicObject.h"
 
 class CEditableRenderable2D;
 
 namespace Engine2D
 {
-	class SpriteContainer : private CLogicObject
+	class SpriteContainer : private RrLogicObject
 	{
 	protected:
 		//		SpriteContainer (Constructor)
-		ENGINE2D_API explicit		SpriteContainer ( Vector3d* position, Real* angle = NULL, Vector3d* scale = NULL );
+		ENGINE2D_API explicit		SpriteContainer ( Vector3f* position, Real* angle = NULL, Vector3f* scale = NULL );
 		//		SpriteContinaer (Destructor)
 		ENGINE2D_API				~SpriteContainer ( void );
 
@@ -72,9 +72,9 @@ namespace Engine2D
 	private:
 		// Source transform pointers:
 
-		Vector3d const*				m_sourcePosition;
+		Vector3f const*				m_sourcePosition;
 		Real const*					m_sourceAngle;
-		Vector3d const*				m_sourceScale;
+		Vector3f const*				m_sourceScale;
 
 		// Depth offset used when building mesh:
 

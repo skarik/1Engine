@@ -1,95 +1,91 @@
 #include "CRenderable3D.h"
-#include "renderer/system/glMainSystem.h"
-#include "renderer/system/glDrawing.h"
-#include "renderer/material/RrMaterial.h"
+#include "renderer/material/RrPass.h"
+#include "renderer/gpuw/Device.h"
 
 CRenderable3D::CRenderable3D ( void )
 	: CRenderableObject()
 {
 	// Start with empty buffers
-	m_buffer_verts = NIL;
-	m_buffer_tris = NIL;
+	//m_buffer_verts = NIL;
+	//m_buffer_tris = NIL;
 
 	// Start off with empty model data
-	m_modeldata.triangleNum = 0;
-	m_modeldata.triangles = NULL;
+	memset(&m_modeldata, 0, sizeof(m_modeldata));
+	m_modeldata.indexNum = 0;
 	m_modeldata.vertexNum = 0;
-	m_modeldata.vertices = NULL;
 }
 
 CRenderable3D::~CRenderable3D ( void )
-{ GL_ACCESS
-
+{ 
 	// Still have to release buffers
-	if ( m_buffer_verts != NIL ) {
+	/*if ( m_buffer_verts != NIL ) {
 		GL.FreeBuffer( &m_buffer_verts );
 		m_buffer_verts = NIL;
 	}
 	if ( m_buffer_tris != NIL ) {
 		GL.FreeBuffer( &m_buffer_tris );
 		m_buffer_tris = NIL;
-	}
+	}*/
+	m_meshBuffer.FreeMeshBuffers();
 }
 
 //		PushModelData()
 // Takes the information inside of m_modeldata and pushes it to the GPU so that it may be rendered.
 void CRenderable3D::PushModeldata ( void )
-{ GL_ACCESS
-	GL.BindVertexArray( 0 );
-
-	// Create new buffers
-	if ( m_buffer_verts == NIL )
-		GL.CreateBuffer( &m_buffer_verts );
-	if ( m_buffer_tris == NIL )
-		GL.CreateBuffer( &m_buffer_tris );
-	//bShaderSetup = false; // With making new buffers, shader is now not ready
-
-	// Bind to some buffer objects
-	GL.BindBuffer( GL_ARRAY_BUFFER,			m_buffer_verts ); // for vertex coordinates
-	GL.BindBuffer( GL_ELEMENT_ARRAY_BUFFER,	m_buffer_tris ); // for face vertex indexes
-
-	// Copy data to the buffer
-	GL.UploadBuffer( GL_ARRAY_BUFFER,
-		sizeof(arModelVertex) * (m_modeldata.vertexNum),
-		m_modeldata.vertices,
-		GL_STATIC_DRAW );
-	GL.UploadBuffer( GL_ELEMENT_ARRAY_BUFFER,
-		sizeof(arModelTriangle) * (m_modeldata.triangleNum),
-		m_modeldata.triangles,
-		GL_STATIC_DRAW );
-
-	// bind with 0, so, switch back to normal pointer operation
-	GL.UnbindBuffer( GL_ARRAY_BUFFER );
-	GL.UnbindBuffer( GL_ELEMENT_ARRAY_BUFFER );
+{
+	m_meshBuffer.InitMeshBuffers(&m_modeldata);
 }
 
 //		PreRender()
 // Push the uniform properties
-bool CRenderable3D::PreRender ( void )
+bool CRenderable3D::PreRender ( rrCameraPass* cameraPass )
 {
-	m_material->prepareShaderConstants(transform.world);
+	PushCbufferPerObject(transform.world, cameraPass);
 	return true;
 }
 
 //		Render()
 // Render the model using the 2D engine's style
-bool CRenderable3D::Render ( const char pass )
-{ GL_ACCESS
-	// Do not render if no buffer to render with
-	if ( m_buffer_verts == 0 || m_buffer_tris == 0 )
+bool CRenderable3D::Render ( const rrRenderParams* params )
+{ 
+	//// Do not render if no buffer to render with
+	//if ( m_buffer_verts == 0 || m_buffer_tris == 0 )
+	//{
+	//	return true;
+	//}
+
+	//// For now, we will render the same way as the 3d meshes render
+	//m_material->m_bufferSkeletonSize = 0;
+	//m_material->m_bufferMatricesSkinning = 0;
+	//m_material->bindPass(pass);
+	//BindVAO( pass, m_buffer_verts, m_buffer_tris );
+	//GL.DrawElements( GL_TRIANGLES, m_modeldata.triangleNum*3, GL_UNSIGNED_INT, 0 );
+
+	// otherwise we will render the same way 3d meshes render
 	{
-		return true;
+		if ( !m_meshBuffer.m_mesh_uploaded )
+			return true; // Only render when have a valid mesh and rendering enabled
+
+		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
+		gpu::Pipeline* pipeline = GetPipeline( params->pass );
+		gfx->setPipeline(pipeline);
+		// bind the vertex buffers
+		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
+			if (m_meshBuffer.m_bufferEnabled[i])
+				gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
+		// bind the index buffer
+		gfx->setIndexBuffer(&m_meshBuffer.m_indexBuffer, gpu::kIndexFormatUnsigned16);
+		// bind the cbuffers: TODO
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
+		// draw now
+		gfx->drawIndexed(m_modeldata.indexNum, 0);
 	}
 
-	// For now, we will render the same way as the 3d meshes render
-	m_material->m_bufferSkeletonSize = 0;
-	m_material->m_bufferMatricesSkinning = 0;
-	m_material->bindPass(pass);
-	//parent->SendShaderUniforms(this);
-	BindVAO( pass, m_buffer_verts, m_buffer_tris );
-	GL.DrawElements( GL_TRIANGLES, m_modeldata.triangleNum*3, GL_UNSIGNED_INT, 0 );
-
-	//GL.endOrtho();
 	// Success!
 	return true;
 }

@@ -16,17 +16,17 @@
 
 #include "renderer/system/glMainSystem.h"
 
-#include "renderer/resource/CModelMaster.h"
+#include "renderer/resource/RrCModelMaster.h"
 #include "renderer/object/mesh/CMesh.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 
 #include "renderer/logic/model/morpher/CMorpher.h"
 
-#include "renderer/debug/CDebugDrawer.h"
+#include "renderer/debug/RrDebugDrawer.h"
 
 // Constructor
 CSkinnedModel::CSkinnedModel( const string &sFilename )
-	: CModel()
+	: RrCModel()
 {
 	debug::Console->PrintMessage( "Loading model \"" + sFilename + "\"\n" );
 	// Set model name to input filename
@@ -146,7 +146,7 @@ CSkinnedModel::CSkinnedModel( const string &sFilename )
 CSkinnedModel::~CSkinnedModel ( void )
 {
 	// RenderResources::Active()->ReleaseMeshSet( myModelFilename.c_str() );
-	// The model references should decrement automatically from CModel's destructor, thus no need for ReleaseMeshSet
+	// The model references should decrement automatically from RrCModel's destructor, thus no need for ReleaseMeshSet
 	if ( pMorpher != NULL ) {
 		RenderResources::Active()->ReleaseMorphSet( myModelFilename.c_str() );
 		pMorpher = NULL;
@@ -171,7 +171,7 @@ CSkinnedModel::~CSkinnedModel ( void )
 void CSkinnedModel::PreStep ( void )
 {
 	// Update the mesh objects
-	CModel::PreStep();
+	RrCModel::PreStep();
 
 	// If not referenced perfectly, convert the pose into a GL compatible form
 	if ( referenceToCopySkeletonFrom != NULL )
@@ -359,7 +359,7 @@ void CSkinnedModel::PassBoneMatrices ( RrMaterial* mat )
 	delete [] sys_BoneMatrix;
 }
 */
-//#include "CDebugDrawer.h"
+//#include "RrDebugDrawer.h"
 
 void CSkinnedModel::DebugRenderSkeleton ( void )
 {
@@ -368,10 +368,10 @@ void CSkinnedModel::DebugRenderSkeleton ( void )
 		//if ( bone->transform.GetParent() != NULL )
 		if ( skeleton.parent[i] >= 0 )
 		{
-			//CDebugDrawer::DrawLine( bone->transform.position + transform.position, bone->transform.GetParent()->position + transform.position );
+			//RrDebugDrawer::DrawLine( bone->transform.position + transform.position, bone->transform.GetParent()->position + transform.position );
 			//if (( bone->transform.scale.x < 0 )||( bone->transform.scale.y < 0 )||( bone->transform.scale.z < 0 ))
-			//	CDebugDrawer::DrawLine( bone->transform.position + transform.position, transform.position );
-			//CDebugDrawer::DrawLine( bone->transform.position + transform.position, bone->transform.position + transform.position + bone->transform.Forward()*0.3f );
+			//	RrDebugDrawer::DrawLine( bone->transform.position + transform.position, transform.position );
+			//RrDebugDrawer::DrawLine( bone->transform.position + transform.position, bone->transform.position + transform.position + bone->transform.Forward()*0.3f );
 		}
 		Color t_drawColor ( 1,1,0,1 );
 		string bone_name = skeleton.names[i];
@@ -381,12 +381,12 @@ void CSkinnedModel::DebugRenderSkeleton ( void )
 		else if ( bone_name.find( "Bip001 L" ) != string::npos ) {
 			t_drawColor = Color( 0,0,1,1 );
 		}
-		//Vector3d t_bonePosition = bone->transform.position + transform.position;
-		Vector3d t_bonePosition = skeleton.current_transform[i].world.position + transform.position;
+		//Vector3f t_bonePosition = bone->transform.position + transform.position;
+		Vector3f t_bonePosition = skeleton.current_transform[i].world.position + transform.position;
 		Rotator& t_rotation = skeleton.current_transform[i].world.rotation;
-		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3d::forward * 0.2f, t_drawColor );
-		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3d(0,0,1) * 0.2f, t_drawColor );
-		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3d(0,1,0) * 0.2f, t_drawColor );
+		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3f::forward * 0.2f, t_drawColor );
+		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3f(0,0,1) * 0.2f, t_drawColor );
+		debug::Drawer->DrawLine( t_bonePosition, t_bonePosition + t_rotation * Vector3f(0,1,0) * 0.2f, t_drawColor );
 		// loop through children
 		/*for ( std::vector<Transform*>::iterator it = bone->transform.children.begin(); it != bone->transform.children.end(); it++ )
 		{

@@ -3,14 +3,13 @@
 
 #include "core/types/types.h"
 #include "renderer/types/types.h"
-#include "renderer/types/textureFormats.h"
 
 namespace gpu
 {
 	enum TransferStyle
 	{
 		kTransferStatic,
-		kTransferDynamic,
+		//kTransferDynamic,
 		kTransferStream,
 	};
 }

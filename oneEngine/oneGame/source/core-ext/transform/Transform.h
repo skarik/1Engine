@@ -17,9 +17,9 @@
 
 #include "core/common.h"
 #include "core/types/float.h"
-#include "core/math/Vector2d.h"
-#include "core/math/Vector3d.h"
-#include "core/math/Vector4d.h"
+#include "core/math/Vector2.h"
+#include "core/math/Vector3.h"
+#include "core/math/Vector4.h"
 #include "core/math/vect2d_template.h"
 #include "core/math/vect3d_template.h"
 #include "core/math/Quaternion.h"
@@ -34,7 +34,7 @@ namespace core
 {
 	typedef TransformLite Transform;
 
-	CORE_API	extern Vector3d_d	world_origin;
+	CORE_API	extern Vector3f_d	world_origin;
 }
 
 #endif//CORE_TRANSFORM_H_
@@ -49,9 +49,9 @@ namespace core
 
 #include "core/common.h"
 #include "core/types/float.h"
-#include "core/math/Vector2d.h"
-#include "core/math/Vector3d.h"
-#include "core/math/Vector4d.h"
+#include "core/math/Vector2.h"
+#include "core/math/Vector3.h"
+#include "core/math/Vector4.h"
 #include "core/math/Quaternion.h"
 #include "core/math/matrix/CMatrix.h"
 #include "core/math/Rotator.h"
@@ -61,7 +61,7 @@ namespace core
 // Prototypes
 class CGameBehavior;		// Engine
 class CRenderableObject;	// Renderer
-class CLogicObject;			// Renderer
+class RrLogicObject;			// Renderer
 
 // Using
 using std::string;
@@ -75,17 +75,17 @@ public:
 	CORE_API CTransform ( void );
 	CORE_API ~CTransform ( void );
 
-	CORE_API void SetPosition( Vector3d );
+	CORE_API void SetPosition( Vector3f );
 	CORE_API void SetPosition( Real, Real, Real );
-	CORE_API void SetScaling( Vector3d );
+	CORE_API void SetScaling( Vector3f );
 	CORE_API void SetScaling( Real, Real, Real );
-	CORE_API void SetRotation( Vector3d );
+	CORE_API void SetRotation( Vector3f );
 	CORE_API void SetRotation( Real, Real, Real );
 	//DEPRECATED( void SetTransform ( Matrix4x4 & ) );
-	CORE_API void SetTransform ( Vector3d, Rotator, Vector3d );
+	CORE_API void SetTransform ( Vector3f, Rotator, Vector3f );
 	//DEPRECATED( void SetLocalTransform ( Matrix4x4 & ) );
-	//DEPRECATED( void SetLocalTransform ( Vector3d, Vector3d, Vector3d ) );
-	CORE_API void SetLocalTransform ( Vector3d, Rotator, Vector3d );
+	//DEPRECATED( void SetLocalTransform ( Vector3f, Vector3f, Vector3f ) );
+	CORE_API void SetLocalTransform ( Vector3f, Rotator, Vector3f );
 
 	CORE_API void SetTransform ( const XTransform& );
 	CORE_API void SetLocalTransform ( const XTransform& );
@@ -172,22 +172,22 @@ public:
 	} ownerType;
 	void*	owner;
 
-	Vector3d position;
-	Vector3d scale;
+	Vector3f position;
+	Vector3f scale;
 	Rotator  rotation;
 
 private:
 	XrTransform previous;
 
 public:
-	Vector3d localPosition;
-	Vector3d localScale;
+	Vector3f localPosition;
+	Vector3f localScale;
 	Rotator localRotation;
 
 public:
-	CORE_API Vector3d Forward ( void );
-	CORE_API Vector3d Up ( void ); 
-	CORE_API Vector3d Side ( void ); 
+	CORE_API Vector3f Forward ( void );
+	CORE_API Vector3f Up ( void ); 
+	CORE_API Vector3f Side ( void ); 
 
 public:
 	std::vector<CTransform*> children;

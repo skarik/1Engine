@@ -2,8 +2,10 @@
 #define RENDERER_C_LOAD_SCREEN_INJECTOR_H_
 
 #include "renderer/object/CRenderableObject.h"
+#include "renderer/object/mesh/system/rrMeshBuffer.h"
 
-class CBitmapFont;
+class RrFontTexture;
+class IrrMeshBuilder;
 
 class CLoadScreenInjector : public CRenderableObject
 {
@@ -17,11 +19,18 @@ public:
 	// Used for fading the screen out smoothly.
 	RENDER_API void			setAlpha ( Real new_alpha );
 
-	bool PreRender ( void ) override;
-	bool Render ( const char pass ) override;
+	//	BeginRender() : Create the mesh & stream to the GPU
+	bool					BeginRender ( void ) override;
+	//	PreRender() : Prepare for the camera
+	bool					PreRender ( rrCameraPass* pass ) override;
+	//	Render() : Rneder the created mesh
+	bool					Render ( const rrRenderParams* params ) override;
 private:
-	CBitmapFont*	m_fntNotifier;
-	Real			m_currentAlpha;
+	RrFontTexture*		m_fntNotifier;
+	Real				m_currentAlpha;
+	IrrMeshBuilder*		m_meshBuilder;
+	arModelData			m_mesh;
+	rrMeshBuffer		m_meshBuffer;
 };
 
 

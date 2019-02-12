@@ -1,7 +1,7 @@
 #ifndef AUDIO_LISTENER_H_
 #define AUDIO_LISTENER_H_
 
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 
 namespace audio
 {
@@ -15,14 +15,14 @@ namespace audio
 		AUDIO_API void			Destroy ( void );
 
 	public:
-		Vector3d position;
-		Vector3d velocity;
-		Vector3d orient_forward;
-		Vector3d orient_up;
+		Vector3f position;
+		Vector3f velocity;
+		Vector3f orient_forward;
+		Vector3f orient_up;
 
 		bool queue_destruction;
 	private:
-		Vector3d position_prev;
+		Vector3f position_prev;
 	};
 }
 

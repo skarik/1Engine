@@ -5,8 +5,8 @@
 #include "core/types/float.h"
 #include "core/math/Color.h"
 
-class CRenderState;
-class RrMaterial;
+class RrRenderer;
+//class RrMaterial;
 
 namespace renderer
 {
@@ -24,13 +24,13 @@ namespace renderer
 		Color	fogColor;
 		bool	fogEnabled;	
 	private:
-		friend CRenderState;
-		friend RrMaterial;
+		friend RrRenderer;
+		//friend RrMaterial;
 
 		Real	fogScale;
 	};
 
-	// Bleh
+	// Global state of current renderer options.
 	RENDER_API extern renderSettings_t Settings;
 }
 

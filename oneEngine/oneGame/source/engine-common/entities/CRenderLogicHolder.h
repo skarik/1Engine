@@ -4,19 +4,19 @@
 
 #include "engine/behavior/CGameBehavior.h"
 
-class CLogicObject;
+class RrLogicObject;
 
 class CRenderLogicHolder : public CGameBehavior
 {
 
 public:
-	ENGCOM_API explicit			CRenderLogicHolder ( CLogicObject* renderer );
+	ENGCOM_API explicit			CRenderLogicHolder ( RrLogicObject* renderer );
 	ENGCOM_API					~CRenderLogicHolder ( void );
 	ENGCOM_API void				Update ( void );
 
-	ENGCOM_API CLogicObject*	GetRenderer ( void );
+	ENGCOM_API RrLogicObject*	GetRenderer ( void );
 private:
-	CLogicObject*	m_renderer;
+	RrLogicObject*	m_renderer;
 };
 
 #endif

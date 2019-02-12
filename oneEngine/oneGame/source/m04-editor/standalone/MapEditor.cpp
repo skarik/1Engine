@@ -13,10 +13,10 @@
 #include "engine-common/entities/CRendererHolder.h"
 
 #include "renderer/state/Settings.h"
-#include "renderer/texture/CBitmapFont.h"
-#include "renderer/camera/CCamera.h"
-#include "renderer/debug/CDebugDrawer.h"
-#include "renderer/light/CLight.h"
+#include "renderer/texture/RrFontTexture.h"
+#include "renderer/camera/RrCamera.h"
+#include "renderer/debug/RrDebugDrawer.h"
+#include "renderer/light/RrLight.h"
 #include "renderer/material/RrMaterial.h"
 #include "render2d/camera/COrthoCamera.h"
 #include "render2d/object/Background2D.h"
@@ -59,7 +59,7 @@ MapEditor::MapEditor ( void )
 		COrthoCamera* cam = new COrthoCamera();
 		// Set camera options
 		cam->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
-		cam->viewport_target.size = Vector2d( 1280,720 ) * 0.5f;
+		cam->viewport_target.size = Vector2f( 1280,720 ) * 0.5f;
 		cam->SetActive(); // Mark it as the main camera to use IMMEDIATELY
 						  // Use this new camera as our main camera
 		m_target_camera = cam;
@@ -123,7 +123,7 @@ MapEditor::MapEditor ( void )
 	// Build Dusk Gui
 	{
 		dusk = new CDuskGUI(
-			new CBitmapFont( "YanoneKaffeesatz-R.otf", 16 )
+			new RrFontTexture( "YanoneKaffeesatz-R.otf", 16 )
 		);
 		dusk->SetPixelMode(true);
 
@@ -347,7 +347,7 @@ void MapEditor::doViewNavigationDrag ( void )
 		if ( Input::Mouse( Input::MBMiddle ) || ( Input::Mouse( Input::MBRight ) && Input::Key( Keys.Control ) ) )
 		{
 			m_navigation_busy = true;
-			m_target_camera_position -= Vector2d(
+			m_target_camera_position -= Vector2f(
 				Input::DeltaMouseX(), Input::DeltaMouseY()
 			);
 		}
@@ -376,7 +376,7 @@ void MapEditor::doTileEditing ( void )
 			// Stop rebuild
 			m_tilemap->ProcessPause();
 			// Build div count needed 
-			int divsNeeded = int(Vector2d( Input::DeltaMouseX(),Input::DeltaMouseY() ).magnitude() / std::min( m_tilemap->m_tileset->tilesize_x,m_tilemap->m_tileset->tilesize_y )) + 1;
+			int divsNeeded = int(Vector2f( Input::DeltaMouseX(),Input::DeltaMouseY() ).magnitude() / std::min( m_tilemap->m_tileset->tilesize_x,m_tilemap->m_tileset->tilesize_y )) + 1;
 			for ( int i = 0; i <= divsNeeded; ++i )
 			{
 				// Do tile editing across the entire range to compensate for lower framerates
@@ -408,7 +408,7 @@ void MapEditor::doTileEditing ( void )
 void MapEditor::_doTileEditingSub ( float mousex, float mousey )
 {
 	// Grab mouse position in the world
-	Vector3d worldpos = m_target_camera->ScreenToWorldPos( Vector2d( mousex/(Real)Screen::Info.width, mousey/(Real)Screen::Info.height ) );
+	Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( mousex/(Real)Screen::Info.width, mousey/(Real)Screen::Info.height ) );
 	// convert worldpos to indexes
 	int ix = (int) (worldpos.x / m_tilemap->m_tileset->tilesize_x); ix *= m_tilemap->m_tileset->tilesize_x;
 	int iy = (int) (worldpos.y / m_tilemap->m_tileset->tilesize_y); iy *= m_tilemap->m_tileset->tilesize_y;
@@ -490,7 +490,7 @@ void MapEditor::doAreaEditing ( void )
 	if ( !m_navigation_busy )
 	{
 		// Grab mouse position in the world
-		Vector3d worldpos = m_target_camera->ScreenToWorldPos( Vector2d( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
 
 		Engine2D::Area2D* t_area_selection = NULL;
 		int t_corner_selection = -1;
@@ -502,8 +502,8 @@ void MapEditor::doAreaEditing ( void )
 		for ( auto area = t_area_listing.begin(); area != t_area_listing.end(); ++area )
 		{
 			Rect rect = (*area)->m_rect;
-			rect.pos -= Vector2d(1,1);
-			rect.size += Vector2d(1,1)*2;
+			rect.pos -= Vector2f(1,1);
+			rect.size += Vector2f(1,1)*2;
 			if ( rect.Contains( worldpos ) )
 			{
 				// Mouse is in, use this
@@ -540,7 +540,7 @@ void MapEditor::doAreaEditing ( void )
 				// Create a new area
 				Engine2D::Area2D* area = new Engine2D::Area2D();
 				area->m_rect.pos = worldpos;
-				area->m_rect.size = Vector2d( 32,32 );
+				area->m_rect.size = Vector2f( 32,32 );
 				area->RemoveReference();
 				m_current_submode = SubMode::Dragging;
 				m_area_target = area;
@@ -666,7 +666,7 @@ void MapEditor::doObjectEditing ( void )
 	if ( !m_navigation_busy )
 	{
 		// Grab mouse position in the world
-		Vector3d worldpos = m_target_camera->ScreenToWorldPos( Vector2d( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
 		worldpos.z = 0;
 
 		M04::EditorObject* t_object_selection = NULL;
@@ -732,19 +732,19 @@ void MapEditor::doObjectEditing ( void )
 			if ( m_drag_handle->HasFocus() && Input::Key( Keys.Alt ) )
 			{
 				// Set visual snapping
-				m_drag_handle->SetSnapping( Vector2d( m_tilemap->m_tileset->tilesize_x * 0.5F, m_tilemap->m_tileset->tilesize_y * 0.5F ) );
-				Vector3d objpos = m_object_target->position;
+				m_drag_handle->SetSnapping( Vector2f( m_tilemap->m_tileset->tilesize_x * 0.5F, m_tilemap->m_tileset->tilesize_y * 0.5F ) );
+				Vector3f objpos = m_object_target->position;
 				// Snap to half-tile
 				objpos.x = (Real) math::round( objpos.x * 2 / m_tilemap->m_tileset->tilesize_x ) * m_tilemap->m_tileset->tilesize_x * 0.5F;
 				objpos.y = (Real) math::round( objpos.y * 2 / m_tilemap->m_tileset->tilesize_y ) * m_tilemap->m_tileset->tilesize_y * 0.5F;
 				// Set positions to snapped values
 				m_object_target->position = objpos;
-				m_drag_handle->SetRenderPosition( Vector3d(objpos.x, objpos.y, -495.0F) );
-				//m_drag_handle->SetRenderPosition( Vector3d(objpos.x, objpos.y, objpos.z) );
+				m_drag_handle->SetRenderPosition( Vector3f(objpos.x, objpos.y, -495.0F) );
+				//m_drag_handle->SetRenderPosition( Vector3f(objpos.x, objpos.y, objpos.z) );
 			}
 			else
 			{	// Reset snapping of tool
-				m_drag_handle->SetSnapping( Vector2d(0,0) );
+				m_drag_handle->SetSnapping( Vector2f(0,0) );
 			}
 
 			// Light gizmo:
@@ -1910,7 +1910,7 @@ void MapEditor::uiStepBottomEdge ( void )
 	if ( !dusk->GetMouseInGUI() )
 	{
 		// Update mouse position on the GUI
-		Vector3d worldpos = m_target_camera->ScreenToWorldPos( Vector2d( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
 
 		// Round the position to half-tile if ALT is held down
 		if ( !Input::Key( Keys.Alt ) )

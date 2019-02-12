@@ -2,11 +2,12 @@
 #include "CDeveloperConsoleUI.h"
 #include "core/input/CInput.h"
 #include "core/settings/CGameSettings.h"
-#include "renderer/texture/CBitmapFont.h"
-#include "renderer/material/RrMaterial.h"
+#include "renderer/texture/RrFontTexture.h"
+#include "renderer/material/RrPass.h"
+#include "renderer/material/RrShaderProgram.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/object/immediate/immediate.h"
 
 CDeveloperConsoleUI*	ActiveConsoleUI = NULL;
@@ -17,24 +18,24 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 {
 	ActiveConsoleUI = this;
 
-	renderType = renderer::kRLV2D;
+	fntMenu	= RrFontTexture::Load( "monofonto.ttf", 16, kFW_Bold );
+	RrPass fontPass;
+	fontPass.m_layer = renderer::kRenderLayerV2D;
+	fontPass.m_type = kPassTypeForward;
+	fontPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
+	fontPass.setTexture( TEX_MAIN, fntMenu );
+	fontPass.utilSetupAs2D();
+	fontPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
+	PassInitWithInput(1, &fontPass);
 
-	fntMenu	= new CBitmapFont ( "monofonto.ttf", 16, FW_BOLD );
-	matfntMenu = new RrMaterial;
-	matfntMenu->m_diffuse = Color( 1.0F,1,1 );
-	matfntMenu->setTexture( TEX_MAIN, fntMenu );
-	matfntMenu->passinfo.push_back( RrPassForward() );
-	matfntMenu->passinfo[0].set2DCommon();
-	matfntMenu->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
-
-	matMenu = new RrMaterial;
-	matMenu->m_diffuse = Color( 1.0F,1,1 );
-	matMenu->setTexture( TEX_MAIN, new CTexture("null") );
-	matMenu->passinfo.push_back( RrPassForward() );
-	matMenu->passinfo[0].set2DCommon();
-	matMenu->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
-
-	SetMaterial( matfntMenu );
+	RrPass shapesPass;
+	shapesPass.m_layer = renderer::kRenderLayerV2D;
+	shapesPass.m_type = kPassTypeForward;
+	shapesPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
+	shapesPass.setTexture( TEX_MAIN, RrTexture::Load(renderer::kTextureWhite) );
+	shapesPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
+	shapesPass.utilSetupAs2D();
+	PassInitWithInput(0, &shapesPass);
 
 	transform.world.position.z = -35;
 }
@@ -45,27 +46,23 @@ CDeveloperConsoleUI::~CDeveloperConsoleUI ( void )
 		ActiveConsoleUI = NULL;
 	}
 
-	delete fntMenu;
-	matMenu->removeReference();
-	matfntMenu->removeReference();
-	// matfntMenu is the main material, and deallocated automagically.
+	fntMenu->RemoveReference();
 }
 
-bool CDeveloperConsoleUI::PreRender ( void )
+bool CDeveloperConsoleUI::PreRender ( rrCameraPass* cameraPass )
 {
-	matMenu->prepareShaderConstants();
-	matfntMenu->prepareShaderConstants();
+	PushCbufferPerObject(XrTransform(), cameraPass);
 	return true;
 }
-bool CDeveloperConsoleUI::Render ( const char pass )
+bool CDeveloperConsoleUI::Render ( const rrRenderParams* params )
 {
-	Vector2d screenSize ((Real)Screen::Info.width, (Real)Screen::Info.height);
-	const Real kLineHeight = (Real)fntMenu->GetFontInfo().height + 3.0F;
+	Vector2f screenSize ((Real)Screen::Info.width, (Real)Screen::Info.height);
+	const Real kLineHeight = (Real)fntMenu->GetFontInfo()->height + 3.0F;
 	const Real kBottomMargin = 5.0F;
 
-	if ( CCamera::activeCamera )
+	if ( RrCamera::activeCamera )
 	{	// Modify console size based on render scale so it is always legible!
-		screenSize *= CCamera::activeCamera->render_scale;
+		screenSize *= RrCamera::activeCamera->renderScale;
 	}
 	core::math::Cubic screenMapping = core::math::Cubic::FromPosition(
 		Vector3f(0, 0, -45.0F),
@@ -94,7 +91,7 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 		
 		// Draw the current command:
 		builder_text.addText(
-			Vector2d(2.0F, screenSize.y - kBottomMargin),
+			Vector2f(2.0F, screenSize.y - kBottomMargin),
 			Color( 0.0F, 0.5F, 1.0F, 1.0F ),
 			(">" + engine::Console->GetCommandString() + "_").c_str() );
 
@@ -102,7 +99,7 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 		for ( uint i = 0; i < engine::Console->GetMatchingCommands().size(); ++i )
 		{	// Draw command list
 			builder_text.addText(
-				Vector2d(18.0F, screenSize.y - kLineHeight - kBottomMargin * 3.0F - kLineHeight * i),
+				Vector2f(18.0F, screenSize.y - kLineHeight - kBottomMargin * 3.0F - kLineHeight * i),
 				Color( 0.0F, 0.5F, 1.0F, 1.0F ),
 				engine::Console->GetMatchingCommands()[i].c_str() );
 		}
@@ -110,10 +107,11 @@ bool CDeveloperConsoleUI::Render ( const char pass )
 
 	// Draw the developer string in the upper-left corner.
 	builder_text.addText(
-		Vector2d(4.0F, (Real)fntMenu->GetFontInfo().height + 2.0F),
+		Vector2f(4.0F, (Real)fntMenu->GetFontInfo()->height + 2.0F),
 		Color( 1.0F, 1.0F, 1.0F, 0.5F ),
 		CGameSettings::Active()->sysprop_developerstring.c_str() );
 
+	// TODO: build mesh in the pre-render (or similar place)
 	RrScopedMeshRenderer renderer;
 	renderer.render(this, matMenu, pass, builder);
 	renderer.render(this, matfntMenu, pass, builder_text);
@@ -128,43 +126,41 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	ActiveCursor = this;
 
 	transform.world.position.z = -44;
+	
+	texCursor = RrTexture::Load( "textures/system/cursor.png" );
+	texCursor->AddReference();
+	RrPass cursorPass;
+	cursorPass.m_layer = renderer::kRenderLayerV2D;
+	cursorPass.m_type = kPassTypeForward;
+	cursorPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
+	cursorPass.setTexture( TEX_MAIN, texCursor );
+	cursorPass.utilSetupAs2D();
+	cursorPass.m_alphaMode = renderer::kAlphaModeAlphatest;
+	cursorPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+	PassInitWithInput(0, &cursorPass);
 
-	renderType = renderer::kRLV2D;
-
-	texCursor = new CTexture( "textures/system/cursor.png" );
-	matCursor = new RrMaterial;
-	matCursor->m_diffuse = Color( 1.0F,1,1 );
-	matCursor->setTexture( TEX_MAIN, texCursor );
-	matCursor->passinfo.push_back( RrPassForward() );
-	matCursor->passinfo[0].set2DCommon();
-	matCursor->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_ALPHATEST;
-	matCursor->passinfo[0].shader = new RrShader( "shaders/v2d/default.glsl" );
-	matCursor->removeReference();
-	SetMaterial( matCursor );
 }
 CDeveloperCursor::~CDeveloperCursor ( void )
 {
 	if ( ActiveCursor == this ) {
 		ActiveCursor = NULL;
 	}
-	delete texCursor;
+	texCursor->RemoveReference();
 }
-bool CDeveloperCursor::PreRender ( void )
+bool CDeveloperCursor::PreRender ( rrCameraPass* cameraPass )
 {
-	matCursor->prepareShaderConstants();
+	PushCbufferPerObject(XrTransform(), cameraPass);
 	return true;
 }
-bool CDeveloperCursor::Render ( const char pass )
+bool CDeveloperCursor::Render ( const rrRenderParams* params )
 {
-	if ( pass != 0 )
-		return false;
-
 	rrMeshBuilder2D builder(6);
 	builder.addRect(
 		Rect( (Real)Input::MouseX(), (Real)Input::MouseY(), 32,32 ),
 		Color(1.0F, 1.0F, 1.0F, 1.0F),
 		false);
 
+	// TODO: build mesh in the pre-render (or similar place)
 	RrScopedMeshRenderer renderer;
 	renderer.render(this, m_material, pass, builder);
 

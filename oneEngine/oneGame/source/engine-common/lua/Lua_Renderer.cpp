@@ -1,7 +1,7 @@
 
 #include "CLuaController.h"
 
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/object/CRenderableObject.h"
 
 

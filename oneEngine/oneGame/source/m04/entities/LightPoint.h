@@ -6,7 +6,7 @@
 #include "engine/behavior/CGameBehavior.h"
 #include "engine2d/interface/SpriteContainer.h"
 
-class CLight;
+class RrLight;
 
 namespace M04
 {
@@ -20,17 +20,17 @@ namespace M04
 
 		void			Update ( void ) override;
 	protected:
-		Vector3d position;
+		Vector3f position;
 		float range;
 		float power;
 		Color color;
 
-		CLight*	m_light;
+		RrLight*	m_light;
 
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::LightPoint);
 			DEFINE_DISPLAY(DISPLAY_LIGHT,"sprites/editor/lightbulb.png");
-			DEFINE_VALUE(position,Vector3d,FIELD_POSITION);
+			DEFINE_VALUE(position,Vector3f,FIELD_POSITION);
 			DEFINE_VALUE(range,float,FIELD_DEFAULT);
 			DEFINE_VALUE(power,float,FIELD_DEFAULT);
 			DEFINE_VALUE(color,Color,FIELD_COLOR);	

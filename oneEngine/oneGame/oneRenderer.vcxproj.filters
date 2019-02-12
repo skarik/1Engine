@@ -25,12 +25,6 @@
     <Filter Include="SOURCE\Renderer\Object">
       <UniqueIdentifier>{47accf67-7029-4360-b035-3e96081a1dec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\Renderer\Object\Screen Shader">
-      <UniqueIdentifier>{536696c9-9668-4605-9d31-da9f02b4ccba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SOURCE\Renderer\Object\Screen Shader\Effects">
-      <UniqueIdentifier>{db8cb2cb-5783-4cc4-90f7-33f55605df18}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SOURCE\Renderer\Object\Screen">
       <UniqueIdentifier>{b95a3838-686a-4560-a81e-0a76bf76ef70}</UniqueIdentifier>
     </Filter>
@@ -103,6 +97,24 @@
     <Filter Include="SOURCE\Renderer\Object\Immediate">
       <UniqueIdentifier>{7e9475da-58a6-416f-83ad-d917a56d253b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Renderer\GPU Wrapper\Internal">
+      <UniqueIdentifier>{25475de9-81a0-49ee-baec-d7cd5382ee06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Renderer\GPU Wrapper\Public">
+      <UniqueIdentifier>{b6d271b4-a9c0-4c90-a7ac-67b542246a97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Renderer\Windowing">
+      <UniqueIdentifier>{28a0fe17-f1a9-4a9d-b96a-ba78af8f2942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Renderer\Object\Post Process">
+      <UniqueIdentifier>{536696c9-9668-4605-9d31-da9f02b4ccba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Renderer\Object\Post Process\Effects">
+      <UniqueIdentifier>{db8cb2cb-5783-4cc4-90f7-33f55605df18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Renderer\Types\shaders">
+      <UniqueIdentifier>{2abe2f40-a4f9-4cd8-93e4-8d79cd9b4c53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\renderer\system\glDrawing.cpp">
@@ -111,59 +123,14 @@
     <ClCompile Include="source\renderer\system\glMainSystem.cpp">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\camera\CCamera.cpp">
-      <Filter>SOURCE\Renderer\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\camera\CRTCamera.cpp">
-      <Filter>SOURCE\Renderer\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\camera\CRTCameraCascade.cpp">
-      <Filter>SOURCE\Renderer\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\camera\CRTCameraCube.cpp">
-      <Filter>SOURCE\Renderer\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\state\CRenderState.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\state\Settings.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\CRenderableObject.cpp">
       <Filter>SOURCE\Renderer\Object</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\CScreenShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CBloomShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CColorFilterShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CDepthSplitShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CScreenSpaceOutlineShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CTestScreenShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CTestViewShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screenshader\effects\CZoomBloomShader.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\screen\CScreenFade.cpp">
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CBillboard.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\mesh\CMesh.cpp">
-      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp">
       <Filter>SOURCE\Renderer\Object\Util</Filter>
@@ -171,50 +138,11 @@
     <ClCompile Include="source\renderer\types\ObjectSettings.cpp">
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\light\CLight.cpp">
-      <Filter>SOURCE\Renderer\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\light\DirectionalLight.cpp">
-      <Filter>SOURCE\Renderer\Light</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\utils\glScreenshot.cpp">
-      <Filter>SOURCE\Renderer\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\CBitmapFont.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\texture\CMRTTexture.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\CRenderTexture.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\CRenderTextureCube.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\CTexture.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\CTexture3D.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\CTextureCube.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\texture\CTextureLoader.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\CTextureMaster.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\logic\CLogicObject.cpp">
-      <Filter>SOURCE\Renderer\Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\logic\model\CModel.cpp">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\logic\model\CModelLoader.cpp">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\logic\model\CSkinnedModel.cpp">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
@@ -228,56 +156,23 @@
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpherSet.cpp">
       <Filter>SOURCE\Renderer\Logic\Model\Morpher</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\debug\CDebugDrawer.cpp">
-      <Filter>SOURCE\Renderer\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\debug\CDebugRTInspector.cpp">
-      <Filter>SOURCE\Renderer\Debug</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\resource\CModelMaster.cpp">
       <Filter>SOURCE\Renderer\Resource</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\resource\CResourceManager.cpp">
       <Filter>SOURCE\Renderer\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\texture\TextureLoader.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\module_renderer.cpp">
       <Filter>SOURCE\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\ogl\wgl_core_3_3.c">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\ogl\gl_core_3_3.c">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\screen\CGlowObject.cpp">
-      <Filter>SOURCE\Renderer\Object\Screen</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\renderer-console.cpp">
       <Filter>SOURCE\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\texture\TextureConverter.cpp">
-      <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\state\Options.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp">
       <Filter>SOURCE\Renderer\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\mesh\CStreamedMesh.cpp">
-      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\mesh\CInstancedMesh.cpp">
-      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\gpuw\Textures.cpp">
-      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\mesh\system\rrMesh.cpp">
-      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
@@ -291,26 +186,11 @@
     <ClCompile Include="source\renderer\material\RrPassDeferred.cpp">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\material\RrShader.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrShaderManager.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\window\RrWindowWin32.cpp">
-      <Filter>SOURCE\Renderer\Window</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp">
       <Filter>SOURCE\Renderer\Particle</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\debug\RrBtDebugDraw.cpp">
       <Filter>SOURCE\Renderer\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\gpuw\Buffers.ConstantBuffer.cpp">
-      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\gpuw\Buffers.VertexBuffer.cpp">
-      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\material\RrMaterial.Constants.cpp">
       <Filter>SOURCE\Renderer\Material</Filter>
@@ -326,15 +206,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\utils\rrTextBuilder2D.cpp">
       <Filter>SOURCE\Renderer\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CPrimitiveCube.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CPrimitiveIsosphere.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\object\shapes\CPrimitivePlane.cpp">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\object\CStreamedRenderable3D.cpp">
       <Filter>SOURCE\Renderer\Object</Filter>
@@ -366,20 +237,182 @@
     <ClCompile Include="source\renderer\system\glMainSystem.textures.cpp">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\state\CRenderState.Render.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\state\CRenderState.Sorters.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\gpuw\Device.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\ogl\glcorearb_impl.c">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\ogl\wgl_impl.c">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTexture.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\rrSamplerState.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTextureMaster.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTextureMasterSubsystem.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTexture.Streaming.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Fence.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrRenderTexture.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrRenderTextureCube.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\GraphicsContext.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\ComputeContext.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrFontTexture.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Shader.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\ShaderPipeline.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrShaderProgram.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Pipeline.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\GraphicsContext.draw.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrPass.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\windowing\RrWindow.cpp">
+      <Filter>SOURCE\Renderer\Windowing</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\_window\RrWindowWin32.cpp">
+      <Filter>SOURCE\Renderer\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\OutputSurface.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrPass.Presets.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\RrPipelinePasses.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\RrRenderer.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\RrRenderer.Sorters.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\RrRenderer.Render.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\material\RrShaderMasterSubsystem.cpp">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\RrHybridBufferChain.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\camera\RrCamera.cpp">
+      <Filter>SOURCE\Renderer\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\camera\RrRTCamera.cpp">
+      <Filter>SOURCE\Renderer\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\camera\RrRTCameraCascade.cpp">
+      <Filter>SOURCE\Renderer\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\camera\RrRTCameraCube.cpp">
+      <Filter>SOURCE\Renderer\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\debug\RrDebugDrawer.cpp">
+      <Filter>SOURCE\Renderer\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\debug\RrDebugRTInspector.cpp">
+      <Filter>SOURCE\Renderer\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\light\RrLight.cpp">
+      <Filter>SOURCE\Renderer\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\logic\RrLogicObject.cpp">
+      <Filter>SOURCE\Renderer\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\system\rrMeshBuffer.cpp">
+      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\utils\RrScreenshot.cpp">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTexture3D.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrTextureCube.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\logic\model\RrModelMasterSubsystem.cpp">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\postprocess\PostProcessPass.cpp">
+      <Filter>SOURCE\Renderer\Object\Post Process</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\Mesh.cpp">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\InstancedMesh.cpp">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\logic\model\ModelLoader.cpp">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\RrBillboard.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\RrShapeCube.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\RrShapePlane.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\shapes\RrShapeIsosphere.cpp">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\logic\model\RrCModel.cpp">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\object\mesh\StreamedMesh.cpp">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Buffers.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\GraphicsContext.sync.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Sampler.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\RenderTarget.cpp">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\Texture.cpp">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\renderer\ogl\GLCommon.h">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\system\glDrawing.h">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClInclude>
@@ -389,59 +422,14 @@
     <ClInclude Include="source\renderer\system\glSystem.h">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\camera\CCamera.h">
-      <Filter>SOURCE\Renderer\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\camera\CRTCamera.h">
-      <Filter>SOURCE\Renderer\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\camera\CRTCameraCascade.h">
-      <Filter>SOURCE\Renderer\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\camera\CRTCameraCube.h">
-      <Filter>SOURCE\Renderer\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\state\CRenderState.h">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\state\Settings.h">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\CRenderableObject.h">
       <Filter>SOURCE\Renderer\Object</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\CScreenShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CBloomShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CColorFilterShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CDepthSplitShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CScreenSpaceOutlineShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CTestScreenShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CTestViewShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screenshader\effects\CZoomBloomShader.h">
-      <Filter>SOURCE\Renderer\Object\Screen Shader\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\object\screen\CScreenFade.h">
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CBillboard.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\mesh\CMesh.h">
-      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\model\Model.h">
       <Filter>SOURCE\Renderer\Object\Model</Filter>
@@ -458,47 +446,8 @@
     <ClInclude Include="source\renderer\types\ObjectSettings.h">
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\light\CLight.h">
-      <Filter>SOURCE\Renderer\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\light\DirectionalLight.h">
-      <Filter>SOURCE\Renderer\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\utils\glScreenshot.h">
-      <Filter>SOURCE\Renderer\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\CBitmapFont.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\texture\CMRTTexture.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\CRenderTexture.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\CRenderTextureCube.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\CTexture.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\CTexture3D.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\CTextureCube.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\CTextureMaster.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\CLogicObject.h">
-      <Filter>SOURCE\Renderer\Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\model\CModel.h">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\model\CModelLoader.h">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\logic\model\CSkinnedModel.h">
       <Filter>SOURCE\Renderer\Logic\Model</Filter>
@@ -512,38 +461,14 @@
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpherSet.h">
       <Filter>SOURCE\Renderer\Logic\Model\Morpher</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\debug\CDebugDrawer.h">
-      <Filter>SOURCE\Renderer\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\debug\CDebugRTInspector.h">
-      <Filter>SOURCE\Renderer\Debug</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\resource\CModelMaster.h">
       <Filter>SOURCE\Renderer\Resource</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\resource\CResourceManager.h">
       <Filter>SOURCE\Renderer\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\types\textureFormats.h">
-      <Filter>SOURCE\Renderer\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\types\pixelFormat.h">
-      <Filter>SOURCE\Renderer\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\texture\TextureLoader.h">
-      <Filter>SOURCE\Renderer\Texture</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\module_renderer.h">
       <Filter>SOURCE\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\ogl\wgl_core_3_3.h">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\ogl\gl_core_3_3.h">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\screen\CGlowObject.h">
-      <Filter>SOURCE\Renderer\Object\Screen</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\types\blendModes.h">
       <Filter>SOURCE\Renderer\Types</Filter>
@@ -566,26 +491,11 @@
     <ClInclude Include="source\renderer\types\ModelStructures.h">
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\object\mesh\CStreamedMesh.h">
-      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\mesh\CInstancedMesh.h">
-      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\state\InternalSettings.h">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\gpuw\Textures.h">
-      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\mesh\system\rrMesh.h">
-      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\types\textureStructures.h">
-      <Filter>SOURCE\Renderer\Types</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\types\RrGpuTexture.h">
       <Filter>SOURCE\Renderer\Types</Filter>
@@ -601,24 +511,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\material\RrPassDeferred.h">
       <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\material\RrShader.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\material\RrShaderManager.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\window\RrWindow.h">
-      <Filter>SOURCE\Renderer\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\window\RrWindowLinux.h">
-      <Filter>SOURCE\Renderer\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\window\RrWindowOsmac.h">
-      <Filter>SOURCE\Renderer\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\window\RrWindowWin32.h">
-      <Filter>SOURCE\Renderer\Window</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\particle\RrParticleSystem.h">
       <Filter>SOURCE\Renderer\Particle</Filter>
@@ -662,15 +554,6 @@
     <ClInclude Include="source\renderer\utils\rrTextBuilder2D.h">
       <Filter>SOURCE\Renderer\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CPrimitiveCube.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CPrimitiveIsosphere.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\shapes\CPrimitivePlane.h">
-      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\object\CStreamedRenderable3D.h">
       <Filter>SOURCE\Renderer\Object</Filter>
     </ClInclude>
@@ -681,6 +564,231 @@
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\gpuw\Device.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\ogl\GLCommon.h">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\ogl\glcorearb.h">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\ogl\glcorearb_impl.h">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\ogl\glxext.h">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\ogl\wgl.h">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\ogl\wgl_impl.h">
+      <Filter>SOURCE\Renderer\OGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Internal\Enums.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Error.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrTexture.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\rrSamplerState.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrTextureMaster.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrTextureMasterSubsystem.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Fence.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrRenderTexture.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrRenderTextureCube.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\GraphicsContext.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\ComputeContext.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrFontTexture.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Shader.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\ShaderPipeline.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Public\ShaderTypes.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrShaderProgram.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Pipeline.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\1docs.gpwu.style.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrPass.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Public\Enums.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Public\Formats.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\ShaderSlots.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\windowing\RrWindow.h">
+      <Filter>SOURCE\Renderer\Windowing</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\_window\RrWindow.h">
+      <Filter>SOURCE\Renderer\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\_window\RrWindowLinux.h">
+      <Filter>SOURCE\Renderer\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\_window\RrWindowOsmac.h">
+      <Filter>SOURCE\Renderer\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\_window\RrWindowWin32.h">
+      <Filter>SOURCE\Renderer\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\OutputSurface.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrPass.Presets.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\RrPipelinePasses.h">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\RrRenderer.h">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\RrShaderMasterSubsystem.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\RrHybridBufferChain.h">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\camera\RrCamera.h">
+      <Filter>SOURCE\Renderer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\camera\RrRTCamera.h">
+      <Filter>SOURCE\Renderer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\camera\RrRTCameraCascade.h">
+      <Filter>SOURCE\Renderer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\camera\RrRTCameraCube.h">
+      <Filter>SOURCE\Renderer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\debug\RrDebugDrawer.h">
+      <Filter>SOURCE\Renderer\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\debug\RrDebugRTInspector.h">
+      <Filter>SOURCE\Renderer\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\light\RrLight.h">
+      <Filter>SOURCE\Renderer\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\logic\RrLogicObject.h">
+      <Filter>SOURCE\Renderer\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\system\rrMeshBuffer.h">
+      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\utils\RrScreenshot.h">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrTexture3D.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrTextureCube.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\logic\model\RrModelMasterSubsystem.h">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\logic\model\RrAnimatedMeshGroup.h">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\VertexAttribute.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\postprocess\PostProcessPass.h">
+      <Filter>SOURCE\Renderer\Object\Post Process</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\camera\CameraPass.h">
+      <Filter>SOURCE\Renderer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\material\Material.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\Mesh.h">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\InstancedMesh.h">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\logic\model\ModelLoader.h">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\RrBillboard.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\RrShapeCube.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\RrShapePlane.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\shapes\RrShapeIsosphere.h">
+      <Filter>SOURCE\Renderer\Object\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\logic\model\RrCModel.h">
+      <Filter>SOURCE\Renderer\Logic\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Public\Slots.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Public\Rect2.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\shaders\sbuffers.h">
+      <Filter>SOURCE\Renderer\Types\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\shaders\vattribs.h">
+      <Filter>SOURCE\Renderer\Types\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\shaders\cbuffers.h">
+      <Filter>SOURCE\Renderer\Types\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\shaders\legacy.h">
+      <Filter>SOURCE\Renderer\Types\shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\StreamedMesh.h">
+      <Filter>SOURCE\Renderer\Object\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Sampler.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\RenderTarget.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\Texture.h">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClInclude>
   </ItemGroup>

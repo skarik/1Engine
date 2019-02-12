@@ -26,13 +26,13 @@ void CDuskGUIDraggablePanel::Update ( void )
 		if ( !isDragging )
 		{
 			isDragging = true;
-			//vSourcePoint = Vector2d( Input::mouseX/(Real)Screen::Info.width, Input::mouseY/(Real)Screen::Info.height );
+			//vSourcePoint = Vector2f( Input::mouseX/(Real)Screen::Info.width, Input::mouseY/(Real)Screen::Info.height );
 		}
 		// Drag around
-		//Vector2d vTargetPoint = Vector2d( Input::mouseX/(Real)Screen::Info.width, Input::mouseY/(Real)Screen::Info.height );
-		Vector2d vDeltaPoint = Vector2d( Input::DeltaMouseX(), Input::DeltaMouseY() );
+		//Vector2f vTargetPoint = Vector2f( Input::mouseX/(Real)Screen::Info.width, Input::mouseY/(Real)Screen::Info.height );
+		Vector2f vDeltaPoint = Vector2f( Input::DeltaMouseX(), Input::DeltaMouseY() );
 		if ( !activeGUI->bInPixelMode ) {
-			vDeltaPoint = vDeltaPoint.divComponents( Vector2d( (Real)Screen::Info.width, (Real)Screen::Info.height ) );
+			vDeltaPoint = vDeltaPoint.divComponents( Vector2f( (Real)Screen::Info.width, (Real)Screen::Info.height ) );
 		}
 
 		// Limit position

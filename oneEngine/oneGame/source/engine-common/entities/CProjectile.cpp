@@ -96,7 +96,7 @@ void CProjectile::Update ( void )
 	}
 	transform.world.position += vVelocity * Time::deltaTime;
 	//transform.rotation = vVelocity.normal().toEulerAngles();
-	transform.world.rotation = Quaternion::CreateRotationTo( Vector3d::forward, vVelocity.normal() );
+	transform.world.rotation = Quaternion::CreateRotationTo( Vector3f::forward, vVelocity.normal() );
 
 	// Check to make sure we're in range
 	if ( (vPreviousPosition - vStartPosition).sqrMagnitude() > sqr( fMaxRange ) )
@@ -332,14 +332,14 @@ void CProjectile::SetDamage ( const Damage & dInDamage )
 
 // ==Movement Set==
 // Set new direction of movement
-void CProjectile::SetHeading ( const Vector3d& newHeading )
+void CProjectile::SetHeading ( const Vector3f& newHeading )
 {
 	vVelocity = newHeading.normal() * vVelocity.magnitude();
 }
 
 // ==Movement Get==
 // Get the current velocity
-Vector3d CProjectile::GetHeading ( void )
+Vector3f CProjectile::GetHeading ( void )
 {
 	return vVelocity;
 }

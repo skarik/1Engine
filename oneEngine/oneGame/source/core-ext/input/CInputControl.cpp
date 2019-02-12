@@ -5,7 +5,7 @@
 
 #include "core/settings/CGameSettings.h"
 
-#include "core/math/Vector2d.h"
+#include "core/math/Vector2.h"
 #include "core/math/Math.h"
 
 #include <algorithm>
@@ -78,7 +78,7 @@ void CInputControl::Update ( void* owner, float deltaTime )
 	// Get inputs from style
 	if ( CGameSettings::Active()->i_cl_KeyboardStyle == 0 )
 	{
-		Vector2d controllerInput;
+		Vector2f controllerInput;
 
 		// Get directional input
 		// First clip controller input

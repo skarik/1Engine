@@ -12,7 +12,7 @@
 #include "core-ext/system/io/osf.h"
 #include "core-ext/transform/Transform.h"
 
-#include "renderer/debug/CDebugDrawer.h"
+#include "renderer/debug/RrDebugDrawer.h"
 
 #include "render2d/object/TileMapLayer.h"
 
@@ -40,11 +40,11 @@ void TileMap::Update ( void )
 {
 	; // What does this need to do on update? xD
 
-	//debug::Drawer->DrawLine( Vector3d(0,0,0), Vector3d(0,0,32), Color(0,0,1) );
-	//debug::Drawer->DrawLine( Vector3d(0,0,0), Vector3d(0,0,-32), Color(0,1,1) );
+	//debug::Drawer->DrawLine( Vector3f(0,0,0), Vector3f(0,0,32), Color(0,0,1) );
+	//debug::Drawer->DrawLine( Vector3f(0,0,0), Vector3f(0,0,-32), Color(0,1,1) );
 	//for ( uint i = 0; i < m_tiles.size(); ++i )
 	//{
-	//	debug::Drawer->DrawLine( Vector3d(0,0,0), Vector3d(m_tiles[i].x,m_tiles[i].y,m_tiles[i].depth) );
+	//	debug::Drawer->DrawLine( Vector3f(0,0,0), Vector3f(m_tiles[i].x,m_tiles[i].y,m_tiles[i].depth) );
 	//}
 }
 
@@ -455,13 +455,13 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 	model.triangleNum = 0;
 
 	// Set up constant tables
-	const Vector2d position_offsets [4] = {
-		Vector2d(0,0),
-		Vector2d(1,0),
-		Vector2d(0,1),
-		Vector2d(1,1),
+	const Vector2f position_offsets [4] = {
+		Vector2f(0,0),
+		Vector2f(1,0),
+		Vector2f(0,1),
+		Vector2f(1,1),
 	};
-	const Vector2d tile_size_reference = Vector2d( (Real)m_tileset->tilesize_x, (Real)m_tileset->tilesize_y );
+	const Vector2f tile_size_reference = Vector2f( (Real)m_tileset->tilesize_x, (Real)m_tileset->tilesize_y );
 
 #	define FULL_SPEED_AHEAD
 #	ifdef  FULL_SPEED_AHEAD

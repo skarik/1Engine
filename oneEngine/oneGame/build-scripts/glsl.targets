@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)glsl.xml" />
+    <AvailableItemName Include="GLSLShader">
+      <Targets>glslangValidator</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+
+  <Target
+    Name="glslangValidator"
+    Condition="'@(GLSLShader)' != ''"
+    BeforeTargets="ClCompile">
+    <Message Importance="high" Text="Building GLSL shaders." />
+  </Target>
+</Project>

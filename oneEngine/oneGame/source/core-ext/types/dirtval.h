@@ -9,7 +9,7 @@
 #ifndef CORE_EXT_DIRT_VAL_H_
 #define CORE_EXT_DIRT_VAL_H_
 
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 
 template <typename Type>
 class dirtval
@@ -45,31 +45,31 @@ private:
 };
 
 template <>
-class dirtval <Vector3d>
+class dirtval <Vector3f>
 {
 public:
 	explicit dirtval ( void )
 		: m_dirty(false), m_val()
 	{
 	}
-	explicit dirtval ( const Vector3d& n_val )
+	explicit dirtval ( const Vector3f& n_val )
 		: m_dirty(false), m_val(n_val)
 	{
 	}
 
-	operator const Vector3d&() const {
+	operator const Vector3f&() const {
 		return m_val;
 	} 
-	Vector3d& operator= ( const Vector3d&rhs ) {
+	Vector3f& operator= ( const Vector3f&rhs ) {
 		m_dirty = true;
 		m_val = rhs;
 		return m_val;
 	}
 
-	Vector3d& operator- ( const Vector3d&rhs ) const {
+	Vector3f& operator- ( const Vector3f&rhs ) const {
 		return ( m_val - rhs );
 	}
-	Vector3d& operator+ ( const Vector3d&rhs ) const {
+	Vector3f& operator+ ( const Vector3f&rhs ) const {
 		return ( m_val + rhs );
 	}
 
@@ -80,7 +80,7 @@ public:
 		m_dirty = false;
 	}
 private:
-	Vector3d m_val;
+	Vector3f m_val;
 	bool m_dirty;
 };
 

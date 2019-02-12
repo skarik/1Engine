@@ -25,14 +25,14 @@
 //#include "floattype.h"
 #include "core/types/types.h"
 
-#include "../Vector2d.h"
-#include "../Vector3d.h"
-#include "../Vector4d.h"
+#include "../Vector2.h"
+#include "../Vector3.h"
+#include "../Vector4.h"
 #include "../Quaternion.h"
 
-class Vector2d;
-class Vector3d;
-class Vector4d;
+template <typename Float> class Vector2_T;
+template <typename Float> class Vector3_T;
+template <typename Float> class Vector4_T;
 class Quaternion;
 class Matrix2x2;
 class Matrix3x3;
@@ -58,36 +58,36 @@ public:
 	// Setters - Translation
 	bool setTranslation ( Real const = 0, Real const = 0, Real const = 0 );
 	bool setTranslation ( Real * );
-	bool setTranslation ( Vector2d const& );
-	bool setTranslation ( Vector3d const& );
+	bool setTranslation ( Vector2f const& );
+	bool setTranslation ( Vector3f const& );
 
 	// Setters - Scaling
 	bool setScale ( Real const = 0, Real const = 0, Real const = 0 );
 	bool setScale ( Real * );
-	bool setScale ( Vector2d const& );
-	bool setScale ( Vector3d const& );
+	bool setScale ( Vector2f const& );
+	bool setScale ( Vector3f const& );
 
 	// Setters - Rotation
 	bool setRotation ( Real const );
 	bool setRotation ( Real * );
 	bool setRotation ( Real const = 0, Real const = 0, Real const = 0 );
-	bool setRotation ( Vector3d const& );
+	bool setRotation ( Vector3f const& );
 	bool setRotation ( Quaternion const& );
 	bool setRotation ( CMatrix<3,3> const& );
 
 	// Getters - Translation
-	Vector3d getTranslation ( void ) const;
+	Vector3f getTranslation ( void ) const;
 
 	// Getters - Rotation
-	Vector3d getEulerAngles ( void ) const;
+	Vector3f getEulerAngles ( void ) const;
 	Quaternion getQuaternion ( void ) const;
 	CMatrix<3,3> getRotator ( void ) const;
 
 	// Getters - Scale
-	Vector3d getScaling ( void );
+	Vector3f getScaling ( void );
 
 	// Modders - Translation
-	void translate ( Vector3d const& );
+	void translate ( Vector3f const& );
 
 	// Operations
 	CMatrix<H,W> transpose ( void );
@@ -109,8 +109,8 @@ public:
 	CMatrix<W,H> operator+ ( CMatrix<W,H> const& ) const;
 	CMatrix<W,H> operator+= ( CMatrix<W,H> const& );
 
-	Vector3d operator* ( Vector3d const& ) const;
-	Vector4d operator* ( Vector4d const& ) const;
+	Vector3f operator* ( Vector3f const& ) const;
+	Vector4f operator* ( Vector4f const& ) const;
 
 	// Transpose
 	CMatrix<H,W> operator! ( void ) const;

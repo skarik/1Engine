@@ -19,9 +19,9 @@ namespace core
 	namespace mesh
 	{
 		//	RecalculateNormals(model) : Recalculates the normals per-triangle.
-		// Internally, uses a lot of useless information.
+		// Trashes existing normal data as they are used for temporary data.
 		CORE_API void RecalculateNormals ( arModelData* md );
-		//	RecalculateTangents(model) : Recalculates the tangent and binormals.
+		//	RecalculateTangents(model) : Recalculates the tangent and binormals per-triangle.
 		// Trashes existing tangent and binormal data as they are used for temporary data.
 		CORE_API void RecalculateTangents ( arModelData* md );
 	}

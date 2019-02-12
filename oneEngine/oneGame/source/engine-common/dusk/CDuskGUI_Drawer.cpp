@@ -1,7 +1,7 @@
 #include "core/time.h"
 #include "core/math/Math.h"
 #include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 #include "renderer/object/immediate/immediate.h"
@@ -130,8 +130,8 @@ void CDuskGUI::drawRect ( const Rect& rect )
 
 	// Round rect coordinates
 	{
-		Vector2d min = draw_rect.pos + parenting_offset;
-		Vector2d max = draw_rect.pos + draw_rect.size + parenting_offset;
+		Vector2f min = draw_rect.pos + parenting_offset;
+		Vector2f max = draw_rect.pos + draw_rect.size + parenting_offset;
 
 		min.x = (Real)math::round(min.x);
 		min.y = (Real)math::round(min.y);
@@ -154,8 +154,8 @@ void CDuskGUI::drawRectWire ( const Rect& rect, bool focused )
 
 	// Round rect coordinates
 	{
-		Vector2d min = draw_rect.pos + parenting_offset;
-		Vector2d max = draw_rect.pos + draw_rect.size + parenting_offset;
+		Vector2f min = draw_rect.pos + parenting_offset;
+		Vector2f max = draw_rect.pos + draw_rect.size + parenting_offset;
 
 		min.x = (Real)math::round(min.x);
 		min.y = (Real)math::round(min.y);
@@ -188,14 +188,14 @@ void CDuskGUI::drawLine ( const Real x1, const Real y1, const Real x2, const Rea
 	SetDrawColor();
 
 	m_builder->addLine(
-		Vector2d(x1 + parenting_offset.x, y1 + parenting_offset.y),
-		Vector2d(x2 + parenting_offset.x, y2 + parenting_offset.y),
+		Vector2f(x1 + parenting_offset.x, y1 + parenting_offset.y),
+		Vector2f(x2 + parenting_offset.x, y2 + parenting_offset.y),
 		m_drawcolor);
 }
 
 void CDuskGUI::drawText ( const Real x, const Real y, const char* str )
 {
-	Vector2d draw_pos = Vector2d(x + parenting_offset.x, y + parenting_offset.y);
+	Vector2f draw_pos = Vector2f(x + parenting_offset.x, y + parenting_offset.y);
 	draw_pos.x = (Real)math::round(draw_pos.x);
 	draw_pos.y = (Real)math::round(draw_pos.y);
 
@@ -206,7 +206,7 @@ void CDuskGUI::drawText ( const Real x, const Real y, const char* str )
 }
 void CDuskGUI::drawTextWidth ( const Real x, const Real y, const Real w, const char* str )
 {
-	Vector2d draw_pos = Vector2d(x + parenting_offset.x, y + parenting_offset.y);
+	Vector2f draw_pos = Vector2f(x + parenting_offset.x, y + parenting_offset.y);
 	draw_pos.x = (Real)math::round(draw_pos.x);
 	draw_pos.y = (Real)math::round(draw_pos.y);
 
@@ -217,7 +217,7 @@ void CDuskGUI::drawTextWidth ( const Real x, const Real y, const Real w, const c
 }
 void CDuskGUI::drawTextCentered ( const Real x, const Real y, const char* str )
 {
-	Vector2d draw_pos = Vector2d(x + parenting_offset.x, y + parenting_offset.y);
+	Vector2f draw_pos = Vector2f(x + parenting_offset.x, y + parenting_offset.y);
 	draw_pos.x = (Real)math::round(draw_pos.x);
 	draw_pos.y = (Real)math::round(draw_pos.y);
 

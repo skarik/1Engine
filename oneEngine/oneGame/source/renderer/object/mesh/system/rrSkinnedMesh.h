@@ -4,6 +4,7 @@
 #ifndef RR_SKINNED_MESH_H_
 #define RR_SKINNED_MESH_H_
 
+#if 0
 #include "rrMesh.h"
 #include "physical/skeleton/skeletonBone.h"
 
@@ -53,5 +54,6 @@ protected:
 public:
 	skinningData_t	skinning_data;
 };
+#endif
 
 #endif//RR_SKINNED_MESH_H_

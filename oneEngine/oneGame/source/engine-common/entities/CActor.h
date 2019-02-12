@@ -95,23 +95,23 @@ public:
 	{
 		Ray newRay;
 		newRay.pos = transform.world.position;
-		newRay.dir = transform.world.rotation * Vector3d::forward;
+		newRay.dir = transform.world.rotation * Vector3f::forward;
 		return newRay;
 	};
 	// Get aim ray. Used for off-center weapon projectiles.
-	virtual Ray		GetAimRay ( const Vector3d & )
+	virtual Ray		GetAimRay ( const Vector3f & )
 	{
 		return GetEyeRay();
 	}
 	// Get aiming arc. Used for melee weapons.
-	// Returns a Vector4d indicating the following aiming properties:
+	// Returns a Vector4f indicating the following aiming properties:
 	// X is the width of the arc in degrees.
 	// Y is the vertical rotation offset. (non-zero means not aiming down center of screen).
 	// Z is the depth rotation.
 	// W is ~0 for zero depth, ~1 for deep depth
-	virtual Vector4d GetAimingArc ( void )
+	virtual Vector4f GetAimingArc ( void )
 	{
-		return Vector4d( 37,0,3,0 );
+		return Vector4f( 37,0,3,0 );
 	}
 	// Get aiming direction. Used for melee weapons.
 	virtual Rotator GetAimRotator ( void )

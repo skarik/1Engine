@@ -3,17 +3,17 @@
 
 // Includes
 #include "core/types/types.h"
-#include "Vector2d.h"
+#include "Vector2.h"
 
 // Class
 class Rect
 {
 public:
-	Vector2d pos;
-	Vector2d size;
+	Vector2f pos;
+	Vector2f size;
 
 public:
-	Rect ( const Vector2d& n_pos, const Vector2d& n_size )
+	Rect ( const Vector2f& n_pos, const Vector2f& n_size )
 	{
 		pos		= n_pos;
 		size	= n_size;
@@ -49,14 +49,14 @@ public:
 
 	//		Contains ( point )
 	// Checks if point is inside the given rect
-	FORCE_INLINE bool Contains ( const Vector2d& point )
+	FORCE_INLINE bool Contains ( const Vector2f& point )
 	{
 		return ((point.x > pos.x) && (point.y > pos.y) && (point.x < pos.x+size.x) && (point.y < pos.y+size.y));
 	}
 
 	//		Expand ( point )
 	// Expands rect to contain point
-	FORCE_INLINE void Expand ( const Vector2d& point )
+	FORCE_INLINE void Expand ( const Vector2f& point )
 	{
 		for ( uint i = 0; i < 2; ++i )
 		{
@@ -83,7 +83,7 @@ public:
 
 	//		FromPosition ( pos1, pos2 )
 	// Creates a Rect from the given positions
-	FORCE_INLINE static Rect FromPosition ( Vector2d min_pos, Vector2d max_pos )
+	FORCE_INLINE static Rect FromPosition ( Vector2f min_pos, Vector2f max_pos )
 	{
 		if ( min_pos.x > max_pos.x ) {
 			Real temp = min_pos.x;

@@ -7,7 +7,7 @@
 
 #include "core/types/types.h"
 #include "core/types/float.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 
 class CActor;
 class physMaterial;
@@ -51,17 +51,17 @@ struct Damage
 	Real		stagger_chance;
 	uint64_t	type;
 
-	Vector3d	source;
-	Vector3d	direction;
+	Vector3f	source;
+	Vector3f	direction;
 	CActor*		actor;
 
-	Vector3d	applyDirection;
+	Vector3f	applyDirection;
 
 
 	// Damage default values
 	Damage ( void )
 		: amount(0), type(0), stagger_chance(0.05f),
-		source(Vector3d()), direction(Vector3d()), applyDirection(Vector3d(0,0,1)),
+		source(Vector3f()), direction(Vector3f()), applyDirection(Vector3f(0,0,1)),
 		actor(NULL)
 	{}
 };

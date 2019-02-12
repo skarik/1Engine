@@ -5,22 +5,24 @@
 #include "core/types/ModelData.h"
 #include "core-ext/transform/TransformUtility.h"
 
-#include "renderer/state/CRenderState.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/object/CRenderableObject.h"
-#include "renderer/light/CLight.h"
+#include "renderer/light/RrLight.h"
 
 #include "renderer/state/Settings.h"
 
-#include "renderer/camera/CCamera.h"
-#include "renderer/camera/CRTCamera.h"
-#include "renderer/camera/CRTCameraCascade.h"
+#include "renderer/camera/RrCamera.h"
+#include "renderer/camera/RrRTCamera.h"
+#include "renderer/camera/RrRTCameraCascade.h"
 
-#include "renderer/texture/CRenderTexture.h"
-#include "renderer/texture/CBitmapFont.h"
-#include "renderer/texture/CRenderTextureCube.h"
+#include "renderer/texture/RrRenderTexture.h"
+#include "renderer/texture/RrFontTexture.h"
+#include "renderer/texture/RrRenderTextureCube.h"
 
 #include "renderer/system/glMainSystem.h"
+
+#include "renderer/gpuw/Device.h"
 
 #include <map>
 
@@ -33,7 +35,7 @@ RrMaterial*	RrMaterial::Fallback= NULL;
 //uchar		RrMaterial::special_mode = renderer::kPipelineModeNormal;
 
 // Current material world sampler state
-CTexture*	RrMaterial::m_sampler_reflection = NULL;
+RrTexture*	RrMaterial::m_sampler_reflection = NULL;
 
 // =====================================
 
@@ -45,9 +47,9 @@ RrMaterial::RrMaterial ( void )
 	m_bufferMatricesSkinning(0), /*m_bufferMatricesSoftbody(0),*/ m_bufferSkeletonSize(0),
 	referenceCount(1), staticResource(false)
 {
-	memset( m_highlevel_storage, 0, sizeof(CTexture*) * 12 );
-	memset( m_samplers,			 0, sizeof(glHandle) * 12 );
-	memset( m_sampler_targets,	 0, sizeof(glHandle) * 12 );
+	memset( m_highlevel_storage, 0, sizeof(RrTexture*) * 12 );
+	memset( m_samplers,			 0, sizeof(gpuHandle) * 12 );
+	memset( m_sampler_targets,	 0, sizeof(gpuHandle) * 12 );
 }
 
 RrMaterial::~RrMaterial ( void ) throw(...)
@@ -91,12 +93,12 @@ RrMaterial*	RrMaterial::copy ( void )
 	newMaterial->m_bufferMatricesSkinning	= m_bufferMatricesSkinning;
 	//newMaterial->m_bufferMatricesSoftbody	= m_bufferMatricesSoftbody;
 
-	memcpy( newMaterial->m_highlevel_storage, m_highlevel_storage, sizeof(CTexture*) * 12 );
+	memcpy( newMaterial->m_highlevel_storage, m_highlevel_storage, sizeof(RrTexture*) * 12 );
 	memcpy( newMaterial->m_samplers, m_samplers, sizeof(glHandle) * 12 );
 	memcpy( newMaterial->m_sampler_targets, m_sampler_targets, sizeof(glHandle) * 12 );
 
 	// Add references to valid high level storage:
-	for (CTexture*& texture : m_highlevel_storage)
+	for (RrTexture*& texture : m_highlevel_storage)
 	{
 		if (texture != NULL) {
 			texture->AddReference();
@@ -117,7 +119,7 @@ RrMaterial*	RrMaterial::copy ( void )
 
 uchar RrMaterial::getPassCount ( void )
 {
-	if ( CRenderState::Active->GetRenderMode() == kRenderModeForward )
+	if ( RrRenderer::Active->GetRenderMode() == kRenderModeForward )
 	{
 		return (uchar)passinfo.size();
 	}
@@ -149,17 +151,17 @@ glHandle	RrMaterial::m_ubo_reflectinfo = 0;
 #define HARD_MAX 8
 struct _lightingInfo_t
 {
-	Vector4d LightColor[HARD_MAX];
-	Vector4d LightPosition[HARD_MAX];
-	Vector4d LightProperties[HARD_MAX];
-	Vector4d LightShadowInfo[HARD_MAX];
+	Vector4f LightColor[HARD_MAX];
+	Vector4f LightPosition[HARD_MAX];
+	Vector4f LightProperties[HARD_MAX];
+	Vector4f LightShadowInfo[HARD_MAX];
 	Matrix4x4 LightMatrix[HARD_MAX];
 };
 struct _reflectInfo_t
 {
-	Vector4d ReflectMinBox;
-	Vector4d ReflectMaxBox;
-	Vector4d ReflectSource;
+	Vector4f ReflectMinBox;
+	Vector4f ReflectMaxBox;
+	Vector4f ReflectSource;
 };
 void RrMaterial::updateStaticUBO ( void )
 {
@@ -181,14 +183,14 @@ void RrMaterial::updateStaticUBO ( void )
 	//	glBindBuffer( GL_UNIFORM_BUFFER, m_ubo_foginfo );
 	//	glBufferSubData( GL_UNIFORM_BUFFER, 0, sizeof(_fogInfo_t), &t_fogInfo );
 	//}
-	auto renderMode = CRenderState::Active->GetRenderMode();
+	auto renderMode = RrRenderer::Active->GetRenderMode();
 	if ( renderMode == kRenderModeForward )
 	{
 		if ( renderer::Settings.maxLights <= 0 ) throw core::NullReferenceException(); // Null data passed to shader
 
 		_lightingInfo_t t_lightingInfo;
 		// Get the light list
-		std::vector<CLight*>* lightList = CLight::GetActiveLightList();
+		std::vector<RrLight*>* lightList = RrLight::GetActiveLightList();
 		// Set the maximum value to iterate through
 		uint t_maxLights = std::min<uint>( (uint)(renderer::Settings.maxLights-1), HARD_MAX );
 		uint maxVal = lightList->size();
@@ -212,7 +214,7 @@ void RrMaterial::updateStaticUBO ( void )
 			t_lightingInfo.LightColor[i].z = (*lightList)[i]->diffuseColor.blue;
 			t_lightingInfo.LightColor[i].w = (*lightList)[i]->diffuseColor.alpha;
 			// Set shadow casting info
-			if ( CRenderState::Active->GetShadowsEnabled() )
+			if ( RrRenderer::Active->GetShadowsEnabled() )
 			{
 				// No shadows, send dead shadow info
 				if ( !(*lightList)[i]->generateShadows )
@@ -234,7 +236,7 @@ void RrMaterial::updateStaticUBO ( void )
 					// Set shadow matrix
 					if ( lightList->at(i)->GetShadowCamera() && lightList->at(i)->GetShadowCamera()->GetType() == CAMERA_TYPE_RT_CASCADE ) { 
 						//t_lightingInfo.LightMatrix[i] = lightList->at(i)->GetShadowCamera()->textureMatrix.transpose();
-						CRTCameraCascade* t_cascadeCamera = (CRTCameraCascade*)lightList->at(i)->GetShadowCamera();
+						RrRTCameraCascade* t_cascadeCamera = (RrRTCameraCascade*)lightList->at(i)->GetShadowCamera();
 						t_lightingInfo.LightMatrix[0] = t_cascadeCamera->m_renderMatrices[0].transpose();
 						t_lightingInfo.LightMatrix[1] = t_cascadeCamera->m_renderMatrices[1].transpose();
 						t_lightingInfo.LightMatrix[2] = t_cascadeCamera->m_renderMatrices[2].transpose();
@@ -288,16 +290,16 @@ void RrMaterial::updateStaticUBO ( void )
 		// Create reflect information
 		if ( m_sampler_reflection->ClassType() == TextureClassRenderTarget_Cube ) 
 		{
-			CRenderTextureCube* t_cubeTexture = (CRenderTextureCube*)m_sampler_reflection;
+			RrRenderTextureCube* t_cubeTexture = (RrRenderTextureCube*)m_sampler_reflection;
 			t_reflectInfo.ReflectSource = t_cubeTexture->m_renderPosition;
-			t_reflectInfo.ReflectMaxBox = t_reflectInfo.ReflectSource + Vector4d( 1000,1000,1000 );
-			t_reflectInfo.ReflectMinBox = t_reflectInfo.ReflectSource - Vector4d( 1000,1000,1000 );
+			t_reflectInfo.ReflectMaxBox = t_reflectInfo.ReflectSource + Vector4f( 1000,1000,1000 );
+			t_reflectInfo.ReflectMinBox = t_reflectInfo.ReflectSource - Vector4f( 1000,1000,1000 );
 		}
 		else
 		{
-			t_reflectInfo.ReflectSource = CCamera::activeCamera->transform.position;
-			t_reflectInfo.ReflectMaxBox = t_reflectInfo.ReflectSource + Vector4d( 1000,1000,1000 );
-			t_reflectInfo.ReflectMinBox = t_reflectInfo.ReflectSource - Vector4d( 1000,1000,1000 );
+			t_reflectInfo.ReflectSource = RrCamera::activeCamera->transform.position;
+			t_reflectInfo.ReflectMaxBox = t_reflectInfo.ReflectSource + Vector4f( 1000,1000,1000 );
+			t_reflectInfo.ReflectMinBox = t_reflectInfo.ReflectSource - Vector4f( 1000,1000,1000 );
 		}
 		// Send it to video card
 		if ( m_ubo_reflectinfo == 0 )
@@ -365,7 +367,7 @@ void RrMaterial::updateLightTBO ( void )
 		glTexBuffer( GL_TEXTURE_BUFFER, GL_RGBA32F, m_tex_shadowinfo ); 
 		glBindTexture( GL_TEXTURE_BUFFER, 0 );
 	}*/
-	renderer::ePipelineMode pipelineMode = CRenderState::Active->GetPipelineMode();
+	renderer::ePipelineMode pipelineMode = RrRenderer::Active->GetPipelineMode();
 	if ( pipelineMode == renderer::kPipelineModeNormal ||
 		 pipelineMode == renderer::kPipelineModeShaft ||
 		 pipelineMode == renderer::kPipelineMode2DPaletted )
@@ -375,10 +377,10 @@ void RrMaterial::updateLightTBO ( void )
 		m_lightCount = 0;
 
 		// Get the light list
-		std::vector<CLight*>* lightList = CLight::GetActiveLightList(); 
+		std::vector<RrLight*>* lightList = RrLight::GetActiveLightList(); 
 		for ( uint li = 0; li < lightList->size(); ++li )
 		{
-			CLight* light = lightList->at(li);
+			RrLight* light = lightList->at(li);
 			lightProperties[li].red		= light->diffuseColor.red;
 			lightProperties[li].green	= light->diffuseColor.green;
 			lightProperties[li].blue	= light->diffuseColor.blue;
@@ -408,7 +410,7 @@ void RrMaterial::updateLightTBO ( void )
 		if ( !lightList->empty() && lightList->at(0)->isDirectional )
 		{
 			_shadowMatrix_t	shadowMatrices [1];
-			CRTCameraCascade* t_cascadeCamera = (CRTCameraCascade*)lightList->at(0)->GetShadowCamera();
+			RrRTCameraCascade* t_cascadeCamera = (RrRTCameraCascade*)lightList->at(0)->GetShadowCamera();
 			if ( t_cascadeCamera )
 			{
 				shadowMatrices[0].shadowCascade[0] = t_cascadeCamera->m_renderMatrices[0].transpose();
@@ -494,9 +496,9 @@ void RrMaterial::updateLightTBO ( void )
 		m_lightCount = 0;
 
 		{	// Create a little sound near camera
-			lightProperties[0].x = CCamera::activeCamera->transform.position.x;
-			lightProperties[0].y = CCamera::activeCamera->transform.position.y;
-			lightProperties[0].z = CCamera::activeCamera->transform.position.z + 0.1f;
+			lightProperties[0].x = RrCamera::activeCamera->transform.position.x;
+			lightProperties[0].y = RrCamera::activeCamera->transform.position.y;
+			lightProperties[0].z = RrCamera::activeCamera->transform.position.z + 0.1f;
 
 			// Set color
 			lightProperties[0].red		= 0.5f;
@@ -510,7 +512,7 @@ void RrMaterial::updateLightTBO ( void )
 			lightProperties[0].directional		= 1;
 			lightProperties[0].falloff			= 1;
 			lightProperties[0].passthrough		= 0.4f;
-			lightProperties[0].range		= 1/(4.0f);//1/(std::max<Real>( 3.0f, std::min<Real>( 12.0f, CCamera::activeCamera->focalDistance )));
+			lightProperties[0].range		= 1/(4.0f);//1/(std::max<Real>( 3.0f, std::min<Real>( 12.0f, RrCamera::activeCamera->focalDistance )));
 
 			m_lightCount += 1;
 		}
@@ -569,7 +571,7 @@ void RrMaterial::bindPass ( uchar pass )
 	TimeProfiler.BeginTimeProfile( "rs_mat_bindpass" );
 
 	// Forward binding
-	auto renderMode = CRenderState::Active->GetRenderMode();
+	auto renderMode = RrRenderer::Active->GetRenderMode();
 	if ( /*GL.inOrtho() ||*/ renderMode == kRenderModeForward || deferredinfo.empty() )
 	{
 		bindPassForward( pass );
@@ -608,6 +610,8 @@ static struct _pass_deferred_state {
 
 void RrMaterial::bindPassForward ( uchar pass )
 {
+	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
 	// Reset deferred state
 	df_state.shader = NULL;
 
@@ -616,75 +620,93 @@ void RrMaterial::bindPassForward ( uchar pass )
 	m_currentPass = pass;
 	m_currentPassForward = true;
 
+	gpu::RasterizerState raster_state;
+	gpu::BlendState blend_state;
+	gpu::DepthStencilState ds_state;
+
 	// Set face mode
 	switch ( passinfo[pass].m_face_mode )
 	{
 	case renderer::FM_FRONT:
-		glEnable( GL_CULL_FACE );
-		glCullFace( GL_BACK );
+		raster_state.cullmode = gpu::kCullModeBack;
 		break;
 	case renderer::FM_BACK:
-		glEnable( GL_CULL_FACE );
-		glCullFace( GL_FRONT );
+		raster_state.cullmode = gpu::kCullModeFront;
 		break;
 	case renderer::FM_FRONTANDBACK:
-		glDisable( GL_CULL_FACE );
+		raster_state.cullmode = gpu::kCullModeNone;
 		break;
 	}
 	// Set blend mode
-	glEnable( GL_BLEND );
 	switch ( passinfo[pass].m_blend_mode )
 	{
 	case renderer::BM_NORMAL:
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeSrcAlpha;
+		blend_state.dst = gpu::kBlendModeInvSrcAlpha;
 		break;
 	case renderer::BM_ADD:
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeSrcAlpha;
+		blend_state.dst = gpu::kBlendModeOne;
 		break;
 	case renderer::BM_SOFT_ADD:
-		glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeOne;
+		blend_state.dst = gpu::kBlendModeInvSrcAlpha;
 		break;
 	case renderer::BM_INV_MULTIPLY:
-		glBlendFunc( GL_ZERO, GL_ONE_MINUS_SRC_COLOR );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeZero;
+		blend_state.dst = gpu::kBlendModeInvSrcColor;
 		break;
 	case renderer::BM_MULTIPLY:
-		glBlendFunc( GL_DST_COLOR, GL_ZERO );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeDstColor;
+		blend_state.dst = gpu::kBlendModeZero;
 		break;
 	case renderer::BM_MULTIPLY_X2:
-		glBlendFunc( GL_DST_COLOR, GL_SRC_COLOR );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeDstColor;
+		blend_state.dst = gpu::kBlendModeSrcColor;
 		break;
 	case renderer::BM_NONE:
-		glDisable( GL_BLEND );
-		glBlendFunc( GL_ONE, GL_ZERO );
+		blend_state.enable = false;
 		break;
 	}
 
 	// Set transparency mode
 	if ( passinfo[pass].b_depthtest )
 	{
-		glEnable( GL_DEPTH_TEST );
-		glDepthFunc( GL_LEQUAL );
+		ds_state.depthTestEnabled = true;
+		ds_state.depthFunc = gpu::kCompareOpLess;
 	}
 	else
 	{
-		glDisable( GL_DEPTH_TEST );
+		ds_state.depthTestEnabled = false;
 	}
 	if ( !passinfo[pass].b_depthmask )
 	{
-		glDepthMask( GL_FALSE );
+		ds_state.depthWriteEnabled = false;
 	}
 	else
 	{
 		if (passinfo[pass].m_transparency_mode == renderer::ALPHAMODE_NONE ||
 			passinfo[pass].m_transparency_mode == renderer::ALPHAMODE_ALPHATEST)
 		{
-			glDepthMask( GL_TRUE );
+			ds_state.depthWriteEnabled = true;
 		}
 		else
 		{
-			glDepthMask( GL_FALSE );
+			ds_state.depthWriteEnabled = false;
 		}
 	}
+
+	// Set blend & rasterizer state
+	gfx->setRasterizerState(raster_state);
+	gfx->setBlendState(blend_state);
+	gfx->setDepthStencilState(ds_state);
+	gfx->setPipeline(passinfo[pass].m_pipeline);
 
 	// Bind shader
 	TimeProfiler.BeginTimeProfile( "rs_mat_bindshader" );
@@ -727,6 +749,8 @@ void RrMaterial::bindPassForward ( uchar pass )
 
 void RrMaterial::bindPassDeferred ( uchar pass )
 {
+	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
 	// Reset forward state
 	state.shader = NULL;
 
@@ -735,38 +759,49 @@ void RrMaterial::bindPassDeferred ( uchar pass )
 	m_currentPass = pass;
 	m_currentPassForward = false;
 
+	gpu::RasterizerState raster_state;
+	gpu::BlendState blend_state;
+	gpu::DepthStencilState ds_state;
+
 	// Set face mode
 	if (0) // TODO: Fix this.
 	{
-		glEnable( GL_CULL_FACE );
-		glCullFace( GL_BACK );
+		raster_state.cullmode = gpu::kCullModeBack;
 	}
 	else
 	{
-		glDisable( GL_CULL_FACE );
+		raster_state.cullmode = gpu::kCullModeNone;
 	}
 
 	// Set transparency mode
-	glEnable( GL_DEPTH_TEST );
-	glDepthFunc( GL_LEQUAL );
+	ds_state.depthTestEnabled = true;
+	ds_state.depthFunc = gpu::kCompareOpLess;
 	switch ( deferredinfo[pass].m_transparency_mode )
 	{
 	case renderer::ALPHAMODE_NONE:
-		glDisable( GL_BLEND );
-		glBlendFunc( GL_ONE, GL_ZERO );
-		glDepthMask( GL_TRUE );
+		blend_state.enable = false;
+		blend_state.src = gpu::kBlendModeOne;
+		blend_state.dst = gpu::kBlendModeZero;
+		ds_state.depthWriteEnabled = true;
 		break;
 	case renderer::ALPHAMODE_ALPHATEST:
-		glDisable( GL_BLEND );
-		glBlendFunc( GL_ONE, GL_ZERO );
-		glDepthMask( GL_TRUE );
+		blend_state.enable = false;
+		blend_state.src = gpu::kBlendModeOne;
+		blend_state.dst = gpu::kBlendModeZero;
+		ds_state.depthWriteEnabled = true;
 		break;
 	case renderer::ALPHAMODE_TRANSLUCENT:
-		glEnable( GL_BLEND );
-		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-		glDepthMask( GL_FALSE );
+		blend_state.enable = true;
+		blend_state.src = gpu::kBlendModeSrcAlpha;
+		blend_state.dst = gpu::kBlendModeInvSrcAlpha;
+		ds_state.depthWriteEnabled = false;
 		break;
 	}
+
+	// Set blend & rasterizer state
+	gfx->setRasterizerState(raster_state);
+	gfx->setBlendState(blend_state);
+	gfx->setDepthStencilState(ds_state);
 
 	// Do first-time initialization checks
 	if ( !deferredinfo[pass].m_ready )
@@ -847,14 +882,14 @@ void RrMaterial::shader_bind_samplers ( RrShader* shader )
 		{
 			glUniform1i( renderer::UNI_SAMPLER_0 + i, current_sampler_slot );
 			glActiveTexture( GL_TEXTURE0+current_sampler_slot );
-			CTexture::Unbind(0);
+			RrTexture::Unbind(0);
 			glBindTexture( m_sampler_targets[i], m_samplers[i] );
 
 			// Increment used texture count
 			current_sampler_slot += 1;
 
 			if ( m_highlevel_storage[i] && m_highlevel_storage[i]->GetIsFont() ) {
-				((CBitmapFont*)(m_highlevel_storage[i]))->Set();
+				((RrFontTexture*)(m_highlevel_storage[i]))->Set();
 			}
 		}
 	}
@@ -883,13 +918,13 @@ void RrMaterial::shader_bind_samplers ( RrShader* shader )
 
 	glUniform1i( renderer::UNI_SAMPLER_LIGHT_BUFFER_0, current_sampler_slot );
 	glActiveTexture( GL_TEXTURE0+current_sampler_slot );
-	CTexture::Unbind(0);
+	RrTexture::Unbind(0);
 	glBindTexture( GL_TEXTURE_BUFFER, m_tex_lightinfo );
 	current_sampler_slot += 1;
 
 	glUniform1i( renderer::UNI_SAMPLER_INSTANCE_BUFFER_0, current_sampler_slot );
 	glActiveTexture( GL_TEXTURE0+current_sampler_slot );
-	CTexture::Unbind(0);
+	RrTexture::Unbind(0);
 	glBindTexture( GL_TEXTURE_BUFFER, m_tex_instancedinfo );
 	current_sampler_slot += 1;
 }
@@ -934,6 +969,20 @@ void	RrMaterial::bindPassAtrribs ( void )
 }
 void RrMaterial::bindAttribute ( int attributeIndex, const uint vec_size, const uint vec_type, const bool normalize, const int struct_size, const void* struct_offset )
 {
+	/*void glBindVertexBuffer(GLuint bindingindex?, GLuint buffer?, GLintptr offset?, GLintptr stride?);
+	void glVertexBindingDivisor(GLuint bindingindex?, GLuint divisor?);
+
+	void glVertexAttribFormat(GLuint attribindex?, GLint size?, GLenum type?, GLboolean normalized?, GLuint relativeoffset?);
+	void glVertexAttribIFormat(GLuint attribindex?, GLint size?, GLenum type?, GLuint relativeoffset?);
+	void glVertexAttribLFormat(GLuint attribindex?, GLint size?, GLenum type?, GLuint relativeoffset?);
+	
+	void glVertexAttribBinding(GLuint attribindex?, GLuint bindingindex?);*/
+	glEnableVertexAttribArray(index);
+	glBindVertexBuffer(bindex, 0, offset, stride);
+	glVertexBindingDivisor(bindex, 0);
+	glVertexAttribFormat(index, 4, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(index, bindex);
+
 	RrPassForward::enabled_attributes[attributeIndex] = true;
 	glEnableVertexAttribArray( attributeIndex );
 	glVertexAttribPointer( attributeIndex,

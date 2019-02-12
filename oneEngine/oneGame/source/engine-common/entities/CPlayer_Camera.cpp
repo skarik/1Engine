@@ -28,7 +28,7 @@ void CPlayer::SetTurnSensitivity ( float fnSensitivity )
 }
 
 // ==View Punching==
-void	CPlayer::PunchView ( Vector3d const&	vPunchValue )
+void	CPlayer::PunchView ( Vector3f const&	vPunchValue )
 {
 	vViewPunch += vPunchValue;
 	vViewPunch.x = Math.Clamp( vViewPunch.x, -73, 73 );
@@ -83,7 +83,7 @@ void*	CPlayer::camDefault ( void )
 	}
 	else
 	{
-		pCamera->transform.position = transform.position + Vector3d( 0,0,fPlayerHeight-0.6f );
+		pCamera->transform.position = transform.position + Vector3f( 0,0,fPlayerHeight-0.6f );
 	}
 	// Do mouse look
 	vCameraRotation.z = vPlayerRotation.z;
@@ -120,7 +120,7 @@ void*	CPlayer::camDefault ( void )
 	vCameraRotation.x = fViewRollOffset;
 
 	// Set the final camera rotation and view angle
-	//Vector3d fin = vCameraRotation+vViewBob+vViewPunch+vCameraAnimOffsetRotation;
+	//Vector3f fin = vCameraRotation+vViewBob+vViewPunch+vCameraAnimOffsetRotation;
 	pCamera->transform.rotation.Euler( vCameraRotation+vViewBob+vViewPunch+vCameraAnimOffsetRotation );
 	//pCamera->transform.rotation = !pCamera->transform.rotation;
 	//pCamera->SetRotation( vCameraRotation+vViewBob+vViewPunch+vCameraAnimOffsetRotation );

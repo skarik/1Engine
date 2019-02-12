@@ -4,7 +4,7 @@
 #include "engine/behavior/CGameBehavior.h"
 #include "engine-common/dusk/CDuskGUIHandle.h"
 
-class CCamera;
+class RrCamera;
 class CDuskGUI;
 namespace Engine2D
 {

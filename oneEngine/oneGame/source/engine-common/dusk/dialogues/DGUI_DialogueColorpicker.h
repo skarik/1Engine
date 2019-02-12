@@ -31,10 +31,10 @@ namespace Dusk
 		bool hasSelection;
 		bool endMe;
 
-		void drawColorWheel ( const Vector2d& position );
-		void drawColorSliders ( const Vector2d& position );
+		void drawColorWheel ( const Vector2f& position );
+		void drawColorSliders ( const Vector2f& position );
 
-		void updateColorSliders ( const Vector2d& position );
+		void updateColorSliders ( const Vector2f& position );
 
 		enum class Mode : uint8_t
 		{
@@ -52,8 +52,8 @@ namespace Dusk
 		Mode current_mode;
 
 		Color color_start;
-		Vector2d drag_start;
-		Vector2d drag_now;
+		Vector2f drag_start;
+		Vector2f drag_now;
 		bool dragging;
 	};
 }

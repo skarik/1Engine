@@ -21,8 +21,8 @@ M04::UIDragHandle::UIDragHandle ( DrawStyle style )
 	m_dragging		= false;
 	m_drag_axis		= Axis::None;
 	m_drag_axis_hover	= Axis::None;
-	m_position		= Vector3d::zero;
-	m_position_snap	= Vector3d::zero;
+	m_position		= Vector3f::zero;
+	m_position_snap	= Vector3f::zero;
 }
 
 M04::UIDragHandle::~UIDragHandle ( void )
@@ -38,7 +38,7 @@ void M04::UIDragHandle::Update ( void )
 		// Grab mouse position in the world to get hover area
 		if ( m_style == DrawStyle::s2D )
 		{
-			Vector3d worldpos = CCamera::activeCamera->ScreenToWorldPos( Vector2d( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+			Vector3f worldpos = RrCamera::activeCamera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
 			Rect check_rect;
 
 			// Reset hovers
@@ -78,7 +78,7 @@ void M04::UIDragHandle::Update ( void )
 				{
 					m_drag_axis = m_drag_axis_hover;
 					m_dragging = true;
-					m_drag_start = Vector2d( Input::MouseX(), Input::MouseY() );
+					m_drag_start = Vector2f( Input::MouseX(), Input::MouseY() );
 
 					m_position_start = m_position;
 					m_rotation_start = m_rotation;
@@ -90,14 +90,14 @@ void M04::UIDragHandle::Update ( void )
 	else
 	{
 		// Perform the dragging
-		m_drag_end = Vector2d( Input::MouseX(), Input::MouseY() );
-		Vector3d t_drag_delta = m_drag_end - m_drag_start;
+		m_drag_end = Vector2f( Input::MouseX(), Input::MouseY() );
+		Vector3f t_drag_delta = m_drag_end - m_drag_start;
 
 		// Different modes have different behavior
 		if ( m_style == DrawStyle::s2D )
 		{
 			// 2D mode uses the pixel size as a baseline
-			t_drag_delta = t_drag_delta.mulComponents( Vector2d( 0.5F, 0.5F ) );
+			t_drag_delta = t_drag_delta.mulComponents( Vector2f( 0.5F, 0.5F ) );
 			// Perform translation motion
 			if ( m_mode == Mode::Translate )
 			{
@@ -126,7 +126,7 @@ void M04::UIDragHandle::Update ( void )
 
 //		SetSnapping
 // When snapping is enabled, sets the divs that the DragHandle snaps to
-void M04::UIDragHandle::SetSnapping ( const Vector3d& n_snappingdivs )
+void M04::UIDragHandle::SetSnapping ( const Vector3f& n_snappingdivs )
 {
 	if ( m_mode == Mode::Translate )
 	{
@@ -136,7 +136,7 @@ void M04::UIDragHandle::SetSnapping ( const Vector3d& n_snappingdivs )
 
 //		SetRenderPosition
 // Sets the position that being rendered at
-void M04::UIDragHandle::SetRenderPosition ( const Vector3d& n_newPosition )
+void M04::UIDragHandle::SetRenderPosition ( const Vector3f& n_newPosition )
 {
 	m_position = n_newPosition;
 }
@@ -149,7 +149,7 @@ bool M04::UIDragHandle::HasFocus ( void )
 }
 //		GetGizmoPosition
 // Returns the position the handle is now being rendered at
-Vector3d M04::UIDragHandle::GetGizmoPosition ( void )
+Vector3f M04::UIDragHandle::GetGizmoPosition ( void )
 {
 	return m_position;
 }

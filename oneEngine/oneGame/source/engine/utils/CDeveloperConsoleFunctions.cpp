@@ -24,7 +24,7 @@ int con_luaReload ( string const& )
 
 // Materials and textures
 #include "RrMaterial.h"
-#include "CTextureMaster.h"
+#include "RrTextureMaster.h"
 
 int reload_textures ( string const& )
 {

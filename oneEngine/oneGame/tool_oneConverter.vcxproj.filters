@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="SOURCE">
@@ -12,8 +12,46 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\tool\converter\main.cpp">
+    <ClCompile Include="source\tool\converter\converter-main.cpp">
       <Filter>SOURCE\Tool\Converter</Filter>
     </ClCompile>
+    <ClCompile Include="source\tool\converter\TrConverterBase.cpp">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tool\converter\TrConverterForwardTo32.cpp">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tool\converter\TrConverterPNG.cpp">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tool\converter\TrConverterJPG.cpp">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tool\converter\TrConverterTGA.cpp">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tool\converter\TrConverterBMP.cpp">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\tool\converter\TrConverterBase.h">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tool\converter\TrConverterForwardTo32.h">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tool\converter\TrConverterPNG.h">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tool\converter\TrConverterJPG.h">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tool\converter\TrConverterTGA.h">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tool\converter\TrConverterBMP.h">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

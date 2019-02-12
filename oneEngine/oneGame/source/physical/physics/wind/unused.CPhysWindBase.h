@@ -4,7 +4,7 @@
 
 //#include "CPhysics.h"
 #include "core/types.h"
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 //#include "physical/physics/CPhysics.h"
 #include <vector>
 
@@ -22,7 +22,7 @@
 //	// Overrideable behaviors
 //
 //	PHYS_API virtual void Update ( Real deltaTime ) =0;
-//	PHYS_API virtual void GetWindVector ( const Vector3d& pos, Vector3d& windOut ) const =0;
+//	PHYS_API virtual void GetWindVector ( const Vector3f& pos, Vector3f& windOut ) const =0;
 //
 //	PHYS_API virtual bool IsActive ( void ) const =0;
 //

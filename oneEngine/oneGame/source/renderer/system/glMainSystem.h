@@ -7,9 +7,9 @@
 #include "core/math/Color.h"
 #include "core-ext/transform/Transform.h"
 // Needs the OpenGL functions
-#include "renderer/ogl/GLCommon.h"
+//#include "renderer/ogl/GLCommon.h"
 #include "renderer/types/types.h"
-#include "renderer/types/textureFormats.h"
+#include "core/gfx/textureFormats.h"
 #include "renderer/types/blendModes.h"
 //#include "renderer/state/Settings.h"
 
@@ -24,7 +24,7 @@
 
 #define GL_ACCESS glMainSystem& GL = *glMainSystem::ActiveReference();
 
-class CRenderTexture;
+class RrRenderTexture;
 
 class glMainSystem
 {
@@ -78,7 +78,7 @@ public:
 	//==============================================================================================//
 
 	// Get the current main screen buffer
-	RENDER_API CRenderTexture* GetMainScreenBuffer ( void );
+	RENDER_API RrRenderTexture* GetMainScreenBuffer ( void );
 	// Tell the entire system to restart
 	RENDER_API void		FullRedraw ( void );
 
@@ -100,8 +100,10 @@ public:
 	// VIEWPORT AND PROJECTION SETUP
 	//==============================================================================================//
 
-	RENDER_API void		setupViewport ( int x, int y, int width, int height );
-	RENDER_API void		scissorViewport ( int x, int y, int width, int height );
+	//DEPRECATED("Use gpu::getDevice()->getContext()->setViewport() instead.")
+	//RENDER_API void		setupViewport ( int x, int y, int width, int height );
+	//DEPRECATED("Use gpu::getDevice()->getContext()->setScissor() instead.")
+	//RENDER_API void		scissorViewport ( int x, int y, int width, int height );
 
 #ifdef _ENGINE_RELEASE
 	RENDER_API FORCE_INLINE void CheckError ( void ) {}
@@ -141,24 +143,24 @@ public:
 	// FORMATS (specific to openGL)
 	//==============================================================================================//
 
-	RENDER_API glEnum		Enum ( const eColorFormat );
+	/*RENDER_API glEnum		Enum ( const eColorFormat );
 	RENDER_API glEnum		Enum ( const eTextureType );
 	RENDER_API glEnum		Enum ( const eDepthFormat );
 	RENDER_API glEnum		Enum ( const eStencilFormat );
 	RENDER_API glEnum		Enum ( const eWrappingType );
-	RENDER_API glEnum		Enum ( const eSamplingFilter );
+	RENDER_API glEnum		Enum ( const eSamplingFilter );*/
 
 	//==============================================================================================//
 	// BUFFERS
 	//==============================================================================================//
 
-	RENDER_API void			CreateBuffer ( uint* index, uint count = 1 );
+	/*RENDER_API void			CreateBuffer ( uint* index, uint count = 1 );
 	RENDER_API void			FreeBuffer ( uint* index, uint count = 1 );
 	RENDER_API void			BindBuffer ( uint target, uint index );
 	RENDER_API void			UploadBuffer ( uint target, uint size, void* data, uint usage );
 	RENDER_API void			UnbindBuffer ( uint target );
 
-	RENDER_API void			BindVertexArray ( uint target );
+	RENDER_API void			BindVertexArray ( uint target );*/
 
 	//==============================================================================================//
 	// RENDERING FROM BUFFER

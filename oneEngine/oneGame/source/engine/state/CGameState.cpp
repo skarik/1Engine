@@ -7,6 +7,7 @@
 //#include "engine/physics/CPhysicsEngine.h"
 #include "core-ext/profiler/CTimeProfiler.h"
 //#include "CResourceManager.h"
+#include "core-ext/resources/ResourceManager.h"
 
 #include <iostream>
 
@@ -115,9 +116,9 @@ void CGameState::Update ( void )
 	unsigned int i;
 
 	// Update resource manager
-	/*if ( mResourceManager ) {
+	if ( mResourceManager ) {
 		mResourceManager->FileUpdate();
-	}*/
+	}
 
 	// Call OnCreate on all new instances
 	while ( !vCreationList.empty() )

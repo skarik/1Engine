@@ -6,15 +6,15 @@
 #include "core/system/io/FileUtils.h"
 #include "core/system/Screen.h"
 
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "renderer/object/CRenderable3D.h"
 #include "renderer/object/CStreamedRenderable3D.h"
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/utils/rrMeshBuilder2D.h"
 #include "renderer/utils/rrTextBuilder2D.h"
 
-#include "renderer/resource/CResourceManager.h"
+//#include "renderer/resource/CResourceManager.h"
 
 #include "engine-common/cutscene/EditorNode.h"
 #include "engine-common/cutscene/Node.h"
@@ -30,9 +30,9 @@
 
 using namespace M04;
 
-static Vector2d _PixelRoundPosition ( const Vector2d vect )
+static Vector2f _PixelRoundPosition ( const Vector2f vect )
 {
-	return Vector2d(
+	return Vector2f(
 		1.0F * math::round( vect.x ),
 		1.0F * math::round( vect.y )
 	);
@@ -41,12 +41,12 @@ static Vector2d _PixelRoundPosition ( const Vector2d vect )
 CutsceneEditor::CLargeTextRenderer::CLargeTextRenderer ( CutsceneEditor* owner )
 	: m_owner(owner), CStreamedRenderable3D()
 {
-	m_font_texture = new CBitmapFont("YanoneKaffeesatz-B.otf", 24, FW_BOLD);
+	m_font_texture = new RrFontTexture("YanoneKaffeesatz-B.otf", 24, FW_BOLD);
 	m_font_texture->SetFilter( SamplingLinear );
 
 	// Use a default 2D material
 	m_material = new RrMaterial();
-	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new CTexture("null")) );
+	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new RrTexture("null")) );
 	m_material->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
 
 	m_material->passinfo.push_back( RrPassForward() );
@@ -75,10 +75,10 @@ void CutsceneEditor::CLargeTextRenderer::UpdateMesh ( void )
 	screenMapping.position.y = 1.0F;
 	screenMapping.size.y = -2.0F;
 
-	if ( CCamera::activeCamera )
+	if ( RrCamera::activeCamera )
 	{	// Modify console size based on render scale so it is always legible!
 		screenMapping.position += screenMapping.size * 0.5F;
-		screenMapping.size *= CCamera::activeCamera->render_scale;
+		screenMapping.size *= RrCamera::activeCamera->render_scale;
 		screenMapping.position -= screenMapping.size * 0.5F;
 	}
 
@@ -88,11 +88,11 @@ void CutsceneEditor::CLargeTextRenderer::UpdateMesh ( void )
 	m_modeldata.vertexNum = 0;
 
 	// Create the visual text
-	Vector2d screenOrigin (-640,-360 + 20);
-	Vector2d generalMargins (4, 4);
+	Vector2f screenOrigin (-640,-360 + 20);
+	Vector2f generalMargins (4, 4);
 
 	builder.addText(
-		screenOrigin + Vector2d(10,10),
+		screenOrigin + Vector2f(10,10),
 		Color(1.0F, 1.0F, 1.0F, 1.0F),
 		"Cutscene Editor" );
 
@@ -104,12 +104,12 @@ void CutsceneEditor::CLargeTextRenderer::UpdateMesh ( void )
 CutsceneEditor::CNormalTextRenderer::CNormalTextRenderer ( CutsceneEditor* owner )
 		: m_owner(owner), CStreamedRenderable3D()
 {
-	m_font_texture = new CBitmapFont("YanoneKaffeesatz-B.otf", 18, FW_BOLD);
+	m_font_texture = new RrFontTexture("YanoneKaffeesatz-B.otf", 18, FW_BOLD);
 	m_font_texture->SetFilter( SamplingLinear );
 
 	// Use a default 2D material
 	m_material = new RrMaterial();
-	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new CTexture("null")) );
+	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new RrTexture("null")) );
 	m_material->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
 
 	m_material->passinfo.push_back( RrPassForward() );
@@ -138,10 +138,10 @@ void CutsceneEditor::CNormalTextRenderer::UpdateMesh ( void )
 	screenMapping.position.y = 1.0F;
 	screenMapping.size.y = -2.0F;
 
-	if ( CCamera::activeCamera )
+	if ( RrCamera::activeCamera )
 	{	// Modify console size based on render scale so it is always legible!
 		screenMapping.position += screenMapping.size * 0.5F;
-		screenMapping.size *= CCamera::activeCamera->render_scale;
+		screenMapping.size *= RrCamera::activeCamera->render_scale;
 		screenMapping.position -= screenMapping.size * 0.5F;
 	}
 
@@ -152,11 +152,11 @@ void CutsceneEditor::CNormalTextRenderer::UpdateMesh ( void )
 
 	// Create the visual text
 	{
-		Vector2d screenOrigin (-640,-360 + 20);
-		Vector2d generalMargins (4, 4);
+		Vector2f screenOrigin (-640,-360 + 20);
+		Vector2f generalMargins (4, 4);
 
 		builder.addText(
-			screenOrigin + Vector2d(10, 40),
+			screenOrigin + Vector2f(10, 40),
 			Color(1.0F, 1.0F, 1.0F, 1.0F),
 			"node count: %d" );
 
@@ -185,7 +185,7 @@ void CutsceneEditor::CNormalTextRenderer::UpdateMesh ( void )
 		{
 			builder.addText(_PixelRoundPosition(
 				m_owner->m_contextMenu_position
-				+ Vector2d(0, m_owner->m_contextMenu_spacing + m_owner->m_contextMenu_spacing * i)
+				+ Vector2f(0, m_owner->m_contextMenu_spacing + m_owner->m_contextMenu_spacing * i)
 				- m_owner->m_target_camera_position),
 				(i == m_owner->m_mouseover_context_prev) ? Color(1.0F, 1.0F, 1.0F, 1.0F) : Color(0.5F, 0.5F, 0.5F, 1.0F),
 				m_owner->m_contextMenu_entries[i].label.c_str());
@@ -206,7 +206,7 @@ CutsceneEditor::CGeometryRenderer::CGeometryRenderer ( CutsceneEditor* owner )
 
 	// Use a default 2D material
 	m_material = new RrMaterial();
-	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new CTexture("null")) );
+	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new RrTexture("null")) );
 	m_material->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
 
 	m_material->passinfo.push_back( RrPassForward() );
@@ -254,7 +254,7 @@ void CutsceneEditor::CGeometryRenderer::UpdateMesh ( void )
 	// Create all the geometry for nodes!
 	{
 		Rect		draw_rect;
-		Vector2d	draw_pos;
+		Vector2f	draw_pos;
 
 		// Loop through all the nodes to draw connections
 		// TODO: Precache these links so as to make it not slow as fuck
@@ -276,8 +276,8 @@ void CutsceneEditor::CGeometryRenderer::UpdateMesh ( void )
 						if (dest_node.node == node_output)
 						{
 							// Draw from node to this node
-							Vector2d source_pos = m_owner->uiGetNodeOutputPosition(&node, connecti);
-							Vector2d dest_pos = m_owner->uiGetNodeInputPosition(&dest_node);
+							Vector2f source_pos = m_owner->uiGetNodeOutputPosition(&node, connecti);
+							Vector2f dest_pos = m_owner->uiGetNodeInputPosition(&dest_node);
 
 							source_pos = _PixelRoundPosition(source_pos - m_owner->m_target_camera_position);
 							dest_pos = _PixelRoundPosition(dest_pos - m_owner->m_target_camera_position);

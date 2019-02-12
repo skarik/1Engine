@@ -2,7 +2,7 @@
 
 namespace core
 {
-	Vector3d_d	world_origin = Vector3d_d(0,0,0);
+	Vector3f_d	world_origin = Vector3f_d(0,0,0);
 }
 
 #if 0
@@ -30,8 +30,8 @@ CTransform CTransform::root;
 CTransform::CTransform ( void )
 	: owner(NULL), ownerType(kOwnerTypeInvalid), active(true), name("Transform"), _parent( NULL )
 {
-	position = Vector3d( 0,0,0 );
-	scale = Vector3d( 1,1,1 );
+	position = Vector3f( 0,0,0 );
+	scale = Vector3f( 1,1,1 );
 	rotation = Rotator();
 	previous.position	= position;
 	previous.scale		= scale;
@@ -107,19 +107,19 @@ CTransform * CTransform::GetParent ( void )
 }*/
 
 // Return forward direction
-Vector3d CTransform::Forward ( void )
+Vector3f CTransform::Forward ( void )
 {
-	return rotation * Vector3d::forward;
+	return rotation * Vector3f::forward;
 }
 // Return up direction
-Vector3d CTransform::Up ( void )
+Vector3f CTransform::Up ( void )
 {
-	return rotation * Vector3d(0,0,1);
+	return rotation * Vector3f(0,0,1);
 }
 // Return side direction
-Vector3d CTransform::Side ( void )
+Vector3f CTransform::Side ( void )
 {
-	return rotation * Vector3d(0,1,0);
+	return rotation * Vector3f(0,1,0);
 }
 
 // Unlinker
@@ -195,7 +195,7 @@ void CTransform::SetParent ( CTransform * pNewParent, bool onDeathlink )
 			// Just take the new rotation in local space
 			localRotation = (_parent->GetTransformMatrixRot().inverse().getRotator() * rotation);
 			// Just take the new scale, I guess
-			localScale = Vector3d( scale.x/_parent->scale.x, scale.y/_parent->scale.y, scale.z/_parent->scale.z );*/
+			localScale = Vector3f( scale.x/_parent->scale.x, scale.y/_parent->scale.y, scale.z/_parent->scale.z );*/
 			core::TransformUtility::WorldToLocal(
 				_parent->WorldMatrix().inverse(), _parent->WorldRotation().inverse().getRotator(), _parent->scale,
 				position, rotation, scale,
@@ -222,7 +222,7 @@ void CTransform::SetParent ( CTransform * pNewParent, bool onDeathlink )
 }
 
 // Late Update
-//#include "CDebugDrawer.h"
+//#include "RrDebugDrawer.h"
 #include "core/debug/CDebugConsole.h"
 void CTransform::LateUpdate ( void )
 {
@@ -276,7 +276,7 @@ void CTransform::LateUpdate ( void )
 
 		// Apply the local tranform
 		position = myTransform.getTranslation();
-		scale = Vector3d( localScale.x * _parent->scale.x, localScale.y * _parent->scale.y, localScale.z * _parent->scale.z );
+		scale = Vector3f( localScale.x * _parent->scale.x, localScale.y * _parent->scale.y, localScale.z * _parent->scale.z );
 
 		// Set the matrices
 		matx = myTransform;
@@ -306,7 +306,7 @@ void CTransform::LateUpdate ( void )
 		{
 			if ( previous.position != position ) {
 				// Update local position by moving the translation into local space
-				//Vector3d offset = (_parent->GetTransformMatrix().inverse() * pposition) - (_parent->GetTransformMatrix().inverse() * position);
+				//Vector3f offset = (_parent->GetTransformMatrix().inverse() * pposition) - (_parent->GetTransformMatrix().inverse() * position);
 				// Now update it
 				//localPosition += offset;
 				localPosition = _parent->WorldMatrix().inverse() * position;
@@ -317,7 +317,7 @@ void CTransform::LateUpdate ( void )
 			}
 			if ( previous.scale != scale ) {
 				// Just take the new scale, I guess
-				localScale = Vector3d( scale.x/_parent->scale.x, scale.y/_parent->scale.y, scale.z/_parent->scale.z );
+				localScale = Vector3f( scale.x/_parent->scale.x, scale.y/_parent->scale.y, scale.z/_parent->scale.z );
 			}
 		}
 
@@ -374,9 +374,9 @@ void CTransform::LateUpdate ( void )
 
 
 		// Reset position
-		position = Vector3d(0,0,0);
+		position = Vector3f(0,0,0);
 		rotation = Quaternion();
-		scale = Vector3d(1,1,1);
+		scale = Vector3f(1,1,1);
 
 		{	// Create the transformation matrix
 			/*Matrix4x4 transMatrix;
@@ -405,7 +405,7 @@ void CTransform::SetTransform ( Matrix4x4 & inMatrix )
 	cout << "SetTransform( Matrix4x4& ) is DEPRECATED! Stop using it!" << endl;
 }
 */
-void CTransform::SetTransform ( Vector3d inPos, Rotator inRot, Vector3d inScal )
+void CTransform::SetTransform ( Vector3f inPos, Rotator inRot, Vector3f inScal )
 {
 	if ( _parent == NULL ) 
 	{
@@ -425,7 +425,7 @@ void CTransform::SetTransform ( Vector3d inPos, Rotator inRot, Vector3d inScal )
 			// Just take the new rotation in local space
 			localRotation = (_parent->GetTransformMatrixRot().inverse().getRotator() * rotation);
 			// Just take the new scale, I guess
-			localScale = Vector3d( scale.x/_parent->scale.x, scale.y/_parent->scale.y, scale.z/_parent->scale.z );*/
+			localScale = Vector3f( scale.x/_parent->scale.x, scale.y/_parent->scale.y, scale.z/_parent->scale.z );*/
 			core::TransformUtility::WorldToLocal(
 				_parent->WorldMatrix().inverse(), _parent->WorldRotation().inverse().getRotator(), _parent->scale,
 				position, rotation, scale,
@@ -455,7 +455,7 @@ void CTransform::SetLocalTransform ( Matrix4x4 & inMatrix )
 	}
 }
 */
-void CTransform::SetLocalTransform ( Vector3d inPos, Rotator inRot, Vector3d inScal )
+void CTransform::SetLocalTransform ( Vector3f inPos, Rotator inRot, Vector3f inScal )
 {
 	if ( _parent == NULL ) 
 	{

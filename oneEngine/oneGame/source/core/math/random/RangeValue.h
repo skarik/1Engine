@@ -3,7 +3,7 @@
 #define _RANGE_VALUE_H_
 
 #include <algorithm>
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 
 #ifdef max
 	#undef max
@@ -72,7 +72,7 @@ public:
 
 
 
-inline void RangeValue<Vector3d>::SetRange ( const Vector3d& lowVal, const Vector3d& highVal )
+inline void RangeValue<Vector3f>::SetRange ( const Vector3f& lowVal, const Vector3f& highVal )
 {
 	/*if ( lowVal.x <= highVal.x )
 	{
@@ -107,7 +107,7 @@ inline void RangeValue<Vector3d>::SetRange ( const Vector3d& lowVal, const Vecto
 	mMinVal = lowVal;
 	mMaxVal = highVal;
 };
-inline void RangeValue<Vector3d>::SetValue ( const Vector3d& curVal )
+inline void RangeValue<Vector3f>::SetValue ( const Vector3f& curVal )
 {
 	mCurVal.x = std::max( mMinVal.x, curVal.x );
 	mCurVal.x = std::min( mMaxVal.x, mCurVal.x );
@@ -116,17 +116,17 @@ inline void RangeValue<Vector3d>::SetValue ( const Vector3d& curVal )
 	mCurVal.z = std::max( mMinVal.z, curVal.z );
 	mCurVal.z = std::min( mMaxVal.z, mCurVal.z );
 };
-inline Vector3d RangeValue<Vector3d>::GetRandom ( void )
+inline Vector3f RangeValue<Vector3f>::GetRandom ( void )
 {
-	Vector3d result;
+	Vector3f result;
 	result.x = ( mMinVal.x + (mMaxVal.x-mMinVal.x)*(rand()/((Real)RAND_MAX)) );
 	result.y = ( mMinVal.y + (mMaxVal.y-mMinVal.y)*(rand()/((Real)RAND_MAX)) );
 	result.z = ( mMinVal.z + (mMaxVal.z-mMinVal.z)*(rand()/((Real)RAND_MAX)) );
 	return result;
 };
-inline Vector3d RangeValue<Vector3d>::GetNext ( void )
+inline Vector3f RangeValue<Vector3f>::GetNext ( void )
 {
-	SetValue( Vector3d(
+	SetValue( Vector3f(
 		mCurVal.x + ((mMinVal.x-mMaxVal.x)*0.5f + (mMaxVal.x-mMinVal.x)*(rand()/((Real)RAND_MAX)) )*0.2f,
 		mCurVal.y + ((mMinVal.y-mMaxVal.y)*0.5f + (mMaxVal.y-mMinVal.y)*(rand()/((Real)RAND_MAX)) )*0.2f,
 		mCurVal.z + ((mMinVal.z-mMaxVal.z)*0.5f + (mMaxVal.z-mMinVal.z)*(rand()/((Real)RAND_MAX)) )*0.2f )

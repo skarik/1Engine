@@ -1,10 +1,10 @@
 
-#include "CModelMaster.h"
+#include "RrCModelMaster.h"
 #include "core/system/io/FileUtils.h"
 
 #include "core-ext/animation/AnimationControl.h"
 #include "renderer/logic/model/morpher/CMorpher.h"
-#include "renderer/resource/CModelMaster.h"
+#include "renderer/resource/RrCModelMaster.h"
 
 #include "renderer/object/mesh/system/rrMesh.h"
 //#include "physical/physics/shapes/physMesh.h"
@@ -125,22 +125,22 @@ void RenderResources::Cleanup ( void )
 using namespace std;
 
 // Instance Define
-CModelMaster ModelMaster;
+RrCModelMaster ModelMaster;
 
 // Constructor
-CModelMaster::CModelMaster ( void )
+RrCModelMaster::RrCModelMaster ( void )
 {
 
 }
 
 // Destructor
-CModelMaster::~CModelMaster ( void )
+RrCModelMaster::~RrCModelMaster ( void )
 {
 
 }
 
 // Add a reference to a mesh set
-void CModelMaster::AddReference ( const string& filename, vector<rrMesh*>& meshes, vector<sHitbox>& hitboxes )
+void RrCModelMaster::AddReference ( const string& filename, vector<rrMesh*>& meshes, vector<sHitbox>& hitboxes )
 {
 	// First look for it
 	std::map<string,MeshSetReference>::iterator it;
@@ -161,7 +161,7 @@ void CModelMaster::AddReference ( const string& filename, vector<rrMesh*>& meshe
 		it->second.referenceCount += 1;
 	}
 }
-void CModelMaster::AddReference ( const string& filename, vector<physMesh*>& meshes )
+void RrCModelMaster::AddReference ( const string& filename, vector<physMesh*>& meshes )
 {
 	// First look for it
 	std::map<string,PhysSetReference>::iterator it;
@@ -181,7 +181,7 @@ void CModelMaster::AddReference ( const string& filename, vector<physMesh*>& mes
 		it->second.referenceCount += 1;
 	}
 }
-void CModelMaster::AddReference ( const string& filename, AnimationControl* animSet )
+void RrCModelMaster::AddReference ( const string& filename, AnimationControl* animSet )
 {
 	// First look for it
 	map<string,AnimSetReference>::iterator it;
@@ -202,7 +202,7 @@ void CModelMaster::AddReference ( const string& filename, AnimationControl* anim
 		it->second.referenceCount += 1;
 	}
 }
-void CModelMaster::AddReference ( const string& filename, CMorpher* animSet )
+void RrCModelMaster::AddReference ( const string& filename, CMorpher* animSet )
 {
 	// First look for it
 	map<string,MorphSetReference>::iterator it;
@@ -225,7 +225,7 @@ void CModelMaster::AddReference ( const string& filename, CMorpher* animSet )
 }
 
 // Decrement the target reference
-void CModelMaster::RemoveReference ( const string& filename )
+void RrCModelMaster::RemoveReference ( const string& filename )
 {
 	// First look for it
 	map<string,MeshSetReference>::iterator it;
@@ -255,7 +255,7 @@ void CModelMaster::RemoveReference ( const string& filename )
 		}
 	}
 }
-void CModelMaster::RemovePhysReference ( const string& filename )
+void RrCModelMaster::RemovePhysReference ( const string& filename )
 {
 	// First look for it
 	map<string,PhysSetReference>::iterator it;
@@ -285,7 +285,7 @@ void CModelMaster::RemovePhysReference ( const string& filename )
 		}
 	}
 }
-void CModelMaster::RemoveAnimSetReference ( const string& filename )
+void RrCModelMaster::RemoveAnimSetReference ( const string& filename )
 {
 	// First look for it
 	map<string,AnimSetReference>::iterator it;
@@ -314,7 +314,7 @@ void CModelMaster::RemoveAnimSetReference ( const string& filename )
 		}
 	}
 }
-void CModelMaster::RemoveMorpherSetReference ( const string& filename )
+void RrCModelMaster::RemoveMorpherSetReference ( const string& filename )
 {
 	// First look for it
 	map<string,MorphSetReference>::iterator it;
@@ -345,7 +345,7 @@ void CModelMaster::RemoveMorpherSetReference ( const string& filename )
 }
 
 // Returns a pointer to the wanted model data, null if not found
-const vector<rrMesh*>* CModelMaster::GetReference ( const string& filename )
+const vector<rrMesh*>* RrCModelMaster::GetReference ( const string& filename )
 {
 	// First look for it
 	map<string,MeshSetReference>::iterator it;
@@ -362,7 +362,7 @@ const vector<rrMesh*>* CModelMaster::GetReference ( const string& filename )
 	}
 }
 
-const vector<sHitbox>* CModelMaster::GetHitboxReference ( const string& filename )
+const vector<sHitbox>* RrCModelMaster::GetHitboxReference ( const string& filename )
 {
 	// First look for it
 	map<string,MeshSetReference>::iterator it;
@@ -379,7 +379,7 @@ const vector<sHitbox>* CModelMaster::GetHitboxReference ( const string& filename
 
 
 
-const vector<physMesh*>*	CModelMaster::GetCollisionReference ( const string& filename )
+const vector<physMesh*>*	RrCModelMaster::GetCollisionReference ( const string& filename )
 {
 	// First look for it
 	map<string,PhysSetReference>::iterator it;
@@ -398,7 +398,7 @@ const vector<physMesh*>*	CModelMaster::GetCollisionReference ( const string& fil
 
 
 
-AnimationControl*			CModelMaster::GetAnimationReference ( const string& filename )
+AnimationControl*			RrCModelMaster::GetAnimationReference ( const string& filename )
 {
 	// First look for it
 	map<string,AnimSetReference>::iterator it;
@@ -416,7 +416,7 @@ AnimationControl*			CModelMaster::GetAnimationReference ( const string& filename
 }
 
 
-CMorpher*			CModelMaster::GetMorpherReference ( const string& filename )
+CMorpher*			RrCModelMaster::GetMorpherReference ( const string& filename )
 {
 	// First look for it
 	map<string,MorphSetReference>::iterator it;

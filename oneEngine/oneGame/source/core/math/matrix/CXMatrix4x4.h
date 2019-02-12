@@ -2,9 +2,9 @@
 #ifndef _C_X_MATRIX_4X4_H_
 #define _C_X_MATRIX_4X4_H_
 
-//#include "../Vector2d.h"
-#include "../Vector3d.h"
-//#include "../Vector4d.h"
+//#include "../Vector2.h"
+#include "../Vector3.h"
+//#include "../Vector4.h"
 //#include "../Quaternion.h"
 #include "CMatrix.h"
 
@@ -12,15 +12,15 @@ class CXMatrix4x4
 {
 
 public:
-	Vector3d GetT ( void );
-	Vector3d GetR ( void );
-	Vector3d GetS ( void );
-	Vector3d GetQ ( void );
+	Vector3f GetT ( void );
+	Vector3f GetR ( void );
+	Vector3f GetS ( void );
+	Vector3f GetQ ( void );
 
 private:
-	Vector3d t;
-	Vector3d r;
-	Vector3d s;
+	Vector3f t;
+	Vector3f r;
+	Vector3f s;
 	//Quaternion q;
 	Matrix4x4 m;
 

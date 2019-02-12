@@ -1,6 +1,6 @@
 #include "core/system/Screen.h"
-#include "renderer/texture/CRenderTexture.h"
-#include "renderer/state/CRenderState.h"
+#include "renderer/texture/RrRenderTexture.h"
+#include "renderer/state/RrRenderer.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/material/RrShaderManager.h"
 
@@ -10,13 +10,13 @@
 
 // Construct orthographic camera
 COrthoCamera::COrthoCamera ( void )
-	: CCamera()
+	: RrCamera()
 {
 	pixel_scale_aspect_ratio= (Real)Screen::Info.width/(Real)Screen::Info.height;
 	pixel_scale_mode		= ORTHOSCALE_MODE_CONSTANT;
 	pixel_scale_factor		= 1.0f;
-	viewport_target.pos		= Vector2d( 0,0 );
-	viewport_target.size	= Vector2d( (Real)Screen::Info.width, (Real)Screen::Info.height );
+	viewport_target.pos		= Vector2f( 0,0 );
+	viewport_target.size	= Vector2f( (Real)Screen::Info.width, (Real)Screen::Info.height );
 	view_roll = 0;
 }
 
@@ -64,22 +64,22 @@ void COrthoCamera::UpdateMatrix ( void )
 	}
 
 	// After projection parameters has been modified, perform orthographic view normally.
-	CCamera::UpdateMatrix();
+	RrCamera::UpdateMatrix();
 }
 
 // Update parameters needed for 2D rendering
-void COrthoCamera::RenderSet ( void )
+void COrthoCamera::RenderBegin ( void )
 {
 	RrMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( kRenderModeDeferred, renderer::kPipelineMode2DPaletted );
-	palette_pass_material->setTexture(TEX_SLOT5, (CTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
-	palette_pass_material->setTexture(TEX_SLOT6, (CTexture*)Render2D::WorldPalette::Active()->GetTexture3D());	// Set 3D lookup
+	palette_pass_material->setTexture(TEX_SLOT5, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
+	palette_pass_material->setTexture(TEX_SLOT6, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture3D());	// Set 3D lookup
 
 	// Remove filtering on the upscaling pass
 	SceneRenderer->GetDeferredBuffer()->SetFilter( SamplingPoint );
 
 	// Set the 2D pipeline mode
-	CRenderState::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
+	RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
 
 	// Set up the camera normally
-	CCamera::RenderSet();
+	RrCamera::RenderBegin();
 }

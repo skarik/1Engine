@@ -48,7 +48,21 @@
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="source\tool\converter\main.cpp" />
+    <ClCompile Include="source\tool\converter\converter-main.cpp" />
+    <ClCompile Include="source\tool\converter\TrConverterBase.cpp" />
+    <ClCompile Include="source\tool\converter\TrConverterBMP.cpp" />
+    <ClCompile Include="source\tool\converter\TrConverterForwardTo32.cpp" />
+    <ClCompile Include="source\tool\converter\TrConverterJPG.cpp" />
+    <ClCompile Include="source\tool\converter\TrConverterPNG.cpp" />
+    <ClCompile Include="source\tool\converter\TrConverterTGA.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\tool\converter\TrConverterBase.h" />
+    <ClInclude Include="source\tool\converter\TrConverterBMP.h" />
+    <ClInclude Include="source\tool\converter\TrConverterForwardTo32.h" />
+    <ClInclude Include="source\tool\converter\TrConverterJPG.h" />
+    <ClInclude Include="source\tool\converter\TrConverterPNG.h" />
+    <ClInclude Include="source\tool\converter\TrConverterTGA.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <!-- Compiler options -->
@@ -114,14 +128,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
     <Link>
-      <AdditionalDependencies>steam_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>libs\core\win32x86;libs\basic\win32x86;libs\render\win32x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
     <Link>
-      <AdditionalDependencies>steam_api64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>libs\core\win32x64;libs\basic\win32x64;libs\render\win32x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
@@ -140,6 +154,14 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>
+if not exist "$(ProjectDir).tools" mkdir "$(ProjectDir).tools"
+xcopy /C/R/Y/Q $(OutDir)$(TargetName).exe "$(ProjectDir).tools"
+xcopy /C/R/Y/Q $(OutDir)$(TargetName).pdb "$(ProjectDir).tools"
+exit 0
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='DebugClang'">
     <ClCompile>

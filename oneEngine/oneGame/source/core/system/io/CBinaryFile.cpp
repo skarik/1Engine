@@ -276,7 +276,7 @@ void	CBinaryFile::WriteString ( const std::string & str )
 	WriteChar( 0 );
 }
 
-void	CBinaryFile::WriteVector3d ( const Vector3d & vect )
+void	CBinaryFile::WriteVector3f ( const Vector3f & vect )
 {
 	WriteFloat( vect.x );
 	WriteFloat( vect.y );
@@ -426,9 +426,9 @@ std::string	CBinaryFile::ReadString ( int i )
 	return result;
 }
 
-Vector3d	CBinaryFile::ReadVector3d ( void )
+Vector3f	CBinaryFile::ReadVector3f ( void )
 {
-	Vector3d vect;
+	Vector3f vect;
 	vect.x = ReadFloat();
 	vect.y = ReadFloat();
 	vect.z = ReadFloat();

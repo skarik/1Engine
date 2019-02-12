@@ -5,7 +5,7 @@
 #include "engine/behavior/CGameObject.h"
 
 class CRenderableObject;
-class CLogicObject;
+class RrLogicObject;
 class CParticleEmitter;
 
 class CParticleSystem : public CGameObject
@@ -42,7 +42,7 @@ protected:
 	// List of the components
 	std::vector<CGameBehavior*> vpComponents;
 	std::vector<CRenderableObject*> vpRComponents;
-	std::vector<CLogicObject*> vpLComponents;
+	std::vector<RrLogicObject*> vpLComponents;
 	std::vector<CCollider*> vpCComponents;
 	std::vector<CParticleEmitter*> vpEmitters;
 

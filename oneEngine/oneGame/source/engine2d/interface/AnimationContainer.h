@@ -6,7 +6,7 @@
 #include "core-ext/animation/AnimationEvents.h"
 #include "SpriteContainer.h"
 
-class CTexture;
+class RrTexture;
 
 namespace Engine2D
 {
@@ -15,10 +15,10 @@ namespace Engine2D
 
 	struct animation_texture_info_t
 	{
-		CTexture*	diffuse;
-		CTexture*	normals;
-		CTexture*	surface;
-		CTexture*	overlay;
+		RrTexture*	diffuse;
+		RrTexture*	normals;
+		RrTexture*	surface;
+		RrTexture*	overlay;
 
 		Vector2i	frame_size;
 		Vector2i	frame_count;
@@ -48,7 +48,7 @@ namespace Engine2D
 	{
 	protected:
 		//		SpriteContainer (Constructor)
-		ENGINE2D_API explicit		AnimationContainer ( Vector3d* position, Real* angle = NULL, Vector3d* scale = NULL );
+		ENGINE2D_API explicit		AnimationContainer ( Vector3f* position, Real* angle = NULL, Vector3f* scale = NULL );
 		//		SpriteContinaer (Destructor)
 		ENGINE2D_API				~AnimationContainer ( void );
 

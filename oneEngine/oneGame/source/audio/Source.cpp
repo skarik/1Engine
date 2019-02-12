@@ -13,8 +13,8 @@ audio::Source::Source( Buffer* pInSound )
 	options.gain	= 1;
 	options.looped	= false;
 	options.rolloff = 1;
-	position = Vector3d();
-	velocity = Vector3d();
+	position = Vector3f();
+	velocity = Vector3f();
 	// Set initial state
 	playbacktime = 0;
 	targets_playing = false;

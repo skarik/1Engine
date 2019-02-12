@@ -7,7 +7,7 @@
 class PrShapeBox : public PrShape
 {
 public:
-	PHYS_API explicit		PrShapeBox ( const Vector3d& centered_box_size );
+	PHYS_API explicit		PrShapeBox ( const Vector3f& centered_box_size );
 
 	PHYS_API				~PrShapeBox ( void );
 };

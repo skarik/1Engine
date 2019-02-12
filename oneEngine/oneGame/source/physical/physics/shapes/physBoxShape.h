@@ -12,10 +12,10 @@
 class physBoxShape : public physShape
 {
 public:
-	PHYS_API explicit physBoxShape ( const Vector3d& halfExtents );
-	PHYS_API explicit physBoxShape ( const Vector3d& halfExtents, const Vector3d& center );
+	PHYS_API explicit physBoxShape ( const Vector3f& halfExtents );
+	PHYS_API explicit physBoxShape ( const Vector3f& halfExtents, const Vector3f& center );
 
-	PHYS_API void setHalfExtents ( const Vector3d& halfExtents );
+	PHYS_API void setHalfExtents ( const Vector3f& halfExtents );
 };
 
 typedef physBoxShape physRectangleShape;

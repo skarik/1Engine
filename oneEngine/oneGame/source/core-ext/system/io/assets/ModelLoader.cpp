@@ -1,12 +1,13 @@
-
 #include "core/system/System.h"
 #include "core/system/io/FileUtils.h"
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 #include "core/debug/console.h"
 
 #include "core/os.h"
 #include "core/system/io/CSegmentedFile.h"
 #include "core/system/io/CBufferIO.h"
+
+#include "core/mem.h"
 
 #include "ModelLoader.h"
 
@@ -25,32 +26,28 @@ ModelLoader::~ModelLoader ( void )
 	// Free up all allocated memory if data has not been grabbed
 	for ( size_t i = 0; i < meshes.size(); ++i )
 	{
-		if ( meshes[i].model.triangles != NULL ) {
-			delete [] meshes[i].model.triangles;
-			meshes[i].model.triangles = NULL;
-		}
-		if ( meshes[i].model.vertices != NULL ) {
-			delete [] meshes[i].model.vertices;
-			meshes[i].model.vertices = NULL;
-		}
+		delete_safe_array(meshes[i].model.indices);
+		delete_safe_array(meshes[i].model.position);
+		delete_safe_array(meshes[i].model.texcoord0);
+		delete_safe_array(meshes[i].model.normal);
+		delete_safe_array(meshes[i].model.tangent);
+		delete_safe_array(meshes[i].model.binormal);
+		delete_safe_array(meshes[i].model.color);
+		delete_safe_array(meshes[i].model.bone);
+		delete_safe_array(meshes[i].model.weight);
+		delete_safe_array(meshes[i].model.texcoord1);
+		delete_safe_array(meshes[i].model.texcoord2);
+		delete_safe_array(meshes[i].model.texcoord3);
 	}
 	for ( size_t i = 0; i < collisions.size(); ++i )
 	{
-		if ( collisions[i].model.triangles != NULL ) {
-			delete [] collisions[i].model.triangles;
-			collisions[i].model.triangles = NULL;
-		}
-		if ( collisions[i].model.vertices != NULL ) {
-			delete [] collisions[i].model.vertices;
-			collisions[i].model.vertices = NULL;
-		}
+		delete_safe_array(collisions[i].model.indices);
+		delete_safe_array(collisions[i].model.position);
+		delete_safe_array(collisions[i].model.normal);
 	}
 	for ( size_t i = 0; i < morphs.size(); ++i )
 	{
-		if ( morphs[i].vertices != NULL ) {
-			delete [] morphs[i].vertices;
-			morphs[i].vertices = NULL;
-		}
+		delete_safe_array(morphs[i].vertices);
 	}
 }
 
@@ -63,7 +60,7 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 	string model_rezname = n_resourcename;
 	string model_filename = model_rezname;
 	{
-		string file_extension = StringUtils::ToLower( StringUtils::GetFileExtension( n_resourcename ) );
+		string file_extension = core::utils::string::GetLower( core::utils::string::GetFileExtension( model_rezname ) );
 		string fbx_rezname = model_rezname;
 		if ( file_extension == "" )
 		{
@@ -241,13 +238,15 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 				entry.material_index	= buffer.ReadUInt32();
 				buffer.ReadData( (char*)(&entry.transform), sizeof(float)*16 );
 
-				entry.model.vertexNum	= buffer.ReadUInt32();
-				entry.model.vertices	= new arModelVertex [entry.model.vertexNum];
-				buffer.ReadData( (char*)(entry.model.vertices),  sizeof(arModelVertex)*entry.model.vertexNum );
+				//entry.model.vertexNum	= buffer.ReadUInt32();
+				//entry.model.vertices	= new arModelVertex [entry.model.vertexNum];
+				//buffer.ReadData( (char*)(entry.model.vertices),  sizeof(arModelVertex)*entry.model.vertexNum );
 
-				entry.model.triangleNum	= buffer.ReadUInt32();
-				entry.model.triangles	= new arModelTriangle [entry.model.triangleNum];
-				buffer.ReadData( (char*)(entry.model.triangles), sizeof(arModelTriangle)*entry.model.triangleNum );
+				//entry.model.triangleNum	= buffer.ReadUInt32();
+				//entry.model.triangles	= new arModelTriangle [entry.model.triangleNum];
+				//buffer.ReadData( (char*)(entry.model.triangles), sizeof(arModelTriangle)*entry.model.triangleNum );
+
+				throw core::NotYetImplementedException();
 
 				entry.collision_index	= buffer.ReadUInt32();
 				buffer.ReadString( entry.parent.data );
@@ -278,13 +277,15 @@ bool ModelLoader::LoadModel ( const char * n_resourcename )
 					buffer.ReadString( entry.name.data );
 					buffer.ReadData( (char*)(&entry.transform), sizeof(float)*16 );
 
-					entry.model.vertexNum	= buffer.ReadUInt32();
-					entry.model.vertices	= new arPhysicsVertex [entry.model.vertexNum];
-					buffer.ReadData( (char*)(entry.model.vertices),  sizeof(arPhysicsVertex)*entry.model.vertexNum );
+					//entry.model.vertexNum	= buffer.ReadUInt32();
+					//entry.model.vertices	= new arPhysicsVertex [entry.model.vertexNum];
+					//buffer.ReadData( (char*)(entry.model.vertices),  sizeof(arPhysicsVertex)*entry.model.vertexNum );
 
-					entry.model.triangleNum	= buffer.ReadUInt32();
-					entry.model.triangles	= new arModelTriangle [entry.model.triangleNum];
-					buffer.ReadData( (char*)(entry.model.triangles), sizeof(arModelTriangle)*entry.model.triangleNum );
+					//entry.model.triangleNum	= buffer.ReadUInt32();
+					//entry.model.triangles	= new arModelTriangle [entry.model.triangleNum];
+					//buffer.ReadData( (char*)(entry.model.triangles), sizeof(arModelTriangle)*entry.model.triangleNum );
+
+					throw core::NotYetImplementedException();
 
 					collisions.push_back( entry );
 				}
@@ -409,7 +410,7 @@ bool ModelLoader::ConvertFile ( const char* n_filename )
 
 	// Check filename's extension to see if should convert
 	string targetFilename = n_filename;
-	string file_extension = StringUtils::ToLower( StringUtils::GetFileExtension( targetFilename ) );
+	string file_extension = core::utils::string::GetLower( core::utils::string::GetFileExtension( targetFilename ) );
 
 	if ( file_extension == "fbx" )
 	{

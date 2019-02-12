@@ -16,8 +16,8 @@
 
 // Renderer bits
 #include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CBitmapFont.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/texture/RrFontTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 
@@ -27,11 +27,11 @@
 using namespace std;
 
 // Constructor
-CDuskGUI::CDuskGUI ( CBitmapFont* font )
+CDuskGUI::CDuskGUI ( RrFontTexture* font )
 	: CGameBehavior(), CRenderableObject()
 {
 	// Sys drawing
-	renderType = renderer::kRLV2D;
+	renderLayer = renderer::kRLV2D;
 
 	// Mat init
 	fntDefault = font;
@@ -96,7 +96,7 @@ void CDuskGUI::InitializeDefaultMaterials ( void )
 {
 	if (fntDefault == NULL)
 	{
-		fntDefault	= new CBitmapFont ( "ComicNeue-Bold.ttf", 16, FW_NORMAL );
+		fntDefault	= new RrFontTexture ( "ComicNeue-Bold.ttf", 16, FW_NORMAL );
 	}
 	if (matDefault == NULL)
 	{
@@ -135,10 +135,10 @@ void CDuskGUI::Update ( void )
 	// Set pixel + screen parameters + current GUI
 	Screen::_screen_info_t prevInfo = Screen::Info;
 	if ( !bInPixelMode ) {
-		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
+		CDuskGUIElement::cursor_pos = Vector2f( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
 	}
 	else {
-		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX(), CInput::MouseY() );
+		CDuskGUIElement::cursor_pos = Vector2f( CInput::MouseX(), CInput::MouseY() );
 		/*Screen::Info.width = 1;
 		Screen::Info.height = 1;
 		Screen::Info.scale = 1;*/
@@ -166,8 +166,8 @@ void CDuskGUI::Update ( void )
 	if ( hCurrentDialogue == -1 )
 	{
 		// Reset offset
-		parenting_offset = Vector2d(0,0);
-		offsetList.resize( vElements.size(), Vector2d(0,0) );
+		parenting_offset = Vector2f(0,0);
+		offsetList.resize( vElements.size(), Vector2f(0,0) );
 
 		// Iterate through all the components
 		for ( unsigned int i = 0; i < vElements.size(); ++i )
@@ -231,7 +231,7 @@ void CDuskGUI::Update ( void )
 	else
 	{
 		// Reset offset
-		parenting_offset = Vector2d(0,0);
+		parenting_offset = Vector2f(0,0);
 		// Fix the focus
 		hCurrentElement = hCurrentDialogue;
 		hCurrentFocus = hCurrentDialogue;
@@ -288,7 +288,7 @@ void CDuskGUI::RenderUI ( void )
 	}
 	if ( renderBuffer == NULL )
 	{
-		renderBuffer = new CRenderTexture( Screen::Info.width, Screen::Info.height, Clamp, Clamp, RGBA8, DepthNone, StencilNone );
+		renderBuffer = new RrRenderTexture( Screen::Info.width, Screen::Info.height, Clamp, Clamp, RGBA8, DepthNone, StencilNone );
 	}
 	// Update material options
 	/*Render_SetupMaterial(matDefault);
@@ -305,11 +305,11 @@ void CDuskGUI::RenderUI ( void )
 	if ( !bInPixelMode )
 	{
 		throw core::DeprecatedCallException();
-		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
+		CDuskGUIElement::cursor_pos = Vector2f( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
 	}
 	else
 	{
-		CDuskGUIElement::cursor_pos = Vector2d( CInput::MouseX(), CInput::MouseY() );
+		CDuskGUIElement::cursor_pos = Vector2f( CInput::MouseX(), CInput::MouseY() );
 	}
 	CDuskGUIElement::activeGUI = this;
 
@@ -318,7 +318,7 @@ void CDuskGUI::RenderUI ( void )
 
 	// Create drawn last list
 	bool* t_element_handled = new bool [vElements.size()];
-	Vector2d* t_element_reference_position = new Vector2d [vElements.size()];
+	Vector2f* t_element_reference_position = new Vector2f [vElements.size()];
 
 	// Check for last element drawn
 	Handle currentElement = 0;
@@ -329,9 +329,9 @@ void CDuskGUI::RenderUI ( void )
 	std::vector<Handle> t_finalDrawList;
 
 	// Reset offset
-	parenting_offset = Vector2d(0,0);
-	offsetList.resize( vElements.size(), Vector2d(0,0) );
-	offsetList.assign( vElements.size(), Vector2d(0,0) );
+	parenting_offset = Vector2f(0,0);
+	offsetList.resize( vElements.size(), Vector2f(0,0) );
+	offsetList.assign( vElements.size(), Vector2f(0,0) );
 
 	// Create base update rect
 	Rect update_rect;
@@ -631,7 +631,7 @@ void CDuskGUI::SetDefaultMaterial	( RrMaterial* newmat )
 //{
 //	matFont = newmat;
 //}
-void CDuskGUI::SetDefaultFont	( CBitmapFont* newfnt )
+void CDuskGUI::SetDefaultFont	( RrFontTexture* newfnt )
 {
 	if (fntDefault != NULL && fntDefault != newfnt)
 	{

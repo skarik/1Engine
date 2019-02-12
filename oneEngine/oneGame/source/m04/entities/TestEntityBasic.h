@@ -18,12 +18,12 @@ namespace M04
 
 		void			Update ( void ) override;
 	protected:
-		Vector3d position;
+		Vector3f position;
 
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::TestEntityBasic);
 			DEFINE_DISPLAY(DISPLAY_2D_SPRITE,"sprites/test0.png");
-			DEFINE_VALUE(position,Vector3d,FIELD_POSITION);				// This will allow the object to have position saved/loaded in the editor
+			DEFINE_VALUE(position,Vector3f,FIELD_POSITION);				// This will allow the object to have position saved/loaded in the editor
 		END_OBJECT_DESC();
 	};
 }

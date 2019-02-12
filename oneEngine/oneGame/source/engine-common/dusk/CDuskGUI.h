@@ -12,8 +12,8 @@
 
 // Include Draw stuff
 class RrMaterial;
-class CBitmapFont;
-class CRenderTexture;
+class RrFontTexture;
+class RrRenderTexture;
 
 #include <string>
 #include <vector>
@@ -41,7 +41,7 @@ class CDuskGUIListview;
 class CDuskGUIPropertyview;
 class CDuskGUITabview;
 class CDuskGUIDraggablePanel;
-class CDuskGUIVector3dPicker;
+class CDuskGUIVector3fPicker;
 class CDuskGUIDropdownList_GO;
 class CDuskGUIMaterialField;
 class CDuskGUIMaterialPicker;
@@ -82,7 +82,7 @@ private:
 	friend CDuskGUIPropertyview;
 	friend CDuskGUITabview;
 	friend CDuskGUIDraggablePanel;
-	friend CDuskGUIVector3dPicker;
+	friend CDuskGUIVector3fPicker;
 	friend CDuskGUIDropdownList_GO;
 	friend CDuskGUIMaterialField;
 	friend CDuskGUIMaterialPicker;
@@ -92,7 +92,7 @@ private:
 	friend Dusk::DialogueColorpicker;
 public:
 	// Constructor+Destructor
-	ENGCOM_API explicit		CDuskGUI ( CBitmapFont* font );
+	ENGCOM_API explicit		CDuskGUI ( RrFontTexture* font );
 	ENGCOM_API				~CDuskGUI ( void );
 
 	// == Stepping Functions ==
@@ -115,7 +115,7 @@ public:
 	//ENGCOM_API void SetHoverMaterial	( RrMaterial* );
 	//ENGCOM_API void SetDownMaterial	( RrMaterial* );
 	//ENGCOM_API void SetFontMaterial	( RrMaterial* );
-	ENGCOM_API void SetDefaultFont		( CBitmapFont* );
+	ENGCOM_API void SetDefaultFont		( RrFontTexture* );
 	// Set pixel mode
 	ENGCOM_API void SetPixelMode ( bool enabled=false );
 	// Set element properties
@@ -167,10 +167,10 @@ public:
 	// A color picker w/ io
 	ENGCOM_API Handle CreateColorPicker( const Handle& =-1, const Color& color=Color(1.0f,1.0f,1.0f,1.0f) );
 	// A vector3d picker
-	ENGCOM_API Handle CreateVector3dPicker ( const Handle& =-1, const Vector3d& vect=Vector3d( 0,0,0 ) );
-		// Update Vector3d picker
-		ENGCOM_API void UpdateVector3dPicker ( const Handle&, Vector3d & inOutVectorVal );
-		ENGCOM_API void SetVector3dPicker ( const Handle &, Vector3d & inVectorVal );
+	ENGCOM_API Handle CreateVector3fPicker ( const Handle& =-1, const Vector3f& vect=Vector3f( 0,0,0 ) );
+		// Update Vector3f picker
+		ENGCOM_API void UpdateVector3fPicker ( const Handle&, Vector3f & inOutVectorVal );
+		ENGCOM_API void SetVector3fPicker ( const Handle &, Vector3f & inVectorVal );
 	// A floatfield w/ io
 	ENGCOM_API Handle CreateFloatfield ( const Handle& =-1, const float =0 );
 	// A textfield w/ io
@@ -267,17 +267,17 @@ private:
 	/*RrMaterial*	matHover;
 	RrMaterial*	matDown;
 	RrMaterial* matFont;*/
-	CBitmapFont*	fntDefault;
+	RrFontTexture*	fntDefault;
 
 	// Static default values
 	/*static RrMaterial*	matDefDefault;
 	static RrMaterial*	matDefHover;
 	static RrMaterial*	matDefDown;
 	static RrMaterial*	matDefFont;
-	static CBitmapFont*	fntDefDefault;*/
+	static RrFontTexture*	fntDefDefault;*/
 
 	// Rendering state
-	CRenderTexture* renderBuffer;
+	RrRenderTexture* renderBuffer;
 
 	// Element information and handles
 	std::vector<CDuskGUIElement*>	vElements;
@@ -356,13 +356,13 @@ private:
 	struct textRequest_t
 	{
 		string		text;
-		Vector2d	position;
+		Vector2f	position;
 		Real		width;
 		char		mode;
 	};
 
-	Vector2d parenting_offset;
-	std::vector<Vector2d> offsetList;
+	Vector2f parenting_offset;
+	std::vector<Vector2f> offsetList;
 
 	// Drawing queue
 	//std::vector<arModelVertex>	modelSolidMeshList;

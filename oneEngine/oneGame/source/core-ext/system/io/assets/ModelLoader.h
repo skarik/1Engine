@@ -114,8 +114,8 @@ namespace core
 	{
 		uint8_t			bone;
 		uint8_t			parentbone;
-		Vector3d		center;
-		Vector3d		extents;
+		Vector3f		center;
+		Vector3f		extents;
 		arstring128		name;
 	};
 	struct modelFmtFxEntry

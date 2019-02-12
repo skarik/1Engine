@@ -5,6 +5,8 @@
 #include "renderer/object/CRenderableObject.h"
 #include "bullet/LinearMath/btIDebugDraw.h"
 
+#include "renderer/gpuw/Buffers.h"
+
 class PrWorld;
 
 class RrBtDebugDraw : public btIDebugDraw, public CRenderableObject
@@ -15,11 +17,11 @@ public:
 
 	//		PreRender()
 	// Push the model's uniform up up.
-	RENDER_API bool			PreRender ( void ) override;
+	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style
-	RENDER_API bool			Render ( const char pass ) override;
+	RENDER_API bool			Render ( const rrRenderParams* params ) override;
 
 	//		PostRender()
 	// Push the current model information to the GPU.
@@ -49,14 +51,19 @@ private:
 
 private:
 	//	Mesh information
-	std::vector<arModelVertex>	m_vertexData;
-	std::vector<uint32_t>		m_indexData;
+	//std::vector<arModelVertex>	m_vertexData;
+	std::vector<Vector3f>		m_vertexPositions;
+	std::vector<Vector4f>		m_vertexColors;
+	std::vector<uint16_t>		m_indexData;
 	uint32_t				m_gpuIndexCount;
 	bool					m_haveNewUpload;
 
 	//	GPU information (todo: abstract this)
-	uint					m_buffer_verts;
-	uint					m_buffer_tris;
+	//uint					m_buffer_verts;
+	//uint					m_buffer_tris;
+	gpu::Buffer				m_buffer_indices;
+	gpu::Buffer				m_buffer_vertPositions;
+	gpu::Buffer				m_buffer_vertColors;
 };
 
 #endif//RENDERER_DEBUG_RR_BT_DEBUG_DRAW_H_

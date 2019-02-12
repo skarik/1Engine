@@ -2,9 +2,10 @@
 #define CORE_MODEL_DATA_
 
 #include "core/types/types.h"
-#include "core/math/Vector2d.h"
-#include "core/math/Vector3d.h"
-#include "core/math/Vector4d.h"
+#include "core/math/Vector2.h"
+#include "core/math/Vector3.h"
+#include "core/math/Vector4.h"
+#include "core/math/vect4d_template.h"
 
 // Vertex structures:
 
@@ -145,7 +146,7 @@ struct arModelQuad
 
 //	Default model data storage class.
 // Limit of 65000 vertices.
-struct arModelData
+struct arModelDataInterleaved
 {
 	arModelVertex* vertices;
 	arModelTriangle* triangles;
@@ -155,7 +156,7 @@ struct arModelData
 
 //	Default model data storage class for physics engine.
 // Limit of 65000 vertices.
-struct arModelPhysicsData
+struct arModelPhysicsDataInterleaved
 {
 	arPhysicsVertex* vertices;
 	arModelTriangle* triangles;
@@ -163,5 +164,40 @@ struct arModelPhysicsData
 	uint16_t triangleNum;
 };
 
+//	Default model data storage class.
+// Limit of 65000 vertices.
+struct arModelData
+{
+	uint16_t indexNum;
+	uint16_t vertexNum;
+
+	uint16_t*	indices;
+
+	Vector3f*	position;
+	Vector3f*	texcoord0;
+	Vector3f*	normal;
+	Vector3f*	tangent;
+	Vector3f*	binormal;
+	Vector4f*	color;
+	// 65534 bones are supported. Bone 0 and 65535 have special meaning.
+	Vector4u16*	bone;
+	Vector4f*	weight;
+	Vector3f*	texcoord1;
+	Vector3f*	texcoord2;
+	Vector3f*	texcoord3;
+};
+
+//	Default model data storage class.
+// Limit of 65000 vertices.
+struct arModelPhysicsData
+{
+	uint16_t indexNum;
+	uint16_t vertexNum;
+
+	uint16_t*	indices;
+
+	Vector3f*	position;
+	Vector3f*	normal;
+};
 
 #endif//CORE_MODEL_DATA_

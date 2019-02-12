@@ -4,6 +4,6 @@
 
 #include "core/debug/CDebugConsole.h"
 #include "core-ext/profiler/CTimeProfiler.h"
-#include "renderer/debug/CDebugDrawer.h"
+#include "renderer/debug/RrDebugDrawer.h"
 
 #endif//_ENGINE_COMMON_DEBUG_ALLTOOLS_H_

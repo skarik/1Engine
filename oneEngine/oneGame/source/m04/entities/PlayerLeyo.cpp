@@ -4,7 +4,7 @@
 #include "core/math/Math.h"
 #include "core/math/Easing.h"
 #include "core-ext/input/CInputControl.h"
-#include "renderer/light/CLight.h"
+#include "renderer/light/RrLight.h"
 #include "render2d/camera/COrthoCamera.h"
 #include "render2d/object/sprite/CEditableRenderable2D.h"
 
@@ -22,7 +22,7 @@ PlayerLeyo* PlayerLeyo::active = NULL;
 
 PlayerLeyo::PlayerLeyo ( void )
 	: CGameBehavior(), Engine2D::SpriteContainer(&position, NULL, &flipstate)
-	//: CGameBehavior(), Engine2D::AnimationContainer(&position, NULL, &flipstate)
+	//: CGameBehavior(), Engine2D::AnimationContainer(&position, NULL, &flipstate) // use this line when finally animated!
 {
 	active = this;
 
@@ -32,29 +32,29 @@ PlayerLeyo::PlayerLeyo ( void )
 	camera = new COrthoCamera();
 	// Set camera options
 	camera->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
-	camera->viewport_target.size = Vector2d( 1280,720 ) * 0.5f;
-	camera->render_scale = 0.5F;
+	camera->viewport_target.size = Vector2f( 1280,720 ) * 0.5f;
+	camera->pixel_scale_factor = 0.5F;
 	camera->SetActive(); // Mark it as the main camera to use IMMEDIATELY
 	// Start camera in follow mode
 	camera_mode = 1;
 	camera_lerp_mode = 1.0F;
 
 	SetupDepthOffset( -1.0F, 0.0F );
-	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 2.0F, 1.0F).normal();
+	m_sprite->SpriteGenParams().normal_default = Vector3f(0, 2.0F, 1.0F).normal();
 	m_sprite->SetSpriteFile("sprites/leo.gal");
 	m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y - 8 );
 	
-	//this->AddFromFile(animation::TYPE_IDLE, 0, "sprites/tests/demon-run.gal");
+	//this->AddFromFile(animation::TYPE_IDLE, 0, "sprites/tests/demon-run.gal"); // silent sky animation test
 	//this->AddFromFile(animation::TYPE_IDLE, 0, "sprites/leo.gal");
 	//m_spriteOrigin = Vector2i( m_spriteSize.x / 2, m_spriteSize.y );
 
-	light = new CLight;
-	light->diffuseColor = Color(0.4,0.4,0.4) * 0.0F;
-	light->range = 128;
+	light = new RrLight;
+	light->color = Color(0.4,0.4,0.4) * 0.0F;
+	light->falloff_range = 128;
 
 	bod = NULL;
 
-	flipstate = Vector3d(1,1,1);
+	flipstate = Vector3f(1,1,1);
 
 	ui = new UILuvPpl();
 }
@@ -78,7 +78,7 @@ void PlayerLeyo::Update ( void )
 
 	if ( bod == NULL )
 	{
-		PrShape* box = new PrShapeBox( Vector2d(24, 16) ); 
+		PrShape* box = new PrShapeBox( Vector2f(24, 16) ); 
 
 		prRigidbodyCreateParams params = {0};
 		params.shape = box;
@@ -97,7 +97,7 @@ void PlayerLeyo::Update ( void )
 
 	input->Update(this, Time::deltaTime);
 
-	Vector3d motion_input (input->vDirInput.x, -input->vDirInput.y, 0);
+	Vector3f motion_input (input->vDirInput.x, -input->vDirInput.y, 0);
 
 	const float acceleration = 512.0F;
 	const float maxSpeed = 128.0F;
@@ -150,7 +150,7 @@ void PlayerLeyo::PostFixedUpdate ( void )
 void PlayerLeyo::CameraUpdate ( void )
 {
 	// Create limited camera position
-	Vector3d cam_pos_limited = position + Vector3d(0, -16, 0);
+	Vector3f cam_pos_limited = position + Vector3f(0, -16, 0);
 	cam_pos_limited.x = math::clamp<Real>(cam_pos_limited.x, camera->ortho_size.x * 0.5F, 100000);
 	cam_pos_limited.y = math::clamp<Real>(cam_pos_limited.y, camera->ortho_size.y * 0.5F, 100000);
 

@@ -31,7 +31,7 @@ namespace M04
 
 	public:
 		std::string	text;
-		Vector3d	position;
+		Vector3f	position;
 		Real		width;
 
 		bool		scramble_lerp;

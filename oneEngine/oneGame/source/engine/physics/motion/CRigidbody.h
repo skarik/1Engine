@@ -8,7 +8,6 @@
 #include "physical/types/layers.h"
 #include "physical/types/motion.h"
 #include "physical/physics/motion/IPrRigidBody.h"
-#include "engine/physics/collider/CCollider.h"
 #include "engine/behavior/CGameBehavior.h"
 #include "engine/physics/material/physMaterial.h"
 #include "engine/physics/motion/CMotion.h"
@@ -84,7 +83,7 @@ public:
 	core::Transform*	target_transform;
 	// Position that motion results are copied to. If NULL, transform must be queried manually.
 	// target_transform must be NULL for this to work.
-	Vector3d*			target_position;
+	Vector3f*			target_position;
 
 public:
 	//===============================================================================================//
@@ -109,16 +108,16 @@ public:
 	//ENGINE_API float	GetMass ( void );
 
 	//// Movement setters
-	//ENGINE_API virtual void		SetVelocity ( Vector3d );
-	//ENGINE_API virtual Vector3d	GetVelocity ( void );
-	//ENGINE_API virtual void		SetAcceleration ( Vector3d );
-	//ENGINE_API virtual Vector3d	GetAcceleration ( void );
+	//ENGINE_API virtual void		SetVelocity ( Vector3f );
+	//ENGINE_API virtual Vector3f	GetVelocity ( void );
+	//ENGINE_API virtual void		SetAcceleration ( Vector3f );
+	//ENGINE_API virtual Vector3f	GetAcceleration ( void );
 	//ENGINE_API void	SetGravity ( bool );
 	//ENGINE_API bool	GetGravity ( void );
-	//ENGINE_API void	ApplyForce ( Vector3d );
-	//ENGINE_API void		SetPosition ( Vector3d );
-	//ENGINE_API Vector3d	GetPosition ( void );
-	//ENGINE_API Vector3d	AddToPosition ( Vector3d );
+	//ENGINE_API void	ApplyForce ( Vector3f );
+	//ENGINE_API void		SetPosition ( Vector3f );
+	//ENGINE_API Vector3f	GetPosition ( void );
+	//ENGINE_API Vector3f	AddToPosition ( Vector3f );
 	//ENGINE_API void		SetRotation ( Quaternion );
 	//ENGINE_API Quaternion	GetRotation ( void );
 
@@ -165,7 +164,7 @@ protected:
 	// Components
 	//CCollider*		pCollider;
 	//PrShape*		m_shape;
-	Vector3d		vCenterOfMass;
+	Vector3f		vCenterOfMass;
 	mCollisionListener*	m_listener;
 
 	// Currently active world
@@ -176,8 +175,8 @@ protected:
 	unsigned int	bitmask;
 
 	// Motion state
-	Vector3d	velocity;
-	Vector3d	gravity;
+	Vector3f	velocity;
+	Vector3f	gravity;
 	bool		bGravityEnabled;
 	bool		bRotationEnabled;
 	float		fMaxAngularVelocity;

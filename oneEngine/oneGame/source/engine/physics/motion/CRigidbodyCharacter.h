@@ -21,8 +21,8 @@ public:
 	ENGINE_API void Update ( void );
 //
 //	// Get and set
-//	ENGINE_API virtual void		SetVelocity ( Vector3d ) override;
-//	ENGINE_API virtual Vector3d	GetVelocity ( void ) override;
+//	ENGINE_API virtual void		SetVelocity ( Vector3f ) override;
+//	ENGINE_API virtual Vector3f	GetVelocity ( void ) override;
 //
 //	// Accessors
 //	ENGINE_API physRigidBody* GetBody ( void ) override;

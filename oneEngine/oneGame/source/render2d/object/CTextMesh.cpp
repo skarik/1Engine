@@ -4,7 +4,7 @@
 
 #include "render2d/object/CTextMesh.h"
 
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/material/RrMaterial.h"
 
 #include <cctype>
@@ -39,7 +39,7 @@ CTextMesh::~CTextMesh ( void )
 // Loads a font as a texture for use with this text mesh
 void CTextMesh::SetFont ( const char* fontFile, int fontSize, int fontWeight )
 {
-	m_font_texture = new CBitmapFont( fontFile, fontSize, fontWeight );
+	m_font_texture = new RrFontTexture( fontFile, fontSize, fontWeight );
 	m_font_texture->SetFilter( SamplingPoint );
 
 	m_material->setTexture( TEX_DIFFUSE, m_font_texture );
@@ -89,13 +89,13 @@ void CTextMesh::UpdateText ( void )
 
 	// Set up information for the text passes:
 
-	Vector2d pen (0,0);
+	Vector2f pen (0,0);
 	const int maxLength = m_text.length();
 	uint32_t vertex_index = 0;
 	uint32_t triangle_index = 0;
 	int c_lookup;
 	// Always use 'M' as the base case font size, because it's huge
-	Vector2d font_max_size = fontInfo.fontSizes['M' - fontInfo.startCharacter];	
+	Vector2f font_max_size = fontInfo.fontSizes['M' - fontInfo.startCharacter];	
 
 	// Pass 1: Build the mesh:
 
@@ -168,7 +168,7 @@ void CTextMesh::UpdateText ( void )
 		// Create the quad for the character:
 
 		// Set up final drawing position
-		Vector2d drawPos = pen - fontInfo.fontOrigins[c_lookup];
+		Vector2f drawPos = pen - fontInfo.fontOrigins[c_lookup];
 		drawPos.x = (Real)math::round( drawPos.x );
 		drawPos.y = (Real)math::round( drawPos.y );
 

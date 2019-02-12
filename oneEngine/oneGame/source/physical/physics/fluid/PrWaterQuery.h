@@ -21,10 +21,10 @@ namespace physical
 			// Which world to check? NULL for current world.
 			PrWorld*	world;
 			// Position to check.
-			Vector3d	position;
+			Vector3f	position;
 
 			// Shorthand check constructor
-			prInside ( const Vector3d& n_position )
+			prInside ( const Vector3f& n_position )
 				: world(NULL), position(n_position)
 			{
 				;

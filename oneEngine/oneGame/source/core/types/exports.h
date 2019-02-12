@@ -79,7 +79,7 @@ typedef __int32 int32_t;
 typedef __int64 int64_t;
 #		endif
 #endif
-
+// Other compilers are sensible and contain the proper types:
 #if defined(__clang__)
 #			include <stdint.h>
 #endif
@@ -99,114 +99,79 @@ typedef unsigned int	uint;
 #include "float.h"
 
 // Define the FORCE_INLINE macro
-#ifdef __GNUC__
-#	define FORCE_INLINE inline
-#else
-#	ifndef __INTEL_COMPILER
-#		define FORCE_INLINE __forceinline
-#	else
-#		define FORCE_INLINE inline
-#	endif
+#if		defined(_MSC_VER)
+#	define FORCE_INLINE __forceinline
+#elif	defined(__clang__)
+#	define FORCE_INLINE __attribute__((always_inline)) inline
 #endif
 
 // Define the AR API macros
-/*#ifdef __GNUC__
-#	define AR_API 
-#	define AR_CALL 
-#	define AR_FASTCALL 
-#else
-#	ifndef __INTEL_COMPILER*/
-/*
-#		ifdef _ENGINE_MODE_DEPLOY
-#			define AR_API __declspec(dllimport)
-#		else
-#			define AR_API __declspec(dllexport)
-#		endif
-*/
-#ifdef __GNUC__
+#if		defined(_MSC_VER)
+// Import/export
+#	define AR_IMPORT __declspec(dllimport)
+#	define AR_EXPORT __declspec(dllexport)
+// Calls
+#	define AR_CALL __cdecl
+#	define AR_FASTCALL __fastcall
+#elif	defined(__clang__)
 // Import/export
 #	define AR_IMPORT __attribute__ ((dllimport))
 #	define AR_EXPORT __attribute__ ((dllexport))
 // Calls
 #	define AR_CALL 
 #	define AR_FASTCALL 
-#else
-#	ifndef __INTEL_COMPILER
-// Import/export
-#		define AR_IMPORT __declspec(dllimport)
-#		define AR_EXPORT __declspec(dllexport)
-// Calls
-#		define AR_CALL __cdecl
-#		define AR_FASTCALL __fastcall
-#	else
-// Import/export
-#		define AR_IMPORT __attribute__ ((dllimport))
-#		define AR_EXPORT __attribute__ ((dllexport))
-// Calls
-#		define AR_CALL 
-#		define AR_FASTCALL 
-#	endif
 #endif
 // Module types
-#		ifndef _ENGINE_DEPLOY
-#			define DEPLOY_API AR_IMPORT
-#		else
-#			define DEPLOY_API AR_EXPORT
-#		endif
-#		ifndef _ENGINE_CORE
-#			define CORE_API AR_IMPORT
-#		else
-#			define CORE_API AR_EXPORT
-#		endif
-#		ifndef _ENGINE_AUDIO
-#			define AUDIO_API AR_IMPORT
-#		else
-#			define AUDIO_API AR_EXPORT
-#		endif
-#		ifndef _ENGINE_PHYSICAL
-#			define PHYS_API AR_IMPORT
-#		else
-#			define PHYS_API AR_EXPORT
-#		endif
-#		ifndef _ENGINE_ENGINE
-#			define ENGINE_API AR_IMPORT
-#		else
-#			define ENGINE_API AR_EXPORT
-#		endif
-#		ifndef _ENGINE_RENDERER
-#			define RENDER_API AR_IMPORT
-#		else
-#			define RENDER_API AR_EXPORT
-#		endif
-#		ifndef _ENGINE_RENDER2D
-#			define RENDER2D_API AR_IMPORT
-#		else
-#			define RENDER2D_API AR_EXPORT
-#		endif
-#		ifndef _ENGINE_ENGINE_COMMON
-#			define ENGCOM_API AR_IMPORT
-#		else
-#			define ENGCOM_API AR_EXPORT
-#		endif
-#		ifndef _ENGINE_ENGINE2D
-#			define ENGINE2D_API AR_IMPORT
-#		else
-#			define ENGINE2D_API AR_EXPORT
-#		endif
-#		ifndef _ENGINE_GAME_CORE
-#			define GAME_API AR_IMPORT
-#		else
-#			define GAME_API AR_EXPORT
-#		endif
-
-/*#	else
-//#		define AR_API 
-#		define AR_IMPORT
-#		define AR_EXPORT
-#		define AR_CALL 
-#		define AR_FASTCALL 
-#	endif
-#endif*/
+#ifndef _ENGINE_DEPLOY
+#	define DEPLOY_API AR_IMPORT
+#else
+#	define DEPLOY_API AR_EXPORT
+#endif
+#ifndef _ENGINE_CORE
+#	define CORE_API AR_IMPORT
+#else
+#	define CORE_API AR_EXPORT
+#endif
+#ifndef _ENGINE_AUDIO
+#	define AUDIO_API AR_IMPORT
+#else
+#	define AUDIO_API AR_EXPORT
+#endif
+#ifndef _ENGINE_PHYSICAL
+#	define PHYS_API AR_IMPORT
+#else
+#	define PHYS_API AR_EXPORT
+#endif
+#ifndef _ENGINE_ENGINE
+#	define ENGINE_API AR_IMPORT
+#else
+#	define ENGINE_API AR_EXPORT
+#endif
+#ifndef _ENGINE_RENDERER
+#	define RENDER_API AR_IMPORT
+#else
+#	define RENDER_API AR_EXPORT
+#endif
+#ifndef _ENGINE_RENDER2D
+#	define RENDER2D_API AR_IMPORT
+#else
+#	define RENDER2D_API AR_EXPORT
+#endif
+#ifndef _ENGINE_ENGINE_COMMON
+#	define ENGCOM_API AR_IMPORT
+#else
+#	define ENGCOM_API AR_EXPORT
+#endif
+#ifndef _ENGINE_ENGINE2D
+#	define ENGINE2D_API AR_IMPORT
+#else
+#	define ENGINE2D_API AR_EXPORT
+#endif
+#ifndef _ENGINE_GAME_CORE
+#	define GAME_API AR_IMPORT
+#else
+#	define GAME_API AR_EXPORT
+#endif
 
 // Define float assertion helper
 #define VALID_FLOAT(a) (( (a)==(a) )&&( ((a) <= FLT_MAX) && ((a) >= -FLT_MAX) ))

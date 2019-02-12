@@ -15,9 +15,9 @@
 
 #include "core/common.h"
 #include "core/types/float.h"
-#include "core/math/Vector2d.h"
-#include "core/math/Vector3d.h"
-#include "core/math/Vector4d.h"
+#include "core/math/Vector2.h"
+#include "core/math/Vector3.h"
+#include "core/math/Vector4.h"
 #include "core/math/Quaternion.h"
 #include "core/math/matrix/CMatrix.h"
 #include "core/math/Rotator.h"
@@ -54,9 +54,9 @@ namespace core
 	{
 	public:
 		CORE_API static void WorldToLocal (
-			const Matrix4x4& parent_inv, const Rotator& parent_rot_inv, const Vector3d& parent_scale,
-			const Vector3d& position, const Rotator& rotation, const Vector3d& scale,
-			Vector3d& local_position, Rotator& local_rotation, Vector3d& local_scale );
+			const Matrix4x4& parent_inv, const Rotator& parent_rot_inv, const Vector3f& parent_scale,
+			const Vector3f& position, const Rotator& rotation, const Vector3f& scale,
+			Vector3f& local_position, Rotator& local_rotation, Vector3f& local_scale );
 
 		static void TRSToMatrix4x4 (
 			const XrTransform& trs,
@@ -65,7 +65,7 @@ namespace core
 			TRSToMatrix4x4( trs.position, trs.rotation, trs.scale, transform, transform_rot );
 		}
 		CORE_API static void TRSToMatrix4x4 (
-			const Vector3d& position, const Rotator& rotation, const Vector3d& scale,
+			const Vector3f& position, const Rotator& rotation, const Vector3f& scale,
 			Matrix4x4& transform, Matrix4x4& transform_rot );
 
 		CORE_API static void LocalToWorld (

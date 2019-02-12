@@ -50,11 +50,11 @@ public:
 };*/
 /*
 // Main Class Definition
-class CModelMaster
+class RrCModelMaster
 {
 public:
-	CModelMaster ( void );
-	~CModelMaster ( void );
+	RrCModelMaster ( void );
+	~RrCModelMaster ( void );
 
 	void AddReference ( const string& filename, std::vector<rrMesh*>& meshes, std::vector<sHitbox>& hitboxes );
 	void AddReference ( const string& filename, std::vector<physMesh*>& meshes );
@@ -81,7 +81,7 @@ private:
 };
 
 // Global Class
-extern CModelMaster ModelMaster;*/
+extern RrCModelMaster ModelMaster;*/
 
 class RenderResources
 {

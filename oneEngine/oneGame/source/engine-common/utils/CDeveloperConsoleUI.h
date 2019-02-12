@@ -1,6 +1,5 @@
-
-#ifndef _C_DEVELOPER_CONSOLE_UI_H_
-#define _C_DEVELOPER_CONSOLE_UI_H_
+#ifndef ENGINE_COMMON_UTIL_DEVELOPER_CONSOLE_UI_H_
+#define ENGINE_COMMON_UTIL_DEVELOPER_CONSOLE_UI_H_
 
 #include <iostream>
 #include <string>
@@ -8,9 +7,9 @@
 #include <map>
 
 #include "renderer/object/CRenderableObject.h"
-//#include "rendererCBitmapFont.h"
-class CBitmapFont;
-class CTexture;
+
+class RrFontTexture;
+class RrTexture;
 
 using std::string;
 
@@ -25,13 +24,11 @@ public:
 	ENGCOM_API		CDeveloperConsoleUI ( void );
 	ENGCOM_API		~CDeveloperConsoleUI ( void );
 
-	bool			PreRender ( void ) override;
-	bool			Render ( const char pass ) override;
+	bool			PreRender ( rrCameraPass* cameraPass ) override;
+	bool			Render ( const rrRenderParams* params ) override;
 
 private:
-	CBitmapFont*	fntMenu;
-	RrMaterial*		matfntMenu;
-	RrMaterial*		matMenu;
+	RrFontTexture*	fntMenu;
 };
 
 class CDeveloperCursor : public CRenderableObject
@@ -41,15 +38,14 @@ public:
 	ENGCOM_API		CDeveloperCursor ( void );
 	ENGCOM_API		~CDeveloperCursor ( void );
 
-	bool			PreRender ( void ) override;
-	bool			Render ( const char pass ) override;;
+	bool			PreRender ( rrCameraPass* cameraPass ) override;
+	bool			Render ( const rrRenderParams* params ) override;;
 
 private:
-	RrMaterial*		matCursor;
-	CTexture*		texCursor;
+	RrTexture*		texCursor;
 };
 
 ENGCOM_API extern CDeveloperConsoleUI*	ActiveConsoleUI;
 ENGCOM_API extern CDeveloperCursor*	ActiveCursor;
 
-#endif//_C_DEVELOPER_CONSOLE_UI_H_
+#endif//ENGINE_COMMON_UTIL_DEVELOPER_CONSOLE_UI_H_

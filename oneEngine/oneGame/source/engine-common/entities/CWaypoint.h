@@ -4,7 +4,7 @@
 #include "CPointBase.h"
 #include <vector>
 
-class CModel;
+class RrCModel;
 
 class CWaypoint: public CPointBase
 {
@@ -33,7 +33,7 @@ public:
 	Real distance;
 	bool in_range;
 
-	CModel* entity;
+	RrCModel* entity;
 
 public:
 	ENGCOM_API static std::vector<CWaypoint*> WaypointList;

@@ -1,7 +1,7 @@
 #include "CameraControllerPlatformer.h"
 
 #include "engine/behavior/CGameBehavior.h"
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 
 M04::CameraControllerPlatformer::CameraControllerPlatformer ( void* owner )
 	: m_owner(owner),

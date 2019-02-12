@@ -5,7 +5,7 @@
 #include "core/types/types.h"
 #include "core/math/Color.h"
 
-class RrMaterial;
+//class RrMaterial;
 
 //	eRenderMode - current high level pipeline in use.
 // Renderer info
@@ -18,20 +18,24 @@ enum eRenderMode : int32_t
 	kRenderModeDeferred		= 0x2
 };
 
+//	eRenderHintBitmask - Sublayer bitmask.
+// Defines specific layers to render.
+enum eRenderHintBitmask : uint32_t
+{
+	kRenderHintBitmaskALL		= 0xFFFFFFFF,
+
+	kRenderHintBitmaskWorld		= 0x1,
+	kRenderHintBitmaskWarp		= 0x2,
+	kRenderHintBitmaskGlow		= 0x4,
+	kRenderHintBitmaskSkyglow	= 0x8,
+	kRenderHintBitmaskFog		= 0x10,
+	kRenderHintBitmaskShadowColor = 0x20,
+};
 //	eRenderHint - Sublayer bitmask.
 // Defines specific layers to render.
-enum eRenderHint : uint32_t
+enum eRenderHint : uint8_t
 {
-	kRenderHintALL		= 0xFFFFFFFF,
-
-	kRenderHintWorld	= 0x1,
-	kRenderHintWarp		= 0x2,
-	kRenderHintGlow		= 0x4,
-	kRenderHintSkyglow	= 0x8,
-	kRenderHintFog		= 0x10,
-	kRenderHintShadowColor = 0x20,
-
-	kRenderHintCOUNT = 6
+	kRenderHintCOUNT = 6,
 };
 
 namespace renderer
@@ -43,20 +47,24 @@ namespace renderer
 	};
 
 	// Enumeration for rendering type
-	enum eRenderLayer
+	enum rrRenderLayer
 	{
-		kRL_BEGIN		= 0,
+		kRenderLayer_BEGIN		= 0,
 
-		kRLBackground	= 0,
-		kRLSecondary	= 1,
-		kRLWorld		= 2,
-		kRLForeground	= 3,
-		kRLV2D			= 4,
+		kRenderLayerBackground	= 0,
+		kRenderLayerSecondary	= 1,
+		kRenderLayerWorld		= 2,
+		kRenderLayerForeground	= 3,
+		kRenderLayerV2D			= 4,
 
-		kRL_MAX,
+		kRenderLayer_MAX,
+
+		// Skipped layer, will not appear in the normal rendering loop.
+		// Used for storing pipelines for off-screen rendering that must occur out of the main loop.
+		kRenderLayerSkip		= 0xFF,
 	};
 	// Struct for pass info
-	struct passinfo_t
+	/*struct passinfo_t
 	{
 		unsigned char pass;
 		unsigned char userpass;
@@ -66,11 +74,11 @@ namespace renderer
 	{
 		uint8_t		pass;
 		uint32_t	vaoObject;
-	};
+	};*/
 
 	//	eClearType - buffer clear type
 	// Is not used as certain hard-coded clear types in certain cases have better GPU performance.
-	enum eClearType : uint8_t
+	enum rrClearType : uint8_t
 	{
 		kClearNone			= 0x00,
 		kClearColor			= 0x01,
@@ -78,34 +86,39 @@ namespace renderer
 		kClearDepthAndColor	= 0x01 | 0x02,
 	};
 
-	enum eAlphaMode : uint8_t
+	enum rrAlphaMode : uint8_t
 	{
-		ALPHAMODE_NONE		= 0,
-		ALPHAMODE_ALPHATEST	= 1,
-		ALPHAMODE_TRANSLUCENT=2
+		kAlphaModeNone			= 0x00,
+		kAlphaModeAlphatest		= 0x01,
+		kAlphaModeTranslucent	= 0x02,
 	};
 
-	enum eDrawBlendMode : uint8_t
+	enum rrHLBlendMode : uint8_t
 	{
-		BM_NORMAL = 0,
-		BM_ADD,
-		BM_INV_MULTIPLY,
-		BM_MULTIPLY,
-		BM_MULTIPLY_X2,
-		BM_SOFT_ADD,
-		BM_NONE
+		kHLBlendModeNone		= 0xFF,
+		kHLBlendModeNormal		= 0x00,
+		kHLBlendModeAdd,
+		kHLBlendModeInvMultiply,
+		kHLBlendModeMultiply,
+		kHLBlendModeMultiplyX2,
+		kHLBlendModeSoftAdd,
 	};
-	enum eDrawLightingMode : uint8_t
+	enum rrHLLightMode : uint8_t
 	{
-		LI_NONE = uchar(-1),
-		LI_NORMAL = 0,
-		LI_SKIN
+		kHLLightModeNone	= 0xFF,
+		kHLLightModeNormal	= 0x00,
 	};
-	enum eDrawFaceMode : uint8_t
+	/*enum eDrawFaceMode : uint8_t
 	{
 		FM_FRONT = 0,
 		FM_BACK,
 		FM_FRONTANDBACK
+	};*/
+	enum rrCullMode : uint8_t
+	{
+		kCullNone			= 0x00,
+		kCullBackface		= 0x01,
+		kCullFrontface		= 0x02,
 	};
 
 	//	ePipelineMode - Current sublevel pipeline in use.
@@ -135,18 +148,18 @@ namespace renderer
 		kPipelineMode2DPaletted 
 	};
 
-	struct _n_hint_rendering_information
+	/*struct _n_hint_rendering_information
 	{
 		RrMaterial*		mats_default		[kRenderHintCOUNT];
 		RrMaterial*		mats_default_skin	[kRenderHintCOUNT];
 		RrMaterial*		mats_transparent	[kRenderHintCOUNT];
 		RrMaterial*		mats_transparent_skin[kRenderHintCOUNT];
-		eClearType		clear_type			[kRenderHintCOUNT];
+		rrClearType		clear_type			[kRenderHintCOUNT];
 		Color			clear_color			[kRenderHintCOUNT];
 
 		_n_hint_rendering_information ( void );
-	}; //m_default_hint_options; // needs to be initialized when CRenderState is created, so to create default replacement materials.
-	extern _n_hint_rendering_information* m_default_hint_options;
+	}; //m_default_hint_options; // needs to be initialized when RrRenderer is created, so to create default replacement materials.
+	extern _n_hint_rendering_information* m_default_hint_options;*/
 };
 
 

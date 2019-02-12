@@ -31,7 +31,7 @@ void sceneEditorCutscene::LoadScene ( void )
 		COrthoCamera* cam = new COrthoCamera();
 		// Set camera options
 		cam->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
-		cam->viewport_target.size = Vector2d( 1280,720 );// * 0.5f;
+		cam->viewport_target.size = Vector2f( 1280,720 );// * 0.5f;
 		cam->SetActive(); // Mark it as the main camera to use IMMEDIATELY
 	}
 

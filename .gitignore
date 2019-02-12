@@ -1,14 +1,15 @@
 /oneEngine/oneGame/x64
 /oneEngine/x64
 /oneEngine/OneEngine_VS2012_M04.VC.db
-/oneEngine/*.suo
+*.suo
 /oneEngine/oneGame/*.user
 /oneEngine/oneGame/.game
+/oneEngine/oneGame/.tools/dev_tool_oneConverter*
 /oneEngine/obj
 /oneEngine/Debug
 /oneEngine/Debug_Win32
 /oneEngine/Debug_x64
-/oneEngine/*.opendb
+*.opendb
 .svn
 .vs
 /oneEngine/oneGame/obj
@@ -16,4 +17,5 @@
 /oneEngine/DebugClang_Win32
 /oneEngine/DebugClang_x64
 *.PAD
-/oneEngine/*.db
+*.db
+*.spv

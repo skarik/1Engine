@@ -8,9 +8,9 @@
 #define _C_DUSK_GUI_VECTOR_2D_PICKER_H_
 
 #include "CDuskGUIButton.h"
-#include "Vector2d.h"
+#include "Vector2.h"
 
-class CDuskGUIVector2dPicker : public CDuskGUIButton
+class CDuskGUIVector2fPicker : public CDuskGUIButton
 {
 public:
 

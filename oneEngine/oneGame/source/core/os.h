@@ -1,11 +1,26 @@
+//===============================================================================================//
+//
+//		os.h
+// 
+// Includes the basic OS's header, specifically for filesystem and windowing.
+//
+//===============================================================================================//
 #ifndef CORE_OS_
 #define CORE_OS_
 
+// For reference, the following URL has some information on compiler macros.
+// https://blog.kowalczyk.info/article/j/guide-to-predefined-macros-in-c-compilers-gcc-clang-msvc-etc..html
+
 // OS NAME:
-#if defined(_WIN64)
+
+#if		defined(_WIN64)
 #	define __OS_STRING_NAME__ "Win32 x64"
-#elif defined(_WIN32)
+#elif	defined(_WIN32)
 #	define __OS_STRING_NAME__ "Win32 x86"
+#elif	defined(__linux__)
+#	define __OS_STRING_NAME__ "Linux/Linux Derived"
+#elif	defined(__APPLE__)
+#	define __OS_STRING_NAME__ "Darwin/Darwin Derived"
 #else
 #	define __OS_STRING_NAME__ "Unknown"
 #endif

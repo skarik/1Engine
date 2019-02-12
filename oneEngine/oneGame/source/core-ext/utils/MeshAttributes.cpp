@@ -12,20 +12,20 @@ void core::mesh::RecalculateNormals ( arModelData* md )
 	// num_indices is number of indices
 	// each face of the mesh is made up of three vertices.
 
-	std::vector<Vector3d>* normal_buffer = new std::vector<Vector3d> [md->vertexNum];
+	/*std::vector<Vector3f>* normal_buffer = new std::vector<Vector3f> [md->vertexNum];
 
 	//for( int i = 0; i < modelData->vertexNum; i += 3 )
 	for ( unsigned int i = 0; i < md->triangleNum; i += 1 )
 	{
 		// get the three vertices that make the face
-		Vector3d p1 = Vector3d( &md->vertices[md->triangles[i].vert[0]].x );
-		Vector3d p2 = Vector3d( &md->vertices[md->triangles[i].vert[1]].y );
-		Vector3d p3 = Vector3d( &md->vertices[md->triangles[i].vert[2]].z );
+		Vector3f p1 = Vector3f( &md->vertices[md->triangles[i].vert[0]].x );
+		Vector3f p2 = Vector3f( &md->vertices[md->triangles[i].vert[1]].y );
+		Vector3f p3 = Vector3f( &md->vertices[md->triangles[i].vert[2]].z );
 
 		// Calculate the face normal
-		Vector3d v1 = p2 - p1;
-		Vector3d v2 = p3 - p1;
-		Vector3d normal = v1.cross( v2 );
+		Vector3f v1 = p2 - p1;
+		Vector3f v2 = p3 - p1;
+		Vector3f normal = v1.cross( v2 );
 
 		normal = normal.normal();
 
@@ -38,29 +38,53 @@ void core::mesh::RecalculateNormals ( arModelData* md )
 	// Now loop through each vertex vector, and avarage out all the normals stored.
 	for( unsigned int i = 0; i < md->vertexNum; ++i )
 	{
-		Vector3d normalResult ( 0,0,0 );
-		/*modelData->vertices[i].nx = 0;
-		modelData->vertices[i].ny = 0;
-		modelData->vertices[i].nz = 0;*/
+		Vector3f normalResult ( 0,0,0 );
 		for( unsigned int j = 0; j < normal_buffer[i].size(); ++j )
 		{
-			//vertices[i].normal += normal_buffer[i][j];
-			/*modelData->vertices[i].nx += normal_buffer[i][j].x;
-			modelData->vertices[i].ny += normal_buffer[i][j].y;
-			modelData->vertices[i].nz += normal_buffer[i][j].z;*/
 			normalResult += normal_buffer[i][j];
 		}
-		//vertices[i].normal /= normal_buffer[i].size();
-		/*modelData->vertices[i].nx /= normal_buffer[i].size();
-		modelData->vertices[i].ny /= normal_buffer[i].size();
-		modelData->vertices[i].nz /= normal_buffer[i].size();*/
 		normalResult = normalResult.normal();
 		md->vertices[i].nx = normalResult.x;
 		md->vertices[i].ny = normalResult.y;
 		md->vertices[i].nz = normalResult.z;
 	}
+	
+	delete[] normal_buffer;*/
 
-	delete[] normal_buffer;
+	// Create the normals
+	if (md->normal == NULL)
+		md->normal = new Vector3f [md->vertexNum];
+	// Zero out the normals
+	for (uint16_t vertex = 0; vertex < md->vertexNum; ++vertex)
+	{
+		md->normal[vertex] = Vector3f(0, 0, 0);
+	}
+
+	for (uint16_t index = 0; index < md->indexNum; index += 3)
+	{
+		// get the three vertices that make the face
+		Vector3f p1 = md->position[md->indices[index + 0]];
+		Vector3f p2 = md->position[md->indices[index + 1]];
+		Vector3f p3 = md->position[md->indices[index + 2]];
+
+		// Calculate the face normal
+		Vector3f v1 = p2 - p1;
+		Vector3f v2 = p3 - p1;
+		Vector3f normal = v1.cross( v2 );
+
+		// Don't normalize it: the larger the face, the more dominant this normal should be.
+
+		// Store the face's normal for each of the vertices
+		md->normal[md->indices[index + 0]] += normal;
+		md->normal[md->indices[index + 1]] += normal;
+		md->normal[md->indices[index + 2]] += normal;
+	}
+
+	// Normalize all the collected normals now
+	for (uint16_t vertex = 0; vertex < md->vertexNum; ++vertex)
+	{
+		md->normal[vertex].normalize();
+	}
 }
 
 
@@ -73,29 +97,40 @@ void core::mesh::RecalculateTangents ( arModelData* md )
 
 	Vector3f* tangent1 = new Vector3f[md->vertexNum * 2];
 	Vector3f* tangent2 = tangent1 + md->vertexNum;
-	memset(tangent1, 0, md->vertexNum * sizeof(Vector3d) * 2);
+	memset(tangent1, 0, md->vertexNum * sizeof(Vector3f) * 2);
+
+	// Allocate tangents & binormals
+	if (md->tangent == NULL)
+		md->tangent = new Vector3f [md->vertexNum];
+	if (md->binormal == NULL)
+		md->binormal = new Vector3f [md->vertexNum];
 
 	// Zero out data
 	for (uint16_t v = 0; v < md->vertexNum; ++v)
 	{
-		md->vertices[v].tangent = Vector3f(0,0,0);
-		md->vertices[v].binormal = Vector3f(0,0,0);
+		md->tangent[v]  = Vector3f(0,0,0);
+		md->binormal[v] = Vector3f(0,0,0);
 	}
 
 	// Collect the tangents
-	for (uint16_t t = 0; t < md->triangleNum; ++t)
+	for (uint16_t index = 0; index < md->indexNum; index += 3)
 	{
-		arModelTriangle tri = md->triangles[t];
+		//arModelTriangle tri = md->triangles[t];
+		uint16_t indices [3] = {
+			md->indices[index + 0],
+			md->indices[index + 1],
+			md->indices[index + 2],
+		};
 
 		Vector3f pos [3] = {
-			md->vertices[tri.vert[0]].position,
-			md->vertices[tri.vert[1]].position,
-			md->vertices[tri.vert[2]].position
+			md->position[indices[0]],
+			md->position[indices[1]],
+			md->position[indices[2]]
 		};
 		Vector2f tex [3] = {
-			md->vertices[tri.vert[0]].texcoord0,
-			md->vertices[tri.vert[1]].texcoord0,
-			md->vertices[tri.vert[2]].texcoord0
+			md->texcoord0[indices[0]],
+			md->texcoord0[indices[1]],
+			md->texcoord0[indices[2]]
 		};
 
 		Vector3f dpos0 = pos[1] - pos[0];
@@ -108,27 +143,27 @@ void core::mesh::RecalculateTangents ( arModelData* md )
 		Vector3f sdir = (dpos0 * dtex1.y - dpos1 * dtex0.y) * r;
 		Vector3f tdir = (dpos1 * dtex0.x - dpos0 * dtex1.x) * r;
 
-		tangent1[tri.vert[0]] += sdir;
-		tangent1[tri.vert[1]] += sdir;
-		tangent1[tri.vert[2]] += sdir;
+		tangent1[indices[0]] += sdir;
+		tangent1[indices[1]] += sdir;
+		tangent1[indices[2]] += sdir;
 
-		tangent2[tri.vert[0]] += tdir;
-		tangent2[tri.vert[1]] += tdir;
-		tangent2[tri.vert[2]] += tdir;
+		tangent2[indices[0]] += tdir;
+		tangent2[indices[1]] += tdir;
+		tangent2[indices[2]] += tdir;
 	}
 
 	// Orthonagonalize and save tangent result.
 	for (uint16_t v = 0; v < md->vertexNum; ++v)
 	{
-		const Vector3f& n = md->vertices[v].normal;
+		const Vector3f& n = md->normal[v];
 		const Vector3f& t = tangent1[v];
 
 		// Gram-Schmidt orthogonalize
-		md->vertices[v].tangent = (t - n * n.dot(t)).normal();
+		md->tangent[v] = (t - n * n.dot(t)).normal();
 
 		// Calculate handedness
 		Real handedness = (n.cross(t).dot(tangent2[v]) < 0.0F) ? -1.0F : 1.0F;
-		md->vertices[v].binormal = n.cross(md->vertices[v].tangent) * handedness;
+		md->binormal[v] = n.cross(md->tangent[v]) * handedness;
 	}
 
 	// Free temp data

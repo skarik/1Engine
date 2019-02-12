@@ -64,7 +64,7 @@ namespace M04
 
 		//		uiGetCurrentMouse() : Get vmouse position
 		// Applies virtual screen offsets
-		Vector3d	uiGetCurrentMouse ( void );
+		Vector3f	uiGetCurrentMouse ( void );
 		//		uiGetNodeRect ( EditorNode* node ) : Gets node rect
 		// Used for both display and hitbox.
 		// Will take the node position into account
@@ -72,11 +72,11 @@ namespace M04
 		//		uiGetNodeOutputPosition ( EditorNode* node, int index ) : Gets node output pos
 		// Used for both display and hitbox.
 		// Will take the node position and rect into account.
-		Vector3d	uiGetNodeOutputPosition ( common::cts::EditorNode* node, const int index );
+		Vector3f	uiGetNodeOutputPosition ( common::cts::EditorNode* node, const int index );
 		//		uiGetNodeInputPosition ( EditorNode* node, int index ) : Gets node input pos
 		// Used for both display and hitbox.
 		// Will take the node position and rect into account.
-		Vector3d	uiGetNodeInputPosition ( common::cts::EditorNode* node );
+		Vector3f	uiGetNodeInputPosition ( common::cts::EditorNode* node );
 
 		//		breakConnectionsTo ( EditorNode* node ) : Breaks all connections to this node.
 		void		breakConnectionsTo( common::cts::EditorNode* node );
@@ -110,7 +110,7 @@ namespace M04
 		static const size_t		kInvalidIndex = (size_t)(-1);
 
 	private:
-		Vector3d				m_target_camera_position;
+		Vector3f				m_target_camera_position;
 		bool					m_preclude_navigation;
 		bool					m_navigation_busy;
 
@@ -123,8 +123,8 @@ namespace M04
 
 		bool					m_dragging_node;
 		size_t					m_dragging_index; // node index
-		Vector3d				m_dragging_reference;
-		Vector3d				m_dragging_startpos;
+		Vector3f				m_dragging_reference;
+		Vector3f				m_dragging_startpos;
 
 		bool					m_connecting_node;
 		size_t					m_connecting_index_input; // node index
@@ -132,8 +132,8 @@ namespace M04
 		size_t					m_connecting_connectorindex;
 
 		bool					m_contextMenu_visible;
-		Vector3d				m_contextMenu_position;
-		Vector3d				m_contextMenu_size;
+		Vector3f				m_contextMenu_position;
+		Vector3f				m_contextMenu_size;
 		Real					m_contextMenu_spacing;
 		eContextMenu			m_contextMenu_type;
 		std::vector<grContextPair>

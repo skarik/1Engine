@@ -7,8 +7,8 @@
 using namespace Engine2D;
 
 
-SpriteContainer::SpriteContainer ( Vector3d* position, Real* angle, Vector3d* scale )
-	: CLogicObject(),
+SpriteContainer::SpriteContainer ( Vector3f* position, Real* angle, Vector3f* scale )
+	: RrLogicObject(),
 	m_sourcePosition(position), m_sourceAngle(angle), m_sourceScale(scale),
 	m_sprite(NULL),
 	m_requireRestream(false)
@@ -46,7 +46,7 @@ void SpriteContainer::PreStep ( void )
 			m_sprite->transform.world.position.y = (Real)math::round(m_sprite->transform.world.position.y);
 		}
 		if ( m_sourceAngle != NULL ) {
-			m_sprite->transform.world.rotation = Quaternion::CreateAxisAngle( Vector3d::up , *m_sourceAngle );
+			m_sprite->transform.world.rotation = Quaternion::CreateAxisAngle( Vector3f::up , *m_sourceAngle );
 		}
 		if ( m_sourceScale != NULL ) {
 			m_sprite->transform.world.scale = *m_sourceScale;
@@ -96,8 +96,8 @@ void SpriteContainer::SetSpriteSize ( const Vector2i size )
 Rect SpriteContainer::GetSpriteRect ( void )
 {
 	Rect rect;
-	rect.pos = Vector2d( (Real)-m_spriteOrigin.x, (Real)-m_spriteOrigin.y );
-	rect.size = Vector2d( (Real)m_spriteSize.x, (Real)m_spriteSize.y );
+	rect.pos = Vector2f( (Real)-m_spriteOrigin.x, (Real)-m_spriteOrigin.y );
+	rect.size = Vector2f( (Real)m_spriteSize.x, (Real)m_spriteSize.y );
 	return rect;
 }
 

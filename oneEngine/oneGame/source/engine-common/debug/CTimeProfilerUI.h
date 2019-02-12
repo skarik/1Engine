@@ -6,8 +6,8 @@
 #include "renderer/object/CRenderableObject.h"
 
 //#include "RrMaterial.h"
-//#include "CBitmapFont.h"
-class CBitmapFont;
+//#include "RrFontTexture.h"
+class RrFontTexture;
 
 class CTimeProfilerUI : public CRenderableObject
 {
@@ -23,7 +23,7 @@ public:
 
 private:
 	RrMaterial*		matFntDebug;
-	CBitmapFont*	fntDebug;
+	RrFontTexture*	fntDebug;
 };
 
 #endif

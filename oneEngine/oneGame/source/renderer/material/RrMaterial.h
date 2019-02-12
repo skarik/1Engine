@@ -1,58 +1,47 @@
-
-#ifndef _GL_MATERIAL_H_
-#define _GL_MATERIAL_H_
+#ifndef RENDERER_MATERIAL_H_
+#define RENDERER_MATERIAL_H_
 
 #include "core/types/types.h"
 #include "core/math/Color.h"
-#include "core/math/Vector2d.h"
-#include "core/math/Vector4d.h"
+#include "core/math/Vector2.h"
+#include "core/math/Vector4.h"
 #include "core/containers/arstring.h"
 #include "core-ext/transform/Transform.h"
 
 #include "renderer/types/types.h"
 #include "renderer/gpuw/Buffers.h"
+#include "renderer/gpuw/Texture.h"
 
 #include "RrShader.h"
+#include "RrShaderProgram.h"
 #include "RrPassForward.h"
 #include "RrPassDeferred.h"
 
 #include <vector>
 
-// todo: move elsewhere
-enum textureslot_t : uint8_t
+enum RrPassType
 {
-	TEX_MAIN = 0,
+	kPassForward,
+	kPassDeferred,
+};
 
-	TEX_SLOT0 = 0,
-	TEX_SLOT1 = 1,
-	TEX_SLOT2 = 2,
-	TEX_SLOT3 = 3,
-	TEX_SLOT4 = 4,
-	TEX_SLOT5 = 5,
-	TEX_SLOT6 = 6,
-	TEX_SLOT7 = 7,
-	TEX_SLOT8 = 8,
-	TEX_SLOT9 = 9,
-	TEX_SLOT10 = 10,
-	TEX_SLOT11 = 11,
-
-	TEX_DIFFUSE = 0,
-	TEX_NORMALS = 1,
-	TEX_SURFACE = 2,
-	TEX_OVERLAY = 3,
-
-	TEX_PALETTE = 0,
+enum RrMaterialConstants
+{
+	kMaterial_MaxPassCount = 4,
 };
 
 // Prototype
 class CRenderableObject;
-class CTexture;
-class CRenderTexture;
-class CRenderState;
+class RrTexture;
+class RrRenderTexture;
+class RrRenderer;
 
+//	class RrMaterial : Utility structure to wrap a collection of shaders, layouts, and textures.
+// This is a higher level construct, which is used to sort objects in a way to minimize context changes.
+// In order to sort properly, most rendering options are set in this class.
 class RrMaterial
 {
-	friend CRenderState;
+	friend RrRenderer;
 public:
 	RENDER_API				RrMaterial ( void );
 	RENDER_API				~RrMaterial ( void ) throw(...);
@@ -110,9 +99,74 @@ private:
 
 public:
 	// List of forward rendered passes
-	std::vector<RrPassForward>	passinfo;
+	//std::vector<RrPassForward>	passinfo;
+	//std::vector<RrPassForward>	forwardpasses;
+	RrPassForward		m_passesForward [kMaterial_MaxPassCount];
+	bool				m_passesForwardEnabled [kMaterial_MaxPassCount];
 	// Deferred rendering information
-	std::vector<RrPassDeferred>	deferredinfo;
+	//std::vector<RrPassDeferred>	deferredinfo;
+	RrPassDeferred		m_passesDeferred [kMaterial_MaxPassCount];
+	bool				m_passesDeferredEnabled [kMaterial_MaxPassCount];
+
+	//RENDER_API bool			enablePass ( RrPassType pass_type, int slot );
+
+	// enables pass
+	RENDER_API bool			enablePassForward ( int slot, bool enabled )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		m_passesForwardEnabled[slot] = enabled;
+	}
+	// enables pass. but fast!
+	template <int slot>
+	RENDER_API bool			enablePassForward ( bool enabled )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		m_passesForwardEnabled[slot] = enabled;
+	}
+	// gets pass
+	RENDER_API RrPassForward&
+							getPassForward ( int slot )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		return m_passesForward[slot];
+	}
+	// gets pass. but fast!
+	template <int slot>
+	RENDER_API RrPassForward&
+							getPassForward ( void )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		return m_passesForward[slot];
+	}
+
+	// enables pass
+	RENDER_API bool			enablePassDeferred ( int slot, bool enabled )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		m_passesDeferredEnabled[slot] = enabled;
+	}
+	// enables pass. but fast!
+	template <int slot>
+	RENDER_API bool			enablePassDeferred ( bool enabled )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		m_passesDeferredEnabled[slot] = enabled;
+	}
+	// gets pass
+	RENDER_API RrPassDeferred&
+							getPassDeferred ( int slot )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		return m_passesDeferred[slot];
+	}
+	// gets pass. but fast!
+	template <int slot>
+	RENDER_API RrPassDeferred&
+							getPassDeferred ( void )
+	{
+		if (slot < 0 || slot >= kMaterial_MaxPassCount) throw slot;
+		return m_passesDeferred[slot];
+	}
 
 	// Global options
 	bool	m_isScreenShader;
@@ -128,11 +182,11 @@ public:
 	Color		m_emissive;
 
 	// Contants (Coordinates)
-	Vector4d	m_texcoordScaling;
-	Vector4d	m_texcoordOffset;
+	Vector4f	m_texcoordScaling;
+	Vector4f	m_texcoordOffset;
 
 	// Constants (Other)
-	Vector4d	gm_WindDirection;
+	Vector4f	gm_WindDirection;
 	Real		gm_FadeValue;
 	Real		gm_HalfScale;
 
@@ -144,11 +198,13 @@ public:
 	//	setTexture ( slot, texture ) : Sets material texture.
 	// Material is given ownership of the texture (to an extent).
 	// Do not delete the texture directly, use RemoveReference.
-	RENDER_API void			setTexture ( const textureslot_t n_index, CTexture* n_texture );
+	RENDER_API void			setTexture ( const textureslot_t n_index, RrTexture* n_texture );
 	//	setSampler ( slot, texture ) : Sets material texture with raw GPU handles.
-	RENDER_API void			setSampler ( const textureslot_t n_index, const glHandle n_sampler, const glEnum n_sampler_target=0 );
+	// To be used only in an immediate use-case, ex. post-processing or compositing.
+	//RENDER_API void			setSampler ( const textureslot_t n_index, const glHandle n_sampler, const glEnum n_sampler_target=0 );
+	RENDER_API void			setSampler ( const textureslot_t n_index, gpu::Texture& n_texture );
 	//	getTexture ( slot ) : Returns texture object set to slot
-	RENDER_API CTexture*	getTexture ( const textureslot_t n_index );
+	RENDER_API RrTexture*	getTexture ( const textureslot_t n_index );
 
 private:
 	// Current state:
@@ -157,43 +213,45 @@ private:
 	bool		m_currentPassForward;
 
 	// Command buffer buildstate:
-	struct rrCmdBufferBuildstate
+	/*struct rrCmdBufferBuildstate
 	{
 		uint	cmdbuffer_index : 4;
 		bool	track_state : 1;
 	};
-	rrCmdBufferBuildstate	m_buildState;
+	rrCmdBufferBuildstate	m_buildState;*/
 
 	// Textures (samplers)
-	CTexture*	m_highlevel_storage [12];
-	glHandle	m_samplers [12];
-	glEnum		m_sampler_targets [12];
+	RrTexture*		m_highlevel_storage [12];
+	gpu::Texture	m_samplers [12];
+	//glEnum			m_sampler_targets [12];
 
 	// Constant Buffers
 	gpu::ConstantBuffer	m_cbufPerObject;
 
 public:
 	// Textures (buffers)
-	glHandle	m_bufferMatricesSkinning;
+	gpu::Buffer			m_bufferMatricesSkinning;
 	//GLuint		m_bufferMatricesSoftbody;
-	glHandle	m_bufferSkeletonSize;
+	//glHandle	m_bufferSkeletonSize;
+	gpu::Buffer			m_bufferSkeletonSize;
 
-	glHandle	m_tex_instancedinfo;
+	//glHandle	m_tex_instancedinfo;
+	gpu::Buffer			m_tex_instancedinfo;
 
 	// Textures (global properties)
-	RENDER_API static CTexture*	m_sampler_reflection;
+	RENDER_API static RrTexture*	m_sampler_reflection;
 
 private:
 	// Static UBOs
-	static glHandle	m_ubo_foginfo;
-	static glHandle	m_ubo_lightinginfo;
-	static glHandle	m_ubo_reflectinfo;
+	static gpu::Buffer	m_ubo_foginfo;
+	static gpu::Buffer	m_ubo_lightinginfo;
+	static gpu::Buffer	m_ubo_reflectinfo;
 
-	static glHandle	m_ubo_deflightinginfo;
-	static glHandle	m_tbo_lightinfo;
-	static glHandle	m_tex_lightinfo;
-	static glHandle	m_tex_shadowinfo;
-	static glHandle	m_lightCount;
+	static gpu::Buffer	m_ubo_deflightinginfo;
+	static gpu::Buffer	m_tbo_lightinfo;
+	static gpu::Buffer	m_tex_lightinfo;
+	static gpu::Buffer	m_tex_shadowinfo;
+	static gpu::Buffer	m_lightCount;
 public:
 	RENDER_API static void	updateStaticUBO ( void );
 	RENDER_API static void	updateLightTBO ( void );
@@ -247,4 +305,4 @@ private:
 	arstring<256>	m_filename;
 };
 
-#endif//_GL_MATERIAL_H_
+#endif//RENDERER_MATERIAL_H_

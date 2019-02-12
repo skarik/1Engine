@@ -59,7 +59,7 @@ bool CMatrix<W,H>::setTranslation ( Real * pInVector )
 }
 
 // Settin the translation via Vector2D
-template<> inline bool Matrix2x2::setTranslation ( Vector2d const& v )
+template<> inline bool Matrix2x2::setTranslation ( Vector2f const& v )
 {
 	pData[1] = v.x;
 	pData[3] = v.y;
@@ -67,7 +67,7 @@ template<> inline bool Matrix2x2::setTranslation ( Vector2d const& v )
 }
 
 // Settin the translation via Vector3D
-template<> inline bool Matrix4x4::setTranslation ( Vector3d const& vect )
+template<> inline bool Matrix4x4::setTranslation ( Vector3f const& vect )
 {
 	pData[3] = vect.x;
 	pData[7] = vect.y;
@@ -91,7 +91,7 @@ template<> inline bool Matrix4x4::setScale ( Real const x, Real const y, Real co
 }
 
 // Settin the scaling via Vector3D
-template<> inline bool Matrix4x4::setScale ( Vector3d const& vect )
+template<> inline bool Matrix4x4::setScale ( Vector3f const& vect )
 {
 	pData[0] = vect.x;
 	pData[5] = vect.y;
@@ -178,7 +178,7 @@ template<> inline bool Matrix4x4::setRotation ( Real const angle_x, Real const a
 }
 
 // Setting the rotation of a 3d matrix via 3d vector
-template<> inline bool Matrix4x4::setRotation ( Vector3d const& vect )
+template<> inline bool Matrix4x4::setRotation ( Vector3f const& vect )
 {
 	/* check for invalid values */
 	assert( vect.x == vect.x );
@@ -292,9 +292,9 @@ template<> inline bool Matrix4x4::setRotation ( Matrix3x3 const& matx )
 }
 
 // Getters - Translation
-template<> inline Vector3d Matrix4x4::getTranslation ( void ) const
+template<> inline Vector3f Matrix4x4::getTranslation ( void ) const
 {
-	Vector3d position;
+	Vector3f position;
 
 	position.x = pData[3];
 	position.y = pData[7];
@@ -304,10 +304,10 @@ template<> inline Vector3d Matrix4x4::getTranslation ( void ) const
 }
 
 // Getters - Rotation
-template<> inline Vector3d Matrix4x4::getEulerAngles ( void ) const
+template<> inline Vector3f Matrix4x4::getEulerAngles ( void ) const
 {
 	float tr_x, tr_y, D,C;
-	Vector3d angle;
+	Vector3f angle;
 	//angle.y = D =  asin( min( max( pData[2], -1.0f ), 1.0f ) );        /* Calculate Y-axis angle */
 
 	// Check for invalid results
@@ -392,15 +392,15 @@ template<> inline Quaternion Matrix4x4::getQuaternion ( void ) const
 	return Quaternion( X,Y,Z,W );
 }
 // Getters - Scale
-template<> inline Vector3d Matrix4x4::getScaling ( void )
+template<> inline Vector3f Matrix4x4::getScaling ( void )
 {
-	Vector3d result;
-	/*result.x = Vector3d( pData[0],pData[1],pData[2] ).magnitude();
-	result.y = Vector3d( pData[4],pData[5],pData[6] ).magnitude();
-	result.z = Vector3d( pData[8],pData[9],pData[10] ).magnitude();*/
-	result.x = Vector3d( pData[0],pData[4],pData[8] ).magnitude();
-	result.y = Vector3d( pData[1],pData[5],pData[9] ).magnitude();
-	result.z = Vector3d( pData[2],pData[6],pData[10] ).magnitude();
+	Vector3f result;
+	/*result.x = Vector3f( pData[0],pData[1],pData[2] ).magnitude();
+	result.y = Vector3f( pData[4],pData[5],pData[6] ).magnitude();
+	result.z = Vector3f( pData[8],pData[9],pData[10] ).magnitude();*/
+	result.x = Vector3f( pData[0],pData[4],pData[8] ).magnitude();
+	result.y = Vector3f( pData[1],pData[5],pData[9] ).magnitude();
+	result.z = Vector3f( pData[2],pData[6],pData[10] ).magnitude();
 
 	/* check for invalid values */
 	assert( result.x == result.x );
@@ -414,7 +414,7 @@ template<> inline Vector3d Matrix4x4::getScaling ( void )
 }
 
 // Modders - Translation
-template<> inline void Matrix4x4::translate ( Vector3d const& v )
+template<> inline void Matrix4x4::translate ( Vector3f const& v )
 {
 	pData[3] += v.x;
 	pData[7] += v.y;
@@ -623,34 +623,34 @@ inline Matrix4x4 Matrix4x4::operator * ( Matrix4x4 const& right )
 }*/
 
 // Multiply by a vector
-inline Vector3d Matrix4x4::operator* ( Vector3d const& vect ) const
+inline Vector3f Matrix4x4::operator* ( Vector3f const& vect ) const
 {
-	return Vector3d(
+	return Vector3f(
 		pData[0]*vect.x+pData[1]*vect.y+pData[2]*vect.z+pData[3],
 		pData[4]*vect.x+pData[5]*vect.y+pData[6]*vect.z+pData[7],
 		pData[8]*vect.x+pData[9]*vect.y+pData[10]*vect.z+pData[11]
 		);
-	/*return Vector3d(
+	/*return Vector3f(
 		pData[0]*vect.x+pData[4]*vect.y+pData[8]*vect.z+pData[3],
 		pData[1]*vect.x+pData[5]*vect.y+pData[9]*vect.z+pData[7],
 		pData[2]*vect.x+pData[6]*vect.y+pData[10]*vect.z+pData[11]
 		);*/
-	/*return Vector3d(
+	/*return Vector3f(
 		pData[0]*vect.x+pData[4]*vect.y+pData[8]*vect.z+pData[12],
 		pData[1]*vect.x+pData[5]*vect.y+pData[9]*vect.z+pData[13],
 		pData[2]*vect.x+pData[6]*vect.y+pData[10]*vect.z+pData[14]
 		);*/
 }
 
-inline Vector4d Matrix4x4::operator* ( Vector4d const& vect ) const
+inline Vector4f Matrix4x4::operator* ( Vector4f const& vect ) const
 {
-	return Vector4d(
+	return Vector4f(
 		pData[0]*vect.x+pData[1]*vect.y+pData[2]*vect.z+pData[3]*vect.w,
 		pData[4]*vect.x+pData[5]*vect.y+pData[6]*vect.z+pData[7]*vect.w,
 		pData[8]*vect.x+pData[9]*vect.y+pData[10]*vect.z+pData[11]*vect.w,
 		pData[12]*vect.x+pData[13]*vect.y+pData[14]*vect.z+pData[15]*vect.w
 		);
-	/*return Vector4d(
+	/*return Vector4f(
 		pData[0]*vect.x+pData[4]*vect.y+pData[8]*vect.z+pData[12]*vect.w,
 		pData[1]*vect.x+pData[5]*vect.y+pData[9]*vect.z+pData[13]*vect.w,
 		pData[2]*vect.x+pData[6]*vect.y+pData[10]*vect.z+pData[14]*vect.w,

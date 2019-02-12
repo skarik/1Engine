@@ -21,7 +21,7 @@
 #include <map>
 #include <utility>
 
-class CModel;
+class RrCModel;
 class CSkinnedModel;
 
 // Class Definition
@@ -88,10 +88,10 @@ public:
 		return bIsValid;
 	}
 	
-	/*void SetOwner ( CModel* model ) {
+	/*void SetOwner ( RrCModel* model ) {
 		pOwner = model;
 	}
-	CModel* GetOwner ( void ) {
+	RrCModel* GetOwner ( void ) {
 		return pOwner;
 	}*/
 
@@ -102,7 +102,7 @@ public:
 
 	CORE_API void			GetEvents ( std::vector<animation::ActionEvent>& events, unsigned int & event_count );
 
-	CORE_API const Vector3d&	GetExtrapolatedMotion ( void );
+	CORE_API const Vector3f&	GetExtrapolatedMotion ( void );
 	CORE_API void			ResetExtrapolatedMotion ( void );
 
 	CORE_API void			AddIKInfo ( const animation::arIKInfo& );
@@ -114,14 +114,14 @@ public:
 	CORE_API static AnimationAction	deadAction;
 protected:
 	friend AnimationAction;
-	friend CModel;
+	friend RrCModel;
 	friend CSkinnedModel;
 
 	// Is the animation valid and loaded?
 	bool					bIsValid;
 
 	// Old sampling and instantiation method
-	//CModel*					pOwner; 
+	//RrCModel*					pOwner; 
 
 	// List of actions
 	std::map<arstring128,AnimationAction>	mAnimations;
@@ -147,7 +147,7 @@ protected:
 	bool					bEventsRead;
 
 	// Extrapolated motion
-	Vector3d				vModelMotion;
+	Vector3f				vModelMotion;
 	// TODO: ???
 	XTransform				mModelTransform;
 

@@ -7,7 +7,7 @@
 #include "engine/behavior/CGameBehavior.h"
 
 class CGameBehavior;
-class CLogicObject;
+class RrLogicObject;
 class CRenderableObject;
 class btMotionState;
 

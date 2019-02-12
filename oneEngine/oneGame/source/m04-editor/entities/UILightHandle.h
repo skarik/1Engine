@@ -54,7 +54,7 @@ namespace M04
 
 		//		SetRenderPosition
 		// Sets the position that being rendered at
-		void		SetRenderPosition ( const Vector3d& n_newPosition );
+		void		SetRenderPosition ( const Vector3f& n_newPosition );
 
 		//		HasFocus
 		// Is this UI element in focus or currently working?
@@ -87,7 +87,7 @@ namespace M04
 		DrawStyle	m_style;
 		Mode		m_mode;
 
-		Vector3d	m_position;
+		Vector3f	m_position;
 
 		float		m_range_start;
 		float		m_range;
@@ -98,8 +98,8 @@ namespace M04
 		float		m_power_snap;
 
 		bool		m_dragging;
-		Vector3d	m_drag_start;
-		Vector3d	m_drag_end;
+		Vector3f	m_drag_start;
+		Vector3f	m_drag_end;
 
 		Axis		m_drag_axis;
 		Axis		m_drag_axis_hover;

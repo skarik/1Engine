@@ -1,8 +1,8 @@
 
-#include "renderer/camera/CCamera.h"
+#include "renderer/camera/RrCamera.h"
 #include "CRenderCameraHolder.h"
 
-CRenderCameraHolder::CRenderCameraHolder ( CCamera* renderer )
+CRenderCameraHolder::CRenderCameraHolder ( RrCamera* renderer )
 	: CGameBehavior(), m_renderer( renderer )
 {
 	;
@@ -20,6 +20,6 @@ void CRenderCameraHolder::Update ( void )
 	;
 }
 
-CCamera*	CRenderCameraHolder::GetRenderer ( void ) {
+RrCamera*	CRenderCameraHolder::GetRenderer ( void ) {
 	return m_renderer;
 }

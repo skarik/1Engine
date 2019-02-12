@@ -4,20 +4,20 @@
 // Includes
 #include "core/types/float.h"
 #include "core/math/Color.h"
-#include "renderer/types/textureFormats.h"
+#include "core/gfx/textureFormats.h"
 
-class CRenderState;
+class RrRenderer;
 class RrMaterial;
 
 namespace renderer
 {
 	// Struct
-	struct internalSettings_t
+	struct rrInternalSettings
 	{
-		eColorFormat	mainColorAttachmentFormat;
-		uint			mainColorAttachmentCount;
-		eDepthFormat	mainDepthFormat;
-		eStencilFormat	mainStencilFormat;
+		core::gfx::tex::arColorFormat	mainColorAttachmentFormat;
+		uint8_t							mainColorAttachmentCount;
+		core::gfx::tex::arColorFormat	mainDepthFormat;
+		core::gfx::tex::arColorFormat	mainStencilFormat;
 	};
 }
 

@@ -2,54 +2,64 @@
 //
 //		common.h
 // 
-// Old messy common code.
+// Old messy common code. (IT's getting better!)
 //
 //===============================================================================================//
 #ifndef CORE_COMMON_MESSY_H_
 #define CORE_COMMON_MESSY_H_
 
-// == DEPRECIATED DEFINITION ==
-#ifdef __GNUC__
-#define DEPRECATED(func) func __attribute__ ((deprecated))
-#elif defined(_MSC_VER)
-#define DEPRECATED(func) __declspec(deprecated) func
+//
+// DEPRECATED DEFINITION
+#if		defined(_MSC_VER)
+#	define DEPRECATED(WHY) __declspec(deprecated( WHY ))
+#elif	defined(__clang__)
+#	define DEPRECATED(WHY) __attribute__ ((deprecated( WHY )))
 #else
-#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
-#define DEPRECATED(func) func
+#	pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+#	define DEPRECATED(WHY)
 #endif
 
-// == ENGINE STRING USAGE ==
+//
+// ENGINE STRING USAGE
 #include <string>
 // Using string
 using std::string;
 
-// == ENGINE EXCEPTION ==
+//
+// ENGINE EXCEPTION
 #include "exceptions/exceptions.h"
 
-// == CLASS PROTOTYPES ==
+//
+// CLASS PROTOTYPES
 class CGameBehavior;
 class CGameObject;
 class CRenderableObject;
 
-// == GLOBAL INSTANTIATION TEMPLATE ==
+//
+// GLOBAL INSTANTIATION TEMPLATE:
 // USED FOR CLASS REGISTRATION SYSTEM
 template<typename T> T * _instantiate( void ) { return new T; }
+template<typename T, typename To> To * _instantiate( void ) { return (To*)(new T); }
 //template<typename T> CGameBehavior * _instGameBehavior( void ) { return new T; }
 
 //typedef CGameBehavior*(*_instantiationFunction)(void);
 
 #include "callback_basics.h"
 
+//
+// ENGINE CASTING
 template<typename CastTo, typename CastFrom>
 FORCE_INLINE CastTo arcast( CastFrom value )
 {
-#ifdef _ENGINE_DEBUG
+#	ifdef _ENGINE_DEBUG
 	return dynamic_cast<CastTo>(value);
-#else
+#	else
 	return static_cast<CastTo>(value);
-#endif
+#	endif
 }
 
+//
+// MEMORY LAYOUT QUERY
 #ifndef offsetof
 template <typename T, typename U>
 constexpr size_t offsetof_impl(T const* t, U T::* a)

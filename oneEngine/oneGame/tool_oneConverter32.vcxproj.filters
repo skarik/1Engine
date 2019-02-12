@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{e5fd0131-72b2-4da6-83ae-e295a95514dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Tool">
+      <UniqueIdentifier>{465a5a1a-cfd1-4245-a810-3df94a918426}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Tool\Converter32">
+      <UniqueIdentifier>{05855e1f-8ded-4f65-bdcd-6f38c4254306}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Tool\Converter">
+      <UniqueIdentifier>{d56c6ee2-d530-4021-ba68-61dfe473e68a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\tool\converter32\converter32-main.cpp">
+      <Filter>SOURCE\Tool\Converter32</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tool\converter\TrConverterBase.cpp">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="source\tool\converter32\TrConverter32GraphicsGale.cpp">
+      <Filter>SOURCE\Tool\Converter32</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\tool\converter\TrConverterBase.h">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tool\converter32\TrConverter32GraphicsGale.h">
+      <Filter>SOURCE\Tool\Converter32</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

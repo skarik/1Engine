@@ -1,9 +1,9 @@
-#ifndef _C_PLANE_
-#define _C_PLANE_
+#ifndef CORE_MATH_PLANE_
+#define CORE_MATH_PLANE_
 
 // Includes
 #include "core/types/float.h"
-#include "Vector3d.h"
+#include "Vector3.h"
 
 // Class Def
 namespace core
@@ -13,17 +13,17 @@ namespace core
 		class Plane
 		{
 		public:
-			Vector3d n;
+			Vector3f n;
 			Real d;
 
 		public:
 			// Constructors
 			Plane ( void );
-			Plane ( Vector3d * );
-			void ConstructFromPoints ( Vector3d * );
-			void ConstructFromPoints ( Vector3d const&, Vector3d const&, Vector3d const& );
+			Plane ( Vector3f * );
+			void ConstructFromPoints ( Vector3f * );
+			void ConstructFromPoints ( Vector3f const&, Vector3f const&, Vector3f const& );
 		};
 	}
 }
 
-#endif
+#endif CORE_MATH_PLANE_

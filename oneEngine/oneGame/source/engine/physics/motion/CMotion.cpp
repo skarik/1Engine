@@ -17,10 +17,10 @@ IPrGameMotion* CMotion::GetOwner ( void )
 	return NULL;
 }
 template<>
-CLogicObject* CMotion::GetOwner ( void )
+RrLogicObject* CMotion::GetOwner ( void )
 {
 	if (ownerType == core::kBasetypeRrLogicObject) {
-		return static_cast<CLogicObject*>(owner);
+		return static_cast<RrLogicObject*>(owner);
 	}
 	return NULL;
 }
@@ -47,7 +47,7 @@ void CMotion::SetOwner ( IPrGameMotion* n_owner )
 	ownerType = core::kBasetypeIPrMotion;
 }
 template <>
-void CMotion::SetOwner ( CLogicObject* n_owner )
+void CMotion::SetOwner ( RrLogicObject* n_owner )
 {
 	owner = static_cast<void*>(n_owner);
 	ownerType = core::kBasetypeRrLogicObject;

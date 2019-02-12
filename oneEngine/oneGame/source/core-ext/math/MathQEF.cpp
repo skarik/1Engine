@@ -4,18 +4,18 @@
 
 #include "MathQEF.h"
 
-using namespace Maths;
+using namespace core::math;
 
 //----------------------------------------------------------------------------
 
-#define MAXROWS 12
-#define EPSILON 1e-5
+auto constexpr MAXROWS = 12;
+auto constexpr EPSILON = 1e-5;
 
 //----------------------------------------------------------------------------
 
 void QEF::evaluate(
     double mat[][3], double *vec, int rows,
-    Vector3d *point)
+    Vector3f *point)
 {
     // perform singular value decomposition on matrix mat
     // into u, v and d.
@@ -38,7 +38,7 @@ void QEF::evaluate(
     double x[3];
     solveSVD(u, v, d, vec, x, rows);
 
-    *point = Vector3d((float)x[0], (float)x[1], (float)x[2]);
+    *point = Vector3f((float)x[0], (float)x[1], (float)x[2]);
 }
 
 //----------------------------------------------------------------------------

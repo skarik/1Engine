@@ -20,10 +20,12 @@ namespace core
 	{
 		//	Quad(model, pos, uvs) : Adds a 2D quad to the given modeldata
 		// Vertices are in counter-clockwise order around the quad edge.
+		// Ensure md.position, md.texcoord0, and md.indices are initialized.
 		CORE_API void Quad ( arModelData* md, const Rect& position, const Rect& uvs );
 
 		//	Quad(model, pos, color, uvs) : Adds a 3D quad to the given modeldata
 		// Vertices are in counter-clockwise order around the quad edge.
+		// Ensure md.position, md.texcoord0, md.color, and md.indices are initialized.
 		CORE_API void Quad ( arModelData* md, const Vector3f* positions, const Color& color, const Rect& uvs );
 	}
 }

@@ -57,13 +57,15 @@ namespace core
 
 		//	Exists( filename )
 		// Find file in the current paths. Uses fopen() internally.
-		// Will return false if cannot find the file, true if found.
+		// Returns:
+		//	bool: True if file found, false if file could not be found.
 		CORE_API static bool Exists ( const std::string& n_filename );
 		CORE_API static bool Exists ( const char* n_filename );
 
 		//	MakePathTo( filename )
 		// Finds file and creates a string that represents path to the file. Uses fopen() internally.
-		// Will return false if it cannot find the file.
+		// Returns:
+		//	bool: True if file found, false if file could not be found.
 		CORE_API static bool MakePathTo ( const std::string& n_filename, std::string& o_filename );
 		CORE_API static bool MakePathTo ( const char* n_filename, std::string& o_filename );
 

@@ -2,7 +2,7 @@
 #define _QUATERNION_H_
 
 #include "core/types/types.h"
-#include "Vector3d.h"
+#include "Vector3.h"
 #include <cmath>
 #include <iostream>
 
@@ -19,7 +19,7 @@ public:
 	FORCE_INLINE Quaternion( ); //Default constructor.
 	FORCE_INLINE Quaternion( Quaternion const& old ); // Copy constructor.
 	FORCE_INLINE Quaternion( Real const& new_x, Real const& new_y, Real const& new_z, Real const& new_w ); // Inpute conversion consturctor.
-	FORCE_INLINE Quaternion( const Vector3d& euler_angles ); // Euler angles input constructor
+	FORCE_INLINE Quaternion( const Vector3f& euler_angles ); // Euler angles input constructor
 	FORCE_INLINE Quaternion( const Matrix3x3& rotator );
 	FORCE_INLINE Quaternion( const Matrix4x4& rotation );
 
@@ -41,21 +41,21 @@ public:
 	FORCE_INLINE Quaternion Slerp ( Quaternion const& qa, const Real t ); 
 
 	// Sets the quat to describing a rotation around an axis
-	FORCE_INLINE void AxisAngle ( const Vector3d& axis, const Real angle );
-	FORCE_INLINE static Quaternion CreateAxisAngle ( const Vector3d& axis, const Real angle );
+	FORCE_INLINE void AxisAngle ( const Vector3f& axis, const Real angle );
+	FORCE_INLINE static Quaternion CreateAxisAngle ( const Vector3f& axis, const Real angle );
 	// Sets the quat to describe a rotation from one vector to another
-	FORCE_INLINE void RotationTo ( const Vector3d& vfrom, const Vector3d& vto );
-	FORCE_INLINE static Quaternion CreateRotationTo ( const Vector3d& vfrom, const Vector3d& vto );
+	FORCE_INLINE void RotationTo ( const Vector3f& vfrom, const Vector3f& vto );
+	FORCE_INLINE static Quaternion CreateRotationTo ( const Vector3f& vfrom, const Vector3f& vto );
 	// Sets the quat to describing the given Euler XYZ rotation
-	FORCE_INLINE void SetEulerAngles ( const Vector3d& euler_angles );
-	FORCE_INLINE static Quaternion CreateFromEuler ( const Vector3d& euler_angles );
+	FORCE_INLINE void SetEulerAngles ( const Vector3f& euler_angles );
+	FORCE_INLINE static Quaternion CreateFromEuler ( const Vector3f& euler_angles );
 	// Sets the quat to describing the given rotation matrix
 	//void SetFromRotator ( const Matrix3x3& rotator );
 	// Swaps the basis of the quaternion (you should never need to use this)
 	Quaternion& SwitchBasis ( void );
 
 	// Rotates a vector
-	FORCE_INLINE Vector3d operator* ( Vector3d const& right ) const;	
+	FORCE_INLINE Vector3f operator* ( Vector3f const& right ) const;	
 	// Rotates against another quat
 	FORCE_INLINE Quaternion operator* ( Quaternion const& right ) const;
 	// Inverts the quaternion
@@ -65,7 +65,7 @@ public:
 	FORCE_INLINE const Quaternion operator* ( const float scale ) const;
 
 	// Gets euler angles from the quaternion
-	Vector3d GetEulerAngles ( void ) const;
+	Vector3f GetEulerAngles ( void ) const;
 
 	//Equal comparison overload
 	FORCE_INLINE bool operator== (Quaternion const& right) const;
@@ -109,7 +109,7 @@ FORCE_INLINE Quaternion::Quaternion(Real const& new_x, Real const& new_y, Real c
 {
 	;
 }
-FORCE_INLINE Quaternion::Quaternion( const Vector3d& euler_angles ) // Euler angles constructor
+FORCE_INLINE Quaternion::Quaternion( const Vector3f& euler_angles ) // Euler angles constructor
 {
 	SetEulerAngles( euler_angles );
 }
@@ -190,9 +190,9 @@ FORCE_INLINE Real Quaternion::Dot( Quaternion const& qa ) const
 }
 
 // Sets the quat to describing a rotation around an axis
-FORCE_INLINE void Quaternion::AxisAngle ( const Vector3d& axis, const Real angle )
+FORCE_INLINE void Quaternion::AxisAngle ( const Vector3f& axis, const Real angle )
 {
-	Vector3d Axis = axis.normal();
+	Vector3f Axis = axis.normal();
 	Real sourceAngle = (Real) degtorad(angle) / 2.0f;
     Real sin_a = sin( sourceAngle );
     x    = Axis.x * sin_a;
@@ -202,7 +202,7 @@ FORCE_INLINE void Quaternion::AxisAngle ( const Vector3d& axis, const Real angle
 
 	Normalize();
 }
-FORCE_INLINE Quaternion Quaternion::CreateAxisAngle ( const Vector3d& axis, const Real angle )
+FORCE_INLINE Quaternion Quaternion::CreateAxisAngle ( const Vector3f& axis, const Real angle )
 {
 	Quaternion q;
 	q.AxisAngle( axis, angle );
@@ -211,14 +211,14 @@ FORCE_INLINE Quaternion Quaternion::CreateAxisAngle ( const Vector3d& axis, cons
 
 
 // Sets the quat to describe a rotation from one vector to another
-FORCE_INLINE void Quaternion::RotationTo ( const Vector3d& vfrom, const Vector3d& vto )
+FORCE_INLINE void Quaternion::RotationTo ( const Vector3f& vfrom, const Vector3f& vto )
 {
 	// Based on Stan Melax's article in Game Programming Gems
     Quaternion q;
 
     // Copy, since cannot modify local
-    Vector3d v0 = vfrom;
-    Vector3d v1 = vto;
+    Vector3f v0 = vfrom;
+    Vector3f v1 = vto;
     v0.normalize();
     v1.normalize();
 
@@ -232,9 +232,9 @@ FORCE_INLINE void Quaternion::RotationTo ( const Vector3d& vfrom, const Vector3d
     else if (d < (1e-6f - 1.0f))
     {
         // Generate an axis
-		Vector3d axis = Vector3d::forward.cross(vfrom);
+		Vector3f axis = Vector3f::forward.cross(vfrom);
         if (axis.sqrMagnitude() < 0.0001f) // pick another if colinear
-			axis = Vector3d::left.cross(vfrom);
+			axis = Vector3f::left.cross(vfrom);
         axis.normalize();
 		q.AxisAngle( axis, radtodeg(PI) );
     }
@@ -243,7 +243,7 @@ FORCE_INLINE void Quaternion::RotationTo ( const Vector3d& vfrom, const Vector3d
         Real s = sqrt( (1+d)*2 );
 		Real invs = 1 / s;
 
-		Vector3d c = v0.cross(v1);
+		Vector3f c = v0.cross(v1);
 
         q.x = c.x * invs;
         q.y = c.y * invs;
@@ -259,7 +259,7 @@ FORCE_INLINE void Quaternion::RotationTo ( const Vector3d& vfrom, const Vector3d
 	Normalize();
 }
 
-FORCE_INLINE Quaternion Quaternion::CreateRotationTo ( const Vector3d& vfrom, const Vector3d& vto )
+FORCE_INLINE Quaternion Quaternion::CreateRotationTo ( const Vector3f& vfrom, const Vector3f& vto )
 {
 	Quaternion temp;
 	temp.RotationTo( vfrom, vto );
@@ -267,10 +267,10 @@ FORCE_INLINE Quaternion Quaternion::CreateRotationTo ( const Vector3d& vfrom, co
 }
 
 // Sets the quat to describing the given Euler XYZ rotation
-FORCE_INLINE void Quaternion::SetEulerAngles ( const Vector3d& euler_angles )
+FORCE_INLINE void Quaternion::SetEulerAngles ( const Vector3f& euler_angles )
 {
 	{
-		/*(Vector3d vx ( 1, 0, 0 ), vy ( 0, 1, 0 ), vz ( 0, 0, 1 );
+		/*(Vector3f vx ( 1, 0, 0 ), vy ( 0, 1, 0 ), vz ( 0, 0, 1 );
 		Quaternion qx, qy, qz, qt;
 		qx.AxisAngle( vx, euler_angles.x );
 		qy.AxisAngle( vy, euler_angles.y );
@@ -320,13 +320,13 @@ FORCE_INLINE void Quaternion::SetEulerAngles ( const Vector3d& euler_angles )
 }
 
 // Rotates a vector
-FORCE_INLINE Vector3d Quaternion::operator* ( Vector3d const& right ) const
+FORCE_INLINE Vector3f Quaternion::operator* ( Vector3f const& right ) const
 {
 	Quaternion qr = *this;
 	Quaternion qri= !(*this);
 	Quaternion v ( right.x,right.y,right.z,0 ); 
 	Quaternion qf = qr*v*qri;
-	return Vector3d( qf.x, qf.y, qf.z );
+	return Vector3f( qf.x, qf.y, qf.z );
 }
 
 // Linear Interpolation (only valid for small differences in angle)

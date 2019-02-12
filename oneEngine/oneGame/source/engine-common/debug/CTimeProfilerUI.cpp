@@ -1,7 +1,7 @@
 
 #include "CTimeProfilerUI.h"
 #include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CBitmapFont.h"
+#include "renderer/texture/RrFontTexture.h"
 #include "renderer/system/glMainSystem.h"
 #include "renderer/system/glDrawing.h"
 #include "renderer/object/immediate/immediate.h"
@@ -12,9 +12,9 @@ CTimeProfilerUI::CTimeProfilerUI ( void )
 	: CRenderableObject()
 {
 	renderSettings.renderHints = kRenderHintWorld;
-	renderType = renderer::kRLV2D;
+	renderLayer = renderer::kRLV2D;
 
-	fntDebug	= new CBitmapFont ( "YanoneKaffeesatz-R.otf", 12, FW_BOLD );
+	fntDebug	= new RrFontTexture ( "YanoneKaffeesatz-R.otf", 12, FW_BOLD );
 	matFntDebug = new RrMaterial;
 	matFntDebug->m_diffuse = Color( 0.2f,0.0f,0.4f );
 	matFntDebug->setTexture( TEX_MAIN, fntDebug );
@@ -43,10 +43,10 @@ bool CTimeProfilerUI::Render ( const char pass )
 		return false;
 
 	////GL.beginOrtho();
-	//core::math::Cubic::FromPosition( Vector3d(0, 0, -45.0F), Vector3d((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
+	//core::math::Cubic::FromPosition( Vector3f(0, 0, -45.0F), Vector3f((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) );
 	//GLd.DrawSet2DScaleMode();
 
-	//Vector2d drawPos;
+	//Vector2f drawPos;
 	//drawPos.x =  0.02f;
 	//drawPos.y =  0.42f;
 

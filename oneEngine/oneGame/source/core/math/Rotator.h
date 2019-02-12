@@ -2,7 +2,7 @@
 #define _X_ROTATION_H_
 
 #include <algorithm>
-#include "Vector3d.h"
+#include "Vector3.h"
 #include "core/types/float.h"
 #include "Quaternion.h"
 #include "core/math/Matrix/CMatrix.h"
@@ -15,14 +15,14 @@ public: // Constructors
 	FORCE_INLINE Rotator( void );
 	FORCE_INLINE Rotator( const Matrix3x3& matx );
 	FORCE_INLINE Rotator( Real const& eulerX, Real const& eulerY, Real const& eulerZ );
-	FORCE_INLINE Rotator( const Vector3d& euler_angles );
+	FORCE_INLINE Rotator( const Vector3f& euler_angles );
 	FORCE_INLINE Rotator( const Quaternion& quat );
 
 public: // Setters
 	// Sets the rotator to describing a rotation around an axis
-	FORCE_INLINE void AxisAngle ( const Vector3d& axis, const Real angle );	
+	FORCE_INLINE void AxisAngle ( const Vector3f& axis, const Real angle );	
 	// Sets the rotator to describing a rotation from vector a to b
-	FORCE_INLINE void RotationTo ( const Vector3d& vfrom, const Vector3d& vto );
+	FORCE_INLINE void RotationTo ( const Vector3f& vfrom, const Vector3f& vto );
 	// Sets the matrix from an array
 	FORCE_INLINE void Set ( Real * data );
 
@@ -34,7 +34,7 @@ public: // Setters
 
 public: // Inline Setters
 	// Set Euler angles
-	FORCE_INLINE void Euler ( const Vector3d& angles ) {
+	FORCE_INLINE void Euler ( const Vector3f& angles ) {
 		setRotation( angles );
 	}
 
@@ -69,7 +69,7 @@ FORCE_INLINE Rotator::Rotator( Real const& eulerX, Real const& eulerY, Real cons
 {
 	setRotation( eulerX, eulerY, eulerZ );
 }
-FORCE_INLINE Rotator::Rotator( const Vector3d& euler_angles )
+FORCE_INLINE Rotator::Rotator( const Vector3f& euler_angles )
 {
 	setRotation( euler_angles );
 }
@@ -79,16 +79,16 @@ FORCE_INLINE Rotator::Rotator( const Quaternion& quat )
 }
 
 // Sets the matrix to describing a rotation around an axis
-FORCE_INLINE void Rotator::AxisAngle ( const Vector3d& axis, const Real angle )
+FORCE_INLINE void Rotator::AxisAngle ( const Vector3f& axis, const Real angle )
 {
 	Quaternion temp;
 	temp.AxisAngle( axis, angle );
 	setRotation( temp );
 }
 // Sets the matrix to descrive a rotation from vector a to b
-FORCE_INLINE void Rotator::RotationTo ( const Vector3d& vfrom, const Vector3d& vto )
+FORCE_INLINE void Rotator::RotationTo ( const Vector3f& vfrom, const Vector3f& vto )
 {
-	Vector3d axis = vfrom.cross(vto).normal();
+	Vector3f axis = vfrom.cross(vto).normal();
 	Real angle = acos( std::min<Real>( 1, std::max<Real>( -1, vfrom.normal().dot(vto.normal()) ) ) );
 	AxisAngle( axis, (Real)radtodeg(angle) );
 }

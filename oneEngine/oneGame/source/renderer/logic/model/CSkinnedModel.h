@@ -3,7 +3,7 @@
 #define _C_SKINNED_MODEL_
 
 // Include model and skinned mesh types
-#include "CModel.h"
+#include "RrCModel.h"
 #include "core-ext/animation/Skeleton.h"
 
 // Include vector
@@ -14,7 +14,7 @@ class rrSkinnedMesh;
 class skeletonBone_t;
 class CMorpher;
 
-class CSkinnedModel : public CModel
+class CSkinnedModel : public RrCModel
 {
 public:
 	// Constructor

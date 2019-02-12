@@ -4,11 +4,12 @@
 #include "physical/physics/PrWorld.h"
 #include "physical/interface/tobt.h"
 
-#include "renderer/material/RrMaterial.h"
-#include "renderer/texture/CTexture.h"
-#include "renderer/system/glMainSystem.h"
-#include "renderer/debug/CDebugDrawer.h"
-
+#include "renderer/material/RrPass.h"
+#include "renderer/material/RrShaderProgram.h"
+#include "renderer/texture/RrTexture.h"
+#include "renderer/debug/RrDebugDrawer.h"
+#include "renderer/gpuw/Buffers.h"
+#include "renderer/gpuw/Device.h"
 
 RrBtDebugDraw::RrBtDebugDraw ( PrWorld* associated_world )
 	: btIDebugDraw(), CRenderableObject(),
@@ -28,20 +29,24 @@ RrBtDebugDraw::RrBtDebugDraw ( PrWorld* associated_world )
 		m_world->ApiWorld()->setDebugDrawer(this);
 	}
 
-	// Set the layer to the final overlay layer
-	this->renderType = renderer::kRLV2D;
-
-	// Create a forward pass material (see CDebugDrawer for reference)
-	RrMaterial* defaultMat = new RrMaterial;
-	defaultMat->m_diffuse = Color( 1,1,1,1 );
-	defaultMat->setTexture( TEX_DIFFUSE, new CTexture( "textures/white.jpg" ) );
-	defaultMat->passinfo.push_back( RrPassForward() );
-	defaultMat->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
-	defaultMat->passinfo[0].set2DCommon();
-	defaultMat->passinfo[0].b_depthmask = true;
-	defaultMat->passinfo[0].b_depthtest = false;
-	SetMaterial( defaultMat );
-	defaultMat->removeReference();
+	// Set up the default white lines
+	RrPass linePass;
+	linePass.m_type = kPassTypeForward;
+	linePass.m_alphaMode = renderer::kAlphaModeTranslucent;
+	linePass.m_cullMode = gpu::kCullModeNone;
+	linePass.m_depthWrite = true;
+	linePass.m_depthTest = gpu::kCompareOpAlways;
+	linePass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+	linePass.m_primitiveType = gpu::kPrimitiveTopologyLineList;
+	linePass.setTexture( TEX_MAIN, RrTexture::Load("null") );
+	linePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"}) );
+	linePass.m_layer = renderer::kRenderLayerV2D;
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor,
+											renderer::shader::Location::kNormal};
+	linePass.setVertexSpecificationByCommonList(t_vspec, 4);
+	PassInitWithInput(0, &linePass);
 }
 
 RrBtDebugDraw::~RrBtDebugDraw ( void )
@@ -56,42 +61,28 @@ RrBtDebugDraw::~RrBtDebugDraw ( void )
 //		PostRender()
 // Push the current model information to the GPU.
 bool RrBtDebugDraw::EndRender ( void ) 
-{ GL_ACCESS
+{// GL_ACCESS
 
 	if (m_haveNewUpload)
 	{
-		// Make sure we don't destroy an existing VAO with the GL_ELEMENT_ARRAY_BUFFER binding.
-		GL.BindVertexArray( 0 ); 
+		// copy over the indicies
+		size_t sz_bufferIndices = sizeof(uint16_t) * m_indexData.size();
+		m_buffer_indices.free(NULL);
+		m_buffer_indices.initAsIndexBuffer(NULL, gpu::kIndexFormatUnsigned16, m_indexData.size());
+		void* data = m_buffer_indices.map(NULL, gpu::kTransferStream);
+		if (data != NULL)
+		{
+			memcpy(data, m_indexData.data(), sz_bufferIndices);
+			m_buffer_indices.unmap(NULL);
+		}
 
-		// Create new buffers
-		if ( m_buffer_verts == NIL )
-			GL.CreateBuffer( &m_buffer_verts );
-		if ( m_buffer_tris == NIL )
-			GL.CreateBuffer( &m_buffer_tris );
-
-		// Bind to some buffer objects
-		GL.BindBuffer( GL_ARRAY_BUFFER,			m_buffer_verts ); // for vertex coordinates
-		GL.BindBuffer( GL_ELEMENT_ARRAY_BUFFER,	m_buffer_tris ); // for face vertex indexes
-
-		// Copy data to the buffer
-		GL.UploadBuffer( GL_ARRAY_BUFFER,
-			sizeof(arModelVertex) * m_vertexData.size(),
-			m_vertexData.data(),
-			GL_STREAM_DRAW );
-		GL.UploadBuffer( GL_ELEMENT_ARRAY_BUFFER,
-			sizeof(uint32_t) * m_indexData.size(),
-			m_indexData.data(),
-			GL_STREAM_DRAW );
-
-		// bind with 0, so, switch back to normal pointer operation
-		GL.UnbindBuffer( GL_ARRAY_BUFFER );
-		GL.UnbindBuffer( GL_ELEMENT_ARRAY_BUFFER );
-
-		// update gpu index count
-		m_gpuIndexCount = m_indexData.size();
-
-		// no new upload
-		m_haveNewUpload = false;
+		// copy over the vertices
+		m_buffer_vertPositions.free(NULL);
+		m_buffer_vertPositions.initAsVertexBuffer(NULL, gpu::kFormatR32G32B32SFloat, m_vertexPositions.size());
+		m_buffer_vertPositions.uploadElements(NULL, m_vertexPositions.data(), m_vertexPositions.size(), gpu::kTransferStream);
+		m_buffer_vertColors.free(NULL);
+		m_buffer_vertColors.initAsVertexBuffer(NULL, gpu::kFormatR32G32B32A32SFloat, m_vertexColors.size());
+		m_buffer_vertColors.uploadElements(NULL, m_vertexColors.data(), m_vertexColors.size(), gpu::kTransferStream);
 	}
 
 	// Success!
@@ -100,31 +91,47 @@ bool RrBtDebugDraw::EndRender ( void )
 
 //		PreRender()
 // Push the model's uniform up up.
-bool RrBtDebugDraw::PreRender ( void )
+bool RrBtDebugDraw::PreRender ( rrCameraPass* cameraPass )
 {
-	//m_material->prepareShaderConstants( transform.world );
-	m_material->prepareShaderConstants();
+	PushCbufferPerObject( XrTransform(), cameraPass );
 	return true;
 }
 
 //		Render()
 // Render the model using the 2D engine's style
-bool RrBtDebugDraw::Render ( const char pass ) 
-{ GL_ACCESS
+bool RrBtDebugDraw::Render ( const rrRenderParams* params ) 
+{
 	// Do not render if no buffer to render with
-	if ( m_buffer_verts == 0 || m_buffer_tris == 0 || m_gpuIndexCount == 0 )
+	if (m_gpuIndexCount <= 0)
 	{
 		return true;
 	}
 
+	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
 	// For now, we will render the same way as the 3d meshes render
-	m_material->m_bufferSkeletonSize = 0;
-	m_material->m_bufferMatricesSkinning = 0;
-	m_material->bindPass(pass);
+	//m_material->m_bufferSkeletonSize = 0;
+	//m_material->m_bufferMatricesSkinning = 0;
+	//m_material->bindPass(pass);
 
 	// Bind VAO and render:
-	BindVAO( pass, m_buffer_verts, m_buffer_tris );
-	GL.DrawElements( GL_LINES, m_gpuIndexCount, GL_UNSIGNED_INT, 0 );
+	//BindVAO( pass, m_buffer_verts, m_buffer_tris );
+	//GL.DrawElements( GL_LINES, m_gpuIndexCount, GL_UNSIGNED_INT, 0 );
+
+	gpu::Pipeline* pipeline = GetPipeline( params->pass );
+
+	// set the pipeline
+	gfx->setPipeline(pipeline);
+	// bind the vertex buffers
+	gfx->setVertexBuffer(renderer::shader::kVBufferSlotPosition, &m_buffer_vertPositions, 0);
+	gfx->setVertexBuffer(renderer::shader::kVBufferSlotColor, &m_buffer_vertColors, 0);
+	// bind the cbuffers
+	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
+	// TODO:
+	// bind the index buffer
+	gfx->setIndexBuffer(&m_buffer_indices, gpu::kIndexFormatUnsigned16);
+	// draw now
+	gfx->drawIndexed(m_gpuIndexCount, 0);
 
 	// Success!
 	return true;
@@ -135,24 +142,29 @@ void RrBtDebugDraw::drawLine(const btVector3& from,const btVector3& to,const btV
 	// Set up new frame
 	if ( m_haveNewUpload == false )
 	{
-		m_vertexData.clear();
+		m_vertexPositions.clear();
+		m_vertexColors.clear();
 		m_indexData.clear();
 		m_haveNewUpload = true;
 	}
 
 	// Add vertex data & index data
-	arModelVertex vert;
+	/*arModelVertex vert;
 	memset(vert.rawbytes, 0, sizeof(arModelVertex));
 	vert.color = physical::ar(color);
-	vert.color.w = 1.0F;
+	vert.color.w = 1.0F;*/
 
-	vert.position = physical::ar(from);
-	m_indexData.push_back(m_vertexData.size());
-	m_vertexData.push_back(vert);
+	//vert.position = physical::ar(from);
+	m_indexData.push_back((uint16_t)m_vertexPositions.size());
+	m_vertexPositions.push_back(physical::ar(from));
+	m_vertexColors.push_back(physical::ar(color));
+	//m_vertexData.push_back(vert);
 
-	vert.position = physical::ar(to);
-	m_indexData.push_back(m_vertexData.size());
-	m_vertexData.push_back(vert);
+	//vert.position = physical::ar(to);
+	m_indexData.push_back((uint16_t)m_vertexPositions.size());
+	m_vertexPositions.push_back(physical::ar(to));
+	m_vertexColors.push_back(physical::ar(color));
+	//m_vertexData.push_back(vert);
 }
 
 void RrBtDebugDraw::drawContactPoint(const btVector3& PointOnB,const btVector3& normalOnB,btScalar distance,int lifeTime,const btVector3& color)

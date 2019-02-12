@@ -10,8 +10,8 @@
 // Prototypes
 //=========================================//
 
-class CTexture;
-class CBitmapFont;
+class RrTexture;
+class RrFontTexture;
 
 //=========================================//
 // Class definitions
@@ -23,7 +23,7 @@ namespace M04
 	{
 	private:
 		CutsceneEditor*		m_owner;
-		CBitmapFont*		m_font_texture;
+		RrFontTexture*		m_font_texture;
 
 	public:
 		explicit	CLargeTextRenderer ( CutsceneEditor* owner );
@@ -36,7 +36,7 @@ namespace M04
 	{
 	private:
 		CutsceneEditor*		m_owner;
-		CBitmapFont*		m_font_texture;
+		RrFontTexture*		m_font_texture;
 
 	public:
 		explicit	CNormalTextRenderer ( CutsceneEditor* owner );
@@ -49,7 +49,7 @@ namespace M04
 	{
 	private:
 		CutsceneEditor*		m_owner;
-		CTexture*			m_texture;
+		RrTexture*			m_texture;
 
 	public:
 		explicit	CGeometryRenderer ( CutsceneEditor* owner );

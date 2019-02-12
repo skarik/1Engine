@@ -51,11 +51,11 @@ namespace M04
 		void		SetMode ( const Mode n_usemode );
 		//		SetSnapping
 		// When snapping is enabled, sets the divs that the DragHandle snaps to
-		void		SetSnapping ( const Vector3d& n_snappingdivs );
+		void		SetSnapping ( const Vector3f& n_snappingdivs );
 
 		//		SetRenderPosition
 		// Sets the position that being rendered at
-		void		SetRenderPosition ( const Vector3d& n_newPosition );
+		void		SetRenderPosition ( const Vector3f& n_newPosition );
 
 		//		HasFocus
 		// Is this UI element in focus or currently working?
@@ -63,7 +63,7 @@ namespace M04
 
 		//		GetGizmoPosition
 		// Returns the position the handle is now being rendered at
-		Vector3d	GetGizmoPosition ( void );
+		Vector3f	GetGizmoPosition ( void );
 
 	protected:
 
@@ -78,21 +78,21 @@ namespace M04
 		DrawStyle	m_style;
 		Mode		m_mode;
 
-		Vector3d	m_position_start;
-		Vector3d	m_position;
-		Vector3d	m_position_snap;
+		Vector3f	m_position_start;
+		Vector3f	m_position;
+		Vector3f	m_position_snap;
 
-		Vector3d	m_rotation_start;
-		Vector3d	m_rotation;
-		Vector3d	m_rotation_snap;
+		Vector3f	m_rotation_start;
+		Vector3f	m_rotation;
+		Vector3f	m_rotation_snap;
 
-		Vector3d	m_scaling_start;
-		Vector3d	m_scaling;
-		Vector3d	m_scaling_snap;
+		Vector3f	m_scaling_start;
+		Vector3f	m_scaling;
+		Vector3f	m_scaling_snap;
 
 		bool		m_dragging;
-		Vector3d	m_drag_start;
-		Vector3d	m_drag_end;
+		Vector3f	m_drag_start;
+		Vector3f	m_drag_end;
 
 		Axis		m_drag_axis;
 		Axis		m_drag_axis_hover;

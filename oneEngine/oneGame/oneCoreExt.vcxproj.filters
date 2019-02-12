@@ -64,6 +64,18 @@
     <Filter Include="SOURCE\Core-ext\System\Shell">
       <UniqueIdentifier>{32f2eed7-aaae-4748-8305-baf6de4cc4b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Core\Gfx">
+      <UniqueIdentifier>{47d9e154-6946-47fd-9169-48ea48c7f1e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Gfx">
+      <UniqueIdentifier>{271f1c1b-ca67-4573-ae4d-6a6ce9d60161}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\System\IO\Assets\TexLoader">
+      <UniqueIdentifier>{6f5969ed-bb74-43f7-af84-6d3b2b8e028d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Resources">
+      <UniqueIdentifier>{55b2ccba-8172-44c2-9858-0ccc8db7aef6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\settings\CGameSettings.cpp">
@@ -158,6 +170,27 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\system\io\osf.cpp">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\assets\Conversion.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\resources\ResourceManager.cpp">
+      <Filter>SOURCE\Core-ext\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\resources\IArResource.cpp">
+      <Filter>SOURCE\Core-ext\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\resources\IArResourceSubsystem.cpp">
+      <Filter>SOURCE\Core-ext\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\shell\Message.cpp">
+      <Filter>SOURCE\Core-ext\System\Shell</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Reader.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Writer.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +292,39 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\io\osf.h">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\Conversion.h">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\bmp.hpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\bpd.hpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\jpg.hpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\png.hpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\tga.hpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\TextureIO.h">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\resources\ResourceManager.h">
+      <Filter>SOURCE\Core-ext\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\resources\IArResource.h">
+      <Filter>SOURCE\Core-ext\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\resources\IArResourceSubsystem.h">
+      <Filter>SOURCE\Core-ext\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\shell\Message.h">
+      <Filter>SOURCE\Core-ext\System\Shell</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

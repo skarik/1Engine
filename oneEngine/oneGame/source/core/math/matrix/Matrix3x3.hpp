@@ -29,7 +29,7 @@ FORCE_INLINE void Matrix3x3::setScale ( const Real x, const Real y, const Real z
 	pData[8] = z;
 }
 // Settin the scaling via Vector3D
-FORCE_INLINE void Matrix3x3::setScale ( const Vector3d& vect )
+FORCE_INLINE void Matrix3x3::setScale ( const Vector3f& vect )
 {
 	pData[0] = vect.x;
 	pData[4] = vect.y;
@@ -92,7 +92,7 @@ FORCE_INLINE void Matrix3x3::setRotationZYX ( const Real angle_x, const Real ang
 
 
 // Setting the rotation of a 3d matrix via 3d vector
-FORCE_INLINE void Matrix3x3::setRotation ( const Vector3d& vect )
+FORCE_INLINE void Matrix3x3::setRotation ( const Vector3f& vect )
 {
 	return setRotation( vect.x, vect.y, vect.z );
 }
@@ -138,10 +138,10 @@ FORCE_INLINE void Matrix3x3::setRotation ( const Matrix3x3& nMatx )
 }
 
 // Getters - Rotation
-FORCE_INLINE Vector3d Matrix3x3::getEulerAngles ( void ) const
+FORCE_INLINE Vector3f Matrix3x3::getEulerAngles ( void ) const
 {
 	float tr_x, tr_y, D,C;
-	Vector3d angle;
+	Vector3f angle;
 
 	//angle.y = D =  asin( min<Real>(max<Real>(pData[2],-1.0f),1.0f) );        /* Calculate Y-axis angle */
  //   C           =  cos( angle.y );
@@ -239,15 +239,15 @@ FORCE_INLINE Quaternion Matrix3x3::getQuaternion ( void ) const
 }
 
 // Getters - Scale
-FORCE_INLINE Vector3d Matrix3x3::getScaling ( void ) const
+FORCE_INLINE Vector3f Matrix3x3::getScaling ( void ) const
 {
-	Vector3d result;
-	/*result.x = Vector3d( pData[0],pData[1],pData[2] ).magnitude();
-	result.y = Vector3d( pData[4],pData[5],pData[6] ).magnitude();
-	result.z = Vector3d( pData[8],pData[9],pData[10] ).magnitude();*/
-	result.x = Vector3d( pData[0],pData[3],pData[6] ).magnitude();
-	result.y = Vector3d( pData[1],pData[4],pData[7] ).magnitude();
-	result.z = Vector3d( pData[2],pData[5],pData[8] ).magnitude();
+	Vector3f result;
+	/*result.x = Vector3f( pData[0],pData[1],pData[2] ).magnitude();
+	result.y = Vector3f( pData[4],pData[5],pData[6] ).magnitude();
+	result.z = Vector3f( pData[8],pData[9],pData[10] ).magnitude();*/
+	result.x = Vector3f( pData[0],pData[3],pData[6] ).magnitude();
+	result.y = Vector3f( pData[1],pData[4],pData[7] ).magnitude();
+	result.z = Vector3f( pData[2],pData[5],pData[8] ).magnitude();
 
 	/* check for invalid values */
 	assert( result.x == result.x );
@@ -435,29 +435,29 @@ FORCE_INLINE Matrix3x3 Matrix3x3::operator*=( Matrix3x3 const& right )
 }
 
 // Multiply by a vector
-FORCE_INLINE Vector3d Matrix3x3::operator* ( const Vector3d& vect ) const
+FORCE_INLINE Vector3f Matrix3x3::operator* ( const Vector3f& vect ) const
 {
-	/*return Vector3d(
+	/*return Vector3f(
 		pData[0]*vect.x+pData[1]*vect.y+pData[2]*vect.z+pData[3],
 		pData[4]*vect.x+pData[5]*vect.y+pData[6]*vect.z+pData[7],
 		pData[8]*vect.x+pData[9]*vect.y+pData[10]*vect.z+pData[11]
 		);*/
-	/*return Vector3d(
+	/*return Vector3f(
 		pData[0]*vect.x+pData[4]*vect.y+pData[8]*vect.z+pData[3],
 		pData[1]*vect.x+pData[5]*vect.y+pData[9]*vect.z+pData[7],
 		pData[2]*vect.x+pData[6]*vect.y+pData[10]*vect.z+pData[11]
 		);*/
-	/*return Vector3d(
+	/*return Vector3f(
 		pData[0]*vect.x+pData[3]*vect.y+pData[6]*vect.z,
 		pData[1]*vect.x+pData[4]*vect.y+pData[7]*vect.z,
 		pData[2]*vect.x+pData[5]*vect.y+pData[8]*vect.z
 		);*/
-	return Vector3d(
+	return Vector3f(
 		pData[0]*vect.x+pData[1]*vect.y+pData[2]*vect.z,
 		pData[3]*vect.x+pData[4]*vect.y+pData[5]*vect.z,
 		pData[6]*vect.x+pData[7]*vect.y+pData[8]*vect.z
 		);
-	/*return Vector3d(
+	/*return Vector3f(
 		pData[0]*vect.x+pData[4]*vect.y+pData[8]*vect.z+pData[12],
 		pData[1]*vect.x+pData[5]*vect.y+pData[9]*vect.z+pData[13],
 		pData[2]*vect.x+pData[6]*vect.y+pData[10]*vect.z+pData[14]

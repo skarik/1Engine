@@ -20,7 +20,7 @@ NpcPenni::NpcPenni ( void )
 	: NpcBase()
 {
 	SetupDepthOffset( -1.0F, 0.0F );
-	m_sprite->SpriteGenParams().normal_default = Vector3d(0, 2.0F, 1.0F).normal();
+	m_sprite->SpriteGenParams().normal_default = Vector3f(0, 2.0F, 1.0F).normal();
 	m_sprite->SetSpriteFile("sprites/penni.gal");
 	m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y - 8 );
 
@@ -43,7 +43,7 @@ void NpcPenni::Update ( void )
 
 	if ( bod == NULL )
 	{
-		PrShape* box = new PrShapeBox( Vector2d(24, 16) ); 
+		PrShape* box = new PrShapeBox( Vector2f(24, 16) ); 
 
 		prRigidbodyCreateParams params = {0};
 		params.shape = box;
@@ -86,7 +86,7 @@ void NpcPenni::Update ( void )
 
 	input->Update(Time::deltaTime);
 
-	Vector3d motion_input (-input->vDirInput.y, -input->vDirInput.x, 0);
+	Vector3f motion_input (-input->vDirInput.y, -input->vDirInput.x, 0);
 
 	const float acceleration = 512.0F;
 	const float maxSpeed = 128.0F;

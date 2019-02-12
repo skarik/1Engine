@@ -247,7 +247,7 @@ struct btMatrixX
 	
 	
 	
-	void copyLowerToUpperTriangle()
+	void copyLowerGetUpperTriangle()
 	{
 		int count=0;
 		for (int row=0;row<rows();row++)
@@ -259,7 +259,7 @@ struct btMatrixX
 				
 			}
 		}
-		//printf("copyLowerToUpperTriangle copied %d elements out of %dx%d=%d\n", count,rows(),cols(),cols()*rows());
+		//printf("copyLowerGetUpperTriangle copied %d elements out of %dx%d=%d\n", count,rows(),cols(),cols()*rows());
 	}
 	
 	const T& operator() (int row,int col) const

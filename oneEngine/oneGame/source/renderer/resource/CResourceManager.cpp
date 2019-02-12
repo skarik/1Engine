@@ -1,4 +1,4 @@
-﻿
+﻿#if 0
 #include "CResourceManager.h"
 
 #include "core/debug/CDebugConsole.h"
@@ -6,15 +6,15 @@
 #include "core-ext/system/io/FileUtils.h"
 #include "core-ext/system/io/Resources.h"
 
-#include "renderer/logic/model/CModel.h"
-#include "renderer/texture/CTexture.h"
-#include "renderer/texture/CRenderTexture.h"
+#include "renderer/logic/model/RrCModel.h"
+#include "renderer/texture/RrTexture.h"
+#include "renderer/texture/RrRenderTexture.h"
 #include "renderer/material/RrMaterial.h"
 #include "renderer/material/RrShader.h"
 
-#include "renderer/texture/TextureLoader.h"
+#include "renderer/texture/TextureIO.h"
 #include "core/math/Math.h"
-#include "renderer/texture/CTextureMaster.h"
+#include "renderer/texture/RrTextureMaster.h"
 
 #include "renderer/system/glMainSystem.h"
 
@@ -95,7 +95,7 @@ void CResourceManager::RenderUpdate ( void )
 		if ( resource->m_needStream && resource->m_resourceType == resourceInfo_t::RESOURCE_TEXTURE )
 		{
 			// Stream the resource
-			CTexture* streamTarget = (CTexture*)resource->m_resource;
+			RrTexture* streamTarget = (RrTexture*)resource->m_resource;
 
 			// Begin a thread
 			switch ( resource->m_streamState )
@@ -492,7 +492,7 @@ void CResourceManager::StreamUpdate_Texture ( const char* n_targetFile )
 	mStreamFlag = true;
 }
 
-void CResourceManager::AddResource ( CTexture* n_texture )
+void CResourceManager::AddResource ( RrTexture* n_texture )
 {
 	for ( auto resource = mResourceList.begin(); resource != mResourceList.end(); resource++ )
 	{
@@ -520,7 +520,7 @@ void CResourceManager::AddResource ( CTexture* n_texture )
 	mResourceList.push_back( newTexture );
 }
 
-void CResourceManager::RemoveResource ( CTexture* n_texture )
+void CResourceManager::RemoveResource ( RrTexture* n_texture )
 {
 	for ( auto resource = mResourceList.begin(); resource != mResourceList.end(); resource++ )
 	{
@@ -541,7 +541,7 @@ void CResourceManager::RemoveResource ( CTexture* n_texture )
 }
 
 // Force load resources
-void CResourceManager::ForceLoadResource ( CTexture* n_texture )
+void CResourceManager::ForceLoadResource ( RrTexture* n_texture )
 {
 	GL_ACCESS;
 
@@ -572,7 +572,7 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 			resource->m_streamState = S_DONE;
 
 			// Stream the resource
-			CTexture* streamTarget = (CTexture*)resource->m_resource;
+			RrTexture* streamTarget = (RrTexture*)resource->m_resource;
 
 			// Get the BPD filename
 			string t_bpdFilename = n_texture->sFilename;
@@ -733,7 +733,7 @@ void CResourceManager::ForceLoadResource ( CTexture* n_texture )
 
 
 // Finish load resource
-void CResourceManager::FinishAddResource ( CTexture* n_texture )
+void CResourceManager::FinishAddResource ( RrTexture* n_texture )
 {
 	GL_ACCESS
 	/*for ( auto resource = mResourceList.begin(); resource != mResourceList.end(); resource++ )
@@ -820,8 +820,8 @@ void CResourceManager::FinishAddResource ( CTexture* n_texture )
 
 namespace renderer
 {
-	std::map<arstring128, CTexture*> Resources::textureMap;
-	CTexture*	Resources::GetTexture ( const char* identifier )
+	std::map<arstring128, RrTexture*> Resources::textureMap;
+	RrTexture*	Resources::GetTexture ( const char* identifier )
 	{
 		auto id = arstring128(identifier);
 		auto find_result = textureMap.find( id );
@@ -834,14 +834,14 @@ namespace renderer
 			return find_result->second;
 		}
 	}
-	void		Resources::AddTexture ( const char* identifier, CTexture* texture )
+	void		Resources::AddTexture ( const char* identifier, RrTexture* texture )
 	{
 		auto id = arstring128(identifier);
 		auto find_result = textureMap.find( id );
 		if ( find_result == textureMap.end() )
 		{
 			textureMap[id] = texture;
-			if ( texture != (CTexture*)0xF33D )
+			if ( texture != (RrTexture*)0xF33D )
 				texture->AddReference();
 		}
 		else
@@ -850,3 +850,4 @@ namespace renderer
 		}
 	}
 }
+#endif

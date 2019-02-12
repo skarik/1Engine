@@ -156,9 +156,6 @@
     <ClInclude Include="source\engine-common\dusk\CDuskGUI.h">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
     </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\CDuskGUIHandle.h">
-      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
-    </ClInclude>
     <ClInclude Include="source\engine-common\dusk\dialogues\DGUI_DialogueFileSelector.h">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogues</Filter>
     </ClInclude>
@@ -185,9 +182,6 @@
     </ClInclude>
     <ClInclude Include="source\engine-common\physics\wind\MinimalWindTester.h">
       <Filter>SOURCE\Engine-Common\Physics\Wind</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIButton.h">
-      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUICheckbox.h">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
@@ -216,13 +210,7 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_RO.h">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIElement.h">
-      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
-    </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.h">
-      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUILabel.h">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIListview.h">
@@ -232,9 +220,6 @@
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIMaterialPicker.h">
-      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIPanel.h">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIParagraph.h">
@@ -360,6 +345,30 @@
     <ClInclude Include="source\engine-common\cutscene\NodeStart.h">
       <Filter>SOURCE\Engine-Common\Cutscene</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\Dusk.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\Element.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\Handle.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\UI.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\UIRenderer.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\Button.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\Panel.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\Label.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -413,9 +422,6 @@
     <ClCompile Include="source\engine-common\dusk\CDuskGUI.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
     </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\CDuskGUIHandle.cpp">
-      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
-    </ClCompile>
     <ClCompile Include="source\engine-common\dusk\CDuskGUI_Drawer.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
     </ClCompile>
@@ -433,9 +439,6 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\utils\CDeveloperConsoleUI.cpp">
       <Filter>SOURCE\Engine-Common\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIButton.cpp">
-      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUICheckbox.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
@@ -458,22 +461,13 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIDropdownList_GO.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIElement.cpp">
-      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
-    </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.cpp">
-      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUILabel.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIListview.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIMaterialField.cpp">
-      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIPanel.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIParagraph.cpp">
@@ -562,6 +556,30 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\cutscene\NodeChoicebox.cpp">
       <Filter>SOURCE\Engine-Common\Cutscene</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\UI.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\UIRenderer.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\Handle.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\Element.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\Button.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\Panel.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\UIRendererContext.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\Label.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

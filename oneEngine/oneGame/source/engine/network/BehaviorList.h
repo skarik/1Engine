@@ -96,7 +96,7 @@ namespace engine
 	class MetadataPData : public Metadata
 	{
 	public:
-		MetadataPData ( void* _source, size_t _size ) : source_size(_size), source(_source) {;}
+		MetadataPData ( void* _source, size_t _size ) : source_size((uint32_t)_size), source(_source) {;}
 		uint32_t		source_size;
 		void*			source;
 	};

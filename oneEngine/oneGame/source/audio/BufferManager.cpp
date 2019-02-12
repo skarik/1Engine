@@ -1,4 +1,4 @@
-#include "core/utils/StringUtils.h"
+#include "core/utils/string.h"
 #include "core/debug/console.h"
 
 #include "AudioMaster.h"
@@ -30,7 +30,8 @@ audio::Buffer* audio::BufferManager::GetSound ( const char* filename, const int 
 
 		// So create a new reference
 		//  (choose between streamed and buffered based on extension)
-		string sFileExtension = StringUtils::ToLower( StringUtils::GetFileExtension( filename ) );
+		string sFileRezname = filename;
+		string sFileExtension = core::utils::string::GetLower( core::utils::string::GetFileExtension( sFileRezname ) );
 		if ( sFileExtension == "ogg" || sFileExtension == "mp3" || sFileExtension == "mp2" )
 		{	
 			// TODO: Get the sound's length. If it's small enough, we may not need to stream it.

@@ -1,7 +1,7 @@
 #ifndef ENGCOM_CUTSCENE_EDITOR_NODE_H_
 #define ENGCOM_CUTSCENE_EDITOR_NODE_H_
 
-#include "core/math/Vector2d.h"
+#include "core/math/Vector2.h"
 #include "engine-common/cutscene/Node.h"
 
 namespace common
@@ -14,7 +14,7 @@ namespace common
 		{
 		public:
 			common::cts::Node*	node;
-			Vector2d			position;
+			Vector2f			position;
 		};
 	}
 }

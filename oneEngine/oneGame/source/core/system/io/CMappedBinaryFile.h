@@ -18,6 +18,9 @@ class CMappedBinaryFile
 public:
 	explicit	CMappedBinaryFile ( const char* n_filename );
 				~CMappedBinaryFile ( void );
+
+	// Returns if the file is ready to be worked on.
+	bool		GetReady ( void );
 				
 	// Write changes to the disk
 	void		SyncToDisk ( void );
@@ -35,6 +38,12 @@ public:
 
 	// Returns a stream for manual I/O. May return NULL if manual I/O is not supported.
 	FILE*		GetStream ( void );
+
+	// Returns current size of the mapped buffer. May not be 100% correct.
+	long		GetSize ( void );
+
+	// Returns the current virtual memory cursor.
+	long		GetCursor ( void );
 
 
 private:

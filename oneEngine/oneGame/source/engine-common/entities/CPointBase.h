@@ -2,7 +2,7 @@
 #ifndef _C_POINT_BASE_H_
 #define _C_POINT_BASE_H_
 
-#include "core/math/Vector3d.h"
+#include "core/math/Vector3.h"
 #include "engine/behavior/CGameBehavior.h"
 
 class CPointBase : public CGameBehavior
@@ -21,7 +21,7 @@ public:
 	}
 
 public:
-	Vector3d	m_position;
+	Vector3f	m_position;
 };
 
 

@@ -4,6 +4,7 @@
 #include "core/types/types.h"
 #include "core/types/ModelData.h"
 #include "renderer/types/renderModes.h"
+#include "renderer/types/shaders/vattribs.h"
 
 class IrrMeshBuilder
 {
@@ -22,13 +23,21 @@ public:
 	RENDER_API virtual		~IrrMeshBuilder ( void );
 
 	//	getModelData () : Returns the current model data.
-	// The sizes in the model data are filled
+	// The sizes in the model data are filled with the correct sizes.
+	// The model data itself still belongs to the mesh builder, so should not be freed by the user.
 	RENDER_API arModelData	getModelData ( void ) const;
+	//	getModelDataVertexCount () : Returns the current vertex count.
+	// This is the value that would fill in for the vertex count in getModelData().
+	// The vertex count can be useful for patching in data that is not written by the builder.
+	RENDER_API uint16_t		getModelDataVertexCount ( void ) const;
 
 	//	getPrimitiveMode () : returns the primitive mode this mesh builder would like to render in.
 	// Must be implemented by child classes.
 	RENDER_API virtual renderer::rrPrimitiveMode
 							getPrimitiveMode ( void ) const = 0;
+
+	//	enableAttribute ( attrib ) : Enables storage for the given attribute
+	RENDER_API void			enableAttribute( renderer::shader::VBufferSlot attrib );
 
 protected:
 	//	expand ( new vertex count ) : Ensure storage is large enough to hold the count
@@ -38,22 +47,25 @@ protected:
 	//	reallocateWild ( new size ) : Expands vertex storage in a conservative way
 	RENDER_API void			reallocateConservative ( uint16_t targetSize );
 
-	//	expandTri ( new triangle count ) : Ensure storage is large enough to hold the count
-	RENDER_API void			expandTri ( const uint16_t triangleCount );
-	//	reallocateTriGreedy ( new size ) : Expands triangle storage in a greedy way
-	RENDER_API void			reallocateTriGreedy ( uint16_t targetSize );
-	//	reallocateTriWild ( new size ) : Expands triangle storage in a conservative way
-	RENDER_API void			reallocateTriConservative ( uint16_t targetSize );
+	//	expandIndices ( new triangle count ) : Ensure storage is large enough to hold the count
+	RENDER_API void			expandIndices ( const uint16_t indiciesCount );
+	//	reallocateIndicesGreedy ( new size ) : Expands triangle storage in a greedy way
+	RENDER_API void			reallocateIndicesGreedy ( uint16_t targetSize );
+	//	reallocateIndicesConservative ( new size ) : Expands triangle storage in a conservative way
+	RENDER_API void			reallocateIndicesConservative ( uint16_t targetSize );
 
 protected:
 	// Current vertex count of the model.
 	uint16_t		m_vertexCount;
-	// Current triangle count of the model.
-	uint16_t		m_triangleCount;
+	// Current index count of the model.
+	uint16_t		m_indexCount;
 	// Pointer to the model structure and the array sizes.
 	arModelData*	m_model;
 	// Did the model come from outside or from the internal model pool?
 	bool			m_model_isFromPool;
+
+	// Enabled attributes:
+	bool			m_enabledAttribs [renderer::shader::kVBufferSlotMaxCount];
 };
 
 #endif//RENDERER_UTILS_I_RR_MESH_BUILDER_H_

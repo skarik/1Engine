@@ -1,17 +1,16 @@
-
-#ifndef _RENDERER_CONSOLE_H_
-#define _RENDERER_CONSOLE_H_
-
 //===============================================================================================//
-// Renderer-console-console
+//
+// Renderer-console
 // 
 // renderer functionality specific to the console
 // Since the renderer cannot see the console (console is in engine) these are added to the console
 // within engine-common.cpp upon EngineCommonInitialize().
+//
 //===============================================================================================//
+#ifndef RENDERER_CONSOLE_H_
+#define RENDERER_CONSOLE_H_
 
 #include <string>
-
 #include "core/types/types.h"
 
 namespace renderer
@@ -20,4 +19,4 @@ namespace renderer
 	RENDER_API int con_recompile_shaders ( std::string const& cmd );
 };
 
-#endif//_RENDERER_CONSOLE_H_
+#endif//RENDERER_CONSOLE_H_

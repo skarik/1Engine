@@ -1,5 +1,5 @@
 #include "LightPoint.h"
-#include "renderer/light/CLight.h"
+#include "renderer/light/RrLight.h"
 
 using namespace M04;
 
@@ -20,7 +20,7 @@ void LightPoint::Update ( void )
 {
 	if (m_light == NULL)
 	{
-		m_light = new CLight();
+		m_light = new RrLight();
 		m_light->diffuseColor = color;
 		m_light->hdrColor = color;
 		m_light->range = range;

@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <algorithm>
 
-//static arModelData l_modelDataTemp = {};
 struct rrModelDataEntry
 {
 	arModelData data;
@@ -15,7 +14,8 @@ static rrModelDataEntry l_modelDatas [4] = {};
 // Pulls a model from the the pool that has at least the estimated input size.
 // If the estimation is incorrect, the data will be resized.
 IrrMeshBuilder::IrrMeshBuilder ( const uint16_t estimatedVertexCount )
-	: m_vertexCount(0), m_triangleCount(0), m_model(NULL), m_model_isFromPool(true)
+	: m_vertexCount(0), m_indexCount(0), m_model(NULL), m_model_isFromPool(true),
+	m_enabledAttribs()
 {
 	// Loop through the pool to find an unused model.
 
@@ -31,15 +31,19 @@ IrrMeshBuilder::IrrMeshBuilder ( const uint16_t estimatedVertexCount )
 	m_model_isFromPool = true;
 
 	expand(estimatedVertexCount);
-	expandTri(estimatedVertexCount / 2);
+	expandIndices((estimatedVertexCount * 3) / 2);
+
+	enableAttribute(renderer::shader::kVBufferSlotPosition);
 }
 //	Constructor (existing data)
 // Sets up model, using the input data.
 // As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
 IrrMeshBuilder::IrrMeshBuilder ( arModelData* preallocatedModelData )
-	: m_vertexCount(0), m_triangleCount(0), m_model(preallocatedModelData), m_model_isFromPool(false)
+	: m_vertexCount(0), m_indexCount(0), m_model(preallocatedModelData), m_model_isFromPool(false),
+	m_enabledAttribs()
 {
 	; // Nothing needed to be done here. :)
+	enableAttribute(renderer::shader::kVBufferSlotPosition);
 }
 
 //	Destructor ()
@@ -66,8 +70,21 @@ arModelData IrrMeshBuilder::getModelData ( void ) const
 {
 	arModelData newData = *m_model;
 	newData.vertexNum = m_vertexCount;
-	newData.triangleNum = m_triangleCount;
+	newData.indexNum  = m_indexCount;
 	return newData;
+}
+
+//	getModelDataVertexCount () : Returns the current vertex count.
+// This is the value that would fill in for the vertex count in getModelData().
+uint16_t IrrMeshBuilder::getModelDataVertexCount ( void ) const
+{
+	return m_vertexCount;
+}
+
+//	enableAttribute ( attrib ) : Enables storage for the given attribute
+void IrrMeshBuilder::enableAttribute( renderer::shader::VBufferSlot attrib )
+{
+	m_enabledAttribs[attrib];
 }
 
 //	expand ( new vertex count ) : Ensure storage is large enough to hold the count
@@ -84,11 +101,19 @@ void IrrMeshBuilder::expand ( const uint16_t vertexCount )
 	}
 }
 
+template <typename T>
+FORCE_INLINE static T* reallocate ( T* old_data, const size_t old_count, const size_t new_count )
+{
+	T* new_data = new T [new_count];
+	memcpy(new_data, old_data, old_count * sizeof(T));
+	delete[] old_data;
+	return new_data;
+}
+
 //	reallocateGreedy ( new size ) : Expands vertex storage in a greedy way
 void IrrMeshBuilder::reallocateGreedy ( uint16_t targetSize )
 {
 	uint16_t old_count = m_model->vertexNum;
-	arModelVertex* old_vertices = m_model->vertices;
 
 	// Increase the size by 150%.
 	while (m_model->vertexNum < targetSize)
@@ -96,16 +121,34 @@ void IrrMeshBuilder::reallocateGreedy ( uint16_t targetSize )
 		m_model->vertexNum = (uint16_t)std::min<Real>(m_model->vertexNum * 1.5F + 1.0F, 65535.0F);
 	}
 
-	m_model->vertices = new arModelVertex[m_model->vertexNum];
-	memcpy(m_model->vertices, old_vertices, old_count * sizeof(arModelVertex));
-	delete[] old_vertices;
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotPosition])
+		m_model->position = reallocate(m_model->position, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotUV0])
+		m_model->texcoord0 = reallocate(m_model->texcoord0, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotColor])
+		m_model->color = reallocate(m_model->color, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotNormal])
+		m_model->normal = reallocate(m_model->normal, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotTangent])
+		m_model->tangent = reallocate(m_model->tangent, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotBinormal])
+		m_model->binormal = reallocate(m_model->binormal, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotUV1])
+		m_model->texcoord1 = reallocate(m_model->texcoord1, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotBoneWeight])
+		m_model->weight = reallocate(m_model->weight, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotBoneIndices])
+		m_model->bone = reallocate(m_model->bone, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotMaxPosition + 0])
+		m_model->texcoord2 = reallocate(m_model->texcoord2, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotMaxPosition + 1])
+		m_model->texcoord3 = reallocate(m_model->texcoord3, old_count, m_model->vertexNum);
 }
 
 //	reallocateWild ( new size ) : Expands vertex storage in a conservative way
 void IrrMeshBuilder::reallocateConservative ( uint16_t targetSize )
 {
 	uint16_t old_count = m_model->vertexNum;
-	arModelVertex* old_vertices = m_model->vertices;
 	
 	// Increase the size to just above the target.
 	while (m_model->vertexNum < targetSize)
@@ -113,56 +156,76 @@ void IrrMeshBuilder::reallocateConservative ( uint16_t targetSize )
 		m_model->vertexNum = targetSize + m_model->vertexNum / 1024 + 1;
 	}
 	
-	m_model->vertices = new arModelVertex[m_model->vertexNum];
-	memcpy(m_model->vertices, old_vertices, old_count * sizeof(arModelVertex));
-	delete[] old_vertices;
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotPosition])
+		m_model->position = reallocate(m_model->position, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotUV0])
+		m_model->texcoord0 = reallocate(m_model->texcoord0, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotColor])
+		m_model->color = reallocate(m_model->color, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotNormal])
+		m_model->normal = reallocate(m_model->normal, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotTangent])
+		m_model->tangent = reallocate(m_model->tangent, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotBinormal])
+		m_model->binormal = reallocate(m_model->binormal, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotUV1])
+		m_model->texcoord1 = reallocate(m_model->texcoord1, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotBoneWeight])
+		m_model->weight = reallocate(m_model->weight, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotBoneIndices])
+		m_model->bone = reallocate(m_model->bone, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotMaxPosition + 0])
+		m_model->texcoord2 = reallocate(m_model->texcoord2, old_count, m_model->vertexNum);
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotMaxPosition + 1])
+		m_model->texcoord3 = reallocate(m_model->texcoord3, old_count, m_model->vertexNum);
+
 }
 
 
 //	expandTri ( new vertex count ) : Ensure storage is large enough to hold the count of triangles
-void IrrMeshBuilder::expandTri ( const uint16_t triangleCount )
+void IrrMeshBuilder::expandIndices ( const uint16_t indiciesCount )
 {
-	if (m_model->triangleNum < triangleCount)
+	if (m_model->indexNum < indiciesCount)
 	{
 		if (m_model_isFromPool) {
-			reallocateTriGreedy(triangleCount);
+			reallocateIndicesGreedy(indiciesCount);
 		}
 		else {
-			reallocateTriConservative(triangleCount);
+			reallocateIndicesConservative(indiciesCount);
 		}
 	}
 }
 
 //	reallocateTriGreedy ( new size ) : Expands triangle storage in a greedy way
-void IrrMeshBuilder::reallocateTriGreedy ( uint16_t targetSize )
+void IrrMeshBuilder::reallocateIndicesGreedy ( uint16_t targetSize )
 {
-	uint16_t old_count = m_model->triangleNum;
-	arModelTriangle* old_triangles = m_model->triangles;
+	uint16_t old_count = m_model->indexNum;
+	uint16_t* old_indices = m_model->indices;
 
 	// Increase the size by 150%.
-	while (m_model->triangleNum < targetSize)
+	while (m_model->indexNum < targetSize)
 	{
-		m_model->triangleNum = (uint16_t)std::min<Real>(m_model->triangleNum * 1.5F + 1.0F, 65535.0F);
+		m_model->indexNum = (uint16_t)std::min<Real>(m_model->indexNum * 1.5F + 1.0F, 65535.0F);
 	}
 
-	m_model->triangles = new arModelTriangle[m_model->triangleNum];
-	memcpy(m_model->triangles, old_triangles, old_count * sizeof(arModelTriangle));
-	delete[] old_triangles;
+	m_model->indices = new uint16_t[m_model->indexNum];
+	memcpy(m_model->indices, old_indices, sizeof(uint16_t) * old_count);
+	delete[] old_indices;
 }
 
 //	reallocateTriWild ( new size ) : Expands triangle storage in a conservative way
-void IrrMeshBuilder::reallocateTriConservative ( uint16_t targetSize )
+void IrrMeshBuilder::reallocateIndicesConservative ( uint16_t targetSize )
 {
-	uint16_t old_count = m_model->triangleNum;
-	arModelTriangle* old_triangles = m_model->triangles;
+	uint16_t old_count = m_model->indexNum;
+	uint16_t* old_indices = m_model->indices;
 
 	// Increase the size to just above the target.
-	while (m_model->triangleNum < targetSize)
+	while (m_model->indexNum < targetSize)
 	{
-		m_model->triangleNum = targetSize + m_model->triangleNum / 1024 + 1;
+		m_model->indexNum = targetSize + m_model->indexNum / 1024 + 1;
 	}
 
-	m_model->triangles = new arModelTriangle[m_model->triangleNum];
-	memcpy(m_model->triangles, old_triangles, old_count * sizeof(arModelTriangle));
-	delete[] old_triangles;
+	m_model->indices = new uint16_t[m_model->indexNum];
+	memcpy(m_model->indices, old_indices, sizeof(uint16_t) * old_count);
+	delete[] old_indices;
 }

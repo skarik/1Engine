@@ -3,7 +3,7 @@
 #include "core/math/Math.h"
 #include "core/math/Easing.h"
 #include "core-ext/input/CInputControl.h"
-#include "renderer/light/CLight.h"
+#include "renderer/light/RrLight.h"
 #include "render2d/camera/COrthoCamera.h"
 #include "render2d/object/sprite/CEditableRenderable2D.h"
 
@@ -32,7 +32,7 @@ PlayerPlatformerBase::PlayerPlatformerBase ( void )
 		COrthoCamera* cam = new COrthoCamera();
 		// Set camera options
 		cam->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
-		cam->viewport_target.size = Vector2d( 1280,720 ) * 0.5f;
+		cam->viewport_target.size = Vector2f( 1280,720 ) * 0.5f;
 		cam->render_scale = 0.5F;
 
 		// Create camera controller:
@@ -44,7 +44,7 @@ PlayerPlatformerBase::PlayerPlatformerBase ( void )
 
 	// Set up the sprite
 	{
-		flipstate = Vector3d(1,1,1);
+		flipstate = Vector3f(1,1,1);
 	}
 }
 

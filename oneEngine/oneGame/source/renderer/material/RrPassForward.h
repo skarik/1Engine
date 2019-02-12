@@ -9,7 +9,7 @@
 #include "core/types/types.h"
 #include "renderer/types/ObjectSettings.h"
 
-class RrShader;
+class RrShaderProgram;
 
 //=========================================//
 // RrPassForward - entire storage class exported
@@ -56,7 +56,7 @@ public:
 	// Pass masking information
 	uint32_t	m_hint;
 
-	RrShader*	shader;
+	RrShaderProgram*	m_program;
 };
 
 #endif//_GL_PASS_H_

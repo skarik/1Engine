@@ -58,8 +58,8 @@ public:
 	};
 
 public:
-	Vector3d	vDirInput;
-	Vector3d	vMouseInput;
+	Vector3f	vDirInput;
+	Vector3f	vMouseInput;
 
 	typedef union
 	{

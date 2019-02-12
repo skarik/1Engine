@@ -26,7 +26,7 @@ public:
 	Serializer&	operator&	( uint64_t & ) override;
 	Serializer&	operator&	( std::string & ) override;
 
-	Serializer&	operator&	( Vector3d & ) override;
+	Serializer&	operator&	( Vector3f & ) override;
 	Serializer&	operator&	( Quaternion & ) override;
 	Serializer&	operator&	( Rotator & ) override;
 	Serializer&	operator&	( Color & ) override;
