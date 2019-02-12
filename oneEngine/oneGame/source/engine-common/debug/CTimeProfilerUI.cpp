@@ -1,45 +1,44 @@
-
 #include "CTimeProfilerUI.h"
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/material/RrMaterial.h"
+#include "renderer/material/RrPass.h"
+#include "renderer/material/RrShaderProgram.h"
 #include "renderer/texture/RrFontTexture.h"
-#include "renderer/system/glMainSystem.h"
-#include "renderer/system/glDrawing.h"
-#include "renderer/object/immediate/immediate.h"
 
 using namespace debug;
 
 CTimeProfilerUI::CTimeProfilerUI ( void )
 	: CRenderableObject()
 {
-	renderSettings.renderHints = kRenderHintWorld;
-	renderLayer = renderer::kRLV2D;
-
-	fntDebug	= new RrFontTexture ( "YanoneKaffeesatz-R.otf", 12, FW_BOLD );
-	matFntDebug = new RrMaterial;
-	matFntDebug->m_diffuse = Color( 0.2f,0.0f,0.4f );
-	matFntDebug->setTexture( TEX_MAIN, fntDebug );
-	matFntDebug->passinfo.push_back( RrPassForward() );
-	matFntDebug->passinfo[0].m_lighting_mode = renderer::LI_NONE;
-	matFntDebug->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
-	SetMaterial( matFntDebug );
+	fntDebug = RrFontTexture::Load( "YanoneKaffeesatz-R.otf", 12, FW_BOLD );
+	fntDebug->AddReference();
+	RrPass textPass;
+	textPass.m_layer = renderer::kRenderLayerV2D;
+	textPass.m_type = kPassTypeForward;
+	textPass.m_surface.diffuseColor = Color( 0.2F, 0.0F, 0.4F );
+	textPass.setTexture( TEX_MAIN, fntDebug );
+	textPass.utilSetupAs2D();
+	textPass.m_alphaMode = renderer::kAlphaModeTranslucent;
+	textPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+	PassInitWithInput(0, &textPass);
 
 	visible = true;
 }
 
 CTimeProfilerUI::~CTimeProfilerUI ( void )
 {
-	delete fntDebug;
+	//delete fntDebug;
+	fntDebug->RemoveReference();
 	//matFntDebug->removeReference();
 	//delete matFntDebug;
 }
 
-bool CTimeProfilerUI::Render ( const char pass )
+bool CTimeProfilerUI::Render ( const rrRenderParams* params )
 {
-	// this eentire thing needs to be rethought
+	// this eentire thing needs to be rethought, since it was very slow
 	
 	//GL_ACCESS GLd_ACCESS;
 
-	if ( pass != 0 ) 
+	if ( params->pass != 0 ) 
 		return false;
 
 	////GL.beginOrtho();

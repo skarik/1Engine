@@ -1,6 +1,5 @@
-
-#ifndef _C_TIME_PROFILER_UI_H_
-#define _C_TIME_PROFILER_UI_H_
+#ifndef ENGINE_COMMON_TIME_PROFILER_UI_H_
+#define ENGINE_COMMON_TIME_PROFILER_UI_H_
 
 #include "core-ext/profiler/CTimeProfiler.h"
 #include "renderer/object/CRenderableObject.h"
@@ -13,17 +12,14 @@ class CTimeProfilerUI : public CRenderableObject
 {
 	RegisterRenderClassName( "CTimeProfilerUI" );
 public:
-	// Constructor+Destructor
-	CTimeProfilerUI ( void );
-	~CTimeProfilerUI ( void );
+	ENGCOM_API				CTimeProfilerUI ( void );
+	ENGCOM_API				~CTimeProfilerUI ( void );
 
-	// == Stepping Functions ==
-	// Render
-	bool Render ( const char pass );
+	bool					Render ( const rrRenderParams* params ) override;
 
 private:
-	RrMaterial*		matFntDebug;
+	//RrMaterial*		matFntDebug;
 	RrFontTexture*	fntDebug;
 };
 
-#endif
+#endif//ENGINE_COMMON_TIME_PROFILER_UI_H_

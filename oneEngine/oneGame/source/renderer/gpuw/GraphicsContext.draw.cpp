@@ -256,7 +256,7 @@ int gpu::GraphicsContext::clearColor ( float* rgbaColor )
 
 int gpu::GraphicsContext::submit ( void )
 {
-	glFlush();
+	glFlush(); // TODO: Test on all 3 drivers and possibly remove.
 	return 0;
 }
 

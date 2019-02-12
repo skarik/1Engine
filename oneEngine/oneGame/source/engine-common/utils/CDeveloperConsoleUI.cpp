@@ -135,7 +135,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	cursorPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
 	cursorPass.setTexture( TEX_MAIN, texCursor );
 	cursorPass.utilSetupAs2D();
-	cursorPass.m_alphaMode = renderer::kAlphaModeAlphatest;
+	cursorPass.m_alphaMode = renderer::kAlphaModeTranslucent;
 	cursorPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
 	PassInitWithInput(0, &cursorPass);
 

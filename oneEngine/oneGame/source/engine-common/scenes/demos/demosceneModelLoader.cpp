@@ -7,7 +7,7 @@
 #include "engine/utils/CDeveloperConsole.h"
 
 #include "renderer/camera/RrCamera.h"
-#include "renderer/object/shapes/CPrimitiveCube.h"
+#include "renderer/object/shapes/RrShapeCube.h"
 #include "renderer/object/model/Model.h"
 
 #include "engine-common/entities/CPlayer.h"
@@ -40,13 +40,14 @@ void demosceneModelLoader::LoadScene ( void )
 
 	// Create tmep cube
 	{
-		CPrimitiveCube* cube = new CPrimitiveCube(0.5F, 0.5F, 0.5F);
+		RrShapeCube* cube = new RrShapeCube();
+		cube->transform.local.scale = Vector3f(0.5F, 0.5F, 0.5F); // 0.5F across
 		(new CRendererHolder(cube))->RemoveReference();
 	}
 
 	// Create acorn
 	{
-		RrCModel* model = new RrCModel("models/demos/female elf.fbx");
+		RrCModel* model = RrCModel::Load("models/demos/female elf.fbx");
 		model->transform.scale = Vector3f(1,1,1) / 304.8F * 2.7F;
 		model->transform.rotation = Vector3f(0.0F, 0, 135.0F);
 		//model->transform.position = Vector3f(-1.0F, +1.0F, -1.3F);

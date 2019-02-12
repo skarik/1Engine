@@ -36,26 +36,6 @@ namespace gpu
 		kBufferTypeIndex,
 	};
 
-	/*class ConstantBuffer
-	{
-	public:
-		//	valid() : is this buffer valid to be used?
-		// If the buffer has not been created, it will be removed.
-		RENDER_API bool			valid ( void );
-		//	getGlIndex() : returns index of resource in OpenGL
-		RENDER_API gpuHandle	nativePtr ( void );
-
-		//	init( data, data_size, transfer ) : initializes a constant buffer with data
-		RENDER_API int			init ( Device* device, void* data, const  uint64_t data_size, const TransferStyle style );
-		//	upload( data, data_size, transfer ) : initializes and upload a constant buffer with data
-		RENDER_API int			upload ( Device* device, void* data, const  uint64_t data_size, const TransferStyle style );
-		//	free() : destroys any allocated buffer, if existing.
-		RENDER_API int			free ( Device* device = NULL );
-
-	private:
-		unsigned int	m_buffer;
-	};*/
-
 	class Buffer
 	{
 	public:
@@ -116,23 +96,6 @@ namespace gpu
 		//unsigned int	m_dataSize; // Needed in OpenGL for binding buffers with an offset.
 	};
 
-	/*class VertexBuffer
-	{
-	public:
-		RENDER_API int			init ( Device* device, void* data, Format format, const uint64_t element_count );
-		RENDER_API int			free ( Device* device );
-
-		//	nativePtr() : returns native index or pointer to the resource.
-		RENDER_API gpuHandle	nativePtr ( void );
-
-		//	getFormat() : returns underlying format of the data, if applicable.
-		// For constant buffers, regular buffers, and structured buffers, this will always be kFormatUndefined.
-		RENDER_API Format		getFormat ( void );
-
-	private:
-		unsigned int	m_buffer;
-		Format			m_format;
-	};*/
 }
 
 #endif//GPU_WRAPPER_BUFFERS_H_

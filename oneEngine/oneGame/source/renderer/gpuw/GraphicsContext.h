@@ -102,23 +102,34 @@ namespace gpu
 	class GraphicsContext
 	{
 	public:
+		//	reset() : Resets the context state to defaults.
+		// Note that on some API's, this will do nothing.
 		RENDER_API int			reset ( void );
 
+		//	submit() : Submits the current graphics commands in the queue.
 		RENDER_API int			submit ( void );
 
+		//	validate() : Checks to make sure submitted graphics commands are valid.
+		// Returns gpu::kError_SUCCESS on no error.
 		RENDER_API int			validate ( void );
 
-		//	setFillMode( fillMode ) : Set device's fill mode.
-		// Controls how to fill polygons for given device. (glPolygonMode in OpenGL)
-		// NULL device sets for current active device.
+		//	setFillMode( fillMode ) : Set fill mode.
+		// Controls how to fill polygons. (glPolygonMode in OpenGL)
 		RENDER_API int			setFillMode( const FillMode fillMode );
 
 		RENDER_API int			setRasterizerState ( const RasterizerState& state );
+		//	setBlendState( state ) : Sets blend state for a single render target
+		// Undocumented behavior when used with MRT. For MRT, use setBlendCollectiveState.
 		RENDER_API int			setBlendState ( const BlendState& state );
+		//	setBlendCollectiveState( state ) : Sets blend state for all targets in an MRT.
+		// Blend states for unbound MRT slots are ignored by the driver (probably)
 		RENDER_API int			setBlendCollectiveState ( const BlendCollectiveState& state );
 		RENDER_API int			setDepthStencilState ( const DepthStencilState& state );
 
+		//	setViewPort( left, top, right, bottom ) : Sets viewport rect
 		RENDER_API int			setViewport ( uint32_t left, uint32_t top, uint32_t right, uint32_t bottom );
+		//	setScissor( left, top, right, bottom ) : Sets scissor rect
+		// The GPU wrapper assumes scissor test is always on. For simple rendering, it's best to set this to same as viewport.
 		RENDER_API int			setScissor ( uint32_t left, uint32_t top, uint32_t right, uint32_t bottom );
 
 		//	setRenderTarget( renderTarget ) : Sets input render target as the current pixel shader output.
@@ -149,6 +160,7 @@ namespace gpu
 
 		RENDER_API int			clearDepthStencil ( bool clearDepth, float depth, bool clearStencil, uint8_t stencil );
 		RENDER_API int			clearColor ( float* rgbaColor );
+		// TODO: clearDepthStencilMRT and clearColorMRT
 
 		//	signal( fence ) : Inserts a command into the command buffer to signal the given fence.
 		// This can be used to make either the CPU or GPU wait on a command buffer to reach a certain point.
@@ -161,6 +173,8 @@ namespace gpu
 		RENDER_API int			blitResolve ( const BlitTarget& source, const BlitTarget& target );
 
 	private:
+		// implementation details:
+
 		RasterizerState			m_rasterState;
 		BlendCollectiveState	m_blendCollectState;
 		DepthStencilState		m_depthStencilState;

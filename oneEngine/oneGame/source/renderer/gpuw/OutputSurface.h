@@ -27,11 +27,18 @@ namespace gpu
 	class OutputSurface
 	{
 	public:
+		//	create( device, presentMode, width, height ) : Creates output surface.
+		// In various APIs (such as OpenGL), certain present modes may not be available.
 		RENDER_API int			create ( Device* device, PresentMode presentMode, uint32_t width, uint32_t height );
+		//	destroy() : Frees output surface.
 		RENDER_API int			destroy ( void );
+		//	getRenderTarget() : Returns this output surface as a render target, for displaying rendered output
+		// The target may be used as a normal RenderTarget.
 		RENDER_API RenderTarget*
 								getRenderTarget ( void );
 
+		//	present() : Tells the driver to display the current renderable surface.
+		// This call may stall.
 		RENDER_API int			present ( void );
 
 		RENDER_API uint32_t		getWidth ( void );

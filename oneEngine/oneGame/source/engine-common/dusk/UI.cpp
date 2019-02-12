@@ -34,7 +34,7 @@ dusk::Element* dusk::UserInterface::AddInitialize ( Element* element, const Elem
 	}
 
 	// Update index
-	element->m_index = m_elements.size();
+	element->m_index = (uint32_t)m_elements.size();
 
 	return element;
 }

@@ -59,7 +59,7 @@ namespace gpu
 		// Input assembler outputs
 		PrimitiveTopology	ia_topology;
 		bool				ia_primitiveRestartEnable;
-		// Pixel shader outputs
+		// Pixel shader outputs (TODO, for MRT)
 	};
 
 	// defines a state of shaders, vertex formats to bind to shader inputs, etc.
