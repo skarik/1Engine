@@ -54,8 +54,8 @@ Large game projects are mostly the same, but instead are prefixed by the game in
     * ``.res-0`` base game resources
     * ``.res+N`` where N is any integer, nondestructive file replacement support
     * ``addons`` plugin support folder
-* ``/oneEngine-render-vk`` vulkan 1 api wrapper. doesnt work yet
-* ``/oneEngine-render-11`` directX 11 api wrapper. doesnt exist yet
+* ``/oneEngine-render-vk`` vulkan 1 api wrapper. not working yet
+* ``/oneEngine-render-11`` directX 11 api wrapper. not working yet (glsl-to-hlsl issues)
 
 ## Repos
 
