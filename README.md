@@ -1,11 +1,11 @@
 1Engine: primary repo
 =====================
 
-EHS internal engine. This the **primary repo** with all code that is able to be legally public.
+1Engine is a simple single-thread engine meant for extremely simple 2D games and overly complicated 3D games. Cross-platform support is planned.
+
+The original EHS engine, now mostly passion project. This the **primary repo** with all code that is able to be legally public.
 
 **For those with low bandwidth: this will use more than 200 MB of bandwidth to download. This will eventually change as ancient 3rd party binaries are removed from the history.**
-
-1Engine is a simple single-thread engine meant for extremely simple 2D games and overly complicated 3D games. Cross-platform support is planned.
 
 ## Prerequisites
 
@@ -13,6 +13,7 @@ For Windows, the following are required:
 * Visual Studio 2015 or later.
 * Some version of the DirectX SDK (used for Xbox controller support).
 * Relevant SDK for the rendering API being used (except OpenGL, that just magically works).
+* Python 3 (used for recompiling shaders on before runtime)
 
 You can compile and run without these with generous applications of self-inflicted pain and suffering, but it is not recommended.
 
@@ -64,9 +65,9 @@ Large game projects are mostly the same, but instead are prefixed by the game in
 
 ## Legal Info
 
-You're welcome to download and mess around. If you want to filch code, please ask. Now, seriously that isn't very enforcable (there's quite a lot of filched code in 1Engine itself) but it would be polite to ask. You can go under the eventual list of "Games Made With/Filched Code" and benefit from the 1-person-per-month traffic of that.
+You're welcome to download and mess around. If you want to filch code, feel free to ask. There's quite a lot of filched code in 1Engine itself. If you filch code, you can go under the eventual list of "Games Made With/Filched Code" and benefit from the 1-person-per-month traffic of that. (It's been measureed over several years, the traffic actually is about 1 non-bot person per month.)
 
-You're welcome to try to make your own games or projects with this, as long as you don't make a considerable profit from them. We're talking, "puts food on the table" profit. We want you to starve.
+You're welcome to try to make your own games or projects with this, free of charge.
 
-Also, stuff that doesn't belong to us doesn't belong to us. We use a lot of 3rd party code, which we will eventually list here and give credit where credit is due.
-Also, it's entirely possible that there is some code or code history in here by mistake. If that is the case, please contact us immediately and we will remove it.
+Also, stuff that doesn't belong to us doesn't belong to us. This engine a lot of 3rd party code, which someone will eventually list here and give credit where credit is due.
+If there is any code in this repository that you think should not be here, please contact @skarik immediately and he will evalutate and, if needed, remove it.
