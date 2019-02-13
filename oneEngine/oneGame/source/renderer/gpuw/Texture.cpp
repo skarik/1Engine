@@ -6,7 +6,7 @@
 #include "core/exceptions.h"
 #include "core/math/Math.h"
 
-#include "renderer/ogl/GLCommon.h"
+#include "renderer/gpuw/ogl/GLCommon.h"
 
 #include <algorithm>
 

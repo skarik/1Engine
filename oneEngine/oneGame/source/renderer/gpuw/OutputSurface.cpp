@@ -2,7 +2,7 @@
 #include "renderer/gpuw/RenderTarget.h"
 #include "renderer/gpuw/Device.h"
 #include "renderer/gpuw/Error.h"
-#include "renderer/ogl/GLCommon.h"
+#include "renderer/gpuw/ogl/GLCommon.h"
 #include "renderer/types/types.h"
 #include "core/os.h"
 #include <stdio.h>

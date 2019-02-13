@@ -1,7 +1,7 @@
 #include "renderer/gpuw/Pipeline.h"
 #include "renderer/gpuw/Error.h"
 #include "renderer/gpuw/Internal/Enums.h"
-#include "renderer/ogl/GLCommon.h"
+#include "renderer/gpuw/ogl/GLCommon.h"
 
 int gpu::Pipeline::create ( Device* device, const PipelineCreationDescription* params )
 {

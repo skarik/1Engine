@@ -7,12 +7,6 @@
     <Filter Include="SOURCE\Renderer">
       <UniqueIdentifier>{1548ea9d-803a-422d-a20f-c236fccde1a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\Renderer\Window">
-      <UniqueIdentifier>{2e8c4b29-cf30-4cf0-8eb7-2f98040f27c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SOURCE\Renderer\OGL">
-      <UniqueIdentifier>{a9970f8b-72e5-4a60-82a1-e971ac11bf67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SOURCE\Renderer\System">
       <UniqueIdentifier>{8fefbbce-687f-4182-b8a2-cba29a639222}</UniqueIdentifier>
     </Filter>
@@ -114,6 +108,9 @@
     </Filter>
     <Filter Include="SOURCE\Renderer\Types\shaders">
       <UniqueIdentifier>{2abe2f40-a4f9-4cd8-93e4-8d79cd9b4c53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Renderer\GPU Wrapper\OpenGL">
+      <UniqueIdentifier>{3f27fff0-4935-4df6-be52-55d0b3b9243c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -240,12 +237,6 @@
     <ClCompile Include="source\renderer\gpuw\Device.cpp">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\ogl\glcorearb_impl.c">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\ogl\wgl_impl.c">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\texture\RrTexture.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
@@ -299,9 +290,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\windowing\RrWindow.cpp">
       <Filter>SOURCE\Renderer\Windowing</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\_window\RrWindowWin32.cpp">
-      <Filter>SOURCE\Renderer\Window</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\gpuw\OutputSurface.cpp">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
@@ -411,14 +399,14 @@
     <ClCompile Include="source\renderer\gpuw\Texture.cpp">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\ogl\glcorearb_impl.c">
+      <Filter>SOURCE\Renderer\GPU Wrapper\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\gpuw\ogl\wgl_impl.c">
+      <Filter>SOURCE\Renderer\GPU Wrapper\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\renderer\system\glDrawing.h">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\system\glMainSystem.h">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\system\glSystem.h">
       <Filter>SOURCE\Renderer\System</Filter>
     </ClInclude>
@@ -566,24 +554,6 @@
     <ClInclude Include="source\renderer\gpuw\Device.h">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\ogl\GLCommon.h">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\ogl\glcorearb.h">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\ogl\glcorearb_impl.h">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\ogl\glxext.h">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\ogl\wgl.h">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\ogl\wgl_impl.h">
-      <Filter>SOURCE\Renderer\OGL</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\gpuw\Internal\Enums.h">
       <Filter>SOURCE\Renderer\GPU Wrapper\Internal</Filter>
     </ClInclude>
@@ -652,18 +622,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\windowing\RrWindow.h">
       <Filter>SOURCE\Renderer\Windowing</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\_window\RrWindow.h">
-      <Filter>SOURCE\Renderer\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\_window\RrWindowLinux.h">
-      <Filter>SOURCE\Renderer\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\_window\RrWindowOsmac.h">
-      <Filter>SOURCE\Renderer\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\_window\RrWindowWin32.h">
-      <Filter>SOURCE\Renderer\Window</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\gpuw\OutputSurface.h">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
@@ -790,6 +748,24 @@
     </ClInclude>
     <ClInclude Include="source\renderer\gpuw\Texture.h">
       <Filter>SOURCE\Renderer\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\ogl\GLCommon.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\ogl\glcorearb.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\ogl\glcorearb_impl.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\ogl\glxext.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\ogl\wgl.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\gpuw\ogl\wgl_impl.h">
+      <Filter>SOURCE\Renderer\GPU Wrapper\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@
 #include "renderer/gpuw/Public/Formats.h"
 #include "renderer/gpuw/Public/ShaderTypes.h"
 
-#include "renderer/ogl/GLCommon.h"
+#include "renderer/gpuw/ogl/GLCommon.h"
 
 namespace gpu {
 namespace internal {

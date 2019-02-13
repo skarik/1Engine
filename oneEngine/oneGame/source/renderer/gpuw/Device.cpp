@@ -3,7 +3,7 @@
 #include "renderer/gpuw/ComputeContext.h"
 #include "renderer/gpuw/Error.h"
 #include "renderer/types/types.h"
-#include "renderer/ogl/GLCommon.h"
+#include "renderer/gpuw/ogl/GLCommon.h"
 #include "core/os.h"
 #include "core/debug.h"
 

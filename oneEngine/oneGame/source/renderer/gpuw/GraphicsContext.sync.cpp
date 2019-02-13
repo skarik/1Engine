@@ -3,7 +3,7 @@
 #include "core/debug.h"
 #include "renderer/gpuw/Fence.h"
 #include "renderer/gpuw/Internal/Enums.h"
-#include "renderer/ogl/GLCommon.h"
+#include "renderer/gpuw/ogl/GLCommon.h"
 #include <stdio.h>
 
 int gpu::GraphicsContext::signal ( Fence* fence )

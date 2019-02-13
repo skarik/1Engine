@@ -62,6 +62,8 @@
     <ClCompile Include="source\renderer\gpuw\GraphicsContext.cpp" />
     <ClCompile Include="source\renderer\gpuw\GraphicsContext.draw.cpp" />
     <ClCompile Include="source\renderer\gpuw\GraphicsContext.sync.cpp" />
+    <ClCompile Include="source\renderer\gpuw\ogl\glcorearb_impl.c" />
+    <ClCompile Include="source\renderer\gpuw\ogl\wgl_impl.c" />
     <ClCompile Include="source\renderer\gpuw\OutputSurface.cpp" />
     <ClCompile Include="source\renderer\gpuw\Pipeline.cpp" />
     <ClCompile Include="source\renderer\gpuw\RenderTarget.cpp" />
@@ -130,8 +132,6 @@
     <ClCompile Include="source\renderer\object\shapes\RrShapeIsosphere.cpp" />
     <ClCompile Include="source\renderer\object\shapes\RrShapePlane.cpp" />
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp" />
-    <ClCompile Include="source\renderer\ogl\glcorearb_impl.c" />
-    <ClCompile Include="source\renderer\ogl\wgl_impl.c" />
     <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp" />
     <ClCompile Include="source\renderer\renderer-console.cpp" />
     <ClCompile Include="source\renderer\resource\CModelMaster.cpp">
@@ -194,9 +194,6 @@
     <ClCompile Include="source\renderer\utils\rrMeshBuilder2D.cpp" />
     <ClCompile Include="source\renderer\utils\rrTextBuilder2D.cpp" />
     <ClCompile Include="source\renderer\windowing\RrWindow.cpp" />
-    <ClCompile Include="source\renderer\_window\RrWindowWin32.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\camera\CameraPass.h" />
@@ -216,6 +213,12 @@
     <ClInclude Include="source\renderer\gpuw\Error.h" />
     <ClInclude Include="source\renderer\gpuw\Fence.h" />
     <ClInclude Include="source\renderer\gpuw\GraphicsContext.h" />
+    <ClInclude Include="source\renderer\gpuw\ogl\GLCommon.h" />
+    <ClInclude Include="source\renderer\gpuw\ogl\glcorearb.h" />
+    <ClInclude Include="source\renderer\gpuw\ogl\glcorearb_impl.h" />
+    <ClInclude Include="source\renderer\gpuw\ogl\glxext.h" />
+    <ClInclude Include="source\renderer\gpuw\ogl\wgl.h" />
+    <ClInclude Include="source\renderer\gpuw\ogl\wgl_impl.h" />
     <ClInclude Include="source\renderer\gpuw\OutputSurface.h" />
     <ClInclude Include="source\renderer\gpuw\Pipeline.h" />
     <ClInclude Include="source\renderer\gpuw\Internal\Enums.h" />
@@ -290,12 +293,6 @@
     <ClInclude Include="source\renderer\object\shapes\RrShapeIsosphere.h" />
     <ClInclude Include="source\renderer\object\shapes\RrShapePlane.h" />
     <ClInclude Include="source\renderer\object\util\CLoadScreenInjector.h" />
-    <ClInclude Include="source\renderer\ogl\GLCommon.h" />
-    <ClInclude Include="source\renderer\ogl\glcorearb.h" />
-    <ClInclude Include="source\renderer\ogl\glcorearb_impl.h" />
-    <ClInclude Include="source\renderer\ogl\glxext.h" />
-    <ClInclude Include="source\renderer\ogl\wgl.h" />
-    <ClInclude Include="source\renderer\ogl\wgl_impl.h" />
     <ClInclude Include="source\renderer\particle\motion.h" />
     <ClInclude Include="source\renderer\particle\RrParticleSystem.h" />
     <ClInclude Include="source\renderer\renderer-console.h" />
@@ -311,12 +308,6 @@
     <ClInclude Include="source\renderer\state\Options.h" />
     <ClInclude Include="source\renderer\state\RrPipelinePasses.h" />
     <ClInclude Include="source\renderer\state\Settings.h" />
-    <ClInclude Include="source\renderer\system\glDrawing.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\renderer\system\glMainSystem.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="source\renderer\system\glSystem.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -356,18 +347,6 @@
     <ClInclude Include="source\renderer\utils\rrMeshBuilder2D.h" />
     <ClInclude Include="source\renderer\utils\rrTextBuilder2D.h" />
     <ClInclude Include="source\renderer\windowing\RrWindow.h" />
-    <ClInclude Include="source\renderer\_window\RrWindow.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\renderer\_window\RrWindowLinux.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\renderer\_window\RrWindowOsmac.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\renderer\_window\RrWindowWin32.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C1BC5440-9CE1-4A7E-89DD-DCD57005426A}</ProjectGuid>

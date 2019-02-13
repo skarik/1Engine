@@ -12,7 +12,7 @@
 
 #include "renderer/gpuw/Internal/Enums.h"
 
-#include "renderer/ogl/GLCommon.h"
+#include "renderer/gpuw/ogl/GLCommon.h"
 
 #include <stdio.h>
 

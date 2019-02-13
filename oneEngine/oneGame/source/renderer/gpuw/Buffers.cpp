@@ -1,6 +1,6 @@
 #include "renderer/gpuw/Buffers.h"
 #include "renderer/gpuw/Error.h"
-#include "renderer/ogl/GLCommon.h"
+#include "renderer/gpuw/ogl/GLCommon.h"
 #include "core/debug.h"
 
 gpu::Buffer::Buffer ( void ) :

@@ -1,7 +1,7 @@
 #include "renderer/gpuw/Shader.h"
 #include "renderer/gpuw/Error.h"
 #include "renderer/gpuw/Internal/Enums.h"
-#include "renderer/ogl/GLCommon.h"
+#include "renderer/gpuw/ogl/GLCommon.h"
 
 #include <stdio.h>
 
