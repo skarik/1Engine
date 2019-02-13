@@ -160,18 +160,22 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 			TimeProfiler.BeginTimeProfile( "MN_audio" );
 			aMaster.Update();
 			TimeProfiler.EndTimeProfile( "MN_audio" );
-			// Draw a debug grid
-			for ( int x = -5; x <= 5; ++x )
 			{
-				for ( int y = -5; y <= 5; ++y )
+				// Draw a debug grid
+				for (int x = -5; x <= 5; ++x)
 				{
-					for ( int z = -5; z <= 5; ++z )
+					for (int y = -5; y <= 5; ++y)
 					{
-						debug::Drawer->DrawLine( Vector3f(x,y,-10), Vector3f(x,y,+10) );
-						debug::Drawer->DrawLine( Vector3f(x,-10,z), Vector3f(x,+10,z) );
-						debug::Drawer->DrawLine( Vector3f(-10,y,z), Vector3f(+10,y,z) );
+						for (int z = -5; z <= 5; ++z)
+						{
+							debug::Drawer->DrawLine(Vector3f(x, y, -10), Vector3f(x, y, +10));
+							debug::Drawer->DrawLine(Vector3f(x, -10, z), Vector3f(x, +10, z));
+							debug::Drawer->DrawLine(Vector3f(-10, y, z), Vector3f(+10, y, z));
+						}
 					}
 				}
+				// Rotate camera a bit
+				l_cam->transform.rotation = Rotator(0, 0, sinf(Time::currentTime) * 30.0F);
 			}
 			// Redraw window
 			TimeProfiler.BeginTimeProfile( "MN_renderer" );

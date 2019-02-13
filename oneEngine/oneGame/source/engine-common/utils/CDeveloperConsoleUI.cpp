@@ -23,10 +23,13 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 	ActiveConsoleUI = this;
 
 	fntMenu	= RrFontTexture::Load( "monofonto.ttf", 16, kFW_Bold );
+	fntMenu->AddReference();
+
 	RrPass fontPass;
 	fontPass.m_layer = renderer::kRenderLayerV2D;
 	fontPass.m_type = kPassTypeForward;
 	fontPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
+	//fontPass.setTexture(TEX_MAIN, RrTexture::Load(renderer::kTextureWhite));
 	fontPass.setTexture( TEX_MAIN, fntMenu );
 	fontPass.utilSetupAs2D();
 	fontPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
@@ -72,10 +75,11 @@ bool CDeveloperConsoleUI::BeginRender ( void )
 	Vector2f screenSize ((Real)Screen::Info.width, (Real)Screen::Info.height);
 	const Real kLineHeight = (Real)fntMenu->GetFontInfo()->height + 3.0F;
 	const Real kBottomMargin = 5.0F;
+	const Real kLeftMargin = 5.0F;
 
-	const Color kColorBackground = Color(0.0F, 0.0F, 0.3F, 0.6F);
-	const Color kColorText = Color(0.0F, 0.5F, 1.0F, 1.0F);
-	const Color kColorTextCorner = Color(1.0F, 1.0F, 1.0F, 1.0F);
+	const Color kColorBackground = Color(0.16F, 0.16F, 0.16F, 0.80F);
+	const Color kColorText = Color(0.16F, 0.32F, 0.96F, 1.00F);
+	const Color kColorTextCorner = Color(1.00F, 1.00F, 1.00F, 0.32F);
 
 	if ( RrCamera::activeCamera )
 	{	// Modify console size based on render scale so it is always legible!
@@ -101,7 +105,7 @@ bool CDeveloperConsoleUI::BeginRender ( void )
 		if ( !l_matchingCommands.empty() )
 		{
 			// Autocomplete rect:
-			Real boxHeight = l_matchingCommands.size() * kLineHeight + kBottomMargin * 2.0F;
+			Real boxHeight = (l_matchingCommands.size() + 1) * kLineHeight + kBottomMargin * 2.0F;
 			builder.addRect(
 				Rect( 0.0F, screenSize.y - kLineHeight - boxHeight - kBottomMargin * 2.0F, screenSize.x, boxHeight),
 				kColorBackground,
@@ -110,17 +114,25 @@ bool CDeveloperConsoleUI::BeginRender ( void )
 
 		// Draw the current command:
 		builder_text.addText(
-			Vector2f(2.0F, screenSize.y - kBottomMargin),
+			Vector2f(kLeftMargin, screenSize.y - kBottomMargin),
 			kColorText,
 			(">" + engine::Console->GetCommandString() + "_").c_str() );
 
-		// Draw the autocomplete results:
-		for ( uint i = 0; i < l_matchingCommands.size(); ++i )
-		{	// Draw command list
+		if ( !l_matchingCommands.empty() )
+		{
 			builder_text.addText(
-				Vector2f(18.0F, screenSize.y - kLineHeight - kBottomMargin * 3.0F - kLineHeight * i),
+				Vector2f(kLeftMargin, screenSize.y - kLineHeight - kBottomMargin * 2.0F - kLineHeight * l_matchingCommands.size()),
 				kColorText,
-				l_matchingCommands[i].c_str() );
+				"POSSIBLE MATCHES");
+
+			// Draw the autocomplete results:
+			for ( uint i = 0; i < l_matchingCommands.size(); ++i )
+			{	// Draw command list
+				builder_text.addText(
+					Vector2f(kLeftMargin, screenSize.y - kLineHeight - kBottomMargin * 2.0F - kLineHeight * i),
+					kColorText,
+					(" " + l_matchingCommands[i]).c_str() );
+			}
 		}
 	}
 

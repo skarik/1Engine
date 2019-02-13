@@ -64,6 +64,18 @@ namespace renderer
 			Vector4f	textureOffset;
 
 			Vector4f	rr_padding [10];
+
+			rrPerObjectSurface()
+				: // Color parameters
+				diffuseColor(1, 1, 1, 1), specularColor(1, 1, 1, 1), emissiveColor(0.0, 0.0, 0.0),
+				// Alpha settings
+				alphaCutoff(0.0F),
+				// Lighting params
+				lighting0(0.0F), lighting1RimStrength(0.0F), lighting2(0.0F), lighting3Alpha(0.0F),
+				// Rare sampling options:
+				textureScale(1.0F, 1.0F, 1.0F, 1.0F),
+				textureOffset(0.0F, 0.0F, 0.0F, 0.0F)
+			{}
 		};
 		LAYOUT_PACK_END
 		static_assert(sizeof(rrPerObjectSurface) == 256, "Alignment of rrPerObjectSurface incorrect for the GPU.");

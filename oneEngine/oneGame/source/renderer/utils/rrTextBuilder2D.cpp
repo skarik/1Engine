@@ -192,17 +192,10 @@ void rrTextBuilder2D::addText ( const Vector2f& position, const Color& color, co
 		m_model->position[vert_index + 2].z = 0.5F;
 		m_model->position[vert_index + 3].z = 0.5F;
 
-		/*m_model->triangles[triangle_index + 0].vert[0] = vertex_index + 0;
-		m_model->triangles[triangle_index + 0].vert[1] = vertex_index + 1;
-		m_model->triangles[triangle_index + 0].vert[2] = vertex_index + 2;
-
-		m_model->triangles[triangle_index + 1].vert[0] = vertex_index + 0;
-		m_model->triangles[triangle_index + 1].vert[1] = vertex_index + 2;
-		m_model->triangles[triangle_index + 1].vert[2] = vertex_index + 3;*/
 		m_model->indices[inde_index + 0] = vert_index + 0;
-		m_model->indices[inde_index + 1] = vert_index + 1;
-		m_model->indices[inde_index + 2] = vert_index + 2;
-		m_model->indices[inde_index + 3] = vert_index + 3;
+		m_model->indices[inde_index + 1] = vert_index + 3;
+		m_model->indices[inde_index + 2] = vert_index + 1;
+		m_model->indices[inde_index + 3] = vert_index + 2;
 		m_model->indices[inde_index + 4] = 0xFFFF;
 
 		// Move the array indices along
