@@ -1,4 +1,3 @@
-
 #ifdef _WIN32
 
 #include "core/types/types.h"

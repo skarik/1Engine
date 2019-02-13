@@ -125,6 +125,9 @@ namespace dusk
 
 	class UIRendererContext
 	{
+	private:
+		friend UIRenderer;
+
 	public:
 		ENGCOM_API void			setFocus ( FocusStyle style );
 		ENGCOM_API void			setColor ( ColorStyle style );

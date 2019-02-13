@@ -3,9 +3,12 @@
 //#include "Water.h"
 //#include "physical/physics/water/Water.h"
 
+#include "core-ext/animation/AnimationControl.h"
 #include "core-ext/animation/Skeleton.h"
 #include "core-ext/types/sHitbox.h"
 #include "physical/skeleton/skeletonBone.h"
+
+#include "renderer/logic/model/RrCModel.h"
 
 //#include "renderer/logic/model/CSkinnedModel.h"
 
@@ -15,23 +18,23 @@
 #include <list>
 using std::list;
 
-CRagdollCollision::CRagdollCollision ( const prRigidbodyCreateParams& params, CSkinnedModel* sourceModel )
+CRagdollCollision::CRagdollCollision ( const prRigidbodyCreateParams& params, RrCModel* sourceModel )
 	: CMotion(params.owner, params.ownerType)
 {
 	hasJoints = false;
-	m_skinnedmodel = sourceModel;
+	m_model = sourceModel;
 
 	// Set the layer
 	layer = physical::layer::Hitboxes;
 
 	hitboxEntry hb;
-	std::vector<sHitbox>* mdl_hitboxes = m_skinnedmodel->GetHitboxes();
-	animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
+	std::vector<sHitbox>* mdl_hitboxes = NULL;// &m_model->m_meshGroup->m_hitboxes; // Mesh system currently doesn't load hitboxes, making this class useless.
+	animation::Skeleton* skeleton = NULL; //m_model->pMyAnimation->GetSkeleton();
 
 	// Create the model/world space of the reference pose
 	std::vector<core::TransformLite> pose_model;
 	pose_model.resize( skeleton->parent.size() );
-	core::TransformUtility::LocalToWorld( &skeleton->parent[0], &skeleton->reference_xpose[0], &pose_model[0], pose_model.size() );
+	core::TransformUtility::LocalToWorld( &skeleton->parent[0], &skeleton->reference_xpose[0], &pose_model[0], (int)pose_model.size() );
 
 #if 0
 	// Add root as first hitbox/bone
@@ -132,8 +135,8 @@ CRagdollCollision::CRagdollCollision ( const prRigidbodyCreateParams& params, CS
 
 void CRagdollCollision::CreateJoints ( std::vector<core::TransformLite>& pose_model )
 {
-	std::vector<sHitbox>* mdl_hitboxes = m_skinnedmodel->GetHitboxes();
-	animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
+	std::vector<sHitbox>* mdl_hitboxes = NULL;//m_skinnedmodel->GetHitboxes();
+	animation::Skeleton* skeleton = NULL;//m_skinnedmodel->GetSkeleton();
 
 	// Loop through model skeleton, child-first order, to create joints
 	//Transform* tr_root = m_skinnedmodel->GetSkeletonRoot();
@@ -475,7 +478,7 @@ void CRagdollCollision::PostFixedUpdate ( void )
 
 void CRagdollCollision::RigidbodyUpdate ( Real interpolation )
 {
-	animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
+	animation::Skeleton* skeleton = NULL;//m_skinnedmodel->GetSkeleton();
 	// Need a Ragdoll to Animation conversion here
 	for ( auto hb = m_hitboxList.begin(); hb != m_hitboxList.end(); ++hb )
 	{	// TODO: apply impulse and continue
@@ -504,7 +507,7 @@ void CRagdollCollision::RigidbodyUpdate ( Real interpolation )
 
 void CRagdollCollision::FixedUpdate ( void )
 {
-	animation::Skeleton* skeleton = m_skinnedmodel->GetSkeleton();
+	animation::Skeleton* skeleton = NULL;//m_skinnedmodel->GetSkeleton();
 	// TODO: Ensure lite transform is updated
 #if 0 
 

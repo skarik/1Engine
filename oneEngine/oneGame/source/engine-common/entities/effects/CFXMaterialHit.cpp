@@ -1,8 +1,8 @@
 #include "CFXMaterialHit.h"
 
 #include "engine/audio/AudioInterface.h"
-#include "engine-common/entities/CParticleSystem.h"
-#include "renderer/logic/particle/CParticleEmitter.h"
+//#include "engine-common/entities/CParticleSystem.h"
+//#include "renderer/logic/particle/CParticleEmitter.h"
 
 CFXMaterialHit::CFXMaterialHit ( const physMaterial& hitMat, const RaycastHit& hitResult, const EHitType hitType )
 	: CGameBehavior()
@@ -55,7 +55,7 @@ CFXMaterialHit::CFXMaterialHit ( const physMaterial& hitMat, const RaycastHit& h
 	};
 
 	// Create particle system
-	if ( particleSystemName.length() > 0 )
+	/*if ( particleSystemName.length() > 0 )
 	{
 		// Create material hit with given particle effect and normal
 		CParticleSystem* ps_hit_effect;
@@ -81,7 +81,7 @@ CFXMaterialHit::CFXMaterialHit ( const physMaterial& hitMat, const RaycastHit& h
 		ps_hit_effect->PostUpdate();
 		ps_hit_effect->bAutoDestroy = true;
 		ps_hit_effect->RemoveReference();
-	}
+	}*/
 
 	// Play sound
 	if ( soundSystemName.length() > 0 )

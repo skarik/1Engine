@@ -290,6 +290,9 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 
 void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList, const Rect& scissorArea)
 {
+	UIRendererContext l_ctx;
+	l_ctx.m_uir = this;
+
 	//
 	// Mesh generation
 
@@ -300,7 +303,7 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	// Loop through the elements and build their mesh
 	for (uint32_t i = 0; i < renderList.size(); ++i)
 	{
-		renderList[i]->Render(this);
+		renderList[i]->Render(&l_ctx);
 	}
 
 	// Upload the mesh

@@ -1,14 +1,18 @@
-#include "engine/utils/CDeveloperConsole.h"
 #include "CDeveloperConsoleUI.h"
+
 #include "core/input/CInput.h"
 #include "core/settings/CGameSettings.h"
+
+#include "engine/utils/CDeveloperConsole.h"
+
+#include "renderer/camera/RrCamera.h"
 #include "renderer/texture/RrFontTexture.h"
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
-#include "renderer/system/glMainSystem.h"
-#include "renderer/system/glDrawing.h"
-#include "renderer/camera/RrCamera.h"
-#include "renderer/object/immediate/immediate.h"
+#include "renderer/gpuw/Device.h"
+#include "renderer/material/Material.h"
+
+#include "renderer/object/immediate/immediate.h" // TODO: Rename this header.
 
 CDeveloperConsoleUI*	ActiveConsoleUI = NULL;
 CDeveloperCursor*		ActiveCursor = NULL;
@@ -26,6 +30,12 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 	fontPass.setTexture( TEX_MAIN, fntMenu );
 	fontPass.utilSetupAs2D();
 	fontPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
+	renderer::shader::Location t_vspecFont[] = {renderer::shader::Location::kPosition,
+												renderer::shader::Location::kUV0,
+												renderer::shader::Location::kColor,
+												renderer::shader::Location::kNormal};
+	fontPass.setVertexSpecificationByCommonList(t_vspecFont, 4);
+	fontPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
 	PassInitWithInput(1, &fontPass);
 
 	RrPass shapesPass;
@@ -35,6 +45,11 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 	shapesPass.setTexture( TEX_MAIN, RrTexture::Load(renderer::kTextureWhite) );
 	shapesPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
 	shapesPass.utilSetupAs2D();
+	renderer::shader::Location t_vspecShap[] = {renderer::shader::Location::kPosition,
+												renderer::shader::Location::kUV0,
+												renderer::shader::Location::kColor};
+	shapesPass.setVertexSpecificationByCommonList(t_vspecShap, 3);
+	shapesPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
 	PassInitWithInput(0, &shapesPass);
 
 	transform.world.position.z = -35;
@@ -47,18 +62,20 @@ CDeveloperConsoleUI::~CDeveloperConsoleUI ( void )
 	}
 
 	fntMenu->RemoveReference();
+
+	m_meshBufferShapes.FreeMeshBuffers();
+	m_meshBufferText.FreeMeshBuffers();
 }
 
-bool CDeveloperConsoleUI::PreRender ( rrCameraPass* cameraPass )
-{
-	PushCbufferPerObject(XrTransform(), cameraPass);
-	return true;
-}
-bool CDeveloperConsoleUI::Render ( const rrRenderParams* params )
+bool CDeveloperConsoleUI::BeginRender ( void )
 {
 	Vector2f screenSize ((Real)Screen::Info.width, (Real)Screen::Info.height);
 	const Real kLineHeight = (Real)fntMenu->GetFontInfo()->height + 3.0F;
 	const Real kBottomMargin = 5.0F;
+
+	const Color kColorBackground = Color(0.0F, 0.0F, 0.3F, 0.6F);
+	const Color kColorText = Color(0.0F, 0.5F, 1.0F, 1.0F);
+	const Color kColorTextCorner = Color(1.0F, 1.0F, 1.0F, 1.0F);
 
 	if ( RrCamera::activeCamera )
 	{	// Modify console size based on render scale so it is always legible!
@@ -77,44 +94,97 @@ bool CDeveloperConsoleUI::Render ( const rrRenderParams* params )
 		// Console rect:
 		builder.addRect(
 			Rect( 0.0F, screenSize.y - kLineHeight - kBottomMargin * 2.0F, screenSize.x, kLineHeight + kBottomMargin * 2.0F),
-			Color(0.0F, 0.0F, 0.3F, 0.6F),
+			kColorBackground,
 			false);
-		if ( !engine::Console->GetMatchingCommands().empty() )
+
+		auto l_matchingCommands = engine::Console->GetMatchingCommands();
+		if ( !l_matchingCommands.empty() )
 		{
 			// Autocomplete rect:
-			Real boxHeight = engine::Console->GetMatchingCommands().size() * kLineHeight + kBottomMargin * 2.0F;
+			Real boxHeight = l_matchingCommands.size() * kLineHeight + kBottomMargin * 2.0F;
 			builder.addRect(
 				Rect( 0.0F, screenSize.y - kLineHeight - boxHeight - kBottomMargin * 2.0F, screenSize.x, boxHeight),
-				Color(0.0F, 0.0F, 0.3F, 0.6F),
+				kColorBackground,
 				false);
 		}
-		
+
 		// Draw the current command:
 		builder_text.addText(
 			Vector2f(2.0F, screenSize.y - kBottomMargin),
-			Color( 0.0F, 0.5F, 1.0F, 1.0F ),
+			kColorText,
 			(">" + engine::Console->GetCommandString() + "_").c_str() );
 
 		// Draw the autocomplete results:
-		for ( uint i = 0; i < engine::Console->GetMatchingCommands().size(); ++i )
+		for ( uint i = 0; i < l_matchingCommands.size(); ++i )
 		{	// Draw command list
 			builder_text.addText(
 				Vector2f(18.0F, screenSize.y - kLineHeight - kBottomMargin * 3.0F - kLineHeight * i),
-				Color( 0.0F, 0.5F, 1.0F, 1.0F ),
-				engine::Console->GetMatchingCommands()[i].c_str() );
+				kColorText,
+				l_matchingCommands[i].c_str() );
 		}
 	}
 
 	// Draw the developer string in the upper-left corner.
 	builder_text.addText(
 		Vector2f(4.0F, (Real)fntMenu->GetFontInfo()->height + 2.0F),
-		Color( 1.0F, 1.0F, 1.0F, 0.5F ),
+		kColorTextCorner,
 		CGameSettings::Active()->sysprop_developerstring.c_str() );
 
-	// TODO: build mesh in the pre-render (or similar place)
-	RrScopedMeshRenderer renderer;
-	renderer.render(this, matMenu, pass, builder);
-	renderer.render(this, matfntMenu, pass, builder_text);
+	// Push both the meshes
+	auto t_shapesMesh = builder.getModelData();
+	if (t_shapesMesh.vertexNum > 0)
+		m_meshBufferShapes.InitMeshBuffers(&t_shapesMesh);
+	auto t_textMesh = builder_text.getModelData();
+	if (t_textMesh.vertexNum > 0)
+		m_meshBufferText.InitMeshBuffers(&t_textMesh);
+	// save their vertex counts
+	m_indexCountShapes = t_shapesMesh.indexNum;
+	m_indexCountText = t_textMesh.indexNum;
+
+	return true;
+}
+
+bool CDeveloperConsoleUI::PreRender ( rrCameraPass* cameraPass )
+{
+	PushCbufferPerObject(XrTransform(), cameraPass);
+	return true;
+}
+bool CDeveloperConsoleUI::Render ( const rrRenderParams* params )
+{
+	uint16_t		t_indexCount	= (params->pass == 0) ? m_indexCountShapes : m_indexCountText;
+	rrMeshBuffer	*t_meshBuffer	= (params->pass == 0) ? &m_meshBufferShapes : &m_meshBufferText;
+
+	// otherwise we will render the same way 3d meshes render
+	{
+		if ( t_indexCount == 0 || t_meshBuffer == NULL || !t_meshBuffer->m_mesh_uploaded )
+			return true; // Only render when have a valid mesh and rendering enabled
+
+		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
+		gpu::Pipeline* pipeline = GetPipeline( params->pass );
+		gfx->setPipeline(pipeline);
+		// Set up the material helper...
+		renderer::Material(this, gfx, params->pass, pipeline)
+			// set the depth & blend state registers
+			.setDepthStencilState()
+			// bind the samplers & textures
+			.setBlendState()
+			.setTextures();
+		// bind the vertex buffers
+		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
+			if (t_meshBuffer->m_bufferEnabled[i])
+				gfx->setVertexBuffer(i, &t_meshBuffer->m_buffer[i], 0);
+		// bind the index buffer
+		gfx->setIndexBuffer(&t_meshBuffer->m_indexBuffer, gpu::kIndexFormatUnsigned16);
+		// bind the cbuffers
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
+		// draw now
+		gfx->drawIndexed(t_indexCount, 0);
+	}
 
 	// Return success
 	return true;
@@ -137,8 +207,24 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	cursorPass.utilSetupAs2D();
 	cursorPass.m_alphaMode = renderer::kAlphaModeTranslucent;
 	cursorPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor};
+	cursorPass.setVertexSpecificationByCommonList(t_vspec, 3);
 	PassInitWithInput(0, &cursorPass);
 
+	// Build the mouse mesh:
+	rrMeshBuilder2D builder(6);
+	builder.addRect(
+		Rect( 0, 0, 32, 32 ),
+		Color(1.0F, 1.0F, 1.0F, 1.0F),
+		false);
+
+	// Push the mouse mesh
+	auto t_Mesh = builder.getModelData();
+	m_meshBuffer.InitMeshBuffers(&t_Mesh);
+	// save their vertex counts
+	m_indexCount = t_Mesh.indexNum;
 }
 CDeveloperCursor::~CDeveloperCursor ( void )
 {
@@ -146,23 +232,47 @@ CDeveloperCursor::~CDeveloperCursor ( void )
 		ActiveCursor = NULL;
 	}
 	texCursor->RemoveReference();
+
+	m_meshBuffer.FreeMeshBuffers();
 }
 bool CDeveloperCursor::PreRender ( rrCameraPass* cameraPass )
 {
-	PushCbufferPerObject(XrTransform(), cameraPass);
+	PushCbufferPerObject(XrTransform(Vector2f((Real)Input::MouseX(), (Real)Input::MouseY())), cameraPass);
 	return true;
 }
 bool CDeveloperCursor::Render ( const rrRenderParams* params )
 {
-	rrMeshBuilder2D builder(6);
-	builder.addRect(
-		Rect( (Real)Input::MouseX(), (Real)Input::MouseY(), 32,32 ),
-		Color(1.0F, 1.0F, 1.0F, 1.0F),
-		false);
+	// otherwise we will render the same way 3d meshes render
+	{
+		if ( m_indexCount == 0 || !m_meshBuffer.m_mesh_uploaded )
+			return true; // Only render when have a valid mesh and rendering enabled
 
-	// TODO: build mesh in the pre-render (or similar place)
-	RrScopedMeshRenderer renderer;
-	renderer.render(this, m_material, pass, builder);
+		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
+		gpu::Pipeline* pipeline = GetPipeline( params->pass );
+		gfx->setPipeline(pipeline);
+		// Set up the material helper...
+		renderer::Material(this, gfx, params->pass, pipeline)
+			// set the depth & blend state registers
+			.setDepthStencilState()
+			// bind the samplers & textures
+			.setBlendState()
+			.setTextures();
+		// bind the vertex buffers
+		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
+			if (m_meshBuffer.m_bufferEnabled[i])
+				gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
+		// bind the index buffer
+		gfx->setIndexBuffer(&m_meshBuffer.m_indexBuffer, gpu::kIndexFormatUnsigned16);
+		// bind the cbuffers
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
+		// draw now
+		gfx->drawIndexed(m_indexCount, 0);
+	}
 
 	// Return success
 	return true;

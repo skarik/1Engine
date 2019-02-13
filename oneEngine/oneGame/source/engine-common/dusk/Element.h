@@ -12,6 +12,11 @@ namespace dusk
 	class UIRenderer;
 	class UIRendererContext;
 
+	struct UIStepInfo
+	{
+		Vector2f	mouse_position;
+	};
+
 	class Element
 	{
 	public:
@@ -29,7 +34,7 @@ namespace dusk
 
 		//	Update() : Called every frame by the UI system.
 		// Default behavior is to update value of m_isMouseIn.
-		virtual void			Update ( void );
+		virtual void			Update ( const UIStepInfo* stepinfo );
 		//	Render() : Renders the element.
 		// This does not actually directly render anything, but create meshes through the interface provided in UIRenderer.
 		// Default behavior is to not render anything.

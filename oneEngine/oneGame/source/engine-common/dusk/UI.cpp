@@ -132,7 +132,7 @@ void dusk::UserInterface::UpdateMouseOver ( void )
 		if (currentParent != NULL)
 		{
 			// First check that it's not in already
-			if ( std::find( mouseoverList.begin(), mouseoverList.end(), currentParent ) == mouseoverList.end() )
+			if ( std::find( mouseoverList.begin(), mouseoverList.end(), currentParent->m_index ) == mouseoverList.end() )
 			{
 				ARCORE_ASSERT(currentParent == m_elements[currentParent->m_index]);
 				mouseoverList.push_back( currentParent->m_index );
@@ -280,6 +280,9 @@ void dusk::UserInterface::UpdateFocus ( void )
 
 void dusk::UserInterface::UpdateElements ( void )
 {
+	dusk::UIStepInfo l_stepInfo;
+	l_stepInfo.mouse_position = Vector2f((Real)Input::MouseX(), (Real)Input::MouseY());
+
 	if ( m_currentDialogue == kElementHandleInvalid )
 	{
 		// Reset offsets
@@ -347,7 +350,7 @@ void dusk::UserInterface::UpdateElements ( void )
 			currentElement->m_absoluteRect = Rect(offsetList[i] + currentElement->m_localRect.pos, currentElement->m_localRect.size);
 
 			// Update them
-			currentElement->Update();
+			currentElement->Update(&l_stepInfo);
 		}
 	}
 	else
@@ -361,7 +364,7 @@ void dusk::UserInterface::UpdateElements ( void )
 		currentElement->m_absoluteRect = Rect(m_updateOffsets[m_currentElement] + currentElement->m_localRect.pos, currentElement->m_localRect.size);
 
 		// Update them
-		currentElement->Update();
+		currentElement->Update(&l_stepInfo);
 	}
 }
 

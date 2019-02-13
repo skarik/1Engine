@@ -7,10 +7,10 @@
 
 // Update
 // Base code that simply checks for mouse in rect
-void dusk::Element::Update ( void )
+void dusk::Element::Update ( const UIStepInfo* stepinfo )
 {
 	// TODO: move this to a common function
-	Vector2f offset_cursor = m_interface->cursor_pos;
+	Vector2f offset_cursor = stepinfo->mouse_position;
 	if (m_visible && m_absoluteRect.Contains(offset_cursor))
 	{
 		m_isMouseIn = true;

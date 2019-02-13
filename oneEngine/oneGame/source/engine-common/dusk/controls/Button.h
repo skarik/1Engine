@@ -14,7 +14,7 @@ namespace elements {
 		{}
 
 		//	Update() : Called every frame by the UI system.
-		void					Update ( void ) override;
+		void					Update ( const UIStepInfo* stepinfo ) override;
 		//	Render() : Renders the element.
 		void					Render ( UIRendererContext* uir ) override;
 

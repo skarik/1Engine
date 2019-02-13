@@ -40,8 +40,6 @@ protected:
 	arModelData				m_modeldata;
 	//	GPU information
 	rrMeshBuffer			m_meshBuffer;
-	//uint					m_buffer_verts;
-	//uint					m_buffer_tris;
 };
 
 #endif//C_RENDERABLE_PRIMITIVE_

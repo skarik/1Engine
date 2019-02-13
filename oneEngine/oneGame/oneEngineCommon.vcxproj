@@ -162,7 +162,9 @@
     <ClInclude Include="source\engine-common\engine-common.h" />
     <ClInclude Include="source\engine-common\entities\CActor.h" />
     <ClInclude Include="source\engine-common\entities\CLoadingScreen.h" />
-    <ClInclude Include="source\engine-common\entities\CParticleSystem.h" />
+    <ClInclude Include="source\engine-common\entities\CParticleSystem.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\engine-common\entities\CPlayer.h" />
     <ClInclude Include="source\engine-common\entities\CPointBase.h" />
     <ClInclude Include="source\engine-common\entities\CPointSpawn.h" />
@@ -337,7 +339,9 @@
     <ClCompile Include="source\engine-common\engine-common-console.cpp" />
     <ClCompile Include="source\engine-common\engine-common.cpp" />
     <ClCompile Include="source\engine-common\entities\CLoadingScreen.cpp" />
-    <ClCompile Include="source\engine-common\entities\CParticleSystem.cpp" />
+    <ClCompile Include="source\engine-common\entities\CParticleSystem.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\engine-common\entities\CPlayer.cpp" />
     <ClCompile Include="source\engine-common\entities\CPlayer_Camera.cpp" />
     <ClCompile Include="source\engine-common\entities\CPlayer_Movement.cpp" />

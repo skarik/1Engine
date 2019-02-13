@@ -1,5 +1,5 @@
-
-#ifndef _C_PARTICLE_SYSTEM_H_
+// Old class, no longer used.
+/*#ifndef _C_PARTICLE_SYSTEM_H_
 #define _C_PARTICLE_SYSTEM_H_
 
 #include "engine/behavior/CGameObject.h"
@@ -50,4 +50,4 @@ public:
 	bool	bAutoDestroy;
 };
 
-#endif
+#endif*/

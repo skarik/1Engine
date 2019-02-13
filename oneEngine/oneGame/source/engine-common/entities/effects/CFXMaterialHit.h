@@ -1,6 +1,5 @@
-
-#ifndef _C_FX_MATERIAL_HIT_H_
-#define _C_FX_MATERIAL_HIT_H_
+#ifndef ENGINE_COMMON_EFFECTS_MATERIAL_HIT_H_
+#define ENGINE_COMMON_EFFECTS_MATERIAL_HIT_H_
 
 #include "engine/behavior/CGameBehavior.h"
 #include "engine/physics/material/physMaterial.h"
@@ -21,4 +20,4 @@ public:
 	ENGCOM_API void			Update ( void );
 };
 
-#endif//_C_FX_MATERIAL_HIT_H_
+#endif//ENGINE_COMMON_EFFECTS_MATERIAL_HIT_H_

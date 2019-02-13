@@ -1,6 +1,7 @@
 #include "CRenderable3D.h"
 #include "renderer/material/RrPass.h"
 #include "renderer/gpuw/Device.h"
+#include "renderer/material/Material.h"
 
 CRenderable3D::CRenderable3D ( void )
 	: CRenderableObject()
@@ -48,19 +49,6 @@ bool CRenderable3D::PreRender ( rrCameraPass* cameraPass )
 // Render the model using the 2D engine's style
 bool CRenderable3D::Render ( const rrRenderParams* params )
 { 
-	//// Do not render if no buffer to render with
-	//if ( m_buffer_verts == 0 || m_buffer_tris == 0 )
-	//{
-	//	return true;
-	//}
-
-	//// For now, we will render the same way as the 3d meshes render
-	//m_material->m_bufferSkeletonSize = 0;
-	//m_material->m_bufferMatricesSkinning = 0;
-	//m_material->bindPass(pass);
-	//BindVAO( pass, m_buffer_verts, m_buffer_tris );
-	//GL.DrawElements( GL_TRIANGLES, m_modeldata.triangleNum*3, GL_UNSIGNED_INT, 0 );
-
 	// otherwise we will render the same way 3d meshes render
 	{
 		if ( !m_meshBuffer.m_mesh_uploaded )
@@ -70,13 +58,20 @@ bool CRenderable3D::Render ( const rrRenderParams* params )
 
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
+		// Set up the material helper...
+		renderer::Material(this, gfx, params->pass, pipeline)
+			// set the depth & blend state registers
+			.setDepthStencilState()
+			// bind the samplers & textures
+			.setBlendState()
+			.setTextures();
 		// bind the vertex buffers
 		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
 			if (m_meshBuffer.m_bufferEnabled[i])
 				gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
 		// bind the index buffer
 		gfx->setIndexBuffer(&m_meshBuffer.m_indexBuffer, gpu::kIndexFormatUnsigned16);
-		// bind the cbuffers: TODO
+		// bind the cbuffers
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);

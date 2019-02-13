@@ -4,9 +4,9 @@
 #include "engine-common/dusk/Dusk.h"
 #include "engine-common/dusk/UIRenderer.h"
 
-void dusk::elements::Label::Update ( void )
+void dusk::elements::Label::Update ( const UIStepInfo* stepinfo )
 {
-	Element::Update();
+	Element::Update(stepinfo);
 }
 
 void dusk::elements::Label::Render ( UIRendererContext* uir )

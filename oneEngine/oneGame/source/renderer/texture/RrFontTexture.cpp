@@ -161,7 +161,7 @@ RrFontTexture::LoadFreetype ( const rrFontTextureLoadParams& params, uint16_t* o
 	}
 
 	// Set the font face size
-	error = FT_Set_Pixel_Sizes( face, 0, fontInfo.height );
+	error = FT_Set_Pixel_Sizes( face, 0, params.height );
 	if ( error ) { 
 		debug::Console->PrintWarning( "Could not set font size (possibly a bitmap font)\n" );
 	}
@@ -247,6 +247,10 @@ RrFontTexture::LoadFreetype ( const rrFontTextureLoadParams& params, uint16_t* o
 
 	// Free face now that we're done with it
 	FT_Done_Face( face );
+
+	// Set the internal info now
+	fontInfo.height = params.height;
+	fontInfo.weight = params.weight;
 
 	// Return the new bitmap!
 	return bitmap;

@@ -84,13 +84,35 @@ uint16_t IrrMeshBuilder::getModelDataVertexCount ( void ) const
 //	enableAttribute ( attrib ) : Enables storage for the given attribute
 void IrrMeshBuilder::enableAttribute( renderer::shader::VBufferSlot attrib )
 {
-	m_enabledAttribs[attrib];
+	m_enabledAttribs[attrib] = true;
 }
 
 //	expand ( new vertex count ) : Ensure storage is large enough to hold the count
 void IrrMeshBuilder::expand ( const uint16_t vertexCount )
 {
-	if (m_model->vertexNum < vertexCount)
+	bool nulled_attribute = false;
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotPosition])
+		if (m_model->position == NULL) nulled_attribute = true;
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotUV0])
+		if (m_model->texcoord0 == NULL) nulled_attribute = true;
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotColor])
+		if (m_model->color == NULL) nulled_attribute = true;
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotNormal])
+		if (m_model->normal == NULL) nulled_attribute = true;
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotBinormal])
+		if (m_model->binormal == NULL) nulled_attribute = true;
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotUV1])
+		if (m_model->texcoord1 == NULL) nulled_attribute = true;
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotBoneWeight])
+		if (m_model->weight == NULL) nulled_attribute = true;
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotBoneIndices])
+		if (m_model->bone == NULL) nulled_attribute = true;
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotMaxPosition + 0])
+		if (m_model->texcoord2 == NULL) nulled_attribute = true;
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotMaxPosition + 1])
+		if (m_model->texcoord3 == NULL) nulled_attribute = true;
+
+	if (nulled_attribute || m_model->vertexNum < vertexCount)
 	{
 		if (m_model_isFromPool) {
 			reallocateGreedy(vertexCount);
@@ -105,8 +127,11 @@ template <typename T>
 FORCE_INLINE static T* reallocate ( T* old_data, const size_t old_count, const size_t new_count )
 {
 	T* new_data = new T [new_count];
-	memcpy(new_data, old_data, old_count * sizeof(T));
-	delete[] old_data;
+	if (old_data != NULL)
+	{
+		memcpy(new_data, old_data, old_count * sizeof(T));
+		delete[] old_data;
+	}
 	return new_data;
 }
 

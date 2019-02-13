@@ -4,9 +4,9 @@
 #include "engine-common/dusk/Dusk.h"
 #include "engine-common/dusk/UIRenderer.h"
 
-void dusk::elements::Button::Update ( void )
+void dusk::elements::Button::Update ( const UIStepInfo* stepinfo )
 {
-	Element::Update();
+	Element::Update(stepinfo);
 
 	isPressed = false;
 
