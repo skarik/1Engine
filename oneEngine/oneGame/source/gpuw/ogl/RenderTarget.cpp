@@ -1,3 +1,5 @@
+#ifdef GPU_API_OPENGL
+
 #include "./RenderTarget.h"
 #include "gpuw/Public/Error.h"
 #include "./ogl/GLCommon.h"
@@ -136,3 +138,5 @@ gpu::WOFrameAttachment* gpu::RenderTarget::getWOAttachment ( int slot )
 {
 	return (gpu::WOFrameAttachment*)m_attachments[slot];
 }
+
+#endif

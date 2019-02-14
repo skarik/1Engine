@@ -1,8 +1,8 @@
-#ifdef GPU_API_OPENGL
+#ifdef GPU_API_VULKAN
 
 #include "./GraphicsContext.h"
 
-#include "./ogl/GLCommon.h"
+#include "./gpu.h"
 #include "renderer/types/types.h"
 
 #include "core/types/types.h"

@@ -1,18 +1,18 @@
-﻿#ifdef GPU_API_OPENGL
+﻿#ifdef GPU_API_VULKAN
 
 #include "./Device.h"
 #include "./GraphicsContext.h"
 #include "./ComputeContext.h"
 #include "gpuw/Public/Error.h"
 #include "renderer/types/types.h"
-#include "./ogl/GLCommon.h"
+#include "./gpu.h"
 #include "core/os.h"
 #include "core/debug.h"
 
 #include <stdio.h>
 
 //typedef void (APIENTRY  *GLDEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
-void APIENTRY DebugCallback(GLenum source​, GLenum type​, GLuint id​, GLenum severity​, GLsizei length​, const GLchar* message​, const void* userParam​);
+//void APIENTRY DebugCallback(GLenum source​, GLenum type​, GLuint id​, GLenum severity​, GLsizei length​, const GLchar* message​, const void* userParam​);
 
 static gpu::Device* m_TargetDisplayDevice = NULL;
 
@@ -23,46 +23,61 @@ gpu::Device* gpu::getDevice ( void )
 
 gpu::Device::Device ( intptr_t module_handle, intptr_t module_window )
 	: mw_module(module_handle), mw_window(module_window),
-	m_graphicsContext(NULL), m_computeContext(NULL),
-	m_layers(NULL), m_layerCount(0)
+	m_graphicsContext(NULL), m_computeContext(NULL)
 {}
 gpu::Device::~Device ( void )
 {
-	delete[] m_layers;
-
 	// Destroy the device context
 	if (mw_deviceContext != NIL)
 	{
-		if (ReleaseDC((HWND)mw_window, (HDC)mw_deviceContext) != 0)
+		/*if (ReleaseDC((HWND)mw_window, (HDC)mw_deviceContext) != 0)
 		{
 			printf("Release Device Context Failed.\n");
 			//core::shell::ShowErrorMessage("Release Device Context Failed.");
 		}
-		mw_deviceContext = NIL;
+		mw_deviceContext = NIL;*/
+		vkDeviceWaitIdle(m_device);
+		vkDestroyDevice(m_device, m_allocator);
 	}
 }
 
-int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
+int gpu::Device::create ( void )
 {
-	// Save layers for creation later
-	if (m_layers != NULL && layerCount != 0)
-	{
-		m_layers = new DeviceLayer[layerCount];
-		m_layerCount = layerCount;
-	}
-
 	// Create device context:
-	mw_deviceContext = (intptr_t)GetDC((HWND)mw_window);
+	/*mw_deviceContext = (intptr_t)GetDC((HWND)mw_window);
 	if (mw_deviceContext == NIL)
 	{
 		printf("Could not create a device context.\n");
 		return gpu::kErrorInvalidDevice;
-	}
+	}*/
+
+	VkResult result;
+
+	VkApplicationInfo applicationInfo;
+	applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+	applicationInfo.pNext = NULL;
+	applicationInfo.pApplicationName = "RrVulkanTest";
+	applicationInfo.pEngineName = NULL;
+	applicationInfo.engineVersion = 1;
+	applicationInfo.apiVersion = VK_MAKE_VERSION(1, 0, 0);
+
+	VkInstanceCreateInfo instanceInfo = {};
+	instanceInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+	instanceInfo.pApplicationInfo = &applicationInfo;
+	instanceInfo.enabledLayerCount = ext->layer_count;
+	instanceInfo.ppEnabledLayerNames = ext->layers;
+	instanceInfo.enabledExtensionCount = ext->extension_count;
+	instanceInfo.ppEnabledExtensionNames = ext->extensions;
+
+	result = vkCreateInstance(&instanceInfo, allocator, &instance);
+	checkVulkanResult(result, "Failed to create Vulkan instance.");
+
+	printf("Created Vulkan instance.\n");
 
 	return gpu::kError_SUCCESS;
 }
 
-int gpu::Device::initialize ( void )
+int gpu::Device::initialize ( DeviceLayer* layers, uint32_t layerCount )
 {
 	// Create temporary OpenGL context:
 	HGLRC tempContext = wglCreateContext((HDC)mw_deviceContext);
@@ -105,9 +120,9 @@ int gpu::Device::initialize ( void )
 
 		// Set up attribs based on input options
 		attribs[5] = 0;
-		for (uint32_t i = 0; i < m_layerCount; ++i)
+		for (uint32_t i = 0; i < layerCount; ++i)
 		{
-			if (m_layers[i] == gpu::kDeviceLayerDebug)
+			if (layers[i] == gpu::kDeviceLayerDebug)
 			{	// Enable debug context if a debug "layer" is requested.
 				attribs[5] |= WGL_CONTEXT_DEBUG_BIT_ARB;
 			}
@@ -180,9 +195,9 @@ int gpu::Device::initialize ( void )
 	m_TargetDisplayDevice = this;
 
 	// Enable debug "layer"
-	for (uint32_t i = 0; i < m_layerCount; ++i)
+	for (uint32_t i = 0; i < layerCount; ++i)
 	{
-		if (m_layers[i] == gpu::kDeviceLayerDebug)
+		if (layers[i] == gpu::kDeviceLayerDebug)
 		{	
 			glDebugMessageCallback(DebugCallback, this);
 		}

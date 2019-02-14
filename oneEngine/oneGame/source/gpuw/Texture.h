@@ -2,3 +2,7 @@
 #ifdef GPU_API_OPENGL
 #	include "gpuw/ogl/Texture.h"
 #endif
+
+#ifdef GPU_API_VULKAN
+#	include "gpuw/vk/Texture.h"
+#endif

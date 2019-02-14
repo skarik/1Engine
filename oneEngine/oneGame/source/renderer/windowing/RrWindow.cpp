@@ -262,7 +262,16 @@ void RrWindow::CreateGfxInstance ( void )
 	}
 
 	m_device = new gpu::Device((intptr_t)mw_instance, (intptr_t)mw_window);
-	if (m_device->create() != 0)
+
+#ifdef _ENGINE_DEBUG
+	uint32_t layerCount = 1;
+	gpu::DeviceLayer layers [] = {gpu::kDeviceLayerDebug};
+#else
+	uint32_t layerCount = 0;
+	gpu::DeviceLayer* layers = NULL;
+#endif
+
+	if (m_device->create(layers, layerCount) != 0)
 	{
 		delete m_device;
 		DestroyScreen();
@@ -284,15 +293,7 @@ void RrWindow::CreateGfxSurface ( void )
 		ERROR_OUT("Gfx surface creation error.\n");
 	}
 
-#ifdef _ENGINE_DEBUG
-	uint32_t layerCount = 1;
-	gpu::DeviceLayer layers [] = {gpu::kDeviceLayerDebug};
-#else
-	uint32_t layerCount = 0;
-	gpu::DeviceLayer* layers = NULL;
-#endif
-
-	if (m_device->initialize(layers, layerCount) != 0)
+	if (m_device->initialize() != 0)
 	{
 		delete m_device;
 		DestroyScreen();

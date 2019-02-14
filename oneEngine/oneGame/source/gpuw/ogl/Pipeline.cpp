@@ -1,3 +1,5 @@
+#ifdef GPU_API_OPENGL
+
 #include "./Pipeline.h"
 #include "gpuw/Public/Error.h"
 #include "./Internal/Enums.h"
@@ -58,3 +60,5 @@ bool gpu::Pipeline::valid ( void )
 {
 	return m_vao != 0 && m_pipeline != NULL;
 }
+
+#endif

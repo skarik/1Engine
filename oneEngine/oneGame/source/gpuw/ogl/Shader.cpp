@@ -1,3 +1,5 @@
+#ifdef GPU_API_OPENGL
+
 #include "./Shader.h"
 #include "gpuw/Public/Error.h"
 #include "./Internal/Enums.h"
@@ -81,3 +83,5 @@ int gpu::Shader::destroy ( void )
 	}
 	return kError_SUCCESS;
 }
+
+#endif

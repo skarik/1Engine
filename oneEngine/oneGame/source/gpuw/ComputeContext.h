@@ -2,3 +2,7 @@
 #ifdef GPU_API_OPENGL
 #	include "gpuw/ogl/ComputeContext.h"
 #endif
+
+#ifdef GPU_API_VULKAN
+#	include "gpuw/vk/ComputeContext.h"
+#endif

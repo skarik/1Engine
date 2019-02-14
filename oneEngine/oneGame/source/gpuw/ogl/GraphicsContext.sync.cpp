@@ -1,3 +1,5 @@
+#ifdef GPU_API_OPENGL
+
 #include "GraphicsContext.h"
 #include "gpuw/Public/Error.h"
 #include "core/debug.h"
@@ -40,3 +42,5 @@ int gpu::GraphicsContext::waitOnSignal ( Fence* fence )
 
 	return kError_SUCCESS;
 }
+
+#endif

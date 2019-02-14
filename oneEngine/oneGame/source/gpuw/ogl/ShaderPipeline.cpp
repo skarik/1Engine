@@ -1,3 +1,5 @@
+#ifdef GPU_API_OPENGL
+
 #include "./ShaderPipeline.h"
 #include "./Shader.h"
 #include "gpuw/Public/Error.h"
@@ -166,3 +168,5 @@ bool gpu::ShaderPipeline::valid ( void )
 {
 	return m_program != 0;
 }
+
+#endif

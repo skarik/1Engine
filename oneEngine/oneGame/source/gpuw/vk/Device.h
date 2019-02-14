@@ -6,6 +6,7 @@
 #include "renderer/types/types.h"
 #include "gpuw/Public/Transfer.h"
 #include "./GraphicsContext.h"
+#include "./gpu.h"
 //#include "gpuw/ComputeContext.h"
 
 namespace gpu
@@ -29,9 +30,9 @@ namespace gpu
 		GPUW_EXLUSIVE_API		~Device ( void );
 
 		// Non-exposed API for initializing the device. (before OutputSurface ready)
-		GPUW_EXLUSIVE_API int	create ( DeviceLayer* layers, uint32_t layerCount );
+		GPUW_EXLUSIVE_API int	create ( void );
 		// Non-exposed API for starting up the device. (after OutputSurface ready)
-		GPUW_EXLUSIVE_API int	initialize ( void );
+		GPUW_EXLUSIVE_API int	initialize ( DeviceLayer* layers, uint32_t layerCount );
 		// Non-exposed API for refreshing the device
 		GPUW_EXLUSIVE_API int	refresh ( intptr_t module_handle, intptr_t module_window );
 
@@ -49,11 +50,12 @@ namespace gpu
 		intptr_t			mw_deviceContext;
 		intptr_t			mw_renderContext;
 
+		VkDevice			m_device;
+		VkAllocationCallbacks*
+							m_allocator;
+
 		GraphicsContext*	m_graphicsContext;
 		ComputeContext*		m_computeContext;
-
-		DeviceLayer*		m_layers;
-		uint32_t			m_layerCount;
 	};
 
 	GPUW_API Device* getDevice ( void );

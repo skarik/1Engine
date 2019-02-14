@@ -2,3 +2,7 @@
 #ifdef GPU_API_OPENGL
 #	include "gpuw/ogl/Pipeline.h"
 #endif
+
+#ifdef GPU_API_VULKAN
+#	include "gpuw/vk/Pipeline.h"
+#endif

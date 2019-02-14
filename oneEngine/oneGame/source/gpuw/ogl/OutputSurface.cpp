@@ -1,3 +1,5 @@
+#ifdef GPU_API_OPENGL
+
 #include "./OutputSurface.h"
 #include "./RenderTarget.h"
 #include "./Device.h"
@@ -72,3 +74,5 @@ uint32_t gpu::OutputSurface::getHeight ( void )
 {
 	return m_height;
 }
+
+#endif

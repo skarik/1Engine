@@ -1,3 +1,5 @@
+#ifdef GPU_API_OPENGL
+
 #include "GraphicsContext.h"
 #include "gpuw/Public/Error.h"
 
@@ -322,3 +324,5 @@ int gpu::GraphicsContext::validate ( void )
 	}
 	return 0;
 }
+
+#endif

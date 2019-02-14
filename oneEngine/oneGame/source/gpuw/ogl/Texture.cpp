@@ -1,3 +1,5 @@
+#ifdef GPU_API_OPENGL
+
 #include "./Texture.h"
 #include "./Internal/Enums.h"
 #include "gpuw/Public/Error.h"
@@ -183,3 +185,5 @@ int gpu::WOFrameAttachment::free ( void )
 
 	return gpu::kError_SUCCESS;
 }
+
+#endif

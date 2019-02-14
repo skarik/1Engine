@@ -82,6 +82,10 @@
     <ClInclude Include="source\gpuw\Shader.h" />
     <ClInclude Include="source\gpuw\ShaderPipeline.h" />
     <ClInclude Include="source\gpuw\Texture.h" />
+    <ClInclude Include="source\gpuw\vk\Buffers.h" />
+    <ClInclude Include="source\gpuw\vk\ComputeContext.h" />
+    <ClInclude Include="source\gpuw\vk\Device.h" />
+    <ClInclude Include="source\gpuw\vk\GraphicsContext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp" />
@@ -100,6 +104,9 @@
     <ClCompile Include="source\gpuw\ogl\Shader.cpp" />
     <ClCompile Include="source\gpuw\ogl\ShaderPipeline.cpp" />
     <ClCompile Include="source\gpuw\ogl\Texture.cpp" />
+    <ClCompile Include="source\gpuw\vk\Buffers.vk.cpp" />
+    <ClCompile Include="source\gpuw\vk\Device.vk.cpp" />
+    <ClCompile Include="source\gpuw\vk\GraphicsContext.vk.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1986D332-4A22-4711-96B0-C94B9BA9B69D}</ProjectGuid>
@@ -152,7 +159,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;$(VK_SDK_PATH)/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <CompileAsManaged>false</CompileAsManaged>
@@ -162,7 +169,7 @@
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PreprocessorDefinitions>_ENGINE_GPU_API;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GPU_API_OPENGL;_ENGINE_GPU_API;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LargeAddressAware>true</LargeAddressAware>
@@ -173,14 +180,14 @@
     <Link>
       <AdditionalDependencies>legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\core\win32x86;libs\basic\win32x86;libs\render\win32x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>libs\core\win32x86;libs\basic\win32x86;libs\render\win32x86;$(VK_SDK_PATH)/Lib32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
     <Link>
       <AdditionalDependencies>legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\core\win32x64;libs\basic\win32x64;libs\render\win32x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>libs\core\win32x64;libs\basic\win32x64;libs\render\win32x64;$(VK_SDK_PATH)/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">

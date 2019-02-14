@@ -1,8 +1,8 @@
-#ifdef GPU_API_OPENGL
+#ifdef GPU_API_VULKAN
 
 #include "./Buffers.h"
 #include "gpuw/Public/Error.h"
-#include "./ogl/GLCommon.h"
+#include "./gpu.h"
 #include "core/debug.h"
 
 gpu::Buffer::Buffer ( void ) :

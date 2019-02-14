@@ -1,3 +1,5 @@
+#ifdef GPU_API_OPENGL
+
 #include "./Fence.h"
 #include "gpuw/Public/Error.h"
 #include "./ogl/GLCommon.h"
@@ -70,3 +72,5 @@ gpuHandle gpu::Fence::nativePtr ( void )
 {
 	return (gpuHandle)m_syncId;
 }
+
+#endif
