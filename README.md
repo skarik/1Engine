@@ -44,7 +44,8 @@ Large game projects are mostly the same, but instead are prefixed by the game in
       * ``engine`` game engine backend
       * ``audio`` audio engine backend. uses OpenAL Soft, limited optional FMOD support
       * ``physical`` animation and physics backend
-      * ``renderer`` opengl 4.6 api wrapper & hybrid forward renderer
+      * ``gpuw`` opengl 4.6 api wrapper
+      * ``renderer`` hybrid forward renderer
       * ``engine-common`` simple game framework
       * ``engine2d`` ``render2d`` 2d game framework extensions & 2d deferred renderer
       * ``deploy`` backend for creating executables
