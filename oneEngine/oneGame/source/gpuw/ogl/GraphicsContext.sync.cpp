@@ -1,9 +1,9 @@
 #include "GraphicsContext.h"
-#include "Error.h"
+#include "gpuw/Public/Error.h"
 #include "core/debug.h"
-#include "gpuw/Fence.h"
-#include "gpuw/Internal/Enums.h"
-#include "gpuw/ogl/GLCommon.h"
+#include "./Fence.h"
+#include "./Internal/Enums.h"
+#include "./ogl/GLCommon.h"
 #include <stdio.h>
 
 int gpu::GraphicsContext::signal ( Fence* fence )

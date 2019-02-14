@@ -42,51 +42,64 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\gpuw\Buffers.cpp" />
-    <ClCompile Include="source\gpuw\ComputeContext.cpp" />
-    <ClCompile Include="source\gpuw\Device.cpp" />
-    <ClCompile Include="source\gpuw\Fence.cpp" />
-    <ClCompile Include="source\gpuw\GraphicsContext.cpp" />
-    <ClCompile Include="source\gpuw\GraphicsContext.draw.cpp" />
-    <ClCompile Include="source\gpuw\GraphicsContext.sync.cpp" />
-    <ClCompile Include="source\gpuw\ogl\glcorearb_impl.c" />
-    <ClCompile Include="source\gpuw\ogl\wgl_impl.c" />
-    <ClCompile Include="source\gpuw\OutputSurface.cpp" />
-    <ClCompile Include="source\gpuw\Pipeline.cpp" />
-    <ClCompile Include="source\gpuw\RenderTarget.cpp" />
-    <ClCompile Include="source\gpuw\Sampler.cpp" />
-    <ClCompile Include="source\gpuw\Shader.cpp" />
-    <ClCompile Include="source\gpuw\ShaderPipeline.cpp" />
-    <ClCompile Include="source\gpuw\Texture.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="source\gpuw\1docs.gpwu.style.h" />
     <ClInclude Include="source\gpuw\Buffers.h" />
     <ClInclude Include="source\gpuw\ComputeContext.h" />
     <ClInclude Include="source\gpuw\Device.h" />
-    <ClInclude Include="source\gpuw\Error.h" />
     <ClInclude Include="source\gpuw\Fence.h" />
     <ClInclude Include="source\gpuw\GraphicsContext.h" />
-    <ClInclude Include="source\gpuw\Internal\Enums.h" />
-    <ClInclude Include="source\gpuw\ogl\GLCommon.h" />
-    <ClInclude Include="source\gpuw\ogl\glcorearb.h" />
-    <ClInclude Include="source\gpuw\ogl\glcorearb_impl.h" />
-    <ClInclude Include="source\gpuw\ogl\glxext.h" />
-    <ClInclude Include="source\gpuw\ogl\wgl.h" />
-    <ClInclude Include="source\gpuw\ogl\wgl_impl.h" />
+    <ClInclude Include="source\gpuw\module_config.h" />
+    <ClInclude Include="source\gpuw\ogl\Buffers.h" />
+    <ClInclude Include="source\gpuw\ogl\ComputeContext.h" />
+    <ClInclude Include="source\gpuw\ogl\Device.h" />
+    <ClInclude Include="source\gpuw\ogl\Fence.h" />
+    <ClInclude Include="source\gpuw\ogl\GraphicsContext.h" />
+    <ClInclude Include="source\gpuw\ogl\Internal\Enums.h" />
+    <ClInclude Include="source\gpuw\ogl\ogl\GLCommon.h" />
+    <ClInclude Include="source\gpuw\ogl\ogl\glcorearb.h" />
+    <ClInclude Include="source\gpuw\ogl\ogl\glcorearb_impl.h" />
+    <ClInclude Include="source\gpuw\ogl\ogl\glxext.h" />
+    <ClInclude Include="source\gpuw\ogl\ogl\wgl.h" />
+    <ClInclude Include="source\gpuw\ogl\ogl\wgl_impl.h" />
+    <ClInclude Include="source\gpuw\ogl\OutputSurface.h" />
+    <ClInclude Include="source\gpuw\ogl\Pipeline.h" />
+    <ClInclude Include="source\gpuw\ogl\RenderTarget.h" />
+    <ClInclude Include="source\gpuw\ogl\Sampler.h" />
+    <ClInclude Include="source\gpuw\ogl\Shader.h" />
+    <ClInclude Include="source\gpuw\ogl\ShaderPipeline.h" />
+    <ClInclude Include="source\gpuw\ogl\Texture.h" />
     <ClInclude Include="source\gpuw\OutputSurface.h" />
     <ClInclude Include="source\gpuw\Pipeline.h" />
     <ClInclude Include="source\gpuw\Public\Enums.h" />
+    <ClInclude Include="source\gpuw\Public\Error.h" />
     <ClInclude Include="source\gpuw\Public\Formats.h" />
     <ClInclude Include="source\gpuw\Public\Rect2.h" />
     <ClInclude Include="source\gpuw\Public\ShaderTypes.h" />
     <ClInclude Include="source\gpuw\Public\Slots.h" />
+    <ClInclude Include="source\gpuw\Public\Transfer.h" />
     <ClInclude Include="source\gpuw\RenderTarget.h" />
     <ClInclude Include="source\gpuw\Sampler.h" />
     <ClInclude Include="source\gpuw\Shader.h" />
     <ClInclude Include="source\gpuw\ShaderPipeline.h" />
     <ClInclude Include="source\gpuw\Texture.h" />
-    <ClInclude Include="source\gpuw\Transfer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\gpuw\ogl\Buffers.cpp" />
+    <ClCompile Include="source\gpuw\ogl\ComputeContext.cpp" />
+    <ClCompile Include="source\gpuw\ogl\Device.cpp" />
+    <ClCompile Include="source\gpuw\ogl\Fence.cpp" />
+    <ClCompile Include="source\gpuw\ogl\GraphicsContext.cpp" />
+    <ClCompile Include="source\gpuw\ogl\GraphicsContext.draw.cpp" />
+    <ClCompile Include="source\gpuw\ogl\GraphicsContext.sync.cpp" />
+    <ClCompile Include="source\gpuw\ogl\ogl\glcorearb_impl.c" />
+    <ClCompile Include="source\gpuw\ogl\ogl\wgl_impl.c" />
+    <ClCompile Include="source\gpuw\ogl\OutputSurface.cpp" />
+    <ClCompile Include="source\gpuw\ogl\Pipeline.cpp" />
+    <ClCompile Include="source\gpuw\ogl\RenderTarget.cpp" />
+    <ClCompile Include="source\gpuw\ogl\Sampler.cpp" />
+    <ClCompile Include="source\gpuw\ogl\Shader.cpp" />
+    <ClCompile Include="source\gpuw\ogl\ShaderPipeline.cpp" />
+    <ClCompile Include="source\gpuw\ogl\Texture.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1986D332-4A22-4711-96B0-C94B9BA9B69D}</ProjectGuid>

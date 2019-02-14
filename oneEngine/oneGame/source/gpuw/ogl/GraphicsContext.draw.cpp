@@ -1,18 +1,18 @@
 #include "GraphicsContext.h"
-#include "Error.h"
+#include "gpuw/Public/Error.h"
 
 #include "core/debug.h"
 
-#include "gpuw/RenderTarget.h"
-#include "gpuw/Pipeline.h"
-#include "gpuw/ShaderPipeline.h"
-#include "gpuw/Sampler.h"
-#include "gpuw/Buffers.h"
-#include "gpuw/Fence.h"
+#include "./RenderTarget.h"
+#include "./Pipeline.h"
+#include "./ShaderPipeline.h"
+#include "./Sampler.h"
+#include "./Buffers.h"
+#include "./Fence.h"
 
-#include "gpuw/Internal/Enums.h"
+#include "./Internal/Enums.h"
 
-#include "gpuw/ogl/GLCommon.h"
+#include "./ogl/GLCommon.h"
 
 #include <stdio.h>
 

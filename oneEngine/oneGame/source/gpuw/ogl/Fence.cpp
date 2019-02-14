@@ -1,6 +1,6 @@
-#include "gpuw/Fence.h"
-#include "gpuw/Error.h"
-#include "gpuw/ogl/GLCommon.h"
+#include "./Fence.h"
+#include "gpuw/Public/Error.h"
+#include "./ogl/GLCommon.h"
 
 #include "core/debug.h"
 

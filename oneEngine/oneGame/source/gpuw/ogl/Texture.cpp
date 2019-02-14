@@ -1,12 +1,12 @@
-#include "gpuw/Texture.h"
-#include "gpuw/Internal/Enums.h"
-#include "gpuw/Error.h"
-#include "gpuw/Buffers.h"
+#include "./Texture.h"
+#include "./Internal/Enums.h"
+#include "gpuw/Public/Error.h"
+#include "./Buffers.h"
 
 #include "core/exceptions.h"
 #include "core/math/Math.h"
 
-#include "gpuw/ogl/GLCommon.h"
+#include "./ogl/GLCommon.h"
 
 #include <algorithm>
 

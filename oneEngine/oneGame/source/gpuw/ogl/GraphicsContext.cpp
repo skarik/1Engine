@@ -1,6 +1,6 @@
-#include "gpuw/GraphicsContext.h"
+#include "./GraphicsContext.h"
 
-#include "gpuw/ogl/GLCommon.h"
+#include "./ogl/GLCommon.h"
 #include "renderer/types/types.h"
 
 #include "core/types/types.h"

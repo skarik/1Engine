@@ -7,80 +7,117 @@
     <Filter Include="SOURCE\GPU Wrapper">
       <UniqueIdentifier>{27f97c23-3b8e-4366-9b54-66a9f1305aea}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\GPU Wrapper\Internal">
+    <Filter Include="SOURCE\GPU Wrapper\OpenGL">
+      <UniqueIdentifier>{4b66074e-1764-4ef2-b2ca-8dc1ba1c319c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\GPU Wrapper\OpenGL\OpenGL">
+      <UniqueIdentifier>{3f27fff0-4935-4df6-be52-55d0b3b9243c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\GPU Wrapper\OpenGL\Internal">
       <UniqueIdentifier>{25475de9-81a0-49ee-baec-d7cd5382ee06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\GPU Wrapper\Vulkan">
+      <UniqueIdentifier>{4fd4f8dd-85bc-4689-8c11-936dd856159a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\GPU Wrapper\DirectX 11">
+      <UniqueIdentifier>{d53cd5f9-3ce6-444b-b086-023aaa5f41bf}</UniqueIdentifier>
     </Filter>
     <Filter Include="SOURCE\GPU Wrapper\Public">
       <UniqueIdentifier>{b6d271b4-a9c0-4c90-a7ac-67b542246a97}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\GPU Wrapper\OpenGL">
-      <UniqueIdentifier>{3f27fff0-4935-4df6-be52-55d0b3b9243c}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\gpuw\Buffers.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\ComputeContext.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\Device.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\Fence.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\GraphicsContext.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\GraphicsContext.draw.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\GraphicsContext.sync.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\OutputSurface.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\Pipeline.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\RenderTarget.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\Sampler.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\Shader.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\ShaderPipeline.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\Texture.cpp">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\ogl\glcorearb_impl.c">
+    <ClInclude Include="source\gpuw\ogl\Buffers.h">
       <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="source\gpuw\ogl\wgl_impl.c">
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\ComputeContext.h">
       <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\Device.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\Fence.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\GraphicsContext.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\OutputSurface.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\Pipeline.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\RenderTarget.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\Sampler.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\Shader.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\ShaderPipeline.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\Texture.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="source\gpuw\1docs.gpwu.style.h">
       <Filter>SOURCE\GPU Wrapper</Filter>
     </ClInclude>
+    <ClInclude Include="source\gpuw\Public\Enums.h">
+      <Filter>SOURCE\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\Public\Formats.h">
+      <Filter>SOURCE\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\Public\Rect2.h">
+      <Filter>SOURCE\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\Public\ShaderTypes.h">
+      <Filter>SOURCE\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\Public\Slots.h">
+      <Filter>SOURCE\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\ogl\GLCommon.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\ogl\glcorearb.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\ogl\glcorearb_impl.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\ogl\glxext.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\ogl\wgl.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\ogl\wgl_impl.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\ogl\Internal\Enums.h">
+      <Filter>SOURCE\GPU Wrapper\OpenGL\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\Public\Error.h">
+      <Filter>SOURCE\GPU Wrapper\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\Public\Transfer.h">
+      <Filter>SOURCE\GPU Wrapper\Public</Filter>
+    </ClInclude>
     <ClInclude Include="source\gpuw\Buffers.h">
+      <Filter>SOURCE\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\module_config.h">
       <Filter>SOURCE\GPU Wrapper</Filter>
     </ClInclude>
     <ClInclude Include="source\gpuw\ComputeContext.h">
       <Filter>SOURCE\GPU Wrapper</Filter>
     </ClInclude>
     <ClInclude Include="source\gpuw\Device.h">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\Error.h">
       <Filter>SOURCE\GPU Wrapper</Filter>
     </ClInclude>
     <ClInclude Include="source\gpuw\Fence.h">
@@ -110,44 +147,55 @@
     <ClInclude Include="source\gpuw\Texture.h">
       <Filter>SOURCE\GPU Wrapper</Filter>
     </ClInclude>
-    <ClInclude Include="source\gpuw\Transfer.h">
-      <Filter>SOURCE\GPU Wrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\Public\Enums.h">
-      <Filter>SOURCE\GPU Wrapper\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\Public\Formats.h">
-      <Filter>SOURCE\GPU Wrapper\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\Public\Rect2.h">
-      <Filter>SOURCE\GPU Wrapper\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\Public\ShaderTypes.h">
-      <Filter>SOURCE\GPU Wrapper\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\Public\Slots.h">
-      <Filter>SOURCE\GPU Wrapper\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\ogl\GLCommon.h">
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\gpuw\ogl\Buffers.cpp">
       <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\ogl\glcorearb.h">
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\ComputeContext.cpp">
       <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\ogl\glcorearb_impl.h">
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\Device.cpp">
       <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\ogl\glxext.h">
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\Fence.cpp">
       <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\ogl\wgl.h">
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\GraphicsContext.cpp">
       <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\ogl\wgl_impl.h">
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\GraphicsContext.draw.cpp">
       <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\gpuw\Internal\Enums.h">
-      <Filter>SOURCE\GPU Wrapper\Internal</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\GraphicsContext.sync.cpp">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\OutputSurface.cpp">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\Pipeline.cpp">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\RenderTarget.cpp">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\Sampler.cpp">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\Shader.cpp">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\ShaderPipeline.cpp">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\Texture.cpp">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\ogl\glcorearb_impl.c">
+      <Filter>SOURCE\GPU Wrapper\OpenGL\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\ogl\wgl_impl.c">
+      <Filter>SOURCE\GPU Wrapper\OpenGL\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

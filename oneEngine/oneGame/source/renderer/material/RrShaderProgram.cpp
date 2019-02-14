@@ -112,7 +112,7 @@
 
 #include "gpuw/ShaderPipeline.h"
 #include "gpuw/Shader.h"
-#include "gpuw/Error.h"
+#include "gpuw/Public/Error.h"
 
 #include "core/containers/arstring.h"
 #include "core/utils/string.h"

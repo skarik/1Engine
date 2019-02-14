@@ -1,6 +1,6 @@
-#include "gpuw/RenderTarget.h"
-#include "gpuw/Error.h"
-#include "gpuw/ogl/GLCommon.h"
+#include "./RenderTarget.h"
+#include "gpuw/Public/Error.h"
+#include "./ogl/GLCommon.h"
 #include "core/debug.h"
 
 gpu::RenderTarget::RenderTarget ( void )

@@ -3,7 +3,7 @@
 
 #include "core/math/Math3d.h"
 #include "core/math/vect2d_template.h"
-#include "gpuw/Error.h"
+#include "gpuw/Public/Error.h"
 #include "gpuw/Texture.h"
 #include "gpuw/RenderTarget.h"
 #include "renderer/state/InternalSettings.h"

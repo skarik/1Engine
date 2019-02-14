@@ -3,7 +3,7 @@
 #include "core/system/Screen.h"
 
 #include "gpuw/Device.h"
-#include "gpuw/Error.h"
+#include "gpuw/Public/Error.h"
 #include "gpuw/RenderTarget.h"
 #include "gpuw/Texture.h"
 #include "renderer/material/RrPass.h"

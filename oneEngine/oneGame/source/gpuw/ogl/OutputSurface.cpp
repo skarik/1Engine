@@ -1,8 +1,8 @@
-#include "gpuw/OutputSurface.h"
-#include "gpuw/RenderTarget.h"
-#include "gpuw/Device.h"
-#include "gpuw/Error.h"
-#include "gpuw/ogl/GLCommon.h"
+#include "./OutputSurface.h"
+#include "./RenderTarget.h"
+#include "./Device.h"
+#include "gpuw/Public/Error.h"
+#include "./ogl/GLCommon.h"
 #include "renderer/types/types.h"
 #include "core/os.h"
 #include <stdio.h>
