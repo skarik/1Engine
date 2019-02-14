@@ -1,6 +1,6 @@
 #include "RrShapeIsosphere.h"
-#include "renderer/gpuw/Device.h"
-#include "renderer/gpuw/GraphicsContext.h"
+#include "gpuw/Device.h"
+#include "gpuw/GraphicsContext.h"
 #include <math.h>
 
 static const Real kIsoSphereX = .525731112119133606F;

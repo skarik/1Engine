@@ -7,8 +7,8 @@
 //#include "renderer/material/RrMaterial.h"
 //#include "renderer/system/glMainSystem.h"
 #include "renderer/types/shaders/sbuffers.h"
-#include "renderer/gpuw/Device.h"
-#include "renderer/gpuw/GraphicsContext.h"
+#include "gpuw/Device.h"
+#include "gpuw/GraphicsContext.h"
 
 renderer::InstancedMesh::InstancedMesh ( rrMeshBuffer* mesh, bool n_enableSkinning )
 	: Mesh(mesh, n_enableSkinning),

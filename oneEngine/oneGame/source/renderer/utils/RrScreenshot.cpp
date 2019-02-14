@@ -3,8 +3,8 @@
 #include "core/system/Screen.h"
 #include "core/system/io/FileUtils.h"
 
-#include "renderer/gpuw/Device.h"
-#include "renderer/gpuw/GraphicsContext.h"
+#include "gpuw/Device.h"
+#include "gpuw/GraphicsContext.h"
 
 #include <stdio.h>
 #include <time.h>

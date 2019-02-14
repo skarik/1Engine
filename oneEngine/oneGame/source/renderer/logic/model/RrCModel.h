@@ -6,7 +6,7 @@
 #include "core-ext/types/sHitbox.h"
 #include "renderer/logic/RrLogicObject.h"
 #include "renderer/types/ModelStructures.h"
-#include "renderer/gpuw/Buffers.h"
+#include "gpuw/Buffers.h"
 
 namespace renderer
 {

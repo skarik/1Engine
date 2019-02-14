@@ -25,8 +25,8 @@
 
 //#include "renderer/resource/CResourceManager.h"
 
-#include "renderer/gpuw/Texture.h"
-#include "renderer/gpuw/RenderTarget.h"
+#include "gpuw/Texture.h"
+#include "gpuw/RenderTarget.h"
 
 #include "renderer/windowing/RrWindow.h"
 

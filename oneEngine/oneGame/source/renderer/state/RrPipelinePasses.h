@@ -2,8 +2,8 @@
 #define RENDERER_PIPELINE_PASSES_H_
 
 #include "core/types.h"
-#include "renderer/gpuw/Buffers.h"
-#include "renderer/gpuw/Pipeline.h"
+#include "gpuw/Buffers.h"
+#include "gpuw/Pipeline.h"
 
 class RrPass;
 

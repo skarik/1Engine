@@ -4,8 +4,8 @@
 
 //#include "renderer/system/glMainSystem.h"
 #include "renderer/exceptions.h"
-#include "renderer/gpuw/Texture.h"
-#include "renderer/gpuw/Error.h"
+#include "gpuw/Texture.h"
+#include "gpuw/Error.h"
 
 // For debug logging of RT.
 //#define RT_DEBUG

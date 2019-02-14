@@ -9,8 +9,8 @@
 #include "core-ext/transform/Transform.h"
 
 #include "renderer/types/types.h"
-#include "renderer/gpuw/Buffers.h"
-#include "renderer/gpuw/Texture.h"
+#include "gpuw/Buffers.h"
+#include "gpuw/Texture.h"
 
 #include "RrShader.h"
 #include "RrShaderProgram.h"

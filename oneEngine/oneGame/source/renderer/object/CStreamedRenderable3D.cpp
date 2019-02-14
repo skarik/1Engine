@@ -1,5 +1,5 @@
 #include "renderer/object/CStreamedRenderable3D.h"
-#include "renderer/gpuw/Device.h"
+#include "gpuw/Device.h"
 #include "renderer/material/Material.h"
 
 CStreamedRenderable3D::CStreamedRenderable3D ( void )

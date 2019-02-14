@@ -3,8 +3,8 @@
 #include "core/math/Math.h"
 #include "core/debug/console.h"
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
-#include "renderer/gpuw/Device.h"
-#include "renderer/gpuw/GraphicsContext.h"
+#include "gpuw/Device.h"
+#include "gpuw/GraphicsContext.h"
 
 CMorphAction CMorpher::m_DeadAction ( "" );
 

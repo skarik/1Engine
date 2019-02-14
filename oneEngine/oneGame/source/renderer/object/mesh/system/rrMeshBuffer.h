@@ -6,7 +6,7 @@
 #include "renderer/types/types.h"
 #include "renderer/types/ModelStructures.h"
 #include "renderer/types/shaders/vattribs.h"
-#include "renderer/gpuw/Buffers.h"
+#include "gpuw/Buffers.h"
 
 /*enum rrMeshBufferType
 {

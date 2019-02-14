@@ -18,9 +18,9 @@
 //#include "renderer/material/RrMaterial.h"
 #include "renderer/object/CRenderableObject.h"
 
-#include "renderer/gpuw/Pipeline.h"
-#include "renderer/gpuw/ShaderPipeline.h"
-#include "renderer/gpuw/OutputSurface.h"
+#include "gpuw/Pipeline.h"
+#include "gpuw/ShaderPipeline.h"
+#include "gpuw/OutputSurface.h"
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
 #include "renderer/state/RrPipelinePasses.h"

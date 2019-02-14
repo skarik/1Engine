@@ -8,7 +8,7 @@
 
 #include "core-ext/utils/MeshBuilder.h"
 
-#include "renderer/gpuw/Device.h"
+#include "gpuw/Device.h"
 
 using namespace M04;
 

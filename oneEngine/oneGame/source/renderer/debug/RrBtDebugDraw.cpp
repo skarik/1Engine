@@ -8,8 +8,8 @@
 #include "renderer/material/RrShaderProgram.h"
 #include "renderer/texture/RrTexture.h"
 #include "renderer/debug/RrDebugDrawer.h"
-#include "renderer/gpuw/Buffers.h"
-#include "renderer/gpuw/Device.h"
+#include "gpuw/Buffers.h"
+#include "gpuw/Device.h"
 
 RrBtDebugDraw::RrBtDebugDraw ( PrWorld* associated_world )
 	: btIDebugDraw(), CRenderableObject(),

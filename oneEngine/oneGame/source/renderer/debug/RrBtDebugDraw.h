@@ -5,7 +5,7 @@
 #include "renderer/object/CRenderableObject.h"
 #include "bullet/LinearMath/btIDebugDraw.h"
 
-#include "renderer/gpuw/Buffers.h"
+#include "gpuw/Buffers.h"
 
 class PrWorld;
 

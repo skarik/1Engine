@@ -5,9 +5,9 @@
 #include "renderer/texture/RrTexture.h"
 #include "core/mem.h"
 
-#include "renderer/gpuw/Device.h"
-#include "renderer/gpuw/Buffers.h"
-#include "renderer/gpuw/Pipeline.h"
+#include "gpuw/Device.h"
+#include "gpuw/Buffers.h"
+#include "gpuw/Pipeline.h"
 
 #include "core/math/Math3d.h"
 

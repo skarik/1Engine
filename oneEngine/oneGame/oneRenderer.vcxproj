@@ -46,6 +46,9 @@
     <ProjectReference Include="onePhysical.vcxproj">
       <Project>{4fdb8acd-7078-4806-b6b0-04c5351f3f87}</Project>
     </ProjectReference>
+    <ProjectReference Include="oneGPUW.vcxproj">
+      <Project>{1986D332-4A22-4711-96B0-C94B9BA9B69D}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\renderer\camera\RrCamera.cpp" />
@@ -55,22 +58,6 @@
     <ClCompile Include="source\renderer\debug\RrDebugDrawer.cpp" />
     <ClCompile Include="source\renderer\debug\RrDebugRTInspector.cpp" />
     <ClCompile Include="source\renderer\debug\RrBtDebugDraw.cpp" />
-    <ClCompile Include="source\renderer\gpuw\Buffers.cpp" />
-    <ClCompile Include="source\renderer\gpuw\ComputeContext.cpp" />
-    <ClCompile Include="source\renderer\gpuw\Device.cpp" />
-    <ClCompile Include="source\renderer\gpuw\Fence.cpp" />
-    <ClCompile Include="source\renderer\gpuw\GraphicsContext.cpp" />
-    <ClCompile Include="source\renderer\gpuw\GraphicsContext.draw.cpp" />
-    <ClCompile Include="source\renderer\gpuw\GraphicsContext.sync.cpp" />
-    <ClCompile Include="source\renderer\gpuw\ogl\glcorearb_impl.c" />
-    <ClCompile Include="source\renderer\gpuw\ogl\wgl_impl.c" />
-    <ClCompile Include="source\renderer\gpuw\OutputSurface.cpp" />
-    <ClCompile Include="source\renderer\gpuw\Pipeline.cpp" />
-    <ClCompile Include="source\renderer\gpuw\RenderTarget.cpp" />
-    <ClCompile Include="source\renderer\gpuw\Sampler.cpp" />
-    <ClCompile Include="source\renderer\gpuw\Shader.cpp" />
-    <ClCompile Include="source\renderer\gpuw\ShaderPipeline.cpp" />
-    <ClCompile Include="source\renderer\gpuw\Texture.cpp" />
     <ClCompile Include="source\renderer\light\RrLight.cpp" />
     <ClCompile Include="source\renderer\logic\model\RrModelMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\logic\RrLogicObject.cpp" />
@@ -206,33 +193,6 @@
     <ClInclude Include="source\renderer\debug\RrBtDebugDraw.h" />
     <ClInclude Include="source\renderer\exceptions.h" />
     <ClInclude Include="source\renderer\exceptions\exceptions.h" />
-    <ClInclude Include="source\renderer\gpuw\1docs.gpwu.style.h" />
-    <ClInclude Include="source\renderer\gpuw\Buffers.h" />
-    <ClInclude Include="source\renderer\gpuw\ComputeContext.h" />
-    <ClInclude Include="source\renderer\gpuw\Device.h" />
-    <ClInclude Include="source\renderer\gpuw\Error.h" />
-    <ClInclude Include="source\renderer\gpuw\Fence.h" />
-    <ClInclude Include="source\renderer\gpuw\GraphicsContext.h" />
-    <ClInclude Include="source\renderer\gpuw\ogl\GLCommon.h" />
-    <ClInclude Include="source\renderer\gpuw\ogl\glcorearb.h" />
-    <ClInclude Include="source\renderer\gpuw\ogl\glcorearb_impl.h" />
-    <ClInclude Include="source\renderer\gpuw\ogl\glxext.h" />
-    <ClInclude Include="source\renderer\gpuw\ogl\wgl.h" />
-    <ClInclude Include="source\renderer\gpuw\ogl\wgl_impl.h" />
-    <ClInclude Include="source\renderer\gpuw\OutputSurface.h" />
-    <ClInclude Include="source\renderer\gpuw\Pipeline.h" />
-    <ClInclude Include="source\renderer\gpuw\Internal\Enums.h" />
-    <ClInclude Include="source\renderer\gpuw\Public\Enums.h" />
-    <ClInclude Include="source\renderer\gpuw\Public\Formats.h" />
-    <ClInclude Include="source\renderer\gpuw\Public\Rect2.h" />
-    <ClInclude Include="source\renderer\gpuw\Public\ShaderTypes.h" />
-    <ClInclude Include="source\renderer\gpuw\Public\Slots.h" />
-    <ClInclude Include="source\renderer\gpuw\RenderTarget.h" />
-    <ClInclude Include="source\renderer\gpuw\Sampler.h" />
-    <ClInclude Include="source\renderer\gpuw\Shader.h" />
-    <ClInclude Include="source\renderer\gpuw\ShaderPipeline.h" />
-    <ClInclude Include="source\renderer\gpuw\Texture.h" />
-    <ClInclude Include="source\renderer\gpuw\Transfer.h" />
     <ClInclude Include="source\renderer\light\RrLight.h" />
     <ClInclude Include="source\renderer\logic\model\RrAnimatedMeshGroup.h" />
     <ClInclude Include="source\renderer\logic\model\RrModelMasterSubsystem.h" />
@@ -418,14 +378,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
     <Link>
-      <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;OpenGL32.lib;freetype.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;freetype.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>libs\core\win32x86;libs\basic\win32x86;libs\render\win32x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
     <Link>
-      <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;OpenGL32.lib;freetype.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libjpeg.lib;libpng.lib;zlibstatic.lib;freetype.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>libs\core\win32x64;libs\basic\win32x64;libs\render\win32x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>

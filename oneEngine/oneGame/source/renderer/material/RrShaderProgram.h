@@ -4,7 +4,7 @@
 #include "core/types/arBaseObject.h"
 #include "core/containers/arstring.h"
 #include "core-ext/resources/IArResource.h"
-#include "renderer/gpuw/ShaderPipeline.h"
+#include "gpuw/ShaderPipeline.h"
 
 struct rrShaderProgramVsPs
 {

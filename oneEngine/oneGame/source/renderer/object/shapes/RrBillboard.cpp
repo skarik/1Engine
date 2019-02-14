@@ -1,7 +1,7 @@
 #include "RrBillboard.h"
 #include "renderer/camera/RrCamera.h"
-#include "renderer/gpuw/Device.h"
-#include "renderer/gpuw/GraphicsContext.h"
+#include "gpuw/Device.h"
+#include "gpuw/GraphicsContext.h"
 
 //#include "renderer/system/glMainSystem.h"
 

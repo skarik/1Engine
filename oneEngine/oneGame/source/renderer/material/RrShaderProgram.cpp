@@ -110,9 +110,9 @@
 #include "RrShaderProgram.h"
 #include "RrShaderMasterSubsystem.h"
 
-#include "renderer/gpuw/ShaderPipeline.h"
-#include "renderer/gpuw/Shader.h"
-#include "renderer/gpuw/Error.h"
+#include "gpuw/ShaderPipeline.h"
+#include "gpuw/Shader.h"
+#include "gpuw/Error.h"
 
 #include "core/containers/arstring.h"
 #include "core/utils/string.h"

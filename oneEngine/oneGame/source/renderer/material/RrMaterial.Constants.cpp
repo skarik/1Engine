@@ -2,7 +2,7 @@
 #include "core/system/Screen.h"
 
 #include "renderer/material/RrShader.h"
-#include "renderer/gpuw/Buffers.h"
+#include "gpuw/Buffers.h"
 #include "renderer/system/glSystem.h"
 #include "renderer/state/Settings.h"
 #include "renderer/camera/RrCamera.h"

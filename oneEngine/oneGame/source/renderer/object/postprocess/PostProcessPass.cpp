@@ -9,7 +9,7 @@
 
 #include "renderer/object/immediate/immediate.h"
 
-#include "renderer/gpuw/Device.h"
+#include "gpuw/Device.h"
 
 RrPostProcessPass::RrPostProcessPass ( void )
 {

@@ -1,6 +1,6 @@
 #include "RrShapeCube.h"
-#include "renderer/gpuw/Device.h"
-#include "renderer/gpuw/GraphicsContext.h"
+#include "gpuw/Device.h"
+#include "gpuw/GraphicsContext.h"
 
 rrMeshBuffer RrShapeCube::m_MeshBuffer;
 void RrShapeCube::BuildMeshBuffer ( void )

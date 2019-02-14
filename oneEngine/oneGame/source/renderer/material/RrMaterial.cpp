@@ -22,7 +22,7 @@
 
 #include "renderer/system/glMainSystem.h"
 
-#include "renderer/gpuw/Device.h"
+#include "gpuw/Device.h"
 
 #include <map>
 

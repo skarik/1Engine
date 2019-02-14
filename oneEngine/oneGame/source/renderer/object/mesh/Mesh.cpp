@@ -5,8 +5,8 @@
 #include "renderer/object/mesh/system/rrSkinnedMesh.h"
 #include "renderer/camera/RrCamera.h"
 #include "renderer/types/shaders/sbuffers.h"
-#include "renderer/gpuw/Device.h"
-#include "renderer/gpuw/GraphicsContext.h"
+#include "gpuw/Device.h"
+#include "gpuw/GraphicsContext.h"
 #include "renderer/material/Material.h"
 
 renderer::Mesh::Mesh ( rrMeshBuffer* nMesh, bool n_enableSkinning )

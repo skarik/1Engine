@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 #include "renderer/types/shaders/vattribs.h"
-#include "renderer/gpuw/Pipeline.h" // TODO?
-#include "renderer/gpuw/Public/Enums.h"
+#include "gpuw/Pipeline.h" // TODO?
+#include "gpuw/Public/Enums.h"
 
 namespace renderer
 {

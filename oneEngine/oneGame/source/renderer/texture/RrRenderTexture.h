@@ -3,7 +3,7 @@
 
 #include "RrTexture.h"
 #include "renderer/types/RrGpuTexture.h"
-#include "renderer/gpuw/RenderTarget.h"
+#include "gpuw/RenderTarget.h"
 
 //#include <stack>
 #include <vector>

@@ -1,9 +1,9 @@
 #include "core/math/Math.h"
 #include "core-ext/system/io/assets/TextureIO.h"
 #include "renderer/texture/RrTexture.h"
-#include "renderer/gpuw/Buffers.h"
-#include "renderer/gpuw/Device.h"
-#include "renderer/gpuw/Fence.h"
+#include "gpuw/Buffers.h"
+#include "gpuw/Device.h"
+#include "gpuw/Fence.h"
 
 //	rrTextureLoadInfo
 // Structure for current loading state

@@ -6,7 +6,7 @@
 #include "renderer/texture/RrTexture.h"
 //#include "renderer/system/glMainSystem.h"
 #include "renderer/camera/RrCamera.h"
-#include "renderer/gpuw/Pipeline.h"
+#include "gpuw/Pipeline.h"
 
 #include "CRenderableObject.h"
 

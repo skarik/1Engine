@@ -24,8 +24,8 @@
 #include "renderer/types/ObjectSettings.h"
 
 #include "renderer/material/RrPass.h"
-#include "renderer/gpuw/Pipeline.h"
-#include "renderer/gpuw/Buffers.h"
+#include "gpuw/Pipeline.h"
+#include "gpuw/Buffers.h"
 
 //#include "RrCamera.h"
 

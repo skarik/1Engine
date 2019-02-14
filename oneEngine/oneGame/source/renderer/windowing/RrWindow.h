@@ -4,8 +4,8 @@
 #include "core/os.h"
 #include "core/types.h"
 #include "core/math/vect2d_template.h"
-#include "renderer/gpuw/Device.h"
-#include "renderer/gpuw/OutputSurface.h"
+#include "gpuw/Device.h"
+#include "gpuw/OutputSurface.h"
 #include <vector>
 
 #ifdef _WIN32

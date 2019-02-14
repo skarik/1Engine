@@ -9,7 +9,7 @@
 #include "renderer/texture/RrFontTexture.h"
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
-#include "renderer/gpuw/Device.h"
+#include "gpuw/Device.h"
 #include "renderer/material/Material.h"
 
 #include "renderer/object/immediate/immediate.h" // TODO: Rename this header.

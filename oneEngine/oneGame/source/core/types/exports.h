@@ -121,52 +121,74 @@ typedef unsigned int	uint;
 #	define AR_CALL 
 #	define AR_FASTCALL 
 #endif
+
 // Module types
 #ifndef _ENGINE_DEPLOY
 #	define DEPLOY_API AR_IMPORT
 #else
 #	define DEPLOY_API AR_EXPORT
 #endif
+
 #ifndef _ENGINE_CORE
 #	define CORE_API AR_IMPORT
 #else
 #	define CORE_API AR_EXPORT
 #endif
+
 #ifndef _ENGINE_AUDIO
 #	define AUDIO_API AR_IMPORT
 #else
 #	define AUDIO_API AR_EXPORT
 #endif
+
 #ifndef _ENGINE_PHYSICAL
 #	define PHYS_API AR_IMPORT
 #else
 #	define PHYS_API AR_EXPORT
 #endif
+
 #ifndef _ENGINE_ENGINE
 #	define ENGINE_API AR_IMPORT
 #else
 #	define ENGINE_API AR_EXPORT
 #endif
+
 #ifndef _ENGINE_RENDERER
 #	define RENDER_API AR_IMPORT
 #else
 #	define RENDER_API AR_EXPORT
 #endif
+
+#ifndef _ENGINE_GPU_API
+#	define GPUW_API AR_IMPORT
+#	ifdef _ENGINE_RENDERER
+#		define GPUW_EXLUSIVE_API AR_IMPORT
+#	else
+#		define GPUW_EXLUSIVE_API
+#	endif
+#else
+#	define GPUW_API AR_EXPORT
+#	define GPUW_EXLUSIVE_API AR_EXPORT
+#endif
+
 #ifndef _ENGINE_RENDER2D
 #	define RENDER2D_API AR_IMPORT
 #else
 #	define RENDER2D_API AR_EXPORT
 #endif
+
 #ifndef _ENGINE_ENGINE_COMMON
 #	define ENGCOM_API AR_IMPORT
 #else
 #	define ENGCOM_API AR_EXPORT
 #endif
+
 #ifndef _ENGINE_ENGINE2D
 #	define ENGINE2D_API AR_IMPORT
 #else
 #	define ENGINE2D_API AR_EXPORT
 #endif
+
 #ifndef _ENGINE_GAME_CORE
 #	define GAME_API AR_IMPORT
 #else

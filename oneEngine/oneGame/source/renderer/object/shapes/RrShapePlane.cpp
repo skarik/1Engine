@@ -1,6 +1,6 @@
 #include "RrShapePlane.h"
-#include "renderer/gpuw/Device.h"
-#include "renderer/gpuw/GraphicsContext.h"
+#include "gpuw/Device.h"
+#include "gpuw/GraphicsContext.h"
 
 rrMeshBuffer RrShapePlane::m_MeshBuffer;
 void RrShapePlane::BuildMeshBuffer ( void )

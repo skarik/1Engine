@@ -1,6 +1,6 @@
 #include "CRenderable3D.h"
 #include "renderer/material/RrPass.h"
-#include "renderer/gpuw/Device.h"
+#include "gpuw/Device.h"
 #include "renderer/material/Material.h"
 
 CRenderable3D::CRenderable3D ( void )

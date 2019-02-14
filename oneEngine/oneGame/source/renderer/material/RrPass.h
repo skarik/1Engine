@@ -5,7 +5,7 @@
 #include "renderer/types/types.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/types/shaders/cbuffers.h"
-#include "renderer/gpuw/Public/Enums.h"
+#include "gpuw/Public/Enums.h"
 #include "renderer/material/ShaderSlots.h"
 #include "renderer/material/VertexAttribute.h"
 

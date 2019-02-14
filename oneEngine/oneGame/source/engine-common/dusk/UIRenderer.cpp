@@ -2,10 +2,10 @@
 
 #include "core/system/Screen.h"
 
-#include "renderer/gpuw/Device.h"
-#include "renderer/gpuw/Error.h"
-#include "renderer/gpuw/RenderTarget.h"
-#include "renderer/gpuw/Texture.h"
+#include "gpuw/Device.h"
+#include "gpuw/Error.h"
+#include "gpuw/RenderTarget.h"
+#include "gpuw/Texture.h"
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
 #include "renderer/material/Material.h"
