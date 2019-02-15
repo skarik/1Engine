@@ -293,7 +293,7 @@ void RrWindow::CreateGfxSurface ( void )
 		ERROR_OUT("Gfx surface creation error.\n");
 	}
 
-	if (m_device->initialize() != 0)
+	if (m_device->initialize(&m_surface) != 0)
 	{
 		delete m_device;
 		DestroyScreen();

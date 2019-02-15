@@ -9,6 +9,15 @@
 #define CORE_COMMON_MESSY_H_
 
 //
+// NUMBERS
+#include <stdint.h>
+
+//
+// ENGINE VERSION & APPNAME
+constexpr uint32_t kEngineVersion = 0x00000001U;
+constexpr const char* kEngineAppName = "1Engine_Application";
+
+//
 // DEPRECATED DEFINITION
 #if		defined(_MSC_VER)
 #	define DEPRECATED(WHY) __declspec(deprecated( WHY ))

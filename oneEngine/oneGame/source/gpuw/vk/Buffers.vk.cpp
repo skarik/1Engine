@@ -1,6 +1,7 @@
+#include "gpuw/gpuw_common.h"
 #ifdef GPU_API_VULKAN
 
-#include "./Buffers.h"
+#include "./Buffers.vk.h"
 #include "gpuw/Public/Error.h"
 #include "./gpu.h"
 #include "core/debug.h"

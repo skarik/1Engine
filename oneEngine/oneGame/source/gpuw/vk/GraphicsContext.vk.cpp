@@ -1,6 +1,7 @@
+#include "gpuw/gpuw_common.h"
 #ifdef GPU_API_VULKAN
 
-#include "./GraphicsContext.h"
+#include "./GraphicsContext.vk.h"
 
 #include "./gpu.h"
 #include "renderer/types/types.h"

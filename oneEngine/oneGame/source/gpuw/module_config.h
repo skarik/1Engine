@@ -4,7 +4,9 @@
 #ifndef GPU_API_OPENGL
 #define GPU_API_OPENGL
 #endif
+//#ifndef GPU_API_VULKAN
 //#define GPU_API_VULKAN
+//#endif
 //#define GPU_API_DIRECTX11
 //#define GPU_API_DIRECTX12
 

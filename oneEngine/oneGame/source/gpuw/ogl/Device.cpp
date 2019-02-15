@@ -1,8 +1,10 @@
-﻿#ifdef GPU_API_OPENGL
+﻿#include "gpuw/gpuw_common.h"
+#ifdef GPU_API_OPENGL
 
 #include "./Device.h"
 #include "./GraphicsContext.h"
 #include "./ComputeContext.h"
+#include "./OutputSurface.h"
 #include "gpuw/Public/Error.h"
 #include "renderer/types/types.h"
 #include "./ogl/GLCommon.h"
@@ -62,7 +64,7 @@ int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
 	return gpu::kError_SUCCESS;
 }
 
-int gpu::Device::initialize ( void )
+int gpu::Device::initialize ( OutputSurface* surface )
 {
 	// Create temporary OpenGL context:
 	HGLRC tempContext = wglCreateContext((HDC)mw_deviceContext);
@@ -186,6 +188,24 @@ int gpu::Device::initialize ( void )
 		{	
 			glDebugMessageCallback(DebugCallback, this);
 		}
+	}
+
+	// Update the Presentation settings
+	switch (surface->m_presentMode)
+	{
+	case gpu::kPresentModeImmediate:
+		wglSwapIntervalEXT(0);
+		break;
+	case gpu::kPresentModeFIFO:
+		wglSwapIntervalEXT(1);
+		break;
+	case gpu::kPresentModeFIFORelaxed:
+		wglSwapIntervalEXT(-1);
+		break;
+	case gpu::kPresentModeMailbox:
+		wglSwapIntervalEXT(2);
+		break;
+
 	}
 
 	return gpu::kError_SUCCESS;

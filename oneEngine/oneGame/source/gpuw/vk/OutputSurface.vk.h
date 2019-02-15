@@ -45,12 +45,12 @@ namespace gpu
 		GPUW_API uint32_t		getHeight ( void );
 
 	private:
-		friend Device;
-
-		intptr_t			mw_deviceContext;
+		//intptr_t			mw_deviceContext;
+		Device*				m_device;
 		uint32_t			m_width;
 		uint32_t			m_height;
-		PresentMode			m_presentMode;
+
+		VkSurfaceKHR		m_surface;
 	};
 }
 

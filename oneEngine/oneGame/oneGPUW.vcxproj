@@ -47,6 +47,7 @@
     <ClInclude Include="source\gpuw\ComputeContext.h" />
     <ClInclude Include="source\gpuw\Device.h" />
     <ClInclude Include="source\gpuw\Fence.h" />
+    <ClInclude Include="source\gpuw\gpuw_common.h" />
     <ClInclude Include="source\gpuw\GraphicsContext.h" />
     <ClInclude Include="source\gpuw\module_config.h" />
     <ClInclude Include="source\gpuw\ogl\Buffers.h" />
@@ -82,10 +83,12 @@
     <ClInclude Include="source\gpuw\Shader.h" />
     <ClInclude Include="source\gpuw\ShaderPipeline.h" />
     <ClInclude Include="source\gpuw\Texture.h" />
-    <ClInclude Include="source\gpuw\vk\Buffers.h" />
-    <ClInclude Include="source\gpuw\vk\ComputeContext.h" />
-    <ClInclude Include="source\gpuw\vk\Device.h" />
-    <ClInclude Include="source\gpuw\vk\GraphicsContext.h" />
+    <ClInclude Include="source\gpuw\vk\Buffers.vk.h" />
+    <ClInclude Include="source\gpuw\vk\ComputeContext.vk.h" />
+    <ClInclude Include="source\gpuw\vk\Device.vk.h" />
+    <ClInclude Include="source\gpuw\vk\gpu.h" />
+    <ClInclude Include="source\gpuw\vk\GraphicsContext.vk.h" />
+    <ClInclude Include="source\gpuw\vk\OutputSurface.vk.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp" />
@@ -107,6 +110,7 @@
     <ClCompile Include="source\gpuw\vk\Buffers.vk.cpp" />
     <ClCompile Include="source\gpuw\vk\Device.vk.cpp" />
     <ClCompile Include="source\gpuw\vk\GraphicsContext.vk.cpp" />
+    <ClCompile Include="source\gpuw\vk\OutputSurface.vk.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1986D332-4A22-4711-96B0-C94B9BA9B69D}</ProjectGuid>
@@ -169,7 +173,7 @@
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PreprocessorDefinitions>GPU_API_OPENGL;_ENGINE_GPU_API;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_ENGINE_GPU_API;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <LargeAddressAware>true</LargeAddressAware>

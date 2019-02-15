@@ -4,5 +4,5 @@
 #endif
 
 #ifdef GPU_API_VULKAN
-#	include "gpuw/vk/GraphicsContext.h"
+#	include "gpuw/vk/GraphicsContext.vk.h"
 #endif

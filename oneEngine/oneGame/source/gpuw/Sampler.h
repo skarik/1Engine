@@ -4,5 +4,5 @@
 #endif
 
 #ifdef GPU_API_VULKAN
-#	include "gpuw/vk/Sampler.h"
+#	include "gpuw/vk/Sampler.vk.h"
 #endif

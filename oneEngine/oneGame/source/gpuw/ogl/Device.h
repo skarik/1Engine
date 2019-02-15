@@ -2,11 +2,10 @@
 #define GPU_WRAPPER_DEVICE_H_
 
 #include "core/types/types.h"
-//#include "core/gfx/textureFormats.h"
 #include "renderer/types/types.h"
 #include "gpuw/Public/Transfer.h"
 #include "./GraphicsContext.h"
-//#include "gpuw/ComputeContext.h"
+#include "./ComputeContext.h"
 
 namespace gpu
 {
@@ -31,7 +30,7 @@ namespace gpu
 		// Non-exposed API for initializing the device. (before OutputSurface ready)
 		GPUW_EXLUSIVE_API int	create ( DeviceLayer* layers, uint32_t layerCount );
 		// Non-exposed API for starting up the device. (after OutputSurface ready)
-		GPUW_EXLUSIVE_API int	initialize ( void );
+		GPUW_EXLUSIVE_API int	initialize ( OutputSurface* surface );
 		// Non-exposed API for refreshing the device
 		GPUW_EXLUSIVE_API int	refresh ( intptr_t module_handle, intptr_t module_window );
 

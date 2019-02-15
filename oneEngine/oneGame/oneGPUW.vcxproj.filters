@@ -147,16 +147,25 @@
     <ClInclude Include="source\gpuw\Texture.h">
       <Filter>SOURCE\GPU Wrapper</Filter>
     </ClInclude>
-    <ClInclude Include="source\gpuw\vk\GraphicsContext.h">
+    <ClInclude Include="source\gpuw\vk\Buffers.vk.h">
       <Filter>SOURCE\GPU Wrapper\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="source\gpuw\vk\Buffers.h">
+    <ClInclude Include="source\gpuw\vk\ComputeContext.vk.h">
       <Filter>SOURCE\GPU Wrapper\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="source\gpuw\vk\ComputeContext.h">
+    <ClInclude Include="source\gpuw\vk\Device.vk.h">
       <Filter>SOURCE\GPU Wrapper\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="source\gpuw\vk\Device.h">
+    <ClInclude Include="source\gpuw\vk\GraphicsContext.vk.h">
+      <Filter>SOURCE\GPU Wrapper\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\gpuw_common.h">
+      <Filter>SOURCE\GPU Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\vk\OutputSurface.vk.h">
+      <Filter>SOURCE\GPU Wrapper\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\vk\gpu.h">
       <Filter>SOURCE\GPU Wrapper\Vulkan</Filter>
     </ClInclude>
   </ItemGroup>
@@ -216,6 +225,9 @@
       <Filter>SOURCE\GPU Wrapper\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="source\gpuw\vk\Buffers.vk.cpp">
+      <Filter>SOURCE\GPU Wrapper\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\vk\OutputSurface.vk.cpp">
       <Filter>SOURCE\GPU Wrapper\Vulkan</Filter>
     </ClCompile>
   </ItemGroup>

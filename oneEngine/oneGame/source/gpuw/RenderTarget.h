@@ -4,5 +4,5 @@
 #endif
 
 #ifdef GPU_API_VULKAN
-#	include "gpuw/vk/RenderTarget.h"
+#	include "gpuw/vk/RenderTarget.vk.h"
 #endif

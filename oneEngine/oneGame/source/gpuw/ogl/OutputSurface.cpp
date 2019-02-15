@@ -1,3 +1,4 @@
+#include "gpuw/gpuw_common.h"
 #ifdef GPU_API_OPENGL
 
 #include "./OutputSurface.h"
@@ -17,6 +18,10 @@ int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32
 	pfd.dwFlags		= PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_DEPTH_DONTCARE;
 	pfd.iPixelType	= PFD_TYPE_RGBA;
 	pfd.cColorBits	= 32; // todo
+	pfd.cRedBits	= 10;
+	pfd.cGreenBits	= 10;
+	pfd.cBlueBits	= 10;
+	pfd.cAlphaBits	= 2;
 	pfd.cDepthBits	= 0;
 	pfd.cStencilBits= 0;
 	pfd.iLayerType  = PFD_MAIN_PLANE;
@@ -35,14 +40,15 @@ int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32
 		return gpu::kErrorFormatUnsupported;
 	}
 
-	// TODO: VSync settings with presentMode.
-
 	// Save the context:
 	mw_deviceContext = device->mw_deviceContext;
 
 	// Save the "requested" width and height.
 	m_width = width;
 	m_height = height;
+
+	// Save the present mode
+	m_presentMode = presentMode;
 
 	return 0;
 }

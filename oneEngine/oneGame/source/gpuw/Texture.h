@@ -4,5 +4,5 @@
 #endif
 
 #ifdef GPU_API_VULKAN
-#	include "gpuw/vk/Texture.h"
+#	include "gpuw/vk/Texture.vk.h"
 #endif

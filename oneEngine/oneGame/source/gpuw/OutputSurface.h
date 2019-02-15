@@ -4,5 +4,5 @@
 #endif
 
 #ifdef GPU_API_VULKAN
-#	include "gpuw/vk/OutputSurface.h"
+#	include "gpuw/vk/OutputSurface.vk.h"
 #endif
