@@ -145,10 +145,10 @@ bool CDeveloperConsoleUI::BeginRender ( void )
 	// Push both the meshes
 	auto t_shapesMesh = builder.getModelData();
 	if (t_shapesMesh.vertexNum > 0)
-		m_meshBufferShapes.InitMeshBuffers(&t_shapesMesh);
+		m_meshBufferShapes.StreamMeshBuffers(&t_shapesMesh);
 	auto t_textMesh = builder_text.getModelData();
 	if (t_textMesh.vertexNum > 0)
-		m_meshBufferText.InitMeshBuffers(&t_textMesh);
+		m_meshBufferText.StreamMeshBuffers(&t_textMesh);
 	// save their vertex counts
 	m_indexCountShapes = t_shapesMesh.indexNum;
 	m_indexCountText = t_textMesh.indexNum;
@@ -179,8 +179,9 @@ bool CDeveloperConsoleUI::Render ( const rrRenderParams* params )
 		renderer::Material(this, gfx, params->pass, pipeline)
 			// set the depth & blend state registers
 			.setDepthStencilState()
-			// bind the samplers & textures
+			.setRasterizerState()
 			.setBlendState()
+			// bind the samplers & textures
 			.setTextures();
 		// bind the vertex buffers
 		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
@@ -267,6 +268,7 @@ bool CDeveloperCursor::Render ( const rrRenderParams* params )
 		renderer::Material(this, gfx, params->pass, pipeline)
 			// set the depth & blend state registers
 			.setDepthStencilState()
+			.setRasterizerState()
 			// bind the samplers & textures
 			.setBlendState()
 			.setTextures();

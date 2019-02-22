@@ -68,6 +68,7 @@ bool CStreamedRenderable3D::Render ( const rrRenderParams* params )
 		renderer::Material(this, gfx, params->pass, pipeline)
 		// set the depth & blend state registers
 			.setDepthStencilState()
+			.setRasterizerState()
 		// bind the samplers & textures
 			.setBlendState()
 			.setTextures();

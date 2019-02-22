@@ -28,7 +28,7 @@ namespace renderer
 
 		RENDER_API Material& setAll ( CRenderableObject::rrRenderParams* thisParams )
 		{
-			return setStart().setDepthStencilState().setBlendState().setTextures().setCommonCBuffers(thisParams);
+			return setStart().setDepthStencilState().setRasterizerState().setBlendState().setTextures().setCommonCBuffers(thisParams);
 		}
 
 		RENDER_API Material& setStart ( void )
@@ -46,6 +46,18 @@ namespace renderer
 			ds.stencilTestEnabled = false;
 
 			m_ctx->setDepthStencilState(ds);
+			return *this;
+		}
+
+		RENDER_API Material& setRasterizerState ( void )
+		{
+			gpu::RasterizerState rs;
+			rs.cullmode = m_pass->m_cullMode;
+			/*rs.fillmode = gpu::kFillModeSolid;
+			rs.frontface = gpu::kFrontFaceCounterClockwise;
+			rs.scissorEnabled = true;*/
+
+			m_ctx->setRasterizerState(rs);
 			return *this;
 		}
 

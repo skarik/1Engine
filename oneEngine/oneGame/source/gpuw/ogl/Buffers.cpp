@@ -6,6 +6,8 @@
 #include "./ogl/GLCommon.h"
 #include "core/debug.h"
 
+#include <algorithm>
+
 gpu::Buffer::Buffer ( void ) :
 	m_bufferType(kBufferTypeUnknown),
 	m_buffer(0),
@@ -27,10 +29,12 @@ gpuHandle gpu::Buffer::nativePtr ( void )
 static void _AllocateBufferSize ( const GLuint buffer, const uint64_t data_size, const gpu::TransferStyle style )
 {
 	if (style == gpu::kTransferStatic)
+		//glNamedBufferStorage(buffer, (GLsizeiptr)std::max<uint64_t>(data_size, 4096), NULL, GL_MAP_WRITE_BIT); // Attempting to fix Quadro issues
 		glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_MAP_WRITE_BIT);
 	//else if (style == gpu::kTransferDynamic)
 	//	glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
 	else if (style == gpu::kTransferStream)
+		//glNamedBufferStorage(buffer, (GLsizeiptr)std::max<uint64_t>(data_size, 4096), NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT); // Attempting to fix Quadro issues
 		glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
 }
 
@@ -122,6 +126,8 @@ int gpu::Buffer::unmap ( Device* device )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
 	glUnmapNamedBuffer(m_buffer);
+	//glMemoryBarrier(GL_ELEMENT_ARRAY_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT); // attempting to fix Quadro issues
+
 	return kError_SUCCESS;
 }
 
@@ -131,6 +137,7 @@ int	gpu::Buffer::upload ( Device* device, void* data, const  uint64_t data_size,
 	ARCORE_ASSERT(m_buffer != NIL);
 
 	glNamedBufferSubData(m_buffer, 0, (GLsizeiptr)data_size, data);
+	//glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT); // attempting to fix Quadro issues
 
 	return 0;
 }

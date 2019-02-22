@@ -102,8 +102,9 @@ bool dusk::UIRenderer::Render ( const rrRenderParams* params )
 	renderer::Material(this, gfx, params->pass, pipeline)
 		// set the pipeline
 		.setStart()
-		// set the depth & blend state registers
+		// set the depth & rasterizer state registers
 		.setDepthStencilState()
+		.setRasterizerState()
 		// bind the blend state
 		.setBlendState();
 	gfx->setShaderSamplerAuto(gpu::kShaderStagePs, TEX_MAIN, m_renderTargetTexture);
@@ -337,6 +338,7 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 		.setStart()
 		// set almost everything else
 		.setDepthStencilState()
+		.setRasterizerState()
 		.setBlendState()
 		.setTextures();
 	// Set the constant buffer used
