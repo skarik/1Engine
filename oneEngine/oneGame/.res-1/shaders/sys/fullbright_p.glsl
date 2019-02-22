@@ -13,7 +13,7 @@ layout(binding = 0, location = 20) uniform sampler2D textureSampler0;
 layout(location = 0) out vec4 FragDiffuse;
 
 // Game Inputs
-layout(std140) uniform sys_cbuffer_PerObjectExt
+layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
 {
     vec4    sys_DiffuseColor;
     vec4    sys_SpecularColor;
