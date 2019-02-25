@@ -1,8 +1,16 @@
-
 #include "core/debug/CDebugConsole.h"
 #include "Resources.h"
 #include <filesystem>
+
+#ifdef _MSC_VER
+#	if _MSC_VER<=1900 // VS2015
 namespace fs = std::tr2::sys;
+#	else // VS2017+
+namespace fs = std::filesystem;
+#	endif
+#else
+namespace fs = std::filesystem;
+#endif
 
 namespace core
 {

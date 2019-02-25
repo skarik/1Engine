@@ -108,20 +108,9 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	// Set up engine component
 	EngineCommonInitialize();
 
-	// Create the developer console
-	//CDeveloperConsoleUI* devConsole = new CDeveloperConsoleUI();
-	//CDeveloperCursor* devCursor = new CDeveloperCursor();
-
-	// Create the debug drawers
-	//debug::CDebugDrawer debugDrawer;
-	//debug::CDebugRTInspector debugRTInspector;
-	// Create the sprite drawer
-	//CSpriteContainer spriteContainer;
-
 	// Create the game scene
 	CGameScene* pNewScene = CGameScene::NewScene<gmsceneSystemLoader> ();
 	CGameScene::SceneGoto( pNewScene );
-	//EngineCommon::LoadScene("default");
 
 	// Create debug camera to show stuff
 	RrCamera* l_cam = new RrCamera;

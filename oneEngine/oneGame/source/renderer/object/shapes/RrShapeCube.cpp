@@ -18,7 +18,7 @@ void RrShapeCube::BuildMeshBuffer ( void )
 			Vector3f(0,0,0), Vector3f(1,0,0), Vector3f(1,1,0), Vector3f(0,1,0)
 		};
 
-		arModelData model;
+		arModelData model = {};
 
 		/*m_modeldata.vertices = new arModelVertex [24];
 		m_modeldata.vertexNum = 24;

@@ -97,8 +97,28 @@ RrCamera::~RrCamera ( void )
 
 void RrCamera::SetActive ( void )
 {
-	if ( activeCamera != this ) {
+	ARCORE_ASSERT(this->GetType() == kCameraClassNormal);
+
+	if ( activeCamera != this )
+	{
+		// Mark self as the active camera.
 		activeCamera = this;
+
+		// We need to now resort the cameras:
+		for ( auto it = m_CameraList.begin(); it != m_CameraList.end(); )
+		{
+			// Search for self to reorder...
+			if ( *it == this )
+			{
+				it = m_CameraList.erase(it);
+				m_CameraList.insert( m_CameraList.begin(), this );
+				break; // No longer need to iterate.
+			}
+			else
+			{
+				++it;
+			}
+		}
 	}
 }
 

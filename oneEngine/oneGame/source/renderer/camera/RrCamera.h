@@ -77,7 +77,7 @@ public:
 	RENDER_API virtual void	RenderEnd ( void );
 	
 	//	SetActive() : sets camera as active
-	// Sets active camera.
+	// Sets active camera. This will force a resorting the of the cameras.
 	// Note that set active is only valid if the camera is not an RT camera.
 	RENDER_API void			SetActive ( void );
 	// Sets the rotation.
