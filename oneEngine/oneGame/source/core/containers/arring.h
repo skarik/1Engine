@@ -9,48 +9,65 @@
 #define CORE_RING_H_
 
 #include "core/types/types.h"
+#include "core/debug.h"
 
 template <typename OBJECT, unsigned short Ln>
 class arring
 {
 public:
-	explicit	arring ( void )
+	explicit	arring ( bool memsetData = false )
 	{
-		memset(data, 0, sizeof(OBJECT) * Ln);
+		if (memsetData)
+			memset(data, 0, sizeof(OBJECT) * Ln);
 		current = 0;
 	}
 
+	// at(index) : Returns object at the given index
 	OBJECT& at ( const unsigned short index )
 	{
-		return data[at];
+		ARCORE_ASSERT(index < Ln);
+		return data[index];
 	}
+	// at(index) : Returns object at the given index
 	const OBJECT& at ( const unsigned short index ) const
 	{
-		return data[at];
+		ARCORE_ASSERT(index < Ln);
+		return data[index];
 	}
 
-	const OBJECT& get ( void )
+	// get() : Returns currently selected object
+	OBJECT& get ( void )
 	{
 		return data[current];
 	}
+	// get() : Returns currently selected object
+	const OBJECT& get ( void ) const
+	{
+		return data[current];
+	}
+	//	increment() : Increments the counter. Will loop around.
 	void increment ( void )
 	{
 		current = (current + 1) % Ln;
 	}
+
+	//	get_incrememnt() : Increments the counter, then returns the previously selected item.
 	const OBJECT& get_increment ( void )
 	{
 		unsigned short prev = current;
-		current = (current + 1) % Ln;
+		this->increment();
 		return data[prev];
 	}
+	//	set_increment(value) : Sets the current selected item, then increments the counter.
 	OBJECT set_increment ( OBJECT& value )
 	{
 		OBJECT prev = data[current];
 		data[current] = value;
-		current = (current + 1) % Ln;
+		this->increment();
 		return prev;
 	}
 
+	//	fill(value) : Fills all elements with the given value
 	void fill ( OBJECT value )
 	{
 		for (int i = 0; i < Ln; ++i)

@@ -70,6 +70,8 @@ namespace gpu
 		//	uploadElements()
 		GPUW_API int			uploadElements ( Device* device, void* data, const uint64_t element_count, const TransferStyle style );
 
+		//	free() : destroys any allocated buffer, if existing.
+		// Assume that any use of the buffer after this point will be invalid, so avoid 1-frame buffers if possible
 		GPUW_API int			free ( Device* device );
 
 		//	valid() : is this buffer valid to be used?

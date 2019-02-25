@@ -126,7 +126,6 @@ int gpu::Buffer::unmap ( Device* device )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
 	glUnmapNamedBuffer(m_buffer);
-	//glMemoryBarrier(GL_ELEMENT_ARRAY_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT); // attempting to fix Quadro issues
 
 	return kError_SUCCESS;
 }
@@ -137,9 +136,8 @@ int	gpu::Buffer::upload ( Device* device, void* data, const  uint64_t data_size,
 	ARCORE_ASSERT(m_buffer != NIL);
 
 	glNamedBufferSubData(m_buffer, 0, (GLsizeiptr)data_size, data);
-	//glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT); // attempting to fix Quadro issues
 
-	return 0;
+	return kError_SUCCESS;
 }
 
 //	upload( data, data_size, transfer ) : initializes and upload a constant buffer with data
@@ -150,7 +148,7 @@ int	gpu::Buffer::uploadElements ( Device* device, void* data, const  uint64_t el
 
 	glNamedBufferSubData(m_buffer, 0, (GLsizeiptr)(m_elementSize * element_count), data);
 
-	return 0;
+	return kError_SUCCESS;
 }
 
 //	free() : destroys any allocated buffer, if existing.
@@ -161,7 +159,7 @@ int	gpu::Buffer::free ( Device* device )
 	m_bufferType = kBufferTypeUnknown;
 	m_format = kFormatUndefined;
 
-	return 0;
+	return kError_SUCCESS;
 }
 
 //	getFormat() : returns underlying format of the data, if applicable.

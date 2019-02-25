@@ -66,8 +66,8 @@ CDeveloperConsoleUI::~CDeveloperConsoleUI ( void )
 
 	fntMenu->RemoveReference();
 
-	m_meshBufferShapes.FreeMeshBuffers();
-	m_meshBufferText.FreeMeshBuffers();
+	m_meshBufferShapes.freeMeshBuffers();
+	m_meshBufferText.freeMeshBuffers();
 }
 
 bool CDeveloperConsoleUI::BeginRender ( void )
@@ -145,10 +145,13 @@ bool CDeveloperConsoleUI::BeginRender ( void )
 	// Push both the meshes
 	auto t_shapesMesh = builder.getModelData();
 	if (t_shapesMesh.vertexNum > 0)
-		m_meshBufferShapes.StreamMeshBuffers(&t_shapesMesh);
+		m_meshBufferShapes.getToEdit()->StreamMeshBuffers(&t_shapesMesh);
 	auto t_textMesh = builder_text.getModelData();
 	if (t_textMesh.vertexNum > 0)
-		m_meshBufferText.StreamMeshBuffers(&t_textMesh);
+		m_meshBufferText.getToEdit()->StreamMeshBuffers(&t_textMesh);
+	m_meshBufferShapes.incrementAfterEdit();
+	m_meshBufferText.incrementAfterEdit();
+
 	// save their vertex counts
 	m_indexCountShapes = t_shapesMesh.indexNum;
 	m_indexCountText = t_textMesh.indexNum;
@@ -164,7 +167,7 @@ bool CDeveloperConsoleUI::PreRender ( rrCameraPass* cameraPass )
 bool CDeveloperConsoleUI::Render ( const rrRenderParams* params )
 {
 	uint16_t		t_indexCount	= (params->pass == 0) ? m_indexCountShapes : m_indexCountText;
-	rrMeshBuffer	*t_meshBuffer	= (params->pass == 0) ? &m_meshBufferShapes : &m_meshBufferText;
+	rrMeshBuffer	*t_meshBuffer	= (params->pass == 0) ? m_meshBufferShapes.getToRender() : m_meshBufferText.getToRender();
 
 	// otherwise we will render the same way 3d meshes render
 	{

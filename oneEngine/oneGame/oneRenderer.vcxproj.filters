@@ -626,5 +626,8 @@
     <ClInclude Include="source\renderer\object\mesh\StreamedMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="source\renderer\object\mesh\system\rrMeshBufferRing.h">
+      <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -239,6 +239,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\system\rrMeshBuffer.h" />
+    <ClInclude Include="source\renderer\object\mesh\system\rrMeshBufferRing.h" />
     <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>

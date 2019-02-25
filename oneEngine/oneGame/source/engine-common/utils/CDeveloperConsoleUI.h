@@ -8,6 +8,7 @@
 
 #include "renderer/object/CRenderableObject.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
+#include "renderer/object/mesh/system/rrMeshBufferRing.h"
 
 class RrFontTexture;
 class RrTexture;
@@ -22,37 +23,37 @@ class CDeveloperConsoleUI : public CRenderableObject
 {
 	RegisterRenderClassName( "CDeveloperConsoleUI" );
 public:
-	ENGCOM_API		CDeveloperConsoleUI ( void );
-	ENGCOM_API		~CDeveloperConsoleUI ( void );
+	ENGCOM_API				CDeveloperConsoleUI ( void );
+	ENGCOM_API				~CDeveloperConsoleUI ( void );
 
-	bool			BeginRender ( void ) override;
-	bool			PreRender ( rrCameraPass* cameraPass ) override;
-	bool			Render ( const rrRenderParams* params ) override;
+	bool					BeginRender ( void ) override;
+	bool					PreRender ( rrCameraPass* cameraPass ) override;
+	bool					Render ( const rrRenderParams* params ) override;
 
 private:
-	RrFontTexture*	fntMenu;
+	RrFontTexture*		fntMenu;
 
-	rrMeshBuffer	m_meshBufferShapes;
-	rrMeshBuffer	m_meshBufferText;
-	uint16_t		m_indexCountShapes;
-	uint16_t		m_indexCountText;
+	rrMeshBufferRing<3>	m_meshBufferShapes;
+	rrMeshBufferRing<3>	m_meshBufferText;
+	uint16_t			m_indexCountShapes;
+	uint16_t			m_indexCountText;
 };
 
 class CDeveloperCursor : public CRenderableObject
 {
 	RegisterRenderClassName( "CDeveloperCursor" );
 public:
-	ENGCOM_API		CDeveloperCursor ( void );
-	ENGCOM_API		~CDeveloperCursor ( void );
+	ENGCOM_API				CDeveloperCursor ( void );
+	ENGCOM_API				~CDeveloperCursor ( void );
 
-	bool			PreRender ( rrCameraPass* cameraPass ) override;
-	bool			Render ( const rrRenderParams* params ) override;;
+	bool					PreRender ( rrCameraPass* cameraPass ) override;
+	bool					Render ( const rrRenderParams* params ) override;;
 
 private:
-	RrTexture*		texCursor;
+	RrTexture*			texCursor;
 
-	rrMeshBuffer	m_meshBuffer;
-	uint16_t		m_indexCount;
+	rrMeshBuffer		m_meshBuffer;
+	uint16_t			m_indexCount;
 };
 
 ENGCOM_API extern CDeveloperConsoleUI*	ActiveConsoleUI;
