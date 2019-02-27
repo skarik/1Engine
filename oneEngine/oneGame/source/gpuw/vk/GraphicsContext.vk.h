@@ -7,10 +7,13 @@
 #include "gpuw/Public/Rect2.h"
 #include "gpuw/Public/ShaderTypes.h"
 #include "gpuw/Public/Slots.h"
+#include "./gpu.h"
 #include <stdint.h>
+#include <vector>
 
 namespace gpu
 {
+	class Device;
 	class ShaderPipeline;
 	class Pipeline;
 	class Fence;
@@ -172,6 +175,12 @@ namespace gpu
 
 	private:
 		// implementation details:
+		friend Device;
+		//Device*					m_device;
+
+		VkCommandPool			m_commandPool;
+		std::vector<VkCommandBuffer>
+								m_commandBuffers;
 
 		RasterizerState			m_rasterState;
 		BlendCollectiveState	m_blendCollectState;

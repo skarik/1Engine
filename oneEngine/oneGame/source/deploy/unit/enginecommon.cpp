@@ -36,11 +36,8 @@
 
 // Include engine-common
 #include "engine-common/engine-common.h"
-//#include "engine-common/utils/CDeveloperConsoleUI.h"
 //#include "engine-common/lua/CLuaController.h"
 #include "engine-common/scenes/gmsceneSystemLoader.h"
-
-//#include "renderer/debug/CDebugDrawer.h"
 
 // Steam Include
 #include "steam/steam_api.h"
@@ -157,9 +154,9 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 					{
 						for (int z = -5; z <= 5; ++z)
 						{
-							debug::Drawer->DrawLine(Vector3f(x, y, -10), Vector3f(x, y, +10));
-							debug::Drawer->DrawLine(Vector3f(x, -10, z), Vector3f(x, +10, z));
-							debug::Drawer->DrawLine(Vector3f(-10, y, z), Vector3f(+10, y, z));
+							debug::Drawer->DrawLine(Vector3f((Real32)x, (Real32)y, -10), Vector3f((Real32)x, (Real32)y, +10));
+							debug::Drawer->DrawLine(Vector3f((Real32)x, -10, (Real32)z), Vector3f((Real32)x, +10, (Real32)z));
+							debug::Drawer->DrawLine(Vector3f(-10, (Real32)y, (Real32)z), Vector3f(+10, (Real32)y, (Real32)z));
 						}
 					}
 				}

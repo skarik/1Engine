@@ -21,9 +21,9 @@ namespace gpu
 
 	struct RasterizerState
 	{
-		FillMode	fillmode;
-		CullMode	cullmode;
-		FrontFace	frontface;
+		FillMode	fillmode;	// how each polygon is filled
+		CullMode	cullmode;	// which face is culled
+		FrontFace	frontface;	// controls winding order
 		bool		scissorEnabled;
 
 		RasterizerState()
@@ -115,6 +115,7 @@ namespace gpu
 		// Controls how to fill polygons. (glPolygonMode in OpenGL)
 		GPUW_API int			setFillMode( const FillMode fillMode );
 
+		//	setRasterizerState( state ) : Sets rasterizer state for the next draw
 		GPUW_API int			setRasterizerState ( const RasterizerState& state );
 		//	setBlendState( state ) : Sets blend state for a single render target
 		// Undocumented behavior when used with MRT. For MRT, use setBlendCollectiveState.
@@ -122,6 +123,7 @@ namespace gpu
 		//	setBlendCollectiveState( state ) : Sets blend state for all targets in an MRT.
 		// Blend states for unbound MRT slots are ignored by the driver (probably)
 		GPUW_API int			setBlendCollectiveState ( const BlendCollectiveState& state );
+		//	setDepthStencilState( state ) : Sets depth-stencil state for the next draw
 		GPUW_API int			setDepthStencilState ( const DepthStencilState& state );
 
 		//	setViewPort( left, top, right, bottom ) : Sets viewport rect

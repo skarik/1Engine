@@ -42,6 +42,9 @@ gpu::Device::~Device ( void )
 		}
 		mw_deviceContext = NIL;
 	}
+
+	delete m_graphicsContext;
+	delete m_computeContext;
 }
 
 int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )

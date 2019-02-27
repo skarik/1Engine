@@ -6,15 +6,17 @@
 //		GenerateNormalMap
 // Given an image, default normal, and output buffer, generates a default normal map.
 // The normals are pillow-shaded based on distance to the transparent edges.
-void Render2D::Preprocess::GenerateNormalMap (
-	const pixel_t* i_pixel_data, pixel_t* o_normal_map, 
-	const uint n_image_width, const uint n_image_height,
-	const Vector3f& n_default_normal
-)
+void render2d::preprocess::GenerateNormalMap (
+	const core::gfx::arPixel* i_pixel_data,
+	core::gfx::arPixel* o_normal_map, 
+	const uint n_image_width,
+	const uint n_image_height,
+	const Vector3f& n_default_normal = Vector3f(0,0,1)
+	)
 {
 	const int filter_radius = 3;
 
-	pixel_t pixel;
+	core::gfx::arPixel pixel;
 	int x, y;
 	int xoffset, yoffset;
 	int xoffsetmax;

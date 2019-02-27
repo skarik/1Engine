@@ -77,7 +77,7 @@ int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32
 
 int gpu::OutputSurface::destroy ( void )
 {
-	vkDestroySurfaceKHR(m_device->m_instance, m_surface, m_device->m_allocator);
+	vkDestroySurfaceKHR(m_device->m_instance, (VkSurfaceKHR)m_surface, m_device->m_allocator);
 	return 0;
 }
 

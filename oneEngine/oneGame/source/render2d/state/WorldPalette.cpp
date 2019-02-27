@@ -1,10 +1,9 @@
-
 #include "WorldPalette.h"
 #include "renderer/texture/RrTexture.h"
 #include "renderer/texture/RrTexture3D.h"
 #include "render2d/preprocess/PaletteToLUT.h"
 
-using namespace Render2D;
+using namespace render2d;
 
 WorldPalette* WorldPalette::m_active_palette = NULL;
 WorldPalette* WorldPalette::Active ( void )
@@ -40,13 +39,19 @@ RrTexture* WorldPalette::GetTexture ( void )
 {
 	if ( palette_texture == NULL )
 	{
-		palette_texture = new RrTexture("_hx_SYSTEM_SKIP");
-		palette3d_texture = new RrTexture3D("_hx_SYSTEM_SKIP");
+		palette_texture = RrTexture::CreateUnitialized("palette2d");
+		palette3d_texture = RrTexture3D::CreateUnitialized("palette3d");
 		palette_texture_needs_update = true;
 	}
 	if ( palette_texture_needs_update )
 	{
-		palette_texture->Upload(palette_data, palette_width, MAX_HEIGHT, Clamp, Clamp, MipmapNone, SamplingPoint);
+		palette_texture->Upload(
+			false,
+			palette_data, palette_width, MAX_HEIGHT,
+			core::gfx::tex::kColorFormatRGBA8,
+			core::gfx::tex::kWrappingClamp, core::gfx::tex::kWrappingClamp,
+			core::gfx::tex::kMipmapGenerationNone,
+			core::gfx::tex::kSamplingPoint);
 		BuildAndUpdatePalette3D();
 		palette_texture_needs_update = false;
 	}
@@ -65,7 +70,7 @@ RrTexture3D* WorldPalette::GetTexture3D ( void )
 //	AddPalette ()
 // Adds a palette to current internal palette.
 // Returns true if successful. Returns false if the widths were not equal, or ran out of room.
-bool WorldPalette::AddPalette ( pixel_t* n_palette_to_add, const uint n_palette_to_add_size, const uint n_palette_width )
+bool WorldPalette::AddPalette ( core::gfx::arPixel* n_palette_to_add, const uint n_palette_to_add_size, const uint n_palette_width )
 {
 	if ( palette_width != 0 && palette_width != n_palette_width )
 	{	// Incoming palette is not the same width, so don't allow for combining.
@@ -91,12 +96,12 @@ bool WorldPalette::AddPalette ( pixel_t* n_palette_to_add, const uint n_palette_
 		// Copy over to just past the first row
 		palette_width = n_palette_width;
 		palette_size = n_palette_to_add_size + 1;
-		memcpy( palette_data + n_palette_width, n_palette_to_add, sizeof(pixel_t) * n_palette_to_add_size * n_palette_width );
+		memcpy( palette_data + n_palette_width, n_palette_to_add, sizeof(core::gfx::arPixel) * n_palette_to_add_size * n_palette_width );
 	}
 	// Use the LUT utilities to combile the palettes (if there will be room)
 	else
 	{
-		palette_size = Preprocess::CombineLUT( palette_data, palette_size, n_palette_to_add, n_palette_to_add_size, palette_width );
+		palette_size = preprocess::CombineLUT( palette_data, palette_size, n_palette_to_add, n_palette_to_add_size, palette_width );
 	}
 
 	// Need an update for next load
@@ -117,9 +122,9 @@ void WorldPalette::BuildAndUpdatePalette3D ( void )
 	const int offset_y = lookup3d_depth;
 	const int offset_z = lookup3d_depth * lookup3d_depth;
 
-	pixel_t* lookup3d_data = new pixel_t [lookup3d_size];
+	core::gfx::arPixel* lookup3d_data = new core::gfx::arPixel [lookup3d_size];
 	// Start with empty pixels
-	memset( lookup3d_data, 0, sizeof(pixel_t) * lookup3d_size );
+	memset( lookup3d_data, 0, sizeof(core::gfx::arPixel) * lookup3d_size );
 
 #if 0
 	// Start off placing each palette color in the palette
@@ -218,7 +223,13 @@ void WorldPalette::BuildAndUpdatePalette3D ( void )
 	}
 
 	// Now that the palette is built, upload it.
-	palette3d_texture->Upload(lookup3d_data, lookup3d_depth, lookup3d_depth, lookup3d_depth, Clamp, Clamp, Clamp, MipmapNone, SamplingPoint);
+	palette3d_texture->Upload(
+		false, lookup3d_data,
+		lookup3d_depth, lookup3d_depth, lookup3d_depth,
+		core::gfx::tex::kColorFormatRGBA8,
+		core::gfx::tex::kWrappingClamp, core::gfx::tex::kWrappingClamp, core::gfx::tex::kWrappingClamp,
+		core::gfx::tex::kMipmapGenerationNone,
+		core::gfx::tex::kSamplingPoint);
 
 	// Free unused data
 	delete [] lookup3d_data;

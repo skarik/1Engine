@@ -1,10 +1,10 @@
 //===============================================================================================//
-// sprintInfo.h
+// spriteInfo.h
 //
 // Contains definitions for individual pixel data storage
 //===============================================================================================//
-#ifndef _RENDER2D_SPRITE_INFO_H_
-#define _RENDER2D_SPRITE_INFO_H_
+#ifndef RENDER2D_SPRITE_INFO_H_
+#define RENDER2D_SPRITE_INFO_H_
 
 #include "core/types/types.h"
 #include "core/types/float.h"
@@ -12,25 +12,24 @@
 
 class RrTexture;
 
-struct spriteInfo_t
+namespace render2d
 {
-	Vector2i	framesize;
-	uint16_t	frames;
-
-	Vector2i	fullsize;
-
-	RrTexture*	tex_sprite;
-	RrTexture*	tex_lookup;
-
-public:
-	spriteInfo_t ( void )
-		: framesize(0,0), frames(0), fullsize(0,0),
-		tex_sprite(NULL),
-		tex_lookup(NULL)
+	struct rrSpriteInfo
 	{
-		;
-	}
-};
+		Vector2i	framesize;
+		uint16_t	frames;
 
+		Vector2i	fullsize;
 
-#endif//_RENDER2D_SPRITE_INFO_H_
+		RrTexture*	tex_sprite;
+		RrTexture*	tex_lookup;
+
+		rrSpriteInfo ( void )
+			: framesize(0,0), frames(0), fullsize(0,0),
+			tex_sprite(NULL),
+			tex_lookup(NULL)
+			{}
+	};
+}
+
+#endif//RENDER2D_SPRITE_INFO_H_

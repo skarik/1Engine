@@ -21,19 +21,19 @@ public: // Creation Interface
 	//	Load ( filename ) : Loads a texture from the disk.
 	// May return a previously loaded instance of the texture.
 	// The reference count of the returned instance will not be incremented.
-	RENDER_API static RrTexture*
+	RENDER_API static RrTexture3D*
 							Load3D ( const char* resource_name );
 
 	//	Load ( filename ) : Loads a texture from the disk.
 	// May return a previously loaded instance of the texture.
 	// The reference count of the returned instance will not be incremented.
-	RENDER_API static RrTexture*
+	RENDER_API static RrTexture3D*
 							LoadAtlas ( const char* resource_name, const int atlas_sx, const int atlas_sy );
 
 	//	CreateUnitialized ( name ) : Creates an uninitialized texture object.
 	// Can be used for procedural textures, with Upload(...) later.
 	// The reference count of the returned instance will not be incremented.
-	RENDER_API static RrTexture*
+	RENDER_API static RrTexture3D*
 							CreateUnitialized ( const char* name );
 
 public:
@@ -47,6 +47,7 @@ public:
 		uint16_t						width,
 		uint16_t						height,
 		uint16_t						depth,
+		core::gfx::tex::arColorFormat	format,
 		core::gfx::tex::arWrappingType	repeatX			= core::gfx::tex::kWrappingRepeat,
 		core::gfx::tex::arWrappingType	repeatY			= core::gfx::tex::kWrappingRepeat,
 		core::gfx::tex::arWrappingType	repeatZ			= core::gfx::tex::kWrappingRepeat,

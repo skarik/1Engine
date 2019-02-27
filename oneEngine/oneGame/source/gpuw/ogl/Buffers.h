@@ -61,8 +61,10 @@ namespace gpu
 		// Data is uploaded separately through map/unmap or upload.
 		GPUW_API int			initAsStructuredBuffer ( Device* device, const uint64_t data_size );
 
-		//GPUW_API int			allocate ( Device* device, const uint64_t data_size, const TransferStyle style );
+		//	map( device, style ) : Maps the entire buffer to CPU-side memory and returns the address.
 		GPUW_API void*			map ( Device* device, const TransferStyle style );
+		//	unmap( device ) : Unmaps the buffer.
+		// If the mapping was Static, this is a synchronous operation, waiting for the data to upload to the device.
 		GPUW_API int			unmap ( Device* device );
 
 		//	upload( data, data_size, transfer ) : upload a buffer with data

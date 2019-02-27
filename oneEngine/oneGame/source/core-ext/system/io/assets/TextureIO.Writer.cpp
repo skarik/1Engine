@@ -113,6 +113,9 @@ bool core::BpdWriter::patchHeader( void )
 	l_header.levelsOffset	= m_offsetLevels;
 	l_header.animationOffset= m_offsetAnimation;
 	l_header.paletteOffset	= m_offsetPalette;
+	l_header.normalsOffset	= 0;
+	l_header.surfaceOffset	= 0;
+	l_header.illuminOffset	= 0;
 
 	// Write the header:
 	mappedfile->SeekTo(0);

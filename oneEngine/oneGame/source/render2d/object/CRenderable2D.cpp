@@ -2,18 +2,13 @@
 
 #include "core/utils/string.h"
 #include "core-ext/system/io/Resources.h"
+#include "core-ext/system/io/assets/TextureIO.h"
 
-#include "renderer/material/RrShader.h"
-#include "renderer/material/RrPass.h"
-#include "renderer/material/RrShaderProgram.h"
+#include "gpuw/Device.h"
 #include "renderer/texture/RrTexture.h"
-#include "renderer/texture/TextureIO.h"
-
-//#include "renderer/resource/CResourceManager.h"
-
-//#include "render2d/texture/TextureIO.h"
-
-#include "renderer/system/glMainSystem.h"
+#include "renderer/material/RrShaderProgram.h"
+#include "renderer/material/RrPass.h"
+#include "renderer/material/Material.h"
 
 #include "render2d/preprocess/PaletteToLUT.h"
 #include "render2d/preprocess/NormalMapGeneration.h"
@@ -23,7 +18,7 @@ CRenderable2D::CRenderable2D ( void )
 	: CRenderableObject()
 {
 	// Set up default parameters
-	m_spriteGenerationInfo = spriteGenParams2D_t();
+	m_spriteGenerationInfo = rrSpriteGenParams();
 	m_spriteGenerationInfo.normal_default = Vector3f(0, 0, 1.0F);
 
 	// Use a default 2D material
@@ -45,31 +40,17 @@ CRenderable2D::CRenderable2D ( void )
 	spritePass.setVertexSpecificationByCommonList(t_vspec, 4);
 	PassInitWithInput(0, &spritePass);
 
-	// Start with empty buffers
-	m_buffer_verts = NIL;
-	m_buffer_tris = NIL;
-
 	// Start off with empty model data
+	memset(&m_modeldata, 0, sizeof(m_modeldata));
 	m_modeldata.indexNum = 0;
-	m_modeldata.indices = NULL;
 	m_modeldata.vertexNum = 0;
-	m_modeldata.vertices = NULL;
 }
 
 CRenderable2D::~CRenderable2D ()
-{ GL_ACCESS
+{
+	m_meshBuffer.FreeMeshBuffers();
+
 	// Material reference released automatically
-
-	// Still have to release buffers
-	if ( m_buffer_verts != NIL ) {
-		GL.FreeBuffer( &m_buffer_verts );
-		m_buffer_verts = NIL;
-	}
-	if ( m_buffer_tris != NIL ) {
-		GL.FreeBuffer( &m_buffer_tris );
-		m_buffer_tris = NIL;
-	}
-
 }
 
 //		SetSpriteFile ( c-string sprite filename )
@@ -253,7 +234,7 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_resname, core::
 	//	if (o_img_info) *o_img_info = imginfo_sprite;
 
 	//	// Convert the colors to the internal world's palette
-	//	Render2D::Preprocess::DataToLUT(
+	//	render2d::preprocess::DataToLUT(
 	//		raw_sprite, imginfo_sprite.width * imginfo_sprite.height,
 	//		Render2D::WorldPalette::Active()->palette_data, Render2D::WorldPalette::MAX_HEIGHT, Render2D::WorldPalette::Active()->palette_width);
 
@@ -309,7 +290,7 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_resname, core::
 
 	//		// Generate a normal map based on input parameters
 	//		pixel_t* raw_normalmap = new pixel_t [imginfo_sprite.width * imginfo_sprite.height];
-	//		Render2D::Preprocess::GenerateNormalMap( raw_sprite, raw_normalmap, imginfo_sprite.width, imginfo_sprite.height, m_spriteGenerationInfo.normal_default );
+	//		render2d::preprocess::GenerateNormalMap( raw_sprite, raw_normalmap, imginfo_sprite.width, imginfo_sprite.height, m_spriteGenerationInfo.normal_default );
 
 	//		// Upload the data
 	//		new_texture->Upload(
@@ -383,14 +364,14 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_resname, core::
 
 //		GetSpriteInfo ()
 // Returns read-only reference to the current sprite information structure.
-const spriteInfo_t& CRenderable2D::GetSpriteInfo ( void )
+const render2d::rrSpriteInfo& CRenderable2D::GetSpriteInfo ( void )
 {
 	return m_spriteInfo;
 }
 
 //		SpriteGenParams ()
 // Returns read-write reference to the sprite generation parameters
-spriteGenParams2D_t& CRenderable2D::SpriteGenParams ( void )
+rrSpriteGenParams& CRenderable2D::SpriteGenParams ( void )
 {
 	return m_spriteGenerationInfo;
 }
@@ -398,63 +379,72 @@ spriteGenParams2D_t& CRenderable2D::SpriteGenParams ( void )
 //		PushModelData()
 // Takes the information inside of m_modeldata and pushes it to the GPU so that it may be rendered.
 void CRenderable2D::PushModeldata ( void )
-{ GL_ACCESS
-	GL.BindVertexArray( 0 );
-
-	// Create new buffers
-	if ( m_buffer_verts == NIL )
-		GL.CreateBuffer( &m_buffer_verts );
-	if ( m_buffer_tris == NIL )
-		GL.CreateBuffer( &m_buffer_tris );
-	//bShaderSetup = false; // With making new buffers, shader is now not ready
-
-	// Bind to some buffer objects
-	GL.BindBuffer( GL_ARRAY_BUFFER,			m_buffer_verts ); // for vertex coordinates
-	GL.BindBuffer( GL_ELEMENT_ARRAY_BUFFER,	m_buffer_tris ); // for face vertex indexes
-
-	// Copy data to the buffer
-	GL.UploadBuffer( GL_ARRAY_BUFFER,
-		sizeof(arModelVertex) * (m_modeldata.vertexNum),
-		m_modeldata.vertices,
-		GL_STATIC_DRAW );
-	GL.UploadBuffer( GL_ELEMENT_ARRAY_BUFFER,
-		sizeof(arModelTriangle) * (m_modeldata.triangleNum),
-		m_modeldata.triangles,
-		GL_STATIC_DRAW );
-
-	// bind with 0, so, switch back to normal pointer operation
-	GL.UnbindBuffer( GL_ARRAY_BUFFER );
-	GL.UnbindBuffer( GL_ELEMENT_ARRAY_BUFFER );
+{
+	m_meshBuffer.InitMeshBuffers(&m_modeldata);
 }
 
 //		PreRender()
 // Push the uniform properties
-bool CRenderable2D::PreRender ( void )
+bool CRenderable2D::PreRender ( rrCameraPass* cameraPass )
 {
-	m_material->prepareShaderConstants(transform.world);
+	PushCbufferPerObject(transform.world, cameraPass);
 	return true;
 }
 
 //		Render()
 // Render the model using the 2D engine's style
-bool CRenderable2D::Render ( const char pass )
-{ GL_ACCESS
-	// Do not render if no buffer to render with
-	if ( m_buffer_verts == 0 || m_buffer_tris == 0 )
+bool CRenderable2D::Render ( const rrRenderParams* params )
+{
+	//// Do not render if no buffer to render with
+	//if ( m_buffer_verts == 0 || m_buffer_tris == 0 )
+	//{
+	//	return true;
+	//}
+
+	//// For now, we will render the same way as the 3d meshes render
+	////GL.Transform( &(transform.world) );
+	//m_material->m_bufferSkeletonSize = 0;
+	//m_material->m_bufferMatricesSkinning = 0;
+	//m_material->bindPass(pass);
+	////parent->SendShaderUniforms(this);
+	//BindVAO( pass, m_buffer_verts, m_buffer_tris );
+	//GL.DrawElements( GL_TRIANGLES, m_modeldata.triangleNum*3, GL_UNSIGNED_INT, 0 );
+
+	////GL.endOrtho();
+	//// Success!
+
+	// otherwise we will render the same way 3d meshes render
 	{
-		return true;
+		if ( !m_meshBuffer.m_mesh_uploaded )
+			return true; // Only render when have a valid mesh and rendering enabled
+
+		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
+		gpu::Pipeline* pipeline = GetPipeline( params->pass );
+		gfx->setPipeline(pipeline);
+		// Set up the material helper...
+		renderer::Material(this, gfx, params->pass, pipeline)
+			// set the depth & blend state registers
+			.setDepthStencilState()
+			.setRasterizerState()
+			// bind the samplers & textures
+			.setBlendState()
+			.setTextures();
+		// bind the vertex buffers
+		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
+			if (m_meshBuffer.m_bufferEnabled[i])
+				gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
+		// bind the index buffer
+		gfx->setIndexBuffer(&m_meshBuffer.m_indexBuffer, gpu::kIndexFormatUnsigned16);
+		// bind the cbuffers
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
+		// draw now
+		gfx->drawIndexed(m_modeldata.indexNum, 0);
 	}
 
-	// For now, we will render the same way as the 3d meshes render
-	//GL.Transform( &(transform.world) );
-	m_material->m_bufferSkeletonSize = 0;
-	m_material->m_bufferMatricesSkinning = 0;
-	m_material->bindPass(pass);
-	//parent->SendShaderUniforms(this);
-	BindVAO( pass, m_buffer_verts, m_buffer_tris );
-	GL.DrawElements( GL_TRIANGLES, m_modeldata.triangleNum*3, GL_UNSIGNED_INT, 0 );
-
-	//GL.endOrtho();
-	// Success!
 	return true;
 }

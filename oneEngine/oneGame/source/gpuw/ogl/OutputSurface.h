@@ -41,7 +41,9 @@ namespace gpu
 		// This call may stall.
 		GPUW_API int			present ( void );
 
+		//	getWidth() : Returns the width of the current renderable surface
 		GPUW_API uint32_t		getWidth ( void );
+		//	getHeight() : Returns the width of the current renderable surface
 		GPUW_API uint32_t		getHeight ( void );
 
 	private:

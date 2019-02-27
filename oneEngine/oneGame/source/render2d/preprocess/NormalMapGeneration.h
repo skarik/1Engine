@@ -1,23 +1,24 @@
-#ifndef _RENDER2D_NORMAL_MAP_GENERATION_H_
-#define _RENDER2D_NORMAL_MAP_GENERATION_H_
+#ifndef RENDER2D_NORMAL_MAP_GENERATION_H_
+#define RENDER2D_NORMAL_MAP_GENERATION_H_
 
 #include "core/types.h"
 #include "core/math/Math3d.h"
 #include "core/gfx/pixelFormat.h"
 
-namespace Render2D
+namespace render2d
 {
-	namespace Preprocess
+	namespace preprocess
 	{
-		//		GenerateNormalMap
+		//	GenerateNormalMap( sprite, o_normal_map, width, height, center_normal )
 		// Given an image, default normal, and output buffer, generates a default normal map.
 		// The normals are pillow-shaded based on distance to the transparent edges.
-		RENDER2D_API void GenerateNormalMap (
-			const pixel_t* i_pixel_data, pixel_t* o_normal_map, 
-			const uint n_image_width, const uint n_image_height,
-			const Vector3f& n_default_normal = Vector3f(0,0,1)
-		);
+		RENDER2D_API void		GenerateNormalMap ( const core::gfx::arPixel* i_pixel_data,
+													core::gfx::arPixel* o_normal_map, 
+													const uint n_image_width,
+													const uint n_image_height,
+													const Vector3f& n_default_normal = Vector3f(0,0,1)
+													);
 	};
 };
 
-#endif//_RENDER2D_PALETTE_TO_LUT_H_
+#endif//RENDER2D_PALETTE_TO_LUT_H_

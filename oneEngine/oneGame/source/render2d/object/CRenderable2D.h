@@ -10,11 +10,12 @@
 #define _RENDER2D_C_RENDERABLE_2D_H_
 
 #include "core/types/ModelData.h"
-#include "renderer/object/CRenderableObject.h"
 #include "core/gfx/textureStructures.h"
+#include "renderer/object/CRenderableObject.h"
 #include "render2d/types/spriteInfo.h"
+#include "renderer/object/mesh/system/rrMeshBuffer.h"
 
-struct spriteGenParams2D_t
+struct rrSpriteGenParams
 {
 	Vector3f normal_default;
 };
@@ -34,19 +35,21 @@ public:
 
 	//		GetSpriteInfo ()
 	// Returns read-only reference to the current sprite information structure.
-	RENDER2D_API const spriteInfo_t& GetSpriteInfo ( void );
+	RENDER2D_API const render2d::rrSpriteInfo&
+							GetSpriteInfo ( void );
 
 	//		SpriteGenParams ()
 	// Returns read-write reference to the sprite generation parameters
-	RENDER2D_API spriteGenParams2D_t& SpriteGenParams ( void );
+	RENDER2D_API rrSpriteGenParams&
+							SpriteGenParams ( void );
 
 	//		PreRender()
 	// Push the uniform properties
-	RENDER2D_API bool		PreRender ( void ) override;
+	RENDER2D_API bool		PreRender ( rrCameraPass* cameraPass ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style
-	RENDER2D_API bool		Render ( const char pass ) override;
+	RENDER2D_API bool		Render ( const rrRenderParams* params ) override;
 
 protected:
 
@@ -55,15 +58,15 @@ protected:
 	RENDER2D_API void		PushModeldata ( void );
 
 	//	Mesh information
-	arModelData				m_modeldata;
+	arModelData			m_modeldata;
 	//	GPU information
-	uint					m_buffer_verts;
-	uint					m_buffer_tris;
+	rrMeshBuffer		m_meshBuffer;
 
 	//	Sprite information
-	spriteInfo_t			m_spriteInfo;
+	render2d::rrSpriteInfo
+						m_spriteInfo;
 	//	Sprite generation parameters
-	spriteGenParams2D_t		m_spriteGenerationInfo;
+	rrSpriteGenParams	m_spriteGenerationInfo;
 };
 
 #endif//_RENDER2D_C_RENDERABLE_2D_H_

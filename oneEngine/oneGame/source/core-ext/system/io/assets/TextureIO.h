@@ -22,7 +22,7 @@ namespace core
 	static const char*	kTextureFormat_Header		= "BPD\0";
 
 	static const int	kTextureFormat_VersionMajor	= 2;
-	static const int	kTextureFormat_VersionMinor	= 1;
+	static const int	kTextureFormat_VersionMinor	= 2;
 
 	static const char*	kTextureFormat_HeadLevel	= "TEX\0";
 	static const char*	kTextureFormat_HeadAnimation= "ANM\0";
@@ -117,6 +117,16 @@ namespace core
 		uint32_t	animationOffset;
 		// byte offset
 		uint32_t	paletteOffset;
+		// byte offset of normal data. use the levels information to load mips.
+		uint32_t	normalsOffset; 
+		// byte offset of surface data. use the levels information to load mips.
+		uint32_t	surfaceOffset;
+		// byte offset of illumination data. use the levels information to load mips.
+		uint32_t	illuminOffset;
+
+		uint32_t _unused0;
+		uint32_t _unused1;
+		uint32_t _unused2;
 
 	public:
 		//void setTextureType
@@ -163,7 +173,7 @@ namespace core
 		uint16_t	unused0;
 	};
 
-	static_assert(sizeof(textureFmtHeader)		== sizeof(uint32_t)*10,	"Invalid structure size");
+	static_assert(sizeof(textureFmtHeader)		== sizeof(uint32_t)*16,	"Invalid structure size");
 	static_assert(sizeof(textureFmtLevel)		== sizeof(uint32_t)*4,	"Invalid structure size");
 	static_assert(sizeof(textureFmtAnimation)	== sizeof(uint32_t)*4,	"Invalid structure size");
 	static_assert(sizeof(textureFmtFrame)		== sizeof(uint32_t)*1,	"Invalid structure size");

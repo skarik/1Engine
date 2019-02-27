@@ -67,6 +67,14 @@ namespace gpu
 		VkAllocationCallbacks*
 							m_allocator;
 
+		uint32_t			m_queueIndexGraphics;
+		uint32_t			m_queueIndexCompute;
+		uint32_t			m_queueIndexTransfer;
+
+		VkPhysicalDevice	m_physicalDevice;
+		VkPhysicalDeviceProperties
+							m_physicalDeviceProperties;
+
 		VkDebugReportCallbackEXT
 							m_debugCallback;
 

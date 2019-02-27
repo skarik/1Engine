@@ -1,6 +1,6 @@
 #include "CRenderable3D.h"
-#include "renderer/material/RrPass.h"
 #include "gpuw/Device.h"
+#include "renderer/material/RrPass.h"
 #include "renderer/material/Material.h"
 
 CRenderable3D::CRenderable3D ( void )
@@ -18,15 +18,6 @@ CRenderable3D::CRenderable3D ( void )
 
 CRenderable3D::~CRenderable3D ( void )
 { 
-	// Still have to release buffers
-	/*if ( m_buffer_verts != NIL ) {
-		GL.FreeBuffer( &m_buffer_verts );
-		m_buffer_verts = NIL;
-	}
-	if ( m_buffer_tris != NIL ) {
-		GL.FreeBuffer( &m_buffer_tris );
-		m_buffer_tris = NIL;
-	}*/
 	m_meshBuffer.FreeMeshBuffers();
 }
 

@@ -1,4 +1,3 @@
-
 #include "PaletteToLUT.h"
 #include "core/math/Math2d.h"
 #include "core/math/vect2d_template.h"
@@ -7,10 +6,10 @@
 
 //	DataToLUT
 // Given a palette and image, turns an image into an XY lookup coordinate in the palette.
-void Render2D::Preprocess::DataToLUT ( pixel_t* io_pixel_data, const uint n_pixel_count, const pixel_t* n_palette, const uint n_palette_size, const uint n_palette_width )
+void render2d::preprocess::DataToLUT ( core::gfx::arPixel* io_pixel_data, const uint n_pixel_count, const core::gfx::arPixel* n_palette, const uint n_palette_size, const uint n_palette_width )
 {
-	pixel_t* current_pixel = io_pixel_data;
-	std::map<pixel_t, Vector2i> previous_cases;
+	core::gfx::arPixel* current_pixel = io_pixel_data;
+	std::map<core::gfx::arPixel, Vector2i> previous_cases;
 
 	// Loop through each pixel in the image
 	for (uint i = 0; i < n_pixel_count; ++i)
@@ -34,9 +33,10 @@ void Render2D::Preprocess::DataToLUT ( pixel_t* io_pixel_data, const uint n_pixe
 				{
 					if (*current_pixel == n_palette[column + row * n_palette_width])
 					{
-						previous_cases[*current_pixel] = Vector2i(column, row);
 						// Update case data now
-						case_data = previous_cases.find(*current_pixel);
+						case_data = previous_cases.insert(
+								std::pair<core::gfx::arPixel, Vector2i>(*current_pixel, Vector2i(column, row))
+							).first; // First returns an iterator to the new data.
 						// Break out
 						work = false;
 						break;
@@ -65,7 +65,7 @@ void Render2D::Preprocess::DataToLUT ( pixel_t* io_pixel_data, const uint n_pixe
 //	CombineLUT
 // Given to LUTs of equal width, combines the two into the first, taking into account duplicate rows when able
 // Returns new size of palette
-uint Render2D::Preprocess::CombineLUT ( pixel_t* n_palette, const uint n_palette_size, pixel_t* n_palette_to_add, const uint n_palette_to_add_size, const uint n_palette_width )
+uint render2d::preprocess::CombineLUT ( core::gfx::arPixel* n_palette, const uint n_palette_size, core::gfx::arPixel* n_palette_to_add, const uint n_palette_to_add_size, const uint n_palette_width )
 {
 	uint palette_size = n_palette_size;
 
@@ -101,7 +101,7 @@ uint Render2D::Preprocess::CombineLUT ( pixel_t* n_palette, const uint n_palette
 		else
 		{
 			// Copy the row over to the main palette
-			memcpy(n_palette + palette_size*n_palette_width, n_palette_to_add + row*n_palette_width, sizeof(pixel_t) * n_palette_width);
+			memcpy(n_palette + palette_size*n_palette_width, n_palette_to_add + row*n_palette_width, sizeof(core::gfx::arPixel) * n_palette_width);
 			palette_size += 1; // Increment height of the palette
 		}
 	}
