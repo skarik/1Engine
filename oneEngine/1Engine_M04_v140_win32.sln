@@ -361,6 +361,7 @@ Global
 		{F7A35433-2C8A-487F-B021-C7AD4F20671C}.Unoptimized|x86.ActiveCfg = Unoptimized|Win32
 		{F7A35433-2C8A-487F-B021-C7AD4F20671C}.Unoptimized|x86.Build.0 = Unoptimized|Win32
 		{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}.Debug|Windows_x64.ActiveCfg = Debug|x64
+		{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}.Debug|Windows_x64.Build.0 = Debug|x64
 		{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}.Debug|Windows_x86.ActiveCfg = Debug|Win32
 		{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}.Debug|Windows_x86.Build.0 = Debug|Win32
 		{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}.Debug|x64.ActiveCfg = Debug|x64

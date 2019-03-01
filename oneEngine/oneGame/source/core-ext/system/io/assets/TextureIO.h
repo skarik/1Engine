@@ -117,11 +117,11 @@ namespace core
 		uint32_t	animationOffset;
 		// byte offset
 		uint32_t	paletteOffset;
-		// byte offset of normal data. use the levels information to load mips.
+		// byte offset of normal data. use the levels information to load mips. currently unused.
 		uint32_t	normalsOffset; 
-		// byte offset of surface data. use the levels information to load mips.
+		// byte offset of surface data. use the levels information to load mips. currently unused.
 		uint32_t	surfaceOffset;
-		// byte offset of illumination data. use the levels information to load mips.
+		// byte offset of illumination data. use the levels information to load mips. currently unused.
 		uint32_t	illuminOffset;
 
 		uint32_t _unused0;

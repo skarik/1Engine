@@ -12,6 +12,7 @@
 
 #include "render2d/preprocess/PaletteToLUT.h"
 #include "render2d/preprocess/NormalMapGeneration.h"
+#include "render2d/preprocess/Conversion.h"
 #include "render2d/state/WorldPalette.h"
 
 CRenderable2D::CRenderable2D ( void )
@@ -80,8 +81,13 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_resname, core::
 	//std::string resource_surface;
 
 	std::string resource_sprite = n_sprite_resname;
-	std::string resource_normals = resource_sprite + "_normal";
+	std::string resource_normals = resource_sprite + "_normals";
 	std::string resource_surface = resource_sprite + "_surface";
+	std::string resource_illumin = resource_sprite + "_illumin";
+
+	render2d::preprocess::rrConvertSpriteResults convert_results = {};
+	bool conversionResult = render2d::preprocess::ConvertSprite(n_sprite_resname, &convert_results);
+	ARCORE_ASSERT(conversionResult == true);
 
 //#if 1 // DEVELOPER_MODE
 //	// Check for a JPG:

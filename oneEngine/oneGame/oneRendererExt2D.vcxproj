@@ -59,6 +59,7 @@
     <ClCompile Include="source\render2d\object\sprite\CEditableRenderable2D.cpp" />
     <ClCompile Include="source\render2d\object\sprite\CStreamedRenderable2D.cpp" />
     <ClCompile Include="source\render2d\object\TileMapLayer.cpp" />
+    <ClCompile Include="source\render2d\preprocess\Conversion.cpp" />
     <ClCompile Include="source\render2d\preprocess\NormalMapGeneration.cpp" />
     <ClCompile Include="source\render2d\preprocess\PaletteToLUT.cpp" />
     <ClCompile Include="source\render2d\state\WorldPalette.cpp" />
@@ -72,6 +73,7 @@
     <ClInclude Include="source\render2d\object\sprite\CEditableRenderable2D.h" />
     <ClInclude Include="source\render2d\object\sprite\CStreamedRenderable2D.h" />
     <ClInclude Include="source\render2d\object\TileMapLayer.h" />
+    <ClInclude Include="source\render2d\preprocess\Conversion.h" />
     <ClInclude Include="source\render2d\preprocess\NormalMapGeneration.h" />
     <ClInclude Include="source\render2d\preprocess\PaletteToLUT.h" />
     <ClInclude Include="source\render2d\state\WorldPalette.h" />

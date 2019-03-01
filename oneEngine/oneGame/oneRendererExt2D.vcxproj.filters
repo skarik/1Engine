@@ -66,6 +66,9 @@
     <ClCompile Include="source\render2d\object\sprite\CEditableRenderable2D.cpp">
       <Filter>SOURCE\Render2D\Object\Sprite</Filter>
     </ClCompile>
+    <ClCompile Include="source\render2d\preprocess\Conversion.cpp">
+      <Filter>SOURCE\Render2D\Preprocess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\render2d\object\CRenderable2D.h">
@@ -103,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="source\render2d\object\sprite\CEditableRenderable2D.h">
       <Filter>SOURCE\Render2D\Object\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="source\render2d\preprocess\Conversion.h">
+      <Filter>SOURCE\Render2D\Preprocess</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

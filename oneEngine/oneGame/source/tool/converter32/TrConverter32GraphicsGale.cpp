@@ -35,7 +35,7 @@ bool TrConverter32GraphicsGale::Convert(const char* inputFilename, const char* o
 	std::vector<trImageDataPair> read_data;
 
 	// GAL's are unique in that they have layer data, so we have to check for all the named layers that are
-	// recognized by the engine (normal, surface, and etc.)
+	// recognized by the engine (normals, surface, illumin, and etc.)
 
 	// Also check for a palette file:
 
