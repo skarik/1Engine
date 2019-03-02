@@ -67,6 +67,13 @@ protected:
 						m_spriteInfo;
 	//	Sprite generation parameters
 	rrSpriteGenParams	m_spriteGenerationInfo;
+
+	//	Sprite textures
+	RrTexture*			m_textureAlbedo; // Either albedo or lookup
+	RrTexture*			m_texturePalette;
+	RrTexture*			m_textureNormals;
+	RrTexture*			m_textureSurface;
+	RrTexture*			m_textureIllumin;
 };
 
 #endif//_RENDER2D_C_RENDERABLE_2D_H_

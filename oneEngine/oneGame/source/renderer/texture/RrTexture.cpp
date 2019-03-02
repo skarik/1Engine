@@ -59,6 +59,25 @@ RrTexture::CreateUnitialized ( const char* name )
 
 	return texture;
 }
+//	Find ( name ) : Finds a texture with the given resource handle.
+// Can be used to locate previously created textures, especially procedural ones.
+RrTexture*
+RrTexture::Find ( const char* name )
+{
+	auto resm = core::ArResourceManager::Active();
+
+	// Find the texture in the resource system:
+	IArResource* existingResource = resm->Find(core::kResourceTypeRrTexture, name);
+	if (existingResource != NULL)
+	{
+		// Found it! Add a reference and return it.
+		RrTexture* existingTexture = (RrTexture*)existingResource;
+		return existingTexture;
+	}
+
+	// Otherwise, didn't find anything.
+	return NULL;
+}
 
 RrTexture::RrTexture (
 	const char* s_resourceId,
@@ -106,7 +125,7 @@ RrTexture::RrTexture (
 void
 RrTexture::Upload (
 	bool							streamed,
-	core::gfx::arPixel*				data,
+	void*							data,
 	uint16_t						width,
 	uint16_t						height,
 	core::gfx::tex::arColorFormat	format,

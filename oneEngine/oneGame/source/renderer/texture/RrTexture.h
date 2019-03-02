@@ -59,6 +59,20 @@ struct rrTextureUploadInfo
 						format;
 };
 
+//	rrTextureExtraInfo
+// Structure for optional additional texture information
+struct rrTextureExtraInfo
+{
+	core::gfx::tex::arAnimationInfo*
+						animationInfo;
+	core::gfx::tex::arSpriteInfo*
+						spriteInfo;
+
+	rrTextureExtraInfo ( void )
+		: animationInfo(NULL), spriteInfo(NULL)
+		{}
+};
+
 // constants: move these elsewhere later
 namespace renderer
 {
@@ -92,6 +106,11 @@ public: // Creation Interface
 	// The reference count of the returned instance will not be incremented.
 	RENDER_API static RrTexture*
 							CreateUnitialized ( const char* name );
+	//	Find ( name ) : Finds a texture with the given resource handle.
+	// Can be used to locate previously created textures, especially procedural ones.
+	// The reference count of the returned instance will not be incremented.
+	RENDER_API static RrTexture*
+							Find ( const char* name );
 
 public: // Resource Interface
 
@@ -139,9 +158,10 @@ public: // Kitchen Sink Interface
 		return info.type;
 	}*/
 	RENDER_API virtual bool	GetIsFont ( void ) { return false; }
-	RENDER_API const core::gfx::tex::arImageInfo&
-							GetIOImgInfo ( void ) const { return io_imginfo; }
 	RENDER_API virtual bool GetIsProcedural ( void ) { return procedural; }
+
+	RENDER_API const rrTextureExtraInfo
+							GetExtraInfo ( void ) { return extra_info; }
 
 	//	Reload() : Forces resource system to add self back into the streaming list.
 	RENDER_API virtual void	Reload ( void );
@@ -157,7 +177,7 @@ public: // Kitchen Sink Interface
 	// This will add the object to the resource manager, but will NOT add to the object's reference count.
 	RENDER_API void			Upload (
 		bool							streamed,
-		core::gfx::arPixel*				data,
+		void*							data,
 		uint16_t						width,
 		uint16_t						height,
 		core::gfx::tex::arColorFormat	format,
@@ -198,26 +218,15 @@ protected:
 	rrTextureUploadInfo*
 						upload_request;
 
-	core::gfx::tex::arImageInfo
-						io_imginfo;
+	rrTextureExtraInfo	extra_info;
 	
 protected:
-	//RENDER_API void			LoadImageInfo ( void );
-
 	//	StreamingReset() : Resets streaming state.
 	RENDER_API void			StreamingReset ( void );
 
 	rrTextureLoadState	loadState;
 	rrTextureLoadInfo*	loadInfo;
 	arstring256			resourceFilename;
-
-	/*
-	void loadTGA ( void );
-	void loadPNG ( void );
-	void loadJPG ( void );
-
-	void loadDefault ( void );
-	*/
 };
 
 #endif//RENDERER_TEXTURE_H_

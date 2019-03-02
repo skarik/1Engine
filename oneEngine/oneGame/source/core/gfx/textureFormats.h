@@ -2,6 +2,7 @@
 #define CORE_GFX_TEXTURE_FORMATS_H_
 
 #include "core/types/types.h"
+#include "core/debug.h" // todo: remove?
 
 namespace core {
 namespace gfx {
@@ -137,6 +138,39 @@ namespace tex {
 		kSamplingLinear,
 		kSamplingAnisotropic,
 	};
+
+	//	getTextureFormatByteSize(type) : Given a format, returns the byte width of a single texel.
+	static size_t getColorFormatByteSize (arColorFormat format) // todo: move to CPP?
+	{
+		switch (format)
+		{
+		case kColorFormatRGB8:		return 3;
+		case kColorFormatRGB16:		return 6;
+		case kColorFormatRGB16F:	return 6;
+		case kColorFormatRGB32:		return 12;
+		case kColorFormatRGB32F:	return 12;
+
+		case kColorFormatRGBA8:		return 4;
+		case kColorFormatRGBA16:	return 8;
+		case kColorFormatRGBA16F:	return 8;
+		case kColorFormatRGBA32:	return 16;
+		case kColorFormatRGBA32F:	return 16;
+
+		case kColorFormatRG8:		return 2;
+		case kColorFormatRG16:		return 4;
+		case kColorFormatRG16F:		return 4;
+		case kColorFormatRG32:		return 8;
+		case kColorFormatRG32F:		return 8;
+
+		case kColorFormatR8:		return 1;
+		case kColorFormatR16:		return 2;
+		case kColorFormatR16F:		return 2;
+		case kColorFormatR32:		return 4;
+		case kColorFormatR32F:		return 4;
+		}
+		ARCORE_ERROR("Invalid or unsupported type passed.");
+		return 0;
+	}
 
 }}}
 

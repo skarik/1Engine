@@ -73,11 +73,11 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 		case kTextureLoadState_LoadImage:
 			{
 				// Create a buffer to upload the texture data
-				loadInfo->pixelBuffer[0].initAsData(NULL, sizeof(core::gfx::arPixel) * upload_request->width * upload_request->height);
-				core::gfx::arPixel* target = (core::gfx::arPixel*)loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferStatic);
+				loadInfo->pixelBuffer[0].initAsData(NULL, core::gfx::tex::getColorFormatByteSize(upload_request->format) * upload_request->width * upload_request->height);
+				void* target = loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferStatic);
 
 				// Copy data to the target
-				memcpy(target, upload_request->data, sizeof(core::gfx::arPixel) * upload_request->width * upload_request->height);
+				memcpy(target, upload_request->data, core::gfx::tex::getColorFormatByteSize(upload_request->format) * upload_request->width * upload_request->height);
 
 				// Unmap and upload
 				loadInfo->pixelBuffer[0].unmap(NULL);
@@ -173,7 +173,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 			{
 				// Create a buffer to upload the texture data
 				loadInfo->pixelBuffer[0].initAsData(NULL, core::kTextureFormat_SuperlowByteSize); // TODO: Take format into account.
-				core::gfx::arPixel* target = (core::gfx::arPixel*)loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferStatic);
+				void* target = loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferStatic);
 
 				// Load the data in:
 				loadInfo->loader.m_buffer_Superlow = target; // Target set here
@@ -228,7 +228,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 					uint16_t level_height	= std::max<uint16_t>(1, loadInfo->loader.info.height / math::exp2(loadInfo->level));
 
 					loadInfo->pixelBuffer[loadInfo->level].initAsData(NULL, core::getTextureFormatByteSize(loadInfo->loader.format) * level_width * level_height);
-					core::gfx::arPixel* target = (core::gfx::arPixel*)loadInfo->pixelBuffer[loadInfo->level].map(NULL, gpu::kTransferStatic);
+					void* target = loadInfo->pixelBuffer[loadInfo->level].map(NULL, gpu::kTransferStatic);
 
 					// Load the data in
 					loadInfo->loader.m_buffer_Mipmaps[loadInfo->level] = target;

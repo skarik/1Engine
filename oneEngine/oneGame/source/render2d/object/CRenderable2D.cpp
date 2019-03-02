@@ -80,10 +80,11 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_resname, core::
 	//std::string resource_normals;
 	//std::string resource_surface;
 
-	std::string resource_sprite = n_sprite_resname;
-	std::string resource_normals = resource_sprite + "_normals";
-	std::string resource_surface = resource_sprite + "_surface";
-	std::string resource_illumin = resource_sprite + "_illumin";
+	arstring256 resource_sprite (n_sprite_resname);
+	arstring256 resource_palette = resource_sprite + "_palette";
+	arstring256 resource_normals = resource_sprite + "_normals";
+	arstring256 resource_surface = resource_sprite + "_surface";
+	arstring256 resource_illumin = resource_sprite + "_illumin";
 
 	render2d::preprocess::rrConvertSpriteResults convert_results = {};
 	bool conversionResult = render2d::preprocess::ConvertSprite(n_sprite_resname, &convert_results);
@@ -155,6 +156,49 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_resname, core::
 //		}
 //	}
 //#endif// DEVELOPER_MODE
+
+	arstring256 name_sprite = resource_sprite;
+	core::utils::string::ToResourceName(name_sprite.data, 256);
+	//name_sprite = arstring256("rr2d_") + name_sprite;
+	arstring256 name_palette = name_sprite + "_palette";
+	//arstring256 name_normals = name_sprite + "_normals";
+	//arstring256 name_surface = name_sprite + "_surface";
+	//arstring256 name_illumin = name_sprite + "_illumin";
+
+	// Load the sprite procedurally for the albedo/palette:
+	m_textureAlbedo = RrTexture::Find(name_sprite);
+	if (m_textureAlbedo == NULL)
+	{
+		m_textureAlbedo = RrTexture::CreateUnitialized(name_sprite);
+
+		// load the bpd now
+
+		m_textureAlbedo->Upload(false,
+			NULL,
+			1, 1,
+			core::gfx::tex::kColorFormatRGBA8,
+			core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
+			core::gfx::tex::kMipmapGenerationNone,
+			core::gfx::tex::kSamplingPoint);
+	}
+	else
+	{
+		//o_sprite_info->
+	}
+	// Load up the paletted texture
+	if (m_texturePalette == NULL)
+	{
+		m_texturePalette = RrTexture::Find(name_palette);
+		if (m_texturePalette == NULL)
+		{
+			m_texturePalette = RrTexture::Load(resource_palette);
+		}
+	}
+
+	// Load the other textures using the normal sequence
+	m_textureNormals = RrTexture::Load(resource_normals);
+	m_textureSurface = RrTexture::Load(resource_surface);
+	m_textureIllumin = RrTexture::Load(resource_illumin);
 
 	// Now create BPD paths:
 	// Require the sprite
