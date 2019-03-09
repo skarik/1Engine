@@ -409,6 +409,15 @@ renderer::cbuffer::rrPerObjectSurface& CRenderableObject::PassGetSurface ( int p
 	return m_passes[pass].m_surface;
 }
 
+RrPass::SafeAccessor CRenderableObject::PassAccess ( int pass )
+{
+	if (pass < 0 || pass >= kPass_MaxPassCount)
+	{
+		throw core::InvalidArgumentException();
+	} 
+	return RrPass::SafeAccessor(&m_passes[pass]);
+}
+
 void CRenderableObject::PassesFree ( void )
 {
 	for (int i = 0; i < kPass_MaxPassCount; ++i)

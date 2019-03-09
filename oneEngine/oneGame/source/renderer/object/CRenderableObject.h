@@ -140,6 +140,10 @@ public:
 	// This marks the surface as edited, which forces the cbuffer to update next frame.
 	RENDER_API renderer::cbuffer::rrPerObjectSurface&
 							PassGetSurface ( int pass );
+	//	PassAccess(pass) : Get the safe accessor for the pass.
+	// Depending on access, various elements may mark the surface as edited.
+	RENDER_API RrPass::SafeAccessor
+							PassAccess ( int pass );
 
 	//	PassesFree() : Cleans up and removes resources used by all passes.
 	RENDER_API void			PassesFree ( void );

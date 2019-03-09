@@ -11,7 +11,7 @@ void render2d::preprocess::GenerateNormalMap (
 	core::gfx::arPixel* o_normal_map, 
 	const uint n_image_width,
 	const uint n_image_height,
-	const Vector3f& n_default_normal = Vector3f(0,0,1)
+	const Vector3f& n_default_normal
 	)
 {
 	const int filter_radius = 3;

@@ -2,7 +2,6 @@
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/state/RrRenderer.h"
 #include "renderer/material/RrMaterial.h"
-#include "renderer/material/RrShaderManager.h"
 
 #include "render2d/state/WorldPalette.h"
 

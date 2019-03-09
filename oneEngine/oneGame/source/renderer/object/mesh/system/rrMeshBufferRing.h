@@ -50,6 +50,12 @@ public:
 		return m_meshToEdit;
 	}
 
+	//	size() : returns the length of the ring
+	size_t					size ( void )
+	{
+		return Ln;
+	}
+
 public:
 	arring<rrMeshBuffer, Ln>
 						m_ring;
@@ -101,6 +107,12 @@ public:
 	rrMeshBuffer*			getToEdit ( void )
 	{
 		return m_objectToEdit;
+	}
+
+	//	size() : returns the length of the ring
+	size_t					size ( void )
+	{
+		return Ln;
 	}
 
 public:

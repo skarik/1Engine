@@ -5,7 +5,6 @@
 #include "render2d/object/CTextMesh.h"
 
 #include "renderer/texture/RrFontTexture.h"
-#include "renderer/material/RrMaterial.h"
 
 #include <cctype>
 
@@ -57,6 +56,8 @@ Real CTextMesh::GetLineHeight ( void )
 // Updates the mesh with the text in m_text
 void CTextMesh::UpdateText ( void )
 {
+	// a lot of this is copy-pasted from rrTextBuilder2D
+
 	// Estimate needed amount of vertices for the text:
 
 	if (m_text_triangle_count < m_text.length() * 2)
@@ -84,8 +85,10 @@ void CTextMesh::UpdateText ( void )
 
 	// Get the font info:
 
-	auto fontInfo	= m_font_texture->GetFontInfo();
-	Real baseScale	= (Real)m_font_texture->GetWidth();
+	auto fontInfo		= m_font_texture->GetFontInfo();
+	auto fontStartGlyph	= m_font_texture->GetFontGlyphStart();
+	auto fontGlyphCount	= m_font_texture->GetFontGlyphCount();
+	Real baseScale		= (Real)m_font_texture->GetWidth();
 
 	// Set up information for the text passes:
 
@@ -95,17 +98,17 @@ void CTextMesh::UpdateText ( void )
 	uint32_t triangle_index = 0;
 	int c_lookup;
 	// Always use 'M' as the base case font size, because it's huge
-	Vector2f font_max_size = fontInfo.fontSizes['M' - fontInfo.startCharacter];	
+	Vector2i font_max_size = fontInfo->glyphSize['M' - fontStartGlyph];	
 
 	// Pass 1: Build the mesh:
 
 	for ( int c = 0; c < maxLength; ++c )
 	{
 		// Get the current character offset into the existing character set
-		c_lookup = m_text[c] - fontInfo.startCharacter;
+		c_lookup = m_text[c] - fontStartGlyph;
 
 		// Check that character is in set
-		if ( c_lookup < 0 || c_lookup >= (int)fontInfo.setLength )
+		if ( c_lookup < 0 || c_lookup >= (int)fontGlyphCount )
 		{
 			continue; // Skip quad
 		}
@@ -113,7 +116,8 @@ void CTextMesh::UpdateText ( void )
 		else if ( std::isspace(m_text[c]) )
 		{
 			// Move the pen along
-			pen += fontInfo.fontOffsets[c_lookup];
+			pen.x += fontInfo->glyphAdvance[c_lookup].x;
+			pen.y += fontInfo->glyphAdvance[c_lookup].y;
 
 			// Check for max width
 			if ( m_max_width > 0 )

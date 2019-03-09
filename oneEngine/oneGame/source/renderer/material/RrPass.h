@@ -116,6 +116,30 @@ public:
 	// World settings:
 	renderer::rrRenderLayer
 						m_layer;		// Render layer
+
+public:
+	// External accessor used to go through data that can be safely modified after Pass is set in an object.
+	class SafeAccessor
+	{
+	public:
+		RENDER_API				SafeAccessor ( RrPass* pass )
+			: m_pass(pass)
+			{}
+
+		//	setTexture ( slot, texture ) : Sets material texture.
+		// Material is given ownership of the texture.
+		// Do not delete the texture directly, use RemoveReference.
+		RENDER_API void			setTexture ( const rrTextureSlot slot, RrTexture* texture )
+			{ m_pass->setTexture(slot, texture); }
+		//	setTexture ( slot, texture ) : Sets material texture with raw GPU handles.
+		// To be used only in an immediate use-case, ex. post-processing or compositing.
+		// Do not ever use for normal objects due to memory considerations.
+		RENDER_API void			setTexture ( const rrTextureSlot slot, gpu::Texture* n_texture )
+			{ m_pass->setTexture(slot, n_texture); }
+
+	private:
+		RrPass*				m_pass;
+	};
 };
 
 #endif//RENDERER_MATERIAL_PASS_H_

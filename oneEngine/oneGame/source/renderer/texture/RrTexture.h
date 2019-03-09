@@ -52,7 +52,7 @@ struct rrTextureUploadInfo
 {
 	core::gfx::tex::arTextureType
 						type;
-	core::gfx::arPixel*	data;
+	void*				data;
 	uint16_t			width;
 	uint16_t			height;
 	core::gfx::tex::arColorFormat
@@ -79,6 +79,7 @@ namespace renderer
 	static const char* kTextureBlack = "rr_black";
 	static const char* kTextureWhite = "rr_white";
 	static const char* kTextureGrayA0 = "rr_graya0";
+	static const char* kTextureNormalN0 = "rr_normalN0";
 }
 
 //	class RrTexture : Base resource-aware texture class.
@@ -140,10 +141,6 @@ public: // Resource Interface
 
 public: // Kitchen Sink Interface
 
-	/*RENDER_API void			Bind ( void );
-	RENDER_API void			Unbind ( void );
-	RENDER_API static void	Unbind ( char );*/
-
 	RENDER_API unsigned int	GetWidth ( void ) { return info.width; };
 	RENDER_API unsigned int	GetHeight( void ) { return info.height; };
 	RENDER_API unsigned int	GetDepth ( void ) { return info.depth; };
@@ -151,12 +148,6 @@ public: // Kitchen Sink Interface
 	RENDER_API core::gfx::tex::arTextureType
 							GetType ( void ) { return info.type; };
 
-	/*RENDER_API virtual glHandle GetColorSampler ( void ) {
-		return info.index;
-	}
-	RENDER_API virtual eTextureType GetSamplerTarget ( void ) {
-		return info.type;
-	}*/
 	RENDER_API virtual bool	GetIsFont ( void ) { return false; }
 	RENDER_API virtual bool GetIsProcedural ( void ) { return procedural; }
 
@@ -168,7 +159,6 @@ public: // Kitchen Sink Interface
 
 	//	GenerateMipmap( gen_style ) : Generates mipmaps for the texture.
 	// Call will be ignored if not actually needed.
-	//RENDER_API void			GenerateMipmap ( core::gfx::tex::arMipmapGenerationStyle generationStyle = core::gfx::tex::kMipmapGenerationNormal );
 	RENDER_API gpu::Texture&
 							GetTexture ( void ) { return m_texture; } 
 
@@ -191,8 +181,6 @@ public: // Kitchen Sink Interface
 	RENDER_API virtual rrSamplerState&
 							GetDefaultSamplerState ( void ) { return defaultSamplerState; }
 protected:
-	//friend RrTextureMaster;
-	//friend CResourceManager;
 	friend RrTextureMasterSubsystem;
 
 	// procedurally created by either cpu or gpu

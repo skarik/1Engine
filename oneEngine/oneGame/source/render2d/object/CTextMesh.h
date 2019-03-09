@@ -1,6 +1,5 @@
-
-#ifndef _RENDER2D_C_TEXTMESH_H_
-#define _RENDER2D_C_TEXTMESH_H_
+#ifndef RENDER2D_C_TEXTMESH_H_
+#define RENDER2D_C_TEXTMESH_H_
 
 #include "CRenderable2D.h"
 
@@ -33,4 +32,4 @@ protected:
 	size_t			m_text_triangle_count;
 };
 
-#endif//_RENDER2D_C_TEXTMESH_H_
+#endif//RENDER2D_C_TEXTMESH_H_

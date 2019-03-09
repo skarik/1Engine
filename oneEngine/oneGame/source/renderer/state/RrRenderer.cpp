@@ -132,7 +132,6 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
-		//renderer::Resources::AddTexture(renderer::TextureWhite, white_texture);
 		ARCORE_ASSERT(mGfxContext->validate() == 0);
 
 		RrTexture* black_texture = RrTexture::CreateUnitialized(renderer::kTextureBlack);
@@ -142,7 +141,7 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
-		//renderer::Resources::AddTexture(renderer::TextureBlack, black_texture);
+		ARCORE_ASSERT(mGfxContext->validate() == 0);
 
 		RrTexture* gray0_texture = RrTexture::CreateUnitialized(renderer::kTextureGrayA0);
 		{
@@ -151,7 +150,16 @@ void RrRenderer::InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::Outp
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}
-		//renderer::Resources::AddTexture(renderer::TextureGrayA0, gray0_texture);
+		ARCORE_ASSERT(mGfxContext->validate() == 0);
+
+		RrTexture* normal0_texture = RrTexture::CreateUnitialized(renderer::kTextureNormalN0);
+		{
+			core::gfx::arPixel normal0 (127, 127, 255, 0);
+			normal0_texture->Upload( false, &normal0, 1,1, core::gfx::tex::kColorFormatRGBA8,
+				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
+				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
+		}
+		ARCORE_ASSERT(mGfxContext->validate() == 0);
 	}
 	ARCORE_ASSERT(mGfxContext->validate() == 0);
 

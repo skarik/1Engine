@@ -76,6 +76,12 @@ public:
 		}
 	}
 
+	//	size() : Returns the length of the ring
+	size_t size ( void ) const 
+	{
+		return Ln;
+	}
+
 private:
 	OBJECT data [Ln];
 	unsigned short current;
