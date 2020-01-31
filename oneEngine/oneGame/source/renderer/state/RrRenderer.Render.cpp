@@ -165,7 +165,7 @@ void RrRenderer::StepBufferPush ( void )
 			gfx->setPipeline(&pipelinePasses->m_pipelineScreenQuadCopy);
 			gfx->setVertexBuffer(0, &pipelinePasses->m_vbufScreenQuad, 0); // see RrPipelinePasses.cpp
 			gfx->setVertexBuffer(1, &pipelinePasses->m_vbufScreenQuad, 0); // there are two binding slots defined with different stride
-			gfx->setShaderSamplerAuto(gpu::kShaderStagePs, 0,
+			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0,
 				                      internal_chain_current->buffer_forward_rt.getAttachment(gpu::kRenderTargetSlotColor0));
 			gfx->draw(4, 0);
 		}

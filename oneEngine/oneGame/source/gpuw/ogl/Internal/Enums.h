@@ -252,6 +252,24 @@ namespace internal {
 		}
 		return GL_INVALID_ENUM;
 	}
+
+	static FORCE_INLINE gpuEnum ArEnumToGL ( const core::gfx::tex::arSamplingFilter filter, bool mipmaps, const core::gfx::tex::arSamplingFilter mipfilter )
+	{
+		using namespace core::gfx::tex;
+		if (!mipmaps) {
+			switch ( filter ) {
+			case kSamplingPoint:	return GL_NEAREST;
+			case kSamplingLinear:	return GL_LINEAR;
+			}
+		}
+		else {
+			switch ( filter ) {
+			case kSamplingPoint:	return (mipfilter == kSamplingPoint) ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST_MIPMAP_LINEAR;
+			case kSamplingLinear:	return (mipfilter == kSamplingPoint) ? GL_LINEAR_MIPMAP_NEAREST : GL_LINEAR_MIPMAP_LINEAR;
+			}
+		}
+		return GL_INVALID_ENUM;
+	}
 }}
 
 #endif//GPU_WRAPPER_INTERNAL_ENUMS_H_

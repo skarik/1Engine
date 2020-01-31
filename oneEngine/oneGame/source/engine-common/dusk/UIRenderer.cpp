@@ -107,7 +107,7 @@ bool dusk::UIRenderer::Render ( const rrRenderParams* params )
 		.setRasterizerState()
 		// bind the blend state
 		.setBlendState();
-	gfx->setShaderSamplerAuto(gpu::kShaderStagePs, TEX_MAIN, m_renderTargetTexture);
+	gfx->setShaderTextureAuto(gpu::kShaderStagePs, TEX_MAIN, m_renderTargetTexture);
 
 	// Bind the material for alpha-blending
 	//matScreenCopy->setTexture( TEX_MAIN, renderBuffer );

@@ -149,8 +149,9 @@ namespace gpu
 		// For compute stages, acts as a fast alias for setShaderResource.
 		GPUW_API int			setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer );
 		GPUW_API int			setShaderSampler ( ShaderStage stage, int slot, Sampler* buffer );
-		//	setShaderSamplerAuto( stage, slot, texture ) : Sets texture to given slot using an automatically generated sampler.
-		GPUW_API int			setShaderSamplerAuto ( ShaderStage stage, int slot, Texture* buffer );
+		GPUW_API int			setShaderTexture ( ShaderStage stage, int slot, Texture* buffer );
+		//	setShaderTextureAuto( stage, slot, texture ) : Sets texture to given slot using an automatically generated sampler.
+		GPUW_API int			setShaderTextureAuto ( ShaderStage stage, int slot, Texture* buffer );
 		GPUW_API int			setShaderResource ( ShaderStage stage, int slot, Buffer* buffer );
 
 		GPUW_API int			draw ( const uint32_t vertexCount, const uint32_t startVertex );

@@ -136,7 +136,7 @@ namespace tex {
 	{
 		kSamplingPoint = 0,
 		kSamplingLinear,
-		kSamplingAnisotropic,
+		//kSamplingAnisotropic,
 	};
 
 	//	getTextureFormatByteSize(type) : Given a format, returns the byte width of a single texel.

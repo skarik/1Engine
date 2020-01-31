@@ -14,7 +14,9 @@ CTextMesh::CTextMesh ( void )
 	m_font_texture(NULL), m_text_triangle_count(0)
 {
 	// Clear out deferred info. We're not using that pass.
-	m_material->deferredinfo.clear();
+	//m_material->deferredinfo.clear();
+
+	// A forward-rendered fullbright pass is in alpha-test mode is set by CRenderable2D().
 }
 
 CTextMesh::~CTextMesh ( void )
@@ -24,13 +26,13 @@ CTextMesh::~CTextMesh ( void )
 		m_font_texture->RemoveReference();
 	}
 
-	if ( m_modeldata.triangles != NULL )
+	if ( m_modeldata.indices != NULL )
 	{
-		delete [] m_modeldata.triangles;
+		delete [] m_modeldata.indices;
 	}
-	if ( m_modeldata.vertices != NULL )
+	if ( m_modeldata.position != NULL )
 	{
-		delete [] m_modeldata.vertices;
+		delete [] m_modeldata.position;
 	}
 }
 
@@ -39,7 +41,7 @@ CTextMesh::~CTextMesh ( void )
 void CTextMesh::SetFont ( const char* fontFile, int fontSize, int fontWeight )
 {
 	m_font_texture = new RrFontTexture( fontFile, fontSize, fontWeight );
-	m_font_texture->SetFilter( SamplingPoint );
+	//m_font_texture->SetFilter( SamplingPoint );
 
 	m_material->setTexture( TEX_DIFFUSE, m_font_texture );
 }

@@ -239,7 +239,7 @@ void RrPostProcessPass::CopyResult ( void )
 	//		gfx->setPipeline(&pipelinePasses->m_pipelineScreenQuadCopy);
 	//		gfx->setVertexBuffer(0, &pipelinePasses->m_vbufScreenQuad, 0); // see RrPipelinePasses.cpp
 	//		gfx->setVertexBuffer(1, &pipelinePasses->m_vbufScreenQuad, 0); // there are two binding slots defined with different stride
-	//		gfx->setShaderSamplerAuto(gpu::kShaderStagePs, 0,
+	//		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0,
 	//			m_buf->getRenderTarget()->getAttachment(gpu::kRenderTargetSlotColor0));
 	//		gfx->draw(4, 0);
 	//	}

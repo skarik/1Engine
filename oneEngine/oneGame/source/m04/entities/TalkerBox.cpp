@@ -7,6 +7,7 @@
 #include "core/math/random/Random.h"
 
 #include "renderer/material/RrMaterial.h"
+#include "renderer/types/fontEnums.h"
 #include "render2d/object/CTextMesh.h"
 
 #include <cctype>
@@ -232,7 +233,7 @@ TalkerBox::TalkerBox ( void )
 
 	// Create vizuallllz
 	m_textmesh = new CTextMesh();
-	m_textmesh->SetFont("Aldrich-Regular.ttf", 12, FW_BOLD);
+	m_textmesh->SetFont("Aldrich-Regular.ttf", 12, kFW_Bold);
 	m_textmesh->m_text = "";
 	m_textmesh->UpdateText();
 	m_textmesh->m_max_width = width;

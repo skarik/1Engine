@@ -86,10 +86,10 @@ namespace renderer
 			for (int i = 0; i < kPass_MaxTextureSlots; ++i)
 			{
 				if (m_pass->m_texturesRaw[i] != NULL) {
-					m_ctx->setShaderSamplerAuto(gpu::kShaderStagePs, i, m_pass->m_texturesRaw[i]);
+					m_ctx->setShaderTextureAuto(gpu::kShaderStagePs, i, m_pass->m_texturesRaw[i]);
 				}
 				else if (m_pass->m_textures[i] != NULL) {
-					m_ctx->setShaderSamplerAuto(gpu::kShaderStagePs, i, &m_pass->m_textures[i]->GetTexture());
+					m_ctx->setShaderTextureAuto(gpu::kShaderStagePs, i, &m_pass->m_textures[i]->GetTexture());
 				}
 			}
 			return *this;

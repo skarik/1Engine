@@ -5,52 +5,40 @@
 #include "core/math/Vector2.h"
 // RrTexture class
 #include "RrTexture.h"
+// Font weight info
+#include "renderer/types/fontEnums.h"
 // Stringstream for unique string id generation
 //#include <sstream>
 //using std::stringstream;
 
 // ===ENUMERATIONS===
 // Enumerations for the font weight
-#ifndef _WIN32
-enum eFontWeight
-{
-	FW_NORMAL = 400
-	FW_BOLD = 700,
-	FW_BLACK = 900
-};
-enum eFontCharset
-{
-	ANSI_CHARSET,
-    BALTIC_CHARSET,
-    CHINESEBIG5_CHARSET,
-    DEFAULT_CHARSET,
-    EASTEUROPE_CHARSET,
-    GB2312_CHARSET,
-    GREEK_CHARSET,
-    HANGUL_CHARSET,
-    MAC_CHARSET,
-    OEM_CHARSET,
-    RUSSIAN_CHARSET,
-    SHIFTJIS_CHARSET,
-    SYMBOL_CHARSET,
-    TURKISH_CHARSET,
-    VIETNAMESE_CHARSET
-};
-#endif
-
-enum rrFontWeight : int
-{
-	kFW_DontCare	= 0,
-	kFW_Thin		= 100,
-	kFW_ExtraLight	= 200,
-	kFW_Light		= 300,
-	kFW_Normal		= 400,
-	kFW_Medium		= 500,
-	kFW_SemiBold	= 600,
-	kFW_Bold		= 700,
-	kFW_ExtraBold	= 800,
-	kFW_Heavy		= 900,
-};
+//#ifndef _WIN32
+//enum eFontWeight
+//{
+//	FW_NORMAL = 400
+//	FW_BOLD = 700,
+//	FW_BLACK = 900
+//};
+//enum eFontCharset
+//{
+//	ANSI_CHARSET,
+//    BALTIC_CHARSET,
+//    CHINESEBIG5_CHARSET,
+//    DEFAULT_CHARSET,
+//    EASTEUROPE_CHARSET,
+//    GB2312_CHARSET,
+//    GREEK_CHARSET,
+//    HANGUL_CHARSET,
+//    MAC_CHARSET,
+//    OEM_CHARSET,
+//    RUSSIAN_CHARSET,
+//    SHIFTJIS_CHARSET,
+//    SYMBOL_CHARSET,
+//    TURKISH_CHARSET,
+//    VIETNAMESE_CHARSET
+//};
+//#endif
 
 // ===STRUCTS===
 // Font info struct
