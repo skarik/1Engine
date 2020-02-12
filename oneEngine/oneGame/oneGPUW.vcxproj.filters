@@ -168,6 +168,15 @@
     <ClInclude Include="source\gpuw\vk\gpu.h">
       <Filter>SOURCE\GPU Wrapper\Vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="source\gpuw\dx11\gpu.h">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\dx11\Buffers.dx11.h">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\dx11\Device.dx11.h">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp">
@@ -229,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="source\gpuw\vk\OutputSurface.vk.cpp">
       <Filter>SOURCE\GPU Wrapper\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\dx11\Buffers.dx11.cpp">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

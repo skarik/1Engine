@@ -12,9 +12,10 @@ namespace gpu
 		kShaderStagePs,		// Pixel shader
 		kShaderStageCs,		// Compute shader
 
-		// Vega+:
+		// Vega/Navi+:
 		kShaderStagePrim,	// Primitive shader
 		kShaderStageMesh,	// Mesh shader
+		kShaderStageAmpl,	// Amplification shader
 
 		// Raytracing:
 		kShaderStageRGen,	// Raygen shader

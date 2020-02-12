@@ -7,6 +7,8 @@
 //===============================================================================================//
 #include "glcorearb_impl.h"
 #include "core/os.h"
+#include "gpuw/gpuw_common.h"
+#ifdef GPU_API_OPENGL
 #ifdef __cplusplus
 extern "C" {
 #endif /*__cplusplus*/
@@ -3841,3 +3843,4 @@ int glgGetMajorVersion()
 #ifdef __cplusplus
 } /*extern "C"*/
 #endif /*__cplusplus*/
+#endif /*GPU_API_OPENGL*/

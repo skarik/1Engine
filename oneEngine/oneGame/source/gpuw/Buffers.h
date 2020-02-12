@@ -6,3 +6,7 @@
 #ifdef GPU_API_VULKAN
 #	include "gpuw/vk/Buffers.vk.h"
 #endif
+
+#ifdef GPU_API_DIRECTX11
+#	include "gpuw/dx11/Buffers.dx11.h"
+#endif
