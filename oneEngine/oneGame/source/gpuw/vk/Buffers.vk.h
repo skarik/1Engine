@@ -90,8 +90,10 @@ namespace gpu
 		friend ComputeContext;
 
 		BufferType		m_bufferType;
-		unsigned int	m_buffer;
+		void*			m_buffer;
+		void*			m_bufferMemory;
 		unsigned int	m_elementSize;
+		unsigned int	m_bufferSize;
 		Format			m_format;
 		//unsigned int	m_dataSize; // Needed in OpenGL for binding buffers with an offset.
 	};

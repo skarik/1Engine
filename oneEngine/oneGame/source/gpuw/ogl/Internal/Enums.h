@@ -245,8 +245,10 @@ namespace internal {
 		case kShaderStageDs:	return GL_TESS_EVALUATION_SHADER;
 		case kShaderStageGs:	return GL_GEOMETRY_SHADER;
 		case kShaderStagePs:	return GL_FRAGMENT_SHADER;
-			// Vega+ pipeline todo???
-		// none
+			// Vega+ Pipeline
+		// No support in OpenGL
+			// Raytracing
+		// No support in OpenGL
 			// Compute
 		case kShaderStageCs:	return GL_COMPUTE_SHADER;
 		}
@@ -270,6 +272,19 @@ namespace internal {
 		}
 		return GL_INVALID_ENUM;
 	}
+
+	static FORCE_INLINE gpuEnum ArEnumToGL ( const core::gfx::tex::arWrappingType wrapping )
+	{
+		using namespace core::gfx::tex;
+		switch ( wrapping ) {
+		case kWrappingClamp:			return GL_CLAMP_TO_EDGE;
+		case kWrappingBorder:			return GL_CLAMP_TO_BORDER;
+		case kWrappingRepeat:			return GL_REPEAT;
+		case kWrappingMirroredRepeat:	return GL_MIRRORED_REPEAT;
+		}
+		return GL_INVALID_ENUM;
+	}
+	
 }}
 
 #endif//GPU_WRAPPER_INTERNAL_ENUMS_H_

@@ -2,6 +2,7 @@
 #ifdef GPU_API_OPENGL
 
 #include "./GraphicsContext.h"
+#include "./Sampler.h"
 
 #include "./ogl/GLCommon.h"
 #include "renderer/types/types.h"
@@ -85,6 +86,20 @@ static gpuEnum GpuEnumToGL ( const gpu::StencilOp op )
 	}
 	throw core::InvalidArgumentException();
 	return GL_INVALID_ENUM;
+}
+
+
+gpu::GraphicsContext::GraphicsContext ( void )
+{
+	SamplerCreationDescription scd = SamplerCreationDescription();
+	m_defaultSampler = new Sampler;
+	m_defaultSampler->create(NULL, &scd);
+}
+
+gpu::GraphicsContext::~GraphicsContext ( void )
+{
+	m_defaultSampler->destroy(NULL);
+	delete m_defaultSampler;
 }
 
 //	DeviceSetFillMode( device, fillMode ) : Set device's fill mode.

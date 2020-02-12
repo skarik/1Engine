@@ -37,7 +37,18 @@ namespace gpu
 		float				mipmapMaxLod;	// Maximum mipmap level to display
 		// is anisotropic sampling enabled?
 		bool				anisotropy;
-		float				maxAnisotropy;
+		float				maxAnisotropy;	// Anisotropy level, anything greater than 1.0 is anisotropy.
+
+		// Default values:
+		SamplerCreationDescription ( void )
+			: magFilter(core::gfx::tex::kSamplingLinear), minFilter(core::gfx::tex::kSamplingLinear),
+			mipmaps(false), mipmapMode(core::gfx::tex::kSamplingLinear),
+			wrapmodeX(core::gfx::tex::kWrappingRepeat), wrapmodeY(core::gfx::tex::kWrappingRepeat), wrapmodeZ(core::gfx::tex::kWrappingRepeat),
+			borderColor(),
+			mipmapLodBias(0.0F),
+			mipmapMinLod(-1000.0F), mipmapMaxLod(1000.0F),
+			anisotropy(false), maxAnisotropy(1.0F)
+			{}
 	};
 
 	// defines how a texture is sampled within the shader

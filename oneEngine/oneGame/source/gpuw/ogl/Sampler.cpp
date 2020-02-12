@@ -25,6 +25,12 @@ int gpu::Sampler::create ( Device* device, const SamplerCreationDescription* par
 	glSamplerParameterf(m_sampler, GL_TEXTURE_MIN_LOD, params->mipmapMinLod);
 	glSamplerParameterf(m_sampler, GL_TEXTURE_MAX_LOD, params->mipmapMaxLod);
 
+	glSamplerParameterf(m_sampler, GL_TEXTURE_WRAP_S, gpu::internal::ArEnumToGL(params->wrapmodeX));
+	glSamplerParameterf(m_sampler, GL_TEXTURE_WRAP_T, gpu::internal::ArEnumToGL(params->wrapmodeY));
+	glSamplerParameterf(m_sampler, GL_TEXTURE_WRAP_R, gpu::internal::ArEnumToGL(params->wrapmodeZ));
+
+	glSamplerParameterfv(m_sampler, GL_TEXTURE_BORDER_COLOR, params->borderColor);
+
 	return kError_SUCCESS;
 }
 int gpu::Sampler::destroy ( Device* device )

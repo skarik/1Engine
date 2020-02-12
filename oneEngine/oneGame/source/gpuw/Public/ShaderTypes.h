@@ -11,6 +11,17 @@ namespace gpu
 		kShaderStageGs,		// Geometry shader
 		kShaderStagePs,		// Pixel shader
 		kShaderStageCs,		// Compute shader
+
+		// Vega+:
+		kShaderStagePrim,	// Primitive shader
+		kShaderStageMesh,	// Mesh shader
+
+		// Raytracing:
+		kShaderStageRGen,	// Raygen shader
+		kShaderStageRInt,	// Intersection shader
+		kShaderStageRCHit,	// Closest-hit shader
+		kShaderStageRAHit,	// Any-hit shader
+		kShaderStageRMiss,	// Miss shader
 	};
 }
 

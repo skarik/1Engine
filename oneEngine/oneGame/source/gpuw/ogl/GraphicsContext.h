@@ -100,6 +100,10 @@ namespace gpu
 	class GraphicsContext
 	{
 	public:
+		GPUW_EXLUSIVE_API explicit
+								GraphicsContext ( void );
+		GPUW_EXLUSIVE_API 		~GraphicsContext ( void );
+
 		//	reset() : Resets the context state to defaults.
 		// Note that on some API's, this will do nothing.
 		GPUW_API int			reset ( void );
@@ -187,6 +191,8 @@ namespace gpu
 
 		IndexFormat				m_indexFormat;
 		Buffer*					m_indexBuffer;
+
+		Sampler*				m_defaultSampler;
 
 		int						drawPreparePipeline ( void );
 	};

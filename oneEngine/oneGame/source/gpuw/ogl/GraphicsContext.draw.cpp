@@ -126,12 +126,14 @@ int gpu::GraphicsContext::setShaderTextureAuto ( ShaderStage stage, int slot, Te
 {
 	ARCORE_ASSERT(buffer != NULL);
 
-	if (buffer != NULL)
+	if (buffer != NULL) {
+		glBindSampler(slot, (GLuint)m_defaultSampler->nativePtr());
 		glBindTextureUnit(slot, (GLuint)buffer->nativePtr());
-	else
+	}
+	else {
+		glBindSampler(slot, 0);
 		glBindTextureUnit(slot, 0);
-
-	//TODO: proper sampler handling. Need to create some default ones in graphics ctx constructor.
+	}
 
 	return kError_SUCCESS;
 }

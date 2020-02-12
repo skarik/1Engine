@@ -42,6 +42,11 @@ namespace gpu
 		GPUW_API ComputeContext*
 								getComputeContext ( void );
 
+		// Non-exposed API for grabbing native device object
+		GPUW_EXLUSIVE_API void*	getNative ( void );
+		// Non-exposed API for allocating memory
+		GPUW_EXLUSIVE_API void*	allocateMemory ( uint32_t typeFlags, uint64_t size, uint64_t offset );
+
 	private:
 		friend OutputSurface;
 		intptr_t			mw_module;

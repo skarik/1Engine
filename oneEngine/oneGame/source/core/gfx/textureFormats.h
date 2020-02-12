@@ -98,13 +98,9 @@ namespace tex {
 	// Enumerations for the texture wrap
 	enum arWrappingType : uint8_t
 	{
-		/*
-		Repeat			= GL_REPEAT,
-		Clamp			= GL_CLAMP,
-		MirroredRepeat	= GL_MIRRORED_REPEAT
-		*/
 		kWrappingRepeat,
 		kWrappingClamp,
+		kWrappingBorder,
 		kWrappingMirroredRepeat,
 	};
 	// Enumerations for import options

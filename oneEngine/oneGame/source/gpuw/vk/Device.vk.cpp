@@ -752,6 +752,12 @@ gpu::ComputeContext* gpu::Device::getComputeContext ( void )
 	return m_computeContext;
 }
 
+// Grab native device object
+void* gpu::Device::getNative ( void )
+{
+	return m_device;
+}
+
 static VKAPI_ATTR VkBool32 VKAPI_CALL
 rvkDebugReportCallback(
 	VkDebugReportFlagsEXT flags,
