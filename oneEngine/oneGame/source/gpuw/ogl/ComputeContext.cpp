@@ -10,6 +10,8 @@
 #include "./Buffers.h"
 #include "./Pipeline.h"
 #include "./ShaderPipeline.h"
+#include "./Texture.h"
+#include "./Sampler.h"
 #include "./ogl/GLCommon.h"
 
 #include "renderer/types/types.h"
@@ -17,9 +19,14 @@
 gpu::ComputeContext::ComputeContext ( void )
 	: m_pipeline(NULL), m_pipelineBound(false), m_pipelineDataBound(false)
 {
+	SamplerCreationDescription scd = SamplerCreationDescription();
+	m_defaultSampler = new Sampler;
+	m_defaultSampler->create(NULL, &scd);
 }
 gpu::ComputeContext::~ComputeContext ( void )
 {
+	m_defaultSampler->destroy(NULL);
+	delete m_defaultSampler;
 }
 
 int gpu::ComputeContext::reset ( void )
@@ -56,6 +63,48 @@ int gpu::ComputeContext::setShaderCBuffer ( ShaderStage stage, int slot, Buffer*
 int gpu::ComputeContext::setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer )
 {
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeStructured);
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER,
+		(GLuint)slot,
+		buffer->m_buffer);
+
+	// todo: bind properly to the resource
+	return kError_SUCCESS;
+}
+
+int gpu::ComputeContext::setShaderSampler ( ShaderStage stage, int slot, Sampler* sampler )
+{
+	ARCORE_ASSERT(sampler != NULL);
+	glBindSampler(slot, (GLuint)sampler->nativePtr());
+	return kError_SUCCESS;
+}
+
+int gpu::ComputeContext::setShaderTexture ( ShaderStage stage, int slot, Texture* texture )
+{
+	ARCORE_ASSERT(texture != NULL);
+	glBindTextureUnit(slot, (GLuint)texture->nativePtr());
+	return kError_SUCCESS;
+}
+
+int gpu::ComputeContext::setShaderTextureAuto ( ShaderStage stage, int slot, Texture* texture )
+{
+	ARCORE_ASSERT(texture != NULL);
+
+	if (texture != NULL) {
+		glBindSampler(slot, (GLuint)m_defaultSampler->nativePtr());
+		glBindTextureUnit(slot, (GLuint)texture->nativePtr());
+	}
+	else {
+		glBindSampler(slot, 0);
+		glBindTextureUnit(slot, 0);
+	}
+
+	return kError_SUCCESS;
+}
+
+int gpu::ComputeContext::setShaderResource ( ShaderStage stage, int slot, Buffer* buffer )
+{
+	ARCORE_ASSERT(buffer->getBufferType() != kBufferTypeUnknown);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER,
 		(GLuint)slot,

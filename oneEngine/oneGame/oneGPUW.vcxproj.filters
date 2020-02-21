@@ -192,6 +192,9 @@
     <ClInclude Include="source\gpuw\Public\Indirect.h">
       <Filter>SOURCE\GPU Wrapper\Public</Filter>
     </ClInclude>
+    <ClInclude Include="source\gpuw\dx11\Shader.dx11.h">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp">
@@ -271,6 +274,9 @@
     </ClCompile>
     <ClCompile Include="source\gpuw\ogl\ComputeContext.sync.cpp">
       <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\dx11\Shader.dx11.cpp">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

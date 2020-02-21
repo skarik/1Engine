@@ -2,10 +2,17 @@
 #define GPU_WRAPPER_COMPUTE_CONTEXT_H_
 
 #include "core/types.h"
+#include "gpuw/Public/ShaderTypes.h"
 
 namespace gpu
 {
+	class ShaderPipeline;
+	class Pipeline;
 	class Fence;
+	class Sampler;
+	class Texture;
+	class Buffer;
+	class RenderTarget;
 
 	class ComputeContext
 	{
@@ -25,9 +32,37 @@ namespace gpu
 		// Returns gpu::kError_SUCCESS on no error.
 		GPUW_API int			validate ( void );
 
-		GPUW_API int			dispatch ( void );
+		//	setPipeline( pipeline ) : Sets current pipeline.
+		// Combination set for shader pipeline.
+		GPUW_API int			setPipeline ( Pipeline* pipeline );
+		//	setShaderCBuffer( stage, slot, buffer ) : Sets buffer to given slot, as a ConstantBuffer.
+		// Size is limited to 4kb on some platforms.
+		GPUW_API int			setShaderCBuffer ( ShaderStage stage, int slot, Buffer* buffer );
+		//	setShaderSBuffer( stage, slot, buffer ) : Sets buffer to given slot, as a StructuredBuffer.
+		// Size must be at least 1kb on some platforms.
+		// For compute stages, acts as a fast alias for setShaderResource.
+		GPUW_API int			setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer );
+		//	setShaderSampler( stage, slot, sampler ) : Sets a sampler to a given slot.
+		GPUW_API int			setShaderSampler ( ShaderStage stage, int slot, Sampler* sampler );
+		//	setShaderSampler( stage, slot, sampler ) : Sets a texture to a given slot, without a sampler.
+		GPUW_API int			setShaderTexture ( ShaderStage stage, int slot, Texture* texture );
+		//	setShaderTextureAuto( stage, slot, texture ) : Sets texture to given slot, using an automatically generated sampler.
+		GPUW_API int			setShaderTextureAuto ( ShaderStage stage, int slot, Texture* texture );
+		//	setShaderResource( stage, slot, buffer ) : Sets a buffer to a given slot, as a generic data buffer.
+		GPUW_API int			setShaderResource ( ShaderStage stage, int slot, Buffer* buffer );
 
+		//	dispatch( groupCountX, groupCountY, groupCountZ ) : Dispatches a compute job.
+		GPUW_API int			dispatch ( const uint32_t groupCountX, const uint32_t groupCountY, const uint32_t groupCountZ );
+		//	setIndirectArgs( buffer ) : sets buffer used for arguments by the next dispatchIndirect call.
+		GPUW_API int			setIndirectArgs ( Buffer* buffer );
+		//	dispatch( groupCountX, groupCountY, groupCountZ ) : Dispatches a compute job, arguments from indirect data.
+		GPUW_API int			dispatchIndirect ( const uint32_t offset );
+
+		//	signal( fence ) : Inserts a command into the command buffer to signal the given fence.
+		// This can be used to make either the CPU or GPU wait on a command buffer to reach a certain point.
 		GPUW_API int			signal ( Fence* fence );
+		//	waitOnSignal( fence ): Inserts a command into the command buffer to stall the command stream until the given fence is signaled.
+		// This can be used to wait on either a CPU or GPU signal.
 		GPUW_API int			waitOnSignal ( Fence* fence );
 
 	private:

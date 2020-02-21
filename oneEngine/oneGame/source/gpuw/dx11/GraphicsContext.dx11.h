@@ -66,7 +66,9 @@ namespace gpu
 		//	setPipeline( pipeline ) : Sets current pipeline.
 		// Combination set for shader pipeline, vertex attributes, and primitive topology.
 		GPUW_API int			setPipeline ( Pipeline* pipeline );
+		//	setIndexBuffer( buffer, format ) : Sets index buffer for use in the next draw.
 		GPUW_API int			setIndexBuffer ( Buffer* buffer, IndexFormat format );
+		//	setVertexBuffer( slot, buffer, offset ) : Sets vertex buffer for use in the next draw, provided through a vertex attribute.
 		GPUW_API int			setVertexBuffer ( int slot, Buffer* buffer, uint32_t offset );
 		//	setShaderCBuffer( stage, slot, buffer ) : Sets buffer to given slot, as a ConstantBuffer.
 		// Size is limited to 4kb on some platforms.
@@ -75,16 +77,25 @@ namespace gpu
 		// Size must be at least 1kb on some platforms.
 		// For compute stages, acts as a fast alias for setShaderResource.
 		GPUW_API int			setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer );
-		GPUW_API int			setShaderSampler ( ShaderStage stage, int slot, Sampler* buffer );
-		GPUW_API int			setShaderTexture ( ShaderStage stage, int slot, Texture* buffer );
-		//	setShaderTextureAuto( stage, slot, texture ) : Sets texture to given slot using an automatically generated sampler.
-		GPUW_API int			setShaderTextureAuto ( ShaderStage stage, int slot, Texture* buffer );
+		//	setShaderSampler( stage, slot, sampler ) : Sets a sampler to a given slot.
+		GPUW_API int			setShaderSampler ( ShaderStage stage, int slot, Sampler* sampler );
+		//	setShaderSampler( stage, slot, sampler ) : Sets a texture to a given slot, without a sampler.
+		GPUW_API int			setShaderTexture ( ShaderStage stage, int slot, Texture* texture );
+		//	setShaderTextureAuto( stage, slot, texture ) : Sets texture to given slot, using an automatically generated sampler.
+		GPUW_API int			setShaderTextureAuto ( ShaderStage stage, int slot, Texture* texture );
+		//	setShaderResource( stage, slot, buffer ) : Sets a buffer to a given slot, as a generic data buffer.
 		GPUW_API int			setShaderResource ( ShaderStage stage, int slot, Buffer* buffer );
 
+		//	draw( vertexCount, startVertex ) : render primitives, automatically generating indices
 		GPUW_API int			draw ( const uint32_t vertexCount, const uint32_t startVertex );
+		//	drawIndexed( indexCount, startIndex ) : render indexed primitive
 		GPUW_API int			drawIndexed ( const uint32_t indexCount, const uint32_t startIndex );
+		//	drawIndexedInstanced( indexCount, instanceCount, startIndex ) : render instanced, indexed primitives
 		GPUW_API int			drawIndexedInstanced ( const uint32_t indexCount, const uint32_t instanceCount, const uint32_t startIndex );
-		GPUW_API int			drawIndirect ( void );
+		//	setIndirectArgs( buffer ) : sets buffer used for arguments by the next drawIndirect call.
+		GPUW_API int			setIndirectArgs ( Buffer* buffer );
+		//	drawInstancedIndirect( offset ) : render instanced, indexed primitives from indirect data
+		GPUW_API int			drawInstancedIndirect ( const uint32_t offset );
 
 		GPUW_API int			clearDepthStencil ( bool clearDepth, float depth, bool clearStencil, uint8_t stencil );
 		GPUW_API int			clearColor ( float* rgbaColor );

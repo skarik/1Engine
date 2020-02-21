@@ -43,11 +43,11 @@ namespace gpu
 		// For compute stages, acts as a fast alias for setShaderResource.
 		GPUW_API int			setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer );
 		//	setShaderSampler( stage, slot, sampler ) : Sets a sampler to a given slot.
-		GPUW_API int			setShaderSampler ( ShaderStage stage, int slot, Sampler* buffer );
+		GPUW_API int			setShaderSampler ( ShaderStage stage, int slot, Sampler* sampler );
 		//	setShaderSampler( stage, slot, sampler ) : Sets a texture to a given slot, without a sampler.
-		GPUW_API int			setShaderTexture ( ShaderStage stage, int slot, Texture* buffer );
+		GPUW_API int			setShaderTexture ( ShaderStage stage, int slot, Texture* texture );
 		//	setShaderTextureAuto( stage, slot, texture ) : Sets texture to given slot, using an automatically generated sampler.
-		GPUW_API int			setShaderTextureAuto ( ShaderStage stage, int slot, Texture* buffer );
+		GPUW_API int			setShaderTextureAuto ( ShaderStage stage, int slot, Texture* texture );
 		//	setShaderResource( stage, slot, buffer ) : Sets a buffer to a given slot, as a generic data buffer.
 		GPUW_API int			setShaderResource ( ShaderStage stage, int slot, Buffer* buffer );
 
@@ -71,6 +71,8 @@ namespace gpu
 		Pipeline*				m_pipeline;
 		bool					m_pipelineBound;
 		bool					m_pipelineDataBound;
+
+		Sampler*				m_defaultSampler;
 
 		int						dispatchPreparePipeline ( void );
 	};
