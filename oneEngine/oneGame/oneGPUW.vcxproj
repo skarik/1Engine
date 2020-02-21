@@ -53,6 +53,8 @@
     <ClInclude Include="source\gpuw\dx11\GraphicsContext.dx11.h" />
     <ClInclude Include="source\gpuw\dx11\OutputSurface.dx11.h" />
     <ClInclude Include="source\gpuw\dx11\Shader.dx11.h" />
+    <ClInclude Include="source\gpuw\dx11\ShaderPipeline.dx11.h" />
+    <ClInclude Include="source\gpuw\dx11\Texture.dx11.h" />
     <ClInclude Include="source\gpuw\Fence.h" />
     <ClInclude Include="source\gpuw\gpuw_common.h" />
     <ClInclude Include="source\gpuw\GraphicsContext.h" />
@@ -106,6 +108,8 @@
     <ClCompile Include="source\gpuw\dx11\GraphicsContext.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\OutputSurface.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\Shader.dx11.cpp" />
+    <ClCompile Include="source\gpuw\dx11\ShaderPipeline.dx11.cpp" />
+    <ClCompile Include="source\gpuw\dx11\Texture.dx11.cpp" />
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp" />
     <ClCompile Include="source\gpuw\ogl\ComputeContext.cpp" />
     <ClCompile Include="source\gpuw\ogl\ComputeContext.sync.cpp" />

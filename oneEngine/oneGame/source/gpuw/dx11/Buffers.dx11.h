@@ -41,7 +41,7 @@ namespace gpu
 	public:
 		GPUW_API				Buffer ( void );
 
-		//	initAsData( device, data_size ) : Initializes as a data buffer.
+		//	initAsData( device, data_size ) : Initializes as a data buffer. Can be used to load textures.
 		// Data is uploaded separately through map/unmap or upload.
 		GPUW_API int			initAsData ( Device* device, const uint64_t data_size );
 		

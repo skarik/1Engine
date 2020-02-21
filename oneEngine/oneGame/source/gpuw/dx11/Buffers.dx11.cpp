@@ -40,7 +40,7 @@ gpuHandle gpu::Buffer::nativePtr ( void )
 		glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
 }*/
 
-//	init ( data ) : initializes a constant buffer with data
+//	init ( data ) : initializes a general buffer with data. Can be used to load textures
 int	gpu::Buffer::initAsData ( Device* device, const uint64_t data_size )
 {
 	ARCORE_ASSERT(data_size > 0);
