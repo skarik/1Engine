@@ -24,6 +24,14 @@ namespace gpu
 		kShaderStageRAHit,	// Any-hit shader
 		kShaderStageRMiss,	// Miss shader
 	};
+
+	enum PipelineType
+	{
+		kPipelineTypeInvalid,
+		kPipelineTypeGraphics,
+		kPipelineTypeCompute,
+		kPipelineTypeRaytracing,
+	};
 }
 
 #endif//GPU_WRAPPER_PUBLIC_SHADER_TYPES_H_

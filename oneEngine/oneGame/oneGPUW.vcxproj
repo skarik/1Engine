@@ -80,9 +80,11 @@
     <ClInclude Include="source\gpuw\Public\Enums.h" />
     <ClInclude Include="source\gpuw\Public\Error.h" />
     <ClInclude Include="source\gpuw\Public\Formats.h" />
+    <ClInclude Include="source\gpuw\Public\Indirect.h" />
     <ClInclude Include="source\gpuw\Public\Rect2.h" />
     <ClInclude Include="source\gpuw\Public\ShaderTypes.h" />
     <ClInclude Include="source\gpuw\Public\Slots.h" />
+    <ClInclude Include="source\gpuw\Public\States.h" />
     <ClInclude Include="source\gpuw\Public\Transfer.h" />
     <ClInclude Include="source\gpuw\RenderTarget.h" />
     <ClInclude Include="source\gpuw\Sampler.h" />

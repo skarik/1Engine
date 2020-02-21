@@ -7,6 +7,7 @@
 #include "gpuw/Public/Rect2.h"
 #include "gpuw/Public/ShaderTypes.h"
 #include "gpuw/Public/Slots.h"
+#include "gpuw/Public/States.h"
 #include <stdint.h>
 
 namespace gpu
@@ -18,84 +19,6 @@ namespace gpu
 	class Texture;
 	class Buffer;
 	class RenderTarget;
-
-	struct RasterizerState
-	{
-		FillMode	fillmode;	// how each polygon is filled
-		CullMode	cullmode;	// which face is culled
-		FrontFace	frontface;	// controls winding order
-		bool		scissorEnabled;
-
-		RasterizerState()
-			: fillmode(kFillModeSolid), cullmode(kCullModeBack), frontface(kFrontFaceCounterClockwise),
-			scissorEnabled(true)
-		{}
-	};
-
-	struct BlendState
-	{
-		bool		enable;
-		BlendMode	src;
-		BlendMode	dst;
-		BlendOp		op;
-		BlendMode	srcAlpha;
-		BlendMode	dstAlpha;
-		BlendOp		opAlpha;
-		uint8_t		channelMask;
-
-		BlendState()
-			: enable(false), 
-			src(kBlendModeOne), dst(kBlendModeZero), op(kBlendOpAdd),
-			srcAlpha(kBlendModeOne), dstAlpha(kBlendModeZero), opAlpha(kBlendOpAdd),
-			channelMask(0xFF)
-			{}
-	};
-	struct BlendCollectiveState
-	{
-		BlendState	blend [16];
-	};
-
-	struct StencilOpInfo
-	{
-		StencilOp		failOp;
-		StencilOp		depthFailOp;
-		StencilOp		passOp;
-		CompareOp		func;
-
-		StencilOpInfo()
-			: failOp(kStencilOpKeep), depthFailOp(kStencilOpKeep), passOp(kStencilOpKeep),
-			func(kCompareOpAlways)
-			{}
-	};
-	struct DepthStencilState
-	{
-		bool			depthTestEnabled;
-		bool			depthWriteEnabled;
-		CompareOp		depthFunc;
-		bool			stencilTestEnabled;
-		uint8_t			stencilReadMask;
-		uint8_t			stencilWriteMask;
-		StencilOpInfo	stencilOpFrontface;
-		StencilOpInfo	stencilOpBackface;
-
-		DepthStencilState()
-			: depthTestEnabled(true), depthWriteEnabled(true), depthFunc(kCompareOpLess),
-			stencilTestEnabled(false), stencilReadMask(0xFF), stencilWriteMask(0xFF),
-			stencilOpFrontface(), stencilOpBackface()
-			{}
-	};
-
-	struct BlitTarget
-	{
-		RenderTarget*	renderTarget;
-		RenderTargetSlot
-						target;
-		Rect2			rect;
-
-		BlitTarget()
-			: renderTarget(NULL), target(gpu::kRenderTargetSlotColor0), rect(0,0,0,0)
-			{}
-	};
 
 	class GraphicsContext
 	{

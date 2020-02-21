@@ -122,19 +122,45 @@ int gpu::GraphicsContext::setShaderSBuffer ( ShaderStage stage, int slot, Buffer
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setShaderTextureAuto ( ShaderStage stage, int slot, Texture* buffer )
+int gpu::GraphicsContext::setShaderSampler ( ShaderStage stage, int slot, Sampler* sampler )
 {
-	ARCORE_ASSERT(buffer != NULL);
+	ARCORE_ASSERT(sampler != NULL);
+	glBindSampler(slot, (GLuint)sampler->nativePtr());
+	return kError_SUCCESS;
+}
 
-	if (buffer != NULL) {
+int gpu::GraphicsContext::setShaderTexture ( ShaderStage stage, int slot, Texture* texture )
+{
+	ARCORE_ASSERT(texture != NULL);
+	glBindTextureUnit(slot, (GLuint)texture->nativePtr());
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setShaderTextureAuto ( ShaderStage stage, int slot, Texture* texture )
+{
+	ARCORE_ASSERT(texture != NULL);
+
+	if (texture != NULL) {
 		glBindSampler(slot, (GLuint)m_defaultSampler->nativePtr());
-		glBindTextureUnit(slot, (GLuint)buffer->nativePtr());
+		glBindTextureUnit(slot, (GLuint)texture->nativePtr());
 	}
 	else {
 		glBindSampler(slot, 0);
 		glBindTextureUnit(slot, 0);
 	}
 
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setShaderResource ( ShaderStage stage, int slot, Buffer* buffer )
+{
+	ARCORE_ASSERT(buffer->getBufferType() != kBufferTypeUnknown);
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER,
+					 (GLuint)slot,
+					 buffer->m_buffer);
+
+	// todo: bind properly to the resource
 	return kError_SUCCESS;
 }
 
@@ -216,16 +242,24 @@ int gpu::GraphicsContext::drawIndexedInstanced ( const uint32_t indexCount, cons
 	return kErrorBadArgument;
 }
 
-int gpu::GraphicsContext::drawIndirect ( void )
+int	 gpu::GraphicsContext::setIndirectArgs ( Buffer* buffer )
+{
+	ARCORE_ASSERT(buffer->getBufferType() != kBufferTypeUnknown);
+
+	glBindBuffer(GL_DRAW_INDIRECT_BUFFER,
+				 buffer->m_buffer);
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::drawInstancedIndirect ( const uint32_t offset )
 {
 	if (drawPreparePipeline() == kError_SUCCESS)
 	{
-		ARCORE_ERROR("Not implemented");
-		//GL_DRAW_INDIRECT_BUFFER
 		glBindVertexArray((GLuint)m_pipeline->nativePtr());
 		glDrawElementsIndirect(gpu::internal::ArEnumToGL(m_primitiveType),
 							   gpu::internal::ArEnumToGL(m_indexFormat),
-							   (intptr_t)0);
+							   (void*)(intptr_t)offset);
 		ARCORE_ASSERT(validate() == 0);
 		return kError_SUCCESS;
 	}
