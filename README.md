@@ -22,7 +22,7 @@ Currently supported platforms:
 * Windows x64 MSClang (In progress...)
 
 Current graphics API support:
-* **OpenGL 4.7 (Default)** - Completly functional. No compute, incorrect synchronization. Can (maybe) fall back to 4.5.
+* **OpenGL 4.7 (Default)** - Functional graphics & compute. Incorrect synchronization. Can (maybe) fall back to 4.5.
 * **DirectX 11** - In progress. Requires Windows 8.1 SDK.
 * **Vulkan 1.X** - In progress. Requires Vulkan SDK, available from LunarG.
 

@@ -106,6 +106,7 @@
     <ClCompile Include="source\gpuw\dx11\OutputSurface.dx11.cpp" />
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp" />
     <ClCompile Include="source\gpuw\ogl\ComputeContext.cpp" />
+    <ClCompile Include="source\gpuw\ogl\ComputeContext.sync.cpp" />
     <ClCompile Include="source\gpuw\ogl\Device.cpp" />
     <ClCompile Include="source\gpuw\ogl\Fence.cpp" />
     <ClCompile Include="source\gpuw\ogl\GraphicsContext.cpp" />

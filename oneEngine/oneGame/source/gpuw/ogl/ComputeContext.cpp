@@ -1,18 +1,21 @@
 #include "gpuw/gpuw_common.h"
 #ifdef GPU_API_OPENGL
 
-#include "./ComputeContext.h"
-#include "gpuw/Public/Error.h"
-
-#include "./Buffers.h"
-
-#include "./ogl/GLCommon.h"
-#include "renderer/types/types.h"
-
 #include "core/types/types.h"
 #include "core/exceptions.h"
 
+#include "gpuw/Public/Error.h"
+
+#include "./ComputeContext.h"
+#include "./Buffers.h"
+#include "./Pipeline.h"
+#include "./ShaderPipeline.h"
+#include "./ogl/GLCommon.h"
+
+#include "renderer/types/types.h"
+
 gpu::ComputeContext::ComputeContext ( void )
+	: m_pipeline(NULL), m_pipelineBound(false), m_pipelineDataBound(false)
 {
 }
 gpu::ComputeContext::~ComputeContext ( void )
@@ -23,6 +26,19 @@ int gpu::ComputeContext::reset ( void )
 {
 	//glBindVertexArray(0);
 	return 0;
+}
+
+int gpu::ComputeContext::setPipeline ( Pipeline* pipeline )
+{
+	ARCORE_ASSERT(pipeline != NULL);
+	ARCORE_ASSERT(pipeline->m_pipeline->m_type == kPipelineTypeCompute);
+	if (pipeline != m_pipeline)
+	{
+		m_pipeline = pipeline;
+		m_pipelineBound = false;
+		m_pipelineDataBound = false;
+	}
+	return kError_SUCCESS;
 }
 
 int gpu::ComputeContext::setShaderCBuffer ( ShaderStage stage, int slot, Buffer* buffer )
@@ -49,9 +65,23 @@ int gpu::ComputeContext::setShaderSBuffer ( ShaderStage stage, int slot, Buffer*
 	return kError_SUCCESS;
 }
 
+int gpu::ComputeContext::dispatchPreparePipeline ( void )
+{
+	if (m_pipelineBound == false)
+	{
+		glUseProgram((GLuint)m_pipeline->m_pipeline->m_program);
+		m_pipelineBound = true;
+		return kError_SUCCESS;
+	}
+	return kError_SUCCESS;
+}
+
 int gpu::ComputeContext::dispatch ( const uint32_t groupCountX, const uint32_t groupCountY, const uint32_t groupCountZ )
 {
-	glDispatchCompute(groupCountX, groupCountY, groupCountZ);
+	if (dispatchPreparePipeline() == kError_SUCCESS)
+	{
+		glDispatchCompute(groupCountX, groupCountY, groupCountZ);
+	}
 	return kError_SUCCESS;
 }
 
@@ -67,7 +97,10 @@ int gpu::ComputeContext::setIndirectArgs ( Buffer* buffer )
 
 int gpu::ComputeContext::dispatchIndirect ( const uint32_t offset )
 {
-	glDispatchComputeIndirect((intptr_t)offset);
+	if (dispatchPreparePipeline() == kError_SUCCESS)
+	{
+		glDispatchComputeIndirect((intptr_t)offset);
+	}
 	return kError_SUCCESS;
 }
 

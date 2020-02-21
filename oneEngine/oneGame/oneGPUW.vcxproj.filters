@@ -269,5 +269,8 @@
     <ClCompile Include="source\gpuw\dx11\GraphicsContext.dx11.cpp">
       <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClCompile>
+    <ClCompile Include="source\gpuw\ogl\ComputeContext.sync.cpp">
+      <Filter>SOURCE\GPU Wrapper\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

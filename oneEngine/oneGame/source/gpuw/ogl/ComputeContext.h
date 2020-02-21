@@ -64,6 +64,15 @@ namespace gpu
 		//	waitOnSignal( fence ): Inserts a command into the command buffer to stall the command stream until the given fence is signaled.
 		// This can be used to wait on either a CPU or GPU signal.
 		GPUW_API int			waitOnSignal ( Fence* fence );
+
+	private:
+		// implementation details:
+
+		Pipeline*				m_pipeline;
+		bool					m_pipelineBound;
+		bool					m_pipelineDataBound;
+
+		int						dispatchPreparePipeline ( void );
 	};
 }
 

@@ -1,14 +1,14 @@
 #include "gpuw/gpuw_common.h"
 #ifdef GPU_API_OPENGL
 
-#include "./GraphicsContext.h"
-#include "./Sampler.h"
-
-#include "./ogl/GLCommon.h"
-#include "renderer/types/types.h"
-
 #include "core/types/types.h"
 #include "core/exceptions.h"
+
+#include "./GraphicsContext.h"
+#include "./Sampler.h"
+#include "./ogl/GLCommon.h"
+
+#include "renderer/types/types.h"
 
 static gpuEnum GpuEnumToGL ( const gpu::BlendMode bm )
 {
@@ -90,6 +90,7 @@ static gpuEnum GpuEnumToGL ( const gpu::StencilOp op )
 
 
 gpu::GraphicsContext::GraphicsContext ( void )
+	: m_pipeline(NULL), m_pipelineBound(false), m_pipelineDataBound(false)
 {
 	SamplerCreationDescription scd = SamplerCreationDescription();
 	m_defaultSampler = new Sampler;
