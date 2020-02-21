@@ -60,7 +60,10 @@ namespace gpu
 		intptr_t			mw_deviceContext;
 		uint32_t			m_width;
 		uint32_t			m_height;
+		OutputFormat		m_format;
 		PresentMode			m_presentMode;
+
+		void*				m_dxSwapchain;
 	};
 }
 

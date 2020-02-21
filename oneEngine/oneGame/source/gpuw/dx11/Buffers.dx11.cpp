@@ -50,13 +50,13 @@ int	gpu::Buffer::initAsData ( Device* device, const uint64_t data_size )
 
 	D3D11_BUFFER_DESC bufferInfo = {};
 	bufferInfo.Usage = D3D11_USAGE_DEFAULT;
-	bufferInfo.ByteWidth = data_size;
+	bufferInfo.ByteWidth = (UINT)data_size;
 	bufferInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;// | D3D11_BIND_UNORDERED_ACCESS;
 	bufferInfo.CPUAccessFlags = 0;
 	bufferInfo.MiscFlags = 0;
 	bufferInfo.StructureByteStride = 0;
 
-	static_cast<ID3D11Device*>(device->getNative())->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
+	device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
 
 	//_AllocateBufferSize(m_buffer, data_size, kTransferStream);
 	
@@ -74,13 +74,13 @@ int gpu::Buffer::initAsVertexBuffer ( Device* device, Format format, const uint6
 
 	D3D11_BUFFER_DESC bufferInfo = {};
 	bufferInfo.Usage = D3D11_USAGE_DEFAULT;
-	bufferInfo.ByteWidth = m_elementSize * element_count;
+	bufferInfo.ByteWidth = (UINT)(m_elementSize * element_count);
 	bufferInfo.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferInfo.CPUAccessFlags = 0;
 	bufferInfo.MiscFlags = 0;
 	bufferInfo.StructureByteStride = 0;
 
-	static_cast<ID3D11Device*>(device->getNative())->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
+	device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
 
 	//_AllocateBufferSize(m_buffer, m_elementSize * element_count, kTransferStream);
 
@@ -98,13 +98,13 @@ int gpu::Buffer::initAsIndexBuffer ( Device* device, IndexFormat format, const u
 
 	D3D11_BUFFER_DESC bufferInfo = {};
 	bufferInfo.Usage = D3D11_USAGE_DEFAULT;
-	bufferInfo.ByteWidth = m_elementSize * element_count;
+	bufferInfo.ByteWidth = (UINT)(m_elementSize * element_count);
 	bufferInfo.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bufferInfo.CPUAccessFlags = 0;
 	bufferInfo.MiscFlags = 0;
 	bufferInfo.StructureByteStride = 0;
 
-	static_cast<ID3D11Device*>(device->getNative())->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
+	device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
 
 	//_AllocateBufferSize(m_buffer, m_elementSize * element_count, kTransferStream);
 
@@ -121,13 +121,13 @@ int gpu::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size
 	
 	D3D11_BUFFER_DESC bufferInfo = {};
 	bufferInfo.Usage = D3D11_USAGE_DEFAULT;
-	bufferInfo.ByteWidth = data_size;
+	bufferInfo.ByteWidth = (UINT)data_size;
 	bufferInfo.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferInfo.CPUAccessFlags = 0;
 	bufferInfo.MiscFlags = 0;
 	bufferInfo.StructureByteStride = 0;
 
-	static_cast<ID3D11Device*>(device->getNative())->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
+	device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
 
 	//_AllocateBufferSize(m_buffer, data_size, kTransferStream);
 
@@ -145,13 +145,13 @@ int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_si
 
 	D3D11_BUFFER_DESC bufferInfo = {};
 	bufferInfo.Usage = D3D11_USAGE_DEFAULT;
-	bufferInfo.ByteWidth = data_size;
+	bufferInfo.ByteWidth = (UINT)data_size;
 	bufferInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;// | D3D11_BIND_UNORDERED_ACCESS;
 	bufferInfo.CPUAccessFlags = 0;
 	bufferInfo.MiscFlags = 0;
 	bufferInfo.StructureByteStride = 0;
 
-	static_cast<ID3D11Device*>(device->getNative())->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
+	device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
 
 	//_AllocateBufferSize(m_buffer, data_size, kTransferStream);
 
@@ -163,8 +163,7 @@ void* gpu::Buffer::map ( Device* device, const TransferStyle style )
 	ARCORE_ASSERT(m_buffer != NIL);
 
 	D3D11_MAPPED_SUBRESOURCE resource;
-	// TODO: getNative cannot be used here, most likely.
-	static_cast<ID3D11DeviceContext*>(device->getNative())->Map((ID3D11Buffer*)m_buffer, 0, D3D11_MAP_WRITE, 0, &resource); 
+	device->getNativeContext()->Map((ID3D11Buffer*)m_buffer, 0, D3D11_MAP_WRITE, 0, &resource); 
 	//todo: correct flags
 	return resource.pData;
 }
@@ -172,7 +171,7 @@ int gpu::Buffer::unmap ( Device* device )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
 	// TODO: getNative cannot be used here, most likely.
-	static_cast<ID3D11DeviceContext*>(device->getNative())->Unmap((ID3D11Buffer*)m_buffer, 0);
+	device->getNativeContext()->Unmap((ID3D11Buffer*)m_buffer, 0);
 	
 	return kError_SUCCESS;
 }

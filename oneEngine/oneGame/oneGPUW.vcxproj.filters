@@ -177,6 +177,15 @@
     <ClInclude Include="source\gpuw\dx11\Device.dx11.h">
       <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClInclude>
+    <ClInclude Include="source\gpuw\dx11\OutputSurface.dx11.h">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\dx11\GraphicsContext.dx11.h">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\dx11\ComputeContext.dx11.h">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp">
@@ -240,6 +249,18 @@
       <Filter>SOURCE\GPU Wrapper\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="source\gpuw\dx11\Buffers.dx11.cpp">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\dx11\Device.dx11.cpp">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\dx11\OutputSurface.dx11.cpp">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\dx11\ComputeContext.dx11.cpp">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\dx11\GraphicsContext.dx11.cpp">
       <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClCompile>
   </ItemGroup>

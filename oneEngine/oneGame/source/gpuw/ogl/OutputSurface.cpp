@@ -10,7 +10,7 @@
 #include "core/os.h"
 #include <stdio.h>
 
-int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32_t width, uint32_t height )
+int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32_t width, uint32_t height, OutputFormat format, bool fullscreen )
 {
 	PIXELFORMATDESCRIPTOR pfd = {};
 	pfd.nSize		= sizeof(PIXELFORMATDESCRIPTOR);
@@ -18,10 +18,10 @@ int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32
 	pfd.dwFlags		= PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_DEPTH_DONTCARE;
 	pfd.iPixelType	= PFD_TYPE_RGBA;
 	pfd.cColorBits	= 32; // todo
-	pfd.cRedBits	= 10;
-	pfd.cGreenBits	= 10;
-	pfd.cBlueBits	= 10;
-	pfd.cAlphaBits	= 2;
+	pfd.cRedBits	= (format == kOutputFormatRGB10) ? 10 : 8;
+	pfd.cGreenBits	= (format == kOutputFormatRGB10) ? 10 : 8;
+	pfd.cBlueBits	= (format == kOutputFormatRGB10) ? 10 : 8;
+	pfd.cAlphaBits	= (format == kOutputFormatRGB10) ? 2 : 8;
 	pfd.cDepthBits	= 0;
 	pfd.cStencilBits= 0;
 	pfd.iLayerType  = PFD_MAIN_PLANE;

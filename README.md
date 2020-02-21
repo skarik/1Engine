@@ -11,7 +11,7 @@ The original EHS engine, now mostly passion project. This the **primary repo** w
 
 For Windows, the following are required:
 * Visual Studio 2015 or later.
-* Some version of the DirectX SDK (used for Xbox controller support).
+* Some version of the DirectX or Windows SDK (used for Xbox controller support).
 * Relevant SDK for the rendering API being used (except OpenGL, that just magically works).
 * Python 3 (used for recompiling shaders on before runtime)
 
@@ -20,6 +20,11 @@ You can compile and run without these with generous applications of self-inflict
 Currently supported platforms:
 * Windows x64 MSVC (In progress...)
 * Windows x64 MSClang (In progress...)
+
+Current graphics API support:
+* **OpenGL 4.7 (Default)** - Completly functional. No compute, incorrect synchronization. Can (maybe) fall back to 4.5.
+* **DirectX 11** - In progress. Requires Windows 8.1 SDK.
+* **Vulkan 1.X** - In progress. Requires Vulkan SDK, available from LunarG.
 
 ## Branches
 
@@ -44,7 +49,7 @@ Large game projects are mostly the same, but instead are prefixed by the game in
       * ``engine`` game engine backend
       * ``audio`` audio engine backend. uses OpenAL Soft, limited optional FMOD support
       * ``physical`` animation and physics backend
-      * ``gpuw`` opengl 4.6 api wrapper
+      * ``gpuw`` graphics API wrapper(s)
       * ``renderer`` hybrid forward renderer
       * ``engine-common`` simple game framework
       * ``engine2d`` ``render2d`` 2d game framework extensions & 2d deferred renderer
@@ -56,8 +61,7 @@ Large game projects are mostly the same, but instead are prefixed by the game in
     * ``.res-0`` base game resources
     * ``.res+N`` where N is any integer, nondestructive file replacement support
     * ``addons`` plugin support folder
-* ``/oneEngine-render-vk`` vulkan 1 api wrapper. not working yet
-* ``/oneEngine-render-11`` directX 11 api wrapper. not working yet (glsl-to-hlsl issues)
+* ``/oneEngine-render-vk`` old unused vulkan test code
 
 ## Repos
 

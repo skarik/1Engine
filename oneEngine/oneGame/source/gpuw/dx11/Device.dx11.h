@@ -43,11 +43,14 @@ namespace gpu
 		GPUW_API ComputeContext*
 								getComputeContext ( void );
 
-		// Non-exposed API for grabbing native device object
-		GPUW_EXLUSIVE_API void*	getNative ( void );
+		// Non-exposed API for grabbing native device
+		GPUW_EXLUSIVE_API ID3D11Device*
+								getNative ( void );
 		// Non-exposed API for allocating memory
 		GPUW_EXLUSIVE_API void*	allocateMemory ( uint32_t typeFlags, uint64_t size, uint64_t offset );
-
+		// Non-exposed API for grabbing native device context
+		GPUW_EXLUSIVE_API ID3D11DeviceContext*
+								getNativeContext ( void );
 	private:
 		friend OutputSurface;
 		intptr_t			mw_module;
@@ -72,6 +75,11 @@ namespace gpu
 		VkDevice			m_device;
 		VkAllocationCallbacks*
 							m_allocator;*/
+		IDXGIFactory*		m_dxFactory;
+		IDXGIAdapter*		m_dxAdapter;
+		ID3D11Device*		m_dxDevice;
+		ID3D11DeviceContext*
+							m_dxImmediateContext;
 
 		uint32_t			m_queueIndexGraphics;
 		uint32_t			m_queueIndexCompute;

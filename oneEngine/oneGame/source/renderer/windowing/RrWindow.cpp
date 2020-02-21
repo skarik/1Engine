@@ -50,6 +50,7 @@ RrWindow::RrWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	m_resolution.x = chooseNonzero(gsi->i_ro_TargetResX, 1280);
 	m_resolution.y = chooseNonzero(gsi->i_ro_TargetResY, 720);
 	m_colordepth   = gsi->b_ro_UseHighRange ? 10 : 8;
+	m_outputFormat = gsi->b_ro_UseHighRange ? gpu::kOutputFormatRGB10 : gpu::kOutputFormatRGB8;
 	m_fullscreen = false;
 
 	// Load window options 
@@ -287,7 +288,7 @@ void RrWindow::CreateGfxSurface ( void )
 		ERROR_OUT("Window is not created. Cannot create surface.\n");
 	}
 
-	if (m_surface.create(m_device, gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y) != 0)
+	if (m_surface.create(m_device, gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y, m_outputFormat, m_fullscreen) != 0)
 	{
 		DestroyScreen();
 		ERROR_OUT("Gfx surface creation error.\n");
@@ -372,7 +373,7 @@ bool RrWindow::Resize ( int width, int height )
 
 		// Refresh the surface
 		m_surface.destroy();
-		m_surface.create(m_device, gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y);
+		m_surface.create(m_device, gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y, m_outputFormat, m_fullscreen);
 
 		// Resize the renderer
 		if (m_renderer != NULL)

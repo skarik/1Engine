@@ -107,6 +107,7 @@ private:
 	friend LRESULT CALLBACK MessageUpdate(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 	Vector2i			m_resolution;
+	gpu::OutputFormat	m_outputFormat;
 	bool				m_fullscreen;
 	int					m_colordepth;
 

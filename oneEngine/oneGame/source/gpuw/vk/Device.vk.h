@@ -47,6 +47,10 @@ namespace gpu
 		// Non-exposed API for allocating memory
 		GPUW_EXLUSIVE_API void*	allocateMemory ( uint32_t typeFlags, uint64_t size, uint64_t offset );
 
+		// Non-exposed API for grabbing allocator.
+		GPUW_EXLUSIVE_API VkAllocationCallbacks*
+								getAllocator ( void );
+
 	private:
 		friend OutputSurface;
 		intptr_t			mw_module;
