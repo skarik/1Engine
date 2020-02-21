@@ -61,7 +61,6 @@ Large game projects are mostly the same, but instead are prefixed by the game in
     * ``.res-0`` base game resources
     * ``.res+N`` where N is any integer, nondestructive file replacement support
     * ``addons`` plugin support folder
-* ``/oneEngine-render-vk`` old unused vulkan test code
 
 ## Repos
 
