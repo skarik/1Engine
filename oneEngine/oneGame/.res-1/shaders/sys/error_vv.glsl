@@ -5,7 +5,7 @@
 layout(location = 0) in vec3 mdl_Vertex;
 
 // System inputs
-layout(std140) uniform sys_cbuffer_PerObject
+layout(binding = 0, std140) uniform sys_cbuffer_PerObject
 {
     mat4 sys_ModelTRS;
     mat4 sys_ModelRS;

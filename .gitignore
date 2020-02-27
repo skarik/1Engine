@@ -19,3 +19,6 @@
 *.PAD
 *.db
 *.spv
+*.hlsl
+*.dxc
+*.aasm

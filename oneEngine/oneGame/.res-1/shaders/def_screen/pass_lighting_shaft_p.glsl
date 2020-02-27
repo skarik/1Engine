@@ -224,7 +224,7 @@ float shadowCalculate ( /*vec4 lightCoords,*/ in float s_strength, sampler2D tex
 			// Limit Y coordinate
 			coord.y = max( min( coord.y, 1.0 ), 0.0 );
 			
-			distanceFromLight = texture( textureShadow, coord.xy ).r;
+			distanceFromLight = textureLod( textureShadow, coord.xy, 0.0 ).r;
 			depthDifference += clamp((coord.z - distanceFromLight)*1024.0 - bias, 0.0,1.0);
 		}
 		depthDifference /= 4.0;
