@@ -49,6 +49,7 @@
     <ClInclude Include="source\gpuw\dx11\Buffers.dx11.h" />
     <ClInclude Include="source\gpuw\dx11\ComputeContext.dx11.h" />
     <ClInclude Include="source\gpuw\dx11\Device.dx11.h" />
+    <ClInclude Include="source\gpuw\dx11\Fence.dx11.h" />
     <ClInclude Include="source\gpuw\dx11\gpu.h" />
     <ClInclude Include="source\gpuw\dx11\GraphicsContext.dx11.h" />
     <ClInclude Include="source\gpuw\dx11\Internal\Enums.dx11.h" />
@@ -110,8 +111,10 @@
     <ClCompile Include="source\gpuw\dx11\Buffers.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\ComputeContext.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\Device.dx11.cpp" />
+    <ClCompile Include="source\gpuw\dx11\Fence.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\GraphicsContext.draw.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\GraphicsContext.dx11.cpp" />
+    <ClCompile Include="source\gpuw\dx11\GraphicsContext.sync.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\OutputSurface.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\Pipeline.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\RenderTarget.dx11.cpp" />

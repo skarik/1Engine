@@ -219,6 +219,9 @@
     <ClInclude Include="source\gpuw\dx11\RenderTarget.dx11.h">
       <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClInclude>
+    <ClInclude Include="source\gpuw\dx11\Fence.dx11.h">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp">
@@ -318,6 +321,12 @@
       <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClCompile>
     <ClCompile Include="source\gpuw\dx11\RenderTarget.dx11.cpp">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\dx11\Fence.dx11.cpp">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\dx11\GraphicsContext.sync.dx11.cpp">
       <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClCompile>
   </ItemGroup>
