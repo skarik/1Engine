@@ -3,12 +3,11 @@
 
 #include "./ShaderPipeline.dx11.h"
 #include "./Shader.dx11.h"
+#include "./Device.dx11.h"
 #include "gpuw/Public/Error.h"
 
 #include "core/debug.h"
 #include "core/debug/console.h"
-
-#include "./Device.dx11.h"
 
 gpu::ShaderPipeline::ShaderPipeline ( void )
 	:

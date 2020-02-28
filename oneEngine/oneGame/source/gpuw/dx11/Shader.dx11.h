@@ -7,6 +7,7 @@
 namespace gpu
 {
 	class ShaderPipeline;
+	class Pipeline;
 
 	class Shader
 	{
@@ -19,6 +20,7 @@ namespace gpu
 
 	private:
 		friend ShaderPipeline;
+		friend Pipeline;
 		ShaderStage		m_type;
 		char*			m_shaderBytes;
 		uint64_t		m_shaderLength;

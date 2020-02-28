@@ -22,7 +22,7 @@ namespace gpu
 		// Sets up with default values
 		GPUW_API explicit		Pipeline ( void )
 		{
-			m_vao = 0;
+			m_layout = NULL;
 			m_pipeline = NULL;
 		}
 
@@ -40,13 +40,15 @@ namespace gpu
 		friend GraphicsContext;
 		friend ComputeContext;
 
-		unsigned int		m_vao;
+		void*				m_layout;
 		ShaderPipeline*		m_pipeline;
 		Buffer*				m_boundIndexBuffer;
 
 		// Input assembler outputs
 		PrimitiveTopology	ia_topology;
 		bool				ia_primitiveRestartEnable;
+		VertexInputBindingDescription*
+							ia_bindingInfo;
 	};
 }
 

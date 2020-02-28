@@ -4,6 +4,7 @@
 #include "./Device.dx11.h"
 #include "./Texture.dx11.h"
 #include "./Buffers.dx11.h"
+#include "./Internal/Enums.dx11.h"
 #include "gpuw/Public/Error.h"
 #include "core/exceptions.h"
 #include "core/math/Math.h"
@@ -18,55 +19,6 @@ bool gpu::Texture::valid ( void )
 gpuHandle gpu::Texture::nativePtr ( void )
 {
 	return (gpuHandle)m_texture;
-}
-
-static DXGI_FORMAT ArEnumToDx ( const core::gfx::tex::arColorFormat format )
-{
-	using namespace core::gfx::tex;
-	switch ( format )
-	{
-		// Color formats:
-	case kColorFormatRGB8:		return DXGI_FORMAT_R8G8B8A8_UNORM;
-	case kColorFormatRGB16:		return DXGI_FORMAT_R16G16B16A16_UNORM;
-	case kColorFormatRGB16F:	return DXGI_FORMAT_R16G16B16A16_FLOAT;
-	case kColorFormatRGB32:		return DXGI_FORMAT_R32G32B32A32_UINT;
-	case kColorFormatRGB32F:	return DXGI_FORMAT_R32G32B32A32_FLOAT;
-
-	case kColorFormatRGBA8:		return DXGI_FORMAT_R8G8B8A8_UNORM;
-	case kColorFormatRGBA16:	return DXGI_FORMAT_R16G16B16A16_UNORM;
-	case kColorFormatRGBA16F:	return DXGI_FORMAT_R16G16B16A16_FLOAT;
-	case kColorFormatRGBA32:	return DXGI_FORMAT_R32G32B32A32_UINT;
-	case kColorFormatRGBA32F:	return DXGI_FORMAT_R32G32B32A32_FLOAT;
-
-	case kColorFormatRG8:		return DXGI_FORMAT_R8G8_UNORM;
-	case kColorFormatRG16:		return DXGI_FORMAT_R16G16_UNORM;
-	case kColorFormatRG16F:		return DXGI_FORMAT_R16G16_FLOAT;
-	case kColorFormatRG32:		return DXGI_FORMAT_R32G32_UINT;
-	case kColorFormatRG32F:		return DXGI_FORMAT_R32G32_FLOAT;
-
-	case kColorFormatR8:		return DXGI_FORMAT_R8_UNORM;
-	case kColorFormatR16:		return DXGI_FORMAT_R16_UNORM;
-	case kColorFormatR16F:		return DXGI_FORMAT_R16_FLOAT;
-	case kColorFormatR32:		return DXGI_FORMAT_R32_UINT;
-	case kColorFormatR32F:		return DXGI_FORMAT_R32_FLOAT;
-
-		// Depth formats:
-	case kDepthFormat16:		return DXGI_FORMAT_D16_UNORM;
-	//case kDepthFormat24:		return DXGI_FORMAT_D24_UNORM;
-	case kDepthFormat32:		return DXGI_FORMAT_D32_FLOAT;
-	case kDepthFormat32F:		return DXGI_FORMAT_D32_FLOAT;
-
-		// Stencil formats:
-	case KStencilFormatIndex1:	return DXGI_FORMAT_R1_UNORM;
-	//case KStencilFormatIndex4:	return DXGI_FORMAT_R4_UNORM;
-	case KStencilFormatIndex8:	return DXGI_FORMAT_R8_UNORM;
-	case KStencilFormatIndex16:	return DXGI_FORMAT_R16_UNORM;
-
-		// Packed Depth+Stencil formats:
-	case kDepthFormat32FStencil8:	return DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
-	case kDepthFormat24Stencil8:	return DXGI_FORMAT_D24_UNORM_S8_UINT;
-	}
-	return DXGI_FORMAT_UNKNOWN;
 }
 
 int gpu::Texture::allocate (
@@ -106,7 +58,7 @@ int gpu::Texture::allocate (
 				txd.Height = height;
 				txd.MipLevels = allocatedLevels;
 				txd.ArraySize = m_depth;
-				txd.Format = ArEnumToDx(textureFormat);
+				txd.Format = gpu::internal::ArEnumToDx(textureFormat);
 				txd.SampleDesc.Count = 1;
 				txd.SampleDesc.Quality = 0;
 				txd.Usage = D3D11_USAGE_DEFAULT;
@@ -133,7 +85,7 @@ int gpu::Texture::allocate (
 				txd.Width = width;
 				txd.MipLevels = allocatedLevels;
 				txd.ArraySize = m_height;
-				txd.Format = ArEnumToDx(textureFormat);
+				txd.Format = gpu::internal::ArEnumToDx(textureFormat);
 				txd.Usage = D3D11_USAGE_DEFAULT;
 				txd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 				txd.CPUAccessFlags = 0;
@@ -158,7 +110,7 @@ int gpu::Texture::allocate (
 				txd.Height = height;
 				txd.Depth = depth;
 				txd.MipLevels = allocatedLevels;
-				txd.Format = ArEnumToDx(textureFormat);
+				txd.Format = gpu::internal::ArEnumToDx(textureFormat);
 				txd.Usage = D3D11_USAGE_DEFAULT;
 				txd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 				txd.CPUAccessFlags = 0;
@@ -288,7 +240,7 @@ int gpu::WOFrameAttachment::allocate (
 			txd.Height = height;
 			txd.MipLevels = 1;
 			txd.ArraySize = 1;
-			txd.Format = ArEnumToDx(textureFormat);
+			txd.Format = gpu::internal::ArEnumToDx(textureFormat);
 			txd.SampleDesc.Count = 1;
 			txd.SampleDesc.Quality = 0;
 			txd.Usage = D3D11_USAGE_DEFAULT;

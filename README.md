@@ -23,7 +23,7 @@ Currently supported platforms:
 
 Current graphics API support:
 * **OpenGL 4.7 (Default)** - Functional graphics & compute. Incorrect synchronization. Can (maybe) fall back to 4.5.
-* **DirectX 11** - In progress. Requires Windows 8.1 SDK.
+* **DirectX 11** - In progress. Requires both Windows 8.1 SDK and Vulkan SDK.
 * **Vulkan 1.X** - In progress. Requires Vulkan SDK, available from LunarG.
 
 ## Branches

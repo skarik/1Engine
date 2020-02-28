@@ -10,6 +10,7 @@ namespace gpu
 	class Shader;
 	class GraphicsContext;
 	class ComputeContext;
+	class Pipeline;
 
 	class ShaderPipeline
 	{
@@ -34,6 +35,7 @@ namespace gpu
 	private:
 		friend GraphicsContext;
 		friend ComputeContext;
+		friend Pipeline;
 
 		PipelineType
 					m_type;

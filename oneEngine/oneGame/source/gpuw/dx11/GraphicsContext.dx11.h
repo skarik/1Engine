@@ -117,7 +117,7 @@ namespace gpu
 		void*					m_wrapperDevice;
 		void*					m_deferredContext;
 
-		/*RasterizerState			m_rasterState;
+		RasterizerState			m_rasterState;
 		BlendCollectiveState	m_blendCollectState;
 		DepthStencilState		m_depthStencilState;
 		PrimitiveTopology		m_primitiveType;
@@ -128,10 +128,11 @@ namespace gpu
 
 		IndexFormat				m_indexFormat;
 		Buffer*					m_indexBuffer;
+		Buffer*					m_vertexBuffer[32/*D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT*/];
 
 		Sampler*				m_defaultSampler;
 
-		int						drawPreparePipeline ( void );*/
+		int						drawPreparePipeline ( void );
 	};
 }
 
