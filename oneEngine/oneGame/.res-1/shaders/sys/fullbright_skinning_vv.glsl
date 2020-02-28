@@ -33,7 +33,7 @@ layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
 };
 
 // Skinning
-layout(binding = 10, std140) uniform sys_SkinningDataMajor
+layout(binding = 10, std140) readonly buffer sys_SkinningDataMajor
 {
 	mat4 majorSkinning [256];
 };

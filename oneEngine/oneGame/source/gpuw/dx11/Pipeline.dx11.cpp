@@ -54,6 +54,7 @@ int gpu::Pipeline::create ( Device* device, const PipelineCreationDescription* p
 	// copy binding info over, since it is needed for ctx::IASetVertexBuffers
 	ia_bindingInfo = new VertexInputBindingDescription[params->vv_inputBindingsCount];
 	memcpy(ia_bindingInfo, params->vv_inputBindings, sizeof(VertexInputBindingDescription) * params->vv_inputBindingsCount);
+	ia_bindingInfoCount = params->vv_inputBindingsCount;
 
 	return kError_SUCCESS;
 }

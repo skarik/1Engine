@@ -175,7 +175,7 @@ bool RrShapeCube::Render ( const rrRenderParams* params )
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
 	// draw now
-	gfx->drawIndexed(m_MeshBuffer.m_modeldata->indexNum, 0);
+	gfx->drawIndexed(m_MeshBuffer.m_modeldata->indexNum, 0, 0);
 	
 	return true;
 }

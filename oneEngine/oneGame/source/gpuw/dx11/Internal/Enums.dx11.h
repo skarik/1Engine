@@ -119,6 +119,58 @@ namespace internal {
 		return D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
 	}
 	
+	static FORCE_INLINE D3D11_FILTER ArEnumToDx ( const core::gfx::tex::arSamplingFilter magFilter, const core::gfx::tex::arSamplingFilter minFilter, const core::gfx::tex::arSamplingFilter mipFilter, bool anisotropic )
+	{
+		using namespace core::gfx::tex;
+		// anisotropic overrides filter
+		if (anisotropic)
+			return D3D11_FILTER_ANISOTROPIC;
+		switch ( minFilter ) {
+			// Normal filtering
+		case kSamplingPoint:
+			switch ( magFilter ) {
+			case kSamplingPoint:
+				switch ( mipFilter ) {
+				case kSamplingPoint:	return D3D11_FILTER_MIN_MAG_MIP_POINT;
+				case kSamplingLinear:	return D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR;
+				}
+			case kSamplingLinear:
+				switch ( mipFilter ) {
+				case kSamplingPoint:	return D3D11_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
+				case kSamplingLinear:	return D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
+				}
+			}
+		case kSamplingLinear:
+			switch ( magFilter ) {
+			case kSamplingPoint:
+				switch ( mipFilter ) {
+				case kSamplingPoint:	return D3D11_FILTER_MIN_LINEAR_MAG_MIP_POINT;
+				case kSamplingLinear:	return D3D11_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+				}
+			case kSamplingLinear:
+				switch ( mipFilter ) {
+				case kSamplingPoint:	return D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+				case kSamplingLinear:	return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+				}
+			}
+		}
+		throw core::InvalidArgumentException();
+		return D3D11_FILTER_MIN_MAG_MIP_POINT;
+	}
+
+	static FORCE_INLINE D3D11_TEXTURE_ADDRESS_MODE ArEnumToDx ( const core::gfx::tex::arWrappingType wrapping )
+	{
+		using namespace core::gfx::tex;
+		switch ( wrapping ) {
+		case kWrappingRepeat:			return D3D11_TEXTURE_ADDRESS_WRAP;
+		case kWrappingClamp:			return D3D11_TEXTURE_ADDRESS_CLAMP;
+		case kWrappingBorder:			return D3D11_TEXTURE_ADDRESS_BORDER;
+		case kWrappingMirroredRepeat:	return D3D11_TEXTURE_ADDRESS_MIRROR;
+		}
+		throw core::InvalidArgumentException();
+		return D3D11_TEXTURE_ADDRESS_WRAP;
+	}
+
 }}
 
 #endif//GPU_WRAPPER_INTERNAL_ENUMS_H_

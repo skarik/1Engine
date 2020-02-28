@@ -167,7 +167,7 @@ bool renderer::Mesh::Render ( const rrRenderParams* params )
 				gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::SBUFFER_SKINNING_MAJOR, &m_parent->GetBuffers().m_sbufSkinningMajor);
 		}
 		// draw now
-		gfx->drawIndexed(m_mesh->m_modeldata->indexNum, 0);
+		gfx->drawIndexed(m_mesh->m_modeldata->indexNum, 0, 0);
 	}
 
 	/*{

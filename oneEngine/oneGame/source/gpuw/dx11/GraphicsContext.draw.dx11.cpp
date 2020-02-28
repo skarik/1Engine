@@ -6,10 +6,11 @@
 
 #include "core/debug.h"
 
-//#include "./RenderTarget.dx11.h"
+#include "./RenderTarget.dx11.h"
 #include "./Pipeline.dx11.h"
 #include "./ShaderPipeline.dx11.h"
-//#include "./Sampler.dx11.h"
+#include "./Sampler.dx11.h"
+#include "./Texture.dx11.h"
 #include "./Buffers.dx11.h"
 //#include "./Fence.dx11.h"
 
@@ -20,6 +21,232 @@
 
 #include <stdio.h>
 
+int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
+{
+	ARCORE_ASSERT(renderTarget != NULL);
+
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+
+	// We through the attachments on the render target to generate the list of actual targets.
+	// TODO: This could be pregenerated on the RenderTarget themselves on their assembly. This would also allow removing the awful 0xFFFFFFFF hack.
+	UINT attachmentCount = 0;
+	ID3D11RenderTargetView* attachments [16] = {};
+
+	for (UINT i = 0; i < 16; ++i)
+	{
+		if (renderTarget->m_attachments[i] != NULL) {
+			attachments[attachmentCount] = (ID3D11RenderTargetView*)renderTarget->m_attachments[i];
+			++attachmentCount;
+		}
+	}
+
+	ctx->OMSetRenderTargets(attachmentCount, attachments, (ID3D11DepthStencilView*)renderTarget->m_attachmentDepthStencil);
+
+	/*if (renderTarget->m_framebuffer != 0xFFFFFFFF)
+	{
+		// Set the framebuffer as the given target.
+		glBindFramebuffer(GL_FRAMEBUFFER, renderTarget->m_framebuffer);
+		glNamedFramebufferDrawBuffers(renderTarget->m_framebuffer, attachmentCount, attachments);
+		//glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	}
+	else
+	{
+		// Set the framebuffer to the screen's target.
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//glNamedFramebufferDrawBuffer(0, GL_FRONT);
+		glDrawBuffer(GL_FRONT_LEFT);
+	}*/
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setPipeline ( Pipeline* pipeline )
+{
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+
+	if (pipeline != m_pipeline)
+	{
+		m_pipeline = pipeline;
+		m_pipelineBound = false;
+		m_pipelineDataBound = false;
+
+		// TODO: move this elsewhere if possible
+		// Unbind all the resources now
+		void* nullRez [64] = {NULL};
+		ctx->VSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
+		ctx->HSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
+		ctx->DSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
+		ctx->GSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
+		ctx->PSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
+
+		ctx->VSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, (ID3D11ShaderResourceView**)nullRez);
+		ctx->HSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, (ID3D11ShaderResourceView**)nullRez);
+		ctx->DSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, (ID3D11ShaderResourceView**)nullRez);
+		ctx->GSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, (ID3D11ShaderResourceView**)nullRez);
+		ctx->PSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, (ID3D11ShaderResourceView**)nullRez);
+
+		ctx->IASetVertexBuffers(0, D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT, (ID3D11Buffer**)nullRez, (UINT*)nullRez, (UINT*)nullRez);
+	}
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setIndexBuffer ( Buffer* buffer, IndexFormat format )
+{
+	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeIndex);
+	ARCORE_ASSERT(m_pipeline != NULL);
+
+	// TODO:
+
+	m_indexBuffer = buffer;
+	m_indexFormat = format;
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setVertexBuffer ( int slot, Buffer* buffer, uint32_t offset )
+{
+	// todo: optimize later
+	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeVertex);
+	ARCORE_ASSERT(m_pipeline != NULL);
+	ARCORE_ASSERT(slot < (int)m_pipeline->ia_bindingInfoCount);
+
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+
+	ID3D11Buffer* bufferList [1] = {(ID3D11Buffer*)buffer->nativePtr()};
+	UINT strideList [1] = {m_pipeline->ia_bindingInfo[slot].stride};
+	UINT offsetList [1] = {0};
+
+	ctx->IASetVertexBuffers(slot, 1, bufferList, strideList, offsetList);
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, Buffer* buffer )
+{
+	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeConstant);
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+
+	ID3D11Buffer* bufferList [1] = {(ID3D11Buffer*)buffer->nativePtr()};
+	if (stage == kShaderStageVs)
+		ctx->VSGetConstantBuffers(slot, 1, bufferList);
+	else if (stage == kShaderStageHs)
+		ctx->HSGetConstantBuffers(slot, 1, bufferList);
+	else if (stage == kShaderStageDs)
+		ctx->DSGetConstantBuffers(slot, 1, bufferList);
+	else if (stage == kShaderStageGs)
+		ctx->GSGetConstantBuffers(slot, 1, bufferList);
+	else if (stage == kShaderStagePs)
+		ctx->PSGetConstantBuffers(slot, 1, bufferList);
+	else if (stage == kShaderStageCs)
+		ctx->CSGetConstantBuffers(slot, 1, bufferList);
+
+	// todo: bind
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer )
+{
+	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeStructured);
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+
+	// https://docs.microsoft.com/en-us/windows/win32/direct3d12/resource-binding-in-hlsl
+	//ctx->OMGetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, NULL, NULL,
+	//											   slot, 1, uavViewList);
+	
+	ID3D11ShaderResourceView* srvList [1] = {(ID3D11ShaderResourceView*)buffer->m_srv};
+	if (stage == kShaderStageVs)
+		ctx->VSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStageHs)
+		ctx->HSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStageDs)
+		ctx->DSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStageGs)
+		ctx->GSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStagePs)
+		ctx->PSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStageCs)
+		ctx->CSSetShaderResources(slot, 1, srvList);
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setShaderSampler ( ShaderStage stage, int slot, Sampler* sampler )
+{
+	ARCORE_ASSERT(sampler != NULL);
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+
+	ID3D11SamplerState* samplerList [1] = {(ID3D11SamplerState*)sampler->nativePtr()};
+	if (stage == kShaderStageVs)
+		ctx->VSSetSamplers(slot, 1, samplerList);
+	else if (stage == kShaderStageHs)
+		ctx->HSSetSamplers(slot, 1, samplerList);
+	else if (stage == kShaderStageDs)
+		ctx->DSSetSamplers(slot, 1, samplerList);
+	else if (stage == kShaderStageGs)
+		ctx->GSSetSamplers(slot, 1, samplerList);
+	else if (stage == kShaderStagePs)
+		ctx->PSSetSamplers(slot, 1, samplerList);
+	else if (stage == kShaderStageCs)
+		ctx->CSSetSamplers(slot, 1, samplerList);
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setShaderTexture ( ShaderStage stage, int slot, Texture* texture )
+{
+	ARCORE_ASSERT(texture != NULL);
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+	//glBindTextureUnit(slot, (GLuint)texture->nativePtr());
+
+	ID3D11ShaderResourceView* srvList [1] = {(ID3D11ShaderResourceView*)texture->m_srv};
+	if (stage == kShaderStageVs)
+		ctx->VSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStageHs)
+		ctx->HSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStageDs)
+		ctx->DSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStageGs)
+		ctx->GSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStagePs)
+		ctx->PSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStageCs)
+		ctx->CSSetShaderResources(slot, 1, srvList);
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setShaderTextureAuto ( ShaderStage stage, int slot, Texture* texture )
+{
+	ARCORE_ASSERT(texture != NULL);
+
+	setShaderSampler(stage, slot, m_defaultSampler);
+	setShaderTexture(stage, slot, texture);
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::setShaderResource ( ShaderStage stage, int slot, Buffer* buffer )
+{
+	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeStructured);
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+
+	ID3D11ShaderResourceView* srvList [1] = {(ID3D11ShaderResourceView*)buffer->nativePtr()};
+	if (stage == kShaderStageVs)
+		ctx->VSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStageHs)
+		ctx->HSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStageDs)
+		ctx->DSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStageGs)
+		ctx->GSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStagePs)
+		ctx->PSSetShaderResources(slot, 1, srvList);
+	else if (stage == kShaderStageCs)
+		ctx->CSSetShaderResources(slot, 1, srvList);
+
+	return kError_SUCCESS;
+}
 
 int gpu::GraphicsContext::drawPreparePipeline ( void )
 {
@@ -55,6 +282,64 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 		return kError_SUCCESS;
 	}
 	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::draw ( const uint32_t vertexCount, const uint32_t startVertex )
+{
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+	if (drawPreparePipeline() == kError_SUCCESS)
+	{
+		ctx->Draw(vertexCount, startVertex);
+		ARCORE_ASSERT(validate() == 0);
+		return kError_SUCCESS;
+	}
+	return kErrorBadArgument;
+}
+
+int gpu::GraphicsContext::drawIndexed ( const uint32_t indexCount, const uint32_t startIndex, const uint32_t baseVertex )
+{
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+	if (drawPreparePipeline() == kError_SUCCESS)
+	{
+		ctx->DrawIndexed(indexCount, startIndex, baseVertex);
+		ARCORE_ASSERT(validate() == 0);
+		return kError_SUCCESS;
+	}
+	return kErrorBadArgument;
+}
+
+int gpu::GraphicsContext::drawIndexedInstanced ( const uint32_t indexCount, const uint32_t instanceCount, const uint32_t startIndex, const uint32_t baseVertex )
+{
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+	if (drawPreparePipeline() == kError_SUCCESS)
+	{
+		ctx->DrawIndexedInstanced(indexCount, instanceCount, startIndex, baseVertex, 0);
+		ARCORE_ASSERT(validate() == 0);
+		return kError_SUCCESS;
+	}
+	return kErrorBadArgument;
+}
+
+int	 gpu::GraphicsContext::setIndirectArgs ( Buffer* buffer )
+{
+	ARCORE_ASSERT(buffer->getBufferType() != kBufferTypeUnknown);
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+
+	m_indirectArgsBuffer = buffer;
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::drawInstancedIndirect ( const uint32_t offset )
+{
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+	if (drawPreparePipeline() == kError_SUCCESS)
+	{
+		ctx->DrawIndexedInstancedIndirect((ID3D11Buffer*)m_indirectArgsBuffer->nativePtr(), offset);
+		ARCORE_ASSERT(validate() == 0);
+		return kError_SUCCESS;
+	}
+	return kErrorBadArgument;
 }
 
 

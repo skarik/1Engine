@@ -97,7 +97,9 @@ namespace gpu
 		void*			m_buffer;
 		unsigned int	m_elementSize;
 		Format			m_format;
-		//unsigned int	m_dataSize; // Needed in OpenGL for binding buffers with an offset.
+
+		void*			m_srv;
+		void*			m_uav;
 	};
 
 }

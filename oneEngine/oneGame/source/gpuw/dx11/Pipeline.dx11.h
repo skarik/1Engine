@@ -49,6 +49,7 @@ namespace gpu
 		bool				ia_primitiveRestartEnable;
 		VertexInputBindingDescription*
 							ia_bindingInfo;
+		uint32_t			ia_bindingInfoCount;
 	};
 }
 

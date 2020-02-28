@@ -14,7 +14,9 @@ gpu::Buffer::Buffer ( void ) :
 	m_bufferType(kBufferTypeUnknown),
 	m_buffer(0),
 	m_elementSize(0),
-	m_format(kFormatUndefined)
+	m_format(kFormatUndefined),
+	m_srv(NULL),
+	m_uav(NULL)
 {}
 
 //	valid () : is this buffer valid to be used?
@@ -51,9 +53,9 @@ int	gpu::Buffer::initAsData ( Device* device, const uint64_t data_size )
 	D3D11_BUFFER_DESC bufferInfo = {};
 	bufferInfo.Usage = D3D11_USAGE_DEFAULT;
 	bufferInfo.ByteWidth = (UINT)data_size;
-	bufferInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;// | D3D11_BIND_UNORDERED_ACCESS;
+	bufferInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 	bufferInfo.CPUAccessFlags = 0;
-	bufferInfo.MiscFlags = 0;
+	bufferInfo.MiscFlags = D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
 	bufferInfo.StructureByteStride = 0;
 
 	device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
@@ -146,14 +148,21 @@ int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_si
 	D3D11_BUFFER_DESC bufferInfo = {};
 	bufferInfo.Usage = D3D11_USAGE_DEFAULT;
 	bufferInfo.ByteWidth = (UINT)data_size;
-	bufferInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;// | D3D11_BIND_UNORDERED_ACCESS;
+	bufferInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE; // SBuffers bound as SRVs for readonly-SSBO parity.
 	bufferInfo.CPUAccessFlags = 0;
-	bufferInfo.MiscFlags = 0;
+	bufferInfo.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS | D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	bufferInfo.StructureByteStride = 0;
 
 	device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
 
-	//_AllocateBufferSize(m_buffer, data_size, kTransferStream);
+	// Create SRV for the buffer
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvInfo = {};
+	srvInfo.Format = DXGI_FORMAT_R8_UINT;
+	srvInfo.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+	srvInfo.BufferEx.FirstElement = 0;
+	srvInfo.BufferEx.NumElements = (UINT)data_size;
+	srvInfo.BufferEx.Flags = D3D11_BUFFEREX_SRV_FLAG_RAW;
+	device->getNative()->CreateShaderResourceView((ID3D11Buffer*)m_buffer, &srvInfo, (ID3D11ShaderResourceView**)&m_srv);
 
 	return kError_SUCCESS;
 }
@@ -201,8 +210,15 @@ int	gpu::Buffer::uploadElements ( Device* device, void* data, const  uint64_t el
 int	gpu::Buffer::free ( Device* device )
 {
 	static_cast<ID3D11Buffer*>(m_buffer)->Release();
+	if (m_srv)
+		static_cast<ID3D11ShaderResourceView*>(m_srv)->Release();
+	if (m_uav)
+		static_cast<ID3D11UnorderedAccessView*>(m_uav)->Release();
 
-	m_buffer = 0;
+	m_buffer = NULL;
+	m_srv = NULL;
+	m_uav = NULL;
+
 	m_bufferType = kBufferTypeUnknown;
 	m_format = kFormatUndefined;
 

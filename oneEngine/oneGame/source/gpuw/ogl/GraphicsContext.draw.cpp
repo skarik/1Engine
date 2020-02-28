@@ -75,8 +75,7 @@ int gpu::GraphicsContext::setPipeline ( Pipeline* pipeline )
 int gpu::GraphicsContext::setIndexBuffer ( Buffer* buffer, IndexFormat format )
 {
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeIndex);
-
-	// TODO:
+	ARCORE_ASSERT(m_pipeline != NULL);
 
 	m_indexBuffer = buffer;
 	m_indexFormat = format;
@@ -87,8 +86,8 @@ int gpu::GraphicsContext::setIndexBuffer ( Buffer* buffer, IndexFormat format )
 int gpu::GraphicsContext::setVertexBuffer ( int slot, Buffer* buffer, uint32_t offset )
 {
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeVertex);
+	ARCORE_ASSERT(m_pipeline != NULL);
 
-	// todo: ensure pipeline exists
 	glVertexArrayVertexBuffer((GLuint)m_pipeline->nativePtr(),
 							  (GLuint)slot,
 							  (GLuint)buffer->nativePtr(),
@@ -211,31 +210,33 @@ int gpu::GraphicsContext::draw ( const uint32_t vertexCount, const uint32_t star
 	}
 	return kErrorBadArgument;
 }
-int gpu::GraphicsContext::drawIndexed ( const uint32_t indexCount, const uint32_t startIndex )
+int gpu::GraphicsContext::drawIndexed ( const uint32_t indexCount, const uint32_t startIndex, const uint32_t baseVertex )
 {
 	if (drawPreparePipeline() == kError_SUCCESS)
 	{
 		glBindVertexArray((GLuint)m_pipeline->nativePtr());
-		glDrawElements(gpu::internal::ArEnumToGL(m_primitiveType),
-					   indexCount,
-					   gpu::internal::ArEnumToGL(m_indexFormat),
-					   (intptr_t)0);
+		glDrawElementsBaseVertex(gpu::internal::ArEnumToGL(m_primitiveType),
+								 indexCount,
+								 gpu::internal::ArEnumToGL(m_indexFormat),
+								 (intptr_t)0,
+								 baseVertex);
 		ARCORE_ASSERT(validate() == 0);
 		return kError_SUCCESS;
 	}
 	return kErrorBadArgument;
 }
 
-int gpu::GraphicsContext::drawIndexedInstanced ( const uint32_t indexCount, const uint32_t instanceCount, const uint32_t startIndex )
+int gpu::GraphicsContext::drawIndexedInstanced ( const uint32_t indexCount, const uint32_t instanceCount, const uint32_t startIndex, const uint32_t baseVertex )
 {
 	if (drawPreparePipeline() == kError_SUCCESS)
 	{
 		glBindVertexArray((GLuint)m_pipeline->nativePtr());
-		glDrawElementsInstanced(gpu::internal::ArEnumToGL(m_primitiveType),
-								indexCount,
-								gpu::internal::ArEnumToGL(m_indexFormat),
-								(intptr_t)0,
-								instanceCount);
+		glDrawElementsInstancedBaseVertex(gpu::internal::ArEnumToGL(m_primitiveType),
+										  indexCount,
+										  gpu::internal::ArEnumToGL(m_indexFormat),
+										  (intptr_t)0,
+										  instanceCount,
+										  baseVertex);
 		ARCORE_ASSERT(validate() == 0);
 		return kError_SUCCESS;
 	}

@@ -7,6 +7,7 @@ namespace gpu
 	{
 		kRenderTargetSlotColor0 = 0,
 		kRenderTargetSlotDepth = -1,
+		kRenderTargetSlotDepthStencil = -1,
 		kRenderTargetSlotStencil = -2,
 	};
 }

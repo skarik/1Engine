@@ -8,6 +8,9 @@
 namespace gpu
 {
 	class Buffer;
+	class GraphicsContext;
+	class ComputeContext;
+	class RenderTarget;
 
 	// Create a read/write texture.
 	class Texture
@@ -40,9 +43,13 @@ namespace gpu
 		GPUW_API int			upload ( gpu::Buffer& buffer, const uint level );
 
 	private:
-		//unsigned int					m_texture;
+		friend GraphicsContext;
+		friend ComputeContext;
+		friend RenderTarget;
+
 		void*							m_texture;
 		core::gfx::tex::arTextureType	m_type;
+		void*							m_srv;
 
 		unsigned int					m_width;
 		unsigned int					m_height;
@@ -50,6 +57,7 @@ namespace gpu
 		unsigned int					m_levels;
 		//gpuEnum							m_glcomponent;
 		//gpuEnum							m_gltype;
+		unsigned int					m_dxFormat;
 	};
 
 	// Create a write-only texture.
@@ -78,8 +86,14 @@ namespace gpu
 		GPUW_API int			free ( void );
 
 	private:
+		friend GraphicsContext;
+		friend ComputeContext;
+		friend RenderTarget;
+
 		void*							m_texture;
 		core::gfx::tex::arTextureType	m_type;
+		void*							m_srv;
+		unsigned int					m_dxFormat;
 	};
 }
 

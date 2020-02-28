@@ -65,6 +65,7 @@ namespace gpu
 
 		//	setPipeline( pipeline ) : Sets current pipeline.
 		// Combination set for shader pipeline, vertex attributes, and primitive topology.
+		// This must be done before any resources are bound to any shader stage.
 		GPUW_API int			setPipeline ( Pipeline* pipeline );
 		//	setIndexBuffer( buffer, format ) : Sets index buffer for use in the next draw.
 		GPUW_API int			setIndexBuffer ( Buffer* buffer, IndexFormat format );
@@ -88,10 +89,10 @@ namespace gpu
 
 		//	draw( vertexCount, startVertex ) : render primitives, automatically generating indices
 		GPUW_API int			draw ( const uint32_t vertexCount, const uint32_t startVertex );
-		//	drawIndexed( indexCount, startIndex ) : render indexed primitive
-		GPUW_API int			drawIndexed ( const uint32_t indexCount, const uint32_t startIndex );
-		//	drawIndexedInstanced( indexCount, instanceCount, startIndex ) : render instanced, indexed primitives
-		GPUW_API int			drawIndexedInstanced ( const uint32_t indexCount, const uint32_t instanceCount, const uint32_t startIndex );
+		//	drawIndexed( indexCount, startIndex, baseVertex ) : render indexed primitive
+		GPUW_API int			drawIndexed ( const uint32_t indexCount, const uint32_t startIndex, const uint32_t baseVertex );
+		//	drawIndexedInstanced( indexCount, instanceCount, startIndex, baseVertex ) : render instanced, indexed primitives
+		GPUW_API int			drawIndexedInstanced ( const uint32_t indexCount, const uint32_t instanceCount, const uint32_t startIndex, const uint32_t baseVertex );
 		//	setIndirectArgs( buffer ) : sets buffer used for arguments by the next drawIndirect call.
 		GPUW_API int			setIndirectArgs ( Buffer* buffer );
 		//	drawInstancedIndirect( offset ) : render instanced, indexed primitives from indirect data
@@ -128,7 +129,8 @@ namespace gpu
 
 		IndexFormat				m_indexFormat;
 		Buffer*					m_indexBuffer;
-		Buffer*					m_vertexBuffer[32/*D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT*/];
+		//Buffer*					m_vertexBuffer[32/*D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT*/];
+		Buffer*					m_indirectArgsBuffer;
 
 		Sampler*				m_defaultSampler;
 

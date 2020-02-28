@@ -213,6 +213,12 @@
     <ClInclude Include="source\gpuw\dx11\Internal\Enums.dx11.h">
       <Filter>SOURCE\GPU Wrapper\DirectX 11\Internal</Filter>
     </ClInclude>
+    <ClInclude Include="source\gpuw\dx11\Sampler.dx11.h">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\dx11\RenderTarget.dx11.h">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp">
@@ -306,6 +312,12 @@
       <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClCompile>
     <ClCompile Include="source\gpuw\dx11\GraphicsContext.draw.dx11.cpp">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\dx11\Sampler.dx11.cpp">
+      <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\dx11\RenderTarget.dx11.cpp">
       <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClCompile>
   </ItemGroup>

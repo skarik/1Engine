@@ -4,8 +4,8 @@
 #include "core/types/types.h"
 #include "renderer/types/types.h"
 #include "gpuw/Public/Transfer.h"
-//#include "./GraphicsContext.vk.h"
-//#include "./ComputeContext.vk.h"
+#include "./GraphicsContext.dx11.h"
+#include "./ComputeContext.dx11.h"
 #include "./gpu.h"
 
 namespace gpu

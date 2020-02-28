@@ -180,7 +180,7 @@ bool renderer::InstancedMesh::Render ( const rrRenderParams* params )
 		}
 		gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION + 1, &m_buffer);
 		// draw now
-		gfx->drawIndexedInstanced(m_mesh->m_modeldata->indexNum, m_instanceCount, 0);
+		gfx->drawIndexedInstanced(m_mesh->m_modeldata->indexNum, m_instanceCount, 0, 0);
 	}
 
 	// Successful rendering

@@ -131,7 +131,7 @@ bool RrBtDebugDraw::Render ( const rrRenderParams* params )
 	// bind the index buffer
 	gfx->setIndexBuffer(&m_buffer_indices, gpu::kIndexFormatUnsigned16);
 	// draw now
-	gfx->drawIndexed(m_gpuIndexCount, 0);
+	gfx->drawIndexed(m_gpuIndexCount, 0, 0);
 
 	// Success!
 	return true;
