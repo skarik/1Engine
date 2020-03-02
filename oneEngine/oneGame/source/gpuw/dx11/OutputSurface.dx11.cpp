@@ -149,8 +149,9 @@ int gpu::OutputSurface::destroy ( void )
 
 int gpu::OutputSurface::present ( void )
 {
-	BOOL result = SwapBuffers((HDC)mw_deviceContext);
-	return (result == TRUE);
+	HRESULT result;
+	result = static_cast<IDXGISwapChain*>(m_dxSwapchain)->Present(0, 0); // TODO.
+	return (result == S_OK) ? kError_SUCCESS : result;
 }
 
 gpu::RenderTarget* gpu::OutputSurface::getRenderTarget ( void )

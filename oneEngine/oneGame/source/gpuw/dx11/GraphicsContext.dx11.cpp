@@ -220,8 +220,14 @@ int gpu::GraphicsContext::submit ( void )
 	gpu::Device*			gpuDevice = (gpu::Device*)m_wrapperDevice;
 	ID3D11CommandList*		commandList = NULL;
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+	HRESULT					result;
 
-	ctx->FinishCommandList(FALSE, &commandList); // Finalize all commands thrown in.
+	result = ctx->FinishCommandList(FALSE, &commandList); // Finalize all commands thrown in.
+	if (FAILED(result))
+	{
+		throw core::InvalidCallException();
+	}
+
 	gpuDevice->getNativeContext()->ExecuteCommandList(commandList, FALSE);
 
 	return kError_SUCCESS;
