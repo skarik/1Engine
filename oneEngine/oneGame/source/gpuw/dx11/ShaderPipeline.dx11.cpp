@@ -201,7 +201,16 @@ int gpu::ShaderPipeline::destroy ( void )
 
 bool gpu::ShaderPipeline::valid ( void )
 {
-	return m_program != 0;
+	if (m_type == kPipelineTypeGraphics)
+	{
+		return true;
+	}
+	else if (m_type == kPipelineTypeCompute)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 #endif

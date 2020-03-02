@@ -24,6 +24,7 @@ namespace gpu
 		{
 			m_layout = NULL;
 			m_pipeline = NULL;
+			ia_bindingInfo = NULL;
 		}
 
 		GPUW_API int			create ( Device* device, const PipelineCreationDescription* params );

@@ -15,6 +15,8 @@ int gpu::Pipeline::create ( Device* device, const PipelineCreationDescription* p
 {
 	D3D11_INPUT_ELEMENT_DESC layoutTable [D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
 
+	if (device == NULL) device = getDevice();
+
 	// Generate the layout table:
 	for (uint32_t i = 0; i < params->vv_inputAttributesCount; ++i)
 	{
@@ -61,8 +63,13 @@ int gpu::Pipeline::create ( Device* device, const PipelineCreationDescription* p
 
 int gpu::Pipeline::destroy ( Device* device )
 {
-	static_cast<ID3D11InputLayout*>(m_layout)->Release();
-	delete[] ia_bindingInfo;
+	if (m_layout)
+		static_cast<ID3D11InputLayout*>(m_layout)->Release();
+	if (ia_bindingInfo)
+		delete[] ia_bindingInfo;
+
+	m_layout = NULL;
+	ia_bindingInfo = NULL;
 
 	return kError_SUCCESS;
 }

@@ -49,14 +49,13 @@ namespace gpu
 
 		void*							m_texture;
 		core::gfx::tex::arTextureType	m_type;
+		core::gfx::tex::arColorFormat	m_format;
 		void*							m_srv;
 
 		unsigned int					m_width;
 		unsigned int					m_height;
 		unsigned int					m_depth;
 		unsigned int					m_levels;
-		//gpuEnum							m_glcomponent;
-		//gpuEnum							m_gltype;
 		unsigned int					m_dxFormat;
 	};
 
@@ -92,6 +91,7 @@ namespace gpu
 
 		void*							m_texture;
 		core::gfx::tex::arTextureType	m_type;
+		core::gfx::tex::arColorFormat	m_format;
 		void*							m_srv;
 		unsigned int					m_dxFormat;
 	};

@@ -77,6 +77,9 @@ int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
 	DXGI_ADAPTER_DESC l_adapterDescription;
 	m_dxAdapter->GetDesc(&l_adapterDescription);
 
+	// Update the target device:
+	m_TargetDisplayDevice = this;
+
 	// Grab all the output adapters for the graphics adapater
 	/*i_currentAdapterIndex = 0;
 	IDXGIOutput		*l_currentOutputAdapter = NULL;

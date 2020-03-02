@@ -47,7 +47,6 @@ namespace gpu
 		void*							m_attachmentDepthStencil;
 		bool							m_assembled;
 		bool							m_hasFailure;
-		//core::gfx::tex::arTextureType	m_type;
 	};
 };
 

@@ -26,6 +26,7 @@ int gpu::Sampler::create ( Device* device, const SamplerCreationDescription* par
 	samplerInfo.MinLOD = params->mipmapMinLod;
 	samplerInfo.MaxLOD = params->mipmapMaxLod;
 
+	if (device == NULL) device = getDevice();
 	device->getNative()->CreateSamplerState(&samplerInfo, (ID3D11SamplerState**)&m_sampler);
 
 	return kError_SUCCESS;

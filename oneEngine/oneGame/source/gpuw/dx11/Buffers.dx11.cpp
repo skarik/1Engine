@@ -7,6 +7,7 @@
 #include "gpuw/Public/Error.h"
 #include "./gpu.h"
 #include "core/debug.h"
+#include "core/exceptions.h"
 
 #include <algorithm>
 
@@ -30,37 +31,31 @@ gpuHandle gpu::Buffer::nativePtr ( void )
 	return (gpuHandle)m_buffer;
 }
 
-/*static void _AllocateBufferSize ( const GLuint buffer, const uint64_t data_size, const gpu::TransferStyle style )
-{
-	if (style == gpu::kTransferStatic)
-		//glNamedBufferStorage(buffer, (GLsizeiptr)std::max<uint64_t>(data_size, 4096), NULL, GL_MAP_WRITE_BIT); // Attempting to fix Quadro issues
-		glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_MAP_WRITE_BIT);
-	//else if (style == gpu::kTransferDynamic)
-	//	glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
-	else if (style == gpu::kTransferStream)
-		//glNamedBufferStorage(buffer, (GLsizeiptr)std::max<uint64_t>(data_size, 4096), NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT); // Attempting to fix Quadro issues
-		glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
-}*/
-
 //	init ( data ) : initializes a general buffer with data. Can be used to load textures
 int	gpu::Buffer::initAsData ( Device* device, const uint64_t data_size )
 {
 	ARCORE_ASSERT(data_size > 0);
+	if (device == NULL) device = getDevice();
+	HRESULT result;
 
 	m_bufferType = kBufferTypeGeneralUse;
 	m_format = kFormatUndefined;
 
 	D3D11_BUFFER_DESC bufferInfo = {};
-	bufferInfo.Usage = D3D11_USAGE_DEFAULT;
+	bufferInfo.Usage = D3D11_USAGE_DYNAMIC;
 	bufferInfo.ByteWidth = (UINT)data_size;
-	bufferInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-	bufferInfo.CPUAccessFlags = 0;
-	bufferInfo.MiscFlags = D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
+	bufferInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;// | D3D11_BIND_UNORDERED_ACCESS;
+	bufferInfo.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	bufferInfo.MiscFlags = 0;//D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS; // TODO: Figure out how to generalize for indirect args. If all else fails, specific buffer type, maybe?
 	bufferInfo.StructureByteStride = 0;
 
-	device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
-
-	//_AllocateBufferSize(m_buffer, data_size, kTransferStream);
+	result = device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
+	if (FAILED(result))
+	{
+		throw core::OutOfMemoryException(); // TODO: Handle this better.
+		m_buffer = NULL;
+		return gpu::kErrorFormatUnsupported;
+	}
 	
 	return kError_SUCCESS;
 }
@@ -69,22 +64,28 @@ int	gpu::Buffer::initAsData ( Device* device, const uint64_t data_size )
 int gpu::Buffer::initAsVertexBuffer ( Device* device, Format format, const uint64_t element_count )
 {
 	ARCORE_ASSERT(element_count > 0);
+	if (device == NULL) device = getDevice();
+	HRESULT result;
 
 	m_bufferType = kBufferTypeVertex;
 	m_elementSize = (unsigned int)gpu::FormatGetByteStride(format);
 	m_format = format;
 
 	D3D11_BUFFER_DESC bufferInfo = {};
-	bufferInfo.Usage = D3D11_USAGE_DEFAULT;
+	bufferInfo.Usage = D3D11_USAGE_DYNAMIC;
 	bufferInfo.ByteWidth = (UINT)(m_elementSize * element_count);
 	bufferInfo.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferInfo.CPUAccessFlags = 0;
+	bufferInfo.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	bufferInfo.MiscFlags = 0;
 	bufferInfo.StructureByteStride = 0;
 
-	device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
-
-	//_AllocateBufferSize(m_buffer, m_elementSize * element_count, kTransferStream);
+	result = device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
+	if (FAILED(result))
+	{
+		throw core::OutOfMemoryException(); // TODO: Handle this better.
+		m_buffer = NULL;
+		return gpu::kErrorFormatUnsupported;
+	}
 
 	return kError_SUCCESS;
 }
@@ -93,22 +94,28 @@ int gpu::Buffer::initAsVertexBuffer ( Device* device, Format format, const uint6
 int gpu::Buffer::initAsIndexBuffer ( Device* device, IndexFormat format, const uint64_t element_count )
 {
 	ARCORE_ASSERT(element_count > 0);
+	if (device == NULL) device = getDevice();
+	HRESULT result;
 
 	m_bufferType = kBufferTypeIndex;
 	m_elementSize = (format == kIndexFormatUnsigned16) ? 2 : 4;
 	m_format = (format == kIndexFormatUnsigned16) ? kFormatR16UInteger : kFormatR32UInteger;
 
 	D3D11_BUFFER_DESC bufferInfo = {};
-	bufferInfo.Usage = D3D11_USAGE_DEFAULT;
+	bufferInfo.Usage = D3D11_USAGE_DYNAMIC;
 	bufferInfo.ByteWidth = (UINT)(m_elementSize * element_count);
 	bufferInfo.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bufferInfo.CPUAccessFlags = 0;
+	bufferInfo.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	bufferInfo.MiscFlags = 0;
 	bufferInfo.StructureByteStride = 0;
 
-	device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
-
-	//_AllocateBufferSize(m_buffer, m_elementSize * element_count, kTransferStream);
+	result = device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
+	if (FAILED(result))
+	{
+		throw core::OutOfMemoryException(); // TODO: Handle this better.
+		m_buffer = NULL;
+		return gpu::kErrorFormatUnsupported;
+	}
 
 	return kError_SUCCESS;
 }
@@ -117,21 +124,27 @@ int gpu::Buffer::initAsIndexBuffer ( Device* device, IndexFormat format, const u
 int gpu::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size )
 {
 	ARCORE_ASSERT(data_size > 0);
+	if (device == NULL) device = getDevice();
+	HRESULT result;
 
 	m_bufferType = kBufferTypeConstant;
 	m_format = kFormatUndefined;
 	
 	D3D11_BUFFER_DESC bufferInfo = {};
-	bufferInfo.Usage = D3D11_USAGE_DEFAULT;
+	bufferInfo.Usage = D3D11_USAGE_DYNAMIC;
 	bufferInfo.ByteWidth = (UINT)data_size;
 	bufferInfo.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bufferInfo.CPUAccessFlags = 0;
+	bufferInfo.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	bufferInfo.MiscFlags = 0;
 	bufferInfo.StructureByteStride = 0;
 
-	device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
-
-	//_AllocateBufferSize(m_buffer, data_size, kTransferStream);
+	result = device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
+	if (FAILED(result))
+	{
+		throw core::OutOfMemoryException(); // TODO: Handle this better.
+		m_buffer = NULL;
+		return gpu::kErrorFormatUnsupported;
+	}
 
 	return kError_SUCCESS;
 }
@@ -141,19 +154,27 @@ int gpu::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size
 int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_size )
 {
 	ARCORE_ASSERT(data_size > 0);
+	if (device == NULL) device = getDevice();
+	HRESULT result;
 
 	m_bufferType = kBufferTypeStructured;
 	m_format = kFormatUndefined;
 
 	D3D11_BUFFER_DESC bufferInfo = {};
-	bufferInfo.Usage = D3D11_USAGE_DEFAULT;
+	bufferInfo.Usage = D3D11_USAGE_DYNAMIC;
 	bufferInfo.ByteWidth = (UINT)data_size;
 	bufferInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE; // SBuffers bound as SRVs for readonly-SSBO parity.
 	bufferInfo.CPUAccessFlags = 0;
 	bufferInfo.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS | D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	bufferInfo.StructureByteStride = 0;
 
-	device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
+	result = device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
+	if (FAILED(result))
+	{
+		throw core::OutOfMemoryException(); // TODO: Handle this better.
+		m_buffer = NULL;
+		return gpu::kErrorFormatUnsupported;
+	}
 
 	// Create SRV for the buffer
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvInfo = {};
@@ -162,7 +183,12 @@ int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_si
 	srvInfo.BufferEx.FirstElement = 0;
 	srvInfo.BufferEx.NumElements = (UINT)data_size;
 	srvInfo.BufferEx.Flags = D3D11_BUFFEREX_SRV_FLAG_RAW;
-	device->getNative()->CreateShaderResourceView((ID3D11Buffer*)m_buffer, &srvInfo, (ID3D11ShaderResourceView**)&m_srv);
+
+	result = device->getNative()->CreateShaderResourceView((ID3D11Buffer*)m_buffer, &srvInfo, (ID3D11ShaderResourceView**)&m_srv);
+	if (FAILED(result))
+	{
+		throw core::OutOfMemoryException(); // TODO: Handle this better.
+	}
 
 	return kError_SUCCESS;
 }
@@ -170,16 +196,24 @@ int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_si
 void* gpu::Buffer::map ( Device* device, const TransferStyle style )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
+	if (device == NULL) device = getDevice();
+	HRESULT result;
 
 	D3D11_MAPPED_SUBRESOURCE resource;
-	device->getNativeContext()->Map((ID3D11Buffer*)m_buffer, 0, D3D11_MAP_WRITE, 0, &resource); 
+	result = device->getNativeContext()->Map((ID3D11Buffer*)m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource); 
+	if (FAILED(result))
+	{
+		throw core::OutOfMemoryException(); // TODO: Handle this better.
+	}
+
 	//todo: correct flags
 	return resource.pData;
 }
 int gpu::Buffer::unmap ( Device* device )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
-	// TODO: getNative cannot be used here, most likely.
+	if (device == NULL) device = getDevice();
+
 	device->getNativeContext()->Unmap((ID3D11Buffer*)m_buffer, 0);
 	
 	return kError_SUCCESS;
@@ -189,6 +223,7 @@ int gpu::Buffer::unmap ( Device* device )
 int	gpu::Buffer::upload ( Device* device, void* data, const  uint64_t data_size, const TransferStyle style )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
+	if (device == NULL) device = getDevice();
 
 	void* data_target = map(device, style);
 		memcpy(data_target, data, data_size);
@@ -209,7 +244,8 @@ int	gpu::Buffer::uploadElements ( Device* device, void* data, const  uint64_t el
 //	free() : destroys any allocated buffer, if existing.
 int	gpu::Buffer::free ( Device* device )
 {
-	static_cast<ID3D11Buffer*>(m_buffer)->Release();
+	if (m_buffer)
+		static_cast<ID3D11Buffer*>(m_buffer)->Release();
 	if (m_srv)
 		static_cast<ID3D11ShaderResourceView*>(m_srv)->Release();
 	if (m_uav)

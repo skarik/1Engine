@@ -40,7 +40,8 @@ int gpu::Texture::allocate (
 	if (m_texture == NULL)
 	{
 		m_type = textureType;
-		m_dxFormat = gpu::internal::ArEnumToDx(textureFormat);
+		m_format = textureFormat;
+		m_dxFormat = gpu::internal::ArEnumToDx(textureFormat, false, true);
 
 		// Allocate storage
 		switch (m_type)
@@ -59,23 +60,38 @@ int gpu::Texture::allocate (
 				txd.Height = height;
 				txd.MipLevels = allocatedLevels;
 				txd.ArraySize = m_depth;
-				txd.Format = (DXGI_FORMAT)m_dxFormat;
+				txd.Format = gpu::internal::ArEnumToDx(textureFormat, false, true);
 				txd.SampleDesc.Count = 1;
 				txd.SampleDesc.Quality = 0;
 				txd.Usage = D3D11_USAGE_DEFAULT;
-				txd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+				txd.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 				txd.CPUAccessFlags = 0;
 				txd.MiscFlags = 0;
+
+				if (textureFormat == core::gfx::tex::kDepthFormat16
+					|| textureFormat == core::gfx::tex::kDepthFormat24
+					|| textureFormat == core::gfx::tex::kDepthFormat24Stencil8
+					|| textureFormat == core::gfx::tex::kDepthFormat32
+					|| textureFormat == core::gfx::tex::kDepthFormat32F
+					|| textureFormat == core::gfx::tex::kDepthFormat32FStencil8
+					|| textureFormat == core::gfx::tex::KStencilFormatIndex1
+					|| textureFormat == core::gfx::tex::KStencilFormatIndex4
+					|| textureFormat == core::gfx::tex::KStencilFormatIndex8
+					|| textureFormat == core::gfx::tex::KStencilFormatIndex16)
+				{
+					txd.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL;
+				}
 
 				result = device->CreateTexture2D(&txd, NULL, (ID3D11Texture2D**)&m_texture);
 				if (FAILED(result))
 				{
-					throw core::OutOfMemoryException(); // TODO: Handle this better.
-					return gpu::kErrorOutOfMemory;
+					//throw core::OutOfMemoryException(); // TODO: Handle this better.
+					m_texture = NULL;
+					return gpu::kErrorFormatUnsupported;
 				}
 
 				D3D11_SHADER_RESOURCE_VIEW_DESC srvInfo;
-				srvInfo.Format = txd.Format;
+				srvInfo.Format = gpu::internal::ArEnumToDx(textureFormat, false, false);
 				if (m_type == core::gfx::tex::kTextureType2D)
 				{
 					srvInfo.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -121,7 +137,7 @@ int gpu::Texture::allocate (
 				txd.Width = width;
 				txd.MipLevels = allocatedLevels;
 				txd.ArraySize = m_height;
-				txd.Format = (DXGI_FORMAT)m_dxFormat;
+				txd.Format = gpu::internal::ArEnumToDx(textureFormat, false, true);
 				txd.Usage = D3D11_USAGE_DEFAULT;
 				txd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 				txd.CPUAccessFlags = 0;
@@ -130,8 +146,9 @@ int gpu::Texture::allocate (
 				result = device->CreateTexture1D(&txd, NULL, (ID3D11Texture1D**)&m_texture);
 				if (FAILED(result))
 				{
-					throw core::OutOfMemoryException(); // TODO: Handle this better.
-					return gpu::kErrorOutOfMemory;
+					//throw core::OutOfMemoryException(); // TODO: Handle this better.
+					m_texture = NULL;
+					return gpu::kErrorFormatUnsupported;
 				}
 			}
 			break;
@@ -146,7 +163,7 @@ int gpu::Texture::allocate (
 				txd.Height = height;
 				txd.Depth = depth;
 				txd.MipLevels = allocatedLevels;
-				txd.Format = (DXGI_FORMAT)m_dxFormat;
+				txd.Format = gpu::internal::ArEnumToDx(textureFormat, false, true);
 				txd.Usage = D3D11_USAGE_DEFAULT;
 				txd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 				txd.CPUAccessFlags = 0;
@@ -155,12 +172,13 @@ int gpu::Texture::allocate (
 				result = device->CreateTexture3D(&txd, NULL, (ID3D11Texture3D**)&m_texture);
 				if (FAILED(result))
 				{
-					throw core::OutOfMemoryException(); // TODO: Handle this better.
-					return gpu::kErrorOutOfMemory;
+					//throw core::OutOfMemoryException(); // TODO: Handle this better.
+					m_texture = NULL;
+					return gpu::kErrorFormatUnsupported;
 				}
 
 				D3D11_SHADER_RESOURCE_VIEW_DESC srvInfo;
-				srvInfo.Format = txd.Format;
+				srvInfo.Format = gpu::internal::ArEnumToDx(textureFormat, false, false);
 				if (m_type == core::gfx::tex::kTextureType3D)
 				{
 					srvInfo.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
@@ -181,7 +199,8 @@ int gpu::Texture::allocate (
 //	free() : destroys any allocated texture, if existing.
 int gpu::Texture::free ( void )
 {
-	static_cast<ID3D11Resource*>(m_texture)->Release();
+	if (m_texture)
+		static_cast<ID3D11Resource*>(m_texture)->Release();
 	if (m_srv)
 		static_cast<ID3D11ShaderResourceView*>(m_srv)->Release();
 	
@@ -271,7 +290,8 @@ int gpu::WOFrameAttachment::allocate (
 	if (m_texture == 0)
 	{
 		m_type = textureType;
-		m_dxFormat = gpu::internal::ArEnumToDx(textureFormat);
+		m_format = textureFormat;
+		m_dxFormat = gpu::internal::ArEnumToDx(textureFormat, false, false);
 		/*// Create texture
 		glCreateRenderbuffers(1, &m_texture);
 		if (m_texture != 0)
@@ -294,7 +314,7 @@ int gpu::WOFrameAttachment::allocate (
 			txd.Height = height;
 			txd.MipLevels = 1;
 			txd.ArraySize = 1;
-			txd.Format = (DXGI_FORMAT)m_dxFormat;
+			txd.Format = gpu::internal::ArEnumToDx(textureFormat, false, false);
 			txd.SampleDesc.Count = 1;
 			txd.SampleDesc.Quality = 0;
 			txd.Usage = D3D11_USAGE_DEFAULT;
@@ -318,12 +338,13 @@ int gpu::WOFrameAttachment::allocate (
 			result = device->CreateTexture2D(&txd, NULL, (ID3D11Texture2D**)&m_texture);
 			if (FAILED(result))
 			{
-				throw core::OutOfMemoryException(); // TODO: Handle this better.
+				//throw core::OutOfMemoryException(); // TODO: Handle this better.
+				m_texture = NULL;
 				return gpu::kErrorOutOfMemory;
 			}
 
 			D3D11_SHADER_RESOURCE_VIEW_DESC srvInfo;
-			srvInfo.Format = txd.Format;
+			srvInfo.Format = gpu::internal::ArEnumToDx(textureFormat, false, true);
 			if (m_type == core::gfx::tex::kTextureType2D)
 			{
 				srvInfo.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -343,7 +364,8 @@ int gpu::WOFrameAttachment::allocate (
 //	free() : destroys any allocated texture, if existing.
 int gpu::WOFrameAttachment::free ( void )
 {
-	static_cast<ID3D11Resource*>(m_texture)->Release();
+	if (m_texture)
+		static_cast<ID3D11Resource*>(m_texture)->Release();
 	if (m_srv)
 		static_cast<ID3D11ShaderResourceView*>(m_srv)->Release();
 

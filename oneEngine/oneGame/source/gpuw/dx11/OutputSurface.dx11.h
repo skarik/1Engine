@@ -64,6 +64,8 @@ namespace gpu
 		PresentMode			m_presentMode;
 
 		void*				m_dxSwapchain;
+		RenderTarget*		m_renderTarget;
+
 	};
 }
 

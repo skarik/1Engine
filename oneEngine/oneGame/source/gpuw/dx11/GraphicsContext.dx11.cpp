@@ -171,6 +171,11 @@ gpu::GraphicsContext::GraphicsContext ( void* wrapperDevice )
 	m_blendStateCachedMap = new GPUBlendStateMap;
 	m_blendStateCurrentBitfilter[0] = (uint64_t)(-1);
 	m_depthStateCachedMap = new GPUDepthStencilStateMap;
+
+	// Create default sampler
+	SamplerCreationDescription scd = SamplerCreationDescription();
+	m_defaultSampler = new Sampler;
+	m_defaultSampler->create(NULL, &scd);
 }
 
 gpu::GraphicsContext::~GraphicsContext ( void )
@@ -192,6 +197,10 @@ gpu::GraphicsContext::~GraphicsContext ( void )
 	}
 	delete bsMap;
 	m_blendStateCachedMap = NULL;
+
+	// Free sampler
+	m_defaultSampler->destroy(NULL);
+	delete m_defaultSampler;
 
 	// Done w/ context
 	static_cast<ID3D11DeviceContext*>(m_deferredContext)->Release();

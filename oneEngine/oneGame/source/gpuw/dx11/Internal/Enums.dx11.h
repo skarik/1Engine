@@ -14,51 +14,51 @@
 namespace gpu {
 namespace internal {
 
-	static FORCE_INLINE DXGI_FORMAT ArEnumToDx ( const core::gfx::tex::arColorFormat format )
+	static FORCE_INLINE DXGI_FORMAT ArEnumToDx ( const core::gfx::tex::arColorFormat format, bool asView, bool typeless )
 	{
 		using namespace core::gfx::tex;
 		switch ( format )
 		{
 			// Color formats:
-		case kColorFormatRGB8:		return DXGI_FORMAT_R8G8B8A8_UNORM;
-		case kColorFormatRGB16:		return DXGI_FORMAT_R16G16B16A16_UNORM;
-		case kColorFormatRGB16F:	return DXGI_FORMAT_R16G16B16A16_FLOAT;
-		case kColorFormatRGB32:		return DXGI_FORMAT_R32G32B32A32_UINT;
-		case kColorFormatRGB32F:	return DXGI_FORMAT_R32G32B32A32_FLOAT;
+		case kColorFormatRGB8:		return typeless ? DXGI_FORMAT_R8G8B8A8_TYPELESS : DXGI_FORMAT_R8G8B8A8_UNORM;
+		case kColorFormatRGB16:		return typeless ? DXGI_FORMAT_R16G16B16A16_TYPELESS : DXGI_FORMAT_R16G16B16A16_UNORM;
+		case kColorFormatRGB16F:	return typeless ? DXGI_FORMAT_R16G16B16A16_TYPELESS : DXGI_FORMAT_R16G16B16A16_FLOAT;
+		case kColorFormatRGB32:		return typeless ? DXGI_FORMAT_R32G32B32A32_TYPELESS : DXGI_FORMAT_R32G32B32A32_UINT;
+		case kColorFormatRGB32F:	return typeless ? DXGI_FORMAT_R32G32B32A32_TYPELESS : DXGI_FORMAT_R32G32B32A32_FLOAT;
 
-		case kColorFormatRGBA8:		return DXGI_FORMAT_R8G8B8A8_UNORM;
-		case kColorFormatRGBA16:	return DXGI_FORMAT_R16G16B16A16_UNORM;
-		case kColorFormatRGBA16F:	return DXGI_FORMAT_R16G16B16A16_FLOAT;
-		case kColorFormatRGBA32:	return DXGI_FORMAT_R32G32B32A32_UINT;
-		case kColorFormatRGBA32F:	return DXGI_FORMAT_R32G32B32A32_FLOAT;
+		case kColorFormatRGBA8:		return typeless ? DXGI_FORMAT_R8G8B8A8_TYPELESS : DXGI_FORMAT_R8G8B8A8_UNORM;
+		case kColorFormatRGBA16:	return typeless ? DXGI_FORMAT_R16G16B16A16_TYPELESS : DXGI_FORMAT_R16G16B16A16_UNORM;
+		case kColorFormatRGBA16F:	return typeless ? DXGI_FORMAT_R16G16B16A16_TYPELESS : DXGI_FORMAT_R16G16B16A16_FLOAT;
+		case kColorFormatRGBA32:	return typeless ? DXGI_FORMAT_R32G32B32A32_TYPELESS : DXGI_FORMAT_R32G32B32A32_UINT;
+		case kColorFormatRGBA32F:	return typeless ? DXGI_FORMAT_R32G32B32A32_TYPELESS : DXGI_FORMAT_R32G32B32A32_FLOAT;
 
-		case kColorFormatRG8:		return DXGI_FORMAT_R8G8_UNORM;
-		case kColorFormatRG16:		return DXGI_FORMAT_R16G16_UNORM;
-		case kColorFormatRG16F:		return DXGI_FORMAT_R16G16_FLOAT;
-		case kColorFormatRG32:		return DXGI_FORMAT_R32G32_UINT;
-		case kColorFormatRG32F:		return DXGI_FORMAT_R32G32_FLOAT;
+		case kColorFormatRG8:		return typeless ? DXGI_FORMAT_R8G8_TYPELESS : DXGI_FORMAT_R8G8_UNORM;
+		case kColorFormatRG16:		return typeless ? DXGI_FORMAT_R16G16_TYPELESS : DXGI_FORMAT_R16G16_UNORM;
+		case kColorFormatRG16F:		return typeless ? DXGI_FORMAT_R16G16_TYPELESS : DXGI_FORMAT_R16G16_FLOAT;
+		case kColorFormatRG32:		return typeless ? DXGI_FORMAT_R32G32_TYPELESS : DXGI_FORMAT_R32G32_UINT;
+		case kColorFormatRG32F:		return typeless ? DXGI_FORMAT_R32G32_TYPELESS : DXGI_FORMAT_R32G32_FLOAT;
 
-		case kColorFormatR8:		return DXGI_FORMAT_R8_UNORM;
-		case kColorFormatR16:		return DXGI_FORMAT_R16_UNORM;
-		case kColorFormatR16F:		return DXGI_FORMAT_R16_FLOAT;
-		case kColorFormatR32:		return DXGI_FORMAT_R32_UINT;
-		case kColorFormatR32F:		return DXGI_FORMAT_R32_FLOAT;
+		case kColorFormatR8:		return typeless ? DXGI_FORMAT_R8_TYPELESS : DXGI_FORMAT_R8_UNORM;
+		case kColorFormatR16:		return typeless ? DXGI_FORMAT_R16_TYPELESS : DXGI_FORMAT_R16_UNORM;
+		case kColorFormatR16F:		return typeless ? DXGI_FORMAT_R16_TYPELESS : DXGI_FORMAT_R16_FLOAT;
+		case kColorFormatR32:		return typeless ? DXGI_FORMAT_R32_TYPELESS : DXGI_FORMAT_R32_UINT;
+		case kColorFormatR32F:		return typeless ? DXGI_FORMAT_R32_TYPELESS : DXGI_FORMAT_R32_FLOAT;
 
 			// Depth formats:
-		case kDepthFormat16:		return DXGI_FORMAT_D16_UNORM;
-			//case kDepthFormat24:		return DXGI_FORMAT_D24_UNORM;
-		case kDepthFormat32:		return DXGI_FORMAT_D32_FLOAT;
-		case kDepthFormat32F:		return DXGI_FORMAT_D32_FLOAT;
+		case kDepthFormat16:		return asView ? DXGI_FORMAT_D16_UNORM : (typeless ? DXGI_FORMAT_R16_TYPELESS : DXGI_FORMAT_R16_UNORM);
+		case kDepthFormat24:		return DXGI_FORMAT_UNKNOWN;
+		case kDepthFormat32:		return asView ? DXGI_FORMAT_D32_FLOAT : (typeless ? DXGI_FORMAT_R32_TYPELESS : DXGI_FORMAT_R32_FLOAT);
+		case kDepthFormat32F:		return asView ? DXGI_FORMAT_D32_FLOAT : (typeless ? DXGI_FORMAT_R32_TYPELESS : DXGI_FORMAT_R32_FLOAT);
 
 			// Stencil formats:
 		case KStencilFormatIndex1:	return DXGI_FORMAT_R1_UNORM;
-			//case KStencilFormatIndex4:	return DXGI_FORMAT_R4_UNORM;
-		case KStencilFormatIndex8:	return DXGI_FORMAT_R8_UNORM;
-		case KStencilFormatIndex16:	return DXGI_FORMAT_R16_UNORM;
+		case KStencilFormatIndex4:	return DXGI_FORMAT_UNKNOWN;
+		case KStencilFormatIndex8:	return asView ? DXGI_FORMAT_R8_UNORM : (typeless ? DXGI_FORMAT_R8_TYPELESS : DXGI_FORMAT_R8_UNORM);
+		case KStencilFormatIndex16:	return asView ? DXGI_FORMAT_R16_UNORM : (typeless ? DXGI_FORMAT_R16_TYPELESS : DXGI_FORMAT_R16_UNORM);
 
 			// Packed Depth+Stencil formats:
-		case kDepthFormat32FStencil8:	return DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
-		case kDepthFormat24Stencil8:	return DXGI_FORMAT_D24_UNORM_S8_UINT;
+		case kDepthFormat32FStencil8:	return asView ? DXGI_FORMAT_D32_FLOAT_S8X24_UINT : (typeless ? DXGI_FORMAT_R32G8X24_TYPELESS : DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS);
+		case kDepthFormat24Stencil8:	return asView ? DXGI_FORMAT_D24_UNORM_S8_UINT : (typeless ? DXGI_FORMAT_R24G8_TYPELESS : DXGI_FORMAT_R24_UNORM_X8_TYPELESS);
 		}
 		return DXGI_FORMAT_UNKNOWN;
 	}

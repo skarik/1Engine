@@ -94,9 +94,11 @@ int gpu::GraphicsContext::setPipeline ( Pipeline* pipeline )
 		m_pipelineBound = false;
 		m_pipelineDataBound = false;
 
+		m_indexBuffer = NULL;
+
 		// TODO: move this elsewhere if possible
 		// Unbind all the resources now
-		void* nullRez [64] = {NULL};
+		void* nullRez [128] = {NULL};
 		ctx->VSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
 		ctx->HSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
 		ctx->DSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
@@ -291,7 +293,8 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 		if (m_pipeline->m_pipeline->m_ps)
 			ctx->PSSetShader((ID3D11PixelShader*)m_pipeline->m_pipeline->m_ps, NULL, 0);
 
-		ctx->IASetIndexBuffer((ID3D11Buffer*)m_indexBuffer->nativePtr(), (m_indexFormat == kIndexFormatUnsigned16) ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT, 0);
+		if (m_indexBuffer != NULL)
+			ctx->IASetIndexBuffer((ID3D11Buffer*)m_indexBuffer->nativePtr(), (m_indexFormat == kIndexFormatUnsigned16) ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT, 0);
 		ctx->IASetPrimitiveTopology(gpu::internal::ArEnumToDx(m_pipeline->ia_topology));
 		// Primitive restart is always enabled on DX11.
 

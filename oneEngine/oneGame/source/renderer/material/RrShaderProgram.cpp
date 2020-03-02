@@ -167,6 +167,10 @@ RrShaderProgram::LoadShaderProgramFromDisk ( const char* s_resourceId, const rrS
 	for (int i = 0; i < stageCount; ++i)
 	{
 		std::string sb_filename = stages[i].filename;
+		// Fix filename if running with DirectX target
+#ifdef GPU_API_DIRECTX11
+		sb_filename = sb_filename.substr(0, sb_filename.find_last_of('.')) + ".dxc";
+#endif
 
 		// Find the file to source data from:
 		bool file_found = core::Resources::MakePathTo(sb_filename.c_str(), sb_filename);

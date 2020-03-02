@@ -3,6 +3,7 @@
 
 #include "./RenderTarget.dx11.h"
 #include "./Device.dx11.h"
+#include "./Internal/Enums.dx11.h"
 #include "gpuw/Public/Error.h"
 #include "core/debug.h"
 
@@ -47,13 +48,19 @@ int gpu::RenderTarget::attach ( int slot, Texture* texture )
 	ID3D11Device*	device = gpu::getDevice()->getNative();
 	HRESULT			result;
 
+	if (texture->m_texture == NULL)
+	{
+		m_hasFailure = true;
+		return kErrorBadArgument;
+	}
+
 	if (slot == kRenderTargetSlotDepthStencil)
 	{
 		ARCORE_ASSERT(m_attachmentDepthStencil == NULL);
 		m_highlevelAttachments[15 - slot] = texture;
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC rtInfo = {};
-		rtInfo.Format = (DXGI_FORMAT)texture->m_dxFormat;
+		rtInfo.Format = gpu::internal::ArEnumToDx(texture->m_format, true, false);
 		switch (texture->m_type)
 		{
 		case core::gfx::tex::kTextureType1D:
@@ -93,7 +100,7 @@ int gpu::RenderTarget::attach ( int slot, Texture* texture )
 		m_highlevelAttachments[slot] = texture;
 
 		D3D11_RENDER_TARGET_VIEW_DESC rtInfo = {};
-		rtInfo.Format = (DXGI_FORMAT)texture->m_dxFormat;
+		rtInfo.Format = gpu::internal::ArEnumToDx(texture->m_format, true, false);
 		switch (texture->m_type)
 		{
 		case core::gfx::tex::kTextureTypeNone:
@@ -149,13 +156,19 @@ int gpu::RenderTarget::attach ( int slot, WOFrameAttachment* buffer )
 	ID3D11Device*	device = gpu::getDevice()->getNative();
 	HRESULT			result;
 
+	if (buffer->m_texture == NULL)
+	{
+		m_hasFailure = true;
+		return kErrorBadArgument;
+	}
+
 	if (slot == kRenderTargetSlotDepthStencil)
 	{
 		ARCORE_ASSERT(m_attachmentDepthStencil == NULL);
 		m_highlevelAttachments[15 - slot] = buffer;
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC rtInfo = {};
-		rtInfo.Format = (DXGI_FORMAT)buffer->m_dxFormat;
+		rtInfo.Format = gpu::internal::ArEnumToDx(buffer->m_format, true, false);
 		rtInfo.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		rtInfo.Texture2D.MipSlice = 0;
 
@@ -171,7 +184,7 @@ int gpu::RenderTarget::attach ( int slot, WOFrameAttachment* buffer )
 		m_highlevelAttachments[slot] = buffer;
 
 		D3D11_RENDER_TARGET_VIEW_DESC rtInfo = {};
-		rtInfo.Format = (DXGI_FORMAT)buffer->m_dxFormat;
+		rtInfo.Format = gpu::internal::ArEnumToDx(buffer->m_format, true, false);
 		rtInfo.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 		rtInfo.Texture2D.MipSlice = 0;
 

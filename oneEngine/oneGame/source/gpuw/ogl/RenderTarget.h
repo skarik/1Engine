@@ -46,7 +46,6 @@ namespace gpu
 		void*							m_attachmentStencil;
 		bool							m_attachmentIsTexture [16];
 		bool							m_assembled;
-		//core::gfx::tex::arTextureType	m_type;
 	};
 };
 

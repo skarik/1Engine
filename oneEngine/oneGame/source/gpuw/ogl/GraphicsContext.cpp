@@ -10,6 +10,8 @@
 
 #include "renderer/types/types.h"
 
+//===============================================================================================//
+
 static gpuEnum GpuEnumToGL ( const gpu::BlendMode bm )
 {
 	using namespace gpu;
@@ -88,6 +90,7 @@ static gpuEnum GpuEnumToGL ( const gpu::StencilOp op )
 	return GL_INVALID_ENUM;
 }
 
+//===============================================================================================//
 
 gpu::GraphicsContext::GraphicsContext ( void )
 	: m_pipeline(NULL), m_pipelineBound(false), m_pipelineDataBound(false)
@@ -102,6 +105,8 @@ gpu::GraphicsContext::~GraphicsContext ( void )
 	m_defaultSampler->destroy(NULL);
 	delete m_defaultSampler;
 }
+
+//===============================================================================================//
 
 int gpu::GraphicsContext::setFillMode( const FillMode fillMode )
 {

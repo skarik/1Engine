@@ -127,10 +127,11 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::rrI
 		// Put the buffer together
 		buffer_forward_rt.attach(gpu::kRenderTargetSlotColor0, &buffer_color);
 		buffer_forward_rt.attach(gpu::kRenderTargetSlotDepth, &buffer_depth);
-		buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_stencil);
 		// Override for the combined formats (TODO: Check if this is valid)
 		if (settings->mainDepthFormat == core::gfx::tex::kDepthFormat32FStencil8 || settings->mainDepthFormat == core::gfx::tex::kDepthFormat24Stencil8)
 			buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_depth);
+		else
+			buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_stencil);
 		// "Compile" the render target.
 		buffer_forward_rt.assemble();
 
@@ -150,10 +151,11 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::rrI
 		// Put the buffer together
 		buffer_deferred_rt.attach(gpu::kRenderTargetSlotColor0, &buffer_deferred_color_composite);
 		buffer_deferred_rt.attach(gpu::kRenderTargetSlotDepth, &buffer_depth);
-		buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_stencil);
 		// Override for the combined formats (TODO: Check if this is valid)
 		if (settings->mainDepthFormat == core::gfx::tex::kDepthFormat32FStencil8 || settings->mainDepthFormat == core::gfx::tex::kDepthFormat24Stencil8)
 			buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_depth);
+		else
+			buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_stencil);
 		// "Compile" the render target.
 		buffer_deferred_rt.assemble();
 
@@ -169,10 +171,11 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const renderer::rrI
 			buffer_deferred_mrt.attach(gpu::kRenderTargetSlotColor0 + i, &buffer_deferred_color[i]);
 		// Add the shared depth & stencil
 		buffer_deferred_mrt.attach(gpu::kRenderTargetSlotDepth, &buffer_depth);
-		buffer_deferred_mrt.attach(gpu::kRenderTargetSlotStencil, &buffer_stencil);
 		// Override for the combined formats (TODO: Check if this is valid)
 		if (settings->mainDepthFormat == core::gfx::tex::kDepthFormat32FStencil8 || settings->mainDepthFormat == core::gfx::tex::kDepthFormat24Stencil8)
 			buffer_deferred_mrt.attach(gpu::kRenderTargetSlotStencil, &buffer_depth);
+		else
+			buffer_deferred_mrt.attach(gpu::kRenderTargetSlotStencil, &buffer_stencil);
 		// "Compile" the render target.
 		buffer_deferred_mrt.assemble();
 

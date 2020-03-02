@@ -55,6 +55,10 @@ namespace gpu
 	class Sampler
 	{
 	public:
+		GPUW_API explicit			Sampler ( void )
+			: m_sampler(0)
+			{}
+
 		GPUW_API int			create ( Device* device, const SamplerCreationDescription* params );
 		GPUW_API int			destroy ( Device* device );
 
