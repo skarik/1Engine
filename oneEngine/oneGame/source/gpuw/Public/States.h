@@ -67,11 +67,13 @@ namespace gpu
 		uint8_t			stencilWriteMask;
 		StencilOpInfo	stencilOpFrontface;
 		StencilOpInfo	stencilOpBackface;
+		uint8_t			stencilReference;
 
 		DepthStencilState()
 			: depthTestEnabled(true), depthWriteEnabled(true), depthFunc(kCompareOpLess),
 			stencilTestEnabled(false), stencilReadMask(0xFF), stencilWriteMask(0xFF),
-			stencilOpFrontface(), stencilOpBackface()
+			stencilOpFrontface(), stencilOpBackface(),
+			stencilReference(0x01)
 		{}
 	};
 

@@ -103,9 +103,6 @@ gpu::GraphicsContext::~GraphicsContext ( void )
 	delete m_defaultSampler;
 }
 
-//	DeviceSetFillMode( device, fillMode ) : Set device's fill mode.
-// Controls how to fill polygons for given device. (glPolygonMode in OpenGL)
-// NULL device sets for current active device.
 int gpu::GraphicsContext::setFillMode( const FillMode fillMode )
 {
 	if ( fillMode == kFillModeWireframe )
@@ -208,6 +205,16 @@ int gpu::GraphicsContext::setBlendState ( const BlendState& state )
 		glBlendEquationSeparate(GpuEnumToGL(state.op), GpuEnumToGL(state.opAlpha));
 		changed = true;
 	}
+	// change blend mask
+	if (state.mask != m_blendCollectState.blend[0].mask
+		|| state.mask != m_blendCollectState.blend[0].mask)
+	{
+		glColorMask((state.mask & kBlendMaskRed) ? GL_TRUE : GL_FALSE,
+					(state.mask & kBlendMaskGreen) ? GL_TRUE : GL_FALSE,
+					(state.mask & kBlendMaskBlue) ? GL_TRUE : GL_FALSE,
+					(state.mask & kBlendMaskAlpha) ? GL_TRUE : GL_FALSE);
+		changed = true;
+	}
 	if (changed)
 	{	// update prev state
 		m_blendCollectState.blend[0] = state;
@@ -246,6 +253,17 @@ int gpu::GraphicsContext::setBlendCollectiveState ( const BlendCollectiveState& 
 			)
 		{
 			glBlendEquationSeparatei(i, GpuEnumToGL(state.blend[i].op), GpuEnumToGL(state.blend[i].opAlpha));
+			changed = true;
+		}
+		// change blend mask
+		if (state.blend[i].mask != m_blendCollectState.blend[i].mask
+			|| state.blend[i].mask != m_blendCollectState.blend[i].mask)
+		{
+			glColorMaski(i,
+						 (state.blend[i].mask & kBlendMaskRed) ? GL_TRUE : GL_FALSE,
+						 (state.blend[i].mask & kBlendMaskGreen) ? GL_TRUE : GL_FALSE,
+						 (state.blend[i].mask & kBlendMaskBlue) ? GL_TRUE : GL_FALSE,
+						 (state.blend[i].mask & kBlendMaskAlpha) ? GL_TRUE : GL_FALSE);
 			changed = true;
 		}
 	}
@@ -294,13 +312,13 @@ int gpu::GraphicsContext::setDepthStencilState ( const DepthStencilState& state 
 		if (state.stencilReadMask != m_depthStencilState.stencilReadMask
 			|| state.stencilOpFrontface.func != m_depthStencilState.stencilOpFrontface.func)
 		{
-			glStencilFuncSeparate(GL_FRONT, GpuEnumToGL(state.stencilOpFrontface.func), 0x01, state.stencilReadMask);
+			glStencilFuncSeparate(GL_FRONT, GpuEnumToGL(state.stencilOpFrontface.func), state.stencilReference, state.stencilReadMask);
 			m_depthStencilState.stencilOpFrontface.func = state.stencilOpFrontface.func;
 		}
 		if (state.stencilReadMask != m_depthStencilState.stencilReadMask
 			|| state.stencilOpBackface.func != m_depthStencilState.stencilOpBackface.func)
 		{
-			glStencilFuncSeparate(GL_BACK, GpuEnumToGL(state.stencilOpBackface.func), 0x01, state.stencilReadMask);
+			glStencilFuncSeparate(GL_BACK, GpuEnumToGL(state.stencilOpBackface.func), state.stencilReference, state.stencilReadMask);
 			m_depthStencilState.stencilOpBackface.func = state.stencilOpBackface.func;
 		}
 		m_depthStencilState.stencilReadMask = state.stencilReadMask;

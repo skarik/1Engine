@@ -89,12 +89,27 @@ int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
 	D3D_FEATURE_LEVEL featureLevels [] = {D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0};
 	D3D_FEATURE_LEVEL actualFeatureLevel;
 
-	result = D3D11CreateDevice(	m_dxAdapter, D3D_DRIVER_TYPE_HARDWARE, NULL,
-								layerFlags,
-								featureLevels, sizeof(featureLevels)/sizeof(D3D_FEATURE_LEVEL),
-								D3D11_SDK_VERSION,
-								&m_dxDevice, &actualFeatureLevel,
-								&m_dxImmediateContext);
+	do
+	{
+		//result = D3D11CreateDevice(	NULL, D3D_DRIVER_TYPE_HARDWARE, NULL,
+		result = D3D11CreateDevice(	m_dxAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL,
+									layerFlags,
+									featureLevels, sizeof(featureLevels)/sizeof(D3D_FEATURE_LEVEL),
+									D3D11_SDK_VERSION,
+									&m_dxDevice, &actualFeatureLevel,
+									&m_dxImmediateContext);
+
+		if (result == DXGI_ERROR_SDK_COMPONENT_MISSING && layerFlags != 0)
+		{
+			printf("Could not find DirectX debug layer. Please install D3D11*SDKLayers.dll.\n");
+			layerFlags = 0;
+			continue;
+		}
+		else if (result != S_OK)
+			break;
+	}
+	while (result != S_OK);
+
 	if (FAILED(result))
 	{
 		printf("Could not create device or device context.\n");

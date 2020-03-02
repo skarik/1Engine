@@ -51,6 +51,13 @@ namespace gpu
 		kBlendOpMin,
 		kBlendOpMax,
 	};
+	enum BlendMask
+	{
+		kBlendMaskRed	= 0x01,
+		kBlendMaskGreen	= 0x02,
+		kBlendMaskBlue	= 0x04,
+		kBlendMaskAlpha	= 0x08,
+	};
 
 	enum CompareOp
 	{

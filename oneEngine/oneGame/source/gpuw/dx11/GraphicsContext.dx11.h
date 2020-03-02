@@ -118,10 +118,23 @@ namespace gpu
 		void*					m_wrapperDevice;
 		void*					m_deferredContext;
 
-		RasterizerState			m_rasterState;
-		BlendCollectiveState	m_blendCollectState;
-		DepthStencilState		m_depthStencilState;
+		//RasterizerState			m_rasterState;
+		void*					m_rasterStateCachedMap;
+		//void*					m_rasterStateCurrent;
+		uint32_t				m_rasterStateCurrentBitfilter;
+
+		//BlendCollectiveState	m_blendCollectState;
+		void*					m_blendStateCachedMap;
+		//void*					m_blendStateCurrent;
+		uint64_t				m_blendStateCurrentBitfilter [4];
+
+		void*					m_depthStateCachedMap;
+		uint64_t				m_depthStateCurrentBitfilter;
+
+		//DepthStencilState		m_depthStencilState;
 		PrimitiveTopology		m_primitiveType;
+
+		void*					m_depthStencilTarget;
 
 		Pipeline*				m_pipeline;
 		bool					m_pipelineBound;

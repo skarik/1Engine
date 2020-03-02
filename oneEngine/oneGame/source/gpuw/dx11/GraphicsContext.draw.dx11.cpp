@@ -21,6 +21,29 @@
 
 #include <stdio.h>
 
+int gpu::GraphicsContext::clearDepthStencil ( bool clearDepth, float depth, bool clearStencil, uint8_t stencil )
+{
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+
+	if (m_depthStencilTarget != NULL)
+	{
+		ctx->ClearDepthStencilView((ID3D11DepthStencilView*)m_depthStencilTarget,
+									(clearDepth ? D3D11_CLEAR_DEPTH : 0) | (clearStencil ? D3D11_CLEAR_STENCIL : 0),
+									depth,
+									stencil);
+	}
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::clearColor ( float* rgbaColor )
+{
+	//glClearColor(rgbaColor[0], rgbaColor[1], rgbaColor[2], rgbaColor[3]);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	// TODO: Implement. This currently has no effect.
+	return kError_SUCCESS;
+}
+
 int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
 {
 	ARCORE_ASSERT(renderTarget != NULL);
@@ -41,6 +64,7 @@ int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
 	}
 
 	ctx->OMSetRenderTargets(attachmentCount, attachments, (ID3D11DepthStencilView*)renderTarget->m_attachmentDepthStencil);
+	m_depthStencilTarget = renderTarget->m_attachmentDepthStencil;
 
 	/*if (renderTarget->m_framebuffer != 0xFFFFFFFF)
 	{

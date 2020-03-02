@@ -19,7 +19,7 @@ int gpu::GraphicsContext::signal ( Fence* fence )
 	ARCORE_ASSERT(fence->m_gfxc == NULL);
 
 	// Create the sync the only way OpenGL allows
-	fence->m_syncId = (void*)0xFFFFFFFF;//glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+	fence->m_syncId = (void*)0xFFFFFFFFFFFFFFFF;//glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 
 	// Tag this context in the fence
 	fence->m_gfxc = this;

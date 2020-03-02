@@ -288,6 +288,7 @@ int gpu::GraphicsContext::clearDepthStencil ( bool clearDepth, float depth, bool
 	}
 	return 0;
 }
+
 int gpu::GraphicsContext::clearColor ( float* rgbaColor )
 {
 	glClearColor(rgbaColor[0], rgbaColor[1], rgbaColor[2], rgbaColor[3]);
