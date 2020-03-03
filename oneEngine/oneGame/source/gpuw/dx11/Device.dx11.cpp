@@ -77,6 +77,8 @@ int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
 	DXGI_ADAPTER_DESC l_adapterDescription;
 	m_dxAdapter->GetDesc(&l_adapterDescription);
 
+	printf("Creating DirectX device on \"%S\"\n", l_adapterDescription.Description);
+
 	// Update the target device:
 	m_TargetDisplayDevice = this;
 
@@ -102,7 +104,14 @@ int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
 									&m_dxDevice, &actualFeatureLevel,
 									&m_dxImmediateContext);
 
-		if (result == DXGI_ERROR_SDK_COMPONENT_MISSING && layerFlags != 0)
+		if (result == DXGI_ERROR_SDK_COMPONENT_MISSING && layerFlags == (D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_DEBUGGABLE))
+		{
+			printf("Could not find DirectX debug layer. Reducing options.\n");
+			layerFlags = D3D11_CREATE_DEVICE_DEBUG;
+			continue;
+		}
+		else
+		if (result == DXGI_ERROR_SDK_COMPONENT_MISSING && layerFlags == D3D11_CREATE_DEVICE_DEBUG)
 		{
 			printf("Could not find DirectX debug layer. Please install D3D11*SDKLayers.dll.\n");
 			layerFlags = 0;

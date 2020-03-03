@@ -41,7 +41,7 @@ int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32
 	swapchain_desc.OutputWindow = (HWND)device->mw_window;
 	swapchain_desc.Windowed = fullscreen ? FALSE : TRUE;
 
-	swapchain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL; // TODO: Flip discard, one day.
+	swapchain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; // TODO: Flip discard, one day.
 	swapchain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;// | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
 	// Given the device, create a swapchain
@@ -57,66 +57,6 @@ int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32
 	// save the "requested" width and height.
 	m_width = width;
 	m_height = height;
-
-	//{
-	//	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = {};
-	//	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-	//	surfaceCreateInfo.hinstance	= (HINSTANCE)device->mw_module;
-	//	surfaceCreateInfo.hwnd		= (HWND)device->mw_window;
-
-	//	VkResult result = vkCreateWin32SurfaceKHR(device->m_instance, &surfaceCreateInfo, device->m_allocator, &m_surface);
-	//	if (result != VK_SUCCESS)
-	//	{
-	//		printf("Could not create surface (error: %x).\n", (int)result);
-	//		return gpu::kErrorFormatUnsupported;
-	//	}
-
-	//	printf("Created win32_surface.\n");
-
-	//	// Save the "requested" width and height.
-	//	m_width = width;
-	//	m_height = height;
-
-	//	// Save the device
-	//	m_device = device;
-	//}
-
-	//{
-	//	// Create swapchain
-	//}
-
-	//PIXELFORMATDESCRIPTOR pfd = {};
-	//pfd.nSize		= sizeof(PIXELFORMATDESCRIPTOR);
-	//pfd.nVersion	= 1;
-	//pfd.dwFlags		= PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_DEPTH_DONTCARE;
-	//pfd.iPixelType	= PFD_TYPE_RGBA;
-	//pfd.cColorBits	= 32; // todo
-	//pfd.cDepthBits	= 0;
-	//pfd.cStencilBits= 0;
-	//pfd.iLayerType  = PFD_MAIN_PLANE;
-
-	//// Did Windows Find A Matching Pixel Format?
-	//int PixelFormat = ChoosePixelFormat((HDC)device->mw_deviceContext, &pfd);
-	//if (PixelFormat == 0)
-	//{
-	//	printf("Can't Find A Suitable PixelFormat.\n");
-	//	return gpu::kErrorFormatUnsupported;
-	//}
-	//// Are We Able To Set The Pixel Format?
-	//if(SetPixelFormat((HDC)device->mw_deviceContext, PixelFormat, &pfd) == 0)
-	//{
-	//	printf("Can't Set The PixelFormat.\n");
-	//	return gpu::kErrorFormatUnsupported;
-	//}
-
-	//// TODO: VSync settings with presentMode.
-
-	//// Save the context:
-	//mw_deviceContext = device->mw_deviceContext;
-
-	//// Save the "requested" width and height.
-	//m_width = width;
-	//m_height = height;
 
 	// Create a render target from the swapchain now:
 	ID3D11Texture2D* l_renderTexture;
