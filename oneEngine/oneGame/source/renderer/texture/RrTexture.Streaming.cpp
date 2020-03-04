@@ -73,7 +73,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 		case kTextureLoadState_LoadImage:
 			{
 				// Create a buffer to upload the texture data
-				loadInfo->pixelBuffer[0].initAsData(NULL, core::gfx::tex::getColorFormatByteSize(upload_request->format) * upload_request->width * upload_request->height);
+				loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, upload_request->format, upload_request->width, upload_request->height);
 				void* target = loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferStatic);
 
 				// Copy data to the target
@@ -172,7 +172,9 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 		case kTextureLoadState_LoadSuperlow:
 			{
 				// Create a buffer to upload the texture data
-				loadInfo->pixelBuffer[0].initAsData(NULL, core::kTextureFormat_SuperlowByteSize); // TODO: Take format into account.
+				uint64_t size_Flat = core::kTextureFormat_SuperlowByteSize / core::gfx::tex::getColorFormatByteSize(info.internalFormat);
+				uint64_t size_Width = (uint64_t)sqrt(size_Flat);
+				loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, info.internalFormat, size_Width, size_Width); // TODO: Take format into account.
 				void* target = loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferStatic);
 
 				// Load the data in:
@@ -227,7 +229,7 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 					uint16_t level_width	= std::max<uint16_t>(1, loadInfo->loader.info.width / math::exp2(loadInfo->level));
 					uint16_t level_height	= std::max<uint16_t>(1, loadInfo->loader.info.height / math::exp2(loadInfo->level));
 
-					loadInfo->pixelBuffer[loadInfo->level].initAsData(NULL, core::getTextureFormatByteSize(loadInfo->loader.format) * level_width * level_height);
+					loadInfo->pixelBuffer[loadInfo->level].initAsTextureBuffer(NULL, info.internalFormat, level_width, level_height);
 					void* target = loadInfo->pixelBuffer[loadInfo->level].map(NULL, gpu::kTransferStatic);
 
 					// Load the data in

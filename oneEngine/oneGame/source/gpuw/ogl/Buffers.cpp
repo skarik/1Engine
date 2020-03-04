@@ -38,21 +38,6 @@ static void _AllocateBufferSize ( const GLuint buffer, const uint64_t data_size,
 		glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
 }
 
-//	init ( data ) : initializes a constant buffer with data
-int	gpu::Buffer::initAsData ( Device* device, const uint64_t data_size )
-{
-	ARCORE_ASSERT(data_size > 0);
-
-	m_bufferType = kBufferTypeGeneralUse;
-	m_format = kFormatUndefined;
-
-	glCreateBuffers(1, &m_buffer);
-
-	_AllocateBufferSize(m_buffer, data_size, kTransferStream);
-	
-	return kError_SUCCESS;
-}
-
 //	initAsVertexBuffer( device, format, element_count ) : Initializes as a vertex buffer.
 int gpu::Buffer::initAsVertexBuffer ( Device* device, Format format, const uint64_t element_count )
 {
@@ -101,7 +86,6 @@ int gpu::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size
 }
 
 //	initAsStructuredBuffer( device, data_size ) : Initializes as a data buffer.
-// Data is uploaded separately through map/unmap or upload.
 int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_size )
 {
 	ARCORE_ASSERT(data_size > 0);
@@ -112,6 +96,37 @@ int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_si
 	glCreateBuffers(1, &m_buffer);
 
 	_AllocateBufferSize(m_buffer, data_size, kTransferStream);
+
+	return kError_SUCCESS;
+}
+
+//	initAsIndirectArgs( device, data_size ) : Initializes as a data buffer, able to be used for indirect args.
+int gpu::Buffer::initAsIndirectArgs ( Device* device, const uint64_t data_size )
+{
+	ARCORE_ASSERT(data_size > 0);
+
+	m_bufferType = kBufferTypeIndirectArgs;
+	m_format = kFormatUndefined;
+
+	glCreateBuffers(1, &m_buffer);
+
+	_AllocateBufferSize(m_buffer, data_size, kTransferStream);
+
+	return kError_SUCCESS;
+}
+
+//	initAsTextureBuffer( device, format, element_width, element_height ) : Initializes as a typed data buffer. Can be used to load textures.
+int	 gpu::Buffer::initAsTextureBuffer ( Device* device, core::gfx::tex::arColorFormat format, const uint64_t element_width, const uint64_t element_height )
+{
+	ARCORE_ASSERT(element_width > 0 && element_height > 0);
+	
+	m_bufferType = kBufferTypeTexture;
+	m_elementSize = core::gfx::tex::getColorFormatByteSize(format);
+	m_format = ArFormatToGPUFormat(format);
+
+	glCreateBuffers(1, &m_buffer);
+
+	_AllocateBufferSize(m_buffer, m_elementSize * element_width * element_height, kTransferStatic);
 
 	return kError_SUCCESS;
 }

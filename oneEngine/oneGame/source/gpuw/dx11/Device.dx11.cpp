@@ -90,6 +90,7 @@ int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
 		dx_adapterOutputs.push_back(l_currentOutputAdapter);
 		++i_currentAdapterIndex;
 	}*/
+	// TODO: pull from layers arg
 	UINT layerFlags = D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_DEBUGGABLE;
 	D3D_FEATURE_LEVEL featureLevels [] = {D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0};
 	D3D_FEATURE_LEVEL actualFeatureLevel;
@@ -104,14 +105,15 @@ int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
 									&m_dxDevice, &actualFeatureLevel,
 									&m_dxImmediateContext);
 
-		if (result == DXGI_ERROR_SDK_COMPONENT_MISSING && layerFlags == (D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_DEBUGGABLE))
+		if ((result == DXGI_ERROR_SDK_COMPONENT_MISSING || result == DXGI_ERROR_UNSUPPORTED)
+			&& layerFlags == (D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_DEBUGGABLE))
 		{
 			printf("Could not find DirectX debug layer. Reducing options.\n");
 			layerFlags = D3D11_CREATE_DEVICE_DEBUG;
 			continue;
 		}
-		else
-		if (result == DXGI_ERROR_SDK_COMPONENT_MISSING && layerFlags == D3D11_CREATE_DEVICE_DEBUG)
+		else if ((result == DXGI_ERROR_SDK_COMPONENT_MISSING || result == DXGI_ERROR_UNSUPPORTED)
+			&& layerFlags == D3D11_CREATE_DEVICE_DEBUG)
 		{
 			printf("Could not find DirectX debug layer. Please install D3D11*SDKLayers.dll.\n");
 			layerFlags = 0;
@@ -127,6 +129,29 @@ int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
 		printf("Could not create device or device context.\n");
 		return gpu::kErrorInvalidDevice;
 	}
+
+#ifdef _ENGINE_DEBUG
+	// Disable specific error keys
+	ID3D11Debug* l_dxDebug;
+	result = m_dxDevice->QueryInterface(&l_dxDebug);
+	if (SUCCEEDED(result))
+	{
+		ID3D11InfoQueue* l_dxInfoQueue;
+		result = l_dxDebug->QueryInterface(&l_dxInfoQueue);
+		if (SUCCEEDED(result))
+		{
+			D3D11_MESSAGE_ID toHide [] = {
+				D3D11_MESSAGE_ID_DEVICE_DRAW_VERTEX_BUFFER_STRIDE_TOO_SMALL, // Enable use of purposefully overlapping data
+			};
+
+			D3D11_INFO_QUEUE_FILTER filter = {};
+			filter.DenyList.NumIDs = sizeof(toHide) / sizeof(D3D11_MESSAGE_ID);
+			filter.DenyList.pIDList = toHide;
+
+			l_dxInfoQueue->AddStorageFilterEntries(&filter);
+		}
+	}
+#endif
 
 	return gpu::kError_SUCCESS;
 }

@@ -8,7 +8,7 @@ namespace core
 {
 	template <typename Float> template <typename FloatOther>
 	Vector4_T<Float>::Vector4_T (Vector3_T<FloatOther> const& old, FloatOther const& new_w = 0)
-		: x((Float)old.x), y((Float)old.y), z((Float)old.x), w((Float)new_w)
+		: x((Float)old.x), y((Float)old.y), z((Float)old.z), w((Float)new_w)
 		{}
 
 	template <typename Float> template <typename FloatOther>

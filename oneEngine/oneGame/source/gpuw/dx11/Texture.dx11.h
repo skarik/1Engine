@@ -92,7 +92,7 @@ namespace gpu
 		void*							m_texture;
 		core::gfx::tex::arTextureType	m_type;
 		core::gfx::tex::arColorFormat	m_format;
-		void*							m_srv;
+		//void*							m_srv;
 		unsigned int					m_dxFormat;
 	};
 }

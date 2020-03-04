@@ -9,7 +9,6 @@ namespace gpu
 	enum TransferStyle
 	{
 		kTransferStatic,
-		//kTransferDynamic,
 		kTransferStream,
 	};
 }

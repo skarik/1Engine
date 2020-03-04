@@ -60,6 +60,11 @@ int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
 	return kError_SUCCESS;
 }
 
+int gpu::GraphicsContext::clearPipelineAndWait ( void )
+{
+	return kError_SUCCESS;
+}
+
 int gpu::GraphicsContext::setPipeline ( Pipeline* pipeline )
 {
 	if (pipeline != m_pipeline)
@@ -245,7 +250,7 @@ int gpu::GraphicsContext::drawIndexedInstanced ( const uint32_t indexCount, cons
 
 int	 gpu::GraphicsContext::setIndirectArgs ( Buffer* buffer )
 {
-	ARCORE_ASSERT(buffer->getBufferType() != kBufferTypeUnknown);
+	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeIndirectArgs);
 
 	glBindBuffer(GL_DRAW_INDIRECT_BUFFER,
 				 buffer->m_buffer);

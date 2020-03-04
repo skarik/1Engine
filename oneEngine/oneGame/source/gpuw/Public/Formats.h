@@ -2,6 +2,7 @@
 #define GPU_WRAPPER_PUBLIC_FORMATS_H_
 
 #include "core/types.h"
+#include "core/gfx/textureFormats.h"
 #include <stdint.h>
 
 namespace gpu
@@ -80,6 +81,48 @@ namespace gpu
 		case kFormatR32G32B32A32SFloat:	return 16;
 		}
 		return 0;
+	}
+
+	static FORCE_INLINE Format ArFormatToGPUFormat ( const core::gfx::tex::arColorFormat format )
+	{
+		using namespace core::gfx::tex;
+		switch (format)
+		{
+		case kColorFormatRGB8:		return kFormatR8G8B8UInteger;
+		case kColorFormatRGB16:		return kFormatR16G16B16UInteger;
+		//case kColorFormatRGB16F:
+		//case kColorFormatRGB32:
+		case kColorFormatRGB32F:	return kFormatR32G32B32SFloat;
+
+		case kColorFormatRGBA8:		return kFormatR8G8B8A8UInteger;
+		case kColorFormatRGBA16:	return kFormatR16G16B16A16UInteger;
+		//case kColorFormatRGBA16F:
+		//case kColorFormatRGBA32:
+		case kColorFormatRGBA32F:	return kFormatR32G32B32A32SFloat;
+
+		case kColorFormatRG8:		return kFormatR8G8UInteger;
+		case kColorFormatRG16:		return kFormatR16G16UInteger;
+		//case kColorFormatRG16F:
+		//case kColorFormatRG32:
+		case kColorFormatRG32F:		return kFormatR32G32SFloat;
+
+		case KStencilFormatIndex8:
+		case kColorFormatR8:		return kFormatR8UInteger;
+		case kDepthFormat16:
+		case kColorFormatR16:		return kFormatR16UInteger;
+		//case kColorFormatR16F:
+		case kDepthFormat32:
+		case kColorFormatR32:		return kFormatR32UInteger;
+		case kDepthFormat32F:
+		case kColorFormatR32F:		return kFormatR32SFloat;
+
+		//case KStencilFormatIndex1:
+		//case KStencilFormatIndex4:
+		//case KStencilFormatIndex16:
+		//case kDepthFormat32FStencil8:
+		//case kDepthFormat24Stencil8:
+		}
+		return kFormatUndefined;
 	}
 }
 

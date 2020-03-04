@@ -38,9 +38,15 @@ int gpu::GraphicsContext::clearDepthStencil ( bool clearDepth, float depth, bool
 
 int gpu::GraphicsContext::clearColor ( float* rgbaColor )
 {
-	//glClearColor(rgbaColor[0], rgbaColor[1], rgbaColor[2], rgbaColor[3]);
-	//glClear(GL_COLOR_BUFFER_BIT);
-	// TODO: Implement. This currently has no effect.
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+
+	// TODO: Reimplement with screen triangle
+
+	if (m_renderTarget != NULL)
+	{
+		ctx->ClearRenderTargetView((ID3D11RenderTargetView*)m_renderTarget, rgbaColor);
+	}
+
 	return kError_SUCCESS;
 }
 
@@ -66,20 +72,36 @@ int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
 	ctx->OMSetRenderTargets(attachmentCount, attachments, (ID3D11DepthStencilView*)renderTarget->m_attachmentDepthStencil);
 	m_depthStencilTarget = renderTarget->m_attachmentDepthStencil;
 
-	/*if (renderTarget->m_framebuffer != 0xFFFFFFFF)
-	{
-		// Set the framebuffer as the given target.
-		glBindFramebuffer(GL_FRAMEBUFFER, renderTarget->m_framebuffer);
-		glNamedFramebufferDrawBuffers(renderTarget->m_framebuffer, attachmentCount, attachments);
-		//glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	if (renderTarget->m_attachments[0] != NULL) {
+		m_renderTarget = renderTarget->m_attachments[0];
 	}
-	else
-	{
-		// Set the framebuffer to the screen's target.
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		//glNamedFramebufferDrawBuffer(0, GL_FRONT);
-		glDrawBuffer(GL_FRONT_LEFT);
-	}*/
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::clearPipelineAndWait ( void )
+{
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+
+	// TODO: move this elsewhere if possible
+	// Unbind all the resources now
+	void* nullRez [128] = {NULL};
+	ctx->VSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
+	ctx->HSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
+	ctx->DSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
+	ctx->GSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
+	ctx->PSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)nullRez);
+
+	ctx->VSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, (ID3D11ShaderResourceView**)nullRez);
+	ctx->HSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, (ID3D11ShaderResourceView**)nullRez);
+	ctx->DSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, (ID3D11ShaderResourceView**)nullRez);
+	ctx->GSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, (ID3D11ShaderResourceView**)nullRez);
+	ctx->PSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, (ID3D11ShaderResourceView**)nullRez);
+
+	ctx->IASetVertexBuffers(0, D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT, (ID3D11Buffer**)nullRez, (UINT*)nullRez, (UINT*)nullRez);
+
+	m_renderTarget = NULL;
+	m_depthStencilTarget = NULL;
 
 	return kError_SUCCESS;
 }
@@ -349,7 +371,7 @@ int gpu::GraphicsContext::drawIndexedInstanced ( const uint32_t indexCount, cons
 
 int	 gpu::GraphicsContext::setIndirectArgs ( Buffer* buffer )
 {
-	ARCORE_ASSERT(buffer->getBufferType() != kBufferTypeUnknown);
+	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeIndirectArgs);
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
 	m_indirectArgsBuffer = buffer;

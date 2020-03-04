@@ -3,6 +3,7 @@
 
 #include "./Device.dx11.h"
 #include "./Buffers.dx11.h"
+#include "./Internal/Enums.dx11.h"
 
 #include "gpuw/Public/Error.h"
 #include "./gpu.h"
@@ -31,35 +32,6 @@ gpuHandle gpu::Buffer::nativePtr ( void )
 	return (gpuHandle)m_buffer;
 }
 
-//	init ( data ) : initializes a general buffer with data. Can be used to load textures
-int	gpu::Buffer::initAsData ( Device* device, const uint64_t data_size )
-{
-	ARCORE_ASSERT(data_size > 0);
-	if (device == NULL) device = getDevice();
-	HRESULT result;
-
-	m_bufferType = kBufferTypeGeneralUse;
-	m_format = kFormatUndefined;
-
-	D3D11_BUFFER_DESC bufferInfo = {};
-	bufferInfo.Usage = D3D11_USAGE_DYNAMIC;
-	bufferInfo.ByteWidth = (UINT)data_size;
-	bufferInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;// | D3D11_BIND_UNORDERED_ACCESS;
-	bufferInfo.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	bufferInfo.MiscFlags = 0;//D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS; // TODO: Figure out how to generalize for indirect args. If all else fails, specific buffer type, maybe?
-	bufferInfo.StructureByteStride = 0;
-
-	result = device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
-	if (FAILED(result))
-	{
-		throw core::OutOfMemoryException(); // TODO: Handle this better.
-		m_buffer = NULL;
-		return gpu::kErrorFormatUnsupported;
-	}
-	
-	return kError_SUCCESS;
-}
-
 //	initAsVertexBuffer( device, format, element_count ) : Initializes as a vertex buffer.
 int gpu::Buffer::initAsVertexBuffer ( Device* device, Format format, const uint64_t element_count )
 {
@@ -77,7 +49,7 @@ int gpu::Buffer::initAsVertexBuffer ( Device* device, Format format, const uint6
 	bufferInfo.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferInfo.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	bufferInfo.MiscFlags = 0;
-	bufferInfo.StructureByteStride = 0;
+	bufferInfo.StructureByteStride = m_elementSize;
 
 	result = device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
 	if (FAILED(result))
@@ -150,7 +122,6 @@ int gpu::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size
 }
 
 //	initAsStructuredBuffer( device, data_size ) : Initializes as a data buffer.
-// Data is uploaded separately through map/unmap or upload.
 int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_size )
 {
 	ARCORE_ASSERT(data_size > 0);
@@ -188,6 +159,73 @@ int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_si
 	if (FAILED(result))
 	{
 		throw core::OutOfMemoryException(); // TODO: Handle this better.
+	}
+
+	return kError_SUCCESS;
+}
+
+//	initAsIndirectArgs( device, data_size ) : Initializes as a data buffer, able to be used for indirect args.
+int gpu::Buffer::initAsIndirectArgs ( Device* device, const uint64_t data_size )
+{
+	ARCORE_ASSERT(data_size > 0);
+	if (device == NULL) device = getDevice();
+	HRESULT result;
+
+	m_bufferType = kBufferTypeIndirectArgs;
+	m_format = kFormatUndefined;
+
+	D3D11_BUFFER_DESC bufferInfo = {};
+	bufferInfo.Usage = D3D11_USAGE_DYNAMIC;
+	bufferInfo.ByteWidth = (UINT)data_size;
+	bufferInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;// | D3D11_BIND_UNORDERED_ACCESS;
+	bufferInfo.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	bufferInfo.MiscFlags = D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
+	bufferInfo.StructureByteStride = 0;
+
+	result = device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
+	if (FAILED(result))
+	{
+		throw core::OutOfMemoryException(); // TODO: Handle this better.
+		m_buffer = NULL;
+		return gpu::kErrorFormatUnsupported;
+	}
+
+	return kError_SUCCESS;
+}
+
+//	initAsTextureBuffer( device, format, element_width, element_height ) : Initializes as a typed data buffer. Can be used to load textures.
+int	 gpu::Buffer::initAsTextureBuffer ( Device* device, core::gfx::tex::arColorFormat format, const uint64_t element_width, const uint64_t element_height )
+{
+	ARCORE_ASSERT(element_width > 0 && element_height > 0);
+	if (device == NULL) device = getDevice();
+	HRESULT result;
+
+	m_bufferType = kBufferTypeTexture;
+	m_elementSize = (unsigned int)core::gfx::tex::getColorFormatByteSize(format);
+	m_format = ArFormatToGPUFormat(format);
+
+	// Internally, Texture buffers are little different, since DX11 doesn't allow copying from Buffer to Texture.
+	// Instead of implementated by a Buffer object, texture buffers are implementated by Texture objects.
+
+	D3D11_TEXTURE2D_DESC		txd;
+	txd.Width = (UINT)element_width;
+	txd.Height = (UINT)element_height;
+	txd.MipLevels = 1;
+	txd.ArraySize = 1;
+	txd.Format = gpu::internal::ArEnumToDx(format, false, true);
+	txd.SampleDesc.Count = 1;
+	txd.SampleDesc.Quality = 0;
+	txd.Usage = D3D11_USAGE_DYNAMIC;
+	txd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	txd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	txd.MiscFlags = 0; 
+
+	result = device->getNative()->CreateTexture2D(&txd, NULL, (ID3D11Texture2D**)&m_buffer);
+	if (FAILED(result))
+	{
+		throw core::OutOfMemoryException(); // TODO: Handle this better.
+		m_buffer = NULL;
+		return gpu::kErrorFormatUnsupported;
 	}
 
 	return kError_SUCCESS;

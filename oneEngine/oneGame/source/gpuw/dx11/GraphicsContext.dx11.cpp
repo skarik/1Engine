@@ -212,6 +212,13 @@ int gpu::GraphicsContext::reset ( void )
 
 	ctx->ClearState(); // TODO: Remove this line, and investigate if it causes issues, if any.
 
+	m_rasterStateCurrentBitfilter = (uint32_t)-1;
+	m_blendStateCurrentBitfilter[0] = (uint64_t)-1;
+	m_blendStateCurrentBitfilter[1] = (uint64_t)-1;
+	m_blendStateCurrentBitfilter[2] = (uint64_t)-1;
+	m_blendStateCurrentBitfilter[3] = (uint64_t)-1;
+	m_depthStateCurrentBitfilter = (uint64_t)-1;;
+
 	return kError_SUCCESS;
 }
 

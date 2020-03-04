@@ -147,6 +147,10 @@ void RrRenderer::StepBufferPush ( void )
 			float clearColor[] = {1, 1, 1, 0};
 			gfx->clearColor(clearColor);
 
+			gpu::RasterizerState rs;
+			rs.cullmode = gpu::kCullModeNone;
+			gfx->setRasterizerState(rs);
+
 			gpu::DepthStencilState ds;
 			ds.depthTestEnabled   = false;
 			ds.depthWriteEnabled  = false;
@@ -169,6 +173,7 @@ void RrRenderer::StepBufferPush ( void )
 				                      internal_chain_current->buffer_forward_rt.getAttachment(gpu::kRenderTargetSlotColor0));
 			gfx->draw(4, 0);
 		}
+		gfx->clearPipelineAndWait(); // Wait until we're done using the buffer...
 
 		// Clear the buffer after we're done with it.
 		gfx->setRenderTarget(&internal_chain_current->buffer_forward_rt);

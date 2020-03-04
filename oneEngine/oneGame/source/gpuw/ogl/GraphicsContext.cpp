@@ -211,13 +211,13 @@ int gpu::GraphicsContext::setBlendState ( const BlendState& state )
 		changed = true;
 	}
 	// change blend mask
-	if (state.mask != m_blendCollectState.blend[0].mask
-		|| state.mask != m_blendCollectState.blend[0].mask)
+	if (state.channelMask != m_blendCollectState.blend[0].channelMask
+		|| state.channelMask != m_blendCollectState.blend[0].channelMask)
 	{
-		glColorMask((state.mask & kBlendMaskRed) ? GL_TRUE : GL_FALSE,
-					(state.mask & kBlendMaskGreen) ? GL_TRUE : GL_FALSE,
-					(state.mask & kBlendMaskBlue) ? GL_TRUE : GL_FALSE,
-					(state.mask & kBlendMaskAlpha) ? GL_TRUE : GL_FALSE);
+		glColorMask((state.channelMask & kBlendMaskRed) ? GL_TRUE : GL_FALSE,
+					(state.channelMask & kBlendMaskGreen) ? GL_TRUE : GL_FALSE,
+					(state.channelMask & kBlendMaskBlue) ? GL_TRUE : GL_FALSE,
+					(state.channelMask & kBlendMaskAlpha) ? GL_TRUE : GL_FALSE);
 		changed = true;
 	}
 	if (changed)
@@ -261,14 +261,14 @@ int gpu::GraphicsContext::setBlendCollectiveState ( const BlendCollectiveState& 
 			changed = true;
 		}
 		// change blend mask
-		if (state.blend[i].mask != m_blendCollectState.blend[i].mask
-			|| state.blend[i].mask != m_blendCollectState.blend[i].mask)
+		if (state.blend[i].channelMask != m_blendCollectState.blend[i].channelMask
+			|| state.blend[i].channelMask != m_blendCollectState.blend[i].channelMask)
 		{
 			glColorMaski(i,
-						 (state.blend[i].mask & kBlendMaskRed) ? GL_TRUE : GL_FALSE,
-						 (state.blend[i].mask & kBlendMaskGreen) ? GL_TRUE : GL_FALSE,
-						 (state.blend[i].mask & kBlendMaskBlue) ? GL_TRUE : GL_FALSE,
-						 (state.blend[i].mask & kBlendMaskAlpha) ? GL_TRUE : GL_FALSE);
+						 (state.blend[i].channelMask & kBlendMaskRed) ? GL_TRUE : GL_FALSE,
+						 (state.blend[i].channelMask & kBlendMaskGreen) ? GL_TRUE : GL_FALSE,
+						 (state.blend[i].channelMask & kBlendMaskBlue) ? GL_TRUE : GL_FALSE,
+						 (state.blend[i].channelMask & kBlendMaskAlpha) ? GL_TRUE : GL_FALSE);
 			changed = true;
 		}
 	}

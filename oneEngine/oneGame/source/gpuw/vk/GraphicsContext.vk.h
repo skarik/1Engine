@@ -137,6 +137,9 @@ namespace gpu
 		// MRT pixel shader outputs are set through RenderTarget setup and Pipeline setup.
 		GPUW_API int			setRenderTarget ( RenderTarget* renderTarget );
 
+		//	clearPipelineAndWait( pipeline ) : Clears current pipeline, performs synchronization with last bound render target
+		GPUW_API int			clearPipelineAndWait ( void );
+
 		//	setPipeline( pipeline ) : Sets current pipeline.
 		// Combination set for shader pipeline, vertex attributes, and primitive topology.
 		GPUW_API int			setPipeline ( Pipeline* pipeline );

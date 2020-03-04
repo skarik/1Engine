@@ -17,9 +17,12 @@ namespace gpu
 	enum BufferType
 	{
 		kBufferTypeUnknown,
-		// General use buffer.
-		// Cannot be used with shaders, use one of the other types.
-		kBufferTypeGeneralUse,
+		// Vertex buffer.
+		// Meant to be used as a vertex stream into to a vertex shader.
+		kBufferTypeVertex,
+		// Index buffer.
+		// Meant to be used as a index stream for the inputs to a vs/gs shader.
+		kBufferTypeIndex,
 		// Constant buffer. 
 		// Corresponds to a cbuffer type in shaders.
 		// Uses at minimum 1KB and at most 4KB on certain platforms.
@@ -28,12 +31,12 @@ namespace gpu
 		// Corresponds to a StructuredBuffer type in shaders, RegularBuffer? (TODO) on other platforms.
 		// Uses at minimum 4KB and at most 65MB on certain platforms.
 		kBufferTypeStructured,
-		// Vertex buffer.
-		// Meant to be used as a vertex stream into to a vertex shader.
-		kBufferTypeVertex,
-		// Index buffer.
-		// Meant to be used as a index stream for the inputs to a vs/gs shader.
-		kBufferTypeIndex,
+		// Indirect args buffer.
+		// Use for storing arguments for indirect draws.
+		kBufferTypeIndirectArgs,
+		// Texture buffer.
+		// Use for loading textures.
+		kBufferTypeTexture,
 	};
 
 	class Buffer
@@ -41,10 +44,6 @@ namespace gpu
 	public:
 		GPUW_API				Buffer ( void );
 
-		//	initAsData( device, data_size ) : Initializes as a data buffer. Can be used to load textures.
-		// Data is uploaded separately through map/unmap or upload.
-		GPUW_API int			initAsData ( Device* device, const uint64_t data_size );
-		
 		//	initAsVertexBuffer( device, format, element_count ) : Initializes as a vertex buffer.
 		// Data is uploaded separately through map/unmap or upload.
 		GPUW_API int			initAsVertexBuffer ( Device* device, Format format, const uint64_t element_count );
@@ -60,6 +59,14 @@ namespace gpu
 		//	initAsStructuredBuffer( device, data_size ) : Initializes as a data buffer.
 		// Data is uploaded separately through map/unmap or upload.
 		GPUW_API int			initAsStructuredBuffer ( Device* device, const uint64_t data_size );
+
+		//	initAsIndirectArgs( device, data_size ) : Initializes as a data buffer, able to be used for indirect args.
+		// Data is uploaded separately through map/unmap or upload.
+		GPUW_API int			initAsIndirectArgs ( Device* device, const uint64_t data_size );
+
+		//	initAsTextureBuffer( device, format, element_width, element_height ) : Initializes as a typed data buffer. Can be used to load textures.
+		// Data is uploaded separately through map/unmap or upload.
+		GPUW_API int			initAsTextureBuffer ( Device* device, core::gfx::tex::arColorFormat format, const uint64_t element_width, const uint64_t element_height );
 
 		//	map( device, style ) : Maps the entire buffer to CPU-side memory and returns the address.
 		GPUW_API void*			map ( Device* device, const TransferStyle style );

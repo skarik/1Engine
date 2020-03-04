@@ -292,7 +292,7 @@ int gpu::WOFrameAttachment::allocate (
 	{
 		m_type = textureType;
 		m_format = textureFormat;
-		m_dxFormat = gpu::internal::ArEnumToDx(textureFormat, false, false);
+		m_dxFormat = gpu::internal::ArEnumToDx(textureFormat, false, true);
 		/*// Create texture
 		glCreateRenderbuffers(1, &m_texture);
 		if (m_texture != 0)
@@ -315,7 +315,7 @@ int gpu::WOFrameAttachment::allocate (
 			txd.Height = height;
 			txd.MipLevels = 1;
 			txd.ArraySize = 1;
-			txd.Format = gpu::internal::ArEnumToDx(textureFormat, false, false);
+			txd.Format = gpu::internal::ArEnumToDx(textureFormat, false, true);
 			txd.SampleDesc.Count = 1;
 			txd.SampleDesc.Quality = 0;
 			txd.Usage = D3D11_USAGE_DEFAULT;
@@ -331,7 +331,7 @@ int gpu::WOFrameAttachment::allocate (
 				|| textureFormat == core::gfx::tex::KStencilFormatIndex8
 				|| textureFormat == core::gfx::tex::KStencilFormatIndex16)
 			{
-				txd.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_DEPTH_STENCIL;
+				txd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 			}
 			txd.CPUAccessFlags = 0;
 			txd.MiscFlags = 0;
@@ -344,8 +344,8 @@ int gpu::WOFrameAttachment::allocate (
 				return gpu::kErrorOutOfMemory;
 			}
 
-			D3D11_SHADER_RESOURCE_VIEW_DESC srvInfo;
-			srvInfo.Format = gpu::internal::ArEnumToDx(textureFormat, false, true);
+			/*D3D11_SHADER_RESOURCE_VIEW_DESC srvInfo;
+			srvInfo.Format = gpu::internal::ArEnumToDx(textureFormat, false, false);
 			if (m_type == core::gfx::tex::kTextureType2D)
 			{
 				srvInfo.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -356,6 +356,7 @@ int gpu::WOFrameAttachment::allocate (
 			result = device->CreateShaderResourceView((ID3D11Texture3D*)m_texture, &srvInfo, (ID3D11ShaderResourceView**)&m_srv);
 			if (FAILED(result))
 				throw core::OutOfMemoryException(); // TODO: Handle this better.
+				*/
 		}
 
 	}
@@ -367,11 +368,11 @@ int gpu::WOFrameAttachment::free ( void )
 {
 	if (m_texture)
 		static_cast<ID3D11Resource*>(m_texture)->Release();
-	if (m_srv)
-		static_cast<ID3D11ShaderResourceView*>(m_srv)->Release();
+	//if (m_srv)
+	//	static_cast<ID3D11ShaderResourceView*>(m_srv)->Release();
 
 	m_texture = NULL;
-	m_srv = NULL;
+	//m_srv = NULL;
 
 	return gpu::kError_SUCCESS;
 }
