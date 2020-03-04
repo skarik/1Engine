@@ -243,6 +243,7 @@ int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level )
 	ID3D11DeviceContext*	ctx = gpu::getDevice()->getNativeContext();
 	ID3D11Texture2D*		texture = (ID3D11Texture2D*)m_texture;
 	D3D11_BOX				src_box;
+	ID3D11Buffer*			src_buffer = (ID3D11Buffer*)buffer.nativePtr();
 
 	const uint				level_divisor = (1 << level);
 	src_box.left = 0;
@@ -255,7 +256,7 @@ int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level )
 	ctx->CopySubresourceRegion(texture,
 							   D3D11CalcSubresource(level, 0, m_levels),
 							   0, 0, 0,
-							   (ID3D11Buffer*)buffer.nativePtr(),
+							   src_buffer,
 							   0,
 							   &src_box);
 

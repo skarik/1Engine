@@ -27,9 +27,9 @@ struct GPUBlendStateFilter
 	friend bool operator< (const GPUBlendStateFilter& l, const GPUBlendStateFilter& r)
 	{
 		return l.filter[0] < r.filter[0]
-			&& l.filter[1] < r.filter[1]
-			&& l.filter[2] < r.filter[2]
-			&& l.filter[3] < r.filter[3];
+			|| l.filter[1] < r.filter[1]
+			|| l.filter[2] < r.filter[2]
+			|| l.filter[3] < r.filter[3];
 	}
 };
 
@@ -230,6 +230,8 @@ int gpu::GraphicsContext::submit ( void )
 
 	gpuDevice->getNativeContext()->ExecuteCommandList(commandList, FALSE);
 
+	commandList->Release();
+
 	return kError_SUCCESS;
 }
 
@@ -306,7 +308,9 @@ int gpu::GraphicsContext::setRasterizerState ( const RasterizerState& state )
 
 		if (rsPair == rsMap->end())
 		{
-			device->CreateRasterizerState(&rsDesc, &rs);
+			HRESULT result = device->CreateRasterizerState(&rsDesc, &rs);
+			if (FAILED(result))
+				throw core::NullReferenceException();
 			(*rsMap)[bitFilter] = rs;
 		}
 		else
@@ -333,8 +337,10 @@ int gpu::GraphicsContext::setBlendCollectiveState ( const BlendCollectiveState& 
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 	ID3D11Device*			device = static_cast<gpu::Device*>(m_wrapperDevice)->getNative();
-	uint64_t				bitFilter [4];
+	uint64_t				bitFilter [4] = {0, 0, 0, 0};
 	GPUBlendStateMap*		bsMap = (GPUBlendStateMap*)m_blendStateCachedMap;
+
+	// TODO: DX11 Api may do all this automatically (as per documentation) so maybe uneccesary to filter.
 
 	// There is no easy filtering this state, so we'll just cache all the variants and compare the values manually.
 
@@ -349,7 +355,7 @@ int gpu::GraphicsContext::setBlendCollectiveState ( const BlendCollectiveState& 
 							| ((state.blend[i].dstAlpha & 0x1F) << 19) // 5
 							| ((state.blend[i].opAlpha & 0x07) << 24) // 3
 							| ((state.blend[i].channelMask & 0x0F) << 27); // 4
-		bitFilter[i / 2] = subFilter << ((i % 2) * 32);
+		bitFilter[i / 2] |= subFilter << ((i % 2) * 32);
 	}
 
 	// Filter out uncessary calls
@@ -377,10 +383,12 @@ int gpu::GraphicsContext::setBlendCollectiveState ( const BlendCollectiveState& 
 				bsDesc.RenderTarget[i].SrcBlendAlpha	= ArEnumToDx(state.blend[i].srcAlpha);
 				bsDesc.RenderTarget[i].DestBlendAlpha	= ArEnumToDx(state.blend[i].dstAlpha);
 				bsDesc.RenderTarget[i].BlendOpAlpha	= ArEnumToDx(state.blend[i].opAlpha);
-				bsDesc.RenderTarget[i].RenderTargetWriteMask	= state.blend[i].channelMask;
+				bsDesc.RenderTarget[i].RenderTargetWriteMask	= state.blend[i].channelMask & D3D11_COLOR_WRITE_ENABLE_ALL;
 			}
 
-			device->CreateBlendState(&bsDesc, &bs);
+			HRESULT result = device->CreateBlendState(&bsDesc, &bs);
+			if (FAILED(result))
+				throw core::NullReferenceException();
 			(*bsMap)[bitFilerAssembled] = bs;
 		}
 		else
@@ -446,7 +454,9 @@ int gpu::GraphicsContext::setDepthStencilState ( const DepthStencilState& state 
 			dsDesc.BackFace.StencilPassOp		= ArEnumToDx(state.stencilOpFrontface.passOp);
 			dsDesc.BackFace.StencilFunc			= ArEnumToDx(state.stencilOpFrontface.func);
 
-			device->CreateDepthStencilState(&dsDesc, &ds);
+			HRESULT result = device->CreateDepthStencilState(&dsDesc, &ds);
+			if (FAILED(result))
+				throw core::NullReferenceException();
 			(*dsMap)[bitFilter] = ds;
 		}
 		else

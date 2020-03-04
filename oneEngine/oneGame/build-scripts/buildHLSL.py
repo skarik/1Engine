@@ -7,10 +7,10 @@ import os, subprocess
 #=========================================================#
 
 g_hlslCompiler = "fxc-auto"
-g_hlslBaseProfile = "5_1"
+g_hlslBaseProfile = "5_0"
 
 g_spirvTranspiler = "spirv-cross.exe" # Should come with the Vulkan SDK
-g_spirvParameters = "--hlsl --shader-model 51"
+g_spirvParameters = "--hlsl --shader-model 50"
 
 #=========================================================#
 # File walker

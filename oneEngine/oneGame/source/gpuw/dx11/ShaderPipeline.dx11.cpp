@@ -8,6 +8,7 @@
 
 #include "core/debug.h"
 #include "core/debug/console.h"
+#include "core/exceptions.h"
 
 gpu::ShaderPipeline::ShaderPipeline ( void )
 	:
@@ -20,6 +21,7 @@ gpu::ShaderPipeline::ShaderPipeline ( void )
 int gpu::ShaderPipeline::attach ( Shader* shader, const char* entrypoint_symbol )
 {
 	ID3D11Device* device = gpu::getDevice()->getNative();
+	HRESULT			result;
 
 	ARCORE_ASSERT(shader->m_type != kShaderStageCs);
 	ARCORE_ASSERT(m_type == kPipelineTypeInvalid || m_type == kPipelineTypeGraphics);
@@ -30,27 +32,33 @@ int gpu::ShaderPipeline::attach ( Shader* shader, const char* entrypoint_symbol 
 	switch (shader->m_type)
 	{
 	case kShaderStageVs:
-		device->CreateVertexShader( shader->m_shaderBytes, shader->m_shaderLength, NULL, (ID3D11VertexShader**)&m_vs );
+		result = device->CreateVertexShader( shader->m_shaderBytes, shader->m_shaderLength, NULL, (ID3D11VertexShader**)&m_vs );
 		m_shaderVs = shader;
 		break;
 	case kShaderStageHs:
-		device->CreateHullShader( shader->m_shaderBytes, shader->m_shaderLength, NULL, (ID3D11HullShader**)&m_hs );
+		result = device->CreateHullShader( shader->m_shaderBytes, shader->m_shaderLength, NULL, (ID3D11HullShader**)&m_hs );
 		m_shaderHs = shader;
 		break;
 	case kShaderStageDs:
-		device->CreateDomainShader( shader->m_shaderBytes, shader->m_shaderLength, NULL, (ID3D11DomainShader**)&m_ds );
+		result = device->CreateDomainShader( shader->m_shaderBytes, shader->m_shaderLength, NULL, (ID3D11DomainShader**)&m_ds );
 		m_shaderDs = shader;
 		break;
 	case kShaderStageGs:
-		device->CreateGeometryShader( shader->m_shaderBytes, shader->m_shaderLength, NULL, (ID3D11GeometryShader**)&m_gs );
+		result = device->CreateGeometryShader( shader->m_shaderBytes, shader->m_shaderLength, NULL, (ID3D11GeometryShader**)&m_gs );
 		m_shaderGs = shader;
 		break;
 	case kShaderStagePs:
-		device->CreatePixelShader( shader->m_shaderBytes, shader->m_shaderLength, NULL, (ID3D11PixelShader**)&m_ps );
+		result = device->CreatePixelShader( shader->m_shaderBytes, shader->m_shaderLength, NULL, (ID3D11PixelShader**)&m_ps );
 		m_shaderPs = shader;
 		break;
 	default:
 		return kErrorBadArgument; // Compute shaders are not accepted in a call.
+	}
+
+	if (FAILED(result))
+	{
+		throw core::CorruptedDataException();
+		return kErrorCreationFailed;
 	}
 
 	return kError_SUCCESS;
@@ -58,6 +66,9 @@ int gpu::ShaderPipeline::attach ( Shader* shader, const char* entrypoint_symbol 
 
 int gpu::ShaderPipeline::attachCompute ( Shader* shader, const char* entrypoint_symbol )
 {
+	ID3D11Device* device = gpu::getDevice()->getNative();
+	HRESULT			result;
+
 	ARCORE_ASSERT(shader->m_type == kShaderStageCs);
 	ARCORE_ASSERT(m_type == kPipelineTypeInvalid || m_type == kPipelineTypeCompute);
 
@@ -67,11 +78,17 @@ int gpu::ShaderPipeline::attachCompute ( Shader* shader, const char* entrypoint_
 	switch (shader->m_type)
 	{
 	case kShaderStageCs:
-		gpu::getDevice()->getNative()->CreateComputeShader( shader->m_shaderBytes, shader->m_shaderLength, NULL, (ID3D11ComputeShader**)&m_cs );
+		result = device->CreateComputeShader( shader->m_shaderBytes, shader->m_shaderLength, NULL, (ID3D11ComputeShader**)&m_cs );
 		m_shaderCs = shader;
 		break;
 	default:
 		return kErrorBadArgument; // Only compute shaders accepted.
+	}
+
+	if (FAILED(result))
+	{
+		throw core::CorruptedDataException();
+		return kErrorCreationFailed;
 	}
 
 	return kError_SUCCESS;

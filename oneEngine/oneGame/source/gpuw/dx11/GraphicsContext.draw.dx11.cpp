@@ -155,17 +155,17 @@ int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, Buffer
 
 	ID3D11Buffer* bufferList [1] = {(ID3D11Buffer*)buffer->nativePtr()};
 	if (stage == kShaderStageVs)
-		ctx->VSGetConstantBuffers(slot, 1, bufferList);
+		ctx->VSSetConstantBuffers(slot, 1, bufferList);
 	else if (stage == kShaderStageHs)
-		ctx->HSGetConstantBuffers(slot, 1, bufferList);
+		ctx->HSSetConstantBuffers(slot, 1, bufferList);
 	else if (stage == kShaderStageDs)
-		ctx->DSGetConstantBuffers(slot, 1, bufferList);
+		ctx->DSSetConstantBuffers(slot, 1, bufferList);
 	else if (stage == kShaderStageGs)
-		ctx->GSGetConstantBuffers(slot, 1, bufferList);
+		ctx->GSSetConstantBuffers(slot, 1, bufferList);
 	else if (stage == kShaderStagePs)
-		ctx->PSGetConstantBuffers(slot, 1, bufferList);
+		ctx->PSSetConstantBuffers(slot, 1, bufferList);
 	else if (stage == kShaderStageCs)
-		ctx->CSGetConstantBuffers(slot, 1, bufferList);
+		ctx->CSSetConstantBuffers(slot, 1, bufferList);
 
 	// todo: bind
 	return kError_SUCCESS;

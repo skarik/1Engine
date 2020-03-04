@@ -12,7 +12,6 @@
 
 int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32_t width, uint32_t height, OutputFormat format, bool fullscreen )
 {
-	//swapchain_desc
 	HRESULT result;
 
 	DXGI_SWAP_CHAIN_DESC swapchain_desc = {};
@@ -75,7 +74,6 @@ int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32
 
 int gpu::OutputSurface::destroy ( void )
 {
-	//vkDestroySurfaceKHR(m_device->m_instance, (VkSurfaceKHR)m_surface, m_device->m_allocator);
 	if (m_dxSwapchain)
 		static_cast<IDXGISwapChain*>(m_dxSwapchain)->Release();
 	m_dxSwapchain = NULL;
