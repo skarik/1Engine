@@ -18,7 +18,7 @@ namespace gpu
 
 		RasterizerState()
 			: fillmode(kFillModeSolid), cullmode(kCullModeBack), frontface(kFrontFaceCounterClockwise),
-			scissorEnabled(true)
+			scissorEnabled(false)
 		{}
 	};
 

@@ -164,6 +164,7 @@ gpu::GraphicsContext::GraphicsContext ( void* wrapperDevice )
 	if (FAILED(result))
 	{
 		// TODO: Error handling. Is a bitch to do in the constructor.
+		abort();
 	}
 
 	// Create the needed cached states

@@ -5,7 +5,7 @@
 #version 430
 
 // Inputs from vertex shader
-layout(location = 1) in vec2 v2f_texcoord0;
+layout(location = 0) in vec2 v2f_texcoord0;
 
 // Samplers
 layout(binding = 0, location = 20) uniform sampler2D textureSampler0;

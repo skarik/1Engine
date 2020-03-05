@@ -61,10 +61,10 @@ renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 	// Create the quad
 	Vector4f screenquad [] = {
 		// positions
-		Vector3f(1, 1, 0.5f),
-		Vector3f(-1, 1, 0.5f),
-		Vector3f(1, -1, 0.5f),
-		Vector3f(-1, -1, 0.5f),
+		Vector2f(1, 1),
+		Vector2f(-1, 1),
+		Vector2f(1, -1),
+		Vector2f(-1, -1),
 		// uvs
 		Vector2f(1, 1),
 		Vector2f(0, 1),
@@ -76,6 +76,16 @@ renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 
 	m_vbufScreenQuad.initAsVertexBuffer(NULL, gpu::kFormatR32G32B32A32SFloat, sizeof(screenquad)/sizeof(Vector4f));
 	m_vbufScreenQuad.upload(NULL, screenquad, sizeof(screenquad), gpu::kTransferStatic);
+	
+	// Create a vbuf with flipped output for DX
+#if defined(GPU_API_DIRECTX11) || defined(GPU_API_DIRECTX12)
+	screenquad[4].y = 0;
+	screenquad[5].y = 0;
+	screenquad[6].y = 1;
+	screenquad[7].y = 1;
+#endif
+	m_vbufScreenQuad_ForOutputSurface.initAsVertexBuffer(NULL, gpu::kFormatR32G32B32A32SFloat, sizeof(screenquad)/sizeof(Vector4f));
+	m_vbufScreenQuad_ForOutputSurface.upload(NULL, screenquad, sizeof(screenquad), gpu::kTransferStatic);
 
 	// create the pipeline
 	gpu::VertexInputBindingDescription binding_desc [2];

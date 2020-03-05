@@ -19,7 +19,7 @@ int gpu::Sampler::create ( Device* device, const SamplerCreationDescription* par
 	glSamplerParameteri(m_sampler, GL_TEXTURE_MAG_FILTER, magFilter);
 	glSamplerParameteri(m_sampler, GL_TEXTURE_MIN_FILTER, minFilter);
 
-	glSamplerParameterf(m_sampler, GL_TEXTURE_MAX_ANISOTROPY, params->anisotropy ? params->maxAnisotropy : 0.0F);
+	glSamplerParameterf(m_sampler, GL_TEXTURE_MAX_ANISOTROPY, params->anisotropy ? params->maxAnisotropy : 1.0F);
 
 	glSamplerParameterf(m_sampler, GL_TEXTURE_LOD_BIAS, params->mipmapLodBias);
 	glSamplerParameterf(m_sampler, GL_TEXTURE_MIN_LOD, params->mipmapMinLod);

@@ -26,6 +26,7 @@ namespace pipeline
 
 		gpu::Pipeline		m_pipelineScreenQuadCopy;
 		gpu::Buffer			m_vbufScreenQuad;
+		gpu::Buffer			m_vbufScreenQuad_ForOutputSurface; // Per-API flips
 	};
 }}
 

@@ -97,8 +97,8 @@ int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
 
 	do
 	{
-		//result = D3D11CreateDevice(	NULL, D3D_DRIVER_TYPE_HARDWARE, NULL,
-		result = D3D11CreateDevice(	m_dxAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL,
+		result = D3D11CreateDevice(	NULL, D3D_DRIVER_TYPE_HARDWARE, NULL,
+		//result = D3D11CreateDevice(	m_dxAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL,
 									layerFlags,
 									featureLevels, sizeof(featureLevels)/sizeof(D3D_FEATURE_LEVEL),
 									D3D11_SDK_VERSION,
@@ -148,7 +148,11 @@ int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
 			filter.DenyList.NumIDs = sizeof(toHide) / sizeof(D3D11_MESSAGE_ID);
 			filter.DenyList.pIDList = toHide;
 
-			l_dxInfoQueue->AddStorageFilterEntries(&filter);
+			result = l_dxInfoQueue->AddStorageFilterEntries(&filter);
+			if (FAILED(result))
+			{
+				printf("Could not filter warning messages.\n");
+			}
 		}
 	}
 #endif
