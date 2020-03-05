@@ -13,18 +13,25 @@ For Windows, the following are required:
 * Visual Studio 2015 or later.
 * Some version of the DirectX or Windows SDK (used for Xbox controller support).
 * Relevant SDK for the rendering API being used (except OpenGL, that just magically works).
-* Python 3 (used for recompiling shaders on before runtime)
+* Vulkan SDK (used for compiling shaders for OpenGL and DirectX).
+* Python 3 (also used for compiling shaders).
 
 You can compile and run without these with generous applications of self-inflicted pain and suffering, but it is not recommended.
+
+## Supported Compilers & Backends
 
 Currently supported platforms:
 * Windows x64 MSVC (In progress...)
 * Windows x64 MSClang (In progress...)
 
 Current graphics API support:
-* **OpenGL 4.7 (Default)** - Functional graphics & compute. Incorrect synchronization. Can (maybe) fall back to 4.5.
+* **OpenGL 4.6 (Default)** - Functional graphics & compute. Incorrect synchronization. Can (maybe) fall back to 4.5.
 * **DirectX 11** - Functional graphics. Incorrect synchronization. Requires both Windows 8.1 SDK and Vulkan SDK.
 * **Vulkan 1.X** - In progress. Requires Vulkan SDK, available from LunarG.
+* **DirectX 12** - Planned. Requires both Windows 10 SDK and Vulkan SDK.
+
+Physics solution: **Bullet Physics**
+Audio solution: **OpenAL Soft**
 
 ## Branches
 
@@ -49,7 +56,7 @@ Large game projects are mostly the same, but instead are prefixed by the game in
       * ``engine`` game engine backend
       * ``audio`` audio engine backend. uses OpenAL Soft, limited optional FMOD support
       * ``physical`` animation and physics backend
-      * ``gpuw`` graphics API wrapper(s)
+      * ``gpuw`` graphics API wrappers
       * ``renderer`` hybrid forward renderer
       * ``engine-common`` simple game framework
       * ``engine2d`` ``render2d`` 2d game framework extensions & 2d deferred renderer
