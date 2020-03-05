@@ -4,6 +4,8 @@
 #include "core/types/types.h"
 #include "core/exceptions.h"
 
+#include "gpuw/Public/Error.h"
+
 #include "./GraphicsContext.h"
 #include "./Sampler.h"
 #include "./ogl/GLCommon.h"
@@ -362,6 +364,26 @@ int gpu::GraphicsContext::setDepthStencilState ( const DepthStencilState& state 
 	}
 
 	return 0;
+}
+
+//===============================================================================================//
+
+int gpu::GraphicsContext::debugGroupPush ( const char* groupName )
+{
+	if (glPushDebugGroup)
+	{
+		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0x00, (GLsizei)strlen(groupName), groupName);
+	}
+	return gpu::kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::debugGroupPop ( void )
+{
+	if (glPopDebugGroup)
+	{
+		glPopDebugGroup();
+	}
+	return gpu::kError_SUCCESS;
 }
 
 #endif

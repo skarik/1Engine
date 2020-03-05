@@ -121,7 +121,7 @@ int	 gpu::Buffer::initAsTextureBuffer ( Device* device, core::gfx::tex::arColorF
 	ARCORE_ASSERT(element_width > 0 && element_height > 0);
 	
 	m_bufferType = kBufferTypeTexture;
-	m_elementSize = core::gfx::tex::getColorFormatByteSize(format);
+	m_elementSize = (unsigned int)core::gfx::tex::getColorFormatByteSize(format);
 	m_format = ArFormatToGPUFormat(format);
 
 	glCreateBuffers(1, &m_buffer);

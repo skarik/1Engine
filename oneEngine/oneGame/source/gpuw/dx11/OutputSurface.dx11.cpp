@@ -27,7 +27,8 @@ int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32
 		swapchain_desc.BufferDesc.RefreshRate.Numerator = 0;// TODO: Grab the display adapter
 		swapchain_desc.BufferDesc.RefreshRate.Denominator = 1;
 	}
-	swapchain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // TODO: HDR with DXGI_FORMAT_R16G16B16A16_FLOAT or DXGI_FORMAT_R10G10B10A2_UNORM
+	//swapchain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; // TODO: HDR with DXGI_FORMAT_R16G16B16A16_FLOAT or DXGI_FORMAT_R10G10B10A2_UNORM
+	swapchain_desc.BufferDesc.Format = (format == kOutputFormatRGB10) ? DXGI_FORMAT_R10G10B10A2_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapchain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	swapchain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 

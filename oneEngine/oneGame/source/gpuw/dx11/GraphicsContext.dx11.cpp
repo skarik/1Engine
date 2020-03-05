@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <map>
+#include <codecvt>
 
 //===============================================================================================//
 
@@ -475,6 +476,35 @@ int gpu::GraphicsContext::setDepthStencilState ( const DepthStencilState& state 
 		ctx->OMSetDepthStencilState(ds, state.stencilReference);
 	}
 
+	return kError_SUCCESS;
+}
+
+//===============================================================================================//
+
+int gpu::GraphicsContext::debugGroupPush ( const char* groupName )
+{
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+	ID3D11DeviceContext2*	ctx2;
+	ctx->QueryInterface(&ctx2);
+	if (ctx2)
+	{
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		std::wstring wide = converter.from_bytes(groupName);
+
+		ctx2->BeginEventInt(wide.c_str(), 0);
+	}
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::debugGroupPop ( void )
+{
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+	ID3D11DeviceContext2*	ctx2;
+	ctx->QueryInterface(&ctx2);
+	if (ctx2)
+	{
+		ctx2->EndEvent();
+	}
 	return kError_SUCCESS;
 }
 

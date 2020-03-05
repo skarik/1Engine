@@ -158,6 +158,9 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 				// Create the sync
 				loadInfo->pixelSync.create(NULL);
 
+				// Allocate the texture.
+				m_texture.allocate(info.type, info.internalFormat, info.width, info.height, info.depth, info.levels);
+
 				if (sync_client)
 				{
 					loadState = kTextureLoadState_LoadImage;
@@ -186,7 +189,6 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 
 				// Unmap and upload
 				loadInfo->pixelBuffer[0].unmap(NULL);
-				m_texture.allocate(info.type, info.internalFormat, info.width, info.height, info.depth, info.levels);
 				m_texture.upload(loadInfo->pixelBuffer[0], info.levels - 1);
 
 				// Create a signal to wait on

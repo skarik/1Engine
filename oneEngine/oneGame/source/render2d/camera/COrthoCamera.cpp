@@ -1,7 +1,6 @@
 #include "core/system/Screen.h"
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/state/RrRenderer.h"
-#include "renderer/material/RrMaterial.h"
 
 #include "render2d/state/WorldPalette.h"
 
@@ -39,12 +38,12 @@ void COrthoCamera::UpdateMatrix ( void )
 	switch ( pixel_scale_mode )
 	{
 	case ORTHOSCALE_MODE_CONSTANT:
-		ortho_size.x = (Real)Screen::Info.width * pixel_scale_factor;
-		ortho_size.y = (Real)Screen::Info.height * pixel_scale_factor;
+		orthoSize.x = (Real)Screen::Info.width * pixel_scale_factor;
+		orthoSize.y = (Real)Screen::Info.height * pixel_scale_factor;
 		break;
 	case ORTHOSCALE_MODE_SIMPLE:
-		ortho_size.x = viewport_target.size.x;
-		ortho_size.y = viewport_target.size.y;
+		orthoSize.x = viewport_target.size.x;
+		orthoSize.y = viewport_target.size.y;
 		break;
 	case ORTHOSCALE_MODE_TOUCH_INSIDE:
 		throw core::NotYetImplementedException();
@@ -69,12 +68,12 @@ void COrthoCamera::UpdateMatrix ( void )
 // Update parameters needed for 2D rendering
 void COrthoCamera::RenderBegin ( void )
 {
-	RrMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( kRenderModeDeferred, renderer::kPipelineMode2DPaletted );
+	/*RrMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( kRenderModeDeferred, renderer::kPipelineMode2DPaletted );
 	palette_pass_material->setTexture(TEX_SLOT5, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
 	palette_pass_material->setTexture(TEX_SLOT6, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture3D());	// Set 3D lookup
 
 	// Remove filtering on the upscaling pass
-	SceneRenderer->GetDeferredBuffer()->SetFilter( SamplingPoint );
+	SceneRenderer->GetDeferredBuffer()->SetFilter( SamplingPoint );*/
 
 	// Set the 2D pipeline mode
 	RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );

@@ -49,6 +49,9 @@
     <ProjectReference Include="oneRenderer.vcxproj">
       <Project>{c1bc5440-9ce1-4a7e-89dd-dcd57005426a}</Project>
     </ProjectReference>
+	<ProjectReference Include="oneGPUW.vcxproj">
+      <Project>{1986D332-4A22-4711-96B0-C94B9BA9B69D}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\render2d\camera\COrthoCamera.cpp" />

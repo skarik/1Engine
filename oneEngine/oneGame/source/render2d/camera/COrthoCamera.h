@@ -25,7 +25,7 @@ enum orthographicScaleMode_t
 // Class Definition
 class COrthoCamera : public RrCamera
 {
-	CameraType( CAMERA_TYPE_NORMAL );
+	CameraType( kCameraClassNormal );
 public:
 	// starting/target aspect ratio of the screen
 	Real		pixel_scale_aspect_ratio;

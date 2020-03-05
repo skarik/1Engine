@@ -212,6 +212,8 @@ int gpu::Texture::free ( void )
 
 int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level )
 {
+	ARCORE_ASSERT(valid());
+
 	/*const uint level_divisor = (1 << level);
 	GLsizei upload_width, upload_height;
 
@@ -266,7 +268,7 @@ int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level )
 
 bool gpu::WOFrameAttachment::valid ( void )
 {
-	return m_texture != 0;
+	return m_texture != NULL;
 }
 gpuHandle gpu::WOFrameAttachment::nativePtr ( void )
 {

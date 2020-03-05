@@ -626,11 +626,14 @@ LRESULT CALLBACK MessageUpdate(
 	case WM_INPUT: 
 		if ( wParam == RIM_INPUT )
 		{
-			UINT dwSize = 40;
-			static BYTE lpb[40];
+			UINT dwSize = 0;
+			static BYTE lpb[128];
 
-			GetRawInputData((HRAWINPUT)lParam, RID_INPUT, 
-				lpb, &dwSize, sizeof(RAWINPUTHEADER));
+			GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER));
+			if (dwSize > 128)
+				throw core::OutOfMemoryException();
+
+			GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER));
 
 			RAWINPUT* raw = (RAWINPUT*)lpb;
 
@@ -638,9 +641,6 @@ LRESULT CALLBACK MessageUpdate(
 			{
 				CInput::_addRawMouseX( raw->data.mouse.lLastX );
 				CInput::_addRawMouseY( raw->data.mouse.lLastY );
-
-				//return 0;
-				return DefWindowProc(hWnd,uMsg,wParam,lParam);
 			} 
 			else if ((raw->header.dwType == RIM_TYPEKEYBOARD) && ( rrWindow->focused ))
 			{
@@ -660,20 +660,10 @@ LRESULT CALLBACK MessageUpdate(
 					CInput::_key(_inputtable[vkey], true);
 					//SendMessage( hWnd, WM_KEYDOWN, vkey, 0 );
 				}
-
-				/*{
-				INPUT inputs [1];
-				memset( inputs, 0, sizeof(INPUT) * 1 );
-				inputs[0].type = INPUT_KEYBOARD;
-				inputs[0].ki.wVk = vkey;
-				inputs[0].ki.dwFlags = flags;
-				inputs[0].ki.wScan = scankey;
-				SendInput( 1, inputs, sizeof(INPUT) );
-				}*/
-				//return DefWindowProc(hWnd,uMsg,wParam,lParam);
-
-				//return 0;
-				//return DefWindowProc(hWnd,uMsg,wParam,lParam);
+			}
+			else if ( rrWindow->focused )
+			{
+				//printf("Unknown input");
 			}
 			return DefWindowProc(hWnd,uMsg,wParam,lParam);
 		}

@@ -14,7 +14,7 @@
 //#endif
 
 // DirectX 11.1
-// Partially supported. Use on systems that do not support at least OpenGL 4.5.
+// Fully supported. Use on systems that do not support at least OpenGL 4.5.
 #ifndef GPU_API_DIRECTX11
 #define GPU_API_DIRECTX11
 #endif

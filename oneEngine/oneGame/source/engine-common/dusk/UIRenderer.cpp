@@ -319,6 +319,11 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 
 	// Set up the target buffer
 	gfx->setRenderTarget(m_renderTarget);
+
+	// Enable and set up scissor
+	gpu::RasterizerState rs;
+	rs.scissorEnabled = true;
+	gfx->setRasterizerState(rs);
 	gfx->setScissor(
 		(int)scissorArea.pos.x,
 		(int)(Screen::Info.height - scissorArea.pos.y - scissorArea.size.y),
@@ -352,7 +357,11 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 			gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
 
 	// draw now
-	gfx->drawIndexed(t_modeldataDrawn.indexNum, 0);
+	gfx->drawIndexed(t_modeldataDrawn.indexNum, 0, 0);
 
-	gfx->submit(); // TODO: remove this
+	// switch back to normal scissor mode
+	gfx->setRasterizerState(gpu::RasterizerState());
+
+	//gfx->submit(); // TODO: remove this
+	gfx->clearPipelineAndWait();
 }

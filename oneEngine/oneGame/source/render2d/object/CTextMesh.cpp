@@ -11,11 +11,8 @@
 CTextMesh::CTextMesh ( void )
 	: CRenderable2D(),
 	m_text(""), m_max_width(-1),
-	m_font_texture(NULL), m_text_triangle_count(0)
+	m_font_texture(NULL), m_text_glyph_count(0)
 {
-	// Clear out deferred info. We're not using that pass.
-	//m_material->deferredinfo.clear();
-
 	// A forward-rendered fullbright pass is in alpha-test mode is set by CRenderable2D().
 }
 
@@ -26,24 +23,23 @@ CTextMesh::~CTextMesh ( void )
 		m_font_texture->RemoveReference();
 	}
 
-	if ( m_modeldata.indices != NULL )
-	{
-		delete [] m_modeldata.indices;
-	}
-	if ( m_modeldata.position != NULL )
-	{
-		delete [] m_modeldata.position;
-	}
+	delete_safe_array(m_modeldata.indices);
+	delete_safe_array(m_modeldata.position);
+	delete_safe_array(m_modeldata.color);
+	delete_safe_array(m_modeldata.texcoord0);
+	delete_safe_array(m_modeldata.normal);
 }
 
 //		SetFont ( ) 
 // Loads a font as a texture for use with this text mesh
 void CTextMesh::SetFont ( const char* fontFile, int fontSize, int fontWeight )
 {
-	m_font_texture = new RrFontTexture( fontFile, fontSize, fontWeight );
+	// Grab the texture since we need the extra information to make the mesh
+	m_font_texture = RrFontTexture::Load( fontFile, fontSize, fontWeight );
 	//m_font_texture->SetFilter( SamplingPoint );
 
-	m_material->setTexture( TEX_DIFFUSE, m_font_texture );
+	// Edit the current pass with the new texture
+	PassAccess(0).setTexture( TEX_DIFFUSE, m_font_texture );
 }
 
 //		GetLineHeight ( )
@@ -51,7 +47,7 @@ void CTextMesh::SetFont ( const char* fontFile, int fontSize, int fontWeight )
 Real CTextMesh::GetLineHeight ( void )
 {
 	auto fontInfo	= m_font_texture->GetFontInfo();
-	return fontInfo.fontSizes['M' - fontInfo.startCharacter].y + 3.0F;
+	return fontInfo->glyphSize['M' - m_font_texture->GetFontGlyphStart()].y + 3.0F;
 }
 
 //		UpdateText ( ) 
@@ -62,27 +58,29 @@ void CTextMesh::UpdateText ( void )
 
 	// Estimate needed amount of vertices for the text:
 
-	if (m_text_triangle_count < m_text.length() * 2)
+	//if (m_text_triangle_count < m_text.length() * 2)
+	if (m_text_glyph_count < m_text.length())
 	{
-		delete [] m_modeldata.triangles;
-		delete [] m_modeldata.vertices;
+		delete_safe_array(m_modeldata.indices);
+		delete_safe_array(m_modeldata.position);
+		delete_safe_array(m_modeldata.color);
+		delete_safe_array(m_modeldata.texcoord0);
+		delete_safe_array(m_modeldata.normal);
 
-		m_text_triangle_count = m_text.length() * 2;
-		m_modeldata.vertexNum = (uint16_t)(m_text.length() * 4);
+		m_text_glyph_count = m_text.length();
 
-		m_modeldata.triangles = new arModelTriangle [m_text_triangle_count];
-		m_modeldata.vertices = new arModelVertex [m_modeldata.vertexNum];
+		m_modeldata.indices = new uint16_t [m_text_glyph_count * 5]; // 5 indices per character
+		m_modeldata.position = new Vector3f [m_text_glyph_count * 4];
+		m_modeldata.color = new Vector4f [m_text_glyph_count * 4];
+		m_modeldata.texcoord0 = new Vector3f [m_text_glyph_count * 4];
+		m_modeldata.normal = new Vector3f [m_text_glyph_count * 4];
 	}
 
 	// Reset mesh data:
 
-	memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * m_modeldata.vertexNum);
 	for ( uint i = 0; i < m_modeldata.vertexNum; ++i )
 	{
-		m_modeldata.vertices[i].r = 1.0F;
-		m_modeldata.vertices[i].g = 1.0F;
-		m_modeldata.vertices[i].b = 1.0F;
-		m_modeldata.vertices[i].a = 1.0F;
+		m_modeldata.color[i] = {1.0F, 1.0F, 1.0F, 1.0F};
 	}
 
 	// Get the font info:
@@ -95,9 +93,9 @@ void CTextMesh::UpdateText ( void )
 	// Set up information for the text passes:
 
 	Vector2f pen (0,0);
-	const int maxLength = m_text.length();
+	const size_t maxLength = m_text.length();
 	uint32_t vertex_index = 0;
-	uint32_t triangle_index = 0;
+	uint32_t index_index = 0;
 	int c_lookup;
 	// Always use 'M' as the base case font size, because it's huge
 	Vector2i font_max_size = fontInfo->glyphSize['M' - fontStartGlyph];	
@@ -131,16 +129,16 @@ void CTextMesh::UpdateText ( void )
 				for ( int cf = c + 1; cf < maxLength; ++cf )
 				{
 					// Get the current character offset into the existing character set
-					cf_lookup = m_text[cf] - fontInfo.startCharacter;
+					cf_lookup = m_text[cf] - m_font_texture->GetFontGlyphStart();
 					// Check that character is in set
-					if ( cf_lookup < 0 || cf_lookup >= (int)fontInfo.setLength )
+					if ( cf_lookup < 0 || cf_lookup >= (int)m_font_texture->GetFontGlyphCount() )
 					{
 						continue; // Skip check
 					}
 					// Not a space, draw a virtual letter
 					else if ( !std::isspace(m_text[cf]) && cf != maxLength - 1 )
 					{
-						pen_m_x += fontInfo.fontOffsets[cf_lookup].x;
+						pen_m_x += fontInfo->glyphAdvance[cf_lookup].x;
 					}
 					// If it's a space, check the current location of the virtual letter
 					else 
@@ -168,67 +166,54 @@ void CTextMesh::UpdateText ( void )
 		}*/
 		
 		// Grab the UV rect of the character
-		Rect uv ( fontInfo.charPositions[c_lookup] / baseScale, fontInfo.fontSizes[c_lookup] / baseScale );
+		Rect uv ( Vector2f( fontInfo->glyphTexelPosition[c_lookup].x / baseScale,
+							fontInfo->glyphTexelPosition[c_lookup].y / baseScale),
+				  Vector2f( fontInfo->glyphSize[c_lookup].x / baseScale,
+							fontInfo->glyphSize[c_lookup].y / baseScale ) );
 
 
 		// Create the quad for the character:
 
 		// Set up final drawing position
-		Vector2f drawPos = pen - fontInfo.fontOrigins[c_lookup];
+		Vector2f drawPos = pen - Vector2f(fontInfo->glyphOrigin[c_lookup].x / baseScale, fontInfo->glyphOrigin[c_lookup].y / baseScale);
 		drawPos.x = (Real)math::round( drawPos.x );
 		drawPos.y = (Real)math::round( drawPos.y );
 
 		// 0
-		m_modeldata.vertices[vertex_index + 0].u = uv.pos.x;
-		m_modeldata.vertices[vertex_index + 0].v = uv.pos.y;
-		m_modeldata.vertices[vertex_index + 0].nx = -1;
-		m_modeldata.vertices[vertex_index + 0].ny = -1;
-		m_modeldata.vertices[vertex_index + 0].nz = uv.size.y / uv.size.x;
-		m_modeldata.vertices[vertex_index + 0].x = drawPos.x;
-		m_modeldata.vertices[vertex_index + 0].y = drawPos.y;
+		m_modeldata.texcoord0[vertex_index + 0] = uv.pos;
+		m_modeldata.normal[vertex_index + 0] = Vector3f(-1.0F, -1.0F, uv.size.y / uv.size.x);
+		m_modeldata.position[vertex_index + 0] = drawPos;
 		// 1
-		m_modeldata.vertices[vertex_index + 1].u = uv.pos.x;
-		m_modeldata.vertices[vertex_index + 1].v = uv.pos.y + uv.size.y;
-		m_modeldata.vertices[vertex_index + 1].nx = -1;
-		m_modeldata.vertices[vertex_index + 1].ny = 1;
-		m_modeldata.vertices[vertex_index + 1].nz = uv.size.y / uv.size.x;
-		m_modeldata.vertices[vertex_index + 1].x = drawPos.x;
-		m_modeldata.vertices[vertex_index + 1].y = drawPos.y + uv.size.y * baseScale;
+		m_modeldata.texcoord0[vertex_index + 1] = uv.pos + Vector2f(0.0F, uv.size.y);
+		m_modeldata.normal[vertex_index + 1] = Vector3f(-1.0F, +1.0F, uv.size.y / uv.size.x);
+		m_modeldata.position[vertex_index + 1] = drawPos + Vector2f(0.0F, uv.size.y * baseScale);
 		// 2
-		m_modeldata.vertices[vertex_index + 2].u = uv.pos.x + uv.size.x;
-		m_modeldata.vertices[vertex_index + 2].v = uv.pos.y + uv.size.y;
-		m_modeldata.vertices[vertex_index + 2].nx = 1;
-		m_modeldata.vertices[vertex_index + 2].ny = 1;
-		m_modeldata.vertices[vertex_index + 2].nz = uv.size.y / uv.size.x;
-		m_modeldata.vertices[vertex_index + 2].x = drawPos.x + uv.size.x * baseScale;
-		m_modeldata.vertices[vertex_index + 2].y = drawPos.y + uv.size.y * baseScale;
+		m_modeldata.texcoord0[vertex_index + 2] = uv.pos + uv.size;
+		m_modeldata.normal[vertex_index + 2] = Vector3f(+1.0F, +1.0F, uv.size.y / uv.size.x);
+		m_modeldata.position[vertex_index + 2] = drawPos + uv.size * baseScale;
 		// 3
-		m_modeldata.vertices[vertex_index + 3].u = uv.pos.x + uv.size.x;
-		m_modeldata.vertices[vertex_index + 3].v = uv.pos.y;
-		m_modeldata.vertices[vertex_index + 3].nx = 1;
-		m_modeldata.vertices[vertex_index + 3].ny = -1;
-		m_modeldata.vertices[vertex_index + 3].nz = uv.size.y / uv.size.x;
-		m_modeldata.vertices[vertex_index + 3].x = drawPos.x + uv.size.x * baseScale;
-		m_modeldata.vertices[vertex_index + 3].y = drawPos.y;
+		m_modeldata.texcoord0[vertex_index + 3] = uv.pos + Vector2f(uv.size.x, 0.0F);
+		m_modeldata.normal[vertex_index + 3] = Vector3f(+1.0F, -1.0F, uv.size.y / uv.size.x);
+		m_modeldata.position[vertex_index + 3] = drawPos + Vector2f(uv.size.x * baseScale, 0.0F);
 
-		// Triangle
-		m_modeldata.triangles[triangle_index + 0].vert[0] = vertex_index + 0;
-		m_modeldata.triangles[triangle_index + 0].vert[1] = vertex_index + 1;
-		m_modeldata.triangles[triangle_index + 0].vert[2] = vertex_index + 2;
-		m_modeldata.triangles[triangle_index + 1].vert[0] = vertex_index + 0;
-		m_modeldata.triangles[triangle_index + 1].vert[1] = vertex_index + 2;
-		m_modeldata.triangles[triangle_index + 1].vert[2] = vertex_index + 3;
+		// Quad
+		m_modeldata.indices[index_index + 0] = vertex_index + 0;
+		m_modeldata.indices[index_index + 1] = vertex_index + 3;
+		m_modeldata.indices[index_index + 2] = vertex_index + 1;
+		m_modeldata.indices[index_index + 3] = vertex_index + 2;
+		m_modeldata.indices[index_index + 4] = 0xFFFF;
 
 		// Move the array indices along
 		vertex_index += 4;
-		triangle_index += 2;
+		index_index += 5;
 
 		// Move the pen along
-		pen += fontInfo.fontOffsets[c_lookup];
+		pen += Vector2f(fontInfo->glyphAdvance[c_lookup].x / baseScale, fontInfo->glyphAdvance[c_lookup].y / baseScale);
 	}
 	
 	// Update triangle count
-	m_modeldata.triangleNum = triangle_index;
+	m_modeldata.vertexNum = vertex_index;
+	m_modeldata.indexNum = index_index;
 
 
 	// Now with the mesh built, push it to the modeldata :)

@@ -46,12 +46,13 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 	shapesPass.m_type = kPassTypeForward;
 	shapesPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
 	shapesPass.setTexture( TEX_MAIN, RrTexture::Load(renderer::kTextureWhite) );
-	shapesPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
 	shapesPass.utilSetupAs2D();
+	shapesPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
 	renderer::shader::Location t_vspecShap[] = {renderer::shader::Location::kPosition,
 												renderer::shader::Location::kUV0,
-												renderer::shader::Location::kColor};
-	shapesPass.setVertexSpecificationByCommonList(t_vspecShap, 3);
+												renderer::shader::Location::kColor,
+												renderer::shader::Location::kNormal};
+	shapesPass.setVertexSpecificationByCommonList(t_vspecShap, 4);
 	shapesPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
 	PassInitWithInput(0, &shapesPass);
 
@@ -195,11 +196,12 @@ bool CDeveloperConsoleUI::Render ( const rrRenderParams* params )
 		// bind the cbuffers
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
+		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
 		// draw now
-		gfx->drawIndexed(t_indexCount, 0);
+		gfx->drawIndexed(t_indexCount, 0, 0);
 	}
 
 	// Return success
@@ -225,8 +227,10 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	cursorPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
 	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
 											renderer::shader::Location::kUV0,
-											renderer::shader::Location::kColor};
-	cursorPass.setVertexSpecificationByCommonList(t_vspec, 3);
+											renderer::shader::Location::kColor,
+											renderer::shader::Location::kNormal};
+	cursorPass.setVertexSpecificationByCommonList(t_vspec, 4);
+	cursorPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
 	PassInitWithInput(0, &cursorPass);
 
 	// Build the mouse mesh:
@@ -253,7 +257,7 @@ CDeveloperCursor::~CDeveloperCursor ( void )
 }
 bool CDeveloperCursor::PreRender ( rrCameraPass* cameraPass )
 {
-	PushCbufferPerObject(XrTransform(Vector2f((Real)Input::MouseX(), (Real)Input::MouseY())), cameraPass);
+	PushCbufferPerObject(XrTransform(Vector2f((Real)Input::MouseX(), (Real)Input::MouseY())), cameraPass); // TODO: V2D default shader does not perform any transformations.
 	return true;
 }
 bool CDeveloperCursor::Render ( const rrRenderParams* params )
@@ -284,11 +288,12 @@ bool CDeveloperCursor::Render ( const rrRenderParams* params )
 		// bind the cbuffers
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
+		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
 		// draw now
-		gfx->drawIndexed(m_indexCount, 0);
+		gfx->drawIndexed(m_indexCount, 0, 0);
 	}
 
 	// Return success

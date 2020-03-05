@@ -319,7 +319,9 @@ void RrRenderer::Render ( void )
 
 			// Render from camera
 			RrCamera::activeCamera = currentCamera;
+			gfx->debugGroupPush("Camera: RenderScene()");
 			RenderScene(currentCamera);
+			gfx->debugGroupPop();
 		}
 	}
 	TimeProfiler.EndTimeProfile( "rs_render" );

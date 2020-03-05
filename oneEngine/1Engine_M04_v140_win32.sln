@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1022
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "M04 Game", "oneGame\M04game.vcxproj", "{410E2926-EC32-401C-A45B-DCBBB8342517}"
 EndProject
@@ -60,6 +60,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_oneEngineCommon", "one
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneRenderer2DExt", "oneGame\oneRendererExt2D.vcxproj", "{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1986D332-4A22-4711-96B0-C94B9BA9B69D} = {1986D332-4A22-4711-96B0-C94B9BA9B69D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneEngineCommon2DExt", "oneGame\oneEngine2D.vcxproj", "{28A5770A-6C98-4CA8-B812-3596C58E621F}"
 EndProject
@@ -512,5 +515,8 @@ Global
 		{B681E210-BBDA-40DE-AEFB-3913F9041FCD} = {FC37B1E5-F178-4C5C-8251-E6F577B71F98}
 		{93C4ECB5-1BCA-4467-81B6-521AF7EA6FEB} = {FC37B1E5-F178-4C5C-8251-E6F577B71F98}
 		{1986D332-4A22-4711-96B0-C94B9BA9B69D} = {A43FD140-8C51-4B8B-A3FB-585023C75DC5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9F93FA03-B597-473C-9E49-53B46897A07C}
 	EndGlobalSection
 EndGlobal

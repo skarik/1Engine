@@ -33,14 +33,12 @@ CRenderable2D::CRenderable2D ( void )
 	spritePass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
 	spritePass.setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureBlack) );
 	spritePass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
-	spritePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/fws/fullbright_vv.spv", "shaders/fws/fullbright_p.spv"}) );
+	spritePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"}) );
 	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
 											renderer::shader::Location::kUV0,
-											renderer::shader::Location::kColor,
-											renderer::shader::Location::kNormal,
-											renderer::shader::Location::kTangent,
-											renderer::shader::Location::kBinormal};
-	spritePass.setVertexSpecificationByCommonList(t_vspec, 4);
+											renderer::shader::Location::kColor};
+	spritePass.setVertexSpecificationByCommonList(t_vspec, 3);
+	spritePass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
 	PassInitWithInput(0, &spritePass);
 
 	// Start off with empty model data
@@ -540,7 +538,7 @@ bool CRenderable2D::Render ( const rrRenderParams* params )
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
 		// draw now
-		gfx->drawIndexed(m_modeldata.indexNum, 0);
+		gfx->drawIndexed(m_modeldata.indexNum, 0, 0);
 	}
 
 	return true;

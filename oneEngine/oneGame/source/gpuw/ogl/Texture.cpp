@@ -106,6 +106,7 @@ int gpu::Texture::free ( void )
 int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level )
 {
 	ARCORE_ASSERT(glGetError() == GLenum(0));
+	ARCORE_ASSERT(valid());
 
 	const uint level_divisor = (1 << level);
 	GLsizei upload_width, upload_height;

@@ -117,6 +117,11 @@ namespace gpu
 		GPUW_API int			blit ( const BlitTarget& source, const BlitTarget& target );
 		GPUW_API int			blitResolve ( const BlitTarget& source, const BlitTarget& target );
 
+		//	debugGroupPush( groupName ) : Inserts a "group" tag into the commands, used to group calls for viewing in graphics debuggers.
+		GPUW_API int			debugGroupPush ( const char* groupName );
+		//	debugGroupPop() : Ends the currently set "group" in the commands.
+		GPUW_API int			debugGroupPop ( void );
+
 	private:
 		// implementation details:
 

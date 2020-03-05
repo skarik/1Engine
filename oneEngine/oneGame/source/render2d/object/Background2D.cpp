@@ -47,8 +47,9 @@ renderer::Background2D::Background2D ( void )
 }
 renderer::Background2D::~Background2D ( void )
 {
-	//delete [] m_modeldata.triangles;
-	//delete [] m_modeldata.vertices;
+	delete[] m_modeldata.indices;
+	delete[] m_modeldata.position;
+	delete[] m_modeldata.color;
 }
 
 bool renderer::Background2D::PreRender ( rrCameraPass* cameraPass )

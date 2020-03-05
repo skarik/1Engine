@@ -29,7 +29,8 @@ public:
 
 protected:
 	RrFontTexture*	m_font_texture;
-	size_t			m_text_triangle_count;
+	//size_t			m_text_triangle_count;
+	size_t			m_text_glyph_count;
 };
 
 #endif//RENDER2D_C_TEXTMESH_H_
