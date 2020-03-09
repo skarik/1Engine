@@ -15,21 +15,22 @@ namespace M04
 	class CollisionMapRenderer : public CStreamedRenderable3D
 	{
 	public:
-		explicit	CollisionMapRenderer ( void );
-					~CollisionMapRenderer ( void );
+		explicit				CollisionMapRenderer ( void );
+								~CollisionMapRenderer ( void );
 
-		bool		PreRender ( void ) override;
+		bool					PreRender ( void ) override;
 
-		bool		Render ( const char pass ) override;
+		bool					Render ( const char pass ) override;
 
 	public:
-		Engine2D::CollisionMap*	m_collision;
-		bool					m_drawSolids;
-		bool					m_drawWireframe;
+		Engine2D::CollisionMap*
+							m_collision;
+		bool				m_drawSolids;
+		bool				m_drawWireframe;
 
 	private:
-		uint32_t	m_max_vertex;
-		uint32_t	m_max_triangle;
+		uint32_t			m_max_vertex;
+		uint32_t			m_max_triangle;
 	};
 };
 

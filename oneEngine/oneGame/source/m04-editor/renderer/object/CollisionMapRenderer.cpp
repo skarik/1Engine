@@ -1,14 +1,8 @@
-#include "CollisionMapRenderer.h"
-
-#include "engine2d/entities/map/CollisionMap.h"
-
-#include "renderer/texture/RrTexture.h"
-#include "renderer/material/RrMaterial.h"
-#include "renderer/system/glDrawing.h"
-
 #include "core-ext/utils/MeshBuilder.h"
-
+#include "renderer/texture/RrTexture.h"
+#include "engine2d/entities/map/CollisionMap.h"
 #include "gpuw/Device.h"
+#include "CollisionMapRenderer.h"
 
 using namespace M04;
 
@@ -89,9 +83,9 @@ bool CollisionMapRenderer::Render ( const char pass )
 {
 	if (m_drawWireframe)
 	{
-		gpu::getDevice()->setFillMode( gpu::kFillModeWireframe );
+		gpu::getDevice()->getContext()->setFillMode( gpu::kFillModeWireframe );
 		CStreamedRenderable3D::Render(pass);
-		gpu::getDevice()->setFillMode( gpu::kFillModeSolid );
+		gpu::getDevice()->getContext()->setFillMode( gpu::kFillModeSolid );
 	}
 	if (m_drawSolids)
 	{

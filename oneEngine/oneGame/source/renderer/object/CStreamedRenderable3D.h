@@ -19,23 +19,23 @@ public:
 	RENDER_API explicit		CStreamedRenderable3D ( void );
 	RENDER_API virtual		~CStreamedRenderable3D ();
 
-	//		GetModelData ( ) 
+	//	GetModelData ( ) 
 	// Return access to model data
 	RENDER_API arModelData*	GetModelData ( void );
 
-	//		StreamLockModelData ( )
+	//	StreamLockModelData ( )
 	// Push the current stuff in model data to GPU.
 	RENDER_API void			StreamLockModelData ( void );
 
-	//		PreRender()
+	//	PreRender()
 	// Push the uniform properties
 	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
 
-	//		Render()
+	//	Render()
 	// Render the model using the 2D engine's style
 	RENDER_API bool			Render ( const rrRenderParams* params ) override;
 
-	//		EndRender()
+	//	EndRender()
 	// Called after the frame is being rendered. Swaps the currently used buffers
 	RENDER_API bool			EndRender ( void ) override;
 

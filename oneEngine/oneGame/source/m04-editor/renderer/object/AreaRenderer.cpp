@@ -1,43 +1,47 @@
-#include "AreaRenderer.h"
-
-#include "engine2d/entities/Area2DBase.h"
-
-#include "renderer/texture/RrTexture.h"
-#include "renderer/material/RrMaterial.h"
-#include "renderer/system/glDrawing.h"
-
 #include "core-ext/utils/MeshBuilder.h"
+#include "renderer/material/RrPass.h"
+#include "renderer/material/RrShaderProgram.h"
+#include "renderer/texture/RrTexture.h"
+#include "engine2d/entities/Area2DBase.h"
+#include "AreaRenderer.h"
 
 using namespace M04;
 
 AreaRenderer::AreaRenderer ( void )
 	: CStreamedRenderable3D()
 {
-	memset( &m_modeldata, 0, sizeof(arModelData) );
+	// Use a default white 2D material
+	RrPass spritePass;
+	spritePass.utilSetupAsDefault();
+	spritePass.m_type = kPassTypeForward;
+	spritePass.m_alphaMode = renderer::kAlphaModeTranslucent;
+	spritePass.m_cullMode = gpu::kCullModeNone;
+	spritePass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+	spritePass.setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
+	spritePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"}) );
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor};
+	spritePass.setVertexSpecificationByCommonList(t_vspec, 3);
+	spritePass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
+	PassInitWithInput(0, &spritePass);
 
-	// Set the default white material
-	RrMaterial* defaultMat = new RrMaterial;
-	defaultMat->m_diffuse = Color( 1,1,1,1 );
-	defaultMat->setTexture( TEX_MAIN, new RrTexture( "textures/white.jpg" ) );
-	defaultMat->passinfo.push_back( RrPassForward() );
-	defaultMat->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
-	defaultMat->passinfo[0].m_lighting_mode = renderer::LI_NONE;
-	defaultMat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	defaultMat->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-	SetMaterial( defaultMat );
-	defaultMat->removeReference();
+	// Start off with empty model data
+	memset(&m_modeldata, 0, sizeof(m_modeldata));
 }
 
 AreaRenderer::~AreaRenderer ( void )
 {
-	delete_safe_array(m_modeldata.vertices);
-	delete_safe_array(m_modeldata.triangles);
+	delete_safe_array(m_modeldata.position);
+	delete_safe_array(m_modeldata.color);
+	delete_safe_array(m_modeldata.texcoord0);
+	delete_safe_array(m_modeldata.indices);
 }
 
-bool AreaRenderer::PreRender ( void )
+bool AreaRenderer::EndRender ( void )
 {
 	const uint kMaxVertices = 4096;
-	const uint kMaxTris		= kMaxVertices / 2; // We're doing 100% quads.
+	const uint kMaxIndices	= kMaxVertices / 6; // We're doing 100% quads.
 	const uint kMaxAreas	= kMaxVertices / 32;
 
 	// Error check now:
@@ -47,18 +51,22 @@ bool AreaRenderer::PreRender ( void )
 	}
 
 	// Allocate data for the streamed mesh
-	if (m_modeldata.triangles == NULL)
+	if (m_modeldata.indices == NULL)
 	{
-		delete[] m_modeldata.triangles;
-		delete[] m_modeldata.vertices;
+		delete[] m_modeldata.indices;
+		delete[] m_modeldata.position;
+		delete[] m_modeldata.color;
+		delete[] m_modeldata.texcoord0;
 
-		m_modeldata.triangles = new arModelTriangle [kMaxTris];
-		m_modeldata.vertices = new arModelVertex [kMaxVertices];
+		m_modeldata.indices = new uint16_t [kMaxIndices];
+		m_modeldata.position = new Vector3f [kMaxVertices];
+		m_modeldata.color = new Vector4f [kMaxVertices];
+		m_modeldata.texcoord0 = new Vector3f [kMaxVertices];
 
-		memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * kMaxVertices);
+		memset(m_modeldata.position, 0, sizeof(arModelVertex) * kMaxVertices);
 	}
 	// Reset count
-	m_modeldata.triangleNum = 0;
+	m_modeldata.indexNum = 0;
 	m_modeldata.vertexNum = 0;
 
 	const Color kDefaultColor	(0.6F,0.6F,0.6F,0.5F);
@@ -148,5 +156,5 @@ bool AreaRenderer::PreRender ( void )
 	StreamLockModelData();
 
 	// Push at the end
-	return CStreamedRenderable3D::PreRender();
+	return CStreamedRenderable3D::EndRender();
 }

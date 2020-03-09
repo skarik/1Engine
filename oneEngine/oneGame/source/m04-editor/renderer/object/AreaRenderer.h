@@ -13,14 +13,18 @@ namespace M04
 	class AreaRenderer : public CStreamedRenderable3D
 	{
 	public:
-		AreaRenderer ( void );
-		~AreaRenderer( void );
+								AreaRenderer ( void );
+								~AreaRenderer( void );
 
-		bool PreRender ( void ) override;
+		//	EndRender() : Post-render work.
+		// Used to recreate the rendered mesh at the last minute.
+		bool					EndRender ( void ) override;
 
 	public:
-		Engine2D::Area2DBase*	m_target_glow;
-		Engine2D::Area2DBase*	m_target_selection;
+		Engine2D::Area2DBase*
+							m_target_glow;
+		Engine2D::Area2DBase*
+							m_target_selection;
 		int					m_target_corner;
 	};
 }
