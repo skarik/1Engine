@@ -115,8 +115,13 @@ int gpu::Buffer::initAsIndirectArgs ( Device* device, const uint64_t data_size )
 	return kError_SUCCESS;
 }
 
-//	initAsTextureBuffer( device, format, element_width, element_height ) : Initializes as a typed data buffer. Can be used to load textures.
-int	 gpu::Buffer::initAsTextureBuffer ( Device* device, core::gfx::tex::arColorFormat format, const uint64_t element_width, const uint64_t element_height )
+//	initAsTextureBuffer( device, type, format, element_width, element_height, element_width ) : Initializes as a typed data buffer. Can be used to load textures.
+int gpu::Buffer::initAsTextureBuffer (
+	Device* device,
+	const core::gfx::tex::arTextureType type,
+	const core::gfx::tex::arColorFormat format,
+	const uint64_t element_width, const uint64_t element_height, const uint64_t element_depth
+)
 {
 	ARCORE_ASSERT(element_width > 0 && element_height > 0);
 	
@@ -126,7 +131,26 @@ int	 gpu::Buffer::initAsTextureBuffer ( Device* device, core::gfx::tex::arColorF
 
 	glCreateBuffers(1, &m_buffer);
 
-	_AllocateBufferSize(m_buffer, m_elementSize * element_width * element_height, kTransferStatic);
+	// Need the size of the buffer based on the texture type param
+	uint64_t l_effectiveSize = 0;
+	switch (type)
+	{
+	case core::gfx::tex::kTextureType1D:
+	case core::gfx::tex::kTextureType1DArray:
+		l_effectiveSize = element_width;
+		break;
+	case core::gfx::tex::kTextureType2D:
+	case core::gfx::tex::kTextureTypeCube:
+		l_effectiveSize = element_width * element_height;
+		break;
+	case core::gfx::tex::kTextureType2DArray:
+	case core::gfx::tex::kTextureType3D:
+	case core::gfx::tex::kTextureTypeCubeArray:
+		l_effectiveSize = element_width * element_height * element_depth;
+		break;
+	}
+
+	_AllocateBufferSize(m_buffer, m_elementSize * l_effectiveSize, kTransferStatic);
 
 	return kError_SUCCESS;
 }

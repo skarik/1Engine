@@ -6,6 +6,7 @@
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/types/shaders/cbuffers.h"
 #include "gpuw/Public/Enums.h"
+#include "gpuw/Public/Sampler.h"
 #include "renderer/material/ShaderSlots.h"
 #include "renderer/material/VertexAttribute.h"
 
@@ -14,6 +15,7 @@ class RrTexture;
 namespace gpu
 {
 	class Texture;
+	class Sampler;
 }
 
 enum rrPassType
@@ -64,6 +66,9 @@ public:
 	// Do not ever use for normal objects due to memory considerations.
 	RENDER_API void			setTexture ( const rrTextureSlot slot, gpu::Texture* n_texture );
 
+	//	setSampler ( slot, samplerInfo ) : Sets and creates sampler object.
+	RENDER_API void			setSampler ( const rrTextureSlot slot, gpu::SamplerCreationDescription* scd );
+
 	//	setProgram ( program ) : Sets shader program.
 	// Pass is given ownership of the program.
 	// Do not delete the program directly, use RemoveReference.
@@ -104,6 +109,7 @@ public:
 	// Textures:
 	RrTexture*			m_textures[kPass_MaxTextureSlots];
 	gpu::Texture*		m_texturesRaw[kPass_MaxTextureSlots];
+	gpu::Sampler*		m_samplers[kPass_MaxTextureSlots];
 
 	// Alpha settings:
 	renderer::rrAlphaMode

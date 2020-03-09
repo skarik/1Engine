@@ -1,5 +1,6 @@
 #ifndef RENDERER_MATERIAL_H_
 #define RENDERER_MATERIAL_H_
+#error This header and interface is no longer supported.
 
 #include "core/types/types.h"
 #include "core/math/Color.h"

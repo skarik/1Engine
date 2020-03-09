@@ -64,9 +64,14 @@ namespace gpu
 		// Data is uploaded separately through map/unmap or upload.
 		GPUW_API int			initAsIndirectArgs ( Device* device, const uint64_t data_size );
 
-		//	initAsTextureBuffer( device, format, element_width, element_height ) : Initializes as a typed data buffer. Can be used to load textures.
+		//	initAsTextureBuffer( device, type, format, element_width, element_height, element_width ) : Initializes as a typed data buffer. Can be used to load textures.
 		// Data is uploaded separately through map/unmap or upload.
-		GPUW_API int			initAsTextureBuffer ( Device* device, core::gfx::tex::arColorFormat format, const uint64_t element_width, const uint64_t element_height );
+		GPUW_API int			initAsTextureBuffer (
+			Device* device,
+			const core::gfx::tex::arTextureType type,
+			const core::gfx::tex::arColorFormat format,
+			const uint64_t element_width, const uint64_t element_height, const uint64_t element_depth
+		);
 
 		//	map( device, style ) : Maps the entire buffer to CPU-side memory and returns the address.
 		GPUW_API void*			map ( Device* device, const TransferStyle style );

@@ -16,11 +16,6 @@ namespace gpu
 	class Texture
 	{
 	public:
-		////	Constructor : creates uninitalized GPU wrapper object.
-		//GPUW_API explicit		Texture ( void );
-		////	Destructor : destroys any allocated texture, if existing.
-		//GPUW_API				~Texture ( void );
-
 		//	valid() : is this texture valid to be used?
 		// If the texture has not been created, it will be removed.
 		GPUW_API bool			valid ( void );
@@ -40,7 +35,7 @@ namespace gpu
 		GPUW_API int			free ( void );
 
 		//	upload() : uploads data to the texture from a buffer
-		GPUW_API int			upload ( gpu::Buffer& buffer, const uint level );
+		GPUW_API int			upload ( gpu::Buffer& buffer, const uint level, const uint arraySlice );
 
 	private:
 		friend GraphicsContext;
@@ -63,11 +58,6 @@ namespace gpu
 	class WOFrameAttachment
 	{
 	public:
-		////	Constructor : creates uninitalized GPU wrapper object.
-		//GPUW_API explicit		WOFrameAttachment ( void );
-		////	Destructor : destroys any allocated texture, if existing.
-		//GPUW_API				~WOFrameAttachment ( void );
-
 		//	valid() : is this texture valid to be used?
 		// If the texture has not been created, it will be removed.
 		GPUW_API bool			valid ( void );

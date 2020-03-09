@@ -222,6 +222,9 @@
     <ClInclude Include="source\gpuw\dx11\Fence.dx11.h">
       <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClInclude>
+    <ClInclude Include="source\gpuw\Public\Sampler.h">
+      <Filter>SOURCE\GPU Wrapper\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp">

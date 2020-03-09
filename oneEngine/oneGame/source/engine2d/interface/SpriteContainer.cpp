@@ -17,10 +17,11 @@ SpriteContainer::SpriteContainer ( Vector3f* position, Real* angle, Vector3f* sc
 }
 SpriteContainer::~SpriteContainer ( void )
 {
-	if ( m_sprite != NULL )
-	{
-		delete_safe(m_sprite);
-	}
+	delete_safe_array(m_sprite->GetModelData()->indices);
+	delete_safe_array(m_sprite->GetModelData()->position);
+	delete_safe_array(m_sprite->GetModelData()->color);
+	delete_safe_array(m_sprite->GetModelData()->texcoord0);
+	delete_safe(m_sprite);
 }
 
 //		SetupDepthOffset
@@ -122,60 +123,47 @@ void SpriteContainer::PostStepSynchronus ( void )
 	arModelData* modeldata = m_sprite->GetModelData();
 
 	// Generate the buffer information when shit is needed
-	if ( modeldata->triangleNum == 0 )
+	if ( modeldata->indexNum == 0 )
 	{
-		modeldata->triangleNum = 2;
-		modeldata->triangles = new arModelTriangle [2];
+		modeldata->indexNum = 4;
+		modeldata->indices = new uint16_t [4];
 
-		modeldata->triangles[0].vert[0] = 0;
-		modeldata->triangles[0].vert[1] = 1;
-		modeldata->triangles[0].vert[2] = 2;
-
-		modeldata->triangles[1].vert[0] = 0;
-		modeldata->triangles[1].vert[1] = 2;
-		modeldata->triangles[1].vert[2] = 3;
+		modeldata->indices[0] = 0;
+		modeldata->indices[1] = 1;
+		modeldata->indices[2] = 2;
+		modeldata->indices[3] = 3;
 	}
 	if ( modeldata->vertexNum == 0 )
 	{
 		modeldata->vertexNum = 4;
-		modeldata->vertices = new arModelVertex [4];
-		memset( modeldata->vertices, 0, sizeof(arModelVertex) * 4 );
+		modeldata->position = new Vector3f [4];
+		modeldata->color = new Vector4f [4];
+		modeldata->texcoord0 = new Vector3f [4];
 
 		for ( uint i = 0; i < 4; ++i )
 		{
-			modeldata->vertices[i].r = 1.0F;
-			modeldata->vertices[i].g = 1.0F;
-			modeldata->vertices[i].b = 1.0F;
-			modeldata->vertices[i].a = 1.0F;
+			modeldata->color[i] = Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 	}
 
 	// Set the sprite information
 	Rect sprite_rect = GetSpriteRect();
 
-	modeldata->vertices[0].x = sprite_rect.pos.x;
-	modeldata->vertices[0].y = sprite_rect.pos.y;
-	modeldata->vertices[0].z = m_doffsetTop * sprite_rect.size.y;
-	modeldata->vertices[0].u = 0.0F;
-	modeldata->vertices[0].v = 0.0F;
+	modeldata->position[0] = sprite_rect.pos;
+	modeldata->position[0].z = m_doffsetTop * sprite_rect.size.y;
+	modeldata->texcoord0[0] = Vector2f(0.0F, 0.0F);
 
-	modeldata->vertices[1].x = sprite_rect.pos.x + sprite_rect.size.x;
-	modeldata->vertices[1].y = sprite_rect.pos.y;
-	modeldata->vertices[1].z = m_doffsetTop * sprite_rect.size.y;
-	modeldata->vertices[1].u = 1.0F;
-	modeldata->vertices[1].v = 0.0F;
+	modeldata->position[1] = Vector2f(sprite_rect.pos.x + sprite_rect.size.x, sprite_rect.pos.y);
+	modeldata->position[1].z = m_doffsetTop * sprite_rect.size.y;
+	modeldata->texcoord0[1] = Vector2f(1.0F, 0.0F);
 
-	modeldata->vertices[2].x = sprite_rect.pos.x + sprite_rect.size.x;
-	modeldata->vertices[2].y = sprite_rect.pos.y + sprite_rect.size.y;
-	modeldata->vertices[2].z = m_doffsetBottom * sprite_rect.size.y;
-	modeldata->vertices[2].u = 1.0F;
-	modeldata->vertices[2].v = 1.0F;
+	modeldata->position[2] = sprite_rect.pos + sprite_rect.size;
+	modeldata->position[2].z = m_doffsetBottom * sprite_rect.size.y;
+	modeldata->texcoord0[2] = Vector2f(1.0F, 1.0F);
 
-	modeldata->vertices[3].x = sprite_rect.pos.x;
-	modeldata->vertices[3].y = sprite_rect.pos.y + sprite_rect.size.y;
-	modeldata->vertices[3].z = m_doffsetBottom * sprite_rect.size.y;
-	modeldata->vertices[3].u = 0.0F;
-	modeldata->vertices[3].v = 1.0F;
+	modeldata->position[3] = Vector2f(sprite_rect.pos.x, sprite_rect.pos.y + sprite_rect.size.y);
+	modeldata->position[3].z = m_doffsetBottom * sprite_rect.size.y;
+	modeldata->texcoord0[3] = Vector2f(0.0F, 1.0F);
 
 	// Push resultant shit
 	m_sprite->StreamLockModelData();

@@ -29,6 +29,14 @@ TileMap::TileMap ( void )
 }
 TileMap::~TileMap ( void )
 {
+	// Clear out the mesh data
+	for ( uint i = 0; i < m_meshstorage.size(); ++i)
+	{
+		delete[] m_meshstorage[i].position;
+		delete[] m_meshstorage[i].color;
+		delete[] m_meshstorage[i].texcoord0;
+		delete[] m_meshstorage[i].indices;
+	}
 	// Clear out the render layers that are currently there
 	for ( uint i = 0; i < m_render_layers.size(); ++i )
 	{
@@ -382,8 +390,10 @@ void TileMap::Rebuild ( void )
 	// Clear out the meshes storage
 	for ( uint i = 0; i < m_meshstorage.size(); ++i )
 	{
-		delete [] m_meshstorage[i].vertices;
-		delete [] m_meshstorage[i].triangles;
+		delete[] m_meshstorage[i].position;
+		delete[] m_meshstorage[i].color;
+		delete[] m_meshstorage[i].texcoord0;
+		delete[] m_meshstorage[i].indices;
 	}
 	m_meshstorage.clear();
 	m_meshstorage_layer.clear();
@@ -437,7 +447,7 @@ void TileMap::Rebuild ( void )
 	for ( uint i = 0; i < m_meshstorage.size(); ++i )
 	{
 		renderer::TileMapLayer* render_layer = new renderer::TileMapLayer (); // This needs to be stored and deleted.
-		render_layer->SetSpriteFile( m_sprite_file ); // TODO: Use the previous layer's sprite file.
+		render_layer->SetSpriteFile( m_sprite_file, NULL ); // TODO: Use the previous layer's sprite file.
 		render_layer->SetLayer( &m_meshstorage[i] );
 		render_layer->source_layer_id = m_meshstorage_layer[i];
 
@@ -449,10 +459,12 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 {
 	// Start with creating the mesh
 	arModelData model;
-	model.vertices = new arModelVertex [predictive_tile_count * 4];
-	model.triangles = new arModelTriangle [predictive_tile_count * 2];
+	model.position = new Vector3f [predictive_tile_count * 4];
+	model.color = new Vector4f [predictive_tile_count * 4];
+	model.texcoord0 = new Vector3f [predictive_tile_count * 4];
+	model.indices = new uint16_t [predictive_tile_count * 5];
 	model.vertexNum = 0;
-	model.triangleNum = 0;
+	model.indexNum = 0;
 
 	// Set up constant tables
 	const Vector2f position_offsets [4] = {
@@ -499,29 +511,24 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 		if ( tile_type.type == TILE_RANDOMIZED || tile_type.type == TILE_DEFAULT )
 		{
 			// Link up the triangles first
-			model.triangles[model.triangleNum+0].vert[0] = model.vertexNum + 0;
-			model.triangles[model.triangleNum+0].vert[1] = model.vertexNum + 1;
-			model.triangles[model.triangleNum+0].vert[2] = model.vertexNum + 2;
+			model.indices[model.indexNum + 0] = model.vertexNum + 0;
+			model.indices[model.indexNum + 1] = model.vertexNum + 1;
+			model.indices[model.indexNum + 2] = model.vertexNum + 2;
+			model.indices[model.indexNum + 3] = model.vertexNum + 3;
+			model.indices[model.indexNum + 4] = 0xFFFF;
 
-			model.triangles[model.triangleNum+1].vert[0] = model.vertexNum + 2;
-			model.triangles[model.triangleNum+1].vert[1] = model.vertexNum + 1;
-			model.triangles[model.triangleNum+1].vert[2] = model.vertexNum + 3;
-
-			model.triangleNum += 2;
+			model.indexNum += 5;
 
 			// Create the 4 vertices
 			for ( int v = 0; v < 4; ++v )
 			{
 				// Set positions
-				model.vertices[model.vertexNum+v].x = ((Real)m_tiles[i].x) + position_offsets[v].x * tile_type.atlas_w * m_tileset->tilesize_x;
-				model.vertices[model.vertexNum+v].y = ((Real)m_tiles[i].y) + position_offsets[v].y * tile_type.atlas_h * m_tileset->tilesize_y;
-				model.vertices[model.vertexNum+v].z = (Real)layer;
+				model.position[model.vertexNum+v].x = ((Real)m_tiles[i].x) + position_offsets[v].x * tile_type.atlas_w * m_tileset->tilesize_x;
+				model.position[model.vertexNum+v].y = ((Real)m_tiles[i].y) + position_offsets[v].y * tile_type.atlas_h * m_tileset->tilesize_y;
+				model.position[model.vertexNum+v].z = (Real)layer;
 
 				// Set up other values
-				model.vertices[model.vertexNum+v].r = 1.0F;
-				model.vertices[model.vertexNum+v].g = 1.0F;
-				model.vertices[model.vertexNum+v].b = 1.0F;
-				model.vertices[model.vertexNum+v].a = 1.0F;
+				model.color[model.vertexNum+v] = Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
 			}
 
 			// Set the vertex UVs
@@ -529,15 +536,15 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 			{
 				uint rindex = (rand() % tile_type.autotile_0[0]) + 1;
 				for ( int v = 0; v < 4; ++v ) {
-					model.vertices[model.vertexNum+v].u = ((tile_type.autotile_0[rindex] + position_offsets[v].x * tile_type.atlas_w) * m_tileset->tilesize_x) / (Real)m_tileset->atlassize_x;
-					model.vertices[model.vertexNum+v].v = ((tile_type.autotile_1[rindex] + position_offsets[v].y * tile_type.atlas_h) * m_tileset->tilesize_y) / (Real)m_tileset->atlassize_y;
+					model.texcoord0[model.vertexNum+v].x = ((tile_type.autotile_0[rindex] + position_offsets[v].x * tile_type.atlas_w) * m_tileset->tilesize_x) / (Real)m_tileset->atlassize_x;
+					model.texcoord0[model.vertexNum+v].y = ((tile_type.autotile_1[rindex] + position_offsets[v].y * tile_type.atlas_h) * m_tileset->tilesize_y) / (Real)m_tileset->atlassize_y;
 				}
 			}
 			else
 			{
 				for ( int v = 0; v < 4; ++v ) {
-					model.vertices[model.vertexNum+v].u = ((tile_type.atlas_x + position_offsets[v].x * tile_type.atlas_w) * m_tileset->tilesize_x) / (Real)m_tileset->atlassize_x;
-					model.vertices[model.vertexNum+v].v = ((tile_type.atlas_y + position_offsets[v].y * tile_type.atlas_h) * m_tileset->tilesize_y) / (Real)m_tileset->atlassize_y;
+					model.texcoord0[model.vertexNum+v].x = ((tile_type.atlas_x + position_offsets[v].x * tile_type.atlas_w) * m_tileset->tilesize_x) / (Real)m_tileset->atlassize_x;
+					model.texcoord0[model.vertexNum+v].y = ((tile_type.atlas_y + position_offsets[v].y * tile_type.atlas_h) * m_tileset->tilesize_y) / (Real)m_tileset->atlassize_y;
 				}
 			}
 
@@ -551,15 +558,13 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 				if ( tile_type.autotile_0[o] != 255 )
 				{
 					// Link up the triangles first
-					model.triangles[model.triangleNum+0].vert[0] = model.vertexNum + 0;
-					model.triangles[model.triangleNum+0].vert[1] = model.vertexNum + 1;
-					model.triangles[model.triangleNum+0].vert[2] = model.vertexNum + 2;
+					model.indices[model.indexNum + 0] = model.vertexNum + 0;
+					model.indices[model.indexNum + 1] = model.vertexNum + 1;
+					model.indices[model.indexNum + 2] = model.vertexNum + 2;
+					model.indices[model.indexNum + 3] = model.vertexNum + 3;
+					model.indices[model.indexNum + 4] = 0xFFFF;
 
-					model.triangles[model.triangleNum+1].vert[0] = model.vertexNum + 2;
-					model.triangles[model.triangleNum+1].vert[1] = model.vertexNum + 1;
-					model.triangles[model.triangleNum+1].vert[2] = model.vertexNum + 3;
-
-					model.triangleNum += 2;
+					model.indexNum += 5;
 
 					int offset_y = o % 3;
 					int offset_x = o / 3;
@@ -568,19 +573,16 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 					for ( int v = 0; v < 4; ++v )
 					{
 						// Set positions
-						model.vertices[model.vertexNum+v].x = ((Real)m_tiles[i].x) + (position_offsets[v].x + (Real)offset_x) * tile_type.atlas_w * m_tileset->tilesize_x;
-						model.vertices[model.vertexNum+v].y = ((Real)m_tiles[i].y) + (position_offsets[v].y + (Real)offset_y) * tile_type.atlas_h * m_tileset->tilesize_y;
-						model.vertices[model.vertexNum+v].z = (Real)layer;
+						model.position[model.vertexNum+v].x = ((Real)m_tiles[i].x) + (position_offsets[v].x + (Real)offset_x) * tile_type.atlas_w * m_tileset->tilesize_x;
+						model.position[model.vertexNum+v].y = ((Real)m_tiles[i].y) + (position_offsets[v].y + (Real)offset_y) * tile_type.atlas_h * m_tileset->tilesize_y;
+						model.position[model.vertexNum+v].z = (Real)layer;
 
 						// Set up other values
-						model.vertices[model.vertexNum+v].r = 1.0F;
-						model.vertices[model.vertexNum+v].g = 1.0F;
-						model.vertices[model.vertexNum+v].b = 1.0F;
-						model.vertices[model.vertexNum+v].a = 1.0F;
+						model.color[model.vertexNum+v] = Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 						// Set UVs for the vertex
-						model.vertices[model.vertexNum+v].u = ((tile_type.autotile_0[o] + position_offsets[v].x * tile_type.atlas_w) * m_tileset->tilesize_x) / (Real)m_tileset->atlassize_x;
-						model.vertices[model.vertexNum+v].v = ((tile_type.autotile_1[o] + position_offsets[v].y * tile_type.atlas_h) * m_tileset->tilesize_y) / (Real)m_tileset->atlassize_y;
+						model.texcoord0[model.vertexNum+v].x = ((tile_type.autotile_0[o] + position_offsets[v].x * tile_type.atlas_w) * m_tileset->tilesize_x) / (Real)m_tileset->atlassize_x;
+						model.texcoord0[model.vertexNum+v].y = ((tile_type.autotile_1[o] + position_offsets[v].y * tile_type.atlas_h) * m_tileset->tilesize_y) / (Real)m_tileset->atlassize_y;
 					}
 
 					model.vertexNum += 4;
@@ -713,15 +715,13 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 			for ( int c = 0; c < 4; ++c )
 			{
 				// Link up the triangles first
-				model.triangles[model.triangleNum+0].vert[0] = model.vertexNum + 0;
-				model.triangles[model.triangleNum+0].vert[1] = model.vertexNum + 1;
-				model.triangles[model.triangleNum+0].vert[2] = model.vertexNum + 2;
+				model.indices[model.indexNum + 0] = model.vertexNum + 0;
+				model.indices[model.indexNum + 1] = model.vertexNum + 1;
+				model.indices[model.indexNum + 2] = model.vertexNum + 2;
+				model.indices[model.indexNum + 3] = model.vertexNum + 3;
+				model.indices[model.indexNum + 4] = 0xFFFF;
 
-				model.triangles[model.triangleNum+1].vert[0] = model.vertexNum + 2;
-				model.triangles[model.triangleNum+1].vert[1] = model.vertexNum + 1;
-				model.triangles[model.triangleNum+1].vert[2] = model.vertexNum + 3;
-
-				model.triangleNum += 2;
+				model.indexNum += 5;
 
 				// Do lookup for the corners
 				uint rindex = 4;
@@ -741,19 +741,16 @@ void TileMap::RebuildMesh ( int layer, int start_offset, int predictive_tile_cou
 				for ( int v = 0; v < 4; ++v )
 				{
 					// Set positions
-					model.vertices[model.vertexNum+v].x = ((Real)m_tiles[i].x) + (position_offsets[v].x+position_offsets[c].x) * tile_type.atlas_w * m_tileset->tilesize_x * 0.5F;
-					model.vertices[model.vertexNum+v].y = ((Real)m_tiles[i].y) + (position_offsets[v].y+position_offsets[c].y) * tile_type.atlas_h * m_tileset->tilesize_y * 0.5F;
-					model.vertices[model.vertexNum+v].z = (Real)layer + math::lerp((position_offsets[v].y+position_offsets[c].y) * 0.5F, offset_top, offset_bottom);
+					model.position[model.vertexNum+v].x = ((Real)m_tiles[i].x) + (position_offsets[v].x+position_offsets[c].x) * tile_type.atlas_w * m_tileset->tilesize_x * 0.5F;
+					model.position[model.vertexNum+v].y = ((Real)m_tiles[i].y) + (position_offsets[v].y+position_offsets[c].y) * tile_type.atlas_h * m_tileset->tilesize_y * 0.5F;
+					model.position[model.vertexNum+v].z = (Real)layer + math::lerp((position_offsets[v].y+position_offsets[c].y) * 0.5F, offset_top, offset_bottom);
 
 					// Set up other values
-					model.vertices[model.vertexNum+v].r = 1.0F;
-					model.vertices[model.vertexNum+v].g = 1.0F;
-					model.vertices[model.vertexNum+v].b = 1.0F;
-					model.vertices[model.vertexNum+v].a = 1.0F;
+					model.color[model.vertexNum+v] = Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 					// Set up default debug UVs
-					model.vertices[model.vertexNum+v].u = ((tile_type.autotile_0[rindex] + (position_offsets[v].x+position_offsets[c].x)*0.5F * tile_type.atlas_w) * m_tileset->tilesize_x) / (Real)m_tileset->atlassize_x;
-					model.vertices[model.vertexNum+v].v = ((tile_type.autotile_1[rindex] + (position_offsets[v].y+position_offsets[c].y)*0.5F * tile_type.atlas_h) * m_tileset->tilesize_y) / (Real)m_tileset->atlassize_y;
+					model.texcoord0[model.vertexNum+v].x = ((tile_type.autotile_0[rindex] + (position_offsets[v].x+position_offsets[c].x)*0.5F * tile_type.atlas_w) * m_tileset->tilesize_x) / (Real)m_tileset->atlassize_x;
+					model.texcoord0[model.vertexNum+v].y = ((tile_type.autotile_1[rindex] + (position_offsets[v].y+position_offsets[c].y)*0.5F * tile_type.atlas_h) * m_tileset->tilesize_y) / (Real)m_tileset->atlassize_y;
 				}
 
 				model.vertexNum += 4;

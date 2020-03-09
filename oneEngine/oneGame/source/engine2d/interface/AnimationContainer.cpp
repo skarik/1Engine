@@ -1,4 +1,3 @@
-
 #include "AnimationContainer.h"
 
 #include "core/time/Time.h"
@@ -7,13 +6,13 @@
 
 #include "core-ext/system/io/Resources.h"
 
-#include "renderer/material/RrShader.h"
-#include "renderer/material/RrMaterial.h"
+//#include "renderer/material/RrShader.h"
+//#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/RrTexture.h"
 //#include "renderer/resource/CResourceManager.h"
 
 #include "render2d/object/sprite/CEditableRenderable2D.h"
-#include "render2d/texture/TextureIO.h"
+//#include "render2d/texture/TextureIO.h"
 
 using namespace Engine2D;
 
@@ -41,22 +40,22 @@ void AnimationContainer::PreStep ( void )
 	animation_entry_t* entry = m_animations[m_current_animation].first;
 	AnimationContainerSubstate* state = m_animations[m_current_animation].second;
 
-	m_sprite->GetMaterial()->m_texcoordOffset = Vector4f(
+	/*m_sprite->GetMaterial()->m_texcoordOffset = Vector4f(
 		(state->m_frame % entry->texture.frame_count.x) / (Real)entry->texture.frame_count.x,
 		(state->m_frame / entry->texture.frame_count.x) / (Real)entry->texture.frame_count.y,
 		0,0);
 	m_sprite->GetMaterial()->m_texcoordScaling = Vector4f(
 		1.0F / (Real)entry->texture.frame_count.x,
 		1.0F / (Real)entry->texture.frame_count.y,
-		0,0);
+		0,0);*/
+	// TODO: Put those into the constant buffers
 
 	// Update material textures:
 
-	m_sprite->GetMaterial()->setTexture(TEX_DIFFUSE, entry->texture.diffuse);
-	m_sprite->GetMaterial()->setTexture(TEX_NORMALS, entry->texture.normals);
-	m_sprite->GetMaterial()->setTexture(TEX_SURFACE, entry->texture.surface);
-	m_sprite->GetMaterial()->setTexture(TEX_OVERLAY, entry->texture.overlay);
-	
+	m_sprite->PassAccess(0).setTexture(TEX_DIFFUSE, entry->texture.diffuse);
+	m_sprite->PassAccess(0).setTexture(TEX_NORMALS, entry->texture.normals);
+	m_sprite->PassAccess(0).setTexture(TEX_SURFACE, entry->texture.surface);
+	m_sprite->PassAccess(0).setTexture(TEX_OVERLAY, entry->texture.overlay);
 }
 
 //		PostStepSynchronus()
@@ -136,34 +135,33 @@ uint32_t AnimationContainer::AddFromFile ( const animation::arAnimType n_anim_ty
 	memset( entry, 0, sizeof(animation_entry_t) );
 
 	// Load the sprite
-	Textures::timgInfo img_info;
-	Real* img_frametimes = NULL;
-	m_sprite->SetSpriteFileAnimated( n_sprite_filename, n_palette_filename, &img_info, &img_frametimes );
-
+	//Textures::timgInfo img_info;
+	//Real* img_frametimes = NULL;
+	//m_sprite->SetSpriteFileAnimated( n_sprite_filename, n_palette_filename, &img_info, &img_frametimes );
+	core::gfx::tex::arSpriteInfo sprite_info;
+	rrSpriteSetResult set_info;
+	m_sprite->SetSpriteFileAnimated( n_sprite_filename, &sprite_info, &set_info );
+	
 	// Create the entry frame size needed for streaming texture offsets
-	entry->frame_count = img_info.framecount;
-	entry->texture.frame_count = Vector2i(img_info.xdivs, img_info.ydivs);
-	entry->texture.frame_size = Vector2i(img_info.width / img_info.xdivs, img_info.height / img_info.ydivs);
-	entry->frame_times = img_frametimes;
-	if ( img_frametimes == NULL )
-	{
-		// Create default frame times
-		entry->frame_times = new Real[img_info.framecount];
-		for (uint i = 0; i < img_info.framecount; ++i)
-			entry->frame_times[i] = 0.1F;
-	}
+	entry->frame_count = sprite_info.animationInfo.framecount;
+	entry->texture.frame_count = Vector2i(sprite_info.animationInfo.xdivs, sprite_info.animationInfo.ydivs);
+	entry->texture.frame_size = Vector2i(sprite_info.info.width / sprite_info.animationInfo.xdivs, sprite_info.info.height / sprite_info.animationInfo.ydivs);
+
+	entry->frame_times = new Real [entry->frame_count];
+	for (uint i = 0; i < entry->frame_count; ++i)
+		entry->frame_times[i] = sprite_info.frame_times[i] / (Real)sprite_info.animationInfo.framerate;
 	
 	// Pull the needed sprite properties from the sprite
-	entry->texture.diffuse = m_sprite->GetMaterial()->getTexture(TEX_DIFFUSE);
-	entry->texture.normals = m_sprite->GetMaterial()->getTexture(TEX_NORMALS);
-	entry->texture.surface = m_sprite->GetMaterial()->getTexture(TEX_SURFACE);
-	entry->texture.overlay = m_sprite->GetMaterial()->getTexture(TEX_OVERLAY);
+	entry->texture.diffuse = set_info.textureAlbedo;
+	entry->texture.normals = set_info.textureNormals;
+	entry->texture.surface = set_info.textureSurface;
+	entry->texture.overlay = set_info.textureIllumin;
 
 	// Update the sprite rect
 	m_spriteSize = entry->texture.frame_size;
 
 	// Create animation state using the set entry:
-	AnimationContainerSubstate* state = new AnimationContainerSubstate(m_animations.size(), this, entry );
+	AnimationContainerSubstate* state = new AnimationContainerSubstate((uint32_t)m_animations.size(), this, entry );
 
 	// Add the result state now
 	m_animations.push_back(std::pair<animation_entry_t*, AnimationContainerSubstate*>(entry, state));

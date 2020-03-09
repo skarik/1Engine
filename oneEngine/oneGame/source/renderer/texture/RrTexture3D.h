@@ -43,7 +43,7 @@ public:
 	// This will add the object to the resource manager, but will NOT add to the object's reference count.
 	RENDER_API void			Upload (
 		bool							streamed,
-		core::gfx::arPixel*				data,
+		void*							data,
 		uint16_t						width,
 		uint16_t						height,
 		uint16_t						depth,

@@ -2,15 +2,11 @@
 #include "core/utils/string.h"
 #include "core/debug/console.h"
 #include "core-ext/system/io/Resources.h"
-
-#include "renderer/state/RrRenderer.h"
-//#include "renderer/resource/CResourceManager.h"
-#include "RrTexture.h"
-#include "RrTextureMaster.h"
-//#include "TextureIO.h"
 #include "core-ext/resources/ResourceManager.h"
 
-//#include "renderer/system/glMainSystem.h"
+#include "renderer/state/RrRenderer.h"
+#include "RrTexture.h"
+#include "RrTextureMaster.h"
 
 //	Load ( filename ) : Loads a texture from the disk.
 // May return a previously loaded instance of the texture.
@@ -150,6 +146,7 @@ RrTexture::Upload (
 	upload_request->data = data;
 	upload_request->width = width;
 	upload_request->height = height;
+	upload_request->depth = 1;
 	upload_request->format = format;
 
 	// Update the info with the input params
@@ -169,16 +166,6 @@ RrTexture::Upload (
 
 RrTexture::~RrTexture ( void )
 {
-	// Check for system overrides here
-	/*if ( info.index == 0 ||  sFilename == "_hx_SYSTEM_FONTLOAD" || sFilename == "_hx_SYSTEM_RENDERTEXTURE" )
-	{	// System overrides should be skipped:
-		return;
-	}
-
-	TextureMaster.RemoveReference( this );
-	if ( RrRenderer::Active )
-		RrRenderer::Active->mResourceManager->RemoveResource( this );*/
-
 	m_texture.free();
 }
 

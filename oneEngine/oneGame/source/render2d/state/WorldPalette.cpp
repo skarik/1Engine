@@ -24,7 +24,8 @@ WorldPalette::WorldPalette ( void )
 }
 WorldPalette::~WorldPalette ( void )
 {
-
+	palette_texture->RemoveReference();
+	palette3d_texture->RemoveReference();
 }
 
 //	Reset () : Clears out the palette, forcing any sprites to re-add themselves

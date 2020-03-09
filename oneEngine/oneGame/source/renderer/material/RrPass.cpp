@@ -3,9 +3,11 @@
 #include "renderer/texture/RrTexture.h"
 #include "renderer/material/RrShaderProgram.h"
 
+#include "gpuw/Sampler.h"
+
 RrPass::RrPass ( void )
 	:
-	m_program(NULL), m_textures(), m_texturesRaw(),
+	m_program(NULL), m_textures(), m_texturesRaw(), m_samplers(),
 	m_vertexSpecification(NULL), m_vertexSpecificationCount(0)
 {
 	utilSetupAsDefault();
@@ -80,6 +82,19 @@ void RrPass::setTexture ( const rrTextureSlot slot, RrTexture* texture )
 void RrPass::setTexture ( const rrTextureSlot slot, gpu::Texture* n_texture )
 {
 	m_texturesRaw[slot] = n_texture;
+}
+
+//	setSampler ( slot, samplerInfo ) : Sets and creates sampler object.
+void RrPass::setSampler ( const rrTextureSlot slot, gpu::SamplerCreationDescription* scd )
+{
+	if (m_samplers[slot] != NULL)
+	{
+		m_samplers[slot]->destroy(NULL);
+		delete(m_samplers[slot]);
+	}
+
+	m_samplers[slot] = new gpu::Sampler();
+	m_samplers[slot]->create(NULL, scd);
 }
 
 //	setProgram ( program ) : Sets shader program.

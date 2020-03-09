@@ -10,6 +10,7 @@
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
 #include "gpuw/Device.h"
+#include "gpuw/Sampler.h"
 #include "renderer/material/Material.h"
 
 #include "renderer/object/immediate/immediate.h" // TODO: Rename this header.
@@ -222,9 +223,15 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	cursorPass.m_type = kPassTypeForward;
 	cursorPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
 	cursorPass.setTexture( TEX_MAIN, texCursor );
+	gpu::SamplerCreationDescription samplerCursor;
+	samplerCursor.mipmaps = false;
+	samplerCursor.magFilter = core::gfx::tex::kSamplingPoint;
+	samplerCursor.minFilter = core::gfx::tex::kSamplingPoint;
+	cursorPass.setSampler( TEX_MAIN, &samplerCursor );
 	cursorPass.utilSetupAs2D();
 	cursorPass.m_alphaMode = renderer::kAlphaModeTranslucent;
-	cursorPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+	//cursorPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
+	cursorPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"});
 	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
 											renderer::shader::Location::kUV0,
 											renderer::shader::Location::kColor,
@@ -235,6 +242,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 
 	// Build the mouse mesh:
 	rrMeshBuilder2D builder(6);
+	builder.setScreenMapping(core::math::Cubic::FromPosition(Vector3f(0, 0, 0), Vector3f(1, 1, 1)));
 	builder.addRect(
 		Rect( 0, 0, 32, 32 ),
 		Color(1.0F, 1.0F, 1.0F, 1.0F),
@@ -257,7 +265,15 @@ CDeveloperCursor::~CDeveloperCursor ( void )
 }
 bool CDeveloperCursor::PreRender ( rrCameraPass* cameraPass )
 {
-	PushCbufferPerObject(XrTransform(Vector2f((Real)Input::MouseX(), (Real)Input::MouseY())), cameraPass); // TODO: V2D default shader does not perform any transformations.
+	// Manually create transform
+	XrTransform cursorTransform;
+	cursorTransform.scale = Vector3f(1.0F / Screen::Info.width, 1.0F / Screen::Info.height, 1.0F);
+	cursorTransform.position = Vector2f((Real)Input::MouseX() - Screen::Info.width * 0.5F, (Real)Input::MouseY() - Screen::Info.height * 0.5F);
+	cursorTransform.position = cursorTransform.position.mulComponents(cursorTransform.scale * 2.0F);
+	cursorTransform.position.y = -cursorTransform.position.y;
+
+	PushCbufferPerObject(cursorTransform, NULL); // Pass NULL camera for an Identity matrix in View-Projection
+
 	return true;
 }
 bool CDeveloperCursor::Render ( const rrRenderParams* params )

@@ -194,7 +194,12 @@ int gpu::Buffer::initAsIndirectArgs ( Device* device, const uint64_t data_size )
 }
 
 //	initAsTextureBuffer( device, format, element_width, element_height ) : Initializes as a typed data buffer. Can be used to load textures.
-int	 gpu::Buffer::initAsTextureBuffer ( Device* device, core::gfx::tex::arColorFormat format, const uint64_t element_width, const uint64_t element_height )
+int gpu::Buffer::initAsTextureBuffer (
+	Device* device,
+	const core::gfx::tex::arTextureType type,
+	const core::gfx::tex::arColorFormat format,
+	const uint64_t element_width, const uint64_t element_height, const uint64_t element_depth
+)
 {
 	ARCORE_ASSERT(element_width > 0 && element_height > 0);
 	if (device == NULL) device = getDevice();
@@ -207,25 +212,79 @@ int	 gpu::Buffer::initAsTextureBuffer ( Device* device, core::gfx::tex::arColorF
 	// Internally, Texture buffers are little different, since DX11 doesn't allow copying from Buffer to Texture.
 	// Instead of implementated by a Buffer object, texture buffers are implementated by Texture objects.
 
-	D3D11_TEXTURE2D_DESC		txd;
-	txd.Width = (UINT)element_width;
-	txd.Height = (UINT)element_height;
-	txd.MipLevels = 1;
-	txd.ArraySize = 1;
-	txd.Format = gpu::internal::ArEnumToDx(format, false, true);
-	txd.SampleDesc.Count = 1;
-	txd.SampleDesc.Quality = 0;
-	txd.Usage = D3D11_USAGE_DYNAMIC;
-	txd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	txd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	txd.MiscFlags = 0; 
-
-	result = device->getNative()->CreateTexture2D(&txd, NULL, (ID3D11Texture2D**)&m_buffer);
-	if (FAILED(result))
+	switch (type)
 	{
-		throw core::OutOfMemoryException(); // TODO: Handle this better.
-		m_buffer = NULL;
-		return gpu::kErrorFormatUnsupported;
+	case core::gfx::tex::kTextureType1D:
+	case core::gfx::tex::kTextureType1DArray:
+		{
+			D3D11_TEXTURE1D_DESC		txd;
+			txd.Width = (UINT)element_width;
+			txd.MipLevels = 1;
+			txd.ArraySize = 1;
+			txd.Format = gpu::internal::ArEnumToDx(format, false, true);
+			txd.Usage = D3D11_USAGE_DYNAMIC;
+			txd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+			txd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			txd.MiscFlags = 0; 
+
+			result = device->getNative()->CreateTexture1D(&txd, NULL, (ID3D11Texture1D**)&m_buffer);
+			if (FAILED(result))
+			{
+				throw core::OutOfMemoryException(); // TODO: Handle this better.
+				m_buffer = NULL;
+				return gpu::kErrorFormatUnsupported;
+			}
+		}
+		break;
+	case core::gfx::tex::kTextureType2D:
+	case core::gfx::tex::kTextureTypeCube:
+	case core::gfx::tex::kTextureType2DArray:
+	case core::gfx::tex::kTextureTypeCubeArray:
+		{
+			D3D11_TEXTURE2D_DESC		txd;
+			txd.Width = (UINT)element_width;
+			txd.Height = (UINT)element_height;
+			txd.MipLevels = 1;
+			txd.ArraySize = 1;
+			txd.Format = gpu::internal::ArEnumToDx(format, false, true);
+			txd.SampleDesc.Count = 1;
+			txd.SampleDesc.Quality = 0;
+			txd.Usage = D3D11_USAGE_DYNAMIC;
+			txd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+			txd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			txd.MiscFlags = 0; 
+
+			result = device->getNative()->CreateTexture2D(&txd, NULL, (ID3D11Texture2D**)&m_buffer);
+			if (FAILED(result))
+			{
+				throw core::OutOfMemoryException(); // TODO: Handle this better.
+				m_buffer = NULL;
+				return gpu::kErrorFormatUnsupported;
+			}
+		}
+		break;
+	case core::gfx::tex::kTextureType3D:
+		{
+			D3D11_TEXTURE3D_DESC		txd;
+			txd.Width = (UINT)element_width;
+			txd.Height = (UINT)element_height;
+			txd.Depth = (UINT)element_depth;
+			txd.MipLevels = 1;
+			txd.Format = gpu::internal::ArEnumToDx(format, false, true);
+			txd.Usage = D3D11_USAGE_DYNAMIC;
+			txd.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+			txd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			txd.MiscFlags = 0; 
+
+			result = device->getNative()->CreateTexture3D(&txd, NULL, (ID3D11Texture3D**)&m_buffer);
+			if (FAILED(result))
+			{
+				throw core::OutOfMemoryException(); // TODO: Handle this better.
+				m_buffer = NULL;
+				return gpu::kErrorFormatUnsupported;
+			}
+		}
+		break;
 	}
 
 	return kError_SUCCESS;

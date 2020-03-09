@@ -103,31 +103,35 @@ int gpu::Texture::free ( void )
 	return gpu::kError_SUCCESS;
 }
 
-int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level )
+int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level, const uint arraySlice )
 {
 	ARCORE_ASSERT(glGetError() == GLenum(0));
 	ARCORE_ASSERT(valid());
 
 	const uint level_divisor = (1 << level);
-	GLsizei upload_width, upload_height;
+	GLsizei upload_width, upload_height, upload_depth;
 
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, (GLuint)buffer.nativePtr());
 	switch (m_type)
 	{
 	case core::gfx::tex::kTextureType1D:
-		ARCORE_ERROR("Not implemented");
+		upload_width  = std::max<GLsizei>(1, m_width / level_divisor);
+		glTextureSubImage1D(m_texture, level, 0, upload_width, m_glcomponent, m_gltype, NULL);
 		break;
 	case core::gfx::tex::kTextureType1DArray:
 	case core::gfx::tex::kTextureType2D:
 	case core::gfx::tex::kTextureTypeCube:
 		upload_width  = std::max<GLsizei>(1, m_width / level_divisor);
 		upload_height = std::max<GLsizei>(1, m_height / level_divisor);
-		glTextureSubImage2D(m_texture, level, 0, 0, upload_width, upload_height, m_glcomponent, m_gltype, NULL);
+		glTextureSubImage2D(m_texture, level, 0, arraySlice, upload_width, upload_height, m_glcomponent, m_gltype, NULL);
 		break;
 	case core::gfx::tex::kTextureType2DArray:
 	case core::gfx::tex::kTextureType3D:
 	case core::gfx::tex::kTextureTypeCubeArray:
-		ARCORE_ERROR("Not implemented");
+		upload_width  = std::max<GLsizei>(1, m_width / level_divisor);
+		upload_height = std::max<GLsizei>(1, m_height / level_divisor);
+		upload_depth  = std::max<GLsizei>(1, m_depth / level_divisor);
+		glTextureSubImage3D(m_texture, level, 0, 0, arraySlice, upload_width, upload_height, upload_depth, m_glcomponent, m_gltype, NULL);
 		break;
 	}
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);

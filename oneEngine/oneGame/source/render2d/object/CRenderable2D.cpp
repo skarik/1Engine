@@ -56,13 +56,13 @@ CRenderable2D::~CRenderable2D ()
 
 //		SetSpriteFile ( c-string sprite filename )
 // Sets the sprite filename to load or convert. Uses resource manager to cache data.
-void CRenderable2D::SetSpriteFile ( const char* n_sprite_resname )
+void CRenderable2D::SetSpriteFile ( const char* n_sprite_resname, rrSpriteSetResult* o_set_result )
 {
-	SetSpriteFileAnimated( n_sprite_resname, NULL );
+	SetSpriteFileAnimated( n_sprite_resname, NULL, o_set_result );
 }
 //		SetSpriteFileAnimated ( c-string sprite filename )
 // Sets the sprite filename to load and possibly convert, but provides returns for additional information.
-void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_resname, core::gfx::tex::arSpriteInfo* o_sprite_info )
+void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_resname, core::gfx::tex::arSpriteInfo* o_sprite_info, rrSpriteSetResult* o_set_result )
 {
 	//// Create the filename for the files.
 	//std::string filename_palette = core::utils::string::GetFileStemLeaf(n_sprite_filename) + "_pal";
@@ -238,6 +238,17 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_resname, core::
 	if (m_textureNormals) PassAccess(0).setTexture(TEX_NORMALS, m_textureNormals);
 	if (m_textureSurface) PassAccess(0).setTexture(TEX_SURFACE, m_textureSurface);
 	if (m_textureIllumin) PassAccess(0).setTexture(TEX_OVERLAY, m_textureIllumin);
+
+	// Set output result
+	if (o_set_result != NULL)
+	{
+		o_set_result->textureAlbedo = m_textureAlbedo;
+		o_set_result->textureNormals = m_textureNormals;
+		o_set_result->textureSurface = m_textureSurface;
+		o_set_result->textureIllumin = m_textureIllumin;
+		
+		o_set_result->texturePalette = m_texturePalette;
+	}
 
 	/*m_material->setTexture(TEX_DIFFUSE, new_texture);
 	// Set the normal map up as well

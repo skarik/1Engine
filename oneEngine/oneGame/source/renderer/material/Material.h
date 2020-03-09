@@ -85,11 +85,25 @@ namespace renderer
 		{
 			for (int i = 0; i < kPass_MaxTextureSlots; ++i)
 			{
-				if (m_pass->m_texturesRaw[i] != NULL) {
-					m_ctx->setShaderTextureAuto(gpu::kShaderStagePs, i, m_pass->m_texturesRaw[i]);
+				if (m_pass->m_texturesRaw[i] != NULL)
+				{
+					if (m_pass->m_samplers[i] != NULL)
+					{
+						m_ctx->setShaderSampler(gpu::kShaderStagePs, i, m_pass->m_samplers[i]);
+						m_ctx->setShaderTexture(gpu::kShaderStagePs, i, m_pass->m_texturesRaw[i]);
+					}
+					else
+						m_ctx->setShaderTextureAuto(gpu::kShaderStagePs, i, m_pass->m_texturesRaw[i]);
 				}
-				else if (m_pass->m_textures[i] != NULL) {
-					m_ctx->setShaderTextureAuto(gpu::kShaderStagePs, i, &m_pass->m_textures[i]->GetTexture());
+				else if (m_pass->m_textures[i] != NULL)
+				{
+					if (m_pass->m_samplers[i] != NULL)
+					{
+						m_ctx->setShaderSampler(gpu::kShaderStagePs, i, m_pass->m_samplers[i]);
+						m_ctx->setShaderTexture(gpu::kShaderStagePs, i, &m_pass->m_textures[i]->GetTexture());
+					}
+					else
+						m_ctx->setShaderTextureAuto(gpu::kShaderStagePs, i, &m_pass->m_textures[i]->GetTexture());
 				}
 			}
 			return *this;

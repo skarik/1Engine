@@ -55,6 +55,7 @@ struct rrTextureUploadInfo
 	void*				data;
 	uint16_t			width;
 	uint16_t			height;
+	uint16_t			depth;
 	core::gfx::tex::arColorFormat
 						format;
 };

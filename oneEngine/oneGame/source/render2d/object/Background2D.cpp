@@ -35,7 +35,7 @@ renderer::Background2D::Background2D ( void )
 	PushModeldata();
 
 	// Set the sprite to use to render the background
-	SetSpriteFile( "textures/black" );
+	SetSpriteFile( "textures/black", NULL );
 
 	// Update material to disable depth write
 	/*m_material->passinfo[0].b_depthmask = false;
