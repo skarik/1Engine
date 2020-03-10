@@ -2,10 +2,8 @@
 #define _M04_EDITOR_DEVELOPER_MENU_
 
 #include "engine/behavior/CGameBehavior.h"
-#include "engine-common/dusk/CDuskGUIHandle.h"
 
 class RrCamera;
-class CDuskGUI;
 namespace Engine2D
 {
 	class TileMap;
@@ -15,6 +13,11 @@ namespace M04
 {
 	class MapInformation;
 }
+namespace dusk
+{
+	class UserInterface;
+	class Element;
+}
 
 namespace M04
 {
@@ -23,30 +26,31 @@ namespace M04
 	class DeveloperMenu : public CGameBehavior
 	{
 	public:
-		explicit	DeveloperMenu ( void );
-					~DeveloperMenu ( void );
+		explicit			DeveloperMenu ( void );
+							~DeveloperMenu ( void );
 
-		void		Update ( void ) override;
+		void				Update ( void ) override;
 
 	protected:
 		//		uiCreate () : create the dusk UI
 		// create entirety of the dusk gui shit
-		void		uiCreate ( void );
+		void				uiCreate ( void );
 
 		//		uiStepMainPanel () : main panel update
 		// handle inputs to the buttons on main panel
-		void		uiStepMainPanel ( void );
+		void				uiStepMainPanel ( void );
 
 	protected:
-		CDuskGUI*	dusk;
+		dusk::UserInterface*
+						dusk;
 
 		//=========================================//
 		// Dusk handles
 
-		Dusk::Handle	ui_main_game;
-		Dusk::Handle	ui_main_testg;
-		Dusk::Handle	ui_main_test0;
-		Dusk::Handle	ui_main_editor;
+		dusk::Element*	ui_main_game;
+		dusk::Element*	ui_main_testg;
+		dusk::Element*	ui_main_test0;
+		dusk::Element*	ui_main_editor;
 	};
 }
 

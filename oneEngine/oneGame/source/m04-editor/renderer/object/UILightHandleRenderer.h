@@ -9,13 +9,13 @@ namespace M04
 	class UILightHandleRenderer : public CStreamedRenderable3D
 	{
 	public:
-		explicit	UILightHandleRenderer ( UILightHandle* );
-		~UILightHandleRenderer( void );
+		explicit				UILightHandleRenderer ( UILightHandle* );
+								~UILightHandleRenderer( void );
 
-		bool PreRender ( void ) override;
+		bool					EndRender ( void ) override;
 
 	public:
-		UILightHandle*	m_ui;
+		UILightHandle*		m_ui;
 	};
 }
 

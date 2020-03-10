@@ -1,4 +1,5 @@
 #include "core-ext/utils/MeshBuilder.h"
+#include "renderer/material/RrShaderProgram.h"
 #include "renderer/texture/RrTexture.h"
 #include "engine2d/entities/map/CollisionMap.h"
 #include "gpuw/Device.h"
@@ -11,85 +12,97 @@ CollisionMapRenderer::CollisionMapRenderer ( void )
 {
 	memset( &m_modeldata, 0, sizeof(arModelData) );
 	m_max_vertex = 0;
-	m_max_triangle = 0;
+	m_max_index = 0;
 
-	// Set the default white material
-	RrMaterial* defaultMat = new RrMaterial;
-	defaultMat->m_diffuse = Color( 1,1,1,1 );
-	defaultMat->setTexture( TEX_MAIN, new RrTexture( "textures/white.jpg" ) );
-	defaultMat->passinfo.push_back( RrPassForward() );
-	defaultMat->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
-	defaultMat->passinfo[0].m_lighting_mode = renderer::LI_NONE;
-	defaultMat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	defaultMat->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-	SetMaterial( defaultMat );
-	defaultMat->removeReference();
+	// Use a default white 2D material
+	RrPass spritePass;
+	spritePass.utilSetupAsDefault();
+	spritePass.m_type = kPassTypeForward;
+	spritePass.m_alphaMode = renderer::kAlphaModeTranslucent;
+	spritePass.m_cullMode = gpu::kCullModeNone;
+	spritePass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+	spritePass.setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
+	spritePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"}) );
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor};
+	spritePass.setVertexSpecificationByCommonList(t_vspec, 3);
+	spritePass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+	PassInitWithInput(0, &spritePass);
 }
 
 CollisionMapRenderer::~CollisionMapRenderer ( void )
 {
-	delete_safe_array(m_modeldata.vertices);
-	delete_safe_array(m_modeldata.triangles);
+	delete_safe_array(m_modeldata.position);
+	delete_safe_array(m_modeldata.color);
+	delete_safe_array(m_modeldata.texcoord0);
+	delete_safe_array(m_modeldata.indices);
 }
 
-bool CollisionMapRenderer::PreRender ( void )
+bool CollisionMapRenderer::EndRender ( void )
 {
 	// Ensure we're not hitting a null pointer already
 	if (m_collision == NULL ||
 		m_collision->m_mesh.vertexNum == 0 ||
-		m_collision->m_mesh.triangleNum == 0)
+		m_collision->m_mesh.indexNum == 0)
 	{
-		m_model_tricount = 0; // Dont render any mesh.
+		m_model_indexcount = 0; // Dont render any mesh.
 		return true;
 	}
 
 	// Allocate data for the streamed mesh
-	if (m_modeldata.triangles == NULL ||
+	if (m_modeldata.indices == NULL ||
 		m_max_vertex < m_collision->m_mesh.vertexNum ||
-		m_max_triangle < m_collision->m_mesh.triangleNum)
+		m_max_index < m_collision->m_mesh.indexNum)
 	{
-		delete[] m_modeldata.triangles;
-		delete[] m_modeldata.vertices;
+		delete[] m_modeldata.indices;
+		delete[] m_modeldata.position;
+		delete[] m_modeldata.color;
+		delete[] m_modeldata.texcoord0;
 
 		m_max_vertex	= (uint)(m_collision->m_mesh.vertexNum * 1.5F);
-		m_max_triangle	= (uint)(m_collision->m_mesh.triangleNum * 1.5F);
+		m_max_index		= (uint)(m_collision->m_mesh.indexNum * 1.5F);
 
-		m_modeldata.triangles = new arModelTriangle [m_max_triangle];
-		m_modeldata.vertices  = new arModelVertex [m_max_vertex];
+		m_modeldata.indices = new uint16_t [m_max_index];
+		m_modeldata.position = new Vector3f [m_max_vertex];
+		m_modeldata.color = new Vector4f [m_max_vertex];
+		m_modeldata.texcoord0 = new Vector3f [m_max_vertex];
 	}
 
 	// Copy over the mesh
-	m_modeldata.triangleNum = m_collision->m_mesh.triangleNum;
-	memcpy( m_modeldata.triangles, m_collision->m_mesh.triangles, sizeof(arModelTriangle) * m_modeldata.triangleNum );
+	m_modeldata.indexNum = m_collision->m_mesh.indexNum;
+	memcpy( m_modeldata.indices, m_collision->m_mesh.indices, sizeof(uint16_t) * m_modeldata.indexNum );
 	m_modeldata.vertexNum = m_collision->m_mesh.vertexNum;
 	for (uint i = 0; i < m_modeldata.vertexNum; ++i)
 	{
-		m_modeldata.vertices[i].position = m_collision->m_mesh.vertices[i].position;
-		m_modeldata.vertices[i].position.z = -50;
-		m_modeldata.vertices[i].texcoord0 = Vector2f(0.5F, 0.5F);
-		m_modeldata.vertices[i].color = Vector4f(1.0F, 0.0F, 0.2F, 0.5F);
+		m_modeldata.position[i] = m_collision->m_mesh.position[i];
+		m_modeldata.position[i].z = -50;
+		m_modeldata.texcoord0[i] = Vector2f(0.5F, 0.5F);
+		m_modeldata.color[i] = Vector4f(1.0F, 0.0F, 0.2F, 0.5F);
 	}
 
 	// Now with the mesh built, push it to the modeldata
 	StreamLockModelData();
 
 	// Push at the end
-	return CStreamedRenderable3D::PreRender();
+	return CStreamedRenderable3D::EndRender();
 }
 
 //		Render()
 // Render the model using the 2D engine's style
-bool CollisionMapRenderer::Render ( const char pass )
+bool CollisionMapRenderer::Render ( const rrRenderParams* params )
 {
 	if (m_drawWireframe)
 	{
-		gpu::getDevice()->getContext()->setFillMode( gpu::kFillModeWireframe );
-		CStreamedRenderable3D::Render(pass);
-		gpu::getDevice()->getContext()->setFillMode( gpu::kFillModeSolid );
+		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
+		gfx->setFillMode( gpu::kFillModeWireframe );
+		CStreamedRenderable3D::Render(params);
+		gfx->setFillMode( gpu::kFillModeSolid );
 	}
 	if (m_drawSolids)
 	{
-		CStreamedRenderable3D::Render(pass);
+		CStreamedRenderable3D::Render(params);
 	}
 	return true;
 }

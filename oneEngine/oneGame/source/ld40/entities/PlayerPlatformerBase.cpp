@@ -33,7 +33,7 @@ PlayerPlatformerBase::PlayerPlatformerBase ( void )
 		// Set camera options
 		cam->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
 		cam->viewport_target.size = Vector2f( 1280,720 ) * 0.5f;
-		cam->render_scale = 0.5F;
+		cam->renderScale = 0.5F;
 
 		// Create camera controller:
 		camera = new CameraControllerPlatformer(this);

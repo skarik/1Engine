@@ -41,6 +41,11 @@ namespace dusk
 		virtual void			Render ( UIRendererContext* uir )
 			{}
 
+		//	as<Element>() : Shorthand element typecast
+		template <typename T>
+		ENGCOM_API T*			as (void)
+			{ return static_cast<T*>(this); }
+
 	public:
 		// Set to true when needs deletion by system
 		bool				m_destructionRequested;

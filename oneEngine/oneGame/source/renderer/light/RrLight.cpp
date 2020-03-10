@@ -1,10 +1,7 @@
-#include "RrLight.h"
-#include "renderer/camera/RrCamera.h"
-
-#include "renderer/state/Settings.h"
-#include "core/settings/CGameSettings.h"
-
 #include <algorithm>
+#include "renderer/state/Settings.h"
+#include "renderer/camera/RrCamera.h"
+#include "RrLight.h"
 
 // Usings
 using std::vector;

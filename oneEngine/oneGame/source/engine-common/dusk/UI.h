@@ -25,6 +25,10 @@ namespace dusk
 		ElementCreationDescription()
 			: parent(NULL), localRect()
 			{}
+
+		ElementCreationDescription(Element* in_parent, Rect in_rect)
+			: parent(in_parent), localRect(in_rect)
+			{}
 	};
 
 	enum ElementHandleConstants

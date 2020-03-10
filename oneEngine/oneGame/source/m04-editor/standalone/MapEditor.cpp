@@ -1,15 +1,14 @@
-#include "MapEditor.h"
+#include <map>
 
 #include "core/input/CInput.h"
 #include "core/math/Math.h"
 #include "core/settings/CGameSettings.h"
 #include "core/system/io/FileUtils.h"
 
-#include <map>
-
 #include "engine/utils/CDeveloperConsole.h"
 
-#include "engine-common/dusk/CDuskGUI.h"
+#include "engine-common/dusk/UI.h"
+#include "engine-common/dusk/Element.h"
 #include "engine-common/entities/CRendererHolder.h"
 
 #include "renderer/state/Settings.h"
@@ -44,6 +43,8 @@
 #include "m04-editor/renderer/object/AreaRenderer.h"
 #include "m04-editor/renderer/object/CollisionMapRenderer.h"
 #include "m04-editor/renderer/object/GizmoRenderer.h"
+
+#include "MapEditor.h"
 
 using namespace M04;
 
@@ -122,10 +123,8 @@ MapEditor::MapEditor ( void )
 	}
 	// Build Dusk Gui
 	{
-		dusk = new CDuskGUI(
-			new RrFontTexture( "YanoneKaffeesatz-R.otf", 16 )
-		);
-		dusk->SetPixelMode(true);
+		dusk = new dusk::UserInterface;
+		//dusk->SetPixelMode(true);
 
 		uiCreate();
 	}
@@ -238,7 +237,7 @@ void MapEditor::Update ( void )
 	renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
 
 	// Update the editor
-	Dusk::Handle openDialogue = dusk->GetOpenDialogue();
+	dusk::Element* openDialogue = dusk->GetOpenDialogue();
 	//if ( dusk->HasOpenDialogue() && openDialogue != ui_fld_area_type && openDialogue != ui_fld_object_type )
 	if ( dusk->HasOpenDialogue() && (openDialogue == ui_dg_save || openDialogue == ui_dg_load) )
 	{

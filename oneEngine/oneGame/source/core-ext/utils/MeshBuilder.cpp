@@ -70,5 +70,5 @@ void core::meshbuilder::Quad ( arModelData* md, const Vector3f* positions, const
 	md->indices[(current_index + 1) * 3 + 2] = current_vertex + 3;
 
 	md->vertexNum += 4;
-	md->indexNum += 2;
+	md->indexNum += 6;
 }

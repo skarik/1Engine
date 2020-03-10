@@ -1,4 +1,3 @@
-
 #include "EditorObject.h"
 #include "render2d/object/sprite/CEditableRenderable2D.h"
 
@@ -35,12 +34,12 @@ EditorObject::EditorObject ( const char* object_name )
 		{
 		case DISPLAY_BOX:
 			// Set to box
-			m_sprite->SetSpriteFile("textures/white");
+			m_sprite->SetSpriteFile("textures/white", NULL);
 			// Change scale
 			scale *= (Real) atoi( file_key );
 			break;
 		case DISPLAY_2D_SPRITE:
-			m_sprite->SetSpriteFile( file_key );
+			m_sprite->SetSpriteFile( file_key, NULL );
 			m_spriteOrigin = m_sprite->GetSpriteInfo().fullsize / 2;
 			break;
 		case DISPLAY_3D_MODEL: // TODO someday
@@ -48,17 +47,17 @@ EditorObject::EditorObject ( const char* object_name )
 			// m_model->SetOwner( this );
 			break;
 		case DISPLAY_LIGHT:
-			m_sprite->SetSpriteFile( file_key );
+			m_sprite->SetSpriteFile( file_key, NULL );
 			m_spriteOrigin = m_sprite->GetSpriteInfo().fullsize / 2;
 			light = new RrLight;
-			light->range = 128.0F;
+			light->falloff_range = 128.0F;
 			break;
 		}
 	}
 	else
 	{
 		// Default to a stupidass box
-		m_sprite->SetSpriteFile("textures/white");
+		m_sprite->SetSpriteFile("textures/white", NULL);
 	}
 
 	// Generate the data we need to store
@@ -93,7 +92,7 @@ void EditorObject::Update ( void )
 	if ( light != NULL )
 	{
 		light->position = position;
-		light->position.z = light->range * -0.3F;
+		light->position.z = light->falloff_range * -0.3F;
 	}
 	
 	// Update metadata entries if we have the entries to pull/save them from
@@ -127,7 +126,7 @@ void EditorObject::WorldToMetadata ( void )
 
 		case FIELD_COLOR:
 			if (light != NULL)
-				memcpy( m_data_storage_buffer + kv_offset, &light->diffuseColor, sizeof(Color) );
+				memcpy( m_data_storage_buffer + kv_offset, &light->color, sizeof(Color) );
 			break;
 
 			// Second do name matching
@@ -135,12 +134,12 @@ void EditorObject::WorldToMetadata ( void )
 			if ( metadata->data_name[i].second.compare("range") )
 			{
 				if (light != NULL)
-					memcpy( m_data_storage_buffer + kv_offset, &light->range, sizeof(float) );
+					memcpy( m_data_storage_buffer + kv_offset, &light->falloff_range, sizeof(float) );
 			}
 			else if ( metadata->data_name[i].second.compare("power") )
 			{
 				if (light != NULL)
-					memcpy( m_data_storage_buffer + kv_offset, &light->falloff, sizeof(float) );
+					memcpy( m_data_storage_buffer + kv_offset, &light->falloff_invpower, sizeof(float) );
 			}
 			break;
 		}
@@ -172,7 +171,7 @@ void EditorObject::MetadataToWorld ( void )
 
 		case FIELD_COLOR:
 			if (light != NULL)
-				memcpy( &light->diffuseColor, m_data_storage_buffer + kv_offset, sizeof(Color) );
+				memcpy( &light->color, m_data_storage_buffer + kv_offset, sizeof(Color) );
 			break;
 
 			// Second do name matching
@@ -180,12 +179,12 @@ void EditorObject::MetadataToWorld ( void )
 			if ( metadata->data_name[i].second.compare("range") )
 			{
 				if (light != NULL)
-					memcpy( &light->range, m_data_storage_buffer + kv_offset, sizeof(float) );
+					memcpy( &light->falloff_range, m_data_storage_buffer + kv_offset, sizeof(float) );
 			}
 			else if ( metadata->data_name[i].second.compare("power") )
 			{
 				if (light != NULL)
-					memcpy( &light->falloff, m_data_storage_buffer + kv_offset, sizeof(float) );
+					memcpy( &light->falloff_invpower, m_data_storage_buffer + kv_offset, sizeof(float) );
 			}
 			break;
 		}

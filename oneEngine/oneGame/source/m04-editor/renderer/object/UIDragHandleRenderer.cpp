@@ -1,12 +1,9 @@
-#include "UIDragHandleRenderer.h"
-#include "m04-editor/entities/UIDragHandle.h"
-
 #include "core/math/Math.h"
-#include "renderer/texture/RrTexture.h"
-#include "renderer/material/RrMaterial.h"
-#include "renderer/system/glDrawing.h"
-
 #include "core-ext/utils/MeshBuilder.h"
+#include "renderer/material/RrShaderProgram.h"
+#include "renderer/texture/RrTexture.h"
+#include "m04-editor/entities/UIDragHandle.h"
+#include "UIDragHandleRenderer.h"
 
 using namespace M04;
 
@@ -15,43 +12,53 @@ UIDragHandleRenderer::UIDragHandleRenderer ( UIDragHandle* n_dragHandle )
 {
 	memset( &m_modeldata, 0, sizeof(arModelData) );
 
-	// Set the default white material
-	RrMaterial* defaultMat = new RrMaterial;
-	defaultMat->m_diffuse = Color( 1,1,1,1 );
-	defaultMat->setTexture( TEX_MAIN, new RrTexture( "textures/white.jpg" ) );
-	defaultMat->passinfo.push_back( RrPassForward() );
-	defaultMat->passinfo[0].shader = new RrShader( "shaders/sys/fullbright.glsl" );
-	defaultMat->passinfo[0].m_lighting_mode = renderer::LI_NONE;
-	defaultMat->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	defaultMat->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-	defaultMat->removeReference();
-	SetMaterial( defaultMat );
+	// Use a default white 2D material
+	RrPass spritePass;
+	spritePass.utilSetupAsDefault();
+	spritePass.m_type = kPassTypeForward;
+	spritePass.m_alphaMode = renderer::kAlphaModeTranslucent;
+	spritePass.m_cullMode = gpu::kCullModeNone;
+	spritePass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+	spritePass.setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
+	spritePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"}) );
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor};
+	spritePass.setVertexSpecificationByCommonList(t_vspec, 3);
+	spritePass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+	PassInitWithInput(0, &spritePass);
 }
 
 UIDragHandleRenderer::~UIDragHandleRenderer ( void )
 {
-	delete_safe_array(m_modeldata.vertices);
-	delete_safe_array(m_modeldata.triangles);
+	delete_safe_array(m_modeldata.position);
+	delete_safe_array(m_modeldata.color);
+	delete_safe_array(m_modeldata.texcoord0);
+	delete_safe_array(m_modeldata.indices);
 }
 
-bool UIDragHandleRenderer::PreRender ( void )
+bool UIDragHandleRenderer::EndRender ( void )
 {
 	const uint kMaxVertices = 32;
-	const uint kMaxTris		= kMaxVertices / 2; // We're doing 100% quads.
+	const uint kMaxIndices	= kMaxVertices / 2 * 3; // We're doing 100% quads.
 
 	// Allocate data for the streamed mesh
-	if (m_modeldata.triangles == NULL)
+	if (m_modeldata.indices == NULL)
 	{
-		delete[] m_modeldata.triangles;
-		delete[] m_modeldata.vertices;
+		delete[] m_modeldata.indices;
+		delete[] m_modeldata.position;
+		delete[] m_modeldata.color;
+		delete[] m_modeldata.texcoord0;
 
-		m_modeldata.triangles = new arModelTriangle [kMaxTris];
-		m_modeldata.vertices = new arModelVertex [kMaxVertices];
+		m_modeldata.indices = new uint16_t [kMaxIndices];
+		m_modeldata.position = new Vector3f [kMaxVertices];
+		m_modeldata.color = new Vector4f [kMaxVertices];
+		m_modeldata.texcoord0 = new Vector3f [kMaxVertices];
 
-		memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * kMaxVertices);
+		memset(m_modeldata.position, 0, sizeof(Vector3f) * kMaxVertices);
 	}
 	// Reset count
-	m_modeldata.triangleNum = 0;
+	m_modeldata.indexNum = 0;
 	m_modeldata.vertexNum = 0;
 
 	Vector3f meshpoints [4];
@@ -109,5 +116,5 @@ bool UIDragHandleRenderer::PreRender ( void )
 	StreamLockModelData();
 
 	// Push at the end
-	return CStreamedRenderable3D::PreRender();
+	return CStreamedRenderable3D::EndRender();
 }

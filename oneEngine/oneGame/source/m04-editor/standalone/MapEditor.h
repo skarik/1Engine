@@ -2,7 +2,7 @@
 #define M04_EDITOR_MAP_EDITOR_
 
 #include "engine/behavior/CGameBehavior.h"
-#include "engine-common/dusk/CDuskGUIHandle.h"
+#include "engine-common/dusk/UI.h"
 
 //=========================================//
 // Prototypes
@@ -156,24 +156,27 @@ namespace M04
 		};
 
 	protected:
-		Mode		m_current_mode;
-		SubMode		m_current_submode;
+		Mode			m_current_mode;
+		SubMode			m_current_submode;
 
-		RrCamera*	m_target_camera;
-		Vector3f	m_target_camera_position;
-		bool		m_navigation_busy;
-		bool		m_preclude_navigation;	// Stop the navigation
+		RrCamera*		m_target_camera;
+		Vector3f		m_target_camera_position;
+		bool			m_navigation_busy;
+		bool			m_preclude_navigation;	// Stop the navigation
 
-		CDuskGUI*	dusk;
+		dusk::UserInterface*
+						dusk;
 		TileSelector*	m_tile_selector;
-		CollisionMapRenderer*	m_tile_collision_renderer;
+		CollisionMapRenderer*
+						m_tile_collision_renderer;
 		AreaRenderer*	m_area_renderer;
 		GizmoRenderer*	m_gizmo_renderer;
 
-		int			m_tile_layer_current;
+		int				m_tile_layer_current;
 
-		int			m_area_corner_selection;
-		Engine2D::Area2DBase*	m_area_target;
+		int				m_area_corner_selection;
+		Engine2D::Area2DBase*
+						m_area_target;
 
 		// M04::EditorObjectProxy*	m_actor_selection;
 		// Engine2D::ObjectProxy*	m_actor_info_selection;
@@ -181,76 +184,83 @@ namespace M04
 		// constructor of it will be explicit, taking a Vector3f pointer, which will be draw pos
 		//										  and a float pointer, which will be angle
 		//										  and a Vector3f pointer, for scale
-		M04::EditorObject*	m_object_target;
+		M04::EditorObject*
+						m_object_target;
 
-		ObjectEditorListing*	m_listing;
-		UIDragHandle*			m_drag_handle;
-		UILightHandle*			m_light_handle;
+		ObjectEditorListing*
+						m_listing;
+		UIDragHandle*	m_drag_handle;
+		UILightHandle*	m_light_handle;
 
-		M04::MapInformation*	m_mapinfo;
-		Engine2D::TileMap*		m_tilemap;
-		Engine2D::CollisionMap*	m_collisionmap;
+		M04::MapInformation*
+						m_mapinfo;
+		Engine2D::TileMap*
+						m_tilemap;
+		Engine2D::CollisionMap*
+						m_collisionmap;
 
-		string		m_current_savetarget;
+		string			m_current_savetarget;
 
 		//=========================================//
 		// Dusk handles
 
-		Dusk::Handle	ui_file_new;
-		Dusk::Handle	ui_file_save;
-		Dusk::Handle	ui_file_load;
+		dusk::Element*	ui_file_new;
+		dusk::Element*	ui_file_save;
+		dusk::Element*	ui_file_load;
 
-		Dusk::Handle	ui_mode_shit;
-		Dusk::Handle	ui_mode_map;
-		Dusk::Handle	ui_mode_area;
-		Dusk::Handle	ui_mode_object;
-		Dusk::Handle	ui_mode_script;
-		Dusk::Handle	ui_mode_utils;
-		Dusk::Handle	ui_toolbox_cutscene;
-		Dusk::Handle	ui_toolbox_global;
-		Dusk::Handle	ui_toolbox_playtest;
-		Dusk::Handle	ui_mode_preferences;
+		dusk::Element*	ui_mode_shit;
+		dusk::Element*	ui_mode_map;
+		dusk::Element*	ui_mode_area;
+		dusk::Element*	ui_mode_object;
+		dusk::Element*	ui_mode_script;
+		dusk::Element*	ui_mode_utils;
+		dusk::Element*	ui_toolbox_cutscene;
+		dusk::Element*	ui_toolbox_global;
+		dusk::Element*	ui_toolbox_playtest;
+		dusk::Element*	ui_mode_preferences;
 
-		Dusk::Handle	ui_lbl_file;
-		Dusk::Handle	ui_lbl_mode;
-		Dusk::Handle	ui_lbl_mousex;
-		Dusk::Handle	ui_lbl_mousey;
+		dusk::Element*	ui_lbl_file;
+		dusk::Element*	ui_lbl_mode;
+		dusk::Element*	ui_lbl_mousex;
+		dusk::Element*	ui_lbl_mousey;
 
-		Dusk::Handle	ui_dg_save;
-		Dusk::Handle	ui_dg_load;
+		dusk::Element*	ui_dg_save;
+		dusk::Element*	ui_dg_load;
 
-		Dusk::Handle	ui_panel_tiles;
-		Dusk::Handle	ui_lst_tile_layer;
-		Dusk::Handle	ui_btn_clear_layer;
-		Dusk::Handle	ui_btn_inc_layer;
-		Dusk::Handle	ui_btn_dec_layer;
-		Dusk::Handle	ui_fld_current_layer;
-		Dusk::Handle	ui_btn_tile_mode_visual;
-		Dusk::Handle	ui_btn_tile_mode_collision;
-		Dusk::Handle	ui_btn_tile_mode_height;
+		dusk::Element*	ui_panel_tiles;
+		dusk::Element*	ui_lst_tile_layer;
+		dusk::Element*	ui_btn_clear_layer;
+		dusk::Element*	ui_btn_inc_layer;
+		dusk::Element*	ui_btn_dec_layer;
+		dusk::Element*	ui_fld_current_layer;
+		dusk::Element*	ui_btn_tile_mode_visual;
+		dusk::Element*	ui_btn_tile_mode_collision;
+		dusk::Element*	ui_btn_tile_mode_height;
 
-		Dusk::Handle	ui_panel_shit;
-		Dusk::Handle	ui_btn_cancel_shit;
-		Dusk::Handle	ui_btn_apply_shit;
-		Dusk::Handle	ui_fld_map_name;
-		Dusk::Handle	ui_fld_map_area;
-		Dusk::Handle	ui_fld_map_size_x;
-		Dusk::Handle	ui_fld_map_size_y;
-		Dusk::Handle	ui_lbl_map_area;
-		Dusk::Handle	ui_lbl_map_size;
-		Dusk::Handle	ui_fld_map_ambient_color;
+		dusk::Element*	ui_panel_shit;
+		dusk::Element*	ui_btn_cancel_shit;
+		dusk::Element*	ui_btn_apply_shit;
+		dusk::Element*	ui_fld_map_name;
+		dusk::Element*	ui_fld_map_area;
+		dusk::Element*	ui_fld_map_size_x;
+		dusk::Element*	ui_fld_map_size_y;
+		dusk::Element*	ui_lbl_map_area;
+		dusk::Element*	ui_lbl_map_size;
+		dusk::Element*	ui_fld_map_ambient_color;
 
-		Dusk::Handle	ui_panel_area;
-		Dusk::Handle	ui_fld_area_type;
+		dusk::Element*	ui_panel_area;
+		dusk::Element*	ui_fld_area_type;
 
-		Dusk::Handle	ui_panel_object;
-		Dusk::Handle	ui_fld_object_type;
-		Dusk::Handle	ui_lbl_object_properties;
-		std::vector<Dusk::Handle>	ui_lbl_object_keys;
-		std::vector<Dusk::Handle>	ui_lbl_object_values;
+		dusk::Element*	ui_panel_object;
+		dusk::Element*	ui_fld_object_type;
+		dusk::Element*	ui_lbl_object_properties;
+		std::vector<dusk::Element*>
+						ui_lbl_object_keys;
+		std::vector<dusk::Element*>
+						ui_lbl_object_values;
 
-		Dusk::Handle	ui_panel_preferences;
-		Dusk::Handle	ui_fld_pref_mouse_sensitivity;
+		dusk::Element*	ui_panel_preferences;
+		dusk::Element*	ui_fld_pref_mouse_sensitivity;
 	};
 }
 

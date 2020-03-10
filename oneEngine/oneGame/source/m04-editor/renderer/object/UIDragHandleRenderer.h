@@ -9,13 +9,13 @@ namespace M04
 	class UIDragHandleRenderer : public CStreamedRenderable3D
 	{
 	public:
-		explicit	UIDragHandleRenderer ( UIDragHandle* );
-					~UIDragHandleRenderer( void );
+		explicit				UIDragHandleRenderer ( UIDragHandle* );
+								~UIDragHandleRenderer( void );
 
-		bool PreRender ( void ) override;
+		bool					EndRender ( void ) override;
 
 	public:
-		UIDragHandle*	m_ui;
+		UIDragHandle*		m_ui;
 	};
 }
 

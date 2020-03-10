@@ -41,7 +41,7 @@ PlayerLeyo::PlayerLeyo ( void )
 
 	SetupDepthOffset( -1.0F, 0.0F );
 	m_sprite->SpriteGenParams().normal_default = Vector3f(0, 2.0F, 1.0F).normal();
-	m_sprite->SetSpriteFile("sprites/leo.gal");
+	m_sprite->SetSpriteFile("sprites/leo.gal", NULL);
 	m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y - 8 );
 	
 	//this->AddFromFile(animation::TYPE_IDLE, 0, "sprites/tests/demon-run.gal"); // silent sky animation test
@@ -151,8 +151,8 @@ void PlayerLeyo::CameraUpdate ( void )
 {
 	// Create limited camera position
 	Vector3f cam_pos_limited = position + Vector3f(0, -16, 0);
-	cam_pos_limited.x = math::clamp<Real>(cam_pos_limited.x, camera->ortho_size.x * 0.5F, 100000);
-	cam_pos_limited.y = math::clamp<Real>(cam_pos_limited.y, camera->ortho_size.y * 0.5F, 100000);
+	cam_pos_limited.x = math::clamp<Real>(cam_pos_limited.x, camera->orthoSize.x * 0.5F, 100000);
+	cam_pos_limited.y = math::clamp<Real>(cam_pos_limited.y, camera->orthoSize.y * 0.5F, 100000);
 
 	Real camera_delta = (cam_pos_limited - camera_position).magnitude();
 	

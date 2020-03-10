@@ -29,12 +29,12 @@ namespace M04
 		engine::ObjectBase*	m_object;
 
 	public:
-		Vector3f	position;
-		float		angle;
-		Vector3f	scale;
+		Vector3f		position;
+		float			angle;
+		Vector3f		scale;
 
-		uint32_t	m_data_storage_buffer_size;
-		char*		m_data_storage_buffer;
+		uint32_t		m_data_storage_buffer_size;
+		char*			m_data_storage_buffer;
 
 	public:
 		RrLight*		light;
@@ -46,9 +46,11 @@ namespace M04
 		
 		//		Objects ()
 		// Returns read-only list of all editor objects
-		GAME_API static const std::vector<EditorObject*>& Objects ( void );
+		GAME_API static const std::vector<EditorObject*>&
+							Objects ( void );
 	private:
-		static std::vector<EditorObject*>	m_objects;
+		static std::vector<EditorObject*>
+						m_objects;
 	};
 }
 

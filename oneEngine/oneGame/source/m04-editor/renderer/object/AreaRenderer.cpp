@@ -23,7 +23,7 @@ AreaRenderer::AreaRenderer ( void )
 											renderer::shader::Location::kUV0,
 											renderer::shader::Location::kColor};
 	spritePass.setVertexSpecificationByCommonList(t_vspec, 3);
-	spritePass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
+	spritePass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
 	PassInitWithInput(0, &spritePass);
 
 	// Start off with empty model data
@@ -63,7 +63,7 @@ bool AreaRenderer::EndRender ( void )
 		m_modeldata.color = new Vector4f [kMaxVertices];
 		m_modeldata.texcoord0 = new Vector3f [kMaxVertices];
 
-		memset(m_modeldata.position, 0, sizeof(arModelVertex) * kMaxVertices);
+		memset(m_modeldata.position, 0, sizeof(Vector3f) * kMaxVertices);
 	}
 	// Reset count
 	m_modeldata.indexNum = 0;

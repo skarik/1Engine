@@ -6,7 +6,10 @@
 
 #include "engine/utils/CDeveloperConsole.h"
 
-#include "engine-common/dusk/CDuskGUI.h"
+#include "engine-common/dusk/UI.h"
+#include "engine-common/dusk/controls/Button.h"
+#include "engine-common/dusk/controls/Panel.h"
+#include "engine-common/dusk/controls/Label.h"
 #include "engine-common/entities/CRendererHolder.h"
 
 #include "renderer/texture/RrFontTexture.h"
@@ -24,10 +27,8 @@ DeveloperMenu::DeveloperMenu ( void )
 	}
 	// Build Dusk Gui
 	{
-		dusk = new CDuskGUI(
-			new RrFontTexture( "YanoneKaffeesatz-R.otf", 16 )
-		);
-		dusk->SetPixelMode(true);
+		dusk = new dusk::UserInterface;
+		//dusk->SetPixelMode(true);
 
 		uiCreate();
 	}
@@ -57,32 +58,28 @@ void DeveloperMenu::Update ( void )
 void DeveloperMenu::uiCreate ( void )
 {
 	{
-		Dusk::Handle panel;
-		Dusk::Handle button, label;
+		dusk::Element* panel;
+		dusk::Element* button;
+		dusk::Element* label;
 
 		// Make base panel
-		panel = dusk->CreatePanel();
-		panel.SetRect( Rect( 100,100,200,400 ) );
+		panel = dusk->Add<dusk::elements::Panel>( dusk::ElementCreationDescription{NULL, Rect( 100,100,200,400 )} );
 
 		// Create buttons
-		button = dusk->CreateButton( panel );
-		button.SetRect( Rect( 20,50,150,20 ) );
-		button.SetText( "Editor (Test 1)" );
+		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,50,150,20 )} );
+		button->m_contents = "Editor (Test 1)";
 		ui_main_editor = button;
 
-		button = dusk->CreateButton( panel );
-		button.SetRect( Rect( 20,100,150,20 ) );
-		button.SetText( "Actually game" );
+		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,100,150,20 )} );
+		button->m_contents = "Actually game";
 		ui_main_testg = button;
 
-		button = dusk->CreateButton( panel );
-		button.SetRect( Rect( 20,150,150,20 ) );
-		button.SetText( "Test 0" );
+		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,150,150,20 )} );
+		button->m_contents = "Test 0";
 		ui_main_test0 = button;
 
-		button = dusk->CreateButton( panel );
-		button.SetRect( Rect( 20,200,150,20 ) );
-		button.SetText( "Game (don't click)" );
+		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,200,150,20 )} );
+		button->m_contents = "Game (don't click)";
 		ui_main_game = button;
 	}
 }
@@ -93,19 +90,19 @@ void DeveloperMenu::uiCreate ( void )
 // handle inputs to the buttons on main panel
 void DeveloperMenu::uiStepMainPanel ( void )
 {
-	if ( ui_main_editor.GetButtonClicked() )
+	if ( ui_main_editor->as<dusk::elements::Button>()->Pressed() )
 	{
 		engine::Console->RunCommand( "scene editorm04" );
 	}
-	else if ( ui_main_testg.GetButtonClicked() )
+	else if ( ui_main_testg->as<dusk::elements::Button>()->Pressed() )
 	{
 		engine::Console->RunCommand( "scene game_luvppl" );
 	}
-	else if ( ui_main_test0.GetButtonClicked() )
+	else if ( ui_main_test0->as<dusk::elements::Button>()->Pressed() )
 	{
 		engine::Console->RunCommand( "scene test0" );
 	}
-	else if ( ui_main_game.GetButtonClicked() )
+	else if ( ui_main_game->as<dusk::elements::Button>()->Pressed() )
 	{
 		while ( true )
 			debug::Console->PrintError("HA ");

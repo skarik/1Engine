@@ -20,43 +20,44 @@ namespace M04
 	class PlayerLeyo : public CGameBehavior, public Engine2D::SpriteContainer
 	{
 	public:
-		explicit		PlayerLeyo ( void );
-						~PlayerLeyo ( void );
+		explicit			PlayerLeyo ( void );
+							~PlayerLeyo ( void );
 
-		void			Update ( void ) override;
-		void			PostFixedUpdate ( void ) override;
+		void				Update ( void ) override;
+		void				PostFixedUpdate ( void ) override;
 
 	public:
-		static PlayerLeyo* active;
+		static PlayerLeyo*
+						active;
 
 	public:
 		// Current state:
 
-		Vector3f flipstate;
+		Vector3f		flipstate;
 		
-		Vector3f position;
-		Vector3f velocity;
+		Vector3f		position;
+		Vector3f		velocity;
 
-		int		camera_mode;
-		float	camera_lerp_mode;
-		float	camera_stuck_time;
-		Vector3f camera_position;
-		Vector3f camera_lockposition;
+		int				camera_mode;
+		float			camera_lerp_mode;
+		float			camera_stuck_time;
+		Vector3f		camera_position;
+		Vector3f		camera_lockposition;
 
 	protected:
 
-		void CameraUpdate ( void );
+		void				CameraUpdate ( void );
 
 
 	protected:
 
 		// Components:
 		
-		CInputControl* input;
-		COrthoCamera* camera;
-		RrLight* light;
-		CRigidbody* bod;
-		UILuvPpl* ui;
+		CInputControl*	input;
+		COrthoCamera*	camera;
+		RrLight*		light;
+		CRigidbody*		bod;
+		UILuvPpl*		ui;
 
 		// Expose values to the editor and serializer
 		BEGIN_OBJECT_DESC(M04::PlayerLeyo);

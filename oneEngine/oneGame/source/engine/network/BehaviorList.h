@@ -24,8 +24,11 @@ enum fieldtype_t : uint32_t
 	FIELD_DEFAULT,
 
 	// Specific field for serializing Vector3's that represent positions.
-	// Only one FIELD_ROTATION is valid per object.
+	// Only one FIELD_POSITION is valid per object.
 	FIELD_POSITION,
+	// Specific field for serializing Vector2's that represent positions.
+	// Only one FIELD_ROTATION is valid per object.
+	FIELD_POSITION2D,
 	// Specific field for serializing Vector4's or Quaternion's that represent rotation.
 	// Only one FIELD_ROTATION is valid per object.
 	FIELD_ROTATION,

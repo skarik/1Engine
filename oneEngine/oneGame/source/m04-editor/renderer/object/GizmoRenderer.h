@@ -13,14 +13,14 @@ namespace M04
 	class GizmoRenderer : public CStreamedRenderable3D
 	{
 	public:
-		GizmoRenderer ( void );
-		~GizmoRenderer( void );
+								GizmoRenderer ( void );
+								~GizmoRenderer( void );
 
-		bool PreRender ( void ) override;
+		bool					EndRender ( void ) override;
 
 	public:
-		EditorObject*	m_target_glow;
-		EditorObject*	m_target_selection;
+		EditorObject*		m_target_glow;
+		EditorObject*		m_target_selection;
 	};
 }
 
