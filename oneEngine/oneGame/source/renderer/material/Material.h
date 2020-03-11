@@ -3,6 +3,8 @@
 
 #include "RrPass.h"
 #include "renderer/texture/RrTexture.h"
+#include "renderer/object/CRenderableObject.h"
+#include "gpuw/GraphicsContext.h"
 
 namespace gpu
 {
@@ -65,16 +67,46 @@ namespace renderer
 		{
 			gpu::BlendState bs;
 			bs.channelMask = 0xFF;
-			bs.enable = (m_pass->m_alphaMode == renderer::kAlphaModeTranslucent) ? true : false;
-			if (m_pass->m_alphaMode == renderer::kAlphaModeTranslucent)
+			if (m_pass->m_blendMode == renderer::kHLBlendModeNone)
 			{
-				bs.dst = gpu::kBlendModeInvSrcAlpha;
-				bs.src = gpu::kBlendModeSrcAlpha;
-				bs.op = gpu::kBlendOpAdd;
+				bs.enable = (m_pass->m_alphaMode == renderer::kAlphaModeTranslucent) ? true : false;
+				if (m_pass->m_alphaMode == renderer::kAlphaModeTranslucent)
+				{
+					bs.dst = gpu::kBlendModeInvSrcAlpha;
+					bs.src = gpu::kBlendModeSrcAlpha;
+					bs.op = gpu::kBlendOpAdd;
 
-				bs.dstAlpha = gpu::kBlendModeOne;
-				bs.srcAlpha = gpu::kBlendModeOne;
-				bs.opAlpha = gpu::kBlendOpAdd;
+					bs.dstAlpha = gpu::kBlendModeOne;
+					bs.srcAlpha = gpu::kBlendModeOne;
+					bs.opAlpha = gpu::kBlendOpAdd;
+				}
+			}
+			else
+			{
+				bs.enable = true;
+				switch (m_pass->m_blendMode)
+				{
+				case renderer::kHLBlendModeNormal:
+					bs.dst = gpu::kBlendModeInvSrcAlpha;
+					bs.src = gpu::kBlendModeSrcAlpha;
+					bs.op = gpu::kBlendOpAdd;
+
+					bs.dstAlpha = gpu::kBlendModeOne;
+					bs.srcAlpha = gpu::kBlendModeOne;
+					bs.opAlpha = gpu::kBlendOpAdd;
+					break;
+				case renderer::kHLBlendModeMultiplyX2:
+					bs.dst = gpu::kBlendModeSrcColor;
+					bs.src = gpu::kBlendModeDstColor;
+					bs.op = gpu::kBlendOpAdd;
+
+					bs.dstAlpha = gpu::kBlendModeOne;
+					bs.srcAlpha = gpu::kBlendModeOne;
+					bs.opAlpha = gpu::kBlendOpAdd;
+					break;
+				default: // Not yet implemented
+					throw false;
+				}
 			}
 
 			m_ctx->setBlendState(bs);

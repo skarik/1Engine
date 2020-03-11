@@ -11,21 +11,15 @@ UILuvPpl::UILuvPpl ( void )
 	memset( &m_modeldata, 0, sizeof(arModelData) );
 
 	// Set up the material and sprite:
-	SetSpriteFile( "sprites/ui/ui_hudparts_tex.gal" );
+	SetSpriteFile( "sprites/ui/ui_hudparts_tex.gal", NULL );
 }
 
 UILuvPpl::~UILuvPpl ( void )
 {
-	if ( m_modeldata.vertices )
-	{
-		delete[] m_modeldata.vertices;
-		m_modeldata.vertices = NULL;
-	}
-	if ( m_modeldata.triangles )
-	{
-		delete[] m_modeldata.triangles;
-		m_modeldata.triangles = NULL;
-	}
+	delete_safe_array(m_modeldata.position);
+	delete_safe_array(m_modeldata.color);
+	delete_safe_array(m_modeldata.texcoord0);
+	delete_safe_array(m_modeldata.indices);
 }
 
 void UILuvPpl::Update ( void )
@@ -34,25 +28,25 @@ void UILuvPpl::Update ( void )
 	
 	// Estimate needed amount of vertices for the text:
 
-	if (m_modeldata.triangles == NULL)
+	if (m_modeldata.indices == NULL)
 	{
-		delete[] m_modeldata.triangles;
-		delete[] m_modeldata.vertices;
+		delete[] m_modeldata.position;
+		delete[] m_modeldata.color;
+		delete[] m_modeldata.texcoord0;
+		delete[] m_modeldata.indices;
 
-		m_modeldata.triangles = new arModelTriangle [512];
-		m_modeldata.vertices = new arModelVertex [1024];
+		m_modeldata.indices = new uint16_t [512 * 3];
+		m_modeldata.position = new Vector3f [1024];
+		m_modeldata.color = new Vector4f [1024];
+		m_modeldata.texcoord0 = new Vector3f [1024];
 
-		memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * 1024);
 		for ( uint i = 0; i < 1024; ++i )
 		{
-			m_modeldata.vertices[i].r = 1.0F;
-			m_modeldata.vertices[i].g = 1.0F;
-			m_modeldata.vertices[i].b = 1.0F;
-			m_modeldata.vertices[i].a = 1.0F;
+			m_modeldata.color[i] = Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 	}
 
-	m_modeldata.triangleNum = 0;
+	m_modeldata.indexNum = 0;
 	m_modeldata.vertexNum = 0;
 
 	Real dx, dy;

@@ -1,41 +1,52 @@
-
-#include "TileSelectorUI.h"
+#include "core/system/Screen.h"
+#include "core/input/CInput.h"
 #include "engine2d/entities/map/TileMap.h"
 
-#include "core/system/Screen.h"
-#include "renderer/material/RrMaterial.h"
+#include "gpuw/Device.h"
+
 #include "renderer/texture/RrTexture.h"
-#include "renderer/system/glMainSystem.h"
-#include "renderer/system/glDrawing.h"
+#include "renderer/material/RrShaderProgram.h"
+#include "renderer/material/Material.h"
 #include "renderer/object/immediate/immediate.h"
 
-#include "core/input/CInput.h"
+#include "TileSelectorUI.h"
 
 using namespace M04;
 
 TileSelectorUI::TileSelectorUI ( void )
 	: CRenderableObject(), m_tileset(NULL)
 {
-	// Sys drawing
-	renderLayer = renderer::kRLV2D;
+	// Pass 0 is the tileset
+	RrPass tilesetPass;
+	tilesetPass.utilSetupAsDefault();
+	tilesetPass.utilSetupAs2D();
+	tilesetPass.m_layer = renderer::kRenderLayerV2D;
+	tilesetPass.m_type = kPassTypeForward;
+	tilesetPass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+	tilesetPass.setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
+	tilesetPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
+	renderer::shader::Location t_vspecA[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor};
+	tilesetPass.setVertexSpecificationByCommonList(t_vspecA, 3);
+	tilesetPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+	PassInitWithInput(0, &tilesetPass);
 
-	// Mat init
-	RrMaterial* draw_mat = new RrMaterial;
-	draw_mat->m_diffuse = Color( 1,1,1,1 );
-	draw_mat->setTexture( TEX_DIFFUSE, new RrTexture("null") );
-	draw_mat->passinfo.push_back( RrPassForward() );
-	draw_mat->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
-	draw_mat->passinfo[0].set2DCommon();
-	SetMaterial( draw_mat );
-	draw_mat->removeReference();
-
-	RrMaterial* ui_mat = new RrMaterial;
-	ui_mat->m_diffuse = Color( 1,1,1,1 );
-	ui_mat->setTexture( TEX_DIFFUSE, new RrTexture( "textures/white.jpg" ) );
-	ui_mat->passinfo.push_back( RrPassForward() );
-	ui_mat->passinfo[0].shader = new RrShader( ".res/shaders/v2d/default.glsl" );
-	ui_mat->passinfo[0].set2DCommon();
-	ui_material = ui_mat;
+	// Pass 1 is the UI overlay
+	RrPass uiPass;
+	uiPass.utilSetupAsDefault();
+	uiPass.utilSetupAs2D();
+	uiPass.m_layer = renderer::kRenderLayerV2D;
+	uiPass.m_type = kPassTypeForward;
+	uiPass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+	uiPass.setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
+	uiPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
+	renderer::shader::Location t_vspecB[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor};
+	uiPass.setVertexSpecificationByCommonList(t_vspecB, 3);
+	uiPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+	PassInitWithInput(1, &uiPass);
 
 	// ui value setup
 	ui_columns = 4;
@@ -45,8 +56,8 @@ TileSelectorUI::TileSelectorUI ( void )
 
 TileSelectorUI::~TileSelectorUI ( void )
 {
-	ui_material->removeReference();
-	delete_safe( ui_material );
+	mesh_buffer_tiles.FreeMeshBuffers();
+	mesh_buffer_ui.FreeMeshBuffers();
 }
 
 //		SetTileMap ( )
@@ -56,15 +67,7 @@ void TileSelectorUI::SetTileMap ( Engine2D::TileMap* target )
 	SetTileset( target->m_tileset );
 
 	// TODO: Convert the texture. For now, set the material based on the input file.
-	m_material->setTexture(
-		TEX_MAIN,
-		new RrTexture (
-			target->m_sprite_file.c_str(), 
-			Texture2D, RGBA8,
-			1024,1024, Clamp,Clamp,
-			MipmapNone,SamplingPoint
-		)
-	);
+	PassAccess(0).setTexture( TEX_DIFFUSE, RrTexture::Load(target->m_sprite_file.c_str()) );
 
 	// ui value setup
 	ui_columns = 5;
@@ -107,13 +110,13 @@ void TileSelectorUI::UISetSelection ( int mouseover )
 	ui_mouseover = mouseover;
 }
 
-bool TileSelectorUI::PreRender ( void ) 
+bool TileSelectorUI::PreRender ( rrCameraPass* pass ) 
 {
-	m_material->prepareShaderConstants();
-	ui_material->prepareShaderConstants();
+	PushCbufferPerObject(this->transform.world, pass);
 	return true;
 }
-bool TileSelectorUI::Render ( const char pass )
+
+bool TileSelectorUI::EndRender ( void )
 {
 	rrMeshBuilder2D builder((uint16_t)(4 + 4 * m_tileset->tiles.size()));
 	rrMeshBuilder2D builderLn(16);
@@ -177,9 +180,54 @@ bool TileSelectorUI::Render ( const char pass )
 		}
 	}
 
-	RrScopedMeshRenderer renderer;
-	renderer.render(this, m_material, 0, builder);
-	renderer.render(this, ui_material, 0, builderLn);
+	arModelData l_tilesModel = builder.getModelData();
+	arModelData l_uiModel = builderLn.getModelData();
 
+	mesh_index_count_tiles = l_tilesModel.indexNum;
+	mesh_index_count_ui = l_uiModel.indexNum;
+
+	mesh_buffer_tiles.InitMeshBuffers(&l_tilesModel);
+	mesh_buffer_ui.InitMeshBuffers(&l_uiModel);
+
+	return true;
+}
+
+bool TileSelectorUI::Render ( const rrRenderParams* params )
+{
+	rrMeshBuffer* l_currentMeshBuffer = (params->pass == 0) ? &mesh_buffer_tiles : &mesh_buffer_ui;
+	uint* l_currentIndexCount = (params->pass == 0) ? &mesh_index_count_tiles : &mesh_index_count_ui;
+
+	if (*l_currentIndexCount > 0)
+	{
+		if ( !l_currentMeshBuffer->m_mesh_uploaded )
+			return true; // Only render when have a valid mesh and rendering enabled
+
+		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+
+		gpu::Pipeline* pipeline = GetPipeline( params->pass );
+		gfx->setPipeline(pipeline);
+		// Set up the material helper...
+		renderer::Material(this, gfx, params->pass, pipeline)
+			// set the depth & blend state registers
+			.setDepthStencilState()
+			.setRasterizerState()
+			// bind the samplers & textures
+			.setBlendState()
+			.setTextures();
+		// bind the vertex buffers
+		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
+			if (l_currentMeshBuffer->m_bufferEnabled[i])
+				gfx->setVertexBuffer(i, &l_currentMeshBuffer->m_buffer[i], 0);
+		// bind the index buffer
+		gfx->setIndexBuffer(&l_currentMeshBuffer->m_indexBuffer, gpu::kIndexFormatUnsigned16);
+		// bind the cbuffers
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
+		// draw now
+		gfx->drawIndexed(*l_currentIndexCount, 0, 0);
+	}
 	return true;
 }

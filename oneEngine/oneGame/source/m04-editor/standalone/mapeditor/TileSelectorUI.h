@@ -2,6 +2,7 @@
 #define _M04_EDITOR_TILE_SELECTOR_UI_
 
 #include "renderer/object/CRenderableObject.h"
+#include "renderer/object/mesh/system/rrMeshBuffer.h"
 
 namespace Engine2D
 {
@@ -17,8 +18,9 @@ namespace M04
 		explicit	TileSelectorUI ( void );
 					~TileSelectorUI ( void );
 
-		bool		PreRender ( void ) override;
-		bool		Render ( const char pass ) override;
+		bool		PreRender ( rrCameraPass* passs ) override;
+		bool		Render ( const rrRenderParams* params ) override;
+		bool		EndRender ( void ) override;
 
 		//		SetTileMap ( )
 		// Sets the tilemap containing the tileset data that need to pull from
@@ -39,14 +41,17 @@ namespace M04
 		Engine2D::Tileset*	m_tileset;
 
 	protected:
-		RrMaterial*			ui_material;
-
 		int					ui_columns;
 		int					ui_spacing;
 		Vector2f			ui_scale;
 		Vector2f			ui_base_offset;
 
 		int					ui_mouseover;
+
+		uint				mesh_index_count_tiles;
+		uint				mesh_index_count_ui;
+		rrMeshBuffer		mesh_buffer_tiles;
+		rrMeshBuffer		mesh_buffer_ui;
 	};
 };
 

@@ -115,6 +115,10 @@ public:
 	renderer::rrAlphaMode
 						m_alphaMode;
 
+	// Blend settings:
+	renderer::rrHLBlendMode
+						m_blendMode;	// Defaults to kHLBlendModeNone. If set otherwise, will override m_alphaMode.
+
 	// Depth settings:
 	bool				m_depthWrite;
 	gpu::CompareOp		m_depthTest;
@@ -142,6 +146,11 @@ public:
 		// Do not ever use for normal objects due to memory considerations.
 		RENDER_API void			setTexture ( const rrTextureSlot slot, gpu::Texture* n_texture )
 			{ m_pass->setTexture(slot, n_texture); }
+
+		//	setHLBlendMode ( blendMode ) : Sets material blend mode.
+		// If not set to kHLBlendModeNone, will override any alpha mode.
+		RENDER_API void			setHLBlendMode ( const renderer::rrHLBlendMode blendMode )
+			{ m_pass->m_blendMode = blendMode; }
 
 	private:
 		RrPass*				m_pass;

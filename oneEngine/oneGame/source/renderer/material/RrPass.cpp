@@ -23,6 +23,7 @@ void RrPass::utilSetupAsDefault ( void )
 	m_cullMode = gpu::kCullModeBack;
 	m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
 	m_alphaMode = renderer::kAlphaModeNone;
+	m_blendMode = renderer::kHLBlendModeNone;
 	m_depthWrite = true;
 	m_depthTest = gpu::kCompareOpLess;
 	m_layer = renderer::kRenderLayerWorld;

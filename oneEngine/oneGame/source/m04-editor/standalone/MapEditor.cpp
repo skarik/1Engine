@@ -16,7 +16,7 @@
 #include "renderer/camera/RrCamera.h"
 #include "renderer/debug/RrDebugDrawer.h"
 #include "renderer/light/RrLight.h"
-#include "renderer/material/RrMaterial.h"
+#include "renderer/material/Material.h"
 #include "render2d/camera/COrthoCamera.h"
 #include "render2d/object/Background2D.h"
 #include "render2d/object/TileMapLayer.h"

@@ -66,7 +66,7 @@ namespace dusk
 		ENGCOM_API Element*		operator->();
 
 		template <typename T>
-		ENGCOM_API T*			as (void)
+		T*						as (void)
 			{ return static_cast<T*>(updateElement(NULL)); }
 
 	public:

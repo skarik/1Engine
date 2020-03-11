@@ -1,16 +1,15 @@
-
-#include "m04/entities/TalkerBox.h"
+#include <cctype>
 
 #include "core/math/Rect.h"
 #include "core/math/Math.h"
 #include "core/math/Easing.h"
 #include "core/math/random/Random.h"
 
-#include "renderer/material/RrMaterial.h"
+#include "renderer/material/Material.h"
 #include "renderer/types/fontEnums.h"
 #include "render2d/object/CTextMesh.h"
 
-#include <cctype>
+#include "m04/entities/TalkerBox.h"
 
 using namespace M04;
 
@@ -20,77 +19,65 @@ public:
 	TalkerBoxBackground ( void )
 		: CRenderable2D()
 	{
-		SetSpriteFile( "sprites/ui/ui_msgbox.gal" );
+		SetSpriteFile( "sprites/ui/ui_msgbox.gal", NULL );
 
 		memset( &m_modeldata, 0, sizeof(arModelData) );
 	}
 	~TalkerBoxBackground ( void )
 	{
-		if ( m_modeldata.triangles )
-		{
-			delete [] m_modeldata.triangles;
-		}
-		if ( m_modeldata.vertices )
-		{
-			delete [] m_modeldata.vertices;
-		}
+		delete_safe_array(m_modeldata.position);
+		delete_safe_array(m_modeldata.color);
+		delete_safe_array(m_modeldata.texcoord0);
+		delete_safe_array(m_modeldata.indices);
 	}
 
 	void GenerateMesh ( const Vector2f& size )
 	{
 		// Estimate needed amount of vertices for the text:
 
-		if (m_modeldata.triangles == NULL)
+		if (m_modeldata.indices == NULL)
 		{
-			delete [] m_modeldata.triangles;
-			delete [] m_modeldata.vertices;
+			delete [] m_modeldata.position;
+			delete [] m_modeldata.color;
+			delete [] m_modeldata.texcoord0;
+			delete [] m_modeldata.indices;
 
-			m_modeldata.triangleNum = 2 * 16;
+			m_modeldata.indexNum = 2 * 16 * 3;
 			m_modeldata.vertexNum = 4 * 16;
 
-			m_modeldata.triangles = new arModelTriangle [m_modeldata.triangleNum];
-			m_modeldata.vertices = new arModelVertex [m_modeldata.vertexNum];
+			m_modeldata.indices = new uint16_t [m_modeldata.indexNum];
+			m_modeldata.position = new Vector3f [m_modeldata.vertexNum];
+			m_modeldata.color = new Vector4f [m_modeldata.vertexNum];
+			m_modeldata.texcoord0 = new Vector3f [m_modeldata.vertexNum];
 		}
 
 		// Reset mesh data:
 
-		memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * m_modeldata.vertexNum);
 		for ( uint i = 0; i < m_modeldata.vertexNum; ++i )
 		{
-			m_modeldata.vertices[i].r = 1.0F;
-			m_modeldata.vertices[i].g = 1.0F;
-			m_modeldata.vertices[i].b = 1.0F;
-			m_modeldata.vertices[i].a = 1.0F;
+			m_modeldata.color[i] = Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 
 		uint32_t current_vertex = 0;
-		uint32_t current_triangle = 0;
+		uint32_t current_index = 0;
 
-#define PUSH_QUAD( position, uvs ) \
-		m_modeldata.vertices[current_vertex + 0].x = position.pos.x; \
-		m_modeldata.vertices[current_vertex + 0].y = position.pos.y; \
-		m_modeldata.vertices[current_vertex + 0].u = uvs.pos.x / m_spriteInfo.fullsize.x; \
-		m_modeldata.vertices[current_vertex + 0].v = uvs.pos.y / m_spriteInfo.fullsize.y; \
-		m_modeldata.vertices[current_vertex + 1].x = position.pos.x; \
-		m_modeldata.vertices[current_vertex + 1].y = position.pos.y + position.size.y; \
-		m_modeldata.vertices[current_vertex + 1].u = uvs.pos.x / m_spriteInfo.fullsize.x; \
-		m_modeldata.vertices[current_vertex + 1].v = (uvs.pos.y + uvs.size.y) / m_spriteInfo.fullsize.y; \
-		m_modeldata.vertices[current_vertex + 2].x = position.pos.x + position.size.x; \
-		m_modeldata.vertices[current_vertex + 2].y = position.pos.y + position.size.y; \
-		m_modeldata.vertices[current_vertex + 2].u = (uvs.pos.x + uvs.size.x) / m_spriteInfo.fullsize.x; \
-		m_modeldata.vertices[current_vertex + 2].v = (uvs.pos.y + uvs.size.y) / m_spriteInfo.fullsize.y; \
-		m_modeldata.vertices[current_vertex + 3].x = position.pos.x + position.size.x; \
-		m_modeldata.vertices[current_vertex + 3].y = position.pos.y; \
-		m_modeldata.vertices[current_vertex + 3].u = (uvs.pos.x + uvs.size.x) / m_spriteInfo.fullsize.x; \
-		m_modeldata.vertices[current_vertex + 3].v = uvs.pos.y / m_spriteInfo.fullsize.y; \
-		m_modeldata.triangles[current_triangle + 0].vert[0] = current_vertex + 0; \
-		m_modeldata.triangles[current_triangle + 0].vert[1] = current_vertex + 1; \
-		m_modeldata.triangles[current_triangle + 0].vert[2] = current_vertex + 2; \
-		m_modeldata.triangles[current_triangle + 1].vert[0] = current_vertex + 0; \
-		m_modeldata.triangles[current_triangle + 1].vert[1] = current_vertex + 2; \
-		m_modeldata.triangles[current_triangle + 1].vert[2] = current_vertex + 3; \
+#define PUSH_QUAD( rect_position, rect_uvs ) \
+		m_modeldata.position[current_vertex + 0] = rect_position.pos; \
+		m_modeldata.texcoord0[current_vertex + 0] = Vector2f(rect_uvs.pos.x / m_spriteInfo.fullsize.x, rect_uvs.pos.y / m_spriteInfo.fullsize.y); \
+		m_modeldata.position[current_vertex + 1] = Vector2f(rect_position.pos.x, rect_position.pos.y + rect_position.size.y); \
+		m_modeldata.texcoord0[current_vertex + 1] = Vector2f(rect_uvs.pos.x / m_spriteInfo.fullsize.x, (rect_uvs.pos.y + rect_uvs.size.y) / m_spriteInfo.fullsize.y); \
+		m_modeldata.position[current_vertex + 2] = rect_position.pos + rect_position.size; \
+		m_modeldata.texcoord0[current_vertex + 2] = Vector2f((rect_uvs.pos.x + rect_uvs.size.x) / m_spriteInfo.fullsize.x, (rect_uvs.pos.y + rect_uvs.size.y) / m_spriteInfo.fullsize.y); \
+		m_modeldata.position[current_vertex + 3] = Vector2f(rect_position.pos.x + rect_position.size.x, rect_position.pos.y); \
+		m_modeldata.texcoord0[current_vertex + 3] = Vector2f((rect_uvs.pos.x + rect_uvs.size.x) / m_spriteInfo.fullsize.x, rect_uvs.pos.y / m_spriteInfo.fullsize.y); \
+		m_modeldata.indices[current_index + 0] = current_vertex + 0; \
+		m_modeldata.indices[current_index + 1] = current_vertex + 1; \
+		m_modeldata.indices[current_index + 2] = current_vertex + 2; \
+		m_modeldata.indices[current_index + 3] = current_vertex + 0; \
+		m_modeldata.indices[current_index + 4] = current_vertex + 2; \
+		m_modeldata.indices[current_index + 5] = current_vertex + 3; \
 		current_vertex += 4; \
-		current_triangle += 2;
+		current_index += 6;
 
 		// Top of the box:
 
@@ -152,71 +139,68 @@ public:
 	TalkerBoxBackgroundColor ( void )
 		: CRenderable2D()
 	{
-		SetSpriteFile( "textures/white.jpg" );
-		m_material->passinfo[0].m_blend_mode = renderer::BM_MULTIPLY_X2;
+		SetSpriteFile( "textures/white.jpg", NULL );
+		
+		PassAccess(0).setHLBlendMode(renderer::kHLBlendModeMultiplyX2);
 
 		memset( &m_modeldata, 0, sizeof(arModelData) );
 	}
 	~TalkerBoxBackgroundColor ( void )
 	{
-		if ( m_modeldata.triangles )
-		{
-			delete [] m_modeldata.triangles;
-		}
-		if ( m_modeldata.vertices )
-		{
-			delete [] m_modeldata.vertices;
-		}
+		delete_safe_array(m_modeldata.position);
+		delete_safe_array(m_modeldata.color);
+		delete_safe_array(m_modeldata.texcoord0);
+		delete_safe_array(m_modeldata.indices);
 	}
 
 	void GenerateMesh ( const Vector2f& size )
 	{
 		// Estimate needed amount of vertices for the text:
 
-		if (m_modeldata.triangles == NULL)
+		if (m_modeldata.indices == NULL)
 		{
-			delete [] m_modeldata.triangles;
-			delete [] m_modeldata.vertices;
+			delete [] m_modeldata.position;
+			delete [] m_modeldata.color;
+			delete [] m_modeldata.texcoord0;
+			delete [] m_modeldata.indices;
 
-			m_modeldata.triangleNum = 2;
+			m_modeldata.indexNum = 2 * 3;
 			m_modeldata.vertexNum = 4;
 
-			m_modeldata.triangles = new arModelTriangle [m_modeldata.triangleNum];
-			m_modeldata.vertices = new arModelVertex [m_modeldata.vertexNum];
+			m_modeldata.indices = new uint16_t [m_modeldata.indexNum];
+			m_modeldata.position = new Vector3f [m_modeldata.vertexNum];
+			m_modeldata.color = new Vector4f [m_modeldata.vertexNum];
+			m_modeldata.texcoord0 = new Vector3f [m_modeldata.vertexNum];
 		}
 
 		// Reset mesh data:
 
-		memset(m_modeldata.vertices, 0, sizeof(arModelVertex) * m_modeldata.vertexNum);
 		for ( uint i = 0; i < m_modeldata.vertexNum; ++i )
 		{
-			m_modeldata.vertices[i].r = 0.3F;
-			m_modeldata.vertices[i].g = 0.2F;
-			m_modeldata.vertices[i].b = 0.4F;
-			m_modeldata.vertices[i].a = 1.0F;
+			m_modeldata.color[i] = Vector4f(0.3F, 0.2F, 0.4F, 1.0F);
 		}
 
 		// Build the quad:
-		m_modeldata.vertices[0].x = 0;
-		m_modeldata.vertices[0].y = 0;
+		m_modeldata.position[0].x = 0;
+		m_modeldata.position[0].y = 0;
 
-		m_modeldata.vertices[1].x = 0;
-		m_modeldata.vertices[1].y = size.y;
+		m_modeldata.position[1].x = 0;
+		m_modeldata.position[1].y = size.y;
 
-		m_modeldata.vertices[2].x = size.x;
-		m_modeldata.vertices[2].y = size.y;
+		m_modeldata.position[2].x = size.x;
+		m_modeldata.position[2].y = size.y;
 
-		m_modeldata.vertices[3].x = size.x;
-		m_modeldata.vertices[3].y = 0;
+		m_modeldata.position[3].x = size.x;
+		m_modeldata.position[3].y = 0;
 
 		// Create quad's triangles:
-		m_modeldata.triangles[0].vert[0] = 0; 
-		m_modeldata.triangles[0].vert[1] = 1; 
-		m_modeldata.triangles[0].vert[2] = 2; 
+		m_modeldata.indices[0] = 0; 
+		m_modeldata.indices[1] = 1; 
+		m_modeldata.indices[2] = 2; 
 
-		m_modeldata.triangles[1].vert[0] = 0;
-		m_modeldata.triangles[1].vert[1] = 2; 
-		m_modeldata.triangles[1].vert[2] = 3; 
+		m_modeldata.indices[3] = 0;
+		m_modeldata.indices[4] = 2; 
+		m_modeldata.indices[5] = 3; 
 
 		// Now with the mesh built, push it to the modeldata :)
 		PushModeldata();
@@ -364,7 +348,7 @@ void TalkerBox::Update ( void )
 	m_textmesh->transform.world.position	= Vector3f( position.x, position.y, -100 );
 
 	// Update text alpha
-	m_textmesh->GetMaterial()->m_diffuse.alpha = m_fadeLerpX;
+	m_textmesh->PassGetSurface(0).diffuseColor.w = m_fadeLerpX;
 
 	// Update background positions
 	if (m_boxbackground)

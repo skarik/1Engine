@@ -57,7 +57,7 @@ namespace dusk
 
 		//	Add() : Adds a new element of the given type.
 		template <class ElementType>
-		ENGCOM_API ElementType*	Add ( const ElementCreationDescription& desc )
+		ElementType*			Add ( const ElementCreationDescription& desc )
 		{
 			ElementType* item = new ElementType();
 			AddInitialize(item, desc);

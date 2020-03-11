@@ -40,15 +40,14 @@ void AnimationContainer::PreStep ( void )
 	animation_entry_t* entry = m_animations[m_current_animation].first;
 	AnimationContainerSubstate* state = m_animations[m_current_animation].second;
 
-	/*m_sprite->GetMaterial()->m_texcoordOffset = Vector4f(
+	m_sprite->PassGetSurface(0).textureOffset = Vector4f(
 		(state->m_frame % entry->texture.frame_count.x) / (Real)entry->texture.frame_count.x,
 		(state->m_frame / entry->texture.frame_count.x) / (Real)entry->texture.frame_count.y,
 		0,0);
-	m_sprite->GetMaterial()->m_texcoordScaling = Vector4f(
+	m_sprite->PassGetSurface(0).textureScale = Vector4f(
 		1.0F / (Real)entry->texture.frame_count.x,
 		1.0F / (Real)entry->texture.frame_count.y,
-		0,0);*/
-	// TODO: Put those into the constant buffers
+		0,0);
 
 	// Update material textures:
 

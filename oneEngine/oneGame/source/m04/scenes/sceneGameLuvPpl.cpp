@@ -34,7 +34,7 @@
 #include "physical/physics/shapes/PrMesh.h"
 
 #include "render2d/object/Background2D.h"
-#include "renderer/material/RrMaterial.h"
+#include "renderer/material/Material.h"
 
 void sceneGameLuvPpl::LoadScene ( void )
 {
@@ -121,7 +121,7 @@ void sceneGameLuvPpl::LoadScene ( void )
 	// Create collision from world
 	Engine2D::CollisionMap* m_collision = new Engine2D::CollisionMap; m_collision->RemoveReference();
 	m_collision->m_tilemap = m_tilemap; m_collision->Rebuild();
-	if (m_collision->m_mesh.triangleNum > 0)
+	if (m_collision->m_mesh.indexNum > 0)
 	{
 		PrMesh* shape = new PrMesh();
 		shape->Initialize(&m_collision->m_mesh, true);
@@ -143,8 +143,8 @@ void sceneGameLuvPpl::LoadScene ( void )
 	// Create background
 	{
 		CRenderable2D* bg = new renderer::Background2D();
-		bg->SetSpriteFile("textures/white.jpg");
-		bg->GetMaterial()->m_diffuse = Color(0.5F,0.5F,0.5F);
+		bg->SetSpriteFile("textures/white.jpg", NULL);
+		bg->PassGetSurface(0).diffuseColor = Color(0.5F,0.5F,0.5F);
 		(new CRendererHolder (bg))->RemoveReference();
 	}
 
