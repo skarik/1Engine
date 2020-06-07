@@ -98,14 +98,20 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, Buffer* buffer, uint32_t o
 {
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeVertex);
 	ARCORE_ASSERT(m_pipeline != NULL);
-	ARCORE_ASSERT(slot < m_pipeline->vv_inputBindingsCount);
+	ARCORE_ASSERT(slot < (int)m_pipeline->vv_inputBindingsCount);
+
+#ifdef _ENGINE_DEBUG
+	m_vertexBuffers[slot] = buffer;
+#endif//_ENGINE_DEBUG
 
 	glVertexArrayVertexBuffer((GLuint)m_pipeline->nativePtr(),
 							  (GLuint)slot,
 							  (GLuint)buffer->nativePtr(),
 							  (GLintptr)offset,
 							  (GLsizei)m_pipeline->vv_inputBindings[slot].stride);
-	//						  (GLsizei)gpu::FormatGetByteStride(buffer->getFormat()));
+	glVertexArrayBindingDivisor((GLuint)m_pipeline->nativePtr(),
+								(GLuint)slot,
+								((GLuint)m_pipeline->vv_inputBindings[slot].inputRate == kInputRatePerVertex) ? 0 : 1);
 
 	return kError_SUCCESS;
 }
@@ -182,9 +188,17 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 	{
 		glUseProgram((GLuint)m_pipeline->m_pipeline->m_program);
 
-		if (m_pipeline->m_boundIndexBuffer != m_indexBuffer)
+		// TODO: don't force unbinding element buffer
+		if (m_pipeline->m_boundIndexBuffer == NULL || m_pipeline->m_boundIndexBuffer != m_indexBuffer)
 		{
-			glVertexArrayElementBuffer((GLuint)m_pipeline->nativePtr(), (GLuint)m_indexBuffer->nativePtr());
+			if (m_pipeline->m_boundIndexBuffer == NULL)
+			{
+				glVertexArrayElementBuffer((GLuint)m_pipeline->nativePtr(), 0);
+			}
+			else
+			{
+				glVertexArrayElementBuffer((GLuint)m_pipeline->nativePtr(), (GLuint)m_indexBuffer->nativePtr());
+			}
 			m_pipeline->m_boundIndexBuffer = m_indexBuffer;
 		}
 		
@@ -202,8 +216,15 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 		// Update topology
 		m_primitiveType = m_pipeline->ia_topology;
 
-		// TODO: loop through the vertex buffers & make sure the pipeline is setup properly.
-		//		 dx11 has proper error handling for this case, but opengl does not as it forces a driver restart
+#ifdef _ENGINE_DEBUG
+		// loop through the vertex buffers & make sure the pipeline is setup properly.
+		// dx11 has proper error handling for this case, but opengl does not as it forces a driver restart
+		for (uint32_t slot = 0; slot < m_pipeline->vv_inputBindingsCount; ++slot)
+		{
+			ARCORE_ASSERT(m_vertexBuffers[slot] != NULL);
+		}
+#endif//_ENGINE_DEBUG
+
 		m_pipelineBound = true;
 		return kError_SUCCESS;
 	}

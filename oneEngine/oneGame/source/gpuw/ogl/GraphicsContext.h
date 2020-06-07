@@ -139,6 +139,10 @@ namespace gpu
 
 		Sampler*				m_defaultSampler;
 
+#ifdef _ENGINE_DEBUG
+		Buffer*					m_vertexBuffers[32];
+#endif//_ENGINE_DEBUG
+
 		int						drawPreparePipeline ( void );
 	};
 }
