@@ -47,6 +47,11 @@ namespace gpu
 		// Input assembler outputs
 		PrimitiveTopology	ia_topology;
 		bool				ia_primitiveRestartEnable;
+
+		// Vertex shader inputs
+		VertexInputBindingDescription*
+							vv_inputBindings;
+		uint32_t			vv_inputBindingsCount;
 	};
 }
 

@@ -13,7 +13,6 @@
 
 #include <stdio.h>
 
-//typedef void (APIENTRY  *GLDEBUGPROC)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
 void APIENTRY DebugCallback(GLenum source​, GLenum type​, GLuint id​, GLenum severity​, GLsizei length​, const GLchar* message​, const void* userParam​);
 
 static gpu::Device* m_TargetDisplayDevice = NULL;
@@ -50,10 +49,12 @@ gpu::Device::~Device ( void )
 int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
 {
 	// Save layers for creation later
-	if (m_layers != NULL && layerCount != 0)
+	if (layers != NULL && layerCount != 0)
 	{
 		m_layers = new DeviceLayer[layerCount];
 		m_layerCount = layerCount;
+
+		memcpy(m_layers, layers, sizeof(DeviceLayer) * m_layerCount);
 	}
 
 	// Create device context:
@@ -267,10 +268,15 @@ gpu::ComputeContext* gpu::Device::getComputeContext ( void )
 
 void APIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
+	// TODO: proper message reporting
 	ARCORE_ASSERT(type != GL_DEBUG_TYPE_ERROR);
 	if (type == GL_DEBUG_TYPE_ERROR)
 	{
 	}
+	// Copy-pasted from OpenGL wiki:
+	fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+		(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+		type, severity, message);
 }
 
 #endif

@@ -51,10 +51,16 @@ int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
 	}
 	else
 	{
+		// Override with default framebuffer options
+		attachmentCount = 1;
+		attachments[0] = GL_FRONT_LEFT;
+
 		// Set the framebuffer to the screen's target.
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glNamedFramebufferDrawBuffers(0, attachmentCount, attachments);
 		//glNamedFramebufferDrawBuffer(0, GL_FRONT);
-		glDrawBuffer(GL_FRONT_LEFT);
+		//glDrawBuffer(GL_FRONT_LEFT);
+		//glDrawBuffer(GL_FRONT);
 	}
 
 	return kError_SUCCESS;
@@ -92,12 +98,14 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, Buffer* buffer, uint32_t o
 {
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeVertex);
 	ARCORE_ASSERT(m_pipeline != NULL);
+	ARCORE_ASSERT(slot < m_pipeline->vv_inputBindingsCount);
 
 	glVertexArrayVertexBuffer((GLuint)m_pipeline->nativePtr(),
 							  (GLuint)slot,
 							  (GLuint)buffer->nativePtr(),
 							  (GLintptr)offset,
-							  (GLsizei)gpu::FormatGetByteStride(buffer->getFormat()));
+							  (GLsizei)m_pipeline->vv_inputBindings[slot].stride);
+	//						  (GLsizei)gpu::FormatGetByteStride(buffer->getFormat()));
 
 	return kError_SUCCESS;
 }

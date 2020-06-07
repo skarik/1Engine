@@ -18,6 +18,11 @@ int gpu::Pipeline::create ( Device* device, const PipelineCreationDescription* p
 	ia_topology = params->ia_topology;
 	ia_primitiveRestartEnable = params->ia_primitiveRestartEnable;
 
+	// copy binding info over, since it is needed for ctx::IASetVertexBuffers
+	vv_inputBindings = new VertexInputBindingDescription[params->vv_inputBindingsCount];
+	memcpy(vv_inputBindings, params->vv_inputBindings, sizeof(VertexInputBindingDescription) * params->vv_inputBindingsCount);
+	vv_inputBindingsCount = params->vv_inputBindingsCount;
+
 	for (uint32_t i = 0; i < params->vv_inputAttributesCount; ++i)
 	{
 		GLint size = gpu::FormatComponentCount(params->vv_inputAttributes[i].format);
@@ -44,6 +49,9 @@ int gpu::Pipeline::create ( Device* device, const PipelineCreationDescription* p
 
 int gpu::Pipeline::destroy ( Device* device )
 {
+	if (vv_inputBindings)
+		delete[] vv_inputBindings;
+
 	glDeleteVertexArrays(1, &m_vao);
 	m_vao = 0;
 	return kError_SUCCESS;
