@@ -15,6 +15,7 @@
 
 // Include audio
 #include "audio/AudioMaster.h"
+#include "audio/Source.h"
 
 // Include physics
 #include "physical/module_physical.h"
@@ -92,6 +93,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	RrCamera* l_cam = new RrCamera;
 	engine::Sound* l_music = core::Orphan(engine::Audio.PlaySound("Music.TestAudio"));
 	l_music->SetLooped(true);
+	l_music->SetGain(0.0F);
 
 	// Start off the clock timer
 	Time::Init();
@@ -127,6 +129,13 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			TimeProfiler.BeginTimeProfile( "MN_audio" );
 			aMaster.Update();
 			TimeProfiler.EndTimeProfile( "MN_audio" );
+			// Update gain:
+			{
+				// Fade the music in
+				float t_currentGain = l_music->mySource->options.gain;
+				t_currentGain = std::min(1.0F, t_currentGain + Time::deltaTime);
+				l_music->SetGain(t_currentGain);
+			}
 			// Perform the debug rendering test:
 			{
 				// Draw the world grid

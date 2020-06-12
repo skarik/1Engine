@@ -273,10 +273,17 @@ void APIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severi
 	if (type == GL_DEBUG_TYPE_ERROR)
 	{
 	}
+
+	// TODO
+	if (severity != GL_DEBUG_SEVERITY_NOTIFICATION)
+	{
+	//	AR_DEBUG_BREAK();
+	}
+
 	// Copy-pasted from OpenGL wiki:
-	fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+	/*fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
 		(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-		type, severity, message);
+		type, severity, message);*/
 }
 
 #endif

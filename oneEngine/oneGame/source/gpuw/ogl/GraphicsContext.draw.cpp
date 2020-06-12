@@ -191,7 +191,7 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 		// TODO: don't force unbinding element buffer
 		if (m_pipeline->m_boundIndexBuffer == NULL || m_pipeline->m_boundIndexBuffer != m_indexBuffer)
 		{
-			if (m_pipeline->m_boundIndexBuffer == NULL)
+			if (m_indexBuffer == NULL)
 			{
 				glVertexArrayElementBuffer((GLuint)m_pipeline->nativePtr(), 0);
 			}
