@@ -8,6 +8,8 @@
 
 #include <algorithm>
 
+constexpr uint64_t kMinimumBufferSize = 16; // Old Quadro drivers had issue where this needed to be 4096.
+
 gpu::Buffer::Buffer ( void ) :
 	m_bufferType(kBufferTypeUnknown),
 	m_buffer(0),
@@ -29,13 +31,9 @@ gpuHandle gpu::Buffer::nativePtr ( void )
 static void _AllocateBufferSize ( const GLuint buffer, const uint64_t data_size, const gpu::TransferStyle style )
 {
 	if (style == gpu::kTransferStatic)
-		//glNamedBufferStorage(buffer, (GLsizeiptr)std::max<uint64_t>(data_size, 4096), NULL, GL_MAP_WRITE_BIT); // Attempting to fix Quadro issues
-		glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_MAP_WRITE_BIT);
-	//else if (style == gpu::kTransferDynamic)
-	//	glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
+		glNamedBufferStorage(buffer, (GLsizeiptr)std::max<uint64_t>(data_size, kMinimumBufferSize), NULL, GL_MAP_WRITE_BIT);
 	else if (style == gpu::kTransferStream)
-		//glNamedBufferStorage(buffer, (GLsizeiptr)std::max<uint64_t>(data_size, 4096), NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT); // Attempting to fix Quadro issues
-		glNamedBufferStorage(buffer, (GLsizeiptr)data_size, NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
+		glNamedBufferStorage(buffer, (GLsizeiptr)std::max<uint64_t>(data_size, kMinimumBufferSize), NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
 }
 
 //	initAsVertexBuffer( device, format, element_count ) : Initializes as a vertex buffer.

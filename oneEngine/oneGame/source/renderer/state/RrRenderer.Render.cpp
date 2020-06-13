@@ -626,7 +626,9 @@ Pass_Groups:
 		l_4rGroup[iLayer].m_enabled = false;
 
 		// Create the thread that puts objects into the layer.
-		l_4rThread[iLayer] = std::thread([=, &l_4rGroup]()
+		//l_4rThread[iLayer] = std::thread([&, iLayer]()
+		//Jobs::System::Current::AddJobRequest(Jobs::kJobTypeRendererSorting, [=, &l_4rGroup]()
+		auto sort = ([&, iLayer]()
 		{
 
 		Pass_Collection:
@@ -699,6 +701,8 @@ Pass_Groups:
 			std::sort(l_4rGroup[iLayer].m_4rFog.begin(), l_4rGroup[iLayer].m_4rFog.end(), RenderRequestSorter); 
 			std::sort(l_4rGroup[iLayer].m_4rWarp.begin(), l_4rGroup[iLayer].m_4rWarp.end(), RenderRequestSorter); 
 		});
+
+		sort(); // TODO: Move this to a thread-pool/jobs.
 	}
 
 Render_Groups:
@@ -716,14 +720,15 @@ Render_Groups:
 	gfx->setRenderTarget(&bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
 	
 	// verified: target set properly here
+	//Jobs::System::Current::WaitForJobs(Jobs::kJobTypeRendererSorting); // TODO: doesn't quite work - seems not all the jobs finish here.
 
 	for (uint8_t iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
 	{
-		if (!l_4rThread[iLayer].joinable())
-			continue;
+		//if (!l_4rThread[iLayer].joinable())
+		//	continue;
 
 		// wait for the sorting of this layer to finish:
-		l_4rThread[iLayer].join();
+		//l_4rThread[iLayer].join(); // TODO: Replace with thread-pool/jobs.
 
 	Rendering:
 

@@ -36,13 +36,15 @@ namespace Jobs
 		}
 	};
 
-	enum jobTypeBits : uint8_t
+	enum jobTypeBits : uint32_t
 	{
-		kJobTypeDefault		= 0x01,
-		kJobTypePhysics		= 0x02,
-		kJobTypeEngine		= 0x04,
-		kJobTypeRenderStep	= 0x08,
-		kJobTypeTerrain		= 0x10,
+		kJobTypeDefault		= 0x0001,
+		kJobTypePhysics		= 0x0002,
+		kJobTypeEngine		= 0x0004,
+		kJobTypeRenderStep	= 0x0008,
+		kJobTypeTerrain		= 0x0010,
+
+		kJobTypeRendererSorting	= 0x0100,
 
 		kJobTypeALL = 0xFF
 	};
@@ -57,7 +59,7 @@ namespace Jobs
 	{
 	public:
 		jobTypeBits				type;
-		uint8_t					worker_index;
+		uint32_t				worker_index;
 	};
 	class jobState_t
 	{

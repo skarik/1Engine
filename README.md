@@ -11,10 +11,10 @@ The original EHS engine, now mostly passion project. This the **primary repo** w
 
 For Windows, the following are required:
 * Visual Studio 2015 or later.
-* Some version of the DirectX or Windows SDK (used for Xbox controller support).
+* Some version of the DirectX or Windows SDK (used for Xbox controller support and DirectX support).
 * Relevant SDK for the rendering API being used (except OpenGL, that just magically works).
 * Vulkan SDK (used for compiling shaders for OpenGL and DirectX).
-* Python 3 (also used for compiling shaders).
+* Python 3 (also used for compiling shaders). Pythonw should be associated with the .py extension.
 
 You can compile and run without these with generous applications of self-inflicted pain and suffering, but it is not recommended.
 
@@ -25,8 +25,8 @@ Currently supported platforms:
 * Windows x64 MSClang (In progress...)
 
 Current graphics API support:
-* **OpenGL 4.6 (Default)** - Functional graphics & compute. Incorrect synchronization. Can (maybe) fall back to 4.5.
-* **DirectX 11** - Functional graphics. Incorrect synchronization. Requires both Windows 8.1 SDK and Vulkan SDK.
+* **DirectX 11 (Default)** - Functional graphics. Incorrect synchronization. Requires both Windows 8.1 SDK and Vulkan SDK.
+* **OpenGL 4.6** - May not work with some Windows drivers. Functional graphics & compute. Incorrect synchronization. Can (maybe) fall back to 4.5.
 * **Vulkan 1.X** - In progress. Requires Vulkan SDK, available from LunarG.
 * **DirectX 12** - Planned. Requires both Windows 10 SDK and Vulkan SDK.
 
