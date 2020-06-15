@@ -344,7 +344,7 @@ unsigned int RrRenderer::AddLO ( RrLogicObject * pLO )
 void RrRenderer::RemoveLO ( unsigned int id )
 {
 	// TODO: Optimize this
-	Jobs::System::Current::WaitForJobs( Jobs::kJobTypeRenderStep );
+	core::jobs::System::Current::WaitForJobs( core::jobs::kJobTypeRenderStep );
 
 	// Now set to null now that the object is pretty much gone
 	mLogicObjects[id] = NULL;

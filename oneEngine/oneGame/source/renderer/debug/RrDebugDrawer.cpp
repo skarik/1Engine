@@ -90,8 +90,13 @@ bool RrDebugDrawer::PreRender ( rrCameraPass* cameraPass )
 	// Build the mesh:
 	for ( uint16_t i = 0; i < avLineList.size(); ++i )
 	{
-		uint16_t iIndex = i * 6;
-		uint16_t iVertex = i * 4;
+		uint16_t iIndex		= i * 6;
+		uint16_t iVertex	= i * 4;
+
+		Vector4f lineColor	= (Vector4f)avColorList[i];
+		Vector3f lineStart	= avLineList[i].start;
+		Vector3f lineEnd	= avLineList[i].end;
+		Vector3f lineDelta	= lineStart - lineEnd;
 
 		// Add triangle data
 		m_modeldata.indices[iIndex + 0] = iVertex + 0;
@@ -102,24 +107,24 @@ bool RrDebugDrawer::PreRender ( rrCameraPass* cameraPass )
 		m_modeldata.indices[iIndex + 5] = iVertex + 3;
 
 		// Set line color and world-space offset
-		m_modeldata.color[iVertex + 0] = (Vector4f)avColorList[i];
-		m_modeldata.color[iVertex + 1] = (Vector4f)avColorList[i];
-		m_modeldata.color[iVertex + 2] = (Vector4f)avColorList[i];
-		m_modeldata.color[iVertex + 3] = (Vector4f)avColorList[i];
-		m_modeldata.normal[iVertex + 0] = avLineList[i].start - avLineList[i].end;
-		m_modeldata.normal[iVertex + 1] = avLineList[i].start - avLineList[i].end;
-		m_modeldata.normal[iVertex + 2] = avLineList[i].start - avLineList[i].end;
-		m_modeldata.normal[iVertex + 3] = avLineList[i].start - avLineList[i].end;
+		m_modeldata.color[iVertex + 0] = lineColor;
+		m_modeldata.color[iVertex + 1] = lineColor;
+		m_modeldata.color[iVertex + 2] = lineColor;
+		m_modeldata.color[iVertex + 3] = lineColor;
+		m_modeldata.normal[iVertex + 0] = lineDelta;
+		m_modeldata.normal[iVertex + 1] = lineDelta;
+		m_modeldata.normal[iVertex + 2] = lineDelta;
+		m_modeldata.normal[iVertex + 3] = lineDelta;
 
 		// Line Start
-		m_modeldata.position[iVertex + 0] = avLineList[i].start;
-		m_modeldata.position[iVertex + 1] = avLineList[i].start;
+		m_modeldata.position[iVertex + 0] = lineStart;
+		m_modeldata.position[iVertex + 1] = lineStart;
 		m_modeldata.texcoord0[iVertex + 0] = Vector2f(1.0F, 0.0F);
 		m_modeldata.texcoord0[iVertex + 1] = Vector2f(-1.0F, 0.0F);
 
 		// Line Ending
-		m_modeldata.position[iVertex + 2] = avLineList[i].end;
-		m_modeldata.position[iVertex + 3] = avLineList[i].end;
+		m_modeldata.position[iVertex + 2] = lineEnd;
+		m_modeldata.position[iVertex + 3] = lineEnd;
 		m_modeldata.texcoord0[iVertex + 2] = Vector2f(1.0F, 1.0F);
 		m_modeldata.texcoord0[iVertex + 3] = Vector2f(-1.0F, 1.0F);
 

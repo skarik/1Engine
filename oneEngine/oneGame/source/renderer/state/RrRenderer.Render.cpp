@@ -40,7 +40,7 @@ void RrRenderer::StepPreRender ( void )
 	unsigned int i;
 
 	// Wait for the PostStep to finish:
-	Jobs::System::Current::WaitForJobs( Jobs::kJobTypeRenderStep );
+	core::jobs::System::Current::WaitForJobs( core::jobs::kJobTypeRenderStep );
 
 	// Update the camera system for the next frame
 	auto l_cameraList = RrCamera::CameraList();
@@ -82,7 +82,7 @@ void RrRenderer::StepPreRender ( void )
 	// Begin the logic jobs
 	for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
-			Jobs::System::Current::AddJobRequest( Jobs::kJobTypeRenderStep, &(RrLogicObject::PreStep), mLogicObjects[i] );
+			core::jobs::System::Current::AddJobRequest( core::jobs::kJobTypeRenderStep, &(RrLogicObject::PreStep), mLogicObjects[i] );
 		}
 	}
 	// Perform the synchronous logic jobs
@@ -101,7 +101,7 @@ void RrRenderer::StepPreRender ( void )
 	resourceManager->Update();
 
 	// Wait for all the PreStep to finish:
-	Jobs::System::Current::WaitForJobs( Jobs::kJobTypeRenderStep );
+	core::jobs::System::Current::WaitForJobs( core::jobs::kJobTypeRenderStep );
 }
 
 void RrRenderer::StepPostRender ( void )
@@ -121,7 +121,7 @@ void RrRenderer::StepPostRender ( void )
 	// Begin the post-step render jobs
 	for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
-			Jobs::System::Current::AddJobRequest( Jobs::kJobTypeRenderStep, &(RrLogicObject::PostStep), mLogicObjects[i] );
+			core::jobs::System::Current::AddJobRequest( core::jobs::kJobTypeRenderStep, &(RrLogicObject::PostStep), mLogicObjects[i] );
 		}
 	}
 	// Perform the synchronous logic jobs
@@ -580,7 +580,8 @@ void RrRenderer::RenderObjectListWorld ( rrCameraPass* cameraPass, CRenderableOb
 		std::vector<rrRenderRequest> m_4rWarp;
 	};
 	rrRenderRequestGroup	l_4rGroup [renderer::kRenderLayer_MAX];
-	std::thread				l_4rThread [renderer::kRenderLayer_MAX];
+	//std::thread				l_4rThread [renderer::kRenderLayer_MAX];
+	core::jobs::JobId		l_4rJobs [renderer::kRenderLayer_MAX];
 
 Prerender_Pass:
 
@@ -626,9 +627,7 @@ Pass_Groups:
 		l_4rGroup[iLayer].m_enabled = false;
 
 		// Create the thread that puts objects into the layer.
-		//l_4rThread[iLayer] = std::thread([&, iLayer]()
-		//Jobs::System::Current::AddJobRequest(Jobs::kJobTypeRendererSorting, [=, &l_4rGroup]()
-		auto sort = ([&, iLayer]()
+		l_4rJobs[iLayer] = core::jobs::System::Current::AddJobRequest(core::jobs::kJobTypeRendererSorting, [=, &l_4rGroup]()
 		{
 
 		Pass_Collection:
@@ -701,8 +700,6 @@ Pass_Groups:
 			std::sort(l_4rGroup[iLayer].m_4rFog.begin(), l_4rGroup[iLayer].m_4rFog.end(), RenderRequestSorter); 
 			std::sort(l_4rGroup[iLayer].m_4rWarp.begin(), l_4rGroup[iLayer].m_4rWarp.end(), RenderRequestSorter); 
 		});
-
-		sort(); // TODO: Move this to a thread-pool/jobs.
 	}
 
 Render_Groups:
@@ -719,16 +716,20 @@ Render_Groups:
 	// target proper buffer
 	gfx->setRenderTarget(&bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
 	
-	// verified: target set properly here
-	//Jobs::System::Current::WaitForJobs(Jobs::kJobTypeRendererSorting); // TODO: doesn't quite work - seems not all the jobs finish here.
-
 	for (uint8_t iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
 	{
-		//if (!l_4rThread[iLayer].joinable())
-		//	continue;
-
 		// wait for the sorting of this layer to finish:
-		//l_4rThread[iLayer].join(); // TODO: Replace with thread-pool/jobs.
+		core::jobs::System::Current::WaitForJob(l_4rJobs[iLayer]);
+
+		// Skip if there's nothing
+		if (l_4rGroup[iLayer].m_4rDepthPrepass.empty()
+			&& l_4rGroup[iLayer].m_4rDeferred.empty() 
+			&& l_4rGroup[iLayer].m_4rForward.empty() 
+			&& l_4rGroup[iLayer].m_4rFog.empty() 
+			&& l_4rGroup[iLayer].m_4rWarp.empty())
+		{
+			continue;
+		}
 
 	Rendering:
 

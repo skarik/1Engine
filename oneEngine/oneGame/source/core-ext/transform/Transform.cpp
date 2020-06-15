@@ -634,11 +634,11 @@ void CTransform::PropogateTransforms ( void )
 	// Create a job for each base-level transform to update
 	for ( auto t_tr = CTransform::root.children.begin(); t_tr != CTransform::root.children.end(); ++t_tr )
 	{
-		Jobs::System::Current::AddJobRequest( Jobs::kJobTypeEngine, PropogateSub, *t_tr );
+		core::jobs::System::Current::AddJobRequest( Jobs::kJobTypeEngine, PropogateSub, *t_tr );
 	}
 
 	// Wait for the transforms to propogate before continuing.
-	Jobs::System::Current::WaitForJobs( Jobs::kJobTypeEngine );
+	core::jobs::System::Current::WaitForJobs( Jobs::kJobTypeEngine );
 #endif
 }
 #endif

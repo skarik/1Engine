@@ -48,7 +48,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	CGameSettings gameSettings ( (string)lpCmdLine );
 
 	// Create jobs system
-	Jobs::System jobSystem (4);
+	core::jobs::System jobSystem (4);
 
 	// Create resource system
 	core::ArResourceManager::Active()->Initialize();

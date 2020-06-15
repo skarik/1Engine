@@ -55,7 +55,7 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	}
 
 	// Create jobs system
-	Jobs::System jobSystem (4);
+	core::jobs::System jobSystem (4);
 
 	// Create resource system
 	core::ArResourceManager::Active()->Initialize();
