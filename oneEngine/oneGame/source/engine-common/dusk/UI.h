@@ -61,7 +61,8 @@ namespace dusk
 		{
 			ElementType* item = new ElementType();
 			AddInitialize(item, desc);
-			m_elements.push_back(item);
+			m_elements.push_back(item); // New element, tree needs regen.
+			m_treeNeedsGeneration = true; 
 			ARCORE_ASSERT(AddInitializeCheckValid(item));
 			return item;
 		}
@@ -87,6 +88,8 @@ namespace dusk
 		void					DestroyElement ( const size_t handle );
 
 
+		void					GenerateElementTree ( void );
+		void					UpdateElementPositions ( void );
 		void					UpdateMouseOver ( void );
 		void					UpdateFocus ( void );
 		void					UpdateElements ( void );
@@ -109,11 +112,18 @@ namespace dusk
 		// List of rects that must be updated & re-rendered.
 		std::vector<Rect>	m_forcedUpdateAreas;
 
-		//std::vector<Vector2f> offsetList;
 
-		std::vector<Vector2f>
-							m_updateOffsets;
+		//std::vector<Vector2f>
+		//					m_updateOffsets;
 
+		struct ElementNode
+		{
+			size_t				index;
+			std::vector<ElementNode>
+								children;
+		};
+		ElementNode			m_elementTreeBase;
+		bool				m_treeNeedsGeneration = false;
 
 	private:
 		friend UIRenderer; // Give UI renderer dangerous access to sidestep creating accessors for only one class.

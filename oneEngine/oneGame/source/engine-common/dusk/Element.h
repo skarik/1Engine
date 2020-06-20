@@ -22,10 +22,6 @@ namespace dusk
 	public:
 		// Constructor for defaul val
 		explicit				Element ( void ) :
-			m_destructionRequested( false ),
-			m_parent(NULL),
-			m_contents(""), m_tooltip(""),
-			m_visible(true), m_canFocus(true),
 			m_isMouseIn(false), m_isFocused(false), m_isEnabled(true), m_isActivated(false),
 			m_wasDrawn(false)
 			{}
@@ -48,20 +44,22 @@ namespace dusk
 
 	public:
 		// Set to true when needs deletion by system
-		bool				m_destructionRequested;
+		bool				m_destructionRequested = false;
 
 		// Local rect for positioning
 		Rect				m_localRect;
+		// Ignore position set up by automatic layout
+		bool				m_ignoreAutoLayout = false;
 		// Reference to parent.
-		dusk::Element*		m_parent;
+		dusk::Element*		m_parent = NULL;
 		// String for contents, often a label.
-		std::string			m_contents;
+		std::string			m_contents = "";
 		// String for tooltip, shown when mouse hovers over the element rect.
-		std::string			m_tooltip;
+		std::string			m_tooltip = "";
 		// Is currently visible
-		bool				m_visible;
+		bool				m_visible = true;
 		// Can be focused?
-		bool				m_canFocus;
+		bool				m_canFocus = true;
 
 		// Mouse is in element...?
 		bool				m_isMouseIn;
