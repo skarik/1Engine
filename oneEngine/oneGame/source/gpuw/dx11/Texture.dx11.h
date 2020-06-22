@@ -42,16 +42,16 @@ namespace gpu
 		friend ComputeContext;
 		friend RenderTarget;
 
-		void*							m_texture;
+		void*							m_texture = NULL;
 		core::gfx::tex::arTextureType	m_type;
 		core::gfx::tex::arColorFormat	m_format;
-		void*							m_srv;
+		void*							m_srv = NULL;
 
-		unsigned int					m_width;
-		unsigned int					m_height;
-		unsigned int					m_depth;
-		unsigned int					m_levels;
-		unsigned int					m_dxFormat;
+		unsigned int					m_width = 0;
+		unsigned int					m_height = 0;
+		unsigned int					m_depth = 0;
+		unsigned int					m_levels = 0;
+		unsigned int					m_dxFormat = 0;
 	};
 
 	// Create a write-only texture.
@@ -79,11 +79,11 @@ namespace gpu
 		friend ComputeContext;
 		friend RenderTarget;
 
-		void*							m_texture;
+		void*							m_texture = NULL;
 		core::gfx::tex::arTextureType	m_type;
 		core::gfx::tex::arColorFormat	m_format;
 		//void*							m_srv;
-		unsigned int					m_dxFormat;
+		unsigned int					m_dxFormat = 0;
 	};
 }
 

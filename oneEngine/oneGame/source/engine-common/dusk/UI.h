@@ -31,7 +31,14 @@ namespace dusk
 			{}
 	};
 
-	enum ElementHandleConstants
+	struct LayoutCreationDescription : public ElementCreationDescription
+	{
+		LayoutCreationDescription(Element* in_parent)
+			: ElementCreationDescription(in_parent, Rect())
+			{}
+	};
+
+	enum ElementHandleConstants : uint32_t
 	{
 		kElementHandleInvalid = 0xFFFFFFFF,
 	};
@@ -73,15 +80,18 @@ namespace dusk
 		//	ExitDialogue(element) : Exit dialogue mode of the system.
 		ENGCOM_API void			ExitDialogue ( Element* element );
 
+		//	IsMouseInside() : Checks if mouse cursor is currently inside any active element
+		ENGCOM_API bool			IsMouseInside ( void );
+
 	private:
 
 		//	AddInitialize(element, desc) : Initializes the element with the given description.
 		// Used after an element is instantiated, applies the given parameters.
-		Element*				AddInitialize ( Element* element, const ElementCreationDescription& desc );
+		ENGCOM_API Element*		AddInitialize ( Element* element, const ElementCreationDescription& desc );
 
 		//	AddInitializeCheckValid(element) : Checks the given element has the correct index.
 		// To be used as part of an assertion check.
-		bool					AddInitializeCheckValid ( Element* element );
+		ENGCOM_API bool			AddInitializeCheckValid ( Element* element );
 
 		//	DestroyElement() : Destroys the element with the given index/handle.
 		// Used internally to remove elements.
@@ -112,13 +122,11 @@ namespace dusk
 		// List of rects that must be updated & re-rendered.
 		std::vector<Rect>	m_forcedUpdateAreas;
 
-
-		//std::vector<Vector2f>
-		//					m_updateOffsets;
+		// TODO: track those with visibility states that were toggled
 
 		struct ElementNode
 		{
-			size_t				index;
+			uint32_t			index;
 			std::vector<ElementNode>
 								children;
 		};

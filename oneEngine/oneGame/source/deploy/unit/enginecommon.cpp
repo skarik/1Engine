@@ -42,6 +42,12 @@
 // Steam Include
 #include "steam/steam_api.h"
 
+// Include Dusk UI
+#include "engine-common/dusk/UI.h"
+#include "engine-common/dusk/controls/Panel.h"
+#include "engine-common/dusk/controls/Button.h"
+#include "engine-common/dusk/controls/Label.h"
+
 int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 {	ARUNIT_BUILD_CMDLINE
 
@@ -94,10 +100,14 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	audio::Master aMaster;
 	debug::Console->PrintMessage( "Audio master created.\n" );
 
-	// Initialize steam
+	// Initialize Steam
+#if 0
 	bool bSteamy = SteamAPI_Init();
 	debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
-	
+#else
+	bool bSteamy = false;
+#endif
+
 	// Create the engine systems
 	//Lua::CLuaController* luaController = new Lua::CLuaController();
 	engine::CDeveloperConsole* engConsole = new engine::CDeveloperConsole();
@@ -109,8 +119,34 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	CGameScene* pNewScene = CGameScene::NewScene<gmsceneSystemLoader> ();
 	CGameScene::SceneGoto( pNewScene );
 
-	// Create debug camera to show stuff
+	// Create debug camera to show stuff (overriding the existing camera)
 	RrCamera* l_cam = new RrCamera;
+
+	// Create a debugging Dusk menu
+	{
+		dusk::Element* panel;
+		dusk::Element* button;
+
+		dusk::UserInterface* dusk = new dusk::UserInterface;
+
+		// Make base panel
+		panel = dusk->Add<dusk::elements::Panel>( dusk::ElementCreationDescription{NULL, Rect( 100,100,200,400 )} );
+
+		// Create test buttons
+		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,45,150,20 )} );
+		button->m_contents = "Button 1";
+
+		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,70,150,20 )} );
+		button->m_contents = "Button 2";
+
+		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,95,150,20 )} );
+		button->m_contents = "Button 3";
+
+		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,120,150,20 )} );
+		button->m_contents = "Button 4";
+
+		dusk->RemoveReference();
+	}
 
 	// Start off the clock timer
 	Time::Init();

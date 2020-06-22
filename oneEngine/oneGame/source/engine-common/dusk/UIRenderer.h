@@ -14,6 +14,7 @@
 
 class RrFontTexture;
 class rrMeshBuffer;
+class rrMeshBuilder2D;
 namespace gpu
 {
 	class RenderTarget;
@@ -63,6 +64,7 @@ namespace dusk
 		gpu::RenderTarget*	m_renderTarget;
 		gpu::Texture*		m_renderTargetTexture;
 		Vector2i			m_renderTargetSize;
+		gpu::Buffer*		m_vbufScreenQuad;
 
 		UserInterface*		m_interface;
 		RrFontTexture*		m_fontTexture;
@@ -156,6 +158,8 @@ namespace dusk
 		Color				m_dsColorGlow;
 
 		UIRenderer*			m_uir;
+		rrMeshBuilder2D*	m_mb2;
+		arModelData*		m_modeldata;
 	};
 }
 

@@ -60,7 +60,6 @@ void DeveloperMenu::uiCreate ( void )
 	{
 		dusk::Element* panel;
 		dusk::Element* button;
-		dusk::Element* label;
 
 		// Make base panel
 		panel = dusk->Add<dusk::elements::Panel>( dusk::ElementCreationDescription{NULL, Rect( 100,100,200,400 )} );

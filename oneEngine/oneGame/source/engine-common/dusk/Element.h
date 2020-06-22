@@ -5,6 +5,7 @@
 #include "core/math/Color.h"
 #include "engine-common/dusk/Handle.h"
 #include <string>
+#include <vector>
 
 namespace dusk
 {
@@ -14,16 +15,29 @@ namespace dusk
 
 	struct UIStepInfo
 	{
-		Vector2f	mouse_position;
+		Vector2f			mouse_position;
+	};
+
+	enum class ElementType : uint8_t
+	{
+		// Element is a normal active control
+		kControl	= 0,
+		// Element only exists to contain data.
+		// Cannot be selected or focused.
+		// Is updated normally, but is skipped in rendering.
+		kMeta		= 1,
+		// Element is used to layout its children.
+		// Cannot be selected or focused.
+		// Is updated normally, but is skipped in rendering. Has special callback for updating children elements.
+		kLayout		= 2,
 	};
 
 	class Element
 	{
 	public:
 		// Constructor for defaul val
-		explicit				Element ( void ) :
-			m_isMouseIn(false), m_isFocused(false), m_isEnabled(true), m_isActivated(false),
-			m_wasDrawn(false)
+		explicit				Element ( const ElementType inElementType = ElementType::kControl )
+			: m_elementType(inElementType)
 			{}
 		virtual					~Element ( void )
 			{}
@@ -48,8 +62,10 @@ namespace dusk
 
 		// Local rect for positioning
 		Rect				m_localRect;
-		// Ignore position set up by automatic layout
+		// Ignore position set up by automatic layout elements
 		bool				m_ignoreAutoLayout = false;
+		// Ignore positoin set up by any layout
+		bool				m_overrideLayout = false;
 		// Reference to parent.
 		dusk::Element*		m_parent = NULL;
 		// String for contents, often a label.
@@ -62,74 +78,65 @@ namespace dusk
 		bool				m_canFocus = true;
 
 		// Mouse is in element...?
-		bool				m_isMouseIn;
+		bool				m_isMouseIn = false;
 		// Element has focus
-		bool				m_isFocused;
+		bool				m_isFocused = false;
 		// Element is active and not locked
-		bool				m_isEnabled;
+		bool				m_isEnabled = true;
 		// Element was activated this frame (ie clicked, used)?
-		bool				m_isActivated;
+		bool				m_isActivated = false;
 		// Element was drawn last frame
-		bool				m_wasDrawn;
+		bool				m_wasDrawn = false;
+
+		// Result actual rect
+		Rect				m_absoluteRect;
 
 	protected:
 		friend UserInterface;
 		friend UIRenderer;
 		friend UIRendererContext;
-		
-		// Result actual rect
-		Rect				m_absoluteRect;
 
 		// The GUI system that this element is associated with
 		UserInterface*		m_interface;
 
-		/*setDown, setHover, setDefault
-		drawRect( Rect )
-		drawRectWire( Rect )
-		drawText( x,y,string )*/
-
-		//=========================================//
-		// GUI Rendering interface
-		//=========================================//
-
-		//void setDrawDown ( void );
-		//void setDrawHover ( void );
-		//void setDrawDefault ( void );
-
-		//// These two cannot mix
-		//void setSubdrawSelection ( void );
-		//void setSubdrawDarkSelection ( void );
-		//// These two cannot mix
-		//void setSubdrawTransparent ( void );
-		//void setSubdrawOpaque ( void );
-		//// These two cannot mix
-		//void setSubdrawNotice ( void );
-		//void setSubdrawError ( void );
-		//// Special states
-		//void setSubdrawPulse ( void );
-		//void setSubdrawOverrideColor ( const Color& color );
-		//// Reset states
-		//void setSubdrawDefault ( void );
-
-		//void drawRect ( const Rect& rect );
-		//void drawRectWire ( const Rect& rect );
-		//void drawLine ( const Real x1, const Real y1, const Real x2, const Real y2 );
-
-		//void drawText ( const Real x, const Real y, const char* str );
-		//void drawTextWidth ( const Real x, const Real y, const Real w, const char* str );
-		//void drawTextCentered ( const Real x, const Real y, const char* str );
-
-		//rrTextBuilder2D* getMeshBuilder ( void );
-
 	private:
 
-		//Rect last_visible_rect;
 		Rect				m_lastRenderedRect;
-		//bool				m_lastRenderedFrame;
-
 		uint32_t			m_index;
-
 		Vector4f			m_rendererData;
+
+		// Element type. Not accessible after construction to child classes.
+		ElementType			m_elementType;
+	};
+
+	class MetaElement : public Element
+	{
+	public:
+		// Constructor for defaul val
+		explicit				MetaElement ( void )
+			: Element(ElementType::kMeta)
+			{}
+	};
+
+	class LayoutElement : public Element
+	{
+	public:
+		// Constructor for defaul val
+		explicit				LayoutElement ( void )
+			: Element(ElementType::kLayout)
+			{}
+
+		//	ResizeChildren() : Called every frame by the UI system.
+		// Requires list of children of the element that need to be laid out.
+		// Resizes are executed from children-to-parent order.
+		virtual void			ResizeChildren ( std::vector<Element*>& elements )
+			{}
+
+		//	LayoutChildren() : Called every frame by the UI system.
+		// Requires list of children of the element that need to be laid out.
+		// Layouts are executed from parent-to-children order. Thus, some width-dependant layouts may take several frames to update correctly.
+		virtual void			LayoutChildren ( std::vector<Element*>& elements )
+			{}
 	};
 };
 

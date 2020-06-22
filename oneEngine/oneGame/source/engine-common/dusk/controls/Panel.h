@@ -9,8 +9,8 @@ namespace elements {
 	class Panel : public dusk::Element
 	{
 	public:
-		ENGCOM_API explicit		Panel (void) :
-			dusk::Element(), m_displayLabel(true)
+		ENGCOM_API explicit		Panel (void)
+			: dusk::Element()
 		{
 			m_canFocus = false;
 		}
@@ -21,7 +21,7 @@ namespace elements {
 		void					Render ( UIRendererContext* uir ) override;
 
 	public:
-		bool				m_displayLabel;
+		bool				m_displayLabel = true;
 	};
 
 }}

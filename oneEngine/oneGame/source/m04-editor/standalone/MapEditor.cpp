@@ -4,11 +4,16 @@
 #include "core/math/Math.h"
 #include "core/settings/CGameSettings.h"
 #include "core/system/io/FileUtils.h"
+#include "core/system/Screen.h"
 
 #include "engine/utils/CDeveloperConsole.h"
 
 #include "engine-common/dusk/UI.h"
-#include "engine-common/dusk/Element.h"
+#include "engine-common/dusk/controls/Button.h"
+#include "engine-common/dusk/controls/Panel.h"
+#include "engine-common/dusk/controls/Label.h"
+#include "engine-common/dusk/controls/DockablePanel.h"
+#include "engine-common/dusk/layouts/Horizontal.h"
 #include "engine-common/entities/CRendererHolder.h"
 
 #include "renderer/state/Settings.h"
@@ -237,9 +242,10 @@ void MapEditor::Update ( void )
 	renderer::Settings.ambientColor.SetCode( m_mapinfo->env_ambientcolor );
 
 	// Update the editor
-	dusk::Element* openDialogue = dusk->GetOpenDialogue();
+	//dusk::Element* openDialogue = dusk->GetOpenDialogue();
 	//if ( dusk->HasOpenDialogue() && openDialogue != ui_fld_area_type && openDialogue != ui_fld_object_type )
-	if ( dusk->HasOpenDialogue() && (openDialogue == ui_dg_save || openDialogue == ui_dg_load) )
+	//if ( dusk->HasOpenDialogue() && (openDialogue == ui_dg_save || openDialogue == ui_dg_load) )
+	if (ui_dg_save->m_isOpen || ui_dg_load->m_isOpen)
 	{
 		// Close all modes for the dialogue system
 		m_current_mode = Mode::None;
@@ -249,7 +255,8 @@ void MapEditor::Update ( void )
 	}
 	else
 	{
-		if ( !dusk->GetMouseInGUI() && !dusk->HasOpenDialogue() )
+		//if ( !dusk->GetMouseInGUI() && !dusk->HasOpenDialogue() )
+		if ( !dusk->IsMouseInside() )
 		{
 			// Enable navigation events
 			m_preclude_navigation = false;
@@ -319,11 +326,11 @@ void MapEditor::Update ( void )
 
 	// Update visibilty of elements based on the modes
 	m_tile_selector->SetVisible ( m_current_mode == Mode::TileEdit );
-	ui_panel_tiles->visible = m_current_mode == Mode::TileEdit;
-	ui_panel_shit->visible = m_current_mode == Mode::Properties;
-	ui_panel_area->visible = m_current_mode == Mode::AreaEdit;
-	ui_panel_object->visible = m_current_mode == Mode::ObjectEdit;
-	ui_panel_preferences->visible = m_current_mode == Mode::Preferences;
+	ui_panel_tiles->m_visible = m_current_mode == Mode::TileEdit;
+	ui_panel_shit->m_visible = m_current_mode == Mode::Properties;
+	ui_panel_area->m_visible = m_current_mode == Mode::AreaEdit;
+	ui_panel_object->m_visible = m_current_mode == Mode::ObjectEdit;
+	ui_panel_preferences->m_visible = m_current_mode == Mode::Preferences;
 
 	if ( m_current_mode != Mode::ObjectEdit )
 	{
@@ -781,8 +788,8 @@ void MapEditor::_doObjectEditingSub_GizmoEnable ( void )
 		{
 			m_light_handle->active = true;
 			m_light_handle->SetRenderPosition( m_object_target->position );
-			m_light_handle->SetRange( m_object_target->light->range );
-			m_light_handle->SetPower( m_object_target->light->falloff );
+			m_light_handle->SetRange( m_object_target->light->falloff_range );
+			m_light_handle->SetPower( m_object_target->light->falloff_invpower );
 		}
 		else
 		{
@@ -933,133 +940,110 @@ void MapEditor::uiCreate ( void )
 {
 	// Top bar
 	{
-		Dusk::Handle panel;
-		Dusk::Handle button, label;
+		dusk::Element* label;
 
 		// Create the panel
-		panel = dusk->CreateEdgePanel();
-		panel.SetRect( Rect(0,0,1280,40) );
+		dusk::elements::DockablePanel* panel = dusk->Add<dusk::elements::DockablePanel>( dusk::ElementCreationDescription{NULL, Rect( 0,0,1280,40 )} );
+		panel->m_dockPosition = dusk::elements::DockPosition::kScreenTop;
+		panel->m_dockFlags = dusk::elements::DockFlags::kLocked;
 
-		// Create labels
-		label = dusk->CreateText( panel, "FILE" );
-		label.SetRect(Rect(20,1,0,0));
+		// Create layout for the panel
+		dusk::layouts::Horizontal* layout = dusk->Add<dusk::layouts::Horizontal>( dusk::LayoutCreationDescription{panel} );
+		layout->m_margin = Vector2f(20, 5);
+		layout->m_padding = Vector2f(5, 5);
 
-		label = dusk->CreateText( panel, "EDIT MODE" );
-		label.SetRect(Rect(240,1,0,0));
+		// File:
 
-		label = dusk->CreateText( panel, "TOOLBOX" );
-		label.SetRect(Rect(640,1,0,0));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,1,25,0)} );
+		label->m_contents = "FILE";
 
-		// Create file buttons
-		button = dusk->CreateButton( panel );
-		button.SetText("New");
-		button.SetRect(Rect(50,5,45,30));
-		ui_file_new = button;
+		ui_file_new = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(50,5,45,30)} );
+		ui_file_new->m_contents = "New";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Save");
-		button.SetRect(Rect(100,5,45,30));
-		ui_file_save = button;
+		ui_file_save = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(100,5,45,30)} );
+		ui_file_save->m_contents = "Save";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Load");
-		button.SetRect(Rect(150,5,45,30));
-		ui_file_load = button;
+		ui_file_load = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(150,5,45,30)} );
+		ui_file_load->m_contents = "Load";
 
-		// Create mode buttons
-		button = dusk->CreateButton( panel );
-		button.SetText("Shit");
-		button.SetRect(Rect(300,5,45,30));
-		ui_mode_shit = button;
+		// Mode:
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Map");
-		button.SetRect(Rect(350,5,45,30));
-		ui_mode_map = button;
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(240,1,55,0)} );
+		label->m_contents = "EDIT MODE";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Areas");
-		button.SetRect(Rect(400,5,45,30));
-		ui_mode_area = button;
+		ui_mode_shit = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(300,5,45,30)} );
+		ui_mode_shit->m_contents = "Shit";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Objects");
-		button.SetRect(Rect(450,5,45,30));
-		ui_mode_object = button;
+		ui_mode_map = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(350,5,45,30)} );
+		ui_mode_map->m_contents = "Map";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Script");
-		button.SetRect(Rect(500,5,45,30));
-		ui_mode_script = button;
+		ui_mode_area = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(400,5,45,30)} );
+		ui_mode_area->m_contents = "Areas";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Utils");
-		button.SetRect(Rect(550,5,45,30));
-		ui_mode_utils = button;
+		ui_mode_object = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(450,5,45,30)} );
+		ui_mode_object->m_contents = "Objects";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Cutscene Editor");
-		button.SetRect(Rect(700,5,95,30));
-		ui_toolbox_cutscene = button;
+		ui_mode_script = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(500,5,45,30)} );
+		ui_mode_script->m_contents = "Script";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Global Settings");
-		button.SetRect(Rect(800,5,95,30));
-		ui_toolbox_global = button;
+		ui_mode_utils = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(550,5,45,30)} );
+		ui_mode_utils->m_contents = "Utils";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Playtest");
-		button.SetRect(Rect(1080,5,95,30));
-		ui_toolbox_playtest = button;
+		// Toolbox:
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Preferences...");
-		button.SetRect(Rect(1180,5,95,30));
-		ui_mode_preferences = button;
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(640,1,55,0)} );
+		label->m_contents = "TOOLBOX";
+
+		ui_toolbox_cutscene = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(700,5,95,30)} );
+		ui_toolbox_cutscene->m_contents = "Cutscene Editor";
+
+		ui_toolbox_global = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(800,5,95,30)} );
+		ui_toolbox_global->m_contents = "Global Settings";
+
+		ui_toolbox_playtest = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(1080,5,95,30)} );
+		ui_toolbox_playtest->m_contents = "Playtest";
+
+		ui_mode_preferences = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect(1180,5,95,30)} );
+		ui_mode_preferences->m_contents = "Preferences...";
 	}
 
 	// Bottom bar
 	{
-		Dusk::Handle panel;
-		Dusk::Handle button, label;
+		dusk::elements::DockablePanel* panel = dusk->Add<dusk::elements::DockablePanel>( dusk::ElementCreationDescription{NULL, Rect(0,690,1280,30)} );
+		panel->m_dockPosition = dusk::elements::DockPosition::kScreenBottom;
+		panel->m_dockFlags = dusk::elements::DockFlags::kLocked;
 
-		// Create the panel
-		panel = dusk->CreateEdgePanel();
-		panel.SetRect( Rect(0,690,1280,30) );
+		// Create layout for the panel
+		dusk::layouts::Horizontal* layout = dusk->Add<dusk::layouts::Horizontal>( dusk::LayoutCreationDescription{panel} );
+		layout->m_margin = Vector2f(10, 1);
+		layout->m_padding = Vector2f(10, 5);
 
-		// Create labels
-		label = dusk->CreateText( panel, "???" );
-		label.SetRect(Rect(10,1,0,0));
-		ui_lbl_mode = label;
+		ui_lbl_mode		= dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(10,1,100,0)} );
+		ui_lbl_mode->m_contents = "???";
+		
+		ui_lbl_mousex	= dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(200,1,100,0)} );
+		ui_lbl_mousex->m_contents = "X: ???";
+		ui_lbl_mousey	= dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(300,1,100,0)} );
+		ui_lbl_mousey->m_contents = "Y: ???";
 
-		label = dusk->CreateText( panel, "" );
-		label.SetRect(Rect(400,1,0,0));
-		ui_lbl_file = label;
-
-		label = dusk->CreateText( panel, "X: ???" );
-		label.SetRect(Rect(200,1,0,0));
-		ui_lbl_mousex = label;
-		label = dusk->CreateText( panel, "Y: ???" );
-		label.SetRect(Rect(300,1,0,0));
-		ui_lbl_mousey = label;
+		ui_lbl_file		= dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(400,1,100,0)} );
+		ui_lbl_file->m_contents = "";
 	}
 
 	// Map panel
 	{
-		Dusk::Handle panel;
-		Dusk::Handle button, label, list;
+		dusk::Element* button;
+		dusk::Element* label;
 
 		// Create the panel
-		panel = dusk->CreatePanel();
-		panel.SetRect( Rect(256, 40, 1280 - 256, 40) );
-		ui_panel_tiles = panel;
+		ui_panel_tiles = dusk->Add<dusk::elements::Panel>( dusk::ElementCreationDescription{NULL, Rect(256, 40, 1280 - 256, 40)} );
 
 		// Create labels
-		label = dusk->CreateText( panel, "LAYER" );
-		label.SetRect(Rect(10,5,0,0));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{ui_panel_tiles, Rect(10,5,0,0)} );
+		label->m_contents = "LAYER";
 
-		label = dusk->CreateText( panel, "MODE" );
-		label.SetRect(Rect(160,5,0,0));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{ui_panel_tiles, Rect(160,5,0,0)} );
+		label->m_contents = "MODE";
 
 		// Create layer thingies
 		button = dusk->CreateButton( panel );
@@ -1095,8 +1079,10 @@ void MapEditor::uiCreate ( void )
 
 	// Shit panel
 	{
-		Dusk::Handle panel;
-		Dusk::Handle button, label, field;
+		dusk::Element* panel;
+		dusk::Element* button;
+		dusk::Element* label;
+		dusk::Element* field;
 
 		// Create the panel
 		panel = dusk->CreatePanel();
@@ -1160,8 +1146,10 @@ void MapEditor::uiCreate ( void )
 
 	// Area panel
 	{
-		Dusk::Handle panel;
-		Dusk::Handle button, label, field;
+		dusk::Element* panel;
+		dusk::Element* button;
+		dusk::Element* label;
+		dusk::Element* field;
 
 		// Create the panel
 		panel = dusk->CreatePanel();
@@ -1201,8 +1189,10 @@ void MapEditor::uiCreate ( void )
 
 	// Object panel
 	{
-		Dusk::Handle panel;
-		Dusk::Handle button, label, field;
+		dusk::Element* panel;
+		dusk::Element* button;
+		dusk::Element* label;
+		dusk::Element* field;
 
 		// Create the panel
 		panel = dusk->CreatePanel();
@@ -1244,8 +1234,10 @@ void MapEditor::uiCreate ( void )
 
 	// Preferences panel
 	{
-		Dusk::Handle panel;
-		Dusk::Handle button, label, field;
+		dusk::Element* panel;
+		dusk::Element* button;
+		dusk::Element* label;
+		dusk::Element* field;
 
 		// Create the panel
 		panel = dusk->CreatePanel();

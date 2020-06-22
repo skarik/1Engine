@@ -49,7 +49,7 @@ namespace M04
 	{
 	private:
 		CutsceneEditor*		m_owner;
-		RrTexture*			m_texture;
+		//RrTexture*			m_texture;
 
 	public:
 		explicit	CGeometryRenderer ( CutsceneEditor* owner );

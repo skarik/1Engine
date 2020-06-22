@@ -1,6 +1,8 @@
 #include "UIRenderer.h"
 
 #include "engine-common/dusk/Element.h"
+#include "renderer/utils/rrMeshBuilder2D.h"
+#include "renderer/utils/rrTextBuilder2D.h"
 
 void dusk::UIRendererContext::setFocus ( FocusStyle style )
 {
@@ -40,7 +42,18 @@ float dusk::UIRendererContext::getTextHeight ( TextFontStyle font )
 
 void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& rectangle )
 {
+	m_mb2->enableAttribute(renderer::shader::kVBufferSlotNormal);
+	auto tVertexCount = m_mb2->getModelDataVertexCount();
+
+	m_mb2->addRect(rectangle, Color(0.16F, 0.16F, 0.16F, 1.00F), false);
+
+	// Zero out normals to disable texture use on this shape
+	for (uint16_t i = tVertexCount; i < m_mb2->getModelDataVertexCount(); ++i)
+	{
+		m_modeldata->normal[i] = Vector3f(0.0F, 0.0F, 0.0F);
+	}
 }
 void dusk::UIRendererContext::drawText ( Element* source, const Vector2f& position, const char* str )
 {
+	static_cast<rrTextBuilder2D*>(m_mb2)->addText(position, Color(1.0F, 1.0F, 1.0F, 1.0F), str);
 }

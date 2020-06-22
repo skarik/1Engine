@@ -10,11 +10,11 @@
 #include "renderer/object/CRenderable3D.h"
 #include "renderer/object/CStreamedRenderable3D.h"
 #include "renderer/texture/RrFontTexture.h"
+#include "renderer/material/RrShaderProgram.h"
+#include "renderer/material/RrPass.h"
 #include "renderer/material/Material.h"
 #include "renderer/utils/rrMeshBuilder2D.h"
 #include "renderer/utils/rrTextBuilder2D.h"
-
-//#include "renderer/resource/CResourceManager.h"
 
 #include "engine-common/cutscene/EditorNode.h"
 #include "engine-common/cutscene/Node.h"
@@ -41,29 +41,48 @@ static Vector2f _PixelRoundPosition ( const Vector2f vect )
 CutsceneEditor::CLargeTextRenderer::CLargeTextRenderer ( CutsceneEditor* owner )
 	: m_owner(owner), CStreamedRenderable3D()
 {
-	m_font_texture = new RrFontTexture("YanoneKaffeesatz-B.otf", 24, FW_BOLD);
-	m_font_texture->SetFilter( SamplingLinear );
+	m_font_texture = RrFontTexture::Load("YanoneKaffeesatz-B.otf", 24, FW_BOLD);
+	//m_font_texture->SetFilter( SamplingLinear );
 
 	// Use a default 2D material
-	m_material = new RrMaterial();
-	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new RrTexture("null")) );
-	m_material->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
+	RrPass spritePass;
+	spritePass.utilSetupAsDefault();
+	spritePass.m_type = kPassTypeForward;
+	spritePass.m_alphaMode = renderer::kAlphaModeTranslucent;
+	spritePass.m_cullMode = gpu::kCullModeNone;
+	spritePass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+	spritePass.m_orderOffset = 2;
+	spritePass.setTexture( TEX_DIFFUSE, m_font_texture );
+	spritePass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
+	spritePass.setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureBlack) );
+	spritePass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
+	spritePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"}) );
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor};
+	spritePass.setVertexSpecificationByCommonList(t_vspec, 3);
+	spritePass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
+	PassInitWithInput(0, &spritePass);
 
-	m_material->passinfo.push_back( RrPassForward() );
-	m_material->passinfo[0].shader = new RrShader( "shaders/fws/fullbright.glsl" );
-	m_material->passinfo[0].m_lighting_mode = renderer::LI_NONE;
-	m_material->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	m_material->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-	m_material->passinfo[0].m_delay = 2;
-
-	m_material->setTexture( TEX_DIFFUSE, m_font_texture );
-	m_font_texture->RemoveReference();
-
-	m_modeldata.triangles = new arModelTriangle [2048];
-	m_modeldata.vertices = new arModelVertex [4096];
+	m_modeldata.indices = new uint16_t [2048 * 3];
+	m_modeldata.position = new Vector3f [4096];
+	m_modeldata.color = new Vector4f [4096];
+	m_modeldata.texcoord0 = new Vector3f [4096];
+	m_modeldata.normal = new Vector3f [4096];
 }
 CutsceneEditor::CLargeTextRenderer::~CLargeTextRenderer ( void )
-{ }
+{ 
+	if (m_font_texture)
+	{
+		m_font_texture->RemoveReference();
+	}
+
+	delete_safe_array(m_modeldata.indices);
+	delete_safe_array(m_modeldata.position);
+	delete_safe_array(m_modeldata.color);
+	delete_safe_array(m_modeldata.texcoord0);
+	delete_safe_array(m_modeldata.normal);
+}
 
 void CutsceneEditor::CLargeTextRenderer::UpdateMesh ( void )
 {
@@ -78,13 +97,13 @@ void CutsceneEditor::CLargeTextRenderer::UpdateMesh ( void )
 	if ( RrCamera::activeCamera )
 	{	// Modify console size based on render scale so it is always legible!
 		screenMapping.position += screenMapping.size * 0.5F;
-		screenMapping.size *= RrCamera::activeCamera->render_scale;
+		screenMapping.size *= RrCamera::activeCamera->renderScale;
 		screenMapping.position -= screenMapping.size * 0.5F;
 	}
 
 	// Create builder
 	rrTextBuilder2D builder (m_font_texture, screenMapping, &m_modeldata);
-	m_modeldata.triangleNum = 0;
+	m_modeldata.indexNum = 0;
 	m_modeldata.vertexNum = 0;
 
 	// Create the visual text
@@ -104,29 +123,48 @@ void CutsceneEditor::CLargeTextRenderer::UpdateMesh ( void )
 CutsceneEditor::CNormalTextRenderer::CNormalTextRenderer ( CutsceneEditor* owner )
 		: m_owner(owner), CStreamedRenderable3D()
 {
-	m_font_texture = new RrFontTexture("YanoneKaffeesatz-B.otf", 18, FW_BOLD);
-	m_font_texture->SetFilter( SamplingLinear );
+	m_font_texture = RrFontTexture::Load("YanoneKaffeesatz-B.otf", 18, FW_BOLD);
+	//m_font_texture->SetFilter( SamplingLinear );
 
 	// Use a default 2D material
-	m_material = new RrMaterial();
-	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new RrTexture("null")) );
-	m_material->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
+	RrPass spritePass;
+	spritePass.utilSetupAsDefault();
+	spritePass.m_type = kPassTypeForward;
+	spritePass.m_alphaMode = renderer::kAlphaModeTranslucent;
+	spritePass.m_cullMode = gpu::kCullModeNone;
+	spritePass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+	spritePass.m_orderOffset = 1;
+	spritePass.setTexture( TEX_DIFFUSE, m_font_texture );
+	spritePass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
+	spritePass.setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureBlack) );
+	spritePass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
+	spritePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"}) );
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor};
+	spritePass.setVertexSpecificationByCommonList(t_vspec, 3);
+	spritePass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
+	PassInitWithInput(0, &spritePass);
 
-	m_material->passinfo.push_back( RrPassForward() );
-	m_material->passinfo[0].shader = new RrShader( "shaders/fws/fullbright.glsl" );
-	m_material->passinfo[0].m_lighting_mode = renderer::LI_NONE;
-	m_material->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	m_material->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-	m_material->passinfo[0].m_delay = 1;
-
-	m_material->setTexture( TEX_DIFFUSE, m_font_texture );
-	m_font_texture->RemoveReference();
-
-	m_modeldata.triangles = new arModelTriangle [2048];
-	m_modeldata.vertices = new arModelVertex [4096];
+	m_modeldata.indices = new uint16_t [2048 * 3];
+	m_modeldata.position = new Vector3f [4096];
+	m_modeldata.color = new Vector4f [4096];
+	m_modeldata.texcoord0 = new Vector3f [4096];
+	m_modeldata.normal = new Vector3f [4096];
 }
 CutsceneEditor::CNormalTextRenderer::~CNormalTextRenderer ( void )
-{ }
+{
+	if (m_font_texture)
+	{
+		m_font_texture->RemoveReference();
+	}
+
+	delete_safe_array(m_modeldata.indices);
+	delete_safe_array(m_modeldata.position);
+	delete_safe_array(m_modeldata.color);
+	delete_safe_array(m_modeldata.texcoord0);
+	delete_safe_array(m_modeldata.normal);
+}
 
 void CutsceneEditor::CNormalTextRenderer::UpdateMesh ( void )
 {
@@ -141,13 +179,13 @@ void CutsceneEditor::CNormalTextRenderer::UpdateMesh ( void )
 	if ( RrCamera::activeCamera )
 	{	// Modify console size based on render scale so it is always legible!
 		screenMapping.position += screenMapping.size * 0.5F;
-		screenMapping.size *= RrCamera::activeCamera->render_scale;
+		screenMapping.size *= RrCamera::activeCamera->renderScale;
 		screenMapping.position -= screenMapping.size * 0.5F;
 	}
 
 	// Create builder
 	rrTextBuilder2D builder (m_font_texture, screenMapping, &m_modeldata);
-	m_modeldata.triangleNum = 0;
+	m_modeldata.indexNum = 0;
 	m_modeldata.vertexNum = 0;
 
 	// Create the visual text
@@ -185,7 +223,7 @@ void CutsceneEditor::CNormalTextRenderer::UpdateMesh ( void )
 		{
 			builder.addText(_PixelRoundPosition(
 				m_owner->m_contextMenu_position
-				+ Vector2f(0, m_owner->m_contextMenu_spacing + m_owner->m_contextMenu_spacing * i)
+				+ Vector2f(0.0F, m_owner->m_contextMenu_spacing + m_owner->m_contextMenu_spacing * i)
 				- m_owner->m_target_camera_position),
 				(i == m_owner->m_mouseover_context_prev) ? Color(1.0F, 1.0F, 1.0F, 1.0F) : Color(0.5F, 0.5F, 0.5F, 1.0F),
 				m_owner->m_contextMenu_entries[i].label.c_str());
@@ -202,28 +240,43 @@ void CutsceneEditor::CNormalTextRenderer::UpdateMesh ( void )
 CutsceneEditor::CGeometryRenderer::CGeometryRenderer ( CutsceneEditor* owner )
 	: m_owner(owner), CStreamedRenderable3D()
 {
-	m_texture = renderer::Resources::GetTexture( renderer::TextureWhite );
+	//m_texture = renderer::Resources::GetTexture( renderer::TextureWhite );
 
 	// Use a default 2D material
-	m_material = new RrMaterial();
-	m_material->setTexture( TEX_DIFFUSE, core::Orphan(new RrTexture("null")) );
-	m_material->setTexture( TEX_SURFACE, renderer::Resources::GetTexture(renderer::TextureBlack) );
+	RrPass spritePass;
+	spritePass.utilSetupAsDefault();
+	spritePass.m_type = kPassTypeForward;
+	spritePass.m_alphaMode = renderer::kAlphaModeTranslucent;
+	spritePass.m_cullMode = gpu::kCullModeNone;
+	spritePass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+	spritePass.m_orderOffset = 0;
+	spritePass.setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
+	spritePass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
+	spritePass.setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureBlack) );
+	spritePass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
+	spritePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"}) );
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor};
+	spritePass.setVertexSpecificationByCommonList(t_vspec, 3);
+	spritePass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
+	PassInitWithInput(0, &spritePass);
 
-	m_material->passinfo.push_back( RrPassForward() );
-	m_material->passinfo[0].shader = new RrShader( "shaders/fws/fullbright.glsl" );
-	m_material->passinfo[0].m_lighting_mode = renderer::LI_NONE;
-	m_material->passinfo[0].m_transparency_mode = renderer::ALPHAMODE_TRANSLUCENT;
-	m_material->passinfo[0].m_face_mode = renderer::FM_FRONTANDBACK;
-	m_material->passinfo[0].m_delay = 0;
 
-	m_material->setTexture( TEX_DIFFUSE, m_texture );
-	//m_texture->RemoveReference(); // TODO: Check if need remove this ref
-
-	m_modeldata.triangles = new arModelTriangle [2048];
-	m_modeldata.vertices = new arModelVertex [4096];
+	m_modeldata.indices = new uint16_t [2048 * 3];
+	m_modeldata.position = new Vector3f [4096];
+	m_modeldata.color = new Vector4f [4096];
+	m_modeldata.texcoord0 = new Vector3f [4096];
+	m_modeldata.normal = new Vector3f [4096];
 }
 CutsceneEditor::CGeometryRenderer::~CGeometryRenderer ( void )
-{ }
+{ 
+	delete_safe_array(m_modeldata.indices);
+	delete_safe_array(m_modeldata.position);
+	delete_safe_array(m_modeldata.color);
+	delete_safe_array(m_modeldata.texcoord0);
+	delete_safe_array(m_modeldata.normal);
+}
 
 void CutsceneEditor::CGeometryRenderer::UpdateMesh ( void )
 {
@@ -237,7 +290,7 @@ void CutsceneEditor::CGeometryRenderer::UpdateMesh ( void )
 
 	// Create builder
 	rrMeshBuilder2D builder (screenMapping, &m_modeldata);
-	m_modeldata.triangleNum = 0;
+	m_modeldata.indexNum = 0;
 	m_modeldata.vertexNum = 0;
 
 	// Set up colors

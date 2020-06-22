@@ -13,24 +13,31 @@ dusk::Element* dusk::UserInterface::AddInitialize ( Element* element, const Elem
 	element->m_interface = this; // Take ownership of this element
 
 	element->m_localRect	= desc.localRect;
-	//element->m_visible		= desc.visible;
 
-	// Find the input parent within the given list
-	size_t parentIndex = 0xFFFFFFFF;
-	for (size_t i = 0; i < m_elements.size(); ++i)
+	if (desc.parent != NULL)
 	{
-		if (m_elements[i] == desc.parent) {
-			parentIndex = i;
+		// Find the input parent within the given list
+		uint32_t parentIndex = kElementHandleInvalid;
+		for (uint32_t i = 0; i < m_elements.size(); ++i)
+		{
+			if (m_elements[i] == desc.parent)
+			{
+				parentIndex = i;
+				break;
+			}
 		}
-	}
-	if (parentIndex != 0xFFFFFFFF)
-	{
-		element->m_parent = desc.parent;
-		//element->m_parentHandle = dusk::Handle(parentIndex, this);
+		if (parentIndex != kElementHandleInvalid)
+		{
+			element->m_parent = desc.parent;
+		}
+		else
+		{
+			throw core::InvalidReferenceException();
+		}
 	}
 	else
 	{
-		throw core::InvalidReferenceException();
+		element->m_parent = NULL;
 	}
 
 	// Update index
@@ -56,6 +63,9 @@ dusk::UserInterface::UserInterface ( void )
 	m_currentDialogue = kElementHandleInvalid;
 	m_currentMouseover = kElementHandleInvalid;
 	m_currentFocus = kElementHandleInvalid;
+
+	// Set up tree root
+	m_elementTreeBase.index = kElementHandleInvalid;
 }
 
 dusk::UserInterface::~UserInterface ( void )
@@ -367,7 +377,7 @@ void dusk::UserInterface::UpdateElementPositions ( void )
 	if ( m_currentDialogue == kElementHandleInvalid )
 	{
 		// Update positions, going down the tree.
-		std::list<ElementNode&> updateList;
+		std::list<std::reference_wrapper<ElementNode>> updateList;
 		updateList.push_front(m_elementTreeBase);
 
 		while (!updateList.empty())
@@ -375,23 +385,52 @@ void dusk::UserInterface::UpdateElementPositions ( void )
 			ElementNode& elementNode = updateList.front();
 			updateList.pop_front();
 
-			Element* element = m_elements[elementNode.index];
-			Element* parent = element->m_parent;
-
-			// Update the offset'd rect of the element
-			if (parent == NULL)
+			// Grab the current element
+			Element* element = NULL;
+			if (elementNode.index != kElementHandleInvalid)
 			{
-				element->m_absoluteRect = element->m_localRect;
+				element = m_elements[elementNode.index];
 			}
+
+			// Do the layout-type elements
+			if (element != NULL && element->m_elementType == ElementType::kLayout)
+			{
+				std::vector<Element*> children (elementNode.children.size(), NULL);
+				for (ElementNode& childNode : elementNode.children)
+				{
+					Element* child = m_elements[childNode.index];
+					if (!child->m_overrideLayout && !child->m_ignoreAutoLayout)
+					{	// Add the child element to the update list for the layout
+						children.push_back(child);
+					}
+
+					// Update children of this item before others now
+					updateList.push_front(childNode);
+				}
+				element->as<dusk::LayoutElement>()->LayoutChildren(children); // Actually execute children layouts now
+			}
+			// Do the control-type elements
 			else
 			{
-				element->m_absoluteRect = Rect(parent->m_absoluteRect.pos + element->m_localRect.pos, element->m_localRect.size);
-			}
+				for (ElementNode& childNode : elementNode.children)
+				{
+					Element* child = m_elements[childNode.index];
+					
+					if (!child->m_overrideLayout)
+					{
+						if (element == NULL)
+						{
+							child->m_absoluteRect = child->m_localRect;
+						}
+						else
+						{	// Update the offset'd rect of the element
+							child->m_absoluteRect = Rect(element->m_absoluteRect.pos + child->m_localRect.pos, child->m_localRect.size);
+						}
+					}
 
-			// Update children of this item before others now
-			for (ElementNode& child : elementNode.children)
-			{
-				updateList.push_front(child);
+					// Update this child item before others now
+					updateList.push_front(childNode);
+				}
 			}
 		}
 	}
@@ -423,23 +462,26 @@ void dusk::UserInterface::UpdateElements ( void )
 	if ( m_currentDialogue == kElementHandleInvalid )
 	{
 		// Update positions, going down the tree.
-		std::list<ElementNode&> updateList;
-		updateList.push_front(m_elementTreeBase);
+		std::list<ElementNode*> updateList;
+		updateList.push_front(&m_elementTreeBase);
 
 		while (!updateList.empty())
 		{
-			ElementNode& elementNode = updateList.front();
+			ElementNode* elementNode = updateList.front();
 			updateList.pop_front();
 
-			Element* element = m_elements[elementNode.index];
-
-			// Update them
-			element->Update(&l_stepInfo);
+			if (elementNode->index != kElementHandleInvalid)
+			{
+				Element* element = m_elements[elementNode->index];
+				
+				// Update them
+				element->Update(&l_stepInfo);
+			}
 
 			// Update children of this item before others now
-			for (ElementNode& child : elementNode.children)
+			for (ElementNode& child : elementNode->children)
 			{
-				updateList.push_front(child);
+				updateList.push_front(&child);
 			}
 		}
 	}
@@ -453,90 +495,6 @@ void dusk::UserInterface::UpdateElements ( void )
 		// Update them
 		element->Update(&l_stepInfo);
 	}
-
-	// If previous works, delete following
-	/*if ( m_currentDialogue == kElementHandleInvalid )
-	{
-		// Reset offsets
-		std::vector<bool> offsetListGenerated(m_elements.size(), false);
-		std::vector<Vector2f>& offsetList = m_updateOffsets;
-		offsetList.resize(m_elements.size(), Vector2f(0,0));
-
-		// Iterate through all the components
-		for ( unsigned int i = 0; i < m_elements.size(); ++i )
-		{
-			Element* currentElement = m_elements[i];
-			m_currentElement = i;
-
-			if (currentElement == NULL)
-				continue; // Skip invalid elements
-
-			if (!offsetListGenerated[i])
-			{
-				// If we have a parent, we need to generate the offset of this element
-				if ( currentElement->m_parent != NULL )
-				{
-					// Create the offset generation stack, which starts with the current element.
-					std::vector<Element*> offsetGenerationStack;
-					offsetGenerationStack.push_back(currentElement);
-
-					// Push back the entire parent tree to the request of what to generate.
-					Element* currentParent = currentElement->m_parent;
-					while (true)
-					{
-						ARCORE_ASSERT(m_elements[currentParent->m_index] == currentParent);
-						if (currentParent == NULL || offsetListGenerated[currentParent->m_index])
-								break;
-						offsetGenerationStack.push_back(currentParent);
-						currentParent = currentParent->m_parent;
-					}
-					
-					// Generate the offsets
-					for (int i = (int)(offsetGenerationStack.size() - 1); i >= 0; --i)
-					{
-						Element* currentChild = offsetGenerationStack[i];
-						currentParent = currentChild->m_parent;
-						
-						if (currentParent == NULL)
-						{	// If no parent, then there's no offset
-							offsetList[currentChild->m_index] = Vector2f(0,0);
-							offsetListGenerated[currentChild->m_index] = true;
-						}
-						else
-						{	// If there is a parent, then the offset is their local position combined w/ their offset.
-							offsetList[currentChild->m_index] = currentParent->m_parent->m_localRect.pos + offsetList[currentParent->m_parent->m_index];
-							offsetListGenerated[currentChild->m_index] = true;
-						}
-					}
-					// The current element's offset will be generated by the previous loop.
-				}
-				else
-				{	// If no parent, then there's no offset
-					offsetList[i] = Vector2f(0,0);
-					offsetListGenerated[i] = true;
-				}
-			}
-
-			// Update the offset'd rect of the element
-			currentElement->m_absoluteRect = Rect(offsetList[i] + currentElement->m_localRect.pos, currentElement->m_localRect.size);
-
-			// Update them
-			currentElement->Update(&l_stepInfo);
-		}
-	}
-	else
-	{
-		// Set current element
-		m_currentElement = m_currentDialogue;
-
-		Element* currentElement = m_elements[m_currentElement];
-
-		// Update only the offset'd rect of the dialogue box
-		currentElement->m_absoluteRect = Rect(m_updateOffsets[m_currentElement] + currentElement->m_localRect.pos, currentElement->m_localRect.size);
-
-		// Update them
-		currentElement->Update(&l_stepInfo);
-	}*/
 }
 
 //	DestroyElement() : Destroys the element with the given index/handle.

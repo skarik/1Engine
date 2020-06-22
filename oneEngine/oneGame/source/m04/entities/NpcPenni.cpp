@@ -21,7 +21,7 @@ NpcPenni::NpcPenni ( void )
 {
 	SetupDepthOffset( -1.0F, 0.0F );
 	m_sprite->SpriteGenParams().normal_default = Vector3f(0, 2.0F, 1.0F).normal();
-	m_sprite->SetSpriteFile("sprites/penni.gal");
+	m_sprite->SetSpriteFile("sprites/penni.gal", NULL);
 	m_spriteOrigin = Vector2i( m_sprite->GetSpriteInfo().fullsize.x / 2, m_sprite->GetSpriteInfo().fullsize.y - 8 );
 
 	talker = NULL;

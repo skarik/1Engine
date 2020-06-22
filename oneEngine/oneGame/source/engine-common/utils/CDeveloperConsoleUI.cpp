@@ -23,7 +23,7 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 {
 	ActiveConsoleUI = this;
 
-	fntMenu	= RrFontTexture::Load( "monofonto.ttf", 16, kFW_Bold );
+	fntMenu	= RrFontTexture::Load( "Lekton-Bold.ttf", 16, kFW_Bold );
 	fntMenu->AddReference();
 
 	RrPass fontPass;
@@ -230,7 +230,6 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	cursorPass.setSampler( TEX_MAIN, &samplerCursor );
 	cursorPass.utilSetupAs2D();
 	cursorPass.m_alphaMode = renderer::kAlphaModeTranslucent;
-	//cursorPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
 	cursorPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"});
 	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
 											renderer::shader::Location::kUV0,

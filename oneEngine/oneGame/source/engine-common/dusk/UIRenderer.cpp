@@ -13,6 +13,7 @@
 #include "renderer/texture/RrFontTexture.h"
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/utils/rrMeshBuilder2D.h"
+#include "renderer/utils/rrTextBuilder2D.h"
 
 #include "engine-common/dusk/UI.h"
 #include "engine-common/dusk/Element.h"
@@ -43,17 +44,18 @@ dusk::UIRenderer::UIRenderer (UserInterface* ui)
 	renderer::shader::Location t_vspecCopyPass[] = {renderer::shader::Location::kPosition,
 													renderer::shader::Location::kUV0};
 	copyPass.setVertexSpecificationByCommonList(t_vspecCopyPass, 2);
+	copyPass.m_vertexSpecification[1].dataOffset = sizeof(Vector3f) * 4;
 	PassInitWithInput(0, &copyPass);
 
 	// Load up the default font used
-	m_fontTexture	= RrFontTexture::Load( "monofonto.ttf", 16, kFW_Bold );
+	m_fontTexture	= RrFontTexture::Load( "Lekton-Bold.ttf", 16, kFW_Bold );
 
 	// Set the actual UI pass
 	RrPass dguiPass;
 	dguiPass.m_layer = renderer::kRenderLayerSkip;
 	dguiPass.m_type = kPassTypeForward;
-	dguiPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
-	copyPass.utilSetupAs2D();
+	dguiPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
+	dguiPass.utilSetupAs2D();
 	dguiPass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
 	dguiPass.setTexture( TEX_MAIN, m_fontTexture );
 	dguiPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/duskui_default_vv.spv", "shaders/v2d/duskui_default_p.spv"}) );
@@ -67,15 +69,35 @@ dusk::UIRenderer::UIRenderer (UserInterface* ui)
 	// Create the render targets
 	m_renderTargetTexture = new gpu::Texture [1];
 	m_renderTarget = new gpu::RenderTarget [1];
+
+	// Create the vertex buffer
+	m_vbufScreenQuad = new gpu::Buffer [1];
+	Vector3f screenquad [] = {
+		// positions
+		Vector2f(1, 1),
+		Vector2f(-1, 1),
+		Vector2f(1, -1),
+		Vector2f(-1, -1),
+		// uvs
+		Vector2f(1, 0),
+		Vector2f(0, 0),
+		Vector2f(1, 1),
+		Vector2f(0, 1),
+	};
+	m_vbufScreenQuad->initAsVertexBuffer(NULL, gpu::kFormatR32G32B32SFloat, sizeof(screenquad)/sizeof(Vector3f));
+	m_vbufScreenQuad->upload(NULL, screenquad, sizeof(screenquad), gpu::kTransferStatic);
 }
 
 dusk::UIRenderer::~UIRenderer (void)
 {
-	delete[] m_renderTargetTexture;
 	m_renderTargetTexture->free();
+	delete[] m_renderTargetTexture;
 
-	delete[] m_renderTarget;
 	m_renderTarget->destroy(NULL);
+	delete[] m_renderTarget;
+
+	m_vbufScreenQuad->free(NULL);
+	delete[] m_vbufScreenQuad;
 
 	m_fontTexture->RemoveReference();
 
@@ -95,25 +117,26 @@ bool dusk::UIRenderer::PreRender ( rrCameraPass* cameraPass )
 }
 bool dusk::UIRenderer::Render ( const rrRenderParams* params )
 {
-	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+	if (m_renderTargetTexture->valid())
+	{
+		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
 
-	gpu::Pipeline* pipeline = GetPipeline( params->pass );
-	// Set up the material helper...
-	renderer::Material(this, gfx, params->pass, pipeline)
-		// set the pipeline
-		.setStart()
-		// set the depth & rasterizer state registers
-		.setDepthStencilState()
-		.setRasterizerState()
-		// bind the blend state
-		.setBlendState();
-	gfx->setShaderTextureAuto(gpu::kShaderStagePs, TEX_MAIN, m_renderTargetTexture);
+		gpu::Pipeline* pipeline = GetPipeline( params->pass );
+		// Set up the material helper...
+		renderer::Material(this, gfx, params->pass, pipeline)
+			// set the pipeline
+			.setStart()
+			// set the depth & rasterizer state registers
+			.setDepthStencilState()
+			.setRasterizerState()
+			// bind the blend state
+			.setBlendState();
+		gfx->setShaderTextureAuto(gpu::kShaderStagePs, TEX_MAIN, m_renderTargetTexture);
 
-	// Bind the material for alpha-blending
-	//matScreenCopy->setTexture( TEX_MAIN, renderBuffer );
-	//matScreenCopy->bindPass( pass );
-	//GLd.DrawScreenQuad(matScreenCopy);
-
+		gfx->setVertexBuffer(0, m_vbufScreenQuad, 0); // Position
+		gfx->setVertexBuffer(1, m_vbufScreenQuad, 0); // UV0
+		gfx->draw(4, 0);
+	}
 	return true;
 }
 
@@ -187,7 +210,8 @@ bool dusk::UIRenderer::ERUpdateRenderTarget ( void )
 		return true;
 	}
 
-	return false;
+	//return false;
+	return true; // Force now for testing urposes
 }
 
 //	ERUpdateRenderList() : Updates the render list.
@@ -298,8 +322,10 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	// Mesh generation
 
 	// Set up the mesh builder now
-	rrMeshBuilder2D meshBuilder (&m_modeldata);
+	rrTextBuilder2D meshBuilder (m_fontTexture, &m_modeldata);
 	meshBuilder.enableAttribute(renderer::shader::kVBufferSlotNormal); // Require normals for the given mode
+	l_ctx.m_mb2 = &meshBuilder;
+	l_ctx.m_modeldata = &m_modeldata;
 
 	// Loop through the elements and build their mesh
 	for (uint32_t i = 0; i < renderList.size(); ++i)
@@ -309,7 +335,15 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 
 	// Upload the mesh
 	arModelData t_modeldataDrawn = meshBuilder.getModelData();
-	m_meshBuffer.InitMeshBuffers(&t_modeldataDrawn);
+	if (t_modeldataDrawn.vertexNum > 0)
+	{
+		m_meshBuffer.InitMeshBuffers(&t_modeldataDrawn);
+	}
+	else
+	{
+		// Nothing was drawn, end here. Consider freeing up the render texture.
+		return;
+	}
 
 
 	//
@@ -324,6 +358,7 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	gpu::RasterizerState rs;
 	rs.scissorEnabled = true;
 	gfx->setRasterizerState(rs);
+	gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
 	gfx->setScissor(
 		(int)scissorArea.pos.x,
 		(int)(Screen::Info.height - scissorArea.pos.y - scissorArea.size.y),
@@ -343,11 +378,12 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 		.setStart()
 		// set almost everything else
 		.setDepthStencilState()
-		.setRasterizerState()
+		//.setRasterizerState()
 		.setBlendState()
 		.setTextures();
 	// Set the constant buffer used
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[1]);
+	gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[1]);
 
 	// bind the index buffer
 	gfx->setIndexBuffer(&m_meshBuffer.m_indexBuffer, gpu::kIndexFormatUnsigned16);
