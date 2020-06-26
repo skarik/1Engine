@@ -37,7 +37,7 @@ void dusk::UIRendererContext::generateDrawState( Element* source )
 
 float dusk::UIRendererContext::getTextHeight ( TextFontStyle font )
 {
-	return 0;
+	return 16; // TODO: Use font setting given by either renderer, or grabbed from renderer
 }
 
 void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& rectangle )

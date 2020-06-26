@@ -48,7 +48,7 @@ dusk::UIRenderer::UIRenderer (UserInterface* ui)
 	PassInitWithInput(0, &copyPass);
 
 	// Load up the default font used
-	m_fontTexture	= RrFontTexture::Load( "Lekton-Bold.ttf", 16, kFW_Bold );
+	m_fontTexture	= RrFontTexture::Load( "Lekton-Bold.ttf", 16, kFW_Normal );
 
 	// Set the actual UI pass
 	RrPass dguiPass;
@@ -378,7 +378,7 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 		.setStart()
 		// set almost everything else
 		.setDepthStencilState()
-		//.setRasterizerState()
+		.setRasterizerState()
 		.setBlendState()
 		.setTextures();
 	// Set the constant buffer used

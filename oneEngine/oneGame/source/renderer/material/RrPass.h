@@ -45,6 +45,7 @@ enum rrPassOrderConstants : int
 	kPassOrder_Step					= 10,
 	kPassOrder_DepthMaskDisabled	= 1000,
 	kPassOrder_PostProcess			= 2000,
+	kPassOrder_DebugTools			= 9000,
 };
 
 // RrPass, defines a single pass for any object.

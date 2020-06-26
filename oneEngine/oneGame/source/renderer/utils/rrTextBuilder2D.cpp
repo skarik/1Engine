@@ -169,18 +169,18 @@ void rrTextBuilder2D::addText ( const Vector2f& position, const Color& color, co
 
 		m_model->position[vert_index + 0] = _transformVertexPosition(position + drawPos, m_multiplier, m_offset);
 		m_model->position[vert_index + 1] = _transformVertexPosition(position + Vector2f(drawPos.x, drawPos.y + uv.size.y * baseScale), m_multiplier, m_offset);
-		m_model->position[vert_index + 2] = _transformVertexPosition(position + Vector2f(drawPos.x + uv.size.x * baseScale, drawPos.y + uv.size.y * baseScale), m_multiplier, m_offset);
-		m_model->position[vert_index + 3] = _transformVertexPosition(position + Vector2f(drawPos.x + uv.size.x * baseScale, drawPos.y), m_multiplier, m_offset);
+		m_model->position[vert_index + 2] = _transformVertexPosition(position + Vector2f(drawPos.x + uv.size.x * baseScale, drawPos.y), m_multiplier, m_offset);
+		m_model->position[vert_index + 3] = _transformVertexPosition(position + Vector2f(drawPos.x + uv.size.x * baseScale, drawPos.y + uv.size.y * baseScale), m_multiplier, m_offset);
 
 		m_model->texcoord0[vert_index + 0] = uv.pos;
 		m_model->texcoord0[vert_index + 1] = Vector2f(uv.pos.x, uv.pos.y + uv.size.y);
-		m_model->texcoord0[vert_index + 2] = Vector2f(uv.pos.x + uv.size.x, uv.pos.y + uv.size.y);
-		m_model->texcoord0[vert_index + 3] = Vector2f(uv.pos.x + uv.size.x, uv.pos.y);
+		m_model->texcoord0[vert_index + 2] = Vector2f(uv.pos.x + uv.size.x, uv.pos.y);
+		m_model->texcoord0[vert_index + 3] = Vector2f(uv.pos.x + uv.size.x, uv.pos.y + uv.size.y);
 
 		m_model->normal[vert_index + 0] = Vector3f(-1, -1, uv.size.y / uv.size.x);
 		m_model->normal[vert_index + 1] = Vector3f(-1, +1, uv.size.y / uv.size.x);
-		m_model->normal[vert_index + 2] = Vector3f(+1, +1, uv.size.y / uv.size.x);
-		m_model->normal[vert_index + 3] = Vector3f(+1, -1, uv.size.y / uv.size.x);
+		m_model->normal[vert_index + 2] = Vector3f(+1, -1, uv.size.y / uv.size.x);
+		m_model->normal[vert_index + 3] = Vector3f(+1, +1, uv.size.y / uv.size.x);
 
 		m_model->color[vert_index + 0] = Vector4f(color.raw);
 		m_model->color[vert_index + 1] = Vector4f(color.raw);
@@ -193,9 +193,9 @@ void rrTextBuilder2D::addText ( const Vector2f& position, const Color& color, co
 		m_model->position[vert_index + 3].z = 0.5F;
 
 		m_model->indices[inde_index + 0] = vert_index + 0;
-		m_model->indices[inde_index + 1] = vert_index + 3;
-		m_model->indices[inde_index + 2] = vert_index + 1;
-		m_model->indices[inde_index + 3] = vert_index + 2;
+		m_model->indices[inde_index + 1] = vert_index + 1;
+		m_model->indices[inde_index + 2] = vert_index + 2;
+		m_model->indices[inde_index + 3] = vert_index + 3;
 		m_model->indices[inde_index + 4] = 0xFFFF;
 
 		// Move the array indices along

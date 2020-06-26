@@ -30,9 +30,24 @@ layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
 
 void main ( void )
 {
-	vec4 diffuseColor = mix( vec4(1,1,1,1), texture( textureSampler0, v2f_texcoord0 ), v2f_textureStrength );
+	vec4 primColor, textColor;
+
+	// Generate normal prim color
+	primColor = vec4(1, 1, 1, 1);
+	primColor.a = v2f_colors.a * sys_DiffuseColor.a;
+	
+	// Generate text colors 
+	textColor = texture( textureSampler0, v2f_texcoord0 );
+	textColor.a = sqrt(textColor.a) * v2f_colors.a * sys_DiffuseColor.a;
+	
+	// Select correct shape type
+	FragDiffuse = mix(primColor, textColor, v2f_textureStrength);
+	// Apply vertex colors
+	FragDiffuse.rgb *= v2f_colors.rgb * sys_DiffuseColor.rgb;
+	
+	/*vec4 diffuseColor = mix( vec4(1,1,1,1), texture( textureSampler0, v2f_texcoord0 ), v2f_textureStrength );
     float f_alpha = diffuseColor.a * v2f_colors.a * sys_DiffuseColor.a;
     f_alpha = mix( f_alpha, sqrt(f_alpha), v2f_textureStrength );
 	FragDiffuse = diffuseColor * v2f_colors * sys_DiffuseColor;
-	FragDiffuse.a = f_alpha;
+	FragDiffuse.a = f_alpha;*/
 }

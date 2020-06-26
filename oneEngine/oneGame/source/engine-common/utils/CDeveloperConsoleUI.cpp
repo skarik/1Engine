@@ -28,9 +28,9 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 
 	RrPass fontPass;
 	fontPass.m_layer = renderer::kRenderLayerV2D;
+	fontPass.m_orderOffset = kPassOrder_DebugTools;
 	fontPass.m_type = kPassTypeForward;
 	fontPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
-	//fontPass.setTexture(TEX_MAIN, RrTexture::Load(renderer::kTextureWhite));
 	fontPass.setTexture( TEX_MAIN, fntMenu );
 	fontPass.utilSetupAs2D();
 	fontPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
@@ -44,6 +44,7 @@ CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
 
 	RrPass shapesPass;
 	shapesPass.m_layer = renderer::kRenderLayerV2D;
+	fontPass.m_orderOffset = kPassOrder_DebugTools;
 	shapesPass.m_type = kPassTypeForward;
 	shapesPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
 	shapesPass.setTexture( TEX_MAIN, RrTexture::Load(renderer::kTextureWhite) );
@@ -220,6 +221,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	texCursor->AddReference();
 	RrPass cursorPass;
 	cursorPass.m_layer = renderer::kRenderLayerV2D;
+	cursorPass.m_orderOffset = kPassOrder_DebugTools + kPassOrder_Step;
 	cursorPass.m_type = kPassTypeForward;
 	cursorPass.m_surface.diffuseColor = Color( 1.0F, 1, 1 );
 	cursorPass.setTexture( TEX_MAIN, texCursor );
