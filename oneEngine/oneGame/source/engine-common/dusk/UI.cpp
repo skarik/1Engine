@@ -390,6 +390,7 @@ void dusk::UserInterface::UpdateElementPositions ( void )
 			if (elementNode.index != kElementHandleInvalid)
 			{
 				element = m_elements[elementNode.index];
+				ARCORE_ASSERT(element->m_index == elementNode.index);
 			}
 
 			// Do the layout-type elements
@@ -473,6 +474,7 @@ void dusk::UserInterface::UpdateElements ( void )
 			if (elementNode->index != kElementHandleInvalid)
 			{
 				Element* element = m_elements[elementNode->index];
+				ARCORE_ASSERT(element->m_index == elementNode->index);
 				
 				// Update them
 				element->Update(&l_stepInfo);

@@ -131,6 +131,7 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 
 		// Make base panel
 		panel = dusk->Add<dusk::elements::Panel>( dusk::ElementCreationDescription{NULL, Rect( 100,100,200,400 )} );
+		panel->m_contents = "Test Panel";
 
 		// Create test buttons
 		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,45,150,20 )} );

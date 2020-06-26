@@ -81,10 +81,12 @@ namespace dusk
 		kColorStyleLabel		= 0x03,
 	};
 
-	enum FocusStyle : uint8_t
+	enum FocusStyle : uint16_t
 	{
 		// Automatic style, pulls from the calling element properties
 		kFocusStyleAutomatic	= 0x00,
+		// Automatic style, but no glow on hover, pulls from calling element properties
+		kFocusStyleAutomaticNoHover	= 0x04,
 		// Active style, default look
 		kFocusStyleActive		= 0x10,
 		// Disabled style, ensure the element cannot be used
@@ -95,7 +97,7 @@ namespace dusk
 		kFocusStyleHovered		= 0x40,
 
 		// Special style, for notice elements. Element pulses and glows.
-		kFocusStyleNotice		= 0x80,
+		kFocusStyleNotice		= 0x100,
 	};
 
 	enum TextAlignStyleHorizontal

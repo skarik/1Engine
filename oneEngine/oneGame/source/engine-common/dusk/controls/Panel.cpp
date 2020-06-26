@@ -12,7 +12,7 @@ void dusk::elements::Panel::Render ( UIRendererContext* uir )
 {
 	if (m_displayLabel)
 	{
-		uir->setFocus(dusk::kFocusStyleAutomatic);
+		uir->setFocus(dusk::kFocusStyleAutomaticNoHover);
 		
 		float textHeight = uir->getTextHeight(dusk::kTextFontTitle);
 		uir->setColor(dusk::kColorStyleBackground);
@@ -25,7 +25,7 @@ void dusk::elements::Panel::Render ( UIRendererContext* uir )
 	}
 	else
 	{
-		uir->setFocus(dusk::kFocusStyleAutomatic);
+		uir->setFocus(dusk::kFocusStyleAutomaticNoHover);
 		uir->setColor(dusk::kColorStyleBackground);
 		uir->drawRectangle(this, m_absoluteRect);
 	}

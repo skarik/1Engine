@@ -219,96 +219,90 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 {
 	renderList->clear();
 
-	// Hold a dialogue render list in case we need it
-	std::vector<Element*> t_renderListDialogue;
-
-	// Here, we want to actually generate render lists and render to the framebuffer.
-	std::vector<bool> t_elementAdded (m_interface->m_elements.size(), false);
-
-	// Loop through all the elements and generate render lists
+	// Clear out previous render state of all items
 	for (uint32_t i = 0; i < m_interface->m_elements.size(); ++i)
 	{
-		Element* currentElement = m_interface->m_elements[i];
-
-		// Skip items that have already been considered
-		if (t_elementAdded[currentElement->m_index])
-			continue;
-		// Skip deleted items
-		if (currentElement == NULL)
-			continue;
-
-		// Go to the first parent
-		Element* rootParent = currentElement;
-		while (rootParent->m_parent != NULL)
+		Element* element = m_interface->m_elements[i];
+		if (element != NULL)
 		{
-			ARCORE_ASSERT(m_interface->m_elements[rootParent->m_index] == rootParent);
-			rootParent = rootParent->m_parent;
+			element->m_wasDrawn = false;
 		}
+	}
 
-		// Skip if it's not visible
-		if (!rootParent->m_visible)
-			continue;
+	// Hold a dialogue render list in case we need it
+	std::list<UserInterface::ElementNode*> delayedUpdateList;
 
-		// Otherwise, we add the current item to the list, then start running down the list of children
-		std::vector<Element*> t_children;
-		t_children.push_back(rootParent);
+	// Update positions, going down the tree.
+	std::list<UserInterface::ElementNode*> updateList;
+	updateList.push_front(&m_interface->m_elementTreeBase);
 
-		for (uint32_t iTree = 0; iTree < t_children.size(); ++iTree)
+	while (!updateList.empty())
+	{
+		UserInterface::ElementNode* elementNode = updateList.front();
+		updateList.pop_front();
+
+		if (elementNode->index != kElementHandleInvalid)
 		{
-			Element* currentParent = t_children[iTree];
+			Element* element = m_interface->m_elements[elementNode->index];
+			ARCORE_ASSERT(element->m_index == elementNode->index);
 
-			// Now look for all the children
-			for (uint32_t iChild = 0; iChild < m_interface->m_elements.size(); ++iChild)
+			if (m_interface->m_currentDialogue != elementNode->index)
 			{
-				Element* possibleChild = m_interface->m_elements[iChild];
-
-				// Skip items that have already been considered
-				if (t_elementAdded[iChild])
-					continue;
-				// Skip deleted items
-				if (possibleChild == NULL)
-					continue;
-
-				// Skip if it's not visible
-				if (!possibleChild->m_visible)
-					continue;
-
-				// Check if the parent matches, and if it does match...
-				if (possibleChild->m_parent == currentParent)
+				// Add them to the rendering list
+				if (element->m_elementType == ElementType::kControl)
 				{
-					// Save this child to check it for children & mark it as considered
-					t_children.push_back(possibleChild);
-					t_elementAdded[possibleChild->m_index] = true;
+					renderList->push_back(element);
 				}
 			}
-		}
-
-		// Add the current t_children list to the render list
-		if (m_interface->m_currentDialogue != rootParent->m_index)
-		{
-			for (uint32_t iTree = 0; iTree < t_children.size(); ++iTree)
+			else
 			{
-				currentElement = t_children[iTree];
-				ARCORE_ASSERT(m_interface->m_elements[currentElement->m_index] == currentElement);
-				renderList->push_back(currentElement);
+				// Add this to the delayed render list
+				delayedUpdateList.push_back(elementNode);
 			}
 		}
-		// If in dialogue mode, add the current t_children list to the dialogue list that has to be added at the end
-		else
+
+		// Render children of this item after all the current depth's items are added.
+		if (elementNode->index == kElementHandleInvalid
+			|| m_interface->m_currentDialogue != elementNode->index)
 		{
-			for (uint32_t iTree = 0; iTree < t_children.size(); ++iTree)
+			for (UserInterface::ElementNode& child : elementNode->children)
 			{
-				currentElement = t_children[iTree];
-				ARCORE_ASSERT(m_interface->m_elements[currentElement->m_index] == currentElement);
-				t_renderListDialogue.push_back(currentElement);
+				updateList.push_back(&child);
 			}
 		}
 	}
 
-	// Force dialogues to come last in the rendering loop
-	for (uint32_t i = 0; i < t_renderListDialogue.size(); ++i)
+	// Any dialogues need their own loop to push their children onto the render list after everything else
+	while (!delayedUpdateList.empty())
 	{
-		renderList->push_back(t_renderListDialogue[i]);
+		UserInterface::ElementNode* elementNode = delayedUpdateList.front();
+		delayedUpdateList.pop_front();
+
+		if (elementNode->index != kElementHandleInvalid)
+		{
+			Element* element = m_interface->m_elements[elementNode->index];
+			ARCORE_ASSERT(element->m_index == elementNode->index);
+
+			if (m_interface->m_currentDialogue != elementNode->index)
+			{
+				// Add them to the rendering list
+				if (element->m_elementType == ElementType::kControl)
+				{
+					renderList->push_back(element);
+				}
+			}
+			else
+			{
+				// Add this to the delayed render list
+				delayedUpdateList.push_back(elementNode);
+			}
+		}
+
+		// Render children of this item after all the current depth's items are added.
+		for (UserInterface::ElementNode& child : elementNode->children)
+		{
+			delayedUpdateList.push_back(&child);
+		}
 	}
 }
 
@@ -331,6 +325,7 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	for (uint32_t i = 0; i < renderList.size(); ++i)
 	{
 		renderList[i]->Render(&l_ctx);
+		renderList[i]->m_wasDrawn = true;
 	}
 
 	// Upload the mesh
