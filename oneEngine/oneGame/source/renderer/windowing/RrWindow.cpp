@@ -171,7 +171,7 @@ void RrWindow::CreateScreen ( void )
 	else
 	{
 		dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
-		dwStyle = WS_OVERLAPPEDWINDOW;
+		dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MAXIMIZEBOX;
 	}
 
 	// Adjust Window To True Requested Size
@@ -365,8 +365,8 @@ bool RrWindow::Resize ( int width, int height )
 {
 	if (m_resolution.x != width || m_resolution.y != height)
 	{
-		m_resolution.x = width;
-		m_resolution.y = height;
+		m_resolution.x = std::max(1, width); // Prevent zero or lower image sizes.
+		m_resolution.y = std::max(1, height);
 
 		// Refresh the device
 		m_device->refresh((intptr_t)mw_instance, (intptr_t)mw_window);
