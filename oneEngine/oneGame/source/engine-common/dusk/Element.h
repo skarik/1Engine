@@ -12,6 +12,7 @@ namespace dusk
 	class UserInterface;
 	class UIRenderer;
 	class UIRendererContext;
+	class UIRendererElementColors;
 
 	struct UIStepInfo
 	{
@@ -95,6 +96,7 @@ namespace dusk
 		friend UserInterface;
 		friend UIRenderer;
 		friend UIRendererContext;
+		friend UIRendererElementColors;
 
 		// The GUI system that this element is associated with
 		UserInterface*		m_interface;

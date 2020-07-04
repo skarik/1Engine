@@ -25,54 +25,67 @@ void dusk::UIRendererContext::generateColor( Element* source )
 	const Color kBackgroundColor (0.16F, 0.16F, 0.16F, 1.00F);
 	const Color kBackgroundBump (0.16F, 0.16F, 0.16F, 1.00F);
 
+	const Color kAccentColorGray = kAccentColor.luminosityRGBA();
+
 	// focused is normal color but adds glow
 	// disabled is normal color but gray
 	// hovered is brighter color in general
 
 	m_dsColorBackground = kBackgroundColor;
 
+	// Update backgrounds
 	if (m_focusType == kFocusStyleDisabled 
 		|| (m_focusType == kFocusStyleAutomatic && !source->m_isEnabled)
 		|| (m_focusType == kFocusStyleAutomaticNoHover && !source->m_isEnabled)
 		)
 	{
 		m_dsColorBackground = kBackgroundColor * 0.5F;
-
+		m_dsColorBackground.a = kBackgroundColor.a;
 		m_dsDrawBackground = true;
-		m_dsDrawOutline = false;
 	}
 	else if (m_focusType == kFocusStyleHovered
 		|| (m_focusType == kFocusStyleAutomatic && source->m_isMouseIn)
 		)
 	{
 		m_dsColorBackground = kBackgroundColor + kBackgroundBump;
+		if (source->m_isActivated)
+		{	// Half-bump for activation
+			m_colors->setBackgroundClickPulse(source, m_dsColorBackground + kBackgroundBump * 0.5F);
+		}
 		m_dsColorBackground.a = kBackgroundColor.a;
-
 		m_dsDrawBackground = true;
-		m_dsDrawOutline = false;
-	}
-	else if (m_focusType == kFocusStyleFocused
-		|| (m_focusType == kFocusStyleAutomatic && source->m_isFocused)
-		|| (m_focusType == kFocusStyleAutomaticNoHover && source->m_isFocused)
-		)
-	{
-		m_dsColorBackground = kBackgroundColor + kBackgroundBump;
-		m_dsColorBackground.a = kBackgroundColor.a;
-
-		m_dsColorOutline = kAccentColor;
-
-		m_dsDrawBackground = true;
-		m_dsDrawOutline = true;
 	}
 	else if (m_focusType == kFocusStyleActive
 		|| (m_focusType == kFocusStyleAutomatic && source->m_isEnabled)
 		|| (m_focusType == kFocusStyleAutomaticNoHover && source->m_isEnabled)
 		)
 	{
-		m_dsColorBackground = kBackgroundColor + kBackgroundBump;
+		m_dsColorBackground = kBackgroundColor;
+		if (source->m_isActivated)
+		{	// Half-bump for activation
+			m_colors->setBackgroundClickPulse(source, m_dsColorBackground + kBackgroundBump * 0.5F);
+		}
 		m_dsColorBackground.a = kBackgroundColor.a;
-
 		m_dsDrawBackground = true;
+	}
+	m_colors->setBackgroundColor(source, m_dsColorBackground);
+	m_dsColorBackground = m_colors->getBackgroundColor(source);
+
+	// Update outlines
+	if (m_focusType == kFocusStyleFocused
+		|| (m_focusType == kFocusStyleAutomatic && m_uir->m_renderMouselessFocus && source->m_isFocused)
+		|| (m_focusType == kFocusStyleAutomaticNoHover && m_uir->m_renderMouselessFocus && source->m_isFocused))
+	{
+		m_dsColorOutline = kAccentColor;
+		m_dsDrawOutline = true;
+	}
+	else if ((m_focusType == kFocusStyleDisabled && source->m_isFocused))
+	{
+		m_dsColorOutline = kAccentColorGray;
+		m_dsDrawOutline = true;
+	}
+	else
+	{
 		m_dsDrawOutline = false;
 	}
 }

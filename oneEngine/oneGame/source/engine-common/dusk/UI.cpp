@@ -117,7 +117,7 @@ void dusk::UserInterface::UpdateMouseOver ( void )
 	// Reset mouseover
 	m_currentMouseover = kElementHandleInvalid;
 
-	std::vector<uint32_t> mouseoverList (m_elements.size());
+	/*std::vector<uint32_t> mouseoverList (m_elements.size());
 	std::vector<uint32_t> mouseoverListFinal (m_elements.size());
 
 	for ( unsigned int i = 0; i < m_elements.size(); ++i )
@@ -171,6 +171,40 @@ void dusk::UserInterface::UpdateMouseOver ( void )
 	if ( mouseoverList.size() > 0 )
 	{
 		m_currentMouseover = mouseoverListFinal[0];
+	}*/
+
+	// Update positions, going down the tree.
+	std::list<ElementNode*> updateList;
+	updateList.push_front(&m_elementTreeBase);
+
+	while (!updateList.empty())
+	{
+		ElementNode* elementNode = updateList.front();
+		updateList.pop_front();
+
+		if (elementNode->index != kElementHandleInvalid)
+		{
+			Element* element = m_elements[elementNode->index];
+			ARCORE_ASSERT(element->m_index == elementNode->index);
+
+			if ( element == NULL ) // Skip deleted
+				continue;
+			if ( !element->m_visible ) // Skip invisible
+				continue;
+			if ( !element->m_wasDrawn ) // Skip not drawn
+				continue;
+
+			if (element->m_isMouseIn)
+			{
+				m_currentMouseover = element->m_index;
+			}
+		}
+
+		// Update children of this item last so we update the mouse over in tiers
+		for (ElementNode& child : elementNode->children)
+		{
+			updateList.push_back(&child);
+		}
 	}
 }
 
@@ -199,6 +233,9 @@ void dusk::UserInterface::UpdateFocus ( void )
 		{
 			m_elements[m_currentFocus]->m_isFocused = true;
 		}
+		
+		// Mouse is used, so don't need to draw the focus
+		m_renderer->m_renderMouselessFocus = false;
 	}
 
 	// If not in dialogue mode...
@@ -262,6 +299,9 @@ void dusk::UserInterface::UpdateFocus ( void )
 			{
 				m_elements[m_currentFocus]->m_isFocused = true;
 			}
+
+			// Tab cycling happened, so enable the visual focus
+			m_renderer->m_renderMouselessFocus = true;
 		}
 		// End tab cycling
 	}

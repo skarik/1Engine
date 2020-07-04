@@ -39,29 +39,59 @@ public:
 	FORCE_INLINE static Color Lerp (Color const c_one, Color const c_two, Real t);
 	// Linear interpolation
 	FORCE_INLINE Color Lerp (Color const c_two, Real t) const;
-	// Addition overload
+
+	// Vector arithmetic
 	FORCE_INLINE Color operator+ (Color const& right) const;		
-	// Subtraction overload
 	FORCE_INLINE Color operator- (Color const& right) const;	
-	// Multiplication overload
 	FORCE_INLINE Color operator* (Color const& right) const;	
-	// Multiplication overload (scalar)
+	FORCE_INLINE Color operator/ (Color const& right) const;
+
+	FORCE_INLINE void operator+= (Color const& right)
+	{
+		*this = *this + right;
+	}
+	FORCE_INLINE void operator-= (Color const& right)
+	{
+		*this = *this - right;
+	}
+
+	// Scalar arithmetic
 	FORCE_INLINE Color operator* (Real32 const& right) const;
 	FORCE_INLINE Color operator* (Real64 const& right) const;
-	// Division overload
-	FORCE_INLINE Color operator/ (Color const& right) const;
-	// Division overload (scalar)
 	FORCE_INLINE Color operator/ (Real32 const& right) const;
 	FORCE_INLINE Color operator/ (Real64 const& right) const;
-	// Equal comparison overload
+
+	template <typename REAL>
+	FORCE_INLINE void operator*= (REAL const& right)
+	{
+		*this = *this * right;
+	}
+	template <typename REAL>
+	FORCE_INLINE void operator/= (REAL const& right)
+	{
+		*this = *this * right;
+	}
+	
+	// Comparison
 	FORCE_INLINE bool operator== (Color const& right) const;
-	//Not equal comparison overload
 	FORCE_INLINE bool operator!= (Color const& right) const;
 
 	// Access via array
 	FORCE_INLINE Real& operator[] ( const int );
 	// Const access via array
 	FORCE_INLINE const Real& operator[] ( const int ) const;
+
+	// luminosity() : Return luminosity of the color value
+	FORCE_INLINE Real luminosity (void) const
+	{
+		return r * 0.299F + g * 0.587F + b * 0.114F;
+	}
+	// luminosityRGBA() : Return luminosity of the color value, as a grayscale color
+	FORCE_INLINE Color luminosityRGBA (void) const
+	{
+		Real lumin = luminosity();
+		return Color(lumin, lumin, lumin, alpha);
+	}
 
 	//===============================================================================================//
 	// HSL + INT Conversion

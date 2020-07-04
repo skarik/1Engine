@@ -26,6 +26,52 @@ namespace dusk
 	class UserInterface;
 	class Element;
 
+	// Color state for a single element
+	struct UIRendererBlendedColor
+	{
+		Color					getCurrentColor ( void )
+			{ return color; }
+
+		//	setColor() : Sets next color to blend to
+		void					setColor ( const Color& next_color, const float blend_time );
+		//	setPulse() : Sets start of animated pulse
+		void					setPulse ( const Color& in_pulse_color );
+
+		//	update() : Update the current color
+		void					update ( void );
+
+	public:
+		Color				color;
+
+		Color				main_color_prev;
+		Color				main_color_next;
+		float				main_color_blend = 0.0F; 
+		float				main_color_blend_time = 0.0F; 
+
+		Color				pulse_color;
+		bool				pulse_up = false;
+		float				pulse_blend = 0.0F;
+	};
+
+	// State of all element colors
+	class UIRendererElementColors
+	{
+	public:
+		void					setSize ( const size_t size );
+		void					update ( void );
+
+		void					setBackgroundColor ( Element* element, const Color& color );
+		void					setBackgroundClickPulse ( Element* element, const Color& click_pulse );
+
+		Color					getBackgroundColor ( Element* element );
+
+	private:
+
+		std::vector<UIRendererBlendedColor>
+							m_elementBackgroundColors;
+	};
+
+	// Renders UI
 	class UIRenderer : public CRenderableObject
 	{
 	public:
@@ -58,6 +104,10 @@ namespace dusk
 		//	ERRenderElements() : Renders the elements to buffer.
 		void					ERRenderElements ( const std::vector<Element*>& renderList, const Rect& scissorArea );
 
+	public:
+
+		bool				m_renderMouselessFocus = false;
+
 	private:
 
 		// Rendering state
@@ -71,6 +121,9 @@ namespace dusk
 
 		arModelData			m_modeldata;
 		rrMeshBuffer		m_meshBuffer;
+
+		UIRendererElementColors
+							m_colors;
 
 	};
 
@@ -162,6 +215,8 @@ namespace dusk
 		UIRenderer*			m_uir;
 		rrMeshBuilder2D*	m_mb2;
 		arModelData*		m_modeldata;
+		UIRendererElementColors*
+							m_colors;
 	};
 }
 

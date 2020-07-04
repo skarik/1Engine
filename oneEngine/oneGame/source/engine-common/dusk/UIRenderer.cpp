@@ -1,5 +1,6 @@
 #include "UIRenderer.h"
 
+#include "core/math/Math.h"
 #include "core/system/Screen.h"
 
 #include "gpuw/Device.h"
@@ -311,6 +312,12 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 {
 	UIRendererContext l_ctx;
 	l_ctx.m_uir = this;
+	l_ctx.m_colors = &m_colors;
+
+	//
+	// Update color state
+	m_colors.setSize(m_interface->m_elements.size());
+	m_colors.update();
 
 	//
 	// Mesh generation
@@ -395,4 +402,89 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 
 	//gfx->submit(); // TODO: remove this
 	gfx->clearPipelineAndWait();
+}
+
+//===============================================================================================//
+
+void dusk::UIRendererBlendedColor::setColor ( const Color& next_color, const float blend_time )
+{
+	if (main_color_next != next_color)
+	{
+		main_color_prev = main_color_prev.Lerp(main_color_next, math::saturate(main_color_blend));;
+		main_color_next = next_color;
+		main_color_blend = 0.0F;
+		main_color_blend_time = blend_time;
+	}
+}
+
+void dusk::UIRendererBlendedColor::setPulse ( const Color& in_pulse_color )
+{
+	pulse_color = in_pulse_color;
+	pulse_up = true;
+}
+
+void dusk::UIRendererBlendedColor::update ( void )
+{
+	// Main blend
+	if (main_color_blend_time <= 0.0F)
+	{
+		main_color_blend = 1.0F;
+	}
+	else
+	{
+		main_color_blend += Time::deltaTime / main_color_blend_time;
+	}
+	color = main_color_prev.Lerp(main_color_next, math::saturate(main_color_blend));
+
+	// Add the pulse blend
+	if (pulse_up)
+	{
+		pulse_blend += Time::deltaTime / 0.02F;
+	}
+	else
+	{
+		pulse_blend -= Time::deltaTime / 0.2F;
+	}
+	if (pulse_blend > 1.0F)
+	{
+		pulse_up = false;
+	}
+	pulse_blend = math::saturate(pulse_blend);
+	color = color.Lerp(pulse_color, pulse_blend);
+}
+
+//===============================================================================================//
+
+void dusk::UIRendererElementColors::setSize ( const size_t size )
+{
+	if (m_elementBackgroundColors.size() < size)
+	{
+		m_elementBackgroundColors.resize(size);
+	}
+}
+
+void dusk::UIRendererElementColors::update ( void )
+{
+	// Update all the blends
+	for (UIRendererBlendedColor& element : m_elementBackgroundColors)
+	{
+		element.update();
+	}
+}
+
+void dusk::UIRendererElementColors::setBackgroundColor ( Element* element, const Color& color )
+{
+	UIRendererBlendedColor& blend = m_elementBackgroundColors[element->m_index];
+	blend.setColor(color, 0.05F);
+}
+
+void dusk::UIRendererElementColors::setBackgroundClickPulse ( Element* element, const Color& click_pulse )
+{
+	UIRendererBlendedColor& blend = m_elementBackgroundColors[element->m_index];
+	blend.setPulse(click_pulse);
+}
+
+Color dusk::UIRendererElementColors::getBackgroundColor ( Element* element )
+{
+	return m_elementBackgroundColors[element->m_index].getCurrentColor();
 }
