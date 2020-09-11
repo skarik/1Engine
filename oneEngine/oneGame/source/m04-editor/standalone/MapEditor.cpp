@@ -5,6 +5,7 @@
 #include "core/settings/CGameSettings.h"
 #include "core/system/io/FileUtils.h"
 #include "core/system/Screen.h"
+#include "core/system/System.h"
 
 #include "engine/utils/CDeveloperConsole.h"
 
@@ -13,7 +14,10 @@
 #include "engine-common/dusk/controls/Panel.h"
 #include "engine-common/dusk/controls/Label.h"
 #include "engine-common/dusk/controls/DockablePanel.h"
+#include "engine-common/dusk/controls/DropdownList.h"
+#include "engine-common/dusk/controls/Slider.h"
 #include "engine-common/dusk/layouts/Horizontal.h"
+#include "engine-common/dusk/layouts/Vertical.h"
 #include "engine-common/entities/CRendererHolder.h"
 
 #include "renderer/state/Settings.h"
@@ -713,7 +717,7 @@ void MapEditor::doObjectEditing ( void )
 			if ( Input::Key( Keys.Shift ) && Input::Key( Keys.Alt ) )
 			{
 				// Create the object
-				EditorObject* object = new EditorObject( dusk->GetCurrentDropdownString( ui_fld_object_type ).c_str() );
+				EditorObject* object = new EditorObject( ui_fld_object_type->as<dusk::elements::DropdownList<int>>()->Selection().first.c_str() );
 				object->position = worldpos;
 				object->RemoveReference();
 				// Set UI
@@ -756,8 +760,8 @@ void MapEditor::doObjectEditing ( void )
 			// Light gizmo:
 			if ( m_object_target->light != NULL )
 			{
-				m_object_target->light->range = m_light_handle->GetRange();
-				m_object_target->light->falloff = m_light_handle->GetPower();
+				m_object_target->light->falloff_range = m_light_handle->GetRange();
+				m_object_target->light->falloff_invpower = m_light_handle->GetPower();
 				// Update gizmo position
 				m_light_handle->SetRenderPosition( m_object_target->position );
 			}
@@ -1046,135 +1050,133 @@ void MapEditor::uiCreate ( void )
 		label->m_contents = "MODE";
 
 		// Create layer thingies
-		button = dusk->CreateButton( panel );
-		button.SetText("-");
-		button.SetRect(Rect(50,5,30,30));
-		ui_btn_dec_layer = button;
+		ui_btn_dec_layer = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{ui_panel_tiles, Rect(50,5,30,30)} );
+		ui_btn_dec_layer->m_contents = "-";
 
-		label = dusk->CreateText( panel, "0" );
-		label.SetRect(Rect(90,5,0,0));
-		ui_fld_current_layer = label;
+		ui_fld_current_layer = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{ui_panel_tiles, Rect(90,5,0,0)} );
+		ui_fld_current_layer->m_contents = "0";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("+");
-		button.SetRect(Rect(110,5,30,30));
-		ui_btn_inc_layer = button;
+		ui_btn_inc_layer = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{ui_panel_tiles, Rect(110,5,30,30)} );
+		ui_btn_inc_layer->m_contents = "+";
 
 		// Create edit mode toggles
-		button = dusk->CreateButton( panel );
-		button.SetText("Visuals");
-		button.SetRect(Rect(200,5,50,30));
-		ui_btn_tile_mode_visual = button;
+		ui_btn_tile_mode_visual = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{ui_panel_tiles, Rect(200,5,50,30)} );
+		ui_btn_tile_mode_visual->m_contents = "Visuals";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Collision");
-		button.SetRect(Rect(255,5,50,30));
-		ui_btn_tile_mode_collision = button;
+		ui_btn_tile_mode_collision = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{ui_panel_tiles, Rect(255,5,50,30)} );
+		ui_btn_tile_mode_collision->m_contents = "Collision";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Height");
-		button.SetRect(Rect(310,5,50,30));
-		ui_btn_tile_mode_height = button;
+		ui_btn_tile_mode_height = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{ui_panel_tiles, Rect(310,5,50,30)} );
+		ui_btn_tile_mode_height->m_contents = "Height";
 	}
 
 	// Shit panel
 	{
-		dusk::Element* panel;
 		dusk::Element* button;
-		dusk::Element* label;
+		dusk::elements::Label* label;
 		dusk::Element* field;
+		dusk::layouts::Horizontal* sublayout;
 
 		// Create the panel
-		panel = dusk->CreatePanel();
-		panel.SetRect( Rect(0,40,200,650) );
+		dusk::elements::DockablePanel* panel = dusk->Add<dusk::elements::DockablePanel>( dusk::ElementCreationDescription{NULL, Rect(0,40,200,650)} );
+		panel->m_dockPosition = dusk::elements::DockPosition::kScreenLeft;
+		panel->m_dockFlags = dusk::elements::DockFlags::kLocked;
+		panel->m_dockOrder = 2;
 		ui_panel_shit = panel;
 
+		// Create layout for the panel
+		dusk::layouts::Vertical* layout = dusk->Add<dusk::layouts::Vertical>( dusk::LayoutCreationDescription{panel} );
+		layout->m_margin = {10, 10};
+		layout->m_padding = {0, 0};
+
 		// Create labels
-		label = dusk->CreateText( panel, "S.H.I.T." );
-		label.SetRect(Rect(11,1,0,0));
-		label = dusk->CreateText( panel, "for map properties" );
-		label.SetRect(Rect(11,21,0,0));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(11,1,15,25)} );
+		label->m_style = dusk::elements::kLabelStyle_Heading1;
+		label->m_contents = "S.H.I.T.";
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(11,21,15,25)} );
+		label->m_style = dusk::elements::kLabelStyle_Heading2;
+		label->m_contents = "for map properties";
 
 		// Create fields
-		label = dusk->CreateText( panel, "Map Name" );
-		label.SetRect(Rect(20,50,0,0));
-		field = dusk->CreateTextfield( panel );
-		field.SetRect(Rect(20,75,160,30) );
-		ui_fld_map_name = field;
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,50,20,25)} );
+		label->m_contents = "Map Name";
+		ui_fld_map_name = dusk->Add<dusk::elements::Textfield>( dusk::ElementCreationDescription{layout, Rect(20,75,160,30)} );
 
-		label = dusk->CreateText( panel, "Area" );
-		label.SetRect(Rect(20,100,0,0));
-		label = dusk->CreateText( panel, "(eg \"mountains\" or \"ruins\")" );
-		label.SetRect(Rect(20,125,0,0));
-		ui_lbl_map_area = label;
-		field = dusk->CreateTextfield( panel );
-		field.SetRect(Rect(20,125,160,30) );
-		ui_fld_map_area = field;
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,100,20,25)} );
+		label->m_contents = "Area";
+		ui_lbl_map_area = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,125,20,25)} );
+		ui_lbl_map_area->m_contents = "(eg \"mountains\" or \"ruins\")";
+		ui_fld_map_area = dusk->Add<dusk::elements::Textfield>( dusk::ElementCreationDescription{layout, Rect(20,125,160,30)} );
 
-		label = dusk->CreateText( panel, "Map Size (in tiles)" );
-		label.SetRect(Rect(20,150,0,0));
-		field = dusk->CreateTextfield( panel, "40" );
-		field.SetRect(Rect(20,175,70,30) );
-		ui_fld_map_size_x = field;
-		label = dusk->CreateText( panel, "x" );
-		label.SetRect(Rect(95,175,0,0));
-		field = dusk->CreateTextfield( panel, "40" );
-		field.SetRect(Rect(110,175,70,30) );
-		ui_fld_map_size_y = field;
-		label = dusk->CreateText( panel, "in pixels: 1280 x 1280" );
-		label.SetRect(Rect(20,200,0,0));
-		ui_lbl_map_size = label;
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,150,20,25)} );
+		label->m_contents = "Map Size (in tiles)";
+		sublayout = dusk->Add<dusk::layouts::Horizontal>( dusk::LayoutCreationDescription{layout} );
+		{
+			ui_fld_map_size_x = dusk->Add<dusk::elements::Textfield>( dusk::ElementCreationDescription{sublayout, Rect(20,175,70,30)} );
+			ui_fld_map_size_x->m_contents = "40";
+			label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{sublayout, Rect(95,175,15,15)} );
+			label->m_contents = "x";
+			ui_fld_map_size_y = dusk->Add<dusk::elements::Textfield>( dusk::ElementCreationDescription{sublayout, Rect(110,175,70,30)} );
+			ui_fld_map_size_y->m_contents = "40";
+		}
+		ui_lbl_map_size = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,200,0,0)} );
+		ui_lbl_map_size->m_contents = "in pixels: 1280 x 1280";
 
-		label = dusk->CreateText( panel, "Ambient Light" );
-		label.SetRect(Rect(20,250,0,0));
-		//field = dusk->CreateTextfield( panel, "808080FF" );
-		field = dusk->CreateColorPicker( panel, renderer::Settings.ambientColor );
-		field.SetRect(Rect(20,275,70,30) );
-		ui_fld_map_ambient_color = field;
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,250,20,25)} );
+		label->m_contents = "Ambient Light";
+		ui_fld_map_ambient_color = dusk->Add<dusk::elements::Colorpicker>( dusk::ElementCreationDescription{layout, Rect(20,275,70,30} );
+		ui_fld_map_ambient_color->m_color = renderer::Settings.ambientColor;
 
 		// Create button
-		button = dusk->CreateButton( panel );
-		button.SetText("Apply");
-		button.SetRect(Rect(20,610,45,30));
-		ui_btn_apply_shit = button;
+		sublayout = dusk->Add<dusk::layouts::Horizontal>( dusk::LayoutCreationDescription{layout} );
+		{
+			ui_btn_apply_shit = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{sublayout, Rect(20,610,45,30)} );
+			ui_btn_apply_shit->m_contents = "Apply";
 
-		button = dusk->CreateButton( panel );
-		button.SetText("Cancel");
-		button.SetRect(Rect(80,610,45,30));
-		ui_btn_cancel_shit = button;
+			ui_btn_cancel_shit = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{sublayout, Rect(80,610,45,30)} );
+			ui_btn_cancel_shit->m_contents = "Cancel";
+		}
 	}
 
 	// Area panel
 	{
-		dusk::Element* panel;
 		dusk::Element* button;
-		dusk::Element* label;
+		dusk::elements::Label* label;
 		dusk::Element* field;
 
 		// Create the panel
-		panel = dusk->CreatePanel();
-		panel.SetRect( Rect(0,40,200,650) );
+		dusk::elements::DockablePanel* panel = dusk->Add<dusk::elements::DockablePanel>( dusk::ElementCreationDescription{NULL, Rect(0,40,200,650)} );
+		panel->m_dockPosition = dusk::elements::DockPosition::kScreenLeft;
+		panel->m_dockFlags = dusk::elements::DockFlags::kLocked;
+		panel->m_dockOrder = 2;
 		ui_panel_area = panel;
 
+		// Create layout for the panel
+		dusk::layouts::Vertical* layout = dusk->Add<dusk::layouts::Vertical>( dusk::LayoutCreationDescription{panel} );
+		layout->m_margin = {10, 10};
+		layout->m_padding = {0, 0};
+
 		// Create labels
-		label = dusk->CreateText( panel, "AREAS" );
-		label.SetRect(Rect(11,1,0,0));
-		label = dusk->CreateText( panel, "for triggers and effects" );
-		label.SetRect(Rect(11,21,0,0));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(11,1,15,25)} );
+		label->m_style = dusk::elements::kLabelStyle_Heading1;
+		label->m_contents = "AREAS";
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(11,21,15,25)} );
+		label->m_style = dusk::elements::kLabelStyle_Heading2;
+		label->m_contents = "for triggers and effects";
 
 		// Create help info
-		label = dusk->CreateText( panel, "SHIFT+LMB to create area" );
-		label.SetRect(Rect(20,50,0,0));
-		label = dusk->CreateText( panel, "SHIFT+RMB to delete area" );
-		label.SetRect(Rect(20,70,0,0));
-		label = dusk->CreateText( panel, "ALT to snap to half-tile" );
-		label.SetRect(Rect(20,90,0,0));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,50,20,25)} );
+		label->m_contents = "SHIFT+LMB to create area";
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,70,20,25)} );
+		label->m_contents = "SHIFT+RMB to delete area";
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,90,20,25)} );
+		label->m_contents = "ALT to snap to half-tile";
 
 		// Create dropdown list type
-		label = dusk->CreateText( panel, "Area Type" );
-		label.SetRect(Rect(20,125,0,0));
-		field = dusk->CreateDropdownList( panel );
-		field.SetRect(Rect(20,150,160,30));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,125,20,25)} );
+		label->m_contents = "Area Type";
+
+		ui_fld_area_type = dusk->Add<dusk::elements::DropdownList<int>>( dusk::ElementCreationDescription{layout, Rect(20,150,160,30)} );
 		if ( lcl_areatype_map.empty() ) {
 			lcl_areatype_map["<no selection>"] = -1;
 			lcl_areatype_map["Area2DBase"] = 0;
@@ -1183,88 +1185,103 @@ void MapEditor::uiCreate ( void )
 			lcl_areatype_map["AreaPlayerSpawn"] = 3;
 		}
 		for ( auto pair = lcl_areatype_map.begin(); pair != lcl_areatype_map.end(); ++pair )
-			dusk->AddDropdownOption( field, pair->first, pair->second );
+			ui_fld_area_type->as<dusk::elements::DropdownList<int>>()->m_list.push_back({pair->first, pair->second});
 		ui_fld_area_type = field;
 	}
 
 	// Object panel
 	{
-		dusk::Element* panel;
 		dusk::Element* button;
-		dusk::Element* label;
+		dusk::elements::Label* label;
 		dusk::Element* field;
 
 		// Create the panel
-		panel = dusk->CreatePanel();
-		panel.SetRect( Rect(0,40,200,650) );
+		dusk::elements::DockablePanel* panel = dusk->Add<dusk::elements::DockablePanel>( dusk::ElementCreationDescription{NULL, Rect(0,40,200,650)} );
+		panel->m_dockPosition = dusk::elements::DockPosition::kScreenLeft;
+		panel->m_dockFlags = dusk::elements::DockFlags::kLocked;
+		panel->m_dockOrder = 2;
 		ui_panel_object = panel;
 
+		// Create layout for the panel
+		dusk::layouts::Vertical* layout = dusk->Add<dusk::layouts::Vertical>( dusk::LayoutCreationDescription{panel} );
+		layout->m_margin = {10, 10};
+		layout->m_padding = {0, 0};
+
 		// Create labels
-		label = dusk->CreateText( panel, "OBJECTS" );
-		label.SetRect(Rect(11,1,0,0));
-		label = dusk->CreateText( panel, "entities and game objects" );
-		label.SetRect(Rect(11,21,0,0));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(11,1,15,25)} );
+		label->m_style = dusk::elements::kLabelStyle_Heading1;
+		label->m_contents = "OBJECTS";
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(11,21,15,25)} );
+		label->m_style = dusk::elements::kLabelStyle_Heading2;
+		label->m_contents = "entities and game objects";
 
 		// Create help info
-		label = dusk->CreateText( panel, "ALT+SHIFT+LMB to create object" );
-		label.SetRect(Rect(20,50,0,0));
-		label = dusk->CreateText( panel, "LMB to select object" );
-		label.SetRect(Rect(20,70,0,0));
-		label = dusk->CreateText( panel, "ALT to snap to half-tile" );
-		label.SetRect(Rect(20,90,0,0));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,50,20,25)} );
+		label->m_contents = "SHIFT+LMB to create object";
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,70,20,25)} );
+		label->m_contents = "LMB to select object";
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,90,20,25)} );
+		label->m_contents = "ALT to snap to half-tile";
 
 		// Create dropdown list type
-		label = dusk->CreateText( panel, "New Object" );
-		label.SetRect(Rect(20,125,0,0));
-		field = dusk->CreateDropdownList( panel );
-		field.SetRect(Rect(20,150,160,30));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,125,20,25)} );
+		label->m_contents = "New Object";
+
+		ui_fld_object_type = dusk->Add<dusk::elements::DropdownList<int>>( dusk::ElementCreationDescription{layout, Rect(20,150,160,30)} );
 		{
 			int i = 0;
 			for ( auto entry = m_listing->List().begin(); entry != m_listing->List().end(); ++entry )
-				dusk->AddDropdownOption( field, entry->name.c_str(), ++i );
+				ui_fld_area_type->as<dusk::elements::DropdownList<int>>()->m_list.push_back({entry->name.c_str(), ++i});
 		}
-		ui_fld_object_type = field;
 
 		// Create labels
-		label = dusk->CreateText( panel, "PROPERTIES" );
-		label.SetRect(Rect(11,181,0,0));
-		ui_lbl_object_properties = label;
+		ui_lbl_object_properties = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(11,181,0,0)} );
+		ui_lbl_object_properties->as<dusk::elements::Label>()->m_style = dusk::elements::kLabelStyle_Heading2;
+		ui_lbl_object_properties->m_contents = "PROPERTIES";
 	}
 
 
 	// Preferences panel
 	{
-		dusk::Element* panel;
 		dusk::Element* button;
-		dusk::Element* label;
+		dusk::elements::Label* label;
 		dusk::Element* field;
 
 		// Create the panel
-		panel = dusk->CreatePanel();
-		panel.SetRect( Rect(0,40,200,650) );
+		dusk::elements::DockablePanel* panel = dusk->Add<dusk::elements::DockablePanel>( dusk::ElementCreationDescription{NULL, Rect(0,40,200,650)} );
+		panel->m_dockPosition = dusk::elements::DockPosition::kScreenLeft;
+		panel->m_dockFlags = dusk::elements::DockFlags::kLocked;
+		panel->m_dockOrder = 2;
 		ui_panel_preferences = panel;
 
+		// Create layout for the panel
+		dusk::layouts::Vertical* layout = dusk->Add<dusk::layouts::Vertical>( dusk::LayoutCreationDescription{panel} );
+		layout->m_margin = {10, 10};
+		layout->m_padding = {0, 0};
+
 		// Create labels
-		label = dusk->CreateText( panel, "PREFERENCES" );
-		label.SetRect(Rect(11,1,0,0));
-		label = dusk->CreateText( panel, "user options and such" );
-		label.SetRect(Rect(11,21,0,0));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(11,1,15,25)} );
+		label->m_style = dusk::elements::kLabelStyle_Heading1;
+		label->m_contents = "PREFERENCES";
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(11,21,15,25)} );
+		label->m_style = dusk::elements::kLabelStyle_Heading2;
+		label->m_contents = "user options and such";
 
 		// Mouse sensitivity field
-		label = dusk->CreateText( panel, "Mouse Sensitivity" );
-		label.SetRect(Rect(20,50,0,0));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,50,20,25)} );
+		label->m_contents = "Mouse Sensitivity";
 
-		field = dusk->CreateSlider( panel );
-		field.SetRect(Rect(20,70,160,30));
-		dusk->SetSliderMinMax( field, 0.2F, 5.0F );
-		Real t_val = 1.0F;
-		dusk->UpdateSlider( field, t_val );
-		ui_fld_pref_mouse_sensitivity = field;
+		ui_fld_pref_mouse_sensitivity = dusk->Add<dusk::elements::Slider<float>>( dusk::ElementCreationDescription{layout, Rect(20,70,160,30)} );
+		ui_fld_pref_mouse_sensitivity->as<dusk::elements::Slider<float>>()->m_range_min = 0.2F;
+		ui_fld_pref_mouse_sensitivity->as<dusk::elements::Slider<float>>()->m_range_max = 5.0F;
+		ui_fld_pref_mouse_sensitivity->as<dusk::elements::Slider<float>>()->m_snap = true;
+		ui_fld_pref_mouse_sensitivity->as<dusk::elements::Slider<float>>()->m_snap_divisor = 0.1F;
+		ui_fld_pref_mouse_sensitivity->as<dusk::elements::Slider<float>>()->m_value = 1.0F;
 
-		label = dusk->CreateText( panel, "The engine ignores OS mouse" );
-		label.SetRect(Rect(20,100,0,0));
-		label = dusk->CreateText( panel, "settings." );
-		label.SetRect(Rect(20,120,0,0));
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,100,20,25)} );
+		label->m_contents = "The engine ignores OS mouse";
+		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,120,20,25)} );
+		label->m_contents = "settings.";
 	}
 }
 
@@ -1341,7 +1358,7 @@ void MapEditor::uiStepKeyboardShortcuts ( void )
 // handle inputs to the buttons on the top edge
 void MapEditor::uiStepTopEdge ( void )
 {
-	if ( ui_file_new.GetButtonClicked() )
+	if ( ui_file_new->m_isActivated )
 	{
 		doNewMap();
 
@@ -1361,7 +1378,7 @@ void MapEditor::uiStepTopEdge ( void )
 			printf( "No tiles on new map. This is normal.\n" );
 		}
 	}
-	if ( ui_file_save.GetButtonClicked() )
+	if ( ui_file_save->m_isActivated )
 	{
 		m_current_mode = Mode::None; // Close out everything to prevent UI from locking up
 
@@ -1370,7 +1387,7 @@ void MapEditor::uiStepTopEdge ( void )
 		strcpy( filetypes[0].filetype, "OneEngine M04 Map" );
 		ui_dg_save = dusk->DialogueSaveFilename(filetypes,1,"./.res-0/");
 	}
-	if ( ui_file_load.GetButtonClicked() )
+	if ( ui_file_load->m_isActivated )
 	{
 		m_current_mode = Mode::None; // Close out everything to prevent UI from locking up
 
@@ -1380,42 +1397,43 @@ void MapEditor::uiStepTopEdge ( void )
 		ui_dg_load = dusk->DialogueOpenFilename(filetypes,1,"./.res-0/");
 	}
 
-	if ( ui_mode_shit.GetButtonClicked() )
+	if ( ui_mode_shit->m_isActivated )
 	{
 		m_current_mode = Mode::Properties;
 	}
-	if ( ui_mode_map.GetButtonClicked() )
+	if ( ui_mode_map->m_isActivated )
 	{
 		m_current_mode = Mode::TileEdit;
 	}
-	if ( ui_mode_area.GetButtonClicked() )
+	if ( ui_mode_area->m_isActivated )
 	{
 		m_current_mode = Mode::AreaEdit;
 	}
-	if ( ui_mode_object.GetButtonClicked() )
+	if ( ui_mode_object->m_isActivated )
 	{
 		m_current_mode = Mode::ObjectEdit;
 	}
-	if ( ui_mode_script.GetButtonClicked() )
+	if ( ui_mode_script->m_isActivated )
 	{
 		m_current_mode = Mode::ScriptEdit;
 	}
-	if ( ui_mode_utils.GetButtonClicked() )
+	if ( ui_mode_utils->m_isActivated )
 	{
 		m_current_mode = Mode::UtilityEdit;
 	}
 
-	if ( ui_toolbox_cutscene.GetButtonClicked() )
+	if ( ui_toolbox_cutscene->m_isActivated )
 	{
 		m_current_mode = Mode::Toolbox;
 	}
-	if ( ui_toolbox_global.GetButtonClicked() )
+	if ( ui_toolbox_global->m_isActivated )
 	{
 		m_current_mode = Mode::Toolbox;
 	}
-	if ( ui_toolbox_playtest.GetButtonClicked() )
+	if ( ui_toolbox_playtest->m_isActivated )
 	{
-		std::string filename = IO::FilenameStandardize(m_current_savetarget).c_str();
+		std::string filename = m_current_savetarget;
+		std::transform(filename.begin(), filename.end(), filename.begin(), [](unsigned char c){ return std::tolower(c); });
 		auto res_pos = filename.find_first_of(".res-");
 		if (res_pos != string::npos)
 		{
@@ -1425,7 +1443,7 @@ void MapEditor::uiStepTopEdge ( void )
 		engine::Console->RunCommand( "scene game_luvppl" );
 	}
 
-	if ( ui_mode_preferences.GetButtonClicked() )
+	if ( ui_mode_preferences->m_isActivated )
 	{
 		m_current_mode = Mode::Preferences;
 	}
@@ -1478,9 +1496,9 @@ void MapEditor::uiStepShitPanel ( void )
 		string areaInfo;
 		dusk->GetTextfieldData( ui_fld_map_area, areaInfo );
 		if ( areaInfo.empty() )
-			ui_lbl_map_area.SetVisible( true );
+			ui_lbl_map_area->m_visible = true;
 		else
-			ui_lbl_map_area.SetVisible( false );
+			ui_lbl_map_area->m_visible = false;
 	}
 	// Update the sizer
 	string s_sizer;
@@ -1496,10 +1514,10 @@ void MapEditor::uiStepShitPanel ( void )
 		sizey = m_mapinfo->tilesize_y;
 	}
 	// Set sizer string
-	ui_lbl_map_size.SetText( "in pixels: " + std::to_string(sizex*m_tilemap->m_tileset->tilesize_x) + " x " + std::to_string(sizey*m_tilemap->m_tileset->tilesize_y) );
+	ui_lbl_map_size->m_contents = "in pixels: " + std::to_string(sizex*m_tilemap->m_tileset->tilesize_x) + " x " + std::to_string(sizey*m_tilemap->m_tileset->tilesize_y);
 
 	// Apply new map properties
-	if ( ui_btn_apply_shit.GetButtonClicked() )
+	if ( ui_btn_apply_shit->m_isActivated )
 	{
 		string s_temp;
 		
@@ -1515,7 +1533,7 @@ void MapEditor::uiStepShitPanel ( void )
 		doMapResize();
 	}
 	// Cancel all changes
-	if ( ui_btn_cancel_shit.GetButtonClicked() )
+	if ( ui_btn_cancel_shit->m_isActivated )
 	{	// Just reload all fields
 		uiDoShitRefresh();
 	}
@@ -1530,10 +1548,10 @@ void MapEditor::uiStepShitPanel ( void )
 // resets all input in the shit panel with the current values
 void MapEditor::uiDoShitRefresh ( void )
 {
-	ui_fld_map_name.SetText( string( m_mapinfo->map_name ) );
-	ui_fld_map_area.SetText( string( m_mapinfo->area_name ) );
-	ui_fld_map_size_x.SetText( std::to_string( m_mapinfo->tilesize_x ) );
-	ui_fld_map_size_y.SetText( std::to_string( m_mapinfo->tilesize_y ) );
+	ui_fld_map_name->m_contents = string( m_mapinfo->map_name );
+	ui_fld_map_area->m_contents = string( m_mapinfo->area_name );
+	ui_fld_map_size_x->m_contents = std::to_string( m_mapinfo->tilesize_x );
+	ui_fld_map_size_y->m_contents = std::to_string( m_mapinfo->tilesize_y );
 }
 
 //		uiStepTilePanel () : tile editor panel update
@@ -1553,39 +1571,39 @@ void MapEditor::uiStepTilePanel ( void )
 	}
 
 	// Do button stuffs
-	if ( ui_btn_inc_layer.GetButtonClicked() )
+	if ( ui_btn_inc_layer->m_isActivated )
 	{
 		if ( Input::Key(Keys.Control) )
 			m_tile_layer_current += 16;
 		else
 			m_tile_layer_current += 1;
-		ui_fld_current_layer.SetText( std::to_string(m_tile_layer_current) );
+		ui_fld_current_layer->m_contents = std::to_string(m_tile_layer_current);
 	}
-	if ( ui_btn_dec_layer.GetButtonClicked() )
+	if ( ui_btn_dec_layer->m_isActivated )
 	{
 		if ( Input::Key(Keys.Control) )
 			m_tile_layer_current -= 16;
 		else
 			m_tile_layer_current -= 1;
-		ui_fld_current_layer.SetText( std::to_string(m_tile_layer_current) );
+		ui_fld_current_layer->m_contents = std::to_string(m_tile_layer_current);
 	}
 	
 	// Change mode with buttons
-	if ( ui_btn_tile_mode_visual.GetButtonClicked() )
+	if ( ui_btn_tile_mode_visual->m_isActivated )
 	{
 		m_current_submode = SubMode::TilesVisual;
 		// Draw only wireframe
 		m_tile_collision_renderer->m_drawSolids = false;
 		m_tile_collision_renderer->m_drawWireframe = true;
 	}
-	if ( ui_btn_tile_mode_collision.GetButtonClicked() )
+	if ( ui_btn_tile_mode_collision->m_isActivated )
 	{
 		m_current_submode = SubMode::TilesCollision;
 		// Draw solids and wireframe
 		m_tile_collision_renderer->m_drawSolids = true;
 		m_tile_collision_renderer->m_drawWireframe = true;
 	}
-	if ( ui_btn_tile_mode_height.GetButtonClicked() )
+	if ( ui_btn_tile_mode_height->m_isActivated )
 	{
 		m_current_submode = SubMode::TilesHeight;
 	}
@@ -1600,17 +1618,13 @@ void MapEditor::uiStepTilePanel ( void )
 		{
 			if ( layer == NULL ) continue;
 
-			RrMaterial* material = layer->GetMaterial();
-			if ( material != NULL )
+			if ( layer->source_layer_id == m_tile_layer_current )
 			{
-				if ( layer->source_layer_id == m_tile_layer_current )
-				{
-					material->m_diffuse = Color(1.25F, 1.25F, 1.25F, 1.0F);
-				}
-				else
-				{
-					material->m_diffuse = Color(0.25F, 0.25F, 0.25F, 1.0F);
-				}
+				layer->PassGetSurface(0).diffuseColor = Color(1.25F, 1.25F, 1.25F, 1.0F);
+			}
+			else
+			{
+				layer->PassGetSurface(0).diffuseColor = Color(0.25F, 0.25F, 0.25F, 1.0F);
 			}
 		}
 		// Anything else?
@@ -1623,9 +1637,7 @@ void MapEditor::uiStepTilePanel ( void )
 		{
 			if ( layer == NULL ) continue;
 
-			RrMaterial* material = layer->GetMaterial();
-			if ( material != NULL )
-				material->m_diffuse = Color(1.0F, 1.0F, 1.0F, 1.0F);
+			layer->PassGetSurface(0).diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F); // TODO: the GetSurface marks the surface as edited. Don't need to edit if already white.
 		}
 	}
 
@@ -1638,9 +1650,7 @@ void MapEditor::_uiStepTilePanel_End ( void )
 	{
 		if ( layer == NULL ) continue;
 
-		RrMaterial* material = layer->GetMaterial();
-		if ( material != NULL )
-			material->m_diffuse = Color(1.0F, 1.0F, 1.0F, 1.0F);
+		layer->PassGetSurface(0).diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 }
 
@@ -1662,10 +1672,16 @@ void MapEditor::uiStepAreaPanel ( void )
 			string areaStringId = m_area_target->GetTypeName();
 			int areaIntID = lcl_areatype_map[areaStringId];
 			// Grab target
-			int targetIntID = dusk->GetDropdownOption(ui_fld_area_type);
+			int targetIntID = ui_fld_area_type->as<dusk::elements::DropdownList<int>>()->Selection().second;
 			string targetStringId = "Area2DBase";
 			for ( auto pair = lcl_areatype_map.begin(); pair != lcl_areatype_map.end(); ++pair )
-				if ( targetIntID == pair->second ) { targetStringId = pair->first; break; }
+			{
+				if ( targetIntID == pair->second )
+				{
+					targetStringId = pair->first;
+					break;
+				}
+			}
 			if ( areaIntID != targetIntID )
 			{
 				// Create new area if needed
@@ -1694,11 +1710,13 @@ void MapEditor::uiStepAreaPanel ( void )
 			m_current_submode = SubMode::None;
 		}
 		// If no selection, empty out the target type
-		if ( m_area_target == NULL ) {
-			dusk->SetDropdownValue( ui_fld_area_type, -1 );
+		if ( m_area_target == NULL )
+		{
+			ui_fld_area_type->as<dusk::elements::DropdownList<int>>()->SetSelection(-1);
 		}
-		else {
-			dusk->SetDropdownValue( ui_fld_area_type, lcl_areatype_map[m_area_target->GetTypeName()] );
+		else
+		{
+			ui_fld_area_type->as<dusk::elements::DropdownList<int>>()->SetSelection(lcl_areatype_map[m_area_target->GetTypeName()]);
 		}
 	}
 }
@@ -1707,7 +1725,7 @@ void MapEditor::uiStepAreaPanel ( void )
 // handles input and updates to the object panel
 void MapEditor::uiStepObjectPanel ( void )
 {
-	if ( dusk->GetOpenDialogue() == ui_fld_object_type )
+	if ( dusk->CurrentDialogue() == ui_fld_object_type )
 	{
 		// We stop doing shit
 	}
@@ -1715,12 +1733,12 @@ void MapEditor::uiStepObjectPanel ( void )
 	{
 		if ( m_object_target == NULL )
 		{
-			ui_lbl_object_properties.SetVisible( false );
+			ui_lbl_object_properties->m_visible = false;
 			_uiStepObjectPanelSub_ClearProperties();
 		}
 		else
 		{
-			ui_lbl_object_properties.SetVisible( true );
+			ui_lbl_object_properties->m_visible = true;
 
 			// Get the object's metadata
 			const engine::MetadataTable* metadata = m_object_target->m_object->GetMetadata();
@@ -1730,8 +1748,9 @@ void MapEditor::uiStepObjectPanel ( void )
 				// Force update on its metadata
 				m_object_target->WorldToMetadata();
 
-				Dusk::Handle panel = ui_panel_object;
-				Dusk::Handle label, field;
+				dusk::Element* panel = ui_panel_object;
+				dusk::Element* label;
+				dusk::Element* field;
 
 				for ( uint i = 0; i < metadata->data.size(); ++i )
 				{
@@ -1753,10 +1772,10 @@ void MapEditor::uiStepObjectPanel ( void )
 							field = dusk->CreateColorPicker( panel, *((Color*)target_data) );
 						break;
 					default:
-						field = -1;
+						field = NULL;
 						break;
 					}
-					if (field != -1)
+					if (field != NULL)
 					{
 						field.SetRect(Rect(20.0F,225.0F + i * 50.0F,160,30));
 					}
@@ -1767,14 +1786,14 @@ void MapEditor::uiStepObjectPanel ( void )
 				}
 			}
 
-			if ( !dusk->GetMouseInGUI() && !dusk->HasOpenDialogue() )
+			if ( !dusk->IsMouseInside() && !dusk->HasOpenDialogue() )
 			{
 				// Force update on its metadata
 				m_object_target->WorldToMetadata();
 
 				for ( uint i = 0; i < ui_lbl_object_values.size(); ++i )
 				{
-					if ( ui_lbl_object_values[i] == -1 ) continue;
+					if ( ui_lbl_object_values[i] == NULL ) continue;
 
 					char* target_data = m_object_target->m_data_storage_buffer + metadata->data[i].first;
 
@@ -1798,7 +1817,7 @@ void MapEditor::uiStepObjectPanel ( void )
 				// UI Is generated, has valid data. We pull information from the UI and place them into the metadata
 				for ( uint i = 0; i < ui_lbl_object_values.size(); ++i )
 				{
-					if ( ui_lbl_object_values[i] == -1 ) continue;
+					if ( ui_lbl_object_values[i] == NULL ) continue;
 
 					char* target_data = m_object_target->m_data_storage_buffer + metadata->data[i].first;
 
@@ -1842,19 +1861,21 @@ void MapEditor::_uiStepObjectPanelSub_ClearProperties ( void )
 	// Delete all objects created for the UI
 	if ( !ui_lbl_object_keys.empty() )
 	{
-		for ( DuskGUI::Handle handle : ui_lbl_object_keys )
+		for ( dusk::Element* &handle : ui_lbl_object_keys )
 		{
-			if ( handle != -1 )
-				dusk->DeleteElement(handle);
+			if ( handle != NULL )
+				handle->m_destructionRequested = true;
+			handle = NULL;
 		}
 		ui_lbl_object_keys.clear();
 	}
 	if ( !ui_lbl_object_values.empty() )
 	{
-		for ( DuskGUI::Handle handle : ui_lbl_object_values )
+		for ( dusk::Element* &handle : ui_lbl_object_values )
 		{
-			if ( handle != -1 )
-				dusk->DeleteElement(handle);
+			if ( handle != NULL )
+				handle->m_destructionRequested = true;
+			handle = NULL;
 		}
 		ui_lbl_object_values.clear();
 	}
@@ -1876,29 +1897,29 @@ void MapEditor::uiStepBottomEdge ( void )
 {
 	// Update the status on the bottom
 	if ( m_navigation_busy )
-		ui_lbl_mode.SetText("Moving view");
+		ui_lbl_mode->m_contents = "Moving view";
 	else switch ( m_current_mode )
 	{
-	case Mode::Properties:	ui_lbl_mode.SetText("S.H.I.T.");
+	case Mode::Properties:	ui_lbl_mode->m_contents = "S.H.I.T.";
 		break;
-	case Mode::TileEdit:	ui_lbl_mode.SetText("Map Editing");
+	case Mode::TileEdit:	ui_lbl_mode->m_contents = "Map Editing";
 		break;
-	case Mode::AreaEdit:	ui_lbl_mode.SetText("Area Editing");
+	case Mode::AreaEdit:	ui_lbl_mode->m_contents = "Area Editing";
 		break;
-	case Mode::ObjectEdit:	ui_lbl_mode.SetText("Object Editing");
+	case Mode::ObjectEdit:	ui_lbl_mode->m_contents = "Object Editing";
 		break;
-	case Mode::ScriptEdit:	ui_lbl_mode.SetText("Script Editing");
+	case Mode::ScriptEdit:	ui_lbl_mode->m_contents = "Script Editing";
 		break;
-	case Mode::Toolbox:		ui_lbl_mode.SetText("In Toolbox");
+	case Mode::Toolbox:		ui_lbl_mode->m_contents = "In Toolbox";
 		break;
 	case Mode::None:
-	default:				ui_lbl_mode.SetText("Ready.");
+	default:				ui_lbl_mode->m_contents = "Ready.";
 		break;
 	}
 
-	ui_lbl_file.SetText(m_current_savetarget);
+	ui_lbl_mode->m_contents = m_current_savetarget;
 	
-	if ( !dusk->GetMouseInGUI() )
+	if ( !dusk->IsMouseInside() )
 	{
 		// Update mouse position on the GUI
 		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
@@ -1906,13 +1927,13 @@ void MapEditor::uiStepBottomEdge ( void )
 		// Round the position to half-tile if ALT is held down
 		if ( !Input::Key( Keys.Alt ) )
 		{
-			ui_lbl_mousex.SetText( "X: " + std::to_string(math::round(worldpos.x)) );
-			ui_lbl_mousey.SetText( "Y: " + std::to_string(math::round(worldpos.y)) );
+			ui_lbl_mousex->m_contents = "X: " + std::to_string(math::round(worldpos.x));
+			ui_lbl_mousey->m_contents = "Y: " + std::to_string(math::round(worldpos.y));
 		}
 		else
 		{
-			ui_lbl_mousex.SetText( "X: " + std::to_string((int)(math::round(worldpos.x*2.0F/m_tilemap->m_tileset->tilesize_x) * m_tilemap->m_tileset->tilesize_x * 0.5F)) );
-			ui_lbl_mousey.SetText( "Y: " + std::to_string((int)(math::round(worldpos.y*2.0F/m_tilemap->m_tileset->tilesize_y) * m_tilemap->m_tileset->tilesize_y * 0.5F)) );
+			ui_lbl_mousex->m_contents = "X: " + std::to_string((int)(math::round(worldpos.x*2.0F/m_tilemap->m_tileset->tilesize_x) * m_tilemap->m_tileset->tilesize_x * 0.5F));
+			ui_lbl_mousey->m_contents = "Y: " + std::to_string((int)(math::round(worldpos.y*2.0F/m_tilemap->m_tileset->tilesize_y) * m_tilemap->m_tileset->tilesize_y * 0.5F));
 		}
 	}
 }

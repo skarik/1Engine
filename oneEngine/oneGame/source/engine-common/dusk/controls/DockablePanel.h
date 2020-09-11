@@ -39,6 +39,7 @@ namespace elements {
 	public:
 		DockPosition		m_dockPosition = DockPosition::kUndocked;
 		uint32_t			m_dockFlags = DockFlags::kDefaultMask;
+		uint32_t			m_dockOrder = 0; // The higher the value, the later in the dock order.
 	};
 
 }}

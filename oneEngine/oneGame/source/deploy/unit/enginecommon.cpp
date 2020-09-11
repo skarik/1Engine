@@ -47,6 +47,7 @@
 #include "engine-common/dusk/controls/Panel.h"
 #include "engine-common/dusk/controls/Button.h"
 #include "engine-common/dusk/controls/Label.h"
+#include "engine-common/dusk/layouts/Vertical.h"
 
 int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 {	ARUNIT_BUILD_CMDLINE
@@ -129,21 +130,27 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 
 		dusk::UserInterface* dusk = new dusk::UserInterface;
 
+		dusk::LayoutElement* layout;
+
 		// Make base panel
 		panel = dusk->Add<dusk::elements::Panel>( dusk::ElementCreationDescription{NULL, Rect( 100,100,200,400 )} );
 		panel->m_contents = "Test Panel";
 
+		// Create layout
+		layout = dusk->Add<dusk::layouts::Vertical>( dusk::LayoutCreationDescription{panel} );
+		static_cast<dusk::layouts::Vertical*>(layout)->m_margin = {0, 40};
+
 		// Create test buttons
-		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,45,150,20 )} );
+		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 20,45,150,30 )} );
 		button->m_contents = "Button 1";
 
-		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,70,150,20 )} );
+		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 20,70,150,30 )} );
 		button->m_contents = "Button 2";
 
-		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,95,150,20 )} );
+		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 20,95,150,30 )} );
 		button->m_contents = "Button 3";
 
-		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{panel, Rect( 20,120,150,20 )} );
+		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 20,120,150,30 )} );
 		button->m_contents = "Button 4";
 
 		dusk->RemoveReference();

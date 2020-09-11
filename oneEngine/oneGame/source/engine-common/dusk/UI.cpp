@@ -436,7 +436,7 @@ void dusk::UserInterface::UpdateElementPositions ( void )
 			// Do the layout-type elements
 			if (element != NULL && element->m_elementType == ElementType::kLayout)
 			{
-				std::vector<Element*> children (elementNode.children.size(), NULL);
+				std::vector<Element*> children;
 				for (ElementNode& childNode : elementNode.children)
 				{
 					Element* child = m_elements[childNode.index];

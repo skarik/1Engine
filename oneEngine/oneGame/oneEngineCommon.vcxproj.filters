@@ -378,6 +378,18 @@
     <ClInclude Include="source\engine-common\dusk\controls\DockablePanel.h">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\layouts\Vertical.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\DropdownList.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\List.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\Slider.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -591,6 +603,18 @@
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\DockablePanel.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\layouts\AllLayouts.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\DropdownList.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\List.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\Slider.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClCompile>
   </ItemGroup>

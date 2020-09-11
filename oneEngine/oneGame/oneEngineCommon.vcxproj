@@ -114,6 +114,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\DockablePanel.h" />
+    <ClInclude Include="source\engine-common\dusk\controls\DropdownList.h" />
     <ClInclude Include="source\engine-common\dusk\controls\Label.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -126,6 +127,7 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIMaterialPicker.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\List.h" />
     <ClInclude Include="source\engine-common\dusk\controls\Panel.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -150,6 +152,7 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\Slider.h" />
     <ClInclude Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -160,6 +163,7 @@
     <ClInclude Include="source\engine-common\dusk\Element.h" />
     <ClInclude Include="source\engine-common\dusk\Handle.h" />
     <ClInclude Include="source\engine-common\dusk\layouts\Horizontal.h" />
+    <ClInclude Include="source\engine-common\dusk\layouts\Vertical.h" />
     <ClInclude Include="source\engine-common\dusk\UI.h" />
     <ClInclude Include="source\engine-common\dusk\UIRenderer.h" />
     <ClInclude Include="source\engine-common\engine-common-console.h" />
@@ -304,6 +308,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\DockablePanel.cpp" />
+    <ClCompile Include="source\engine-common\dusk\controls\DropdownList.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\Label.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -313,6 +318,7 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIMaterialField.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\List.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\Panel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -331,6 +337,7 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\Slider.cpp" />
     <ClCompile Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -339,6 +346,7 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\Element.cpp" />
     <ClCompile Include="source\engine-common\dusk\Handle.cpp" />
+    <ClCompile Include="source\engine-common\dusk\layouts\AllLayouts.cpp" />
     <ClCompile Include="source\engine-common\dusk\UI.cpp" />
     <ClCompile Include="source\engine-common\dusk\UIRenderer.cpp" />
     <ClCompile Include="source\engine-common\dusk\UIRendererContext.cpp" />

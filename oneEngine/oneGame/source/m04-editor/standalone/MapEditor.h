@@ -9,7 +9,6 @@
 //=========================================//
 
 class RrCamera;
-class CDuskGUI;
 namespace Engine2D
 {
 	class TileMap;
@@ -28,6 +27,9 @@ namespace M04
 	class UILightHandle;
 	class GizmoRenderer;
 	class EditorObject;
+}
+namespace dusk
+{
 }
 
 //=========================================//

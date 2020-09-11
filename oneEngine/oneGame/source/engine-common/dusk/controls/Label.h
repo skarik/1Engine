@@ -6,6 +6,14 @@
 namespace dusk {
 namespace elements {
 
+	enum LabelStyle
+	{
+		kLabelStyle_Normal,
+		kLabelStyle_Heading1,
+		kLabelStyle_Heading2,
+		kLabelStyle_Heading3,
+	};
+
 	class Label : public dusk::Element
 	{
 	public:
@@ -19,6 +27,9 @@ namespace elements {
 		void					Update ( const UIStepInfo* stepinfo ) override;
 		//	Render() : Renders the element.
 		void					Render ( UIRendererContext* uir ) override;
+
+	public:
+		LabelStyle			m_style = kLabelStyle_Normal;
 	};
 
 }}

@@ -1,6 +1,5 @@
-
-#ifndef _ENGINE_OS_SYSTEM_H_
-#define _ENGINE_OS_SYSTEM_H_
+#ifndef ENGINE_OS_SYSTEM_H_
+#define ENGINE_OS_SYSTEM_H_
 
 namespace System
 {
@@ -15,4 +14,4 @@ namespace System
 	void GetWorkingDirectory ( char* nOutDirectory, int nStrlen );
 }
 
-#endif//_ENGINE_OS_SYSTEM_H_
+#endif//ENGINE_OS_SYSTEM_H_
