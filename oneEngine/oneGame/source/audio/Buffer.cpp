@@ -9,14 +9,14 @@ audio::Buffer::Buffer ( const char* n_filename, const int nPositional )
 	: arBaseObject(), m_positional(nPositional>0)
 {
 	m_streamed = false;
-	m_sound = BUFFER_NULL;
+	m_sound = NIL;
 	Init( n_filename );
 }
 audio::Buffer::Buffer ( void )
 	: arBaseObject(), m_positional(true)
 {
 	m_streamed = false;
-	m_sound = BUFFER_NULL;
+	m_sound = NIL;
 }
 
 audio::Buffer::~Buffer ( void )
@@ -42,36 +42,37 @@ void audio::Buffer::Free ( void )
 
 	if ( m_sound )
 	{
-#	ifndef _AUDIO_FMOD_
-		alDeleteBuffers( 1, &m_sound );
-#	else
-		FMOD::FMOD_Sound_Release( m_sound );
-#	endif
+//#	ifndef _AUDIO_FMOD_
+//		alDeleteBuffers( 1, &m_sound );
+//#	else
+//		FMOD::FMOD_Sound_Release( m_sound );
+//#	endif
 	}
 
-	m_sound = BUFFER_NULL;
+	m_sound = NIL;
 }
 
 double audio::Buffer::GetLength ( void )
 {
-#ifndef _AUDIO_FMOD_
-	// First need length in samples
-	ALint sizeInBytes;
-	ALint channels;
-	ALint bits;
-	alGetBufferi(m_sound, AL_SIZE, &sizeInBytes);
-	alGetBufferi(m_sound, AL_CHANNELS, &channels);
-	alGetBufferi(m_sound, AL_BITS, &bits);
-	double lengthInSamples = sizeInBytes * 8 / (channels * bits);
-	// Then with length in samples, can get length in seconds
-	ALint frequency;
-	alGetBufferi(m_sound, AL_FREQUENCY, &frequency);
-	double durationInSeconds = (double)lengthInSamples / (double)frequency;
-	// Return length in seconds
-	return durationInSeconds;
-#else
-	unsigned int ms;
-	FMOD::FMOD_Sound_GetLength( m_sound, &ms, FMOD_TIMEUNIT_MS );
-	return (ms/1000.0f);
-#endif
+//#ifndef _AUDIO_FMOD_
+//	// First need length in samples
+//	ALint sizeInBytes;
+//	ALint channels;
+//	ALint bits;
+//	alGetBufferi(m_sound, AL_SIZE, &sizeInBytes);
+//	alGetBufferi(m_sound, AL_CHANNELS, &channels);
+//	alGetBufferi(m_sound, AL_BITS, &bits);
+//	double lengthInSamples = sizeInBytes * 8 / (channels * bits);
+//	// Then with length in samples, can get length in seconds
+//	ALint frequency;
+//	alGetBufferi(m_sound, AL_FREQUENCY, &frequency);
+//	double durationInSeconds = (double)lengthInSamples / (double)frequency;
+//	// Return length in seconds
+//	return durationInSeconds;
+//#else
+//	unsigned int ms;
+//	FMOD::FMOD_Sound_GetLength( m_sound, &ms, FMOD_TIMEUNIT_MS );
+//	return (ms/1000.0f);
+//#endif
+	return 0.0;
 }

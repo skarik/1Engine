@@ -21,7 +21,7 @@ audio::arBufferHandle audio::WaveformLoader::LoadFile ( const char* sFilename, b
 	{
 		cout << __FILE__ << "(" << __LINE__ << ") don't recognize extension " << sFileExtension << endl;
 	}
-	return BUFFER_NULL;
+	return NIL;
 #else
 	FMOD::FMOD_RESULT result = FMOD::FMOD_OK;
 	arBufferHandle result = BUFFER_NULL;
@@ -104,34 +104,34 @@ audio::arBufferHandle audio::WaveformLoader::LoadWave ( const char* sFilename )
     if ( !fread( data, wave_data.subChunk2Size, 1, soundFile ) )
         return Error( "CAudioSoundLoader::LoadWave: error loading WAVE data into struct!" );
 
-	ALuint buffer = 0;
-	{
-		// Now we set the variables that we passed in with the
-		// data from the structs
-		ALsizei size		= wave_data.subChunk2Size;
-		ALsizei frequency	= wave_format.sampleRate;
-		// The format is worked out by looking at the number of
-		// channels and the bits per sample.
-		ALenum format;
-		if (wave_format.numChannels == 1)
-		{
-			if (wave_format.bitsPerSample == 8 )
-				format = AL_FORMAT_MONO8;
-			else if (wave_format.bitsPerSample == 16)
-				format = AL_FORMAT_MONO16;
-		}
-		else if (wave_format.numChannels == 2)
-		{
-			if (wave_format.bitsPerSample == 8 )
-				format = AL_FORMAT_STEREO8;
-			else if (wave_format.bitsPerSample == 16)
-				format = AL_FORMAT_STEREO16;
-		}
-		// Create the OpenAL buffer
-		alGenBuffers( 1, &buffer );
-		// Send the data to OpenAL
-		alBufferData( buffer, format, (void*)data, size, frequency );
-	}
+	arBufferHandle buffer = 0;
+	//{
+	//	// Now we set the variables that we passed in with the
+	//	// data from the structs
+	//	ALsizei size		= wave_data.subChunk2Size;
+	//	ALsizei frequency	= wave_format.sampleRate;
+	//	// The format is worked out by looking at the number of
+	//	// channels and the bits per sample.
+	//	ALenum format;
+	//	if (wave_format.numChannels == 1)
+	//	{
+	//		if (wave_format.bitsPerSample == 8 )
+	//			format = AL_FORMAT_MONO8;
+	//		else if (wave_format.bitsPerSample == 16)
+	//			format = AL_FORMAT_MONO16;
+	//	}
+	//	else if (wave_format.numChannels == 2)
+	//	{
+	//		if (wave_format.bitsPerSample == 8 )
+	//			format = AL_FORMAT_STEREO8;
+	//		else if (wave_format.bitsPerSample == 16)
+	//			format = AL_FORMAT_STEREO16;
+	//	}
+	//	// Create the OpenAL buffer
+	//	alGenBuffers( 1, &buffer );
+	//	// Send the data to OpenAL
+	//	alBufferData( buffer, format, (void*)data, size, frequency );
+	//}
 
 	// Free temp data
 	delete [] data; // Though it may be possible we want this data down the road, so consider saving it

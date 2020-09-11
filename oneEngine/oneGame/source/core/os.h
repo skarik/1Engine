@@ -15,12 +15,16 @@
 
 #if		defined(_WIN64)
 #	define __OS_STRING_NAME__ "Win32 x64"
+#	define PLATFORM_WINDOWS 1
 #elif	defined(_WIN32)
 #	define __OS_STRING_NAME__ "Win32 x86"
+#	define PLATFORM_WINDOWS 1
 #elif	defined(__linux__)
 #	define __OS_STRING_NAME__ "Linux/Linux Derived"
+#	define PLATFORM_LINUX 1
 #elif	defined(__APPLE__)
 #	define __OS_STRING_NAME__ "Darwin/Darwin Derived"
+#	define PLATFORM_APPLE 1
 #else
 #	define __OS_STRING_NAME__ "Unknown"
 #endif

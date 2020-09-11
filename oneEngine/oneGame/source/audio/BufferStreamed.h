@@ -23,7 +23,7 @@ namespace audio
 		bool Sample ( arSourceHandle source, double& rawtime, bool loop = false );
 		bool Stream ( arBufferHandle buffer, double& rawtime, bool loop = false );
 
-		void FreeBuffers ( ALuint source );
+		void FreeBuffers ( arSourceHandle source );
 
 		virtual double GetLength ( void );
 
@@ -38,7 +38,7 @@ namespace audio
 		vorbis_info*	m_vorbisInfo;
 		vorbis_comment*	m_vorbisComment;
 
-		ALenum			m_format;
+		uint32_t		m_format;
 	#endif
 
 		void InitStream ( const char* filename );

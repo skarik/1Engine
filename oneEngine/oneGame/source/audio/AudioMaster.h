@@ -1,12 +1,12 @@
-//---------------------------------------------
+//===============================================================================================//
+//
 //	CAudioMaster.h
 //		Master class for managing OpenAL interface
 //
-//
+//===============================================================================================//
 
-#ifndef _C_AUDIO_MASTER_H_
-#define _C_AUDIO_MASTER_H_
-
+#ifndef AUDIO_MASTER_H_
+#define AUDIO_MASTER_H_
 
 // Includes
 #include "core/types/types.h"
@@ -19,7 +19,6 @@
 
 namespace audio
 {
-	// Class prototypes
 	class Listener;
 	class Source;
 	class Buffer;
@@ -33,7 +32,7 @@ namespace audio
 		AUDIO_API Master ( void );
 		AUDIO_API ~Master ( void );
 
-		// Per-frame update
+		//	Update() : Per-frame keep-alive.
 		AUDIO_API void Update ( void );
 
 		// Adding and removing objects
@@ -46,7 +45,7 @@ namespace audio
 		// Public queries
 		AUDIO_API static	Master* GetCurrent ( void );
 		AUDIO_API static	bool	Active ( void );
-	#ifdef _AUDIO_FMOD_
+	/*#ifdef _AUDIO_FMOD_
 		static	FMOD::FMOD_SYSTEM*	System ( void ) {
 	#ifdef _ENGINE_DEBUG
 			if ( GetCurrent() == NULL ) {
@@ -55,7 +54,7 @@ namespace audio
 	#endif
 			return GetCurrent()->m_system;
 		}
-	#endif
+	#endif*/
 
 		AUDIO_API const std::vector<Source*>* GetSources ( void ) const
 		{
@@ -74,13 +73,13 @@ namespace audio
 		// Private member data
 		bool	active;		// Is true if the audio device is valid and usable
 
-	#ifndef _AUDIO_FMOD_
+	/*#ifndef _AUDIO_FMOD_
 		// OpenAL device and context pointers
 		ALCdevice*	device;
 		ALCcontext*	context;
 	#else
 		FMOD::FMOD_SYSTEM*	m_system;
-	#endif
+	#endif*/
 
 		// Next ID to assign to sounds
 		unsigned int next_sound_id;
@@ -92,4 +91,4 @@ namespace audio
 	};
 }
 
-#endif 
+#endif//AUDIO_MASTER_H_

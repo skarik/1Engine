@@ -4,6 +4,13 @@
 #include "audio/BufferManager.h"
 #include "audio/Buffer.h"
 
+// TODO: move to wind32
+#include <mmdeviceapi.h>
+#include <Audioclient.h>
+#include <windows.h>
+#pragma comment(lib, "Shell32.lib")
+#pragma comment(lib, "Ole32.lib")
+
 using std::cout;
 using std::endl;
 using std::vector;
@@ -85,10 +92,10 @@ void audio::Master::Update ( void )
 		}
 	}
 
-#ifdef _AUDIO_FMOD_
-	// Update audio system
-	FMOD::FMOD_System_Update( m_system );
-#endif
+//#ifdef _AUDIO_FMOD_
+//	// Update audio system
+//	FMOD::FMOD_System_Update( m_system );
+//#endif
 }
 
 
@@ -98,114 +105,147 @@ void audio::Master::InitSystem ( void )
 	// Number of channels
 	const int c_voices = 128;
 
-#ifndef _AUDIO_FMOD_
-	// Create device and context
-	device	= alcOpenDevice( NULL );
-	context	= alcCreateContext( device, NULL );
-	alcMakeContextCurrent( context );
+#ifdef PLATFORM_WINDOWS
 
-	if (( device != NULL )&&( context != NULL ))
+	// Set up WASAPI system
+	HRESULT hr;
+	IMMDeviceEnumerator* device_enumerator = NULL;
+	IMMDevice* device = NULL;
+	IAudioClient* audio_client = NULL;
+
+	// Initialize COM for this thread...
+	CoInitialize(NULL);
+
+	// Need the COM MM Enumerator
+	hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&device_enumerator);
+	if (hr != S_OK || device_enumerator == NULL)
 	{
-		// Print out device version if successful
-		int ver_maj, ver_min;
-		alcGetIntegerv( device, ALC_MAJOR_VERSION, sizeof(int), &ver_maj );
-		alcGetIntegerv( device, ALC_MINOR_VERSION, sizeof(int), &ver_min );
-
-		cout << "  OpenAL version " << ver_maj << "." << ver_min;
-
-		// Print out device using
-		const char* str_dev;
-		str_dev = alcGetString( device, ALC_DEFAULT_DEVICE_SPECIFIER );
-		cout << " using " << str_dev << endl;
-
-		// Assume success here
-		active = true;
+		ARCORE_ERROR("BAD");
 	}
 
-	// Set options if active
-	if ( Active() )
-	{
-		//alDistanceModel( 
-	}
-#else
-	FMOD::FMOD_RESULT	result;
-	unsigned int		version;
-	int					numdrivers;
-	FMOD::FMOD_SPEAKERMODE	speakermode;
-	FMOD::FMOD_CAPS			caps;
-	char				name [256];
 
-
-	// Create a system object
-	result = FMOD::FMOD_System_Create( &m_system );
-	// Check the version
-	FMOD::FMOD_System_GetVersion( m_system, &version );
-	if ( version < FMOD_VERSION )
+	hr = device_enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device);
+	if (hr != S_OK || device == NULL)
 	{
-		printf( "You are using an old version of FMOD %08x. This program requires %08x.\n", version, FMOD_VERSION );
-		active = false;
-		return;
-	}
-	// Get the drivers that we can use
-	result = FMOD::FMOD_System_GetNumDrivers( m_system, &numdrivers );
-	if ( numdrivers == 0 )
-	{
-		result = FMOD::FMOD_System_SetOutput( m_system, FMOD::FMOD_OUTPUTTYPE_NOSOUND );
-		printf( "Could not find open audio driver. Sound output currently disabled.\n" );
-	}
-	else
-	{
-		// Get the driver caps
-		result = FMOD::FMOD_System_GetDriverCaps( m_system, 0, &caps, 0, &speakermode );
-		// User selected speaker mode
-		result = FMOD::FMOD_System_SetSpeakerMode( m_system, speakermode );
-		// Check for hardware emulation
-		if ( caps & FMOD_CAPS_HARDWARE_EMULATED )
-		{
-			// User has the hardware acceleration slider set to off. This is really bad for latency.
-			result = FMOD::FMOD_System_SetDSPBufferSize( m_system, 1024, 10 );
-			printf( "  Windows hardware acceleration slider is set to off! Turn it on!\n" );
-		}
-
-		// Get driver name
-		result = FMOD::FMOD_System_GetDriverInfo( m_system, 0, name, 256, 0 );
-		// Check for specific type of driver that has issues
-		if ( strstr( name, "SigmaTel" ) != NULL )
-		{
-			/*
-			Sigmatel sound devices crackle for some reason if the format is PCM 16bit.
-			PCM floating point output seems to solve it.
-			*/
-			result = FMOD::FMOD_System_SetSoftwareFormat( m_system, 48000, FMOD::FMOD_SOUND_FORMAT_PCMFLOAT, 0,0, FMOD::FMOD_DSP_RESAMPLER_LINEAR );
-		}
-		// Print out the name of the driver
-		printf( "  FMOD started on devicename:'%s'\n", name );
+		ARCORE_ERROR("BAD");
 	}
 
-	// Initialize the system
-	result = FMOD::FMOD_System_Init( m_system, 100, FMOD_INIT_NORMAL, 0);
-	if ( result == FMOD::FMOD_ERR_OUTPUT_CREATEBUFFER )
+	hr = device->Activate(__uuidof(IAudioClient), CLSCTX_ALL, NULL, (void**)&audio_client);
+	if (hr != S_OK || audio_client == NULL)
 	{
-		/*
-		Ok, the speaker mode selected isn't supported by this soundcard. Switch it
-		back to stereo...
-		*/
-		result = FMOD::FMOD_System_SetSpeakerMode( m_system, FMOD::FMOD_SPEAKERMODE_STEREO );
-		// ...and reinit
-		result = FMOD::FMOD_System_Init( m_system, c_voices, FMOD_INIT_NORMAL, 0 );
-	}
-
-	active = true;
-
-	// Now set options if active
-	if ( Active() )
-	{
-		// Set 3D options
-		FMOD_System_Set3DNumListeners( CAudioMaster::System(), 1 );
-		FMOD::FMOD_System_Set3DSettings( m_system, 1.0f, 3.28f, 1.0f ); // Feet scale
+		ARCORE_ERROR("BAD");
 	}
 
 #endif
+
+//#ifndef _AUDIO_FMOD_
+//	// Create device and context
+//	device	= alcOpenDevice( NULL );
+//	context	= alcCreateContext( device, NULL );
+//	alcMakeContextCurrent( context );
+//
+//	if (( device != NULL )&&( context != NULL ))
+//	{
+//		// Print out device version if successful
+//		int ver_maj, ver_min;
+//		alcGetIntegerv( device, ALC_MAJOR_VERSION, sizeof(int), &ver_maj );
+//		alcGetIntegerv( device, ALC_MINOR_VERSION, sizeof(int), &ver_min );
+//
+//		cout << "  OpenAL version " << ver_maj << "." << ver_min;
+//
+//		// Print out device using
+//		const char* str_dev;
+//		str_dev = alcGetString( device, ALC_DEFAULT_DEVICE_SPECIFIER );
+//		cout << " using " << str_dev << endl;
+//
+//		// Assume success here
+//		active = true;
+//	}
+//
+//	// Set options if active
+//	if ( Active() )
+//	{
+//		//alDistanceModel( 
+//	}
+//#else
+//	FMOD::FMOD_RESULT	result;
+//	unsigned int		version;
+//	int					numdrivers;
+//	FMOD::FMOD_SPEAKERMODE	speakermode;
+//	FMOD::FMOD_CAPS			caps;
+//	char				name [256];
+//
+//
+//	// Create a system object
+//	result = FMOD::FMOD_System_Create( &m_system );
+//	// Check the version
+//	FMOD::FMOD_System_GetVersion( m_system, &version );
+//	if ( version < FMOD_VERSION )
+//	{
+//		printf( "You are using an old version of FMOD %08x. This program requires %08x.\n", version, FMOD_VERSION );
+//		active = false;
+//		return;
+//	}
+//	// Get the drivers that we can use
+//	result = FMOD::FMOD_System_GetNumDrivers( m_system, &numdrivers );
+//	if ( numdrivers == 0 )
+//	{
+//		result = FMOD::FMOD_System_SetOutput( m_system, FMOD::FMOD_OUTPUTTYPE_NOSOUND );
+//		printf( "Could not find open audio driver. Sound output currently disabled.\n" );
+//	}
+//	else
+//	{
+//		// Get the driver caps
+//		result = FMOD::FMOD_System_GetDriverCaps( m_system, 0, &caps, 0, &speakermode );
+//		// User selected speaker mode
+//		result = FMOD::FMOD_System_SetSpeakerMode( m_system, speakermode );
+//		// Check for hardware emulation
+//		if ( caps & FMOD_CAPS_HARDWARE_EMULATED )
+//		{
+//			// User has the hardware acceleration slider set to off. This is really bad for latency.
+//			result = FMOD::FMOD_System_SetDSPBufferSize( m_system, 1024, 10 );
+//			printf( "  Windows hardware acceleration slider is set to off! Turn it on!\n" );
+//		}
+//
+//		// Get driver name
+//		result = FMOD::FMOD_System_GetDriverInfo( m_system, 0, name, 256, 0 );
+//		// Check for specific type of driver that has issues
+//		if ( strstr( name, "SigmaTel" ) != NULL )
+//		{
+//			/*
+//			Sigmatel sound devices crackle for some reason if the format is PCM 16bit.
+//			PCM floating point output seems to solve it.
+//			*/
+//			result = FMOD::FMOD_System_SetSoftwareFormat( m_system, 48000, FMOD::FMOD_SOUND_FORMAT_PCMFLOAT, 0,0, FMOD::FMOD_DSP_RESAMPLER_LINEAR );
+//		}
+//		// Print out the name of the driver
+//		printf( "  FMOD started on devicename:'%s'\n", name );
+//	}
+//
+//	// Initialize the system
+//	result = FMOD::FMOD_System_Init( m_system, 100, FMOD_INIT_NORMAL, 0);
+//	if ( result == FMOD::FMOD_ERR_OUTPUT_CREATEBUFFER )
+//	{
+//		/*
+//		Ok, the speaker mode selected isn't supported by this soundcard. Switch it
+//		back to stereo...
+//		*/
+//		result = FMOD::FMOD_System_SetSpeakerMode( m_system, FMOD::FMOD_SPEAKERMODE_STEREO );
+//		// ...and reinit
+//		result = FMOD::FMOD_System_Init( m_system, c_voices, FMOD_INIT_NORMAL, 0 );
+//	}
+//
+//	active = true;
+//
+//	// Now set options if active
+//	if ( Active() )
+//	{
+//		// Set 3D options
+//		FMOD_System_Set3DNumListeners( CAudioMaster::System(), 1 );
+//		FMOD::FMOD_System_Set3DSettings( m_system, 1.0f, 3.28f, 1.0f ); // Feet scale
+//	}
+//
+//#endif
 }
 
 // OpenAL starting
@@ -214,13 +254,13 @@ void audio::Master::FreeSystem ( void )
 	if ( !Active() )
 		return;
 
-#ifndef _AUDIO_FMOD_
-	// Free context and device
-	alcDestroyContext( context );
-	alcCloseDevice   ( device  );
-#else
-	FMOD::FMOD_System_Release( m_system );
-#endif
+//#ifndef _AUDIO_FMOD_
+//	// Free context and device
+//	alcDestroyContext( context );
+//	alcCloseDevice   ( device  );
+//#else
+//	FMOD::FMOD_System_Release( m_system );
+//#endif
 }
 
 
