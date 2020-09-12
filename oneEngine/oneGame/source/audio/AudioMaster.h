@@ -10,12 +10,10 @@
 
 // Includes
 #include "core/types/types.h"
-#include "AudioHeaders.h"
-#include <cstdio>
-#include <iostream>
+#include "audio/backend/AudioBackend.h"
+
 #include <vector>
 #include <string>
-#include <algorithm>
 
 namespace audio
 {
@@ -23,28 +21,30 @@ namespace audio
 	class Source;
 	class Buffer;
 	class BufferManager;
+	class Mixer;
 
 	// Class Definition
 	class Master
 	{
 	public:
 		// Constructor and Destructor
-		AUDIO_API Master ( void );
-		AUDIO_API ~Master ( void );
+		AUDIO_API				Master ( void );
+		AUDIO_API				~Master ( void );
 
 		//	Update() : Per-frame keep-alive.
-		AUDIO_API void Update ( void );
+		AUDIO_API void			Update ( void );
 
 		// Adding and removing objects
 		// TODO: This should be automatic:
-		AUDIO_API void AddListener ( Listener* );
-		AUDIO_API void RemoveListener ( Listener* );
-		AUDIO_API unsigned int AddSource ( Source* );
-		AUDIO_API void RemoveSource ( Source* );
+		AUDIO_API void			AddListener ( Listener* );
+		AUDIO_API void			RemoveListener ( Listener* );
+		AUDIO_API unsigned int	AddSource ( Source* );
+		AUDIO_API void			RemoveSource ( Source* );
 
 		// Public queries
-		AUDIO_API static	Master* GetCurrent ( void );
-		AUDIO_API static	bool	Active ( void );
+		AUDIO_API static Master*
+								GetCurrent ( void );
+		AUDIO_API static bool	Active ( void );
 	/*#ifdef _AUDIO_FMOD_
 		static	FMOD::FMOD_SYSTEM*	System ( void ) {
 	#ifdef _ENGINE_DEBUG
@@ -56,7 +56,8 @@ namespace audio
 		}
 	#endif*/
 
-		AUDIO_API const std::vector<Source*>* GetSources ( void ) const
+		AUDIO_API const std::vector<Source*>*
+								GetSources ( void ) const
 		{
 			return &sources;
 		}
@@ -88,6 +89,9 @@ namespace audio
 		std::vector<Listener*>	listeners;
 		std::vector<Source*>	sources;
 		//vector<CAudioSound*>	sounds;
+
+		AudioBackend*			backend;
+		Mixer*					mixer;
 	};
 }
 

@@ -4,12 +4,15 @@
 #include "audio/BufferManager.h"
 #include "audio/Buffer.h"
 
-// TODO: move to wind32
-#include <mmdeviceapi.h>
-#include <Audioclient.h>
-#include <windows.h>
-#pragma comment(lib, "Shell32.lib")
-#pragma comment(lib, "Ole32.lib")
+#include "audio/backend/WASAPIAudioBackend.h"
+#include "audio/mixing/Mixer.h"
+
+#include <cstdio>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
 
 using std::cout;
 using std::endl;
@@ -106,37 +109,13 @@ void audio::Master::InitSystem ( void )
 	const int c_voices = 128;
 
 #ifdef PLATFORM_WINDOWS
-
-	// Set up WASAPI system
-	HRESULT hr;
-	IMMDeviceEnumerator* device_enumerator = NULL;
-	IMMDevice* device = NULL;
-	IAudioClient* audio_client = NULL;
-
-	// Initialize COM for this thread...
-	CoInitialize(NULL);
-
-	// Need the COM MM Enumerator
-	hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&device_enumerator);
-	if (hr != S_OK || device_enumerator == NULL)
-	{
-		ARCORE_ERROR("BAD");
-	}
-
-
-	hr = device_enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device);
-	if (hr != S_OK || device == NULL)
-	{
-		ARCORE_ERROR("BAD");
-	}
-
-	hr = device->Activate(__uuidof(IAudioClient), CLSCTX_ALL, NULL, (void**)&audio_client);
-	if (hr != S_OK || audio_client == NULL)
-	{
-		ARCORE_ERROR("BAD");
-	}
-
+	backend = new WASAPIAudioBackend();
 #endif
+
+
+	backend->Start();
+
+	mixer = new Mixer(backend);
 
 //#ifndef _AUDIO_FMOD_
 //	// Create device and context
@@ -253,6 +232,11 @@ void audio::Master::FreeSystem ( void )
 {
 	if ( !Active() )
 		return;
+
+	delete mixer;
+
+	backend->Stop();
+	delete backend;
 
 //#ifndef _AUDIO_FMOD_
 //	// Free context and device

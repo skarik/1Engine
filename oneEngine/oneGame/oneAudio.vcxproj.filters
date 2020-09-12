@@ -10,6 +10,12 @@
     <Filter Include="SOURCE\Audio\types">
       <UniqueIdentifier>{8c7f1e2f-778e-4b12-8866-9bdd5a655d6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Audio\backend">
+      <UniqueIdentifier>{8a079742-da2c-43e8-8b6e-1c41c3409bb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Audio\mixing">
+      <UniqueIdentifier>{c0cae456-f45a-42f1-8655-62ca99666c04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\audio\Buffer.cpp">
@@ -35,6 +41,12 @@
     </ClCompile>
     <ClCompile Include="source\audio\Listener.cpp">
       <Filter>SOURCE\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\backend\WASAPIAudioBackend.cpp">
+      <Filter>SOURCE\Audio\backend</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\mixing\Mixer.cpp">
+      <Filter>SOURCE\Audio\mixing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +79,15 @@
     </ClInclude>
     <ClInclude Include="source\audio\Listener.h">
       <Filter>SOURCE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\backend\AudioBackend.h">
+      <Filter>SOURCE\Audio\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\backend\WASAPIAudioBackend.h">
+      <Filter>SOURCE\Audio\backend</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\mixing\Mixer.h">
+      <Filter>SOURCE\Audio\mixing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
