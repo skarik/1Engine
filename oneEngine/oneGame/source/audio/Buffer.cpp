@@ -39,7 +39,7 @@ void audio::Buffer::Init ( const char* n_filename )
 
 	// We need to resample the audio:
 	auto resampleJob = core::jobs::System::Current::AddJobRequest(
-		[&]
+		[&, auc]
 	{
 		// Prevent the job from working on a deleted object:
 		this->AddReference();
@@ -110,7 +110,7 @@ void audio::Buffer::Free ( void )
 	m_sound = NULL;
 }
 
-double audio::Buffer::GetLength ( void )
+double audio::Buffer::GetLength ( void ) const
 {
 	uint64_t packedData = m_framesAndSampleRate_Packed;
 	uint32_t frames = 0xFFFFFFFF & packedData;
@@ -119,12 +119,12 @@ double audio::Buffer::GetLength ( void )
 	return frames / (double)sampleRate;
 }
 
-uint32_t audio::Buffer::GetSampleLength ( void )
+uint32_t audio::Buffer::GetSampleLength ( void ) const
 {
 	return m_sound->frames;
 }
 
-audio::ChannelCount audio::Buffer::GetChannelCount ( void )
+audio::ChannelCount audio::Buffer::GetChannelCount ( void ) const
 {
 	return m_sound->channels;
 }

@@ -12,8 +12,6 @@ audio::BufferStreamed::BufferStreamed ( const char* filename )
 {
 	m_streamed = true;
 
-	memset(m_buffers, 0, sizeof(m_buffers));
-	
 	InitStream( filename );
 }
 
@@ -95,6 +93,8 @@ void audio::BufferStreamed::InitStream ( const char* filename )
 	const double frameScale = (double)m_sound->sampleRate / (double)resampledRate;
 	m_sound->frames = (uint32_t)(ov_pcm_total( &m_oggStream, -1 ) / frameScale);
 
+	// Store length of the audio as well
+	m_vorbisLength = ov_time_total( &m_oggStream, -1 );
 }
 
 void audio::BufferStreamed::FreeStream ( void )
@@ -167,6 +167,8 @@ void audio::BufferStreamed::Sample ( uint32_t& inout_sample_position, uint32_t s
 
 		const double frameScaleToNewData = frameScale * ((double)size / (double)read_buffer_size);
 		
+		// TODO: do different scaling depending on if frameScaleToNewData < 1, ==0, or > 1.
+
 		// Resample it:
 		for (uint32_t frame = 0; frame < sample_count; ++frame)
 		{
@@ -192,13 +194,12 @@ void audio::BufferStreamed::Sample ( uint32_t& inout_sample_position, uint32_t s
 	delete[] read_buffer;
 }
 
-double audio::BufferStreamed::GetLength ( void )
+double audio::BufferStreamed::GetLength ( void ) const
 {
-	return ov_time_total( &m_oggStream, -1 );
+	return m_vorbisLength;
 }
 
-//	GetSampleLength() : returns length of the audio buffer, in samples
-uint32_t audio::BufferStreamed::GetSampleLength ( void )
+uint32_t audio::BufferStreamed::GetSampleLength ( void ) const
 {
 	return m_sound->frames;
 }

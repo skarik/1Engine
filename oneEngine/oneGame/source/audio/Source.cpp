@@ -23,57 +23,7 @@ audio::Source::Source( Buffer* inSound )
 	sound_id = auc->AddSource( this );
 	if ( auc->IsActive() )
 	{
-//#ifndef _AUDIO_FMOD_
-//		alGenSources( 1, &instance );
-//		if ( !instance )
-//		{
-//			sound->RemoveReference();
-//			sound = NULL;
-//			std::cout << "Warning: source not created successfully!" << std::endl;
-//			return;
-//		}
-//		if ( !sound->IsStreamed() )
-//		{
-//			alSourcei( instance, AL_BUFFER, sound->GetBuffer() );
-//		}
-//		else
-//		{
-//			audio::BufferStreamed* ssound = (audio::BufferStreamed*)sound;
-//			ALuint buffer0, buffer1;
-//			// Get the open buffers
-//			for ( int i = 0; i < 8; ++i ) {
-//				if ( !ssound->m_buffer_usage[i] ) {
-//					ssound->m_buffer_usage[i] = true;
-//					buffer0 = ssound->m_buffers[i];
-//					break;
-//				}
-//			}
-//			for ( int i = 0; i < 8; ++i ) {
-//				if ( !ssound->m_buffer_usage[i] ) {
-//					ssound->m_buffer_usage[i] = true;
-//					buffer1 = ssound->m_buffers[i];
-//					break;
-//				}
-//			}
-//			// Load in inital streaming data
-//			ssound->Stream( buffer0, playbacktime );
-//			ssound->Stream( buffer1, playbacktime );
-//			// Queue buffers to source
-//			alSourceQueueBuffers( instance, 1, &buffer0 );
-//			alSourceQueueBuffers( instance, 1, &buffer1 );
-//			// Set that did initial setup
-//			initial_setup = true;
-//		}
-//#else
-//		FMOD::FMOD_System_PlaySound( CAudioMaster::System(), FMOD::FMOD_CHANNEL_FREE, sound->Handle(), true, &m_instance );
-//		if ( m_instance ) {
-//			initial_setup = true;
-//		}
-//		FMOD::FMOD_Channel_SetLoopCount( instance, 0 ); 
-//
-//		FMOD::FMOD_Channel_Set3DPanLevel( instance, 1 ); 
-//		// Channels are groups.
-//#endif
+		; // ??? why is this needed anymore
 	}
 
 	// Perform initial options update
@@ -89,11 +39,11 @@ audio::Source::~Source ( void )
 		sound->RemoveReference();
 	}
 
-	auc->RemoveSource( this );
+	/*auc->RemoveSource( this );
 	if ( auc->IsActive() )
 	{
 		// ???
-	}
+	}*/
 }
 
 //void audio::Source::SetChannelProperties ( const audio::eSoundScriptChannel n_channel )
@@ -140,11 +90,8 @@ void audio::Source::MixerSampleAndAdvance ( const uint32_t delta_samples, float*
 		return;
 	}
 
-	SourceState current_state;
-	{	// Lock and grab the mixer state
-		std::lock_guard<std::mutex> lock(mixer_state_lock);
-		current_state = mixer_state;
-	}
+	// Grab the looped from mixer state (only have one bit here, so shouldn't be any race-cond issues)
+	bool isLooped = mixer_state.looped;
 
 	{
 		// Now we do another scoped lock for the other states that shouldn't change
@@ -156,7 +103,7 @@ void audio::Source::MixerSampleAndAdvance ( const uint32_t delta_samples, float*
 
 		// Copy into the work buffer
 		uint32_t current_sample_io = current_sample;
-		if (!current_state.looped)
+		if (!isLooped)
 		{
 			if (current_sample + actual_samples_processed >= sound->GetSampleLength())
 			{
@@ -191,7 +138,7 @@ void audio::Source::MixerSampleAndAdvance ( const uint32_t delta_samples, float*
 			current_sample = current_sample_io;
 			actual_samples_processed = 0;
 		}
-		if (!current_state.looped)
+		if (!isLooped)
 		{
 			current_sample += actual_samples_processed;
 			// If we're at the end of the audio, mark as no longer playing
@@ -208,6 +155,13 @@ void audio::Source::MixerSampleAndAdvance ( const uint32_t delta_samples, float*
 	}
 
 	// Now that we sampled it, we don't need to be locking anymore...
+}
+
+//	MixerGetSourceState : Get the current source state for the audio
+void audio::Source::MixerGetSourceState ( SourceState& output_state )
+{
+	std::lock_guard<std::mutex> lock(mixer_state_lock);
+	output_state = mixer_state;
 }
 
 void audio::Source::Play ( bool reset )
@@ -245,7 +199,7 @@ void audio::Source::Destroy ( void )
 	queue_destruction = true;
 }
 
-bool audio::Source::IsPlaying ( void )
+bool audio::Source::IsPlaying ( void ) const
 {
 	return is_playing;
 }
@@ -257,34 +211,20 @@ bool audio::Source::Played ( void )
 void audio::Source::SetPlaybackTime ( double target_time )
 {
 	std::lock_guard<std::mutex> lock(playing_state_lock);
-	//#ifndef _AUDIO_FMOD_
-//	if ( !sound->IsStreamed() ) {
-//		alSourcef( instance, AL_SEC_OFFSET, (ALfloat)target_time );
-//		playbacktime = target_time;
-//	}
-//	else {
-//		playbacktime = target_time;
-//	}
-//#else
-//	FMOD::FMOD_Channel_SetPosition( instance, (unsigned int)(target_time*1000), FMOD_TIMEUNIT_MS );
-//#endif
+	current_sample = (uint32_t)(sound->GetSampleLength() * (target_time / sound->GetLength()));
 }
-double audio::Source::GetPlaybackTime ( void )
+double audio::Source::GetPlaybackTime ( void ) const
 {
-//	return current_sample / (double)sound->Data()->sampleRate;
 	auto auc = getValidManager();
 	return current_sample / (double)auc->GetPreferredSampleRate();
 }
-double audio::Source::GetSoundLength ( void )
+double audio::Source::GetSoundLength ( void ) const
 {
 	return sound->GetLength();
 }
 
 double audio::Source::GetCurrentMagnitude ( void )
 {
-//#ifndef _AUDIO_FMOD_
-//	return 0.0;
-//#else
 //	float wavearray[8];
 //	FMOD::FMOD_Channel_GetWaveData( instance, wavearray, 8, 0 );
 //	double result = 0;
@@ -292,6 +232,11 @@ double audio::Source::GetCurrentMagnitude ( void )
 //		result += fabs(wavearray[i]);
 //	}
 //	return result/8.0;
-//#endif
-	return 0.0; // TODO.
+	return 0.0; // TODO. Could store 8 pieces of the last PCM processed...
+}
+
+// Playing sound information
+const audio::Buffer* audio::Source::GetBuffer ( void ) const
+{
+	return sound;
 }

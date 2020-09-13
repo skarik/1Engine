@@ -31,32 +31,26 @@ namespace audio
 		AUDIO_API explicit		Buffer ( void );
 		AUDIO_API virtual		~Buffer ( void );
 
-		//arBufferHandle			GetBuffer ( void )
-		//	{ return m_sound; }
-
-		AUDIO_API bool			IsStreamed ( void )
+		//	IsStreamed() : is this a streamed sound?
+		// Streamed audio needs slightly different sampling handling on the audio::Source end.
+		AUDIO_API bool			IsStreamed ( void ) const
 			{ return m_streamed; }
 
 		//	GetSampleLength() : returns length of the audio buffer, in samples
 		AUDIO_API virtual uint32_t
-								GetSampleLength ( void );
+								GetSampleLength ( void ) const;
 		//	GetLength() : return length of the audio buffer, in seconds
 		AUDIO_API virtual double
-								GetLength ( void );
+								GetLength ( void ) const;
 
-		AUDIO_API ChannelCount	GetChannelCount ( void );
-		//	Data() : returns the underlying data of this buffer
-		//AUDIO_API virtual arBufferHandle
-		//						Data ( void );
+		//	GetChannelCount() : return number of channels the audio buffer has
+		AUDIO_API ChannelCount	GetChannelCount ( void ) const;
 
 		virtual void			Sample ( uint32_t& inout_sample_position, uint32_t sample_count, float* sample_output );
 
 	protected:
 		bool				m_streamed = false;
 		arBufferHandle		m_sound = NULL;
-
-		//Format				m_format = Format::kInvalid;
-		//ChannelCount		m_channels = ChannelCount::kInvalid;
 
 		std::atomic_uint64_t
 							m_framesAndSampleRate_Packed;

@@ -5,11 +5,16 @@
 
 namespace audio
 {
+	class Manager;
+
 	class Listener
 	{
+	private:
+		friend Manager;
+		AUDIO_API				~Listener ( void );
+
 	public:
 		AUDIO_API explicit		Listener ( void );
-		AUDIO_API				~Listener ( void );
 
 		AUDIO_API void			Update ( void );
 		AUDIO_API void			Destroy ( void );

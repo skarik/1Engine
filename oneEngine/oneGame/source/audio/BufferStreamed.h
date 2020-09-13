@@ -24,13 +24,10 @@ namespace audio
 
 		//	GetSampleLength() : returns length of the audio buffer, in samples
 		AUDIO_API virtual uint32_t
-								GetSampleLength ( void ) override;
+								GetSampleLength ( void ) const override;
 		//	GetLength() : return length of the audio buffer, in seconds
 		AUDIO_API virtual double
-								GetLength ( void ) override;
-
-		arBufferHandle		m_buffers [8];
-		bool				m_buffer_usage [8];
+								GetLength ( void ) const override;
 
 	protected:
 		// Streaming state
@@ -38,6 +35,7 @@ namespace audio
 		OggVorbis_File		m_oggStream;
 		vorbis_info*		m_vorbisInfo = NULL;
 		vorbis_comment*		m_vorbisComment = NULL;
+		double				m_vorbisLength = 0.0;
 
 		void					InitStream ( const char* filename );
 		void					FreeStream ( void );

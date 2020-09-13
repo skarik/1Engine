@@ -40,7 +40,7 @@ namespace audio
 		AUDIO_API void			AddListener ( Listener* );
 		AUDIO_API void			RemoveListener ( Listener* );
 		AUDIO_API unsigned int	AddSource ( Source* );
-		AUDIO_API void			RemoveSource ( Source* );
+		//AUDIO_API void			RemoveSource ( Source* );
 
 		// Public queries
 		AUDIO_API bool			IsActive ( void );

@@ -56,6 +56,16 @@ audio::Manager::~Manager ( void )
 {
 	FreeSystem();
 
+	// Clear out all the managed audio-side objects we have
+	for (Listener* listener : listeners_to_delete)
+	{
+		delete listener;
+	}
+	for (Source* source : sources_to_delete)
+	{
+		delete source;
+	}
+
 	delete BufferManager::m_Active;
 	BufferManager::m_Active = NULL;
 
@@ -121,6 +131,10 @@ void audio::Manager::Update ( void )
 		}
 		for (Source* source : sources_to_delete)
 		{
+			// Remove the source from the mixer (Mixer must take care of it in case it's still echoing or has reverb)
+			mixer->CleanupSource(source->GetID());
+
+			// Free up the source now that we're done with its info
 			delete source;
 		}
 
@@ -171,7 +185,6 @@ void audio::Manager::FreeSystem ( void )
 	delete backend;
 }
 
-
 // Adding and removing objects
 void audio::Manager::AddListener ( Listener* listener )
 {
@@ -198,7 +211,7 @@ unsigned int audio::Manager::AddSource ( Source* source )
 	return next_sound_id++;
 }
 
-void audio::Manager::RemoveSource ( Source* source )
+/*void audio::Manager::RemoveSource ( Source* source )
 {
 	std::vector<Source*>::iterator it;
 	it = find( sources.begin(), sources.end(), source );
@@ -210,7 +223,7 @@ void audio::Manager::RemoveSource ( Source* source )
 	{
 		sources.erase( it );
 	}
-}
+}*/
 
 bool audio::Manager::IsActive ( void ) 
 {

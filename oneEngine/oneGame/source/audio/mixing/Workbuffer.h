@@ -5,11 +5,24 @@
 
 namespace audio
 {
-	template <int Length, int Channels>
-	class Workbuffer
+	template <int Length>
+	struct WorkbufferStereo
 	{
-		float				m_data [Length * Channels];
-		MixChannel			m_tag = MixChannel::kDefault;
+		union
+		{
+			struct
+			{
+				float				m_data [Length * 2];
+			};
+			struct
+			{
+				float				m_data_left [Length];
+				float				m_data_right [Length];
+			};
+		};
+
+		constexpr const int GetLength ( void ) const
+			{ return Length; }
 	};
 }
 

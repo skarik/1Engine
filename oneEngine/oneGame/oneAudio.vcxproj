@@ -62,6 +62,7 @@
     <ClInclude Include="source\audio\Buffer.h" />
     <ClInclude Include="source\audio\mixing\Channels.h" />
     <ClInclude Include="source\audio\mixing\Mixer.h" />
+    <ClInclude Include="source\audio\mixing\Operations.h" />
     <ClInclude Include="source\audio\mixing\Workbuffer.h" />
     <ClInclude Include="source\audio\types\Soundscripts.h" />
     <ClInclude Include="source\audio\types\BufferData.h" />

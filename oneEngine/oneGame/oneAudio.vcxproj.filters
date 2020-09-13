@@ -101,5 +101,8 @@
     <ClInclude Include="source\audio\mixing\Workbuffer.h">
       <Filter>SOURCE\Audio\mixing</Filter>
     </ClInclude>
+    <ClInclude Include="source\audio\mixing\Operations.h">
+      <Filter>SOURCE\Audio\mixing</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

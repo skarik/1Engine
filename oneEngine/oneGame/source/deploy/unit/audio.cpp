@@ -55,6 +55,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	bool bSteamy = SteamAPI_Init();
 	debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
 	debug::Console->PrintWarning( "Press Escape to exit this module test.\n" );
+	debug::Console->PrintWarning( "Press Space to play a click @ random position, WASD to control music direction.\n" );
 	
 	// Set up the thread priority
 	{
@@ -70,6 +71,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/Theme07-snippet.ogg");
 	audio::Source* l_musicSource = new audio::Source(l_musicBuffer);
 	l_musicSource->state.looped = true;
+	l_musicSource->state.position = Vector3f(0, 1, 0);
 	l_musicSource->Play(true);
 
 	// Start off the clock timer
@@ -108,14 +110,31 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 				// Play a sound
 				audio::Buffer* sound = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/menu/click.wav");
 				audio::Source* source = new audio::Source(sound);
+				source->state.position = Random.PointInUnitSphere() * 3.0F;
 				source->Play(true);
+			}
+			break;
+		case 'a': {
+				l_musicSource->state.position = Vector3f(-1, 0, 0);
+			}
+			break;
+		case 'w': {
+				l_musicSource->state.position = Vector3f(0, 1, 0);
+			}
+			break;
+		case 'd': {
+				l_musicSource->state.position = Vector3f(1, 0, 0);
+			}
+			break;
+		case 's': {
+				l_musicSource->state.position = Vector3f(0, -1, 0);
 			}
 			break;
 		}
 	}
 
-	// Clean up audio
-	delete l_listener;
+	l_listener->Destroy();
+	l_musicSource->Destroy();
 
 	// Save all app data
 	gameSettings.SaveSettings();
