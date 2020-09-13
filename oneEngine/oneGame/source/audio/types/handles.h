@@ -2,10 +2,13 @@
 #define AUDIO_HANDLES_H_
 
 #include "audio/AudioHeaders.h"
+#include "core/types.h"
 
 namespace audio
 {
-	typedef uint32_t arBufferHandle;
+	struct arBufferData;
+
+	typedef arBufferData* arBufferHandle;
 	typedef uint32_t arSourceHandle;
 	typedef uint32_t arReturnCode;
 //#ifdef _AUDIO_FMOD_

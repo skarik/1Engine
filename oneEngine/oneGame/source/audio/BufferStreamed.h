@@ -2,6 +2,7 @@
 #define AUDIO_BUFFER_STREAMED_H_
 
 #include "audio/Buffer.h"
+#include "audio/types/Formats.h"
 
 #include "ogg/ogg.h"
 #include "vorbis/codec.h"
@@ -13,36 +14,33 @@ namespace audio
 	class BufferStreamed : public Buffer
 	{
 	private:
-		explicit BufferStreamed ( const char* filename, const int );
-				~BufferStreamed ( void );
+		explicit				BufferStreamed ( const char* filename );
+								~BufferStreamed ( void );
 
 		friend	BufferManager;
 
 	public:
-	#ifndef _AUDIO_FMOD_
-		bool Sample ( arSourceHandle source, double& rawtime, bool loop = false );
-		bool Stream ( arBufferHandle buffer, double& rawtime, bool loop = false );
+		virtual void			Sample ( uint32_t& inout_sample_position, uint32_t sample_count, float* sample_output ) override;
 
-		void FreeBuffers ( arSourceHandle source );
+		//	GetSampleLength() : returns length of the audio buffer, in samples
+		AUDIO_API virtual uint32_t
+								GetSampleLength ( void ) override;
+		//	GetLength() : return length of the audio buffer, in seconds
+		AUDIO_API virtual double
+								GetLength ( void ) override;
 
-		virtual double GetLength ( void );
-
-		arBufferHandle	m_buffers [8];
-		bool			m_buffer_usage [8];
-	#endif
+		arBufferHandle		m_buffers [8];
+		bool				m_buffer_usage [8];
 
 	protected:
-	#ifndef _AUDIO_FMOD_
-		FILE*			m_file;
-		OggVorbis_File	m_oggStream;
-		vorbis_info*	m_vorbisInfo;
-		vorbis_comment*	m_vorbisComment;
+		// Streaming state
+		FILE*				m_file = NULL;
+		OggVorbis_File		m_oggStream;
+		vorbis_info*		m_vorbisInfo = NULL;
+		vorbis_comment*		m_vorbisComment = NULL;
 
-		uint32_t		m_format;
-	#endif
-
-		void InitStream ( const char* filename );
-		void FreeStream ( void );
+		void					InitStream ( const char* filename );
+		void					FreeStream ( void );
 	};
 }
 

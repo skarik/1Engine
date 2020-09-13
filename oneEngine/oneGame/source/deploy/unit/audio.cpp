@@ -15,9 +15,10 @@
 #include "core/settings/CGameSettings.h"
 #include "core/input/CInput.h"
 #include "core/debug/console.h"
+#include "core-ext/threads/Jobs.h"
 
 // Include audio
-#include "audio/AudioMaster.h"
+#include "audio/Manager.h"
 
 // Steam Include
 #include "steam/steam_api.h"
@@ -33,6 +34,9 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	// Load window settings
 	CGameSettings gameSettings ( (string)lpCmdLine );
 
+	// Create jobs system
+	core::jobs::System jobSystem (4);
+
 	// Initialize input
 	CInput::Initialize();
 
@@ -44,8 +48,8 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	std::cout << "Win32 Build (" << __DATE__ << ") Prealpha" << std::endl;
 
 	// Create Audio
-	audio::Master aMaster;
-	debug::Console->PrintMessage( "Audio master created.\n" );
+	audio::Manager aManager;
+	debug::Console->PrintMessage( "Audio manager created.\n" );
 
 	// Inialize steam
 	bool bSteamy = SteamAPI_Init();
@@ -65,7 +69,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop.ogg");
 	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/Theme07-snippet.ogg");
 	audio::Source* l_musicSource = new audio::Source(l_musicBuffer);
-	l_musicSource->options.looped = true;
+	l_musicSource->state.looped = true;
 	l_musicSource->Play(true);
 
 	// Start off the clock timer
@@ -82,7 +86,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 		// Grab inputs
 		CInput::Update();
 		// Update audio
-		aMaster.Update();
+		aManager.Update();
 		// Clear all inputs
 		CInput::PreUpdate();
 

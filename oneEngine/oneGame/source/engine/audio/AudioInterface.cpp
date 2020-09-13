@@ -1,7 +1,7 @@
 #include "core/debug/console.h"
 #include "core-ext/system/io/Resources.h"
 
-#include "audio/AudioMaster.h"
+#include "audio/Manager.h"
 #include "audio/Listener.h"
 #include "audio/Source.h"
 #include "audio/Buffer.h"

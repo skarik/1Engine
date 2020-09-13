@@ -10,6 +10,7 @@
 
 #include "core/types/types.h"
 #include "core/exceptions/exceptions.h"
+#include <atomic>
 
 class arBaseObject
 {
@@ -46,7 +47,7 @@ private:
 
 	//	referenceCount
 	// used for reference counting
-	uint16_t	referenceCount;
+	std::atomic_uint16_t	referenceCount;
 };
 
 namespace core

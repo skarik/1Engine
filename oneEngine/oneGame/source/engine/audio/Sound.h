@@ -14,7 +14,7 @@
 
 #include "core/math/Vector3.h"
 #include "engine/behavior/CGameBehavior.h"
-#include "audio/types/AudioStructs.h"
+#include "audio/types/Soundscripts.h"
 #include <vector>
 
 namespace audio

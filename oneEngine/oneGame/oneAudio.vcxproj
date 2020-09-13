@@ -44,7 +44,7 @@
   <ItemGroup>
     <ClCompile Include="source\audio\backend\WASAPIAudioBackend.cpp" />
     <ClCompile Include="source\audio\Listener.cpp" />
-    <ClCompile Include="source\audio\AudioMaster.cpp" />
+    <ClCompile Include="source\audio\Manager.cpp" />
     <ClCompile Include="source\audio\Buffer.cpp" />
     <ClCompile Include="source\audio\mixing\Mixer.cpp" />
     <ClCompile Include="source\audio\WaveformLoader.cpp" />
@@ -58,11 +58,15 @@
     <ClInclude Include="source\audio\backend\AudioBackend.h" />
     <ClInclude Include="source\audio\backend\WASAPIAudioBackend.h" />
     <ClInclude Include="source\audio\Listener.h" />
-    <ClInclude Include="source\audio\AudioMaster.h" />
+    <ClInclude Include="source\audio\Manager.h" />
     <ClInclude Include="source\audio\Buffer.h" />
+    <ClInclude Include="source\audio\mixing\Channels.h" />
     <ClInclude Include="source\audio\mixing\Mixer.h" />
-    <ClInclude Include="source\audio\types\AudioStructs.h" />
-    <ClInclude Include="source\audio\types\handles.h" />
+    <ClInclude Include="source\audio\mixing\Workbuffer.h" />
+    <ClInclude Include="source\audio\types\Soundscripts.h" />
+    <ClInclude Include="source\audio\types\BufferData.h" />
+    <ClInclude Include="source\audio\types\Formats.h" />
+    <ClInclude Include="source\audio\types\Handles.h" />
     <ClInclude Include="source\audio\WaveformLoader.h" />
     <ClInclude Include="source\audio\BufferStreamed.h" />
     <ClInclude Include="source\audio\Source.h" />

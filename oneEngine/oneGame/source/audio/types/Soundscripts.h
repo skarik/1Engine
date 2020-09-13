@@ -3,17 +3,18 @@
 
 #include "core/types/types.h"
 #include "core/containers/arstring.h"
+#include "audio/mixing/Channels.h"
 
 namespace audio
 {
 	enum eSoundScriptChannel : uint8_t
 	{
-		kChannelDefault = 0,
-		kChannelPhysics,
-		kChannelHeavy,
-		kChannelSpeech,
-		kChannelBackground,
-		kChannelMusic,
+		kChannelDefault = (uint8_t)MixChannel::kDefault,
+		kChannelPhysics = (uint8_t)MixChannel::kPhysics,
+		kChannelHeavy = (uint8_t)MixChannel::kHeavy,
+		kChannelSpeech = (uint8_t)MixChannel::kSpeech,
+		kChannelBackground = (uint8_t)MixChannel::kBackground,
+		kChannelMusic = (uint8_t)MixChannel::kMusic,
 	};
 
 	enum eSoundScriptAIAlert : uint8_t

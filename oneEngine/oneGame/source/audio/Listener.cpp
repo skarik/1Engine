@@ -1,13 +1,15 @@
-#include "audio/AudioMaster.h"
+#include "audio/Manager.h"
 #include "audio/Listener.h"
 
 audio::Listener::Listener( void )
 {
+	auto auc = getValidManager();
+
 	queue_destruction = false;
 
-	if ( audio::Master::Active() )
+	if ( auc->IsActive() )
 	{
-		audio::Master::GetCurrent()->AddListener( this );
+		auc->AddListener( this );
 	}
 
 	// Set initial options
@@ -20,9 +22,11 @@ audio::Listener::Listener( void )
 
 audio::Listener::~Listener ( void )
 {
-	if ( audio::Master::Active() )
+	auto auc = getValidManager();
+
+	if ( auc->IsActive() )
 	{
-		audio::Master::GetCurrent()->RemoveListener( this );
+		auc->RemoveListener( this );
 	}
 }
 

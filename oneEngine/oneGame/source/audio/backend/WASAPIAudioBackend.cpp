@@ -541,7 +541,7 @@ void audio::WASAPIAudioBackend::Start ( void )
 	}
 
 	// Allocate buffer for the data to send in
-	m_audioBufferSize = std::max<uint32_t>(2048, 5 * (kAudioDefaultSampleRate / 1000)); // 5 ms of data to buffer in.
+	m_audioBufferSize = std::max<uint32_t>(1024 * 4, 5 * (kAudioDefaultSampleRate / 1000)); // 5 ms of data to buffer in.
 	m_audioBuffer = new float[m_audioBufferSize * ChannelCount()];
 }
 

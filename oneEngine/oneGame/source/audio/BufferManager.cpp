@@ -1,7 +1,7 @@
 #include "core/utils/string.h"
 #include "core/debug/console.h"
 
-#include "AudioMaster.h"
+#include "Manager.h"
 #include "BufferManager.h"
 #include "Buffer.h"
 #include "BufferStreamed.h"
@@ -14,10 +14,10 @@ ARSINGLETON_CPP_DEF(audio::BufferManager);
 //	GetSound(filename, 3d) : Finds the given sound, loading if needed.
 // Immediately releases the reference upon load.
 // The pointer to the given sound is then returned.
-audio::Buffer* audio::BufferManager::GetSound ( const char* filename, const int n_positional )
+audio::Buffer* audio::BufferManager::GetSound ( const char* filename, const int )
 {
-	if ( !Master::Active() )
-		return NULL;	// Do not load buffers if the device has failed
+	auto auc = getValidManager();
+	ARCORE_ASSERT_MSG(auc != NULL && auc->IsActive(), "No valid audio manager to work on!");
 
 	// First look for it
 	arstring<128> ar_soundName(filename);
@@ -35,12 +35,12 @@ audio::Buffer* audio::BufferManager::GetSound ( const char* filename, const int 
 		if ( sFileExtension == "ogg" || sFileExtension == "mp3" || sFileExtension == "mp2" )
 		{	
 			// TODO: Get the sound's length. If it's small enough, we may not need to stream it.
-			resource.m_value = new BufferStreamed( filename, (n_positional == -1) ? false : n_positional );
+			resource.m_value = new BufferStreamed( filename );
 			printf("New sound reference \"%s\" [streamed]\n", filename);
 		}
 		else
 		{
-			resource.m_value = new Buffer( filename, (n_positional == -1) ? true : n_positional );
+			resource.m_value = new Buffer( filename );
 			printf("New sound reference \"%s\" [normal]\n", filename);
 		}
 		resource.m_value->RemoveReference();

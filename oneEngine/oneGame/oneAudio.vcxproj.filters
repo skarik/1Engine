@@ -24,9 +24,6 @@
     <ClCompile Include="source\audio\WaveformLoader.cpp">
       <Filter>SOURCE\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="source\audio\AudioMaster.cpp">
-      <Filter>SOURCE\Audio</Filter>
-    </ClCompile>
     <ClCompile Include="source\audio\BufferManager.cpp">
       <Filter>SOURCE\Audio</Filter>
     </ClCompile>
@@ -48,6 +45,9 @@
     <ClCompile Include="source\audio\mixing\Mixer.cpp">
       <Filter>SOURCE\Audio\mixing</Filter>
     </ClCompile>
+    <ClCompile Include="source\audio\Manager.cpp">
+      <Filter>SOURCE\Audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\audio\AudioHeaders.h">
@@ -58,15 +58,6 @@
     </ClInclude>
     <ClInclude Include="source\audio\WaveformLoader.h">
       <Filter>SOURCE\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="source\audio\AudioMaster.h">
-      <Filter>SOURCE\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="source\audio\types\AudioStructs.h">
-      <Filter>SOURCE\Audio\types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\audio\types\handles.h">
-      <Filter>SOURCE\Audio\types</Filter>
     </ClInclude>
     <ClInclude Include="source\audio\BufferManager.h">
       <Filter>SOURCE\Audio</Filter>
@@ -87,6 +78,27 @@
       <Filter>SOURCE\Audio\backend</Filter>
     </ClInclude>
     <ClInclude Include="source\audio\mixing\Mixer.h">
+      <Filter>SOURCE\Audio\mixing</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\Manager.h">
+      <Filter>SOURCE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\types\Formats.h">
+      <Filter>SOURCE\Audio\types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\types\BufferData.h">
+      <Filter>SOURCE\Audio\types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\types\Handles.h">
+      <Filter>SOURCE\Audio\types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\types\Soundscripts.h">
+      <Filter>SOURCE\Audio\types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\mixing\Channels.h">
+      <Filter>SOURCE\Audio\mixing</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\mixing\Workbuffer.h">
       <Filter>SOURCE\Audio\mixing</Filter>
     </ClInclude>
   </ItemGroup>

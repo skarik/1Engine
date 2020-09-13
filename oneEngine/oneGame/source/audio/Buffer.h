@@ -13,8 +13,9 @@
 #define AUDIO_SOUND_H_
 
 #include "core/types/arBaseObject.h"
-#include "audio/AudioMaster.h"
+#include "audio/types/Formats.h"
 #include "audio/types/handles.h"
+#include <atomic>
 
 namespace audio
 {
@@ -26,27 +27,42 @@ namespace audio
 		friend BufferManager;
 
 	public:
-		AUDIO_API explicit	Buffer ( const char* filename, const int channel_count = 1 );
-		AUDIO_API explicit	Buffer ( void );
-		AUDIO_API virtual	~Buffer ( void );
+		AUDIO_API explicit		Buffer ( const char* filename );
+		AUDIO_API explicit		Buffer ( void );
+		AUDIO_API virtual		~Buffer ( void );
 
-		arBufferHandle	GetBuffer ( void )
-			{ return m_sound; }
+		//arBufferHandle			GetBuffer ( void )
+		//	{ return m_sound; }
 
-		bool			IsStreamed ( void )
+		AUDIO_API bool			IsStreamed ( void )
 			{ return m_streamed; }
-		bool			IsPositional ( void )
-			{ return m_positional; }
 
-		virtual double	GetLength ( void );
+		//	GetSampleLength() : returns length of the audio buffer, in samples
+		AUDIO_API virtual uint32_t
+								GetSampleLength ( void );
+		//	GetLength() : return length of the audio buffer, in seconds
+		AUDIO_API virtual double
+								GetLength ( void );
+
+		AUDIO_API ChannelCount	GetChannelCount ( void );
+		//	Data() : returns the underlying data of this buffer
+		//AUDIO_API virtual arBufferHandle
+		//						Data ( void );
+
+		virtual void			Sample ( uint32_t& inout_sample_position, uint32_t sample_count, float* sample_output );
 
 	protected:
-		bool			m_streamed;
-		bool			m_positional;
-		arBufferHandle	m_sound;
+		bool				m_streamed = false;
+		arBufferHandle		m_sound = NULL;
+
+		//Format				m_format = Format::kInvalid;
+		//ChannelCount		m_channels = ChannelCount::kInvalid;
+
+		std::atomic_uint64_t
+							m_framesAndSampleRate_Packed;
 	
-		void Init ( const char* filename );
-		void Free ( void );
+		void					Init ( const char* filename );
+		void					Free ( void );
 	};	
 }
 

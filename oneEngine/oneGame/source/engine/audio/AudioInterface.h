@@ -12,7 +12,7 @@
 #include <unordered_map>
 
 #include "core/containers/arstring.h"
-#include "audio/types/AudioStructs.h"
+#include "audio/types/Soundscripts.h"
 
 // Often needs to be controlled directly by listeners.
 #include "audio/Listener.h"

@@ -14,7 +14,7 @@
 #include "core-ext/system/shell/Status.h"
 
 // Include audio
-#include "audio/AudioMaster.h"
+#include "audio/Manager.h"
 #include "audio/Source.h"
 
 // Include physics

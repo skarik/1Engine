@@ -1,24 +1,28 @@
 #ifndef AUDIO_WAVEFORM_LOADER_H_
 #define AUDIO_WAVEFORM_LOADER_H_
 
-#include "audio/AudioMaster.h"
-#include "audio/types/handles.h"
-#include "stdio.h"
+#include "audio/types/Handles.h"
+#include "audio/types/BufferData.h"
 
 namespace audio
 {
 	class WaveformLoader
 	{
-
 	public:
-		arBufferHandle LoadFile ( const char* filename, bool positional );
+		//	LoadFile( filename ) : Loads the given file into a newly allocated PCM buffer.
+		// Does not perform any resampling.
+		arBufferHandle			LoadFile ( const char* filename );
 
 	private:
-		arReturnCode Error ( const char* );
-
-		arBufferHandle LoadWave ( const char* );
+		//	Error() : Spits the input string as an error and returns NULL.
+		arBufferHandle			Error ( const char* );
 
 		// -------------------- WAVE FILE FORMAT -------------------- //
+
+		//	LoadWave( ... ) : Loads & allocates memory for new PCM buffer.
+		// Does not perform any resampling.
+		arBufferHandle			LoadWave ( const char* );
+		
 		/*
 		 * Struct that holds the RIFF data of the Wave file.
 		 * The RIFF data is the meta data information that holds,
@@ -50,8 +54,12 @@ namespace audio
 			long subChunk2Size; //Stores the size of the data block
 		};
 
+		// -------------------- OGG FILE FORMAT -------------------- //
+		// Not actually handled here yet - typically OGGs are streamed.
 
-		arBufferHandle LoadOGG ( const char* );
+		//	LoadOGG( ... ) : Loads & allocates memory for new PCM buffer.
+		// Does not perform any resampling.
+		arBufferHandle			LoadOGG ( const char* );
 	};
 }
 

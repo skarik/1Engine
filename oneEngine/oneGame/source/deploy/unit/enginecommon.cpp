@@ -15,7 +15,7 @@
 #include "core-ext/system/shell/Message.h"
 
 // Include audio
-#include "audio/AudioMaster.h"
+#include "audio/Manager.h"
 
 // Include physics
 #include "physical/module_physical.h"

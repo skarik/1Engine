@@ -1,35 +1,27 @@
 #include "audio/Source.h"
 #include "audio/Buffer.h"
 #include "audio/BufferStreamed.h"
-#include "audio/types/AudioStructs.h"
+#include "audio/types/BufferData.h"
 
-audio::Source::Source( Buffer* pInSound )
+#include "audio/Manager.h"
+
+audio::Source::Source( Buffer* inSound )
 	:  sound(NULL), instance(NIL)
 {
-	queue_destruction = false;
-
-	// Set initial options
-	options.pitch	= 1;
-	options.gain	= 1;
-	options.looped	= false;
-	options.rolloff = 1;
-	position = Vector3f();
-	velocity = Vector3f();
-	// Set initial state
-	playbacktime = 0;
-	targets_playing = false;
-	initial_setup = false;
-
 	// Set sound
-	sound = pInSound;
-	if ( sound == NULL ) {
+	sound = inSound;
+	if ( sound == NULL )
+	{
 		std::cout << "Warning: source with no sound created!" << std::endl;
 		return;
 	}
+
+	auto auc = getValidManager();
+
 	// Create the source and perform initialization
 	sound->AddReference();
-	sound_id = audio::Master::GetCurrent()->AddSource( this );
-	if ( audio::Master::Active() )
+	sound_id = auc->AddSource( this );
+	if ( auc->IsActive() )
 	{
 //#ifndef _AUDIO_FMOD_
 //		alGenSources( 1, &instance );
@@ -85,33 +77,28 @@ audio::Source::Source( Buffer* pInSound )
 	}
 
 	// Perform initial options update
-	Update();
+	GameTick(0.0F);
 }
 
 audio::Source::~Source ( void )
 {
-	if ( sound ) {
+	auto auc = getValidManager();
+
+	if ( sound )
+	{
 		sound->RemoveReference();
 	}
-	else {
-		return;
-	}
-	audio::Master::GetCurrent()->RemoveSource( this );
-	if ( audio::Master::Active() )
+
+	auc->RemoveSource( this );
+	if ( auc->IsActive() )
 	{
-//#ifndef _AUDIO_FMOD_
-//		if ( instance ) {
-//			alDeleteSources( 1, &instance );
-//		}
-//#else
-//		FMOD::FMOD_Channel_Stop( instance );
-//#endif
+		// ???
 	}
 }
 
-void audio::Source::SetChannelProperties ( const audio::eSoundScriptChannel n_channel )
-{
-	audio::eSoundScriptChannel channel = (audio::eSoundScriptChannel)n_channel;
+//void audio::Source::SetChannelProperties ( const audio::eSoundScriptChannel n_channel )
+//{
+//	audio::eSoundScriptChannel channel = (audio::eSoundScriptChannel)n_channel;
 //#ifndef _AUDIO_FMOD_
 //
 //#else
@@ -133,78 +120,94 @@ void audio::Source::SetChannelProperties ( const audio::eSoundScriptChannel n_ch
 //		break;
 //	}
 //#endif
-}
+//}
 
-void audio::Source::Update ( void )
+void audio::Source::GameTick ( const float delta_time )
 {
 	if ( !sound ) {
 		return;
 	}
 
-//#ifndef _AUDIO_FMOD_
-//	if ( sound->IsStreamed() )
-//	{
-//		// Check for an invalid stop
-//		if ( !IsPlaying() )
-//		{
-//			if ( targets_playing )
-//			{
-//				alSourcePlay( instance );
-//			}
-//		}
-//		// Otherwise update the sound playing
-//		if ( targets_playing )
-//		{
-//			// Update the buffer
-//			BufferStreamed* ssound = (BufferStreamed*)sound;
-//			bool sound_valid = ssound->Sample( instance, playbacktime, options.looped );
-//			if ( !sound_valid )
-//			{
-//				alSourceStop( instance );
-//				targets_playing = false;
-//			}
-//		}
-//	}
-//	else
-//	{
-//		if ( IsPlaying() )
-//		{
-//			// Get playback position
-//			ALfloat sample_time;
-//			alGetSourcef( instance, AL_SEC_OFFSET, &sample_time );
-//			playbacktime = sample_time;
-//		}
-//		else
-//		{
-//			playbacktime = GetSoundLength();
-//		}
-//	}
-//
-//	// Update the source
-//	alSourcef( instance, AL_PITCH, options.pitch);
-//	alSourcef( instance, AL_GAIN, options.gain );
-//	alSource3f(instance, AL_POSITION, position.x, position.y, position.z);
-//	alSource3f(instance, AL_VELOCITY, velocity.x, velocity.y, velocity.z);
-//	alSourcei( instance, AL_LOOPING, sound->IsStreamed() ? AL_FALSE : options.looped );
-//	alSourcef( instance, AL_ROLLOFF_FACTOR, options.rolloff );
-//#else
-//	// Update the instance options
-//	FMOD::FMOD_Channel_SetFrequency( instance, 44100 * options.pitch );
-//	FMOD::FMOD_Channel_SetVolume( instance, options.gain );
-//	if ( sound->IsStreamed() ) {
-//		if ( options.looped ) {
-//			FMOD::FMOD_Channel_SetLoopCount( instance, -1 ); 
-//		}
-//		else {
-//			FMOD::FMOD_Channel_SetLoopCount( instance, 0 ); 
-//		}
-//	}
-//	if ( sound->IsPositional() ) {
-//		FMOD::FMOD_VECTOR t_position = { position.x, position.y, position.z };
-//		FMOD::FMOD_VECTOR t_velocity = { velocity.x, velocity.y, velocity.z };
-//		FMOD::FMOD_Channel_Set3DAttributes( instance, &t_position, &t_velocity );
-//	}
-//#endif
+	{	// Lock and push the mixer state
+		std::lock_guard<std::mutex> lock(mixer_state_lock);
+		mixer_state = state;
+	}
+}
+
+void audio::Source::MixerSampleAndAdvance ( const uint32_t delta_samples, float* work_buffer )
+{
+	if ( !sound ) {
+		return;
+	}
+
+	SourceState current_state;
+	{	// Lock and grab the mixer state
+		std::lock_guard<std::mutex> lock(mixer_state_lock);
+		current_state = mixer_state;
+	}
+
+	{
+		// Now we do another scoped lock for the other states that shouldn't change
+		std::lock_guard<std::mutex> lock(playing_state_lock);
+
+		//arBufferHandle	sound_data = sound->Data();
+		uint channel_count = (uint)sound->GetChannelCount();
+		uint32_t actual_samples_processed = delta_samples;
+
+		// Copy into the work buffer
+		uint32_t current_sample_io = current_sample;
+		if (!current_state.looped)
+		{
+			if (current_sample + actual_samples_processed >= sound->GetSampleLength())
+			{
+				actual_samples_processed = sound->GetSampleLength() - current_sample;
+				// Fill the part of the buffer that will be empty with 0's
+				std::fill(&work_buffer[actual_samples_processed * channel_count], &work_buffer[delta_samples * channel_count], 0.0F);
+			}
+			sound->Sample(current_sample_io, actual_samples_processed, work_buffer);
+		}
+		// Copy into the work buffer but with looping
+		else
+		{
+			if (current_sample + actual_samples_processed >= sound->GetSampleLength())
+			{
+				// Copy the end of the buffer
+				sound->Sample(current_sample_io, actual_samples_processed, work_buffer);
+				// Copy the remainder at the start
+				current_sample_io = 0;
+				uint32_t copy_offset = sound->GetSampleLength() - current_sample;
+				sound->Sample(current_sample_io, actual_samples_processed - copy_offset, &work_buffer[copy_offset * channel_count]);
+			}
+			else
+			{
+				sound->Sample(current_sample_io, actual_samples_processed, work_buffer);
+			}
+		}
+
+		// Advance at the end. Will always be delta_samples unless we're a non-looped audio file.
+		if (sound->IsStreamed())
+		{	
+			// If it's a streamed file, we want the stream to advance the cursor, not the system.
+			current_sample = current_sample_io;
+			actual_samples_processed = 0;
+		}
+		if (!current_state.looped)
+		{
+			current_sample += actual_samples_processed;
+			// If we're at the end of the audio, mark as no longer playing
+			if (current_sample >= sound->GetSampleLength())
+			{
+				is_playing = false;
+			}
+		}
+		else
+		{
+			// Loop the sample cursor around when looping (obvs)
+			current_sample = (current_sample + actual_samples_processed) % sound->GetSampleLength();
+		}
+	}
+
+	// Now that we sampled it, we don't need to be locking anymore...
 }
 
 void audio::Source::Play ( bool reset )
@@ -213,51 +216,28 @@ void audio::Source::Play ( bool reset )
 		return;
 	}
 
-//#ifndef _AUDIO_FMOD_
-//	if ( reset )
-//	{
-//		targets_playing = true;
-//		if ( !sound->IsStreamed() ) {
-//			alSourcePlay( instance );
-//		}
-//		else {
-//			if ( !IsPlaying() ) {
-//				if ( !initial_setup ) {
-//					playbacktime = 0;
-//				}
-//				alSourcePlay( instance );
-//			}
-//		}
-//		initial_setup = false;
-//	}
-//	else
-//	{
-//		targets_playing = true;
-//		alSourcePlay( instance );
-//		initial_setup = false;
-//	}
-//#else
-//	FMOD::FMOD_Channel_SetPaused( instance, false );
-//#endif
+	if (!is_playing)
+	{
+		if ( reset )
+		{
+			std::lock_guard<std::mutex> lock(playing_state_lock);
+			current_sample = 0;
+		}
+
+		is_playing = true;
+	}
 }
+
 void audio::Source::Pause ( void )
 {
-//#ifndef _AUDIO_FMOD_
-//	targets_playing = false;
-//	alSourcePause( instance );
-//#else
-//	FMOD::FMOD_Channel_SetPaused( instance, true );
-//#endif
+	is_playing = false;
 }
+
 void audio::Source::Stop ( void )
 {
-//#ifndef _AUDIO_FMOD_
-//	targets_playing = false;
-//	alSourceStop( instance );
-//#else
-//	FMOD::FMOD_Channel_SetPaused( instance, true );
-//	FMOD::FMOD_Channel_SetPosition( instance, 0, FMOD_TIMEUNIT_MS );
-//#endif
+	is_playing = false;
+	std::lock_guard<std::mutex> lock(playing_state_lock);
+	current_sample = 0;
 }
 
 void audio::Source::Destroy ( void )
@@ -267,38 +247,17 @@ void audio::Source::Destroy ( void )
 
 bool audio::Source::IsPlaying ( void )
 {
-//#ifndef _AUDIO_FMOD_
-//	ALint state;
-//	alGetSourcei( instance, AL_SOURCE_STATE, &state );
-//	return state == AL_PLAYING;
-//#else
-//	int isPlaying;
-//	FMOD::FMOD_Channel_IsPlaying( instance, &isPlaying );
-//	if ( isPlaying ) {
-//		FMOD::FMOD_Channel_GetPaused( instance, &isPlaying );
-//		isPlaying = !isPlaying;
-//	}
-//	return isPlaying!=0;
-//#endif
-	return false;
+	return is_playing;
 }
 bool audio::Source::Played ( void )
 {
-//#ifndef _AUDIO_FMOD_
-//	ALint state;
-//	alGetSourcei( instance, AL_SOURCE_STATE, &state );
-//	return (state == AL_STOPPED)&&(playbacktime>=sound->GetLength());
-//#else
-//	int isPlaying;
-//	FMOD::FMOD_Channel_IsPlaying( instance, &isPlaying );
-//	return !isPlaying;
-//#endif
-	return false;
+	return !is_playing && (current_sample >= sound->GetSampleLength());
 }
 
 void audio::Source::SetPlaybackTime ( double target_time )
 {
-//#ifndef _AUDIO_FMOD_
+	std::lock_guard<std::mutex> lock(playing_state_lock);
+	//#ifndef _AUDIO_FMOD_
 //	if ( !sound->IsStreamed() ) {
 //		alSourcef( instance, AL_SEC_OFFSET, (ALfloat)target_time );
 //		playbacktime = target_time;
@@ -312,14 +271,9 @@ void audio::Source::SetPlaybackTime ( double target_time )
 }
 double audio::Source::GetPlaybackTime ( void )
 {
-//#ifndef _AUDIO_FMOD_
-//	return playbacktime;
-//#else
-//	unsigned int result_time;
-//	FMOD::FMOD_Channel_GetPosition( instance, &result_time, FMOD_TIMEUNIT_MS );
-//	return result_time/1000.0;
-//#endif
-	return 0.0;
+//	return current_sample / (double)sound->Data()->sampleRate;
+	auto auc = getValidManager();
+	return current_sample / (double)auc->GetPreferredSampleRate();
 }
 double audio::Source::GetSoundLength ( void )
 {
@@ -339,5 +293,5 @@ double audio::Source::GetCurrentMagnitude ( void )
 //	}
 //	return result/8.0;
 //#endif
-	return 0.0;
+	return 0.0; // TODO.
 }

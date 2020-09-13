@@ -1,11 +1,9 @@
 #include "WaveformLoader.h"
 #include "core/utils/string.h"
+#include "core/debug/console.h"
 
-using namespace std;
-
-audio::arBufferHandle audio::WaveformLoader::LoadFile ( const char* sFilename, bool positional )
+audio::arBufferHandle audio::WaveformLoader::LoadFile ( const char* sFilename )
 {
-#ifndef _AUDIO_FMOD_
 	string sFileRezname = sFilename;
 	string sFileExtension = core::utils::string::GetLower( core::utils::string::GetFileExtension( sFileRezname ) );
 
@@ -19,33 +17,15 @@ audio::arBufferHandle audio::WaveformLoader::LoadFile ( const char* sFilename, b
 	}
 	else
 	{
-		cout << __FILE__ << "(" << __LINE__ << ") don't recognize extension " << sFileExtension << endl;
+		debug::Console->PrintWarning(__FILE__ "(%d) don't recognize extension %s\n", __LINE__, sFileExtension.c_str());
 	}
-	return NIL;
-#else
-	FMOD::FMOD_RESULT result = FMOD::FMOD_OK;
-	arBufferHandle result = BUFFER_NULL;
-
-	if ( positional ) {
-		result = FMOD::FMOD_System_CreateSound( CAudioMaster::System(), sFilename, FMOD_DEFAULT | FMOD_3D, 0, &result );
-	}
-	else {
-		result = FMOD::FMOD_System_CreateSound( CAudioMaster::System(), sFilename, FMOD_DEFAULT, 0, &result );
-	}
-
-	// Check to see if it loaded properly
-	if ( result != FMOD::FMOD_OK ) {
-		debug::Console->PrintError("FMOD could not open the file \"" + sFileName + "\"");
-		result = BUFFER_NULL;
-	}
-	return result;
-#endif
+	return NULL;
 }
 
-audio::arReturnCode audio::WaveformLoader::Error ( const char* message )
+audio::arBufferHandle audio::WaveformLoader::Error ( const char* message )
 {
-	cout << message << endl;
-	return 0;
+	debug::Console->PrintError("%s\n", message);
+	return NULL;
 }
 
 
@@ -99,43 +79,64 @@ audio::arBufferHandle audio::WaveformLoader::LoadWave ( const char* sFilename )
              return Error( "CAudioSoundLoader::LoadWave: Invalid data header" );
 
 	// Allocate memory for data
-    data = new unsigned char [ wave_data.subChunk2Size ];
+	data = (unsigned char*) new uint64_t [ wave_data.subChunk2Size / sizeof(uint64_t) + 1 ]; // Allocate on the alignment of 8-byte for speed
     // Read in the sound data into the soundData variable
     if ( !fread( data, wave_data.subChunk2Size, 1, soundFile ) )
         return Error( "CAudioSoundLoader::LoadWave: error loading WAVE data into struct!" );
 
-	arBufferHandle buffer = 0;
-	//{
-	//	// Now we set the variables that we passed in with the
-	//	// data from the structs
-	//	ALsizei size		= wave_data.subChunk2Size;
-	//	ALsizei frequency	= wave_format.sampleRate;
-	//	// The format is worked out by looking at the number of
-	//	// channels and the bits per sample.
-	//	ALenum format;
-	//	if (wave_format.numChannels == 1)
-	//	{
-	//		if (wave_format.bitsPerSample == 8 )
-	//			format = AL_FORMAT_MONO8;
-	//		else if (wave_format.bitsPerSample == 16)
-	//			format = AL_FORMAT_MONO16;
-	//	}
-	//	else if (wave_format.numChannels == 2)
-	//	{
-	//		if (wave_format.bitsPerSample == 8 )
-	//			format = AL_FORMAT_STEREO8;
-	//		else if (wave_format.bitsPerSample == 16)
-	//			format = AL_FORMAT_STEREO16;
-	//	}
-	//	// Create the OpenAL buffer
-	//	alGenBuffers( 1, &buffer );
-	//	// Send the data to OpenAL
-	//	alBufferData( buffer, format, (void*)data, size, frequency );
-	//}
+	arBufferHandle buffer = new arBufferData;
+	{
+		//// Now we set the variables that we passed in with the
+		//// data from the structs
+		//ALsizei size		= wave_data.subChunk2Size;
+		//ALsizei frequency	= wave_format.sampleRate;
+		//// The format is worked out by looking at the number of
+		//// channels and the bits per sample.
+		//ALenum format;
+		//if (wave_format.numChannels == 1)
+		//{
+		//	if (wave_format.bitsPerSample == 8 )
+		//		format = AL_FORMAT_MONO8;
+		//	else if (wave_format.bitsPerSample == 16)
+		//		format = AL_FORMAT_MONO16;
+		//}
+		//else if (wave_format.numChannels == 2)
+		//{
+		//	if (wave_format.bitsPerSample == 8 )
+		//		format = AL_FORMAT_STEREO8;
+		//	else if (wave_format.bitsPerSample == 16)
+		//		format = AL_FORMAT_STEREO16;
+		//}
+		//// Create the OpenAL buffer
+		//alGenBuffers( 1, &buffer );
+		//// Send the data to OpenAL
+		//alBufferData( buffer, format, (void*)data, size, frequency );
 
-	// Free temp data
-	delete [] data; // Though it may be possible we want this data down the road, so consider saving it
-					// Effects need to be rendered in real time, causing this issue.
+		buffer->channels = (audio::ChannelCount)wave_format.numChannels;
+		buffer->sampleRate = wave_format.sampleRate;
+		switch (wave_format.bitsPerSample)
+		{
+		case 8:
+			buffer->format = audio::Format::kSignedInteger8;
+			break;
+		case 16:
+			buffer->format = audio::Format::kSignedInteger16;
+			break;
+		case 32:
+			buffer->format = audio::Format::kFloat32;
+			break;
+		default:
+			buffer->format = audio::Format::kInvalid;
+		}
+
+		// Calculate the length of the buffer
+		buffer->frames = (uint32_t)(((int64_t)wave_data.subChunk2Size * 8) / ((int64_t)wave_format.numChannels * wave_format.bitsPerSample));
+
+		// Save the loaded data. This cast is safe as the data is aligned to 8 bytes
+		buffer->data = (float*)data;
+	}
+
+	// We keep the data around until we resample the buffer in a separate thread in the buffer loader itself.
 
 	// Close the file
 	fclose(soundFile);

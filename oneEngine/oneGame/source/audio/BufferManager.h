@@ -10,7 +10,7 @@
 
 namespace audio
 {
-	class Master;
+	class Manager;
 	class Buffer;
 
 	typedef arresource<Buffer*> arResourceBuffer;
@@ -27,18 +27,18 @@ namespace audio
 		//	GetSound(filename, 3d) : Finds the given sound, loading if needed.
 		// Immediately releases the reference upon load.
 		// The pointer to the given sound is then returned.
-		AUDIO_API Buffer*		GetSound ( const char* filename, const int n_positional=-1 );
+		AUDIO_API Buffer*		GetSound ( const char* filename, const int=-1 );
 
 		//	PrecacheSound(filename, 3d) : Loads the given sound if not already loaded.
 		// Uses GetSound() and immediately releases the reference.
-		AUDIO_API void			PrecacheSound ( const char* filename, const int n_positional=-1 )
-			{ GetSound( filename, n_positional ); }
+		AUDIO_API void			PrecacheSound ( const char* filename, const int=-1 )
+			{ GetSound( filename ); }
 
 		//	Tick(delta_time) : Updates the resource management system.
 		// When items get too old, they are unloaded.
 		AUDIO_API void			Tick ( const float delta_time );
 	private:
-		friend Master; // Give AudioMaster access.
+		friend Manager; // Give AudioMaster access.
 
 		// Map for the sound reference
 		std::map<arstring128,arResourceBuffer> soundmap;
