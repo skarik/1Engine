@@ -31,7 +31,7 @@ Current graphics API support:
 * **DirectX 12** - Planned. Requires both Windows 10 SDK and Vulkan SDK.
 
 Physics solution: **Bullet Physics**
-Audio solution: **OpenAL Soft**
+Audio solution: **Homebrew (WASAPI)**
 
 ## Branches
 
@@ -54,7 +54,7 @@ Large game projects are mostly the same, but instead are prefixed by the game in
     * ``source`` game and engine source code (this is where the magic happens)
       * ``core`` ``core-ext`` common code for all 1Engine support
       * ``engine`` game engine backend
-      * ``audio`` audio engine backend. uses OpenAL Soft, limited optional FMOD support
+      * ``audio`` audio engine backend. homebrew stereo audio mixer
       * ``physical`` animation and physics backend
       * ``gpuw`` graphics API wrappers
       * ``renderer`` hybrid forward renderer

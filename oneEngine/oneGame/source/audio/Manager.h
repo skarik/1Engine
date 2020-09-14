@@ -4,11 +4,9 @@
 //		Master class for managing audio interfaces, mixers, listeners, and sources.
 //
 //===============================================================================================//
-
 #ifndef AUDIO_MASTER_H_
 #define AUDIO_MASTER_H_
 
-// Includes
 #include "core/types/types.h"
 #include "audio/backend/AudioBackend.h"
 
@@ -33,7 +31,7 @@ namespace audio
 		AUDIO_API				~Manager ( void );
 
 		//	Update() : Per-frame keep-alive.
-		AUDIO_API void			Update ( void );
+		AUDIO_API void			Update ( float deltatime );
 
 		// Adding and removing objects
 		// TODO: This should be automatic:

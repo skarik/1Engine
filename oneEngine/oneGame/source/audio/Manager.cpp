@@ -74,13 +74,13 @@ audio::Manager::~Manager ( void )
 }
 
 // Update
-void audio::Manager::Update ( void )
+void audio::Manager::Update ( float deltatime )
 {
 	if ( !IsActive() )
 		return;
 
 	// Update the buffer manager
-	BufferManager::Active()->Tick( Time::deltaTime );
+	BufferManager::Active()->Tick( deltatime );
 
 	// Go through the listeners and update them
 	for ( std::vector<Listener*>::iterator it = listeners.begin(); it != listeners.end(); )
@@ -108,7 +108,7 @@ void audio::Manager::Update ( void )
 		Source* current = *it;
 		if ( current && !current->queue_destruction )
 		{
-			current->GameTick( Time::deltaTime );
+			current->GameTick( deltatime );
 			++it;
 		}
 		else

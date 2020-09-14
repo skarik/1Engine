@@ -74,6 +74,8 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	l_musicSource->state.position = Vector3f(0, 1, 0);
 	l_musicSource->Play(true);
 
+	audio::Source* l_soundSource = NULL;
+
 	// Start off the clock timer
 	Time::Init();
 	// Run main loop
@@ -88,7 +90,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 		// Grab inputs
 		CInput::Update();
 		// Update audio
-		aManager.Update();
+		aManager.Update(Time::deltaTime);
 		// Clear all inputs
 		CInput::PreUpdate();
 
@@ -107,11 +109,20 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 		switch (kbkey)
 		{
 		case ' ': {
-				// Play a sound
+				// Free previous sound
+				if (l_soundSource != NULL)
+				{
+					l_soundSource->Destroy();
+				}
+
+				// Play a new sound
 				audio::Buffer* sound = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/menu/click.wav");
 				audio::Source* source = new audio::Source(sound);
 				source->state.position = Random.PointInUnitSphere() * 3.0F;
 				source->Play(true);
+
+				// Save this source
+				l_soundSource = source;
 			}
 			break;
 		case 'a': {
@@ -135,6 +146,10 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 
 	l_listener->Destroy();
 	l_musicSource->Destroy();
+	if (l_soundSource != NULL)
+	{
+		l_soundSource->Destroy();
+	}
 
 	// Save all app data
 	gameSettings.SaveSettings();

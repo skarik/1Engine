@@ -49,7 +49,8 @@ namespace audio
 
 void audio::Mixer::CleanupSource ( uint source_id )
 {
-
+	std::lock_guard<std::mutex> lock(m_sourceRemovalRequestsLock);
+	m_sourceRemovalRequests.push_back(source_id);
 }
 
 audio::SourceWorkbufferSet& audio::Mixer::FindSourceWorkbufferSet ( uint source_id )
@@ -212,6 +213,32 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 				}
 				l_pendingJobs.clear();
 
+				// Check for sources we can remove now
+				{
+					std::lock_guard<std::mutex> lock(m_sourceRemovalRequestsLock);
+					for (auto iterSourceId = m_sourceRemovalRequests.begin(); iterSourceId != m_sourceRemovalRequests.end(); )
+					{
+						uint sourceId = *iterSourceId;
+						SourceWorkbufferSet& workbufferSet = FindSourceWorkbufferSet(sourceId);
+						// If no new mix, we can remove it from the list.
+						if (!workbufferSet.m_newmix)
+						{
+							// Deallocate the item
+							auto pair = m_sourceStateMap.find(sourceId);
+							ARCORE_ASSERT(pair != m_sourceStateMap.end());
+							delete pair->second;
+							m_sourceStateMap.erase(pair);
+
+							// Remove from list
+							iterSourceId = m_sourceRemovalRequests.erase(iterSourceId);
+						}
+						else
+						{
+							++iterSourceId;
+						}
+					}
+				}
+
 				// Now push all source data into the main buffer
 				std::fill(workbuffer_out, workbuffer_out + kWorkbufferSize * channelCount, 0.0F);
 				for (auto& setPair : m_sourceStateMap)
@@ -262,4 +289,10 @@ audio::Mixer::~Mixer ( void )
 {
 	m_continueWork = false;
 	m_workerThread.join();
+
+	// Free all the mixing states
+	for (auto& setPair : m_sourceStateMap)
+	{
+		delete setPair.second;
+	}
 }

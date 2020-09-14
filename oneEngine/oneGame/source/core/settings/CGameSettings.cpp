@@ -155,9 +155,9 @@ void CGameSettings::Initialize ( void )
 	m_target_file_player	= "_default";
 
 	MakeDirectory( ".game" );
-	MakeDirectory( ".game/.realms" );
-	MakeDirectory( ".game/.players" );
-	MakeDirectory( ".game/.dfshaders" );
+	//MakeDirectory( ".game/.realms" );		// A bit outdated by this point....
+	//MakeDirectory( ".game/.players" );
+	//MakeDirectory( ".game/.dfshaders" );
 
 	// Set up external setting variables
 	LinkSettingVariable( b_dbg_logToFile, "dbg_logtofile" );

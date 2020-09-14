@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\audio\backend\WASAPIAudioBackend.cpp" />
+    <ClCompile Include="source\audio\c_interface\OneForTwo.cpp" />
     <ClCompile Include="source\audio\Listener.cpp" />
     <ClCompile Include="source\audio\Manager.cpp" />
     <ClCompile Include="source\audio\Buffer.cpp" />
@@ -57,6 +58,8 @@
     <ClInclude Include="source\audio\AudioHeaders.h" />
     <ClInclude Include="source\audio\backend\AudioBackend.h" />
     <ClInclude Include="source\audio\backend\WASAPIAudioBackend.h" />
+    <ClInclude Include="source\audio\c_interface\config.h" />
+    <ClInclude Include="source\audio\c_interface\OneForTwo.h" />
     <ClInclude Include="source\audio\Listener.h" />
     <ClInclude Include="source\audio\Manager.h" />
     <ClInclude Include="source\audio\Buffer.h" />

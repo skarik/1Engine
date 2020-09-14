@@ -69,7 +69,7 @@ void core::ArResourceManager::Update ( void )
 		{
 			// Loop through the resource list:
 			size_t i_max = m_resourceLoadLists[i_resourceType].size();
-			for (int i = 0; i < i_max; ++i)
+			for (size_t i = 0; i < i_max; ++i)
 			{
 				IArResource* resource = m_resourceLoadLists[i_resourceType][i];
 				if (resource != NULL)

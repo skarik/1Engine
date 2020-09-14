@@ -5,6 +5,8 @@
 #include <thread>
 #include <atomic>
 #include <map>
+#include <list>
+#include <mutex>
 
 namespace audio
 {
@@ -31,6 +33,9 @@ namespace audio
 		uint32_t				m_maxVoices = 64;
 
 		std::map<uint, void*>	m_sourceStateMap;
+
+		std::mutex				m_sourceRemovalRequestsLock;
+		std::list<uint>			m_sourceRemovalRequests;
 
 		SourceWorkbufferSet&	FindSourceWorkbufferSet ( uint source_id );
 	};

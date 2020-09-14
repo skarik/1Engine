@@ -155,7 +155,7 @@ void core::jobs::System::_internal_WaitForJobs ( const JobTypeBits jobTypeBits )
 // Waits for the given job id
 void core::jobs::System::_internal_WaitForJob ( const JobId& id )
 {
-	bool hasJob, hasTask;
+	bool hasJob;
 	CHECK_JOBS:
 	{
 		hasJob = false;
