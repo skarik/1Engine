@@ -1,4 +1,3 @@
-
 #ifndef _MATRIX_3_3_H_
 #define _MATRIX_3_3_H_
 
@@ -8,6 +7,7 @@ public:
 	FORCE_INLINE Matrix3x3 ( void );
 	FORCE_INLINE Matrix3x3 ( const Matrix3x3& );
 	FORCE_INLINE Matrix3x3 ( const Real* );
+	FORCE_INLINE Matrix3x3 ( const Vector3f& row_x, const Vector3f& row_y, const Vector3f& row_z );
 
 	// Setters - Scaling
 	FORCE_INLINE void setScale ( const Real = 0, const Real = 0, const Real = 0 );

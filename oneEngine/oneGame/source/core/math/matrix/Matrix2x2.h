@@ -8,6 +8,7 @@ public:
 	FORCE_INLINE Matrix2x2 ( void );
 	FORCE_INLINE Matrix2x2 ( const Matrix2x2& );
 	FORCE_INLINE Matrix2x2 ( const Real* );
+	FORCE_INLINE Matrix2x2 ( const Vector2f& row_x, const Vector2f& row_y );
 
 	// Setters - Translation
 	FORCE_INLINE bool setTranslation ( const Real = 0, const Real = 0 );

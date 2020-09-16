@@ -1,6 +1,6 @@
-
 #include "CMatrix.h"
 #include "string.h"
+#include <algorithm>
 
 FORCE_INLINE Matrix2x2::Matrix2x2 ( void )
 {
@@ -11,11 +11,19 @@ FORCE_INLINE Matrix2x2::Matrix2x2 ( void )
 }
 FORCE_INLINE Matrix2x2::Matrix2x2 ( const Matrix2x2& nSrc )
 {
-	memcpy( pData, nSrc.pData, 4*sizeof(Real) );
+	std::copy(nSrc.pData, nSrc.pData + 4, pData);
 }
 FORCE_INLINE Matrix2x2::Matrix2x2 ( const Real* nData )
 {
-	memcpy( pData, nData, 4*sizeof(Real) );
+	std::copy(nData, nData + 4, pData);
+}
+FORCE_INLINE Matrix2x2::Matrix2x2 ( const Vector2f& row_x, const Vector2f& row_y )
+{
+	pData[0] = row_x[0];
+	pData[1] = row_x[1];
+
+	pData[2] = row_y[0];
+	pData[3] = row_y[1];
 }
 
 // Settin the translation

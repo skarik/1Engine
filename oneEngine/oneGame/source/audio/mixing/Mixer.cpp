@@ -3,12 +3,14 @@
 #include "audio/backend/AudioBackend.h"
 #include "audio/Source.h"
 #include "audio/Buffer.h"
+#include "audio/Listener.h"
 #include "audio/mixing/Workbuffer.h"
 #include "audio/mixing/Channels.h"
 #include "audio/mixing/Operations.h"
 
 #include "core-ext/threads/Jobs.h"
 #include "core/math/Math.h"
+#include "core/math/Math3d.h"
 
 #include <chrono>
 #include <algorithm>
@@ -19,6 +21,7 @@ namespace audio
 	enum MixConstants : uint32_t
 	{
 		kWorkbufferSize = 1024,
+		kWorkingMaxPitch = 4,
 	};
 
 	struct Audio3DMixConstants
@@ -26,12 +29,18 @@ namespace audio
 		// Rough max left-right ear delay for 3D audio
 		static constexpr double kMaxAudioDelay = 0.660 / 1000.0;
 		static constexpr double kActualCoolSoundingAudioDelay = 8.0 / 1000.0;
+
+		// Maxing out the pitch because the workbuffers are not that bit
+		static constexpr double kMaxPitch = (double)kWorkingMaxPitch;
 	};
 	
 	struct SourceWorkbufferSet
 	{
-		// [0] will be pristine audio
-		// [1] will be post-processed audio
+		// Pristine audio sampled from the source
+		WorkbufferStereo<kWorkbufferSize * kWorkingMaxPitch>
+							m_workbufferRaw;
+		// [0] is pitched audio
+		// [1] is post-processed audio
 		std::array<WorkbufferStereo<kWorkbufferSize>, 2>
 							m_workbuffers;
 
@@ -110,6 +119,22 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 					listener = l_listeners[0];
 				}
 
+				// Get listener info
+				Vector3f listenerPosition = listener ? listener->position : Vector3f::zero;
+				Vector3f listenerVelocity = listener ? listener->velocity : Vector3f::zero;
+				Matrix3x3 listenerRotation = listener
+					? Matrix3x3(listener->orient_forward.raw, listener->orient_forward.cross(listener->orient_up).raw, listener->orient_up.raw)
+					: Matrix3x3();
+
+				Matrix4x4 listenerTransform;
+				{
+					Matrix4x4 translation, rotation;
+					translation.setTranslation(listenerPosition);
+					rotation.setRotation(listenerRotation);
+					listenerTransform = !translation * rotation;
+				}
+				Matrix4x4 listenerInverseTransform = listenerTransform.inverse();
+
 				// Sample all the sources, but do not yet process them
 				for (audio::Source* source : l_sources)
 				{
@@ -159,51 +184,73 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 				}
 				l_pendingJobs.clear();
 				
-				// Perform per-source work to make them 3D
+				// Perform per-source work to make them 3D:
+
 				for (auto& setPair : m_sourceStateMap)
 				{
-					SourceWorkbufferSet& set = *((audio::SourceWorkbufferSet*)setPair.second);
+					SourceWorkbufferSet* setRef = ((audio::SourceWorkbufferSet*)setPair.second);
 
-					if (set.m_newframe)
+					if (setRef->m_newframe)
 					{
 						// Mix in the new frame:
+						auto process3dAudio = [&, setRef]
+						{
+							SourceWorkbufferSet& set = *setRef;
+							// For now we just copy, but eventually we'll do the actual per-listener & per-source 3D effects here
+							//std::copy(set.m_workbuffers[0].m_data, set.m_workbuffers[0].m_data + kWorkbufferSize * 2, set.m_workbuffers[1].m_data);
 
-						// For now we just copy, but eventually we'll do the actual per-listener & per-source 3D effects here
-						//std::copy(set.m_workbuffers[0].m_data, set.m_workbuffers[0].m_data + kWorkbufferSize * 2, set.m_workbuffers[1].m_data);
+							// Let's transform the audio's position
+							Vector3f localPosition = listenerInverseTransform * set.m_state.position;
+							Real localPositionLength = localPosition.magnitude();
+							Vector3f localPositionNormalized = localPosition / localPositionLength;
 
-						// get the angle to the audio
+							//Vector3f totalVelocity = set.m_state.velocity - listenerVelocity; // pitch up and down
+							// TODO: pitch the samples up or down after sampling
+
+
+							// get the angle to the audio
 						
-						float angle = atan2(set.m_state.position.y, set.m_state.position.x);
-						float cosine = cos(angle);
-						float distance_blend = math::clamp(set.m_state.position.sqrMagnitude(), 0.0F, 1.0F);
+							float angle = atan2(set.m_state.position.y, set.m_state.position.x);
+							float cosine = localPositionNormalized.x;//cos(angle);
+							float distance_blend = math::clamp(localPositionLength, 0.0F, 1.0F);
 						 
-						// for now, we just delay the left the most amount of time
-						uint32_t delayAmountLeft = (uint32_t)(distance_blend * std::max(0.0F, cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
-						uint32_t delayAmountRight = (uint32_t)(distance_blend * std::max(0.0F, -cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
+							// for now, we just delay the left the most amount of time
+							uint32_t delayAmountLeft = (uint32_t)(distance_blend * std::max(0.0F, +cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
+							uint32_t delayAmountRight = (uint32_t)(distance_blend * std::max(0.0F, -cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
 
-						// let's do left & right
+							// let's do left & right
 
-						// copy the data offset into the buffer
-						std::copy(set.m_workbuffers[0].m_data_left, set.m_workbuffers[0].m_data_left + kWorkbufferSize, set.m_workbuffer_delay.m_data_left + delayAmountLeft);
-						std::copy(set.m_workbuffers[0].m_data_right, set.m_workbuffers[0].m_data_right + kWorkbufferSize, set.m_workbuffer_delay.m_data_right + delayAmountRight);
-						// copy the first half into target
-						std::copy(set.m_workbuffer_delay.m_data_left, set.m_workbuffer_delay.m_data_left + kWorkbufferSize, set.m_workbuffers[1].m_data_left);
-						std::copy(set.m_workbuffer_delay.m_data_right, set.m_workbuffer_delay.m_data_right + kWorkbufferSize, set.m_workbuffers[1].m_data_right);
-						// shift the bank downward
-						std::copy(set.m_workbuffer_delay.m_data_left + kWorkbufferSize, set.m_workbuffer_delay.m_data_left + kWorkbufferSize + kWorkbufferSize, set.m_workbuffer_delay.m_data_left);
-						std::copy(set.m_workbuffer_delay.m_data_right + kWorkbufferSize, set.m_workbuffer_delay.m_data_right + kWorkbufferSize + kWorkbufferSize, set.m_workbuffer_delay.m_data_right);
+							// copy the data offset into the buffer
+							std::copy(set.m_workbuffers[0].m_data_left, set.m_workbuffers[0].m_data_left + kWorkbufferSize, set.m_workbuffer_delay.m_data_left + delayAmountLeft);
+							std::copy(set.m_workbuffers[0].m_data_right, set.m_workbuffers[0].m_data_right + kWorkbufferSize, set.m_workbuffer_delay.m_data_right + delayAmountRight);
+							// copy the first half into target
+							std::copy(set.m_workbuffer_delay.m_data_left, set.m_workbuffer_delay.m_data_left + kWorkbufferSize, set.m_workbuffers[1].m_data_left);
+							std::copy(set.m_workbuffer_delay.m_data_right, set.m_workbuffer_delay.m_data_right + kWorkbufferSize, set.m_workbuffers[1].m_data_right);
+							// shift the bank downward
+							std::copy(set.m_workbuffer_delay.m_data_left + kWorkbufferSize, set.m_workbuffer_delay.m_data_left + kWorkbufferSize + kWorkbufferSize, set.m_workbuffer_delay.m_data_left);
+							std::copy(set.m_workbuffer_delay.m_data_right + kWorkbufferSize, set.m_workbuffer_delay.m_data_right + kWorkbufferSize + kWorkbufferSize, set.m_workbuffer_delay.m_data_right);
+
+							// scale left and right
+							for (uint32_t i = 0; i < kWorkbufferSize; ++i)
+							{
+								set.m_workbuffers[1].m_data_left[i] *= 1.0F - std::max(0.0F, +cosine);
+								set.m_workbuffers[1].m_data_right[i] *= 1.0F - std::max(0.0F, -cosine);
+							}
+
+							// The fucked-up sampled audio now lives in workbuffer 1
+						};
+
+						// Push the new job
+						l_pendingJobs.push_back(core::jobs::System::Current::AddJobRequest(process3dAudio));
 
 						// Set new state
-						set.m_newframe = false; // Data consumed
-						set.m_newmix = true; // New mix
-
-						 // The fucked-up sampled audio now lives in workbuffer 0
+						setRef->m_newframe = false; // Data consumed
+						setRef->m_newmix = true; // New mix
 					}
 					else
 					{
 						// Otherwise continue the old working
 					}
-
 				}
 
 				// Wait for all the per-source sampling to finish

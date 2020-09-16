@@ -1,7 +1,6 @@
-
-#include <algorithm>
 #include "CMatrix.h"
 #include "string.h"
+#include <algorithm>
 
 FORCE_INLINE Matrix4x4::Matrix4x4 ( void )
 {
@@ -17,12 +16,35 @@ FORCE_INLINE Matrix4x4::Matrix4x4 ( void )
 }
 FORCE_INLINE Matrix4x4::Matrix4x4 ( const Matrix4x4& nSrc )
 {
-	memcpy( pData, nSrc.pData, 16*sizeof(Real) );
+	std::copy(nSrc.pData, nSrc.pData + 16, pData);
 }
 FORCE_INLINE Matrix4x4::Matrix4x4 ( const Real* nData )
 {
-	memcpy( pData, nData, 16*sizeof(Real) );
+	std::copy(nData, nData + 16, pData);
 }
+FORCE_INLINE Matrix4x4::Matrix4x4 ( const Vector4f& row_x, const Vector4f& row_y, const Vector4f& row_z, const Vector4f& row_w )
+{
+	pData[0] = row_x[0];
+	pData[1] = row_x[1];
+	pData[2] = row_x[2];
+	pData[3] = row_x[3];
+
+	pData[4] = row_y[0];
+	pData[5] = row_y[1];
+	pData[6] = row_y[2];
+	pData[7] = row_y[3];
+
+	pData[8] = row_z[0];
+	pData[9] = row_z[1];
+	pData[10] = row_z[2];
+	pData[11] = row_z[3];
+
+	pData[12] = row_w[0];
+	pData[13] = row_w[1];
+	pData[14] = row_w[2];
+	pData[15] = row_w[3];
+}
+
 
 // Set translation with FTYPE
 FORCE_INLINE bool Matrix4x4::setTranslation ( Real const x, Real const y, Real const z )

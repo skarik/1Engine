@@ -8,6 +8,7 @@ public:
 	FORCE_INLINE Matrix4x4 ( void );
 	FORCE_INLINE Matrix4x4 ( const Matrix4x4& );
 	FORCE_INLINE Matrix4x4 ( const Real* );
+	FORCE_INLINE Matrix4x4 ( const Vector4f& row_x, const Vector4f& row_y, const Vector4f& row_z, const Vector4f& row_w );
 
 	// Setters - Translation
 	FORCE_INLINE bool setTranslation ( const Real = 0, const Real = 0, const Real = 0 );

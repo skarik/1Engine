@@ -1,6 +1,7 @@
 #include <algorithm>
 #include "CMatrix.h"
 #include "string.h"
+#include <algorithm>
 
 FORCE_INLINE Matrix3x3::Matrix3x3 ( void )
 {
@@ -14,11 +15,25 @@ FORCE_INLINE Matrix3x3::Matrix3x3 ( void )
 }
 FORCE_INLINE Matrix3x3::Matrix3x3 ( const Matrix3x3& nSrc )
 {
-	memcpy( pData, nSrc.pData, 9*sizeof(Real) );
+	std::copy(nSrc.pData, nSrc.pData + 9, pData);
 }
 FORCE_INLINE Matrix3x3::Matrix3x3 ( const Real* nData )
 {
-	memcpy( pData, nData, 9*sizeof(Real) );
+	std::copy(nData, nData + 9, pData);
+}
+FORCE_INLINE Matrix3x3::Matrix3x3 ( const Vector3f& row_x, const Vector3f& row_y, const Vector3f& row_z )
+{
+	pData[0] = row_x[0];
+	pData[1] = row_x[1];
+	pData[2] = row_x[2];
+
+	pData[3] = row_y[0];
+	pData[4] = row_y[1];
+	pData[5] = row_y[2];
+
+	pData[6] = row_z[0];
+	pData[7] = row_z[1];
+	pData[8] = row_z[2];
 }
 
 // Setting scale via FTYPE
