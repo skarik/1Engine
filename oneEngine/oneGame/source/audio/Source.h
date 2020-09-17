@@ -14,8 +14,13 @@ namespace audio
 
 	enum class Falloff
 	{
+		// 1.0 - (x / L)
 		kLinear,
+		// (1.0 - (x / L)) ^ factor
 		kPower,
+		// 1 / (1.0 + x / L * 4 * factor)
+		kInverse,
+		// 0.5 ^ (x / L * 4 * factor)
 		kExponential,
 	};
 

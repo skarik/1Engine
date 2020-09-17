@@ -72,8 +72,8 @@ typedef double	Real64;
 #		define FTYPE_PRECISION 1e-8
 #		define FLOAT_PRECISION 1e-8
 #	else
-#		define FTYPE_PRECISION 1e-6
-#		define FLOAT_PRECISION 1e-6
+#		define FTYPE_PRECISION 1e-6F
+#		define FLOAT_PRECISION 1e-6F
 #	endif
 #endif
 

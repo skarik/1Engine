@@ -38,6 +38,16 @@ namespace audio
 				inout_buffer_acculmulator[i] += buffer[i];
 			}
 		}
+
+		//	Scale(input_output, scale) : Scales the entire buffer by the given value
+		template <uint32_t Length>
+		void Scale ( float* inout_buffer, const float scale )
+		{
+			for (uint32_t i = 0; i < Length; ++i)
+			{
+				inout_buffer[i] *= scale;
+			}
+		}
 	}
 }
 

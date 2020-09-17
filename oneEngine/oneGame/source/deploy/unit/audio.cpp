@@ -65,6 +65,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 
 	// Create a listener
 	audio::Listener* l_listener = new audio::Listener();
+	l_listener->orient_forward = Vector3f(0, 1, 0);
 
 	// Create the music track to loop
 	audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop.ogg");
@@ -118,7 +119,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 				// Play a new sound
 				audio::Buffer* sound = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/menu/click.wav");
 				audio::Source* source = new audio::Source(sound);
-				source->state.position = Random.PointInUnitSphere() * 3.0F;
+				source->state.position = Random.PointInUnitSphere() * 400.0F;
 				source->Play(true);
 
 				// Save this source
@@ -131,7 +132,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			break;
 		case 'w': {
 				l_musicSource->state.position = Vector3f(0, 1, 0);
-			}
+		}
 			break;
 		case 'd': {
 				l_musicSource->state.position = Vector3f(1, 0, 0);
@@ -139,6 +140,30 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			break;
 		case 's': {
 				l_musicSource->state.position = Vector3f(0, -1, 0);
+			}
+			break;
+		case 'z': {
+				l_musicSource->state.position = Vector3f(-140, 140, 0);
+			}
+			break;
+		case '1': {
+				l_musicSource->state.spatial = 1.0F;
+			}
+			break;
+		case '2': {
+				l_musicSource->state.spatial = 0.75F;
+			}
+			break;
+		case '3': {
+				l_musicSource->state.spatial = 0.5F;
+			}
+			break;
+		case '4': {
+				l_musicSource->state.spatial = 0.25F;
+			}
+			break;
+		case '5': {
+				l_musicSource->state.spatial = 0.0F;
 			}
 			break;
 		}

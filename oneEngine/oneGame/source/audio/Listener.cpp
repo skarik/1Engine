@@ -11,13 +11,6 @@ audio::Listener::Listener( void )
 	{
 		auc->AddListener( this );
 	}
-
-	// Set initial options
-	position = Vector3f();
-	position_prev = Vector3f();
-	velocity = Vector3f();
-	orient_forward = Vector3f::forward;
-	orient_up = Vector3f( 0,0,1 );
 }
 
 audio::Listener::~Listener ( void )

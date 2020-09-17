@@ -49,6 +49,7 @@ namespace audio
 							m_workbuffer_delay;
 			
 		SourceState			m_state;
+		float				m_distanceFromListener; // Calculated when sampling.
 		MixChannel			m_tag = MixChannel::kDefault;
 
 		bool				m_newframe = false;
@@ -148,25 +149,110 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							// Get the source state
 							source->MixerGetSourceState(workbufferSet.m_state);
 
+							// Calculate the pitch
+							double base_pitch = workbufferSet.m_state.pitch;
+
+							Vector3f relative_velocity = workbufferSet.m_state.velocity - listenerVelocity;
+							Vector3f relative_position = workbufferSet.m_state.position - listenerPosition;
+							workbufferSet.m_distanceFromListener = relative_velocity.magnitude(); // Store since it's reused later
+							float velocity_total = relative_velocity.magnitude();
+							float velocity_pitch_multiplier = (relative_velocity / std::max<float>(FLOAT_PRECISION, velocity_total)).dot(relative_position / std::max<float>(FLOAT_PRECISION, workbufferSet.m_distanceFromListener));
+
+							double final_pitch = math::clamp(base_pitch + base_pitch * (velocity_total / m_speedOfSound * velocity_pitch_multiplier), 0.01, audio::Audio3DMixConstants::kMaxPitch);
+
+							// From the pitch, calculate number of samples needed
+							uint32_t samplesNeeded = (uint32_t)std::ceil(workingFrames * final_pitch);
+
 							// First sample into the workbuffer
-							source->MixerSampleAndAdvance(workingFrames, workbufferSet.m_workbuffers[1].m_data);
+							source->MixerSampleAndAdvance(samplesNeeded, workbufferSet.m_workbufferRaw.m_data);
+							// We now have raw interleaved audio. During the re-pitching, we split it into correct channels.
 
-							// System works in stereo, so create the stereo channels for this sound:
-							if (source->GetBuffer()->GetChannelCount() == ChannelCount::kMono)
-							{
-								// Duplicate into both left & right channels
-								std::copy(workbufferSet.m_workbuffers[1].m_data, workbufferSet.m_workbuffers[1].m_data + kWorkbufferSize, workbufferSet.m_workbuffers[0].m_data_left);
-								std::copy(workbufferSet.m_workbuffers[1].m_data, workbufferSet.m_workbuffers[1].m_data + kWorkbufferSize, workbufferSet.m_workbuffers[0].m_data_right);
-							}
-							else if (source->GetBuffer()->GetChannelCount() == ChannelCount::kStereo)
-							{
-								audio::mixing::InterleavedStereoToChannels<kWorkbufferSize>(
-									workbufferSet.m_workbuffers[1].m_data,
-									workbufferSet.m_workbuffers[0].m_data_left,
-									workbufferSet.m_workbuffers[0].m_data_right
-									);
-							}
+							// Now we re-pitch the audio:
 
+							// No repitching. Just copy-paste.
+							if (samplesNeeded == workingFrames)
+							{	
+								// Copy and paste if no scaling needed
+								if (source->GetBuffer()->GetChannelCount() == ChannelCount::kMono)
+								{
+									// Duplicate into both left & right channels
+									std::copy(workbufferSet.m_workbufferRaw.m_data, workbufferSet.m_workbufferRaw.m_data + kWorkbufferSize, workbufferSet.m_workbuffers[0].m_data_left);
+									std::copy(workbufferSet.m_workbufferRaw.m_data, workbufferSet.m_workbufferRaw.m_data + kWorkbufferSize, workbufferSet.m_workbuffers[0].m_data_right);
+								}
+								else if (source->GetBuffer()->GetChannelCount() == ChannelCount::kStereo)
+								{
+									audio::mixing::InterleavedStereoToChannels<kWorkbufferSize>(
+										workbufferSet.m_workbufferRaw.m_data,
+										workbufferSet.m_workbuffers[0].m_data_left,
+										workbufferSet.m_workbuffers[0].m_data_right
+										);
+								}
+							}
+							// Low pitched, stretch
+							else if (samplesNeeded < workingFrames)
+							{
+								// TODO: actual interpolation to get rid of some of the crust
+								if (source->GetBuffer()->GetChannelCount() == ChannelCount::kMono)
+								{
+									for (uint32_t frame = 0; frame < workingFrames; ++frame)
+									{
+										double percentThruBuffer = frame / (double)workingFrames;
+										double sourceFrame = samplesNeeded * percentThruBuffer;
+										uint32_t sourceFrame0 = (uint32_t)sourceFrame;
+
+										workbufferSet.m_workbuffers[0].m_data_left[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0];
+										workbufferSet.m_workbuffers[0].m_data_right[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0];
+									}
+								}
+								else if (source->GetBuffer()->GetChannelCount() == ChannelCount::kStereo)
+								{
+									for (uint32_t frame = 0; frame < workingFrames; ++frame)
+									{
+										double percentThruBuffer = frame / (double)workingFrames;
+										double sourceFrame = samplesNeeded * percentThruBuffer;
+										uint32_t sourceFrame0 = (uint32_t)sourceFrame;
+
+										workbufferSet.m_workbuffers[0].m_data_left[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0 * 2 + 0];
+										workbufferSet.m_workbuffers[0].m_data_right[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0 * 2 + 1];
+									}
+								}
+							}
+							// High pitched, compress
+							else if (samplesNeeded > workingFrames)
+							{
+								// TODO: actual interpolation to get rid of some of the crust
+								if (source->GetBuffer()->GetChannelCount() == ChannelCount::kMono)
+								{
+									for (uint32_t frame = 0; frame < workingFrames; ++frame)
+									{
+										double percentThruBufferStart = frame / (double)workingFrames;
+										double percentThruBufferEnd = (frame + 1) / (double)workingFrames;
+										double sourceFrameStart = samplesNeeded * percentThruBufferStart;
+										double sourceFrameEnd = samplesNeeded * percentThruBufferEnd;
+										uint32_t sourceFrame0 = (uint32_t)sourceFrameStart;
+										uint32_t sourceFrame1 = (uint32_t)std::ceil(sourceFrameEnd);
+
+										workbufferSet.m_workbuffers[0].m_data_left[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0];
+										workbufferSet.m_workbuffers[0].m_data_right[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0];
+									}
+								}
+								else if (source->GetBuffer()->GetChannelCount() == ChannelCount::kStereo)
+								{
+									for (uint32_t frame = 0; frame < workingFrames; ++frame)
+									{
+										double percentThruBufferStart = frame / (double)workingFrames;
+										double percentThruBufferEnd = (frame + 1) / (double)workingFrames;
+										double sourceFrameStart = samplesNeeded * percentThruBufferStart;
+										double sourceFrameEnd = samplesNeeded * percentThruBufferEnd;
+										uint32_t sourceFrame0 = (uint32_t)sourceFrameStart;
+										uint32_t sourceFrame1 = (uint32_t)std::ceil(sourceFrameEnd);
+
+										workbufferSet.m_workbuffers[0].m_data_left[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0 * 2 + 0];
+										workbufferSet.m_workbuffers[0].m_data_right[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0 * 2 + 1];
+									}
+								}
+							}
+							
 							workbufferSet.m_tag = workbufferSet.m_state.channel;
 							workbufferSet.m_newframe = true;
 
@@ -196,24 +282,60 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 						auto process3dAudio = [&, setRef]
 						{
 							SourceWorkbufferSet& set = *setRef;
-							// For now we just copy, but eventually we'll do the actual per-listener & per-source 3D effects here
-							//std::copy(set.m_workbuffers[0].m_data, set.m_workbuffers[0].m_data + kWorkbufferSize * 2, set.m_workbuffers[1].m_data);
+
+							// Eventually we'll do the actual per-listener & per-source 3D effects here
 
 							// Let's transform the audio's position
 							Vector3f localPosition = listenerInverseTransform * set.m_state.position;
 							Real localPositionLength = localPosition.magnitude();
 							Vector3f localPositionNormalized = localPosition / localPositionLength;
 
-							//Vector3f totalVelocity = set.m_state.velocity - listenerVelocity; // pitch up and down
-							// TODO: pitch the samples up or down after sampling
+							// get the gain and the distance fade
+							float base_gain = set.m_state.gain;
+							float final_gain = base_gain;
 
+							switch (set.m_state.falloffStyle)
+							{
+								case audio::Falloff::kLinear:
+								{
+									float distance_gain = 1.0F - math::saturate((localPositionLength - set.m_state.min_dist) / (set.m_state.max_dist - set.m_state.min_dist));
+									final_gain = base_gain * distance_gain;
+								}
+								break;
+
+								case audio::Falloff::kPower:
+								{
+									float distance_gain_linear = 1.0F - math::saturate((localPositionLength - set.m_state.min_dist) / (set.m_state.max_dist - set.m_state.min_dist));
+									float distance_gain = std::powf(distance_gain_linear, set.m_state.falloff);
+									final_gain = base_gain * distance_gain;
+								}
+								break;
+
+								case audio::Falloff::kInverse:
+								{
+									float distance_gain_linear = std::max(0.0F, (localPositionLength - set.m_state.min_dist) / (set.m_state.max_dist - set.m_state.min_dist));
+									float distance_gain = 1.0F / (1.0F + distance_gain_linear * set.m_state.falloff * 4.0F);
+									final_gain = base_gain * distance_gain;
+								}
+								break;
+
+								case audio::Falloff::kExponential:
+								{
+									float distance_gain_linear = std::max(0.0F, (localPositionLength - set.m_state.min_dist) / (set.m_state.max_dist - set.m_state.min_dist));
+									float distance_gain = std::powf(0.5F, distance_gain_linear * set.m_state.falloff * 4.0F);
+									final_gain = base_gain * distance_gain;
+								}
+								break;
+							}
 
 							// get the angle to the audio
-						
-							float angle = atan2(set.m_state.position.y, set.m_state.position.x);
-							float cosine = localPositionNormalized.x;//cos(angle);
+							float cosine = localPositionNormalized.y;
 							float distance_blend = math::clamp(localPositionLength, 0.0F, 1.0F);
 						 
+							// do spatial blend disable
+							cosine = math::lerp(set.m_state.spatial, 0.0F, cosine);
+							final_gain = math::lerp(set.m_state.spatial, base_gain, final_gain);
+
 							// for now, we just delay the left the most amount of time
 							uint32_t delayAmountLeft = (uint32_t)(distance_blend * std::max(0.0F, +cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
 							uint32_t delayAmountRight = (uint32_t)(distance_blend * std::max(0.0F, -cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
@@ -231,11 +353,10 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							std::copy(set.m_workbuffer_delay.m_data_right + kWorkbufferSize, set.m_workbuffer_delay.m_data_right + kWorkbufferSize + kWorkbufferSize, set.m_workbuffer_delay.m_data_right);
 
 							// scale left and right
-							for (uint32_t i = 0; i < kWorkbufferSize; ++i)
-							{
-								set.m_workbuffers[1].m_data_left[i] *= 1.0F - std::max(0.0F, +cosine);
-								set.m_workbuffers[1].m_data_right[i] *= 1.0F - std::max(0.0F, -cosine);
-							}
+							const float gain_left = math::lerp(set.m_state.spatial, 1.0F, 1.0F - std::max(0.0F, +cosine) * 0.7F);
+							const float gain_right = math::lerp(set.m_state.spatial, 1.0F, 1.0F - std::max(0.0F, -cosine) * 0.7F);
+							audio::mixing::Scale<kWorkbufferSize>(set.m_workbuffers[1].m_data_left, final_gain * gain_left);
+							audio::mixing::Scale<kWorkbufferSize>(set.m_workbuffers[1].m_data_right, final_gain * gain_right);
 
 							// The fucked-up sampled audio now lives in workbuffer 1
 						};
