@@ -22,6 +22,20 @@ AR_CEXPORT double AR_CALL AudioFree ( void );
 //	AudioGameTick() : Ticks the system forward.
 AR_CEXPORT double AR_CALL AudioUpdate ( double deltatime );
 
+AR_CEXPORT double AR_CALL AudioSetChannelGain ( double channel, double gain );
+AR_CEXPORT double AR_CALL AudioSetSoundSpeed ( double channel, double speed_of_sound );
+
+//
+// Listener management:
+//
+
+AR_CEXPORT double AR_CALL AudioListenerCreate ( void );
+AR_CEXPORT double AR_CALL AudioListenerDestroy ( double listener );
+
+AR_CEXPORT double AR_CALL AudioListenerSetPosition ( double listener, double x, double y, double z );
+AR_CEXPORT double AR_CALL AudioListenerSetVelocity ( double listener, double x, double y, double z );
+AR_CEXPORT double AR_CALL AudioListenerSetOrientation ( double listener, double x_forward, double y_forward, double z_forward, double x_up, double y_up, double z_up );
+
 //
 // Buffer management:
 //
@@ -57,9 +71,11 @@ AR_CEXPORT double AR_CALL AudioSourceSetVelocity ( double source, double x, doub
 AR_CEXPORT double AR_CALL AudioSourceSetLooped ( double source, double looped );
 AR_CEXPORT double AR_CALL AudioSourceSetPitch ( double source, double pitch );
 AR_CEXPORT double AR_CALL AudioSourceSetGain ( double source, double gain );
+AR_CEXPORT double AR_CALL AudioSourceSetSpatial ( double source, double spatial );
 AR_CEXPORT double AR_CALL AudioSourceSetChannel ( double source, double channel );
 
-
+AR_CEXPORT double AR_CALL AudioSourceSetFalloff ( double source, double min_distance, double max_distance );
+AR_CEXPORT double AR_CALL AudioSourceSetFalloffModel ( double source, double model, double falloff );
 
 #endif
 

@@ -51,6 +51,8 @@ namespace audio
 		SourceState			m_state;
 		float				m_distanceFromListener; // Calculated when sampling.
 		MixChannel			m_tag = MixChannel::kDefault;
+		uint32_t			m_previousDelayLeft = 0;
+		uint32_t			m_previousDelayRight = 0;
 
 		bool				m_newframe = false;
 		bool				m_newmix = false;
@@ -99,6 +101,8 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 		const uint32_t channelCount = 2;//m_backendTarget->ChannelCount(); // Always assume stereo for now
 		const double sampleStep = 1.0 / sampleRate;
 
+		WorkbufferStereo<kWorkbufferSize>* workbuffer_channel_out = new WorkbufferStereo<kWorkbufferSize>[(uint)MixChannel::kMAX_COUNT];
+
 		float* workbuffer_out = new float [kWorkbufferSize * channelCount];
 		float* workbuffer_mix = new float [kWorkbufferSize * channelCount];
 
@@ -112,7 +116,10 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 			uint32_t workingFrames = std::min<uint32_t>(m_backendTarget->AvailableFrames(), kWorkbufferSize);
 			if (workingFrames >= kWorkbufferSize)
 			{
-				m_objectState->GetObjectStateForMixerThread(l_sources, l_listeners);
+				MixerObjectState mixObjectState;
+				mixObjectState.m_sources = &l_sources;
+				mixObjectState.m_listeners = &l_listeners;
+				m_objectState->GetObjectStateForMixerThread(mixObjectState);
 
 				audio::Listener* listener = NULL;
 				if (l_listeners.size() > 0)
@@ -158,7 +165,7 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							float velocity_total = relative_velocity.magnitude();
 							float velocity_pitch_multiplier = (relative_velocity / std::max<float>(FLOAT_PRECISION, velocity_total)).dot(relative_position / std::max<float>(FLOAT_PRECISION, workbufferSet.m_distanceFromListener));
 
-							double final_pitch = math::clamp(base_pitch + base_pitch * (velocity_total / m_speedOfSound * velocity_pitch_multiplier), 0.01, audio::Audio3DMixConstants::kMaxPitch);
+							double final_pitch = math::clamp(base_pitch + base_pitch * (velocity_total / mixObjectState.m_speedOfSound * velocity_pitch_multiplier), 0.01, audio::Audio3DMixConstants::kMaxPitch);
 
 							// From the pitch, calculate number of samples needed
 							uint32_t samplesNeeded = (uint32_t)std::ceil(workingFrames * final_pitch);
@@ -337,8 +344,29 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							final_gain = math::lerp(set.m_state.spatial, base_gain, final_gain);
 
 							// for now, we just delay the left the most amount of time
-							uint32_t delayAmountLeft = (uint32_t)(distance_blend * std::max(0.0F, +cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
-							uint32_t delayAmountRight = (uint32_t)(distance_blend * std::max(0.0F, -cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
+							uint32_t delayAmountLeft = 0;//(uint32_t)(distance_blend * std::max(0.0F, +cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
+							uint32_t delayAmountRight = 0;//(uint32_t)(distance_blend * std::max(0.0F, -cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
+
+							// TODO: We're just going to nix delay until we can actually figure out how to properly do a variable delay without a ton of clicks.
+							// Honestly, the gain changing has clicks too. Are there two samples generated, the prev & current state, and the two just blended together?
+							// ...that's probably it, isn't it.
+
+							// stretch the current delay to the new delay
+							//copy from m_workbuffer_delay to buffer1
+							//rescale from buffer1 to m_workbuffer_delay
+							std::copy(set.m_workbuffer_delay.m_data_left, set.m_workbuffer_delay.m_data_left + set.m_previousDelayLeft, set.m_workbuffers[1].m_data_left);
+							std::copy(set.m_workbuffer_delay.m_data_right, set.m_workbuffer_delay.m_data_right + set.m_previousDelayRight, set.m_workbuffers[1].m_data_right);
+							// rescale the data
+							for (uint32_t frame = 0; frame < delayAmountLeft; ++frame)
+							{
+								uint32_t frameSource = (uint32_t)(frame * (set.m_previousDelayLeft / (double)delayAmountLeft));
+								set.m_workbuffer_delay.m_data_left[frame] = set.m_workbuffers[1].m_data_left[frameSource];
+							}
+							for (uint32_t frame = 0; frame < delayAmountRight; ++frame)
+							{
+								uint32_t frameSource = (uint32_t)(frame * (set.m_previousDelayRight / (double)delayAmountRight));
+								set.m_workbuffer_delay.m_data_right[frame] = set.m_workbuffers[1].m_data_right[frameSource];
+							}
 
 							// let's do left & right
 
@@ -351,12 +379,39 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							// shift the bank downward
 							std::copy(set.m_workbuffer_delay.m_data_left + kWorkbufferSize, set.m_workbuffer_delay.m_data_left + kWorkbufferSize + kWorkbufferSize, set.m_workbuffer_delay.m_data_left);
 							std::copy(set.m_workbuffer_delay.m_data_right + kWorkbufferSize, set.m_workbuffer_delay.m_data_right + kWorkbufferSize + kWorkbufferSize, set.m_workbuffer_delay.m_data_right);
+							// clear the now-unused part of the bank
+							std::fill(set.m_workbuffer_delay.m_data_left + kWorkbufferSize, set.m_workbuffer_delay.m_data_left + kWorkbufferSize + kWorkbufferSize, 0.0F);
+							std::fill(set.m_workbuffer_delay.m_data_right + kWorkbufferSize, set.m_workbuffer_delay.m_data_right + kWorkbufferSize + kWorkbufferSize, 0.0F);
 
 							// scale left and right
 							const float gain_left = math::lerp(set.m_state.spatial, 1.0F, 1.0F - std::max(0.0F, +cosine) * 0.7F);
 							const float gain_right = math::lerp(set.m_state.spatial, 1.0F, 1.0F - std::max(0.0F, -cosine) * 0.7F);
 							audio::mixing::Scale<kWorkbufferSize>(set.m_workbuffers[1].m_data_left, final_gain * gain_left);
 							audio::mixing::Scale<kWorkbufferSize>(set.m_workbuffers[1].m_data_right, final_gain * gain_right);
+
+							// do fades if we have a new delay and no previous data in the buffer (gotta fix the clicks!)
+							/*if (delayAmountLeft != 0 && set.m_previousDelayLeft == 0)
+							{
+								uint32_t fadeLength = std::min<uint32_t>(kWorkbufferSize - delayAmountLeft, 32);
+								for (uint32_t frame = 0; frame < fadeLength; ++frame)
+								{
+									float fade_in_gain = frame / (float)fadeLength;
+									set.m_workbuffers[1].m_data_left[frame + delayAmountLeft] *= fade_in_gain;
+								}
+							}
+							if (delayAmountRight != 0 && set.m_previousDelayRight == 0)
+							{
+								uint32_t fadeLength = std::min<uint32_t>(kWorkbufferSize - delayAmountRight, 32);
+								for (uint32_t frame = 0; frame < fadeLength; ++frame)
+								{
+									float fade_in_gain = frame / (float)fadeLength;
+									set.m_workbuffers[1].m_data_right[frame + delayAmountRight] *= fade_in_gain;
+								}
+							}*/
+
+							// save delay so we can stretch the current delay if things change
+							set.m_previousDelayLeft = delayAmountLeft;
+							set.m_previousDelayRight = delayAmountRight;
 
 							// The fucked-up sampled audio now lives in workbuffer 1
 						};
@@ -407,20 +462,35 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 					}
 				}
 
-				// Now push all source data into the main buffer
-				std::fill(workbuffer_out, workbuffer_out + kWorkbufferSize * channelCount, 0.0F);
+				// Now push all source data into their relevant channels:
+
+				// Clear all channels
+				for (uint32_t mixchannel = 0; mixchannel < (uint32_t)MixChannel::kMAX_COUNT; ++mixchannel)
+				{
+					std::fill(workbuffer_channel_out[mixchannel].m_data, workbuffer_channel_out[mixchannel].m_data + kWorkbufferSize * channelCount, 0.0F);
+				}
+				// Acculmulate all audio into their channels
 				for (auto& setPair : m_sourceStateMap)
 				{
 					SourceWorkbufferSet& set = *((audio::SourceWorkbufferSet*)setPair.second);
 
 					if (set.m_newmix)
 					{
+						WorkbufferStereo<kWorkbufferSize>& workbuffer_channel = workbuffer_channel_out[(uint32_t)set.m_state.channel];
+
 						audio::mixing::ChannelsToInterleavedStereo<kWorkbufferSize>(set.m_workbuffers[1].m_data_left, set.m_workbuffers[1].m_data_right, workbuffer_mix);
-						audio::mixing::Acculmulate<kWorkbufferSize * 2>(workbuffer_mix, workbuffer_out);
+						audio::mixing::Acculmulate<kWorkbufferSize * 2>(workbuffer_mix, workbuffer_channel.m_data);
 
 						// Done mixing here
 						set.m_newmix = false;
 					}
+				}
+				// Scale channels & acculmulate channels data into the main buffer
+				std::fill(workbuffer_out, workbuffer_out + kWorkbufferSize * channelCount, 0.0F);
+				for (uint32_t mixchannel = 0; mixchannel < (uint32_t)MixChannel::kMAX_COUNT; ++mixchannel)
+				{
+					audio::mixing::Scale<kWorkbufferSize * 2>(workbuffer_channel_out[mixchannel].m_data, mixObjectState.m_channelGain[mixchannel]);
+					audio::mixing::Acculmulate<kWorkbufferSize * 2>(workbuffer_channel_out[mixchannel].m_data, workbuffer_out);
 				}
 
 				//// Generate sine waves to verify device working properly
@@ -448,6 +518,7 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
+		delete[] workbuffer_channel_out;
 		delete[] workbuffer_out;
 		delete[] workbuffer_mix;
 	});

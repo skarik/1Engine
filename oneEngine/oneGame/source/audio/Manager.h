@@ -8,6 +8,7 @@
 #define AUDIO_MASTER_H_
 
 #include "core/types/types.h"
+#include "audio/mixing/Channels.h"
 #include "audio/backend/AudioBackend.h"
 
 #include <vector>
@@ -22,6 +23,14 @@ namespace audio
 	class Buffer;
 	class BufferManager;
 	class Mixer;
+
+	struct MixerObjectState
+	{
+		std::vector<Source*>*	m_sources;
+		std::vector<Listener*>*	m_listeners;
+		double					m_speedOfSound = 1125.0;
+		Real					m_channelGain [(uint)audio::MixChannel::kMAX_COUNT];
+	};
 
 	class Manager
 	{
@@ -50,10 +59,15 @@ namespace audio
 		}*/
 
 		//	GetObjectStateForMixerThread( ... ) : Gets the object lists for the mixer thread
-		void					GetObjectStateForMixerThread ( std::vector<Source*>& sources, std::vector<Listener*>& listeners );
+		void					GetObjectStateForMixerThread ( MixerObjectState& object_state );
 
 		AUDIO_API const uint32_t
 								GetPreferredSampleRate ( void );
+
+		// Currently set speed of sound
+		double					m_speedOfSound = 1125.0;
+		// Currently set channel volumes
+		Real					m_channelGain [(uint)audio::MixChannel::kMAX_COUNT];
 
 	private:
 		//	InitSystem() : Starts up the audio system & mixer

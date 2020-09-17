@@ -5,10 +5,13 @@
 #include "core/settings/CGameSettings.h"
 #include "core-ext/threads/Jobs.h"
 #include "core/debug/console.h"
+#include "core/math/Math.h"
+
 #include "audio/Manager.h"
 #include "audio/Buffer.h"
 #include "audio/BufferManager.h"
 #include "audio/Source.h"
+#include "audio/Listener.h"
 
 #include "core/os.h"
 #include "core-ext/system/shell/Message.h"
@@ -73,6 +76,61 @@ double AR_CALL AudioUpdate ( double deltatime )
 	return NIL;
 }
 
+double AR_CALL AudioSetChannelGain ( double channel, double gain )
+{
+	m_manager->m_channelGain[(uint)channel] = (float)gain;
+	return NIL;
+}
+double AR_CALL AudioSetSoundSpeed ( double channel, double speed_of_sound )
+{
+	m_manager->m_speedOfSound = (float)speed_of_sound;
+	return NIL;
+}
+
+
+//
+// Listener management:
+//
+
+double AR_CALL AudioListenerCreate ( void )
+{
+	audio::Listener* listenerRef = new audio::Listener();
+	return HandleFromReference(listenerRef);
+}
+
+double AR_CALL AudioListenerDestroy ( double listener )
+{
+	audio::Listener* listenerRef = ReferenceFromHandle<audio::Listener>(listener);
+	listenerRef->Destroy();
+	return NIL;
+}
+
+double AR_CALL AudioListenerSetPosition ( double listener, double x, double y, double z )
+{
+	audio::Listener* listenerRef = ReferenceFromHandle<audio::Listener>(listener);
+	listenerRef->position = Vector3f((Real32)x, (Real32)y, (Real32)z);
+	return NIL;
+}
+
+double AR_CALL AudioListenerSetVelocity ( double listener, double x, double y, double z )
+{
+	audio::Listener* listenerRef = ReferenceFromHandle<audio::Listener>(listener);
+	listenerRef->velocity = Vector3f((Real32)x, (Real32)y, (Real32)z);
+	return NIL;
+}
+
+double AR_CALL AudioListenerSetOrientation ( double listener, double x_forward, double y_forward, double z_forward, double x_up, double y_up, double z_up )
+{
+	audio::Listener* listenerRef = ReferenceFromHandle<audio::Listener>(listener);
+	listenerRef->orient_forward = Vector3f((Real32)x_forward, (Real32)y_forward, (Real32)z_forward);
+	listenerRef->orient_up = Vector3f((Real32)x_up, (Real32)y_up, (Real32)z_up);
+	return NIL;
+}
+
+
+//
+// Buffer management:
+//
 
 double AR_CALL AudioBufferLoad ( const char* filename )
 {
@@ -88,6 +146,10 @@ double AR_CALL AudioBufferFree ( double buffer )
 	return NIL;
 }
 
+
+//
+// Source management:
+//
 
 double AR_CALL AudioSourceCreate ( double buffer )
 {
@@ -196,6 +258,13 @@ double AR_CALL AudioSourceSetGain ( double source, double gain )
 	return NIL;
 }
 
+double AR_CALL AudioSourceSetSpatial ( double source, double spatial )
+{
+	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
+	sourceRef->state.spatial = (float)math::saturate(spatial);
+	return NIL;
+}
+
 double AR_CALL AudioSourceSetChannel ( double source, double channel )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
@@ -203,5 +272,20 @@ double AR_CALL AudioSourceSetChannel ( double source, double channel )
 	return NIL;
 }
 
+double AR_CALL AudioSourceSetFalloff ( double source, double min_distance, double max_distance )
+{
+	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
+	sourceRef->state.min_dist = (float)min_distance;
+	sourceRef->state.max_dist = (float)max_distance;
+	return NIL;
+}
+
+double AR_CALL AudioSourceSetFalloffModel ( double source, double model, double falloff )
+{
+	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
+	sourceRef->state.falloffStyle = (audio::Falloff)((uint)model);
+	sourceRef->state.falloff = (float)falloff;
+	return NIL;
+}
 
 #endif//ONEFORTWO_ENABLED

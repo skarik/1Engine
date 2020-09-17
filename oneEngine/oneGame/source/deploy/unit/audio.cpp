@@ -105,6 +105,8 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			}
 		}
 
+		l_musicSource->state.position.x += Time::deltaTime * 3.0F;
+
 		// Check for other characters:
 
 		switch (kbkey)
@@ -127,7 +129,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			}
 			break;
 		case 'a': {
-				l_musicSource->state.position = Vector3f(-1, 0, 0);
+				l_musicSource->state.position = Vector3f(-3, 0, 0);
 			}
 			break;
 		case 'w': {

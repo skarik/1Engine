@@ -38,7 +38,6 @@ namespace audio
 
 		// Max number of sources to sample at a time
 		uint32_t				m_maxVoices = 64;
-		double					m_speedOfSound = 1125.0;
 
 		// Source states. Used to track buffers between audio frames for DSP.
 		std::map<uint, void*>	m_sourceStateMap;

@@ -50,6 +50,12 @@ audio::Manager::Manager ( void )
 	{
 		debug::Console->PrintError("Unable to created audio backend!\n");
 	}
+
+	// Set up default channel volumes
+	for (uint i = 0; i < (uint)audio::MixChannel::kMAX_COUNT; ++i)
+	{
+		m_channelGain[i] = 1.0F;
+	}
 }
 
 audio::Manager::~Manager ( void )
@@ -143,13 +149,15 @@ void audio::Manager::Update ( float deltatime )
 	}
 }
 
-void audio::Manager::GetObjectStateForMixerThread ( std::vector<Source*>& sources, std::vector<Listener*>& listeners )
+void audio::Manager::GetObjectStateForMixerThread ( MixerObjectState& object_state )
 {
 	// Copy over the lists now
 	{
 		std::lock_guard<std::mutex> lock(mixer_objects_lock);
-		sources = this->sources;
-		listeners = this->listeners;
+		*object_state.m_sources = sources;
+		*object_state.m_listeners = listeners;
+		object_state.m_speedOfSound = m_speedOfSound;
+		std::copy(m_channelGain, m_channelGain + (uint)audio::MixChannel::kMAX_COUNT, object_state.m_channelGain);
 	}
 	mixer_objects_synced = true;
 }
