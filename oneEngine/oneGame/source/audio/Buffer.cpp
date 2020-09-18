@@ -33,6 +33,15 @@ void audio::Buffer::Init ( const char* n_filename )
 	m_sound = loader.LoadFile( n_filename );
 	m_streamed = false;
 
+	// If we have no sound, then mark this audio as bad.
+	if (m_sound == NULL)
+	{
+		printf("Error loading \"%s\" [normal]\n", n_filename);
+		m_sound->frames = 0;
+		m_sound->sampleRate = 0;
+		return;
+	}
+
 	// Pack in the frames & sample rate info now for the audio thread:
 	uint64_t shiftableSampleRate = m_sound->sampleRate;
 	m_framesAndSampleRate_Packed = (m_sound->frames) | (shiftableSampleRate << 32);
@@ -90,6 +99,9 @@ void audio::Buffer::Init ( const char* n_filename )
 		// Now we can apply the correct sample rate when done
 		uint64_t shiftableSampleRate = m_sound->sampleRate;
 		m_framesAndSampleRate_Packed = (m_sound->frames) | (shiftableSampleRate << 32);
+		
+		// And we're ready to sample
+		m_readyToSample = true;
 
 		// Now we're done, we can remove the reference
 		this->RemoveReference();
@@ -121,7 +133,23 @@ double audio::Buffer::GetLength ( void ) const
 
 uint32_t audio::Buffer::GetSampleLength ( void ) const
 {
-	return m_sound->frames;
+	uint64_t packedData = m_framesAndSampleRate_Packed;
+	uint32_t frames = 0xFFFFFFFF & packedData;
+
+	return frames;
+}
+
+uint32_t audio::Buffer::GetSampleRate ( void ) const
+{
+	uint64_t packedData = m_framesAndSampleRate_Packed;
+	uint32_t sampleRate = 0xFFFFFFFF & (packedData >> 32);
+
+	return sampleRate;
+}
+
+bool audio::Buffer::GetReadyToSample ( void ) const
+{
+	return m_readyToSample;
 }
 
 audio::ChannelCount audio::Buffer::GetChannelCount ( void ) const

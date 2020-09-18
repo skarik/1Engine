@@ -101,29 +101,41 @@ double AR_CALL AudioListenerCreate ( void )
 double AR_CALL AudioListenerDestroy ( double listener )
 {
 	audio::Listener* listenerRef = ReferenceFromHandle<audio::Listener>(listener);
-	listenerRef->Destroy();
+	if (listenerRef != NULL)
+	{
+		listenerRef->Destroy();
+	}
 	return NIL;
 }
 
 double AR_CALL AudioListenerSetPosition ( double listener, double x, double y, double z )
 {
 	audio::Listener* listenerRef = ReferenceFromHandle<audio::Listener>(listener);
-	listenerRef->position = Vector3f((Real32)x, (Real32)y, (Real32)z);
+	if (listenerRef != NULL)
+	{
+		listenerRef->position = Vector3f((Real32)x, (Real32)y, (Real32)z);
+	}
 	return NIL;
 }
 
 double AR_CALL AudioListenerSetVelocity ( double listener, double x, double y, double z )
 {
 	audio::Listener* listenerRef = ReferenceFromHandle<audio::Listener>(listener);
-	listenerRef->velocity = Vector3f((Real32)x, (Real32)y, (Real32)z);
+	if (listenerRef != NULL)
+	{
+		listenerRef->velocity = Vector3f((Real32)x, (Real32)y, (Real32)z);
+	}
 	return NIL;
 }
 
 double AR_CALL AudioListenerSetOrientation ( double listener, double x_forward, double y_forward, double z_forward, double x_up, double y_up, double z_up )
 {
 	audio::Listener* listenerRef = ReferenceFromHandle<audio::Listener>(listener);
-	listenerRef->orient_forward = Vector3f((Real32)x_forward, (Real32)y_forward, (Real32)z_forward);
-	listenerRef->orient_up = Vector3f((Real32)x_up, (Real32)y_up, (Real32)z_up);
+	if (listenerRef != NULL)
+	{
+		listenerRef->orient_forward = Vector3f((Real32)x_forward, (Real32)y_forward, (Real32)z_forward);
+		listenerRef->orient_up = Vector3f((Real32)x_up, (Real32)y_up, (Real32)z_up);
+	}
 	return NIL;
 }
 
@@ -135,14 +147,20 @@ double AR_CALL AudioListenerSetOrientation ( double listener, double x_forward, 
 double AR_CALL AudioBufferLoad ( const char* filename )
 {
 	audio::Buffer* bufferRef = audio::BufferManager::Active()->GetSound(filename);
-	bufferRef->AddReference();
+	if (bufferRef != NULL)
+	{
+		bufferRef->AddReference();
+	}
 	return HandleFromReference(bufferRef);
 }
 
 double AR_CALL AudioBufferFree ( double buffer )
 {
 	audio::Buffer* bufferRef = ReferenceFromHandle<audio::Buffer>(buffer);
-	bufferRef->RemoveReference();
+	if (bufferRef != NULL)
+	{
+		bufferRef->RemoveReference();
+	}
 	return NIL;
 }
 
@@ -161,130 +179,192 @@ double AR_CALL AudioSourceCreate ( double buffer )
 double AR_CALL AudioSourceDestroy ( double source )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->Destroy();
+	if (sourceRef != NULL)
+	{
+		sourceRef->Destroy();
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourcePlay ( double source, double reset )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->Play(reset > 0.0);
+	if (sourceRef != NULL)
+	{
+		sourceRef->Play(reset > 0.0);
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourcePause ( double source )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->Pause();
+	if (sourceRef != NULL)
+	{
+		sourceRef->Pause();
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourceStop ( double source )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->Stop();
+	if (sourceRef != NULL)
+	{
+		sourceRef->Stop();
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourceIsPlaying ( double source )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	return BoolToDouble(sourceRef->IsPlaying());
+	if (sourceRef != NULL)
+	{
+		return BoolToDouble(sourceRef->IsPlaying());
+	}
+	return NIL;
 }
 
 double AR_CALL AudioSourcePlayed ( double source )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	return BoolToDouble(sourceRef->Played());
+	if (sourceRef != NULL)
+	{
+		return BoolToDouble(sourceRef->Played());
+	}
+	return NIL;
 }
 
 double AR_CALL AudioSourceSetPlaybackTime ( double source, double time )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->SetPlaybackTime( time );
+	if (sourceRef != NULL)
+	{
+		sourceRef->SetPlaybackTime( time );
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourceGetPlaybackTime ( double source )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	return sourceRef->GetPlaybackTime();
+	if (sourceRef != NULL)
+	{
+		return sourceRef->GetPlaybackTime();
+	}
+	return NIL;
 }
 
 double AR_CALL AudioSourceGetSoundLength ( double source )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	return sourceRef->GetSoundLength();
+	if (sourceRef != NULL)
+	{
+		return sourceRef->GetSoundLength();
+	}
+	return NIL;
 }
 
 double AR_CALL AudioSourceGetCurrentMagnitude ( double source )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	return sourceRef->GetCurrentMagnitude();
+	if (sourceRef != NULL)
+	{
+		return sourceRef->GetCurrentMagnitude();
+	}
+	return NIL;
 }
 
 double AR_CALL AudioSourceSetPosition ( double source, double x, double y, double z )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->state.position = Vector3f((Real32)x, (Real32)y, (Real32)z);
+	if (sourceRef != NULL)
+	{
+		sourceRef->state.position = Vector3f((Real32)x, (Real32)y, (Real32)z);
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourceSetVelocity ( double source, double x, double y, double z )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->state.velocity = Vector3f((Real32)x, (Real32)y, (Real32)z);
+	if (sourceRef != NULL)
+	{
+		sourceRef->state.velocity = Vector3f((Real32)x, (Real32)y, (Real32)z);
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourceSetLooped ( double source, double looped )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->state.looped = looped > 0.0;
+	if (sourceRef != NULL)
+	{
+		sourceRef->state.looped = looped > 0.0;
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourceSetPitch ( double source, double pitch )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->state.pitch = (float)pitch;
+	if (sourceRef != NULL)
+	{
+		sourceRef->state.pitch = (float)pitch;
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourceSetGain ( double source, double gain )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->state.gain = (float)gain;
+	if (sourceRef != NULL)
+	{
+		sourceRef->state.gain = (float)gain;
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourceSetSpatial ( double source, double spatial )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->state.spatial = (float)math::saturate(spatial);
+	if (sourceRef != NULL)
+	{
+		sourceRef->state.spatial = (float)math::saturate(spatial);
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourceSetChannel ( double source, double channel )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->state.channel = (audio::MixChannel)((uint)channel);
+	if (sourceRef != NULL)
+	{
+		sourceRef->state.channel = (audio::MixChannel)((uint)channel);
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourceSetFalloff ( double source, double min_distance, double max_distance )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->state.min_dist = (float)min_distance;
-	sourceRef->state.max_dist = (float)max_distance;
+	if (sourceRef != NULL)
+	{
+		sourceRef->state.min_dist = (float)min_distance;
+		sourceRef->state.max_dist = (float)max_distance;
+	}
 	return NIL;
 }
 
 double AR_CALL AudioSourceSetFalloffModel ( double source, double model, double falloff )
 {
 	audio::Source* sourceRef = ReferenceFromHandle<audio::Source>(source);
-	sourceRef->state.falloffStyle = (audio::Falloff)((uint)model);
-	sourceRef->state.falloff = (float)falloff;
+	if (sourceRef != NULL)
+	{
+		sourceRef->state.falloffStyle = (audio::Falloff)((uint)model);
+		sourceRef->state.falloff = (float)falloff;
+	}
 	return NIL;
 }
 

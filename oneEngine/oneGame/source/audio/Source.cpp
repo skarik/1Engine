@@ -86,7 +86,14 @@ void audio::Source::GameTick ( const float delta_time )
 
 void audio::Source::MixerSampleAndAdvance ( const uint32_t delta_samples, float* work_buffer )
 {
-	if ( !sound ) {
+	if ( !sound )
+	{
+		return;
+	}
+
+	// Need to skip sampling until the buffer is ready, else we're going to massively crash on fast start
+	if ( !sound->GetReadyToSample() )
+	{
 		return;
 	}
 

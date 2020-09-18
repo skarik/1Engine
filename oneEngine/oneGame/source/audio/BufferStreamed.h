@@ -25,6 +25,9 @@ namespace audio
 		//	GetSampleLength() : returns length of the audio buffer, in samples
 		AUDIO_API virtual uint32_t
 								GetSampleLength ( void ) const override;
+		//	GetSampleRate() : returns sample rate of the audio buffer
+		AUDIO_API virtual uint32_t
+								GetSampleRate ( void ) const override;
 		//	GetLength() : return length of the audio buffer, in seconds
 		AUDIO_API virtual double
 								GetLength ( void ) const override;

@@ -139,7 +139,7 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 					Matrix4x4 translation, rotation;
 					translation.setTranslation(listenerPosition);
 					rotation.setRotation(listenerRotation);
-					listenerTransform = !translation * rotation;
+					listenerTransform = translation * rotation;
 				}
 				Matrix4x4 listenerInverseTransform = listenerTransform.inverse();
 
@@ -163,9 +163,12 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							Vector3f relative_position = workbufferSet.m_state.position - listenerPosition;
 							workbufferSet.m_distanceFromListener = relative_velocity.magnitude(); // Store since it's reused later
 							float velocity_total = relative_velocity.magnitude();
-							float velocity_pitch_multiplier = (relative_velocity / std::max<float>(FLOAT_PRECISION, velocity_total)).dot(relative_position / std::max<float>(FLOAT_PRECISION, workbufferSet.m_distanceFromListener));
+							float velocity_pitch_multiplier = -(relative_velocity / std::max<float>(FLOAT_PRECISION, velocity_total)).dot(relative_position / std::max<float>(FLOAT_PRECISION, workbufferSet.m_distanceFromListener));
 
 							double final_pitch = math::clamp(base_pitch + base_pitch * (velocity_total / mixObjectState.m_speedOfSound * velocity_pitch_multiplier), 0.01, audio::Audio3DMixConstants::kMaxPitch);
+
+							// Disable the pitch shifting if in 2D mode
+							final_pitch = math::lerp(workbufferSet.m_state.spatial, base_pitch, final_pitch);
 
 							// From the pitch, calculate number of samples needed
 							uint32_t samplesNeeded = (uint32_t)std::ceil(workingFrames * final_pitch);

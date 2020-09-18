@@ -95,6 +95,9 @@ void audio::BufferStreamed::InitStream ( const char* filename )
 
 	// Store length of the audio as well
 	m_vorbisLength = ov_time_total( &m_oggStream, -1 );
+
+	// And we're reading to stream
+	m_readyToSample = true;
 }
 
 void audio::BufferStreamed::FreeStream ( void )
@@ -202,4 +205,10 @@ double audio::BufferStreamed::GetLength ( void ) const
 uint32_t audio::BufferStreamed::GetSampleLength ( void ) const
 {
 	return m_sound->frames;
+}
+
+uint32_t audio::BufferStreamed::GetSampleRate ( void ) const
+{
+	auto auc = getValidManager();
+	return auc->GetPreferredSampleRate();
 }

@@ -39,9 +39,15 @@ namespace audio
 		//	GetSampleLength() : returns length of the audio buffer, in samples
 		AUDIO_API virtual uint32_t
 								GetSampleLength ( void ) const;
+		//	GetSampleRate() : returns sample rate of the audio buffer
+		AUDIO_API virtual uint32_t
+								GetSampleRate ( void ) const;
 		//	GetLength() : return length of the audio buffer, in seconds
 		AUDIO_API virtual double
 								GetLength ( void ) const;
+		//	GetReadyToSample() : return if the sample is loaded and ready to sample
+		AUDIO_API virtual bool
+								GetReadyToSample ( void ) const;
 
 		//	GetChannelCount() : return number of channels the audio buffer has
 		AUDIO_API ChannelCount	GetChannelCount ( void ) const;
@@ -52,8 +58,10 @@ namespace audio
 		bool				m_streamed = false;
 		arBufferHandle		m_sound = NULL;
 
+		std::atomic_bool
+							m_readyToSample = false;
 		std::atomic_uint64_t
-							m_framesAndSampleRate_Packed;
+							m_framesAndSampleRate_Packed = 0;
 	
 		void					Init ( const char* filename );
 		void					Free ( void );
