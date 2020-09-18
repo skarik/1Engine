@@ -120,24 +120,24 @@ namespace math
 	// Interpolation:
 	//
 
-	inline
-		Real lerp ( Real t, Real a, Real b )
+	template <typename Number> inline
+		Number lerp ( Number t, Number a, Number b )
 	{
 		return ( a+t*(b-a) );
 	}
-	inline
-		Real lerp_clamp ( Real t, Real a, Real b )
+	template <typename Number> inline
+		Number lerp_clamp ( Number t, Number a, Number b )
 	{
 		return lerp( saturate(t), a, b );
 	}
 
-	inline
-		Real smoothlerp ( Real t )
+	template <typename Number> inline
+		Number smoothlerp ( Number t )
 	{
 		return ( t * t * (3 - 2 * t) );
 	}
-	inline
-		Real smoothlerp ( Real t, Real a, Real b )
+	template <typename Number> inline
+		Number smoothlerp ( Number t, Number a, Number b )
 	{
 		return lerp( smoothlerp(t), a, b );
 	}

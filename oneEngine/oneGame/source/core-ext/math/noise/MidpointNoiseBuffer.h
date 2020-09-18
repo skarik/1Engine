@@ -52,8 +52,8 @@ public:
 		uchar p_1_1 = getSample( sample_x+1, sample_y+1 );
 
 		return	math::lerp( Real(x-sample_x),
-					math::lerp( Real(y-sample_y), p_0_0, p_0_1 ),
-					math::lerp( Real(y-sample_y), p_1_0, p_1_1 ) );
+					math::lerp( Real(y-sample_y), Real(p_0_0), Real(p_0_1) ),
+					math::lerp( Real(y-sample_y), Real(p_1_0), Real(p_1_1) ) );
 	}
 		
 	// Generate a terrain buffer into a 64x64 buffer
@@ -106,11 +106,11 @@ public:
 
 		return	math::lerp( Real(z-sample_z),
 					math::lerp( Real(x-sample_x),
-						math::lerp( Real(y-sample_y), p_0_0_a, p_0_1_a ),
-						math::lerp( Real(y-sample_y), p_1_0_a, p_1_1_a ) ),
+						math::lerp( Real(y-sample_y), Real(p_0_0_a), Real(p_0_1_a) ),
+						math::lerp( Real(y-sample_y), Real(p_1_0_a), Real(p_1_1_a) ) ),
 					math::lerp( Real(x-sample_x),
-						math::lerp( Real(y-sample_y), p_0_0_b, p_0_1_b ),
-						math::lerp( Real(y-sample_y), p_1_0_b, p_1_1_b ) ) );
+						math::lerp( Real(y-sample_y), Real(p_0_0_b), Real(p_0_1_b) ),
+						math::lerp( Real(y-sample_y), Real(p_1_0_b), Real(p_1_1_b) ) ) );
 	}
 		
 	// Generate a noise buffer into a 64x64x64 buffer

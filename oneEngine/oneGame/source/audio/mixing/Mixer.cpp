@@ -67,7 +67,9 @@ void audio::Mixer::CleanupSource ( uint source_id )
 
 audio::SourceWorkbufferSet& audio::Mixer::FindSourceWorkbufferSet ( uint source_id )
 {
-	void* source_data = NULL;//m_sourceStateMap.fin
+	std::lock_guard<std::mutex> lock(m_sourceStateMapLock); // Need to lock this since this can be edited by multiple frames at the same time
+
+	void* source_data = NULL;
 	auto source_data_find_result = m_sourceStateMap.find(source_id);
 	if (source_data_find_result == m_sourceStateMap.end())
 	{
@@ -168,7 +170,7 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							double final_pitch = math::clamp(base_pitch + base_pitch * (velocity_total / mixObjectState.m_speedOfSound * velocity_pitch_multiplier), 0.01, audio::Audio3DMixConstants::kMaxPitch);
 
 							// Disable the pitch shifting if in 2D mode
-							final_pitch = math::lerp(workbufferSet.m_state.spatial, base_pitch, final_pitch);
+							final_pitch = math::lerp<double>(workbufferSet.m_state.spatial, base_pitch, final_pitch);
 
 							// From the pitch, calculate number of samples needed
 							uint32_t samplesNeeded = (uint32_t)std::ceil(workingFrames * final_pitch);
