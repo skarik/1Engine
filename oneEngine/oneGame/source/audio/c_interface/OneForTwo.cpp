@@ -81,7 +81,7 @@ double AR_CALL AudioSetChannelGain ( double channel, double gain )
 	m_manager->m_channelGain[(uint)channel] = (float)gain;
 	return NIL;
 }
-double AR_CALL AudioSetSoundSpeed ( double channel, double speed_of_sound )
+double AR_CALL AudioSetSoundSpeed ( double speed_of_sound )
 {
 	m_manager->m_speedOfSound = (float)speed_of_sound;
 	return NIL;

@@ -69,14 +69,43 @@ audio::arBufferHandle audio::WaveformLoader::LoadWave ( const char* sFilename )
     if (wave_format.subChunkSize > 16)
         fseek( soundFile, sizeof(short), SEEK_CUR );
 
+	// Read in sections until we hit the data chunk:
+	bool at_data = false;
+	while (!at_data)
+	{
+		// Read in the the last byte of data before the sound file
+		fread(&wave_data, sizeof(WAVE_Data), 1, soundFile);
+		// Check for 'data' tag in memory
+		if (wave_data.subChunkID[0] != 'd' ||
+			wave_data.subChunkID[1] != 'a' ||
+			wave_data.subChunkID[2] != 't' ||
+			wave_data.subChunkID[3] != 'a')
+		{
+			fseek( soundFile, wave_data.subChunk2Size, SEEK_CUR );
+			if (feof( soundFile ))
+			{
+				break;
+			}
+		}
+		else
+		{
+			at_data = true;
+		}
+	}
+
+	if (!at_data)
+	{
+		return Error( "CAudioSoundLoader::LoadWave: Invalid data header" );
+	}
+
 	// Read in the the last byte of data before the sound file
-    fread(&wave_data, sizeof(WAVE_Data), 1, soundFile);
+   /* fread(&wave_data, sizeof(WAVE_Data), 1, soundFile);
     // Check for 'data' tag in memory
     if (wave_data.subChunkID[0] != 'd' ||
         wave_data.subChunkID[1] != 'a' ||
         wave_data.subChunkID[2] != 't' ||
         wave_data.subChunkID[3] != 'a')
-             return Error( "CAudioSoundLoader::LoadWave: Invalid data header" );
+             return Error( "CAudioSoundLoader::LoadWave: Invalid data header" );*/
 
 	// Allocate memory for data
 	data = (unsigned char*) new uint64_t [ wave_data.subChunk2Size / sizeof(uint64_t) + 1 ]; // Allocate on the alignment of 8-byte for speed

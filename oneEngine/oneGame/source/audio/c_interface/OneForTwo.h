@@ -23,7 +23,7 @@ AR_CEXPORT double AR_CALL AudioFree ( void );
 AR_CEXPORT double AR_CALL AudioUpdate ( double deltatime );
 
 AR_CEXPORT double AR_CALL AudioSetChannelGain ( double channel, double gain );
-AR_CEXPORT double AR_CALL AudioSetSoundSpeed ( double channel, double speed_of_sound );
+AR_CEXPORT double AR_CALL AudioSetSoundSpeed ( double speed_of_sound );
 
 //
 // Listener management:

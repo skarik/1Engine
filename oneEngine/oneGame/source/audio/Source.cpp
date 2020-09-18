@@ -119,7 +119,7 @@ void audio::Source::MixerSampleAndAdvance ( const uint32_t delta_samples, float*
 			if (current_sample + actual_samples_processed >= sound->GetSampleLength())
 			{
 				// Copy the end of the buffer
-				sound->Sample(current_sample_io, actual_samples_processed, work_buffer);
+				sound->Sample(current_sample_io, sound->GetSampleLength() - current_sample, work_buffer);
 				// Copy the remainder at the start
 				current_sample_io = 0;
 				uint32_t copy_offset = sound->GetSampleLength() - current_sample;

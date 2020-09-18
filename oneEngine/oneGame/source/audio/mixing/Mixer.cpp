@@ -352,8 +352,8 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							// ...that's probably it, isn't it.
 
 							// stretch the current delay to the new delay
-							//copy from m_workbuffer_delay to buffer1
-							//rescale from buffer1 to m_workbuffer_delay
+							//    copy from m_workbuffer_delay to buffer1
+							//    rescale from buffer1 to m_workbuffer_delay
 							std::copy(set.m_workbuffer_delay.m_data_left, set.m_workbuffer_delay.m_data_left + set.m_previousDelayLeft, set.m_workbuffers[1].m_data_left);
 							std::copy(set.m_workbuffer_delay.m_data_right, set.m_workbuffer_delay.m_data_right + set.m_previousDelayRight, set.m_workbuffers[1].m_data_right);
 							// rescale the data
