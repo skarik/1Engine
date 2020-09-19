@@ -28,7 +28,7 @@ namespace audio
 	{
 		// Rough max left-right ear delay for 3D audio
 		static constexpr double kMaxAudioDelay = 0.660 / 1000.0;
-		static constexpr double kActualCoolSoundingAudioDelay = 8.0 / 1000.0;
+		static constexpr double kActualCoolSoundingAudioDelay = 16.0 / 1000.0;
 
 		// Maxing out the pitch because the workbuffers are not that bit
 		static constexpr double kMaxPitch = (double)kWorkingMaxPitch;
@@ -61,6 +61,7 @@ namespace audio
 		float				m_distanceFromListener = 0.0F; // Calculated when sampling.
 		MixChannel			m_tag = MixChannel::kDefault;
 
+		bool				m_firstFrame = true;
 		bool				m_newframe = false;
 		bool				m_newmix = false;
 	};
@@ -174,6 +175,13 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							// Get the source state
 							source->MixerGetSourceState(workbufferSet.m_state);
 
+							// Update previous state if first frame
+							if (workbufferSet.m_firstFrame)
+							{
+								workbufferSet.m_statePrevious = workbufferSet.m_state;
+								workbufferSet.m_firstFrame = false;
+							}
+
 							// Calculate the pitch
 							double base_pitch = workbufferSet.m_state.pitch;
 
@@ -202,7 +210,7 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							if (source->GetBuffer()->GetChannelCount() == ChannelCount::kMono)
 							{
 								audio::mixing::Resample<kWorkbufferSize>(workbufferSet.m_workbufferRaw.m_data, samplesNeeded, workbufferSet.m_workbuffer_sourceResult.m_data_left);
-								std::copy(workbufferSet.m_workbuffers[0].m_data_left, workbufferSet.m_workbuffers[0].m_data_left + workingFrames, workbufferSet.m_workbuffer_sourceResult.m_data_right);
+								std::copy(workbufferSet.m_workbuffer_sourceResult.m_data_left, workbufferSet.m_workbuffer_sourceResult.m_data_left + workingFrames, workbufferSet.m_workbuffer_sourceResult.m_data_right);
 							}
 							else
 							{

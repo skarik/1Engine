@@ -107,8 +107,8 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			}
 		}
 
-		//l_musicSource->state.position.x += Time::deltaTime * 3.0F;
-		//l_musicSource->state.velocity.x = 300.0F;
+		l_musicSource->state.position.x += Time::deltaTime * 3.0F;
+		l_musicSource->state.velocity.x = 300.0F;
 
 		// Check for other characters:
 
