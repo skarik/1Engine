@@ -67,18 +67,21 @@ namespace math
 	{
 		return (Number(0) < val) - (val < Number(0));
 	}
+
 	//	square ( number ) : returns value to the second power
 	template <typename Number> inline
 		Number square(Number val)
 	{
 		return sqr(val);
 	}
+
 	//	cube ( number ) : returns value to the third power
 	template <typename Number> inline
 		Number cube(Number val)
 	{
 		return cub(val);
 	}
+
 	//	round ( number ) : rounds value to the neearest integer
 	template <typename Number> inline
 		int32_t round(Number r)
@@ -115,7 +118,6 @@ namespace math
 		return (1<<x);
 	}
 
-
 	//
 	// Interpolation:
 	//
@@ -142,6 +144,24 @@ namespace math
 		return lerp( smoothlerp(t), a, b );
 	}
 
+
+	//
+	// Other:
+	//
+
+	//	largest ( a, b ) : Returns larger (magnitude) of the two numbers
+	template <typename Number> inline
+		Number largest ( Number a, Number b )
+	{
+		return (abs(a) > abs(b)) ? a : b;
+	}
+
+	//	smallest ( a, b ) : Returns smaller (magnitude) of the two numbers
+	template <typename Number> inline
+		Number smallest ( Number a, Number b )
+	{
+		return (abs(a) < abs(b)) ? a : b;
+	}
 
 	//
 	// Helpers:

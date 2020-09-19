@@ -40,9 +40,10 @@ namespace audio
 		uint32_t				m_maxVoices = 64;
 
 		// Source states. Used to track buffers between audio frames for DSP.
-		std::mutex				m_sourceStateMapLock;
 		std::map<uint, void*>	m_sourceStateMap;
 
+		//	AllocateSourceWorkbufferSet( source_id ) : Ensures the given source has data allocated
+		void					AllocateSourceWorkbufferSet ( uint source_id );
 		//	FindSourceWorkbufferSet( source_id ) : Finds existing or allocates new workbuffers for the given source.
 		SourceWorkbufferSet&	FindSourceWorkbufferSet ( uint source_id );
 

@@ -69,10 +69,12 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 
 	// Create the music track to loop
 	audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop.ogg");
+	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/ambient/water_lapping_loop.wav");
 	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/Theme07-snippet.ogg");
 	audio::Source* l_musicSource = new audio::Source(l_musicBuffer);
 	l_musicSource->state.looped = true;
 	l_musicSource->state.position = Vector3f(0, 1, 0);
+	l_musicSource->state.pitch = 1.2;
 	l_musicSource->Play(true);
 
 	audio::Source* l_soundSource = NULL;
@@ -106,6 +108,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 		}
 
 		l_musicSource->state.position.x += Time::deltaTime * 3.0F;
+		l_musicSource->state.velocity.x = 300.0F;
 
 		// Check for other characters:
 

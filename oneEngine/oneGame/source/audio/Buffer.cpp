@@ -37,8 +37,7 @@ void audio::Buffer::Init ( const char* n_filename )
 	if (m_sound == NULL)
 	{
 		printf("Error loading \"%s\" [normal]\n", n_filename);
-		m_sound->frames = 0;
-		m_sound->sampleRate = 0;
+		m_readyToSample = false;
 		return;
 	}
 
@@ -154,11 +153,15 @@ bool audio::Buffer::GetReadyToSample ( void ) const
 
 audio::ChannelCount audio::Buffer::GetChannelCount ( void ) const
 {
-	return m_sound->channels;
+	if (m_sound == NULL)
+		return audio::ChannelCount::kInvalid;
+	else
+		return m_sound->channels;
 }
 
 void audio::Buffer::Sample ( uint32_t& inout_sample_position, uint32_t sample_count, float* sample_output )
 {
+	ARCORE_ASSERT(m_sound != NULL);
 	ARCORE_ASSERT(inout_sample_position + sample_count <= m_sound->frames);
 	uint32_t copy_start = inout_sample_position * (uint)m_sound->channels;
 	uint32_t copy_end = copy_start + sample_count * (uint)m_sound->channels;

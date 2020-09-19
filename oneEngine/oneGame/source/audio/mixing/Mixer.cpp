@@ -65,16 +65,24 @@ void audio::Mixer::CleanupSource ( uint source_id )
 	m_sourceRemovalRequests.push_back(source_id);
 }
 
-audio::SourceWorkbufferSet& audio::Mixer::FindSourceWorkbufferSet ( uint source_id )
+void audio::Mixer::AllocateSourceWorkbufferSet ( uint source_id )
 {
-	std::lock_guard<std::mutex> lock(m_sourceStateMapLock); // Need to lock this since this can be edited by multiple frames at the same time
-
 	void* source_data = NULL;
 	auto source_data_find_result = m_sourceStateMap.find(source_id);
 	if (source_data_find_result == m_sourceStateMap.end())
 	{
 		source_data = new SourceWorkbufferSet();
 		m_sourceStateMap.insert({source_id, source_data});
+	}
+}
+
+audio::SourceWorkbufferSet& audio::Mixer::FindSourceWorkbufferSet ( uint source_id )
+{
+	void* source_data = NULL;
+	auto source_data_find_result = m_sourceStateMap.find(source_id);
+	if (source_data_find_result == m_sourceStateMap.end())
+	{
+		source_data = m_sourceStateMap.find(0xFFFFFFFF)->second;
 	}
 	else
 	{
@@ -90,12 +98,6 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 	, m_maxVoices(max_voices)
 {
 	m_continueWork = true;
-
-	// we need:
-	//		workbuffer for each voice
-	//		MixChannel::kMAX_COUNT workbuffers for each listener
-	//			we want to tag each workbuffer with a channel
-	//		workbuffer for the final output
 
 	m_workerThread = std::thread([&]
 	{
@@ -145,6 +147,13 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 				}
 				Matrix4x4 listenerInverseTransform = listenerTransform.inverse();
 
+				// Allocate data for all the sources
+				AllocateSourceWorkbufferSet(0xFFFFFFFF); // Allocate dummy set for if we have a bad state.
+				for (audio::Source* source : l_sources)
+				{
+					AllocateSourceWorkbufferSet(source->GetID());
+				}
+
 				// Sample all the sources, but do not yet process them
 				for (audio::Source* source : l_sources)
 				{
@@ -163,9 +172,12 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 
 							Vector3f relative_velocity = workbufferSet.m_state.velocity - listenerVelocity;
 							Vector3f relative_position = workbufferSet.m_state.position - listenerPosition;
-							workbufferSet.m_distanceFromListener = relative_velocity.magnitude(); // Store since it's reused later
+							workbufferSet.m_distanceFromListener = relative_position.magnitude(); // Store since it's reused later
 							float velocity_total = relative_velocity.magnitude();
-							float velocity_pitch_multiplier = -(relative_velocity / std::max<float>(FLOAT_PRECISION, velocity_total)).dot(relative_position / std::max<float>(FLOAT_PRECISION, workbufferSet.m_distanceFromListener));
+							float velocity_pitch_multiplier = 
+								-(relative_velocity / std::max<float>(FLOAT_PRECISION, velocity_total)).dot(
+									relative_position / std::max<float>(FLOAT_PRECISION, workbufferSet.m_distanceFromListener)
+								);
 
 							double final_pitch = math::clamp(base_pitch + base_pitch * (velocity_total / mixObjectState.m_speedOfSound * velocity_pitch_multiplier), 0.01, audio::Audio3DMixConstants::kMaxPitch);
 
@@ -180,91 +192,17 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							// We now have raw interleaved audio. During the re-pitching, we split it into correct channels.
 
 							// Now we re-pitch the audio:
-
-							// No repitching. Just copy-paste.
-							if (samplesNeeded == workingFrames)
-							{	
-								// Copy and paste if no scaling needed
-								if (source->GetBuffer()->GetChannelCount() == ChannelCount::kMono)
-								{
-									// Duplicate into both left & right channels
-									std::copy(workbufferSet.m_workbufferRaw.m_data, workbufferSet.m_workbufferRaw.m_data + kWorkbufferSize, workbufferSet.m_workbuffers[0].m_data_left);
-									std::copy(workbufferSet.m_workbufferRaw.m_data, workbufferSet.m_workbufferRaw.m_data + kWorkbufferSize, workbufferSet.m_workbuffers[0].m_data_right);
-								}
-								else if (source->GetBuffer()->GetChannelCount() == ChannelCount::kStereo)
-								{
-									audio::mixing::InterleavedStereoToChannels<kWorkbufferSize>(
-										workbufferSet.m_workbufferRaw.m_data,
-										workbufferSet.m_workbuffers[0].m_data_left,
-										workbufferSet.m_workbuffers[0].m_data_right
-										);
-								}
-							}
-							// Low pitched, stretch
-							else if (samplesNeeded < workingFrames)
+							if (source->GetBuffer()->GetChannelCount() == ChannelCount::kMono)
 							{
-								// TODO: actual interpolation to get rid of some of the crust
-								if (source->GetBuffer()->GetChannelCount() == ChannelCount::kMono)
-								{
-									for (uint32_t frame = 0; frame < workingFrames; ++frame)
-									{
-										double percentThruBuffer = frame / (double)workingFrames;
-										double sourceFrame = samplesNeeded * percentThruBuffer;
-										uint32_t sourceFrame0 = (uint32_t)sourceFrame;
-
-										workbufferSet.m_workbuffers[0].m_data_left[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0];
-										workbufferSet.m_workbuffers[0].m_data_right[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0];
-									}
-								}
-								else if (source->GetBuffer()->GetChannelCount() == ChannelCount::kStereo)
-								{
-									for (uint32_t frame = 0; frame < workingFrames; ++frame)
-									{
-										double percentThruBuffer = frame / (double)workingFrames;
-										double sourceFrame = samplesNeeded * percentThruBuffer;
-										uint32_t sourceFrame0 = (uint32_t)sourceFrame;
-
-										workbufferSet.m_workbuffers[0].m_data_left[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0 * 2 + 0];
-										workbufferSet.m_workbuffers[0].m_data_right[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0 * 2 + 1];
-									}
-								}
+								audio::mixing::Resample<kWorkbufferSize>(workbufferSet.m_workbufferRaw.m_data, samplesNeeded, workbufferSet.m_workbuffers[0].m_data_left);
+								std::copy(workbufferSet.m_workbuffers[0].m_data_left, workbufferSet.m_workbuffers[0].m_data_left + workingFrames, workbufferSet.m_workbuffers[0].m_data_right);
 							}
-							// High pitched, compress
-							else if (samplesNeeded > workingFrames)
+							else
 							{
-								// TODO: actual interpolation to get rid of some of the crust
-								if (source->GetBuffer()->GetChannelCount() == ChannelCount::kMono)
-								{
-									for (uint32_t frame = 0; frame < workingFrames; ++frame)
-									{
-										double percentThruBufferStart = frame / (double)workingFrames;
-										double percentThruBufferEnd = (frame + 1) / (double)workingFrames;
-										double sourceFrameStart = samplesNeeded * percentThruBufferStart;
-										double sourceFrameEnd = samplesNeeded * percentThruBufferEnd;
-										uint32_t sourceFrame0 = (uint32_t)sourceFrameStart;
-										uint32_t sourceFrame1 = (uint32_t)std::ceil(sourceFrameEnd);
-
-										workbufferSet.m_workbuffers[0].m_data_left[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0];
-										workbufferSet.m_workbuffers[0].m_data_right[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0];
-									}
-								}
-								else if (source->GetBuffer()->GetChannelCount() == ChannelCount::kStereo)
-								{
-									for (uint32_t frame = 0; frame < workingFrames; ++frame)
-									{
-										double percentThruBufferStart = frame / (double)workingFrames;
-										double percentThruBufferEnd = (frame + 1) / (double)workingFrames;
-										double sourceFrameStart = samplesNeeded * percentThruBufferStart;
-										double sourceFrameEnd = samplesNeeded * percentThruBufferEnd;
-										uint32_t sourceFrame0 = (uint32_t)sourceFrameStart;
-										uint32_t sourceFrame1 = (uint32_t)std::ceil(sourceFrameEnd);
-
-										workbufferSet.m_workbuffers[0].m_data_left[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0 * 2 + 0];
-										workbufferSet.m_workbuffers[0].m_data_right[frame] = workbufferSet.m_workbufferRaw.m_data[sourceFrame0 * 2 + 1];
-									}
-								}
+								audio::mixing::ResampleStride<kWorkbufferSize, 2>(workbufferSet.m_workbufferRaw.m_data, samplesNeeded, workbufferSet.m_workbuffers[0].m_data_left);
+								audio::mixing::ResampleStride<kWorkbufferSize, 2>(workbufferSet.m_workbufferRaw.m_data + 1, samplesNeeded, workbufferSet.m_workbuffers[0].m_data_right);
 							}
-							
+
 							workbufferSet.m_tag = workbufferSet.m_state.channel;
 							workbufferSet.m_newframe = true;
 

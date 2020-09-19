@@ -179,8 +179,14 @@ void audio::Source::Play ( bool reset )
 
 	if (!is_playing)
 	{
+		// This should be fine since we're not playing all the time
+		{	// Lock and push the mixer state
+			std::lock_guard<std::mutex> lock(mixer_state_lock);
+			mixer_state = state;
+		}
+
 		if ( reset )
-		{
+		{	// Lock and reset the playing state
 			std::lock_guard<std::mutex> lock(playing_state_lock);
 			current_sample = 0;
 		}
