@@ -2,6 +2,8 @@
 #define AUDIO_MIXING_OPERATIONS_H_
 
 #include "core/types.h"
+#include "muFFT/fft.h"
+#include <complex>
 
 namespace audio
 {
@@ -146,6 +148,56 @@ namespace audio
 					out_buffer[i] = math::lerp(0.5F, totalWave, largestWave); // Bias it slightly towards the larger waveform to get crisper peaks.
 				}
 			}
+		}
+
+		template <uint32_t Length>
+		void FFT (const float* buffer, float* out_buffer_real, float* out_buffer_imag)
+		{
+			float* input = (float*)mufft_alloc(Length * sizeof(float));
+			std::complex<float>* output = (std::complex<float>*)mufft_alloc(Length * sizeof(std::complex<float>));
+
+			for (uint32_t i = 0; i < Length; ++i)
+			{
+				input[i] = buffer[i];
+			}
+
+			mufft_plan_1d *muplan = mufft_create_plan_1d_r2c(Length, MUFFT_FLAG_CPU_ANY);
+			mufft_execute_plan_1d(muplan, output, input);
+
+			for (uint32_t i = 0; i < Length; ++i)
+			{
+				out_buffer_real[i] = output[i].real();
+				out_buffer_imag[i] = output[i].imag();
+			}
+
+			mufft_free(input);
+			mufft_free(output);
+			mufft_free_plan_1d(muplan);
+		}
+
+		template <uint32_t Length>
+		void InverseFFT (const float* buffer_real, const float* buffer_imag, float* out_buffer)
+		{
+			std::complex<float>* input = (std::complex<float>*)mufft_alloc(Length * sizeof(std::complex<float>));
+			float* output = (float*)mufft_alloc(Length * sizeof(float));
+
+			for (uint32_t i = 0; i < Length; ++i)
+			{
+				input[i].real(buffer_real[i]);
+				input[i].imag(buffer_imag[i]);
+			}
+
+			mufft_plan_1d *muplan = mufft_create_plan_1d_c2r(Length, MUFFT_FLAG_CPU_ANY);
+			mufft_execute_plan_1d(muplan, output, input);
+
+			for (uint32_t i = 0; i < Length; ++i)
+			{
+				out_buffer[i] = output[i] / Length; // WHY IS IT SCALED UP???
+			}
+
+			mufft_free(input);
+			mufft_free(output);
+			mufft_free_plan_1d(muplan);
 		}
 	}
 }

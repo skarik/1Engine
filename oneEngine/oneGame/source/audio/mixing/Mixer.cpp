@@ -30,7 +30,7 @@ namespace audio
 		static constexpr double kMaxAudioDelay = 0.660 / 1000.0;
 		static constexpr double kActualCoolSoundingAudioDelay = 16.0 / 1000.0;
 
-		// Maxing out the pitch because the workbuffers are not that bit
+		// Maxing out the pitch because the workbuffers are not that big
 		static constexpr double kMaxPitch = (double)kWorkingMaxPitch;
 	};
 	
@@ -117,6 +117,9 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 
 		float* workbuffer_out = new float [kWorkbufferSize * channelCount];
 		float* workbuffer_mix = new float [kWorkbufferSize * channelCount];
+
+		WorkbufferStereo<kWorkbufferSize>* workbuffer_fft_real = new WorkbufferStereo<kWorkbufferSize>;
+		WorkbufferStereo<kWorkbufferSize>* workbuffer_fft_imag = new WorkbufferStereo<kWorkbufferSize>;
 
 		std::vector<Source*> l_sources;
 		std::vector<Listener*> l_listeners;
@@ -427,8 +430,8 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 					{
 						WorkbufferStereo<kWorkbufferSize>& workbuffer_channel = workbuffer_channel_out[(uint32_t)set.m_state.channel];
 
-						audio::mixing::ChannelsToInterleavedStereo<kWorkbufferSize>(set.m_workbuffer_3dDSPResult.m_data_left, set.m_workbuffer_3dDSPResult.m_data_right, workbuffer_mix);
-						audio::mixing::Acculmulate<kWorkbufferSize * 2>(workbuffer_mix, workbuffer_channel.m_data);
+						audio::mixing::Acculmulate<kWorkbufferSize>(set.m_workbuffer_3dDSPResult.m_data_left, workbuffer_channel.m_data_left);
+						audio::mixing::Acculmulate<kWorkbufferSize>(set.m_workbuffer_3dDSPResult.m_data_right, workbuffer_channel.m_data_right);
 
 						// Done mixing here
 						set.m_newmix = false;
@@ -438,8 +441,33 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 				std::fill(workbuffer_out, workbuffer_out + kWorkbufferSize * channelCount, 0.0F);
 				for (uint32_t mixchannel = 0; mixchannel < (uint32_t)MixChannel::kMAX_COUNT; ++mixchannel)
 				{
-					audio::mixing::Scale<kWorkbufferSize * 2>(workbuffer_channel_out[mixchannel].m_data, mixObjectState.m_channelGain[mixchannel]);
-					audio::mixing::Acculmulate<kWorkbufferSize * 2>(workbuffer_channel_out[mixchannel].m_data, workbuffer_out);
+					// let's do some fucky dsp 
+					// This actually works! We just have too much other noise in our mixing still...
+					/*if (mixchannel == (uint32_t)MixChannel::kMusic)
+					{
+						audio::mixing::FFT<kWorkbufferSize>(workbuffer_channel_out[mixchannel].m_data_left, workbuffer_fft_real->m_data_left, workbuffer_fft_imag->m_data_left);
+						audio::mixing::FFT<kWorkbufferSize>(workbuffer_channel_out[mixchannel].m_data_right, workbuffer_fft_real->m_data_right, workbuffer_fft_imag->m_data_right);
+
+						// let's fade out the back end of it
+						for (uint32_t i = 0; i < kWorkbufferSize; ++i)
+						{
+							float percent = i / (float)(kWorkbufferSize - 1);
+
+							percent = pow(1.0 - percent, 100);
+
+							workbuffer_fft_real->m_data_left[i] *= percent;
+							workbuffer_fft_real->m_data_right[i] *= percent;
+							workbuffer_fft_imag->m_data_left[i] *= percent;
+							workbuffer_fft_imag->m_data_right[i] *= percent;
+						}
+
+						//audio::mixing::InverseFFT<kWorkbufferSize>(workbuffer_fft_real->m_data_left, workbuffer_fft_imag->m_data_left, workbuffer_channel_out[mixchannel].m_data_left);
+						//audio::mixing::InverseFFT<kWorkbufferSize>(workbuffer_fft_real->m_data_right, workbuffer_fft_imag->m_data_right, workbuffer_channel_out[mixchannel].m_data_right);
+					}*/
+
+					audio::mixing::ChannelsToInterleavedStereo<kWorkbufferSize>(workbuffer_channel_out[mixchannel].m_data_left, workbuffer_channel_out[mixchannel].m_data_right, workbuffer_mix);
+					audio::mixing::Scale<kWorkbufferSize * 2>(workbuffer_mix, mixObjectState.m_channelGain[mixchannel]);
+					audio::mixing::Acculmulate<kWorkbufferSize * 2>(workbuffer_mix, workbuffer_out);
 				}
 
 				//// Generate sine waves to verify device working properly
@@ -470,6 +498,8 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 		delete[] workbuffer_channel_out;
 		delete[] workbuffer_out;
 		delete[] workbuffer_mix;
+		delete workbuffer_fft_real;
+		delete workbuffer_fft_imag;
 	});
 }
 

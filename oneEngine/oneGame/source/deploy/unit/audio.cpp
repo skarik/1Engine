@@ -75,6 +75,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	l_musicSource->state.looped = true;
 	l_musicSource->state.position = Vector3f(0, 1, 0);
 	l_musicSource->state.pitch = 1.2F;
+	l_musicSource->state.channel = audio::MixChannel::kMusic;
 	l_musicSource->Play(true);
 
 	audio::Source* l_soundSource = NULL;
