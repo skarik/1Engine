@@ -153,14 +153,14 @@ namespace math
 	template <typename Number> inline
 		Number largest ( Number a, Number b )
 	{
-		return (abs(a) > abs(b)) ? a : b;
+		return (std::abs(a) > std::abs(b)) ? a : b;
 	}
 
 	//	smallest ( a, b ) : Returns smaller (magnitude) of the two numbers
 	template <typename Number> inline
 		Number smallest ( Number a, Number b )
 	{
-		return (abs(a) < abs(b)) ? a : b;
+		return (std::abs(a) < std::abs(b)) ? a : b;
 	}
 
 	//

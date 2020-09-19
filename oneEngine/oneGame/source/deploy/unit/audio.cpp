@@ -32,7 +32,7 @@
 int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 {	ARUNIT_BUILD_CMDLINE
 	// Load window settings
-	CGameSettings gameSettings ( (string)lpCmdLine );
+	CGameSettings gameSettings ( (string)lpCmdLine, false );
 
 	// Create jobs system
 	core::jobs::System jobSystem (4);
@@ -74,7 +74,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	audio::Source* l_musicSource = new audio::Source(l_musicBuffer);
 	l_musicSource->state.looped = true;
 	l_musicSource->state.position = Vector3f(0, 1, 0);
-	l_musicSource->state.pitch = 1.2;
+	l_musicSource->state.pitch = 1.2F;
 	l_musicSource->Play(true);
 
 	audio::Source* l_soundSource = NULL;
@@ -107,8 +107,8 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			}
 		}
 
-		l_musicSource->state.position.x += Time::deltaTime * 3.0F;
-		l_musicSource->state.velocity.x = 300.0F;
+		//l_musicSource->state.position.x += Time::deltaTime * 3.0F;
+		//l_musicSource->state.velocity.x = 300.0F;
 
 		// Check for other characters:
 

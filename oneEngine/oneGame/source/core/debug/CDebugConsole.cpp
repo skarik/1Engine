@@ -28,10 +28,11 @@ public:
 
 // Static functions
 // Debug Console Init
-void debug::CDebugConsole::Init ( void )
+void debug::CDebugConsole::Init ( bool create_new_window )
 {
 	// Create a new console
-	if ( !Console ) {
+	if ( !Console )
+	{
 		Console = new CDebugConsole();
 	}
 
@@ -44,8 +45,10 @@ void debug::CDebugConsole::Init ( void )
 		// point to console as well
 		std::ios::sync_with_stdio();
 	}
-	else
+	else if (create_new_window)
 	{
+		Console->bCreatedNewOutput = true;
+
 #	ifdef _WIN32
 
 		// Get a console for this program
@@ -106,20 +109,29 @@ void debug::CDebugConsole::Init ( void )
 	/// use openpty to create a terminal window and redirect output to it
 #	endif
 	}
+	else
+	{
+		Console->bCreatedNewOutput = false;
+	}
 }
 
 // Free
 void debug::CDebugConsole::Free ( void )
 {
+	// Close all handles
+	if ( Console && Console->bCreatedNewOutput )
+	{
+		if ( stdin ) fclose( stdin );
+		if ( stdout ) fclose( stdout );
+		if ( stderr ) fclose( stderr );
+	}
+
 	// Kill the console
-	if ( Console ) {
+	if ( Console )
+	{
 		delete Console;
 	}
 	Console = NULL;
-	// Close all handles
-	if ( stdin ) fclose( stdin );
-	if ( stdout ) fclose( stdout );
-	if ( stderr ) fclose( stderr );
 }
 
 

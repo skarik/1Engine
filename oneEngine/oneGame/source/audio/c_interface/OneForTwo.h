@@ -16,7 +16,7 @@
 #define AR_CEXPORT extern "C" AR_EXPORT
 
 //	AudioInitialize() : Starts up the job system & audio engine
-AR_CEXPORT double AR_CALL AudioInitialize ( void );
+AR_CEXPORT double AR_CALL AudioInitialize ( double startupMask );
 //	AudioFree() : Stops the job system & audio engine, frees stored memory
 AR_CEXPORT double AR_CALL AudioFree ( void );
 //	AudioGameTick() : Ticks the system forward.

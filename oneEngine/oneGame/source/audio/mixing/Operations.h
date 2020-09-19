@@ -49,12 +49,25 @@ namespace audio
 			}
 		}
 
+		//	Crossfade(inputFrom, inputTo, output) : Crossfades the two inputs to the output
+		template <uint32_t Length>
+		void Crossfade ( const float* bufferFrom, const float* bufferTo, float* out_buffer )
+		{
+			for (uint32_t i = 0; i < Length; ++i)
+			{
+				float fade = i / (float)(Length - 1);
+				out_buffer[i] = math::lerp(fade, bufferFrom[i], bufferTo[i]);
+			}
+		}
+
+		//	Resample<LengthTo>(input, lengthFrom, output) : Resamples given input to the output.
 		template <uint32_t LengthTo>
 		void Resample ( const float* buffer, const uint32_t lengthFrom, float* out_buffer)
 		{
 			ResampleStride<LengthTo, 1>(buffer, lengthFrom, out_buffer);
 		}
 
+		//	ResampleStride<LengthTo,Stride>(input, lengthFrom, output) : Resamples given input with the given stride to the output.
 		template <uint32_t LengthTo, uint32_t FrameStride>
 		void ResampleStride ( const float* buffer, const uint32_t lengthFrom, float* out_buffer)
 		{

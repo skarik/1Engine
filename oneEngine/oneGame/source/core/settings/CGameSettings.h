@@ -44,8 +44,8 @@ private:
 public:
 	// == Constructor ==
 	// Creates default directories and loads options.
-	CORE_API explicit CGameSettings ( string& command_line );
-	CORE_API explicit CGameSettings ( char** command_line );
+	CORE_API explicit CGameSettings ( string& command_line, bool read_only_mode );
+	CORE_API explicit CGameSettings ( char** command_line, bool read_only_mode );
 
 	//=========================================//
 	// Settings system
@@ -202,6 +202,9 @@ private:
 	std::map<string,int>	m_settings_int;
 	std::map<string,float>	m_settings_real;
 	std::map<string,string>	m_settings_string;
+
+	// Current state
+	bool		m_readonly = false;
 };
 
 #endif//C_GAME_SETTINGS_

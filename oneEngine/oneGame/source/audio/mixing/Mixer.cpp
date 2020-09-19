@@ -44,15 +44,22 @@ namespace audio
 		std::array<WorkbufferStereo<kWorkbufferSize>, 2>
 							m_workbuffers;
 
+		// Pitched audio that resulted from the source sampling.
+		WorkbufferStereo<kWorkbufferSize>
+							m_workbuffer_sourceResult;
+		// Result audio that resulted from the 3D DSP step
+		WorkbufferStereo<kWorkbufferSize>
+							m_workbuffer_3dDSPResult;
+
 		// TODO: per-listener delay bank & pitch shift
-		WorkbufferStereo<kWorkbufferSize + kWorkbufferSize>
-							m_workbuffer_delay;
-			
+		std::array<WorkbufferStereo<kWorkbufferSize + kWorkbufferSize>, 2>
+							m_workbuffers_delay;
+		uint32_t			m_delay_step = 0;
+
 		SourceState			m_state;
-		float				m_distanceFromListener; // Calculated when sampling.
+		SourceState			m_statePrevious;
+		float				m_distanceFromListener = 0.0F; // Calculated when sampling.
 		MixChannel			m_tag = MixChannel::kDefault;
-		uint32_t			m_previousDelayLeft = 0;
-		uint32_t			m_previousDelayRight = 0;
 
 		bool				m_newframe = false;
 		bool				m_newmix = false;
@@ -194,19 +201,17 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							// Now we re-pitch the audio:
 							if (source->GetBuffer()->GetChannelCount() == ChannelCount::kMono)
 							{
-								audio::mixing::Resample<kWorkbufferSize>(workbufferSet.m_workbufferRaw.m_data, samplesNeeded, workbufferSet.m_workbuffers[0].m_data_left);
-								std::copy(workbufferSet.m_workbuffers[0].m_data_left, workbufferSet.m_workbuffers[0].m_data_left + workingFrames, workbufferSet.m_workbuffers[0].m_data_right);
+								audio::mixing::Resample<kWorkbufferSize>(workbufferSet.m_workbufferRaw.m_data, samplesNeeded, workbufferSet.m_workbuffer_sourceResult.m_data_left);
+								std::copy(workbufferSet.m_workbuffers[0].m_data_left, workbufferSet.m_workbuffers[0].m_data_left + workingFrames, workbufferSet.m_workbuffer_sourceResult.m_data_right);
 							}
 							else
 							{
-								audio::mixing::ResampleStride<kWorkbufferSize, 2>(workbufferSet.m_workbufferRaw.m_data, samplesNeeded, workbufferSet.m_workbuffers[0].m_data_left);
-								audio::mixing::ResampleStride<kWorkbufferSize, 2>(workbufferSet.m_workbufferRaw.m_data + 1, samplesNeeded, workbufferSet.m_workbuffers[0].m_data_right);
+								audio::mixing::ResampleStride<kWorkbufferSize, 2>(workbufferSet.m_workbufferRaw.m_data, samplesNeeded, workbufferSet.m_workbuffer_sourceResult.m_data_left);
+								audio::mixing::ResampleStride<kWorkbufferSize, 2>(workbufferSet.m_workbufferRaw.m_data + 1, samplesNeeded, workbufferSet.m_workbuffer_sourceResult.m_data_right);
 							}
 
 							workbufferSet.m_tag = workbufferSet.m_state.channel;
 							workbufferSet.m_newframe = true;
-
-							// The pristine sampled audio now lives in workbuffer 0
 						};
 
 						l_pendingJobs.push_back(core::jobs::System::Current::AddJobRequest(sampleAndDemux));
@@ -235,128 +240,121 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 
 							// Eventually we'll do the actual per-listener & per-source 3D effects here
 
-							// Let's transform the audio's position
-							Vector3f localPosition = listenerInverseTransform * set.m_state.position;
-							Real localPositionLength = localPosition.magnitude();
-							Vector3f localPositionNormalized = localPosition / localPositionLength;
-
-							// get the gain and the distance fade
-							float base_gain = set.m_state.gain;
-							float final_gain = base_gain;
-
-							switch (set.m_state.falloffStyle)
+							auto processForSourceState = [&listenerInverseTransform, &sampleStep](
+								const SourceState& in_state,
+								WorkbufferStereo<kWorkbufferSize>& in_workbuffer,
+								WorkbufferStereo<kWorkbufferSize>& scratch_workbuffer,
+								WorkbufferStereo<kWorkbufferSize + kWorkbufferSize>& delay_workbuffer,
+								WorkbufferStereo<kWorkbufferSize>& out_workbuffer)
 							{
-								case audio::Falloff::kLinear:
-								{
-									float distance_gain = 1.0F - math::saturate((localPositionLength - set.m_state.min_dist) / (set.m_state.max_dist - set.m_state.min_dist));
-									final_gain = base_gain * distance_gain;
-								}
-								break;
+								// Let's transform the audio's position
+								Vector3f localPosition = listenerInverseTransform * in_state.position;
+								Real localPositionLength = localPosition.magnitude();
+								Vector3f localPositionNormalized = localPosition / localPositionLength;
 
-								case audio::Falloff::kPower:
-								{
-									float distance_gain_linear = 1.0F - math::saturate((localPositionLength - set.m_state.min_dist) / (set.m_state.max_dist - set.m_state.min_dist));
-									float distance_gain = std::powf(distance_gain_linear, set.m_state.falloff);
-									final_gain = base_gain * distance_gain;
-								}
-								break;
+								// get the gain and the distance fade
+								float base_gain = in_state.gain;
+								float final_gain = base_gain;
 
-								case audio::Falloff::kInverse:
+								switch (in_state.falloffStyle)
 								{
-									float distance_gain_linear = std::max(0.0F, (localPositionLength - set.m_state.min_dist) / (set.m_state.max_dist - set.m_state.min_dist));
-									float distance_gain = 1.0F / (1.0F + distance_gain_linear * set.m_state.falloff * 4.0F);
-									final_gain = base_gain * distance_gain;
-								}
-								break;
+									case audio::Falloff::kLinear:
+									{
+										float distance_gain = 1.0F - math::saturate((localPositionLength - in_state.min_dist) / (in_state.max_dist - in_state.min_dist));
+										final_gain = base_gain * distance_gain;
+									}
+									break;
 
-								case audio::Falloff::kExponential:
-								{
-									float distance_gain_linear = std::max(0.0F, (localPositionLength - set.m_state.min_dist) / (set.m_state.max_dist - set.m_state.min_dist));
-									float distance_gain = std::powf(0.5F, distance_gain_linear * set.m_state.falloff * 4.0F);
-									final_gain = base_gain * distance_gain;
+									case audio::Falloff::kPower:
+									{
+										float distance_gain_linear = 1.0F - math::saturate((localPositionLength - in_state.min_dist) / (in_state.max_dist - in_state.min_dist));
+										float distance_gain = std::powf(distance_gain_linear, in_state.falloff);
+										final_gain = base_gain * distance_gain;
+									}
+									break;
+
+									case audio::Falloff::kInverse:
+									{
+										float distance_gain_linear = std::max(0.0F, (localPositionLength - in_state.min_dist) / (in_state.max_dist - in_state.min_dist));
+										float distance_gain = 1.0F / (1.0F + distance_gain_linear * in_state.falloff * 4.0F);
+										final_gain = base_gain * distance_gain;
+									}
+									break;
+
+									case audio::Falloff::kExponential:
+									{
+										float distance_gain_linear = std::max(0.0F, (localPositionLength - in_state.min_dist) / (in_state.max_dist - in_state.min_dist));
+										float distance_gain = std::powf(0.5F, distance_gain_linear * in_state.falloff * 4.0F);
+										final_gain = base_gain * distance_gain;
+									}
+									break;
 								}
-								break;
+
+								// get the angle to the audio
+								float cosine = localPositionNormalized.y;
+								float distance_blend = math::clamp(localPositionLength, 0.0F, 1.0F);
+
+								// do spatial blend disable
+								cosine = math::lerp(in_state.spatial, 0.0F, cosine);
+								final_gain = math::lerp(in_state.spatial, base_gain, final_gain);
+
+								// for now, we just delay the left the most amount of time
+								uint32_t delayAmountLeft = (uint32_t)(distance_blend * std::max(0.0F, +cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
+								uint32_t delayAmountRight = (uint32_t)(distance_blend * std::max(0.0F, -cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
+
+								// copy the data offset into the buffer
+								std::copy(in_workbuffer.m_data_left, in_workbuffer.m_data_left + kWorkbufferSize, delay_workbuffer.m_data_left + delayAmountLeft);
+								std::copy(in_workbuffer.m_data_right, in_workbuffer.m_data_right + kWorkbufferSize, delay_workbuffer.m_data_right + delayAmountRight);
+								// copy the first half into target
+								std::copy(delay_workbuffer.m_data_left, delay_workbuffer.m_data_left + kWorkbufferSize, scratch_workbuffer.m_data_left);
+								std::copy(delay_workbuffer.m_data_right, delay_workbuffer.m_data_right + kWorkbufferSize, scratch_workbuffer.m_data_right);
+								// shift the bank downward
+								std::copy(delay_workbuffer.m_data_left + kWorkbufferSize, delay_workbuffer.m_data_left + kWorkbufferSize + kWorkbufferSize, delay_workbuffer.m_data_left);
+								std::copy(delay_workbuffer.m_data_right + kWorkbufferSize, delay_workbuffer.m_data_right + kWorkbufferSize + kWorkbufferSize, delay_workbuffer.m_data_right);
+								// clear the now-unused part of the bank
+								std::fill(delay_workbuffer.m_data_left + kWorkbufferSize, delay_workbuffer.m_data_left + kWorkbufferSize + kWorkbufferSize, 0.0F);
+								std::fill(delay_workbuffer.m_data_right + kWorkbufferSize, delay_workbuffer.m_data_right + kWorkbufferSize + kWorkbufferSize, 0.0F);
+
+								// scale left and right
+								const float gain_left = math::lerp(in_state.spatial, 1.0F, 1.0F - std::max(0.0F, +cosine) * 0.7F);
+								const float gain_right = math::lerp(in_state.spatial, 1.0F, 1.0F - std::max(0.0F, -cosine) * 0.7F);
+								audio::mixing::Scale<kWorkbufferSize>(scratch_workbuffer.m_data_left, final_gain * gain_left);
+								audio::mixing::Scale<kWorkbufferSize>(scratch_workbuffer.m_data_right, final_gain * gain_right);
+
+								// now output
+								std::copy(scratch_workbuffer.m_data_left, scratch_workbuffer.m_data_left + kWorkbufferSize, out_workbuffer.m_data_left);
+								std::copy(scratch_workbuffer.m_data_right, scratch_workbuffer.m_data_right + kWorkbufferSize, out_workbuffer.m_data_right);
+							};
+
+							// To prevent clicks with the delay bank, we must blend with the previous frame's delay state - thus we need to mix the 3D audio twice:
+							if (set.m_delay_step == 0)
+							{
+								processForSourceState(
+									set.m_state,
+									set.m_workbuffer_sourceResult, set.m_workbuffers[0], set.m_workbuffers_delay[0], set.m_workbuffer_3dDSPResult);
+								processForSourceState(
+									set.m_statePrevious,
+									set.m_workbuffer_sourceResult, set.m_workbuffers[0], set.m_workbuffers_delay[1], set.m_workbuffers[1]);
+							}
+							else
+							{
+								processForSourceState(
+									set.m_state,
+									set.m_workbuffer_sourceResult, set.m_workbuffers[0], set.m_workbuffers_delay[1], set.m_workbuffer_3dDSPResult);
+								processForSourceState(
+									set.m_statePrevious,
+									set.m_workbuffer_sourceResult, set.m_workbuffers[0], set.m_workbuffers_delay[0], set.m_workbuffers[1]);
 							}
 
-							// get the angle to the audio
-							float cosine = localPositionNormalized.y;
-							float distance_blend = math::clamp(localPositionLength, 0.0F, 1.0F);
-						 
-							// do spatial blend disable
-							cosine = math::lerp(set.m_state.spatial, 0.0F, cosine);
-							final_gain = math::lerp(set.m_state.spatial, base_gain, final_gain);
+							// Crossfade the old state with the new state.
+							audio::mixing::Crossfade<kWorkbufferSize>(set.m_workbuffers[1].m_data_left, set.m_workbuffer_3dDSPResult.m_data_left, set.m_workbuffer_3dDSPResult.m_data_left);
+							audio::mixing::Crossfade<kWorkbufferSize>(set.m_workbuffers[1].m_data_right, set.m_workbuffer_3dDSPResult.m_data_right, set.m_workbuffer_3dDSPResult.m_data_right);
 
-							// for now, we just delay the left the most amount of time
-							uint32_t delayAmountLeft = 0;//(uint32_t)(distance_blend * std::max(0.0F, +cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
-							uint32_t delayAmountRight = 0;//(uint32_t)(distance_blend * std::max(0.0F, -cosine) * audio::Audio3DMixConstants::kActualCoolSoundingAudioDelay / sampleStep);
+							// Go to the next step
+							set.m_delay_step = (set.m_delay_step + 1) % 2;
 
-							// TODO: We're just going to nix delay until we can actually figure out how to properly do a variable delay without a ton of clicks.
-							// Honestly, the gain changing has clicks too. Are there two samples generated, the prev & current state, and the two just blended together?
-							// ...that's probably it, isn't it.
-
-							// stretch the current delay to the new delay
-							//    copy from m_workbuffer_delay to buffer1
-							//    rescale from buffer1 to m_workbuffer_delay
-							std::copy(set.m_workbuffer_delay.m_data_left, set.m_workbuffer_delay.m_data_left + set.m_previousDelayLeft, set.m_workbuffers[1].m_data_left);
-							std::copy(set.m_workbuffer_delay.m_data_right, set.m_workbuffer_delay.m_data_right + set.m_previousDelayRight, set.m_workbuffers[1].m_data_right);
-							// rescale the data
-							for (uint32_t frame = 0; frame < delayAmountLeft; ++frame)
-							{
-								uint32_t frameSource = (uint32_t)(frame * (set.m_previousDelayLeft / (double)delayAmountLeft));
-								set.m_workbuffer_delay.m_data_left[frame] = set.m_workbuffers[1].m_data_left[frameSource];
-							}
-							for (uint32_t frame = 0; frame < delayAmountRight; ++frame)
-							{
-								uint32_t frameSource = (uint32_t)(frame * (set.m_previousDelayRight / (double)delayAmountRight));
-								set.m_workbuffer_delay.m_data_right[frame] = set.m_workbuffers[1].m_data_right[frameSource];
-							}
-
-							// let's do left & right
-
-							// copy the data offset into the buffer
-							std::copy(set.m_workbuffers[0].m_data_left, set.m_workbuffers[0].m_data_left + kWorkbufferSize, set.m_workbuffer_delay.m_data_left + delayAmountLeft);
-							std::copy(set.m_workbuffers[0].m_data_right, set.m_workbuffers[0].m_data_right + kWorkbufferSize, set.m_workbuffer_delay.m_data_right + delayAmountRight);
-							// copy the first half into target
-							std::copy(set.m_workbuffer_delay.m_data_left, set.m_workbuffer_delay.m_data_left + kWorkbufferSize, set.m_workbuffers[1].m_data_left);
-							std::copy(set.m_workbuffer_delay.m_data_right, set.m_workbuffer_delay.m_data_right + kWorkbufferSize, set.m_workbuffers[1].m_data_right);
-							// shift the bank downward
-							std::copy(set.m_workbuffer_delay.m_data_left + kWorkbufferSize, set.m_workbuffer_delay.m_data_left + kWorkbufferSize + kWorkbufferSize, set.m_workbuffer_delay.m_data_left);
-							std::copy(set.m_workbuffer_delay.m_data_right + kWorkbufferSize, set.m_workbuffer_delay.m_data_right + kWorkbufferSize + kWorkbufferSize, set.m_workbuffer_delay.m_data_right);
-							// clear the now-unused part of the bank
-							std::fill(set.m_workbuffer_delay.m_data_left + kWorkbufferSize, set.m_workbuffer_delay.m_data_left + kWorkbufferSize + kWorkbufferSize, 0.0F);
-							std::fill(set.m_workbuffer_delay.m_data_right + kWorkbufferSize, set.m_workbuffer_delay.m_data_right + kWorkbufferSize + kWorkbufferSize, 0.0F);
-
-							// scale left and right
-							const float gain_left = math::lerp(set.m_state.spatial, 1.0F, 1.0F - std::max(0.0F, +cosine) * 0.7F);
-							const float gain_right = math::lerp(set.m_state.spatial, 1.0F, 1.0F - std::max(0.0F, -cosine) * 0.7F);
-							audio::mixing::Scale<kWorkbufferSize>(set.m_workbuffers[1].m_data_left, final_gain * gain_left);
-							audio::mixing::Scale<kWorkbufferSize>(set.m_workbuffers[1].m_data_right, final_gain * gain_right);
-
-							// do fades if we have a new delay and no previous data in the buffer (gotta fix the clicks!)
-							/*if (delayAmountLeft != 0 && set.m_previousDelayLeft == 0)
-							{
-								uint32_t fadeLength = std::min<uint32_t>(kWorkbufferSize - delayAmountLeft, 32);
-								for (uint32_t frame = 0; frame < fadeLength; ++frame)
-								{
-									float fade_in_gain = frame / (float)fadeLength;
-									set.m_workbuffers[1].m_data_left[frame + delayAmountLeft] *= fade_in_gain;
-								}
-							}
-							if (delayAmountRight != 0 && set.m_previousDelayRight == 0)
-							{
-								uint32_t fadeLength = std::min<uint32_t>(kWorkbufferSize - delayAmountRight, 32);
-								for (uint32_t frame = 0; frame < fadeLength; ++frame)
-								{
-									float fade_in_gain = frame / (float)fadeLength;
-									set.m_workbuffers[1].m_data_right[frame + delayAmountRight] *= fade_in_gain;
-								}
-							}*/
-
-							// save delay so we can stretch the current delay if things change
-							set.m_previousDelayLeft = delayAmountLeft;
-							set.m_previousDelayRight = delayAmountRight;
-
-							// The fucked-up sampled audio now lives in workbuffer 1
+							// Save previous state so we can blend to next sample set
+							set.m_statePrevious = set.m_state; 
 						};
 
 						// Push the new job
@@ -421,7 +419,7 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 					{
 						WorkbufferStereo<kWorkbufferSize>& workbuffer_channel = workbuffer_channel_out[(uint32_t)set.m_state.channel];
 
-						audio::mixing::ChannelsToInterleavedStereo<kWorkbufferSize>(set.m_workbuffers[1].m_data_left, set.m_workbuffers[1].m_data_right, workbuffer_mix);
+						audio::mixing::ChannelsToInterleavedStereo<kWorkbufferSize>(set.m_workbuffer_3dDSPResult.m_data_left, set.m_workbuffer_3dDSPResult.m_data_right, workbuffer_mix);
 						audio::mixing::Acculmulate<kWorkbufferSize * 2>(workbuffer_mix, workbuffer_channel.m_data);
 
 						// Done mixing here

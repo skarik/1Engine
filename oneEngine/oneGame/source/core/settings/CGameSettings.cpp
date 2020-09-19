@@ -34,7 +34,8 @@ void CGameSettings::SetActive ( CGameSettings* instance )
 }
 
 // == Constructor ==
-CGameSettings::CGameSettings ( string& command_line )
+CGameSettings::CGameSettings ( string& command_line, bool read_only_mode )
+	: m_readonly(read_only_mode)
 {
 	pActive = this;
 	Initialize();
@@ -102,7 +103,8 @@ CGameSettings::CGameSettings ( string& command_line )
 }
 
 // == Constructor ==
-CGameSettings::CGameSettings ( char** command_line )
+CGameSettings::CGameSettings ( char** command_line, bool read_only_mode )
+	: m_readonly(read_only_mode)
 {
 	pActive = this;
 	Initialize();
@@ -345,84 +347,27 @@ void CGameSettings::LoadSettings ( void )
 // == Save Settings ==
 void CGameSettings::SaveSettings ( void )
 {
-	// output file
-	ofstream outfile ( ".game/gameoptions.cfg" );
+	if (!m_readonly)
+	{
+		// output file
+		ofstream outfile ( ".game/gameoptions.cfg" );
 
-	/*outfile << "ro_enableshaders " << b_ro_EnableShaders << std::endl;
-	outfile << "ro_resolutionx " << i_ro_TargetResX << std::endl;
-	outfile << "ro_resolutiony " << i_ro_TargetResY << std::endl;
-	outfile << "ro_enableshadows " << b_ro_EnableShadows << std::endl;
-	outfile << "ro_shadowresolution " << i_ro_ShadowMapResolution << std::endl;
-	outfile << "ro_grasssubdivisions " << i_ro_GrassSubdivisions << std::endl;
-	outfile << std::endl;
-	outfile << "ro_usebuffermodel " << b_ro_UseBufferModel << std::endl;
-	outfile << "ro_usehighrange " << b_ro_UseHighRange << std::endl;
-	outfile << "ro_renderer_mode " << i_ro_RendererMode << std::endl;
-	outfile << "ro_Enable30Blit " << b_ro_Enable30Blit << std::endl;
-	outfile << "ro_Enable30Steroscopic " << b_ro_Enable30Steroscopic << std::endl;
-	outfile << "ro_CameraRangeDefault " << f_ro_DefaultCameraRange << std::endl;
-	outfile << std::endl;
-	outfile << "cl_faststart " << b_cl_FastStart << std::endl;
-	outfile << "cl_defaultseed " << i_cl_DefaultSeed << std::endl;
-	outfile << "cl_minimal_terrain_threads " << b_cl_MinimizeTerrainThreads << std::endl;
-	outfile << std::endl;
-	outfile << "cl_keyboardstyle " << i_cl_KeyboardStyle << std::endl;
-	outfile << "cl_mouse_sensitivity " << f_cl_MouseSensitivity << std::endl;
-	outfile << std::endl;
-	outfile << "cl_reticlescale " << f_cl_ReticleScale << std::endl;
-	outfile << std::endl;
-	outfile << "cl_ter_range " << i_cl_ter_Range << std::endl;
-	outfile << "cl_ter_shadowofthecollussusrenderstyle " << b_cl_ter_ShadowOfTheCollussusRenderStyle << std::endl;
-	outfile << "cl_ter_farlodrangecount " << i_cl_ter_FarLODRangeCount << std::endl;
-	outfile << std::endl;
-	outfile << "dbg_ro_ShowMissingLinks " << b_dbg_ro_ShowMissingLinks << std::endl;
-	outfile << std::endl;
-	outfile << std::endl;*/
+		// Output all values to the file
+		for ( auto t_value = m_settings_pint.begin(); t_value != m_settings_pint.end(); t_value++ )
+			outfile << t_value->first << " " << *t_value->second << std::endl;
+		for ( auto t_value = m_settings_preal.begin(); t_value != m_settings_preal.end(); t_value++ )
+			outfile << t_value->first << " " << *t_value->second << std::endl;
 
-	/*EditSaveSetting( "ro_enableshaders", b_ro_EnableShaders );
-	EditSaveSetting( "ro_resolutionx", i_ro_TargetResX );
-	EditSaveSetting( "ro_resolutiony", i_ro_TargetResY );
-	EditSaveSetting( "ro_enableshadows", b_ro_EnableShadows );
-	EditSaveSetting( "ro_shadowresolution", i_ro_ShadowMapResolution );
-	EditSaveSetting( "ro_grasssubdivisions", i_ro_GrassSubdivisions );
+		// TODO: Check the following lists for duplicates first
+		for ( auto t_value = m_settings_int.begin(); t_value != m_settings_int.end(); t_value++ )
+			outfile << t_value->first << " " << t_value->second << std::endl;
+		for ( auto t_value = m_settings_real.begin(); t_value != m_settings_real.end(); t_value++ )
+			outfile << t_value->first << " " << t_value->second << std::endl;
+		for ( auto t_value = m_settings_string.begin(); t_value != m_settings_string.end(); t_value++ )
+			outfile << t_value->first << " " << t_value->second << std::endl;
 
-	EditSaveSetting( "ro_usebuffermodel", b_ro_UseBufferModel );
-	EditSaveSetting( "ro_usehighrange", b_ro_UseHighRange );
-	EditSaveSetting( "ro_renderer_mode", i_ro_RendererMode );
-	EditSaveSetting( "ro_Enable30Blit", b_ro_Enable30Blit );
-	EditSaveSetting( "ro_Enable30Steroscopic", b_ro_Enable30Steroscopic );
-	EditSaveSetting( "ro_CameraRangeDefault", f_ro_DefaultCameraRange );
-
-	EditSaveSetting( "cl_faststart", b_cl_FastStart );
-	EditSaveSetting( "cl_defaultseed", i_cl_DefaultSeed );
-	EditSaveSetting( "cl_minimal_terrain_threads", b_cl_MinimizeTerrainThreads );
-
-	EditSaveSetting( "cl_keyboardstyle", i_cl_KeyboardStyle );
-	EditSaveSetting( "cl_mouse_sensitivity", f_cl_MouseSensitivity );
-
-	EditSaveSetting( "cl_reticlescale", f_cl_ReticleScale );
-
-	EditSaveSetting( "cl_ter_range", i_cl_ter_Range );
-	EditSaveSetting( "cl_ter_shadowofthecollussusrenderstyle", b_cl_ter_ShadowOfTheCollussusRenderStyle );
-	EditSaveSetting( "cl_ter_farlodrangecount", i_cl_ter_FarLODRangeCount );
-
-	EditSaveSetting( "dbg_ro_ShowMissingLinks", b_dbg_ro_ShowMissingLinks );*/
-
-	// Output all values to the file
-	for ( auto t_value = m_settings_pint.begin(); t_value != m_settings_pint.end(); t_value++ )
-		outfile << t_value->first << " " << *t_value->second << std::endl;
-	for ( auto t_value = m_settings_preal.begin(); t_value != m_settings_preal.end(); t_value++ )
-		outfile << t_value->first << " " << *t_value->second << std::endl;
-
-	// TODO: Check the following lists for duplicates first
-	for ( auto t_value = m_settings_int.begin(); t_value != m_settings_int.end(); t_value++ )
-		outfile << t_value->first << " " << t_value->second << std::endl;
-	for ( auto t_value = m_settings_real.begin(); t_value != m_settings_real.end(); t_value++ )
-		outfile << t_value->first << " " << t_value->second << std::endl;
-	for ( auto t_value = m_settings_string.begin(); t_value != m_settings_string.end(); t_value++ )
-		outfile << t_value->first << " " << t_value->second << std::endl;
-
-	outfile << std::endl;
+		outfile << std::endl;
+	}
 }
 
 //template <typename Type>

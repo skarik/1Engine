@@ -37,20 +37,21 @@ namespace debug
 		CDebugConsole ( const CDebugConsole& ) {}
 		~CDebugConsole ( void ) {}
 
-		static bool	bOutputEnabled;
+		static bool			bOutputEnabled;
+		bool				bCreatedNewOutput = true;
 	public:
-		CORE_API static void Init ( void );
-		CORE_API static void Free ( void );
+		CORE_API static void	Init ( bool create_new_window = true );
+		CORE_API static void	Free ( void );
 
-		CORE_API static void PrintMessage ( const char* fmt, ... ); 
-		CORE_API static void PrintMessage ( const std::string& str ); 
-		CORE_API static void PrintWarning ( const char* fmt, ... );
-		CORE_API static void PrintWarning ( const std::string& str ); 
-		CORE_API static void PrintError ( const char* fmt, ... );
-		CORE_API static void PrintError ( const std::string& str ); 
+		CORE_API static void	PrintMessage ( const char* fmt, ... ); 
+		CORE_API static void	PrintMessage ( const std::string& str ); 
+		CORE_API static void	PrintWarning ( const char* fmt, ... );
+		CORE_API static void	PrintWarning ( const std::string& str ); 
+		CORE_API static void	PrintError ( const char* fmt, ... );
+		CORE_API static void	PrintError ( const std::string& str ); 
 
-		CORE_API static void DisableOutput ( void );
-		CORE_API static void EnableOutput ( void );
+		CORE_API static void	DisableOutput ( void );
+		CORE_API static void	EnableOutput ( void );
 	};
 
 	CORE_API extern CDebugConsole*	Console;

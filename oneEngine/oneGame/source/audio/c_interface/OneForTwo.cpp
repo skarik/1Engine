@@ -40,16 +40,18 @@ static double BoolToDouble ( const bool boolean )
 }
 
 
-double AR_CALL AudioInitialize ( void )
+double AR_CALL AudioInitialize ( double startupMask )
 {
+	uint32_t l_startupMask = (uint32_t)startupMask;
+
 	// Load window settings
-	m_settings = new CGameSettings(string(""));
+	m_settings = new CGameSettings(string(""), true);
 
 	// Create jobs system first
 	m_jobSystem = new core::jobs::System (4);
 
 	// Create debug console
-	debug::CDebugConsole::Init();
+	debug::CDebugConsole::Init(l_startupMask != 0);
 
 	// Create the manager
 	m_manager = new audio::Manager();
