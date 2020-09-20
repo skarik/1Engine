@@ -2,13 +2,13 @@
 #include "core/os.h"
 
 // Includes
-#include "CDebugConsole.h"
+#include "Console.h"
 #include "core/types/types.h"
 #include "core/settings/CGameSettings.h"
 
 // Static variables
-debug::CDebugConsole*	debug::Console							= NULL;
-bool					debug::CDebugConsole::bOutputEnabled	= true;
+debug::ConsoleWindow*	debug::Console							= NULL;
+bool					debug::ConsoleWindow::bOutputEnabled	= true;
 
 #ifdef _WIN32
 #	if _MSC_VER >= 1900
@@ -28,12 +28,12 @@ public:
 
 // Static functions
 // Debug Console Init
-void debug::CDebugConsole::Init ( bool create_new_window )
+void debug::ConsoleWindow::Init ( bool create_new_window )
 {
 	// Create a new console
 	if ( !Console )
 	{
-		Console = new CDebugConsole();
+		Console = new ConsoleWindow();
 	}
 
 	if ( CGameSettings::Active()->b_dbg_logToFile )
@@ -116,7 +116,7 @@ void debug::CDebugConsole::Init ( bool create_new_window )
 }
 
 // Free
-void debug::CDebugConsole::Free ( void )
+void debug::ConsoleWindow::Free ( void )
 {
 	// Close all handles
 	if ( Console && Console->bCreatedNewOutput )
@@ -136,7 +136,7 @@ void debug::CDebugConsole::Free ( void )
 
 
 // Output functions
-void debug::CDebugConsole::PrintMessage ( const char* fmt, ... )
+void debug::ConsoleWindow::PrintMessage ( const char* fmt, ... )
 {
 #ifdef _WIN32
 	HANDLE lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -151,7 +151,7 @@ void debug::CDebugConsole::PrintMessage ( const char* fmt, ... )
 #endif
 }
 
-void debug::CDebugConsole::PrintWarning ( const char* fmt, ... )
+void debug::ConsoleWindow::PrintWarning ( const char* fmt, ... )
 {
 #ifdef _WIN32
 	HANDLE lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -166,7 +166,7 @@ void debug::CDebugConsole::PrintWarning ( const char* fmt, ... )
 #endif
 }
 
-void debug::CDebugConsole::PrintError ( const char* fmt, ... )
+void debug::ConsoleWindow::PrintError ( const char* fmt, ... )
 {
 #ifdef _WIN32
 	HANDLE lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -181,25 +181,25 @@ void debug::CDebugConsole::PrintError ( const char* fmt, ... )
 #endif
 }
 
-void debug::CDebugConsole::PrintMessage ( const std::string& str )
+void debug::ConsoleWindow::PrintMessage ( const std::string& str )
 {
 	PrintMessage(str.c_str());
 }
-void debug::CDebugConsole::PrintWarning ( const std::string& str )
+void debug::ConsoleWindow::PrintWarning ( const std::string& str )
 {
 	PrintWarning(str.c_str());
 }
-void debug::CDebugConsole::PrintError ( const std::string& str )
+void debug::ConsoleWindow::PrintError ( const std::string& str )
 {
 	PrintError(str.c_str());
 }
 
 
-void debug::CDebugConsole::DisableOutput ( void )
+void debug::ConsoleWindow::DisableOutput ( void )
 {
 	bOutputEnabled = false;
 }
-void debug::CDebugConsole::EnableOutput ( void )
+void debug::ConsoleWindow::EnableOutput ( void )
 {
 	bOutputEnabled = true;
 }

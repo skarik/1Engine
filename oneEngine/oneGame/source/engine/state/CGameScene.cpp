@@ -1,5 +1,5 @@
 
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 #include "core-ext/system/shell/Status.h"
 #include "engine/utils/CDeveloperConsole.h"
 

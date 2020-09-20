@@ -1,7 +1,7 @@
 #include "demosceneModelLoader.h"
 
 #include "core/settings/CGameSettings.h"
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 #include "core-ext/system/io/Resources.h"
 
 #include "engine/utils/CDeveloperConsole.h"

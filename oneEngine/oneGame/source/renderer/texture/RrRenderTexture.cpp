@@ -1,6 +1,6 @@
 #include "RrRenderTexture.h"
 #include "core/containers/arstring.h"
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 
 //#include "renderer/system/glMainSystem.h"
 #include "renderer/exceptions.h"

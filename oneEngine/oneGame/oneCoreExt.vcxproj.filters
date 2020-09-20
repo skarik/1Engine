@@ -102,9 +102,6 @@
     <ClCompile Include="source\core-ext\input\CInputControl.cpp">
       <Filter>SOURCE\Core-ext\Input</Filter>
     </ClCompile>
-    <ClCompile Include="source\core\debug\CDebugConsole.cpp">
-      <Filter>SOURCE\Core\Debug</Filter>
-    </ClCompile>
     <ClCompile Include="source\core\system\Screen.cpp">
       <Filter>SOURCE\Core\System</Filter>
     </ClCompile>
@@ -192,6 +189,9 @@
     <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Writer.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClCompile>
+    <ClCompile Include="source\core\debug\Console.cpp">
+      <Filter>SOURCE\Core\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -220,12 +220,6 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\input\emulated\CEmulatedInputControl.h">
       <Filter>SOURCE\Core-ext\Input\Emulated</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core\debug\CDebugConsole.h">
-      <Filter>SOURCE\Core\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core\debug\console.h">
-      <Filter>SOURCE\Core\Debug</Filter>
     </ClInclude>
     <ClInclude Include="source\core\system\Screen.h">
       <Filter>SOURCE\Core\System</Filter>
@@ -325,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\shell\Message.h">
       <Filter>SOURCE\Core-ext\System\Shell</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\debug\Console.h">
+      <Filter>SOURCE\Core\Debug</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

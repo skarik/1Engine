@@ -1,4 +1,4 @@
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 #include "Resources.h"
 #include <filesystem>
 

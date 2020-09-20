@@ -1,7 +1,7 @@
 #if 0
 // == Includes ==
 #include "RrRenderTextureCube.h"
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 #include "renderer/system/glMainSystem.h"
 
 // Stringstream for unique string id generation

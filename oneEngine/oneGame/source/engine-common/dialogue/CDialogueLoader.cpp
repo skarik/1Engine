@@ -1,6 +1,6 @@
 #include "CDialogueLoader.h"
 
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 #include "core-ext/system/io/Resources.h"
 #include "engine-common/entities/CActor.h"
 

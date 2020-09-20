@@ -1,6 +1,6 @@
 #include "CRigidbody.h"
 
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 #include <stdio.h>
 #include "core/time/time.h"
 #include "core/exceptions/exceptions.h"

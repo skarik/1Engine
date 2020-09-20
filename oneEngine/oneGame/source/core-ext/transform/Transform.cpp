@@ -223,7 +223,7 @@ void CTransform::SetParent ( CTransform * pNewParent, bool onDeathlink )
 
 // Late Update
 //#include "RrDebugDrawer.h"
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 void CTransform::LateUpdate ( void )
 {
 	/*if ( pOwnerBehavior == NULL ) {

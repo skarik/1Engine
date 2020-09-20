@@ -2,7 +2,7 @@
 #ifdef _WIN32
 
 #include "CTimeProfiler.h"
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 #include "core/types/float.h"
 
 #include <iostream>

@@ -2,7 +2,7 @@
 
 #include "core/input/CInput.h"
 #include "core/math/Math.h"
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 
 #include "engine/utils/CDeveloperConsole.h"
 

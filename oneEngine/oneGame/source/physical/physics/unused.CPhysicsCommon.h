@@ -7,7 +7,7 @@
 #include "core/types/types.h"
 #include "core/types/ModelData.h"
 #include "core-ext/transform/Transform.h"
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 
 // Raytracing includes
 #include "core/math/Ray.h"

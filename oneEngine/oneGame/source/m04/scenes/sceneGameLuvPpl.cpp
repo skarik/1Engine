@@ -6,7 +6,7 @@
 #include "core/settings/CGameSettings.h"
 
 // Include debug console
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 #include "engine/utils/CDeveloperConsole.h"
 #include "engine-common/utils/CDeveloperConsoleUI.h"
 

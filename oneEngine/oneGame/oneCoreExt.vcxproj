@@ -66,7 +66,7 @@
     <ClCompile Include="source\core-ext\transform\TransformUtility.cpp" />
     <ClCompile Include="source\core-ext\utils\MeshAttributes.cpp" />
     <ClCompile Include="source\core-ext\utils\MeshBuilder.cpp" />
-    <ClCompile Include="source\core\debug\CDebugConsole.cpp" />
+    <ClCompile Include="source\core\debug\Console.cpp" />
     <ClCompile Include="source\core\input\CInput.cpp" />
     <ClCompile Include="source\core\input\CInput.Table.cpp" />
     <ClCompile Include="source\core\input\CXboxController.cpp" />
@@ -113,8 +113,7 @@
     <ClInclude Include="source\core-ext\transform\TransformUtility.h" />
     <ClInclude Include="source\core-ext\utils\MeshAttributes.h" />
     <ClInclude Include="source\core-ext\utils\MeshBuilder.h" />
-    <ClInclude Include="source\core\debug\CDebugConsole.h" />
-    <ClInclude Include="source\core\debug\console.h" />
+    <ClInclude Include="source\core\debug\Console.h" />
     <ClInclude Include="source\core\input\CInput.h" />
     <ClInclude Include="source\core\input\CXboxController.h" />
     <ClInclude Include="source\core\settings\CGameSettings.h" />

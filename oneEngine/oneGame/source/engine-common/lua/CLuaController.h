@@ -18,7 +18,7 @@
 #include "clua.h"
 
 #include "core/types/types.h"
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 
 using std::string;
 

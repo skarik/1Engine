@@ -1,5 +1,5 @@
 /*
-#include "CDebugConsole.h"
+#include "Console.h"
 #include "CDeveloperConsole.h"
 #include "CGameSettings.h"
 

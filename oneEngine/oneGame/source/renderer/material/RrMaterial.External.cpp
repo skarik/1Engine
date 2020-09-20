@@ -1,6 +1,6 @@
 
 #include "RrMaterial.h"
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 
 #include <iostream>
 #include <fstream>

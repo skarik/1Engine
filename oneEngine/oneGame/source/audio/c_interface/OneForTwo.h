@@ -13,7 +13,9 @@
 
 #if ONEFORTWO_ENABLED
 
+#ifndef AR_CEXPORT
 #define AR_CEXPORT extern "C" AR_EXPORT
+#endif
 
 //	AudioInitialize() : Starts up the job system & audio engine
 AR_CEXPORT double AR_CALL AudioInitialize ( double startupMask );
@@ -43,6 +45,8 @@ AR_CEXPORT double AR_CALL AudioListenerSetOrientation ( double listener, double 
 //	AudioBufferLoad( filename ) : Loads the given file as a buffer.
 AR_CEXPORT double AR_CALL AudioBufferLoad ( const char* filename );
 AR_CEXPORT double AR_CALL AudioBufferFree ( double buffer );
+
+AR_CEXPORT double AR_CALL AudioBufferGetLength ( double buffer );
 
 //
 // Source management:

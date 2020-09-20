@@ -3,7 +3,7 @@
 
 // Include Game Base
 #include "core-ext/transform/Transform.h"
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 
 #include "core/common.h"
 #include "core/types/float.h"

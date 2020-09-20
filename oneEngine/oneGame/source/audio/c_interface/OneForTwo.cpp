@@ -3,9 +3,12 @@
 #if ONEFORTWO_ENABLED
 
 #include "core/settings/CGameSettings.h"
-#include "core-ext/threads/Jobs.h"
 #include "core/debug/console.h"
 #include "core/math/Math.h"
+#include "core/os.h"
+
+#include "core-ext/threads/Jobs.h"
+#include "core-ext/system/shell/Message.h"
 
 #include "audio/Manager.h"
 #include "audio/Buffer.h"
@@ -13,28 +16,75 @@
 #include "audio/Source.h"
 #include "audio/Listener.h"
 
-#include "core/os.h"
-#include "core-ext/system/shell/Message.h"
+#include <unordered_map>
 
+// Settings system required for the job system settings
 static CGameSettings*		m_settings = NULL;
+// Job system required for mixer threads
 static core::jobs::System*	m_jobSystem = NULL;
+// Audio manager
 static audio::Manager*		m_manager = NULL;
+// Map of instantiated buffers, used for safety. TODO: This leaks a bit, consider clearing on buffer delete.
+static std::unordered_map<uint64_t, audio::Buffer*>*
+							m_refmapBuffers = NULL;
+// Map of instantiated sources, used for safety. TODO: This leaks a bit, consider cleraing on source delete.
+static std::unordered_map<uint64_t, audio::Source*>*
+							m_refmapSources = NULL;
 
-template <typename Referenced>
+template <class Referenced>
+static std::unordered_map<uint64_t, Referenced*>* GetHandleReferenceMap()
+	{ return NULL; }
+
+template <>
+static std::unordered_map<uint64_t, audio::Buffer*>* GetHandleReferenceMap<audio::Buffer>()
+{
+	return m_refmapBuffers;
+}
+
+template <>
+static std::unordered_map<uint64_t, audio::Source*>* GetHandleReferenceMap<audio::Source>()
+{
+	return m_refmapSources;
+}
+
+
+template <class Referenced>
 static double HandleFromReference ( const Referenced* ref )
 {
-	// For now, we just do something INCREDIBLY unsafe, which is cast the pointer to an integer, then to a double.
-	// Yeah, that's not problematic at all.
-	return (double)((uint64_t)(ref));
+	// For now, we just do something INCREDIBLY unsafe, which is cast the pointer to an integer.
+	// There could be some very big issues with this...
+	uint64_t handle = (uint64_t)ref;
+
+	auto referenceMap = GetHandleReferenceMap<Referenced>();
+	if (referenceMap != NULL)
+	{
+		referenceMap->insert_or_assign((uint64_t)ref, (Referenced*)ref);
+	}
+
+	return (double)handle;
 }
 
-template <typename Referenced>
+template <class Referenced>
 static Referenced* ReferenceFromHandle ( const double handle )
 {
-	return (Referenced*)((uint64_t)(handle));
+	uint64_t intHandle = (uint64_t)handle;
+
+	// Check if this is a valid handle to a correct instance type.
+	// This prevents the extremely common case where passing in a buffer for a source or vice-versa
+	auto referenceMap = GetHandleReferenceMap<Referenced>();
+	if (referenceMap != NULL)
+	{
+		auto result = referenceMap->find(intHandle);
+		if (result != referenceMap->end())
+		{
+			return result->second;
+		}
+	}
+
+	return NULL;
 }
 
-static double BoolToDouble ( const bool boolean )
+static inline double BoolToDouble ( const bool boolean )
 {
 	return boolean ? 1.0 : 0.0;
 }
@@ -51,7 +101,7 @@ double AR_CALL AudioInitialize ( double startupMask )
 	m_jobSystem = new core::jobs::System (4);
 
 	// Create debug console
-	debug::CDebugConsole::Init(l_startupMask != 0);
+	debug::ConsoleWindow::Init(l_startupMask != 0);
 
 	// Create the manager
 	m_manager = new audio::Manager();
@@ -166,6 +216,15 @@ double AR_CALL AudioBufferFree ( double buffer )
 	return NIL;
 }
 
+double AR_CALL AudioBufferGetLength ( double buffer )
+{
+	audio::Buffer* bufferRef = ReferenceFromHandle<audio::Buffer>(buffer);
+	if (bufferRef != NULL)
+	{
+		return bufferRef->GetLength();
+	}
+	return NIL;
+}
 
 //
 // Source management:

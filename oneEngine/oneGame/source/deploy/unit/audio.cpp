@@ -41,7 +41,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	CInput::Initialize();
 
 	// Create debug console
-	debug::CDebugConsole::Init();
+	debug::ConsoleWindow::Init();
 
 	// Create Window
 	debug::Console->PrintMessage( "Main system initialized properly. I think.\n" );

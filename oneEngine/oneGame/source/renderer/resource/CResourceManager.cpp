@@ -1,7 +1,7 @@
 ﻿#if 0
 #include "CResourceManager.h"
 
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 
 #include "core-ext/system/io/FileUtils.h"
 #include "core-ext/system/io/Resources.h"

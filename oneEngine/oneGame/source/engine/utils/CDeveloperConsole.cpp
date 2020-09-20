@@ -1,6 +1,6 @@
 
-//#include "CDebugConsole.h"
-#include "core/debug/CDebugConsole.h"
+//#include "Console.h"
+#include "core/debug/Console.h"
 #include "CDeveloperConsole.h"
 //#include "CInput.h"
 #include "core/input/CInput.h"

@@ -1,7 +1,6 @@
-
 #include "MapIO.h"
 
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 
 #include "engine2d/entities/map/TileMap.h"
 #include "engine2d/entities/Area2DBase.h"

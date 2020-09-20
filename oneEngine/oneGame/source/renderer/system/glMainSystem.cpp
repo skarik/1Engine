@@ -2,7 +2,7 @@
 //#include "physical/liscensing.cxx" // Include license info
 
 // Includes
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 #include "renderer/exceptions/exceptions.h"
 #include "renderer/window/RrWindow.h"
 #include "glMainSystem.h"

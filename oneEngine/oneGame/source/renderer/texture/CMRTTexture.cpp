@@ -1,6 +1,6 @@
 //#include "CMRTTexture.h"
 //#include "core/containers/arstring.h"
-//#include "core/debug/CDebugConsole.h"
+//#include "core/debug/Console.h"
 //
 //#include "renderer/system/glMainSystem.h"
 //#include "gpuw/Texture.h"

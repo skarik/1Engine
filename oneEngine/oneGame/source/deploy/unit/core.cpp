@@ -28,7 +28,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	CInput::Initialize();
 
 	// Create debug console
-	debug::CDebugConsole::Init();
+	debug::ConsoleWindow::Init();
 
 	// In core, need to ensure that the conversions are working properly.
 	{	// Test matrix math

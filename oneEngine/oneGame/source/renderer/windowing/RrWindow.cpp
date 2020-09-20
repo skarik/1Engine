@@ -101,7 +101,7 @@ RrWindow::~RrWindow ( void )
 
 void RrWindow::CreateConsole ( void )
 {
-	debug::CDebugConsole::Init();
+	debug::ConsoleWindow::Init();
 }
 
 bool RrWindow::Show ( void )

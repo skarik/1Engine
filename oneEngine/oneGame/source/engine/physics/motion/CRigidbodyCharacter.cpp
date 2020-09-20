@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 #include "core/time/time.h"
 
 //#include "physical/physics/motion/physCharacter.h"

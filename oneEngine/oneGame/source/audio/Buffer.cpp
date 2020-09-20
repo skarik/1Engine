@@ -36,7 +36,7 @@ void audio::Buffer::Init ( const char* n_filename )
 	// If we have no sound, then mark this audio as bad.
 	if (m_sound == NULL)
 	{
-		printf("Error loading \"%s\" [normal]\n", n_filename);
+		debug::Console->PrintError("Error loading \"%s\" [normal]\n", n_filename);
 		m_readyToSample = false;
 		return;
 	}
