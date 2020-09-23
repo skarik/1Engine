@@ -208,6 +208,7 @@ extern "C" {
 #		define fnl_assert(_Expression) (void)( (!!(_Expression)) || (_wassert(_CRT_WIDE(#_Expression), _CRT_WIDE(__FILE__), __LINE__), 0) )
 #	else
 // Not debug mode
+#		include "core/os.h"
 #		define fnl_assert(_Expression)     ((void)0)
 #	endif
 #endif

@@ -41,7 +41,7 @@ namespace engine
 		ENGINE_API audio::Source* PlayWaveFile ( const char* filename );
 		ENGINE_API audio::Source* LoopMusicFile ( const char* filename );
 
-		ENGINE_API std::vector<audio::Source*> GetCurrentSources ( void );
+		//ENGINE_API std::vector<audio::Source*> GetCurrentSources ( void );
 
 	private:
 		std::unordered_map<arstring128, audio::arSoundScript> scriptList;

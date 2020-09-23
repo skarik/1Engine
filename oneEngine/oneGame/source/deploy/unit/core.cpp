@@ -22,7 +22,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 {	ARUNIT_BUILD_CMDLINE
 
 	// Load window settings
-	CGameSettings gameSettings( (string)lpCmdLine );
+	CGameSettings gameSettings( (string)lpCmdLine, false );
 
 	// Initialize input
 	CInput::Initialize();

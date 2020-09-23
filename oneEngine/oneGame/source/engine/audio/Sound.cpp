@@ -19,8 +19,9 @@ engine::Sound::Sound ( void ) : CGameBehavior()
 
 engine::Sound::~Sound ( void )
 {
-	if ( mySource ) {
-		delete mySource;
+	if ( mySource )
+	{
+		mySource->Destroy();
 	}
 	mySource = NULL;
 
@@ -38,12 +39,12 @@ void engine::Sound::Update ( void )
 	}
 
 	if ( source_position ) {
-		mySource->position = position + *source_position;
-		mySource->velocity = velocity;
+		mySource->state.position = position + *source_position;
+		mySource->state.velocity = velocity;
 	}
 	else {
-		mySource->position = position;
-		mySource->velocity = velocity;
+		mySource->state.position = position;
+		mySource->state.velocity = velocity;
 	}
 
 	if ( deleteWhenDone ) {
@@ -62,18 +63,16 @@ void engine::Sound::Stop ( void )
 }
 void engine::Sound::SetLooped ( bool b_loop )
 {
-	mySource->options.looped = b_loop;
+	mySource->state.looped = b_loop;
 }
 
 void engine::Sound::SetGain ( float f_gain )
 {
-	mySource->options.gain = f_gain;
-	mySource->Update();
+	mySource->state.gain = f_gain;
 }
 void engine::Sound::SetPitch ( float f_pitch )
 {
-	mySource->options.pitch = f_pitch;
-	mySource->Update();
+	mySource->state.pitch = f_pitch;
 }
 
 const std::vector<engine::Sound*> & engine::Sound::GetSoundList ( void )

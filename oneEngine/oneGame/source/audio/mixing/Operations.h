@@ -51,6 +51,16 @@ namespace audio
 			}
 		}
 
+		//	Saturate(input_output) : Saturates the values in the entire buffer
+		template <uint32_t Length>
+		void Saturate ( float* inout_buffer )
+		{
+			for (uint32_t i = 0; i < Length; ++i)
+			{
+				inout_buffer[i] = math::saturate(inout_buffer[i]);
+			}
+		}
+
 		//	Crossfade(inputFrom, inputTo, output) : Crossfades the two inputs to the output
 		template <uint32_t Length>
 		void Crossfade ( const float* bufferFrom, const float* bufferTo, float* out_buffer )

@@ -14,10 +14,10 @@
 
 engine::AudioInterface engine::Audio;
 
-std::vector<audio::Source*> engine::AudioInterface::GetCurrentSources ( void )
+/*std::vector<audio::Source*> engine::AudioInterface::GetCurrentSources ( void )
 {
-	return *audio::Master::GetCurrent()->GetSources();
-}
+	return *audio::Manager::GetCurrent()->GetSources();
+}*/
 
 audio::Listener* engine::AudioInterface::CreateListener ( void )
 {
@@ -34,7 +34,7 @@ audio::Source* engine::AudioInterface::PlayWaveFile ( const char* filename )
 
 	// Create a source playing it
 	audio::Source* newSource = new audio::Source( newSound );
-	newSource->options.looped = false;
+	newSource->state.looped = false;
 	newSource->Play();
 	return newSource;
 }
@@ -49,7 +49,7 @@ audio::Source* engine::AudioInterface::LoopMusicFile ( const char* filename )
 
 	// Create the source playing it
 	audio::Source* newSource = new audio::Source( newSound );
-	newSource->options.looped = true;
+	newSource->state.looped = true;
 	newSource->Play();
 	return newSource;
 }
@@ -185,11 +185,11 @@ engine::Sound* engine::AudioInterface::PlaySound ( const char* soundscriptName )
 			
 			// Create the source playing it
 			audio::Source* newSource = new audio::Source( newSound );
-			newSource->options.looped	= (scriptResult->second.loop != 0);
-			newSource->options.pitch	= scriptResult->second.pitch;
-			newSource->options.rolloff	= scriptResult->second.attenuation * 4.5f;
-			newSource->options.gain		= scriptResult->second.gain;
-			newSource->SetChannelProperties( scriptResult->second.channel );
+			newSource->state.looped	= (scriptResult->second.loop != 0);
+			newSource->state.pitch	= scriptResult->second.pitch;
+			newSource->state.falloff	= scriptResult->second.attenuation * 4.5f;
+			newSource->state.gain		= scriptResult->second.gain;
+			newSource->state.channel	= (audio::MixChannel)scriptResult->second.channel;
 			newSource->Play();
 
 			// Create the behavior holding it

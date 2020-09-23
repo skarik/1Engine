@@ -53,7 +53,7 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 {	ARUNIT_BUILD_CMDLINE
 
 	// Load window settings
-	CGameSettings gameSettings ( (string)lpCmdLine );
+	CGameSettings gameSettings ( (string)lpCmdLine, false );
 
 	if ( CGameSettings::Active()->b_ro_Enable30Steroscopic )
 	{
@@ -98,8 +98,8 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	CGameState aGameState;
 
 	// Create Audio
-	audio::Master aMaster;
-	debug::Console->PrintMessage( "Audio master created.\n" );
+	audio::Manager aManager;
+	debug::Console->PrintMessage( "Audio manager created.\n" );
 
 	// Initialize Steam
 #if 0
@@ -188,7 +188,7 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 			Input::Update();
 			// Update audio
 			TimeProfiler.BeginTimeProfile( "MN_audio" );
-			aMaster.Update();
+			aManager.Update(Time::deltaTime);
 			TimeProfiler.EndTimeProfile( "MN_audio" );
 			{
 				// Draw a debug grid

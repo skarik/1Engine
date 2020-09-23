@@ -470,6 +470,8 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 					audio::mixing::Acculmulate<kWorkbufferSize * 2>(workbuffer_mix, workbuffer_out);
 				}
 
+				audio::mixing::Saturate<kWorkbufferSize * 2>(workbuffer_out);
+
 				//// Generate sine waves to verify device working properly
 				//for (uint32_t frame = 0; frame < workingFrames; ++frame)
 				//{

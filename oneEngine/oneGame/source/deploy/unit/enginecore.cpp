@@ -43,7 +43,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 {	ARUNIT_BUILD_CMDLINE
 	
 	// Load window settings
-	CGameSettings gameSettings ( (string)lpCmdLine );
+	CGameSettings gameSettings ( (string)lpCmdLine, false );
 
 	// Create jobs system
 	core::jobs::System jobSystem (4);
@@ -82,8 +82,8 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	CGameState aGameState;
 
 	// Create Audio
-	audio::Master aMaster;
-	debug::Console->PrintMessage( "Audio master created.\n" );
+	audio::Manager aMaster;
+	debug::Console->PrintMessage( "Audio manager created.\n" );
 
 	// Inialize steam
 	bool bSteamy = SteamAPI_Init();
@@ -127,12 +127,12 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			Input::Update();
 			// Update audio
 			TimeProfiler.BeginTimeProfile( "MN_audio" );
-			aMaster.Update();
+			aMaster.Update(Time::deltaTime);
 			TimeProfiler.EndTimeProfile( "MN_audio" );
 			// Update gain:
 			{
 				// Fade the music in
-				float t_currentGain = l_music->mySource->options.gain;
+				float t_currentGain = l_music->mySource->state.gain;
 				t_currentGain = std::min(1.0F, t_currentGain + Time::deltaTime);
 				l_music->SetGain(t_currentGain);
 			}

@@ -106,6 +106,10 @@ double AR_CALL AudioInitialize ( double startupMask )
 	// Create the manager
 	m_manager = new audio::Manager();
 
+	// Create the refmaps
+	m_refmapBuffers = new std::unordered_map<uint64_t, audio::Buffer*>;
+	m_refmapSources = new std::unordered_map<uint64_t, audio::Source*>;
+
 	return NIL;
 }
 
@@ -118,6 +122,10 @@ double AR_CALL AudioFree ( void )
 
 	// Settings freed very last
 	delete m_settings;
+
+	// Free the refs now
+	delete m_refmapBuffers;
+	delete m_refmapSources;
 
 	return NIL;
 }

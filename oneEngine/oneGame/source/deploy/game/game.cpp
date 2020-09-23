@@ -45,7 +45,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 {	_ARUNIT_BUILD_CMDLINE
 
 	// Load window settings
-	CGameSettings gameSettings ( (string)lpCmdLine );
+	CGameSettings gameSettings ( (string)lpCmdLine, false );
 
 	// Create jobs system
 	core::jobs::System jobSystem (4);
@@ -81,7 +81,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	CGameState aGameState;
 
 	// Create Audio
-	audio::Master aMaster;
+	audio::Manager aMaster;
 	
 	// Inialize steam
 	bool bSteamy = false;
@@ -140,7 +140,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 			Input::Update();
 			// Update audio
 			TimeProfiler.BeginTimeProfile( "MN_audio" );
-			aMaster.Update();
+			aMaster.Update(Time::deltaTime);
 			TimeProfiler.EndTimeProfile( "MN_audio" );
 			// Redraw window
 			TimeProfiler.BeginTimeProfile( "MN_renderer" );
