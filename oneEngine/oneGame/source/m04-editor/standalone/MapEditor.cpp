@@ -16,8 +16,12 @@
 #include "engine-common/dusk/controls/DockablePanel.h"
 #include "engine-common/dusk/controls/DropdownList.h"
 #include "engine-common/dusk/controls/Slider.h"
+#include "engine-common/dusk/controls/TextField.h"
+#include "engine-common/dusk/controls/ColorPicker.h"
 #include "engine-common/dusk/layouts/Horizontal.h"
 #include "engine-common/dusk/layouts/Vertical.h"
+#include "engine-common/dusk/dialogs/LoadFile.h"
+#include "engine-common/dusk/dialogs/SaveFile.h"
 #include "engine-common/entities/CRendererHolder.h"
 
 #include "renderer/state/Settings.h"
@@ -54,6 +58,8 @@
 #include "m04-editor/renderer/object/GizmoRenderer.h"
 
 #include "MapEditor.h"
+
+#include <cctype>
 
 using namespace M04;
 
@@ -898,7 +904,7 @@ void MapEditor::doIOLoading ( void )
 	// Force an update now
 	Update();
 	// Update the UI to new values
-	dusk->SetColorPicker( ui_fld_map_ambient_color, renderer::Settings.ambientColor );
+	ui_fld_map_ambient_color->as<dusk::elements::ColorPicker>()->m_value = renderer::Settings.ambientColor;
 }
 
 //		doNewMap () : delete all items in map, clear out tilemap
@@ -1036,7 +1042,6 @@ void MapEditor::uiCreate ( void )
 
 	// Map panel
 	{
-		dusk::Element* button;
 		dusk::Element* label;
 
 		// Create the panel
@@ -1072,9 +1077,7 @@ void MapEditor::uiCreate ( void )
 
 	// Shit panel
 	{
-		dusk::Element* button;
 		dusk::elements::Label* label;
-		dusk::Element* field;
 		dusk::layouts::Horizontal* sublayout;
 
 		// Create the panel
@@ -1100,23 +1103,23 @@ void MapEditor::uiCreate ( void )
 		// Create fields
 		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,50,20,25)} );
 		label->m_contents = "Map Name";
-		ui_fld_map_name = dusk->Add<dusk::elements::Textfield>( dusk::ElementCreationDescription{layout, Rect(20,75,160,30)} );
+		ui_fld_map_name = dusk->Add<dusk::elements::TextField>( dusk::ElementCreationDescription{layout, Rect(20,75,160,30)} );
 
 		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,100,20,25)} );
 		label->m_contents = "Area";
 		ui_lbl_map_area = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,125,20,25)} );
 		ui_lbl_map_area->m_contents = "(eg \"mountains\" or \"ruins\")";
-		ui_fld_map_area = dusk->Add<dusk::elements::Textfield>( dusk::ElementCreationDescription{layout, Rect(20,125,160,30)} );
+		ui_fld_map_area = dusk->Add<dusk::elements::TextField>( dusk::ElementCreationDescription{layout, Rect(20,125,160,30)} );
 
 		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,150,20,25)} );
 		label->m_contents = "Map Size (in tiles)";
 		sublayout = dusk->Add<dusk::layouts::Horizontal>( dusk::LayoutCreationDescription{layout} );
 		{
-			ui_fld_map_size_x = dusk->Add<dusk::elements::Textfield>( dusk::ElementCreationDescription{sublayout, Rect(20,175,70,30)} );
+			ui_fld_map_size_x = dusk->Add<dusk::elements::TextField>( dusk::ElementCreationDescription{sublayout, Rect(20,175,70,30)} );
 			ui_fld_map_size_x->m_contents = "40";
 			label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{sublayout, Rect(95,175,15,15)} );
 			label->m_contents = "x";
-			ui_fld_map_size_y = dusk->Add<dusk::elements::Textfield>( dusk::ElementCreationDescription{sublayout, Rect(110,175,70,30)} );
+			ui_fld_map_size_y = dusk->Add<dusk::elements::TextField>( dusk::ElementCreationDescription{sublayout, Rect(110,175,70,30)} );
 			ui_fld_map_size_y->m_contents = "40";
 		}
 		ui_lbl_map_size = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,200,0,0)} );
@@ -1124,8 +1127,8 @@ void MapEditor::uiCreate ( void )
 
 		label = dusk->Add<dusk::elements::Label>( dusk::ElementCreationDescription{layout, Rect(20,250,20,25)} );
 		label->m_contents = "Ambient Light";
-		ui_fld_map_ambient_color = dusk->Add<dusk::elements::Colorpicker>( dusk::ElementCreationDescription{layout, Rect(20,275,70,30} );
-		ui_fld_map_ambient_color->m_color = renderer::Settings.ambientColor;
+		ui_fld_map_ambient_color = dusk->Add<dusk::elements::ColorPicker>( dusk::ElementCreationDescription{layout, Rect(20,275,70,30)} );
+		ui_fld_map_ambient_color->as<dusk::elements::ColorPicker>()->m_value = renderer::Settings.ambientColor;
 
 		// Create button
 		sublayout = dusk->Add<dusk::layouts::Horizontal>( dusk::LayoutCreationDescription{layout} );
@@ -1140,9 +1143,7 @@ void MapEditor::uiCreate ( void )
 
 	// Area panel
 	{
-		dusk::Element* button;
 		dusk::elements::Label* label;
-		dusk::Element* field;
 
 		// Create the panel
 		dusk::elements::DockablePanel* panel = dusk->Add<dusk::elements::DockablePanel>( dusk::ElementCreationDescription{NULL, Rect(0,40,200,650)} );
@@ -1186,14 +1187,11 @@ void MapEditor::uiCreate ( void )
 		}
 		for ( auto pair = lcl_areatype_map.begin(); pair != lcl_areatype_map.end(); ++pair )
 			ui_fld_area_type->as<dusk::elements::DropdownList<int>>()->m_list.push_back({pair->first, pair->second});
-		ui_fld_area_type = field;
 	}
 
 	// Object panel
 	{
-		dusk::Element* button;
 		dusk::elements::Label* label;
-		dusk::Element* field;
 
 		// Create the panel
 		dusk::elements::DockablePanel* panel = dusk->Add<dusk::elements::DockablePanel>( dusk::ElementCreationDescription{NULL, Rect(0,40,200,650)} );
@@ -1243,9 +1241,7 @@ void MapEditor::uiCreate ( void )
 
 	// Preferences panel
 	{
-		dusk::Element* button;
 		dusk::elements::Label* label;
-		dusk::Element* field;
 
 		// Create the panel
 		dusk::elements::DockablePanel* panel = dusk->Add<dusk::elements::DockablePanel>( dusk::ElementCreationDescription{NULL, Rect(0,40,200,650)} );
@@ -1299,10 +1295,10 @@ void MapEditor::uiStepKeyboardShortcuts ( void )
 			{
 				m_current_mode = Mode::None; // Close out everything to prevent UI from locking up
 
-				System::sFileDialogueEntry filetypes [1];
-				strcpy( filetypes[0].extension, "m04" );
-				strcpy( filetypes[0].filetype, "OneEngine M04 Map" );
-				ui_dg_save = dusk->DialogueSaveFilename(filetypes,1,"./.res-0/");
+				ui_dg_save = dusk->AddDialog<dusk::dialogs::SaveFile>( dusk::DialogCreationDescription() );
+				ui_dg_save->as<dusk::dialogs::SaveFile>()->m_defaultDirectory = "./.res-0/";
+				ui_dg_save->as<dusk::dialogs::SaveFile>()->m_filetypes.push_back(System::sFileDialogueEntry{"m04", "OneEngine M04 Map"});
+				ui_dg_save->Show();
 			}
 			else
 			{
@@ -1313,10 +1309,10 @@ void MapEditor::uiStepKeyboardShortcuts ( void )
 		{
 			m_current_mode = Mode::None; // Close out everything to prevent UI from locking up
 
-			System::sFileDialogueEntry filetypes [1];
-			strcpy( filetypes[0].extension, "m04" );
-			strcpy( filetypes[0].filetype, "OneEngine M04 Map" );
-			ui_dg_load = dusk->DialogueOpenFilename(filetypes,1,"./.res-0/");
+			ui_dg_load = dusk->AddDialog<dusk::dialogs::LoadFile>( dusk::DialogCreationDescription() );
+			ui_dg_load->as<dusk::dialogs::LoadFile>()->m_defaultDirectory = "./.res-0/";
+			ui_dg_load->as<dusk::dialogs::LoadFile>()->m_filetypes.push_back(System::sFileDialogueEntry{"m04", "OneEngine M04 Map"});
+			ui_dg_load->Show();
 		}
 
 		if ( Input::Keydown( '1' ) )
@@ -1382,19 +1378,19 @@ void MapEditor::uiStepTopEdge ( void )
 	{
 		m_current_mode = Mode::None; // Close out everything to prevent UI from locking up
 
-		System::sFileDialogueEntry filetypes [1];
-		strcpy( filetypes[0].extension, "m04" );
-		strcpy( filetypes[0].filetype, "OneEngine M04 Map" );
-		ui_dg_save = dusk->DialogueSaveFilename(filetypes,1,"./.res-0/");
+		ui_dg_save = dusk->AddDialog<dusk::dialogs::SaveFile>( dusk::DialogCreationDescription() );
+		ui_dg_save->as<dusk::dialogs::SaveFile>()->m_defaultDirectory = "./.res-0/";
+		ui_dg_save->as<dusk::dialogs::SaveFile>()->m_filetypes.push_back(System::sFileDialogueEntry{"m04", "OneEngine M04 Map"});
+		ui_dg_save->Show();
 	}
 	if ( ui_file_load->m_isActivated )
 	{
 		m_current_mode = Mode::None; // Close out everything to prevent UI from locking up
 
-		System::sFileDialogueEntry filetypes [1];
-		strcpy( filetypes[0].extension, "m04" );
-		strcpy( filetypes[0].filetype, "OneEngine M04 Map" );
-		ui_dg_load = dusk->DialogueOpenFilename(filetypes,1,"./.res-0/");
+		ui_dg_save = dusk->AddDialog<dusk::dialogs::LoadFile>( dusk::DialogCreationDescription() );
+		ui_dg_save->as<dusk::dialogs::LoadFile>()->m_defaultDirectory = "./.res-0/";
+		ui_dg_save->as<dusk::dialogs::LoadFile>()->m_filetypes.push_back(System::sFileDialogueEntry{"m04", "OneEngine M04 Map"});
+		ui_dg_save->Show();
 	}
 
 	if ( ui_mode_shit->m_isActivated )
@@ -1452,38 +1448,40 @@ void MapEditor::uiStepTopEdge ( void )
 // handles dialogue inputs and performs actions based on inputs to them
 void MapEditor::uiStepDialogues ( void )
 {
-	if ( dusk->SaveDialogueHasSelection(ui_dg_save) )
+	if ( ui_dg_save->as<dusk::dialogs::SaveFile>()->hasSelection )
 	{
 		// Get the filename to use
-		char filename [1024];
-		dusk->GetSaveFilename( filename );
-		printf( "FILE: %s\n", filename );
-		string file = filename;
-		if ( file.find(".m04") == string::npos ) {
-			file += ".m04";
+		std::string& filename = ui_dg_save->as<dusk::dialogs::SaveFile>()->selectedFilename;
+		printf( "FILE: %s\n", filename.c_str() );
+		if ( filename.find(".m04") == string::npos ) {
+			filename += ".m04";
 		}
 		// Set save target
-		m_current_savetarget = file;
+		m_current_savetarget = filename;
 		// Perform saving
 		doIOSaving();
+		// Clear out dialog just to be safe
+		ui_dg_save->as<dusk::dialogs::SaveFile>()->hasSelection = false;
+		ui_dg_save->as<dusk::dialogs::SaveFile>()->Hide();
 	}
-	if ( dusk->OpenDialogueHasSelection(ui_dg_load) )
+	if ( ui_dg_load->as<dusk::dialogs::LoadFile>()->hasSelection )
 	{
 		// Get the filename to use
-		char filename [1024];
-		dusk->GetOpenFilename( filename );
-		printf( "FILE: %s\n", filename );
-		string file = filename;
-		if ( file.find(".m04") == string::npos ) {
-			file += ".m04";
+		std::string& filename = ui_dg_save->as<dusk::dialogs::LoadFile>()->selectedFilename;
+		printf( "FILE: %s\n", filename.c_str() );
+		if ( filename.find(".m04") == string::npos ) {
+			filename += ".m04";
 		}
 		// Set save target
-		m_current_savetarget = file;
+		m_current_savetarget = filename;
 		// Perform loading
 		doNewMap();
 		doIOLoading();
 		// Reset UI states
 		uiDoShitRefresh();
+		// Clear out dialog just to be safe
+		ui_dg_save->as<dusk::dialogs::LoadFile>()->hasSelection = false;
+		ui_dg_save->as<dusk::dialogs::LoadFile>()->Hide();
 	}
 }
 
@@ -1493,23 +1491,18 @@ void MapEditor::uiStepShitPanel ( void )
 {
 	// Update the map area hint label
 	{
-		string areaInfo;
-		dusk->GetTextfieldData( ui_fld_map_area, areaInfo );
-		if ( areaInfo.empty() )
+		if ( ui_fld_map_area->m_contents.empty() )
 			ui_lbl_map_area->m_visible = true;
 		else
 			ui_lbl_map_area->m_visible = false;
 	}
 	// Update the sizer
-	string s_sizer;
 	int sizex, sizey;
-	dusk->GetTextfieldData( ui_fld_map_size_x, s_sizer );
-	sizex = atoi( s_sizer.c_str() );
+	sizex = atoi( ui_fld_map_size_x->m_contents.c_str() );
 	if ( sizex == 0 ) {
 		sizex = m_mapinfo->tilesize_x;
 	}
-	dusk->GetTextfieldData( ui_fld_map_size_y, s_sizer );
-	sizey = atoi( s_sizer.c_str() );
+	sizey = atoi( ui_fld_map_size_y->m_contents.c_str() );
 	if ( sizey == 0 ) {
 		sizey = m_mapinfo->tilesize_y;
 	}
@@ -1524,10 +1517,8 @@ void MapEditor::uiStepShitPanel ( void )
 		// Set all values in the M04::MapInformation structure
 		m_mapinfo->tilesize_x = sizex;
 		m_mapinfo->tilesize_y = sizey;
-		dusk->GetTextfieldData( ui_fld_map_name, s_temp );
-		m_mapinfo->map_name = s_temp.c_str();
-		dusk->GetTextfieldData( ui_fld_map_area, s_temp );
-		m_mapinfo->area_name = s_temp.c_str();
+		m_mapinfo->map_name = ui_fld_map_name->m_contents.c_str();
+		m_mapinfo->area_name = ui_fld_map_area->m_contents.c_str();
 
 		// Apply new map options
 		doMapResize();
@@ -1540,7 +1531,7 @@ void MapEditor::uiStepShitPanel ( void )
 
 	// Do realtime changes:
 	{
-		dusk->GetColorPicker( ui_fld_map_ambient_color, renderer::Settings.ambientColor );
+		renderer::Settings.ambientColor = ui_fld_map_ambient_color->as<dusk::elements::ColorPicker>()->m_value;
 		m_mapinfo->env_ambientcolor = renderer::Settings.ambientColor.GetCode();
 	}
 }
@@ -1658,6 +1649,7 @@ void MapEditor::_uiStepTilePanel_End ( void )
 // handles input and updates to the area panel
 void MapEditor::uiStepAreaPanel ( void )
 {
+#if 0
 	if ( dusk->GetOpenDialogue() == ui_fld_area_type )
 	{
 		// Mark as possible change made
@@ -1719,12 +1711,14 @@ void MapEditor::uiStepAreaPanel ( void )
 			ui_fld_area_type->as<dusk::elements::DropdownList<int>>()->SetSelection(lcl_areatype_map[m_area_target->GetTypeName()]);
 		}
 	}
+#endif
 }
 
 //		uiStepObjectPanel () : object panel update
 // handles input and updates to the object panel
 void MapEditor::uiStepObjectPanel ( void )
 {
+#if 0
 	if ( dusk->CurrentDialogue() == ui_fld_object_type )
 	{
 		// We stop doing shit
@@ -1855,6 +1849,7 @@ void MapEditor::uiStepObjectPanel ( void )
 			}
 		}
 	}
+#endif
 }
 void MapEditor::_uiStepObjectPanelSub_ClearProperties ( void )
 {
@@ -1887,7 +1882,7 @@ void MapEditor::_uiStepObjectPanelSub_ClearProperties ( void )
 void MapEditor::uiStepPreferencesPanel ( void )
 {
 	static Real sensitivity = 1.0F;
-	dusk->UpdateSlider( ui_fld_pref_mouse_sensitivity, sensitivity );
+	sensitivity = ui_fld_pref_mouse_sensitivity->as<dusk::elements::Slider<float>>()->m_value;
 	CInput::SetMouseSensitivity( sensitivity );
 }
 

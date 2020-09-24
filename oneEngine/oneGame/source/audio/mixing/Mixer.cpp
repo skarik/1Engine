@@ -461,8 +461,8 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 							workbuffer_fft_imag->m_data_right[i] *= percent;
 						}
 
-						//audio::mixing::InverseFFT<kWorkbufferSize>(workbuffer_fft_real->m_data_left, workbuffer_fft_imag->m_data_left, workbuffer_channel_out[mixchannel].m_data_left);
-						//audio::mixing::InverseFFT<kWorkbufferSize>(workbuffer_fft_real->m_data_right, workbuffer_fft_imag->m_data_right, workbuffer_channel_out[mixchannel].m_data_right);
+						audio::mixing::InverseFFT<kWorkbufferSize>(workbuffer_fft_real->m_data_left, workbuffer_fft_imag->m_data_left, workbuffer_channel_out[mixchannel].m_data_left);
+						audio::mixing::InverseFFT<kWorkbufferSize>(workbuffer_fft_real->m_data_right, workbuffer_fft_imag->m_data_right, workbuffer_channel_out[mixchannel].m_data_right);
 					}*/
 
 					audio::mixing::ChannelsToInterleavedStereo<kWorkbufferSize>(workbuffer_channel_out[mixchannel].m_data_left, workbuffer_channel_out[mixchannel].m_data_right, workbuffer_mix);

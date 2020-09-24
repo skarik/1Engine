@@ -88,6 +88,9 @@
     <Filter Include="SOURCE\Engine-Common\Dusk %28GUI System%29\Layouts">
       <UniqueIdentifier>{79a47e08-98a1-48d4-942d-ce6fe07bcc05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogs">
+      <UniqueIdentifier>{a170b631-b595-4f7c-96ea-bb502deb9525}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\engine-common\engine-common.h">
@@ -390,6 +393,21 @@
     <ClInclude Include="source\engine-common\dusk\controls\Slider.h">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\TextField.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\ColorPicker.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\dialogs\FileViewer.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\dialogs\LoadFile.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\dialogs\SaveFile.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -616,6 +634,21 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\Slider.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\TextField.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\ColorPicker.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\dialogs\LoadFile.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\dialogs\SaveFile.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\dialogs\FileViewer.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -16,6 +16,9 @@ namespace dusk
 {
 	class UIRenderer;
 	class Element;
+	class MetaElement;
+	class LayoutElement;
+	class DialogElement;
 
 	struct ElementCreationDescription
 	{
@@ -35,6 +38,13 @@ namespace dusk
 	{
 		LayoutCreationDescription(Element* in_parent)
 			: ElementCreationDescription(in_parent, Rect())
+			{}
+	};
+
+	struct DialogCreationDescription : public ElementCreationDescription
+	{
+		DialogCreationDescription()
+			: ElementCreationDescription(NULL, Rect())
 			{}
 	};
 
@@ -66,6 +76,21 @@ namespace dusk
 		template <class ElementType>
 		ElementType*			Add ( const ElementCreationDescription& desc )
 		{
+			static_assert(ElementType::IsDialogElement() == false, "Dialogs cannot be added normally.");
+			ElementType* item = new ElementType();
+			AddInitialize(item, desc);
+			m_elements.push_back(item); // New element, tree needs regen.
+			m_treeNeedsGeneration = true; 
+			ARCORE_ASSERT(AddInitializeCheckValid(item));
+			return item;
+		}
+
+		//	CreateDialog()
+		template <class ElementType>
+		ElementType*			AddDialog ( const ElementCreationDescription& desc )
+		{
+			static_assert(ElementType::IsDialogElement(), "Controls cannot be added via dialog creation.");
+			ARCORE_ASSERT(desc.parent == NULL);
 			ElementType* item = new ElementType();
 			AddInitialize(item, desc);
 			m_elements.push_back(item); // New element, tree needs regen.

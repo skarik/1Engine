@@ -252,7 +252,7 @@ TalkerBox::~TalkerBox ( void )
 
 void TalkerBox::Update ( void )
 {
-	int display_length_previous = m_displayString.length();
+	size_t display_length_previous = m_displayString.length();
 
 	// Fade in the box
 	if ( m_fadeIn )
@@ -337,8 +337,8 @@ void TalkerBox::Update ( void )
 
 	// Lerp in the box
 	Vector2f estimatedSize;
-	estimatedSize.x = math::lerp( easing::back_out(m_fadeLerpX), 16, width + 14 );
-	estimatedSize.y = math::lerp( easing::back_out(m_fadeLerpY), 16, 10 + m_textmesh->GetLineHeight() * (Real)math::round(0.5F + text.length() / 23.0F)  );
+	estimatedSize.x = math::lerp<Real>( easing::back_out(m_fadeLerpX), 16, width + 14 );
+	estimatedSize.y = math::lerp<Real>( easing::back_out(m_fadeLerpY), 16, 10 + m_textmesh->GetLineHeight() * (Real)math::round(0.5F + text.length() / 23.0F)  );
 
 	// Update box size
 	if (m_boxbackground)		m_boxbackground->GenerateMesh( estimatedSize );

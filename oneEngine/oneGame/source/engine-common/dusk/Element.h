@@ -57,6 +57,10 @@ namespace dusk
 		T*						as (void)
 			{ return static_cast<T*>(this); }
 
+		//	IsDialogType() : Is this a dialog? Used for type-safe instantiation of dialogs.
+		static constexpr bool	IsDialogElement ( void )
+			{ return false; }
+
 	public:
 		// Set to true when needs deletion by system
 		bool				m_destructionRequested = false;
@@ -111,6 +115,32 @@ namespace dusk
 		ElementType			m_elementType;
 	};
 
+	class DialogElement : public Element
+	{
+	public:
+		// Constructor for defaul val
+		explicit				DialogElement ( void )
+			: Element(ElementType::kControl)
+			{}
+
+		//	Show() : Shows the dialog.
+		// Must be called in order to bring this dialog to the forefront
+		virtual void			Show ( void )
+			{}
+
+		//	Hide() : Hides the dialog.
+		virtual void			Hide ( void )
+			{}
+
+		//	IsDialogType() : Is this a dialog? Used for type-safe instantiation of dialogs.
+		static constexpr bool	IsDialogElement ( void )
+			{ return true; }
+
+	public:
+		// Is this dialog currently open?
+		bool				m_isOpen = false;
+	};
+
 	class MetaElement : public Element
 	{
 	public:
@@ -140,6 +170,7 @@ namespace dusk
 		virtual void			LayoutChildren ( std::vector<Element*>& elements )
 			{}
 	};
+
 };
 
 #endif//ENGINE_COMMON_DUSK_UI_ELEMENT_H_

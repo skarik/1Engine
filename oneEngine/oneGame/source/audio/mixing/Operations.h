@@ -57,7 +57,7 @@ namespace audio
 		{
 			for (uint32_t i = 0; i < Length; ++i)
 			{
-				inout_buffer[i] = math::saturate(inout_buffer[i]);
+				inout_buffer[i] = math::clamp(inout_buffer[i], -1.0F, +1.0F);
 			}
 		}
 

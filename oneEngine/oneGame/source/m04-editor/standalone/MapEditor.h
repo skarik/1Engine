@@ -226,8 +226,8 @@ namespace M04
 		dusk::Element*	ui_lbl_mousex;
 		dusk::Element*	ui_lbl_mousey;
 
-		dusk::Element*	ui_dg_save;
-		dusk::Element*	ui_dg_load;
+		dusk::DialogElement*	ui_dg_save;
+		dusk::DialogElement*	ui_dg_load;
 
 		dusk::Element*	ui_panel_tiles;
 		dusk::Element*	ui_lst_tile_layer;

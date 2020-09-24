@@ -113,6 +113,7 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\ColorPicker.h" />
     <ClInclude Include="source\engine-common\dusk\controls\DockablePanel.h" />
     <ClInclude Include="source\engine-common\dusk\controls\DropdownList.h" />
     <ClInclude Include="source\engine-common\dusk\controls\Label.h">
@@ -153,6 +154,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\Slider.h" />
+    <ClInclude Include="source\engine-common\dusk\controls\TextField.h" />
+    <ClInclude Include="source\engine-common\dusk\dialogs\FileViewer.h" />
+    <ClInclude Include="source\engine-common\dusk\dialogs\LoadFile.h" />
+    <ClInclude Include="source\engine-common\dusk\dialogs\SaveFile.h" />
     <ClInclude Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -307,6 +312,7 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\ColorPicker.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\DockablePanel.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\DropdownList.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\Label.cpp">
@@ -338,6 +344,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\Slider.cpp" />
+    <ClCompile Include="source\engine-common\dusk\controls\TextField.cpp" />
+    <ClCompile Include="source\engine-common\dusk\dialogs\FileViewer.cpp" />
+    <ClCompile Include="source\engine-common\dusk\dialogs\LoadFile.cpp" />
+    <ClCompile Include="source\engine-common\dusk\dialogs\SaveFile.cpp" />
     <ClCompile Include="source\engine-common\dusk\dialogues\DGUI_DialogueColorpicker.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
