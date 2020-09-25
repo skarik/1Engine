@@ -47,6 +47,7 @@
 #include "engine-common/dusk/controls/Panel.h"
 #include "engine-common/dusk/controls/Button.h"
 #include "engine-common/dusk/controls/Label.h"
+#include "engine-common/dusk/controls/Slider.h"
 #include "engine-common/dusk/layouts/Vertical.h"
 
 int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
@@ -143,6 +144,7 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 		// Create test buttons
 		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 20,45,150,30 )} );
 		button->m_contents = "Button 1";
+		button->as<dusk::elements::Button>()->m_emphasizeVisuals = true;
 
 		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 20,70,150,30 )} );
 		button->m_contents = "Button 2";
@@ -152,6 +154,11 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 
 		button = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 20,120,150,30 )} );
 		button->m_contents = "Button 4";
+
+		auto slider = dusk->Add<dusk::elements::Slider<Real32>>( dusk::ElementCreationDescription{layout, Rect( 0,0, 150,30 )} );
+		slider->m_range_min = 0.0F;
+		slider->m_range_max = 4.0F;
+		slider->m_value = 1.0F;
 
 		dusk->RemoveReference();
 	}

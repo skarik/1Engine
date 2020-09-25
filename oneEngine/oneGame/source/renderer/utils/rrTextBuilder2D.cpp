@@ -58,6 +58,121 @@ static Vector2f _transformVertexPosition ( const Vector2f& position, const Vecto
 	return position.mulComponents(multiplier) + offset;
 }
 
+//	predictTextSize ( str ) : Predicts text size of the given string
+Vector2f rrTextBuilder2D::predictTextSize ( const char* str )
+{
+	// Estimate needed amount of vertices for the text:
+
+	Rect drawrect;
+
+	Real m_max_width = 10000;
+
+	const int maxLength = (int)strlen(str);
+
+	expand(m_vertexCount + maxLength * 4);
+	expandIndices(m_indexCount + maxLength * 5);
+
+	// Get the font info:
+
+	auto fontInfo		= m_font_texture->GetFontInfo();
+	auto fontStartGlyph	= m_font_texture->GetFontGlyphStart();
+	auto fontGlyphCount	= m_font_texture->GetFontGlyphCount();
+	Real baseScale		= (Real)m_font_texture->GetWidth();
+
+	// Set up information for the text passes:
+
+	Vector2f pen (0,0);
+	uint16_t vert_index = m_vertexCount;
+	uint16_t inde_index = m_indexCount;
+	int c_lookup;
+	// Always use 'M' as the base case font size, because it's huge
+	Vector2i font_max_size = fontInfo->glyphSize['M' - fontStartGlyph];	
+
+	// Pass 1: Build the mesh:
+
+	for ( int c = 0; c < maxLength; ++c )
+	{
+		// Get the current character offset into the existing character set
+		c_lookup = str[c] - fontStartGlyph;
+
+		// Check that character is in set
+		if ( c_lookup < 0 || c_lookup >= (int)fontGlyphCount )
+		{
+			continue; // Skip quad
+		}
+		// Don't make quads for whitespace
+		else if ( std::isspace(str[c]) )
+		{
+			// Move the pen along
+			pen.x += fontInfo->glyphAdvance[c_lookup].x;
+			pen.y += fontInfo->glyphAdvance[c_lookup].y;
+
+			// Check for max width
+			if ( m_max_width > 0 )
+			{
+				float pen_m_x = pen.x;
+				int cf_lookup;
+
+				// Check forward for the next letter
+				for ( int cf = c + 1; cf < maxLength; ++cf )
+				{
+					// Get the current character offset into the existing character set
+					cf_lookup = str[cf] - fontStartGlyph;
+					// Check that character is in set
+					if ( cf_lookup < 0 || cf_lookup >= (int)fontGlyphCount )
+					{
+						continue; // Skip check
+					}
+					// Not a space, draw a virtual letter
+					else if ( !std::isspace(str[cf]) && cf != maxLength - 1 )
+					{
+						pen_m_x += fontInfo->glyphAdvance[cf_lookup].x;
+					}
+					// If it's a space, check the current location of the virtual letter
+					else 
+					{
+						if ( pen_m_x >= m_max_width )
+						{
+							// Go to next line
+							pen.x = 0;
+							pen.y += font_max_size.y + 3.0F;
+						}
+						break;
+					}
+				}
+			}
+
+			continue; // Skip quad
+		}
+
+		// Grab the UV rect of the character
+		Rect uv ( 
+			Vector2f(fontInfo->glyphTexelPosition[c_lookup].x, fontInfo->glyphTexelPosition[c_lookup].y) / baseScale,
+			Vector2f(fontInfo->glyphSize[c_lookup].x, fontInfo->glyphSize[c_lookup].y) / baseScale );
+
+		
+		// Create the quad for the character:
+
+		// Set up final drawing position
+		Vector2f drawPos = pen - Vector2f(fontInfo->glyphOrigin[c_lookup].x, fontInfo->glyphOrigin[c_lookup].y);
+		drawPos.x = (Real)math::round( drawPos.x );
+		drawPos.y = (Real)math::round( drawPos.y );
+
+		// shite
+		Vector2f pos;
+		pos = Vector2f(0,0) + drawPos;//, m_multiplier, m_offset);
+		drawrect.Expand(pos);
+		pos = Vector2f(0,0) + Vector2f(drawPos.x + uv.size.x * baseScale, drawPos.y + uv.size.y * baseScale);//, m_multiplier, m_offset);
+		drawrect.Expand(pos);
+
+		// Move the pen along
+		pen.x += fontInfo->glyphAdvance[c_lookup].x;
+		pen.y += fontInfo->glyphAdvance[c_lookup].y;
+	}
+
+	return drawrect.size;
+}
+
 //	addText ( position, color, str ) : Adds text to draw.
 void rrTextBuilder2D::addText ( const Vector2f& position, const Color& color, const char* str )
 {

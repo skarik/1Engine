@@ -7,6 +7,7 @@
 namespace dusk {
 namespace dialogs {
 
+	// Variant of SaveFile but with "Load" visuals, and ability to select more than one item.
 	class LoadFile : public dusk::dialogs::SaveFile
 	{
 	public:
@@ -19,6 +20,13 @@ namespace dialogs {
 		//	Render() : Renders the element.
 		void					Render ( UIRendererContext* uir ) override;
 
+	public:
+		bool				hasMultiselection = false;
+		std::vector<std::string>
+							selectedFilenames;
+
+		// Is more than one file allowed to be selected in the dialog?
+		bool				m_allowMultiselection = false;
 	};
 
 }}

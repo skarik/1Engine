@@ -12,22 +12,24 @@ namespace elements {
 	public:
 		ENGCOM_API explicit		Slider ( void ) 
 			: dusk::Element()
-		{}
+			{}
 
 		//	Update() : Called every frame by the UI system.
-		void					Update ( const UIStepInfo* stepinfo ) override;
+		ENGCOM_API void			Update ( const UIStepInfo* stepinfo ) override;
 		//	Render() : Renders the element.
-		void					Render ( UIRendererContext* uir ) override;
+		ENGCOM_API void			Render ( UIRendererContext* uir ) override;
 
 	public:
-		NumberType			m_range_min = 0.0F;
-		NumberType			m_range_max = 1.0F;
+		NumberType			m_range_min = (NumberType)0.0;
+		NumberType			m_range_max = (NumberType)1.0;
 		bool				m_snap = false;
-		NumberType			m_snap_divisor = 0.1F;
+		NumberType			m_snap_divisor = (NumberType)0.1;
 
-		NumberType			m_value = 0.5F;
+		NumberType			m_value = (NumberType)0.5;
 	};
 
 }}
+
+//#include "Slider.hpp"
 
 #endif//ENGINE_COMMON_DUSK_UI_ELEMENT_SLIDER_H_

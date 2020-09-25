@@ -132,6 +132,9 @@ namespace dusk
 		kColorStyleBackground	= 0x01,
 		kColorStyleElement		= 0x02,
 		kColorStyleLabel		= 0x03,
+		kColorStyleElementEmphasized	= 0x04,
+		kColorStyleShapeNormal		= 0x05,
+		kColorStyleShapeAccented	= 0x06,
 	};
 
 	enum FocusStyle : uint16_t

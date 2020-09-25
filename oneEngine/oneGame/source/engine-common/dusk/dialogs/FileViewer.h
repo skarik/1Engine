@@ -6,6 +6,7 @@
 namespace dusk {
 namespace dialogs {
 
+	// FileViewer is a base dialog class that allows for browsing of files and folders.
 	class FileViewer : public dusk::DialogElement
 	{
 	public:

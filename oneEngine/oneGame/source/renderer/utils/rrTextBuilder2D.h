@@ -37,8 +37,11 @@ public:
 	//	getPrimitiveMode () : returns the primitive mode this mesh builder would like to render in.
 	// Must be implemented by child classes.
 	RENDER_API renderer::rrPrimitiveMode
-		getPrimitiveMode ( void ) const override
-	{ return renderer::kPrimitiveModeTriangleList_Indexed; }
+							getPrimitiveMode ( void ) const override
+		{ return renderer::kPrimitiveModeTriangleList_Indexed; }
+
+	//	predictTextSize ( str ) : Predicts text size of the given string
+	RENDER_API Vector2f		predictTextSize ( const char* str );
 
 	//	addText ( position, color, str ) : Adds text to draw.
 	// Uses the font to generate a mesh.

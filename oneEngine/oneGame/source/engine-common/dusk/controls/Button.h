@@ -11,7 +11,7 @@ namespace elements {
 	public:
 		ENGCOM_API explicit		Button()
 			: dusk::Element(), isPressed(false), beginPress(false)
-		{}
+			{}
 
 		//	Update() : Called every frame by the UI system.
 		void					Update ( const UIStepInfo* stepinfo ) override;
@@ -20,6 +20,10 @@ namespace elements {
 
 		ENGCOM_API bool			Pressed ( void )
 			{ return m_isEnabled && isPressed; }
+
+	public:
+		// Emphasize the visuals of this button?
+		bool	m_emphasizeVisuals = false;
 
 	private:
 		// Button state

@@ -8,6 +8,7 @@
 namespace dusk {
 namespace dialogs {
 
+	// Dialog that allows to browse through the filesystem and find a filename of result.
 	class SaveFile : public dusk::dialogs::FileViewer
 	{
 	public:
@@ -24,7 +25,9 @@ namespace dialogs {
 		bool				hasSelection = false;
 		std::string			selectedFilename = "";
 
+		// Directory the filesystem browser starts on
 		std::string			m_defaultDirectory = ".";
+		// Filetype filter. When empty, allows all files
 		std::vector<System::sFileDialogueEntry>
 							m_filetypes;
 	};
