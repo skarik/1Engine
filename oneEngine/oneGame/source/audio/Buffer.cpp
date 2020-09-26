@@ -1,11 +1,10 @@
 #include "Buffer.h"
 #include "WaveformLoader.h"
 #include "audio/Manager.h"
+#include "audio/mixing/Operations.h"
 
 #include "core/debug/console.h"
 #include "core-ext/threads/Jobs.h"
-
-using std::string;
 
 audio::Buffer::Buffer ( const char* filename )
 	: arBaseObject()
@@ -61,33 +60,47 @@ void audio::Buffer::Init ( const char* n_filename )
 		uint32_t resampledFrames = (uint32_t)(m_sound->frames / frameScale);
 
 		// New data
+		float* convertedData = (float*) new uint64_t [(m_sound->frames / (sizeof(uint64_t) / sizeof(float)) + 1) * channelCount];
 		float* resampledData = (float*) new uint64_t [(resampledFrames / (sizeof(uint64_t) / sizeof(float)) + 1) * channelCount];
 
-		// Resample it:
-		for (uint32_t frame = 0; frame < resampledFrames; ++frame)
+		// Convert it:
+		for (uint32_t frame = 0; frame < m_sound->frames; ++frame)
 		{
-			uint32_t originalFrame = (uint32_t)(frame * frameScale);
 			for (uint8_t channel = 0; channel < channelCount; ++channel)
 			{
+				float value = 0.0F;
 				if (m_sound->format == audio::Format::kSignedInteger8)
 				{
 					int8_t* sourceData = (int8_t*)m_sound->data;
-					resampledData[frame * channelCount + channel] = sourceData[originalFrame * channelCount + channel] / (float)INT8_MAX;
+					value = sourceData[frame * channelCount + channel] / (float)INT8_MAX;
 				}
 				else if (m_sound->format == audio::Format::kSignedInteger16)
 				{
 					int16_t* sourceData = (int16_t*)m_sound->data;
-					resampledData[frame * channelCount + channel] = sourceData[originalFrame * channelCount + channel] / (float)INT16_MAX;
+					value = sourceData[frame * channelCount + channel] / (float)INT16_MAX;
 				}
 				else if (m_sound->format == audio::Format::kFloat32)
 				{
-					resampledData[frame * channelCount + channel] = m_sound->data[originalFrame * channelCount + channel];
+					value = m_sound->data[frame * channelCount + channel];
 				}
+				convertedData[frame * channelCount + channel] = value;
 			}
+		}
+
+		// Resample it:
+		if (channelCount == 1)
+		{
+			audio::mixing::ResampleStride<1, 1>(convertedData, m_sound->frames, resampledFrames, resampledData);
+		}
+		else if (channelCount == 2)
+		{
+			audio::mixing::ResampleStride<2, 2>(convertedData + 0, m_sound->frames, resampledFrames, resampledData + 0);
+			audio::mixing::ResampleStride<2, 2>(convertedData + 1, m_sound->frames, resampledFrames, resampledData + 1);
 		}
 
 		// Save the new resampled data & free the old data
 		delete[] m_sound->data;
+		delete[] convertedData;
 		m_sound->data = resampledData;
 
 		// Set the new parameters

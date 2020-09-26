@@ -69,8 +69,8 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	l_listener->orient_forward = Vector3f(0, 1, 0);
 
 	// Create the music track to loop
-	audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop.ogg");
-	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop.wav");
+	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop.ogg");
+	audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop4.wav");
 	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/ambient/water_lapping_loop.wav");
 	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/Theme07-snippet.ogg");
 	audio::Source* l_musicSource = new audio::Source(l_musicBuffer);
@@ -80,7 +80,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	l_musicSource->state.channel = audio::MixChannel::kMusic;
 	l_musicSource->Play(true);
 
-	audio::effect::LowPass1* l_lowPass = new audio::effect::LowPass1 (audio::MixChannel::kMusic);
+	//audio::effect::LowPass1* l_lowPass = new audio::effect::LowPass1 (audio::MixChannel::kMusic);
 
 	audio::Source* l_soundSource = NULL;
 
@@ -181,7 +181,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 
 	l_listener->Destroy();
 	l_musicSource->Destroy();
-	l_lowPass->Destroy();
+	//l_lowPass->Destroy();
 	if (l_soundSource != NULL)
 	{
 		l_soundSource->Destroy();
