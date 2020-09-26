@@ -11,6 +11,7 @@
 #include "audio/mixing/Channels.h"
 #include "audio/backend/AudioBackend.h"
 
+#include <array>
 #include <vector>
 #include <string>
 #include <mutex>
@@ -23,13 +24,22 @@ namespace audio
 	class Buffer;
 	class BufferManager;
 	class Mixer;
+	class Effect;
+
+	struct ChannelState
+	{
+		// Channel volume
+		Real					m_gain;
+		// Effects stack
+		std::vector<Effect*>	m_effects;
+	};
 
 	struct MixerObjectState
 	{
 		std::vector<Source*>*	m_sources;
 		std::vector<Listener*>*	m_listeners;
 		double					m_speedOfSound = 1125.0;
-		Real					m_channelGain [(uint)audio::MixChannel::kMAX_COUNT];
+		ChannelState			m_channel [(uint)audio::MixChannel::kMAX_COUNT + 1];
 	};
 
 	class Manager
@@ -44,10 +54,9 @@ namespace audio
 
 		// Adding and removing objects
 		// TODO: This should be automatic:
-		AUDIO_API void			AddListener ( Listener* );
-		AUDIO_API void			RemoveListener ( Listener* );
-		AUDIO_API unsigned int	AddSource ( Source* );
-		//AUDIO_API void			RemoveSource ( Source* );
+		AUDIO_API void			AddListener ( Listener* listener );
+		AUDIO_API unsigned int	AddSource ( Source* source );
+		AUDIO_API void			AddEffect ( Effect* effect, audio::MixChannel channel );
 
 		// Public queries
 		AUDIO_API bool			IsActive ( void );
@@ -69,6 +78,7 @@ namespace audio
 		// Currently set channel volumes
 		Real					m_channelGain [(uint)audio::MixChannel::kMAX_COUNT];
 
+
 	private:
 		//	InitSystem() : Starts up the audio system & mixer
 		// If succeeds, then this sets active to true
@@ -83,14 +93,19 @@ namespace audio
 		// Next ID to assign to sounds
 		unsigned int			next_sound_id = 0;
 
-		// Lists of sound objects
+		// Current listeners in the world
 		std::vector<Listener*>	listeners;
+		// Current sources in the world
 		std::vector<Source*>	sources;
+		// Current effects attached to each channel
+		std::array<std::vector<Effect*>, (uint)MixChannel::kMAX_COUNT + 1>
+								effects;
 		std::atomic_bool		mixer_objects_synced = false;
 		std::mutex				mixer_objects_lock;
 
 		std::vector<Listener*>	listeners_to_delete;
 		std::vector<Source*>	sources_to_delete;
+		std::vector<Effect*>	effects_to_delete;
 
 		AudioBackend*			backend = NULL;
 		Mixer*					mixer = NULL;

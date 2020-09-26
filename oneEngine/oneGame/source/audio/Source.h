@@ -89,7 +89,7 @@ namespace audio
 
 	public:
 		SourceState			state;
-		bool				queue_destruction;
+		bool				queue_destruction = false;
 
 	private:
 		SourceState			mixer_state;

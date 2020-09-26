@@ -4,6 +4,7 @@
 #include "audio/Source.h"
 #include "audio/Buffer.h"
 #include "audio/Listener.h"
+#include "audio/Effect.h"
 #include "audio/mixing/Workbuffer.h"
 #include "audio/mixing/Channels.h"
 #include "audio/mixing/Operations.h"
@@ -18,12 +19,6 @@
 
 namespace audio
 {
-	enum MixConstants : uint32_t
-	{
-		kWorkbufferSize = 1024,
-		kWorkingMaxPitch = 4,
-	};
-
 	struct Audio3DMixConstants
 	{
 		// Rough max left-right ear delay for 3D audio
@@ -114,12 +109,13 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 		const double sampleStep = 1.0 / sampleRate;
 
 		WorkbufferStereo<kWorkbufferSize>* workbuffer_channel_out = new WorkbufferStereo<kWorkbufferSize>[(uint)MixChannel::kMAX_COUNT];
+		WorkbufferStereo<kWorkbufferSize>* workbuffer_channel_mix = new WorkbufferStereo<kWorkbufferSize>;
 
 		float* workbuffer_out = new float [kWorkbufferSize * channelCount];
 		float* workbuffer_mix = new float [kWorkbufferSize * channelCount];
 
-		WorkbufferStereo<kWorkbufferSize>* workbuffer_fft_real = new WorkbufferStereo<kWorkbufferSize>;
-		WorkbufferStereo<kWorkbufferSize>* workbuffer_fft_imag = new WorkbufferStereo<kWorkbufferSize>;
+		//WorkbufferStereo<kWorkbufferSize>* workbuffer_fft_real = new WorkbufferStereo<kWorkbufferSize>;
+		//WorkbufferStereo<kWorkbufferSize>* workbuffer_fft_imag = new WorkbufferStereo<kWorkbufferSize>;
 
 		std::vector<Source*> l_sources;
 		std::vector<Listener*> l_listeners;
@@ -441,34 +437,29 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 				std::fill(workbuffer_out, workbuffer_out + kWorkbufferSize * channelCount, 0.0F);
 				for (uint32_t mixchannel = 0; mixchannel < (uint32_t)MixChannel::kMAX_COUNT; ++mixchannel)
 				{
-					// let's do some fucky dsp 
-					// This actually works! We just have too much other noise in our mixing still...
-					/*if (mixchannel == (uint32_t)MixChannel::kMusic)
+					// Run through the channel effect stack:
+					WorkbufferStereo<kWorkbufferSize>* mix_input = &workbuffer_channel_out[mixchannel];
+					WorkbufferStereo<kWorkbufferSize>* mix_output = workbuffer_channel_mix;
+					for (Effect* effect : mixObjectState.m_channel[mixchannel].m_effects)
 					{
-						audio::mixing::FFT<kWorkbufferSize>(workbuffer_channel_out[mixchannel].m_data_left, workbuffer_fft_real->m_data_left, workbuffer_fft_imag->m_data_left);
-						audio::mixing::FFT<kWorkbufferSize>(workbuffer_channel_out[mixchannel].m_data_right, workbuffer_fft_real->m_data_right, workbuffer_fft_imag->m_data_right);
+						auto state = effect->AllocateState();
+						effect->UpdateStateForMixerThread(state);
 
-						// let's fade out the back end of it
-						for (uint32_t i = 0; i < kWorkbufferSize; ++i)
-						{
-							float percent = i / (float)(kWorkbufferSize - 1);
+						effect->Evaluate(*mix_input, *mix_output, state);
+						
+						delete state;
 
-							percent = pow(1.0 - percent, 100);
+						std::swap(mix_input, mix_output);
+					}
+					// Final output is always in mix_input
 
-							workbuffer_fft_real->m_data_left[i] *= percent;
-							workbuffer_fft_real->m_data_right[i] *= percent;
-							workbuffer_fft_imag->m_data_left[i] *= percent;
-							workbuffer_fft_imag->m_data_right[i] *= percent;
-						}
-
-						audio::mixing::InverseFFT<kWorkbufferSize>(workbuffer_fft_real->m_data_left, workbuffer_fft_imag->m_data_left, workbuffer_channel_out[mixchannel].m_data_left);
-						audio::mixing::InverseFFT<kWorkbufferSize>(workbuffer_fft_real->m_data_right, workbuffer_fft_imag->m_data_right, workbuffer_channel_out[mixchannel].m_data_right);
-					}*/
-
-					audio::mixing::ChannelsToInterleavedStereo<kWorkbufferSize>(workbuffer_channel_out[mixchannel].m_data_left, workbuffer_channel_out[mixchannel].m_data_right, workbuffer_mix);
-					audio::mixing::Scale<kWorkbufferSize * 2>(workbuffer_mix, mixObjectState.m_channelGain[mixchannel]);
+					// Now split to interleaved audio & do the madd into main output
+					audio::mixing::ChannelsToInterleavedStereo<kWorkbufferSize>(mix_input->m_data_left, mix_input->m_data_right, workbuffer_mix);
+					audio::mixing::Scale<kWorkbufferSize * 2>(workbuffer_mix, mixObjectState.m_channel[mixchannel].m_gain);
 					audio::mixing::Acculmulate<kWorkbufferSize * 2>(workbuffer_mix, workbuffer_out);
 				}
+
+				// Run through the main effect stack:
 
 				audio::mixing::Saturate<kWorkbufferSize * 2>(workbuffer_out);
 
@@ -498,10 +489,11 @@ audio::Mixer::Mixer ( Manager* object_state, AudioBackend* backend, uint32_t max
 		}
 
 		delete[] workbuffer_channel_out;
+		delete workbuffer_channel_mix;
 		delete[] workbuffer_out;
 		delete[] workbuffer_mix;
-		delete workbuffer_fft_real;
-		delete workbuffer_fft_imag;
+		//delete workbuffer_fft_real;
+		//delete workbuffer_fft_imag;
 	});
 }
 

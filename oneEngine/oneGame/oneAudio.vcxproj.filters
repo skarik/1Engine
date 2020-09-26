@@ -19,6 +19,9 @@
     <Filter Include="SOURCE\Audio\c_interface">
       <UniqueIdentifier>{4f1af02e-6e2d-4f6c-98cc-c74cf0856f1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Audio\effects">
+      <UniqueIdentifier>{4cf64c80-f747-4d07-bab9-181559591509}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\audio\Buffer.cpp">
@@ -53,6 +56,12 @@
     </ClCompile>
     <ClCompile Include="source\audio\c_interface\OneForTwo.cpp">
       <Filter>SOURCE\Audio\c_interface</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\Effect.cpp">
+      <Filter>SOURCE\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="source\audio\effects\LowPass1.cpp">
+      <Filter>SOURCE\Audio\effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +124,12 @@
     </ClInclude>
     <ClInclude Include="source\audio\c_interface\OneForTwo.h">
       <Filter>SOURCE\Audio\c_interface</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\Effect.h">
+      <Filter>SOURCE\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="source\audio\effects\LowPass1.h">
+      <Filter>SOURCE\Audio\effects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

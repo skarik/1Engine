@@ -14,6 +14,12 @@ namespace audio
 	class AudioBackend;
 	struct SourceWorkbufferSet;
 
+	enum MixConstants : uint32_t
+	{
+		kWorkbufferSize = 1024,
+		kWorkingMaxPitch = 4,
+	};
+
 	// Thread-destroying stereo mixer.
 	class Mixer
 	{

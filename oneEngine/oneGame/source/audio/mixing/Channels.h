@@ -14,7 +14,8 @@ namespace audio
 		kBackground,
 		kMusic,
 
-		kMAX_COUNT
+		kMAX_COUNT,
+		kNoChannel = kMAX_COUNT
 	};
 }
 

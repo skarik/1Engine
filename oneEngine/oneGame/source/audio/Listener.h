@@ -25,7 +25,7 @@ namespace audio
 		Vector3f			orient_forward = Vector3f::forward;
 		Vector3f			orient_up = Vector3f::up;
 
-		bool				queue_destruction;
+		bool				queue_destruction = false;
 	private:
 		Vector3f			position_prev = Vector3f();
 	};

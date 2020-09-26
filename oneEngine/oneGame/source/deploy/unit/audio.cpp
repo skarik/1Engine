@@ -27,6 +27,7 @@
 #include "audio/Listener.h"
 #include "audio/BufferManager.h"
 #include "audio/Source.h"
+#include "audio/effects/LowPass1.h"
 
 // Program entry point
 int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
@@ -52,8 +53,8 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	debug::Console->PrintMessage( "Audio manager created.\n" );
 
 	// Inialize steam
-	bool bSteamy = SteamAPI_Init();
-	debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
+	//bool bSteamy = SteamAPI_Init();
+	//debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
 	debug::Console->PrintWarning( "Press Escape to exit this module test.\n" );
 	debug::Console->PrintWarning( "Press Space to play a click @ random position, WASD to control music direction.\n" );
 	
@@ -69,14 +70,17 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 
 	// Create the music track to loop
 	audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop.ogg");
+	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop.wav");
 	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/ambient/water_lapping_loop.wav");
 	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/Theme07-snippet.ogg");
 	audio::Source* l_musicSource = new audio::Source(l_musicBuffer);
 	l_musicSource->state.looped = true;
 	l_musicSource->state.position = Vector3f(0, 1, 0);
-	l_musicSource->state.pitch = 1.2F;
+	l_musicSource->state.pitch = 1.0F;
 	l_musicSource->state.channel = audio::MixChannel::kMusic;
 	l_musicSource->Play(true);
+
+	audio::effect::LowPass1* l_lowPass = new audio::effect::LowPass1 (audio::MixChannel::kMusic);
 
 	audio::Source* l_soundSource = NULL;
 
@@ -88,9 +92,9 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 		// Update delta time since last step
 		Time::Tick();
 		// Update Steam's state
-		if ( bSteamy ) {
-			SteamAPI_RunCallbacks();
-		}
+		//if ( bSteamy ) {
+		//	SteamAPI_RunCallbacks();
+		//}
 		// Grab inputs
 		CInput::Update();
 		// Update audio
@@ -108,8 +112,8 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			}
 		}
 
-		l_musicSource->state.position.x += Time::deltaTime * 3.0F;
-		l_musicSource->state.velocity.x = 300.0F;
+		//l_musicSource->state.position.x += Time::deltaTime * 3.0F;
+		//l_musicSource->state.velocity.x = 300.0F;
 
 		// Check for other characters:
 
@@ -177,6 +181,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 
 	l_listener->Destroy();
 	l_musicSource->Destroy();
+	l_lowPass->Destroy();
 	if (l_soundSource != NULL)
 	{
 		l_soundSource->Destroy();
@@ -185,7 +190,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	// Save all app data
 	gameSettings.SaveSettings();
 	// End Steam
-	SteamAPI_Shutdown();
+	//SteamAPI_Shutdown();
 
 	// Free input
 	CInput::Free();
