@@ -56,6 +56,26 @@ RrPass::~RrPass ( void )
 	}
 }
 
+// Copy constructor must increment references of owned textures & shaders
+RrPass& RrPass::assignFrom ( const RrPass& other )
+{
+	*this = other;
+	
+	for (size_t i = 0; i < kPass_MaxTextureSlots; ++i)
+	{
+		if (m_textures[i] != NULL)
+		{
+			m_textures[i]->AddReference();
+		}
+	}
+	if (m_program != NULL)
+	{
+		m_program->AddReference();
+	}
+
+	return *this;
+}
+
 //	setTexture ( slot, texture ) : Sets material texture.
 // Material is given ownership of the texture.
 // Do not delete the texture directly, use RemoveReference.

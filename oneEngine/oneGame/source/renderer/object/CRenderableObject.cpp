@@ -365,7 +365,7 @@ void CRenderableObject::PassInitWithInput ( int pass, RrPass* passData )
 	PassFree(pass);
 	
 	// Copy the pass over
-	m_passes[pass] = *passData;
+	m_passes[pass].assignFrom(*passData);
 	m_passEnabled[pass] = true;
 	m_passSurfaceSynced[pass] = false;
 

@@ -95,6 +95,7 @@ RrFontTexture::Load ( const char* resource_name, const rrFontTextureLoadParams& 
 	// We're done with the bitmap now. Add it to the resource system:
 	resm->Add(texture);
 
+	texture->AddReference();
 	return texture;
 }
 

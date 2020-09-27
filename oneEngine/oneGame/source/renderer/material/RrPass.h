@@ -52,11 +52,15 @@ enum rrPassOrderConstants : int
 // An RrPass stores information used to generate a gpu::Pipeline by the renderer.
 class RrPass
 {
+protected:
+	// will not increment references of owned textures & shaders
+	RENDER_API RrPass&		operator= ( const RrPass& other ) = default;
 public:
-	RENDER_API				RrPass ( void );
-	//RENDER_API				RrPass ( const RrPass& other );
+	RENDER_API explicit		RrPass ( void );
 	// will release references of owned textures & shaders
 	RENDER_API				~RrPass ( void );
+	// will increment references of owned textures & shaders
+	RENDER_API RrPass&		assignFrom ( const RrPass& other );
 
 	//	setTexture ( slot, texture ) : Sets material texture.
 	// Material is given ownership of the texture.
