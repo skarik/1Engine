@@ -15,6 +15,8 @@
 #include "audio/BufferManager.h"
 #include "audio/Source.h"
 #include "audio/Listener.h"
+#include "audio/Effect.h"
+#include "audio/effects/LowPass1.h"
 
 #include <unordered_map>
 
@@ -30,6 +32,9 @@ static std::unordered_map<uint64_t, audio::Buffer*>*
 // Map of instantiated sources, used for safety. TODO: This leaks a bit, consider cleraing on source delete.
 static std::unordered_map<uint64_t, audio::Source*>*
 							m_refmapSources = NULL;
+// Map of instantiated sources, used for safety. TODO: This leaks a bit, consider cleraing on effect delete.
+static std::unordered_map<uint64_t, audio::Effect*>*
+							m_refmapEffects = NULL;
 
 template <class Referenced>
 static std::unordered_map<uint64_t, Referenced*>* GetHandleReferenceMap()
@@ -45,6 +50,12 @@ template <>
 static std::unordered_map<uint64_t, audio::Source*>* GetHandleReferenceMap<audio::Source>()
 {
 	return m_refmapSources;
+}
+
+template <>
+static std::unordered_map<uint64_t, audio::Effect*>* GetHandleReferenceMap<audio::Effect>()
+{
+	return m_refmapEffects;
 }
 
 
@@ -109,6 +120,7 @@ double AR_CALL AudioInitialize ( double startupMask )
 	// Create the refmaps
 	m_refmapBuffers = new std::unordered_map<uint64_t, audio::Buffer*>;
 	m_refmapSources = new std::unordered_map<uint64_t, audio::Source*>;
+	m_refmapEffects = new std::unordered_map<uint64_t, audio::Effect*>;
 
 	return NIL;
 }
@@ -126,6 +138,7 @@ double AR_CALL AudioFree ( void )
 	// Free the refs now
 	delete m_refmapBuffers;
 	delete m_refmapSources;
+	delete m_refmapEffects;
 
 	return NIL;
 }
@@ -433,6 +446,69 @@ double AR_CALL AudioSourceSetFalloffModel ( double source, double model, double 
 	{
 		sourceRef->state.falloffStyle = (audio::Falloff)((uint)model);
 		sourceRef->state.falloff = (float)falloff;
+	}
+	return NIL;
+}
+
+
+//
+// Effect management:
+//
+
+double AR_CALL AudioEffectDestroy ( double effect )
+{
+	audio::Effect* effectRef = ReferenceFromHandle<audio::Effect>(effect);
+	if (effectRef != NULL)
+	{
+		effectRef->Destroy();
+	}
+	return NIL;
+}
+
+double AR_CALL AudioEffectCreateLowPass1 ( double channel )
+{
+	audio::Effect* effectRef = new audio::effect::LowPass1((audio::MixChannel)((uint)channel));
+	return HandleFromReference(effectRef);
+}
+
+double AR_CALL AudioEffectLowPass1SetParams ( double effect, double cutoffPitch, double cutoffFade, double strength )
+{
+	audio::effect::LowPass1* effectRef = (audio::effect::LowPass1*)ReferenceFromHandle<audio::Effect>(effect);
+	if (effectRef != NULL)
+	{
+		effectRef->m_state.m_cutoffPitch = (Real)cutoffPitch;
+		effectRef->m_state.m_cutoffFade = (Real)cutoffFade;
+		effectRef->m_state.m_strength = (Real)strength;
+	}
+	return NIL;
+}
+
+double AR_CALL AudioEffectLowPass1GetCutoffPitch ( double effect )
+{
+	audio::effect::LowPass1* effectRef = (audio::effect::LowPass1*)ReferenceFromHandle<audio::Effect>(effect);
+	if (effectRef != NULL)
+	{
+		return effectRef->m_state.m_cutoffPitch;
+	}
+	return NIL;
+}
+
+double AR_CALL AudioEffectLowPass1GetCutoffFade ( double effect )
+{
+	audio::effect::LowPass1* effectRef = (audio::effect::LowPass1*)ReferenceFromHandle<audio::Effect>(effect);
+	if (effectRef != NULL)
+	{
+		return effectRef->m_state.m_cutoffFade;
+	}
+	return NIL;
+}
+
+double AR_CALL AudioEffectLowPass1GetCutoffStrength ( double effect )
+{
+	audio::effect::LowPass1* effectRef = (audio::effect::LowPass1*)ReferenceFromHandle<audio::Effect>(effect);
+	if (effectRef != NULL)
+	{
+		return effectRef->m_state.m_strength;
 	}
 	return NIL;
 }

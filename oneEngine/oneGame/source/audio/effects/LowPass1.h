@@ -10,7 +10,11 @@ namespace effect {
 
 	struct LowPass1State : public EffectState
 	{
-		Real					m_cutoffPitch = 0.1F;
+		// Pitch to begin the cutoff at
+		Real					m_cutoffPitch = 440.0F;
+		// Cutoff fade in Hz, scaled against a 440.0 pitch. At 220 Hz, this will be a 2x narrower fade (50% width).
+		Real					m_cutoffFade = 100.0F;
+		// Mix of the "wet" and "dry" sounds
 		Real					m_strength = 1.0F;
 	};
 
@@ -31,6 +35,8 @@ namespace effect {
 
 	public:
 		LowPass1State			m_state;
+
+	private:
 		WorkbufferStereo<audio::kWorkbufferSize * 4>
 								m_waveform;
 		WorkbufferStereo<audio::kWorkbufferSize * 4>

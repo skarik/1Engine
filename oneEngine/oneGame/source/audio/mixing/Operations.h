@@ -73,6 +73,16 @@ namespace audio
 			}
 		}
 
+		//	Interpolate(inputA, inputB, blend, output) : Linearly interpolates the two inputs to the output
+		template <uint32_t Length>
+		void Interpolate ( const float* bufferA, const float* bufferB, const float t, float* out_buffer )
+		{
+			for (uint32_t i = 0; i < Length; ++i)
+			{
+				out_buffer[i] = math::lerp(t, bufferA[i], bufferB[i]);
+			}
+		}
+
 		//	Resample<LengthTo>(input, lengthFrom, output) : Resamples given input to the output.
 		template <uint32_t LengthTo>
 		void Resample ( const float* buffer, const uint32_t lengthFrom, float* out_buffer )

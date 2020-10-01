@@ -81,6 +81,18 @@ AR_CEXPORT double AR_CALL AudioSourceSetChannel ( double source, double channel 
 AR_CEXPORT double AR_CALL AudioSourceSetFalloff ( double source, double min_distance, double max_distance );
 AR_CEXPORT double AR_CALL AudioSourceSetFalloffModel ( double source, double model, double falloff );
 
+//
+// Effect management:
+//
+
+AR_CEXPORT double AR_CALL AudioEffectDestroy ( double effect );
+
+AR_CEXPORT double AR_CALL AudioEffectCreateLowPass1 ( double channel );
+AR_CEXPORT double AR_CALL AudioEffectLowPass1SetParams ( double effect, double cutoffPitch, double cutoffFade, double strength );
+AR_CEXPORT double AR_CALL AudioEffectLowPass1GetCutoffPitch ( double effect );
+AR_CEXPORT double AR_CALL AudioEffectLowPass1GetCutoffFade ( double effect );
+AR_CEXPORT double AR_CALL AudioEffectLowPass1GetCutoffStrength ( double effect );
+
 #endif
 
 #endif//AUDIO_C_INTERFACE_INITIALIZATION_H_
