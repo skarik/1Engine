@@ -92,7 +92,7 @@ public:
 	// Operations
 	CMatrix<H,W> transpose ( void );
 	CMatrix<W,H> inverse ( void );
-	Real det ( void );
+	Real determinant ( void );
 	
 	CMatrix<W-1,H-1> submatrix ( int, int ) const;
 

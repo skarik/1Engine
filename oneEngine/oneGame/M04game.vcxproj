@@ -61,6 +61,9 @@
     <ProjectReference Include="oneRendererExt2D.vcxproj">
       <Project>{38f71bd7-ca57-4e5d-87c7-6299b0e218ea}</Project>
     </ProjectReference>
+    <ProjectReference Include="oneGPUW.vcxproj">
+      <Project>{1986D332-4A22-4711-96B0-C94B9BA9B69D}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ld40\entities\PlayerMage.h" />
@@ -95,6 +98,9 @@
     <ClInclude Include="source\m04\entities\TalkerBox.h" />
     <ClInclude Include="source\m04\entities\TestEntityBasic.h" />
     <ClInclude Include="source\m04\entities\UILuvPpl.h" />
+    <ClInclude Include="source\m04\eventide\Common.h" />
+    <ClInclude Include="source\m04\eventide\Element.h" />
+    <ClInclude Include="source\m04\eventide\UserInterface.h" />
     <ClInclude Include="source\m04\interfaces\MapIO.h" />
     <ClInclude Include="source\m04\m04-common.h" />
     <ClInclude Include="source\m04\scenes\sceneGameLuvPpl.h" />
@@ -133,6 +139,8 @@
     <ClCompile Include="source\m04\entities\TalkerBox.cpp" />
     <ClCompile Include="source\m04\entities\TestEntityBasic.cpp" />
     <ClCompile Include="source\m04\entities\UILuvPpl.cpp" />
+    <ClCompile Include="source\m04\eventide\Element.cpp" />
+    <ClCompile Include="source\m04\eventide\UserInterface.cpp" />
     <ClCompile Include="source\m04\interfaces\MapIO.cpp" />
     <ClCompile Include="source\m04\m04-common.cpp" />
     <ClCompile Include="source\m04\scenes\sceneGameLuvPpl.cpp" />

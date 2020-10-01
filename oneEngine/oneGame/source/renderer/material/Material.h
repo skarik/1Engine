@@ -151,6 +151,12 @@ namespace renderer
 			return *this;
 		}
 
+		RENDER_API Material& execute ( rrMaterialRenderFunction function )
+		{
+			function(this);
+			return *this;
+		}
+
 	public:
 		CRenderableObject*
 							m_object;

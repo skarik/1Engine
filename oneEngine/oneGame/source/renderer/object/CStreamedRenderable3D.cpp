@@ -71,7 +71,9 @@ bool CStreamedRenderable3D::Render ( const rrRenderParams* params )
 			.setRasterizerState()
 		// bind the samplers & textures
 			.setBlendState()
-			.setTextures();
+			.setTextures()
+		// post-material cb
+			.execute(m_postMaterialCb);
 		// bind the vertex buffers
 		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
 			if (m_currentMeshBuffer->m_bufferEnabled[i])

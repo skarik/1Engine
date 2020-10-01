@@ -10,8 +10,8 @@ namespace elements {
 	class DropdownList : public dusk::elements::List<PairedType>
 	{
 	public:
-		ENGCOM_API explicit		DropdownList()
-			: List()
+		explicit				DropdownList()
+			: List<PairedType>()
 		{}
 	};
 

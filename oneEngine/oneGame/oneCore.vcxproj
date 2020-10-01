@@ -263,7 +263,6 @@
     <ClCompile Include="source\core-ext\system\io\serializer\ISerialBinary.cpp" />
     <ClCompile Include="source\core-ext\system\io\serializer\OSerialBinary.cpp" />
     <ClCompile Include="source\core\callbacks\Events.cpp" />
-    <ClCompile Include="source\core\math\BoundingBox.cpp" />
     <ClCompile Include="source\core\math\Color.cpp" />
     <ClCompile Include="source\core\math\Cubic.cpp" />
     <ClCompile Include="source\core\math\Frustum.cpp" />
@@ -271,7 +270,6 @@
     <ClCompile Include="source\core\math\noise\Perlin.cpp" />
     <ClCompile Include="source\core\math\noise\SimplexNoise.cpp" />
     <ClCompile Include="source\core\math\noise\simplex_noise.cpp" />
-    <ClCompile Include="source\core\math\Plane.cpp" />
     <ClCompile Include="source\core\math\Polygon.cpp" />
     <ClCompile Include="source\core\math\Quadrilateral.cpp" />
     <ClCompile Include="source\core\math\Quaternion.cpp" />

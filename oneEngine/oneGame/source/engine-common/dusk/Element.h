@@ -37,19 +37,19 @@ namespace dusk
 	{
 	public:
 		// Constructor for defaul val
-		explicit				Element ( const ElementType inElementType = ElementType::kControl )
+		ENGCOM_API  explicit	Element ( const ElementType inElementType = ElementType::kControl )
 			: m_elementType(inElementType)
 			{}
-		virtual					~Element ( void )
+		ENGCOM_API  virtual		~Element ( void )
 			{}
 
 		//	Update() : Called every frame by the UI system.
 		// Default behavior is to update value of m_isMouseIn.
-		virtual void			Update ( const UIStepInfo* stepinfo );
+		ENGCOM_API virtual void	Update ( const UIStepInfo* stepinfo );
 		//	Render() : Renders the element.
 		// This does not actually directly render anything, but create meshes through the interface provided in UIRenderer.
 		// Default behavior is to not render anything.
-		virtual void			Render ( UIRendererContext* uir )
+		ENGCOM_API virtual void	Render ( UIRendererContext* uir )
 			{}
 
 		//	as<Element>() : Shorthand element typecast
@@ -57,7 +57,7 @@ namespace dusk
 		T*						as (void)
 			{ return static_cast<T*>(this); }
 
-		//	IsDialogType() : Is this a dialog? Used for type-safe instantiation of dialogs.
+		//	IsDialogElement() : Is this a dialog? Used for type-safe instantiation of dialogs.
 		static constexpr bool	IsDialogElement ( void )
 			{ return false; }
 
@@ -132,7 +132,7 @@ namespace dusk
 		virtual void			Hide ( void )
 			{}
 
-		//	IsDialogType() : Is this a dialog? Used for type-safe instantiation of dialogs.
+		//	IsDialogElement() : Is this a dialog? Used for type-safe instantiation of dialogs.
 		static constexpr bool	IsDialogElement ( void )
 			{ return true; }
 

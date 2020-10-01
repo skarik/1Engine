@@ -31,7 +31,7 @@ public:
 	// Operations
 	FORCE_INLINE Matrix3x3 transpose ( void ) const;
 	FORCE_INLINE Matrix3x3 inverse ( void ) const;
-	FORCE_INLINE Real det ( void ) const;
+	FORCE_INLINE Real determinant ( void ) const;
 	
 	FORCE_INLINE Matrix2x2 submatrix ( int, int ) const;
 
@@ -51,9 +51,8 @@ public:
 	// Transpose
 	FORCE_INLINE Matrix3x3 operator! ( void ) const;
 
-	// Accessor
+	// Accessors
 	FORCE_INLINE const Real* operator[] ( int ) const;
-	// Editor
 	FORCE_INLINE Real* operator[] ( int );
 
 	//Equal comparison overload

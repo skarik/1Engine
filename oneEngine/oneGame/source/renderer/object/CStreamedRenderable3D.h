@@ -55,6 +55,10 @@ protected:
 	//	GPU information
 	rrMeshBuffer			m_meshBufferAux;
 	rrMeshBuffer*			m_currentMeshBuffer;
+
+	//	Render callbacks
+	rrMaterialRenderFunction
+							m_postMaterialCb = NULL;
 };
 
 #endif//RENDER_C_STREAMED_RENDERABLE_3D_H_

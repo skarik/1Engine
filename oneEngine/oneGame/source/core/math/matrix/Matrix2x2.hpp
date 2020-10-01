@@ -104,7 +104,7 @@ FORCE_INLINE Matrix2x2 Matrix2x2::transpose ( void ) const
 // Matrix inverse 2x2
 FORCE_INLINE Matrix2x2 Matrix2x2::inverse ( void ) const
 {
-	Real detVal = det();
+	Real detVal = determinant();
 	if ( fabs( detVal ) <= 0.0005f )
 	{
 		return Matrix2x2();
@@ -122,7 +122,7 @@ FORCE_INLINE Matrix2x2 Matrix2x2::inverse ( void ) const
 }
 
 // Matrix determinant
-FORCE_INLINE Real Matrix2x2::det ( void ) const
+FORCE_INLINE Real Matrix2x2::determinant ( void ) const
 {
 	return ( (pData[0]*pData[3]) - (pData[1]*pData[2]) );
 }

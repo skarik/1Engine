@@ -1,5 +1,6 @@
 #include "core-ext/utils/MeshBuilder.h"
 #include "renderer/material/RrShaderProgram.h"
+#include "renderer/material/Material.h"
 #include "renderer/texture/RrTexture.h"
 #include "engine2d/entities/map/CollisionMap.h"
 #include "gpuw/Device.h"
@@ -96,9 +97,15 @@ bool CollisionMapRenderer::Render ( const rrRenderParams* params )
 	{
 		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
 
-		gfx->setFillMode( gpu::kFillModeWireframe );
+		m_postMaterialCb = [](renderer::Material* material)
+		{
+			gpu::RasterizerState rs;
+			rs.cullmode = material->m_pass->m_cullMode;
+			rs.fillmode = gpu::kFillModeWireframe;
+			material->m_ctx->setRasterizerState(rs);
+		};
 		CStreamedRenderable3D::Render(params);
-		gfx->setFillMode( gpu::kFillModeSolid );
+		m_postMaterialCb = NULL;
 	}
 	if (m_drawSolids)
 	{

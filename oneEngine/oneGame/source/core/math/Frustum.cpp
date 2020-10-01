@@ -55,7 +55,7 @@ core::math::Frustum::BoundingBoxIsInside ( const BoundingBox& box )
 	for ( int i = 0; i < 6; ++i )
 	{
 		// find the distance to this plane
-		bboxBehind = box.BoxOutsidePlane( plane[i].n, Vector3f( 0,0, -plane[i].d ) );
+		bboxBehind = box.BoxOutsidePlane( plane[i] );
 
 		if ( bboxBehind )
 			return kShapeCheckResultOutside;

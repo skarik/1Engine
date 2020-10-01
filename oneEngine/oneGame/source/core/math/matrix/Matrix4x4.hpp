@@ -390,7 +390,7 @@ FORCE_INLINE Matrix4x4 Matrix4x4::transpose ( void ) const
 // Matrix inverse general
 FORCE_INLINE Matrix4x4 Matrix4x4::inverse ( void ) const
 {
-	Real detVal = det();
+	Real detVal = determinant();
 	assert( detVal == detVal );
 	assert( detVal <= FLT_MAX && detVal >= -FLT_MAX );
 	if ( fabs( detVal ) <= 0.0005f )
@@ -408,7 +408,7 @@ FORCE_INLINE Matrix4x4 Matrix4x4::inverse ( void ) const
 			{
 				sign = 1 - ( (i +j) % 2 ) * 2;
 				mtemp = submatrix( i, j );
-				mresult[j][i] = ( mtemp.det() * sign ) / detVal;
+				mresult[j][i] = ( mtemp.determinant() * sign ) / detVal;
 			}
 		}
 		return mresult;
@@ -416,7 +416,7 @@ FORCE_INLINE Matrix4x4 Matrix4x4::inverse ( void ) const
 }
 
 // Matrix determinant of arbitrary size (TODO)
-FORCE_INLINE Real Matrix4x4::det ( void ) const
+FORCE_INLINE Real Matrix4x4::determinant ( void ) const
 {
 	Real   det, result = 0, i = 1;
 	Matrix3x3 msub;
@@ -424,7 +424,7 @@ FORCE_INLINE Real Matrix4x4::det ( void ) const
 	for ( n = 0; n < 4; n++, i *= -1 )
 	{
 		msub	= submatrix( 0, n );
-		det     = msub.det();
+		det     = msub.determinant();
 		result += pData[n] * det * i;
 	}
 	return( result );

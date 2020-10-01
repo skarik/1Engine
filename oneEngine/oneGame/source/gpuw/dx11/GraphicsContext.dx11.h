@@ -38,10 +38,6 @@ namespace gpu
 		// Returns gpu::kError_SUCCESS on no error.
 		GPUW_API int			validate ( void );
 
-		//	setFillMode( fillMode ) : Set fill mode.
-		// Controls how to fill polygons. (glPolygonMode in OpenGL)
-		GPUW_API int			setFillMode( const FillMode fillMode );
-
 		//	setRasterizerState( state ) : Sets rasterizer state for the next draw
 		GPUW_API int			setRasterizerState ( const RasterizerState& state );
 		//	setBlendState( state ) : Sets blend state for a single render target

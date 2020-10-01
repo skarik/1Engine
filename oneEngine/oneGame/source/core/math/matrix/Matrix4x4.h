@@ -43,7 +43,7 @@ public:
 	// Operations
 	FORCE_INLINE Matrix4x4 transpose ( void ) const;
 	FORCE_INLINE Matrix4x4 inverse ( void ) const;
-	FORCE_INLINE Real det ( void ) const;
+	FORCE_INLINE Real determinant ( void ) const;
 	
 	FORCE_INLINE Matrix3x3 submatrix ( int, int ) const;
 

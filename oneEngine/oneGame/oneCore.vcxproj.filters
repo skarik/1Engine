@@ -429,13 +429,7 @@
     <ClCompile Include="source\core\math\noise\simplex_noise.cpp">
       <Filter>SOURCE\Core\Math\Noise</Filter>
     </ClCompile>
-    <ClCompile Include="source\core\math\BoundingBox.cpp">
-      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
-    </ClCompile>
     <ClCompile Include="source\core\math\Cubic.cpp">
-      <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core\math\Plane.cpp">
       <Filter>SOURCE\Core\Math\Geometry %28filter only%29</Filter>
     </ClCompile>
     <ClCompile Include="source\core\math\Polygon.cpp">

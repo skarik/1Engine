@@ -301,7 +301,7 @@ FORCE_INLINE Matrix3x3 Matrix3x3::operator! ( void ) const
 // Matrix inverse general
 FORCE_INLINE Matrix3x3 Matrix3x3::inverse ( void ) const
 {
-	Real detVal = det();
+	Real detVal = determinant();
 	assert( detVal == detVal );
 	assert( detVal <= FLT_MAX && detVal >= -FLT_MAX );
 	if ( fabs( detVal ) <= 0.0005f )
@@ -319,14 +319,14 @@ FORCE_INLINE Matrix3x3 Matrix3x3::inverse ( void ) const
 			{
 				sign = 1 - ( (i +j) % 2 ) * 2;
 				mtemp = submatrix( i, j );
-				mresult[j][i] = ( mtemp.det() * sign ) / detVal;
+				mresult[j][i] = ( mtemp.determinant() * sign ) / detVal;
 			}
 		}
 		return mresult;
 	}
 }
 // Determinant
-FORCE_INLINE Real Matrix3x3::det ( void ) const
+FORCE_INLINE Real Matrix3x3::determinant ( void ) const
 {
 	return ( (pData[0]*pData[4]*pData[8]) + (pData[1]*pData[5]*pData[6]) + (pData[2]*pData[3]*pData[7])
 		- (pData[2]*pData[4]*pData[6]) - (pData[1]*pData[3]*pData[8]) - (pData[0]*pData[5]*pData[7]) );
@@ -502,12 +502,12 @@ FORCE_INLINE Matrix3x3 Matrix3x3::operator+= ( const Matrix3x3& right )
 	return (*this);
 }
 
-// Public Accessor
+// Accessors
+
 FORCE_INLINE const Real* Matrix3x3::operator[] ( int index ) const
 {
 	return &( pData[index*3] );
 }
-// Private Accessor and Editor
 FORCE_INLINE Real* Matrix3x3::operator[] ( int index )
 {
 	return &( pData[index*3] );

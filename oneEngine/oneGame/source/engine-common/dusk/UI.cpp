@@ -601,3 +601,15 @@ void dusk::UserInterface::ExitDialogue ( Element* element )
 		}
 	}
 }
+
+//	IsMouseInside() : Checks if mouse cursor is currently inside any active element
+bool dusk::UserInterface::IsMouseInside ( void )
+{
+	return std::any_of(
+		m_elements.begin(), m_elements.end(),
+		[](dusk::Element* element)
+		{ 
+			return element != NULL && element->m_isMouseIn;
+		}
+	);
+}

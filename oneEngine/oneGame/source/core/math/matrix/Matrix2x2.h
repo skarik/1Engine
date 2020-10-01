@@ -37,7 +37,7 @@ public:
 	// Operations
 	FORCE_INLINE Matrix2x2 transpose ( void ) const;
 	FORCE_INLINE Matrix2x2 inverse ( void ) const;
-	FORCE_INLINE Real det ( void ) const;
+	FORCE_INLINE Real determinant ( void ) const;
 
 	FORCE_INLINE Matrix2x2 LerpTo( Matrix2x2 const&, Real const ) const;
 	FORCE_INLINE void Lerp ( Matrix2x2 const&, Real const ); 

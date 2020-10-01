@@ -64,6 +64,9 @@
     <Filter Include="SOURCE\LD40\Interfaces">
       <UniqueIdentifier>{a30c3dde-b0a6-48df-97bb-61ca7c055d55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04\Eventide">
+      <UniqueIdentifier>{63171915-cd70-4332-b39f-a9b26999c24e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -177,6 +180,15 @@
     <ClInclude Include="source\m04-editor\standalone\CutsceneEditor.Renderers.h">
       <Filter>SOURCE\M04-Editor\Standalone</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04\eventide\Common.h">
+      <Filter>SOURCE\M04\Eventide</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04\eventide\UserInterface.h">
+      <Filter>SOURCE\M04\Eventide</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04\eventide\Element.h">
+      <Filter>SOURCE\M04\Eventide</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -283,6 +295,12 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\CutsceneEditor.Renderers.cpp">
       <Filter>SOURCE\M04-Editor\Standalone</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\eventide\UserInterface.cpp">
+      <Filter>SOURCE\M04\Eventide</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\eventide\Element.cpp">
+      <Filter>SOURCE\M04\Eventide</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

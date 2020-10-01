@@ -38,6 +38,8 @@ namespace renderer
 	class Material;
 }
 
+typedef void (*rrMaterialRenderFunction)(renderer::Material*);
+
 // Defines
 #ifndef RegisterRenderClassName
 #	define RegisterRenderClassName(_strname) public: virtual string GetTypeName ( void ) { return string(_strname); };

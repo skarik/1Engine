@@ -432,7 +432,7 @@ CMatrix<H,W> CMatrix<W,H>::transpose ( void )
 // Matrix inverse 2x2
 template<> inline CMatrix<2,2> CMatrix<2,2>::inverse ( void )
 {
-	Real detVal = det();
+	Real detVal = determinant();
 	if ( fabs( detVal ) <= 0.0005f )
 	{
 		return CMatrix<2,2>();
@@ -454,7 +454,7 @@ inline CMatrix<W,H> CMatrix<W,H>::inverse ( void )
 {
 	if ( W == H )
 	{
-		Real detVal = det();
+		Real detVal = determinant();
 		assert( detVal == detVal );
 		assert( detVal <= FLT_MAX && detVal >= -FLT_MAX );
 		if ( fabs( detVal ) <= 0.0005f )
@@ -472,7 +472,7 @@ inline CMatrix<W,H> CMatrix<W,H>::inverse ( void )
 				{
 					sign = 1 - ( (i +j) % 2 ) * 2;
 					mtemp = submatrix( i, j );
-					mresult[j][i] = ( mtemp.det() * sign ) / detVal;
+					mresult[j][i] = ( mtemp.determinant() * sign ) / detVal;
 				}
 			}
 			return mresult;
@@ -483,18 +483,18 @@ inline CMatrix<W,H> CMatrix<W,H>::inverse ( void )
 }
 
 // Matrix determinant
-template<> inline Real CMatrix<2,2>::det ( void )
+template<> inline Real CMatrix<2,2>::determinant ( void )
 {
 	return ( (pData[0]*pData[3]) - (pData[1]*pData[2]) );
 }
-template<> inline Real CMatrix<3,3>::det ( void )
+template<> inline Real CMatrix<3,3>::determinant ( void )
 {
 	return ( (pData[0]*pData[4]*pData[8]) + (pData[1]*pData[5]*pData[6]) + (pData[2]*pData[3]*pData[7])
 		- (pData[2]*pData[4]*pData[6]) - (pData[1]*pData[3]*pData[8]) - (pData[0]*pData[5]*pData[7]) );
 }
 // Matrix determinant of arbitrary size (TODO)
 template <int W, int H>
-inline Real CMatrix<W,H>::det ( void )
+inline Real CMatrix<W,H>::determinant ( void )
 {
 	Real   det, result = 0, i = 1;
 	CMatrix<W-1,H-1> msub;
@@ -502,7 +502,7 @@ inline Real CMatrix<W,H>::det ( void )
 	for ( n = 0; n < W; n++, i *= -1 )
 	{
 		msub	= submatrix( 0, n );
-		det     = msub.det();
+		det     = msub.determinant();
 		result += pData[n] * det * i;
 	}
 	return( result );
