@@ -3,8 +3,8 @@
 
 #include "RrTexture.h"
 
-//	class RrTexture : Resource-aware texture class, for 3D texture.
-// Instantiate with either RrTexture::Load or RrTexture::CreateUnitialized.
+//	class RrTexture3D : Resource-aware texture class, for 3D texture.
+// Instantiate with either RrTexture3D::Load3D, RrTexture3D::LoadAtlas, or RrTexture3D::CreateUnitialized.
 class RrTexture3D : public RrTexture
 {
 	TextureType( core::gfx::tex::kTextureClass3D );
@@ -18,13 +18,13 @@ protected:
 
 public: // Creation Interface
 
-	//	Load ( filename ) : Loads a texture from the disk.
+	//	Load3D ( filename ) : Loads a texture from the disk.
 	// May return a previously loaded instance of the texture.
 	// The reference count of the returned instance will not be incremented.
 	RENDER_API static RrTexture3D*
 							Load3D ( const char* resource_name );
 
-	//	Load ( filename ) : Loads a texture from the disk.
+	//	LoadAtlas ( filename ) : Loads a texture from the disk.
 	// May return a previously loaded instance of the texture.
 	// The reference count of the returned instance will not be incremented.
 	RENDER_API static RrTexture3D*

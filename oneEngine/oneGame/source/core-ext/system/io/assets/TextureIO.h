@@ -234,6 +234,11 @@ namespace core
 		bool			m_loadPalette;
 		// Load the animation?
 		bool			m_loadAnimation;
+		// Force a texture format?
+		bool			m_forceTextureFormat = false;
+		// Forced format?
+		core::gfx::tex::arColorFormat
+						m_forcedTextureFormat = core::gfx::tex::kColorFormatRGBA8;
 
 		//	Load targets:
 

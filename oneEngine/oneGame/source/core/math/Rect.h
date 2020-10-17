@@ -1,11 +1,9 @@
 #ifndef CORE_MATH_RECT_H_
 #define CORE_MATH_RECT_H_
 
-// Includes
 #include "core/types/types.h"
 #include "Vector2.h"
 
-// Class
 class Rect
 {
 public:
