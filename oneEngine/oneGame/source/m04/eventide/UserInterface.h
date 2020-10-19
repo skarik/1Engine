@@ -63,6 +63,8 @@ namespace eventide {
 
 		std::vector<Element*>	m_elements;
 		bool					m_elementsDirty = false;
+
+		std::vector<RrTexture*>	m_textures;
 	};
 
 }}

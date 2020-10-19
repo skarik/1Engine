@@ -66,12 +66,12 @@ struct rrFontTextureInfo
 
 struct rrFontTextureLoadParams
 {
-	int height;
-	int weight;
-	bool italic;
-	bool underline;
+	int				height = 18;
+	int				weight = kFW_Normal;
+	bool			italic = false;
+	bool			underline = false;
 
-	unsigned long characterSets;
+	unsigned long	characterSets = 0;
 };
 
 // ===CLASS===

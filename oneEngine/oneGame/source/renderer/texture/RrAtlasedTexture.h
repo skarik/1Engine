@@ -2,6 +2,7 @@
 #define RENDERER_ATLASED_TEXTURE_H_
 
 #include "RrTexture.h"
+#include <vector>
 
 struct rrAtlasedTextureEntry
 {
@@ -42,9 +43,13 @@ public:
 
 private:
 	
+	// Listing all textures that this atlas has
 	std::vector<rrAtlasedTextureEntry>
 						subtextures;
 
-}
+	// The texture data this texture has so far
+	uint32_t*			textureData;
+
+};
 
 #endif//RENDERER_ATLASED_TEXTURE_H_

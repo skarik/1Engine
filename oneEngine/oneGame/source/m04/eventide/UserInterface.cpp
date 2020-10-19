@@ -3,6 +3,9 @@
 #include "core/debug/Console.h"
 #include "../eventide/Element.h"
 
+#include "renderer/texture/RrTexture.h"
+#include "renderer/texture/RrFontTexture.h"
+
 static ui::eventide::UserInterface* l_ActiveManager = NULL;
 
 ui::eventide::UserInterface* ui::eventide::UserInterface::Get ( void )
@@ -130,3 +133,48 @@ void ui::eventide::UserInterface::Update ( void )
 	// Update mouse clickity clack:
 }
 
+ui::eventide::Texture ui::eventide::UserInterface::LoadTexture ( const char* filename )
+{
+	// Load texture
+	RrTexture* loaded_texture = RrTexture::Load(filename);
+	
+	// Check the internal texture list and add if needed
+	if (std::find(m_textures.begin(), m_textures.end(), loaded_texture) == m_textures.end())
+	{
+		loaded_texture->AddReference();
+		m_textures.push_back(loaded_texture);
+	}
+
+	return ui::eventide::Texture{loaded_texture};
+}
+
+ui::eventide::Texture ui::eventide::UserInterface::LoadTextureFont ( const char* filename )
+{
+	// Set load params
+	rrFontTextureLoadParams params;
+	params.characterSets = 0;
+	params.height = 24;
+	params.weight = kFW_Normal;
+
+	// Load texture
+	RrFontTexture* loaded_texture = RrFontTexture::Load(filename, params);
+
+	// Check the internal texture list and add if needed
+	if (std::find(m_textures.begin(), m_textures.end(), loaded_texture) == m_textures.end())
+	{
+		loaded_texture->AddReference();
+		m_textures.push_back(loaded_texture);
+	}
+
+	return ui::eventide::Texture{loaded_texture};
+}
+
+void ui::eventide::UserInterface::ReleaseTexture ( const Texture& texture )
+{
+	auto find_result = std::find(m_textures.begin(), m_textures.end(), texture.reference);
+	if (find_result != m_textures.end())
+	{
+		texture.reference->RemoveReference();
+		m_textures.erase(find_result);
+	}
+}

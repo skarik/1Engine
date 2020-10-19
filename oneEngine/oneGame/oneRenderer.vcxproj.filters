@@ -345,6 +345,9 @@
     <ClCompile Include="source\renderer\object\mesh\StreamedMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\texture\RrAtlasedTexture.cpp">
+      <Filter>SOURCE\Renderer\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glSystem.h">
@@ -628,6 +631,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\system\rrMeshBufferRing.h">
       <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\texture\RrAtlasedTexture.h">
+      <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

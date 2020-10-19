@@ -167,18 +167,76 @@ RrAtlasedTexture::Add ( const char* resource_name )
 		new_subtexture.pixel_size.y = loadInfo->loader.info.height;
 
 		// now find new position
-		// TODO
+		// loop through each Y, taking a minimum Y greater than current Y. If we cant find something at the current Y, then we go to the next minimum Y.
+		Vector2i current_position (0, 0);
+		int32_t next_minimum_y = 0;
+		bool has_found_position = false;
+		while (!has_found_position)
+		{
+			has_found_position = true;
+
+			// Loop through all the bounding boxes, looking for boxes in the Y range
+			for (const auto& subtexture : subtextures)
+			{
+				if (subtexture.pixel_position.y + subtexture.pixel_size.y > current_position.y
+					&& subtexture.pixel_position.y < current_position.y + (int32_t)subtextureinfo.height)
+				{
+					// in range of y, check if colliding with current x
+					if (subtexture.pixel_position.x + subtexture.pixel_size.x > current_position.x
+						&& subtexture.pixel_position.x < current_position.x + (int32_t)subtextureinfo.width)
+					{
+						// Position not free, we go to next position
+						has_found_position = false;
+						current_position.x = std::max<int32_t>(subtexture.pixel_position.x + subtexture.pixel_size.x, current_position.x);
+
+						// Update the next Y to check at when we go to the next row
+						if (next_minimum_y == current_position.y || subtexture.pixel_position.y + subtexture.pixel_size.y < next_minimum_y)
+						{
+							next_minimum_y = subtexture.pixel_position.y + subtexture.pixel_size.y;
+						}
+						
+						// Stop checking collision, check through everything again
+						break;
+					}
+				}
+			}
+
+			// If found position, check that we're in range
+			if (has_found_position)
+			{
+				if (current_position.x + subtextureinfo.width > info.width)
+				{
+					// Not in range, go to next row and continue
+					has_found_position = false;
+					current_position.x = 0;
+					current_position.y = next_minimum_y;
+					continue;
+				}
+				else
+				{
+					// Valid position, save this.
+					has_found_position = true;
+					new_subtexture.pixel_position = current_position;
+					new_subtexture.pixel_size = Vector2i(subtextureinfo.width, subtextureinfo.height);
+				}
+			}
+		}
 
 		// position found, copy it in line-by-line
 		uint32_t* input_data = (uint32_t*)loadInfo->data;
 		uint32_t* output_data = (uint32_t*)textureData;
-		for (uint32_t iy = 0; iy < new_subtexture.pixel_size.y; ++iy)
+		for (int32_t iy = 0; iy < new_subtexture.pixel_size.y; ++iy)
 		{
 			std::copy(
 				input_data + iy * new_subtexture.pixel_size.x, 
 				input_data + iy * (new_subtexture.pixel_size.x + 1),
 				output_data + new_subtexture.pixel_position.x + (new_subtexture.pixel_position.y + iy) * info.width);
 		}
+	}
+
+	// cleanup. done with data
+	{
+		delete[] loadInfo->data;
 	}
 
 	// Upload final
