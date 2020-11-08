@@ -72,17 +72,17 @@ void rrMeshBuffer::InitMeshBuffers ( arModelData* const modelData )
 		m_bufferEnabled[renderer::shader::kVBufferSlotBoneIndices] = true;
 	}
 	if (m_modeldata->texcoord1) {
-		m_buffer[renderer::shader::kVBufferSlotUV1].initAsVertexBuffer(NULL, gpu::kFormatR32G32SFloat, m_modeldata->vertexNum);
+		m_buffer[renderer::shader::kVBufferSlotUV1].initAsVertexBuffer(NULL, gpu::kFormatR32G32B32SFloat, m_modeldata->vertexNum);
 		m_buffer[renderer::shader::kVBufferSlotUV1].uploadElements(NULL, m_modeldata->texcoord1, m_modeldata->vertexNum, gpu::kTransferStatic);
 		m_bufferEnabled[renderer::shader::kVBufferSlotUV1] = true;
 	}
 	if (m_modeldata->texcoord2) {
-		m_buffer[renderer::shader::kVBufferSlotMaxPosition + 0].initAsVertexBuffer(NULL, gpu::kFormatR32G32SFloat, m_modeldata->vertexNum);
+		m_buffer[renderer::shader::kVBufferSlotMaxPosition + 0].initAsVertexBuffer(NULL, gpu::kFormatR32G32B32SFloat, m_modeldata->vertexNum);
 		m_buffer[renderer::shader::kVBufferSlotMaxPosition + 0].uploadElements(NULL, m_modeldata->texcoord2, m_modeldata->vertexNum, gpu::kTransferStatic);
 		m_bufferEnabled[renderer::shader::kVBufferSlotMaxPosition + 0] = true;
 	}
 	if (m_modeldata->texcoord3) {
-		m_buffer[renderer::shader::kVBufferSlotMaxPosition + 1].initAsVertexBuffer(NULL, gpu::kFormatR32G32SFloat, m_modeldata->vertexNum);
+		m_buffer[renderer::shader::kVBufferSlotMaxPosition + 1].initAsVertexBuffer(NULL, gpu::kFormatR32G32B32SFloat, m_modeldata->vertexNum);
 		m_buffer[renderer::shader::kVBufferSlotMaxPosition + 1].upload(NULL, m_modeldata->texcoord3, m_modeldata->vertexNum, gpu::kTransferStatic);
 		m_bufferEnabled[renderer::shader::kVBufferSlotMaxPosition + 1] = true;
 	}

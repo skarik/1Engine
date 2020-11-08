@@ -129,8 +129,15 @@ void ui::eventide::UserInterface::Update ( void )
 	}
 
 	// Update all transforms (perhaps this should be late-update?):
+	for (ui::eventide::Element* element : m_elements)
+	{
+		//
+	}
 
 	// Update mouse clickity clack:
+
+	// make the mouse ray
+	// loop thru all, check if mouse ray collides.
 }
 
 ui::eventide::Texture ui::eventide::UserInterface::LoadTexture ( const char* filename )

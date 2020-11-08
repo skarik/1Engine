@@ -168,23 +168,23 @@ struct arModelPhysicsDataInterleaved
 // Limit of 65000 vertices.
 struct arModelData
 {
-	uint16_t indexNum;
-	uint16_t vertexNum;
+	uint16_t indexNum = 0;
+	uint16_t vertexNum = 0;
 
-	uint16_t*	indices;
+	uint16_t*	indices		= NULL;
 
-	Vector3f*	position;
-	Vector3f*	texcoord0;
-	Vector3f*	normal;
-	Vector3f*	tangent;
-	Vector3f*	binormal;
-	Vector4f*	color;
+	Vector3f*	position	= NULL;
+	Vector3f*	texcoord0	= NULL;
+	Vector3f*	normal		= NULL;
+	Vector3f*	tangent		= NULL;
+	Vector3f*	binormal	= NULL;
+	Vector4f*	color		= NULL;
 	// 65534 bones are supported. Bone 0 and 65535 have special meaning.
-	Vector4u16*	bone;
-	Vector4f*	weight;
-	Vector3f*	texcoord1;
-	Vector3f*	texcoord2;
-	Vector3f*	texcoord3;
+	Vector4u16*	bone		= NULL;
+	Vector4f*	weight		= NULL;
+	Vector3f*	texcoord1	= NULL;
+	Vector3f*	texcoord2	= NULL;
+	Vector3f*	texcoord3	= NULL;
 };
 
 //	Default model data storage class.

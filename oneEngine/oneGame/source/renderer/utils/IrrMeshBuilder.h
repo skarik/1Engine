@@ -16,7 +16,7 @@ public:
 	//	Constructor (existing data)
 	// Sets up model, using the input data.
 	// As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
-	RENDER_API explicit		IrrMeshBuilder ( arModelData* preallocatedModelData );
+	RENDER_API explicit		IrrMeshBuilder ( arModelData* preallocatedModelData, uint16_t initialVertexCount = 0, uint16_t initialIndexCount = 0 );
 
 	//	Destructor ()
 	// Frees internal storage for reuse.
@@ -30,6 +30,10 @@ public:
 	// This is the value that would fill in for the vertex count in getModelData().
 	// The vertex count can be useful for patching in data that is not written by the builder.
 	RENDER_API uint16_t		getModelDataVertexCount ( void ) const;
+	//	getModelDataIndexCount () : Returns the current vertex count.
+	// This is the value that would fill in for the index count in getModelData().
+	// The index count can be useful for patching in data that is not written by the builder.
+	RENDER_API uint16_t		getModelDataIndexCount ( void ) const;
 
 	//	getPrimitiveMode () : returns the primitive mode this mesh builder would like to render in.
 	// Must be implemented by child classes.

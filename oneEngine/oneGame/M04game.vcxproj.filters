@@ -67,6 +67,9 @@
     <Filter Include="SOURCE\M04\Eventide">
       <UniqueIdentifier>{63171915-cd70-4332-b39f-a9b26999c24e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04\Eventide_Test">
+      <UniqueIdentifier>{26570b46-7fab-484b-b50f-fa19cdb53cd5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -189,6 +192,9 @@
     <ClInclude Include="source\m04\eventide\Element.h">
       <Filter>SOURCE\M04\Eventide</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04\eventide_test\CubicLabel.h">
+      <Filter>SOURCE\M04\Eventide_Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -301,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="source\m04\eventide\Element.cpp">
       <Filter>SOURCE\M04\Eventide</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\eventide_test\CubicLabel.cpp">
+      <Filter>SOURCE\M04\Eventide_Test</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

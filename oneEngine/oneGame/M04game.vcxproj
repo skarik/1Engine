@@ -101,6 +101,7 @@
     <ClInclude Include="source\m04\eventide\Common.h" />
     <ClInclude Include="source\m04\eventide\Element.h" />
     <ClInclude Include="source\m04\eventide\UserInterface.h" />
+    <ClInclude Include="source\m04\eventide_test\CubicLabel.h" />
     <ClInclude Include="source\m04\interfaces\MapIO.h" />
     <ClInclude Include="source\m04\m04-common.h" />
     <ClInclude Include="source\m04\scenes\sceneGameLuvPpl.h" />
@@ -141,6 +142,7 @@
     <ClCompile Include="source\m04\entities\UILuvPpl.cpp" />
     <ClCompile Include="source\m04\eventide\Element.cpp" />
     <ClCompile Include="source\m04\eventide\UserInterface.cpp" />
+    <ClCompile Include="source\m04\eventide_test\CubicLabel.cpp" />
     <ClCompile Include="source\m04\interfaces\MapIO.cpp" />
     <ClCompile Include="source\m04\m04-common.cpp" />
     <ClCompile Include="source\m04\scenes\sceneGameLuvPpl.cpp" />

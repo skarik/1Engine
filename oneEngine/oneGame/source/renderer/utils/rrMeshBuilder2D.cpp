@@ -25,8 +25,8 @@ rrMeshBuilder2D::rrMeshBuilder2D ( const uint16_t estimatedVertexCount )
 // Sets up model, using the input data.
 // As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
 // The screen mapping for the meshes created defaults to 1:1 pixel-mode mapping.
-rrMeshBuilder2D::rrMeshBuilder2D ( arModelData* preallocatedModelData )
-	: IrrMeshBuilder(preallocatedModelData)
+rrMeshBuilder2D::rrMeshBuilder2D ( arModelData* preallocatedModelData, uint16_t initialVertexCount, uint16_t initialIndexCount )
+	: IrrMeshBuilder(preallocatedModelData, initialVertexCount, initialIndexCount)
 {
 	setScreenMapping(
 		core::math::Cubic::FromPosition(
@@ -53,8 +53,8 @@ rrMeshBuilder2D::rrMeshBuilder2D ( const core::math::Cubic& screenMapping, const
 //	Constructor (cubic, existing data)
 // Sets up model, using the input data.
 // As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
-rrMeshBuilder2D::rrMeshBuilder2D ( const core::math::Cubic& screenMapping, arModelData* preallocatedModelData )
-	: IrrMeshBuilder(preallocatedModelData)
+rrMeshBuilder2D::rrMeshBuilder2D ( const core::math::Cubic& screenMapping, arModelData* preallocatedModelData, uint16_t initialVertexCount, uint16_t initialIndexCount )
+	: IrrMeshBuilder(preallocatedModelData, initialVertexCount, initialIndexCount)
 {
 	setScreenMapping(screenMapping);
 

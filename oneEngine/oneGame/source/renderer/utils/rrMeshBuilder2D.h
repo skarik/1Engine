@@ -20,7 +20,7 @@ public:
 	// Sets up model, using the input data.
 	// As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
 	// The screen mapping for the meshes created defaults to 1:1 pixel-mode mapping.
-	RENDER_API explicit		rrMeshBuilder2D ( arModelData* preallocatedModelData );
+	RENDER_API explicit		rrMeshBuilder2D ( arModelData* preallocatedModelData, uint16_t initialVertexCount = 0, uint16_t initialIndexCount = 0 );
 	//	Constructor (cubic, new data)
 	// Pulls a model from the the pool that has at least the estimated input size.
 	// If the estimation is incorrect, the data will be resized.
@@ -29,7 +29,7 @@ public:
 	//	Constructor (cubic, existing data)
 	// Sets up model, using the input data.
 	// As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
-	RENDER_API explicit		rrMeshBuilder2D ( const core::math::Cubic& screenMapping, arModelData* preallocatedModelData );
+	RENDER_API explicit		rrMeshBuilder2D ( const core::math::Cubic& screenMapping, arModelData* preallocatedModelData, uint16_t initialVertexCount = 0, uint16_t initialIndexCount = 0 );
 
 	//	getPrimitiveMode () : returns the primitive mode this mesh builder would like to render in.
 	// Must be implemented by child classes.

@@ -22,8 +22,8 @@ rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const uint16_t estimated
 // Sets up model, using the input data.
 // As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
 // The screen mapping for the meshes created defaults to 1:1 pixel-mode mapping.
-rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, arModelData* preallocatedModelData )
-	: rrMeshBuilder2D(preallocatedModelData), m_font_texture(font)
+rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, arModelData* preallocatedModelData, uint16_t initialVertexCount, uint16_t initialIndexCount )
+	: rrMeshBuilder2D(preallocatedModelData, initialVertexCount, initialIndexCount), m_font_texture(font)
 {
 	enableAttribute(renderer::shader::kVBufferSlotPosition);
 	enableAttribute(renderer::shader::kVBufferSlotUV0);
@@ -44,8 +44,8 @@ rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const core::math::Cubic&
 //	Constructor (cubic, existing data)
 // Sets up model, using the input data.
 // As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
-rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const core::math::Cubic& screenMapping, arModelData* preallocatedModelData )
-	: rrMeshBuilder2D(screenMapping, preallocatedModelData), m_font_texture(font)
+rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const core::math::Cubic& screenMapping, arModelData* preallocatedModelData, uint16_t initialVertexCount, uint16_t initialIndexCount )
+	: rrMeshBuilder2D(screenMapping, preallocatedModelData, initialVertexCount, initialIndexCount), m_font_texture(font)
 {
 	enableAttribute(renderer::shader::kVBufferSlotPosition);
 	enableAttribute(renderer::shader::kVBufferSlotUV0);

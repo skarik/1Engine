@@ -24,6 +24,8 @@ namespace eventide {
 	{
 		// Eventually index to something but for now, it's just another texture
 		RrTexture*				reference = NULL;
+		// We use this to pass into params so things get the right texture
+		uint32_t				index;
 	};
 
 	class Element;

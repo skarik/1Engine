@@ -38,8 +38,8 @@ IrrMeshBuilder::IrrMeshBuilder ( const uint16_t estimatedVertexCount )
 //	Constructor (existing data)
 // Sets up model, using the input data.
 // As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
-IrrMeshBuilder::IrrMeshBuilder ( arModelData* preallocatedModelData )
-	: m_vertexCount(0), m_indexCount(0), m_model(preallocatedModelData), m_model_isFromPool(false),
+IrrMeshBuilder::IrrMeshBuilder ( arModelData* preallocatedModelData, uint16_t initialVertexCount, uint16_t initialIndexCount )
+	: m_vertexCount(initialVertexCount), m_indexCount(initialIndexCount), m_model(preallocatedModelData), m_model_isFromPool(false),
 	m_enabledAttribs()
 {
 	; // Nothing needed to be done here. :)
@@ -79,6 +79,13 @@ arModelData IrrMeshBuilder::getModelData ( void ) const
 uint16_t IrrMeshBuilder::getModelDataVertexCount ( void ) const
 {
 	return m_vertexCount;
+}
+
+//	getModelDataIndexCount () : Returns the current vertex count.
+// This is the value that would fill in for the index count in getModelData().
+uint16_t IrrMeshBuilder::getModelDataIndexCount ( void ) const
+{
+	return m_indexCount;
 }
 
 //	enableAttribute ( attrib ) : Enables storage for the given attribute
