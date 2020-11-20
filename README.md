@@ -1,16 +1,14 @@
 1Engine: primary repo
 =====================
 
-1Engine is a simple single-thread engine meant for extremely simple 2D games and overly complicated 3D games. Cross-platform support is planned.
+1Engine is a simple single-thread engine meant for extremely simple 2D games, overly complicated 3D games, and hobbled-together tools. Cross-platform support is planned.
 
 The original EHS engine, now mostly passion project. This the **primary repo** with all code that is able to be legally public.
-
-**For those with low bandwidth: this will use more than 200 MB of bandwidth to download. This will eventually change as ancient 3rd party binaries are removed from the history.**
 
 ## Prerequisites
 
 For Windows, the following are required:
-* Visual Studio 2015 or later.
+* Visual Studio 2017 or later.
 * Some version of the DirectX or Windows SDK (used for Xbox controller support and DirectX support).
 * Relevant SDK for the rendering API being used (except OpenGL, that just magically works).
 * Vulkan SDK (used for compiling shaders for OpenGL and DirectX).
