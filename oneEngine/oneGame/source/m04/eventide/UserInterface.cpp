@@ -146,13 +146,14 @@ ui::eventide::Texture ui::eventide::UserInterface::LoadTexture ( const char* fil
 	RrTexture* loaded_texture = RrTexture::Load(filename);
 	
 	// Check the internal texture list and add if needed
-	if (std::find(m_textures.begin(), m_textures.end(), loaded_texture) == m_textures.end())
+	auto texture_location = std::find(m_textures.begin(), m_textures.end(), loaded_texture);
+	if (texture_location == m_textures.end())
 	{
 		loaded_texture->AddReference();
 		m_textures.push_back(loaded_texture);
 	}
 
-	return ui::eventide::Texture{loaded_texture};
+	return ui::eventide::Texture{loaded_texture, (uint32_t)std::distance(m_textures.begin(), texture_location)};
 }
 
 ui::eventide::Texture ui::eventide::UserInterface::LoadTextureFont ( const char* filename )
@@ -167,13 +168,14 @@ ui::eventide::Texture ui::eventide::UserInterface::LoadTextureFont ( const char*
 	RrFontTexture* loaded_texture = RrFontTexture::Load(filename, params);
 
 	// Check the internal texture list and add if needed
-	if (std::find(m_textures.begin(), m_textures.end(), loaded_texture) == m_textures.end())
+	auto texture_location = std::find(m_textures.begin(), m_textures.end(), loaded_texture);
+	if (texture_location == m_textures.end())
 	{
 		loaded_texture->AddReference();
 		m_textures.push_back(loaded_texture);
 	}
 
-	return ui::eventide::Texture{loaded_texture};
+	return ui::eventide::Texture{loaded_texture, (uint32_t)std::distance(m_textures.begin(), texture_location)};
 }
 
 void ui::eventide::UserInterface::ReleaseTexture ( const Texture& texture )

@@ -58,6 +58,8 @@ namespace eventide {
 			kUV1_Slot6_G_TextureIndex = 1,
 			kUV1_Slot6_B_TextureIndex = 2,
 		};
+		static constexpr float	kVETextureEnableOff = 0.0F;
+		static constexpr float	kVETextureEnableOn = 1.0F;
 
 		// Current state of mesh creation
 		MeshCreationState		mesh_creation_state;

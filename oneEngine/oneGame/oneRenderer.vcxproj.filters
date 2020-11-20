@@ -348,6 +348,9 @@
     <ClCompile Include="source\renderer\texture\RrAtlasedTexture.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\utils\rrMeshBuilder.cpp">
+      <Filter>SOURCE\Renderer\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glSystem.h">
