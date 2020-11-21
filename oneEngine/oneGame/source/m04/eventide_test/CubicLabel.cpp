@@ -1,23 +1,27 @@
 #include "CubicLabel.h"
+#include "m04/eventide/UserInterface.h"
 
 ETCubicLabel::ETCubicLabel ( ui::eventide::UserInterface* ui )
 	: Element(ui)
 {
+	m_fontTexture = LoadTextureFont("YanoneKaffeesatz-B.otf");
 }
 
 ETCubicLabel::~ETCubicLabel ( void )
 {
-	;
+	ReleaseTexture(m_fontTexture);
 }
 
 void ETCubicLabel::BuildMesh ( void )
 {
 	ParamsForCube cubeParams;
-	cubeParams.color = m_mouseInside ? Color(0.2, 0.2, 0.5, 1.0) : Color(0.2, 0.2, 0.2, 1.0);
+	cubeParams.color = GetMouseInside() ? Color(0.2, 0.2, 0.5, 1.0) : Color(0.2, 0.2, 0.2, 1.0);
+	//cubeParams.box
 	buildCube(cubeParams);
 
 	ParamsForText textParams;
 	textParams.string = "Hello world!";
+	textParams.font_texture = &m_fontTexture;
 	buildText(textParams);
 }
 

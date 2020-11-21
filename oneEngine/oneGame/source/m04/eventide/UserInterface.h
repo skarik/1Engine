@@ -20,14 +20,6 @@ namespace dawn
 namespace ui {
 namespace eventide {
 
-	struct Texture
-	{
-		// Eventually index to something but for now, it's just another texture
-		RrTexture*				reference = NULL;
-		// We use this to pass into params so things get the right texture
-		uint32_t				index;
-	};
-
 	class Element;
 
 	//	Manager class for the Eventide UI system. Can be automatically created by controls.
@@ -67,6 +59,12 @@ namespace eventide {
 		bool					m_elementsDirty = false;
 
 		std::vector<RrTexture*>	m_textures;
+
+	private:
+		// Element that is currently focused. Used for alternative inputs.
+		Element*				m_currentFocusedElement;
+		// Element that the mouse is currently over. Used to track mouse events.
+		Element*				m_currentMouseOverElement;
 	};
 
 }}

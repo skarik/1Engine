@@ -16,6 +16,7 @@ namespace eventide {
 	class Element
 	{
 	public:
+		friend UserInterface; // User interface updates various mouse & focus states.
 
 		enum class MouseInteract
 		{
@@ -25,6 +26,36 @@ namespace eventide {
 			kBlocking = 1,
 			// The mouse is blocked by the element, and captures mouse events.
 			kCapturing = 2,
+		};
+
+		enum class FocusInteract
+		{
+			// The element can not be focus-cycled, nor focused.
+			kNone = 0,
+			// The element can be focus-cycled and focused.
+			kFocusable = 1,
+			// The element can not be focus-cycled, but can be focused in other means.
+			kFocusableNoCycle = 2,
+		};
+
+		struct InputInteractMasks 
+		{
+			enum Type : uint32_t
+			{
+				kNone = 0,
+				// Enter is forwarded as an Activate event.
+				kActivateEnter = 0x01,
+				// Space is forwarded as an Activate event.
+				kActivateSpace = 0x02,
+				// Enter and Space is forwarded as an Activate event.
+				kActivateButton = kActivateEnter | kActivateSpace,
+
+				// Allows keystrokes to be forwarded to the element
+				kKeyboardPress = 0x04,
+
+				// Does this get inputs even when not focused
+				kCatchAll = 0xF000,
+			};
 		};
 
 	public:
@@ -102,6 +133,7 @@ namespace eventide {
 			};
 
 			Type				type = Type::kInvalid;
+			uint8_t				button = 0;
 			Vector3f			position_world;
 			Vector2f			position_screen;
 			Vector2f			velocity_screen;
@@ -114,12 +146,42 @@ namespace eventide {
 								OnEventMouse ( const EventMouse& mouse_event )
 			{}
 
-		// manager->LoadTexture
-		// manager->ReleaseTexture
+		struct EventInput
+		{
+			enum class Type
+			{
+				kInvalid,
+				kActivate,
+			};
 
+			Type				type = Type::kInvalid;
+		};
+
+		//	virtual OnEventInput() : Called when the given input occurs.
+		EVENTIDE_API virtual void
+								OnEventInput ( const EventInput& input_event )
+			{}
+
+	protected:
+
+		//	LoadTexture() : Loads a texture, using ui->LoadTexture().
+		EVENTIDE_API ui::eventide::Texture
+								LoadTexture ( const char* filename );
+
+		//	LoadTextureFont() : Loads a font, using ui->LoadTextureFont().
+		EVENTIDE_API ui::eventide::Texture
+								LoadTextureFont ( const char* filename );
+
+		//	ReleaseTexture() : Frees a texture, using ui->ReleaseTexture().
+		EVENTIDE_API void		ReleaseTexture ( const ui::eventide::Texture& texture );
+
+	public:
 		EVENTIDE_API const core::math::BoundingBox&
 								GetBBox ( void ) const
 			{ return m_bbox; }
+		EVENTIDE_API const core::math::BoundingBox&
+								GetBBoxAbsolute ( void ) const
+			{ return m_bboxAbsolute; }
 
 		EVENTIDE_API void		SetParent ( Element* parent ) const;
 
@@ -127,8 +189,32 @@ namespace eventide {
 								GetParent ( void ) const
 			{ return m_parent; }
 
+		EVENTIDE_API const MouseInteract
+								GetMouseInteract ( void ) const
+			{ return m_mouseInteract; }
+		EVENTIDE_API const FocusInteract
+								GetFocusInteract ( void ) const
+			{ return m_focusInteract; }
+		EVENTIDE_API const uint32_t
+								GetInputInteractMask ( void ) const
+			{ return m_inputInteractMask; }
+
+		EVENTIDE_API const bool	GetMouseInside ( void ) const
+			{ return m_mouseInside; }
+		EVENTIDE_API const bool	GetFocused ( void ) const
+			{ return m_focused; }
+
 	protected:
+		// Local-space bounding box of the element. Used for mouse collision.
+		// The offset is calculated against center of the bounding box of the parent.
 		core::math::BoundingBox	m_bbox;
+
+	private:
+		// "World"-space bounding box of the element.
+		core::math::BoundingBox m_bboxAbsolute;
+
+	protected:
+		// UI this element is associated with.
 		UserInterface*			m_ui = NULL;
 
 		// Parent element to float position on
@@ -136,11 +222,22 @@ namespace eventide {
 		
 		// How does the mouse interact with this element?
 		MouseInteract			m_mouseInteract = MouseInteract::kNone;
+		// How does the tab & inputs focus work with this element?
+		FocusInteract			m_focusInteract = FocusInteract::kNone;
+		// How does the various inputs work with this element?
+		uint32_t				m_inputInteractMask = InputInteractMasks::kNone;
 
+	private:
 		// Is the mouse inside this element? Updated by the UI manager
 		bool					m_mouseInside = false;
+
+	protected:
 		// Are we locking the mouse to this element for now?
 		bool					m_mouseLocked = false;
+
+	private:
+		// Is this element focused? Updated by the UI manager
+		bool					m_focused = false;
 	};
 
 }}

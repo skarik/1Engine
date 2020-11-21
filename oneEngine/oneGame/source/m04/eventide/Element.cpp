@@ -99,3 +99,21 @@ void ui::eventide::Element::buildText ( const ParamsForText& params )
 		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_G_TextureIndex] = (Real)params.font_texture->index;
 	}
 }
+
+ui::eventide::Texture ui::eventide::Element::LoadTexture ( const char* filename )
+{
+	ARCORE_ASSERT(m_ui != NULL);
+	return m_ui->LoadTexture(filename);
+}
+
+ui::eventide::Texture ui::eventide::Element::LoadTextureFont ( const char* filename )
+{
+	ARCORE_ASSERT(m_ui != NULL);
+	return m_ui->LoadTextureFont(filename);
+}
+
+void ui::eventide::Element::ReleaseTexture ( const ui::eventide::Texture& texture )
+{
+	ARCORE_ASSERT(m_ui != NULL);
+	m_ui->ReleaseTexture(texture);
+}

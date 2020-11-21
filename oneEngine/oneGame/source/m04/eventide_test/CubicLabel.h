@@ -14,6 +14,9 @@ public:
 
 	virtual void			OnEventMouse ( const EventMouse& mouse_event ) override;
 
+private:
+	ui::eventide::Texture	m_fontTexture;
+
 };
 
 #endif//EVENTIDE_TEST_CUBIC_LABEL_H_

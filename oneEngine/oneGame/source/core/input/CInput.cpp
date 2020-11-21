@@ -173,7 +173,7 @@ bool CInput::KeyupAny ( void )
 
 unsigned char CInput::GetTypeChar ( void )
 {
-	/// First get the key pressed
+	// First get the key pressed
 	unsigned char kc = 0;
 	for ( unsigned short i = 0; i < 256; ++i ) {
 		if (( i == Keys.Control )||( i == Keys.Shift )) {

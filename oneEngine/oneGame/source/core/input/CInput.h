@@ -39,14 +39,24 @@ public:
 	static inline void		_keydown ( unsigned char const keycode_ascii, bool state );
 	static inline void		_keyup ( unsigned char const keycode_ascii, bool state );
 
+	//	Keypress(keycode) : Checks if the key is currently down.
 	CORE_API static bool	Keypress ( unsigned char const keycode_ascii );
+	//	Key(keycode) : Checks if the key is currently down.
+	// Alias for Keypress().
 	CORE_API static bool	Key ( unsigned char const keycode_ascii );
+	//	Keydown(keycode) : Checks if the key was pressed in the previous frame.
 	CORE_API static bool	Keydown ( unsigned char const keycode_ascii );
+	//	Keydown(keycode) : Checks if the key was released in the previous frame.
 	CORE_API static bool	Keyup ( unsigned char const keycode_ascii );
+	//	KeypressAny() : Checks if any key is currently down.
 	CORE_API static bool	KeypressAny ( void );
+	//	KeydownAny() : Checks if any key was pressed in the previous frame.
 	CORE_API static bool	KeydownAny ( void );
+	//	KeyupAny() : Checks if any key was released in the previous frame.
 	CORE_API static bool	KeyupAny ( void );
 
+	//	GetTypeChar() : Returns the last typed character.
+	// TODO: Should queue up data from events in case of low framerates
 	CORE_API static unsigned char	GetTypeChar ( void );
 	
 	CORE_API static void		SetMouseSensitivity ( const Real sensitivity );

@@ -434,7 +434,7 @@ void CutsceneEditor::doEditorContextMenu ( void )
 					int menu_value = m_contextMenu_entries[l_clickedindex].value;
 					if ( menu_value == kContextValueBreakConnection && m_mouseover_connector_output )
 					{
-						breakConnectionFrom(&m_nodes[m_mouseover_index], m_mouseover_connectorindex);
+						breakConnectionFrom(&m_nodes[m_mouseover_index], (int)m_mouseover_connectorindex);
 					}
 				}
 
