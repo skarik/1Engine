@@ -6,9 +6,9 @@
 layout(location = 0) in vec4 v2f_colors;
 layout(location = 1) in vec4 v2f_position;
 layout(location = 2) in vec2 v2f_texcoord0;
-layout(location = 3) in vec2 v2f_normal;
+layout(location = 3) in vec3 v2f_normal;
 layout(location = 4) in float v2f_textureStrength;
-layout(location = 5) in int v2f_textureIndex;
+layout(location = 5) in flat int v2f_textureIndex;
 
 // Outputs
 layout(location = 0) out vec4 FragDiffuse;
@@ -38,7 +38,30 @@ void main ( void )
 	primColor.a = v2f_colors.a * sys_DiffuseColor.a;
 	
 	// Generate text colors 
+#if 0
 	textColor = texture( textureSamplers[v2f_textureIndex], v2f_texcoord0 );
+#else
+	switch (v2f_textureIndex)
+	{
+	case 0: textColor = texture( textureSamplers[0], v2f_texcoord0 ); break;
+	case 1: textColor = texture( textureSamplers[1], v2f_texcoord0 ); break;
+	case 2: textColor = texture( textureSamplers[2], v2f_texcoord0 ); break;
+	case 3: textColor = texture( textureSamplers[3], v2f_texcoord0 ); break;
+	case 4: textColor = texture( textureSamplers[4], v2f_texcoord0 ); break;
+	case 5: textColor = texture( textureSamplers[5], v2f_texcoord0 ); break;
+	case 6: textColor = texture( textureSamplers[6], v2f_texcoord0 ); break;
+	case 7: textColor = texture( textureSamplers[7], v2f_texcoord0 ); break;
+	case 8: textColor = texture( textureSamplers[8], v2f_texcoord0 ); break;
+	case 9: textColor = texture( textureSamplers[9], v2f_texcoord0 ); break;
+	case 10: textColor = texture( textureSamplers[10], v2f_texcoord0 ); break;
+	case 11: textColor = texture( textureSamplers[11], v2f_texcoord0 ); break;
+	case 12: textColor = texture( textureSamplers[12], v2f_texcoord0 ); break;
+	case 13: textColor = texture( textureSamplers[13], v2f_texcoord0 ); break;
+	case 14: textColor = texture( textureSamplers[14], v2f_texcoord0 ); break;
+	case 15: textColor = texture( textureSamplers[15], v2f_texcoord0 ); break;
+	default: textColor = vec4(0,0,0,0); break;
+	}
+#endif
 	textColor.a = sqrt(textColor.a) * v2f_colors.a * sys_DiffuseColor.a;
 	
 	// Select correct shape type

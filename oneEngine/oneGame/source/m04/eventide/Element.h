@@ -183,7 +183,7 @@ namespace eventide {
 								GetBBoxAbsolute ( void ) const
 			{ return m_bboxAbsolute; }
 
-		EVENTIDE_API void		SetParent ( Element* parent ) const;
+		EVENTIDE_API void		SetParent ( Element* parent );
 
 		EVENTIDE_API const Element*
 								GetParent ( void ) const

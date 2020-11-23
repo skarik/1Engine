@@ -7,6 +7,7 @@
 #include "renderer/logic/RrLogicObject.h"
 
 class RrTexture;
+class CStreamedRenderable3D;
 
 namespace dusk
 {
@@ -43,6 +44,13 @@ namespace eventide {
 		//	Update() : Per-frame update
 		EVENTIDE_API void		Update ( void ) override;
 
+		//	PostStep() : Threaded post-render
+		EVENTIDE_API void		PostStep ( void ) override;
+		//	PostStepSynchronus() : Synchronous post-render
+		EVENTIDE_API void		PostStepSynchronus ( void ) override;
+		//	PreStepSynchronus() : Synchronous pre-render
+		EVENTIDE_API void		PreStepSynchronus ( void ) override;
+
 		EVENTIDE_API void		AddElement ( Element* element );
 		EVENTIDE_API void		RemoveElement ( Element* element );
 
@@ -62,9 +70,14 @@ namespace eventide {
 
 	private:
 		// Element that is currently focused. Used for alternative inputs.
-		Element*				m_currentFocusedElement;
+		Element*				m_currentFocusedElement = NULL;
 		// Element that the mouse is currently over. Used to track mouse events.
-		Element*				m_currentMouseOverElement;
+		Element*				m_currentMouseOverElement = NULL;
+
+	private:
+		CStreamedRenderable3D*	m_renderable = NULL;
+		uint32_t				m_renderableStreamedIndexStorageSize = 0;
+		uint32_t				m_renderableStreamedVertexStorageSize = 0;
 	};
 
 }}

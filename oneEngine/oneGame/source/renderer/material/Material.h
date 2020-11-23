@@ -153,7 +153,10 @@ namespace renderer
 
 		RENDER_API Material& execute ( rrMaterialRenderFunction function )
 		{
-			function(this);
+			if (function != NULL)
+			{
+				function(this);
+			}
 			return *this;
 		}
 

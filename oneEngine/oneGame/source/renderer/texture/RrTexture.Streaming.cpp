@@ -77,7 +77,10 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 				void* target = loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferStatic);
 
 				// Copy data to the target
-				memcpy(target, upload_request->data, core::gfx::tex::getColorFormatByteSize(upload_request->format) * upload_request->width * upload_request->height);
+				if (upload_request->data != NULL)
+				{
+					memcpy(target, upload_request->data, core::gfx::tex::getColorFormatByteSize(upload_request->format) * upload_request->width * upload_request->height);
+				}
 
 				// Unmap and upload
 				loadInfo->pixelBuffer[0].unmap(NULL);

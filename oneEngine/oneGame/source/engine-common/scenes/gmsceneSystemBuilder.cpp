@@ -128,9 +128,8 @@ int EngineCommon::BuildToTarget ( const std::string& n_cmd )
 	return 0;
 }
 
-#include <filesystem>
+#include "core-ext/std/filesystem.h"
 #include <thread>
-namespace fs = std::tr2::sys;
 
 void BuildWithInformation ( const char* n_build_directory, const buildMode_t n_build_mode, const uint32_t n_rebuild_mask )
 {

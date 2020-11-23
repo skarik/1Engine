@@ -12,9 +12,9 @@ layout(location = 6) in vec3 mdl_TextureInfo;
 layout(location = 0) out vec4 v2f_colors;
 layout(location = 1) out vec4 v2f_position;
 layout(location = 2) out vec2 v2f_texcoord0;
-layout(location = 3) out vec2 v2f_normal;
+layout(location = 3) out vec3 v2f_normal;
 layout(location = 4) out float v2f_textureStrength;
-layout(location = 5) out int v2f_textureIndex;
+layout(location = 5) out flat int v2f_textureIndex;
 
 // Cbuffers
 layout(binding = 0, std140) uniform sys_cbuffer_PerObject

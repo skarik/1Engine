@@ -27,8 +27,8 @@ static int listen ( std::string const& )
 {
 #ifdef _ENGINE_DEBUG
 	//engine::Console->RunCommand( "scene game_luvppl" );
-	//engine::Console->RunCommand( "scene m04devmenu" );
-	engine::Console->RunCommand( "scene editorcts" );
+	engine::Console->RunCommand( "scene m04devmenu" );
+	//engine::Console->RunCommand( "scene editorcts" );
 #else
 	engine::Console->RunCommand( "scene game_luvppl" );
 #endif

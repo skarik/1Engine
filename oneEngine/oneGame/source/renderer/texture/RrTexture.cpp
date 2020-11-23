@@ -19,8 +19,6 @@ RrTexture::Load ( const char* resource_name )
 	arstring256 resource_str_id (resource_name);
 	core::utils::string::ToResourceName(resource_str_id);
 
-	// TODO: Cache the lookup misses, return NULL.
-
 	// First, find the texture in the resource system:
 	IArResource* existingResource = resm->Find(core::kResourceTypeRrTexture, resource_str_id);
 	if (existingResource != NULL)
@@ -31,7 +29,12 @@ RrTexture::Load ( const char* resource_name )
 		return existingTexture;
 	}
 
-	// TODO: Check if the file exists. Required for 2D to fail gracefully.
+	// TODO: Cache the lookup misses, return NULL.
+	// Check if the file exists. Required for 2D to fail gracefully.
+	if (!core::Resources::Exists(resource_name))
+	{
+		return NULL;
+	}
 
 	// We need to create a new texture:
 	RrTexture* texture = new RrTexture(resource_str_id, resource_name);
@@ -47,6 +50,7 @@ RrTexture*
 RrTexture::CreateUnitialized ( const char* name )
 {
 	arstring256 resource_str_id (name);
+	core::utils::string::ToResourceName(resource_str_id);
 
 	// We need to create a new texture:
 	RrTexture* texture = new RrTexture(resource_str_id, NULL);

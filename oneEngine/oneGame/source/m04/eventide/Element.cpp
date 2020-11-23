@@ -30,7 +30,7 @@ void ui::eventide::Element::RequestUpdateMesh ( void )
 
 	mesh_creation_state.building_mesh = false;
 
-	// upload mesh
+	// upload mesh (done elsewhere)
 	// TODO: don't update for now
 	mesh_creation_state.has_change = true;
 }
@@ -116,4 +116,9 @@ void ui::eventide::Element::ReleaseTexture ( const ui::eventide::Texture& textur
 {
 	ARCORE_ASSERT(m_ui != NULL);
 	m_ui->ReleaseTexture(texture);
+}
+
+void ui::eventide::Element::SetParent ( Element* parent )
+{
+	m_parent = parent;
 }

@@ -3,12 +3,16 @@
 #include "core/debug/Console.h"
 #include "core/system/Screen.h"
 #include "core/input/CInput.h"
-#include "../eventide/Element.h"
+
+#include "core-ext/threads/Jobs.h"
 
 #include "renderer/texture/RrTexture.h"
 #include "renderer/texture/RrFontTexture.h"
-
 #include "renderer/camera/RrCamera.h"
+#include "renderer/object/CStreamedRenderable3D.h"
+#include "renderer/material/RrShaderProgram.h"
+
+#include "../eventide/Element.h"
 
 static ui::eventide::UserInterface* l_ActiveManager = NULL;
 
@@ -32,11 +36,24 @@ ui::eventide::UserInterface::UserInterface ( dusk::UserInterface* duskUI, dawn::
 	: m_duskUI(duskUI)
 	, m_dawnUI(dawnUI)
 {
-	;
+	// Create renderable
+	m_renderable = new CStreamedRenderable3D();
+
+	RrPass uiPass;
+	uiPass.utilSetupAsDefault();
+	uiPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/eventide_default_vv.spv", "shaders/v2d/eventide_default_p.spv"}) );
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor,
+											renderer::shader::Location::kNormal,
+											renderer::shader::Location::kUV1};
+	m_renderable->PassInitWithInput(0, &uiPass);
 }
 
 ui::eventide::UserInterface::~UserInterface ( void )
 {
+	delete m_renderable;
+
 	m_shuttingDown = true;
 
 	// Free all allocated elements now
@@ -368,4 +385,130 @@ void ui::eventide::UserInterface::ReleaseTexture ( const Texture& texture )
 		texture.reference->RemoveReference();
 		m_textures.erase(find_result);
 	}
+}
+
+
+struct MeshOffsets
+{
+	uint32_t	indexOffset;
+	uint32_t	vertexOffset;
+};
+
+//	PostStep() : Threaded post-render
+void ui::eventide::UserInterface::PostStep ( void )
+{
+	std::vector<MeshOffsets> l_meshOffsets (m_elements.size());
+	MeshOffsets l_trackedOffset = {0, 0};
+
+	// Generate the offsets for each mesh
+	for (uint32_t elementIndex = 0; elementIndex < m_elements.size(); ++elementIndex)
+	{
+		const Element* element = m_elements[elementIndex];
+		ARCORE_ASSERT(element != NULL);
+
+		// Skip in-progress meshes
+		if (element->mesh_creation_state.building_mesh)
+		{
+			continue;
+		}
+
+		// Save current offset
+		l_meshOffsets[elementIndex] = l_trackedOffset;
+
+		// Generate next offset based on the amount of geometry this will add
+		l_trackedOffset.indexOffset += element->mesh_creation_state.index_count;
+		l_trackedOffset.vertexOffset += element->mesh_creation_state.vertex_count;
+	}
+
+	// Update sizes for the model data
+	arModelData* modeldata = m_renderable->GetModelData();
+	if (l_trackedOffset.indexOffset > m_renderableStreamedIndexStorageSize)
+	{
+		delete[] modeldata->indices;
+		m_renderableStreamedIndexStorageSize = l_trackedOffset.indexOffset;
+		modeldata->indices = new uint16_t[m_renderableStreamedIndexStorageSize];
+	}
+	if (l_trackedOffset.vertexOffset > m_renderableStreamedVertexStorageSize)
+	{
+		delete[] modeldata->position;
+		delete[] modeldata->normal;
+		delete[] modeldata->color;
+		delete[] modeldata->texcoord0;
+		delete[] modeldata->texcoord1;
+		m_renderableStreamedVertexStorageSize = l_trackedOffset.indexOffset;
+		modeldata->position = new Vector3f[m_renderableStreamedVertexStorageSize];
+		modeldata->normal = new Vector3f[m_renderableStreamedVertexStorageSize];
+		modeldata->color = new Vector4f[m_renderableStreamedVertexStorageSize];
+		modeldata->texcoord0 = new Vector3f[m_renderableStreamedVertexStorageSize];
+		modeldata->texcoord1 = new Vector3f[m_renderableStreamedVertexStorageSize];
+	}
+	modeldata->indexNum = l_trackedOffset.indexOffset;
+	modeldata->vertexNum = l_trackedOffset.vertexOffset;
+
+	// Copy the meshes for each mesh into the correct part of the final mesh
+	std::vector<core::jobs::JobId> l_jobsToWaitOn (m_elements.size());
+	for (uint32_t elementIndex = 0; elementIndex < m_elements.size(); ++elementIndex)
+	{
+		// Skip in-progress meshes
+		if (m_elements[elementIndex]->mesh_creation_state.building_mesh)
+		{
+			continue;
+		}
+
+		l_jobsToWaitOn[elementIndex] = core::jobs::System::Current::AddJobRequest([this, elementIndex, &modeldata, &l_meshOffsets](void)
+		{
+			const Element* element = m_elements[elementIndex];
+			const MeshOffsets& target_offset = l_meshOffsets[elementIndex];
+			
+			// Copy the indicies over
+			std::copy(element->mesh_creation_state.mesh_data.indices, 
+					  element->mesh_creation_state.mesh_data.indices + element->mesh_creation_state.index_count,
+					  modeldata->indices + target_offset.indexOffset);
+
+			// Update the indicies for this element.
+			for (uint32_t indicieIndex = 0; indicieIndex < element->mesh_creation_state.index_count; ++indicieIndex)
+			{
+				*(modeldata->indices + target_offset.indexOffset + indicieIndex) += target_offset.vertexOffset;
+			}
+
+			// Copy the vertices over.
+			std::copy(element->mesh_creation_state.mesh_data.position, 
+					  element->mesh_creation_state.mesh_data.position + element->mesh_creation_state.vertex_count,
+					  modeldata->position + target_offset.vertexOffset);
+			std::copy(element->mesh_creation_state.mesh_data.texcoord0, 
+					  element->mesh_creation_state.mesh_data.texcoord0 + element->mesh_creation_state.vertex_count,
+					  modeldata->texcoord0 + target_offset.vertexOffset);
+			std::copy(element->mesh_creation_state.mesh_data.texcoord1, 
+					  element->mesh_creation_state.mesh_data.texcoord1 + element->mesh_creation_state.vertex_count,
+					  modeldata->texcoord1 + target_offset.vertexOffset);
+			std::copy(element->mesh_creation_state.mesh_data.color, 
+					  element->mesh_creation_state.mesh_data.color + element->mesh_creation_state.vertex_count,
+					  modeldata->color + target_offset.vertexOffset);
+			std::copy(element->mesh_creation_state.mesh_data.normal, 
+					  element->mesh_creation_state.mesh_data.normal + element->mesh_creation_state.vertex_count,
+					  modeldata->normal + target_offset.vertexOffset);
+		});
+	}
+	// Wait for all the mesh copying to finish
+	for (const core::jobs::JobId jobId : l_jobsToWaitOn)
+	{
+		core::jobs::System::Current::WaitForJob(jobId);
+	}
+}
+
+//	PostStepSynchronus() : Synchronus post-render
+void ui::eventide::UserInterface::PostStepSynchronus ( void )
+{
+	// Update the material's textures
+	auto passAccessor = m_renderable->PassAccess(0);
+	for (uint32_t textureIndex = 0; textureIndex < m_textures.size(); ++textureIndex)
+	{
+		passAccessor.setTexture((rrTextureSlot)(rrTextureSlot::TEX_SLOT0 + textureIndex), m_textures[textureIndex]);
+	}
+}
+
+//	PreStepSynchronus() : Synchronous pre-render
+void ui::eventide::UserInterface::PreStepSynchronus ( void )
+{
+	m_renderable->StreamLockModelData();
 }

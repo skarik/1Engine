@@ -18,6 +18,7 @@ renderer::Background2D::Background2D ( void )
 	}
 	m_modeldata.vertexNum = 4;
 	m_modeldata.position = new Vector3f[4];
+	m_modeldata.color = new Vector4f[4];
 	memset(m_modeldata.position, 0, sizeof(Vector3f) * m_modeldata.vertexNum);
 	memset(m_modeldata.color, 0, sizeof(Vector4f) * m_modeldata.vertexNum);
 	{

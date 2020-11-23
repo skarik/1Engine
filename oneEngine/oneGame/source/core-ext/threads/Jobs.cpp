@@ -155,6 +155,12 @@ void core::jobs::System::_internal_WaitForJobs ( const JobTypeBits jobTypeBits )
 // Waits for the given job id
 void core::jobs::System::_internal_WaitForJob ( const JobId& id )
 {
+	// Skip invalid job indicies
+	if (id.value == JobId::kInvalidIndex)
+	{
+		return;
+	}
+
 	bool hasJob;
 	CHECK_JOBS:
 	{

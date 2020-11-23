@@ -157,65 +157,82 @@ void CRenderable2D::SetSpriteFileAnimated ( const char* n_sprite_resname, core::
 //	}
 //#endif// DEVELOPER_MODE
 
-	arstring256 name_sprite = resource_sprite;
-	core::utils::string::ToResourceName(name_sprite.data, 256);
-	//name_sprite = arstring256("rr2d_") + name_sprite;
-	arstring256 name_palette = name_sprite + "_palette";
-	//arstring256 name_normals = name_sprite + "_normals";
-	//arstring256 name_surface = name_sprite + "_surface";
-	//arstring256 name_illumin = name_sprite + "_illumin";
+	//arstring256 name_sprite = resource_sprite;
+	//core::utils::string::ToResourceName(name_sprite.data, 256);
+	////name_sprite = arstring256("rr2d_") + name_sprite;
+	////arstring256 name_palette = name_sprite + "_palette";
+	////arstring256 name_normals = name_sprite + "_normals";
+	////arstring256 name_surface = name_sprite + "_surface";
+	////arstring256 name_illumin = name_sprite + "_illumin";
 
-	// Load the sprite procedurally for the albedo/palette:
-	m_textureAlbedo = RrTexture::Find(name_sprite);
-	if (m_textureAlbedo == NULL)
+	//// Load the sprite procedurally for the albedo/palette:
+	//m_textureAlbedo = RrTexture::Find(name_sprite);
+	//if (m_textureAlbedo == NULL)
+	//{
+	//	m_textureAlbedo = RrTexture::CreateUnitialized(name_sprite);
+
+	//	// load the bpd now
+	//	
+	//	// pull the info?
+
+	//	m_textureAlbedo->Upload(false,
+	//		NULL,
+	//		1, 1,
+	//		core::gfx::tex::kColorFormatRGBA8,
+	//		core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
+	//		core::gfx::tex::kMipmapGenerationNone,
+	//		core::gfx::tex::kSamplingPoint);
+	//}
+	//else
+	//{
+	//	//o_sprite_info->
+	//}
+	//// Load up the paletted texture
+	//if (m_texturePalette == NULL)
+	//{
+	//	m_texturePalette = RrTexture::Find(name_palette);
+	//	// Load a new palette and add it to the world.
+	//	if (m_texturePalette == NULL)
+	//	{
+	//		m_texturePalette = RrTexture::Load(resource_palette);
+
+	//		// Some things need a palette, some things dont.
+
+	//		// Push the palette to the world (possibly?? improve this???)
+	//		/*if (m_texturePalette != NULL)
+	//		{
+	//			// Load the raw data from the palette first
+	//			Textures::timgInfo imginfo_palette;
+	//			pixel_t* raw_palette = Textures::LoadRawImageData(resource_palette, imginfo_palette);
+	//			if ( raw_palette == NULL ) throw core::MissingDataException();
+
+	//			// Set all data in the palette to have 255 alpha (opaque)
+	//			for (int i = 0; i < imginfo_palette.width * imginfo_palette.height; ++i)
+	//				raw_palette[i].a = 255;
+
+	//			// Add the palette to the world's palette
+	//			render2d::WorldPalette::Active()->AddPalette( raw_palette, imginfo_palette.height, imginfo_palette.width );
+
+	//			// Save dummy value
+	//			renderer::Resources::AddTexture(filename_palette);
+	//		}*/
+	//	}
+	//}
+
+	// Load the palette:
+	if (core::Resources::Exists(resource_palette))
 	{
-		m_textureAlbedo = RrTexture::CreateUnitialized(name_sprite);
-
-		// load the bpd now
-		
-		// pull the info?
-
-		m_textureAlbedo->Upload(false,
-			NULL,
-			1, 1,
-			core::gfx::tex::kColorFormatRGBA8,
-			core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
-			core::gfx::tex::kMipmapGenerationNone,
-			core::gfx::tex::kSamplingPoint);
+		m_texturePalette = RrTexture::Load(resource_palette);
+		m_textureAlbedo = RrTexture::Load(resource_sprite);
 	}
 	else
 	{
-		//o_sprite_info->
-	}
-	// Load up the paletted texture
-	if (m_texturePalette == NULL)
-	{
-		m_texturePalette = RrTexture::Find(name_palette);
-		// Load a new palette and add it to the world.
-		if (m_texturePalette == NULL)
+		// The palette may be part of the bitmap:
+		m_textureAlbedo = RrTexture::Load(resource_sprite);
+		if (m_textureAlbedo)
 		{
-			m_texturePalette = RrTexture::Load(resource_palette);
-
-			// Some things need a palette, some things dont.
-
-			// Push the palette to the world (possibly?? improve this???)
-			/*if (m_texturePalette != NULL)
-			{
-				// Load the raw data from the palette first
-				Textures::timgInfo imginfo_palette;
-				pixel_t* raw_palette = Textures::LoadRawImageData(resource_palette, imginfo_palette);
-				if ( raw_palette == NULL ) throw core::MissingDataException();
-
-				// Set all data in the palette to have 255 alpha (opaque)
-				for (int i = 0; i < imginfo_palette.width * imginfo_palette.height; ++i)
-					raw_palette[i].a = 255;
-
-				// Add the palette to the world's palette
-				render2d::WorldPalette::Active()->AddPalette( raw_palette, imginfo_palette.height, imginfo_palette.width );
-
-				// Save dummy value
-				renderer::Resources::AddTexture(filename_palette);
-			}*/
+			//m_texturePalette = m_textureAlbedo->GetPalette();
+			//TODO
 		}
 	}
 

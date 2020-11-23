@@ -76,6 +76,9 @@
     <Filter Include="SOURCE\Core-ext\Resources">
       <UniqueIdentifier>{55b2ccba-8172-44c2-9858-0ccc8db7aef6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Core-ext\Std">
+      <UniqueIdentifier>{9833256a-85a1-4bcf-95bd-979dbaa219a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\settings\CGameSettings.cpp">
@@ -322,6 +325,9 @@
     </ClInclude>
     <ClInclude Include="source\core\debug\Console.h">
       <Filter>SOURCE\Core\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\std\filesystem.h">
+      <Filter>SOURCE\Core-ext\Std</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

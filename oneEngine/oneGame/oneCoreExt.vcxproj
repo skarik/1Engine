@@ -91,6 +91,7 @@
     <ClInclude Include="source\core-ext\resources\IArResource.h" />
     <ClInclude Include="source\core-ext\resources\IArResourceSubsystem.h" />
     <ClInclude Include="source\core-ext\resources\ResourceManager.h" />
+    <ClInclude Include="source\core-ext\std\filesystem.h" />
     <ClInclude Include="source\core-ext\system\io\assets\Conversion.h" />
     <ClInclude Include="source\core-ext\system\io\assets\ResourceAnimLoader.h" />
     <ClInclude Include="source\core-ext\system\io\assets\ResourceHandler.h" />

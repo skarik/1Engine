@@ -28,9 +28,7 @@ CGameBehavior::CGameBehavior ( void )
 //	also checks for references, in order to check that there are not dangling references
 CGameBehavior::~CGameBehavior ( void )
 {
-	if ( referenceCount > 0 ) {
-		throw core::NullReferenceException();
-	}
+	ARCORE_ASSERT(referenceCount == 0);
 	CGameState::Active()->RemoveBehavior( id );
 }
 

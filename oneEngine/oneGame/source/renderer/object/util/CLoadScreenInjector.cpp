@@ -60,6 +60,11 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 	notifierPass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
 	notifierPass.setTexture( TEX_MAIN, m_fntNotifier );
 	notifierPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+											renderer::shader::Location::kUV0,
+											renderer::shader::Location::kColor,
+											renderer::shader::Location::kNormal};
+	notifierPass.setVertexSpecificationByCommonList(t_vspec, 4);
 	PassInitWithInput(0, &notifierPass);
 
 	// Create the text builder:
