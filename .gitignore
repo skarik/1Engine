@@ -4,6 +4,7 @@
 *.suo
 /oneEngine/oneGame/*.user
 /oneEngine/oneGame/.game
+/oneEngine/oneGame/.resbackup-0
 /oneEngine/oneGame/.tools/dev_tool_oneConverter*
 /oneEngine/obj
 /oneEngine/Debug_Win32
