@@ -23,8 +23,8 @@ void sceneEditorCutscene::LoadScene ( void )
 	// Enable cursor
 	ActiveCursor->SetVisible(true);
 
-	CLoadingScreen* loadScreen = new CLoadingScreen();
-	loadScreen->loadStep();
+	//CLoadingScreen* loadScreen = new CLoadingScreen();
+	//loadScreen->loadStep();
 
 	// Create orthographic camera
 	{
@@ -39,13 +39,13 @@ void sceneEditorCutscene::LoadScene ( void )
 	{
 		M04::CutsceneEditor* editor = new M04::CutsceneEditor();
 		editor->RemoveReference(); // So it can be destroyed when the game quits
-	} loadScreen->loadStep();
+	} //loadScreen->loadStep();
 
 	// Print a prompt
 	debug::Console->PrintMessage( "You are running a debug build of M04.\n" );
 	debug::Console->PrintMessage( "This scene is meant to expose the 2D game module's built-in editor functionality.\n" );
 
 	// Finish load screen.
-	loadScreen->loadSetDone();
-	loadScreen->RemoveReference();
+	//loadScreen->loadSetDone();
+	//loadScreen->RemoveReference();
 }

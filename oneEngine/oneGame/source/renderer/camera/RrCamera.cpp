@@ -333,12 +333,14 @@ void RrCamera::UpdateMatrix ( void )
 
 		projTransform[2][0] = 0;
 		projTransform[2][1] = 0;
-		projTransform[2][2] = -2 / (z_max);
+		//projTransform[2][2] = -2 / (z_max);
+		projTransform[2][2] = -1 / (z_max); // We aren't in NDC. We're in 0-1 that is defined by the engine, rather than specs.
 		projTransform[2][3] = 0;
 
 		projTransform[3][0] = (left + left + width) / (-x_max);
 		projTransform[3][1] = (mirrorView ? 1 : -1) * ((top + top + height) / (y_max));
-		projTransform[3][2] = (minz + maxz) / (-z_max);
+		//projTransform[3][2] = (minz + maxz) / (-z_max);
+		projTransform[3][2] = 0; // We aren't in NDC. We're in 0-1 that is defined by the engine, rather than specs.
 		projTransform[3][3] = 1;
 	}
 	else

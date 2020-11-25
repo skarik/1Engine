@@ -313,6 +313,7 @@ void rrMeshBuilder2D::addCircle ( const Vector2f& center, const Real radius, con
 
 		//memset(m_model->vertices + index, 0, sizeof(arModelVertex) * (divs + 1));
 
+		// Set up the center of the circle that we make the triangle fan with
 		m_model->position[vert_index + 0] = pos_center;
 		m_model->position[vert_index + 0].z = 0.5F;
 		m_model->texcoord0[vert_index + 0] = Vector2f(0.5F, 0.5F);
@@ -327,10 +328,15 @@ void rrMeshBuilder2D::addCircle ( const Vector2f& center, const Real radius, con
 
 			m_model->color[vert_index + 1 + i] = Vector4f(color.raw);
 
-			m_model->indices[inde_index + i + 0] = vert_index;
-			m_model->indices[inde_index + i + 1] = vert_index + i % divs + 1;
-			m_model->indices[inde_index + i + 2] = vert_index + (i + 1) % divs + 1;
+			// Make a triangle strip
+			m_model->indices[inde_index + i * 2 + 0] = vert_index;
+			m_model->indices[inde_index + i * 2 + 1] = vert_index + 1 + i;
 		}
+
+		// Add ending indices (loop around)
+		m_model->indices[inde_index + divs * 2 + 0] = vert_index;
+		m_model->indices[inde_index + divs * 2 + 1] = vert_index + 1 + divs;
+		m_model->indices[inde_index + divs * 2 + 2] = 0xFFFF;
 
 		m_vertexCount += divs + 1;
 		m_indexCount += (divs + 1) * 2 + 1;

@@ -41,12 +41,15 @@ CutsceneEditor::CutsceneEditor ( void )
 	m_largeTextRenderer		= new CLargeTextRenderer(this);
 	m_normalTextRenderer	= new CNormalTextRenderer(this);
 
+	m_geometryUpdater		= new CGeometryUpdater(this);
+
 	//m_nodes.push_back(EditorNode({NULL, Vector2f(0,0)}));
 	//m_nodes.push_back(EditorNode({NULL, Vector2f(0,128)}));
 }
 
 CutsceneEditor::~CutsceneEditor ( void )
 {
+	delete_safe(m_geometryUpdater);
 	delete_safe(m_geometryRenderer);
 	delete_safe(m_largeTextRenderer);
 	delete_safe(m_normalTextRenderer);
@@ -60,9 +63,9 @@ void CutsceneEditor::Update ( void )
 	doEditorConnectNodes();
 	doEditorContextMenu();
 
-	m_geometryRenderer->UpdateMesh();
+	/*m_geometryRenderer->UpdateMesh();
 	m_largeTextRenderer->UpdateMesh();
-	m_normalTextRenderer->UpdateMesh();
+	m_normalTextRenderer->UpdateMesh();*/
 }
 
 

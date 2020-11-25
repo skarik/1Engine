@@ -47,6 +47,8 @@ namespace M04
 		//=========================================//
 		// Dusk handles
 
+		dusk::Element*	ui_cts_editor;
+
 		dusk::Element*	ui_main_game;
 		dusk::Element*	ui_main_testg;
 		dusk::Element*	ui_main_test0;

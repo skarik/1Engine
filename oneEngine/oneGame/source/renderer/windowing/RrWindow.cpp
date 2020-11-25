@@ -180,7 +180,7 @@ void RrWindow::CreateScreen ( void )
 	// Create The Window
 	mw_window = CreateWindowEx( dwExStyle,	// Extended Style For The Window
 		kWindowClass,						// Class Name
-		"OpenGL Window",					// Window Title
+		"1Engine Base Window",				// Window Title
 		dwStyle |							// Defined Window Style
 		WS_CLIPSIBLINGS |					// Required Window Style
 		WS_CLIPCHILDREN,					// Required Window Style

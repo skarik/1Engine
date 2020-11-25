@@ -140,7 +140,7 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, Buffer* buffer, uint32_t o
 	// todo: optimize later
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeVertex);
 	ARCORE_ASSERT(m_pipeline != NULL);
-	ARCORE_ASSERT(slot < (int)m_pipeline->ia_bindingInfoCount);
+	//ARCORE_ASSERT(slot < (int)m_pipeline->ia_bindingInfoCount); // This is incorrect, esp if we have non-incremental slots.
 
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 

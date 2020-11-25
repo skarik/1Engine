@@ -5,6 +5,7 @@
 
 #include "renderer/object/CRenderable3D.h"
 #include "renderer/object/CStreamedRenderable3D.h"
+#include "renderer/logic/RrLogicObject.h"
 
 //=========================================//
 // Prototypes
@@ -56,6 +57,16 @@ namespace M04
 					~CGeometryRenderer ( void );
 
 		void		UpdateMesh ( void );
+	};
+
+	class CutsceneEditor::CGeometryUpdater : public RrLogicObject
+	{
+	private:
+		CutsceneEditor*		m_owner;
+
+	public:
+		explicit	CGeometryUpdater ( CutsceneEditor* owner );
+		void		PostStep ( void ) override;
 	};
 }
 

@@ -31,9 +31,13 @@ namespace M04
 		class CNormalTextRenderer;
 		class CGeometryRenderer;
 
+		class CGeometryUpdater;
+
 		friend CLargeTextRenderer;
 		friend CNormalTextRenderer;
 		friend CGeometryRenderer;
+
+		friend CGeometryUpdater;
 
 	public:
 		explicit	CutsceneEditor ( void );
@@ -142,6 +146,7 @@ namespace M04
 		CLargeTextRenderer*		m_largeTextRenderer;
 		CNormalTextRenderer*	m_normalTextRenderer;
 		CGeometryRenderer*		m_geometryRenderer;
+		CGeometryUpdater*		m_geometryUpdater;
 
 		std::vector<common::cts::EditorNode>	m_nodes;
 	};

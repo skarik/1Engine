@@ -38,9 +38,25 @@ static Vector2f _PixelRoundPosition ( const Vector2f vect )
 	);
 }
 
+CutsceneEditor::CGeometryUpdater::CGeometryUpdater ( CutsceneEditor* owner )
+	: m_owner(owner), RrLogicObject()
+{
+
+}
+
+void CutsceneEditor::CGeometryUpdater::PostStep ( void )
+{
+	m_owner->m_geometryRenderer->UpdateMesh();
+	m_owner->m_largeTextRenderer->UpdateMesh();
+	m_owner->m_normalTextRenderer->UpdateMesh();
+}
+
 CutsceneEditor::CLargeTextRenderer::CLargeTextRenderer ( CutsceneEditor* owner )
 	: m_owner(owner), CStreamedRenderable3D()
 {
+	// Bring up
+	transform.world.position.z = -1;
+
 	m_font_texture = RrFontTexture::Load("YanoneKaffeesatz-B.otf", 24, FW_BOLD);
 	//m_font_texture->SetFilter( SamplingLinear );
 
@@ -240,7 +256,8 @@ void CutsceneEditor::CNormalTextRenderer::UpdateMesh ( void )
 CutsceneEditor::CGeometryRenderer::CGeometryRenderer ( CutsceneEditor* owner )
 	: m_owner(owner), CStreamedRenderable3D()
 {
-	//m_texture = renderer::Resources::GetTexture( renderer::TextureWhite );
+	// Push down
+	transform.world.position.z = 1;
 
 	// Use a default 2D material
 	RrPass spritePass;
@@ -261,7 +278,6 @@ CutsceneEditor::CGeometryRenderer::CGeometryRenderer ( CutsceneEditor* owner )
 	spritePass.setVertexSpecificationByCommonList(t_vspec, 3);
 	spritePass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
 	PassInitWithInput(0, &spritePass);
-
 
 	m_modeldata.indices = new uint16_t [2048 * 3];
 	m_modeldata.position = new Vector3f [4096];

@@ -5,6 +5,7 @@
 //#include "renderer/material/RrPassDeferred.h"
 
 #include "core-ext/resources/ResourceManager.h"
+#include "core/debug/Console.h"
 
 void renderer::Options::TextureStreaming ( const bool enabled )
 {
@@ -15,5 +16,6 @@ void renderer::Options::TextureStreaming ( const bool enabled )
 void renderer::Options::DeferredShaders ( const rrDeferredShaderSettings& shaderInfo )
 {
 	//renderer::gDefferedShaderSettings = shaderInfo;
-	ARCORE_ERROR("Not yet implemented");
+	//ARCORE_ERROR("Not yet implemented");
+	debug::Console->PrintError("renderer::Options::DeferredShaders() : Not yet implemented\n");
 }
