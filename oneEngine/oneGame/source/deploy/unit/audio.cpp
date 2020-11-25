@@ -67,6 +67,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	// Create a listener
 	audio::Listener* l_listener = new audio::Listener();
 	l_listener->orient_forward = Vector3f(0, 1, 0);
+	//l_listener->position = Vector3f(-140, 140, 0);
 
 	// Create the music track to loop
 	audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop.ogg");

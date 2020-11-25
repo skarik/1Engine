@@ -27,6 +27,9 @@ static core::jobs::System*	m_jobSystem = NULL;
 // Audio manager
 static audio::Manager*		m_manager = NULL;
 // Map of instantiated buffers, used for safety. TODO: This leaks a bit, consider clearing on buffer delete.
+static std::unordered_map<uint64_t, audio::Listener*>*
+							m_refmapListeners = NULL;
+// Map of instantiated buffers, used for safety. TODO: This leaks a bit, consider clearing on buffer delete.
 static std::unordered_map<uint64_t, audio::Buffer*>*
 							m_refmapBuffers = NULL;
 // Map of instantiated sources, used for safety. TODO: This leaks a bit, consider cleraing on source delete.
@@ -39,6 +42,12 @@ static std::unordered_map<uint64_t, audio::Effect*>*
 template <class Referenced>
 static std::unordered_map<uint64_t, Referenced*>* GetHandleReferenceMap()
 	{ return NULL; }
+
+template <>
+static std::unordered_map<uint64_t, audio::Listener*>* GetHandleReferenceMap<audio::Listener>()
+{
+	return m_refmapListeners;
+}
 
 template <>
 static std::unordered_map<uint64_t, audio::Buffer*>* GetHandleReferenceMap<audio::Buffer>()
@@ -118,6 +127,7 @@ double AR_CALL AudioInitialize ( double startupMask )
 	m_manager = new audio::Manager();
 
 	// Create the refmaps
+	m_refmapListeners = new std::unordered_map<uint64_t, audio::Listener*>;
 	m_refmapBuffers = new std::unordered_map<uint64_t, audio::Buffer*>;
 	m_refmapSources = new std::unordered_map<uint64_t, audio::Source*>;
 	m_refmapEffects = new std::unordered_map<uint64_t, audio::Effect*>;
@@ -136,6 +146,7 @@ double AR_CALL AudioFree ( void )
 	delete m_settings;
 
 	// Free the refs now
+	delete m_refmapListeners;
 	delete m_refmapBuffers;
 	delete m_refmapSources;
 	delete m_refmapEffects;
