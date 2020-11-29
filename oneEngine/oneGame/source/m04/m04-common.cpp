@@ -16,6 +16,7 @@
 #include "m04-editor/scenes/sceneEditorMain.h"
 #include "m04-editor/scenes/sceneDeveloperMenu.h"
 #include "m04-editor/scenes/sceneEditorCutscene.h"
+#include "m04-editor/standalone/seqeditor/sceneEditorSequence.h"
 
 namespace M04
 {
@@ -61,14 +62,22 @@ int GameInitialize ( void )
 	}
 
 	// Scene registration
-	EngineCommon::RegisterScene<sceneTilesetTest>( "test0" );
-	EngineCommon::RegisterScene<sceneEditorMain>( "editorm04" );
-	EngineCommon::RegisterScene<sceneEditorCutscene>( "editorcts" );
-	EngineCommon::RegisterScene<sceneDeveloperMenu>( "menu" );
-	EngineCommon::RegisterScene<sceneDeveloperMenu>( "m04devmenu" );
-	EngineCommon::RegisterScene<sceneGameLuvPpl>( "game_luvppl" );
-	//EngineCommon::RegisterScene<gmsceneParticleEditor>( "pce" );
-	//EngineCommon::RegisterScene<gmsceneLipsyncEditor>( "lse" );
+	{	// Test scenes
+		EngineCommon::RegisterSceneOld<sceneDeveloperMenu>( "menu" );
+		EngineCommon::RegisterSceneOld<sceneDeveloperMenu>( "m04devmenu" );
+	}
+	{	// Game Scenes
+		EngineCommon::RegisterSceneOld<sceneTilesetTest>( "test0" );
+		EngineCommon::RegisterSceneOld<sceneGameLuvPpl>( "game_luvppl" );
+	}
+	{	// Editor Scenes
+		//EngineCommon::RegisterScene<gmsceneParticleEditor>( "pce" );
+		//EngineCommon::RegisterScene<gmsceneLipsyncEditor>( "lse" );
+		EngineCommon::RegisterSceneOld<sceneEditorMain>( "editorm04" );
+		EngineCommon::RegisterSceneOld<sceneEditorCutscene>( "editorcts" );
+		EngineCommon::RegisterScene<sceneEditorSequence>();
+	}
+
 
 	// Set renderer options:
 	renderer::rrDeferredShaderSettings shaderSettings;

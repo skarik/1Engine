@@ -71,6 +71,10 @@ namespace eventide {
 		// Stores current state of mesh creation
 		struct MeshCreationState
 		{
+			// Has a rebuild been requested
+			bool				rebuild_requested = false;
+
+			// Is the mesh currently being put together?
 			bool				building_mesh = false;
 
 			arModelData			mesh_data;
@@ -92,8 +96,14 @@ namespace eventide {
 		static constexpr float	kVETextureEnableOff = 0.0F;
 		static constexpr float	kVETextureEnableOn = 1.0F;
 
+	private:
 		// Current state of mesh creation
 		MeshCreationState		mesh_creation_state;
+
+		//	RebuildMesh() : Rebuilds the mesh data.
+		EVENTIDE_API void		RebuildMesh ( void );
+
+	protected:
 
 		struct ParamsForCube
 		{
@@ -118,7 +128,8 @@ namespace eventide {
 		EVENTIDE_API void		buildText ( const ParamsForText& params );
 
 	public:
-		//	RequestUpdateMesh() : Requests an update of the mesh. Calls BuildMesh to recreate.
+		//	RequestUpdateMesh() : Requests an update of the mesh.
+		// The request eventually BuildMesh to recreate.
 		EVENTIDE_API void		RequestUpdateMesh ( void );
 
 		struct EventMouse
@@ -183,6 +194,10 @@ namespace eventide {
 								GetBBoxAbsolute ( void ) const
 			{ return m_bboxAbsolute; }
 
+		//	SetBBox(bbox) : Sets the local-space bbox, in relation to the parent.
+		EVENTIDE_API void		SetBBox ( core::math::BoundingBox& bbox )
+			{ m_bbox = bbox; }
+		//	SetParent(parent) : Sets the parent of the element.
 		EVENTIDE_API void		SetParent ( Element* parent );
 
 		EVENTIDE_API const Element*

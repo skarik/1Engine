@@ -48,7 +48,12 @@ namespace EngineCommon
 	//	RegisterScene()
 	// Registers a scene instantiation and swap method with the internal list used for LoadScene.
 	template <class Scene>
-	void RegisterScene ( const std::string& sceneName );
+	void RegisterScene ( void );
+
+	//	RegisterSceneOld()
+	// Registers a scene instantiation and swap method with the internal list used for LoadScene.
+	template <class Scene>
+	void RegisterSceneOld ( const std::string& sceneName );
 };
 
 

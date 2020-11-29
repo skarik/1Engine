@@ -191,8 +191,10 @@ typedef unsigned int	uint;
 
 #ifndef _ENGINE_GAME_CORE
 #	define GAME_API AR_IMPORT
+#	define EDITOR_API AR_IMPORT
 #else
 #	define GAME_API AR_EXPORT
+#	define EDITOR_API AR_EXPORT
 #endif
 
 // Define float assertion helper

@@ -16,12 +16,14 @@ void ETCubicLabel::BuildMesh ( void )
 {
 	ParamsForCube cubeParams;
 	cubeParams.color = GetMouseInside() ? Color(0.2, 0.2, 0.5, 1.0) : Color(0.2, 0.2, 0.2, 1.0);
-	//cubeParams.box
+	cubeParams.box = core::math::Cubic(GetBBoxAbsolute().GetCenterPoint(), GetBBoxAbsolute().GetExtents());
 	buildCube(cubeParams);
 
 	ParamsForText textParams;
 	textParams.string = "Hello world!";
 	textParams.font_texture = &m_fontTexture;
+	textParams.position = GetBBoxAbsolute().GetCenterPoint();
+	textParams.size = 24.0F;
 	buildText(textParams);
 }
 

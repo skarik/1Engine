@@ -9,6 +9,7 @@ layout(location = 2) in vec2 v2f_texcoord0;
 layout(location = 3) in vec3 v2f_normal;
 layout(location = 4) in float v2f_textureStrength;
 layout(location = 5) in flat int v2f_textureIndex;
+layout(location = 6) in float v2f_alphaCutoff;
 
 // Outputs
 layout(location = 0) out vec4 FragDiffuse;
@@ -63,6 +64,11 @@ void main ( void )
 	}
 #endif
 	textColor.a = sqrt(textColor.a) * v2f_colors.a * sys_DiffuseColor.a;
+	
+	if (textColor.a < v2f_alphaCutoff)
+	{
+		discard;
+	}
 	
 	// Select correct shape type
 	FragDiffuse = mix(primColor, textColor, v2f_textureStrength);

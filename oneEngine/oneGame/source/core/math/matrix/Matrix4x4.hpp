@@ -222,13 +222,7 @@ FORCE_INLINE void Matrix4x4::translate ( const Vector3f& v )
 // Getters - Translation
 FORCE_INLINE Vector3f Matrix4x4::getTranslation ( void ) const
 {
-	Vector3f position;
-
-	position.x = pData[3];
-	position.y = pData[7];
-	position.z = pData[11];
-
-	return position;
+	return Vector3f(pData[3], pData[7], pData[11]);
 }
 
 // Getters - Rotation

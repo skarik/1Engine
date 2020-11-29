@@ -32,8 +32,8 @@ namespace core
 				{}
 			BoundingBox( const Matrix4x4& M, const Vector3f& Extent ) 
 				{ Set( M, Extent );	}
-			BoundingBox( const Matrix4x4& M, const Vector3f& BL, const Vector3f& BH ) 
-				{ Set( M, BL, BH );	}
+			BoundingBox( const Matrix4x4& M, const Vector3f& lowerBounds, const Vector3f& upperBounds ) 
+				{ Set( M, lowerBounds, upperBounds );	}
 	
 			FORCE_INLINE void Set( const Matrix4x4& M, const Vector3f& Extent )
 			{
@@ -44,11 +44,11 @@ namespace core
 				//m_Extent.w = std::sqrt(m_Extent.x * m_Extent.x + m_Extent.y * m_Extent.y + m_Extent.z * m_Extent.z);
 			}
 
-			FORCE_INLINE void Set( const Matrix4x4& M, const Vector3f& BL, const Vector3f& BH )
+			FORCE_INLINE void Set( const Matrix4x4& M, const Vector3f& lowerBounds, const Vector3f& upperBounds )
 			{
 				// Need to ensure each component is properly sorted:
-				Vector3f l_actualLower = Vector3f(std::min(BL.x, BH.x), std::min(BL.y, BH.y), std::min(BL.z, BH.z));
-				Vector3f l_actualHigher = Vector3f(std::max(BL.x, BH.x), std::max(BL.y, BH.y), std::max(BL.z, BH.z));
+				Vector3f l_actualLower = Vector3f(std::min(lowerBounds.x, upperBounds.x), std::min(lowerBounds.y, upperBounds.y), std::min(lowerBounds.z, upperBounds.z));
+				Vector3f l_actualHigher = Vector3f(std::max(lowerBounds.x, upperBounds.x), std::max(lowerBounds.y, upperBounds.y), std::max(lowerBounds.z, upperBounds.z));
 
 				m_M = M;
 				m_M.translate( (l_actualHigher + l_actualLower) * 0.5f ); // Move by midpoint
@@ -96,6 +96,9 @@ namespace core
 	
 			FORCE_INLINE Vector3f GetSize() const 
 				{ return m_Extent * 2.0f; }
+
+			FORCE_INLINE Vector3f GetExtents() const 
+				{ return m_Extent; }
 
 			FORCE_INLINE Vector3f GetCenterPoint() const
 				{ return m_M.getTranslation(); }

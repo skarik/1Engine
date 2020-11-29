@@ -34,7 +34,25 @@ namespace EngineCommon
 	//	RegisterScene()
 	// Registers a scene instantiation and swap method with the internal list used for LoadScene.
 	template <class Scene>
-	void RegisterScene ( const std::string& sceneName )
+	void RegisterScene ( void )
+	{
+		const std::string& sceneName = Scene::GetName();
+		_sceneListing.push_back(
+			_sceneEntry_t (
+				sceneName,
+				[] () {
+					CGameScene::SceneGoto( CGameScene::NewScene<Scene> () );
+					Network::Host();
+				}
+			)
+		);
+		engine::Console->AddConsoleMatch( "scene " + sceneName );
+	}
+
+	//	RegisterSceneOld( sceneName )
+	// Registers a scene instantiation and swap method with the internal list used for LoadScene.
+	template <class Scene>
+	void RegisterSceneOld ( const std::string& sceneName )
 	{
 		_sceneListing.push_back(
 			_sceneEntry_t (
@@ -45,7 +63,7 @@ namespace EngineCommon
 				}
 			)
 		);
-		engine::Console->AddConsoleMatch( "scene "+sceneName );
+		engine::Console->AddConsoleMatch( "scene " + sceneName );
 	}
 
 };

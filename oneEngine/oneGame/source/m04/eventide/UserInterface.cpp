@@ -47,6 +47,10 @@ ui::eventide::UserInterface::UserInterface ( dusk::UserInterface* duskUI, dawn::
 											renderer::shader::Location::kColor,
 											renderer::shader::Location::kNormal,
 											renderer::shader::Location::kUV1};
+	uiPass.setVertexSpecificationByCommonList(t_vspec, 5);
+	uiPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
+	uiPass.m_alphaMode = renderer::kAlphaModeTranslucent;
+	uiPass.m_blendMode = renderer::kHLBlendModeNormal;
 	m_renderable->PassInitWithInput(0, &uiPass);
 }
 
@@ -290,7 +294,7 @@ void ui::eventide::UserInterface::Update ( void )
 				m_currentMouseOverElement->m_mouseInside = true;
 			}
 		}
-		else
+		else if (m_currentMouseOverElement != NULL)
 		{
 			// Staying inside the current element:
 			if (Input::MouseDown(Input::MBLeft))
@@ -372,6 +376,7 @@ ui::eventide::Texture ui::eventide::UserInterface::LoadTextureFont ( const char*
 	{
 		loaded_texture->AddReference();
 		m_textures.push_back(loaded_texture);
+		texture_location = (--m_textures.end());
 	}
 
 	return ui::eventide::Texture{loaded_texture, (uint32_t)std::distance(m_textures.begin(), texture_location)};
@@ -397,6 +402,28 @@ struct MeshOffsets
 //	PostStep() : Threaded post-render
 void ui::eventide::UserInterface::PostStep ( void )
 {
+	// Rebuild all the meshes as needed
+	std::vector<core::jobs::JobId> l_rebuildJobs;
+	for (uint32_t elementIndex = 0; elementIndex < m_elements.size(); ++elementIndex)
+	{
+		Element* element = m_elements[elementIndex];
+
+		// Add meshes that need new meshes to the job list
+		if (element->mesh_creation_state.rebuild_requested)
+		{
+			l_rebuildJobs.push_back(core::jobs::System::Current::AddJobRequest([element](void)
+			{
+				element->RebuildMesh();
+				element->mesh_creation_state.rebuild_requested = false;
+			}));
+		}
+	}
+	// Wait for all the mesh generation to finish
+	for (const core::jobs::JobId jobId : l_rebuildJobs)
+	{
+		core::jobs::System::Current::WaitForJob(jobId);
+	}
+
 	std::vector<MeshOffsets> l_meshOffsets (m_elements.size());
 	MeshOffsets l_trackedOffset = {0, 0};
 

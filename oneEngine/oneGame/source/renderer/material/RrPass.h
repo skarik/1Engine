@@ -157,6 +157,15 @@ public:
 		RENDER_API void			setHLBlendMode ( const renderer::rrHLBlendMode blendMode )
 			{ m_pass->m_blendMode = blendMode; }
 
+		//	getVertexSpecificationCount () : Get how many vertex spec count
+		RENDER_API int			getVertexSpecificationCount ( void ) const
+			{ return m_pass->m_vertexSpecificationCount; }
+
+		//	getVertexSpecification () : Get the vertex specification info, for binding vbuffers
+		RENDER_API const renderer::shader::VertexAttribute*
+								getVertexSpecification ( void ) const
+			{ return m_pass->m_vertexSpecification; }
+
 	private:
 		RrPass*				m_pass;
 	};

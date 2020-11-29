@@ -10,6 +10,8 @@ ui::eventide::Element::Element ( UserInterface* ui )
 	: m_ui((ui != NULL) ? ui : ui::eventide::UserInterface::Get())
 {
 	m_ui->AddElement(this);
+
+	RequestUpdateMesh();
 }
 
 ui::eventide::Element::~Element ( void )
@@ -18,6 +20,11 @@ ui::eventide::Element::~Element ( void )
 }
 
 void ui::eventide::Element::RequestUpdateMesh ( void )
+{
+	mesh_creation_state.rebuild_requested = true;
+}
+
+void ui::eventide::Element::RebuildMesh ( void )
 {
 	mesh_creation_state.building_mesh = true;
 
@@ -59,7 +66,7 @@ void ui::eventide::Element::buildCube ( const ParamsForCube& params )
 
 		// apply texture index, texture strength
 		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_R_TextureEnableBlend] = (params.texture && params.texture->reference) ? kVETextureEnableOn : kVETextureEnableOff;
-		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_G_TextureIndex] = (Real)params.texture->index;
+		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_G_TextureIndex] = (params.texture && params.texture->reference) ? (Real)params.texture->index : 0;
 	}
 }
 

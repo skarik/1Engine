@@ -72,8 +72,11 @@ void DeveloperMenu::uiCreate ( void )
 			->m_contents = "Developer Menu";
 
 		// Create actual buttons
+		ui_seq_editor = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
+		ui_seq_editor->m_contents = "Sequence Editor";
+
 		ui_cts_editor = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
-		ui_cts_editor->m_contents = "Cutscene Editor";
+		ui_cts_editor->m_contents = "OLD: Cutscene Editor";
 
 		// Create buttons
 		ui_main_editor = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
@@ -96,7 +99,12 @@ void DeveloperMenu::uiCreate ( void )
 // handle inputs to the buttons on main panel
 void DeveloperMenu::uiStepMainPanel ( void )
 {
-	if (ui_cts_editor->as<dusk::elements::Button>()->Pressed())
+	if (ui_seq_editor->as<dusk::elements::Button>()->Pressed())
+	{
+		engine::Console->RunCommand( "scene SequenceEditor" );
+		DeleteObject(this);
+	}
+	else if (ui_cts_editor->as<dusk::elements::Button>()->Pressed())
 	{
 		engine::Console->RunCommand( "scene editorcts" );
 		DeleteObject(this);

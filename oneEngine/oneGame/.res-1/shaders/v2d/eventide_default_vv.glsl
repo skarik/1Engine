@@ -15,6 +15,7 @@ layout(location = 2) out vec2 v2f_texcoord0;
 layout(location = 3) out vec3 v2f_normal;
 layout(location = 4) out float v2f_textureStrength;
 layout(location = 5) out flat int v2f_textureIndex;
+layout(location = 6) out float v2f_alphaCutoff;
 
 // Cbuffers
 layout(binding = 0, std140) uniform sys_cbuffer_PerObject
@@ -49,6 +50,8 @@ void main ( void )
 
     v2f_textureStrength = clamp(mdl_TextureInfo.r, 0.0, 1.0);
 	v2f_textureIndex = int(mdl_TextureInfo.g);
+	
+	v2f_alphaCutoff	= 0.5;
 
 	gl_Position = v_screenPos;
 }

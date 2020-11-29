@@ -32,17 +32,17 @@ int EngineCommonInitialize ( void )
 {
 	// Engine
 	engine::Console->AddConsoleFunc( "scene",	EngineCommon::LoadScene );
-	EngineCommon::RegisterScene<gmsceneSystemLoader>( "default" );
-	EngineCommon::RegisterScene<gmsceneSystemBuilder>( "sysbuild" );
+	EngineCommon::RegisterSceneOld<gmsceneSystemLoader>( "default" );
+	EngineCommon::RegisterSceneOld<gmsceneSystemBuilder>( "sysbuild" );
 
-	EngineCommon::RegisterScene<benchmarkSemaphores>( "benchmark_semaphore" );
-	EngineCommon::RegisterScene<benchmarkMatrices>("benchmark_matrices");
+	EngineCommon::RegisterSceneOld<benchmarkSemaphores>( "benchmark_semaphore" );
+	EngineCommon::RegisterSceneOld<benchmarkMatrices>("benchmark_matrices");
 
-	EngineCommon::RegisterScene<testComparisons>( "test_cmp" );
-	EngineCommon::RegisterScene<testStringOperations>( "test_string" );
-	EngineCommon::RegisterScene<testColorConversion>("test_color_conversion");
+	EngineCommon::RegisterSceneOld<testComparisons>( "test_cmp" );
+	EngineCommon::RegisterSceneOld<testStringOperations>( "test_string" );
+	EngineCommon::RegisterSceneOld<testColorConversion>("test_color_conversion");
 
-	EngineCommon::RegisterScene<demosceneModelLoader>("demoscene0");
+	EngineCommon::RegisterSceneOld<demosceneModelLoader>("demoscene0");
 
 	// Lua
 	//engine::Console->AddConsoleFunc( "lua",	Lua::con_execLua );

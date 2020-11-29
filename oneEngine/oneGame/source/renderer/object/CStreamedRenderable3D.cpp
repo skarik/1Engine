@@ -75,9 +75,17 @@ bool CStreamedRenderable3D::Render ( const rrRenderParams* params )
 		// post-material cb
 			.execute(m_postMaterialCb);
 		// bind the vertex buffers
-		for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
-			if (m_currentMeshBuffer->m_bufferEnabled[i])
-				gfx->setVertexBuffer(i, &m_currentMeshBuffer->m_buffer[i], 0);
+		//for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
+		//	if (m_currentMeshBuffer->m_bufferEnabled[i])
+		//		gfx->setVertexBuffer(this->PassAccess(params->pass). m_slotbindings[i], &m_currentMeshBuffer->m_buffer[i], 0);
+		auto passAccess = PassAccess(params->pass);
+		for (int i = 0; i < passAccess.getVertexSpecificationCount(); ++i)
+		{
+			int buffer_index = (int)passAccess.getVertexSpecification()[i].location;
+			int buffer_binding = (int)passAccess.getVertexSpecification()[i].binding;
+			if (m_currentMeshBuffer->m_bufferEnabled[buffer_index])
+				gfx->setVertexBuffer(buffer_binding, &m_currentMeshBuffer->m_buffer[buffer_index], 0);
+		}
 		// bind the index buffer
 		gfx->setIndexBuffer(&m_currentMeshBuffer->m_indexBuffer, gpu::kIndexFormatUnsigned16);
 		// bind the cbuffers
