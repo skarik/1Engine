@@ -33,9 +33,16 @@ void ui::eventide::UserInterface::ReleaseActive ( void )
 
 
 ui::eventide::UserInterface::UserInterface ( dusk::UserInterface* duskUI, dawn::UserInterface* dawnUI )
-	: m_duskUI(duskUI)
+	: CGameBehavior()
+	, RrLogicObject()
+	, m_duskUI(duskUI)
 	, m_dawnUI(dawnUI)
 {
+	if (l_ActiveManager == NULL)
+	{
+		l_ActiveManager = this;
+	}
+
 	// Create renderable
 	m_renderable = new CStreamedRenderable3D();
 
@@ -51,6 +58,7 @@ ui::eventide::UserInterface::UserInterface ( dusk::UserInterface* duskUI, dawn::
 	uiPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
 	uiPass.m_alphaMode = renderer::kAlphaModeTranslucent;
 	uiPass.m_blendMode = renderer::kHLBlendModeNormal;
+	uiPass.m_cullMode = gpu::kCullModeNone;
 	m_renderable->PassInitWithInput(0, &uiPass);
 }
 
@@ -165,7 +173,7 @@ void ui::eventide::UserInterface::Update ( void )
 	}
 
 	// Update all transforms (perhaps this should be late-update?):
-	for (ui::eventide::Element* element : m_elements)
+	for (ui::eventide::Element* element : m_elements) // This needs to be able to delay mesh regen until this is done.
 	{
 		if (element->m_parent == NULL)
 		{
@@ -180,6 +188,7 @@ void ui::eventide::UserInterface::Update ( void )
 			element->m_bboxAbsolute.m_M			= element->m_bboxAbsolute.m_M * element->m_parent->m_bboxAbsolute.m_M;
 			element->m_bboxAbsolute.m_MInverse	= element->m_parent->m_bboxAbsolute.m_MInverse	* element->m_bboxAbsolute.m_MInverse;
 		}
+		element->m_bboxDirty = false;
 	}
 
 	// Update tab-focus:
@@ -414,7 +423,7 @@ void ui::eventide::UserInterface::PostStep ( void )
 			l_rebuildJobs.push_back(core::jobs::System::Current::AddJobRequest([element](void)
 			{
 				element->RebuildMesh();
-				element->mesh_creation_state.rebuild_requested = false;
+				element->mesh_creation_state.rebuild_requested = element->m_bboxDirty;
 			}));
 		}
 	}

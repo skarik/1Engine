@@ -275,10 +275,10 @@ namespace core
 				// Implementation borrowed from http://www.jcgt.org/published/0007/03/04/paper-lowres.pdf
 
 				Ray l_ray = Ray(m_MInverse * ray.pos, m_MInverse.getRotator() * ray.dir);
-				Vector3i l_sign = Vector3i(::math::sgn(l_ray.dir.x), ::math::sgn(l_ray.dir.y), ::math::sgn(l_ray.dir.z));
+				Vector3i l_sign = Vector3i(-::math::sgn(l_ray.dir.x), -::math::sgn(l_ray.dir.y), -::math::sgn(l_ray.dir.z));
 
 				// Distance to plane
-				Vector3f l_d = l_ray.pos - Vector3f((Real32)l_sign.x, (Real32)l_sign.y, (Real32)l_sign.z).mulComponents(m_Extent);
+				Vector3f l_d = Vector3f((Real32)l_sign.x, (Real32)l_sign.y, (Real32)l_sign.z).mulComponents(m_Extent) - l_ray.pos;
 				l_d = l_d.divComponents(l_ray.dir);
 
 				// Test all axes at once

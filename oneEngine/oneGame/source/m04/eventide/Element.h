@@ -196,7 +196,10 @@ namespace eventide {
 
 		//	SetBBox(bbox) : Sets the local-space bbox, in relation to the parent.
 		EVENTIDE_API void		SetBBox ( core::math::BoundingBox& bbox )
-			{ m_bbox = bbox; }
+		{
+			m_bbox = bbox;
+			m_bboxDirty = true;
+		}
 		//	SetParent(parent) : Sets the parent of the element.
 		EVENTIDE_API void		SetParent ( Element* parent );
 
@@ -225,6 +228,8 @@ namespace eventide {
 		core::math::BoundingBox	m_bbox;
 
 	private:
+		// Does the bbox need a full update?
+		bool					m_bboxDirty = false;
 		// "World"-space bounding box of the element.
 		core::math::BoundingBox m_bboxAbsolute;
 

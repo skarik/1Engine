@@ -39,7 +39,7 @@ namespace eventide {
 		//	Constructor : creates manager that can defer to the given items
 		EVENTIDE_API			UserInterface ( dusk::UserInterface*, dawn::UserInterface* );
 
-		EVENTIDE_API			~UserInterface ( void );
+		EVENTIDE_API virtual	~UserInterface ( void );
 
 		//	Update() : Per-frame update
 		EVENTIDE_API void		Update ( void ) override;

@@ -578,6 +578,7 @@ Vector3f RrCamera::WorldToScreenPos ( const Vector3f & worldPos ) const
 Vector3f RrCamera::ScreenToWorldDir ( const Vector2f & screenPos ) const
 {
 	// TODO: Test if this still works.
+	// TODO: fix for ortho. Z seems flipped.
 
 	// last, rotate vector by current camera rotation
 	Vector4f screen = Vector4f( screenPos.x*2.0f - 1, -screenPos.y*2.0f + 1, 1, 1 );

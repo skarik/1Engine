@@ -65,7 +65,8 @@ void main ( void )
 #endif
 	textColor.a = sqrt(textColor.a) * v2f_colors.a * sys_DiffuseColor.a;
 	
-	if (textColor.a < v2f_alphaCutoff)
+	float compareAlpha = v2f_textureStrength * (textColor.a - 1.0) + 1.0;
+	if (compareAlpha < v2f_alphaCutoff)
 	{
 		discard;
 	}

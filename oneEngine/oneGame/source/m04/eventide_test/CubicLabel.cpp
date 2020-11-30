@@ -5,6 +5,8 @@ ETCubicLabel::ETCubicLabel ( ui::eventide::UserInterface* ui )
 	: Element(ui)
 {
 	m_fontTexture = LoadTextureFont("YanoneKaffeesatz-B.otf");
+
+	m_mouseInteract = MouseInteract::kCapturing;
 }
 
 ETCubicLabel::~ETCubicLabel ( void )
@@ -16,13 +18,13 @@ void ETCubicLabel::BuildMesh ( void )
 {
 	ParamsForCube cubeParams;
 	cubeParams.color = GetMouseInside() ? Color(0.2, 0.2, 0.5, 1.0) : Color(0.2, 0.2, 0.2, 1.0);
-	cubeParams.box = core::math::Cubic(GetBBoxAbsolute().GetCenterPoint(), GetBBoxAbsolute().GetExtents());
+	cubeParams.box = core::math::Cubic::ConstructCenterExtents(GetBBoxAbsolute().GetCenterPoint(), GetBBoxAbsolute().GetExtents());
 	buildCube(cubeParams);
 
 	ParamsForText textParams;
 	textParams.string = "Hello world!";
 	textParams.font_texture = &m_fontTexture;
-	textParams.position = GetBBoxAbsolute().GetCenterPoint();
+	textParams.position = GetBBoxAbsolute().GetCenterPoint() + Vector3f(0, 0, 32);
 	textParams.size = 24.0F;
 	buildText(textParams);
 }

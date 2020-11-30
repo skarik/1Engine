@@ -30,6 +30,12 @@ namespace core
 			// Creates a new Cubic from the input positions
 			static Cubic FromPosition ( Vector3f vMinPos, Vector3f vMaxPos );
 
+			//	ConstructCenterExtents ( center, extent ) : Creates cubic from given positions
+			static Cubic ConstructCenterExtents ( const Vector3f& center, const Vector3f& extent )
+			{
+				return FromPosition(center - extent, center + extent);
+			}
+
 			//		Realign ()
 			// Looks at the position and size, and moves their values around so that
 			// the position refers to the bottom back right corner of the Cubic.
