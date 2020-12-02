@@ -18,6 +18,14 @@ namespace eventide {
 	public:
 		friend UserInterface; // User interface updates various mouse & focus states.
 
+		enum class FrameUpdate
+		{
+			// The element does not have a frame-update behavior
+			kNone = 0,
+			// The element does have frame-update behavior
+			kPerFrame = 1,
+		};
+
 		enum class MouseInteract
 		{
 			// The mouse can pass through this element
@@ -111,6 +119,7 @@ namespace eventide {
 			Rotator				rotation	= Rotator();
 			Color				color		= Color(1.0F, 1.0F, 1.0F, 1.0F);
 			Texture*			texture		= nullptr;
+			bool				wireframe	= false;
 		};
 		//	buildCube( params ) : Adds a cube to the build.
 		EVENTIDE_API void		buildCube ( const ParamsForCube& params );
@@ -173,6 +182,22 @@ namespace eventide {
 								OnEventInput ( const EventInput& input_event )
 			{}
 
+		struct GameFrameUpdateInput
+		{
+			enum class Type
+			{
+				kGameThread,
+			};
+
+			Type				type = Type::kGameThread;
+		};
+
+		//	virtual OnGameFrameUpdate() : Called when frame update is enabled.
+		// Called on the game thread. BuildMesh can be happening concurrently, so do not rely on mesh data.
+		EVENTIDE_API virtual void
+								OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame )
+			{}
+
 	protected:
 
 		//	LoadTexture() : Loads a texture, using ui->LoadTexture().
@@ -207,6 +232,9 @@ namespace eventide {
 								GetParent ( void ) const
 			{ return m_parent; }
 
+		EVENTIDE_API const FrameUpdate
+								GetFrameUpdate ( void ) const
+			{ return m_frameUpdate; }
 		EVENTIDE_API const MouseInteract
 								GetMouseInteract ( void ) const
 			{ return m_mouseInteract; }
@@ -240,6 +268,8 @@ namespace eventide {
 		// Parent element to float position on
 		Element*				m_parent = NULL;
 		
+		// How does per-frame updates work with this element?
+		FrameUpdate				m_frameUpdate = FrameUpdate::kNone;
 		// How does the mouse interact with this element?
 		MouseInteract			m_mouseInteract = MouseInteract::kNone;
 		// How does the tab & inputs focus work with this element?

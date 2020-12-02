@@ -44,7 +44,28 @@ FORCE_INLINE Matrix4x4::Matrix4x4 ( const Vector4f& row_x, const Vector4f& row_y
 	pData[14] = row_w[2];
 	pData[15] = row_w[3];
 }
+FORCE_INLINE Matrix4x4::Matrix4x4 ( const Matrix3x3& rotator )
+{
+	pData[0] = rotator.pData[0];
+	pData[1] = rotator.pData[1];
+	pData[2] = rotator.pData[2];
+	pData[3] = 0.0F;
 
+	pData[4] = rotator.pData[3];
+	pData[5] = rotator.pData[4];
+	pData[6] = rotator.pData[5];
+	pData[7] = 0.0F;
+
+	pData[8] = rotator.pData[6];
+	pData[9] = rotator.pData[7];
+	pData[10] = rotator.pData[8];
+	pData[11] = 0.0F;
+
+	pData[12] = 0.0F;
+	pData[13] = 0.0F;
+	pData[14] = 0.0F;
+	pData[15] = 1.0F;
+}
 
 // Set translation with FTYPE
 FORCE_INLINE bool Matrix4x4::setTranslation ( Real const x, Real const y, Real const z )

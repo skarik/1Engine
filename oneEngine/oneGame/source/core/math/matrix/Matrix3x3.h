@@ -55,14 +55,15 @@ public:
 	FORCE_INLINE const Real* operator[] ( int ) const;
 	FORCE_INLINE Real* operator[] ( int );
 
-	//Equal comparison overload
+	// Equal comparison overload
 	FORCE_INLINE bool operator== (Matrix3x3 const& right) const;
 
-	//Not equal comparison overload
+	// Not equal comparison overload
 	FORCE_INLINE bool operator!= (Matrix3x3 const& right) const;
 
 	// Check for valid values
 	FORCE_INLINE bool isOk ( void );
+
 public:
 	Real pData [9];
 };

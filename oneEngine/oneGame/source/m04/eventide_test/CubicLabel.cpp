@@ -1,10 +1,11 @@
 #include "CubicLabel.h"
 #include "m04/eventide/UserInterface.h"
+#include "m04/eventide/elements/DefaultStyler.h"
 
 ETCubicLabel::ETCubicLabel ( ui::eventide::UserInterface* ui )
 	: Element(ui)
 {
-	m_fontTexture = LoadTextureFont("YanoneKaffeesatz-B.otf");
+	m_fontTexture = LoadTextureFont(ui::eventide::DefaultStyler.text.font);
 
 	m_mouseInteract = MouseInteract::kCapturing;
 }
@@ -17,7 +18,7 @@ ETCubicLabel::~ETCubicLabel ( void )
 void ETCubicLabel::BuildMesh ( void )
 {
 	ParamsForCube cubeParams;
-	cubeParams.color = GetMouseInside() ? Color(0.2, 0.2, 0.5, 1.0) : Color(0.2, 0.2, 0.2, 1.0);
+	cubeParams.color = GetMouseInside() ? ui::eventide::DefaultStyler.box.hoverColor : ui::eventide::DefaultStyler.box.defaultColor;
 	cubeParams.box = core::math::Cubic::ConstructCenterExtents(GetBBoxAbsolute().GetCenterPoint(), GetBBoxAbsolute().GetExtents());
 	buildCube(cubeParams);
 

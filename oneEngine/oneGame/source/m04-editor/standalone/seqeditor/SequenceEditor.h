@@ -141,6 +141,15 @@ namespace editor {
 
 		ui::eventide::Element*
 							test_element = NULL;
+
+		// Is the camera being currently dragged?
+		bool				dragging_view = false;
+		// XYZ position that we want to keep trained under the mouse
+		Vector3f			dragging_reference_position;
+		// Is the camera being currently zoom-dragged?
+		bool				zooming_view = false;
+		//	UpdateCameraControl() : Does camera panning & zooming
+		void				UpdateCameraControl ( void );
 	};
 }};
 

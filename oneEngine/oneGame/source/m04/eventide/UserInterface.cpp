@@ -6,6 +6,9 @@
 
 #include "core-ext/threads/Jobs.h"
 
+#include "engine-common/dusk/Dusk.h"
+#include "engine-common/dawn/DawnGUI.h"
+
 #include "renderer/texture/RrTexture.h"
 #include "renderer/texture/RrFontTexture.h"
 #include "renderer/camera/RrCamera.h"
@@ -327,7 +330,7 @@ void ui::eventide::UserInterface::Update ( void )
 		}
 	}
 
-	// Do other input events:
+	// Do other events:
 	for (ui::eventide::Element* element : m_elements) // TODO: this can be parallelized, probably??? Depends on the element OnThing calls.
 	{
 		const uint32_t interactMask = element->GetInputInteractMask();
@@ -349,8 +352,33 @@ void ui::eventide::UserInterface::Update ( void )
 				element->OnEventInput(event);
 			}
 		}
+
+		const ui::eventide::Element::FrameUpdate frameUpdateStyle = element->GetFrameUpdate();
+		if (frameUpdateStyle == ui::eventide::Element::FrameUpdate::kPerFrame)
+		{
+			element->OnGameFrameUpdate( ui::eventide::Element::GameFrameUpdateInput() );
+		}
 	}
 }
+
+bool ui::eventide::UserInterface::IsMouseInside ( void )
+{
+	return m_currentMouseOverElement != NULL
+		|| (m_duskUI != NULL && m_duskUI->IsMouseInside())
+		|| (m_dawnUI != NULL && m_dawnUI->IsMouseInside());
+}
+
+void ui::eventide::UserInterface::LockMouse ( void )
+{
+	m_currentMouseLockedElement = m_currentMouseOverElement;
+	m_currentMouseLocked = true;
+}
+
+void ui::eventide::UserInterface::UnlockMouse ( void )
+{
+	m_currentMouseLocked = false;
+}
+
 
 ui::eventide::Texture ui::eventide::UserInterface::LoadTexture ( const char* filename )
 {
@@ -422,8 +450,9 @@ void ui::eventide::UserInterface::PostStep ( void )
 		{
 			l_rebuildJobs.push_back(core::jobs::System::Current::AddJobRequest([element](void)
 			{
-				element->RebuildMesh();
+				// Should be safe, as bbox dirty is not cleared until completely done writing.
 				element->mesh_creation_state.rebuild_requested = element->m_bboxDirty;
+				element->RebuildMesh();
 			}));
 		}
 	}
@@ -504,7 +533,8 @@ void ui::eventide::UserInterface::PostStep ( void )
 			// Update the indicies for this element.
 			for (uint32_t indicieIndex = 0; indicieIndex < element->mesh_creation_state.index_count; ++indicieIndex)
 			{
-				*(modeldata->indices + target_offset.indexOffset + indicieIndex) += target_offset.vertexOffset;
+				auto& current_index = *(modeldata->indices + target_offset.indexOffset + indicieIndex);
+				current_index = (current_index != 0xFFFF) ? (current_index + target_offset.vertexOffset) : 0xFFFF;
 			}
 
 			// Copy the vertices over.

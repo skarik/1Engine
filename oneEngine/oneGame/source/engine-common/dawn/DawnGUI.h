@@ -7,10 +7,15 @@
 // DAWN-GUI is the console-friendly answer.
 // Layouts are done mostly automatically, and control with a controller made usable.
 
-namespace Dawn
+namespace dawn
 {
 	class UserInterface : public CGameBehavior
 	{
+	public:
+		bool IsMouseInside ( void )
+		{
+			return false;
+		}
 		
 	};
 }

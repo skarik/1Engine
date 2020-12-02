@@ -73,6 +73,9 @@
     <Filter Include="SOURCE\M04-Editor\Standalone\SeqEditor">
       <UniqueIdentifier>{7dd083a6-a009-4ec8-89b2-76b87bd4aee2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04\Eventide\Elements">
+      <UniqueIdentifier>{86206c82-e906-4b53-8e90-e35109303c9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -207,6 +210,15 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\osfstructure.h">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04\eventide\elements\DefaultStyler.h">
+      <Filter>SOURCE\M04\Eventide\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04\eventide\elements\Label.h">
+      <Filter>SOURCE\M04\Eventide\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04\eventide\elements\Button.h">
+      <Filter>SOURCE\M04\Eventide\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -331,6 +343,15 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\seqeditor\osfstructure.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\eventide\elements\DefaultStyler.cpp">
+      <Filter>SOURCE\M04\Eventide\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\eventide\elements\Label.cpp">
+      <Filter>SOURCE\M04\Eventide\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\eventide\elements\Button.cpp">
+      <Filter>SOURCE\M04\Eventide\Elements</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

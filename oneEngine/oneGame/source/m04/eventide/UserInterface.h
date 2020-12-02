@@ -51,6 +51,13 @@ namespace eventide {
 		//	PreStepSynchronus() : Synchronous pre-render
 		EVENTIDE_API void		PreStepSynchronus ( void ) override;
 
+		//	IsMouseInside() : Checks if mouse is inside this UI or any of the associated UI's.
+		EVENTIDE_API bool		IsMouseInside ( void );
+		//	LockMouse() : Locks mouse to current selection.
+		EVENTIDE_API void		LockMouse ( void );
+		//	UnlockMouse() : Unlocks mouse from current selection.
+		EVENTIDE_API void		UnlockMouse ( void );
+
 		EVENTIDE_API void		AddElement ( Element* element );
 		EVENTIDE_API void		RemoveElement ( Element* element );
 
@@ -73,6 +80,10 @@ namespace eventide {
 		Element*				m_currentFocusedElement = NULL;
 		// Element that the mouse is currently over. Used to track mouse events.
 		Element*				m_currentMouseOverElement = NULL;
+		// Element that the mouse is currently locked to.
+		Element*				m_currentMouseLockedElement = NULL;
+		// Is the mouse locked element locked
+		bool					m_currentMouseLocked = false;
 
 	private:
 		CStreamedRenderable3D*	m_renderable = NULL;
