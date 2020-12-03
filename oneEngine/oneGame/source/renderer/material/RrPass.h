@@ -37,7 +37,7 @@ enum rrPassType
 enum rrPassConstants : int
 {
 	kPass_MaxPassCount		= 4,
-	kPass_MaxTextureSlots	= 7,
+	kPass_MaxTextureSlots	= 16,
 };
 
 enum rrPassOrderConstants : int

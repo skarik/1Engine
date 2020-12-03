@@ -5,6 +5,8 @@
 #include "core/math/Math3d.h"
 #include "core/math/BoundingBox.h"
 
+#include "core/input/CInput.h"
+
 #ifndef EVENTIDE_API 
 #define EVENTIDE_API GAME_API
 #endif

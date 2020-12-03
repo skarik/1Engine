@@ -219,6 +219,9 @@
     <ClInclude Include="source\m04\eventide\elements\Button.h">
       <Filter>SOURCE\M04\Eventide\Elements</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04\eventide\elements\ListMenu.h">
+      <Filter>SOURCE\M04\Eventide\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -351,6 +354,9 @@
       <Filter>SOURCE\M04\Eventide\Elements</Filter>
     </ClCompile>
     <ClCompile Include="source\m04\eventide\elements\Button.cpp">
+      <Filter>SOURCE\M04\Eventide\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\eventide\elements\ListMenu.cpp">
       <Filter>SOURCE\M04\Eventide\Elements</Filter>
     </ClCompile>
   </ItemGroup>

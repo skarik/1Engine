@@ -83,6 +83,7 @@ RrPass& RrPass::assignFrom ( const RrPass& other )
 // Do not delete the texture directly, use RemoveReference.
 void RrPass::setTexture ( const rrTextureSlot slot, RrTexture* texture )
 {
+	ARCORE_ASSERT(slot < kPass_MaxTextureSlots);
 	if (m_textures[slot] != texture)
 	{
 		// Free the slot.
@@ -104,12 +105,14 @@ void RrPass::setTexture ( const rrTextureSlot slot, RrTexture* texture )
 // Do not ever use for normal objects due to memory considerations.
 void RrPass::setTexture ( const rrTextureSlot slot, gpu::Texture* n_texture )
 {
+	ARCORE_ASSERT(slot < kPass_MaxTextureSlots);
 	m_texturesRaw[slot] = n_texture;
 }
 
 //	setSampler ( slot, samplerInfo ) : Sets and creates sampler object.
 void RrPass::setSampler ( const rrTextureSlot slot, gpu::SamplerCreationDescription* scd )
 {
+	ARCORE_ASSERT(slot < kPass_MaxTextureSlots);
 	if (m_samplers[slot] != NULL)
 	{
 		m_samplers[slot]->destroy(NULL);

@@ -63,6 +63,8 @@ ui::eventide::UserInterface::UserInterface ( dusk::UserInterface* duskUI, dawn::
 	uiPass.m_blendMode = renderer::kHLBlendModeNormal;
 	uiPass.m_cullMode = gpu::kCullModeNone;
 	m_renderable->PassInitWithInput(0, &uiPass);
+
+	m_blackTexture = RrTexture::Load(renderer::kTextureBlack);
 }
 
 ui::eventide::UserInterface::~UserInterface ( void )
@@ -77,6 +79,8 @@ ui::eventide::UserInterface::~UserInterface ( void )
 		delete element;
 	}
 	m_elements.clear();
+
+	m_blackTexture->RemoveReference();
 }
 
 void ui::eventide::UserInterface::AddElement ( ui::eventide::Element* element )
@@ -249,12 +253,37 @@ void ui::eventide::UserInterface::Update ( void )
 		// find element with the shortest distance to the camera. that's the one with the mouse focus
 
 		float minMouseHitDistance = INFINITY;
-		Element* minMouseHitElement = NULL;
+		Element* minMouseHitElement = m_currentMouseLocked ? m_currentMouseLockedElement : NULL;
 
-		for (ui::eventide::Element* element : m_elements)
+		if (!m_currentMouseLocked)
 		{
-			ARCORE_ASSERT(element != NULL);
+			for (ui::eventide::Element* element : m_elements)
+			{
+				ARCORE_ASSERT(element != NULL);
 
+				const ui::eventide::Element::MouseInteract elementInteractStyle = element->GetMouseInteract();
+
+				if (elementInteractStyle == ui::eventide::Element::MouseInteract::kBlocking
+					|| elementInteractStyle == ui::eventide::Element::MouseInteract::kCapturing)
+				{
+					float mouseHitDistance = 0.0F;
+					if (element->GetBBoxAbsolute().Raycast(mouseRay, mouseHitDistance))
+					{
+						if (minMouseHitDistance > mouseHitDistance)
+						{
+							minMouseHitDistance = mouseHitDistance;
+							minMouseHitElement = element;
+						}
+					}
+				}
+			}
+		}
+		else if (m_currentMouseLockedElement != NULL)
+		{
+			ui::eventide::Element* element = m_currentMouseLockedElement;
+			bool hasValidHit = false;
+
+			// Attempt to do collision with the locked element
 			const ui::eventide::Element::MouseInteract elementInteractStyle = element->GetMouseInteract();
 
 			if (elementInteractStyle == ui::eventide::Element::MouseInteract::kBlocking
@@ -263,13 +292,26 @@ void ui::eventide::UserInterface::Update ( void )
 				float mouseHitDistance = 0.0F;
 				if (element->GetBBoxAbsolute().Raycast(mouseRay, mouseHitDistance))
 				{
-					if (minMouseHitDistance > mouseHitDistance)
-					{
-						minMouseHitDistance = mouseHitDistance;
-						minMouseHitElement = element;
-					}
+					minMouseHitDistance = mouseHitDistance;
+					hasValidHit = true;
 				}
 			}
+
+			if (!hasValidHit)
+			{
+				// Make a plane parallel to the camera at the object's center, and cast against that.
+				core::math::Plane testPlane (element->GetBBox().GetCenterPoint(), RrCamera::activeCamera->transform.rotation * Vector3f::forward);
+
+				float mouseHitDistance = 0.0F;
+				if (testPlane.Raycast(mouseRay, mouseHitDistance))
+				{
+					minMouseHitDistance = mouseHitDistance;
+					hasValidHit = true;
+				}
+			}
+
+			// If we don't have a valid hit at this point, the element has gone behind the camera. This is a bad state to be in.
+			ARCORE_ASSERT(hasValidHit);
 		}
 
 		// Update changes in the state and generate events:
@@ -309,24 +351,37 @@ void ui::eventide::UserInterface::Update ( void )
 		else if (m_currentMouseOverElement != NULL)
 		{
 			// Staying inside the current element:
-			if (Input::MouseDown(Input::MBLeft))
+			for (int mouseButton = 0; mouseButton < 4; ++mouseButton)
 			{
-				event.type = ui::eventide::Element::EventMouse::Type::kClicked;
-				event.button = Input::MBLeft;
-				m_currentMouseOverElement->OnEventMouse(event);
+				if (Input::MouseDown(mouseButton))
+				{
+					event.type = ui::eventide::Element::EventMouse::Type::kClicked;
+					event.button = mouseButton;
+					m_currentMouseOverElement->OnEventMouse(event);
+
+					m_mouseDragReference[mouseButton] = event.position_world;
+				}
+				if (Input::Mouse(mouseButton))
+				{
+					Vector3f mouseDelta = event.position_world - m_mouseDragReference[mouseButton];
+					if (mouseDelta.sqrMagnitude() > FLOAT_PRECISION)
+					{
+						event.type = ui::eventide::Element::EventMouse::Type::kDragged;
+						event.button = mouseButton;
+						event.velocity_world = mouseDelta;
+						m_currentMouseOverElement->OnEventMouse(event);
+
+						m_mouseDragReference[mouseButton] = event.position_world;
+					}
+				}
+				if (Input::MouseUp(mouseButton))
+				{
+					event.type = ui::eventide::Element::EventMouse::Type::kReleased;
+					event.button = mouseButton;
+					m_currentMouseOverElement->OnEventMouse(event);
+				}
 			}
-			if (Input::MouseDown(Input::MBRight))
-			{
-				event.type = ui::eventide::Element::EventMouse::Type::kClicked;
-				event.button = Input::MBRight;
-				m_currentMouseOverElement->OnEventMouse(event);
-			}
-			if (Input::MouseDown(Input::MBMiddle))
-			{
-				event.type = ui::eventide::Element::EventMouse::Type::kClicked;
-				event.button = Input::MBMiddle;
-				m_currentMouseOverElement->OnEventMouse(event);
-			}
+			
 		}
 	}
 
@@ -439,11 +494,13 @@ struct MeshOffsets
 //	PostStep() : Threaded post-render
 void ui::eventide::UserInterface::PostStep ( void )
 {
+	std::vector<Element*> l_renderedElements = m_elements;
+	
 	// Rebuild all the meshes as needed
 	std::vector<core::jobs::JobId> l_rebuildJobs;
-	for (uint32_t elementIndex = 0; elementIndex < m_elements.size(); ++elementIndex)
+	for (uint32_t elementIndex = 0; elementIndex < l_renderedElements.size(); ++elementIndex)
 	{
-		Element* element = m_elements[elementIndex];
+		Element* element = l_renderedElements[elementIndex];
 
 		// Add meshes that need new meshes to the job list
 		if (element->mesh_creation_state.rebuild_requested)
@@ -462,13 +519,13 @@ void ui::eventide::UserInterface::PostStep ( void )
 		core::jobs::System::Current::WaitForJob(jobId);
 	}
 
-	std::vector<MeshOffsets> l_meshOffsets (m_elements.size());
+	std::vector<MeshOffsets> l_meshOffsets (l_renderedElements.size());
 	MeshOffsets l_trackedOffset = {0, 0};
 
 	// Generate the offsets for each mesh
-	for (uint32_t elementIndex = 0; elementIndex < m_elements.size(); ++elementIndex)
+	for (uint32_t elementIndex = 0; elementIndex < l_renderedElements.size(); ++elementIndex)
 	{
-		const Element* element = m_elements[elementIndex];
+		const Element* element = l_renderedElements[elementIndex];
 		ARCORE_ASSERT(element != NULL);
 
 		// Skip in-progress meshes
@@ -511,18 +568,18 @@ void ui::eventide::UserInterface::PostStep ( void )
 	modeldata->vertexNum = l_trackedOffset.vertexOffset;
 
 	// Copy the meshes for each mesh into the correct part of the final mesh
-	std::vector<core::jobs::JobId> l_jobsToWaitOn (m_elements.size());
-	for (uint32_t elementIndex = 0; elementIndex < m_elements.size(); ++elementIndex)
+	std::vector<core::jobs::JobId> l_jobsToWaitOn (l_renderedElements.size());
+	for (uint32_t elementIndex = 0; elementIndex < l_renderedElements.size(); ++elementIndex)
 	{
 		// Skip in-progress meshes
-		if (m_elements[elementIndex]->mesh_creation_state.building_mesh)
+		if (l_renderedElements[elementIndex]->mesh_creation_state.building_mesh)
 		{
 			continue;
 		}
 
-		l_jobsToWaitOn[elementIndex] = core::jobs::System::Current::AddJobRequest([this, elementIndex, &modeldata, &l_meshOffsets](void)
+		l_jobsToWaitOn[elementIndex] = core::jobs::System::Current::AddJobRequest([this, &l_renderedElements, elementIndex, &modeldata, &l_meshOffsets](void)
 		{
-			const Element* element = m_elements[elementIndex];
+			const Element* element = l_renderedElements[elementIndex];
 			const MeshOffsets& target_offset = l_meshOffsets[elementIndex];
 			
 			// Copy the indicies over
@@ -567,9 +624,13 @@ void ui::eventide::UserInterface::PostStepSynchronus ( void )
 {
 	// Update the material's textures
 	auto passAccessor = m_renderable->PassAccess(0);
-	for (uint32_t textureIndex = 0; textureIndex < m_textures.size(); ++textureIndex)
+	for (int32_t textureIndex = 0; textureIndex < m_textures.size(); ++textureIndex)
 	{
-		passAccessor.setTexture((rrTextureSlot)(rrTextureSlot::TEX_SLOT0 + textureIndex), m_textures[textureIndex]);
+		passAccessor.setTexture((rrTextureSlot)(rrTextureSlot::TEX_SLOT0 + textureIndex), m_textures[textureIndex] );
+	}
+	for (size_t textureIndex = m_textures.size(); textureIndex < kPass_MaxTextureSlots; ++textureIndex)
+	{
+		passAccessor.setTexture((rrTextureSlot)(rrTextureSlot::TEX_SLOT0 + textureIndex), m_blackTexture);
 	}
 }
 

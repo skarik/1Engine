@@ -9,6 +9,47 @@
 #include "m04/eventide/UserInterface.h"
 #include "m04/eventide_test/CubicLabel.h"
 #include "m04/eventide/elements/Button.h"
+#include "m04/eventide/elements/ListMenu.h"
+
+class DraggableButtonTest : public ui::eventide::elements::Button
+{
+public:
+	DraggableButtonTest ( ui::eventide::UserInterface* ui = NULL )
+		: Button(ui)
+	{
+		;
+	}
+
+	virtual void			OnEventMouse ( const EventMouse& mouse_event ) override
+	{
+		if (mouse_event.type == EventMouse::Type::kDragged)
+		{
+			core::math::BoundingBox bbox = GetBBox();
+			bbox.m_M.translate(mouse_event.velocity_world);
+			bbox.m_MInverse = bbox.m_M.inverse();
+			SetBBox( bbox );
+			RequestUpdateMesh();
+		}
+		else
+		{
+			if (mouse_event.type == EventMouse::Type::kClicked)
+			{
+				m_dragging = true;
+				m_ui->LockMouse();
+			}
+			else if (mouse_event.type == EventMouse::Type::kReleased)
+			{
+				m_dragging = false;
+				m_ui->UnlockMouse();
+			}
+
+			Button::OnEventMouse(mouse_event);
+		}
+	}
+
+private:
+	bool			m_dragging;
+};
 
 m04::editor::SequenceEditor::SequenceEditor ( void )
 	: CGameBehavior()
@@ -19,8 +60,16 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	test_element->SetBBox( core::math::BoundingBox( Matrix4x4(), Vector3f(100, 100, 0), Vector3f(64, 64, 4) ) );
 
 	auto button = new ui::eventide::elements::Button();
-	button->SetBBox( core::math::BoundingBox( Rotator(), Vector3f(-10, -10, 0), Vector3f(64, 32, 4) ) );
+	button->SetBBox( core::math::BoundingBox( Rotator(), Vector3f(-50, -10, 0), Vector3f(64, 32, 4) ) );
 	button->m_contents = "Press me.";
+
+	auto list = new ui::eventide::elements::ListMenu();
+	list->SetBBox( core::math::BoundingBox( Rotator(), Vector3f(-100, 200, 0), Vector3f() ) );
+	list->SetListChoices({"Option 1", "Option 2", "Eggs", "Murder", "Milk"});
+
+	auto draggable = new DraggableButtonTest();
+	draggable->SetBBox( core::math::BoundingBox( Rotator(), Vector3f(120, -10, 0), Vector3f(64, 32, 4) ) );
+	draggable->m_contents = "Drag me.";
 
 	RrCamera* camera = new RrCamera();
 	camera->SetActive();

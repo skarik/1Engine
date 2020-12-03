@@ -85,10 +85,14 @@ namespace eventide {
 		// Is the mouse locked element locked
 		bool					m_currentMouseLocked = false;
 
+		// Reference mouse position, where the clicks start
+		Vector2f				m_mouseDragReference [4];
+
 	private:
 		CStreamedRenderable3D*	m_renderable = NULL;
 		uint32_t				m_renderableStreamedIndexStorageSize = 0;
 		uint32_t				m_renderableStreamedVertexStorageSize = 0;
+		RrTexture*				m_blackTexture = NULL;
 	};
 
 }}

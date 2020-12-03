@@ -2,6 +2,7 @@
 #include "m04/eventide/elements/DefaultStyler.h"
 
 #include "core/time.h"
+#include "core/math/Easing.h"
 
 ui::eventide::elements::Button::Button ( ui::eventide::UserInterface* ui )
 	: Element(ui)
@@ -21,7 +22,9 @@ void ui::eventide::elements::Button::BuildMesh ( void )
 	cubeParams.box = core::math::Cubic::ConstructFromBBox(GetBBoxAbsolute());
 	cubeParams.rotation = GetBBoxAbsolute().m_M.getRotator();
 	cubeParams.texture = NULL;
-	cubeParams.color = (GetMouseInside() ? DefaultStyler.box.hoverColor : DefaultStyler.box.defaultColor).Lerp(DefaultStyler.box.activeColor, m_activateGlowPulse);
+	cubeParams.color = DefaultStyler.box.defaultColor
+		.Lerp(DefaultStyler.box.hoverColor, m_hoverGlowValue)
+		.Lerp(DefaultStyler.box.activeColor, Styler::PulseFade(m_activateGlowPulse));
 	buildCube(cubeParams);
 
 	ParamsForText textParams;
@@ -52,13 +55,16 @@ void ui::eventide::elements::Button::OnEventMouse ( const EventMouse& mouse_even
 		if (mouse_event.type == EventMouse::Type::kEnter)
 		{
 			RequestUpdateMesh();
+			m_frameUpdate = FrameUpdate::kPerFrame;
 		}
 		else if (mouse_event.type == EventMouse::Type::kExit)
 		{
 			RequestUpdateMesh();
+			m_frameUpdate = FrameUpdate::kPerFrame;
 		}
 		// Do a flash when clicked
-		else if (mouse_event.type == EventMouse::Type::kClicked)
+		else if (mouse_event.type == EventMouse::Type::kClicked
+			&& mouse_event.button == Input::MBLeft)
 		{
 			RequestUpdateMesh();
 			m_frameUpdate = FrameUpdate::kPerFrame;
@@ -70,13 +76,26 @@ void ui::eventide::elements::Button::OnEventMouse ( const EventMouse& mouse_even
 
 void ui::eventide::elements::Button::OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame )
 {
-	m_activateGlowPulse = m_activateGlowPulse - Time::deltaTime / 0.5F;
-	if (m_activateGlowPulse <= 0.0F)
+	m_activateGlowPulse = m_activateGlowPulse - Time::deltaTime / DefaultStyler.timing.clickPulse;
+
+	m_hoverGlowValue = math::clamp<float>(m_hoverGlowValue, 0.0F, 1.0F);
+	if (GetMouseInside())
 	{
-		m_frameUpdate = FrameUpdate::kNone;
+		m_hoverGlowValue = m_hoverGlowValue + Time::deltaTime / DefaultStyler.timing.hoverFade;
 	}
 	else
 	{
-		RequestUpdateMesh();
+		m_hoverGlowValue = m_hoverGlowValue - Time::deltaTime / DefaultStyler.timing.hoverFade;
 	}
+
+	// Check that all color blends are steady, and if they are, stop updating.
+	if ((GetMouseInside() ? (m_hoverGlowValue >= 1.0F) : (m_hoverGlowValue <= 0.0F))
+		&& m_activateGlowPulse <= 0.0F)
+	{
+		m_hoverGlowValue = math::clamp<float>(m_hoverGlowValue, 0.0F, 1.0F);
+		m_activateGlowPulse = std::max<float>(m_activateGlowPulse, 0.0F);
+		m_frameUpdate = FrameUpdate::kNone;
+	}
+
+	RequestUpdateMesh();
 }

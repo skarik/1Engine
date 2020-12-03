@@ -150,12 +150,14 @@ namespace eventide {
 				kExit,
 				kClicked,
 				kDragged,
+				kReleased,
 			};
 
 			Type				type = Type::kInvalid;
 			uint8_t				button = 0;
 			Vector3f			position_world;
 			Vector2f			position_screen;
+			Vector2f			velocity_world;
 			Vector2f			velocity_screen;
 		};
 

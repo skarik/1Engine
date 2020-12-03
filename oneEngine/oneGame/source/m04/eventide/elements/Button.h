@@ -38,11 +38,13 @@ namespace elements {
 			{}
 
 		// If the button can be activated or focused.
-		bool					m_enabled = true;
+		bool				m_enabled = true;
 
 	private:
-		ui::eventide::Texture	m_fontTexture;
-		std::atomic<float>		m_activateGlowPulse = 0;
+		ui::eventide::Texture
+							m_fontTexture;
+		std::atomic<float>	m_hoverGlowValue = 0;
+		std::atomic<float>	m_activateGlowPulse = 0;
 	};
 
 }}}
