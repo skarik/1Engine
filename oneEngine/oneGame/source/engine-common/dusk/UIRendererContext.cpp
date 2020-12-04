@@ -9,9 +9,10 @@ void dusk::UIRendererContext::setFocus ( FocusStyle style )
 {
 	m_focusType = style;
 }
-void dusk::UIRendererContext::setColor ( ColorStyle style )
+void dusk::UIRendererContext::setColor ( ColorStyle style, size_t subelement )
 {
 	m_colorType = style;
+	m_colorSubelement = subelement;
 }
 void dusk::UIRendererContext::setTextSettings ( TextStyleSettings settings )
 {
@@ -130,6 +131,13 @@ void dusk::UIRendererContext::generateDrawState( Element* source )
 float dusk::UIRendererContext::getTextHeight ( TextFontStyle font )
 {
 	return 16; // TODO: Use font setting given by either renderer, or grabbed from renderer
+}
+
+float dusk::UIRendererContext::getTextWidth ( TextFontStyle font, const char* str )
+{
+	rrTextBuilder2D* l_textBuilder = static_cast<rrTextBuilder2D*>(m_mb2);
+	Vector2f l_size = l_textBuilder->predictTextSize(str);
+	return l_size.x;
 }
 
 void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& rectangle )

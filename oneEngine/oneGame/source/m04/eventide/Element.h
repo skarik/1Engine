@@ -68,7 +68,7 @@ namespace eventide {
 
 	public:
 		EVENTIDE_API			Element ( UserInterface* ui = NULL );
-		EVENTIDE_API			~Element ( void );
+		EVENTIDE_API virtual	~Element ( void );
 
 		//	virtual BuildMesh() : Called to build the mesh that is actually drawn.
 		//	The build***() functions are used for building within this function.

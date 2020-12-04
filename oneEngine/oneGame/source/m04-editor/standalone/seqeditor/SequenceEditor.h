@@ -7,6 +7,7 @@
 
 #include "engine/behavior/CGameBehavior.h"
 #include "m04/eventide/UserInterface.h"
+#include "engine-common/dusk/Dusk.h"
 
 namespace m04 {
 namespace editor {
@@ -138,6 +139,9 @@ namespace editor {
 	protected:
 		ui::eventide::UserInterface*
 							user_interface = NULL;
+
+		dusk::UserInterface*
+							dusk_interface = NULL;
 
 		ui::eventide::Element*
 							test_element = NULL;

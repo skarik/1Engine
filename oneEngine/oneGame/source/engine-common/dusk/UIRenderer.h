@@ -190,10 +190,11 @@ namespace dusk
 
 	public:
 		ENGCOM_API void			setFocus ( FocusStyle style );
-		ENGCOM_API void			setColor ( ColorStyle style );
+		ENGCOM_API void			setColor ( ColorStyle style, size_t subelement = 0 );
 		ENGCOM_API void			setTextSettings ( TextStyleSettings settings );
 
 		ENGCOM_API float		getTextHeight ( TextFontStyle font );
+		ENGCOM_API float		getTextWidth ( TextFontStyle font, const char* str );
 
 		ENGCOM_API void			drawRectangle ( Element* source, const Rect& rectangle );
 		ENGCOM_API void			drawText ( Element* source, const Vector2f& position, const char* str );
@@ -206,6 +207,7 @@ namespace dusk
 	private:
 		FocusStyle			m_focusType;
 		ColorStyle			m_colorType;
+		size_t				m_colorSubelement;
 		TextStyleSettings	m_textType;
 
 		bool				m_dsDrawBackground;

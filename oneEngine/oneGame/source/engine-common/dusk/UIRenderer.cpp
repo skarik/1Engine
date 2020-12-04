@@ -235,7 +235,7 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 
 	// Update positions, going down the tree.
 	std::list<UserInterface::ElementNode*> updateList;
-	updateList.push_front(&m_interface->m_elementTreeBase);
+	updateList.push_front(m_interface->m_elementTreeBase);
 
 	while (!updateList.empty())
 	{
@@ -250,7 +250,8 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 			if (m_interface->m_currentDialogue != elementNode->index)
 			{
 				// Add them to the rendering list
-				if (element->m_elementType == ElementType::kControl)
+				if (element->m_elementType == ElementType::kControl
+					&& element->m_visible)
 				{
 					renderList->push_back(element);
 				}
@@ -266,9 +267,9 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 		if (elementNode->index == kElementHandleInvalid
 			|| m_interface->m_currentDialogue != elementNode->index)
 		{
-			for (UserInterface::ElementNode& child : elementNode->children)
+			for (UserInterface::ElementNode* child : elementNode->children)
 			{
-				updateList.push_back(&child);
+				updateList.push_back(child);
 			}
 		}
 	}
@@ -300,9 +301,9 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 		}
 
 		// Render children of this item after all the current depth's items are added.
-		for (UserInterface::ElementNode& child : elementNode->children)
+		for (UserInterface::ElementNode* child : elementNode->children)
 		{
-			delayedUpdateList.push_back(&child);
+			delayedUpdateList.push_back(child);
 		}
 	}
 }

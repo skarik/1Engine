@@ -65,7 +65,8 @@ dusk::UserInterface::UserInterface ( void )
 	m_currentFocus = kElementHandleInvalid;
 
 	// Set up tree root
-	m_elementTreeBase.index = kElementHandleInvalid;
+	m_elementTreeBase = new ElementNode;
+	m_elementTreeBase->index = kElementHandleInvalid;
 }
 
 dusk::UserInterface::~UserInterface ( void )
@@ -175,7 +176,7 @@ void dusk::UserInterface::UpdateMouseOver ( void )
 
 	// Update positions, going down the tree.
 	std::list<ElementNode*> updateList;
-	updateList.push_front(&m_elementTreeBase);
+	updateList.push_front(m_elementTreeBase);
 
 	while (!updateList.empty())
 	{
@@ -201,9 +202,9 @@ void dusk::UserInterface::UpdateMouseOver ( void )
 		}
 
 		// Update children of this item last so we update the mouse over in tiers
-		for (ElementNode& child : elementNode->children)
+		for (ElementNode* child : elementNode->children)
 		{
-			updateList.push_back(&child);
+			updateList.push_back(child);
 		}
 	}
 }
@@ -330,12 +331,40 @@ void dusk::UserInterface::UpdateFocus ( void )
 	}
 }
 
+void dusk::UserInterface::ClearElementTree ( void )
+{
+	std::vector<ElementNode*> nodesToTraverse;
+	nodesToTraverse.reserve(m_elements.size());
+
+	for (auto child : m_elementTreeBase->children)
+	{
+		nodesToTraverse.push_back(child);
+	}
+	m_elementTreeBase->children.clear();
+
+	for (int traverseIndex = 0; traverseIndex < nodesToTraverse.size(); ++traverseIndex)
+	{
+		ElementNode* currentNode = nodesToTraverse[traverseIndex];
+		ARCORE_ASSERT(currentNode != NULL);
+
+		// Push back all children
+		for (auto child : currentNode->children)
+		{
+			nodesToTraverse.push_back(child);
+		}
+
+		// Delete now that we done need it.
+		delete currentNode;
+	}
+}
+
 void dusk::UserInterface::GenerateElementTree ( void )
 {
 	if (m_treeNeedsGeneration)
 	{
 		// Clear out current tree
-		m_elementTreeBase.children.clear();
+		//m_elementTreeBase.children.clear();
+		ClearElementTree();
 
 		std::vector<bool> addedToTree(m_elements.size(), false);
 		std::vector<ElementNode*> treeNodeLookup(m_elements.size(), NULL);
@@ -351,58 +380,62 @@ void dusk::UserInterface::GenerateElementTree ( void )
 
 			if (!addedToTree[i])
 			{
+				// If no parent, then just add to the tree's base
+				if (currentElement->m_parent == NULL)
+				{	
+					m_elementTreeBase->children.push_back(new ElementNode());
+					m_elementTreeBase->children.back()->index = i;
+
+					treeNodeLookup[i] = m_elementTreeBase->children.back();
+					addedToTree[i] = true;
+				}
 				// If we have a parent, we need to generate the the dependancy tree of this element
-				if (currentElement->m_parent != NULL)
-				{
+				else
+				{	
 					// Create the parenting stack, which starts with the current element.
 					std::vector<Element*> treeGenerationStack;
 					treeGenerationStack.push_back(currentElement);
 
 					// Push back the entire parent tree to the request of what to generate.
 					Element* currentParent = currentElement->m_parent;
-					while (true)
+					while (currentParent != NULL && !addedToTree[currentParent->m_index])
 					{
 						ARCORE_ASSERT(m_elements[currentParent->m_index] == currentParent);
-						if (currentParent == NULL || addedToTree[currentParent->m_index])
-							break;
 						treeGenerationStack.push_back(currentParent);
 						currentParent = currentParent->m_parent;
 					}
 
 					// Generate the offsets, starting at the parent and working down the list.
-					for (int i = (int)(treeGenerationStack.size() - 1); i >= 0; --i)
+					for (auto stackItr = treeGenerationStack.rbegin(); stackItr != treeGenerationStack.rend(); ++stackItr)
 					{
-						Element* currentChild = treeGenerationStack[i];
+						Element* currentChild = *stackItr;
 						currentParent = currentChild->m_parent;
 
-						if (currentParent == NULL)
-						{	// If no parent, then add them to the trunk
-							m_elementTreeBase.children.push_back(ElementNode());
-							m_elementTreeBase.children.back().index = currentChild->m_index;
+						ARCORE_ASSERT(currentChild != NULL && m_elements[currentChild->m_index] == currentChild);
 
-							treeNodeLookup[currentChild->m_index] = &m_elementTreeBase.children.back();
+						// If no parent, then add them to the trunk
+						if (currentParent == NULL)
+						{	
+							m_elementTreeBase->children.push_back(new ElementNode());
+							m_elementTreeBase->children.back()->index = currentChild->m_index;
+
+							treeNodeLookup[currentChild->m_index] = m_elementTreeBase->children.back();
 							addedToTree[currentChild->m_index] = true;
 						}
+						// If there is a parent, then add the current child to its node
 						else
-						{	// If there is a parent, then add the child to its node
+						{	
+							ARCORE_ASSERT(addedToTree[currentParent->m_index]);
 							ElementNode* parentNode = treeNodeLookup[currentParent->m_index];
 
-							parentNode->children.push_back(ElementNode());
-							parentNode->children.back().index = currentChild->m_index;
+							parentNode->children.push_back(new ElementNode());
+							parentNode->children.back()->index = currentChild->m_index;
 
-							treeNodeLookup[currentChild->m_index] = &parentNode->children.back();
+							treeNodeLookup[currentChild->m_index] = parentNode->children.back();
 							addedToTree[currentChild->m_index] = true;
 						}
 					}
 					// The current element's offset will be generated by the previous loop.
-				}
-				else
-				{	// If no parent, then just add to the tree's base
-					m_elementTreeBase.children.push_back(ElementNode());
-					m_elementTreeBase.children.back().index = i;
-
-					treeNodeLookup[i] = &m_elementTreeBase.children.back();
-					addedToTree[i] = true;
 				}
 			}
 		}
@@ -417,29 +450,29 @@ void dusk::UserInterface::UpdateElementPositions ( void )
 	if ( m_currentDialogue == kElementHandleInvalid )
 	{
 		// Update positions, going down the tree.
-		std::list<std::reference_wrapper<ElementNode>> updateList;
+		std::list<ElementNode*> updateList;
 		updateList.push_front(m_elementTreeBase);
 
 		while (!updateList.empty())
 		{
-			ElementNode& elementNode = updateList.front();
+			ElementNode* elementNode = updateList.front();
 			updateList.pop_front();
 
 			// Grab the current element
 			Element* element = NULL;
-			if (elementNode.index != kElementHandleInvalid)
+			if (elementNode->index != kElementHandleInvalid)
 			{
-				element = m_elements[elementNode.index];
-				ARCORE_ASSERT(element->m_index == elementNode.index);
+				element = m_elements[elementNode->index];
+				ARCORE_ASSERT(element->m_index == elementNode->index);
 			}
 
 			// Do the layout-type elements
 			if (element != NULL && element->m_elementType == ElementType::kLayout)
 			{
 				std::vector<Element*> children;
-				for (ElementNode& childNode : elementNode.children)
+				for (ElementNode* childNode : elementNode->children)
 				{
-					Element* child = m_elements[childNode.index];
+					Element* child = m_elements[childNode->index];
 					if (!child->m_overrideLayout && !child->m_ignoreAutoLayout)
 					{	// Add the child element to the update list for the layout
 						children.push_back(child);
@@ -453,9 +486,9 @@ void dusk::UserInterface::UpdateElementPositions ( void )
 			// Do the control-type elements
 			else
 			{
-				for (ElementNode& childNode : elementNode.children)
+				for (ElementNode* childNode : elementNode->children)
 				{
-					Element* child = m_elements[childNode.index];
+					Element* child = m_elements[childNode->index];
 					
 					if (!child->m_overrideLayout)
 					{
@@ -504,7 +537,7 @@ void dusk::UserInterface::UpdateElements ( void )
 	{
 		// Update positions, going down the tree.
 		std::list<ElementNode*> updateList;
-		updateList.push_front(&m_elementTreeBase);
+		updateList.push_front(m_elementTreeBase);
 
 		while (!updateList.empty())
 		{
@@ -521,9 +554,9 @@ void dusk::UserInterface::UpdateElements ( void )
 			}
 
 			// Update children of this item before others now
-			for (ElementNode& child : elementNode->children)
+			for (ElementNode* child : elementNode->children)
 			{
-				updateList.push_front(&child);
+				updateList.push_front(child);
 			}
 		}
 	}

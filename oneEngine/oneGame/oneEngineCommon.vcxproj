@@ -116,6 +116,7 @@
     <ClInclude Include="source\engine-common\dusk\controls\ColorPicker.h" />
     <ClInclude Include="source\engine-common\dusk\controls\DockablePanel.h" />
     <ClInclude Include="source\engine-common\dusk\controls\DropdownList.h" />
+    <ClInclude Include="source\engine-common\dusk\controls\DropdownMenu.h" />
     <ClInclude Include="source\engine-common\dusk\controls\Label.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -315,6 +316,7 @@
     <ClCompile Include="source\engine-common\dusk\controls\ColorPicker.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\DockablePanel.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\DropdownList.cpp" />
+    <ClCompile Include="source\engine-common\dusk\controls\DropdownMenu.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\Label.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

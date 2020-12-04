@@ -122,6 +122,9 @@ namespace dusk
 		// Used internally to remove elements.
 		void					DestroyElement ( const size_t handle );
 
+		//	ClearElementTree() : Destroys the entire element tree.
+		void					ClearElementTree ( void );
+
 
 		void					GenerateElementTree ( void );
 		void					UpdateElementPositions ( void );
@@ -151,11 +154,11 @@ namespace dusk
 
 		struct ElementNode
 		{
-			uint32_t			index;
-			std::vector<ElementNode>
-								children;
+			uint32_t			index = 0;
+			std::vector<ElementNode*>
+								children = std::vector<ElementNode*>(0);
 		};
-		ElementNode			m_elementTreeBase;
+		ElementNode*		m_elementTreeBase;
 		bool				m_treeNeedsGeneration = false;
 
 	private:

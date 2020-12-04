@@ -222,6 +222,9 @@
     <ClInclude Include="source\m04\eventide\elements\ListMenu.h">
       <Filter>SOURCE\M04\Eventide\Elements</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\TopMenu.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -358,6 +361,9 @@
     </ClCompile>
     <ClCompile Include="source\m04\eventide\elements\ListMenu.cpp">
       <Filter>SOURCE\M04\Eventide\Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\TopMenu.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
