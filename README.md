@@ -29,6 +29,7 @@ Current graphics API support:
 * **DirectX 12** - Planned. Requires both Windows 10 SDK and Vulkan SDK.
 
 Physics solution: **Bullet Physics**
+
 Audio solution: **Homebrew (WASAPI)**
 
 ## Branches
