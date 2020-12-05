@@ -21,6 +21,12 @@ void dusk::Element::Update ( const UIStepInfo* stepinfo )
 	}
 }
 
+dusk::Element::~Element ( void )
+{
+	// Destructor removes self from the DuskUI's list
+	m_interface->RemoveElement(m_index);
+}
+
 //
 //void CDuskGUIElement::setDrawDown ( void )
 //{

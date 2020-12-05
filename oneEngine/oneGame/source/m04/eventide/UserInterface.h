@@ -57,6 +57,12 @@ namespace eventide {
 		EVENTIDE_API void		LockMouse ( void );
 		//	UnlockMouse() : Unlocks mouse from current selection.
 		EVENTIDE_API void		UnlockMouse ( void );
+		//	GetMouseHit() : Returns the element the mouse hit last. NULL if not.
+		EVENTIDE_API Element*	GetMouseHit ( void ) const;
+		//	GetMousePosition() : Returns the last position the mouse has hit. Not updated if GetMouseHit() is NULL.
+		EVENTIDE_API const Vector3f&
+								GetMousePosition ( void ) const;
+
 
 		EVENTIDE_API void		AddElement ( Element* element );
 		EVENTIDE_API void		RemoveElement ( Element* element );
@@ -87,6 +93,9 @@ namespace eventide {
 
 		// Reference mouse position, where the clicks start
 		Vector2f				m_mouseDragReference [4];
+
+		// Last hit mouse position
+		Vector3f				m_mouseLastHitPosition;
 
 	private:
 		CStreamedRenderable3D*	m_renderable = NULL;

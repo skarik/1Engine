@@ -67,6 +67,7 @@ void ui::eventide::Element::buildCube ( const ParamsForCube& params )
 		// apply texture index, texture strength
 		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_R_TextureEnableBlend] = (params.texture && params.texture->reference) ? kVETextureEnableOn : kVETextureEnableOff;
 		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_G_TextureIndex] = (params.texture && params.texture->reference) ? (Real)params.texture->index : 0;
+		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_B_AlphaCutoff] = (params.texture && params.texture->reference) ? 0.9F : 0.5F;
 	}
 }
 
@@ -104,6 +105,47 @@ void ui::eventide::Element::buildText ( const ParamsForText& params )
 		// apply texture index, texture strength
 		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_R_TextureEnableBlend] = kVETextureEnableOn;
 		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_G_TextureIndex] = (Real)params.font_texture->index;
+		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_B_AlphaCutoff] = (params.font_texture && params.font_texture->reference) ? 0.6F : 0.5F;
+	}
+}
+
+void ui::eventide::Element::buildQuad ( const ParamsForQuad& params )
+{
+	rrMeshBuilder meshBuilder (&mesh_creation_state.mesh_data, mesh_creation_state.vertex_count, mesh_creation_state.index_count);
+	meshBuilder.enableAttribute(renderer::shader::kVBufferSlotPosition);
+	meshBuilder.enableAttribute(renderer::shader::kVBufferSlotColor);
+	meshBuilder.enableAttribute(renderer::shader::kVBufferSlotNormal);
+	meshBuilder.enableAttribute(renderer::shader::kVBufferSlotUV0);
+	meshBuilder.enableAttribute(renderer::shader::kVBufferSlotUV1);
+
+	uint16_t initialVertexCount = mesh_creation_state.vertex_count;
+
+	{
+		Vector3f face[] = {
+			params.position + params.rotation * Vector3f(-params.size.x, -params.size.y, 0),
+			params.position + params.rotation * Vector3f( params.size.x, -params.size.y, 0),
+			params.position + params.rotation * Vector3f(-params.size.x,  params.size.y, 0),
+			params.position + params.rotation * Vector3f( params.size.x,  params.size.y, 0)
+		};
+		meshBuilder.addQuad(face, params.rotation * Vector3f(0, 0, -1), params.color);
+
+	}
+	mesh_creation_state.vertex_count = meshBuilder.getModelDataVertexCount();
+	mesh_creation_state.index_count = meshBuilder.getModelDataIndexCount();
+
+	for (uint16_t i = initialVertexCount; i < mesh_creation_state.vertex_count; ++i)
+	{
+		// apply color
+		mesh_creation_state.mesh_data.color[i] = Vector4f(params.color.x, params.color.y, params.color.z, params.color.w);
+
+		// apply texture coord transforms
+		mesh_creation_state.mesh_data.texcoord0[i].x = mesh_creation_state.mesh_data.texcoord0[i].x * params.uvs.size.x + params.uvs.pos.x;
+		mesh_creation_state.mesh_data.texcoord0[i].y = mesh_creation_state.mesh_data.texcoord0[i].y * params.uvs.size.y + params.uvs.pos.y;
+
+		// apply texture index, texture strength
+		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_R_TextureEnableBlend] = (params.texture && params.texture->reference) ? kVETextureEnableOn : kVETextureEnableOff;
+		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_G_TextureIndex] = (params.texture && params.texture->reference) ? (Real)params.texture->index : 0;
+		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_B_AlphaCutoff] = (params.texture && params.texture->reference) ? 0.9F : 0.5F;
 	}
 }
 

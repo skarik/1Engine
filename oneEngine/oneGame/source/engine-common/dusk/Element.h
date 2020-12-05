@@ -40,9 +40,10 @@ namespace dusk
 		ENGCOM_API  explicit	Element ( const ElementType inElementType = ElementType::kControl )
 			: m_elementType(inElementType)
 			{}
-		ENGCOM_API  virtual		~Element ( void )
-			{}
 
+		ENGCOM_API  virtual		~Element ( void );
+
+	public:
 		//	Update() : Called every frame by the UI system.
 		// Default behavior is to update value of m_isMouseIn.
 		ENGCOM_API virtual void	Update ( const UIStepInfo* stepinfo );

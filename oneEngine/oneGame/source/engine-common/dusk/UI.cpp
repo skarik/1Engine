@@ -572,9 +572,16 @@ void dusk::UserInterface::UpdateElements ( void )
 	}
 }
 
-//	DestroyElement() : Destroys the element with the given index/handle.
+//	DestroyElement(index) : Removes the element with the given index/handle.
+// Should only be used in the Element destructor.
+void dusk::UserInterface::RemoveElement ( const size_t handle )
+{
+	DestroyElement(handle, false);
+}
+
+//	DestroyElement(index) : Destroys the element with the given index/handle.
 // Used internally to remove elements.
-void dusk::UserInterface::DestroyElement ( const size_t handle )
+void dusk::UserInterface::DestroyElement ( const size_t handle, const bool also_delete )
 {
 	if ( handle >= m_elements.size() )
 	{
@@ -591,7 +598,10 @@ void dusk::UserInterface::DestroyElement ( const size_t handle )
 		}
 
 		// Remove the elements
-		delete m_elements[handle];
+		if (also_delete)
+		{
+			delete m_elements[handle];
+		}
 		m_elements[handle] = NULL;
 
 		// Request a regen of the element tree

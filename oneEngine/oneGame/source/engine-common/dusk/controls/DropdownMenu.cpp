@@ -1,12 +1,27 @@
 #include "engine-common/dusk/controls/DropdownMenu.h"
 
+#include "core/input/CInput.h"
+
 #include "engine-common/dusk/Dusk.h"
 #include "engine-common/dusk/UIRenderer.h"
 
-static const Vector2f kPadding = {5.0F, 3.0F};
+// Padding used for the look of the dropdown menus
+static const Vector2f	kPadding = {5.0F, 3.0F};
+
+// List of all menus instantiated. Used for interaction between seperate dropdown menu elements.
+static std::vector<dusk::elements::DropdownMenu*>
+						g_DropdownMenus;
+
+dusk::elements::DropdownMenu::DropdownMenu (void)
+	: dusk::elements::Button()
+{
+	g_DropdownMenus.push_back(this);
+}
 
 dusk::elements::DropdownMenu::~DropdownMenu (void)
 {
+	g_DropdownMenus.erase(std::remove(g_DropdownMenus.begin(), g_DropdownMenus.end(), this), g_DropdownMenus.end());
+
 	for (Button* button : m_dropdownMenu)
 	{
 		delete button;
@@ -87,6 +102,59 @@ void dusk::elements::DropdownMenu::Update ( const UIStepInfo* stepinfo )
 				entry.action();
 			}
 		}
+
+		// If there was a click, ensure that we're inside the menu
+		if (CInput::MouseDown(CInput::MBLeft))
+		{
+			bool l_containsClick = m_isMouseIn;
+			if (!l_containsClick)
+			{
+				for (Button* button : m_dropdownMenu)
+				{
+					if (button->m_isMouseIn)
+					{
+						l_containsClick = true;
+						break;
+					}
+				}
+			}
+
+			if (!l_containsClick)
+			{
+				HideMenu();
+			}
+		}
+
+		// If the user hit escape, assume we're trying to close the current menu.
+		// TODO: handle submenus
+		if (CInput::Keydown(VK_ESCAPE))
+		{
+			HideMenu();
+		}
+
+		// If the menu is suddenly disabled, we need to also close
+		if (!m_isEnabled)
+		{
+			HideMenu();
+		}
+	}
+	else
+	{
+		// We're not in and not open? We want to check our neighbors w/ the same parent
+		if (m_isMouseIn)
+		{
+			for (DropdownMenu* menu : g_DropdownMenus)
+			{
+				if (menu->m_parent == m_parent && menu != this
+					&& menu->m_open)
+				{
+					// Move to this menu naturally instead.
+					menu->HideMenu();
+					this->ShowMenu();
+					break;
+				}
+			}
+		}
 	}
 }
 
@@ -97,6 +165,15 @@ void dusk::elements::DropdownMenu::ShowMenu ( void )
 		button->m_visible = true;
 	}
 	m_open = true;
+
+	// Find all menus with the same parent and hide them.
+	for (DropdownMenu* menu : g_DropdownMenus)
+	{
+		if (menu->m_parent == m_parent && menu != this)
+		{
+			menu->HideMenu();
+		}
+	}
 }
 
 void dusk::elements::DropdownMenu::HideMenu ( void )
@@ -110,26 +187,6 @@ void dusk::elements::DropdownMenu::HideMenu ( void )
 
 void dusk::elements::DropdownMenu::Render ( UIRendererContext* uir )
 {
-	/*if (m_displayLabel)
-	{
-		uir->setFocus(dusk::kFocusStyleAutomaticNoHover);
-
-		float textHeight = uir->getTextHeight(dusk::kTextFontTitle);
-		uir->setColor(dusk::kColorStyleBackground);
-		uir->drawRectangle(this, Rect(m_absoluteRect.pos, Vector2f(m_absoluteRect.size.x, textHeight + 10)));
-		uir->drawRectangle(this, Rect(m_absoluteRect.pos + Vector2f(0.0F, textHeight + 10), m_absoluteRect.size - Vector2f(0.0F, textHeight + 10)));
-
-		uir->setColor(dusk::kColorStyleLabel);
-		uir->setTextSettings(TextStyleSettings{dusk::kTextFontTitle, dusk::kTextAlignLeft, dusk::kTextAlignTop});
-		uir->drawText(this, m_absoluteRect.pos + Vector2f(5, 5), m_contents.c_str());
-	}
-	else
-	{
-		uir->setFocus(dusk::kFocusStyleAutomaticNoHover);
-		uir->setColor(dusk::kColorStyleBackground);
-		uir->drawRectangle(this, m_absoluteRect);
-	}*/
-
 	Button::Render(uir);
 
 	if (m_sizeNeedsUpdate)
@@ -154,28 +211,4 @@ void dusk::elements::DropdownMenu::Render ( UIRendererContext* uir )
 		m_menuWidth += kPadding.x * 2;
 		m_entryHeight += kPadding.y * 2;
 	}
-
-	/*uir->setFocus(dusk::kFocusStyleAutomatic);
-	uir->setColor(dusk::kColorStyleElement);
-	uir->drawRectangle(this, m_absoluteRect);
-
-	uir->setColor(dusk::kColorStyleLabel);
-	uir->setTextSettings(TextStyleSettings{dusk::kTextFontButton, dusk::kTextAlignLeft, dusk::kTextAlignMiddle});
-	uir->drawText(this, m_absoluteRect.pos + Vector2f(5.0F, m_absoluteRect.size.y * 0.5F), m_contents.c_str());
-
-	if (m_open)
-	{
-		const float kEntryHeight = uir->getTextHeight(dusk::kTextFontButton) + kPadding.y * 2;
-
-		for (size_t entryIndex = 0; entryIndex < m_entries.size(); ++entryIndex)
-		{
-			const Rect entryRect (
-				m_absoluteRect.pos + Vector2f(0.0F, m_absoluteRect.size.y + entryIndex * kEntryHeight),
-				Vector2f(m_menuWidth, kEntryHeight));
-
-			uir->setFocus(dusk::kFocu);
-			uir->setColor(dusk::kColorStyleElement);
-			uir->drawRectangle(this, m_absoluteRect);
-		}
-	}*/
 }

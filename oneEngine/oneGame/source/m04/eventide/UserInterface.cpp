@@ -46,6 +46,9 @@ ui::eventide::UserInterface::UserInterface ( dusk::UserInterface* duskUI, dawn::
 		l_ActiveManager = this;
 	}
 
+	if (m_duskUI) m_duskUI->AddReference();
+	if (m_dawnUI) m_dawnUI->AddReference();
+
 	// Create renderable
 	m_renderable = new CStreamedRenderable3D();
 
@@ -71,12 +74,15 @@ ui::eventide::UserInterface::~UserInterface ( void )
 {
 	delete m_renderable;
 
+	if (m_duskUI) m_duskUI->RemoveReference();
+	if (m_dawnUI) m_dawnUI->RemoveReference();
+
 	m_shuttingDown = true;
 
 	// Free all allocated elements now
-	for (ui::eventide::Element* element : m_elements)
+	for (ui::eventide::Element*& element : m_elements)
 	{
-		delete element;
+		delete_safe(element);
 	}
 	m_elements.clear();
 
@@ -123,6 +129,12 @@ void ui::eventide::UserInterface::RemoveElement ( ui::eventide::Element* element
 		}
 
 		m_elementsDirty = true; // Mark elements dirty - we need a new update order
+	}
+	else
+	{
+		auto element_iter = std::find(m_elements.begin(), m_elements.end(), element);
+		ARCORE_ASSERT(element_iter != m_elements.end());
+		*element_iter = nullptr;
 	}
 }
 
@@ -242,7 +254,7 @@ void ui::eventide::UserInterface::Update ( void )
 	}
 
 	// Update mouse clickity clack:
-	if (RrCamera::activeCamera != NULL)
+	if (RrCamera::activeCamera != NULL && (m_duskUI == NULL || !m_duskUI->IsMouseInside()))
 	{
 		const Vector2f mouseScreenPosition (Input::MouseX() / Screen::Info.width, Input::MouseY() / Screen::Info.height);
 		const Ray mouseRay = Ray(
@@ -313,6 +325,9 @@ void ui::eventide::UserInterface::Update ( void )
 			// If we don't have a valid hit at this point, the element has gone behind the camera. This is a bad state to be in.
 			ARCORE_ASSERT(hasValidHit);
 		}
+
+		// Save hit position:
+		m_mouseLastHitPosition = mouseRay.pos + mouseRay.dir * minMouseHitDistance;
 
 		// Update changes in the state and generate events:
 
@@ -434,6 +449,15 @@ void ui::eventide::UserInterface::UnlockMouse ( void )
 	m_currentMouseLocked = false;
 }
 
+ui::eventide::Element* ui::eventide::UserInterface::GetMouseHit ( void ) const
+{
+	return (m_currentMouseLocked && m_currentMouseLockedElement != NULL) ? m_currentMouseLockedElement : m_currentMouseOverElement;
+}
+
+const Vector3f& ui::eventide::UserInterface::GetMousePosition ( void ) const
+{
+	return m_mouseLastHitPosition;
+}
 
 ui::eventide::Texture ui::eventide::UserInterface::LoadTexture ( const char* filename )
 {
@@ -446,6 +470,7 @@ ui::eventide::Texture ui::eventide::UserInterface::LoadTexture ( const char* fil
 	{
 		loaded_texture->AddReference();
 		m_textures.push_back(loaded_texture);
+		texture_location = (--m_textures.end());
 	}
 
 	return ui::eventide::Texture{loaded_texture, (uint32_t)std::distance(m_textures.begin(), texture_location)};

@@ -16,7 +16,7 @@ namespace sequence {
 	private:
 
 		dusk::UserInterface*
-							m_ui;
+							dusk_interface;
 
 	};
 

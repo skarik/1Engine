@@ -11,10 +11,6 @@
 #include "m04/eventide/elements/Button.h"
 #include "m04/eventide/elements/ListMenu.h"
 
-#include "engine-common/dusk/controls/Panel.h"
-#include "engine-common/dusk/controls/DropdownMenu.h"
-#include "engine-common/dusk/layouts/Horizontal.h"
-
 class DraggableButtonTest : public ui::eventide::elements::Button
 {
 public:
@@ -61,35 +57,8 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	dusk_interface = new dusk::UserInterface();
 	user_interface = new ui::eventide::UserInterface(dusk_interface, NULL);
 
-	{
-		auto topPanel = dusk_interface->Add<dusk::elements::Panel>(dusk::ElementCreationDescription(NULL, Rect(0, 0, 256, 32)));
-		auto topLayout = dusk_interface->Add<dusk::layouts::Horizontal>(dusk::LayoutCreationDescription(topPanel));
-
-		auto fileMenu = dusk_interface->Add<dusk::elements::DropdownMenu>(dusk::ElementCreationDescription(topLayout, Rect()));
-		fileMenu->m_contents = "File";
-		fileMenu->Add("New", 'N', true, [](){});
-		fileMenu->Add("Save", 'S', true, [](){});
-		fileMenu->Add("Save As", 0, true, [](){});
-		fileMenu->Add("Open", 'O', true, [](){});
-		fileMenu->Add("Quit", 'Q', true, [](){});
-
-		auto EditMenu = dusk_interface->Add<dusk::elements::DropdownMenu>(dusk::ElementCreationDescription(topLayout, Rect()));
-		EditMenu->m_contents = "Edit";
-		EditMenu->Add("Undo", 'U', true, [](){});
-		EditMenu->Add("Redo", 'R', true, [](){});
-		EditMenu->Add("Clone", 'L', true, [](){});
-		EditMenu->Add("Copy", 'C', true, [](){});
-		EditMenu->Add("Cut", 'T', true, [](){});
-		EditMenu->Add("Paste", 'P', true, [](){});
-
-		auto ViewMenu = dusk_interface->Add<dusk::elements::DropdownMenu>(dusk::ElementCreationDescription(topLayout, Rect()));
-		ViewMenu->m_contents = "View";
-		ViewMenu->Add("Reset", 'R', true, [](){});
-
-		auto HelpMenu = dusk_interface->Add<dusk::elements::DropdownMenu>(dusk::ElementCreationDescription(topLayout, Rect()));
-		HelpMenu->m_contents = "Help";
-		HelpMenu->Add("About", 'A', true, [](){});
-	}
+	top_menu = new m04::editor::sequence::TopMenu(dusk_interface);
+	mouse_gizmo = new m04::editor::sequence::MouseGizmo(user_interface);
 
 	test_element = new ETCubicLabel();
 	test_element->SetBBox( core::math::BoundingBox( Matrix4x4(), Vector3f(100, 100, 0), Vector3f(64, 64, 4) ) );
@@ -119,6 +88,7 @@ m04::editor::SequenceEditor::~SequenceEditor ( void )
 {
 	delete_safe(test_element);
 	delete_safe_decrement(user_interface);
+	delete_safe_decrement(dusk_interface);
 
 	debug::Console->PrintMessage("SequenceEditor shutdown.\n");
 }

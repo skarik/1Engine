@@ -4,6 +4,7 @@
 #include "../eventide/Common.h"
 
 #include "core/math/Color.h"
+#include "core/math/Rect.h"
 #include "core/math/Cubic.h"
 #include "core/types/ModelData.h"
 
@@ -99,7 +100,7 @@ namespace eventide {
 		{
 			kUV1_Slot6_R_TextureEnableBlend = 0,
 			kUV1_Slot6_G_TextureIndex = 1,
-			kUV1_Slot6_B_TextureIndex = 2,
+			kUV1_Slot6_B_AlphaCutoff = 2,
 		};
 		static constexpr float	kVETextureEnableOff = 0.0F;
 		static constexpr float	kVETextureEnableOn = 1.0F;
@@ -135,6 +136,19 @@ namespace eventide {
 		};
 		//	buildText( params ) : Adds text to the build.
 		EVENTIDE_API void		buildText ( const ParamsForText& params );
+
+		struct ParamsForQuad
+		{
+			Vector3f			position	= Vector3f(0, 0, 0);
+			Vector2f			size		= Vector2f(10, 10);
+			Rotator				rotation	= Rotator();
+			Color				color		= Color(1.0F, 1.0F, 1.0F, 1.0F);
+			Texture*			texture		= nullptr;
+			Rect				uvs			= Rect(0, 0, 1, 1);
+			bool				wireframe	= false;
+		};
+		//	buildQuad( params ) : Adds a quad to the build.
+		EVENTIDE_API void		buildQuad ( const ParamsForQuad& params );
 
 	public:
 		//	RequestUpdateMesh() : Requests an update of the mesh.

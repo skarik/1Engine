@@ -51,7 +51,7 @@ void main ( void )
     v2f_textureStrength = clamp(mdl_TextureInfo.r, 0.0, 1.0);
 	v2f_textureIndex = int(mdl_TextureInfo.g);
 	
-	v2f_alphaCutoff	= 0.5;
+	v2f_alphaCutoff	= mdl_TextureInfo.b;
 
 	gl_Position = v_screenPos;
 }

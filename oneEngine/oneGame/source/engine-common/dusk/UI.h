@@ -108,6 +108,10 @@ namespace dusk
 		//	IsMouseInside() : Checks if mouse cursor is currently inside any active element
 		ENGCOM_API bool			IsMouseInside ( void );
 
+		//	DestroyElement(index) : Removes the element with the given index/handle.
+		// Should only be used in the Element destructor.
+		void					RemoveElement ( const size_t handle );
+
 	private:
 
 		//	AddInitialize(element, desc) : Initializes the element with the given description.
@@ -118,9 +122,9 @@ namespace dusk
 		// To be used as part of an assertion check.
 		ENGCOM_API bool			AddInitializeCheckValid ( Element* element );
 
-		//	DestroyElement() : Destroys the element with the given index/handle.
+		//	DestroyElement(index) : Destroys the element with the given index/handle.
 		// Used internally to remove elements.
-		void					DestroyElement ( const size_t handle );
+		void					DestroyElement ( const size_t handle, const bool also_delete = true );
 
 		//	ClearElementTree() : Destroys the entire element tree.
 		void					ClearElementTree ( void );

@@ -9,6 +9,9 @@
 #include "m04/eventide/UserInterface.h"
 #include "engine-common/dusk/Dusk.h"
 
+#include "./TopMenu.h"
+#include "./MouseGizmo.h"
+
 namespace m04 {
 namespace editor {
 
@@ -145,6 +148,13 @@ namespace editor {
 
 		ui::eventide::Element*
 							test_element = NULL;
+
+		// Top menu with all the dropdowns and associated logic.
+		m04::editor::sequence::TopMenu*
+							top_menu = NULL;
+		// Mouse gizmo used to show current mouse position & view motion.
+		m04::editor::sequence::MouseGizmo*
+							mouse_gizmo = NULL;
 
 		// Is the camera being currently dragged?
 		bool				dragging_view = false;

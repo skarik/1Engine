@@ -14,9 +14,7 @@ namespace elements {
 	class DropdownMenu : public dusk::elements::Button
 	{
 	public:
-		ENGCOM_API explicit		DropdownMenu (void)
-			: dusk::elements::Button()
-		{}
+		ENGCOM_API explicit		DropdownMenu (void);
 
 		ENGCOM_API				~DropdownMenu (void);
 
@@ -44,9 +42,21 @@ namespace elements {
 			return int32_t(m_entries.size() - 1);
 		}
 
+		//	GetElement(menuOption) : Returns element with the given menu index, if it exists.
+		ENGCOM_API Element*		GetElement ( int32_t menuOption )
+		{
+			if (menuOption < m_dropdownMenu.size())
+			{
+				return m_dropdownMenu[menuOption];
+			}
+			return NULL;
+		}
+
 	protected:
-		void ShowMenu();
-		void HideMenu();
+		//	ShowMenu() : Shows the menu elements and toggles relevant state.
+		void					ShowMenu();
+		//	HideMenu() : Hides the menu elements and toggles relevant state.
+		void					HideMenu();
 
 	public:
 
