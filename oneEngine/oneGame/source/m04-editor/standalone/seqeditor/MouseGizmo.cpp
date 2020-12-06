@@ -28,7 +28,7 @@ void m04::editor::sequence::MouseGizmo::BuildMesh ( void )
 
 	// Move quad towards camera slightly
 	Vector3f deltaToCamera = RrCamera::activeCamera->transform.position - quadParams.position;
-	quadParams.position += deltaToCamera.normal() * 2.0F;
+	quadParams.position += deltaToCamera.normal();// * 2.0F;
 
 	buildQuad(quadParams);
 }

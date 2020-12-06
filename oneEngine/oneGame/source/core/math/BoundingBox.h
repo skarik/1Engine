@@ -276,6 +276,7 @@ namespace math
 			// Implementation borrowed from http://www.jcgt.org/published/0007/03/04/paper-lowres.pdf
 
 			Ray l_ray = Ray(m_MInverse * ray.pos, m_MInverse.getRotator() * ray.dir);
+			//Ray l_ray = Ray(ray.pos + m_MInverse.getTranslation(), m_MInverse.getRotator() * ray.dir);
 			Vector3i l_sign = Vector3i(-::math::sgn(l_ray.dir.x), -::math::sgn(l_ray.dir.y), -::math::sgn(l_ray.dir.z));
 
 			// Distance to plane
@@ -289,9 +290,10 @@ namespace math
 				(l_d.z > 0.0) && (std::abs(l_ray.pos.x + l_ray.dir.x * l_d.z) < m_Extent.x) && (std::abs(l_ray.pos.y + l_ray.dir.y * l_d.z) < m_Extent.y)
 			};
 
-			l_sign[0] = l_test[0] ? l_sign[0] : 0;
-			l_sign[1] = l_test[1] ? l_sign[1] : 0;
-			l_sign[2] = l_test[2] ? l_sign[2] : 0;
+			l_sign = l_test[0] ? Vector3i(l_sign[0], 0, 0) : (
+					l_test[1] ? Vector3i(0, l_sign[1], 0) : (
+					l_test[2] ? Vector3i(0, 0, l_sign[2]) : Vector3i(0, 0, 0))
+				);
 
 			// Get distance
 			out_distance = (l_sign.x != 0) ? l_d.x : ((l_sign.y != 0) ? l_d.y : l_d.z);

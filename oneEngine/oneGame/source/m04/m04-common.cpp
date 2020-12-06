@@ -85,7 +85,7 @@ int GameInitialize ( void )
 	shaderSettings.filenamePrimaryPixelShader  = "shaders/def_alt/surface_default_2d.frag";
 
 	renderer::Options::DeferredShaders( shaderSettings );
-	renderer::Options::TextureStreaming( false );
+	renderer::Options::TextureStreaming( true );
 	RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
 
 	// Register game start command

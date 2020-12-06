@@ -205,7 +205,8 @@ void ui::eventide::UserInterface::Update ( void )
 			element->m_bboxAbsolute = element->m_bbox;
 			// Transform by the parent's matrix
 			element->m_bboxAbsolute.m_M			= element->m_bboxAbsolute.m_M * element->m_parent->m_bboxAbsolute.m_M;
-			element->m_bboxAbsolute.m_MInverse	= element->m_parent->m_bboxAbsolute.m_MInverse	* element->m_bboxAbsolute.m_MInverse;
+			element->m_bboxAbsolute.m_MInverse	= element->m_bboxAbsolute.m_M.inverse();
+			//element->m_bboxAbsolute.m_MInverse	= element->m_parent->m_bboxAbsolute.m_MInverse	* element->m_bboxAbsolute.m_MInverse;
 		}
 		element->m_bboxDirty = false;
 	}

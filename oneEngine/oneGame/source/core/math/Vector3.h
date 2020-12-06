@@ -199,7 +199,7 @@ namespace core
 
 		Vector3_T<Float>		divComponents ( Vector3_T<Float> const& right ) const
 		{
-			return Vector3_T<Float>(x * right.x, y * right.y, z * right.z);
+			return Vector3_T<Float>(x / right.x, y / right.y, z / right.z);
 		}
 
 		FORCE_INLINE bool		operator== (Vector3_T<Float> const& right) const
