@@ -16,14 +16,15 @@ namespace m04 {
 namespace editor {
 
 	class SeqeunceNode;
-	class SequenceNodeView;
+	class ISequenceNodeView;
 
 	class SequenceViewFlow;
 	class SequenceViewInput;
 	class SequenceViewOutput;
 	class SequenceViewProperty;
 
-	class SequenceNodeView
+	// Interface describing the node it's attached to.
+	class ISequenceNodeView
 	{
 	public:
 		SeqeunceNode*		node;
@@ -66,8 +67,9 @@ namespace editor {
 		// Different views on top of this data allow for different editors to be applied to the node.
 		osf::KeyValue*		data;
 		
-		// The view this node is using to display
-		SequenceNodeView*	view;
+		// The view this node is using to display.
+		// Essentially dictates the type of node this is.
+		ISequenceNodeView*	view;
 
 	public:
 		// Task sync target.

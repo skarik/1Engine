@@ -81,6 +81,7 @@ void core::ArResourceManager::Update ( void )
 						doneLoading = resource->OnStreamStep(false);
 					}
 					// Force the streamed loader:
+					else
 					{
 						doneLoading = true;
 						while (resource->OnStreamStep(true) == false) {}

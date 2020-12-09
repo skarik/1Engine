@@ -50,11 +50,11 @@ namespace io
 	// OSF Entry information
 	struct OSFEntryInfo
 	{
-		eOSFEntryType	type;
+		eOSFEntryType	type = kOSFEntryTypeUnknown;
 		char			name [64];		// The `key` of the key-value pair
 		char			value [128];	// The `value` of the key-value pair
-		int				level;
-		unsigned long	nextchar;
+		int				level = 0;
+		unsigned long	nextchar = 0;
 	};
 	typedef OSFEntryInfo* OSFEntryInfop;
 
@@ -80,7 +80,7 @@ namespace io
 		//	output_value_len:	length of the buffer. ignored if output_value is null
 		// Returns:
 		//	bool: No errors on read and no EoF found.
-		CORE_API bool			GetNext ( OSFEntryInfo& entry, char* output_value = NULL, const size_t output_value_len = 0 );
+		CORE_API bool			GetNext ( OSFEntryInfo& out_entry, char* output_value = NULL, const size_t output_value_len = 0 );
 		//		GoInto( object_entry ) : enters the given entry, assuming it is an object
 		// Enters the given object. GetNext() will return an entry of type kOSFEntryTypeEnd at the closing brace "}"
 		//	bool: No errors on set and entry is valid object.

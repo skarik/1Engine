@@ -140,6 +140,14 @@ public: // Resource Interface
 	//          The resource will stay in the "loading" list until it is done.
 	RENDER_API bool			OnStreamStep ( bool sync_client ) override;
 
+protected:
+
+	//	OnStreamStepProcedural() : Step for streaming load of procedural textures.
+	RENDER_API bool			OnStreamStepProcedural ( bool sync_client );
+
+	//	OnStreamStepDisk() : Step for streaming load of textures from disk.
+	RENDER_API bool			OnStreamStepDisk ( bool sync_client );
+
 public: // Kitchen Sink Interface
 
 	RENDER_API unsigned int	GetWidth ( void ) { return info.width; };
