@@ -412,6 +412,9 @@
     <ClInclude Include="source\core\math\Vector4.h">
       <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
     </ClInclude>
+    <ClInclude Include="source\core-ext\containers\arguid.h">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">
@@ -500,6 +503,9 @@
     </ClCompile>
     <ClCompile Include="source\core\math\Vector4.cpp">
       <Filter>SOURCE\Core\Math\Vector and Rotation %28filter only%29</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\containers\arguid.cpp">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

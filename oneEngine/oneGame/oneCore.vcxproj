@@ -157,6 +157,7 @@
     <ClInclude Include="source\core-ext\animation\curve\ArrayAnimationCurve.h" />
     <ClInclude Include="source\core-ext\animation\Types.h" />
     <ClInclude Include="source\core-ext\constants\distances.h" />
+    <ClInclude Include="source\core-ext\containers\arguid.h" />
     <ClInclude Include="source\core-ext\containers\arproperty.h" />
     <ClInclude Include="source\core-ext\containers\arresource.h" />
     <ClInclude Include="source\core-ext\containers\ExtendibleMap2D.h" />
@@ -258,6 +259,7 @@
     <ClInclude Include="source\core\utils\string.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\core-ext\containers\arguid.cpp" />
     <ClCompile Include="source\core-ext\math\MathQEF.cpp" />
     <ClCompile Include="source\core-ext\math\noise\MidpointNoiseBuffer.cpp" />
     <ClCompile Include="source\core-ext\system\io\serializer\ISerialBinary.cpp" />
