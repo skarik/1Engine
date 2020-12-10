@@ -12,8 +12,11 @@ namespace elements {
 	{
 	public:
 		EVENTIDE_API			Button ( ui::eventide::UserInterface* ui = NULL );
-		EVENTIDE_API			~Button ( void );
 
+	protected:
+		EVENTIDE_API virtual	~Button ( void );
+
+	public:
 		EVENTIDE_API virtual void
 								BuildMesh ( void ) override;
 		EVENTIDE_API virtual void

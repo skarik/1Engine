@@ -18,9 +18,10 @@ ui::eventide::elements::ListMenu::ListMenu ( ui::eventide::UserInterface* ui )
 
 ui::eventide::elements::ListMenu::~ListMenu ( void )
 {
+	ui::eventide::ScopedCriticalGameThread lock(this);
 	for (Button* button : m_choiceButtons)
 	{
-		delete button;
+		button->Destroy();
 	}
 	m_choiceButtons.empty();
 }
@@ -44,6 +45,18 @@ void ui::eventide::elements::ListMenu::SetEnabled ( bool enable )
 	}
 }
 
+const bool ui::eventide::elements::ListMenu::GetMouseInside ( void ) const
+{
+	for (Button* button : m_choiceButtons)
+	{
+		if (button->GetMouseInside())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void ui::eventide::elements::ListMenu::OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame )
 {
 	if (m_choiceButtons.size() != m_choices.size())
@@ -53,7 +66,7 @@ void ui::eventide::elements::ListMenu::OnGameFrameUpdate ( const GameFrameUpdate
 		{
 			for (size_t i = m_choices.size(); i < m_choiceButtons.size(); ++i)
 			{
-				delete m_choiceButtons[i];
+				m_choiceButtons[i]->Destroy();
 			}
 			m_choiceButtons.resize(m_choices.size());
 		}

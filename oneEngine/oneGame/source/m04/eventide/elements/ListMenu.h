@@ -22,6 +22,8 @@ namespace elements {
 			, m_choiceIndex(choiceIndex)
 		{
 		}
+
+	protected:
 		EVENTIDE_API			~ListMenuButton ( void ) {}
 
 	protected:
@@ -37,7 +39,7 @@ namespace elements {
 	{
 	public:
 		EVENTIDE_API			ListMenu ( ui::eventide::UserInterface* ui = NULL );
-		EVENTIDE_API			~ListMenu ( void );
+		EVENTIDE_API virtual	~ListMenu ( void );
 
 		EVENTIDE_API virtual void
 								BuildMesh ( void ) override;
@@ -61,6 +63,10 @@ namespace elements {
 		EVENTIDE_API void		SetEnabled ( bool enable );
 		EVENTIDE_API bool		GetEnabled ( void )
 			{ return m_enabled; }
+
+		//	GetMouseInside() : Overridden to check if mouse inside any direct child choices.
+		EVENTIDE_API virtual const bool
+								GetMouseInside ( void ) const override;
 
 	protected:
 		friend ListMenuButton;

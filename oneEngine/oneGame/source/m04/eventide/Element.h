@@ -1,6 +1,8 @@
 #ifndef UI_EVENTIDE_ELEMENT_H_
 #define UI_EVENTIDE_ELEMENT_H_
 
+#include <atomic>
+
 #include "../eventide/Common.h"
 
 #include "core/math/Color.h"
@@ -35,6 +37,10 @@ namespace eventide {
 			kBlocking = 1,
 			// The mouse is blocked by the element, and captures mouse events.
 			kCapturing = 2,
+			// The can pass through the element. However, it will also receive all events.
+			kCatchAll = 3,
+			// The mouse is blocked by the element, and captures mouse events. It will also receive events when not focused.
+			kCapturingCatchAll = 4,
 		};
 
 		enum class FocusInteract
@@ -69,7 +75,13 @@ namespace eventide {
 
 	public:
 		EVENTIDE_API			Element ( UserInterface* ui = NULL );
+
+	protected:
 		EVENTIDE_API virtual	~Element ( void );
+
+	public:
+		//	Destroy() : Requests this element to be destroyed. Is added to the ignore status.
+		EVENTIDE_API void		Destroy ( void );
 
 		//	virtual BuildMesh() : Called to build the mesh that is actually drawn.
 		//	The build***() functions are used for building within this function.
@@ -81,10 +93,10 @@ namespace eventide {
 		struct MeshCreationState
 		{
 			// Has a rebuild been requested
-			bool				rebuild_requested = false;
+			std::atomic_bool	rebuild_requested = false;
 
 			// Is the mesh currently being put together?
-			bool				building_mesh = false;
+			std::atomic_bool	building_mesh = false;
 
 			arModelData			mesh_data;
 			// Actual number of indicies to draw
@@ -93,7 +105,7 @@ namespace eventide {
 			uint32_t			vertex_count = 0;
 
 			// todo: for now we just have one big mesh for the entire UI. so we need to store the current mesh on CPU side
-			bool				has_change = false; // For now we use this to check if we need to regen the UI's mesh
+			std::atomic_bool	has_change = false; // For now we use this to check if we need to regen the UI's mesh
 		};
 
 		enum class VertexElements
@@ -261,51 +273,66 @@ namespace eventide {
 								GetInputInteractMask ( void ) const
 			{ return m_inputInteractMask; }
 
-		EVENTIDE_API const bool	GetMouseInside ( void ) const
+		EVENTIDE_API virtual const bool
+								GetMouseInside ( void ) const
 			{ return m_mouseInside; }
 		EVENTIDE_API const bool	GetFocused ( void ) const
 			{ return m_focused; }
 
+		EVENTIDE_API UserInterface*
+								GetUserInterface ( void ) const
+			{ return m_ui; }
+
 	protected:
 		// Local-space bounding box of the element. Used for mouse collision.
 		// The offset is calculated against center of the bounding box of the parent.
-		core::math::BoundingBox	m_bbox;
+		core::math::BoundingBox
+							m_bbox;
 
 	private:
 		// Does the bbox need a full update?
-		bool					m_bboxDirty = false;
+		bool				m_bboxDirty = false;
 		// "World"-space bounding box of the element.
-		core::math::BoundingBox m_bboxAbsolute;
+		core::math::BoundingBox
+							m_bboxAbsolute;
 
 	protected:
 		// UI this element is associated with.
-		UserInterface*			m_ui = NULL;
+		UserInterface*		m_ui = NULL;
 
 		// Parent element to float position on
-		Element*				m_parent = NULL;
+		Element*			m_parent = NULL;
 		
 		// How does per-frame updates work with this element?
-		FrameUpdate				m_frameUpdate = FrameUpdate::kNone;
+		FrameUpdate			m_frameUpdate = FrameUpdate::kNone;
 		// How does the mouse interact with this element?
-		MouseInteract			m_mouseInteract = MouseInteract::kNone;
+		MouseInteract		m_mouseInteract = MouseInteract::kNone;
 		// How does the tab & inputs focus work with this element?
-		FocusInteract			m_focusInteract = FocusInteract::kNone;
+		FocusInteract		m_focusInteract = FocusInteract::kNone;
 		// How does the various inputs work with this element?
-		uint32_t				m_inputInteractMask = InputInteractMasks::kNone;
+		uint32_t			m_inputInteractMask = InputInteractMasks::kNone;
 
 	private:
 		// Is the mouse inside this element? Updated by the UI manager
-		bool					m_mouseInside = false;
+		bool				m_mouseInside = false;
 
 	protected:
 		// Are we locking the mouse to this element for now?
-		bool					m_mouseLocked = false;
+		bool				m_mouseLocked = false;
 
 	private:
 		// Is this element focused? Updated by the UI manager
-		bool					m_focused = false;
+		bool				m_focused = false;
 	};
 
+	class ScopedCriticalGameThread
+	{
+	public:
+		EVENTIDE_API explicit	ScopedCriticalGameThread ( Element* element );
+		EVENTIDE_API			~ScopedCriticalGameThread ( void );
+	private:
+		Element*			calling_element;
+	};
 }}
 
 #endif//UI_EVENTIDE_ELEMENT_H_

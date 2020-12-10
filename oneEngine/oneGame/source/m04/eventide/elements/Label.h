@@ -11,8 +11,11 @@ namespace elements {
 	{
 	public:
 		EVENTIDE_API			Label ( ui::eventide::UserInterface* ui = NULL );
+
+	protected:
 		EVENTIDE_API			~Label ( void );
 
+	public:
 		virtual void			BuildMesh ( void ) override;
 
 		// Label displayed within the element.

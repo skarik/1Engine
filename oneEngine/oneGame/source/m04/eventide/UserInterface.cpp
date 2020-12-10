@@ -124,7 +124,7 @@ void ui::eventide::UserInterface::RemoveElement ( ui::eventide::Element* element
 			if (element_check != NULL && element_check->GetParent() == element)
 			{
 				element_check->SetParent(NULL);
-				debug::Console->PrintWarning("Orphaned eventide::Element (%p)\n.", element_check);
+				debug::Console->PrintWarning("Orphaned eventide::Element (%p).\n", element_check);
 			}
 		}
 
@@ -135,6 +135,14 @@ void ui::eventide::UserInterface::RemoveElement ( ui::eventide::Element* element
 		auto element_iter = std::find(m_elements.begin(), m_elements.end(), element);
 		ARCORE_ASSERT(element_iter != m_elements.end());
 		*element_iter = nullptr;
+	}
+}
+
+void ui::eventide::UserInterface::RequestDestroyElement ( Element* element )
+{
+	if (std::find(m_elementsToDestroy.begin(), m_elementsToDestroy.end(), element) == m_elementsToDestroy.end())
+	{
+		m_elementsToDestroy.push_back(element);
 	}
 }
 
@@ -277,7 +285,8 @@ void ui::eventide::UserInterface::Update ( void )
 				const ui::eventide::Element::MouseInteract elementInteractStyle = element->GetMouseInteract();
 
 				if (elementInteractStyle == ui::eventide::Element::MouseInteract::kBlocking
-					|| elementInteractStyle == ui::eventide::Element::MouseInteract::kCapturing)
+					|| elementInteractStyle == ui::eventide::Element::MouseInteract::kCapturing
+					|| elementInteractStyle == ui::eventide::Element::MouseInteract::kCapturingCatchAll)
 				{
 					float mouseHitDistance = 0.0F;
 					if (element->GetBBoxAbsolute().Raycast(mouseRay, mouseHitDistance))
@@ -300,7 +309,8 @@ void ui::eventide::UserInterface::Update ( void )
 			const ui::eventide::Element::MouseInteract elementInteractStyle = element->GetMouseInteract();
 
 			if (elementInteractStyle == ui::eventide::Element::MouseInteract::kBlocking
-				|| elementInteractStyle == ui::eventide::Element::MouseInteract::kCapturing)
+				|| elementInteractStyle == ui::eventide::Element::MouseInteract::kCapturing
+				|| elementInteractStyle == ui::eventide::Element::MouseInteract::kCapturingCatchAll)
 			{
 				float mouseHitDistance = 0.0F;
 				if (element->GetBBoxAbsolute().Raycast(mouseRay, mouseHitDistance))
@@ -328,7 +338,10 @@ void ui::eventide::UserInterface::Update ( void )
 		}
 
 		// Save hit position:
-		m_mouseLastHitPosition = mouseRay.pos + mouseRay.dir * minMouseHitDistance;
+		if (minMouseHitElement != NULL)
+		{
+			m_mouseLastHitPosition = mouseRay.pos + mouseRay.dir * minMouseHitDistance;
+		}
 
 		// Update changes in the state and generate events:
 
@@ -342,7 +355,8 @@ void ui::eventide::UserInterface::Update ( void )
 			// Exiting the current element:
 			if (m_currentMouseOverElement != NULL)
 			{
-				if (m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturing)
+				if (m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturing
+					|| m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll)
 				{
 					event.type = ui::eventide::Element::EventMouse::Type::kExit;
 					m_currentMouseOverElement->OnEventMouse(event);
@@ -356,7 +370,8 @@ void ui::eventide::UserInterface::Update ( void )
 			// Entering the new element:
 			if (m_currentMouseOverElement != NULL)
 			{
-				if (m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturing)
+				if (m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturing
+					|| m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll)
 				{
 					event.type = ui::eventide::Element::EventMouse::Type::kEnter;
 					m_currentMouseOverElement->OnEventMouse(event);
@@ -364,7 +379,8 @@ void ui::eventide::UserInterface::Update ( void )
 				m_currentMouseOverElement->m_mouseInside = true;
 			}
 		}
-		else if (m_currentMouseOverElement != NULL)
+		//else if (m_currentMouseOverElement != NULL)
+		else
 		{
 			// Staying inside the current element:
 			for (int mouseButton = 0; mouseButton < 4; ++mouseButton)
@@ -373,7 +389,20 @@ void ui::eventide::UserInterface::Update ( void )
 				{
 					event.type = ui::eventide::Element::EventMouse::Type::kClicked;
 					event.button = mouseButton;
-					m_currentMouseOverElement->OnEventMouse(event);
+					if (m_currentMouseOverElement != NULL)
+					{
+						m_currentMouseOverElement->OnEventMouse(event);
+					}
+					// Send to global capturing elements
+					for (ui::eventide::Element* element : m_elements)
+					{
+						if (element != m_currentMouseOverElement
+							&& (element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll
+								|| element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCatchAll))
+						{
+							element->OnEventMouse(event);
+						}
+					}
 
 					m_mouseDragReference[mouseButton] = event.position_world;
 				}
@@ -385,7 +414,20 @@ void ui::eventide::UserInterface::Update ( void )
 						event.type = ui::eventide::Element::EventMouse::Type::kDragged;
 						event.button = mouseButton;
 						event.velocity_world = mouseDelta;
-						m_currentMouseOverElement->OnEventMouse(event);
+						if (m_currentMouseOverElement != NULL)
+						{
+							m_currentMouseOverElement->OnEventMouse(event);
+						}
+						// Send to global capturing elements
+						for (ui::eventide::Element* element : m_elements)
+						{
+							if (element != m_currentMouseOverElement
+								&& (element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll
+									|| element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCatchAll))
+							{
+								element->OnEventMouse(event);
+							}
+						}
 
 						m_mouseDragReference[mouseButton] = event.position_world;
 					}
@@ -394,7 +436,20 @@ void ui::eventide::UserInterface::Update ( void )
 				{
 					event.type = ui::eventide::Element::EventMouse::Type::kReleased;
 					event.button = mouseButton;
-					m_currentMouseOverElement->OnEventMouse(event);
+					if (m_currentMouseOverElement != NULL)
+					{
+						m_currentMouseOverElement->OnEventMouse(event);
+					}
+					// Send to global capturing elements
+					for (ui::eventide::Element* element : m_elements)
+					{
+						if (element != m_currentMouseOverElement
+							&& (element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll
+								|| element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCatchAll))
+						{
+							element->OnEventMouse(event);
+						}
+					}
 				}
 			}
 			
@@ -506,7 +561,10 @@ void ui::eventide::UserInterface::ReleaseTexture ( const Texture& texture )
 	if (find_result != m_textures.end())
 	{
 		texture.reference->RemoveReference();
-		m_textures.erase(find_result);
+		if (!texture.reference->HasReference())
+		{
+			m_textures.erase(find_result);
+		}
 	}
 }
 
@@ -520,6 +578,20 @@ struct MeshOffsets
 //	PostStep() : Threaded post-render
 void ui::eventide::UserInterface::PostStep ( void )
 {
+	while (true)
+	{
+		m_renderThreadSync.lock();
+		if (m_gameThreadSyncUsers == 0)
+		{
+			break;
+		}
+		else
+		{
+			m_renderThreadSync.unlock();
+			std::this_thread::yield();
+		}
+	}
+
 	std::vector<Element*> l_renderedElements = m_elements;
 	
 	// Rebuild all the meshes as needed
@@ -643,6 +715,8 @@ void ui::eventide::UserInterface::PostStep ( void )
 	{
 		core::jobs::System::Current::WaitForJob(jobId);
 	}
+
+	m_renderThreadSync.unlock();
 }
 
 //	PostStepSynchronus() : Synchronus post-render
@@ -664,4 +738,30 @@ void ui::eventide::UserInterface::PostStepSynchronus ( void )
 void ui::eventide::UserInterface::PreStepSynchronus ( void )
 {
 	m_renderable->StreamLockModelData();
+
+	// We can delete items now
+	std::vector<Element*> l_elementsToDestroy = m_elementsToDestroy;
+	m_elementsToDestroy.clear();
+
+	for (Element* element : l_elementsToDestroy)
+	{
+		delete element;
+	}
+}
+
+
+ui::eventide::ScopedCriticalGameThread::ScopedCriticalGameThread ( Element* element )
+	: calling_element(element)
+{
+	auto ui = element->GetUserInterface();
+
+	std::lock_guard<std::mutex> renderThreadLock(ui->m_renderThreadSync);
+	ui->m_gameThreadSyncUsers++;
+}
+ui::eventide::ScopedCriticalGameThread::~ScopedCriticalGameThread ( void )
+{
+	auto ui = calling_element->GetUserInterface();
+
+	std::lock_guard<std::mutex> renderThreadLock(ui->m_renderThreadSync);
+	ui->m_gameThreadSyncUsers--;
 }

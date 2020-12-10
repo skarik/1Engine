@@ -2,6 +2,9 @@
 #define UI_EVENTIDE_USER_INTERFACE_H_
 
 #include "../eventide/Common.h"
+ 
+#include <atomic>
+#include <mutex>
 
 #include "engine/behavior/CGameBehavior.h"
 #include "renderer/logic/RrLogicObject.h"
@@ -22,6 +25,7 @@ namespace ui {
 namespace eventide {
 
 	class Element;
+	class ScopedCriticalGameThread;
 
 	//	Manager class for the Eventide UI system. Can be automatically created by controls.
 	class UserInterface : public CGameBehavior, public RrLogicObject
@@ -57,53 +61,68 @@ namespace eventide {
 		EVENTIDE_API void		LockMouse ( void );
 		//	UnlockMouse() : Unlocks mouse from current selection.
 		EVENTIDE_API void		UnlockMouse ( void );
+		//	IsMouseLocked() : Returns if the mouse is currently locked
+		EVENTIDE_API bool		IsMouseLocked ( void )
+			{ return m_currentMouseLocked && (m_currentMouseLockedElement != NULL); }
 		//	GetMouseHit() : Returns the element the mouse hit last. NULL if not.
 		EVENTIDE_API Element*	GetMouseHit ( void ) const;
 		//	GetMousePosition() : Returns the last position the mouse has hit. Not updated if GetMouseHit() is NULL.
 		EVENTIDE_API const Vector3f&
 								GetMousePosition ( void ) const;
 
-
 		EVENTIDE_API void		AddElement ( Element* element );
 		EVENTIDE_API void		RemoveElement ( Element* element );
+
+		EVENTIDE_API void		RequestDestroyElement ( Element* element );
 
 		EVENTIDE_API Texture	LoadTexture ( const char* filename );
 		EVENTIDE_API Texture	LoadTextureFont ( const char* filename );
 		EVENTIDE_API void		ReleaseTexture ( const Texture& texture );
 
 	public:
-		dusk::UserInterface*	m_duskUI = NULL;
-		dawn::UserInterface*	m_dawnUI = NULL;
-		bool					m_shuttingDown = false;
+		dusk::UserInterface*
+							m_duskUI = NULL;
+		dawn::UserInterface*
+							m_dawnUI = NULL;
+		bool				m_shuttingDown = false;
 
-		std::vector<Element*>	m_elements;
-		bool					m_elementsDirty = false;
+		std::vector<Element*>
+							m_elements;
+		bool				m_elementsDirty = false;
+		std::vector<Element*>
+							m_elementsToDestroy;
 
-		std::vector<RrTexture*>	m_textures;
+		std::vector<RrTexture*>
+							m_textures;
 
 	private:
 		// Element that is currently focused. Used for alternative inputs.
-		Element*				m_currentFocusedElement = NULL;
+		Element*			m_currentFocusedElement = NULL;
 		// Element that the mouse is currently over. Used to track mouse events.
-		Element*				m_currentMouseOverElement = NULL;
+		Element*			m_currentMouseOverElement = NULL;
 		// Element that the mouse is currently locked to.
-		Element*				m_currentMouseLockedElement = NULL;
+		Element*			m_currentMouseLockedElement = NULL;
 		// Is the mouse locked element locked
-		bool					m_currentMouseLocked = false;
+		bool				m_currentMouseLocked = false;
 
 		// Reference mouse position, where the clicks start
-		Vector2f				m_mouseDragReference [4];
+		Vector2f			m_mouseDragReference [4];
 
 		// Last hit mouse position
-		Vector3f				m_mouseLastHitPosition;
+		Vector3f			m_mouseLastHitPosition;
 
 	private:
-		CStreamedRenderable3D*	m_renderable = NULL;
-		uint32_t				m_renderableStreamedIndexStorageSize = 0;
-		uint32_t				m_renderableStreamedVertexStorageSize = 0;
-		RrTexture*				m_blackTexture = NULL;
-	};
+		CStreamedRenderable3D*
+							m_renderable = NULL;
+		uint32_t			m_renderableStreamedIndexStorageSize = 0;
+		uint32_t			m_renderableStreamedVertexStorageSize = 0;
+		RrTexture*			m_blackTexture = NULL;
 
+		friend ScopedCriticalGameThread;
+		std::atomic_int		m_gameThreadSyncUsers = 0;
+		std::mutex			m_gameThreadSync;
+		std::mutex			m_renderThreadSync;
+	};
 }}
 
 #endif//UI_EVENTIDE_USER_INTERFACE_H_

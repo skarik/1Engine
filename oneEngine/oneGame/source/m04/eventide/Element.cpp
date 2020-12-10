@@ -1,5 +1,7 @@
 #include "Element.h"
 
+#include <thread>
+
 #include "../eventide/UserInterface.h"
 
 #include "renderer/utils/rrMeshBuilder.h"
@@ -16,7 +18,15 @@ ui::eventide::Element::Element ( UserInterface* ui )
 
 ui::eventide::Element::~Element ( void )
 {
+	ScopedCriticalGameThread lock(this);
 	m_ui->RemoveElement(this);
+}
+
+//	Destroy() : Requests this element to be destroyed. Is added to the ignore status.
+void ui::eventide::Element::Destroy ( void )
+{
+	SetParent(NULL);
+	m_ui->RequestDestroyElement(this);
 }
 
 void ui::eventide::Element::RequestUpdateMesh ( void )

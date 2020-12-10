@@ -11,8 +11,11 @@ namespace sequence {
 	{
 	public:
 		explicit				MouseGizmo ( ui::eventide::UserInterface* ui = NULL );
+
+	protected:
 								~MouseGizmo ( void );
 
+	public:
 		virtual void			BuildMesh ( void ) override;
 		virtual void			OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame ) override;
 

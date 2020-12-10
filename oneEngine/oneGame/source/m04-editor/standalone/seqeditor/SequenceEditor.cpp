@@ -83,10 +83,18 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	camera->zNear = 1;
 	camera->zFar = 1000;
 	camera->fieldOfView = 40;
+
+
+	// Create board state
+	board_state = new m04::editor::sequence::NodeBoardState(user_interface);
 }
 m04::editor::SequenceEditor::~SequenceEditor ( void )
 {
-	delete_safe(test_element);
+	delete_safe(board_state);
+
+
+	//delete_safe(test_element);
+	test_element->Destroy();
 	delete_safe_decrement(user_interface);
 	delete_safe_decrement(dusk_interface);
 
@@ -95,89 +103,132 @@ m04::editor::SequenceEditor::~SequenceEditor ( void )
 
 void m04::editor::SequenceEditor::Update ( void )
 {
+	// Do right click menu first, before all other actions.
+	UpdateRightClickMenu();
+
+	// Camera control last - low priority action.
 	UpdateCameraControl();
 }
 
 
 void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 {
-	const Vector2f mouseScreenPosition (Input::MouseX() / Screen::Info.width, Input::MouseY() / Screen::Info.height);
-	const Ray mouseRay = Ray(
-		RrCamera::activeCamera->transform.position,
-		RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)
-		);
-
-	if (!dragging_view && !zooming_view)
+	// We cannot do camera control if the mouse is locked
+	if (user_interface->IsMouseLocked()
+		// Don't do camera control if the right-click menu is up
+		|| right_click_menu != NULL)
 	{
-		if (Input::MouseDown(Input::MBMiddle))
+		// Need to notify mouse gizmo to change to normal pointer state.
+	}
+	else
+	{
+		const Vector2f mouseScreenPosition (Input::MouseX() / Screen::Info.width, Input::MouseY() / Screen::Info.height);
+		const Ray mouseRay = Ray(
+			RrCamera::activeCamera->transform.position,
+			RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)
+			);
+
+		if (!dragging_view && !zooming_view)
 		{
-			if (Input::Key(VK_MENU))
+			if (Input::MouseDown(Input::MBMiddle))
 			{
-				if (!user_interface->IsMouseInside())
+				if (Input::Key(VK_MENU))
 				{
-					// On button press, lock. Begin drag mode.
-					user_interface->LockMouse();
-					zooming_view = true;
+					if (!user_interface->IsMouseInside())
+					{
+						// On button press, lock. Begin drag mode.
+						user_interface->LockMouse();
+						zooming_view = true;
+					}
 				}
+				else
+				{
+					if (!user_interface->IsMouseInside())
+					{
+						// On button press, lock. Begin drag mode.
+						user_interface->LockMouse();
+						dragging_view = true;
+
+						// Let's lock a specific position down on the XY plane.
+						float hit_distance = 0.0F;
+						if (core::math::Plane(Vector3f(), Vector3f(0, 0, 1)).Raycast(mouseRay, hit_distance))
+						{
+							// This position is what we're going to be dragging against. We want this position to stay under the mouse.
+							dragging_reference_position = mouseRay.pos + mouseRay.dir * hit_distance;
+						}
+						else
+						{
+							ARCORE_ASSERT(false);
+						}
+					}
+				}
+			}
+		}
+		else if (dragging_view)
+		{
+			// Let's find the current position of the mouse on the XY plane.
+			float hit_distance = 0.0F;
+			if (core::math::Plane(Vector3f(), Vector3f(0, 0, 1)).Raycast(mouseRay, hit_distance))
+			{
+				Vector3f current_3d_mouse_position = mouseRay.pos + mouseRay.dir * hit_distance;
+			
+				// We need to make a translation now in world space. This is 1-to-1 with the camera delta that needs to happen.
+				Vector3f delta_3d_position = current_3d_mouse_position - dragging_reference_position;
+			
+				// TODO: Toggle for smooth scrolling. Needs to have a time-based acceleration and decceleration.
+				RrCamera::activeCamera->transform.position -= delta_3d_position;
 			}
 			else
 			{
-				if (!user_interface->IsMouseInside())
-				{
-					// On button press, lock. Begin drag mode.
-					user_interface->LockMouse();
-					dragging_view = true;
+				ARCORE_ASSERT(false);
+			}
 
-					// Let's lock a specific position down on the XY plane.
-					float hit_distance = 0.0F;
-					if (core::math::Plane(Vector3f(), Vector3f(0, 0, 1)).Raycast(mouseRay, hit_distance))
-					{
-						// This position is what we're going to be dragging against. We want this position to stay under the mouse.
-						dragging_reference_position = mouseRay.pos + mouseRay.dir * hit_distance;
-					}
-					else
-					{
-						ARCORE_ASSERT(false);
-					}
-				}
+			if (Input::MouseUp(Input::MBMiddle))
+			{
+				// On button release, unlock. End drag mode.
+				user_interface->UnlockMouse();
+				dragging_view = false;
+			}
+		}
+		else if (zooming_view)
+		{
+			RrCamera::activeCamera->transform.position += Vector3f(0, 0, Input::DeltaMouseY());
+
+			if (Input::MouseUp(Input::MBMiddle))
+			{
+				// On button release, unlock. End drag mode.
+				user_interface->UnlockMouse();
+				zooming_view = false;
 			}
 		}
 	}
-	else if (dragging_view)
-	{
-		// Let's find the current position of the mouse on the XY plane.
-		float hit_distance = 0.0F;
-		if (core::math::Plane(Vector3f(), Vector3f(0, 0, 1)).Raycast(mouseRay, hit_distance))
-		{
-			Vector3f current_3d_mouse_position = mouseRay.pos + mouseRay.dir * hit_distance;
-			
-			// We need to make a translation now in world space. This is 1-to-1 with the camera delta that needs to happen.
-			Vector3f delta_3d_position = current_3d_mouse_position - dragging_reference_position;
-			
-			// TODO: Toggle for smooth scrolling. Needs to have a time-based acceleration and decceleration.
-			RrCamera::activeCamera->transform.position -= delta_3d_position;
-		}
-		else
-		{
-			ARCORE_ASSERT(false);
-		}
+}
 
-		if (Input::MouseUp(Input::MBMiddle))
+void m04::editor::SequenceEditor::UpdateRightClickMenu ( void )
+{
+	if (right_click_menu != NULL)
+	{
+		// If menu is up, check if we want to destroy it
+		if (right_click_menu->m_losingFocus)
 		{
-			// On button release, unlock. End drag mode.
-			user_interface->UnlockMouse();
-			dragging_view = false;
+			right_click_menu->Destroy();
+			right_click_menu = NULL;
 		}
 	}
-	else if (zooming_view)
-	{
-		RrCamera::activeCamera->transform.position += Vector3f(0, 0, Input::DeltaMouseY());
 
-		if (Input::MouseUp(Input::MBMiddle))
+	if (Input::MouseUp(Input::MBRight))
+	{
+		if (right_click_menu == NULL
+			|| !right_click_menu->GetMouseInside())
 		{
-			// On button release, unlock. End drag mode.
-			user_interface->UnlockMouse();
-			zooming_view = false;
+			if (right_click_menu != NULL)
+			{
+				right_click_menu->Destroy();
+				right_click_menu = NULL;
+			}
+
+			right_click_menu = new m04::editor::sequence::RightClickListMenu(user_interface);
+			right_click_menu->SetBBox(core::math::BoundingBox(Rotator(), mouse_gizmo->GetBBox().GetCenterPoint(), Vector3f()));
 		}
 	}
 }

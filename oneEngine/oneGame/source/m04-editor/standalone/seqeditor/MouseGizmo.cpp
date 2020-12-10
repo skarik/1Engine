@@ -36,6 +36,26 @@ void m04::editor::sequence::MouseGizmo::BuildMesh ( void )
 void m04::editor::sequence::MouseGizmo::OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame )
 {
 	Vector3f centerPosition = m_ui->GetMousePosition();
+
+	// We need to project onto a plane in order to have a good spot for the cursor
+	if (m_ui->GetMouseHit() == NULL)
+	{
+		const Vector2f mouseScreenPosition (Input::MouseX() / Screen::Info.width, Input::MouseY() / Screen::Info.height);
+		const Ray mouseRay = Ray(
+			RrCamera::activeCamera->transform.position,
+			RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)
+		);
+
+		// Let's look for a specific position on an XY plane at the current mouse Z
+		float hit_distance = 0.0F;
+		if (core::math::Plane(centerPosition, Vector3f(0, 0, 1)).Raycast(mouseRay, hit_distance))
+		{
+			// Save new center position in this case
+			centerPosition = mouseRay.pos + mouseRay.dir * hit_distance;
+		}
+	}
+
+	// Set the bbox on the new center position
 	SetBBox(core::math::BoundingBox(Rotator(), centerPosition, Vector3f(10, 10, 1)));
 
 	// Now that we're at a new position, update the menu
