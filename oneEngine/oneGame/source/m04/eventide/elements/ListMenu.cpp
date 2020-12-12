@@ -75,7 +75,7 @@ void ui::eventide::elements::ListMenu::OnGameFrameUpdate ( const GameFrameUpdate
 		{
 			while (m_choiceButtons.size() < m_choices.size())
 			{
-				m_choiceButtons.push_back(new Button(m_ui));
+				m_choiceButtons.push_back(new ListMenuButton(this, (int)m_choiceButtons.size(), m_ui));
 			}
 		}
 	}

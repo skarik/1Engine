@@ -31,6 +31,9 @@ m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui)
 
 	auto ViewMenu = dusk_interface->Add<dusk::elements::DropdownMenu>(dusk::ElementCreationDescription(topLayout, Rect()));
 	ViewMenu->m_contents = "View";
+	ViewMenu->Add("Horizontal Mode", 0, true, [](){});
+	ViewMenu->Add("Vertical Mode", 0, true, [](){});
+	ViewMenu->Add("Script Mode", 0, true, [](){});
 	ViewMenu->Add("Reset", 'R', true, [](){});
 
 	auto HelpMenu = dusk_interface->Add<dusk::elements::DropdownMenu>(dusk::ElementCreationDescription(topLayout, Rect()));

@@ -48,7 +48,7 @@ public:
 	}
 
 private:
-	bool			m_dragging;
+	bool			m_dragging = false;
 };
 
 m04::editor::SequenceEditor::SequenceEditor ( void )
@@ -60,7 +60,7 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	top_menu = new m04::editor::sequence::TopMenu(dusk_interface);
 	mouse_gizmo = new m04::editor::sequence::MouseGizmo(user_interface);
 
-	test_element = new ETCubicLabel();
+	/*test_element = new ETCubicLabel();
 	test_element->SetBBox( core::math::BoundingBox( Matrix4x4(), Vector3f(100, 100, 0), Vector3f(64, 64, 4) ) );
 
 	auto button = new ui::eventide::elements::Button();
@@ -69,7 +69,7 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 
 	auto list = new ui::eventide::elements::ListMenu();
 	list->SetBBox( core::math::BoundingBox( Rotator(), Vector3f(-100, 200, 0), Vector3f() ) );
-	list->SetListChoices({"Option 1", "Option 2", "Eggs", "Murder", "Milk"});
+	list->SetListChoices({"Option 1", "Option 2", "Eggs", "Murder", "Milk"});*/
 
 	auto draggable = new DraggableButtonTest();
 	draggable->SetBBox( core::math::BoundingBox( Rotator(), Vector3f(120, -10, 0), Vector3f(64, 32, 4) ) );
@@ -86,14 +86,19 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 
 
 	// Create board state
-	board_state = new m04::editor::sequence::NodeBoardState(user_interface);
+	board_state = new m04::editor::sequence::NodeBoardState(this);
 }
 m04::editor::SequenceEditor::~SequenceEditor ( void )
 {
 	delete_safe(board_state);
 
 
-	//delete_safe(test_element);
+
+	if (right_click_menu != NULL)
+	{
+		right_click_menu->Destroy();
+		right_click_menu = NULL;
+	}
 	test_element->Destroy();
 	delete_safe_decrement(user_interface);
 	delete_safe_decrement(dusk_interface);
@@ -227,7 +232,7 @@ void m04::editor::SequenceEditor::UpdateRightClickMenu ( void )
 				right_click_menu = NULL;
 			}
 
-			right_click_menu = new m04::editor::sequence::RightClickListMenu(user_interface);
+			right_click_menu = new m04::editor::sequence::RightClickListMenu(this);
 			right_click_menu->SetBBox(core::math::BoundingBox(Rotator(), mouse_gizmo->GetBBox().GetCenterPoint(), Vector3f()));
 		}
 	}

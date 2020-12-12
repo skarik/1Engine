@@ -25,6 +25,18 @@ namespace editor {
 
 		EDITOR_API void			Update ( void );
 
+		EDITOR_API ui::eventide::UserInterface*
+								GetEventideUI ( void )
+			{ return user_interface; }
+
+		EDITOR_API dusk::UserInterface*
+								GetDuskUI ( void )
+			{ return dusk_interface; }
+
+		EDITOR_API m04::editor::sequence::NodeBoardState*
+								GetNodeBoardState ( void )
+			{ return board_state; }
+
 	protected:
 		ui::eventide::UserInterface*
 							user_interface = NULL;

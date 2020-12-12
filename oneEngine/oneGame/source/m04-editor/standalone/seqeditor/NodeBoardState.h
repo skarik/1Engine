@@ -10,6 +10,11 @@
 
 namespace m04 {
 namespace editor {
+	class SequenceEditor;
+}}
+
+namespace m04 {
+namespace editor {
 namespace sequence {
 
 	class INodeDisplay;
@@ -27,19 +32,31 @@ namespace sequence {
 
 		// Associated Eventide element used to render the object
 		INodeDisplay*		display;
+
+	public:
+		EDITOR_API void 		SetPosition ( const Vector3f& new_position )
+			{ position = new_position; }
+
 	};
 
 	class INodeDisplay
 	{
+	public:
+		INodeDisplay(BoardNode* in_node)
+			: node(in_node)
+			{}
+
+	protected:
 		BoardNode*			node;
 	};
 
 	class NodeBoardState
 	{
 	public:
-		explicit				NodeBoardState (ui::eventide::UserInterface* in_ui)
-			: ui(in_ui)
-			{}
+		explicit				NodeBoardState ( m04::editor::SequenceEditor* editor );
+
+		//	AddDisplayNode( board_node ) : Adds node to display. Allocates and sets up a proper display object.
+		void					AddDisplayNode ( BoardNode* board_node );
 
 	public:
 		std::vector<BoardNode*>

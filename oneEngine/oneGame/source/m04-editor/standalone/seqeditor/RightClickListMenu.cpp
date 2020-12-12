@@ -5,8 +5,11 @@
 #include "renderer/camera/RrCamera.h"
 #include "m04/eventide/UserInterface.h"
 
-m04::editor::sequence::RightClickListMenu::RightClickListMenu ( ui::eventide::UserInterface* ui )
-	: ListMenu( ui )
+#include "./SequenceEditor.h"
+
+m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* editor )
+	: ListMenu( editor->GetEventideUI() )
+	, m_editor(editor)
 {
 	m_mouseInteract = MouseInteract::kCatchAll;
 
@@ -62,5 +65,22 @@ void m04::editor::sequence::RightClickListMenu::OnEventMouse ( const EventMouse&
 
 void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 {
-	// TODO
+	m_losingFocus = true; // Close on any activation
+
+	if (choiceIndex == 0)
+	{
+		// Close
+	}
+	else
+	{
+		// TODO: need a callback on somewhere else?
+		// Need to signal to the board state that we want to add a new node at the given position.
+
+		// TODO: move to a boardnode factory for the actual sequence info gen
+		BoardNode* board_node = new BoardNode();
+		board_node->SetPosition(GetBBox().GetCenterPoint());
+		board_node->guid.generate(); // TODO: make this better
+
+		m_editor->GetNodeBoardState()->AddDisplayNode(board_node);
+	}
 }

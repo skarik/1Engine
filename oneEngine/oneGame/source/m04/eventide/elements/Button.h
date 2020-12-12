@@ -43,7 +43,7 @@ namespace elements {
 		// If the button can be activated or focused.
 		bool				m_enabled = true;
 
-	private:
+	protected:
 		ui::eventide::Texture
 							m_fontTexture;
 		std::atomic<float>	m_hoverGlowValue = 0;

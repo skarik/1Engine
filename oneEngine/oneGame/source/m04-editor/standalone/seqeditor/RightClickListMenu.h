@@ -5,12 +5,17 @@
 
 namespace m04 {
 namespace editor {
+	class SequenceEditor;
+}}
+
+namespace m04 {
+namespace editor {
 namespace sequence {
 
 	class RightClickListMenu : public ui::eventide::elements::ListMenu
 	{
 	public:
-		explicit				RightClickListMenu ( ui::eventide::UserInterface* ui = NULL );
+		explicit				RightClickListMenu ( SequenceEditor* editor = NULL );
 
 	protected:
 		virtual					~RightClickListMenu ( void );
@@ -20,6 +25,9 @@ namespace sequence {
 		virtual void			OnActivated ( int choiceIndex ) override;
 
 	public:
+		m04::editor::SequenceEditor*
+							m_editor = NULL;
+
 		// Check if losing any focus
 		bool				m_losingFocus = false;
 	};
