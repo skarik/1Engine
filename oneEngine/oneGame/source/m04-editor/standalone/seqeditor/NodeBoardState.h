@@ -50,6 +50,7 @@ namespace sequence {
 		BoardNode*			node;
 	};
 
+	// Board state contains all the nodes for the current sequence, as well as the visuals and ids
 	class NodeBoardState
 	{
 	public:
@@ -58,11 +59,16 @@ namespace sequence {
 		//	AddDisplayNode( board_node ) : Adds node to display. Allocates and sets up a proper display object.
 		void					AddDisplayNode ( BoardNode* board_node );
 
+		//	RemoveNode( board_node ) : Removes node from the board.
+		void					RemoveDisplayNode ( BoardNode* board_node );
+
 	public:
 		std::vector<BoardNode*>
 							nodes;
 		std::vector<INodeDisplay*>
 							display;
+		std::vector<arguid32*>
+							node_guids;
 
 	protected:
 		ui::eventide::UserInterface*

@@ -71,17 +71,17 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	list->SetBBox( core::math::BoundingBox( Rotator(), Vector3f(-100, 200, 0), Vector3f() ) );
 	list->SetListChoices({"Option 1", "Option 2", "Eggs", "Murder", "Milk"});*/
 
-	auto draggable = new DraggableButtonTest();
+	/*auto draggable = new DraggableButtonTest();
 	draggable->SetBBox( core::math::BoundingBox( Rotator(), Vector3f(120, -10, 0), Vector3f(64, 32, 4) ) );
-	draggable->m_contents = "Drag me.";
+	draggable->m_contents = "Drag me.";*/
 
 	RrCamera* camera = new RrCamera();
 	camera->SetActive();
 	// Override certain camera aspects to get the right projection
 	camera->transform.rotation = Rotator( 0.0, -90, -90 );
-	camera->transform.position.z = 500;
+	camera->transform.position.z = 800;
 	camera->zNear = 1;
-	camera->zFar = 1000;
+	camera->zFar = 4000;
 	camera->fieldOfView = 40;
 
 

@@ -16,7 +16,7 @@
 
 namespace m04 {
 namespace editor {
-	
+
 	class SequenceEditor : public CGameBehavior
 	{
 	public:

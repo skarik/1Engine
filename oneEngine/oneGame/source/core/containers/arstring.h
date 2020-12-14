@@ -17,7 +17,7 @@ template <unsigned short Ln>
 class arstring
 {
 public:
-	explicit		arstring ( const char* str ) {
+	arstring ( const char* str ) {
 		if ( str ) {
 			strncpy( data, str, Ln );
 		}
@@ -25,10 +25,10 @@ public:
 			data[0] = 0;
 		}
 	}
-	explicit		arstring ( void ) {
+	arstring ( void ) {
 		strcpy( data, "" );
 	}
-	explicit		arstring ( arstring<Ln>&& other ) {
+	arstring ( arstring<Ln>&& other ) {
 		strncpy( data, other.data, Ln );
 	}
 	arstring( const arstring<Ln>& other ) {

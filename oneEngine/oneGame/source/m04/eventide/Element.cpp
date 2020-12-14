@@ -86,6 +86,8 @@ void ui::eventide::Element::buildText ( const ParamsForText& params )
 	ARCORE_ASSERT(params.font_texture != nullptr);
 
 	RrFontTexture* l_font = (RrFontTexture*)params.font_texture->reference;
+	ARCORE_ASSERT(l_font != nullptr);
+
 	rrTextBuilder2D textBuilder (l_font, &mesh_creation_state.mesh_data, mesh_creation_state.vertex_count, mesh_creation_state.index_count);
 	textBuilder.setScreenMapping(core::math::Cubic(Vector3f(1, 1, 1), Vector3f(2, 2, 2)));
 	textBuilder.enableAttribute(renderer::shader::kVBufferSlotPosition);
@@ -96,10 +98,18 @@ void ui::eventide::Element::buildText ( const ParamsForText& params )
 
 	uint16_t initialVertexCount = mesh_creation_state.vertex_count;
 
+	const Vector2f textSize = textBuilder.predictTextSize(params.string);
 	textBuilder.addText(Vector3f(0, 0, 0), params.color, params.string);
 
 	mesh_creation_state.vertex_count = textBuilder.getModelDataVertexCount();
 	mesh_creation_state.index_count = textBuilder.getModelDataIndexCount();
+
+	const Vector3f kPrerotationOffset = 
+		(params.alignment == AlignHorizontal::kLeft)
+		? Vector3f()
+		: ((params.alignment == AlignHorizontal::kCenter)
+			? Vector3f(-textSize.x * 0.5F, 0, 0) 
+			: Vector3f(-textSize.x, 0, 0));
 
 	const Real kTextScale = params.size / l_font->GetFontInfo()->height;
 	for (uint16_t i = initialVertexCount; i < mesh_creation_state.vertex_count; ++i)
@@ -108,6 +118,7 @@ void ui::eventide::Element::buildText ( const ParamsForText& params )
 		mesh_creation_state.mesh_data.position[i].z = 0.0F;
 
 		// next, apply position, rotation, size
+		mesh_creation_state.mesh_data.position[i] += kPrerotationOffset;
 		mesh_creation_state.mesh_data.position[i] *= kTextScale;
 		mesh_creation_state.mesh_data.position[i] = params.rotation * mesh_creation_state.mesh_data.position[i];
 		mesh_creation_state.mesh_data.position[i] += params.position;

@@ -1,9 +1,10 @@
-#include "MouseGizmo.h"
-
 #include "core/system/Screen.h"
 #include "core/input/CInput.h"
 #include "renderer/camera/RrCamera.h"
 #include "m04/eventide/UserInterface.h"
+#include "./Constants.h"
+
+#include "MouseGizmo.h"
 
 m04::editor::sequence::MouseGizmo::MouseGizmo ( ui::eventide::UserInterface* ui )
 	: Element( ui )
@@ -11,7 +12,7 @@ m04::editor::sequence::MouseGizmo::MouseGizmo ( ui::eventide::UserInterface* ui 
 	m_frameUpdate = FrameUpdate::kPerFrame;
 	m_mouseInteract = MouseInteract::kNone;
 
-	m_texture = LoadTexture("textures/editor/sequenceElements.png");
+	m_texture = LoadTexture(m04::editor::sequence::gFilenameGUIElementTexture);
 }
 
 m04::editor::sequence::MouseGizmo::~MouseGizmo ( void )
@@ -26,8 +27,13 @@ void m04::editor::sequence::MouseGizmo::BuildMesh ( void )
 	quadParams.uvs = Rect(0.0F, 0.0F, 64.0F / 1024, 64.0F / 1024);
 	quadParams.texture = &m_texture;
 
+	// Need camera delta for next
+	const Vector3f deltaToCamera = RrCamera::activeCamera->transform.position - quadParams.position;
+
+	// Make size based on camera distance to keep screen-size constant
+	quadParams.size = Vector2f(10, 10) * (deltaToCamera.magnitude() / 600.0F);
+
 	// Move quad towards camera slightly
-	Vector3f deltaToCamera = RrCamera::activeCamera->transform.position - quadParams.position;
 	quadParams.position += deltaToCamera.normal();// * 2.0F;
 
 	buildQuad(quadParams);

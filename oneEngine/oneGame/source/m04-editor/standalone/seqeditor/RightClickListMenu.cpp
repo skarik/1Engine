@@ -6,6 +6,7 @@
 #include "m04/eventide/UserInterface.h"
 
 #include "./SequenceEditor.h"
+#include "./SequenceNodeViews.h"
 
 m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* editor )
 	: ListMenu( editor->GetEventideUI() )
@@ -79,7 +80,10 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 		// TODO: move to a boardnode factory for the actual sequence info gen
 		BoardNode* board_node = new BoardNode();
 		board_node->SetPosition(GetBBox().GetCenterPoint());
-		board_node->guid.generate(); // TODO: make this better
+		board_node->guid.generateDistinctTo(m_editor->GetNodeBoardState()->node_guids);
+
+		// create a view for the board node
+		board_node->sequenceInfo.view = new m04::editor::sequence::BarebonesSequenceNodeView(&board_node->sequenceInfo);
 
 		m_editor->GetNodeBoardState()->AddDisplayNode(board_node);
 	}

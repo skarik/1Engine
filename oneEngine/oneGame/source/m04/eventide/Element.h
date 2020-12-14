@@ -137,10 +137,18 @@ namespace eventide {
 		//	buildCube( params ) : Adds a cube to the build.
 		EVENTIDE_API void		buildCube ( const ParamsForCube& params );
 
+		enum class AlignHorizontal
+		{
+			kLeft,
+			kCenter,
+			kRight,
+		};
+
 		struct ParamsForText
 		{
 			const char*			string		= nullptr;
 			Real				size		= 12.0F;
+			AlignHorizontal		alignment	= AlignHorizontal::kLeft;
 			Color				color		= Color(1.0F, 1.0F, 1.0F, 1.0F);
 			Vector3f			position	= Vector3f(0, 0, 0);
 			Rotator				rotation	= Rotator();
@@ -152,7 +160,7 @@ namespace eventide {
 		struct ParamsForQuad
 		{
 			Vector3f			position	= Vector3f(0, 0, 0);
-			Vector2f			size		= Vector2f(10, 10);
+			Vector2f			size		= Vector2f(10, 10); // Halfsize
 			Rotator				rotation	= Rotator();
 			Color				color		= Color(1.0F, 1.0F, 1.0F, 1.0F);
 			Texture*			texture		= nullptr;

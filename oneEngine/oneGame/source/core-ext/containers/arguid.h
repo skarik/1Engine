@@ -39,27 +39,27 @@ public:
 		: arguid32(stringValue.c_str())
 		{}
 
-	bool					operator== ( const arguid32& other )
+	bool					operator== ( const arguid32& other ) const
 	{
 		return identifier == other.identifier;
 	}
-	bool					operator< ( const arguid32& other )
+	bool					operator< ( const arguid32& other ) const
 	{
 		return identifier < other.identifier;
 	}
-	bool					operator> ( const arguid32& other )
+	bool					operator> ( const arguid32& other ) const
 	{
 		return identifier > other.identifier;
 	}
-	bool					operator<= ( const arguid32& other )
+	bool					operator<= ( const arguid32& other ) const
 	{
 		return identifier <= other.identifier;
 	}
-	bool					operator>= ( const arguid32& other )
+	bool					operator>= ( const arguid32& other ) const
 	{
 		return identifier >= other.identifier;
 	}
-	bool					operator!= ( const arguid32& other )
+	bool					operator!= ( const arguid32& other ) const
 	{
 		return identifier != other.identifier;
 	}
@@ -148,9 +148,9 @@ public:
 	template <class ContainerType>
 	bool					isDistinctTo ( const ContainerType& container ) const
 	{
-		for (const arguid32& guid : container)
+		for (const arguid32* guid : container)
 		{
-			if (guid == *this)
+			if (*guid == *this)
 			{
 				return false;
 			}
