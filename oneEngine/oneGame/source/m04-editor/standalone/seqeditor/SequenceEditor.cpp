@@ -99,7 +99,7 @@ m04::editor::SequenceEditor::~SequenceEditor ( void )
 		right_click_menu->Destroy();
 		right_click_menu = NULL;
 	}
-	test_element->Destroy();
+	//test_element->Destroy();
 	delete_safe_decrement(user_interface);
 	delete_safe_decrement(dusk_interface);
 

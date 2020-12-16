@@ -44,8 +44,8 @@ namespace editor {
 		dusk::UserInterface*
 							dusk_interface = NULL;
 
-		ui::eventide::Element*
-							test_element = NULL;
+		//ui::eventide::Element*
+		//					test_element = NULL;
 
 		// Top menu with all the dropdowns and associated logic.
 		m04::editor::sequence::TopMenu*

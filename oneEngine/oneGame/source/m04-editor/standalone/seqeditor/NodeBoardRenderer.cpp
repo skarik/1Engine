@@ -57,35 +57,105 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 	{
 		if (mouse_event.type == EventMouse::Type::kClicked)
 		{
-			// this bbox calculation is common. there will also be a lot of clicking. move to other functions?
-			// TODO: OnClicked.
-			// TODO: OnReleased.
-			core::math::BoundingBox l_bbox_flow_input = m_bbox_flow_input;
-			l_bbox_flow_input.m_M.setTranslation(
-				l_bbox_flow_input.m_M.getTranslation() 
-				+ Vector3f(0, 0, m_bbox.GetExtents().z + 1)
-				+ GetBBoxAbsolute().m_M.getTranslation());
-			l_bbox_flow_input.m_MInverse = l_bbox_flow_input.m_M.inverse();
-			if (l_bbox_flow_input.IsPointInBox(mouse_event.position_world))
-			{
-				printf("clicked input!");
-			}
-			else
-			{
-				m_dragging = true;
-				m_ui->LockMouse();
-			}
+			OnClicked(mouse_event);
 		}
 		else if (mouse_event.type == EventMouse::Type::kReleased)
 		{
-			if (m_dragging)
-			{
-				m_dragging = false;
-				m_ui->UnlockMouse();
-			}
+			OnReleased(mouse_event);
 		}
 
 		Button::OnEventMouse(mouse_event);
+	}
+}
+
+void m04::editor::sequence::NodeRenderer::OnClicked ( const EventMouse& mouse_event )
+{
+	const bool bDoDraggingAsFallback = (!m_draggingInfo.active);
+
+	bool bAllowCapture = true; // Flag if we captured something already? Should be used to skip and fallback.
+
+	core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
+	if (bAllowCapture
+		&& l_bbox_flow_input.IsPointInBox(mouse_event.position_world))
+	{
+		bAllowCapture = false;
+		m_draggingInfo = {true, DragState::Target::kFlowInput, 0};
+		m_mouseInteract = MouseInteract::kCapturingCatchAll;
+	}
+	else if (bAllowCapture)
+	{
+		for (uint32_t flowOutputIndex = 0; flowOutputIndex < node->sequenceInfo.view->Flow().outputCount; ++flowOutputIndex)
+		{
+			core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(flowOutputIndex);
+			if (l_bbox_flow_output.IsPointInBox(mouse_event.position_world))
+			{
+				bAllowCapture = false;
+				m_draggingInfo = {true, DragState::Target::kFlowOutput, flowOutputIndex};
+				m_mouseInteract = MouseInteract::kCapturingCatchAll;
+
+				// No more check
+				break;
+			}
+		}
+	}
+
+	//core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
+	if (bAllowCapture
+		&& false)
+	{
+
+	}
+	else if (bAllowCapture && bDoDraggingAsFallback)
+	{
+		m_dragging = true;
+		m_ui->LockMouse();
+	}
+}
+void m04::editor::sequence::NodeRenderer::OnReleased ( const EventMouse& mouse_event )
+{
+	ARCORE_ASSERT(!m_draggingInfo.active || !m_dragging);
+
+	if (m_draggingInfo.active)
+	{
+		/*
+		if (GetMouseInside())
+		{
+		}*/
+
+		// Check if hit another node
+		if (m_draggingInfo.target == DragState::Target::kFlowInput
+			|| m_draggingInfo.target == DragState::Target::kFlowOutput
+			|| m_draggingInfo.target == DragState::Target::kFlowSync
+			|| m_draggingInfo.target == DragState::Target::kLogicInput
+			|| m_draggingInfo.target == DragState::Target::kLogicOutput)
+		{
+			ui::eventide::Element* hitElement = m_ui->GetMouseHit();
+			if (hitElement != NULL)
+			{
+				NodeRenderer* hitElementAsNodeRenderer = dynamic_cast<NodeRenderer*>(hitElement);
+				if (hitElementAsNodeRenderer != NULL)
+				{
+					if (m_draggingInfo.target == DragState::Target::kFlowInput)
+					{
+						hitElementAsNodeRenderer->GetBoardNode()->sequenceInfo.next = &node->sequenceInfo;
+						hitElementAsNodeRenderer->UpdateNextNode();
+					}
+					else if (m_draggingInfo.target == DragState::Target::kFlowOutput)
+					{
+						node->sequenceInfo.next = &hitElementAsNodeRenderer->GetBoardNode()->sequenceInfo;
+						m_next = hitElementAsNodeRenderer;
+					}
+				}
+			}
+		}
+
+		m_draggingInfo.active = false;
+		m_mouseInteract = MouseInteract::kCapturing;
+	}
+	else if (m_dragging)
+	{
+		m_dragging = false;
+		m_ui->UnlockMouse();
 	}
 }
 
@@ -136,11 +206,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 
 	// Flow input
 	{
-		core::math::BoundingBox l_bbox_flow_input = m_bbox_flow_input;
-		l_bbox_flow_input.m_M.setTranslation(
-			l_bbox_flow_input.m_M.getTranslation() 
-			+ Vector3f(0, 0, m_bbox.GetExtents().z + 1)
-			+ GetBBoxAbsolute().m_M.getTranslation());
+		core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
 
 		quadParams = {};
 		quadParams.position = l_bbox_flow_input.GetCenterPoint();
@@ -154,11 +220,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	// Flow output
 	for (uint32_t flowOutputIndex = 0; flowOutputIndex < node->sequenceInfo.view->Flow().outputCount; ++flowOutputIndex)
 	{
-		core::math::BoundingBox l_bbox_flow_output = m_bbox_flow_output;
-		l_bbox_flow_output.m_M.setTranslation(
-			l_bbox_flow_output.m_M.getTranslation() 
-			+ Vector3f(0, flowOutputIndex * m_bbox_flow_output.GetExtents().y * -2.0F, m_bbox.GetExtents().z + 1)
-			+ GetBBoxAbsolute().m_M.getTranslation());
+		core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(flowOutputIndex);
 
 		quadParams = {};
 		quadParams.position = l_bbox_flow_output.GetCenterPoint();
@@ -169,6 +231,16 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		buildQuad(quadParams);
 	}
 
+	// Draw drag nonsense
+	if (m_draggingInfo.active)
+	{
+		cubeParams = {};
+		cubeParams.box = core::math::Cubic::ConstructCenterExtents(m_ui->GetMousePosition(), Vector3f(5, 5, 5));
+		cubeParams.color = Color(1, 0, 0, 1);
+		cubeParams.texture = NULL;
+		buildCube(cubeParams);
+	}
+
 	// Draw the flow output
 	if (m_next == NULL)
 	{
@@ -177,6 +249,12 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	else
 	{
 		NodeRenderer* next_noderenderer = (NodeRenderer*)m_next;
+
+		cubeParams = {};
+		cubeParams.box = core::math::Cubic::ConstructCenterExtents((GetBboxFlowOutput(0).GetCenterPoint() + next_noderenderer->GetBboxFlowInput().GetCenterPoint()) * 0.5F, Vector3f(5, 5, 5));
+		cubeParams.color = Color(1, 0, 0, 1);
+		cubeParams.texture = NULL;
+		buildCube(cubeParams);
 	}
 
 	// Draw all the options
@@ -200,7 +278,7 @@ void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpd
 
 void m04::editor::sequence::NodeRenderer::UpdateNextNode ( void )
 {
-	/*const NodeBoardState* nbs = m_board;
+	const NodeBoardState* nbs = m_board;
 
 	// Find the node in the board with the matching pointer
 	auto boardNodeIter = (this->node->sequenceInfo.next == NULL)
@@ -211,9 +289,33 @@ void m04::editor::sequence::NodeRenderer::UpdateNextNode ( void )
 	{
 		m_next = (*boardNodeIter)->display;
 	}
-	else*/
+	else
 	{	// Next node does not exist, update both this node and the next one
 		m_next = NULL;
 		node->sequenceInfo.next = NULL;
 	}
+}
+
+
+core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxFlowInput ( void )
+{
+	core::math::BoundingBox l_bbox_flow_input = m_bbox_flow_input;
+	l_bbox_flow_input.m_M.setTranslation(
+		l_bbox_flow_input.m_M.getTranslation() 
+		+ Vector3f(0, 0, m_bbox.GetExtents().z + 1)
+		+ GetBBoxAbsolute().m_M.getTranslation());
+	l_bbox_flow_input.m_MInverse = l_bbox_flow_input.m_M.inverse(); // TODO: optimize this
+
+	return l_bbox_flow_input;
+}
+core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxFlowOutput ( const uint32_t output_index )
+{
+	core::math::BoundingBox l_bbox_flow_output = m_bbox_flow_output;
+	l_bbox_flow_output.m_M.setTranslation(
+		l_bbox_flow_output.m_M.getTranslation() 
+		+ Vector3f(0, output_index * m_bbox_flow_output.GetExtents().y * -2.0F, m_bbox.GetExtents().z + 1)
+		+ GetBBoxAbsolute().m_M.getTranslation());
+	l_bbox_flow_output.m_MInverse = l_bbox_flow_output.m_M.inverse(); // TODO: optimize this
+
+	return l_bbox_flow_output;
 }

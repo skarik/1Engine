@@ -46,6 +46,9 @@ namespace sequence {
 			: node(in_node)
 			{}
 
+		BoardNode*			GetBoardNode ( void )
+			{ return node; }
+
 	protected:
 		BoardNode*			node;
 	};

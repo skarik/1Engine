@@ -11,6 +11,28 @@ namespace sequence {
 	
 	class NodeBoardState;
 
+	struct DragState
+	{
+		enum class Target
+		{
+			kNone,
+
+			kFlowInput,
+			kFlowOutput,
+			kFlowSync,
+
+			kLogicInput,
+			kLogicOutput,
+
+			kPropertyValue,
+		};
+
+		bool					active = false;
+		Target					target = Target::kNone;
+		uint32_t				index = 0;
+	};
+
+	// less renderer, more an interactable
 	class NodeRenderer : public m04::editor::sequence::INodeDisplay, public ui::eventide::elements::Button
 	{
 	public:
@@ -24,6 +46,14 @@ namespace sequence {
 		void					UpdateNextNode ( void );
 
 	protected:
+
+		void					OnClicked ( const EventMouse& mouse_event );
+		void					OnReleased ( const EventMouse& mouse_event );
+
+		core::math::BoundingBox	GetBboxFlowInput ( void );
+		core::math::BoundingBox GetBboxFlowOutput ( const uint32_t output_index );
+
+	protected:
 		Vector3f			m_halfsizeOnBoard;
 		Vector3f			m_margins;
 		Vector3f			m_connectionHalfsize;
@@ -34,6 +64,8 @@ namespace sequence {
 
 		// Currently being dragged?
 		bool				m_dragging = false;
+		// Info for dragging a subelement
+		DragState			m_draggingInfo;
 
 		// GUI texture.
 		ui::eventide::Texture
