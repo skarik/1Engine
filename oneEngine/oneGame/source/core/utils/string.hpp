@@ -3,6 +3,7 @@
 
 #include "core/utils/string.h"
 #include "core/types/types.h"
+#include "core/debug.h"
 
 #include <vector>
 #include <iostream>
@@ -215,6 +216,34 @@ namespace string
 			maxsize = std::max( maxsize, checksize );
 		}
 		return maxsize;
+	}
+
+	//	CamelCaseToReadable(string) : Makes a human-readable spaced string from a camel-cased string
+	arstring256 CamelCaseToReadable( const char* camelCased, size_t len )
+	{
+		arstring256 result = camelCased;
+
+		size_t result_itr = 1;
+		for (size_t i = 1; i < len; ++i)
+		{
+			ARCORE_ASSERT(result_itr < sizeof(arstring256) - 2);
+
+			// Is this an upper case character
+			if (::isupper(camelCased[i]) && ::islower(camelCased[i - 1]))
+			{
+				//result_itr
+				result[result_itr++] = ' ';
+				result[result_itr++] = camelCased[i];
+			}
+			else
+			{
+				result[result_itr++] = camelCased[i];
+			}
+		}
+		// Put null character at the end
+		result[result_itr] = 0;
+
+		return result;
 	}
 
 	//===============================================================================================//

@@ -23,7 +23,7 @@ namespace sequence {
 	{
 	public:
 		// Actual data contained in the node
-		SequenceNode		sequenceInfo;
+		SequenceNode*		sequenceInfo;
 
 		// Position the node is at
 		Vector3f			position;

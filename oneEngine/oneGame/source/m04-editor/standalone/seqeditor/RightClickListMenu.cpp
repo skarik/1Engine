@@ -15,10 +15,14 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 	m_mouseInteract = MouseInteract::kCatchAll;
 
 	// Set up own choices now:
-	this->SetListChoices({
-		"Cancel",
-		"New Generic"
-	});
+	std::vector<std::string> l_choiceList;
+	l_choiceList.push_back("Cancel");
+	for (auto& registryEntry : ISequenceNodeClassInfo::m_registry)
+	{
+		m_classnameListing.push_back(registryEntry.first);
+		l_choiceList.push_back(registryEntry.second->m_displayname.c_str());
+	}
+	this->SetListChoices(l_choiceList);
 }
 
 m04::editor::sequence::RightClickListMenu::~RightClickListMenu ( void )
@@ -83,7 +87,9 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 		board_node->guid.generateDistinctTo(m_editor->GetNodeBoardState()->node_guids);
 
 		// create a view for the board node
-		board_node->sequenceInfo.view = new m04::editor::sequence::BarebonesSequenceNodeView(&board_node->sequenceInfo);
+		//board_node->sequenceInfo.view = new m04::editor::sequence::BarebonesSequenceNodeView(&board_node->sequenceInfo);
+		//board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView("Generic");
+		board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(m_classnameListing[choiceIndex - 1]);
 
 		m_editor->GetNodeBoardState()->AddDisplayNode(board_node);
 	}

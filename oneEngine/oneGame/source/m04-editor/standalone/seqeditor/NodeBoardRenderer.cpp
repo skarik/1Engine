@@ -18,7 +18,8 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 
 	m_uiElementsTexture = LoadTexture(m04::editor::sequence::gFilenameGUIElementTexture);
 
-	ARCORE_ASSERT(in_node->sequenceInfo.view != NULL); // Must ensure view is valid
+	ARCORE_ASSERT(in_node->sequenceInfo != NULL); // Must ensure node exists
+	ARCORE_ASSERT(in_node->sequenceInfo->view != NULL); // Must ensure view is valid
 
 	// Set position & bbox
 	SetBBox(core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard));
@@ -28,6 +29,7 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 	m_bbox_flow_output = core::math::BoundingBox(Rotator(), Vector3f(m_halfsizeOnBoard.x, m_halfsizeOnBoard.y - m_connectionHalfsize.y - m_margins.y, 0), Vector3f(m_connectionHalfsize.x, m_connectionHalfsize.y, 4));
 
 	// Cache all needed info
+	m_display_text = ISequenceNodeClassInfo::GetInfo(node->sequenceInfo->view->classname)->m_displayname;
 	m_guid_text = node->guid.toString().c_str();
 	UpdateNextNode();
 }
@@ -84,7 +86,7 @@ void m04::editor::sequence::NodeRenderer::OnClicked ( const EventMouse& mouse_ev
 	}
 	else if (bAllowCapture)
 	{
-		for (uint32_t flowOutputIndex = 0; flowOutputIndex < node->sequenceInfo.view->Flow().outputCount; ++flowOutputIndex)
+		for (uint32_t flowOutputIndex = 0; flowOutputIndex < node->sequenceInfo->view->Flow().outputCount; ++flowOutputIndex)
 		{
 			core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(flowOutputIndex);
 			if (l_bbox_flow_output.IsPointInBox(mouse_event.position_world))
@@ -137,12 +139,12 @@ void m04::editor::sequence::NodeRenderer::OnReleased ( const EventMouse& mouse_e
 				{
 					if (m_draggingInfo.target == DragState::Target::kFlowInput)
 					{
-						hitElementAsNodeRenderer->GetBoardNode()->sequenceInfo.next = &node->sequenceInfo;
+						hitElementAsNodeRenderer->GetBoardNode()->sequenceInfo->next = node->sequenceInfo;
 						hitElementAsNodeRenderer->UpdateNextNode();
 					}
 					else if (m_draggingInfo.target == DragState::Target::kFlowOutput)
 					{
-						node->sequenceInfo.next = &hitElementAsNodeRenderer->GetBoardNode()->sequenceInfo;
+						node->sequenceInfo->next = hitElementAsNodeRenderer->GetBoardNode()->sequenceInfo;
 						m_next = hitElementAsNodeRenderer;
 					}
 				}
@@ -185,7 +187,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 
 	// Show the view's name
 	textParams = {};
-	textParams.string = "Generic";
+	textParams.string = m_display_text;
 	textParams.font_texture = &m_fontTexture;
 	textParams.position = nodeTopLeft + Vector3f(m_margins.x, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0);
 	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
@@ -205,6 +207,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	buildText(textParams);
 
 	// Flow input
+	if (node->sequenceInfo->view->Flow().inputCount != 0)
 	{
 		core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
 
@@ -218,7 +221,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	}
 
 	// Flow output
-	for (uint32_t flowOutputIndex = 0; flowOutputIndex < node->sequenceInfo.view->Flow().outputCount; ++flowOutputIndex)
+	for (uint32_t flowOutputIndex = 0; flowOutputIndex < node->sequenceInfo->view->Flow().outputCount; ++flowOutputIndex)
 	{
 		core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(flowOutputIndex);
 
@@ -258,7 +261,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	}
 
 	// Draw all the options
-	auto& nodeProperties = node->sequenceInfo.view->PropertyList();
+	auto& nodeProperties = node->sequenceInfo->view->PropertyList();
 
 }
 
@@ -281,9 +284,9 @@ void m04::editor::sequence::NodeRenderer::UpdateNextNode ( void )
 	const NodeBoardState* nbs = m_board;
 
 	// Find the node in the board with the matching pointer
-	auto boardNodeIter = (this->node->sequenceInfo.next == NULL)
+	auto boardNodeIter = (this->node->sequenceInfo->next == NULL)
 		? nbs->nodes.end()
-		: std::find_if(nbs->nodes.begin(), nbs->nodes.end(), [this](BoardNode* board_node) { return this->node->sequenceInfo.next == &board_node->sequenceInfo; });
+		: std::find_if(nbs->nodes.begin(), nbs->nodes.end(), [this](BoardNode* board_node) { return this->node->sequenceInfo->next == board_node->sequenceInfo; });
 
 	if (boardNodeIter != nbs->nodes.end())
 	{
@@ -292,7 +295,7 @@ void m04::editor::sequence::NodeRenderer::UpdateNextNode ( void )
 	else
 	{	// Next node does not exist, update both this node and the next one
 		m_next = NULL;
-		node->sequenceInfo.next = NULL;
+		node->sequenceInfo->next = NULL;
 	}
 }
 

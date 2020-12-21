@@ -74,6 +74,8 @@ namespace sequence {
 		// Node currently selected as the "next" node in the flow. Corresponds to node->next.
 		m04::editor::sequence::INodeDisplay*
 							m_next;
+		// Display name of the node
+		arstring128			m_display_text;
 		// GUID of the node, cached for rendering.
 		arstring<9>			m_guid_text;
 

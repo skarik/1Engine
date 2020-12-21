@@ -2,6 +2,8 @@
 #define M04_EDITORS_SEQUENCE_EDITOR_RIGHT_CLICK_LIST_MENU_H_
 
 #include "m04/eventide/elements/ListMenu.h"
+#include <vector>
+#include "core/containers/arstring.h"
 
 namespace m04 {
 namespace editor {
@@ -30,6 +32,11 @@ namespace sequence {
 
 		// Check if losing any focus
 		bool				m_losingFocus = false;
+
+	protected:
+		// Listing of classnames for the right-click menu.
+		std::vector<arstring128>
+							m_classnameListing;
 	};
 
 }}}

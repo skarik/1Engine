@@ -61,6 +61,9 @@ namespace core
 			// Order of the arguments does not matter: "rapped & wrap" will return 3 just as "wrap & rapped" would, the common substring being "rap".
 			static size_t				LargestCommonSubstringLength ( const std::string& str1, const std::string& str2 );
 
+			//	CamelCaseToReadable(string) : Makes a human-readable spaced string from a camel-cased string
+			static arstring256			CamelCaseToReadable( const char* camelCased, size_t len = 0 );
+
 			//===============================================================================================//
 			// C-string
 			//===============================================================================================//

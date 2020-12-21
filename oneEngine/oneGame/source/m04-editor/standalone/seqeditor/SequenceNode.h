@@ -2,7 +2,9 @@
 #define M04_EDITORS_SEQUENCE_EDITOR_SQUENCE_NODE_H_
 
 #include <vector>
+#include <unordered_map>
 #include "osfstructure.h"
+#include "core/utils/string.h"
 
 namespace m04 {
 namespace editor {
@@ -33,13 +35,17 @@ namespace editor {
 
 		// Task sync target.
 		SequenceNode*		task_sync_target = NULL;
+
+	public:
+		static SequenceNode*	CreateWithEditorView ( const char* className );
 	};
 
 	class SequenceViewFlow
 	{
 	public:
 		// Number of flow inputs. They are considered sequential.
-		//uint				inputCount = 1;
+		// Only zero (0) or one (1) are valid vaues.
+		uint				inputCount = 1;
 		// There is always one flow input - since flow is one way, a single input can take multiple values.
 		// Number of flow outputs. They are considered sequential.
 		uint				outputCount = 1;
@@ -124,6 +130,8 @@ namespace editor {
 	public:
 		SequenceNode*		node;
 
+		arstring128			classname;
+
 		//	FlowList() : Provides the flow information for this node.
 		// This is usually one input, and one or more outputs.
 		const SequenceViewFlow&	Flow ( void ) const
@@ -155,6 +163,55 @@ namespace editor {
 							propertyViews;
 	};
 
+	class ISequenceNodeClassInfo
+	{
+	public:
+		//	CreateNew() : Create a new instance of the given sequence node.
+		virtual SequenceNode*	CreateNew (void) = 0;
+
+		//	GetInfo(classname) : Locates classinfo instance with the match class name.
+		// NULL is returned if a matching class name cannot be found.
+		EDITOR_API static ISequenceNodeClassInfo*
+								GetInfo ( const char* classname )
+		{
+			auto classInfoItr = m_registry.find(classname);
+			if (classInfoItr == m_registry.end())
+			{
+				return NULL;
+			}
+			else
+			{
+				return classInfoItr->second;
+			}
+		}
+	public:
+		static std::unordered_map<arstring128,ISequenceNodeClassInfo*>
+							m_registry;
+
+		// Node's class name for display.
+		arstring128			m_displayname;
+	};
+	
+#	define DECLARE_SEQUENCENODE_CLASS(SequenceNodeClass, EditorView) \
+	static class SequenceNodeClass_##SequenceNodeClass : public m04::editor::ISequenceNodeClassInfo \
+	{ \
+	public: \
+		/* Constructor, adds self to the registry. */ \
+		SequenceNodeClass_##SequenceNodeClass() \
+		{ \
+			m_registry[ #SequenceNodeClass ] = this;\
+			m_displayname = core::utils::string::CamelCaseToReadable( #SequenceNodeClass, strlen( #SequenceNodeClass ) );\
+		} \
+		\
+		/* CreateNew override, constructs new node & view. */ \
+		virtual m04::editor::SequenceNode*	CreateNew (void) override \
+		{ \
+			m04::editor::SequenceNode* node = new m04::editor::SequenceNode;\
+			node->view = new EditorView(node); \
+			node->view->classname = #SequenceNodeClass; \
+			return node; \
+		} \
+	} InstSequenceNodeClass_##SequenceNodeClass;\
 
 }}
 
