@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdint.h>
 
+#include "core/debug.h"
+
 //===============================================================================================//
 
 io::OSFReader::OSFReader ( FILE* file )
@@ -315,7 +317,9 @@ bool io::OSFReader::SearchToMarker ( const char* name )
 
 io::OSFWriter::OSFWriter ( FILE* file, eOSFWriteMode writeMode )
 	: m_file(file), m_level(0), m_mode(writeMode)
-{}
+{
+	ARCORE_ASSERT_MSG(m_mode != kOSFWriteModePreserveComments, "PreserveComments mode is currently unsupported with OSF writing.");
+}
 io::OSFWriter::~OSFWriter ( void )
 {}
 

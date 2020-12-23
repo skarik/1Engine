@@ -22,7 +22,7 @@ namespace editor {
 	public:
 		// OSF Native data.
 		// Different views on top of this data allow for different editors to be applied to the node.
-		std::vector<osf::KeyValue*>
+		osf::ObjectValue
 							data;
 		
 		// The view this node is using to display.
@@ -119,6 +119,8 @@ namespace editor {
 			{}
 
 		EDITOR_API virtual void SetFlow ( const int flowOutputIndex, SequenceNode* newNodeValue );
+		EDITOR_API virtual SequenceNode* 
+								GetFlow ( const int flowOutputIndex );
 
 		EDITOR_API virtual void	SetOutput ( const int outputIndex, SequenceNode* newNodeValue ) =0;
 

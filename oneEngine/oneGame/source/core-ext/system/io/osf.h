@@ -51,8 +51,8 @@ namespace io
 	struct OSFEntryInfo
 	{
 		eOSFEntryType	type = kOSFEntryTypeUnknown;
-		char			name [64];		// The `key` of the key-value pair
-		char			value [128];	// The `value` of the key-value pair
+		arstring64		name;		// The `key` of the key-value pair
+		arstring128		value;	// The `value` of the key-value pair
 		int				level = 0;
 		unsigned long	nextchar = 0;
 	};
@@ -115,6 +115,7 @@ namespace io
 
 		// Tries to make sure that comments are preserved while writing.
 		// Requires that the file is opened in read-append mode.
+		// Currently unsupported.
 		kOSFWriteModePreserveComments,
 	};
 

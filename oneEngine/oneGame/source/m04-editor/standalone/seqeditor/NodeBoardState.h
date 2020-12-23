@@ -18,6 +18,7 @@ namespace editor {
 namespace sequence {
 
 	class INodeDisplay;
+	class ISequenceSerializer;
 
 	struct BoardNode
 	{
@@ -64,6 +65,19 @@ namespace sequence {
 
 		//	RemoveNode( board_node ) : Removes node from the board.
 		void					RemoveDisplayNode ( BoardNode* board_node );
+
+		// TODO: Save & load from a buffer?
+		// Saving:
+		//		pass 1: determine which nodes need a label
+		//				- nodes after nodes with 2 or more flow outputs
+		//				- nodes with 2 or more flow inputs
+		//		pass 2: loop through flow:
+		//				- current path added to front
+		//				- next path added to back
+		//				- pop next node to process from the front
+		// generate vector<vector<BoardNode>>, and each time there is a duplicate across lists - split the list at that node, do a goto instead?
+		// struct EntryLink { BoardNode, Link { vector<BoardNode>, index } }
+		void					Save ( ISequenceSerializer* serializer );
 
 	public:
 		std::vector<BoardNode*>
