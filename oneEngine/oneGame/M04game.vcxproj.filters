@@ -246,6 +246,9 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceNodeViews.h">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceSerialization.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -399,6 +402,9 @@
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceNodeViews.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceSerialization.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClCompile>
   </ItemGroup>
