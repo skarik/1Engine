@@ -93,7 +93,6 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\MouseGizmo.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\NodeBoardRenderer.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\NodeBoardState.h" />
-    <ClInclude Include="source\m04-editor\standalone\seqeditor\osfstructure.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\RightClickListMenu.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\sceneEditorSequence.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceEditor.h" />
@@ -151,7 +150,6 @@
     <ClCompile Include="source\m04-editor\standalone\seqeditor\MouseGizmo.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\NodeBoardRenderer.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\NodeBoardState.cpp" />
-    <ClCompile Include="source\m04-editor\standalone\seqeditor\osfstructure.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\RightClickListMenu.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\sceneEditorSequence.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceEditor.cpp" />

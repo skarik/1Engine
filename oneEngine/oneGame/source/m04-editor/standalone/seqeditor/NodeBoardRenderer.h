@@ -37,8 +37,10 @@ namespace sequence {
 	{
 	public:
 		explicit				NodeRenderer (m04::editor::sequence::NodeBoardState* in_nbs, m04::editor::sequence::BoardNode* in_node, ui::eventide::UserInterface* ui);
+	protected:
 		virtual					~NodeRenderer ( void );
 
+	public:
 		virtual void			OnEventMouse ( const EventMouse& mouse_event ) override;
 		virtual void			BuildMesh ( void ) override;
 		virtual void			OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame ) override;

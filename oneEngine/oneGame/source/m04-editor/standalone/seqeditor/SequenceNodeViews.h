@@ -13,6 +13,8 @@ namespace sequence {
 		EDITOR_API explicit		BarebonesSequenceNodeView ( SequenceNode* in_node );
 
 		EDITOR_API virtual void SetFlow ( const int flowOutputIndex, SequenceNode* newNodeValue ) override;
+		EDITOR_API virtual SequenceNode* 
+								GetFlow ( const int flowOutputIndex ) override;
 
 		EDITOR_API virtual void	SetOutput ( const int outputIndex, SequenceNode* newNodeValue ) override;
 

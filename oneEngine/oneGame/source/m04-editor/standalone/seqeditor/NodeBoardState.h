@@ -19,6 +19,7 @@ namespace sequence {
 
 	class INodeDisplay;
 	class ISequenceSerializer;
+	class ISequenceDeserializer;
 
 	struct BoardNode
 	{
@@ -31,13 +32,19 @@ namespace sequence {
 		// GUID of the node
 		arguid32			guid;
 
-		// Associated Eventide element used to render the object
+		// Associated Eventide element used to render the object.
+		// Not owned by this object.
 		INodeDisplay*		display;
 
 	public:
 		EDITOR_API void 		SetPosition ( const Vector3f& new_position )
 			{ position = new_position; }
 
+		//	PushEditorData() : Pushes the editor data to the sequence node's keyvalues.
+		EDITOR_API void			PushEditorData ( void );
+
+		// Frees associated SequenceNode and other information.
+		EDITOR_API void			FreeData ( void );
 	};
 
 	class INodeDisplay
@@ -66,18 +73,12 @@ namespace sequence {
 		//	RemoveNode( board_node ) : Removes node from the board.
 		void					RemoveDisplayNode ( BoardNode* board_node );
 
-		// TODO: Save & load from a buffer?
-		// Saving:
-		//		pass 1: determine which nodes need a label
-		//				- nodes after nodes with 2 or more flow outputs
-		//				- nodes with 2 or more flow inputs
-		//		pass 2: loop through flow:
-		//				- current path added to front
-		//				- next path added to back
-		//				- pop next node to process from the front
-		// generate vector<vector<BoardNode>>, and each time there is a duplicate across lists - split the list at that node, do a goto instead?
-		// struct EntryLink { BoardNode, Link { vector<BoardNode>, index } }
+		//	Save( serializer ) : Saves board state with the given serializer.
 		void					Save ( ISequenceSerializer* serializer );
+
+		//	Load( deserializer ) : Clears board state, then loads board state with given serializer.
+		// Any invalid nodes are still loaded, but with a severely-limited view. Since the views are mostly untouched, their data is preserved.
+		void					Load ( ISequenceDeserializer* deserializer );
 
 	public:
 		std::vector<BoardNode*>

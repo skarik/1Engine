@@ -14,6 +14,8 @@ namespace m04 {
 namespace editor {
 namespace sequence {
 
+	struct BoardNode;
+
 	class RightClickListMenu : public ui::eventide::elements::ListMenu
 	{
 	public:
@@ -32,6 +34,15 @@ namespace sequence {
 
 		// Check if losing any focus
 		bool				m_losingFocus = false;
+
+		enum class Mode
+		{
+			kEmptyBoard,
+			kOnNode,
+		};
+
+		Mode				m_mode = Mode::kEmptyBoard;
+		BoardNode*			m_targetNode = NULL;
 
 	protected:
 		// Listing of classnames for the right-click menu.

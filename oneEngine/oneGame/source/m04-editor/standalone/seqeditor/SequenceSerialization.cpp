@@ -37,7 +37,7 @@ void m04::editor::sequence::OsfSerializer::SerializeStartpoint ( const m04::edit
 	startpointEntry.name = node->view->classname;
 	osf_writer->WriteObjectBegin(startpointEntry);
 	{
-		io::OSFEntryInfo guidEntry = {io::kOSFEntryTypeNormal, "goto", node->next->data["guid"]->value->As<osf::StringValue>()->value.c_str()};
+		io::OSFEntryInfo guidEntry = {io::kOSFEntryTypeNormal, "goto", node->next->data["guid"]->As<osf::StringValue>()->value.c_str()};
 		osf_writer->WriteEntry(guidEntry);
 	}
 	osf_writer->WriteObjectEnd();
@@ -45,7 +45,7 @@ void m04::editor::sequence::OsfSerializer::SerializeStartpoint ( const m04::edit
 void m04::editor::sequence::OsfSerializer::SerializeJumptarget ( const m04::editor::SequenceNode* node )
 {
 	// Create a jump target label
-	io::OSFEntryInfo marker = {io::kOSFEntryTypeMarker, node->next->data["guid"]->value->As<osf::StringValue>()->value.c_str()};
+	io::OSFEntryInfo marker = {io::kOSFEntryTypeMarker, node->next->data["guid"]->As<osf::StringValue>()->value.c_str()};
 	osf_writer->WriteEntry(marker);
 }
 
@@ -124,7 +124,7 @@ void m04::editor::sequence::OsfSerializer::SerializeListEnd ( const m04::editor:
 		io::OSFEntryInfo entry;
 		entry.type = io::kOSFEntryTypeNormal;
 		entry.name = "goto";
-		entry.value = lastNode->next->data["guid"]->value->As<osf::StringValue>()->value.c_str();
+		entry.value = lastNode->next->data["guid"]->As<osf::StringValue>()->value.c_str();
 		osf_writer->WriteEntry(entry);
 	}
 }

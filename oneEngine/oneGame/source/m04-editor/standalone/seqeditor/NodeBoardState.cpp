@@ -6,6 +6,38 @@
 #include "./SequenceEditor.h"
 #include "./SequenceSerialization.h"
 
+static const char* kKeyGuid = "guid";
+static const char* kKeyEditorPosition = "__editor_position";
+
+void m04::editor::sequence::BoardNode::PushEditorData ( void )
+{
+	osf::BaseValue* v;
+
+	v = sequenceInfo->data[kKeyGuid];
+	if (v == nullptr)
+	{
+		v = sequenceInfo->data.Add(new osf::KeyValue(kKeyGuid, new osf::StringValue()))->value;
+	}
+	v->As<osf::StringValue>()->value = guid.toString();
+
+	v = sequenceInfo->data[kKeyEditorPosition];
+	if (v == nullptr)
+	{
+		v = sequenceInfo->data.Add(new osf::KeyValue(kKeyEditorPosition, new osf::StringValue()))->value;
+	}
+	v->As<osf::StringValue>()->value = std::to_string(position.x) + "\t" + std::to_string(position.y) + "\t" + std::to_string(position.z);
+}
+
+void m04::editor::sequence::BoardNode::FreeData ( void )
+{
+	if (sequenceInfo)
+	{
+		delete sequenceInfo;
+		sequenceInfo = NULL;
+	}
+	display = NULL;
+}
+
 m04::editor::sequence::NodeBoardState::NodeBoardState ( m04::editor::SequenceEditor* editor )
 	: ui( editor->GetEventideUI() )
 {
@@ -70,6 +102,12 @@ void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializ
 			}
 		}
 	};
+
+	// First push all nodes' editor data into their keyvalues
+	for (BoardNode* node : nodes)
+	{
+		node->PushEditorData();
+	}
 
 	// PASS 1: DETERMINE WHICH NODES NEEDS JUMPS
 	struct JumpInfo
@@ -211,4 +249,21 @@ void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializ
 	}
 	// We're at the end of the file, serialize a "end"
 	serializer->SerializeFileEnd();
+}
+
+void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deserializer )
+{
+	// Now, from all the loaded nodes, pull their GUIDs and positions.
+	for (BoardNode* currentNode : nodes)
+	{
+		currentNode->guid.setFromString(currentNode->sequenceInfo->data[kKeyGuid]->As<osf::StringValue>()->value);
+
+		// Need the string tuplet from the values as well.
+		std::string positionTripletString = currentNode->sequenceInfo->data[kKeyEditorPosition]->As<osf::StringValue>()->value;
+		// Split the poisition into three string values
+		auto tripletValues = core::utils::string::Split(positionTripletString, core::utils::string::kWhitespace);
+		ARCORE_ASSERT(tripletValues.size() == 3);
+		// Set the node's position.
+		currentNode->position = Vector3f(std::stof(tripletValues[0]), std::stof(tripletValues[1]), std::stof(tripletValues[2]));
+	}
 }

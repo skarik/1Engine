@@ -9,6 +9,7 @@ namespace m04 {
 namespace editor {
 namespace sequence {
 
+	// Node serialization interface
 	class ISequenceSerializer
 	{
 	public:
@@ -21,6 +22,13 @@ namespace sequence {
 		EDITOR_API virtual void	SerializeNode ( const m04::editor::SequenceNode* node ) = 0;
 		EDITOR_API virtual void	SerializeListEnd ( const m04::editor::SequenceNode* lastNode ) = 0;
 		EDITOR_API virtual void	SerializeFileEnd ( void ) = 0;
+	};
+
+	// Node deserialization interface
+	class ISequenceDeserializer
+	{
+	public:
+		EDITOR_API virtual bool	IsValid ( void ) = 0;
 	};
 
 	class OsfSerializer : public ISequenceSerializer

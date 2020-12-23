@@ -7,7 +7,7 @@
 #include "core/debug.h"
 
 #ifndef OSF_API 
-#define OSF_API GAME_API
+#define OSF_API CORE_API
 #endif
 
 namespace io
@@ -46,10 +46,20 @@ namespace osf
 		//	As<Type>() : Casts to the correct type.
 		// Returns null if the cast is incorrect.
 		template <class SequenceTypeCastTo>
-		SequenceTypeCastTo*		As ( void )
-		{
+		SequenceTypeCastTo*
+								As ( void );
+		/*{
 			return dynamic_cast<SequenceTypeCastTo*>(this);
-		}
+		}*/
+
+		//	As<Type>() : Casts to the correct type.
+		// Returns null if the cast is incorrect.
+		template <class SequenceTypeCastTo>
+		const SequenceTypeCastTo*
+								As ( void ) const;
+		/*{
+			return dynamic_cast<const SequenceTypeCastTo*>(this);
+		}*/
 	};
 
 	class ObjectValue : public BaseValue
@@ -61,14 +71,18 @@ namespace osf
 		std::vector<KeyValue*>
 							values;
 
+		// Deconstructor frees all keyvalues in the values list.
+		~ObjectValue ( void );
+
 		//	Add(kv) : Adds keyvalue to the object-value.
-		OSF_API void			Add (KeyValue* kv)
+		/*OSF_API*/ KeyValue*	Add (KeyValue* kv)
 		{
 			values.push_back(kv);
+			return values.back();
 		}
 
 		//	Remove(kv) : Removes the given k-v from the listing.
-		OSF_API void			Remove (KeyValue* kv)
+		/*OSF_API*/ void		Remove (KeyValue* kv)
 		{
 			for (auto kvItr = values.begin(); kvItr != values.end(); ++kvItr)
 			{
@@ -81,16 +95,84 @@ namespace osf
 			ARCORE_ERROR("Value was not in the array to be removed!");
 		}
 
-		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.
-		OSF_API KeyValue*		operator[] (const char* key_name);
+		//	Convert(index)<type> : Attempts to convert the given index to the correct type.
+		// Returns null if the key was not found or conversion could not happen.
+		template <class SequenceTypeCastTo>
+		/*OSF_API*/ KeyValue*	Convert (const char* key_name)
+		{
+			KeyValue* kvSource = operator[](key_name);
+
+			// Cannot convert source objects
+			if (kvSource == nullptr
+				// We cannot convert objects.
+				|| kvSource->value->GetType() == ValueType::kObject)
+			{
+				return nullptr;
+			}
+			// Let's create the new keyvalue type now.
+			SequenceTypeCastTo* vTarget = new SequenceTypeCastTo;
+			if (vTarget->GetType() == ValueType::kObject // Again, we cannot convert objects.
+				// Cannot convert markers either.
+				|| vTarget->GetType() == ValueType::kMarker)
+			{
+				delete vTarget;
+				return nullptr;
+			}
+
+			// Don't convert if the same type
+			if (vTarget->GetType() == kvSource->value->GetType())
+			{
+				delete vTarget;
+				return kvSource->value;
+			}
+
+			// Convert the value type now
+			if (!ConvertValue(kvSource->value, vTarget))
+			{
+				delete vTarget;
+				return nullptr;
+			}
+
+			// Now that we're done, save the old one.
+			delete kvSource->value;
+			kvSource->value = vTarget;
+
+			return vTarget;
+		}
 
 		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.
-		OSF_API KeyValue*		operator[] (const arstring256& key_name)
+		/*OSF_API*/ BaseValue*	operator[] (const char* key_name);
+
+		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.
+		/*OSF_API*/ BaseValue*	operator[] (const arstring256& key_name)
 			{ return operator[](key_name.c_str()); }
 
 		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.
-		OSF_API KeyValue*		operator[] (const std::string& key_name)
+		/*OSF_API*/ BaseValue*	operator[] (const std::string& key_name)
 			{ return operator[](key_name.c_str()); }
+
+		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.
+		/*OSF_API*/ KeyValue*	GetKeyValue (const char* key_name);
+
+		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.
+		/*OSF_API*/ KeyValue*	GetKeyValue (const arstring256& key_name)
+			{ return GetKeyValue(key_name.c_str()); }
+
+		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.
+		/*OSF_API*/ KeyValue*	GetKeyValue (const std::string& key_name)
+			{ return GetKeyValue(key_name.c_str()); }
+
+	public:
+		static constexpr size_t
+							kNoIndex = (size_t)(-1);
+
+	private:
+		//	GetKeyIndex(string) : Looks up the given key-value and returns its index in the list.
+		// Returns ::NoIndex if not found.
+		OSF_API size_t			GetKeyIndex (const char* key_name);
+
+		//	ConvertValue(source, target) : Converts the given value. Returns false if conversion failed.
+		OSF_API bool			ConvertValue (const BaseValue* source, BaseValue* target);
 	};
 
 	class MarkerValue : public BaseValue

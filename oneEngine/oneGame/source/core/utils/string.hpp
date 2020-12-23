@@ -103,6 +103,15 @@ namespace string
 		return result;
 	}
 
+	void ToLower( std::string& inout )
+	{
+		std::transform( inout.begin(), inout.end(), inout.begin(), ::tolower );
+	}
+	void ToUpper( std::string& inout )
+	{
+		std::transform( inout.begin(), inout.end(), inout.begin(), ::toupper );
+	}
+
 
 	std::string TrimRight( const std::string &t, const std::string &ws )
 	{

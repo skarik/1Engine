@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <unordered_map>
-#include "osfstructure.h"
+#include "core-ext/containers/osfstructure.h"
 #include "core/utils/string.h"
 
 namespace m04 {
@@ -35,6 +35,10 @@ namespace editor {
 
 		// Task sync target.
 		SequenceNode*		task_sync_target = NULL;
+
+	public:
+		// Destructor for clearing out the view.
+		~SequenceNode ( void );
 
 	public:
 		static SequenceNode*	CreateWithEditorView ( const char* className );

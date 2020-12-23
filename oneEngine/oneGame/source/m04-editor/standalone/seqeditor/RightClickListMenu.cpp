@@ -7,6 +7,7 @@
 
 #include "./SequenceEditor.h"
 #include "./SequenceNodeViews.h"
+#include "./NodeBoardRenderer.h"
 
 m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* editor )
 	: ListMenu( editor->GetEventideUI() )
@@ -14,15 +15,32 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 {
 	m_mouseInteract = MouseInteract::kCatchAll;
 
+	m04::editor::sequence::NodeRenderer* renderer = dynamic_cast<m04::editor::sequence::NodeRenderer*>(m_editor->GetEventideUI()->GetMouseHit());
+
 	// Set up own choices now:
-	std::vector<std::string> l_choiceList;
-	l_choiceList.push_back("Cancel");
-	for (auto& registryEntry : ISequenceNodeClassInfo::m_registry)
+	if (renderer != nullptr)
 	{
-		m_classnameListing.push_back(registryEntry.first);
-		l_choiceList.push_back(registryEntry.second->m_displayname.c_str());
+		m_mode = Mode::kOnNode;
+		m_targetNode = renderer->GetBoardNode();
+
+		std::vector<std::string> l_choiceList;
+		l_choiceList.push_back("Cancel");
+		l_choiceList.push_back("Delete");
+		this->SetListChoices(l_choiceList);
 	}
-	this->SetListChoices(l_choiceList);
+	else
+	{
+		m_mode = Mode::kEmptyBoard;
+
+		std::vector<std::string> l_choiceList;
+		l_choiceList.push_back("Cancel");
+		for (auto& registryEntry : ISequenceNodeClassInfo::m_registry)
+		{
+			m_classnameListing.push_back(registryEntry.first);
+			l_choiceList.push_back(registryEntry.second->m_displayname.c_str());
+		}
+		this->SetListChoices(l_choiceList);
+	}
 }
 
 m04::editor::sequence::RightClickListMenu::~RightClickListMenu ( void )
@@ -78,19 +96,32 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 	}
 	else
 	{
-		// TODO: need a callback on somewhere else?
-		// Need to signal to the board state that we want to add a new node at the given position.
+		if (m_mode == Mode::kEmptyBoard)
+		{
+			// TODO: need a callback on somewhere else?
+			// Need to signal to the board state that we want to add a new node at the given position.
 
-		// TODO: move to a boardnode factory for the actual sequence info gen
-		BoardNode* board_node = new BoardNode();
-		board_node->SetPosition(GetBBox().GetCenterPoint());
-		board_node->guid.generateDistinctTo(m_editor->GetNodeBoardState()->node_guids);
+			// TODO: move to a boardnode factory for the actual sequence info gen
+			BoardNode* board_node = new BoardNode();
+			board_node->SetPosition(GetBBox().GetCenterPoint());
+			board_node->guid.generateDistinctTo(m_editor->GetNodeBoardState()->node_guids);
 
-		// create a view for the board node
-		//board_node->sequenceInfo.view = new m04::editor::sequence::BarebonesSequenceNodeView(&board_node->sequenceInfo);
-		//board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView("Generic");
-		board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(m_classnameListing[choiceIndex - 1]);
+			// create a view for the board node
+			//board_node->sequenceInfo.view = new m04::editor::sequence::BarebonesSequenceNodeView(&board_node->sequenceInfo);
+			//board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView("Generic");
+			board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(m_classnameListing[choiceIndex - 1]);
 
-		m_editor->GetNodeBoardState()->AddDisplayNode(board_node);
+			m_editor->GetNodeBoardState()->AddDisplayNode(board_node);
+		}
+		else if (m_mode == Mode::kOnNode)
+		{
+			// get the node of the hovered
+			BoardNode* board_node = m_targetNode;
+			m_editor->GetNodeBoardState()->RemoveDisplayNode(board_node);
+
+			((NodeRenderer*)board_node->display)->Destroy();
+			delete board_node;
+			// TODO: Unhook the board node in the entire board.
+		}
 	}
 }

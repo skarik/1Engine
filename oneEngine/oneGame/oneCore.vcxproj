@@ -162,6 +162,7 @@
     <ClInclude Include="source\core-ext\containers\arresource.h" />
     <ClInclude Include="source\core-ext\containers\ExtendibleMap2D.h" />
     <ClInclude Include="source\core-ext\containers\arKDTree.h" />
+    <ClInclude Include="source\core-ext\containers\osfstructure.h" />
     <ClInclude Include="source\core-ext\math\MathQEF.h" />
     <ClInclude Include="source\core-ext\math\noise\MidpointNoiseBuffer.h" />
     <ClInclude Include="source\core-ext\system\io\serializer.h" />
@@ -260,6 +261,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core-ext\containers\arguid.cpp" />
+    <ClCompile Include="source\core-ext\containers\osfstructure.cpp" />
     <ClCompile Include="source\core-ext\math\MathQEF.cpp" />
     <ClCompile Include="source\core-ext\math\noise\MidpointNoiseBuffer.cpp" />
     <ClCompile Include="source\core-ext\system\io\serializer\ISerialBinary.cpp" />

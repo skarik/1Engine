@@ -15,6 +15,7 @@
 #define CORE_OSF_IO_H_
 
 #include "core/types/types.h"
+#include "core/containers/arstring.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -52,7 +53,7 @@ namespace io
 	{
 		eOSFEntryType	type = kOSFEntryTypeUnknown;
 		arstring64		name;		// The `key` of the key-value pair
-		arstring128		value;	// The `value` of the key-value pair
+		arstring128		value;		// The `value` of the key-value pair
 		int				level = 0;
 		unsigned long	nextchar = 0;
 	};

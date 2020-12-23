@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "osfstructure.h"
+#include "core-ext/containers/osfstructure.h"
 
 #include "engine/behavior/CGameBehavior.h"
 #include "m04/eventide/UserInterface.h"

@@ -207,9 +207,6 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceEditor.h">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClInclude>
-    <ClInclude Include="source\m04-editor\standalone\seqeditor\osfstructure.h">
-      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
-    </ClInclude>
     <ClInclude Include="source\m04\eventide\elements\DefaultStyler.h">
       <Filter>SOURCE\M04\Eventide\Elements</Filter>
     </ClInclude>
@@ -369,9 +366,6 @@
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceEditor.cpp">
-      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="source\m04-editor\standalone\seqeditor\osfstructure.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClCompile>
     <ClCompile Include="source\m04\eventide\elements\DefaultStyler.cpp">
