@@ -38,6 +38,45 @@ void m04::editor::sequence::BoardNode::FreeData ( void )
 	display = NULL;
 }
 
+void m04::editor::sequence::BoardNode::DebugDumpOSF ( void )
+{
+	PushEditorData();
+
+	printf("Dump for %p\n", sequenceInfo);
+	if (sequenceInfo != NULL)
+	{
+		for (auto kv : sequenceInfo->data.values)
+		{
+			printf("\"%s\": ", kv->key.c_str());
+			switch (kv->value->GetType())
+			{
+			case osf::ValueType::kBoolean:
+				printf("%s\n", kv->value->As<osf::BooleanValue>()->value ? "true" : "false");
+				break;
+			case osf::ValueType::kFloat:
+				printf("%f\n", kv->value->As<osf::FloatValue>()->value);
+				break;
+			case osf::ValueType::kInteger:
+				printf("%lld\n", kv->value->As<osf::IntegerValue>()->value);
+				break;
+			case osf::ValueType::kString:
+				printf("%s\n", kv->value->As<osf::StringValue>()->value.c_str());
+				break;
+			case osf::ValueType::kObject:
+				printf("OBJECT [TODO]\n");
+				break;
+			default:
+				printf("??? (Unknown type)\n");
+				break;
+			}
+		}
+	}
+	else
+	{
+		printf("Nothing to dump!\n");
+	}
+}
+
 m04::editor::sequence::NodeBoardState::NodeBoardState ( m04::editor::SequenceEditor* editor )
 	: ui( editor->GetEventideUI() )
 {
@@ -68,6 +107,36 @@ void m04::editor::sequence::NodeBoardState::RemoveDisplayNode ( BoardNode* board
 	nodes.erase(nodeIter);
 	display.erase(displayIter);
 	node_guids.erase(guidIter);
+}
+
+void m04::editor::sequence::NodeBoardState::UnhookNode ( BoardNode* board_node )
+{
+	m04::editor::SequenceNode* sequence_node = board_node->sequenceInfo;
+	for (BoardNode* node : nodes)
+	{
+		// Clear Sync
+		if (node->sequenceInfo->task_sync_target == sequence_node)
+		{
+			node->sequenceInfo->task_sync_target = NULL;
+		}
+		// Clear Flow
+		for (uint outputIndex = 0; outputIndex < node->sequenceInfo->view->Flow().outputCount; ++outputIndex)
+		{
+			if (node->sequenceInfo->view->GetFlow(outputIndex) == sequence_node)
+			{
+				node->sequenceInfo->view->SetFlow(outputIndex, NULL);
+			}
+		}
+		// Clear Output
+		auto nodeOutputs = node->sequenceInfo->view->OutputList();
+		for (uint outputIndex = 0; outputIndex < nodeOutputs.size(); ++outputIndex)
+		{
+			if (node->sequenceInfo->view->GetOuptut(outputIndex) == sequence_node)
+			{
+				node->sequenceInfo->view->SetOutput(outputIndex, NULL);
+			}
+		}
+	}
 }
 
 void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializer )

@@ -26,6 +26,7 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 		std::vector<std::string> l_choiceList;
 		l_choiceList.push_back("Cancel");
 		l_choiceList.push_back("Delete");
+		l_choiceList.push_back("[Debug] Dump OSF");
 		this->SetListChoices(l_choiceList);
 	}
 	else
@@ -115,13 +116,21 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 		}
 		else if (m_mode == Mode::kOnNode)
 		{
-			// get the node of the hovered
-			BoardNode* board_node = m_targetNode;
-			m_editor->GetNodeBoardState()->RemoveDisplayNode(board_node);
+			if (choiceIndex == 1)
+			{
+				// get the node of the hovered
+				BoardNode* board_node = m_targetNode;
+				m_editor->GetNodeBoardState()->UnhookNode(board_node);
+				m_editor->GetNodeBoardState()->RemoveDisplayNode(board_node);
 
-			((NodeRenderer*)board_node->display)->Destroy();
-			delete board_node;
-			// TODO: Unhook the board node in the entire board.
+				((NodeRenderer*)board_node->display)->Destroy();
+				delete board_node;
+			}
+			else if (choiceIndex == 2)
+			{
+				BoardNode* board_node = m_targetNode;
+				board_node->DebugDumpOSF();
+			}
 		}
 	}
 }

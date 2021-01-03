@@ -15,6 +15,7 @@ m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui)
 	auto fileMenu = dusk_interface->Add<dusk::elements::DropdownMenu>(dusk::ElementCreationDescription(topLayout, Rect()));
 	fileMenu->m_contents = "File";
 	fileMenu->Add("New", 'N', true, [](){});
+	fileMenu->Add("Save (Test)", 0, true, [](){});
 	fileMenu->Add("Save", 'S', true, [](){});
 	fileMenu->Add("Save As", 0, true, [](){});
 	fileMenu->Add("Open", 'O', true, [](){});

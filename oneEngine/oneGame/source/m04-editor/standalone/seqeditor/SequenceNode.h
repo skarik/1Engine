@@ -102,6 +102,9 @@ namespace editor {
 		kScriptCharacter,
 		// Text that the character speaks.
 		kScriptText,
+
+		// Node. Usually only used by flow outputs.
+		kSequenceNode,
 	};
 
 	class SequenceViewProperty
@@ -127,6 +130,8 @@ namespace editor {
 								GetFlow ( const int flowOutputIndex );
 
 		EDITOR_API virtual void	SetOutput ( const int outputIndex, SequenceNode* newNodeValue ) =0;
+		EDITOR_API virtual SequenceNode*
+								GetOuptut ( const int outputIndex ) =0;
 
 		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const float newFloatValue ) =0;
 		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const int newIntValue ) =0;

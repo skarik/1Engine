@@ -53,13 +53,17 @@ void m04::editor::sequence::BarebonesSequenceNodeView::SetFlow ( const int flowO
 	ISequenceNodeView::SetFlow(flowOutputIndex, newNodeValue);
 }
 
-m04::editor::SequenceNode*  m04::editor::sequence::BarebonesSequenceNodeView::GetFlow ( const int flowOutputIndex )
+m04::editor::SequenceNode* m04::editor::sequence::BarebonesSequenceNodeView::GetFlow ( const int flowOutputIndex )
 {
 	return ISequenceNodeView::GetFlow(flowOutputIndex);
 }
 
 void m04::editor::sequence::BarebonesSequenceNodeView::SetOutput ( const int outputIndex, SequenceNode* newNodeValue )
 {
+}
+m04::editor::SequenceNode* m04::editor::sequence::BarebonesSequenceNodeView::GetOuptut ( const int outputIndex )
+{
+	return NULL;
 }
 
 void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const int propertyIndex, const float newFloatValue )

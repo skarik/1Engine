@@ -43,8 +43,12 @@ namespace sequence {
 		//	PushEditorData() : Pushes the editor data to the sequence node's keyvalues.
 		EDITOR_API void			PushEditorData ( void );
 
-		// Frees associated SequenceNode and other information.
+		//	FreeData() : Frees associated SequenceNode and other information.
 		EDITOR_API void			FreeData ( void );
+
+	public:
+		//	DebugDumpOSF() : Calls PushEditorData, then dumps out current keyvalues into stdout.
+		EDITOR_API void			DebugDumpOSF ( void );
 	};
 
 	class INodeDisplay
@@ -69,6 +73,10 @@ namespace sequence {
 
 		//	AddDisplayNode( board_node ) : Adds node to display. Allocates and sets up a proper display object.
 		void					AddDisplayNode ( BoardNode* board_node );
+
+		//	UnhookNode( board_node ) : Removes links to this node.
+		// Searches through all the flow, sync, and output of everything in the board.
+		void					UnhookNode ( BoardNode* board_node );
 
 		//	RemoveNode( board_node ) : Removes node from the board.
 		void					RemoveDisplayNode ( BoardNode* board_node );
