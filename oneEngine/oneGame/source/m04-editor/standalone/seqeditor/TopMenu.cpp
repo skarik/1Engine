@@ -6,8 +6,13 @@
 
 #include "engine/state/CGameState.h"
 
-m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui)
+#include "./SequenceEditor.h"
+#include "./NodeBoardState.h"
+#include "./SequenceSerialization.h"
+
+m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui, m04::editor::SequenceEditor* editor)
 	: dusk_interface(ui)
+	, main_editor(editor)
 {
 	auto topPanel = dusk_interface->Add<dusk::elements::Panel>(dusk::ElementCreationDescription(NULL, Rect()));
 	auto topLayout = dusk_interface->Add<dusk::layouts::Horizontal>(dusk::LayoutCreationDescription(topPanel));
@@ -15,7 +20,7 @@ m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui)
 	auto fileMenu = dusk_interface->Add<dusk::elements::DropdownMenu>(dusk::ElementCreationDescription(topLayout, Rect()));
 	fileMenu->m_contents = "File";
 	fileMenu->Add("New", 'N', true, [](){});
-	fileMenu->Add("Save (Test)", 0, true, [](){});
+	fileMenu->Add("Save (Test)", 0, true, [this](){ SaveTest(); });
 	fileMenu->Add("Save", 'S', true, [](){});
 	fileMenu->Add("Save As", 0, true, [](){});
 	fileMenu->Add("Open", 'O', true, [](){});
@@ -44,4 +49,14 @@ m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui)
 
 m04::editor::sequence::TopMenu::~TopMenu ()
 {
+}
+
+void m04::editor::sequence::TopMenu::SaveTest ( void )
+{
+	auto board = main_editor->GetNodeBoardState();
+	if (board != NULL)
+	{
+		m04::editor::sequence::OsfSerializer serializer (".game/testosf.txt");
+		board->Save(&serializer);
+	}
 }

@@ -36,6 +36,13 @@ public:
 
 	RENDER_API bool			SetTitle ( const char* title );
 
+	RENDER_API void			SetWantsHideCursor ( bool hideCursor )
+		{ m_wantHideCursor = hideCursor; }
+	RENDER_API void			SetWantsClipCursor ( bool clipCursor )
+		{ m_wantClipCursor = clipCursor; }
+	RENDER_API void			SetZeroInputOnLoseFocus ( bool zeroInput )
+		{ m_zeroInputOnLoseFocus = zeroInput; }
+
 	// State update
 	// ================================
 
@@ -110,6 +117,10 @@ private:
 	gpu::OutputFormat	m_outputFormat;
 	bool				m_fullscreen;
 	int					m_colordepth;
+	
+	bool				m_wantClipCursor = true;
+	bool				m_wantHideCursor = true;
+	bool				m_zeroInputOnLoseFocus = false;
 
 	// OS:
 
@@ -118,7 +129,7 @@ private:
 	LPSTR		mw_cmdline;
 	int			mw_cmdshow;
 
-	HWND		mw_window;
+	HWND		mw_window = NIL;
 
 	// Gfx:
 
@@ -129,10 +140,10 @@ private:
 	// Windows Message Loop:
 
 	MSG		msg;
-	bool	done;
-	bool	active;
-	bool	focused;
-	bool	hiddencursor;
+	bool	done = false;
+	bool	active = true;
+	bool	focused = true;
+	bool	hiddencursor = false;
 };
 
 #endif//_WIN32

@@ -41,9 +41,8 @@ static int chooseNonzero ( const int variable, const int fallback )
 std::vector<RrWindow*> RrWindow::m_windows;
 
 RrWindow::RrWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
-	: mw_instance(hInstance), mw_previnstance(hPrevInstance), mw_cmdline(lpCmdLine), mw_cmdshow(nCmdShow),
-	mw_window(0),
-	done(false), active(true), focused(true), hiddencursor(false)
+	: mw_instance(hInstance), mw_previnstance(hPrevInstance), mw_cmdline(lpCmdLine), mw_cmdshow(nCmdShow)
+	//,
 {
 	auto gsi = CGameSettings::Active();
 
@@ -459,30 +458,44 @@ void RrWindow::PostRedrawMessage ( void )
 
 void RrWindow::UpdateMouseClipping ( void )
 {
-	if (   ( CInput::SysMouseX() == std::min<long>( std::max<long>( CInput::SysMouseX(), 0 ), m_resolution.x ) )
-		&& ( CInput::SysMouseY() == std::min<long>( std::max<long>( CInput::SysMouseY(), 0 ), m_resolution.y ) ))
+	if (m_wantClipCursor)
 	{
-		hiddencursor = false;
+		// Is mouse inside the window?
+		if (   ( CInput::SysMouseX() == std::min<long>( std::max<long>( CInput::SysMouseX(), 0 ), m_resolution.x ) )
+			&& ( CInput::SysMouseY() == std::min<long>( std::max<long>( CInput::SysMouseY(), 0 ), m_resolution.y ) ))
+		{
+			hiddencursor = false;
 
-		// Get the window's rect
-		RECT rc;
-		GetClientRect( mw_window, &rc );
-		POINT xy, wh;
-		xy.x = rc.left;
-		xy.y = rc.top;
-		wh.x = rc.right;
-		wh.y = rc.bottom;
+			// Get the window's rect
+			RECT rc;
+			GetClientRect( mw_window, &rc );
+			POINT xy, wh;
+			xy.x = rc.left;
+			xy.y = rc.top;
+			wh.x = rc.right;
+			wh.y = rc.bottom;
 		
-		// Get the window rect in screen-space
-		ClientToScreen( mw_window, &xy );
-		ClientToScreen( mw_window, &wh );
-		rc.left = xy.x;
-		rc.top = xy.y;
-		rc.right = wh.x;
-		rc.bottom = wh.y;
+			// Get the window rect in screen-space
+			ClientToScreen( mw_window, &xy );
+			ClientToScreen( mw_window, &wh );
+			rc.left = xy.x;
+			rc.top = xy.y;
+			rc.right = wh.x;
+			rc.bottom = wh.y;
 
-		// Clip cursor against that
-		ClipCursor( &rc );
+			// Clip cursor against that
+			ClipCursor( &rc );
+		}
+	}
+	else
+	{
+		// Is mouse inside the window?
+		if (   ( CInput::SysMouseX() == std::min<long>( std::max<long>( CInput::SysMouseX(), 0 ), m_resolution.x ) )
+			&& ( CInput::SysMouseY() == std::min<long>( std::max<long>( CInput::SysMouseY(), 0 ), m_resolution.y ) ))
+		{
+			// Disable clipping the cursor
+			ClipCursor(NULL);
+		}
 	}
 }
 
@@ -515,19 +528,27 @@ LRESULT CALLBACK MessageUpdate(
 		{
 			rrWindow->active = false;	// Program Is No Longer Active
 			rrWindow->focused = false;	// Program is no longer focused
+			if (rrWindow->m_zeroInputOnLoseFocus)
+			{
+				CInput::Reset();
+			}
 		}
 
-		return 0;								// Return To The Message Loop
+		return 0;	// Return To The Message Loop
 	}
 	case WM_SETFOCUS:
 	{
-		rrWindow->focused = true;	// Program is no longer focused
+		rrWindow->focused = true;	// Program is now focused
 		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_KILLFOCUS:
 	{
 		rrWindow->focused = false;	// Program is no longer focused
+		if (rrWindow->m_zeroInputOnLoseFocus)
+		{
+			CInput::Reset();
+		}
 		return 0;
 	}
 	// Window move
@@ -605,20 +626,30 @@ LRESULT CALLBACK MessageUpdate(
 		{
 			CInput::_sysMouseX( LOWORD(lParam) );
 			CInput::_sysMouseY( HIWORD(lParam) );
+			CInput::_syncRawAndSystemMouse(!rrWindow->m_wantHideCursor);
 		}
 		return 0;
 	}
 	case WM_SETCURSOR:
-	{ //http://stackoverflow.com/questions/5629613/hide-cursor-in-client-rectangle-but-not-on-title-bar
-		WORD ht = LOWORD(lParam);
-		if (HTCLIENT == ht && !rrWindow->hiddencursor)
+	{
+		if (rrWindow->m_wantHideCursor)
 		{
-			rrWindow->hiddencursor = true;
-			ShowCursor(false);
+			// Toggle if mouse is visible depending on where on the window it is at
+			//http://stackoverflow.com/questions/5629613/hide-cursor-in-client-rectangle-but-not-on-title-bar
+			WORD ht = LOWORD(lParam);
+			if (HTCLIENT == ht && !rrWindow->hiddencursor)
+			{
+				rrWindow->hiddencursor = true;
+				ShowCursor(false);
+			}
+			else if (HTCLIENT != ht && rrWindow->hiddencursor) 
+			{
+				rrWindow->hiddencursor = false;
+				ShowCursor(true);
+			}
 		}
-		else if (HTCLIENT != ht && rrWindow->hiddencursor) 
+		else
 		{
-			rrWindow->hiddencursor = false;
 			ShowCursor(true);
 		}
 	}
@@ -637,33 +668,36 @@ LRESULT CALLBACK MessageUpdate(
 
 			RAWINPUT* raw = (RAWINPUT*)lpb;
 
-			if ((raw->header.dwType == RIM_TYPEMOUSE) && ( rrWindow->focused ))
+			if ( rrWindow->focused )
 			{
-				CInput::_addRawMouseX( raw->data.mouse.lLastX );
-				CInput::_addRawMouseY( raw->data.mouse.lLastY );
-			} 
-			else if ((raw->header.dwType == RIM_TYPEKEYBOARD) && ( rrWindow->focused ))
-			{
-				ushort vkey		= raw->data.keyboard.VKey;
-				ushort flags	= raw->data.keyboard.Flags;
-				ushort scankey	= raw->data.keyboard.MakeCode;
+				if (raw->header.dwType == RIM_TYPEMOUSE)
+				{
+					CInput::_addRawMouseX( raw->data.mouse.lLastX );
+					CInput::_addRawMouseY( raw->data.mouse.lLastY );
+				} 
+				else if (raw->header.dwType == RIM_TYPEKEYBOARD)
+				{
+					ushort vkey		= raw->data.keyboard.VKey;
+					ushort flags	= raw->data.keyboard.Flags;
+					ushort scankey	= raw->data.keyboard.MakeCode;
 
-				if ( flags&RI_KEY_BREAK )
-				{
-					CInput::_keyup(_inputtable[vkey], true);
-					CInput::_key(_inputtable[vkey], false);
-					//SendMessage( hWnd, WM_KEYUP, vkey, 0 );
+					if ( flags&RI_KEY_BREAK )
+					{
+						CInput::_keyup(_inputtable[vkey], true);
+						CInput::_key(_inputtable[vkey], false);
+						//SendMessage( hWnd, WM_KEYUP, vkey, 0 );
+					}
+					else // is a make
+					{
+						CInput::_keydown(_inputtable[vkey], true);
+						CInput::_key(_inputtable[vkey], true);
+						//SendMessage( hWnd, WM_KEYDOWN, vkey, 0 );
+					}
 				}
-				else // is a make
+				else
 				{
-					CInput::_keydown(_inputtable[vkey], true);
-					CInput::_key(_inputtable[vkey], true);
-					//SendMessage( hWnd, WM_KEYDOWN, vkey, 0 );
+					//printf("Unknown input");
 				}
-			}
-			else if ( rrWindow->focused )
-			{
-				//printf("Unknown input");
 			}
 			return DefWindowProc(hWnd,uMsg,wParam,lParam);
 		}

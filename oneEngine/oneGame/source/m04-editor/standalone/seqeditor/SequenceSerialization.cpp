@@ -1,7 +1,5 @@
 #include "SequenceSerialization.h"
 
-//OSFWriter
-
 m04::editor::sequence::OsfSerializer::OsfSerializer ( const char* filename )
 {
 	osf_fileHandle = fopen(filename, "wb");
@@ -24,29 +22,13 @@ bool m04::editor::sequence::OsfSerializer::IsValid ( void )
 
 void m04::editor::sequence::OsfSerializer::SerializeFileBegin ( void ) 
 {
-	// Nothing.
+	// Write the type of file at the top
+	fputs("//!/osf/seq/2\n", osf_fileHandle);
 }
+
 void m04::editor::sequence::OsfSerializer::SerializeListBegin ( void )
 {
 	// Nothing.
-}
-void m04::editor::sequence::OsfSerializer::SerializeStartpoint ( const m04::editor::SequenceNode* node )
-{
-	io::OSFEntryInfo startpointEntry;
-	startpointEntry.type = io::kOSFEntryTypeObject;
-	startpointEntry.name = node->view->classname;
-	osf_writer->WriteObjectBegin(startpointEntry);
-	{
-		io::OSFEntryInfo guidEntry = {io::kOSFEntryTypeNormal, "goto", node->next->data["guid"]->As<osf::StringValue>()->value.c_str()};
-		osf_writer->WriteEntry(guidEntry);
-	}
-	osf_writer->WriteObjectEnd();
-}
-void m04::editor::sequence::OsfSerializer::SerializeJumptarget ( const m04::editor::SequenceNode* node )
-{
-	// Create a jump target label
-	io::OSFEntryInfo marker = {io::kOSFEntryTypeMarker, node->next->data["guid"]->As<osf::StringValue>()->value.c_str()};
-	osf_writer->WriteEntry(marker);
 }
 
 static void WriteObjectEntry (io::OSFWriter* osf_writer, const osf::ObjectValue* object)
@@ -96,6 +78,29 @@ static void WriteObjectEntry (io::OSFWriter* osf_writer, const osf::ObjectValue*
 			osf_writer->WriteObjectEnd();
 		}
 	}
+}
+
+void m04::editor::sequence::OsfSerializer::SerializeStartpoint ( const m04::editor::SequenceNode* node )
+{
+	io::OSFEntryInfo startpointEntry;
+	startpointEntry.type = io::kOSFEntryTypeObject;
+	startpointEntry.name = node->view->classname;
+	osf_writer->WriteObjectBegin(startpointEntry);
+	{
+		io::OSFEntryInfo guidEntry = {io::kOSFEntryTypeNormal, "goto", node->next->data["guid"]->As<osf::StringValue>()->value.c_str()};
+		osf_writer->WriteEntry(guidEntry);
+
+		// Write the GUID and the Editor information.
+		WriteObjectEntry(osf_writer, &node->data); // TODO: Limit this to the editor information.
+	}
+	osf_writer->WriteObjectEnd();
+}
+
+void m04::editor::sequence::OsfSerializer::SerializeJumptarget ( const m04::editor::SequenceNode* node )
+{
+	// Create a jump target label
+	io::OSFEntryInfo marker = {io::kOSFEntryTypeMarker, node->data["guid"]->As<osf::StringValue>()->value.c_str()};
+	osf_writer->WriteEntry(marker);
 }
 
 void m04::editor::sequence::OsfSerializer::SerializeNode ( const m04::editor::SequenceNode* node )

@@ -82,6 +82,8 @@ private:
 
 	int prevMouseW;
 
+	bool syncRawAndSystemMouse = false;
+
 public:
 	static inline void		_sysMouseX ( const int mousex );
 	static inline void		_sysMouseY ( const int mousey );
@@ -92,6 +94,8 @@ public:
 	static inline void		_mouse ( const int mousebutton_id, bool state );
 	static inline void		_mousedown ( const int mousebutton_id, bool state );
 	static inline void		_mouseup ( const int mousebutton_id, bool state );
+
+	static inline void		_syncRawAndSystemMouse ( const bool sync );
 
 	CORE_API static float	MouseX ( void );
 	CORE_API static float	MouseY ( void );
@@ -161,6 +165,10 @@ inline void		CInput::_mousedown ( const int mousebutton_id, bool state ) {
 }
 inline void		CInput::_mouseup ( const int mousebutton_id, bool state ) {
 	Active->mouseup[mousebutton_id] = state;
+}
+
+inline void		CInput::_syncRawAndSystemMouse ( const bool sync ) {
+	Active->syncRawAndSystemMouse = sync;
 }
 
 class CKeys

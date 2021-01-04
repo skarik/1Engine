@@ -5,18 +5,30 @@
 
 namespace m04 {
 namespace editor {
+	class SequenceEditor;
+}}
+
+namespace m04 {
+namespace editor {
 namespace sequence {
 
 	class TopMenu
 	{
 	public:
-		explicit				TopMenu (dusk::UserInterface* ui);
+		explicit				TopMenu (dusk::UserInterface* ui, m04::editor::SequenceEditor* editor);
 								~TopMenu ( void );
 
 	private:
 
 		dusk::UserInterface*
 							dusk_interface;
+
+		m04::editor::SequenceEditor*
+							main_editor;
+
+	private:
+
+		void					SaveTest ( void );
 
 	};
 

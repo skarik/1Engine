@@ -113,6 +113,13 @@ void CInput::_Update ( void )
 		currMouseW = 0;
 		prevMouseW = 0;
 	}
+
+	// If we need to sync up the system mouse tho, we will need to override some values
+	if (syncRawAndSystemMouse)
+	{
+		mouseX = (float)sysMouseX;
+		mouseY = (float)sysMouseY;
+	}
 }
 
 void CInput::SetMouseSensitivity ( const Real sensitivity )

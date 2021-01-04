@@ -5,6 +5,7 @@
 #include "core/input/CInput.h"
 
 #include "renderer/camera/RrCamera.h"
+#include "renderer/windowing/RrWindow.h"
 
 #include "m04/eventide/UserInterface.h"
 #include "m04/eventide_test/CubicLabel.h"
@@ -57,23 +58,8 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	dusk_interface = new dusk::UserInterface();
 	user_interface = new ui::eventide::UserInterface(dusk_interface, NULL);
 
-	top_menu = new m04::editor::sequence::TopMenu(dusk_interface);
+	top_menu = new m04::editor::sequence::TopMenu(dusk_interface, this);
 	mouse_gizmo = new m04::editor::sequence::MouseGizmo(user_interface);
-
-	/*test_element = new ETCubicLabel();
-	test_element->SetBBox( core::math::BoundingBox( Matrix4x4(), Vector3f(100, 100, 0), Vector3f(64, 64, 4) ) );
-
-	auto button = new ui::eventide::elements::Button();
-	button->SetBBox( core::math::BoundingBox( Rotator(), Vector3f(-50, -10, 0), Vector3f(64, 32, 4) ) );
-	button->m_contents = "Press me.";
-
-	auto list = new ui::eventide::elements::ListMenu();
-	list->SetBBox( core::math::BoundingBox( Rotator(), Vector3f(-100, 200, 0), Vector3f() ) );
-	list->SetListChoices({"Option 1", "Option 2", "Eggs", "Murder", "Milk"});*/
-
-	/*auto draggable = new DraggableButtonTest();
-	draggable->SetBBox( core::math::BoundingBox( Rotator(), Vector3f(120, -10, 0), Vector3f(64, 32, 4) ) );
-	draggable->m_contents = "Drag me.";*/
 
 	RrCamera* camera = new RrCamera();
 	camera->SetActive();
@@ -84,6 +70,10 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	camera->zFar = 4000;
 	camera->fieldOfView = 40;
 
+	// Update windowing options
+	RrWindow::Main()->SetWantsClipCursor(false);
+	RrWindow::Main()->SetWantsHideCursor(false);
+	RrWindow::Main()->SetZeroInputOnLoseFocus(true);
 
 	// Create board state
 	board_state = new m04::editor::sequence::NodeBoardState(this);
@@ -91,8 +81,6 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 m04::editor::SequenceEditor::~SequenceEditor ( void )
 {
 	delete_safe(board_state);
-
-
 
 	if (right_click_menu != NULL)
 	{

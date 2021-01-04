@@ -152,6 +152,20 @@ namespace osf
 			{ return operator[](key_name.c_str()); }
 
 		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.
+		/*OSF_API*/ const BaseValue*
+								operator[] (const char* key_name) const;
+
+		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.
+		/*OSF_API*/ const BaseValue*
+								operator[] (const arstring256& key_name) const
+			{ return operator[](key_name.c_str()); }
+
+		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.
+		/*OSF_API*/ const BaseValue*
+								operator[] (const std::string& key_name) const
+			{ return operator[](key_name.c_str()); }
+
+		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.
 		/*OSF_API*/ KeyValue*	GetKeyValue (const char* key_name);
 
 		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.

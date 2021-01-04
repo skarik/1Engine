@@ -62,6 +62,18 @@ osf::BaseValue* osf::ObjectValue::operator[] (const char* key_name)
 	return nullptr;
 }
 
+const osf::BaseValue* osf::ObjectValue::operator[] (const char* key_name) const
+{
+	for (KeyValue* kv : values)
+	{
+		if (kv->key.compare(key_name))
+		{
+			return kv->value;
+		}
+	}
+	return nullptr;
+}
+
 //	operator[](string) : Looks up the given key-value. Returns NULL if not found.
 osf::KeyValue* osf::ObjectValue::GetKeyValue (const char* key_name)
 {
