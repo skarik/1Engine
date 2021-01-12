@@ -332,7 +332,7 @@ void RrWindow::DestroyScreen ( void )
 	if (m_fullscreen)
 	{	// If So Switch Back To The Desktop and show the pointer
 		ChangeDisplaySettings(NULL, 0);
-		ShowCursor(TRUE);
+		//ShowCursor(TRUE);
 	}
 
 	// Destroy the window
@@ -638,20 +638,30 @@ LRESULT CALLBACK MessageUpdate(
 			// Toggle if mouse is visible depending on where on the window it is at
 			//http://stackoverflow.com/questions/5629613/hide-cursor-in-client-rectangle-but-not-on-title-bar
 			WORD ht = LOWORD(lParam);
-			if (HTCLIENT == ht && !rrWindow->hiddencursor)
+			if (ht == HTCLIENT)
 			{
-				rrWindow->hiddencursor = true;
-				ShowCursor(false);
+				if (!rrWindow->hiddencursor)
+				{
+					rrWindow->hiddencursor = true;
+					while (ShowCursor(false) > 0) {};
+				}
 			}
-			else if (HTCLIENT != ht && rrWindow->hiddencursor) 
+			else if (ht != HTCLIENT) 
 			{
-				rrWindow->hiddencursor = false;
-				ShowCursor(true);
+				if (rrWindow->hiddencursor)
+				{
+					rrWindow->hiddencursor = false;
+					while (ShowCursor(true) < 1) {};
+				}
 			}
 		}
 		else
 		{
-			ShowCursor(true);
+			if (rrWindow->hiddencursor)
+			{
+				rrWindow->hiddencursor = false;
+				while (ShowCursor(true) < 1) {};
+			}
 		}
 	}
 	break;
