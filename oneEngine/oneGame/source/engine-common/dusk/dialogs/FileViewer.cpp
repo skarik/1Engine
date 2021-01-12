@@ -6,6 +6,8 @@
 
 void dusk::dialogs::FileViewer::Update ( const UIStepInfo* stepinfo )
 {
+	m_localRect = Rect(100, 100, 500, 300);
+
 	DialogElement::Update(stepinfo);
 }
 void dusk::dialogs::FileViewer::Render ( UIRendererContext* uir )

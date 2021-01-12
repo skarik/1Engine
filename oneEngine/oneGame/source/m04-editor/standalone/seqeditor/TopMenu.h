@@ -30,6 +30,10 @@ namespace sequence {
 
 		void					SaveTest ( void );
 
+		void					BeginSaveFile ( void );
+		dusk::DialogElement*
+							savefileDialog = NULL;
+
 	};
 
 }}}

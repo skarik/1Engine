@@ -82,6 +82,7 @@ namespace dusk
 			m_elements.push_back(item); // New element, tree needs regen.
 			m_treeNeedsGeneration = true; 
 			ARCORE_ASSERT(AddInitializeCheckValid(item));
+			item->PostCreate();
 			return item;
 		}
 
@@ -96,6 +97,7 @@ namespace dusk
 			m_elements.push_back(item); // New element, tree needs regen.
 			m_treeNeedsGeneration = true; 
 			ARCORE_ASSERT(AddInitializeCheckValid(item));
+			item->PostCreate();
 			return item;
 		}
 
@@ -150,6 +152,9 @@ namespace dusk
 		uint32_t			m_currentDialogue;
 		uint32_t			m_currentMouseover;
 		uint32_t			m_currentFocus;
+
+		std::vector<std::vector<bool>>
+							m_dialogueActivationStack;
 
 		// List of rects that must be updated & re-rendered.
 		std::vector<Rect>	m_forcedUpdateAreas;

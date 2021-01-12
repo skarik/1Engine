@@ -562,6 +562,7 @@ LRESULT CALLBACK MessageUpdate(
 			ScreenToClient( hWnd, &pt );
 			CInput::_sysMouseX( pt.x );
 			CInput::_sysMouseY( pt.y );
+			CInput::_syncRawAndSystemMouse(rrWindow->m_wantSystemCursor);
 			rrWindow->UpdateMouseClipping();
 		}
 		return 0;
@@ -626,7 +627,7 @@ LRESULT CALLBACK MessageUpdate(
 		{
 			CInput::_sysMouseX( LOWORD(lParam) );
 			CInput::_sysMouseY( HIWORD(lParam) );
-			CInput::_syncRawAndSystemMouse(!rrWindow->m_wantHideCursor);
+			CInput::_syncRawAndSystemMouse(rrWindow->m_wantSystemCursor);
 		}
 		return 0;
 	}

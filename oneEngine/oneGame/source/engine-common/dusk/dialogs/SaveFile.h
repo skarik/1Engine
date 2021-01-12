@@ -16,6 +16,10 @@ namespace dialogs {
 			: dusk::dialogs::FileViewer()
 			{}
 
+		ENGCOM_API virtual		~SaveFile();
+
+		//	PostCreate() : Called after creation.
+		void					PostCreate ( void ) override;
 		//	Update() : Called every frame by the UI system.
 		void					Update ( const UIStepInfo* stepinfo ) override;
 		//	Render() : Renders the element.
@@ -30,6 +34,10 @@ namespace dialogs {
 		// Filetype filter. When empty, allows all files
 		std::vector<System::sFileDialogueEntry>
 							m_filetypes;
+
+	private:
+		std::vector<dusk::Element*>
+							m_elements;
 	};
 
 }}

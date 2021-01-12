@@ -16,6 +16,20 @@ namespace layouts {
 		//	LayoutChildren() : Called every frame by the UI system.
 		void					LayoutChildren ( std::vector<Element*>& elements ) override
 		{
+			if (m_parent != NULL)
+			{
+				if (m_parent->GetElementType() == ElementType::kLayout)
+				{
+					m_localRect.size = m_parent->m_localRect.size;
+					m_absoluteRect.size = m_parent->m_absoluteRect.size;
+				}
+				else
+				{
+					m_localRect = m_parent->m_localRect;
+					m_absoluteRect = m_parent->m_absoluteRect;
+				}
+			}
+
 			Vector2f t_currentPosition = m_absoluteRect.pos + m_margin;
 			for (Element* child : elements)
 			{

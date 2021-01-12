@@ -38,6 +38,8 @@ public:
 
 	RENDER_API void			SetWantsHideCursor ( bool hideCursor )
 		{ m_wantHideCursor = hideCursor; }
+	RENDER_API void			SetWantsSystemCursor ( bool useSystemCursor )
+		{ m_wantSystemCursor = useSystemCursor; }
 	RENDER_API void			SetWantsClipCursor ( bool clipCursor )
 		{ m_wantClipCursor = clipCursor; }
 	RENDER_API void			SetZeroInputOnLoseFocus ( bool zeroInput )
@@ -119,6 +121,7 @@ private:
 	int					m_colordepth;
 	
 	bool				m_wantClipCursor = true;
+	bool				m_wantSystemCursor = false; // If system mouse position should be used instead of direct hardware stuff
 	bool				m_wantHideCursor = true;
 	bool				m_zeroInputOnLoseFocus = false;
 

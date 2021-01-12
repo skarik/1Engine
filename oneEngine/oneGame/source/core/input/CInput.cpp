@@ -49,17 +49,14 @@ void CInput::Free ( void )
 
 void CInput::PreUpdate ( void )
 {
-	Active->rawDeltaMouseX = 0;
-	Active->rawDeltaMouseY = 0;
+	Active->_PreUpdate();
 }
 
-// Static function declare
-void CInput::Update ( void )
+void CInput::_PreUpdate ( void )
 {
-	Active->_Update();
-}
-void CInput::_Update ( void )
-{
+	rawDeltaMouseX = 0;
+	rawDeltaMouseY = 0;
+
 	for ( int i = 0; i < 256; i += 1 )
 	{
 		if ( keydown[i] )
@@ -83,7 +80,15 @@ void CInput::_Update ( void )
 			mouseup[i] = false;
 		}
 	}
+}
 
+// Static function declare
+void CInput::Update ( void )
+{
+	Active->_Update();
+}
+void CInput::_Update ( void )
+{
 	{
 		prevRawDeltaMouseX = rawDeltaMouseX;
 		deltaMouseX = rawDeltaMouseX * CGameSettings::Active()->f_cl_MouseSensitivity;

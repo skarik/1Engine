@@ -285,18 +285,10 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 			Element* element = m_interface->m_elements[elementNode->index];
 			ARCORE_ASSERT(element->m_index == elementNode->index);
 
-			if (m_interface->m_currentDialogue != elementNode->index)
+			// Add them to the rendering list
+			if (element->m_elementType == ElementType::kControl)
 			{
-				// Add them to the rendering list
-				if (element->m_elementType == ElementType::kControl)
-				{
-					renderList->push_back(element);
-				}
-			}
-			else
-			{
-				// Add this to the delayed render list
-				delayedUpdateList.push_back(elementNode);
+				renderList->push_back(element);
 			}
 		}
 

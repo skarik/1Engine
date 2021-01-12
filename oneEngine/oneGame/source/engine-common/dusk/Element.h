@@ -44,6 +44,11 @@ namespace dusk
 		ENGCOM_API  virtual		~Element ( void );
 
 	public:
+		//	PostCreate() : Called after the element has been created and added to the UI.
+		// Default behavior is nothing.
+		ENGCOM_API virtual void PostCreate ( void )
+			{}
+
 		//	Update() : Called every frame by the UI system.
 		// Default behavior is to update value of m_isMouseIn.
 		ENGCOM_API virtual void	Update ( const UIStepInfo* stepinfo );
@@ -61,6 +66,10 @@ namespace dusk
 		//	IsDialogElement() : Is this a dialog? Used for type-safe instantiation of dialogs.
 		static constexpr bool	IsDialogElement ( void )
 			{ return false; }
+
+		ENGCOM_API const ElementType
+								GetElementType ( void ) const
+			{ return m_elementType; }
 
 	public:
 		// Set to true when needs deletion by system
@@ -119,19 +128,19 @@ namespace dusk
 	class DialogElement : public Element
 	{
 	public:
-		// Constructor for defaul val
+		// Constructor for default val
 		explicit				DialogElement ( void )
 			: Element(ElementType::kControl)
-			{}
+		{
+			m_visible = false;
+		}
 
 		//	Show() : Shows the dialog.
 		// Must be called in order to bring this dialog to the forefront
-		virtual void			Show ( void )
-			{}
+		ENGCOM_API void			Show ( void );
 
 		//	Hide() : Hides the dialog.
-		virtual void			Hide ( void )
-			{}
+		ENGCOM_API void			Hide ( void );
 
 		//	IsDialogElement() : Is this a dialog? Used for type-safe instantiation of dialogs.
 		static constexpr bool	IsDialogElement ( void )
@@ -145,7 +154,7 @@ namespace dusk
 	class MetaElement : public Element
 	{
 	public:
-		// Constructor for defaul val
+		// Constructor for default val
 		explicit				MetaElement ( void )
 			: Element(ElementType::kMeta)
 			{}

@@ -33,6 +33,7 @@ private:
 	bool	keydown[256];
 	bool	keyup[256];
 
+	void	_PreUpdate ( void );
 	void	_Update ( void );
 public:
 	static inline void		_key ( unsigned char const keycode_ascii, bool state );
@@ -143,9 +144,17 @@ inline void		CInput::_keyup ( unsigned char const keycode_ascii, bool state ) {
 
 inline void		CInput::_sysMouseX ( const int mousex ) {
 	Active->sysMouseX = mousex;
+	if (Active->syncRawAndSystemMouse)
+	{
+		Active->mouseX = (float)mousex;
+	}
 }
 inline void		CInput::_sysMouseY ( const int mousey ) {
 	Active->sysMouseY = mousey;
+	if (Active->syncRawAndSystemMouse)
+	{
+		Active->mouseY = (float)mousey;
+	}
 }
 inline void		CInput::_addRawMouseX ( const int deltamousex ) {
 	Active->rawDeltaMouseX += deltamousex;

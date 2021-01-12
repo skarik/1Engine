@@ -131,13 +131,13 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 				RrScreenshot ss;
 				ss.SaveTimestampedToPNG();
 			}
+			// Grab inputs
+			Input::Update();
 			// Update game
 			TimeProfiler.BeginTimeProfile( "MN_gamestate" );
 			aGameState.Update();
 			aGameState.LateUpdate();
 			TimeProfiler.EndTimeProfile( "MN_gamestate" );
-			// Grab inputs
-			Input::Update();
 			// Update audio
 			TimeProfiler.BeginTimeProfile( "MN_audio" );
 			aMaster.Update(Time::deltaTime);
