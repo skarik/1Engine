@@ -82,6 +82,10 @@ dusk::UserInterface::~UserInterface ( void )
 	// Remove the renderer last
 	delete m_renderer;
 	m_renderer = NULL;
+
+	// Clear up the tree
+	ClearElementTree();
+	delete m_elementTreeBase;
 }
 
 //	Update() : Called by engine.
@@ -307,7 +311,7 @@ void dusk::UserInterface::UpdateFocus ( void )
 		// End tab cycling
 	}
 	// If in dialogue mode...
-	else
+	/*else
 	{
 		// Fix the focus
 		m_currentFocus = m_currentDialogue;
@@ -328,7 +332,7 @@ void dusk::UserInterface::UpdateFocus ( void )
 			m_elements[m_currentFocus]->m_isFocused = true;
 			m_elements[m_currentFocus]->m_isEnabled = true;
 		}
-	}
+	}*/
 }
 
 void dusk::UserInterface::ClearElementTree ( void )
@@ -628,14 +632,46 @@ void dusk::UserInterface::EnterDialogue ( Element* element )
 	// Set current dialog state
 	m_currentDialogue = element->m_index;
 
-	// Immediately reset all focuses
-	for ( unsigned int i = 0; i < m_elements.size(); ++i )
+	// Immediately disable all focuses on elements that are not part of the dialogue
+	/*for ( unsigned int i = 0; i < m_elements.size(); ++i )
 	{
 		if ( m_elements[i] != NULL )
 		{
 			m_elements[i]->m_isFocused = false;
 			m_elements[i]->m_isMouseIn = false;
 			m_elements[i]->m_isEnabled = false;
+		}
+	}*/
+	GenerateElementTree();
+	{
+		std::list<ElementNode*> updateList;
+		updateList.push_front(m_elementTreeBase);
+
+		while (!updateList.empty())
+		{
+			ElementNode* elementNode = updateList.front();
+			updateList.pop_front();
+
+			if (elementNode->index == m_currentDialogue)
+			{
+				continue; // Skip the current dialog and its children entirely.
+			}
+
+			if (elementNode->index != kElementHandleInvalid)
+			{
+				Element* element = m_elements[elementNode->index];
+				ARCORE_ASSERT(element->m_index == elementNode->index);
+
+				element->m_isFocused = false;
+				element->m_isMouseIn = false;
+				element->m_isEnabled = false;
+			}
+
+			// Disable children of this item as well
+			for (ElementNode* child : elementNode->children)
+			{
+				updateList.push_front(child);
+			}
 		}
 	}
 }

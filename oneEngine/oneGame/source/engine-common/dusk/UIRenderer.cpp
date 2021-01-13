@@ -459,25 +459,43 @@ void dusk::UIRendererElementColors::setSize ( const size_t size )
 void dusk::UIRendererElementColors::update ( void )
 {
 	// Update all the blends
-	for (UIRendererBlendedColor& element : m_elementBackgroundColors)
+	for (auto& elementColors : m_elementBackgroundColors)
 	{
-		element.update();
+		for (UIRendererBlendedColor& element : elementColors)
+		{
+			element.update();
+		}
 	}
 }
 
-void dusk::UIRendererElementColors::setBackgroundColor ( Element* element, const Color& color )
+void dusk::UIRendererElementColors::setBackgroundColor ( Element* element, size_t subelement, const Color& color )
 {
-	UIRendererBlendedColor& blend = m_elementBackgroundColors[element->m_index];
+	auto& elementColors = m_elementBackgroundColors[element->m_index];
+	if (elementColors.size() <= subelement)
+	{
+		elementColors.resize(subelement + 1);
+	}
+	UIRendererBlendedColor& blend = elementColors[subelement];
 	blend.setColor(color, 0.05F);
 }
 
-void dusk::UIRendererElementColors::setBackgroundClickPulse ( Element* element, const Color& click_pulse )
+void dusk::UIRendererElementColors::setBackgroundClickPulse ( Element* element, size_t subelement, const Color& click_pulse )
 {
-	UIRendererBlendedColor& blend = m_elementBackgroundColors[element->m_index];
+	auto& elementColors = m_elementBackgroundColors[element->m_index];
+	if (elementColors.size() <= subelement)
+	{
+		elementColors.resize(subelement + 1);
+	}
+	UIRendererBlendedColor& blend = elementColors[subelement];
 	blend.setPulse(click_pulse);
 }
 
-Color dusk::UIRendererElementColors::getBackgroundColor ( Element* element )
+Color dusk::UIRendererElementColors::getBackgroundColor ( Element* element, size_t subelement )
 {
-	return m_elementBackgroundColors[element->m_index].getCurrentColor();
+	auto& elementColors = m_elementBackgroundColors[element->m_index];
+	if (elementColors.size() <= subelement)
+	{
+		elementColors.resize(subelement + 1);
+	}
+	return elementColors[subelement].getCurrentColor();
 }

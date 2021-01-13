@@ -79,7 +79,7 @@ void dusk::UIRendererContext::generateColor( Element* source )
 		m_dsColorBackground = l_bgHoveredColor;
 		if (source->m_isActivated)
 		{	// Half-bump for activation
-			m_colors->setBackgroundClickPulse(source, m_dsColorBackground + kBackgroundBump * 0.5F);
+			m_colors->setBackgroundClickPulse(source, m_colorSubelement, m_dsColorBackground + kBackgroundBump * 0.5F);
 		}
 		m_dsDrawBackground = true;
 	}
@@ -91,7 +91,7 @@ void dusk::UIRendererContext::generateColor( Element* source )
 		m_dsColorBackground = l_bgActiveColor;
 		if (source->m_isActivated)
 		{	// Half-bump for activation
-			m_colors->setBackgroundClickPulse(source, m_dsColorBackground + kBackgroundBump * 0.5F);
+			m_colors->setBackgroundClickPulse(source, m_colorSubelement, m_dsColorBackground + kBackgroundBump * 0.5F);
 		}
 		m_dsDrawBackground = true;
 	}
@@ -100,8 +100,8 @@ void dusk::UIRendererContext::generateColor( Element* source )
 	// Disable animations except for some key colors
 	if (m_colorType != kColorStyleShapeAccented)
 	{
-		m_colors->setBackgroundColor(source, m_dsColorBackground);
-		m_dsColorBackground = m_colors->getBackgroundColor(source);
+		m_colors->setBackgroundColor(source, m_colorSubelement, m_dsColorBackground);
+		m_dsColorBackground = m_colors->getBackgroundColor(source, m_colorSubelement);
 	}
 
 	// Update outlines

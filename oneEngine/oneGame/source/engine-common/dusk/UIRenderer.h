@@ -60,14 +60,14 @@ namespace dusk
 		void					setSize ( const size_t size );
 		void					update ( void );
 
-		void					setBackgroundColor ( Element* element, const Color& color );
-		void					setBackgroundClickPulse ( Element* element, const Color& click_pulse );
+		void					setBackgroundColor ( Element* element, size_t subelement, const Color& color );
+		void					setBackgroundClickPulse ( Element* element, size_t subelement, const Color& click_pulse );
 
-		Color					getBackgroundColor ( Element* element );
+		Color					getBackgroundColor ( Element* element, size_t subelement );
 
 	private:
 
-		std::vector<UIRendererBlendedColor>
+		std::vector<std::vector<UIRendererBlendedColor>>
 							m_elementBackgroundColors;
 	};
 

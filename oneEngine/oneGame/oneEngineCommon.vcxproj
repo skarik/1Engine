@@ -156,6 +156,7 @@
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\Slider.h" />
     <ClInclude Include="source\engine-common\dusk\controls\TextField.h" />
+    <ClInclude Include="source\engine-common\dusk\controls\TextListView.h" />
     <ClInclude Include="source\engine-common\dusk\dialogs\FileViewer.h" />
     <ClInclude Include="source\engine-common\dusk\dialogs\LoadFile.h" />
     <ClInclude Include="source\engine-common\dusk\dialogs\SaveFile.h" />
@@ -168,7 +169,9 @@
     <ClInclude Include="source\engine-common\dusk\Dusk.h" />
     <ClInclude Include="source\engine-common\dusk\Element.h" />
     <ClInclude Include="source\engine-common\dusk\Handle.h" />
+    <ClInclude Include="source\engine-common\dusk\layouts\Grid.h" />
     <ClInclude Include="source\engine-common\dusk\layouts\Horizontal.h" />
+    <ClInclude Include="source\engine-common\dusk\layouts\LayoutCommon.h" />
     <ClInclude Include="source\engine-common\dusk\layouts\Vertical.h" />
     <ClInclude Include="source\engine-common\dusk\UI.h" />
     <ClInclude Include="source\engine-common\dusk\UIRenderer.h" />
@@ -347,6 +350,7 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\Slider.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\TextField.cpp" />
+    <ClCompile Include="source\engine-common\dusk\controls\TextListView.cpp" />
     <ClCompile Include="source\engine-common\dusk\dialogs\FileViewer.cpp" />
     <ClCompile Include="source\engine-common\dusk\dialogs\LoadFile.cpp" />
     <ClCompile Include="source\engine-common\dusk\dialogs\SaveFile.cpp" />

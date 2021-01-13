@@ -66,7 +66,7 @@ void m04::editor::sequence::TopMenu::BeginSaveFile ( void )
 {
 	if (savefileDialog == NULL)
 	{
-		savefileDialog = dusk_interface->AddDialog<dusk::dialogs::SaveFile>(dusk::ElementCreationDescription(NULL, Rect()));
+		savefileDialog = dusk_interface->AddDialog<dusk::dialogs::SaveFile>(dusk::DialogCreationDescription());
 	}
 
 	savefileDialog->Show();

@@ -63,6 +63,11 @@ namespace dusk
 		T*						as (void)
 			{ return static_cast<T*>(this); }
 
+		//	asSafeAndSlow<Element>() : Shorthand element typecast
+		template <typename T>
+		T*						asSafeAndSlow (void)
+			{ return dynamic_cast<T*>(this); }
+
 		//	IsDialogElement() : Is this a dialog? Used for type-safe instantiation of dialogs.
 		static constexpr bool	IsDialogElement ( void )
 			{ return false; }

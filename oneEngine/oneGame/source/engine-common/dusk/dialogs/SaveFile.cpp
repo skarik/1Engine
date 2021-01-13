@@ -6,31 +6,38 @@
 
 #include "engine-common/dusk/layouts/Horizontal.h"
 #include "engine-common/dusk/layouts/Vertical.h"
+#include "engine-common/dusk/layouts/Grid.h"
 #include "engine-common/dusk/controls/Label.h"
 #include "engine-common/dusk/controls/Button.h"
 #include "engine-common/dusk/controls/TextField.h"
+#include "engine-common/dusk/controls/TextListView.h"
 
 void dusk::dialogs::SaveFile::PostCreate ( void )
 {
-	auto fullLayout = m_interface->Add<dusk::layouts::Vertical>(dusk::LayoutCreationDescription(this));
+	auto fullLayout = m_interface->Add<dusk::layouts::StretchGridRows>(dusk::LayoutCreationDescription(this));
 	m_elements.push_back(fullLayout);
 
-	auto topLayout = m_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(fullLayout));
-	topLayout->m_spaceItems = false;
+	auto topLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 40)));
+	//topLayout->m_justifyScaleStyle = dusk::layouts::JustifyScaleStyle::kInline;
+	topLayout->m_heightLocked = true;
 	m_elements.push_back(topLayout);
 
-	auto middleLayout = m_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(fullLayout));
-	middleLayout->m_spaceItems = true;
+	auto middleLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 350)));
+	//middleLayout->m_justifyScaleStyle = dusk::layouts::JustifyScaleStyle::kStretch;
+	//middleLayout->m_fitItemHeight = true;
+	middleLayout->m_heightLocked = false;
 	m_elements.push_back(middleLayout);
 
-	auto bottomLayout = m_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(fullLayout));
-	bottomLayout->m_spaceItems = false;
+	auto bottomLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 40)));
+	//bottomLayout->m_justifyScaleStyle = dusk::layouts::JustifyScaleStyle::kInline;
 	bottomLayout->m_justify = dusk::layouts::AlignStyleHorizontal::kRight;
+	bottomLayout->m_heightLocked = true;
 	m_elements.push_back(bottomLayout);
 
-	auto bottomestLayout = m_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(fullLayout));
-	bottomestLayout->m_spaceItems = false;
+	auto bottomestLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 40)));
+	//bottomestLayout->m_justifyScaleStyle = dusk::layouts::JustifyScaleStyle::kInline;
 	bottomestLayout->m_justify = dusk::layouts::AlignStyleHorizontal::kRight;
+	bottomestLayout->m_heightLocked = true;
 	m_elements.push_back(bottomestLayout);
 
 	// Create top row items
@@ -50,12 +57,20 @@ void dusk::dialogs::SaveFile::PostCreate ( void )
 
 	// Create the file browser area
 	{
-		auto folderListview = m_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(middleLayout, Rect(0, 0, 100, 350)));
+		auto folderListview = m_interface->Add<dusk::elements::TextListView>(dusk::ElementCreationDescription(middleLayout, Rect(0, 0, 100, 350)));
 		folderListview->m_contents = "FOLDERS";
+		folderListview->AddMenuEntry("test");
+		folderListview->AddMenuEntry("entries");
+		folderListview->AddMenuEntry("in the magical");
+		folderListview->AddMenuEntry("LISTVIEW");
 		m_elements.push_back(folderListview);
 
-		auto fileListview = m_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(middleLayout, Rect(0, 0, 300, 350)));
+		auto fileListview = m_interface->Add<dusk::elements::TextListView>(dusk::ElementCreationDescription(middleLayout, Rect(0, 0, 300, 350)));
 		fileListview->m_contents = "FOLDERS";
+		fileListview->AddMenuEntry("test");
+		fileListview->AddMenuEntry("entries");
+		fileListview->AddMenuEntry("in the magical");
+		fileListview->AddMenuEntry("LISTVIEW");
 		m_elements.push_back(fileListview);
 	}
 

@@ -39,6 +39,10 @@ namespace dusk
 		LayoutCreationDescription(Element* in_parent)
 			: ElementCreationDescription(in_parent, Rect())
 			{}
+
+		LayoutCreationDescription(Element* in_parent, Vector2f in_size)
+			: ElementCreationDescription(in_parent, Rect(Vector2f(), in_size))
+			{}
 	};
 
 	struct DialogCreationDescription : public ElementCreationDescription
