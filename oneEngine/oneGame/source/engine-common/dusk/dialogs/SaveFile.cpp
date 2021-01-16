@@ -1,5 +1,8 @@
 #include "SaveFile.h"
 
+#include "core-ext/std/filesystem.h"
+#include "core-ext/system/io/Volumes.h"
+
 #include "core/input/CInput.h"
 #include "engine-common/dusk/Dusk.h"
 #include "engine-common/dusk/UIRenderer.h"
@@ -18,24 +21,19 @@ void dusk::dialogs::SaveFile::PostCreate ( void )
 	m_elements.push_back(fullLayout);
 
 	auto topLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 40)));
-	//topLayout->m_justifyScaleStyle = dusk::layouts::JustifyScaleStyle::kInline;
 	topLayout->m_heightLocked = true;
 	m_elements.push_back(topLayout);
 
 	auto middleLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 350)));
-	//middleLayout->m_justifyScaleStyle = dusk::layouts::JustifyScaleStyle::kStretch;
-	//middleLayout->m_fitItemHeight = true;
 	middleLayout->m_heightLocked = false;
 	m_elements.push_back(middleLayout);
 
 	auto bottomLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 40)));
-	//bottomLayout->m_justifyScaleStyle = dusk::layouts::JustifyScaleStyle::kInline;
 	bottomLayout->m_justify = dusk::layouts::AlignStyleHorizontal::kRight;
 	bottomLayout->m_heightLocked = true;
 	m_elements.push_back(bottomLayout);
 
 	auto bottomestLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 40)));
-	//bottomestLayout->m_justifyScaleStyle = dusk::layouts::JustifyScaleStyle::kInline;
 	bottomestLayout->m_justify = dusk::layouts::AlignStyleHorizontal::kRight;
 	bottomestLayout->m_heightLocked = true;
 	m_elements.push_back(bottomestLayout);
@@ -50,6 +48,10 @@ void dusk::dialogs::SaveFile::PostCreate ( void )
 		nextButton->m_contents = ">";
 		m_elements.push_back(nextButton);
 
+		auto upButton = m_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(topLayout, Rect(0, 0, 40, 40)));
+		upButton->m_contents = "^";
+		m_elements.push_back(upButton);
+
 		auto pathField = m_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(topLayout, Rect(0, 0, 100, 40)));
 		pathField->m_contents = "TEST";
 		m_elements.push_back(pathField);
@@ -63,6 +65,7 @@ void dusk::dialogs::SaveFile::PostCreate ( void )
 		folderListview->AddMenuEntry("entries");
 		folderListview->AddMenuEntry("in the magical");
 		folderListview->AddMenuEntry("LISTVIEW");
+		folderListview->SetOnClickEntry([this](dusk::elements::TextListView*, int selection) { OnSelectItemInFolderview(selection); });
 		m_elements.push_back(folderListview);
 
 		auto fileListview = m_interface->Add<dusk::elements::TextListView>(dusk::ElementCreationDescription(middleLayout, Rect(0, 0, 300, 350)));
@@ -71,7 +74,11 @@ void dusk::dialogs::SaveFile::PostCreate ( void )
 		fileListview->AddMenuEntry("entries");
 		fileListview->AddMenuEntry("in the magical");
 		fileListview->AddMenuEntry("LISTVIEW");
+		fileListview->SetOnClickEntry([this](dusk::elements::TextListView*, int selection) { OnSelectItemInFileview(selection); });
 		m_elements.push_back(fileListview);
+
+		m_folderListview = folderListview;
+		m_filesListview = fileListview;
 	}
 
 	// Create the bottoms on the bottom
@@ -108,6 +115,15 @@ dusk::dialogs::SaveFile::~SaveFile()
 
 void dusk::dialogs::SaveFile::Update ( const UIStepInfo* stepinfo )
 {
+	// Do delayed initialization
+	if (!m_ready)
+	{
+		m_currentDirectory = m_defaultDirectory;
+		UpdateDirectoryListing();
+
+		m_ready = true;
+	}
+
 	FileViewer::Update(stepinfo);
 }
 
@@ -116,4 +132,89 @@ void dusk::dialogs::SaveFile::Render ( UIRendererContext* uir )
 	uir->setFocus(dusk::kFocusStyleAutomaticNoHover);
 	uir->setColor(dusk::kColorStyleBackground);
 	uir->drawRectangle(this, m_absoluteRect);
+}
+
+void dusk::dialogs::SaveFile::UpdateDirectoryListing ( void )
+{
+	auto folderListview = m_folderListview->as<dusk::elements::TextListView>();
+	auto filesListview = m_filesListview->as<dusk::elements::TextListView>();
+
+	folderListview->ClearMenuEntries();
+	filesListview->ClearMenuEntries();
+
+	// Need to get everything in the current directory:
+	m_fileListing.clear();
+	for (auto& p : fs::directory_iterator(m_currentDirectory))
+	{
+		auto& path = p.path();
+		m_fileListing.push_back(path.string());
+	}
+	
+	// Now we generate the unique stuff for the folder view:
+	m_folderListing.clear();
+	// Add in volumes
+	{
+		std::vector<std::string> volumes;
+		core::io::EnumerateVolumes(volumes);
+		for (auto& volume : volumes)
+		{
+			m_folderListing.push_back(volume);
+		}
+	}
+	// Add in current directory and everything parent to it
+	{
+		fs::path l_absolutePath = fs::canonical(m_currentDirectory);
+		std::string l_rootPrefix = "";
+		if (l_absolutePath.has_root_name())
+		{
+			l_rootPrefix = (l_absolutePath.root_name() / "/").string();
+			std::string smallified = l_absolutePath.string().substr(l_rootPrefix.length());
+			l_absolutePath = smallified;
+		}
+
+		fs::path l_currentPath = l_rootPrefix;
+		for (auto& itr : l_absolutePath)
+		{
+			l_currentPath /= itr;
+			m_folderListing.push_back(l_currentPath.string());
+		}
+		std::sort(m_folderListing.begin(), m_folderListing.end());
+	}
+
+	// Set up the listviews now
+	for (auto& str : m_fileListing)
+	{
+		fs::path filename (str);
+		filesListview->AddMenuEntry(filename.filename().string());
+	}
+	for (auto& str : m_folderListing)
+	{
+		fs::path filename = str;
+		if (filename.has_relative_path())
+		{
+			folderListview->AddMenuEntry(std::string(std::count(str.begin(), str.end(), '\\'), ' ') + filename.filename().string());
+		}
+		else
+		{
+			folderListview->AddMenuEntry(str);
+		}
+		//folderListview->AddMenuEntry(str);
+	}
+}
+
+void dusk::dialogs::SaveFile::OnSelectItemInFileview ( const int selection )
+{
+	fs::path l_nextPath = fs::absolute(m_fileListing[selection]);
+
+	if (fs::is_directory(l_nextPath))
+	{
+		m_currentDirectory = l_nextPath.string();
+		UpdateDirectoryListing();
+	}
+}
+
+void dusk::dialogs::SaveFile::OnSelectItemInFolderview ( const int selection )
+{
+	m_currentDirectory = fs::absolute(m_folderListing[selection]).string();
+	UpdateDirectoryListing();
 }

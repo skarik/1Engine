@@ -182,9 +182,9 @@ struct arModelData
 	// 65534 bones are supported. Bone 0 and 65535 have special meaning.
 	Vector4u16*	bone		= NULL;
 	Vector4f*	weight		= NULL;
-	Vector3f*	texcoord1	= NULL;
-	Vector3f*	texcoord2	= NULL;
-	Vector3f*	texcoord3	= NULL;
+	Vector4f*	texcoord1	= NULL;
+	Vector4f*	texcoord2	= NULL;
+	Vector4f*	texcoord3	= NULL;
 };
 
 //	Default model data storage class.

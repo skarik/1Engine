@@ -77,6 +77,13 @@ void rrMeshBuilder2D::setScreenMapping ( const core::math::Cubic& screenMapping 
 	m_offset.y		= -m_offset.y;
 }
 
+//	getScreenMapping(out multiplier, out offset) : Gets the internal screen mapping
+void rrMeshBuilder2D::getScreenMapping ( Vector2f& out_multiplier, Vector2f& out_offset )
+{
+	out_multiplier = m_multiplier;
+	out_offset = m_offset;
+}
+
 //	addRect (rect, color, outline) : Adds a rectangle to draw.
 // "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
 void rrMeshBuilder2D::addRect ( const Rect& rect, const Color& color, bool outline )

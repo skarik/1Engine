@@ -17,31 +17,14 @@ void dusk::elements::TextListView::Update ( const UIStepInfo* stepinfo )
 {
 	Element::Update(stepinfo);
 
-	//isPressed = false;
-
 	if ( !m_isEnabled )
 	{
-		//beginPress = false;
-		//isPressed = false;
+		
 	}
 	else
 	{
 		if ( m_isMouseIn && m_wasDrawn )
 		{
-			// Mouse controls
-			if ( CInput::MouseDown(CInput::MBLeft) )
-			{
-				//beginPress = true;
-			}
-			/*else if ( beginPress )
-			{
-			if ( CInput::MouseUp(CInput::MBLeft) )
-			{
-			beginPress = false;
-			isPressed = true;
-			}
-			}*/
-
 			// Update the hovered item
 			for (uint menuIndex = 0; menuIndex < m_entries.size(); ++menuIndex)
 			{
@@ -55,6 +38,26 @@ void dusk::elements::TextListView::Update ( const UIStepInfo* stepinfo )
 					break;
 				}
 			}
+
+			// Update clicks on hovered items
+			if ( CInput::MouseDown(CInput::MBLeft) )
+			{
+				for (uint menuIndex = 0; menuIndex < m_entries.size(); ++menuIndex)
+				{
+					if (m_entries[menuIndex].hovered)
+					{
+						m_entries[menuIndex].selected = true;
+						if (m_onClickEntry != nullptr)
+						{
+							m_onClickEntry(this, menuIndex);
+						}
+					}
+					else
+					{
+						m_entries[menuIndex].selected = false;
+					}
+				}
+			}
 		}
 		else
 		{
@@ -62,16 +65,6 @@ void dusk::elements::TextListView::Update ( const UIStepInfo* stepinfo )
 			{
 				m_entries[menuIndex].hovered = false;
 			}
-			/*beginPress = false;
-
-			// Keyboard controls
-			if ( m_isFocused )
-			{
-			if ( CInput::Keydown( Keys.Return ) )
-			{
-			isPressed = true;
-			}
-			}*/
 		}
 	}
 
@@ -79,6 +72,7 @@ void dusk::elements::TextListView::Update ( const UIStepInfo* stepinfo )
 }
 void dusk::elements::TextListView::Render ( UIRendererContext* uir )
 {
+	uir->setScissor(m_absoluteRect);
 	uir->setFocus(dusk::kFocusStyleAutomaticNoHover);
 	uir->setColor(dusk::kColorStyleBackground);
 	uir->drawRectangle(this, m_absoluteRect);
@@ -89,7 +83,7 @@ void dusk::elements::TextListView::Render ( UIRendererContext* uir )
 		Rect bg (corner, Vector2f(uir->getTextWidth(kTextFontButton, m_entries[menuIndex].contents.c_str()), uir->getTextHeight(kTextFontButton)));
 
 		uir->setFocus(m_entries[menuIndex].hovered ? dusk::kFocusStyleHovered : dusk::kFocusStyleAutomaticNoHover);
-		uir->setColor(dusk::kColorStyleBackground, menuIndex + 1);
+		uir->setColor(m_entries[menuIndex].selected ? dusk::kColorStyleElementEmphasized : dusk::kColorStyleBackground, menuIndex + 1);
 		uir->drawRectangle(this, bg);
 
 		uir->setColor(dusk::kColorStyleLabel, menuIndex + 1);

@@ -54,6 +54,7 @@ namespace elements {
 		{
 			std::string			contents;
 			bool				hovered = false;
+			bool				selected = false;
 			Rect				rect; // Updated on draw.
 		};
 

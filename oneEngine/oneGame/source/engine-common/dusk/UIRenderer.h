@@ -189,6 +189,7 @@ namespace dusk
 		friend UIRenderer;
 
 	public:
+		ENGCOM_API void			setScissor ( const Rect& scissor );
 		ENGCOM_API void			setFocus ( FocusStyle style );
 		ENGCOM_API void			setColor ( ColorStyle style, size_t subelement = 0 );
 		ENGCOM_API void			setTextSettings ( TextStyleSettings settings );
@@ -209,6 +210,8 @@ namespace dusk
 		ColorStyle			m_colorType;
 		size_t				m_colorSubelement;
 		TextStyleSettings	m_textType;
+
+		Rect				m_currentScissor;
 
 		bool				m_dsDrawBackground;
 		Color				m_dsColorBackground;

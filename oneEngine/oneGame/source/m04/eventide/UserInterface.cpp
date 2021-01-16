@@ -660,7 +660,7 @@ void ui::eventide::UserInterface::PostStep ( void )
 		modeldata->normal = new Vector3f[m_renderableStreamedVertexStorageSize];
 		modeldata->color = new Vector4f[m_renderableStreamedVertexStorageSize];
 		modeldata->texcoord0 = new Vector3f[m_renderableStreamedVertexStorageSize];
-		modeldata->texcoord1 = new Vector3f[m_renderableStreamedVertexStorageSize];
+		modeldata->texcoord1 = new Vector4f[m_renderableStreamedVertexStorageSize];
 	}
 	modeldata->indexNum = l_trackedOffset.indexOffset;
 	modeldata->vertexNum = l_trackedOffset.vertexOffset;

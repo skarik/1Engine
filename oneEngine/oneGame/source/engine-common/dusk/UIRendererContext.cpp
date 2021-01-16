@@ -5,6 +5,21 @@
 #include "renderer/utils/rrMeshBuilder2D.h"
 #include "renderer/utils/rrTextBuilder2D.h"
 
+void dusk::UIRendererContext::setScissor ( const Rect& scissor )
+{
+	m_currentScissor = scissor;
+
+	Vector2f offset, multiplier;
+	m_mb2->getScreenMapping(multiplier, offset);
+
+	m_currentScissor.pos = m_currentScissor.pos.mulComponents(multiplier);
+	m_currentScissor.pos += offset;
+	m_currentScissor.size = m_currentScissor.size.mulComponents(multiplier);
+
+	// Unflip.
+	m_currentScissor.pos.y += m_currentScissor.size.y;
+	m_currentScissor.size.y = -m_currentScissor.size.y;
+}
 void dusk::UIRendererContext::setFocus ( FocusStyle style )
 {
 	m_focusType = style;
@@ -143,6 +158,7 @@ float dusk::UIRendererContext::getTextWidth ( TextFontStyle font, const char* st
 void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& rectangle )
 {
 	m_mb2->enableAttribute(renderer::shader::kVBufferSlotNormal);
+	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV1);
 	auto tVertexCount = m_mb2->getModelDataVertexCount();
 
 	generateColor(source);
@@ -152,14 +168,19 @@ void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& recta
 	if (m_dsDrawOutline)
 		m_mb2->addRect(rectangle, m_dsColorOutline, true);
 
-	// Zero out normals to disable texture use on this shape
 	for (uint16_t i = tVertexCount; i < m_mb2->getModelDataVertexCount(); ++i)
 	{
+		// Zero out normals to disable texture use on this shape
 		m_modeldata->normal[i] = Vector3f(0.0F, 0.0F, 0.0F);
+		// Shunt current scissor params into this shape
+		m_modeldata->texcoord1[i] = Vector4f(m_currentScissor.pos, m_currentScissor.size);
 	}
 }
 void dusk::UIRendererContext::drawText ( Element* source, const Vector2f& position, const char* str )
 {
+	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV1);
+	auto tVertexCount = m_mb2->getModelDataVertexCount();
+
 	rrTextBuilder2D* l_textBuilder = static_cast<rrTextBuilder2D*>(m_mb2);
 	Vector2f l_drawPosition (math::round(position.x), math::round(position.y + 0.9F * getTextHeight(m_textType.font)));
 
@@ -178,4 +199,10 @@ void dusk::UIRendererContext::drawText ( Element* source, const Vector2f& positi
 		l_drawPosition,
 		Color(1.0F, 1.0F, 1.0F, 1.0F),
 		str);
+
+	for (uint16_t i = tVertexCount; i < m_mb2->getModelDataVertexCount(); ++i)
+	{
+		// Shunt current scissor params into this shape
+		m_modeldata->texcoord1[i] = Vector4f(m_currentScissor.pos, m_currentScissor.size);
+	}
 }

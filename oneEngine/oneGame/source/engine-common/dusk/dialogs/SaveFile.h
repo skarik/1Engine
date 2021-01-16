@@ -36,8 +36,26 @@ namespace dialogs {
 							m_filetypes;
 
 	private:
+		bool				m_ready = false;
+		
 		std::vector<dusk::Element*>
 							m_elements;
+		dusk::Element*		m_folderListview;
+		dusk::Element*		m_filesListview;
+
+
+		// Current directory browsing to
+		std::string			m_currentDirectory = "";
+
+		std::vector<std::string>
+							m_fileListing;
+		std::vector<std::string>
+							m_folderListing;
+		void					OnSelectItemInFileview ( const int selection );
+		void					OnSelectItemInFolderview ( const int selection );
+
+		//	UpdateDirectoryListing() : Updates the UI's directory listing with the value in m_currentDirectory.
+		void					UpdateDirectoryListing ( void );
 	};
 
 }}

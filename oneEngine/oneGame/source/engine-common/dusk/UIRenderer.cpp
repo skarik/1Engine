@@ -63,8 +63,9 @@ dusk::UIRenderer::UIRenderer (UserInterface* ui)
 	renderer::shader::Location t_vspecDguiPass[] = {renderer::shader::Location::kPosition,
 													renderer::shader::Location::kUV0,
 													renderer::shader::Location::kColor,
-													renderer::shader::Location::kNormal}; // Normals used for controlling text or shapes.
-	dguiPass.setVertexSpecificationByCommonList(t_vspecDguiPass, 4);
+													renderer::shader::Location::kNormal, // Normals used for controlling text or shapes.
+													renderer::shader::Location::kUV1 }; // UV1 used for controlling scissor.
+	dguiPass.setVertexSpecificationByCommonList(t_vspecDguiPass, 5);
 	PassInitWithInput(1, &dguiPass);
 
 	// Create the render targets
@@ -324,6 +325,7 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	// Loop through the elements and build their mesh
 	for (uint32_t i = 0; i < renderList.size(); ++i)
 	{
+		l_ctx.setScissor(Rect((float)-0x7FFF, (float)-0x7FFF, (float)0xFFFF, (float)0xFFFF));
 		renderList[i]->Render(&l_ctx);
 		renderList[i]->m_wasDrawn = true;
 	}
@@ -345,6 +347,7 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	// Rendering
 
 	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+	gfx->debugGroupPush("dusk::ERRenderElements");
 
 	// Set up the target buffer
 	gfx->setRenderTarget(m_renderTarget);
@@ -383,9 +386,17 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	// bind the index buffer
 	gfx->setIndexBuffer(&m_meshBuffer.m_indexBuffer, gpu::kIndexFormatUnsigned16);
 	// bind the vertex buffers
-	for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
-		if (m_meshBuffer.m_bufferEnabled[i])
-			gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
+	//for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
+	//	if (m_meshBuffer.m_bufferEnabled[i])
+	//		gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
+	auto passAccess = PassAccess(kPassId);
+	for (int i = 0; i < passAccess.getVertexSpecificationCount(); ++i)
+	{
+		int buffer_index = (int)passAccess.getVertexSpecification()[i].location;
+		int buffer_binding = (int)passAccess.getVertexSpecification()[i].binding;
+		if (m_meshBuffer.m_bufferEnabled[buffer_index])
+			gfx->setVertexBuffer(buffer_binding, &m_meshBuffer.m_buffer[buffer_index], 0);
+	}
 
 	// draw now
 	gfx->drawIndexed(t_modeldataDrawn.indexNum, 0, 0);
@@ -395,6 +406,8 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 
 	//gfx->submit(); // TODO: remove this
 	gfx->clearPipelineAndWait();
+
+	gfx->debugGroupPop();
 }
 
 //===============================================================================================//

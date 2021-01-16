@@ -195,6 +195,9 @@
     <ClCompile Include="source\core\debug\Console.cpp">
       <Filter>SOURCE\Core\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\Volumes.cpp">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -328,6 +331,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\std\filesystem.h">
       <Filter>SOURCE\Core-ext\Std</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\Volumes.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

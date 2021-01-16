@@ -613,36 +613,61 @@ void dusk::UserInterface::DestroyElement ( const size_t handle, const bool also_
 	}
 }
 
-//	EnterDialogue(element) : Enters the element as a dialogue.
-void dusk::UserInterface::EnterDialogue ( Element* element )
+void dusk::UserInterface::PushEnableState ( void )
 {
-	ARCORE_ASSERT(m_elements[element->m_index] == element);
-
-	m_dialogueActivationStack.push_back(std::vector<bool>());
+	m_dialogueActivationStack.push_back(std::vector<SavedEnableState>());
 	// Save current state of focuses
 	m_dialogueActivationStack.back().resize(m_elements.size());
 	for ( unsigned int i = 0; i < m_elements.size(); ++i )
 	{
 		if ( m_elements[i] != NULL )
 		{
-			m_dialogueActivationStack.back()[i] = m_elements[i]->m_isEnabled;
+			m_dialogueActivationStack.back()[i] = {m_elements[i], i, m_elements[i]->m_isEnabled};
 		}
 	}
+}
+
+void dusk::UserInterface::PopEnableState ( void )
+{
+	ARCORE_ASSERT(!m_dialogueActivationStack.empty());
+
+	auto& activationState = m_dialogueActivationStack.back();
+	for (SavedEnableState& stateInfo : activationState)
+	{
+		// If it's a proper match, then simply restore the state
+		if ( stateInfo.index < m_elements.size() && m_elements[stateInfo.index] == stateInfo.element )
+		{
+			stateInfo.element->m_isEnabled = stateInfo.enabled;
+		}
+		else 
+		{
+			// Find the element in the listing
+			for (Element* element : m_elements)
+			{
+				if ( stateInfo.element == element )
+				{
+					stateInfo.element->m_isEnabled = stateInfo.enabled;
+					break;
+				}
+			}
+		}
+		// Anything else is an invalid object and should be skipped, as it may have been since deleted.
+	}
+	m_dialogueActivationStack.pop_back();
+}
+
+//	EnterDialogue(element) : Enters the element as a dialogue.
+void dusk::UserInterface::EnterDialogue ( Element* element )
+{
+	ARCORE_ASSERT(m_elements[element->m_index] == element);
+
+	PushEnableState();
 
 	// Set current dialog state
 	m_currentDialogue = element->m_index;
 
 	// Immediately disable all focuses on elements that are not part of the dialogue
-	/*for ( unsigned int i = 0; i < m_elements.size(); ++i )
-	{
-		if ( m_elements[i] != NULL )
-		{
-			m_elements[i]->m_isFocused = false;
-			m_elements[i]->m_isMouseIn = false;
-			m_elements[i]->m_isEnabled = false;
-		}
-	}*/
-	GenerateElementTree();
+	GenerateElementTree(); // Tree needs to be updated for navigating thru the elements
 	{
 		std::list<ElementNode*> updateList;
 		updateList.push_front(m_elementTreeBase);
@@ -685,15 +710,7 @@ void dusk::UserInterface::ExitDialogue ( Element* element )
 
 	m_currentDialogue = kElementHandleInvalid;
 
-	// Pop current enable state
-	for ( unsigned int i = 0; i < m_elements.size(); ++i )
-	{
-		if ( m_elements[i] != NULL )
-		{
-			m_elements[i]->m_isEnabled = m_dialogueActivationStack.back()[i];
-		}
-	}
-	m_dialogueActivationStack.pop_back();
+	PopEnableState();
 }
 
 //	IsMouseInside() : Checks if mouse cursor is currently inside any active element
