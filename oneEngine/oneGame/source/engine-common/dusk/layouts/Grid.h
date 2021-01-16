@@ -35,10 +35,18 @@ namespace layouts {
 
 			float totalWidth = 0.0F;
 			float maxHeight = 0.0F;
+			float elementWidthScale = 1.0F;
 			for (Element* child : elements)
 			{
 				totalWidth += child->m_localRect.size.x;
 				maxHeight = std::max<float>(maxHeight, child->m_localRect.size.y);
+			}
+
+			// If we're stretching then we need to expand the total width now
+			if (m_horizontalScale == JustifyScaleStyle::kStretch)
+			{
+				elementWidthScale = m_absoluteRect.size.x / totalWidth;
+				totalWidth = m_absoluteRect.size.x;
 			}
 
 			float heightRatio = m_absoluteRect.size.y / maxHeight;
@@ -59,6 +67,7 @@ namespace layouts {
 			{
 				child->m_absoluteRect = Rect(t_currentPosition, child->m_localRect.size);
 				child->m_absoluteRect.size.y *= m_scaleHeight ? heightRatio : 1.0F;
+				child->m_absoluteRect.size.x *= elementWidthScale;
 				t_currentPosition.x += child->m_absoluteRect.size.x;
 			}
 		}
@@ -66,6 +75,7 @@ namespace layouts {
 	public:
 		AlignStyleHorizontal
 							m_justify = AlignStyleHorizontal::kLeft;
+		JustifyScaleStyle	m_horizontalScale = JustifyScaleStyle::kInline;
 		bool				m_scaleHeight = true;
 		bool				m_heightLocked = false; // Can the height of this element change?
 	};

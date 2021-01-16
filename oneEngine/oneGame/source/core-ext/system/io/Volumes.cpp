@@ -17,7 +17,7 @@ void core::io::EnumerateVolumes ( std::vector<std::string>& outVolumeList )
 	while (l_cursor < l_driveBufferSize - 2)
 	{
 		outVolumeList.push_back(l_driveBuffer + l_cursor);
-		l_cursor += outVolumeList.back().size() + 1;
+		l_cursor += (DWORD)outVolumeList.back().size() + 1;
 	}
 
 	delete[] l_driveBuffer;

@@ -26,6 +26,7 @@ void dusk::dialogs::SaveFile::PostCreate ( void )
 
 	auto middleLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 350)));
 	middleLayout->m_heightLocked = false;
+	middleLayout->m_horizontalScale = dusk::layouts::JustifyScaleStyle::kStretch;
 	m_elements.push_back(middleLayout);
 
 	auto bottomLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 40)));
@@ -49,12 +50,16 @@ void dusk::dialogs::SaveFile::PostCreate ( void )
 		m_elements.push_back(nextButton);
 
 		auto upButton = m_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(topLayout, Rect(0, 0, 40, 40)));
-		upButton->m_contents = "^";
+		upButton->m_contents = "..";
 		m_elements.push_back(upButton);
 
 		auto pathField = m_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(topLayout, Rect(0, 0, 100, 40)));
 		pathField->m_contents = "TEST";
 		m_elements.push_back(pathField);
+
+		m_navBackward = prevButton;
+		m_navForward = nextButton;
+		m_navUp = upButton;
 	}
 
 	// Create the file browser area
@@ -74,7 +79,8 @@ void dusk::dialogs::SaveFile::PostCreate ( void )
 		fileListview->AddMenuEntry("entries");
 		fileListview->AddMenuEntry("in the magical");
 		fileListview->AddMenuEntry("LISTVIEW");
-		fileListview->SetOnClickEntry([this](dusk::elements::TextListView*, int selection) { OnSelectItemInFileview(selection); });
+		//fileListview->SetOnClickEntry([this](dusk::elements::TextListView*, int selection) { OnSelectItemInFileview(selection); });
+		fileListview->SetOnDoubleClickEntry([this](dusk::elements::TextListView*, int selection) { OnSelectItemInFileview(selection); });
 		m_elements.push_back(fileListview);
 
 		m_folderListview = folderListview;
@@ -125,6 +131,28 @@ void dusk::dialogs::SaveFile::Update ( const UIStepInfo* stepinfo )
 	}
 
 	FileViewer::Update(stepinfo);
+
+	if (m_navBackward->m_isActivated
+		|| (CInput::Key(VK_MENU) && CInput::Keydown(VK_LEFT)))
+	{
+		NavigationBackward();
+	}
+	else if (m_navForward->m_isActivated
+		|| (CInput::Key(VK_MENU) && CInput::Keydown(VK_RIGHT)))
+	{
+		NavigationForward();
+	}
+	else if (m_navUp->m_isActivated
+		|| (CInput::Key(VK_MENU) && CInput::Keydown(VK_UP)))
+	{
+		NavigationUp();
+	}
+
+	// Refresh.
+	if (CInput::Keydown(VK_F5))
+	{
+		UpdateDirectoryListing();
+	}
 }
 
 void dusk::dialogs::SaveFile::Render ( UIRendererContext* uir )
@@ -134,7 +162,7 @@ void dusk::dialogs::SaveFile::Render ( UIRendererContext* uir )
 	uir->drawRectangle(this, m_absoluteRect);
 }
 
-void dusk::dialogs::SaveFile::UpdateDirectoryListing ( void )
+void dusk::dialogs::SaveFile::UpdateDirectoryListing ( bool isNavigation )
 {
 	auto folderListview = m_folderListview->as<dusk::elements::TextListView>();
 	auto filesListview = m_filesListview->as<dusk::elements::TextListView>();
@@ -177,9 +205,10 @@ void dusk::dialogs::SaveFile::UpdateDirectoryListing ( void )
 		{
 			l_currentPath /= itr;
 			m_folderListing.push_back(l_currentPath.string());
-		}
-		std::sort(m_folderListing.begin(), m_folderListing.end());
+		}	
 	}
+	// Sort alphabetically so that items stick with the drives they're on.
+	std::sort(m_folderListing.begin(), m_folderListing.end());
 
 	// Set up the listviews now
 	for (auto& str : m_fileListing)
@@ -198,8 +227,28 @@ void dusk::dialogs::SaveFile::UpdateDirectoryListing ( void )
 		{
 			folderListview->AddMenuEntry(str);
 		}
-		//folderListview->AddMenuEntry(str);
 	}
+
+	// Update navigation history with the current directory.
+	if (!isNavigation)
+	{
+		if (m_navigationHistory.empty()
+			|| fs::canonical(m_navigationHistory.back()) != fs::canonical(m_currentDirectory))
+		{
+			// Resize to the currnet nav point.
+			if (!m_navigationHistory.empty())
+			{
+				m_navigationHistory.resize(m_navigationPosition + 1);
+			}
+			// Add new nav point
+			m_navigationHistory.push_back(m_currentDirectory);
+			// Save new nav position
+			m_navigationPosition = (int)m_navigationHistory.size() - 1;
+		}
+	}
+	// Update navigation button enable states
+	m_navBackward->m_isEnabled = m_navigationPosition > 0;
+	m_navForward->m_isEnabled = m_navigationPosition < m_navigationHistory.size() - 1;
 }
 
 void dusk::dialogs::SaveFile::OnSelectItemInFileview ( const int selection )
@@ -216,5 +265,23 @@ void dusk::dialogs::SaveFile::OnSelectItemInFileview ( const int selection )
 void dusk::dialogs::SaveFile::OnSelectItemInFolderview ( const int selection )
 {
 	m_currentDirectory = fs::absolute(m_folderListing[selection]).string();
+	UpdateDirectoryListing();
+}
+
+void dusk::dialogs::SaveFile::NavigationForward ( void )
+{
+	m_navigationPosition += 1;
+	m_currentDirectory = m_navigationHistory[m_navigationPosition];
+	UpdateDirectoryListing(true);
+}
+void dusk::dialogs::SaveFile::NavigationBackward ( void )
+{
+	m_navigationPosition -= 1;
+	m_currentDirectory = m_navigationHistory[m_navigationPosition];
+	UpdateDirectoryListing(true);
+}
+void dusk::dialogs::SaveFile::NavigationUp ( void )
+{
+	m_currentDirectory = fs::canonical(m_currentDirectory + "/..").string();
 	UpdateDirectoryListing();
 }

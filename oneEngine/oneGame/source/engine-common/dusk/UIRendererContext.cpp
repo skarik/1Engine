@@ -61,6 +61,12 @@ void dusk::UIRendererContext::generateColor( Element* source )
 		l_bgHoveredColor = kBackgroundColor + kBackgroundBump * 2.0F;
 		l_bgActiveColor = kBackgroundColor + kBackgroundBump * 1.0F;
 	}
+	else if (m_colorType == kColorStyleElementEmphasized2)
+	{
+		l_bgDisabledColor = kBackgroundColor + kBackgroundBump * 0.75F;
+		l_bgHoveredColor = kBackgroundColor + kBackgroundBump * 3.5F;
+		l_bgActiveColor = kBackgroundColor + kBackgroundBump * 2.5F;
+	}
 	else if (m_colorType == kColorStyleShapeNormal)
 	{
 		l_bgDisabledColor = kBackgroundColor + kBackgroundBump * 0.5F;

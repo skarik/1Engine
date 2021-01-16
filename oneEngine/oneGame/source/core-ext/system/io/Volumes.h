@@ -1,3 +1,10 @@
+//===============================================================================================//
+//
+//		core-ext/system/io/Volumes.h
+//
+// Contains OS-specific features dealing with logical disk volumes
+//
+//===============================================================================================//
 #ifndef CORE_EXT_SYSTEM_IO_VOLUMES_H_
 #define CORE_EXT_SYSTEM_IO_VOLUMES_H_
 

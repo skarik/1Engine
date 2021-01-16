@@ -43,6 +43,9 @@ namespace dialogs {
 		dusk::Element*		m_folderListview;
 		dusk::Element*		m_filesListview;
 
+		dusk::Element*		m_navBackward;
+		dusk::Element*		m_navForward;
+		dusk::Element*		m_navUp;
 
 		// Current directory browsing to
 		std::string			m_currentDirectory = "";
@@ -54,8 +57,16 @@ namespace dialogs {
 		void					OnSelectItemInFileview ( const int selection );
 		void					OnSelectItemInFolderview ( const int selection );
 
+		std::vector<std::string>
+							m_navigationHistory;
+		int					m_navigationPosition = 0;
+
+		void					NavigationForward ( void );
+		void					NavigationBackward ( void );
+		void					NavigationUp ( void );
+
 		//	UpdateDirectoryListing() : Updates the UI's directory listing with the value in m_currentDirectory.
-		void					UpdateDirectoryListing ( void );
+		void					UpdateDirectoryListing ( bool isNavigation = false );
 	};
 
 }}

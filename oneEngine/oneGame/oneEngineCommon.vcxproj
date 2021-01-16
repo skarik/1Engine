@@ -154,6 +154,7 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\ScrollBar.h" />
     <ClInclude Include="source\engine-common\dusk\controls\Slider.h" />
     <ClInclude Include="source\engine-common\dusk\controls\TextField.h" />
     <ClInclude Include="source\engine-common\dusk\controls\TextListView.h" />
@@ -348,6 +349,7 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\ScrollBar.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\Slider.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\TextField.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\TextListView.cpp" />

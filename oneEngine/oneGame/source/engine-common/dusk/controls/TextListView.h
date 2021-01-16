@@ -8,12 +8,17 @@
 namespace dusk {
 namespace elements {
 
+	class ScrollBar;
+
 	class TextListView : public dusk::Element
 	{
 	public:
 		ENGCOM_API explicit		TextListView();
 
 		ENGCOM_API				~TextListView (void);
+
+		//	PostCreate() : Called after creation.
+		void					PostCreate ( void ) override;
 
 		//	Update() : Called every frame by the UI system.
 		void					Update ( const UIStepInfo* stepinfo ) override;
@@ -50,11 +55,15 @@ namespace elements {
 		TextListViewCallback
 							m_onDoubleClickEntry = nullptr;
 
+		ScrollBar*			m_scrollBar = nullptr;
+
 		struct MenuEntry
 		{
 			std::string			contents;
 			bool				hovered = false;
 			bool				selected = false;
+			bool				activated = false;
+			Real				lastClickTime = 0.0;
 			Rect				rect; // Updated on draw.
 		};
 
