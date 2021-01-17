@@ -182,6 +182,29 @@ void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& recta
 		m_modeldata->texcoord1[i] = Vector4f(m_currentScissor.pos, m_currentScissor.size);
 	}
 }
+
+void dusk::UIRendererContext::drawBorder ( Element* source, const Rect& rectangle )
+{
+	m_mb2->enableAttribute(renderer::shader::kVBufferSlotNormal);
+	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV1);
+	auto tVertexCount = m_mb2->getModelDataVertexCount();
+
+	generateColor(source);
+
+	if (m_dsDrawBackground)
+		m_mb2->addRect(rectangle, m_dsColorBackground, true, 2.0F);
+	if (m_dsDrawOutline)
+		m_mb2->addRect(rectangle, m_dsColorOutline, true);
+
+	for (uint16_t i = tVertexCount; i < m_mb2->getModelDataVertexCount(); ++i)
+	{
+		// Zero out normals to disable texture use on this shape
+		m_modeldata->normal[i] = Vector3f(0.0F, 0.0F, 0.0F);
+		// Shunt current scissor params into this shape
+		m_modeldata->texcoord1[i] = Vector4f(m_currentScissor.pos, m_currentScissor.size);
+	}
+}
+
 void dusk::UIRendererContext::drawText ( Element* source, const Vector2f& position, const char* str )
 {
 	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV1);
@@ -203,7 +226,7 @@ void dusk::UIRendererContext::drawText ( Element* source, const Vector2f& positi
 
 	l_textBuilder->addText(
 		l_drawPosition,
-		Color(1.0F, 1.0F, 1.0F, 1.0F),
+		source->m_isEnabled ? Color(1.0F, 1.0F, 1.0F, 1.0F) : Color(0.7F, 0.7F, 0.7F, 1.0F), // TODO: Make this use the style rules above
 		str);
 
 	for (uint16_t i = tVertexCount; i < m_mb2->getModelDataVertexCount(); ++i)

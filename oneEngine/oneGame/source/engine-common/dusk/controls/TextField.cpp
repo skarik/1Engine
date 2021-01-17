@@ -52,11 +52,20 @@ void dusk::elements::TextField::Update ( const UIStepInfo* stepinfo )
 }
 void dusk::elements::TextField::Render ( UIRendererContext* uir )
 {
+	if (m_drawHeight <= 0.0F)
+	{
+		m_drawHeight = (Real)math::round(uir->getTextHeight(kTextFontButton) * 1.5F + 5.0F);
+	}
+	m_absoluteRect.pos.y += (Real)math::round((m_absoluteRect.size.y - m_drawHeight) * 0.5F);
+	m_absoluteRect.size.y = m_drawHeight;
+
 	uir->setFocus(dusk::kFocusStyleAutomatic);
-	uir->setColor(dusk::kColorStyleBackground);
+	uir->setColor(dusk::kColorStyleBackground, 0);
 	uir->drawRectangle(this, m_absoluteRect);
+	uir->setColor(dusk::kColorStyleElementEmphasized, 1);
+	uir->drawBorder(this, m_absoluteRect);
 
 	uir->setColor(dusk::kColorStyleLabel);
 	uir->setTextSettings(TextStyleSettings{dusk::kTextFontButton, dusk::kTextAlignLeft, dusk::kTextAlignMiddle});
-	uir->drawText(this, m_absoluteRect.pos + Vector2f(5.0F, (m_absoluteRect.size.y - uir->getTextHeight(kTextFontButton)) * 0.5F), m_contents.c_str());
+	uir->drawText(this, m_absoluteRect.pos + Vector2f(5.0F, m_absoluteRect.size.y * 0.5F - 1.0F), m_contents.c_str());
 }

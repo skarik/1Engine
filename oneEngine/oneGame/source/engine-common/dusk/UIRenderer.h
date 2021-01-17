@@ -199,6 +199,7 @@ namespace dusk
 		ENGCOM_API float		getTextWidth ( TextFontStyle font, const char* str );
 
 		ENGCOM_API void			drawRectangle ( Element* source, const Rect& rectangle );
+		ENGCOM_API void			drawBorder ( Element* source, const Rect& rectangle );
 		ENGCOM_API void			drawText ( Element* source, const Vector2f& position, const char* str );
 
 	private:

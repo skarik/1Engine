@@ -84,8 +84,12 @@ namespace dusk
 		Rect				m_localRect;
 		// Ignore position set up by automatic layout elements
 		bool				m_ignoreAutoLayout = false;
-		// Ignore positoin set up by any layout
+		// Ignore position set up by any layout
 		bool				m_overrideLayout = false;
+		// Lock width and don't let layouts resize this element
+		bool				m_layoutLockWidth = false;
+		// Lock height and don't let layouts resize this element
+		bool				m_layoutLockHeight = false;
 		// Reference to parent.
 		dusk::Element*		m_parent = NULL;
 		// String for contents, often a label.
@@ -142,10 +146,10 @@ namespace dusk
 
 		//	Show() : Shows the dialog.
 		// Must be called in order to bring this dialog to the forefront
-		ENGCOM_API void			Show ( void );
+		ENGCOM_API virtual void	Show ( void );
 
 		//	Hide() : Hides the dialog.
-		ENGCOM_API void			Hide ( void );
+		ENGCOM_API virtual void	Hide ( void );
 
 		//	IsDialogElement() : Is this a dialog? Used for type-safe instantiation of dialogs.
 		static constexpr bool	IsDialogElement ( void )

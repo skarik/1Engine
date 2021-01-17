@@ -240,6 +240,8 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 
 	while (!updateList.empty())
 	{
+		bool bDrawChildren = false;
+
 		UserInterface::ElementNode* elementNode = updateList.front();
 		updateList.pop_front();
 
@@ -255,6 +257,12 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 					&& element->m_visible)
 				{
 					renderList->push_back(element);
+					bDrawChildren = true;
+				}
+				else if (element->m_elementType != ElementType::kControl
+					&& element->m_visible)
+				{
+					bDrawChildren = true;
 				}
 			}
 			else
@@ -263,10 +271,13 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 				delayedUpdateList.push_back(elementNode);
 			}
 		}
+		else
+		{
+			bDrawChildren = true;
+		}
 
 		// Render children of this item after all the current depth's items are added.
-		if (elementNode->index == kElementHandleInvalid
-			|| m_interface->m_currentDialogue != elementNode->index)
+		if (bDrawChildren)
 		{
 			for (UserInterface::ElementNode* child : elementNode->children)
 			{
@@ -278,6 +289,8 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 	// Any dialogues need their own loop to push their children onto the render list after everything else
 	while (!delayedUpdateList.empty())
 	{
+		bool bDrawChildren = false;
+
 		UserInterface::ElementNode* elementNode = delayedUpdateList.front();
 		delayedUpdateList.pop_front();
 
@@ -287,16 +300,30 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 			ARCORE_ASSERT(element->m_index == elementNode->index);
 
 			// Add them to the rendering list
-			if (element->m_elementType == ElementType::kControl)
+			if (element->m_elementType == ElementType::kControl
+				&& element->m_visible)
 			{
 				renderList->push_back(element);
+				bDrawChildren = true;
 			}
+			else if (element->m_elementType != ElementType::kControl
+				&& element->m_visible)
+			{
+				bDrawChildren = true;
+			}
+		}
+		else
+		{
+			bDrawChildren = true;
 		}
 
 		// Render children of this item after all the current depth's items are added.
-		for (UserInterface::ElementNode* child : elementNode->children)
+		if (bDrawChildren)
 		{
-			delayedUpdateList.push_back(child);
+			for (UserInterface::ElementNode* child : elementNode->children)
+			{
+				delayedUpdateList.push_back(child);
+			}
 		}
 	}
 }

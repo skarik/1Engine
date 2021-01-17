@@ -77,7 +77,7 @@ namespace layouts {
 							m_justify = AlignStyleHorizontal::kLeft;
 		JustifyScaleStyle	m_horizontalScale = JustifyScaleStyle::kInline;
 		bool				m_scaleHeight = true;
-		bool				m_heightLocked = false; // Can the height of this element change?
+		//bool				m_heightLocked = false; // Can the height of this element change?
 	};
 
 	class StretchGridRows : public dusk::LayoutElement
@@ -121,7 +121,7 @@ namespace layouts {
 					StretchGridRow* childAsRow = child->asSafeAndSlow<StretchGridRow>();
 					if (childAsRow != NULL)
 					{
-						if (childAsRow->m_heightLocked)
+						if (childAsRow->m_layoutLockHeight)
 						{
 							totalHeightNoStretch += child->m_localRect.size.y;
 							elementCanStretch.back() = false;

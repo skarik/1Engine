@@ -550,6 +550,7 @@ void dusk::UserInterface::UpdateElements ( void )
 
 			if (elementNode->index != kElementHandleInvalid)
 			{
+				ARCORE_ASSERT(elementNode->index < m_elements.size());
 				Element* element = m_elements[elementNode->index];
 				ARCORE_ASSERT(element->m_index == elementNode->index);
 				

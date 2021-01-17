@@ -14,29 +14,30 @@
 #include "engine-common/dusk/controls/Button.h"
 #include "engine-common/dusk/controls/TextField.h"
 #include "engine-common/dusk/controls/TextListView.h"
+#include "engine-common/dusk/controls/Spacer.h"
 
 void dusk::dialogs::SaveFile::PostCreate ( void )
 {
 	auto fullLayout = m_interface->Add<dusk::layouts::StretchGridRows>(dusk::LayoutCreationDescription(this));
 	m_elements.push_back(fullLayout);
 
-	auto topLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 40)));
-	topLayout->m_heightLocked = true;
+	auto topLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(500, 40)));
+	topLayout->m_layoutLockHeight = true;
 	m_elements.push_back(topLayout);
 
-	auto middleLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 350)));
-	middleLayout->m_heightLocked = false;
+	auto middleLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(500, 350)));
+	middleLayout->m_layoutLockHeight = false;
 	middleLayout->m_horizontalScale = dusk::layouts::JustifyScaleStyle::kStretch;
 	m_elements.push_back(middleLayout);
 
-	auto bottomLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 40)));
+	auto bottomLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(500, 40)));
 	bottomLayout->m_justify = dusk::layouts::AlignStyleHorizontal::kRight;
-	bottomLayout->m_heightLocked = true;
+	bottomLayout->m_layoutLockHeight = true;
 	m_elements.push_back(bottomLayout);
 
-	auto bottomestLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(1, 40)));
+	auto bottomestLayout = m_interface->Add<dusk::layouts::StretchGridRow>(dusk::LayoutCreationDescription(fullLayout, Vector2f(500, 40)));
 	bottomestLayout->m_justify = dusk::layouts::AlignStyleHorizontal::kRight;
-	bottomestLayout->m_heightLocked = true;
+	bottomestLayout->m_layoutLockHeight = true;
 	m_elements.push_back(bottomestLayout);
 
 	// Create top row items
@@ -79,7 +80,7 @@ void dusk::dialogs::SaveFile::PostCreate ( void )
 		fileListview->AddMenuEntry("entries");
 		fileListview->AddMenuEntry("in the magical");
 		fileListview->AddMenuEntry("LISTVIEW");
-		//fileListview->SetOnClickEntry([this](dusk::elements::TextListView*, int selection) { OnSelectItemInFileview(selection); });
+		fileListview->SetOnClickEntry([this](dusk::elements::TextListView*, int selection) { OnClickItemInFileview(selection); });
 		fileListview->SetOnDoubleClickEntry([this](dusk::elements::TextListView*, int selection) { OnSelectItemInFileview(selection); });
 		m_elements.push_back(fileListview);
 
@@ -89,13 +90,23 @@ void dusk::dialogs::SaveFile::PostCreate ( void )
 
 	// Create the bottoms on the bottom
 	{
-		auto pathField = m_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(bottomLayout, Rect(0, 0, 200, 40)));
-		pathField->m_contents = "FILE";
+		auto sideSpacer = m_interface->Add<dusk::elements::Spacer>(dusk::ElementCreationDescription(bottomLayout, Rect(0, 0, 500 - 400 - 5, 40)));
+		m_elements.push_back(sideSpacer);
+
+		auto pathField = m_interface->Add<dusk::elements::TextField>(dusk::ElementCreationDescription(bottomLayout, Rect(0, 0, 300, 40)));
+		pathField->m_contents = "";
 		m_elements.push_back(pathField);
+
+		auto middleSpacer = m_interface->Add<dusk::elements::Spacer>(dusk::ElementCreationDescription(bottomLayout, Rect(0, 0, 5, 40)));
+		m_elements.push_back(middleSpacer);
 
 		auto typeField = m_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(bottomLayout, Rect(0, 0, 100, 40)));
 		typeField->m_contents = "TYPES";
+		typeField->m_layoutLockWidth = true;
 		m_elements.push_back(typeField);
+
+		m_filenameField = pathField;
+		m_filetypeField = typeField;
 	}
 
 	// Create the bottoms on the bottom
@@ -107,6 +118,9 @@ void dusk::dialogs::SaveFile::PostCreate ( void )
 		auto cancelButton = m_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(bottomestLayout, Rect(0, 0, 100, 40)));
 		cancelButton->m_contents = "CANCEL";
 		m_elements.push_back(cancelButton);
+
+		m_buttonAccept = acceptButton;
+		m_buttonCancel = cancelButton;
 	}
 }
 
@@ -117,6 +131,15 @@ dusk::dialogs::SaveFile::~SaveFile()
 		delete element;
 	}
 	m_elements.clear();
+}
+
+void dusk::dialogs::SaveFile::Show ( void )
+{
+	FileViewer::Show();
+
+	//m_currentDirectory = ".";
+	m_filenameField->as<dusk::elements::TextField>()->m_contents = "";
+	UpdateDirectoryListing();
 }
 
 void dusk::dialogs::SaveFile::Update ( const UIStepInfo* stepinfo )
@@ -132,26 +155,78 @@ void dusk::dialogs::SaveFile::Update ( const UIStepInfo* stepinfo )
 
 	FileViewer::Update(stepinfo);
 
-	if (m_navBackward->m_isActivated
-		|| (CInput::Key(VK_MENU) && CInput::Keydown(VK_LEFT)))
+	if (m_isEnabled && m_wasDrawn)
 	{
-		NavigationBackward();
-	}
-	else if (m_navForward->m_isActivated
-		|| (CInput::Key(VK_MENU) && CInput::Keydown(VK_RIGHT)))
-	{
-		NavigationForward();
-	}
-	else if (m_navUp->m_isActivated
-		|| (CInput::Key(VK_MENU) && CInput::Keydown(VK_UP)))
-	{
-		NavigationUp();
-	}
+		if (m_navBackward->m_isActivated
+			|| (CInput::Key(VK_MENU) && CInput::Keydown(VK_LEFT)))
+		{
+			NavigationBackward();
+		}
+		else if (m_navForward->m_isActivated
+			|| (CInput::Key(VK_MENU) && CInput::Keydown(VK_RIGHT)))
+		{
+			NavigationForward();
+		}
+		else if (m_navUp->m_isActivated
+			|| (CInput::Key(VK_MENU) && CInput::Keydown(VK_UP)))
+		{
+			NavigationUp();
+		}
 
-	// Refresh.
-	if (CInput::Keydown(VK_F5))
-	{
-		UpdateDirectoryListing();
+		// Refresh.
+		if (CInput::Keydown(VK_F5))
+		{
+			UpdateDirectoryListing();
+		}
+
+		// Check buttons
+		if (m_buttonCancel->m_isActivated)
+		{
+			if (m_onCancel != nullptr)
+			{
+				m_onCancel();
+			}
+			Hide();
+		}
+		if (m_buttonAccept->m_isActivated)
+		{
+			if (m_filenameField->as<dusk::elements::TextField>()->m_contents.empty())
+			{
+				// If the input is empty, we don't do anything.
+			}
+			else
+			{
+				fs::path currentPath = fs::absolute(m_currentDirectory);
+				fs::path selectionPath = currentPath / m_filenameField->as<dusk::elements::TextField>()->m_contents;
+				if (fs::exists(selectionPath))
+				{
+					// If selected a directory, move into the directory instead.
+					if (fs::is_directory(selectionPath))
+					{
+						m_currentDirectory = selectionPath.string();
+						UpdateDirectoryListing();
+					}
+					// If selected a file, then check that either the file is a normal file
+					else if (fs::is_regular_file(selectionPath))
+					{
+						if (m_onAccept != nullptr)
+						{
+							m_onAccept(selectionPath.string());
+						}
+						Hide();
+					}
+				}
+				// If the path exists, let's just select the path properly.
+				else if (fs::exists(currentPath))
+				{
+					if (m_onAccept != nullptr)
+					{
+						m_onAccept(selectionPath.string());
+					}
+					Hide();
+				}
+			}
+		}
 	}
 }
 
@@ -266,6 +341,16 @@ void dusk::dialogs::SaveFile::OnSelectItemInFolderview ( const int selection )
 {
 	m_currentDirectory = fs::absolute(m_folderListing[selection]).string();
 	UpdateDirectoryListing();
+}
+
+void dusk::dialogs::SaveFile::OnClickItemInFileview ( const int selection )
+{
+	fs::path l_nextPath = fs::absolute(m_fileListing[selection]);
+
+	if (fs::is_regular_file(l_nextPath))
+	{
+		m_filenameField->as<dusk::elements::TextField>()->m_contents = l_nextPath.filename().string();
+	}
 }
 
 void dusk::dialogs::SaveFile::NavigationForward ( void )

@@ -156,6 +156,7 @@
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\ScrollBar.h" />
     <ClInclude Include="source\engine-common\dusk\controls\Slider.h" />
+    <ClInclude Include="source\engine-common\dusk\controls\Spacer.h" />
     <ClInclude Include="source\engine-common\dusk\controls\TextField.h" />
     <ClInclude Include="source\engine-common\dusk\controls\TextListView.h" />
     <ClInclude Include="source\engine-common\dusk\dialogs\FileViewer.h" />
@@ -351,6 +352,7 @@
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\ScrollBar.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\Slider.cpp" />
+    <ClCompile Include="source\engine-common\dusk\controls\Spacer.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\TextField.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\TextListView.cpp" />
     <ClCompile Include="source\engine-common\dusk\dialogs\FileViewer.cpp" />
