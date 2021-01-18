@@ -50,7 +50,7 @@ void dusk::elements::TextListView::Update ( const UIStepInfo* stepinfo )
 			}
 
 			// Update clicks on hovered items
-			if ( CInput::MouseDown(CInput::MBLeft) )
+			if ( core::Input::MouseDown(core::kMBLeft) )
 			{
 				for (uint menuIndex = 0; menuIndex < m_entries.size(); ++menuIndex)
 				{

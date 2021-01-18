@@ -64,7 +64,7 @@ void ui::eventide::elements::Button::OnEventMouse ( const EventMouse& mouse_even
 		}
 		// Do a flash when clicked
 		else if (mouse_event.type == EventMouse::Type::kClicked
-			&& mouse_event.button == Input::MBLeft)
+			&& mouse_event.button == core::kMBLeft)
 		{
 			RequestUpdateMesh();
 			m_frameUpdate = FrameUpdate::kPerFrame;

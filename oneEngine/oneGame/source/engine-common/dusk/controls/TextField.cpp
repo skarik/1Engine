@@ -20,13 +20,13 @@ void dusk::elements::TextField::Update ( const UIStepInfo* stepinfo )
 		if ( m_isMouseIn && m_wasDrawn )
 		{
 			// Mouse controls
-			if ( CInput::MouseDown(CInput::MBLeft) )
+			if ( core::Input::MouseDown(core::kMBLeft) )
 			{
 				//beginPress = true;
 			}
 			/*else if ( beginPress )
 			{
-				if ( CInput::MouseUp(CInput::MBLeft) )
+				if ( core::Input::MouseUp(core::kMBLeft) )
 				{
 					beginPress = false;
 					isPressed = true;
@@ -40,7 +40,7 @@ void dusk::elements::TextField::Update ( const UIStepInfo* stepinfo )
 			// Keyboard controls
 			if ( m_isFocused )
 			{
-				if ( CInput::Keydown( Keys.Return ) )
+				if ( core::Input::Keydown( core::kVkReturn ) )
 				{
 					isPressed = true;
 				}

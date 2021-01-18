@@ -86,7 +86,7 @@ void TileSelectorUI::SetTileset ( Engine2D::Tileset* target )
 // Returns negative value when below 
 int TileSelectorUI::UIMouseoverTiletype ( void )
 {
-	Vector2f t_mousepos ( Input::MouseX(), Input::MouseY() );
+	Vector2f t_mousepos ( core::Input::MouseX(), core::Input::MouseY() );
 
 	int ix = (int)( (t_mousepos.x-ui_base_offset.x) / (m_tileset->tilesize_x+ui_spacing) );
 	int iy = (int)( (t_mousepos.y-ui_base_offset.y) / (m_tileset->tilesize_y+ui_spacing) );

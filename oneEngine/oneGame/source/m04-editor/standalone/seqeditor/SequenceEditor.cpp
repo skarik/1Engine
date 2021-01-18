@@ -116,7 +116,7 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 	}
 	else
 	{
-		const Vector2f mouseScreenPosition (Input::MouseX() / Screen::Info.width, Input::MouseY() / Screen::Info.height);
+		const Vector2f mouseScreenPosition (core::Input::MouseX() / Screen::Info.width, core::Input::MouseY() / Screen::Info.height);
 		const Ray mouseRay = Ray(
 			RrCamera::activeCamera->transform.position,
 			RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)
@@ -124,9 +124,9 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 
 		if (!dragging_view && !zooming_view)
 		{
-			if (Input::MouseDown(Input::MBMiddle))
+			if (core::Input::MouseDown(core::kMBMiddle))
 			{
-				if (Input::Key(VK_MENU))
+				if (core::Input::Key(core::kVkAlt))
 				{
 					if (!user_interface->IsMouseInside())
 					{
@@ -177,7 +177,7 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 				ARCORE_ASSERT(false);
 			}
 
-			if (Input::MouseUp(Input::MBMiddle))
+			if (core::Input::MouseUp(core::kMBMiddle))
 			{
 				// On button release, unlock. End drag mode.
 				user_interface->UnlockMouse();
@@ -186,9 +186,9 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 		}
 		else if (zooming_view)
 		{
-			RrCamera::activeCamera->transform.position += Vector3f(0, 0, Input::DeltaMouseY());
+			RrCamera::activeCamera->transform.position += Vector3f(0, 0, core::Input::DeltaMouseY());
 
-			if (Input::MouseUp(Input::MBMiddle))
+			if (core::Input::MouseUp(core::kMBMiddle))
 			{
 				// On button release, unlock. End drag mode.
 				user_interface->UnlockMouse();
@@ -210,7 +210,7 @@ void m04::editor::SequenceEditor::UpdateRightClickMenu ( void )
 		}
 	}
 
-	if (Input::MouseUp(Input::MBRight))
+	if (core::Input::MouseUp(core::kMBRight))
 	{
 		if (right_click_menu == NULL
 			|| !right_click_menu->GetMouseInside())

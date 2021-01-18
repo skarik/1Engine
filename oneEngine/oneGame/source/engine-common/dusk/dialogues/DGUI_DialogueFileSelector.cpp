@@ -182,7 +182,7 @@ void Dusk::DialogueFileSelector::Update ( void )
 {
 	// Set proper cursor position for the situation
 	//Vector2f old_cursor_pos = cursor_pos;
-	//cursor_pos = Vector2f( CInput::MouseX(), CInput::MouseY() );
+	//cursor_pos = Vector2f( core::Input::MouseX(), core::Input::MouseY() );
 
 	// Set the constant Rect size (40% of the screen)
 	const Real margin = 10.0F;
@@ -270,7 +270,7 @@ void Dusk::DialogueFileSelector::Update ( void )
 
 	bool t_checknewfile = false;
 	// Check the mouse click action
-	if ( CInput::MouseDown(CInput::MBLeft) )
+	if ( core::Input::MouseDown(core::kMBLeft) )
 	{
 		// Clicked on a file
 		if ( m_mouseover != -1 )
@@ -316,7 +316,7 @@ void Dusk::DialogueFileSelector::Update ( void )
 			m_button_mousedown = true;
 		}
 	}
-	if ( CInput::MouseUp(CInput::MBLeft) )
+	if ( core::Input::MouseUp(core::kMBLeft) )
 	{
 		// Clicked on a button
 		if ( m_button_mouseover != -1 && m_button_mousedown ) 
@@ -341,7 +341,7 @@ void Dusk::DialogueFileSelector::Update ( void )
 		if ( m_namebox_value.size() < 96 )
 		{
 			unsigned char i = Input::GetTypeChar(); // Get typed character
-			if (( i != Keys.Return )&&( i != 0 ))
+			if (( i != core::kVkReturn )&&( i != 0 ))
 			{
 				m_namebox_value += i;
 				t_checknewfile = true;

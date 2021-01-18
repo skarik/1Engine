@@ -158,23 +158,23 @@ void dusk::dialogs::SaveFile::Update ( const UIStepInfo* stepinfo )
 	if (m_isEnabled && m_wasDrawn)
 	{
 		if (m_navBackward->m_isActivated
-			|| (CInput::Key(VK_MENU) && CInput::Keydown(VK_LEFT)))
+			|| (core::Input::Key(VK_MENU) && core::Input::Keydown(VK_LEFT)))
 		{
 			NavigationBackward();
 		}
 		else if (m_navForward->m_isActivated
-			|| (CInput::Key(VK_MENU) && CInput::Keydown(VK_RIGHT)))
+			|| (core::Input::Key(VK_MENU) && core::Input::Keydown(VK_RIGHT)))
 		{
 			NavigationForward();
 		}
 		else if (m_navUp->m_isActivated
-			|| (CInput::Key(VK_MENU) && CInput::Keydown(VK_UP)))
+			|| (core::Input::Key(VK_MENU) && core::Input::Keydown(VK_UP)))
 		{
 			NavigationUp();
 		}
 
 		// Refresh.
-		if (CInput::Keydown(VK_F5))
+		if (core::Input::Keydown(VK_F5))
 		{
 			UpdateDirectoryListing();
 		}

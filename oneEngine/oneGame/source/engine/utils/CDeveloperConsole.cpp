@@ -93,7 +93,7 @@ void CDeveloperConsole::Update ( void )
 		sLastCommand = "";
 	}
 
-	/*if ( Input::Keydown( Keys.F9 ) )//if ( CInput::keydown[VK_F9] )
+	/*if ( Input::Keydown( Keys.F9 ) )//if ( core::Input::keydown[VK_F9] )
 	{
 		std::cout << "Recompiling all shaders...(this may take a while)..." << std::endl;
 		ShaderManager.RecompileAll();
@@ -118,7 +118,7 @@ void CDeveloperConsole::Update ( void )
 void CDeveloperConsole::PostUpdate ( void )
 {
 	// If input says we hit tilde, toggle command acceptance state and eat inputs
-	if ( Input::Keydown('`') ) {
+	if ( core::Input::Keydown(core::kVkTilde) ) {
 		bAcceptingCommands = !bAcceptingCommands;
 		if ( bAcceptingCommands ) {
 			mControl->Capture();
@@ -131,23 +131,28 @@ void CDeveloperConsole::PostUpdate ( void )
 	if ( bAcceptingCommands )
 	{
 		// Get input
-		unsigned char input = Input::GetTypeChar();
-		if ( input ) {
-			sLastCommand += input;
-			// Reset the command selection
-			iPreviousCommandSelection = -1;
-			// Regenerate the matching commands list
-			MatchCommands();
+		const auto& inputString = core::Input::FrameInputString();
+		for (const auto& input : inputString)
+		{
+			if ( input && isprint(input) )
+			{
+				sLastCommand += input;
+				// Reset the command selection
+				iPreviousCommandSelection = -1;
+				// Regenerate the matching commands list
+				MatchCommands();
+			}
+			if ( input == core::kVkBackspace )
+			{
+				// Reset the command selection
+				iPreviousCommandSelection = -1;
+				// Subtract a character
+				sLastCommand = sLastCommand.substr(0,sLastCommand.length()-1);
+				// Regenerate the matching commands list
+				MatchCommands();
+			}
 		}
-		if ( Input::Keydown( Keys.Backspace ) ) {
-			// Reset the command selection
-			iPreviousCommandSelection = -1;
-			// Subtract a character
-			sLastCommand = sLastCommand.substr(0,sLastCommand.length()-1);
-			// Regenerate the matching commands list
-			MatchCommands();
-		}
-		if ( Input::Keydown( Keys.Tab ) ) {
+		if ( core::Input::Keydown( core::kVkTab ) ) {
 			if ( iPreviousCommandSelection == -1 ) {
 				// Autocomplete
 				if ( !matchingCommands.empty() ) {
@@ -156,7 +161,7 @@ void CDeveloperConsole::PostUpdate ( void )
 			}
 		}
 		// Check for press up to go through previous commands
-		if ( Input::Keydown( Keys.Up ) ) {
+		if ( core::Input::Keydown( core::kVkUp ) ) {
 			iPreviousCommandSelection -= 1;
 			if ( iPreviousCommandSelection < -1 ) {
 				iPreviousCommandSelection = ((int)previousCommands.size())-1;
@@ -169,7 +174,7 @@ void CDeveloperConsole::PostUpdate ( void )
 			}
 		}
 		// Run command otherwise
-		if ( Input::Keydown( Keys.Return ) ) {
+		if ( core::Input::Keydown( core::kVkReturn ) ) {
 			bRunCommand = true;
 		}
 	}

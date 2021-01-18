@@ -145,7 +145,7 @@ namespace dusk
 	public:
 
 		Vector2f			m_cursor; // accessible publicly? 
-		//Vector2f( CInput::MouseX(), CInput::MouseY() );
+		//Vector2f( core::Input::MouseX(), core::Input::MouseY() );
 		// offsets: set the element's true position?
 
 	private:

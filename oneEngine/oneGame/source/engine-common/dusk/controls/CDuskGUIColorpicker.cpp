@@ -99,7 +99,7 @@ void CDuskGUIColorpicker::Update ( void )
 
 		if ( mouseIn )
 		{
-			if ( CInput::Mouse(CInput::MBLeft) )
+			if ( core::Input::Mouse(core::kMBLeft) )
 			{
 				bool hasChange = false;
 				Vector2f dpos, delta;
@@ -203,14 +203,14 @@ void CDuskGUIColorpicker::Update ( void )
 		}
 		else
 		{
-			if ( CInput::MouseDown(CInput::MBLeft) )
+			if ( core::Input::MouseDown(core::kMBLeft) )
 			{
 				inDialogueMode = false;
 				activeGUI->hCurrentDialogue = Handle(-1);
 				rect = homeRect;
 				lastColorValue = homeColorValue;
 			}
-			else if ( CInput::MouseDown(CInput::MBRight) )
+			else if ( core::Input::MouseDown(core::kMBRight) )
 			{
 				inDialogueMode = false;
 				activeGUI->hCurrentDialogue = Handle(-1);

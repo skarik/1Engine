@@ -220,7 +220,7 @@ void ui::eventide::UserInterface::Update ( void )
 	}
 
 	// Update tab-focus:
-	if (Input::Key(VK_TAB))
+	if (core::Input::Key(core::kVkTab))
 	{
 		Element* nextFocusedElement = nullptr;
 
@@ -265,7 +265,7 @@ void ui::eventide::UserInterface::Update ( void )
 	// Update mouse clickity clack:
 	if (RrCamera::activeCamera != NULL && (m_duskUI == NULL || !m_duskUI->IsMouseInside()))
 	{
-		const Vector2f mouseScreenPosition (Input::MouseX() / Screen::Info.width, Input::MouseY() / Screen::Info.height);
+		const Vector2f mouseScreenPosition (core::Input::MouseX() / Screen::Info.width, core::Input::MouseY() / Screen::Info.height);
 		const Ray mouseRay = Ray(
 			RrCamera::activeCamera->transform.position,
 			RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)
@@ -385,7 +385,7 @@ void ui::eventide::UserInterface::Update ( void )
 			// Staying inside the current element:
 			for (int mouseButton = 0; mouseButton < 4; ++mouseButton)
 			{
-				if (Input::MouseDown(mouseButton))
+				if (core::Input::MouseDown(mouseButton))
 				{
 					event.type = ui::eventide::Element::EventMouse::Type::kClicked;
 					event.button = mouseButton;
@@ -406,7 +406,7 @@ void ui::eventide::UserInterface::Update ( void )
 
 					m_mouseDragReference[mouseButton] = event.position_world;
 				}
-				if (Input::Mouse(mouseButton))
+				if (core::Input::Mouse(mouseButton))
 				{
 					Vector3f mouseDelta = event.position_world - m_mouseDragReference[mouseButton];
 					if (mouseDelta.sqrMagnitude() > FLOAT_PRECISION)
@@ -432,7 +432,7 @@ void ui::eventide::UserInterface::Update ( void )
 						m_mouseDragReference[mouseButton] = event.position_world;
 					}
 				}
-				if (Input::MouseUp(mouseButton))
+				if (core::Input::MouseUp(mouseButton))
 				{
 					event.type = ui::eventide::Element::EventMouse::Type::kReleased;
 					event.button = mouseButton;
@@ -463,7 +463,7 @@ void ui::eventide::UserInterface::Update ( void )
 		if (element->m_focused || (interactMask & ui::eventide::Element::InputInteractMasks::kCatchAll))
 		{
 			if ((interactMask & ui::eventide::Element::InputInteractMasks::kActivateEnter)
-				&& Input::Keydown(VK_RETURN))
+				&& core::Input::Keydown(core::kVkReturn))
 			{
 				ui::eventide::Element::EventInput event;
 				event.type = ui::eventide::Element::EventInput::Type::kActivate;
@@ -471,7 +471,7 @@ void ui::eventide::UserInterface::Update ( void )
 			}
 
 			if ((interactMask & ui::eventide::Element::InputInteractMasks::kActivateSpace)
-				&& Input::Keydown(VK_SPACE))
+				&& core::Input::Keydown(core::kVkSpace))
 			{
 				ui::eventide::Element::EventInput event;
 				event.type = ui::eventide::Element::EventInput::Type::kActivate;

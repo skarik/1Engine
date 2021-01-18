@@ -26,7 +26,7 @@ bool TileSelector::Update ( void )
 
 	if ( nextTileSelect >= 0 )
 	{
-		if ( Input::MouseDown( Input::MBLeft ) )
+		if ( core::Input::MouseDown( core::kMBLeft ) )
 		{
 			m_tileselection = nextTileSelect;
 			ui->UISetSelection( m_tileselection );

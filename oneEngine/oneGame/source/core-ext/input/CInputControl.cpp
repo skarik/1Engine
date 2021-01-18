@@ -73,7 +73,8 @@ void CInputControl::Release ( void )
 void CInputControl::Update ( void* owner, float deltaTime )
 {
 	// Update xbox controller:
-	Input::xboxControl->UpdateState();
+	InputControl::CXBoxController* xboxControl = nullptr; // TODO: InputControl::CXBoxController::GetController(0)
+	xboxControl->UpdateState();
 
 	// Get inputs from style
 	if ( CGameSettings::Active()->i_cl_KeyboardStyle == 0 )
@@ -82,115 +83,115 @@ void CInputControl::Update ( void* owner, float deltaTime )
 
 		// Get directional input
 		// First clip controller input
-		controllerInput = Input::xboxControl->GetAnalog(InputControl::kAnalogIndexLeftStick);
+		controllerInput = xboxControl->GetAnalog(InputControl::kAnalogIndexLeftStick);
 		// Now perform the rest of the inputs
-		vDirInput.x		= (float)Input::Key('D') - (float)Input::Key('A');
+		vDirInput.x		= (float)core::Input::Key('D') - (float)core::Input::Key('A');
 			vDirInput.x+= controllerInput.x;
-		vDirInput.y		= (float)Input::Key('W') - (float)Input::Key('S');
+		vDirInput.y		= (float)core::Input::Key('W') - (float)core::Input::Key('S');
 			vDirInput.y+= controllerInput.y;
-		vDirInput.z		= (float)Input::Key(Keys.Space) - (float)Input::Key(Keys.Control) - (float)Input::Key('C');
-			vDirInput.z+= ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_A)?1:0);
-			vDirInput.z-= ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)?1:0);
+		vDirInput.z		= (float)core::Input::Key(core::kVkSpace) - (float)core::Input::Key(core::kVkControl) - (float)core::Input::Key('C');
+			vDirInput.z+= ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_A)?1:0);
+			vDirInput.z-= ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER)?1:0);
 		
 		// Get turning input
 		// First clicp controller input
-		controllerInput = Input::xboxControl->GetAnalog(InputControl::kAnalogIndexRightStick);
+		controllerInput = xboxControl->GetAnalog(InputControl::kAnalogIndexRightStick);
 		// Now perform the rest of the inputs
-		vMouseInput.x	= (float)CInput::DeltaMouseX()*0.5f;
+		vMouseInput.x	= (float)core::Input::DeltaMouseX()*0.5f;
 			vMouseInput.x+= (controllerInput.x * deltaTime) * 160.0f;
-		vMouseInput.y	= (float)CInput::DeltaMouseY()*0.5f;
+		vMouseInput.y	= (float)core::Input::DeltaMouseY()*0.5f;
 			vMouseInput.y-= (controllerInput.y * deltaTime) * 160.0f;
-			vMouseInput.z	= (float)CInput::DeltaMouseW();
-			vMouseInput.z+= ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)?1:0);
-			vMouseInput.z-= ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)?1:0);
+			vMouseInput.z	= (float)core::Input::DeltaMouseW();
+			vMouseInput.z+= ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)?1:0);
+			vMouseInput.z-= ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)?1:0);
 			
 		// Get the keydown input
-		controllerInput = Input::xboxControl->GetAnalog(InputControl::kAnalogIndexTriggers);
-		//axes.crouch.Update			( (float)Input::Key(Keys.Control) + (float)Input::Key('C') );
+		controllerInput = xboxControl->GetAnalog(InputControl::kAnalogIndexTriggers);
+		//axes.crouch.Update			( (float)core::Input::Key(core::kVkControl) + (float)core::Input::Key('C') );
 		axes.crouch.Update			( -math::clamp<Real>(vDirInput.z,-1,0) );
-		//axes.jump.Update			( (float)Input::Key(Keys.Space) );
+		//axes.jump.Update			( (float)core::Input::Key(core::kVkSpace) );
 		axes.jump.Update			( math::clamp<Real>(vDirInput.z,0,1) );
-		axes.primary.Update			( (float)CInput::Mouse(CInput::MBLeft)  + controllerInput.y );
-		axes.secondary.Update		( (float)CInput::Mouse(CInput::MBRight) + controllerInput.x );
-		//axes.sprint.Update			( (float)Input::Key(Keys.Shift) );
-		axes.sprint.Update			( (float)Input::Key(Keys.Shift) + ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)?1:0) );
-		axes.prone.Update			( (float)Input::Keydown('Z') );
-		//axes.defend.Update			( (float)Input::Key('Q') );
-		axes.defend.Update			( (float)Input::Key('Q') + ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)?1:0) );
-		//axes.use.Update				( (float)Input::Key('E') );
-		axes.use.Update				( (float)Input::Key('E') + ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_X)?1:0) );
-		//axes.tertiary.Update		( (float)Input::Key('R') );
-		axes.tertiary.Update		( (float)Input::Key('R') + ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_Y)?1:0) );
+		axes.primary.Update			( (float)core::Input::Mouse(core::kMBLeft)  + controllerInput.y );
+		axes.secondary.Update		( (float)core::Input::Mouse(core::kMBRight) + controllerInput.x );
+		//axes.sprint.Update			( (float)core::Input::Key(core::kVkShift) );
+		axes.sprint.Update			( (float)core::Input::Key(core::kVkShift) + ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)?1:0) );
+		axes.prone.Update			( (float)core::Input::Keydown('Z') );
+		//axes.defend.Update			( (float)core::Input::Key('Q') );
+		axes.defend.Update			( (float)core::Input::Key('Q') + ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB)?1:0) );
+		//axes.use.Update				( (float)core::Input::Key('E') );
+		axes.use.Update				( (float)core::Input::Key('E') + ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_X)?1:0) );
+		//axes.tertiary.Update		( (float)core::Input::Key('R') );
+		axes.tertiary.Update		( (float)core::Input::Key('R') + ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_Y)?1:0) );
 
-		axes.menuToggle.Update		( (float)Input::Key(Keys.Tab) + ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_BACK)?1:0) );
-		axes.menuInventory.Update	( (float)Input::Key('I') + ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)?1:0) );
-		axes.menuLogbook.Update		( (float)Input::Key('L') );
-		axes.menuCharscreen.Update	( (float)Input::Key('O') );
-		axes.menuSkills.Update		( (float)Input::Key('K') );
-		axes.menuQuestlog.Update	( (float)Input::Key('J') );
-		axes.menuCrafting.Update	( (float)Input::Key('U') );
+		axes.menuToggle.Update		( (float)core::Input::Key(core::kVkTab) + ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_BACK)?1:0) );
+		axes.menuInventory.Update	( (float)core::Input::Key('I') + ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)?1:0) );
+		axes.menuLogbook.Update		( (float)core::Input::Key('L') );
+		axes.menuCharscreen.Update	( (float)core::Input::Key('O') );
+		axes.menuSkills.Update		( (float)core::Input::Key('K') );
+		axes.menuQuestlog.Update	( (float)core::Input::Key('J') );
+		axes.menuCrafting.Update	( (float)core::Input::Key('U') );
 
-		axes.tglCompanion.Update	( (float)Input::Key('F') + ((Input::xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB)?1:0) );
-		axes.tglContext.Update		( (float)Input::Key('X') );
-		axes.tglEyewear.Update		( (float)Input::Key('V') );
+		axes.tglCompanion.Update	( (float)core::Input::Key('F') + ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB)?1:0) );
+		axes.tglContext.Update		( (float)core::Input::Key('X') );
+		axes.tglEyewear.Update		( (float)core::Input::Key('V') );
 	}
 	else if ( CGameSettings::Active()->i_cl_KeyboardStyle == 1 ) // US DVORAK
 	{
 		// Get directional input
-		vDirInput.x		= (float)Input::Key(',') - (float)Input::Key('O');
-		vDirInput.y		= (float)Input::Key('A') - (float)Input::Key('E');
-		vDirInput.z		= (float)Input::Key(Keys.Space) - (float)Input::Key(Keys.Control) - (float)Input::Key('C');
+		vDirInput.x		= (float)core::Input::Key(',') - (float)core::Input::Key('O');
+		vDirInput.y		= (float)core::Input::Key('A') - (float)core::Input::Key('E');
+		vDirInput.z		= (float)core::Input::Key(core::kVkSpace) - (float)core::Input::Key(core::kVkControl) - (float)core::Input::Key('C');
 		// Get turnint input
-		vMouseInput.x	= (float)CInput::DeltaMouseX();
-		vMouseInput.y	= (float)CInput::DeltaMouseY();
-		vMouseInput.z	= (float)CInput::DeltaMouseW();
+		vMouseInput.x	= (float)core::Input::DeltaMouseX();
+		vMouseInput.y	= (float)core::Input::DeltaMouseY();
+		vMouseInput.z	= (float)core::Input::DeltaMouseW();
 
 		// Get the keydown input
-		axes.crouch.Update			( (float)Input::Key(Keys.Control) + (float)Input::Key('J') );
-		axes.jump.Update			( (float)Input::Key(Keys.Space) );
-		axes.primary.Update			( (float)CInput::Mouse(CInput::MBLeft) );
-		axes.secondary.Update		( (float)CInput::Mouse(CInput::MBRight) );
-		axes.sprint.Update			( (float)Input::Key(Keys.Shift) );
-		axes.prone.Update			( (float)Input::Keydown(';') );
-		axes.defend.Update			( (float)Input::Key('\'') );
-		axes.use.Update				( (float)Input::Key('.') );
-		axes.tertiary.Update		( (float)Input::Key('P') );
+		axes.crouch.Update			( (float)core::Input::Key(core::kVkControl) + (float)core::Input::Key('J') );
+		axes.jump.Update			( (float)core::Input::Key(core::kVkSpace) );
+		axes.primary.Update			( (float)core::Input::Mouse(core::kMBLeft) );
+		axes.secondary.Update		( (float)core::Input::Mouse(core::kMBRight) );
+		axes.sprint.Update			( (float)core::Input::Key(core::kVkShift) );
+		axes.prone.Update			( (float)core::Input::Keydown(';') );
+		axes.defend.Update			( (float)core::Input::Key('\'') );
+		axes.use.Update				( (float)core::Input::Key('.') );
+		axes.tertiary.Update		( (float)core::Input::Key('P') );
 
-		axes.menuToggle.Update		( (float)Input::Key(Keys.Tab) );
-		axes.menuInventory.Update	( (float)Input::Key('C') );
-		axes.menuLogbook.Update		( (float)Input::Key('N') );
-		axes.menuCharscreen.Update	( (float)Input::Key('R') );
-		axes.menuSkills.Update		( (float)Input::Key('T') );
-		axes.menuQuestlog.Update	( (float)Input::Key('H') );
-		axes.menuCrafting.Update	( (float)Input::Key('G') );
+		axes.menuToggle.Update		( (float)core::Input::Key(core::kVkTab) );
+		axes.menuInventory.Update	( (float)core::Input::Key('C') );
+		axes.menuLogbook.Update		( (float)core::Input::Key('N') );
+		axes.menuCharscreen.Update	( (float)core::Input::Key('R') );
+		axes.menuSkills.Update		( (float)core::Input::Key('T') );
+		axes.menuQuestlog.Update	( (float)core::Input::Key('H') );
+		axes.menuCrafting.Update	( (float)core::Input::Key('G') );
 
-		axes.tglCompanion.Update	( (float)Input::Key('U') );
-		axes.tglContext.Update		( (float)Input::Key('Q') );
-		axes.tglEyewear.Update		( (float)Input::Key('K') );
+		axes.tglCompanion.Update	( (float)core::Input::Key('U') );
+		axes.tglContext.Update		( (float)core::Input::Key('Q') );
+		axes.tglEyewear.Update		( (float)core::Input::Key('K') );
 	}
 
 	/*
 	// Get directional input
-	vDirInput.x		= (float)CInput::key['W'] - (float)CInput::key['S'];
-	vDirInput.y		= (float)CInput::key['A'] - (float)CInput::key['D'];
-	vDirInput.z		= (float)CInput::key[VK_SPACE];
+	vDirInput.x		= (float)core::Input::key['W'] - (float)core::Input::key['S'];
+	vDirInput.y		= (float)core::Input::key['A'] - (float)core::Input::key['D'];
+	vDirInput.z		= (float)core::Input::key[VK_SPACE];
 	// Get turnint input
-	vTurnInput.x	= (float)CInput::deltaMouseX;
-	vTurnInput.y	= (float)CInput::deltaMouseY;
-	vTurnInput.z	= (float)CInput::deltaMouseW;
+	vTurnInput.x	= (float)core::Input::deltaMouseX;
+	vTurnInput.y	= (float)core::Input::deltaMouseY;
+	vTurnInput.z	= (float)core::Input::deltaMouseW;
 	// Get the keydown input
 	for ( short i = 0; i < maxInputs; i += 1 )
 	{
 		fInputPrev[ i ] = fInput[ i ];
 	}
-	fInput[ iCrouch ]	= (float)CInput::key[VK_CONTROL] + (float)CInput::key['C'];
-	fInput[ iJump ]		= (float)CInput::key[VK_SPACE];
-	fInput[ iPrimary ]	= (float)CInput::mouse[CInput::MBLeft];
-	fInput[ iSecondary ]= (float)CInput::mouse[CInput::MBRight];
-	fInput[ iTab ]		= (float)CInput::key[VK_TAB];
-	fInput[ iSprint ]	= (float)CInput::key[VK_SHIFT];
-	fInput[ iProne ]	= (float)CInput::keydown['Z'];
-	fInput[ iThrow ]	= (float)CInput::key['Q'];
+	fInput[ iCrouch ]	= (float)core::Input::key[VK_CONTROL] + (float)core::Input::key['C'];
+	fInput[ iJump ]		= (float)core::Input::key[VK_SPACE];
+	fInput[ iPrimary ]	= (float)core::Input::mouse[core::kMBLeft];
+	fInput[ iSecondary ]= (float)core::Input::mouse[core::kMBRight];
+	fInput[ iTab ]		= (float)core::Input::key[VK_TAB];
+	fInput[ iSprint ]	= (float)core::Input::key[VK_SHIFT];
+	fInput[ iProne ]	= (float)core::Input::keydown['Z'];
+	fInput[ iThrow ]	= (float)core::Input::key['Q'];
 	*/
 
 	// Check for owning of control events

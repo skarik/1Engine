@@ -1,6 +1,7 @@
 #include "core/debug/console.h"
 #include "core/input/CInput.h"
 #include "core/system/Screen.h"
+#include "core/math/Math.h"
 #include "core/settings/CGameSettings.h"
 #include "core-ext/system/shell/Message.h"
 #include "core-ext/system/shell/DragAndDrop.h"
@@ -461,8 +462,8 @@ void RrWindow::UpdateMouseClipping ( void )
 	if (m_wantClipCursor)
 	{
 		// Is mouse inside the window?
-		if (   ( CInput::SysMouseX() == std::min<long>( std::max<long>( CInput::SysMouseX(), 0 ), m_resolution.x ) )
-			&& ( CInput::SysMouseY() == std::min<long>( std::max<long>( CInput::SysMouseY(), 0 ), m_resolution.y ) ))
+		if (   ( core::Input::SysMouseX() == math::clamp<long>( core::Input::SysMouseX(), 0 , m_resolution.x ) )
+			&& ( core::Input::SysMouseY() == math::clamp<long>( core::Input::SysMouseY(), 0 , m_resolution.y ) ))
 		{
 			hiddencursor = false;
 
@@ -490,8 +491,8 @@ void RrWindow::UpdateMouseClipping ( void )
 	else
 	{
 		// Is mouse inside the window?
-		if (   ( CInput::SysMouseX() == std::min<long>( std::max<long>( CInput::SysMouseX(), 0 ), m_resolution.x ) )
-			&& ( CInput::SysMouseY() == std::min<long>( std::max<long>( CInput::SysMouseY(), 0 ), m_resolution.y ) ))
+		if (   ( core::Input::SysMouseX() == math::clamp<long>( core::Input::SysMouseX(), 0 , m_resolution.x ) )
+			&& ( core::Input::SysMouseY() == math::clamp<long>( core::Input::SysMouseY(), 0 , m_resolution.y ) ))
 		{
 			// Disable clipping the cursor
 			ClipCursor(NULL);
@@ -530,7 +531,7 @@ LRESULT CALLBACK MessageUpdate(
 			rrWindow->focused = false;	// Program is no longer focused
 			if (rrWindow->m_zeroInputOnLoseFocus)
 			{
-				CInput::Reset();
+				core::Input::Reset();
 			}
 		}
 
@@ -547,7 +548,7 @@ LRESULT CALLBACK MessageUpdate(
 		rrWindow->focused = false;	// Program is no longer focused
 		if (rrWindow->m_zeroInputOnLoseFocus)
 		{
-			CInput::Reset();
+			core::Input::Reset();
 		}
 		return 0;
 	}
@@ -560,9 +561,8 @@ LRESULT CALLBACK MessageUpdate(
 			POINT pt;
 			GetCursorPos( &pt );
 			ScreenToClient( hWnd, &pt );
-			CInput::_sysMouseX( pt.x );
-			CInput::_sysMouseY( pt.y );
-			CInput::_syncRawAndSystemMouse(rrWindow->m_wantSystemCursor);
+			core::Input::WSetSysMouse({pt.x, pt.y});
+			core::Input::WSetSyncRawAndSystemMouse(rrWindow->m_wantSystemCursor);
 			rrWindow->UpdateMouseClipping();
 		}
 		return 0;
@@ -625,9 +625,8 @@ LRESULT CALLBACK MessageUpdate(
 	{
 		if ( rrWindow->focused )
 		{
-			CInput::_sysMouseX( LOWORD(lParam) );
-			CInput::_sysMouseY( HIWORD(lParam) );
-			CInput::_syncRawAndSystemMouse(rrWindow->m_wantSystemCursor);
+			core::Input::WSetSysMouse({LOWORD(lParam), HIWORD(lParam)});
+			core::Input::WSetSyncRawAndSystemMouse(rrWindow->m_wantSystemCursor);
 		}
 		return 0;
 	}
@@ -683,8 +682,7 @@ LRESULT CALLBACK MessageUpdate(
 			{
 				if (raw->header.dwType == RIM_TYPEMOUSE)
 				{
-					CInput::_addRawMouseX( raw->data.mouse.lLastX );
-					CInput::_addRawMouseY( raw->data.mouse.lLastY );
+					core::Input::WAddRawMouse( {raw->data.mouse.lLastX, raw->data.mouse.lLastY} );
 				} 
 				else if (raw->header.dwType == RIM_TYPEKEYBOARD)
 				{
@@ -694,14 +692,16 @@ LRESULT CALLBACK MessageUpdate(
 
 					if ( flags&RI_KEY_BREAK )
 					{
-						CInput::_keyup(_inputtable[vkey], true);
-						CInput::_key(_inputtable[vkey], false);
+						core::Input::WSetKeyBreak((uchar)vkey);
+						//core::Input::_keyup(_inputtable[vkey], true);
+						//core::Input::_key(_inputtable[vkey], false);
 						//SendMessage( hWnd, WM_KEYUP, vkey, 0 );
 					}
 					else // is a make
 					{
-						CInput::_keydown(_inputtable[vkey], true);
-						CInput::_key(_inputtable[vkey], true);
+						core::Input::WSetKeyMake((uchar)vkey);
+						//core::Input::_keydown(_inputtable[vkey], true);
+						//core::Input::_key(_inputtable[vkey], true);
 						//SendMessage( hWnd, WM_KEYDOWN, vkey, 0 );
 					}
 				}
@@ -717,65 +717,67 @@ LRESULT CALLBACK MessageUpdate(
 		// Mouse Buttons
 	case WM_LBUTTONDOWN:
 	{
-		CInput::_mousedown(CInput::MBLeft,true);
-		CInput::_mouse(CInput::MBLeft,true);
-
+		core::Input::WSetMouseMake(core::kMBLeft);
 		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_LBUTTONUP:
 	{
-		CInput::_mouseup(CInput::MBLeft,true);
-		CInput::_mouse(CInput::MBLeft,false);
+		core::Input::WSetMouseBreak(core::kMBLeft);
 		return 0;
 	}
 	case WM_RBUTTONDOWN:
 	{
-		CInput::_mousedown(CInput::MBRight,true);
-		CInput::_mouse(CInput::MBRight,true);
-
+		core::Input::WSetMouseMake(core::kMBRight);
 		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_RBUTTONUP:
 	{
-		CInput::_mouseup(CInput::MBRight,true);
-		CInput::_mouse(CInput::MBRight,false);
+		core::Input::WSetMouseBreak(core::kMBRight);
 		return 0;
 	}
 	case WM_MBUTTONDOWN:
 	{
-		CInput::_mousedown(CInput::MBMiddle,true);
-		CInput::_mouse(CInput::MBMiddle,true);
-
+		core::Input::WSetMouseMake(core::kMBMiddle);
 		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_MBUTTONUP:
 	{
-		CInput::_mouseup(CInput::MBMiddle,true);
-		CInput::_mouse(CInput::MBMiddle,false);
+		core::Input::WSetMouseBreak(core::kMBMiddle);
 		return 0;
 	}
 	case WM_XBUTTONDOWN:
 	{
-		CInput::_mousedown(CInput::MBXtra,true);
-		CInput::_mouse(CInput::MBXtra,true);
-
+		if (HIWORD(wParam) == XBUTTON1)
+		{
+			core::Input::WSetMouseMake(core::kMBBackward);
+		}
+		else if (HIWORD(wParam) == XBUTTON2)
+		{
+			core::Input::WSetMouseMake(core::kMBForward);
+		}
 		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_XBUTTONUP:
 	{
-		CInput::_mouseup(CInput::MBXtra,true);
-		CInput::_mouse(CInput::MBXtra,false);
+		if (HIWORD(wParam) == XBUTTON1)
+		{
+			core::Input::WSetMouseBreak(core::kMBBackward);
+		}
+		else if (HIWORD(wParam) == XBUTTON2)
+		{
+			core::Input::WSetMouseBreak(core::kMBForward);
+		}
 		return 0;
 	}
 
 	// Mouse wheel
 	case WM_MOUSEWHEEL:
 	{
-		CInput::_currMouseW( GET_WHEEL_DELTA_WPARAM(wParam) );
+		core::Input::WSetCurrMouseW( GET_WHEEL_DELTA_WPARAM(wParam) );
 		return 0;
 	}
 	case WM_HSCROLL:

@@ -38,7 +38,7 @@ void M04::UIDragHandle::Update ( void )
 		// Grab mouse position in the world to get hover area
 		if ( m_style == DrawStyle::s2D )
 		{
-			Vector3f worldpos = RrCamera::activeCamera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+			Vector3f worldpos = RrCamera::activeCamera->ScreenToWorldPos( Vector2f( core::Input::MouseX()/(Real)Screen::Info.width, core::Input::MouseY()/(Real)Screen::Info.height ) );
 			Rect check_rect;
 
 			// Reset hovers
@@ -72,13 +72,13 @@ void M04::UIDragHandle::Update ( void )
 		// Check for mouse input
 		if ( m_drag_axis_hover != Axis::None )
 		{
-			if ( Input::MouseDown(Input::MBLeft) )
+			if ( core::Input::MouseDown(core::kMBLeft) )
 			{
 				if ( m_dragging == false )
 				{
 					m_drag_axis = m_drag_axis_hover;
 					m_dragging = true;
-					m_drag_start = Vector2f( Input::MouseX(), Input::MouseY() );
+					m_drag_start = Vector2f( core::Input::MouseX(), core::Input::MouseY() );
 
 					m_position_start = m_position;
 					m_rotation_start = m_rotation;
@@ -90,7 +90,7 @@ void M04::UIDragHandle::Update ( void )
 	else
 	{
 		// Perform the dragging
-		m_drag_end = Vector2f( Input::MouseX(), Input::MouseY() );
+		m_drag_end = Vector2f( core::Input::MouseX(), core::Input::MouseY() );
 		Vector3f t_drag_delta = m_drag_end - m_drag_start;
 
 		// Different modes have different behavior
@@ -114,7 +114,7 @@ void M04::UIDragHandle::Update ( void )
 		}
 
 		// Check if still dragging
-		if ( Input::MouseUp(Input::MBLeft) || !Input::Mouse(Input::MBLeft) )
+		if ( core::Input::MouseUp(core::kMBLeft) || !core::Input::Mouse(core::kMBLeft) )
 		{
 			m_dragging = false;
 			m_drag_axis = Axis::None;

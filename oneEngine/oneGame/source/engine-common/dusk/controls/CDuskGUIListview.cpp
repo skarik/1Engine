@@ -101,7 +101,7 @@ void CDuskGUIListview::Update ( void )
 
 		if ( nselection != -1 ) {
 			currentmouseover = nselection;
-			if ( CInput::MouseDown(CInput::MBLeft) )
+			if ( core::Input::MouseDown(core::kMBLeft) )
 			{
 				selection = currentmouseover;
 			}

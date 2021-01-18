@@ -75,22 +75,22 @@ void CutsceneEditor::doViewNavigationDrag ( void )
 	{
 		m_navigation_busy = false;
 		// Drag navigation
-		if ( Input::Mouse( Input::MBMiddle ) || ( Input::Mouse( Input::MBRight ) && Input::Key( Keys.Control ) ) )
+		if ( core::Input::Mouse( core::kMBMiddle ) || ( core::Input::Mouse( core::kMBRight ) && core::Input::Key( core::kVkControl ) ) )
 		{
 			m_navigation_busy = true;
 			m_target_camera_position -= Vector2f(
-				Input::DeltaMouseX(), Input::DeltaMouseY()
+				core::Input::DeltaMouseX(), core::Input::DeltaMouseY()
 			);
 		}
-		if ( Input::DeltaMouseW() != 0 )
+		if ( core::Input::DeltaMouseW() != 0 )
 		{
-			m_target_camera_position.y += Input::DeltaMouseW() * 0.05f;
+			m_target_camera_position.y += core::Input::DeltaMouseW() * 0.05f;
 		}
 		// Navigation via arrow keys for bonus usability
-		//if ( Input::Key( Keys.Left ) )  m_target_camera_position.x -= m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
-		//if ( Input::Key( Keys.Right ) ) m_target_camera_position.x += m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
-		//if ( Input::Key( Keys.Up ) )	m_target_camera_position.y -= m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
-		//if ( Input::Key( Keys.Down ) )	m_target_camera_position.y += m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
+		//if ( Input::Key( core::kVkLeft ) )  m_target_camera_position.x -= m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
+		//if ( Input::Key( core::kVkRight ) ) m_target_camera_position.x += m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
+		//if ( Input::Key( core::kVkUp ) )	m_target_camera_position.y -= m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
+		//if ( Input::Key( core::kVkDown ) )	m_target_camera_position.y += m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
 
 		// Update camera position
 		//m_target_camera->transform.position = m_target_camera_position;
@@ -100,7 +100,7 @@ void CutsceneEditor::doViewNavigationDrag ( void )
 //		uiGetCurrentMouse() : Get vmouse position
 Vector3f CutsceneEditor::uiGetCurrentMouse ( void )
 {
-	return Vector3f( Input::MouseX(), Input::MouseY(), 0.0F )
+	return Vector3f( core::Input::MouseX(), core::Input::MouseY(), 0.0F )
 		+ m_target_camera_position
 		- Vector3f((Real)Screen::Info.width, (Real)Screen::Info.height, 0.0F) * 0.5F;
 }
@@ -220,7 +220,7 @@ void CutsceneEditor::doEditorDragNodes ( void )
 	if ( !m_dragging_node )
 	{
 		// Check for begin drag
-		if ( m_mouseover_node && Input::MouseDown(Input::MBLeft) )
+		if ( m_mouseover_node && core::Input::MouseDown(core::kMBLeft) )
 		{
 			m_dragging_node = true;
 			m_dragging_index = m_mouseover_index;
@@ -235,7 +235,7 @@ void CutsceneEditor::doEditorDragNodes ( void )
 			m_dragging_startpos + uiGetCurrentMouse() - m_dragging_reference;
 
 		// Release drag
-		if ( Input::MouseUp(Input::MBLeft) )
+		if ( core::Input::MouseUp(core::kMBLeft) )
 		{
 			m_dragging_node = false;
 		}
@@ -251,14 +251,14 @@ void CutsceneEditor::doEditorConnectNodes ( void )
 	if ( !m_connecting_node )
 	{
 		// Check for begin drag connection
-		if ( m_mouseover_connector_input && Input::MouseDown(Input::MBLeft) )
+		if ( m_mouseover_connector_input && core::Input::MouseDown(core::kMBLeft) )
 		{
 			m_connecting_node = true;
 			m_connecting_index_input = m_mouseover_index;
 			m_connecting_index_output = kInvalidIndex;
 			m_connecting_connectorindex = kInvalidIndex;
 		}
-		else if ( m_mouseover_connector_output && Input::MouseDown(Input::MBLeft) )
+		else if ( m_mouseover_connector_output && core::Input::MouseDown(core::kMBLeft) )
 		{
 			m_connecting_node = true;
 			m_connecting_index_input = kInvalidIndex;
@@ -268,7 +268,7 @@ void CutsceneEditor::doEditorConnectNodes ( void )
 	}
 	else
 	{
-		if ( Input::MouseUp(Input::MBLeft) )
+		if ( core::Input::MouseUp(core::kMBLeft) )
 		{
 			bool valid_make = false;
 
@@ -307,7 +307,7 @@ void CutsceneEditor::doEditorConnectNodes ( void )
 
 void CutsceneEditor::doEditorContextMenu ( void )
 {
-	if ( Input::MouseDown( Input::MBRight ) )
+	if ( core::Input::MouseDown( core::kMBRight ) )
 	{
 		// Force mouseover update if pressing right click while menu is already up.
 		if ( m_contextMenu_visible )
@@ -372,7 +372,7 @@ void CutsceneEditor::doEditorContextMenu ( void )
 			m_mouseover_context_prev = kInvalidIndex;
 		}
 
-		if ( Input::MouseDown( Input::MBLeft ) )
+		if ( core::Input::MouseDown( core::kMBLeft ) )
 		{
 			// Is the mouse even in range?
 			if (m_mouseover_context_prev != kInvalidIndex

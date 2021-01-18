@@ -269,7 +269,7 @@ bool CDeveloperCursor::PreRender ( rrCameraPass* cameraPass )
 	// Manually create transform
 	XrTransform cursorTransform;
 	cursorTransform.scale = Vector3f(1.0F / Screen::Info.width, 1.0F / Screen::Info.height, 1.0F);
-	cursorTransform.position = Vector2f((Real)Input::MouseX() - Screen::Info.width * 0.5F, (Real)Input::MouseY() - Screen::Info.height * 0.5F);
+	cursorTransform.position = Vector2f((Real)core::Input::MouseX() - Screen::Info.width * 0.5F, (Real)core::Input::MouseY() - Screen::Info.height * 0.5F);
 	cursorTransform.position = cursorTransform.position.mulComponents(cursorTransform.scale * 2.0F);
 	cursorTransform.position.y = -cursorTransform.position.y;
 
