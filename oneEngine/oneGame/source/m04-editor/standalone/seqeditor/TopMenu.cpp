@@ -70,6 +70,17 @@ void m04::editor::sequence::TopMenu::BeginSaveFile ( void )
 	}
 
 	savefileDialog->Show();
+
 	//dusk_interface->EnterDialogue(savefileDialog);
-	
+	savefileDialog->as<dusk::dialogs::SaveFile>()->SetOnAccept([this](const std::string& filename){ SaveFile(filename); });
+}
+
+void m04::editor::sequence::TopMenu::SaveFile ( const std::string& filename )
+{
+	auto board = main_editor->GetNodeBoardState();
+	if (board != NULL)
+	{
+		m04::editor::sequence::OsfSerializer serializer (filename.c_str());
+		board->Save(&serializer);
+	}
 }

@@ -194,14 +194,17 @@ void dusk::UserInterface::UpdateMouseOver ( void )
 
 			if ( element == NULL ) // Skip deleted
 				continue;
-			if ( !element->m_visible ) // Skip invisible
-				continue;
-			if ( !element->m_wasDrawn ) // Skip not drawn
-				continue;
-
-			if (element->m_isMouseIn)
+			if ( element->GetElementType() == ElementType::kControl )
 			{
-				m_currentMouseover = element->m_index;
+				if ( !element->m_visible ) // Skip invisible
+					continue;
+				if ( !element->m_wasDrawn ) // Skip not drawn
+					continue;
+
+				if (element->m_isMouseIn)
+				{
+					m_currentMouseover = element->m_index;
+				}
 			}
 		}
 

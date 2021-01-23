@@ -78,6 +78,8 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 
 	// Create board state
 	board_state = new m04::editor::sequence::NodeBoardState(this);
+
+	// Initialize with "system/kingfisher.sel"
 }
 m04::editor::SequenceEditor::~SequenceEditor ( void )
 {

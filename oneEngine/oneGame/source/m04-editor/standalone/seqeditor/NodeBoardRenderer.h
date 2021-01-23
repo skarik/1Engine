@@ -42,7 +42,12 @@ namespace sequence {
 
 	public:
 		virtual void			OnEventMouse ( const EventMouse& mouse_event ) override;
+		//	BuildMesh() : Rebuilds the mesh for Eventide UI.
+		// This controls all the visual layouts and logic for the renderer.
 		virtual void			BuildMesh ( void ) override;
+	private:
+		void					BuildMeshPropertyBoolean ( const Vector3f& in_nodeTopLeft, const m04::editor::SequenceViewProperty& in_property, const uint32_t in_propertyIndex, Vector3f& inout_penPosition );
+	public:
 		virtual void			OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame ) override;
 
 		void					UpdateNextNode ( void );
@@ -55,9 +60,13 @@ namespace sequence {
 		core::math::BoundingBox	GetBboxFlowInput ( void );
 		core::math::BoundingBox GetBboxFlowOutput ( const uint32_t output_index );
 
+		core::math::BoundingBox GetBboxPropertyAll ( const uint32_t property_index );
+		core::math::BoundingBox GetBboxPropertyKey ( const uint32_t property_index );
+
 	protected:
 		Vector3f			m_halfsizeOnBoard;
 		Vector3f			m_margins;
+		Vector3f			m_padding;
 		Vector3f			m_connectionHalfsize;
 
 	private:
@@ -68,6 +77,15 @@ namespace sequence {
 		bool				m_dragging = false;
 		// Info for dragging a subelement
 		DragState			m_draggingInfo;
+
+		// Property hover state
+		struct PropertyState
+		{
+			bool			m_editing = false;
+			bool			m_hovered = false;
+		};
+		std::vector<PropertyState>
+							m_propertyState;
 
 		// GUI texture.
 		ui::eventide::Texture

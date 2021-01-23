@@ -107,6 +107,7 @@ void dusk::UIRendererContext::generateColor( Element* source )
 	else if (m_focusType == kFocusStyleActive
 		|| (m_focusType == kFocusStyleAutomatic && source->m_isEnabled)
 		|| (m_focusType == kFocusStyleAutomaticNoHover && source->m_isEnabled)
+		|| (m_focusType == kFocusStyleFocused)
 		)
 	{
 		m_dsColorBackground = l_bgActiveColor;

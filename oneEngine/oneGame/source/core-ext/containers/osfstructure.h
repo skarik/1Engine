@@ -95,12 +95,31 @@ namespace osf
 			ARCORE_ERROR("Value was not in the array to be removed!");
 		}
 
-		//	Convert(index)<type> : Attempts to convert the given index to the correct type.
+		//	GetAdd<type>(string) : Looks up the given key-value and casts it. Adds it if it does not exist.
+		template <class SequenceTypeCastTo>
+		/*OSF_API*/ SequenceTypeCastTo*
+								GetAdd (const char* key_name)
+		{
+			KeyValue* kvSource = GetKeyValue(key_name);
+
+			// Need to add the item
+			if (kvSource == nullptr)
+			{
+				kvSource = Add(new osf::KeyValue(key_name, new SequenceTypeCastTo()));
+				return kvSource->value->As<SequenceTypeCastTo>();
+			}
+			else
+			{
+				return kvSource->value->As<SequenceTypeCastTo>();
+			}
+		}
+
+		//	Convert<type>(index) : Attempts to convert the given index to the correct type.
 		// Returns null if the key was not found or conversion could not happen.
 		template <class SequenceTypeCastTo>
 		/*OSF_API*/ KeyValue*	Convert (const char* key_name)
 		{
-			KeyValue* kvSource = operator[](key_name);
+			KeyValue* kvSource = GetKeyValue(key_name);
 
 			// Cannot convert source objects
 			if (kvSource == nullptr

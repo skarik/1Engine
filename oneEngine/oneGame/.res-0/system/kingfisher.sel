@@ -1,0 +1,90 @@
+// Sequence Editor Listing for Kingfisher
+
+nodetype lines
+{
+	displayAs Lines
+	
+	ARRAY 
+	{
+		$
+		{
+			displayAs Text
+			type scriptText
+		}
+		
+		target
+		{
+			displayAs Talking Character
+			type scriptCharacter
+		}
+	}
+	
+	style
+	{
+		displayAs Box Style
+		type list
+		default Default Speech
+		portrait Portrait
+		diagetic Diegetic
+		tutorial Tutorial
+		thinking Thinking
+		reward Reward
+		mumble Mumble Speech
+	}
+	end
+	{
+		displayAs Ending Style
+		type list
+		defaultValue default
+		default Wait for Advance
+		organic End after reading time
+		auto End after last letter
+	}
+}
+
+nodetype audio
+{
+	displayAs Play Audio
+	play
+	{
+		displayAs Audio File
+		type file
+		filetype audio
+	}
+}
+
+nodetype music
+{
+	displayAs Play Music
+	
+	ARRAY
+	{
+		$
+		{
+			displayAs Track File
+			type file
+			filetype audio
+		}
+		
+		volume
+		{
+			displayAs Volume
+			type float
+			defaultValue 1.0
+		}
+		
+		pitch
+		{
+			displayAs Pitch
+			type float
+			defaultValue 1.0
+		}
+	}
+	
+	play
+	{
+		displayAs Audio File
+		type file
+		filetype audio
+	}
+}

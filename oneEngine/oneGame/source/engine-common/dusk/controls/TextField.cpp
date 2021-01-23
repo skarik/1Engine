@@ -17,6 +17,22 @@ void dusk::elements::TextField::Update ( const UIStepInfo* stepinfo )
 	}
 	else
 	{
+		if ( m_isFocused )
+		{
+			const auto& inputString = core::Input::FrameInputString();
+			for (const auto& input : inputString)
+			{
+				if ( input && isprint(input) )
+				{
+					m_contents += input;
+				}
+				if ( input == core::kVkBackspace )
+				{
+					m_contents = m_contents.substr(0, m_contents.length() - 1);
+				}
+			}
+		}
+
 		if ( m_isMouseIn && m_wasDrawn )
 		{
 			// Mouse controls
@@ -62,6 +78,7 @@ void dusk::elements::TextField::Render ( UIRendererContext* uir )
 	uir->setFocus(dusk::kFocusStyleAutomatic);
 	uir->setColor(dusk::kColorStyleBackground, 0);
 	uir->drawRectangle(this, m_absoluteRect);
+	uir->setFocus(m_isFocused ? dusk::kFocusStyleFocused : dusk::kFocusStyleAutomatic);
 	uir->setColor(dusk::kColorStyleElementEmphasized, 1);
 	uir->drawBorder(this, m_absoluteRect);
 

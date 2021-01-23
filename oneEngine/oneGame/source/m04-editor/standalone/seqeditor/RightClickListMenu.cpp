@@ -38,7 +38,11 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 		for (auto& registryEntry : ISequenceNodeClassInfo::m_registry)
 		{
 			m_classnameListing.push_back(registryEntry.first);
-			l_choiceList.push_back(registryEntry.second->m_displayname.c_str());
+
+			std::string choiceDisplayName = registryEntry.second->m_displayname;
+			std::replace(choiceDisplayName.begin(), choiceDisplayName.end(), '_', '/');
+
+			l_choiceList.push_back(choiceDisplayName.c_str());
 		}
 		this->SetListChoices(l_choiceList);
 	}

@@ -22,8 +22,7 @@ namespace editor {
 	public:
 		// OSF Native data.
 		// Different views on top of this data allow for different editors to be applied to the node.
-		osf::ObjectValue
-							data;
+		osf::ObjectValue	data;
 		
 		// The view this node is using to display.
 		// Essentially dictates the type of node this is.
@@ -111,6 +110,7 @@ namespace editor {
 	{
 	public:
 		arstring64			label = "Property";
+		arstring64			identifier = "property";
 
 		PropertyRenderStyle	renderstyle = PropertyRenderStyle::kUnknown;
 	public:
@@ -137,6 +137,17 @@ namespace editor {
 		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const int newIntValue ) =0;
 		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const bool newBooleanValue ) =0;
 		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const char* newStringValue ) =0;
+
+		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const float newFloatValue ) =0;
+		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const int newIntValue ) =0;
+		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const bool newBooleanValue ) =0;
+		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const char* newStringValue ) =0;
+		EDITOR_API virtual float
+								GetPropertyAsFloat ( const char* stringIndex ) =0;
+		EDITOR_API virtual int	GetPropertyAsint ( const char* stringIndex ) =0;
+		EDITOR_API virtual bool	GetPropertyAsBool ( const char* stringIndex ) =0;
+		EDITOR_API virtual const char*
+								GetPropertyAsString ( const char* stringIndex ) =0;
 
 	public:
 		SequenceNode*		node;

@@ -34,6 +34,8 @@ namespace sequence {
 		dusk::DialogElement*
 							savefileDialog = NULL;
 
+		void					SaveFile ( const std::string& filename );
+
 	};
 
 }}}

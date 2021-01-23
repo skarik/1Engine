@@ -20,13 +20,16 @@ void core::Input::Initialize ( void )
 
 void core::Input::Reset ( void )
 {
-	for ( int i = 0; i < kVkCount; ++i )
+	if (m_Active != nullptr)
 	{
-		m_Active->m_keys[i] = KeyState();
-	}
-	for ( int i = 0; i < kMBCount; ++i )
-	{
-		m_Active->m_mouseButtons[i] = KeyState();
+		for ( int i = 0; i < kVkCount; ++i )
+		{
+			m_Active->m_keys[i] = KeyState();
+		}
+		for ( int i = 0; i < kMBCount; ++i )
+		{
+			m_Active->m_mouseButtons[i] = KeyState();
+		}
 	}
 }
 

@@ -100,6 +100,7 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceNodeViews.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceSerialization.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\TopMenu.h" />
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\vn\ViewsLines.h" />
     <ClInclude Include="source\m04\entities\LightPoint.h" />
     <ClInclude Include="source\m04\entities\NpcBase.h" />
     <ClInclude Include="source\m04\entities\NpcPenni.h" />
@@ -156,6 +157,7 @@
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceNodeViews.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceSerialization.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\TopMenu.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\vn\ViewsLines.cpp" />
     <ClCompile Include="source\m04\entities\LightPoint.cpp" />
     <ClCompile Include="source\m04\entities\NpcBase.cpp" />
     <ClCompile Include="source\m04\entities\NpcPenni.cpp" />

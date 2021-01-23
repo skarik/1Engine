@@ -11,6 +11,7 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 	, m_board(in_nbs)
 	, m_halfsizeOnBoard(Vector3f(80, 40, 5))
 	, m_margins(Vector3f(10, 5, 5))
+	, m_padding(Vector3f(10, 5, 5))
 	, m_connectionHalfsize(Vector3f(10, 10, 10))
 {
 	m_mouseInteract = MouseInteract::kCapturing;
@@ -29,9 +30,20 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 	m_bbox_flow_output = core::math::BoundingBox(Rotator(), Vector3f(m_halfsizeOnBoard.x, m_halfsizeOnBoard.y - m_connectionHalfsize.y - m_margins.y, 0), Vector3f(m_connectionHalfsize.x, m_connectionHalfsize.y, 4));
 
 	// Cache all needed info
-	m_display_text = ISequenceNodeClassInfo::GetInfo(node->sequenceInfo->view->classname)->m_displayname;
+	std::string l_displayNameModified = ISequenceNodeClassInfo::GetInfo(node->sequenceInfo->view->classname)->m_displayname;
+	{
+		size_t l_lastUnderscore = l_displayNameModified.find_last_of('_');
+		if (l_lastUnderscore != string::npos)
+		{
+			l_displayNameModified = l_displayNameModified.substr(l_lastUnderscore + 1);
+		}
+	}
+	m_display_text = l_displayNameModified.c_str();
 	m_guid_text = node->guid.toString().c_str();
 	UpdateNextNode();
+
+	// Set up the properties and extra
+	m_propertyState.resize(node->sequenceInfo->view->PropertyList().size());
 }
 
 m04::editor::sequence::NodeRenderer::~NodeRenderer ( void )
@@ -65,6 +77,34 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 		{
 			OnReleased(mouse_event);
 		}
+
+
+		auto& nodeProperties = node->sequenceInfo->view->PropertyList();
+		for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
+		{
+			auto& nodeProperty = nodeProperties[nodePropertyIndex];
+			
+			core::math::BoundingBox l_bbox_property = GetBboxPropertyAll(nodePropertyIndex);
+			core::math::BoundingBox l_bbox_property_key = GetBboxPropertyKey(nodePropertyIndex);
+
+			if (l_bbox_property.IsPointInBox(mouse_event.position_world))
+			{
+				m_propertyState[nodePropertyIndex].m_hovered = true;
+
+				if (mouse_event.type == EventMouse::Type::kClicked)
+				{
+					if (l_bbox_property_key.IsPointInBox(mouse_event.position_world))
+					{
+						node->sequenceInfo->view->SetProperty(nodeProperty.identifier, !node->sequenceInfo->view->GetPropertyAsBool(nodeProperty.identifier));
+					}
+				}
+			}
+			else
+			{
+				m_propertyState[nodePropertyIndex].m_hovered = false;
+			}
+		}
+
 
 		Button::OnEventMouse(mouse_event);
 	}
@@ -247,7 +287,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	// Draw the flow output
 	if (m_next == NULL)
 	{
-		// TODO: when dragging the output to the node
+		;	
 	}
 	else
 	{
@@ -259,10 +299,89 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		cubeParams.texture = NULL;
 		buildCube(cubeParams);
 	}
+	// TODO: when dragging the output to the node
 
 	// Draw all the options
 	auto& nodeProperties = node->sequenceInfo->view->PropertyList();
+	Vector3f l_bboxPenPosition = Vector3f(0.0F, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0.0F);
+	//for (auto& nodeProperty : nodeProperties)
+	for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
+	{
+		auto& nodeProperty = nodeProperties[nodePropertyIndex];
 
+		switch (nodeProperty.renderstyle)
+		{
+		case m04::editor::PropertyRenderStyle::kBoolean:
+			BuildMeshPropertyBoolean(nodeTopLeft, nodeProperty, nodePropertyIndex, l_bboxPenPosition);
+			break;
+		}
+	}
+}
+
+void m04::editor::sequence::NodeRenderer::BuildMeshPropertyBoolean ( const Vector3f& in_nodeTopLeft, const m04::editor::SequenceViewProperty& in_property, const uint32_t in_propertyIndex, Vector3f& inout_penPosition )
+{
+	using namespace ui::eventide;
+
+	ParamsForText textParams;
+	ParamsForCube cubeParams;
+	ParamsForQuad quadParams;
+
+	/*textParams = {};
+	textParams.string = in_property.label.c_str();
+	textParams.font_texture = &m_fontTexture;
+	textParams.position = in_nodeTopLeft + inout_penPosition + Vector3f(m_margins.x + ui::eventide::DefaultStyler.text.headingSize + 5.0F, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0);
+	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
+	textParams.size = math::lerp(0.5F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
+	textParams.alignment = AlignHorizontal::kLeft;
+	textParams.color = DefaultStyler.text.headingColor;
+	buildText(textParams);
+
+	quadParams = {};
+	quadParams.position = in_nodeTopLeft + inout_penPosition + Vector3f(m_margins.x + ui::eventide::DefaultStyler.text.headingSize * 0.5F, -ui::eventide::DefaultStyler.text.headingSize * 0.5F - m_margins.y, 0.0F);
+	quadParams.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.headingSize * 0.5F);
+	quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F);
+	buildQuad(quadParams);
+
+	quadParams = {};
+	quadParams.position = in_nodeTopLeft + inout_penPosition + Vector3f(m_margins.x + ui::eventide::DefaultStyler.text.headingSize * 0.5F, -ui::eventide::DefaultStyler.text.headingSize * 0.5F - m_margins.y, 1.0F);
+	quadParams.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.headingSize * 0.5F - 5.0F);
+	quadParams.uvs = Rect(128.0F / 1024, 0.0F, 128.0F / 1024, 128.0F / 1024);
+	quadParams.texture = &m_uiElementsTexture;
+	quadParams.color = Color(1, 1, 1, 1);
+	buildQuad(quadParams);*/
+
+	const core::math::BoundingBox bbox_all = GetBboxPropertyAll(in_propertyIndex);
+	const core::math::BoundingBox bbox_key = GetBboxPropertyKey(in_propertyIndex);
+
+	textParams = {};
+	textParams.string = in_property.label.c_str();
+	textParams.font_texture = &m_fontTexture;
+	textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, -bbox_all.GetExtents().z) + Vector3f(ui::eventide::DefaultStyler.text.headingSize + m_padding.x, 0, 0);
+	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
+	textParams.size = math::lerp(0.5F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
+	textParams.alignment = AlignHorizontal::kLeft;
+	textParams.color = m_propertyState[in_propertyIndex].m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
+	buildText(textParams);
+
+	quadParams = {};
+	quadParams.position = bbox_key.GetCenterPoint();
+	quadParams.size = Vector3f(1, 1, 1) * (bbox_key.GetExtents().y);
+	quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F);
+	buildQuad(quadParams);
+
+	if (node->sequenceInfo->view->GetPropertyAsBool(in_property.identifier))
+	{
+		quadParams = {};
+		quadParams.position = bbox_key.GetCenterPoint() + Vector3f(0, 0, 2);
+		quadParams.size = Vector3f(1, 1, 1) * (bbox_key.GetExtents().y - m_padding.x * 0.5F);
+		quadParams.uvs = Rect(128.0F / 1024, 0.0F, 128.0F / 1024, 128.0F / 1024);
+		quadParams.texture = &m_uiElementsTexture;
+		quadParams.color = Color(1, 1, 1, 1);
+		buildQuad(quadParams);
+	}
+
+	// Push down pen
+	inout_penPosition.y -= ui::eventide::DefaultStyler.text.buttonSize + 5;
 }
 
 void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame )
@@ -270,6 +389,7 @@ void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpd
 	core::math::BoundingBox bbox = GetBBox();
 
 	bbox = core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard);
+	// TODO: based on properties, update bbox
 
 	SetBBox(bbox);
 	RequestUpdateMesh();
@@ -321,4 +441,83 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxFlowOutput (
 	l_bbox_flow_output.m_MInverse = l_bbox_flow_output.m_M.inverse(); // TODO: optimize this
 
 	return l_bbox_flow_output;
+}
+
+core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyAll ( const uint32_t property_index )
+{
+	// TODO: optimize this
+	const core::math::BoundingBox nodeBbox = GetBBoxAbsolute();
+
+	// sum up all the offsets to the current position
+	Vector3f offset = Vector3f(0, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0);
+	offset.y -= ui::eventide::DefaultStyler.text.headingSize; // Push it down again.
+	for (uint32_t checkPropertyIndex = 0; checkPropertyIndex < property_index; ++checkPropertyIndex)
+	{
+		auto nodeProperty = node->sequenceInfo->view->PropertyList()[property_index];
+		switch (nodeProperty.renderstyle)
+		{
+		case m04::editor::PropertyRenderStyle::kBoolean:
+			offset.y -= ui::eventide::DefaultStyler.text.headingSize + m_padding.y;
+		}
+	}
+
+	// generate layout for the actual thing
+	auto nodeProperty = node->sequenceInfo->view->PropertyList()[property_index];
+	switch (nodeProperty.renderstyle)
+	{
+	case m04::editor::PropertyRenderStyle::kBoolean:
+		{
+			core::math::BoundingBox l_bbox;
+			l_bbox.m_Extent = Vector3f(nodeBbox.GetExtents().x - m_padding.x, ui::eventide::DefaultStyler.text.headingSize * 0.5F, 4.0F);
+			l_bbox.m_M.setTranslation(nodeBbox.m_M.getTranslation()
+				- Vector3f(0, -nodeBbox.GetExtents().y, nodeBbox.GetExtents().z)
+				+ Vector3f(0, 0, nodeBbox.GetExtents().z * 2.0F + 1.0F)
+				+ offset
+				);
+			l_bbox.m_MInverse = l_bbox.m_M.inverse();
+			return l_bbox;
+		}
+		break;
+	}
+
+	return core::math::BoundingBox();
+}
+core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyKey ( const uint32_t property_index )
+{
+	// TODO: optimize this
+		const core::math::BoundingBox nodeBbox = GetBBoxAbsolute();
+
+	// sum up all the offsets to the current position
+	Vector3f offset = Vector3f(0, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0);
+	offset.y -= ui::eventide::DefaultStyler.text.headingSize; // Push it down again.
+	for (uint32_t checkPropertyIndex = 0; checkPropertyIndex < property_index; ++checkPropertyIndex)
+	{
+		auto nodeProperty = node->sequenceInfo->view->PropertyList()[property_index];
+		switch (nodeProperty.renderstyle)
+		{
+		case m04::editor::PropertyRenderStyle::kBoolean:
+			offset.y -= ui::eventide::DefaultStyler.text.headingSize + m_padding.y;
+		}
+	}
+
+	// generate layout for the actual thing
+	auto nodeProperty = node->sequenceInfo->view->PropertyList()[property_index];
+	switch (nodeProperty.renderstyle)
+	{
+	case m04::editor::PropertyRenderStyle::kBoolean:
+		{
+			core::math::BoundingBox l_bbox;
+			l_bbox.m_Extent = Vector3f(ui::eventide::DefaultStyler.text.headingSize * 0.5F, ui::eventide::DefaultStyler.text.headingSize * 0.5F, 4.0F);
+			l_bbox.m_M.setTranslation(nodeBbox.m_M.getTranslation()
+				- Vector3f(0, -nodeBbox.GetExtents().y, nodeBbox.GetExtents().z)
+				+ Vector3f(0, 0, nodeBbox.GetExtents().z * 2.0F + 1.0F)
+				+ Vector3f(-nodeBbox.GetExtents().x + m_padding.x + ui::eventide::DefaultStyler.text.headingSize * 0.5F, 0, 0)
+				+ offset
+				);
+			l_bbox.m_MInverse = l_bbox.m_M.inverse();
+			return l_bbox;
+		}
+		break;
+	}
+	return core::math::BoundingBox();
 }
