@@ -47,6 +47,7 @@ namespace sequence {
 		virtual void			BuildMesh ( void ) override;
 	private:
 		void					BuildMeshPropertyBoolean ( const Vector3f& in_nodeTopLeft, const m04::editor::SequenceViewProperty& in_property, const uint32_t in_propertyIndex, Vector3f& inout_penPosition );
+		void					BuildMeshPropertyScriptText ( const Vector3f& in_nodeTopLeft, const m04::editor::SequenceViewProperty& in_property, const uint32_t in_propertyIndex, Vector3f& inout_penPosition );
 	public:
 		virtual void			OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame ) override;
 
@@ -62,6 +63,8 @@ namespace sequence {
 
 		core::math::BoundingBox GetBboxPropertyAll ( const uint32_t property_index );
 		core::math::BoundingBox GetBboxPropertyKey ( const uint32_t property_index );
+
+		Real					GetBboxOfAllProperties ( void );
 
 	protected:
 		Vector3f			m_halfsizeOnBoard;

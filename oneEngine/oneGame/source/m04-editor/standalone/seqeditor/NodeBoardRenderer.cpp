@@ -91,17 +91,28 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 			{
 				m_propertyState[nodePropertyIndex].m_hovered = true;
 
-				if (mouse_event.type == EventMouse::Type::kClicked)
+				if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kBoolean)
 				{
-					if (l_bbox_property_key.IsPointInBox(mouse_event.position_world))
+					if (mouse_event.type == EventMouse::Type::kClicked)
 					{
-						node->sequenceInfo->view->SetProperty(nodeProperty.identifier, !node->sequenceInfo->view->GetPropertyAsBool(nodeProperty.identifier));
+						if (l_bbox_property_key.IsPointInBox(mouse_event.position_world))
+						{
+							node->sequenceInfo->view->SetProperty(nodeProperty.identifier, !node->sequenceInfo->view->GetPropertyAsBool(nodeProperty.identifier));
+						}
+					}
+				}
+				else if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kScriptText)
+				{
+					if (mouse_event.type == EventMouse::Type::kClicked)
+					{
+						m_propertyState[nodePropertyIndex].m_editing = true;
 					}
 				}
 			}
 			else
 			{
 				m_propertyState[nodePropertyIndex].m_hovered = false;
+				m_propertyState[nodePropertyIndex].m_editing = false;
 			}
 		}
 
@@ -314,6 +325,10 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		case m04::editor::PropertyRenderStyle::kBoolean:
 			BuildMeshPropertyBoolean(nodeTopLeft, nodeProperty, nodePropertyIndex, l_bboxPenPosition);
 			break;
+
+		case m04::editor::PropertyRenderStyle::kScriptText:
+			BuildMeshPropertyScriptText(nodeTopLeft, nodeProperty, nodePropertyIndex, l_bboxPenPosition);
+			break;
 		}
 	}
 }
@@ -325,30 +340,6 @@ void m04::editor::sequence::NodeRenderer::BuildMeshPropertyBoolean ( const Vecto
 	ParamsForText textParams;
 	ParamsForCube cubeParams;
 	ParamsForQuad quadParams;
-
-	/*textParams = {};
-	textParams.string = in_property.label.c_str();
-	textParams.font_texture = &m_fontTexture;
-	textParams.position = in_nodeTopLeft + inout_penPosition + Vector3f(m_margins.x + ui::eventide::DefaultStyler.text.headingSize + 5.0F, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0);
-	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
-	textParams.size = math::lerp(0.5F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-	textParams.alignment = AlignHorizontal::kLeft;
-	textParams.color = DefaultStyler.text.headingColor;
-	buildText(textParams);
-
-	quadParams = {};
-	quadParams.position = in_nodeTopLeft + inout_penPosition + Vector3f(m_margins.x + ui::eventide::DefaultStyler.text.headingSize * 0.5F, -ui::eventide::DefaultStyler.text.headingSize * 0.5F - m_margins.y, 0.0F);
-	quadParams.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.headingSize * 0.5F);
-	quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F);
-	buildQuad(quadParams);
-
-	quadParams = {};
-	quadParams.position = in_nodeTopLeft + inout_penPosition + Vector3f(m_margins.x + ui::eventide::DefaultStyler.text.headingSize * 0.5F, -ui::eventide::DefaultStyler.text.headingSize * 0.5F - m_margins.y, 1.0F);
-	quadParams.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.headingSize * 0.5F - 5.0F);
-	quadParams.uvs = Rect(128.0F / 1024, 0.0F, 128.0F / 1024, 128.0F / 1024);
-	quadParams.texture = &m_uiElementsTexture;
-	quadParams.color = Color(1, 1, 1, 1);
-	buildQuad(quadParams);*/
 
 	const core::math::BoundingBox bbox_all = GetBboxPropertyAll(in_propertyIndex);
 	const core::math::BoundingBox bbox_key = GetBboxPropertyKey(in_propertyIndex);
@@ -384,12 +375,93 @@ void m04::editor::sequence::NodeRenderer::BuildMeshPropertyBoolean ( const Vecto
 	inout_penPosition.y -= ui::eventide::DefaultStyler.text.buttonSize + 5;
 }
 
+void m04::editor::sequence::NodeRenderer::BuildMeshPropertyScriptText ( const Vector3f& in_nodeTopLeft, const m04::editor::SequenceViewProperty& in_property, const uint32_t in_propertyIndex, Vector3f& inout_penPosition )
+{
+	using namespace ui::eventide;
+
+	ParamsForText textParams;
+	ParamsForCube cubeParams;
+	ParamsForQuad quadParams;
+
+	const core::math::BoundingBox bbox_all = GetBboxPropertyAll(in_propertyIndex);
+	const core::math::BoundingBox bbox_key = GetBboxPropertyKey(in_propertyIndex);
+
+	quadParams = {};
+	quadParams.position = bbox_all.GetCenterPoint();
+	quadParams.size = bbox_all.GetExtents();
+	quadParams.color = m_propertyState[in_propertyIndex].m_hovered ? Color(1,1,1,1) : Color(1, 1, 1, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F);
+	buildQuad(quadParams);
+
+	textParams = {};
+	textParams.string = in_property.label.c_str();
+	textParams.font_texture = &m_fontTexture;
+	textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, -bbox_all.GetExtents().z);
+	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
+	textParams.size = math::lerp(0.5F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
+	textParams.alignment = AlignHorizontal::kLeft;
+	textParams.color = m_propertyState[in_propertyIndex].m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
+	buildText(textParams);
+
+	const char* str = node->sequenceInfo->view->GetPropertyAsString(in_property.identifier);
+	if (str)
+	{
+		textParams = {};
+		textParams.string = str;
+		textParams.font_texture = &m_fontTexture;
+		textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, -bbox_all.GetExtents().z) + Vector3f(0, 0, 1);
+		textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
+		textParams.size = math::lerp(0.5F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
+		textParams.alignment = AlignHorizontal::kLeft;
+		textParams.color = Color(1, 0, 0, 1);
+		buildText(textParams);
+	}
+
+	// Push down pen
+	inout_penPosition.y -= ui::eventide::DefaultStyler.text.buttonSize + 5;
+}
+
 void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame )
 {
 	core::math::BoundingBox bbox = GetBBox();
 
-	bbox = core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard);
+	// Update size of the board
+	m_halfsizeOnBoard.y = std::max(40.0F, (GetBboxOfAllProperties() + ui::eventide::DefaultStyler.text.headingSize + m_padding.y * 2.0F + m_margins.y * 2.0F) * 0.5F);
 	// TODO: based on properties, update bbox
+	bbox = core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard);
+
+	// TODO: more organized
+	// Update per-frame edits
+	auto& nodeProperties = node->sequenceInfo->view->PropertyList();
+	for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
+	{
+		auto& nodeProperty = nodeProperties[nodePropertyIndex];
+		if (m_propertyState[nodePropertyIndex].m_editing)
+		{
+			if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kScriptText)
+			{
+				// Parse input and modify the underlying property
+				std::string l_currentValue = node->sequenceInfo->view->GetPropertyAsString(nodeProperty.identifier);
+
+				// Run the parse loop (see dusk/TextField.cpp)
+				const auto& inputString = core::Input::FrameInputString();
+				for (const auto& input : inputString)
+				{
+					if ( input && isprint(input) )
+					{
+						l_currentValue += input;
+					}
+					if ( input == core::kVkBackspace )
+					{
+						l_currentValue = l_currentValue.substr(0, l_currentValue.length() - 1);
+					}
+				}
+
+				// Save back the edits
+				node->sequenceInfo->view->SetProperty(nodeProperty.identifier, l_currentValue.c_str());
+			}
+		}
+	}
+
 
 	SetBBox(bbox);
 	RequestUpdateMesh();
@@ -458,6 +530,10 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyAll 
 		{
 		case m04::editor::PropertyRenderStyle::kBoolean:
 			offset.y -= ui::eventide::DefaultStyler.text.headingSize + m_padding.y;
+			break;
+		case m04::editor::PropertyRenderStyle::kScriptText:
+			offset.y -= ui::eventide::DefaultStyler.text.headingSize + m_padding.y;
+			break;
 		}
 	}
 
@@ -478,6 +554,19 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyAll 
 			return l_bbox;
 		}
 		break;
+	case m04::editor::PropertyRenderStyle::kScriptText:
+		{
+			core::math::BoundingBox l_bbox;
+			l_bbox.m_Extent = Vector3f(nodeBbox.GetExtents().x - m_padding.x, ui::eventide::DefaultStyler.text.headingSize * 0.5F, 4.0F);
+			l_bbox.m_M.setTranslation(nodeBbox.m_M.getTranslation()
+				- Vector3f(0, -nodeBbox.GetExtents().y, nodeBbox.GetExtents().z)
+				+ Vector3f(0, 0, nodeBbox.GetExtents().z * 2.0F + 1.0F)
+				+ offset
+				);
+			l_bbox.m_MInverse = l_bbox.m_M.inverse();
+			return l_bbox;
+		}
+		break;
 	}
 
 	return core::math::BoundingBox();
@@ -485,7 +574,7 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyAll 
 core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyKey ( const uint32_t property_index )
 {
 	// TODO: optimize this
-		const core::math::BoundingBox nodeBbox = GetBBoxAbsolute();
+	const core::math::BoundingBox nodeBbox = GetBBoxAbsolute();
 
 	// sum up all the offsets to the current position
 	Vector3f offset = Vector3f(0, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0);
@@ -497,6 +586,7 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyKey 
 		{
 		case m04::editor::PropertyRenderStyle::kBoolean:
 			offset.y -= ui::eventide::DefaultStyler.text.headingSize + m_padding.y;
+			break;
 		}
 	}
 
@@ -519,5 +609,18 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyKey 
 		}
 		break;
 	}
+
 	return core::math::BoundingBox();
+}
+
+Real m04::editor::sequence::NodeRenderer::GetBboxOfAllProperties ( void )
+{
+	Real size = 0.0F;
+	auto& nodePropertyList = node->sequenceInfo->view->PropertyList();
+	for (uint32_t propertyIndex = 0; propertyIndex < (uint32_t)nodePropertyList.size(); ++propertyIndex)
+	{
+		size += GetBboxPropertyAll(propertyIndex).m_Extent.y * 2.0F;
+		size += m_padding.y;
+	}
+	return size;
 }

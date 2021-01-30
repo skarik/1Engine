@@ -89,35 +89,35 @@ void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const int p
 
 void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char* stringIndex, const float newFloatValue )
 {
-	node->data.GetAdd<osf::FloatValue>(stringIndex)->value = newFloatValue;
+	node->data.GetConvertAdd<osf::FloatValue>(stringIndex)->value = newFloatValue;
 }
 void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char* stringIndex, const int newIntValue )
 {
-	node->data.GetAdd<osf::IntegerValue>(stringIndex)->value = newIntValue;
+	node->data.GetConvertAdd<osf::IntegerValue>(stringIndex)->value = newIntValue;
 }
 void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char* stringIndex, const bool newBooleanValue )
 {
-	node->data.GetAdd<osf::BooleanValue>(stringIndex)->value = newBooleanValue;
+	node->data.GetConvertAdd<osf::BooleanValue>(stringIndex)->value = newBooleanValue;
 }
 void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char* stringIndex, const char* newStringValue )
 {
-	node->data.GetAdd<osf::StringValue>(stringIndex)->value = newStringValue;
+	node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value = newStringValue;
 }
 float m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsFloat ( const char* stringIndex )
 {
-	return node->data.GetAdd<osf::FloatValue>(stringIndex)->value;
+	return node->data.GetConvertAdd<osf::FloatValue>(stringIndex)->value;
 }
 int m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsint ( const char* stringIndex )
 {
-	return (int)node->data.GetAdd<osf::IntegerValue>(stringIndex)->value;
+	return (int)node->data.GetConvertAdd<osf::IntegerValue>(stringIndex)->value;
 }
 bool m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsBool ( const char* stringIndex )
 {
-	return node->data.GetAdd<osf::BooleanValue>(stringIndex)->value;
+	return node->data.GetConvertAdd<osf::BooleanValue>(stringIndex)->value;
 }
 const char* m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsString ( const char* stringIndex )
 {
-	return node->data.GetAdd<osf::StringValue>(stringIndex)->value.c_str();
+	return node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value.c_str();
 }
 
 DECLARE_SEQUENCENODE_CLASS(MainTask, m04::editor::sequence::MainTaskSeqNodeView);
