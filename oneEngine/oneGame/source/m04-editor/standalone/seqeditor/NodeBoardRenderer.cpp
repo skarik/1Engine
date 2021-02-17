@@ -69,7 +69,8 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 	}
 	else
 	{
-		if (mouse_event.type == EventMouse::Type::kClicked)
+		if (mouse_event.type == EventMouse::Type::kClicked
+			&& mouse_event.button == core::kMBLeft)
 		{
 			OnClicked(mouse_event);
 		}
@@ -93,7 +94,8 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 
 				if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kBoolean)
 				{
-					if (mouse_event.type == EventMouse::Type::kClicked)
+					if (mouse_event.type == EventMouse::Type::kClicked
+						&& mouse_event.button == core::kMBLeft)
 					{
 						if (l_bbox_property_key.IsPointInBox(mouse_event.position_world))
 						{
@@ -103,7 +105,8 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 				}
 				else if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kScriptText)
 				{
-					if (mouse_event.type == EventMouse::Type::kClicked)
+					if (mouse_event.type == EventMouse::Type::kClicked
+						&& mouse_event.button == core::kMBLeft)
 					{
 						m_propertyState[nodePropertyIndex].m_editing = true;
 					}
@@ -347,7 +350,7 @@ void m04::editor::sequence::NodeRenderer::BuildMeshPropertyBoolean ( const Vecto
 	textParams = {};
 	textParams.string = in_property.label.c_str();
 	textParams.font_texture = &m_fontTexture;
-	textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, -bbox_all.GetExtents().z) + Vector3f(ui::eventide::DefaultStyler.text.headingSize + m_padding.x, 0, 0);
+	textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, 0) + Vector3f(ui::eventide::DefaultStyler.text.headingSize + m_padding.x, 0, 0);
 	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
 	textParams.size = math::lerp(0.5F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
 	textParams.alignment = AlignHorizontal::kLeft;
