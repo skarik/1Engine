@@ -26,8 +26,16 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 	SetBBox(core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard));
 
 	// Set up the style infos
-	m_bbox_flow_input = core::math::BoundingBox(Rotator(), Vector3f(-m_halfsizeOnBoard.x, m_halfsizeOnBoard.y - m_connectionHalfsize.y - m_margins.y, 0), Vector3f(m_connectionHalfsize.x, m_connectionHalfsize.y, 4));
-	m_bbox_flow_output = core::math::BoundingBox(Rotator(), Vector3f(m_halfsizeOnBoard.x, m_halfsizeOnBoard.y - m_connectionHalfsize.y - m_margins.y, 0), Vector3f(m_connectionHalfsize.x, m_connectionHalfsize.y, 4));
+	m_bbox_flow_input = core::math::BoundingBox(
+		Rotator(), 
+		Vector3f(-m_halfsizeOnBoard.x, 0.0F - m_connectionHalfsize.y - m_margins.y, 0), 
+		Vector3f(m_connectionHalfsize.x, m_connectionHalfsize.y, 4)
+		);
+	m_bbox_flow_output = core::math::BoundingBox(
+		Rotator(),
+		Vector3f(m_halfsizeOnBoard.x, 0.0F - m_connectionHalfsize.y - m_margins.y, 0),
+		Vector3f(m_connectionHalfsize.x, m_connectionHalfsize.y, 4)
+		);
 
 	// Cache all needed info
 	std::string l_displayNameModified = ISequenceNodeClassInfo::GetInfo(node->sequenceInfo->view->classname)->m_displayname;
@@ -438,9 +446,12 @@ void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpd
 {
 	core::math::BoundingBox bbox = GetBBox();
 
+	Vector3f l_previousExtents = bbox.GetExtents();
+
 	// Update size of the board
 	m_halfsizeOnBoard.y = std::max(40.0F, (GetBboxOfAllProperties() + ui::eventide::DefaultStyler.text.headingSize + m_padding.y * 2.0F + m_margins.y * 2.0F) * 0.5F);
 	// TODO: based on properties, update bbox
+	node->position.y += (l_previousExtents.y - m_halfsizeOnBoard.y) * 2.0F;
 	bbox = core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard);
 
 	// Set bbox, push update for mesh
@@ -513,7 +524,7 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxFlowInput ( 
 	core::math::BoundingBox l_bbox_flow_input = m_bbox_flow_input;
 	l_bbox_flow_input.m_M.setTranslation(
 		l_bbox_flow_input.m_M.getTranslation() 
-		+ Vector3f(0, 0, m_bbox.GetExtents().z + 1)
+		+ Vector3f(0, m_halfsizeOnBoard.y, m_bbox.GetExtents().z + 1)
 		+ GetBBoxAbsolute().m_M.getTranslation());
 	l_bbox_flow_input.m_MInverse = l_bbox_flow_input.m_M.inverse(); // TODO: optimize this
 
@@ -524,7 +535,7 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxFlowOutput (
 	core::math::BoundingBox l_bbox_flow_output = m_bbox_flow_output;
 	l_bbox_flow_output.m_M.setTranslation(
 		l_bbox_flow_output.m_M.getTranslation() 
-		+ Vector3f(0, output_index * m_bbox_flow_output.GetExtents().y * -2.0F, m_bbox.GetExtents().z + 1)
+		+ Vector3f(0, m_halfsizeOnBoard.y + output_index * m_bbox_flow_output.GetExtents().y * -2.0F, m_bbox.GetExtents().z + 1)
 		+ GetBBoxAbsolute().m_M.getTranslation());
 	l_bbox_flow_output.m_MInverse = l_bbox_flow_output.m_M.inverse(); // TODO: optimize this
 
@@ -537,11 +548,97 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyAll 
 	const core::math::BoundingBox nodeBbox = GetBBoxAbsolute();
 
 	// sum up all the offsets to the current position
-	Vector3f offset = Vector3f(0, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0);
-	offset.y -= ui::eventide::DefaultStyler.text.headingSize; // Push it down again.
+	Vector3f offset;
+	offset.y = -ui::eventide::DefaultStyler.text.headingSize - m_margins.y; // Start below the title.
+	//offset.y -= ui::eventide::DefaultStyler.text.headingSize; // Push it down again.
 	for (uint32_t checkPropertyIndex = 0; checkPropertyIndex < property_index; ++checkPropertyIndex)
 	{
-		auto nodeProperty = node->sequenceInfo->view->PropertyList()[property_index];
+		auto nodeProperty = node->sequenceInfo->view->PropertyList()[checkPropertyIndex];
+		switch (nodeProperty.renderstyle)
+		{
+		case m04::editor::PropertyRenderStyle::kBoolean:
+			offset.y -= ui::eventide::DefaultStyler.text.headingSize + m_padding.y;
+			break;
+		case m04::editor::PropertyRenderStyle::kScriptText:
+			{
+				const char* l_scriptString = node->sequenceInfo->view->GetPropertyAsString(nodeProperty.identifier);
+				int l_numberOfLines = strlen(l_scriptString) / 40 + 1;
+				l_numberOfLines = std::max(1, l_numberOfLines);
+
+				offset.y -= ui::eventide::DefaultStyler.text.headingSize * l_numberOfLines + m_padding.y;
+			}
+			break;
+		}
+	}
+	
+	// Apply the offset so we're working against the upper-left corner
+	offset.x -= nodeBbox.GetExtents().x;
+	offset.y += nodeBbox.GetExtents().y;
+	offset.z += nodeBbox.GetExtents().z - 1.0F;
+
+	offset += nodeBbox.m_M.getTranslation();
+
+	// generate layout for the actual thing
+	auto nodeProperty = node->sequenceInfo->view->PropertyList()[property_index];
+	switch (nodeProperty.renderstyle)
+	{
+	case m04::editor::PropertyRenderStyle::kBoolean:
+		{
+			core::math::BoundingBox l_bbox(
+				Matrix4x4(),
+				offset + Vector3f(m_padding.x, 0, 0),
+				offset + Vector3f((nodeBbox.GetExtents().x - m_padding.x) * 2.0F, -ui::eventide::DefaultStyler.text.headingSize, 4.0F)
+				);
+			/*l_bbox.m_Extent = Vector3f(nodeBbox.GetExtents().x - m_padding.x, ui::eventide::DefaultStyler.text.headingSize * 0.5F, 4.0F);
+			l_bbox.m_M.setTranslation(nodeBbox.m_M.getTranslation()
+				- Vector3f(0, -nodeBbox.GetExtents().y, nodeBbox.GetExtents().z)
+				+ Vector3f(0, 0, nodeBbox.GetExtents().z * 2.0F + 1.0F)
+				+ offset
+				);
+			l_bbox.m_MInverse = l_bbox.m_M.inverse();*/
+			return l_bbox;
+		}
+		break;
+	case m04::editor::PropertyRenderStyle::kScriptText:
+		{
+			const char* l_scriptString = node->sequenceInfo->view->GetPropertyAsString(nodeProperty.identifier);
+			int l_numberOfLines = strlen(l_scriptString) / 40 + 1;
+			l_numberOfLines = std::max(1, l_numberOfLines);
+
+			core::math::BoundingBox l_bbox(
+				Matrix4x4(),
+				offset + Vector3f(m_padding.x, 0, 0),
+				offset + Vector3f((nodeBbox.GetExtents().x - m_padding.x) * 2.0F, -ui::eventide::DefaultStyler.text.headingSize * l_numberOfLines, 4.0F)
+				);
+			/*l_bbox.m_Extent = Vector3f(nodeBbox.GetExtents().x - m_padding.x,
+									   ui::eventide::DefaultStyler.text.headingSize * 0.5F * l_numberOfLines,
+									   4.0F);
+			l_bbox.m_M.setTranslation(nodeBbox.m_M.getTranslation()
+				- Vector3f(0, -nodeBbox.GetExtents().y, nodeBbox.GetExtents().z)
+				+ Vector3f(0, 0, nodeBbox.GetExtents().z * 2.0F + 1.0F)
+				+ offset
+				);
+			l_bbox.m_MInverse = l_bbox.m_M.inverse();*/
+			return l_bbox;
+		}
+		break;
+	}
+
+	return core::math::BoundingBox();
+}
+core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyKey ( const uint32_t property_index )
+{
+	// TODO: optimize this
+	const core::math::BoundingBox nodeBbox = GetBBoxAbsolute();
+
+	// sum up all the offsets to the current position
+	//Vector3f offset = Vector3f(0, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0);
+	Vector3f offset;
+	offset.y = -ui::eventide::DefaultStyler.text.headingSize - m_margins.y; // Start below the title.
+	//offset.y -= ui::eventide::DefaultStyler.text.headingSize; // Push it down again.
+	for (uint32_t checkPropertyIndex = 0; checkPropertyIndex < property_index; ++checkPropertyIndex)
+	{
+		auto nodeProperty = node->sequenceInfo->view->PropertyList()[checkPropertyIndex];
 		switch (nodeProperty.renderstyle)
 		{
 		case m04::editor::PropertyRenderStyle::kBoolean:
@@ -559,64 +656,12 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyAll 
 		}
 	}
 
-	// generate layout for the actual thing
-	auto nodeProperty = node->sequenceInfo->view->PropertyList()[property_index];
-	switch (nodeProperty.renderstyle)
-	{
-	case m04::editor::PropertyRenderStyle::kBoolean:
-		{
-			core::math::BoundingBox l_bbox;
-			l_bbox.m_Extent = Vector3f(nodeBbox.GetExtents().x - m_padding.x, ui::eventide::DefaultStyler.text.headingSize * 0.5F, 4.0F);
-			l_bbox.m_M.setTranslation(nodeBbox.m_M.getTranslation()
-				- Vector3f(0, -nodeBbox.GetExtents().y, nodeBbox.GetExtents().z)
-				+ Vector3f(0, 0, nodeBbox.GetExtents().z * 2.0F + 1.0F)
-				+ offset
-				);
-			l_bbox.m_MInverse = l_bbox.m_M.inverse();
-			return l_bbox;
-		}
-		break;
-	case m04::editor::PropertyRenderStyle::kScriptText:
-		{
-			const char* l_scriptString = node->sequenceInfo->view->GetPropertyAsString(nodeProperty.identifier);
-			int l_numberOfLines = strlen(l_scriptString) / 40 + 1;
-			l_numberOfLines = std::max(1, l_numberOfLines);
+	// Apply the offset so we're working against the upper-left corner
+	offset.x -= nodeBbox.GetExtents().x;
+	offset.y += nodeBbox.GetExtents().y;
+	offset.z += nodeBbox.GetExtents().z - 1.0F;
 
-			core::math::BoundingBox l_bbox;
-			l_bbox.m_Extent = Vector3f(nodeBbox.GetExtents().x - m_padding.x,
-									   ui::eventide::DefaultStyler.text.headingSize * 0.5F * l_numberOfLines,
-									   4.0F);
-			l_bbox.m_M.setTranslation(nodeBbox.m_M.getTranslation()
-				- Vector3f(0, -nodeBbox.GetExtents().y, nodeBbox.GetExtents().z)
-				+ Vector3f(0, 0, nodeBbox.GetExtents().z * 2.0F + 1.0F)
-				+ offset
-				);
-			l_bbox.m_MInverse = l_bbox.m_M.inverse();
-			return l_bbox;
-		}
-		break;
-	}
-
-	return core::math::BoundingBox();
-}
-core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyKey ( const uint32_t property_index )
-{
-	// TODO: optimize this
-	const core::math::BoundingBox nodeBbox = GetBBoxAbsolute();
-
-	// sum up all the offsets to the current position
-	Vector3f offset = Vector3f(0, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0);
-	offset.y -= ui::eventide::DefaultStyler.text.headingSize; // Push it down again.
-	for (uint32_t checkPropertyIndex = 0; checkPropertyIndex < property_index; ++checkPropertyIndex)
-	{
-		auto nodeProperty = node->sequenceInfo->view->PropertyList()[property_index];
-		switch (nodeProperty.renderstyle)
-		{
-		case m04::editor::PropertyRenderStyle::kBoolean:
-			offset.y -= ui::eventide::DefaultStyler.text.headingSize + m_padding.y;
-			break;
-		}
-	}
+	offset += nodeBbox.m_M.getTranslation();
 
 	// generate layout for the actual thing
 	auto nodeProperty = node->sequenceInfo->view->PropertyList()[property_index];
@@ -624,15 +669,19 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyKey 
 	{
 	case m04::editor::PropertyRenderStyle::kBoolean:
 		{
-			core::math::BoundingBox l_bbox;
-			l_bbox.m_Extent = Vector3f(ui::eventide::DefaultStyler.text.headingSize * 0.5F, ui::eventide::DefaultStyler.text.headingSize * 0.5F, 4.0F);
+			core::math::BoundingBox l_bbox(
+				Matrix4x4(),
+				offset + Vector3f(m_padding.x, 0, 0),
+				offset + Vector3f(m_padding.x + ui::eventide::DefaultStyler.text.headingSize, -ui::eventide::DefaultStyler.text.headingSize, 4.0F)
+				);
+			/*l_bbox.m_Extent = Vector3f(ui::eventide::DefaultStyler.text.headingSize * 0.5F, ui::eventide::DefaultStyler.text.headingSize * 0.5F, 4.0F);
 			l_bbox.m_M.setTranslation(nodeBbox.m_M.getTranslation()
 				- Vector3f(0, -nodeBbox.GetExtents().y, nodeBbox.GetExtents().z)
 				+ Vector3f(0, 0, nodeBbox.GetExtents().z * 2.0F + 1.0F)
 				+ Vector3f(-nodeBbox.GetExtents().x + m_padding.x + ui::eventide::DefaultStyler.text.headingSize * 0.5F, 0, 0)
 				+ offset
 				);
-			l_bbox.m_MInverse = l_bbox.m_M.inverse();
+			l_bbox.m_MInverse = l_bbox.m_M.inverse();*/
 			return l_bbox;
 		}
 		break;
