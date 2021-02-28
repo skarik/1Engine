@@ -11,9 +11,9 @@ Cubic::Cubic ( void )
 	size = Vector3f( 1,1,1 );
 }
 // Constructor taking two vectors
-Cubic::Cubic ( Vector3f const& vPosition, Vector3f const& vSize )
+Cubic::Cubic ( Vector3f const& vBottomBackRightCorner, Vector3f const& vSize )
 {
-	position = vPosition;
+	position = vBottomBackRightCorner;
 	size = vSize;
 }
 // Creation taking min and max pos

@@ -67,7 +67,7 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 			RequestUpdateMesh();
 		}
 	}
-	else
+	else if (mouse_event.type == EventMouse::Type::kClicked || mouse_event.type == EventMouse::Type::kReleased)
 	{
 		if (mouse_event.type == EventMouse::Type::kClicked
 			&& mouse_event.button == core::kMBLeft)
@@ -398,7 +398,8 @@ void m04::editor::sequence::NodeRenderer::BuildMeshPropertyScriptText ( const Ve
 	textParams = {};
 	textParams.string = in_property.label.c_str();
 	textParams.font_texture = &m_fontTexture;
-	textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, -bbox_all.GetExtents().z);
+	//textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, -bbox_all.GetExtents().z);
+	textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
 	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
 	textParams.size = math::lerp(0.5F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
 	textParams.alignment = AlignHorizontal::kLeft;
@@ -408,10 +409,20 @@ void m04::editor::sequence::NodeRenderer::BuildMeshPropertyScriptText ( const Ve
 	const char* str = node->sequenceInfo->view->GetPropertyAsString(in_property.identifier);
 	if (str)
 	{
+		std::string l_drawString = str;
+		if (m_propertyState[in_propertyIndex].m_editing)
+		{
+			if (fmod(Time::currentTime, 1.0F) < 0.5F)
+			{
+				l_drawString += '|';
+			}
+		}
+
 		textParams = {};
-		textParams.string = str;
+		textParams.string = l_drawString.c_str();
 		textParams.font_texture = &m_fontTexture;
-		textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, -bbox_all.GetExtents().z) + Vector3f(0, 0, 1);
+		//textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, -bbox_all.GetExtents().z) + Vector3f(0, 0, 0.1F);
+		textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, 0) + Vector3f(0, 0, 0.2F);
 		textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
 		textParams.size = math::lerp(0.5F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
 		textParams.alignment = AlignHorizontal::kLeft;
@@ -431,6 +442,14 @@ void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpd
 	m_halfsizeOnBoard.y = std::max(40.0F, (GetBboxOfAllProperties() + ui::eventide::DefaultStyler.text.headingSize + m_padding.y * 2.0F + m_margins.y * 2.0F) * 0.5F);
 	// TODO: based on properties, update bbox
 	bbox = core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard);
+
+	// Set bbox, push update for mesh
+	SetBBox(bbox);
+	// Request the mesh updates next frame
+	RequestUpdateMesh();
+
+	// Run the button updates
+	Button::OnGameFrameUpdate(input_frame);
 
 	// TODO: more organized
 	// Update per-frame edits
@@ -464,12 +483,6 @@ void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpd
 			}
 		}
 	}
-
-
-	SetBBox(bbox);
-	RequestUpdateMesh();
-
-	Button::OnGameFrameUpdate(input_frame);
 
 	m_frameUpdate = FrameUpdate::kPerFrame;
 }
@@ -535,7 +548,13 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyAll 
 			offset.y -= ui::eventide::DefaultStyler.text.headingSize + m_padding.y;
 			break;
 		case m04::editor::PropertyRenderStyle::kScriptText:
-			offset.y -= ui::eventide::DefaultStyler.text.headingSize + m_padding.y;
+			{
+				const char* l_scriptString = node->sequenceInfo->view->GetPropertyAsString(nodeProperty.identifier);
+				int l_numberOfLines = strlen(l_scriptString) / 40 + 1;
+				l_numberOfLines = std::max(1, l_numberOfLines);
+
+				offset.y -= ui::eventide::DefaultStyler.text.headingSize * l_numberOfLines + m_padding.y;
+			}
 			break;
 		}
 	}
@@ -559,8 +578,14 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxPropertyAll 
 		break;
 	case m04::editor::PropertyRenderStyle::kScriptText:
 		{
+			const char* l_scriptString = node->sequenceInfo->view->GetPropertyAsString(nodeProperty.identifier);
+			int l_numberOfLines = strlen(l_scriptString) / 40 + 1;
+			l_numberOfLines = std::max(1, l_numberOfLines);
+
 			core::math::BoundingBox l_bbox;
-			l_bbox.m_Extent = Vector3f(nodeBbox.GetExtents().x - m_padding.x, ui::eventide::DefaultStyler.text.headingSize * 0.5F, 4.0F);
+			l_bbox.m_Extent = Vector3f(nodeBbox.GetExtents().x - m_padding.x,
+									   ui::eventide::DefaultStyler.text.headingSize * 0.5F * l_numberOfLines,
+									   4.0F);
 			l_bbox.m_M.setTranslation(nodeBbox.m_M.getTranslation()
 				- Vector3f(0, -nodeBbox.GetExtents().y, nodeBbox.GetExtents().z)
 				+ Vector3f(0, 0, nodeBbox.GetExtents().z * 2.0F + 1.0F)

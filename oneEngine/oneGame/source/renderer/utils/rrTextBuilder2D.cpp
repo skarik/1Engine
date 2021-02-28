@@ -162,7 +162,7 @@ Vector2f rrTextBuilder2D::predictTextSize ( const char* str )
 		Vector2f pos;
 		pos = Vector2f(0,0) + drawPos;//, m_multiplier, m_offset);
 		drawrect.Expand(pos);
-		pos = Vector2f(0,0) + Vector2f(drawPos.x + uv.size.x * baseScale, drawPos.y + uv.size.y * baseScale);//, m_multiplier, m_offset);
+		pos = Vector2f(0,0) + Vector2f(drawPos.x + uv.size.x * baseScale * m_multiplier.x, drawPos.y + uv.size.y * baseScale * m_multiplier.y);//, m_multiplier, m_offset);
 		drawrect.Expand(pos);
 
 		// Move the pen along

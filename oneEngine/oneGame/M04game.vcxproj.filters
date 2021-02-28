@@ -252,6 +252,9 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\vn\ViewsLines.h">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\VN</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\vn\ViewsGraphics.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\VN</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -408,6 +411,9 @@
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\seqeditor\vn\ViewsLines.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\VN</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\vn\ViewsGraphics.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\VN</Filter>
     </ClCompile>
   </ItemGroup>
