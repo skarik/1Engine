@@ -69,8 +69,8 @@ Vector2f rrTextBuilder2D::predictTextSize ( const char* str )
 
 	const int maxLength = (int)strlen(str);
 
-	expand(m_vertexCount + maxLength * 4);
-	expandIndices(m_indexCount + maxLength * 5);
+	//expand(m_vertexCount + maxLength * 4);
+	//expandIndices(m_indexCount + maxLength * 5);
 
 	// Get the font info:
 
@@ -160,9 +160,9 @@ Vector2f rrTextBuilder2D::predictTextSize ( const char* str )
 
 		// shite
 		Vector2f pos;
-		pos = Vector2f(0,0) + drawPos;//, m_multiplier, m_offset);
+		pos = Vector2f(0,0) + Vector2f((drawPos.x + 0.0F) * m_multiplier.x, (drawPos.y + 0.0F) * m_multiplier.y);//, m_multiplier, m_offset);
 		drawrect.Expand(pos);
-		pos = Vector2f(0,0) + Vector2f(drawPos.x + uv.size.x * baseScale * m_multiplier.x, drawPos.y + uv.size.y * baseScale * m_multiplier.y);//, m_multiplier, m_offset);
+		pos = Vector2f(0,0) + Vector2f((drawPos.x + uv.size.x * baseScale) * m_multiplier.x, (drawPos.y + uv.size.y * baseScale) * m_multiplier.y);//, m_multiplier, m_offset);
 		drawrect.Expand(pos);
 
 		// Move the pen along

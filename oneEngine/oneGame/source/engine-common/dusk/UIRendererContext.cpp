@@ -158,7 +158,10 @@ float dusk::UIRendererContext::getTextHeight ( TextFontStyle font )
 float dusk::UIRendererContext::getTextWidth ( TextFontStyle font, const char* str )
 {
 	rrTextBuilder2D* l_textBuilder = static_cast<rrTextBuilder2D*>(m_mb2);
-	Vector2f l_size = l_textBuilder->predictTextSize(str);
+
+	Vector2f l_screenMultiplier, l_screenOffset;
+	l_textBuilder->getScreenMapping(l_screenMultiplier, l_screenOffset);
+	Vector2f l_size = l_textBuilder->predictTextSize(str) / l_screenMultiplier.x;
 	return l_size.x;
 }
 

@@ -130,6 +130,22 @@ void ui::eventide::Element::buildText ( const ParamsForText& params )
 	}
 }
 
+Vector2f ui::eventide::Element::predictText ( const ParamsForText& params )
+{
+	ARCORE_ASSERT(params.font_texture != nullptr);
+
+	RrFontTexture* l_font = (RrFontTexture*)params.font_texture->reference;
+	ARCORE_ASSERT(l_font != nullptr);
+
+	rrTextBuilder2D textBuilder (l_font, &mesh_creation_state.mesh_data, mesh_creation_state.vertex_count, mesh_creation_state.index_count);
+	textBuilder.setScreenMapping(core::math::Cubic(Vector3f(0, 0, 0), Vector3f(2.0F, 2.0F, 2.0F)));
+
+	const Vector2f textSize = textBuilder.predictTextSize(params.string);
+	const Real kTextScale = params.size / l_font->GetFontInfo()->height;
+
+	return textSize * kTextScale;
+}
+
 void ui::eventide::Element::buildQuad ( const ParamsForQuad& params )
 {
 	rrMeshBuilder meshBuilder (&mesh_creation_state.mesh_data, mesh_creation_state.vertex_count, mesh_creation_state.index_count);

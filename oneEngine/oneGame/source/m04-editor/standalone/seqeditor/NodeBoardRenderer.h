@@ -61,8 +61,16 @@ namespace sequence {
 		core::math::BoundingBox	GetBboxFlowInput ( void );
 		core::math::BoundingBox GetBboxFlowOutput ( const uint32_t output_index );
 
-		core::math::BoundingBox GetBboxPropertyAll ( const uint32_t property_index );
-		core::math::BoundingBox GetBboxPropertyKey ( const uint32_t property_index );
+		//core::math::BoundingBox GetBboxPropertyAll ( const uint32_t property_index );
+		//core::math::BoundingBox GetBboxPropertyKey ( const uint32_t property_index );
+
+		enum class PropertyComponent
+		{
+			All,
+			Key,
+		};
+		template <PropertyComponent Part>
+		core::math::BoundingBox GetBboxProperty ( const uint32_t property_index );
 
 		Real					GetBboxOfAllProperties ( void );
 
