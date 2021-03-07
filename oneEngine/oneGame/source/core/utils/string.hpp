@@ -103,13 +103,15 @@ namespace string
 		return result;
 	}
 
-	void ToLower( std::string& inout )
+	std::string& ToLower( std::string& inout )
 	{
 		std::transform( inout.begin(), inout.end(), inout.begin(), ::tolower );
+		return inout;
 	}
-	void ToUpper( std::string& inout )
+	std::string& ToUpper( std::string& inout )
 	{
 		std::transform( inout.begin(), inout.end(), inout.begin(), ::toupper );
+		return inout;
 	}
 
 

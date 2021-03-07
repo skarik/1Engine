@@ -41,8 +41,8 @@ namespace core
 			//	GetUpper(input) : Returns uppercase version of the string. Will work with Unicode.
 			static std::string			GetUpper( const std::string& input );
 
-			static void					ToLower( std::string& inout );
-			static void					ToUpper( std::string& inout );
+			static std::string&			ToLower( std::string& inout );
+			static std::string&			ToUpper( std::string& inout );
 
 			//	TrimLeft(t, whitespace) : Returns string with whitespace removed from the right edge (end).
 			static std::string			TrimRight( const std::string &t, const std::string &ws = kWhitespace );

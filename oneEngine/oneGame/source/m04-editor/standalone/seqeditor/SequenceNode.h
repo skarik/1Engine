@@ -102,6 +102,9 @@ namespace editor {
 		// Text that the character speaks.
 		kScriptText,
 
+		// Dropdown that appears, attempting to match the property with an enum
+		kEnumtypeDropdown,
+
 		// Node. Usually only used by flow outputs.
 		kSequenceNode,
 	};

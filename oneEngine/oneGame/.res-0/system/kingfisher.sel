@@ -1,5 +1,32 @@
 // Sequence Editor Listing for Kingfisher
 
+enumtype Character
+{
+	0 nobody Nobody
+	2 killian Killian
+	3 yuuto Yuuto
+	4 micolash Micolash
+	5 vincent Vincent
+	6 osric Osric
+	7 juliet Juliet
+	8 summer Summer
+	9 lydia Lydia
+	10 frank Frank
+	11 okinobu Okinobu
+	128 libby Librarian
+}
+
+enumtype BoxStyle
+{
+	0 default Default Speech
+	1 portrait Portrait
+	2 diagetic Diegetic
+	3 tutorial Tutorial
+	4 thinking Thinking
+	5 reward Reward
+	6 muble Mumbled Speech
+}
+
 nodetype lines
 {
 	displayAs Lines

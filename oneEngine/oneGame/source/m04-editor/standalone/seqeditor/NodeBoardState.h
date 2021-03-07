@@ -89,6 +89,11 @@ namespace sequence {
 		void					Load ( ISequenceDeserializer* deserializer );
 
 	public:
+		m04::editor::SequenceEditor*
+								GetEditor ( void )
+			{ return parent_editor; }
+
+	public:
 		std::vector<BoardNode*>
 							nodes;
 		std::vector<INodeDisplay*>
@@ -99,6 +104,9 @@ namespace sequence {
 	protected:
 		ui::eventide::UserInterface*
 							ui;
+
+		m04::editor::SequenceEditor*
+							parent_editor;
 	};
 
 }}}

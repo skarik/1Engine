@@ -2,6 +2,7 @@
 #define M04_EDITORS_SEQUENCE_EDITOR_MAIN_
 
 #include <vector>
+#include <map>
 
 #include "core-ext/containers/osfstructure.h"
 
@@ -13,6 +14,8 @@
 #include "./MouseGizmo.h"
 #include "./NodeBoardState.h"
 #include "./RightClickListMenu.h"
+
+class arStringEnumDefinition;
 
 namespace m04 {
 namespace editor {
@@ -37,12 +40,23 @@ namespace editor {
 								GetNodeBoardState ( void )
 			{ return board_state; }
 
+		//	GetEnums() : Returns the enum definitions loaded for the current SEL.
+		EDITOR_API const std::map<arstring128, arStringEnumDefinition*>&
+								GetEnums ( void )
+			{ return enum_definitions; }
+
 	protected:
 		ui::eventide::UserInterface*
 							user_interface = NULL;
 
 		dusk::UserInterface*
 							dusk_interface = NULL;
+
+		//	LoadSequenceEditorListing(filepath) : Loads the given editor info.
+		void					LoadSequenceEditorListing( const char* sel_path );
+		// List of all available externally-loaded enums
+		std::map<arstring128, arStringEnumDefinition*>
+							enum_definitions;
 
 		// Top menu with all the dropdowns and associated logic.
 		m04::editor::sequence::TopMenu*
@@ -58,16 +72,16 @@ namespace editor {
 		// Is the camera being currently zoom-dragged?
 		bool				zooming_view = false;
 		//	UpdateCameraControl() : Does camera panning & zooming
-		void				UpdateCameraControl ( void );
+		void					UpdateCameraControl ( void );
 
 		
 		// Right click menu.
 		m04::editor::sequence::RightClickListMenu*
 							right_click_menu = NULL;
 
-		void				UpdateRightClickMenu ( void );
+		void					UpdateRightClickMenu ( void );
 
-
+		// Current state of board
 		m04::editor::sequence::NodeBoardState*
 							board_state = NULL;
 	};

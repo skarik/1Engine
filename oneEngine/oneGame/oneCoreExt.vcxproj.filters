@@ -79,6 +79,9 @@
     <Filter Include="SOURCE\Core-ext\Std">
       <UniqueIdentifier>{9833256a-85a1-4bcf-95bd-979dbaa219a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Core-ext\Containers">
+      <UniqueIdentifier>{2c7c35f0-252a-4864-a4eb-6e948928517c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\settings\CGameSettings.cpp">
@@ -200,6 +203,12 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\system\shell\Inputs.cpp">
       <Filter>SOURCE\Core-ext\System\Shell</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\core-ext.cpp">
+      <Filter>SOURCE\Core-ext</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\containers\arStringEnum.cpp">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -340,6 +349,12 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\shell\Inputs.h">
       <Filter>SOURCE\Core-ext\System\Shell</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\core-ext.h">
+      <Filter>SOURCE\Core-ext</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\containers\arStringEnum.h">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

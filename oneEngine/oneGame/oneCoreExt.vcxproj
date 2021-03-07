@@ -45,6 +45,8 @@
     <ClCompile Include="source\core-ext\animation\BoneMapper.cpp" />
     <ClCompile Include="source\core-ext\animation\set\AnimationSet.cpp" />
     <ClCompile Include="source\core-ext\animation\Skeleton.cpp" />
+    <ClCompile Include="source\core-ext\containers\arStringEnum.cpp" />
+    <ClCompile Include="source\core-ext\core-ext.cpp" />
     <ClCompile Include="source\core-ext\input\CInputControl.cpp" />
     <ClCompile Include="source\core-ext\profiler\CTimeProfiler.cpp" />
     <ClCompile Include="source\core-ext\resources\IArResource.cpp" />
@@ -87,6 +89,8 @@
     <ClInclude Include="source\core-ext\animation\BoneMapper.h" />
     <ClInclude Include="source\core-ext\animation\set\AnimationSet.h" />
     <ClInclude Include="source\core-ext\animation\Skeleton.h" />
+    <ClInclude Include="source\core-ext\containers\arStringEnum.h" />
+    <ClInclude Include="source\core-ext\core-ext.h" />
     <ClInclude Include="source\core-ext\input\CInputControl.h" />
     <ClInclude Include="source\core-ext\input\emulated\CEmulatedInputControl.h" />
     <ClInclude Include="source\core-ext\profiler\CTimeProfiler.h" />
