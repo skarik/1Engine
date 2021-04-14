@@ -50,3 +50,16 @@ arStringEnumValue arStringEnumDefinition::CreateValue ( const int32_t enumValue 
 	int32_t enumIndex = FindEnumValue(enumValue);
 	return arStringEnumValue(this, enumIndex);
 }
+
+//	CreateValueFromIndex() : Creates a value with the given enum index
+arStringEnumValue arStringEnumDefinition::CreateValueFromIndex ( const int32_t enumIndex )
+{
+	if (enumIndex < GetSize() && enumIndex >= 0)
+	{
+		return arStringEnumValue(this, enumIndex);
+	}
+	else
+	{
+		return arStringEnumValue(this, kInvalidValue);
+	}
+}

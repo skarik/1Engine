@@ -29,6 +29,11 @@ private:
 	std::vector<NameValue>
 						m_enumInfo;
 
+	enum LocalConstants : int32_t
+	{
+		kInvalidValue = -1,
+	};
+
 public:
 	//	CreateNew(enumInfo) : Creates a new persistent string enum definition.
 	// String enums are freed at the end of the lifetime, or when explicitly freed.
@@ -50,6 +55,10 @@ public:
 	CORE_API arStringEnumValue
 							CreateValue ( const int32_t enumValue );
 
+	//	CreateValueFromIndex() : Creates a value with the given enum index
+	CORE_API arStringEnumValue
+							CreateValueFromIndex ( const int32_t enumIndex );
+
 	//	GetSize() : Number of elements in the enum
 	size_t					GetSize ( void )
 	{
@@ -59,7 +68,7 @@ public:
 	//	GetEnumName() : The name of the Nth enum.
 	const char*				GetEnumName ( const int32_t enumIndex )
 	{
-		if (enumIndex == -1)
+		if (enumIndex == kInvalidValue)
 		{
 			return nullptr;
 		}
@@ -83,6 +92,10 @@ public:
 private:
 	int32_t				FindEnumValue ( const char* enumName )
 	{
+		if (enumName == NULL)
+		{
+			return kInvalidValue;
+		}
 		for (int32_t index = 0; index < m_enumInfo.size(); ++index)
 		{
 			if (m_enumInfo[index].name == enumName)
@@ -90,7 +103,7 @@ private:
 				return index;
 			}
 		}
-		return -1;
+		return kInvalidValue;
 	}
 	int32_t				FindEnumValue ( const int32_t enumValue )
 	{
@@ -101,7 +114,7 @@ private:
 				return index;
 			}
 		}
-		return -1;
+		return kInvalidValue;
 	}
 };
 
@@ -133,6 +146,12 @@ public:
 	const int32_t			GetValue ( void )
 	{
 		return m_definition->GetEnumValue(m_enumIndex);
+	}
+
+	//	GetEnumIndex() : Return index of the enum in the parent definition.
+	const int32_t			GetEnumIndex ( void )
+	{
+		return m_enumIndex;
 	}
 
 	arStringEnumValue&		operator=(const arStringEnumValue& other)
