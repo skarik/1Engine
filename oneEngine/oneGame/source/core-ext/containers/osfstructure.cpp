@@ -107,7 +107,13 @@ bool osf::ObjectValue::ConvertValue (const BaseValue* source, BaseValue* target)
 		switch (source->GetType())
 		{
 		case ValueType::kFloat:
-			target->As<StringValue>()->value = std::to_string(source->As<FloatValue>()->value);
+			{
+				std::string& valueStringRef = target->As<StringValue>()->value;
+				valueStringRef = std::to_string(source->As<FloatValue>()->value);
+				// Remove trailing zeroes or decimal points.
+				valueStringRef.erase(valueStringRef.find_last_not_of('0') + 1, std::string::npos);
+				valueStringRef.erase(valueStringRef.find_last_not_of('.') + 1, std::string::npos); 
+			}
 			return true;
 		case ValueType::kInteger:
 			target->As<StringValue>()->value = std::to_string(source->As<IntegerValue>()->value);

@@ -27,6 +27,13 @@ enumtype BoxStyle
 	6 muble Mumbled Speech
 }
 
+enumtype EndingStyle
+{
+	0 default Wait for Advance
+	1 organic End after reading time
+	2 auto End after last letter
+}
+
 nodetype lines
 {
 	displayAs Lines
@@ -50,6 +57,7 @@ nodetype lines
 	{
 		displayAs Box Style
 		type list
+		defaultValue default
 		default Default Speech
 		portrait Portrait
 		diagetic Diegetic

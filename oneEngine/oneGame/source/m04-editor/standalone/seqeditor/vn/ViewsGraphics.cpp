@@ -9,6 +9,7 @@ m04::editor::sequence::vn::PortraitNodeView::PortraitNodeView ( SequenceNode* in
 	propertyViews.push_back({"Blend Time", "time", PropertyRenderStyle::kFloat});
 
 	SetProperty("time", 0.2F);
+	SetProperty("character", "nobody");
 }
 
 DECLARE_SEQUENCENODE_CLASS(VN_Background, m04::editor::sequence::vn::BackgroundNodeView);
