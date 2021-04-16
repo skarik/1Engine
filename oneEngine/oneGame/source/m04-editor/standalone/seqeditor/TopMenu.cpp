@@ -60,3 +60,12 @@ void m04::editor::sequence::TopMenu::SaveTest ( void )
 		board->Save(&serializer);
 	}
 }
+
+void m04::editor::sequence::TopMenu::LoadTest (void)
+{
+	auto board = main_editor->GetNodeBoardState();
+	if (board != NULL)
+	{
+		//Go fucking do something, I don't know.
+	}
+}

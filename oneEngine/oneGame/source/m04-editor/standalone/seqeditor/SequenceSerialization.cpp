@@ -8,6 +8,7 @@ m04::editor::sequence::OsfSerializer::OsfSerializer ( const char* filename )
 		osf_writer = new io::OSFWriter(osf_fileHandle);
 	}
 }
+
 m04::editor::sequence::OsfSerializer::~OsfSerializer ( void )
 {
 	delete osf_writer;
@@ -141,4 +142,73 @@ void m04::editor::sequence::OsfSerializer::SerializeFileEnd ( void )
 	entry.name = "#__END";
 	entry.value = "";
 	osf_writer->WriteEntry(entry);
+}
+
+m04::editor::sequence::OsfDeserializer::OsfDeserializer ( const char* filename )
+{
+	osf_fileHandle = fopen(filename, "r");
+	if (osf_fileHandle != NULL)
+	{
+		osf_reader = new io::OSFReader(osf_fileHandle);
+	}
+
+	buffer = new char[buffer_size];
+}
+
+m04::editor::sequence::OsfDeserializer::~OsfDeserializer ( void )
+{
+	delete osf_reader;
+	osf_reader = NULL;
+	
+	delete buffer;
+	buffer = NULL;
+
+	fclose(osf_fileHandle);
+}
+
+//read first line of the file and verify it matches the expected file header
+bool m04::editor::sequence::OsfDeserializer::DeserializeFileBegin ( void ) 
+{
+	fgets(buffer, buffer_size, osf_fileHandle);
+
+	if (strcmp(buffer, "//!/osf/seq/2\n") == 0)
+		return true;
+
+	return false;
+}
+
+m04::editor::SequenceNode* m04::editor::sequence::OsfDeserializer::DeserializeNode ( void ) 
+{
+	io::OSFEntryInfo currentEntryInfo;
+	osf_reader->GetNext(currentEntryInfo, buffer, buffer_size);
+
+	//Check the node
+	switch (currentEntryInfo.type) {
+	case io::eOSFEntryType::kOSFEntryTypeUnknown:
+		return NULL; //Actually probably want to return the node, now that I'm thinking about it.
+		break;
+	case io::eOSFEntryType::kOSFEntryTypeNormal:
+		//Normal key-value pair
+		//Separate this out to another function because I need to account for all sorts of keys
+		break;	
+	case io::eOSFEntryType::kOSFEntryTypeObject:
+		//Object to enter into. Need to call GoInto()
+		//Will there be nested objects? Or does this 
+		//The label on an object (probably) isn't 
+		break;
+	case io::eOSFEntryType::kOSFEntryTypeMarker:
+		//Marker to jump to in the file
+		break;
+
+	case io::eOSFEntryType::kOSFEntryTypeSource:
+		//Go parse some code
+		break;
+	case io::eOSFEntryType::kOSFEntryTypeEnd:
+		//Return the node, potentially cleaning up any lose ends first.
+		break;
+	case io::eOSFEntryType::kOSFEntryTypeEoF:
+		//What happens here depend on if this is returned over the above. It shouldn't, though.
+		break;
+	}
+	return NULL;
 }

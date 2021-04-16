@@ -60,7 +60,7 @@ namespace io
 	typedef OSFEntryInfo* OSFEntryInfop;
 
 	// Class for reading from OSF formatted text files.
-	// It will not write take ownership of the file. The file must be closed by the user.
+	// It will not take ownership of the file. The file must be closed by the user.
 	// Note: This is currently not performant when reading large OSF files or blocks of code. Try to save results.
 	class OSFReader
 	{

@@ -29,6 +29,8 @@ namespace sequence {
 	{
 	public:
 		EDITOR_API virtual bool	IsValid ( void ) = 0;
+
+		EDITOR_API virtual bool DeserializeFileBegin(void) = 0;
 	};
 
 	class OsfSerializer : public ISequenceSerializer
@@ -55,6 +57,24 @@ namespace sequence {
 
 	class JsonSerializer : public ISequenceSerializer
 	{
+	};
+
+	class OsfDeserializer : ISequenceDeserializer
+	{
+	public:
+
+		EDITOR_API explicit OsfDeserializer ( const char* filename);
+		EDITOR_API			~OsfDeserializer ( void );
+
+		EDITOR_API virtual bool DeserializeFileBegin ( void ) override;
+		EDITOR_API virtual m04::editor::SequenceNode* DeserializeNode ( void );
+
+	protected:
+
+		FILE * osf_fileHandle = NULL;
+		io::OSFReader*		osf_reader = NULL;
+		int buffer_size = 256;
+		char * buffer = NULL;
 	};
 
 }}}

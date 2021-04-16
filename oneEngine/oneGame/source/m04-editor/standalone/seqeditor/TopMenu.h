@@ -29,6 +29,7 @@ namespace sequence {
 	private:
 
 		void					SaveTest ( void );
+		void					LoadTest ( void );
 
 	};
 
