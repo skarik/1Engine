@@ -84,3 +84,12 @@ void m04::editor::sequence::TopMenu::SaveFile ( const std::string& filename )
 		board->Save(&serializer);
 	}
 }
+
+void m04::editor::sequence::TopMenu::LoadTest(void)
+{
+	auto board = main_editor->GetNodeBoardState();
+	if (board != NULL)
+	{
+		//Go fucking do something, I don't know.
+	}
+}
