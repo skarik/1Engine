@@ -82,6 +82,10 @@ dusk::UserInterface::~UserInterface ( void )
 	// Remove the renderer last
 	delete m_renderer;
 	m_renderer = NULL;
+
+	// Clear up the tree
+	ClearElementTree();
+	delete m_elementTreeBase;
 }
 
 //	Update() : Called by engine.
@@ -190,14 +194,17 @@ void dusk::UserInterface::UpdateMouseOver ( void )
 
 			if ( element == NULL ) // Skip deleted
 				continue;
-			if ( !element->m_visible ) // Skip invisible
-				continue;
-			if ( !element->m_wasDrawn ) // Skip not drawn
-				continue;
-
-			if (element->m_isMouseIn)
+			if ( element->GetElementType() == ElementType::kControl )
 			{
-				m_currentMouseover = element->m_index;
+				if ( !element->m_visible ) // Skip invisible
+					continue;
+				if ( !element->m_wasDrawn ) // Skip not drawn
+					continue;
+
+				if (element->m_isMouseIn)
+				{
+					m_currentMouseover = element->m_index;
+				}
 			}
 		}
 
@@ -212,7 +219,7 @@ void dusk::UserInterface::UpdateMouseOver ( void )
 void dusk::UserInterface::UpdateFocus ( void )
 {
 	// On mouse click, focus the item the mouse is over.
-	if ( Input::MouseDown(Input::MBLeft) )
+	if ( core::Input::MouseDown(core::kMBLeft) )
 	{
 		// Unfocus the current focus
 		if (m_currentFocus != kElementHandleInvalid && m_elements[m_currentFocus] != NULL)
@@ -243,7 +250,7 @@ void dusk::UserInterface::UpdateFocus ( void )
 	if ( m_currentDialogue == kElementHandleInvalid )
 	{
 		// Now, if there's focus, and tab is hit, cycle through the elements
-		if ( Input::Keydown( Keys.Tab ) )
+		if ( core::Input::Keydown( core::kVkTab ) )
 		{
 			int repeatCount = 0; // Variable for preventing infinite loops.
 
@@ -307,7 +314,7 @@ void dusk::UserInterface::UpdateFocus ( void )
 		// End tab cycling
 	}
 	// If in dialogue mode...
-	else
+	/*else
 	{
 		// Fix the focus
 		m_currentFocus = m_currentDialogue;
@@ -328,7 +335,7 @@ void dusk::UserInterface::UpdateFocus ( void )
 			m_elements[m_currentFocus]->m_isFocused = true;
 			m_elements[m_currentFocus]->m_isEnabled = true;
 		}
-	}
+	}*/
 }
 
 void dusk::UserInterface::ClearElementTree ( void )
@@ -447,7 +454,7 @@ void dusk::UserInterface::GenerateElementTree ( void )
 
 void dusk::UserInterface::UpdateElementPositions ( void )
 {
-	if ( m_currentDialogue == kElementHandleInvalid )
+	//if ( m_currentDialogue == kElementHandleInvalid )
 	{
 		// Update positions, going down the tree.
 		std::list<ElementNode*> updateList;
@@ -508,7 +515,7 @@ void dusk::UserInterface::UpdateElementPositions ( void )
 			}
 		}
 	}
-	else
+	/*else
 	{
 		// Set current element
 		m_currentElement = m_currentDialogue;
@@ -525,15 +532,15 @@ void dusk::UserInterface::UpdateElementPositions ( void )
 		{
 			element->m_absoluteRect = Rect(parent->m_absoluteRect.pos + element->m_localRect.pos, element->m_localRect.size);
 		}
-	}
+	}*/
 }
 
 void dusk::UserInterface::UpdateElements ( void )
 {
 	dusk::UIStepInfo l_stepInfo;
-	l_stepInfo.mouse_position = Vector2f((Real)Input::MouseX(), (Real)Input::MouseY());
+	l_stepInfo.mouse_position = Vector2f((Real)core::Input::MouseX(), (Real)core::Input::MouseY());
 
-	if ( m_currentDialogue == kElementHandleInvalid )
+	//if ( m_currentDialogue == kElementHandleInvalid )
 	{
 		// Update positions, going down the tree.
 		std::list<ElementNode*> updateList;
@@ -546,6 +553,7 @@ void dusk::UserInterface::UpdateElements ( void )
 
 			if (elementNode->index != kElementHandleInvalid)
 			{
+				ARCORE_ASSERT(elementNode->index < m_elements.size());
 				Element* element = m_elements[elementNode->index];
 				ARCORE_ASSERT(element->m_index == elementNode->index);
 				
@@ -559,8 +567,8 @@ void dusk::UserInterface::UpdateElements ( void )
 				updateList.push_front(child);
 			}
 		}
-	}
-	else
+	} // TODO: Mask out only the items on the dialog button tree
+	/*else
 	{
 		// Set current element
 		m_currentElement = m_currentDialogue;
@@ -569,7 +577,7 @@ void dusk::UserInterface::UpdateElements ( void )
 
 		// Update them
 		element->Update(&l_stepInfo);
-	}
+	}*/
 }
 
 //	DestroyElement(index) : Removes the element with the given index/handle.
@@ -609,21 +617,90 @@ void dusk::UserInterface::DestroyElement ( const size_t handle, const bool also_
 	}
 }
 
+void dusk::UserInterface::PushEnableState ( void )
+{
+	m_dialogueActivationStack.push_back(std::vector<SavedEnableState>());
+	// Save current state of focuses
+	m_dialogueActivationStack.back().resize(m_elements.size());
+	for ( unsigned int i = 0; i < m_elements.size(); ++i )
+	{
+		if ( m_elements[i] != NULL )
+		{
+			m_dialogueActivationStack.back()[i] = {m_elements[i], i, m_elements[i]->m_isEnabled};
+		}
+	}
+}
+
+void dusk::UserInterface::PopEnableState ( void )
+{
+	ARCORE_ASSERT(!m_dialogueActivationStack.empty());
+
+	auto& activationState = m_dialogueActivationStack.back();
+	for (SavedEnableState& stateInfo : activationState)
+	{
+		// If it's a proper match, then simply restore the state
+		if ( stateInfo.index < m_elements.size() && m_elements[stateInfo.index] == stateInfo.element )
+		{
+			stateInfo.element->m_isEnabled = stateInfo.enabled;
+		}
+		else 
+		{
+			// Find the element in the listing
+			for (Element* element : m_elements)
+			{
+				if ( stateInfo.element == element )
+				{
+					stateInfo.element->m_isEnabled = stateInfo.enabled;
+					break;
+				}
+			}
+		}
+		// Anything else is an invalid object and should be skipped, as it may have been since deleted.
+	}
+	m_dialogueActivationStack.pop_back();
+}
+
 //	EnterDialogue(element) : Enters the element as a dialogue.
 void dusk::UserInterface::EnterDialogue ( Element* element )
 {
 	ARCORE_ASSERT(m_elements[element->m_index] == element);
 
+	PushEnableState();
+
+	// Set current dialog state
 	m_currentDialogue = element->m_index;
 
-	// Immediately reset all focuses
-	for ( unsigned int i = 0; i < m_elements.size(); ++i )
+	// Immediately disable all focuses on elements that are not part of the dialogue
+	GenerateElementTree(); // Tree needs to be updated for navigating thru the elements
 	{
-		if ( m_elements[i] != NULL )
+		std::list<ElementNode*> updateList;
+		updateList.push_front(m_elementTreeBase);
+
+		while (!updateList.empty())
 		{
-			m_elements[i]->m_isFocused = false;
-			m_elements[i]->m_isMouseIn = false;
-			m_elements[i]->m_isEnabled = false;
+			ElementNode* elementNode = updateList.front();
+			updateList.pop_front();
+
+			if (elementNode->index == m_currentDialogue)
+			{
+				continue; // Skip the current dialog and its children entirely.
+			}
+
+			if (elementNode->index != kElementHandleInvalid)
+			{
+				Element* element = m_elements[elementNode->index];
+				ARCORE_ASSERT(element->m_index == elementNode->index);
+
+				element->m_isFocused = false;
+				element->m_isMouseIn = false;
+				element->m_isEnabled = false;
+			}
+
+			// Disable children of this item as well
+			for (ElementNode* child : elementNode->children)
+			{
+				updateList.push_front(child);
+			}
 		}
 	}
 }
@@ -633,16 +710,11 @@ void dusk::UserInterface::ExitDialogue ( Element* element )
 {
 	ARCORE_ASSERT(m_elements[element->m_index] == element);
 	ARCORE_ASSERT(m_currentDialogue == element->m_index);
+	ARCORE_ASSERT(!m_dialogueActivationStack.empty());
 
 	m_currentDialogue = kElementHandleInvalid;
 
-	// Immediately re-enable all focuses
-	for ( unsigned int i = 0; i < m_elements.size(); ++i )
-	{
-		if ( m_elements[i] != NULL ) {
-			m_elements[i]->m_isEnabled = true;
-		}
-	}
+	PopEnableState();
 }
 
 //	IsMouseInside() : Checks if mouse cursor is currently inside any active element

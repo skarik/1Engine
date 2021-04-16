@@ -95,12 +95,40 @@ namespace osf
 			ARCORE_ERROR("Value was not in the array to be removed!");
 		}
 
-		//	Convert(index)<type> : Attempts to convert the given index to the correct type.
+		//	GetAdd<type>(string) : Looks up the given key-value and casts it. Adds it if it does not exist.
+		template <class SequenceTypeCastTo>
+		/*OSF_API*/ SequenceTypeCastTo*
+								GetAdd (const char* key_name)
+		{
+			KeyValue* kvSource = GetKeyValue(key_name);
+
+			// Need to add the item
+			if (kvSource == nullptr)
+			{
+				kvSource = Add(new osf::KeyValue(key_name, new SequenceTypeCastTo()));
+				return kvSource->value->As<SequenceTypeCastTo>();
+			}
+			else
+			{
+				return kvSource->value->As<SequenceTypeCastTo>();
+			}
+		}
+
+		//	GetConvertAdd<type>(string) : Looks up the given key-value and casts or converts it. Adds it if it does not exist.
+		template <class SequenceTypeCastTo>
+		/*OSF_API*/ SequenceTypeCastTo*
+								GetConvertAdd (const char* key_name)
+		{
+			GetAdd<SequenceTypeCastTo>(key_name);
+			return Convert<SequenceTypeCastTo>(key_name)->value->As<SequenceTypeCastTo>();
+		}
+
+		//	Convert<type>(index) : Attempts to convert the given index to the correct type.
 		// Returns null if the key was not found or conversion could not happen.
 		template <class SequenceTypeCastTo>
 		/*OSF_API*/ KeyValue*	Convert (const char* key_name)
 		{
-			KeyValue* kvSource = operator[](key_name);
+			KeyValue* kvSource = GetKeyValue(key_name);
 
 			// Cannot convert source objects
 			if (kvSource == nullptr
@@ -110,23 +138,21 @@ namespace osf
 				return nullptr;
 			}
 			// Let's create the new keyvalue type now.
-			SequenceTypeCastTo* vTarget = new SequenceTypeCastTo;
-			if (vTarget->GetType() == ValueType::kObject // Again, we cannot convert objects.
+			if (SequenceTypeCastTo::GetType_Static() == ValueType::kObject // Again, we cannot convert objects.
 				// Cannot convert markers either.
-				|| vTarget->GetType() == ValueType::kMarker)
+				|| SequenceTypeCastTo::GetType_Static() == ValueType::kMarker)
 			{
-				delete vTarget;
 				return nullptr;
 			}
 
 			// Don't convert if the same type
-			if (vTarget->GetType() == kvSource->value->GetType())
+			if (SequenceTypeCastTo::GetType_Static() == kvSource->value->GetType())
 			{
-				delete vTarget;
-				return kvSource->value;
+				return kvSource;
 			}
 
 			// Convert the value type now
+			SequenceTypeCastTo* vTarget = new SequenceTypeCastTo;
 			if (!ConvertValue(kvSource->value, vTarget))
 			{
 				delete vTarget;
@@ -137,7 +163,7 @@ namespace osf
 			delete kvSource->value;
 			kvSource->value = vTarget;
 
-			return vTarget;
+			return kvSource;
 		}
 
 		//	operator[](string) : Looks up the given key-value. Returns NULL if not found.
@@ -183,16 +209,19 @@ namespace osf
 	private:
 		//	GetKeyIndex(string) : Looks up the given key-value and returns its index in the list.
 		// Returns ::NoIndex if not found.
-		OSF_API size_t			GetKeyIndex (const char* key_name);
+		/*OSF_API*/ size_t		GetKeyIndex (const char* key_name);
 
 		//	ConvertValue(source, target) : Converts the given value. Returns false if conversion failed.
-		OSF_API bool			ConvertValue (const BaseValue* source, BaseValue* target);
+		/*OSF_API*/ bool		ConvertValue (const BaseValue* source, BaseValue* target);
 	};
 
 	class MarkerValue : public BaseValue
 	{
 	public:
 		virtual ValueType		GetType ( void ) const override
+			{ return ValueType::kMarker; }
+		static constexpr ValueType
+								GetType_Static ( void )
 			{ return ValueType::kMarker; }
 
 		std::string			value;
@@ -203,6 +232,9 @@ namespace osf
 	public:
 		virtual ValueType		GetType ( void ) const override
 			{ return ValueType::kString; }
+		static constexpr ValueType
+								GetType_Static ( void )
+			{ return ValueType::kString; }
 
 		std::string			value;
 	};
@@ -211,6 +243,9 @@ namespace osf
 	{
 	public:
 		virtual ValueType		GetType ( void ) const override
+			{ return ValueType::kInteger; }
+		static constexpr ValueType
+								GetType_Static ( void )
 			{ return ValueType::kInteger; }
 
 		int64_t				value;
@@ -221,6 +256,9 @@ namespace osf
 	public:
 		virtual ValueType		GetType ( void ) const override
 			{ return ValueType::kFloat; }
+		static constexpr ValueType
+								GetType_Static ( void )
+			{ return ValueType::kFloat; }
 
 		float				value;
 	};
@@ -229,6 +267,9 @@ namespace osf
 	{
 	public:
 		virtual ValueType		GetType ( void ) const override
+			{ return ValueType::kBoolean; }
+		static constexpr ValueType
+								GetType_Static ( void )
 			{ return ValueType::kBoolean; }
 
 		bool				value;

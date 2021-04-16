@@ -52,7 +52,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	core::ArResourceManager::Active()->Initialize();
 
 	// Initialize input
-	CInput::Initialize();
+	core::Input::Initialize();
 
 	// Create Window
 	RrWindow aWindow ( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
@@ -110,11 +110,11 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 				SteamAPI_RunCallbacks();
 			}
 			// Toggle fullscreen
-			if ( Input::Keydown( Keys.F4 ) ) {
+			if ( core::Input::Keydown( core::kVkF4 ) ) {
 				aWindow.SetFullscreen(!aWindow.IsFullscreen());
 			}
 			// Take screenshot
-			if ( Input::Keydown( Keys.F11 ) ) {
+			if ( core::Input::Keydown( core::kVkF1 ) ) {
 				RrScreenshot ss;
 				ss.SaveTimestampedToPNG();
 			}
@@ -124,7 +124,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			aGameState.LateUpdate();
 			TimeProfiler.EndTimeProfile( "MN_gamestate" );
 			// Grab inputs
-			Input::Update();
+			core::Input::Update();
 			// Update audio
 			TimeProfiler.BeginTimeProfile( "MN_audio" );
 			aMaster.Update(Time::deltaTime);
@@ -164,7 +164,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			aRenderer->Render();
 			TimeProfiler.EndTimeProfile( "MN_renderer" );
 			// Clear all inputs
-			Input::PreUpdate();
+			core::Input::PreUpdate();
 			// Update the title with the framerate
 			char szTitle[512] = {0};
 			sprintf(szTitle, "1Engine Test: Core Modules, (FPS: %d) (FT: %d ms)", int(1.0F / Time::smoothDeltaTime), int(Time::smoothDeltaTime * 1000.0F));
@@ -173,7 +173,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 		// Check for exiting type of input
 		if ( aWindow.IsActive() )
 		{
-			if ( ( aGameState.EndingGame() ) || ( Input::Key( Keys.Alt ) && Input::Keydown( Keys.F4 ) ) )
+			if ( ( aGameState.EndingGame() ) || ( core::Input::Key( core::kVkAlt ) && core::Input::Keydown( core::kVkF4 ) ) )
 			{
 				aWindow.PostEndMessage();
 			}
@@ -193,7 +193,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	// Free Physics
 	PrPhysics::FreeInstance();
 	// Free input
-	CInput::Free();
+	core::Input::Free();
 
 	return 0;
 }

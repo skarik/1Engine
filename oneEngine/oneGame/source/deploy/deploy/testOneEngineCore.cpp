@@ -2,6 +2,7 @@
 #ifdef _WIN32
 
 #include "core/types/types.h"
+#include "core-ext/core-ext.h"
 #include "deploy/unit/unit.h"
 
 // Instance Limiting
@@ -30,8 +31,16 @@ int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
 	// Throw exception or crash when the memory heap gets corrupted in order to track down larger errors.
 	BOOL f=HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
 
+	// Call core init CBs
+	core::OnApplicationStartup();
+
 	// Call the Unit to run
-	return Unit::Test_EngineCore(hInstance,hPrevInstance,lpCmdLine,nCmdShow);
+	int returnCode = Unit::Test_EngineCore(hInstance,hPrevInstance,lpCmdLine,nCmdShow);
+
+	// Call core free CBs
+	core::OnApplicationEnd();
+
+	return returnCode;
 }
 
 #endif

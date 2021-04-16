@@ -150,7 +150,7 @@ void CDuskGUIFloatfield::GetFloatValue ( void )
 	{
 		/*for ( int i = 0; i < 256; ++i )
 		{
-			if ( CInput::keydown[i] )
+			if ( core::Input::keydown[i] )
 			{
 				if ( isalnum(i) || ispunct(i) )
 				{
@@ -175,7 +175,7 @@ void CDuskGUIFloatfield::GetFloatValue ( void )
 			}
 		}
 	}
-	if ( Input::Keydown( Keys.Backspace ) )//if ( CInput::keydown[VK_BACK] )
+	if ( Input::Keydown( Keys.Backspace ) )//if ( core::Input::keydown[VK_BACK] )
 	{
 		//label = label.substr( label.size()-1 );
 		if ( label.size() > 0 )

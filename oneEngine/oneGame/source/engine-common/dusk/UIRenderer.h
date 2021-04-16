@@ -60,14 +60,14 @@ namespace dusk
 		void					setSize ( const size_t size );
 		void					update ( void );
 
-		void					setBackgroundColor ( Element* element, const Color& color );
-		void					setBackgroundClickPulse ( Element* element, const Color& click_pulse );
+		void					setBackgroundColor ( Element* element, size_t subelement, const Color& color );
+		void					setBackgroundClickPulse ( Element* element, size_t subelement, const Color& click_pulse );
 
-		Color					getBackgroundColor ( Element* element );
+		Color					getBackgroundColor ( Element* element, size_t subelement );
 
 	private:
 
-		std::vector<UIRendererBlendedColor>
+		std::vector<std::vector<UIRendererBlendedColor>>
 							m_elementBackgroundColors;
 	};
 
@@ -135,6 +135,7 @@ namespace dusk
 		kColorStyleElementEmphasized	= 0x04,
 		kColorStyleShapeNormal		= 0x05,
 		kColorStyleShapeAccented	= 0x06,
+		kColorStyleElementEmphasized2	= 0x07,
 	};
 
 	enum FocusStyle : uint16_t
@@ -189,6 +190,7 @@ namespace dusk
 		friend UIRenderer;
 
 	public:
+		ENGCOM_API void			setScissor ( const Rect& scissor );
 		ENGCOM_API void			setFocus ( FocusStyle style );
 		ENGCOM_API void			setColor ( ColorStyle style, size_t subelement = 0 );
 		ENGCOM_API void			setTextSettings ( TextStyleSettings settings );
@@ -197,6 +199,7 @@ namespace dusk
 		ENGCOM_API float		getTextWidth ( TextFontStyle font, const char* str );
 
 		ENGCOM_API void			drawRectangle ( Element* source, const Rect& rectangle );
+		ENGCOM_API void			drawBorder ( Element* source, const Rect& rectangle );
 		ENGCOM_API void			drawText ( Element* source, const Vector2f& position, const char* str );
 
 	private:
@@ -209,6 +212,8 @@ namespace dusk
 		ColorStyle			m_colorType;
 		size_t				m_colorSubelement;
 		TextStyleSettings	m_textType;
+
+		Rect				m_currentScissor;
 
 		bool				m_dsDrawBackground;
 		Color				m_dsColorBackground;

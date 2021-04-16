@@ -17,16 +17,32 @@ void dusk::elements::TextField::Update ( const UIStepInfo* stepinfo )
 	}
 	else
 	{
+		if ( m_isFocused )
+		{
+			const auto& inputString = core::Input::FrameInputString();
+			for (const auto& input : inputString)
+			{
+				if ( input && isprint(input) )
+				{
+					m_contents += input;
+				}
+				if ( input == core::kVkBackspace )
+				{
+					m_contents = m_contents.substr(0, m_contents.length() - 1);
+				}
+			}
+		}
+
 		if ( m_isMouseIn && m_wasDrawn )
 		{
 			// Mouse controls
-			if ( CInput::MouseDown(CInput::MBLeft) )
+			if ( core::Input::MouseDown(core::kMBLeft) )
 			{
 				//beginPress = true;
 			}
 			/*else if ( beginPress )
 			{
-				if ( CInput::MouseUp(CInput::MBLeft) )
+				if ( core::Input::MouseUp(core::kMBLeft) )
 				{
 					beginPress = false;
 					isPressed = true;
@@ -40,7 +56,7 @@ void dusk::elements::TextField::Update ( const UIStepInfo* stepinfo )
 			// Keyboard controls
 			if ( m_isFocused )
 			{
-				if ( CInput::Keydown( Keys.Return ) )
+				if ( core::Input::Keydown( core::kVkReturn ) )
 				{
 					isPressed = true;
 				}
@@ -52,11 +68,21 @@ void dusk::elements::TextField::Update ( const UIStepInfo* stepinfo )
 }
 void dusk::elements::TextField::Render ( UIRendererContext* uir )
 {
+	if (m_drawHeight <= 0.0F)
+	{
+		m_drawHeight = (Real)math::round(uir->getTextHeight(kTextFontButton) * 1.5F + 5.0F);
+	}
+	m_absoluteRect.pos.y += (Real)math::round((m_absoluteRect.size.y - m_drawHeight) * 0.5F);
+	m_absoluteRect.size.y = m_drawHeight;
+
 	uir->setFocus(dusk::kFocusStyleAutomatic);
-	uir->setColor(dusk::kColorStyleBackground);
+	uir->setColor(dusk::kColorStyleBackground, 0);
 	uir->drawRectangle(this, m_absoluteRect);
+	uir->setFocus(m_isFocused ? dusk::kFocusStyleFocused : dusk::kFocusStyleAutomatic);
+	uir->setColor(dusk::kColorStyleElementEmphasized, 1);
+	uir->drawBorder(this, m_absoluteRect);
 
 	uir->setColor(dusk::kColorStyleLabel);
 	uir->setTextSettings(TextStyleSettings{dusk::kTextFontButton, dusk::kTextAlignLeft, dusk::kTextAlignMiddle});
-	uir->drawText(this, m_absoluteRect.pos + Vector2f(5.0F, (m_absoluteRect.size.y - uir->getTextHeight(kTextFontButton)) * 0.5F), m_contents.c_str());
+	uir->drawText(this, m_absoluteRect.pos + Vector2f(5.0F, m_absoluteRect.size.y * 0.5F - 1.0F), m_contents.c_str());
 }

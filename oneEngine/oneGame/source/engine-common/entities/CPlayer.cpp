@@ -331,7 +331,7 @@ void CPlayer::DoPlayerActions ( void )
 	// Calling the lookAt functions
 	DoLookAtCommands();
 	
-	if ( CInput::Keydown( 'B' ) )
+	if ( core::Input::Keydown( 'B' ) )
 	{
 		if ( rhLookAtResult.hit ) {
 			rhLookAtResult.hitPos.x = (Real)Math.Round( rhLookAtResult.hitPos.x );
@@ -341,7 +341,7 @@ void CPlayer::DoPlayerActions ( void )
 			COctreeTerrain::GetActive()->TerrainUpdate();
 		}
 	}
-	if ( CInput::Keydown( 'N' ) )
+	if ( core::Input::Keydown( 'N' ) )
 	{
 		if ( rhLookAtResult.hit ) {
 			rhLookAtResult.hitPos.x = (Real)Math.Round( rhLookAtResult.hitPos.x );
@@ -351,7 +351,7 @@ void CPlayer::DoPlayerActions ( void )
 			COctreeTerrain::GetActive()->TerrainUpdate();
 		}
 	}
-	if ( CInput::Keydown( 'X' ) )
+	if ( core::Input::Keydown( 'X' ) )
 	{
 		if ( rhLookAtResult.hit ) {
 			rhLookAtResult.hitPos.x = (Real)Math.Round( rhLookAtResult.hitPos.x );
@@ -361,7 +361,7 @@ void CPlayer::DoPlayerActions ( void )
 			COctreeTerrain::GetActive()->TerrainUpdate();
 		}
 	}
-	if ( CInput::Keydown( 'L' ) )
+	if ( core::Input::Keydown( 'L' ) )
 	{
 		COctreeMesher::m_useDualContouring = !COctreeMesher::m_useDualContouring;
 		COctreeTerrain::GetActive()->TerrainUpdate();

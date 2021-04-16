@@ -178,14 +178,14 @@ void CDuskGUIPropertyview::Update ( void )
 	CDuskGUIPanel::Update();
 
 	if ( mouseIn ) {
-		if ( CInput::DeltaMouseW() != 0 ) {
-			scroll_offset -= CInput::DeltaMouseW() * 0.02f;
+		if ( core::Input::DeltaMouseW() != 0 ) {
+			scroll_offset -= core::Input::DeltaMouseW() * 0.02f;
 		}
 		else {
-			if ( CInput::Keydown( Keys.Down ) ) {
+			if ( core::Input::Keydown( core::kVkDown ) ) {
 				scroll_offset += 0.2f;
 			}
-			if ( CInput::Keydown( Keys.Up ) ) {
+			if ( core::Input::Keydown( core::kVkUp ) ) {
 				scroll_offset -= 0.2f;
 			}
 		}

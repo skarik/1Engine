@@ -127,13 +127,13 @@ void CDuskGUIVector3fPicker::Update ( void )
 		}
 		else
 		{
-			if ( CInput::MouseDown(CInput::MBLeft) )
+			if ( core::Input::MouseDown(core::kMBLeft) )
 			{
 				inDialogueMode = false;
 				activeGUI->hCurrentDialogue = Handle(-1);
 				rect = homeRect;
 			}
-			else if ( CInput::MouseDown(CInput::MBRight) )
+			else if ( core::Input::MouseDown(core::kMBRight) )
 			{
 				inDialogueMode = false;
 				activeGUI->hCurrentDialogue = Handle(-1);

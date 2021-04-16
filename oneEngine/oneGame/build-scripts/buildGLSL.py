@@ -24,6 +24,18 @@ class bcolors:
 	BOLD = '\033[1m'
 	UNDERLINE = '\033[4m'
 
+def enableConsoleColors():
+	import ctypes
+	# Pulling from kernel32 to enable VT100 processing in the console we're working in.
+	l_kernel32 = ctypes.WinDLL('kernel32')
+	l_hStdOut = l_kernel32.GetStdHandle(-11)
+	
+	mode = ctypes.c_ulong()
+	l_kernel32.GetConsoleMode(l_hStdOut, ctypes.byref(mode))
+	mode.value |= 0x004 # ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x004
+	l_kernel32.SetConsoleMode(l_hStdOut, mode)
+enableConsoleColors()
+
 m_outp = "0>  "
 
 def main():

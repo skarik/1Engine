@@ -66,7 +66,7 @@ void CDuskGUITextfield::GetStringValue ( void )
 			/*if ( isalpha(i) || (i=='\'') || (i=='`') || (i=='-') ) { //only allow alphabetical characters and '`- for names
 				label += i;
 			}*/
-			if (( i != Keys.Return )&&( i != 0 ))
+			if (( i != core::kVkReturn )&&( i != 0 ))
 			{
 				label += i;
 			}

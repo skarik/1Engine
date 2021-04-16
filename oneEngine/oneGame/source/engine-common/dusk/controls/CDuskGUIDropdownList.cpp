@@ -92,7 +92,7 @@ void CDuskGUIDropdownList::Update ( void )
 		}
 
 		if ( !isReady ) {
-			if ( CInput::MouseUp(CInput::MBLeft) || CInput::Mouse(CInput::MBRight) ) {
+			if ( core::Input::MouseUp(core::kMBLeft) || core::Input::Mouse(core::kMBRight) ) {
 				isReady = true;
 			}
 		}
@@ -119,7 +119,7 @@ void CDuskGUIDropdownList::Update ( void )
 			}
 
 			// if left clicked, make selection
-			if ( CInput::Mouse(CInput::MBLeft) )
+			if ( core::Input::Mouse(core::kMBLeft) )
 			{
 				// go to normalfag mode
 				isReady = false; //body is not ready
@@ -131,14 +131,14 @@ void CDuskGUIDropdownList::Update ( void )
 		}
 		else
 		{
-			if ( CInput::MouseDown(CInput::MBLeft) )
+			if ( core::Input::MouseDown(core::kMBLeft) )
 			{
 				isReady = false;
 				inDialogueMode = false;
 				activeGUI->hCurrentDialogue = Handle(-1);
 				rect = homeRect;
 			}
-			else if ( CInput::MouseDown(CInput::MBRight) )
+			else if ( core::Input::MouseDown(core::kMBRight) )
 			{
 				isReady = false;
 				inDialogueMode = false;

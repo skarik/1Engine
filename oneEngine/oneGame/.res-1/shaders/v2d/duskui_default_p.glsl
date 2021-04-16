@@ -8,6 +8,7 @@ layout(location = 0) in vec4 v2f_colors;
 layout(location = 1) in vec4 v2f_position;
 layout(location = 2) in vec2 v2f_texcoord0;
 layout(location = 3) in float v2f_textureStrength;
+layout(location = 4) in vec4 v2f_scissorCoords;
 
 // Outputs
 layout(location = 0) out vec4 FragDiffuse;
@@ -30,6 +31,12 @@ layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
 
 void main ( void )
 {
+	// Software scissoring
+	if (any(lessThan(v2f_position.xy, v2f_scissorCoords.xy)) || any(greaterThan(v2f_position.xy, v2f_scissorCoords.xy + v2f_scissorCoords.zw)))
+	{
+		discard;
+	}
+
 	vec4 primColor, textColor;
 
 	// Generate normal prim color

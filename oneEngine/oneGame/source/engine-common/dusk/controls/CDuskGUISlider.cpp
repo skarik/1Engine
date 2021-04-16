@@ -69,12 +69,12 @@ void CDuskGUISlider::Update ( void )
 
 		// or if mouse in, start dragging.
 		// based on mouse change of X, change percent.
-		if ( CInput::MouseDown(CInput::MBLeft) )
+		if ( core::Input::MouseDown(core::kMBLeft) )
 		{
 			isDragging = true;
 		}
 		if ( isDragging ) {
-			if ( CInput::MouseUp(CInput::MBLeft) )
+			if ( core::Input::MouseUp(core::kMBLeft) )
 			{
 				isDragging = false;
 			}

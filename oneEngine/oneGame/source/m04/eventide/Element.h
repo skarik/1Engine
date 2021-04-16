@@ -156,6 +156,8 @@ namespace eventide {
 		};
 		//	buildText( params ) : Adds text to the build.
 		EVENTIDE_API void		buildText ( const ParamsForText& params );
+		//	predictText( params ) : Adds text to the build.
+		EVENTIDE_API Vector2f	predictText ( const ParamsForText& params );
 
 		struct ParamsForQuad
 		{

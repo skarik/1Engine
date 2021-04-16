@@ -21,7 +21,7 @@ void CDuskGUIDraggablePanel::Update ( void )
 	screen.pos += screen.size * 0.01F;
 	screen.size *= 1.0F - 0.01F;
 
-	if ( hasFocus && Input::Mouse(Input::MBLeft) )
+	if ( hasFocus && Input::Mouse(core::kMBLeft) )
 	{
 		if ( !isDragging )
 		{

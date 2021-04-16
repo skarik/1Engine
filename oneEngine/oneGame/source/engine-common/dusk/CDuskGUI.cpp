@@ -135,10 +135,10 @@ void CDuskGUI::Update ( void )
 	// Set pixel + screen parameters + current GUI
 	Screen::_screen_info_t prevInfo = Screen::Info;
 	if ( !bInPixelMode ) {
-		CDuskGUIElement::cursor_pos = Vector2f( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
+		CDuskGUIElement::cursor_pos = Vector2f( core::Input::MouseX() / (Real)Screen::Info.width, core::Input::MouseY() / (Real)Screen::Info.height );
 	}
 	else {
-		CDuskGUIElement::cursor_pos = Vector2f( CInput::MouseX(), CInput::MouseY() );
+		CDuskGUIElement::cursor_pos = Vector2f( core::Input::MouseX(), core::Input::MouseY() );
 		/*Screen::Info.width = 1;
 		Screen::Info.height = 1;
 		Screen::Info.scale = 1;*/
@@ -149,7 +149,7 @@ void CDuskGUI::Update ( void )
 	UpdateCurrentMouseover();
 
 	// Handle focus
-	if ( CInput::MouseDown(CInput::MBLeft) )
+	if ( core::Input::MouseDown(core::kMBLeft) )
 	{
 		hCurrentFocus = hCurrentMouseover;
 		// Reset focuses
@@ -182,7 +182,7 @@ void CDuskGUI::Update ( void )
 		}
 
 		// Now, if there's focus, and tab is hit, cycle through the elements
-		if ( CInput::Keydown( Keys.Tab ) )
+		if ( core::Input::Keydown( core::kVkTab ) )
 		{
 			int repeatCount = 0;
 			int nextFocus = int(hCurrentFocus);
@@ -305,11 +305,11 @@ void CDuskGUI::RenderUI ( void )
 	if ( !bInPixelMode )
 	{
 		throw core::DeprecatedCallException();
-		CDuskGUIElement::cursor_pos = Vector2f( CInput::MouseX() / (Real)Screen::Info.width, CInput::MouseY() / (Real)Screen::Info.height );
+		CDuskGUIElement::cursor_pos = Vector2f( core::Input::MouseX() / (Real)Screen::Info.width, core::Input::MouseY() / (Real)Screen::Info.height );
 	}
 	else
 	{
-		CDuskGUIElement::cursor_pos = Vector2f( CInput::MouseX(), CInput::MouseY() );
+		CDuskGUIElement::cursor_pos = Vector2f( core::Input::MouseX(), core::Input::MouseY() );
 	}
 	CDuskGUIElement::activeGUI = this;
 
@@ -689,7 +689,7 @@ bool CDuskGUI::GetMouseInGUI ( void )
 // Grab states of elements
 bool CDuskGUI::GetClicked ( const Handle & handle )
 {
-	return ( (CInput::MouseDown(CInput::MBLeft)) && (GetMouseOver( handle )) );
+	return ( (core::Input::MouseDown(core::kMBLeft)) && (GetMouseOver( handle )) );
 }
 bool CDuskGUI::GetMouseOver ( const Handle & handle )
 {

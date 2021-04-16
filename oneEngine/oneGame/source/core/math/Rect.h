@@ -56,7 +56,7 @@ public:
 	// Expands rect to contain point
 	FORCE_INLINE void Expand ( const Vector2f& point )
 	{
-		for ( uint i = 0; i < 2; ++i )
+		/*for ( uint i = 0; i < 2; ++i )
 		{
 			if ( point[i] < pos[i] )
 			{
@@ -67,7 +67,17 @@ public:
 			{
 				size[i] += point[i] - (pos[i] + size[i]);
 			}
-		}
+		}*/
+		Vector2f min = pos;
+		Vector2f max = pos + size;
+		
+		min.x = (min.x < point.x) ? min.x : point.x;
+		min.y = (min.y < point.y) ? min.y : point.y;
+		max.x = (max.x > point.x) ? max.x : point.x;
+		max.y = (max.y > point.y) ? max.y : point.y;
+
+		pos = min;
+		size = max - min;
 	}
 	//		Expand ( rect )
 	// Expands rect to contain rect

@@ -31,6 +31,8 @@
 
 using namespace renderer;
 
+#pragma warning disable 4102
+
 //===============================================================================================//
 // RrRenderer: Rendering
 //===============================================================================================//
@@ -137,6 +139,7 @@ void RrRenderer::StepBufferPush ( void )
 	gpu::GraphicsContext* gfx = mGfxContext;
 
 	// Are we in buffer mode? (This should always be true)
+	gfx->debugGroupPush("Buffer Push");
 	TimeProfiler.BeginTimeProfile( "rs_buffer_push" );
 	if ( bufferedMode )
 	{
@@ -183,6 +186,7 @@ void RrRenderer::StepBufferPush ( void )
 		gfx->clearColor(clearColor);
 	}
 	TimeProfiler.EndTimeProfile( "rs_buffer_push" );
+	gfx->debugGroupPop();
 }
 
 // Called during the window's rendering routine.
@@ -259,10 +263,9 @@ void RrRenderer::Render ( void )
 	TimeProfiler.EndTimeProfile( "WD_Swap" );*/
 
 	// Prepare frame
-	TimeProfiler.BeginTimeProfile( "rs_present" );
-	//GL.BeginFrame();
+	//TimeProfiler.BeginTimeProfile( "rs_present" );
 	gfx->reset();
-	TimeProfiler.EndTimeProfile( "rs_present" );
+	//TimeProfiler.EndTimeProfile( "rs_present" );
 	
 	// Loop through all cameras (todo: sort render order for each camera)
 	TimeProfiler.BeginTimeProfile( "rs_camera_matrix" );
@@ -345,7 +348,6 @@ void RrRenderer::Render ( void )
 
 	// Do error check at this point
 	//if ( RrMaterial::Default->passinfo.size() > 16 ) throw std::exception();
-	//GL.CheckError();
 	gfx->validate();
 
 	// Present the output buffer
@@ -848,6 +850,8 @@ Render_Groups:
 	// at the end, copy the aggregate forward RT onto the render target (do that outside of this function!)
 
 }
+
+#pragma warning restore 4102
 
 //
 //// Deferred rendering routine.

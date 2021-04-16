@@ -49,9 +49,6 @@ class CRenderableObject;
 // USED FOR CLASS REGISTRATION SYSTEM
 template<typename T> T * _instantiate( void ) { return new T; }
 template<typename T, typename To> To * _instantiate( void ) { return (To*)(new T); }
-//template<typename T> CGameBehavior * _instGameBehavior( void ) { return new T; }
-
-//typedef CGameBehavior*(*_instantiationFunction)(void);
 
 #include "callback_basics.h"
 

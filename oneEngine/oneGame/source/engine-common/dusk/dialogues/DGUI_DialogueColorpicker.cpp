@@ -108,7 +108,7 @@ void Dusk::DialogueColorpicker::Update ( void )
 	}
 
 	// Process mouse clicks
-	if ( Input::MouseDown(Input::MBLeft) )
+	if ( Input::MouseDown(core::kMBLeft) )
 	{
 		// Drag on mouse press
 		if ( current_mode_hover != Mode::None && current_mode_hover != Mode::Outside )
@@ -127,7 +127,7 @@ void Dusk::DialogueColorpicker::Update ( void )
 			hasSelection = true;
 		}
 	}
-	else if ( Input::MouseUp(Input::MBLeft) )
+	else if ( Input::MouseUp(core::kMBLeft) )
 	{
 		// Release drag on mouse up
 		current_mode = Mode::None;

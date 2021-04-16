@@ -16,26 +16,26 @@ namespace math {
 	{
 	public:
 		// Bottom back right corner
-		Vector3f position;
+		Vector3f		position;
 		// Size of object, going forward x, left y, and up z
-		Vector3f size;
+		Vector3f		size;
 
 	public:
-		Cubic ( void );
-		Cubic ( Vector3f const& vPosition, Vector3f const& vSize );
+							Cubic ( void );
+							Cubic ( Vector3f const& vBottomBackRightCorner, Vector3f const& vSize );
 
 		//		FromPosition ( pos1, pos2 )
 		// Creates a new Cubic from the input positions
-		static Cubic FromPosition ( Vector3f vMinPos, Vector3f vMaxPos );
+		static Cubic		FromPosition ( Vector3f vMinPos, Vector3f vMaxPos );
 
 		//	ConstructCenterExtents ( center, extent ) : Creates cubic from given positions
-		static Cubic ConstructCenterExtents ( const Vector3f& center, const Vector3f& extent )
+		static Cubic		ConstructCenterExtents ( const Vector3f& center, const Vector3f& extent )
 		{
 			return FromPosition(center - extent, center + extent);
 		}
 
 		//	ConstructFromBBox ( boundingBox ) : Creates cubic from the given bounding box
-		static Cubic ConstructFromBBox ( const BoundingBox& bbox )
+		static Cubic		ConstructFromBBox ( const BoundingBox& bbox )
 		{
 			return ConstructCenterExtents(bbox.GetCenterPoint(), bbox.GetExtents());
 		}
@@ -43,22 +43,22 @@ namespace math {
 		//		Realign ()
 		// Looks at the position and size, and moves their values around so that
 		// the position refers to the bottom back right corner of the Cubic.
-		void Realign ( void );
+		void				Realign ( void );
 
-		Vector3f center ( void ) const;
+		Vector3f			center ( void ) const;
 	public:
-		void DrawDebug ( void );
+		void				DrawDebug ( void );
 	public:
-		Frustum GetFrustum ( Vector3f const& casterPosition );
-		bool PointIsInside ( Vector3f const& );
-		bool LineCollides ( Line const& );
-		bool LineGetCollision ( Line const&, Vector3f & );
+		Frustum				GetFrustum ( Vector3f const& casterPosition );
+		bool				PointIsInside ( Vector3f const& );
+		bool				LineCollides ( Line const& );
+		bool				LineGetCollision ( Line const&, Vector3f & );
 	
-		bool CubicCollides ( const Cubic & );
+		bool				CubicCollides ( const Cubic & );
 	private:
 		// Helper functions for collision
-		bool inline GetIntersection( Real fDst1, Real fDst2, Vector3f P1, Vector3f P2, Vector3f & Hit );
-		bool inline InBox( Vector3f Hit, Vector3f B1, Vector3f B2, const char Axis );
+		bool inline			GetIntersection( Real fDst1, Real fDst2, Vector3f P1, Vector3f P2, Vector3f & Hit );
+		bool inline			InBox( Vector3f Hit, Vector3f B1, Vector3f B2, const char Axis );
 	};
 
 }}

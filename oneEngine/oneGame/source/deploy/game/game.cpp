@@ -54,7 +54,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	core::ArResourceManager::Active()->Initialize();
 
 	// Initialize input
-	CInput::Initialize();
+	core::Input::Initialize();
 
 	// Create Window
 	RrWindow aWindow ( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
@@ -123,21 +123,21 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 				SteamAPI_RunCallbacks();
 			}
 			// Toggle fullscreen
-			if ( Input::Keydown( Keys.F4 ) ) {
+			if ( core::Input::Keydown( core::kVkF4 ) && !core::Input::Key( core::kVkAlt ) ) {
 				aWindow.SetFullscreen(!aWindow.IsFullscreen());
 			}
 			// Take screenshot
-			if ( Input::Keydown( Keys.F11 ) ) {
+			if ( core::Input::Keydown( core::kVkF11 ) ) {
 				RrScreenshot ss;
 				ss.SaveTimestampedToPNG();
 			}
+			// Grab inputs
+			core::Input::Update();
 			// Update game
 			TimeProfiler.BeginTimeProfile( "MN_gamestate" );
 			aGameState.Update();
 			aGameState.LateUpdate();
 			TimeProfiler.EndTimeProfile( "MN_gamestate" );
-			// Grab inputs
-			Input::Update();
 			// Update audio
 			TimeProfiler.BeginTimeProfile( "MN_audio" );
 			aMaster.Update(Time::deltaTime);
@@ -147,12 +147,12 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 			aRenderer->Render();
 			TimeProfiler.EndTimeProfile( "MN_renderer" );
 			// Clear all inputs
-			Input::PreUpdate();
+			core::Input::PreUpdate();
 		}
 		// Check for exiting type of input
 		if ( aWindow.IsActive() )
 		{
-			if ( ( aGameState.EndingGame() ) || ( Input::Key( Keys.Alt ) && Input::Keydown( Keys.F4 ) ) )
+			if ( ( aGameState.EndingGame() ) || ( core::Input::Key( core::kVkAlt ) && core::Input::Keydown( core::kVkF4 ) ) )
 			{
 				aWindow.PostEndMessage();
 			}
@@ -169,7 +169,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	// Free Physics
 	PrPhysics::FreeInstance();
 	// Free input
-	CInput::Free();
+	core::Input::Free();
 	// Free resources
 	core::ArResourceManager::FreeInstance();
 

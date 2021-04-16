@@ -76,6 +76,9 @@
     <Filter Include="SOURCE\M04\Eventide\Elements">
       <UniqueIdentifier>{86206c82-e906-4b53-8e90-e35109303c9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04-Editor\Standalone\SeqEditor\VN">
+      <UniqueIdentifier>{a36accb6-1fb4-4199-9282-2c6e153c6a87}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -246,6 +249,12 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceSerialization.h">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\vn\ViewsLines.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\VN</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\vn\ViewsGraphics.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\VN</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -400,6 +409,12 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceSerialization.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\vn\ViewsLines.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\VN</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\vn\ViewsGraphics.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\VN</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

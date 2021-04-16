@@ -3,6 +3,7 @@
 #include "engine-common/dusk/controls/Panel.h"
 #include "engine-common/dusk/controls/DropdownMenu.h"
 #include "engine-common/dusk/layouts/Horizontal.h"
+#include "engine-common/dusk/dialogs/SaveFile.h"
 
 #include "engine/state/CGameState.h"
 
@@ -21,7 +22,7 @@ m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui, m04::editor::S
 	fileMenu->m_contents = "File";
 	fileMenu->Add("New", 'N', true, [](){});
 	fileMenu->Add("Save (Test)", 0, true, [this](){ SaveTest(); });
-	fileMenu->Add("Save", 'S', true, [](){});
+	fileMenu->Add("Save", 'S', true, [this](){ BeginSaveFile(); });
 	fileMenu->Add("Save As", 0, true, [](){});
 	fileMenu->Add("Open", 'O', true, [](){});
 	fileMenu->Add("Quit", 'Q', true, [](){ CGameState::Active()->EndGame(); }); // TODO: check if things are unsaved first.
@@ -61,7 +62,30 @@ void m04::editor::sequence::TopMenu::SaveTest ( void )
 	}
 }
 
-void m04::editor::sequence::TopMenu::LoadTest (void)
+void m04::editor::sequence::TopMenu::BeginSaveFile ( void )
+{
+	if (savefileDialog == NULL)
+	{
+		savefileDialog = dusk_interface->AddDialog<dusk::dialogs::SaveFile>(dusk::DialogCreationDescription());
+	}
+
+	savefileDialog->Show();
+
+	//dusk_interface->EnterDialogue(savefileDialog);
+	savefileDialog->as<dusk::dialogs::SaveFile>()->SetOnAccept([this](const std::string& filename){ SaveFile(filename); });
+}
+
+void m04::editor::sequence::TopMenu::SaveFile ( const std::string& filename )
+{
+	auto board = main_editor->GetNodeBoardState();
+	if (board != NULL)
+	{
+		m04::editor::sequence::OsfSerializer serializer (filename.c_str());
+		board->Save(&serializer);
+	}
+}
+
+void m04::editor::sequence::TopMenu::LoadTest(void)
 {
 	auto board = main_editor->GetNodeBoardState();
 	if (board != NULL)

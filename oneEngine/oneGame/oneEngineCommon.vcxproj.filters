@@ -411,6 +411,21 @@
     <ClInclude Include="source\engine-common\dusk\controls\DropdownMenu.h">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\layouts\Grid.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\layouts\LayoutCommon.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\TextListView.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\ScrollBar.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\Spacer.h">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\engine-common\lua\CLuaBehavior.cpp">
@@ -654,6 +669,15 @@
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\DropdownMenu.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\TextListView.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\ScrollBar.cpp">
+      <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\Spacer.cpp">
       <Filter>SOURCE\Engine-Common\Dusk %28GUI System%29\Controls</Filter>
     </ClCompile>
   </ItemGroup>

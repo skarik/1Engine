@@ -39,13 +39,15 @@ public:
 
 	//	setScreenMapping (cubic) : Sets the mapping of the Rect coordinates to the screen.
 	RENDER_API void			setScreenMapping ( const core::math::Cubic& screenMapping );
+	//	getScreenMapping(out multiplier, out offset) : Gets the internal screen mapping
+	RENDER_API void			getScreenMapping ( Vector2f& out_multiplier, Vector2f& out_offset );
 
 	//	addRect (rect, color, outline) : Adds a rectangle to draw.
 	// "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
-	RENDER_API void			addRect ( const Rect& rect, const Color& color, bool outline );
+	RENDER_API void			addRect ( const Rect& rect, const Color& color, bool outline, Real outlineWidth = 1.0F );
 	//	addRectTex (rect, tex, color, outline) : Adds a rectangle to draw, but with the specified texcoord0.
 	// "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
-	RENDER_API void			addRectTex ( const Rect& rect, const Rect& tex, const Color& color, bool outline );
+	RENDER_API void			addRectTex ( const Rect& rect, const Rect& tex, const Color& color, bool outline, Real outlineWidth = 1.0F );
 
 	//	addLine (point1, point2, color) : Adds a line to draw.
 	// The "line" is actually a very thin quad, with a width of what is calculated to be one pixel.

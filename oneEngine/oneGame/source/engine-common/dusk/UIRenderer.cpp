@@ -63,8 +63,9 @@ dusk::UIRenderer::UIRenderer (UserInterface* ui)
 	renderer::shader::Location t_vspecDguiPass[] = {renderer::shader::Location::kPosition,
 													renderer::shader::Location::kUV0,
 													renderer::shader::Location::kColor,
-													renderer::shader::Location::kNormal}; // Normals used for controlling text or shapes.
-	dguiPass.setVertexSpecificationByCommonList(t_vspecDguiPass, 4);
+													renderer::shader::Location::kNormal, // Normals used for controlling text or shapes.
+													renderer::shader::Location::kUV1 }; // UV1 used for controlling scissor.
+	dguiPass.setVertexSpecificationByCommonList(t_vspecDguiPass, 5);
 	PassInitWithInput(1, &dguiPass);
 
 	// Create the render targets
@@ -239,6 +240,8 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 
 	while (!updateList.empty())
 	{
+		bool bDrawChildren = false;
+
 		UserInterface::ElementNode* elementNode = updateList.front();
 		updateList.pop_front();
 
@@ -254,6 +257,12 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 					&& element->m_visible)
 				{
 					renderList->push_back(element);
+					bDrawChildren = true;
+				}
+				else if (element->m_elementType != ElementType::kControl
+					&& element->m_visible)
+				{
+					bDrawChildren = true;
 				}
 			}
 			else
@@ -262,10 +271,13 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 				delayedUpdateList.push_back(elementNode);
 			}
 		}
+		else
+		{
+			bDrawChildren = true;
+		}
 
 		// Render children of this item after all the current depth's items are added.
-		if (elementNode->index == kElementHandleInvalid
-			|| m_interface->m_currentDialogue != elementNode->index)
+		if (bDrawChildren)
 		{
 			for (UserInterface::ElementNode* child : elementNode->children)
 			{
@@ -277,6 +289,8 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 	// Any dialogues need their own loop to push their children onto the render list after everything else
 	while (!delayedUpdateList.empty())
 	{
+		bool bDrawChildren = false;
+
 		UserInterface::ElementNode* elementNode = delayedUpdateList.front();
 		delayedUpdateList.pop_front();
 
@@ -285,25 +299,31 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 			Element* element = m_interface->m_elements[elementNode->index];
 			ARCORE_ASSERT(element->m_index == elementNode->index);
 
-			if (m_interface->m_currentDialogue != elementNode->index)
+			// Add them to the rendering list
+			if (element->m_elementType == ElementType::kControl
+				&& element->m_visible)
 			{
-				// Add them to the rendering list
-				if (element->m_elementType == ElementType::kControl)
-				{
-					renderList->push_back(element);
-				}
+				renderList->push_back(element);
+				bDrawChildren = true;
 			}
-			else
+			else if (element->m_elementType != ElementType::kControl
+				&& element->m_visible)
 			{
-				// Add this to the delayed render list
-				delayedUpdateList.push_back(elementNode);
+				bDrawChildren = true;
 			}
+		}
+		else
+		{
+			bDrawChildren = true;
 		}
 
 		// Render children of this item after all the current depth's items are added.
-		for (UserInterface::ElementNode* child : elementNode->children)
+		if (bDrawChildren)
 		{
-			delayedUpdateList.push_back(child);
+			for (UserInterface::ElementNode* child : elementNode->children)
+			{
+				delayedUpdateList.push_back(child);
+			}
 		}
 	}
 }
@@ -332,6 +352,7 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	// Loop through the elements and build their mesh
 	for (uint32_t i = 0; i < renderList.size(); ++i)
 	{
+		l_ctx.setScissor(Rect((float)-0x7FFF, (float)-0x7FFF, (float)0xFFFF, (float)0xFFFF));
 		renderList[i]->Render(&l_ctx);
 		renderList[i]->m_wasDrawn = true;
 	}
@@ -353,6 +374,7 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	// Rendering
 
 	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+	gfx->debugGroupPush("dusk::ERRenderElements");
 
 	// Set up the target buffer
 	gfx->setRenderTarget(m_renderTarget);
@@ -391,9 +413,17 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	// bind the index buffer
 	gfx->setIndexBuffer(&m_meshBuffer.m_indexBuffer, gpu::kIndexFormatUnsigned16);
 	// bind the vertex buffers
-	for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
-		if (m_meshBuffer.m_bufferEnabled[i])
-			gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
+	//for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
+	//	if (m_meshBuffer.m_bufferEnabled[i])
+	//		gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
+	auto passAccess = PassAccess(kPassId);
+	for (int i = 0; i < passAccess.getVertexSpecificationCount(); ++i)
+	{
+		int buffer_index = (int)passAccess.getVertexSpecification()[i].location;
+		int buffer_binding = (int)passAccess.getVertexSpecification()[i].binding;
+		if (m_meshBuffer.m_bufferEnabled[buffer_index])
+			gfx->setVertexBuffer(buffer_binding, &m_meshBuffer.m_buffer[buffer_index], 0);
+	}
 
 	// draw now
 	gfx->drawIndexed(t_modeldataDrawn.indexNum, 0, 0);
@@ -403,6 +433,8 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 
 	//gfx->submit(); // TODO: remove this
 	gfx->clearPipelineAndWait();
+
+	gfx->debugGroupPop();
 }
 
 //===============================================================================================//
@@ -467,25 +499,43 @@ void dusk::UIRendererElementColors::setSize ( const size_t size )
 void dusk::UIRendererElementColors::update ( void )
 {
 	// Update all the blends
-	for (UIRendererBlendedColor& element : m_elementBackgroundColors)
+	for (auto& elementColors : m_elementBackgroundColors)
 	{
-		element.update();
+		for (UIRendererBlendedColor& element : elementColors)
+		{
+			element.update();
+		}
 	}
 }
 
-void dusk::UIRendererElementColors::setBackgroundColor ( Element* element, const Color& color )
+void dusk::UIRendererElementColors::setBackgroundColor ( Element* element, size_t subelement, const Color& color )
 {
-	UIRendererBlendedColor& blend = m_elementBackgroundColors[element->m_index];
+	auto& elementColors = m_elementBackgroundColors[element->m_index];
+	if (elementColors.size() <= subelement)
+	{
+		elementColors.resize(subelement + 1);
+	}
+	UIRendererBlendedColor& blend = elementColors[subelement];
 	blend.setColor(color, 0.05F);
 }
 
-void dusk::UIRendererElementColors::setBackgroundClickPulse ( Element* element, const Color& click_pulse )
+void dusk::UIRendererElementColors::setBackgroundClickPulse ( Element* element, size_t subelement, const Color& click_pulse )
 {
-	UIRendererBlendedColor& blend = m_elementBackgroundColors[element->m_index];
+	auto& elementColors = m_elementBackgroundColors[element->m_index];
+	if (elementColors.size() <= subelement)
+	{
+		elementColors.resize(subelement + 1);
+	}
+	UIRendererBlendedColor& blend = elementColors[subelement];
 	blend.setPulse(click_pulse);
 }
 
-Color dusk::UIRendererElementColors::getBackgroundColor ( Element* element )
+Color dusk::UIRendererElementColors::getBackgroundColor ( Element* element, size_t subelement )
 {
-	return m_elementBackgroundColors[element->m_index].getCurrentColor();
+	auto& elementColors = m_elementBackgroundColors[element->m_index];
+	if (elementColors.size() <= subelement)
+	{
+		elementColors.resize(subelement + 1);
+	}
+	return elementColors[subelement].getCurrentColor();
 }

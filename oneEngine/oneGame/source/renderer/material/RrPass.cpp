@@ -158,7 +158,7 @@ void RrPass::setVertexSpecificationByCommonList ( renderer::shader::Location* lo
 		m_vertexSpecification[i] = renderer::shader::VertexAttribute();
 		m_vertexSpecification[i].location = locations[i];
 		m_vertexSpecification[i].dataOffset = 0;
-		m_vertexSpecification[i].binding = renderer::shader::kBinding0 + i;
+		m_vertexSpecification[i].binding = renderer::shader::kBinding0 + (uint32_t)i;
 
 #	if _ENGINE_DEBUG
 		if ((int)m_vertexSpecification[i].location != m_vertexSpecification[i].binding)
@@ -196,8 +196,8 @@ void RrPass::setVertexSpecificationByCommonList ( renderer::shader::Location* lo
 			m_vertexSpecification[i].dataStride = sizeof(Vector3f);
 			break;
 		case renderer::shader::Location::kUV1:
-			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32SFloat;
-			m_vertexSpecification[i].dataStride = sizeof(Vector3f);
+			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32A32SFloat;
+			m_vertexSpecification[i].dataStride = sizeof(Vector4f);
 			break;
 		case renderer::shader::Location::kBoneWeight:
 			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32A32SFloat;

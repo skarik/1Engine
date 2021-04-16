@@ -104,7 +104,7 @@ void dusk::elements::DropdownMenu::Update ( const UIStepInfo* stepinfo )
 		}
 
 		// If there was a click, ensure that we're inside the menu
-		if (CInput::MouseDown(CInput::MBLeft))
+		if (core::Input::MouseDown(core::kMBLeft))
 		{
 			bool l_containsClick = m_isMouseIn;
 			if (!l_containsClick)
@@ -127,7 +127,7 @@ void dusk::elements::DropdownMenu::Update ( const UIStepInfo* stepinfo )
 
 		// If the user hit escape, assume we're trying to close the current menu.
 		// TODO: handle submenus
-		if (CInput::Keydown(VK_ESCAPE))
+		if (core::Input::Keydown(VK_ESCAPE))
 		{
 			HideMenu();
 		}

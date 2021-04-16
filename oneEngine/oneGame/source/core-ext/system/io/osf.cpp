@@ -67,16 +67,24 @@ bool io::OSFReader::GetNext ( OSFEntryInfo& nextEntry, char* output_value, const
 		if ( m_linebuffer[i] == '{' )
 		{
 			// Read in until found entry end
-			int val;
+			int currentDepth = 1;
 			do
 			{
-				val = fgetc( m_file );
+				int val = fgetc( m_file );
+				if (val == '{')
+				{
+					currentDepth++;
+				}
+				else if (val == '}')
+				{
+					currentDepth--;
+				}
 			}
-			while ( val != '}' );
+			while (!feof(m_file) && currentDepth > 0);
 			continue; // And skip (skip areas with no designator)
 		}
 		// Check for an entry-end naively. 
-		// This ruins support for 1-liners, but why support them if you rely on whitespace?
+		// This ruins support for 1-liners, but why support them if you rely on whitespace? TODO: Rememdy one-liners
 		if ( m_linebuffer[i] == '}' )
 		{
 			// Go down a level
@@ -206,12 +214,20 @@ bool io::OSFReader::GetNext ( OSFEntryInfo& nextEntry, char* output_value, const
 					// And instead go to the next entry
 					{
 						// Read in until found entry end
-						int val;
+						int currentDepth = 1;
 						do
 						{
-							val = fgetc( m_file );
+							int val = fgetc( m_file );
+							if (val == '{')
+							{
+								currentDepth++;
+							}
+							else if (val == '}')
+							{
+								currentDepth--;
+							}
 						}
-						while ( val != '}' );
+						while (!feof(m_file) && currentDepth > 0);
 					}
 					return true; // Definitely an object!
 				}

@@ -5,6 +5,21 @@
 #include "renderer/utils/rrMeshBuilder2D.h"
 #include "renderer/utils/rrTextBuilder2D.h"
 
+void dusk::UIRendererContext::setScissor ( const Rect& scissor )
+{
+	m_currentScissor = scissor;
+
+	Vector2f offset, multiplier;
+	m_mb2->getScreenMapping(multiplier, offset);
+
+	m_currentScissor.pos = m_currentScissor.pos.mulComponents(multiplier);
+	m_currentScissor.pos += offset;
+	m_currentScissor.size = m_currentScissor.size.mulComponents(multiplier);
+
+	// Unflip.
+	m_currentScissor.pos.y += m_currentScissor.size.y;
+	m_currentScissor.size.y = -m_currentScissor.size.y;
+}
 void dusk::UIRendererContext::setFocus ( FocusStyle style )
 {
 	m_focusType = style;
@@ -46,6 +61,12 @@ void dusk::UIRendererContext::generateColor( Element* source )
 		l_bgHoveredColor = kBackgroundColor + kBackgroundBump * 2.0F;
 		l_bgActiveColor = kBackgroundColor + kBackgroundBump * 1.0F;
 	}
+	else if (m_colorType == kColorStyleElementEmphasized2)
+	{
+		l_bgDisabledColor = kBackgroundColor + kBackgroundBump * 0.75F;
+		l_bgHoveredColor = kBackgroundColor + kBackgroundBump * 3.5F;
+		l_bgActiveColor = kBackgroundColor + kBackgroundBump * 2.5F;
+	}
 	else if (m_colorType == kColorStyleShapeNormal)
 	{
 		l_bgDisabledColor = kBackgroundColor + kBackgroundBump * 0.5F;
@@ -79,19 +100,20 @@ void dusk::UIRendererContext::generateColor( Element* source )
 		m_dsColorBackground = l_bgHoveredColor;
 		if (source->m_isActivated)
 		{	// Half-bump for activation
-			m_colors->setBackgroundClickPulse(source, m_dsColorBackground + kBackgroundBump * 0.5F);
+			m_colors->setBackgroundClickPulse(source, m_colorSubelement, m_dsColorBackground + kBackgroundBump * 0.5F);
 		}
 		m_dsDrawBackground = true;
 	}
 	else if (m_focusType == kFocusStyleActive
 		|| (m_focusType == kFocusStyleAutomatic && source->m_isEnabled)
 		|| (m_focusType == kFocusStyleAutomaticNoHover && source->m_isEnabled)
+		|| (m_focusType == kFocusStyleFocused)
 		)
 	{
 		m_dsColorBackground = l_bgActiveColor;
 		if (source->m_isActivated)
 		{	// Half-bump for activation
-			m_colors->setBackgroundClickPulse(source, m_dsColorBackground + kBackgroundBump * 0.5F);
+			m_colors->setBackgroundClickPulse(source, m_colorSubelement, m_dsColorBackground + kBackgroundBump * 0.5F);
 		}
 		m_dsDrawBackground = true;
 	}
@@ -100,8 +122,8 @@ void dusk::UIRendererContext::generateColor( Element* source )
 	// Disable animations except for some key colors
 	if (m_colorType != kColorStyleShapeAccented)
 	{
-		m_colors->setBackgroundColor(source, m_dsColorBackground);
-		m_dsColorBackground = m_colors->getBackgroundColor(source);
+		m_colors->setBackgroundColor(source, m_colorSubelement, m_dsColorBackground);
+		m_dsColorBackground = m_colors->getBackgroundColor(source, m_colorSubelement);
 	}
 
 	// Update outlines
@@ -136,13 +158,17 @@ float dusk::UIRendererContext::getTextHeight ( TextFontStyle font )
 float dusk::UIRendererContext::getTextWidth ( TextFontStyle font, const char* str )
 {
 	rrTextBuilder2D* l_textBuilder = static_cast<rrTextBuilder2D*>(m_mb2);
-	Vector2f l_size = l_textBuilder->predictTextSize(str);
+
+	Vector2f l_screenMultiplier, l_screenOffset;
+	l_textBuilder->getScreenMapping(l_screenMultiplier, l_screenOffset);
+	Vector2f l_size = l_textBuilder->predictTextSize(str) / l_screenMultiplier.x;
 	return l_size.x;
 }
 
 void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& rectangle )
 {
 	m_mb2->enableAttribute(renderer::shader::kVBufferSlotNormal);
+	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV1);
 	auto tVertexCount = m_mb2->getModelDataVertexCount();
 
 	generateColor(source);
@@ -152,14 +178,42 @@ void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& recta
 	if (m_dsDrawOutline)
 		m_mb2->addRect(rectangle, m_dsColorOutline, true);
 
-	// Zero out normals to disable texture use on this shape
 	for (uint16_t i = tVertexCount; i < m_mb2->getModelDataVertexCount(); ++i)
 	{
+		// Zero out normals to disable texture use on this shape
 		m_modeldata->normal[i] = Vector3f(0.0F, 0.0F, 0.0F);
+		// Shunt current scissor params into this shape
+		m_modeldata->texcoord1[i] = Vector4f(m_currentScissor.pos, m_currentScissor.size);
 	}
 }
+
+void dusk::UIRendererContext::drawBorder ( Element* source, const Rect& rectangle )
+{
+	m_mb2->enableAttribute(renderer::shader::kVBufferSlotNormal);
+	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV1);
+	auto tVertexCount = m_mb2->getModelDataVertexCount();
+
+	generateColor(source);
+
+	if (m_dsDrawBackground)
+		m_mb2->addRect(rectangle, m_dsColorBackground, true, 2.0F);
+	if (m_dsDrawOutline)
+		m_mb2->addRect(rectangle, m_dsColorOutline, true);
+
+	for (uint16_t i = tVertexCount; i < m_mb2->getModelDataVertexCount(); ++i)
+	{
+		// Zero out normals to disable texture use on this shape
+		m_modeldata->normal[i] = Vector3f(0.0F, 0.0F, 0.0F);
+		// Shunt current scissor params into this shape
+		m_modeldata->texcoord1[i] = Vector4f(m_currentScissor.pos, m_currentScissor.size);
+	}
+}
+
 void dusk::UIRendererContext::drawText ( Element* source, const Vector2f& position, const char* str )
 {
+	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV1);
+	auto tVertexCount = m_mb2->getModelDataVertexCount();
+
 	rrTextBuilder2D* l_textBuilder = static_cast<rrTextBuilder2D*>(m_mb2);
 	Vector2f l_drawPosition (math::round(position.x), math::round(position.y + 0.9F * getTextHeight(m_textType.font)));
 
@@ -176,6 +230,12 @@ void dusk::UIRendererContext::drawText ( Element* source, const Vector2f& positi
 
 	l_textBuilder->addText(
 		l_drawPosition,
-		Color(1.0F, 1.0F, 1.0F, 1.0F),
+		source->m_isEnabled ? Color(1.0F, 1.0F, 1.0F, 1.0F) : Color(0.7F, 0.7F, 0.7F, 1.0F), // TODO: Make this use the style rules above
 		str);
+
+	for (uint16_t i = tVertexCount; i < m_mb2->getModelDataVertexCount(); ++i)
+	{
+		// Shunt current scissor params into this shape
+		m_modeldata->texcoord1[i] = Vector4f(m_currentScissor.pos, m_currentScissor.size);
+	}
 }

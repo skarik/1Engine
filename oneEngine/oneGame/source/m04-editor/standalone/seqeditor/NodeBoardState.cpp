@@ -79,6 +79,7 @@ void m04::editor::sequence::BoardNode::DebugDumpOSF ( void )
 
 m04::editor::sequence::NodeBoardState::NodeBoardState ( m04::editor::SequenceEditor* editor )
 	: ui( editor->GetEventideUI() )
+	, parent_editor(editor)
 {
 	;
 }

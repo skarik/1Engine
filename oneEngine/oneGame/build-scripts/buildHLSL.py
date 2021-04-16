@@ -18,14 +18,26 @@ g_spirvParameters = "--hlsl --shader-model 50"
 
 #colors ripped from blender
 class bcolors:
-	HEADER = '\033[95m'
-	OKBLUE = '\033[94m'
-	OKGREEN = '\033[92m'
-	WARNING = '\033[93m'
-	FAIL = '\033[91m'
-	ENDC = '\033[0m'
-	BOLD = '\033[1m'
-	UNDERLINE = '\033[4m'
+	HEADER = '\x1b[95m'
+	OKBLUE = '\x1b[94m'
+	OKGREEN = '\x1b[92m'
+	WARNING = '\x1b[93m'
+	FAIL = '\x1b[91m'
+	ENDC = '\x1b[0m'
+	BOLD = '\x1b[1m'
+	UNDERLINE = '\x1b[4m'
+
+def enableConsoleColors():
+	import ctypes
+	# Pulling from kernel32 to enable VT100 processing in the console we're working in.
+	l_kernel32 = ctypes.WinDLL('kernel32')
+	l_hStdOut = l_kernel32.GetStdHandle(-11)
+	
+	mode = ctypes.c_ulong()
+	l_kernel32.GetConsoleMode(l_hStdOut, ctypes.byref(mode))
+	mode.value |= 0x004 # ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x004
+	l_kernel32.SetConsoleMode(l_hStdOut, mode)
+enableConsoleColors()
 
 m_outp = "0>  "
 

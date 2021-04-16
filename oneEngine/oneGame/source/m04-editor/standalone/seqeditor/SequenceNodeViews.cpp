@@ -45,7 +45,8 @@ m04::editor::sequence::BarebonesSequenceNodeView::BarebonesSequenceNodeView ( Se
 	flowView.inputCount = 1;
 	flowView.outputCount = 1;
 	propertyViews.resize(1);
-	propertyViews[0] = {"Enabled?", PropertyRenderStyle::kBoolean};
+	propertyViews[0] = {"Enabled?", "enable", PropertyRenderStyle::kBoolean};
+	SetProperty(0, true); // Default enabled.
 }
 
 void m04::editor::sequence::BarebonesSequenceNodeView::SetFlow ( const int flowOutputIndex, SequenceNode* newNodeValue )
@@ -76,10 +77,47 @@ void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const int p
 
 void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const int propertyIndex, const bool newBooleanValue )
 {
+	if (propertyIndex == 0)
+	{
+		node->data.GetAdd<osf::BooleanValue>("enable")->value = newBooleanValue;
+	}
 }
 
 void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const int propertyIndex, const char* newStringValue )
 {
+}
+
+void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char* stringIndex, const float newFloatValue )
+{
+	node->data.GetConvertAdd<osf::FloatValue>(stringIndex)->value = newFloatValue;
+}
+void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char* stringIndex, const int newIntValue )
+{
+	node->data.GetConvertAdd<osf::IntegerValue>(stringIndex)->value = newIntValue;
+}
+void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char* stringIndex, const bool newBooleanValue )
+{
+	node->data.GetConvertAdd<osf::BooleanValue>(stringIndex)->value = newBooleanValue;
+}
+void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char* stringIndex, const char* newStringValue )
+{
+	node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value = newStringValue;
+}
+float m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsFloat ( const char* stringIndex )
+{
+	return node->data.GetConvertAdd<osf::FloatValue>(stringIndex)->value;
+}
+int m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsint ( const char* stringIndex )
+{
+	return (int)node->data.GetConvertAdd<osf::IntegerValue>(stringIndex)->value;
+}
+bool m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsBool ( const char* stringIndex )
+{
+	return node->data.GetConvertAdd<osf::BooleanValue>(stringIndex)->value;
+}
+const char* m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsString ( const char* stringIndex )
+{
+	return node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value.c_str();
 }
 
 DECLARE_SEQUENCENODE_CLASS(MainTask, m04::editor::sequence::MainTaskSeqNodeView);

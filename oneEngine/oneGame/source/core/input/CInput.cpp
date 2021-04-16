@@ -2,296 +2,185 @@
 #include "CXboxController.h"
 #include "core/system/Screen.h"
 #include "core/settings/CGameSettings.h"
+#include "core/math/Math.h"
 
-InputControl::CXBoxController* CInput::xboxControl = NULL;
-CInput* CInput::Active = NULL;
+ARSINGLETON_CPP_DEF(core::Input);
 
-void CInput::Initialize ( void )
+void core::Input::Initialize ( void )
 {
-	if ( Active == NULL ) {
-		Active = new CInput();
-	}
-
-	Active->setInputTable();
+	Active();
+	ARCORE_ASSERT(Active() != NULL);
 	
-	// Zero input
-	for ( int i = 0; i < 256; ++i )
-	{
-		Active->key[i]		= false;
-		Active->keyup[i]	= false;
-		Active->keydown[i]	= false;
-	}
-	for ( int i = 0; i < 4; ++i )
-	{
-		Active->mouse[i]	= false;
-		Active->mousedown[i]= false;
-		Active->mouseup[i]	= false;
-	}
+	InitializeVkToAsciiTable();
+
+	Reset();
+
 	SetMouseSensitivity( 1.0F );
-
-	xboxControl = new InputControl::CXBoxController(0);
-}
-void CInput::Reset ( void )
-{
-	Free();
-	Initialize();
-}
-void CInput::Free ( void )
-{
-	if ( Active ) {
-		delete Active;
-		Active = NULL;
-	}
-	delete xboxControl;
-	xboxControl = NULL;
 }
 
-
-void CInput::PreUpdate ( void )
+void core::Input::Reset ( void )
 {
-	Active->rawDeltaMouseX = 0;
-	Active->rawDeltaMouseY = 0;
-}
-
-// Static function declare
-void CInput::Update ( void )
-{
-	Active->_Update();
-}
-void CInput::_Update ( void )
-{
-	for ( int i = 0; i < 256; i += 1 )
+	if (m_Active != nullptr)
 	{
-		if ( keydown[i] )
+		for ( int i = 0; i < kVkCount; ++i )
 		{
-			keydown[i] = false;
+			m_Active->m_keys[i] = KeyState();
 		}
-		if ( keyup[i] )
+		for ( int i = 0; i < kMBCount; ++i )
 		{
-			keyup[i] = false;
+			m_Active->m_mouseButtons[i] = KeyState();
 		}
 	}
+}
 
-	for ( int i = 0; i < 4; i += 1 )
+void core::Input::Free ( void )
+{
+	FreeInstance();
+}
+
+void core::Input::PreupdateMouse ( void )
+{
+	m_rawDeltaMouse = {0, 0};
+
+	for ( int i = 0; i < kMBCount; ++i )
 	{
-		if ( mousedown[i] )
-		{
-			mousedown[i] = false;
-		}
-		if ( mouseup[i] )
-		{
-			mouseup[i] = false;
-		}
+		m_mouseButtons[i].PreUpdate();
+	}
+}
+
+void core::Input::PreupdateKeyboard ( void )
+{
+	for ( int i = 0; i < kVkCount; ++i )
+	{
+		m_keys[i].PreUpdate();
 	}
 
-	{
-		prevRawDeltaMouseX = rawDeltaMouseX;
-		deltaMouseX = rawDeltaMouseX * CGameSettings::Active()->f_cl_MouseSensitivity;
-	}
+	m_keypressesLastFrame.clear();
+	m_stringLastFrame.clear();
+}
 
-	{
-		prevRawDeltaMouseY = rawDeltaMouseY;
-		deltaMouseY = rawDeltaMouseY * CGameSettings::Active()->f_cl_MouseSensitivity;
-	}
+void core::Input::UpdateMouse ( void )
+{
+	m_prevRawDeltaMouse = m_rawDeltaMouse;
+
+	//m_deltaMouse.x = m_rawDeltaMouse.x * CGameSettings::Active()->f_cl_MouseSensitivity;
+	//m_deltaMouse.y = m_rawDeltaMouse.y * CGameSettings::Active()->f_cl_MouseSensitivity;
+	m_deltaMouse.x = m_rawDeltaMouse.x * m_mouseSensitivity.x;
+	m_deltaMouse.y = m_rawDeltaMouse.y * m_mouseSensitivity.y;
 	
 	// offset them real mouse posses, limiting to window
-	mouseX += deltaMouseX * mouseSensitivityX;
-	mouseX = (mouseX<0) ? 0 : mouseX;
-	mouseX = (mouseX>Screen::Info.width) ? Screen::Info.width : mouseX;
-	mouseY += deltaMouseY * mouseSensitivityY;
-	mouseY = (mouseY<0) ? 0 : mouseY;
-	mouseY = (mouseY>Screen::Info.height) ? Screen::Info.height : mouseY;
+	m_mouse += m_deltaMouse.mulComponents(m_mouseSensitivity);
+	m_mouse.x = math::clamp<Real>(m_mouse.x, 0.0F, (Real)Screen::Info.width);
+	m_mouse.y = math::clamp<Real>(m_mouse.y, 0.0F, (Real)Screen::Info.height);
 
-	if ( currMouseW != prevMouseW )
+	if ( m_mouseW != m_prevMouseW )
 	{
-		deltaMouseW = currMouseW;
-		prevMouseW = currMouseW;
+		m_deltaMouseW = m_mouseW;
+		m_prevMouseW = m_mouseW;
 	}
 	else
 	{
-		deltaMouseW = 0;
-		currMouseW = 0;
-		prevMouseW = 0;
+		m_deltaMouseW = 0;
+		m_mouseW = 0;
+		m_prevMouseW = 0;
 	}
 
 	// If we need to sync up the system mouse tho, we will need to override some values
-	if (syncRawAndSystemMouse)
+	if (m_syncRawAndSystemMouse)
 	{
-		mouseX = (float)sysMouseX;
-		mouseY = (float)sysMouseY;
+		m_mouse = {(Real)m_sysMouse.x, (Real)m_sysMouse.y};
 	}
 }
 
-void CInput::SetMouseSensitivity ( const Real sensitivity )
+void core::Input::UpdateKeyboard ( void )
 {
-	Active->mouseSensitivityX = sensitivity;
-	Active->mouseSensitivityY = sensitivity;
-}
-Real CInput::GetMouseSensitivity ( void )
-{
-	return Active->mouseSensitivityX;
-}
+	// loop thru the inputs
 
-
-bool CInput::Keypress ( unsigned char const keycode_ascii )
-{
-	return Active->key[keycode_ascii];
-}
-bool CInput::Key ( unsigned char const keycode_ascii )
-{
-	return Active->key[keycode_ascii];
-}
-bool CInput::Keydown ( unsigned char const keycode_ascii )
-{
-	return Active->keydown[keycode_ascii];
-}
-bool CInput::Keyup ( unsigned char const keycode_ascii )
-{
-	return Active->keyup[keycode_ascii];
-}
-
-bool CInput::KeypressAny ( void )
-{
-	for ( unsigned short i = 0; i < 256; ++i ) {
-		if ( Active->key[i] ) {
-			return true;
-		}
-	}
-	return false;
-}
-bool CInput::KeydownAny ( void )
-{
-	for ( unsigned short i = 0; i < 256; ++i ) {
-		if ( Active->keydown[i] ) {
-			return true;
-		}
-	}
-	return false;
-}
-bool CInput::KeyupAny ( void )
-{
-	for ( unsigned short i = 0; i < 256; ++i ) {
-		if ( Active->keyup[i] ) {
-			return true;
-		}
-	}
-	return false;
-}
-
-unsigned char CInput::GetTypeChar ( void )
-{
-	// First get the key pressed
-	unsigned char kc = 0;
-	for ( unsigned short i = 0; i < 256; ++i ) {
-		if (( i == Keys.Control )||( i == Keys.Shift )) {
+	// are we currently in Shift state?
+	bool bInShiftState = m_keys[kVkShift].prev;
+	for (const auto& key : m_keypressesLastFrame)
+	{
+		if (key.code == kVkShift)
+		{
+			bInShiftState = key.isMake;
 			continue;
 		}
-		if ( Active->keydown[i] ) {
-			kc = (unsigned char)i;
-			break;
-		}
-	}
 
-	if ( kc == Keys.Space ) {
-		return kc;
-	}
-	
-	if ( Active->key[Keys.Shift] )
-	{
-		if ( kc >= 'A' && kc <= 'Z' ) {
-			return kc;
-		}
-		switch ( kc )
+		// Start with simple Ascii mappings.
+		unsigned char mappedAscii = VkToAsciiTable[key.code];
+		if (mappedAscii != 0 && key.isMake)
 		{
-			case '1': return '!';
-			case '2': return '@';
-			case '3': return '#';
-			case '4': return '$';
-			case '5': return '%';
-			case '6': return '^';
-			case '7': return '&';
-			case '8': return '*';
-			case '9': return '(';
-			case '0': return ')';
+			// Do not shift numpad inputs. Push their direct mappings.
+			if ((key.code >= kVkNumpad0 && key.code <= kVkNumpad9)
+				|| (key.code == kVkNumpadAdd || key.code == kVkNumpadSubtract || key.code == kVkNumpadMultiply || key.code == kVkNumpadDivide || key.code == kVkNumpadDecimal))
+			{
+				m_stringLastFrame += mappedAscii;
+				continue;
+			}
 
-			case '[': return '{';
-			case ']': return '}';
-			case '\\': return '|';
-			case ';': return ':';
-			case '\'': return '"';
-			case ',': return '<';
-			case '.': return '>';
-			case '/': return '?';
+			if (!bInShiftState)
+			{
+				if (mappedAscii >= 'A' && mappedAscii <= 'Z')
+				{
+					m_stringLastFrame += 'a' + (mappedAscii - 'A');
+					continue;
+				}
 
-			case '-': return '_';
-			case '=':
-			case '+': return '+';
+				// Everything else we throw in unmodified.
+				if (mappedAscii)
+				{
+					m_stringLastFrame += mappedAscii;
+				}
+				continue;
+			}
+			else
+			{
+				if (mappedAscii >= 'A' && mappedAscii <= 'Z')
+				{
+					m_stringLastFrame += mappedAscii;
+					continue;
+				}
 
-			default: break;
+				// US keyboard character mappings.
+				switch ( mappedAscii )
+				{
+					case '1': m_stringLastFrame += '!'; break;
+					case '2': m_stringLastFrame += '@'; break;
+					case '3': m_stringLastFrame += '#'; break;
+					case '4': m_stringLastFrame += '$'; break;
+					case '5': m_stringLastFrame += '%'; break;
+					case '6': m_stringLastFrame += '^'; break;
+					case '7': m_stringLastFrame += '&'; break;
+					case '8': m_stringLastFrame += '*'; break;
+					case '9': m_stringLastFrame += '('; break;
+					case '0': m_stringLastFrame += ')'; break;
+
+					case '[': m_stringLastFrame += '{'; break;
+					case ']': m_stringLastFrame += '}'; break;
+					case '\\': m_stringLastFrame += '|'; break;
+					case ';': m_stringLastFrame += ':'; break;
+					case '\'': m_stringLastFrame += '"'; break;
+					case ',': m_stringLastFrame += '<'; break;
+					case '.': m_stringLastFrame += '>'; break;
+					case '/': m_stringLastFrame += '?'; break;
+
+					case '-': m_stringLastFrame += '_'; break;
+					case '=': m_stringLastFrame += '+'; break;
+					case '+': m_stringLastFrame += '+'; break;
+
+					default: 
+					{
+						if (mappedAscii)
+						{
+							m_stringLastFrame += mappedAscii; break;
+						}
+					}
+				}
+
+				continue;
+			}
 		}
+
+		// End loop thru keypresses
 	}
-	else
-	{
-		if ( kc >= 'A' && kc <= 'Z' ) {
-			return kc-'A'+'a';
-		}
-		if ( kc >= '0' && kc <= '9' ) {
-			return kc;
-		}
-		switch ( kc )
-		{
-		case '[':
-		case ']':
-		case '\\':
-		case ';':
-		case '\'':
-		case ',':
-		case '.':
-		case '/':
-		case '-':
-			return kc;
-		case '=':
-		case '+':
-			return '=';
-		default:
-			break;
-		}
-	}
-
-	return 0;
-}
-
-
-float CInput::MouseX ( void ) {
-	return Active->mouseX;
-}
-float CInput::MouseY ( void ) {
-	return Active->mouseY;
-}
-
-int CInput::SysMouseX ( void ) {
-	return Active->sysMouseX;
-}
-int CInput::SysMouseY ( void ) {
-	return Active->sysMouseY;
-}
-
-float CInput::DeltaMouseX ( void ) {
-	return Active->deltaMouseX;
-}
-float CInput::DeltaMouseY ( void ) {
-	return Active->deltaMouseY;
-}
-int CInput::DeltaMouseW ( void ) {
-	return Active->deltaMouseW;
-}
-
-bool CInput::Mouse ( const int mousebutton_id ) {
-	return Active->mouse[mousebutton_id];
-}
-bool CInput::MouseDown ( const int mousebutton_id ) {
-	return Active->mousedown[mousebutton_id];
-}
-bool CInput::MouseUp ( const int mousebutton_id ) {
-	return Active->mouseup[mousebutton_id];
 }

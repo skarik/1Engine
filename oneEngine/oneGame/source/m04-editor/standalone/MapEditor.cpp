@@ -293,7 +293,7 @@ void MapEditor::Update ( void )
 				break;
 
 			case Mode::ObjectEdit:
-				if ( Input::Key( Keys.Shift ) && Input::Key( Keys.Alt ) )
+				if ( core::Input::Key( core::kVkShift ) && core::Input::Key( core::kVkAlt ) )
 				{
 					m_preclude_navigation = true;
 				}
@@ -360,22 +360,22 @@ void MapEditor::doViewNavigationDrag ( void )
 	{
 		m_navigation_busy = false;
 		// Drag navigation
-		if ( Input::Mouse( Input::MBMiddle ) || ( Input::Mouse( Input::MBRight ) && Input::Key( Keys.Control ) ) )
+		if ( core::Input::Mouse( core::kMBMiddle ) || ( core::Input::Mouse( core::kMBRight ) && core::Input::Key( core::kVkControl ) ) )
 		{
 			m_navigation_busy = true;
 			m_target_camera_position -= Vector2f(
-				Input::DeltaMouseX(), Input::DeltaMouseY()
+				core::Input::DeltaMouseX(), core::Input::DeltaMouseY()
 			);
 		}
-		if ( Input::DeltaMouseW() != 0 )
+		if ( core::Input::DeltaMouseW() != 0 )
 		{
-			m_target_camera_position.y += Input::DeltaMouseW() * 0.05f;
+			m_target_camera_position.y += core::Input::DeltaMouseW() * 0.05f;
 		}
 		// Navigation via arrow keys for bonus usability
-		if ( Input::Key( Keys.Left ) )  m_target_camera_position.x -= m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
-		if ( Input::Key( Keys.Right ) ) m_target_camera_position.x += m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
-		if ( Input::Key( Keys.Up ) )	m_target_camera_position.y -= m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
-		if ( Input::Key( Keys.Down ) )	m_target_camera_position.y += m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
+		if ( core::Input::Key( core::kVkLeft ) )  m_target_camera_position.x -= m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
+		if ( core::Input::Key( core::kVkRight ) ) m_target_camera_position.x += m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;
+		if ( core::Input::Key( core::kVkUp ) )	m_target_camera_position.y -= m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
+		if ( core::Input::Key( core::kVkDown ) )	m_target_camera_position.y += m_tilemap->m_tileset->tilesize_y * Time::deltaTime * 4.0F;
 
 		// Update camera position
 		m_target_camera->transform.position = m_target_camera_position;
@@ -392,12 +392,12 @@ void MapEditor::doTileEditing ( void )
 			// Stop rebuild
 			m_tilemap->ProcessPause();
 			// Build div count needed 
-			int divsNeeded = int(Vector2f( Input::DeltaMouseX(),Input::DeltaMouseY() ).magnitude() / std::min( m_tilemap->m_tileset->tilesize_x,m_tilemap->m_tileset->tilesize_y )) + 1;
+			int divsNeeded = int(Vector2f( core::Input::DeltaMouseX(),core::Input::DeltaMouseY() ).magnitude() / std::min( m_tilemap->m_tileset->tilesize_x,m_tilemap->m_tileset->tilesize_y )) + 1;
 			for ( int i = 0; i <= divsNeeded; ++i )
 			{
 				// Do tile editing across the entire range to compensate for lower framerates
 				float percent = i / (float)divsNeeded;
-				_doTileEditingSub( Input::MouseX() - Input::DeltaMouseX() * percent, Input::MouseY() - Input::DeltaMouseY() * percent );
+				_doTileEditingSub( core::Input::MouseX() - core::Input::DeltaMouseX() * percent, core::Input::MouseY() - core::Input::DeltaMouseY() * percent );
 			}
 			// Resume rebuild
 			m_tilemap->ProcessResume();
@@ -436,7 +436,7 @@ void MapEditor::_doTileEditingSub ( float mousex, float mousey )
 	int max_y = (m_mapinfo->tilesize_y+0)*m_tilemap->m_tileset->tilesize_y;
 
 	// Tile addition/change
-	if ( Input::Mouse( Input::MBLeft ) )
+	if ( core::Input::Mouse( core::kMBLeft ) )
 	{
 		// loop through tiles to find the one under the mouse
 		bool changed_tile = false;
@@ -460,7 +460,7 @@ void MapEditor::_doTileEditingSub ( float mousex, float mousey )
 		if ( changed_tile == false )
 		{
 			// Make sure the tile is in range
-			if ( Input::Key( Keys.Shift ) || (ix >= min_x && iy >= min_x && ix < max_x && iy < max_y) )
+			if ( core::Input::Key( core::kVkShift ) || (ix >= min_x && iy >= min_x && ix < max_x && iy < max_y) )
 			{
 				// Create a new tile object
 				mapTile_t tile;
@@ -476,7 +476,7 @@ void MapEditor::_doTileEditingSub ( float mousex, float mousey )
 			}
 		}
 	}
-	else if ( Input::Mouse( Input::MBRight ) )
+	else if ( core::Input::Mouse( core::kMBRight ) )
 	{
 		// loop through tiles to find the one under the mouse
 		int next_tile = m_tile_selector->GetTileSelection();
@@ -492,7 +492,7 @@ void MapEditor::_doTileEditingSub ( float mousex, float mousey )
 			}
 		}
 	}
-	else if ( Input::Keypress( 'F' ) )
+	else if ( core::Input::Key( 'F' ) )
 	{
 
 	}
@@ -506,7 +506,7 @@ void MapEditor::doAreaEditing ( void )
 	if ( !m_navigation_busy )
 	{
 		// Grab mouse position in the world
-		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( core::Input::MouseX()/(Real)Screen::Info.width, core::Input::MouseY()/(Real)Screen::Info.height ) );
 
 		Engine2D::Area2D* t_area_selection = NULL;
 		int t_corner_selection = -1;
@@ -549,9 +549,9 @@ void MapEditor::doAreaEditing ( void )
 		m_area_renderer->m_target_glow = t_area_selection;
 		m_area_renderer->m_target_corner = t_corner_selection;
 
-		if ( Input::MouseDown( Input::MBLeft ) )
+		if ( core::Input::MouseDown( core::kMBLeft ) )
 		{
-			if ( Input::Key( Keys.Shift ) )
+			if ( core::Input::Key( core::kVkShift ) )
 			{
 				// Create a new area
 				Engine2D::Area2D* area = new Engine2D::Area2D();
@@ -578,7 +578,7 @@ void MapEditor::doAreaEditing ( void )
 			}
 		}
 		// Mouse released. Round the position, reset the mode.
-		if ( !Input::Mouse( Input::MBLeft ) )
+		if ( !core::Input::Mouse( core::kMBLeft ) )
 		{
 			if ( m_area_target != NULL )
 			{
@@ -592,11 +592,11 @@ void MapEditor::doAreaEditing ( void )
 			m_current_submode = SubMode::None;
 			
 			// Deselect areas on right click
-			if ( Input::MouseDown( Input::MBRight ) )
+			if ( core::Input::MouseDown( core::kMBRight ) )
 			{
 				m_area_target = NULL;
 				// Delete tiles with shift right click
-				if ( Input::Key( Keys.Shift ) )
+				if ( core::Input::Key( core::kVkShift ) )
 				{
 					if ( t_area_selection != NULL ) {
 						delete t_area_selection;
@@ -608,7 +608,7 @@ void MapEditor::doAreaEditing ( void )
 		if ( m_current_submode == SubMode::Dragging && m_area_target != NULL && m_area_corner_selection >= 0 )
 		{
 			// Snap to half tile
-			if ( Input::Key( Keys.Alt ) )
+			if ( core::Input::Key( core::kVkAlt ) )
 			{
 				worldpos.x = (Real) math::round( worldpos.x * 2 / m_tilemap->m_tileset->tilesize_x ) * m_tilemap->m_tileset->tilesize_x * 0.5F;
 				worldpos.y = (Real) math::round( worldpos.y * 2 / m_tilemap->m_tileset->tilesize_y ) * m_tilemap->m_tileset->tilesize_y * 0.5F;
@@ -663,7 +663,7 @@ void MapEditor::doAreaEditing ( void )
 			}
 		}
 		// Check for area deletion
-		if ( Input::Key( Keys.Delete ) )
+		if ( core::Input::Key( core::kVkDelete ) )
 		{
 			if ( m_area_target != NULL )
 			{
@@ -682,7 +682,7 @@ void MapEditor::doObjectEditing ( void )
 	if ( !m_navigation_busy )
 	{
 		// Grab mouse position in the world
-		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( core::Input::MouseX()/(Real)Screen::Info.width, core::Input::MouseY()/(Real)Screen::Info.height ) );
 		worldpos.z = 0;
 
 		M04::EditorObject* t_object_selection = NULL;
@@ -718,9 +718,9 @@ void MapEditor::doObjectEditing ( void )
 		m_gizmo_renderer->m_target_glow = t_object_selection;
 		m_gizmo_renderer->m_target_selection = m_object_target;
 
-		if ( Input::MouseDown( Input::MBLeft ) )
+		if ( core::Input::MouseDown( core::kMBLeft ) )
 		{
-			if ( Input::Key( Keys.Shift ) && Input::Key( Keys.Alt ) )
+			if ( core::Input::Key( core::kVkShift ) && core::Input::Key( core::kVkAlt ) )
 			{
 				// Create the object
 				EditorObject* object = new EditorObject( ui_fld_object_type->as<dusk::elements::DropdownList<int>>()->Selection().first.c_str() );
@@ -745,7 +745,7 @@ void MapEditor::doObjectEditing ( void )
 			// Transform gizmo:
 			m_object_target->position = m_drag_handle->GetGizmoPosition();
 			// Transform gizmo position snapping:
-			if ( m_drag_handle->HasFocus() && Input::Key( Keys.Alt ) )
+			if ( m_drag_handle->HasFocus() && core::Input::Key( core::kVkAlt ) )
 			{
 				// Set visual snapping
 				m_drag_handle->SetSnapping( Vector2f( m_tilemap->m_tileset->tilesize_x * 0.5F, m_tilemap->m_tileset->tilesize_y * 0.5F ) );
@@ -773,7 +773,7 @@ void MapEditor::doObjectEditing ( void )
 			}
 		}
 		// Check for object deletion
-		if ( Input::Key( Keys.Delete ) )
+		if ( core::Input::Key( core::kVkDelete ) )
 		{
 			if ( m_object_target != NULL )
 			{
@@ -1287,9 +1287,9 @@ void MapEditor::uiCreate ( void )
 // handles keyboard inputs (shortcuts) to do things fast
 void MapEditor::uiStepKeyboardShortcuts ( void )
 {
-	if ( Input::Key( Keys.Control ) )
+	if ( core::Input::Key( core::kVkControl ) )
 	{
-		if ( Input::Keydown( 'S' ) )
+		if ( core::Input::Keydown( 'S' ) )
 		{
 			if ( m_current_savetarget.empty() )
 			{
@@ -1305,7 +1305,7 @@ void MapEditor::uiStepKeyboardShortcuts ( void )
 				doIOSaving();
 			}
 		}
-		if ( Input::Keydown( 'O' ) )
+		if ( core::Input::Keydown( 'O' ) )
 		{
 			m_current_mode = Mode::None; // Close out everything to prevent UI from locking up
 
@@ -1315,35 +1315,35 @@ void MapEditor::uiStepKeyboardShortcuts ( void )
 			ui_dg_load->Show();
 		}
 
-		if ( Input::Keydown( '1' ) )
+		if ( core::Input::Keydown( '1' ) )
 		{
 			m_current_mode = Mode::Properties;
 		}
-		if ( Input::Keydown( '2' ) )
+		if ( core::Input::Keydown( '2' ) )
 		{
 			m_current_mode = Mode::TileEdit;
 		}
-		if ( Input::Keydown( '3' ) )
+		if ( core::Input::Keydown( '3' ) )
 		{
 			m_current_mode = Mode::AreaEdit;
 		}
-		if ( Input::Keydown( '4' ) )
+		if ( core::Input::Keydown( '4' ) )
 		{
 			m_current_mode = Mode::ObjectEdit;
 		}
-		if ( Input::Keydown( '5' ) )
+		if ( core::Input::Keydown( '5' ) )
 		{
 			m_current_mode = Mode::ScriptEdit;
 		}
-		if ( Input::Keydown( '6' ) )
+		if ( core::Input::Keydown( '6' ) )
 		{
 			m_current_mode = Mode::UtilityEdit;
 		}
-		if ( Input::Keydown( '7' ) )
+		if ( core::Input::Keydown( '7' ) )
 		{
 			m_current_mode = Mode::Toolbox;
 		}
-		if ( Input::Keydown( '8' ) )
+		if ( core::Input::Keydown( '8' ) )
 		{
 			m_current_mode = Mode::Preferences;
 		}
@@ -1564,7 +1564,7 @@ void MapEditor::uiStepTilePanel ( void )
 	// Do button stuffs
 	if ( ui_btn_inc_layer->m_isActivated )
 	{
-		if ( Input::Key(Keys.Control) )
+		if ( core::Input::Key(core::kVkControl) )
 			m_tile_layer_current += 16;
 		else
 			m_tile_layer_current += 1;
@@ -1572,7 +1572,7 @@ void MapEditor::uiStepTilePanel ( void )
 	}
 	if ( ui_btn_dec_layer->m_isActivated )
 	{
-		if ( Input::Key(Keys.Control) )
+		if ( core::Input::Key(core::kVkControl) )
 			m_tile_layer_current -= 16;
 		else
 			m_tile_layer_current -= 1;
@@ -1883,7 +1883,7 @@ void MapEditor::uiStepPreferencesPanel ( void )
 {
 	static Real sensitivity = 1.0F;
 	sensitivity = ui_fld_pref_mouse_sensitivity->as<dusk::elements::Slider<float>>()->m_value;
-	CInput::SetMouseSensitivity( sensitivity );
+	core::Input::SetMouseSensitivity( sensitivity );
 }
 
 //		uiStepBottomEdge () : status panel update
@@ -1917,10 +1917,10 @@ void MapEditor::uiStepBottomEdge ( void )
 	if ( !dusk->IsMouseInside() )
 	{
 		// Update mouse position on the GUI
-		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( Input::MouseX()/(Real)Screen::Info.width, Input::MouseY()/(Real)Screen::Info.height ) );
+		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( core::Input::MouseX()/(Real)Screen::Info.width, core::Input::MouseY()/(Real)Screen::Info.height ) );
 
 		// Round the position to half-tile if ALT is held down
-		if ( !Input::Key( Keys.Alt ) )
+		if ( !core::Input::Key( core::kVkAlt ) )
 		{
 			ui_lbl_mousex->m_contents = "X: " + std::to_string(math::round(worldpos.x));
 			ui_lbl_mousey->m_contents = "Y: " + std::to_string(math::round(worldpos.y));

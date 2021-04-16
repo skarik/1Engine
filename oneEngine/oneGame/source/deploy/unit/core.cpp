@@ -25,7 +25,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	CGameSettings gameSettings( (string)lpCmdLine, false );
 
 	// Initialize input
-	CInput::Initialize();
+	core::Input::Initialize();
 
 	// Create debug console
 	debug::ConsoleWindow::Init();
@@ -95,9 +95,9 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			SteamAPI_RunCallbacks();
 		}
 		// Grab inputs
-		CInput::Update();
+		core::Input::Update();
 		// Clear all inputs
-		CInput::PreUpdate();
+		core::Input::PreUpdate();
 
 		// Check for escape
 #ifdef _WIN32
@@ -105,7 +105,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 #else
 		int kbhit = getc();
 #endif
-		if ( kbhit == CKeys::Escape ) {
+		if ( kbhit == core::kVkEscape ) {
 			break;
 		}
 	}
@@ -116,7 +116,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	SteamAPI_Shutdown();
 
 	// Free input
-	CInput::Free();
+	core::Input::Free();
 
 	return 0;
 }

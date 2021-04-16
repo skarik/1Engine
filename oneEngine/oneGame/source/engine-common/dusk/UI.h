@@ -39,6 +39,10 @@ namespace dusk
 		LayoutCreationDescription(Element* in_parent)
 			: ElementCreationDescription(in_parent, Rect())
 			{}
+
+		LayoutCreationDescription(Element* in_parent, Vector2f in_size)
+			: ElementCreationDescription(in_parent, Rect(Vector2f(), in_size))
+			{}
 	};
 
 	struct DialogCreationDescription : public ElementCreationDescription
@@ -82,6 +86,7 @@ namespace dusk
 			m_elements.push_back(item); // New element, tree needs regen.
 			m_treeNeedsGeneration = true; 
 			ARCORE_ASSERT(AddInitializeCheckValid(item));
+			item->PostCreate();
 			return item;
 		}
 
@@ -96,6 +101,7 @@ namespace dusk
 			m_elements.push_back(item); // New element, tree needs regen.
 			m_treeNeedsGeneration = true; 
 			ARCORE_ASSERT(AddInitializeCheckValid(item));
+			item->PostCreate();
 			return item;
 		}
 
@@ -139,7 +145,7 @@ namespace dusk
 	public:
 
 		Vector2f			m_cursor; // accessible publicly? 
-		//Vector2f( CInput::MouseX(), CInput::MouseY() );
+		//Vector2f( core::Input::MouseX(), core::Input::MouseY() );
 		// offsets: set the element's true position?
 
 	private:
@@ -150,6 +156,20 @@ namespace dusk
 		uint32_t			m_currentDialogue;
 		uint32_t			m_currentMouseover;
 		uint32_t			m_currentFocus;
+
+		struct SavedEnableState
+		{
+			Element*			element;
+			uint32_t			index;
+			bool				enabled;
+		};
+		std::vector<std::vector<SavedEnableState>>
+							m_dialogueActivationStack;
+
+		//	PushEnableState() : Pushes the current enable state of all elements onto the enablestack
+		void					PushEnableState ( void );
+		//	PopEnableState() : Pops the current enable state of all elements from the enablestack, safely.
+		void					PopEnableState ( void );
 
 		// List of rects that must be updated & re-rendered.
 		std::vector<Rect>	m_forcedUpdateAreas;

@@ -27,6 +27,21 @@ dusk::Element::~Element ( void )
 	m_interface->RemoveElement(m_index);
 }
 
+//	Show() : Shows the dialog.
+// Must be called in order to bring this dialog to the forefront
+void dusk::DialogElement::Show ( void )
+{
+	m_visible = true;
+	m_interface->EnterDialogue(this);
+}
+
+//	Hide() : Hides the dialog.
+void dusk::DialogElement::Hide ( void )
+{
+	m_visible = false;
+	m_interface->ExitDialogue(this);
+}
+
 //
 //void CDuskGUIElement::setDrawDown ( void )
 //{

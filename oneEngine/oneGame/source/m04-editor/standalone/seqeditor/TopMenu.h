@@ -31,6 +31,12 @@ namespace sequence {
 		void					SaveTest ( void );
 		void					LoadTest ( void );
 
+		void					BeginSaveFile ( void );
+		dusk::DialogElement*
+							savefileDialog = NULL;
+
+		void					SaveFile ( const std::string& filename );
+
 	};
 
 }}}

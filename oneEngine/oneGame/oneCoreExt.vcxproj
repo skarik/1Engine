@@ -45,6 +45,8 @@
     <ClCompile Include="source\core-ext\animation\BoneMapper.cpp" />
     <ClCompile Include="source\core-ext\animation\set\AnimationSet.cpp" />
     <ClCompile Include="source\core-ext\animation\Skeleton.cpp" />
+    <ClCompile Include="source\core-ext\containers\arStringEnum.cpp" />
+    <ClCompile Include="source\core-ext\core-ext.cpp" />
     <ClCompile Include="source\core-ext\input\CInputControl.cpp" />
     <ClCompile Include="source\core-ext\profiler\CTimeProfiler.cpp" />
     <ClCompile Include="source\core-ext\resources\IArResource.cpp" />
@@ -58,7 +60,9 @@
     <ClCompile Include="source\core-ext\system\io\osf.cpp" />
     <ClCompile Include="source\core-ext\system\io\mccvxg.cpp" />
     <ClCompile Include="source\core-ext\system\io\Resources.cpp" />
+    <ClCompile Include="source\core-ext\system\io\Volumes.cpp" />
     <ClCompile Include="source\core-ext\system\shell\DragAndDrop.cpp" />
+    <ClCompile Include="source\core-ext\system\shell\Inputs.cpp" />
     <ClCompile Include="source\core-ext\system\shell\Message.cpp" />
     <ClCompile Include="source\core-ext\system\shell\Status.cpp" />
     <ClCompile Include="source\core-ext\threads\Jobs.cpp" />
@@ -85,6 +89,8 @@
     <ClInclude Include="source\core-ext\animation\BoneMapper.h" />
     <ClInclude Include="source\core-ext\animation\set\AnimationSet.h" />
     <ClInclude Include="source\core-ext\animation\Skeleton.h" />
+    <ClInclude Include="source\core-ext\containers\arStringEnum.h" />
+    <ClInclude Include="source\core-ext\core-ext.h" />
     <ClInclude Include="source\core-ext\input\CInputControl.h" />
     <ClInclude Include="source\core-ext\input\emulated\CEmulatedInputControl.h" />
     <ClInclude Include="source\core-ext\profiler\CTimeProfiler.h" />
@@ -106,7 +112,9 @@
     <ClInclude Include="source\core-ext\system\io\osf.h" />
     <ClInclude Include="source\core-ext\system\io\mccvxg.h" />
     <ClInclude Include="source\core-ext\system\io\Resources.h" />
+    <ClInclude Include="source\core-ext\system\io\Volumes.h" />
     <ClInclude Include="source\core-ext\system\shell\DragAndDrop.h" />
+    <ClInclude Include="source\core-ext\system\shell\Inputs.h" />
     <ClInclude Include="source\core-ext\system\shell\Message.h" />
     <ClInclude Include="source\core-ext\system\shell\Status.h" />
     <ClInclude Include="source\core-ext\threads\Jobs.h" />

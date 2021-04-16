@@ -17,6 +17,9 @@ namespace elements {
 		void					Update ( const UIStepInfo* stepinfo ) override;
 		//	Render() : Renders the element.
 		void					Render ( UIRendererContext* uir ) override;
+
+	public:
+		Real				m_drawHeight = 0.0F;
 	};
 
 }}

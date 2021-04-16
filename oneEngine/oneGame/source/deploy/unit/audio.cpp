@@ -39,7 +39,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	core::jobs::System jobSystem (4);
 
 	// Initialize input
-	CInput::Initialize();
+	core::Input::Initialize();
 
 	// Create debug console
 	debug::ConsoleWindow::Init();
@@ -97,18 +97,18 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 		//	SteamAPI_RunCallbacks();
 		//}
 		// Grab inputs
-		CInput::Update();
+		core::Input::Update();
 		// Update audio
 		aManager.Update(Time::deltaTime);
 		// Clear all inputs
-		CInput::PreUpdate();
+		core::Input::PreUpdate();
 
 		// Check for escape
 		int kbkey = NIL;
 		if (KBHIT())
 		{
 			kbkey = GETC();
-			if ( kbkey == CKeys::Escape ) {
+			if ( kbkey == core::kVkEscape ) {
 				break;
 			}
 		}
@@ -196,7 +196,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	//SteamAPI_Shutdown();
 
 	// Free input
-	CInput::Free();
+	core::Input::Free();
 
 	return 0;
 }

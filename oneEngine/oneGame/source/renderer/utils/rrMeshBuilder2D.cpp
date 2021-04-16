@@ -77,16 +77,23 @@ void rrMeshBuilder2D::setScreenMapping ( const core::math::Cubic& screenMapping 
 	m_offset.y		= -m_offset.y;
 }
 
+//	getScreenMapping(out multiplier, out offset) : Gets the internal screen mapping
+void rrMeshBuilder2D::getScreenMapping ( Vector2f& out_multiplier, Vector2f& out_offset )
+{
+	out_multiplier = m_multiplier;
+	out_offset = m_offset;
+}
+
 //	addRect (rect, color, outline) : Adds a rectangle to draw.
 // "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
-void rrMeshBuilder2D::addRect ( const Rect& rect, const Color& color, bool outline )
+void rrMeshBuilder2D::addRect ( const Rect& rect, const Color& color, bool outline, Real outlineWidth )
 {
-	return addRectTex(rect, Rect(0.0F, 0.0F, 1.0F, 1.0F), color, outline);
+	return addRectTex(rect, Rect(0.0F, 0.0F, 1.0F, 1.0F), color, outline, outlineWidth);
 }
 
 //	addRectTex (rect, tex, color, outline) : Adds a rectangle to draw, but with the specified texcoord0.
 // "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
-void rrMeshBuilder2D::addRectTex ( const Rect& rect, const Rect& tex, const Color& color, bool outline )
+void rrMeshBuilder2D::addRectTex ( const Rect& rect, const Rect& tex, const Color& color, bool outline, Real outlineWidth )
 {
 	Rect fixedRect = rect;
 	fixedRect.Fix();
@@ -148,7 +155,7 @@ void rrMeshBuilder2D::addRectTex ( const Rect& rect, const Rect& tex, const Colo
 	else
 	{
 		//const Vector2f pixelSize ( 2.0F/(Real)Screen::Info.width * math::sgn(m_multiplier.x), 2.0F/(Real)Screen::Info.height * math::sgn(m_multiplier.y) );
-		const Vector2f pixelSize ( 1.4F * m_multiplier.x, 1.4F * m_multiplier.y );
+		const Vector2f pixelSize = m_multiplier * std::max(outlineWidth, 1.4F);
 		const Vector2f pos_min_inside = (fixedRect.pos).mulComponents(m_multiplier) + m_offset + pixelSize;
 		const Vector2f pos_max_inside = (fixedRect.pos + fixedRect.size).mulComponents(m_multiplier) + m_offset - pixelSize;
 
