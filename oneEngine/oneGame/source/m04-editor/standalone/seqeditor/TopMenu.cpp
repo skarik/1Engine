@@ -24,6 +24,7 @@ m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui, m04::editor::S
 	fileMenu->Add("Save (Test)", 0, true, [this](){ SaveTest(); });
 	fileMenu->Add("Save", 'S', true, [this](){ BeginSaveFile(); });
 	fileMenu->Add("Save As", 0, true, [](){});
+	fileMenu->Add("Open (Test)", 0, true, [this](){ LoadTest(); });
 	fileMenu->Add("Open", 'O', true, [](){});
 	fileMenu->Add("Quit", 'Q', true, [](){ CGameState::Active()->EndGame(); }); // TODO: check if things are unsaved first.
 
@@ -90,6 +91,7 @@ void m04::editor::sequence::TopMenu::LoadTest(void)
 	auto board = main_editor->GetNodeBoardState();
 	if (board != NULL)
 	{
-		//Go fucking do something, I don't know.
+		m04::editor::sequence::OsfDeserializer deserializer (".game/testosf.txt");
+		board->Load(&deserializer);
 	}
 }

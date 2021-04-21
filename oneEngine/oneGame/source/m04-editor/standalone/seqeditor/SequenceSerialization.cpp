@@ -144,6 +144,7 @@ void m04::editor::sequence::OsfSerializer::SerializeFileEnd ( void )
 	osf_writer->WriteEntry(entry);
 }
 
+
 m04::editor::sequence::OsfDeserializer::OsfDeserializer ( const char* filename )
 {
 	osf_fileHandle = fopen(filename, "r");
@@ -152,7 +153,7 @@ m04::editor::sequence::OsfDeserializer::OsfDeserializer ( const char* filename )
 		osf_reader = new io::OSFReader(osf_fileHandle);
 	}
 
-	buffer = new char[buffer_size];
+	//buffer = new char[buffer_size];
 }
 
 m04::editor::sequence::OsfDeserializer::~OsfDeserializer ( void )
@@ -160,55 +161,103 @@ m04::editor::sequence::OsfDeserializer::~OsfDeserializer ( void )
 	delete osf_reader;
 	osf_reader = NULL;
 	
-	delete buffer;
-	buffer = NULL;
+	//delete buffer;
+	//buffer = NULL;
 
 	fclose(osf_fileHandle);
+}
+
+bool m04::editor::sequence::OsfDeserializer::IsValid ( void )
+{
+	return osf_reader != NULL;
 }
 
 //read first line of the file and verify it matches the expected file header
 bool m04::editor::sequence::OsfDeserializer::DeserializeFileBegin ( void ) 
 {
-	fgets(buffer, buffer_size, osf_fileHandle);
+	//fgets(buffer, buffer_size, osf_fileHandle);
+	char buffer [256];
+	fgets(buffer, sizeof(buffer), osf_fileHandle);
 
-	if (strcmp(buffer, "//!/osf/seq/2\n") == 0)
+	if (strncmp(buffer, "//!/osf/seq/2\n", sizeof(buffer)) == 0)
 		return true;
 
 	return false;
 }
 
-m04::editor::SequenceNode* m04::editor::sequence::OsfDeserializer::DeserializeNode ( void ) 
+static void ReadObjectEntry (io::OSFReader* osf_reader, osf::ObjectValue* object)
 {
-	io::OSFEntryInfo currentEntryInfo;
-	osf_reader->GetNext(currentEntryInfo, buffer, buffer_size);
+	io::OSFEntryInfo entry;
+	do 
+	{
+		osf_reader->GetNext(entry);
 
-	//Check the node
-	switch (currentEntryInfo.type) {
-	case io::eOSFEntryType::kOSFEntryTypeUnknown:
-		return NULL; //Actually probably want to return the node, now that I'm thinking about it.
-		break;
+		switch (entry.type)
+		{
+		case io::eOSFEntryType::kOSFEntryTypeNormal:
+			object->GetConvertAdd<osf::StringValue>(entry.name.c_str())->value = entry.value;
+			// TODO: convert back to the correct type
+			break;
+
+		case io::eOSFEntryType::kOSFEntryTypeObject:
+			{
+				osf::ObjectValue* objectToRead = object->GetAdd<osf::ObjectValue>(entry.name.c_str());
+				osf_reader->GoInto(entry);
+				ReadObjectEntry(osf_reader, objectToRead);
+			}
+			break;
+		}
+	}
+	while (entry.type != io::eOSFEntryType::kOSFEntryTypeEnd);
+}
+
+m04::editor::sequence::DeserializedItem m04::editor::sequence::OsfDeserializer::DeserializeNext ( void )
+{
+	io::OSFEntryInfo entry;
+	osf_reader->GetNext(entry);
+
+	DeserializedItem outputItem;
+
+	// Check the node
+	switch (entry.type)
+	{
 	case io::eOSFEntryType::kOSFEntryTypeNormal:
-		//Normal key-value pair
-		//Separate this out to another function because I need to account for all sorts of keys
+		if (entry.name.compare("goto"))
+		{
+			outputItem.go_to = new arstring256(entry.value);
+		}
 		break;	
-	case io::eOSFEntryType::kOSFEntryTypeObject:
-		//Object to enter into. Need to call GoInto()
-		//Will there be nested objects? Or does this 
-		//The label on an object (probably) isn't 
-		break;
+
 	case io::eOSFEntryType::kOSFEntryTypeMarker:
-		//Marker to jump to in the file
+		outputItem.label = new arstring256(entry.name);
 		break;
 
-	case io::eOSFEntryType::kOSFEntryTypeSource:
-		//Go parse some code
+	case io::eOSFEntryType::kOSFEntryTypeObject:
+		outputItem.node = new arstring256(entry.name);
+		osf_lastEntry = entry;
 		break;
-	case io::eOSFEntryType::kOSFEntryTypeEnd:
-		//Return the node, potentially cleaning up any lose ends first.
-		break;
+
 	case io::eOSFEntryType::kOSFEntryTypeEoF:
-		//What happens here depend on if this is returned over the above. It shouldn't, though.
+		outputItem.last_item = true;
+		break;
+
+	case io::eOSFEntryType::kOSFEntryTypeUnknown:
+	case io::eOSFEntryType::kOSFEntryTypeSource:
+	case io::eOSFEntryType::kOSFEntryTypeEnd:
+	default:
+		// TODO: unexpected input
 		break;
 	}
-	return NULL;
+
+	return outputItem;
+}
+
+bool m04::editor::sequence::OsfDeserializer::DeserializeNode ( m04::editor::SequenceNode* node )
+{
+	ARCORE_ASSERT(node != NULL);
+
+	osf_reader->GoInto(osf_lastEntry);
+	ReadObjectEntry(osf_reader, &node->data);
+
+	return true;
 }

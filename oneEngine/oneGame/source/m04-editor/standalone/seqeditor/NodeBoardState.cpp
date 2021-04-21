@@ -70,6 +70,7 @@ void m04::editor::sequence::BoardNode::DebugDumpOSF ( void )
 				break;
 			}
 		}
+		printf("Next node: %p\n", sequenceInfo->next);
 	}
 	else
 	{
@@ -323,6 +324,131 @@ void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializ
 
 void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deserializer )
 {
+	// Loop through entire file, loading labels & nodes. 
+
+	struct LabelToNode
+	{
+		arstring256 label;
+		m04::editor::SequenceNode* node = NULL;
+		arstring256* go_to = NULL;
+	};
+	std::vector<LabelToNode> l_labelToNodeListing;
+
+	// Begin deserializing
+	deserializer->DeserializeFileBegin();
+
+	// Loop through all the items and deserialize them one-by-one
+	DeserializedItem	l_nextItem;
+	arstring256			l_currentLabel;
+	do
+	{
+		l_nextItem = deserializer->DeserializeNext();
+
+		if (l_nextItem.label != NULL)
+		{
+			l_currentLabel = *l_nextItem.label;
+		}
+
+		if (l_nextItem.go_to != NULL)
+		{
+			// Swap the go_to out of the item
+			arstring256* l_currentGoto = l_nextItem.go_to;
+			l_nextItem.go_to = NULL;
+
+			// Add the goto onto the list
+			l_labelToNodeListing.push_back(LabelToNode{l_currentLabel, NULL, l_currentGoto});
+		}
+
+		if (l_nextItem.node != NULL)
+		{
+			// Create the node based on the input
+			m04::editor::SequenceNode* l_currentNode = m04::editor::SequenceNode::CreateWithEditorView(l_nextItem.node->c_str());
+
+			// Deserialize the rest of the node info
+			deserializer->DeserializeNode(l_currentNode);
+
+			// Add to the list with the current label
+			l_labelToNodeListing.push_back(LabelToNode{l_currentLabel, l_currentNode, NULL});
+		}
+
+		l_nextItem.FreeItems();
+	}
+	while (!l_nextItem.last_item);
+	
+	// Move all the loaded nodes into board-nodes
+	//for (LabelToNode& nodeEntry : l_labelToNodeListing)
+	for (size_t listingIndex = 0; listingIndex < l_labelToNodeListing.size(); ++listingIndex)
+	{
+		LabelToNode& nodeEntry = l_labelToNodeListing[listingIndex];
+		if (nodeEntry.node != NULL)
+		{
+			// Update the Gotos on the board
+
+			// Check previous linking forward:
+			if (listingIndex > 0)
+			{
+				LabelToNode& previousNodeEntry = l_labelToNodeListing[listingIndex - 1];
+				if (previousNodeEntry.node != NULL)
+				{
+					previousNodeEntry.node->next = nodeEntry.node;
+				}
+			}
+			// Check goto linking:
+			if (listingIndex + 1 < l_labelToNodeListing.size())
+			{
+				LabelToNode& nextNodeEntry = l_labelToNodeListing[listingIndex + 1];
+				if (nextNodeEntry.go_to != NULL)
+				{
+					// Find the matching node GUID
+					auto possibleFindResult = std::find_if(
+						l_labelToNodeListing.begin(),
+						l_labelToNodeListing.end(),
+						[&nextNodeEntry](LabelToNode& possibleEntry)
+						{
+							return (possibleEntry.node != NULL) && (possibleEntry.node->data[kKeyGuid]->As<osf::StringValue>()->value == nextNodeEntry.go_to->c_str());
+						}
+					);
+
+					// Redirect the current node to follow the goto
+					if (possibleFindResult != l_labelToNodeListing.end())
+					{
+						nodeEntry.node->next = possibleFindResult->node;
+					}
+					else
+					{
+						nodeEntry.node->next = NULL;
+						//ARCORE_ERROR("INVALID RESULT");
+					}
+				}
+			}
+		}
+	}
+
+	// Free the goto info
+	//for (LabelToNode& nodeEntry : l_labelToNodeListing)
+	for (auto iter = l_labelToNodeListing.rbegin(); iter != l_labelToNodeListing.rend(); ++iter)
+	{
+		LabelToNode& nodeEntry = *iter;
+
+		if (nodeEntry.go_to != NULL)
+		{
+			delete nodeEntry.go_to;
+			nodeEntry.go_to = NULL;
+		}
+
+		if (nodeEntry.node != NULL)
+		{
+			// TODO: move to a boardnode factory for the actual sequence info gen
+			BoardNode* board_node = new BoardNode();
+
+			// The seqinfo has the editor view already
+			board_node->sequenceInfo = nodeEntry.node;
+
+			// Add to the board
+			AddDisplayNode(board_node);
+		}
+	}
+
 	// Now, from all the loaded nodes, pull their GUIDs and positions.
 	for (BoardNode* currentNode : nodes)
 	{

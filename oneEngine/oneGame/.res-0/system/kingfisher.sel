@@ -58,22 +58,12 @@ nodetype lines
 		displayAs Box Style
 		type list
 		defaultValue default
-		default Default Speech
-		portrait Portrait
-		diagetic Diegetic
-		tutorial Tutorial
-		thinking Thinking
-		reward Reward
-		mumble Mumble Speech
 	}
 	end
 	{
 		displayAs Ending Style
 		type list
 		defaultValue default
-		default Wait for Advance
-		organic End after reading time
-		auto End after last letter
 	}
 }
 

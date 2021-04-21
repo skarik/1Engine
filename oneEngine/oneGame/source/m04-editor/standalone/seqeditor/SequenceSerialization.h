@@ -24,13 +24,45 @@ namespace sequence {
 		EDITOR_API virtual void	SerializeFileEnd ( void ) = 0;
 	};
 
+	struct DeserializedItem
+	{
+		arstring256*		label = NULL;
+		arstring256*		go_to = NULL;
+		arstring256*		node = NULL;
+		bool				last_item = false;
+
+		//	FreeItems() : Frees all allocated items.
+		void					FreeItems ( void )
+		{
+			if (label)
+			{
+				delete label;
+				label = NULL;
+			}
+
+			if (go_to)
+			{
+				delete go_to;
+				label = NULL;
+			}
+			
+			if (node)
+			{
+				delete node;
+				node = NULL;
+			}
+		}
+	};
+
 	// Node deserialization interface
 	class ISequenceDeserializer
 	{
 	public:
 		EDITOR_API virtual bool	IsValid ( void ) = 0;
 
-		EDITOR_API virtual bool DeserializeFileBegin(void) = 0;
+		EDITOR_API virtual bool DeserializeFileBegin ( void ) = 0;
+		EDITOR_API virtual DeserializedItem DeserializeNext ( void ) = 0;
+		EDITOR_API virtual bool DeserializeNode ( m04::editor::SequenceNode* node ) = 0;
 	};
 
 	class OsfSerializer : public ISequenceSerializer
@@ -59,22 +91,25 @@ namespace sequence {
 	{
 	};
 
-	class OsfDeserializer : ISequenceDeserializer
+	class OsfDeserializer : public ISequenceDeserializer
 	{
 	public:
 
 		EDITOR_API explicit OsfDeserializer ( const char* filename);
 		EDITOR_API			~OsfDeserializer ( void );
 
+		EDITOR_API virtual bool IsValid ( void ) override;
+
 		EDITOR_API virtual bool DeserializeFileBegin ( void ) override;
-		EDITOR_API virtual m04::editor::SequenceNode* DeserializeNode ( void );
+		EDITOR_API virtual DeserializedItem DeserializeNext ( void ) override;
+		EDITOR_API virtual bool DeserializeNode ( m04::editor::SequenceNode* node ) override;
 
 	protected:
 
-		FILE * osf_fileHandle = NULL;
+		FILE*				osf_fileHandle = NULL;
 		io::OSFReader*		osf_reader = NULL;
-		int buffer_size = 256;
-		char * buffer = NULL;
+
+		io::OSFEntryInfo	osf_lastEntry;
 	};
 
 }}}
