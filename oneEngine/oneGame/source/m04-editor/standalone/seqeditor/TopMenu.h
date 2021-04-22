@@ -37,6 +37,12 @@ namespace sequence {
 
 		void					SaveFile ( const std::string& filename );
 
+		void					BeginLoadFile ( void );
+		dusk::DialogElement*
+							loadfileDialog = NULL;
+
+		void					LoadFile ( const std::string& filename );
+
 	};
 
 }}}

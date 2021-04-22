@@ -324,6 +324,8 @@ void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializ
 
 void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deserializer )
 {
+	ClearAllNodes();
+
 	// Loop through entire file, loading labels & nodes. 
 
 	struct LabelToNode
@@ -374,16 +376,31 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 		l_nextItem.FreeItems();
 	}
 	while (!l_nextItem.last_item);
-	
-	// Move all the loaded nodes into board-nodes
-	//for (LabelToNode& nodeEntry : l_labelToNodeListing)
+
+	// Create all the board nodes
+	for (auto iter = l_labelToNodeListing.rbegin(); iter != l_labelToNodeListing.rend(); ++iter)
+	{
+		LabelToNode& nodeEntry = *iter;
+
+		if (nodeEntry.node != NULL)
+		{
+			// TODO: move to a boardnode factory for the actual sequence info gen
+			BoardNode* board_node = new BoardNode();
+
+			// The seqinfo has the editor view already
+			board_node->sequenceInfo = nodeEntry.node;
+
+			// Add to the board
+			AddDisplayNode(board_node);
+		}
+	}
+
+	// With all the items on the board, we update all the Goto's on the board.
 	for (size_t listingIndex = 0; listingIndex < l_labelToNodeListing.size(); ++listingIndex)
 	{
 		LabelToNode& nodeEntry = l_labelToNodeListing[listingIndex];
 		if (nodeEntry.node != NULL)
 		{
-			// Update the Gotos on the board
-
 			// Check previous linking forward:
 			if (listingIndex > 0)
 			{
@@ -404,10 +421,9 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 						l_labelToNodeListing.begin(),
 						l_labelToNodeListing.end(),
 						[&nextNodeEntry](LabelToNode& possibleEntry)
-						{
-							return (possibleEntry.node != NULL) && (possibleEntry.node->data[kKeyGuid]->As<osf::StringValue>()->value == nextNodeEntry.go_to->c_str());
-						}
-					);
+					{
+						return (possibleEntry.node != NULL) && (possibleEntry.node->data[kKeyGuid]->As<osf::StringValue>()->value == nextNodeEntry.go_to->c_str());
+					});
 
 					// Redirect the current node to follow the goto
 					if (possibleFindResult != l_labelToNodeListing.end())
@@ -417,7 +433,6 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 					else
 					{
 						nodeEntry.node->next = NULL;
-						//ARCORE_ERROR("INVALID RESULT");
 					}
 				}
 			}
@@ -425,7 +440,6 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 	}
 
 	// Free the goto info
-	//for (LabelToNode& nodeEntry : l_labelToNodeListing)
 	for (auto iter = l_labelToNodeListing.rbegin(); iter != l_labelToNodeListing.rend(); ++iter)
 	{
 		LabelToNode& nodeEntry = *iter;
@@ -434,18 +448,6 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 		{
 			delete nodeEntry.go_to;
 			nodeEntry.go_to = NULL;
-		}
-
-		if (nodeEntry.node != NULL)
-		{
-			// TODO: move to a boardnode factory for the actual sequence info gen
-			BoardNode* board_node = new BoardNode();
-
-			// The seqinfo has the editor view already
-			board_node->sequenceInfo = nodeEntry.node;
-
-			// Add to the board
-			AddDisplayNode(board_node);
 		}
 	}
 
@@ -461,5 +463,27 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 		ARCORE_ASSERT(tripletValues.size() == 3);
 		// Set the node's position.
 		currentNode->position = Vector3f(std::stof(tripletValues[0]), std::stof(tripletValues[1]), std::stof(tripletValues[2]));
+
+		// Update the BoardNode's cached display info
+		static_cast<NodeRenderer*>(currentNode->display)->UpdateNextNode();
+		static_cast<NodeRenderer*>(currentNode->display)->UpdateCachedVisualInfo();
 	}
+}
+
+void m04::editor::sequence::NodeBoardState::ClearAllNodes ( void )
+{
+	for (BoardNode* currentNode : nodes)
+	{
+		// get the node of the hovered
+		BoardNode* board_node = currentNode;
+		UnhookNode(board_node);
+		RemoveDisplayNode(board_node);
+
+		((NodeRenderer*)board_node->display)->Destroy();
+		delete board_node;
+	}
+
+	nodes.clear();
+	display.clear();
+	node_guids.clear();
 }

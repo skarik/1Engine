@@ -88,6 +88,9 @@ namespace sequence {
 		// Any invalid nodes are still loaded, but with a severely-limited view. Since the views are mostly untouched, their data is preserved.
 		void					Load ( ISequenceDeserializer* deserializer );
 
+		//	ClearAllNodes() : Clears all nodes from the board state.
+		void					ClearAllNodes ( void );
+
 	public:
 		m04::editor::SequenceEditor*
 								GetEditor ( void )

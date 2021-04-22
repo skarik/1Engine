@@ -53,6 +53,7 @@ namespace sequence {
 	public:
 		virtual void			OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame ) override;
 
+		void					UpdateCachedVisualInfo ( void );
 		void					UpdateNextNode ( void );
 
 	protected:
@@ -62,9 +63,6 @@ namespace sequence {
 
 		core::math::BoundingBox	GetBboxFlowInput ( void );
 		core::math::BoundingBox GetBboxFlowOutput ( const uint32_t output_index );
-
-		//core::math::BoundingBox GetBboxPropertyAll ( const uint32_t property_index );
-		//core::math::BoundingBox GetBboxPropertyKey ( const uint32_t property_index );
 
 		enum class PropertyComponent
 		{

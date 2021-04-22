@@ -39,6 +39,20 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 		Vector3f(m_connectionHalfsize.x, m_connectionHalfsize.y, 4)
 		);
 
+	UpdateCachedVisualInfo();
+	UpdateNextNode();
+
+	// Set up the properties and extra
+	m_propertyState.resize(node->sequenceInfo->view->PropertyList().size());
+}
+
+m04::editor::sequence::NodeRenderer::~NodeRenderer ( void )
+{
+	ReleaseTexture(m_uiElementsTexture);
+}
+
+void m04::editor::sequence::NodeRenderer::UpdateCachedVisualInfo ( void )
+{
 	// Cache all needed info
 	std::string l_displayNameModified = ISequenceNodeClassInfo::GetInfo(node->sequenceInfo->view->classname)->m_displayname;
 	{
@@ -50,15 +64,6 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 	}
 	m_display_text = l_displayNameModified.c_str();
 	m_guid_text = node->guid.toString().c_str();
-	UpdateNextNode();
-
-	// Set up the properties and extra
-	m_propertyState.resize(node->sequenceInfo->view->PropertyList().size());
-}
-
-m04::editor::sequence::NodeRenderer::~NodeRenderer ( void )
-{
-	ReleaseTexture(m_uiElementsTexture);
 }
 
 void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse_event )
@@ -826,7 +831,6 @@ void m04::editor::sequence::NodeRenderer::UpdateNextNode ( void )
 		node->sequenceInfo->next = NULL;
 	}
 }
-
 
 core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxFlowInput ( void )
 {

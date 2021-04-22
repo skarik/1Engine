@@ -4,6 +4,7 @@
 #include "engine-common/dusk/controls/DropdownMenu.h"
 #include "engine-common/dusk/layouts/Horizontal.h"
 #include "engine-common/dusk/dialogs/SaveFile.h"
+#include "engine-common/dusk/dialogs/LoadFile.h"
 
 #include "engine/state/CGameState.h"
 
@@ -21,11 +22,11 @@ m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui, m04::editor::S
 	auto fileMenu = dusk_interface->Add<dusk::elements::DropdownMenu>(dusk::ElementCreationDescription(topLayout, Rect()));
 	fileMenu->m_contents = "File";
 	fileMenu->Add("New", 'N', true, [](){});
-	fileMenu->Add("Save (Test)", 0, true, [this](){ SaveTest(); });
+	//fileMenu->Add("Save (Test)", 0, true, [this](){ SaveTest(); });
 	fileMenu->Add("Save", 'S', true, [this](){ BeginSaveFile(); });
 	fileMenu->Add("Save As", 0, true, [](){});
-	fileMenu->Add("Open (Test)", 0, true, [this](){ LoadTest(); });
-	fileMenu->Add("Open", 'O', true, [](){});
+	//fileMenu->Add("Open (Test)", 0, true, [this](){ LoadTest(); });
+	fileMenu->Add("Open", 'O', true, [this](){ BeginLoadFile(); });
 	fileMenu->Add("Quit", 'Q', true, [](){ CGameState::Active()->EndGame(); }); // TODO: check if things are unsaved first.
 
 	auto EditMenu = dusk_interface->Add<dusk::elements::DropdownMenu>(dusk::ElementCreationDescription(topLayout, Rect()));
@@ -63,6 +64,16 @@ void m04::editor::sequence::TopMenu::SaveTest ( void )
 	}
 }
 
+void m04::editor::sequence::TopMenu::LoadTest(void)
+{
+	auto board = main_editor->GetNodeBoardState();
+	if (board != NULL)
+	{
+		m04::editor::sequence::OsfDeserializer deserializer (".game/testosf.txt");
+		board->Load(&deserializer);
+	}
+}
+
 void m04::editor::sequence::TopMenu::BeginSaveFile ( void )
 {
 	if (savefileDialog == NULL)
@@ -71,8 +82,6 @@ void m04::editor::sequence::TopMenu::BeginSaveFile ( void )
 	}
 
 	savefileDialog->Show();
-
-	//dusk_interface->EnterDialogue(savefileDialog);
 	savefileDialog->as<dusk::dialogs::SaveFile>()->SetOnAccept([this](const std::string& filename){ SaveFile(filename); });
 }
 
@@ -86,12 +95,23 @@ void m04::editor::sequence::TopMenu::SaveFile ( const std::string& filename )
 	}
 }
 
-void m04::editor::sequence::TopMenu::LoadTest(void)
+void m04::editor::sequence::TopMenu::BeginLoadFile ( void )
+{
+	if (loadfileDialog == NULL)
+	{
+		loadfileDialog = dusk_interface->AddDialog<dusk::dialogs::LoadFile>(dusk::DialogCreationDescription());
+	}
+
+	loadfileDialog->Show();
+	loadfileDialog->as<dusk::dialogs::LoadFile>()->SetOnAccept([this](const std::string& filename){ LoadFile(filename); });
+}
+
+void m04::editor::sequence::TopMenu::LoadFile ( const std::string& filename )
 {
 	auto board = main_editor->GetNodeBoardState();
 	if (board != NULL)
 	{
-		m04::editor::sequence::OsfDeserializer deserializer (".game/testosf.txt");
+		m04::editor::sequence::OsfDeserializer deserializer (filename.c_str());
 		board->Load(&deserializer);
 	}
 }
