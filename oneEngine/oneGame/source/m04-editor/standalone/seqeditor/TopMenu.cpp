@@ -8,6 +8,8 @@
 
 #include "engine/state/CGameState.h"
 
+#include "core-ext/system/shell/Message.h"
+
 #include "./SequenceEditor.h"
 #include "./NodeBoardState.h"
 #include "./SequenceSerialization.h"
@@ -21,7 +23,7 @@ m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui, m04::editor::S
 
 	auto fileMenu = dusk_interface->Add<dusk::elements::DropdownMenu>(dusk::ElementCreationDescription(topLayout, Rect()));
 	fileMenu->m_contents = "File";
-	fileMenu->Add("New", 'N', true, [](){});
+	fileMenu->Add("New", 'N', true, [this](){ BeginNewFile(); });
 	//fileMenu->Add("Save (Test)", 0, true, [this](){ SaveTest(); });
 	fileMenu->Add("Save", 'S', true, [this](){ BeginSaveFile(); });
 	fileMenu->Add("Save As", 0, true, [](){});
@@ -57,6 +59,24 @@ m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui, m04::editor::S
 
 m04::editor::sequence::TopMenu::~TopMenu ()
 {
+}
+
+void m04::editor::sequence::TopMenu::BeginNewFile ( void )
+{
+	if (main_editor->GetWorkspaceDirty())
+	{
+		core::shell::ShowErrorMessage("Save before creating new workspace");
+	}
+	else
+	{
+		NewFile();
+	}
+}
+void m04::editor::sequence::TopMenu::NewFile ( void )
+{
+	auto board = main_editor->GetNodeBoardState();
+	board->ClearAllNodes();
+	main_editor->SetWorkspaceDirty(false); // Clear workspace dirty flag
 }
 
 void m04::editor::sequence::TopMenu::SaveTest ( void )
@@ -97,6 +117,7 @@ void m04::editor::sequence::TopMenu::SaveFile ( const std::string& filename )
 	{
 		m04::editor::sequence::OsfSerializer serializer (filename.c_str());
 		board->Save(&serializer);
+		main_editor->SetWorkspaceDirty(false); // Clear workspace dirty flag
 	}
 }
 
@@ -118,5 +139,6 @@ void m04::editor::sequence::TopMenu::LoadFile ( const std::string& filename )
 	{
 		m04::editor::sequence::OsfDeserializer deserializer (filename.c_str());
 		board->Load(&deserializer);
+		main_editor->SetWorkspaceDirty(false); // Clear workspace dirty flag
 	}
 }

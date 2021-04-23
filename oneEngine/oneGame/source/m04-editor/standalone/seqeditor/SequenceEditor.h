@@ -21,6 +21,10 @@ class arStringEnumDefinition;
 namespace m04 {
 namespace editor {
 
+	struct SequenceEditorAction
+	{
+	};
+
 	class SequenceEditor : public CGameBehavior
 	{
 	public:
@@ -50,6 +54,13 @@ namespace editor {
 		EDITOR_API m04::editor::sequence::GridState&
 								GetGridState ( void )
 			{ return grid_state; }
+
+		//	GetWorkspaceDirty() : Returns if workspace is dirty.
+		EDITOR_API bool			GetWorkspaceDirty ( void )
+			{ return workspace_dirty; }
+		//	SetWorkspaceDirty() : Returns if workspace is dirty.
+		EDITOR_API void			SetWorkspaceDirty ( bool dirty = true )
+			{ workspace_dirty = dirty; }
 
 	protected:
 		ui::eventide::UserInterface*
@@ -98,6 +109,11 @@ namespace editor {
 		// Current state of board
 		m04::editor::sequence::NodeBoardState*
 							board_state = NULL;
+		// Has the workspace been dirtied (worked on?)
+		bool				workspace_dirty = false;
+		// List of actions to do/undo
+		std::vector<SequenceEditorAction>
+							actions;
 	};
 }};
 
