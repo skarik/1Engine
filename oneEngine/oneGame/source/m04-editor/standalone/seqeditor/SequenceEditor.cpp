@@ -65,6 +65,7 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 
 	top_menu = new m04::editor::sequence::TopMenu(dusk_interface, this);
 	mouse_gizmo = new m04::editor::sequence::MouseGizmo(user_interface);
+	grid_gizmo = new m04::editor::sequence::GridGizmo(user_interface, this);
 
 	RrCamera* camera = new RrCamera();
 	camera->SetActive();

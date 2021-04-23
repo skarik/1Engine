@@ -42,6 +42,20 @@ namespace elements {
 			return int32_t(m_entries.size() - 1);
 		}
 
+		//	AddDivingSpacer() : Adds a divider spacer to the menu.
+		ENGCOM_API int32_t		AddDivingSpacer (void)
+		{
+			m_entries.push_back(MenuEntry());
+			MenuEntry& newEntry = m_entries.back();
+
+			newEntry.type = MenuEntryType::kSpacer;
+
+			m_elementsNeedUpdate = true;
+			m_sizeNeedsUpdate = true;
+
+			return int32_t(m_entries.size() - 1);
+		}
+
 		//	GetElement(menuOption) : Returns element with the given menu index, if it exists.
 		ENGCOM_API Element*		GetElement ( int32_t menuOption )
 		{
@@ -74,8 +88,16 @@ namespace elements {
 		float				m_entryHeight = 16.0F;
 		float				m_toplevelWidth = 25.0F;
 
+		enum class MenuEntryType
+		{
+			kEntry,
+			kSubmenu,
+			kSpacer,
+		};
+
 		struct MenuEntry
 		{
+			MenuEntryType		type = MenuEntryType::kEntry;
 			std::string			name;
 			char				shortcut		= 0;
 			size_t				shortcut_index	= 0;

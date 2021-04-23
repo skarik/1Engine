@@ -54,18 +54,41 @@ void dusk::elements::DropdownMenu::Update ( const UIStepInfo* stepinfo )
 		m_dropdownMenu.resize(m_entries.size());
 
 		// Apply changes to the entries
+		Real l_currentEntryHeight = 0.0F;
 		for (size_t entryIndex = 0; entryIndex < m_entries.size(); ++entryIndex)
 		{
 			const MenuEntry& entry = m_entries[entryIndex];
 			Button* button = m_dropdownMenu[entryIndex];
 
-			button->m_parent = this;
-			button->m_localRect = Rect(
-				Vector2f(0.0F, m_localRect.size.y + m_entryHeight * entryIndex),
-				Vector2f(m_menuWidth, m_entryHeight)
-			);
-			button->m_contents = entry.name;
-			button->m_visible = m_open;
+			switch (entry.type)
+			{
+			case MenuEntryType::kEntry:
+				button->m_parent = this;
+				button->m_localRect = Rect(
+					Vector2f(0.0F, m_localRect.size.y + l_currentEntryHeight),
+					Vector2f(m_menuWidth, m_entryHeight)
+				);
+				button->m_contents = entry.name;
+				button->m_visible = m_open;
+			
+				l_currentEntryHeight += button->m_localRect.size.y;
+				break;
+
+			case MenuEntryType::kSpacer:
+				button->m_parent = this;
+				button->m_localRect = Rect(
+					Vector2f(0.0F, m_localRect.size.y + l_currentEntryHeight),
+					Vector2f(m_menuWidth, m_entryHeight * 0.5F)
+				);
+				button->m_contents = entry.name;
+				button->m_visible = m_open;
+				
+				button->m_canFocus = false;
+				button->m_isEnabled = false;
+
+				l_currentEntryHeight += button->m_localRect.size.y;
+				break;
+			}
 		}
 	}
 
@@ -93,13 +116,17 @@ void dusk::elements::DropdownMenu::Update ( const UIStepInfo* stepinfo )
 			const MenuEntry& entry = m_entries[entryIndex];
 			Button* button = m_dropdownMenu[entryIndex];
 
-			if (button->m_isActivated)
+			if (entry.type == MenuEntryType::kEntry
+				&& button->m_isActivated)
 			{
 				if (entry.hide_menu)
 				{
 					HideMenu();
 				}
-				entry.action();
+				if (entry.action != NULL)
+				{
+					entry.action();
+				}
 			}
 		}
 

@@ -90,6 +90,7 @@
     <ClInclude Include="source\m04-editor\standalone\mapeditor\TileSelector.h" />
     <ClInclude Include="source\m04-editor\standalone\mapeditor\TileSelectorUI.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\Constants.h" />
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\GridGizmo.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\MouseGizmo.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\NodeBoardRenderer.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\NodeBoardState.h" />
@@ -149,6 +150,7 @@
     <ClCompile Include="source\m04-editor\standalone\mapeditor\ObjectEditorListing.cpp" />
     <ClCompile Include="source\m04-editor\standalone\mapeditor\TileSelector.cpp" />
     <ClCompile Include="source\m04-editor\standalone\mapeditor\TileSelectorUI.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\GridGizmo.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\MouseGizmo.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\NodeBoardRenderer.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\NodeBoardState.cpp" />

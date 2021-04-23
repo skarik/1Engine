@@ -17,3 +17,16 @@ m04::editor::sequence::vn::LinesNodeView::LinesNodeView ( SequenceNode* in_node 
 	SetProperty("style", "default");
 	SetProperty("end", "default");
 }
+
+DECLARE_SEQUENCENODE_CLASS(VN_LinesUpdate, m04::editor::sequence::vn::LinesUpdateNodeView);
+
+m04::editor::sequence::vn::LinesUpdateNodeView::LinesUpdateNodeView ( SequenceNode* in_node )
+	: m04::editor::sequence::BarebonesSequenceNodeView(in_node)
+{
+	propertyViews.push_back({"Line", "line0", PropertyRenderStyle::kScriptText});
+	propertyViews.push_back({"Character", "character", PropertyRenderStyle::kScriptCharacter});
+
+	SetProperty("count", 1);
+	SetProperty("audio0", ".");
+	SetProperty("character", "nobody");
+}

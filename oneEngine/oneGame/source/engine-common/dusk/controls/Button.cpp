@@ -52,6 +52,13 @@ void dusk::elements::Button::Update ( const UIStepInfo* stepinfo )
 }
 void dusk::elements::Button::Render ( UIRendererContext* uir )
 {
+	// If not enabled, temporarily disable mouse-in
+	bool mouseInPrevious = m_isMouseIn;
+	if (!m_isEnabled)
+	{
+		m_isMouseIn = false;
+	}
+
 	uir->setFocus(dusk::kFocusStyleAutomatic);
 	uir->setColor(m_emphasizeVisuals ? dusk::kColorStyleElementEmphasized : dusk::kColorStyleElement);
 	uir->drawRectangle(this, m_absoluteRect);
@@ -59,4 +66,6 @@ void dusk::elements::Button::Render ( UIRendererContext* uir )
 	uir->setColor(dusk::kColorStyleLabel);
 	uir->setTextSettings(TextStyleSettings{dusk::kTextFontButton, dusk::kTextAlignLeft, dusk::kTextAlignMiddle});
 	uir->drawText(this, m_absoluteRect.pos + Vector2f(5.0F, m_absoluteRect.size.y * 0.5F), m_contents.c_str());
+
+	m_isMouseIn = mouseInPrevious;
 }

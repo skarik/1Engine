@@ -44,6 +44,11 @@ m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui, m04::editor::S
 	ViewMenu->Add("Vertical Mode", 0, true, [](){});
 	ViewMenu->Add("Script Mode", 0, true, [](){});
 	ViewMenu->Add("Reset", 'R', true, [](){});
+	ViewMenu->AddDivingSpacer();
+	ViewMenu->Add("Toggle Grid", 0, true, [](){});
+	ViewMenu->Add("Toggle Snap", 0, true, [](){});
+	ViewMenu->Add("Larger Grid", 0, true, [](){});
+	ViewMenu->Add("Smaller Grid", 0, true, [](){});
 
 	auto HelpMenu = dusk_interface->Add<dusk::elements::DropdownMenu>(dusk::ElementCreationDescription(topLayout, Rect()));
 	HelpMenu->m_contents = "Help";

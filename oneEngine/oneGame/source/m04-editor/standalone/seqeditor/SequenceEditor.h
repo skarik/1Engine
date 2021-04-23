@@ -12,6 +12,7 @@
 
 #include "./TopMenu.h"
 #include "./MouseGizmo.h"
+#include "./GridGizmo.h"
 #include "./NodeBoardState.h"
 #include "./RightClickListMenu.h"
 
@@ -73,6 +74,11 @@ namespace editor {
 		bool				zooming_view = false;
 		//	UpdateCameraControl() : Does camera panning & zooming
 		void					UpdateCameraControl ( void );
+
+
+		// Grid gizmo used to draw the grid
+		m04::editor::sequence::GridGizmo*
+							grid_gizmo = NULL;
 
 		
 		// Right click menu.
