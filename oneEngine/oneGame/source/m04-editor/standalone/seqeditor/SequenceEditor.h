@@ -46,6 +46,11 @@ namespace editor {
 								GetEnums ( void )
 			{ return enum_definitions; }
 
+		//	GetGridState() : Returns the grid state for the editor.
+		EDITOR_API m04::editor::sequence::GridState&
+								GetGridState ( void )
+			{ return grid_state; }
+
 	protected:
 		ui::eventide::UserInterface*
 							user_interface = NULL;
@@ -79,6 +84,9 @@ namespace editor {
 		// Grid gizmo used to draw the grid
 		m04::editor::sequence::GridGizmo*
 							grid_gizmo = NULL;
+		// Grid state of the editor
+		m04::editor::sequence::GridState
+							grid_state;
 
 		
 		// Right click menu.

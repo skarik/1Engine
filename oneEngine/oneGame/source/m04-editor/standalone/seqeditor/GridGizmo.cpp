@@ -3,6 +3,7 @@
 #include "renderer/camera/RrCamera.h"
 #include "m04/eventide/UserInterface.h"
 #include "./Constants.h"
+#include "./SequenceEditor.h"
 
 #include "GridGizmo.h"
 
@@ -42,10 +43,10 @@ void m04::editor::sequence::GridGizmo::BuildMesh ( void )
 
 	// Build out vertical lines
 	
-	Real gridSize = 32.0F;
-	Real workGridHeight = -3.0F;
-	Vector3f planeNormal = {0.0F, 0.0F, 1.0F};
-	Vector3f gridOffsetMultiplier = {
+	const Real gridSize = main_editor->GetGridState().gridSize;
+	const Real workGridHeight = -3.0F;
+	const Vector3f planeNormal = {0.0F, 0.0F, 1.0F};
+	const Vector3f gridOffsetMultiplier = {
 		fabsf(planeNormal.x) < 0.707F ? 1.0F : 0.0F,
 		fabsf(planeNormal.y) < 0.707F ? 1.0F : 0.0F,
 		fabsf(planeNormal.z) < 0.707F ? 1.0F : 0.0F};
@@ -53,18 +54,29 @@ void m04::editor::sequence::GridGizmo::BuildMesh ( void )
 	RrCamera* camera = RrCamera::activeCamera;
 
 	// Get the min & max positions of where to build the grid
-	Vector3f rayTopLeft = camera->ScreenToWorldDir(Vector2f(0.0F, 0.0F));
-	Vector3f rayBottomRight = camera->ScreenToWorldDir(Vector2f(1.0F, 1.0F));
+	Vector3f rayTopLeft		= camera->ScreenToWorldDir(Vector2f(0.0F, 0.0F));
+	Vector3f rayBottomRight	= camera->ScreenToWorldDir(Vector2f(1.0F, 1.0F));
+
+	Vector2f l_pixelStep = Vector2f(1.0F / Screen::Info.width, 1.0F / Screen::Info.height);
+	Vector3f rayTopLeftStep	= camera->ScreenToWorldDir(l_pixelStep);
+	Vector3f rayCenter		= camera->ScreenToWorldDir(Vector2f(0.5F, 0.5F));
+	Vector3f rayCenterStep	= camera->ScreenToWorldDir(Vector2f(0.5F, 0.5F) + l_pixelStep);
 
 	// Trace down to the lowest position of the working area
 	core::math::Plane workPlane({0.0F, 0.0F, workGridHeight}, planeNormal);
-	Real distanceTopLeft = 0.0F;
-	Real distanceBottomRight = 0.0F;
+	Real distanceTopLeft, distanceBottomRight, distanceTopLeftStep, distanceCenter, distanceCenterStep;
 	if (workPlane.Raycast(Ray(camera->transform.position, rayTopLeft), distanceTopLeft)
-		&& workPlane.Raycast(Ray(camera->transform.position, rayBottomRight), distanceBottomRight))
+		&& workPlane.Raycast(Ray(camera->transform.position, rayBottomRight), distanceBottomRight)
+		&& workPlane.Raycast(Ray(camera->transform.position, rayTopLeftStep), distanceTopLeftStep)
+		&& workPlane.Raycast(Ray(camera->transform.position, rayCenter), distanceCenter)
+		&& workPlane.Raycast(Ray(camera->transform.position, rayCenterStep), distanceCenterStep))
 	{
 		Vector3f workTopLeft = camera->transform.position + rayTopLeft * distanceTopLeft;
 		Vector3f workBottomRight = camera->transform.position + rayBottomRight * distanceBottomRight;
+		Vector3f workCenter = camera->transform.position + rayCenter * distanceCenter;
+
+		Vector3f workCornerStep = rayTopLeft * distanceTopLeft - rayTopLeftStep * distanceTopLeftStep;
+		Vector3f workCenterStep = rayCenter * distanceCenter - rayCenterStep * distanceCenterStep;
 
 		// Ensure the work area values are in the right order
 		for (int componentIndex = 0; componentIndex < 3; ++componentIndex)
@@ -94,9 +106,13 @@ void m04::editor::sequence::GridGizmo::BuildMesh ( void )
 			{
 				quadParams.color = Color(0.15F, 0.25F, 0.35F, 1.0F);
 			}
+			if (math::round(virtualXPosition / gridSize) == 0)
+			{
+				quadParams.color = Color(0.25F, 0.35F, 0.35F, 1.0F);
+			}
 
-			const Vector3f deltaToCamera = RrCamera::activeCamera->transform.position - quadParams.position;
-			quadParams.size = Vector2f(0.5F * (deltaToCamera.magnitude() / 800.0F), (cornerEnd.y - cornerStart.y) * 0.5F);
+			float stepSize = math::lerp(fabsf((virtualXPosition - workCenter.x) / (cornerStart.x - cornerEnd.x)), workCenterStep.x, workCornerStep.x);
+			quadParams.size = Vector2f(0.5F * stepSize, (cornerEnd.y - cornerStart.y) * 0.5F);
 
 			buildQuad(quadParams);
 		}
@@ -110,9 +126,13 @@ void m04::editor::sequence::GridGizmo::BuildMesh ( void )
 			{
 				quadParams.color = Color(0.15F, 0.25F, 0.35F, 1.0F);
 			}
+			if (math::round(virtualYPosition / gridSize) == 0)
+			{
+				quadParams.color = Color(0.25F, 0.35F, 0.35F, 1.0F);
+			}
 
-			const Vector3f deltaToCamera = RrCamera::activeCamera->transform.position - quadParams.position;
-			quadParams.size = Vector2f((cornerEnd.x - cornerStart.x) * 0.5F, 0.5F * (deltaToCamera.magnitude() / 800.0F));
+			float stepSize = math::lerp(fabsf((virtualYPosition - workCenter.y) / (cornerStart.y - cornerEnd.y)), workCenterStep.y, workCornerStep.y);
+			quadParams.size = Vector2f((cornerEnd.x - cornerStart.x) * 0.5F, 0.5F * stepSize);
 
 			buildQuad(quadParams);
 		}

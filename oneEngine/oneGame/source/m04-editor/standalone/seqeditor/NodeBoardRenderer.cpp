@@ -72,9 +72,23 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 	{
 		if (m_dragging)
 		{
-			core::math::BoundingBox bbox = GetBBox();
+			core::math::BoundingBox bbox = m_draggingStart;
 			bbox.m_M.translate(mouse_event.velocity_world);
 			bbox.m_MInverse = bbox.m_M.inverse();
+			m_draggingStart = bbox;
+
+			// Update snapping
+			auto& grid_state = m_board->GetEditor()->GetGridState();
+			Vector3f bboxPosition = bbox.m_M.getTranslation();
+			if (grid_state.snapX)
+			{
+				bboxPosition.x = math::round((bboxPosition.x - m_halfsizeOnBoard.x) / grid_state.gridSize) * grid_state.gridSize + m_halfsizeOnBoard.x;
+			}
+			if (grid_state.snapY)
+			{
+				bboxPosition.y = math::round((bboxPosition.y + m_halfsizeOnBoard.y) / grid_state.gridSize) * grid_state.gridSize - m_halfsizeOnBoard.y;
+			}
+			bbox.m_M.setTranslation(bboxPosition);
 
 			node->position = bbox.GetCenterPoint() - m_halfsizeOnBoard;
 
@@ -257,6 +271,7 @@ void m04::editor::sequence::NodeRenderer::OnClicked ( const EventMouse& mouse_ev
 	else if (bAllowCapture && bDoDraggingAsFallback)
 	{
 		m_dragging = true;
+		m_draggingStart = GetBBox();
 		m_ui->LockMouse();
 	}
 }

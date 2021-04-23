@@ -86,6 +86,9 @@ namespace sequence {
 
 		// Currently being dragged?
 		bool				m_dragging = false;
+		// Starting Bbox for dragging
+		core::math::BoundingBox
+							m_draggingStart;
 		// Info for dragging a subelement
 		DragState			m_draggingInfo;
 

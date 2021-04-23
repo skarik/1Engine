@@ -12,6 +12,13 @@ namespace m04 {
 namespace editor {
 namespace sequence {
 
+	struct GridState
+	{
+		Real					gridSize = 32.0F;
+		bool					snapX = true;
+		bool					snapY = true;
+	};
+
 	class GridGizmo : public ui::eventide::Element
 	{
 	public:
