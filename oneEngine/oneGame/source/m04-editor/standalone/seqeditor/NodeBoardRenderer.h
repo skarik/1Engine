@@ -27,9 +27,14 @@ namespace sequence {
 			kPropertyValue,
 		};
 
-		bool					active = false;
-		Target					target = Target::kNone;
-		uint32_t				index = 0;
+		bool				active = false;
+		Target				target = Target::kNone;
+		uint32_t			index = 0;
+	};
+
+	struct NodeDisplayInfo
+	{
+		Color				color;
 	};
 
 	// less renderer, more an interactable
@@ -112,6 +117,8 @@ namespace sequence {
 		arstring128			m_display_text;
 		// GUID of the node, cached for rendering.
 		arstring<9>			m_guid_text;
+		// Color tint of the node
+		Color				m_display_tint;
 
 	private:
 		// Local bbox for flow the first flow input

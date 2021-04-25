@@ -219,6 +219,13 @@ namespace core
 		}
 
 	public:
+		FORCE_INLINE static Vector3_T<Float>
+								lerp (Vector3_T<Float> const& left, Vector3_T<Float> const& right, Float const& t)
+		{
+			return left.lerp(right, t);
+		}
+
+	public:
 		union
 		{
 			struct 

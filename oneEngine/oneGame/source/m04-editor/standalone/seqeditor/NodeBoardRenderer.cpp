@@ -7,6 +7,20 @@
 
 #include "NodeBoardRenderer.h"
 
+const static std::unordered_map<arstring128, m04::editor::sequence::NodeDisplayInfo> g_NodeColors ({
+	{"MainTask",			{Color(1.0F, 1.0F, 0.0F)}},
+	{"Sidetask",			{Color(1.0F, 1.0F, 0.0F)}},
+
+	{"VN_Lines",			{Color(0.5F, 0.0F, 0.0F)}},
+	{"VN_LinesUpdate",		{Color(0.4F, 0.1F, 0.1F)}},
+
+	{"VN_Portrait",			{Color(0.0F, 0.5F, 0.0F)}},
+	{"VN_PortraitAction",	{Color(0.1F, 0.5F, 0.1F)}},
+	{"VN_Background",		{Color(0.0F, 0.5F, 0.5F)}},
+
+	{"VN_Wait",				{Color(0.0F, 0.0F, 0.0F)}},
+});
+
 m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBoardState* in_nbs, m04::editor::sequence::BoardNode* in_node, ui::eventide::UserInterface* ui)
 	: ui::eventide::elements::Button(ui)
 	, m04::editor::sequence::INodeDisplay(in_node)
@@ -53,6 +67,8 @@ m04::editor::sequence::NodeRenderer::~NodeRenderer ( void )
 
 void m04::editor::sequence::NodeRenderer::UpdateCachedVisualInfo ( void )
 {
+	using namespace ui::eventide;
+
 	// Cache all needed info
 	std::string l_displayNameModified = ISequenceNodeClassInfo::GetInfo(node->sequenceInfo->view->classname)->m_displayname;
 	{
@@ -64,6 +80,17 @@ void m04::editor::sequence::NodeRenderer::UpdateCachedVisualInfo ( void )
 	}
 	m_display_text = l_displayNameModified.c_str();
 	m_guid_text = node->guid.toString().c_str();
+
+	// Grab tint color from the node info
+	auto& tintColor = g_NodeColors.find(node->sequenceInfo->view->classname);
+	if (tintColor != g_NodeColors.end())
+	{
+		m_display_tint = tintColor->second.color;
+	}
+	else
+	{
+		m_display_tint = DefaultStyler.box.defaultColor;
+	}
 }
 
 void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse_event )
@@ -340,6 +367,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	cubeParams.texture = NULL;
 	cubeParams.color = DefaultStyler.box.defaultColor
 		.Lerp(DefaultStyler.box.hoverColor, m_hoverGlowValue)
+		.Lerp(m_display_tint, 0.5F)
 		.Lerp(DefaultStyler.box.activeColor, Styler::PulseFade(m_activateGlowPulse));
 	//cubeParams.wireframe = true; // TODO
 	buildCube(cubeParams);
@@ -423,13 +451,34 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		buildCube(cubeParams);
 
 		pathParams = {};
-		Vector3f pointArray[] = {
+		/*Vector3f pointArray[] = {
 			Vector3f(GetBboxFlowOutput(0).GetCenterPoint()),
 			Vector3f((GetBboxFlowOutput(0).GetCenterPoint() + next_noderenderer->GetBboxFlowInput().GetCenterPoint()) * 0.5F),
 			Vector3f(next_noderenderer->GetBboxFlowInput().GetCenterPoint()),
-		};
+		};*/
+		Vector3f pointArray[21];
+		pointArray[0] = GetBboxFlowOutput(0).GetCenterPoint();
+		pointArray[20] = next_noderenderer->GetBboxFlowInput().GetCenterPoint();
+		const Vector3f pointDelta = pointArray[20] - pointArray[0];
+		for (int i = 1; i < 20; ++i)
+		{
+			Vector3f& pointA = pointArray[0];
+			Vector3f& pointB = pointArray[20];
+			const Vector3f anchorA = pointA + Vector3f(pointDelta.x, 0, 0);
+			const Vector3f anchorB = pointB - Vector3f(pointDelta.x, 0, 0);
+			Real interpolator = i / 20.0F;
+
+			pointArray[i] = 
+				Vector3f::lerp(
+					Vector3f::lerp(
+						Vector3f::lerp(pointA, anchorA, interpolator),
+						Vector3f::lerp(anchorA, anchorB, interpolator), interpolator),
+					Vector3f::lerp(
+						Vector3f::lerp(anchorA, anchorB, interpolator),
+						Vector3f::lerp(anchorB, pointB, interpolator), interpolator), interpolator);
+		}
 		pathParams.points = pointArray;
-		pathParams.pointCount = 3;
+		pathParams.pointCount = 21;
 		buildPath(pathParams);
 	}
 	// TODO: when dragging the output to the node
