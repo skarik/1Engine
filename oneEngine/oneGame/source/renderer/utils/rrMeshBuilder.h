@@ -29,12 +29,16 @@ public:
 		{ return renderer::kPrimitiveModeTriangleList_Indexed; }
 
 	//	addQuad (points[4], normal, color) : Adds a quad to draw.
-	// "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
 	RENDER_API void			addQuad ( const Vector3f points [4], const Vector3f normal, const Color& color );
 
 	//	addCube (cubic, rotator, color) : Adds a cube to draw.
-	// "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
 	RENDER_API void			addCube ( const core::math::Cubic& cubic, const Rotator& rotator, const Color& color );
+
+	//	addTriangle (points[3]) : Adds a triangle to draw
+	RENDER_API void			addTriangle ( const Vector3f points [3] );
+
+	//	addTriangleStrip (points[], pointCount) : Adds a triangle strip to draw.
+	RENDER_API void			addTriangleStrip ( const Vector3f* points, const uint32_t pointCount );
 
 };
 

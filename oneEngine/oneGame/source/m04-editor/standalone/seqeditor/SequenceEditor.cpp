@@ -129,7 +129,7 @@ void m04::editor::SequenceEditor::LoadSequenceEditorListing( const char* sel_pat
 		{
 			if (entry.name.compare("enumtype"))
 			{
-				printf("SEL: found enumtype \"%s\"\n", entry.value);
+				printf("SEL: found enumtype \"%s\"\n", entry.value.c_str());
 
 				std::string enumtypeName = entry.value;
 				core::utils::string::ToLower(enumtypeName);

@@ -1,6 +1,7 @@
 #include "SequenceNodeViews.h"
 
 std::unordered_map<arstring128,m04::editor::ISequenceNodeClassInfo*> m04::editor::ISequenceNodeClassInfo::m_registry;
+std::vector<m04::editor::ISequenceNodeClassInfo*> m04::editor::ISequenceNodeClassInfo::m_ordereredRegistry;
 
 m04::editor::SequenceNode::~SequenceNode ( void )
 {

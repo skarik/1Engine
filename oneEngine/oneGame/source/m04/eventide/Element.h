@@ -172,6 +172,21 @@ namespace eventide {
 		//	buildQuad( params ) : Adds a quad to the build.
 		EVENTIDE_API void		buildQuad ( const ParamsForQuad& params );
 
+		struct ParamsForPath
+		{
+			uint32_t			pointCount	= 0;
+			Vector3f*			points		= nullptr;
+			Real*				widths		= nullptr;
+			bool				width_solo	= false;
+			Color*				colors		= nullptr;
+			bool				color_solo	= false;
+			Texture*			texture		= nullptr;
+			Rect				uvs			= Rect(0, 0, 1, 1);
+			bool				wireframe	= false;
+		};
+		//	buildPath( params ) : Adds a trianglestrip path to the build.
+		EVENTIDE_API void		buildPath ( const ParamsForPath& params );
+
 	public:
 		//	RequestUpdateMesh() : Requests an update of the mesh.
 		// The request eventually BuildMesh to recreate.

@@ -101,6 +101,7 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceNodeViews.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceSerialization.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\TopMenu.h" />
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\vn\ViewsFlow.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\vn\ViewsGraphics.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\vn\ViewsLines.h" />
     <ClInclude Include="source\m04\entities\LightPoint.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceNodeViews.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceSerialization.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\TopMenu.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\vn\ViewsFlow.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\vn\ViewsGraphics.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\vn\ViewsLines.cpp" />
     <ClCompile Include="source\m04\entities\LightPoint.cpp" />

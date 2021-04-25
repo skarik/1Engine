@@ -35,11 +35,11 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 
 		std::vector<std::string> l_choiceList;
 		l_choiceList.push_back("Cancel");
-		for (auto& registryEntry : ISequenceNodeClassInfo::m_registry)
+		for (auto& registryEntry : ISequenceNodeClassInfo::m_ordereredRegistry)
 		{
-			m_classnameListing.push_back(registryEntry.first);
+			m_classnameListing.push_back(registryEntry->m_classname);
 
-			std::string choiceDisplayName = registryEntry.second->m_displayname;
+			std::string choiceDisplayName = registryEntry->m_displayname;
 			std::replace(choiceDisplayName.begin(), choiceDisplayName.end(), '_', '/');
 
 			l_choiceList.push_back(choiceDisplayName.c_str());

@@ -28,6 +28,9 @@ namespace sequence {
 
 	private:
 
+		void					BeginNewFile ( void );
+		void					NewFile ( void );
+
 		void					SaveTest ( void );
 		void					LoadTest ( void );
 

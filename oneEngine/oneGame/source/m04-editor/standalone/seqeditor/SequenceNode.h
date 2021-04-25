@@ -212,7 +212,11 @@ namespace editor {
 	public:
 		static std::unordered_map<arstring128,ISequenceNodeClassInfo*>
 							m_registry;
+		static std::vector<ISequenceNodeClassInfo*>
+							m_ordereredRegistry;
 
+		// Node's raw class name
+		arstring128			m_classname;
 		// Node's class name for display.
 		arstring128			m_displayname;
 	};
@@ -225,6 +229,8 @@ namespace editor {
 		SequenceNodeClass_##SequenceNodeClass() \
 		{ \
 			m_registry[ #SequenceNodeClass ] = this;\
+			m_ordereredRegistry.push_back(this);\
+			m_classname = #SequenceNodeClass;\
 			m_displayname = core::utils::string::CamelCaseToReadable( #SequenceNodeClass, strlen( #SequenceNodeClass ) );\
 		} \
 		\

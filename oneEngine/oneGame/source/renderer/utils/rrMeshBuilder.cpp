@@ -27,7 +27,6 @@ rrMeshBuilder::rrMeshBuilder ( arModelData* preallocatedModelData, uint16_t init
 }
 
 //	addQuad (points[4], normal, color) : Adds a quad to draw.
-// "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
 void rrMeshBuilder::addQuad ( const Vector3f points [4], const Vector3f normal, const Color& color )
 {
 	expand(m_vertexCount + 4);
@@ -67,7 +66,6 @@ void rrMeshBuilder::addQuad ( const Vector3f points [4], const Vector3f normal, 
 }
 
 //	addCube (cubic, rotator, color) : Adds a cube to draw.
-// "Wireframe" is done via four thin quads, inset by what is calculated to be one pixel.
 void rrMeshBuilder::addCube ( const core::math::Cubic& cubic, const Rotator& rotator, const Color& color )
 {
 	Vector3f cubicCenter = cubic.center();
@@ -132,4 +130,63 @@ void rrMeshBuilder::addCube ( const core::math::Cubic& cubic, const Rotator& rot
 		};
 		addQuad(face, rotator * Vector3f(0, 1, 0), color);
 	}
+}
+
+//	addTriangle (points[3]) : Adds a triangle to draw
+void rrMeshBuilder::addTriangle ( const Vector3f points [3] )
+{
+	expand(m_vertexCount + 3);
+	expandIndices(m_indexCount + 4);
+
+	const uint16_t vert_index = m_vertexCount;
+	const uint16_t inde_index = m_indexCount;
+
+	m_model->position[vert_index + 0] = points[0];
+	m_model->position[vert_index + 1] = points[1];
+	m_model->position[vert_index + 2] = points[2];
+
+	m_model->normal[vert_index + 0] = Vector3f();
+	m_model->normal[vert_index + 1] = Vector3f();
+	m_model->normal[vert_index + 2] = Vector3f();
+
+	m_model->color[vert_index + 0] = Vector4f();
+	m_model->color[vert_index + 1] = Vector4f();
+	m_model->color[vert_index + 2] = Vector4f();
+
+	m_model->texcoord0[vert_index + 0] = Vector3f(0, 0, 0);
+	m_model->texcoord0[vert_index + 1] = Vector3f(1, 0, 0);
+	m_model->texcoord0[vert_index + 2] = Vector3f(0, 1, 0);
+
+	m_model->indices[inde_index + 0] = vert_index + 0;
+	m_model->indices[inde_index + 1] = vert_index + 1;
+	m_model->indices[inde_index + 2] = vert_index + 2;
+	m_model->indices[inde_index + 3] = 0xFFFF;
+
+	m_vertexCount += 3;
+	m_indexCount += 4;
+}
+
+//	addTriangleStrip (points[], pointCount) : Adds a triangle strip to draw.
+void rrMeshBuilder::addTriangleStrip ( const Vector3f* points, const uint32_t pointCount )
+{
+	expand(m_vertexCount + pointCount);
+	expandIndices(m_indexCount + pointCount + 1);
+
+	const uint16_t vert_index = m_vertexCount;
+	const uint16_t inde_index = m_indexCount;
+
+	for (uint32_t pointIndex = 0; pointIndex < pointCount; ++pointIndex)
+	{
+		m_model->position[vert_index + pointIndex] = points[pointIndex];
+
+		m_model->normal[vert_index + pointIndex] = Vector3f();
+		m_model->color[vert_index + pointIndex] = Vector4f();
+		m_model->texcoord0[vert_index + pointIndex] = Vector3f();
+
+		m_model->indices[inde_index + pointIndex] = vert_index + pointIndex;
+	}
+	m_model->indices[inde_index + pointCount] = 0xFFFF; // Reset index at the end
+
+	m_vertexCount += pointCount;
+	m_indexCount += pointCount + 1;
 }

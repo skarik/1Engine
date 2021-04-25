@@ -7,6 +7,7 @@
 #include "renderer/utils/rrMeshBuilder.h"
 #include "renderer/utils/rrTextBuilder2D.h"
 #include "renderer/texture/RrFontTexture.h"
+#include "renderer/camera/RrCamera.h"
 
 ui::eventide::Element::Element ( UserInterface* ui )
 	: m_ui((ui != NULL) ? ui : ui::eventide::UserInterface::Get())
@@ -165,7 +166,6 @@ void ui::eventide::Element::buildQuad ( const ParamsForQuad& params )
 			params.position + params.rotation * Vector3f( params.size.x,  params.size.y, 0)
 		};
 		meshBuilder.addQuad(face, params.rotation * Vector3f(0, 0, -1), params.color);
-
 	}
 	mesh_creation_state.vertex_count = meshBuilder.getModelDataVertexCount();
 	mesh_creation_state.index_count = meshBuilder.getModelDataIndexCount();
@@ -183,6 +183,69 @@ void ui::eventide::Element::buildQuad ( const ParamsForQuad& params )
 		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_R_TextureEnableBlend] = (params.texture && params.texture->reference) ? kVETextureEnableOn : kVETextureEnableOff;
 		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_G_TextureIndex] = (params.texture && params.texture->reference) ? (Real)params.texture->index : 0;
 		mesh_creation_state.mesh_data.texcoord1[i][(int)VertexElements::kUV1_Slot6_B_AlphaCutoff] = (params.texture && params.texture->reference) ? 0.9F : 0.5F;
+	}
+}
+
+void ui::eventide::Element::buildPath ( const ParamsForPath& params )
+{
+	rrMeshBuilder meshBuilder (&mesh_creation_state.mesh_data, mesh_creation_state.vertex_count, mesh_creation_state.index_count);
+	meshBuilder.enableAttribute(renderer::shader::kVBufferSlotPosition);
+	meshBuilder.enableAttribute(renderer::shader::kVBufferSlotColor);
+	meshBuilder.enableAttribute(renderer::shader::kVBufferSlotNormal);
+	meshBuilder.enableAttribute(renderer::shader::kVBufferSlotUV0);
+	meshBuilder.enableAttribute(renderer::shader::kVBufferSlotUV1);
+
+	// build the mesh locally for now
+	Vector3f*	positions = new Vector3f [params.pointCount * 2];
+	// need current camera for bulding path
+	auto currentCamera = RrCamera::activeCamera;
+	// build path point-by-point
+	for (uint32_t pointIndex = 0; pointIndex < params.pointCount; ++pointIndex)
+	{
+		const Vector3f& point = params.points[pointIndex];
+		Vector3f cameraToPoint = point - currentCamera->transform.position;
+		Vector3f pointDelta;
+		pointDelta += (pointIndex > 0)					   ? (point - params.points[pointIndex - 1]) : Vector3f();
+		pointDelta += (pointIndex < params.pointCount - 1) ? (params.points[pointIndex + 1] - point) : Vector3f();
+
+		Vector3f pathOffset = cameraToPoint.cross(pointDelta).normal()
+			* (params.width_solo
+				? (params.widths == NULL ? 1.0F : params.widths[0]) 
+				: (params.widths == NULL ? 1.0F : params.widths[pointIndex]));
+		positions[pointIndex * 2 + 0] = point - pathOffset;
+		positions[pointIndex * 2 + 1] = point + pathOffset;
+	}
+
+	uint16_t initialVertexCount = mesh_creation_state.vertex_count;
+	{
+		meshBuilder.addTriangleStrip(positions, params.pointCount * 2);
+	}
+	mesh_creation_state.vertex_count = meshBuilder.getModelDataVertexCount();
+	mesh_creation_state.index_count = meshBuilder.getModelDataIndexCount();
+
+	for (uint32_t pointIndex = 0; pointIndex < params.pointCount; ++pointIndex)
+	{
+		ARCORE_ASSERT(pointIndex * 2 + initialVertexCount < mesh_creation_state.vertex_count);
+
+		uint32_t verteIndex = pointIndex * 2 + initialVertexCount;
+
+		// apply color
+		mesh_creation_state.mesh_data.color[verteIndex + 0] =
+			params.color_solo 
+				? (params.colors == NULL ? Vector4f(1.0F, 1.0F, 1.0F, 1.0F) : params.colors[0])
+				: (params.colors == NULL ? Vector4f(1.0F, 1.0F, 1.0F, 1.0F) : params.colors[pointIndex]);
+		mesh_creation_state.mesh_data.color[verteIndex + 1] = mesh_creation_state.mesh_data.color[verteIndex + 0];
+
+		// apply texture coord transforms
+		Real texcoord_x = pointIndex / (Real)(params.pointCount - 1);
+		mesh_creation_state.mesh_data.texcoord0[verteIndex + 0] = Vector2f(texcoord_x, 0.0F).mulComponents(params.uvs.size) + params.uvs.pos;
+		mesh_creation_state.mesh_data.texcoord0[verteIndex + 1] = Vector2f(texcoord_x, 1.0F).mulComponents(params.uvs.size) + params.uvs.pos;
+
+		// apply texture index, texture strength
+		mesh_creation_state.mesh_data.texcoord1[verteIndex + 0][(int)VertexElements::kUV1_Slot6_R_TextureEnableBlend] = (params.texture && params.texture->reference) ? kVETextureEnableOn : kVETextureEnableOff;
+		mesh_creation_state.mesh_data.texcoord1[verteIndex + 0][(int)VertexElements::kUV1_Slot6_G_TextureIndex] = (params.texture && params.texture->reference) ? (Real)params.texture->index : 0;
+		mesh_creation_state.mesh_data.texcoord1[verteIndex + 0][(int)VertexElements::kUV1_Slot6_B_AlphaCutoff] = (params.texture && params.texture->reference) ? 0.9F : 0.5F;
+		mesh_creation_state.mesh_data.texcoord1[verteIndex + 1] = mesh_creation_state.mesh_data.texcoord1[verteIndex + 0];
 	}
 }
 

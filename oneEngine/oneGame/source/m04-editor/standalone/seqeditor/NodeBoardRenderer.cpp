@@ -330,6 +330,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	ParamsForText textParams;
 	ParamsForCube cubeParams;
 	ParamsForQuad quadParams;
+	ParamsForPath pathParams;
 
 	const Vector3f nodeExtents = GetBBoxAbsolute().GetExtents();
 
@@ -365,7 +366,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
 	textParams.size = ui::eventide::DefaultStyler.text.buttonSize;
 	textParams.alignment = AlignHorizontal::kRight;
-	textParams.color = DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.5F);
+	textParams.color = DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.75F);
 	buildText(textParams);
 
 	// Flow input
@@ -420,6 +421,16 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		cubeParams.color = Color(1, 0, 0, 1);
 		cubeParams.texture = NULL;
 		buildCube(cubeParams);
+
+		pathParams = {};
+		Vector3f pointArray[] = {
+			Vector3f(GetBboxFlowOutput(0).GetCenterPoint()),
+			Vector3f((GetBboxFlowOutput(0).GetCenterPoint() + next_noderenderer->GetBboxFlowInput().GetCenterPoint()) * 0.5F),
+			Vector3f(next_noderenderer->GetBboxFlowInput().GetCenterPoint()),
+		};
+		pathParams.points = pointArray;
+		pathParams.pointCount = 3;
+		buildPath(pathParams);
 	}
 	// TODO: when dragging the output to the node
 
