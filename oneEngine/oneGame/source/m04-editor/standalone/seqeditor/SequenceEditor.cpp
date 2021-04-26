@@ -313,3 +313,12 @@ void m04::editor::SequenceEditor::UpdateRightClickMenu ( void )
 		}
 	}
 }
+
+Vector3f m04::editor::SequenceEditor::GetMousePosition3D ( void )
+{
+	if (mouse_gizmo)
+	{
+		return mouse_gizmo->GetBBox().GetCenterPoint();
+	}
+	return Vector3f();
+}

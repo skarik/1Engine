@@ -62,6 +62,9 @@ namespace editor {
 		EDITOR_API void			SetWorkspaceDirty ( bool dirty = true )
 			{ workspace_dirty = dirty; }
 
+		//	GetMousePosition3D() : Returns current calculated position of the 3D mouse cursor.
+		EDITOR_API Vector3f		GetMousePosition3D ( void );
+
 	protected:
 		ui::eventide::UserInterface*
 							user_interface = NULL;

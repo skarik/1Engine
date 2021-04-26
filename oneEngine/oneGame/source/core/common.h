@@ -64,6 +64,12 @@ FORCE_INLINE CastTo arcast( CastFrom value )
 #	endif
 }
 
+template<typename CastTo, typename CastFrom>
+FORCE_INLINE CastTo arFastCast( CastFrom value )
+{
+	return static_cast<CastTo>(value);
+}
+
 //
 // MEMORY LAYOUT QUERY
 #ifndef offsetof

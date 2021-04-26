@@ -61,10 +61,16 @@ namespace sequence {
 		void					UpdateCachedVisualInfo ( void );
 		void					UpdateNextNode ( void );
 
+		m04::editor::sequence::INodeDisplay*
+								GetNextNode ( void ) const
+			{ return m_next; }
+
 	protected:
 
 		void					OnClicked ( const EventMouse& mouse_event );
 		void					OnReleased ( const EventMouse& mouse_event );
+
+	public:
 
 		core::math::BoundingBox	GetBboxFlowInput ( void );
 		core::math::BoundingBox GetBboxFlowOutput ( const uint32_t output_index );

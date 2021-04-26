@@ -16,9 +16,34 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 	m_mouseInteract = MouseInteract::kCatchAll;
 
 	m04::editor::sequence::NodeRenderer* renderer = dynamic_cast<m04::editor::sequence::NodeRenderer*>(m_editor->GetEventideUI()->GetMouseHit());
+	bool bHoveringOnConnection = false;
+
+	const Vector3f mousePositionUI = m_editor->GetMousePosition3D();
+
+	// Also check which node connection we're over
+	for (const auto& boardNode : m_editor->GetNodeBoardState()->nodes)
+	{
+		NodeRenderer* outputNode = arFastCast<NodeRenderer*>(boardNode->display);
+		NodeRenderer* inputNode = arFastCast<NodeRenderer*>(outputNode->GetNextNode());
+
+		if (outputNode && inputNode)
+		{
+			// Only connection is the flow connection (for now)
+			Vector3f flowOutput = outputNode->GetBboxFlowOutput(0).GetCenterPoint();
+			Vector3f flowInput = inputNode->GetBboxFlowInput().GetCenterPoint();
+			core::math::Cubic flowCenterBbox = core::math::Cubic::ConstructCenterExtents((flowOutput + flowInput) * 0.5F, Vector3f(10.0F, 10.0F, 20.0F));
+
+			if (flowCenterBbox.PointIsInside(mousePositionUI))
+			{
+				bHoveringOnConnection = true;
+				renderer = outputNode;
+				m_targetConnection = 0;
+			}
+		}
+	}
 
 	// Set up own choices now:
-	if (renderer != nullptr)
+	if (renderer != nullptr && !bHoveringOnConnection)
 	{
 		m_mode = Mode::kOnNode;
 		m_targetNode = renderer->GetBoardNode();
@@ -27,6 +52,16 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 		l_choiceList.push_back("Cancel");
 		l_choiceList.push_back("Delete");
 		l_choiceList.push_back("[Debug] Dump OSF");
+		this->SetListChoices(l_choiceList);
+	}
+	else if (renderer != nullptr && bHoveringOnConnection)
+	{
+		m_mode = Mode::kOnConnection;
+		m_targetNode = renderer->GetBoardNode();
+
+		std::vector<std::string> l_choiceList;
+		l_choiceList.push_back("Cancel");
+		l_choiceList.push_back("Unlink");
 		this->SetListChoices(l_choiceList);
 	}
 	else
@@ -134,6 +169,17 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 			{
 				BoardNode* board_node = m_targetNode;
 				board_node->DebugDumpOSF();
+			}
+		}
+		else if (m_mode == Mode::kOnConnection)
+		{
+			if (choiceIndex == 1)
+			{
+				// Unlink the given node
+				BoardNode* board_node = m_targetNode;
+				board_node->sequenceInfo->next = nullptr;
+				NodeRenderer* node_display = arFastCast<NodeRenderer*>(board_node->display);
+				node_display->UpdateNextNode();
 			}
 		}
 	}

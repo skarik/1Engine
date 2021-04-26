@@ -39,10 +39,12 @@ namespace sequence {
 		{
 			kEmptyBoard,
 			kOnNode,
+			kOnConnection,
 		};
 
 		Mode				m_mode = Mode::kEmptyBoard;
 		BoardNode*			m_targetNode = NULL;
+		uint32_t			m_targetConnection = 0;
 
 	protected:
 		// Listing of classnames for the right-click menu.
