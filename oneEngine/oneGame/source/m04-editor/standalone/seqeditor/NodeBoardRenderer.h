@@ -95,6 +95,9 @@ namespace sequence {
 		// Board state this renderer is associated with.
 		NodeBoardState*		m_board = NULL;
 
+		// Currently selected?
+		bool				m_selected = false;
+
 		// Currently being dragged?
 		bool				m_dragging = false;
 		// Starting Bbox for dragging

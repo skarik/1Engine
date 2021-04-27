@@ -349,6 +349,7 @@ void ui::eventide::UserInterface::Update ( void )
 		ui::eventide::Element::EventMouse event;
 		event.position_screen = mouseScreenPosition;
 		event.position_world = mouseRay.pos + mouseRay.dir * minMouseHitDistance;
+		event.element = m_currentMouseOverElement;
 
 		if (minMouseHitElement != m_currentMouseOverElement)
 		{
@@ -359,6 +360,7 @@ void ui::eventide::UserInterface::Update ( void )
 					|| m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll)
 				{
 					event.type = ui::eventide::Element::EventMouse::Type::kExit;
+					event.element = m_currentMouseOverElement;
 					m_currentMouseOverElement->OnEventMouse(event);
 				}
 				m_currentMouseOverElement->m_mouseInside = false;
@@ -374,6 +376,7 @@ void ui::eventide::UserInterface::Update ( void )
 					|| m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll)
 				{
 					event.type = ui::eventide::Element::EventMouse::Type::kEnter;
+					event.element = m_currentMouseOverElement;
 					m_currentMouseOverElement->OnEventMouse(event);
 				}
 				m_currentMouseOverElement->m_mouseInside = true;
@@ -389,6 +392,7 @@ void ui::eventide::UserInterface::Update ( void )
 				{
 					event.type = ui::eventide::Element::EventMouse::Type::kClicked;
 					event.button = mouseButton;
+					event.element = m_currentMouseOverElement;
 					if (m_currentMouseOverElement != NULL)
 					{
 						m_currentMouseOverElement->OnEventMouse(event);
@@ -414,6 +418,7 @@ void ui::eventide::UserInterface::Update ( void )
 						event.type = ui::eventide::Element::EventMouse::Type::kDragged;
 						event.button = mouseButton;
 						event.velocity_world = mouseDelta;
+						event.element = m_currentMouseOverElement;
 						if (m_currentMouseOverElement != NULL)
 						{
 							m_currentMouseOverElement->OnEventMouse(event);
@@ -436,6 +441,7 @@ void ui::eventide::UserInterface::Update ( void )
 				{
 					event.type = ui::eventide::Element::EventMouse::Type::kReleased;
 					event.button = mouseButton;
+					event.element = m_currentMouseOverElement;
 					if (m_currentMouseOverElement != NULL)
 					{
 						m_currentMouseOverElement->OnEventMouse(event);
@@ -519,7 +525,8 @@ ui::eventide::Texture ui::eventide::UserInterface::LoadTexture ( const char* fil
 {
 	// Load texture
 	RrTexture* loaded_texture = RrTexture::Load(filename);
-	
+	ARCORE_ASSERT(loaded_texture != NULL);
+
 	// Check the internal texture list and add if needed
 	auto texture_location = std::find(m_textures.begin(), m_textures.end(), loaded_texture);
 	if (texture_location == m_textures.end())
@@ -542,6 +549,7 @@ ui::eventide::Texture ui::eventide::UserInterface::LoadTextureFont ( const char*
 
 	// Load texture
 	RrFontTexture* loaded_texture = RrFontTexture::Load(filename, params);
+	ARCORE_ASSERT(loaded_texture != NULL);
 
 	// Check the internal texture list and add if needed
 	auto texture_location = std::find(m_textures.begin(), m_textures.end(), loaded_texture);

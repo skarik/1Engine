@@ -210,6 +210,7 @@ namespace eventide {
 			Vector2f			position_screen;
 			Vector2f			velocity_world;
 			Vector2f			velocity_screen;
+			Element*			element = nullptr;
 		};
 
 		//	virtual OnEventMouse() : Called when mouse events occur with this element.

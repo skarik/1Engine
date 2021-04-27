@@ -263,43 +263,54 @@ void m04::editor::sequence::NodeRenderer::OnClicked ( const EventMouse& mouse_ev
 	const bool bDoDraggingAsFallback = (!m_draggingInfo.active);
 
 	bool bAllowCapture = true; // Flag if we captured something already? Should be used to skip and fallback.
+	bool bMouseInThisElement = mouse_event.element == this;
 
-	core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
-	if (bAllowCapture
-		&& l_bbox_flow_input.IsPointInBox(mouse_event.position_world))
+	if (bMouseInThisElement)
 	{
-		bAllowCapture = false;
-		m_draggingInfo = {true, DragState::Target::kFlowInput, 0};
+		m_selected = true;
 		m_mouseInteract = MouseInteract::kCapturingCatchAll;
-	}
-	else if (bAllowCapture)
-	{
-		for (uint32_t flowOutputIndex = 0; flowOutputIndex < node->sequenceInfo->view->Flow().outputCount; ++flowOutputIndex)
-		{
-			core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(flowOutputIndex);
-			if (l_bbox_flow_output.IsPointInBox(mouse_event.position_world))
-			{
-				bAllowCapture = false;
-				m_draggingInfo = {true, DragState::Target::kFlowOutput, flowOutputIndex};
-				m_mouseInteract = MouseInteract::kCapturingCatchAll;
 
-				// No more check
-				break;
+		core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
+		if (bAllowCapture
+			&& l_bbox_flow_input.IsPointInBox(mouse_event.position_world))
+		{
+			bAllowCapture = false;
+			m_draggingInfo = {true, DragState::Target::kFlowInput, 0};
+			m_mouseInteract = MouseInteract::kCapturingCatchAll;
+		}
+		else if (bAllowCapture)
+		{
+			for (uint32_t flowOutputIndex = 0; flowOutputIndex < node->sequenceInfo->view->Flow().outputCount; ++flowOutputIndex)
+			{
+				core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(flowOutputIndex);
+				if (l_bbox_flow_output.IsPointInBox(mouse_event.position_world))
+				{
+					bAllowCapture = false;
+					m_draggingInfo = {true, DragState::Target::kFlowOutput, flowOutputIndex};
+					m_mouseInteract = MouseInteract::kCapturingCatchAll;
+
+					// No more check
+					break;
+				}
 			}
 		}
-	}
 
-	//core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
-	if (bAllowCapture
-		&& false)
-	{
+		if (bAllowCapture
+			&& false)
+		{
 
+		}
+		else if (bAllowCapture && bDoDraggingAsFallback)
+		{
+			m_dragging = true;
+			m_draggingStart = GetBBox();
+			m_ui->LockMouse();
+		}
 	}
-	else if (bAllowCapture && bDoDraggingAsFallback)
+	else
 	{
-		m_dragging = true;
-		m_draggingStart = GetBBox();
-		m_ui->LockMouse();
+		m_selected = false;
+		m_mouseInteract = MouseInteract::kCapturing;
 	}
 }
 void m04::editor::sequence::NodeRenderer::OnReleased ( const EventMouse& mouse_event )
@@ -342,6 +353,7 @@ void m04::editor::sequence::NodeRenderer::OnReleased ( const EventMouse& mouse_e
 
 		m_draggingInfo.active = false;
 		m_mouseInteract = MouseInteract::kCapturing;
+		m_selected = false;
 	}
 	else if (m_dragging)
 	{
@@ -367,10 +379,40 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	cubeParams.texture = NULL;
 	cubeParams.color = DefaultStyler.box.defaultColor
 		.Lerp(DefaultStyler.box.hoverColor, m_hoverGlowValue)
-		.Lerp(m_display_tint, 0.5F)
-		.Lerp(DefaultStyler.box.activeColor, Styler::PulseFade(m_activateGlowPulse));
+		.Lerp(m_display_tint, 0.5F);
+		//.Lerp(DefaultStyler.box.activeColor, Styler::PulseFade(m_activateGlowPulse));
 	//cubeParams.wireframe = true; // TODO
 	buildCube(cubeParams);
+
+	if (m_selected)
+	{
+		// Draw an outline of the box.
+		core::math::Cubic baseCube = cubeParams.box;
+
+		const Real outlineWidth = 2.0F;
+
+		cubeParams.color = Color(1.0F, 1.0F, 1.0F, 1.0F);
+		cubeParams.box = core::math::Cubic(
+			baseCube.position + Vector3f(-outlineWidth, -outlineWidth, 0.0F),
+			Vector3f(outlineWidth, baseCube.size.y + outlineWidth * 2.0F, baseCube.size.z));
+		buildCube(cubeParams);
+
+		cubeParams.box = core::math::Cubic(
+			baseCube.position + Vector3f(baseCube.size.x, -outlineWidth, 0.0F),
+			Vector3f(outlineWidth, baseCube.size.y + outlineWidth * 2.0F, baseCube.size.z));
+		buildCube(cubeParams);
+
+		cubeParams.box = core::math::Cubic(
+			baseCube.position + Vector3f(0.0F, -outlineWidth, 0.0F),
+			Vector3f(baseCube.size.x, outlineWidth, baseCube.size.z));
+		buildCube(cubeParams);
+
+		cubeParams.box = core::math::Cubic(
+			baseCube.position + Vector3f(0.0F, baseCube.size.y, 0.0F),
+			Vector3f(baseCube.size.x, outlineWidth, baseCube.size.z));
+		buildCube(cubeParams);
+
+	}
 
 	Vector3f nodeTopLeft = GetBBoxAbsolute().GetCenterPoint()
 		- Vector3f(nodeExtents.x, -nodeExtents.y, nodeExtents.z)
@@ -428,14 +470,42 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	// Draw drag nonsense
 	if (m_draggingInfo.active)
 	{
-		cubeParams = {};
+		/*cubeParams = {};
 		cubeParams.box = core::math::Cubic::ConstructCenterExtents(m_ui->GetMousePosition(), Vector3f(5, 5, 5));
 		cubeParams.color = Color(1, 0, 0, 1);
 		cubeParams.texture = NULL;
-		buildCube(cubeParams);
+		buildCube(cubeParams);*/
+
+		// Build the curve
+		pathParams = {};
+		Vector3f pointArray[21];
+		pointArray[0] = GetBboxFlowOutput(0).GetCenterPoint();
+		pointArray[20] = m_board->GetEditor()->GetMousePosition3D(); // Lead curve to the mouse position
+		const Vector3f pointDelta = pointArray[20] - pointArray[0];
+		// Build a bezier curve between the points
+		for (int i = 1; i < 20; ++i)
+		{
+			Vector3f& pointA = pointArray[0];
+			Vector3f& pointB = pointArray[20];
+			const Vector3f anchorA = pointA + Vector3f(pointDelta.x, 0, 0);
+			const Vector3f anchorB = pointB - Vector3f(pointDelta.x, 0, 0);
+			Real interpolator = i / 20.0F;
+
+			pointArray[i] = 
+				Vector3f::lerp(
+					Vector3f::lerp(
+						Vector3f::lerp(pointA, anchorA, interpolator),
+						Vector3f::lerp(anchorA, anchorB, interpolator), interpolator),
+					Vector3f::lerp(
+						Vector3f::lerp(anchorA, anchorB, interpolator),
+						Vector3f::lerp(anchorB, pointB, interpolator), interpolator), interpolator);
+		}
+		pathParams.points = pointArray;
+		pathParams.pointCount = 21;
+		buildPath(pathParams);
 	}
 
-	// Draw the flow output
+	// Draw the flow output line
 	if (m_next == NULL)
 	{
 		;	
@@ -444,12 +514,25 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	{
 		NodeRenderer* next_noderenderer = (NodeRenderer*)m_next;
 
-		cubeParams = {};
+		/*cubeParams = {};
 		cubeParams.box = core::math::Cubic::ConstructCenterExtents((GetBboxFlowOutput(0).GetCenterPoint() + next_noderenderer->GetBboxFlowInput().GetCenterPoint()) * 0.5F, Vector3f(5, 5, 5));
 		cubeParams.color = Color(1, 0, 0, 1);
 		cubeParams.texture = NULL;
-		buildCube(cubeParams);
+		buildCube(cubeParams);*/
 
+		core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(0);
+		core::math::BoundingBox l_bbox_flow_input = next_noderenderer->GetBboxFlowInput();
+
+		// Build the click-able node
+		quadParams = {};
+		quadParams.position = (l_bbox_flow_output.GetCenterPoint() + l_bbox_flow_input.GetCenterPoint()) * 0.5F + Vector3f(0, 0, 2);
+		quadParams.size = Vector2f(l_bbox_flow_output.GetExtents().x, l_bbox_flow_output.GetExtents().y) * 0.5F;
+		quadParams.uvs = Rect(128.0F / 1024, 0.0F, 128.0F / 1024, 128.0F / 1024);
+		quadParams.texture = &m_uiElementsTexture;
+		quadParams.color = Color(1.0F, 1.0F, 1.0F, 1.0F);
+		buildQuad(quadParams);
+
+		// Build the curve
 		pathParams = {};
 		/*Vector3f pointArray[] = {
 			Vector3f(GetBboxFlowOutput(0).GetCenterPoint()),
@@ -460,6 +543,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		pointArray[0] = GetBboxFlowOutput(0).GetCenterPoint();
 		pointArray[20] = next_noderenderer->GetBboxFlowInput().GetCenterPoint();
 		const Vector3f pointDelta = pointArray[20] - pointArray[0];
+		// Build a bezier curve between the points
 		for (int i = 1; i < 20; ++i)
 		{
 			Vector3f& pointA = pointArray[0];
