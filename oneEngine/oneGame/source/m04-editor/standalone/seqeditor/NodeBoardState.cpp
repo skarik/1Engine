@@ -2,7 +2,7 @@
 #include "m04/eventide/elements/DefaultStyler.h"
 #include "m04/eventide/elements/Button.h"
 
-#include "./NodeBoardRenderer.h"
+#include "./noderenderer/NodeBoardRenderer.h"
 #include "./SequenceEditor.h"
 #include "./SequenceSerialization.h"
 

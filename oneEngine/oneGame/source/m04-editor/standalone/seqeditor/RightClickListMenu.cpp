@@ -7,7 +7,7 @@
 
 #include "./SequenceEditor.h"
 #include "./SequenceNodeViews.h"
-#include "./NodeBoardRenderer.h"
+#include "./noderenderer/NodeBoardRenderer.h"
 
 m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* editor )
 	: ListMenu( editor->GetEventideUI() )

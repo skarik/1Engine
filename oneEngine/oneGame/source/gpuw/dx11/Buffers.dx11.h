@@ -112,6 +112,12 @@ namespace gpu
 
 		void*			m_srv;
 		void*			m_uav;
+
+#	if GPU_API_DEBUG_MAP_OVERRUNS
+		void*			m_intermediateBuffer;
+		size_t			m_intermediateBufferSize;
+		void*			m_actualBuffer;
+#	endif
 	};
 
 }

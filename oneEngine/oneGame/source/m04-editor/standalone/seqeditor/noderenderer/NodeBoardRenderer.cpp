@@ -1,9 +1,14 @@
 #include "m04/eventide/elements/DefaultStyler.h"
 #include "m04/eventide/elements/Button.h"
-#include "./NodeBoardState.h"
-#include "./Constants.h"
-#include "./SequenceEditor.h"
+#include "../NodeBoardState.h"
+#include "../Constants.h"
+#include "../SequenceEditor.h"
 #include "core-ext/containers/arStringEnum.h"
+
+#include "./ScriptTextPropertyRenderer.h"
+#include "./BooleanPropertyRenderer.h"
+#include "./FloatPropertyRenderer.h"
+#include "./EnumPropertyRenderer.h"
 
 #include "NodeBoardRenderer.h"
 
@@ -33,7 +38,8 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 	m_mouseInteract = MouseInteract::kCapturing;
 	m_frameUpdate = FrameUpdate::kPerFrame;
 
-	m_uiElementsTexture = LoadTexture(m04::editor::sequence::gFilenameGUIElementTexture);
+	m_renderResources.m_fontTexture = m_fontTexture;
+	m_renderResources.m_uiElementsTexture = LoadTexture(m04::editor::sequence::gFilenameGUIElementTexture);
 
 	ARCORE_ASSERT(in_node->sequenceInfo != NULL); // Must ensure node exists
 	ARCORE_ASSERT(in_node->sequenceInfo->view != NULL); // Must ensure view is valid
@@ -57,12 +63,51 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 	UpdateNextNode();
 
 	// Set up the properties and extra
-	m_propertyState.resize(node->sequenceInfo->view->PropertyList().size());
+	auto& nodeProperties = node->sequenceInfo->view->PropertyList();
+	m_propertyState.resize(nodeProperties.size());
+	for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
+	{
+		IPropertyRenderer* property_renderer = nullptr;
+		
+		auto& nodeProperty = nodeProperties[nodePropertyIndex];
+
+		IPropertyRenderer::CreationParameters l_propCreateParams = {this, &nodeProperty, &m_propertyState[nodePropertyIndex]};
+
+		switch (nodeProperty.renderstyle)
+		{
+		case m04::editor::PropertyRenderStyle::kBoolean:
+			property_renderer = new m04::editor::sequence::BooleanPropertyRenderer(l_propCreateParams);
+			break;
+
+		case m04::editor::PropertyRenderStyle::kFloat:
+			property_renderer = new m04::editor::sequence::FloatPropertyRenderer(l_propCreateParams);
+			break;
+
+		case m04::editor::PropertyRenderStyle::kScriptText:
+			property_renderer = new m04::editor::sequence::ScriptTextPropertyRenderer(l_propCreateParams);
+			break;
+
+		case m04::editor::PropertyRenderStyle::kEnumtypeDropdown:
+		case m04::editor::PropertyRenderStyle::kScriptCharacter:
+			property_renderer = new m04::editor::sequence::EnumPropertyRenderer(l_propCreateParams);
+			break;
+		}
+
+		m_propertyRenderers.push_back(property_renderer);
+	}
+
+	UpdatePropertyLayout();
 }
 
 m04::editor::sequence::NodeRenderer::~NodeRenderer ( void )
 {
-	ReleaseTexture(m_uiElementsTexture);
+	ReleaseTexture(m_renderResources.m_uiElementsTexture);
+
+	for (IPropertyRenderer* renderer : m_propertyRenderers)
+	{
+		delete renderer;
+	}
+	m_propertyRenderers.clear();
 }
 
 void m04::editor::sequence::NodeRenderer::UpdateCachedVisualInfo ( void )
@@ -93,6 +138,30 @@ void m04::editor::sequence::NodeRenderer::UpdateCachedVisualInfo ( void )
 	}
 }
 
+void m04::editor::sequence::NodeRenderer::UpdatePropertyLayout()
+{
+	const core::math::BoundingBox nodeBbox = GetBBoxAbsolute();
+	const Real kRightColumnOffset = ui::eventide::DefaultStyler.text.headingSize * 3.0F;
+
+	// sum up all the offsets to the current position
+	Vector3f offset;
+	offset.y = -ui::eventide::DefaultStyler.text.headingSize - m_margins.y * 2.0F; // Start below the title.
+
+	// Apply the offset so we're working against the upper-left corner
+	offset.x -= nodeBbox.GetExtents().x;
+	offset.y += nodeBbox.GetExtents().y;
+	offset.z += nodeBbox.GetExtents().z - 1.0F;
+	// Apply offset for the world-space position
+	offset += nodeBbox.m_M.getTranslation();
+
+	for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < m_propertyRenderers.size(); ++nodePropertyIndex)
+	{
+		m_propertyRenderers[nodePropertyIndex]->UpdateLayout(offset, kRightColumnOffset, nodeBbox);
+
+		offset.y -= m_propertyRenderers[nodePropertyIndex]->GetCachedBboxHeight();
+	}
+}
+
 void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse_event )
 {
 	if (mouse_event.type == EventMouse::Type::kDragged)
@@ -120,6 +189,7 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 			node->position = bbox.GetCenterPoint() - m_halfsizeOnBoard;
 
 			SetBBox( bbox );
+			UpdatePropertyLayout();
 			RequestUpdateMesh();
 		}
 	}
@@ -135,7 +205,7 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 			OnReleased(mouse_event);
 		}
 
-
+		// TODO: a lot of the following nodeProperty.renderstyle if-statement can be moved to a separate class/abstracted away, instead of being a massive mess here.
 		auto& nodeProperties = node->sequenceInfo->view->PropertyList();
 		for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
 		{
@@ -148,7 +218,12 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 			{
 				m_propertyState[nodePropertyIndex].m_hovered = true;
 
-				if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kBoolean)
+				if (mouse_event.type == EventMouse::Type::kClicked)
+				{
+					m_propertyRenderers[nodePropertyIndex]->OnClicked(mouse_event);
+				}
+
+				/*if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kBoolean)
 				{
 					if (mouse_event.type == EventMouse::Type::kClicked
 						&& mouse_event.button == core::kMBLeft)
@@ -159,14 +234,14 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 						}
 					}
 				}
-				else if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kFloat)
+				else *//*if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kFloat)
 				{
 					if (mouse_event.type == EventMouse::Type::kClicked
 						&& mouse_event.button == core::kMBLeft)
 					{
 						m_propertyState[nodePropertyIndex].m_editing = true;
 					}
-				}
+				}*/
 				else if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kScriptText)
 				{
 					if (mouse_event.type == EventMouse::Type::kClicked
@@ -175,7 +250,7 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 						m_propertyState[nodePropertyIndex].m_editing = true;
 					}
 				}
-				else if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kEnumtypeDropdown
+				/*else if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kEnumtypeDropdown
 					|| nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kScriptCharacter)
 				{
 					if (mouse_event.type == EventMouse::Type::kClicked
@@ -244,7 +319,7 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 							}
 						}
 					}
-				}
+				}*/
 			}
 			else
 			{
@@ -448,7 +523,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		quadParams.position = l_bbox_flow_input.GetCenterPoint();
 		quadParams.size = Vector2f(l_bbox_flow_input.GetExtents().x, l_bbox_flow_input.GetExtents().y);
 		quadParams.uvs = Rect(128.0F / 1024, 0.0F, 128.0F / 1024, 128.0F / 1024);
-		quadParams.texture = &m_uiElementsTexture;
+		quadParams.texture = &m_renderResources.m_uiElementsTexture;
 		quadParams.color = DefaultStyler.box.defaultColor;
 		buildQuad(quadParams);
 	}
@@ -462,7 +537,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		quadParams.position = l_bbox_flow_output.GetCenterPoint();
 		quadParams.size = Vector2f(l_bbox_flow_output.GetExtents().x, l_bbox_flow_output.GetExtents().y);
 		quadParams.uvs = Rect(128.0F / 1024, 0.0F, 128.0F / 1024, 128.0F / 1024);
-		quadParams.texture = &m_uiElementsTexture;
+		quadParams.texture = &m_renderResources.m_uiElementsTexture;
 		quadParams.color = DefaultStyler.box.defaultColor;
 		buildQuad(quadParams);
 	}
@@ -528,7 +603,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		quadParams.position = (l_bbox_flow_output.GetCenterPoint() + l_bbox_flow_input.GetCenterPoint()) * 0.5F + Vector3f(0, 0, 2);
 		quadParams.size = Vector2f(l_bbox_flow_output.GetExtents().x, l_bbox_flow_output.GetExtents().y) * 0.5F;
 		quadParams.uvs = Rect(128.0F / 1024, 0.0F, 128.0F / 1024, 128.0F / 1024);
-		quadParams.texture = &m_uiElementsTexture;
+		quadParams.texture = &m_renderResources.m_uiElementsTexture;
 		quadParams.color = Color(1.0F, 1.0F, 1.0F, 1.0F);
 		buildQuad(quadParams);
 
@@ -570,306 +645,11 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	// Draw all the options
 	auto& nodeProperties = node->sequenceInfo->view->PropertyList();
 	Vector3f l_bboxPenPosition = Vector3f(0.0F, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0.0F);
-	//for (auto& nodeProperty : nodeProperties)
 	for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
 	{
 		auto& nodeProperty = nodeProperties[nodePropertyIndex];
-
-		switch (nodeProperty.renderstyle)
-		{
-		case m04::editor::PropertyRenderStyle::kBoolean:
-			BuildMeshPropertyBoolean(nodeTopLeft, nodeProperty, nodePropertyIndex, l_bboxPenPosition);
-			break;
-
-		case m04::editor::PropertyRenderStyle::kFloat:
-			BuildMeshPropertyFloat(nodeTopLeft, nodeProperty, nodePropertyIndex, l_bboxPenPosition);
-			break;
-
-		case m04::editor::PropertyRenderStyle::kScriptText:
-			BuildMeshPropertyScriptText(nodeTopLeft, nodeProperty, nodePropertyIndex, l_bboxPenPosition);
-			break;
-
-		case m04::editor::PropertyRenderStyle::kScriptCharacter:
-		case m04::editor::PropertyRenderStyle::kEnumtypeDropdown:
-			BuildMeshPropertyEnumDropdown(nodeTopLeft, nodeProperty, nodePropertyIndex, l_bboxPenPosition);
-			break;
-		}
+		m_propertyRenderers[nodePropertyIndex]->BuildMesh(l_bboxPenPosition);
 	}
-}
-
-void m04::editor::sequence::NodeRenderer::BuildMeshPropertyBoolean ( const Vector3f& in_nodeTopLeft, const m04::editor::SequenceViewProperty& in_property, const uint32_t in_propertyIndex, Vector3f& inout_penPosition )
-{
-	using namespace ui::eventide;
-
-	ParamsForText textParams;
-	ParamsForCube cubeParams;
-	ParamsForQuad quadParams;
-
-	const core::math::BoundingBox bbox_all = GetBboxProperty<PropertyComponent::All>(in_propertyIndex);
-	const core::math::BoundingBox bbox_key = GetBboxProperty<PropertyComponent::Key>(in_propertyIndex);
-
-	textParams = {};
-	textParams.string = in_property.label.c_str();
-	textParams.font_texture = &m_fontTexture;
-	//textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, 0) + Vector3f(ui::eventide::DefaultStyler.text.headingSize + m_padding.x, 0, 0);
-	textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
-	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
-	textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-	textParams.alignment = AlignHorizontal::kLeft;
-	textParams.color = m_propertyState[in_propertyIndex].m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
-	buildText(textParams);
-
-	quadParams = {};
-	quadParams.position = bbox_key.GetCenterPoint();
-	quadParams.size = Vector3f(1, 1, 1) * (bbox_key.GetExtents().y);
-	quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F);
-	buildQuad(quadParams);
-
-	if (node->sequenceInfo->view->GetPropertyAsBool(in_property.identifier))
-	{
-		quadParams = {};
-		quadParams.position = bbox_key.GetCenterPoint() + Vector3f(0, 0, 2);
-		quadParams.size = Vector3f(1, 1, 1) * (bbox_key.GetExtents().y - m_padding.x * 0.5F);
-		quadParams.uvs = Rect(128.0F / 1024, 0.0F, 128.0F / 1024, 128.0F / 1024);
-		quadParams.texture = &m_uiElementsTexture;
-		quadParams.color = Color(1, 1, 1, 1);
-		buildQuad(quadParams);
-	}
-
-	// Push down pen
-	inout_penPosition.y -= ui::eventide::DefaultStyler.text.buttonSize + 5;
-}
-
-void m04::editor::sequence::NodeRenderer::BuildMeshPropertyFloat ( const Vector3f& in_nodeTopLeft, const m04::editor::SequenceViewProperty& in_property, const uint32_t in_propertyIndex, Vector3f& inout_penPosition )
-{
-	using namespace ui::eventide;
-
-	ParamsForText textParams;
-	ParamsForCube cubeParams;
-	ParamsForQuad quadParams;
-
-	const core::math::BoundingBox bbox_all = GetBboxProperty<PropertyComponent::All>(in_propertyIndex);
-	const core::math::BoundingBox bbox_key = GetBboxProperty<PropertyComponent::Key>(in_propertyIndex);
-
-	textParams = {};
-	textParams.string = in_property.label.c_str();
-	textParams.font_texture = &m_fontTexture;
-	//textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, -bbox_all.GetExtents().z);
-	textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
-	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
-	textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-	textParams.alignment = AlignHorizontal::kLeft;
-	textParams.color = m_propertyState[in_propertyIndex].m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
-	buildText(textParams);
-
-	quadParams = {};
-	quadParams.position = bbox_key.GetCenterPoint();
-	quadParams.size = bbox_key.GetExtents();
-	quadParams.color = m_propertyState[in_propertyIndex].m_hovered ? Color(1, 1, 1, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F) : DefaultStyler.box.defaultColor;
-	buildQuad(quadParams);
-
-	const char* str = NULL;
-	std::string str_tempBuffer;
-	if (m_propertyState[in_propertyIndex].m_editing)
-	{
-		str = node->sequenceInfo->view->GetPropertyAsString(in_property.identifier);
-	}
-	else
-	{
-		const float currentValue = node->sequenceInfo->view->GetPropertyAsFloat(in_property.identifier);
-		str_tempBuffer = std::to_string(currentValue);
-		str_tempBuffer.erase(str_tempBuffer.find_last_not_of('0') + 1, std::string::npos);
-		str_tempBuffer.erase(str_tempBuffer.find_last_not_of('.') + 1, std::string::npos); // See the node conversion GetPropertyAsFloat/GetPropertyAsString
-		str = str_tempBuffer.c_str();
-	}
-
-	if (str)
-	{
-		std::string l_drawString = str;
-		if (m_propertyState[in_propertyIndex].m_editing)
-		{
-			if (fmod(Time::currentTime, 1.0F) < 0.5F)
-			{
-				l_drawString += '|';
-			}
-		}
-
-		textParams = {};
-		textParams.string = l_drawString.c_str();
-		textParams.font_texture = &m_fontTexture;
-		textParams.position = bbox_key.GetCenterPoint() - Vector3f(bbox_key.GetExtents().x, bbox_key.GetExtents().y, 0) + Vector3f(0, 0, 0.2F);
-		textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
-		textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-		textParams.alignment = AlignHorizontal::kLeft;
-		textParams.color = Color(1, 1, 1, 1);
-		buildText(textParams);
-	}
-
-	// Push down pen
-	inout_penPosition.y -= ui::eventide::DefaultStyler.text.buttonSize + 5;
-}
-
-void m04::editor::sequence::NodeRenderer::BuildMeshPropertyScriptText ( const Vector3f& in_nodeTopLeft, const m04::editor::SequenceViewProperty& in_property, const uint32_t in_propertyIndex, Vector3f& inout_penPosition )
-{
-	using namespace ui::eventide;
-
-	ParamsForText textParams;
-	ParamsForCube cubeParams;
-	ParamsForQuad quadParams;
-
-	const core::math::BoundingBox bbox_all = GetBboxProperty<PropertyComponent::All>(in_propertyIndex);
-	const core::math::BoundingBox bbox_key = GetBboxProperty<PropertyComponent::Key>(in_propertyIndex);
-
-	quadParams = {};
-	quadParams.position = bbox_all.GetCenterPoint();
-	quadParams.size = bbox_all.GetExtents();
-	quadParams.color = m_propertyState[in_propertyIndex].m_hovered ? Color(1,1,1,1) : Color(1, 1, 1, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F);
-	buildQuad(quadParams);
-
-	textParams = {};
-	textParams.string = in_property.label.c_str();
-	textParams.font_texture = &m_fontTexture;
-	//textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, -bbox_all.GetExtents().z);
-	textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
-	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
-	textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-	textParams.alignment = AlignHorizontal::kLeft;
-	textParams.color = m_propertyState[in_propertyIndex].m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
-	buildText(textParams);
-
-	const char* str = node->sequenceInfo->view->GetPropertyAsString(in_property.identifier);
-	if (str)
-	{
-		std::string l_drawString = str;
-		if (m_propertyState[in_propertyIndex].m_editing)
-		{
-			if (fmod(Time::currentTime, 1.0F) < 0.5F)
-			{
-				l_drawString += '|';
-			}
-		}
-
-		textParams = {};
-		textParams.string = l_drawString.c_str();
-		textParams.font_texture = &m_fontTexture;
-		//textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, -bbox_all.GetExtents().z) + Vector3f(0, 0, 0.1F);
-		textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, 0) + Vector3f(0, 0, 0.2F);
-		textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
-		textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-		textParams.alignment = AlignHorizontal::kLeft;
-		textParams.color = Color(1, 0, 0, 1);
-		buildText(textParams);
-	}
-
-	// Push down pen
-	inout_penPosition.y -= ui::eventide::DefaultStyler.text.buttonSize + 5;
-}
-
-void m04::editor::sequence::NodeRenderer::BuildMeshPropertyEnumDropdown ( const Vector3f& in_nodeTopLeft, const m04::editor::SequenceViewProperty& in_property, const uint32_t in_propertyIndex, Vector3f& inout_penPosition )
-{
-	using namespace ui::eventide;
-
-	ParamsForText textParams;
-	ParamsForCube cubeParams;
-	ParamsForQuad quadParams;
-
-	const core::math::BoundingBox bbox_all = GetBboxProperty<PropertyComponent::All>(in_propertyIndex);
-	const core::math::BoundingBox bbox_key = GetBboxProperty<PropertyComponent::Key>(in_propertyIndex);
-
-	textParams = {};
-	textParams.string = in_property.label.c_str();
-	textParams.font_texture = &m_fontTexture;
-	textParams.position = bbox_all.GetCenterPoint() - Vector3f(bbox_all.GetExtents().x, bbox_all.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
-	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
-	textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-	textParams.alignment = AlignHorizontal::kLeft;
-	textParams.color = m_propertyState[in_propertyIndex].m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
-	buildText(textParams);
-
-	/*quadParams = {};
-	quadParams.position = bbox_key.GetCenterPoint();
-	quadParams.size = Vector3f(1, 1, 1) * (bbox_key.GetExtents().y);
-	quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F);
-	buildQuad(quadParams);
-
-	if (node->sequenceInfo->view->GetPropertyAsBool(in_property.identifier))
-	{
-		quadParams = {};
-		quadParams.position = bbox_key.GetCenterPoint() + Vector3f(0, 0, 2);
-		quadParams.size = Vector3f(1, 1, 1) * (bbox_key.GetExtents().y - m_padding.x * 0.5F);
-		quadParams.uvs = Rect(128.0F / 1024, 0.0F, 128.0F / 1024, 128.0F / 1024);
-		quadParams.texture = &m_uiElementsTexture;
-		quadParams.color = Color(1, 1, 1, 1);
-		buildQuad(quadParams);
-	}*/
-
-	// TODO: so much of this can be moved to a separate class and cached (or at least just cached)
-
-	// Now, render the current setting (find a matching enum first)
-	const auto& editorEnums = m_board->GetEditor()->GetEnums();
-	arstring128 enumDefinitionName;
-	arStringEnumDefinition* enumDefinition = NULL;
-
-	std::string identifierLower = in_property.identifier;
-	core::utils::string::ToLower(identifierLower);
-
-	if (editorEnums.find(identifierLower.c_str()) != editorEnums.end())
-	{
-		enumDefinitionName = identifierLower.c_str();
-	}
-	else
-	{
-		// Take display name and remove the spaces
-		std::string moddedDisplayName = in_property.label;
-		moddedDisplayName.erase(std::remove(moddedDisplayName.begin(), moddedDisplayName.end(), ' '));
-		core::utils::string::ToLower(moddedDisplayName);
-
-		if (editorEnums.find(moddedDisplayName.c_str()) != editorEnums.end())
-		{
-			enumDefinitionName = moddedDisplayName.c_str();
-		}
-	}
-
-	ARCORE_ASSERT(enumDefinitionName.length() > 0);
-	enumDefinition = editorEnums.find(enumDefinitionName)->second;
-
-	if (enumDefinition != NULL)
-	{
-		// find matching enum name
-		const char* str = node->sequenceInfo->view->GetPropertyAsString(in_property.identifier);
-		if (str == NULL || strlen(str) == 0)
-		{
-			str = enumDefinition->GetEnumName(0); //todo
-		}
-		else
-		{
-			auto enumValue = enumDefinition->CreateValue(str);
-			if (enumValue.IsValid())
-			{
-				str = enumValue.GetName();
-			}
-			else
-			{
-				str = enumDefinition->GetEnumName(0); //todo
-			}
-		}
-
-		arstring256 camelCasedValue = core::utils::string::CamelCaseToReadable(str, strlen(str));
-		camelCasedValue[0] = ::toupper(camelCasedValue[0]);
-
-		textParams = {};
-		textParams.string = camelCasedValue.c_str();
-		textParams.font_texture = &m_fontTexture;
-		textParams.position = bbox_key.GetCenterPoint() - Vector3f(bbox_key.GetExtents().x, bbox_key.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
-		textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
-		textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-		textParams.alignment = AlignHorizontal::kLeft;
-		textParams.color = m_propertyState[in_propertyIndex].m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
-		buildText(textParams);
-	}
-
-	// Push down pen
-	inout_penPosition.y -= ui::eventide::DefaultStyler.text.buttonSize + 5;
 }
 
 void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame )
@@ -886,6 +666,8 @@ void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpd
 
 	// Set bbox, push update for mesh
 	SetBBox(bbox);
+	// Update the property positions (TODO: call this only when bbox changes)
+	UpdatePropertyLayout();
 	// Request the mesh updates next frame
 	RequestUpdateMesh();
 
@@ -898,74 +680,7 @@ void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpd
 	for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
 	{
 		auto& nodeProperty = nodeProperties[nodePropertyIndex];
-		if (m_propertyState[nodePropertyIndex].m_editing)
-		{
-			if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kScriptText)
-			{
-				// Parse input and modify the underlying property
-				std::string l_currentValue = node->sequenceInfo->view->GetPropertyAsString(nodeProperty.identifier);
-
-				// Run the parse loop (see dusk/TextField.cpp)
-				const auto& inputString = core::Input::FrameInputString();
-				for (const auto& input : inputString)
-				{
-					if ( input && isprint(input) )
-					{
-						l_currentValue += input;
-					}
-					if ( input == core::kVkBackspace )
-					{
-						l_currentValue = l_currentValue.substr(0, l_currentValue.length() - 1);
-					}
-				}
-
-				// Save back the edits
-				node->sequenceInfo->view->SetProperty(nodeProperty.identifier, l_currentValue.c_str());
-			}
-			else if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kFloat)
-			{
-				// Parse input and modify the underlying property
-				std::string l_currentValue = node->sequenceInfo->view->GetPropertyAsString(nodeProperty.identifier);
-
-				// Run the parse loop (see dusk/TextField.cpp)
-				const auto& inputString = core::Input::FrameInputString();
-				for (const auto& input : inputString)
-				{
-					if ( input && isprint(input) && (isdigit(input) || input == '.') )
-					{
-						l_currentValue += input;
-					}
-					if ( input == core::kVkBackspace )
-					{
-						l_currentValue = l_currentValue.substr(0, l_currentValue.length() - 1);
-					}
-				}
-
-				// Save back the edits
-				node->sequenceInfo->view->SetProperty(nodeProperty.identifier, l_currentValue.c_str());
-			}
-		}
-		else
-		{
-			if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kFloat)
-			{
-				// If the field is invalid, force the value of zero
-				if (node->sequenceInfo->view->node->data[nodeProperty.identifier]->GetType() == osf::ValueType::kString)
-				{
-					std::string l_currentValue = node->sequenceInfo->view->GetPropertyAsString(nodeProperty.identifier);
-					try
-					{
-						std::stof(l_currentValue); // Try the conversion. If it throws, the input is invalid.
-					}
-					catch (std::invalid_argument&)
-					{
-						node->sequenceInfo->view->SetProperty(nodeProperty.identifier, "0");
-					}
-				}
-				// Forces the value to convert back to a floating point value.
-				node->sequenceInfo->view->GetPropertyAsFloat(nodeProperty.identifier);
-			}
-		}
+		m_propertyRenderers[nodePropertyIndex]->OnGameFrameUpdate(input_frame);
 	}
 
 	m_frameUpdate = FrameUpdate::kPerFrame;
@@ -1017,144 +732,13 @@ core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxFlowOutput (
 template <m04::editor::sequence::NodeRenderer::PropertyComponent Part>
 core::math::BoundingBox m04::editor::sequence::NodeRenderer::GetBboxProperty ( const uint32_t property_index )
 {
-	// TODO: optimize this
-	const core::math::BoundingBox nodeBbox = GetBBoxAbsolute();
-
-	// sum up all the offsets to the current position
-	Vector3f offset;
-	offset.y = -ui::eventide::DefaultStyler.text.headingSize - m_margins.y * 2.0F; // Start below the title.
-	//offset.y -= ui::eventide::DefaultStyler.text.headingSize; // Push it down again.
-	for (uint32_t checkPropertyIndex = 0; checkPropertyIndex < property_index; ++checkPropertyIndex)
+	if (Part == PropertyComponent::All)
 	{
-		auto nodeProperty = node->sequenceInfo->view->PropertyList()[checkPropertyIndex];
-		switch (nodeProperty.renderstyle)
-		{
-		case m04::editor::PropertyRenderStyle::kBoolean:
-			offset.y -= ui::eventide::DefaultStyler.text.buttonSize + m_padding.y;
-			break;
-		case m04::editor::PropertyRenderStyle::kScriptCharacter:
-		case m04::editor::PropertyRenderStyle::kEnumtypeDropdown:
-			offset.y -= ui::eventide::DefaultStyler.text.buttonSize + m_padding.y;
-			break;
-		case m04::editor::PropertyRenderStyle::kScriptText:
-			{
-				const Real l_boxWidth = nodeBbox.GetExtents().x * 2.0F - m_padding.x * 2.0F;
-				const char* l_scriptString = node->sequenceInfo->view->GetPropertyAsString(nodeProperty.identifier);
-				ParamsForText textParams;
-				textParams = {};
-				textParams.string = l_scriptString;
-				textParams.font_texture = &m_fontTexture;
-				textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-				const int l_numberOfLines = std::max(1, (int)(predictText(textParams).x / l_boxWidth) + 1);
-
-				offset.y -= ui::eventide::DefaultStyler.text.headingSize * l_numberOfLines + m_padding.y;
-			}
-			break;
-		}
+		return m_propertyRenderers[property_index]->GetCachedBboxAll();
 	}
-
-	// Apply the offset so we're working against the upper-left corner
-	offset.x -= nodeBbox.GetExtents().x;
-	offset.y += nodeBbox.GetExtents().y;
-	offset.z += nodeBbox.GetExtents().z - 1.0F;
-
-	offset += nodeBbox.m_M.getTranslation();
-
-	const Vector3f kRightColumnOffset = Vector3f(ui::eventide::DefaultStyler.text.headingSize * 3.0F, 0.0F, 0.0F);
-
-	// generate layout for the actual thing
-	auto nodeProperty = node->sequenceInfo->view->PropertyList()[property_index];
-	switch (nodeProperty.renderstyle)
+	else if (Part == PropertyComponent::Key)
 	{
-	case m04::editor::PropertyRenderStyle::kBoolean:
-		{
-			if (Part == PropertyComponent::All)
-			{
-				core::math::BoundingBox l_bbox(
-					Matrix4x4(),
-					offset + Vector3f(m_padding.x, 0, 0),
-					offset + Vector3f((nodeBbox.GetExtents().x - m_padding.x) * 2.0F, -ui::eventide::DefaultStyler.text.buttonSize, 4.0F)
-				);
-				return l_bbox;
-			}
-			else if (Part == PropertyComponent::Key)
-			{
-				core::math::BoundingBox l_bbox(
-					Matrix4x4(),
-					offset + kRightColumnOffset + Vector3f(m_padding.x, 0, 0),
-					offset + kRightColumnOffset + Vector3f(m_padding.x + ui::eventide::DefaultStyler.text.buttonSize, -ui::eventide::DefaultStyler.text.buttonSize, 4.0F)
-				);
-				return l_bbox;
-			}
-		}
-		break;
-	case m04::editor::PropertyRenderStyle::kFloat:
-		{
-			if (Part == PropertyComponent::All)
-			{
-				core::math::BoundingBox l_bbox(
-					Matrix4x4(),
-					offset + Vector3f(m_padding.x, 0, 0),
-					offset + Vector3f((nodeBbox.GetExtents().x - m_padding.x) * 2.0F, -ui::eventide::DefaultStyler.text.buttonSize, 4.0F)
-				);
-				return l_bbox;
-			}
-			else if (Part == PropertyComponent::Key)
-			{
-				core::math::BoundingBox l_bbox(
-					Matrix4x4(),
-					offset + kRightColumnOffset + Vector3f(m_padding.x, 0, 0),
-					offset + Vector3f((nodeBbox.GetExtents().x - m_padding.x) * 2.0F, -ui::eventide::DefaultStyler.text.buttonSize, 4.0F)
-				);
-				return l_bbox;
-			}
-		}
-		break;
-	case m04::editor::PropertyRenderStyle::kScriptCharacter:
-	case m04::editor::PropertyRenderStyle::kEnumtypeDropdown:
-		{
-			if (Part == PropertyComponent::All)
-			{
-				core::math::BoundingBox l_bbox(
-					Matrix4x4(),
-					offset + Vector3f(m_padding.x, 0, 0),
-					offset + Vector3f((nodeBbox.GetExtents().x - m_padding.x) * 2.0F, -ui::eventide::DefaultStyler.text.buttonSize, 4.0F)
-				);
-				return l_bbox;
-			}
-			else if (Part == PropertyComponent::Key)
-			{
-				core::math::BoundingBox l_bbox(
-					Matrix4x4(),
-					offset + kRightColumnOffset + Vector3f(m_padding.x, 0, 0),
-					offset + Vector3f((nodeBbox.GetExtents().x - m_padding.x) * 2.0F, -ui::eventide::DefaultStyler.text.buttonSize, 4.0F)
-				);
-				return l_bbox;
-			}
-		}
-		break;
-	case m04::editor::PropertyRenderStyle::kScriptText:
-		{
-			const Real l_boxWidth = nodeBbox.GetExtents().x * 2.0F - m_padding.x * 2.0F;
-			const char* l_scriptString = node->sequenceInfo->view->GetPropertyAsString(nodeProperty.identifier);
-			ParamsForText textParams;
-			textParams = {};
-			textParams.string = l_scriptString;
-			textParams.font_texture = &m_fontTexture;
-			textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-			const int l_numberOfLines = std::max(1, (int)(predictText(textParams).x / l_boxWidth) + 1);
-
-			if (Part == PropertyComponent::All)
-			{
-				core::math::BoundingBox l_bbox(
-					Matrix4x4(),
-					offset + Vector3f(m_padding.x, 0, 0),
-					offset + Vector3f(m_padding.x + l_boxWidth, -ui::eventide::DefaultStyler.text.buttonSize * l_numberOfLines, 4.0F)
-				);
-				return l_bbox;
-			}
-		}
-		break;
+		return m_propertyRenderers[property_index]->GetCachedBboxKey();
 	}
 
 	return core::math::BoundingBox();

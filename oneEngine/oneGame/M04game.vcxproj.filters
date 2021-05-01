@@ -79,6 +79,9 @@
     <Filter Include="SOURCE\M04-Editor\Standalone\SeqEditor\VN">
       <UniqueIdentifier>{a36accb6-1fb4-4199-9282-2c6e153c6a87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer">
+      <UniqueIdentifier>{ac51aacd-8f6f-4daf-9d2e-64bb0e0dd213}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -237,9 +240,6 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\RightClickListMenu.h">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClInclude>
-    <ClInclude Include="source\m04-editor\standalone\seqeditor\NodeBoardRenderer.h">
-      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
-    </ClInclude>
     <ClInclude Include="source\m04-editor\standalone\seqeditor\Constants.h">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClInclude>
@@ -260,6 +260,24 @@
     </ClInclude>
     <ClInclude Include="source\m04-editor\standalone\seqeditor\vn\ViewsFlow.h">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\VN</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\NodeBoardRenderer.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\IPropertyRenderer.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\ScriptTextPropertyRenderer.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\BooleanPropertyRenderer.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\EnumPropertyRenderer.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\FloatPropertyRenderer.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -407,9 +425,6 @@
     <ClCompile Include="source\m04-editor\standalone\seqeditor\RightClickListMenu.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClCompile>
-    <ClCompile Include="source\m04-editor\standalone\seqeditor\NodeBoardRenderer.cpp">
-      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
-    </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceNodeViews.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClCompile>
@@ -427,6 +442,24 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\seqeditor\vn\ViewsFlow.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\VN</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\NodeBoardRenderer.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\IPropertyRenderer.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\BooleanPropertyRenderer.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\EnumPropertyRenderer.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\FloatPropertyRenderer.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\ScriptTextPropertyRenderer.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

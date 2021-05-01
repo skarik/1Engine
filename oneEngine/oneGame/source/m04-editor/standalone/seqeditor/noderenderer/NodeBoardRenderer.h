@@ -1,7 +1,7 @@
 #ifndef M04_EDITORS_SEQUENCE_EDITOR_NODE_BOARD_RENDERER_H_
 #define M04_EDITORS_SEQUENCE_EDITOR_NODE_BOARD_RENDERER_H_
 
-#include "NodeBoardState.h"
+#include "../NodeBoardState.h"
 #include "m04/eventide/elements/DefaultStyler.h"
 #include "m04/eventide/elements/Button.h"
 
@@ -10,6 +10,7 @@ namespace editor {
 namespace sequence {
 	
 	class NodeBoardState;
+	class IPropertyRenderer;
 
 	struct DragState
 	{
@@ -60,6 +61,7 @@ namespace sequence {
 
 		void					UpdateCachedVisualInfo ( void );
 		void					UpdateNextNode ( void );
+		void					UpdatePropertyLayout ( void );
 
 		m04::editor::sequence::INodeDisplay*
 								GetNextNode ( void ) const
@@ -85,6 +87,35 @@ namespace sequence {
 
 		Real					GetBboxOfAllProperties ( void );
 
+	public:
+		// State of each property
+		struct PropertyState
+		{
+			bool			m_editing = false;
+			bool			m_hovered = false;
+		};
+
+		// All resources used for building mesh or rendering
+		struct RenderResources
+		{
+			// Font texture
+			ui::eventide::Texture
+								m_fontTexture;
+			// GUI texture.
+			ui::eventide::Texture
+								m_uiElementsTexture;
+		};
+
+		RenderResources&		GetRenderResources ( void )
+			{ return m_renderResources; }
+		const Vector3f&			GetMargins ( void )
+			{ return m_margins; }
+		const Vector3f&			GetPadding ( void )
+			{ return m_padding; }
+
+		NodeBoardState*			GetNodeBoardState ( void ) const
+			{ return m_board; }
+
 	protected:
 		Vector3f			m_halfsizeOnBoard;
 		Vector3f			m_margins;
@@ -107,17 +138,14 @@ namespace sequence {
 		DragState			m_draggingInfo;
 
 		// Property hover state
-		struct PropertyState
-		{
-			bool			m_editing = false;
-			bool			m_hovered = false;
-		};
 		std::vector<PropertyState>
 							m_propertyState;
 
-		// GUI texture.
-		ui::eventide::Texture
-							m_uiElementsTexture;
+		// Property renderers
+		std::vector<IPropertyRenderer*>
+							m_propertyRenderers;
+
+		RenderResources		m_renderResources;
 
 		// Node currently selected as the "next" node in the flow. Corresponds to node->next.
 		m04::editor::sequence::INodeDisplay*

@@ -188,6 +188,58 @@ namespace eventide {
 		EVENTIDE_API void		buildPath ( const ParamsForPath& params );
 
 	public:
+		// Class for external access to an element's rendering context. Use with care.
+		// Should only be used within BuildMesh implementations.
+		class RenderContext
+		{
+		public:
+			EVENTIDE_API explicit	RenderContext ( Element* element )
+				: m_element(element)
+				{}
+
+			typedef ui::eventide::Element::ParamsForCube ParamsForCube;
+
+			//	buildCube( params ) : Adds a cube to the build.
+			EVENTIDE_API void		buildCube ( const ParamsForCube& params )
+			{
+				m_element->buildCube(params);
+			}
+
+			typedef ui::eventide::Element::AlignHorizontal AlignHorizontal;
+			typedef ui::eventide::Element::ParamsForText ParamsForText;
+
+			//	buildText( params ) : Adds text to the build.
+			EVENTIDE_API void		buildText ( const ParamsForText& params )
+			{
+				m_element->buildText(params);
+			}
+			//	predictText( params ) : Adds text to the build.
+			EVENTIDE_API Vector2f	predictText ( const ParamsForText& params )
+			{
+				return m_element->predictText(params);
+			}
+
+			typedef ui::eventide::Element::ParamsForQuad ParamsForQuad;
+
+			//	buildQuad( params ) : Adds a quad to the build.
+			EVENTIDE_API void		buildQuad ( const ParamsForQuad& params )
+			{
+				m_element->buildQuad(params);
+			}
+
+			typedef ui::eventide::Element::ParamsForPath ParamsForPath;
+
+			//	buildPath( params ) : Adds a trianglestrip path to the build.
+			EVENTIDE_API void		buildPath ( const ParamsForPath& params )
+			{
+				m_element->buildPath(params);
+			}
+
+		private:
+			Element*			m_element;
+		};
+
+	public:
 		//	RequestUpdateMesh() : Requests an update of the mesh.
 		// The request eventually BuildMesh to recreate.
 		EVENTIDE_API void		RequestUpdateMesh ( void );

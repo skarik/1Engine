@@ -297,11 +297,48 @@ void* gpu::Buffer::map ( Device* device, const TransferStyle style )
 	HRESULT result;
 
 	D3D11_MAPPED_SUBRESOURCE resource;
-	result = device->getNativeContext()->Map((ID3D11Buffer*)m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource); 
+	result = device->getNativeContext()->Map((ID3D11Resource*)m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource); 
 	if (FAILED(result))
 	{
 		throw core::OutOfMemoryException(); // TODO: Handle this better.
 	}
+
+#	if GPU_API_DEBUG_MAP_OVERRUNS
+	{
+		size_t bufferSize = 0;
+		ID3D11Resource* l_resource = (ID3D11Resource*)m_buffer;
+		D3D11_RESOURCE_DIMENSION l_resourceType;
+		l_resource->GetType(&l_resourceType);
+		if (l_resourceType == D3D11_RESOURCE_DIMENSION_BUFFER)
+		{
+			D3D11_BUFFER_DESC buff_desc = {};
+			((ID3D11Buffer*)l_resource)->GetDesc(&buff_desc);
+			bufferSize = buff_desc.ByteWidth;
+		}
+		else if (l_resourceType == D3D11_RESOURCE_DIMENSION_TEXTURE2D)
+		{
+			D3D11_TEXTURE2D_DESC tex_desc = {};
+			((ID3D11Texture2D*)l_resource)->GetDesc(&tex_desc);
+			bufferSize = tex_desc.Width * tex_desc.Height * m_elementSize;
+		}
+
+		if (bufferSize != 0)
+		{
+			m_intermediateBufferSize = bufferSize;
+
+			m_intermediateBuffer = malloc(m_intermediateBufferSize + sizeof(uint32_t) * 2);
+			*(uint32_t*)((char*)m_intermediateBuffer + 0) = 0xB16B00BA;
+			*(uint32_t*)((char*)m_intermediateBuffer + m_intermediateBufferSize + sizeof(uint32_t)) = 0xB16B00BA;
+		}
+		else
+		{
+			m_intermediateBuffer = nullptr;
+		}
+
+		m_actualBuffer = resource.pData;
+		return (void*)((char*)m_intermediateBuffer + sizeof(uint32_t));
+	}
+#	endif
 
 	//todo: correct flags
 	return resource.pData;
@@ -310,6 +347,18 @@ int gpu::Buffer::unmap ( Device* device )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
 	if (device == NULL) device = getDevice();
+
+#	if GPU_API_DEBUG_MAP_OVERRUNS
+	if (m_intermediateBuffer != nullptr)
+	{
+		// Check the values on the edges of the buffer
+		ARCORE_ASSERT(*(uint32_t*)((char*)m_intermediateBuffer + 0) == 0xB16B00BA);
+		ARCORE_ASSERT(*(uint32_t*)((char*)m_intermediateBuffer + m_intermediateBufferSize + sizeof(uint32_t)) == 0xB16B00BA);
+
+		memcpy(m_actualBuffer, (char*)m_intermediateBuffer + sizeof(uint32_t), m_intermediateBufferSize);
+		::free(m_intermediateBuffer);
+	}
+#	endif
 
 	device->getNativeContext()->Unmap((ID3D11Buffer*)m_buffer, 0);
 	
