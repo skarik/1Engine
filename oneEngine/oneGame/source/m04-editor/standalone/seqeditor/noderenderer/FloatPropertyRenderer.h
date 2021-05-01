@@ -16,7 +16,7 @@ namespace sequence {
 
 	public:
 
-		virtual void			BuildMesh ( Vector3f& inout_penPosition ) override;
+		virtual void			BuildMesh ( void ) override;
 		virtual void			OnClicked ( const ui::eventide::Element::EventMouse& mouse_event ) override;
 		virtual void			OnGameFrameUpdate ( const ui::eventide::Element::GameFrameUpdateInput& input_frame ) override;
 

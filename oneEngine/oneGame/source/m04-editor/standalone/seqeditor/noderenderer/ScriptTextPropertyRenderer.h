@@ -16,12 +16,15 @@ namespace sequence {
 
 	public:
 
-		virtual void			BuildMesh ( Vector3f& inout_penPosition ) override;
+		virtual void			BuildMesh ( void ) override;
 		virtual void			OnClicked ( const ui::eventide::Element::EventMouse& mouse_event ) override;
 		virtual void			OnGameFrameUpdate ( const ui::eventide::Element::GameFrameUpdateInput& input_frame ) override;
 
 		virtual void			UpdateLayout ( const Vector3f& upper_left_corner, const Real left_column_width, const core::math::BoundingBox& node_bbox ) override;
 
+	private:
+
+		int32_t				m_lineCount = 0;
 	};
 
 }}}

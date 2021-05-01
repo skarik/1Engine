@@ -13,7 +13,7 @@ void m04::editor::sequence::FloatPropertyRenderer::OnClicked ( const ui::eventid
 	}
 }
 
-void m04::editor::sequence::FloatPropertyRenderer::BuildMesh ( Vector3f& inout_penPosition )
+void m04::editor::sequence::FloatPropertyRenderer::BuildMesh ( void )
 {
 	using namespace ui::eventide;
 
@@ -74,9 +74,6 @@ void m04::editor::sequence::FloatPropertyRenderer::BuildMesh ( Vector3f& inout_p
 		textParams.color = Color(1, 1, 1, 1);
 		buildText(textParams);
 	}
-
-	// Push down pen
-	inout_penPosition.y -= ui::eventide::DefaultStyler.text.buttonSize + 5;
 }
 
 void m04::editor::sequence::FloatPropertyRenderer::OnGameFrameUpdate ( const ui::eventide::Element::GameFrameUpdateInput& input_frame )

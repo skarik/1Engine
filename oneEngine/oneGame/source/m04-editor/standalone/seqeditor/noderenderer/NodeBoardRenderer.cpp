@@ -222,104 +222,6 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 				{
 					m_propertyRenderers[nodePropertyIndex]->OnClicked(mouse_event);
 				}
-
-				/*if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kBoolean)
-				{
-					if (mouse_event.type == EventMouse::Type::kClicked
-						&& mouse_event.button == core::kMBLeft)
-					{
-						if (l_bbox_property_key.IsPointInBox(mouse_event.position_world))
-						{
-							node->sequenceInfo->view->SetProperty(nodeProperty.identifier, !node->sequenceInfo->view->GetPropertyAsBool(nodeProperty.identifier));
-						}
-					}
-				}
-				else *//*if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kFloat)
-				{
-					if (mouse_event.type == EventMouse::Type::kClicked
-						&& mouse_event.button == core::kMBLeft)
-					{
-						m_propertyState[nodePropertyIndex].m_editing = true;
-					}
-				}*/
-				else if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kScriptText)
-				{
-					if (mouse_event.type == EventMouse::Type::kClicked
-						&& mouse_event.button == core::kMBLeft)
-					{
-						m_propertyState[nodePropertyIndex].m_editing = true;
-					}
-				}
-				/*else if (nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kEnumtypeDropdown
-					|| nodeProperty.renderstyle == m04::editor::PropertyRenderStyle::kScriptCharacter)
-				{
-					if (mouse_event.type == EventMouse::Type::kClicked
-						&& mouse_event.button == core::kMBLeft)
-					{
-						// Now, render the current setting (find a matching enum first)
-						const auto& editorEnums = m_board->GetEditor()->GetEnums();
-						arstring128 enumDefinitionName;
-						arStringEnumDefinition* enumDefinition = NULL;
-
-						std::string identifierLower = nodeProperty.identifier;
-						core::utils::string::ToLower(identifierLower);
-
-						if (editorEnums.find(identifierLower.c_str()) != editorEnums.end())
-						{
-							enumDefinitionName = identifierLower.c_str();
-						}
-						else
-						{
-							// Take display name and remove the spaces
-							std::string moddedDisplayName = nodeProperty.label;
-							moddedDisplayName.erase(std::remove(moddedDisplayName.begin(), moddedDisplayName.end(), ' '));
-							core::utils::string::ToLower(moddedDisplayName);
-
-							if (editorEnums.find(moddedDisplayName.c_str()) != editorEnums.end())
-							{
-								enumDefinitionName = moddedDisplayName.c_str();
-							}
-						}
-
-						ARCORE_ASSERT(enumDefinitionName.length() > 0);
-						enumDefinition = editorEnums.find(enumDefinitionName)->second;
-
-						if (enumDefinition != NULL)
-						{
-							// find matching enum name
-							int32_t currentEnumIndex = -1;
-							const char* str = node->sequenceInfo->view->GetPropertyAsString(nodeProperty.identifier);
-							if (str == NULL || strlen(str) == 0)
-							{
-								currentEnumIndex = 0;
-							}
-							else
-							{
-								auto enumValue = enumDefinition->CreateValue(str);
-								if (enumValue.IsValid())
-								{
-									currentEnumIndex = enumValue.GetEnumIndex();
-								}
-								else
-								{
-									currentEnumIndex = 0;
-								}
-							}
-
-							// scroll thru values
-							currentEnumIndex++;
-							auto enumValue = enumDefinition->CreateValueFromIndex(currentEnumIndex);
-							if (enumValue.IsValid())
-							{
-								node->sequenceInfo->view->SetProperty(nodeProperty.identifier, enumValue.GetName());
-							}
-							else
-							{
-								node->sequenceInfo->view->SetProperty(nodeProperty.identifier, enumDefinition->CreateValueFromIndex(0).GetName());
-							}
-						}
-					}
-				}*/
 			}
 			else
 			{
@@ -554,7 +456,9 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		// Build the curve
 		pathParams = {};
 		Vector3f pointArray[21];
-		pointArray[0] = GetBboxFlowOutput(0).GetCenterPoint();
+		pointArray[0] = (m_draggingInfo.target == DragState::Target::kFlowInput)
+			? GetBboxFlowInput().GetCenterPoint()
+			: GetBboxFlowOutput(0).GetCenterPoint();
 		pointArray[20] = m_board->GetEditor()->GetMousePosition3D(); // Lead curve to the mouse position
 		const Vector3f pointDelta = pointArray[20] - pointArray[0];
 		// Build a bezier curve between the points
@@ -644,11 +548,10 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 
 	// Draw all the options
 	auto& nodeProperties = node->sequenceInfo->view->PropertyList();
-	Vector3f l_bboxPenPosition = Vector3f(0.0F, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0.0F);
 	for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
 	{
 		auto& nodeProperty = nodeProperties[nodePropertyIndex];
-		m_propertyRenderers[nodePropertyIndex]->BuildMesh(l_bboxPenPosition);
+		m_propertyRenderers[nodePropertyIndex]->BuildMesh();
 	}
 }
 

@@ -16,7 +16,7 @@ void m04::editor::sequence::BooleanPropertyRenderer::OnClicked ( const ui::event
 	}
 }
 
-void m04::editor::sequence::BooleanPropertyRenderer::BuildMesh ( Vector3f& inout_penPosition )
+void m04::editor::sequence::BooleanPropertyRenderer::BuildMesh ( void )
 {
 	using namespace ui::eventide;
 
@@ -50,9 +50,6 @@ void m04::editor::sequence::BooleanPropertyRenderer::BuildMesh ( Vector3f& inout
 		quadParams.color = Color(1, 1, 1, 1);
 		buildQuad(quadParams);
 	}
-
-	// Push down pen
-	inout_penPosition.y -= ui::eventide::DefaultStyler.text.buttonSize + 5;
 }
 
 void m04::editor::sequence::BooleanPropertyRenderer::UpdateLayout ( const Vector3f& upper_left_corner, const Real left_column_width, const core::math::BoundingBox& node_bbox )

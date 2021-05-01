@@ -6,6 +6,37 @@
 
 #include "core-ext/containers/arStringEnum.h"
 
+m04::editor::sequence::EnumPropertyRenderer::EnumPropertyRenderer ( const CreationParameters& params )
+	: IPropertyRenderer(params)
+{
+	// Find the matching enum definition
+	const auto& editorEnums = m_nodeRenderer->GetNodeBoardState()->GetEditor()->GetEnums();
+	arstring128 enumDefinitionName;
+
+	std::string identifierLower = m_property->identifier;
+	core::utils::string::ToLower(identifierLower);
+
+	if (editorEnums.find(identifierLower.c_str()) != editorEnums.end())
+	{
+		enumDefinitionName = identifierLower.c_str();
+	}
+	else
+	{
+		// Take display name and remove the spaces
+		std::string moddedDisplayName = m_property->label;
+		moddedDisplayName.erase(std::remove(moddedDisplayName.begin(), moddedDisplayName.end(), ' '));
+		core::utils::string::ToLower(moddedDisplayName);
+
+		if (editorEnums.find(moddedDisplayName.c_str()) != editorEnums.end())
+		{
+			enumDefinitionName = moddedDisplayName.c_str();
+		}
+	}
+
+	ARCORE_ASSERT(enumDefinitionName.length() > 0);
+	m_enumDefinition = editorEnums.find(enumDefinitionName)->second;
+}
+
 void m04::editor::sequence::EnumPropertyRenderer::OnClicked ( const ui::eventide::Element::EventMouse& mouse_event )
 {
 	typedef ui::eventide::Element::EventMouse EventMouse;
@@ -14,35 +45,7 @@ void m04::editor::sequence::EnumPropertyRenderer::OnClicked ( const ui::eventide
 
 	if (mouse_event.button == core::kMBLeft)
 	{
-		// Now, render the current setting (find a matching enum first)
-		const auto& editorEnums = m_nodeRenderer->GetNodeBoardState()->GetEditor()->GetEnums();
-		arstring128 enumDefinitionName;
-		arStringEnumDefinition* enumDefinition = NULL;
-
-		std::string identifierLower = m_property->identifier;
-		core::utils::string::ToLower(identifierLower);
-
-		if (editorEnums.find(identifierLower.c_str()) != editorEnums.end())
-		{
-			enumDefinitionName = identifierLower.c_str();
-		}
-		else
-		{
-			// Take display name and remove the spaces
-			std::string moddedDisplayName = m_property->label;
-			moddedDisplayName.erase(std::remove(moddedDisplayName.begin(), moddedDisplayName.end(), ' '));
-			core::utils::string::ToLower(moddedDisplayName);
-
-			if (editorEnums.find(moddedDisplayName.c_str()) != editorEnums.end())
-			{
-				enumDefinitionName = moddedDisplayName.c_str();
-			}
-		}
-
-		ARCORE_ASSERT(enumDefinitionName.length() > 0);
-		enumDefinition = editorEnums.find(enumDefinitionName)->second;
-
-		if (enumDefinition != NULL)
+		if (m_enumDefinition != NULL)
 		{
 			// find matching enum name
 			int32_t currentEnumIndex = -1;
@@ -53,7 +56,7 @@ void m04::editor::sequence::EnumPropertyRenderer::OnClicked ( const ui::eventide
 			}
 			else
 			{
-				auto enumValue = enumDefinition->CreateValue(str);
+				auto enumValue = m_enumDefinition->CreateValue(str);
 				if (enumValue.IsValid())
 				{
 					currentEnumIndex = enumValue.GetEnumIndex();
@@ -66,29 +69,26 @@ void m04::editor::sequence::EnumPropertyRenderer::OnClicked ( const ui::eventide
 
 			// scroll thru values
 			currentEnumIndex++;
-			auto enumValue = enumDefinition->CreateValueFromIndex(currentEnumIndex);
+			auto enumValue = m_enumDefinition->CreateValueFromIndex(currentEnumIndex);
 			if (enumValue.IsValid())
 			{
 				GetNode()->view->SetProperty(m_property->identifier, enumValue.GetName());
 			}
 			else
 			{
-				GetNode()->view->SetProperty(m_property->identifier, enumDefinition->CreateValueFromIndex(0).GetName());
+				GetNode()->view->SetProperty(m_property->identifier, m_enumDefinition->CreateValueFromIndex(0).GetName());
 			}
 		}
 	}
 }
 
-void m04::editor::sequence::EnumPropertyRenderer::BuildMesh ( Vector3f& inout_penPosition )
+void m04::editor::sequence::EnumPropertyRenderer::BuildMesh ( void )
 {
 	using namespace ui::eventide;
 
 	ParamsForText textParams;
 	ParamsForCube cubeParams;
 	ParamsForQuad quadParams;
-
-	//const core::math::BoundingBox bbox_all = GetBboxProperty<PropertyComponent::All>(in_propertyIndex);
-	//const core::math::BoundingBox bbox_key = GetBboxProperty<PropertyComponent::Key>(in_propertyIndex);
 
 	textParams = ParamsForText();
 	textParams.string = m_property->label.c_str();
@@ -119,52 +119,25 @@ void m04::editor::sequence::EnumPropertyRenderer::BuildMesh ( Vector3f& inout_pe
 
 	// TODO: so much of this can be moved to a separate class and cached (or at least just cached)
 
-	// Now, render the current setting (find a matching enum first)
-	const auto& editorEnums = m_nodeRenderer->GetNodeBoardState()->GetEditor()->GetEnums();
-	arstring128 enumDefinitionName;
-	arStringEnumDefinition* enumDefinition = NULL;
-
-	std::string identifierLower = m_property->identifier;
-	core::utils::string::ToLower(identifierLower);
-
-	if (editorEnums.find(identifierLower.c_str()) != editorEnums.end())
-	{
-		enumDefinitionName = identifierLower.c_str();
-	}
-	else
-	{
-		// Take display name and remove the spaces
-		std::string moddedDisplayName = m_property->label;
-		moddedDisplayName.erase(std::remove(moddedDisplayName.begin(), moddedDisplayName.end(), ' '));
-		core::utils::string::ToLower(moddedDisplayName);
-
-		if (editorEnums.find(moddedDisplayName.c_str()) != editorEnums.end())
-		{
-			enumDefinitionName = moddedDisplayName.c_str();
-		}
-	}
-
-	ARCORE_ASSERT(enumDefinitionName.length() > 0);
-	enumDefinition = editorEnums.find(enumDefinitionName)->second;
-
-	if (enumDefinition != NULL)
+	// Now, render the current setting
+	if (m_enumDefinition != NULL)
 	{
 		// find matching enum name
 		const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
 		if (str == NULL || strlen(str) == 0)
 		{
-			str = enumDefinition->GetEnumName(0); //todo
+			str = m_enumDefinition->GetEnumName(0); //todo
 		}
 		else
 		{
-			auto enumValue = enumDefinition->CreateValue(str);
+			auto enumValue = m_enumDefinition->CreateValue(str);
 			if (enumValue.IsValid())
 			{
 				str = enumValue.GetName();
 			}
 			else
 			{
-				str = enumDefinition->GetEnumName(0); //todo
+				str = m_enumDefinition->GetEnumName(0); //todo
 			}
 		}
 
@@ -181,9 +154,6 @@ void m04::editor::sequence::EnumPropertyRenderer::BuildMesh ( Vector3f& inout_pe
 		textParams.color = m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
 		buildText(textParams);
 	}
-
-	// Push down pen
-	inout_penPosition.y -= ui::eventide::DefaultStyler.text.buttonSize + 5;
 }
 
 void m04::editor::sequence::EnumPropertyRenderer::UpdateLayout ( const Vector3f& upper_left_corner, const Real left_column_width, const core::math::BoundingBox& node_bbox )

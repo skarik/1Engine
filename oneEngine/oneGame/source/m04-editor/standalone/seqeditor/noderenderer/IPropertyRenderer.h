@@ -40,7 +40,7 @@ namespace sequence {
 
 	public:
 
-		virtual void			BuildMesh ( Vector3f& inout_penPosition ) {}
+		virtual void			BuildMesh ( void ) {}
 		virtual void			OnClicked ( const ui::eventide::Element::EventMouse& mouse_event ) {}
 		virtual void			OnGameFrameUpdate ( const ui::eventide::Element::GameFrameUpdateInput& input_frame ) {}
 
