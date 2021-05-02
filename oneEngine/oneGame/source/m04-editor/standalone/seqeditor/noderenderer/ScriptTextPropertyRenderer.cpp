@@ -89,131 +89,144 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::BuildMesh ( void )
 			uint32_t string_length = 0;
 
 			// Loop through string until we're past the end
-			for ( int c = 0; c < l_strLen; ++c, ++string_length )
+			for (int c = 0; c < l_strLen; )
 			{
-				// Get the current character offset into the existing character set
-				int c_lookup = str[c] - fontStartGlyph;
-
-				// If not a space, then lookahead for the next space
-				if (!std::isspace(str[c]))
+				// Declare helpers
+				auto CharacterLookupInSet = [&](const int lookup)
 				{
-					// Check that character is in set
-					if ( c_lookup < 0 || c_lookup >= (int)fontGlyphCount )
+					return lookup >= 0 && lookup < (int)fontGlyphCount;
+				};
+				auto GetNextWordLength = [&](Vector2f& out_offset) -> uint32_t
+				{
+					for (int i = c; i < l_strLen; ++i)
 					{
-						continue; // Skip quad
-					}
-
-					Vector2f l_nextPen = pen;
-
-					for (int next_c = c; next_c < l_strLen; ++next_c)
-					{
-						// Get the current character offset into the existing character set
-						int next_c_lookup = str[next_c] - fontStartGlyph;
-						
-						if (std::isspace(str[next_c]))
+						if (std::isspace(str[i]))
 						{
-							if (str[next_c] == '\r' || str[next_c] == '\n')
-							{
-								// If it's a newline, we need to push back a new word and break out now.
-								int word_length = next_c - c;
-								c += word_length;
-								string_length += word_length;
-
-								l_lines.push_back(std::string(str + string_start, string_length));
-								string_length = 0;
-								string_start = c;
-
-								pen.x = 0;
-								pen.y += fontInfo->height + 3.0F;
-								break;
-							}
-							else
-							{
-								// It's a space, we can break out of this check loop and add in the word.
-								int word_length = next_c - c;
-								c += word_length;
-								string_length += word_length;
-							}
-							break;
+							return (uint32_t)(i - c);
 						}
 						else
 						{
+							// Get the current character offset into the existing character set
+							int i_lookup = str[i] - fontStartGlyph;
+
 							// Check that character is in set
-							if ( next_c_lookup < 0 || next_c_lookup >= (int)fontGlyphCount )
+							if (!CharacterLookupInSet(i_lookup))
 							{
 								continue; // Skip quad
 							}
 
-							l_nextPen += Vector2f(fontInfo->glyphAdvance[next_c_lookup].x, fontInfo->glyphAdvance[next_c_lookup].y);
-
-							// If the pen is going beyond the limit, then this word needs to move to the next line.
-							if (l_nextPen.x > l_maxPenWidth)
-							{
-								// Word can go onto the next line.
-								if (pen.x > l_maxPenWidth / 2.0F)
-								{
-									l_lines.push_back(std::string(str + string_start, string_length));
-									string_length = 0;
-									string_start = c;
-
-									pen.x = (Real)fontInfo->glyphAdvance[c_lookup].x;
-									pen.y += fontInfo->height + 3.0F;
-									break;
-								}
-								// Word is too long to go onto the next line.
-								else
-								{
-									int word_length = next_c - c;
-									c += word_length;
-									string_length += word_length;
-
-									l_lines.push_back(std::string(str + string_start, string_length));
-									string_length = 0;
-									string_start = c;
-
-									pen.x = (Real)fontInfo->glyphAdvance[c_lookup].x;
-									pen.y += fontInfo->height + 3.0F;
-									break;
-								}
-							}
+							// Add the character's offset
+							out_offset += Vector2f(fontInfo->glyphAdvance[i_lookup].x, fontInfo->glyphAdvance[i_lookup].y);
 						}
 					}
-				}
-				else
+					return (uint32_t)(l_strLen - c);
+				};
+				auto AddNewLineAndReset = [&]()
 				{
-					if (str[c] == '\r' || str[c] == '\n')
+					// Add new line to the draw list
+					l_lines.push_back(std::string(str + string_start, string_length));
+
+					// Reset pen to the beginning of the line
+					pen.x = 0;
+					pen.y += fontInfo->height + 3.0F;
+
+					// Set new start of the word
+					string_start = c;
+					// Set new length of the word
+					string_length = 0;
+				};
+
+				// Check the next character
+				if (!std::isspace(str[c]))
+				{
+					// If not a space, then get the next word.
+					Vector2f l_wordSize;
+					uint32_t l_nextWordLength = GetNextWordLength(l_wordSize);
+
+					// Word is not smaller than max with? Add it normally.
+					if (pen.x + l_wordSize.x < l_maxPenWidth)
 					{
-						pen.x = 0.0F;
-						pen.y += fontInfo->height + 3.0F;
-						l_lines.push_back("");
+						pen += l_wordSize;
+
+						c += l_nextWordLength;
+						string_length += l_nextWordLength;
 					}
+					// We go beyond, and the word is small enough to wrap
+					else if (pen.x > l_maxPenWidth * 0.5F)
+					{
+						AddNewLineAndReset(); // This does not increment so the next iteration can work
+					}
+					// We go beyond, and the word cannot wrap
 					else
 					{
-						pen += Vector2f(fontInfo->glyphAdvance[c_lookup].x, fontInfo->glyphAdvance[c_lookup].y);
+						// We must iterate forward until we hit the limit.
+						while (true)
+						{
+							// Get the current character offset into the existing character set
+							int c_lookup = str[c] - fontStartGlyph;
+
+							// Check that character is in set
+							if (!CharacterLookupInSet(c_lookup))
+							{
+								++c;
+								continue; // Skip counting this character.
+							}
+
+							// Grab offset & check against limit
+							Vector2f l_letterSize (fontInfo->glyphAdvance[c_lookup].x, fontInfo->glyphAdvance[c_lookup].y);
+							
+							// We haven't hit the limit yet, so step forward
+							if (pen.x + l_letterSize.x < l_maxPenWidth)
+							{
+								pen += l_letterSize;
+
+								c += 1;
+								string_length += 1;
+							}
+							// We've hit the limit, so break out of the loop.
+							else
+							{
+								break;
+							}
+						}
+
+						AddNewLineAndReset(); // This does not increment so the next iteration can work
 					}
 				}
-
-				// Get the next position
-				/*Vector2f l_nextPen = pen + Vector2f(fontInfo->glyphAdvance[c_lookup].x, fontInfo->glyphAdvance[c_lookup].y);
-
-				// If the pen is going beyond the limit, split the string.
-				if (l_nextPen.x > l_maxPenWidth)
+				else if (str[c] == '\r' || str[c] == '\n')
 				{
-					l_lines.push_back(std::string(str + string_start, string_length));
-					string_length = 0;
-					string_start = c;
+					// Skip to next character.
+					c += 1;
 
-					pen.x = fontInfo->glyphAdvance[c_lookup].x;
-					pen.y += fontInfo->height + 3.0F;
+					// Since a newline, go to the next line.
+					AddNewLineAndReset();
 				}
 				else
 				{
-					pen = l_nextPen;
-				}*/
+					// Get the current character offset into the existing character set
+					int c_lookup = str[c] - fontStartGlyph;
+					
+					// Grab offset & check against limit
+					Vector2f l_letterSize (fontInfo->glyphAdvance[c_lookup].x, fontInfo->glyphAdvance[c_lookup].y);
+
+					// We haven't hit the limit yet, so step forward
+					if (pen.x + l_letterSize.x < l_maxPenWidth)
+					{
+						pen += l_letterSize;
+
+						c += 1;
+						string_length += 1;
+					}
+					// We've hit the limit, so go to next line.
+					else
+					{
+						AddNewLineAndReset();
+					}
+				}
 			}
 
 			// Add the final string
-			if (string_length > 0 && string_start < l_strLen)
+			if (string_length >= 0 && string_start <= l_strLen)
 			{
 				l_lines.push_back(std::string(str + string_start, string_length));
 			}

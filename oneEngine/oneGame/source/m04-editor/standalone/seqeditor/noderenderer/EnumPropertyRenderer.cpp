@@ -33,7 +33,7 @@ m04::editor::sequence::EnumPropertyRenderer::EnumPropertyRenderer ( const Creati
 		}
 	}
 
-	ARCORE_ASSERT(enumDefinitionName.length() > 0);
+	//ARCORE_ASSERT(enumDefinitionName.length() > 0); // TODO
 	m_enumDefinition = editorEnums.find(enumDefinitionName)->second;
 }
 

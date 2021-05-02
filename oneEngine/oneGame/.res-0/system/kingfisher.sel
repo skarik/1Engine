@@ -34,6 +34,16 @@ enumtype EndingStyle
 	2 auto End after last letter
 }
 
+enumtype SpriteIndex
+{
+	0 default DEFAULT INDEX
+}
+
+enumtype PortraitAction
+{
+	0 default DEFAULT ACTION
+}
+
 nodetype lines
 {
 	displayAs Lines
