@@ -18,6 +18,8 @@ namespace sequence {
 		explicit				TopMenu (dusk::UserInterface* ui, m04::editor::SequenceEditor* editor);
 								~TopMenu ( void );
 
+		void					UpdateHotkeys ( void );
+
 	private:
 
 		dusk::UserInterface*
@@ -35,6 +37,7 @@ namespace sequence {
 		void					LoadTest ( void );
 
 		void					BeginSaveFile ( void );
+		void					BeginSaveAsFile ( void );
 		dusk::DialogElement*
 							savefileDialog = NULL;
 

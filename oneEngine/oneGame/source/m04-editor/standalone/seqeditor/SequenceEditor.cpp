@@ -188,6 +188,9 @@ void m04::editor::SequenceEditor::Update ( void )
 	// Do right click menu first, before all other actions.
 	UpdateRightClickMenu();
 
+	// Update hotkeys in top menu
+	top_menu->UpdateHotkeys();
+
 	// Camera control last - low priority action.
 	UpdateCameraControl();
 }

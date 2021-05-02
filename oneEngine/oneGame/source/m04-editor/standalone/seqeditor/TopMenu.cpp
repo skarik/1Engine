@@ -8,6 +8,7 @@
 
 #include "engine/state/CGameState.h"
 
+#include "core/input/CInput.h"
 #include "core-ext/system/shell/Message.h"
 
 #include "./SequenceEditor.h"
@@ -26,7 +27,7 @@ m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui, m04::editor::S
 	fileMenu->Add("New", 'N', true, [this](){ BeginNewFile(); });
 	//fileMenu->Add("Save (Test)", 0, true, [this](){ SaveTest(); });
 	fileMenu->Add("Save", 'S', true, [this](){ BeginSaveFile(); });
-	fileMenu->Add("Save As", 0, true, [](){});
+	fileMenu->Add("Save As", 0, true, [this](){ BeginSaveAsFile(); });
 	//fileMenu->Add("Open (Test)", 0, true, [this](){ LoadTest(); });
 	fileMenu->Add("Open", 'O', true, [this](){ BeginLoadFile(); });
 	fileMenu->Add("Quit", 'Q', true, [](){ CGameState::Active()->EndGame(); }); // TODO: check if things are unsaved first.
@@ -59,6 +60,29 @@ m04::editor::sequence::TopMenu::TopMenu (dusk::UserInterface* ui, m04::editor::S
 
 m04::editor::sequence::TopMenu::~TopMenu ()
 {
+}
+
+void m04::editor::sequence::TopMenu::UpdateHotkeys ( void )
+{
+	if (core::Input::Key(core::kVkControl))
+	{
+		if (core::Input::Keydown('S'))
+		{
+			if (!core::Input::Key(core::kVkShift))
+			{
+				BeginSaveFile();
+			}
+			else
+			{
+				BeginSaveAsFile();
+			}
+		}
+
+		if (core::Input::Keydown('O'))
+		{
+			BeginLoadFile();
+		}
+	}
 }
 
 void m04::editor::sequence::TopMenu::BeginNewFile ( void )
@@ -101,6 +125,18 @@ void m04::editor::sequence::TopMenu::LoadTest(void)
 
 void m04::editor::sequence::TopMenu::BeginSaveFile ( void )
 {
+	if (main_editor->GetSaveTargetFilename().length() == 0)
+	{
+		BeginSaveAsFile();
+	}
+	else
+	{
+		SaveFile(main_editor->GetSaveTargetFilename());
+	}
+}
+
+void m04::editor::sequence::TopMenu::BeginSaveAsFile ( void )
+{
 	if (savefileDialog == NULL)
 	{
 		savefileDialog = dusk_interface->AddDialog<dusk::dialogs::SaveFile>(dusk::DialogCreationDescription());
@@ -118,6 +154,7 @@ void m04::editor::sequence::TopMenu::SaveFile ( const std::string& filename )
 		m04::editor::sequence::OsfSerializer serializer (filename.c_str());
 		board->Save(&serializer);
 		main_editor->SetWorkspaceDirty(false); // Clear workspace dirty flag
+		main_editor->SetSaveTargetFilename(filename.c_str());
 	}
 }
 
@@ -140,5 +177,6 @@ void m04::editor::sequence::TopMenu::LoadFile ( const std::string& filename )
 		m04::editor::sequence::OsfDeserializer deserializer (filename.c_str());
 		board->Load(&deserializer);
 		main_editor->SetWorkspaceDirty(false); // Clear workspace dirty flag
+		main_editor->SetSaveTargetFilename(filename.c_str()); // Set the save-target on load for easy & quick saving
 	}
 }

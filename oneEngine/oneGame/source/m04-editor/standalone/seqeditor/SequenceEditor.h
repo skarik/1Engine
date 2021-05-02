@@ -62,6 +62,14 @@ namespace editor {
 		EDITOR_API void			SetWorkspaceDirty ( bool dirty = true )
 			{ workspace_dirty = dirty; }
 
+		//	GetSaveTargetFilename() : Returns current save target filename
+		EDITOR_API const std::string&
+								GetSaveTargetFilename ( void )
+			{ return save_target_filename; }
+		//	SetSaveTargetFilename(filename) : Sets the current save target filename
+		EDITOR_API void			SetSaveTargetFilename ( const char* filename )
+			{ save_target_filename = filename; }
+
 		//	GetMousePosition3D() : Returns current calculated position of the 3D mouse cursor.
 		EDITOR_API Vector3f		GetMousePosition3D ( void );
 
@@ -117,6 +125,8 @@ namespace editor {
 		// List of actions to do/undo
 		std::vector<SequenceEditorAction>
 							actions;
+		// Filename of the current save target
+		std::string			save_target_filename = "";
 	};
 }};
 
