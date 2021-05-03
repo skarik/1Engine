@@ -693,15 +693,11 @@ LRESULT CALLBACK MessageUpdate(
 					if ( flags&RI_KEY_BREAK )
 					{
 						core::Input::WSetKeyBreak((uchar)vkey);
-						//core::Input::_keyup(_inputtable[vkey], true);
-						//core::Input::_key(_inputtable[vkey], false);
 						//SendMessage( hWnd, WM_KEYUP, vkey, 0 );
 					}
 					else // is a make
 					{
 						core::Input::WSetKeyMake((uchar)vkey);
-						//core::Input::_keydown(_inputtable[vkey], true);
-						//core::Input::_key(_inputtable[vkey], true);
 						//SendMessage( hWnd, WM_KEYDOWN, vkey, 0 );
 					}
 				}

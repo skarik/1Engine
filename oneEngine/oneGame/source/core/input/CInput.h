@@ -48,10 +48,10 @@ namespace core
 		kVkAlt			= 0x12,
 		kVkPause		= 0x13,
 
-		kVkLeft			= 0x21,
-		kVkUp			= 0x22,
-		kVkRight		= 0x23,
-		kVkDown			= 0x24,
+		kVkLeft			= 0x25,
+		kVkUp			= 0x26,
+		kVkRight		= 0x27,
+		kVkDown			= 0x28,
 
 		kVkNumpad0		= 0x60,
 		kVkNumpad1		= 0x61,

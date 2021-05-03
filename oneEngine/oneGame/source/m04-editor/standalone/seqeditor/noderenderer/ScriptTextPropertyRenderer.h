@@ -24,7 +24,10 @@ namespace sequence {
 
 	private:
 
+		// Number of lines the output is, for sizing the layout
 		int32_t				m_lineCount = 0;
+		// Current position of the editing cursor.
+		int32_t				m_cursorPosition = 0;
 	};
 
 }}}
