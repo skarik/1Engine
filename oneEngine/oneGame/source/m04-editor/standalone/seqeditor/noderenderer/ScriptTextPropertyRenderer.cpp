@@ -3,29 +3,20 @@
 
 #include "renderer/texture/RrFontTexture.h"
 
-void m04::editor::sequence::ScriptTextPropertyRenderer::OnClicked ( const ui::eventide::Element::EventMouse& mouse_event )
-{
-	typedef ui::eventide::Element::EventMouse EventMouse;
-
-	ARCORE_ASSERT(mouse_event.type == EventMouse::Type::kClicked);
-
-	if (mouse_event.button == core::kMBLeft)
-	{
-		m_propertyState->m_editing = true;
-	}
-}
-
+// Request for text to render
 struct TextRequest
 {
 	std::string		text;
 	Vector2f		offset;
 };
 
+// Output from split string
 struct SplitStringOutputs
 {
 	std::vector<TextRequest>* lines = nullptr;
 };
 
+// State for split string visible to eary quit checks.
 struct TextLayoutState
 {
 	int				index;
@@ -79,7 +70,7 @@ void SplitString ( const char* str, RrFontTexture* font_texture, const Real max_
 				{
 					state = l_state;
 					uint32_t word_len = (uint32_t)(i - state.index);
-					state.index = (int)(l_strLen + 1);
+					state.index = (int)(l_strLen + 2);
 					return word_len;
 				}
 				state = l_state;
@@ -201,7 +192,7 @@ void SplitString ( const char* str, RrFontTexture* font_texture, const Real max_
 			// Do early quit check
 			if (earlyQuitCheck && earlyQuitCheck(state))
 			{
-				state.index = (int)(l_strLen + 1);
+				state.index = (int)(l_strLen + 2);
 				break;
 			}
 		}
@@ -232,7 +223,7 @@ void SplitString ( const char* str, RrFontTexture* font_texture, const Real max_
 			// Do early quit check
 			if (earlyQuitCheck && earlyQuitCheck(state))
 			{
-				state.index = (int)(l_strLen + 1);
+				state.index = (int)(l_strLen + 2);
 				break;
 			}
 		}
@@ -251,13 +242,80 @@ void SplitString ( const char* str, RrFontTexture* font_texture, const Real max_
 	}
 
 	// Do final check at the very end
-
-	// Update state
-	state.chara = str[state.index];
-	// Do early quit check
-	if (earlyQuitCheck && earlyQuitCheck(state))
+	if (state.index < l_strLen + 1)
 	{
-		; // Nothing
+		// Update state
+		state.chara = str[state.index];
+		// Do early quit check
+		if (earlyQuitCheck && earlyQuitCheck(state))
+		{
+			; // Nothing
+		}
+	}
+}
+
+void m04::editor::sequence::ScriptTextPropertyRenderer::OnClicked ( const ui::eventide::Element::EventMouse& mouse_event )
+{
+	typedef ui::eventide::Element::EventMouse EventMouse;
+
+	ARCORE_ASSERT(mouse_event.type == EventMouse::Type::kClicked);
+
+	if (mouse_event.button == core::kMBLeft)
+	{
+		if (!m_propertyState->m_editing)
+		{
+			m_propertyState->m_editing = true;
+			// Move cursor to the end
+			std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
+			m_cursorPosition = l_currentValue.length();
+		}
+		else
+		{
+			// Otherwise, we're going to split the string to find the closest position to the click position.
+			Vector2f l_clickInPenspace = mouse_event.position_world - (m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, -m_bboxAll.GetExtents().y, m_bboxAll.GetExtents().z));
+			l_clickInPenspace.y = -l_clickInPenspace.y;
+
+			const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+			if (str)
+			{
+				// Get the font info:
+				RrFontTexture* font_texture = (RrFontTexture*)m_nodeRenderer->GetRenderResources().m_fontTexture.reference;
+				auto fontInfo		= font_texture->GetFontInfo();
+
+				// Get box width
+				const core::math::BoundingBox& node_bbox = m_nodeRenderer->GetBBoxAbsolute();
+				const Real l_boxWidth = node_bbox.GetExtents().x * 2.0F - m_nodeRenderer->GetPadding().x * 2.0F;
+
+				// Set up the max width we can go to
+				Real l_fontScaling = (m_fontSize / fontInfo->height);
+				const Real l_maxPenWidth = l_boxWidth / l_fontScaling;
+
+				// Scale to correct penspace
+				l_clickInPenspace /= l_fontScaling;
+
+				bool bHasCursorChange = false;
+
+				SplitStringOutputs outputs;
+				SplitString<false>(str, font_texture, l_maxPenWidth, outputs, [&](const TextLayoutState& state)->bool
+				{
+					if (state.pen.y + fontInfo->height > l_clickInPenspace.y 
+						&& state.pen.x > l_clickInPenspace.x)
+					{
+						bHasCursorChange = true;
+						m_cursorPosition = state.index;
+						return true;
+					}
+
+					return false;	
+				});
+
+				// If seeked to the end, move the cursor to the end.
+				if (!bHasCursorChange)
+				{
+					m_cursorPosition = strlen(str);
+				}
+			}
+		}
 	}
 }
 
@@ -280,7 +338,7 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::BuildMesh ( void )
 	textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
 	textParams.position = m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, m_bboxAll.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
 	textParams.rotation = m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator();
-	textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
+	textParams.size = m_fontSize;
 	textParams.alignment = AlignHorizontal::kLeft;
 	textParams.color = Color(0, 0, 0, 1).Lerp(m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F), 0.4F);
 	buildText(textParams);
@@ -290,7 +348,7 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::BuildMesh ( void )
 	{
 		textParams = ParamsForText();
 		textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
-		textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
+		textParams.size = m_fontSize;
 		textParams.position = m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, -m_bboxAll.GetExtents().y + textParams.size, 0) + Vector3f(0, 0, 0.2F);
 		textParams.rotation = m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator();
 		textParams.alignment = AlignHorizontal::kLeft;
@@ -309,7 +367,7 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::BuildMesh ( void )
 			const Real l_boxWidth = node_bbox.GetExtents().x * 2.0F - m_nodeRenderer->GetPadding().x * 2.0F;
 
 			// Set up the max width we can go to
-			l_fontScaling = (textParams.size / fontInfo->height);
+			l_fontScaling = (m_fontSize / fontInfo->height);
 			const Real l_maxPenWidth = l_boxWidth / l_fontScaling;
 
 			SplitStringOutputs outputs;
@@ -319,19 +377,22 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::BuildMesh ( void )
 			// Save number of lines
 			m_lineCount = (int32_t)l_lines.size();
 
-			// Now we want to split string, but to the given character and get the output position
-			SplitString<false>(str, font_texture, l_maxPenWidth, outputs, [&](const TextLayoutState& state)->bool 
+			if (m_propertyState->m_editing && fmod(Time::currentTime, 1.0) < 0.5)
 			{
-				if (state.index >= m_cursorPosition)
+				// Now we want to split string, but to the given character and get the output position
+				SplitString<false>(str, font_texture, l_maxPenWidth, outputs, [&](const TextLayoutState& state)->bool 
 				{
-					l_lines.push_back(TextRequest{
-						"|",
-						state.pen + Vector2f(-4.0F, 0.0F)
-						});
-					return true;
-				}
-				return false; 
-			});
+					if (state.index >= m_cursorPosition)
+					{
+						l_lines.push_back(TextRequest{
+							"|",
+							state.pen + Vector2f(-4.0F, 0.0F)
+							});
+						return true;
+					}
+					return false; 
+				});
+			}
 		}
 
 		// Display all the lines in-order
@@ -417,6 +478,8 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::OnGameFrameUpdate ( cons
 
 void m04::editor::sequence::ScriptTextPropertyRenderer::UpdateLayout ( const Vector3f& upper_left_corner, const Real left_column_width, const core::math::BoundingBox& node_bbox )
 {
+	m_fontSize = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
+
 	const Real l_boxWidth = node_bbox.GetExtents().x * 2.0F - m_nodeRenderer->GetPadding().x * 2.0F;
 	int l_numberOfLines = 0;
 
@@ -427,7 +490,7 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::UpdateLayout ( const Vec
 		textParams = ParamsForText();
 		textParams.string = l_scriptString;
 		textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
-		textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
+		textParams.size = m_fontSize;
 		l_numberOfLines = std::max(1, (int)(predictText(textParams).x / l_boxWidth) + 1);
 	}
 	else
