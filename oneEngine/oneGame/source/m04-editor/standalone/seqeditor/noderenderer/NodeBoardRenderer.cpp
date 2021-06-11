@@ -316,13 +316,19 @@ void m04::editor::sequence::NodeRenderer::OnReleased ( const EventMouse& mouse_e
 				{
 					if (m_draggingInfo.target == DragState::Target::kFlowInput)
 					{
-						hitElementAsNodeRenderer->GetBoardNode()->sequenceInfo->next = node->sequenceInfo;
-						hitElementAsNodeRenderer->UpdateNextNode();
+						if (hitElementAsNodeRenderer != this)
+						{
+							hitElementAsNodeRenderer->GetBoardNode()->sequenceInfo->next = node->sequenceInfo;
+							hitElementAsNodeRenderer->UpdateNextNode();
+						}
 					}
 					else if (m_draggingInfo.target == DragState::Target::kFlowOutput)
 					{
-						node->sequenceInfo->next = hitElementAsNodeRenderer->GetBoardNode()->sequenceInfo;
-						m_next = hitElementAsNodeRenderer;
+						if (hitElementAsNodeRenderer != this)
+						{
+							node->sequenceInfo->next = hitElementAsNodeRenderer->GetBoardNode()->sequenceInfo;
+							m_next = hitElementAsNodeRenderer;
+						}
 					}
 				}
 			}
@@ -422,9 +428,9 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
 
 		quadParams = {};
-		quadParams.position = l_bbox_flow_input.GetCenterPoint();
-		quadParams.size = Vector2f(l_bbox_flow_input.GetExtents().x, l_bbox_flow_input.GetExtents().y);
-		quadParams.uvs = Rect(128.0F / 1024, 0.0F, 128.0F / 1024, 128.0F / 1024);
+		quadParams.position = l_bbox_flow_input.GetCenterPoint() + Vector3f(l_bbox_flow_input.GetExtents().x * 0.5F, 0, 0);
+		quadParams.size = Vector2f(l_bbox_flow_input.GetExtents().x * 0.5F, l_bbox_flow_input.GetExtents().y);
+		quadParams.uvs = Rect((128.0F + 64.0F) / 1024, 0.0F, 64.0F / 1024, 128.0F / 1024);
 		quadParams.texture = &m_renderResources.m_uiElementsTexture;
 		quadParams.color = DefaultStyler.box.defaultColor;
 		buildQuad(quadParams);
@@ -436,9 +442,9 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(flowOutputIndex);
 
 		quadParams = {};
-		quadParams.position = l_bbox_flow_output.GetCenterPoint();
-		quadParams.size = Vector2f(l_bbox_flow_output.GetExtents().x, l_bbox_flow_output.GetExtents().y);
-		quadParams.uvs = Rect(128.0F / 1024, 0.0F, 128.0F / 1024, 128.0F / 1024);
+		quadParams.position = l_bbox_flow_output.GetCenterPoint() - Vector3f(l_bbox_flow_output.GetExtents().x * 0.5F, 0, 0);
+		quadParams.size = Vector2f(l_bbox_flow_output.GetExtents().x * 0.5F, l_bbox_flow_output.GetExtents().y);
+		quadParams.uvs = Rect(128.0F / 1024, 0.0F, 64.0F / 1024, 128.0F / 1024);
 		quadParams.texture = &m_renderResources.m_uiElementsTexture;
 		quadParams.color = DefaultStyler.box.defaultColor;
 		buildQuad(quadParams);

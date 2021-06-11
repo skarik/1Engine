@@ -1,6 +1,7 @@
 #include "./ScriptTextPropertyRenderer.h"
 #include "./NodeBoardRenderer.h"
 
+#include "core-ext/system/shell/Clipboard.h"
 #include "renderer/texture/RrFontTexture.h"
 
 // Request for text to render
@@ -410,10 +411,25 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::BuildMesh ( void )
 	}
 }
 
+static void HandleControlComboInput ( const char input, std::string& currentValue, int32_t& cursorPosition )
+{
+	if (input == 'v')
+	{
+		if (core::shell::clipboard::ContainsString())
+		{
+			const std::string clipboardString = core::shell::clipboard::GetString();
+			currentValue.insert(cursorPosition, clipboardString);
+			cursorPosition += clipboardString.length();
+		}
+	}
+}
+
 void m04::editor::sequence::ScriptTextPropertyRenderer::OnGameFrameUpdate ( const ui::eventide::Element::GameFrameUpdateInput& input_frame )
 {
 	if (m_propertyState->m_editing)
 	{
+		const bool bControlHeld = core::Input::Key( core::kVkControl );
+
 		// Parse input and modify the underlying property
 		std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
 
@@ -423,9 +439,17 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::OnGameFrameUpdate ( cons
 		{
 			if ( input && isprint(input) )
 			{
-				//l_currentValue += input;
-				l_currentValue.insert(m_cursorPosition, 1, input);
-				m_cursorPosition += 1;
+				if (!bControlHeld)
+				{
+					//l_currentValue += input;
+					l_currentValue.insert(m_cursorPosition, 1, input);
+					m_cursorPosition += 1;
+				}
+				else
+				{
+					// Do control-keybind with the given input
+					HandleControlComboInput(input, l_currentValue, m_cursorPosition);
+				}
 			}
 			else if ( input == core::kVkBackspace )
 			{

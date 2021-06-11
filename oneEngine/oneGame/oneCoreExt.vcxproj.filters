@@ -210,6 +210,9 @@
     <ClCompile Include="source\core-ext\containers\arStringEnum.cpp">
       <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClCompile>
+    <ClCompile Include="source\core-ext\system\shell\Clipboard.cpp">
+      <Filter>SOURCE\Core-ext\System\Shell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -355,6 +358,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\containers\arStringEnum.h">
       <Filter>SOURCE\Core-ext\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\shell\Clipboard.h">
+      <Filter>SOURCE\Core-ext\System\Shell</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

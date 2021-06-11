@@ -61,6 +61,7 @@
     <ClCompile Include="source\core-ext\system\io\mccvxg.cpp" />
     <ClCompile Include="source\core-ext\system\io\Resources.cpp" />
     <ClCompile Include="source\core-ext\system\io\Volumes.cpp" />
+    <ClCompile Include="source\core-ext\system\shell\Clipboard.cpp" />
     <ClCompile Include="source\core-ext\system\shell\DragAndDrop.cpp" />
     <ClCompile Include="source\core-ext\system\shell\Inputs.cpp" />
     <ClCompile Include="source\core-ext\system\shell\Message.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="source\core-ext\system\io\mccvxg.h" />
     <ClInclude Include="source\core-ext\system\io\Resources.h" />
     <ClInclude Include="source\core-ext\system\io\Volumes.h" />
+    <ClInclude Include="source\core-ext\system\shell\Clipboard.h" />
     <ClInclude Include="source\core-ext\system\shell\DragAndDrop.h" />
     <ClInclude Include="source\core-ext\system\shell\Inputs.h" />
     <ClInclude Include="source\core-ext\system\shell\Message.h" />

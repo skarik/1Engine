@@ -19,12 +19,14 @@ enumtype Character
 enumtype BoxStyle
 {
 	0 default Default Speech
-	1 portrait Portrait
-	2 diagetic Diegetic
-	3 tutorial Tutorial
-	4 thinking Thinking
-	5 reward Reward
-	6 muble Mumbled Speech
+	1 narration Narration
+	2 incidental Incidental
+	3 portrait Portrait
+	4 diagetic Diegetic
+	5 tutorial Tutorial
+	6 thinking Thinking
+	7 reward Reward
+	8 mumbled Mumbled Speech
 }
 
 enumtype EndingStyle
