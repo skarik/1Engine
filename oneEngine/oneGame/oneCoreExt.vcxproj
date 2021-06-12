@@ -47,6 +47,7 @@
     <ClCompile Include="source\core-ext\animation\Skeleton.cpp" />
     <ClCompile Include="source\core-ext\containers\arStringEnum.cpp" />
     <ClCompile Include="source\core-ext\core-ext.cpp" />
+    <ClCompile Include="source\core-ext\c_interface\OneForTwo.cpp" />
     <ClCompile Include="source\core-ext\input\CInputControl.cpp" />
     <ClCompile Include="source\core-ext\profiler\CTimeProfiler.cpp" />
     <ClCompile Include="source\core-ext\resources\IArResource.cpp" />
@@ -56,6 +57,7 @@
     <ClCompile Include="source\core-ext\system\io\assets\ModelLoader.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Reader.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Writer.cpp" />
+    <ClCompile Include="source\core-ext\system\io\Files.cpp" />
     <ClCompile Include="source\core-ext\system\io\FileUtils.cpp" />
     <ClCompile Include="source\core-ext\system\io\osf.cpp" />
     <ClCompile Include="source\core-ext\system\io\mccvxg.cpp" />
@@ -92,6 +94,8 @@
     <ClInclude Include="source\core-ext\animation\Skeleton.h" />
     <ClInclude Include="source\core-ext\containers\arStringEnum.h" />
     <ClInclude Include="source\core-ext\core-ext.h" />
+    <ClInclude Include="source\core-ext\c_interface\config.h" />
+    <ClInclude Include="source\core-ext\c_interface\OneForTwo.h" />
     <ClInclude Include="source\core-ext\input\CInputControl.h" />
     <ClInclude Include="source\core-ext\input\emulated\CEmulatedInputControl.h" />
     <ClInclude Include="source\core-ext\profiler\CTimeProfiler.h" />
@@ -109,6 +113,7 @@
     <ClInclude Include="source\core-ext\system\io\assets\texloader\png.hpp" />
     <ClInclude Include="source\core-ext\system\io\assets\texloader\tga.hpp" />
     <ClInclude Include="source\core-ext\system\io\assets\TextureIO.h" />
+    <ClInclude Include="source\core-ext\system\io\Files.h" />
     <ClInclude Include="source\core-ext\system\io\FileUtils.h" />
     <ClInclude Include="source\core-ext\system\io\osf.h" />
     <ClInclude Include="source\core-ext\system\io\mccvxg.h" />
