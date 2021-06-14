@@ -7,9 +7,17 @@
 #	if _MSC_VER<=1900 // VS2015
 namespace fs = std::tr2::sys;
 #	elif _MSC_VER<=1916 // VS2017
+#		if __cplusplus < 201703L
 namespace fs = std::experimental::filesystem;
-#	else // VS2019+
+#		else
 namespace fs = std::filesystem;
+#		endif
+#	else // VS2019+
+#		if __cplusplus < 201703L
+namespace fs = std::experimental::filesystem;
+#		else
+namespace fs = std::filesystem;
+#		endif
 #	endif
 #else
 namespace fs = std::filesystem;

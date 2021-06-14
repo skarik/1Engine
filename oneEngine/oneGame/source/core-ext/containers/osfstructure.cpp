@@ -47,7 +47,7 @@ osf::ObjectValue::~ObjectValue (void)
 	{
 		delete kv;
 	}
-	values.empty();
+	values.clear();
 }
 
 osf::BaseValue* osf::ObjectValue::operator[] (const char* key_name)

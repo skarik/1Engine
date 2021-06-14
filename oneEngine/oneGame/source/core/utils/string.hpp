@@ -118,7 +118,7 @@ namespace string
 	std::string TrimRight( const std::string &t, const std::string &ws )
 	{
 		std::string s = t;
-		s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+		s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(), s.end());
 		return s;
 	}
 	std::string TrimLeft ( const std::string &t, const std::string &ws )
@@ -127,7 +127,7 @@ namespace string
 		//http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 		
 		std::string s = t;
-		s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+		s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch); }));
 		return s;
 	}
 
