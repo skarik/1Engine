@@ -50,14 +50,14 @@ public:
 						buffer_stencil;
 	//RrRenderTexture*	buffer_forward_rt;
 	gpu::Texture		buffer_color;
-	gpu::RenderTarget	buffer_forward_rt;
+	gpu::RenderTarget	buffer_forward_rt		= gpu::RenderTarget();
 
 	//CMRTTexture*	buffer_deferred_mrt;
 	//RrRenderTexture*	buffer_deferred_rt;
 	gpu::Texture		buffer_deferred_color_composite;
 	gpu::Texture		buffer_deferred_color[kMRTColorAttachmentCount];
-	gpu::RenderTarget	buffer_deferred_mrt;
-	gpu::RenderTarget	buffer_deferred_rt;
+	gpu::RenderTarget	buffer_deferred_mrt		= gpu::RenderTarget();
+	gpu::RenderTarget	buffer_deferred_rt		= gpu::RenderTarget();
 };
 
 #endif//RENDERER_BUFFER_CHAIN_FOR_HYBRID_PIPELINE_

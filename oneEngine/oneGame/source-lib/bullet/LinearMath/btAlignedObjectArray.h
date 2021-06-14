@@ -41,9 +41,13 @@ subject to the following restrictions:
 
 // The register keyword is deprecated in C++11 so don't use it.
 #if __cplusplus > 199711L
-#define BT_REGISTER
+#	define BT_REGISTER
 #else
-#define BT_REGISTER register
+#	if _MSVC_LANG >= 201703L
+#		define BT_REGISTER
+#	else
+#		define BT_REGISTER register
+#	endif
 #endif
 
 ///The btAlignedObjectArray template class uses a subset of the stl::vector interface for its methods
