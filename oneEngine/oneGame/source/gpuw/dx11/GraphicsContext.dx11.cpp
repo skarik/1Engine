@@ -488,10 +488,20 @@ int gpu::GraphicsContext::debugGroupPush ( const char* groupName )
 	ctx->QueryInterface(&ctx2);
 	if (ctx2)
 	{
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-		std::wstring wide = converter.from_bytes(groupName);
+		//std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+		//std::wstring wide = converter.from_bytes(groupName);
 
-		ctx2->BeginEventInt(wide.c_str(), 0);
+		//ctx2->BeginEventInt(wide.c_str(), 0);
+
+		int groupNameLen = (int)strlen(groupName);
+		int wideLen = MultiByteToWideChar(CP_UTF8, 0, groupName, groupNameLen, NULL, NIL);
+		
+		wchar_t* wide = new wchar_t[wideLen];
+		MultiByteToWideChar(CP_UTF8, 0, groupName, groupNameLen, wide, wideLen);
+
+		ctx2->BeginEventInt(wide, 0);
+
+		delete[] wide;
 	}
 	return kError_SUCCESS;
 }
