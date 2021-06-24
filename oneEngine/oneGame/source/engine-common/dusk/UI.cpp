@@ -712,6 +712,10 @@ void dusk::UserInterface::ExitDialogue ( Element* element )
 	ARCORE_ASSERT(m_currentDialogue == element->m_index);
 	ARCORE_ASSERT(!m_dialogueActivationStack.empty());
 
+	// Clear state that gets skipped
+	element->m_isMouseIn = false;
+	element->m_isFocused = false;
+
 	m_currentDialogue = kElementHandleInvalid;
 
 	PopEnableState();

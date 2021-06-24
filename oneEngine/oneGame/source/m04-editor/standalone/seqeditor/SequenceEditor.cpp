@@ -300,7 +300,7 @@ void m04::editor::SequenceEditor::UpdateRightClickMenu ( void )
 		}
 	}
 
-	if (core::Input::MouseUp(core::kMBRight))
+	if (!user_interface->IsMouseInside() && core::Input::MouseUp(core::kMBRight))
 	{
 		if (right_click_menu == NULL
 			|| !right_click_menu->GetMouseInside())

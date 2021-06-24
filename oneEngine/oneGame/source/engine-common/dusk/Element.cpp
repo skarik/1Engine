@@ -11,7 +11,7 @@ void dusk::Element::Update ( const UIStepInfo* stepinfo )
 {
 	// TODO: move this to a common function
 	Vector2f offset_cursor = stepinfo->mouse_position;
-	if (m_visible && m_absoluteRect.Contains(offset_cursor))
+	if (m_visible && m_wasDrawn && m_absoluteRect.Contains(offset_cursor))
 	{
 		m_isMouseIn = true;
 	}
