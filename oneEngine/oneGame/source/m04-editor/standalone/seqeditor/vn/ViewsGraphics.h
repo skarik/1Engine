@@ -14,7 +14,7 @@ namespace vn {
 		EDITOR_API explicit		PortraitNodeView ( SequenceNode* in_node );
 	};
 
-	class PortraitActionNodeView : public m04::editor::sequence::BarebonesSequenceNodeView
+	class PortraitActionNodeView : public PortraitNodeView
 	{
 	public:
 		EDITOR_API explicit		PortraitActionNodeView ( SequenceNode* in_node );

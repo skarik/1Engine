@@ -44,6 +44,9 @@ enumtype SpriteIndex
 enumtype PortraitAction
 {
 	0 default DEFAULT ACTION
+	1 scale Rescale
+	2 move Move
+	3 bounce Bounce
 }
 
 nodetype lines

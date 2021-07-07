@@ -6,6 +6,9 @@
 #include "core-ext/containers/osfstructure.h"
 #include "core/utils/string.h"
 
+#include "core/math/Vector2.h"
+#include "core/math/Vector3.h"
+
 namespace m04 {
 namespace editor {
 
@@ -97,6 +100,13 @@ namespace editor {
 		// A generic boolean input
 		kBoolean,
 
+		// A generic 2-component float vector input
+		kFloat2,
+		// A generic 3-component float vector input
+		kFloat3,
+		// A generic color input
+		kColor,
+
 		// Dropdown that appears as the character speaking text.
 		kScriptCharacter,
 		// Text that the character speaks.
@@ -116,6 +126,8 @@ namespace editor {
 		arstring64			identifier = "property";
 
 		PropertyRenderStyle	renderstyle = PropertyRenderStyle::kUnknown;
+
+		const char*			description = nullptr;
 	public:
 		// each property has information on how to render
 	};
@@ -145,12 +157,18 @@ namespace editor {
 		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const int newIntValue ) =0;
 		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const bool newBooleanValue ) =0;
 		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const char* newStringValue ) =0;
+		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const Vector2f& newVectorValue ) =0;
+		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const Vector3f& newVectorValue ) =0;
 		EDITOR_API virtual float
 								GetPropertyAsFloat ( const char* stringIndex ) =0;
-		EDITOR_API virtual int	GetPropertyAsint ( const char* stringIndex ) =0;
+		EDITOR_API virtual int	GetPropertyAsInt ( const char* stringIndex ) =0;
 		EDITOR_API virtual bool	GetPropertyAsBool ( const char* stringIndex ) =0;
 		EDITOR_API virtual const char*
 								GetPropertyAsString ( const char* stringIndex ) =0;
+		EDITOR_API virtual Vector2f
+								GetPropertyAsVector2f ( const char* stringIndex ) =0;
+		EDITOR_API virtual Vector3f
+								GetPropertyAsVector3f ( const char* stringIndex ) =0;
 
 	public:
 		SequenceNode*		node;

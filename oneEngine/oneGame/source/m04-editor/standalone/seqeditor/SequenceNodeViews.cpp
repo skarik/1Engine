@@ -104,11 +104,19 @@ void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char*
 {
 	node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value = newStringValue;
 }
+void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char* stringIndex, const Vector2f& newVectorValue )
+{
+	node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value = std::to_string(newVectorValue.x) + "\t" + std::to_string(newVectorValue.y);
+}
+void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char* stringIndex, const Vector3f& newVectorValue )
+{
+	node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value = std::to_string(newVectorValue.x) + "\t" + std::to_string(newVectorValue.y) + "\t" + std::to_string(newVectorValue.z);
+}
 float m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsFloat ( const char* stringIndex )
 {
 	return node->data.GetConvertAdd<osf::FloatValue>(stringIndex)->value;
 }
-int m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsint ( const char* stringIndex )
+int m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsInt ( const char* stringIndex )
 {
 	return (int)node->data.GetConvertAdd<osf::IntegerValue>(stringIndex)->value;
 }
@@ -119,6 +127,26 @@ bool m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsBool ( const
 const char* m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsString ( const char* stringIndex )
 {
 	return node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value.c_str();
+}
+Vector2f m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsVector2f ( const char* stringIndex )
+{
+	// Need the string tuplet from the values as well.
+	std::string positionTripletString = node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value.c_str();
+	// Split the poisition into three string values
+	auto tripletValues = core::utils::string::Split(positionTripletString, core::utils::string::kWhitespace);
+	ARCORE_ASSERT(tripletValues.size() == 2);
+	// Set the node's position.
+	return Vector2f(std::stof(tripletValues[0]), std::stof(tripletValues[1]));
+}
+Vector3f m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsVector3f ( const char* stringIndex )
+{
+	// Need the string tuplet from the values as well.
+	std::string positionTripletString = node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value.c_str();
+	// Split the poisition into three string values
+	auto tripletValues = core::utils::string::Split(positionTripletString, core::utils::string::kWhitespace);
+	ARCORE_ASSERT(tripletValues.size() == 3);
+	// Set the node's position.
+	return Vector3f(std::stof(tripletValues[0]), std::stof(tripletValues[1]), std::stof(tripletValues[2]));
 }
 
 DECLARE_SEQUENCENODE_CLASS(MainTask, m04::editor::sequence::MainTaskSeqNodeView);

@@ -29,12 +29,18 @@ namespace sequence {
 		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const int newIntValue ) override;
 		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const bool newBooleanValue ) override;
 		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const char* newStringValue ) override;
+		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const Vector2f& newVectorValue ) override;
+		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const Vector3f& newVectorValue ) override;
 		EDITOR_API virtual float
 								GetPropertyAsFloat ( const char* stringIndex ) override;
-		EDITOR_API virtual int	GetPropertyAsint ( const char* stringIndex ) override;
+		EDITOR_API virtual int	GetPropertyAsInt ( const char* stringIndex ) override;
 		EDITOR_API virtual bool	GetPropertyAsBool ( const char* stringIndex ) override;
 		EDITOR_API virtual const char*
 								GetPropertyAsString ( const char* stringIndex ) override;
+		EDITOR_API virtual Vector2f
+								GetPropertyAsVector2f ( const char* stringIndex ) override;
+		EDITOR_API virtual Vector3f
+								GetPropertyAsVector3f ( const char* stringIndex ) override;
 	};
 
 	class TaskSeqNodeView : public BarebonesSequenceNodeView
