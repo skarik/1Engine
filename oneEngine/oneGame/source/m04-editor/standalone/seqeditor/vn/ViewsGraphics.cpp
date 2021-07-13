@@ -24,10 +24,12 @@ m04::editor::sequence::vn::PortraitActionNodeView::PortraitActionNodeView ( Sequ
 	propertyViews.push_back({"Portrait Action", "portrait_action", PropertyRenderStyle::kEnumtypeDropdown});
 	propertyViews.push_back({"Position", "position", PropertyRenderStyle::kFloat2});
 	propertyViews.push_back({"Scale", "scale", PropertyRenderStyle::kFloat2});
+	propertyViews.push_back({"Color", "color", PropertyRenderStyle::kColor});
 
 	SetProperty("portrait_action", "default");
 	SetProperty("position", Vector2f(1.0F, 1.0F));
 	SetProperty("scale", Vector2f(1.0F, 1.0F));
+	SetProperty("color", Color(1, 1, 1, 1.0));
 }
 
 DECLARE_SEQUENCENODE_CLASS(VN_Background, m04::editor::sequence::vn::BackgroundNodeView);

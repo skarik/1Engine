@@ -201,6 +201,11 @@ void rrTextBuilder2D::addText ( const Vector2f& position, const Color& color, co
 	// Always use 'M' as the base case font size, because it's huge
 	Vector2i font_max_size = fontInfo->glyphSize['M' - fontStartGlyph];	
 
+	auto CharacterInSet = [fontGlyphCount](const int lookup) -> bool
+	{
+		return lookup >= 0 && lookup < (int)fontGlyphCount;
+	};
+
 	// Pass 1: Build the mesh:
 
 	for ( int c = 0; c < maxLength; ++c )
@@ -208,17 +213,24 @@ void rrTextBuilder2D::addText ( const Vector2f& position, const Color& color, co
 		// Get the current character offset into the existing character set
 		c_lookup = str[c] - fontStartGlyph;
 
-		// Check that character is in set
-		if ( c_lookup < 0 || c_lookup >= (int)fontGlyphCount )
-		{
-			continue; // Skip quad
-		}
 		// Don't make quads for whitespace
-		else if ( std::isspace(str[c]) )
+		if ( std::isspace(str[c]) )
 		{
 			// Move the pen along
-			pen.x += fontInfo->glyphAdvance[c_lookup].x;
-			pen.y += fontInfo->glyphAdvance[c_lookup].y;
+			if (CharacterInSet(c_lookup))
+			{
+				pen.x += fontInfo->glyphAdvance[c_lookup].x;
+				pen.y += fontInfo->glyphAdvance[c_lookup].y;
+			}
+			else if (str[c] == '\t')
+			{
+				pen.x += fontInfo->glyphAdvance[' ' - fontStartGlyph].x * 4;
+				pen.y += fontInfo->glyphAdvance[' ' - fontStartGlyph].y;
+			}
+			else
+			{
+				continue; // Skip unknown whitespace.
+			}
 
 			// Check for max width
 			if ( m_max_width > 0 )
@@ -232,7 +244,7 @@ void rrTextBuilder2D::addText ( const Vector2f& position, const Color& color, co
 					// Get the current character offset into the existing character set
 					cf_lookup = str[cf] - fontStartGlyph;
 					// Check that character is in set
-					if ( cf_lookup < 0 || cf_lookup >= (int)fontGlyphCount )
+					if (CharacterInSet(cf_lookup))
 					{
 						continue; // Skip check
 					}
@@ -255,6 +267,10 @@ void rrTextBuilder2D::addText ( const Vector2f& position, const Color& color, co
 				}
 			}
 
+			continue; // Skip quad
+		}
+		else if (!CharacterInSet(c_lookup))
+		{
 			continue; // Skip quad
 		}
 

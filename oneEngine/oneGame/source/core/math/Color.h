@@ -1,9 +1,11 @@
 //===============================================================================================//
 //
-//		class Color
+//		Color.h
 //
-// POD color class, 16 bytes.
-// Represents a 4-component floating point color.
+// Contains the following classes:
+//		Color, floating point RGBA color.
+//		ColorRGBA8, byte RGBA color.
+//		ColorRGBA16, short RGBA color.
 //
 //===============================================================================================//
 #ifndef CORE_MATH_COLOR_H_
@@ -13,6 +15,20 @@
 #include "core/types/types.h"
 #include "core/types/float.h"
 #include "core/math/Vector4.h"
+
+class Color;
+class ColorRGBA8;
+class ColorRGBA16;
+
+// Provides a mapping of values for converting between types.
+// Defaults to mapping [0.0, 1.0] with [0, 256).
+struct ColorRangeMapping
+{
+	float			min_float = 0.0F;
+	float			max_float = 1.0F;
+	int32_t			min_int = 0;
+	int32_t			max_int = 255;
+};
 
 class Color
 {
@@ -33,7 +49,7 @@ public:
 	FORCE_INLINE Color (T0 r, T1 g, T2 b, T3 a);
 
 	// Implicit cast to Vector4.
-	operator Vector4f();
+	operator Vector4f() const;
 
 	// Linear interpolation
 	FORCE_INLINE static Color Lerp (Color const c_one, Color const c_two, Real t);
@@ -98,14 +114,18 @@ public:
 	//===============================================================================================//
 
 	// Returns a Color containing HSL values
-	void GetHSLC ( Color& outHSL ) const;
+	/*CORE_API*/ void		GetHSLC ( Color& outHSL ) const;
 	// Sets the Color to a value with the given HSL values (RGB as HSL)
-	void SetHSL ( const Color& inHSL );
+	/*CORE_API*/ void		SetHSL ( const Color& inHSL );
 
 	// Returns an integer representing the color
-	FORCE_INLINE uint32_t GetCode ( void ) const;
+	FORCE_INLINE uint32_t	GetCode ( void ) const;
 	// Sets the Color to a value represented by the given integer.
-	FORCE_INLINE void SetCode ( const uint32_t code );
+	FORCE_INLINE void		SetCode ( const uint32_t code );
+
+	/*CORE_API*/ ColorRGBA8	ToRGBA8 ( const ColorRangeMapping& mapping = ColorRangeMapping() ) const;
+	/*CORE_API*/ ColorRGBA16
+							ToRGBA16 ( const ColorRangeMapping& mapping = ColorRangeMapping() ) const;
 
 	//===============================================================================================//
 	// Extensions
@@ -146,6 +166,71 @@ public:
 	};
 };
 
+class ColorRGBA8
+{
+public:
+	FORCE_INLINE ColorRGBA8 ( uint8_t r, uint8_t g, uint8_t b, uint8_t a = UINT8_MAX )
+		: r(r), g(g), b(b), a(a)
+		{}
+
+	/*CORE_API*/ Color		ToRGBAFloat ( const ColorRangeMapping& mapping = ColorRangeMapping() ) const;
+
+public:
+	union
+	{
+		struct
+		{
+			uint8_t r;
+			uint8_t g;
+			uint8_t b;
+			uint8_t a;
+		};
+		struct
+		{
+			uint8_t x;
+			uint8_t y;
+			uint8_t z;
+			uint8_t w;
+		};
+		struct
+		{
+			uint8_t raw [4];
+		};
+	};
+};
+
+class ColorRGBA16
+{
+public:
+	FORCE_INLINE ColorRGBA16 ( int16_t r, int16_t g, int16_t b, int16_t a = INT16_MAX )
+		: r(r), g(g), b(b), a(a)
+		{}
+
+	/*CORE_API*/ Color		ToRGBAFloat ( const ColorRangeMapping& mapping = ColorRangeMapping() ) const;
+
+public:
+	union
+	{
+		struct
+		{
+			int16_t r;
+			int16_t g;
+			int16_t b;
+			int16_t a;
+		};
+		struct
+		{
+			int16_t x;
+			int16_t y;
+			int16_t z;
+			int16_t w;
+		};
+		struct
+		{
+			int16_t raw [4];
+		};
+	};
+};
 
 //===============================================================================================//
 // Color implementation

@@ -112,6 +112,15 @@ void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char*
 {
 	node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value = std::to_string(newVectorValue.x) + "\t" + std::to_string(newVectorValue.y) + "\t" + std::to_string(newVectorValue.z);
 }
+void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const char* stringIndex, const Color& newColorValue )
+{
+	ColorRGBA16 intConversion = newColorValue.ToRGBA16();
+	node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value =
+		std::to_string(intConversion.r) + "\t"
+		+ std::to_string(intConversion.g) + "\t"
+		+ std::to_string(intConversion.b) + "\t"
+		+ std::to_string(intConversion.a);
+}
 float m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsFloat ( const char* stringIndex )
 {
 	return node->data.GetConvertAdd<osf::FloatValue>(stringIndex)->value;
@@ -147,6 +156,16 @@ Vector3f m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsVector3f
 	ARCORE_ASSERT(tripletValues.size() == 3);
 	// Set the node's position.
 	return Vector3f(std::stof(tripletValues[0]), std::stof(tripletValues[1]), std::stof(tripletValues[2]));
+}
+Color m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsColor ( const char* stringIndex )
+{
+	// Need the string tuplet from the values as well.
+	std::string colorQuadString = node->data.GetConvertAdd<osf::StringValue>(stringIndex)->value.c_str();
+	// Split the poisition into three string values
+	auto quadValues = core::utils::string::Split(colorQuadString, core::utils::string::kWhitespace);
+	ARCORE_ASSERT(quadValues.size() == 3 || quadValues.size() == 4);
+	// Set the node's position.
+	return ColorRGBA16(std::stoi(quadValues[0]), std::stoi(quadValues[0]), std::stoi(quadValues[0]), (quadValues.size() == 4) ? std::stoi(quadValues[0]) : 255).ToRGBAFloat();
 }
 
 DECLARE_SEQUENCENODE_CLASS(MainTask, m04::editor::sequence::MainTaskSeqNodeView);

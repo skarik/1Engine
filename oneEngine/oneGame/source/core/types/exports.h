@@ -107,19 +107,28 @@ typedef unsigned int	uint;
 
 // Define the AR API macros
 #if		defined(_MSC_VER)
+
 // Import/export
-#	define AR_IMPORT __declspec(dllimport)
-#	define AR_EXPORT __declspec(dllexport)
+#	ifdef _ENGINE_CORE_STATIC
+#		define AR_IMPORT __declspec(dllimport)
+#		define AR_EXPORT
+#	else
+#		define AR_IMPORT __declspec(dllimport)
+#		define AR_EXPORT __declspec(dllexport)
+#	endif
 // Calls
 #	define AR_CALL __cdecl
 #	define AR_FASTCALL __fastcall
+
 #elif	defined(__clang__)
+
 // Import/export
 #	define AR_IMPORT __attribute__ ((dllimport))
 #	define AR_EXPORT __attribute__ ((dllexport))
 // Calls
 #	define AR_CALL 
 #	define AR_FASTCALL 
+
 #endif
 
 // Module types

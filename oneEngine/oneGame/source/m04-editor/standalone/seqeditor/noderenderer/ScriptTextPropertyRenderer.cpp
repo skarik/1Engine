@@ -268,7 +268,7 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::OnClicked ( const ui::ev
 			m_propertyState->m_editing = true;
 			// Move cursor to the end
 			std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
-			m_cursorPosition = l_currentValue.length();
+			m_cursorPosition = (int32_t)l_currentValue.length();
 		}
 		else
 		{
@@ -313,7 +313,7 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::OnClicked ( const ui::ev
 				// If seeked to the end, move the cursor to the end.
 				if (!bHasCursorChange)
 				{
-					m_cursorPosition = strlen(str);
+					m_cursorPosition = (int32_t)strlen(str);
 				}
 			}
 		}
@@ -419,7 +419,7 @@ static void HandleControlComboInput ( const char input, std::string& currentValu
 		{
 			const std::string clipboardString = core::shell::clipboard::GetString();
 			currentValue.insert(cursorPosition, clipboardString);
-			cursorPosition += clipboardString.length();
+			cursorPosition += (int32_t)clipboardString.length();
 		}
 	}
 }

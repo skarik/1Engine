@@ -61,7 +61,6 @@ namespace core
 		{
 			return Vector4_T<Float>(x + right.x, y + right.y, z + right.z, w + right.w);
 		}
-
 		FORCE_INLINE void		operator+= (Vector4_T<Float> const& right)
 		{
 			x += right.x;
@@ -71,11 +70,23 @@ namespace core
 		}
 
 		FORCE_INLINE Vector4_T<Float>
+								operator+ (Float const& right) const
+		{
+			return Vector4_T<Float>(x + right, y + right, z + right, w + right);
+		}
+		FORCE_INLINE void		operator+= (Float const& right)
+		{
+			x += right;
+			y += right;
+			z += right;
+			w += right;
+		}
+
+		FORCE_INLINE Vector4_T<Float>
 								operator- (Vector4_T<Float> const& right) const
 		{
 			return Vector4_T<Float>(x - right.x, y - right.y, z - right.z, w - right.w);
 		}
-
 		FORCE_INLINE void		operator-= (Vector4_T<Float> const& right)
 		{
 			x -= right.x;
@@ -84,6 +95,19 @@ namespace core
 			w -= right.w;
 		}
 		
+		FORCE_INLINE Vector4_T<Float>
+								operator- (Float const& right) const
+		{
+			return Vector4_T<Float>(x - right, y - right, z - right, w - right);
+		}
+		FORCE_INLINE void		operator-= (Float const& right)
+		{
+			x -= right;
+			y -= right;
+			z -= right;
+			w -= right;
+		}
+
 		FORCE_INLINE Vector4_T<Float>
 								operator* (Float const& right) const
 		{

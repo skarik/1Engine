@@ -214,6 +214,16 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 
 		if (!dragging_view && !zooming_view)
 		{
+			// TODO: make a better peek & camera control option
+			if (core::Input::Key(core::kVkAlt) && core::Input::Key(core::kVkControl))
+			{
+				RrCamera::activeCamera->transform.rotation = Rotator( 0.0, -90, -90 ) * Rotator(0, -(mouseScreenPosition.y - 0.5) * 45.0, (mouseScreenPosition.x - 0.5) * 45.0);
+			}
+			else
+			{
+				RrCamera::activeCamera->transform.rotation = Rotator( 0.0, -90, -90 );
+			}
+			// Use middle mouse to drag view around
 			if (core::Input::MouseDown(core::kMBMiddle))
 			{
 				if (core::Input::Key(core::kVkAlt))
@@ -300,7 +310,7 @@ void m04::editor::SequenceEditor::UpdateRightClickMenu ( void )
 		}
 	}
 
-	if (!user_interface->IsMouseInside() && core::Input::MouseUp(core::kMBRight))
+	if (!dusk_interface->IsMouseInside() && core::Input::MouseUp(core::kMBRight))
 	{
 		if (right_click_menu == NULL
 			|| !right_click_menu->GetMouseInside())

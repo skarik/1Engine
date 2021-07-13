@@ -3,11 +3,12 @@
 #include "Vector4.h"
 #include "Quaternion.h"
 #include "core/math/random/Random.h"
+#include "core/math/Math.h"
 
 #include "Color.h"
 
 // Implicit cast to Vector4.
-Color::operator Vector4f()
+Color::operator Vector4f() const
 {
 	return Vector4f(x, y, z, w);
 }
@@ -20,7 +21,6 @@ void Color::randomize (void)
 	blue = (Real)(Random.Next() % 256) / 255.0f;
 	alpha = (Real)(Random.Next() % 256) / 255.0f;
 }
-
 
 //===============================================================================================//
 // HSL + INT Conversion
@@ -104,4 +104,52 @@ void Color::SetHSL ( const Color& inHSL )
 		green	= lightness;
 		blue	= lightness;
 	}
+}
+
+ColorRGBA8 Color::ToRGBA8 ( const ColorRangeMapping& mapping ) const
+{
+	Vector4f temp = *this;
+	temp -= mapping.min_float;
+	temp *= (Real)((mapping.max_int + 1) - mapping.min_int) / (mapping.max_float - mapping.min_float);
+	temp += (Real)mapping.min_int;
+
+	return ColorRGBA8(
+		(uint8_t)math::clamp<int32_t>((int32_t)temp.x, 0, UINT8_MAX),
+		(uint8_t)math::clamp<int32_t>((int32_t)temp.y, 0, UINT8_MAX),
+		(uint8_t)math::clamp<int32_t>((int32_t)temp.z, 0, UINT8_MAX),
+		(uint8_t)math::clamp<int32_t>((int32_t)temp.w, 0, UINT8_MAX));
+}
+
+ColorRGBA16	Color::ToRGBA16 ( const ColorRangeMapping& mapping ) const
+{
+	Vector4f temp = *this;
+	temp -= mapping.min_float;
+	temp *= (Real)((mapping.max_int + 1) - mapping.min_int) / (mapping.max_float - mapping.min_float);
+	temp += (Real)mapping.min_int;
+
+	return ColorRGBA16(
+		(int16_t)math::clamp<int32_t>((int32_t)temp.x, INT16_MIN, INT16_MAX),
+		(int16_t)math::clamp<int32_t>((int32_t)temp.y, INT16_MIN, INT16_MAX),
+		(int16_t)math::clamp<int32_t>((int32_t)temp.z, INT16_MIN, INT16_MAX),
+		(int16_t)math::clamp<int32_t>((int32_t)temp.w, INT16_MIN, INT16_MAX));
+}
+
+Color ColorRGBA8::ToRGBAFloat ( const ColorRangeMapping& mapping ) const
+{
+	Vector4f temp ((Real)x, (Real)y, (Real)z, (Real)w);
+	temp -= (Real)mapping.min_int;
+	temp *= 1.0F / (Real)(mapping.max_int - mapping.min_int);
+	temp += mapping.min_float;
+
+	return Color(temp.x, temp.y, temp.z, temp.w);
+}
+
+Color ColorRGBA16::ToRGBAFloat ( const ColorRangeMapping& mapping ) const
+{
+	Vector4_d temp ((Real64)x, (Real64)y, (Real64)z, (Real64)w);
+	temp -= (Real64)mapping.min_int;
+	temp *= 1.0 / (Real64)(mapping.max_int - mapping.min_int);
+	temp += mapping.min_float;
+
+	return Color(temp.x, temp.y, temp.z, temp.w);
 }

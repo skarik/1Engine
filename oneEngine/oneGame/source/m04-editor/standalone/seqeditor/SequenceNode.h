@@ -8,6 +8,7 @@
 
 #include "core/math/Vector2.h"
 #include "core/math/Vector3.h"
+#include "core/math/Color.h"
 
 namespace m04 {
 namespace editor {
@@ -159,6 +160,7 @@ namespace editor {
 		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const char* newStringValue ) =0;
 		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const Vector2f& newVectorValue ) =0;
 		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const Vector3f& newVectorValue ) =0;
+		EDITOR_API virtual void	SetProperty ( const char* stringIndex, const Color& newVectorValue ) =0;
 		EDITOR_API virtual float
 								GetPropertyAsFloat ( const char* stringIndex ) =0;
 		EDITOR_API virtual int	GetPropertyAsInt ( const char* stringIndex ) =0;
@@ -169,6 +171,8 @@ namespace editor {
 								GetPropertyAsVector2f ( const char* stringIndex ) =0;
 		EDITOR_API virtual Vector3f
 								GetPropertyAsVector3f ( const char* stringIndex ) =0;
+		EDITOR_API virtual Color
+								GetPropertyAsColor ( const char* stringIndex ) =0;
 
 	public:
 		SequenceNode*		node;

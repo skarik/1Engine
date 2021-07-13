@@ -279,6 +279,9 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\FloatPropertyRenderer.h">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\InvalidPropertyRenderer.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -459,6 +462,9 @@
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\ScriptTextPropertyRenderer.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\InvalidPropertyRenderer.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
     </ClCompile>
   </ItemGroup>

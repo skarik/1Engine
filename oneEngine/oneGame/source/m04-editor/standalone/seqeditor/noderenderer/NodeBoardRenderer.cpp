@@ -5,6 +5,7 @@
 #include "../SequenceEditor.h"
 #include "core-ext/containers/arStringEnum.h"
 
+#include "./InvalidPropertyRenderer.h"
 #include "./ScriptTextPropertyRenderer.h"
 #include "./BooleanPropertyRenderer.h"
 #include "./FloatPropertyRenderer.h"
@@ -90,6 +91,10 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 		case m04::editor::PropertyRenderStyle::kEnumtypeDropdown:
 		case m04::editor::PropertyRenderStyle::kScriptCharacter:
 			property_renderer = new m04::editor::sequence::EnumPropertyRenderer(l_propCreateParams);
+			break;
+
+		default:
+			property_renderer = new m04::editor::sequence::InvalidPropertyRenderer(l_propCreateParams);
 			break;
 		}
 

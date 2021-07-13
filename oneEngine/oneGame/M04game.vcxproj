@@ -96,6 +96,7 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\BooleanPropertyRenderer.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\EnumPropertyRenderer.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\FloatPropertyRenderer.h" />
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\InvalidPropertyRenderer.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\NodeBoardRenderer.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\IPropertyRenderer.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\ScriptTextPropertyRenderer.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\BooleanPropertyRenderer.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\EnumPropertyRenderer.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\FloatPropertyRenderer.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\InvalidPropertyRenderer.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\NodeBoardRenderer.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\IPropertyRenderer.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\ScriptTextPropertyRenderer.cpp" />
