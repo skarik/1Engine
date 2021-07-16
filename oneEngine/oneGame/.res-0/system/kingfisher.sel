@@ -49,6 +49,11 @@ enumtype PortraitAction
 	3 bounce Bounce
 }
 
+enumtype Expression
+{
+	0 neutral Neutral
+}
+
 nodetype lines
 {
 	displayAs Lines

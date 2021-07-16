@@ -67,8 +67,7 @@ namespace editor {
 								GetSaveTargetFilename ( void )
 			{ return save_target_filename; }
 		//	SetSaveTargetFilename(filename) : Sets the current save target filename
-		EDITOR_API void			SetSaveTargetFilename ( const char* filename )
-			{ save_target_filename = filename; }
+		EDITOR_API void			SetSaveTargetFilename ( const char* filename );
 
 		//	GetMousePosition3D() : Returns current calculated position of the 3D mouse cursor.
 		EDITOR_API Vector3f		GetMousePosition3D ( void );

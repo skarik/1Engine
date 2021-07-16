@@ -53,6 +53,7 @@
     <ClCompile Include="source\core-ext\resources\IArResource.cpp" />
     <ClCompile Include="source\core-ext\resources\IArResourceSubsystem.cpp" />
     <ClCompile Include="source\core-ext\resources\ResourceManager.cpp" />
+    <ClCompile Include="source\core-ext\settings\PersistentSettings.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\Conversion.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\ModelLoader.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Reader.cpp" />
@@ -63,6 +64,7 @@
     <ClCompile Include="source\core-ext\system\io\mccvxg.cpp" />
     <ClCompile Include="source\core-ext\system\io\Resources.cpp" />
     <ClCompile Include="source\core-ext\system\io\Volumes.cpp" />
+    <ClCompile Include="source\core-ext\system\services\Profiles.cpp" />
     <ClCompile Include="source\core-ext\system\shell\Clipboard.cpp" />
     <ClCompile Include="source\core-ext\system\shell\DragAndDrop.cpp" />
     <ClCompile Include="source\core-ext\system\shell\Inputs.cpp" />
@@ -102,6 +104,7 @@
     <ClInclude Include="source\core-ext\resources\IArResource.h" />
     <ClInclude Include="source\core-ext\resources\IArResourceSubsystem.h" />
     <ClInclude Include="source\core-ext\resources\ResourceManager.h" />
+    <ClInclude Include="source\core-ext\settings\PersistentSettings.h" />
     <ClInclude Include="source\core-ext\std\filesystem.h" />
     <ClInclude Include="source\core-ext\system\io\assets\Conversion.h" />
     <ClInclude Include="source\core-ext\system\io\assets\ResourceAnimLoader.h" />
@@ -119,6 +122,7 @@
     <ClInclude Include="source\core-ext\system\io\mccvxg.h" />
     <ClInclude Include="source\core-ext\system\io\Resources.h" />
     <ClInclude Include="source\core-ext\system\io\Volumes.h" />
+    <ClInclude Include="source\core-ext\system\services\Profiles.h" />
     <ClInclude Include="source\core-ext\system\shell\Clipboard.h" />
     <ClInclude Include="source\core-ext\system\shell\DragAndDrop.h" />
     <ClInclude Include="source\core-ext\system\shell\Inputs.h" />
@@ -200,7 +204,7 @@
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-	  <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_ENGINE_CORE;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>

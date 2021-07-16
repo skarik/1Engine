@@ -10,6 +10,7 @@
 
 #include "core/input/CInput.h"
 #include "core-ext/system/shell/Message.h"
+#include "core-ext/std/filesystem.h"
 
 #include "./SequenceEditor.h"
 #include "./NodeBoardState.h"
@@ -142,6 +143,11 @@ void m04::editor::sequence::TopMenu::BeginSaveAsFile ( void )
 		savefileDialog = dusk_interface->AddDialog<dusk::dialogs::SaveFile>(dusk::DialogCreationDescription());
 	}
 
+	savefileDialog->as<dusk::dialogs::SaveFile>()->m_defaultDirectory = 
+		(!main_editor->GetSaveTargetFilename().empty())
+		? fs::path(main_editor->GetSaveTargetFilename()).parent_path().string().c_str()
+		: ".";
+
 	savefileDialog->Show();
 	savefileDialog->as<dusk::dialogs::SaveFile>()->SetOnAccept([this](const std::string& filename){ SaveFile(filename); });
 }
@@ -164,6 +170,11 @@ void m04::editor::sequence::TopMenu::BeginLoadFile ( void )
 	{
 		loadfileDialog = dusk_interface->AddDialog<dusk::dialogs::LoadFile>(dusk::DialogCreationDescription());
 	}
+
+	loadfileDialog->as<dusk::dialogs::LoadFile>()->m_defaultDirectory = 
+		(!main_editor->GetSaveTargetFilename().empty())
+		? fs::path(main_editor->GetSaveTargetFilename()).parent_path().string().c_str()
+		: ".";
 
 	loadfileDialog->Show();
 	loadfileDialog->as<dusk::dialogs::LoadFile>()->SetOnAccept([this](const std::string& filename){ LoadFile(filename); });

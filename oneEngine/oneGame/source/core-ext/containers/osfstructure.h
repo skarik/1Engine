@@ -102,6 +102,10 @@ namespace osf
 		{
 			KeyValue* kvSource = GetKeyValue(key_name);
 
+			// This is not a valid add.
+			const bool isSame = std::is_same<SequenceTypeCastTo,osf::ObjectValue>::value;
+			ARCORE_ASSERT(!isSame);
+
 			// Need to add the item
 			if (kvSource == nullptr)
 			{
@@ -111,6 +115,25 @@ namespace osf
 			else
 			{
 				return kvSource->value->As<SequenceTypeCastTo>();
+			}
+		}
+
+		//	GetKeyValueAdd<type>(string) : Looks up the given key-value and returns it. Adds it if it does not exist.
+		template <class SequenceTypeCastTo>
+		/*OSF_API*/ osf::KeyValue*
+								GetKeyValueAdd (const char* key_name)
+		{
+			KeyValue* kvSource = GetKeyValue(key_name);
+
+			// Need to add the item
+			if (kvSource == nullptr)
+			{
+				kvSource = Add(new osf::KeyValue(key_name, new SequenceTypeCastTo()));
+				return kvSource;
+			}
+			else
+			{
+				return kvSource;
 			}
 		}
 
@@ -304,24 +327,25 @@ namespace osf
 		OSF_API void			FreeKeyValues ( void );
 	};
 
-	class KeyValueTree
+	class KeyValueTree : public ObjectValue
 	{
-		std::vector<KeyValue*>
-							keyvalues;
 	public:
 
 		//	LoadKeyValues( reader ) : Loads entire OSF file in as a keyvalue structure.
 		void					LoadKeyValues ( io::OSFReader* reader );
 
+		//	SaveKeyValues( writer ) : Writes entire keyvalue tree to file.
+		void					SaveKeyValues ( io::OSFWriter* writer );
+
 		//	FreeKeyValues() : Recursively frees all keyvalues.
 		void					FreeKeyValues ( void )
 		{
-			for (KeyValue* kv : keyvalues)
+			for (KeyValue* kv : values)
 			{
 				kv->FreeKeyValues();
 				delete kv;
 			}
-			keyvalues.clear();
+			values.clear();
 		}
 
 	};

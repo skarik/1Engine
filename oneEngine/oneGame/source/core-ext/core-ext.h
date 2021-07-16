@@ -30,7 +30,7 @@ namespace core
 		/* Constructor, adds self to the registry. */ \
 		arApplicationEndRegistry_##Fn() \
 		{ \
-			core::_RegisterOnApplicationStartup(Fn); \
+			core::_RegisterOnApplicationEnd(Fn); \
 		} \
 	} InstApplicationEndRegistry_##Fn;
 

@@ -8,6 +8,7 @@
 #include "core-ext/system/io/Resources.h"
 #include "core-ext/containers/arStringEnum.h"
 #include "core-ext/system/io/osf.h"
+#include "core-ext/settings/PersistentSettings.h"
 
 #include "renderer/camera/RrCamera.h"
 #include "renderer/windowing/RrWindow.h"
@@ -17,45 +18,50 @@
 #include "m04/eventide/elements/Button.h"
 #include "m04/eventide/elements/ListMenu.h"
 
-class DraggableButtonTest : public ui::eventide::elements::Button
-{
-public:
-	DraggableButtonTest ( ui::eventide::UserInterface* ui = NULL )
-		: Button(ui)
-	{
-		;
-	}
+static core::settings::PersistentSetting<std::string> gPSetLastSavedTarget (
+	"seqedit_lastSavedTarget",
+	"",
+	core::settings::PersistentSettingGroup::kUser);
 
-	virtual void			OnEventMouse ( const EventMouse& mouse_event ) override
-	{
-		if (mouse_event.type == EventMouse::Type::kDragged)
-		{
-			core::math::BoundingBox bbox = GetBBox();
-			bbox.m_M.translate(mouse_event.velocity_world);
-			bbox.m_MInverse = bbox.m_M.inverse();
-			SetBBox( bbox );
-			RequestUpdateMesh();
-		}
-		else
-		{
-			if (mouse_event.type == EventMouse::Type::kClicked)
-			{
-				m_dragging = true;
-				m_ui->LockMouse();
-			}
-			else if (mouse_event.type == EventMouse::Type::kReleased)
-			{
-				m_dragging = false;
-				m_ui->UnlockMouse();
-			}
-
-			Button::OnEventMouse(mouse_event);
-		}
-	}
-
-private:
-	bool			m_dragging = false;
-};
+//class DraggableButtonTest : public ui::eventide::elements::Button
+//{
+//public:
+//	DraggableButtonTest ( ui::eventide::UserInterface* ui = NULL )
+//		: Button(ui)
+//	{
+//		;
+//	}
+//
+//	virtual void			OnEventMouse ( const EventMouse& mouse_event ) override
+//	{
+//		if (mouse_event.type == EventMouse::Type::kDragged)
+//		{
+//			core::math::BoundingBox bbox = GetBBox();
+//			bbox.m_M.translate(mouse_event.velocity_world);
+//			bbox.m_MInverse = bbox.m_M.inverse();
+//			SetBBox( bbox );
+//			RequestUpdateMesh();
+//		}
+//		else
+//		{
+//			if (mouse_event.type == EventMouse::Type::kClicked)
+//			{
+//				m_dragging = true;
+//				m_ui->LockMouse();
+//			}
+//			else if (mouse_event.type == EventMouse::Type::kReleased)
+//			{
+//				m_dragging = false;
+//				m_ui->UnlockMouse();
+//			}
+//
+//			Button::OnEventMouse(mouse_event);
+//		}
+//	}
+//
+//private:
+//	bool			m_dragging = false;
+//};
 
 m04::editor::SequenceEditor::SequenceEditor ( void )
 	: CGameBehavior()
@@ -87,6 +93,9 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 
 	// Initialize with "system/kingfisher.sel" for now
 	LoadSequenceEditorListing("system/kingfisher.sel");
+
+	// Load prefs
+	save_target_filename = gPSetLastSavedTarget;
 }
 m04::editor::SequenceEditor::~SequenceEditor ( void )
 {
@@ -334,4 +343,12 @@ Vector3f m04::editor::SequenceEditor::GetMousePosition3D ( void )
 		return mouse_gizmo->GetBBox().GetCenterPoint();
 	}
 	return Vector3f();
+}
+
+void m04::editor::SequenceEditor::SetSaveTargetFilename ( const char* filename )
+{
+	save_target_filename = filename;
+	gPSetLastSavedTarget = save_target_filename;
+	RrWindow::Main()->SetTitle(("Sequence Editor: " + save_target_filename + (workspace_dirty ? "*" : "")).c_str()); //TODO: move elsewhere
+	core::settings::Persistent::Save(); // Save current settings.
 }

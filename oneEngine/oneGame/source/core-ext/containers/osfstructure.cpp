@@ -280,7 +280,7 @@ void osf::KeyValueTree::LoadKeyValues( io::OSFReader* reader )
 			// Add the kv to the current parent level we're at.
 			if (stackParentKeyvalue.empty())
 			{
-				keyvalues.push_back(kv);
+				values.push_back(kv);
 			}
 			else
 			{
@@ -327,4 +327,88 @@ void osf::KeyValueTree::LoadKeyValues( io::OSFReader* reader )
 	while (currentEntry.type != io::kOSFEntryTypeEoF);
 
 	delete[] l_buffer;
+}
+
+static void SaveKeyValueArray ( io::OSFWriter* writer, const std::vector<osf::KeyValue*>& keyvalues )
+{
+	for (const osf::KeyValue* kv_to_write : keyvalues)
+	{
+		const auto kv_type = kv_to_write->value->GetType();
+		bool bHasObject = (kv_to_write->object != nullptr) && (kv_to_write->value != kv_to_write->object);
+
+		ARCORE_ASSERT(!bHasObject || (kv_type != osf::ValueType::kObject)); // Don't allow double-defined objects.
+
+		if (kv_type == osf::ValueType::kObject)
+		{	
+			// begin object, and start the current for-loop with the object array
+			io::OSFEntryInfo entry = {};
+			entry.type = io::kOSFEntryTypeObject;
+			entry.name = kv_to_write->key;
+			writer->WriteObjectBegin(entry);
+			{
+				SaveKeyValueArray(writer, kv_to_write->value->As<osf::ObjectValue>()->values);
+			}
+			writer->WriteObjectEnd();
+		}
+		else if (kv_type == osf::ValueType::kMarker)
+		{
+			auto& valueToWrite = kv_to_write->value->As<osf::StringValue>()->value;
+
+			io::OSFEntryInfo entry = {};
+			entry.type = io::kOSFEntryTypeMarker;
+			entry.name = kv_to_write->key;
+			entry.value = valueToWrite.c_str();
+			if (!bHasObject)
+			{
+				writer->WriteEntry(entry);
+			}
+			else
+			{
+				writer->WriteObjectBegin(entry);
+				{
+					SaveKeyValueArray(writer, kv_to_write->object->values);
+				}
+				writer->WriteObjectEnd();
+			}
+		}
+		else
+		{
+			auto& valueToWrite = kv_to_write->value->As<osf::StringValue>()->value;
+
+			if (valueToWrite.length() <= sizeof(io::OSFEntryInfo::value))
+			{
+				io::OSFEntryInfo entry = {};
+				entry.type = io::kOSFEntryTypeNormal;
+				entry.name = kv_to_write->key;
+				entry.value = valueToWrite.c_str();
+				if (!bHasObject)
+				{
+					writer->WriteEntry(entry);
+				}
+				else
+				{
+					writer->WriteObjectBegin(entry);
+					{
+						SaveKeyValueArray(writer, kv_to_write->object->values);
+					}
+					writer->WriteObjectEnd();
+				}
+			}
+			else
+			{
+				io::OSFEntryInfo entry = {};
+				entry.type = io::kOSFEntryTypeSource;
+				entry.name = kv_to_write->key;
+				writer->WriteEntry(entry, valueToWrite.c_str(), valueToWrite.length());
+			}
+		}
+	}
+}
+
+void osf::KeyValueTree::SaveKeyValues ( io::OSFWriter* writer )
+{
+	ARCORE_ASSERT(writer != NULL);
+
+	// Start with base level keyvalues
+	SaveKeyValueArray(writer, this->values);
 }

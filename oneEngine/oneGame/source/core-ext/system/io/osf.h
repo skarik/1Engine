@@ -140,7 +140,7 @@ namespace io
 		//	output_value_len:	length of the buffer. ignored if output_value is null
 		// Returns:
 		//	bool: true when written.
-		CORE_API bool			WriteEntry ( const OSFEntryInfo& entry, char* output_value = NULL, const size_t output_value_len = 0 );
+		CORE_API bool			WriteEntry ( const OSFEntryInfo& entry, const char* output_value = NULL, const size_t output_value_len = 0 );
 		//		WriteObjectBegin( entry ) : Writes the given entry as the start of an object.
 		// The entry is written normally, with a following { character. The scope is incremented.
 		// Returns:

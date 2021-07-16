@@ -7,12 +7,14 @@ m04::editor::sequence::vn::PortraitNodeView::PortraitNodeView ( SequenceNode* in
 {
 	propertyViews.push_back({"Sprite Index", "sprite_index", PropertyRenderStyle::kEnumtypeDropdown});
 	propertyViews.push_back({"Character", "character", PropertyRenderStyle::kScriptCharacter});
+	propertyViews.push_back({"Expression", "expression", PropertyRenderStyle::kEnumtypeDropdown});
 	propertyViews.push_back({"Time", "time", PropertyRenderStyle::kFloat, "Time in seconds to fade in character or perform given action over."});
 	propertyViews.push_back({"Wait For Finish", "wait_for_finish", PropertyRenderStyle::kBoolean, "If we should wait on this action (true) or immediately go to next node and start a side-task to finish this one (falsE)."});
 
 	SetProperty("sprite_index", "-1");
 	SetProperty("time", 0.2F);
 	SetProperty("character", "nobody");
+	SetProperty("expression", "neutral");
 	SetProperty("wait_for_finish", true);
 }
 

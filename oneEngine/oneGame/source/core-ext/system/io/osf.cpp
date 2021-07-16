@@ -339,7 +339,7 @@ io::OSFWriter::OSFWriter ( FILE* file, eOSFWriteMode writeMode )
 io::OSFWriter::~OSFWriter ( void )
 {}
 
-bool io::OSFWriter::WriteEntry ( const OSFEntryInfo& entry, char* output_value, const size_t output_value_len )
+bool io::OSFWriter::WriteEntry ( const OSFEntryInfo& entry, const char* output_value, const size_t output_value_len )
 {
 	// Validate the type of entries we can write
 	if ( entry.type == kOSFEntryTypeObject
@@ -445,10 +445,10 @@ bool io::OSFWriter::WriteEntry ( const OSFEntryInfo& entry, char* output_value, 
 
 bool io::OSFWriter::WriteObjectBegin ( const OSFEntryInfo& object_entry )
 {
-	if ( object_entry.type != kOSFEntryTypeObject )
+	/*if ( object_entry.type != kOSFEntryTypeObject )
 	{
 		return false;
-	}
+	}*/
 
 	// Create a temp type of object to write the beginning entry:
 	OSFEntryInfo temp_entry = object_entry;

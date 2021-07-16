@@ -85,6 +85,12 @@
     <Filter Include="SOURCE\Core-ext\c_interface">
       <UniqueIdentifier>{133e504c-c709-447f-abc3-13faf8776583}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Core-ext\System\Services">
+      <UniqueIdentifier>{fc0e7ff7-94b5-4bd5-a51d-0e55109451b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\Core-ext\Settings">
+      <UniqueIdentifier>{b6da4431-c782-4085-9918-e96965e5dd88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\settings\CGameSettings.cpp">
@@ -221,6 +227,12 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\system\io\Files.cpp">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\services\Profiles.cpp">
+      <Filter>SOURCE\Core-ext\System\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\settings\PersistentSettings.cpp">
+      <Filter>SOURCE\Core-ext\Settings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -379,6 +391,12 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\io\Files.h">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\services\Profiles.h">
+      <Filter>SOURCE\Core-ext\System\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\settings\PersistentSettings.h">
+      <Filter>SOURCE\Core-ext\Settings</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

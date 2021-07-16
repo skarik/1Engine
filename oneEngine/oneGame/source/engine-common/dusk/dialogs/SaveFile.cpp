@@ -137,7 +137,10 @@ void dusk::dialogs::SaveFile::Show ( void )
 {
 	FileViewer::Show();
 
-	//m_currentDirectory = ".";
+	if (m_defaultDirectory != ".")
+	{
+		m_currentDirectory = m_defaultDirectory;
+	}
 	m_filenameField->as<dusk::elements::TextField>()->m_contents = "";
 	UpdateDirectoryListing();
 }
