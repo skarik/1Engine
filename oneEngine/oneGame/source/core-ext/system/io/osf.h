@@ -48,7 +48,7 @@ namespace io
 		kOSFEntryTypeUnknown = -3,
 	};
 
-	// OSF Entry information
+	// OSF Entry information (minimal)
 	struct OSFEntryInfo
 	{
 		eOSFEntryType	type = kOSFEntryTypeUnknown;
@@ -57,7 +57,16 @@ namespace io
 		int				level = 0;
 		unsigned long	nextchar = 0;
 	};
-	typedef OSFEntryInfo* OSFEntryInfop;
+
+	// OSF Entry information (large)
+	struct OSFEntryInfoLarge
+	{
+		eOSFEntryType	type = kOSFEntryTypeUnknown;
+		arstring64		name;		// The `key` of the key-value pair
+		std::string		value;		// The `value` of the key-value pair
+		int				level = 0;
+		unsigned long	nextchar = 0;
+	};
 
 	// Class for reading from OSF formatted text files.
 	// It will not take ownership of the file. The file must be closed by the user.
@@ -81,16 +90,19 @@ namespace io
 		//	output_value_len:	length of the buffer. ignored if output_value is null
 		// Returns:
 		//	bool: No errors on read and no EoF found.
-		CORE_API bool			GetNext ( OSFEntryInfo& out_entry, char* output_value = NULL, const size_t output_value_len = 0 );
+		template <class OSFEntryType>
+		CORE_API bool			GetNext ( OSFEntryType& out_entry, char* output_value = NULL, const size_t output_value_len = 0 );
 		//		GoInto( object_entry ) : enters the given entry, assuming it is an object
 		// Enters the given object. GetNext() will return an entry of type kOSFEntryTypeEnd at the closing brace "}"
 		//	bool: No errors on set and entry is valid object.
-		CORE_API bool			GoInto ( const OSFEntryInfo& object_entry );
+		template <class OSFEntryType>
+		CORE_API bool			GoInto ( const OSFEntryType& object_entry );
 		//		GoToMarker( marker_entry ) : returns file cursor to the given entry
 		// Will change what is read next to the entry after the marker.
 		// Returns:
 		//	bool: No errors on set and entry is valid marker.
-		CORE_API bool			GoToMarker ( const OSFEntryInfo& marker_entry );
+		template <class OSFEntryType>
+		CORE_API bool			GoToMarker ( const OSFEntryType& marker_entry );
 		//		SearchToMarker () : locate a marker
 		// Looks for marker (#Marker) with given name. Sets next entry to the one after the marker.
 		// Returns:
@@ -140,12 +152,14 @@ namespace io
 		//	output_value_len:	length of the buffer. ignored if output_value is null
 		// Returns:
 		//	bool: true when written.
-		CORE_API bool			WriteEntry ( const OSFEntryInfo& entry, const char* output_value = NULL, const size_t output_value_len = 0 );
+		template <class OSFEntryType>
+		CORE_API bool			WriteEntry ( const OSFEntryType& entry, const char* output_value = NULL, const size_t output_value_len = 0 );
 		//		WriteObjectBegin( entry ) : Writes the given entry as the start of an object.
 		// The entry is written normally, with a following { character. The scope is incremented.
 		// Returns:
 		//	bool: true when written.
-		CORE_API bool			WriteObjectBegin ( const OSFEntryInfo& object_entry );
+		template <class OSFEntryType>
+		CORE_API bool			WriteObjectBegin ( const OSFEntryType& object_entry );
 		//		WriteObjectEnd( entry ) : Writes end of an arbitrary object `}` and decrements scope.
 		// Returns:
 		//	bool: true when written. false if there are scope issues.

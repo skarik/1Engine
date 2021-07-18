@@ -16,13 +16,19 @@ io::OSFReader::OSFReader ( FILE* file )
 io::OSFReader::~OSFReader ( void )
 {}
 
-bool io::OSFReader::GetNext ( OSFEntryInfo& nextEntry, char* output_value, const size_t output_value_len )
+template <class OSFEntryType>
+bool io::OSFReader::GetNext ( OSFEntryType& nextEntry, char* output_value, const size_t output_value_len )
 {
 	int line_length;
 
 	nextEntry.type = kOSFEntryTypeUnknown;
 	nextEntry.name[0] = 0;
-	nextEntry.value[0] = 0;
+	if constexpr (std::is_same<OSFEntryInfo, OSFEntryType>::value)
+		nextEntry.value[0] = 0;
+	else if constexpr (std::is_same<OSFEntryInfoLarge, OSFEntryType>::value)
+		nextEntry.value.clear();
+	else
+		static_assert(false, "Invalid OSF entry type");
 
 	nextEntry.level = m_level;
 
@@ -126,7 +132,10 @@ bool io::OSFReader::GetNext ( OSFEntryInfo& nextEntry, char* output_value, const
 		// If there's no value, set an empty value
 		if ( fins == line_length )
 		{
-			nextEntry.value[0] = 0;
+			if constexpr (std::is_same<OSFEntryInfo, OSFEntryType>::value)
+				nextEntry.value[0] = 0;
+			else if constexpr (std::is_same<OSFEntryInfoLarge, OSFEntryType>::value)
+				nextEntry.value.clear();
 		}
 		else
 		{
@@ -164,11 +173,20 @@ bool io::OSFReader::GetNext ( OSFEntryInfo& nextEntry, char* output_value, const
 				}
 			}
 
-			// Now copy string over to smaller buffer
-			memcpy( nextEntry.value, m_linebuffer, ( line_length-fins < 128 ? line_length-fins : 128 ) );
-			size_t finalLength = strlen(nextEntry.value);
-			if ( finalLength > 0 && isspace(nextEntry.value[finalLength-1]) ) {
-				nextEntry.value[finalLength-1] = 0;
+			if constexpr (std::is_same<OSFEntryInfo, OSFEntryType>::value)
+			{
+				// Now copy string over to smaller buffer
+				memcpy( nextEntry.value, m_linebuffer, ( line_length-fins < 128 ? line_length-fins : 128 ) );
+				size_t finalLength = strlen(nextEntry.value);
+				if ( finalLength > 0 && isspace(nextEntry.value[finalLength-1]) ) {
+					nextEntry.value[finalLength-1] = 0;
+				}
+			}
+			else if constexpr (std::is_same<OSFEntryInfoLarge, OSFEntryType>::value)
+			{
+				// Copy entry string remainder over
+				size_t finalLength = strnlen(m_linebuffer, kLineBufferLen);
+				nextEntry.value.assign(m_linebuffer, finalLength);
 			}
 		}
 
@@ -180,12 +198,25 @@ bool io::OSFReader::GetNext ( OSFEntryInfo& nextEntry, char* output_value, const
 		
 		// Now, check if the value expects source code node:
 		bool expects_source_code = false;
-		if (   !strncmp(nextEntry.value, "$code", 6)
-			|| !strncmp(nextEntry.value, "$lua", 5)
-			|| !strncmp(nextEntry.value, "$js", 4)
-			|| !strncmp(nextEntry.value, "$c", 3))
+		if constexpr (std::is_same<OSFEntryInfo, OSFEntryType>::value)
 		{
-			expects_source_code = true;
+			if (   !strncmp(nextEntry.value, "$code", 6)
+				|| !strncmp(nextEntry.value, "$lua", 5)
+				|| !strncmp(nextEntry.value, "$js", 4)
+				|| !strncmp(nextEntry.value, "$c", 3))
+			{
+				expects_source_code = true;
+			}
+		}
+		else if constexpr (std::is_same<OSFEntryInfoLarge, OSFEntryType>::value)
+		{
+			if (   !strncmp(nextEntry.value.c_str(), "$code", 6)
+				|| !strncmp(nextEntry.value.c_str(), "$lua", 5)
+				|| !strncmp(nextEntry.value.c_str(), "$js", 4)
+				|| !strncmp(nextEntry.value.c_str(), "$c", 3))
+			{
+				expects_source_code = true;
+			}
 		}
 
 		// Object detection code
@@ -300,20 +331,36 @@ bool io::OSFReader::GetNext ( OSFEntryInfo& nextEntry, char* output_value, const
 	}
 	return false;
 }
-bool io::OSFReader::GoInto ( const OSFEntryInfo& entry_info )
+template
+CORE_API bool io::OSFReader::GetNext<io::OSFEntryInfo> ( io::OSFEntryInfo& nextEntry, char* output_value, const size_t output_value_len );
+template
+CORE_API bool io::OSFReader::GetNext<io::OSFEntryInfoLarge> ( io::OSFEntryInfoLarge& nextEntry, char* output_value, const size_t output_value_len );
+
+template <class OSFEntryType>
+bool io::OSFReader::GoInto ( const OSFEntryType& entry_info )
 {
 	fseek( m_file, entry_info.nextchar, SEEK_SET );
 	m_level = entry_info.level+1;
 
 	return true;
 }
-bool io::OSFReader::GoToMarker ( const OSFEntryInfo& entry_info )
+template
+CORE_API bool io::OSFReader::GoInto<io::OSFEntryInfo> ( const io::OSFEntryInfo& entry_info );
+template
+CORE_API bool io::OSFReader::GoInto<io::OSFEntryInfoLarge> ( const io::OSFEntryInfoLarge& entry_info );
+
+template <class OSFEntryType>
+bool io::OSFReader::GoToMarker ( const OSFEntryType& entry_info )
 {
 	fseek( m_file, entry_info.nextchar, SEEK_SET );
 	m_level = entry_info.level;
 
 	return true;
 }
+template
+CORE_API bool io::OSFReader::GoToMarker<io::OSFEntryInfo> ( const io::OSFEntryInfo& entry_info );
+template
+CORE_API bool io::OSFReader::GoToMarker<io::OSFEntryInfoLarge> ( const io::OSFEntryInfoLarge& entry_info );
 
 bool io::OSFReader::SearchToMarker ( const char* name )
 {
@@ -339,7 +386,8 @@ io::OSFWriter::OSFWriter ( FILE* file, eOSFWriteMode writeMode )
 io::OSFWriter::~OSFWriter ( void )
 {}
 
-bool io::OSFWriter::WriteEntry ( const OSFEntryInfo& entry, const char* output_value, const size_t output_value_len )
+template <class OSFEntryType>
+bool io::OSFWriter::WriteEntry ( const OSFEntryType& entry, const char* output_value, const size_t output_value_len )
 {
 	// Validate the type of entries we can write
 	if ( entry.type == kOSFEntryTypeObject
@@ -353,10 +401,27 @@ bool io::OSFWriter::WriteEntry ( const OSFEntryInfo& entry, const char* output_v
 	// Validate the value for kOSFEntryTypeSource entries
 	if ( entry.type == kOSFEntryTypeSource )
 	{
-		if (   !strncmp(entry.value, "$code", 6)
-			|| !strncmp(entry.value, "$lua", 5)
-			|| !strncmp(entry.value, "$js", 4)
-			|| !strncmp(entry.value, "$c", 3))
+		if constexpr (std::is_same<OSFEntryInfo, OSFEntryType>::value)
+		{
+			if (   !strncmp(entry.value, "$code", 6)
+				|| !strncmp(entry.value, "$lua", 5)
+				|| !strncmp(entry.value, "$js", 4)
+				|| !strncmp(entry.value, "$c", 3))
+			{
+				return false;
+			}
+		}
+		else if constexpr (std::is_same<OSFEntryInfoLarge, OSFEntryType>::value)
+		{
+			if (   !strncmp(entry.value.c_str(), "$code", 6)
+				|| !strncmp(entry.value.c_str(), "$lua", 5)
+				|| !strncmp(entry.value.c_str(), "$js", 4)
+				|| !strncmp(entry.value.c_str(), "$c", 3))
+			{
+				return false;
+			}
+		}
+		else
 		{
 			return false;
 		}
@@ -368,52 +433,98 @@ bool io::OSFWriter::WriteEntry ( const OSFEntryInfo& entry, const char* output_v
 		return false;
 	}
 
-	size_t l_linepos = 0;
-	char l_linebuffer[kLineBufferLen] = {0};
-
-	// Add the tab characters
-	for ( int i = 0; i < m_level; ++i )
+	if constexpr (std::is_same<OSFEntryInfo, OSFEntryType>::value)
 	{
-		l_linebuffer[l_linepos++] = '\t';
-	}
+		size_t l_linepos = 0;
+		char l_linebuffer[kLineBufferLen] = {0};
 
-	// Marker/macro objects need a leading # or $
-	if ( entry.type == kOSFEntryTypeMarker ) 
-	{
-		if ( entry.name[0] != '#' && entry.name[0] != '$' )
+		// Add the tab characters
+		for ( int i = 0; i < m_level; ++i )
 		{
-			l_linebuffer[l_linepos++] = '#';
+			l_linebuffer[l_linepos++] = '\t';
 		}
-	}
-	// Copy the name over
-	for ( size_t i = 0; i < l_fieldw; ++i )
-	{
-		l_linebuffer[l_linepos++] = entry.name[i];
-	}
 
-	// Check for the value now:
-	l_fieldw = strlen(entry.value);
-	if ( l_fieldw != 0 )
-	{
-		// Add a space
-		l_linebuffer[l_linepos++] = ' ';
-
-		// Copy the field over
+		// Marker/macro objects need a leading # or $
+		if ( entry.type == kOSFEntryTypeMarker ) 
+		{
+			if ( entry.name[0] != '#' && entry.name[0] != '$' )
+			{
+				l_linebuffer[l_linepos++] = '#';
+			}
+		}
+		// Copy the name over
 		for ( size_t i = 0; i < l_fieldw; ++i )
 		{
-			l_linebuffer[l_linepos++] = entry.value[i];
+			l_linebuffer[l_linepos++] = entry.name[i];
 		}
-	}
-	// Add the final newlines
-	l_linebuffer[l_linepos++] = '\r';
-	l_linebuffer[l_linepos++] = '\n';
 
-	// Write to file
-	fwrite(l_linebuffer, 1, l_linepos, m_file);
+		// Check for the value now:
+		l_fieldw = strlen(entry.value);
+		if ( l_fieldw != 0 )
+		{
+			// Add a space
+			l_linebuffer[l_linepos++] = ' ';
+
+			// Copy the field over
+			for ( size_t i = 0; i < l_fieldw; ++i )
+			{
+				l_linebuffer[l_linepos++] = entry.value[i];
+			}
+		}
+		// Add the final newlines
+		l_linebuffer[l_linepos++] = '\r';
+		l_linebuffer[l_linepos++] = '\n';
+
+		// Write to file
+		fwrite(l_linebuffer, 1, l_linepos, m_file);
+	}
+	else if constexpr (std::is_same<OSFEntryInfoLarge, OSFEntryType>::value)
+	{
+		std::string l_linebuffer;
+
+		// Add the tab characters
+		for ( int i = 0; i < m_level; ++i )
+		{
+			l_linebuffer += '\t';
+		}
+
+		// Marker/macro objects need a leading # or $
+		if ( entry.type == kOSFEntryTypeMarker ) 
+		{
+			if ( entry.name[0] != '#' && entry.name[0] != '$' )
+			{
+				l_linebuffer += '#';
+			}
+		}
+		// Copy the name over
+		l_linebuffer += entry.name;
+
+		// Check for the value now:
+		if (!entry.value.empty())
+		{
+			// Add a space
+			l_linebuffer += ' ';
+
+			// Copy the field over
+			l_linebuffer += entry.value;
+		}
+		// Add the final newlines
+		l_linebuffer += "\r\n";
+
+		// Write to file
+		fwrite(l_linebuffer.c_str(), 1, l_linebuffer.length(), m_file);
+	}
+	else
+	{
+		static_assert(false, "Invalid OSF entry type");
+	}
 
 	// Now, if it's a source object, we need also write out the contents of output_value.
 	if ( entry.type == kOSFEntryTypeSource )
 	{
+		size_t l_linepos = 0;
+		char l_linebuffer[kLineBufferLen] = {0};
+
 		// Opening bracket:
 		l_linepos = 0;
 		for ( int i = 0; i < m_level; ++i )
@@ -442,8 +553,13 @@ bool io::OSFWriter::WriteEntry ( const OSFEntryInfo& entry, const char* output_v
 
 	return true; // Success! Nothing blew up!
 }
+template
+CORE_API bool io::OSFWriter::WriteEntry<io::OSFEntryInfo> ( const io::OSFEntryInfo& entry, const char* output_value, const size_t output_value_len );
+template
+CORE_API bool io::OSFWriter::WriteEntry<io::OSFEntryInfoLarge> ( const io::OSFEntryInfoLarge& entry, const char* output_value, const size_t output_value_len );
 
-bool io::OSFWriter::WriteObjectBegin ( const OSFEntryInfo& object_entry )
+template <class OSFEntryType>
+bool io::OSFWriter::WriteObjectBegin ( const OSFEntryType& object_entry )
 {
 	/*if ( object_entry.type != kOSFEntryTypeObject )
 	{
@@ -451,7 +567,7 @@ bool io::OSFWriter::WriteObjectBegin ( const OSFEntryInfo& object_entry )
 	}*/
 
 	// Create a temp type of object to write the beginning entry:
-	OSFEntryInfo temp_entry = object_entry;
+	OSFEntryType temp_entry = object_entry;
 	temp_entry.type = kOSFEntryTypeNormal;
 	WriteEntry(temp_entry);
 
@@ -472,6 +588,10 @@ bool io::OSFWriter::WriteObjectBegin ( const OSFEntryInfo& object_entry )
 
 	return true;
 }
+template
+CORE_API bool io::OSFWriter::WriteObjectBegin<io::OSFEntryInfo> ( const io::OSFEntryInfo& object_entry );
+template
+CORE_API bool io::OSFWriter::WriteObjectBegin<io::OSFEntryInfoLarge> ( const io::OSFEntryInfoLarge& object_entry );
 
 bool io::OSFWriter::WriteObjectEnd ( void )
 {

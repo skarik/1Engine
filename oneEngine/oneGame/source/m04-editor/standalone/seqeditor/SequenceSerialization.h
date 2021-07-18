@@ -109,7 +109,8 @@ namespace sequence {
 		FILE*				osf_fileHandle = NULL;
 		io::OSFReader*		osf_reader = NULL;
 
-		io::OSFEntryInfo	osf_lastEntry;
+		io::OSFEntryInfoLarge
+							osf_lastEntry;
 	};
 
 }}}

@@ -36,7 +36,7 @@ static void WriteObjectEntry (io::OSFWriter* osf_writer, const osf::ObjectValue*
 {
 	for (osf::KeyValue* kv : object->values)
 	{
-		io::OSFEntryInfo kvEntry = {io::kOSFEntryTypeNormal, kv->key};
+		io::OSFEntryInfoLarge kvEntry = {io::kOSFEntryTypeNormal, kv->key};
 
 		switch (kv->value->GetType())
 		{
@@ -187,7 +187,7 @@ bool m04::editor::sequence::OsfDeserializer::DeserializeFileBegin ( void )
 
 static void ReadObjectEntry (io::OSFReader* osf_reader, osf::ObjectValue* object)
 {
-	io::OSFEntryInfo entry;
+	io::OSFEntryInfoLarge entry;
 	do 
 	{
 		osf_reader->GetNext(entry);
@@ -213,7 +213,7 @@ static void ReadObjectEntry (io::OSFReader* osf_reader, osf::ObjectValue* object
 
 m04::editor::sequence::DeserializedItem m04::editor::sequence::OsfDeserializer::DeserializeNext ( void )
 {
-	io::OSFEntryInfo entry;
+	io::OSFEntryInfoLarge entry;
 	osf_reader->GetNext(entry);
 
 	DeserializedItem outputItem;
@@ -224,7 +224,7 @@ m04::editor::sequence::DeserializedItem m04::editor::sequence::OsfDeserializer::
 	case io::eOSFEntryType::kOSFEntryTypeNormal:
 		if (entry.name.compare("goto"))
 		{
-			outputItem.go_to = new arstring256(entry.value);
+			outputItem.go_to = new arstring256(entry.value.c_str());
 		}
 		break;	
 
