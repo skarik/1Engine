@@ -11,7 +11,7 @@ bool core::shell::clipboard::ContainsString ( void )
 	do
 	{
 		Format = EnumClipboardFormats(Format);
-		if (Format == CF_TEXT)
+		if (Format == CF_UNICODETEXT)
 		{
 			// Found a compatible format, break out
 			break;
@@ -32,13 +32,26 @@ std::string core::shell::clipboard::GetString ( void )
 	OpenClipboard(NULL);
 
 	// Pull the handle to the global allocation
-	HANDLE textGlobalAllocation = GetClipboardData(CF_TEXT);
+	HANDLE textGlobalAllocation = GetClipboardData(CF_UNICODETEXT);
 
 	// Lock it for reading
-	char* textGlobalBuffer = (char*)GlobalLock(textGlobalAllocation);
+	wchar_t* textGlobalBuffer = (wchar_t*)GlobalLock(textGlobalAllocation);
 	if (textGlobalBuffer != NULL)
 	{
-		result = textGlobalBuffer;
+		// Pull the UTF16 string
+		int textGlobalBufferLen = lstrlenW(textGlobalBuffer);
+
+		// Convert UTF16 to UTF8
+		int utf8BufferSize = WideCharToMultiByte(CP_UTF8, WC_COMPOSITECHECK, textGlobalBuffer, textGlobalBufferLen, NULL, 0, NULL, NULL);
+		char* utf8Buffer = new char [utf8BufferSize];
+		WideCharToMultiByte(CP_UTF8, WC_COMPOSITECHECK, textGlobalBuffer, textGlobalBufferLen, utf8Buffer, utf8BufferSize, NULL, NULL);
+
+		// We have the result!
+		result = utf8Buffer;
+
+		// Clear the used buffer
+		delete[] utf8Buffer;
+
 		GlobalUnlock(textGlobalAllocation);
 	}
 
@@ -53,15 +66,16 @@ void core::shell::clipboard::SetString ( const char* str )
 	EmptyClipboard();
 
 	const size_t str_len = strlen(str);
+	int utf16BufferSize = MultiByteToWideChar(CP_UTF8, WC_COMPOSITECHECK, str, str_len, NULL, 0);
 
 	// Create global allocation
-	HANDLE textGlobalAllocation = GlobalAlloc(GMEM_MOVEABLE, str_len);
+	HANDLE textGlobalAllocation = GlobalAlloc(GMEM_MOVEABLE, utf16BufferSize);
 
 	// Lock it for writing
-	char* textGlobalBuffer = (char*)GlobalLock(textGlobalAllocation);
+	wchar_t* textGlobalBuffer = (wchar_t*)GlobalLock(textGlobalAllocation);
 	if (textGlobalBuffer != NULL)
 	{
-		memcpy(textGlobalBuffer, str, str_len);
+		MultiByteToWideChar(CP_UTF8, WC_COMPOSITECHECK, str, str_len, textGlobalBuffer, utf16BufferSize);
 		GlobalUnlock(textGlobalAllocation);
 	}
 
