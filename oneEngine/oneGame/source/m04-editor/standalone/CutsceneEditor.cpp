@@ -82,9 +82,9 @@ void CutsceneEditor::doViewNavigationDrag ( void )
 				core::Input::DeltaMouseX(), core::Input::DeltaMouseY()
 			);
 		}
-		if ( core::Input::DeltaMouseW() != 0 )
+		if ( core::Input::DeltaMouseScroll() != 0 )
 		{
-			m_target_camera_position.y += core::Input::DeltaMouseW() * 0.05f;
+			m_target_camera_position.y += core::Input::DeltaMouseScroll() * 0.05f;
 		}
 		// Navigation via arrow keys for bonus usability
 		//if ( Input::Key( core::kVkLeft ) )  m_target_camera_position.x -= m_tilemap->m_tileset->tilesize_x * Time::deltaTime * 4.0F;

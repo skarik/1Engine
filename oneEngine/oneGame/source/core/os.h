@@ -33,17 +33,23 @@
 
 #ifdef _WIN32
 
-	// Input defines
-	#ifndef HID_USAGE_PAGE_GENERIC
-	#define HID_USAGE_PAGE_GENERIC         ((USHORT) 0x01)
-	#endif
-	#ifndef HID_USAGE_GENERIC_MOUSE
-	#define HID_USAGE_GENERIC_MOUSE        ((USHORT) 0x02)
-	#endif
+	//// Input defines
+	//#ifndef HID_USAGE_PAGE_GENERIC
+	//#define HID_USAGE_PAGE_GENERIC         ((USHORT) 0x01)
+	//#endif
+	//#ifndef HID_USAGE_GENERIC_MOUSE
+	//#define HID_USAGE_GENERIC_MOUSE        ((USHORT) 0x02)
+	//#endif
 
 	// No MFC
 	#ifndef WIN32_LEAN_AND_MEAN
 	#define WIN32_LEAN_AND_MEAN 1
+	#endif
+
+	// Require a certain level of Windows features
+	#include "sdkddkver.h"
+	#ifndef WINVER
+	#define WINVER _WIN32_WINNT_WIN7
 	#endif
 
 	// Disable certain security warnings

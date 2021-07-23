@@ -11,6 +11,13 @@
 #include <shellapi.h>
 #include <algorithm>
 
+#include <hidusage.h>
+#if 0
+#	include <bcrypt.h>
+#	include <hidpi.h>
+#	pragma comment(lib, "hid.lib") // TODO
+#endif
+
 //#define ERROR_OUT(_str, ...) { printf(_str, __VA_ARGS__); abort(); }
 #define ERROR_OUT(_str, ...) { printf(_str, __VA_ARGS__); return; }
 
@@ -229,20 +236,29 @@ void RrWindow::RegisterInput ( void )
 		ERROR_OUT("Window is not created. Cannot register input.\n");
 	}
 
-	// init raw mouse input
-	RAWINPUTDEVICE Rid[2];
+	// init raw input
+	RAWINPUTDEVICE Rid[3]; // TODO: Query devices in case there is an issue with registering an HID that isn't connected.
 
-	Rid[0].usUsagePage = HID_USAGE_PAGE_GENERIC; 
-	Rid[0].usUsage = HID_USAGE_GENERIC_MOUSE; 
-	Rid[0].dwFlags = RIDEV_INPUTSINK;   
-	Rid[0].hwndTarget = mw_window;
+	{ // Mouse:
+		Rid[0].usUsagePage = HID_USAGE_PAGE_GENERIC; 
+		Rid[0].usUsage = HID_USAGE_GENERIC_MOUSE; 
+		Rid[0].dwFlags = RIDEV_INPUTSINK;   
+		Rid[0].hwndTarget = mw_window;
+	}
+	{ // Keyboard:
+		Rid[1].usUsagePage = HID_USAGE_PAGE_GENERIC;
+		Rid[1].usUsage = HID_USAGE_GENERIC_KEYBOARD;
+		Rid[1].dwFlags = 0;//RIDEV_NOLEGACY;
+		Rid[1].hwndTarget = mw_window;
+	}
+	{ // Touchpad:
+		Rid[2].usUsagePage = HID_USAGE_PAGE_DIGITIZER;
+		Rid[2].usUsage = 0x00;
+		Rid[2].dwFlags = RIDEV_PAGEONLY; // Pull from everything in the given page.
+		Rid[2].hwndTarget = mw_window;
+	}
 
-	Rid[1].usUsagePage = HID_USAGE_PAGE_GENERIC;
-	Rid[1].usUsage = 0x06;
-	Rid[1].dwFlags = 0;//RIDEV_NOLEGACY;
-	Rid[1].hwndTarget = mw_window;
-
-	if ( !RegisterRawInputDevices(Rid, 2, sizeof(RAWINPUTDEVICE) ) )
+	if ( !RegisterRawInputDevices(Rid, sizeof(Rid) / sizeof(RAWINPUTDEVICE), sizeof(RAWINPUTDEVICE) ) )
 	{
 		printf( "BAD HID REGISTRATION.\n" );
 		throw std::exception("BAD HID REGISTRATION");
@@ -668,12 +684,10 @@ LRESULT CALLBACK MessageUpdate(
 		if ( wParam == RIM_INPUT )
 		{
 			UINT dwSize = 0;
-			static BYTE lpb[128];
+			static BYTE lpb[1024];
 
 			GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER));
-			if (dwSize > 128)
-				throw core::OutOfMemoryException();
-
+			ARCORE_ASSERT_MSG(dwSize <= 1024, "HID Input information was larger than 1024 bytes. Consider increasing buffer size.");
 			GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER));
 
 			RAWINPUT* raw = (RAWINPUT*)lpb;
@@ -701,6 +715,76 @@ LRESULT CALLBACK MessageUpdate(
 						//SendMessage( hWnd, WM_KEYDOWN, vkey, 0 );
 					}
 				}
+#			if 0
+				else if (raw->header.dwType == RIM_TYPEHID)
+				{
+					// TODO: We could cache this instead of querying every frame - but we don't need performance for this yet.
+
+					DWORD count   = raw->data.hid.dwCount;
+					BYTE* rawData = raw->data.hid.bRawData;
+					if (count != 0)
+					{
+						BYTE deviceName [256];
+						UINT deviceNameSize = 0;
+						GetRawInputDeviceInfo(raw->header.hDevice, RIDI_DEVICENAME, NULL, &deviceNameSize);
+						ARCORE_ASSERT(deviceNameSize < sizeof(deviceName));
+						GetRawInputDeviceInfo(raw->header.hDevice, RIDI_DEVICENAME, deviceName, &deviceNameSize);
+						debug::Console->PrintWarning( "Touchpad Info: %s\n", deviceName );
+						
+						UINT preparsedDataSize = 0;
+						PHIDP_PREPARSED_DATA preparsedData = NULL;
+						GetRawInputDeviceInfo(raw->header.hDevice, RIDI_PREPARSEDDATA, NULL, &preparsedDataSize);
+						preparsedData = (PHIDP_PREPARSED_DATA)new BYTE[preparsedDataSize];
+						GetRawInputDeviceInfo(raw->header.hDevice, RIDI_PREPARSEDDATA, preparsedData, &preparsedDataSize);
+
+						HIDP_CAPS device_caps;
+						HidP_GetCaps(preparsedData, &device_caps);
+
+						// Loop through all value caps since we need their link collections:
+						HIDP_VALUE_CAPS* allValueCaps = new HIDP_VALUE_CAPS[device_caps.NumberInputValueCaps];
+						USHORT allValueCapsNumber = device_caps.NumberInputValueCaps;
+						HidP_GetValueCaps(HidP_Input, allValueCaps, &allValueCapsNumber, preparsedData);
+						ARCORE_ASSERT(allValueCapsNumber <= device_caps.NumberInputValueCaps);
+
+						for (UINT valueCapabilityIndex = 0; valueCapabilityIndex < device_caps.NumberInputValueCaps; ++valueCapabilityIndex)
+						{
+							HIDP_VALUE_CAPS& value_capability = allValueCaps[valueCapabilityIndex];
+
+							// Skip ranges (TODO: what are these?)
+							if (value_capability.IsRange /*|| value_capability.IsAbsolute*/) continue;
+							
+							if (value_capability.UsagePage == HID_USAGE_PAGE_GENERIC)
+							{
+								// check HID_USAGE_GENERIC_X, HID_USAGE_GENERIC_Y, and others
+								if (value_capability.NotRange.Usage == HID_USAGE_GENERIC_X)
+								{
+									ULONG xPosition;
+									HidP_GetUsageValue(HidP_Input, 0x01, value_capability.LinkCollection, HID_USAGE_GENERIC_X, &xPosition, preparsedData, (PCHAR)rawData, raw->data.hid.dwSizeHid);
+									debug::Console->PrintWarning( "X: %d\n", xPosition );
+								}
+								else if (value_capability.NotRange.Usage == HID_USAGE_GENERIC_Y)
+								{
+									ULONG xPosition;
+									HidP_GetUsageValue(HidP_Input, 0x01, value_capability.LinkCollection, HID_USAGE_GENERIC_Y, &xPosition, preparsedData, (PCHAR)rawData, raw->data.hid.dwSizeHid);
+									debug::Console->PrintWarning( "Y: %d\n", xPosition );
+								}
+								else if (value_capability.NotRange.Usage >= 0x32 && value_capability.NotRange.Usage <= 0x8D)
+								{
+									ULONG xPosition;
+									HidP_GetUsageValue(HidP_Input, 0x01, value_capability.LinkCollection, value_capability.NotRange.Usage, &xPosition, preparsedData, (PCHAR)rawData, raw->data.hid.dwSizeHid);
+									debug::Console->PrintWarning( "%x: %d\n", value_capability.NotRange.Usage, xPosition );
+								}
+							}
+
+							// With our input, we find the matching value_capability so we can get their value_capability.LinkCollection
+						}	
+
+						// Clean up:
+						delete[] (BYTE*)allValueCaps;
+						delete[] (BYTE*)preparsedData;
+					}
+				}
+#			endif
 				else
 				{
 					//printf("Unknown input");
@@ -773,7 +857,14 @@ LRESULT CALLBACK MessageUpdate(
 	// Mouse wheel
 	case WM_MOUSEWHEEL:
 	{
-		core::Input::WSetCurrMouseW( GET_WHEEL_DELTA_WPARAM(wParam) );
+		if (LOWORD(wParam) == MK_CONTROL)
+		{
+			core::Input::WSetCurrMouseZoom( GET_WHEEL_DELTA_WPARAM(wParam) );
+		}
+		else
+		{
+			core::Input::WSetCurrMouseScroll( GET_WHEEL_DELTA_WPARAM(wParam) );
+		}
 		return 0;
 	}
 	case WM_HSCROLL:

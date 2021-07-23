@@ -63,8 +63,6 @@ void core::Input::UpdateMouse ( void )
 {
 	m_prevRawDeltaMouse = m_rawDeltaMouse;
 
-	//m_deltaMouse.x = m_rawDeltaMouse.x * CGameSettings::Active()->f_cl_MouseSensitivity;
-	//m_deltaMouse.y = m_rawDeltaMouse.y * CGameSettings::Active()->f_cl_MouseSensitivity;
 	m_deltaMouse.x = m_rawDeltaMouse.x * m_mouseSensitivity.x;
 	m_deltaMouse.y = m_rawDeltaMouse.y * m_mouseSensitivity.y;
 	
@@ -73,17 +71,14 @@ void core::Input::UpdateMouse ( void )
 	m_mouse.x = math::clamp<Real>(m_mouse.x, 0.0F, (Real)Screen::Info.width);
 	m_mouse.y = math::clamp<Real>(m_mouse.y, 0.0F, (Real)Screen::Info.height);
 
-	if ( m_mouseW != m_prevMouseW )
-	{
-		m_deltaMouseW = m_mouseW;
-		m_prevMouseW = m_mouseW;
-	}
-	else
-	{
-		m_deltaMouseW = 0;
-		m_mouseW = 0;
-		m_prevMouseW = 0;
-	}
+	// update the mouse wheel changes
+	if ( !m_deltaMouseScrollChange )
+		m_deltaMouseScroll = 0;
+	m_deltaMouseScrollChange = false;
+
+	if ( !m_deltaMouseZoomChange )
+		m_deltaMouseZoom = 0;
+	m_deltaMouseZoomChange = false;
 
 	// If we need to sync up the system mouse tho, we will need to override some values
 	if (m_syncRawAndSystemMouse)

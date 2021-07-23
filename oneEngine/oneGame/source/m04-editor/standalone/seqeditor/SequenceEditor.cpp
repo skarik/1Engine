@@ -232,6 +232,21 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 			{
 				RrCamera::activeCamera->transform.rotation = Rotator( 0.0, -90, -90 );
 			}
+
+			// Use the zoom control to...zoom in and out around the mouse
+			if (core::Input::DeltaMouseZoom() != 0)
+			{
+				float delta_zoom = core::Input::DeltaMouseZoom() / 120.0F * RrCamera::activeCamera->transform.position.z * 0.1F;
+				RrCamera::activeCamera->transform.position += Vector3f(0, 0, delta_zoom);
+			}
+
+			// Limit camera Z
+			const Real kMaxCameraZ = RrCamera::activeCamera->zFar * 0.95F;
+			if (RrCamera::activeCamera->transform.position.z > kMaxCameraZ)
+			{
+				RrCamera::activeCamera->transform.position.z = kMaxCameraZ;
+			}
+
 			// Use middle mouse to drag view around
 			if (core::Input::MouseDown(core::kMBMiddle))
 			{

@@ -101,7 +101,7 @@ void CInputControl::Update ( void* owner, float deltaTime )
 			vMouseInput.x+= (controllerInput.x * deltaTime) * 160.0f;
 		vMouseInput.y	= (float)core::Input::DeltaMouseY()*0.5f;
 			vMouseInput.y-= (controllerInput.y * deltaTime) * 160.0f;
-			vMouseInput.z	= (float)core::Input::DeltaMouseW();
+			vMouseInput.z	= (float)core::Input::DeltaMouseScroll();
 			vMouseInput.z+= ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)?1:0);
 			vMouseInput.z-= ((xboxControl->GetState().Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)?1:0);
 			
@@ -144,7 +144,7 @@ void CInputControl::Update ( void* owner, float deltaTime )
 		// Get turnint input
 		vMouseInput.x	= (float)core::Input::DeltaMouseX();
 		vMouseInput.y	= (float)core::Input::DeltaMouseY();
-		vMouseInput.z	= (float)core::Input::DeltaMouseW();
+		vMouseInput.z	= (float)core::Input::DeltaMouseScroll();
 
 		// Get the keydown input
 		axes.crouch.Update			( (float)core::Input::Key(core::kVkControl) + (float)core::Input::Key('J') );
