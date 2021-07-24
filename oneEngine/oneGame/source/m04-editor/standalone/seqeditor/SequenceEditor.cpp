@@ -236,8 +236,30 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 			// Use the zoom control to...zoom in and out around the mouse
 			if (core::Input::DeltaMouseZoom() != 0)
 			{
-				float delta_zoom = core::Input::DeltaMouseZoom() / 120.0F * RrCamera::activeCamera->transform.position.z * 0.1F;
-				RrCamera::activeCamera->transform.position += Vector3f(0, 0, delta_zoom);
+				float delta_zoom = -core::Input::DeltaMouseZoom() / 120.0F * RrCamera::activeCamera->transform.position.z * 0.1F;
+
+				// We want to get the position the mouse is on the grid and move forward & back against that.
+				float hit_distance = 0.0F;
+				if (core::math::Plane(Vector3f(), Vector3f(0, 0, 1)).Raycast(mouseRay, hit_distance))
+				{
+					Vector3f reference_position = mouseRay.pos + mouseRay.dir * hit_distance;
+					RrCamera::activeCamera->transform.position += (RrCamera::activeCamera->transform.position - reference_position).normal() * delta_zoom;
+				}
+				else
+				{
+					RrCamera::activeCamera->transform.position += Vector3f(0, 0, delta_zoom);
+				}
+			}
+			// Use the scrolls to scroll
+			if (core::Input::DeltaMouseScroll() != 0)
+			{
+				float delta_scroll = core::Input::DeltaMouseScroll() * RrCamera::activeCamera->transform.position.z / 1000.0F;
+				RrCamera::activeCamera->transform.position += Vector3f(0, delta_scroll, 0);
+			}
+			if (core::Input::DeltaMouseHScroll() != 0)
+			{
+				float delta_scroll = core::Input::DeltaMouseHScroll() * RrCamera::activeCamera->transform.position.z / 1000.0F;
+				RrCamera::activeCamera->transform.position += Vector3f(delta_scroll, 0, 0);
 			}
 
 			// Limit camera Z

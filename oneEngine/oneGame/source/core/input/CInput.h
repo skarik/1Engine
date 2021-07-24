@@ -288,15 +288,20 @@ namespace core
 		{
 			return m_Active->m_deltaMouse.y;
 		}
-		//	DeltaMouseW() : Current virtual mouse wheel delta.
+		//	DeltaMouseScroll() : Current virtual mouse wheel delta.
 		CORE_API static int		DeltaMouseScroll ( void )
 		{
 			return m_Active->m_deltaMouseScroll;
 		}
+		//	DeltaMouseHScroll() : Current virtual mouse wheel delta.
+		CORE_API static int		DeltaMouseHScroll ( void )
+		{
+			return m_Active->m_deltaMouseHScroll;
+		}
 		//	DeltaMouseZoom() : Current virtual mouse wheel zoom.
 		CORE_API static int		DeltaMouseZoom ( void )
 		{
-			return m_Active->m_deltaMouseZoom;
+			return m_Active->m_deltaMouseZoom + m_Active->m_deltaMouseHZoom;
 		}
 
 		//	Mouse(mousebutton) : Checks if the mouse button is currently down.
@@ -350,6 +355,16 @@ namespace core
 			m_Active->m_deltaMouseZoomChange = true;
 			m_Active->m_deltaMouseZoom = mousew;
 		}
+		static inline void		WSetCurrMouseHScroll ( const int mousew )
+		{
+			m_Active->m_deltaMouseHScrollChange = true;
+			m_Active->m_deltaMouseHScroll = mousew;
+		}
+		static inline void		WSetCurrMouseHZoom ( const int mousew )
+		{
+			m_Active->m_deltaMouseHZoomChange = true;
+			m_Active->m_deltaMouseHZoom = mousew;
+		}
 
 		static inline void		WSetMouseMake ( const int mousebutton_id )
 		{
@@ -383,6 +398,10 @@ namespace core
 		int					m_deltaMouseScroll = 0;
 		bool				m_deltaMouseZoomChange = false;
 		int					m_deltaMouseZoom = 0;
+		bool				m_deltaMouseHScrollChange = false;
+		int					m_deltaMouseHScroll = 0;
+		bool				m_deltaMouseHZoomChange = false;
+		int					m_deltaMouseHZoom = 0;
 
 		bool				m_syncRawAndSystemMouse = false;
 

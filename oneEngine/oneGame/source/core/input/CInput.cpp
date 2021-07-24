@@ -80,6 +80,14 @@ void core::Input::UpdateMouse ( void )
 		m_deltaMouseZoom = 0;
 	m_deltaMouseZoomChange = false;
 
+	if ( !m_deltaMouseHScrollChange )
+		m_deltaMouseHScroll = 0;
+	m_deltaMouseHScrollChange = false;
+
+	if ( !m_deltaMouseHZoomChange )
+		m_deltaMouseHZoom = 0;
+	m_deltaMouseHZoomChange = false;
+
 	// If we need to sync up the system mouse tho, we will need to override some values
 	if (m_syncRawAndSystemMouse)
 	{

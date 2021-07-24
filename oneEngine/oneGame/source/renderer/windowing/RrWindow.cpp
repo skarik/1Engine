@@ -867,6 +867,19 @@ LRESULT CALLBACK MessageUpdate(
 		}
 		return 0;
 	}
+	case WM_MOUSEHWHEEL:
+	{
+		if (LOWORD(wParam) == MK_CONTROL)
+		{
+			core::Input::WSetCurrMouseHZoom( GET_WHEEL_DELTA_WPARAM(wParam) );
+		}
+		else
+		{
+			core::Input::WSetCurrMouseHScroll( GET_WHEEL_DELTA_WPARAM(wParam) );
+		}
+		return 0;
+	}
+
 	case WM_HSCROLL:
 	{
 		debug::Console->PrintWarning( "HScroll message\n" );
