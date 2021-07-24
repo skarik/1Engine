@@ -732,3 +732,9 @@ bool dusk::UserInterface::IsMouseInside ( void )
 		}
 	);
 }
+
+//	IsInDialogue() : Checks if dialogue is currently open
+bool dusk::UserInterface::IsInDialogue ( void )
+{
+	return m_currentDialogue != kElementHandleInvalid;
+}

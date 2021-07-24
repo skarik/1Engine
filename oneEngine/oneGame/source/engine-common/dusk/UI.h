@@ -114,6 +114,9 @@ namespace dusk
 		//	IsMouseInside() : Checks if mouse cursor is currently inside any active element
 		ENGCOM_API bool			IsMouseInside ( void );
 
+		//	IsInDialogue() : Checks if dialogue is currently open
+		ENGCOM_API bool			IsInDialogue ( void );
+
 		//	DestroyElement(index) : Removes the element with the given index/handle.
 		// Should only be used in the Element destructor.
 		void					RemoveElement ( const size_t handle );

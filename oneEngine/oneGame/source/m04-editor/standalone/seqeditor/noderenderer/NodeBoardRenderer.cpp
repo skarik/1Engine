@@ -588,13 +588,16 @@ void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpd
 	// Run the button updates
 	Button::OnGameFrameUpdate(input_frame);
 
-	// TODO: more organized
-	// Update per-frame edits
-	auto& nodeProperties = node->sequenceInfo->view->PropertyList();
-	for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
+	if (!m_board->GetEditor()->GetDuskUI()->IsInDialogue())
 	{
-		auto& nodeProperty = nodeProperties[nodePropertyIndex];
-		m_propertyRenderers[nodePropertyIndex]->OnGameFrameUpdate(input_frame);
+		// TODO: more organized
+		// Update per-frame edits
+		auto& nodeProperties = node->sequenceInfo->view->PropertyList();
+		for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
+		{
+			auto& nodeProperty = nodeProperties[nodePropertyIndex];
+			m_propertyRenderers[nodePropertyIndex]->OnGameFrameUpdate(input_frame);
+		}
 	}
 
 	m_frameUpdate = FrameUpdate::kPerFrame;
