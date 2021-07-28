@@ -1,5 +1,6 @@
 #include "core/system/Screen.h"
 #include "core/math/Math.h"
+#include "core/debug/Console.h"
 
 #include "renderer/light/RrLight.h"
 #include "renderer/types/ObjectSettings.h"
@@ -16,20 +17,12 @@
 #include <cmath>
 
 RrCamera*				RrCamera::activeCamera	= NULL;
-std::vector<RrCamera*>	RrCamera::m_CameraList;
+RrCamera*				RrCamera::g_FirstCamera	= NULL;
+RrCamera*				RrCamera::g_LastCamera	= NULL;
+//std::vector<RrCamera*>	RrCamera::m_CameraList;
 
-RrCamera::RrCamera ( void )
-	: active(true), 
-	m_needsNewPasses(true), m_cameraIndex(-1),
-	// default render options
-	zNear(0.1F), zFar(200.0F),
-	// default viewport options
-	renderScale(1.0F), viewportPercent(Rect(0.0F, 0.0F, 1.0F, 1.0F)), mirrorView(false),
-	orthographic(false), orthoSize(512.0F, 512.0F),
-	// default physical options
-	fieldOfView(100.0F), focalDistance(10.0F), focalRange(100.0F)
-	// default Rt options
-	//m_renderTexture(NULL)
+RrCamera::RrCamera ( bool isTransient )
+	: isTransient(isTransient)
 {
 	up = Vector3f(0, 0, 1);
 	forward = Vector3f::forward;
@@ -43,7 +36,7 @@ RrCamera::RrCamera ( void )
 	enabledHints = 0 | kRenderHintBitmaskWorld;
 
 	// Camera list management:
-	{
+	/*{
 		// Generate a camera index by finding the lowest unused value.
 		m_cameraIndex = 0;
 		bool btIndexExists;
@@ -62,6 +55,21 @@ RrCamera::RrCamera ( void )
 
 		// Add camera to the list
 		m_CameraList.push_back( this );
+	}*/
+	if (!isTransient)
+	{
+		if (g_LastCamera != nullptr)
+		{
+			ARCORE_ASSERT(g_FirstCamera != nullptr);
+			g_LastCamera->m_nextCamera = this;
+		}
+		else
+		{
+			ARCORE_ASSERT(g_FirstCamera == nullptr);
+			g_FirstCamera = this;
+		}
+		m_prevCamera = g_LastCamera;
+		g_LastCamera = this;
 	}
 
 	// Mark as active if there is no active camera
@@ -69,19 +77,40 @@ RrCamera::RrCamera ( void )
 		activeCamera = this;
 	}
 	// Output camera creation
-	std::cout << "New camera with index " << (int)m_cameraIndex << " created. Main scene: " << ((activeCamera==this) ? "yes" : "no") << std::endl;
-
-}
-RrCamera::~RrCamera ( void )
-{
-	// Reset active camera
-	if ( activeCamera == this )
+	//std::cout << "New camera with index " << (int)m_cameraIndex << " created. Main scene: " << ((activeCamera==this) ? "yes" : "no") << std::endl;
+	if (!isTransient)
 	{
-		activeCamera = NULL;
+		debug::Console->PrintMessage("New permanent camera created. Main scene: %s\n", (activeCamera == this) ? "yes" : "no");
+	}
+}
+
+void RrCamera::RemoveFromCameraList ( void )
+{
+	// Update the first & last cameras
+	if (this == g_FirstCamera)
+	{
+		g_FirstCamera = m_nextCamera;
+	}
+	if (this == g_LastCamera)
+	{
+		g_LastCamera = m_prevCamera;
 	}
 
+	// Redo links to skip this current one.
+	if (m_prevCamera != nullptr)
+	{
+		m_prevCamera->m_nextCamera = m_nextCamera;
+	}
+	if (m_nextCamera != nullptr)
+	{
+		m_nextCamera->m_prevCamera = m_prevCamera;
+	}
+}
+
+RrCamera::~RrCamera ( void )
+{
 	// Remove camera from the list
-	for ( std::vector<RrCamera*>::iterator it = m_CameraList.begin(); it != m_CameraList.end();  )
+	/*for ( std::vector<RrCamera*>::iterator it = m_CameraList.begin(); it != m_CameraList.end();  )
 	{
 		if ( (*it) == this )
 		{
@@ -92,6 +121,17 @@ RrCamera::~RrCamera ( void )
 		{
 			++it;
 		}
+	}*/
+	if (!isTransient)
+	{
+		RemoveFromCameraList();
+	}
+
+	// Reset active camera
+	if ( activeCamera == this )
+	{
+		//activeCamera = NULL;
+		activeCamera = g_FirstCamera;
 	}
 }
 
@@ -105,7 +145,7 @@ void RrCamera::SetActive ( void )
 		activeCamera = this;
 
 		// We need to now resort the cameras:
-		for ( auto it = m_CameraList.begin(); it != m_CameraList.end(); )
+		/*for ( auto it = m_CameraList.begin(); it != m_CameraList.end(); )
 		{
 			// Search for self to reorder...
 			if ( *it == this )
@@ -118,6 +158,19 @@ void RrCamera::SetActive ( void )
 			{
 				++it;
 			}
+		}*/
+		if (this != g_FirstCamera)
+		{
+			RemoveFromCameraList();
+
+			// Insert into the front of the list:
+			if (g_FirstCamera != nullptr)
+			{
+				g_FirstCamera->m_prevCamera = this;
+			}
+			m_nextCamera = g_FirstCamera;
+			m_prevCamera = nullptr;
+			g_FirstCamera = this;
 		}
 	}
 }
@@ -139,25 +192,25 @@ void RrCamera::LateUpdate ( void )
 		activeCamera = this;
 
 		// Is this not a valid camera?
-		if ( !activeCamera->active || activeCamera->GetType() != kCameraClassNormal /*activeCamera->m_renderTexture != NULL*/ )
-		{
-			activeCamera = NULL; // Go back to invalid camera.
-			// Loop through all the cameras and find the first valid one
-			for ( unsigned int i = 0; i < m_CameraList.size(); ++i )
-			{
-				RrCamera* potentialCamera = m_CameraList[i];
-				if ( potentialCamera == NULL || !potentialCamera->active || potentialCamera->GetType() != kCameraClassNormal /*potentialCamera->m_renderTexture != NULL*/ )
-					{}
-				else
-				{
-					// Assign found camera as current
-					activeCamera = potentialCamera;
-					// Force an immediate update of the pass
-					activeCamera->m_needsNewPasses = true;
-					break;
-				}
-			}
-		}
+		//if ( !activeCamera->active || activeCamera->GetType() != kCameraClassNormal /*activeCamera->m_renderTexture != NULL*/ )
+		//{
+		//	activeCamera = NULL; // Go back to invalid camera.
+		//	// Loop through all the cameras and find the first valid one
+		//	for ( unsigned int i = 0; i < m_CameraList.size(); ++i )
+		//	{
+		//		RrCamera* potentialCamera = m_CameraList[i];
+		//		if ( potentialCamera == NULL || !potentialCamera->active || potentialCamera->GetType() != kCameraClassNormal /*potentialCamera->m_renderTexture != NULL*/ )
+		//			{}
+		//		else
+		//		{
+		//			// Assign found camera as current
+		//			activeCamera = potentialCamera;
+		//			// Force an immediate update of the pass
+		//			activeCamera->m_needsNewPasses = true;
+		//			break;
+		//		}
+		//	}
+		//}
 	}
 
 	// Rotate the move vector to match the camera
@@ -268,10 +321,12 @@ void RrCamera::UpdateCBuffer ( const uint index, const uint predictedMax, const 
 //}
 
 
-void RrCamera::RenderBegin ( void )
+void RrCamera::RenderBegin ( gpu::GraphicsContext* graphics_context )
 {
-	auto gfx = gpu::getDevice()->getContext();
+	auto gfx = graphics_context;//gpu::getDevice()->getContext();
 
+	// TODO: move this to the output settings, rather than have in the camera
+	ARCORE_ERROR("Move this elsewhere. Cameras are not outputs, so their viewports shouldn't affect anything");
 	gfx->setViewport(
 		(uint32_t)math::round(viewport.pos.x),
 		(uint32_t)math::round(viewport.pos.y),

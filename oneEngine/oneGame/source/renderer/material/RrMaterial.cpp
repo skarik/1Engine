@@ -610,7 +610,7 @@ static struct _pass_deferred_state {
 
 void RrMaterial::bindPassForward ( uchar pass )
 {
-	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+	gpu::GraphicsContext* gfx = params->context_graphics;
 
 	// Reset deferred state
 	df_state.shader = NULL;
@@ -749,7 +749,7 @@ void RrMaterial::bindPassForward ( uchar pass )
 
 void RrMaterial::bindPassDeferred ( uchar pass )
 {
-	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+	gpu::GraphicsContext* gfx = params->context_graphics;
 
 	// Reset forward state
 	state.shader = NULL;

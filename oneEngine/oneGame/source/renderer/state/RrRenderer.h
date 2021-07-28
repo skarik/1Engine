@@ -6,6 +6,7 @@
 #include "renderer/types/types.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/types/RrGpuTexture.h"
+#include "renderer/types/id.h"
 #include "renderer/state/InternalSettings.h"
 #include "renderer/state/RrHybridBufferChain.h"
 
@@ -14,6 +15,7 @@
 #include "gpuw/RenderTarget.h"
 #include "gpuw/Device.h"
 #include "gpuw/GraphicsContext.h"
+#include "gpuw/Buffers.h"
 
 #include <vector>
 
@@ -26,6 +28,8 @@ class RrPass;
 class RrRenderTexture;
 class CMRTTexture;
 struct rrCameraPass;
+class RrWindow;
+class RrRenderer;
 namespace renderer
 {
 	namespace pipeline
@@ -34,6 +38,174 @@ namespace renderer
 	}
 }
 
+class RrWorld
+{
+public:
+	explicit				RrWorld ( void );
+							~RrWorld ( void );
+
+	friend CRenderableObject;
+	rrId					AddObject ( CRenderableObject* renderable );
+	bool					RemoveObject ( CRenderableObject* renderable );
+	bool					RemoveObject ( const rrId& renderable_id );
+
+	friend RrLogicObject;
+	rrId					AddLogic ( RrLogicObject* logic );
+	bool					RemoveLogic ( RrLogicObject* logic );
+	bool					RemoveLogic ( const rrId& logic_id );
+
+	void					FrameUpdate ( void );
+
+private:
+	struct rrWorldState
+	{
+		enum WorkStep
+		{
+			kWorkStepSortObjects = 0,
+			kWorkStepSortLogics = 1,
+			kWorkStepCompactObjects = 2,
+			kWorkStepCompactLogics = 3,
+
+			kWorkStep_MAX,
+		};
+
+		WorkStep		work_step = kWorkStepSortObjects;
+	};
+
+	rrWorldState			state;
+
+	void					CompactObjectListing ( void );
+	void					SortObjectListing ( void );
+
+	void					CompactLogicListing ( void ) {}
+	void					SortLogicListing ( void ) {}
+
+public:
+	renderer::ePipelineMode
+						pipeline_mode = renderer::kPipelineModeNormal;
+
+	uint				world_index;
+
+	std::vector<CRenderableObject*>
+						objects;
+	std::vector<RrLogicObject*>
+						logics;
+};
+
+struct rrViewport
+{
+	Vector2i			corner = Vector2i(0, 0);
+	Vector2i			size = Vector2i(0, 0);
+	Vector2i			pixel_density = Vector2i(1, 1);
+};
+
+class RrOutputInfo
+{
+public:
+
+	RrOutputInfo ( RrWorld* world, RrWindow* window )
+	{
+		this->world = world;
+		output_window = window;
+
+		type = Type::kWindow;
+	}
+
+public:
+	enum class Type
+	{
+		kUinitialized,
+		kWindow,
+		kRenderTarget,
+	};
+
+	arstring64			name;
+	bool				enabled = true;
+	// Update interval normally
+	int					update_interval = -1;
+	// Update interval when the view isn't focused. Only valid for Type::kRenderTarget.
+	int					update_interval_when_not_focused = -1;
+
+	RrWorld*			world;
+
+	RrCamera*			camera = nullptr;
+	rrViewport			viewport;
+	Type				type = Type::kUinitialized;
+
+	uint8				backbuffer_count = 3;
+	rrBufferChainInfo	requested_buffers;
+
+	RrWindow*			output_window = nullptr;
+	RrRenderTexture*	output_target = nullptr;
+
+	//	GetOutputSize() : Returns the desired output size for the given output
+	RENDER_API Vector2i		GetOutputSize ( void ) const;
+
+	//	GetRenderTarget() : Returns the render target for the output
+	RENDER_API gpu::RenderTarget*
+							GetRenderTarget ( void ) const;
+};
+
+class RrOutputState
+{
+public:
+	explicit				RrOutputState ( void );
+							~RrOutputState ( void )
+	{
+		ResizeBufferChain(0);
+		FreeContexts();
+	}
+
+	void					Update ( RrOutputInfo* output_info );
+	
+private:
+	void					ResizeBufferChain ( uint sizing );
+	void					FreeContexts ( void );
+
+public:
+	RrOutputInfo*		output_info = nullptr;
+	// Counter used for updating the output.
+	int					update_interval_counter = 0;
+
+	Vector2i			output_size;
+	bool				first_frame_after_creation = false;
+
+	// List of buffer targets that are used to render to.
+	std::vector<RrHybridBufferChain>
+						internal_chain_list;
+	// Current buffer target being recorded/rendered to.
+	RrHybridBufferChain*
+						internal_chain_current = nullptr;
+	// Index of the buffer target being recorded/rendered to.
+	uint				internal_chain_index = 0;
+
+	// These are per output:
+	// Per-pass constant buffers. See renderer::cbuffer:rrPerPass.
+	// Each group of kRenderLayer_MAX refers to a layer used in a buffer target of internal_chain_list.
+	// Ex: If kRenderLayer_MAX is 7, and the engine is using triple (3) buffering, there will be 21 cbuffers.
+	std::vector<gpu::Buffer>
+						internal_cbuffers_passes;
+
+public:
+	gpu::GraphicsContext*
+						graphics_context = nullptr;
+};
+
+//	rrRenderRequest : Render request
+struct rrRenderRequest
+{
+	CRenderableObject*	obj = nullptr;
+	uint8_t				pass = UINT8_MAX;
+};
+
+struct rrRenderRequestSorter
+{
+	bool operator() ( const rrRenderRequest& i, const rrRenderRequest& j );
+};
+
+// Global active instance
+RENDER_API extern RrRenderer* SceneRenderer;
+
 //	RrRenderer : main render state & swapchain manager class
 class RrRenderer
 {
@@ -41,70 +213,54 @@ public:
 	// Structure Definitions
 	// ================================
 
-	//	rrRenderRequest : Render request
-	struct rrRenderRequest
-	{
-		CRenderableObject*	obj;
-		uint8_t				pass;
-		//bool				transparent;
-		//bool				forward;
-		//bool				screenshader;
-		//uchar				renderLayer;
+	////	rrRenderRequest : Render request
+	//struct rrRenderRequest
+	//{
+	//	CRenderableObject*	obj = nullptr;
+	//	uint8_t				pass = UINT8_MAX;
+	//};
 
-		// Default constructor
-		/*rrRenderRequest ( void ) :
-			obj(NULL), pass(0)//, transparent(false), forward(true), screenshader(false), renderLayer(2)
-		{ ; }*/
+	//struct rrRenderRequestSorter
+	//{
+	//	bool operator() ( rrRenderRequest& i, rrRenderRequest& j );
+	//};
+
+	//	rrOutputPair : Pair of output info & state
+	struct rrOutputPair
+	{
+		RrOutputInfo		info;
+		RrOutputState*		state = nullptr;
 	};
-
-	//	tReplacementRule : Render material replacement rule
-	// Material settings must be done before the Render() call
-	struct tReplacementRule
-	{
-		arstring<32>		hintToReplace;
-		RrMaterial*			materialToUse;
-	};
-
-	/*enum rrConstants : int
-	{
-		kMRTColorAttachmentCount = 4,
-	};
-
-	//	rrInternalBufferChain : internal storage of buffers used for rendering
-	struct rrInternalBufferChain
-	{
-		//glHandle		buffer_depth;
-		//glHandle		buffer_stencil;
-		gpu::Texture		buffer_depth;
-		gpu::WOFrameAttachment
-							buffer_stencil;
-		//RrRenderTexture*	buffer_forward_rt;
-		gpu::Texture		buffer_color;
-		gpu::RenderTarget	buffer_forward_rt;
-
-		//CMRTTexture*	buffer_deferred_mrt;
-		//RrRenderTexture*	buffer_deferred_rt;
-		gpu::Texture		buffer_deferred_color_composite;
-		gpu::Texture		buffer_deferred_color[kMRTColorAttachmentCount];
-		gpu::RenderTarget	buffer_deferred_mrt;
-		gpu::RenderTarget	buffer_deferred_rt;
-	};*/
 
 public:
 	// Constructor, Destructor, and Initialization
 	// ================================
 
-	RENDER_API explicit		RrRenderer ( CResourceManager* nResourceManager );
+	RENDER_API explicit		RrRenderer ( void );
 	RENDER_API				~RrRenderer ( void );
 
-	void					InitializeWithDeviceAndSurface ( gpu::Device* device, gpu::OutputSurface* surface );
-	void					ResizeSurface ( void );
+	// we want to initialize the comon stuff still here
+	//	and also store the output surface
+	// but we arent making the swapchain here. those are created 
+
+private:
+	void					InitializeResourcesWithDevice ( gpu::Device* device );
+	//void					ResizeSurface ( void );
+public:
+
+	// Creates an output. The pointer to the output is only guaranteed to be valid between HelpGenerateOutput calls.
+	//RENDER_API RrOutputInfo*
+	//						HelpGenerateOutput ( RrWindow* output, RrWorld* input );
+	RENDER_API void			AddOutput ( const RrOutputInfo& info );
+
+	RENDER_API void			AddWorld ( RrWorld* world );
+	RENDER_API void			AddWorldDefault ( void );
 
 	// Buffer management
 	// ================================
 
 	// Creates buffers for rendering to.
-	RENDER_API void			CreateTargetBuffers ( void );
+	/*RENDER_API void			CreateTargetBuffers ( void );
 	// Recreates buffers for the given chain. Returns success.
 	//RENDER_API bool			CreateTargetBufferChain ( rrInternalBufferChain& bufferChain );
 	RENDER_API gpu::RenderTarget*
@@ -114,7 +270,7 @@ public:
 	RENDER_API gpu::Texture*
 							GetDepthTexture ( void );
 	RENDER_API gpu::WOFrameAttachment*
-							GetStencilTexture ( void );
+							GetStencilTexture ( void );*/
 
 
 	// Public Render routine
@@ -125,26 +281,23 @@ public:
 
 	// object state update
 	void					StepPreRender ( void );
-	void					StepBufferPush ( void );
+	void					StepBufferPush ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state );
 	void					StepPostRender ( void );
 
 
 	// Full Scene Rendering Routines
 	// ================================
 
-	// Normal rendering routine.
-	//void RenderSceneForward ( const uint32_t n_renderHint );
-	// Deferred rendering routine.
-	//void RenderSceneDeferred ( const uint32_t n_renderHint );
+	void					RenderOutput ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world );
 
 	//	RenderScene () : Renders the main scene from the given camera with DeferredForward+.
 	// Is shorthand for ``RenderObjectList(m_renderableObjects)``.
-	RENDER_API void			RenderScene ( RrCamera* camera );
+	//RENDER_API void			RenderScene ( RrCamera* camera );
 	//	RenderObjectList () : Renders the object list from the given camera with DeferredForward+.
-	RENDER_API void			RenderObjectList ( RrCamera* camera, CRenderableObject** objectsToRender, const uint32_t objectCount );
+	//RENDER_API void			RenderObjectList ( RrCamera* camera, CRenderableObject** objectsToRender, const uint32_t objectCount );
 
-	RENDER_API void			RenderObjectListWorld ( rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount );
-	RENDER_API void			RenderObjectListShadows ( rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount );
+	RENDER_API void			RenderObjectListWorld ( gpu::GraphicsContext* gfx, rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount, RrOutputState* state );
+	//RENDER_API void			RenderObjectListShadows ( rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount );
 
 	// Specialized Rendering Routines
 	// ================================
@@ -169,7 +322,7 @@ public:
 	//	SetPipelineMode - Sets new pipeline mode.
 	// Calling this has the potential to be very slow and completely invalidate rendering state.
 	// This should be only be called from the GameState, when the pipeline is at no risk of being corrupted.
-	RENDER_API void			SetPipelineMode ( renderer::ePipelineMode newPipelineMode );
+	//RENDER_API void			SetPipelineMode ( renderer::ePipelineMode newPipelineMode );
 
 
 	// Rendering configuration
@@ -183,35 +336,108 @@ public:
 	// ================================
 
 	// Returns internal settings that govern the current render setup
-	RENDER_API const renderer::rrInternalSettings&
-							GetSettings ( void ) const;
+	//RENDER_API const renderer::rrInternalSettings&
+	//						GetSettings ( void ) const;
 	// Returns if shadows are enabled for the renderer or not.
-	RENDER_API const bool	GetShadowsEnabled ( void ) const;
+	//RENDER_API const bool	GetShadowsEnabled ( void ) const;
 	// Returns current pipeline information
 	//RENDER_API const eRenderMode
 	//						GetRenderMode ( void ) const;
 	// Returns current pipeline mode (previously, special render type)
-	RENDER_API const renderer::ePipelineMode
-							GetPipelineMode ( void ) const;
+	//RENDER_API const renderer::ePipelineMode
+	//						GetPipelineMode ( void ) const;
 
 private:
-	bool bSpecialRender_ResetLights;
-	std::vector<RrLight*> vSpecialRender_LightList;
+	//bool bSpecialRender_ResetLights;
+	//std::vector<RrLight*> vSpecialRender_LightList;
 
 public:
 	// Public active instance pointer
 	RENDER_API static RrRenderer* Active;
 
 	// Device & context
-	gpu::Device*			mDevice;
-	gpu::OutputSurface*		mOutputSurface;
-	gpu::GraphicsContext*	mGfxContext;
-	gpu::ComputeContext*	mComputeContext;
+	//gpu::Device*			mDevice;
+	//gpu::OutputSurface*		mOutputSurface;
+	//gpu::GraphicsContext*	mGfxContext;
+	//gpu::ComputeContext*	mComputeContext;
+private:
+	gpu::Device*		gpu_device;
+public:
+	gpu::Device*			GetGpuDevice ( void ) const
+		{ return gpu_device; }
 
 private:
 	// Renderable object access and management
 	// ================================
 
+	// Objects queued to add to the default world
+	std::vector<CRenderableObject*> objects_to_add;
+	// Logics queued to add to the default world
+	std::vector<RrLogicObject*> logics_to_add;
+
+	void					AddQueuedToWorld ( void );
+
+public:
+	class Listings
+	{
+	private:
+		friend CRenderableObject;
+		friend RrLogicObject;
+
+		static void				AddToUnsorted ( CRenderableObject* object, rrId& out_id )
+		{
+			SceneRenderer->objects_to_add.push_back(object);
+			out_id = rrId();
+			out_id.object_index = (uint16)(SceneRenderer->objects_to_add.size() - 1);
+			out_id.world_index = rrId::kWorldInvalid;
+		}
+		static void				RemoveFromUnsorted ( CRenderableObject* object, const rrId& id )
+		{
+			if (SceneRenderer->objects_to_add.back() == object)
+			{
+				ARCORE_ASSERT(id.object_index == (SceneRenderer->objects_to_add.size() - 1));
+				SceneRenderer->objects_to_add.pop_back();
+			}
+			else
+			{
+				ARCORE_ASSERT(SceneRenderer->objects_to_add[id.object_index] == object);
+				SceneRenderer->objects_to_add[id.object_index] = nullptr;
+			}
+		}
+
+		static void				AddToUnsorted ( RrLogicObject* object, rrId& out_id )
+		{
+			SceneRenderer->logics_to_add.push_back(object);
+			out_id = rrId();
+			out_id.object_index = (uint16)(SceneRenderer->logics_to_add.size() - 1);
+			out_id.world_index = rrId::kWorldInvalid;
+		}
+		static void				RemoveFromUnsorted ( RrLogicObject* object, const rrId& id )
+		{
+			if (SceneRenderer->logics_to_add.back() == object)
+			{
+				ARCORE_ASSERT(id.object_index == (SceneRenderer->logics_to_add.size() - 1));
+				SceneRenderer->logics_to_add.pop_back();
+			}
+			else
+			{
+				ARCORE_ASSERT(SceneRenderer->logics_to_add[id.object_index] == object);
+				SceneRenderer->logics_to_add[id.object_index] = nullptr;
+			}
+		}
+
+		static RrWorld*			GetWorld ( const rrId& id )
+		{
+			if (id.world_index != rrId::kWorldInvalid)
+			{
+				ARCORE_ASSERT(id.world_index < SceneRenderer->worlds.size());
+				return SceneRenderer->worlds[id.world_index];
+			}
+			return nullptr;
+		}
+	};
+
+	/*
 	// Give RO constructor and destructor access to adding and removing
 	friend CRenderableObject;
 	// Adding and removing renderable objects
@@ -226,14 +452,27 @@ private:
 	// Adding and removing renderable objects
 	unsigned int AddLO ( RrLogicObject* );
 	void RemoveLO ( unsigned int );
-
+	*/
 private:
+	//
+	// ================================
+	
+	// list of outputs
+	std::vector<rrOutputPair>
+						render_outputs;
+
+	// list of worlds
+	std::vector<RrWorld*>
+						worlds;
+
 	// Render list
 	// ================================
-	std::vector<CRenderableObject*>
-							pRenderableObjects;
-	unsigned int			iCurrentIndex;
-	unsigned int			iListSize;
+
+	// these go to the world
+	//std::vector<CRenderableObject*>
+	//						pRenderableObjects;
+	//unsigned int			iCurrentIndex;
+	//unsigned int			iListSize;
 
 	// Render list sorting
 	// ================================
@@ -247,49 +486,53 @@ private:
 		bool operator() ( tRenderRequest& i, tRenderRequest& j);
 	} OrderComparatorDeferred;*/
 
-	struct rrRenderRequestSorter
-	{
-		bool operator() ( rrRenderRequest& i, rrRenderRequest& j );
-	}
-	RenderRequestSorter;
+	
+	rrRenderRequestSorter RenderRequestSorter;
 
 	// Render state
 	// ================================
-	RrCamera*				mainBufferCamera;
-	bool					bufferedMode;
-	bool					shadowMode;
+	//RrCamera*				mainBufferCamera;
+	//bool					bufferedMode;
+	//bool					shadowMode;
 	//eRenderMode				renderMode;
-	renderer::ePipelineMode	pipelineMode;
+	//renderer::ePipelineMode	pipelineMode;
 
 	// Logic list
 	// ================================
-	std::vector<RrLogicObject*>
-							mLogicObjects;
-	unsigned int			mLoCurrentIndex;
-	unsigned int			mLoListSize;
+	//std::vector<RrLogicObject*>
+	//						mLogicObjects;
+	//unsigned int			mLoCurrentIndex;
+	//unsigned int			mLoListSize;
 
 	// Internal setup state
 	// ================================
-	renderer::rrInternalSettings
-							internal_settings;
-	// List of buffer targets that are used to render to.
-	std::vector<RrHybridBufferChain>
-							internal_chain_list;
-	// Current buffer target being recorded/rendered to.
-	RrHybridBufferChain*	internal_chain_current;
-	// Index of the buffer target being recorded/rendered to.
-	uint					internal_chain_index;
+	//renderer::rrInternalSettings
+	//						internal_settings; // WHERE ARE THESE INITIALIZED TO LMAO
 
+	uint8					backbuffer_count = 3;
+	int						frame_index = 0;
+
+	// List of buffer targets that are used to render to.
+	//std::vector<RrHybridBufferChain>
+	//						internal_chain_list;
+	// Current buffer target being recorded/rendered to.
+	//RrHybridBufferChain*	internal_chain_current;
+	// Index of the buffer target being recorded/rendered to.
+	//uint					internal_chain_index;
+
+	// These are per frame:
 	// Per-frame constant buffers. See renderer::cbuffer::rrPerFrame.
 	// Each index refers directly to a buffer target of internal_chain_list.
 	// Ex: If the engine is using triple (3) buffering, there will be three (3) cbuffers.
 	std::vector<gpu::Buffer>
 							internal_cbuffers_frames;
+
+	// These are per output:
 	// Per-pass constant buffers. See renderer::cbuffer:rrPerPass.
 	// Each group of kRenderLayer_MAX refers to a layer used in a buffer target of internal_chain_list.
 	// Ex: If kRenderLayer_MAX is 7, and the engine is using triple (3) buffering, there will be 21 cbuffers.
-	std::vector<gpu::Buffer>
-							internal_cbuffers_passes;
+	//std::vector<gpu::Buffer>
+	//						internal_cbuffers_passes;
 
 	// Deferred pass materials
 	// ================================
@@ -297,8 +540,5 @@ private:
 							pipelinePasses;
 
 };
-
-// Global active instance
-RENDER_API extern RrRenderer* SceneRenderer;
 
 #endif//RENDERER_RENDER_STATE_SYSTEM_H_

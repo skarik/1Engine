@@ -8,6 +8,31 @@
 #include "gpuw/RenderTarget.h"
 #include "renderer/state/InternalSettings.h"
 
+struct rrBufferChainInfo
+{
+	const uint8			kDefaultColorAttachmentCount = 4;
+	const core::gfx::tex::arColorFormat
+						kDefaultColorAttachments[4] = {
+		core::gfx::tex::kColorFormatRGBA8,
+		core::gfx::tex::kColorFormatRGBA16F,
+		core::gfx::tex::kColorFormatRGBA8,
+		core::gfx::tex::kColorFormatRGBA8};
+
+	// Main output. Used for both deferred & forward outputs.
+	const core::gfx::tex::arColorFormat
+						mainAttachmentFormat = core::gfx::tex::kColorFormatRGBA16F;
+	// Deferred buffer types
+	uint8_t				colorAttachmentCount = kDefaultColorAttachmentCount;
+	const core::gfx::tex::arColorFormat*
+						colorAttachmentFormats = kDefaultColorAttachments;
+	// Depth format
+	core::gfx::tex::arColorFormat
+						depthFormat = core::gfx::tex::kDepthFormat32;
+	// Stencil format
+	core::gfx::tex::arColorFormat
+						stencilFormat = core::gfx::tex::KStencilFormatIndex16;
+};
+
 class RrHybridBufferChain
 {
 public:
@@ -23,8 +48,8 @@ public:
 	// Returns:
 	//	ErrorCode: Describes success or failure of the call.
 	RENDER_API gpu::ErrorCode
-							CreateTargetBufferChain ( renderer::rrInternalSettings* io_settings, const Vector2i& size );
-	bool					CreateTargetBufferChain_Internal ( const renderer::rrInternalSettings* settings, const Vector2i& size );
+							CreateTargetBufferChain ( rrBufferChainInfo* io_settings, const Vector2i& size );
+	bool					CreateTargetBufferChain_Internal ( const rrBufferChainInfo* settings, const Vector2i& size );
 
 	/*RENDER_API gpu::RenderTarget*
 							GetForwardBuffer ( void );
@@ -56,6 +81,7 @@ public:
 	//RrRenderTexture*	buffer_deferred_rt;
 	gpu::Texture		buffer_deferred_color_composite;
 	gpu::Texture		buffer_deferred_color[kMRTColorAttachmentCount];
+	uint				buffer_deferred_color_count = 0;
 	gpu::RenderTarget	buffer_deferred_mrt		= gpu::RenderTarget();
 	gpu::RenderTarget	buffer_deferred_rt		= gpu::RenderTarget();
 };

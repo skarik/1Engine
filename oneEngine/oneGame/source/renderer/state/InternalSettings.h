@@ -12,13 +12,13 @@ class RrMaterial;
 namespace renderer
 {
 	// Struct
-	struct rrInternalSettings
+	/*struct rrInternalSettings
 	{
 		core::gfx::tex::arColorFormat	mainColorAttachmentFormat;
 		uint8_t							mainColorAttachmentCount;
 		core::gfx::tex::arColorFormat	mainDepthFormat;
 		core::gfx::tex::arColorFormat	mainStencilFormat;
-	};
+	};*/
 }
 
 #endif//_RENDER_INTERNAL_SETTINGS_STRUCT_

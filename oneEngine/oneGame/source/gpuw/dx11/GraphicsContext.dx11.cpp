@@ -145,7 +145,7 @@ static FORCE_INLINE D3D11_STENCIL_OP ArEnumToDx ( const gpu::StencilOp mode )
 
 //===============================================================================================//
 
-gpu::GraphicsContext::GraphicsContext ( void* wrapperDevice )
+gpu::GraphicsContext::GraphicsContext ( Device* wrapperDevice )
 	: m_rasterStateCachedMap(NULL), m_rasterStateCurrentBitfilter((uint32_t)-1),
 	m_blendStateCachedMap(NULL), m_blendStateCurrentBitfilter(),
 	m_depthStateCachedMap(NULL), m_depthStateCurrentBitfilter((uint64_t)-1)
@@ -237,7 +237,7 @@ int gpu::GraphicsContext::submit ( void )
 		throw core::InvalidCallException();
 	}
 
-	gpuDevice->getNativeContext()->ExecuteCommandList(commandList, FALSE);
+	gpuDevice->getImmediateContext()->ExecuteCommandList(commandList, FALSE);
 
 	commandList->Release();
 

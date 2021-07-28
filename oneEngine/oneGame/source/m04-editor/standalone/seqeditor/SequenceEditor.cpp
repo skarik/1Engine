@@ -73,7 +73,7 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	mouse_gizmo = new m04::editor::sequence::MouseGizmo(user_interface);
 	grid_gizmo = new m04::editor::sequence::GridGizmo(user_interface, this);
 
-	RrCamera* camera = new RrCamera();
+	RrCamera* camera = new RrCamera(false);
 	camera->SetActive();
 	// Override certain camera aspects to get the right projection
 	camera->transform.rotation = Rotator( 0.0, -90, -90 );

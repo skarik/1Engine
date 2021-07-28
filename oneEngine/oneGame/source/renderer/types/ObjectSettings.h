@@ -51,11 +51,14 @@ namespace renderer
 	{
 		kRenderLayer_BEGIN		= 0,
 
+		// Layer used for skyboxes. Has depth buffer available.
 		kRenderLayerBackground	= 0,
-		kRenderLayerSecondary	= 1,
-		kRenderLayerWorld		= 2,
-		kRenderLayerForeground	= 3,
-		kRenderLayerV2D			= 4,
+		//kRenderLayerSecondary	= 1,
+		// Layer used for the main world. Has depth buffer available.
+		kRenderLayerWorld		= 1,
+		//kRenderLayerForeground	= 3,
+		// Layer used for 2D UI.
+		kRenderLayerV2D			= 2,
 
 		kRenderLayer_MAX,
 

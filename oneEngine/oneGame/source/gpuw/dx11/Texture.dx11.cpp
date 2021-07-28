@@ -5,6 +5,7 @@
 #include "./Texture.dx11.h"
 #include "./Buffers.dx11.h"
 #include "./Internal/Enums.dx11.h"
+#include "./BaseContext.dx11.h"
 #include "gpuw/Public/Error.h"
 #include "core/exceptions.h"
 #include "core/math/Math.h"
@@ -210,12 +211,12 @@ int gpu::Texture::free ( void )
 	return gpu::kError_SUCCESS;
 }
 
-int gpu::Texture::upload ( gpu::Buffer& buffer, const uint level, const uint arraySlice )
+int gpu::Texture::upload ( gpu::BaseContext* context, gpu::Buffer& buffer, const uint level, const uint arraySlice )
 {
 	ARCORE_ASSERT(valid());
 	
 	ID3D11Device*			device = gpu::getDevice()->getNative();
-	ID3D11DeviceContext*	ctx = gpu::getDevice()->getNativeContext();
+	ID3D11DeviceContext*	ctx = (context == nullptr) ? gpu::getDevice()->getImmediateContext() : (ID3D11DeviceContext*)context->getNativeContext();
 	ID3D11Texture2D*		texture = (ID3D11Texture2D*)m_texture;
 	D3D11_BOX				src_box;
 	ID3D11Buffer*			src_buffer = (ID3D11Buffer*)buffer.nativePtr();

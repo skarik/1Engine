@@ -2,6 +2,7 @@
 #include "core-ext/system/io/assets/TextureIO.h"
 #include "core-ext/threads/Jobs.h"
 #include "renderer/texture/RrTexture.h"
+#include "renderer/texture/RrTextureMasterSubsystem.h"
 #include "gpuw/Buffers.h"
 #include "gpuw/Device.h"
 #include "gpuw/Fence.h"
@@ -54,17 +55,17 @@ void RrTexture::StreamingReset ( void )
 // Returns:
 //	bool:	False when still loading, True when done.
 //          The resource will stay in the "loading" list until it is done.
-bool RrTexture::OnStreamStep ( bool sync_client )
+bool RrTexture::OnStreamStep ( bool sync_client, core::IArResourceSubsystem* subsystem )
 {
 	// Streaming load of procedural textures
 	if (procedural && upload_request != NULL)
 	{
-		return OnStreamStepProcedural(sync_client);
+		return OnStreamStepProcedural(sync_client, subsystem);
 	}
 	// Streaming load of textures
 	else if (!procedural)
 	{
-		return OnStreamStepDisk(sync_client);
+		return OnStreamStepDisk(sync_client, subsystem);
 	}
 	//
 	// Catch-all case
@@ -74,9 +75,9 @@ bool RrTexture::OnStreamStep ( bool sync_client )
 	}
 }
 
-bool RrTexture::OnStreamStepProcedural ( bool sync_client )
+bool RrTexture::OnStreamStepProcedural ( bool sync_client, core::IArResourceSubsystem* subsystem )
 {
-	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+	gpu::GraphicsContext* gfx = static_cast<RrTextureMasterSubsystem*>(subsystem)->GetGraphicsContext();
 
 	switch (loadState)
 	{
@@ -113,14 +114,14 @@ bool RrTexture::OnStreamStepProcedural ( bool sync_client )
 			// Unmap and upload
 			loadInfo->pixelBuffer[0].unmap(NULL);
 			m_texture.allocate(info.type, info.internalFormat, info.width, info.height, info.depth, info.levels);
-			m_texture.upload(loadInfo->pixelBuffer[0], 0, 0);
+			m_texture.upload(gfx, loadInfo->pixelBuffer[0], 0, 0);
 
 			// Create a signal to wait on
 			gfx->signal(&loadInfo->pixelSync);
 
 			// And we next want to wait on the load.
 			loadState = kTextureLoadState_GPUImage;
-			return OnStreamStep(sync_client);
+			return OnStreamStep(sync_client, subsystem);
 		}
 		return false;
 
@@ -157,9 +158,9 @@ bool RrTexture::OnStreamStepProcedural ( bool sync_client )
 	}
 }
 
-bool RrTexture::OnStreamStepDisk ( bool sync_client )
+bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem* subsystem )
 {
-	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+	gpu::GraphicsContext* gfx = static_cast<RrTextureMasterSubsystem*>(subsystem)->GetGraphicsContext();
 
 	switch (loadState)
 	{
@@ -210,7 +211,7 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client )
 			uint64_t size_Flat = core::kTextureFormat_SuperlowByteSize / core::gfx::tex::getColorFormatByteSize(info.internalFormat);
 			uint64_t size_Width = (uint64_t)sqrt(size_Flat);
 			loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, info.type, info.internalFormat, size_Width, size_Width, 1); // TODO: Take format into account.
-			void* target = loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferStatic);
+			void* target = loadInfo->pixelBuffer[0].map(gfx, gpu::kTransferStatic);
 
 			// Load the data in:
 			loadInfo->loader.m_buffer_Superlow = target; // Target set here
@@ -220,15 +221,15 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client )
 			loadInfo->loader.m_loadOnlySuperlow = false;
 
 			// Unmap and upload
-			loadInfo->pixelBuffer[0].unmap(NULL);
-			m_texture.upload(loadInfo->pixelBuffer[0], info.levels - 1, 0);
+			loadInfo->pixelBuffer[0].unmap(gfx);
+			m_texture.upload(gfx, loadInfo->pixelBuffer[0], info.levels - 1, 0);
 
 			// Create a signal to wait on
 			gfx->signal(&loadInfo->pixelSync);
 
 			// And we next want to wait on the load.
 			loadState = kTextureLoadState_GPUSuperlow;
-			return OnStreamStep(sync_client);
+			return OnStreamStep(sync_client, subsystem);
 		}
 		return false;
 
@@ -268,7 +269,7 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client )
 					uint16_t level_depth	= std::max<uint16_t>(1, loadInfo->loader.info.depth / math::exp2(loadInfo->level));
 
 					loadInfo->pixelBuffer[loadInfo->level].initAsTextureBuffer(NULL, info.type, info.internalFormat, level_width, level_height, level_depth);
-					void* target = loadInfo->pixelBuffer[loadInfo->level].map(NULL, gpu::kTransferStatic);
+					void* target = loadInfo->pixelBuffer[loadInfo->level].map(gfx, gpu::kTransferStatic);
 
 					// Go to the waiting step before we dispatch
 					loadInfo->unpack_step = kTextureUnpack1_WaitForDispatch;
@@ -289,8 +290,8 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client )
 				if (loadInfo->unpack_step == kTextureUnpack2_Upload)
 				{
 					// Unmap and upload
-					loadInfo->pixelBuffer[loadInfo->level].unmap(NULL);
-					m_texture.upload(loadInfo->pixelBuffer[loadInfo->level], loadInfo->level, 0);
+					loadInfo->pixelBuffer[loadInfo->level].unmap(gfx);
+					m_texture.upload(gfx, loadInfo->pixelBuffer[loadInfo->level], loadInfo->level, 0);
 
 					// If we're not forcing sync, we need to wait until we're done uploading that texture level.
 					if (!sync_client)
@@ -299,7 +300,7 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client )
 						loadInfo->pixelSync.init();
 						gfx->signal(&loadInfo->pixelSync);
 						loadInfo->uploading = true;
-						return OnStreamStep(sync_client);
+						return OnStreamStep(sync_client, subsystem);
 					}
 					// If we're forcing sync, we can immediately go to waiting on the texture.
 					else
@@ -374,7 +375,7 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client )
 
 				// Mark done.
 				loadState = kTextureLoadState_Done;
-				return OnStreamStep(sync_client);
+				return OnStreamStep(sync_client, subsystem);
 			}
 		}
 		return false;

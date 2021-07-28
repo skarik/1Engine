@@ -2,6 +2,7 @@
 #ifdef GPU_API_DIRECTX11
 
 #include "./Device.dx11.h"
+#include "./BaseContext.dx11.h"
 #include "./Buffers.dx11.h"
 #include "./Internal/Enums.dx11.h"
 
@@ -290,14 +291,14 @@ int gpu::Buffer::initAsTextureBuffer (
 	return kError_SUCCESS;
 }
 
-void* gpu::Buffer::map ( Device* device, const TransferStyle style )
+void* gpu::Buffer::map ( BaseContext* context, const TransferStyle style )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
-	if (device == NULL) device = getDevice();
+	ID3D11DeviceContext* ctx = (context == nullptr) ? gpu::getDevice()->getImmediateContext() : (ID3D11DeviceContext*)context->getNativeContext();
 	HRESULT result;
 
 	D3D11_MAPPED_SUBRESOURCE resource;
-	result = device->getNativeContext()->Map((ID3D11Resource*)m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource); 
+	result = ctx->Map((ID3D11Resource*)m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource); 
 	if (FAILED(result))
 	{
 		throw core::OutOfMemoryException(); // TODO: Handle this better.
@@ -343,10 +344,10 @@ void* gpu::Buffer::map ( Device* device, const TransferStyle style )
 	//todo: correct flags
 	return resource.pData;
 }
-int gpu::Buffer::unmap ( Device* device )
+int gpu::Buffer::unmap ( BaseContext* context )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
-	if (device == NULL) device = getDevice();
+	ID3D11DeviceContext* ctx = (context == nullptr) ? gpu::getDevice()->getImmediateContext() : (ID3D11DeviceContext*)context->getNativeContext();
 
 #	if GPU_API_DEBUG_MAP_OVERRUNS
 	if (m_intermediateBuffer != nullptr)
@@ -360,31 +361,30 @@ int gpu::Buffer::unmap ( Device* device )
 	}
 #	endif
 
-	device->getNativeContext()->Unmap((ID3D11Buffer*)m_buffer, 0);
+	ctx->Unmap((ID3D11Buffer*)m_buffer, 0);
 	
 	return kError_SUCCESS;
 }
 
 //	upload( data, data_size, transfer ) : upload a buffer with data
-int	gpu::Buffer::upload ( Device* device, void* data, const  uint64_t data_size, const TransferStyle style )
+int	gpu::Buffer::upload ( BaseContext* context, void* data, const  uint64_t data_size, const TransferStyle style )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
-	if (device == NULL) device = getDevice();
 
-	void* data_target = map(device, style);
+	void* data_target = map(context, style);
 		memcpy(data_target, data, data_size);
-	unmap(device);
+	unmap(context);
 
 	return kError_SUCCESS;
 }
 
 //	upload( data, data_size, transfer ) : initializes and upload a constant buffer with data
-int	gpu::Buffer::uploadElements ( Device* device, void* data, const  uint64_t element_count, const TransferStyle style )
+int	gpu::Buffer::uploadElements ( BaseContext* context, void* data, const  uint64_t element_count, const TransferStyle style )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
 	ARCORE_ASSERT(m_elementSize != 0);
 
-	return upload(device, data, m_elementSize * element_count, style);
+	return upload(context, data, m_elementSize * element_count, style);
 }
 
 //	free() : destroys any allocated buffer, if existing.

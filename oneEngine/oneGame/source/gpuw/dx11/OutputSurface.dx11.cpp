@@ -14,6 +14,8 @@ int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32
 {
 	HRESULT result;
 
+	m_device = device;
+
 	DXGI_SWAP_CHAIN_DESC swapchain_desc = {};
 	swapchain_desc.BufferDesc.Width = width;
 	swapchain_desc.BufferDesc.Height = height;
@@ -115,6 +117,10 @@ uint32_t gpu::OutputSurface::getWidth ( void )
 uint32_t gpu::OutputSurface::getHeight ( void )
 {
 	return m_height;
+}
+gpu::Device* gpu::OutputSurface::getDevice ( void )
+{
+	return m_device;
 }
 
 #endif

@@ -157,7 +157,7 @@ bool RrShapeIsosphere::PreRender ( rrCameraPass* cameraPass )
 // Render the mesh
 bool RrShapeIsosphere::Render ( const rrRenderParams* params )
 {
-	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+	gpu::GraphicsContext* gfx = params->context_graphics;
 
 	gpu::Pipeline* pipeline = GetPipeline( params->pass );
 	gfx->setPipeline(pipeline);

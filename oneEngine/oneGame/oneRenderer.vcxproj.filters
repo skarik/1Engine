@@ -638,5 +638,8 @@
     <ClInclude Include="source\renderer\texture\RrAtlasedTexture.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
+    <ClInclude Include="source\renderer\types\id.h">
+      <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

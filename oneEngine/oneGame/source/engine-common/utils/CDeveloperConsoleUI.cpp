@@ -177,7 +177,7 @@ bool CDeveloperConsoleUI::Render ( const rrRenderParams* params )
 		if ( t_indexCount == 0 || t_meshBuffer == NULL || !t_meshBuffer->m_mesh_uploaded )
 			return true; // Only render when have a valid mesh and rendering enabled
 
-		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+		gpu::GraphicsContext* gfx = params->context_graphics;
 
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
@@ -284,7 +284,7 @@ bool CDeveloperCursor::Render ( const rrRenderParams* params )
 		if ( m_indexCount == 0 || !m_meshBuffer.m_mesh_uploaded )
 			return true; // Only render when have a valid mesh and rendering enabled
 
-		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+		gpu::GraphicsContext* gfx = params->context_graphics;
 
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);

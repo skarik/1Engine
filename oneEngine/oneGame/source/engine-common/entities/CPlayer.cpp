@@ -19,7 +19,7 @@ CPlayer::CPlayer ( void )
 
 	// ===Camera===
 	//m_cameraUpdateType	= (stateFunc_t)&CPlayer::camDefault;
-	pCamera	= new RrCamera ();
+	pCamera	= new RrCamera (false);
 	pCamera->SetActive();
 	
 	fTurnSensitivity	= 1;

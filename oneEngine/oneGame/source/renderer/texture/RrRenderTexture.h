@@ -139,6 +139,11 @@ public:
 	RENDER_API const bool IsValid ( void ) const {
 		return rtInfo.active;
 	}*/
+
+	RENDER_API gpu::RenderTarget*
+							GetRenderTarget ( void )
+		{ return &m_rt; }
+
 protected:
 	// Private routines
 	//virtual void GenerateFramebuffer ( void );

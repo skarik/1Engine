@@ -54,8 +54,11 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	// Initialize input
 	core::Input::Initialize();
 
+	// Create renderer
+	RrRenderer* aRenderer = new RrRenderer(); // passing null creates default resource manager
+
 	// Create Window
-	RrWindow aWindow ( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
+	RrWindow aWindow ( aRenderer, hPrevInstance, lpCmdLine, nCmdShow );
 	if (!aWindow.Show())
 	{
 		debug::Console->PrintError( "Could not show windowing system.\n" );
@@ -72,9 +75,9 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	// Set the window title
 	aWindow.SetTitle("1Engine Test: Core Modules");
 
-	// Create Renderstate
-	RrRenderer* aRenderer = new RrRenderer(NULL); // passing null creates default resource manager
-	aWindow.AttachRenderer(aRenderer); // Set the window's renderer (multiple possible render states)
+	// Set up renderer
+	aRenderer->AddWorldDefault();
+	aRenderer->AddOutput(RrOutputInfo(nullptr, &aWindow)); // Create an output using the window
 
 	// Init Physics
 	PrPhysics::Active()->Initialize();
@@ -90,7 +93,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	debug::Console->PrintMessage( "holy shit it's STEAMy!\n" );
 
 	// Create the game scene
-	RrCamera* l_cam = new RrCamera;
+	RrCamera* l_cam = new RrCamera(false);
 	engine::Sound* l_music = core::Orphan(engine::Audio.PlaySound("Music.TestAudio"));
 	l_music->SetLooped(true);
 	l_music->SetGain(0.0F);
@@ -165,6 +168,8 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 			TimeProfiler.EndTimeProfile( "MN_renderer" );
 			// Clear all inputs
 			core::Input::PreUpdate();
+			// Update the resource system
+			core::ArResourceManager::Active()->Update();
 			// Update the title with the framerate
 			char szTitle[512] = {0};
 			sprintf(szTitle, "1Engine Test: Core Modules, (FPS: %d) (FT: %d ms)", int(1.0F / Time::smoothDeltaTime), int(Time::smoothDeltaTime * 1000.0F));

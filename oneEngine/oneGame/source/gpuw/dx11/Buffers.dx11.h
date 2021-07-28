@@ -13,6 +13,7 @@ namespace gpu
 	class Device;
 	class GraphicsContext;
 	class ComputeContext;
+	class BaseContext;
 
 	enum BufferType
 	{
@@ -74,15 +75,15 @@ namespace gpu
 		);
 
 		//	map( device, style ) : Maps the entire buffer to CPU-side memory and returns the address.
-		GPUW_API void*			map ( Device* device, const TransferStyle style );
+		GPUW_API void*			map ( BaseContext* context, const TransferStyle style );
 		//	unmap( device ) : Unmaps the buffer.
 		// If the mapping was Static, this is a synchronous operation, waiting for the data to upload to the device.
-		GPUW_API int			unmap ( Device* device );
+		GPUW_API int			unmap ( BaseContext* context );
 
 		//	upload( data, data_size, transfer ) : upload a buffer with data
-		GPUW_API int			upload ( Device* device, void* data, const uint64_t data_size, const TransferStyle style );
+		GPUW_API int			upload ( BaseContext* context, void* data, const uint64_t data_size, const TransferStyle style );
 		//	uploadElements()
-		GPUW_API int			uploadElements ( Device* device, void* data, const uint64_t element_count, const TransferStyle style );
+		GPUW_API int			uploadElements ( BaseContext* context, void* data, const uint64_t element_count, const TransferStyle style );
 
 		//	free() : destroys any allocated buffer, if existing.
 		// Assume that any use of the buffer after this point will be invalid, so avoid 1-frame buffers if possible

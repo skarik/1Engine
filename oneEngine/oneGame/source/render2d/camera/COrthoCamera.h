@@ -41,13 +41,13 @@ public:
 
 public:
 	// Construct orthographic camera
-	RENDER2D_API explicit		COrthoCamera ( void );
+	RENDER2D_API explicit		COrthoCamera ( bool isTransient );
 
 	// Camera position setup
 	RENDER2D_API void UpdateMatrix ( void ) override;
 
 	// Update parameters needed for 2D rendering
-	RENDER2D_API void RenderBegin ( void ) override;
+	RENDER2D_API void RenderBegin ( gpu::GraphicsContext* graphics_context ) override;
 };
 
 #endif//_RENDER2D_C_ORTHO_CAMERA_H_

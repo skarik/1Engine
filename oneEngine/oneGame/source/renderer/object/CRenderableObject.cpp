@@ -26,7 +26,8 @@ CRenderableObject::CRenderableObject ( void )
 	// TODO: Should renderables get a default forward pass?
 
 	//renderLayer = renderer::kRLWorld;
-	id = RrRenderer::Active->AddRO( this );
+	//id = RrRenderer::Active->AddRO( this );
+	RrRenderer::Listings::AddToUnsorted(this, id);
 	visible = true;
 }
 
@@ -36,7 +37,8 @@ CRenderableObject::CRenderableObject ( void )
 CRenderableObject::~CRenderableObject ( void )
 {
 	// Remove the object from the list immediately
-	RrRenderer::Active->RemoveRO( id );
+	//RrRenderer::Active->RemoveRO( id );
+	RrRenderer::Listings::GetWorld(id)->RemoveObject(this);
 
 	// Remove material reference
 	//SetMaterial( NULL );
@@ -48,13 +50,20 @@ CRenderableObject::~CRenderableObject ( void )
 	FreePipelines();
 }
 
+void CRenderableObject::AddToWorld ( RrWorld* world )
+{
+	ARCORE_ASSERT(id.world_index == rrId::kWorldInvalid);
+	RrRenderer::Listings::RemoveFromUnsorted(this, id);
+	id = world->AddObject(this);
+}
+
 // == Private Setters ==
 
-// Private ID 'safe' set
-void CRenderableObject::SetId( unsigned int nId )
-{
-	id = nId;
-}
+//// Private ID 'safe' set
+//void CRenderableObject::SetId( unsigned int nId )
+//{
+//	id = nId;
+//}
 
 // == Public Setters ==
 
@@ -353,10 +362,7 @@ void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform
 // Creates a copy of passData without changing reference counts.
 void CRenderableObject::PassInitWithInput ( int pass, RrPass* passData )
 {
-	if (pass < 0 || pass >= kPass_MaxPassCount)
-	{
-		throw core::InvalidArgumentException();
-	}
+	ARCORE_ASSERT(pass >= 0 || pass < kPass_MaxPassCount);
 
 	// Ensure vertex data exists
 	ARCORE_ASSERT_MSG(passData->m_vertexSpecification != NULL, "Cannot initialize a pass without setting the vertex specification.");
@@ -375,10 +381,7 @@ void CRenderableObject::PassInitWithInput ( int pass, RrPass* passData )
 
 void CRenderableObject::PassFree ( int pass )
 {
-	if (pass < 0 || pass >= kPass_MaxPassCount)
-	{
-		throw core::InvalidArgumentException();
-	} 
+	ARCORE_ASSERT(pass >= 0 || pass < kPass_MaxPassCount);
 
 	// Remove the previous pass, and decrement references then.
 	if (m_passEnabled[pass])
@@ -401,20 +404,14 @@ void CRenderableObject::PassFree ( int pass )
 
 renderer::cbuffer::rrPerObjectSurface& CRenderableObject::PassGetSurface ( int pass )
 {
-	if (pass < 0 || pass >= kPass_MaxPassCount)
-	{
-		throw core::InvalidArgumentException();
-	} 
+	ARCORE_ASSERT(pass >= 0 || pass < kPass_MaxPassCount);
 	m_passSurfaceSynced[pass] = false;
 	return m_passes[pass].m_surface;
 }
 
 RrPass::SafeAccessor CRenderableObject::PassAccess ( int pass )
 {
-	if (pass < 0 || pass >= kPass_MaxPassCount)
-	{
-		throw core::InvalidArgumentException();
-	} 
+	ARCORE_ASSERT(pass >= 0 || pass < kPass_MaxPassCount);
 	return RrPass::SafeAccessor(&m_passes[pass]);
 }
 

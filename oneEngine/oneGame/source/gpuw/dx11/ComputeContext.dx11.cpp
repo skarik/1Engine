@@ -21,7 +21,7 @@
 #include <stdio.h>
 
 
-gpu::ComputeContext::ComputeContext ( void* wrapperDevice )
+gpu::ComputeContext::ComputeContext ( Device* wrapperDevice )
 {
 	HRESULT			result;
 	gpu::Device*	gpuDevice = (gpu::Device*)wrapperDevice;
@@ -58,7 +58,7 @@ int gpu::ComputeContext::submit ( void )
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
 	ctx->FinishCommandList(FALSE, &commandList); // Finalize all commands thrown in.
-	gpuDevice->getNativeContext()->ExecuteCommandList(commandList, FALSE);
+	gpuDevice->getImmediateContext()->ExecuteCommandList(commandList, FALSE);
 
 	return gpu::kError_SUCCESS;
 }

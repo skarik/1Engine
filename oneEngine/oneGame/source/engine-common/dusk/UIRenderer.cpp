@@ -121,7 +121,7 @@ bool dusk::UIRenderer::Render ( const rrRenderParams* params )
 {
 	if (m_renderTargetTexture->valid())
 	{
-		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+		gpu::GraphicsContext* gfx = params->context_graphics;
 
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		// Set up the material helper...
@@ -373,7 +373,7 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	//
 	// Rendering
 
-	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+	gpu::GraphicsContext* gfx = params->context_graphics;
 	gfx->debugGroupPush("dusk::ERRenderElements");
 
 	// Set up the target buffer

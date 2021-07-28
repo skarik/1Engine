@@ -7,8 +7,8 @@
 #include "COrthoCamera.h"
 
 // Construct orthographic camera
-COrthoCamera::COrthoCamera ( void )
-	: RrCamera()
+COrthoCamera::COrthoCamera ( bool isTransient )
+	: RrCamera(isTransient)
 {
 	pixel_scale_aspect_ratio= (Real)Screen::Info.width/(Real)Screen::Info.height;
 	pixel_scale_mode		= ORTHOSCALE_MODE_CONSTANT;
@@ -66,7 +66,7 @@ void COrthoCamera::UpdateMatrix ( void )
 }
 
 // Update parameters needed for 2D rendering
-void COrthoCamera::RenderBegin ( void )
+void COrthoCamera::RenderBegin ( gpu::GraphicsContext* graphics_context )
 {
 	/*RrMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( kRenderModeDeferred, renderer::kPipelineMode2DPaletted );
 	palette_pass_material->setTexture(TEX_SLOT5, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
@@ -76,8 +76,8 @@ void COrthoCamera::RenderBegin ( void )
 	SceneRenderer->GetDeferredBuffer()->SetFilter( SamplingPoint );*/
 
 	// Set the 2D pipeline mode
-	RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
+	//RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
 
 	// Set up the camera normally
-	RrCamera::RenderBegin();
+	RrCamera::RenderBegin(graphics_context);
 }

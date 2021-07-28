@@ -29,8 +29,11 @@ void core::ArResourceManager::SetSubsystem ( const core::arResourceType resource
 {
 	if (resource_type != core::kResourceType_MAX)
 	{
-		subsystem->m_manager = this;
-		subsystem->m_subsystemType = resource_type;
+		if (subsystem != nullptr)
+		{
+			subsystem->m_manager = this;
+			subsystem->m_subsystemType = resource_type;
+		}
 		m_resourceSubsystems[resource_type] = subsystem;
 	}
 	else
@@ -58,52 +61,91 @@ void core::ArResourceManager::FileUpdate ( void )
 	// TODO: Check all the resources for disk changes:
 }
 
+void core::ArResourceManager::UpdateResources ( const core::arResourceType resource_type )
+{
+	if (m_resourceLoadCounts[resource_type] != 0)
+	{
+		// Loop through the resource list:
+		size_t i_max = m_resourceLoadLists[resource_type].size();
+		for (size_t i = 0; i < i_max; ++i)
+		{
+			IArResource* resource = m_resourceLoadLists[resource_type][i];
+			if (resource != NULL)
+			{
+				// Step the streamed loader:
+				bool doneLoading = false;
+				if (resource->IsStreamedLoad())
+				{
+					doneLoading = resource->OnStreamStep(false, m_resourceSubsystems[resource_type]);
+				}
+				// Force the streamed loader:
+				else
+				{
+					doneLoading = true;
+					while (resource->OnStreamStep(true, m_resourceSubsystems[resource_type]) == false)
+					{
+						// Make sure we have a "BetweenStreamStep" in case something needs to be submitted.
+						if (m_resourceSubsystems[resource_type] != NULL)
+						{
+							m_resourceSubsystems[resource_type]->OnBetweenStreamStep(resource);
+						}
+					}
+				}
+				// Remove from load list when done:
+				if (doneLoading)
+				{
+					m_resourceLoadLists[resource_type][i] = NULL;
+					m_resourceLoadCounts[resource_type] -= 1;
+				}
+			}
+		}
+	}
+}
+
 // Step per frame for updating the streaming system
 void core::ArResourceManager::Update ( void )
 {
 	// Loop through all the load counts and check if there is something to load:
 	for (int i_resourceType = 0; i_resourceType < core::kResourceType_MAX; ++i_resourceType)
 	{
+		bool bAutoUpdateResources = m_resourceSubsystems[i_resourceType] == NULL || m_resourceSubsystems[i_resourceType]->IsResourceTypeAutoUpdated();
+		bool bAutoUpdateSubsystem = m_resourceSubsystems[i_resourceType] != NULL && m_resourceSubsystems[i_resourceType]->IsSubsystemAutoUpdated();
+
 		// Is there something here to load?
-		if (m_resourceLoadCounts[i_resourceType] != 0)
+		if (bAutoUpdateResources)
 		{
-			// Loop through the resource list:
-			size_t i_max = m_resourceLoadLists[i_resourceType].size();
-			for (size_t i = 0; i < i_max; ++i)
-			{
-				IArResource* resource = m_resourceLoadLists[i_resourceType][i];
-				if (resource != NULL)
-				{
-					// Step the streamed loader:
-					bool doneLoading = false;
-					if (resource->IsStreamedLoad())
-					{
-						doneLoading = resource->OnStreamStep(false);
-					}
-					// Force the streamed loader:
-					else
-					{
-						doneLoading = true;
-						while (resource->OnStreamStep(true) == false) {}
-					}
-					// Remove from load list when done:
-					if (doneLoading)
-					{
-						m_resourceLoadLists[i_resourceType][i] = NULL;
-						m_resourceLoadCounts[i_resourceType] -= 1;
-					}
-				}
-			}
+			UpdateResources((core::arResourceType)i_resourceType);
 		}
-		
+
 		// Update the subsystem:
-		if (m_resourceSubsystems[i_resourceType] != NULL)
+		if (bAutoUpdateSubsystem)
 		{
 			m_resourceSubsystems[i_resourceType]->Update();
 		}
 	}
 
 	//
+}
+
+void core::ArResourceManager::UpdateManual ( const core::arResourceType resource_type )
+{
+	bool bAutoUpdateResources = m_resourceSubsystems[resource_type] == NULL || m_resourceSubsystems[resource_type]->IsResourceTypeAutoUpdated();
+	bool bAutoUpdateSubsystem = m_resourceSubsystems[resource_type] != NULL && m_resourceSubsystems[resource_type]->IsSubsystemAutoUpdated();
+
+	// This is a bad call if it's duplicated auto-update.
+	ARCORE_ASSERT(!bAutoUpdateResources || !bAutoUpdateSubsystem);
+
+	// Is there something here to load?
+	if (!bAutoUpdateResources)
+	{
+		UpdateResources(resource_type);
+	}
+
+	// Update the subsystem:
+	if (!bAutoUpdateSubsystem)
+	{
+		m_resourceSubsystems[resource_type]->Update();
+	}
 }
 
 IArResource* core::ArResourceManager::Find ( const core::arResourceType resource_type, const char* resource_name )
@@ -172,13 +214,18 @@ void core::ArResourceManager::Add ( IArResource* resource )
 		m_resourceLoadLists[resource_type].push_back(resource);
 		m_resourceLoadCounts[resource_type] += 1;
 		// Perform first stream step immediately:
-		resource->OnStreamStep(false);
+		resource->OnStreamStep(false, m_resourceSubsystems[resource_type]);
 	}
 	else
 	{
 		// Not streamed? Loop until we're done loading.
-		while (resource->OnStreamStep(true) == false) {
-			// Loading.
+		while (resource->OnStreamStep(true, m_resourceSubsystems[resource_type]) == false)
+		{
+			// Make sure we have a "BetweenStreamStep" in case something needs to be submitted.
+			if (m_resourceSubsystems[resource_type] != NULL)
+			{
+				m_resourceSubsystems[resource_type]->OnBetweenStreamStep(resource);
+			}
 		}
 	}
 

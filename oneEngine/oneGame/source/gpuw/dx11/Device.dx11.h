@@ -4,6 +4,7 @@
 #include "core/types/types.h"
 #include "renderer/types/types.h"
 #include "gpuw/Public/Transfer.h"
+#include "./BaseContext.dx11.h"
 #include "./GraphicsContext.dx11.h"
 #include "./ComputeContext.dx11.h"
 #include "./gpu.h"
@@ -20,37 +21,40 @@ namespace gpu
 		kDeviceLayerDebug,
 	};
 
+	enum DeviceFeature
+	{
+		kDeviceFeatureRaytracing,
+	};
+
 	class Device
 	{
 	public:
 		// Non-exposed API for creating device.
 		GPUW_EXLUSIVE_API explicit
-								Device ( intptr_t module_handle, intptr_t module_window );
+								Device ( void );
 		// Non-exposed API for destroying device.
 		GPUW_EXLUSIVE_API		~Device ( void );
 
 		// Non-exposed API for initializing the device. (before OutputSurface ready)
-		GPUW_EXLUSIVE_API int	create ( DeviceLayer* layers, uint32_t layerCount );
+		GPUW_EXLUSIVE_API int	create ( DeviceFeature* features, uint32_t featureCount, DeviceLayer* layers, uint32_t layerCount );
 		// Non-exposed API for starting up the device. (after OutputSurface ready)
 		GPUW_EXLUSIVE_API int	initialize ( OutputSurface* surface );
 		// Non-exposed API for refreshing the device
-		GPUW_EXLUSIVE_API int	refresh ( intptr_t module_handle, intptr_t module_window );
+		//GPUW_EXLUSIVE_API int	refresh ( intptr_t module_handle, intptr_t module_window );
 
 		// Grabs the graphics context for the device.
-		GPUW_API GraphicsContext*
-								getContext ( void );
+		//GPUW_API GraphicsContext*
+		//						getContext ( void );
 		// Grabs the first compute-enabled context for the device.
-		GPUW_API ComputeContext*
-								getComputeContext ( void );
+		//GPUW_API ComputeContext*
+		//						getComputeContext ( void );
 
 		// Non-exposed API for grabbing native device
-		GPUW_EXLUSIVE_API ID3D11Device*
-								getNative ( void );
+		ID3D11Device*			getNative ( void );
 		// Non-exposed API for allocating memory
-		GPUW_EXLUSIVE_API void*	allocateMemory ( uint32_t typeFlags, uint64_t size, uint64_t offset );
-		// Non-exposed API for grabbing native device context
-		GPUW_EXLUSIVE_API ID3D11DeviceContext*
-								getNativeContext ( void );
+		void*					allocateMemory ( uint32_t typeFlags, uint64_t size, uint64_t offset );
+		// Non-exposed API for grabbing the immediate device context
+		ID3D11DeviceContext*	getImmediateContext ( void );
 	private:
 		friend OutputSurface;
 		intptr_t			mw_module;
@@ -93,11 +97,12 @@ namespace gpu
 							m_debugCallback;
 							*/
 
-		GraphicsContext*	m_graphicsContext;
-		ComputeContext*		m_computeContext;
+		//GraphicsContext*	m_graphicsContext;
+		//ComputeContext*		m_computeContext;
 	};
 
 	GPUW_API Device* getDevice ( void );
+	GPUW_API void setActiveDevice ( Device* );
 
 }
 

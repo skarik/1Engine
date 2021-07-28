@@ -56,8 +56,11 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	// Initialize input
 	core::Input::Initialize();
 
-	// Create Window
-	RrWindow aWindow ( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
+	// Create renderer
+	RrRenderer* aRenderer = new RrRenderer();
+
+	// Create main window
+	RrWindow aWindow ( aRenderer, hInstance, lpCmdLine, nCmdShow );
 	if (!aWindow.Show())
 	{
 		debug::Console->PrintError( "Could not show windowing system.\n" );
@@ -70,10 +73,10 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	core::shell::SetTaskbarProgressHandle(aWindow.OsShellHandle());
 	core::shell::SetTaskbarProgressValue(NIL, 100, 100);
 	core::shell::SetTaskbarProgressState(NIL, core::shell::kTaskbarStateIndeterminate);
-
-	// Create Renderstate
-	RrRenderer* aRenderer = new RrRenderer(NULL); // passing null creates default resource manager
-	aWindow.AttachRenderer(aRenderer); // Set the window's renderer (multiple possible render states)
+	
+	// Set up renderer
+	aRenderer->AddWorldDefault();
+	aRenderer->AddOutput(RrOutputInfo(nullptr, &aWindow)); // Create an output using the window
 
 	// Init Physics
 	PrPhysics::Active()->Initialize();
@@ -148,6 +151,8 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 			TimeProfiler.EndTimeProfile( "MN_renderer" );
 			// Clear all inputs
 			core::Input::PreUpdate();
+			// Update resources
+			core::ArResourceManager::Active()->Update();
 		}
 		// Check for exiting type of input
 		if ( aWindow.IsActive() )

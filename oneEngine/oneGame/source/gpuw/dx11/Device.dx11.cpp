@@ -20,9 +20,9 @@ gpu::Device* gpu::getDevice ( void )
 	return m_TargetDisplayDevice;
 }
 
-gpu::Device::Device ( intptr_t module_handle, intptr_t module_window )
-	: mw_module(module_handle), mw_window(module_window),
-	m_graphicsContext(NULL), m_computeContext(NULL)
+gpu::Device::Device ( void )
+	//: mw_module(module_handle), mw_window(module_window),
+	//m_graphicsContext(NULL), m_computeContext(NULL)
 	//m_layers(NULL), m_layerCount(0)
 {}
 gpu::Device::~Device ( void )
@@ -40,11 +40,11 @@ gpu::Device::~Device ( void )
 		mw_deviceContext = NIL;
 	}*/
 
-	delete m_graphicsContext;
-	delete m_computeContext;
+	//delete m_graphicsContext;
+	//delete m_computeContext;
 }
 
-int gpu::Device::create ( DeviceLayer* layers, uint32_t layerCount )
+int gpu::Device::create ( DeviceFeature* features, uint32_t featureCount, DeviceLayer* layers, uint32_t layerCount )
 {
 	//IDXGIFactory	*dx_factory;
 	std::vector<IDXGIAdapter*>
@@ -167,18 +167,18 @@ int gpu::Device::initialize ( OutputSurface* surface )
 	return gpu::kError_SUCCESS;
 }
 
-int gpu::Device::refresh ( intptr_t module_handle, intptr_t module_window )
-{
-	// Update context
-	mw_module = module_handle;
-	mw_window = module_window;
+//int gpu::Device::refresh ( intptr_t module_handle, intptr_t module_window )
+//{
+//	// Update context
+//	mw_module = module_handle;
+//	mw_window = module_window;
+//
+//	// The output surface now has to be recreated, but is done by the caller.
+//
+//	return gpu::kError_SUCCESS;
+//}
 
-	// The output surface now has to be recreated, but is done by the caller.
-
-	return gpu::kError_SUCCESS;
-}
-
-gpu::GraphicsContext* gpu::Device::getContext ( void )
+/*gpu::GraphicsContext* gpu::Device::getContext ( void )
 {
 	if (m_graphicsContext == NULL) {
 		m_graphicsContext = new gpu::GraphicsContext(this);
@@ -192,7 +192,7 @@ gpu::ComputeContext* gpu::Device::getComputeContext ( void )
 		m_computeContext = new gpu::ComputeContext(this);
 	}
 	return m_computeContext;
-}
+}*/
 
 // Grab native device object
 ID3D11Device* gpu::Device::getNative ( void )
@@ -200,7 +200,7 @@ ID3D11Device* gpu::Device::getNative ( void )
 	return m_dxDevice;
 }
 
-ID3D11DeviceContext* gpu::Device::getNativeContext ( void )
+ID3D11DeviceContext* gpu::Device::getImmediateContext ( void )
 {
 	return m_dxImmediateContext;
 }

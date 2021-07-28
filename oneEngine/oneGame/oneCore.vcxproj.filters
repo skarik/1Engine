@@ -418,6 +418,9 @@
     <ClInclude Include="source\core-ext\containers\osfstructure.h">
       <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\containers\araccessor.h">
+      <Filter>SOURCE\Core\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">

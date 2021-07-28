@@ -14,6 +14,8 @@
 #include "core/math/Vector3.h"
 #include "core-ext/transform/Transform.h"
 
+#include "core/containers/araccessor.h"
+
 //#include "GLCommon.h"
 //#include "glMainSystem.h"
 //#include "renderer/material/RrMaterial.h"
@@ -22,6 +24,7 @@
 
 #include "renderer/types/RrObjectMaterialProperties.h"
 #include "renderer/types/ObjectSettings.h"
+#include "renderer/types/id.h"
 
 #include "renderer/material/RrPass.h"
 #include "gpuw/Pipeline.h"
@@ -33,10 +36,12 @@
 class RrRenderer;
 class RrPass;
 class RrCamera;
+class RrWorld;
 namespace renderer
 {
 	class Material;
 }
+struct rrRenderRequestSorter;
 
 typedef void (*rrMaterialRenderFunction)(renderer::Material*);
 
@@ -63,10 +68,12 @@ public:
 	// Provided as input to all functions render routine.
 	struct rrRenderParams
 	{
-		int8_t pass;
+		int8_t			pass;
 		gpu::Buffer*	cbuf_perPass;
 		gpu::Buffer*	cbuf_perFrame;
 		gpu::Buffer*	cbuf_perCamera;
+		gpu::GraphicsContext*
+						context_graphics;
 	};
 
 private:
@@ -77,6 +84,9 @@ public:
 	RENDER_API explicit		CRenderableObject ( void );
 	RENDER_API virtual		~CRenderableObject ( void );
 
+	RENDER_API void			AddToWorld ( RrWorld* world );
+
+	RENDER_API virtual bool	IsInstantiatable ( void ) { return false; }
 protected:
 	// Returns of material placement can be edited
 	/*virtual bool			GetPassMaterialConst ( const char pass ) { return false; }
@@ -95,11 +105,11 @@ public:
 		{ return true; }
 	//	Render(const rrRenderParams* params) : Current pass
 	RENDER_API virtual bool	Render ( const rrRenderParams* params ) =0;
-	//	BeginRender() : Called before the render-loop executes.
+	//	BeginRender() : Called before the render-loop executes, outside of the world loop.
 	// Called once per frame.
 	RENDER_API virtual bool	BeginRender ( void )
 		{ return true; }
-	//	EndRender() : Called after the render-loop executes.
+	//	EndRender() : Called after the render-loop executes, outside of the world loop.
 	// Called once per frame.
 	RENDER_API virtual bool	EndRender ( void )
 		{ return true; }
@@ -150,6 +160,28 @@ public:
 	//	PassesFree() : Cleans up and removes resources used by all passes.
 	RENDER_API void			PassesFree ( void );
 
+	RENDER_API bool			PassEnabled ( int pass )
+	{
+		ARCORE_ASSERT(pass >= 0 && pass < kPass_MaxPassCount);
+		return m_passEnabled[pass];
+	}
+	RENDER_API renderer::rrRenderLayer
+							PassLayer ( int pass )
+	{
+		ARCORE_ASSERT(pass >= 0 && pass < kPass_MaxPassCount);
+		return m_passes[pass].m_layer;
+	}
+	RENDER_API rrPassType	PassType ( int pass )
+	{
+		ARCORE_ASSERT(pass >= 0 && pass < kPass_MaxPassCount);
+		return m_passes[pass].m_type;
+	}
+	RENDER_API bool			PassDepthWrite ( int pass )
+	{
+		ARCORE_ASSERT(pass >= 0 && pass < kPass_MaxPassCount);
+		return m_passes[pass].m_depthWrite;
+	}
+
 	// 
 	// Culling/Prerendering Prototypes
 
@@ -197,7 +229,12 @@ public:
 	RrObjectMaterialProperties
 							shaderConstants;
 
+	// Distance from the render pivot
+	float					renderDistance;
+
 private:
+	friend rrRenderRequestSorter;
+
 	RrPass					m_passes [kPass_MaxPassCount];
 	bool					m_passEnabled [kPass_MaxPassCount];
 	bool					m_passSurfaceSynced [kPass_MaxPassCount];
@@ -256,12 +293,20 @@ protected:
 
 private:
 	// Distance from the render pivot
-	float renderDistance;
+	//float renderDistance;
 	// ID values
-	uint32_t id;
-	void SetId ( unsigned int );
+	//uint32_t id;
+	//void SetId ( unsigned int );
 	// Give storage class access to SetId
-	friend RrRenderer;
+	//friend RrRenderer;
+
+	rrId id;
+public:
+	const rrId& GetId ( void ) const
+		{ return id; }
+
+	ARACCESSOR_PRIVATE_EXCLUSIVE_SET(RrRenderer, CRenderableObject, rrId, id);
+	ARACCESSOR_PRIVATE_EXCLUSIVE_SET(RrWorld, CRenderableObject, rrId, id);
 };
 
 // typedef for persons coming from Unity

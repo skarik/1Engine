@@ -107,7 +107,7 @@ bool RrBtDebugDraw::Render ( const rrRenderParams* params )
 		return true;
 	}
 
-	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+	gpu::GraphicsContext* gfx = params->context_graphics;
 
 	// For now, we will render the same way as the 3d meshes render
 	//m_material->m_bufferSkeletonSize = 0;

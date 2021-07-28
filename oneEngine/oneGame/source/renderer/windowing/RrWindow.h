@@ -17,8 +17,8 @@ class RrWindow
 {
 public:
 	RENDER_API explicit		RrWindow(
+		RrRenderer*	renderer,
 		HINSTANCE	hInstance,
-		HINSTANCE	hPrevInstance,
 		LPSTR		lpCmdLine,
 		int			nCmdShow );
 	RENDER_API virtual		~RrWindow ( void );
@@ -28,7 +28,7 @@ public:
 
 	RENDER_API bool			Show ( void );
 	RENDER_API bool			Close ( void );
-	RENDER_API bool			AttachRenderer ( RrRenderer* renderer );
+	//RENDER_API bool			AttachRenderer ( RrRenderer* renderer );
 	RENDER_API bool			Resize ( int width, int height );
 
 	RENDER_API bool			SetFullscreen ( bool fullscreen );
@@ -67,8 +67,8 @@ public:
 		{ return (intptr_t)mw_window; }
 
 	//	GpuDevice() : Returns the GPU device this renderer is using.
-	RENDER_API gpu::Device*	GpuDevice ( void )
-		{ return m_device; }
+	//RENDER_API gpu::Device*	GpuDevice ( void )
+	//	{ return m_device; } // TODO: For DX11, this should be the same across multiple windows.
 
 	//	GpuSurface() : Returns the surface the renderer is currently using.
 	RENDER_API gpu::OutputSurface*
@@ -99,12 +99,12 @@ private:
 	void					CreateConsole ( void );
 	void					RegisterInput ( void ); // windows thing where we register input devices
 
-	void					CreateGfxInstance ( void );
+	//void					CreateGfxInstance ( void );
 	void					CreateGfxSurface ( void );
 	void					CreateGfxSwapchain ( void );
 
 	void					DestroyScreen ( void );
-	void					DestroyGfxInstance ( void );
+	//void					DestroyGfxInstance ( void );
 	void					DestroyGfxSurface ( void );
 
 	void					UpdateMouseClipping ( void );
@@ -128,7 +128,6 @@ private:
 	// OS:
 
 	HINSTANCE	mw_instance;
-	HINSTANCE	mw_previnstance;
 	LPSTR		mw_cmdline;
 	int			mw_cmdshow;
 
@@ -137,7 +136,7 @@ private:
 	// Gfx:
 
 	RrRenderer*			m_renderer;
-	gpu::Device*		m_device;
+	//gpu::Device*		m_device;
 	gpu::OutputSurface	m_surface;
 
 	// Windows Message Loop:

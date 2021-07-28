@@ -4,6 +4,8 @@
 #include "core/types.h"
 #include "gpuw/Public/ShaderTypes.h"
 
+#include "./BaseContext.dx11.h"
+
 namespace gpu
 {
 	class ShaderPipeline;
@@ -13,12 +15,13 @@ namespace gpu
 	class Texture;
 	class Buffer;
 	class RenderTarget;
+	class Device;
 
-	class ComputeContext
+	class ComputeContext : public BaseContext
 	{
 	public:
 		GPUW_EXLUSIVE_API explicit
-								ComputeContext ( void* wrapperDevice );
+								ComputeContext ( Device* wrapperDevice );
 		GPUW_EXLUSIVE_API 		~ComputeContext ( void );
 
 		//	reset() : Resets the context state to defaults.
@@ -68,8 +71,8 @@ namespace gpu
 	private:
 		// implementation details:
 
-		void*					m_wrapperDevice;
-		void*					m_deferredContext;
+		Device*					m_wrapperDevice;
+		//void*					m_deferredContext;
 
 	};
 }

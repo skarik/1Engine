@@ -45,6 +45,9 @@ namespace gpu
 		GPUW_API RenderTarget*
 								getRenderTarget ( void );
 
+		//	activate() : Marks this surface as the next one to be rendered to
+		GPUW_API void			activate ( void );
+
 		//	present() : Tells the driver to display the current renderable surface.
 		// This call may stall.
 		GPUW_API int			present ( void );
@@ -53,6 +56,9 @@ namespace gpu
 		GPUW_API uint32_t		getWidth ( void );
 		//	getHeight() : Returns the width of the current renderable surface
 		GPUW_API uint32_t		getHeight ( void );
+
+		//	getDevice() : Returns the associated device this output is associated with.
+		GPUW_API Device*		getDevice ( void );
 
 	private:
 		friend Device;
@@ -65,7 +71,7 @@ namespace gpu
 
 		void*				m_dxSwapchain;
 		RenderTarget*		m_renderTarget;
-
+		Device*				m_device;
 	};
 }
 

@@ -29,6 +29,9 @@ namespace core
 	};
 
 	typedef uint32_t arResourceHash;
+
+	// Forward declare subsystem: it's passed into resource's OnStreamStep.
+	class IArResourceSubsystem;
 }
 
 // Base resource type.
@@ -68,10 +71,12 @@ public:
 	// Arguments:
 	//	sync_client: True when performing a synchronized stream step.
 	//               When synchronized, some remote commands (GPU) will need to finish before continuing.
+	//	subsystem: Subsystem instance provided for this resource type. Can be null.
+	//             Any casts of this argument must be unsafe - there are no provisions for type strictness.
 	// Returns:
 	//	bool:	False when still loading, True when done.
 	//          The resource will stay in the "loading" list until it is done.
-	CORE_API virtual bool	OnStreamStep ( bool sync_client ) 
+	CORE_API virtual bool	OnStreamStep ( bool sync_client, core::IArResourceSubsystem* subsystem ) 
 		{ return true; }
 };
 

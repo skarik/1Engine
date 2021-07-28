@@ -79,7 +79,7 @@
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
-	  <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -182,6 +182,7 @@
     <ClInclude Include="source\core\callbacks\Events.h" />
     <ClInclude Include="source\core\callback_basics.h" />
     <ClInclude Include="source\core\common.h" />
+    <ClInclude Include="source\core\containers\araccessor.h" />
     <ClInclude Include="source\core\containers\arring.h" />
     <ClInclude Include="source\core\containers\arsingleton.h" />
     <ClInclude Include="source\core\containers\arstring.h" />

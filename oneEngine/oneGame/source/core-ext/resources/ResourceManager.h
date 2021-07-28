@@ -61,6 +61,16 @@ namespace core
 		// Step per frame for updating the streaming system
 		CORE_API void			Update ( void );
 
+		//	UpdateManual(resource_type) : Step per frame of manually updating certain systems
+		//	arguments:
+		//		resource_type: Subsystem and resource types to update.
+		//					   Resource types that are not marked to be manually updated are ignored.
+		//					   If the call does nothing, it will assert.
+		CORE_API void			UpdateManual ( const core::arResourceType resource_type );
+
+	private:
+		void					UpdateResources ( const core::arResourceType resource_type );
+
 	public:
 		core::arResourceManagerSettings
 							m_settings;

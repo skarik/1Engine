@@ -15,7 +15,7 @@ void CLoadScreenInjector::StepScreen ( void )
 	RrCamera* mCamera = NULL;
 	if ( RrCamera::activeCamera == NULL )
 	{
-		mCamera = new RrCamera;
+		mCamera = new RrCamera(false);
 		mCamera->SetActive();
 		mCamera->LateUpdate();
 	}
@@ -126,7 +126,7 @@ bool CLoadScreenInjector::PreRender ( rrCameraPass* pass )
 //	Render() : render the previously created mesh now
 bool CLoadScreenInjector::Render ( const rrRenderParams* params )
 {
-	gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+	gpu::GraphicsContext* gfx = params->context_graphics;
 
 	gpu::Pipeline* pipeline = GetPipeline( params->pass );
 	gfx->setPipeline(pipeline);

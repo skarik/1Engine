@@ -95,7 +95,7 @@ bool CollisionMapRenderer::Render ( const rrRenderParams* params )
 {
 	if (m_drawWireframe)
 	{
-		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+		gpu::GraphicsContext* gfx = params->context_graphics;
 
 		m_postMaterialCb = [](renderer::Material* material)
 		{

@@ -143,7 +143,7 @@ bool renderer::Mesh::Render ( const rrRenderParams* params )
 		if ( !bCanRender || m_mesh == NULL )
 			return true; // Only render when have a valid mesh and rendering enabled
 
-		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+		gpu::GraphicsContext* gfx = params->context_graphics;
 
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
@@ -174,7 +174,7 @@ bool renderer::Mesh::Render ( const rrRenderParams* params )
 		if ( !bCanRender || m_mesh == NULL )
 			return true; // Only render when have a valid mesh and rendering enabled
 
-		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+		gpu::GraphicsContext* gfx = params->context_graphics;
 
 		renderer::Material* material = renderer::Material::Begin(gfx, params, this);
 		// bind the vertex buffers

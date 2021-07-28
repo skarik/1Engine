@@ -48,10 +48,12 @@ static int chooseNonzero ( const int variable, const int fallback )
 // Static variables
 std::vector<RrWindow*> RrWindow::m_windows;
 
-RrWindow::RrWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
-	: mw_instance(hInstance), mw_previnstance(hPrevInstance), mw_cmdline(lpCmdLine), mw_cmdshow(nCmdShow)
+RrWindow::RrWindow(RrRenderer* renderer, HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow )
+	: m_renderer(renderer), mw_instance(hInstance), mw_cmdline(lpCmdLine), mw_cmdshow(nCmdShow)
 	//,
 {
+	ARCORE_ASSERT(m_renderer != nullptr);
+
 	auto gsi = CGameSettings::Active();
 
 	m_resolution.x = chooseNonzero(gsi->i_ro_TargetResX, 1280);
@@ -90,13 +92,13 @@ RrWindow::RrWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	RegisterInput();
 	CreateConsole();
 
-	CreateGfxInstance();
+	//CreateGfxInstance();
 	CreateGfxSurface();
 }
 RrWindow::~RrWindow ( void )
 {
 	DestroyGfxSurface();
-	DestroyGfxInstance();
+	//DestroyGfxInstance();
 	DestroyScreen();
 
 	// Remove this from the list of windows
@@ -270,31 +272,34 @@ void RrWindow::RegisterInput ( void )
 	DragAcceptFiles( mw_window, TRUE );
 }
 
-// Creates the instance & device
-void RrWindow::CreateGfxInstance ( void )
-{
-	if (mw_window == NIL)
-	{
-		ERROR_OUT("Window is not created. Cannot create device.\n");
-	}
-
-	m_device = new gpu::Device((intptr_t)mw_instance, (intptr_t)mw_window);
-
-#ifdef _ENGINE_DEBUG
-	uint32_t layerCount = 1;
-	gpu::DeviceLayer layers [] = {gpu::kDeviceLayerDebug};
-#else
-	uint32_t layerCount = 0;
-	gpu::DeviceLayer* layers = NULL;
-#endif
-
-	if (m_device->create(layers, layerCount) != 0)
-	{
-		delete m_device;
-		DestroyScreen();
-		ERROR_OUT("Gfx instance creation error.\n");
-	}
-}
+//// Creates the instance & device
+//void RrWindow::CreateGfxInstance ( void )
+//{
+//	if (mw_window == NIL)
+//	{
+//		ERROR_OUT("Window is not created. Cannot create device.\n");
+//	}
+//
+//	//m_device = new gpu::Device((intptr_t)mw_instance, (intptr_t)mw_window);
+//
+//#ifdef _ENGINE_DEBUG
+//	uint32_t layerCount = 1;
+//	gpu::DeviceLayer layers [] = {gpu::kDeviceLayerDebug};
+//#else
+//	uint32_t layerCount = 0;
+//	gpu::DeviceLayer* layers = NULL;
+//#endif
+//
+//	//if (m_device->create(layers, layerCount) != 0)
+//	m_device = gpu::createDevice((intptr_t)mw_instance, (intptr_t)mw_window,
+//								layers, layerCount);
+//	if (m_device == nullptr)
+//	{
+//		//delete m_device;
+//		DestroyScreen();
+//		ERROR_OUT("Gfx instance creation error.\n");
+//	}
+//}
 
 // Sets up surface to render to
 void RrWindow::CreateGfxSurface ( void )
@@ -304,30 +309,30 @@ void RrWindow::CreateGfxSurface ( void )
 		ERROR_OUT("Window is not created. Cannot create surface.\n");
 	}
 
-	if (m_surface.create(m_device, gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y, m_outputFormat, m_fullscreen) != 0)
+	if (m_surface.create(m_renderer->GetGpuDevice(), gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y, m_outputFormat, m_fullscreen) != 0)
 	{
 		DestroyScreen();
 		ERROR_OUT("Gfx surface creation error.\n");
 	}
 
-	if (m_device->initialize(&m_surface) != 0)
-	{
+	//if (m_device->initialize(&m_surface) != 0)
+	/*{
 		delete m_device;
 		DestroyScreen();
 		core::shell::ShowErrorMessage("Your video card does not support the minimum required OpenGL version.\nOpenGL 4.5 is required. Please update your drivers.");
 		ERROR_OUT("Gfx instance creation error.\n");
-	}
+	}*/
 }
 
 void RrWindow::CreateGfxSwapchain ( void )
 {}
 
-bool RrWindow::AttachRenderer ( RrRenderer* renderer )
-{
-	m_renderer = renderer;
-	m_renderer->InitializeWithDeviceAndSurface( this->m_device, &this->m_surface );
-	return true;
-}
+//bool RrWindow::AttachRenderer ( RrRenderer* renderer )
+//{
+//	m_renderer = renderer;
+//	m_renderer->InitializeWithDeviceAndSurface( this->m_device, &this->m_surface );
+//	return true;
+//}
 
 
 //===============================================================================================//
@@ -363,11 +368,11 @@ void RrWindow::DestroyScreen ( void )
 	}
 }
 
-void RrWindow::DestroyGfxInstance ( void )
-{
-	delete m_device;
-	m_device = NULL;
-}
+//void RrWindow::DestroyGfxInstance ( void )
+//{
+//	delete m_device;
+//	m_device = NULL;
+//}
 void RrWindow::DestroyGfxSurface ( void )
 {
 	m_surface.destroy();
@@ -385,15 +390,17 @@ bool RrWindow::Resize ( int width, int height )
 		m_resolution.y = std::max(1, height);
 
 		// Refresh the device
-		m_device->refresh((intptr_t)mw_instance, (intptr_t)mw_window);
+		//m_device->refresh((intptr_t)mw_instance, (intptr_t)mw_window);
 
 		// Refresh the surface
 		m_surface.destroy();
-		m_surface.create(m_device, gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y, m_outputFormat, m_fullscreen);
+		m_surface.create(m_renderer->GetGpuDevice(), gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y, m_outputFormat, m_fullscreen);
 
 		// Resize the renderer
-		if (m_renderer != NULL)
-			m_renderer->ResizeSurface();
+		//if (m_renderer != NULL)
+		//	m_renderer->ResizeSurface();
+
+		// The renderer checks the size of the output surface every frame and recreates the swapchain before rendering if needed
 	}
 	return true;
 }

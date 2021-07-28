@@ -10,6 +10,8 @@
 #include "gpuw/Public/States.h"
 #include <stdint.h>
 
+#include "./BaseContext.dx11.h"
+
 namespace gpu
 {
 	class ShaderPipeline;
@@ -19,12 +21,13 @@ namespace gpu
 	class Texture;
 	class Buffer;
 	class RenderTarget;
+	class Device;
 
-	class GraphicsContext
+	class GraphicsContext : public BaseContext
 	{
 	public:
 		GPUW_EXLUSIVE_API explicit
-								GraphicsContext ( void* wrapperDevice );
+								GraphicsContext ( Device* wrapperDevice );
 		GPUW_EXLUSIVE_API 		~GraphicsContext ( void );
 
 		//	reset() : Resets the context state to defaults.
@@ -120,8 +123,8 @@ namespace gpu
 	private:
 		// implementation details:
 
-		void*					m_wrapperDevice;
-		void*					m_deferredContext;
+		Device*					m_wrapperDevice;
+		//void*					m_deferredContext;
 
 		//RasterizerState			m_rasterState;
 		void*					m_rasterStateCachedMap;

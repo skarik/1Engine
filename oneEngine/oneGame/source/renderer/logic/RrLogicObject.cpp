@@ -14,7 +14,8 @@ RrLogicObject::RrLogicObject ( void )
 	transform.name = "Transform(RenderLogic)";*/
 	//transform.name = this->name; // TODO: ADD NAME
 
-	id = RrRenderer::Active->AddLO( this );
+	//id = RrRenderer::Active->AddLO( this );
+	RrRenderer::Listings::AddToUnsorted(this, id);
 	active = true;
 }
 // ==Destructor
@@ -22,5 +23,13 @@ RrLogicObject::RrLogicObject ( void )
 RrLogicObject::~RrLogicObject ( void )
 {
 	active = false;
-	RrRenderer::Active->RemoveLO( id );
+	//RrRenderer::Active->RemoveLO( id );
+	RrRenderer::Listings::GetWorld(id)->RemoveLogic(this);
+}
+
+void RrLogicObject::AddToWorld ( RrWorld* world )
+{
+	ARCORE_ASSERT(id.world_index == rrId::kWorldInvalid);
+	RrRenderer::Listings::RemoveFromUnsorted(this, id);
+	id = world->AddLogic(this);
 }

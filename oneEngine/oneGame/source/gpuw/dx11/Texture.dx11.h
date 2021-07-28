@@ -11,6 +11,7 @@ namespace gpu
 	class GraphicsContext;
 	class ComputeContext;
 	class RenderTarget;
+	class BaseContext;
 
 	// Create a read/write texture.
 	class Texture
@@ -35,7 +36,7 @@ namespace gpu
 		GPUW_API int			free ( void );
 
 		//	upload() : uploads data to the texture from a buffer
-		GPUW_API int			upload ( gpu::Buffer& buffer, const uint level, const uint arraySlice );
+		GPUW_API int			upload ( gpu::BaseContext* context, gpu::Buffer& buffer, const uint level, const uint arraySlice );
 
 	private:
 		friend GraphicsContext;

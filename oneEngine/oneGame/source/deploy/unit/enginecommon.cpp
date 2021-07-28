@@ -71,8 +71,11 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	// Initialize input
 	core::Input::Initialize();
 
+	// Create renderer
+	RrRenderer* aRenderer = new RrRenderer();
+
 	// Create Window
-	RrWindow aWindow( hInstance, hPrevInstance, lpCmdLine, nCmdShow );
+	RrWindow aWindow( aRenderer, hInstance, lpCmdLine, nCmdShow );
 	if (!aWindow.Show())
 	{
 		core::shell::ShowErrorMessage( "Could not show windowing system.\n" );
@@ -89,9 +92,9 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	// Set the window title
 	aWindow.SetTitle("1Engine Test: Game Common Modules");
 
-	// Create Renderstate
-	RrRenderer* aRenderer = new RrRenderer(NULL); // passing null creates default resource manager
-	aWindow.AttachRenderer(aRenderer); // Set the window's renderer (multiple possible render states)
+	// Set up rendeer output
+	aRenderer->AddWorldDefault();
+	aRenderer->AddOutput(RrOutputInfo(nullptr, &aWindow)); // Create an output using the window
 
 	// Init Physics
 	PrPhysics::Active()->Initialize();
@@ -122,7 +125,7 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	CGameScene::SceneGoto( pNewScene );
 
 	// Create debug camera to show stuff (overriding the existing camera)
-	RrCamera* l_cam = new RrCamera;
+	RrCamera* l_cam = new RrCamera(false);
 
 	// Create a debugging Dusk menu
 	{
@@ -220,6 +223,8 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 			TimeProfiler.EndTimeProfile( "MN_renderer" );
 			// Clear all inputs
 			core::Input::PreUpdate();
+			// Update resources
+			core::ArResourceManager::Active()->Update();
 			// Update the title with the framerate
 			char szTitle[512] = {0};
 			sprintf(szTitle, "1Engine Test: Game Common Modules, (FPS: %d) (FT: %d ms)", int(1.0F / Time::smoothDeltaTime), int(Time::smoothDeltaTime * 1000.0F));

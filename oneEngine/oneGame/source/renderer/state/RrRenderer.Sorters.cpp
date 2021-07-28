@@ -26,7 +26,7 @@ static int PassOrder ( RrPass* pass, CRenderableObject* object )
 
 // Render order control
 // Returns true if I is supposed to come before J.
-bool RrRenderer::rrRenderRequestSorter::operator() ( RrRenderer::rrRenderRequest& i, RrRenderer::rrRenderRequest& j )
+bool rrRenderRequestSorter::operator() ( const rrRenderRequest& i, const rrRenderRequest& j )
 {
 	if ( j.obj == NULL ) {
 		throw std::invalid_argument("Null renderRequest");

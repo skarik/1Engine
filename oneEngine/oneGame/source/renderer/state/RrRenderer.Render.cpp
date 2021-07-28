@@ -24,6 +24,7 @@
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
 #include "renderer/state/RrPipelinePasses.h"
+#include "renderer/windowing/RrWindow.h"
 
 #include <algorithm>
 
@@ -31,7 +32,74 @@
 
 using namespace renderer;
 
-#pragma warning disable 4102
+#pragma warning( disable : 4102 ) // Suppress warnings about unreferenced labels. Used for organizational purposes here.
+
+//===============================================================================================//
+// RrWorld : Frame Update
+//===============================================================================================//
+
+void RrWorld::FrameUpdate ( void )
+{
+	switch (state.work_step)
+	{
+	case rrWorldState::kWorkStepCompactObjects:
+		CompactObjectListing();
+		break;
+	case rrWorldState::kWorkStepCompactLogics:
+		CompactLogicListing();
+		break;
+	case rrWorldState::kWorkStepSortObjects:
+		SortObjectListing();
+		break;
+	case rrWorldState::kWorkStepSortLogics:
+		SortLogicListing();
+		break;
+	}
+	state.work_step = (rrWorldState::WorkStep)(state.work_step % rrWorldState::kWorkStep_MAX);
+}
+
+void RrWorld::CompactObjectListing ( void )
+{
+	// Cut off the items at the end of the listing.
+	for (size_t i = objects.size() - 1; i >= 0; --i)
+	{
+		if (objects[i] != nullptr)
+		{
+			objects.resize(i + 1);
+			break;
+		}
+	}
+}
+
+void RrWorld::SortObjectListing ( void )
+{
+	std::sort(objects.begin(), objects.end(), [](CRenderableObject* a, CRenderableObject* b)
+	{
+		// Force nullptr to the end of the list. Treat nullptr as a high value.
+		if (a == nullptr && b != nullptr) return false;
+		if (a != nullptr && b == nullptr) return true;
+
+		// Otherwise, sort by memory address.
+		return a < b;
+
+		// TODO: We can sort by type if each RrRenderableObject has a virtual & static typeid.
+		// To ensure that this is set up properly, we can also have a virtual IsInstantiatable() call.
+	});
+
+	// Update the item IDs
+	for (int objectIndex = 0; objectIndex < objects.size(); ++objectIndex)
+	{
+		CRenderableObject* object = objects[objectIndex];
+		if (object != nullptr)
+		{
+			rrId id;
+			id.world_index = world_index;
+			id.object_index = objectIndex;
+			object->Access_id_From_RrWorld().Set(id);
+		}
+	}
+}
+
 
 //===============================================================================================//
 // RrRenderer: Rendering
@@ -39,20 +107,23 @@ using namespace renderer;
 
 void RrRenderer::StepPreRender ( void )
 {
-	unsigned int i;
-
 	// Wait for the PostStep to finish:
 	core::jobs::System::Current::WaitForJobs( core::jobs::kJobTypeRenderStep );
 
-	// Update the camera system for the next frame
-	auto l_cameraList = RrCamera::CameraList();
-	for ( i = 0; i < l_cameraList.size(); ++i )
+	// Add the queued up objects to the world now that all jobs are done.
+	AddQueuedToWorld();
+	// Update the worlds
+	for ( size_t worldIndex = 0; worldIndex < worlds.size(); ++worldIndex )
 	{
-		RrCamera* currentCamera = l_cameraList[i];
-		if ( currentCamera != NULL )
-		{
-			currentCamera->LateUpdate();
-		}
+		worlds[worldIndex]->FrameUpdate();
+	}
+
+	// Update the camera system for the next frame
+	auto l_currentCamera = RrCamera::GetFirstCamera();
+	while (l_currentCamera != RrCamera::GetLastCamera())
+	{
+		l_currentCamera->LateUpdate();
+		l_currentCamera = l_currentCamera->GetNextCamera();
 	}
 
 	// Update the per-frame constant buffer data:
@@ -69,30 +140,62 @@ void RrRenderer::StepPreRender ( void )
 		frameInfo.fogEnd = renderer::Settings.fogEnd;
 		frameInfo.fogScale = renderer::Settings.fogScale; // These fog values likely won't see actual use in more modern rendering pipelines.
 		// Push to GPU:
-		internal_cbuffers_frames[internal_chain_index].upload(NULL, &frameInfo, sizeof(renderer::cbuffer::rrPerFrame), gpu::kTransferStream);
+		//internal_cbuffers_frames[internal_chain_index].upload(NULL, &frameInfo, sizeof(renderer::cbuffer::rrPerFrame), gpu::kTransferStream);
+		internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()].upload(NULL, &frameInfo, sizeof(renderer::cbuffer::rrPerFrame), gpu::kTransferStream);
 	}
 
 	// Update the per-pass constant buffer data:
-	for (int iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
+	for (size_t outputIndex = 0; outputIndex < render_outputs.size(); ++outputIndex )
 	{
-		renderer::cbuffer::rrPerPassLightingInfo passInfo = {}; // Unused. May want to remove later...
+		RrOutputState* state = render_outputs[outputIndex].state;
+		if (state != nullptr)
+		{
+			for (int iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
+			{
+				renderer::cbuffer::rrPerPassLightingInfo passInfo = {}; // Unused. May want to remove later...
 
-		internal_cbuffers_passes[internal_chain_index * renderer::kRenderLayer_MAX + iLayer]
-			.upload(NULL, &passInfo, sizeof(renderer::cbuffer::rrPerPassLightingInfo), gpu::kTransferStream);
+				state->internal_cbuffers_passes[state->internal_chain_index * renderer::kRenderLayer_MAX + iLayer]
+					.upload(NULL, &passInfo, sizeof(renderer::cbuffer::rrPerPassLightingInfo), gpu::kTransferStream);
+			}
+		}
 	}
+	//for (int iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
+	//{
+	//	renderer::cbuffer::rrPerPassLightingInfo passInfo = {}; // Unused. May want to remove later...
+
+	//	internal_cbuffers_passes[internal_chain_index * renderer::kRenderLayer_MAX + iLayer]
+	//		.upload(NULL, &passInfo, sizeof(renderer::cbuffer::rrPerPassLightingInfo), gpu::kTransferStream);
+	//}
 
 	// Begin the logic jobs
-	for ( i = 0; i < mLoCurrentIndex; ++i ) {
-		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
-			core::jobs::System::Current::AddJobRequest( core::jobs::kJobTypeRenderStep, &(RrLogicObject::PreStep), mLogicObjects[i] );
+	for ( size_t worldIndex = 0; worldIndex < worlds.size(); ++worldIndex )
+	{
+		for ( size_t logicIndex = 0; logicIndex < worlds[worldIndex]->logics.size(); ++logicIndex )
+		{
+			RrLogicObject* logic = worlds[worldIndex]->logics[logicIndex];
+			if ( logic != nullptr && logic->GetActive() )
+			{
+				core::jobs::System::Current::AddJobRequest( core::jobs::kJobTypeRenderStep, &(RrLogicObject::PreStep), logic );
+			}
 		}
 	}
 	// Perform the synchronous logic jobs
-	for ( i = 0; i < mLoCurrentIndex; ++i ) {
+	for ( size_t worldIndex = 0; worldIndex < worlds.size(); ++worldIndex )
+	{
+		for ( size_t logicIndex = 0; logicIndex < worlds[worldIndex]->logics.size(); ++logicIndex )
+		{
+			RrLogicObject* logic = worlds[worldIndex]->logics[logicIndex];
+			if ( logic != nullptr && logic->GetActive() )
+			{
+				logic->PreStepSynchronus();
+			}
+		}
+	}
+	/*for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
 			mLogicObjects[i]->PreStepSynchronus();
 		}
-	}
+	}*/
 
 	// Update the streamed loading system
 	//if ( mResourceManager ) {
@@ -100,7 +203,29 @@ void RrRenderer::StepPreRender ( void )
 	//}
 	// TODO:
 	auto resourceManager = core::ArResourceManager::Active();
-	resourceManager->Update();
+	//resourceManager->Update(); // TODO: This updates ALL render systems. This will stall if we're handling non-render resources too
+	resourceManager->UpdateManual(core::kResourceTypeRrTexture);
+
+	// Call begin render
+	TimeProfiler.BeginTimeProfile( "rs_begin_render" );
+	/*for ( i = 0; i < iCurrentIndex; i += 1 )
+	{
+	if ( pRenderableObjects[i] ) {
+	pRenderableObjects[i]->BeginRender(); //massive slowdown
+	}
+	}*/
+	for ( size_t worldIndex = 0; worldIndex < worlds.size(); ++worldIndex )
+	{
+		for ( size_t objectIndex = 0; objectIndex < worlds[worldIndex]->objects.size(); ++objectIndex )
+		{
+			auto object = worlds[worldIndex]->objects[objectIndex];
+			if ( object != nullptr )
+			{
+				object->BeginRender(); //massive slowdown?
+			}
+		}
+	}
+	TimeProfiler.EndTimeProfile( "rs_begin_render" );
 
 	// Wait for all the PreStep to finish:
 	core::jobs::System::Current::WaitForJobs( core::jobs::kJobTypeRenderStep );
@@ -108,43 +233,74 @@ void RrRenderer::StepPreRender ( void )
 
 void RrRenderer::StepPostRender ( void )
 {
-	unsigned int i;
-
 	// Call end render
 	TimeProfiler.BeginTimeProfile( "rs_end_render" );
-	for ( i = 0; i < iCurrentIndex; i += 1 )
+	/*for ( i = 0; i < iCurrentIndex; i += 1 )
 	{
 		if ( pRenderableObjects[i] ) {
 			pRenderableObjects[i]->EndRender();
+		}
+	}*/
+	for ( size_t worldIndex = 0; worldIndex < worlds.size(); ++worldIndex )
+	{
+		for ( size_t objectIndex = 0; objectIndex < worlds[worldIndex]->objects.size(); ++objectIndex )
+		{
+			auto object = worlds[worldIndex]->objects[objectIndex];
+			if ( object != nullptr )
+			{
+				object->EndRender();
+			}
 		}
 	}
 	TimeProfiler.EndTimeProfile( "rs_end_render" );
 
 	// Begin the post-step render jobs
-	for ( i = 0; i < mLoCurrentIndex; ++i ) {
+	/*for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
 			core::jobs::System::Current::AddJobRequest( core::jobs::kJobTypeRenderStep, &(RrLogicObject::PostStep), mLogicObjects[i] );
 		}
+	}*/
+	for ( size_t worldIndex = 0; worldIndex < worlds.size(); ++worldIndex )
+	{
+		for ( size_t logicIndex = 0; logicIndex < worlds[worldIndex]->logics.size(); ++logicIndex )
+		{
+			RrLogicObject* logic = worlds[worldIndex]->logics[logicIndex];
+			if ( logic != nullptr && logic->GetActive() )
+			{
+				core::jobs::System::Current::AddJobRequest( core::jobs::kJobTypeRenderStep, &(RrLogicObject::PostStep), logic );
+			}
+		}
 	}
 	// Perform the synchronous logic jobs
-	for ( i = 0; i < mLoCurrentIndex; ++i ) {
+	/*for ( i = 0; i < mLoCurrentIndex; ++i ) {
 		if ( mLogicObjects[i] && mLogicObjects[i]->active ) {
 			mLogicObjects[i]->PostStepSynchronus();
+		}
+	}*/
+	for ( size_t worldIndex = 0; worldIndex < worlds.size(); ++worldIndex )
+	{
+		for ( size_t logicIndex = 0; logicIndex < worlds[worldIndex]->logics.size(); ++logicIndex )
+		{
+			RrLogicObject* logic = worlds[worldIndex]->logics[logicIndex];
+			if ( logic != nullptr && logic->GetActive() )
+			{
+				logic->PostStepSynchronus();
+			}
 		}
 	}
 }
 
-void RrRenderer::StepBufferPush ( void )
+void RrRenderer::StepBufferPush ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state )
 {
-	gpu::GraphicsContext* gfx = mGfxContext;
+	// TODO: Make it go to the output & state
 
 	// Are we in buffer mode? (This should always be true)
 	gfx->debugGroupPush("Buffer Push");
 	TimeProfiler.BeginTimeProfile( "rs_buffer_push" );
-	if ( bufferedMode )
+	//if ( bufferedMode )
 	{
 		// Render the current result to the screen
-		gfx->setRenderTarget(mOutputSurface->getRenderTarget());
+		gfx->setRenderTarget(output.GetRenderTarget());
 		gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
 		{
 			float clearColor[] = {1, 1, 1, 0};
@@ -173,13 +329,13 @@ void RrRenderer::StepBufferPush ( void )
 			gfx->setVertexBuffer(0, &pipelinePasses->m_vbufScreenQuad_ForOutputSurface, 0); // see RrPipelinePasses.cpp
 			gfx->setVertexBuffer(1, &pipelinePasses->m_vbufScreenQuad_ForOutputSurface, 0); // there are two binding slots defined with different stride
 			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0,
-				                      internal_chain_current->buffer_forward_rt.getAttachment(gpu::kRenderTargetSlotColor0));
+				                      state->internal_chain_current->buffer_forward_rt.getAttachment(gpu::kRenderTargetSlotColor0));
 			gfx->draw(4, 0);
 		}
 		gfx->clearPipelineAndWait(); // Wait until we're done using the buffer...
 
 		// Clear the buffer after we're done with it.
-		gfx->setRenderTarget(&internal_chain_current->buffer_forward_rt);
+		gfx->setRenderTarget(&state->internal_chain_current->buffer_forward_rt);
 		gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
 		gfx->clearDepthStencil(true, 1.0F, true, 0x00);
 		float clearColor[] = {0, 0, 0, 0};
@@ -192,9 +348,6 @@ void RrRenderer::StepBufferPush ( void )
 // Called during the window's rendering routine.
 void RrRenderer::Render ( void )
 {
-	gpu::GraphicsContext* gfx = mGfxContext;
-	unsigned int i;
-
 #define _ENGINE_LIMIT_FRAMES // TODO: Move this block somewhere else.
 #ifdef _ENGINE_LIMIT_FRAMES
 	// Slow down the framerate if it's too fast.
@@ -206,20 +359,6 @@ void RrRenderer::Render ( void )
 		std::this_thread::sleep_for(std::chrono::microseconds(100));
 	}
 #endif
-
-	// Update pre-render steps:
-	//	- RrLogicObject::PostStep finish
-	//	- RrCamera::LateUpdate
-	//	- RrLogicObject::PreStep, RrLogicObject::PreStepSynchronous
-	//	- ResourceManager::update
-	StepPreRender(); 
-
-	// Check for a main camera to work with
-	if ( RrCamera::activeCamera == NULL )
-	{
-		return; // Don't render if there's no camera to render with...
-	}
-	mainBufferCamera = RrCamera::activeCamera;
 
 	{
 		// Update all aggregate counters
@@ -245,16 +384,23 @@ void RrRenderer::Render ( void )
 		TimeProfiler.ZeroTimeProfile( "rs_particle_renderer_begin" );
 		TimeProfiler.ZeroTimeProfile( "rs_particle_renderer_push" );
 	}
-	
-	// Call begin render
-	TimeProfiler.BeginTimeProfile( "rs_begin_render" );
-	for ( i = 0; i < iCurrentIndex; i += 1 )
+
+	// Update pre-render steps:
+	//	- RrLogicObject::PostStep finish
+	//	- RrCamera::LateUpdate
+	//	- RrLogicObject::PreStep, RrLogicObject::PreStepSynchronous
+	//	- ResourceManager::update
+	//	- BeginRender
+	StepPreRender(); 
+
+	// Check for a main camera to work with
+	if ( RrCamera::activeCamera == NULL )
 	{
-		if ( pRenderableObjects[i] ) {
-			pRenderableObjects[i]->BeginRender(); //massive slowdown
-		}
+		return; // Don't render if there's no camera to render with...
 	}
-	TimeProfiler.EndTimeProfile( "rs_begin_render" );
+	//mainBufferCamera = RrCamera::activeCamera;
+
+	RrCamera* prevActiveCam = RrCamera::activeCamera;
 
 	// Update window buffer
 	/*TimeProfiler.BeginTimeProfile( "WD_Swap" );
@@ -262,47 +408,120 @@ void RrRenderer::Render ( void )
 	//wglSwapLayerBuffers(aWindow.getDevicePointer(),WGL_SWAP_MAIN_PLANE );
 	TimeProfiler.EndTimeProfile( "WD_Swap" );*/
 
+	std::vector<gpu::GraphicsContext*> collected_contexts;
+	std::vector<gpu::OutputSurface*> collected_outputs;
+
 	// Prepare frame
 	//TimeProfiler.BeginTimeProfile( "rs_present" );
-	gfx->reset();
+	//gfx->reset();
 	//TimeProfiler.EndTimeProfile( "rs_present" );
 	
 	// Loop through all cameras (todo: sort render order for each camera)
 	TimeProfiler.BeginTimeProfile( "rs_camera_matrix" );
-	RrCamera* prevActiveCam = RrCamera::activeCamera;
-	auto l_cameraList = RrCamera::CameraList();
-	for ( i = 0; i < l_cameraList.size(); ++i )
+	auto l_currentCamera = RrCamera::GetFirstCamera();
+	while (l_currentCamera != RrCamera::GetLastCamera())
 	{
-		RrCamera* currentCamera = l_cameraList[i];
-		// Update the camera positions and matrices
-		if ( currentCamera != NULL && currentCamera->GetRender() )
+		if ( l_currentCamera->GetRender() )
 		{
-			currentCamera->UpdateMatrix();
+			l_currentCamera->UpdateMatrix();
 		}
+		l_currentCamera = l_currentCamera->GetNextCamera();
 	}
+	//auto l_cameraList = RrCamera::CameraList();
+	//for ( i = 0; i < l_cameraList.size(); ++i )
+	//{
+	//	// TODO: Thread this.
+	//	RrCamera* currentCamera = l_cameraList[i];
+	//	// Update the camera positions and matrices
+	//	if ( currentCamera != NULL && currentCamera->GetRender() )
+	//	{
+	//		currentCamera->UpdateMatrix();
+	//	}
+	//}
 	// Double check to make sure the zero camera is the active camera
-	if ( l_cameraList[0] != prevActiveCam )
-	{
-		std::cout << "Error in rendering: invalid zero index camera! (Seriously, this CAN'T happen)" << std::endl;
-		// Meaning, resort the camera list
-		/*for ( auto it = RrCamera::vCameraList.begin(); it != RrCamera::vCameraList.end(); )
-		{
-			if ( *it == prevActiveCam )
-			{
-				it = RrCamera::vCameraList.erase(it);
-				RrCamera::vCameraList.insert( RrCamera::vCameraList.begin(), prevActiveCam );
-			}
-			else
-			{
-				++it;
-			}
-		}*/
-		return; // Don't render past here, then.
-	}
+	//if ( l_cameraList[0] != prevActiveCam )
+	//{
+	//	std::cout << "Error in rendering: invalid zero index camera! (Seriously, this CAN'T happen)" << std::endl;
+	//	// Meaning, resort the camera list
+	//	/*for ( auto it = RrCamera::vCameraList.begin(); it != RrCamera::vCameraList.end(); )
+	//	{
+	//		if ( *it == prevActiveCam )
+	//		{
+	//			it = RrCamera::vCameraList.erase(it);
+	//			RrCamera::vCameraList.insert( RrCamera::vCameraList.begin(), prevActiveCam );
+	//		}
+	//		else
+	//		{
+	//			++it;
+	//		}
+	//	}*/
+	//	return; // Don't render past here, then.
+	//}
 	TimeProfiler.EndTimeProfile( "rs_camera_matrix" );
 	
-	// Loop through all cameras:
 	TimeProfiler.BeginTimeProfile( "rs_render" );
+	// TODO: Loop through all Outputs. Find the ones that are active.
+	static RrWindow* gLastDrawnWindow = nullptr;
+	for ( size_t outputIndex = 0; outputIndex < render_outputs.size(); ++outputIndex )
+	{
+		auto& render_output = render_outputs[outputIndex];
+		if (render_output.info.enabled)
+		{
+			// Update the state
+			if (render_output.state == nullptr)
+			{
+				render_output.state = new RrOutputState();
+			}
+			render_output.state->Update(&render_output.info);
+
+			// Grab the graphics context to render with
+			gpu::GraphicsContext* gfx = render_output.state->graphics_context;
+
+			// Collect this current context
+			if (std::find(collected_contexts.begin(), collected_contexts.end(), gfx) == collected_contexts.end())
+			{
+				collected_contexts.push_back(gfx);
+			}
+
+			// Reset the context
+			gfx->reset();
+
+			// Ensure the outputs context is correct
+			if (render_output.info.type == RrOutputInfo::Type::kWindow)
+			{
+				if (gLastDrawnWindow != render_output.info.output_window)
+				{
+					gLastDrawnWindow = render_output.info.output_window;
+					gLastDrawnWindow->GpuSurface()->activate();
+				}
+
+				// Collect the output so they can be finalized
+				collected_outputs.push_back(render_output.info.output_window->GpuSurface());
+			}
+
+			// Render with the given camera.
+			ARCORE_ASSERT(render_output.info.camera != nullptr);
+			if (render_output.info.camera->GetRender())
+			{
+				// Update the common culling information (This should happen in the RenderScene routine)
+				//for ( int i = 0; i < 
+
+				// Render from camera
+				RrCamera::activeCamera = render_output.info.camera;
+				gfx->debugGroupPush("Camera: RenderScene()");
+				// We drop the const on the world because rendering objects changes their state
+				RenderOutput(gfx, render_output.info, render_output.state, render_output.info.world);
+				gfx->debugGroupPop();
+			}
+
+			// Push buffer to screen
+			StepBufferPush(gfx, render_output.info, render_output.state);
+		}
+	}
+	TimeProfiler.EndTimeProfile( "rs_render" );
+
+	// Loop through all cameras:
+	/*TimeProfiler.BeginTimeProfile( "rs_render" );
 	for ( std::vector<RrCamera*>::reverse_iterator it = l_cameraList.rbegin(); it != l_cameraList.rend(); ++it )
 	{
 		RrCamera* currentCamera = *it;
@@ -327,31 +546,61 @@ void RrRenderer::Render ( void )
 			gfx->debugGroupPop();
 		}
 	}
-	TimeProfiler.EndTimeProfile( "rs_render" );
+	TimeProfiler.EndTimeProfile( "rs_render" );*/
 	
 	// Set active camera back to default
 	RrCamera::activeCamera = prevActiveCam;
 
-	// Push buffer to screen
-	StepBufferPush();
-
 	// Signal frame ended
-	gfx->submit();
+	//gfx->submit();
+	for (gpu::GraphicsContext* gfx : collected_contexts)
+	{
+		// Submit the commands now
+		gfx->submit();
+		// Validate the GPU state isn't completely broken
+		gfx->validate();
+	}
+
+	// Query up all the outputs we were working on
+	// Present the output buffer
+	//mOutputSurface->present(); // TODO: On Vulkan and other platforms, this will likely need a fence.
+	for (gpu::OutputSurface* surface : collected_outputs)
+	{
+		surface->present();
+	}
 
 	// Cycle the draw inputs
+	//{
+	//	// Go to next input
+	//	internal_chain_index = (internal_chain_index + 1) % internal_chain_list.size();
+	//	// Pull its pointer
+	//	internal_chain_current = &internal_chain_list[internal_chain_index];
+	//}
+	for ( size_t outputIndex = 0; outputIndex < render_outputs.size(); ++outputIndex )
 	{
-		// Go to next input
-		internal_chain_index = (internal_chain_index + 1) % internal_chain_list.size();
-		// Pull its pointer
-		internal_chain_current = &internal_chain_list[internal_chain_index];
+		RrOutputState* state = render_outputs[outputIndex].state;
+		if (state != nullptr)
+		{
+			// Go to next input
+			state->internal_chain_index = (state->internal_chain_index + 1) % state->internal_chain_list.size();
+			// Pull its pointer
+			state->internal_chain_current = &state->internal_chain_list[state->internal_chain_index];
+		}
 	}
+	// Count the global frame rendered
+	frame_index++;
 
 	// Do error check at this point
 	//if ( RrMaterial::Default->passinfo.size() > 16 ) throw std::exception();
-	gfx->validate();
+	//gfx->validate();
 
-	// Present the output buffer
-	mOutputSurface->present(); // TODO: On Vulkan and other platforms, this will likely need a fence.
+	//// Query up all the outputs we were working on
+	//// Present the output buffer
+	////mOutputSurface->present(); // TODO: On Vulkan and other platforms, this will likely need a fence.
+	//for (gpu::OutputSurface* surface : collected_outputs)
+	//{
+	//	surface->present();
+	//}
 
 	// Call post-render and start up new jobs
 	StepPostRender();
@@ -530,53 +779,102 @@ void RrRenderer::Render ( void )
 #define FORCE_BUFFER_CLEAR
 //#define ENABLE_RUNTIME_BLIT_TEST
 
-void RrRenderer::RenderScene ( RrCamera* camera )
-{
-	RenderObjectList(camera, pRenderableObjects.data(), iCurrentIndex);
-}
+//void RrRenderer::RenderScene ( RrCamera* camera )
+//{
+//	RenderObjectList(camera, pRenderableObjects.data(), iCurrentIndex);
+//}
 
-//	RenderObjectList () : Renders the object list from the given camera with DeferredForward+.
-void RrRenderer::RenderObjectList ( RrCamera* camera, CRenderableObject** objectsToRender, const uint32_t objectCount )
+void RrRenderer::RenderOutput ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world )
 {
+Update_Culling:
+	// Update the render distance of objects against this camera:
+	for ( int objectIndex = 0; objectIndex < world->objects.size(); objectIndex += 1 )
+	{	
+		// Put into it's own loop, since it's the same calculation across all objects
+		if ( world->objects[objectIndex] != nullptr )
+		{ 
+			// TODO: Handle 2D mode properly. Postprocess is entirely sorted by transform.position.z Should this be made more consistent?
+			world->objects[objectIndex]->renderDistance = (output.camera->transform.position - world->objects[objectIndex]->transform.world.position).sqrMagnitude();
+		}
+	}
+
+Render_Camera_Passes:
 	// Get a pass list from the camera
 	const int kMaxCameraPasses = 8;
 	rrCameraPass cameraPasses [kMaxCameraPasses];
 	rrCameraPassInput cameraPassInput;
 	cameraPassInput.m_maxPasses = kMaxCameraPasses;
-	cameraPassInput.m_bufferingCount = (uint16_t)std::min<size_t>(internal_chain_list.size(), 0xFFFF);
-	cameraPassInput.m_bufferingIndex = internal_chain_index;
+	cameraPassInput.m_bufferingCount = (uint16_t)std::min<size_t>(state->internal_chain_list.size(), 0xFFFF);
+	cameraPassInput.m_bufferingIndex = state->internal_chain_index;
 
-	int passCount = camera->PassCount();
-	camera->PassRetrieve(&cameraPassInput, cameraPasses);
+	int passCount = output.camera->PassCount();
+	output.camera->PassRetrieve(&cameraPassInput, cameraPasses);
 
 	// Begin rendering now
-	camera->RenderBegin();
+	output.camera->RenderBegin(gfx);
 
 	// Loop through each pass and render with them:
 	for (int iCameraPass = 0; iCameraPass < passCount; ++iCameraPass)
 	{
 		if (cameraPasses[iCameraPass].m_passType == kCameraRenderWorld)
 		{
-			RenderObjectListWorld(&cameraPasses[iCameraPass], objectsToRender, objectCount);
+			RenderObjectListWorld(gfx, &cameraPasses[iCameraPass], world->objects.data(), (uint32_t)world->objects.size(), state);
 		}
-		else if (cameraPasses[iCameraPass].m_passType == kCameraRenderShadow)
+		else
 		{
-			//RenderObjectListShadows(&cameraPasses[iCameraPass], objectsToRender, objectCount);
-			ARCORE_ERROR("Shadow pass not yet implemented.");
+			ARCORE_ERROR("Only single pass supported");
 		}
 	}
 
 	// Finish up the rendering
-	camera->RenderEnd();
+	output.camera->RenderEnd();
 }
 
-void RrRenderer::RenderObjectListWorld ( rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount )
+////	RenderObjectList () : Renders the object list from the given camera with DeferredForward+.
+//void RrRenderer::RenderObjectList ( RrCamera* camera, CRenderableObject** objectsToRender, const uint32_t objectCount )
+//{
+//	// Get a pass list from the camera
+//	const int kMaxCameraPasses = 8;
+//	rrCameraPass cameraPasses [kMaxCameraPasses];
+//	rrCameraPassInput cameraPassInput;
+//	cameraPassInput.m_maxPasses = kMaxCameraPasses;
+//	cameraPassInput.m_bufferingCount = (uint16_t)std::min<size_t>(internal_chain_list.size(), 0xFFFF);
+//	cameraPassInput.m_bufferingIndex = internal_chain_index;
+//
+//	int passCount = camera->PassCount();
+//	camera->PassRetrieve(&cameraPassInput, cameraPasses);
+//
+//	// Begin rendering now
+//	camera->RenderBegin();
+//
+//	// Loop through each pass and render with them:
+//	for (int iCameraPass = 0; iCameraPass < passCount; ++iCameraPass)
+//	{
+//		if (cameraPasses[iCameraPass].m_passType == kCameraRenderWorld)
+//		{
+//			RenderObjectListWorld(&cameraPasses[iCameraPass], objectsToRender, objectCount);
+//		}
+//		else if (cameraPasses[iCameraPass].m_passType == kCameraRenderShadow)
+//		{
+//			//RenderObjectListShadows(&cameraPasses[iCameraPass], objectsToRender, objectCount);
+//			ARCORE_ERROR("Shadow pass not yet implemented.");
+//		}
+//	}
+//
+//	// Finish up the rendering
+//	camera->RenderEnd();
+//}
+
+void RrRenderer::RenderObjectListWorld ( gpu::GraphicsContext* gfx, rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount, RrOutputState* state )
 {
 	struct rrRenderRequestGroup
 	{
 		bool m_enabled;
+		// Depth-prepass is used for all opaques, deferred and forward. This is what is used for the base of occlusion queries.
 		std::vector<rrRenderRequest> m_4rDepthPrepass;
+		// Deferred objects render with a separate pass.
 		std::vector<rrRenderRequest> m_4rDeferred;
+		// Forwrad rendered objects render on top of the deferred state.
 		std::vector<rrRenderRequest> m_4rForward;
 		std::vector<rrRenderRequest> m_4rFog;
 		std::vector<rrRenderRequest> m_4rWarp;
@@ -600,7 +898,7 @@ Prerender_Pass:
 				// Loop through each pass to place them in the render lists.
 				for (uint8_t iPass = 0; iPass < kPass_MaxPassCount; ++iPass)
 				{
-					if (renderable->m_passEnabled[iPass] && renderable->m_passes[iPass].m_layer == iLayer)
+					if (renderable->PassEnabled(iPass) && renderable->PassLayer(iPass) == iLayer)
 					{
 						l_hasPass = true;
 						break;
@@ -644,30 +942,31 @@ Pass_Groups:
 					// Loop through each pass to place them in the render lists.
 					for (uint8_t iPass = 0; iPass < kPass_MaxPassCount; ++iPass)
 					{
-						if (renderable->m_passEnabled[iPass] && renderable->m_passes[iPass].m_layer == iLayer)
+						if (renderable->PassEnabled(iPass) && renderable->PassLayer(iPass) == iLayer)
 						{
-							RrPass* pass = &renderable->m_passes[iPass];
+							const rrPassType passType = renderable->PassType(iPass);
+							const bool passDepthWrite = renderable->PassDepthWrite(iPass);
 
 							// If part of the world...
-							if (pass->m_type == kPassTypeForward || pass->m_type == kPassTypeDeferred)
+							if (passType == kPassTypeForward || passType == kPassTypeDeferred)
 							{
-								if (pass->m_depthWrite)
+								if (passDepthWrite)
 								{	// Add opaque objects to the prepass list:
 									l_4rGroup[iLayer].m_4rDepthPrepass.push_back(rrRenderRequest{renderable, iPass});
 								}
 								// Add the other objects to the deferred or forward pass
-								if (pass->m_type == kPassTypeDeferred)
+								if (passType == kPassTypeDeferred)
 									l_4rGroup[iLayer].m_4rDeferred.push_back(rrRenderRequest{renderable, iPass});
 								else
 									l_4rGroup[iLayer].m_4rForward.push_back(rrRenderRequest{renderable, iPass});
 							}
 							// If part of fog effects...
-							else if (pass->m_type == kPassTypeVolumeFog)
+							else if (passType == kPassTypeVolumeFog)
 							{
 								l_4rGroup[iLayer].m_4rFog.push_back(rrRenderRequest{renderable, iPass});
 							}
 							// If part of warp effects...
-							else if (pass->m_type == kPassTypeWarp)
+							else if (passType == kPassTypeWarp)
 							{
 								l_4rGroup[iLayer].m_4rWarp.push_back(rrRenderRequest{renderable, iPass});
 							}
@@ -705,13 +1004,11 @@ Pass_Groups:
 	}
 
 Render_Groups:
-	gpu::GraphicsContext* gfx = mGfxContext;
-
 	// select buffer chain we work with
 	RrHybridBufferChain* bufferChain = cameraPass->m_bufferChain;
 	if (bufferChain == NULL)
 	{	// Select the main buffer chain if no RT is defined.
-		bufferChain = internal_chain_current;
+		bufferChain = state->internal_chain_current;
 	}
 	ARCORE_ASSERT(bufferChain != NULL);
 
@@ -735,7 +1032,7 @@ Render_Groups:
 
 	Rendering:
 
-		int l_cbuffer_pass_index = internal_chain_index * renderer::kRenderLayer_MAX + iLayer;
+		int l_cbuffer_pass_index = state->internal_chain_index * renderer::kRenderLayer_MAX + iLayer;
 
 		bool dirty_deferred = false;
 		bool dirty_forward = false;
@@ -791,9 +1088,12 @@ Render_Groups:
 			CRenderableObject::rrRenderParams params;
 			params.pass = l_4r.pass;
 			params.cbuf_perCamera = cameraPass->m_cbuffer;
-			params.cbuf_perFrame = &internal_cbuffers_frames[internal_chain_index];
-			params.cbuf_perPass = &internal_cbuffers_passes[l_cbuffer_pass_index];
+			//params.cbuf_perFrame = &internal_cbuffers_frames[internal_chain_index];
+			params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
+			params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
+			params.context_graphics = gfx;
 			
+			ARCORE_ASSERT(params.context_graphics != nullptr);
 			renderable->Render(&params);
 		}
 		// check if rendered anything, mark screen dirty if so.
@@ -831,8 +1131,9 @@ Render_Groups:
 			CRenderableObject::rrRenderParams params;
 			params.pass = l_4r.pass;
 			params.cbuf_perCamera = cameraPass->m_cbuffer;
-			params.cbuf_perFrame = &internal_cbuffers_frames[internal_chain_index];
-			params.cbuf_perPass = &internal_cbuffers_passes[l_cbuffer_pass_index];
+			//params.cbuf_perFrame = &internal_cbuffers_frames[internal_chain_index];
+			params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
+			params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
 
 			renderable->Render(&params);
 		}
@@ -851,7 +1152,7 @@ Render_Groups:
 
 }
 
-#pragma warning restore 4102
+#pragma warning( restore : 4102 )
 
 //
 //// Deferred rendering routine.

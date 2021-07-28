@@ -541,7 +541,7 @@ bool CRenderable2D::Render ( const rrRenderParams* params )
 		if ( !m_meshBuffer.m_mesh_uploaded )
 			return true; // Only render when have a valid mesh and rendering enabled
 
-		gpu::GraphicsContext* gfx = gpu::getDevice()->getContext();
+		gpu::GraphicsContext* gfx = params->context_graphics;
 
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);

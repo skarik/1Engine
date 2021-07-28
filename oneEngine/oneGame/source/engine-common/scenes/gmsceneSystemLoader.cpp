@@ -89,7 +89,7 @@ void gmsceneSystemLoader::LoadScene ( void )
 	else
 	{
 		// If they want to stay in the console, a camera needs to be added so the output can be rendered
-		RrCamera* aCamera = new RrCamera;
+		RrCamera* aCamera = new RrCamera(false);
 		CRenderCameraHolder* holder = new CRenderCameraHolder( aCamera );
 		holder->RemoveReference();
 		//aCamera->RemoveReference();

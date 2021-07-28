@@ -12,6 +12,11 @@
 class RrRenderTexture;
 class RrPostProcessPass;
 
+namespace gpu
+{
+	class GraphicsContext;
+}
+
 // Enumeration for type of camera
 enum rrCameraClassType
 {
@@ -31,8 +36,12 @@ class RrCamera
 	CameraType( kCameraClassNormal );
 protected:
 	// List of current cameras.
-	static std::vector<RrCamera*>
-						m_CameraList;
+	//static std::vector<RrCamera*>
+	//					m_CameraList;
+	RrCamera*			m_prevCamera = nullptr;
+	RrCamera*			m_nextCamera = nullptr;
+	static RrCamera*	g_FirstCamera;
+	static RrCamera*	g_LastCamera;
 
 public:
 
@@ -42,13 +51,24 @@ public:
 						activeCamera;
 
 	//	CameraList() : Returns a list of all the currently active cameras.
-	RENDER_API static const std::vector<RrCamera*>&
-							CameraList ( void )
-		{ return m_CameraList; }
+	//RENDER_API static const std::vector<RrCamera*>&
+	//						CameraList ( void )
+	//	{ return m_CameraList; }
 
+	static RrCamera*	GetFirstCamera ( void )
+		{ return g_FirstCamera; }
+	static RrCamera*	GetLastCamera ( void )
+		{ return g_LastCamera; }
+
+	RrCamera*			GetNextCamera ( void )
+		{ return m_nextCamera; }
 
 public:
-	RENDER_API explicit		RrCamera ( void );
+	//	Constructor RrCamera(isTransient)
+	//	arguments:
+	//		isTransient: If true, the camera is assumed to be used for helping rendering, and is not added to the internal camera list.
+	//					 Transient cameras typically only exist for a short time, ie, a subset of a single frame.
+	RENDER_API explicit		RrCamera ( bool isTransient );
 	RENDER_API virtual		~RrCamera ( void );
 
 	//	LateUpdate() : Pre-render update
@@ -72,7 +92,7 @@ public:
 
 	//	RenderBegin() : Begins rendering, pushing the current camera params.
 	// Should be called after PassRetrieve or immediately before PassRetrieve to ensure constant buffer values are correct.
-	RENDER_API virtual void	RenderBegin ( void );
+	RENDER_API virtual void	RenderBegin ( gpu::GraphicsContext* graphics_context );
 	//	RenderEnd() : Called at the end of render, cleans up any camera-specific objects.
 	RENDER_API virtual void	RenderEnd ( void );
 	
@@ -89,8 +109,8 @@ public:
 	// Property & State queries:
 
 	// Grab privately generated camera index
-	RENDER_API int8_t		GetCameraIndex ( void )
-		{ return m_cameraIndex; }
+	/*RENDER_API int8_t		GetCameraIndex ( void )
+		{ return m_cameraIndex; }*/
 
 	// Get if should render with camera or not
 	RENDER_API bool			GetRender ( void )
@@ -129,25 +149,30 @@ private:
 	//	UpdateFrustum() : recalculates view frustum based on the currently set state.
 	void					UpdateFrustum ( void );
 
+	//	RemoveFromCameraList() : Removes this current camera from the camera linked list. Useful for resorting.
+	void					RemoveFromCameraList ( void );
+
 public:
+	// is the camera only created for a single frame
+	bool				isTransient = false;
 	// is the camera available for rendering
-	bool				active;
+	bool				active = true;
 	// current camera position & rotation to render from
 	XrTransform			transform;
 	// Render options
-	Real				zNear;
-	Real				zFar;
+	Real				zNear = 0.1F;
+	Real				zFar = 200.0F;
 	// Viewport options
-	Real				renderScale;
-	Rect				viewportPercent;
-	bool				mirrorView;
+	Real				renderScale = 1.0F;
+	Rect				viewportPercent = Rect(0.0F, 0.0F, 1.0F, 1.0F);
+	bool				mirrorView = false;
 	// Orthographic options
-	bool				orthographic;
-	Vector2f			orthoSize;
+	bool				orthographic = false;
+	Vector2f			orthoSize = Vector2f(512.0F, 512.0F);
 	// Physical options
-	Real				fieldOfView;
-	Real				focalDistance;
-	Real				focalRange;
+	Real				fieldOfView = 100.0F;
+	Real				focalDistance = 10.0F;
+	Real				focalRange = 100.0F;
 
 	// World layers to enable
 	bool				layerVisibility [renderer::kRenderLayer_MAX];
@@ -194,7 +219,7 @@ protected:
 private:
 	// Camera index given by the system.
 	// Gauranteed to be unique within the camera listing.
-	int8_t				m_cameraIndex;
+	//int8_t				m_cameraIndex = -1;
 
 };
 
