@@ -7,19 +7,19 @@
 #include "COrthoCamera.h"
 
 // Construct orthographic camera
-COrthoCamera::COrthoCamera ( bool isTransient )
+COrthoCamera::COrthoCamera ( bool isTransient, const rrViewport& viewport )
 	: RrCamera(isTransient)
 {
-	pixel_scale_aspect_ratio= (Real)Screen::Info.width/(Real)Screen::Info.height;
+	pixel_scale_aspect_ratio= (Real)viewport.size.x/(Real)viewport.size.y;
 	pixel_scale_mode		= ORTHOSCALE_MODE_CONSTANT;
 	pixel_scale_factor		= 1.0f;
 	viewport_target.pos		= Vector2f( 0,0 );
-	viewport_target.size	= Vector2f( (Real)Screen::Info.width, (Real)Screen::Info.height );
+	viewport_target.size	= Vector2f( (Real)viewport.size.x, (Real)viewport.size.y );
 	view_roll = 0;
 }
 
 	// Camera position setup
-void COrthoCamera::UpdateMatrix ( void )
+void COrthoCamera::UpdateMatrix ( const RrOutputInfo& viewport_info )
 {
 	// Override to be orthographic
 	orthographic = true;
@@ -38,8 +38,8 @@ void COrthoCamera::UpdateMatrix ( void )
 	switch ( pixel_scale_mode )
 	{
 	case ORTHOSCALE_MODE_CONSTANT:
-		orthoSize.x = (Real)Screen::Info.width * pixel_scale_factor;
-		orthoSize.y = (Real)Screen::Info.height * pixel_scale_factor;
+		orthoSize.x = (Real)viewport_info.viewport.size.x * pixel_scale_factor;
+		orthoSize.y = (Real)viewport_info.viewport.size.y * pixel_scale_factor;
 		break;
 	case ORTHOSCALE_MODE_SIMPLE:
 		orthoSize.x = viewport_target.size.x;
@@ -62,11 +62,11 @@ void COrthoCamera::UpdateMatrix ( void )
 	}
 
 	// After projection parameters has been modified, perform orthographic view normally.
-	RrCamera::UpdateMatrix();
+	RrCamera::UpdateMatrix(viewport_info);
 }
 
 // Update parameters needed for 2D rendering
-void COrthoCamera::RenderBegin ( gpu::GraphicsContext* graphics_context )
+void COrthoCamera::RenderBegin ( void )
 {
 	/*RrMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( kRenderModeDeferred, renderer::kPipelineMode2DPaletted );
 	palette_pass_material->setTexture(TEX_SLOT5, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
@@ -79,5 +79,5 @@ void COrthoCamera::RenderBegin ( gpu::GraphicsContext* graphics_context )
 	//RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
 
 	// Set up the camera normally
-	RrCamera::RenderBegin(graphics_context);
+	RrCamera::RenderBegin();
 }

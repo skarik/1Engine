@@ -46,7 +46,7 @@ void m04::editor::sequence::MouseGizmo::OnGameFrameUpdate ( const GameFrameUpdat
 	// We need to project onto a plane in order to have a good spot for the cursor
 	if (m_ui->GetMouseHit() == NULL)
 	{
-		const Vector2f mouseScreenPosition (core::Input::MouseX() / Screen::Info.width, core::Input::MouseY() / Screen::Info.height);
+		const Vector2f mouseScreenPosition (core::Input::MouseX() / core::GetFocusedScreen().GetWidth(), core::Input::MouseY() / core::GetFocusedScreen().GetHeight());
 		const Ray mouseRay = Ray(
 			RrCamera::activeCamera->transform.position,
 			RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)

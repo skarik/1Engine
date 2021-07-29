@@ -29,7 +29,8 @@ PlayerLeyo::PlayerLeyo ( void )
 	input = new CInputControl(this);
 	input->Capture();
 
-	camera = new COrthoCamera();
+	camera = new COrthoCamera(false, rrViewport());
+	ARCORE_ERROR("Bad viewport");
 	// Set camera options
 	camera->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
 	camera->viewport_target.size = Vector2f( 1280,720 ) * 0.5f;

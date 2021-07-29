@@ -7,6 +7,7 @@
 #include "core/math/matrix/CMatrix.h"
 #include "core-ext/transform/Transform.h"
 #include "renderer/types/ObjectSettings.h"
+#include "renderer/types/viewport.h"
 #include "renderer/camera/CameraPass.h"
 
 class RrRenderTexture;
@@ -80,7 +81,7 @@ public:
 	// Rendering Queries:
 
 	//	UpdateMatrix() : Updates the camera matrices.
-	RENDER_API virtual void	UpdateMatrix ( void );
+	RENDER_API virtual void	UpdateMatrix ( const RrOutputInfo& viewport_info );
 
 	//	PassCount() : Returns number of passes this camera will render
 	// Must be 1 or greater in order to render.
@@ -92,7 +93,7 @@ public:
 
 	//	RenderBegin() : Begins rendering, pushing the current camera params.
 	// Should be called after PassRetrieve or immediately before PassRetrieve to ensure constant buffer values are correct.
-	RENDER_API virtual void	RenderBegin ( gpu::GraphicsContext* graphics_context );
+	RENDER_API virtual void	RenderBegin ( void );
 	//	RenderEnd() : Called at the end of render, cleans up any camera-specific objects.
 	RENDER_API virtual void	RenderEnd ( void );
 	
@@ -164,7 +165,7 @@ public:
 	Real				zFar = 200.0F;
 	// Viewport options
 	Real				renderScale = 1.0F;
-	Rect				viewportPercent = Rect(0.0F, 0.0F, 1.0F, 1.0F);
+	//Rect				viewportPercent = Rect(0.0F, 0.0F, 1.0F, 1.0F);
 	bool				mirrorView = false;
 	// Orthographic options
 	bool				orthographic = false;
@@ -191,7 +192,7 @@ protected:
 	Vector3f			up;
 	Vector3f			forward;
 	// Viewport options
-	Rect				viewport;
+	//Rect				viewport;
 
 	// Camera frustum
 	//core::math::Plane frustum [6];
@@ -214,7 +215,7 @@ protected:
 
 	// Needs a new frame render? True when we should render a new frame from this camera.
 	// Is normally always true for the base camera class.
-	bool				m_needsNewPasses;
+	bool				m_needsNewPasses = true;
 
 private:
 	// Camera index given by the system.

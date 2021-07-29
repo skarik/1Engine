@@ -57,7 +57,7 @@ void m04::editor::sequence::GridGizmo::BuildMesh ( void )
 	Vector3f rayTopLeft		= camera->ScreenToWorldDir(Vector2f(0.0F, 0.0F));
 	Vector3f rayBottomRight	= camera->ScreenToWorldDir(Vector2f(1.0F, 1.0F));
 
-	Vector2f l_pixelStep = Vector2f(1.0F / Screen::Info.width, 1.0F / Screen::Info.height);
+	Vector2f l_pixelStep = Vector2f(1.0F / main_editor->GetScreen().GetWidth(), 1.0F / main_editor->GetScreen().GetHeight());
 	Vector3f rayTopLeftStep	= camera->ScreenToWorldDir(l_pixelStep);
 	Vector3f rayCenter		= camera->ScreenToWorldDir(Vector2f(0.5F, 0.5F));
 	Vector3f rayCenterStep	= camera->ScreenToWorldDir(Vector2f(0.5F, 0.5F) + l_pixelStep);
@@ -146,7 +146,7 @@ void m04::editor::sequence::GridGizmo::OnGameFrameUpdate ( const GameFrameUpdate
 	// We need to project onto a plane in order to have a good spot for the cursor
 	if (m_ui->GetMouseHit() == NULL)
 	{
-		const Vector2f mouseScreenPosition (core::Input::MouseX() / Screen::Info.width, core::Input::MouseY() / Screen::Info.height);
+		const Vector2f mouseScreenPosition (core::Input::MouseX() / main_editor->GetScreen().GetWidth(), core::Input::MouseY() / main_editor->GetScreen().GetHeight());
 		const Ray mouseRay = Ray(
 			RrCamera::activeCamera->transform.position,
 			RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)

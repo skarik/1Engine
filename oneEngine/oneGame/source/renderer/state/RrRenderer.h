@@ -7,6 +7,7 @@
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/types/RrGpuTexture.h"
 #include "renderer/types/id.h"
+#include "renderer/types/viewport.h"
 #include "renderer/state/InternalSettings.h"
 #include "renderer/state/RrHybridBufferChain.h"
 
@@ -41,8 +42,10 @@ namespace renderer
 class RrWorld
 {
 public:
-	explicit				RrWorld ( void );
-							~RrWorld ( void );
+	explicit				RrWorld ( void )
+		{}
+							~RrWorld ( void )
+		{}
 
 	friend CRenderableObject;
 	rrId					AddObject ( CRenderableObject* renderable );
@@ -92,13 +95,6 @@ public:
 						logics;
 };
 
-struct rrViewport
-{
-	Vector2i			corner = Vector2i(0, 0);
-	Vector2i			size = Vector2i(0, 0);
-	Vector2i			pixel_density = Vector2i(1, 1);
-};
-
 class RrOutputInfo
 {
 public:
@@ -126,17 +122,27 @@ public:
 	// Update interval when the view isn't focused. Only valid for Type::kRenderTarget.
 	int					update_interval_when_not_focused = -1;
 
-	RrWorld*			world;
-
+	// World this output shows
+	RrWorld*			world = nullptr;
+	// Camera used for rendering this world
 	RrCamera*			camera = nullptr;
+	
+	// Is the viewport scaled up to the output each frame?
+	bool				scale_viewport_to_output = true;
+	// If scale_viewport_to_output is false, provides the viewport.
 	rrViewport			viewport;
-	Type				type = Type::kUinitialized;
 
 	uint8				backbuffer_count = 3;
 	rrBufferChainInfo	requested_buffers;
 
+	// Output type - window or render target
+	Type				type = Type::kUinitialized;
+	// Output window if type is Window
 	RrWindow*			output_window = nullptr;
+	// Output target if type is RenderTarget
 	RrRenderTexture*	output_target = nullptr;
+
+public:
 
 	//	GetOutputSize() : Returns the desired output size for the given output
 	RENDER_API Vector2i		GetOutputSize ( void ) const;
@@ -144,12 +150,27 @@ public:
 	//	GetRenderTarget() : Returns the render target for the output
 	RENDER_API gpu::RenderTarget*
 							GetRenderTarget ( void ) const;
+
+	//	GetOutputViewport() : Returns the size of the output viewport.
+	RENDER_API rrViewport	GetOutputViewport ( void ) const
+	{
+		if (scale_viewport_to_output)
+		{
+			//return rrViewport{.corner=Vector2i(0, 0), .size=GetOutputSize(), .pixel_density=viewport.pixel_density};
+			return rrViewport{Vector2i(0, 0), GetOutputSize(), viewport.pixel_density};
+		}
+		else
+		{
+			return viewport;
+		}
+	}
 };
 
 class RrOutputState
 {
 public:
-	explicit				RrOutputState ( void );
+	explicit				RrOutputState ( void )
+		{}
 							~RrOutputState ( void )
 	{
 		ResizeBufferChain(0);
@@ -185,6 +206,11 @@ public:
 	// Ex: If kRenderLayer_MAX is 7, and the engine is using triple (3) buffering, there will be 21 cbuffers.
 	std::vector<gpu::Buffer>
 						internal_cbuffers_passes;
+
+public:
+	// Current pipeline mode used for rendering.
+	renderer::ePipelineMode
+						pipeline_mode = renderer::kPipelineModeNormal;
 
 public:
 	gpu::GraphicsContext*
@@ -251,10 +277,45 @@ public:
 	// Creates an output. The pointer to the output is only guaranteed to be valid between HelpGenerateOutput calls.
 	//RENDER_API RrOutputInfo*
 	//						HelpGenerateOutput ( RrWindow* output, RrWorld* input );
-	RENDER_API void			AddOutput ( const RrOutputInfo& info );
+	RENDER_API uint			AddOutput ( const RrOutputInfo& info );
 
-	RENDER_API void			AddWorld ( RrWorld* world );
-	RENDER_API void			AddWorldDefault ( void );
+	RENDER_API uint			AddWorld ( RrWorld* world );
+	RENDER_API uint			AddWorldDefault ( void );
+
+	template <int Index>
+	RrOutputInfo&			GetOutput ( void )
+	{
+		ARCORE_ASSERT(Index >= 0 && (size_t)(Index) < render_outputs.size());
+		return render_outputs[Index].info;
+	}
+	RrOutputInfo&			GetOutput ( const uint Index )
+	{
+		ARCORE_ASSERT(Index >= 0 && (size_t)(Index) < render_outputs.size());
+		return render_outputs[Index].info;
+	}
+	template <int Index>
+	const RrOutputInfo&		GetOutput ( void ) const
+	{
+		ARCORE_ASSERT(Index >= 0 && (size_t)(Index) < render_outputs.size());
+		return render_outputs[Index].info;
+	}
+	const RrOutputInfo&		GetOutput ( const uint Index ) const
+	{
+		ARCORE_ASSERT(Index >= 0 && (size_t)(Index) < render_outputs.size());
+		return render_outputs[Index].info;
+	}
+
+	template <int Index>
+	RrWorld*				GetWorld ( void )
+	{
+		ARCORE_ASSERT(Index >= 0 && (size_t)(Index) < worlds.size());
+		return worlds[Index];
+	}
+	RrWorld*				GetWorld ( const uint Index )
+	{
+		ARCORE_ASSERT(Index >= 0 && (size_t)(Index) < worlds.size());
+		return worlds[Index];
+	}
 
 	// Buffer management
 	// ================================

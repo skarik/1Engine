@@ -48,6 +48,22 @@ static int chooseNonzero ( const int variable, const int fallback )
 // Static variables
 std::vector<RrWindow*> RrWindow::m_windows;
 
+static void UpdateScreenInfo ( void )
+{
+	auto& windows = RrWindow::List();
+	for (int windowIndex = 0; windowIndex < windows.size(); ++windowIndex)
+	{
+		auto window = windows[windowIndex];
+		auto& screen = core::GetScreen(windowIndex);
+
+		const Vector2i resolution = window->GetSize();
+	
+		screen.SetIndex(windowIndex);
+		screen.SetSize(resolution.x, resolution.y);
+		screen.SetFocused(window->GetFocused());
+	}
+}
+
 RrWindow::RrWindow(RrRenderer* renderer, HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow )
 	: m_renderer(renderer), mw_instance(hInstance), mw_cmdline(lpCmdLine), mw_cmdshow(nCmdShow)
 	//,
@@ -61,9 +77,6 @@ RrWindow::RrWindow(RrRenderer* renderer, HINSTANCE hInstance, LPSTR lpCmdLine, i
 	m_colordepth   = gsi->b_ro_UseHighRange ? 10 : 8;
 	m_outputFormat = gsi->b_ro_UseHighRange ? gpu::kOutputFormatRGB10 : gpu::kOutputFormatRGB8;
 	m_fullscreen = false;
-
-	// Load window options 
-	CGameSettings::Active()->LoadSettings();
 
 	// Register class
 	WNDCLASS	wc; // Windows Class Structure
@@ -84,9 +97,6 @@ RrWindow::RrWindow(RrRenderer* renderer, HINSTANCE hInstance, LPSTR lpCmdLine, i
 		ERROR_OUT("Failed To Register The Window Class. (Has the class already been registered?)\n");
 	}
 
-	// Add self to the window list:
-	m_windows.push_back(this);
-
 	// Create everything!
 	CreateScreen();
 	RegisterInput();
@@ -94,6 +104,14 @@ RrWindow::RrWindow(RrRenderer* renderer, HINSTANCE hInstance, LPSTR lpCmdLine, i
 
 	//CreateGfxInstance();
 	CreateGfxSurface();
+
+	// Add self to the window list:
+	m_windows.push_back(this);
+
+	// Update Screen count
+	m_windowListIndex = (int)(m_windows.size() - 1);
+	core::SetScreenCount((int)m_windows.size());
+	UpdateScreenInfo();
 }
 RrWindow::~RrWindow ( void )
 {
@@ -105,6 +123,14 @@ RrWindow::~RrWindow ( void )
 	auto this_window = std::find(m_windows.begin(), m_windows.end(), this);
 	if (this_window != m_windows.end())
 		m_windows.erase(this_window);
+
+	// Update all the indicies in the other windows
+	for (int windowIndex = 0; windowIndex < m_windows.size(); ++windowIndex)
+	{
+		m_windows[windowIndex]->m_windowListIndex = windowIndex;
+	}
+	core::SetScreenCount((int)m_windows.size());
+	UpdateScreenInfo();
 }
 
 
@@ -309,7 +335,7 @@ void RrWindow::CreateGfxSurface ( void )
 		ERROR_OUT("Window is not created. Cannot create surface.\n");
 	}
 
-	if (m_surface.create(m_renderer->GetGpuDevice(), gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y, m_outputFormat, m_fullscreen) != 0)
+	if (m_surface.create((intptr_t)mw_window, m_renderer->GetGpuDevice(), gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y, m_outputFormat, m_fullscreen) != 0)
 	{
 		DestroyScreen();
 		ERROR_OUT("Gfx surface creation error.\n");
@@ -394,7 +420,7 @@ bool RrWindow::Resize ( int width, int height )
 
 		// Refresh the surface
 		m_surface.destroy();
-		m_surface.create(m_renderer->GetGpuDevice(), gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y, m_outputFormat, m_fullscreen);
+		m_surface.create((intptr_t)mw_window, m_renderer->GetGpuDevice(), gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y, m_outputFormat, m_fullscreen);
 
 		// Resize the renderer
 		//if (m_renderer != NULL)
@@ -477,6 +503,15 @@ void RrWindow::PostRedrawMessage ( void )
 }
 
 //===============================================================================================//
+// RRWINDOW GETTERS:
+//===============================================================================================//
+
+const ArScreen& RrWindow::GetScreen ( void )
+{
+	return core::GetScreen(m_windowListIndex);
+}
+
+//===============================================================================================//
 // WINDOWS MESSAGE LOOP:
 //===============================================================================================//
 
@@ -556,6 +591,7 @@ LRESULT CALLBACK MessageUpdate(
 			{
 				core::Input::Reset();
 			}
+			UpdateScreenInfo();
 		}
 
 		return 0;	// Return To The Message Loop
@@ -564,6 +600,7 @@ LRESULT CALLBACK MessageUpdate(
 	{
 		rrWindow->focused = true;	// Program is now focused
 		rrWindow->UpdateMouseClipping();
+		UpdateScreenInfo();
 		return 0;
 	}
 	case WM_KILLFOCUS:
@@ -573,6 +610,7 @@ LRESULT CALLBACK MessageUpdate(
 		{
 			core::Input::Reset();
 		}
+		UpdateScreenInfo();
 		return 0;
 	}
 	// Window move

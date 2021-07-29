@@ -345,6 +345,7 @@
     <ClInclude Include="source\renderer\types\shaders\sbuffers.h" />
     <ClInclude Include="source\renderer\types\shaders\vattribs.h" />
     <ClInclude Include="source\renderer\types\types.h" />
+    <ClInclude Include="source\renderer\types\viewport.h" />
     <ClInclude Include="source\renderer\utils\RrScreenshot.h" />
     <ClInclude Include="source\renderer\utils\glTMeshContainer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

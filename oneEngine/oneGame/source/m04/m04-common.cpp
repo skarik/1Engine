@@ -86,7 +86,8 @@ int GameInitialize ( void )
 
 	renderer::Options::DeferredShaders( shaderSettings );
 	renderer::Options::TextureStreaming( true );
-	RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
+	//RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
+	RrRenderer::Active->GetWorld<0>()->pipeline_mode = renderer::kPipelineMode2DPaletted;
 
 	// Register game start command
 	engine::Console->AddConsoleFunc( "listen", listen );

@@ -145,7 +145,7 @@ static FORCE_INLINE D3D11_STENCIL_OP ArEnumToDx ( const gpu::StencilOp mode )
 
 //===============================================================================================//
 
-gpu::GraphicsContext::GraphicsContext ( Device* wrapperDevice )
+gpu::GraphicsContext::GraphicsContext ( Device* wrapperDevice, bool passthroughAsImmediate )
 	: m_rasterStateCachedMap(NULL), m_rasterStateCurrentBitfilter((uint32_t)-1),
 	m_blendStateCachedMap(NULL), m_blendStateCurrentBitfilter(),
 	m_depthStateCachedMap(NULL), m_depthStateCurrentBitfilter((uint64_t)-1)
@@ -160,12 +160,24 @@ gpu::GraphicsContext::GraphicsContext ( Device* wrapperDevice )
 	// Save the device for submit
 	m_wrapperDevice = wrapperDevice;
 
-	// Grab a new context
-	result = gpuDevice->getNative()->CreateDeferredContext(0, (ID3D11DeviceContext**)&m_deferredContext);
-	if (FAILED(result))
+	// Set up context being used
+	m_isImmediateMode = passthroughAsImmediate;
+	if ( !passthroughAsImmediate )
 	{
-		// TODO: Error handling. Is a bitch to do in the constructor.
-		abort();
+		// Grab a new context
+		result = gpuDevice->getNative()->CreateDeferredContext(0, (ID3D11DeviceContext**)&m_deferredContext);
+		if (FAILED(result))
+		{
+			// TODO: Error handling. Is a bitch to do in the constructor.
+			abort();
+		}
+
+		const wchar_t* kName = L"Deferred Context";
+		((ID3D11DeviceContext*)m_deferredContext)->SetPrivateData(GUID(), lstrlenW(kName), kName);
+	}
+	else
+	{
+		m_deferredContext = gpuDevice->getImmediateContext();
 	}
 
 	// Create the needed cached states
@@ -205,21 +217,31 @@ gpu::GraphicsContext::~GraphicsContext ( void )
 	delete m_defaultSampler;
 
 	// Done w/ context
-	static_cast<ID3D11DeviceContext*>(m_deferredContext)->Release();
+	if (!m_isImmediateMode)
+	{
+		static_cast<ID3D11DeviceContext*>(m_deferredContext)->Release();
+	}
 }
 
 int gpu::GraphicsContext::reset ( void )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
-	ctx->ClearState(); // TODO: Remove this line, and investigate if it causes issues, if any.
+	if (!m_isImmediateMode)
+	{
+		ctx->ClearState(); // TODO: Remove this line, and investigate if it causes issues, if any.
+	}
 
 	m_rasterStateCurrentBitfilter = (uint32_t)-1;
 	m_blendStateCurrentBitfilter[0] = (uint64_t)-1;
 	m_blendStateCurrentBitfilter[1] = (uint64_t)-1;
 	m_blendStateCurrentBitfilter[2] = (uint64_t)-1;
 	m_blendStateCurrentBitfilter[3] = (uint64_t)-1;
-	m_depthStateCurrentBitfilter = (uint64_t)-1;;
+	m_depthStateCurrentBitfilter = (uint64_t)-1;
+
+	// Reset the pipeline since nothing is bound.
+	m_pipelineBound = false;
+	m_pipelineDataBound = false;
 
 	return kError_SUCCESS;
 }
@@ -231,15 +253,18 @@ int gpu::GraphicsContext::submit ( void )
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 	HRESULT					result;
 
-	result = ctx->FinishCommandList(FALSE, &commandList); // Finalize all commands thrown in.
-	if (FAILED(result))
+	if (!m_isImmediateMode)
 	{
-		throw core::InvalidCallException();
+		result = ctx->FinishCommandList(FALSE, &commandList); // Finalize all commands thrown in.
+		if (FAILED(result))
+		{
+			ARCORE_ERROR("Error occurred when creating a CommandList from context.");
+		}
+
+		gpuDevice->getImmediateContext()->ExecuteCommandList(commandList, FALSE);
+
+		commandList->Release();
 	}
-
-	gpuDevice->getImmediateContext()->ExecuteCommandList(commandList, FALSE);
-
-	commandList->Release();
 
 	return kError_SUCCESS;
 }

@@ -3,6 +3,8 @@
 #include "core/system/Screen.h"
 #include "core/input/CInput.h"
 
+#include "renderer/windowing/RrWindow.h"
+
 #include "engine-common/dusk/Element.h"
 #include "engine-common/dusk/UIRenderer.h"
 
@@ -53,8 +55,9 @@ bool dusk::UserInterface::AddInitializeCheckValid ( Element* element )
 	return m_elements[element->m_index] == element;
 }
 
-dusk::UserInterface::UserInterface ( void )
+dusk::UserInterface::UserInterface ( RrWindow* targeted_display )
 	: CGameBehavior()
+	, m_window(targeted_display)
 {
 	m_renderer = new UIRenderer(this);
 
@@ -602,7 +605,7 @@ void dusk::UserInterface::DestroyElement ( const size_t handle, const bool also_
 		// If the element was a dialogue, though, it likely affected the entire screen.
 		if ((size_t)m_currentDialogue == handle)
 		{
-			m_forcedUpdateAreas.push_back( Rect(0,0, (Real)Screen::Info.width, (Real)Screen::Info.height) );
+			m_forcedUpdateAreas.push_back( Rect(0,0, (Real)GetScreen().GetWidth(), (Real)GetScreen().GetHeight()) );
 		}
 
 		// Remove the elements
@@ -737,4 +740,10 @@ bool dusk::UserInterface::IsMouseInside ( void )
 bool dusk::UserInterface::IsInDialogue ( void )
 {
 	return m_currentDialogue != kElementHandleInvalid;
+}
+
+//	GetScreen() : Returns the screen associated with this UI.
+const ArScreen& dusk::UserInterface::GetScreen ( void )
+{
+	return m_window->GetScreen();
 }

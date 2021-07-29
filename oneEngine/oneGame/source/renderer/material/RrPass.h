@@ -32,6 +32,10 @@ enum rrPassType
 	kPassTypeWarp,
 	// System pass, lighting shadows, forward rendered.
 	kPassTypeShadowColorOverride,
+
+	// General purpose job pass. Renders outside of viewport sets, so safe render-target work can happen.
+	// Use for items where the sorting doesn't quite matter.
+	kPassTypeJob,
 };
 
 enum rrPassConstants : int

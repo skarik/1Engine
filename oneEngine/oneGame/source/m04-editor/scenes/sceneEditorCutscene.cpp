@@ -28,7 +28,8 @@ void sceneEditorCutscene::LoadScene ( void )
 
 	// Create orthographic camera
 	{
-		COrthoCamera* cam = new COrthoCamera();
+		COrthoCamera* cam = new COrthoCamera(false, rrViewport());
+		ARCORE_ERROR("Invalid camera");
 		// Set camera options
 		cam->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
 		cam->viewport_target.size = Vector2f( 1280,720 );// * 0.5f;

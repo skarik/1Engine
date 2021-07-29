@@ -10,6 +10,7 @@
 
 #ifdef _WIN32
 
+class ArScreen;
 class RrRenderer;
 
 // Class Definition
@@ -45,6 +46,16 @@ public:
 	RENDER_API void			SetZeroInputOnLoseFocus ( bool zeroInput )
 		{ m_zeroInputOnLoseFocus = zeroInput; }
 
+	// Getters
+	// ================================
+
+	RENDER_API Vector2i		GetSize ( void )
+		{ return m_resolution; }
+	RENDER_API bool			GetFocused ( void )
+		{ return focused; }
+	RENDER_API const ArScreen&
+							GetScreen ( void );
+
 	// State update
 	// ================================
 
@@ -60,7 +71,7 @@ public:
 	// ================================
 
 	//	OsHasFocus() : Does this window have focus?
-	RENDER_API bool			OsHasFocus ( void );
+	//RENDER_API bool			OsHasFocus ( void );
 
 	//	OsShellHandle() : Returns the OS handle of this window representation
 	RENDER_API intptr_t		OsShellHandle ( void )
@@ -114,6 +125,8 @@ private:
 
 private:
 	friend LRESULT CALLBACK MessageUpdate(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+	int					m_windowListIndex;
 
 	Vector2i			m_resolution;
 	gpu::OutputFormat	m_outputFormat;

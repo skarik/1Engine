@@ -57,8 +57,8 @@ namespace gpu
 		ID3D11DeviceContext*	getImmediateContext ( void );
 	private:
 		friend OutputSurface;
-		intptr_t			mw_module;
-		intptr_t			mw_window;
+		//intptr_t			mw_module;
+		//intptr_t			mw_window;
 		/*intptr_t			mw_deviceContext;
 		intptr_t			mw_renderContext;*/
 

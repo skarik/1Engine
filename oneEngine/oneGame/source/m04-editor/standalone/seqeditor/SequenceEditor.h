@@ -41,6 +41,9 @@ namespace editor {
 								GetDuskUI ( void )
 			{ return dusk_interface; }
 
+		EDITOR_API const ArScreen&
+								GetScreen ( void );
+
 		EDITOR_API m04::editor::sequence::NodeBoardState*
 								GetNodeBoardState ( void )
 			{ return board_state; }

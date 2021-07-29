@@ -265,6 +265,7 @@ namespace audio
 		{
 			// Create notifier instance before starting audio systems
 			m_audioChangedNotifier = new AudioChangedNotifier(this);
+			m_audioChangedNotifier->AddRef();
 
 			InitializeAudio();
 			RecreateDevice();
@@ -417,7 +418,8 @@ namespace audio
 			m_deviceEnumerator = NULL;
 
 			// Clean up notifier instance
-			delete_safe(m_audioChangedNotifier);
+			//delete_safe(m_audioChangedNotifier);
+			m_audioChangedNotifier->Release();
 		}
 	};
 

@@ -121,7 +121,7 @@ void RrRenderer::InitializeResourcesWithDevice ( gpu::Device* device )
 	//ARCORE_ASSERT(mGfxContext->validate() == 0);
 
 	// We need a new context specifically created for the resource manager
-	gpu::GraphicsContext* gfx = new gpu::GraphicsContext(device);
+	gpu::GraphicsContext* gfx = new gpu::GraphicsContext(device, true); // We need the resource command context to work immediately.
 
 	// Set up resource manangers
 	auto resourceManager = core::ArResourceManager::Active();
@@ -255,22 +255,16 @@ void RrRenderer::InitializeResourcesWithDevice ( gpu::Device* device )
 
 	// Submit and release the gfx
 	gfx->submit();
-	delete gfx;
 }
 
 void RrOutputState::Update ( RrOutputInfo* output_info )
 {
-	this->output_info = output_info;
-	// Set initial rendertarget states
-	/*{
-		internal_chain_current = NULL;
-		internal_chain_index = 0;
-	}*/
+	this->output_info = output_info; // This can change from frame-to-frame, so we force update.
 
 	// Create the graphics context:
 	if (graphics_context == nullptr)
 	{
-		graphics_context = new gpu::GraphicsContext(SceneRenderer->GetGpuDevice());
+		graphics_context = new gpu::GraphicsContext(SceneRenderer->GetGpuDevice(), false);
 	}
 
 	// Initialize the buffer chain:
@@ -346,6 +340,17 @@ RrRenderer::~RrRenderer ( void )
 	delete debug::Drawer;
 	delete debug::RTInspector;
 
+	// Free the worlds
+	for (RrWorld* world : worlds)
+	{
+		delete world;
+	}
+	// Free the output states
+	for (auto& output : render_outputs)
+	{
+		delete output.state;
+	}
+
 	// Free state info
 	Active			= NULL;
 	SceneRenderer	= NULL;
@@ -378,7 +383,6 @@ RrRenderer::~RrRenderer ( void )
 	resourceManager->SetSubsystem(core::kResourceTypeRrShader, nullptr);
 	resourceManager->SetSubsystem(core::kResourceTypeRrMeshGroup, nullptr);
 
-	
 	// TODO
 }
 
@@ -405,6 +409,7 @@ bool RrWorld::RemoveObject ( const rrId& object_id )
 	ARCORE_ASSERT(object_id.world_index == this->world_index);
 
 	// Grab the object & then null it from the list.
+	ARCORE_ASSERT(object_id.object_index < objects.size());
 	CRenderableObject*& object = objects[object_id.object_index];
 	ARCORE_ASSERT(object->GetId() == object_id);
 
@@ -437,6 +442,7 @@ bool RrWorld::RemoveLogic ( const rrId& logic_id )
 	ARCORE_ASSERT(logic_id.world_index == this->world_index);
 
 	// Grab the object & then null it from the list.
+	ARCORE_ASSERT(logic_id.object_index < logics.size());
 	RrLogicObject*& logic = logics[logic_id.object_index];
 	ARCORE_ASSERT(logic->GetId() == logic_id);
 
@@ -472,21 +478,28 @@ void RrRenderer::AddQueuedToWorld ( void )
 }
 
 
-void RrRenderer::AddOutput ( const RrOutputInfo& info )
+uint RrRenderer::AddOutput ( const RrOutputInfo& info )
 {
+	ARCORE_ASSERT(info.type != RrOutputInfo::Type::kUinitialized);
+	ARCORE_ASSERT(info.camera != nullptr);
+
 	render_outputs.push_back(rrOutputPair{info});
+
+	return (uint16)(render_outputs.size() - 1);
 }
 
-void RrRenderer::AddWorld ( RrWorld* world )
+uint RrRenderer::AddWorld ( RrWorld* world )
 {
 	worlds.push_back(world);
 	world->world_index = (uint16)(worlds.size() - 1);
+
+	return world->world_index;
 }
 
-void RrRenderer::AddWorldDefault ( void )
+uint RrRenderer::AddWorldDefault ( void )
 {
 	RrWorld* world = new RrWorld();
-	AddWorld(world);
+	return AddWorld(world);
 }
 
 //// AddRO ( pointer to new RO )

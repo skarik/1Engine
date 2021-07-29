@@ -10,7 +10,7 @@
 #include "core/os.h"
 #include <stdio.h>
 
-int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32_t width, uint32_t height, OutputFormat format, bool fullscreen )
+int gpu::OutputSurface::create ( intptr_t window, Device* device, PresentMode presentMode, uint32_t width, uint32_t height, OutputFormat format, bool fullscreen )
 {
 	HRESULT result;
 
@@ -40,7 +40,7 @@ int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32
 	swapchain_desc.BufferUsage = DXGI_USAGE_BACK_BUFFER | DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swapchain_desc.BufferCount = 3;
 
-	swapchain_desc.OutputWindow = (HWND)device->mw_window;
+	swapchain_desc.OutputWindow = (HWND)window;
 	swapchain_desc.Windowed = fullscreen ? FALSE : TRUE;
 
 	swapchain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; // TODO: Flip discard, one day.
@@ -53,8 +53,6 @@ int gpu::OutputSurface::create ( Device* device, PresentMode presentMode, uint32
 		printf("Could not create surface (error: %x).\n", (int)result);
 		return gpu::kErrorFormatUnsupported;
 	}
-
-	printf("created win32_surface.\n");
 
 	// save the "requested" width and height.
 	m_width = width;
@@ -121,6 +119,11 @@ uint32_t gpu::OutputSurface::getHeight ( void )
 gpu::Device* gpu::OutputSurface::getDevice ( void )
 {
 	return m_device;
+}
+
+void gpu::OutputSurface::activate ( void )
+{
+	// DX11, activating the surface does nothing. Surfaces are always ready to be rendered to.
 }
 
 #endif

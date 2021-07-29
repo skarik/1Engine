@@ -44,18 +44,20 @@ void RrScreenshot::SaveToPNG( const arstring<256> & filename )
 
 	//float* raw_pixelVals = GL.GetPixels( 0,0, Screen::Info.width,Screen::Info.height );
 	//float* raw_pixelVals = gfx->getScreenPixels();
+	auto screen = core::GetFocusedScreen();
+
 	float* raw_pixelVals = NULL; // TODO: Grab from the RrRenderer's main buffer, as a texture.
 	ARCORE_ASSERT(raw_pixelVals != NULL);
-	uchar* rgb_pixelVals = new uchar [Screen::Info.width*Screen::Info.height*3];
+	uchar* rgb_pixelVals = new uchar [screen.GetWidth()*screen.GetHeight()*3];
 	{
-		for ( uint i = 0; i < Screen::Info.width*Screen::Info.height*3; ++i ) {
+		for ( uint i = 0; i < screen.GetWidth()*screen.GetHeight()*3; ++i ) {
 			rgb_pixelVals[i] = (uchar)(raw_pixelVals[i]*255);
 		}
 	}
-	uchar** rgb_pixelRows = new uchar* [Screen::Info.height];
+	uchar** rgb_pixelRows = new uchar* [screen.GetHeight()];
 	{
-		for ( uint i = 0; i < Screen::Info.height; ++i ) {
-			rgb_pixelRows[i] = &(rgb_pixelVals[Screen::Info.width*(Screen::Info.height-i-1)*3]);
+		for ( uint i = 0; i < screen.GetHeight(); ++i ) {
+			rgb_pixelRows[i] = &(rgb_pixelVals[screen.GetWidth()*(screen.GetHeight()-i-1)*3]);
 		}
 	}
 
@@ -92,7 +94,7 @@ void RrScreenshot::SaveToPNG( const arstring<256> & filename )
 	// rofl
 	//PNG_COLOR_TYPE_RGB
 	//PNG_INTERLACE_NONE
-	png_set_IHDR( png_ptr, info_ptr, Screen::Info.width, Screen::Info.height,
+	png_set_IHDR( png_ptr, info_ptr, screen.GetWidth(), screen.GetHeight(),
       8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
       PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT );
 

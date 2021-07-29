@@ -7,23 +7,48 @@
 #define ENGINE_SCREEN_H_
 
 #include "core/types/types.h"
+#include "core/math/vect2d_template.h"
 
-namespace Screen
+//	class ArScreen
+// A screen corresponds to an output display. They are directly related to windows and are managed by them.
+class ArScreen
 {
-	struct _screen_info_t
+public:
+	CORE_API uint		GetWidth ( void ) const
+		{ return width; }
+	CORE_API uint		GetHeight ( void ) const
+		{ return height; }
+	CORE_API bool		GetFocused ( void ) const
+		{ return focused; }
+
+	CORE_API float		GetAspectRatio ( void ) const
+		{ return width / (float)height; }
+	CORE_API Vector2i	GetSize ( void ) const
+		{ return Vector2i(width, height); }
+
+	CORE_API void		SetIndex ( uint index )
 	{
-	public:
-		CORE_API void Update ( void );
+		this->index = index;
+	}
+	CORE_API void		SetSize ( uint width, uint height )
+	{
+		this->width = width;
+		this->height = height;
+	}
+	CORE_API void		SetFocused ( bool focused );
 
-	public:
-		unsigned int width;
-		unsigned int height;
-		double aspect;
-
-		float scale;
-	};
-	CORE_API extern _screen_info_t Info;
+private:
+	uint				width;
+	uint				height;
+	bool				focused;
+	uint				index;
 };
 
+namespace core
+{
+	CORE_API ArScreen&	GetScreen ( const int index );
+	CORE_API ArScreen&	GetFocusedScreen ( void );
+	CORE_API void		SetScreenCount ( const int count );
+}
 
 #endif//ENGINE_SCREEN_H_

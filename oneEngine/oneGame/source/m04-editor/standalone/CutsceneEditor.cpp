@@ -102,7 +102,7 @@ Vector3f CutsceneEditor::uiGetCurrentMouse ( void )
 {
 	return Vector3f( core::Input::MouseX(), core::Input::MouseY(), 0.0F )
 		+ m_target_camera_position
-		- Vector3f((Real)Screen::Info.width, (Real)Screen::Info.height, 0.0F) * 0.5F;
+		- Vector3f((Real)core::GetFocusedScreen().GetWidth(), (Real)core::GetFocusedScreen().GetHeight(), 0.0F) * 0.5F;
 }
 //		uiGetNodeRect ( EditorNode* node ) : Gets node rect
 Rect CutsceneEditor::uiGetNodeRect( common::cts::EditorNode* node )

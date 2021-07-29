@@ -92,10 +92,6 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	// Set the window title
 	aWindow.SetTitle("1Engine Test: Game Common Modules");
 
-	// Set up rendeer output
-	aRenderer->AddWorldDefault();
-	aRenderer->AddOutput(RrOutputInfo(nullptr, &aWindow)); // Create an output using the window
-
 	// Init Physics
 	PrPhysics::Active()->Initialize();
 	// Create Gamestate
@@ -127,12 +123,19 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	// Create debug camera to show stuff (overriding the existing camera)
 	RrCamera* l_cam = new RrCamera(false);
 
+	// Set up rendeer output
+	uint worldIndex = aRenderer->AddWorldDefault();
+
+	RrOutputInfo output(aRenderer->GetWorld(worldIndex), &aWindow);
+	output.camera = l_cam;
+	aRenderer->AddOutput(output);
+
 	// Create a debugging Dusk menu
 	{
 		dusk::Element* panel;
 		dusk::Element* button;
 
-		dusk::UserInterface* dusk = new dusk::UserInterface;
+		dusk::UserInterface* dusk = new dusk::UserInterface(&aWindow);
 
 		dusk::LayoutElement* layout;
 

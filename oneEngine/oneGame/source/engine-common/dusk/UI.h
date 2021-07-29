@@ -12,6 +12,9 @@
 #include "engine/behavior/CGameBehavior.h"
 #include "engine-common/dusk/Handle.h"
 
+class ArScreen;
+class RrWindow;
+
 namespace dusk
 {
 	class UIRenderer;
@@ -62,7 +65,7 @@ namespace dusk
 		ClassName( "DuskGUI" );
 
 	public:
-		ENGCOM_API explicit		UserInterface ( void );
+		ENGCOM_API explicit		UserInterface ( RrWindow* targeted_display );
 		ENGCOM_API				~UserInterface ( void );
 
 		//	Update() : Called by engine.
@@ -121,6 +124,9 @@ namespace dusk
 		// Should only be used in the Element destructor.
 		void					RemoveElement ( const size_t handle );
 
+		//	GetScreen() : Returns the screen associated with this UI.
+		const ArScreen&			GetScreen ( void );
+
 	private:
 
 		//	AddInitialize(element, desc) : Initializes the element with the given description.
@@ -152,6 +158,9 @@ namespace dusk
 		// offsets: set the element's true position?
 
 	private:
+		// Targeted window to render to
+		RrWindow*			m_window;
+
 		// List of elements
 		std::vector<Element*>
 							m_elements;

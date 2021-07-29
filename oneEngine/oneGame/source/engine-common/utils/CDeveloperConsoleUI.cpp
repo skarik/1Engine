@@ -75,7 +75,7 @@ CDeveloperConsoleUI::~CDeveloperConsoleUI ( void )
 
 bool CDeveloperConsoleUI::BeginRender ( void )
 {
-	Vector2f screenSize ((Real)Screen::Info.width, (Real)Screen::Info.height);
+	Vector2f screenSize ((Real)core::GetScreen(0).GetWidth(), (Real)core::GetScreen(0).GetHeight());
 	const Real kLineHeight = (Real)fntMenu->GetFontInfo()->height + 3.0F;
 	const Real kBottomMargin = 5.0F;
 	const Real kLeftMargin = 5.0F;
@@ -242,7 +242,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	PassInitWithInput(0, &cursorPass);
 
 	// Build the mouse mesh:
-	rrMeshBuilder2D builder(6);
+	rrMeshBuilder2D builder(core::GetScreen(0).GetSize(), 6);
 	builder.setScreenMapping(core::math::Cubic::FromPosition(Vector3f(0, 0, 0), Vector3f(1, 1, 1)));
 	builder.addRect(
 		Rect( 0, 0, 32, 32 ),
@@ -268,8 +268,8 @@ bool CDeveloperCursor::PreRender ( rrCameraPass* cameraPass )
 {
 	// Manually create transform
 	XrTransform cursorTransform;
-	cursorTransform.scale = Vector3f(1.0F / Screen::Info.width, 1.0F / Screen::Info.height, 1.0F);
-	cursorTransform.position = Vector2f((Real)core::Input::MouseX() - Screen::Info.width * 0.5F, (Real)core::Input::MouseY() - Screen::Info.height * 0.5F);
+	cursorTransform.scale = Vector3f(1.0F / cameraPass->m_viewport.size.x, 1.0F / cameraPass->m_viewport.size.y, 1.0F);
+	cursorTransform.position = Vector2f((Real)core::Input::MouseX() - cameraPass->m_viewport.size.x * 0.5F, (Real)core::Input::MouseY() - cameraPass->m_viewport.size.y * 0.5F);
 	cursorTransform.position = cursorTransform.position.mulComponents(cursorTransform.scale * 2.0F);
 	cursorTransform.position.y = -cursorTransform.position.y;
 

@@ -6,6 +6,7 @@
 #include "core/math/Rect.h"
 #include "core/math/Color.h"
 #include "core/math/Cubic.h"
+#include "core/math/vect2d_template.h"
 
 class rrMeshBuilder2D : public IrrMeshBuilder
 {
@@ -15,12 +16,12 @@ public:
 	// If the estimation is incorrect, the data will be resized.
 	// The screen mapping for the meshes created defaults to 1:1 pixel-mode mapping.
 	// To assist in estimation, there are 4 vertices used per quad, and 16 per outlined quad.
-	RENDER_API explicit		rrMeshBuilder2D ( const uint16_t estimatedVertexCount );
+	RENDER_API explicit		rrMeshBuilder2D ( const Vector2i& screenSize, const uint16_t estimatedVertexCount );
 	//	Constructor (existing data)
 	// Sets up model, using the input data.
 	// As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
 	// The screen mapping for the meshes created defaults to 1:1 pixel-mode mapping.
-	RENDER_API explicit		rrMeshBuilder2D ( arModelData* preallocatedModelData, uint16_t initialVertexCount = 0, uint16_t initialIndexCount = 0 );
+	RENDER_API explicit		rrMeshBuilder2D ( const Vector2i& screenSize, arModelData* preallocatedModelData, uint16_t initialVertexCount = 0, uint16_t initialIndexCount = 0 );
 	//	Constructor (cubic, new data)
 	// Pulls a model from the the pool that has at least the estimated input size.
 	// If the estimation is incorrect, the data will be resized.

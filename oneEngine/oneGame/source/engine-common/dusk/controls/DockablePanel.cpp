@@ -8,6 +8,8 @@ void dusk::elements::DockablePanel::Update ( const UIStepInfo* stepinfo )
 {
 	dusk::elements::Panel::Update(stepinfo);
 
+	auto screen = m_interface->GetScreen();
+
 	if (m_dockPosition != DockPosition::kUndocked)
 	{
 		m_overrideLayout = true;
@@ -15,16 +17,16 @@ void dusk::elements::DockablePanel::Update ( const UIStepInfo* stepinfo )
 		switch (m_dockPosition)
 		{
 		case DockPosition::kScreenTop:
-			m_absoluteRect = Rect(Vector2f(0, 0), Vector2f((Real32)Screen::Info.width, m_localRect.size.y));
+			m_absoluteRect = Rect(Vector2f(0, 0), Vector2f((Real32)screen.GetWidth(), m_localRect.size.y));
 			break;
 		case DockPosition::kScreenBottom:
-			m_absoluteRect = Rect(Vector2f(0.0F, (Real32)Screen::Info.height - m_localRect.size.y), Vector2f((Real32)Screen::Info.width, m_localRect.size.y));
+			m_absoluteRect = Rect(Vector2f(0.0F, (Real32)screen.GetHeight() - m_localRect.size.y), Vector2f((Real32)screen.GetWidth(), m_localRect.size.y));
 			break;
 		case DockPosition::kScreenLeft:
-			m_absoluteRect = Rect(Vector2f(0, 0), Vector2f(m_localRect.size.x, (Real32)Screen::Info.height));
+			m_absoluteRect = Rect(Vector2f(0, 0), Vector2f(m_localRect.size.x, (Real32)screen.GetHeight()));
 			break;
 		case DockPosition::kScreenRight:
-			m_absoluteRect = Rect(Vector2f((Real32)Screen::Info.width - m_localRect.size.x, 0.0F), Vector2f(m_localRect.size.x, (Real32)Screen::Info.height));
+			m_absoluteRect = Rect(Vector2f((Real32)screen.GetWidth() - m_localRect.size.x, 0.0F), Vector2f(m_localRect.size.x, (Real32)screen.GetHeight()));
 			break;
 		}
 	}

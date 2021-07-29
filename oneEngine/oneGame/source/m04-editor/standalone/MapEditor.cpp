@@ -72,7 +72,8 @@ MapEditor::MapEditor ( void )
 {
 	// Create orthographic camera
 	{
-		COrthoCamera* cam = new COrthoCamera();
+		COrthoCamera* cam = new COrthoCamera(false, rrViewport());
+		ARCORE_ERROR("invalid viewport");
 		// Set camera options
 		cam->pixel_scale_mode = orthographicScaleMode_t::ORTHOSCALE_MODE_SIMPLE;
 		cam->viewport_target.size = Vector2f( 1280,720 ) * 0.5f;
@@ -138,7 +139,8 @@ MapEditor::MapEditor ( void )
 	}
 	// Build Dusk Gui
 	{
-		dusk = new dusk::UserInterface;
+		dusk = new dusk::UserInterface( nullptr ); 
+		ARCORE_ERROR("Give a proper window...");
 		//dusk->SetPixelMode(true);
 
 		uiCreate();
@@ -424,7 +426,7 @@ void MapEditor::doTileEditing ( void )
 void MapEditor::_doTileEditingSub ( float mousex, float mousey )
 {
 	// Grab mouse position in the world
-	Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( mousex/(Real)Screen::Info.width, mousey/(Real)Screen::Info.height ) );
+	Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( mousex/(Real)core::GetFocusedScreen().GetWidth(), mousey/(Real)core::GetFocusedScreen().GetHeight() ) );
 	// convert worldpos to indexes
 	int ix = (int) (worldpos.x / m_tilemap->m_tileset->tilesize_x); ix *= m_tilemap->m_tileset->tilesize_x;
 	int iy = (int) (worldpos.y / m_tilemap->m_tileset->tilesize_y); iy *= m_tilemap->m_tileset->tilesize_y;
@@ -506,7 +508,7 @@ void MapEditor::doAreaEditing ( void )
 	if ( !m_navigation_busy )
 	{
 		// Grab mouse position in the world
-		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( core::Input::MouseX()/(Real)Screen::Info.width, core::Input::MouseY()/(Real)Screen::Info.height ) );
+		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( core::Input::MouseX()/(Real)core::GetFocusedScreen().GetWidth(), core::Input::MouseY()/(Real)core::GetFocusedScreen().GetHeight() ) );
 
 		Engine2D::Area2D* t_area_selection = NULL;
 		int t_corner_selection = -1;
@@ -682,7 +684,7 @@ void MapEditor::doObjectEditing ( void )
 	if ( !m_navigation_busy )
 	{
 		// Grab mouse position in the world
-		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( core::Input::MouseX()/(Real)Screen::Info.width, core::Input::MouseY()/(Real)Screen::Info.height ) );
+		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( core::Input::MouseX()/(Real)core::GetFocusedScreen().GetWidth(), core::Input::MouseY()/(Real)core::GetFocusedScreen().GetHeight() ) );
 		worldpos.z = 0;
 
 		M04::EditorObject* t_object_selection = NULL;
@@ -1917,7 +1919,7 @@ void MapEditor::uiStepBottomEdge ( void )
 	if ( !dusk->IsMouseInside() )
 	{
 		// Update mouse position on the GUI
-		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( core::Input::MouseX()/(Real)Screen::Info.width, core::Input::MouseY()/(Real)Screen::Info.height ) );
+		Vector3f worldpos = m_target_camera->ScreenToWorldPos( Vector2f( core::Input::MouseX()/(Real)core::GetFocusedScreen().GetWidth(), core::Input::MouseY()/(Real)core::GetFocusedScreen().GetHeight() ) );
 
 		// Round the position to half-tile if ALT is held down
 		if ( !core::Input::Key( core::kVkAlt ) )

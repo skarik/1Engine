@@ -68,7 +68,7 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 	PassInitWithInput(0, &notifierPass);
 
 	// Create the text builder:
-	m_meshBuilder = new rrTextBuilder2D(m_fntNotifier, 512);
+	m_meshBuilder = new rrTextBuilder2D(m_fntNotifier, core::GetFocusedScreen().GetSize(), 512);
 }
 
 CLoadScreenInjector::~CLoadScreenInjector ( void )
@@ -86,10 +86,12 @@ bool CLoadScreenInjector::BeginRender ( void )
 	const char*		kScreenMessage = "LOADING";
 	const size_t	kScreenMessageLen = strlen(kScreenMessage);
 
-	rrTextBuilder2D builder (m_fntNotifier, 512);
+	auto screen = core::GetFocusedScreen();
+
+	rrTextBuilder2D builder (m_fntNotifier, core::GetFocusedScreen().GetSize(), 512);
 
 	builder.addRect(
-		Rect(-(Real)Screen::Info.width, -(Real)Screen::Info.width, (Real)Screen::Info.width * 3.0F, (Real)Screen::Info.width * 3.0F),
+		Rect(-(Real)screen.GetWidth(), -(Real)screen.GetWidth(), (Real)screen.GetWidth() * 3.0F, (Real)screen.GetWidth() * 3.0F),
 		Color(0.1F, 0.1F, 0.1F, std::max<Real>(0.0F,m_currentAlpha * 0.5F)),
 		false );
 
@@ -100,7 +102,7 @@ bool CLoadScreenInjector::BeginRender ( void )
 			);
 		char str [2] = {kScreenMessage[i], 0};
 		builder.addText(
-			Vector2f(64 + i * 1.0F * ((Screen::Info.width-128)/(Real)(kScreenMessageLen - 1)), Screen::Info.height * 0.5F),
+			Vector2f(64 + i * 1.0F * ((screen.GetWidth()-128)/(Real)(kScreenMessageLen - 1)), screen.GetHeight() * 0.5F),
 			Color(1.0F, 1.0F, 1.0F, alpha),
 			str);
 	};

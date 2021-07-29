@@ -53,8 +53,8 @@ dusk::UIRenderer::UIRenderer (UserInterface* ui)
 
 	// Set the actual UI pass
 	RrPass dguiPass;
-	dguiPass.m_layer = renderer::kRenderLayerSkip;
-	dguiPass.m_type = kPassTypeForward;
+	dguiPass.m_layer = renderer::kRenderLayerV2D;
+	dguiPass.m_type = kPassTypeJob;
 	dguiPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
 	dguiPass.utilSetupAs2D();
 	dguiPass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -119,25 +119,36 @@ bool dusk::UIRenderer::PreRender ( rrCameraPass* cameraPass )
 }
 bool dusk::UIRenderer::Render ( const rrRenderParams* params )
 {
-	if (m_renderTargetTexture->valid())
+	if (params->pass == 1)
 	{
-		gpu::GraphicsContext* gfx = params->context_graphics;
+		P1Render(params->context_graphics);
+	}
+	else if (params->pass == 0)
+	{
+		if (m_renderTargetTexture->valid())
+		{
+			gpu::GraphicsContext* gfx = params->context_graphics;
 
-		gpu::Pipeline* pipeline = GetPipeline( params->pass );
-		// Set up the material helper...
-		renderer::Material(this, gfx, params->pass, pipeline)
-			// set the pipeline
-			.setStart()
-			// set the depth & rasterizer state registers
-			.setDepthStencilState()
-			.setRasterizerState()
-			// bind the blend state
-			.setBlendState();
-		gfx->setShaderTextureAuto(gpu::kShaderStagePs, TEX_MAIN, m_renderTargetTexture);
+			gpu::Pipeline* pipeline = GetPipeline( params->pass );
+			// Set up the material helper...
+			renderer::Material(this, gfx, params->pass, pipeline)
+				// set the pipeline
+				.setStart()
+				// set the depth & rasterizer state registers
+				.setDepthStencilState()
+				.setRasterizerState()
+				// bind the blend state
+				.setBlendState();
+			gfx->setShaderTextureAuto(gpu::kShaderStagePs, TEX_MAIN, m_renderTargetTexture);
 
-		gfx->setVertexBuffer(0, m_vbufScreenQuad, 0); // Position
-		gfx->setVertexBuffer(1, m_vbufScreenQuad, 0); // UV0
-		gfx->draw(4, 0);
+			gfx->setVertexBuffer(0, m_vbufScreenQuad, 0); // Position
+			gfx->setVertexBuffer(1, m_vbufScreenQuad, 0); // UV0
+			gfx->draw(4, 0);
+		}
+	}
+	else
+	{
+		ARCORE_ERROR("Invalid pass given to UIRenderer.");
 	}
 	return true;
 }
@@ -149,7 +160,7 @@ bool dusk::UIRenderer::BeginRender ( void )
 }
 
 // Called once per frame.
-bool dusk::UIRenderer::EndRender ( void )
+bool dusk::UIRenderer::P1Render ( gpu::GraphicsContext* graphics_context )
 {
 	// Create the update area
 	Rect t_updateArea;
@@ -167,9 +178,9 @@ bool dusk::UIRenderer::EndRender ( void )
 	}
 
 	// Update the render target
-	bool t_requireFullUpdate = ERUpdateRenderTarget();
+	bool t_requireFullUpdate = P1UpdateRenderTarget();
 	if (t_requireFullUpdate) {
-		t_updateArea = Rect(0, 0, (Real)Screen::Info.width, (Real)Screen::Info.height);
+		t_updateArea = Rect(0, 0, (Real)m_interface->GetScreen().GetWidth(), (Real)m_interface->GetScreen().GetHeight());
 	}
 
 	// Check update rect. Don't need to re-render if there's nothing to update
@@ -180,24 +191,24 @@ bool dusk::UIRenderer::EndRender ( void )
 	// Get the render list
 	std::vector<Element*> t_renderList;
 	t_renderList.reserve(m_interface->m_elements.size());
-	ERUpdateRenderList(&t_renderList);
+	P1UpdateRenderList(&t_renderList);
 
 	// Render the elements
-	ERRenderElements(t_renderList, t_updateArea);
+	P1RenderElements(graphics_context, t_renderList, t_updateArea);
 
 	return true;
 }
 
 //	ERUpdateRenderTarget() : Updates & resizes render target.
-bool dusk::UIRenderer::ERUpdateRenderTarget ( void )
+bool dusk::UIRenderer::P1UpdateRenderTarget ( void )
 {
-	if ( m_renderTargetSize.x != Screen::Info.width || m_renderTargetSize.y != Screen::Info.height )
+	if ( m_renderTargetSize.x != m_interface->GetScreen().GetWidth() || m_renderTargetSize.y != m_interface->GetScreen().GetHeight() )
 	{
 		m_renderTarget->destroy(NULL);
 		m_renderTargetTexture->free();
 
 		// create the texture
-		m_renderTargetTexture->allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, Screen::Info.width, Screen::Info.height, 1, 1);
+		m_renderTargetTexture->allocate(core::gfx::tex::kTextureType2D, core::gfx::tex::kColorFormatRGBA8, m_interface->GetScreen().GetWidth(), m_interface->GetScreen().GetHeight(), 1, 1);
 
 		// create the render target
 		m_renderTarget->create(NULL);
@@ -206,8 +217,8 @@ bool dusk::UIRenderer::ERUpdateRenderTarget ( void )
 		ARCORE_ASSERT(result == gpu::kError_SUCCESS);
 
 		// update the target size
-		m_renderTargetSize.x = Screen::Info.width;
-		m_renderTargetSize.y = Screen::Info.height;
+		m_renderTargetSize.x = m_interface->GetScreen().GetWidth();
+		m_renderTargetSize.y = m_interface->GetScreen().GetHeight();
 
 		return true;
 	}
@@ -217,7 +228,7 @@ bool dusk::UIRenderer::ERUpdateRenderTarget ( void )
 }
 
 //	ERUpdateRenderList() : Updates the render list.
-void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
+void dusk::UIRenderer::P1UpdateRenderList ( std::vector<Element*>* renderList )
 {
 	renderList->clear();
 
@@ -329,7 +340,7 @@ void dusk::UIRenderer::ERUpdateRenderList ( std::vector<Element*>* renderList )
 }
 
 
-void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList, const Rect& scissorArea)
+void dusk::UIRenderer::P1RenderElements (gpu::GraphicsContext* graphics_context, const std::vector<Element*>& renderList, const Rect& scissorArea)
 {
 	UIRendererContext l_ctx;
 	l_ctx.m_uir = this;
@@ -344,7 +355,7 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	// Mesh generation
 
 	// Set up the mesh builder now
-	rrTextBuilder2D meshBuilder (m_fontTexture, &m_modeldata);
+	rrTextBuilder2D meshBuilder (m_fontTexture, m_interface->GetScreen().GetSize(), &m_modeldata);
 	meshBuilder.enableAttribute(renderer::shader::kVBufferSlotNormal); // Require normals for the given mode
 	l_ctx.m_mb2 = &meshBuilder;
 	l_ctx.m_modeldata = &m_modeldata;
@@ -373,7 +384,7 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	//
 	// Rendering
 
-	gpu::GraphicsContext* gfx = params->context_graphics;
+	gpu::GraphicsContext* gfx = graphics_context;
 	gfx->debugGroupPush("dusk::ERRenderElements");
 
 	// Set up the target buffer
@@ -383,10 +394,10 @@ void dusk::UIRenderer::ERRenderElements (const std::vector<Element*>& renderList
 	gpu::RasterizerState rs;
 	rs.scissorEnabled = true;
 	gfx->setRasterizerState(rs);
-	gfx->setViewport(0, 0, Screen::Info.width, Screen::Info.height);
+	gfx->setViewport(0, 0, m_interface->GetScreen().GetWidth(), m_interface->GetScreen().GetHeight());
 	gfx->setScissor(
 		(int)scissorArea.pos.x,
-		(int)(Screen::Info.height - scissorArea.pos.y - scissorArea.size.y),
+		(int)(m_interface->GetScreen().GetHeight() - scissorArea.pos.y - scissorArea.size.y),
 		(int)scissorArea.size.x,
 		(int)scissorArea.size.y);
 

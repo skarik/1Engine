@@ -27,7 +27,7 @@ namespace gpu
 	{
 	public:
 		GPUW_EXLUSIVE_API explicit
-								GraphicsContext ( Device* wrapperDevice );
+								GraphicsContext ( Device* wrapperDevice, bool passthroughAsImmediate );
 		GPUW_EXLUSIVE_API 		~GraphicsContext ( void );
 
 		//	reset() : Resets the context state to defaults.
@@ -125,6 +125,7 @@ namespace gpu
 
 		Device*					m_wrapperDevice;
 		//void*					m_deferredContext;
+		bool					m_isImmediateMode;
 
 		//RasterizerState			m_rasterState;
 		void*					m_rasterStateCachedMap;

@@ -641,5 +641,8 @@
     <ClInclude Include="source\renderer\types\id.h">
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClInclude>
+    <ClInclude Include="source\renderer\types\viewport.h">
+      <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

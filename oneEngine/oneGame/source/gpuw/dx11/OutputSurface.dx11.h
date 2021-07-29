@@ -37,7 +37,7 @@ namespace gpu
 	public:
 		//	create( device, presentMode, width, height, format, fullscreen ) : Creates output surface.
 		// In various APIs (such as OpenGL), certain present modes may not be available.
-		GPUW_API int			create ( Device* device, PresentMode presentMode, uint32_t width, uint32_t height, OutputFormat format, bool fullscreen );
+		GPUW_API int			create ( intptr_t window, Device* device, PresentMode presentMode, uint32_t width, uint32_t height, OutputFormat format, bool fullscreen );
 		//	destroy() : Frees output surface.
 		GPUW_API int			destroy ( void );
 		//	getRenderTarget() : Returns this output surface as a render target, for displaying rendered output

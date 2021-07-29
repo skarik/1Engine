@@ -8,13 +8,13 @@
 // Pulls a model from the the pool that has at least the estimated input size.
 // If the estimation is incorrect, the data will be resized.
 // The screen mapping for the meshes created defaults to 1:1 pixel-mode mapping.
-rrMeshBuilder2D::rrMeshBuilder2D ( const uint16_t estimatedVertexCount )
+rrMeshBuilder2D::rrMeshBuilder2D ( const Vector2i& screenSize, const uint16_t estimatedVertexCount )
 	: IrrMeshBuilder(estimatedVertexCount)
 {
 	setScreenMapping(
 		core::math::Cubic::FromPosition(
 			Vector3f(0, 0, -45.0F),
-			Vector3f((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) )
+			Vector3f((Real)screenSize.x, (Real)screenSize.y, +45.0F) )
 	);
 
 	enableAttribute(renderer::shader::kVBufferSlotPosition);
@@ -25,13 +25,13 @@ rrMeshBuilder2D::rrMeshBuilder2D ( const uint16_t estimatedVertexCount )
 // Sets up model, using the input data.
 // As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
 // The screen mapping for the meshes created defaults to 1:1 pixel-mode mapping.
-rrMeshBuilder2D::rrMeshBuilder2D ( arModelData* preallocatedModelData, uint16_t initialVertexCount, uint16_t initialIndexCount )
+rrMeshBuilder2D::rrMeshBuilder2D ( const Vector2i& screenSize, arModelData* preallocatedModelData, uint16_t initialVertexCount, uint16_t initialIndexCount )
 	: IrrMeshBuilder(preallocatedModelData, initialVertexCount, initialIndexCount)
 {
 	setScreenMapping(
 		core::math::Cubic::FromPosition(
 			Vector3f(0, 0, -45.0F),
-			Vector3f((Real)Screen::Info.width, (Real)Screen::Info.height, +45.0F) )
+			Vector3f((Real)screenSize.x, (Real)screenSize.y, +45.0F) )
 	);
 
 	enableAttribute(renderer::shader::kVBufferSlotPosition);

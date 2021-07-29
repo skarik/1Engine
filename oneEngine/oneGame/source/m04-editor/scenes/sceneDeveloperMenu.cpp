@@ -30,7 +30,7 @@ void sceneDeveloperMenu::LoadScene ( void )
 
 	// Create camera to render
 	{
-		CRenderCameraHolder* holder = new CRenderCameraHolder(new RrCamera());
+		CRenderCameraHolder* holder = new CRenderCameraHolder(new RrCamera(false));
 		holder->RemoveReference();
 	} loadScreen->loadStep();
 

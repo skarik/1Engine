@@ -118,8 +118,8 @@ bool TileSelectorUI::PreRender ( rrCameraPass* pass )
 
 bool TileSelectorUI::EndRender ( void )
 {
-	rrMeshBuilder2D builder((uint16_t)(4 + 4 * m_tileset->tiles.size()));
-	rrMeshBuilder2D builderLn(16);
+	rrMeshBuilder2D builder(core::GetFocusedScreen().GetSize(), (uint16_t)(4 + 4 * m_tileset->tiles.size()));
+	rrMeshBuilder2D builderLn(core::GetFocusedScreen().GetSize(), 16);
 
 	// render the selection shit
 	{

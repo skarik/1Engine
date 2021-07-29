@@ -10,8 +10,8 @@
 // Pulls a model from the the pool that has at least the estimated input size.
 // If the estimation is incorrect, the data will be resized.
 // The screen mapping for the meshes created defaults to 1:1 pixel-mode mapping.
-rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const uint16_t estimatedVertexCount )
-	: rrMeshBuilder2D(estimatedVertexCount), m_font_texture(font)
+rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const Vector2i& screenSize, const uint16_t estimatedVertexCount )
+	: rrMeshBuilder2D(screenSize, estimatedVertexCount), m_font_texture(font)
 {
 	enableAttribute(renderer::shader::kVBufferSlotPosition);
 	enableAttribute(renderer::shader::kVBufferSlotUV0);
@@ -22,8 +22,8 @@ rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const uint16_t estimated
 // Sets up model, using the input data.
 // As above, will re-allocate if the data is small, but will do so extremely conservatively (slowly).
 // The screen mapping for the meshes created defaults to 1:1 pixel-mode mapping.
-rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, arModelData* preallocatedModelData, uint16_t initialVertexCount, uint16_t initialIndexCount )
-	: rrMeshBuilder2D(preallocatedModelData, initialVertexCount, initialIndexCount), m_font_texture(font)
+rrTextBuilder2D::rrTextBuilder2D ( RrFontTexture* font, const Vector2i& screenSize, arModelData* preallocatedModelData, uint16_t initialVertexCount, uint16_t initialIndexCount )
+	: rrMeshBuilder2D(screenSize, preallocatedModelData, initialVertexCount, initialIndexCount), m_font_texture(font)
 {
 	enableAttribute(renderer::shader::kVBufferSlotPosition);
 	enableAttribute(renderer::shader::kVBufferSlotUV0);

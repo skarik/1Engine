@@ -230,12 +230,12 @@ void RrCamera::LateUpdate ( void )
 
 	// Update viewport
 	//if (m_renderTexture == NULL)
-	{
+	/*{
 		viewport.pos.x  = viewportPercent.pos.x * Screen::Info.width;
 		viewport.pos.y  = viewportPercent.pos.y * Screen::Info.height;
 		viewport.size.x = viewportPercent.size.x * Screen::Info.width;
 		viewport.size.y = viewportPercent.size.y * Screen::Info.height;
-	}
+	}*/
 	/*else
 	{
 		viewport.pos.x  = viewportPercent.pos.x * m_renderTexture->GetWidth();
@@ -251,19 +251,18 @@ int RrCamera::PassCount ( void )
 }
 void RrCamera::PassRetrieve ( const rrCameraPassInput* input, rrCameraPass* passList )
 {
-	if (input->m_maxPasses > 0)
-	{
-		passList[0].m_bufferChain	= NULL; // Use the default buffer chain for rendering.
-		passList[0].m_passType		= kCameraRenderWorld;
-		passList[0].m_viewport		= viewport;
-		passList[0].m_viewTransform	= viewTransform;
-		passList[0].m_projTransform	= projTransform;
-		passList[0].m_viewprojTransform	= viewprojMatrix;
+	ARCORE_ASSERT(input->m_outputInfo != nullptr && input->m_maxPasses > 0);
 
-		int cbuffer_index = input->m_bufferingIndex;
-		UpdateCBuffer(cbuffer_index, input->m_bufferingCount, &passList[0]);
-		passList[0].m_cbuffer = &m_cbuffers[cbuffer_index];
-	}
+	passList[0].m_bufferChain	= NULL; // Use the default buffer chain for rendering.
+	passList[0].m_passType		= kCameraRenderWorld;
+	passList[0].m_viewport		= input->m_outputInfo->GetOutputViewport();
+	passList[0].m_viewTransform	= viewTransform;
+	passList[0].m_projTransform	= projTransform;
+	passList[0].m_viewprojTransform	= viewprojMatrix;
+
+	int cbuffer_index = input->m_bufferingIndex;
+	UpdateCBuffer(cbuffer_index, input->m_bufferingCount, &passList[0]);
+	passList[0].m_cbuffer = &m_cbuffers[cbuffer_index];
 }
 
 void RrCamera::UpdateCBuffer ( const uint index, const uint predictedMax, const rrCameraPass* passinfo )
@@ -279,8 +278,8 @@ void RrCamera::UpdateCBuffer ( const uint index, const uint predictedMax, const 
 	renderer::cbuffer::rrPerCamera cameraData = {};
 	cameraData.viewProjection = passinfo[0].m_viewprojTransform;
 	cameraData.worldCameraPosition = transform.position;
-	cameraData.screenSizeScaled = passinfo->m_viewport.size * renderScale;
-	cameraData.screenSize = passinfo->m_viewport.size;
+	cameraData.screenSizeScaled = Vector2f(passinfo->m_viewport.size.x * renderScale, passinfo->m_viewport.size.y * renderScale);
+	cameraData.screenSize = Vector2f(passinfo->m_viewport.size.x, passinfo->m_viewport.size.y);
 	cameraData.pixelRatio = Vector2f(1, 1) * (orthoSize.x / passinfo->m_viewport.size.x);
 
 	// And shunt it to the GPU!
@@ -321,17 +320,17 @@ void RrCamera::UpdateCBuffer ( const uint index, const uint predictedMax, const 
 //}
 
 
-void RrCamera::RenderBegin ( gpu::GraphicsContext* graphics_context )
+void RrCamera::RenderBegin ( void )
 {
-	auto gfx = graphics_context;//gpu::getDevice()->getContext();
+	//auto gfx = graphics_context;//gpu::getDevice()->getContext();
 
 	// TODO: move this to the output settings, rather than have in the camera
-	ARCORE_ERROR("Move this elsewhere. Cameras are not outputs, so their viewports shouldn't affect anything");
+	/*ARCORE_ERROR("Move this elsewhere. Cameras are not outputs, so their viewports shouldn't affect anything");
 	gfx->setViewport(
 		(uint32_t)math::round(viewport.pos.x),
 		(uint32_t)math::round(viewport.pos.y),
 		(uint32_t)math::round(viewport.pos.x + viewport.size.x), 
-		(uint32_t)math::round(viewport.pos.y + viewport.size.y)); 
+		(uint32_t)math::round(viewport.pos.y + viewport.size.y)); */
 
 	//CameraUpdate();
 	UpdateFrustum();
@@ -356,7 +355,7 @@ void RrCamera::RenderEnd ( void )
 	}
 }
 
-void RrCamera::UpdateMatrix ( void )
+void RrCamera::UpdateMatrix ( const RrOutputInfo& viewport_info )
 {
 	if ( orthographic )
 	{
@@ -403,10 +402,11 @@ void RrCamera::UpdateMatrix ( void )
 		projTransform = Matrix4x4();
 
 		// Define constants
+		const rrViewport viewport = viewport_info.GetOutputViewport();
 		const Real f = Real( 1.0 / tan( degtorad(fieldOfView)/2 ) );
 
 		// Build the perspective projection first
-		projTransform.pData[0] = f / (viewport.size.x / viewport.size.y);
+		projTransform.pData[0] = f / (viewport.size.x / (Real)viewport.size.y);
 		projTransform.pData[1] = 0;
 		projTransform.pData[2] = 0;
 		projTransform.pData[3] = 0;

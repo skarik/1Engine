@@ -68,8 +68,8 @@ void core::Input::UpdateMouse ( void )
 	
 	// offset them real mouse posses, limiting to window
 	m_mouse += m_deltaMouse.mulComponents(m_mouseSensitivity);
-	m_mouse.x = math::clamp<Real>(m_mouse.x, 0.0F, (Real)Screen::Info.width);
-	m_mouse.y = math::clamp<Real>(m_mouse.y, 0.0F, (Real)Screen::Info.height);
+	m_mouse.x = math::clamp<Real>(m_mouse.x, 0.0F, (Real)core::GetFocusedScreen().GetWidth());
+	m_mouse.y = math::clamp<Real>(m_mouse.y, 0.0F, (Real)core::GetFocusedScreen().GetHeight());
 
 	// update the mouse wheel changes
 	if ( !m_deltaMouseScrollChange )

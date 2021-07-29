@@ -88,21 +88,21 @@ namespace dusk
 		//	BeginRender() : Called before the render-loop executes.
 		// Called once per frame.
 		ENGCOM_API bool			BeginRender ( void ) override;
-		//	EndRender() : Called after the render-loop executes.
-		// Called once per frame.
-		ENGCOM_API bool			EndRender ( void ) override;
 
 	private:
 
+		//	P1Render() : Pass 1's render routine. Called by the job pass.
+		bool					P1Render ( gpu::GraphicsContext* graphics_context );
+
 		//	ERUpdateRenderList() : Updates the render list.
-		void					ERUpdateRenderList ( std::vector<Element*>* renderList );
+		void					P1UpdateRenderList ( std::vector<Element*>* renderList );
 
 		//	ERUpdateRenderTarget() : Updates & resizes render target.
 		// Returns true when there has been a change to the render target.
-		bool					ERUpdateRenderTarget ( void );
+		bool					P1UpdateRenderTarget ( void );
 
 		//	ERRenderElements() : Renders the elements to buffer.
-		void					ERRenderElements ( const std::vector<Element*>& renderList, const Rect& scissorArea );
+		void					P1RenderElements ( gpu::GraphicsContext* graphics_context, const std::vector<Element*>& renderList, const Rect& scissorArea );
 
 	public:
 

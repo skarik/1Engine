@@ -22,9 +22,9 @@ void RrTextureMasterSubsystem::Update ( void )
 void RrTextureMasterSubsystem::OnBetweenStreamStep ( IArResource* resource )
 {
 	// Submit commands so we don't stall (since we're now working on a deferred context)
-	graphics_context->submit();
+	//graphics_context->submit();
 	// Clear out all that's been submitted
-	graphics_context->reset();
+	//graphics_context->reset();
 }
 
 void RrTextureMasterSubsystem::OnAdd(IArResource* resource)

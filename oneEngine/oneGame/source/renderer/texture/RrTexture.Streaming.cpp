@@ -22,6 +22,7 @@ struct rrTextureLoadInfo
 	int					level;
 	std::atomic<rrTextureUnpackState>
 						unpack_step;
+	// Are we currently in the process of running a copy to the GPU?
 	bool				uploading;
 	gpu::Buffer			pixelBuffer [16];
 	core::BpdLoader		loader;

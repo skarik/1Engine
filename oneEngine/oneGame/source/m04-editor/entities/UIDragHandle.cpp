@@ -38,7 +38,7 @@ void M04::UIDragHandle::Update ( void )
 		// Grab mouse position in the world to get hover area
 		if ( m_style == DrawStyle::s2D )
 		{
-			Vector3f worldpos = RrCamera::activeCamera->ScreenToWorldPos( Vector2f( core::Input::MouseX()/(Real)Screen::Info.width, core::Input::MouseY()/(Real)Screen::Info.height ) );
+			Vector3f worldpos = RrCamera::activeCamera->ScreenToWorldPos( Vector2f( core::Input::MouseX()/(Real)core::GetFocusedScreen().GetWidth(), core::Input::MouseY()/(Real)core::GetFocusedScreen().GetHeight() ) );
 			Rect check_rect;
 
 			// Reset hovers

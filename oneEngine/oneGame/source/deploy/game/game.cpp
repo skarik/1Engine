@@ -75,8 +75,10 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	core::shell::SetTaskbarProgressState(NIL, core::shell::kTaskbarStateIndeterminate);
 	
 	// Set up renderer
-	aRenderer->AddWorldDefault();
-	aRenderer->AddOutput(RrOutputInfo(nullptr, &aWindow)); // Create an output using the window
+	uint worldIndex = aRenderer->AddWorldDefault();
+	RrOutputInfo mainRenderOutput(aRenderer->GetWorld(worldIndex), &aWindow);
+	mainRenderOutput.camera = new RrCamera(false);
+	aRenderer->AddOutput(mainRenderOutput); // Create an output using the window
 
 	// Init Physics
 	PrPhysics::Active()->Initialize();
@@ -175,12 +177,13 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	PrPhysics::FreeInstance();
 	// Free input
 	core::Input::Free();
-	// Free resources
-	core::ArResourceManager::FreeInstance();
 
-	// Free the renderer last now
+	// Free the renderer
 	delete aRenderer;
 	aWindow.Close();
+
+	// Free resource system
+	core::ArResourceManager::FreeInstance();
 
 	return 0;
 }

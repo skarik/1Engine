@@ -4,6 +4,7 @@
 #include "core/math/Frustum.h"
 #include "core/math/Rect.h"
 #include "core/math/matrix/CMatrix.h"
+#include "renderer/types/viewport.h"
 
 enum rrCameraRenderType
 {
@@ -14,6 +15,7 @@ enum rrCameraRenderType
 	kCameraRenderShadow,
 };
 
+class RrOutputInfo;
 class RrHybridBufferChain;
 namespace gpu {
 	class Buffer;
@@ -23,12 +25,15 @@ namespace gpu {
 struct rrCameraPassInput
 {
 	// maximum number of passes to return
-	uint32_t	m_maxPasses;
+	uint32_t			m_maxPasses = 0;
 
 	// Number of buffers used by the engine (usually between 1 and 3)
-	uint16_t	m_bufferingCount;
+	uint16_t			m_bufferingCount = 3;
 	// Current index of the buffer we're on
-	uint16_t	m_bufferingIndex;
+	uint16_t			m_bufferingIndex = 0;
+
+	// Output info for the viewport information
+	const RrOutputInfo*	m_outputInfo = nullptr;
 };
 
 // Pass information.
@@ -38,7 +43,7 @@ struct rrCameraPass
 	rrCameraRenderType	m_passType;
 
 	// target viewport rendering to
-	Rect				m_viewport;
+	rrViewport			m_viewport;
 
 	// NULL to use the main engine's buffer chain.
 	// Otherwise, points to the buffer chain to use for rendering.

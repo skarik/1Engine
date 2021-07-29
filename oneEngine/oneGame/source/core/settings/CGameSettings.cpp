@@ -100,6 +100,9 @@ CGameSettings::CGameSettings ( string& command_line, bool read_only_mode )
 			}
 		}
 	}
+
+	// Load settings now
+	LoadSettings();
 }
 
 // == Constructor ==
@@ -130,6 +133,9 @@ CGameSettings::CGameSettings ( char** command_line, bool read_only_mode )
 			}
 		}
 	}
+
+	// Load settings now
+	LoadSettings();
 }
 
 void CGameSettings::Initialize ( void )

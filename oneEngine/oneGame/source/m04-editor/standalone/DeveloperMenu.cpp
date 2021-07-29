@@ -14,6 +14,7 @@
 #include "engine-common/entities/CRendererHolder.h"
 
 #include "renderer/texture/RrFontTexture.h"
+#include "renderer/windowing/RrWindow.h"
 #include "render2d/object/Background2D.h"
 
 using namespace M04;
@@ -28,7 +29,7 @@ DeveloperMenu::DeveloperMenu ( void )
 	}
 	// Build Dusk Gui
 	{
-		dusk = new dusk::UserInterface;
+		dusk = new dusk::UserInterface( RrWindow::List()[0] );
 		//dusk->SetPixelMode(true);
 
 		uiCreate();

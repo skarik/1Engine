@@ -495,7 +495,7 @@ FORCE_INLINE Matrix4x4 Matrix4x4::LerpTo ( const Matrix4x4& right, const Real t 
 FORCE_INLINE Matrix4x4 Matrix4x4::operator* ( const Matrix4x4& right ) const
 {
 //#ifdef _WIN32
-#ifdef FUCKING_PEN0RS
+#ifdef USE_MM_MULTILY
 	Matrix4x4 result;
 	const float* A = pData;
 	const float* B = right.pData;
@@ -544,8 +544,9 @@ FORCE_INLINE Matrix4x4 Matrix4x4::operator* ( const Matrix4x4& right ) const
 #endif
 
 #ifdef _ENGINE_DEBUG
-	if ( !result.isOk() ) {
-		printf( " bad matrix4\n" );
+	if ( !result.isOk() )
+	{
+		ARCORE_ERROR("bad matrix4");
 	}
 #endif
 

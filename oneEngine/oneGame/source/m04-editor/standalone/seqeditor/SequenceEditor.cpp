@@ -215,7 +215,7 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 	}
 	else
 	{
-		const Vector2f mouseScreenPosition (core::Input::MouseX() / Screen::Info.width, core::Input::MouseY() / Screen::Info.height);
+		const Vector2f mouseScreenPosition (core::Input::MouseX() / GetScreen().GetWidth(), core::Input::MouseY() / GetScreen().GetHeight());
 		const Ray mouseRay = Ray(
 			RrCamera::activeCamera->transform.position,
 			RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)
