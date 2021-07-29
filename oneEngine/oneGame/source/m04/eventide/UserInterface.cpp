@@ -14,16 +14,18 @@
 #include "renderer/camera/RrCamera.h"
 #include "renderer/object/CStreamedRenderable3D.h"
 #include "renderer/material/RrShaderProgram.h"
+#include "renderer/windowing/RrWindow.h"
 
 #include "../eventide/Element.h"
 
 static ui::eventide::UserInterface* l_ActiveManager = NULL;
 
+// TODO: This is a bit unsafe, probably dont do this
 ui::eventide::UserInterface* ui::eventide::UserInterface::Get ( void )
 {
 	if (l_ActiveManager == NULL)
 	{
-		l_ActiveManager = new ui::eventide::UserInterface(NULL, NULL);
+		l_ActiveManager = new ui::eventide::UserInterface(RrWindow::Main(), NULL, NULL);
 	}
 	return l_ActiveManager;
 }
@@ -35,9 +37,10 @@ void ui::eventide::UserInterface::ReleaseActive ( void )
 }
 
 
-ui::eventide::UserInterface::UserInterface ( dusk::UserInterface* duskUI, dawn::UserInterface* dawnUI )
+ui::eventide::UserInterface::UserInterface ( RrWindow* target_window, dusk::UserInterface* duskUI, dawn::UserInterface* dawnUI, RrWorld* world_to_add_to )
 	: CGameBehavior()
 	, RrLogicObject()
+	, m_window(target_window)
 	, m_duskUI(duskUI)
 	, m_dawnUI(dawnUI)
 {
@@ -68,6 +71,13 @@ ui::eventide::UserInterface::UserInterface ( dusk::UserInterface* duskUI, dawn::
 	m_renderable->PassInitWithInput(0, &uiPass);
 
 	m_blackTexture = RrTexture::Load(renderer::kTextureBlack);
+
+	// Update the world we add to
+	if (world_to_add_to != nullptr)
+	{
+		this->AddToWorld(world_to_add_to);
+		m_renderable->AddToWorld(world_to_add_to);
+	}
 }
 
 ui::eventide::UserInterface::~UserInterface ( void )
@@ -265,7 +275,7 @@ void ui::eventide::UserInterface::Update ( void )
 	// Update mouse clickity clack:
 	if (RrCamera::activeCamera != NULL && (m_duskUI == NULL || !m_duskUI->IsMouseInside()))
 	{
-		const Vector2f mouseScreenPosition (core::Input::MouseX() / Screen::Info.width, core::Input::MouseY() / Screen::Info.height);
+		const Vector2f mouseScreenPosition (core::Input::MouseX() / GetScreen().GetWidth(), core::Input::MouseY() / GetScreen().GetHeight());
 		const Ray mouseRay = Ray(
 			RrCamera::activeCamera->transform.position,
 			RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)
@@ -755,6 +765,12 @@ void ui::eventide::UserInterface::PreStepSynchronus ( void )
 	{
 		delete element;
 	}
+}
+
+//	GetScreen() : Returns the screen associated with this UI.
+const ArScreen& ui::eventide::UserInterface::GetScreen ( void )
+{
+	return m_window->GetScreen();
 }
 
 

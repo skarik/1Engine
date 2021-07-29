@@ -2,6 +2,12 @@
 
 #include "core/debug/console.h"
 
+const core::gfx::tex::arColorFormat rrBufferChainInfo::kDefaultColorAttachments[4] = {
+	core::gfx::tex::kColorFormatRGBA8,
+	core::gfx::tex::kColorFormatRGBA16F,
+	core::gfx::tex::kColorFormatRGBA8,
+	core::gfx::tex::kColorFormatRGBA8};
+
 // Internal buffer handling
 // ================================
 
@@ -200,7 +206,7 @@ bool RrHybridBufferChain::FreeTargetBufferChain ( void )
 		buffer_depth.free();
 		buffer_stencil.free();
 
-		for (int i = 0; i < buffer_deferred_color_count; ++i)
+		for (uint i = 0; i < buffer_deferred_color_count; ++i)
 			buffer_deferred_color[i].free();
 	}
 	// Delete forward buffers

@@ -58,7 +58,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	RrRenderer* aRenderer = new RrRenderer(); // passing null creates default resource manager
 
 	// Create Window
-	RrWindow aWindow ( aRenderer, hPrevInstance, lpCmdLine, nCmdShow );
+	RrWindow aWindow ( aRenderer, hInstance );
 	if (!aWindow.Show())
 	{
 		debug::Console->PrintError( "Could not show windowing system.\n" );

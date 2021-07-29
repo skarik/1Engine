@@ -69,11 +69,11 @@ public:
 	struct rrRenderParams
 	{
 		int8_t			pass;
-		gpu::Buffer*	cbuf_perPass;
-		gpu::Buffer*	cbuf_perFrame;
-		gpu::Buffer*	cbuf_perCamera;
+		gpu::Buffer*	cbuf_perPass = nullptr;
+		gpu::Buffer*	cbuf_perFrame = nullptr;
+		gpu::Buffer*	cbuf_perCamera = nullptr;
 		gpu::GraphicsContext*
-						context_graphics;
+						context_graphics = nullptr;
 	};
 
 private:
@@ -84,6 +84,8 @@ public:
 	RENDER_API explicit		CRenderableObject ( void );
 	RENDER_API virtual		~CRenderableObject ( void );
 
+	//	AddToWorld(world) : Adds the given object to a world before initialization.
+	// This cannot be called after an object is already in a world.
 	RENDER_API void			AddToWorld ( RrWorld* world );
 
 	RENDER_API virtual bool	IsInstantiatable ( void ) { return false; }

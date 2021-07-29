@@ -55,11 +55,15 @@ bool dusk::UserInterface::AddInitializeCheckValid ( Element* element )
 	return m_elements[element->m_index] == element;
 }
 
-dusk::UserInterface::UserInterface ( RrWindow* targeted_display )
+dusk::UserInterface::UserInterface ( RrWindow* targeted_display, RrWorld* targeted_world )
 	: CGameBehavior()
 	, m_window(targeted_display)
 {
 	m_renderer = new UIRenderer(this);
+	if (targeted_world != nullptr)
+	{
+		m_renderer->AddToWorld(targeted_world);
+	}
 
 	// Handle init
 	m_currentElement = kElementHandleInvalid;

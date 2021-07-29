@@ -1073,7 +1073,9 @@ Render_Groups:
 			params.cbuf_perCamera = cameraPass->m_cbuffer;
 			params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
 			params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
+			params.context_graphics = gfx;
 
+			ARCORE_ASSERT(params.context_graphics != nullptr);
 			renderable->Render(&params);
 		}
 	}
@@ -1256,7 +1258,9 @@ Render_Groups:
 			//params.cbuf_perFrame = &internal_cbuffers_frames[internal_chain_index];
 			params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
 			params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
+			params.context_graphics = gfx;
 
+			ARCORE_ASSERT(params.context_graphics != nullptr);
 			renderable->Render(&params);
 		}
 		// check if rendered anything, mark screen dirty if so.

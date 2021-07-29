@@ -4,6 +4,8 @@
 
 #include "../eventide/UserInterface.h"
 
+#include "core/system/Screen.h"
+
 #include "renderer/utils/rrMeshBuilder.h"
 #include "renderer/utils/rrTextBuilder2D.h"
 #include "renderer/texture/RrFontTexture.h"
@@ -89,7 +91,7 @@ void ui::eventide::Element::buildText ( const ParamsForText& params )
 	RrFontTexture* l_font = (RrFontTexture*)params.font_texture->reference;
 	ARCORE_ASSERT(l_font != nullptr);
 
-	rrTextBuilder2D textBuilder (l_font, &mesh_creation_state.mesh_data, mesh_creation_state.vertex_count, mesh_creation_state.index_count);
+	rrTextBuilder2D textBuilder (l_font, m_ui->GetScreen().GetSize(), &mesh_creation_state.mesh_data, mesh_creation_state.vertex_count, mesh_creation_state.index_count);
 	textBuilder.setScreenMapping(core::math::Cubic(Vector3f(0, 0, 0), Vector3f(2.0F, 2.0F, 2.0F)));
 	textBuilder.enableAttribute(renderer::shader::kVBufferSlotPosition);
 	textBuilder.enableAttribute(renderer::shader::kVBufferSlotColor);
@@ -138,7 +140,7 @@ Vector2f ui::eventide::Element::predictText ( const ParamsForText& params )
 	RrFontTexture* l_font = (RrFontTexture*)params.font_texture->reference;
 	ARCORE_ASSERT(l_font != nullptr);
 
-	rrTextBuilder2D textBuilder (l_font, &mesh_creation_state.mesh_data, mesh_creation_state.vertex_count, mesh_creation_state.index_count);
+	rrTextBuilder2D textBuilder (l_font, m_ui->GetScreen().GetSize(), &mesh_creation_state.mesh_data, mesh_creation_state.vertex_count, mesh_creation_state.index_count);
 	textBuilder.setScreenMapping(core::math::Cubic(Vector3f(0, 0, 0), Vector3f(2.0F, 2.0F, 2.0F)));
 
 	const Vector2f textSize = textBuilder.predictTextSize(params.string);

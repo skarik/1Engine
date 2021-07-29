@@ -157,11 +157,11 @@ namespace settings {
 			return m_value;
 		}
 
-		//	implicit cast : Querying of the option.
-		/**/				operator const Type(void) const
-		{
-			return m_value;
-		}
+		////	implicit cast : Querying of the option.
+		///**/				operator const Type(void) const
+		//{
+		//	return m_value;
+		//}
 
 		//	implicit cast : Querying of the option.
 		/**/				operator const Type&(void) const

@@ -39,6 +39,7 @@ namespace renderer
 	}
 }
 
+//	class RrWorld : A container of objects that can be rendered.
 class RrWorld
 {
 public:
@@ -95,6 +96,8 @@ public:
 						logics;
 };
 
+//	class RrOutputInfo : Defines an output's properties
+// Does not provide any logic, simply provides information.
 class RrOutputInfo
 {
 public:
@@ -166,6 +169,8 @@ public:
 	}
 };
 
+//	class RrOutputState : State for the output views.
+// Persistent between frames.
 class RrOutputState
 {
 public:
@@ -239,18 +244,6 @@ public:
 	// Structure Definitions
 	// ================================
 
-	////	rrRenderRequest : Render request
-	//struct rrRenderRequest
-	//{
-	//	CRenderableObject*	obj = nullptr;
-	//	uint8_t				pass = UINT8_MAX;
-	//};
-
-	//struct rrRenderRequestSorter
-	//{
-	//	bool operator() ( rrRenderRequest& i, rrRenderRequest& j );
-	//};
-
 	//	rrOutputPair : Pair of output info & state
 	struct rrOutputPair
 	{
@@ -277,45 +270,73 @@ public:
 	// Creates an output. The pointer to the output is only guaranteed to be valid between HelpGenerateOutput calls.
 	//RENDER_API RrOutputInfo*
 	//						HelpGenerateOutput ( RrWindow* output, RrWorld* input );
+
+	// Output Management
+	// ================================
+
+	//	AddOutput(info) : Adds output to be rendered
 	RENDER_API uint			AddOutput ( const RrOutputInfo& info );
 
-	RENDER_API uint			AddWorld ( RrWorld* world );
-	RENDER_API uint			AddWorldDefault ( void );
-
+	//	GetOutput<Index>() : Gets output with given index.
 	template <int Index>
 	RrOutputInfo&			GetOutput ( void )
 	{
 		ARCORE_ASSERT(Index >= 0 && (size_t)(Index) < render_outputs.size());
 		return render_outputs[Index].info;
 	}
+	//	GetOutput(Index) : Gets output with given index.
 	RrOutputInfo&			GetOutput ( const uint Index )
 	{
 		ARCORE_ASSERT(Index >= 0 && (size_t)(Index) < render_outputs.size());
 		return render_outputs[Index].info;
 	}
+	//	GetOutput<Index>() : Gets output with given index.
 	template <int Index>
 	const RrOutputInfo&		GetOutput ( void ) const
 	{
 		ARCORE_ASSERT(Index >= 0 && (size_t)(Index) < render_outputs.size());
 		return render_outputs[Index].info;
 	}
+	//	GetOutput(Index) : Gets output with given index.
 	const RrOutputInfo&		GetOutput ( const uint Index ) const
 	{
 		ARCORE_ASSERT(Index >= 0 && (size_t)(Index) < render_outputs.size());
 		return render_outputs[Index].info;
 	}
 
+	//	FindOutputWithTarget(Window) : Finds output with the given window. Returns its index.
+	RENDER_API uint			FindOutputWithTarget ( RrWindow* window );
+	//	FindOutputWithTarget(Window) : Finds output with the given window. Returns its index.
+	RENDER_API uint			FindOutputWithTarget ( gpu::RenderTarget* target );
+	//	RemoveOutput(Index) : Removes the output with the given index.
+	RENDER_API void			RemoveOutput ( const uint Index );
+
+	// World Management
+	// ================================
+
+	//	AddWorld(world) : Adds world to the renderer for update.
+	RENDER_API uint			AddWorld ( RrWorld* world );
+	//	AddWorldDefault() : Adds a world with default settings to the renderer for update.
+	RENDER_API uint			AddWorldDefault ( void );
+
+	//	GetWorld<Index>() : Gets world with given index.
 	template <int Index>
 	RrWorld*				GetWorld ( void )
 	{
 		ARCORE_ASSERT(Index >= 0 && (size_t)(Index) < worlds.size());
 		return worlds[Index];
 	}
+	//	GetWorld(Index) : Gets world with given index.
 	RrWorld*				GetWorld ( const uint Index )
 	{
 		ARCORE_ASSERT(Index >= 0 && (size_t)(Index) < worlds.size());
 		return worlds[Index];
 	}
+
+	//	RemoveWorld(Index) : Removes world with the given index.
+	RENDER_API void			RemoveWorld ( const uint Index );
+	//	RemoveWorld(World) : Removes given world.
+	RENDER_API void			RemoveWorld ( RrWorld* world );
 
 	// Buffer management
 	// ================================

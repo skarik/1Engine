@@ -14,6 +14,7 @@
 
 class ArScreen;
 class RrWindow;
+class RrWorld;
 
 namespace dusk
 {
@@ -65,7 +66,7 @@ namespace dusk
 		ClassName( "DuskGUI" );
 
 	public:
-		ENGCOM_API explicit		UserInterface ( RrWindow* targeted_display );
+		ENGCOM_API explicit		UserInterface ( RrWindow* targeted_display, RrWorld* targeted_world = nullptr );
 		ENGCOM_API				~UserInterface ( void );
 
 		//	Update() : Called by engine.
@@ -125,7 +126,8 @@ namespace dusk
 		void					RemoveElement ( const size_t handle );
 
 		//	GetScreen() : Returns the screen associated with this UI.
-		const ArScreen&			GetScreen ( void );
+		ENGCOM_API const ArScreen&
+								GetScreen ( void );
 
 	private:
 

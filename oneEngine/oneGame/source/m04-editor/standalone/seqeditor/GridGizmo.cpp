@@ -51,7 +51,7 @@ void m04::editor::sequence::GridGizmo::BuildMesh ( void )
 		fabsf(planeNormal.y) < 0.707F ? 1.0F : 0.0F,
 		fabsf(planeNormal.z) < 0.707F ? 1.0F : 0.0F};
 
-	RrCamera* camera = RrCamera::activeCamera;
+	RrCamera* camera = main_editor->GetCamera();
 
 	// Get the min & max positions of where to build the grid
 	Vector3f rayTopLeft		= camera->ScreenToWorldDir(Vector2f(0.0F, 0.0F));
@@ -148,8 +148,8 @@ void m04::editor::sequence::GridGizmo::OnGameFrameUpdate ( const GameFrameUpdate
 	{
 		const Vector2f mouseScreenPosition (core::Input::MouseX() / main_editor->GetScreen().GetWidth(), core::Input::MouseY() / main_editor->GetScreen().GetHeight());
 		const Ray mouseRay = Ray(
-			RrCamera::activeCamera->transform.position,
-			RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)
+			main_editor->GetCamera()->transform.position,
+			main_editor->GetCamera()->ScreenToWorldDir(mouseScreenPosition)
 		);
 
 		// Let's look for a specific position on an XY plane at the current mouse Z

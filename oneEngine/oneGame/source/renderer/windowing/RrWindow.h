@@ -19,9 +19,7 @@ class RrWindow
 public:
 	RENDER_API explicit		RrWindow(
 		RrRenderer*	renderer,
-		HINSTANCE	hInstance,
-		LPSTR		lpCmdLine,
-		int			nCmdShow );
+		HINSTANCE	hInstance );
 	RENDER_API virtual		~RrWindow ( void );
 
 	// Setup
@@ -29,7 +27,6 @@ public:
 
 	RENDER_API bool			Show ( void );
 	RENDER_API bool			Close ( void );
-	//RENDER_API bool			AttachRenderer ( RrRenderer* renderer );
 	RENDER_API bool			Resize ( int width, int height );
 
 	RENDER_API bool			SetFullscreen ( bool fullscreen );
@@ -70,16 +67,9 @@ public:
 	// Platform specific getters
 	// ================================
 
-	//	OsHasFocus() : Does this window have focus?
-	//RENDER_API bool			OsHasFocus ( void );
-
 	//	OsShellHandle() : Returns the OS handle of this window representation
 	RENDER_API intptr_t		OsShellHandle ( void )
 		{ return (intptr_t)mw_window; }
-
-	//	GpuDevice() : Returns the GPU device this renderer is using.
-	//RENDER_API gpu::Device*	GpuDevice ( void )
-	//	{ return m_device; } // TODO: For DX11, this should be the same across multiple windows.
 
 	//	GpuSurface() : Returns the surface the renderer is currently using.
 	RENDER_API gpu::OutputSurface*
@@ -110,12 +100,10 @@ private:
 	void					CreateConsole ( void );
 	void					RegisterInput ( void ); // windows thing where we register input devices
 
-	//void					CreateGfxInstance ( void );
 	void					CreateGfxSurface ( void );
 	void					CreateGfxSwapchain ( void );
 
 	void					DestroyScreen ( void );
-	//void					DestroyGfxInstance ( void );
 	void					DestroyGfxSurface ( void );
 
 	void					UpdateMouseClipping ( void );
@@ -126,7 +114,8 @@ private:
 private:
 	friend LRESULT CALLBACK MessageUpdate(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-	int					m_windowListIndex;
+	bool				m_screenReady = false;
+	int					m_windowListIndex = -1;
 
 	Vector2i			m_resolution;
 	gpu::OutputFormat	m_outputFormat;
@@ -141,15 +130,11 @@ private:
 	// OS:
 
 	HINSTANCE	mw_instance;
-	LPSTR		mw_cmdline;
-	int			mw_cmdshow;
-
 	HWND		mw_window = NIL;
 
 	// Gfx:
 
 	RrRenderer*			m_renderer;
-	//gpu::Device*		m_device;
 	gpu::OutputSurface	m_surface;
 
 	// Windows Message Loop:

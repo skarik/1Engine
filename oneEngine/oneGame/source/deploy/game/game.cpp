@@ -60,7 +60,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	RrRenderer* aRenderer = new RrRenderer();
 
 	// Create main window
-	RrWindow aWindow ( aRenderer, hInstance, lpCmdLine, nCmdShow );
+	RrWindow aWindow ( aRenderer, hInstance );
 	if (!aWindow.Show())
 	{
 		debug::Console->PrintError( "Could not show windowing system.\n" );
@@ -118,8 +118,17 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	// Run main loop
 	while ( !aWindow.IsDone() )
 	{
+		// Pump message loop for all open windows.
+		for (RrWindow* window : RrWindow::List())
+		{
+			while ( !window->UpdateMessages() ) // Returns true when messages are done
+			{
+				; // Nothing.
+			}
+		}
+		
 		// Only update when all the messages have been looked at
-		if ( aWindow.UpdateMessages() ) // (this returns true when messages done)
+		//if ( aWindow.UpdateMessages() ) // (this returns true when messages done)
 		{
 			// Update delta time since last step
 			Time::Tick();
@@ -156,6 +165,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 			// Update resources
 			core::ArResourceManager::Active()->Update();
 		}
+
 		// Check for exiting type of input
 		if ( aWindow.IsActive() )
 		{

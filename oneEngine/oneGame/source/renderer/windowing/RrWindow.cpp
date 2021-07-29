@@ -28,6 +28,7 @@ LRESULT CALLBACK MessageUpdate(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 // Constants
 static const char* const	kWindowClass = "GraphicsWindow";
+static const char* const	kWindowClassSub = "GraphicsWindow_Sub";
 
 //===============================================================================================//
 // Local Utilties:
@@ -46,7 +47,8 @@ static int chooseNonzero ( const int variable, const int fallback )
 //===============================================================================================//
 
 // Static variables
-std::vector<RrWindow*> RrWindow::m_windows;
+std::vector<RrWindow*>	RrWindow::m_windows;
+static HINSTANCE		ghInstance;
 
 static void UpdateScreenInfo ( void )
 {
@@ -64,9 +66,43 @@ static void UpdateScreenInfo ( void )
 	}
 }
 
-RrWindow::RrWindow(RrRenderer* renderer, HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow )
-	: m_renderer(renderer), mw_instance(hInstance), mw_cmdline(lpCmdLine), mw_cmdshow(nCmdShow)
-	//,
+static void RegisterClasses ( HINSTANCE hInstance )
+{
+	static bool l_bRegistered = false;
+
+	if (!l_bRegistered)
+	{
+		// Register class
+		WNDCLASS	wc; // Windows Class Structure
+		wc.style			= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;	// Redraw On Size, And Own DC For Window.
+		wc.lpfnWndProc		= (WNDPROC) MessageUpdate;				// WndProc Handles Messages
+		wc.cbClsExtra		= 0;									// No Extra Window Data
+		wc.cbWndExtra		= 0;									// No Extra Window Data
+		wc.hInstance		= hInstance;							// Set The Instance
+		wc.hIcon			= LoadIcon(NULL, IDI_WINLOGO);			// Load The Default Icon
+		wc.hCursor			= LoadCursor(NULL, IDC_ARROW);			// Load The Arrow Pointer
+		wc.hbrBackground	= NULL;									// No Background Required For GL
+		wc.lpszMenuName		= NULL;									// We Don't Want A Menu
+		wc.lpszClassName	= kWindowClass;							// Set The Class Name
+		if (!RegisterClass(&wc))									// Attempt To Register The Window Class
+		{
+			ERROR_OUT("Failed To Register The Window Class. (Has the class already been registered?)\n");
+		}
+
+		wc.lpszClassName	= kWindowClassSub;						// Set The Class Name
+		if (!RegisterClass(&wc))									// Attempt To Register The Window Class
+		{
+			ERROR_OUT("Failed To Register The Window Class. (Has the class already been registered?)\n");
+		}
+
+		l_bRegistered = true;
+
+		ghInstance = hInstance;
+	}
+}
+
+RrWindow::RrWindow(RrRenderer* renderer, HINSTANCE hInstance )
+	: m_renderer(renderer), mw_instance(hInstance)
 {
 	ARCORE_ASSERT(m_renderer != nullptr);
 
@@ -78,32 +114,13 @@ RrWindow::RrWindow(RrRenderer* renderer, HINSTANCE hInstance, LPSTR lpCmdLine, i
 	m_outputFormat = gsi->b_ro_UseHighRange ? gpu::kOutputFormatRGB10 : gpu::kOutputFormatRGB8;
 	m_fullscreen = false;
 
-	// Register class
-	WNDCLASS	wc; // Windows Class Structure
-	wc.style			= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;	// Redraw On Size, And Own DC For Window.
-	wc.lpfnWndProc		= (WNDPROC) MessageUpdate;				// WndProc Handles Messages
-	wc.cbClsExtra		= 0;									// No Extra Window Data
-	wc.cbWndExtra		= 0;									// No Extra Window Data
-	wc.hInstance		= mw_instance;							// Set The Instance
-	wc.hIcon			= LoadIcon(NULL, IDI_WINLOGO);			// Load The Default Icon
-	wc.hCursor			= LoadCursor(NULL, IDC_ARROW);			// Load The Arrow Pointer
-	wc.hbrBackground	= NULL;									// No Background Required For GL
-	wc.lpszMenuName		= NULL;									// We Don't Want A Menu
-	wc.lpszClassName	= kWindowClass;							// Set The Class Name
+	RegisterClasses(hInstance);
+	mw_window = NIL;
 
-	if (!RegisterClass(&wc))									// Attempt To Register The Window Class
+	if (mw_instance == NIL)
 	{
-		mw_window = NIL;
-		ERROR_OUT("Failed To Register The Window Class. (Has the class already been registered?)\n");
+		mw_instance = ghInstance;
 	}
-
-	// Create everything!
-	CreateScreen();
-	RegisterInput();
-	CreateConsole();
-
-	//CreateGfxInstance();
-	CreateGfxSurface();
 
 	// Add self to the window list:
 	m_windows.push_back(this);
@@ -115,9 +132,11 @@ RrWindow::RrWindow(RrRenderer* renderer, HINSTANCE hInstance, LPSTR lpCmdLine, i
 }
 RrWindow::~RrWindow ( void )
 {
-	DestroyGfxSurface();
-	//DestroyGfxInstance();
-	DestroyScreen();
+	if (m_screenReady)
+	{
+		DestroyGfxSurface();
+		DestroyScreen();
+	}
 
 	// Remove this from the list of windows
 	auto this_window = std::find(m_windows.begin(), m_windows.end(), this);
@@ -141,6 +160,17 @@ void RrWindow::CreateConsole ( void )
 
 bool RrWindow::Show ( void )
 {
+	if (!m_screenReady)
+	{
+		m_screenReady = true;
+
+		// Create everything!
+		CreateScreen();
+		RegisterInput();
+		CreateConsole();
+		CreateGfxSurface();
+	}
+
 	if (mw_window == NIL)
 	{
 		return false;
@@ -156,12 +186,13 @@ bool RrWindow::Show ( void )
 
 bool RrWindow::Close ( void )
 {
-	// Unregister class
-	if (UnregisterClass(kWindowClass, mw_instance) != 0)
-	{
-		core::shell::ShowErrorMessage("Could not unregister class.");
-		return false;
-	}
+	//// Unregister class
+	//if (UnregisterClass(kWindowClass, mw_instance) != 0)
+	//{
+	//	core::shell::ShowErrorMessage("Could not unregister class.");
+	//	return false;
+	//}
+	// As per MSDN, window classes are unregistered on application end.
 	return true;
 }
 
@@ -214,7 +245,7 @@ void RrWindow::CreateScreen ( void )
 
 	// Create The Window
 	mw_window = CreateWindowEx( dwExStyle,	// Extended Style For The Window
-		kWindowClass,						// Class Name
+		(m_windowListIndex == 0) ? kWindowClass : kWindowClassSub,
 		"1Engine Base Window",				// Window Title
 		dwStyle |							// Defined Window Style
 		WS_CLIPSIBLINGS |					// Required Window Style
@@ -415,18 +446,16 @@ bool RrWindow::Resize ( int width, int height )
 		m_resolution.x = std::max(1, width); // Prevent zero or lower image sizes.
 		m_resolution.y = std::max(1, height);
 
-		// Refresh the device
-		//m_device->refresh((intptr_t)mw_instance, (intptr_t)mw_window);
-
-		// Refresh the surface
-		m_surface.destroy();
-		m_surface.create((intptr_t)mw_window, m_renderer->GetGpuDevice(), gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y, m_outputFormat, m_fullscreen);
-
-		// Resize the renderer
-		//if (m_renderer != NULL)
-		//	m_renderer->ResizeSurface();
+		if (m_screenReady)
+		{
+			// Refresh the surface
+			m_surface.destroy();
+			m_surface.create((intptr_t)mw_window, m_renderer->GetGpuDevice(), gpu::kPresentModeImmediate, m_resolution.x, m_resolution.y, m_outputFormat, m_fullscreen);
+		}
 
 		// The renderer checks the size of the output surface every frame and recreates the swapchain before rendering if needed
+
+		// TODO: Resize the window itself.
 	}
 	return true;
 }

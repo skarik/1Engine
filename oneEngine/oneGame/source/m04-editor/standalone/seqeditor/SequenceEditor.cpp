@@ -12,6 +12,7 @@
 
 #include "renderer/camera/RrCamera.h"
 #include "renderer/windowing/RrWindow.h"
+#include "renderer/state/RrRenderer.h"
 
 #include "m04/eventide/UserInterface.h"
 #include "m04/eventide_test/CubicLabel.h"
@@ -23,70 +24,55 @@ static core::settings::PersistentSetting<std::string> gPSetLastSavedTarget (
 	"",
 	core::settings::PersistentSettingGroup::kUser);
 
-//class DraggableButtonTest : public ui::eventide::elements::Button
-//{
-//public:
-//	DraggableButtonTest ( ui::eventide::UserInterface* ui = NULL )
-//		: Button(ui)
-//	{
-//		;
-//	}
-//
-//	virtual void			OnEventMouse ( const EventMouse& mouse_event ) override
-//	{
-//		if (mouse_event.type == EventMouse::Type::kDragged)
-//		{
-//			core::math::BoundingBox bbox = GetBBox();
-//			bbox.m_M.translate(mouse_event.velocity_world);
-//			bbox.m_MInverse = bbox.m_M.inverse();
-//			SetBBox( bbox );
-//			RequestUpdateMesh();
-//		}
-//		else
-//		{
-//			if (mouse_event.type == EventMouse::Type::kClicked)
-//			{
-//				m_dragging = true;
-//				m_ui->LockMouse();
-//			}
-//			else if (mouse_event.type == EventMouse::Type::kReleased)
-//			{
-//				m_dragging = false;
-//				m_ui->UnlockMouse();
-//			}
-//
-//			Button::OnEventMouse(mouse_event);
-//		}
-//	}
-//
-//private:
-//	bool			m_dragging = false;
-//};
+static core::settings::PersistentSetting<int32> gPSetWidowWidth (
+	"seqedit_window_width",
+	1280,
+	core::settings::PersistentSettingGroup::kUser);
+static core::settings::PersistentSetting<int32> gPSetWindowHeight (
+	"seqedit_window_height",
+	720,
+	core::settings::PersistentSettingGroup::kUser);
 
 m04::editor::SequenceEditor::SequenceEditor ( void )
 	: CGameBehavior()
 {
-	dusk_interface = new dusk::UserInterface();
-	user_interface = new ui::eventide::UserInterface(dusk_interface, NULL);
+	// Set up window and output for this
+	window = new RrWindow(RrRenderer::Active, NIL);
+	window->Resize(gPSetWidowWidth, gPSetWindowHeight);
+
+	editor_world = new RrWorld();
+	RrOutputInfo output (editor_world, window);
+	{
+		editor_camera = new RrCamera(false);
+		// Override certain camera aspects to get the right projection
+		editor_camera->transform.rotation = Rotator( 0.0, -90, -90 );
+		editor_camera->transform.position.z = 800;
+		editor_camera->zNear = 1;
+		editor_camera->zFar = 4000;
+		editor_camera->fieldOfView = 40;
+	}
+	output.camera = editor_camera;
+
+	// Add the output to the renderer now that it's somewhat ready.
+	RrRenderer::Active->AddOutput(output);
+
+	dusk_interface = new dusk::UserInterface(window, editor_world);
+	user_interface = new ui::eventide::UserInterface(window, dusk_interface, NULL, editor_world);
 
 	top_menu = new m04::editor::sequence::TopMenu(dusk_interface, this);
 	mouse_gizmo = new m04::editor::sequence::MouseGizmo(user_interface);
 	grid_gizmo = new m04::editor::sequence::GridGizmo(user_interface, this);
-
-	RrCamera* camera = new RrCamera(false);
-	camera->SetActive();
-	// Override certain camera aspects to get the right projection
-	camera->transform.rotation = Rotator( 0.0, -90, -90 );
-	camera->transform.position.z = 800;
-	camera->zNear = 1;
-	camera->zFar = 4000;
-	camera->fieldOfView = 40;
 
 	// Update windowing options
 	RrWindow::Main()->SetWantsClipCursor(false);
 	RrWindow::Main()->SetWantsHideCursor(true);
 	RrWindow::Main()->SetWantsSystemCursor(true);
 	RrWindow::Main()->SetZeroInputOnLoseFocus(true);
+
+	window->SetWantsClipCursor(false);
+	window->SetWantsHideCursor(true);
+	window->SetWantsSystemCursor(true);
+	window->SetZeroInputOnLoseFocus(true);
 
 	// Create board state
 	board_state = new m04::editor::sequence::NodeBoardState(this);
@@ -96,6 +82,9 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 
 	// Load prefs
 	save_target_filename = gPSetLastSavedTarget;
+
+	// Everything is set up, show the window now.
+	window->Show();
 }
 m04::editor::SequenceEditor::~SequenceEditor ( void )
 {
@@ -217,8 +206,8 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 	{
 		const Vector2f mouseScreenPosition (core::Input::MouseX() / GetScreen().GetWidth(), core::Input::MouseY() / GetScreen().GetHeight());
 		const Ray mouseRay = Ray(
-			RrCamera::activeCamera->transform.position,
-			RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)
+			editor_camera->transform.position,
+			editor_camera->ScreenToWorldDir(mouseScreenPosition)
 			);
 
 		if (!dragging_view && !zooming_view)
@@ -226,47 +215,47 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 			// TODO: make a better peek & camera control option
 			if (core::Input::Key(core::kVkAlt) && core::Input::Key(core::kVkControl))
 			{
-				RrCamera::activeCamera->transform.rotation = Rotator( 0.0, -90, -90 ) * Rotator(0, -(mouseScreenPosition.y - 0.5) * 45.0, (mouseScreenPosition.x - 0.5) * 45.0);
+				editor_camera->transform.rotation = Rotator( 0.0, -90, -90 ) * Rotator(0, -(mouseScreenPosition.y - 0.5) * 45.0, (mouseScreenPosition.x - 0.5) * 45.0);
 			}
 			else
 			{
-				RrCamera::activeCamera->transform.rotation = Rotator( 0.0, -90, -90 );
+				editor_camera->transform.rotation = Rotator( 0.0, -90, -90 );
 			}
 
 			// Use the zoom control to...zoom in and out around the mouse
 			if (core::Input::DeltaMouseZoom() != 0)
 			{
-				float delta_zoom = -core::Input::DeltaMouseZoom() / 120.0F * RrCamera::activeCamera->transform.position.z * 0.1F;
+				float delta_zoom = -core::Input::DeltaMouseZoom() / 120.0F * editor_camera->transform.position.z * 0.1F;
 
 				// We want to get the position the mouse is on the grid and move forward & back against that.
 				float hit_distance = 0.0F;
 				if (core::math::Plane(Vector3f(), Vector3f(0, 0, 1)).Raycast(mouseRay, hit_distance))
 				{
 					Vector3f reference_position = mouseRay.pos + mouseRay.dir * hit_distance;
-					RrCamera::activeCamera->transform.position += (RrCamera::activeCamera->transform.position - reference_position).normal() * delta_zoom;
+					editor_camera->transform.position += (editor_camera->transform.position - reference_position).normal() * delta_zoom;
 				}
 				else
 				{
-					RrCamera::activeCamera->transform.position += Vector3f(0, 0, delta_zoom);
+					editor_camera->transform.position += Vector3f(0, 0, delta_zoom);
 				}
 			}
 			// Use the scrolls to scroll
 			if (core::Input::DeltaMouseScroll() != 0)
 			{
-				float delta_scroll = core::Input::DeltaMouseScroll() * RrCamera::activeCamera->transform.position.z / 1000.0F;
-				RrCamera::activeCamera->transform.position += Vector3f(0, delta_scroll, 0);
+				float delta_scroll = core::Input::DeltaMouseScroll() * editor_camera->transform.position.z / 1000.0F;
+				editor_camera->transform.position += Vector3f(0, delta_scroll, 0);
 			}
 			if (core::Input::DeltaMouseHScroll() != 0)
 			{
-				float delta_scroll = core::Input::DeltaMouseHScroll() * RrCamera::activeCamera->transform.position.z / 1000.0F;
-				RrCamera::activeCamera->transform.position += Vector3f(delta_scroll, 0, 0);
+				float delta_scroll = core::Input::DeltaMouseHScroll() * editor_camera->transform.position.z / 1000.0F;
+				editor_camera->transform.position += Vector3f(delta_scroll, 0, 0);
 			}
 
 			// Limit camera Z
-			const Real kMaxCameraZ = RrCamera::activeCamera->zFar * 0.95F;
-			if (RrCamera::activeCamera->transform.position.z > kMaxCameraZ)
+			const Real kMaxCameraZ = editor_camera->zFar * 0.95F;
+			if (editor_camera->transform.position.z > kMaxCameraZ)
 			{
-				RrCamera::activeCamera->transform.position.z = kMaxCameraZ;
+				editor_camera->transform.position.z = kMaxCameraZ;
 			}
 
 			// Use middle mouse to drag view around
@@ -316,7 +305,7 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 				Vector3f delta_3d_position = current_3d_mouse_position - dragging_reference_position;
 			
 				// TODO: Toggle for smooth scrolling. Needs to have a time-based acceleration and decceleration.
-				RrCamera::activeCamera->transform.position -= delta_3d_position;
+				editor_camera->transform.position -= delta_3d_position;
 			}
 			else
 			{
@@ -332,7 +321,7 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 		}
 		else if (zooming_view)
 		{
-			RrCamera::activeCamera->transform.position += Vector3f(0, 0, core::Input::DeltaMouseY());
+			editor_camera->transform.position += Vector3f(0, 0, core::Input::DeltaMouseY());
 
 			if (core::Input::MouseUp(core::kMBMiddle))
 			{
@@ -388,4 +377,9 @@ void m04::editor::SequenceEditor::SetSaveTargetFilename ( const char* filename )
 	gPSetLastSavedTarget = save_target_filename;
 	RrWindow::Main()->SetTitle(("Sequence Editor: " + save_target_filename + (workspace_dirty ? "*" : "")).c_str()); //TODO: move elsewhere
 	core::settings::Persistent::Save(); // Save current settings.
+}
+
+const ArScreen& m04::editor::SequenceEditor::GetScreen ( void )
+{
+	return window->GetScreen();
 }

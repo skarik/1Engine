@@ -10,13 +10,15 @@
 
 struct rrBufferChainInfo
 {
-	const uint8			kDefaultColorAttachmentCount = 4;
-	const core::gfx::tex::arColorFormat
+	static const uint8	kDefaultColorAttachmentCount = 4;
+	/*static inline const core::gfx::tex::arColorFormat
 						kDefaultColorAttachments[4] = {
 		core::gfx::tex::kColorFormatRGBA8,
 		core::gfx::tex::kColorFormatRGBA16F,
 		core::gfx::tex::kColorFormatRGBA8,
-		core::gfx::tex::kColorFormatRGBA8};
+		core::gfx::tex::kColorFormatRGBA8};*/
+	RENDER_API static const core::gfx::tex::arColorFormat
+						kDefaultColorAttachments[4];
 
 	// Main output. Used for both deferred & forward outputs.
 	const core::gfx::tex::arColorFormat

@@ -9,8 +9,11 @@
 #include "engine/behavior/CGameBehavior.h"
 #include "renderer/logic/RrLogicObject.h"
 
+class ArScreen;
 class RrTexture;
 class CStreamedRenderable3D;
+class RrWorld;
+class RrWindow;
 
 namespace dusk
 {
@@ -30,6 +33,8 @@ namespace eventide {
 	//	Manager class for the Eventide UI system. Can be automatically created by controls.
 	class UserInterface : public CGameBehavior, public RrLogicObject
 	{
+		ClassName( "EventideGUI" );
+
 	public:
 
 		//	Get() : Gets current active manager. Allocates new one if it doesn't yet exist.
@@ -41,7 +46,7 @@ namespace eventide {
 								ReleaseActive ( void );
 
 		//	Constructor : creates manager that can defer to the given items
-		EVENTIDE_API			UserInterface ( dusk::UserInterface*, dawn::UserInterface* );
+		EVENTIDE_API			UserInterface ( RrWindow*, dusk::UserInterface*, dawn::UserInterface*, RrWorld* = nullptr );
 
 		EVENTIDE_API virtual	~UserInterface ( void );
 
@@ -69,6 +74,9 @@ namespace eventide {
 		//	GetMousePosition() : Returns the last position the mouse has hit. Not updated if GetMouseHit() is NULL.
 		EVENTIDE_API const Vector3f&
 								GetMousePosition ( void ) const;
+		//	GetScreen() : Returns the screen associated with this UI.
+		EVENTIDE_API const ArScreen&
+								GetScreen ( void );
 
 		EVENTIDE_API void		AddElement ( Element* element );
 		EVENTIDE_API void		RemoveElement ( Element* element );
@@ -80,6 +88,9 @@ namespace eventide {
 		EVENTIDE_API void		ReleaseTexture ( const Texture& texture );
 
 	public:
+		// Targeted window to render to
+		RrWindow*			m_window;
+
 		dusk::UserInterface*
 							m_duskUI = NULL;
 		dawn::UserInterface*

@@ -51,8 +51,8 @@ void UILuvPpl::Update ( void )
 
 	Real dx, dy;
 
-	dx = Screen::Info.width * -0.25F + 16;
-	dy = Screen::Info.height * -0.25F + 16;
+	dx = core::GetFocusedScreen().GetWidth() * -0.25F + 16;
+	dy = core::GetFocusedScreen().GetHeight() * -0.25F + 16;
 	for ( int i = 0; i < 3; ++i )
 	{
 		core::meshbuilder::Quad( &m_modeldata, Rect(dx + 16*i,dy,16,16), Rect(0,0,1.0F/8,1.0F/8) );

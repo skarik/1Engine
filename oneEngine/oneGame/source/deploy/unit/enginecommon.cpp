@@ -75,7 +75,7 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 	RrRenderer* aRenderer = new RrRenderer();
 
 	// Create Window
-	RrWindow aWindow( aRenderer, hInstance, lpCmdLine, nCmdShow );
+	RrWindow aWindow( aRenderer, hInstance );
 	if (!aWindow.Show())
 	{
 		core::shell::ShowErrorMessage( "Could not show windowing system.\n" );

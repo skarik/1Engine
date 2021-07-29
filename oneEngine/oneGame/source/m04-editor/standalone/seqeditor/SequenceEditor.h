@@ -17,6 +17,9 @@
 #include "./RightClickListMenu.h"
 
 class arStringEnumDefinition;
+class RrWindow;
+class RrWorld;
+class RrCamera;
 
 namespace m04 {
 namespace editor {
@@ -43,6 +46,9 @@ namespace editor {
 
 		EDITOR_API const ArScreen&
 								GetScreen ( void );
+
+		EDITOR_API RrCamera*	GetCamera ( void )
+			{ return editor_camera; }
 
 		EDITOR_API m04::editor::sequence::NodeBoardState*
 								GetNodeBoardState ( void )
@@ -76,6 +82,10 @@ namespace editor {
 		EDITOR_API Vector3f		GetMousePosition3D ( void );
 
 	protected:
+		RrWindow*			window = NULL;
+		RrWorld*			editor_world = NULL;
+		RrCamera*			editor_camera = NULL;
+
 		ui::eventide::UserInterface*
 							user_interface = NULL;
 
