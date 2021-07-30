@@ -77,6 +77,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	// Set up renderer
 	uint worldIndex = aRenderer->AddWorldDefault();
 	RrOutputInfo mainRenderOutput(aRenderer->GetWorld(worldIndex), &aWindow);
+	mainRenderOutput.name = "MainOutput";
 	mainRenderOutput.camera = new RrCamera(false);
 	aRenderer->AddOutput(mainRenderOutput); // Create an output using the window
 
@@ -141,10 +142,10 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 				aWindow.SetFullscreen(!aWindow.IsFullscreen());
 			}
 			// Take screenshot
-			if ( core::Input::Keydown( core::kVkF11 ) ) {
+			/*if ( core::Input::Keydown( core::kVkF11 ) ) {
 				RrScreenshot ss;
 				ss.SaveTimestampedToPNG();
-			}
+			}*/
 			// Grab inputs
 			core::Input::Update();
 			// Update game

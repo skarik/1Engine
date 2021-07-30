@@ -95,7 +95,7 @@ void m04::editor::sequence::MouseGizmo::BuildMesh ( void )
 	quadParams.texture = &m_texture;
 
 	// Move quad towards camera slightly
-	Vector3f deltaToCamera = RrCamera::activeCamera->transform.position - quadParams.position;
+	Vector3f deltaToCamera = m_ui->GetCamera()->transform.position - quadParams.position;
 	quadParams.position += deltaToCamera.normal();// * 2.0F;
 
 	buildQuad(quadParams);

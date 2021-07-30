@@ -29,6 +29,7 @@ RrLogicObject::~RrLogicObject ( void )
 
 void RrLogicObject::AddToWorld ( RrWorld* world )
 {
+	ARCORE_ASSERT_MSG(world->world_index != UINT32_MAX, "Invalid world. Was the world added to a renderer first?");
 	ARCORE_ASSERT(id.world_index == rrId::kWorldInvalid);
 	RrRenderer::Listings::RemoveFromUnsorted(this, id);
 	id = world->AddLogic(this);

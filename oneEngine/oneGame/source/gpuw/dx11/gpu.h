@@ -3,6 +3,9 @@
 
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d11.lib")
+#if _ENGINE_DEBUG
+#pragma comment(lib, "dxguid.lib")
+#endif
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN

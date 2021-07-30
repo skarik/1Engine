@@ -200,7 +200,7 @@ void ui::eventide::Element::buildPath ( const ParamsForPath& params )
 	// build the mesh locally for now
 	Vector3f*	positions = new Vector3f [params.pointCount * 2];
 	// need current camera for bulding path
-	auto currentCamera = RrCamera::activeCamera;
+	auto currentCamera = m_ui->GetCamera();
 	// build path point-by-point
 	for (uint32_t pointIndex = 0; pointIndex < params.pointCount; ++pointIndex)
 	{

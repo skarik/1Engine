@@ -28,7 +28,7 @@ void m04::editor::sequence::MouseGizmo::BuildMesh ( void )
 	quadParams.texture = &m_texture;
 
 	// Need camera delta for next
-	const Vector3f deltaToCamera = RrCamera::activeCamera->transform.position - quadParams.position;
+	const Vector3f deltaToCamera = m_ui->GetCamera()->transform.position - quadParams.position;
 
 	// Make size based on camera distance to keep screen-size constant
 	quadParams.size = Vector2f(10, 10) * (deltaToCamera.magnitude() / 600.0F);
@@ -48,8 +48,8 @@ void m04::editor::sequence::MouseGizmo::OnGameFrameUpdate ( const GameFrameUpdat
 	{
 		const Vector2f mouseScreenPosition (core::Input::MouseX() / core::GetFocusedScreen().GetWidth(), core::Input::MouseY() / core::GetFocusedScreen().GetHeight());
 		const Ray mouseRay = Ray(
-			RrCamera::activeCamera->transform.position,
-			RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)
+			m_ui->GetCamera()->transform.position,
+			m_ui->GetCamera()->ScreenToWorldDir(mouseScreenPosition)
 		);
 
 		// Let's look for a specific position on an XY plane at the current mouse Z

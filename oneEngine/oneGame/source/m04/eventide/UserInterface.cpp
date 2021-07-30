@@ -15,6 +15,7 @@
 #include "renderer/object/CStreamedRenderable3D.h"
 #include "renderer/material/RrShaderProgram.h"
 #include "renderer/windowing/RrWindow.h"
+#include "renderer/state/RrRenderer.h"
 
 #include "../eventide/Element.h"
 
@@ -37,10 +38,11 @@ void ui::eventide::UserInterface::ReleaseActive ( void )
 }
 
 
-ui::eventide::UserInterface::UserInterface ( RrWindow* target_window, dusk::UserInterface* duskUI, dawn::UserInterface* dawnUI, RrWorld* world_to_add_to )
+ui::eventide::UserInterface::UserInterface ( RrWindow* target_window, dusk::UserInterface* duskUI, dawn::UserInterface* dawnUI, RrWorld* world_to_add_to, RrCamera* camera_to_use )
 	: CGameBehavior()
 	, RrLogicObject()
 	, m_window(target_window)
+	, m_camera(camera_to_use)
 	, m_duskUI(duskUI)
 	, m_dawnUI(dawnUI)
 {
@@ -64,6 +66,7 @@ ui::eventide::UserInterface::UserInterface ( RrWindow* target_window, dusk::User
 											renderer::shader::Location::kNormal,
 											renderer::shader::Location::kUV1};
 	uiPass.setVertexSpecificationByCommonList(t_vspec, 5);
+	uiPass.m_type = kPassTypeForward;
 	uiPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
 	uiPass.m_alphaMode = renderer::kAlphaModeTranslucent;
 	uiPass.m_blendMode = renderer::kHLBlendModeNormal;
@@ -158,6 +161,8 @@ void ui::eventide::UserInterface::RequestDestroyElement ( Element* element )
 
 void ui::eventide::UserInterface::Update ( void )
 {
+	RrCamera* camera = GetCamera();
+
 	// Sort elements if there's been a change:
 	if (m_elementsDirty)
 	{
@@ -273,12 +278,12 @@ void ui::eventide::UserInterface::Update ( void )
 	}
 
 	// Update mouse clickity clack:
-	if (RrCamera::activeCamera != NULL && (m_duskUI == NULL || !m_duskUI->IsMouseInside()))
+	if (camera != NULL && (m_duskUI == NULL || !m_duskUI->IsMouseInside()))
 	{
 		const Vector2f mouseScreenPosition (core::Input::MouseX() / GetScreen().GetWidth(), core::Input::MouseY() / GetScreen().GetHeight());
 		const Ray mouseRay = Ray(
-			RrCamera::activeCamera->transform.position,
-			RrCamera::activeCamera->ScreenToWorldDir(mouseScreenPosition)
+			camera->transform.position,
+			camera->ScreenToWorldDir(mouseScreenPosition)
 			);
 		
 		// find element with the shortest distance to the camera. that's the one with the mouse focus
@@ -333,7 +338,7 @@ void ui::eventide::UserInterface::Update ( void )
 			if (!hasValidHit)
 			{
 				// Make a plane parallel to the camera at the object's center, and cast against that.
-				core::math::Plane testPlane (element->GetBBox().GetCenterPoint(), RrCamera::activeCamera->transform.rotation * Vector3f::forward);
+				core::math::Plane testPlane (element->GetBBox().GetCenterPoint(), camera->transform.rotation * Vector3f::forward);
 
 				float mouseHitDistance = 0.0F;
 				if (testPlane.Raycast(mouseRay, mouseHitDistance))
@@ -771,6 +776,15 @@ void ui::eventide::UserInterface::PreStepSynchronus ( void )
 const ArScreen& ui::eventide::UserInterface::GetScreen ( void )
 {
 	return m_window->GetScreen();
+}
+
+//	GetCamera() : Returns the camera associated with this UI.
+RrCamera* ui::eventide::UserInterface::GetCamera ( void )
+{
+	return
+		m_camera ? m_camera
+			: (m_window ? RrRenderer::Active->GetOutput(RrRenderer::Active->FindOutputWithTarget(m_window)).camera
+				: RrCamera::activeCamera);
 }
 
 

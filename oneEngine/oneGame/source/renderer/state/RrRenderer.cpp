@@ -477,6 +477,9 @@ void RrRenderer::AddQueuedToWorld ( void )
 	logics_to_add.clear();
 }
 
+// ================================
+// Output Management
+// ================================
 
 uint RrRenderer::AddOutput ( const RrOutputInfo& info )
 {
@@ -487,6 +490,41 @@ uint RrRenderer::AddOutput ( const RrOutputInfo& info )
 
 	return (uint16)(render_outputs.size() - 1);
 }
+
+uint RrRenderer::FindOutputWithTarget ( RrWindow* window )
+{
+	for (uint i = 0; i < (uint)render_outputs.size(); ++i)
+	{
+		if (render_outputs[i].info.type == RrOutputInfo::Type::kWindow
+			&& render_outputs[i].info.output_window == window)
+		{
+			return i;
+		}
+	}
+	return UINT16_MAX;
+}
+
+uint RrRenderer::FindOutputWithTarget ( RrRenderTexture* target )
+{
+	for (uint i = 0; i < (uint)render_outputs.size(); ++i)
+	{
+		if (render_outputs[i].info.type == RrOutputInfo::Type::kRenderTarget
+			&& render_outputs[i].info.output_target == target)
+		{
+			return i;
+		}
+	}
+	return UINT16_MAX;
+}
+
+void RrRenderer::RemoveOutput ( const uint Index )
+{
+	render_outputs.erase(render_outputs.begin() + Index);
+}
+
+// ================================
+// World Management
+// ================================
 
 uint RrRenderer::AddWorld ( RrWorld* world )
 {

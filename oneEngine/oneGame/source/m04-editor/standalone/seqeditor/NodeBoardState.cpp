@@ -467,6 +467,8 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 		// Update the BoardNode's cached display info
 		static_cast<NodeRenderer*>(currentNode->display)->UpdateNextNode();
 		static_cast<NodeRenderer*>(currentNode->display)->UpdateCachedVisualInfo();
+		static_cast<NodeRenderer*>(currentNode->display)->UpdatePropertyLayout();
+		static_cast<NodeRenderer*>(currentNode->display)->UpdateBboxSize();
 	}
 }
 

@@ -566,6 +566,18 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	}
 }
 
+void m04::editor::sequence::NodeRenderer::UpdateHalfsize ( void )
+{
+	// Update size of the board
+	m_halfsizeOnBoard.y = std::max(40.0F, (GetBboxOfAllProperties() + ui::eventide::DefaultStyler.text.headingSize + m_padding.y * 2.0F + m_margins.y * 2.0F) * 0.5F);
+}
+
+void m04::editor::sequence::NodeRenderer::UpdateBboxSize ( void )
+{
+	UpdateHalfsize();
+	SetBBox(core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard));
+}
+
 void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame )
 {
 	core::math::BoundingBox bbox = GetBBox();
@@ -573,7 +585,7 @@ void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpd
 	Vector3f l_previousExtents = bbox.GetExtents();
 
 	// Update size of the board
-	m_halfsizeOnBoard.y = std::max(40.0F, (GetBboxOfAllProperties() + ui::eventide::DefaultStyler.text.headingSize + m_padding.y * 2.0F + m_margins.y * 2.0F) * 0.5F);
+	UpdateHalfsize();
 	// TODO: based on properties, update bbox
 	node->position.y += (l_previousExtents.y - m_halfsizeOnBoard.y) * 2.0F;
 	bbox = core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard);

@@ -14,6 +14,7 @@ class RrTexture;
 class CStreamedRenderable3D;
 class RrWorld;
 class RrWindow;
+class RrCamera;
 
 namespace dusk
 {
@@ -46,7 +47,7 @@ namespace eventide {
 								ReleaseActive ( void );
 
 		//	Constructor : creates manager that can defer to the given items
-		EVENTIDE_API			UserInterface ( RrWindow*, dusk::UserInterface*, dawn::UserInterface*, RrWorld* = nullptr );
+		EVENTIDE_API			UserInterface ( RrWindow*, dusk::UserInterface*, dawn::UserInterface*, RrWorld* = nullptr, RrCamera* = nullptr );
 
 		EVENTIDE_API virtual	~UserInterface ( void );
 
@@ -77,6 +78,8 @@ namespace eventide {
 		//	GetScreen() : Returns the screen associated with this UI.
 		EVENTIDE_API const ArScreen&
 								GetScreen ( void );
+		//	GetCamera() : Returns the camera associated with this UI.
+		EVENTIDE_API RrCamera*	GetCamera ( void );
 
 		EVENTIDE_API void		AddElement ( Element* element );
 		EVENTIDE_API void		RemoveElement ( Element* element );
@@ -90,6 +93,8 @@ namespace eventide {
 	public:
 		// Targeted window to render to
 		RrWindow*			m_window;
+		// Camera using to display. If null, defaults to active camera.
+		RrCamera*			m_camera;
 
 		dusk::UserInterface*
 							m_duskUI = NULL;

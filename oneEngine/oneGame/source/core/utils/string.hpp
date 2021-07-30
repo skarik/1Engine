@@ -135,15 +135,7 @@ namespace string
 	{
 		// Trim input string name
 		std::string trimmedMatname = TrimLeft(TrimRight(t));
-
-		char str [128];
-		char*tok;
-		memcpy( str, trimmedMatname.c_str(), 128 );
-		str[127] = 0;
-		tok = strtok( str, "\0 ");
-		trimmedMatname.clear();
-		trimmedMatname = tok;
-
+		trimmedMatname = trimmedMatname.substr(0, trimmedMatname.find('\0'));
 		return trimmedMatname;
 	}
 

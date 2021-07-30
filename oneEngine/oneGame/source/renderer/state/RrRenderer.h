@@ -88,7 +88,7 @@ public:
 	renderer::ePipelineMode
 						pipeline_mode = renderer::kPipelineModeNormal;
 
-	uint				world_index;
+	uint				world_index = UINT32_MAX;
 
 	std::vector<CRenderableObject*>
 						objects;
@@ -264,12 +264,7 @@ public:
 
 private:
 	void					InitializeResourcesWithDevice ( gpu::Device* device );
-	//void					ResizeSurface ( void );
 public:
-
-	// Creates an output. The pointer to the output is only guaranteed to be valid between HelpGenerateOutput calls.
-	//RENDER_API RrOutputInfo*
-	//						HelpGenerateOutput ( RrWindow* output, RrWorld* input );
 
 	// Output Management
 	// ================================
@@ -307,7 +302,7 @@ public:
 	//	FindOutputWithTarget(Window) : Finds output with the given window. Returns its index.
 	RENDER_API uint			FindOutputWithTarget ( RrWindow* window );
 	//	FindOutputWithTarget(Window) : Finds output with the given window. Returns its index.
-	RENDER_API uint			FindOutputWithTarget ( gpu::RenderTarget* target );
+	RENDER_API uint			FindOutputWithTarget ( RrRenderTexture* target );
 	//	RemoveOutput(Index) : Removes the output with the given index.
 	RENDER_API void			RemoveOutput ( const uint Index );
 

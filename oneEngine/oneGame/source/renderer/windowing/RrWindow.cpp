@@ -456,6 +456,9 @@ bool RrWindow::Resize ( int width, int height )
 		// The renderer checks the size of the output surface every frame and recreates the swapchain before rendering if needed
 
 		// TODO: Resize the window itself.
+
+		// Update the sizes of windows
+		UpdateScreenInfo();
 	}
 	return true;
 }

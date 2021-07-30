@@ -62,6 +62,8 @@ namespace sequence {
 		void					UpdateCachedVisualInfo ( void );
 		void					UpdateNextNode ( void );
 		void					UpdatePropertyLayout ( void );
+		void					UpdateHalfsize ( void );
+		void					UpdateBboxSize ( void );
 
 		m04::editor::sequence::INodeDisplay*
 								GetNextNode ( void ) const

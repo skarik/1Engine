@@ -21,7 +21,7 @@ struct rrBufferChainInfo
 						kDefaultColorAttachments[4];
 
 	// Main output. Used for both deferred & forward outputs.
-	const core::gfx::tex::arColorFormat
+	core::gfx::tex::arColorFormat
 						mainAttachmentFormat = core::gfx::tex::kColorFormatRGBA16F;
 	// Deferred buffer types
 	uint8_t				colorAttachmentCount = kDefaultColorAttachmentCount;

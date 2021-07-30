@@ -41,7 +41,10 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	window->Resize(gPSetWidowWidth, gPSetWindowHeight);
 
 	editor_world = new RrWorld();
+	RrRenderer::Active->AddWorld(editor_world);
+
 	RrOutputInfo output (editor_world, window);
+	output.name = "SequenceEditor";
 	{
 		editor_camera = new RrCamera(false);
 		// Override certain camera aspects to get the right projection
@@ -57,7 +60,7 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	RrRenderer::Active->AddOutput(output);
 
 	dusk_interface = new dusk::UserInterface(window, editor_world);
-	user_interface = new ui::eventide::UserInterface(window, dusk_interface, NULL, editor_world);
+	user_interface = new ui::eventide::UserInterface(window, dusk_interface, NULL, editor_world, editor_camera);
 
 	top_menu = new m04::editor::sequence::TopMenu(dusk_interface, this);
 	mouse_gizmo = new m04::editor::sequence::MouseGizmo(user_interface);
@@ -85,6 +88,7 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 
 	// Everything is set up, show the window now.
 	window->Show();
+	window->SetTitle("Sequence Editor");
 }
 m04::editor::SequenceEditor::~SequenceEditor ( void )
 {
@@ -375,7 +379,7 @@ void m04::editor::SequenceEditor::SetSaveTargetFilename ( const char* filename )
 {
 	save_target_filename = filename;
 	gPSetLastSavedTarget = save_target_filename;
-	RrWindow::Main()->SetTitle(("Sequence Editor: " + save_target_filename + (workspace_dirty ? "*" : "")).c_str()); //TODO: move elsewhere
+	window->SetTitle(("Sequence Editor: " + save_target_filename + (workspace_dirty ? "*" : "")).c_str()); //TODO: move elsewhere
 	core::settings::Persistent::Save(); // Save current settings.
 }
 

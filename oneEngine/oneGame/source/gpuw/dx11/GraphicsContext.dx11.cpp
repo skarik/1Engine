@@ -172,8 +172,9 @@ gpu::GraphicsContext::GraphicsContext ( Device* wrapperDevice, bool passthroughA
 			abort();
 		}
 
-		const wchar_t* kName = L"Deferred Context";
-		((ID3D11DeviceContext*)m_deferredContext)->SetPrivateData(GUID(), lstrlenW(kName), kName);
+#	if _ENGINE_DEBUG
+		D3D_SET_OBJECT_NAME_A((ID3D11DeviceContext*)m_deferredContext, "Deferred Context");
+#	endif
 	}
 	else
 	{

@@ -31,7 +31,7 @@ void m04::editor::sequence::GridGizmo::BuildMesh ( void )
 	////quadParams.texture = &m_texture;
 
 	//// Need camera delta for next
-	//const Vector3f deltaToCamera = RrCamera::activeCamera->transform.position - quadParams.position;
+	//const Vector3f deltaToCamera = m_ui->GetCamera()->transform.position - quadParams.position;
 
 	//// Make size based on camera distance to keep screen-size constant
 	//quadParams.size = Vector2f(10, 10) * (deltaToCamera.magnitude() / 600.0F);

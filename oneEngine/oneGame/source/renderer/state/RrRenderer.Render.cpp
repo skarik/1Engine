@@ -520,7 +520,7 @@ void RrRenderer::Render ( void )
 
 				// Render from camera
 				RrCamera::activeCamera = render_output.info.camera;
-				gfx->debugGroupPush("Camera: RenderScene()");
+				gfx->debugGroupPush(render_output.info.name.c_str());
 				// We drop the const on the world because rendering objects changes their state
 				RenderOutput(gfx, render_output.info, render_output.state, render_output.info.world);
 				gfx->debugGroupPop();
