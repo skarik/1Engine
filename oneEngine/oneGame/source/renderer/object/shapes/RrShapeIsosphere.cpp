@@ -1,6 +1,7 @@
 #include "RrShapeIsosphere.h"
 #include "gpuw/Device.h"
 #include "gpuw/GraphicsContext.h"
+#include "renderer/material/Material.h"
 #include <math.h>
 
 static const Real kIsoSphereX = .525731112119133606F;
@@ -99,6 +100,8 @@ void RrShapeIsosphere::BuildMeshBuffer ( const int divisions )
 	model.vertexNum	= (uint16_t)(20 * 3 * (int)powf(4, (Real)divisions));
 	model.indexNum = (uint16_t)(3 * 20 * (int)powf(4, (Real)divisions));
 
+	m_indexCount = model.indexNum;
+
 	// Create data arrays
 	model.position = new Vector3f [model.vertexNum];
 	model.normal = new Vector3f [model.vertexNum];
@@ -161,20 +164,40 @@ bool RrShapeIsosphere::Render ( const rrRenderParams* params )
 
 	gpu::Pipeline* pipeline = GetPipeline( params->pass );
 	gfx->setPipeline(pipeline);
+	// Set up the material helper...
+	renderer::Material(this, gfx, params->pass, pipeline)
+		// set the depth & blend state registers
+		.setDepthStencilState()
+		.setRasterizerState()
+		// bind the samplers & textures
+		.setBlendState()
+		.setTextures();
+
 	// bind the vertex buffers
-	for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
-		if (m_meshBuffer.m_bufferEnabled[i])
-			gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
+	auto passAccess = PassAccess(params->pass);
+	for (int i = 0; i < passAccess.getVertexSpecificationCount(); ++i)
+	{
+		int buffer_index = (int)passAccess.getVertexSpecification()[i].location;
+		int buffer_binding = (int)passAccess.getVertexSpecification()[i].binding;
+		if (m_meshBuffer.m_bufferEnabled[buffer_index])
+			gfx->setVertexBuffer(buffer_binding, &m_meshBuffer.m_buffer[buffer_index], 0);
+	}
+
 	// bind the index buffer
 	gfx->setIndexBuffer(&m_meshBuffer.m_indexBuffer, gpu::kIndexFormatUnsigned16);
 	// bind the cbuffers: TODO
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
+	gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
+	gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
+	gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
+	gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
+	gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
 	// draw now
-	gfx->drawIndexed(m_meshBuffer.m_modeldata->indexNum, 0, 0);
+	gfx->drawIndexed(m_indexCount, 0, 0);
 
 	return true;
 }

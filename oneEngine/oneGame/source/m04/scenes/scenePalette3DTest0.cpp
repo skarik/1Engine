@@ -15,6 +15,7 @@
 
 #include "engine-common/entities/CPlayer.h"
 #include "renderer/object/shapes/RrShapePlane.h"
+#include "renderer/object/shapes/RrShapeIsosphere.h"
 #include "renderer/texture/RrTexture.h"
 #include "renderer/material/RrShaderProgram.h"
 
@@ -49,7 +50,7 @@ void scenePalette3DTest0::LoadScene ( void )
 		RrPass pass;
 		pass.utilSetupAsDefault();
 		pass.m_type = kPassTypeForward;
-		pass.m_alphaMode = renderer::kAlphaModeAlphatest;
+		pass.m_alphaMode = renderer::kAlphaModeNone;
 		pass.m_cullMode = gpu::kCullModeNone;
 		pass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
 		pass.setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
@@ -63,9 +64,28 @@ void scenePalette3DTest0::LoadScene ( void )
 												renderer::shader::Location::kNormal,
 												renderer::shader::Location::kTangent};
 		pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
-		pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
+		pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
 
 		plane->PassInitWithInput(0, &pass);
+	} loadScreen->loadStep();
+
+	// Create a skysphere
+	{
+		RrShapeIsosphere* sphere = new RrShapeIsosphere();
+		sphere->transform.world.scale = Vector3f(20.0F, 20.0F, 20.0F);
+
+		// Use a default material
+		RrPass pass;
+		pass.utilSetupAsDefault();
+		pass.m_type = kPassTypeForward;
+		pass.m_alphaMode = renderer::kAlphaModeNone;
+		pass.m_cullMode = gpu::kCullModeNone;
+		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/env/sky_hosek_wilkie_vv.spv", "shaders/env/sky_hosek_wilkie_p.spv"}) );
+		renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition};
+		pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
+		pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+
+		sphere->PassInitWithInput(0, &pass);
 	} loadScreen->loadStep();
 
 	loadScreen->RemoveReference();

@@ -22,6 +22,7 @@ protected:
 	void					BuildMeshBuffer ( const int divisions );
 
 	rrMeshBuffer		m_meshBuffer;
+	uint				m_indexCount;
 };
 
 #endif//RENDERER_RENDERABLE_SHAPE_ISOSPHERE_H_
