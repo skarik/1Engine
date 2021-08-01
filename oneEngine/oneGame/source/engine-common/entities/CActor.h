@@ -10,7 +10,6 @@
 //#include "engine-common/types/ActorAnimation.h"
 
 class CInventory;
-class CPlayerInventory;
 class CItemBase;
 
 class CharacterStats;

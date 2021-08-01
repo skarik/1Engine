@@ -1,6 +1,7 @@
 #include "RrShapePlane.h"
 #include "gpuw/Device.h"
 #include "gpuw/GraphicsContext.h"
+#include "renderer/material/Material.h"
 
 rrMeshBuffer RrShapePlane::m_MeshBuffer;
 void RrShapePlane::BuildMeshBuffer ( void )
@@ -86,10 +87,25 @@ bool RrShapePlane::Render ( const rrRenderParams* params )
 
 	gpu::Pipeline* pipeline = GetPipeline( params->pass );
 	gfx->setPipeline(pipeline);
+	// Set up the material helper...
+	renderer::Material(this, gfx, params->pass, pipeline)
+		// set the depth & blend state registers
+		.setDepthStencilState()
+		.setRasterizerState()
+		// bind the samplers & textures
+		.setBlendState()
+		.setTextures();
+
 	// bind the vertex buffers
-	for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
-		if (m_MeshBuffer.m_bufferEnabled[i])
-			gfx->setVertexBuffer(i, &m_MeshBuffer.m_buffer[i], 0);
+	auto passAccess = PassAccess(params->pass);
+	for (int i = 0; i < passAccess.getVertexSpecificationCount(); ++i)
+	{
+		int buffer_index = (int)passAccess.getVertexSpecification()[i].location;
+		int buffer_binding = (int)passAccess.getVertexSpecification()[i].binding;
+		if (m_MeshBuffer.m_bufferEnabled[buffer_index])
+			gfx->setVertexBuffer(buffer_binding, &m_MeshBuffer.m_buffer[buffer_index], 0);
+	}
+
 	// bind the index buffer
 	gfx->setIndexBuffer(&m_MeshBuffer.m_indexBuffer, gpu::kIndexFormatUnsigned16);
 	// bind the cbuffers: TODO
@@ -99,7 +115,8 @@ bool RrShapePlane::Render ( const rrRenderParams* params )
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
 	// draw now
-	gfx->drawIndexed(m_MeshBuffer.m_modeldata->indexNum, 0, 0);
+	//gfx->drawIndexed(m_MeshBuffer.m_modeldata->indexNum, 0, 0);
+	gfx->drawIndexed(6, 0, 0);
 
 	return true;
 }

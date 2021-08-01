@@ -1,6 +1,9 @@
 #include "CPlayer.h"
 #include "core-ext/input/CInputControl.h"
+
 #include "renderer/camera/RrCamera.h"
+#include "renderer/state/RrRenderer.h"
+
 #include "engine/audio/AudioInterface.h"
 
 // ==Constructor and Destructor==
@@ -18,10 +21,15 @@ CPlayer::CPlayer ( void )
 	bCanMouseMove	= true;
 
 	// ===Camera===
+	// Grab the camera from the output.
+	pCamera = RrRenderer::Active->GetOutput<0>().camera; 
+	if (pCamera == nullptr)
+	{
+		pCamera	= new RrCamera (false);
+		bOwnCamera = true;
+	}
 	//m_cameraUpdateType	= (stateFunc_t)&CPlayer::camDefault;
-	pCamera	= new RrCamera (false);
-	pCamera->SetActive();
-	
+
 	fTurnSensitivity	= 1;
 
 	// ===Audio===
@@ -29,9 +37,14 @@ CPlayer::CPlayer ( void )
 }
 CPlayer::~CPlayer ( void )
 {
-	delete pCamera;
-	delete input;
-	input = NULL;
+	if (bOwnCamera)
+	{
+		delete_safe(pCamera);
+	}
+
+	delete_safe(input);
+
+	pListener->Destroy();
 }
 
 
@@ -167,9 +180,7 @@ void*	CPlayer::mvtPhaseFlying ( void )
 	vPlayerRotation.z += vTurnInput.x;
 	vTurnInput.x = 0.0f;
 
-	Vector3f moveVector(0,0,0);
-	moveVector = vDirInput;
-	moveVector.z = 0;
+	Vector3f moveVector(vDirInput.y, -vDirInput.x, 0.0F);
 
 	// Rotate the move vector to match the camera
 	Matrix4x4 rotMatrix;
@@ -177,10 +188,10 @@ void*	CPlayer::mvtPhaseFlying ( void )
 	moveVector = rotMatrix*moveVector;
 
 	if ( input->axes.jump ) {
-		moveVector.z += Time::deltaTime * 6.0F;
+		moveVector.z += 6.0F;
 	}
 	if ( input->axes.crouch ) {
-		moveVector.z -= Time::deltaTime * 6.0F;
+		moveVector.z -= 6.0F;
 	}
 
 	if ( input->axes.sprint ) { 

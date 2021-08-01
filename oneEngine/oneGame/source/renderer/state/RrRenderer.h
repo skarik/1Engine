@@ -39,6 +39,8 @@ namespace renderer
 	}
 }
 
+class RrPipelineOptions;
+
 //	class RrWorld : A container of objects that can be rendered.
 class RrWorld
 {
@@ -87,6 +89,7 @@ private:
 public:
 	renderer::ePipelineMode
 						pipeline_mode = renderer::kPipelineModeNormal;
+	RrPipelineOptions*	pipeline_options = nullptr;
 
 	uint				world_index = UINT32_MAX;
 

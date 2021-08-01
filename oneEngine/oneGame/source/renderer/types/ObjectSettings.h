@@ -128,13 +128,17 @@ namespace renderer
 	// These modes have the power to override the current RenderMode
 	enum ePipelineMode : uint8_t
 	{
-		// Default rendering pipeline. Eat a cock.
+		// Default rendering pipeline.
 		kPipelineModeNormal,
+
+		// Paletted rendering pipeline.
+		// TODO: Where does the palette get input? Each object needs either a gradient map or a LUT. The final output also requires a LUT.
+		kPipelineModePaletted,
 
 		// Pulls information from the attached audio engine.
 		// The entirety of the audio list is shoved into the light list.
 		// Albedo is dropped. Instead, approximated sound reflections are rendered.
-		kPipelineModeEcho,
+		/*kPipelineModeEcho,
 		
 		// Imagination mode. Doesn't actually render.
 		kPipelineModeAether,
@@ -144,11 +148,11 @@ namespace renderer
 		//	* Shadows are fucking dithered
 		//	* Sometimes the color palette changes
 		//	* Sometimes the scene is flatshaded
-		kPipelineModeShaft,
+		kPipelineModeShaft,*/
 
 		// Default 2D rendering pipeline, with orthographic optimizations.
 		// Requires 2D extension to function properly.
-		kPipelineMode2DPaletted 
+		//kPipelineMode2DPaletted 
 	};
 
 	/*struct _n_hint_rendering_information

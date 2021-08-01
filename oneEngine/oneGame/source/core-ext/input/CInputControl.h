@@ -110,6 +110,8 @@ private:
 	void* current_user;
 	static std::list<CInputControl*>	m_inputs;
 	int	zerotimer;
+
+	void*	xbox_controller;
 };
 
 

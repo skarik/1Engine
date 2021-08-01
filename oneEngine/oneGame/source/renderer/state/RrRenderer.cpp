@@ -651,10 +651,11 @@ RrPass* RrRenderer::GetScreenMaterial ( const eRenderMode mode, const renderer::
 	{
 		switch (mode_type)
 		{
-		case renderer::kPipelineModeNormal:	return pipelinePasses->LightingPass;
-		case renderer::kPipelineModeEcho:	return pipelinePasses->EchoPass;
-		case renderer::kPipelineModeShaft:	return pipelinePasses->ShaftPass;
-		case renderer::kPipelineMode2DPaletted:	return pipelinePasses->Lighting2DPass;
+		case renderer::kPipelineModeNormal:		return pipelinePasses->LightingPass;
+		case renderer::kPipelineModePaletted:	ARCORE_ERROR("Not implmented");
+		//case renderer::kPipelineModeEcho:	return pipelinePasses->EchoPass;
+		//case renderer::kPipelineModeShaft:	return pipelinePasses->ShaftPass;
+		//case renderer::kPipelineMode2DPaletted:	return pipelinePasses->Lighting2DPass;
 		}
 	}
 	return NULL;

@@ -75,9 +75,6 @@ bool CStreamedRenderable3D::Render ( const rrRenderParams* params )
 		// post-material cb
 			.execute(m_postMaterialCb);
 		// bind the vertex buffers
-		//for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
-		//	if (m_currentMeshBuffer->m_bufferEnabled[i])
-		//		gfx->setVertexBuffer(this->PassAccess(params->pass). m_slotbindings[i], &m_currentMeshBuffer->m_buffer[i], 0);
 		auto passAccess = PassAccess(params->pass);
 		for (int i = 0; i < passAccess.getVertexSpecificationCount(); ++i)
 		{

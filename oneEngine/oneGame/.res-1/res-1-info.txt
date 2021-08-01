@@ -1,0 +1,5 @@
+This directory is for resources used by the engine itself.
+
+For games or other projects, use:
+- .res-0 for base game content
+- .res+1 and up for in-development or test content

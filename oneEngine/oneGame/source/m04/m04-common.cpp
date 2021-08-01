@@ -13,6 +13,7 @@
 
 #include "m04/scenes/sceneTilesetTest.h"
 #include "m04/scenes/sceneGameLuvPpl.h"
+#include "m04/scenes/scenePalette3DTest0.h"
 #include "m04-editor/scenes/sceneEditorMain.h"
 #include "m04-editor/scenes/sceneDeveloperMenu.h"
 #include "m04-editor/scenes/sceneEditorCutscene.h"
@@ -76,6 +77,7 @@ int GameInitialize ( void )
 		EngineCommon::RegisterSceneOld<sceneEditorMain>( "editorm04" );
 		EngineCommon::RegisterSceneOld<sceneEditorCutscene>( "editorcts" );
 		EngineCommon::RegisterScene<sceneEditorSequence>();
+		EngineCommon::RegisterScene<scenePalette3DTest0>();
 	}
 
 
@@ -87,7 +89,7 @@ int GameInitialize ( void )
 	renderer::Options::DeferredShaders( shaderSettings );
 	renderer::Options::TextureStreaming( true );
 	//RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
-	RrRenderer::Active->GetWorld<0>()->pipeline_mode = renderer::kPipelineMode2DPaletted;
+	//RrRenderer::Active->GetWorld<0>()->pipeline_mode = renderer::kPipelineMode2DPaletted;
 
 	// Register game start command
 	engine::Console->AddConsoleFunc( "listen", listen );

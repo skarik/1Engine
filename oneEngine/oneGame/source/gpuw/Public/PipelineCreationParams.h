@@ -13,6 +13,8 @@ namespace gpu
 	{
 		kInputRatePerVertex,
 		kInputRatePerInstance,
+
+		kInputRateInvalid,
 	};
 
 	struct VertexInputBindingDescription
@@ -22,7 +24,7 @@ namespace gpu
 		// byte offset to the next element
 		uint32_t	stride;
 		// input increment rate for the element
-		InputRate	inputRate;
+		InputRate	inputRate = kInputRateInvalid;
 	};
 
 	struct VertexInputAttributeDescription

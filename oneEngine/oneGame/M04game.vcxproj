@@ -130,6 +130,7 @@
     <ClInclude Include="source\m04\interfaces\MapIO.h" />
     <ClInclude Include="source\m04\m04-common.h" />
     <ClInclude Include="source\m04\scenes\sceneGameLuvPpl.h" />
+    <ClInclude Include="source\m04\scenes\scenePalette3DTest0.h" />
     <ClInclude Include="source\m04\scenes\sceneTilesetTest.h" />
     <ClInclude Include="source\m04\states\MapInformation.h" />
   </ItemGroup>
@@ -194,6 +195,7 @@
     <ClCompile Include="source\m04\interfaces\MapIO.cpp" />
     <ClCompile Include="source\m04\m04-common.cpp" />
     <ClCompile Include="source\m04\scenes\sceneGameLuvPpl.cpp" />
+    <ClCompile Include="source\m04\scenes\scenePalette3DTest0.cpp" />
     <ClCompile Include="source\m04\scenes\sceneTilesetTest.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

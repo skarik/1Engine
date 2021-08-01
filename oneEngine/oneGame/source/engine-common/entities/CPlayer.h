@@ -88,8 +88,9 @@ protected: // PROTECTED FIELDS and ROUTINES
 	// Attached objects
 	//===============================================================================================//
 
-	RrCamera*		pCamera;	// Attached camera
-	audio::Listener*pListener;	// Attached listener
+	bool			bOwnCamera = false;
+	RrCamera*		pCamera = nullptr;	// Attached camera
+	audio::Listener*pListener = nullptr;	// Attached listener
 
 	//===============================================================================================//
 	// Location state 

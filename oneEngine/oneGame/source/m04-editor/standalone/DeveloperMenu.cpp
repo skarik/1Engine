@@ -76,7 +76,10 @@ void DeveloperMenu::uiCreate ( void )
 		ui_seq_editor = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
 		ui_seq_editor->m_contents = "Sequence Editor";
 
-		ui_cts_editor = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
+		ui_paletted_3d_test = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
+		ui_paletted_3d_test->m_contents = "Paletted 3D Test";
+
+		/*ui_cts_editor = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
 		ui_cts_editor->m_contents = "OLD: Cutscene Editor";
 
 		// Create buttons
@@ -90,7 +93,7 @@ void DeveloperMenu::uiCreate ( void )
 		ui_main_test0->m_contents = "OLD: Test 0";
 
 		ui_main_game = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
-		ui_main_game->m_contents = "OLD: Game (don't click)";
+		ui_main_game->m_contents = "OLD: Game (don't click)";*/
 	}
 }
 
@@ -105,7 +108,12 @@ void DeveloperMenu::uiStepMainPanel ( void )
 		engine::Console->RunCommand( "scene SequenceEditor" );
 		DeleteObject(this);
 	}
-	else if (ui_cts_editor->as<dusk::elements::Button>()->Pressed())
+	else if (ui_paletted_3d_test->as<dusk::elements::Button>()->Pressed())
+	{
+		engine::Console->RunCommand( "scene Palette3DTest0" );
+		DeleteObject(this);
+	}
+	/*else if (ui_cts_editor->as<dusk::elements::Button>()->Pressed())
 	{
 		engine::Console->RunCommand( "scene editorcts" );
 		DeleteObject(this);
@@ -129,5 +137,5 @@ void DeveloperMenu::uiStepMainPanel ( void )
 	{
 		while ( true )
 			debug::Console->PrintError("HA ");
-	}
+	}*/
 }

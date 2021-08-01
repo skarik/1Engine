@@ -27,6 +27,8 @@ CInputControl::CInputControl ( void* owner )
 	}
 
 	zerotimer = 1;
+
+	xbox_controller = new InputControl::CXBoxController(0); // TODO properly
 }
 CInputControl::~CInputControl ( void )
 {
@@ -37,6 +39,8 @@ CInputControl::~CInputControl ( void )
 	{
 		m_inputs.erase( position );
 	}
+
+	delete ((InputControl::CXBoxController*)xbox_controller); // TODO properly
 }
 
 void CInputControl::Capture ( void )
@@ -73,7 +77,7 @@ void CInputControl::Release ( void )
 void CInputControl::Update ( void* owner, float deltaTime )
 {
 	// Update xbox controller:
-	InputControl::CXBoxController* xboxControl = nullptr; // TODO: InputControl::CXBoxController::GetController(0)
+	InputControl::CXBoxController* xboxControl = (InputControl::CXBoxController*)xbox_controller; // TODO: InputControl::CXBoxController::GetController(0)
 	xboxControl->UpdateState();
 
 	// Get inputs from style

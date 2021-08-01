@@ -48,12 +48,13 @@ namespace M04
 		// Dusk handles
 
 		dusk::Element*	ui_seq_editor;
-		dusk::Element*	ui_cts_editor;
+		dusk::Element*	ui_paletted_3d_test;
+		/*dusk::Element*	ui_cts_editor;
 
 		dusk::Element*	ui_main_game;
 		dusk::Element*	ui_main_testg;
 		dusk::Element*	ui_main_test0;
-		dusk::Element*	ui_main_editor;
+		dusk::Element*	ui_main_editor;*/
 	};
 }
 
