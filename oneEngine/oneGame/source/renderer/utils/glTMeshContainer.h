@@ -9,7 +9,7 @@
 #include "core/types/types.h"
 #include "core/types/ModelData.h"
 #include "renderer/types/types.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 
 namespace renderer
 {

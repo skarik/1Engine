@@ -1,12 +1,12 @@
 #ifndef RENDERER_POSTPROCESS_PASS_H_
 #define RENDERER_POSTPROCESS_PASS_H_
 
-#include "../CRenderableObject.h"
+#include "../RrRenderObject.h"
 #include "renderer/texture/RrRenderTexture.h"
 
 class RrCamera;
 
-// TODO: PostProcessPass should not be a CRenderableObject, but something hooked into cameras.
+// TODO: PostProcessPass should not be a RrRenderObject, but something hooked into cameras.
 // It should be more akin to a live gameobject-type resource that can be referenced by multiple cameras.
 
 class RrPostProcessPass

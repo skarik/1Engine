@@ -6,19 +6,19 @@
 #include "CRenderLogicHolder.h"
 #include "CRenderCameraHolder.h"
 
-class CRenderableObject;
+class RrRenderObject;
 
 class CRendererHolder : public CGameBehavior
 {
 
 public:
-	ENGCOM_API explicit			CRendererHolder ( CRenderableObject* renderer );
+	ENGCOM_API explicit			CRendererHolder ( RrRenderObject* renderer );
 	ENGCOM_API					~CRendererHolder ( void );
 	ENGCOM_API void				Update ( void );
 
-	ENGCOM_API CRenderableObject*	GetRenderer ( void );
+	ENGCOM_API RrRenderObject*	GetRenderer ( void );
 private:
-	CRenderableObject*	m_renderer;
+	RrRenderObject*	m_renderer;
 };
 
 #endif

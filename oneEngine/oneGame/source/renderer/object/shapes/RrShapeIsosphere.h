@@ -3,7 +3,7 @@
 
 #include "renderer/object/CRenderable3D.h"
 
-class RrShapeIsosphere : public CRenderableObject
+class RrShapeIsosphere : public RrRenderObject
 {
 public:
 	// Constructor and Destructor

@@ -9,7 +9,7 @@
 #ifndef ENGINE_COMMON_DUSK_UI_RENDERER_H_
 #define ENGINE_COMMON_DUSK_UI_RENDERER_H_
 
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 
 class RrFontTexture;
@@ -72,7 +72,7 @@ namespace dusk
 	};
 
 	// Renders UI
-	class UIRenderer : public CRenderableObject
+	class UIRenderer : public RrRenderObject
 	{
 	public:
 		explicit				UIRenderer ( UserInterface* ui );

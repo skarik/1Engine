@@ -7,7 +7,7 @@
 
 #include "renderer/state/RrRenderer.h"
 #include "renderer/types/ObjectSettings.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "renderer/light/RrLight.h"
 
 #include "renderer/state/Settings.h"

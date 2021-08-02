@@ -32,7 +32,7 @@ enum RrMaterialConstants
 };
 
 // Prototype
-class CRenderableObject;
+class RrRenderObject;
 class RrTexture;
 class RrRenderTexture;
 class RrRenderer;

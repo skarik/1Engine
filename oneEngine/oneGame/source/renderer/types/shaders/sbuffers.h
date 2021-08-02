@@ -6,11 +6,16 @@
 
 namespace renderer
 {
-	// Since Cbuffers and Sbuffers share binding targets on the backend, we start at 10.
+	// Since Cbuffers and Sbuffers share binding targets on the backend, we start at 11.
 	enum rrSBufferId
 	{
-		SBUFFER_SKINNING_MAJOR = 10,
-		SBUFFER_SKINNING_MINOR = 11,
+		SBUFFER_SKINNING_MAJOR = 11,
+		SBUFFER_SKINNING_MINOR = 12,
+
+		SBUFFER_USER0 = 13,
+		SBUFFER_USER1 = 14,
+		SBUFFER_USER2 = 15,
+		SBUFFER_USER3 = 16,
 	};
 
 	namespace sbuffer

@@ -12,7 +12,7 @@
 #include "gpuw/Device.h"
 
 RrBtDebugDraw::RrBtDebugDraw ( PrWorld* associated_world )
-	: btIDebugDraw(), CRenderableObject(),
+	: btIDebugDraw(), RrRenderObject(),
 	m_debugMode(DBG_DrawWireframe | DBG_DrawAabb),
 	m_gpuIndexCount(0), m_haveNewUpload(false)
 {

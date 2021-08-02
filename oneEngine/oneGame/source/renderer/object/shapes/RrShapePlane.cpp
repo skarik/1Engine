@@ -68,7 +68,7 @@ void RrShapePlane::BuildMeshBuffer ( void )
 }
 
 RrShapePlane::RrShapePlane ( void )
-	: CRenderableObject()
+	: RrRenderObject()
 {
 	BuildMeshBuffer();
 }

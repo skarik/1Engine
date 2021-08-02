@@ -1,6 +1,6 @@
 //===============================================================================================//
 //
-//	class CRenderableObject
+//	class RrRenderObject
 //
 // base class for all objects that need to be rendered by the device
 //
@@ -60,7 +60,7 @@ typedef void (*rrMaterialRenderFunction)(renderer::Material*);
 #endif
 
 // Base class, virtual/abstract
-class CRenderableObject
+class RrRenderObject
 {
 public:
 
@@ -78,22 +78,19 @@ public:
 
 private:
 	// No copying with "="
-	CRenderableObject & operator= (const CRenderableObject & other) =delete;
+	RrRenderObject & operator= (const RrRenderObject & other) =delete;
 
 public:
-	RENDER_API explicit		CRenderableObject ( void );
-	RENDER_API virtual		~CRenderableObject ( void );
+	RENDER_API explicit		RrRenderObject ( void );
+	RENDER_API virtual		~RrRenderObject ( void );
 
 	//	AddToWorld(world) : Adds the given object to a world before initialization.
 	// This cannot be called after an object is already in a world.
 	RENDER_API void			AddToWorld ( RrWorld* world );
 
+	//	IsInstantiatable() : Can this instance be instantiated?
+	// Not intended to be overriden by the user manually. Instead, use the DEFINE_RENDER_CLASS() macro. (TODO: macro doesn't yet exist)
 	RENDER_API virtual bool	IsInstantiatable ( void ) { return false; }
-protected:
-	// Returns of material placement can be edited
-	/*virtual bool			GetPassMaterialConst ( const char pass ) { return false; }
-	// Returns the material placement
-	virtual RrMaterial**	GetPassMaterialPosition ( const char pass ) { return &(vMaterials[pass]); }*/
 
 public:
 	// 
@@ -119,13 +116,6 @@ public:
 	// 
 	// Setters
 
-	// Change the material the given material array thing.
-	// Give the ownership of the material to this mesh if the materials have been "released"
-	//RENDER_API virtual void			SetMaterial		( RrMaterial* n_pNewMaterial );
-
-	// Change the object's render type
-	//RENDER_API void			SetRenderType ( eRenderLayer newRenderType )
-	//	{ renderLayer = newRenderType; }
 	// Change visible state
 	RENDER_API virtual void	SetVisible ( const bool nextState )
 		{ visible = nextState; }
@@ -133,11 +123,6 @@ public:
 	//
 	// Getters
 
-	// Searches for the first material with the string in its name
-	//RrMaterial*				FindMaterial( const string & strToFind, int skipAmount=0 );
-	//RENDER_API virtual RrMaterial*	GetMaterial ( void ) {
-	//	return m_material;
-	//}
 	// Returns visible state
 	RENDER_API virtual bool	GetVisible ( void ) const
 		{ return visible; }
@@ -184,44 +169,6 @@ public:
 		return m_passes[pass].m_depthWrite;
 	}
 
-	// 
-	// Culling/Prerendering Prototypes
-
-	//	GetPassNumber : number of passes to add to render list
-	// Get the number of passes required to render the model in the current pipeline.
-	// When implementing your own overrides, only return the amount of passes for one pipeline.
-	// If there is both a deferred and a forward set of shaders, but the pipeline is deferred, only the deferred pass will be used.
-	// If this returns zero, the renderer will instead pull directly from the forward pass list in the material.
-	/*RENDER_API virtual uchar
-							GetPassNumber ( void );
-	//	GetPass : Return forward pass info
-	// Returns the associated pass. This is used for ordering.
-	RENDER_API virtual RrPassForward*
-							GetPass ( const uchar pass );
-	//	GetPassDeferred : Return deferred pass info
-	// Returns the associated deferred rendering pass. This is used for ordering.
-	RENDER_API virtual RrPassDeferred*
-							GetPassDeferred ( const uchar pass );*/
-
-
-private:
-	// == Update Prototypes ==
-
-
-	//	UpdateRenderOrderToCamera : generate data needed for sorting
-	// Generated data needed for sorting, namely distance from the camera. Is not fast.
-	/*void					UpdateRenderOrderToCamera ( RrCamera* camera )
-	{
-		if ( renderLayer == renderer::kRLV2D )
-		{
-			renderDistance = ( transform.world.position.z * 50.0f ) + ( ( camera->transform.position - transform.world.position ).sqrMagnitude() * 0.005f );
-		}
-		else
-		{
-			renderDistance = ( camera->transform.position - transform.world.position ).sqrMagnitude();
-		}
-	};*/
-
 public:
 	// Positional transform
 	core::Transform			transform;
@@ -251,12 +198,17 @@ protected:
 
 	gpu::Buffer				m_cbufPerObjectMatrices;
 	gpu::Buffer				m_cbufPerObjectSurfaces [kPass_MaxPassCount];
+public:
+	//	GetCbufferPerObjectMatrices() : Get the cbuffer used for the object matrices. Use for external shader binding.
+	RENDER_API const gpu::Buffer&
+							GetCbufferPerObjectMatrices ( void )
+		{ return m_cbufPerObjectMatrices; }
+	//	GetCbufferPerObjectSurfaces(pass) : Get the cbuffer used for the pass's surface params for the given pass. Use for external shader binding.
+	RENDER_API const gpu::Buffer&
+							GetCbufferPerObjectSurfaces ( int passIndex )
+		{ return m_cbufPerObjectSurfaces[passIndex]; }
 protected:
 	// ==Render Setup==
-	
-	// BindVAO()
-	// Must be called after the vertex buffer is bound, as will bind materials to render.
-	//RENDER_API bool BindVAO ( const uchar pass, const uint vbo, const uint eab=0, const bool userDefinedAttribs=false );
 
 	//	GetPipeline(pass) : Creates a pipeline if needed, and returns it.
 	// The engine attempts to track some pass changes, and will recreate a pipeline if needed. Generally, this is not recommended.
@@ -271,47 +223,17 @@ protected:
 	// ==Render Status==
 	RENDER_API float		GetRenderDistance ( void );
 
-	// ==Materials==
-	// Clears up the entire material list.
-	//void ClearMaterialList ( void );
-
-	// Public materials that are reused
-	/*static bool bStaticMaterialsInit;
-	static RrMaterial* GLoutlineMaterial;
-
-	static void InitMaterials ( void )
-	{
-		if ( !bStaticMaterialsInit )
-		{
-			GLoutlineMaterial = new RrMaterial();
-			GLoutlineMaterial->iFaceMode = GLoutlineMaterial->FM_BACK;
-			GLoutlineMaterial->setShader( new RrShader( ".res/shaders/d/outline.glsl" ) );
-
-			bStaticMaterialsInit = true;
-		}
-	};*/
-	//static Vector3f _activeCameraPosition;
-	//static Rotator	_activeCameraRotation;
-
 private:
-	// Distance from the render pivot
-	//float renderDistance;
-	// ID values
-	//uint32_t id;
-	//void SetId ( unsigned int );
-	// Give storage class access to SetId
-	//friend RrRenderer;
-
 	rrId id;
 public:
 	const rrId& GetId ( void ) const
 		{ return id; }
 
-	ARACCESSOR_PRIVATE_EXCLUSIVE_SET(RrRenderer, CRenderableObject, rrId, id);
-	ARACCESSOR_PRIVATE_EXCLUSIVE_SET(RrWorld, CRenderableObject, rrId, id);
+	ARACCESSOR_PRIVATE_EXCLUSIVE_SET(RrRenderer, RrRenderObject, rrId, id);
+	ARACCESSOR_PRIVATE_EXCLUSIVE_SET(RrWorld, RrRenderObject, rrId, id);
 };
 
 // typedef for persons coming from Unity
-typedef CRenderableObject RenderObject;
+typedef RrRenderObject RenderObject;
 
 #endif//C_RENDERABLE_OBJECT_

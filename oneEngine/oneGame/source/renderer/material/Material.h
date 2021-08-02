@@ -3,7 +3,7 @@
 
 #include "RrPass.h"
 #include "renderer/texture/RrTexture.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "gpuw/GraphicsContext.h"
 
 namespace gpu
@@ -20,7 +20,7 @@ namespace renderer
 	{
 	public:
 
-		RENDER_API explicit Material ( CRenderableObject* thisObject, gpu::GraphicsContext* ctx, int8_t pass, gpu::Pipeline* pipeline )
+		RENDER_API explicit Material ( RrRenderObject* thisObject, gpu::GraphicsContext* ctx, int8_t pass, gpu::Pipeline* pipeline )
 		{
 			m_object = thisObject;
 			m_ctx = ctx;
@@ -28,7 +28,7 @@ namespace renderer
 			m_pass = &thisObject->m_passes[pass];
 		}
 
-		RENDER_API Material& setAll ( CRenderableObject::rrRenderParams* thisParams )
+		RENDER_API Material& setAll ( RrRenderObject::rrRenderParams* thisParams )
 		{
 			return setStart().setDepthStencilState().setRasterizerState().setBlendState().setTextures().setCommonCBuffers(thisParams);
 		}
@@ -141,7 +141,7 @@ namespace renderer
 			return *this;
 		}
 
-		RENDER_API Material& setCommonCBuffers ( CRenderableObject::rrRenderParams* thisParams )
+		RENDER_API Material& setCommonCBuffers ( RrRenderObject::rrRenderParams* thisParams )
 		{
 			m_ctx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_object->m_cbufPerObjectMatrices);
 			m_ctx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_object->m_cbufPerObjectSurfaces[thisParams->pass]);
@@ -161,7 +161,7 @@ namespace renderer
 		}
 
 	public:
-		CRenderableObject*
+		RrRenderObject*
 							m_object;
 		gpu::GraphicsContext*
 							m_ctx;

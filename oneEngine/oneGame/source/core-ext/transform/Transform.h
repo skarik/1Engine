@@ -60,7 +60,7 @@ namespace core
 
 // Prototypes
 class CGameBehavior;		// Engine
-class CRenderableObject;	// Renderer
+class RrRenderObject;	// Renderer
 class RrLogicObject;			// Renderer
 
 // Using

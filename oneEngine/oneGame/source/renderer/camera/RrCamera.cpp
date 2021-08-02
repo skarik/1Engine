@@ -263,6 +263,8 @@ void RrCamera::PassRetrieve ( const rrCameraPassInput* input, rrCameraPass* pass
 	int cbuffer_index = input->m_bufferingIndex;
 	UpdateCBuffer(cbuffer_index, input->m_bufferingCount, &passList[0]);
 	passList[0].m_cbuffer = &m_cbuffers[cbuffer_index];
+
+	passList[0].m_graphicsContext = input->m_graphicsContext;
 }
 
 void RrCamera::UpdateCBuffer ( const uint index, const uint predictedMax, const rrCameraPass* passinfo )

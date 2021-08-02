@@ -4,12 +4,12 @@
 // Includes
 #include <vector>
 
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 class RrRenderTexture;
 
 namespace debug
 {
-	class RrDebugRTInspector : public CRenderableObject
+	class RrDebugRTInspector : public RrRenderObject
 	{
 	public:
 		// Constructor and destructor

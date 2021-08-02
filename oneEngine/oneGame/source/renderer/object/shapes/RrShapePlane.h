@@ -3,7 +3,7 @@
 
 #include "renderer/object/CRenderable3D.h"
 
-class RrShapePlane : public CRenderableObject
+class RrShapePlane : public RrRenderObject
 {
 public:
 	RENDER_API explicit		RrShapePlane ( void );

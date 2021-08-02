@@ -42,7 +42,7 @@ using std::string;
 // CLASS PROTOTYPES
 class CGameBehavior;
 class CGameObject;
-class CRenderableObject;
+class RrRenderObject;
 
 //
 // GLOBAL INSTANTIATION TEMPLATE:

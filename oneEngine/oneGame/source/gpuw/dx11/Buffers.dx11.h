@@ -97,10 +97,10 @@ namespace gpu
 
 		//	getFormat() : returns underlying format of the data, if applicable.
 		// For constant buffers, regular buffers, and structured buffers, this will always be kFormatUndefined.
-		GPUW_API Format			getFormat ( void );
+		GPUW_API Format			getFormat ( void ) const;
 
 		//	getBufferType() : returns the buffer type.
-		GPUW_API BufferType		getBufferType ( void );
+		GPUW_API BufferType		getBufferType ( void ) const;
 
 	private:
 		friend GraphicsContext;

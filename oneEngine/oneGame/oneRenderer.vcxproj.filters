@@ -111,9 +111,6 @@
     <ClCompile Include="source\renderer\state\Settings.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\object\CRenderableObject.cpp">
-      <Filter>SOURCE\Renderer\Object</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\screen\CScreenFade.cpp">
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
     </ClCompile>
@@ -351,6 +348,9 @@
     <ClCompile Include="source\renderer\utils\rrMeshBuilder.cpp">
       <Filter>SOURCE\Renderer\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\object\RrRenderObject.cpp">
+      <Filter>SOURCE\Renderer\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glSystem.h">
@@ -358,9 +358,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\state\Settings.h">
       <Filter>SOURCE\Renderer\State</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\object\CRenderableObject.h">
-      <Filter>SOURCE\Renderer\Object</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\screen\CScreenFade.h">
       <Filter>SOURCE\Renderer\Object\Screen</Filter>
@@ -643,6 +640,9 @@
     </ClInclude>
     <ClInclude Include="source\renderer\types\viewport.h">
       <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\object\RrRenderObject.h">
+      <Filter>SOURCE\Renderer\Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

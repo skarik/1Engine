@@ -4,7 +4,7 @@
 #include "renderer/material/Material.h"
 
 CRenderable3D::CRenderable3D ( void )
-	: CRenderableObject()
+	: RrRenderObject()
 {
 	// Start with empty buffers
 	//m_buffer_verts = NIL;

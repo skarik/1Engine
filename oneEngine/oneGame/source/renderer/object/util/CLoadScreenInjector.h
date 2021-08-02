@@ -1,13 +1,13 @@
 #ifndef RENDERER_C_LOAD_SCREEN_INJECTOR_H_
 #define RENDERER_C_LOAD_SCREEN_INJECTOR_H_
 
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 
 class RrFontTexture;
 class IrrMeshBuilder;
 
-class CLoadScreenInjector : public CRenderableObject
+class CLoadScreenInjector : public RrRenderObject
 {
 public:
 	RENDER_API explicit		CLoadScreenInjector ( void );

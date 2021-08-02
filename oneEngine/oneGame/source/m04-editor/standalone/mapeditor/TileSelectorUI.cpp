@@ -14,7 +14,7 @@
 using namespace M04;
 
 TileSelectorUI::TileSelectorUI ( void )
-	: CRenderableObject(), m_tileset(NULL)
+	: RrRenderObject(), m_tileset(NULL)
 {
 	// Pass 0 is the tileset
 	RrPass tilesetPass;

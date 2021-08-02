@@ -8,7 +8,7 @@
 
 class CGameBehavior;
 class RrLogicObject;
-class CRenderableObject;
+class RrRenderObject;
 class btMotionState;
 
 class CMotion : public CGameBehavior, public IPrGameMotion

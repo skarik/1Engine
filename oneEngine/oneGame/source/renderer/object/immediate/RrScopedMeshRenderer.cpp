@@ -41,7 +41,7 @@ static bool _primiteModeIndexed( renderer::rrPrimitiveMode mode )
 
 //	render() : Renders the given mesh builder.
 void RrScopedMeshRenderer::render (
-	CRenderableObject* owner, 
+	RrRenderObject* owner, 
 	RrMaterial* material,
 	uchar pass,
 	const IrrMeshBuilder& meshBuilder )

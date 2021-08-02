@@ -16,7 +16,7 @@
 #include "render2d/state/WorldPalette.h"
 
 CRenderable2D::CRenderable2D ( void )
-	: CRenderableObject()
+	: RrRenderObject()
 {
 	// Set up default parameters
 	m_spriteGenerationInfo = rrSpriteGenParams();

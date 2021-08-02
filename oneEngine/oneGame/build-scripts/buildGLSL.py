@@ -49,6 +49,24 @@ def main():
 	m_buildFailed = 0
 	m_buildUpToDate = 0
 	m_buildSkipped = 0
+	
+	# Loop through each .res folder to generate include directors.
+	l_includeFolders = []
+	for i_filename in os.listdir(m_projectRootPath):
+	
+		# Only work on res folders:
+		if not (".res" in i_filename):
+			continue
+		if ("backup" in i_filename):
+			continue
+	
+		# Check if the shaders folder exists
+		l_resourceFolder = m_projectRootPath + i_filename + "/shaders"
+		if not os.path.isdir(l_resourceFolder):
+			continue
+		   
+		# Save the current shader folder
+		l_includeFolders.append(l_resourceFolder);
 
 	# Loop through each .res folder to compile shaders.
 	for i_filename in os.listdir(m_projectRootPath):
@@ -75,7 +93,7 @@ def main():
 					print(m_outp + l_displayName)
 
 					# Compile the shader
-					l_status = CompileShader(l_shaderFilePath, l_displayName)
+					l_status = CompileShader(l_shaderFilePath, l_displayName, l_includeFolders)
 					if (l_status == 1):
 						m_buildSkipped += 1
 					elif (l_status == 0):
@@ -92,7 +110,7 @@ def main():
 # Compiler shell command
 #=========================================================#
 
-def CompileShader(shaderFilePath, displayName):
+def CompileShader(shaderFilePath, displayName, includeFolders):
 	
 	# Get the name without suffix
 	l_nakedFile = os.path.splitext(shaderFilePath)[0]
@@ -117,9 +135,9 @@ def CompileShader(shaderFilePath, displayName):
 				  g_glslParameters,
 				  "-S " + l_glslCompilerMode,
 				  "-o \"" + l_outputFile + "\"",
+				  *["-I\"" + include + "\"" for include in includeFolders],
 				  shaderFilePath]),
 		stdout=subprocess.PIPE)
-
 	# Grab the output and return code
 	output_bytestream = stream.communicate()
 	code = stream.returncode

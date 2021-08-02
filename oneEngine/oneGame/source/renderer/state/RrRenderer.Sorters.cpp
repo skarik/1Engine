@@ -1,11 +1,11 @@
 #include "RrRenderer.h"
 #include "renderer/material/RrPass.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 
 using namespace renderer;
 
 FORCE_INLINE
-static int PassOrder ( RrPass* pass, CRenderableObject* object )
+static int PassOrder ( RrPass* pass, RrRenderObject* object )
 {
 	int order = pass->m_orderOffset;
 	if (pass->m_depthWrite == false)

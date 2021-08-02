@@ -1,0 +1,19 @@
+
+// Binding constants. Ensure matches with renderer\types\shaders\cbuffers.h
+#define CBUFFER_PER_OBJECT_MATRICES 0
+#define CBUFFER_PER_OBJECT_EXTENDED 1
+#define CBUFFER_PER_CAMERA_INFORMATION 2
+#define CBUFFER_PER_FRAME_INFORMATION 3
+#define CBUFFER_PER_PASS_INFORMATION 4
+#define CBUFFER_USER0 7
+#define CBUFFER_USER1 8
+#define CBUFFER_USER2 9
+#define CBUFFER_USER3 10
+
+// Binding constants. Ensure matches with renderer\types\shaders\sbuffers.h
+#define SBUFFER_SKINNING_MAJOR 11
+#define SBUFFER_SKINNING_MINOR 12
+#define SBUFFER_USER0 13
+#define SBUFFER_USER1 14
+#define SBUFFER_USER2 15
+#define SBUFFER_USER3 16

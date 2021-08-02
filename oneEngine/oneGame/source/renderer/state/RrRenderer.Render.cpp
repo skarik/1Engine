@@ -16,7 +16,7 @@
 //#include "renderer/texture/CMRTTexture.h"
 
 //#include "renderer/material/RrMaterial.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 
 #include "gpuw/Pipeline.h"
 #include "gpuw/ShaderPipeline.h"
@@ -73,7 +73,7 @@ void RrWorld::CompactObjectListing ( void )
 
 void RrWorld::SortObjectListing ( void )
 {
-	std::sort(objects.begin(), objects.end(), [](CRenderableObject* a, CRenderableObject* b)
+	std::sort(objects.begin(), objects.end(), [](RrRenderObject* a, RrRenderObject* b)
 	{
 		// Force nullptr to the end of the list. Treat nullptr as a high value.
 		if (a == nullptr && b != nullptr) return false;
@@ -89,7 +89,7 @@ void RrWorld::SortObjectListing ( void )
 	// Update the item IDs
 	for (int objectIndex = 0; objectIndex < objects.size(); ++objectIndex)
 	{
-		CRenderableObject* object = objects[objectIndex];
+		RrRenderObject* object = objects[objectIndex];
 		if (object != nullptr)
 		{
 			rrId id;
@@ -632,7 +632,7 @@ void RrRenderer::Render ( void )
 //	// Override it with forward
 //	renderMode = kRenderModeForward;
 //
-//	CRenderableObject * pRO;
+//	RrRenderObject * pRO;
 //	tRenderRequest	renderRQ;
 //	int i;
 //	unsigned char passCount;
@@ -655,7 +655,7 @@ void RrRenderer::Render ( void )
 //
 //		// Create a sorted render list.
 //		std::vector<tRenderRequest> sortedRenderList;
-//		std::vector<CRenderableObject*> sortSinglePassList;
+//		std::vector<RrRenderObject*> sortSinglePassList;
 //		for ( i = 0; i < (int)iCurrentIndex; i += 1 )
 //		{
 //			pRO = pRenderableObjects[i];
@@ -819,6 +819,7 @@ Render_Camera_Passes:
 	cameraPassInput.m_bufferingCount = (uint16_t)std::min<size_t>(state->internal_chain_list.size(), 0xFFFF);
 	cameraPassInput.m_bufferingIndex = state->internal_chain_index;
 	cameraPassInput.m_outputInfo = &output;
+	cameraPassInput.m_graphicsContext = gfx;
 
 	int passCount = output.camera->PassCount();
 	output.camera->PassRetrieve(&cameraPassInput, cameraPasses);
@@ -844,7 +845,7 @@ Render_Camera_Passes:
 }
 
 ////	RenderObjectList () : Renders the object list from the given camera with DeferredForward+.
-//void RrRenderer::RenderObjectList ( RrCamera* camera, CRenderableObject** objectsToRender, const uint32_t objectCount )
+//void RrRenderer::RenderObjectList ( RrCamera* camera, RrRenderObject** objectsToRender, const uint32_t objectCount )
 //{
 //	// Get a pass list from the camera
 //	const int kMaxCameraPasses = 8;
@@ -878,7 +879,7 @@ Render_Camera_Passes:
 //	camera->RenderEnd();
 //}
 
-void RrRenderer::RenderObjectListWorld ( gpu::GraphicsContext* gfx, rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount, RrOutputState* state )
+void RrRenderer::RenderObjectListWorld ( gpu::GraphicsContext* gfx, rrCameraPass* cameraPass, RrRenderObject** objectsToRender, const uint32_t objectCount, RrOutputState* state )
 {
 	struct rrRenderRequestGroup
 	{
@@ -908,7 +909,7 @@ Prerender_Pass:
 	{
 		for (uint32_t iObject = 0; iObject < objectCount; ++iObject)
 		{
-			CRenderableObject* renderable = objectsToRender[iObject];
+			RrRenderObject* renderable = objectsToRender[iObject];
 			if (renderable != NULL)
 			{
 				bool l_hasPass = false;
@@ -952,7 +953,7 @@ Pass_Groups:
 
 			for (uint32_t iObject = 0; iObject < objectCount; ++iObject)
 			{
-				CRenderableObject* renderable = objectsToRender[iObject];
+				RrRenderObject* renderable = objectsToRender[iObject];
 				if (renderable != NULL)
 				{
 					bool l_hasPass = false;
@@ -1066,9 +1067,9 @@ Render_Groups:
 		for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rJob.size(); ++iObject)
 		{
 			const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rJob[iObject];
-			CRenderableObject* renderable = l_4r.obj;
+			RrRenderObject* renderable = l_4r.obj;
 
-			CRenderableObject::rrRenderParams params;
+			RrRenderObject::rrRenderParams params;
 			params.pass = l_4r.pass;
 			params.cbuf_perCamera = cameraPass->m_cbuffer;
 			params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
@@ -1146,7 +1147,7 @@ Render_Groups:
 		//{
 		// TODO: Fiddle with the rasterization rules so we only write to the depth.
 		//const rrRenderRequest const&  l_4r = l_4rDepthPrepass[iObject];
-		//CRenderableObject* renderable = l_4r.obj;
+		//RrRenderObject* renderable = l_4r.obj;
 		//renderable->Render(l_4r.pass);
 		//}
 
@@ -1188,9 +1189,9 @@ Render_Groups:
 		for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rDeferred.size(); ++iObject)
 		{
 			const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rDeferred[iObject];
-			CRenderableObject* renderable = l_4r.obj;
+			RrRenderObject* renderable = l_4r.obj;
 
-			CRenderableObject::rrRenderParams params;
+			RrRenderObject::rrRenderParams params;
 			params.pass = l_4r.pass;
 			params.cbuf_perCamera = cameraPass->m_cbuffer;
 			//params.cbuf_perFrame = &internal_cbuffers_frames[internal_chain_index];
@@ -1250,9 +1251,9 @@ Render_Groups:
 		for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rForward.size(); ++iObject)
 		{
 			const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rForward[iObject];
-			CRenderableObject* renderable = l_4r.obj;
+			RrRenderObject* renderable = l_4r.obj;
 
-			CRenderableObject::rrRenderParams params;
+			RrRenderObject::rrRenderParams params;
 			params.pass = l_4r.pass;
 			params.cbuf_perCamera = cameraPass->m_cbuffer;
 			//params.cbuf_perFrame = &internal_cbuffers_frames[internal_chain_index];
@@ -1285,7 +1286,7 @@ Render_Groups:
 //void RrRenderer::RenderScene ( const uint32_t renderHint, RrCamera* camera )
 //{
 //	GL_ACCESS GLd_ACCESS
-//	CRenderableObject * pRO;
+//	RrRenderObject * pRO;
 //	int i;
 //	unsigned char passCount;
 //	RrCamera* currentCamera = RrCamera::activeCamera;
@@ -1295,7 +1296,7 @@ Render_Groups:
 //	TimeProfiler.BeginTimeProfile( "rs_render_makelist" );
 //	// Build the unsorted data
 //	std::vector<tRenderRequest> sortedRenderList;
-//	std::vector<CRenderableObject*> sortSinglePassList;
+//	std::vector<RrRenderObject*> sortSinglePassList;
 //	for ( i = 0; i < (int)iCurrentIndex; i += 1 )
 //	{
 //		pRO = pRenderableObjects[i];
@@ -1692,7 +1693,7 @@ Render_Groups:
 //void RrRenderer::RenderSceneDeferred ( const uint32_t n_renderHint )
 //{
 //	GL_ACCESS GLd_ACCESS
-//	CRenderableObject * pRO;
+//	RrRenderObject * pRO;
 //	int i;
 //	unsigned char passCount;
 //	RrCamera* currentCamera = RrCamera::activeCamera;
@@ -1702,7 +1703,7 @@ Render_Groups:
 //	TimeProfiler.BeginTimeProfile( "rs_render_makelist" );
 //	// Build the unsorted data
 //	std::vector<tRenderRequest> sortedRenderList;
-//	std::vector<CRenderableObject*> sortSinglePassList;
+//	std::vector<RrRenderObject*> sortSinglePassList;
 //	for ( i = 0; i < (int)iCurrentIndex; i += 1 )
 //	{
 //		pRO = pRenderableObjects[i];
@@ -2110,7 +2111,7 @@ Render_Groups:
 //	RrMaterial::updateStaticUBO();
 //}
 //// RenderSingleObject renders an object, assuming the projection has been already set up.
-//void RrRenderer::RenderSingleObject ( CRenderableObject* objectToRender )
+//void RrRenderer::RenderSingleObject ( RrRenderObject* objectToRender )
 //{
 //	GL_ACCESS;
 //	char maxPass = objectToRender->GetPassNumber();
@@ -2130,7 +2131,7 @@ Render_Groups:
 //	}
 //}
 //// RenderObjectArray() renders a null terminated list of objects, assuming the projection has been already set up.
-//void RrRenderer::RenderObjectArray ( CRenderableObject** objectsToRender )
+//void RrRenderer::RenderObjectArray ( RrRenderObject** objectsToRender )
 //{
 //	GL_ACCESS;
 //	int i = 0;

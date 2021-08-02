@@ -13,7 +13,7 @@ RrDebugRTInspector* debug::RTInspector = NULL;
 
 // Constructor
 RrDebugRTInspector::RrDebugRTInspector ( void )
-	: CRenderableObject ()
+	: RrRenderObject ()
 {
 	debug::RTInspector = this;
 

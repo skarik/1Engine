@@ -1,8 +1,8 @@
 
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "CRendererHolder.h"
 
-CRendererHolder::CRendererHolder ( CRenderableObject* renderer )
+CRendererHolder::CRendererHolder ( RrRenderObject* renderer )
 	: CGameBehavior(), m_renderer( renderer )
 {
 	;
@@ -20,6 +20,6 @@ void CRendererHolder::Update ( void )
 	;
 }
 
-CRenderableObject*	CRendererHolder::GetRenderer ( void ) {
+RrRenderObject*	CRendererHolder::GetRenderer ( void ) {
 	return m_renderer;
 }

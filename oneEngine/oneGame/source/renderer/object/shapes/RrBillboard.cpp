@@ -63,7 +63,7 @@ void RrBillboard::BuildMeshBuffer ( void )
 
 
 RrBillboard::RrBillboard ( void )
-	: CRenderableObject(),
+	: RrRenderObject(),
 	width(1.0F), pointAtCamera(false)
 {
 	BuildMeshBuffer();

@@ -8,12 +8,12 @@
 #include "renderer/camera/RrCamera.h"
 #include "gpuw/Pipeline.h"
 
-#include "CRenderableObject.h"
+#include "RrRenderObject.h"
 
 // ==Constructor
 //  adds render object to the list of RO in RrRenderer
 //  sets visibility to true
-CRenderableObject::CRenderableObject ( void )
+RrRenderObject::RrRenderObject ( void )
 	/*: m_material(NULL), m_vao_info(NULL), m_vao_count(0), m_vao_maxcount(0)*/
 	: m_passEnabled(), m_pipelineReady()
 {
@@ -21,7 +21,7 @@ CRenderableObject::CRenderableObject ( void )
 	renderSettings.renderHints = kRenderHintBitmaskALL;
 
 	//InitMaterials();
-	//CRenderableObject::SetMaterial( RrMaterial::Default );
+	//RrRenderObject::SetMaterial( RrMaterial::Default );
 
 	// TODO: Should renderables get a default forward pass?
 
@@ -34,7 +34,7 @@ CRenderableObject::CRenderableObject ( void )
 // ==Destructor
 
 //  removes render object from the list of RO in RrRenderer
-CRenderableObject::~CRenderableObject ( void )
+RrRenderObject::~RrRenderObject ( void )
 {
 	// Remove the object from the list immediately
 	//RrRenderer::Active->RemoveRO( id );
@@ -50,7 +50,7 @@ CRenderableObject::~CRenderableObject ( void )
 	FreePipelines();
 }
 
-void CRenderableObject::AddToWorld ( RrWorld* world )
+void RrRenderObject::AddToWorld ( RrWorld* world )
 {
 	ARCORE_ASSERT_MSG(world->world_index != UINT32_MAX, "Invalid world. Was the world added to a renderer first?");
 	ARCORE_ASSERT(id.world_index == rrId::kWorldInvalid);
@@ -61,7 +61,7 @@ void CRenderableObject::AddToWorld ( RrWorld* world )
 // == Private Setters ==
 
 //// Private ID 'safe' set
-//void CRenderableObject::SetId( unsigned int nId )
+//void RrRenderObject::SetId( unsigned int nId )
 //{
 //	id = nId;
 //}
@@ -69,13 +69,13 @@ void CRenderableObject::AddToWorld ( RrWorld* world )
 // == Public Setters ==
 
 //// Set the rendering type to change draw order and stuff
-//void CRenderableObject::SetRenderType ( eRenderLayer newRenderType )
+//void RrRenderObject::SetRenderType ( eRenderLayer newRenderType )
 //{
 //	renderLayer = newRenderType;
 //}
 //
 //// Set Materials
-//void CRenderableObject::SetMaterial ( RrMaterial* n_pNewMaterial )
+//void RrRenderObject::SetMaterial ( RrMaterial* n_pNewMaterial )
 //{
 //	// Go through current materials, delete them if they have no more owner
 //	/*for ( vector<RrMaterial*>::iterator mat = vMaterials.begin(); mat != vMaterials.end(); mat++ )
@@ -207,7 +207,7 @@ void CRenderableObject::AddToWorld ( RrWorld* world )
 //	}
 //}
 //
-//void CRenderableObject::PassinfoClear ( void )
+//void RrRenderObject::PassinfoClear ( void )
 //{
 //	// Delete all the vertex arrays
 //	for ( uint i = 0; i < m_vao_maxcount; ++i )
@@ -224,7 +224,7 @@ void CRenderableObject::AddToWorld ( RrWorld* world )
 //	m_vao_count = 0;
 //	m_vao_maxcount = 0;
 //}
-//void CRenderableObject::PassinfoGenerate ( void )
+//void RrRenderObject::PassinfoGenerate ( void )
 //{
 //	// Set new VAO count
 //	m_vao_maxcount = m_material->getPassCountForward() + m_material->getPassCountDeferred();
@@ -237,7 +237,7 @@ void CRenderableObject::AddToWorld ( RrWorld* world )
 //	}
 //}
 //
-//void CRenderableObject::PassinfoRegenerate ( void )
+//void RrRenderObject::PassinfoRegenerate ( void )
 //{
 //	if ( m_vao_count == 0 ) {
 //		// If no VAOs, just generate
@@ -270,19 +270,19 @@ void CRenderableObject::AddToWorld ( RrWorld* world )
 // Material system
 //===============================================================================================//
 // Get the number of passes (as models will need a lot more than one pass)
-//uchar CRenderableObject::GetPassNumber ( void ) {
+//uchar RrRenderObject::GetPassNumber ( void ) {
 //	return m_material->getPassCount();
 //}
 //// Returns the associated pass. This is used for ordering.
-//RrPassForward* CRenderableObject::GetPass ( const uchar pass ) {
+//RrPassForward* RrRenderObject::GetPass ( const uchar pass ) {
 //	return &(m_material->passinfo[pass]);
 //}
 //// Returns the associated deferred rendering pass. This is used for ordering.
-//RrPassDeferred* CRenderableObject::GetPassDeferred ( const uchar pass ) {
+//RrPassDeferred* RrRenderObject::GetPassDeferred ( const uchar pass ) {
 //	return &(m_material->deferredinfo[pass]);
 //}
 //
-//bool CRenderableObject::BindVAO ( const uchar pass, const uint vbo, const uint eab, const bool userDefinedAttribs )
+//bool RrRenderObject::BindVAO ( const uchar pass, const uint vbo, const uint eab, const bool userDefinedAttribs )
 //{
 //	uint t_targetPass = pass;
 //	if ( RrRenderer::Active->GetRenderMode() == kRenderModeDeferred ) {
@@ -316,7 +316,7 @@ void CRenderableObject::AddToWorld ( RrWorld* world )
 //	}
 //}
 
-void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform, const rrCameraPass* cameraPass )
+void RrRenderObject::PushCbufferPerObject ( const XrTransform& worldTransform, const rrCameraPass* cameraPass )
 {
 	// Update matrix constants
 	{
@@ -361,7 +361,7 @@ void CRenderableObject::PushCbufferPerObject ( const XrTransform& worldTransform
 
 //	PassInitWithInput(pass, passData) : Sets up a new pass on the given slot.
 // Creates a copy of passData without changing reference counts.
-void CRenderableObject::PassInitWithInput ( int pass, RrPass* passData )
+void RrRenderObject::PassInitWithInput ( int pass, RrPass* passData )
 {
 	ARCORE_ASSERT(pass >= 0 || pass < kPass_MaxPassCount);
 
@@ -380,7 +380,7 @@ void CRenderableObject::PassInitWithInput ( int pass, RrPass* passData )
 	ARCORE_ASSERT(m_passes[pass].validate());
 }
 
-void CRenderableObject::PassFree ( int pass )
+void RrRenderObject::PassFree ( int pass )
 {
 	ARCORE_ASSERT(pass >= 0 || pass < kPass_MaxPassCount);
 
@@ -403,20 +403,20 @@ void CRenderableObject::PassFree ( int pass )
 	m_passEnabled[pass] = false;
 }
 
-renderer::cbuffer::rrPerObjectSurface& CRenderableObject::PassGetSurface ( int pass )
+renderer::cbuffer::rrPerObjectSurface& RrRenderObject::PassGetSurface ( int pass )
 {
 	ARCORE_ASSERT(pass >= 0 || pass < kPass_MaxPassCount);
 	m_passSurfaceSynced[pass] = false;
 	return m_passes[pass].m_surface;
 }
 
-RrPass::SafeAccessor CRenderableObject::PassAccess ( int pass )
+RrPass::SafeAccessor RrRenderObject::PassAccess ( int pass )
 {
 	ARCORE_ASSERT(pass >= 0 || pass < kPass_MaxPassCount);
 	return RrPass::SafeAccessor(&m_passes[pass]);
 }
 
-void CRenderableObject::PassesFree ( void )
+void RrRenderObject::PassesFree ( void )
 {
 	for (int i = 0; i < kPass_MaxPassCount; ++i)
 	{
@@ -430,7 +430,7 @@ void CRenderableObject::PassesFree ( void )
 // Pipeline management
 //===============================================================================================//
 
-gpu::Pipeline* CRenderableObject::GetPipeline ( const uchar pass )
+gpu::Pipeline* RrRenderObject::GetPipeline ( const uchar pass )
 {
 	if (!m_pipelineReady[pass])
 	{
@@ -483,7 +483,7 @@ gpu::Pipeline* CRenderableObject::GetPipeline ( const uchar pass )
 	return &m_pipelines[pass];
 }
 
-void CRenderableObject::FreePipelines ( void )
+void RrRenderObject::FreePipelines ( void )
 {
 	for (int i = 0; i < kPass_MaxPassCount; ++i)
 	{
@@ -499,7 +499,7 @@ void CRenderableObject::FreePipelines ( void )
 //===============================================================================================//
 // Render Status
 //===============================================================================================//
-float CRenderableObject::GetRenderDistance ( void )
+float RrRenderObject::GetRenderDistance ( void )
 {
 	return renderDistance;
 }

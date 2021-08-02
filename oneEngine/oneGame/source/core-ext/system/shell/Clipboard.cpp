@@ -65,7 +65,7 @@ void core::shell::clipboard::SetString ( const char* str )
 	OpenClipboard(NULL);
 	EmptyClipboard();
 
-	const size_t str_len = strlen(str);
+	const int str_len = (int)strlen(str);
 	int utf16BufferSize = MultiByteToWideChar(CP_UTF8, WC_COMPOSITECHECK, str, str_len, NULL, 0);
 
 	// Create global allocation

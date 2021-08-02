@@ -1,7 +1,7 @@
 #ifndef _M04_EDITOR_TILE_SELECTOR_UI_
 #define _M04_EDITOR_TILE_SELECTOR_UI_
 
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 
 namespace Engine2D
@@ -12,7 +12,7 @@ namespace Engine2D
 
 namespace M04
 {
-	class TileSelectorUI : public CRenderableObject
+	class TileSelectorUI : public RrRenderObject
 	{
 	public:
 		explicit	TileSelectorUI ( void );

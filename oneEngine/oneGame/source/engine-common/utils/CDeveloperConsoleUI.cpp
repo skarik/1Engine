@@ -19,7 +19,7 @@ CDeveloperConsoleUI*	ActiveConsoleUI = NULL;
 CDeveloperCursor*		ActiveCursor = NULL;
 
 CDeveloperConsoleUI::CDeveloperConsoleUI ( void )
-	: CRenderableObject()
+	: RrRenderObject()
 {
 	ActiveConsoleUI = this;
 
@@ -211,7 +211,7 @@ bool CDeveloperConsoleUI::Render ( const rrRenderParams* params )
 }
 
 CDeveloperCursor::CDeveloperCursor ( void )
-	: CRenderableObject()
+	: RrRenderObject()
 {
 	ActiveCursor = this;
 

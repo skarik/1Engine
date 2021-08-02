@@ -108,7 +108,7 @@ typedef uint64_t		uint64;
 
 #include "float.h"
 
-// Define the FORCE_INLINE macro
+// Define various helper macros
 #if		defined(_MSC_VER)
 #	define FORCE_INLINE __forceinline
 #elif	defined(__clang__)

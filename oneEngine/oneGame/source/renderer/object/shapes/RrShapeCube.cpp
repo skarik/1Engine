@@ -140,7 +140,7 @@ void RrShapeCube::BuildMeshBuffer ( void )
 }
 
 RrShapeCube::RrShapeCube ( void )
-	: CRenderableObject ()
+	: RrRenderObject ()
 {
 	BuildMeshBuffer();
 	//SetSize(Vector3f(1.0F, 1.0F, 1.0F));
@@ -182,7 +182,7 @@ bool RrShapeCube::Render ( const rrRenderParams* params )
 
 
 /*RrShapeCube::RrShapeCube ( Vector3f const& size )
-	: CRenderableObject ()
+	: RrRenderObject ()
 {
 	SetSize(Vector3f(1.0F, 1.0F, 1.0F));
 }

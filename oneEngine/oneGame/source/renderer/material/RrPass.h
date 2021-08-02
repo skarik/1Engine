@@ -5,6 +5,7 @@
 #include "renderer/types/types.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/types/shaders/cbuffers.h"
+#include "renderer/types/shaders/sbuffers.h"
 #include "gpuw/Public/Enums.h"
 #include "gpuw/Public/Sampler.h"
 #include "renderer/material/ShaderSlots.h"

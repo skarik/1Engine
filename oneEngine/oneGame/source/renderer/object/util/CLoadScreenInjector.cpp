@@ -20,7 +20,7 @@ void CLoadScreenInjector::StepScreen ( void )
 		mCamera->LateUpdate();
 	}
 
-	CRenderableObject* l_renderList[] = {this};
+	RrRenderObject* l_renderList[] = {this};
 	//RrRenderer::Active->RenderObjectList(mCamera, l_renderList, 1);
 	RrRenderer::Active->Render();
 	//RrRenderer::Active->RenderScene(mCamera);
@@ -42,7 +42,7 @@ void CLoadScreenInjector::setAlpha ( Real new_alpha )
 }
 
 CLoadScreenInjector::CLoadScreenInjector ( void )
-	: CRenderableObject (  )
+	: RrRenderObject (  )
 {
 	renderSettings.renderHints = 0 | kRenderHintBitmaskWorld;
 

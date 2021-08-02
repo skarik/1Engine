@@ -3,7 +3,7 @@
 
 #include "core/math/BoundingBox.h"
 
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 
 class RrCModel;
@@ -13,7 +13,7 @@ namespace renderer
 {
 	//	class Mesh
 	// A Mesh provides a mechanism to draw a single rrMesh.
-	class Mesh : public CRenderableObject
+	class Mesh : public RrRenderObject
 	{
 	public:
 		RENDER_API explicit		Mesh ( rrMeshBuffer*, bool n_enableSkinning=false );

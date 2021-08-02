@@ -85,6 +85,9 @@
     <Filter Include="SOURCE\M04\Standalone">
       <UniqueIdentifier>{80d21371-4850-4279-ae65-bedb3a5611a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04\Entities_Test">
+      <UniqueIdentifier>{fe47aa60-e8b7-43fc-a4f6-d8bb67d2f726}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -288,6 +291,9 @@
     <ClInclude Include="source\m04\scenes\scenePalette3DTest0.h">
       <Filter>SOURCE\M04\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04\entities_test\InstancedGrassRenderObject.h">
+      <Filter>SOURCE\M04\Entities_Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -475,6 +481,9 @@
     </ClCompile>
     <ClCompile Include="source\m04\scenes\scenePalette3DTest0.cpp">
       <Filter>SOURCE\M04\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\entities_test\InstancedGrassRenderObject.cpp">
+      <Filter>SOURCE\M04\Entities_Test</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

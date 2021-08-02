@@ -19,6 +19,10 @@
 #include "renderer/texture/RrTexture.h"
 #include "renderer/material/RrShaderProgram.h"
 
+#include "m04/entities_test/InstancedGrassRenderObject.h"
+
+#include "core/math/random/Random.h"
+
 
 void scenePalette3DTest0::LoadScene ( void )
 {
@@ -86,6 +90,28 @@ void scenePalette3DTest0::LoadScene ( void )
 		pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
 
 		sphere->PassInitWithInput(0, &pass);
+	} loadScreen->loadStep();
+
+	// Create the grass
+	{
+		InstancedGrassRenderObject* foliage = new InstancedGrassRenderObject();
+
+		for (uint i = 0; i < 100; ++i)
+		{
+			grInstancedGrassInfo grass;
+			grass.color = Vector3f(1.0F, 1.0F, 1.0F);
+
+			Matrix4x4 transform, dump;
+			core::TransformUtility::TRSToMatrix4x4(
+				Vector3f(Random.Range(-128, +128), Random.Range(-128, +128), 0.0F),
+				Rotator(),
+				Vector3f(1, 1, 1),
+				transform,
+				dump);
+			grass.transform = transform;
+
+			foliage->m_grassInfo.push_back(grass);
+		}
 	} loadScreen->loadStep();
 
 	loadScreen->RemoveReference();

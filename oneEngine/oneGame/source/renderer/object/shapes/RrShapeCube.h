@@ -3,10 +3,10 @@
 
 #include "core/types/ModelData.h"
 #include "core/math/Vector3.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 
-class RrShapeCube : public CRenderableObject
+class RrShapeCube : public RrRenderObject
 {
 public:
 	RENDER_API explicit		RrShapeCube ( void );

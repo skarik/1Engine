@@ -7,7 +7,7 @@
 using namespace debug;
 
 CTimeProfilerUI::CTimeProfilerUI ( void )
-	: CRenderableObject()
+	: RrRenderObject()
 {
 	fntDebug = RrFontTexture::Load( "YanoneKaffeesatz-R.otf", 12, FW_BOLD );
 	fntDebug->AddReference();

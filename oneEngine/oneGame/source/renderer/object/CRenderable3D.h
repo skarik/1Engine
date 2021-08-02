@@ -13,10 +13,10 @@
 
 #include "core/types/ModelData.h"
 #include "core/math/Vector3.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 
-class CRenderable3D : public CRenderableObject
+class CRenderable3D : public RrRenderObject
 {
 public:
 	RENDER_API				CRenderable3D ( void );

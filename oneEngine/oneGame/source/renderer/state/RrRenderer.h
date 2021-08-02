@@ -20,7 +20,7 @@
 
 #include <vector>
 
-class CRenderableObject;
+class RrRenderObject;
 class RrLogicObject;
 class RrLight;
 class RrCamera;
@@ -50,9 +50,9 @@ public:
 							~RrWorld ( void )
 		{}
 
-	friend CRenderableObject;
-	rrId					AddObject ( CRenderableObject* renderable );
-	bool					RemoveObject ( CRenderableObject* renderable );
+	friend RrRenderObject;
+	rrId					AddObject ( RrRenderObject* renderable );
+	bool					RemoveObject ( RrRenderObject* renderable );
 	bool					RemoveObject ( const rrId& renderable_id );
 
 	friend RrLogicObject;
@@ -93,7 +93,7 @@ public:
 
 	uint				world_index = UINT32_MAX;
 
-	std::vector<CRenderableObject*>
+	std::vector<RrRenderObject*>
 						objects;
 	std::vector<RrLogicObject*>
 						logics;
@@ -228,7 +228,7 @@ public:
 //	rrRenderRequest : Render request
 struct rrRenderRequest
 {
-	CRenderableObject*	obj = nullptr;
+	RrRenderObject*	obj = nullptr;
 	uint8_t				pass = UINT8_MAX;
 };
 
@@ -374,10 +374,10 @@ public:
 	// Is shorthand for ``RenderObjectList(m_renderableObjects)``.
 	//RENDER_API void			RenderScene ( RrCamera* camera );
 	//	RenderObjectList () : Renders the object list from the given camera with DeferredForward+.
-	//RENDER_API void			RenderObjectList ( RrCamera* camera, CRenderableObject** objectsToRender, const uint32_t objectCount );
+	//RENDER_API void			RenderObjectList ( RrCamera* camera, RrRenderObject** objectsToRender, const uint32_t objectCount );
 
-	RENDER_API void			RenderObjectListWorld ( gpu::GraphicsContext* gfx, rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount, RrOutputState* state );
-	//RENDER_API void			RenderObjectListShadows ( rrCameraPass* cameraPass, CRenderableObject** objectsToRender, const uint32_t objectCount );
+	RENDER_API void			RenderObjectListWorld ( gpu::GraphicsContext* gfx, rrCameraPass* cameraPass, RrRenderObject** objectsToRender, const uint32_t objectCount, RrOutputState* state );
+	//RENDER_API void			RenderObjectListShadows ( rrCameraPass* cameraPass, RrRenderObject** objectsToRender, const uint32_t objectCount );
 
 	// Specialized Rendering Routines
 	// ================================
@@ -391,13 +391,13 @@ public:
 	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
 	// This call adds setting up the cbuffers, forcing a certain set of lights.
 	// It should be noted the DeferredForward+ pipeline will not work without a Forward RrPass.
-	RENDER_API void			RenderSingleObject ( CRenderableObject* objectToRender );
+	RENDER_API void			RenderSingleObject ( RrRenderObject* objectToRender );
 	//	RenderObjectArray() : renders a null terminated list of objects, assuming the projection has been already set up.
 	// Think very carefully if this should be used, versus scheduling draws directly on the GPU.
 	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
 	// This call adds setting up the cbuffers, forcing a certain set of lights.
 	// It should be noted the DeferredForward+ pipeline will not work without a Forward RrPass.
-	RENDER_API void			RenderObjectArray ( CRenderableObject** objectsToRender );*/
+	RENDER_API void			RenderObjectArray ( RrRenderObject** objectsToRender );*/
 
 	//	SetPipelineMode - Sets new pipeline mode.
 	// Calling this has the potential to be very slow and completely invalidate rendering state.
@@ -451,7 +451,7 @@ private:
 	// ================================
 
 	// Objects queued to add to the default world
-	std::vector<CRenderableObject*> objects_to_add;
+	std::vector<RrRenderObject*> objects_to_add;
 	// Logics queued to add to the default world
 	std::vector<RrLogicObject*> logics_to_add;
 
@@ -461,17 +461,17 @@ public:
 	class Listings
 	{
 	private:
-		friend CRenderableObject;
+		friend RrRenderObject;
 		friend RrLogicObject;
 
-		static void				AddToUnsorted ( CRenderableObject* object, rrId& out_id )
+		static void				AddToUnsorted ( RrRenderObject* object, rrId& out_id )
 		{
 			SceneRenderer->objects_to_add.push_back(object);
 			out_id = rrId();
 			out_id.object_index = (uint16)(SceneRenderer->objects_to_add.size() - 1);
 			out_id.world_index = rrId::kWorldInvalid;
 		}
-		static void				RemoveFromUnsorted ( CRenderableObject* object, const rrId& id )
+		static void				RemoveFromUnsorted ( RrRenderObject* object, const rrId& id )
 		{
 			if (SceneRenderer->objects_to_add.back() == object)
 			{
@@ -519,9 +519,9 @@ public:
 
 	/*
 	// Give RO constructor and destructor access to adding and removing
-	friend CRenderableObject;
+	friend RrRenderObject;
 	// Adding and removing renderable objects
-	unsigned int AddRO ( CRenderableObject* );
+	unsigned int AddRO ( RrRenderObject* );
 	void RemoveRO ( unsigned int );
 	void CleanROList ( void );
 	// Reorder the render list
@@ -549,7 +549,7 @@ private:
 	// ================================
 
 	// these go to the world
-	//std::vector<CRenderableObject*>
+	//std::vector<RrRenderObject*>
 	//						pRenderableObjects;
 	//unsigned int			iCurrentIndex;
 	//unsigned int			iListSize;
@@ -557,7 +557,7 @@ private:
 	// Render list sorting
 	// ================================
 	/*struct structRenderComparison_old {
-		bool operator() ( CRenderableObject* i, CRenderableObject* j);
+		bool operator() ( RrRenderObject* i, RrRenderObject* j);
 	} RenderOrderComparison_old;
 	struct render_forward_comparator_t {
 		bool operator() ( tRenderRequest& i, tRenderRequest& j);

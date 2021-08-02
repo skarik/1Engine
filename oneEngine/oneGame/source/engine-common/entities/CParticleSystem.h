@@ -4,7 +4,7 @@
 
 #include "engine/behavior/CGameObject.h"
 
-class CRenderableObject;
+class RrRenderObject;
 class RrLogicObject;
 class CParticleEmitter;
 
@@ -16,7 +16,7 @@ public:
 	ENGCOM_API explicit			CParticleSystem ( const string& s_ps, const string& s_mat );
 	ENGCOM_API 					~CParticleSystem ( void );
 
-	CRenderableObject*	GetRenderable ( int index=0 )
+	RrRenderObject*	GetRenderable ( int index=0 )
 	{
 		if ( vpRComponents.empty() )
 			return NULL;
@@ -41,7 +41,7 @@ protected:
 protected:
 	// List of the components
 	std::vector<CGameBehavior*> vpComponents;
-	std::vector<CRenderableObject*> vpRComponents;
+	std::vector<RrRenderObject*> vpRComponents;
 	std::vector<RrLogicObject*> vpLComponents;
 	std::vector<CCollider*> vpCComponents;
 	std::vector<CParticleEmitter*> vpEmitters;

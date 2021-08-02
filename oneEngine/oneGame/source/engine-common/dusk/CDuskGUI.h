@@ -7,7 +7,7 @@
 #include "core/math/Rect.h"
 
 #include "engine/behavior/CGameBehavior.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "renderer/object/immediate/immediate.h"
 
 // Include Draw stuff
@@ -54,7 +54,7 @@ namespace Dusk
 }
 
 // Class Definition
-class CDuskGUI : public CGameBehavior, public CRenderableObject
+class CDuskGUI : public CGameBehavior, public RrRenderObject
 {
 	ClassName( "DuskGUI" );
 public:

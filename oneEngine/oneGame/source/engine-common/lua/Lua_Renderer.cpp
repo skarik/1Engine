@@ -2,7 +2,7 @@
 #include "CLuaController.h"
 
 #include "renderer/state/RrRenderer.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 
 
 //int lua_gs_FindBehavior ( lua_State *luaState );

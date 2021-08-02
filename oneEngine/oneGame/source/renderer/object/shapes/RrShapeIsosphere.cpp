@@ -140,7 +140,7 @@ void RrShapeIsosphere::BuildMeshBuffer ( const int divisions )
 }
 
 RrShapeIsosphere::RrShapeIsosphere ( const int divisions )
-	: CRenderableObject ()
+	: RrRenderObject ()
 {
 	BuildMeshBuffer(divisions);
 }

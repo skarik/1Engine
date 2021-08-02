@@ -10,7 +10,7 @@
 #include "renderer/material/Material.h"
 
 renderer::Mesh::Mesh ( rrMeshBuffer* nMesh, bool n_enableSkinning )
-	: CRenderableObject(),
+	: RrRenderObject(),
 	m_mesh(nMesh), m_parent(NULL),
 	bUseFrustumCulling(true), bCanRender(true), bUseSkinning(n_enableSkinning)
 {

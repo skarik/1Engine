@@ -20,7 +20,7 @@
 #include "renderer/logic/particle/modifiers/CParticleMod_Windmotion.h"
 #include "renderer/object/particle/CParticleRenderer_Animated.h"
 */
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "renderer/particle/RrParticleSystem.h"
 
 #include <sstream>
@@ -46,7 +46,7 @@ CParticleSystem::CParticleSystem ( const string& s_ps, const string& s_mat )
 		RrMaterial* mat = new RrMaterial();
 		mat->loadFromFile( s_mat.c_str() );
 		mat->removeReference();
-		CRenderableObject* targetRenderable;
+		RrRenderObject* targetRenderable;
 		targetRenderable = GetRenderable();
 		if ( targetRenderable )
 		{
@@ -225,7 +225,7 @@ void CParticleSystem::PostUpdate ( void )
 		(*it)->SetActive( enabled );
 	}
 	// Update the transform of particle renderers...
-	for ( vector<CRenderableObject*>::iterator it = vpRComponents.begin(); it != vpRComponents.end(); it++ )
+	for ( vector<RrRenderObject*>::iterator it = vpRComponents.begin(); it != vpRComponents.end(); it++ )
 	{
 		(*it)->transform.Get( this->transform );
 	}

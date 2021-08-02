@@ -153,12 +153,12 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, Buffer* buffer, uint32_t o
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, Buffer* buffer )
+int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, const Buffer* buffer )
 {
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeConstant);
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
-	ID3D11Buffer* bufferList [1] = {(ID3D11Buffer*)buffer->nativePtr()};
+	ID3D11Buffer* bufferList [1] = {(ID3D11Buffer*)((Buffer*)buffer)->nativePtr()};
 	if (stage == kShaderStageVs)
 		ctx->VSSetConstantBuffers(slot, 1, bufferList);
 	else if (stage == kShaderStageHs)

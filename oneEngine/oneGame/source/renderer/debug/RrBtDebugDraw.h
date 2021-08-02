@@ -2,14 +2,14 @@
 #define RENDERER_DEBUG_RR_BT_DEBUG_DRAW_H_
 
 #include "core/types/ModelData.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "bullet/LinearMath/btIDebugDraw.h"
 
 #include "gpuw/Buffers.h"
 
 class PrWorld;
 
-class RrBtDebugDraw : public btIDebugDraw, public CRenderableObject
+class RrBtDebugDraw : public btIDebugDraw, public RrRenderObject
 {
 public:
 	RENDER_API explicit		RrBtDebugDraw ( PrWorld* associated_world );

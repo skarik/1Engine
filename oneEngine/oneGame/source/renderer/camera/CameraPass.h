@@ -19,6 +19,7 @@ class RrOutputInfo;
 class RrHybridBufferChain;
 namespace gpu {
 	class Buffer;
+	class GraphicsContext;
 }
 
 // Input struct for querying passes
@@ -34,6 +35,10 @@ struct rrCameraPassInput
 
 	// Output info for the viewport information
 	const RrOutputInfo*	m_outputInfo = nullptr;
+
+	// Context to use
+	gpu::GraphicsContext*
+						m_graphicsContext = nullptr;
 };
 
 // Pass information.
@@ -52,7 +57,11 @@ struct rrCameraPass
 						m_bufferChain;
 
 	// camera cbuffer to be used with this pass
-	gpu::Buffer*		m_cbuffer;
+	gpu::Buffer*		m_cbuffer = nullptr;
+
+	// Context to use
+	gpu::GraphicsContext*
+						m_graphicsContext = nullptr;
 
 	// rendering properties
 	Matrix4x4			m_viewTransform;

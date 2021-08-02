@@ -5,7 +5,7 @@
 #include "IRrRenderableStreamedMesh.h"
 
 #include "renderer/utils/IrrMeshBuilder.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 
 class RrScopedMeshRenderer : public IRrRenderableStreamedMesh
 {
@@ -15,7 +15,7 @@ public:
 	//	render() : Renders the given mesh builder.
 	// This will not pass in mesh uniforms! Uniforms must be pushed by the user.
 	RENDER_API void			render (
-		CRenderableObject* owner, 
+		RrRenderObject* owner, 
 		RrMaterial* material,
 		uchar pass,
 		const IrrMeshBuilder& meshBuilder );

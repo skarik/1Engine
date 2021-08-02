@@ -6,7 +6,7 @@
 #include "core-ext/threads/Jobs.h"
 #include "core/debug/console.h"
 
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "renderer/logic/RrLogicObject.h"
 
 //#include "renderer/material/RrMaterial.h"
@@ -388,7 +388,7 @@ RrRenderer::~RrRenderer ( void )
 
 //-Adding and Removing Renderable/Logic Objects-
 
-rrId RrWorld::AddObject ( CRenderableObject* object )
+rrId RrWorld::AddObject ( RrRenderObject* object )
 {
 	objects.push_back(object);
 
@@ -399,7 +399,7 @@ rrId RrWorld::AddObject ( CRenderableObject* object )
 	return new_id;
 }
 
-bool RrWorld::RemoveObject ( CRenderableObject* object )
+bool RrWorld::RemoveObject ( RrRenderObject* object )
 {
 	return RemoveObject(object->GetId());
 }
@@ -410,7 +410,7 @@ bool RrWorld::RemoveObject ( const rrId& object_id )
 
 	// Grab the object & then null it from the list.
 	ARCORE_ASSERT(object_id.object_index < objects.size());
-	CRenderableObject*& object = objects[object_id.object_index];
+	RrRenderObject*& object = objects[object_id.object_index];
 	ARCORE_ASSERT(object->GetId() == object_id);
 
 	object = nullptr;
@@ -457,7 +457,7 @@ void RrRenderer::AddQueuedToWorld ( void )
 	ARCORE_ASSERT(!worlds.empty());
 	RrWorld* target_world = worlds[0];
 
-	for (CRenderableObject* object : objects_to_add)
+	for (RrRenderObject* object : objects_to_add)
 	{
 		if (object != nullptr)
 		{
@@ -543,12 +543,12 @@ uint RrRenderer::AddWorldDefault ( void )
 //// AddRO ( pointer to new RO )
 ////  adds an RO to be drawn and returns the index
 ////  used only by the RO constructor
-//unsigned int RrRenderer::AddRO ( CRenderableObject * pRO )
+//unsigned int RrRenderer::AddRO ( RrRenderObject * pRO )
 //{
 //	// Randomly reshift the renderable objects
 //	if ( (rand()%10) == 0 )
 //	{
-//		CRenderableObject* tmpRO;
+//		RrRenderObject* tmpRO;
 //		// Shift them suckers
 //		unsigned int newIndex = 0;
 //		for ( unsigned int i = 0; i < iCurrentIndex; i += 1 )

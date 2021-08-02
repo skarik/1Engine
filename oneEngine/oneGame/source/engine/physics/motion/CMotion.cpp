@@ -25,10 +25,10 @@ RrLogicObject* CMotion::GetOwner ( void )
 	return NULL;
 }
 template<>
-CRenderableObject* CMotion::GetOwner ( void )
+RrRenderObject* CMotion::GetOwner ( void )
 {
 	if (ownerType == core::kBasetypeRrRenderObject) {
-		return static_cast<CRenderableObject*>(owner);
+		return static_cast<RrRenderObject*>(owner);
 	}
 	return NULL;
 }
@@ -53,7 +53,7 @@ void CMotion::SetOwner ( RrLogicObject* n_owner )
 	ownerType = core::kBasetypeRrLogicObject;
 }
 template <>
-void CMotion::SetOwner ( CRenderableObject* n_owner )
+void CMotion::SetOwner ( RrRenderObject* n_owner )
 {
 	owner = static_cast<void*>(n_owner);
 	ownerType = core::kBasetypeRrRenderObject;

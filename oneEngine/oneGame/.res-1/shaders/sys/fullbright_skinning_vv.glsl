@@ -2,6 +2,11 @@
 // Renders object without lighting, only diffuse multiply blending.
 #version 430
 
+#extension GL_GOOGLE_include_directive : require
+#extension GL_EXT_control_flow_attributes : require
+
+#include "../common.glsli"
+
 layout(location = 0) in vec3 mdl_Vertex;
 layout(location = 1) in vec3 mdl_TexCoord;
 layout(location = 2) in vec4 mdl_Color;
@@ -33,7 +38,7 @@ layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
 };
 
 // Skinning
-layout(binding = 10, std140) readonly buffer sys_SkinningDataMajor
+layout(binding = SBUFFER_SKINNING_MAJOR, std140) readonly buffer sys_SkinningDataMajor
 {
 	mat4 majorSkinning [256];
 };

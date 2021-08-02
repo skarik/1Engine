@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <map>
 
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 #include "renderer/object/mesh/system/rrMeshBufferRing.h"
 
@@ -19,7 +19,7 @@ class CDeveloperConsoleUI;
 class CDeveloperCursor;
 class CTimeProfilerUI;
 
-class CDeveloperConsoleUI : public CRenderableObject
+class CDeveloperConsoleUI : public RrRenderObject
 {
 	RegisterRenderClassName( "CDeveloperConsoleUI" );
 public:
@@ -39,7 +39,7 @@ private:
 	uint16_t			m_indexCountText;
 };
 
-class CDeveloperCursor : public CRenderableObject
+class CDeveloperCursor : public RrRenderObject
 {
 	RegisterRenderClassName( "CDeveloperCursor" );
 public:

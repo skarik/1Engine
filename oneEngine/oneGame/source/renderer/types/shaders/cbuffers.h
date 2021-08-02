@@ -13,8 +13,15 @@ namespace renderer
 		CBUFFER_PER_CAMERA_INFORMATION	= 2,
 		CBUFFER_PER_FRAME_INFORMATION	= 3,
 		CBUFFER_PER_PASS_INFORMATION	= 4,
+		// 5 & 6 reserved for future pass information
+		CBUFFER_USER0	= 7,
+		CBUFFER_USER1	= 8,
+		CBUFFER_USER2	= 9,
+		CBUFFER_USER3	= 10,
 	};
-	struct rrCBufferReservedName
+
+	// Based on statically defined slots and no longer reflection, so the following is out-of-date.
+	/*struct rrCBufferReservedName
 	{
 		rrCBufferId id;
 		const char* token;
@@ -26,7 +33,7 @@ namespace renderer
 		{CBUFFER_PER_CAMERA_INFORMATION, "sys_cbuffer_PerCamera"},
 		{CBUFFER_PER_FRAME_INFORMATION, "sys_cbuffer_PerFrame"},
 		{CBUFFER_PER_PASS_INFORMATION, "sys_cbuffer_PerPass"},
-	};
+	};*/
 
 	namespace cbuffer
 	{

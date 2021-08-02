@@ -2,13 +2,13 @@
 #define ENGINE_COMMON_TIME_PROFILER_UI_H_
 
 #include "core-ext/profiler/CTimeProfiler.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 
 //#include "RrMaterial.h"
 //#include "RrFontTexture.h"
 class RrFontTexture;
 
-class CTimeProfilerUI : public CRenderableObject
+class CTimeProfilerUI : public RrRenderObject
 {
 	RegisterRenderClassName( "CTimeProfilerUI" );
 public:

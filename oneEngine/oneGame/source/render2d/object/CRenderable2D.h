@@ -11,7 +11,7 @@
 
 #include "core/types/ModelData.h"
 #include "core/gfx/textureStructures.h"
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "render2d/types/spriteInfo.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 
@@ -34,7 +34,7 @@ struct rrSpriteSetResult
 		{}
 };
 
-class CRenderable2D : public CRenderableObject
+class CRenderable2D : public RrRenderObject
 {
 public:
 	RENDER2D_API explicit	CRenderable2D ( void );

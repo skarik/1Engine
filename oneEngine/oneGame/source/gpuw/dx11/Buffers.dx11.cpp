@@ -136,8 +136,8 @@ int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_si
 	bufferInfo.Usage = D3D11_USAGE_DYNAMIC;
 	bufferInfo.ByteWidth = (UINT)data_size;
 	bufferInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE; // SBuffers bound as SRVs for readonly-SSBO parity.
-	bufferInfo.CPUAccessFlags = 0;
-	bufferInfo.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS | D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	bufferInfo.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	bufferInfo.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;// | D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	bufferInfo.StructureByteStride = 0;
 
 	result = device->getNative()->CreateBuffer(&bufferInfo, NULL, (ID3D11Buffer**)&m_buffer);
@@ -150,10 +150,10 @@ int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_si
 
 	// Create SRV for the buffer
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvInfo = {};
-	srvInfo.Format = DXGI_FORMAT_R8_UINT;
+	srvInfo.Format = DXGI_FORMAT_R32_TYPELESS;//DXGI_FORMAT_R8_UINT;
 	srvInfo.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
 	srvInfo.BufferEx.FirstElement = 0;
-	srvInfo.BufferEx.NumElements = (UINT)data_size;
+	srvInfo.BufferEx.NumElements = (UINT)data_size / 4;
 	srvInfo.BufferEx.Flags = D3D11_BUFFEREX_SRV_FLAG_RAW;
 
 	result = device->getNative()->CreateShaderResourceView((ID3D11Buffer*)m_buffer, &srvInfo, (ID3D11ShaderResourceView**)&m_srv);
@@ -408,13 +408,13 @@ int	gpu::Buffer::free ( Device* device )
 }
 
 //	getFormat() : returns underlying format of the data, if applicable.
-gpu::Format gpu::Buffer::getFormat ( void )
+gpu::Format gpu::Buffer::getFormat ( void ) const
 {
 	return m_format;
 }
 
 //	getBufferType() : returns the buffer type.
-gpu::BufferType gpu::Buffer::getBufferType ( void )
+gpu::BufferType gpu::Buffer::getBufferType ( void ) const
 {
 	return m_bufferType;
 }

@@ -28,7 +28,7 @@ using namespace std;
 
 // Constructor
 CDuskGUI::CDuskGUI ( RrFontTexture* font )
-	: CGameBehavior(), CRenderableObject()
+	: CGameBehavior(), RrRenderObject()
 {
 	// Sys drawing
 	renderLayer = renderer::kRLV2D;

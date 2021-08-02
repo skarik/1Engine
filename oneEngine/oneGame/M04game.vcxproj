@@ -119,6 +119,7 @@
     <ClInclude Include="source\m04\entities\TalkerBox.h" />
     <ClInclude Include="source\m04\entities\TestEntityBasic.h" />
     <ClInclude Include="source\m04\entities\UILuvPpl.h" />
+    <ClInclude Include="source\m04\entities_test\InstancedGrassRenderObject.h" />
     <ClInclude Include="source\m04\eventide\Common.h" />
     <ClInclude Include="source\m04\eventide\Element.h" />
     <ClInclude Include="source\m04\eventide\elements\Button.h" />
@@ -185,6 +186,7 @@
     <ClCompile Include="source\m04\entities\TalkerBox.cpp" />
     <ClCompile Include="source\m04\entities\TestEntityBasic.cpp" />
     <ClCompile Include="source\m04\entities\UILuvPpl.cpp" />
+    <ClCompile Include="source\m04\entities_test\InstancedGrassRenderObject.cpp" />
     <ClCompile Include="source\m04\eventide\Element.cpp" />
     <ClCompile Include="source\m04\eventide\elements\Button.cpp" />
     <ClCompile Include="source\m04\eventide\elements\DefaultStyler.cpp" />

@@ -1,11 +1,11 @@
 #ifndef RENDERER_RENDERABLE_SHAPE_BILLBOARD_H_
 #define RENDERER_RENDERABLE_SHAPE_BILLBOARD_H_
 
-#include "renderer/object/CRenderableObject.h"
+#include "renderer/object/RrRenderObject.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 #include <vector>
 
-class RrBillboard : public CRenderableObject
+class RrBillboard : public RrRenderObject
 {
 public:
 	RENDER_API explicit		RrBillboard ( void );

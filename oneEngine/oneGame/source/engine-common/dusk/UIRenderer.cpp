@@ -20,7 +20,7 @@
 #include "engine-common/dusk/Element.h"
 
 dusk::UIRenderer::UIRenderer (UserInterface* ui)
-	: CRenderableObject(),
+	: RrRenderObject(),
 	m_interface(ui)
 {
 	m_renderTargetSize = Vector2i(0, 0);
