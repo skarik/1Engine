@@ -59,7 +59,7 @@ bool core::BpdLoader::LoadBpd ( const char* n_resourcename )
 		}
 
 		const char* const image_extensions[] = {
-			".png", ".jpg", ".jpeg", ".gif", ".tga", ".bmp"
+			".png", ".jpg", ".jpeg", ".gif", ".tga", ".bmp", ".gal"
 		};
 		const size_t image_extensions_len = sizeof(image_extensions) / sizeof(const char* const);
 

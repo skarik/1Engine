@@ -30,6 +30,9 @@ public:
 	bool					PreRender ( rrCameraPass* cameraPass ) override;
 	bool					Render ( const rrRenderParams* params ) override;
 
+public:
+	bool				m_showFPS = true;
+
 private:
 	RrFontTexture*		fntMenu;
 

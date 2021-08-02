@@ -39,13 +39,14 @@ bool TrConverter32GraphicsGale::Convert(const char* inputFilename, const char* o
 
 	// Also check for a palette file:
 
-
 	// If we have no palette file, we save in the same way we would save a JPEG.
 	if (0)
 	{
+		printf("GAL files are currently not supported.");
 	}
 	// If we have a palette file, we must convert the GAL and save a palette'd BPD.
 	{
+		printf("GAL files are currently not supported.");
 	}
 
 	// All the other layers may be saved in the same way as a JPEG. Only diffuse is ever palette'd.

@@ -74,6 +74,8 @@ namespace gpu
 			const uint64_t element_width, const uint64_t element_height, const uint64_t element_depth
 		);
 
+		//	map( device, style, out row_pitch ) : Maps the entire buffer to CPU-side memory and returns the address.
+		GPUW_API void*			map ( BaseContext* context, const TransferStyle style, uint32& out_row_pitch );
 		//	map( device, style ) : Maps the entire buffer to CPU-side memory and returns the address.
 		GPUW_API void*			map ( BaseContext* context, const TransferStyle style );
 		//	unmap( device ) : Unmaps the buffer.

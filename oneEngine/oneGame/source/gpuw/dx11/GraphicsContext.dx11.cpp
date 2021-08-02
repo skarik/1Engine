@@ -266,6 +266,10 @@ int gpu::GraphicsContext::submit ( void )
 
 		commandList->Release();
 	}
+	else
+	{
+		ctx->Flush();
+	}
 
 	return kError_SUCCESS;
 }

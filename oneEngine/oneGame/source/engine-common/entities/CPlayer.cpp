@@ -53,14 +53,7 @@ CPlayer::~CPlayer ( void )
 void CPlayer::LateUpdate ( void )
 {
 	GrabInput();
-	//vTurnInput *= ((fViewAngle+fViewAngleOffset+5)/90.0f) * fTurnSensitivity; //CGameSettings::Active()->f_cl_MouseSensitivity;
-
-	// Perform player actions
-	//DoPlayerActions();
-	// Update light position
-	//pMyLight->diffuseColor = Color( 1.0f,1.0f,1.0f,1.0f );
-	//pMyLight->transform.position = pCamera->transform.position;
-
+	
 	// Update the camera based on the input
 	//(this->*m_cameraUpdateType)();
 	camDefault();
@@ -79,8 +72,7 @@ void CPlayer::Update ( void )
 	// Update base class code first
 	CActor::Update();
 
-	//m_moveType = *((stateFunc_t*)( (this->*m_moveType)() )); // MOVE THIS TO FIXEDUPDATE when FIXEDUPDATE is FIXED
-	// UPDATE: IT IS ON LATEUPDATE BECAUSE OF THE WONKEY MOUSE-CONTROL, *NOT* BECAUSE FIXEDUPDATE IS BROKEN
+	//m_moveType = *((stateFunc_t*)( (this->*m_moveType)() ));
 	// Call the movement type
 }
 

@@ -17,3 +17,10 @@
 #define SBUFFER_USER1 14
 #define SBUFFER_USER2 15
 #define SBUFFER_USER3 16
+
+
+vec4 TransformToProjection ( mat4 viewProjection, vec3 localPosition )
+{
+	vec4 v_screenPos = viewProjection * vec4(localPosition, 1.0);
+	return v_screenPos;
+}

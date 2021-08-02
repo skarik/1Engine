@@ -19,7 +19,6 @@
 RrCamera*				RrCamera::activeCamera	= NULL;
 RrCamera*				RrCamera::g_FirstCamera	= NULL;
 RrCamera*				RrCamera::g_LastCamera	= NULL;
-//std::vector<RrCamera*>	RrCamera::m_CameraList;
 
 RrCamera::RrCamera ( bool isTransient )
 	: isTransient(isTransient)
@@ -36,26 +35,6 @@ RrCamera::RrCamera ( bool isTransient )
 	enabledHints = 0 | kRenderHintBitmaskWorld;
 
 	// Camera list management:
-	/*{
-		// Generate a camera index by finding the lowest unused value.
-		m_cameraIndex = 0;
-		bool btIndexExists;
-		do
-		{
-			btIndexExists = false;
-			for ( unsigned int i = 0; i < m_CameraList.size(); ++i )
-			{
-				if ( m_cameraIndex == m_CameraList[i]->m_cameraIndex )
-				{
-					++m_cameraIndex;
-					btIndexExists = true;
-				}
-			}
-		} while ( btIndexExists );
-
-		// Add camera to the list
-		m_CameraList.push_back( this );
-	}*/
 	if (!isTransient)
 	{
 		if (g_LastCamera != nullptr)
@@ -77,7 +56,6 @@ RrCamera::RrCamera ( bool isTransient )
 		activeCamera = this;
 	}
 	// Output camera creation
-	//std::cout << "New camera with index " << (int)m_cameraIndex << " created. Main scene: " << ((activeCamera==this) ? "yes" : "no") << std::endl;
 	if (!isTransient)
 	{
 		debug::Console->PrintMessage("New permanent camera created. Main scene: %s\n", (activeCamera == this) ? "yes" : "no");
@@ -110,18 +88,6 @@ void RrCamera::RemoveFromCameraList ( void )
 RrCamera::~RrCamera ( void )
 {
 	// Remove camera from the list
-	/*for ( std::vector<RrCamera*>::iterator it = m_CameraList.begin(); it != m_CameraList.end();  )
-	{
-		if ( (*it) == this )
-		{
-			m_CameraList.erase( it );
-			it = m_CameraList.end();
-		}
-		else
-		{
-			++it;
-		}
-	}*/
 	if (!isTransient)
 	{
 		RemoveFromCameraList();
@@ -145,20 +111,6 @@ void RrCamera::SetActive ( void )
 		activeCamera = this;
 
 		// We need to now resort the cameras:
-		/*for ( auto it = m_CameraList.begin(); it != m_CameraList.end(); )
-		{
-			// Search for self to reorder...
-			if ( *it == this )
-			{
-				it = m_CameraList.erase(it);
-				m_CameraList.insert( m_CameraList.begin(), this );
-				break; // No longer need to iterate.
-			}
-			else
-			{
-				++it;
-			}
-		}*/
 		if (this != g_FirstCamera)
 		{
 			RemoveFromCameraList();

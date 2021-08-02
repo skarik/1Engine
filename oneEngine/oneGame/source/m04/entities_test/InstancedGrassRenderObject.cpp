@@ -11,8 +11,8 @@ InstancedGrassRenderObject::InstancedGrassRenderObject ( void )
 	// Generate a simple grass mesh
 	// TODO: Load meshes from disk instead.
 
-	const Real kWidth = 5.0F;
-	const Real kHeight = 16.0F;
+	const Real kWidth = 0.1F;
+	const Real kHeight = 1.0F;
 
 	arModelData model;
 
@@ -34,10 +34,10 @@ InstancedGrassRenderObject::InstancedGrassRenderObject ( void )
 	// Set UVs:
 	for (uint i = 0; i < 2; ++i)
 	{
-		model.texcoord0[0 + 4*i] = Vector2f(0, 0);
-		model.texcoord0[1 + 4*i] = Vector2f(1, 0);
-		model.texcoord0[2 + 4*i] = Vector2f(0, 1);
-		model.texcoord0[3 + 4*i] = Vector2f(1, 1);
+		model.texcoord0[0 + 4*i] = Vector2f(0, 1);
+		model.texcoord0[1 + 4*i] = Vector2f(1, 1);
+		model.texcoord0[2 + 4*i] = Vector2f(0, 0);
+		model.texcoord0[3 + 4*i] = Vector2f(1, 0);
 	}
 
 	// Set positions:
@@ -93,7 +93,12 @@ InstancedGrassRenderObject::InstancedGrassRenderObject ( void )
 											renderer::shader::Location::kColor};
 	pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
 	pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
-	pass.setTexture(rrTextureSlot::TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite));
+	//pass.setTexture(rrTextureSlot::TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite));
+	pass.setTexture(rrTextureSlot::TEX_DIFFUSE, RrTexture::Load("textures/foliage/hapgrass0.png"));
+	gpu::SamplerCreationDescription pointFilter;
+	pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
+	pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+	pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
 
 	PassInitWithInput(0, &pass);
 }

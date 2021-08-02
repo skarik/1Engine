@@ -122,6 +122,7 @@ void RrRenderer::InitializeResourcesWithDevice ( gpu::Device* device )
 
 	// We need a new context specifically created for the resource manager
 	gpu::GraphicsContext* gfx = new gpu::GraphicsContext(device, true); // We need the resource command context to work immediately.
+	// TODO: Fix up the texture streaming so we can use deferred contexts one day.
 
 	// Set up resource manangers
 	auto resourceManager = core::ArResourceManager::Active();

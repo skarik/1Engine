@@ -28,6 +28,8 @@ layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
 void main ( void )
 {
 	vec4 diffuseColor = texture( textureSampler0, v2f_texcoord0 );
+	
+	if (diffuseColor.a < 0.5) discard;
 
 	FragDiffuse = diffuseColor * v2f_colors;
 }

@@ -145,6 +145,15 @@ bool CDeveloperConsoleUI::BeginRender ( void )
 		kColorTextCorner,
 		CGameSettings::Active()->sysprop_developerstring.c_str() );
 
+	// Show FPS in upper-right corner
+	if (m_showFPS)
+	{
+		builder_text.addText(
+			Vector2f(core::GetScreen(0).GetWidth() - 64.0F, (Real)fntMenu->GetFontInfo()->height + 2.0F),
+			kColorTextCorner,
+			(std::to_string(math::round(1.0F / std::max(0.0001F, Time::deltaTime))) + " FPS").c_str() );
+	}
+
 	// Push both the meshes
 	auto t_shapesMesh = builder.getModelData();
 	if (t_shapesMesh.vertexNum > 0)

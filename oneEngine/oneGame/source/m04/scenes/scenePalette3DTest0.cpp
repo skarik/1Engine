@@ -49,6 +49,7 @@ void scenePalette3DTest0::LoadScene ( void )
 	// Create a plane to start with
 	{
 		RrShapePlane* plane = new RrShapePlane();
+		plane->transform.world.scale = Vector3f(30.0F, 30.0F, 30.0F);
 
 		// Use a default material
 		RrPass pass;
@@ -76,7 +77,7 @@ void scenePalette3DTest0::LoadScene ( void )
 	// Create a skysphere
 	{
 		RrShapeIsosphere* sphere = new RrShapeIsosphere();
-		sphere->transform.world.scale = Vector3f(20.0F, 20.0F, 20.0F);
+		sphere->transform.world.scale = Vector3f(1500.0F, 1500.0F, 1500.0F);
 
 		// Use a default material
 		RrPass pass;
@@ -103,7 +104,7 @@ void scenePalette3DTest0::LoadScene ( void )
 
 			Matrix4x4 transform, dump;
 			core::TransformUtility::TRSToMatrix4x4(
-				Vector3f(Random.Range(-128, +128), Random.Range(-128, +128), 0.0F),
+				Vector3f(Random.Range(-2.0F, +2.0F), Random.Range(-2.0F, +2.0F), 0.0F),
 				Rotator(),
 				Vector3f(1, 1, 1),
 				transform,

@@ -293,6 +293,12 @@ int gpu::Buffer::initAsTextureBuffer (
 
 void* gpu::Buffer::map ( BaseContext* context, const TransferStyle style )
 {
+	uint32 dummy;
+	return map(context, style, dummy);
+}
+
+void* gpu::Buffer::map ( BaseContext* context, const TransferStyle style, uint32& out_row_pitch )
+{
 	ARCORE_ASSERT(m_buffer != NIL);
 	ID3D11DeviceContext* ctx = (context == nullptr) ? gpu::getDevice()->getImmediateContext() : (ID3D11DeviceContext*)context->getNativeContext();
 	HRESULT result;
@@ -303,6 +309,8 @@ void* gpu::Buffer::map ( BaseContext* context, const TransferStyle style )
 	{
 		throw core::OutOfMemoryException(); // TODO: Handle this better.
 	}
+
+	out_row_pitch = (uint32)resource.RowPitch;
 
 #	if GPU_API_DEBUG_MAP_OVERRUNS
 	{

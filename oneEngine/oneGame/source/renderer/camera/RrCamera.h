@@ -161,8 +161,8 @@ public:
 	// current camera position & rotation to render from
 	XrTransform			transform;
 	// Render options
-	Real				zNear = 0.1F;
-	Real				zFar = 200.0F;
+	Real				zNear = 0.01F;
+	Real				zFar = 2000.0F;
 	// Viewport options
 	Real				renderScale = 1.0F;
 	//Rect				viewportPercent = Rect(0.0F, 0.0F, 1.0F, 1.0F);

@@ -195,7 +195,8 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 			// Allocate the texture.
 			m_texture.allocate(info.type, info.internalFormat, info.width, info.height, info.depth, info.levels);
 
-			if (sync_client)
+			if (sync_client
+				|| info.width < core::kTextureFormat_SuperlowWidth || info.height < core::kTextureFormat_SuperlowWidth)
 			{
 				loadState = kTextureLoadState_LoadImage;
 			}
@@ -220,6 +221,8 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 			loadInfo->loader.LoadBpd();
 			loadInfo->loader.m_buffer_Superlow = NULL;
 			loadInfo->loader.m_loadOnlySuperlow = false;
+
+			// TODO: Superlow is actually incorrect due to the varying pitch at this size.
 
 			// Unmap and upload
 			loadInfo->pixelBuffer[0].unmap(gfx);
@@ -270,18 +273,29 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 					uint16_t level_depth	= std::max<uint16_t>(1, loadInfo->loader.info.depth / math::exp2(loadInfo->level));
 
 					loadInfo->pixelBuffer[loadInfo->level].initAsTextureBuffer(NULL, info.type, info.internalFormat, level_width, level_height, level_depth);
-					void* target = loadInfo->pixelBuffer[loadInfo->level].map(gfx, gpu::kTransferStatic);
+					uint32 target_pitch = 0;
+					void* target = loadInfo->pixelBuffer[loadInfo->level].map(gfx, gpu::kTransferStatic, target_pitch);
 
 					// Go to the waiting step before we dispatch
 					loadInfo->unpack_step = kTextureUnpack1_WaitForDispatch;
 
-					auto uploadJobId = core::jobs::System::Current::AddJobRequest([this, target]()
+					auto uploadJobId = core::jobs::System::Current::AddJobRequest([this, target, target_pitch, level_width, level_height]()
 					{
 						// Load the data in
 						loadInfo->loader.m_buffer_Mipmaps[loadInfo->level] = target;
 						loadInfo->loader.m_loadMipmapMask = 0x01 << loadInfo->level;
 						loadInfo->loader.LoadBpd();
 						loadInfo->loader.m_buffer_Mipmaps[loadInfo->level] = NULL;
+
+						// Loop from the bottom row of the texture, and move the data so the pitches are loaded into the correct spot.
+						const uint32 assumed_pitch = level_width * core::gfx::tex::getColorFormatByteSize(info.internalFormat);
+						if (target_pitch != assumed_pitch)
+						{
+							for (uint16_t row = level_height - 1; row > 0; --row)
+							{
+								memcpy((char*)target + row * target_pitch, (char*)target + row * assumed_pitch, assumed_pitch);
+							}
+						}
 
 						// We're done. Go to the upload step.
 						loadInfo->unpack_step = kTextureUnpack2_Upload;

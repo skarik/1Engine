@@ -164,12 +164,12 @@ bool core::BpdWriter::writeSuperlow ( void )
 					if ( set_w != 1 ) 
 						pixelIndex = sx;
 					else 
-						pixelIndex = x / (kTextureFormat_SuperlowWidth / info.width);
+						pixelIndex = x / std::max(kTextureFormat_SuperlowWidth / info.width, 1);
 					// Add the row
 					if ( set_h != 1 ) 
 						pixelIndex += sy * info.width;
 					else
-						pixelIndex += (y / (kTextureFormat_SuperlowWidth / info.height)) * info.width;
+						pixelIndex += (y / std::max(kTextureFormat_SuperlowWidth / info.height, 1)) * info.width;
 					// Clamp the position
 					pixelIndex = std::min<uint32_t>( pixelIndex, (uint32_t)(info.width * info.height) - 1 );
 					// Collect the colors
