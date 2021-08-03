@@ -54,22 +54,6 @@ RrRenderer::RrRenderer ( void )
 	SceneRenderer = this;
 
 	// Create the device
-
-	// Create resource manager
-	/*if ( mResourceManager == NULL )
-	{
-		mResourceManager = new CResourceManager;
-		mResourceManager->m_renderStateOwned = true;
-	}*/
-
-	//// Set up reandering options
-	//{
-	//	bufferedMode	= CGameSettings::Active()->b_ro_UseBufferModel ? true : false;
-	//	shadowMode		= CGameSettings::Active()->b_ro_EnableShadows ? true : false;
-	//	//renderMode		= (eRenderMode)CGameSettings::Active()->i_ro_RendererMode;
-	//	pipelineMode	= renderer::kPipelineModeNormal;
-	//}
-
 #ifdef _ENGINE_DEBUG
 	uint32_t layerCount = 1;
 	gpu::DeviceLayer layers [] = {gpu::kDeviceLayerDebug};
@@ -78,7 +62,7 @@ RrRenderer::RrRenderer ( void )
 	gpu::DeviceLayer* layers = NULL;
 #endif
 
-	gpu_device = new gpu::Device();  //gpu::createDevice(nullptr, 0, layers, layerCount);
+	gpu_device = new gpu::Device();
 	int gpuErrorCode = gpu_device->create(nullptr, 0, layers, layerCount);
 	if (gpuErrorCode != gpu::kError_SUCCESS)
 	{
@@ -97,29 +81,10 @@ RrRenderer::RrRenderer ( void )
 	}
 
 	InitializeResourcesWithDevice(gpu_device);
-	
-	//// Set up arrays
-	//iListSize		= 500; // Start with 500 slots
-	//iCurrentIndex	= 0;
-	//pRenderableObjects.resize( iListSize, NULL );
-
-	//mLoListSize		= 50; // Start with 50 logic slots
-	//mLoCurrentIndex	= 0;
-	//mLogicObjects.resize( mLoListSize, NULL );
 }
 
 void RrRenderer::InitializeResourcesWithDevice ( gpu::Device* device )
 {
-	// Grab that device!
-	//mDevice = device;
-	//// Grab the surface!
-	//mOutputSurface	= surface;
-	//// And pull out a graphics queue from the rendering device:
-	//mGfxContext		= mDevice->getContext();
-	//mComputeContext	= mDevice->getComputeContext();
-
-	//ARCORE_ASSERT(mGfxContext->validate() == 0);
-
 	// We need a new context specifically created for the resource manager
 	gpu::GraphicsContext* gfx = new gpu::GraphicsContext(device, true); // We need the resource command context to work immediately.
 	// TODO: Fix up the texture streaming so we can use deferred contexts one day.
@@ -356,10 +321,6 @@ RrRenderer::~RrRenderer ( void )
 	Active			= NULL;
 	SceneRenderer	= NULL;
 
-	//// Reset arrays
-	//iCurrentIndex = 0;
-	//iListSize = 0;
-
 	// Free system default material
 	//delete_safe(renderer::pass::Default);
 	delete_safe(renderer::pass::Copy);
@@ -543,20 +504,6 @@ uint RrRenderer::AddWorldDefault ( void )
 
 // Rendering configuration
 // ================================
-
-// Returns the material used for rendering a screen's pass in the given effect
-//RrPass* RrRenderer::GetScreenMaterial ( const eRenderMode mode, const renderer::ePipelineMode mode_type )
-//{
-//	if ( mode == kRenderModeDeferred )
-//	{
-//		switch (mode_type)
-//		{
-//		case renderer::kPipelineModeNormal:		return pipelinePasses->LightingPass;
-//		case renderer::kPipelineModePaletted:	ARCORE_ERROR("Not implmented");
-//		}
-//	}
-//	return NULL;
-//}
 
 Vector2i RrOutputInfo::GetOutputSize ( void ) const
 {

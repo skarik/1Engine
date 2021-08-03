@@ -1,7 +1,6 @@
 ﻿#!python3
 
-import os, subprocess
-import types
+import os, subprocess, types, sys
 
 #=========================================================#
 # Options
@@ -42,6 +41,11 @@ m_outp = "0>  "
 
 def main():
 
+	# Check args for if we're going to compile a single file instead
+	m_matchingPattern = None
+	if (len(sys.argv) > 1):
+		m_matchingPattern = sys.argv[1]
+
 	# Grab directory
 	l_directoryPath = os.path.dirname(os.path.realpath(__file__))
 	m_projectRootPath = os.path.split(l_directoryPath)[0] + "/"
@@ -73,7 +77,7 @@ def main():
 		# Loop through each file
 		for subdir, dirs, files in os.walk(l_resourceFolder):
 			for file in files:
-				if (file.endswith(".glsl")):
+				if (file.endswith(".glsl") and ((m_matchingPattern is None) or (m_matchingPattern in file))):
 					# Get the file path & display it
 					l_shaderFilePath = os.path.join(subdir, file)
 					l_displayName = l_shaderFilePath[len(m_projectRootPath):]
