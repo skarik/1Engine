@@ -16,10 +16,6 @@
 
 #include "core/containers/araccessor.h"
 
-//#include "GLCommon.h"
-//#include "glMainSystem.h"
-//#include "renderer/material/RrMaterial.h"
-
 #include "renderer/camera/CameraPass.h"
 
 #include "renderer/types/RrObjectMaterialProperties.h"
@@ -69,6 +65,7 @@ public:
 	struct rrRenderParams
 	{
 		int8_t			pass;
+		rrPassType		pass_type;
 		gpu::Buffer*	cbuf_perPass = nullptr;
 		gpu::Buffer*	cbuf_perFrame = nullptr;
 		gpu::Buffer*	cbuf_perCamera = nullptr;
@@ -147,26 +144,33 @@ public:
 	//	PassesFree() : Cleans up and removes resources used by all passes.
 	RENDER_API void			PassesFree ( void );
 
-	RENDER_API bool			PassEnabled ( int pass )
+	RENDER_API bool			PassEnabled ( int pass ) const
 	{
 		ARCORE_ASSERT(pass >= 0 && pass < kPass_MaxPassCount);
 		return m_passEnabled[pass];
 	}
 	RENDER_API renderer::rrRenderLayer
-							PassLayer ( int pass )
+							PassLayer ( int pass ) const
 	{
 		ARCORE_ASSERT(pass >= 0 && pass < kPass_MaxPassCount);
 		return m_passes[pass].m_layer;
 	}
-	RENDER_API rrPassType	PassType ( int pass )
+	RENDER_API rrPassType	PassType ( int pass ) const
 	{
 		ARCORE_ASSERT(pass >= 0 && pass < kPass_MaxPassCount);
 		return m_passes[pass].m_type;
 	}
-	RENDER_API bool			PassDepthWrite ( int pass )
+	RENDER_API bool			PassDepthWrite ( int pass ) const
 	{
 		ARCORE_ASSERT(pass >= 0 && pass < kPass_MaxPassCount);
-		return m_passes[pass].m_depthWrite;
+		return m_passes[pass].m_overrideDepth
+			? m_passes[pass].m_overrideDepthWrite
+			: !PassIsTranslucent(pass);
+	}
+	RENDER_API bool			PassIsTranslucent ( int pass ) const
+	{
+		ARCORE_ASSERT(pass >= 0 && pass < kPass_MaxPassCount);
+		return m_passes[pass].isTranslucent();
 	}
 
 public:

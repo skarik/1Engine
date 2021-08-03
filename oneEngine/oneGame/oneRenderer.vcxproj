@@ -95,26 +95,8 @@
     </ClCompile>
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpher.cpp" />
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpherSet.cpp" />
-    <ClCompile Include="source\renderer\material\RrMaterial.Constants.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrMaterial.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrMaterial.External.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrMaterial.Utility.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\renderer\material\RrPass.cpp" />
     <ClCompile Include="source\renderer\material\RrPass.Presets.cpp" />
-    <ClCompile Include="source\renderer\material\RrPassForward.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrPassDeferred.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\renderer\material\RrShaderMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\material\RrShaderProgram.cpp" />
     <ClCompile Include="source\renderer\module_renderer.cpp" />
@@ -149,6 +131,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\renderer\state\RrHybridBufferChain.cpp" />
+    <ClCompile Include="source\renderer\state\RrPipeline.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Render.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Sorters.cpp" />
@@ -253,17 +236,8 @@
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpher.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpherSet.h" />
     <ClInclude Include="source\renderer\material\Material.h" />
-    <ClInclude Include="source\renderer\material\RrMaterial.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="source\renderer\material\RrPass.h" />
     <ClInclude Include="source\renderer\material\RrPass.Presets.h" />
-    <ClInclude Include="source\renderer\material\RrPassForward.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\renderer\material\RrPassDeferred.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="source\renderer\material\RrShaderMasterSubsystem.h" />
     <ClInclude Include="source\renderer\material\RrShaderProgram.h" />
     <ClInclude Include="source\renderer\material\ShaderSlots.h" />
@@ -308,7 +282,10 @@
     <ClInclude Include="source\renderer\resource\CResourceManager.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="source\renderer\state\PipelineModes.h" />
     <ClInclude Include="source\renderer\state\RrHybridBufferChain.h" />
+    <ClInclude Include="source\renderer\state\RrPipeline.h" />
+    <ClInclude Include="source\renderer\state\RrPipelinePaletted.h" />
     <ClInclude Include="source\renderer\state\RrRenderer.h" />
     <ClInclude Include="source\renderer\state\InternalSettings.h" />
     <ClInclude Include="source\renderer\state\Options.h" />

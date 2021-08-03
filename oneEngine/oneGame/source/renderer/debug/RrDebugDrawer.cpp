@@ -32,8 +32,9 @@ RrDebugDrawer::RrDebugDrawer ( void )
 	linePass.m_alphaMode = renderer::kAlphaModeTranslucent;
 	linePass.m_cullMode = gpu::kCullModeNone;
 	linePass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
-	linePass.m_depthWrite = true;
-	linePass.m_depthTest = gpu::kCompareOpAlways;
+	linePass.m_overrideDepth = true;
+	linePass.m_overrideDepthWrite = true;
+	linePass.m_overrideDepthTest = gpu::kCompareOpAlways;
 	linePass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
 	linePass.setTexture( TEX_MAIN, RrTexture::Load(renderer::kTextureWhite) );
 	linePass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/debug_lines_vv.spv", "shaders/sys/debug_lines_p.spv"}) );

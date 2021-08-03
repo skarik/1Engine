@@ -5,8 +5,6 @@
 #include "core/types/types.h"
 #include "core/math/Color.h"
 
-//class RrMaterial;
-
 //	eRenderMode - current high level pipeline in use.
 // Renderer info
 enum eRenderMode : int32_t
@@ -123,50 +121,6 @@ namespace renderer
 		kCullBackface		= 0x01,
 		kCullFrontface		= 0x02,
 	};
-
-	//	ePipelineMode - Current sublevel pipeline in use.
-	// These modes have the power to override the current RenderMode
-	enum ePipelineMode : uint8_t
-	{
-		// Default rendering pipeline.
-		kPipelineModeNormal,
-
-		// Paletted rendering pipeline.
-		// TODO: Where does the palette get input? Each object needs either a gradient map or a LUT. The final output also requires a LUT.
-		kPipelineModePaletted,
-
-		// Pulls information from the attached audio engine.
-		// The entirety of the audio list is shoved into the light list.
-		// Albedo is dropped. Instead, approximated sound reflections are rendered.
-		/*kPipelineModeEcho,
-		
-		// Imagination mode. Doesn't actually render.
-		kPipelineModeAether,
-
-		// Insprited by Studio SHAFT animation style (particularly Nisemonogatari)
-		// Mostly the same as kPipelineModeNormal, however:
-		//	* Shadows are fucking dithered
-		//	* Sometimes the color palette changes
-		//	* Sometimes the scene is flatshaded
-		kPipelineModeShaft,*/
-
-		// Default 2D rendering pipeline, with orthographic optimizations.
-		// Requires 2D extension to function properly.
-		//kPipelineMode2DPaletted 
-	};
-
-	/*struct _n_hint_rendering_information
-	{
-		RrMaterial*		mats_default		[kRenderHintCOUNT];
-		RrMaterial*		mats_default_skin	[kRenderHintCOUNT];
-		RrMaterial*		mats_transparent	[kRenderHintCOUNT];
-		RrMaterial*		mats_transparent_skin[kRenderHintCOUNT];
-		rrClearType		clear_type			[kRenderHintCOUNT];
-		Color			clear_color			[kRenderHintCOUNT];
-
-		_n_hint_rendering_information ( void );
-	}; //m_default_hint_options; // needs to be initialized when RrRenderer is created, so to create default replacement materials.
-	extern _n_hint_rendering_information* m_default_hint_options;*/
 };
 
 

@@ -159,23 +159,11 @@
     <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\material\RrMaterial.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrPassForward.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrPassDeferred.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp">
       <Filter>SOURCE\Renderer\Particle</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\debug\RrBtDebugDraw.cpp">
       <Filter>SOURCE\Renderer\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrMaterial.Constants.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\utils\IrrMeshBuilder.cpp">
       <Filter>SOURCE\Renderer\Utils</Filter>
@@ -194,12 +182,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\object\CRenderable3D.cpp">
       <Filter>SOURCE\Renderer\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrMaterial.External.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\material\RrMaterial.Utility.cpp">
-      <Filter>SOURCE\Renderer\Material</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\system\glMainSystem.buffers.cpp">
       <Filter>SOURCE\Renderer\System</Filter>
@@ -351,6 +333,9 @@
     <ClCompile Include="source\renderer\object\RrRenderObject.cpp">
       <Filter>SOURCE\Renderer\Object</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\state\RrPipeline.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\system\glSystem.h">
@@ -433,15 +418,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\types\RrObjectMaterialProperties.h">
       <Filter>SOURCE\Renderer\Types</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\material\RrMaterial.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\material\RrPassForward.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\material\RrPassDeferred.h">
-      <Filter>SOURCE\Renderer\Material</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\particle\RrParticleSystem.h">
       <Filter>SOURCE\Renderer\Particle</Filter>
@@ -646,6 +622,15 @@
     </ClInclude>
     <ClInclude Include="source\renderer\material\ShaderVariations.h">
       <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\RrPipeline.h">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\PipelineModes.h">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\RrPipelinePaletted.h">
+      <Filter>SOURCE\Renderer\State</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

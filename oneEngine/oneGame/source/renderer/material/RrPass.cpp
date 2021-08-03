@@ -26,8 +26,9 @@ void RrPass::utilSetupAsDefault ( void )
 	m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
 	m_alphaMode = renderer::kAlphaModeNone;
 	m_blendMode = renderer::kHLBlendModeNone;
-	m_depthWrite = true;
-	m_depthTest = gpu::kCompareOpLess;
+	m_overrideDepth = false;
+	m_overrideDepthWrite = true;
+	m_overrideDepthTest = gpu::kCompareOpLess;
 	m_layer = renderer::kRenderLayerWorld;
 }
 
@@ -37,8 +38,9 @@ void RrPass::utilSetupAs2D ( void )
 {
 	m_alphaMode = renderer::kAlphaModeTranslucent;
 	m_cullMode = gpu::kCullModeNone;
-	m_depthWrite = false;
-	m_depthTest = gpu::kCompareOpAlways;
+	m_overrideDepth = true;
+	m_overrideDepthWrite = false;
+	m_overrideDepthTest = gpu::kCompareOpAlways;
 }
 
 // Destructor for the pass attempts to release references to all objects in use.

@@ -28,7 +28,8 @@ renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 	// Setup forward pass
 	CopyScaled->m_type = kPassTypeForward;
 	CopyScaled->m_cullMode = gpu::kCullModeNone;
-	CopyScaled->m_depthTest = gpu::kCompareOpAlways;
+	CopyScaled->m_overrideDepth = true;
+	CopyScaled->m_overrideDepthTest = gpu::kCompareOpAlways;
 	CopyScaled->setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{
 		"shaders/sys/copy_buffer_scaled_vv.spv",
 		"shaders/sys/copy_buffer_scaled_p.spv"}) );

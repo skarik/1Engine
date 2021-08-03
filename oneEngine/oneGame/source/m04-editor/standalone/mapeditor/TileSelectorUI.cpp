@@ -207,7 +207,7 @@ bool TileSelectorUI::Render ( const rrRenderParams* params )
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
 		// Set up the material helper...
-		renderer::Material(this, gfx, params->pass, pipeline)
+		renderer::Material(this, gfx, params, pipeline)
 			// set the depth & blend state registers
 			.setDepthStencilState()
 			.setRasterizerState()

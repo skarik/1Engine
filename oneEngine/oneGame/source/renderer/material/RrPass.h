@@ -37,6 +37,9 @@ enum rrPassType
 	// General purpose job pass. Renders outside of viewport sets, so safe render-target work can happen.
 	// Use for items where the sorting doesn't quite matter.
 	kPassTypeJob,
+
+	// System pass used for rendering depth.
+	kPassTypeSystemDepth,
 };
 
 enum rrPassConstants : int
@@ -100,6 +103,18 @@ public:
 	RENDER_API void			utilSetupAs2D ( void );
 
 public:
+	//	isTranslucent () : Is this pass to be considered as part of the translucent passgroup?
+	RENDER_API bool			isTranslucent ( void ) const
+	{
+		return m_alphaMode == renderer::kAlphaModeTranslucent
+			|| m_blendMode == renderer::kHLBlendModeAdd
+			|| m_blendMode == renderer::kHLBlendModeInvMultiply
+			|| m_blendMode == renderer::kHLBlendModeMultiply
+			|| m_blendMode == renderer::kHLBlendModeMultiplyX2
+			|| m_blendMode == renderer::kHLBlendModeSoftAdd;
+	}
+
+public:
 	rrPassType			m_type;
 	RrShaderProgram*	m_program;		// Shader program. This pass has ownership.
 	int					m_orderOffset;	// order offset. see rrPassOrderConstants for util values. lower is earlier
@@ -123,19 +138,20 @@ public:
 
 	// Alpha settings:
 	renderer::rrAlphaMode
-						m_alphaMode;
+						m_alphaMode = renderer::kAlphaModeNone;
 
 	// Blend settings:
 	renderer::rrHLBlendMode
-						m_blendMode;	// Defaults to kHLBlendModeNone. If set otherwise, will override m_alphaMode.
+						m_blendMode = renderer::kHLBlendModeNone;	// Defaults to kHLBlendModeNone. If set otherwise, will override m_alphaMode.
 
 	// Depth settings:
-	bool				m_depthWrite;
-	gpu::CompareOp		m_depthTest;
+	bool				m_overrideDepth = false;
+	bool				m_overrideDepthWrite = true;
+	gpu::CompareOp		m_overrideDepthTest = gpu::kCompareOpLess;
 
 	// World settings:
 	renderer::rrRenderLayer
-						m_layer;		// Render layer
+						m_layer = renderer::kRenderLayerWorld;	// Render layer
 
 public:
 	// External accessor used to go through data that can be safely modified after Pass is set in an object.

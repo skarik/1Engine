@@ -191,7 +191,8 @@ void RrRenderer::InitializeResourcesWithDevice ( gpu::Device* device )
 		renderer::pass::Copy = new RrPass;
 		renderer::pass::Copy->m_type = kPassTypeForward;
 		renderer::pass::Copy->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/copy_buffer_simple_vv.spv", "shaders/sys/copy_buffer_simple_p.spv"});
-		renderer::pass::Copy->m_depthTest = gpu::kCompareOpAlways;
+		renderer::pass::Copy->m_overrideDepth = true;
+		renderer::pass::Copy->m_overrideDepthTest = gpu::kCompareOpAlways;
 		renderer::pass::Copy->m_cullMode = gpu::kCullModeNone;
 	}
 	// Create the fallback shader

@@ -10,6 +10,7 @@
 #include "renderer/types/viewport.h"
 #include "renderer/state/InternalSettings.h"
 #include "renderer/state/RrHybridBufferChain.h"
+#include "renderer/state/PipelineModes.h"
 
 //Todo: make following prototypes
 #include "gpuw/Texture.h"
@@ -39,6 +40,7 @@ namespace renderer
 	}
 }
 
+class RrPipelineStateRenderer;
 class RrPipelineOptions;
 
 //	class RrWorld : A container of objects that can be rendered.
@@ -87,8 +89,8 @@ private:
 	void					SortLogicListing ( void ) {}
 
 public:
-	renderer::ePipelineMode
-						pipeline_mode = renderer::kPipelineModeNormal;
+	renderer::PipelineMode
+						pipeline_mode = renderer::PipelineMode::kNormal;
 	RrPipelineOptions*	pipeline_options = nullptr;
 
 	uint				world_index = UINT32_MAX;
@@ -217,8 +219,11 @@ public:
 
 public:
 	// Current pipeline mode used for rendering.
-	renderer::ePipelineMode
-						pipeline_mode = renderer::kPipelineModeNormal;
+	renderer::PipelineMode
+						pipeline_mode = renderer::PipelineMode::kNormal;
+	// Pipeline state renderer. Used for setting up additional pass information.
+	RrPipelineStateRenderer*
+						pipeline_renderer = nullptr;
 
 public:
 	gpu::GraphicsContext*
@@ -260,10 +265,6 @@ public:
 
 	RENDER_API explicit		RrRenderer ( void );
 	RENDER_API				~RrRenderer ( void );
-
-	// we want to initialize the comon stuff still here
-	//	and also store the output surface
-	// but we arent making the swapchain here. those are created 
 
 private:
 	void					InitializeResourcesWithDevice ( gpu::Device* device );
@@ -339,20 +340,6 @@ public:
 	// Buffer management
 	// ================================
 
-	// Creates buffers for rendering to.
-	/*RENDER_API void			CreateTargetBuffers ( void );
-	// Recreates buffers for the given chain. Returns success.
-	//RENDER_API bool			CreateTargetBufferChain ( rrInternalBufferChain& bufferChain );
-	RENDER_API gpu::RenderTarget*
-							GetForwardBuffer ( void );
-	RENDER_API gpu::RenderTarget*
-							GetDeferredBuffer ( void );
-	RENDER_API gpu::Texture*
-							GetDepthTexture ( void );
-	RENDER_API gpu::WOFrameAttachment*
-							GetStencilTexture ( void );*/
-
-
 	// Public Render routine
 	// ================================
 
@@ -370,76 +357,21 @@ public:
 
 	void					RenderOutput ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world );
 
-	//	RenderScene () : Renders the main scene from the given camera with DeferredForward+.
-	// Is shorthand for ``RenderObjectList(m_renderableObjects)``.
-	//RENDER_API void			RenderScene ( RrCamera* camera );
-	//	RenderObjectList () : Renders the object list from the given camera with DeferredForward+.
-	//RENDER_API void			RenderObjectList ( RrCamera* camera, RrRenderObject** objectsToRender, const uint32_t objectCount );
-
 	RENDER_API void			RenderObjectListWorld ( gpu::GraphicsContext* gfx, rrCameraPass* cameraPass, RrRenderObject** objectsToRender, const uint32_t objectCount, RrOutputState* state );
-	//RENDER_API void			RenderObjectListShadows ( rrCameraPass* cameraPass, RrRenderObject** objectsToRender, const uint32_t objectCount );
 
 	// Specialized Rendering Routines
 	// ================================
 
-	//	PreRenderBeginLighting() : Sets up rendering with the given light list.
-	// Think very carefully if this should be used, versus scheduling draws directly on the GPU.
-	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
-	/*RENDER_API void			PreRenderBeginLighting ( std::vector<RrLight*> & lightsToUse );
-	//	RenderSingleObject() : renders an object, assuming the projection has been already set up.
-	// Think very carefully if this should be used, versus scheduling draws directly on the GPU.
-	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
-	// This call adds setting up the cbuffers, forcing a certain set of lights.
-	// It should be noted the DeferredForward+ pipeline will not work without a Forward RrPass.
-	RENDER_API void			RenderSingleObject ( RrRenderObject* objectToRender );
-	//	RenderObjectArray() : renders a null terminated list of objects, assuming the projection has been already set up.
-	// Think very carefully if this should be used, versus scheduling draws directly on the GPU.
-	// Most meshes will generate correct internal state on draw, regardless. This allows you to render them onto the current active graphics queue.
-	// This call adds setting up the cbuffers, forcing a certain set of lights.
-	// It should be noted the DeferredForward+ pipeline will not work without a Forward RrPass.
-	RENDER_API void			RenderObjectArray ( RrRenderObject** objectsToRender );*/
-
-	//	SetPipelineMode - Sets new pipeline mode.
-	// Calling this has the potential to be very slow and completely invalidate rendering state.
-	// This should be only be called from the GameState, when the pipeline is at no risk of being corrupted.
-	//RENDER_API void			SetPipelineMode ( renderer::ePipelineMode newPipelineMode );
-
-
 	// Rendering configuration
 	// ================================
 
-	// Returns the material used for rendering a screen's pass in the given effect
-	//RENDER_API RrPass*		GetScreenMaterial ( const eRenderMode mode, const renderer::ePipelineMode mode_type );
-
-
 	// Settings and query
 	// ================================
-
-	// Returns internal settings that govern the current render setup
-	//RENDER_API const renderer::rrInternalSettings&
-	//						GetSettings ( void ) const;
-	// Returns if shadows are enabled for the renderer or not.
-	//RENDER_API const bool	GetShadowsEnabled ( void ) const;
-	// Returns current pipeline information
-	//RENDER_API const eRenderMode
-	//						GetRenderMode ( void ) const;
-	// Returns current pipeline mode (previously, special render type)
-	//RENDER_API const renderer::ePipelineMode
-	//						GetPipelineMode ( void ) const;
-
-private:
-	//bool bSpecialRender_ResetLights;
-	//std::vector<RrLight*> vSpecialRender_LightList;
 
 public:
 	// Public active instance pointer
 	RENDER_API static RrRenderer* Active;
 
-	// Device & context
-	//gpu::Device*			mDevice;
-	//gpu::OutputSurface*		mOutputSurface;
-	//gpu::GraphicsContext*	mGfxContext;
-	//gpu::ComputeContext*	mComputeContext;
 private:
 	gpu::Device*		gpu_device;
 public:

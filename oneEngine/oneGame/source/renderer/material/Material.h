@@ -20,12 +20,24 @@ namespace renderer
 	{
 	public:
 
-		RENDER_API explicit Material ( RrRenderObject* thisObject, gpu::GraphicsContext* ctx, int8_t pass, gpu::Pipeline* pipeline )
+		RENDER_API explicit Material ( RrRenderObject* thisObject, gpu::GraphicsContext* ctx, const RrRenderObject::rrRenderParams* passParams, gpu::Pipeline* pipeline )
+		{
+			m_object = thisObject;
+			m_ctx = ctx;
+			m_pipeline = pipeline;
+			m_pass = &thisObject->m_passes[passParams->pass];
+
+			m_renderPassType = passParams->pass_type;
+		}
+
+		RENDER_API explicit Material ( RrRenderObject* thisObject, gpu::GraphicsContext* ctx, int32 pass, rrPassType passType, gpu::Pipeline* pipeline )
 		{
 			m_object = thisObject;
 			m_ctx = ctx;
 			m_pipeline = pipeline;
 			m_pass = &thisObject->m_passes[pass];
+
+			m_renderPassType = passType;
 		}
 
 		RENDER_API Material& setAll ( RrRenderObject::rrRenderParams* thisParams )
@@ -41,13 +53,49 @@ namespace renderer
 
 		RENDER_API Material& setDepthStencilState ( void )
 		{
-			gpu::DepthStencilState ds;
-			ds.depthWriteEnabled = m_pass->m_depthWrite;
-			ds.depthTestEnabled = true;
-			ds.depthFunc = m_pass->m_depthTest;
-			ds.stencilTestEnabled = false;
+			if (m_pass->m_overrideDepth)
+			{
+				gpu::DepthStencilState ds;
+				ds.depthWriteEnabled = m_pass->m_overrideDepthWrite;
+				ds.depthTestEnabled = true;
+				ds.depthFunc = m_pass->m_overrideDepthTest;
+				ds.stencilTestEnabled = false;
 
-			m_ctx->setDepthStencilState(ds);
+				m_ctx->setDepthStencilState(ds);
+			}
+			// If translucent, set to the default less-equal
+			else if (m_pass->isTranslucent())
+			{
+				gpu::DepthStencilState ds;
+				ds.depthWriteEnabled = false;
+				ds.depthTestEnabled = true;
+				ds.depthFunc = gpu::kCompareOpLessEqual;
+				ds.stencilTestEnabled = false;
+
+				m_ctx->setDepthStencilState(ds);
+			}
+			// If opaque and doing depth pass, render depth normally.
+			else if (m_renderPassType == kPassTypeSystemDepth)
+			{
+				gpu::DepthStencilState ds;
+				ds.depthWriteEnabled = true;
+				ds.depthTestEnabled = true;
+				ds.depthFunc = gpu::kCompareOpLessEqual;
+				ds.stencilTestEnabled = false;
+
+				m_ctx->setDepthStencilState(ds);
+			}
+			// If opaque, set to default depth-equal
+			else
+			{
+				gpu::DepthStencilState ds;
+				ds.depthWriteEnabled = false;
+				ds.depthTestEnabled = true;
+				ds.depthFunc = gpu::kCompareOpEqual;
+				ds.stencilTestEnabled = false;
+
+				m_ctx->setDepthStencilState(ds);
+			}
 			return *this;
 		}
 
@@ -66,46 +114,66 @@ namespace renderer
 		RENDER_API Material& setBlendState ( void )
 		{
 			gpu::BlendState bs;
-			bs.channelMask = 0xFF;
-			if (m_pass->m_blendMode == renderer::kHLBlendModeNone)
+			if (m_renderPassType == kPassTypeSystemDepth)
 			{
-				bs.enable = (m_pass->m_alphaMode == renderer::kAlphaModeTranslucent) ? true : false;
-				if (m_pass->m_alphaMode == renderer::kAlphaModeTranslucent)
-				{
-					bs.dst = gpu::kBlendModeInvSrcAlpha;
-					bs.src = gpu::kBlendModeSrcAlpha;
-					bs.op = gpu::kBlendOpAdd;
-
-					bs.dstAlpha = gpu::kBlendModeOne;
-					bs.srcAlpha = gpu::kBlendModeOne;
-					bs.opAlpha = gpu::kBlendOpAdd;
-				}
+				bs.channelMask = 0x00;
+				bs.enable = false;
 			}
 			else
 			{
-				bs.enable = true;
-				switch (m_pass->m_blendMode)
+				bs.channelMask = 0xFF;
+				if (m_pass->m_blendMode == renderer::kHLBlendModeNone)
 				{
-				case renderer::kHLBlendModeNormal:
-					bs.dst = gpu::kBlendModeInvSrcAlpha;
-					bs.src = gpu::kBlendModeSrcAlpha;
-					bs.op = gpu::kBlendOpAdd;
+					bs.enable = (m_pass->m_alphaMode == renderer::kAlphaModeTranslucent) ? true : false;
+					if (m_pass->m_alphaMode == renderer::kAlphaModeTranslucent)
+					{
+						bs.dst = gpu::kBlendModeInvSrcAlpha;
+						bs.src = gpu::kBlendModeSrcAlpha;
+						bs.op = gpu::kBlendOpAdd;
 
-					bs.dstAlpha = gpu::kBlendModeOne;
-					bs.srcAlpha = gpu::kBlendModeOne;
-					bs.opAlpha = gpu::kBlendOpAdd;
-					break;
-				case renderer::kHLBlendModeMultiplyX2:
-					bs.dst = gpu::kBlendModeSrcColor;
-					bs.src = gpu::kBlendModeDstColor;
-					bs.op = gpu::kBlendOpAdd;
+						bs.dstAlpha = gpu::kBlendModeOne;
+						bs.srcAlpha = gpu::kBlendModeOne;
+						bs.opAlpha = gpu::kBlendOpAdd;
+					}
+				}
+				else
+				{
+					bs.enable = true;
+					switch (m_pass->m_blendMode)
+					{
+					case renderer::kHLBlendModeNormal:
+						bs.dst = gpu::kBlendModeInvSrcAlpha;
+						bs.src = gpu::kBlendModeSrcAlpha;
+						bs.op = gpu::kBlendOpAdd;
 
-					bs.dstAlpha = gpu::kBlendModeOne;
-					bs.srcAlpha = gpu::kBlendModeOne;
-					bs.opAlpha = gpu::kBlendOpAdd;
-					break;
-				default: // Not yet implemented
-					throw false;
+						bs.dstAlpha = gpu::kBlendModeOne;
+						bs.srcAlpha = gpu::kBlendModeOne;
+						bs.opAlpha = gpu::kBlendOpAdd;
+						break;
+
+					case renderer::kHLBlendModeAdd:
+						bs.dst = gpu::kBlendModeOne;
+						bs.src = gpu::kBlendModeOne;
+						bs.op = gpu::kBlendOpAdd;
+
+						bs.dstAlpha = gpu::kBlendModeOne;
+						bs.srcAlpha = gpu::kBlendModeOne;
+						bs.opAlpha = gpu::kBlendOpAdd;
+						break;
+
+					case renderer::kHLBlendModeMultiplyX2:
+						bs.dst = gpu::kBlendModeSrcColor;
+						bs.src = gpu::kBlendModeDstColor;
+						bs.op = gpu::kBlendOpAdd;
+
+						bs.dstAlpha = gpu::kBlendModeOne;
+						bs.srcAlpha = gpu::kBlendModeOne;
+						bs.opAlpha = gpu::kBlendOpAdd;
+						break;
+
+					default: // Not yet implemented
+						ARCORE_ERROR("Not yet implemented");
+					}
 				}
 			}
 
@@ -167,6 +235,7 @@ namespace renderer
 							m_ctx;
 		gpu::Pipeline*		m_pipeline;
 		RrPass*				m_pass;
+		rrPassType			m_renderPassType;
 	};
 };
 

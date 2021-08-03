@@ -131,7 +131,7 @@ bool dusk::UIRenderer::Render ( const rrRenderParams* params )
 
 			gpu::Pipeline* pipeline = GetPipeline( params->pass );
 			// Set up the material helper...
-			renderer::Material(this, gfx, params->pass, pipeline)
+			renderer::Material(this, gfx, params, pipeline)
 				// set the pipeline
 				.setStart()
 				// set the depth & rasterizer state registers
@@ -409,7 +409,7 @@ void dusk::UIRenderer::P1RenderElements (gpu::GraphicsContext* graphics_context,
 	const uint8_t kPassId = 1;
 	gpu::Pipeline* pipeline = GetPipeline( kPassId );
 	// Set up the material helper...
-	renderer::Material(this, gfx, kPassId, pipeline)
+	renderer::Material(this, gfx, kPassId, kPassTypeForward, pipeline)
 		// set the pipeline
 		.setStart()
 		// set almost everything else

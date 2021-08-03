@@ -8,7 +8,8 @@ FORCE_INLINE
 static int PassOrder ( RrPass* pass, RrRenderObject* object )
 {
 	int order = pass->m_orderOffset;
-	if (pass->m_depthWrite == false)
+	//if (pass->m_depthWrite == false)
+	if (pass->m_overrideDepth ? !pass->m_overrideDepthWrite : pass->isTranslucent())
 		order += kPassOrder_DepthMaskDisabled;
 	/*if (pass->m_depthWrite == false)
 	{

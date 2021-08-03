@@ -23,6 +23,7 @@
 #include "gpuw/OutputSurface.h"
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
+#include "renderer/state/RrPipeline.h"
 #include "renderer/state/RrPipelinePasses.h"
 #include "renderer/windowing/RrWindow.h"
 
@@ -791,23 +792,31 @@ void RrRenderer::Render ( void )
 #define FORCE_BUFFER_CLEAR
 //#define ENABLE_RUNTIME_BLIT_TEST
 
-//void RrRenderer::RenderScene ( RrCamera* camera )
-//{
-//	RenderObjectList(camera, pRenderableObjects.data(), iCurrentIndex);
-//}
-
 void RrRenderer::RenderOutput ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world )
 {
+Create_Pipeline:
+	if (state->pipeline_renderer == nullptr || !state->pipeline_renderer->IsCompatible(world->pipeline_mode))
+	{
+		// Free the old renderer
+		delete_safe(state->pipeline_renderer);
+
+		// Create new renderer & save the current mode
+		state->pipeline_renderer = renderer::CreatePipelineRenderer(world->pipeline_mode);
+		state->pipeline_mode = world->pipeline_mode;
+	}
+
+Prepare_Pipeline:
+	if (state->pipeline_renderer != nullptr)
+	{
+		const auto pipelineOptions = state->output_info->world->pipeline_options;
+		const bool bPipelineOptionsCompatible = (pipelineOptions == nullptr) ? false : pipelineOptions->IsCompatible(state->pipeline_mode);
+		state->pipeline_renderer->PrepareOptions(bPipelineOptionsCompatible ? pipelineOptions : nullptr);
+	}
+
 Update_Culling:
-	// Update the render distance of objects against this camera:
-	for ( int objectIndex = 0; objectIndex < world->objects.size(); objectIndex += 1 )
-	{	
-		// Put into it's own loop, since it's the same calculation across all objects
-		if ( world->objects[objectIndex] != nullptr )
-		{ 
-			// TODO: Handle 2D mode properly. Postprocess is entirely sorted by transform.position.z Should this be made more consistent?
-			world->objects[objectIndex]->renderDistance = (output.camera->transform.position - world->objects[objectIndex]->transform.world.position).sqrMagnitude();
-		}
+	if (state->pipeline_renderer != nullptr)
+	{
+		state->pipeline_renderer->CullObjects(gfx, output, state, world);
 	}
 
 Render_Camera_Passes:
@@ -890,6 +899,8 @@ void RrRenderer::RenderObjectListWorld ( gpu::GraphicsContext* gfx, rrCameraPass
 		std::vector<rrRenderRequest> m_4rDeferred;
 		// Forward rendered objects render on top of the deferred state.
 		std::vector<rrRenderRequest> m_4rForward;
+		// Forward translucent objects render on top of everything else.
+		std::vector<rrRenderRequest> m_4rForwardTranslucent;
 
 		// Jobs are separate from the output. Run before the previous steps
 		std::vector<rrRenderRequest> m_4rJob;
@@ -965,6 +976,7 @@ Pass_Groups:
 						{
 							const rrPassType passType = renderable->PassType(iPass);
 							const bool passDepthWrite = renderable->PassDepthWrite(iPass);
+							const bool passTranslucent = renderable->PassIsTranslucent(iPass);
 
 							// If part of the world...
 							if (passType == kPassTypeForward || passType == kPassTypeDeferred)
@@ -975,9 +987,17 @@ Pass_Groups:
 								}
 								// Add the other objects to the deferred or forward pass
 								if (passType == kPassTypeDeferred)
+								{
+									ARCORE_ASSERT(passTranslucent == false);
 									l_4rGroup[iLayer].m_4rDeferred.push_back(rrRenderRequest{renderable, iPass});
+								}
 								else
-									l_4rGroup[iLayer].m_4rForward.push_back(rrRenderRequest{renderable, iPass});
+								{
+									if (!passTranslucent)
+										l_4rGroup[iLayer].m_4rForward.push_back(rrRenderRequest{renderable, iPass});
+									else
+										l_4rGroup[iLayer].m_4rForwardTranslucent.push_back(rrRenderRequest{renderable, iPass});
+								}
 							}
 							// If part of fog effects...
 							else if (passType == kPassTypeVolumeFog)
@@ -1029,11 +1049,19 @@ Pass_Groups:
 				// sort the rest:
 				std::sort(l_4rGroup[iLayer].m_4rDeferred.begin(), l_4rGroup[iLayer].m_4rDeferred.end(), RenderRequestSorter); 
 				std::sort(l_4rGroup[iLayer].m_4rForward.begin(), l_4rGroup[iLayer].m_4rForward.end(), RenderRequestSorter); 
+				std::sort(l_4rGroup[iLayer].m_4rForwardTranslucent.begin(), l_4rGroup[iLayer].m_4rForwardTranslucent.end(), RenderRequestSorter); 
 				std::sort(l_4rGroup[iLayer].m_4rFog.begin(), l_4rGroup[iLayer].m_4rFog.end(), RenderRequestSorter); 
 				std::sort(l_4rGroup[iLayer].m_4rWarp.begin(), l_4rGroup[iLayer].m_4rWarp.end(), RenderRequestSorter); 
 			});
 
 		});
+	}
+
+Setup_Pipeline:
+	// Lighting needs to be handled by the pipeline info
+	if (state->pipeline_renderer)
+	{
+		state->pipeline_renderer->PreparePass(gfx);
 	}
 
 Render_Groups:
@@ -1092,6 +1120,7 @@ Render_Groups:
 		if (l_4rGroup[iLayer].m_4rDepthPrepass.empty()
 			&& l_4rGroup[iLayer].m_4rDeferred.empty() 
 			&& l_4rGroup[iLayer].m_4rForward.empty() 
+			&& l_4rGroup[iLayer].m_4rForwardTranslucent.empty() 
 			&& l_4rGroup[iLayer].m_4rFog.empty() 
 			&& l_4rGroup[iLayer].m_4rWarp.empty())
 		{
@@ -1110,98 +1139,121 @@ Render_Groups:
 			gfx->setRenderTarget(&bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
 		}
 
-		// Set up depth & color draw for pre-pass mode. Draw all opaques.
+		gfx->debugGroupPush("Depth Pre-pass");
 		{
-			gpu::DepthStencilState ds;
-			ds.depthTestEnabled   = true;
-			ds.depthWriteEnabled  = true;
-			ds.depthFunc = gpu::kCompareOpLessEqual;
-			ds.stencilTestEnabled = false;
-			gfx->setDepthStencilState(ds);
-
-			gpu::BlendState bs;
-			bs.channelMask = 0x00; // Disable color masking.
-			bs.enable = false;
-			gfx->setBlendState(bs);
-		}
+			// Set up no-color draw for pre-pass mode.
+			{
+				gpu::BlendState bs;
+				bs.channelMask = 0x00; // Disable color entirely.
+				bs.enable = false;
+				gfx->setBlendState(bs);
+			}
 		
-		// Set up viewport
-		{
-			gfx->setViewport(
-				cameraPass->m_viewport.corner.x,
-				cameraPass->m_viewport.corner.y,
-				cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
-				cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
-			gfx->setScissor(
-				cameraPass->m_viewport.corner.x,
-				cameraPass->m_viewport.corner.y,
-				cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
-				cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
-		}
+			// Set up viewport
+			{
+				gfx->setViewport(
+					cameraPass->m_viewport.corner.x,
+					cameraPass->m_viewport.corner.y,
+					cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
+					cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
+				gfx->setScissor(
+					cameraPass->m_viewport.corner.x,
+					cameraPass->m_viewport.corner.y,
+					cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
+					cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
+			}
 
-		// Clear depth:
-		gfx->clearDepthStencil(true, 1.0F, false, 0x00);
+			// Clear depth:
+			{
+				gpu::DepthStencilState ds;
+				ds.depthTestEnabled   = true;
+				ds.depthWriteEnabled  = true;
+				ds.depthFunc = gpu::kCompareOpLessEqual;
+				ds.stencilTestEnabled = false;
+				gfx->setDepthStencilState(ds);
+
+				gfx->clearDepthStencil(true, 1.0F, false, 0x00);
+			}
 		
-		// Do depth pre-pass:
-		//for (size_t iObject = 0; iObject < l_4rDepthPrepass.size(); ++iObject)
-		//{
-		// TODO: Fiddle with the rasterization rules so we only write to the depth.
-		//const rrRenderRequest const&  l_4r = l_4rDepthPrepass[iObject];
-		//RrRenderObject* renderable = l_4r.obj;
-		//renderable->Render(l_4r.pass);
-		//}
+			// Do depth pre-pass:
+			for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rDepthPrepass.size(); ++iObject)
+			{
+				const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rDepthPrepass[iObject];
+				RrRenderObject* renderable = l_4r.obj;
 
-		// Set up output
-		{
-			gfx->setRenderTarget(&bufferChain->buffer_deferred_mrt); // TODO: Binding buffers at the right time.
+				RrRenderObject::rrRenderParams params;
+				params.pass = l_4r.pass;
+				params.pass_type = kPassTypeSystemDepth;
+				params.cbuf_perCamera = cameraPass->m_cbuffer;
+				params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
+				params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
+				params.context_graphics = gfx;
+
+				ARCORE_ASSERT(params.context_graphics != nullptr);
+				renderable->Render(&params);
+			}
 		}
+		gfx->debugGroupPop();
 
-		// Set up depth & color draw for deferred mode. Depth-equal only.
+		gfx->debugGroupPush("Deferred Opaques");
 		{
-			gpu::DepthStencilState ds;
-			ds.depthTestEnabled   = true;
-			ds.depthWriteEnabled  = false;
-			ds.depthFunc = gpu::kCompareOpEqual;
-			ds.stencilTestEnabled = false;
-			gfx->setDepthStencilState(ds);
+			// Set up output
+			{
+				gfx->setRenderTarget(&bufferChain->buffer_deferred_mrt); // TODO: Binding buffers at the right time.
+			}
 
-			gpu::BlendState bs;
-			bs.channelMask = 0xFF; // Enable color masking.
-			bs.enable = false;
-			gfx->setBlendState(bs);
-		}
+			// Set color draw for deferred mode.
+			{
+				gpu::BlendState bs;
+				bs.channelMask = 0xFF; // Enable color masking.
+				bs.enable = false;
+				gfx->setBlendState(bs);
+			}
 
-		// Set up viewport
-		{
-			gfx->setViewport(
-				cameraPass->m_viewport.corner.x,
-				cameraPass->m_viewport.corner.y,
-				cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
-				cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
-			gfx->setScissor(
-				cameraPass->m_viewport.corner.x,
-				cameraPass->m_viewport.corner.y,
-				cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
-				cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
-		}
+			// Set up viewport
+			{
+				gfx->setViewport(
+					cameraPass->m_viewport.corner.x,
+					cameraPass->m_viewport.corner.y,
+					cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
+					cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
+				gfx->setScissor(
+					cameraPass->m_viewport.corner.x,
+					cameraPass->m_viewport.corner.y,
+					cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
+					cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
+			}
 
-		// Do the deferred pass:
-		for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rDeferred.size(); ++iObject)
-		{
-			const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rDeferred[iObject];
-			RrRenderObject* renderable = l_4r.obj;
+			// Set up default depth-equal for lazy objects
+			{
+				gpu::DepthStencilState ds;
+				ds.depthTestEnabled   = true;
+				ds.depthWriteEnabled  = false;
+				ds.depthFunc = gpu::kCompareOpEqual;
+				ds.stencilTestEnabled = false;
+				gfx->setDepthStencilState(ds);
+			}
 
-			RrRenderObject::rrRenderParams params;
-			params.pass = l_4r.pass;
-			params.cbuf_perCamera = cameraPass->m_cbuffer;
-			//params.cbuf_perFrame = &internal_cbuffers_frames[internal_chain_index];
-			params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
-			params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
-			params.context_graphics = gfx;
+			// Do the deferred pass:
+			for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rDeferred.size(); ++iObject)
+			{
+				const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rDeferred[iObject];
+				RrRenderObject* renderable = l_4r.obj;
+
+				RrRenderObject::rrRenderParams params;
+				params.pass = l_4r.pass;
+				params.pass_type = kPassTypeDeferred;
+				params.cbuf_perCamera = cameraPass->m_cbuffer;
+				params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
+				params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
+				params.context_graphics = gfx;
 			
-			ARCORE_ASSERT(params.context_graphics != nullptr);
-			renderable->Render(&params);
+				ARCORE_ASSERT(params.context_graphics != nullptr);
+				renderable->Render(&params);
+			}
 		}
+		gfx->debugGroupPop();
+
 		// check if rendered anything, mark screen dirty if so.
 		if (!l_4rGroup[iLayer].m_4rDeferred.empty())
 			dirty_deferred = true;
@@ -1213,64 +1265,108 @@ Render_Groups:
 			dirty_forward = true;
 		}
 
-		// Set up output
+		gfx->debugGroupPush("Forward Pass");
 		{
-			gfx->setRenderTarget(&bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
+			// Set up output
+			{
+				gfx->setRenderTarget(&bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
+			}
+
+			// Set up color draw for forward mode. Draw normally.
+			{
+				gpu::BlendState bs;
+				bs.channelMask = 0xFF; // Enable color masking.
+				bs.enable = false;
+				gfx->setBlendState(bs);
+			}
+
+			// Set up viewport
+			{
+				gfx->setViewport(
+					cameraPass->m_viewport.corner.x,
+					cameraPass->m_viewport.corner.y,
+					cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
+					cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
+				gfx->setScissor(
+					cameraPass->m_viewport.corner.x,
+					cameraPass->m_viewport.corner.y,
+					cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
+					cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
+			}
+
+			gfx->debugGroupPush("Forward Opaques");
+			// Set default depth-equal
+			{
+				gpu::DepthStencilState ds;
+				ds.depthTestEnabled   = true;
+				ds.depthWriteEnabled  = false;
+				ds.depthFunc = gpu::kCompareOpEqual;
+				ds.stencilTestEnabled = false;
+				gfx->setDepthStencilState(ds);
+			}
+
+			// Do the forward pass:
+			for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rForward.size(); ++iObject)
+			{
+				const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rForward[iObject];
+				RrRenderObject* renderable = l_4r.obj;
+
+				RrRenderObject::rrRenderParams params;
+				params.pass = l_4r.pass;
+				params.pass_type = kPassTypeForward;
+				params.cbuf_perCamera = cameraPass->m_cbuffer;
+				params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
+				params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
+				params.context_graphics = gfx;
+
+				ARCORE_ASSERT(params.context_graphics != nullptr);
+				renderable->Render(&params);
+			}
+			gfx->debugGroupPop();
+
+			gfx->debugGroupPush("Forward Translucents");
+			// Set default less-than-equal depth test
+			{
+				gpu::DepthStencilState ds;
+				ds.depthTestEnabled   = true;
+				ds.depthWriteEnabled  = false;
+				ds.depthFunc = gpu::kCompareOpLessEqual;
+				ds.stencilTestEnabled = false;
+				gfx->setDepthStencilState(ds);
+			}
+
+			// Do the forward translucent pass:
+			for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rForwardTranslucent.size(); ++iObject)
+			{
+				const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rForwardTranslucent[iObject];
+				RrRenderObject* renderable = l_4r.obj;
+
+				RrRenderObject::rrRenderParams params;
+				params.pass = l_4r.pass;
+				params.pass_type = kPassTypeForward;
+				params.cbuf_perCamera = cameraPass->m_cbuffer;
+				params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
+				params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
+				params.context_graphics = gfx;
+
+				ARCORE_ASSERT(params.context_graphics != nullptr);
+				renderable->Render(&params);
+			}
+			gfx->debugGroupPop();
 		}
+		gfx->debugGroupPop();
 
-		// Set up depth & color draw for forward mode. Draw normally.
-		{
-			gpu::DepthStencilState ds;
-			ds.depthTestEnabled   = true;
-			ds.depthWriteEnabled  = true;
-			ds.depthFunc = gpu::kCompareOpLessEqual;
-			ds.stencilTestEnabled = false;
-			gfx->setDepthStencilState(ds);
-
-			gpu::BlendState bs;
-			bs.channelMask = 0xFF; // Enable color masking.
-			bs.enable = false;
-			gfx->setBlendState(bs);
-		}
-
-		// Set up viewport
-		{
-			gfx->setViewport(
-				cameraPass->m_viewport.corner.x,
-				cameraPass->m_viewport.corner.y,
-				cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
-				cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
-			gfx->setScissor(
-				cameraPass->m_viewport.corner.x,
-				cameraPass->m_viewport.corner.y,
-				cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
-				cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
-		}
-
-		// Do the forward pass:
-		for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rForward.size(); ++iObject)
-		{
-			const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rForward[iObject];
-			RrRenderObject* renderable = l_4r.obj;
-
-			RrRenderObject::rrRenderParams params;
-			params.pass = l_4r.pass;
-			params.cbuf_perCamera = cameraPass->m_cbuffer;
-			//params.cbuf_perFrame = &internal_cbuffers_frames[internal_chain_index];
-			params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
-			params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
-			params.context_graphics = gfx;
-
-			ARCORE_ASSERT(params.context_graphics != nullptr);
-			renderable->Render(&params);
-		}
 		// check if rendered anything, mark screen dirty if so.
-		if (!l_4rGroup[iLayer].m_4rForward.empty())
+		if (!l_4rGroup[iLayer].m_4rForward.empty() || !l_4rGroup[iLayer].m_4rForwardTranslucent.empty())
 			dirty_forward = true;
 
 		// run another composite if forward is dirty
 		if (dirty_forward)
 		{
+			if (state->pipeline_renderer != nullptr)
+			{
+				state->pipeline_renderer->CompositeDeferred(gfx);
+			}
 			// TODO
 		}
 	}

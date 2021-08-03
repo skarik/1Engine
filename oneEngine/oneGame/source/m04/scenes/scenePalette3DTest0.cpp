@@ -36,7 +36,7 @@ void scenePalette3DTest0::LoadScene ( void )
 
 	// Set up pipeline
 	{
-		RrRenderer::Active->GetWorld<0>()->pipeline_mode = renderer::kPipelineModePaletted;
+		RrRenderer::Active->GetWorld<0>()->pipeline_mode = renderer::PipelineMode::kPaletted;
 		RrRenderer::Active->GetWorld<0>()->pipeline_options = nullptr; // TODO. Needs a Paletted pipeline.
 	} loadScreen->loadStep();
 

@@ -34,8 +34,9 @@ RrBtDebugDraw::RrBtDebugDraw ( PrWorld* associated_world )
 	linePass.m_type = kPassTypeForward;
 	linePass.m_alphaMode = renderer::kAlphaModeTranslucent;
 	linePass.m_cullMode = gpu::kCullModeNone;
-	linePass.m_depthWrite = true;
-	linePass.m_depthTest = gpu::kCompareOpAlways;
+	linePass.m_overrideDepth = true;
+	linePass.m_overrideDepthWrite = true;
+	linePass.m_overrideDepthTest = gpu::kCompareOpAlways;
 	linePass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
 	linePass.m_primitiveType = gpu::kPrimitiveTopologyLineList;
 	linePass.setTexture( TEX_MAIN, RrTexture::Load("null") );
