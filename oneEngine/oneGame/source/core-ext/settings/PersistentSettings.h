@@ -20,7 +20,6 @@ namespace settings {
 	class StringSettingGroup
 	{
 	public:
-		//CORE_API const std::string&
 		CORE_API const BasePersistentSetting*
 								operator[] ( const char* identifier ) const
 		{
@@ -34,19 +33,7 @@ namespace settings {
 				return m_data.at("");
 			}
 		}
-		//CORE_API std::string&	operator[] ( const char* identifier )
-		/*CORE_API BasePersistentSetting*
-								operator[] ( const char* identifier )
-		{
-			auto value_itr = m_data.find(identifier);
-			if (value_itr != m_data.end())
-			{
-				return value_itr->second;
-			}
-			// Create a new key-value if it cannot be found.
-			return m_data[identifier];
-		}*/
-
+		
 		const std::map<std::string, BasePersistentSetting*>&
 								GetSettingsReadOnly ( void ) const
 		{
@@ -65,7 +52,6 @@ namespace settings {
 		StringSettingGroup ( void )
 		{
 			// Add the default invalid 
-			//m_data[""] = "invalid";
 			m_data[""] = nullptr;
 		}
 
@@ -156,12 +142,6 @@ namespace settings {
 			m_value = rhs;
 			return m_value;
 		}
-
-		////	implicit cast : Querying of the option.
-		///**/				operator const Type(void) const
-		//{
-		//	return m_value;
-		//}
 
 		//	implicit cast : Querying of the option.
 		/**/				operator const Type&(void) const

@@ -234,6 +234,9 @@
     <ClCompile Include="source\core-ext\settings\PersistentSettings.cpp">
       <Filter>SOURCE\Core-ext\Settings</Filter>
     </ClCompile>
+    <ClCompile Include="source\core-ext\settings\SessionSettings.cpp">
+      <Filter>SOURCE\Core-ext\Settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -396,6 +399,9 @@
       <Filter>SOURCE\Core-ext\System\Services</Filter>
     </ClInclude>
     <ClInclude Include="source\core-ext\settings\PersistentSettings.h">
+      <Filter>SOURCE\Core-ext\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\settings\SessionSettings.h">
       <Filter>SOURCE\Core-ext\Settings</Filter>
     </ClInclude>
   </ItemGroup>

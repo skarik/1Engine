@@ -644,5 +644,8 @@
     <ClInclude Include="source\renderer\object\RrRenderObject.h">
       <Filter>SOURCE\Renderer\Object</Filter>
     </ClInclude>
+    <ClInclude Include="source\renderer\material\ShaderVariations.h">
+      <Filter>SOURCE\Renderer\Material</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

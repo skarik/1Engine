@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cctype>
 //#include "CGameSettings.h"
+#include "core-ext/settings/SessionSettings.h"
 
 using namespace engine;
 using std::cin;
@@ -117,17 +118,6 @@ void CDeveloperConsole::Update ( void )
 
 void CDeveloperConsole::PostUpdate ( void )
 {
-	// If input says we hit tilde, toggle command acceptance state and eat inputs
-	if ( core::Input::Keydown(core::kVkTilde) ) {
-		bAcceptingCommands = !bAcceptingCommands;
-		if ( bAcceptingCommands ) {
-			mControl->Capture();
-		}
-		else {
-			mControl->Release();
-		}
-	}
-	
 	if ( bAcceptingCommands )
 	{
 		// Get input
@@ -181,13 +171,29 @@ void CDeveloperConsole::PostUpdate ( void )
 
 	//mUI->visible = bAcceptingCommands;
 	//mUI->visible = true;
+
+	// If input says we hit tilde, toggle command acceptance state and eat inputs
+	if ( core::Input::Keydown(core::kVkTilde) )
+	{
+		bAcceptingCommands = !bAcceptingCommands;
+		if ( bAcceptingCommands ) {
+			mControl->Capture();
+		}
+		else {
+			mControl->Release();
+		}
+	}
 }
 void CDeveloperConsole::MatchCommands ( void )
 {
+	auto sessionVariableMap = core::settings::Session::GetSettingsReadOnly();
+
 	auto varListIterator = variableList.begin();
+	auto seshVarListIterator = sessionVariableMap.begin();
 	auto fncListIterator = functionList.begin();
 	auto strListIterator = manualMatchList.begin();
 	bool addVar = false;
+	bool addSeshVar = false;
 	bool addFnc = false;
 	bool addStr = false;
 
@@ -195,7 +201,7 @@ void CDeveloperConsole::MatchCommands ( void )
 	std::list<std::pair<string,int>> strs_to_add;
 
 	matchingCommands.clear();
-	while ( (varListIterator != variableList.end() || fncListIterator != functionList.end() || strListIterator != manualMatchList.end()) && (matchingCommands.size() < 13) )
+	while ( (varListIterator != variableList.end() || seshVarListIterator != sessionVariableMap.end() || fncListIterator != functionList.end() || strListIterator != manualMatchList.end()) && (matchingCommands.size() < 13) )
 	{
 		// Get the next matching item from each list.
 		while ( !addVar && varListIterator != variableList.end() ) {
@@ -205,6 +211,15 @@ void CDeveloperConsole::MatchCommands ( void )
 			}
 			else {
 				++varListIterator;
+			}
+		}
+		while ( !addSeshVar && seshVarListIterator != sessionVariableMap.end() ) {
+			if ( seshVarListIterator->first.find( sLastCommand ) != string::npos ) {
+				addSeshVar = true;
+				strs_to_add.push_back( std::pair<string,int>(seshVarListIterator->first,3) );
+			}
+			else {
+				++seshVarListIterator;
 			}
 		}
 		while ( !addFnc && fncListIterator != functionList.end() ) {
@@ -236,6 +251,7 @@ void CDeveloperConsole::MatchCommands ( void )
 			switch ( strs_to_add.back().second )
 			{
 			case 0: addVar = false; if ( varListIterator != variableList.end() ) ++varListIterator; break;
+			case 3: addSeshVar = false; if ( seshVarListIterator != sessionVariableMap.end() ) ++seshVarListIterator; break;
 			case 1: addFnc = false; if ( fncListIterator != functionList.end() ) ++fncListIterator; break;
 			case 2: addStr = false; if ( strListIterator != manualMatchList.end() ) ++strListIterator; break;
 			}
@@ -306,6 +322,8 @@ void CDeveloperConsole::AddConsoleMatch( string const& name )
 // Parse the command and actually run it
 bool CDeveloperConsole::RunLastCommand ( void )
 {
+	auto sessionVariableMap = core::settings::Session::GetSettingsReadOnly();
+
 	string cmd = sLastCommand;
 	{
 		auto suffix = cmd.find_last_not_of(' ');
@@ -355,6 +373,7 @@ bool CDeveloperConsole::RunLastCommand ( void )
 			}
 			std::cout << std::endl;
 		}
+		// Otherwise set
 		else
 		{
 			debug::Console->PrintMessage( cmd );
@@ -365,6 +384,24 @@ bool CDeveloperConsole::RunLastCommand ( void )
 			else if ( type == 1 ) {
 				(*((Real*)(variableList[verb].var))) = (Real)atof( args.c_str() );
 			}
+		}
+	}
+	// Search the session variables for the command
+	else if ( sessionVariableMap.find(verb) != sessionVariableMap.end() )
+	{
+		// If argument list is empty, then display current value
+		if ( args.length() <= 0 )
+		{
+			debug::Console->PrintMessage( verb );
+			debug::Console->PrintMessage( " = " );
+			debug::Console->PrintMessage(sessionVariableMap[verb]->ToString());
+			debug::Console->PrintMessage( "\n" );
+		}
+		// Otherwise set
+		else
+		{
+			debug::Console->PrintMessage( cmd );
+			sessionVariableMap[verb]->SetFromString(args.c_str());
 		}
 	}
 	else // Print that cannot find values

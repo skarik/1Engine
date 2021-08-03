@@ -409,7 +409,7 @@ public:
 	// ================================
 
 	// Returns the material used for rendering a screen's pass in the given effect
-	RENDER_API RrPass*		GetScreenMaterial ( const eRenderMode mode, const renderer::ePipelineMode mode_type );
+	//RENDER_API RrPass*		GetScreenMaterial ( const eRenderMode mode, const renderer::ePipelineMode mode_type );
 
 
 	// Settings and query

@@ -76,21 +76,54 @@ def main():
 					l_shaderFilePath = os.path.join(subdir, file)
 					l_displayName = l_shaderFilePath[len(m_projectRootPath):]
 					print(m_outp + l_displayName)
-
-					# Transpile the shader
-					l_status = TranspileShader(l_shaderFilePath, l_displayName)
-					if (l_status == 0):
-						pass
-					else:
-						m_buildFailed += 1
-						continue
 					
-					# Compile the shader
-					l_status = CompileShader(l_shaderFilePath, l_displayName)
-					if (l_status == 0):
-						m_buildSucceeded += 1
+					# Get the name without suffix
+					l_transpileVariants = False
+					l_nakedFile = os.path.splitext(l_shaderFilePath)[0]
+					if (os.path.exists(l_nakedFile + ".variants.h")):
+						l_transpileVariants = True
+					
+					if (not l_transpileVariants):
+						# Transpile the shader
+						l_status = TranspileShader(l_shaderFilePath, l_displayName)
+						if (l_status == 0):
+							pass
+						else:
+							m_buildFailed += 1
+							continue
+						
+						# Compile the shader
+						l_status = CompileShader(l_shaderFilePath, l_nakedFile, l_displayName)
+						if (l_status == 0):
+							m_buildSucceeded += 1
+						else:
+							m_buildFailed += 1
 					else:
-						m_buildFailed += 1
+						print("Searching for variants...")
+						for local_file in os.listdir(subdir):
+							
+							l_localFilePath = os.path.join(subdir, local_file)
+							if not(l_localFilePath.startswith(l_nakedFile) and l_localFilePath.endswith(".spv")):
+								continue
+							
+							l_localNakedFile = os.path.splitext(l_localFilePath)[0]
+							l_shaderFilePath = l_localNakedFile + ".dummy"
+							print("Found variant " + l_localNakedFile)
+							
+							# Transpile the variant
+							l_status = TranspileShader(l_shaderFilePath, l_displayName)
+							if (l_status == 0):
+								pass
+							else:
+								m_buildFailed += 1
+								continue
+							
+							# Compile the shader
+							l_status = CompileShader(l_shaderFilePath, l_nakedFile, l_displayName)
+							if (l_status == 0):
+								m_buildSucceeded += 1
+							else:
+								m_buildFailed += 1
 
 	print((bcolors.WARNING if m_buildFailed > 0 else bcolors.OKGREEN)
 		  + "Shader Build: {:d} succeeded, {:d} failed, {:d} up-to-date, {:d} skipped."
@@ -161,7 +194,7 @@ def TranspileShader(shaderFilePath, displayName):
 
 	return code
 	
-def CompileShader(shaderFilePath, displayName):
+def CompileShader(shaderFilePath, nakedFilePath, displayName):
 	
 	# Get the name without suffix
 	l_nakedFile = os.path.splitext(shaderFilePath)[0]
@@ -171,15 +204,15 @@ def CompileShader(shaderFilePath, displayName):
 
 	# Grab the correct shader type by the name
 	l_hlslCompilerProfile = ""
-	if l_nakedFile.endswith("_vv"):
+	if nakedFilePath.endswith("_vv"):
 		l_hlslCompilerProfile = "vs"
-	elif l_nakedFile.endswith("_p"):
+	elif nakedFilePath.endswith("_p"):
 		l_hlslCompilerProfile = "ps"
-	elif l_nakedFile.endswith("_g"):
+	elif nakedFilePath.endswith("_g"):
 		l_hlslCompilerProfile = "gs"
-	elif l_nakedFile.endswith("_h"):
+	elif nakedFilePath.endswith("_h"):
 		l_hlslCompilerProfile = "hs"
-	elif l_nakedFile.endswith("_d"):
+	elif nakedFilePath.endswith("_d"):
 		l_hlslCompilerProfile = "ds"
 	l_hlslCompilerProfile = f"{l_hlslCompilerProfile}_{g_hlslBaseProfile}"
 

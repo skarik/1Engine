@@ -94,7 +94,7 @@ bool CDeveloperConsoleUI::BeginRender ( void )
 	);
 
 	rrMeshBuilder2D builder(screenMapping, 6);
-	rrTextBuilder2D builder_text(fntMenu, screenMapping, 100);
+	rrTextBuilder2D builder_text(fntMenu, screenMapping, 2000);
 
 	if ( engine::Console->GetIsOpen() )
 	{

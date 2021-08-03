@@ -526,8 +526,9 @@ int gpu::GraphicsContext::debugGroupPush ( const char* groupName )
 		int groupNameLen = (int)strlen(groupName);
 		int wideLen = MultiByteToWideChar(CP_UTF8, 0, groupName, groupNameLen, NULL, NIL);
 		
-		wchar_t* wide = new wchar_t[wideLen];
+		wchar_t* wide = new wchar_t[wideLen + 1];
 		MultiByteToWideChar(CP_UTF8, 0, groupName, groupNameLen, wide, wideLen);
+		wide[wideLen] = 0;
 
 		ctx2->BeginEventInt(wide, 0);
 

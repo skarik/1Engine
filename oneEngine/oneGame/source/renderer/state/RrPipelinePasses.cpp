@@ -11,8 +11,18 @@
 
 #include "core/math/Math3d.h"
 
+#include "core-ext/settings/SessionSettings.h"
+#include "../.res-1/shaders/deferred_pass/shade_lighting_p.variants.h"
+
+static core::settings::SessionSetting<bool> gsesh_LightingUseDebugBuffers ("rdbg_deferred_gbuffers", false);
+static core::settings::SessionSetting<bool> gsesh_LightingUseLighting ("rdbg_deferred_lighting", true);
+
 renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 {
+	RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
+	l_shadeLightingVariantInfo.VARIANT_DEBUG_GBUFFERS = gsesh_LightingUseDebugBuffers;
+	l_shadeLightingVariantInfo.VARIANT_DEBUG_LIGHTING = gsesh_LightingUseLighting;
+
 	// Create the render copy upscaling shader:
 	CopyScaled = new RrPass();
 	// Setup forward pass

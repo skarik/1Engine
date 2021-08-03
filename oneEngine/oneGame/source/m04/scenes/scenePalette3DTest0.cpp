@@ -49,7 +49,7 @@ void scenePalette3DTest0::LoadScene ( void )
 	// Create a plane to start with
 	{
 		RrShapePlane* plane = new RrShapePlane();
-		plane->transform.world.scale = Vector3f(30.0F, 30.0F, 30.0F);
+		plane->transform.world.scale = Vector3f(300.0F, 300.0F, 300.0F);
 
 		// Use a default material
 		RrPass pass;
@@ -85,6 +85,7 @@ void scenePalette3DTest0::LoadScene ( void )
 		pass.m_type = kPassTypeForward;
 		pass.m_alphaMode = renderer::kAlphaModeNone;
 		pass.m_cullMode = gpu::kCullModeNone;
+		pass.m_layer = renderer::kRenderLayerBackground;
 		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/env/sky_hosek_wilkie_vv.spv", "shaders/env/sky_hosek_wilkie_p.spv"}) );
 		renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition};
 		pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));

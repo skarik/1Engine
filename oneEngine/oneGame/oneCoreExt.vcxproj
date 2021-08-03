@@ -54,6 +54,7 @@
     <ClCompile Include="source\core-ext\resources\IArResourceSubsystem.cpp" />
     <ClCompile Include="source\core-ext\resources\ResourceManager.cpp" />
     <ClCompile Include="source\core-ext\settings\PersistentSettings.cpp" />
+    <ClCompile Include="source\core-ext\settings\SessionSettings.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\Conversion.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\ModelLoader.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Reader.cpp" />
@@ -105,6 +106,7 @@
     <ClInclude Include="source\core-ext\resources\IArResourceSubsystem.h" />
     <ClInclude Include="source\core-ext\resources\ResourceManager.h" />
     <ClInclude Include="source\core-ext\settings\PersistentSettings.h" />
+    <ClInclude Include="source\core-ext\settings\SessionSettings.h" />
     <ClInclude Include="source\core-ext\std\filesystem.h" />
     <ClInclude Include="source\core-ext\system\io\assets\Conversion.h" />
     <ClInclude Include="source\core-ext\system\io\assets\ResourceAnimLoader.h" />

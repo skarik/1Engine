@@ -267,6 +267,7 @@
     <ClInclude Include="source\renderer\material\RrShaderMasterSubsystem.h" />
     <ClInclude Include="source\renderer\material\RrShaderProgram.h" />
     <ClInclude Include="source\renderer\material\ShaderSlots.h" />
+    <ClInclude Include="source\renderer\material\ShaderVariations.h" />
     <ClInclude Include="source\renderer\material\VertexAttribute.h" />
     <ClInclude Include="source\renderer\module_renderer.h" />
     <ClInclude Include="source\renderer\object\RrRenderObject.h" />
