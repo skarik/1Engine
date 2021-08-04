@@ -24,9 +24,10 @@ Currently supported platforms:
 
 Current graphics API support:
 * **DirectX 11 (Default)** - Functional graphics. Incorrect synchronization. Requires both Windows 8.1 SDK and Vulkan SDK.
-* **OpenGL 4.6** - May not work with some Windows drivers. Functional graphics & compute. Incorrect synchronization. Can (maybe) fall back to 4.5.
 * **Vulkan 1.X** - In progress. Requires Vulkan SDK, available from LunarG.
 * **DirectX 12** - Planned. Requires both Windows 10 SDK and Vulkan SDK.
+* **PS5 API** - Planned. Still working out the kinks with textures.
+* **OpenGL 4.6** - No longer supported.
 
 Physics solution: **Bullet Physics**
 
@@ -72,6 +73,34 @@ Large game projects are mostly the same, but instead are prefixed by the game in
 
 * ``primary`` you're looking at it. public.
 * ``experimental`` scripting language, networking, other rendering pipelines (like consoles and stuff). ask for access, as bunch of the stuff legally cannot be on github.
+
+## Common Questions
+
+### Why GLSL Shaders?
+
+HLSL is the superior shader language, we all know. However, GLSL has the minimum feature set between the two - in other words, HLSL can support all of GLSL's features but GLSL can not support all of HLSL's features. To avoid this, all shaders are written in GLSL, at the cost of some sanity and performance.
+
+### Can I make a game with this?
+
+Yes.
+
+### Should I make a game with this?
+
+If you have money, and can pay EHS for full support and feature requestions, absolutely.
+
+Realistically, tt is recommended until the asset pipelines are fully mature before considering this as a usable engine for any project. This engine is in very active development. 
+
+### Can I just steal the GPUW module?
+
+God, please do. Noone should have to make a wrapper from scratch.
+
+### Do you have console-specific code available?
+
+Currently, no. While EHS maintains their access to console SDKs, development on them has not been a priority.
+
+### Can *I* contribute?
+
+Yes.
 
 ## Legal Info
 
