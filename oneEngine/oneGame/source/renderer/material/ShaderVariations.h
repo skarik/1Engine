@@ -43,6 +43,7 @@ public:
 			// Make sure next element steps over all the current element's indices.
 			multiplier *= variantValue->GetVariantCount();
 		}
+		return index;
 	}
 
 	//	GetVariantName() : Returns expected name of the current configuration's variant.

@@ -7,9 +7,13 @@
 class RrWorld;
 class RrOutputInfo;
 class RrOutputState;
+class RrShaderProgram;
 namespace gpu
 {
 	class GraphicsContext;
+	class Texture;
+	class RenderTarget;
+	class Pipeline;
 }
 
 class RrPipelineStateRenderer;
@@ -28,6 +32,22 @@ namespace renderer
 	RENDER_API RrPipelineOptions*
 							CreatePipelineOptions ( const renderer::PipelineMode mode );
 }
+
+//=====================================
+// Helper structures
+//=====================================
+
+struct rrPipelineCompositeInput
+{
+	gpu::Texture*		deferred_albedo = nullptr;
+	gpu::Texture*		deferred_normals = nullptr;
+	gpu::Texture*		deferred_surface = nullptr;
+	gpu::Texture*		deferred_emissive = nullptr;
+
+	gpu::Texture*		forward_color = nullptr;
+
+	gpu::RenderTarget*	output_color = nullptr;
+};
 
 //=====================================
 // Common pipeline information
@@ -61,7 +81,7 @@ public:
 		{}
 
 	//	CompositeDeferred() : Called when the renderer wants to combine a deferred pass with a forward pass.
-	RENDER_API virtual void CompositeDeferred (  gpu::GraphicsContext* gfx )
+	RENDER_API virtual void CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
 		{}
 
 public:
@@ -85,6 +105,9 @@ public:
 class RrPipelineStandardRenderer : public RrPipelineStateRenderer
 {
 public:
+	RENDER_API				RrPipelineStandardRenderer ( void );
+							~RrPipelineStandardRenderer ( void );
+
 	//	IsCompatible()
 	// Is this state compatible with the given pipeline? If not, it is destroyed and correct one is created.
 	RENDER_API bool			IsCompatible ( const renderer::PipelineMode mode ) const override
@@ -92,6 +115,13 @@ public:
 
 	//	CullObjects() : Called to cull objects.
 	RENDER_API void			CullObjects ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world ) override;
+
+	//	CompositeDeferred() : Called when the renderer wants to combine a deferred pass with a forward pass.
+	RENDER_API void			CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
+
+private:
+	RrShaderProgram*	m_lightingCompositeProgram = nullptr;
+	gpu::Pipeline*		m_lightingCompositePipeline;
 };
 
 class RrPipelineStandardOptions : public RrPipelineOptions

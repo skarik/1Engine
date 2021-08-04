@@ -38,10 +38,6 @@ struct rrBufferChainInfo
 class RrHybridBufferChain
 {
 public:
-	// Creates buffers for rendering to.
-	//RENDER_API void			CreateTargetBuffers ( void );
-	//
-
 	//	CreateTargetBufferChain(io_settings, size) : Recreates buffers for the given chain.
 	// Will create new buffers using the options given in io_settings, dropping options until creation works.
 	// Arguments:
@@ -51,16 +47,8 @@ public:
 	//	ErrorCode: Describes success or failure of the call.
 	RENDER_API gpu::ErrorCode
 							CreateTargetBufferChain ( rrBufferChainInfo* io_settings, const Vector2i& size );
-	bool					CreateTargetBufferChain_Internal ( const rrBufferChainInfo* settings, const Vector2i& size );
 
-	/*RENDER_API gpu::RenderTarget*
-							GetForwardBuffer ( void );
-	RENDER_API gpu::RenderTarget*
-							GetDeferredBuffer ( void );
-	RENDER_API gpu::Texture*
-							GetDepthTexture ( void );
-	RENDER_API gpu::WOFrameAttachment*
-							GetStencilTexture ( void );*/
+	bool					CreateTargetBufferChain_Internal ( const rrBufferChainInfo* settings, const Vector2i& size );
 
 	bool					FreeTargetBufferChain ( void );
 
@@ -70,19 +58,14 @@ public:
 		kMRTColorAttachmentCount = 4,
 	};
 
-	//glHandle		buffer_depth;
-	//glHandle		buffer_stencil;
-	gpu::Texture		buffer_depth;
+	gpu::Texture		texture_depth;
 	gpu::WOFrameAttachment
-						buffer_stencil;
-	//RrRenderTexture*	buffer_forward_rt;
-	gpu::Texture		buffer_color;
+						texture_stencil;
+	gpu::Texture		texture_color;
 	gpu::RenderTarget	buffer_forward_rt		= gpu::RenderTarget();
 
-	//CMRTTexture*	buffer_deferred_mrt;
-	//RrRenderTexture*	buffer_deferred_rt;
-	gpu::Texture		buffer_deferred_color_composite;
-	gpu::Texture		buffer_deferred_color[kMRTColorAttachmentCount];
+	gpu::Texture		texture_deferred_color_composite;
+	gpu::Texture		texture_deferred_color[kMRTColorAttachmentCount];
 	uint				buffer_deferred_color_count = 0;
 	gpu::RenderTarget	buffer_deferred_mrt		= gpu::RenderTarget();
 	gpu::RenderTarget	buffer_deferred_rt		= gpu::RenderTarget();

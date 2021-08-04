@@ -153,9 +153,6 @@
     <ClCompile Include="source\renderer\state\Options.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp">
-      <Filter>SOURCE\Renderer\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh\System</Filter>
     </ClCompile>
@@ -400,9 +397,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\state\Options.h">
       <Filter>SOURCE\Renderer\State</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\utils\glTMeshContainer.h">
-      <Filter>SOURCE\Renderer\Utils</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\types\ModelStructures.h">
       <Filter>SOURCE\Renderer\Types</Filter>

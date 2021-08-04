@@ -51,6 +51,15 @@ InstancedGrassRenderObject::InstancedGrassRenderObject ( void )
 	model.position[6] = Vector3f(0, -kWidth, kHeight);
 	model.position[7] = Vector3f(0,  kWidth, kHeight);
 
+	// Set normals
+	for (uint i = 0; i < 2; ++i)
+	{
+		for (uint j = 0; j < 4; ++j)
+		{
+			model.normal[j + 4*i] = (i == 0) ? Vector3f(0.0F, 1.0F, 0.0F) : Vector3f(1.0F, 0.0F, 0.0F);
+		}
+	}
+
 	// Set triangles
 	model.indices = new uint16_t [9];
 	model.indexNum = 9;
@@ -84,13 +93,16 @@ InstancedGrassRenderObject::InstancedGrassRenderObject ( void )
 	// Use a default material
 	RrPass pass;
 	pass.utilSetupAsDefault();
-	pass.m_type = kPassTypeForward;
+	pass.m_type = kPassTypeDeferred;
 	pass.m_alphaMode = renderer::kAlphaModeAlphatest;
 	pass.m_cullMode = gpu::kCullModeNone;
-	pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/env/foliage_hapgrass0_vv.spv", "shaders/env/foliage_hapgrass0_p.spv"}) );
+	pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/deferred_env/foliage_hapgrass0_vv.spv", "shaders/deferred_env/simple_p.spv"}) );
 	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
 											renderer::shader::Location::kUV0,
-											renderer::shader::Location::kColor};
+											renderer::shader::Location::kColor,
+											renderer::shader::Location::kNormal,
+											renderer::shader::Location::kTangent,
+											renderer::shader::Location::kBinormal};
 	pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
 	pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
 	//pass.setTexture(rrTextureSlot::TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite));

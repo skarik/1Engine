@@ -54,7 +54,7 @@ void scenePalette3DTest0::LoadScene ( void )
 		// Use a default material
 		RrPass pass;
 		pass.utilSetupAsDefault();
-		pass.m_type = kPassTypeForward;
+		pass.m_type = kPassTypeDeferred;
 		pass.m_alphaMode = renderer::kAlphaModeNone;
 		pass.m_cullMode = gpu::kCullModeNone;
 		pass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -62,12 +62,13 @@ void scenePalette3DTest0::LoadScene ( void )
 		pass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
 		pass.setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureBlack) );
 		pass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
-		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"}) );
+		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/deferred_env/simple_vv.spv", "shaders/deferred_env/simple_p.spv"}) );
 		renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
 												renderer::shader::Location::kUV0,
 												renderer::shader::Location::kColor,
 												renderer::shader::Location::kNormal,
-												renderer::shader::Location::kTangent};
+												renderer::shader::Location::kTangent,
+												renderer::shader::Location::kBinormal};
 		pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
 		pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
 
@@ -106,7 +107,7 @@ void scenePalette3DTest0::LoadScene ( void )
 			Matrix4x4 transform, dump;
 			core::TransformUtility::TRSToMatrix4x4(
 				Vector3f(Random.Range(-2.0F, +2.0F), Random.Range(-2.0F, +2.0F), 0.0F),
-				Rotator(),
+				Rotator(0.0F, 0.0F, Random.Range(0.0F, 360.0F)),
 				Vector3f(1, 1, 1),
 				transform,
 				dump);

@@ -333,7 +333,8 @@ void RrRenderer::StepBufferPush ( gpu::GraphicsContext* gfx, const RrOutputInfo&
 			gfx->setVertexBuffer(0, &pipelinePasses->m_vbufScreenQuad_ForOutputSurface, 0); // see RrPipelinePasses.cpp
 			gfx->setVertexBuffer(1, &pipelinePasses->m_vbufScreenQuad_ForOutputSurface, 0); // there are two binding slots defined with different stride
 			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0,
-				                      state->internal_chain_current->buffer_forward_rt.getAttachment(gpu::kRenderTargetSlotColor0));
+										&state->internal_chain_current->texture_color);
+				                      //state->internal_chain_current->buffer_forward_rt.getAttachment(gpu::kRenderTargetSlotColor0));
 			gfx->draw(4, 0);
 		}
 		gfx->clearPipelineAndWait(); // Wait until we're done using the buffer...
@@ -1134,6 +1135,8 @@ Render_Groups:
 		bool dirty_deferred = false;
 		bool dirty_forward = false;
 
+		gfx->debugGroupPush((std::string("Rendering Layer ") + std::to_string((int)iLayer)).c_str());
+
 		// Set up output
 		{
 			gfx->setRenderTarget(&bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
@@ -1223,6 +1226,10 @@ Render_Groups:
 					cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
 					cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
 			}
+
+			// Clear color on MRT now
+			float clearColor[] = {0, 0, 0, 0};
+			gfx->clearColor(clearColor);
 
 			// Set up default depth-equal for lazy objects
 			{
@@ -1361,14 +1368,30 @@ Render_Groups:
 			dirty_forward = true;
 
 		// run another composite if forward is dirty
-		if (dirty_forward)
+		if (dirty_deferred)
 		{
+			// TODO
 			if (state->pipeline_renderer != nullptr)
 			{
-				state->pipeline_renderer->CompositeDeferred(gfx);
+				rrPipelineCompositeInput input;
+
+				input.deferred_albedo = &bufferChain->texture_deferred_color[0];
+				input.deferred_normals = &bufferChain->texture_deferred_color[1];
+				input.deferred_surface = &bufferChain->texture_deferred_color[2];
+				input.deferred_emissive = &bufferChain->texture_deferred_color[3];
+				input.forward_color = dirty_forward ? &bufferChain->texture_color : nullptr;
+
+				input.output_color = &bufferChain->buffer_deferred_rt;
+
+				state->pipeline_renderer->CompositeDeferred(gfx, input, state);
+
+				// Quietly swap the inputs & outputs here.
+				std::swap(bufferChain->buffer_deferred_rt, bufferChain->buffer_forward_rt);
+				std::swap(bufferChain->texture_deferred_color_composite, bufferChain->texture_color);
 			}
-			// TODO
 		}
+
+		gfx->debugGroupPop();
 	}
 
 	// at the end, copy the aggregate forward RT onto the render target (do that outside of this function!)

@@ -11,20 +11,20 @@
 
 #include "core/math/Math3d.h"
 
-#include "core-ext/settings/SessionSettings.h"
+/*#include "core-ext/settings/SessionSettings.h"
 #include "../.res-1/shaders/deferred_pass/shade_lighting_p.variants.h"
 
 static core::settings::SessionSetting<bool> gsesh_LightingUseDebugBuffers ("rdbg_deferred_gbuffers", false);
-static core::settings::SessionSetting<bool> gsesh_LightingUseLighting ("rdbg_deferred_lighting", true);
+static core::settings::SessionSetting<bool> gsesh_LightingUseLighting ("rdbg_deferred_lighting", true);*/
 
 renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 {
-	RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
+	/*RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
 	l_shadeLightingVariantInfo.VARIANT_DEBUG_GBUFFERS = gsesh_LightingUseDebugBuffers;
-	l_shadeLightingVariantInfo.VARIANT_DEBUG_LIGHTING = gsesh_LightingUseLighting;
+	l_shadeLightingVariantInfo.VARIANT_DEBUG_LIGHTING = gsesh_LightingUseLighting;*/
 
 	// Create the render copy upscaling shader:
-	CopyScaled = new RrPass();
+	/*CopyScaled = new RrPass();
 	// Setup forward pass
 	CopyScaled->m_type = kPassTypeForward;
 	CopyScaled->m_cullMode = gpu::kCullModeNone;
@@ -67,7 +67,7 @@ renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 	Lighting2DPass->m_cullMode = gpu::kCullModeNone;
 	Lighting2DPass->setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{
 		"shaders/def_screen/pass_lighting2d_vv.spv",
-		"shaders/def_screen/pass_lighting2d_p.spv"}) );
+		"shaders/def_screen/pass_lighting2d_p.spv"}) );*/
 
 	// Create the quad
 	Vector4f screenquad [] = {
@@ -99,7 +99,7 @@ renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 	m_vbufScreenQuad_ForOutputSurface.upload(NULL, screenquad, sizeof(screenquad), gpu::kTransferStatic);
 
 	// create the pipeline
-	gpu::VertexInputBindingDescription binding_desc [2];
+	/*gpu::VertexInputBindingDescription binding_desc [2];
 	binding_desc[0].binding = 0;
 	binding_desc[0].stride = sizeof(Vector4f);
 	binding_desc[0].inputRate = gpu::kInputRatePerVertex;
@@ -129,18 +129,55 @@ renderer::pipeline::RrPipelinePasses::RrPipelinePasses ( void )
 	desc.vv_inputAttributesCount = 3;
 	desc.ia_topology = gpu::kPrimitiveTopologyTriangleStrip;
 	desc.ia_primitiveRestartEnable = false;
-	m_pipelineScreenQuadCopy.create(NULL, &desc);
+	m_pipelineScreenQuadCopy.create(NULL, &desc);*/
+	CreatePipeline(&renderer::pass::Copy->m_program->GetShaderPipeline(), m_pipelineScreenQuadCopy);
 }
 
 renderer::pipeline::RrPipelinePasses::~RrPipelinePasses ( void )
 {
-	delete_safe(CopyScaled);
+	/*delete_safe(CopyScaled);
 
 	delete_safe(LightingPass);
 	delete_safe(EchoPass);
 	delete_safe(ShaftPass);
-	delete_safe(Lighting2DPass);
+	delete_safe(Lighting2DPass);*/
 
 	m_vbufScreenQuad.free(NULL);
 	m_pipelineScreenQuadCopy.destroy(NULL);
+}
+
+void renderer::pipeline::RrPipelinePasses::CreatePipeline ( gpu::ShaderPipeline* in_pipeline, gpu::Pipeline& out_pipeline )
+{
+	// create the pipeline
+	gpu::VertexInputBindingDescription binding_desc [2];
+	binding_desc[0].binding = 0;
+	binding_desc[0].stride = sizeof(Vector4f);
+	binding_desc[0].inputRate = gpu::kInputRatePerVertex;
+	binding_desc[1].binding = 1;
+	binding_desc[1].stride = 0; // no stride, constant color
+	binding_desc[1].inputRate = gpu::kInputRatePerVertex;
+
+	gpu::VertexInputAttributeDescription attrib_desc [3];
+	attrib_desc[0].binding = 0;
+	attrib_desc[0].offset = 0;
+	attrib_desc[0].location = (uint32_t)renderer::shader::Location::kPosition;
+	attrib_desc[0].format = gpu::kFormatR32G32B32SFloat;
+	attrib_desc[1].binding = 0;
+	attrib_desc[1].offset = sizeof(Vector4f) * 4;
+	attrib_desc[1].location = (uint32_t)renderer::shader::Location::kUV0;
+	attrib_desc[1].format = gpu::kFormatR32G32SFloat;
+	attrib_desc[2].binding = 1; // uses the binding w/o any stride
+	attrib_desc[2].offset = sizeof(Vector4f) * 8;
+	attrib_desc[2].location = (uint32_t)renderer::shader::Location::kColor;
+	attrib_desc[2].format = gpu::kFormatR32G32B32A32SFloat;
+
+	gpu::PipelineCreationDescription desc;
+	desc.shader_pipeline = in_pipeline;
+	desc.vv_inputBindings = binding_desc;
+	desc.vv_inputBindingsCount = 2;
+	desc.vv_inputAttributes = attrib_desc;
+	desc.vv_inputAttributesCount = 3;
+	desc.ia_topology = gpu::kPrimitiveTopologyTriangleStrip;
+	desc.ia_primitiveRestartEnable = false;
+	out_pipeline.create(NULL, &desc);
 }

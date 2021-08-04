@@ -4,6 +4,7 @@
 #include "core/types.h"
 #include "gpuw/Buffers.h"
 #include "gpuw/Pipeline.h"
+#include "gpuw/ShaderPipeline.h"
 
 class RrPass;
 
@@ -16,13 +17,14 @@ namespace pipeline
 								RrPipelinePasses ( void );
 								~RrPipelinePasses ( void );
 
+		RENDER_API void			CreatePipeline ( gpu::ShaderPipeline* in_pipeline, gpu::Pipeline& out_pipeline );
 	public:
 
-		RrPass*				CopyScaled;
+		/*RrPass*				CopyScaled;
 		RrPass*				LightingPass;
 		RrPass*				EchoPass;
 		RrPass*				ShaftPass;
-		RrPass*				Lighting2DPass;
+		RrPass*				Lighting2DPass;*/
 
 		gpu::Pipeline		m_pipelineScreenQuadCopy;
 		gpu::Buffer			m_vbufScreenQuad;

@@ -368,6 +368,11 @@ public:
 	// Settings and query
 	// ================================
 
+	// todo: class is tiny. can probably combine down to this class
+	RENDER_API renderer::pipeline::RrPipelinePasses*
+							GetPipelinePasses ( void )
+		{ return pipelinePasses; }
+
 public:
 	// Public active instance pointer
 	RENDER_API static RrRenderer* Active;

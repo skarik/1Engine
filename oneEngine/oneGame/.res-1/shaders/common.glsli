@@ -1,3 +1,5 @@
+#ifndef COMMON_GLSLI_
+#define COMMON_GLSLI_
 
 // Binding constants. Ensure matches with renderer\types\shaders\cbuffers.h
 #define CBUFFER_PER_OBJECT_MATRICES 0
@@ -24,3 +26,5 @@ vec4 TransformToProjection ( mat4 viewProjection, vec3 localPosition )
 	vec4 v_screenPos = viewProjection * vec4(localPosition, 1.0);
 	return v_screenPos;
 }
+
+#endif//COMMON_GLSLI_

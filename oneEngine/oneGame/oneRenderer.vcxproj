@@ -180,9 +180,6 @@
     <ClCompile Include="source\renderer\types\ObjectSettings.cpp" />
     <ClCompile Include="source\renderer\utils\rrMeshBuilder.cpp" />
     <ClCompile Include="source\renderer\utils\RrScreenshot.cpp" />
-    <ClCompile Include="source\renderer\utils\glTMeshContainer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\renderer\utils\IrrMeshBuilder.cpp" />
     <ClCompile Include="source\renderer\utils\rrMeshBuilder2D.cpp" />
     <ClCompile Include="source\renderer\utils\rrTextBuilder2D.cpp" />
@@ -325,9 +322,6 @@
     <ClInclude Include="source\renderer\types\types.h" />
     <ClInclude Include="source\renderer\types\viewport.h" />
     <ClInclude Include="source\renderer\utils\RrScreenshot.h" />
-    <ClInclude Include="source\renderer\utils\glTMeshContainer.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="source\renderer\utils\IrrMeshBuilder.h" />
     <ClInclude Include="source\renderer\utils\rrMeshBuilder.h" />
     <ClInclude Include="source\renderer\utils\rrMeshBuilder2D.h" />

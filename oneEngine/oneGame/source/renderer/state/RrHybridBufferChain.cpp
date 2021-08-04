@@ -97,13 +97,13 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const rrBufferChain
 {
 	// Delete shared buffers
 	{
-		buffer_color.free();
-		buffer_deferred_color_composite.free();
-		buffer_depth.free();
-		buffer_stencil.free();
+		texture_color.free();
+		texture_deferred_color_composite.free();
+		texture_depth.free();
+		texture_stencil.free();
 
 		for (int i = 0; i < kMRTColorAttachmentCount; ++i)
-			buffer_deferred_color[i].free();
+			texture_deferred_color[i].free();
 	}
 	// Delete forward buffers
 	if ( buffer_forward_rt.empty() == false )
@@ -121,23 +121,23 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const rrBufferChain
 	if ( buffer_forward_rt.empty() )
 	{
 		// Generate unique color buffer
-		buffer_color.allocate(core::gfx::tex::kTextureType2D, settings->mainAttachmentFormat, size.x, size.y, 1, 1);
+		texture_color.allocate(core::gfx::tex::kTextureType2D, settings->mainAttachmentFormat, size.x, size.y, 1, 1);
 
 		// Generate shared depth and stencil buffers (these are also used by the MRT)
 		if ( settings->depthFormat != core::gfx::tex::kDepthFormatNone )
-			buffer_depth.allocate(core::gfx::tex::kTextureType2D, settings->depthFormat, size.x, size.y, 1, 1);
+			texture_depth.allocate(core::gfx::tex::kTextureType2D, settings->depthFormat, size.x, size.y, 1, 1);
 		if ( settings->stencilFormat != core::gfx::tex::kStencilFormatNone )
-			buffer_stencil.allocate(core::gfx::tex::kTextureType2D, settings->stencilFormat, size.x, size.y, 1, 1);
+			texture_stencil.allocate(core::gfx::tex::kTextureType2D, settings->stencilFormat, size.x, size.y, 1, 1);
 
 		buffer_forward_rt.create(NULL);
 		// Put the buffer together
-		buffer_forward_rt.attach(gpu::kRenderTargetSlotColor0, &buffer_color);
-		buffer_forward_rt.attach(gpu::kRenderTargetSlotDepth, &buffer_depth);
+		buffer_forward_rt.attach(gpu::kRenderTargetSlotColor0, &texture_color);
+		buffer_forward_rt.attach(gpu::kRenderTargetSlotDepth, &texture_depth);
 		// Override for the combined formats (TODO: Check if this is valid)
 		if (settings->depthFormat == core::gfx::tex::kDepthFormat32FStencil8 || settings->depthFormat == core::gfx::tex::kDepthFormat24Stencil8)
-			buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_depth);
+			buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &texture_depth);
 		else
-			buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_stencil);
+			buffer_forward_rt.attach(gpu::kRenderTargetSlotStencil, &texture_stencil);
 		// "Compile" the render target.
 		buffer_forward_rt.assemble();
 
@@ -151,39 +151,45 @@ bool RrHybridBufferChain::CreateTargetBufferChain_Internal ( const rrBufferChain
 	if ( buffer_deferred_mrt.empty() )
 	{
 		// Generate unique color buffer
-		buffer_deferred_color_composite.allocate(core::gfx::tex::kTextureType2D, settings->mainAttachmentFormat, size.x, size.y, 1, 1);
+		texture_deferred_color_composite.allocate(core::gfx::tex::kTextureType2D, settings->mainAttachmentFormat, size.x, size.y, 1, 1);
 
 		buffer_deferred_rt.create(NULL);
 		// Put the buffer together
-		buffer_deferred_rt.attach(gpu::kRenderTargetSlotColor0, &buffer_deferred_color_composite);
-		buffer_deferred_rt.attach(gpu::kRenderTargetSlotDepth, &buffer_depth);
+		buffer_deferred_rt.attach(gpu::kRenderTargetSlotColor0, &texture_deferred_color_composite);
+		buffer_deferred_rt.attach(gpu::kRenderTargetSlotDepth, &texture_depth);
 		// Override for the combined formats (TODO: Check if this is valid)
 		if (settings->depthFormat == core::gfx::tex::kDepthFormat32FStencil8 || settings->depthFormat == core::gfx::tex::kDepthFormat24Stencil8)
-			buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_depth);
+			buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &texture_depth);
 		else
-			buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &buffer_stencil);
+			buffer_deferred_rt.attach(gpu::kRenderTargetSlotStencil, &texture_stencil);
 		// "Compile" the render target.
 		buffer_deferred_rt.assemble();
+
+		// Check to make sure buffer is valid.
+		if (!buffer_deferred_rt.valid())
+		{
+			return false;
+		}
 
 		// Create the MRT buffers
 		ARCORE_ASSERT(kMRTColorAttachmentCount <= settings->colorAttachmentCount);
 		for (uint i = 0; i < settings->colorAttachmentCount; ++i)
 		{
-			buffer_deferred_color[i].allocate(core::gfx::tex::kTextureType2D, settings->colorAttachmentFormats[i], size.x, size.y, 1, 1);
+			texture_deferred_color[i].allocate(core::gfx::tex::kTextureType2D, settings->colorAttachmentFormats[i], size.x, size.y, 1, 1);
 		}
 		buffer_deferred_color_count = settings->colorAttachmentCount;
 
 		buffer_deferred_mrt.create(NULL);
 		// Attach the color buffers for the MRT
 		for (int i = 0; i < settings->colorAttachmentCount; ++i)
-			buffer_deferred_mrt.attach(gpu::kRenderTargetSlotColor0 + i, &buffer_deferred_color[i]);
+			buffer_deferred_mrt.attach(gpu::kRenderTargetSlotColor0 + i, &texture_deferred_color[i]);
 		// Add the shared depth & stencil
-		buffer_deferred_mrt.attach(gpu::kRenderTargetSlotDepth, &buffer_depth);
+		buffer_deferred_mrt.attach(gpu::kRenderTargetSlotDepth, &texture_depth);
 		// Override for the combined formats (TODO: Check if this is valid)
 		if (settings->depthFormat == core::gfx::tex::kDepthFormat32FStencil8 || settings->depthFormat == core::gfx::tex::kDepthFormat24Stencil8)
-			buffer_deferred_mrt.attach(gpu::kRenderTargetSlotStencil, &buffer_depth);
+			buffer_deferred_mrt.attach(gpu::kRenderTargetSlotStencil, &texture_depth);
 		else
-			buffer_deferred_mrt.attach(gpu::kRenderTargetSlotStencil, &buffer_stencil);
+			buffer_deferred_mrt.attach(gpu::kRenderTargetSlotStencil, &texture_stencil);
 		// "Compile" the render target.
 		buffer_deferred_mrt.assemble();
 
@@ -201,13 +207,13 @@ bool RrHybridBufferChain::FreeTargetBufferChain ( void )
 {
 	// Delete shared buffers
 	{
-		buffer_color.free();
-		buffer_deferred_color_composite.free();
-		buffer_depth.free();
-		buffer_stencil.free();
+		texture_color.free();
+		texture_deferred_color_composite.free();
+		texture_depth.free();
+		texture_stencil.free();
 
 		for (uint i = 0; i < buffer_deferred_color_count; ++i)
-			buffer_deferred_color[i].free();
+			texture_deferred_color[i].free();
 	}
 	// Delete forward buffers
 	if ( buffer_forward_rt.empty() == false )
