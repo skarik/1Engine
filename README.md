@@ -23,11 +23,12 @@ Currently supported platforms:
 * Windows x64 MSClang (In progress...)
 
 Current graphics API support:
-* **DirectX 11 (Default)** - Functional graphics. Incorrect synchronization. Requires both Windows 8.1 SDK and Vulkan SDK.
+* **DirectX 11 (Default)** - Functional graphics. Incorrect synchronization. Requires both Windows 10 SDK and Vulkan SDK.
 * **Vulkan 1.X** - In progress. Requires Vulkan SDK, available from LunarG.
 * **DirectX 12** - Planned. Requires both Windows 10 SDK and Vulkan SDK.
 * **PS5 API** - Planned. Still working out the kinks with textures.
 * **OpenGL 4.6** - No longer supported.
+* **PS4 API** - Not planned.
 
 Physics solution: **Bullet Physics**
 
@@ -63,6 +64,7 @@ Large game projects are mostly the same, but instead are prefixed by the game in
       * ``deploy`` backend for creating executables
       * ``tool`` backend for IPC tools needed for development. replaces ``_devtools``
       * ``after`` ``after-editor`` ``ld40`` ``m04`` ``m04-editor`` ``tool-suite`` game and tool projects
+    * ``build-scripts`` python scripts used in the building process. The shader compiling scripts live here.
     * ``_devtools`` programs & code for tools needed for development. **This will be phasing out**
     * ``.res-1`` engine common resources
     * ``.res-0`` base game resources
@@ -88,11 +90,11 @@ Yes.
 
 If you have money, and can pay EHS for full support and feature requestions, absolutely.
 
-Realistically, tt is recommended until the asset pipelines are fully mature before considering this as a usable engine for any project. This engine is in very active development. 
+Realistically, it is recommended until the asset pipelines are fully mature before considering this as a usable engine for any project. This engine is in very active development. 
 
 ### Can I just steal the GPUW module?
 
-God, please do. Noone should have to make a wrapper from scratch.
+God, please do. **No one** should have to make a graphics wrapper from scratch.
 
 ### Do you have console-specific code available?
 
