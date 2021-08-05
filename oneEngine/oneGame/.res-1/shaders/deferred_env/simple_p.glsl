@@ -22,10 +22,10 @@ void main ( void )
 	vec4 diffuseColor = texture( textureSampler0, v2f_texcoord0 );
 	if (diffuseColor.a <= sys_AlphaCutoff) discard;
 
-	rrShaderOutput result;
+	rrSurfaceInfo result;
 	
-	result.diffuse = diffuseColor * v2f_colors;
-	result.normals = normalize(gl_FrontFacing ? v2f_normal : -v2f_normal);
+	result.albedo = diffuseColor * v2f_colors;
+	result.normal = normalize(gl_FrontFacing ? v2f_normal : -v2f_normal);
 	
 	result.metalness = 0.0;
 	result.smoothness = 0.0;

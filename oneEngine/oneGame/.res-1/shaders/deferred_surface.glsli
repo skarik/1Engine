@@ -1,0 +1,28 @@
+#ifndef DEFERRED_SURFACE_GLSLI_
+#define DEFERRED_SURFACE_GLSLI_
+
+// Structued output
+struct rrSurfaceInfo
+{
+	vec4 albedo;
+	vec3 normal;
+	
+	float metalness;
+	float smoothness;
+	
+	vec3 emissive;
+	
+	vec3 world_position;
+};
+
+// Structured input
+struct rrGBufferValues
+{
+	vec4 buffer0;
+	vec4 buffer1;
+	vec4 buffer2;
+	vec4 buffer3;
+	float depth;
+};
+
+#endif//DEFERRED_SURFACE_GLSLI_

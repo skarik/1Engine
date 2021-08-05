@@ -1,31 +1,21 @@
 #ifndef DEFERRED_ENV_OUTPUT_COMMON_P_GLSLI_
 #define DEFERRED_ENV_OUTPUT_COMMON_P_GLSLI_
 
+#include "../deferred_surface.glsli"
+
 // Outputs
 layout(location = 0) out vec4 FragDiffuse;
 layout(location = 1) out vec4 FragNormals;
 layout(location = 2) out vec4 FragLighting;
 layout(location = 3) out vec4 FragGlowmap;
 
-// Structued output
-struct rrShaderOutput
-{
-	vec4 diffuse;
-	vec3 normals;
-	
-	float metalness;
-	float smoothness;
-	
-	vec3 emissive;
-};
-
 // Pushing structured output
-void PushOutput ( in rrShaderOutput shaderOutput )
+void PushOutput ( in rrSurfaceInfo shaderOutput )
 {
-	FragDiffuse = shaderOutput.diffuse;
-	FragNormals = vec4(shaderOutput.normals, 1.0);
-	FragLighting = vec4(shaderOutput.metalness, shaderOutput.smoothness, 1.0, 1.0);
-	FragGlowmap = vec4(shaderOutput.emissive, 1.0);
+	FragDiffuse		= shaderOutput.albedo;
+	FragNormals		= vec4(shaderOutput.normal, 1.0);
+	FragLighting	= vec4(shaderOutput.metalness, shaderOutput.smoothness, 1.0, 1.0);
+	FragGlowmap		= vec4(shaderOutput.emissive, 1.0);
 }
 
 #endif//DEFERRED_ENV_OUTPUT_COMMON_P_GLSLI_

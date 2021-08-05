@@ -3,6 +3,7 @@
 
 #include "core/types.h"
 #include "renderer/state/PipelineModes.h"
+#include "renderer/types/ObjectSettings.h"
 
 class RrWorld;
 class RrOutputInfo;
@@ -44,9 +45,22 @@ struct rrPipelineCompositeInput
 	gpu::Texture*		deferred_surface = nullptr;
 	gpu::Texture*		deferred_emissive = nullptr;
 
+	gpu::Texture*		combined_depth = nullptr;
+
 	gpu::Texture*		forward_color = nullptr;
 
-	gpu::RenderTarget*	output_color = nullptr;
+	gpu::Texture*		output_color = nullptr;
+};
+
+struct rrPipelineLayerFinishInput
+{
+	renderer::rrRenderLayer
+						layer = renderer::kRenderLayerSkip;
+
+	gpu::Texture*		color = nullptr;
+	gpu::Texture*		depth = nullptr;
+
+	gpu::Texture*		output_color = nullptr;
 };
 
 //=====================================
@@ -77,11 +91,15 @@ public:
 
 	//	PreparePass()
 	// Called before a world begins to render.
-	RENDER_API virtual void PreparePass ( gpu::GraphicsContext* gfx )
+	RENDER_API virtual void	PreparePass ( gpu::GraphicsContext* gfx )
 		{}
 
 	//	CompositeDeferred() : Called when the renderer wants to combine a deferred pass with a forward pass.
-	RENDER_API virtual void CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
+	RENDER_API virtual void	CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
+		{}
+
+	//	RenderLayerEnd() : Called when the renderer finishes a given layer.
+	RENDER_API virtual void	RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state )
 		{}
 
 public:
@@ -118,6 +136,9 @@ public:
 
 	//	CompositeDeferred() : Called when the renderer wants to combine a deferred pass with a forward pass.
 	RENDER_API void			CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
+
+	//	RenderLayerEnd() : Called when the renderer finishes a given layer.
+	RENDER_API void			RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) override;
 
 private:
 	RrShaderProgram*	m_lightingCompositeProgram = nullptr;

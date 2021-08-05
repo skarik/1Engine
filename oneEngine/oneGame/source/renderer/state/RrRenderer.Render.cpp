@@ -1379,9 +1379,10 @@ Render_Groups:
 				input.deferred_normals = &bufferChain->texture_deferred_color[1];
 				input.deferred_surface = &bufferChain->texture_deferred_color[2];
 				input.deferred_emissive = &bufferChain->texture_deferred_color[3];
+				input.combined_depth = &bufferChain->texture_depth;
 				input.forward_color = dirty_forward ? &bufferChain->texture_color : nullptr;
 
-				input.output_color = &bufferChain->buffer_deferred_rt;
+				input.output_color = &bufferChain->texture_deferred_color_composite;
 
 				state->pipeline_renderer->CompositeDeferred(gfx, input, state);
 
@@ -1390,6 +1391,24 @@ Render_Groups:
 				std::swap(bufferChain->texture_deferred_color_composite, bufferChain->texture_color);
 			}
 		}
+
+		// finish off the layer
+		/*if (state->pipeline_renderer != nullptr)
+		{
+			rrPipelineLayerFinishInput input;
+
+			input.layer = (renderer::rrRenderLayer)iLayer;
+			input.color = &bufferChain->texture_color;
+			input.depth = &bufferChain->texture_depth;
+
+			input.output_color = &bufferChain->texture_deferred_color_composite;
+
+			state->pipeline_renderer->RenderLayerEnd(gfx, input, state);
+
+			// Quietly swap the inputs & outputs here.
+			std::swap(bufferChain->buffer_deferred_rt, bufferChain->buffer_forward_rt);
+			std::swap(bufferChain->texture_deferred_color_composite, bufferChain->texture_color);
+		}*/
 
 		gfx->debugGroupPop();
 	}

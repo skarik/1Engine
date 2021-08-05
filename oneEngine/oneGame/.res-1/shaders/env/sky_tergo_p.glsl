@@ -85,7 +85,7 @@ void main ( void )
 		(1.0 - l_sunRay.z) * M_PI * 0.5, atan(l_sunRay.y, l_sunRay.x)
 		);
 	
-	FragDiffuse = vec4(skyColor, 1.0);
+	FragDiffuse = vec4(max(vec3(0, 0, 0), skyColor), 1.0);
 }
 
 const float kHosekCoeffsX[] = float[](

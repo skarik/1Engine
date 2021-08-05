@@ -87,7 +87,7 @@ void scenePalette3DTest0::LoadScene ( void )
 		pass.m_alphaMode = renderer::kAlphaModeNone;
 		pass.m_cullMode = gpu::kCullModeNone;
 		pass.m_layer = renderer::kRenderLayerBackground;
-		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/env/sky_hosek_wilkie_vv.spv", "shaders/env/sky_hosek_wilkie_p.spv"}) );
+		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/env/sky_tergo_vv.spv", "shaders/env/sky_tergo_p.spv"}) );
 		renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition};
 		pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
 		pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;

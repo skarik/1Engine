@@ -105,7 +105,7 @@ int gpu::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size
 	
 	D3D11_BUFFER_DESC bufferInfo = {};
 	bufferInfo.Usage = D3D11_USAGE_DYNAMIC;
-	bufferInfo.ByteWidth = (UINT)data_size;
+	bufferInfo.ByteWidth = std::max(16U, (UINT)data_size);
 	bufferInfo.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferInfo.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	bufferInfo.MiscFlags = 0;

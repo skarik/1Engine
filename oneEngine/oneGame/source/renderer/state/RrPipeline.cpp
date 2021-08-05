@@ -108,18 +108,27 @@ void RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, 
 	auto& output = *state->output_info;
 	rrViewport output_viewport =  output.GetOutputViewport();
 
+	// Create render target output
+	gpu::RenderTarget compositeOutput;
+	compositeOutput.create(NULL);
+	compositeOutput.attach(0, compositeInput.output_color);
+	compositeOutput.assemble();
+	ARCORE_ASSERT(compositeOutput.valid());
+
 	// Set output
-	gfx->setRenderTarget(compositeInput.output_color);
+	gfx->setRenderTarget(&compositeOutput);
 	// Render the current result to the screen
 	gfx->setViewport(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
 	gfx->setScissor(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
 
 	// Set up output state
 	{
+		// No cull. Always draw.
 		gpu::RasterizerState rs;
 		rs.cullmode = gpu::kCullModeNone;
 		gfx->setRasterizerState(rs);
 
+		// No depth/stencil test. Always draw.
 		gpu::DepthStencilState ds;
 		ds.depthTestEnabled   = false;
 		ds.depthWriteEnabled  = false;
@@ -127,14 +136,25 @@ void RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, 
 		ds.stencilWriteMask   = 0x00;
 		gfx->setDepthStencilState(ds);
 
+		// Simple alpha-blending
 		gpu::BlendState bs;
-		bs.enable = false;
-		bs.src = gpu::kBlendModeOne;
-		bs.dst = gpu::kBlendModeZero;
+		bs.enable = true;
+		bs.src = gpu::kBlendModeSrcAlpha;
+		bs.dst = gpu::kBlendModeInvSrcAlpha;
 		bs.srcAlpha = gpu::kBlendModeOne;
-		bs.dstAlpha = gpu::kBlendModeZero;
+		bs.dstAlpha = gpu::kBlendModeOne;
+		bs.opAlpha = gpu::kBlendOpMax;
 		gfx->setBlendState(bs);
 	}
+
+	// Create cbuffer for the input
+	struct rrCbufferCompositeParams
+	{
+	} cbuffer_composite_params;
+
+	gpu::Buffer cbuffer;
+	cbuffer.initAsConstantBuffer(NULL, sizeof(rrCbufferCompositeParams));
+	cbuffer.upload(gfx, &cbuffer_composite_params, sizeof(rrCbufferCompositeParams), gpu::kTransferStream);
 
 	// Render with the composite shader
 	{
@@ -145,11 +165,23 @@ void RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, 
 		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 1, compositeInput.deferred_normals);
 		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 2, compositeInput.deferred_surface);
 		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 3, compositeInput.deferred_emissive);
+		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 4, compositeInput.combined_depth);
 		if (compositeInput.forward_color != nullptr)
 		{
-			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 4, compositeInput.forward_color);
+			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 5, compositeInput.forward_color);
 		}
+		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, &cbuffer);
 
 		gfx->draw(4, 0);
 	}
+
+	// done with cbuffer
+	cbuffer.free(NULL);
+	// done with render target
+	compositeOutput.destroy(NULL);
+}
+
+void RrPipelineStandardRenderer::RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) 
+{
+	;
 }

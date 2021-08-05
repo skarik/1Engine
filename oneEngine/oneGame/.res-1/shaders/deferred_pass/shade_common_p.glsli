@@ -1,0 +1,39 @@
+#ifndef DEFERRED_PASS_SHADE_COMMON_P_GLSLI_
+#define DEFERRED_PASS_SHADE_COMMON_P_GLSLI_
+
+#include "../deferred_surface.glsli"
+#include "../cbuffers.glsli"
+
+// Common samplers
+layout(binding = 0, location = 20) uniform sampler2D textureSampler0;	// Diffuse
+layout(binding = 1, location = 21) uniform sampler2D textureSampler1;	// Normals
+layout(binding = 2, location = 22) uniform sampler2D textureSampler2;	// Lighting Properties
+layout(binding = 3, location = 23) uniform sampler2D textureSampler3;	// Glow (for now)
+layout(binding = 4, location = 24) uniform sampler2D textureSampler4;	// Depth
+
+void DecodeSurfaceInfo ( out rrSurfaceInfo surface, in rrGBufferValues gbuffer, in vec2 uv0 )
+{
+	surface.albedo = gbuffer.buffer0.rgba;
+	surface.normal = gbuffer.buffer1.xyz;
+	
+	surface.metalness = gbuffer.buffer2.x;
+	surface.smoothness = gbuffer.buffer2.y;
+	
+	surface.emissive = gbuffer.buffer3.xyz;
+	
+	//vec4 unprojected_position = vec4( uv0.x*2 - 1, -(uv0.y*2 - 1), gbuffer.depth*2 - 1, 1.0 );
+	vec4 unprojected_position = vec4( uv0.x*2 - 1, -(uv0.y*2 - 1), gbuffer.depth, 1.0 );
+	vec4 undivided_position = inverse(sys_ViewProjectionMatrix) * vec4( unprojected_position.xyz, 1.0 );
+	surface.world_position = undivided_position.xyz / undivided_position.w;
+}
+
+void SampleGBuffer ( out rrGBufferValues gbuffer, in vec2 uv0 )
+{
+	gbuffer.buffer0 = texture( textureSampler0, uv0 );
+	gbuffer.buffer1 = texture( textureSampler1, uv0 );
+	gbuffer.buffer2 = texture( textureSampler2, uv0 );
+	gbuffer.buffer3 = texture( textureSampler3, uv0 );
+	gbuffer.depth = texture( textureSampler4, uv0 ).x;
+}
+
+#endif//DEFERRED_PASS_SHADE_COMMON_P_GLSLI_
