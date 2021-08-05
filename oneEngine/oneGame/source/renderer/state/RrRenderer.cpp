@@ -34,8 +34,6 @@
 #include "renderer/material/RrPass.Presets.h"
 #include "renderer/material/RrShaderProgram.h"
 
-#include "renderer/state/RrPipelinePasses.h"
-
 //===Class static member data===
 
 RrRenderer* RrRenderer::Active	= NULL;
@@ -122,13 +120,13 @@ void RrRenderer::InitializeResourcesWithDevice ( gpu::Device* device )
 	ARCORE_ASSERT(gfx->validate() == 0);
 
 	// Create the cbuffers relying on the surface counts
-	internal_cbuffers_frames.resize(backbuffer_count);
+	/*internal_cbuffers_frames.resize(backbuffer_count);
 	//internal_cbuffers_passes.resize(internal_chain_list.size() * renderer::kRenderLayer_MAX);
 	for (gpu::Buffer& buffer : internal_cbuffers_frames)
 		buffer.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerFrame));
 	//for (gpu::Buffer& buffer : internal_cbuffers_passes)
 	//	buffer.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerPassLightingInfo));
-
+	*/
 	ARCORE_ASSERT(gfx->validate() == 0);
 
 	// Create default textures
@@ -210,7 +208,8 @@ void RrRenderer::InitializeResourcesWithDevice ( gpu::Device* device )
 	ARCORE_ASSERT(gfx->validate() == 0);
 
 	// Create the pipeline utils
-	pipelinePasses = new renderer::pipeline::RrPipelinePasses();
+	//pipelinePasses = new renderer::pipeline::RrPipelinePasses();
+	InitializeCommonPipelineResources(device);
 
 	//bSpecialRender_ResetLights = false;
 
@@ -224,9 +223,10 @@ void RrRenderer::InitializeResourcesWithDevice ( gpu::Device* device )
 	gfx->submit();
 }
 
-void RrOutputState::Update ( RrOutputInfo* output_info )
+void RrOutputState::Update ( RrOutputInfo* output_info, rrRenderFrameState* frame_state )
 {
 	this->output_info = output_info; // This can change from frame-to-frame, so we force update.
+	this->frame_state = frame_state;
 
 	// Create the graphics context:
 	if (graphics_context == nullptr)
@@ -235,17 +235,17 @@ void RrOutputState::Update ( RrOutputInfo* output_info )
 	}
 
 	// Initialize the buffer chain:
-	if (internal_chain_list.empty() || internal_chain_list.size() != output_info->backbuffer_count)
+	/*if (internal_chain_list.empty() || internal_chain_list.size() != output_info->backbuffer_count)
 	{
 		ResizeBufferChain(output_info->backbuffer_count);
-	}
+	}*/
 	Vector2i l_requested_size = output_info->GetOutputSize();
 	if (output_size != l_requested_size)
 	{
 		output_size = l_requested_size;
 
 		// Recreate buffers on resize
-		for (RrHybridBufferChain& chain : internal_chain_list)
+		/*for (RrHybridBufferChain& chain : internal_chain_list)
 		{
 			rrBufferChainInfo settings = output_info->requested_buffers;
 			gpu::ErrorCode status = chain.CreateTargetBufferChain(&settings, output_size);
@@ -254,7 +254,7 @@ void RrOutputState::Update ( RrOutputInfo* output_info )
 				debug::Console->PrintError("Screen buffer formats not supported. Throwing an unsupported error.");
 				throw core::DeprecatedFeatureException();
 			}
-		}
+		}*/
 
 		// Mark this is the first frame after creation.
 		first_frame_after_creation = true;
@@ -263,14 +263,14 @@ void RrOutputState::Update ( RrOutputInfo* output_info )
 	//ARCORE_ASSERT(mGfxContext->validate() == 0);
 
 	// Create the cbuffers relying on the surface counts
-	internal_cbuffers_passes.resize(internal_chain_list.size() * renderer::kRenderLayer_MAX);
+	/*internal_cbuffers_passes.resize(internal_chain_list.size() * renderer::kRenderLayer_MAX);
 	for (gpu::Buffer& buffer : internal_cbuffers_passes)
-		buffer.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerPassLightingInfo));
+		buffer.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerPassLightingInfo));*/
 }
 
 void RrOutputState::ResizeBufferChain ( uint sizing )
 {
-	if (sizing > internal_chain_list.size())
+	/*if (sizing > internal_chain_list.size())
 	{
 		RrHybridBufferChain chain = {};
 		// Create backbuffers
@@ -289,7 +289,7 @@ void RrOutputState::ResizeBufferChain ( uint sizing )
 			internal_chain_list[i].FreeTargetBufferChain();
 		}
 		internal_chain_list.resize(sizing);
-	}
+	}*/
 }
 
 void RrOutputState::FreeContexts ( void )
@@ -328,7 +328,8 @@ RrRenderer::~RrRenderer ( void )
 	delete_safe(renderer::pass::Fullbright);
 
 	// Free the other materials
-	delete_safe(pipelinePasses);
+	//delete_safe(pipelinePasses);
+	FreeCommonPipelineResources(gpu_device);
 
 	// Clear out the context for the resource manager
 	auto resourceManager = core::ArResourceManager::Active();
@@ -347,6 +348,11 @@ RrRenderer::~RrRenderer ( void )
 	resourceManager->SetSubsystem(core::kResourceTypeRrMeshGroup, nullptr);
 
 	// TODO
+
+
+	// Free GPU device
+	gpu_device->free();
+	delete_safe(gpu_device);
 }
 
 //-Adding and Removing Renderable/Logic Objects-

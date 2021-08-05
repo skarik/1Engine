@@ -42,6 +42,7 @@ gpu::Device::~Device ( void )
 
 	//delete m_graphicsContext;
 	//delete m_computeContext;
+	free();
 }
 
 int gpu::Device::create ( DeviceFeature* features, uint32_t featureCount, DeviceLayer* layers, uint32_t layerCount )
@@ -212,5 +213,34 @@ ID3D11DeviceContext* gpu::Device::getImmediateContext ( void )
 	{
 	}
 }*/
+
+int gpu::Device::free ( void )
+{
+	if (m_dxImmediateContext)
+	{
+		m_dxImmediateContext->Release();
+		m_dxImmediateContext = NULL;
+	}
+
+	if (m_dxDevice)
+	{
+		m_dxDevice->Release();
+		m_dxDevice = NULL;
+	}
+
+	if (m_dxAdapter)
+	{
+		m_dxAdapter->Release();
+		m_dxAdapter = NULL;
+	}
+
+	if (m_dxFactory)
+	{
+		m_dxFactory->Release();
+		m_dxFactory = NULL;
+	}
+
+	return gpu::kError_SUCCESS;
+}
 
 #endif

@@ -69,11 +69,11 @@ namespace gpu
 		//	setPipeline( pipeline ) : Sets current pipeline.
 		// Combination set for shader pipeline, vertex attributes, and primitive topology.
 		// This must be done before any resources are bound to any shader stage.
-		GPUW_API int			setPipeline ( Pipeline* pipeline );
+		GPUW_API int			setPipeline ( const Pipeline* pipeline );
 		//	setIndexBuffer( buffer, format ) : Sets index buffer for use in the next draw.
-		GPUW_API int			setIndexBuffer ( Buffer* buffer, IndexFormat format );
+		GPUW_API int			setIndexBuffer ( const Buffer* buffer, IndexFormat format );
 		//	setVertexBuffer( slot, buffer, offset ) : Sets vertex buffer for use in the next draw, provided through a vertex attribute.
-		GPUW_API int			setVertexBuffer ( int slot, Buffer* buffer, uint32_t offset );
+		GPUW_API int			setVertexBuffer ( int slot, const Buffer* buffer, uint32_t offset );
 		//	setShaderCBuffer( stage, slot, buffer ) : Sets buffer to given slot, as a ConstantBuffer.
 		// Size is limited to 4kb on some platforms.
 		GPUW_API int			setShaderCBuffer ( ShaderStage stage, int slot, const Buffer* buffer );

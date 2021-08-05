@@ -234,9 +234,6 @@
     <ClCompile Include="source\renderer\material\RrPass.Presets.cpp">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\state\RrPipelinePasses.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\state\RrRenderer.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
@@ -331,6 +328,9 @@
       <Filter>SOURCE\Renderer\Object</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\state\RrPipeline.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\RrRenderer.PipelineCommon.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
   </ItemGroup>
@@ -494,9 +494,6 @@
     <ClInclude Include="source\renderer\material\RrPass.Presets.h">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\state\RrPipelinePasses.h">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\state\RrRenderer.h">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClInclude>
@@ -624,6 +621,9 @@
       <Filter>SOURCE\Renderer\State</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\state\RrPipelinePaletted.h">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\RaiiHelpers.h">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClInclude>
   </ItemGroup>

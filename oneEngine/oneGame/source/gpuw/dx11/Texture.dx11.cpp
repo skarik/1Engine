@@ -15,7 +15,7 @@
 
 bool gpu::Texture::valid ( void )
 {
-	return m_texture != 0;
+	return m_texture != NULL;
 }
 gpuHandle gpu::Texture::nativePtr ( void )
 {

@@ -288,7 +288,7 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 						loadInfo->loader.m_buffer_Mipmaps[loadInfo->level] = NULL;
 
 						// Loop from the bottom row of the texture, and move the data so the pitches are loaded into the correct spot.
-						const uint32 assumed_pitch = level_width * core::gfx::tex::getColorFormatByteSize(info.internalFormat);
+						const uint32 assumed_pitch = level_width * (uint32)core::gfx::tex::getColorFormatByteSize(info.internalFormat);
 						if (target_pitch != assumed_pitch)
 						{
 							for (uint16_t row = level_height - 1; row > 0; --row)

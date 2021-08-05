@@ -18,6 +18,7 @@
 #include "gpuw/Device.h"
 #include "gpuw/GraphicsContext.h"
 #include "gpuw/Buffers.h"
+#include "gpuw/Pipeline.h"
 
 #include <vector>
 
@@ -32,16 +33,45 @@ class CMRTTexture;
 struct rrCameraPass;
 class RrWindow;
 class RrRenderer;
-namespace renderer
-{
-	namespace pipeline
-	{
-		class RrPipelinePasses;
-	}
-}
+//namespace renderer
+//{
+//	namespace pipeline
+//	{
+//		class RrPipelinePasses;
+//	}
+//}
 
 class RrPipelineStateRenderer;
 class RrPipelineOptions;
+
+struct rrStoredRenderTexture
+{
+	Vector2i			size;
+	int					frame_of_request;
+	int					persist_for;
+	core::gfx::tex::arColorFormat
+						format;
+	gpu::Texture		texture;
+};
+
+struct rrStoredRenderDepthTexture
+{
+	Vector2i			size;
+	int					frame_of_request;
+	int					persist_for;
+	core::gfx::tex::arColorFormat
+						depth_format;
+	core::gfx::tex::arColorFormat
+						stencil_format;
+	gpu::Texture		depth_texture;
+	gpu::WOFrameAttachment
+						stencil_texture;
+};
+
+struct rrRenderFrameState
+{
+	gpu::Buffer			cbuffer_perFrame;
+};
 
 //	class RrWorld : A container of objects that can be rendered.
 class RrWorld
@@ -187,7 +217,7 @@ public:
 		FreeContexts();
 	}
 
-	void					Update ( RrOutputInfo* output_info );
+	void					Update ( RrOutputInfo* output_info, rrRenderFrameState* frame_state );
 	
 private:
 	void					ResizeBufferChain ( uint sizing );
@@ -201,21 +231,24 @@ public:
 	Vector2i			output_size;
 	bool				first_frame_after_creation = false;
 
+	// Render info and structures for the given frame.
+	rrRenderFrameState*	frame_state;
+
 	// List of buffer targets that are used to render to.
-	std::vector<RrHybridBufferChain>
-						internal_chain_list;
-	// Current buffer target being recorded/rendered to.
-	RrHybridBufferChain*
-						internal_chain_current = nullptr;
-	// Index of the buffer target being recorded/rendered to.
-	uint				internal_chain_index = 0;
+	//std::vector<RrHybridBufferChain>
+	//					internal_chain_list;
+	//// Current buffer target being recorded/rendered to.
+	//RrHybridBufferChain*
+	//					internal_chain_current = nullptr;
+	//// Index of the buffer target being recorded/rendered to.
+	//uint				internal_chain_index = 0;
 
 	// These are per output:
 	// Per-pass constant buffers. See renderer::cbuffer:rrPerPass.
 	// Each group of kRenderLayer_MAX refers to a layer used in a buffer target of internal_chain_list.
 	// Ex: If kRenderLayer_MAX is 7, and the engine is using triple (3) buffering, there will be 21 cbuffers.
-	std::vector<gpu::Buffer>
-						internal_cbuffers_passes;
+	//std::vector<gpu::Buffer>
+	//					internal_cbuffers_passes;
 
 public:
 	// Current pipeline mode used for rendering.
@@ -268,6 +301,8 @@ public:
 
 private:
 	void					InitializeResourcesWithDevice ( gpu::Device* device );
+	void					InitializeCommonPipelineResources ( gpu::Device* device );
+	void					FreeCommonPipelineResources ( gpu::Device* device );
 public:
 
 	// Output Management
@@ -347,17 +382,17 @@ public:
 	RENDER_API void			Render ( void );
 
 	// object state update
-	void					StepPreRender ( void );
-	void					StepBufferPush ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state );
+	void					StepPreRender ( rrRenderFrameState* frameState );
+	void					StepBufferPush ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, gpu::Texture texture );
 	void					StepPostRender ( void );
 
 
 	// Full Scene Rendering Routines
 	// ================================
 
-	void					RenderOutput ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world );
+	gpu::Texture			RenderOutput ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world );
 
-	RENDER_API void			RenderObjectListWorld ( gpu::GraphicsContext* gfx, rrCameraPass* cameraPass, RrRenderObject** objectsToRender, const uint32_t objectCount, RrOutputState* state );
+	RENDER_API gpu::Texture	RenderObjectListWorld ( gpu::GraphicsContext* gfx, rrCameraPass* cameraPass, RrRenderObject** objectsToRender, const uint32_t objectCount, RrOutputState* state );
 
 	// Specialized Rendering Routines
 	// ================================
@@ -365,17 +400,49 @@ public:
 	// Rendering configuration
 	// ================================
 
-	// Settings and query
+	// Resource creation and management
 	// ================================
 
 	// todo: class is tiny. can probably combine down to this class
-	RENDER_API renderer::pipeline::RrPipelinePasses*
+	/*RENDER_API renderer::pipeline::RrPipelinePasses*
 							GetPipelinePasses ( void )
-		{ return pipelinePasses; }
+		{ return pipelinePasses; }*/
+
+	RENDER_API void			CreatePipeline ( gpu::ShaderPipeline* in_pipeline, gpu::Pipeline& out_pipeline );
+
+private:
+	gpu::Pipeline		m_pipelineScreenQuadCopy;
+	gpu::Buffer			m_vbufScreenQuad;
+	gpu::Buffer			m_vbufScreenQuad_ForOutputSurface; // Per-API flips
+
+public:
+	RENDER_API const gpu::Pipeline&
+							GetScreenQuadCopyPipeline ( void )
+		{ return m_pipelineScreenQuadCopy; }
+	RENDER_API const gpu::Buffer&
+							GetScreenQuadVertexBuffer ( void )
+		{ return m_vbufScreenQuad; }
+	RENDER_API const gpu::Buffer&
+							GetScreenQuadOutputVertexBuffer ( void )
+		{ return m_vbufScreenQuad_ForOutputSurface; }
 
 public:
 	// Public active instance pointer
 	RENDER_API static RrRenderer* Active;
+
+public:
+
+	RENDER_API void			CreateRenderTexture ( rrDepthBufferRequest* in_out_request, gpu::Texture* depth, gpu::WOFrameAttachment* stencil );
+	RENDER_API void			CreateRenderTexture ( const rrRTBufferRequest& in_request, gpu::Texture* color );
+	RENDER_API void			CreateRenderTextures ( const rrMRTBufferRequest& in_request, gpu::Texture* colors );
+
+private:
+	std::vector<rrStoredRenderTexture>
+						m_renderTexturePool;
+	std::vector<rrStoredRenderDepthTexture>
+						m_renderDepthTexturePool;
+	rrDepthBufferRequest
+						m_currentDepthBufferRequest;
 
 private:
 	gpu::Device*		gpu_device;
@@ -388,9 +455,11 @@ private:
 	// ================================
 
 	// Objects queued to add to the default world
-	std::vector<RrRenderObject*> objects_to_add;
+	std::vector<RrRenderObject*>
+						objects_to_add;
 	// Logics queued to add to the default world
-	std::vector<RrLogicObject*> logics_to_add;
+	std::vector<RrLogicObject*>
+						logics_to_add;
 
 	void					AddQueuedToWorld ( void );
 
@@ -541,8 +610,8 @@ private:
 	// Per-frame constant buffers. See renderer::cbuffer::rrPerFrame.
 	// Each index refers directly to a buffer target of internal_chain_list.
 	// Ex: If the engine is using triple (3) buffering, there will be three (3) cbuffers.
-	std::vector<gpu::Buffer>
-							internal_cbuffers_frames;
+	//std::vector<gpu::Buffer>
+	//						internal_cbuffers_frames;
 
 	// These are per output:
 	// Per-pass constant buffers. See renderer::cbuffer:rrPerPass.
@@ -553,9 +622,8 @@ private:
 
 	// Deferred pass materials
 	// ================================
-	renderer::pipeline::RrPipelinePasses*
-							pipelinePasses;
-
+	//renderer::pipeline::RrPipelinePasses*
+	//						pipelinePasses;
 };
 
 #endif//RENDERER_RENDER_STATE_SYSTEM_H_

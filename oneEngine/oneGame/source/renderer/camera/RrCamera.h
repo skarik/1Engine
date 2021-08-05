@@ -144,7 +144,7 @@ public:
 
 protected:
 	//	UpdateCBuffer(index) : creates if needed and updates given cbuffer in the list.
-	void					UpdateCBuffer ( const uint index, const uint predictedMax, const rrCameraPass* passinfo );
+	void					UpdateCBuffer ( gpu::GraphicsContext* gfx, rrCameraPass* passinfo );
 
 private:
 	//	UpdateFrustum() : recalculates view frustum based on the currently set state.
@@ -210,8 +210,8 @@ protected:
 	// Ex: If the engine is triple (3) buffered, there will be three (3) cbuffers here.
 	// For inheriting classes, the number of cbuffers may be a multiple.
 	// Ex: Cubemap renderers will have 24 cbuffers for the same case (6 per frame).
-	std::vector<gpu::Buffer>
-						m_cbuffers;
+	//std::vector<gpu::Buffer>
+	//					m_cbuffers;
 
 	// Needs a new frame render? True when we should render a new frame from this camera.
 	// Is normally always true for the base camera class.

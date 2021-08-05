@@ -24,10 +24,11 @@
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
 #include "renderer/state/RrPipeline.h"
-#include "renderer/state/RrPipelinePasses.h"
 #include "renderer/windowing/RrWindow.h"
 
 #include <algorithm>
+
+#include "renderer/state/RaiiHelpers.h"
 
 //#include "renderer/resource/CResourceManager.h"
 
@@ -101,12 +102,185 @@ void RrWorld::SortObjectListing ( void )
 	}
 }
 
+//===============================================================================================//
+// RrRenderer: Render Texture Pool
+//===============================================================================================//
+
+// Returns true if settings dropped. False otherwise.
+static bool _DropSettings (rrDepthBufferRequest* io_settings)
+{
+	using namespace core::gfx::tex;
+	if (io_settings->stencil == KStencilFormatIndex16) 
+	{
+		debug::Console->PrintError("Dropping Stencil16 to Stencil8.\n");
+		io_settings->stencil = KStencilFormatIndex8;
+		return true;
+	}
+
+	// First, attempt packed format
+	if (io_settings->stencil == KStencilFormatIndex8 && (io_settings->depth == kDepthFormat32 || io_settings->depth == kDepthFormat32F))
+	{
+		debug::Console->PrintError("Dropping separate stencil, trying Depth32F+Stencil8.\n");
+		io_settings->depth = kDepthFormat32FStencil8;
+		io_settings->stencil = kStencilFormatNone;
+		return true;
+	}
+	// Then attempt lower packed format
+	if (io_settings->depth == kDepthFormat32FStencil8)
+	{
+		debug::Console->PrintError("Dropping Depth32F+Stencil8 to Depth24+Stencil8.\n");
+		io_settings->depth = kDepthFormat24Stencil8;
+		return true;
+	}
+	// Then go back to separate formats
+	if (io_settings->depth == kDepthFormat24Stencil8)
+	{
+		debug::Console->PrintError("Dropping packed Depth24+Stencil8, trying Depth24 and Stencil8.\n");
+		io_settings->depth = kDepthFormat24;
+		io_settings->stencil = KStencilFormatIndex8;
+		return true;
+	}
+
+	if (io_settings->depth == kDepthFormat24) 
+	{
+		debug::Console->PrintError("Dropping Depth24 to Depth16.\n");
+		io_settings->depth = kDepthFormat16;
+		return true;
+	}
+
+	if (io_settings->stencil == KStencilFormatIndex8) 
+	{
+		debug::Console->PrintError("Dropping Stencil8 to None. (This may cause visual artifacts!)\n");
+		io_settings->stencil = kStencilFormatNone;
+		return true;
+	}
+
+	debug::Console->PrintError("Could not downgrade screen buffer settings.\n");
+
+	// Couldn't drop any settings.
+	return false;
+}
+
+void RrRenderer::CreateRenderTexture ( rrDepthBufferRequest* in_out_request, gpu::Texture* depth, gpu::WOFrameAttachment* stencil )
+{
+	// Search current pool for matching request
+	for (rrStoredRenderDepthTexture& rt : m_renderDepthTexturePool)
+	{
+		if ((frame_index - rt.frame_of_request) >= rt.persist_for
+			&& rt.size == in_out_request->size
+			&& rt.depth_format == in_out_request->depth
+			&& rt.stencil_format == in_out_request->stencil)
+		{
+			*depth = rt.depth_texture;
+			*stencil = rt.stencil_texture;
+
+			rt.frame_of_request = frame_index;
+			rt.persist_for = in_out_request->persist_for;
+			return;
+		}
+	}
+
+	// No match, need to find a properly working render target combo
+	bool isValid;
+	do
+	{
+		// allocate the textures
+		if ( in_out_request->depth != core::gfx::tex::kDepthFormatNone )
+			depth->allocate(core::gfx::tex::kTextureType2D, in_out_request->depth, in_out_request->size.x, in_out_request->size.y, 1, 1);
+		if ( in_out_request->stencil != core::gfx::tex::kStencilFormatNone )
+			stencil->allocate(core::gfx::tex::kTextureType2D, in_out_request->stencil, in_out_request->size.x, in_out_request->size.y, 1, 1);
+
+		// Test if the textures work with a target:
+		{
+			gpu::RenderTarget depthTestTarget;
+			depthTestTarget.create(NULL);
+			if ( in_out_request->depth != core::gfx::tex::kDepthFormatNone )
+				depthTestTarget.attach(gpu::kRenderTargetSlotDepth, depth);
+			// Override for the combined formats
+			if (in_out_request->depth == core::gfx::tex::kDepthFormat32FStencil8 || in_out_request->depth == core::gfx::tex::kDepthFormat24Stencil8)
+				depthTestTarget.attach(gpu::kRenderTargetSlotStencil, depth);
+			else
+				depthTestTarget.attach(gpu::kRenderTargetSlotStencil, stencil);
+			// "Compile" the render target.
+			depthTestTarget.assemble();
+
+			// Check if valid
+			isValid = depthTestTarget.valid();
+			// Free the temporary target
+			depthTestTarget.destroy(NULL);
+		}
+
+		if (!isValid)
+		{
+			depth->free();
+			stencil->free();
+
+			// Drop the settings if still invalid
+			_DropSettings(in_out_request);
+		}
+	}
+	while (!isValid);
+
+	// Save the allocated texture to our pool
+	rrStoredRenderDepthTexture new_rt;
+	new_rt.depth_format = in_out_request->depth;
+	new_rt.stencil_format = in_out_request->stencil;
+	new_rt.size = in_out_request->size;
+	new_rt.persist_for = in_out_request->persist_for;
+	new_rt.frame_of_request = frame_index;
+	new_rt.depth_texture = *depth;
+	new_rt.stencil_texture = *stencil;
+
+	m_renderDepthTexturePool.push_back(new_rt);
+}
+
+void RrRenderer::CreateRenderTexture ( const rrRTBufferRequest& in_request, gpu::Texture* color )
+{
+	// Search current pool for matching request
+	for (rrStoredRenderTexture& rt : m_renderTexturePool)
+	{
+		if ((frame_index - rt.frame_of_request) >= rt.persist_for
+			&& rt.size == in_request.size
+			&& rt.format == in_request.format)
+		{
+			*color = rt.texture;
+			rt.frame_of_request = frame_index;
+			rt.persist_for = in_request.persist_for;
+			return;
+		}
+	}
+
+	// No match, then make a new one
+	color->allocate(core::gfx::tex::kTextureType2D, in_request.format, in_request.size.x, in_request.size.y, 1, 1);
+
+	// Save the allocated texture to our pool
+	rrStoredRenderTexture new_rt;
+	new_rt.format = in_request.format;
+	new_rt.frame_of_request = frame_index;
+	new_rt.size = in_request.size;
+	new_rt.persist_for = in_request.persist_for;
+	new_rt.texture = *color;
+
+	m_renderTexturePool.push_back(new_rt);
+}
+
+void RrRenderer::CreateRenderTextures ( const rrMRTBufferRequest& in_request, gpu::Texture* colors )
+{
+	for (uint i = 0; i < in_request.count; ++i)
+	{
+		rrRTBufferRequest request;
+		request.format = in_request.formats[i];
+		request.persist_for = in_request.persist_for;
+		request.size = in_request.size;
+		CreateRenderTexture(request, &colors[i]);
+	}
+}
 
 //===============================================================================================//
 // RrRenderer: Rendering
 //===============================================================================================//
 
-void RrRenderer::StepPreRender ( void )
+void RrRenderer::StepPreRender ( rrRenderFrameState* frameState )
 {
 	// Wait for the PostStep to finish:
 	core::jobs::System::Current::WaitForJobs( core::jobs::kJobTypeRenderStep );
@@ -142,11 +316,12 @@ void RrRenderer::StepPreRender ( void )
 		frameInfo.fogScale = renderer::Settings.fogScale; // These fog values likely won't see actual use in more modern rendering pipelines.
 		// Push to GPU:
 		//internal_cbuffers_frames[internal_chain_index].upload(NULL, &frameInfo, sizeof(renderer::cbuffer::rrPerFrame), gpu::kTransferStream);
-		internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()].upload(NULL, &frameInfo, sizeof(renderer::cbuffer::rrPerFrame), gpu::kTransferStream);
+		frameState->cbuffer_perFrame.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerFrame));
+		frameState->cbuffer_perFrame.upload(NULL, &frameInfo, sizeof(renderer::cbuffer::rrPerFrame), gpu::kTransferStream);
 	}
 
 	// Update the per-pass constant buffer data:
-	for (size_t outputIndex = 0; outputIndex < render_outputs.size(); ++outputIndex )
+	/*for (size_t outputIndex = 0; outputIndex < render_outputs.size(); ++outputIndex )
 	{
 		RrOutputState* state = render_outputs[outputIndex].state;
 		if (state != nullptr)
@@ -159,14 +334,7 @@ void RrRenderer::StepPreRender ( void )
 					.upload(NULL, &passInfo, sizeof(renderer::cbuffer::rrPerPassLightingInfo), gpu::kTransferStream);
 			}
 		}
-	}
-	//for (int iLayer = renderer::kRenderLayer_BEGIN; iLayer < renderer::kRenderLayer_MAX; ++iLayer)
-	//{
-	//	renderer::cbuffer::rrPerPassLightingInfo passInfo = {}; // Unused. May want to remove later...
-
-	//	internal_cbuffers_passes[internal_chain_index * renderer::kRenderLayer_MAX + iLayer]
-	//		.upload(NULL, &passInfo, sizeof(renderer::cbuffer::rrPerPassLightingInfo), gpu::kTransferStream);
-	//}
+	}*/
 
 	// Begin the logic jobs
 	for ( size_t worldIndex = 0; worldIndex < worlds.size(); ++worldIndex )
@@ -291,7 +459,7 @@ void RrRenderer::StepPostRender ( void )
 	}
 }
 
-void RrRenderer::StepBufferPush ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state )
+void RrRenderer::StepBufferPush ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, gpu::Texture texture )
 {
 	// TODO: Make it go to the output & state
 
@@ -329,22 +497,23 @@ void RrRenderer::StepBufferPush ( gpu::GraphicsContext* gfx, const RrOutputInfo&
 			bs.dstAlpha = gpu::kBlendModeZero;
 			gfx->setBlendState(bs);
 
-			gfx->setPipeline(&pipelinePasses->m_pipelineScreenQuadCopy);
-			gfx->setVertexBuffer(0, &pipelinePasses->m_vbufScreenQuad_ForOutputSurface, 0); // see RrPipelinePasses.cpp
-			gfx->setVertexBuffer(1, &pipelinePasses->m_vbufScreenQuad_ForOutputSurface, 0); // there are two binding slots defined with different stride
+			gfx->setPipeline(&GetScreenQuadCopyPipeline());
+			gfx->setVertexBuffer(0, &GetScreenQuadOutputVertexBuffer(), 0); // see RrPipelinePasses.cpp
+			gfx->setVertexBuffer(1, &GetScreenQuadOutputVertexBuffer(), 0); // there are two binding slots defined with different stride
 			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0,
-										&state->internal_chain_current->texture_color);
+										&texture);
+										//&state->internal_chain_current->texture_color);
 				                      //state->internal_chain_current->buffer_forward_rt.getAttachment(gpu::kRenderTargetSlotColor0));
 			gfx->draw(4, 0);
 		}
 		gfx->clearPipelineAndWait(); // Wait until we're done using the buffer...
 
 		// Clear the buffer after we're done with it.
-		gfx->setRenderTarget(&state->internal_chain_current->buffer_forward_rt);
+		/*gfx->setRenderTarget(&state->internal_chain_current->buffer_forward_rt);
 		gfx->setViewport(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
 		gfx->clearDepthStencil(true, 1.0F, true, 0x00);
 		float clearColor[] = {0, 0, 0, 0};
-		gfx->clearColor(clearColor);
+		gfx->clearColor(clearColor);*/
 	}
 	TimeProfiler.EndTimeProfile( "rs_buffer_push" );
 	gfx->debugGroupPop();
@@ -390,13 +559,15 @@ void RrRenderer::Render ( void )
 		TimeProfiler.ZeroTimeProfile( "rs_particle_renderer_push" );
 	}
 
+	rrRenderFrameState frameState;
+
 	// Update pre-render steps:
 	//	- RrLogicObject::PostStep finish
 	//	- RrCamera::LateUpdate
 	//	- RrLogicObject::PreStep, RrLogicObject::PreStepSynchronous
 	//	- ResourceManager::update
 	//	- BeginRender
-	StepPreRender(); 
+	StepPreRender(&frameState); 
 
 	// Check for a main camera to work with
 	if ( RrCamera::activeCamera == NULL )
@@ -486,7 +657,7 @@ void RrRenderer::Render ( void )
 			{
 				render_output.state = new RrOutputState();
 			}
-			render_output.state->Update(&render_output.info);
+			render_output.state->Update(&render_output.info, &frameState);
 
 			// Grab the graphics context to render with
 			gpu::GraphicsContext* gfx = render_output.state->graphics_context;
@@ -513,6 +684,9 @@ void RrRenderer::Render ( void )
 				collected_outputs.push_back(render_output.info.output_window->GpuSurface());
 			}
 
+			//
+			gpu::Texture output_texture;
+
 			// Render with the given camera.
 			ARCORE_ASSERT(render_output.info.camera != nullptr);
 			if (render_output.info.camera->GetRender())
@@ -524,12 +698,19 @@ void RrRenderer::Render ( void )
 				RrCamera::activeCamera = render_output.info.camera;
 				gfx->debugGroupPush(render_output.info.name.c_str());
 				// We drop the const on the world because rendering objects changes their state
-				RenderOutput(gfx, render_output.info, render_output.state, render_output.info.world);
+				output_texture = RenderOutput(gfx, render_output.info, render_output.state, render_output.info.world);
 				gfx->debugGroupPop();
 			}
 
-			// Push buffer to screen
-			StepBufferPush(gfx, render_output.info, render_output.state);
+			if (output_texture.valid())
+			{
+				// Push buffer to screen
+				StepBufferPush(gfx, render_output.info, render_output.state, output_texture);
+			}
+			else
+			{
+				ARCORE_ERROR("Invalid texture attempted to be pushed to screen");
+			}
 		}
 	}
 	TimeProfiler.EndTimeProfile( "rs_render" );
@@ -596,9 +777,9 @@ void RrRenderer::Render ( void )
 		if (state != nullptr)
 		{
 			// Go to next input
-			state->internal_chain_index = (state->internal_chain_index + 1) % state->internal_chain_list.size();
+			//state->internal_chain_index = (state->internal_chain_index + 1) % state->internal_chain_list.size();
 			// Pull its pointer
-			state->internal_chain_current = &state->internal_chain_list[state->internal_chain_index];
+			//state->internal_chain_current = &state->internal_chain_list[state->internal_chain_index];
 		}
 	}
 	// Count the global frame rendered
@@ -618,6 +799,9 @@ void RrRenderer::Render ( void )
 
 	// Call post-render and start up new jobs
 	StepPostRender();
+
+	// Free frame resources
+	frameState.cbuffer_perFrame.free(NULL);
 }
 
 
@@ -793,7 +977,7 @@ void RrRenderer::Render ( void )
 #define FORCE_BUFFER_CLEAR
 //#define ENABLE_RUNTIME_BLIT_TEST
 
-void RrRenderer::RenderOutput ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world )
+gpu::Texture RrRenderer::RenderOutput ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world )
 {
 Create_Pipeline:
 	if (state->pipeline_renderer == nullptr || !state->pipeline_renderer->IsCompatible(world->pipeline_mode))
@@ -826,8 +1010,8 @@ Render_Camera_Passes:
 	rrCameraPass cameraPasses [kMaxCameraPasses];
 	rrCameraPassInput cameraPassInput;
 	cameraPassInput.m_maxPasses = kMaxCameraPasses;
-	cameraPassInput.m_bufferingCount = (uint16_t)std::min<size_t>(state->internal_chain_list.size(), 0xFFFF);
-	cameraPassInput.m_bufferingIndex = state->internal_chain_index;
+	//cameraPassInput.m_bufferingCount = (uint16_t)std::min<size_t>(state->internal_chain_list.size(), 0xFFFF);
+	//cameraPassInput.m_bufferingIndex = state->internal_chain_index;
 	cameraPassInput.m_outputInfo = &output;
 	cameraPassInput.m_graphicsContext = gfx;
 
@@ -838,58 +1022,30 @@ Render_Camera_Passes:
 	output.camera->RenderBegin();
 
 	// Loop through each pass and render with them:
+	gpu::Texture output_color;
 	for (int iCameraPass = 0; iCameraPass < passCount; ++iCameraPass)
 	{
 		if (cameraPasses[iCameraPass].m_passType == kCameraRenderWorld)
 		{
-			RenderObjectListWorld(gfx, &cameraPasses[iCameraPass], world->objects.data(), (uint32_t)world->objects.size(), state);
+			output_color = RenderObjectListWorld(gfx, &cameraPasses[iCameraPass], world->objects.data(), (uint32_t)world->objects.size(), state);
 		}
 		else
 		{
 			ARCORE_ERROR("Only single pass supported");
 		}
+
+		// Free the camera pass now that we're done with it.
+		cameraPasses[iCameraPass].free();
 	}
 
 	// Finish up the rendering
 	output.camera->RenderEnd();
+
+	// Return result output
+	return output_color;
 }
 
-////	RenderObjectList () : Renders the object list from the given camera with DeferredForward+.
-//void RrRenderer::RenderObjectList ( RrCamera* camera, RrRenderObject** objectsToRender, const uint32_t objectCount )
-//{
-//	// Get a pass list from the camera
-//	const int kMaxCameraPasses = 8;
-//	rrCameraPass cameraPasses [kMaxCameraPasses];
-//	rrCameraPassInput cameraPassInput;
-//	cameraPassInput.m_maxPasses = kMaxCameraPasses;
-//	cameraPassInput.m_bufferingCount = (uint16_t)std::min<size_t>(internal_chain_list.size(), 0xFFFF);
-//	cameraPassInput.m_bufferingIndex = internal_chain_index;
-//
-//	int passCount = camera->PassCount();
-//	camera->PassRetrieve(&cameraPassInput, cameraPasses);
-//
-//	// Begin rendering now
-//	camera->RenderBegin();
-//
-//	// Loop through each pass and render with them:
-//	for (int iCameraPass = 0; iCameraPass < passCount; ++iCameraPass)
-//	{
-//		if (cameraPasses[iCameraPass].m_passType == kCameraRenderWorld)
-//		{
-//			RenderObjectListWorld(&cameraPasses[iCameraPass], objectsToRender, objectCount);
-//		}
-//		else if (cameraPasses[iCameraPass].m_passType == kCameraRenderShadow)
-//		{
-//			//RenderObjectListShadows(&cameraPasses[iCameraPass], objectsToRender, objectCount);
-//			ARCORE_ERROR("Shadow pass not yet implemented.");
-//		}
-//	}
-//
-//	// Finish up the rendering
-//	camera->RenderEnd();
-//}
-
-void RrRenderer::RenderObjectListWorld ( gpu::GraphicsContext* gfx, rrCameraPass* cameraPass, RrRenderObject** objectsToRender, const uint32_t objectCount, RrOutputState* state )
+gpu::Texture RrRenderer::RenderObjectListWorld ( gpu::GraphicsContext* gfx, rrCameraPass* cameraPass, RrRenderObject** objectsToRender, const uint32_t objectCount, RrOutputState* state )
 {
 	struct rrRenderRequestGroup
 	{
@@ -1067,12 +1223,12 @@ Setup_Pipeline:
 
 Render_Groups:
 	// select buffer chain we work with
-	RrHybridBufferChain* bufferChain = cameraPass->m_bufferChain;
+	/*RrHybridBufferChain* bufferChain = cameraPass->m_bufferChain;
 	if (bufferChain == NULL)
 	{	// Select the main buffer chain if no RT is defined.
 		bufferChain = state->internal_chain_current;
 	}
-	ARCORE_ASSERT(bufferChain != NULL);
+	ARCORE_ASSERT(bufferChain != NULL);*/
 
 	// target proper buffer
 	//gfx->setRenderTarget(&bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
@@ -1090,7 +1246,7 @@ Render_Groups:
 		}
 	RenderJobs:
 
-		int l_cbuffer_pass_index = state->internal_chain_index * renderer::kRenderLayer_MAX + iLayer;
+		//int l_cbuffer_pass_index = state->internal_chain_index * renderer::kRenderLayer_MAX + iLayer;
 
 		// Do the forward pass:
 		for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rJob.size(); ++iObject)
@@ -1100,14 +1256,39 @@ Render_Groups:
 
 			RrRenderObject::rrRenderParams params;
 			params.pass = l_4r.pass;
-			params.cbuf_perCamera = cameraPass->m_cbuffer;
-			params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
-			params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
+			params.cbuf_perCamera = &cameraPass->m_cbuffer;
+			params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;// internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
+			params.cbuf_perPass = nullptr;//&state->internal_cbuffers_passes[l_cbuffer_pass_index];
 			params.context_graphics = gfx;
 
 			ARCORE_ASSERT(params.context_graphics != nullptr);
 			renderable->Render(&params);
 		}
+	}
+
+	// Set up output buffers
+	gpu::Texture outputDepth;
+	gpu::WOFrameAttachment outputStencil;
+	gpu::Texture outputColor;
+	{
+		rrDepthBufferRequest depthRequest = m_currentDepthBufferRequest;
+		depthRequest.size = cameraPass->m_viewport.size;
+
+		rrRTBufferRequest colorRequest {cameraPass->m_viewport.size, core::gfx::tex::kColorFormatRGBA16F}; 
+
+		CreateRenderTexture( &depthRequest, &outputDepth, &outputStencil );
+		CreateRenderTexture( colorRequest, &outputColor );
+
+		m_currentDepthBufferRequest = depthRequest; // Save the depth request settings
+	}
+
+	// Clear color on output
+	{
+		rrRenderTarget forwardTarget ( &outputColor );
+		gfx->setRenderTarget(&forwardTarget.m_renderTarget);
+
+		float clearColor[] = {0, 0, 0, 0};
+		gfx->clearColor(clearColor);
 	}
 
 	// Run the full rendering routine
@@ -1130,20 +1311,20 @@ Render_Groups:
 
 	Rendering:
 
-		int l_cbuffer_pass_index = state->internal_chain_index * renderer::kRenderLayer_MAX + iLayer;
+		//int l_cbuffer_pass_index = state->internal_chain_index * renderer::kRenderLayer_MAX + iLayer;
 
 		bool dirty_deferred = false;
 		bool dirty_forward = false;
 
 		gfx->debugGroupPush((std::string("Rendering Layer ") + std::to_string((int)iLayer)).c_str());
 
-		// Set up output
-		{
-			gfx->setRenderTarget(&bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
-		}
-
 		gfx->debugGroupPush("Depth Pre-pass");
 		{
+			rrRenderTarget depthTarget ( &outputDepth, &outputStencil );
+
+			// Set up output
+			gfx->setRenderTarget(&depthTarget.m_renderTarget); 
+
 			// Set up no-color draw for pre-pass mode.
 			{
 				gpu::BlendState bs;
@@ -1187,9 +1368,9 @@ Render_Groups:
 				RrRenderObject::rrRenderParams params;
 				params.pass = l_4r.pass;
 				params.pass_type = kPassTypeSystemDepth;
-				params.cbuf_perCamera = cameraPass->m_cbuffer;
-				params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
-				params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
+				params.cbuf_perCamera = &cameraPass->m_cbuffer;
+				params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;// internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
+				params.cbuf_perPass = nullptr;//&state->internal_cbuffers_passes[l_cbuffer_pass_index];
 				params.context_graphics = gfx;
 
 				ARCORE_ASSERT(params.context_graphics != nullptr);
@@ -1199,12 +1380,26 @@ Render_Groups:
 		gfx->debugGroupPop();
 
 		gfx->debugGroupPush("Deferred Opaques");
+		if (!l_4rGroup[iLayer].m_4rDeferred.empty())
 		{
-			// Set up output
+			// Allocated needed texture buffers for rendering
+			static constexpr int kColorAttachmentCount = 4;
+			static const core::gfx::tex::arColorFormat kColorAttachments[kColorAttachmentCount] = {
+				core::gfx::tex::kColorFormatRGBA8,
+				core::gfx::tex::kColorFormatRGBA16F,
+				core::gfx::tex::kColorFormatRGBA8,
+				core::gfx::tex::kColorFormatRGBA8};
+			
+			gpu::Texture outputGbuffers [kColorAttachmentCount];
 			{
-				gfx->setRenderTarget(&bufferChain->buffer_deferred_mrt); // TODO: Binding buffers at the right time.
+				rrMRTBufferRequest colorsRequest {cameraPass->m_viewport.size, kColorAttachmentCount, kColorAttachments};
+				CreateRenderTextures( colorsRequest, outputGbuffers );
 			}
 
+			// Set up output
+			rrRenderTarget deferredTarget ( &outputDepth, &outputStencil, outputGbuffers, kColorAttachmentCount );
+			gfx->setRenderTarget(&deferredTarget.m_renderTarget);
+			
 			// Set color draw for deferred mode.
 			{
 				gpu::BlendState bs;
@@ -1250,34 +1445,40 @@ Render_Groups:
 				RrRenderObject::rrRenderParams params;
 				params.pass = l_4r.pass;
 				params.pass_type = kPassTypeDeferred;
-				params.cbuf_perCamera = cameraPass->m_cbuffer;
-				params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
-				params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
+				params.cbuf_perCamera = &cameraPass->m_cbuffer;
+				params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;// internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
+				params.cbuf_perPass = nullptr;//&state->internal_cbuffers_passes[l_cbuffer_pass_index];
 				params.context_graphics = gfx;
 			
 				ARCORE_ASSERT(params.context_graphics != nullptr);
 				renderable->Render(&params);
 			}
+
+			// Run a composite pass
+			if (state->pipeline_renderer != nullptr)
+			{
+				rrPipelineCompositeInput input;
+
+				input.deferred_albedo = &outputGbuffers[0];
+				input.deferred_normals = &outputGbuffers[1];
+				input.deferred_surface = &outputGbuffers[2];
+				input.deferred_emissive = &outputGbuffers[3];
+				input.combined_depth = &outputDepth;
+				//input.forward_color = &outputColor;
+
+				// Deferred composites directly on top of the previously rendered output.
+				input.output_color = &outputColor;
+
+				state->pipeline_renderer->CompositeDeferred(gfx, input, state);
+			}
 		}
 		gfx->debugGroupPop();
-
-		// check if rendered anything, mark screen dirty if so.
-		if (!l_4rGroup[iLayer].m_4rDeferred.empty())
-			dirty_deferred = true;
-
-		// run a composite pass if deferred is dirty
-		if (dirty_deferred)
-		{
-			// Mark forward as dirty so output will happen even without a forward object.
-			dirty_forward = true;
-		}
 
 		gfx->debugGroupPush("Forward Pass");
 		{
 			// Set up output
-			{
-				gfx->setRenderTarget(&bufferChain->buffer_forward_rt); // TODO: Binding buffers at the right time.
-			}
+			rrRenderTarget forwardTarget ( &outputDepth, &outputStencil, &outputColor );
+			gfx->setRenderTarget(&forwardTarget.m_renderTarget); // TODO: Binding buffers at the right time.
 
 			// Set up color draw for forward mode. Draw normally.
 			{
@@ -1321,9 +1522,9 @@ Render_Groups:
 				RrRenderObject::rrRenderParams params;
 				params.pass = l_4r.pass;
 				params.pass_type = kPassTypeForward;
-				params.cbuf_perCamera = cameraPass->m_cbuffer;
-				params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
-				params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
+				params.cbuf_perCamera = &cameraPass->m_cbuffer;
+				params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;// internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
+				params.cbuf_perPass = nullptr;//&state->internal_cbuffers_passes[l_cbuffer_pass_index];
 				params.context_graphics = gfx;
 
 				ARCORE_ASSERT(params.context_graphics != nullptr);
@@ -1351,9 +1552,9 @@ Render_Groups:
 				RrRenderObject::rrRenderParams params;
 				params.pass = l_4r.pass;
 				params.pass_type = kPassTypeForward;
-				params.cbuf_perCamera = cameraPass->m_cbuffer;
-				params.cbuf_perFrame = &internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
-				params.cbuf_perPass = &state->internal_cbuffers_passes[l_cbuffer_pass_index];
+				params.cbuf_perCamera = &cameraPass->m_cbuffer;
+				params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;// internal_cbuffers_frames[frame_index % internal_cbuffers_frames.size()];
+				params.cbuf_perPass = nullptr;//&state->internal_cbuffers_passes[l_cbuffer_pass_index];
 				params.context_graphics = gfx;
 
 				ARCORE_ASSERT(params.context_graphics != nullptr);
@@ -1363,58 +1564,24 @@ Render_Groups:
 		}
 		gfx->debugGroupPop();
 
-		// check if rendered anything, mark screen dirty if so.
-		if (!l_4rGroup[iLayer].m_4rForward.empty() || !l_4rGroup[iLayer].m_4rForwardTranslucent.empty())
-			dirty_forward = true;
-
-		// run another composite if forward is dirty
-		if (dirty_deferred)
-		{
-			// TODO
-			if (state->pipeline_renderer != nullptr)
-			{
-				rrPipelineCompositeInput input;
-
-				input.deferred_albedo = &bufferChain->texture_deferred_color[0];
-				input.deferred_normals = &bufferChain->texture_deferred_color[1];
-				input.deferred_surface = &bufferChain->texture_deferred_color[2];
-				input.deferred_emissive = &bufferChain->texture_deferred_color[3];
-				input.combined_depth = &bufferChain->texture_depth;
-				input.forward_color = dirty_forward ? &bufferChain->texture_color : nullptr;
-
-				input.output_color = &bufferChain->texture_deferred_color_composite;
-
-				state->pipeline_renderer->CompositeDeferred(gfx, input, state);
-
-				// Quietly swap the inputs & outputs here.
-				std::swap(bufferChain->buffer_deferred_rt, bufferChain->buffer_forward_rt);
-				std::swap(bufferChain->texture_deferred_color_composite, bufferChain->texture_color);
-			}
-		}
-
 		// finish off the layer
-		/*if (state->pipeline_renderer != nullptr)
+		if (state->pipeline_renderer != nullptr)
 		{
 			rrPipelineLayerFinishInput input;
 
 			input.layer = (renderer::rrRenderLayer)iLayer;
-			input.color = &bufferChain->texture_color;
-			input.depth = &bufferChain->texture_depth;
+			input.color = &outputColor;
+			input.depth = &outputDepth;
 
-			input.output_color = &bufferChain->texture_deferred_color_composite;
-
-			state->pipeline_renderer->RenderLayerEnd(gfx, input, state);
-
-			// Quietly swap the inputs & outputs here.
-			std::swap(bufferChain->buffer_deferred_rt, bufferChain->buffer_forward_rt);
-			std::swap(bufferChain->texture_deferred_color_composite, bufferChain->texture_color);
-		}*/
+			rrPipelineOutput output = state->pipeline_renderer->RenderLayerEnd(gfx, input, state);
+			outputColor = output.color;
+		}
 
 		gfx->debugGroupPop();
 	}
 
 	// at the end, copy the aggregate forward RT onto the render target (do that outside of this function!)
-
+	return outputColor;
 }
 
 #pragma warning( default : 4102 )

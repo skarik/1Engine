@@ -49,6 +49,8 @@ namespace gpu
 		//GPUW_API ComputeContext*
 		//						getComputeContext ( void );
 
+		GPUW_EXLUSIVE_API int	free ( void );
+
 		// Non-exposed API for grabbing native device
 		ID3D11Device*			getNative ( void );
 		// Non-exposed API for allocating memory

@@ -106,13 +106,13 @@ int gpu::GraphicsContext::clearPipelineAndWait ( void )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setPipeline ( Pipeline* pipeline )
+int gpu::GraphicsContext::setPipeline ( const Pipeline* pipeline )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
 	if (pipeline != m_pipeline)
 	{
-		m_pipeline = pipeline;
+		m_pipeline = (Pipeline*)pipeline;
 		m_pipelineBound = false;
 		m_pipelineDataBound = false;
 
@@ -122,20 +122,20 @@ int gpu::GraphicsContext::setPipeline ( Pipeline* pipeline )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setIndexBuffer ( Buffer* buffer, IndexFormat format )
+int gpu::GraphicsContext::setIndexBuffer ( const Buffer* buffer, IndexFormat format )
 {
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeIndex);
 	ARCORE_ASSERT(m_pipeline != NULL);
 
 	// TODO:
 
-	m_indexBuffer = buffer;
+	m_indexBuffer = (Buffer*)buffer;
 	m_indexFormat = format;
 
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setVertexBuffer ( int slot, Buffer* buffer, uint32_t offset )
+int gpu::GraphicsContext::setVertexBuffer ( int slot, const Buffer* buffer, uint32_t offset )
 {
 	// todo: optimize later
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeVertex);
@@ -144,7 +144,7 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, Buffer* buffer, uint32_t o
 
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
-	ID3D11Buffer* bufferList [1] = {(ID3D11Buffer*)buffer->nativePtr()};
+	ID3D11Buffer* bufferList [1] = {(ID3D11Buffer*)((Buffer*)buffer)->nativePtr()};
 	UINT strideList [1] = {m_pipeline->ia_bindingInfo[slot].stride};
 	UINT offsetList [1] = {0};
 
@@ -155,6 +155,9 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, Buffer* buffer, uint32_t o
 
 int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, const Buffer* buffer )
 {
+	if (buffer == nullptr)
+		return kError_SUCCESS; // TODO: handle this better
+
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeConstant);
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 

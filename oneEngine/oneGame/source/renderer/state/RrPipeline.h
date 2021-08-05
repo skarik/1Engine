@@ -5,6 +5,8 @@
 #include "renderer/state/PipelineModes.h"
 #include "renderer/types/ObjectSettings.h"
 
+#include "gpuw/Texture.h"
+
 class RrWorld;
 class RrOutputInfo;
 class RrOutputState;
@@ -60,7 +62,13 @@ struct rrPipelineLayerFinishInput
 	gpu::Texture*		color = nullptr;
 	gpu::Texture*		depth = nullptr;
 
-	gpu::Texture*		output_color = nullptr;
+	//gpu::Texture*		output_color = nullptr;
+};
+
+struct rrPipelineOutput
+{
+	// TODO: maybe....
+	gpu::Texture		color;
 };
 
 //=====================================
@@ -99,8 +107,9 @@ public:
 		{}
 
 	//	RenderLayerEnd() : Called when the renderer finishes a given layer.
-	RENDER_API virtual void	RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state )
-		{}
+	RENDER_API virtual rrPipelineOutput
+							RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state )
+		{ return rrPipelineOutput{*(gpu::Texture*)finishInput.color}; }
 
 public:
 
@@ -138,7 +147,8 @@ public:
 	RENDER_API void			CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
 
 	//	RenderLayerEnd() : Called when the renderer finishes a given layer.
-	RENDER_API void			RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) override;
+	RENDER_API rrPipelineOutput
+							RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) override;
 
 private:
 	RrShaderProgram*	m_lightingCompositeProgram = nullptr;

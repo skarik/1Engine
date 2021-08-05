@@ -205,28 +205,31 @@ void RrCamera::PassRetrieve ( const rrCameraPassInput* input, rrCameraPass* pass
 {
 	ARCORE_ASSERT(input->m_outputInfo != nullptr && input->m_maxPasses > 0);
 
-	passList[0].m_bufferChain	= NULL; // Use the default buffer chain for rendering.
+	//passList[0].m_bufferChain	= NULL; // Use the default buffer chain for rendering.
 	passList[0].m_passType		= kCameraRenderWorld;
 	passList[0].m_viewport		= input->m_outputInfo->GetOutputViewport();
 	passList[0].m_viewTransform	= viewTransform;
 	passList[0].m_projTransform	= projTransform;
 	passList[0].m_viewprojTransform	= viewprojMatrix;
 
-	int cbuffer_index = input->m_bufferingIndex;
-	UpdateCBuffer(cbuffer_index, input->m_bufferingCount, &passList[0]);
-	passList[0].m_cbuffer = &m_cbuffers[cbuffer_index];
+	//int cbuffer_index = input->m_bufferingIndex;
+	//UpdateCBuffer(cbuffer_index, input->m_bufferingCount, &passList[0]);
+	//passList[0].m_cbuffer = &m_cbuffers[cbuffer_index];
+	UpdateCBuffer(input->m_graphicsContext, &passList[0]);
 
 	passList[0].m_graphicsContext = input->m_graphicsContext;
 }
 
-void RrCamera::UpdateCBuffer ( const uint index, const uint predictedMax, const rrCameraPass* passinfo )
+void RrCamera::UpdateCBuffer ( gpu::GraphicsContext* gfx, rrCameraPass* passinfo )
 {
-	if (m_cbuffers.size() < predictedMax) {
-		m_cbuffers.resize(predictedMax);
-	}
-	if (!m_cbuffers[index].valid()) {
-		m_cbuffers[index].initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerCamera));
-	}
+	//if (m_cbuffers.size() < predictedMax) {
+	//	m_cbuffers.resize(predictedMax);
+	//}
+	//if (!m_cbuffers[index].valid()) {
+	//	m_cbuffers[index].initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerCamera));
+	//}
+
+	passinfo->m_cbuffer.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerCamera));
 
 	// Generate structure information to shunt to the GPU...
 	renderer::cbuffer::rrPerCamera cameraData = {};
@@ -237,7 +240,7 @@ void RrCamera::UpdateCBuffer ( const uint index, const uint predictedMax, const 
 	cameraData.pixelRatio = Vector2f(1, 1) * (orthoSize.x / passinfo->m_viewport.size.x);
 
 	// And shunt it to the GPU!
-	m_cbuffers[index].upload(NULL, &cameraData, sizeof(renderer::cbuffer::rrPerCamera), gpu::kTransferStream);
+	passinfo->m_cbuffer.upload(gfx, &cameraData, sizeof(renderer::cbuffer::rrPerCamera), gpu::kTransferStream);
 }
 
 

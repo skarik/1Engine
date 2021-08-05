@@ -7,7 +7,8 @@
 #include "renderer/object/RrRenderObject.h"
 #include "renderer/camera/RrCamera.h"
 #include "renderer/material/RrShaderProgram.h"
-#include "renderer/state/RrPipelinePasses.h"
+
+#include "renderer/state/RaiiHelpers.h"
 
 #include "gpuw/Pipeline.h"
 #include "gpuw/ShaderPipeline.h"
@@ -85,7 +86,7 @@ void RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, 
 	l_shadeLightingVariantInfo.VARIANT_DEBUG_GBUFFERS = gsesh_LightingUseDebugBuffers;
 	l_shadeLightingVariantInfo.VARIANT_DEBUG_LIGHTING = gsesh_LightingUseLighting;
 
-	auto pipelinePasses = RrRenderer::Active->GetPipelinePasses();
+	auto renderer = RrRenderer::Active; // TODO: make argument
 
 	RrShaderProgram* desiredProgram = RrShaderProgram::Load(rrShaderProgramVsPs{
 		"shaders/deferred_pass/shade_common_vv.spv",
@@ -101,7 +102,7 @@ void RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, 
 
 		// Create a new rendering pipeline.
 		m_lightingCompositePipeline->destroy(NULL);
-		pipelinePasses->CreatePipeline(&m_lightingCompositeProgram->GetShaderPipeline(), *m_lightingCompositePipeline);
+		renderer->CreatePipeline(&m_lightingCompositeProgram->GetShaderPipeline(), *m_lightingCompositePipeline);
 	}
 
 	// Grab output size for the screen quad info
@@ -109,14 +110,10 @@ void RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, 
 	rrViewport output_viewport =  output.GetOutputViewport();
 
 	// Create render target output
-	gpu::RenderTarget compositeOutput;
-	compositeOutput.create(NULL);
-	compositeOutput.attach(0, compositeInput.output_color);
-	compositeOutput.assemble();
-	ARCORE_ASSERT(compositeOutput.valid());
-
+	rrRenderTarget compositeOutput (compositeInput.output_color);
+	
 	// Set output
-	gfx->setRenderTarget(&compositeOutput);
+	gfx->setRenderTarget(&compositeOutput.m_renderTarget);
 	// Render the current result to the screen
 	gfx->setViewport(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
 	gfx->setScissor(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
@@ -159,8 +156,8 @@ void RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, 
 	// Render with the composite shader
 	{
 		gfx->setPipeline(m_lightingCompositePipeline);
-		gfx->setVertexBuffer(0, &pipelinePasses->m_vbufScreenQuad_ForOutputSurface, 0); // see RrPipelinePasses.cpp
-		gfx->setVertexBuffer(1, &pipelinePasses->m_vbufScreenQuad_ForOutputSurface, 0); // there are two binding slots defined with different stride
+		gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
+		gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
 		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, compositeInput.deferred_albedo);
 		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 1, compositeInput.deferred_normals);
 		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 2, compositeInput.deferred_surface);
@@ -177,11 +174,16 @@ void RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, 
 
 	// done with cbuffer
 	cbuffer.free(NULL);
-	// done with render target
-	compositeOutput.destroy(NULL);
 }
 
-void RrPipelineStandardRenderer::RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) 
+rrPipelineOutput RrPipelineStandardRenderer::RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) 
 {
-	;
+	if (finishInput.layer != renderer::kRenderLayerWorld)
+	{
+		return RrPipelineStateRenderer::RenderLayerEnd(gfx, finishInput, state);
+	}
+	else
+	{
+		return RrPipelineStateRenderer::RenderLayerEnd(gfx, finishInput, state);
+	}
 }

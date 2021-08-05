@@ -35,6 +35,42 @@ struct rrBufferChainInfo
 						stencilFormat = core::gfx::tex::KStencilFormatIndex16;
 };
 
+struct rrDepthBufferRequest
+{
+	Vector2i			size = Vector2i(0, 0);
+
+	core::gfx::tex::arColorFormat
+						depth = core::gfx::tex::kDepthFormat32;
+	core::gfx::tex::arColorFormat
+						stencil = core::gfx::tex::KStencilFormatIndex16;
+
+	// Number of frames this request should persist for
+	int32				persist_for = 2;
+};
+
+struct rrRTBufferRequest
+{
+	Vector2i			size = Vector2i(0, 0);
+
+	core::gfx::tex::arColorFormat
+						format = core::gfx::tex::kColorFormatRGBA16F;
+
+	// Number of frames this request should persist for
+	int32				persist_for = 2;
+};
+
+struct rrMRTBufferRequest
+{
+	Vector2i			size = Vector2i(0, 0);
+
+	uint8				count;
+	const core::gfx::tex::arColorFormat*
+						formats = nullptr;
+
+	// Number of frames this request should persist for
+	int32				persist_for = 2;
+};
+
 class RrHybridBufferChain
 {
 public:

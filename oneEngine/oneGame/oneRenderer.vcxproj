@@ -136,7 +136,7 @@
     <ClCompile Include="source\renderer\state\RrRenderer.Render.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Sorters.cpp" />
     <ClCompile Include="source\renderer\state\Options.cpp" />
-    <ClCompile Include="source\renderer\state\RrPipelinePasses.cpp" />
+    <ClCompile Include="source\renderer\state\RrRenderer.PipelineCommon.cpp" />
     <ClCompile Include="source\renderer\state\Settings.cpp" />
     <ClCompile Include="source\renderer\system\glDrawing.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -280,13 +280,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\renderer\state\PipelineModes.h" />
+    <ClInclude Include="source\renderer\state\RaiiHelpers.h" />
     <ClInclude Include="source\renderer\state\RrHybridBufferChain.h" />
     <ClInclude Include="source\renderer\state\RrPipeline.h" />
     <ClInclude Include="source\renderer\state\RrPipelinePaletted.h" />
     <ClInclude Include="source\renderer\state\RrRenderer.h" />
     <ClInclude Include="source\renderer\state\InternalSettings.h" />
     <ClInclude Include="source\renderer\state\Options.h" />
-    <ClInclude Include="source\renderer\state\RrPipelinePasses.h" />
     <ClInclude Include="source\renderer\state\Settings.h" />
     <ClInclude Include="source\renderer\system\glSystem.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
