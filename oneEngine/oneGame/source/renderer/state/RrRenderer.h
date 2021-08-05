@@ -9,7 +9,6 @@
 #include "renderer/types/id.h"
 #include "renderer/types/viewport.h"
 #include "renderer/state/InternalSettings.h"
-#include "renderer/state/RrHybridBufferChain.h"
 #include "renderer/state/PipelineModes.h"
 
 //Todo: make following prototypes
@@ -33,45 +32,9 @@ class CMRTTexture;
 struct rrCameraPass;
 class RrWindow;
 class RrRenderer;
-//namespace renderer
-//{
-//	namespace pipeline
-//	{
-//		class RrPipelinePasses;
-//	}
-//}
 
 class RrPipelineStateRenderer;
 class RrPipelineOptions;
-
-struct rrStoredRenderTexture
-{
-	Vector2i			size;
-	int					frame_of_request;
-	int					persist_for;
-	core::gfx::tex::arColorFormat
-						format;
-	gpu::Texture		texture;
-};
-
-struct rrStoredRenderDepthTexture
-{
-	Vector2i			size;
-	int					frame_of_request;
-	int					persist_for;
-	core::gfx::tex::arColorFormat
-						depth_format;
-	core::gfx::tex::arColorFormat
-						stencil_format;
-	gpu::Texture		depth_texture;
-	gpu::WOFrameAttachment
-						stencil_texture;
-};
-
-struct rrRenderFrameState
-{
-	gpu::Buffer			cbuffer_perFrame;
-};
 
 //	class RrWorld : A container of objects that can be rendered.
 class RrWorld
@@ -131,6 +94,11 @@ public:
 						logics;
 };
 
+struct rrRenderFrameState
+{
+	gpu::Buffer			cbuffer_perFrame;
+};
+
 //	class RrOutputInfo : Defines an output's properties
 // Does not provide any logic, simply provides information.
 class RrOutputInfo
@@ -169,9 +137,6 @@ public:
 	bool				scale_viewport_to_output = true;
 	// If scale_viewport_to_output is false, provides the viewport.
 	rrViewport			viewport;
-
-	uint8				backbuffer_count = 3;
-	rrBufferChainInfo	requested_buffers;
 
 	// Output type - window or render target
 	Type				type = Type::kUinitialized;
@@ -213,14 +178,12 @@ public:
 		{}
 							~RrOutputState ( void )
 	{
-		ResizeBufferChain(0);
 		FreeContexts();
 	}
 
 	void					Update ( RrOutputInfo* output_info, rrRenderFrameState* frame_state );
 	
 private:
-	void					ResizeBufferChain ( uint sizing );
 	void					FreeContexts ( void );
 
 public:
@@ -234,22 +197,6 @@ public:
 	// Render info and structures for the given frame.
 	rrRenderFrameState*	frame_state;
 
-	// List of buffer targets that are used to render to.
-	//std::vector<RrHybridBufferChain>
-	//					internal_chain_list;
-	//// Current buffer target being recorded/rendered to.
-	//RrHybridBufferChain*
-	//					internal_chain_current = nullptr;
-	//// Index of the buffer target being recorded/rendered to.
-	//uint				internal_chain_index = 0;
-
-	// These are per output:
-	// Per-pass constant buffers. See renderer::cbuffer:rrPerPass.
-	// Each group of kRenderLayer_MAX refers to a layer used in a buffer target of internal_chain_list.
-	// Ex: If kRenderLayer_MAX is 7, and the engine is using triple (3) buffering, there will be 21 cbuffers.
-	//std::vector<gpu::Buffer>
-	//					internal_cbuffers_passes;
-
 public:
 	// Current pipeline mode used for rendering.
 	renderer::PipelineMode
@@ -261,6 +208,71 @@ public:
 public:
 	gpu::GraphicsContext*
 						graphics_context = nullptr;
+};
+
+//
+struct rrDepthBufferRequest
+{
+	Vector2i			size = Vector2i(0, 0);
+
+	core::gfx::tex::arColorFormat
+						depth = core::gfx::tex::kDepthFormat32;
+	core::gfx::tex::arColorFormat
+						stencil = core::gfx::tex::KStencilFormatIndex16;
+
+	// Number of frames this request should persist for
+	int32				persist_for = 2;
+};
+
+//
+struct rrRTBufferRequest
+{
+	Vector2i			size = Vector2i(0, 0);
+
+	core::gfx::tex::arColorFormat
+						format = core::gfx::tex::kColorFormatRGBA16F;
+
+	// Number of frames this request should persist for
+	int32				persist_for = 2;
+};
+
+//
+struct rrMRTBufferRequest
+{
+	Vector2i			size = Vector2i(0, 0);
+
+	uint8				count;
+	const core::gfx::tex::arColorFormat*
+						formats = nullptr;
+
+	// Number of frames this request should persist for
+	int32				persist_for = 2;
+};
+
+//
+struct rrStoredRenderTexture
+{
+	Vector2i			size;
+	int					frame_of_request;
+	int					persist_for;
+	core::gfx::tex::arColorFormat
+						format;
+	gpu::Texture		texture;
+};
+
+//
+struct rrStoredRenderDepthTexture
+{
+	Vector2i			size;
+	int					frame_of_request;
+	int					persist_for;
+	core::gfx::tex::arColorFormat
+						depth_format;
+	core::gfx::tex::arColorFormat
+						stencil_format;
+	gpu::Texture		depth_texture;
+	gpu::WOFrameAttachment
+						stencil_texture;
 };
 
 //	rrRenderRequest : Render request
@@ -386,7 +398,6 @@ public:
 	void					StepBufferPush ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, gpu::Texture texture );
 	void					StepPostRender ( void );
 
-
 	// Full Scene Rendering Routines
 	// ================================
 
@@ -403,11 +414,7 @@ public:
 	// Resource creation and management
 	// ================================
 
-	// todo: class is tiny. can probably combine down to this class
-	/*RENDER_API renderer::pipeline::RrPipelinePasses*
-							GetPipelinePasses ( void )
-		{ return pipelinePasses; }*/
-
+	//	CreatePipeline() : Creates a screen-quad pipeline for the given shader pipeline.
 	RENDER_API void			CreatePipeline ( gpu::ShaderPipeline* in_pipeline, gpu::Pipeline& out_pipeline );
 
 private:
@@ -435,6 +442,9 @@ public:
 	RENDER_API void			CreateRenderTexture ( rrDepthBufferRequest* in_out_request, gpu::Texture* depth, gpu::WOFrameAttachment* stencil );
 	RENDER_API void			CreateRenderTexture ( const rrRTBufferRequest& in_request, gpu::Texture* color );
 	RENDER_API void			CreateRenderTextures ( const rrMRTBufferRequest& in_request, gpu::Texture* colors );
+
+private:
+	void					UpdateResourcePools ( void );
 
 private:
 	std::vector<rrStoredRenderTexture>
@@ -523,22 +533,6 @@ public:
 		}
 	};
 
-	/*
-	// Give RO constructor and destructor access to adding and removing
-	friend RrRenderObject;
-	// Adding and removing renderable objects
-	unsigned int AddRO ( RrRenderObject* );
-	void RemoveRO ( unsigned int );
-	void CleanROList ( void );
-	// Reorder the render list
-	void ReorderList ( void );
-
-	// Give RO constructor and destructor access to adding and removing
-	friend RrLogicObject;
-	// Adding and removing renderable objects
-	unsigned int AddLO ( RrLogicObject* );
-	void RemoveLO ( unsigned int );
-	*/
 private:
 	//
 	// ================================
@@ -554,76 +548,25 @@ private:
 	// Render list
 	// ================================
 
-	// these go to the world
-	//std::vector<RrRenderObject*>
-	//						pRenderableObjects;
-	//unsigned int			iCurrentIndex;
-	//unsigned int			iListSize;
-
 	// Render list sorting
 	// ================================
-	/*struct structRenderComparison_old {
-		bool operator() ( RrRenderObject* i, RrRenderObject* j);
-	} RenderOrderComparison_old;
-	struct render_forward_comparator_t {
-		bool operator() ( tRenderRequest& i, tRenderRequest& j);
-	} OrderComparatorForward;
-	struct render_deferred_comparator_t {
-		bool operator() ( tRenderRequest& i, tRenderRequest& j);
-	} OrderComparatorDeferred;*/
-
 	
 	rrRenderRequestSorter RenderRequestSorter;
 
 	// Render state
 	// ================================
-	//RrCamera*				mainBufferCamera;
-	//bool					bufferedMode;
-	//bool					shadowMode;
-	//eRenderMode				renderMode;
-	//renderer::ePipelineMode	pipelineMode;
 
 	// Logic list
 	// ================================
-	//std::vector<RrLogicObject*>
-	//						mLogicObjects;
-	//unsigned int			mLoCurrentIndex;
-	//unsigned int			mLoListSize;
 
 	// Internal setup state
 	// ================================
-	//renderer::rrInternalSettings
-	//						internal_settings; // WHERE ARE THESE INITIALIZED TO LMAO
-
 	uint8					backbuffer_count = 3;
 	int						frame_index = 0;
 
-	// List of buffer targets that are used to render to.
-	//std::vector<RrHybridBufferChain>
-	//						internal_chain_list;
-	// Current buffer target being recorded/rendered to.
-	//RrHybridBufferChain*	internal_chain_current;
-	// Index of the buffer target being recorded/rendered to.
-	//uint					internal_chain_index;
-
-	// These are per frame:
-	// Per-frame constant buffers. See renderer::cbuffer::rrPerFrame.
-	// Each index refers directly to a buffer target of internal_chain_list.
-	// Ex: If the engine is using triple (3) buffering, there will be three (3) cbuffers.
-	//std::vector<gpu::Buffer>
-	//						internal_cbuffers_frames;
-
-	// These are per output:
-	// Per-pass constant buffers. See renderer::cbuffer:rrPerPass.
-	// Each group of kRenderLayer_MAX refers to a layer used in a buffer target of internal_chain_list.
-	// Ex: If kRenderLayer_MAX is 7, and the engine is using triple (3) buffering, there will be 21 cbuffers.
-	//std::vector<gpu::Buffer>
-	//						internal_cbuffers_passes;
-
+	
 	// Deferred pass materials
 	// ================================
-	//renderer::pipeline::RrPipelinePasses*
-	//						pipelinePasses;
 };
 
 #endif//RENDERER_RENDER_STATE_SYSTEM_H_

@@ -18,7 +18,6 @@ enum rrCameraRenderType
 };
 
 class RrOutputInfo;
-class RrHybridBufferChain;
 namespace gpu {
 	class Buffer;
 	class GraphicsContext;
@@ -29,11 +28,6 @@ struct rrCameraPassInput
 {
 	// maximum number of passes to return
 	uint32_t			m_maxPasses = 0;
-
-	// Number of buffers used by the engine (usually between 1 and 3)
-	//uint16_t			m_bufferingCount = 3;
-	// Current index of the buffer we're on
-	//uint16_t			m_bufferingIndex = 0;
 
 	// Output info for the viewport information
 	const RrOutputInfo*	m_outputInfo = nullptr;
@@ -51,12 +45,6 @@ struct rrCameraPass
 
 	// target viewport rendering to
 	rrViewport			m_viewport;
-
-	// NULL to use the main engine's buffer chain.
-	// Otherwise, points to the buffer chain to use for rendering.
-	// An RT camera will properly create their own buffer chain
-	//RrHybridBufferChain*
-	//					m_bufferChain;
 
 	// camera cbuffer to be used with this pass
 	gpu::Buffer			m_cbuffer;

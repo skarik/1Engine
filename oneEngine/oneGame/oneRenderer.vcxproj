@@ -130,9 +130,9 @@
     <ClCompile Include="source\renderer\resource\CResourceManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="source\renderer\state\RrHybridBufferChain.cpp" />
     <ClCompile Include="source\renderer\state\RrPipeline.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.cpp" />
+    <ClCompile Include="source\renderer\state\RrRenderer.Pooling.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Render.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Sorters.cpp" />
     <ClCompile Include="source\renderer\state\Options.cpp" />
@@ -281,7 +281,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\state\PipelineModes.h" />
     <ClInclude Include="source\renderer\state\RaiiHelpers.h" />
-    <ClInclude Include="source\renderer\state\RrHybridBufferChain.h" />
     <ClInclude Include="source\renderer\state\RrPipeline.h" />
     <ClInclude Include="source\renderer\state\RrPipelinePaletted.h" />
     <ClInclude Include="source\renderer\state\RrRenderer.h" />

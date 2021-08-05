@@ -9,24 +9,20 @@
 #include "renderer/object/RrRenderObject.h"
 #include "renderer/logic/RrLogicObject.h"
 
-//#include "renderer/material/RrMaterial.h"
 #include "renderer/texture/RrTexture.h"
 #include "renderer/texture/RrRenderTexture.h"
-//#include "renderer/texture/CMRTTexture.h"
 
 #include "renderer/debug/RrDebugDrawer.h"
 #include "renderer/debug/RrDebugRTInspector.h"
-//#include "renderer/object/sprite/CSpriteContainer.h"
 
 #include "core-ext/resources/ResourceManager.h"
 #include "renderer/texture/RrTextureMasterSubsystem.h"
 #include "renderer/material/RrShaderMasterSubsystem.h"
 #include "renderer/logic/model/RrModelMasterSubsystem.h"
 
-//#include "renderer/resource/CResourceManager.h"
-
 #include "gpuw/Texture.h"
 #include "gpuw/RenderTarget.h"
+#include "gpuw/Public/Error.h"
 
 #include "renderer/windowing/RrWindow.h"
 
@@ -100,33 +96,6 @@ void RrRenderer::InitializeResourcesWithDevice ( gpu::Device* device )
 	resourceManager->SetSubsystem(core::kResourceTypeRrShader, new RrShaderMasterSubsystem());
 	resourceManager->SetSubsystem(core::kResourceTypeRrMeshGroup, new RrModelMasterSubsystem());
 
-
-
-	// Set up default rendering targets
-	/*{
-		internal_settings.mainColorAttachmentCount = 4;
-		internal_settings.mainColorAttachmentFormat = core::gfx::tex::kColorFormatRGBA16F;
-		internal_settings.mainDepthFormat = core::gfx::tex::kDepthFormat32;
-		internal_settings.mainStencilFormat = core::gfx::tex::KStencilFormatIndex16;
-	}
-	// Set initial rendertarget states
-	{
-		internal_chain_current = NULL;
-		internal_chain_index = 0;
-	}*/
-
-	// Create the rendertargets now
-	//ResizeSurface(); // Will create the new sized render targets.
-	ARCORE_ASSERT(gfx->validate() == 0);
-
-	// Create the cbuffers relying on the surface counts
-	/*internal_cbuffers_frames.resize(backbuffer_count);
-	//internal_cbuffers_passes.resize(internal_chain_list.size() * renderer::kRenderLayer_MAX);
-	for (gpu::Buffer& buffer : internal_cbuffers_frames)
-		buffer.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerFrame));
-	//for (gpu::Buffer& buffer : internal_cbuffers_passes)
-	//	buffer.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerPassLightingInfo));
-	*/
 	ARCORE_ASSERT(gfx->validate() == 0);
 
 	// Create default textures
@@ -200,18 +169,11 @@ void RrRenderer::InitializeResourcesWithDevice ( gpu::Device* device )
 		renderer::pass::Fullbright->m_type = kPassTypeForward;
 		renderer::pass::Fullbright->m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"});
 	}
-	//// Create the default hint options
-	//if ( renderer::m_default_hint_options == NULL )
-	//{
-	//	renderer::m_default_hint_options = new renderer::_n_hint_rendering_information();
-	//}
+	
 	ARCORE_ASSERT(gfx->validate() == 0);
 
 	// Create the pipeline utils
-	//pipelinePasses = new renderer::pipeline::RrPipelinePasses();
 	InitializeCommonPipelineResources(device);
-
-	//bSpecialRender_ResetLights = false;
 
 	// Create the debug tools
 	new debug::RrDebugDrawer;
@@ -235,61 +197,14 @@ void RrOutputState::Update ( RrOutputInfo* output_info, rrRenderFrameState* fram
 	}
 
 	// Initialize the buffer chain:
-	/*if (internal_chain_list.empty() || internal_chain_list.size() != output_info->backbuffer_count)
-	{
-		ResizeBufferChain(output_info->backbuffer_count);
-	}*/
 	Vector2i l_requested_size = output_info->GetOutputSize();
 	if (output_size != l_requested_size)
 	{
 		output_size = l_requested_size;
 
-		// Recreate buffers on resize
-		/*for (RrHybridBufferChain& chain : internal_chain_list)
-		{
-			rrBufferChainInfo settings = output_info->requested_buffers;
-			gpu::ErrorCode status = chain.CreateTargetBufferChain(&settings, output_size);
-			if (status != gpu::kError_SUCCESS)
-			{
-				debug::Console->PrintError("Screen buffer formats not supported. Throwing an unsupported error.");
-				throw core::DeprecatedFeatureException();
-			}
-		}*/
-
 		// Mark this is the first frame after creation.
 		first_frame_after_creation = true;
 	}
-
-	//ARCORE_ASSERT(mGfxContext->validate() == 0);
-
-	// Create the cbuffers relying on the surface counts
-	/*internal_cbuffers_passes.resize(internal_chain_list.size() * renderer::kRenderLayer_MAX);
-	for (gpu::Buffer& buffer : internal_cbuffers_passes)
-		buffer.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerPassLightingInfo));*/
-}
-
-void RrOutputState::ResizeBufferChain ( uint sizing )
-{
-	/*if (sizing > internal_chain_list.size())
-	{
-		RrHybridBufferChain chain = {};
-		// Create backbuffers
-		for (size_t i = internal_chain_list.size(); i < sizing; ++i)
-		{
-			internal_chain_list.push_back(chain);
-		}
-		// Set current buffer to first
-		internal_chain_current = &internal_chain_list[0];
-	}
-	else
-	{
-		// Free the items that are out of the range.
-		for (size_t i = sizing; i < internal_chain_list.size(); ++i)
-		{
-			internal_chain_list[i].FreeTargetBufferChain();
-		}
-		internal_chain_list.resize(sizing);
-	}*/
 }
 
 void RrOutputState::FreeContexts ( void )
@@ -328,7 +243,6 @@ RrRenderer::~RrRenderer ( void )
 	delete_safe(renderer::pass::Fullbright);
 
 	// Free the other materials
-	//delete_safe(pipelinePasses);
 	FreeCommonPipelineResources(gpu_device);
 
 	// Clear out the context for the resource manager
@@ -348,7 +262,6 @@ RrRenderer::~RrRenderer ( void )
 	resourceManager->SetSubsystem(core::kResourceTypeRrMeshGroup, nullptr);
 
 	// TODO
-
 
 	// Free GPU device
 	gpu_device->free();

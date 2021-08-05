@@ -246,9 +246,6 @@
     <ClCompile Include="source\renderer\material\RrShaderMasterSubsystem.cpp">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\state\RrHybridBufferChain.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\camera\RrCamera.cpp">
       <Filter>SOURCE\Renderer\Camera</Filter>
     </ClCompile>
@@ -331,6 +328,9 @@
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\state\RrRenderer.PipelineCommon.cpp">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\RrRenderer.Pooling.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
   </ItemGroup>
@@ -499,9 +499,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\material\RrShaderMasterSubsystem.h">
       <Filter>SOURCE\Renderer\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\state\RrHybridBufferChain.h">
-      <Filter>SOURCE\Renderer\State</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\camera\RrCamera.h">
       <Filter>SOURCE\Renderer\Camera</Filter>
