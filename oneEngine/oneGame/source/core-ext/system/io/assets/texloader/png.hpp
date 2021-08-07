@@ -75,7 +75,7 @@ namespace texture
 			calcW = png_get_image_width(png_ptr, info_ptr);
 			calcH = png_get_image_height(png_ptr, info_ptr);
 
-			// Figure out the bit depth ajd transparency modes
+			// Figure out the bit depth and transparency modes
 			int color_type, bit_depth;
 			png_bytep trans_alpha = NULL;
 			int num_trans = 0;
@@ -83,10 +83,12 @@ namespace texture
 
 			color_type = png_get_color_type(png_ptr, info_ptr);
 			bit_depth = png_get_bit_depth(png_ptr, info_ptr);
-			if ( color_type == PNG_COLOR_TYPE_RGBA ) {
+			if ( color_type == PNG_COLOR_TYPE_RGBA )
+			{
 				calcBPP = (bit_depth / 8)*4;
 			}
-			else if ( color_type == PNG_COLOR_TYPE_RGB ) {
+			else if ( color_type == PNG_COLOR_TYPE_RGB )
+			{
 				calcBPP = (bit_depth / 8)*3;
 				// Check for tRNS alpha chunk
 				{
@@ -99,16 +101,18 @@ namespace texture
 					{
 						iTransSize = 1;
 						pTransTable = new gfx::arPixel [1];
-						pTransTable->r = trans_color->red;
-						pTransTable->g = trans_color->green;
-						pTransTable->b = trans_color->blue;
-						pTransTable->a = trans_color->gray;
+						pTransTable->r = (uint8)trans_color->red;
+						pTransTable->g = (uint8)trans_color->green;
+						pTransTable->b = (uint8)trans_color->blue;
+						pTransTable->a = (uint8)trans_color->gray;
 						alphaMode = ALPHA_LOAD_MODE_KEYED;
 					}
 				}
 			}
-			else { // todo: color_type == PNG_COLOR_TYPE_GA
+			else
+			{	// todo: color_type == PNG_COLOR_TYPE_GA
 				calcBPP = 1;
+				ARCORE_ERROR("Unsupported PNG color format");
 			}
 			//cout << "PNG BPP: " << calcBPP << endl;
 
@@ -127,7 +131,7 @@ namespace texture
 			if ( pixelData ) 
 			{
 				// Input data to file
-				uint32_t rowbytes;
+				int32_t rowbytes;
 				void* raw_image;
 				png_bytep * row_pointers;
 				row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * calcH);

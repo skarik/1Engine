@@ -131,7 +131,6 @@ namespace core
 	public:
 		//void setTextureType
 	};
-	static const int sz = sizeof(textureFmtHeader);
 
 	struct textureFmtLevel
 	{

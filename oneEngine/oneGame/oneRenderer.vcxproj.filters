@@ -76,9 +76,6 @@
     <Filter Include="SOURCE\Renderer\Debug">
       <UniqueIdentifier>{97f466cd-578e-4c1d-b58c-11c19d1aeae3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\Renderer\Resource">
-      <UniqueIdentifier>{403ed4f8-6137-492d-af9c-f442b62ef771}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SOURCE\Renderer\Exceptions">
       <UniqueIdentifier>{562c253f-1b16-4503-bf8c-eb58c2a99361}</UniqueIdentifier>
     </Filter>
@@ -137,12 +134,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpherSet.cpp">
       <Filter>SOURCE\Renderer\Logic\Model\Morpher</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\resource\CModelMaster.cpp">
-      <Filter>SOURCE\Renderer\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\resource\CResourceManager.cpp">
-      <Filter>SOURCE\Renderer\Resource</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\module_renderer.cpp">
       <Filter>SOURCE\Renderer</Filter>
@@ -373,12 +364,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpherSet.h">
       <Filter>SOURCE\Renderer\Logic\Model\Morpher</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\resource\CModelMaster.h">
-      <Filter>SOURCE\Renderer\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\resource\CResourceManager.h">
-      <Filter>SOURCE\Renderer\Resource</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\module_renderer.h">
       <Filter>SOURCE\Renderer</Filter>

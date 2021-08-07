@@ -237,6 +237,9 @@
     <ClCompile Include="source\core-ext\settings\SessionSettings.cpp">
       <Filter>SOURCE\Core-ext\Settings</Filter>
     </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\assets\ModelIO.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -403,6 +406,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\settings\SessionSettings.h">
       <Filter>SOURCE\Core-ext\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\ModelIO.h">
+      <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

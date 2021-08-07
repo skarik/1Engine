@@ -1,22 +1,37 @@
 #include "vect4d_template.h"
+#include "vect3d_template.h"
+#include "vect2d_template.h"
 
 namespace core
 {
-	//Default constructor
 	template <typename REAL>
 	vect4d_template<REAL>::vect4d_template(void)
 		: x(0), y(0), z(0), w(0)
 	{
 		;
 	}
-	//Copy constructor
+
+	template <typename REAL>
+	vect4d_template<REAL>::vect4d_template (vect2d_template<REAL> const& old, const REAL& new_z, const REAL& new_w)
+		: x(old.x), y(old.y), z(new_z), w(new_w)
+	{
+		;
+	}
+
+	template <typename REAL>
+	vect4d_template<REAL>::vect4d_template (vect3d_template<REAL> const& old, const REAL& new_w)
+		: x(old.x), y(old.y), z(old.z), w(new_w)
+	{
+		;
+	}
+
 	template <typename REAL>
 	vect4d_template<REAL>::vect4d_template (vect4d_template<REAL> const& old)
 		: x(old.x), y(old.y), z(old.z), w(old.w)
 	{
 		;
 	}
-	//Component input constructor
+
 	template <typename REAL>
 	vect4d_template<REAL>::vect4d_template (REAL const& new_x, REAL const& new_y, REAL const& new_z, REAL const& new_w)
 		: x(new_x), y(new_y), z(new_z), w(new_w)

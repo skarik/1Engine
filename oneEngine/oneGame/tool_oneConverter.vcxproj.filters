@@ -33,6 +33,9 @@
     <ClCompile Include="source\tool\converter\TrConverterBMP.cpp">
       <Filter>SOURCE\Tool\Converter</Filter>
     </ClCompile>
+    <ClCompile Include="source\tool\converter\TrConverterGLTF.cpp">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\tool\converter\TrConverterBase.h">
@@ -51,6 +54,9 @@
       <Filter>SOURCE\Tool\Converter</Filter>
     </ClInclude>
     <ClInclude Include="source\tool\converter\TrConverterBMP.h">
+      <Filter>SOURCE\Tool\Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="source\tool\converter\TrConverterGLTF.h">
       <Filter>SOURCE\Tool\Converter</Filter>
     </ClInclude>
   </ItemGroup>

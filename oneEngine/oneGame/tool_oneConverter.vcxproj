@@ -52,6 +52,7 @@
     <ClCompile Include="source\tool\converter\TrConverterBase.cpp" />
     <ClCompile Include="source\tool\converter\TrConverterBMP.cpp" />
     <ClCompile Include="source\tool\converter\TrConverterForwardTo32.cpp" />
+    <ClCompile Include="source\tool\converter\TrConverterGLTF.cpp" />
     <ClCompile Include="source\tool\converter\TrConverterJPG.cpp" />
     <ClCompile Include="source\tool\converter\TrConverterPNG.cpp" />
     <ClCompile Include="source\tool\converter\TrConverterTGA.cpp" />
@@ -60,6 +61,7 @@
     <ClInclude Include="source\tool\converter\TrConverterBase.h" />
     <ClInclude Include="source\tool\converter\TrConverterBMP.h" />
     <ClInclude Include="source\tool\converter\TrConverterForwardTo32.h" />
+    <ClInclude Include="source\tool\converter\TrConverterGLTF.h" />
     <ClInclude Include="source\tool\converter\TrConverterJPG.h" />
     <ClInclude Include="source\tool\converter\TrConverterPNG.h" />
     <ClInclude Include="source\tool\converter\TrConverterTGA.h" />
@@ -119,7 +121,7 @@
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-	  <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_ENGINE_DEPLOY;_ENGINE_MODE_DEPLOY;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>

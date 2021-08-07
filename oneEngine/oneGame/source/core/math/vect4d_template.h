@@ -8,10 +8,17 @@
 namespace core
 {
 	template <typename REAL>
+	class vect2d_template;
+	template <typename REAL>
+	class vect3d_template;
+
+	template <typename REAL>
 	class vect4d_template 
 	{
 	public:
 		vect4d_template (void);
+		vect4d_template (vect2d_template<REAL> const& old, const REAL& new_z = 0, const REAL& new_w = 0 );
+		vect4d_template (vect3d_template<REAL> const& old, const REAL& new_w = 0 );
 		vect4d_template (vect4d_template<REAL> const& old );
 		vect4d_template (REAL const& new_x, REAL const& new_y, REAL const& new_z, REAL const& new_w);
 		vect4d_template (const REAL* arr);

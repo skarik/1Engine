@@ -124,12 +124,6 @@
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp" />
     <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp" />
     <ClCompile Include="source\renderer\renderer-console.cpp" />
-    <ClCompile Include="source\renderer\resource\CModelMaster.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\resource\CResourceManager.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\renderer\state\RrPipeline.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Pooling.cpp" />
@@ -273,12 +267,6 @@
     <ClInclude Include="source\renderer\particle\motion.h" />
     <ClInclude Include="source\renderer\particle\RrParticleSystem.h" />
     <ClInclude Include="source\renderer\renderer-console.h" />
-    <ClInclude Include="source\renderer\resource\CModelMaster.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\renderer\resource\CResourceManager.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="source\renderer\state\PipelineModes.h" />
     <ClInclude Include="source\renderer\state\RaiiHelpers.h" />
     <ClInclude Include="source\renderer\state\RrPipeline.h" />

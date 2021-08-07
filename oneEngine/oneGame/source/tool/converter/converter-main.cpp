@@ -12,6 +12,8 @@
 #include "tool/converter/TrConverterTGA.h"
 #include "tool/converter/TrConverterBMP.h"
 
+#include "tool/converter/TrConverterGLTF.h"
+
 int main ( int argc, char **argv )
 {	
 	if (argc < 3)
@@ -27,13 +29,15 @@ int main ( int argc, char **argv )
 
 	std::vector<trConversionEntry> l_conversionTable;
 	l_conversionTable.push_back(trConversionEntry("fbx",  core::converter::kEngineModelFileExtension, NULL));
-	l_conversionTable.push_back(trConversionEntry("gltf", core::converter::kEngineModelFileExtension, NULL));
+	l_conversionTable.push_back(trConversionEntry("gltf", core::converter::kEngineModelFileExtension, (trConverterInstantiator)_instantiate<TrConverterGLTF, TrConverterBase>));
+
 	l_conversionTable.push_back(trConversionEntry("gal",  core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterForwardTo32, TrConverterBase>));
 	l_conversionTable.push_back(trConversionEntry("png",  core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterPNG, TrConverterBase>));
 	l_conversionTable.push_back(trConversionEntry("jpg",  core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterJPG, TrConverterBase>));
 	l_conversionTable.push_back(trConversionEntry("jpeg", core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterJPG, TrConverterBase>));
 	l_conversionTable.push_back(trConversionEntry("tga",  core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterTGA, TrConverterBase>));
 	l_conversionTable.push_back(trConversionEntry("bmp",  core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterBMP, TrConverterBase>));
+
 	l_conversionTable.push_back(trConversionEntry("gif",  core::converter::kEngineImageFileExtension, NULL));
 
 	// Parse the arguments:
