@@ -56,11 +56,13 @@ namespace core
 	struct modelFmtHeader
 	{
 	public:
-		char		head[4];	// Always "MPD\0"
-		uint16		version[2];	// version
+		// Always "MPD\0"
+		char		head[4] = {kModelFormat_Header[0], kModelFormat_Header[1], kModelFormat_Header[2], kModelFormat_Header[3]};
+		// version
+		uint16		version[2] = {kModelFormat_VersionMajor, kModelFormat_VersionMinor};
 		//	CONVERSION TIME
 		// Date of creation/conversion
-		uint64		datetime;
+		uint64		datetime = 0;
 
 		//	FLAGS
 		union
@@ -76,12 +78,12 @@ namespace core
 				// Does this file include animation
 				uint flag_hasAnimation : 1;
 			};
-			uint32	flags;
+			uint32	flags = 0;
 		};
 
 		//	CONTENT INFO
 		// Number of segments.
-		uint32_t	segmentInfoCount;
+		uint32_t	segmentInfoCount = 0;
 
 		// A list of segments immediately follows the header.
 	};
@@ -148,9 +150,13 @@ namespace core
 		CORE_API explicit		MpdInterface ( void );
 		CORE_API				~MpdInterface ( void );
 
-		//	Open ( resource name ) : Attempts to open given MPD.
+		//	Open ( resource name, convert ) : Attempts to open given MPD.
 		// If any issues are detected with the file, will return false.
-		CORE_API bool			Open ( const char* n_resource_name );
+		CORE_API bool			Open ( const char* n_resource_name, const bool n_convert = true );
+
+		//	OpenFile ( file name, create on missing ) : Attemps to open given MPD.
+		// If any issues are detected with the file, will return false.
+		CORE_API bool			OpenFile ( const char* n_file_name, const bool n_create_on_missing = false );
 
 		//	Save ( ) : Attemps to resave given MPD.
 		// This may spike memory usage as the entire file is loaded into memory.
@@ -169,6 +175,9 @@ namespace core
 
 		//	GetSegmentData(type, index) : Returns the segment data with given type and index.
 		CORE_API const void*	GetSegmentData ( const ModelFmtSegmentType segment_type, int index );
+
+		//	ReleaseSegmentData(type, index) : Releases the decompressed/allocated segment data
+		CORE_API void			ReleaseSegmentData ( const ModelFmtSegmentType segment_type, int index );
 
 		//	RemoveSegment(type, index) : Removes segment with type and index.
 		CORE_API void			RemoveSegment ( const ModelFmtSegmentType segment_type, int index );

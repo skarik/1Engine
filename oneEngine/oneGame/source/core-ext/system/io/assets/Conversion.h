@@ -19,7 +19,7 @@ namespace core
 {
 	namespace converter
 	{
-		static const char* kEngineModelFileExtension = "pad";
+		static const char* kEngineModelFileExtension = "mpd";
 		static const char* kEngineImageFileExtension = "bpd";
 
 		struct arConversionEntry
@@ -34,6 +34,7 @@ namespace core
 		{
 			{"fbx",  kEngineModelFileExtension},
 			{"gltf", kEngineModelFileExtension},
+			{"glb",  kEngineModelFileExtension},
 
 			{"gal",  kEngineImageFileExtension},
 			{"png",  kEngineImageFileExtension},

@@ -152,13 +152,16 @@ void CopyFromGLTFData( const fx::gltf::Document& document, const fx::gltf::Acces
 template <core::ModelFmtVertexAttribute Attribute, typename Type>
 void AddMPDVertexAttribute ( core::MpdInterface& mpd, const int32 meshIndex, Type* attributeData, const uint32 vertexCount )
 {
-	core::modelFmtSegmentInfoHeader header;
-	header.type = core::ModelFmtSegmentType::kGeometryVertexData;
-	header.subindex = meshIndex;
-	header.subtype = (uint8)Attribute;
-	header.dataSize = sizeof(Type) * vertexCount;
+	if (attributeData != NULL)
+	{
+		core::modelFmtSegmentInfoHeader header;
+		header.type = core::ModelFmtSegmentType::kGeometryVertexData;
+		header.subindex = meshIndex;
+		header.subtype = (uint8)Attribute;
+		header.dataSize = sizeof(Type) * vertexCount;
 
-	mpd.AddSegment(header, attributeData);
+		mpd.AddSegment(header, attributeData);
+	}
 }
 
 bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilename)
@@ -247,7 +250,8 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 	{
 		// Open up the MPD file.
 		core::MpdInterface mpd;
-		mpd.Open(outputFilename);
+		bool mpdOpen = mpd.OpenFile(outputFilename, true);
+		ARCORE_ASSERT(mpdOpen);
 
 		// Remove all the geometry info since we have brand new geometry
 		while (mpd.GetSegmentCount(core::ModelFmtSegmentType::kGeometryInfo) > 0)
@@ -299,7 +303,7 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 			AddMPDVertexAttribute<core::ModelFmtVertexAttribute::kTangent>(mpd, meshIndex, mesh.data.tangent, mesh.data.vertexNum);
 			AddMPDVertexAttribute<core::ModelFmtVertexAttribute::kUV1>(mpd, meshIndex, mesh.data.texcoord1, mesh.data.vertexNum);
 			AddMPDVertexAttribute<core::ModelFmtVertexAttribute::kBoneWeight>(mpd, meshIndex, mesh.data.weight, mesh.data.vertexNum);
-			AddMPDVertexAttribute<core::ModelFmtVertexAttribute::kBoneIndices>(mpd, meshIndex, mesh.data.indices, mesh.data.vertexNum);
+			AddMPDVertexAttribute<core::ModelFmtVertexAttribute::kBoneIndices>(mpd, meshIndex, mesh.data.bone, mesh.data.vertexNum);
 		}
 
 		// Save the MPD file.

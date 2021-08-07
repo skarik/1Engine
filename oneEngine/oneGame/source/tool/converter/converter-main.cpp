@@ -30,6 +30,7 @@ int main ( int argc, char **argv )
 	std::vector<trConversionEntry> l_conversionTable;
 	l_conversionTable.push_back(trConversionEntry("fbx",  core::converter::kEngineModelFileExtension, NULL));
 	l_conversionTable.push_back(trConversionEntry("gltf", core::converter::kEngineModelFileExtension, (trConverterInstantiator)_instantiate<TrConverterGLTF, TrConverterBase>));
+	l_conversionTable.push_back(trConversionEntry("glb",  core::converter::kEngineModelFileExtension, (trConverterInstantiator)_instantiate<TrConverterGLTF, TrConverterBase>));
 
 	l_conversionTable.push_back(trConversionEntry("gal",  core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterForwardTo32, TrConverterBase>));
 	l_conversionTable.push_back(trConversionEntry("png",  core::converter::kEngineImageFileExtension, (trConverterInstantiator)_instantiate<TrConverterPNG, TrConverterBase>));
@@ -62,7 +63,10 @@ int main ( int argc, char **argv )
 			{
 				// Run with the new test type.
 				TrConverterBase* converter = instantiator();
-				converter->Convert(l_inputFilename.c_str(), l_outputFilename.c_str());
+
+				bool result = converter->Convert(l_inputFilename.c_str(), l_outputFilename.c_str());
+				ARCORE_ASSERT(result);
+				
 				delete converter;
 				return 0;
 			}

@@ -1,7 +1,7 @@
 #include "RrCModel.h"
 #include "ModelLoader.h"
 
-#include "core-ext/system/io/assets/ModelLoader.h"
+//#include "core-ext/system/io/assets/ModelLoader.h"
 
 #include "core/utils/string.h"
 #include "core/system/io/CSegmentedFile.h"

@@ -5,7 +5,7 @@
 //#include "physical/physics/shapes/physMesh.h"
 #include "physical/physics/shapes/PrMesh.h"
 
-#include "core-ext/system/io/assets/ModelLoader.h"
+//#include "core-ext/system/io/assets/ModelLoader.h"
 #include "core-ext/transform/TransformUtility.h"
 
 #include "core-ext/animation/set/AnimationSet.h"
@@ -30,108 +30,108 @@
 
 void CSkinnedModel::LoadSkinnedModel ( const string& sFilename )
 {
-	// Create loader and set options for the load
-	core::ModelLoader loader;
-	loader.m_loadMesh = true;
-	loader.m_loadSkeleton = true;
+	//// Create loader and set options for the load
+	//core::ModelLoader loader;
+	//loader.m_loadMesh = true;
+	//loader.m_loadSkeleton = true;
 
-	// Attempt load
-	if ( !loader.LoadModel( sFilename.c_str() ) )
-	{
-		throw core::MissingFileException();
-	}
-	else
-	{
-		// Model needs the skeleton loaded
-		skeleton = animation::Skeleton(); // Clear out skelly
-		std::vector<core::TransformLite> stored_transforms;
-		for ( size_t i = 0; i < loader.skeleton.size(); ++i )
-		{
-			core::modelFmtBoneEntry& bone = loader.skeleton[i];
+	//// Attempt load
+	//if ( !loader.LoadModel( sFilename.c_str() ) )
+	//{
+	//	throw core::MissingFileException();
+	//}
+	//else
+	//{
+	//	// Model needs the skeleton loaded
+	//	skeleton = animation::Skeleton(); // Clear out skelly
+	//	std::vector<core::TransformLite> stored_transforms;
+	//	for ( size_t i = 0; i < loader.skeleton.size(); ++i )
+	//	{
+	//		core::modelFmtBoneEntry& bone = loader.skeleton[i];
 
-			// Create the correct values needed for bind pose information
-			stored_transforms.push_back(core::TransformLite());
-			stored_transforms[i].world.position = bone.world_transform.position;
-			stored_transforms[i].world.scale	= bone.world_transform.scale;
-			stored_transforms[i].world.rotation = bone.world_transform.rotation;
-			if ( bone.parent >= 0 )
-				stored_transforms[i].UpdateLocalFromWorld( &stored_transforms[bone.parent] );
-			else
-				stored_transforms[i].UpdateLocalFromWorld();
+	//		// Create the correct values needed for bind pose information
+	//		stored_transforms.push_back(core::TransformLite());
+	//		stored_transforms[i].world.position = bone.world_transform.position;
+	//		stored_transforms[i].world.scale	= bone.world_transform.scale;
+	//		stored_transforms[i].world.rotation = bone.world_transform.rotation;
+	//		if ( bone.parent >= 0 )
+	//			stored_transforms[i].UpdateLocalFromWorld( &stored_transforms[bone.parent] );
+	//		else
+	//			stored_transforms[i].UpdateLocalFromWorld();
 
-			// Pull out the local transform
-			XTransform local_transform;
-			local_transform.position	= stored_transforms[i].local.position;
-			local_transform.scale		= stored_transforms[i].local.scale;
-			local_transform.rotation	= stored_transforms[i].local.rotation;
+	//		// Pull out the local transform
+	//		XTransform local_transform;
+	//		local_transform.position	= stored_transforms[i].local.position;
+	//		local_transform.scale		= stored_transforms[i].local.scale;
+	//		local_transform.rotation	= stored_transforms[i].local.rotation;
 
-			// Add the information to the skeleton
-			skeleton.bind_xpose.push_back	( local_transform );
-			//skeleton.bind_pose.push_back	( stored_transforms[i].WorldMatrix() );
-			skeleton.inv_bind_pose.push_back( stored_transforms[i].WorldMatrix().inverse() );
-			skeleton.names.push_back( bone.name );
-			skeleton.parent.push_back( bone.parent );
-			skeleton.reference_xpose.push_back( bone.firstframe_transform );
-		}
-		PhysicalResources::Active()->AddSkeleton( sFilename.c_str(), skeleton );
+	//		// Add the information to the skeleton
+	//		skeleton.bind_xpose.push_back	( local_transform );
+	//		//skeleton.bind_pose.push_back	( stored_transforms[i].WorldMatrix() );
+	//		skeleton.inv_bind_pose.push_back( stored_transforms[i].WorldMatrix().inverse() );
+	//		skeleton.names.push_back( bone.name );
+	//		skeleton.parent.push_back( bone.parent );
+	//		skeleton.reference_xpose.push_back( bone.firstframe_transform );
+	//	}
+	//	PhysicalResources::Active()->AddSkeleton( sFilename.c_str(), skeleton );
 
-		// Model needs the mesh loaded. We need to create a std::vector<rrMesh*> and pass it in
-		std::vector<rrMesh*> meshList;
-		for ( size_t i = 0; i < loader.meshes.size(); ++i )
-		{
-			// Create Mesh
-			rrMesh* newMesh = new rrSkinnedMesh ();
-			//((rrSkinnedMesh*)newMesh)->SetSkeleton( &vSkeleton );
+	//	// Model needs the mesh loaded. We need to create a std::vector<rrMesh*> and pass it in
+	//	std::vector<rrMesh*> meshList;
+	//	for ( size_t i = 0; i < loader.meshes.size(); ++i )
+	//	{
+	//		// Create Mesh
+	//		rrMesh* newMesh = new rrSkinnedMesh ();
+	//		//((rrSkinnedMesh*)newMesh)->SetSkeleton( &vSkeleton );
 
-			// Create the mesh object
-			arModelData* modeldata = new arModelData();
-			*modeldata = loader.meshes[i].model;	// Shallow copy the data over
-			// Ownership of pointers are now in modeldata
-			loader.meshes[i].model.triangles = NULL;
-			loader.meshes[i].model.vertices = NULL;
+	//		// Create the mesh object
+	//		arModelData* modeldata = new arModelData();
+	//		*modeldata = loader.meshes[i].model;	// Shallow copy the data over
+	//		// Ownership of pointers are now in modeldata
+	//		loader.meshes[i].model.triangles = NULL;
+	//		loader.meshes[i].model.vertices = NULL;
 
-			// Init mesh with new model data
-			newMesh->Initialize( loader.meshes[i].name.c_str(), modeldata );
+	//		// Init mesh with new model data
+	//		newMesh->Initialize( loader.meshes[i].name.c_str(), modeldata );
 
-			// Load material for this new mesh
-			if ( loader.meshes[i].material_index < loader.materials.size() )
-			{
-				RrMaterial* newMat = new RrMaterial;
-				newMat->m_isSkinnedShader = true;
-				newMat->loadFromFile( loader.materials[loader.meshes[i].material_index].filename );
-				//newMesh->pmMat = newMat;
-				throw core::NotYetImplementedException();
-			}
-			else
-			{
-				//newMesh->pmMat = RrMaterial::Default;
-			}
+	//		// Load material for this new mesh
+	//		if ( loader.meshes[i].material_index < loader.materials.size() )
+	//		{
+	//			RrMaterial* newMat = new RrMaterial;
+	//			newMat->m_isSkinnedShader = true;
+	//			newMat->loadFromFile( loader.materials[loader.meshes[i].material_index].filename );
+	//			//newMesh->pmMat = newMat;
+	//			throw core::NotYetImplementedException();
+	//		}
+	//		else
+	//		{
+	//			//newMesh->pmMat = RrMaterial::Default;
+	//		}
 
-			// Put the mesh into the render list
-			meshList.push_back(newMesh);
-		}
-		RenderResources::Active()->AddMeshSet( sFilename.c_str(), meshList );
+	//		// Put the mesh into the render list
+	//		meshList.push_back(newMesh);
+	//	}
+	//	RenderResources::Active()->AddMeshSet( sFilename.c_str(), meshList );
 
-		//// Load morphs if needed
-		//// TODO: This is currently low priority, so the following is very minimal and disabled.
-		//if ( loader.header.morphnum > 0 )
-		//{
-		//	const unsigned int vertexCount = meshList[loader.header.morphmesh]->pmData->vertexNum;
-		//	CMorpherSet* morphSet = new CMorpherSet( vertexCount, loader.header.morphnum );
-		//	morphSet->iMorphTarget = loader.header.morphmesh;
-		//	for ( size_t i = 0; i < loader.morphs.size(); ++i )
-		//	{
-		//		// Add morph to list
-		//		CMorphAction newAction( loader.morphs[i].name.c_str() );
-		//		newAction.index = (short)(i);
-		//		morphSet->AddAction( newAction );
+	//	//// Load morphs if needed
+	//	//// TODO: This is currently low priority, so the following is very minimal and disabled.
+	//	//if ( loader.header.morphnum > 0 )
+	//	//{
+	//	//	const unsigned int vertexCount = meshList[loader.header.morphmesh]->pmData->vertexNum;
+	//	//	CMorpherSet* morphSet = new CMorpherSet( vertexCount, loader.header.morphnum );
+	//	//	morphSet->iMorphTarget = loader.header.morphmesh;
+	//	//	for ( size_t i = 0; i < loader.morphs.size(); ++i )
+	//	//	{
+	//	//		// Add morph to list
+	//	//		CMorphAction newAction( loader.morphs[i].name.c_str() );
+	//	//		newAction.index = (short)(i);
+	//	//		morphSet->AddAction( newAction );
 
-		//		// Load in morph mesh data
-		//		memcpy( (void*)morphSet->GetMorphData(i), loader.morphs[i].vertices, sizeof(arModelVertex) * vertexCount );
-		//	}
-		//	RenderResources::Active()->AddMorphSet( sFilename.c_str(), morphSet );
-		//}
-	}
+	//	//		// Load in morph mesh data
+	//	//		memcpy( (void*)morphSet->GetMorphData(i), loader.morphs[i].vertices, sizeof(arModelVertex) * vertexCount );
+	//	//	}
+	//	//	RenderResources::Active()->AddMorphSet( sFilename.c_str(), morphSet );
+	//	//}
+	//}
 }
 
 //	bool haveConverter = IO::FileExists("_devtools/FBXtoPAD.exe");

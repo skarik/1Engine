@@ -13,7 +13,7 @@
 //#include "renderer/resource/RrCModelMaster.h"
 #include "renderer/logic/model/RrModelMasterSubsystem.h"
 
-#include "core-ext/system/io/assets/ModelLoader.h"
+//#include "core-ext/system/io/assets/ModelLoader.h"
 
 RrCModel*
 RrCModel::Load ( const char* resource_name )
@@ -45,25 +45,26 @@ RrCModel::Load ( const rrModelLoadParams& load_params )
 		RrAnimatedMeshGroup* existingMeshGroup = (RrAnimatedMeshGroup*)existingResource;
 		existingMeshGroup->AddReference();
 
-		// Check what is loaded in the mesh group, and load up the rest:
-		core::ModelLoader loader;
+		ARCORE_ERROR("NOT IMPLEMENTED");
+		//// Check what is loaded in the mesh group, and load up the rest:
+		//core::ModelLoader loader;
 
-		if (load_params.morphs && existingMeshGroup->m_morphs == NULL)
-		{
-			loader.m_loadMorphs = true;
-		}
-		if ((load_params.hitboxes) && existingMeshGroup->m_skeleton == NULL)
-		{
-			loader.m_loadSkeleton = true;
-		}
+		//if (load_params.morphs && existingMeshGroup->m_morphs == NULL)
+		//{
+		//	loader.m_loadMorphs = true;
+		//}
+		//if ((load_params.hitboxes) && existingMeshGroup->m_skeleton == NULL)
+		//{
+		//	loader.m_loadSkeleton = true;
+		//}
 
-		// Load model
-		bool model_loaded = loader.LoadModel(load_params.resource_name);
-		if (model_loaded == false)
-		{
-			debug::Console->PrintError("Could not load model resource \"%s\".\n", load_params.resource_name);
-			return NULL;
-		}
+		//// Load model
+		//bool model_loaded = loader.LoadModel(load_params.resource_name);
+		//if (model_loaded == false)
+		//{
+		//	debug::Console->PrintError("Could not load model resource \"%s\".\n", load_params.resource_name);
+		//	return NULL;
+		//}
 
 		// Create a new RrCModel with the given RrAnimatedMeshGroup.
 		RrCModel* model = new RrCModel(existingMeshGroup, load_params);
@@ -75,21 +76,22 @@ RrCModel::Load ( const rrModelLoadParams& load_params )
 		// No model. We need to load up a new mesh group.
 
 		// Create a new RrAnimatedMeshGroup.
-		core::ModelLoader loader;
-		loader.m_loadMesh = true;
-		loader.m_loadMorphs = load_params.morphs;
-		loader.m_loadAnimation = load_params.animation;
-		loader.m_loadActions = load_params.animation;
-		loader.m_loadSkeleton = load_params.animation | load_params.hitboxes;
+		//core::ModelLoader loader;
+		//loader.m_loadMesh = true;
+		//loader.m_loadMorphs = load_params.morphs;
+		//loader.m_loadAnimation = load_params.animation;
+		//loader.m_loadActions = load_params.animation;
+		//loader.m_loadSkeleton = load_params.animation | load_params.hitboxes;
 
-		// Load model
-		bool model_loaded = loader.LoadModel(load_params.resource_name);
-		if (model_loaded == false)
-		{
-			//ARCORE_ERROR(0, "Unimplemented RrCModel instantiation.");
-			debug::Console->PrintError("Could not load model resource \"%s\".\n", load_params.resource_name);
-			return NULL;
-		}
+		//// Load model
+		//bool model_loaded = loader.LoadModel(load_params.resource_name);
+		//if (model_loaded == false)
+		//{
+		//	//ARCORE_ERROR(0, "Unimplemented RrCModel instantiation.");
+		//	debug::Console->PrintError("Could not load model resource \"%s\".\n", load_params.resource_name);
+		//	return NULL;
+		//}
+		ARCORE_ERROR("NOT IMPLEMENTED");
 
 		// Create a mesh group that holds the information:
 		RrAnimatedMeshGroup* meshGroup = new RrAnimatedMeshGroup();

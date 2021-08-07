@@ -57,7 +57,14 @@
     <ClCompile Include="source\core-ext\settings\SessionSettings.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\Conversion.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\ModelIO.cpp" />
-    <ClCompile Include="source\core-ext\system\io\assets\ModelLoader.cpp" />
+    <ClCompile Include="source\core-ext\system\io\assets\ModelLoader.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Reader.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Writer.cpp" />
     <ClCompile Include="source\core-ext\system\io\Files.cpp" />
@@ -113,7 +120,14 @@
     <ClInclude Include="source\core-ext\system\io\assets\ModelIO.h" />
     <ClInclude Include="source\core-ext\system\io\assets\ResourceAnimLoader.h" />
     <ClInclude Include="source\core-ext\system\io\assets\ResourceHandler.h" />
-    <ClInclude Include="source\core-ext\system\io\assets\ModelLoader.h" />
+    <ClInclude Include="source\core-ext\system\io\assets\ModelLoader.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="source\core-ext\system\io\assets\texloader\bmp.hpp" />
     <ClInclude Include="source\core-ext\system\io\assets\texloader\bpd.hpp" />
     <ClInclude Include="source\core-ext\system\io\assets\texloader\jpg.hpp" />
