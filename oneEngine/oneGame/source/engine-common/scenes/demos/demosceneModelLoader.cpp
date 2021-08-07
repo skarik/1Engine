@@ -47,7 +47,7 @@ void demosceneModelLoader::LoadScene ( void )
 
 	// Create acorn
 	{
-		RrCModel* model = RrCModel::Load("models/demos/female elf.fbx");
+		RrCModel* model = RrCModel::Load("models/demos/female elf.fbx", NULL);
 		model->transform.scale = Vector3f(1,1,1) / 304.8F * 2.7F;
 		model->transform.rotation = Vector3f(0.0F, 0, 135.0F);
 		//model->transform.position = Vector3f(-1.0F, +1.0F, -1.3F);

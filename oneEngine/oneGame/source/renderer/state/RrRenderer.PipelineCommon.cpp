@@ -45,6 +45,14 @@ void RrRenderer::InitializeCommonPipelineResources ( gpu::Device* device )
 	m_vbufScreenQuad_ForOutputSurface.upload(NULL, screenquad, sizeof(screenquad), gpu::kTransferStatic);
 
 	CreatePipeline(&renderer::pass::Copy->m_program->GetShaderPipeline(), m_pipelineScreenQuadCopy);
+
+	// Create default geometry for empty values
+	Vector4f defaultgeo [] = {
+		Vector4f(1, 1, 1, 1),
+		Vector4f(0, 0, 0, 1)
+	};
+	m_vbufDefault.initAsVertexBuffer(device, gpu::kFormatR32G32B32A32SFloat, sizeof(defaultgeo)/sizeof(Vector4f));
+	m_vbufDefault.upload(NULL, defaultgeo, sizeof(defaultgeo), gpu::kTransferStatic);
 }
 
 void RrRenderer::FreeCommonPipelineResources ( gpu::Device* device )

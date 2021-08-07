@@ -22,7 +22,7 @@ namespace renderer
 	public:
 		//	GetName ()
 		// Return my mesh's name
-		RENDER_API const char* const
+		/*RENDER_API const char* const
 								GetName ( void ) const
 			{ return m_name.c_str(); }
 
@@ -30,7 +30,7 @@ namespace renderer
 		// Gets the bounding box of the mesh
 		RENDER_API core::math::BoundingBox
 								GetBoundingBox ( void ) const
-			{ return bbCheckRenderBox; }
+			{ return bbCheckRenderBox; }*/
 
 		//	GetCanRender ()
 		// Get if frustum culling hides this mesh
@@ -45,29 +45,29 @@ namespace renderer
 		// Called during engine render pass.
 		RENDER_API bool			Render ( const rrRenderParams* params ) override;
 
-	protected:
+	//protected:
 		// Get the mesh bounding box
-		void					CalculateBoundingBox ( void );
+		//void					CalculateBoundingBox ( void );
 
 	public:
 		rrMeshBuffer*		m_mesh;
-		RrCModel*			m_parent;
+		//RrCModel*			m_parent;
 
 	protected:
 		friend RrCModel;
-		bool				bUseFrustumCulling;
+		//bool				bUseFrustumCulling;
 		bool				bCanRender;
 		bool				bUseSkinning;
 
 		// Frustum Culling
-		Vector3f			vCheckRenderPos;
+		/*Vector3f			vCheckRenderPos;
 		float				fCheckRenderDist;
 		Vector3f			vMinExtents;
 		Vector3f			vMaxExtents;
 		core::math::BoundingBox
 							bbCheckRenderBox;
 
-		arstring64			m_name;
+		arstring64			m_name;*/
 	};
 }
 

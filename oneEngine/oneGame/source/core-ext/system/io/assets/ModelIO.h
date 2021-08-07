@@ -22,7 +22,7 @@ namespace core
 	static const char*	kModelFormat_Header			= "MPD\0";
 
 	static const int	kModelFormat_VersionMajor	= 0;
-	static const int	kModelFormat_VersionMinor	= 0;
+	static const int	kModelFormat_VersionMinor	= 1;
 
 	static const char*	kModelFormat_HeadSegmentInfo	= "INF\0";
 
@@ -131,8 +131,21 @@ namespace core
 		uint32		vertex_count = 0;
 		// if true, is made of triangle strips. If false, is a list of triangles.
 		bool		is_strips = false;
+		// bounding box minimum
+		Vector3f	bbox_min;
+		// bounding box maximum
+		Vector3f	bbox_max;
 		// 256-character string of the name
 		arstring256	name; // This is limited in length and constant in order to simplify the IO.
+
+	public:
+		const bool		IsValid ( void )
+		{
+			return head[0] == kModelFormat_HeadGeometryInfo[0]
+				&& head[1] == kModelFormat_HeadGeometryInfo[1]
+				&& head[2] == kModelFormat_HeadGeometryInfo[2]
+				&& head[3] == kModelFormat_HeadGeometryInfo[3];
+		}
 	};
 	//static const int sz = sizeof(modelFmtSegmentGeometryInfo);
 

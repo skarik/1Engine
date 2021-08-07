@@ -10,26 +10,145 @@
 
 #include "renderer/object/mesh/Mesh.h"
 #include "renderer/logic/model/RrAnimatedMeshGroup.h"
-//#include "renderer/resource/RrCModelMaster.h"
 #include "renderer/logic/model/RrModelMasterSubsystem.h"
 
-//#include "core-ext/system/io/assets/ModelLoader.h"
+#include "core-ext/system/io/assets/ModelIO.h"
 
-RrCModel*
-RrCModel::Load ( const char* resource_name )
+template <typename Type>
+void AssignMPDDataAsType ( Type*& target, const void* data )
 {
-	rrModelLoadParams mlparams;
-	mlparams.resource_name = resource_name;
-	mlparams.morphs = true;
-	mlparams.animation = true;
-	mlparams.hitboxes = true;
-	mlparams.collision = true;
+	ARCORE_ASSERT(target == NULL);
+	target = (Type*)data;
+}
 
-	return Load(mlparams);
+static bool LoadModelToMeshGroup ( const rrModelLoadParams& load_params, RrAnimatedMeshGroup* mesh_group )
+{
+	ARCORE_ASSERT(mesh_group != NULL);
+
+	// For now, we just mark the mesh group's load state as loaded for unsupported items
+	if (load_params.morphs)
+	{
+		mesh_group->m_loadState.morphs = true;
+	}
+	if (load_params.skeleton)
+	{
+		mesh_group->m_loadState.skeleton = true;
+	}
+
+	// Load in geometry
+	if (load_params.geometry)
+	{
+		core::MpdInterface mpd;
+		mpd.Open(load_params.resource_name, true);
+		
+		for (uint meshIndex = 0; meshIndex < mpd.GetSegmentCount(core::ModelFmtSegmentType::kGeometryInfo); ++meshIndex)
+		{
+			rrMeshBuffer*		meshBuffer = nullptr;
+			arModelData*		meshData = nullptr;
+			core::math::Cubic	meshBounds;
+			arstring64			meshName;
+
+			// First pull in the geometry general information
+			core::modelFmtSegmentGeometry_Info* geoInfo = (core::modelFmtSegmentGeometry_Info*)mpd.GetSegmentData(core::ModelFmtSegmentType::kGeometryInfo, meshIndex);
+			ARCORE_ASSERT(geoInfo->IsValid());
+			{
+				meshBuffer = new rrMeshBuffer();
+				meshData = new arModelData();
+
+				meshData->indexNum = geoInfo->index_count;
+				meshData->vertexNum = geoInfo->vertex_count;
+				meshBounds = core::math::Cubic::FromPosition(geoInfo->bbox_min, geoInfo->bbox_max);
+				meshName = geoInfo->name;
+			}
+			mpd.ReleaseSegmentData(core::ModelFmtSegmentType::kGeometryInfo, meshIndex);
+
+			// Pull in the index data of matching mesh
+			for (uint segmentIndex = 0; segmentIndex < mpd.GetSegmentCount(core::ModelFmtSegmentType::kGeometryIndices); ++segmentIndex)
+			{
+				if (mpd.GetSegment(core::ModelFmtSegmentType::kGeometryIndices, segmentIndex).subindex == meshIndex)
+				{
+					meshData->indices = (uint16_t*)mpd.GetSegmentData(core::ModelFmtSegmentType::kGeometryIndices, segmentIndex);
+					break;
+				}
+			}
+
+			// Pull in the attribute data of matching mesh
+			for (uint segmentIndex = 0; segmentIndex < mpd.GetSegmentCount(core::ModelFmtSegmentType::kGeometryVertexData); ++segmentIndex)
+			{
+				if (mpd.GetSegment(core::ModelFmtSegmentType::kGeometryVertexData, segmentIndex).subindex == meshIndex)
+				{
+					switch (mpd.GetSegment(core::ModelFmtSegmentType::kGeometryVertexData, segmentIndex).subtype)
+					{
+					case (uint)core::ModelFmtVertexAttribute::kPosition:
+						AssignMPDDataAsType(meshData->position, mpd.GetSegmentData(core::ModelFmtSegmentType::kGeometryVertexData, segmentIndex));
+						break;
+					case (uint)core::ModelFmtVertexAttribute::kUV0:
+						AssignMPDDataAsType(meshData->texcoord0, mpd.GetSegmentData(core::ModelFmtSegmentType::kGeometryVertexData, segmentIndex));
+						break;
+					case (uint)core::ModelFmtVertexAttribute::kColor:
+						AssignMPDDataAsType(meshData->color, mpd.GetSegmentData(core::ModelFmtSegmentType::kGeometryVertexData, segmentIndex));
+						break;
+					case (uint)core::ModelFmtVertexAttribute::kNormal:
+						AssignMPDDataAsType(meshData->normal, mpd.GetSegmentData(core::ModelFmtSegmentType::kGeometryVertexData, segmentIndex));
+						break;
+					case (uint)core::ModelFmtVertexAttribute::kTangent:
+						AssignMPDDataAsType(meshData->tangent, mpd.GetSegmentData(core::ModelFmtSegmentType::kGeometryVertexData, segmentIndex));
+						break;
+					case (uint)core::ModelFmtVertexAttribute::kBinormal:
+						AssignMPDDataAsType(meshData->binormal, mpd.GetSegmentData(core::ModelFmtSegmentType::kGeometryVertexData, segmentIndex));
+						break;
+					case (uint)core::ModelFmtVertexAttribute::kUV1:
+						AssignMPDDataAsType(meshData->texcoord1, mpd.GetSegmentData(core::ModelFmtSegmentType::kGeometryVertexData, segmentIndex));
+						break;
+					case (uint)core::ModelFmtVertexAttribute::kBoneWeight:
+						AssignMPDDataAsType(meshData->weight, mpd.GetSegmentData(core::ModelFmtSegmentType::kGeometryVertexData, segmentIndex));
+						break;
+					case (uint)core::ModelFmtVertexAttribute::kBoneIndices:
+						AssignMPDDataAsType(meshData->bone, mpd.GetSegmentData(core::ModelFmtSegmentType::kGeometryVertexData, segmentIndex));
+						break;
+					}
+				}
+			}
+
+			// Upload mesh to GPU
+			meshBuffer->InitMeshBuffers(meshData);
+
+			// Clean up mesh data refs
+			{
+				arModelData storedRefsMeshData = *meshData;
+				*meshData = arModelData();
+				meshData->vertexNum = storedRefsMeshData.vertexNum;
+				meshData->indexNum = storedRefsMeshData.indexNum;
+			}
+
+			// Add the new data to the Meshgroup
+			mesh_group->m_meshes.push_back(meshBuffer);
+			mesh_group->m_meshBounds.push_back(meshBounds);
+			mesh_group->m_meshNames.push_back(meshName);
+		}
+
+		mesh_group->m_loadState.meshes = true;
+	}
+
+	return true;
 }
 
 RrCModel*
-RrCModel::Load ( const rrModelLoadParams& load_params )
+RrCModel::Load ( const char* resource_name, RrWorld* world_to_add_to )
+{
+	rrModelLoadParams mlparams;
+	mlparams.resource_name = resource_name;
+	mlparams.geometry = true;
+	mlparams.morphs = true;
+	mlparams.animation = true;
+	mlparams.skeleton = true;
+	mlparams.collision = true;
+
+	return Load(mlparams, world_to_add_to);
+}
+
+RrCModel*
+RrCModel::Load ( const rrModelLoadParams& load_params, RrWorld* world_to_add_to )
 {
 	auto resm = core::ArResourceManager::Active();
 
@@ -45,59 +164,42 @@ RrCModel::Load ( const rrModelLoadParams& load_params )
 		RrAnimatedMeshGroup* existingMeshGroup = (RrAnimatedMeshGroup*)existingResource;
 		existingMeshGroup->AddReference();
 
-		ARCORE_ERROR("NOT IMPLEMENTED");
-		//// Check what is loaded in the mesh group, and load up the rest:
-		//core::ModelLoader loader;
+		// Check what is loaded in the mesh group, and load up the rest:
+		rrModelLoadParams effective_load_params = load_params;
 
-		//if (load_params.morphs && existingMeshGroup->m_morphs == NULL)
-		//{
-		//	loader.m_loadMorphs = true;
-		//}
-		//if ((load_params.hitboxes) && existingMeshGroup->m_skeleton == NULL)
-		//{
-		//	loader.m_loadSkeleton = true;
-		//}
+		if (load_params.geometry && existingMeshGroup->m_loadState.meshes)
+		{
+			effective_load_params.geometry = false;
+		}
+		if (load_params.morphs && existingMeshGroup->m_loadState.morphs)
+		{
+			effective_load_params.morphs = false;
+		}
+		if (load_params.skeleton && existingMeshGroup->m_loadState.skeleton)
+		{
+			effective_load_params.skeleton = false;
+		}
 
-		//// Load model
-		//bool model_loaded = loader.LoadModel(load_params.resource_name);
-		//if (model_loaded == false)
-		//{
-		//	debug::Console->PrintError("Could not load model resource \"%s\".\n", load_params.resource_name);
-		//	return NULL;
-		//}
-
+		if (effective_load_params.geometry
+			|| effective_load_params.morphs
+			|| effective_load_params.skeleton)
+		{
+			bool loadResult = LoadModelToMeshGroup(effective_load_params, existingMeshGroup);
+			ARCORE_ASSERT(loadResult);
+		}
+		
 		// Create a new RrCModel with the given RrAnimatedMeshGroup.
-		RrCModel* model = new RrCModel(existingMeshGroup, load_params);
+		RrCModel* model = new RrCModel(existingMeshGroup, load_params, world_to_add_to);
 
 		return model;
 	}
 	else
 	{
-		// No model. We need to load up a new mesh group.
-
-		// Create a new RrAnimatedMeshGroup.
-		//core::ModelLoader loader;
-		//loader.m_loadMesh = true;
-		//loader.m_loadMorphs = load_params.morphs;
-		//loader.m_loadAnimation = load_params.animation;
-		//loader.m_loadActions = load_params.animation;
-		//loader.m_loadSkeleton = load_params.animation | load_params.hitboxes;
-
-		//// Load model
-		//bool model_loaded = loader.LoadModel(load_params.resource_name);
-		//if (model_loaded == false)
-		//{
-		//	//ARCORE_ERROR(0, "Unimplemented RrCModel instantiation.");
-		//	debug::Console->PrintError("Could not load model resource \"%s\".\n", load_params.resource_name);
-		//	return NULL;
-		//}
-		ARCORE_ERROR("NOT IMPLEMENTED");
-
 		// Create a mesh group that holds the information:
 		RrAnimatedMeshGroup* meshGroup = new RrAnimatedMeshGroup();
 		{
-			ARCORE_ERROR("Unimplemented RrCModel instantiation.");
-			return NULL;
+			bool loadResult = LoadModelToMeshGroup(load_params, meshGroup);
+			ARCORE_ASSERT(loadResult);
 		}
 
 		// Add self to the resource system:
@@ -105,23 +207,58 @@ RrCModel::Load ( const rrModelLoadParams& load_params )
 			resm->Add(meshGroup);
 
 		// Create a new RrCModel with the given RrAnimatedMeshGroup.
-		RrCModel* model = new RrCModel(meshGroup, load_params);
+		RrCModel* model = new RrCModel(meshGroup, load_params, world_to_add_to);
 
 		return model;
 	}
 }
 
 RrCModel*
-RrCModel::Upload ( arModelData& model_data )
+RrCModel::Upload ( arModelData& model_data, RrWorld* world_to_add_to )
 {
 	return NULL;
 }
 
-RrCModel::RrCModel ( RrAnimatedMeshGroup* mesh_group, const rrModelLoadParams& params )
-	: RrLogicObject(),
-	m_animRefMode(kAnimReferenceNone)
+static core::math::Cubic CalculateTotalMeshBounds ( RrAnimatedMeshGroup* mesh_group )
 {
-	;
+	if (mesh_group->m_meshBounds.empty())
+	{
+		return core::math::Cubic(Vector3f(), Vector3f());
+	}
+	else
+	{
+		core::math::Cubic result = mesh_group->m_meshBounds[0];
+		for (int i = 1; i < mesh_group->m_meshBounds.size(); ++i)
+		{
+			result.Expand(mesh_group->m_meshBounds[i]);
+		}
+		return result;
+	}
+}
+
+RrCModel::RrCModel ( RrAnimatedMeshGroup* mesh_group, const rrModelLoadParams& params, RrWorld* world_to_add_to )
+	: RrLogicObject()
+{
+	m_totalMeshBounds = CalculateTotalMeshBounds(mesh_group);
+
+	// Update the world we add to
+	if (world_to_add_to != nullptr)
+	{
+		this->AddToWorld(world_to_add_to);
+	}
+
+	// Instiantiate the RrMeshes we use to render:
+	for (rrMeshBuffer* mesh_buffer : mesh_group->m_meshes)
+	{
+		renderer::Mesh* mesh = new renderer::Mesh(mesh_buffer, false);
+
+		if (world_to_add_to != nullptr)
+		{
+			mesh->AddToWorld(world_to_add_to);
+		}
+
+		m_meshes.push_back(mesh);
+	}
 }
 //
 //// Constructor, taking model object
@@ -352,9 +489,9 @@ RrCModel::~RrCModel ( void )
 
 	// Free animation reference
 	/*ModelMaster.RemoveAnimSetReference( myModelFilename );*/
-	if ( pMyAnimation != NULL )
+	/*if ( pMyAnimation != NULL )
 		delete pMyAnimation;
-	pMyAnimation = NULL;
+	pMyAnimation = NULL;*/
 
 	//delete_safe( uniformMapFloat );
 	//delete_safe( uniformMapVect2d );
@@ -366,11 +503,13 @@ RrCModel::~RrCModel ( void )
 // Begin render
 void RrCModel::PreStep ( void ) 
 {
+	// TODO: Update the bounding box
+
 	for ( uint i = 0; i < m_meshes.size(); ++i )
 	{
 		//m_meshes[i]->transform.Get(transform);
 		m_meshes[i]->transform.world = transform;
-		m_meshes[i]->bUseFrustumCulling = bUseFrustumCulling;
+		//m_meshes[i]->bUseFrustumCulling = bUseFrustumCulling;
 	}
 	/*if ( visible )
 	{
@@ -384,57 +523,57 @@ void RrCModel::PreStep ( void )
 // End render
 void RrCModel::PostStepSynchronus ( void ) 
 {
-	if ( pMyAnimation )
-	{
-		pMyAnimation->UpdateTransform( XTransform( transform.position, transform.rotation, transform.scale ) );
-		if ( !bReferenceAnimation )
-		{
-			pMyAnimation->Update(Time::deltaTime);
-		}
-		else
-		{
-			if ( m_animRefMode == kAnimReferenceDirect )
-			{
-				// Directly copy the transforms
-				//pReferencedAnimation->GetAnimationSet
-				//vector<void*>& refList = pReferencedAnimation->animRefs;
-				// THIS WON'T WORK FOR NORMAL FUCKING ANIMATIONS
-			}
-		}
-	}
+	//if ( pMyAnimation )
+	//{
+	//	pMyAnimation->UpdateTransform( XTransform( transform.position, transform.rotation, transform.scale ) );
+	//	if ( !bReferenceAnimation )
+	//	{
+	//		pMyAnimation->Update(Time::deltaTime);
+	//	}
+	//	else
+	//	{
+	//		if ( m_animRefMode == kAnimReferenceDirect )
+	//		{
+	//			// Directly copy the transforms
+	//			//pReferencedAnimation->GetAnimationSet
+	//			//vector<void*>& refList = pReferencedAnimation->animRefs;
+	//			// THIS WON'T WORK FOR NORMAL FUCKING ANIMATIONS
+	//		}
+	//	}
+	//}
 }
 
 
 //#include "renderer/debug/RrDebugDrawer.h"
 
-void RrCModel::CalculateBoundingBox ( void )
-{
-	Vector3f minPos, maxPos;
-
-	for ( size_t i = 0; i < m_meshGroup->m_meshCount; i++ )
-	{
-		arModelData* modeldata = m_meshGroup->m_meshes[i]->m_modeldata;
-		for ( size_t v = 0; v < modeldata->vertexNum; v++ )
-		{
-			//arModelVertex* vert = &(modeldata->vertices[v]);
-			Vector3f* vert = &(modeldata->position[v]);
-			minPos.x = std::min<Real>( minPos.x, vert->x );
-			minPos.y = std::min<Real>( minPos.y, vert->y );
-			minPos.z = std::min<Real>( minPos.z, vert->z );
-			maxPos.x = std::max<Real>( maxPos.x, vert->x );
-			maxPos.y = std::max<Real>( maxPos.y, vert->y );
-			maxPos.z = std::max<Real>( maxPos.z, vert->z );
-		}
-	}
-
-	vMinExtents = minPos;
-	vMaxExtents = maxPos;
-	vCheckRenderPos = (minPos+maxPos)/2;
-	fCheckRenderDist = (( maxPos-minPos )/2).magnitude();
-	//bbCheckRenderBox.Set( transform.GetTransformMatrix(), vMinExtents, vMaxExtents );
-	m_renderBoundingBox.Set( Matrix4x4(), vMinExtents, vMaxExtents );
-	//bbCheckRenderBox.Set( transform.GetTransformMatrix(), Vector3f( -0.1f,-0.1f,-0.1f ), Vector3f( 0.1f,0.1f,0.1f ) );
-}
+//void RrCModel::CalculateBoundingBox ( void )
+//{
+//	//Vector3f minPos, maxPos;
+//
+//	//for ( size_t i = 0; i < m_meshGroup->m_meshCount; i++ )
+//	//{
+//	//	arModelData* modeldata = m_meshGroup->m_meshes[i]->m_modeldata;
+//	//	for ( size_t v = 0; v < modeldata->vertexNum; v++ )
+//	//	{
+//	//		//arModelVertex* vert = &(modeldata->vertices[v]);
+//	//		Vector3f* vert = &(modeldata->position[v]);
+//	//		minPos.x = std::min<Real>( minPos.x, vert->x );
+//	//		minPos.y = std::min<Real>( minPos.y, vert->y );
+//	//		minPos.z = std::min<Real>( minPos.z, vert->z );
+//	//		maxPos.x = std::max<Real>( maxPos.x, vert->x );
+//	//		maxPos.y = std::max<Real>( maxPos.y, vert->y );
+//	//		maxPos.z = std::max<Real>( maxPos.z, vert->z );
+//	//	}
+//	//}
+//
+//	//vMinExtents = minPos;
+//	//vMaxExtents = maxPos;
+//	//vCheckRenderPos = (minPos+maxPos)/2;
+//	//fCheckRenderDist = (( maxPos-minPos )/2).magnitude();
+//	////bbCheckRenderBox.Set( transform.GetTransformMatrix(), vMinExtents, vMaxExtents );
+//	//m_renderBoundingBox.Set( Matrix4x4(), vMinExtents, vMaxExtents );
+//	////bbCheckRenderBox.Set( transform.GetTransformMatrix(), Vector3f( -0.1f,-0.1f,-0.1f ), Vector3f( 0.1f,0.1f,0.1f ) );
+//}
 
 // ==Shader interface==
 //void RrCModel::SetShaderUniform ( const char* sUniformName, float const fInput )
@@ -528,10 +667,10 @@ void RrCModel::CalculateBoundingBox ( void )
 	}
 }*/
 
-// Set if to use frustum culling or not
-void RrCModel::SetFrustumCulling ( bool useCulling ) {
-	bUseFrustumCulling = useCulling;
-}
+//// Set if to use frustum culling or not
+//void RrCModel::SetFrustumCulling ( bool useCulling ) {
+//	bUseFrustumCulling = useCulling;
+//}
 // Forces the model to be drawn the next frame
 void RrCModel::SetForcedDraw ( void ) {
 	//bCanRender = true;
@@ -577,13 +716,16 @@ size_t RrCModel::GetMeshCount ( void ) const
 // Gets the mesh with the index
 renderer::Mesh* RrCModel::GetMesh ( const uint n_index ) const
 {
+	ARCORE_ASSERT(n_index >= 0 && n_index < m_meshes.size());
 	return m_meshes[n_index];
 }
 // Gets the mesh with the name
 renderer::Mesh* RrCModel::GetMesh ( const char* n_name ) const
 {
-	for ( uint i = 0; i < m_meshes.size(); ++i ) {
-		if ( strstr( m_meshes[i]->GetName(), n_name ) != NULL ) {
+	for ( uint i = 0; i < m_meshes.size(); ++i )
+	{
+		if ( m_meshGroup[i].m_name.compare(n_name) )
+		{
 			return m_meshes[i];
 		}
 	}
@@ -594,7 +736,8 @@ renderer::Mesh* RrCModel::GetMesh ( const char* n_name ) const
 arModelData* RrCModel::GetModelData ( int iMeshIndex ) const
 {
 	renderer::Mesh* mesh = GetMesh( iMeshIndex );
-	if ( mesh ) {
+	if ( mesh )
+	{
 		return mesh->m_mesh->m_modeldata;
 	}
 	return NULL;
@@ -604,7 +747,8 @@ arModelData* RrCModel::GetModelData ( int iMeshIndex ) const
 arModelData* RrCModel::GetModelDataByName ( const char* nNameMatch ) const 
 {
 	renderer::Mesh* mesh = GetMesh( nNameMatch );
-	if ( mesh ) {
+	if ( mesh )
+	{
 		return mesh->m_mesh->m_modeldata;
 	}
 	return NULL;
@@ -628,8 +772,10 @@ arModelData* RrCModel::GetModelDataByName ( const char* nNameMatch ) const
 // Gets if any of the meshes are being rendered
 bool RrCModel::GetVisibility ( void )
 {
-	for ( uint i = 0; i < m_meshes.size(); ++i ) {
-		if ( m_meshes[i]->GetVisible() ) {
+	for ( uint i = 0; i < m_meshes.size(); ++i )
+	{
+		if ( m_meshes[i]->GetVisible() )
+		{
 			return true;
 		}
 	}

@@ -430,8 +430,16 @@ void RrRenderObject::PassesFree ( void )
 // Pipeline management
 //===============================================================================================//
 
-gpu::Pipeline* RrRenderObject::GetPipeline ( const uchar pass )
+gpu::Pipeline* RrRenderObject::GetPipeline ( const uchar pass, bool* bindings_active_at_locations )
 {
+	if (m_pipelineReady[pass])
+	{
+		// check for changes
+
+		m_pipelines[pass].destroy(NULL);
+		m_pipelineReady[pass] = false;
+	}
+
 	if (!m_pipelineReady[pass])
 	{
 		RrPass* rp = &m_passes[pass];
@@ -467,6 +475,19 @@ gpu::Pipeline* RrRenderObject::GetPipeline ( const uchar pass )
 			attrib_desc[i].offset = rp->m_vertexSpecification[i].dataOffset;
 		}
 
+		// Modify the pipelines based on the bindings active
+		if (bindings_active_at_locations)
+		{
+			for (int i = 0; i < rp->m_vertexSpecificationCount; ++i)
+			{
+				if (!bindings_active_at_locations[(int)rp->m_vertexSpecification[i].location])
+				{
+					binding_desc[i].stride = 0; // Force zero stride for the given position
+				}
+			}
+		}
+
+		// Create pipeline now
 		m_pipelines[pass].create(NULL, &pipeline_desc);
 
 		// Mark pipeline as ready

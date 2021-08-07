@@ -81,13 +81,13 @@ bool core::MpdInterface::Open ( const char* n_resource_name, const bool n_conver
 		}
 
 		// If MPD is found, and GLTF found, compare the times in them to check
-		if (bMpdFound && (bGltfFound && bGlbFound))
+		if (bMpdFound && (bGltfFound || bGlbFound))
 		{
 			bool bMpdCorrupted = false;
 			bool bMpdOutOfDate = false;
 
 			// Read in the MPD header
-			FILE* l_fileMpd = fopen(mpd_filename.c_str(), "r");
+			FILE* l_fileMpd = fopen(mpd_filename.c_str(), "rb");
 			modelFmtHeader mpd_header;
 			fread(&mpd_header, sizeof(modelFmtHeader), 1, l_fileMpd);
 			fclose(l_fileMpd);
@@ -116,7 +116,7 @@ bool core::MpdInterface::Open ( const char* n_resource_name, const bool n_conver
 		// Let's convert if we need a convert
 		if (bRequiresConvert && n_convert)
 		{
-			ARCORE_ASSERT(bGltfFound);
+			ARCORE_ASSERT(bGltfFound || bGlbFound);
 			if (core::Converter::ConvertFile(bGltfFound ? gltf_filename.c_str() : glb_filename.c_str()) == false)
 			{
 				debug::Console->PrintError( "MpdLoader::Open : Error occurred in core::Converter::ConvertFile call\n" );
@@ -135,7 +135,7 @@ bool core::MpdInterface::Open ( const char* n_resource_name, const bool n_conver
 	}
 
 	// Open the new file
-	m_liveFile = fopen(mpd_filename.c_str(), "r+");
+	m_liveFile = fopen(mpd_filename.c_str(), "rb+");
 	if (m_liveFile != NULL)
 	{
 		return LoadMpdCommon();
@@ -143,7 +143,7 @@ bool core::MpdInterface::Open ( const char* n_resource_name, const bool n_conver
 	// If not converting files, then we want to open a new file.
 	else if (!n_convert)
 	{
-		m_liveFile = fopen(mpd_filename.c_str(), "w+");
+		m_liveFile = fopen(mpd_filename.c_str(), "wb+");
 		if (m_liveFile != NULL)
 		{
 			// Reset local information
@@ -173,14 +173,14 @@ bool core::MpdInterface::OpenFile ( const char* n_file_name, const bool n_create
 	}
 
 	// Open the new file
-	m_liveFile = fopen(n_file_name, "r+");
+	m_liveFile = fopen(n_file_name, "rb+");
 	if (m_liveFile != NULL)
 	{
 		return LoadMpdCommon();
 	}
 	else if (n_create_on_missing)
 	{
-		m_liveFile = fopen(n_file_name, "w+");
+		m_liveFile = fopen(n_file_name, "wb+");
 		if (m_liveFile != NULL)
 		{
 			// Reset local information
@@ -418,6 +418,7 @@ bool core::MpdInterface::Save ( void )
 	{
 		for (uint segment_index = 0; segment_index < (uint)m_segments[type_index].size(); ++segment_index)
 		{
+			ARCORE_ASSERT(ftell(m_liveFile) == (long)m_segments[type_index][segment_index].dataOffset);
 			fwrite(m_segmentsData[type_index][segment_index], m_segments[type_index][segment_index].dataSize, 1, m_liveFile);
 		}
 	}

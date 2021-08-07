@@ -19,6 +19,9 @@
 #include "renderer/texture/RrTexture.h"
 #include "renderer/material/RrShaderProgram.h"
 
+#include "renderer/logic/model/RrCModel.h"
+#include "renderer/object/mesh/Mesh.h"
+
 #include "m04/entities_test/InstancedGrassRenderObject.h"
 
 #include "core/math/random/Random.h"
@@ -115,6 +118,42 @@ void scenePalette3DTest0::LoadScene ( void )
 
 			foliage->m_grassInfo.push_back(grass);
 		}
+	} loadScreen->loadStep();
+
+	// Add a model
+	{
+		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/blender_default_cube"}, NULL);
+		//RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/test0"}, NULL);
+		//RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/Go_blender"}, NULL);
+		model->transform.position = Vector3f(0, 0, 5);
+
+		// Use a default material
+		RrPass pass;
+		pass.utilSetupAsDefault();
+		pass.m_type = kPassTypeDeferred;
+		pass.m_alphaMode = renderer::kAlphaModeNone;
+		pass.m_cullMode = gpu::kCullModeNone;
+		pass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+		pass.setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
+		pass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
+		pass.setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureBlack) );
+		pass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
+		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/deferred_env/simple_vv.spv", "shaders/deferred_env/simple_p.spv"}) );
+		renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+												renderer::shader::Location::kUV0,
+												renderer::shader::Location::kColor,
+												renderer::shader::Location::kNormal,
+												renderer::shader::Location::kTangent,
+												renderer::shader::Location::kBinormal};
+		pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
+		pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+
+		// Give initial pass
+		for (int i = 0; i < model->GetMeshCount(); ++i)
+		{
+			model->GetMesh(i)->PassInitWithInput(0, &pass);
+		}
+
 	} loadScreen->loadStep();
 
 	loadScreen->RemoveReference();

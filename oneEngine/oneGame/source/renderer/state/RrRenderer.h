@@ -422,6 +422,8 @@ private:
 	gpu::Buffer			m_vbufScreenQuad;
 	gpu::Buffer			m_vbufScreenQuad_ForOutputSurface; // Per-API flips
 
+	gpu::Buffer			m_vbufDefault;
+
 public:
 	RENDER_API const gpu::Pipeline&
 							GetScreenQuadCopyPipeline ( void )
@@ -432,6 +434,10 @@ public:
 	RENDER_API const gpu::Buffer&
 							GetScreenQuadOutputVertexBuffer ( void )
 		{ return m_vbufScreenQuad_ForOutputSurface; }
+
+	RENDER_API const gpu::Buffer&
+							GetDefaultVertexBuffer ( void )
+		{ return m_vbufDefault; }
 
 public:
 	// Public active instance pointer

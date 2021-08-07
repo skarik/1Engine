@@ -11,10 +11,6 @@
 #include "core/containers/araccessor.h"
 #include "core-ext/transform/Transform.h"
 
-//#include "GLCommon.h"
-//#include "glMainSystem.h"
-//#include "renderer/material/RrMaterial.h"
-
 #include "renderer/types/RrObjectMaterialProperties.h"
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/types/id.h"

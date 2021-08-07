@@ -14,7 +14,7 @@ renderer::InstancedMesh::InstancedMesh ( rrMeshBuffer* mesh, bool n_enableSkinni
 	: Mesh(mesh, n_enableSkinning),
 	m_instanceCount(0), m_data(NULL), m_dataSize(0)
 {
-	bUseFrustumCulling = false; // Disable frustum culling
+	//bUseFrustumCulling = false; // Disable frustum culling
 
 	m_buffer.initAsStructuredBuffer(NULL, sizeof(float) * 2048);
 	/*GL_ACCESS
@@ -77,7 +77,7 @@ void renderer::InstancedMesh::SetInstanceCount ( int instance_count )
 bool renderer::InstancedMesh::PreRender ( rrCameraPass* cameraPass ) 
 {
 	// disable frustum culling:
-	bUseFrustumCulling = false;
+	//bUseFrustumCulling = false;
 
 	// update the instance information
 	if ( m_newData && m_data != NULL && m_dataSize > 0 )
@@ -173,11 +173,11 @@ bool renderer::InstancedMesh::Render ( const rrRenderParams* params )
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
-		if ( m_parent != NULL )
+		/*if ( m_parent != NULL )
 		{
 			if ( m_parent->GetBuffers().m_sbufSkinningMajorValid )
 				gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::SBUFFER_SKINNING_MAJOR, &m_parent->GetBuffers().m_sbufSkinningMajor);
-		}
+		}*/
 		gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION + 1, &m_buffer);
 		// draw now
 		gfx->drawIndexedInstanced(m_mesh->m_modeldata->indexNum, m_instanceCount, 0, 0);

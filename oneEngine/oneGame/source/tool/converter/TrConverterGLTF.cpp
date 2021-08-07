@@ -50,6 +50,7 @@ struct trMeshInfo
 template <typename TypeTo, typename TypeFrom>
 void CopyCastBuffer ( TypeTo* output_buffer, const uint8* buffer_base, uint32 buffer_stride, uint32 accessor_count )
 {
+	buffer_stride = buffer_stride ? buffer_stride : sizeof(TypeFrom);
 	for (uint i = 0; i < accessor_count; ++i)
 	{
 		output_buffer[i] = (TypeTo) *static_cast<const TypeFrom*>(static_cast<const void*>(buffer_base + buffer_stride * i));
@@ -161,6 +162,25 @@ void AddMPDVertexAttribute ( core::MpdInterface& mpd, const int32 meshIndex, Typ
 		header.dataSize = sizeof(Type) * vertexCount;
 
 		mpd.AddSegment(header, attributeData);
+	}
+}
+
+static void CalculateBBoxMinAndMax ( Vector3f* min, Vector3f* max, const arModelData& model )
+{
+	ARCORE_ASSERT(model.position && model.vertexNum > 0);
+
+	*min = model.position[0];
+	*max = model.position[0];
+
+	for (uint i = 0; i < model.vertexNum; ++i)
+	{
+		min->x = std::min(min->x, model.position[i].x);
+		min->y = std::min(min->y, model.position[i].y);
+		min->z = std::min(min->z, model.position[i].z);
+
+		max->x = std::max(max->x, model.position[i].x);
+		max->y = std::max(max->y, model.position[i].y);
+		max->z = std::max(max->z, model.position[i].z);
 	}
 }
 
@@ -282,6 +302,7 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 				geo_info.index_count = mesh.data.indexNum;
 				geo_info.vertex_count = mesh.data.vertexNum;
 				geo_info.name = mesh.name;
+				CalculateBBoxMinAndMax(&geo_info.bbox_min, &geo_info.bbox_max, mesh.data);
 
 				header.type = core::ModelFmtSegmentType::kGeometryInfo;
 				header.dataSize = sizeof(core::modelFmtSegmentGeometry_Info);
@@ -305,6 +326,8 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 			AddMPDVertexAttribute<core::ModelFmtVertexAttribute::kBoneWeight>(mpd, meshIndex, mesh.data.weight, mesh.data.vertexNum);
 			AddMPDVertexAttribute<core::ModelFmtVertexAttribute::kBoneIndices>(mpd, meshIndex, mesh.data.bone, mesh.data.vertexNum);
 		}
+
+		// TODO: clear off the temporarily allocated arModelData arrays
 
 		// Save the MPD file.
 		return mpd.Save();

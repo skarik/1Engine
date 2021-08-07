@@ -45,7 +45,44 @@ namespace math {
 		// the position refers to the bottom back right corner of the Cubic.
 		void				Realign ( void );
 
+		//	Expand ( other cubic )
+		// Expands the current cubic to encompass both the old cubic and the new one.
+		void				Expand ( const Cubic& other )
+		{
+			Vector3f this_min = min();
+			Vector3f this_max = max();
+			Vector3f other_min = other.min();
+			Vector3f other_max = other.max();
+
+			Vector3f min (
+				std::min(this_min.x, other_min.x),
+				std::min(this_min.y, other_min.y),
+				std::min(this_min.z, other_min.z));
+
+			Vector3f max (
+				std::max(this_max.x, other_max.x),
+				std::max(this_max.y, other_max.y),
+				std::max(this_max.z, other_max.z));
+
+			*this = FromPosition(min, max);
+		}
+
+		Cubic&				operator= ( const Cubic& other )
+		{
+			position = other.position;
+			size = other.size;
+			return *this;
+		}
+
 		Vector3f			center ( void ) const;
+		Vector3f			min ( void ) const
+		{
+			return position;
+		}
+		Vector3f			max ( void ) const
+		{
+			return position + size;
+		}
 	public:
 		void				DrawDebug ( void );
 	public:

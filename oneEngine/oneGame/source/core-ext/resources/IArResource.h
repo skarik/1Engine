@@ -19,10 +19,9 @@ namespace core
 
 		kResourceTypeRawImage,
 		kResourceTypeRrTexture,
-		kResourceTypeRrMesh,
+		//kResourceTypeRrMesh,
 		kResourceTypeRrShader,
 		// stores a collection of RrMesh, skeleton, and morpher
-		//kResourceTypeRrModel,
 		kResourceTypeRrMeshGroup,
 
 		kResourceType_MAX,

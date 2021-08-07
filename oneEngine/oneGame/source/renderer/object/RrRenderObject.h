@@ -215,9 +215,9 @@ protected:
 	// ==Render Setup==
 
 	//	GetPipeline(pass) : Creates a pipeline if needed, and returns it.
-	// The engine attempts to track some pass changes, and will recreate a pipeline if needed. Generally, this is not recommended.
+	// The engine attempts to track some pass changes, and will recreate a pipeline if needed.
 	RENDER_API gpu::Pipeline*
-							GetPipeline ( const uchar pass );
+							GetPipeline ( const uchar pass, bool* bindings_active_at_locations = nullptr );
 	//	FreePipelines() : Frees all allocated pipelines.
 	RENDER_API void			FreePipelines ( void );
 
