@@ -266,6 +266,47 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 		// TODO: Error checking on loaded meshes? Binormal generation?
 	}
 
+	// Reparse, recalculate, or generation additional mesh information.
+	for (int meshIndex = 0; meshIndex < loadedMeshes.size(); ++meshIndex)
+	{
+		trMeshInfo& mesh = loadedMeshes[meshIndex];
+
+		// Since GLTF standard is Y-up, we need to swap the Y and Z coordinates to get it into the engine's coordinate system.
+		// The attributes that are in world-space all need this swap. This includes:
+		//	• position
+		//	• normal
+		//	• tangent
+		//	• binormal
+		if (mesh.data.position)
+		{
+			for (uint i = 0; i < mesh.data.vertexNum; ++i)
+			{
+				std::swap(mesh.data.position[i].y, mesh.data.position[i].z);
+			}
+		}
+		if (mesh.data.normal)
+		{
+			for (uint i = 0; i < mesh.data.vertexNum; ++i)
+			{
+				std::swap(mesh.data.normal[i].y, mesh.data.normal[i].z);
+			}
+		}
+		if (mesh.data.tangent)
+		{
+			for (uint i = 0; i < mesh.data.vertexNum; ++i)
+			{
+				std::swap(mesh.data.tangent[i].y, mesh.data.tangent[i].z);
+			}
+		}
+		if (mesh.data.binormal)
+		{
+			for (uint i = 0; i < mesh.data.vertexNum; ++i)
+			{
+				std::swap(mesh.data.binormal[i].y, mesh.data.binormal[i].z);
+			}
+		}
+	}
+
 	// 
 	{
 		// Open up the MPD file.
