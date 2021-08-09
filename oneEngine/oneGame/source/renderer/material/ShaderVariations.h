@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 
+// Prototype variant info before access
+class RrShaderVariantBase;
+
 // Base class for variant macro values.
 class ShaderVariantValue
 {
@@ -13,6 +16,11 @@ public:
 
 	virtual int			GetVariantIndex ( void )
 	{ return 0; }
+
+public:
+	int&				AccessVariantCount (RrShaderVariantBase* variant);
+	std::vector<ShaderVariantValue*>&
+						AccessVariantValues (RrShaderVariantBase* variant);
 };
 
 // Types of values
@@ -65,6 +73,15 @@ protected:
 						m_values;
 };
 
+int& ShaderVariantValue::AccessVariantCount (RrShaderVariantBase* variant)
+{
+	return variant->m_totalVariantCount;
+}
+std::vector<ShaderVariantValue*>& ShaderVariantValue::AccessVariantValues (RrShaderVariantBase* variant)
+{
+	return variant->m_values;
+}
+
 // Boolean variant macro value.
 class ShaderVariantValueBool : public ShaderVariantValue
 {
@@ -93,7 +110,66 @@ public:
 		{ return value; }
 
 public:
-	bool					value = false;
+	bool				value = false;
+};
+
+// Enumerating integer variant macro value.
+template <int... Values>
+class ShaderVariantValueEnumInt : public ShaderVariantValue
+{
+public:
+	explicit				ShaderVariantValueEnumInt(const RrShaderVariantBase *const const_owningVariant)
+		: ShaderVariantValue()
+	{
+		RrShaderVariantBase* owningVariant = (RrShaderVariantBase*)const_owningVariant;
+		const std::size_t ValueCount = sizeof...(Values);
+		AccessVariantCount(owningVariant) = std::max<int>(1, AccessVariantCount(owningVariant) * ValueCount);
+		AccessVariantValues(owningVariant).push_back(this);
+	}
+
+	// Variant information
+	virtual int			GetVariantCount ( void ) override
+		{ return (int)sizeof...(Values); }
+	virtual int			GetVariantIndex ( void ) override
+	{
+		int index = _GetVariantIndex(0, Values...);
+		return index;
+	}
+
+private:
+	template <typename Arg>
+	int _GetVariantIndex ( int current_index, Arg&& arg )
+	{
+		if (value == std::forward<Arg>(arg))
+		{
+			return current_index;
+		}
+		ARCORE_ERROR("Invalid value passed in.");
+		return -1;
+	}
+	template <typename Arg, typename... Args>
+	int _GetVariantIndex ( int current_index, Arg&& arg, Args&&... args)
+	{
+		if (value == std::forward<Arg>(arg))
+		{
+			return current_index;
+		}
+		return _GetVariantIndex( current_index + 1, std::forward<Args>(args)... );
+	}
+
+public:
+	// Option setting
+	int&					operator= (const int input)
+	{
+		value = input;
+		ARCORE_ASSERT(GetVariantIndex() != -1);
+		return value;
+	}
+							operator int() const
+		{ return value; }
+
+public:
+	int					value = 0;
 };
 
 
@@ -106,6 +182,8 @@ public:
 
 #define SHADER_BOOL(MacroName) \
 		ShaderVariantValueBool MacroName;
+#define SHADER_ENUM(MacroName, ...) \
+		ShaderVariantValueEnumInt<__VA_ARGS__> MacroName;
 
 #define RR_SHADER_VARIANT_COLLECT_BEGIN(ShaderName) \
 	public: \

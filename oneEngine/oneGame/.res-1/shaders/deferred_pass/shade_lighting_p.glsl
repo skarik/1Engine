@@ -19,18 +19,16 @@
 #define VARIANT_DEBUG_LIGHTING 0
 #endif
 
-#ifndef VARIANT_PASS_DO_INDIRECT_EMISSIVE
-#define VARIANT_PASS_DO_INDIRECT_EMISSIVE 0
+#ifndef VARIANT_PASS
+#define VARIANT_PASS 0
 #endif
-#ifndef VARIANT_PASS_DO_DIRECT_DIRECTIONAL
-#define VARIANT_PASS_DO_DIRECT_DIRECTIONAL 0
-#endif
-#ifndef VARIANT_PASS_DO_DIRECT_OMNI
-#define VARIANT_PASS_DO_DIRECT_OMNI 0
-#endif
-#ifndef VARIANT_PASS_DO_DIRECT_SPOTLIGHT
-#define VARIANT_PASS_DO_DIRECT_SPOTLIGHT 0
-#endif
+
+#define VARIANT_PASS_DO_INDIRECT_EMISSIVE 1
+#define VARIANT_PASS_DO_DIRECT_DIRECTIONAL 2
+#define VARIANT_PASS_DO_DIRECT_OMNI 3
+#define VARIANT_PASS_DO_DIRECT_SPOTLIGHT 4
+#define VARIANT_PASS_DEBUG_GBUFFERS 10
+#define VARIANT_PASS_DEBUG_LIGHTING 11
 
 // Previous forward rendered output
 layout(binding = 5, location = 25) uniform sampler2D textureSamplerForward;
@@ -128,7 +126,8 @@ void ShadePixel ( void )
 	const float ndotv = clamp(dot(surface.normal, viewDirection), 0.0, 1.0);
 	//float ndotl = saturate(dot(normal, lightDir));
 	
-#if VARIANT_PASS_DO_INDIRECT_EMISSIVE
+#if VARIANT_PASS==VARIANT_PASS_DO_INDIRECT_EMISSIVE
+
 	{
 		// Get rough environment to reflect
 		vec3 skyColor = vec3(0.45, 0.75, 0.90);
@@ -151,9 +150,9 @@ void ShadePixel ( void )
 		FragColor.rgb = totalLighting;
 		FragColor.a = surface.albedo.a;
 	}
-#endif
-	
-#if VARIANT_PASS_DO_DIRECT_DIRECTIONAL
+
+#elif VARIANT_PASS==VARIANT_PASS_DO_DIRECT_DIRECTIONAL
+
 	{
 		vec3 lightDirection = normalize(vec3(0.7, 0.2, 0.7));
 		vec3 lightColor = vec3(1.0, 0.9, 0.8);
@@ -182,6 +181,7 @@ void ShadePixel ( void )
 		FragColor.rgb = totalLighting;
 		FragColor.a = surface.albedo.a;
 	}
+	
 #endif
 
 #ifdef ENABLE_LIGHTING
@@ -266,8 +266,7 @@ void ShadePixel ( void )
 
 void main ( void )
 {
-#if VARIANT_DEBUG_GBUFFERS
-#	if !VARIANT_DEBUG_SURFACE
+#if VARIANT_PASS==VARIANT_PASS_DEBUG_GBUFFERS
 
 	// 4X Debug Output
     if ( v2f_texcoord0.x < 0.5 && v2f_texcoord0.y < 0.5 ) {
@@ -283,7 +282,7 @@ void main ( void )
 		FragColor = texture( textureSampler3, v2f_texcoord0*2 - vec2(1,1) );
 	}
 	
-#	else
+#elif VARIANT_PASS==VARIANT_PASS_DEBUG_SURFACE
 
 	rrGBufferValues gbuffer;
 	SampleGBuffer(gbuffer, mod(v2f_texcoord0 * 2.0, 1.0));
@@ -311,9 +310,10 @@ void main ( void )
 	
 	FragColor.a = clamp( FragColor.a , 0.0 , 1.0 );
 	
-#	endif
 #else
+	
 	// Actually shade pixel
 	ShadePixel();
+	
 #endif
 }

@@ -194,6 +194,19 @@ def ReadVariants(variantsFilePath):
 				
 				# Print this new variant's info
 				print("Boolean variant definition: \"" + l_variant.name + "\" = " + ','.join(map(str, l_variant.values)));
+			elif ("SHADER_ENUM" in l_variantLine):
+				l_enumName = l_variantLine[l_variantLine.find('(') + 1 : l_variantLine.find(',')].replace(';', '')
+				
+				# Grab the types
+				l_enumListStr = l_variantLine[l_variantLine.find(',') + 1 : l_variantLine.find(')')]
+				l_enumList = [int(i) for i in l_enumListStr.split(',')]
+				
+				# Create a new boolean variant
+				l_variant = types.SimpleNamespace(name=l_enumName, values=l_enumList);
+				l_variants.append(l_variant);
+				
+				# Print this new variant's info
+				print("Enum variant definition: \"" + l_variant.name + "\" = " + ','.join(map(str, l_variant.values)));
 				
 	return l_variants;
 

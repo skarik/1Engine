@@ -154,9 +154,9 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 
 	{
 		RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
-		l_shadeLightingVariantInfo.VARIANT_DEBUG_GBUFFERS = gsesh_LightingUseDebugBuffers;
-		l_shadeLightingVariantInfo.VARIANT_DEBUG_LIGHTING = gsesh_LightingUseLighting;
-		l_shadeLightingVariantInfo.VARIANT_PASS_DO_INDIRECT_EMISSIVE = true;
+		l_shadeLightingVariantInfo.VARIANT_PASS = gsesh_LightingUseDebugBuffers
+			? l_shadeLightingVariantInfo.VARIANT_PASS_DEBUG_SURFACE
+			: l_shadeLightingVariantInfo.VARIANT_PASS_DO_INDIRECT_EMISSIVE;
 
 		GetPostprocessVariant(
 			renderer,
@@ -170,7 +170,7 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 
 	{
 		RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
-		l_shadeLightingVariantInfo.VARIANT_PASS_DO_DIRECT_DIRECTIONAL = true;
+		l_shadeLightingVariantInfo.VARIANT_PASS = l_shadeLightingVariantInfo.VARIANT_PASS_DO_DIRECT_DIRECTIONAL;
 
 		GetPostprocessVariant(
 			renderer,
