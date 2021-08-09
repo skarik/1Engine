@@ -28,11 +28,11 @@ protected:
 
 public:
 	//	GetTotalVariantCount() : Get total number of available variants in this shader.
-	int					GetTotalVariantCount ( void )
+	int					GetTotalVariantCount ( void ) const
 		{ return m_totalVariantCount; }
 
 	//	GetVariantIndex() : Returns expected index of the current configuration's variant.
-	int					GetVariantIndex ( void )
+	int					GetVariantIndex ( void ) const
 	{
 		// Loop through each variant to generate the indices.
 		int index = 0;
@@ -47,12 +47,12 @@ public:
 	}
 
 	//	GetVariantName() : Returns expected name of the current configuration's variant.
-	std::string			GetVariantName ( void )
+	std::string			GetVariantName ( void ) const
 	{
 		return std::string(GetShaderName()) + "_" + std::to_string(GetVariantIndex());
 	}
 
-	virtual char*		GetShaderName ( void )
+	virtual const char*	GetShaderName ( void ) const
 		{ return "Invalid Shader"; }
 
 protected:
@@ -101,7 +101,7 @@ public:
 	class RrShaderVariant_ShaderType##ShaderName : public RrShaderVariantBase \
 	{ \
 	public: \
-		virtual char*		GetShaderName ( void ) override \
+		virtual const char*	GetShaderName ( void ) const override \
 			{ return #ShaderName ; }
 
 #define SHADER_BOOL(MacroName) \
