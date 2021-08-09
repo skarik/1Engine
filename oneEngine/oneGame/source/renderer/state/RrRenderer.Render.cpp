@@ -960,12 +960,13 @@ Render_Groups:
 				input.deferred_surface = &outputGbuffers[2];
 				input.deferred_emissive = &outputGbuffers[3];
 				input.combined_depth = &outputDepth;
-				//input.forward_color = &outputColor;
+				input.forward_color = &outputColor;
 
 				// Deferred composites directly on top of the previously rendered output.
-				input.output_color = &outputColor;
+				//input.output_color = &outputColor;
 
-				state->pipeline_renderer->CompositeDeferred(gfx, input, state);
+				rrCompositeOutput output = state->pipeline_renderer->CompositeDeferred(gfx, input, state);
+				outputColor = output.color;
 			}
 		}
 		gfx->debugGroupPop();

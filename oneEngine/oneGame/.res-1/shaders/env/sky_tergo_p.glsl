@@ -57,7 +57,6 @@ layout(binding = CBUFFER_USER0, std140) uniform user_cbuffer_SkyboxInfo
 #define ALBEDO 1
 #define TURBIDITY 3
 
-#define M_PI 3.1415926535897932384626433832795
 #define CIE_X 0
 #define CIE_Y 1
 #define CIE_Z 2

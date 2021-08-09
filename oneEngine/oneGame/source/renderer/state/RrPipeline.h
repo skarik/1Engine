@@ -51,7 +51,7 @@ struct rrPipelineCompositeInput
 
 	gpu::Texture*		forward_color = nullptr;
 
-	gpu::Texture*		output_color = nullptr;
+	//gpu::Texture*		output_color = nullptr;
 };
 
 struct rrPipelineLayerFinishInput
@@ -63,6 +63,11 @@ struct rrPipelineLayerFinishInput
 	gpu::Texture*		depth = nullptr;
 
 	//gpu::Texture*		output_color = nullptr;
+};
+
+struct rrCompositeOutput
+{
+	gpu::Texture		color;
 };
 
 struct rrPipelineOutput
@@ -103,8 +108,9 @@ public:
 		{}
 
 	//	CompositeDeferred() : Called when the renderer wants to combine a deferred pass with a forward pass.
-	RENDER_API virtual void	CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
-		{}
+	RENDER_API virtual rrCompositeOutput
+							CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
+		{ return rrCompositeOutput{*(gpu::Texture*)compositeInput.forward_color}; }
 
 	//	RenderLayerEnd() : Called when the renderer finishes a given layer.
 	RENDER_API virtual rrPipelineOutput
@@ -144,7 +150,8 @@ public:
 	RENDER_API void			CullObjects ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world ) override;
 
 	//	CompositeDeferred() : Called when the renderer wants to combine a deferred pass with a forward pass.
-	RENDER_API void			CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
+	RENDER_API rrCompositeOutput
+							CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
 
 	//	RenderLayerEnd() : Called when the renderer finishes a given layer.
 	RENDER_API rrPipelineOutput
@@ -153,6 +160,9 @@ public:
 private:
 	RrShaderProgram*	m_lightingCompositeProgram = nullptr;
 	gpu::Pipeline*		m_lightingCompositePipeline;
+
+	RrShaderProgram*	m_lightingLighting0Program = nullptr;
+	gpu::Pipeline*		m_lightingLighting0Pipeline;
 };
 
 class RrPipelineStandardOptions : public RrPipelineOptions

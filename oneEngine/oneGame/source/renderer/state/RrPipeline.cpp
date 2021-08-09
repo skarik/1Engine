@@ -51,14 +51,22 @@ RrPipelineStandardRenderer::RrPipelineStandardRenderer ( void )
 	: RrPipelineStateRenderer()
 {
 	m_lightingCompositePipeline = new gpu::Pipeline;
+	m_lightingLighting0Pipeline = new gpu::Pipeline;
 }
 
 RrPipelineStandardRenderer::~RrPipelineStandardRenderer ( void )
 {
-	delete m_lightingCompositeProgram;
+	if (m_lightingCompositeProgram)
+		m_lightingCompositeProgram->RemoveReference();
 
 	m_lightingCompositePipeline->destroy(NULL);
 	delete m_lightingCompositePipeline;
+
+	if (m_lightingLighting0Program)
+		m_lightingLighting0Program->RemoveReference();
+
+	m_lightingLighting0Pipeline->destroy(NULL);
+	delete m_lightingLighting0Pipeline;
 }
 
 void RrPipelineStandardRenderer::CullObjects ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world )
@@ -80,43 +88,80 @@ void RrPipelineStandardRenderer::CullObjects ( gpu::GraphicsContext* gfx, const 
 static core::settings::SessionSetting<bool> gsesh_LightingUseDebugBuffers ("rdbg_deferred_gbuffers", false);
 static core::settings::SessionSetting<bool> gsesh_LightingUseLighting ("rdbg_deferred_lighting", true);
 
-void RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
+rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
 {
-	RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
-	l_shadeLightingVariantInfo.VARIANT_DEBUG_GBUFFERS = gsesh_LightingUseDebugBuffers;
-	l_shadeLightingVariantInfo.VARIANT_DEBUG_LIGHTING = gsesh_LightingUseLighting;
-
 	auto renderer = RrRenderer::Active; // TODO: make argument
 
-	RrShaderProgram* desiredProgram = RrShaderProgram::Load(rrShaderProgramVsPs{
-		"shaders/deferred_pass/shade_common_vv.spv",
-		("shaders/deferred_pass/" + l_shadeLightingVariantInfo.GetVariantName()).c_str()
-		});
-	if (desiredProgram != m_lightingCompositeProgram)
+	// TODO: make loader into a common function here
 	{
-		if (m_lightingCompositeProgram != nullptr)
-		{
-			m_lightingCompositeProgram->RemoveReference();
-		}
-		m_lightingCompositeProgram = desiredProgram;
+		RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
+		l_shadeLightingVariantInfo.VARIANT_DEBUG_GBUFFERS = gsesh_LightingUseDebugBuffers;
+		l_shadeLightingVariantInfo.VARIANT_DEBUG_LIGHTING = gsesh_LightingUseLighting;
+		l_shadeLightingVariantInfo.VARIANT_PASS_DO_INDIRECT_EMISSIVE = true;
 
-		// Create a new rendering pipeline.
-		m_lightingCompositePipeline->destroy(NULL);
-		renderer->CreatePipeline(&m_lightingCompositeProgram->GetShaderPipeline(), *m_lightingCompositePipeline);
+		RrShaderProgram* desiredProgram = RrShaderProgram::Load(rrShaderProgramVsPs{
+			"shaders/deferred_pass/shade_common_vv.spv",
+			("shaders/deferred_pass/" + l_shadeLightingVariantInfo.GetVariantName()).c_str()
+			});
+		if (desiredProgram != m_lightingCompositeProgram)
+		{
+			if (m_lightingCompositeProgram != nullptr)
+			{
+				m_lightingCompositeProgram->RemoveReference();
+			}
+			m_lightingCompositeProgram = desiredProgram;
+
+			// Create a new rendering pipeline.
+			m_lightingCompositePipeline->destroy(NULL);
+			renderer->CreatePipeline(&m_lightingCompositeProgram->GetShaderPipeline(), *m_lightingCompositePipeline);
+		}
+	}
+
+	{
+		RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
+		l_shadeLightingVariantInfo.VARIANT_PASS_DO_DIRECT_DIRECTIONAL = true;
+
+		RrShaderProgram* desiredProgram = RrShaderProgram::Load(rrShaderProgramVsPs{
+			"shaders/deferred_pass/shade_common_vv.spv",
+			("shaders/deferred_pass/" + l_shadeLightingVariantInfo.GetVariantName()).c_str()
+			});
+		if (desiredProgram != m_lightingLighting0Program)
+		{
+			if (m_lightingLighting0Program != nullptr)
+			{
+				m_lightingLighting0Program->RemoveReference();
+			}
+			m_lightingLighting0Program = desiredProgram;
+
+			// Create a new rendering pipeline.
+			m_lightingLighting0Pipeline->destroy(NULL);
+			renderer->CreatePipeline(&m_lightingLighting0Program->GetShaderPipeline(), *m_lightingLighting0Pipeline);
+		}
 	}
 
 	// Grab output size for the screen quad info
 	auto& output = *state->output_info;
 	rrViewport output_viewport =  output.GetOutputViewport();
 
+	// Allocate a new buffer 
+	gpu::Texture outputLightingComposite;
+	rrRTBufferRequest colorRequest {output_viewport.size, core::gfx::tex::kColorFormatRGBA16F}; 
+	renderer->CreateRenderTexture( colorRequest, &outputLightingComposite );
+
 	// Create render target output
-	rrRenderTarget compositeOutput (compositeInput.output_color);
+	rrRenderTarget compositeOutput (&outputLightingComposite);
 	
 	// Set output
 	gfx->setRenderTarget(&compositeOutput.m_renderTarget);
 	// Render the current result to the screen
 	gfx->setViewport(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
 	gfx->setScissor(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
+
+	// Clear color
+	{
+		float clearColor[] = {0, 0, 0, 0};
+		gfx->clearColor(clearColor);
+	}
 
 	// Set up output state
 	{
@@ -149,31 +194,128 @@ void RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, 
 	{
 	} cbuffer_composite_params;
 
-	gpu::Buffer cbuffer;
-	cbuffer.initAsConstantBuffer(NULL, sizeof(rrCbufferCompositeParams));
-	cbuffer.upload(gfx, &cbuffer_composite_params, sizeof(rrCbufferCompositeParams), gpu::kTransferStream);
-
-	// Render with the composite shader
+	if (gsesh_LightingUseDebugBuffers)
 	{
-		gfx->setPipeline(m_lightingCompositePipeline);
-		gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
-		gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
-		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, compositeInput.deferred_albedo);
-		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 1, compositeInput.deferred_normals);
-		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 2, compositeInput.deferred_surface);
-		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 3, compositeInput.deferred_emissive);
-		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 4, compositeInput.combined_depth);
-		if (compositeInput.forward_color != nullptr)
-		{
-			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 5, compositeInput.forward_color);
-		}
-		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, &cbuffer);
+		gpu::Buffer cbuffer;
+		cbuffer.initAsConstantBuffer(NULL, sizeof(rrCbufferCompositeParams));
+		cbuffer.upload(gfx, &cbuffer_composite_params, sizeof(rrCbufferCompositeParams), gpu::kTransferStream);
 
-		gfx->draw(4, 0);
+		// Render with the composite shader
+		{
+			gfx->setPipeline(m_lightingCompositePipeline);
+			gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
+			gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
+			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, compositeInput.deferred_albedo);
+			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 1, compositeInput.deferred_normals);
+			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 2, compositeInput.deferred_surface);
+			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 3, compositeInput.deferred_emissive);
+			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 4, compositeInput.combined_depth);
+			if (compositeInput.forward_color != nullptr)
+			{
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 5, compositeInput.forward_color);
+			}
+			gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, &cbuffer);
+
+			gfx->draw(4, 0);
+		}
+
+		// done with cbuffer
+		cbuffer.free(NULL);
+	}
+	else
+	{
+		// Render the ambient lighting
+		{
+			gpu::Buffer cbuffer;
+			cbuffer.initAsConstantBuffer(NULL, sizeof(rrCbufferCompositeParams));
+			cbuffer.upload(gfx, &cbuffer_composite_params, sizeof(rrCbufferCompositeParams), gpu::kTransferStream);
+
+			// Render with the composite shader
+			{
+				gfx->setPipeline(m_lightingCompositePipeline);
+				gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
+				gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, compositeInput.deferred_albedo);
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 1, compositeInput.deferred_normals);
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 2, compositeInput.deferred_surface);
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 3, compositeInput.deferred_emissive);
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 4, compositeInput.combined_depth);
+				if (compositeInput.forward_color != nullptr)
+				{
+					gfx->setShaderTextureAuto(gpu::kShaderStagePs, 5, compositeInput.forward_color);
+				}
+				gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, &cbuffer);
+
+				gfx->draw(4, 0);
+			}
+
+			// done with cbuffer
+			cbuffer.free(NULL);
+		}
+
+		// Do a fake directional light now
+		{
+			// Additive blending
+			gpu::BlendState bs;
+			bs.enable = true;
+			bs.src = gpu::kBlendModeSrcAlpha;
+			bs.dst = gpu::kBlendModeOne;
+			bs.srcAlpha = gpu::kBlendModeOne;
+			bs.dstAlpha = gpu::kBlendModeOne;
+			bs.opAlpha = gpu::kBlendOpMax;
+			gfx->setBlendState(bs);
+
+			gpu::Buffer cbuffer;
+			cbuffer.initAsConstantBuffer(NULL, sizeof(rrCbufferCompositeParams));
+			cbuffer.upload(gfx, &cbuffer_composite_params, sizeof(rrCbufferCompositeParams), gpu::kTransferStream);
+
+			// Render with the composite shader
+			{
+				gfx->setPipeline(m_lightingLighting0Pipeline);
+				gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
+				gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, compositeInput.deferred_albedo);
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 1, compositeInput.deferred_normals);
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 2, compositeInput.deferred_surface);
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 3, compositeInput.deferred_emissive);
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 4, compositeInput.combined_depth);
+				if (compositeInput.forward_color != nullptr)
+				{
+					gfx->setShaderTextureAuto(gpu::kShaderStagePs, 5, compositeInput.forward_color);
+				}
+				gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, &cbuffer);
+
+				gfx->draw(4, 0);
+			}
+
+			// done with cbuffer
+			cbuffer.free(NULL);
+		}
+
+		// Render the forward data
+		if (compositeInput.forward_color)
+		{
+			// Alpha blend using the destination's alpha channel
+			gpu::BlendState bs;
+			bs.enable = true;
+			bs.src = gpu::kBlendModeInvDstAlpha;
+			bs.dst = gpu::kBlendModeDstAlpha;
+			bs.srcAlpha = gpu::kBlendModeOne;
+			bs.dstAlpha = gpu::kBlendModeOne;
+			bs.opAlpha = gpu::kBlendOpMax;
+			gfx->setBlendState(bs);
+
+			gfx->setPipeline(&renderer->GetScreenQuadCopyPipeline());
+			gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
+			gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
+			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, compositeInput.forward_color);
+
+			gfx->draw(4, 0);
+		}
+
 	}
 
-	// done with cbuffer
-	cbuffer.free(NULL);
+	return rrCompositeOutput {outputLightingComposite};
 }
 
 rrPipelineOutput RrPipelineStandardRenderer::RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) 

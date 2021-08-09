@@ -293,7 +293,7 @@ void RrCamera::RenderBegin ( void )
 	UpdateFrustum();
 
 	// Update the light listing from this camera:
-	RrLight::UpdateLights(this);
+	//RrLight::UpdateLights(this);
 
 	// TODO: Push camera constants now.
 

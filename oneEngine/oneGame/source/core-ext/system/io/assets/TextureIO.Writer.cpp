@@ -69,7 +69,7 @@ bool core::BpdWriter::WriteBpd ( const char* n_newfilename )
 	// Close the file
 	mappedfile.SyncToDisk();
 
-	return false;
+	return true;
 }
 
 //	writeHeader() : writes header

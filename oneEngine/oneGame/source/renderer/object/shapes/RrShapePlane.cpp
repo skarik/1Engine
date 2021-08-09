@@ -39,12 +39,12 @@ void RrShapePlane::BuildMeshBuffer ( void )
 
 		// Set triangles:
 		model.indices[0] = 0;
-		model.indices[1] = 1;
-		model.indices[2] = 2;
+		model.indices[1] = 2;
+		model.indices[2] = 1;
 
 		model.indices[3] = 2;
-		model.indices[4] = 1;
-		model.indices[5] = 3;
+		model.indices[4] = 3;
+		model.indices[5] = 1;
 
 		// Set new positions
 		model.position[0] = Vector2f(-hxsize, -hysize);
