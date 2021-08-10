@@ -83,10 +83,6 @@
     <ClCompile Include="source\renderer\logic\model\RrModelMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\logic\RrLogicObject.cpp" />
     <ClCompile Include="source\renderer\logic\model\RrCModel.cpp" />
-    <ClCompile Include="source\renderer\logic\model\ModelLoader.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\renderer\logic\model\CSkinnedModel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -216,10 +212,6 @@
     <ClInclude Include="source\renderer\logic\model\RrModelMasterSubsystem.h" />
     <ClInclude Include="source\renderer\logic\RrLogicObject.h" />
     <ClInclude Include="source\renderer\logic\model\RrCModel.h" />
-    <ClInclude Include="source\renderer\logic\model\ModelLoader.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="source\renderer\logic\model\CSkinnedModel.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>

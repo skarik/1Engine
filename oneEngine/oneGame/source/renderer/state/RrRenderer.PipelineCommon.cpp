@@ -4,6 +4,9 @@
 #include "renderer/material/RrPass.Presets.h"
 #include "renderer/material/RrShaderProgram.h"
 #include "renderer/texture/RrTexture.h"
+#include "renderer/logic/model/RrCModel.h" // TODO
+#include "renderer/logic/model/RrAnimatedMeshGroup.h"
+#include "renderer/object/mesh/system/rrMeshBuffer.h"
 #include "core/mem.h"
 
 #include "gpuw/Device.h"
@@ -56,8 +59,14 @@ void RrRenderer::InitializeCommonPipelineResources ( gpu::Device* device )
 
 	// Load in lighting geometry
 	{
-		//m_vbufLightSphere
-		//m_vbufLightCone
+		rrModelLoadParams loadParams {"models/system/light_sphere"};
+		RrAnimatedMeshGroup* meshGroup = renderer::LoadMeshGroup(loadParams);
+		m_vbufLightSphere = meshGroup->m_meshes[0]->m_buffer[(uint32_t)renderer::shader::Location::kPosition];
+	}
+	{
+		rrModelLoadParams loadParams {"models/system/light_cone"};
+		RrAnimatedMeshGroup* meshGroup = renderer::LoadMeshGroup(loadParams);
+		m_vbufLightCone = meshGroup->m_meshes[0]->m_buffer[(uint32_t)renderer::shader::Location::kPosition];
 	}
 }
 
@@ -65,6 +74,19 @@ void RrRenderer::FreeCommonPipelineResources ( gpu::Device* device )
 {
 	m_vbufScreenQuad.free(device);
 	m_pipelineScreenQuadCopy.destroy(device);
+
+	// TODO: Improve this reference removal. LoadMeshGroup adds a reference on load. Perhaps a "retrieval"-only routine instead?
+	{
+		rrModelLoadParams loadParams {"models/system/light_sphere"};
+		RrAnimatedMeshGroup* meshGroup = renderer::LoadMeshGroup(loadParams);
+		meshGroup->RemoveReference();
+	}
+
+	{
+		rrModelLoadParams loadParams {"models/system/light_cone"};
+		RrAnimatedMeshGroup* meshGroup = renderer::LoadMeshGroup(loadParams);
+		meshGroup->RemoveReference();
+	}
 }
 
 void RrRenderer::CreatePipeline ( gpu::ShaderPipeline* in_pipeline, gpu::Pipeline& out_pipeline )

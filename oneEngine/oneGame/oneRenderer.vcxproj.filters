@@ -285,9 +285,6 @@
     <ClCompile Include="source\renderer\object\mesh\InstancedMesh.cpp">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\logic\model\ModelLoader.cpp">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\shapes\RrBillboard.cpp">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>
     </ClCompile>
@@ -544,9 +541,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\InstancedMesh.h">
       <Filter>SOURCE\Renderer\Object\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\model\ModelLoader.h">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\shapes\RrBillboard.h">
       <Filter>SOURCE\Renderer\Object\Shapes</Filter>

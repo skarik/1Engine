@@ -60,7 +60,13 @@ struct rrCModelConstantBuffers
 		{}
 };
 
-// TODO: Add global function that loads RrAnimatedMeshGroup. For instance, foliage could benefit from sharing the model pool.
+namespace renderer
+{
+	// Load in a mesh group.
+	RENDER_API RrAnimatedMeshGroup*
+							LoadMeshGroup ( const rrModelLoadParams& load_params );
+};
+// TODO: Move rrModelLoadParams + renderer::LoadMeshGroup to separate header.
 
 //	RrCModel : Container for handling animated and static meshes.
 // Is the basis of the "Mesh Trio," which are:
@@ -91,10 +97,6 @@ public: // Creation Interface
 	//	Upload ( data, id )
 	static RENDER_API RrCModel*
 							Upload ( arModelData& model_data, RrWorld* world_to_add_to );
-
-//protected:
-	// Get the model bounding box
-	//void					CalculateBoundingBox ( void );
 
 public:
 	//	Destructor : Frees used references.
