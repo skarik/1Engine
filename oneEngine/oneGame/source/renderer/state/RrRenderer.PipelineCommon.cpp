@@ -53,6 +53,12 @@ void RrRenderer::InitializeCommonPipelineResources ( gpu::Device* device )
 	};
 	m_vbufDefault.initAsVertexBuffer(device, gpu::kFormatR32G32B32A32SFloat, sizeof(defaultgeo)/sizeof(Vector4f));
 	m_vbufDefault.upload(NULL, defaultgeo, sizeof(defaultgeo), gpu::kTransferStatic);
+
+	// Load in lighting geometry
+	{
+		//m_vbufLightSphere
+		//m_vbufLightCone
+	}
 }
 
 void RrRenderer::FreeCommonPipelineResources ( gpu::Device* device )

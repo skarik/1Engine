@@ -13,19 +13,19 @@ class RrRTCamera;
 class RrRenderTexture;
 class CBillboard;
 
-enum rrLightType
+enum rrLightType : uint8
 {
-	kLightTypeOmni,
-	kLightTypeSpotlight,
-	kLightTypeDirectional,
+	kLightTypeOmni			= 0,
+	kLightTypeSpotlight		= 1,
+	kLightTypeDirectional	= 2,
 };
 
-enum rrLightAreaType
+enum rrLightAreaType : uint8
 {
-	kLightAreaTypePoint,
-	kLightAreaTypeSphere,
-	kLightAreaTypeRotatedTube,
-	kLightAreaTypeRotatedQuad,
+	kLightAreaTypePoint			= 0,
+	kLightAreaTypeSphere		= 1,
+	kLightAreaTypeRotatedTube	= 2,
+	kLightAreaTypeRotatedQuad	= 3,
 };
 
 // Comparison class. Used to sort lights.
@@ -51,10 +51,6 @@ public:
 	void					PreStepSynchronus ( void ) override;
 
 public:
-	//	UpdateLights( camera ) : Updates light listing for the currently rendering camera.
-	//static void				UpdateLights ( RrCamera* rendering_camera );
-
-public:
 	// General Light Parameters
 
 	// Light type
@@ -70,8 +66,8 @@ public:
 	Vector3f			size = Vector3f(0.1F, 0.1F, 0.1F);
 	// Color
 	Color				color = Color(1.0F, 1.0F, 1.0F, 1.0F);
-	// Distance in feet the light is forced to not effect beyond. Default is 500.
-	float				falloff_range = 500.0F;
+	// Distance in feet the light is forced to not effect beyond. Default is 10.
+	float				falloff_range = 10.0F;
 	// The power of the falloff. The default is 2.0, for inverse square.
 	float				falloff_invpower = 2.0F;
 	// Amount the light should not take normals into account. Default is 0.0.
@@ -83,20 +79,47 @@ public:
 	// Percentage of base resolution shadows should be. Default is 1.0.
 	float				shadows_resolution_factor = 1.0F;
 
-	// Does this light force a volumetric halo on? Default is 0.0.
-	float				effect_halo_strength = 0.0F;
+	// Density multiplier of the volumetrics around this light.
+	float				volumetric_density = 1.0F;
 
 protected:
-	// Calculated index for lists
-	//uint16_t			m_lightIndex;
-
 	// Friend classes for comparison
 	friend RrLightComparison;
-
-private:
-	//static std::vector<RrLight*>
-	//					lightList;
-	//static uint16_t		lightsActive;
 };
+
+namespace renderer
+{
+	namespace cbuffer
+	{
+		struct rrLight
+		{
+			Vector3f			position;
+			float				falloff_range;
+			Vector3f			direction;
+			float				falloff_invpower;
+			Vector3f			size;
+			float				falloff_passthru;
+			Vector3f			color;
+			rrLightAreaType		area_type;
+			rrLightType			light_type;
+			uint16				padding;
+
+			rrLight() = default;
+
+			rrLight (RrLight* source)
+				: position(source->position)
+				, falloff_range(source->falloff_range)
+				, direction(source->direction)
+				, falloff_invpower(source->falloff_invpower)
+				, size(source->size)
+				, falloff_passthru(source->falloff_passthru)
+				, color(source->color.r, source->color.g, source->color.b)
+				, area_type(source->area_type)
+				, light_type(source->type)
+				, padding(0)
+			{}
+		};
+	}
+}
 
 #endif

@@ -18,6 +18,7 @@ namespace gpu
 	class RenderTarget;
 	class Pipeline;
 }
+struct rrCameraPass;
 
 class RrPipelineStateRenderer;
 class RrPipelineOptions;
@@ -51,6 +52,7 @@ struct rrPipelineCompositeInput
 
 	gpu::Texture*		forward_color = nullptr;
 
+	rrCameraPass*		cameraPass = nullptr;
 	//gpu::Texture*		output_color = nullptr;
 };
 
@@ -135,6 +137,8 @@ public:
 // Standard renderer
 //=====================================
 
+#include <vector>
+class RrLight;
 class RrPipelineStandardRenderer : public RrPipelineStateRenderer
 {
 public:
@@ -163,6 +167,19 @@ private:
 
 	RrShaderProgram*	m_lightingLighting0Program = nullptr;
 	gpu::Pipeline*		m_lightingLighting0Pipeline;
+
+	RrShaderProgram*	m_lightingLightingOmniProgram = nullptr;
+	gpu::Pipeline*		m_lightingLightingOmniPipeline;
+
+	RrShaderProgram*	m_lightingLightingSpotProgram = nullptr;
+	gpu::Pipeline*		m_lightingLightingSpotPipeline;
+
+private:
+	// TODO: organize this properly. light management likely should be outside of RrPipeline.cpp as it grows larger
+	void					SortLights ( void );
+	std::vector<RrLight*> directional_lights;
+	std::vector<RrLight*> spot_lights;
+	std::vector<RrLight*> omni_lights;
 };
 
 class RrPipelineStandardOptions : public RrPipelineOptions

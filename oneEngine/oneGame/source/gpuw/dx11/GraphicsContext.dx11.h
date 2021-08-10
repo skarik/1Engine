@@ -92,6 +92,8 @@ namespace gpu
 
 		//	draw( vertexCount, startVertex ) : render primitives, automatically generating indices
 		GPUW_API int			draw ( const uint32_t vertexCount, const uint32_t startVertex );
+		//	drawInstanced( vertexCount, startVertex ) : render primitives, automatically generating indices
+		GPUW_API int			drawInstanced ( const uint32_t vertexCount, const uint32_t instanceCount, const uint32_t startVertex );
 		//	drawIndexed( indexCount, startIndex, baseVertex ) : render indexed primitive
 		GPUW_API int			drawIndexed ( const uint32_t indexCount, const uint32_t startIndex, const uint32_t baseVertex );
 		//	drawIndexedInstanced( indexCount, instanceCount, startIndex, baseVertex ) : render instanced, indexed primitives

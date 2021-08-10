@@ -143,6 +143,8 @@ static void GetPostprocessVariant (
 	}
 }
 
+#include "renderer/light/RrLight.h"
+
 #include "../.res-1/shaders/deferred_pass/shade_lighting_p.variants.h"
 
 static core::settings::SessionSetting<bool> gsesh_LightingUseDebugBuffers ("rdbg_deferred_gbuffers", false);
@@ -158,29 +160,31 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 			? l_shadeLightingVariantInfo.VARIANT_PASS_DEBUG_SURFACE
 			: l_shadeLightingVariantInfo.VARIANT_PASS_DO_INDIRECT_EMISSIVE;
 
-		GetPostprocessVariant(
-			renderer,
-			"shaders/deferred_pass/shade_common_vv.spv",
-			"shaders/deferred_pass/",
-			l_shadeLightingVariantInfo,
-			true,
-			&m_lightingCompositePipeline,
-			&m_lightingCompositeProgram);
+		GetPostprocessVariant(renderer, "shaders/deferred_pass/shade_common_vv.spv", "shaders/deferred_pass/",
+			l_shadeLightingVariantInfo, true,
+			&m_lightingCompositePipeline, &m_lightingCompositeProgram);
 	}
 
 	{
 		RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
 		l_shadeLightingVariantInfo.VARIANT_PASS = l_shadeLightingVariantInfo.VARIANT_PASS_DO_DIRECT_DIRECTIONAL;
 
-		GetPostprocessVariant(
-			renderer,
-			"shaders/deferred_pass/shade_common_vv.spv",
-			"shaders/deferred_pass/",
-			l_shadeLightingVariantInfo,
-			true,
+		GetPostprocessVariant(renderer, "shaders/deferred_pass/shade_instanced_vv.spv", "shaders/deferred_pass/",
+			l_shadeLightingVariantInfo, true,
 			&m_lightingLighting0Pipeline,
 			&m_lightingLighting0Program);
 	}
+
+#if 0
+	{
+		RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
+		l_shadeLightingVariantInfo.VARIANT_PASS = l_shadeLightingVariantInfo.VARIANT_PASS_DO_DIRECT_OMNI;
+
+		GetPostprocessVariant(renderer, "shaders/deferred_pass/shade_worldproj_instanced_vv.spv", "shaders/deferred_pass/",
+			l_shadeLightingVariantInfo, false,
+			&m_lightingLightingOmniPipeline, &m_lightingLightingOmniProgram);
+	}
+#endif
 
 	// Grab output size for the screen quad info
 	auto& output = *state->output_info;
@@ -192,7 +196,7 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 	renderer->CreateRenderTexture( colorRequest, &outputLightingComposite );
 
 	// Create render target output
-	rrRenderTarget compositeOutput (&outputLightingComposite);
+	rrRenderTarget compositeOutput (compositeInput.combined_depth, nullptr, &outputLightingComposite);
 	
 	// Set output
 	gfx->setRenderTarget(&compositeOutput.m_renderTarget);
@@ -236,7 +240,8 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 	auto BindPipelineAndRun = [gfx, &compositeInput, &renderer](
 		gpu::Pipeline* pipeline,
 		gpu::Buffer* cbuffer,
-		void (*renderCall)(RrRenderer* renderer, gpu::GraphicsContext* gfx))
+		gpu::Buffer* sbuffer,
+		std::function<void(RrRenderer*, gpu::GraphicsContext*)> renderCall)
 	{
 		gfx->setPipeline(pipeline);
 		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, compositeInput.deferred_albedo);
@@ -248,48 +253,70 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 		{
 			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 5, compositeInput.forward_color);
 		}
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_USER0, cbuffer);
 		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, cbuffer);
+		gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::SBUFFER_USER0, sbuffer);
+		gfx->setShaderSBuffer(gpu::kShaderStagePs, renderer::SBUFFER_USER0, sbuffer);
 		renderCall(renderer, gfx);
 	};
 
 	// Debug output:
 	if (gsesh_LightingUseDebugBuffers)
 	{
-		// Create cbuffer for the input
-		struct rrCbufferCompositeParams
-		{
-		} cbuffer_composite_params;
-
-		gpu::Buffer cbuffer;
-		cbuffer.initAsConstantBuffer(NULL, sizeof(rrCbufferCompositeParams));
-		cbuffer.upload(gfx, &cbuffer_composite_params, sizeof(rrCbufferCompositeParams), gpu::kTransferStream);
-
 		// Render with the composite shader
-		BindPipelineAndRun(m_lightingCompositePipeline, &cbuffer, [](RrRenderer* renderer, gpu::GraphicsContext* gfx)
+		BindPipelineAndRun(m_lightingCompositePipeline, nullptr, nullptr, [](RrRenderer* renderer, gpu::GraphicsContext* gfx)
 		{
 			gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
 			gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
 			gfx->draw(4, 0);
 		});
-
-		// done with cbuffer
-		cbuffer.free(NULL);
 	}
 	else
 	{
-		// Set up all the cbuffers now:
-		struct rrCbufferCompositeParams
+		// Sort all the lights:
+		SortLights();
+		// Create a SBuffer with all the light information.
+		int directionalLightFirstIndex = 0;
+		int spotLightFirstIndex = 0;
+		int omniLightFirstIndex = 0;
+		gpu::Buffer lightParameterBuffer;
 		{
-		} cbuffer_composite_params;
+			std::vector<renderer::cbuffer::rrLight> lights;
+			lights.resize(directional_lights.size() + spot_lights.size() + omni_lights.size());
 
-		gpu::Buffer cbuffer;
-		cbuffer.initAsConstantBuffer(NULL, sizeof(rrCbufferCompositeParams));
-		cbuffer.upload(gfx, &cbuffer_composite_params, sizeof(rrCbufferCompositeParams), gpu::kTransferStream);
+			int light_index = 0;
+			directionalLightFirstIndex = light_index;
+			for (RrLight* light : directional_lights)
+			{
+				lights[light_index] = renderer::cbuffer::rrLight(light);
+				++light_index;
+			}
+
+			spotLightFirstIndex = light_index;
+			for (RrLight* light : spot_lights)
+			{
+				lights[light_index] = renderer::cbuffer::rrLight(light);
+				++light_index;
+			}
+			
+			omniLightFirstIndex = light_index;
+			for (RrLight* light : omni_lights)
+			{
+				lights[light_index] = renderer::cbuffer::rrLight(light);
+				++light_index;
+			}
+
+			if (!lights.empty())
+			{
+				lightParameterBuffer.initAsStructuredBuffer(NULL, sizeof(renderer::cbuffer::rrLight) * lights.size());
+				lightParameterBuffer.upload(gfx, lights.data(), sizeof(renderer::cbuffer::rrLight) * lights.size(), gpu::TransferStyle::kTransferStream);
+			}
+		}
 
 		// Render the ambient lighting
 		{
 			// Render with the composite shader
-			BindPipelineAndRun(m_lightingCompositePipeline, &cbuffer, [](RrRenderer* renderer, gpu::GraphicsContext* gfx)
+			BindPipelineAndRun(m_lightingCompositePipeline, nullptr, nullptr, [](RrRenderer* renderer, gpu::GraphicsContext* gfx)
 			{
 				gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
 				gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
@@ -308,19 +335,83 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 			gfx->setBlendState(bs);
 		}
 
-		// Do a fake directional light now
+		// Render directional lights as quads
+		if (!directional_lights.empty())
 		{
+			int directionalLightCount = (int)directional_lights.size();
+
+			struct rrCBufferLightInfo
+			{
+				int firstIndex;
+			} cbuffer_light_params;
+			cbuffer_light_params.firstIndex = directionalLightFirstIndex;
+
+			gpu::Buffer cbuffer;
+			cbuffer.initAsConstantBuffer(NULL, sizeof(rrCBufferLightInfo));
+			cbuffer.upload(gfx, &cbuffer_light_params, sizeof(rrCBufferLightInfo), gpu::kTransferStream);
+
 			// Render with the lighting0
-			BindPipelineAndRun(m_lightingLighting0Pipeline, &cbuffer, [](RrRenderer* renderer, gpu::GraphicsContext* gfx)
+			BindPipelineAndRun(m_lightingLighting0Pipeline, &cbuffer, &lightParameterBuffer, [directionalLightFirstIndex, directionalLightCount](RrRenderer* renderer, gpu::GraphicsContext* gfx)
 			{
 				gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
 				gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
-				gfx->draw(4, 0);
+				gfx->drawInstanced(4, directionalLightCount, 0);
 			});
+
+			cbuffer.free(NULL);
 		}
 
-		// done with cbuffers
-		cbuffer.free(NULL);
+		{ // Go back to normal depth with omni lights.
+			gpu::DepthStencilState ds;
+			ds.depthTestEnabled   = true;
+			ds.depthFunc          = gpu::kCompareOpLessEqual;
+			ds.depthWriteEnabled  = false;
+			ds.stencilTestEnabled = false;
+			ds.stencilWriteMask   = 0x00;
+			gfx->setDepthStencilState(ds);
+		}
+
+#if 0
+		// Render point lights as spheres
+		if (!omni_lights.empty())
+		{
+			// TODO: Change the mesh loader to be more general/universal, so the mesh can be grabbed.
+			int omniLightCount = (int)omni_lights.size();
+			rrCameraPass* cameraPass = compositeInput.cameraPass;
+
+			struct rrCBufferLightInfo
+			{
+				int firstIndex;
+			} cbuffer_light_params;
+			cbuffer_light_params.firstIndex = omniLightFirstIndex;
+
+			gpu::Buffer cbuffer;
+			cbuffer.initAsConstantBuffer(NULL, sizeof(rrCBufferLightInfo));
+			cbuffer.upload(gfx, &cbuffer_light_params, sizeof(rrCBufferLightInfo), gpu::kTransferStream);
+
+			// Render with the lightingOmni
+			BindPipelineAndRun(m_lightingLighting0Pipeline, &cbuffer, &lightParameterBuffer, [directionalLightFirstIndex, omniLightCount, cameraPass](RrRenderer* renderer, gpu::GraphicsContext* gfx)
+			{
+				gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+				gfx->setVertexBuffer(0, &renderer->GetLightSphereVertexBuffer(), 0); // see RrPipelinePasses.cpp
+				gfx->drawInstanced(4, omniLightCount, 0);
+			});
+
+			cbuffer.free(NULL);
+		}
+#endif
+
+		// done with buffers
+		lightParameterBuffer.free(NULL);
+
+		{ // No depth/stencil test. Always draw.
+			gpu::DepthStencilState ds;
+			ds.depthTestEnabled   = false;
+			ds.depthWriteEnabled  = false;
+			ds.stencilTestEnabled = false;
+			ds.stencilWriteMask   = 0x00;
+			gfx->setDepthStencilState(ds);
+		}
 
 		// Render the forward data
 		if (compositeInput.forward_color)
@@ -356,5 +447,34 @@ rrPipelineOutput RrPipelineStandardRenderer::RenderLayerEnd ( gpu::GraphicsConte
 	else
 	{
 		return RrPipelineStateRenderer::RenderLayerEnd(gfx, finishInput, state);
+	}
+}
+
+void RrPipelineStandardRenderer::SortLights ( void )
+{
+	auto lightList = renderer::LightList();
+
+	/*std::vector<RrLight*> directional_lights;
+	std::vector<RrLight*> spot_lights;
+	std::vector<RrLight*> omni_lights;*/
+	directional_lights.clear();
+	spot_lights.clear();
+	omni_lights.clear();
+
+	// Place all the lights into the scene into the listing.
+	for (RrLight* light : lightList)
+	{
+		switch (light->type)
+		{
+		case kLightTypeDirectional:
+			directional_lights.push_back(light);
+			break;
+		case kLightTypeSpotlight:
+			spot_lights.push_back(light);
+			break;
+		case kLightTypeOmni:
+			omni_lights.push_back(light);
+			break;
+		}
 	}
 }

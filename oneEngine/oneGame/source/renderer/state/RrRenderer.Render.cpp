@@ -961,6 +961,7 @@ Render_Groups:
 				input.deferred_emissive = &outputGbuffers[3];
 				input.combined_depth = &outputDepth;
 				input.forward_color = &outputColor;
+				input.cameraPass = cameraPass;
 
 				// Deferred composites directly on top of the previously rendered output.
 				//input.output_color = &outputColor;

@@ -181,6 +181,9 @@ int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, const 
 
 int gpu::GraphicsContext::setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer )
 {
+	if (buffer == nullptr)
+		return kError_SUCCESS; // TODO: handle this better
+
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeStructured);
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
@@ -325,6 +328,18 @@ int gpu::GraphicsContext::draw ( const uint32_t vertexCount, const uint32_t star
 	if (drawPreparePipeline() == kError_SUCCESS)
 	{
 		ctx->Draw(vertexCount, startVertex);
+		ARCORE_ASSERT(validate() == 0);
+		return kError_SUCCESS;
+	}
+	return kErrorBadArgument;
+}
+
+int gpu::GraphicsContext::drawInstanced ( const uint32_t vertexCount, const uint32_t instanceCount, const uint32_t startVertex )
+{
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+	if (drawPreparePipeline() == kError_SUCCESS)
+	{
+		ctx->DrawInstanced(vertexCount, instanceCount, startVertex, 0);
 		ARCORE_ASSERT(validate() == 0);
 		return kError_SUCCESS;
 	}

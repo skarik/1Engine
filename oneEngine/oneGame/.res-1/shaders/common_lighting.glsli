@@ -1,0 +1,21 @@
+#ifndef COMMON_LIGHTING_GLSLI_
+#define COMMON_LIGHTING_GLSLI_
+
+#include "common.glsli"
+
+struct rrLight
+{
+	vec3		position;
+	float		falloff_range;
+	vec3		direction;
+	float		falloff_invpower;
+	vec3		size;
+	float		falloff_passthru;
+	vec3		color;
+	uint		packedLightAndAreaType;
+};
+
+uint	rrLightGetAreaType(in rrLight light)	{ return (light.packedLightAndAreaType << 24 & 0xFF); }
+uint	rrLightGetLightType(in rrLight light)	{ return (light.packedLightAndAreaType << 16 & 0xFF); }
+
+#endif//COMMON_LIGHTING_GLSLI_

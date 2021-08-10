@@ -5,19 +5,8 @@
 
 #include "../common.glsli"
 #include "../cbuffers.glsli"
+#include "../common_lighting.glsli"
 #include "shade_common_p.glsli"
-
-#ifndef VARIANT_DEBUG_GBUFFERS
-#define VARIANT_DEBUG_GBUFFERS 0
-#endif
-
-#ifndef VARIANT_DEBUG_SURFACE
-#define VARIANT_DEBUG_SURFACE 1
-#endif
-
-#ifndef VARIANT_DEBUG_LIGHTING
-#define VARIANT_DEBUG_LIGHTING 0
-#endif
 
 #ifndef VARIANT_PASS
 #define VARIANT_PASS 0
@@ -28,7 +17,8 @@
 #define VARIANT_PASS_DO_DIRECT_OMNI 3
 #define VARIANT_PASS_DO_DIRECT_SPOTLIGHT 4
 #define VARIANT_PASS_DEBUG_GBUFFERS 10
-#define VARIANT_PASS_DEBUG_LIGHTING 11
+#define VARIANT_PASS_DEBUG_SURFACE 11
+#define VARIANT_PASS_DEBUG_LIGHTING 12
 
 // Previous forward rendered output
 layout(binding = 5, location = 25) uniform sampler2D textureSamplerForward;
@@ -39,25 +29,27 @@ layout(location = 0) out vec4 FragColor;
 // Inputs from vertex shader
 layout(location = 0) in vec4 v2f_position;
 layout(location = 1) in vec2 v2f_texcoord0;
+layout(location = 2) in flat int v2f_lightIndex;
 
-// Lighting and Shadows
-/*layout(binding = 24, location = 44) uniform samplerBuffer textureLightBuffer;
-layout(binding = 5, std140) uniform def_LightingInfo
+// Lighting Parameters:
+layout(binding = SBUFFER_USER0, std430) readonly buffer Lighting_Data
 {
-	mat4 def_LightMatrix0[4];
+	rrLight Lighting_Params [];
 };
-layout(binding = 25, location = 45) uniform samplerBuffer textureLightMatrixBuffer;
-layout(binding = 12, location = 32) uniform sampler2D textureShadow0;
-layout(binding = 13, location = 33) uniform sampler2D textureShadow1;
-layout(binding = 14, location = 34) uniform sampler2D textureShadow2;
 
-vec4 v2f_lightcoord [8];*/
+#if VARIANT_PASS==VARIANT_PASS_DO_DIRECT_DIRECTIONAL
 
+layout(binding = CBUFFER_USER0, std140) uniform sys_cbuffer_User0
+{
+	int Lighting_FirstIndex;
+};
 
+#else
 layout(binding = CBUFFER_USER0, std140) uniform sys_cbuffer_User0
 {
 	int unused;
 };
+#endif
 
 // https://www.unrealengine.com/en-US/blog/physically-based-shading-on-mobile
 vec3 EnvBRDFApprox(vec3 specularColor, float roughness, float ndotv)
@@ -154,8 +146,11 @@ void ShadePixel ( void )
 #elif VARIANT_PASS==VARIANT_PASS_DO_DIRECT_DIRECTIONAL
 
 	{
-		vec3 lightDirection = normalize(vec3(0.7, 0.2, 0.7));
-		vec3 lightColor = vec3(1.0, 0.9, 0.8);
+		const rrLight lightParams = Lighting_Params[v2f_lightIndex];
+		const vec3 lightDirection = -lightParams.direction;
+		const vec3 lightColor = lightParams.color;
+		//vec3 lightDirection = normalize(vec3(0.7, 0.2, 0.7));
+		//vec3 lightColor = vec3(1.0, 0.9, 0.8);
 
 		const vec3 halfVec = normalize(viewDirection + lightDirection);
 		const float vdoth = clamp(dot(viewDirection, halfVec), 0.0, 1.0);

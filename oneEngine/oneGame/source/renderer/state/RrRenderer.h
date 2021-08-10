@@ -418,13 +418,21 @@ public:
 	RENDER_API void			CreatePipeline ( gpu::ShaderPipeline* in_pipeline, gpu::Pipeline& out_pipeline );
 
 private:
+	gpu::Buffer			m_vbufDefault;
+	
 	gpu::Pipeline		m_pipelineScreenQuadCopy;
 	gpu::Buffer			m_vbufScreenQuad;
 	gpu::Buffer			m_vbufScreenQuad_ForOutputSurface; // Per-API flips
 
-	gpu::Buffer			m_vbufDefault;
+	gpu::Buffer			m_vbufLightSphere;
+	gpu::Buffer			m_vbufLightCone;
 
 public:
+	RENDER_API const gpu::Buffer&
+							GetDefaultVertexBuffer ( void )
+		{ return m_vbufDefault; }
+
+
 	RENDER_API const gpu::Pipeline&
 							GetScreenQuadCopyPipeline ( void )
 		{ return m_pipelineScreenQuadCopy; }
@@ -436,8 +444,11 @@ public:
 		{ return m_vbufScreenQuad_ForOutputSurface; }
 
 	RENDER_API const gpu::Buffer&
-							GetDefaultVertexBuffer ( void )
-		{ return m_vbufDefault; }
+							GetLightSphereVertexBuffer ( void )
+		{ return m_vbufLightSphere; }
+	RENDER_API const gpu::Buffer&
+							GetLightConeVertexBuffer ( void )
+		{ return m_vbufLightCone; }
 
 public:
 	// Public active instance pointer
