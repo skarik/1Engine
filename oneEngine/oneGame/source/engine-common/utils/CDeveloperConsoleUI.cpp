@@ -93,8 +93,8 @@ bool CDeveloperConsoleUI::BeginRender ( void )
 		Vector3f(screenSize, +45.0F)
 	);
 
-	rrMeshBuilder2D builder(screenMapping, 6);
-	rrTextBuilder2D builder_text(fntMenu, screenMapping, 2000);
+	rrMeshBuilder2D builder(screenMapping, 48);
+	rrTextBuilder2D builder_text(fntMenu, screenMapping, 4096);
 
 	if ( engine::Console->GetIsOpen() )
 	{
