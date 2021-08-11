@@ -102,7 +102,8 @@ namespace renderer
 
 		struct rrPerCamera
 		{
-			Matrix4x4	viewProjection; // todo: add inverse
+			Matrix4x4	viewProjection;
+			Matrix4x4	viewProjectionInverse;
 			Vector4f	worldCameraPosition;
 			Vector2f	unused;
 			Vector2f	screenSizeScaled;
@@ -111,7 +112,7 @@ namespace renderer
 
 			Vector4f	rr_padding [1];
 		};
-		static_assert(sizeof(rrPerCamera) == 128, "Alignment of rrPerCamera incorrect for the GPU.");
+		static_assert(sizeof(rrPerCamera) == 192, "Alignment of rrPerCamera incorrect for the GPU.");
 
 		struct rrPerFrame
 		{

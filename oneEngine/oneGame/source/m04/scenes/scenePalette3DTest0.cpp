@@ -21,6 +21,7 @@
 
 #include "renderer/logic/model/RrCModel.h"
 #include "renderer/object/mesh/Mesh.h"
+#include "renderer/light/RrLight.h"
 
 #include "m04/entities_test/InstancedGrassRenderObject.h"
 
@@ -102,14 +103,21 @@ void scenePalette3DTest0::LoadScene ( void )
 	{
 		InstancedGrassRenderObject* foliage = new InstancedGrassRenderObject();
 
-		for (uint i = 0; i < 100; ++i)
+		const char* l_grassMeshes [2] = {"models/foliage/redgrass_clump_0", "models/foliage/redgrass_clump_1"};
+		foliage->LoadGrassMeshes(l_grassMeshes, 2);
+		foliage->PassAccess(0).setTexture(rrTextureSlot::TEX_DIFFUSE, RrTexture::Load("textures/foliage/hapgrass0_0.png"));
+
+		for (uint i = 0; i < 120; ++i)
 		{
 			grInstancedGrassInfo grass;
 			grass.color = Vector3f(1.0F, 1.0F, 1.0F);
 
+			grass.variation_index = Random.Next(0, 1);
+
 			Matrix4x4 transform, dump;
 			core::TransformUtility::TRSToMatrix4x4(
-				Vector3f(Random.Range(-2.0F, +2.0F), Random.Range(-2.0F, +2.0F), 0.0F),
+				Vector3f(Random.Range(-5.0F, +5.0F), Random.Range(-5.0F, +5.0F), 0.0F),
+				//Vector3f(Random.Range(-2.0F, +2.0F), Random.Range(-2.0F, +2.0F), 0.0F),
 				Rotator(0.0F, 0.0F, Random.Range(0.0F, 360.0F)),
 				Vector3f(1, 1, 1),
 				transform,
@@ -125,7 +133,7 @@ void scenePalette3DTest0::LoadScene ( void )
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/blender_default_cube"}, NULL);
 		//RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/test0"}, NULL);
 		//RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/Go_blender"}, NULL);
-		model->transform.position = Vector3f(0, 0, 5);
+		model->transform.position = Vector3f(0, 0, 5.0F);
 
 		// Use a default material
 		RrPass pass;
@@ -155,6 +163,62 @@ void scenePalette3DTest0::LoadScene ( void )
 		}
 
 	} loadScreen->loadStep();
+
+	// Add a rock
+	{
+		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/desert/rocks_0"}, NULL);
+		model->transform.position = Vector3f(2.0F, 1.5F, 0);
+
+		// Use a default material
+		RrPass pass;
+		pass.utilSetupAsDefault();
+		pass.m_type = kPassTypeDeferred;
+		pass.m_alphaMode = renderer::kAlphaModeNone;
+		pass.m_cullMode = gpu::kCullModeNone;
+		pass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+		pass.setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
+		pass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
+		pass.setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureBlack) );
+		pass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
+		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/deferred_env/simple_vv.spv", "shaders/deferred_env/simple_p.spv"}) );
+		renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+			renderer::shader::Location::kUV0,
+			renderer::shader::Location::kColor,
+			renderer::shader::Location::kNormal,
+			renderer::shader::Location::kTangent,
+			renderer::shader::Location::kBinormal};
+		pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
+		pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+
+		// Give initial pass
+		for (int i = 0; i < model->GetMeshCount(); ++i)
+		{
+			model->GetMesh(i)->PassInitWithInput(0, &pass);
+		}
+
+	} loadScreen->loadStep();
+
+	// Add a directional light
+	/*{
+		RrLight* light = new RrLight;
+		light->type = kLightTypeDirectional;
+		light->direction = -Vector3f(0.7F, 0.2F, 0.7F).normal();
+		light->color = Color(1.1, 0.2, 0.3);
+	}
+
+	{	// (Add another)
+		RrLight* light = new RrLight;
+		light->type = kLightTypeDirectional;
+		light->direction = -Vector3f(-0.6F, -0.6F, 0.2F).normal();
+		light->color = Color(0.3, 0.1, 0.9);
+	}*/
+
+	{
+		RrLight* light = new RrLight;
+		light->type = kLightTypeDirectional;
+		light->direction = -Vector3f(0.7F, 0.2F, 0.7F).normal();
+		light->color = Color(1.1, 1.0, 0.9);
+	}
 
 	loadScreen->RemoveReference();
 	CGameBehavior::DeleteObject(loadScreen);

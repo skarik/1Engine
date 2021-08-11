@@ -26,6 +26,7 @@ layout(binding = CBUFFER_PER_OBJECT_EXTENDED, std140) uniform sys_cbuffer_PerObj
 layout(binding = CBUFFER_PER_CAMERA_INFORMATION, std140) uniform sys_cbuffer_PerCamera
 {
     mat4 sys_ViewProjectionMatrix;
+	mat4 sys_ViewProjectionMatrixInverse;
     vec4 sys_WorldCameraPos;
     vec4 sys_ViewportInfo;
     vec2 sys_ScreenSize;

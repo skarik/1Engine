@@ -6,92 +6,11 @@
 #include "renderer/material/RrShaderProgram.h"
 
 #include "renderer/meshmodel/Loader.h"
+#include "renderer/state/RrRenderer.h"
 
 InstancedGrassRenderObject::InstancedGrassRenderObject ( void )
 	: RrRenderObject()
 {
-	// Generate a simple grass mesh
-	// TODO: Load meshes from disk instead.
-
-	//const Real kWidth = 0.1F;
-	//const Real kHeight = 1.0F;
-
-	//arModelData model;
-
-	//model.vertexNum = 8;
-	//model.position = new Vector3f [model.vertexNum];
-	//model.normal = new Vector3f [model.vertexNum];
-	//model.tangent = new Vector3f [model.vertexNum];
-	//model.color = new Vector4f [model.vertexNum];
-	//model.texcoord0 = new Vector3f [model.vertexNum];
-
-	//// set commons
-	//for ( uint i = 0; i < model.vertexNum; i += 1 )
-	//{
-	//	model.normal[i] = Vector3f(0, 0, 1.0F);
-	//	model.color[i] = Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
-	//	model.tangent[i] = Vector3f(1.0F, 0, 0);
-	//}
-	//
-	//// Set UVs:
-	//for (uint i = 0; i < 2; ++i)
-	//{
-	//	model.texcoord0[0 + 4*i] = Vector2f(0, 1);
-	//	model.texcoord0[1 + 4*i] = Vector2f(1, 1);
-	//	model.texcoord0[2 + 4*i] = Vector2f(0, 0);
-	//	model.texcoord0[3 + 4*i] = Vector2f(1, 0);
-	//}
-
-	//// Set positions:
-	//model.position[0] = Vector3f(-kWidth, 0, 0);
-	//model.position[1] = Vector3f( kWidth, 0, 0);
-	//model.position[2] = Vector3f(-kWidth, 0, kHeight);
-	//model.position[3] = Vector3f( kWidth, 0, kHeight);
-
-	//model.position[4] = Vector3f(0, -kWidth, 0);
-	//model.position[5] = Vector3f(0,  kWidth, 0);
-	//model.position[6] = Vector3f(0, -kWidth, kHeight);
-	//model.position[7] = Vector3f(0,  kWidth, kHeight);
-
-	//// Set normals
-	//for (uint i = 0; i < 2; ++i)
-	//{
-	//	for (uint j = 0; j < 4; ++j)
-	//	{
-	//		model.normal[j + 4*i] = (i == 0) ? Vector3f(0.0F, 1.0F, 0.0F) : Vector3f(1.0F, 0.0F, 0.0F);
-	//	}
-	//}
-
-	//// Set triangles
-	//model.indices = new uint16_t [9];
-	//model.indexNum = 9;
-
-	//model.indices[0] = 0;
-	//model.indices[1] = 1;
-	//model.indices[2] = 2;
-	//model.indices[3] = 3;
-	//model.indices[4] = 0xFFFF;
-	//model.indices[5] = 4;
-	//model.indices[6] = 5;
-	//model.indices[7] = 6;
-	//model.indices[8] = 7;
-
-	//// Model is created, we upload:
-	//m_meshBuffer.InitMeshBuffers(&model);
-	//m_meshBuffer.m_modeldata = NULL;
-
-	//// Free the CPU model data:
-	//delete_safe_array(model.position);
-	//delete_safe_array(model.normal);
-	//delete_safe_array(model.tangent);
-	//delete_safe_array(model.color);
-	//delete_safe_array(model.texcoord0);
-
-	//delete_safe_array(model.indices);
-
-	//m_indexCount = model.indexNum;
-
-
 	// Use a default material
 	RrPass pass;
 	pass.utilSetupAsDefault();
@@ -229,7 +148,7 @@ bool InstancedGrassRenderObject::Render ( const rrRenderParams* params )
 			offset_info.initAsConstantBuffer(NULL, sizeof(int32));
 			offset_info.upload(gfx, (void*)&subdrawInfo.base_offset, sizeof(int32), gpu::kTransferStream);
 
-			gpu::Pipeline* pipeline = GetPipeline( params->pass );
+			gpu::Pipeline* pipeline = GetPipeline( params->pass, meshBuffer->m_bufferEnabled );
 			gfx->setPipeline(pipeline);
 			// Set up the material helper...
 			renderer::Material(this, gfx, params, pipeline)
@@ -248,6 +167,8 @@ bool InstancedGrassRenderObject::Render ( const rrRenderParams* params )
 				int buffer_binding = (int)passAccess.getVertexSpecification()[i].binding;
 				if (meshBuffer->m_bufferEnabled[buffer_index])
 					gfx->setVertexBuffer(buffer_binding, &meshBuffer->m_buffer[buffer_index], 0);
+				else
+					gfx->setVertexBuffer(buffer_binding, &RrRenderer::Active->GetDefaultVertexBuffer(), 0);
 			}
 
 			// bind the index buffer

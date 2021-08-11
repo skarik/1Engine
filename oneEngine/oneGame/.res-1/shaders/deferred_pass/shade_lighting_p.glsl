@@ -131,7 +131,7 @@ void ShadePixel ( void )
 		vec3 environmentReflectionColor = EnvBRDFApprox(specularColor, roughnessExp, ndotv);
 		
 		// Calculate rough direct reflection with diffuse
-		vec3 ambientColor = skyReflection * 0.1;
+		vec3 ambientColor = skyReflection * 0.5;
 		
 		// Sum up emittance
 		vec3 emissive = surface.emissive.rgb;
@@ -268,7 +268,14 @@ void main ( void )
 		FragColor = texture( textureSampler0, v2f_texcoord0*2 );
 	}
 	else if ( v2f_texcoord0.x > 0.5 && v2f_texcoord0.y < 0.5 ) {
-		FragColor = (texture( textureSampler1, v2f_texcoord0*2 - vec2(1,0) )+1)*0.5;
+		const vec2 uv0 = v2f_texcoord0*2 - vec2(1,0);
+		const uvec2 normalBits = texelFetch( textureSampler1, ivec2(uv0.x * sys_ScreenSize.x, uv0.y * sys_ScreenSize.y), 0).xy;
+		FragColor = vec4(
+						DecodeNormalComponent(normalBits.x >> 16),
+						DecodeNormalComponent(normalBits.x & 0xFFFF),
+						DecodeNormalComponent(normalBits.y >> 16),
+						1.0)
+						* 0.5 + 0.5;
 	}
 	else if ( v2f_texcoord0.x < 0.5 && v2f_texcoord0.y > 0.5 ) {
 		FragColor = texture( textureSampler2, v2f_texcoord0*2 - vec2(0,1) );
@@ -279,10 +286,12 @@ void main ( void )
 	
 #elif VARIANT_PASS==VARIANT_PASS_DEBUG_SURFACE
 
+	const vec2 debugUV = mod(v2f_texcoord0 * 2.0, 1.0);
+
 	rrGBufferValues gbuffer;
-	SampleGBuffer(gbuffer, mod(v2f_texcoord0 * 2.0, 1.0));
+	SampleGBuffer(gbuffer, debugUV);
 	rrSurfaceInfo surface;
-	DecodeSurfaceInfo(surface, gbuffer, mod(v2f_texcoord0 * 2.0, 1.0));
+	DecodeSurfaceInfo(surface, gbuffer, debugUV);
 	
 	FragColor.a = 1.0;
 	

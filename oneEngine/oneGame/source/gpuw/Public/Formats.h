@@ -19,13 +19,16 @@ namespace gpu
 		kFormatR8UInteger,
 		kFormatR8G8UInteger,
 		kFormatR8G8B8UInteger,
+		kFormatR8G8B8A8UNorm,
 		kFormatR8G8B8A8UInteger,
 		kFormatR16UInteger,
 		kFormatR16G16UInteger,
 		kFormatR16G16B16UInteger,
+		kFormatR16G16B16A16UNorm,
 		kFormatR16G16B16A16UInteger,
 		kFormatR32UInteger,
 		kFormatR32SFloat,
+		kFormatR32G32UInteger,
 		kFormatR32G32SFloat,
 		kFormatR32G32B32SFloat,
 		kFormatR32G32B32A32SFloat,
@@ -42,13 +45,16 @@ namespace gpu
 
 		case kFormatR8G8UInteger:
 		case kFormatR16G16UInteger:
+		case kFormatR32G32UInteger:
 		case kFormatR32G32SFloat:		return 2;
 
 		case kFormatR8G8B8UInteger:
 		case kFormatR16G16B16UInteger:
 		case kFormatR32G32B32SFloat:	return 3;
 
+		case kFormatR8G8B8A8UNorm:
 		case kFormatR8G8B8A8UInteger:
+		case kFormatR16G16B16A16UNorm:
 		case kFormatR16G16B16A16UInteger:
 		case kFormatR32G32B32A32SFloat:	return 4;
 		}
@@ -66,6 +72,7 @@ namespace gpu
 
 		case kFormatR8G8B8UInteger:		return 3;
 
+		case kFormatR8G8B8A8UNorm:
 		case kFormatR8G8B8A8UInteger:
 		case kFormatR16G16UInteger:
 		case kFormatR32UInteger:
@@ -73,7 +80,9 @@ namespace gpu
 
 		case kFormatR16G16B16UInteger:	return 6;
 
+		case kFormatR16G16B16A16UNorm:
 		case kFormatR16G16B16A16UInteger:
+		case kFormatR32G32UInteger:
 		case kFormatR32G32SFloat:		return 8;
 
 		case kFormatR32G32B32SFloat:	return 12;
@@ -94,8 +103,10 @@ namespace gpu
 		//case kColorFormatRGB32:
 		case kColorFormatRGB32F:	return kFormatR32G32B32SFloat;
 
-		case kColorFormatRGBA8:		return kFormatR8G8B8A8UInteger;
-		case kColorFormatRGBA16:	return kFormatR16G16B16A16UInteger;
+		case kColorFormatRGBA8:		return kFormatR8G8B8A8UNorm;
+		case kColorFormatRGBA8UI:	return kFormatR8G8B8A8UInteger;
+		case kColorFormatRGBA16:	return kFormatR16G16B16A16UNorm;
+		case kColorFormatRGBA16UI:	return kFormatR16G16B16A16UInteger;
 		//case kColorFormatRGBA16F:
 		//case kColorFormatRGBA32:
 		case kColorFormatRGBA32F:	return kFormatR32G32B32A32SFloat;
@@ -104,6 +115,7 @@ namespace gpu
 		case kColorFormatRG16:		return kFormatR16G16UInteger;
 		//case kColorFormatRG16F:
 		//case kColorFormatRG32:
+		case kColorFormatRG32UI:	return kFormatR32G32UInteger;
 		case kColorFormatRG32F:		return kFormatR32G32SFloat;
 
 		case KStencilFormatIndex8:

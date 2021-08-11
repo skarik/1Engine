@@ -42,7 +42,9 @@ namespace tex {
 
 		__COLOR_FORMAT_RGBA_MIN,
 		kColorFormatRGBA8,
+		kColorFormatRGBA8UI,
 		kColorFormatRGBA16,
+		kColorFormatRGBA16UI,
 		kColorFormatRGBA16F,
 		kColorFormatRGBA32,
 		kColorFormatRGBA32F,
@@ -53,6 +55,7 @@ namespace tex {
 		kColorFormatRG16,
 		kColorFormatRG16F,
 		kColorFormatRG32,
+		kColorFormatRG32UI,
 		kColorFormatRG32F,
 		__COLOR_FORMAT_RG_MAX,
 
@@ -147,7 +150,9 @@ namespace tex {
 		case kColorFormatRGB32F:	return 12;
 
 		case kColorFormatRGBA8:		return 4;
+		case kColorFormatRGBA8UI:	return 4;
 		case kColorFormatRGBA16:	return 8;
+		case kColorFormatRGBA16UI:	return 8;
 		case kColorFormatRGBA16F:	return 8;
 		case kColorFormatRGBA32:	return 16;
 		case kColorFormatRGBA32F:	return 16;
@@ -156,6 +161,7 @@ namespace tex {
 		case kColorFormatRG16:		return 4;
 		case kColorFormatRG16F:		return 4;
 		case kColorFormatRG32:		return 8;
+		case kColorFormatRG32UI:	return 8;
 		case kColorFormatRG32F:		return 8;
 
 		case kColorFormatR8:		return 1;

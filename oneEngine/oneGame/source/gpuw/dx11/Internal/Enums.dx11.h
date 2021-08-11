@@ -27,7 +27,9 @@ namespace internal {
 		case kColorFormatRGB32F:	return typeless ? DXGI_FORMAT_R32G32B32A32_TYPELESS : DXGI_FORMAT_R32G32B32A32_FLOAT;
 
 		case kColorFormatRGBA8:		return typeless ? DXGI_FORMAT_R8G8B8A8_TYPELESS : DXGI_FORMAT_R8G8B8A8_UNORM;
+		case kColorFormatRGBA8UI:	return typeless ? DXGI_FORMAT_R8G8B8A8_TYPELESS : DXGI_FORMAT_R8G8B8A8_UINT;
 		case kColorFormatRGBA16:	return typeless ? DXGI_FORMAT_R16G16B16A16_TYPELESS : DXGI_FORMAT_R16G16B16A16_UNORM;
+		case kColorFormatRGBA16UI:	return typeless ? DXGI_FORMAT_R16G16B16A16_TYPELESS : DXGI_FORMAT_R16G16B16A16_UINT;
 		case kColorFormatRGBA16F:	return typeless ? DXGI_FORMAT_R16G16B16A16_TYPELESS : DXGI_FORMAT_R16G16B16A16_FLOAT;
 		case kColorFormatRGBA32:	return typeless ? DXGI_FORMAT_R32G32B32A32_TYPELESS : DXGI_FORMAT_R32G32B32A32_UINT;
 		case kColorFormatRGBA32F:	return typeless ? DXGI_FORMAT_R32G32B32A32_TYPELESS : DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -36,6 +38,7 @@ namespace internal {
 		case kColorFormatRG16:		return typeless ? DXGI_FORMAT_R16G16_TYPELESS : DXGI_FORMAT_R16G16_UNORM;
 		case kColorFormatRG16F:		return typeless ? DXGI_FORMAT_R16G16_TYPELESS : DXGI_FORMAT_R16G16_FLOAT;
 		case kColorFormatRG32:		return typeless ? DXGI_FORMAT_R32G32_TYPELESS : DXGI_FORMAT_R32G32_UINT;
+		case kColorFormatRG32UI:	return typeless ? DXGI_FORMAT_R32G32_TYPELESS : DXGI_FORMAT_R32G32_UINT;
 		case kColorFormatRG32F:		return typeless ? DXGI_FORMAT_R32G32_TYPELESS : DXGI_FORMAT_R32G32_FLOAT;
 
 		case kColorFormatR8:		return typeless ? DXGI_FORMAT_R8_TYPELESS : DXGI_FORMAT_R8_UNORM;
@@ -66,6 +69,9 @@ namespace internal {
 	static FORCE_INLINE DXGI_FORMAT ArEnumToDx ( const gpu::Format format )
 	{
 		switch ( format ) {
+			// Unorm formats
+		case kFormatR8G8B8A8UNorm:			return DXGI_FORMAT_R8G8B8A8_UNORM;
+		case kFormatR16G16B16A16UNorm:		return DXGI_FORMAT_R16G16B16A16_UNORM;
 			// Byte formats
 		case kFormatR8UInteger:				return DXGI_FORMAT_R8_UINT;
 		case kFormatR8G8UInteger:			return DXGI_FORMAT_R8G8_UINT;
@@ -78,6 +84,7 @@ namespace internal {
 		case kFormatR16G16B16A16UInteger:	return DXGI_FORMAT_R16G16B16A16_UINT;
 			// Int formats
 		case kFormatR32UInteger:			return DXGI_FORMAT_R32_UINT;
+		case kFormatR32G32UInteger:			return DXGI_FORMAT_R32G32_UINT;
 			// Float formats
 		case kFormatR32SFloat:				return DXGI_FORMAT_R32_FLOAT;
 		case kFormatR32G32SFloat:			return DXGI_FORMAT_R32G32_FLOAT;

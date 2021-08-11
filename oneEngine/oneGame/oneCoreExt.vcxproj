@@ -109,6 +109,7 @@
     <ClInclude Include="source\core-ext\c_interface\OneForTwo.h" />
     <ClInclude Include="source\core-ext\input\CInputControl.h" />
     <ClInclude Include="source\core-ext\input\emulated\CEmulatedInputControl.h" />
+    <ClInclude Include="source\core-ext\locale\locale.h" />
     <ClInclude Include="source\core-ext\profiler\CTimeProfiler.h" />
     <ClInclude Include="source\core-ext\resources\IArResource.h" />
     <ClInclude Include="source\core-ext\resources\IArResourceSubsystem.h" />

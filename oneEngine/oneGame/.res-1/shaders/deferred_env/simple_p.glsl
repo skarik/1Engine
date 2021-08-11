@@ -31,5 +31,7 @@ void main ( void )
 	result.smoothness = 0.0;
 	result.emissive = vec3(0, 0, 0);
 	
+	result.shade_model = 0;
+	
 	PushOutput(result);
 }

@@ -91,6 +91,9 @@
     <Filter Include="SOURCE\Core-ext\Settings">
       <UniqueIdentifier>{b6da4431-c782-4085-9918-e96965e5dd88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Core-ext\Locale">
+      <UniqueIdentifier>{bfc99e5d-9df2-488c-b3ba-39f37ad79ce4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\settings\CGameSettings.cpp">
@@ -409,6 +412,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\io\assets\ModelIO.h">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\locale\locale.h">
+      <Filter>SOURCE\Core-ext\Locale</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

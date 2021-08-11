@@ -4,21 +4,12 @@
 
 #extension GL_GOOGLE_include_directive : require
 #include "../common.glsli"
+#include "../cbuffers.glsli"
 
 layout(location = 0) in vec3 mdl_Vertex;
 
 // Outputs to fragment shader
 // [None]
-
-// System inputs
-layout(binding = 0, std140) uniform sys_cbuffer_PerObject
-{
-    mat4 sys_ModelTRS;
-    mat4 sys_ModelRS;
-    mat4 sys_ModelViewProjectionMatrix;
-    mat4 sys_ModelViewProjectionMatrixInverse;
-};
-
 
 void main ( void )
 {

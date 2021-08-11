@@ -6,6 +6,7 @@
 #extension GL_EXT_control_flow_attributes : require
 
 #include "../common.glsli"
+#include "../cbuffers.glsli"
 
 // Inputs from vertex shader
 // [None]
@@ -17,32 +18,6 @@
 layout(location = 0) out vec4 FragDiffuse;
 
 // Game Inputs
-layout(binding = 0, std140) uniform sys_cbuffer_PerObject
-{
-    mat4 sys_ModelTRS;
-    mat4 sys_ModelRS;
-    mat4 sys_ModelViewProjectionMatrix;
-    mat4 sys_ModelViewProjectionMatrixInverse;
-};
-layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
-{
-    vec4    sys_DiffuseColor;
-    vec4    sys_SpecularColor;
-    vec4    sys_EmissiveColor;
-    vec4    sys_LightingOverrides;
-
-    vec4    sys_TextureScale;
-    vec4    sys_TextureOffset;
-};
-layout(binding = 2, std140) uniform sys_cbuffer_PerCamera
-{
-    mat4 sys_ViewProjectionMatrix;
-    vec4 sys_WorldCameraPos;
-    vec4 sys_ViewportInfo;
-    vec2 sys_ScreenSize;
-    vec2 sys_PixelRatio;
-};
-
 layout(binding = CBUFFER_USER0, std140) uniform user_cbuffer_SkyboxInfo
 {
 	float	sky_timeOfDay;

@@ -1,11 +1,16 @@
 #ifndef DEFERRED_SURFACE_GLSLI_
 #define DEFERRED_SURFACE_GLSLI_
 
+#extension GL_ARB_shader_bit_encoding : require
+#extension GL_AMD_gpu_shader_half_float : require
+#extension GL_AMD_gpu_shader_int16 : require
+
 // Structued output
 struct rrSurfaceInfo
 {
 	vec4 albedo;
 	vec3 normal;
+	int shade_model;
 	
 	float metalness;
 	float smoothness;
@@ -19,7 +24,7 @@ struct rrSurfaceInfo
 struct rrGBufferValues
 {
 	vec4 buffer0;
-	vec4 buffer1;
+	uvec2 buffer1;
 	vec4 buffer2;
 	vec4 buffer3;
 	float depth;

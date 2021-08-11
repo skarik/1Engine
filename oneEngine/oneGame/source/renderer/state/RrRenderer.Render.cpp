@@ -882,7 +882,7 @@ Render_Groups:
 			static constexpr int kColorAttachmentCount = 4;
 			static const core::gfx::tex::arColorFormat kColorAttachments[kColorAttachmentCount] = {
 				core::gfx::tex::kColorFormatRGBA8,
-				core::gfx::tex::kColorFormatRGBA16F,
+				core::gfx::tex::kColorFormatRG32UI, // Normals + packed material info
 				core::gfx::tex::kColorFormatRGBA8,
 				core::gfx::tex::kColorFormatRGBA8};
 			

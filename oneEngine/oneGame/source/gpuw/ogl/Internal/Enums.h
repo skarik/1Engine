@@ -51,6 +51,7 @@ namespace internal {
 		case kColorFormatRG16:		return GL_RG16;
 		case kColorFormatRG16F:		return GL_RG16F;
 		case kColorFormatRG32:		return GL_RG32UI;
+		case kColorFormatRG32UI:	return GL_RG32UI;
 		case kColorFormatRG32F:		return GL_RG32F;
 
 		case kColorFormatR8:		return GL_R8;
@@ -100,6 +101,7 @@ namespace internal {
 		case kColorFormatRG16:
 		case kColorFormatRG16F:
 		case kColorFormatRG32:
+		case kColorFormatRG32UI:
 		case kColorFormatRG32F:		return GL_RG;
 
 		case kColorFormatR8:
@@ -149,6 +151,7 @@ namespace internal {
 		case kColorFormatRG16:		return GL_UNSIGNED_SHORT;
 		case kColorFormatRG16F:		return GL_HALF_FLOAT;
 		case kColorFormatRG32:		return GL_UNSIGNED_INT;
+		case kColorFormatRG32UI:	return GL_UNSIGNED_INT;
 		case kColorFormatRG32F:		return GL_FLOAT;
 
 		case kColorFormatR8:		return GL_UNSIGNED_BYTE;

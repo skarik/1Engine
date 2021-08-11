@@ -5,15 +5,24 @@
 
 // Outputs
 layout(location = 0) out vec4 FragDiffuse;
-layout(location = 1) out vec4 FragNormals;
+layout(location = 1) out uvec2 FragNormals;
 layout(location = 2) out vec4 FragLighting;
 layout(location = 3) out vec4 FragGlowmap;
+
+uint EncodeNormalComponent ( float normal )
+{
+	return (uint(normal * 32767.5 + 32767.5)) & 0xFFFF;
+}
 
 // Pushing structured output
 void PushOutput ( in rrSurfaceInfo shaderOutput )
 {
+	int packedShadingType = shaderOutput.shade_model & 0xF;
+	
 	FragDiffuse		= shaderOutput.albedo;
-	FragNormals		= vec4(shaderOutput.normal, 1.0);
+	FragNormals		= uvec2(
+		(EncodeNormalComponent(shaderOutput.normal.x) << 16) | EncodeNormalComponent(shaderOutput.normal.y),
+		(EncodeNormalComponent(shaderOutput.normal.z) << 16) | packedShadingType);
 	FragLighting	= vec4(shaderOutput.metalness, shaderOutput.smoothness, 1.0, 1.0);
 	FragGlowmap		= vec4(shaderOutput.emissive, 1.0);
 }

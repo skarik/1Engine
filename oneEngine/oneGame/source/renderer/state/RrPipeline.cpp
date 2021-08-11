@@ -196,7 +196,7 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 	renderer->CreateRenderTexture( colorRequest, &outputLightingComposite );
 
 	// Create render target output
-	rrRenderTarget compositeOutput (compositeInput.combined_depth, nullptr, &outputLightingComposite);
+	rrRenderTarget compositeOutput (&outputLightingComposite);
 	
 	// Set output
 	gfx->setRenderTarget(&compositeOutput.m_renderTarget);
@@ -253,6 +253,7 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 		{
 			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 5, compositeInput.forward_color);
 		}
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &compositeInput.cameraPass->m_cbuffer);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_USER0, cbuffer);
 		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, cbuffer);
 		gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::SBUFFER_USER0, sbuffer);
@@ -361,6 +362,7 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 			cbuffer.free(NULL);
 		}
 
+		// TODO: Cannot bind depth buffer as depth buffer & texture at same time. Might need to sort instead, or depth-test in the shader
 		{ // Go back to normal depth with omni lights.
 			gpu::DepthStencilState ds;
 			ds.depthTestEnabled   = true;
