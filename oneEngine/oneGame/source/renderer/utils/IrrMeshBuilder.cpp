@@ -2,11 +2,12 @@
 
 #include <stdlib.h>
 #include <algorithm>
+#include <atomic>
 
 struct rrModelDataEntry
 {
 	arModelData data;
-	bool in_use;
+	std::atomic_flag in_use;
 };
 static rrModelDataEntry l_modelDatas [4] = {};
 
@@ -21,13 +22,13 @@ IrrMeshBuilder::IrrMeshBuilder ( const uint16_t estimatedVertexCount )
 
 	for (uint i = 0; i < 4; ++i)
 	{
-		if (l_modelDatas[i].in_use == false)
+		if (!l_modelDatas[i].in_use.test_and_set())
 		{
 			m_model = &l_modelDatas[i].data;
-			l_modelDatas[i].in_use = true;
 			break;
 		}
 	}
+	ARCORE_ASSERT(m_model != NULL);
 	m_model_isFromPool = true;
 
 	expand(estimatedVertexCount);
@@ -57,7 +58,7 @@ IrrMeshBuilder::~IrrMeshBuilder ( void )
 		{
 			if (m_model == &l_modelDatas[i].data)
 			{
-				l_modelDatas[i].in_use = false;
+				l_modelDatas[i].in_use.clear();
 				break;
 			}
 		}
