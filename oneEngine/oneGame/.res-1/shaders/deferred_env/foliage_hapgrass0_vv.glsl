@@ -20,6 +20,12 @@ layout(location = 0) out vec4 v2f_colors;
 layout(location = 1) out vec2 v2f_texcoord0;
 layout(location = 2) out vec3 v2f_normal;
 
+// Instancing offset info
+layout(binding = CBUFFER_USER0, std140) uniform sys_cbuffer_User0
+{
+	int instanced_FirstIndex;
+};
+
 // Instancing buffers
 layout(binding = SBUFFER_USER0, std430) readonly buffer instanced_Transforms
 {
@@ -38,8 +44,8 @@ layout(binding = SBUFFER_USER1, std430) readonly buffer instanced_Variations
 
 void main ( void )
 {
-	const mat4 l_worldTransform = instanced_Transform[gl_InstanceIndex]; 
-	const Variation l_variationInfo = instanced_Variation[gl_InstanceIndex];
+	const mat4 l_worldTransform = instanced_Transform[instanced_FirstIndex + gl_InstanceIndex]; 
+	const Variation l_variationInfo = instanced_Variation[instanced_FirstIndex + gl_InstanceIndex];
 	
 	vec4 v_localPos = l_worldTransform * vec4( mdl_Vertex, 1.0 );
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * vec4( v_localPos.xyz, 1.0 );

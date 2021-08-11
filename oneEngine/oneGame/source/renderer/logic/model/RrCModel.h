@@ -15,6 +15,7 @@
 #include "core-ext/types/sHitbox.h"
 #include "renderer/logic/RrLogicObject.h"
 #include "renderer/types/ModelStructures.h"
+#include "renderer/meshmodel/LoadRequest.h"
 #include "gpuw/Buffers.h"
 
 namespace renderer
@@ -35,18 +36,6 @@ enum rrAnimReferenceType
 	kAnimReferenceMatch,
 };
 
-//	rrModelLoadParams : Parameter struct for loading models.
-// Used for when only parts of the model data is needed.
-struct rrModelLoadParams
-{
-	const char*			resource_name = nullptr;
-	bool				geometry = true;
-	bool				morphs = false;
-	bool				animation = false;
-	bool				skeleton = false;
-	bool				collision = false;
-};
-
 //	rrCModelBuffers : Structure holding buffers created by the model and their status.
 struct rrCModelConstantBuffers
 {
@@ -59,14 +48,6 @@ struct rrCModelConstantBuffers
 		: m_sbufSkinningMajorValid(false), m_sbufSkinningMinorValid(false)
 		{}
 };
-
-namespace renderer
-{
-	// Load in a mesh group.
-	RENDER_API RrAnimatedMeshGroup*
-							LoadMeshGroup ( const rrModelLoadParams& load_params );
-};
-// TODO: Move rrModelLoadParams + renderer::LoadMeshGroup to separate header.
 
 //	RrCModel : Container for handling animated and static meshes.
 // Is the basis of the "Mesh Trio," which are:

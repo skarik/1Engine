@@ -168,7 +168,7 @@ void ShadePixel ( void )
 		// Calculate specular
 		vec3 specularLighting = lightColor * lightF * (lightD * lightV * M_PI * ndotl);
 		// Caclulate diffuse
-		vec3 diffuseLighting = vec3(1.0, 1.0, 1.0) * ndotl;
+		vec3 diffuseLighting = lightColor * ndotl;
 		
 		// Sum up the lighting
 		vec3 totalLighting = specularLighting + diffuseLighting * diffuseColor;

@@ -97,6 +97,9 @@
     <Filter Include="SOURCE\Renderer\Types\shaders">
       <UniqueIdentifier>{2abe2f40-a4f9-4cd8-93e4-8d79cd9b4c53}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Renderer\MeshModel">
+      <UniqueIdentifier>{5141213a-c952-49bd-a134-b60a75c0867a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\renderer\system\glDrawing.cpp">
@@ -273,9 +276,6 @@
     <ClCompile Include="source\renderer\texture\RrTextureCube.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\logic\model\RrModelMasterSubsystem.cpp">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\object\postprocess\PostProcessPass.cpp">
       <Filter>SOURCE\Renderer\Object\Post Process</Filter>
     </ClCompile>
@@ -320,6 +320,9 @@
     </ClCompile>
     <ClCompile Include="source\renderer\state\RrRenderer.Pooling.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\meshmodel\RrModelMasterSubsystem.cpp">
+      <Filter>SOURCE\Renderer\MeshModel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -518,12 +521,6 @@
     <ClInclude Include="source\renderer\texture\RrTextureCube.h">
       <Filter>SOURCE\Renderer\Texture</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\logic\model\RrModelMasterSubsystem.h">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\logic\model\RrAnimatedMeshGroup.h">
-      <Filter>SOURCE\Renderer\Logic\Model</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\material\VertexAttribute.h">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClInclude>
@@ -601,6 +598,18 @@
     </ClInclude>
     <ClInclude Include="source\renderer\state\RaiiHelpers.h">
       <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\meshmodel\LoadRequest.h">
+      <Filter>SOURCE\Renderer\MeshModel</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\meshmodel\RrAnimatedMeshGroup.h">
+      <Filter>SOURCE\Renderer\MeshModel</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\meshmodel\RrModelMasterSubsystem.h">
+      <Filter>SOURCE\Renderer\MeshModel</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\meshmodel\Loader.h">
+      <Filter>SOURCE\Renderer\MeshModel</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -920,7 +920,7 @@ Render_Groups:
 
 			// Clear color on MRT now
 			float clearColor[] = {0, 0, 0, 0};
-			gfx->clearColor(clearColor);
+			gfx->clearColorAll(clearColor);
 
 			// Set up default depth-equal for lazy objects
 			{

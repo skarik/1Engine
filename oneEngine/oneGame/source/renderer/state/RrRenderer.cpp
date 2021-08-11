@@ -18,7 +18,7 @@
 #include "core-ext/resources/ResourceManager.h"
 #include "renderer/texture/RrTextureMasterSubsystem.h"
 #include "renderer/material/RrShaderMasterSubsystem.h"
-#include "renderer/logic/model/RrModelMasterSubsystem.h"
+#include "renderer/meshmodel/RrModelMasterSubsystem.h"
 
 #include "gpuw/Texture.h"
 #include "gpuw/RenderTarget.h"

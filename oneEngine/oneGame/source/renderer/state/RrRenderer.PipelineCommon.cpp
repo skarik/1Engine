@@ -4,9 +4,7 @@
 #include "renderer/material/RrPass.Presets.h"
 #include "renderer/material/RrShaderProgram.h"
 #include "renderer/texture/RrTexture.h"
-#include "renderer/logic/model/RrCModel.h" // TODO
-#include "renderer/logic/model/RrAnimatedMeshGroup.h"
-#include "renderer/object/mesh/system/rrMeshBuffer.h"
+#include "renderer/meshmodel/Loader.h"
 #include "core/mem.h"
 
 #include "gpuw/Device.h"

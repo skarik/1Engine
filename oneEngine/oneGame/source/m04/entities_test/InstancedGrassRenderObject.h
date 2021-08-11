@@ -7,10 +7,14 @@
 #include "renderer/object/RrRenderObject.h"
 #include "renderer/object/mesh/system/rrMeshBuffer.h"
 
+class RrAnimatedMeshGroup;
+class rrMeshBuffer;
+
 struct grInstancedGrassInfo
 {
 	Matrix4x4			transform; 
 	Vector3f			color;
+	int					variation_index;
 };
 
 struct grInstancedDataGrassTransform
@@ -29,6 +33,10 @@ public:
 	GAME_API				InstancedGrassRenderObject ( void );
 	GAME_API				~InstancedGrassRenderObject ( void );
 
+	//		LoadGrassMeshes(meshs, count)
+	// Load the meshes that the grass variations pull from
+	GAME_API void			LoadGrassMeshes ( const char* const* mesh_resources, const int mesh_count );
+
 	//		PreRender()
 	// Push the uniform properties
 	GAME_API bool			PreRender ( rrCameraPass* cameraPass ) override;
@@ -46,6 +54,15 @@ public:
 						m_grassInfo;
 
 protected:
+	struct grassMeshType
+	{
+		RrAnimatedMeshGroup*
+						m_meshGroup = nullptr;
+		rrMeshBuffer*	m_meshBuffer = nullptr;
+	};
+	std::vector<grassMeshType>
+						mesh_types;
+
 	struct bufferFrameInfo
 	{
 		gpu::Buffer		buffer_transforms;
@@ -63,10 +80,18 @@ protected:
 
 	bufferFrameInfo		instancing_info;
 
+	struct grassSubDrawInfo
+	{
+		int32			instance_count = 0;
+		int32			base_offset = 0;
+	};
+	std::vector<grassSubDrawInfo>
+						instancing_subdraw_info;
+
 	// Mesh information
-	uint				m_indexCount;
+	//uint				m_indexCount;
 	// GPU information
-	rrMeshBuffer		m_meshBuffer;
+	//rrMeshBuffer		m_meshBuffer;
 };
 
 #endif//M04_ENTITY_TEST_INSTANCED_GRASS_RENDER_OBJECT_H_

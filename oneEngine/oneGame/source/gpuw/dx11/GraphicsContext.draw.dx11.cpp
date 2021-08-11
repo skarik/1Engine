@@ -42,9 +42,26 @@ int gpu::GraphicsContext::clearColor ( float* rgbaColor )
 
 	// TODO: Reimplement with screen triangle
 
-	if (m_renderTarget != NULL)
+	if (m_renderTarget[0] != NULL)
 	{
-		ctx->ClearRenderTargetView((ID3D11RenderTargetView*)m_renderTarget, rgbaColor);
+		ctx->ClearRenderTargetView((ID3D11RenderTargetView*)m_renderTarget[0], rgbaColor);
+	}
+
+	return kError_SUCCESS;
+}
+
+int gpu::GraphicsContext::clearColorAll ( float* rgbaColor )
+{
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+
+	// TODO: Reimplement with screen triangle
+
+	for (uint i = 0; i < 16; ++i)
+	{
+		if (m_renderTarget[i] != NULL)
+		{
+			ctx->ClearRenderTargetView((ID3D11RenderTargetView*)m_renderTarget[i], rgbaColor);
+		}
 	}
 
 	return kError_SUCCESS;
@@ -72,9 +89,7 @@ int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
 	ctx->OMSetRenderTargets(attachmentCount, attachments, (ID3D11DepthStencilView*)renderTarget->m_attachmentDepthStencil);
 	m_depthStencilTarget = renderTarget->m_attachmentDepthStencil;
 
-	if (renderTarget->m_attachments[0] != NULL) {
-		m_renderTarget = renderTarget->m_attachments[0];
-	}
+	memcpy(m_renderTarget, attachments, sizeof(void*) * 16);
 
 	return kError_SUCCESS;
 }
@@ -100,7 +115,7 @@ int gpu::GraphicsContext::clearPipelineAndWait ( void )
 
 	ctx->IASetVertexBuffers(0, D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT, (ID3D11Buffer**)nullRez, (UINT*)nullRez, (UINT*)nullRez);
 
-	m_renderTarget = NULL;
+	m_renderTarget[0] = NULL;
 	m_depthStencilTarget = NULL;
 
 	return kError_SUCCESS;

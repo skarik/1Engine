@@ -9,8 +9,8 @@
 #include "core-ext/resources/ResourceManager.h"
 
 #include "renderer/object/mesh/Mesh.h"
-#include "renderer/logic/model/RrAnimatedMeshGroup.h"
-#include "renderer/logic/model/RrModelMasterSubsystem.h"
+#include "renderer/meshmodel/RrAnimatedMeshGroup.h"
+#include "renderer/meshmodel/RrModelMasterSubsystem.h"
 
 #include "core-ext/system/io/assets/ModelIO.h"
 

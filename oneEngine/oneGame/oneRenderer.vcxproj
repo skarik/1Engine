@@ -80,7 +80,6 @@
     <ClCompile Include="source\renderer\debug\RrDebugRTInspector.cpp" />
     <ClCompile Include="source\renderer\debug\RrBtDebugDraw.cpp" />
     <ClCompile Include="source\renderer\light\RrLight.cpp" />
-    <ClCompile Include="source\renderer\logic\model\RrModelMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\logic\RrLogicObject.cpp" />
     <ClCompile Include="source\renderer\logic\model\RrCModel.cpp" />
     <ClCompile Include="source\renderer\logic\model\CSkinnedModel.cpp">
@@ -95,6 +94,7 @@
     <ClCompile Include="source\renderer\material\RrPass.Presets.cpp" />
     <ClCompile Include="source\renderer\material\RrShaderMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\material\RrShaderProgram.cpp" />
+    <ClCompile Include="source\renderer\meshmodel\RrModelMasterSubsystem.cpp" />
     <ClCompile Include="source\renderer\module_renderer.cpp" />
     <ClCompile Include="source\renderer\object\RrRenderObject.cpp" />
     <ClCompile Include="source\renderer\object\CRenderable3D.cpp" />
@@ -208,8 +208,6 @@
     <ClInclude Include="source\renderer\exceptions.h" />
     <ClInclude Include="source\renderer\exceptions\exceptions.h" />
     <ClInclude Include="source\renderer\light\RrLight.h" />
-    <ClInclude Include="source\renderer\logic\model\RrAnimatedMeshGroup.h" />
-    <ClInclude Include="source\renderer\logic\model\RrModelMasterSubsystem.h" />
     <ClInclude Include="source\renderer\logic\RrLogicObject.h" />
     <ClInclude Include="source\renderer\logic\model\RrCModel.h" />
     <ClInclude Include="source\renderer\logic\model\CSkinnedModel.h">
@@ -226,6 +224,10 @@
     <ClInclude Include="source\renderer\material\ShaderSlots.h" />
     <ClInclude Include="source\renderer\material\ShaderVariations.h" />
     <ClInclude Include="source\renderer\material\VertexAttribute.h" />
+    <ClInclude Include="source\renderer\meshmodel\Loader.h" />
+    <ClInclude Include="source\renderer\meshmodel\LoadRequest.h" />
+    <ClInclude Include="source\renderer\meshmodel\RrAnimatedMeshGroup.h" />
+    <ClInclude Include="source\renderer\meshmodel\RrModelMasterSubsystem.h" />
     <ClInclude Include="source\renderer\module_renderer.h" />
     <ClInclude Include="source\renderer\object\RrRenderObject.h" />
     <ClInclude Include="source\renderer\object\CRenderable3D.h" />

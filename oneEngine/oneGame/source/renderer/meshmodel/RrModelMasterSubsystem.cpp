@@ -1,5 +1,5 @@
-#include "renderer/logic/model/RrModelMasterSubsystem.h"
-#include "renderer/logic/model/RrAnimatedMeshGroup.h"
+#include "renderer/meshmodel/RrModelMasterSubsystem.h"
+#include "renderer/meshmodel/RrAnimatedMeshGroup.h"
 #include "core/debug/console.h"
 
 RrModelMasterSubsystem::RrModelMasterSubsystem ( void )

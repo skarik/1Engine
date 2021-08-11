@@ -105,6 +105,7 @@ namespace gpu
 
 		GPUW_API int			clearDepthStencil ( bool clearDepth, float depth, bool clearStencil, uint8_t stencil );
 		GPUW_API int			clearColor ( float* rgbaColor );
+		GPUW_API int			clearColorAll ( float* rgbaColor );
 		// TODO: clearDepthStencilMRT and clearColorMRT
 
 		//	signal( fence ) : Inserts a command into the command buffer to signal the given fence.
@@ -145,7 +146,7 @@ namespace gpu
 		//DepthStencilState		m_depthStencilState;
 		PrimitiveTopology		m_primitiveType;
 
-		void*					m_renderTarget;
+		void*					m_renderTarget [16];
 		void*					m_depthStencilTarget;
 
 		Pipeline*				m_pipeline;
