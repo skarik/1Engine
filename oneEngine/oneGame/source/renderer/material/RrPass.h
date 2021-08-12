@@ -20,6 +20,8 @@ namespace gpu
 	class Sampler;
 }
 
+typedef void (*rrPassRenderFunction)(gpu::GraphicsContext*);
+
 enum rrPassType
 {
 	// World pass, forward rendered.
@@ -153,6 +155,10 @@ public:
 	// World settings:
 	renderer::rrRenderLayer
 						m_layer = renderer::kRenderLayerWorld;	// Render layer
+
+	// Special render callbacks:
+	rrPassRenderFunction
+						m_renderCallback = nullptr;
 
 public:
 	// External accessor used to go through data that can be safely modified after Pass is set in an object.

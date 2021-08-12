@@ -228,6 +228,15 @@ namespace renderer
 			return *this;
 		}
 
+		RENDER_API Material& executePassCallback ( void )
+		{
+			if (m_pass->m_renderCallback != NULL)
+			{
+				m_pass->m_renderCallback(m_ctx);
+			}
+			return *this;
+		}
+
 	public:
 		RrRenderObject*
 							m_object;

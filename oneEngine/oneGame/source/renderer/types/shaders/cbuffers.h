@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 #include "core/math/Math3d.h"
+#include "core/math/vect2d_template.h"
+#include "core/math/vect3d_template.h"
+#include "core/math/vect4d_template.h"
 #include "renderer/types/Shading.h"
 
 namespace renderer
@@ -21,29 +24,11 @@ namespace renderer
 		CBUFFER_USER3	= 10,
 	};
 
-	// Based on statically defined slots and no longer reflection, so the following is out-of-date.
-	/*struct rrCBufferReservedName
-	{
-		rrCBufferId id;
-		const char* token;
-	};
-	static struct rrCBufferReservedName CBufferNames[] =
-	{
-		{CBUFFER_PER_OBJECT_MATRICES, "sys_cbuffer_PerObject"},
-		{CBUFFER_PER_OBJECT_EXTENDED, "sys_cbuffer_PerObjectExt"},
-		{CBUFFER_PER_CAMERA_INFORMATION, "sys_cbuffer_PerCamera"},
-		{CBUFFER_PER_FRAME_INFORMATION, "sys_cbuffer_PerFrame"},
-		{CBUFFER_PER_PASS_INFORMATION, "sys_cbuffer_PerPass"},
-	};*/
-
 	namespace cbuffer
 	{
-		/*LAYOUT_PACK_TIGHTLY
-		struct rrPerObjectPassSurface
-		{
-		};
-		LAYOUT_PACK_END*/
-		//static_assert(sizeof(rrPerObjectPassSurface) == 256, "Alignment of rrPerObjectPassSurface incorrect for the GPU.");
+		//===============================================================================================//
+		// Common Cbuffers
+		//===============================================================================================//
 
 		// store per-model on the gpu
 		LAYOUT_PACK_TIGHTLY
@@ -61,10 +46,10 @@ namespace renderer
 		struct rrPerObjectSurface
 		{
 			Vector4f	diffuseColor = Vector4f(1, 1, 1, 1);
-			float		baseSmoothness = 0.0;
-			float		scaledSmoothness = 0.0;
-			float		baseMetallicness = 0.0;
-			float		scaledMetallicness = 0.0;
+			float		baseSmoothness = 0.0F;
+			float		scaledSmoothness = 1.0F;
+			float		baseMetallicness = 0.0F;
+			float		scaledMetallicness = 1.0F;
 			Vector3f	emissiveColor = Vector4f(1, 1, 1, 1);
 			float		alphaCutoff = 0.0F;
 			float		lighting0;
@@ -139,6 +124,37 @@ namespace renderer
 			int32_t : 32;
 		};
 		static_assert(sizeof(rrPerPassLightingInfo) == 64, "Alignment of rrPerPassLightingInfo incorrect for the GPU.");
+
+		//===============================================================================================//
+		// Specific effect CBuffers:
+		//===============================================================================================//
+
+		namespace tilebomber
+		{
+			LAYOUT_PACK_TIGHTLY
+			struct rrTilebombParams
+			{
+				Vector2f base_texture_uv_position;
+				Vector2f base_texture_uv_size;
+
+				float bomb_chance = 0.9F;
+				float unused1;
+				float bomb_scale = 1.0F;
+				int32 bomb_count = 1;
+
+				struct rrBombInfo
+				{
+					Vector2f uv_position;
+					Vector2f uv_size;
+					Vector2i uv_divs = Vector2i(2, 2);
+					int min_repeat = 1;
+					int max_repeat = 1;
+					Vector4f occurrence = Vector4f(0.25F, 0.25F, 0.25F, 0.25F);
+				};
+				rrBombInfo bomb_texture [16];
+			};
+			LAYOUT_PACK_END
+		}
 	}
 }
 

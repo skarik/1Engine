@@ -128,7 +128,9 @@ bool renderer::Mesh::Render ( const rrRenderParams* params )
 			.setRasterizerState()
 			// bind the samplers & textures
 			.setBlendState()
-			.setTextures();
+			.setTextures()
+			// execute callback
+			.executePassCallback();
 
 		// bind the vertex buffers
 		auto passAccess = PassAccess(params->pass);

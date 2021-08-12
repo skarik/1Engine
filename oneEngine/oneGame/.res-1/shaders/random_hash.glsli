@@ -1,0 +1,45 @@
+#ifndef RANDOM_HASH_GLSLI_
+#define RANDOM_HASH_GLSLI_
+
+// The OTHER super common StackOverflow GLSL randomizer
+
+// A single iteration of Bob Jenkins' One-At-A-Time hashing algorithm.
+uint hashForRandom( uint x )
+{
+    x += ( x << 10u );
+    x ^= ( x >>  6u );
+    x += ( x <<  3u );
+    x ^= ( x >> 11u );
+    x += ( x << 15u );
+    return x;
+}
+
+// Compound versions of the hashing algorithm I whipped together.
+uint hashForRandom( uvec2 v ) { return hashForRandom( v.x ^ hashForRandom(v.y) ); }
+uint hashForRandom( uvec3 v ) { return hashForRandom( v.x ^ hashForRandom(v.y) ^ hashForRandom(v.z) ); }
+uint hashForRandom( uvec4 v ) { return hashForRandom( v.x ^ hashForRandom(v.y) ^ hashForRandom(v.z) ^ hashForRandom(v.w) ); }
+
+// Construct a float with half-open range [0:1] using low 23 bits.
+// All zeroes yields 0.0, all ones yields the next smallest representable value below 1.0.
+float floatConstruct( uint m )
+{
+    const uint ieeeMantissa = 0x007FFFFFu; // binary32 mantissa bitmask
+    const uint ieeeOne      = 0x3F800000u; // 1.0 in IEEE binary32
+
+    m &= ieeeMantissa;                     // Keep only mantissa bits (fractional part)
+    m |= ieeeOne;                          // Add fractional part to 1.0
+
+    float  f = uintBitsToFloat( m );       // Range [1:2]
+    return f - 1.0;                        // Range [0:1]
+}
+
+// Pseudo-random value in half-open range [0:1].
+float hashRand( float x ) { return floatConstruct(hashForRandom(floatBitsToUint(x))); }
+float hashRand( vec2  v ) { return floatConstruct(hashForRandom(floatBitsToUint(v))); }
+float hashRand( vec3  v ) { return floatConstruct(hashForRandom(floatBitsToUint(v))); }
+float hashRand( vec4  v ) { return floatConstruct(hashForRandom(floatBitsToUint(v))); }
+vec2 hashRand2( vec2 v, float seed ) { return vec2(hashRand(vec3(v.xy, seed)), hashRand(vec3(v.yx, -seed))); }
+vec3 hashRand3( vec3 v, float seed ) { return vec3(hashRand(vec3(v.xy, seed)), hashRand(vec3(v.yz, -seed)), hashRand(vec3(seed, v.zx))); }
+vec4 hashRand4( vec4 v, float seed ) { return vec4(hashRand(vec3(v.xy, seed)), hashRand(vec3(v.yz, -seed)), hashRand(vec3(seed, v.zw)), hashRand(vec2(-seed, v.wx))); }
+
+#endif//RANDOM_HASH_GLSLI_
