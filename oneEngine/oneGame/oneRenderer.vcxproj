@@ -300,6 +300,7 @@
     <ClInclude Include="source\renderer\types\shaders\legacy.h" />
     <ClInclude Include="source\renderer\types\shaders\sbuffers.h" />
     <ClInclude Include="source\renderer\types\shaders\vattribs.h" />
+    <ClInclude Include="source\renderer\types\Shading.h" />
     <ClInclude Include="source\renderer\types\types.h" />
     <ClInclude Include="source\renderer\types\viewport.h" />
     <ClInclude Include="source\renderer\utils\RrScreenshot.h" />

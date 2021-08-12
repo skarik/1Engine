@@ -10,6 +10,7 @@
 #include "gpuw/Public/Sampler.h"
 #include "renderer/material/ShaderSlots.h"
 #include "renderer/material/VertexAttribute.h"
+#include "renderer/types/Shading.h"
 
 class RrShaderProgram;
 class RrTexture;
@@ -172,6 +173,10 @@ public:
 		// Do not ever use for normal objects due to memory considerations.
 		RENDER_API void			setTexture ( const rrTextureSlot slot, gpu::Texture* n_texture )
 			{ m_pass->setTexture(slot, n_texture); }
+
+		//	setSampler ( slot, samplerInfo ) : Sets and creates sampler object.
+		RENDER_API void			setSampler ( const rrTextureSlot slot, gpu::SamplerCreationDescription* scd )
+			{ m_pass->setSampler(slot, scd); }
 
 		//	setHLBlendMode ( blendMode ) : Sets material blend mode.
 		// If not set to kHLBlendModeNone, will override any alpha mode.

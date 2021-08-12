@@ -23,13 +23,15 @@ void DecodeSurfaceInfo ( out rrSurfaceInfo surface, in rrGBufferValues gbuffer, 
 		DecodeNormalComponent(gbuffer.buffer1.x >> 16),
 		DecodeNormalComponent(gbuffer.buffer1.x & 0xFFFF),
 		DecodeNormalComponent(gbuffer.buffer1.y >> 16));
+	surface.shade_model = int(gbuffer.buffer1.y & 0xF);
+	surface.is_frontface = ((gbuffer.buffer1.y & 0x10) == 0) ? false : true;
 		
+	
 	surface.metalness = gbuffer.buffer2.x;
 	surface.smoothness = gbuffer.buffer2.y;
+	surface.inverse_occlusion = gbuffer.buffer2.z;
 	
 	surface.emissive = gbuffer.buffer3.xyz;
-	
-	surface.shade_model = int(gbuffer.buffer1.y & 0xF);
 	
 	//vec4 unprojected_position = vec4( uv0.x*2 - 1, -(uv0.y*2 - 1), gbuffer.depth*2 - 1, 1.0 );
 	vec4 unprojected_position = vec4( uv0.x*2 - 1, -(uv0.y*2 - 1), gbuffer.depth, 1.0 );

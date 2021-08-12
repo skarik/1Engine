@@ -93,7 +93,6 @@ void ShadePixel ( void )
 	// Decode the surface information from it
 	rrSurfaceInfo surface;
 	DecodeSurfaceInfo(surface, gbuffer, v2f_texcoord0);
-	surface.normal = -surface.normal; // TODO: WHY
 	
 	// Skip any pixels where there is nothing to calculate
 	if (surface.albedo.a <= 0.0)
@@ -111,16 +110,12 @@ void ShadePixel ( void )
 	const vec3 viewDirection = l_cameraVector.xyz / l_cameraVector.w;
 	
 	const vec3 reflectRay = reflect(-viewDirection, surface.normal);
-	
-	//vec3 halfVec = normalize(viewDirection + lightDir);
-	//float vdoth = saturate(dot(viewDirection, halfVec));
-	//float ndoth = saturate(dot(surface.normal, halfVec));
-	const float ndotv = clamp(dot(surface.normal, viewDirection), 0.0, 1.0);
-	//float ndotl = saturate(dot(normal, lightDir));
-	
+
 #if VARIANT_PASS==VARIANT_PASS_DO_INDIRECT_EMISSIVE
 
 	{
+		const float ndotv = clamp(dot(surface.normal, viewDirection), 0.0, 1.0);
+		
 		// Get rough environment to reflect
 		vec3 skyColor = vec3(0.45, 0.75, 0.90);
 		vec3 skyColorBottom = vec3(0.95, 0.85, 0.65);
@@ -131,7 +126,7 @@ void ShadePixel ( void )
 		vec3 environmentReflectionColor = EnvBRDFApprox(specularColor, roughnessExp, ndotv);
 		
 		// Calculate rough direct reflection with diffuse
-		vec3 ambientColor = skyReflection * 0.5;
+		vec3 ambientColor = skyReflection * 0.70;
 		
 		// Sum up emittance
 		vec3 emissive = surface.emissive.rgb;
@@ -146,6 +141,18 @@ void ShadePixel ( void )
 #elif VARIANT_PASS==VARIANT_PASS_DO_DIRECT_DIRECTIONAL
 
 	{
+		vec3 surfaceReflectance = diffuseColor;
+		
+		// Add backface-lighting
+		if (surface.shade_model == kShadeModelThinFoliage)
+		{
+			if (!surface.is_frontface)
+			{
+				surfaceReflectance = mix(surfaceReflectance * 0.7, surfaceReflectance * surfaceReflectance, 0.5);
+				surface.normal = -surface.normal;
+			}
+		}
+		
 		const rrLight lightParams = Lighting_Params[v2f_lightIndex];
 		const vec3 lightDirection = -lightParams.direction;
 		const vec3 lightColor = lightParams.color;
@@ -155,7 +162,7 @@ void ShadePixel ( void )
 		const vec3 halfVec = normalize(viewDirection + lightDirection);
 		const float vdoth = clamp(dot(viewDirection, halfVec), 0.0, 1.0);
 		const float ndoth = clamp(dot(surface.normal, halfVec), 0.0, 1.0);
-		//const float ndotv = clamp(dot(surface.normal, viewDirection), 0.0, 1.0);
+		const float ndotv = clamp(dot(surface.normal, viewDirection), 0.0, 1.0);
 		const float ndotl = clamp(dot(surface.normal, lightDirection), 0.0, 1.0);
 
 		const float roughnessExpLimited = max(0.01, roughnessExp);
@@ -171,92 +178,13 @@ void ShadePixel ( void )
 		vec3 diffuseLighting = lightColor * ndotl;
 		
 		// Sum up the lighting
-		vec3 totalLighting = specularLighting + diffuseLighting * diffuseColor;
+		vec3 totalLighting = specularLighting + diffuseLighting * surfaceReflectance;
 
 		FragColor.rgb = totalLighting;
 		FragColor.a = surface.albedo.a;
 	}
 	
 #endif
-
-#ifdef ENABLE_LIGHTING
-
-		// Use depth to generate the world position
-	/*float pixelDepth 		= texture( textureSampler4, v2f_texcoord0 ).r;
-	vec4 pixelPosition = vec4( (v2f_texcoord0.x*2-1),(v2f_texcoord0.y*2-1),pixelDepth,1.0 );
-	{
-		pixelPosition.z = ( pixelPosition.z*2 - 1 );
-        pixelPosition = inverse(sys_ViewProjectionMatrix) * vec4( pixelPosition.xyz, 1.0 );
-		pixelPosition.xyzw /= pixelPosition.w;
-	}
-
-	// pixelDiffuse
-	// rgb	surface diffuse
-	// a	unused (used as temp discard in source)
-	vec4 pixelDiffuse		= texture( textureSampler0, v2f_texcoord0 );
-	// pixelNormal
-	// rgb	surface normal
-	// a	unused
-	vec4 pixelNormal		= texture( textureSampler1, v2f_texcoord0 );
-    // pixelLightProperty
-    // rgb  specular color
-    // a	smoothness
-	vec4 pixelLightProperty	= texture( textureSampler2, v2f_texcoord0 );
-	// pixelGlow
-	// rgb	surface glow
-	// a	rim lighting strength
-	vec4 pixelGlow			= texture( textureSampler3, v2f_texcoord0 );
-
-    // ==Perform lighting==
-
-	vec4 n_cameraVector;
-	n_cameraVector.xyz = sys_WorldCameraPos.xyz - pixelPosition.xyz;
-	n_cameraVector.w = length( n_cameraVector.xyz );
-	vec3 n_cameraDir = n_cameraVector.xyz / n_cameraVector.w;
-
-    // Generate general rim-light value
-	float n_rimValue = max(1.0 - dot( pixelNormal.xyz, n_cameraDir ), 0.0);*/
-	
-
-    /*vec3 specularMask = pixelLightProperty.rgb;
-
-    vec3 diffuseColor = lighting_mix(
-        pixelDiffuse.xyz,
-        pixelNormal.xyz, pixelPosition.xyz, specularMask, pixelLightProperty.a
-    );
-
-    float lightingStrength = 0.0;*/
-
-
-#else
-
-	/*
-    float lightDir = dot(vec3(-0.1,0.6,0.8), pixelNormal.rgb);
-    float light = 0.3 + pow(n_rimValue, 4) * 2.5 * max(0.0, lightDir - 0.3) + max(0.0, lightDir) * 0.6;
-
-    //vec3 diffuseColor = pixelNormal.rgb * 0.5 + 0.5;
-    //vec3 diffuseColor = vec3(1,1,1) * n_rimValue * 0.5;
-    vec3 diffuseColor = pixelDiffuse.rgb * max(0.0, light);
-    diffuseColor.rgb += pixelDiffuse.rgb * vec3(0.3,0.25,0.25) * (0.5 + min(1.0, pow(n_rimValue, 2) * 7)) * max(0.0, -lightDir) * 2.0;
-
-    float lightingStrength = 0.0;
-	*/
-	
-#endif
-	
-	/*
-	// ==Perform fog==
-	float n_fogDensity = clamp( (sys_FogEnd - n_cameraVector.w) * sys_FogScale, 0, 1 );
-	n_fogDensity = mix( 1, n_fogDensity, lightingStrength ); // TODO: Reimplement
-
-	// Mix output with fog
-	FragColor.rgb = mix( sys_FogColor.rgb, diffuseColor.rgb, n_fogDensity );
-	FragColor.a = pixelDiffuse.a;
-	*/
-	
-	//FragColor.rgb = pixelGlow.rgb * pixelLightProperty.r;//luminColor.rgb*0.5;//vec3(1,1,1) * pixelGlow.a;
-	//+ dot( n_cameraDir, pixelNormal.xyz );
-
 }
 
 void main ( void )
@@ -305,7 +233,7 @@ void main ( void )
 	}
 	else if ( v2f_texcoord0.x < 0.5 && v2f_texcoord0.y > 0.5 )
 	{
-		FragColor.rgb = vec3(surface.metalness, surface.smoothness, 0.5);
+		FragColor.rgb = vec3(surface.metalness, surface.smoothness, surface.inverse_occlusion);
 	}
 	else if ( v2f_texcoord0.x > 0.5 && v2f_texcoord0.y > 0.5 )
 	{

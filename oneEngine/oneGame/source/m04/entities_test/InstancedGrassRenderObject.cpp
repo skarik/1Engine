@@ -27,11 +27,10 @@ InstancedGrassRenderObject::InstancedGrassRenderObject ( void )
 	pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
 	pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
 	pass.setTexture(rrTextureSlot::TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite));
-	gpu::SamplerCreationDescription pointFilter;
-	pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
-	pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
-	pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
-
+	pass.setTexture(rrTextureSlot::TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0));
+	pass.setTexture(rrTextureSlot::TEX_SURFACE, RrTexture::Load(renderer::kTextureSurfaceM0));
+	pass.setTexture(rrTextureSlot::TEX_OVERLAY, RrTexture::Load(renderer::kTextureBlack));
+	pass.m_surface.shadingModel = kShadingModelThinFoliage;
 	PassInitWithInput(0, &pass);
 }
 
@@ -176,6 +175,7 @@ bool InstancedGrassRenderObject::Render ( const rrRenderParams* params )
 			// bind the cbuffers
 			gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
 			gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
+			gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
 			gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
 			gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
 			gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);

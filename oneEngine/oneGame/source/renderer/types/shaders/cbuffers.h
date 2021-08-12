@@ -1,8 +1,9 @@
 #ifndef RENDERER_SHADER_CONSTANT_BUFFER_TYPES_H_
 #define RENDERER_SHADER_CONSTANT_BUFFER_TYPES_H_
 
-#include "core/math/Math3d.h"
 #include <stdint.h>
+#include "core/math/Math3d.h"
+#include "renderer/types/Shading.h"
 
 namespace renderer
 {
@@ -59,30 +60,22 @@ namespace renderer
 		LAYOUT_PACK_TIGHTLY
 		struct rrPerObjectSurface
 		{
-			Vector4f	diffuseColor;
-			Vector4f	specularColor;
-			Vector3f	emissiveColor;
-			float		alphaCutoff;
+			Vector4f	diffuseColor = Vector4f(1, 1, 1, 1);
+			float		baseSmoothness = 0.0;
+			float		scaledSmoothness = 0.0;
+			float		baseMetallicness = 0.0;
+			float		scaledMetallicness = 0.0;
+			Vector3f	emissiveColor = Vector4f(1, 1, 1, 1);
+			float		alphaCutoff = 0.0F;
 			float		lighting0;
-			float		lighting1RimStrength;
+			float		lighting1;
 			float		lighting2;
-			float		lighting3Alpha;
-			Vector4f	textureScale;
-			Vector4f	textureOffset;
+			rrShadingModel
+						shadingModel = kShadingModelNormal;
+			Vector4f	textureScale = Vector4f(1, 1, 1, 1);
+			Vector4f	textureOffset = Vector4f(0, 0, 0, 0);
 
 			Vector4f	rr_padding [10];
-
-			rrPerObjectSurface()
-				: // Color parameters
-				diffuseColor(1, 1, 1, 1), specularColor(1, 1, 1, 1), emissiveColor(0.0, 0.0, 0.0),
-				// Alpha settings
-				alphaCutoff(0.0F),
-				// Lighting params
-				lighting0(0.0F), lighting1RimStrength(0.0F), lighting2(0.0F), lighting3Alpha(0.0F),
-				// Rare sampling options:
-				textureScale(1.0F, 1.0F, 1.0F, 1.0F),
-				textureOffset(0.0F, 0.0F, 0.0F, 0.0F)
-			{}
 		};
 		LAYOUT_PACK_END
 		static_assert(sizeof(rrPerObjectSurface) == 256, "Alignment of rrPerObjectSurface incorrect for the GPU.");

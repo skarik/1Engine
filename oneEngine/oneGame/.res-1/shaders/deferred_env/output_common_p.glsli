@@ -17,13 +17,15 @@ uint EncodeNormalComponent ( float normal )
 // Pushing structured output
 void PushOutput ( in rrSurfaceInfo shaderOutput )
 {
-	int packedShadingType = shaderOutput.shade_model & 0xF;
+	uint packedShadingType =
+		(shaderOutput.shade_model & 0xF)
+		| (shaderOutput.is_frontface ? 0x10 : 0x00);
 	
 	FragDiffuse		= shaderOutput.albedo;
 	FragNormals		= uvec2(
 		(EncodeNormalComponent(shaderOutput.normal.x) << 16) | EncodeNormalComponent(shaderOutput.normal.y),
 		(EncodeNormalComponent(shaderOutput.normal.z) << 16) | packedShadingType);
-	FragLighting	= vec4(shaderOutput.metalness, shaderOutput.smoothness, 1.0, 1.0);
+	FragLighting	= vec4(shaderOutput.metalness, shaderOutput.smoothness, shaderOutput.inverse_occlusion, 1.0);
 	FragGlowmap		= vec4(shaderOutput.emissive, 1.0);
 }
 

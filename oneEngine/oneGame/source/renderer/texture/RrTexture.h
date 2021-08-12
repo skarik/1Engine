@@ -81,6 +81,7 @@ namespace renderer
 	static const char* kTextureWhite = "rr_white";
 	static const char* kTextureGrayA0 = "rr_graya0";
 	static const char* kTextureNormalN0 = "rr_normalN0";
+	static const char* kTextureSurfaceM0 = "rr_surfaceM0";
 }
 
 //	class RrTexture : Base resource-aware texture class.

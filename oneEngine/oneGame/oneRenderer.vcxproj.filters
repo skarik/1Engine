@@ -611,5 +611,8 @@
     <ClInclude Include="source\renderer\meshmodel\Loader.h">
       <Filter>SOURCE\Renderer\MeshModel</Filter>
     </ClInclude>
+    <ClInclude Include="source\renderer\types\Shading.h">
+      <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

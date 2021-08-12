@@ -1,6 +1,8 @@
 #ifndef CBUFFERS_GLSLI
 #define CBUFFERS_GLSLI
 
+#extension GL_EXT_scalar_block_layout : require
+
 #include "common.glsli"
 
 layout(binding = CBUFFER_PER_OBJECT_MATRICES, std140) uniform sys_cbuffer_PerObject
@@ -11,13 +13,17 @@ layout(binding = CBUFFER_PER_OBJECT_MATRICES, std140) uniform sys_cbuffer_PerObj
     mat4 sys_ModelViewProjectionMatrixInverse;
 };
 
-layout(binding = CBUFFER_PER_OBJECT_EXTENDED, std140) uniform sys_cbuffer_PerObjectExt
+layout(binding = CBUFFER_PER_OBJECT_EXTENDED, std430) uniform sys_cbuffer_PerObjectExt
 {
     vec4    sys_DiffuseColor;
-    vec4    sys_SpecularColor;
+	float	sys_BaseSmoothness;
+	float	sys_ScaledSmoothness;
+    float	sys_BaseMetallicness;
+	float	sys_ScaledMetallicness;
     vec3    sys_EmissiveColor;
     float   sys_AlphaCutoff;
-    vec4    sys_LightingOverrides;
+    vec3    sys_LightingOverrides;
+	int		sys_ShadingModel;
 
     vec4    sys_TextureScale;
     vec4    sys_TextureOffset;
@@ -36,9 +42,9 @@ layout(binding = CBUFFER_PER_CAMERA_INFORMATION, std140) uniform sys_cbuffer_Per
 layout(binding = CBUFFER_PER_FRAME_INFORMATION, std140) uniform sys_cbuffer_PerFrame
 {
     // Time inputs
+	vec4    sys_Time;
     vec4    sys_SinTime;
     vec4    sys_CosTime;
-    vec4    sys_Time;
 
     // Fog
 	vec4	sys_FogColor;

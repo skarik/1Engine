@@ -100,7 +100,7 @@ void RrRenderer::InitializeResourcesWithDevice ( gpu::Device* device )
 
 	// Create default textures
 	{
-		RrTexture* white_texture = RrTexture::CreateUnitialized(renderer::kTextureWhite); //new RrTexture("");
+		RrTexture* white_texture = RrTexture::CreateUnitialized(renderer::kTextureWhite);
 		{
 			core::gfx::arPixel white (255, 255, 255, 255);
 			white_texture->Upload( false, &white, 1,1, core::gfx::tex::kColorFormatRGBA8,
@@ -131,6 +131,15 @@ void RrRenderer::InitializeResourcesWithDevice ( gpu::Device* device )
 		{
 			core::gfx::arPixel normal0 (127, 127, 255, 0);
 			normal0_texture->Upload( false, &normal0, 1,1, core::gfx::tex::kColorFormatRGBA8,
+				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
+				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
+		}
+		ARCORE_ASSERT(gfx->validate() == 0);
+
+		RrTexture* surface0_texture = RrTexture::CreateUnitialized(renderer::kTextureSurfaceM0);
+		{
+			core::gfx::arPixel surface0 (0, 0, 255, 0);
+			surface0_texture->Upload( false, &surface0, 1,1, core::gfx::tex::kColorFormatRGBA8,
 				core::gfx::tex::kWrappingRepeat, core::gfx::tex::kWrappingRepeat,
 				core::gfx::tex::kMipmapGenerationNone, core::gfx::tex::kSamplingPoint );
 		}

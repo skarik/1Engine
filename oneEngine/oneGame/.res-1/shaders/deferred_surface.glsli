@@ -5,15 +5,20 @@
 #extension GL_AMD_gpu_shader_half_float : require
 #extension GL_AMD_gpu_shader_int16 : require
 
+#define kShadeModelNormal 0
+#define kShadeModelThinFoliage 1
+
 // Structued output
 struct rrSurfaceInfo
 {
 	vec4 albedo;
 	vec3 normal;
 	int shade_model;
+	bool is_frontface;
 	
 	float metalness;
 	float smoothness;
+	float inverse_occlusion;
 	
 	vec3 emissive;
 	

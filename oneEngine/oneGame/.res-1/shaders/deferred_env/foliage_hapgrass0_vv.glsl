@@ -47,10 +47,32 @@ void main ( void )
 	const mat4 l_worldTransform = instanced_Transform[instanced_FirstIndex + gl_InstanceIndex]; 
 	const Variation l_variationInfo = instanced_Variation[instanced_FirstIndex + gl_InstanceIndex];
 	
-	vec4 v_localPos = l_worldTransform * vec4( mdl_Vertex, 1.0 );
+	float hacky_heightVariation = 1.0 + 0.2 * sin(l_variationInfo.index * 32.13124 * 4);
+	
+	vec4 v_localPos = l_worldTransform * vec4( mdl_Vertex.xy, mdl_Vertex.z * hacky_heightVariation, 1.0 );
+	float hacky_ao = 0;
+	
+	vec3 l_offset = vec3(0, 0, 0);
+	{
+		vec3 v_rootPos = l_worldTransform[3].xyz;
+		
+		float l_offsetLength = 
+			sin(l_variationInfo.index * 32.13124 + sys_Time.w) * 1.0
+			+ sin(v_rootPos.x * 0.42 * 2 + v_rootPos.y * 0.16 * 2 + sys_Time.y * 1.7) * 7.0;
+			
+		l_offset.x += sys_CosTime.x * l_offsetLength;
+		l_offset.y += sys_SinTime.x * l_offsetLength;
+		
+		hacky_ao = clamp(abs(mdl_Vertex.z) * 2.0, 0.0, 1.0) * 0.9 + 0.1;
+		// change color as it moves
+		hacky_ao += mdl_Vertex.z * (l_offsetLength/10.0) * 0.1;
+	}
+	v_localPos.xyz += l_offset * mdl_Vertex.z / 28.0; // Offset grass
+	
+	
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * vec4( v_localPos.xyz, 1.0 );
 
-	v2f_colors		= vec4(mdl_Color.rgb * sys_DiffuseColor.rgb * l_variationInfo.color, mdl_Color.a * sys_DiffuseColor.a);
+	v2f_colors		= vec4(mdl_Color.rgb * sys_DiffuseColor.rgb * l_variationInfo.color * hacky_ao, mdl_Color.a * sys_DiffuseColor.a);
 	v2f_texcoord0	= mdl_TexCoord.xy;
 	v2f_normal		= mat3(l_worldTransform) * mdl_Normal;
 
