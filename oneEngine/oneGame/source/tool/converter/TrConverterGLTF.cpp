@@ -277,11 +277,13 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 		//	• normal
 		//	• tangent
 		//	• binormal
+		// As for swapping the other items - not 100% sure. We're using the same handedness as Blender, so we just try to match that with everything.
 		if (mesh.data.position)
 		{
 			for (uint i = 0; i < mesh.data.vertexNum; ++i)
 			{
 				std::swap(mesh.data.position[i].y, mesh.data.position[i].z);
+				mesh.data.position[i].y = -mesh.data.position[i].y;
 			}
 		}
 		if (mesh.data.normal)
@@ -289,6 +291,8 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 			for (uint i = 0; i < mesh.data.vertexNum; ++i)
 			{
 				std::swap(mesh.data.normal[i].y, mesh.data.normal[i].z);
+				mesh.data.normal[i].x = -mesh.data.normal[i].x;
+				mesh.data.normal[i].z = -mesh.data.normal[i].z;
 			}
 		}
 		if (mesh.data.tangent)
@@ -296,6 +300,8 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 			for (uint i = 0; i < mesh.data.vertexNum; ++i)
 			{
 				std::swap(mesh.data.tangent[i].y, mesh.data.tangent[i].z);
+				mesh.data.tangent[i].x = -mesh.data.tangent[i].x;
+				mesh.data.tangent[i].z = -mesh.data.tangent[i].z;
 			}
 		}
 		if (mesh.data.binormal)
@@ -303,6 +309,8 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 			for (uint i = 0; i < mesh.data.vertexNum; ++i)
 			{
 				std::swap(mesh.data.binormal[i].y, mesh.data.binormal[i].z);
+				mesh.data.binormal[i].x = -mesh.data.binormal[i].x;
+				mesh.data.binormal[i].z = -mesh.data.binormal[i].z;
 			}
 		}
 	}

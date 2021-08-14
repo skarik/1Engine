@@ -83,6 +83,12 @@ int gpu::Texture::allocate (
 					txd.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL;
 				}
 
+				if (m_type == core::gfx::tex::kTextureTypeCube
+					|| m_type == core::gfx::tex::kTextureTypeCubeArray)
+				{
+					txd.MiscFlags |= D3D11_RESOURCE_MISC_TEXTURECUBE;
+				}
+
 				result = device->CreateTexture2D(&txd, NULL, (ID3D11Texture2D**)&m_texture);
 				if (FAILED(result))
 				{

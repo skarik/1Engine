@@ -335,8 +335,8 @@ int gpu::GraphicsContext::setRasterizerState ( const RasterizerState& state )
 	// Build filter used for fast lookup of existing states
 	bitFilter = (rsDesc.FillMode << 0)
 				| (rsDesc.CullMode << 2)
-				| (rsDesc.FrontCounterClockwise << 3)
-				| (rsDesc.ScissorEnable << 4);
+				| (rsDesc.FrontCounterClockwise << 4)
+				| (rsDesc.ScissorEnable << 5);
 
 	// Filter out uneccessary calls
 	if (bitFilter != m_rasterStateCurrentBitfilter) // TODO: Check if this filtering actually provides any speed increase, remove if necessary

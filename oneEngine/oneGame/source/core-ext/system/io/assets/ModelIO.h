@@ -22,7 +22,7 @@ namespace core
 	static const char*	kModelFormat_Header			= "MPD\0";
 
 	static const int	kModelFormat_VersionMajor	= 0;
-	static const int	kModelFormat_VersionMinor	= 2;
+	static const int	kModelFormat_VersionMinor	= 3;
 
 	static const char*	kModelFormat_HeadSegmentInfo	= "INF\0";
 

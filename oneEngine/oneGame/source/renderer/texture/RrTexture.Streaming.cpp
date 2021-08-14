@@ -291,7 +291,7 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 						const uint32 assumed_pitch = level_width * (uint32)core::gfx::tex::getColorFormatByteSize(info.internalFormat);
 						if (target_pitch != assumed_pitch)
 						{
-							for (uint16_t row = level_height - 1; row > 0; --row)
+							for (int16_t row = (int16_t)(level_height - 1); row > 0; --row)
 							{
 								memcpy((char*)target + row * target_pitch, (char*)target + row * assumed_pitch, assumed_pitch);
 							}

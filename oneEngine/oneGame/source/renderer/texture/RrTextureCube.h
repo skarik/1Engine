@@ -19,13 +19,13 @@ public: // Creation Interface
 	//	Load ( filename ) : Loads a texture from the disk.
 	// May return a previously loaded instance of the texture.
 	// The reference count of the returned instance will not be incremented.
-	RENDER_API static RrTexture*
-							LoadAtlas ( const char* resource_name, const int atlas_sx, const int atlas_sy );
+	RENDER_API static RrTextureCube*
+							Load ( const char* resource_name );
 
 	//	CreateUnitialized ( name ) : Creates an uninitialized texture object.
 	// Can be used for procedural textures, with Upload(...) later.
 	// The reference count of the returned instance will not be incremented.
-	RENDER_API static RrTexture*
+	RENDER_API static RrTextureCube*
 							CreateUnitialized ( const char* name );
 
 public:
@@ -44,6 +44,9 @@ public:
 		core::gfx::tex::arSamplingFilter	/*ignored*/	= core::gfx::tex::kSamplingLinear
 	);
 
+	// override to just hardcode upload on request for now
+	RENDER_API bool			OnStreamStep ( bool sync_client, core::IArResourceSubsystem* subsystem )
+		{ return true; }
 };
 
 

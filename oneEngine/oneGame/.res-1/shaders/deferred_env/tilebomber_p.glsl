@@ -37,7 +37,6 @@ layout(binding = CBUFFER_USER0, std430) uniform sys_cbuffer_ArbitraryTileBombInf
 	float	sys_TilebombUnused1;
 	float	sys_TilebombScale;
 	int		sys_TilebombBombCount;
-	//vec4	sys_TilebombBombTexture[16];
 	rrBombInfo sys_TilebombBombTexture[16];
 };
 

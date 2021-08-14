@@ -59,12 +59,8 @@ namespace tex {
 		uint16_t	height;
 		uint16_t	depth; // usually 1
 		uint8_t		levels;
-
-		// Specific for getting and setting animation data:
-
-		/*uint16_t	framecount;
-		uint8_t		xdivs;	
-		uint8_t		ydivs;*/
+		arTextureType
+					type = kTextureType2D;
 	};
 
 	// Image animation info

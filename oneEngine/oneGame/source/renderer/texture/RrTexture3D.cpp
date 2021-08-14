@@ -30,7 +30,7 @@ RrTexture3D::CreateUnitialized ( const char* name )
 RrTexture3D::RrTexture3D (
 	const char* s_resourceId,
 	const char* s_resourcePath
-)
+	)
 	: RrTexture(s_resourceId, s_resourcePath)
 {
 	// All handled by RrTexture.
