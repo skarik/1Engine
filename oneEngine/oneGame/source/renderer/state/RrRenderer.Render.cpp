@@ -21,7 +21,7 @@
 #include "gpuw/OutputSurface.h"
 #include "renderer/material/RrPass.h"
 #include "renderer/material/RrShaderProgram.h"
-#include "renderer/state/RrPipeline.h"
+#include "renderer/state/pipeline/RrPipeline.h"
 #include "renderer/windowing/RrWindow.h"
 
 #include <algorithm>

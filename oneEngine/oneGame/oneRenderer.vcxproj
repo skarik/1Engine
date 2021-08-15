@@ -120,7 +120,10 @@
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp" />
     <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp" />
     <ClCompile Include="source\renderer\renderer-console.cpp" />
-    <ClCompile Include="source\renderer\state\RrPipeline.cpp" />
+    <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.Composite.cpp" />
+    <ClCompile Include="source\renderer\state\pipeline\RrPipeline.cpp" />
+    <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.Lighting.cpp" />
+    <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Pooling.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Render.cpp" />
@@ -128,30 +131,6 @@
     <ClCompile Include="source\renderer\state\Options.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.PipelineCommon.cpp" />
     <ClCompile Include="source\renderer\state\Settings.cpp" />
-    <ClCompile Include="source\renderer\system\glDrawing.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.buffers.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.frame.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.matrix.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.screen_pixels.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.state.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.textures.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\renderer\texture\RrAtlasedTexture.cpp" />
     <ClCompile Include="source\renderer\texture\RrFontTexture.cpp" />
     <ClCompile Include="source\renderer\texture\CMRTTexture.cpp" />
@@ -261,20 +240,15 @@
     <ClInclude Include="source\renderer\particle\motion.h" />
     <ClInclude Include="source\renderer\particle\RrParticleSystem.h" />
     <ClInclude Include="source\renderer\renderer-console.h" />
-    <ClInclude Include="source\renderer\state\PipelineModes.h" />
+    <ClInclude Include="source\renderer\state\Options.h" />
+    <ClInclude Include="source\renderer\state\pipeline\PipelineModes.h" />
+    <ClInclude Include="source\renderer\state\pipeline\RrPipeline.h" />
+    <ClInclude Include="source\renderer\state\pipeline\RrPipelinePaletted.h" />
+    <ClInclude Include="source\renderer\state\pipeline\RrPipelineStandard.h" />
     <ClInclude Include="source\renderer\state\RaiiHelpers.h" />
-    <ClInclude Include="source\renderer\state\RrPipeline.h" />
-    <ClInclude Include="source\renderer\state\RrPipelinePaletted.h" />
     <ClInclude Include="source\renderer\state\RrRenderer.h" />
     <ClInclude Include="source\renderer\state\InternalSettings.h" />
-    <ClInclude Include="source\renderer\state\Options.h" />
     <ClInclude Include="source\renderer\state\Settings.h" />
-    <ClInclude Include="source\renderer\system\glSystem.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\renderer\system\rrVBufferStreaming.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="source\renderer\texture\RrAtlasedTexture.h" />
     <ClInclude Include="source\renderer\texture\RrFontTexture.h" />
     <ClInclude Include="source\renderer\texture\CMRTTexture.h" />

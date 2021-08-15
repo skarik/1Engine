@@ -2,10 +2,12 @@
 #define RENDERER_STATE_PIPELINE_H_
 
 #include "core/types.h"
-#include "renderer/state/PipelineModes.h"
+#include "renderer/state/pipeline/PipelineModes.h"
 #include "renderer/types/ObjectSettings.h"
 
 #include "gpuw/Texture.h"
+
+#include <functional>
 
 class RrWorld;
 class RrOutputInfo;
@@ -18,6 +20,7 @@ namespace gpu
 	class RenderTarget;
 	class Pipeline;
 }
+class RrRenderer;
 struct rrCameraPass;
 
 class RrPipelineStateRenderer;
@@ -131,64 +134,6 @@ public:
 	//	IsCompatible()
 	// Are these options compatible with the given pipeline? If not, assumes no pipeline options.
 	RENDER_API virtual bool	IsCompatible ( const renderer::PipelineMode mode ) const = 0;
-};
-
-//=====================================
-// Standard renderer
-//=====================================
-
-#include <vector>
-class RrLight;
-class RrPipelineStandardRenderer : public RrPipelineStateRenderer
-{
-public:
-	RENDER_API				RrPipelineStandardRenderer ( void );
-							~RrPipelineStandardRenderer ( void );
-
-	//	IsCompatible()
-	// Is this state compatible with the given pipeline? If not, it is destroyed and correct one is created.
-	RENDER_API bool			IsCompatible ( const renderer::PipelineMode mode ) const override
-		{ return mode == renderer::PipelineMode::kNormal; }
-
-	//	CullObjects() : Called to cull objects.
-	RENDER_API void			CullObjects ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world ) override;
-
-	//	CompositeDeferred() : Called when the renderer wants to combine a deferred pass with a forward pass.
-	RENDER_API rrCompositeOutput
-							CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
-
-	//	RenderLayerEnd() : Called when the renderer finishes a given layer.
-	RENDER_API rrPipelineOutput
-							RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) override;
-
-private:
-	RrShaderProgram*	m_lightingCompositeProgram = nullptr;
-	gpu::Pipeline*		m_lightingCompositePipeline;
-
-	RrShaderProgram*	m_lightingLighting0Program = nullptr;
-	gpu::Pipeline*		m_lightingLighting0Pipeline;
-
-	RrShaderProgram*	m_lightingLightingOmniProgram = nullptr;
-	gpu::Pipeline*		m_lightingLightingOmniPipeline;
-
-	RrShaderProgram*	m_lightingLightingSpotProgram = nullptr;
-	gpu::Pipeline*		m_lightingLightingSpotPipeline;
-
-private:
-	// TODO: organize this properly. light management likely should be outside of RrPipeline.cpp as it grows larger
-	void					SortLights ( void );
-	std::vector<RrLight*> directional_lights;
-	std::vector<RrLight*> spot_lights;
-	std::vector<RrLight*> omni_lights;
-};
-
-class RrPipelineStandardOptions : public RrPipelineOptions
-{
-public:
-	//	IsCompatible()
-	// Are these options compatible with the given pipeline? If not, assumes no pipeline options.
-	RENDER_API bool			IsCompatible ( const renderer::PipelineMode mode ) const override
-		{ return mode == renderer::PipelineMode::kNormal; }
 };
 
 #endif//RENDERER_STATE_PIPELINE_H_

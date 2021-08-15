@@ -9,7 +9,7 @@
 #include "renderer/types/id.h"
 #include "renderer/types/viewport.h"
 #include "renderer/state/InternalSettings.h"
-#include "renderer/state/PipelineModes.h"
+#include "renderer/state/pipeline/PipelineModes.h"
 
 //Todo: make following prototypes
 #include "gpuw/Texture.h"

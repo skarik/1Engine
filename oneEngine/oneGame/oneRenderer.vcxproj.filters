@@ -7,9 +7,6 @@
     <Filter Include="SOURCE\Renderer">
       <UniqueIdentifier>{1548ea9d-803a-422d-a20f-c236fccde1a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\Renderer\System">
-      <UniqueIdentifier>{8fefbbce-687f-4182-b8a2-cba29a639222}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SOURCE\Renderer\Camera">
       <UniqueIdentifier>{5632602e-f568-4331-88be-aa0afbf8e2f9}</UniqueIdentifier>
     </Filter>
@@ -100,14 +97,11 @@
     <Filter Include="SOURCE\Renderer\MeshModel">
       <UniqueIdentifier>{5141213a-c952-49bd-a134-b60a75c0867a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Renderer\State\Pipeline">
+      <UniqueIdentifier>{53473fdc-d1ca-4efa-82f7-9f807314862b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\renderer\system\glDrawing.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\state\Settings.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
@@ -173,24 +167,6 @@
     </ClCompile>
     <ClCompile Include="source\renderer\object\CRenderable3D.cpp">
       <Filter>SOURCE\Renderer\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.buffers.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.frame.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.matrix.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.screen_pixels.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.state.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClCompile>
-    <ClCompile Include="source\renderer\system\glMainSystem.textures.cpp">
-      <Filter>SOURCE\Renderer\System</Filter>
     </ClCompile>
     <ClCompile Include="source\renderer\texture\RrTexture.cpp">
       <Filter>SOURCE\Renderer\Texture</Filter>
@@ -312,9 +288,6 @@
     <ClCompile Include="source\renderer\object\RrRenderObject.cpp">
       <Filter>SOURCE\Renderer\Object</Filter>
     </ClCompile>
-    <ClCompile Include="source\renderer\state\RrPipeline.cpp">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClCompile>
     <ClCompile Include="source\renderer\state\RrRenderer.PipelineCommon.cpp">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClCompile>
@@ -324,11 +297,20 @@
     <ClCompile Include="source\renderer\meshmodel\RrModelMasterSubsystem.cpp">
       <Filter>SOURCE\Renderer\MeshModel</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\state\pipeline\RrPipeline.cpp">
+      <Filter>SOURCE\Renderer\State\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.cpp">
+      <Filter>SOURCE\Renderer\State\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.Lighting.cpp">
+      <Filter>SOURCE\Renderer\State\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.Composite.cpp">
+      <Filter>SOURCE\Renderer\State\Pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\renderer\system\glSystem.h">
-      <Filter>SOURCE\Renderer\System</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\state\Settings.h">
       <Filter>SOURCE\Renderer\State</Filter>
     </ClInclude>
@@ -380,9 +362,6 @@
     <ClInclude Include="source\renderer\renderer-console.h">
       <Filter>SOURCE\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\state\Options.h">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\types\ModelStructures.h">
       <Filter>SOURCE\Renderer\Types</Filter>
     </ClInclude>
@@ -406,9 +385,6 @@
     </ClInclude>
     <ClInclude Include="source\renderer\debug\RrBtDebugDraw.h">
       <Filter>SOURCE\Renderer\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\system\rrVBufferStreaming.h">
-      <Filter>SOURCE\Renderer\System</Filter>
     </ClInclude>
     <ClInclude Include="source\renderer\object\immediate\immediate.h">
       <Filter>SOURCE\Renderer\Object\Immediate</Filter>
@@ -587,18 +563,6 @@
     <ClInclude Include="source\renderer\material\ShaderVariations.h">
       <Filter>SOURCE\Renderer\Material</Filter>
     </ClInclude>
-    <ClInclude Include="source\renderer\state\RrPipeline.h">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\state\PipelineModes.h">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\state\RrPipelinePaletted.h">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClInclude>
-    <ClInclude Include="source\renderer\state\RaiiHelpers.h">
-      <Filter>SOURCE\Renderer\State</Filter>
-    </ClInclude>
     <ClInclude Include="source\renderer\meshmodel\LoadRequest.h">
       <Filter>SOURCE\Renderer\MeshModel</Filter>
     </ClInclude>
@@ -613,6 +577,24 @@
     </ClInclude>
     <ClInclude Include="source\renderer\types\Shading.h">
       <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\Options.h">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\pipeline\RrPipeline.h">
+      <Filter>SOURCE\Renderer\State\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\pipeline\RrPipelinePaletted.h">
+      <Filter>SOURCE\Renderer\State\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\pipeline\PipelineModes.h">
+      <Filter>SOURCE\Renderer\State\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\RaiiHelpers.h">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\state\pipeline\RrPipelineStandard.h">
+      <Filter>SOURCE\Renderer\State\Pipeline</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #ifndef RENDERER_STATE_PIPELINE_PALETTED_H_
 #define RENDERER_STATE_PIPELINE_PALETTED_H_
 
-#include "renderer/state/RrPipeline.h"
+#include "renderer/state/pipeline/RrPipelineStandard.h"
 
 class RrPipelinePalettedRenderer : public RrPipelineStandardRenderer
 {

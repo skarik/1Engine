@@ -74,10 +74,36 @@ public:
 	// This value may be ignored in some lighting models.
 	float				falloff_passthru = 0.0F;
 
-	// Are shadows enabled for this light?
-	bool				shadows_enabled = false;
-	// Percentage of base resolution shadows should be. Default is 1.0.
-	float				shadows_resolution_factor = 1.0F;
+	struct ShadowOptions
+	{
+		// Are shadows enabled for this light?
+		int				enabled : 1;
+
+		// Are shadows rendered using shadow maps?
+		int				use_shadow_maps : 1;
+		// Are contact shadows used to render the maps?
+		int				use_contact_shadows : 1;
+		// Is only non-static geometry used to cast shadows from this light?
+		int				only_cast_dynamic : 1;
+		// Does this cast shadows into volumetrics?
+		int				cast_into_volumetrics : 1;
+
+		// Percentage of base resolution shadows should be. Default is 1.0.
+		float			shadows_resolution_factor = 1.0F;
+
+		ShadowOptions()
+			: enabled(false)
+			, use_contact_shadows(true)
+			, use_shadow_maps(true)
+			, only_cast_dynamic(false)
+			, cast_into_volumetrics(true)
+			{}
+
+		bool				AreEnabled ( void )
+			{ return enabled && (use_shadow_maps || use_contact_shadows); }
+	};
+	// All the shadow configuration options.
+	ShadowOptions		shadows;
 
 	// Density multiplier of the volumetrics around this light.
 	float				volumetric_density = 1.0F;
