@@ -7,6 +7,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
+#include <chrono>
+
 bool TrConverterBMP::Convert(const char* inputFilename, const char* outputFilename)
 {
 	core::gfx::tex::arImageInfo imageInfo = {};
@@ -24,9 +26,10 @@ bool TrConverterBMP::Convert(const char* inputFilename, const char* outputFilena
 		writer.info = imageInfo;
 
 		// Get the time of the input file
-		struct stat f_buf;
-		stat(inputFilename, &f_buf);
-		writer.datetime = (uint64_t)f_buf.st_mtime;
+		//struct stat f_buf;
+		//stat(inputFilename, &f_buf);
+		//writer.datetime = (uint64_t)f_buf.st_mtime;
+		writer.datetime = (uint64_t)std::chrono::system_clock::now().time_since_epoch().count();
 
 		// Write the new BPD to the disk.
 		return writer.WriteBpd(outputFilename);

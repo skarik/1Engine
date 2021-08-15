@@ -9,6 +9,7 @@
 
 #include "core-ext/system/io/Resources.h"
 #include "core-ext/system/io/assets/Conversion.h"
+#include "core-ext/system/io/Files.h"
 
 #include "zlib/zlib.h"
 
@@ -45,16 +46,14 @@ bool core::BpdLoader::LoadBpd ( const char* n_resourcename )
 	std::string image_filename = image_rezname;
 	{
 		arstring256 file_extension = core::utils::string::GetFileExtension(image_rezname);
-		std::string raw_filename;
+		std::string raw_filename = image_rezname;
+
+		bool bRawFound = false;
+		bool bBpdFound = false;
 
 		core::utils::string::ToLower(file_extension, file_extension.length());
-		if (file_extension.compare(""))
-		{
-			image_filename += ".bpd";
-		}
-		else
+		if (file_extension.length() > 0)
 		{	// Remove the extension
-			raw_filename = image_rezname;
 			image_rezname = raw_filename.substr(0, raw_filename.length() - (file_extension.length() + 1)).c_str();
 		}
 
@@ -64,32 +63,77 @@ bool core::BpdLoader::LoadBpd ( const char* n_resourcename )
 		const size_t image_extensions_len = sizeof(image_extensions) / sizeof(const char* const);
 
 		// Loop through and try to find the matching filename:
-		bool raw_exists = false;
 		for (size_t i = 0; i < image_extensions_len; ++i)
 		{
 			raw_filename = image_rezname + image_extensions[i];
 			// Find the file to source data from:
 			if (core::Resources::MakePathTo(raw_filename.c_str(), raw_filename))
 			{
-				raw_exists = true;
+				bRawFound = true;
 				break;
 			}
 		}
 
-		// Convert file
-		if (raw_exists)
+		// Select the BPD filename:
+		image_filename = image_rezname + ".bpd";
+
+		// Check if we have a BPD now
+		if (core::Resources::MakePathTo(image_filename.c_str(), image_filename))
 		{
-			if (core::Converter::ConvertFile(raw_filename.c_str()) == false)
+			bBpdFound = true;
+		}
+
+		// If we have the raw, convert against the 
+		if (bRawFound)
+		{
+			bool bBpdOutOfDate = false;
+			bool bBpdCorrupted = false;
+
+			if (bBpdFound)
+			{
+				// Read in the header
+				m_liveFile = fopen(image_filename.c_str(), "rb");
+				ARCORE_ASSERT(m_liveFile != NULL);
+				textureFmtHeader header;
+				fread(&header, sizeof(header), 1, m_liveFile);
+				fclose(m_liveFile);
+
+				// Check for correct BPD format & version
+				bBpdCorrupted = strcmp(header.head, kTextureFormat_Header) != 0;
+				bBpdOutOfDate = header.version[0] < kTextureFormat_VersionMajor || (header.version[0] == kTextureFormat_VersionMajor && header.version[1] < kTextureFormat_VersionMinor);
+
+				// Grab the BPD's age
+				uint64 bpd_datetime = header.datetime;
+
+				// Grab the Raw's age
+				uint64 raw_datetime = io::file::GetLastWriteTime(raw_filename.c_str());
+
+				// Also check if we're out of date here
+				bBpdOutOfDate = bBpdOutOfDate || (raw_datetime > bpd_datetime);
+			}
+
+			// Convert file
+			if ((!bBpdFound || bBpdOutOfDate || bBpdCorrupted)
+				&& core::Converter::ConvertFile(raw_filename.c_str()) == false)
 			{
 				debug::Console->PrintError( "BpdLoader::LoadBpd : Error occurred in core::Converter::ConvertFile call\n" );
 			}
+
+			// Find the file to open post-convert...
+			image_filename = image_rezname + ".bpd";
+			if (!core::Resources::MakePathTo(image_filename.c_str(), image_filename))
+			{
+				debug::Console->PrintError( "BpdLoader::LoadBpd : Could not find image file in the resources.\n" );
+				return false;
+			}
+			else
+			{
+				bBpdFound = true;
+			}
 		}
 
-		// Select the BPD filename after conversion:
-		image_filename = image_rezname + ".bpd";
-
-		// Find the file to open...
-		if (!core::Resources::MakePathTo(image_filename.c_str(), image_filename))
+		// Check we have a BPD
+		if (!bBpdFound)
 		{
 			debug::Console->PrintError( "BpdLoader::LoadBpd : Could not find image file in the resources.\n" );
 			return false;

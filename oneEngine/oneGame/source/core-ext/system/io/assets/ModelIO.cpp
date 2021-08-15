@@ -6,6 +6,8 @@
 #include "core-ext/system/io/assets/Conversion.h"
 #include "core-ext/system/io/Files.h"
 
+#include <chrono>
+
 core::MpdInterface::MpdInterface ( void )
 {
 	;
@@ -154,7 +156,7 @@ bool core::MpdInterface::Open ( const char* n_resource_name, const bool n_conver
 			}
 
 			// Set time to now
-			m_datetime = time(NULL);
+			m_datetime = (uint64_t)std::chrono::system_clock::now().time_since_epoch().count();
 
 			return true;
 		}
@@ -191,7 +193,7 @@ bool core::MpdInterface::OpenFile ( const char* n_file_name, const bool n_create
 			}
 
 			// Set time to now
-			m_datetime = time(NULL);
+			m_datetime = (uint64_t)std::chrono::system_clock::now().time_since_epoch().count();
 
 			return true;
 		}
@@ -341,6 +343,9 @@ void core::MpdInterface::AddSegment ( const modelFmtSegmentInfoHeader& header, c
 bool core::MpdInterface::Save ( void )
 {
 	ARCORE_ASSERT(m_liveFile != NULL);
+
+	// Set time to now
+	m_datetime = (uint64_t)std::chrono::system_clock::now().time_since_epoch().count();
 
 	// Count all segments & data
 	int segment_count = 0;
