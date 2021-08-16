@@ -44,6 +44,8 @@ private:
 	RrShaderProgram*	m_lightingLightingSpotProgram = nullptr;
 	gpu::Pipeline*		m_lightingLightingSpotPipeline;
 
+	RrShaderProgram*	m_shadowingContactShadowProgram = nullptr;
+
 protected:
 	struct rrLightSetup
 	{
@@ -58,6 +60,9 @@ protected:
 	std::vector<RrLight*> directional_lights;
 	std::vector<RrLight*> spot_lights;
 	std::vector<RrLight*> omni_lights;
+	std::vector<RrLight*> all_lights;
+
+	std::vector<gpu::Texture> shadow_masks;
 
 protected:
 	RENDER_API virtual void	DrawWithPipelineAndGBuffers (
@@ -78,6 +83,7 @@ protected:
 	RENDER_API virtual void	RenderShadows (
 		gpu::GraphicsContext* gfx,
 		const rrPipelineCompositeInput& gbuffers,
+		RrOutputState* state,
 		rrLightSetup* lightSetup);
 
 	RENDER_API virtual gpu::Texture

@@ -158,6 +158,38 @@ RrShaderProgram::Load ( const rrShaderProgramVsPs& params )
 }
 
 RrShaderProgram*
+RrShaderProgram::Load ( const rrShaderProgramCs& params )
+{
+	auto resm = core::ArResourceManager::Active();
+
+	// Generate the resource name from the filenames:
+	arstring256 resource_str_id;
+	snprintf(resource_str_id.data, 256, "Cs_%08" PRIx32, math::hash::fnv1a_32(params.file_cs));
+	core::utils::string::ToResourceName(resource_str_id);
+
+	// First, find the texture in the resource system:
+	IArResource* existingResource = resm->Find(core::kResourceTypeRrShader, resource_str_id);
+	if (existingResource != NULL)
+	{
+		// Found it! Add a reference and return it.
+		RrShaderProgram* existingShader = (RrShaderProgram*)existingResource;
+		existingShader->AddReference();
+		return existingShader;
+	}
+
+	// We need to create a new texture:
+	rrStageToLoad stages[] = {
+		{gpu::kShaderStageCs, params.file_cs},
+	};
+	RrShaderProgram* shaderProgram = LoadShaderProgramFromDisk(resource_str_id.c_str(), stages, 1);
+
+	// Add it to the resource system:
+	resm->Add(shaderProgram);
+
+	return shaderProgram;
+}
+
+RrShaderProgram*
 RrShaderProgram::LoadShaderProgramFromDisk ( const char* s_resourceId, const rrStageToLoad* stages, const int stageCount )
 {
 	gpu::Shader* shaderStages [8] = {};
@@ -228,7 +260,7 @@ RrShaderProgram::RrShaderProgram (
 	if (ps)
 		m_pipeline.attach(ps, "main");
 	if (cs)
-		m_pipeline.attach(cs, "main");
+		m_pipeline.attachCompute(cs, "main");
 
 	// Assemble the shader pipeline now that everything has been added to it.
 	int ret = m_pipeline.assemble();

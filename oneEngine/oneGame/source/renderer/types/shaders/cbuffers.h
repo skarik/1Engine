@@ -82,15 +82,20 @@ namespace renderer
 		{
 			Matrix4x4	viewProjection;
 			Matrix4x4	viewProjectionInverse;
+			Matrix4x4	view;
+			Matrix4x4	viewInverse;
+			Matrix4x4	projection;
+			Matrix4x4	projectionInverse;
 			Vector4f	worldCameraPosition;
 			Vector2f	unused;
 			Vector2f	screenSizeScaled;
 			Vector2f	screenSize;
 			Vector2f	pixelRatio;
-
-			Vector4f	rr_padding [1];
+			float		nearPlane;
+			float		farPlane;
+			Vector2f	rr_padding [1];
 		};
-		static_assert(sizeof(rrPerCamera) == 192, "Alignment of rrPerCamera incorrect for the GPU.");
+		//static_assert(sizeof(rrPerCamera) == 192, "Alignment of rrPerCamera incorrect for the GPU.");
 
 		struct rrPerFrame
 		{

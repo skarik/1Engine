@@ -12,6 +12,7 @@ namespace gpu
 	class ComputeContext;
 	class RenderTarget;
 	class BaseContext;
+	class WriteableResource;
 
 	// Create a read/write texture.
 	class Texture
@@ -19,7 +20,7 @@ namespace gpu
 	public:
 		//	valid() : is this texture valid to be used?
 		// If the texture has not been created, it will be removed.
-		GPUW_API bool			valid ( void );
+		GPUW_API bool			valid ( void ) const;
 		//	nativePtr() : returns native index or pointer to the resource.
 		GPUW_API gpuHandle		nativePtr ( void );
 
@@ -42,6 +43,7 @@ namespace gpu
 		friend GraphicsContext;
 		friend ComputeContext;
 		friend RenderTarget;
+		friend WriteableResource;
 
 		void*							m_texture = NULL;
 		core::gfx::tex::arTextureType	m_type;
@@ -83,7 +85,6 @@ namespace gpu
 		void*							m_texture = NULL;
 		core::gfx::tex::arTextureType	m_type;
 		core::gfx::tex::arColorFormat	m_format;
-		//void*							m_srv;
 		unsigned int					m_dxFormat = 0;
 	};
 }

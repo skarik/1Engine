@@ -77,16 +77,16 @@ public:
 	struct ShadowOptions
 	{
 		// Are shadows enabled for this light?
-		int				enabled : 1;
+		uint			enabled : 1;
 
 		// Are shadows rendered using shadow maps?
-		int				use_shadow_maps : 1;
+		uint			use_shadow_maps : 1;
 		// Are contact shadows used to render the maps?
-		int				use_contact_shadows : 1;
+		uint			use_contact_shadows : 1;
 		// Is only non-static geometry used to cast shadows from this light?
-		int				only_cast_dynamic : 1;
+		uint			only_cast_dynamic : 1;
 		// Does this cast shadows into volumetrics?
-		int				cast_into_volumetrics : 1;
+		uint			cast_into_volumetrics : 1;
 
 		// Percentage of base resolution shadows should be. Default is 1.0.
 		float			shadows_resolution_factor = 1.0F;
@@ -128,7 +128,8 @@ namespace renderer
 			Vector3f			color;
 			rrLightAreaType		area_type;
 			rrLightType			light_type;
-			uint16				padding;
+			uint8				shadowed;
+			uint8				padding;
 
 			rrLight() = default;
 
@@ -142,6 +143,7 @@ namespace renderer
 				, color(source->color.r, source->color.g, source->color.b)
 				, area_type(source->area_type)
 				, light_type(source->type)
+				, shadowed(source->shadows.enabled ? 1 : 0)
 				, padding(0)
 			{}
 		};

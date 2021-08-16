@@ -13,7 +13,7 @@
 
 //https://computergraphics.stackexchange.com/questions/4422/directx-openglvulkan-concepts-mapping-chart/4434
 
-bool gpu::Texture::valid ( void )
+bool gpu::Texture::valid ( void ) const
 {
 	return m_texture != NULL;
 }
@@ -65,7 +65,7 @@ int gpu::Texture::allocate (
 				txd.SampleDesc.Count = 1;
 				txd.SampleDesc.Quality = 0;
 				txd.Usage = D3D11_USAGE_DEFAULT;
-				txd.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+				txd.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 				txd.CPUAccessFlags = 0;
 				txd.MiscFlags = 0;
 

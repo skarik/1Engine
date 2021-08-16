@@ -20,6 +20,7 @@ namespace gpu
 	class Sampler;
 	class Texture;
 	class Buffer;
+	class WriteableResource;
 	class RenderTarget;
 	class Device;
 
@@ -87,8 +88,8 @@ namespace gpu
 		GPUW_API int			setShaderTexture ( ShaderStage stage, int slot, Texture* texture );
 		//	setShaderTextureAuto( stage, slot, texture ) : Sets texture to given slot, using an automatically generated sampler.
 		GPUW_API int			setShaderTextureAuto ( ShaderStage stage, int slot, Texture* texture );
-		//	setShaderResource( stage, slot, buffer ) : Sets a buffer to a given slot, as a generic data buffer.
-		GPUW_API int			setShaderResource ( ShaderStage stage, int slot, Buffer* buffer );
+		//	setShaderWriteable( stage, slot, resource ) : Sets a resource (texture or buffer) to a given slot, as a ReadWrite resource.
+		GPUW_API int			setShaderWriteable ( ShaderStage stage, int slot, WriteableResource* resource );
 
 		//	draw( vertexCount, startVertex ) : render primitives, automatically generating indices
 		GPUW_API int			draw ( const uint32_t vertexCount, const uint32_t startVertex );
@@ -107,6 +108,11 @@ namespace gpu
 		GPUW_API int			clearColor ( float* rgbaColor );
 		GPUW_API int			clearColorAll ( float* rgbaColor );
 		// TODO: clearDepthStencilMRT and clearColorMRT
+
+		//	setComputeShader( shader ) : Sets compute shader to use with next dispatch.
+		GPUW_API int			setComputeShader ( ShaderPipeline* computePipeline );
+		//	dispatch(X, Y, Z) : dispatch a compute job with a given shader
+		GPUW_API int			dispatch ( const uint32 threadCountX, const uint32 threadCountY, const uint32 threadCountZ );
 
 		//	signal( fence ) : Inserts a command into the command buffer to signal the given fence.
 		// This can be used to make either the CPU or GPU wait on a command buffer to reach a certain point.

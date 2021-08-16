@@ -219,6 +219,8 @@ def CompileShader(shaderFilePath, nakedFilePath, displayName):
 		l_hlslCompilerProfile = "hs"
 	elif nakedFilePath.endswith("_d"):
 		l_hlslCompilerProfile = "ds"
+	elif nakedFilePath.endswith("_c"):
+		l_hlslCompilerProfile = "cs"
 	l_hlslCompilerProfile = f"{l_hlslCompilerProfile}_{g_hlslBaseProfile}"
 
 	# Start up the compiler

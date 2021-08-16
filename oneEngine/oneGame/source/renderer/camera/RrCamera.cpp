@@ -198,12 +198,18 @@ void RrCamera::UpdateCBuffer ( gpu::GraphicsContext* gfx, rrCameraPass* passinfo
 
 	// Generate structure information to shunt to the GPU...
 	renderer::cbuffer::rrPerCamera cameraData = {};
-	cameraData.viewProjection = passinfo[0].m_viewprojTransform;
-	cameraData.viewProjectionInverse = passinfo[0].m_viewprojTransform.inverse();
+	cameraData.viewProjection			= passinfo[0].m_viewprojTransform;
+	cameraData.viewProjectionInverse	= passinfo[0].m_viewprojTransform.inverse();
+	cameraData.view						= passinfo[0].m_viewTransform;
+	cameraData.viewInverse				= passinfo[0].m_viewTransform.inverse();
+	cameraData.projection				= passinfo[0].m_projTransform;
+	cameraData.projectionInverse		= passinfo[0].m_projTransform.inverse();
 	cameraData.worldCameraPosition = transform.position;
 	cameraData.screenSizeScaled = Vector2f(passinfo->m_viewport.size.x * renderScale, passinfo->m_viewport.size.y * renderScale);
 	cameraData.screenSize = Vector2f(passinfo->m_viewport.size.x, passinfo->m_viewport.size.y);
 	cameraData.pixelRatio = Vector2f(1, 1) * (orthoSize.x / passinfo->m_viewport.size.x);
+	cameraData.nearPlane	= zNear;
+	cameraData.farPlane		= zFar;
 
 	// And shunt it to the GPU!
 	passinfo->m_cbuffer.upload(gfx, &cameraData, sizeof(renderer::cbuffer::rrPerCamera), gpu::kTransferStream);

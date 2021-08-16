@@ -43,6 +43,9 @@ RrPipelineStandardRenderer::~RrPipelineStandardRenderer ( void )
 		m_lightingLighting0Pipeline->destroy(NULL);
 		delete m_lightingLighting0Pipeline;
 	}
+
+	if (m_shadowingContactShadowProgram)
+		m_shadowingContactShadowProgram->RemoveReference();
 }
 
 void RrPipelineStandardRenderer::CullObjects ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world )
@@ -192,7 +195,7 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 
 		auto lightSetup = SetupLights(gfx);
 
-		RenderShadows(gfx, compositeInput, &lightSetup);
+		RenderShadows(gfx, compositeInput, state, &lightSetup);
 
 		outputLightingComposite = RenderLights(gfx, compositeInput, state, &lightSetup, outputLightingComposite);
 

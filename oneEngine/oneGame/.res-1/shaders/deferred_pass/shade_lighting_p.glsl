@@ -22,6 +22,7 @@
 
 // Previous forward rendered output
 layout(binding = 5, location = 25) uniform sampler2D textureSamplerForward;
+layout(binding = 6, location = 26) uniform sampler2D textureSamplerShadowMask;
 
 // Output to screen
 layout(location = 0) out vec4 FragColor;
@@ -158,6 +159,13 @@ void ShadePixel ( void )
 		const vec3 lightColor = lightParams.color;
 		//vec3 lightDirection = normalize(vec3(0.7, 0.2, 0.7));
 		//vec3 lightColor = vec3(1.0, 0.9, 0.8);
+		
+		float shadowMask = 1.0;
+		[[branch]]
+		if (rrLightGetShadows(lightParams) != 0)
+		{
+			shadowMask = texture(textureSamplerShadowMask, v2f_texcoord0).r;
+		}
 
 		const vec3 halfVec = normalize(viewDirection + lightDirection);
 		const float vdoth = clamp(dot(viewDirection, halfVec), 0.0, 1.0);
@@ -178,7 +186,7 @@ void ShadePixel ( void )
 		vec3 diffuseLighting = lightColor * ndotl;
 		
 		// Sum up the lighting
-		vec3 totalLighting = specularLighting + diffuseLighting * surfaceReflectance;
+		vec3 totalLighting = (specularLighting + diffuseLighting * surfaceReflectance) * shadowMask;
 
 		FragColor.rgb = totalLighting;
 		FragColor.a = surface.albedo.a;

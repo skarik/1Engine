@@ -33,10 +33,16 @@ layout(binding = CBUFFER_PER_CAMERA_INFORMATION, std140) uniform sys_cbuffer_Per
 {
     mat4 sys_ViewProjectionMatrix;
 	mat4 sys_ViewProjectionMatrixInverse;
+	mat4 sys_ViewMatrix;
+	mat4 sys_ViewMatrixInverse;
+	mat4 sys_ProjectionMatrix;
+	mat4 sys_ProjectionMatrixInverse;
     vec4 sys_WorldCameraPos;
     vec4 sys_ViewportInfo;
     vec2 sys_ScreenSize;
     vec2 sys_PixelRatio;
+	float sys_CameraNearPlane;
+	float sys_CameraFarPlane;
 };
 
 layout(binding = CBUFFER_PER_FRAME_INFORMATION, std140) uniform sys_cbuffer_PerFrame

@@ -15,7 +15,8 @@ struct rrLight
 	uint		packedLightAndAreaType;
 };
 
-uint	rrLightGetAreaType(in rrLight light)	{ return (light.packedLightAndAreaType << 24 & 0xFF); }
-uint	rrLightGetLightType(in rrLight light)	{ return (light.packedLightAndAreaType << 16 & 0xFF); }
+uint	rrLightGetAreaType(in rrLight light)	{ return (light.packedLightAndAreaType >> 24 & 0xFF); }
+uint	rrLightGetLightType(in rrLight light)	{ return (light.packedLightAndAreaType >> 16 & 0xFF); }
+uint	rrLightGetShadows(in rrLight light)		{ return (light.packedLightAndAreaType >>  8 & 0xFF); }
 
 #endif//COMMON_LIGHTING_GLSLI_

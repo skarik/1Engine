@@ -65,6 +65,9 @@ public:
 	RENDER_API static RrShaderProgram*
 							Load ( const rrShaderProgramVsHsDsGsPs& params );
 
+	RENDER_API static RrShaderProgram*
+							Load ( const rrShaderProgramCs& params );
+
 private:
 	struct rrStageToLoad
 	{

@@ -231,6 +231,8 @@ def CompileShader(shaderFilePath, outputFilePath, includeFolders, macros):
 		l_glslCompilerMode = "tesc"
 	elif l_nakedFile.endswith("_d"):
 		l_glslCompilerMode = "tese"
+	elif l_nakedFile.endswith("_c"):
+		l_glslCompilerMode = "comp"
 
 	# Start up the compiler
 	stream = subprocess.Popen(
