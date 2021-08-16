@@ -58,6 +58,7 @@ CLoadScreenInjector::CLoadScreenInjector ( void )
 	notifierPass.m_layer = renderer::kRenderLayerV2D;
 	notifierPass.m_orderOffset = kPassOrder_PostProcess + 1; // Draw on top of everything.
 	notifierPass.utilSetupAs2D();
+	notifierPass.m_primitiveType = gpu::kPrimitiveTopologyTriangleStrip;
 	notifierPass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
 	notifierPass.setTexture( TEX_MAIN, m_fntNotifier );
 	notifierPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"}) );
