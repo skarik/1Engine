@@ -5,8 +5,12 @@
 #extension GL_AMD_gpu_shader_half_float : require
 #extension GL_AMD_gpu_shader_int16 : require
 
+//=====================================
+
 #define kShadeModelNormal 0
 #define kShadeModelThinFoliage 1
+
+//=====================================
 
 // Structued output
 struct rrSurfaceInfo
@@ -34,5 +38,68 @@ struct rrGBufferValues
 	vec4 buffer3;
 	float depth;
 };
+
+//=====================================
+
+//	DecodeNormalComponent( packed_uint16 ) : Takes a packed normal and returns the corresponding floating point value
+float DecodeNormalComponent ( uint normal_int )
+{
+	return (normal_int - 32767.5) / 32767.5;
+}
+
+//	DecodePackedNormals( gbuffer_normals, out normal, out shade_model, out is_frontface ) : Decode gbuffer
+// Unpacks all the information that is stored within the normals gbuffer data.
+void DecodePackedNormals ( in uvec2 gbuffer_packed, out vec3 normal, out int shade_model, out bool is_frontface )
+{
+	normal = vec3(
+		DecodeNormalComponent(gbuffer_packed.x >> 16),
+		DecodeNormalComponent(gbuffer_packed.x & 0xFFFF),
+		DecodeNormalComponent(gbuffer_packed.y >> 16));
+	shade_model = int(gbuffer_packed.y & 0xF);
+	is_frontface = ((gbuffer_packed.y & 0x10) == 0) ? false : true;
+}
+
+//	DecodePackedNormals( gbuffer_normals, out normal ) : Decode gbuffer
+// Shorthand. Only decodes the normals.
+void DecodePackedNormals ( in uvec2 gbuffer_packed, out vec3 normal )
+{
+	int  dummy_shade_model;
+	bool dummy_is_frontface;
+	DecodePackedNormals(gbuffer_packed, normal, dummy_shade_model, dummy_is_frontface);
+}
+
+//	DecodeSurfaceInfo( out surface, in gbuffer, in uv0 )
+// Decodes all the gbuffer data into surface information.
+void DecodeSurfaceInfo ( out rrSurfaceInfo surface, in rrGBufferValues gbuffer, in vec2 uv0 )
+{
+	surface.albedo = gbuffer.buffer0.rgba;
+	surface.normal = vec3(
+		DecodeNormalComponent(gbuffer.buffer1.x >> 16),
+		DecodeNormalComponent(gbuffer.buffer1.x & 0xFFFF),
+		DecodeNormalComponent(gbuffer.buffer1.y >> 16));
+	surface.shade_model = int(gbuffer.buffer1.y & 0xF);
+	surface.is_frontface = ((gbuffer.buffer1.y & 0x10) == 0) ? false : true;
+		
+	
+	surface.metalness = gbuffer.buffer2.x;
+	surface.smoothness = gbuffer.buffer2.y;
+	surface.inverse_occlusion = gbuffer.buffer2.z;
+	
+	surface.emissive = gbuffer.buffer3.xyz;
+	
+	//vec4 unprojected_position = vec4( uv0.x*2 - 1, -(uv0.y*2 - 1), gbuffer.depth*2 - 1, 1.0 );
+	vec4 unprojected_position = vec4( uv0.x*2 - 1, -(uv0.y*2 - 1), gbuffer.depth, 1.0 );
+	vec4 undivided_position = sys_ViewProjectionMatrixInverse * vec4( unprojected_position.xyz, 1.0 );
+	surface.world_position = undivided_position.xyz / undivided_position.w;
+}
+
+//=====================================
+
+//	LinearizeZBufferDepth( depth ) : Linearizes depth pulled from a depth buffer.
+// Depth returned should be in the range [0.0, 1.0]
+float LinearizeZBufferDepth ( in float depth )
+{
+	return (sys_CameraNearPlane * sys_CameraFarPlane) / (sys_CameraFarPlane + depth * (sys_CameraNearPlane - sys_CameraFarPlane));
+}
 
 #endif//DEFERRED_SURFACE_GLSLI_

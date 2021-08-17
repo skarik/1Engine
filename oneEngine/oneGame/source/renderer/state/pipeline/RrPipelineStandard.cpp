@@ -13,6 +13,7 @@
 
 #include "gpuw/Pipeline.h"
 #include "gpuw/ShaderPipeline.h"
+#include "gpuw/WriteableResource.h"
 
 //=====================================
 // Standard renderer pipeline
@@ -43,6 +44,9 @@ RrPipelineStandardRenderer::~RrPipelineStandardRenderer ( void )
 		m_lightingLighting0Pipeline->destroy(NULL);
 		delete m_lightingLighting0Pipeline;
 	}
+
+	if (m_hzbGenerationProgram)
+		m_hzbGenerationProgram->RemoveReference();
 
 	if (m_shadowingContactShadowProgram)
 		m_shadowingContactShadowProgram->RemoveReference();
@@ -191,8 +195,10 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 	}
 	else
 	{
-		// Render the lighting
+		// Create HZB needed for some effects
+		GenerateHZB(gfx, compositeInput, state);
 
+		// Render the lighting
 		auto lightSetup = SetupLights(gfx);
 
 		RenderShadows(gfx, compositeInput, state, &lightSetup);
@@ -273,6 +279,64 @@ void RrPipelineStandardRenderer::DrawDebugOutput (
 		gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
 		gfx->draw(4, 0);
 	});
+}
+
+void RrPipelineStandardRenderer::GenerateHZB (
+	gpu::GraphicsContext* gfx,
+	const rrPipelineCompositeInput& gbuffers,
+	RrOutputState* state)
+{
+	auto renderer = RrRenderer::Active; // TODO: make argument or class field
+
+	// Grab output size for the screen quad info
+	auto& output = *state->output_info;
+	rrViewport output_viewport =  output.GetOutputViewport();
+
+	// Allocate the 4 and 16 downscales
+	gpu::Texture depthInfoDownscale4;
+	gpu::Texture depthInfoDownscale16;
+
+	rrRTBufferRequest depthInfoRequest;
+
+	depthInfoRequest = {output_viewport.size / 4, core::gfx::tex::kColorFormatRG32F};
+	renderer->CreateRenderTexture( depthInfoRequest, &depthInfoDownscale4 );
+	depthInfoRequest = {output_viewport.size / 16, core::gfx::tex::kColorFormatRG32F};
+	renderer->CreateRenderTexture( depthInfoRequest, &depthInfoDownscale16 );
+
+	// Grab the shader program
+	if (m_hzbGenerationProgram == nullptr)
+	{
+		m_hzbGenerationProgram = RrShaderProgram::Load(rrShaderProgramCs{"shaders/deferred_pass/hzb_generate_c.spv"});
+	}
+
+	// Clear out usage of render target to gain control of depth
+	gfx->setRenderTarget(NULL);
+
+	// Create writeable with the render target
+	gpu::WriteableResource rwDepthInfoDownscale4;
+	gpu::WriteableResource rwDepthInfoDownscale16;
+	rwDepthInfoDownscale4.create(&depthInfoDownscale4, 0);
+	rwDepthInfoDownscale16.create(&depthInfoDownscale16, 0);
+
+	// Set up compute shader
+	gfx->setComputeShader(&m_hzbGenerationProgram->GetShaderPipeline());
+	gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &gbuffers.cameraPass->m_cbuffer);
+	gfx->setShaderWriteable(gpu::kShaderStageCs, 0, &rwDepthInfoDownscale4);
+	gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwDepthInfoDownscale16);
+	gfx->setShaderTextureAuto(gpu::kShaderStageCs, 2, gbuffers.combined_depth);
+	// Render the contact shadows
+	gfx->dispatch(output_viewport.size.x / 4, output_viewport.size.y / 4, 1);
+	// Unbind the UAVs
+	gfx->setShaderWriteable(gpu::kShaderStageCs, 0, NULL);
+	gfx->setShaderWriteable(gpu::kShaderStageCs, 1, NULL);
+
+	// Done with the writeables
+	rwDepthInfoDownscale4.destroy();
+	rwDepthInfoDownscale16.destroy();
+
+	// Save the results
+	hzb_4 = depthInfoDownscale4;
+	hzb_16 = depthInfoDownscale16;
 }
 
 rrPipelineOutput RrPipelineStandardRenderer::RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) 

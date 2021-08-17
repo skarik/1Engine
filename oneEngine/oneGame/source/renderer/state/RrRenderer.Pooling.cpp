@@ -86,9 +86,9 @@ void RrRenderer::CreateRenderTexture ( rrDepthBufferRequest* in_out_request, gpu
 	{
 		// allocate the textures
 		if ( in_out_request->depth != core::gfx::tex::kDepthFormatNone )
-			depth->allocate(core::gfx::tex::kTextureType2D, in_out_request->depth, in_out_request->size.x, in_out_request->size.y, 1, 1);
+			depth->allocate(core::gfx::tex::kTextureType2D, in_out_request->depth, in_out_request->size.x, in_out_request->size.y, 1, in_out_request->mips);
 		if ( in_out_request->stencil != core::gfx::tex::kStencilFormatNone )
-			stencil->allocate(core::gfx::tex::kTextureType2D, in_out_request->stencil, in_out_request->size.x, in_out_request->size.y, 1, 1);
+			stencil->allocate(core::gfx::tex::kTextureType2D, in_out_request->stencil, in_out_request->size.x, in_out_request->size.y, 1, in_out_request->mips);
 
 		// Test if the textures work with a target:
 		{
@@ -151,7 +151,7 @@ void RrRenderer::CreateRenderTexture ( const rrRTBufferRequest& in_request, gpu:
 	}
 
 	// No match, then make a new one
-	color->allocate(core::gfx::tex::kTextureType2D, in_request.format, in_request.size.x, in_request.size.y, 1, 1);
+	color->allocate(core::gfx::tex::kTextureType2D, in_request.format, in_request.size.x, in_request.size.y, 1, in_request.mips);
 
 	// Save the allocated texture to our pool
 	rrStoredRenderTexture new_rt;
@@ -172,6 +172,7 @@ void RrRenderer::CreateRenderTextures ( const rrMRTBufferRequest& in_request, gp
 		request.format = in_request.formats[i];
 		request.persist_for = in_request.persist_for;
 		request.size = in_request.size;
+		request.mips = in_request.mips;
 		CreateRenderTexture(request, &colors[i]);
 	}
 }

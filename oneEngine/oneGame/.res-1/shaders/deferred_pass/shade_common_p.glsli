@@ -11,34 +11,6 @@ layout(binding = 2, location = 22) uniform sampler2D textureSampler2;	// Lightin
 layout(binding = 3, location = 23) uniform sampler2D textureSampler3;	// Glow (for now)
 layout(binding = 4, location = 24) uniform sampler2D textureSampler4;	// Depth
 
-float DecodeNormalComponent ( uint normal_int )
-{
-	return (normal_int - 32767.5) / 32767.5;
-}
-
-void DecodeSurfaceInfo ( out rrSurfaceInfo surface, in rrGBufferValues gbuffer, in vec2 uv0 )
-{
-	surface.albedo = gbuffer.buffer0.rgba;
-	surface.normal = vec3(
-		DecodeNormalComponent(gbuffer.buffer1.x >> 16),
-		DecodeNormalComponent(gbuffer.buffer1.x & 0xFFFF),
-		DecodeNormalComponent(gbuffer.buffer1.y >> 16));
-	surface.shade_model = int(gbuffer.buffer1.y & 0xF);
-	surface.is_frontface = ((gbuffer.buffer1.y & 0x10) == 0) ? false : true;
-		
-	
-	surface.metalness = gbuffer.buffer2.x;
-	surface.smoothness = gbuffer.buffer2.y;
-	surface.inverse_occlusion = gbuffer.buffer2.z;
-	
-	surface.emissive = gbuffer.buffer3.xyz;
-	
-	//vec4 unprojected_position = vec4( uv0.x*2 - 1, -(uv0.y*2 - 1), gbuffer.depth*2 - 1, 1.0 );
-	vec4 unprojected_position = vec4( uv0.x*2 - 1, -(uv0.y*2 - 1), gbuffer.depth, 1.0 );
-	vec4 undivided_position = sys_ViewProjectionMatrixInverse * vec4( unprojected_position.xyz, 1.0 );
-	surface.world_position = undivided_position.xyz / undivided_position.w;
-}
-
 void SampleGBuffer ( out rrGBufferValues gbuffer, in vec2 uv0 )
 {
 	ivec2 pixelLookup = ivec2(uv0.x * sys_ScreenSize.x, uv0.y * sys_ScreenSize.y);

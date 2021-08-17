@@ -44,6 +44,8 @@ private:
 	RrShaderProgram*	m_lightingLightingSpotProgram = nullptr;
 	gpu::Pipeline*		m_lightingLightingSpotPipeline;
 
+	RrShaderProgram*	m_hzbGenerationProgram = nullptr;
+
 	RrShaderProgram*	m_shadowingContactShadowProgram = nullptr;
 
 protected:
@@ -64,6 +66,10 @@ protected:
 
 	std::vector<gpu::Texture> shadow_masks;
 
+	// TODO: better organize this if possible.
+	gpu::Texture hzb_4;
+	gpu::Texture hzb_16;
+
 protected:
 	RENDER_API virtual void	DrawWithPipelineAndGBuffers (
 		gpu::GraphicsContext* gfx,
@@ -76,6 +82,11 @@ protected:
 	RENDER_API virtual void	DrawDebugOutput (
 		gpu::GraphicsContext* gfx,
 		const rrPipelineCompositeInput& compositeInput,
+		RrOutputState* state);
+
+	RENDER_API virtual void GenerateHZB (
+		gpu::GraphicsContext* gfx,
+		const rrPipelineCompositeInput& gbuffers,
 		RrOutputState* state);
 
 	RENDER_API rrLightSetup	SetupLights ( gpu::GraphicsContext* gfx );

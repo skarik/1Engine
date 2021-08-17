@@ -220,6 +220,8 @@ struct rrDepthBufferRequest
 	core::gfx::tex::arColorFormat
 						stencil = core::gfx::tex::KStencilFormatIndex16;
 
+	int32				mips = 1;
+
 	// Number of frames this request should persist for
 	int32				persist_for = 2;
 };
@@ -231,6 +233,8 @@ struct rrRTBufferRequest
 
 	core::gfx::tex::arColorFormat
 						format = core::gfx::tex::kColorFormatRGBA16F;
+
+	int32				mips = 1;
 
 	// Number of frames this request should persist for
 	int32				persist_for = 2;
@@ -244,6 +248,8 @@ struct rrMRTBufferRequest
 	uint8				count;
 	const core::gfx::tex::arColorFormat*
 						formats = nullptr;
+
+	int32				mips = 1;
 
 	// Number of frames this request should persist for
 	int32				persist_for = 2;

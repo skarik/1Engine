@@ -29,7 +29,7 @@ layout(binding = CBUFFER_PER_OBJECT_EXTENDED, std430) uniform sys_cbuffer_PerObj
     vec4    sys_TextureOffset;
 };
 
-layout(binding = CBUFFER_PER_CAMERA_INFORMATION, std140) uniform sys_cbuffer_PerCamera
+layout(binding = CBUFFER_PER_CAMERA_INFORMATION, std430) uniform sys_cbuffer_PerCamera
 {
     mat4 sys_ViewProjectionMatrix;
 	mat4 sys_ViewProjectionMatrixInverse;
