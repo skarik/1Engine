@@ -29,6 +29,7 @@ void RrPipelineStandardRenderer::DrawWithPipelineAndGBuffers (
 		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 5, compositeInput.forward_color);
 	}
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &compositeInput.cameraPass->m_cbuffer);
+	gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &compositeInput.cameraPass->m_cbuffer);
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_USER0, cbuffer);
 	gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, cbuffer);
 	gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::SBUFFER_USER0, sbuffer);

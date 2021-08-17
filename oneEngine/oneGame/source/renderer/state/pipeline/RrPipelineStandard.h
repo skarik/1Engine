@@ -13,7 +13,7 @@ class RrPipelineStandardRenderer : public RrPipelineStateRenderer
 {
 public:
 	RENDER_API				RrPipelineStandardRenderer ( void );
-	~RrPipelineStandardRenderer ( void );
+							~RrPipelineStandardRenderer ( void );
 
 	//	IsCompatible()
 	// Is this state compatible with the given pipeline? If not, it is destroyed and correct one is created.
@@ -25,11 +25,11 @@ public:
 
 	//	CompositeDeferred() : Called when the renderer wants to combine a deferred pass with a forward pass.
 	RENDER_API rrCompositeOutput
-		CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
+							CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
 
 	//	RenderLayerEnd() : Called when the renderer finishes a given layer.
 	RENDER_API rrPipelineOutput
-		RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) override;
+							RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) override;
 
 private:
 	RrShaderProgram*	m_lightingCompositeProgram = nullptr;

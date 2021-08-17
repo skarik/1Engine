@@ -120,6 +120,7 @@
     <ClCompile Include="source\renderer\object\util\CLoadScreenInjector.cpp" />
     <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp" />
     <ClCompile Include="source\renderer\renderer-console.cpp" />
+    <ClCompile Include="source\renderer\state\pipeline\RrPipelinePaletted.cpp" />
     <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.Composite.cpp" />
     <ClCompile Include="source\renderer\state\pipeline\RrPipeline.cpp" />
     <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.Lighting.cpp" />

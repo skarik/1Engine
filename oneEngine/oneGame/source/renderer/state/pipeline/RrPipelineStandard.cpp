@@ -288,6 +288,8 @@ void RrPipelineStandardRenderer::GenerateHZB (
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument or class field
 
+	gfx->debugGroupPush("GenerateHZB");
+
 	// Grab output size for the screen quad info
 	auto& output = *state->output_info;
 	rrViewport output_viewport =  output.GetOutputViewport();
@@ -337,6 +339,8 @@ void RrPipelineStandardRenderer::GenerateHZB (
 	// Save the results
 	hzb_4 = depthInfoDownscale4;
 	hzb_16 = depthInfoDownscale16;
+
+	gfx->debugGroupPop();
 }
 
 rrPipelineOutput RrPipelineStandardRenderer::RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) 
