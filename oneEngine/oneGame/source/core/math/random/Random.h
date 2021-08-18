@@ -35,6 +35,7 @@ public:
 	static Vector3f PointInUnitSphere ( void );
 
 	static Vector2f PointOnUnitCircle ( void );
+	static Vector2f PointInUnitCircle ( void );
 
 	void Seed ( uint32_t seed )
 	{

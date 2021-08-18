@@ -28,7 +28,7 @@ Vector3f CRandom::PointOnUnitSphere ( void )
 
 Vector3f CRandom::PointInUnitSphere ( void )
 {
-	return ( PointOnUnitSphere() * Range(0,1) );
+	return ( PointOnUnitSphere() * sqrt(Range(0,1) / 2) );
 }
 
 Vector2f CRandom::PointOnUnitCircle ( void )
@@ -40,6 +40,11 @@ Vector2f CRandom::PointOnUnitCircle ( void )
 	result.y = cos( angle );
 
 	return result;
+}
+
+Vector2f CRandom::PointInUnitCircle ( void )
+{
+	return ( PointOnUnitCircle() * sqrt(Range(0,1)) );
 }
 
 bool CRandom::Chance ( Real test_value )

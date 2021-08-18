@@ -397,6 +397,12 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 		m_pipelineBound = true;
 		return kError_SUCCESS;
 	}
+	else
+	{
+		// Update the IA state that could have changed if we're reusing the pipeline
+		if (m_indexBuffer != NULL)
+			ctx->IASetIndexBuffer((ID3D11Buffer*)m_indexBuffer->nativePtr(), (m_indexFormat == kIndexFormatUnsigned16) ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT, 0);
+	}
 	return kError_SUCCESS;
 }
 

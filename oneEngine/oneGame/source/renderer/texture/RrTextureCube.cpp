@@ -5,6 +5,8 @@
 #include "core-ext/system/io/Resources.h"
 #include "core-ext/resources/ResourceManager.h"
 
+#include "core-ext/threads/Jobs.h" // TODO: hacky speed increase
+
 #include "gpuw/Buffers.h"
 
 RrTextureCube::RrTextureCube (
@@ -111,69 +113,80 @@ RrTextureCube* RrTextureCube::Load ( const char* resource_name )
 			// Flip on X
 			const uint32 elementSize = core::gfx::tex::getColorFormatByteSize(texture->info.internalFormat);
 			const uint32 elementRowSize = texture->info.width * elementSize;
-			char elementTempBuffer [sizeof(uint32) * 4];
 
 			for (uint16_t row = 0; row < texture->info.height; ++row)
 			{
-				for (uint16_t column = 0; column < texture->info.width / 2; ++column)
-				{
-					memcpy(elementTempBuffer, (char*)target + row * elementRowSize + column * elementSize, elementSize);
-					memcpy((char*)target + row * elementRowSize + column * elementSize, (char*)target + row * elementRowSize + (texture->info.width - column - 1) * elementSize, elementSize);
-					memcpy((char*)target + row * elementRowSize + (texture->info.width - column - 1) * elementSize, elementTempBuffer, elementSize);
-				}
+				core::jobs::System::Current::AddJobRequest(core::jobs::kJobTypeEngine, [texture, target, row, elementRowSize, elementSize]() {
+					for (uint16_t column = 0; column < texture->info.width / 2; ++column)
+					{
+						char elementTempBuffer [sizeof(uint32) * 4];
+						memcpy(elementTempBuffer, (char*)target + row * elementRowSize + column * elementSize, elementSize);
+						memcpy((char*)target + row * elementRowSize + column * elementSize, (char*)target + row * elementRowSize + (texture->info.width - column - 1) * elementSize, elementSize);
+						memcpy((char*)target + row * elementRowSize + (texture->info.width - column - 1) * elementSize, elementTempBuffer, elementSize);
+					}
+				});
 			}
+			core::jobs::System::Current::WaitForJobs(core::jobs::kJobTypeEngine);
 		}
 		else if (sliceIndex == 2)
 		{
 			// Flip on Y
 			const uint32 elementSize = core::gfx::tex::getColorFormatByteSize(texture->info.internalFormat);
 			const uint32 elementRowSize = texture->info.width * elementSize;
-			char* elementTempBuffer = new char [elementRowSize];
 
 			for (uint16_t row = 0; row < texture->info.height / 2; ++row)
 			{
-				memcpy(elementTempBuffer, (char*)target + row * elementRowSize, elementRowSize);
-				memcpy((char*)target + row * elementRowSize, (char*)target + (texture->info.height - row - 1) * elementRowSize, elementRowSize);
-				memcpy((char*)target + (texture->info.height - row - 1) * elementRowSize, elementTempBuffer, elementRowSize);
+				core::jobs::System::Current::AddJobRequest(core::jobs::kJobTypeEngine, [texture, target, row, elementRowSize, elementSize]() {
+					char* elementTempBuffer = new char [elementRowSize];
+					memcpy(elementTempBuffer, (char*)target + row * elementRowSize, elementRowSize);
+					memcpy((char*)target + row * elementRowSize, (char*)target + (texture->info.height - row - 1) * elementRowSize, elementRowSize);
+					memcpy((char*)target + (texture->info.height - row - 1) * elementRowSize, elementTempBuffer, elementRowSize);
+					delete[] elementTempBuffer;
+				});
 			}
-
-			delete[] elementTempBuffer;
+			core::jobs::System::Current::WaitForJobs(core::jobs::kJobTypeEngine);
 		}
 		else if (sliceIndex == 0)
 		{
 			// Flip on +X/+Y
 			const uint32 elementSize = core::gfx::tex::getColorFormatByteSize(texture->info.internalFormat);
 			const uint32 elementRowSize = texture->info.width * elementSize;
-			char elementTempBuffer [sizeof(uint32) * 4];
 
 			ARCORE_ASSERT(texture->info.width == texture->info.height);
 			for (uint16_t row = 0; row < texture->info.height; ++row)
 			{
-				for (uint16_t column = 0; column < row; ++column)
-				{
-					memcpy(elementTempBuffer, (char*)target + row * elementRowSize + column * elementSize, elementSize);
-					memcpy((char*)target + row * elementRowSize + column * elementSize, (char*)target + column * elementRowSize + row * elementSize, elementSize);
-					memcpy((char*)target + column * elementRowSize + row * elementSize, elementTempBuffer, elementSize);
-				}
+				core::jobs::System::Current::AddJobRequest(core::jobs::kJobTypeEngine, [texture, target, row, elementRowSize, elementSize]() {
+					for (uint16_t column = 0; column < row; ++column)
+					{
+						char elementTempBuffer [sizeof(uint32) * 4];
+						memcpy(elementTempBuffer, (char*)target + row * elementRowSize + column * elementSize, elementSize);
+						memcpy((char*)target + row * elementRowSize + column * elementSize, (char*)target + column * elementRowSize + row * elementSize, elementSize);
+						memcpy((char*)target + column * elementRowSize + row * elementSize, elementTempBuffer, elementSize);
+					}
+				});
 			}
+			core::jobs::System::Current::WaitForJobs(core::jobs::kJobTypeEngine);
 		}
 		else if (sliceIndex == 1)
 		{
 			// Flip on -X/+Y
 			const uint32 elementSize = core::gfx::tex::getColorFormatByteSize(texture->info.internalFormat);
 			const uint32 elementRowSize = texture->info.width * elementSize;
-			char elementTempBuffer [sizeof(uint32) * 4];
 
 			ARCORE_ASSERT(texture->info.width == texture->info.height);
 			for (uint16_t row = 0; row < texture->info.height; ++row)
 			{
-				for (uint16_t column = 0; column < (texture->info.width - row - 1); ++column)
-				{
-					memcpy(elementTempBuffer, (char*)target + row * elementRowSize + column * elementSize, elementSize);
-					memcpy((char*)target + row * elementRowSize + column * elementSize, (char*)target + (texture->info.width - column - 1) * elementRowSize + (texture->info.height - row - 1) * elementSize, elementSize);
-					memcpy((char*)target + (texture->info.width - column - 1) * elementRowSize + (texture->info.height - row - 1) * elementSize, elementTempBuffer, elementSize);
-				}
+				core::jobs::System::Current::AddJobRequest(core::jobs::kJobTypeEngine, [texture, target, row, elementRowSize, elementSize]() {
+					for (uint16_t column = 0; column < (texture->info.width - row - 1); ++column)
+					{
+						char elementTempBuffer [sizeof(uint32) * 4];
+						memcpy(elementTempBuffer, (char*)target + row * elementRowSize + column * elementSize, elementSize);
+						memcpy((char*)target + row * elementRowSize + column * elementSize, (char*)target + (texture->info.width - column - 1) * elementRowSize + (texture->info.height - row - 1) * elementSize, elementSize);
+						memcpy((char*)target + (texture->info.width - column - 1) * elementRowSize + (texture->info.height - row - 1) * elementSize, elementTempBuffer, elementSize);
+					}
+				});
 			}
+			core::jobs::System::Current::WaitForJobs(core::jobs::kJobTypeEngine);
 		}
 
 		// Loop from the bottom row of the texture, and move the data so the pitches are loaded into the correct spot.

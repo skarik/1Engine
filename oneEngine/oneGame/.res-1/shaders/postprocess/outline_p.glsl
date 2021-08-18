@@ -5,6 +5,7 @@
 
 #include "../cbuffers.glsli"
 #include "../deferred_surface.glsli"
+#include "../colorspaces.glsli"
 
 // Output to screen
 layout(location = 0) out vec4 FragColor;
@@ -63,24 +64,16 @@ void GetPoissonDisk ( inout vec2 samples[16] )
 
 void main ( void )
 {
-	// get the current depth
-	// sample a circle around the current pixel
-	
-	// for each pixel
-		// if the sampled pixel depth is less than current pixel
-			// calculate the delta
-			// thickness = min(maxThickness, 1.0 + delta / 100.0)
-			// if the distance to the pixel < thickness
-				// darken this pixel
-	
+	// Sample the center pixel's depth.
 	float referenceDepth = LinearizeZBufferDepth(texture(textureSamplerDepth, v2f_texcoord0).x);
 	
+	// Need correct aspect in order to make sure the outlines are consistent sizes in both X and Y
 	const vec2 aspectCorrectOffset = vec2(1.0, sys_ScreenSize.x / sys_ScreenSize.y);
 	
 	vec2 samples [16];
 	GetPoissonDisk(samples);
 	
-	const float kMinThickness = 0.5 / 1280.0;
+	const float kMinThickness = 1.3 / 1280.0;
 	const float kMaxThickness = 3.3 / 1280.0;
 	
 	float darkening = 0.0;
@@ -91,14 +84,20 @@ void main ( void )
 		const vec2 sampleOffset = samples[i] * aspectCorrectOffset * kMaxThickness;
 		const float sampleWidth = length(samples[i]) * kMaxThickness;
 		
+		// Sample from the zbuffer
 		float sampleDepth = LinearizeZBufferDepth(texture(textureSamplerDepth, v2f_texcoord0 + sampleOffset).x);
-		float sampleDepthDelta = (referenceDepth - sampleDepth) / (referenceDepth / 3.0);
+		// Get a delta that gets smaller as we get further from the camera.
+		// Smaller delta at distance means smaller edges don't get an outline.
+		float sampleDepthDelta = (referenceDepth - sampleDepth) / sqrt(referenceDepth);
 		
-		float sampleDepthDeltaBias = max(0.0, sampleDepthDelta - 1.0);
+		// Create a bias's delta. It has an amount subtracted so that there's a minimum depth difference for any darkening to occur.
+		float sampleDepthDeltaBias = max(0.0, sampleDepthDelta - min(10.0, 0.1 + sampleDepth / 5.0)); // By using the closer depth, we can get darker outlines on close-ups
+		
 		if (sampleDepthDeltaBias > 0.0)
 		{
-			float lineThickness = min(kMaxThickness, kMinThickness + sampleDepthDeltaBias / 180.0);
+			float lineThickness = min(kMaxThickness, kMinThickness + sampleDepthDeltaBias / 1200.0);
 			
+			// If the sample distance is smaller than the line thickness, we darken.
 			if (sampleWidth < lineThickness)
 			{
 				float sampleDarkening = min(100.0, sampleDepthDeltaBias);
@@ -110,10 +109,22 @@ void main ( void )
 	
 	vec4 pixelColor = texture(textureSamplerColor, v2f_texcoord0);
 	
+	vec3 pixelColorHSV = RGBtoHSV(pixelColor.rgb);
+	
+	bool bUseDarkerOutlines = pixelColorHSV.z > 0.1;
+	vec3 outline0HSV = vec3(pixelColorHSV.x,
+							bUseDarkerOutlines ? min(1.0, pixelColorHSV.y * 2.00 + 0.10)	: max(0.0, pixelColorHSV.y * 0.25),
+							bUseDarkerOutlines ? min(0.5, pixelColorHSV.z * 0.7)			: min(1.0, pixelColorHSV.z * 1.5 + 0.2)
+							);
+	vec3 outline1HSV = vec3(pixelColorHSV.x,
+							bUseDarkerOutlines ? min(1.0, pixelColorHSV.y * 2.50 + 0.25)	: max(0.0, pixelColorHSV.y * 0.10),
+							bUseDarkerOutlines ? pixelColorHSV.z * 0.4 						: min(1.0, pixelColorHSV.z * 2.0 + 0.4)
+							);
+	
 	// Darken first to a deeper color
-	pixelColor.rgb = mix(pixelColor.rgb, pow(min((0.95).xxx, pixelColor.rgb), (3.0).xxx), clamp(darkening * 4.0, 0.0, 1.0));
+	pixelColor.rgb = mix(pixelColor.rgb, HSVtoRGB(outline0HSV), clamp(darkening * 4.0, 0.0, 1.0));
 	// Then darken to even DEEPER
-	pixelColor.rgb = mix(pixelColor.rgb, pow(min((0.90).xxx, pixelColor.rgb), (5.0).xxx), clamp((darkening - 10.0) * 0.5, 0.0, 1.0));
+	pixelColor.rgb = mix(pixelColor.rgb, HSVtoRGB(outline1HSV), clamp((darkening - 15.0) * 0.5, 0.0, 1.0));
 	
 	FragColor = pixelColor;
 }
