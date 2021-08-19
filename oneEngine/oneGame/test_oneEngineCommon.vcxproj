@@ -123,6 +123,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
 	  <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_ENGINE_DEPLOY;_ENGINE_MODE_DEPLOY;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+	  <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
     </ClCompile>
     <Link>
       <LargeAddressAware>true</LargeAddressAware>

@@ -104,6 +104,7 @@
     <ClInclude Include="source\core-ext\animation\set\AnimationSet.h" />
     <ClInclude Include="source\core-ext\animation\Skeleton.h" />
     <ClInclude Include="source\core-ext\containers\arStringEnum.h" />
+    <ClInclude Include="source\core-ext\containers\arTimeline.h" />
     <ClInclude Include="source\core-ext\core-ext.h" />
     <ClInclude Include="source\core-ext\c_interface\config.h" />
     <ClInclude Include="source\core-ext\c_interface\OneForTwo.h" />
@@ -225,6 +226,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_ENGINE_CORE;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+	  <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
     </ClCompile>
     <Link>
       <LargeAddressAware>true</LargeAddressAware>
