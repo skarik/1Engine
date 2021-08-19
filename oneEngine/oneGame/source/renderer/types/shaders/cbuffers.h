@@ -51,7 +51,7 @@ namespace renderer
 			float		baseMetallicness = 0.0F;
 			float		scaledMetallicness = 1.0F;
 			Vector3f	emissiveColor = Vector4f(1, 1, 1, 1);
-			float		alphaCutoff = 0.0F;
+			float		alphaCutoff = 0.5F;
 			float		lighting0;
 			float		lighting1;
 			float		lighting2;

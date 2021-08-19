@@ -130,9 +130,13 @@ static core::settings::SessionSetting<bool> gsesh_LightingUseLighting ("rdbg_def
 rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument
+	auto options = (RrPipelineStandardOptions*)m_options;
 
 	{
 		RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
+		l_shadeLightingVariantInfo.VARIANT_STYLE = options->m_celShadeLighting
+			? l_shadeLightingVariantInfo.VARIANT_STYLE_CELSHADED
+			: l_shadeLightingVariantInfo.VARIANT_STYLE_NORMAL;
 		l_shadeLightingVariantInfo.VARIANT_PASS = gsesh_LightingUseDebugBuffers
 			? l_shadeLightingVariantInfo.VARIANT_PASS_DEBUG_SURFACE
 			: l_shadeLightingVariantInfo.VARIANT_PASS_DO_INDIRECT_EMISSIVE;
@@ -144,6 +148,9 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 
 	{
 		RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
+		l_shadeLightingVariantInfo.VARIANT_STYLE = options->m_celShadeLighting
+			? l_shadeLightingVariantInfo.VARIANT_STYLE_CELSHADED
+			: l_shadeLightingVariantInfo.VARIANT_STYLE_NORMAL;
 		l_shadeLightingVariantInfo.VARIANT_PASS = l_shadeLightingVariantInfo.VARIANT_PASS_DO_DIRECT_DIRECTIONAL;
 
 		GetPostprocessVariant(renderer, "shaders/deferred_pass/shade_instanced_vv.spv", "shaders/deferred_pass/",
@@ -155,6 +162,9 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 #if 0
 	{
 		RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
+		l_shadeLightingVariantInfo.VARIANT_STYLE = options->m_celShadeLighting
+			? l_shadeLightingVariantInfo.VARIANT_STYLE_CELSHADED
+			: l_shadeLightingVariantInfo.VARIANT_STYLE_NORMAL;
 		l_shadeLightingVariantInfo.VARIANT_PASS = l_shadeLightingVariantInfo.VARIANT_PASS_DO_DIRECT_OMNI;
 
 		GetPostprocessVariant(renderer, "shaders/deferred_pass/shade_worldproj_instanced_vv.spv", "shaders/deferred_pass/",

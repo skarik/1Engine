@@ -196,7 +196,10 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 			m_texture.allocate(info.type, info.internalFormat, info.width, info.height, info.depth, info.levels);
 
 			if (sync_client
-				|| info.width < core::kTextureFormat_SuperlowWidth || info.height < core::kTextureFormat_SuperlowWidth)
+				// Super small images have invalid superlows
+				|| info.width < core::kTextureFormat_SuperlowWidth || info.height < core::kTextureFormat_SuperlowWidth
+				// Many non-square images also have invalid superlows
+				|| info.width != info.height)
 			{
 				loadState = kTextureLoadState_LoadImage;
 			}

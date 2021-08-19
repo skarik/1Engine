@@ -112,7 +112,10 @@ public:
 	//	IsCompatible()
 	// Are these options compatible with the given pipeline? If not, assumes no pipeline options.
 	RENDER_API bool			IsCompatible ( const renderer::PipelineMode mode ) const override
-	{ return mode == renderer::PipelineMode::kNormal; }
+		{ return mode == renderer::PipelineMode::kNormal; }
+
+public:
+	bool				m_celShadeLighting = false;
 };
 
 #endif//RENDERER_STATE_PIPLEINE_STANDARD_H_

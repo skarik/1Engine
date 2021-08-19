@@ -23,10 +23,10 @@ DeveloperMenu::DeveloperMenu ( void )
 	: CGameBehavior()
 {
 	// Create background
-	{
+	/*{
 		CRenderable2D* bg = new renderer::Background2D();
 		(new CRendererHolder (bg))->RemoveReference();
-	}
+	}*/
 	// Build Dusk Gui
 	{
 		dusk = new dusk::UserInterface( RrWindow::List()[0] );

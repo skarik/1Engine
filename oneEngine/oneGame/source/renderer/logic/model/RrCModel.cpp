@@ -373,7 +373,7 @@ size_t RrCModel::GetMeshCount ( void ) const
 	return m_meshes.size();
 }
 // Gets the mesh with the index
-renderer::Mesh* RrCModel::GetMesh ( const uint n_index ) const
+renderer::Mesh* RrCModel::GetMesh ( const int n_index ) const
 {
 	ARCORE_ASSERT(n_index >= 0 && n_index < m_meshes.size());
 	return m_meshes[n_index];
@@ -392,7 +392,7 @@ renderer::Mesh* RrCModel::GetMesh ( const char* n_name ) const
 }
 
 // Gets the indicated mesh data in the array
-arModelData* RrCModel::GetModelData ( int iMeshIndex ) const
+arModelData* RrCModel::GetModelData ( const int iMeshIndex ) const
 {
 	renderer::Mesh* mesh = GetMesh( iMeshIndex );
 	if ( mesh )
@@ -403,7 +403,7 @@ arModelData* RrCModel::GetModelData ( int iMeshIndex ) const
 }
 
 // Returns the first matching mesh with the given name in the array
-arModelData* RrCModel::GetModelDataByName ( const char* nNameMatch ) const 
+arModelData* RrCModel::GetModelData ( const char* nNameMatch ) const 
 {
 	renderer::Mesh* mesh = GetMesh( nNameMatch );
 	if ( mesh )

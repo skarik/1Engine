@@ -33,6 +33,7 @@ RrTexture::Load ( const char* resource_name )
 	// Check if the file exists. Required for 2D to fail gracefully.
 	if (!core::Resources::Exists(resource_name))
 	{
+		ARCORE_ERROR("Invalid file passed in.");
 		return NULL;
 	}
 

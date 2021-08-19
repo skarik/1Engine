@@ -116,14 +116,14 @@ public:
 	RENDER_API size_t		GetMeshCount ( void ) const;
 	// Gets the mesh with the index
 	RENDER_API renderer::Mesh*
-							GetMesh ( const uint n_index ) const;
+							GetMesh ( const int n_index ) const;
 	// Gets the mesh with the name
 	RENDER_API renderer::Mesh*
 							GetMesh ( const char* n_name ) const;
 	// Gets the indicated mesh data in the array
 	RENDER_API arModelData*	GetModelData ( int iMeshIndex ) const;
 	// Returns the first matching mesh with the given name in the array
-	RENDER_API arModelData*	GetModelDataByName ( const char* nNameMatch ) const;
+	RENDER_API arModelData*	GetModelData ( const char* nNameMatch ) const;
 
 	// Get the hitbox list
 	//std::vector<sHitbox>*	GetHitboxes ( void )
