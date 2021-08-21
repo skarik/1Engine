@@ -22,7 +22,7 @@ namespace elements {
 		ENGCOM_API void			SetOnValueChange ( std::function<void(bool)>&& fn )
 			{ m_onValueChange = fn; }
 
-	private:
+	public:
 		bool				m_value = false;
 
 		std::function<void(bool)>

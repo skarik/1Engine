@@ -419,5 +419,8 @@
     <ClInclude Include="source\core-ext\containers\arTimeline.h">
       <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="source\core-ext\threads\ParallelFor.h">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

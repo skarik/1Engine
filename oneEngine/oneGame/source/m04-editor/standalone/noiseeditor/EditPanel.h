@@ -33,24 +33,6 @@ namespace noise {
 		m04::editor::NoiseEditor*
 							main_editor;
 
-
-		/*dusk::elements::Button*
-							button_2d;
-		dusk::elements::Button*
-							button_3d;
-
-		dusk::elements::Button*
-							button_noise_perlin;
-		dusk::elements::Button*
-							button_noise_simplex;
-		dusk::elements::Button*
-							button_noise_midpoint;
-		dusk::elements::Button*
-							button_noise_worley;
-
-		dusk::Element*		slider_total_bias;
-		dusk::Element*		slider_total_scale;*/
-
 	};
 
 }}}

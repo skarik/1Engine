@@ -149,6 +149,7 @@
     <ClInclude Include="source\core-ext\system\shell\Message.h" />
     <ClInclude Include="source\core-ext\system\shell\Status.h" />
     <ClInclude Include="source\core-ext\threads\Jobs.h" />
+    <ClInclude Include="source\core-ext\threads\ParallelFor.h" />
     <ClInclude Include="source\core-ext\transform\Transform.h" />
     <ClInclude Include="source\core-ext\transform\TransformUtility.h" />
     <ClInclude Include="source\core-ext\utils\MeshAttributes.h" />
@@ -226,7 +227,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_ENGINE_CORE;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-	  <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
     </ClCompile>
     <Link>
       <LargeAddressAware>true</LargeAddressAware>

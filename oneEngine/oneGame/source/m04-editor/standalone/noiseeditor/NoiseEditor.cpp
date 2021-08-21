@@ -4,6 +4,7 @@
 
 #include "core-ext/system/io/Resources.h"
 #include "core-ext/system/shell/Inputs.h"
+#include "core-ext/threads/ParallelFor.h"
 #include "core-ext/containers/arStringEnum.h"
 #include "core-ext/settings/PersistentSettings.h"
 
@@ -223,7 +224,7 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 
 		if (edit_state.type == NoiseType::kPerlin)
 		{
-			Perlin noise (3, 4.0F, 1.0F, edit_state.seed);
+			Perlin noise (edit_state.octaves, edit_state.frequency, 1.0F, edit_state.seed);
 			for (int pixel_x = 0; pixel_x < edit_state.size; ++pixel_x)
 			{
 				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
@@ -241,7 +242,7 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 		}
 		else if (edit_state.type == NoiseType::kSimplex)
 		{
-			SimplexNoise noise (5, 4.0F, 1.0F, (float)edit_state.seed);
+			SimplexNoise noise (edit_state.octaves, edit_state.frequency, 1.0F, (float)edit_state.seed);
 			for (int pixel_x = 0; pixel_x < edit_state.size; ++pixel_x)
 			{
 				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
@@ -259,7 +260,7 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 		}
 		else if (edit_state.type == NoiseType::kMidpoint)
 		{
-			Perlin noise_source (5, 10.0F, 1.0F, edit_state.seed);
+			Perlin noise_source (edit_state.octaves, edit_state.frequency, 1.0F, edit_state.seed);
 			midpoint_buffer_t<128> noise;
 			noise.CreateBuffer(&noise_source, 1.0F / 128.0F, 1.0F / 128.0F);
 
@@ -268,7 +269,7 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
 				{
 					float noiseValue = noise.sampleBufferMicro(pixel_x / (float)edit_state.size * 64, pixel_y / (float)edit_state.size * 64) / 255.0F;
-					noiseValue = noiseValue * 2.0F - 1.0;
+					noiseValue = noiseValue * 2.0F - 1.0F;
 
 					noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
 					if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
@@ -293,8 +294,10 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 
 		if (edit_state.type == NoiseType::kPerlin)
 		{
-			Perlin noise (3, 4.0F, 1.0F, edit_state.seed);
-			for (int pixel_x = 0; pixel_x < edit_state.size; ++pixel_x)
+			Perlin noise (edit_state.octaves, edit_state.frequency, 1.0F, edit_state.seed);
+			core::parallel_for(true,
+				0, edit_state.size,
+				[this, &noise, raw_noise](int pixel_x)
 			{
 				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
 				{
@@ -310,7 +313,59 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 							Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
 					}
 				}
-			}
+			});
+		}
+		else if (edit_state.type == NoiseType::kSimplex)
+		{
+			SimplexNoise noise (edit_state.octaves, edit_state.frequency, 1.0F, (float)edit_state.seed);
+			core::parallel_for(true,
+				0, edit_state.size,
+				[this, &noise, raw_noise](int pixel_x)
+			{
+				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
+				{
+					for (int pixel_z = 0; pixel_z < edit_state.size; ++pixel_z)
+					{
+						float noiseValue = noise.Get3D(pixel_x / (float)edit_state.size, pixel_y / (float)edit_state.size, pixel_z / (float)edit_state.size);
+
+						noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
+						if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
+						if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
+
+						raw_noise[pixel_z * edit_state.size * edit_state.size + pixel_y * edit_state.size + pixel_x] =
+							Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
+					}
+				}
+			});
+		}
+		else if (edit_state.type == NoiseType::kMidpoint)
+		{
+			Perlin noise_source (edit_state.octaves, edit_state.frequency, 1.0F, edit_state.seed);
+			midpoint_buffer3_t<128>* noise = new midpoint_buffer3_t<128>;
+			noise->CreateBuffer(&noise_source, 1.0F / 128.0F, 1.0F / 128.0F, 1.0F / 128.0F);
+
+			core::parallel_for(true,
+				0, edit_state.size,
+				[this, &noise, raw_noise](int pixel_x)
+			{
+				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
+				{
+					for (int pixel_z = 0; pixel_z < edit_state.size; ++pixel_z)
+					{
+						float noiseValue = noise->sampleBufferMicro(pixel_x / (float)edit_state.size * 64, pixel_y / (float)edit_state.size * 64, pixel_z / (float)edit_state.size * 64) / 255.0F;
+						noiseValue = noiseValue * 2.0F - 1.0F;
+
+						noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
+						if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
+						if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
+
+						raw_noise[pixel_z * edit_state.size * edit_state.size + pixel_y * edit_state.size + pixel_x] =
+							Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
+					}
+				}
+			});
+
+			delete noise;
 		}
 
 		// Save the new texture

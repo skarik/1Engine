@@ -36,15 +36,16 @@ float Perlin::noise1(float arg)
 
 	vec[0] = arg;
 
-	if ( mStart )
+	/*if ( mStart )
 	{
 		//srand(mSeed);
 		mRand.seed( mSeed );
 
 		mStart = false;
 		init();
-	}
-
+	}*/
+	ARCORE_ASSERT(mStart);
+	
 	setup(0, bx0,bx1, rx0,rx1);
 
 	sx = s_curve(rx0);
@@ -61,14 +62,15 @@ float Perlin::noise2(float vec[2])
 	float rx0, rx1, ry0, ry1, *q, sx, sy, a, b, t, u, v;
 	int i, j;
 
-	if ( mStart )
+	/*if ( mStart )
 	{
 		//srand(mSeed);
 		mRand.seed( mSeed );
 
 		mStart = false;
 		init();
-	}
+	}*/
+	ARCORE_ASSERT(mStart);
 
 	setup(0,bx0,bx1,rx0,rx1);
 	setup(1,by0,by1,ry0,ry1);
@@ -107,14 +109,15 @@ float Perlin::noise3(float vec[3])
 	float rx0, rx1, ry0, ry1, rz0, rz1, *q, sy, sz, a, b, c, d, t, u, v;
 	int i, j;
 
-	if ( mStart )
+	/*if ( mStart )
 	{
 		//srand(mSeed);
 		mRand.seed( mSeed );
 
 		mStart = false;
 		init();
-	}
+	}*/
+	ARCORE_ASSERT(mStart);
 
 	setup(0, bx0,bx1, rx0,rx1);
 	setup(1, by0,by1, ry0,ry1);
@@ -270,17 +273,19 @@ Perlin::Perlin(int octaves,float freq,float amp,int seed)
 	mSeed = seed;
 	mStart = true;
 
+	mRand.seed( mSeed );
+	init();
+
 	unnormalize = false;
 }
 
 float Perlin::Get(float x,float y)
 {
-	float vec[2];
-	// rotate input by 40
-	vec[0] = x*0.866f - y*0.5f;
-	vec[1] = x*0.5f + y*0.866f;
+	float vec[2] = {x, y};
 	float result = perlin_noise_2D(vec);
-	if ( unnormalize ) {
+
+	if ( unnormalize )
+	{
 		result += ((1-exp(-fabs(result/0.707f))) + ( sqr( (mAmplitude/2)-fabs(result) )*fabs(result) ) ) * math::sgn<float>( result );
 		result = std::max<float>( -0.5f, std::min<float>( 0.5f, result ) );
 	}
@@ -290,13 +295,11 @@ float Perlin::Get(float x,float y)
 }
 float Perlin::Get3D(float x,float y,float z)
 {
-	float vec[3];
-	// rotate input by 30,15,20
-	vec[0] = x*0.837f + y*0.483f - z*0.259f;
-	vec[1] = -x*0.393f + y*0.858f + z*0.330f;
-	vec[2] = x*0.382f - y*0.175f + z*0.908f;
+	float vec[3] = {x, y, z};
 	float result = perlin_noise_3D(vec);
-	if ( unnormalize ) {
+
+	if ( unnormalize )
+	{
 		result += ((1-exp(-fabs(result/0.707f))) + ( sqr( (mAmplitude/2)-fabs(result) )*fabs(result) ) ) * math::sgn<float>( result );
 		result = std::max<float>( -0.5f, std::min<float>( 0.5f, result ) );
 	}

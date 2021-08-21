@@ -22,20 +22,21 @@ layout(location = 0) out vec4 FragDiffuse;
 void main ( void )
 {
 	// Create the actual ray that's rasterizing this pixel
-	vec3 rayOrigin = sys_WorldCameraPos.xyz;
-	vec3 rayVector = v2f_worldcoord - rayOrigin;
-	vec3 rayVectorRenormalized = normalize(rayVector);
+	vec3 rayOriginWorld = sys_WorldCameraPos.xyz;
+	vec3 rayVectorWorld = v2f_worldcoord - rayOriginWorld;
+	vec3 rayVectorRenormalizedWorld = normalize(rayVectorWorld);
 	
 	// Transform the ray into the local object's space
-	rayOrigin = (inverse(sys_ModelTRS) * vec4(rayOrigin, 1.0)).xyz;
-	rayVector = inverse(mat3(sys_ModelTRS)) * rayVector;
-	rayVectorRenormalized = inverse(mat3(sys_ModelTRS)) * rayVectorRenormalized;
+	vec3 rayOrigin = (inverse(sys_ModelTRS) * vec4(rayOriginWorld, 1.0)).xyz;
+	vec3 rayVector = inverse(mat3(sys_ModelTRS)) * rayVectorWorld;
+	vec3 rayVectorRenormalized = inverse(mat3(sys_ModelTRS)) * rayVectorRenormalizedWorld;
 	
 	// Start with black
 	vec4 diffuseColor = vec4(0.0);
 	
 	// Set up the ray step to go 1 texel at a time
 	const vec3 rayStep = rayVectorRenormalized;//normalize(rayVector);
+	const float brightnessRatio = 1.414 * length(rayVectorRenormalized) / length(rayVectorRenormalizedWorld);
 	
 	// Hit spot is the 3D texcoord.
 	vec3 rayStart = v2f_texcoord0;
@@ -45,14 +46,8 @@ void main ( void )
 	while (all(greaterThanEqual(sampleCoord, vec3(0.0, 0.0, 0.0))) && all(lessThanEqual(sampleCoord, vec3(1.0, 1.0, 1.0))))
 	{
 		// Add in the colors
-		diffuseColor += textureLod( textureSampler0, sampleCoord, 0 );
-		
-		// Skip out if we're saturated
-		/*if (all(greaterThan(diffuseColor.rgb, vec3(1, 1, 1))))
-		{
-			break;
-		}*/
-		
+		diffuseColor += textureLod( textureSampler0, sampleCoord, 0 ) * brightnessRatio;
+
 		// Step forward
 		sampleCoord += rayStep;
 	}

@@ -36,6 +36,8 @@ namespace jobs
 
 		kJobTypeRendererSorting	= 0x0100,
 
+		kJobTypeParallelFor	= 0x8000,
+
 		kJobTypeALL = 0xFF
 	};
 

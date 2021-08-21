@@ -102,7 +102,8 @@ core::jobs::JobId core::jobs::System::_internal_AddJob ( const JobRequest& jobTo
 void core::jobs::System::_internal_WaitForJobs ( const JobTypeBits jobTypeBits )
 {
 	// Ignore invalid calls
-	if ( (jobTypeBits & kJobTypeALL) == 0 ) {
+	if ( (jobTypeBits & 0xFF00 == 0) && (jobTypeBits & kJobTypeALL) == 0 )
+	{
 		return;
 	}
 	// Set priority flag

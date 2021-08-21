@@ -36,6 +36,10 @@ namespace layouts {
 				child->m_absoluteRect = Rect(t_currentPosition, child->m_localRect.size);
 				t_currentPosition.y += child->m_absoluteRect.size.y + m_padding.y;
 			}
+
+			// update with true sizes
+			m_localRect.size.y = t_currentPosition.y - m_absoluteRect.pos.y;
+			m_absoluteRect.size.y = m_localRect.size.y;
 		}
 
 	public:
