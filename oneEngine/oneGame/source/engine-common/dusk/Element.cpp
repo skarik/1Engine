@@ -19,6 +19,12 @@ void dusk::Element::Update ( const UIStepInfo* stepinfo )
 	{
 		m_isMouseIn = false;
 	}
+
+	// If activated, invoke the callback
+	if (m_isActivated && m_onActivation != nullptr)
+	{
+		m_onActivation();
+	}
 }
 
 dusk::Element::~Element ( void )

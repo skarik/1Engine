@@ -6,6 +6,7 @@
 #include "engine-common/dusk/Handle.h"
 #include <string>
 #include <vector>
+#include <functional>
 
 namespace dusk
 {
@@ -72,9 +73,14 @@ namespace dusk
 		static constexpr bool	IsDialogElement ( void )
 			{ return false; }
 
+		//	GetElementType() : Return this element's type
 		ENGCOM_API const ElementType
 								GetElementType ( void ) const
 			{ return m_elementType; }
+
+		//	SetOnActivation ( callback ) : Set default callback to call on activation
+		ENGCOM_API void			SetOnActivation ( std::function<void()>&& fn )
+			{ m_onActivation = fn; }
 
 	public:
 		// Set to true when needs deletion by system
@@ -96,6 +102,9 @@ namespace dusk
 		std::string			m_contents = "";
 		// String for tooltip, shown when mouse hovers over the element rect.
 		std::string			m_tooltip = "";
+		// Callback for activation
+		std::function<void()>
+							m_onActivation = nullptr;
 		// Is currently visible
 		bool				m_visible = true;
 		// Can be focused?

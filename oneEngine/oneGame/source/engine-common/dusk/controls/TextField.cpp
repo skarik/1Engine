@@ -8,12 +8,8 @@ void dusk::elements::TextField::Update ( const UIStepInfo* stepinfo )
 {
 	Element::Update(stepinfo);
 
-	//isPressed = false;
-
 	if ( !m_isEnabled )
 	{
-		//beginPress = false;
-		//isPressed = false;
 	}
 	else
 	{
@@ -38,29 +34,10 @@ void dusk::elements::TextField::Update ( const UIStepInfo* stepinfo )
 			// Mouse controls
 			if ( core::Input::MouseDown(core::kMBLeft) )
 			{
-				//beginPress = true;
 			}
-			/*else if ( beginPress )
-			{
-				if ( core::Input::MouseUp(core::kMBLeft) )
-				{
-					beginPress = false;
-					isPressed = true;
-				}
-			}*/
 		}
 		else
 		{
-			/*beginPress = false;
-
-			// Keyboard controls
-			if ( m_isFocused )
-			{
-				if ( core::Input::Keydown( core::kVkReturn ) )
-				{
-					isPressed = true;
-				}
-			}*/
 		}
 	}
 

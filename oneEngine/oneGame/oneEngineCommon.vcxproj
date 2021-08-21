@@ -71,14 +71,8 @@
     <ClInclude Include="source\engine-common\debug\CTimeProfilerUI.h" />
     <ClInclude Include="source\engine-common\dialogue\CDialogueLoader.h" />
     <ClInclude Include="source\engine-common\dialogue\CDialogueTree.h" />
-    <ClInclude Include="source\engine-common\dusk\CDuskGUI.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\Button.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUICheckbox.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIColorpicker.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -110,18 +104,14 @@
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIEdgePanel.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="source\engine-common\dusk\controls\Checkbox.h" />
     <ClInclude Include="source\engine-common\dusk\controls\ColorPicker.h" />
     <ClInclude Include="source\engine-common\dusk\controls\DockablePanel.h" />
     <ClInclude Include="source\engine-common\dusk\controls\DropdownList.h" />
     <ClInclude Include="source\engine-common\dusk\controls\DropdownMenu.h" />
+    <ClInclude Include="source\engine-common\dusk\controls\FloatField.h" />
     <ClInclude Include="source\engine-common\dusk\controls\Label.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIListview.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIMaterialField.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -137,15 +127,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIPropertyview.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUISlider.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUITabview.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="source\engine-common\dusk\controls\CDuskGUITextfield.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\engine-common\dusk\controls\CDuskGUIVector2dPicker.h">
@@ -279,17 +260,8 @@
     <ClCompile Include="source\engine-common\debug\CTimeProfilerUI.cpp" />
     <ClCompile Include="source\engine-common\dialogue\CDialogueLoader.cpp" />
     <ClCompile Include="source\engine-common\dialogue\CDialogueTree.cpp" />
-    <ClCompile Include="source\engine-common\dusk\CDuskGUI.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\CDuskGUI_Drawer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\Button.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUICheckbox.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIColorpicker.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -315,18 +287,14 @@
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIEdgePanel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIFloatfield.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="source\engine-common\dusk\controls\Checkbox.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\ColorPicker.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\DockablePanel.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\DropdownList.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\DropdownMenu.cpp" />
+    <ClCompile Include="source\engine-common\dusk\controls\FloatField.cpp" />
     <ClCompile Include="source\engine-common\dusk\controls\Label.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIListview.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIMaterialField.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -339,12 +307,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIPropertyview.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUISlider.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="source\engine-common\dusk\controls\CDuskGUITextfield.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\engine-common\dusk\controls\CDuskGUIVector3dPicker.cpp">
@@ -499,9 +461,9 @@
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-	  <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_ENGINE_ENGINE_COMMON;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-	  <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
     </ClCompile>
     <Link>
       <LargeAddressAware>true</LargeAddressAware>

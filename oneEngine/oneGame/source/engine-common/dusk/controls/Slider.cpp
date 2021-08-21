@@ -16,6 +16,8 @@ void dusk::elements::Slider<NumberType>::Update ( const UIStepInfo* stepinfo )
 	}
 	else
 	{
+		const NumberType l_previousValue = m_value;
+
 		if ( m_isMouseIn && m_wasDrawn )
 		{
 			// Mouse controls
@@ -24,14 +26,16 @@ void dusk::elements::Slider<NumberType>::Update ( const UIStepInfo* stepinfo )
 				// Check the mouse position versus the absolute rect
 				Real32 mousePercent = math::saturate<Real32>((core::Input::MouseX() - (m_absoluteRect.pos.x + 2.0F)) / (m_absoluteRect.size.x - 4.0F));
 
+				// And we apply the limit
+				m_value = (NumberType)math::lerp<Real32>(mousePercent, (Real32)m_range_min, (Real32)m_range_max);
+
 				// Then we snap
 				if (m_snap)
 				{
 					m_value = (NumberType)(math::round<Real32>((Real32)((Real32)m_value / m_snap_divisor)) * m_snap_divisor);
+					// And limit again
+					m_value = (NumberType)math::clamp<NumberType>(m_value, m_range_min, m_range_max);
 				}
-
-				// And we apply the limit
-				m_value = (NumberType)math::lerp<Real32>(mousePercent, (Real32)m_range_min, (Real32)m_range_max);
 			}
 		}
 		else
@@ -53,6 +57,12 @@ void dusk::elements::Slider<NumberType>::Update ( const UIStepInfo* stepinfo )
 					m_value = (NumberType)math::clamp(m_value, m_range_min, m_range_max);
 				}
 			}
+		}
+
+		// Update change callbacks
+		if (l_previousValue != m_value && m_onValueChange != nullptr)
+		{
+			m_onValueChange(m_value);
 		}
 	}
 
