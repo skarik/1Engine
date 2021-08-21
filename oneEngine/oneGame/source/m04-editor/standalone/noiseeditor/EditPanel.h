@@ -33,6 +33,12 @@ namespace noise {
 		m04::editor::NoiseEditor*
 							main_editor;
 
+		void					BeginSaveAsFile ( void );
+		dusk::DialogElement*
+							savefileDialog = NULL;
+
+		void					SaveFile ( const std::string& filename );
+
 	};
 
 }}}
