@@ -202,9 +202,12 @@ void m04::editor::NoiseEditor::UpdateViewDrag ( void )
 	}
 }
 
-#include "core/math/noise/Perlin.h"
+#include "core/math/noise/PerlinNoise.h"
 #include "core/math/noise/SimplexNoise.h"
 #include "core-ext/math/noise/MidpointNoiseBuffer.h"
+#include "core-ext/math/noise/MidpointWrappedNoise.h"
+#include "core/math/noise/WorleyCellNoise.h"
+#include "core/math/noise/WorleyNoise.h"
 
 #include "renderer/object/shapes/RrShapePlane.h"
 #include "renderer/object/shapes/RrShapeCube.h"
@@ -217,164 +220,94 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 		noise_texture->RemoveReference();
 	}
 
+	BaseNoise* noise = nullptr;
+	if (edit_state.type == NoiseType::kPerlin)
+	{
+		noise = new PerlinNoise (edit_state.octaves, edit_state.frequency, 1.0F, edit_state.seed);
+	}
+	else if (edit_state.type == NoiseType::kSimplex)
+	{
+		noise = new SimplexNoise (edit_state.octaves, edit_state.frequency, 1.0F, (float)edit_state.seed);
+	}
+	else if (edit_state.type == NoiseType::kMidpoint)
+	{
+		noise = new MidpointWrappedNoise (edit_state.octaves, edit_state.frequency, edit_state.seed);
+	}
+	else if (edit_state.type == NoiseType::kWorleyCell)
+	{
+		noise = new WorleyCellNoise (edit_state.frequency, 1.0F, edit_state.seed);
+	}
+	else if (edit_state.type == NoiseType::kWorley)
+	{
+		noise = new WorleyNoise ((int)(edit_state.frequency * edit_state.frequency * edit_state.frequency), 1.0F / edit_state.frequency, 1.0F, edit_state.seed);
+	}
+
 	// Generate noise
-	if (!edit_state.is3D)
+	if (noise != nullptr)
 	{
-		Vector4f* raw_noise = new Vector4f [edit_state.size * edit_state.size];
-
-		if (edit_state.type == NoiseType::kPerlin)
+		if (!edit_state.is3D)
 		{
-			Perlin noise (edit_state.octaves, edit_state.frequency, 1.0F, edit_state.seed);
-			for (int pixel_x = 0; pixel_x < edit_state.size; ++pixel_x)
+			Vector4f* raw_noise = new Vector4f [edit_state.size * edit_state.size];
+
+			core::parallel_for(true,
+				0, edit_state.size,
+				[this, &noise, raw_noise](int pixel_x)
 			{
 				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
 				{
-					float noiseValue = noise.Get(pixel_x / (float)edit_state.size, pixel_y / (float)edit_state.size);
+					float noiseValue = noise->Get(pixel_x / (float)edit_state.size, pixel_y / (float)edit_state.size);
 
 					noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
+					if (edit_state.invert_output) noiseValue = 1.0F - noiseValue;
 					if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
 					if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
 
 					raw_noise[pixel_y * edit_state.size + pixel_x] =
 						Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
 				}
-			}
+			});
+
+			// Save the new texture
+			noise_texture = RrTexture::CreateUnitialized("noise");
+			noise_texture->Upload(false, raw_noise, edit_state.size, edit_state.size, core::gfx::tex::kColorFormatRGBA32F);
+			noise_texture->AddReference();
+
+			delete[] raw_noise;
 		}
-		else if (edit_state.type == NoiseType::kSimplex)
+		else
 		{
-			SimplexNoise noise (edit_state.octaves, edit_state.frequency, 1.0F, (float)edit_state.seed);
-			for (int pixel_x = 0; pixel_x < edit_state.size; ++pixel_x)
+			Vector4f* raw_noise = new Vector4f [edit_state.size * edit_state.size * edit_state.size];
+
+			core::parallel_for(true,
+				0, edit_state.size,
+				[this, &noise, raw_noise](int pixel_x)
 			{
 				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
 				{
-					float noiseValue = noise.Get(pixel_x / (float)edit_state.size, pixel_y / (float)edit_state.size);
+					for (int pixel_z = 0; pixel_z < edit_state.size; ++pixel_z)
+					{
+						float noiseValue = noise->Get(pixel_x / (float)edit_state.size, pixel_y / (float)edit_state.size, pixel_z / (float)edit_state.size);
 
-					noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
-					if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
-					if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
+						noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
+						if (edit_state.invert_output) noiseValue = 1.0F - noiseValue;
+						if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
+						if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
 
-					raw_noise[pixel_y * edit_state.size + pixel_x] =
-						Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
+						raw_noise[pixel_z * edit_state.size * edit_state.size + pixel_y * edit_state.size + pixel_x] =
+							Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
+					}
 				}
-			}
+			});
+
+			// Save the new texture
+			noise_texture = RrTexture3D::CreateUnitialized("noise");
+			((RrTexture3D*)noise_texture)->Upload(false, raw_noise, edit_state.size, edit_state.size, edit_state.size, core::gfx::tex::kColorFormatRGBA32F);
+			noise_texture->AddReference();
+
+			delete[] raw_noise;
 		}
-		else if (edit_state.type == NoiseType::kMidpoint)
-		{
-			Perlin noise_source (edit_state.octaves, edit_state.frequency, 1.0F, edit_state.seed);
-			midpoint_buffer_t<128> noise;
-			noise.CreateBuffer(&noise_source, 1.0F / 128.0F, 1.0F / 128.0F);
-
-			for (int pixel_x = 0; pixel_x < edit_state.size; ++pixel_x)
-			{
-				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
-				{
-					float noiseValue = noise.sampleBufferMicro(pixel_x / (float)edit_state.size * 64, pixel_y / (float)edit_state.size * 64) / 255.0F;
-					noiseValue = noiseValue * 2.0F - 1.0F;
-
-					noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
-					if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
-					if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
-
-					raw_noise[pixel_y * edit_state.size + pixel_x] =
-						Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
-				}
-			}
-		}
-
-		// Save the new texture
-		noise_texture = RrTexture::CreateUnitialized("noise");
-		noise_texture->Upload(false, raw_noise, edit_state.size, edit_state.size, core::gfx::tex::kColorFormatRGBA32F);
-		noise_texture->AddReference();
-
-		delete[] raw_noise;
 	}
-	else
-	{
-		Vector4f* raw_noise = new Vector4f [edit_state.size * edit_state.size * edit_state.size];
-
-		if (edit_state.type == NoiseType::kPerlin)
-		{
-			Perlin noise (edit_state.octaves, edit_state.frequency, 1.0F, edit_state.seed);
-			core::parallel_for(true,
-				0, edit_state.size,
-				[this, &noise, raw_noise](int pixel_x)
-			{
-				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
-				{
-					for (int pixel_z = 0; pixel_z < edit_state.size; ++pixel_z)
-					{
-						float noiseValue = noise.Get3D(pixel_x / (float)edit_state.size, pixel_y / (float)edit_state.size, pixel_z / (float)edit_state.size);
-
-						noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
-						if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
-						if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
-
-						raw_noise[pixel_z * edit_state.size * edit_state.size + pixel_y * edit_state.size + pixel_x] =
-							Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
-					}
-				}
-			});
-		}
-		else if (edit_state.type == NoiseType::kSimplex)
-		{
-			SimplexNoise noise (edit_state.octaves, edit_state.frequency, 1.0F, (float)edit_state.seed);
-			core::parallel_for(true,
-				0, edit_state.size,
-				[this, &noise, raw_noise](int pixel_x)
-			{
-				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
-				{
-					for (int pixel_z = 0; pixel_z < edit_state.size; ++pixel_z)
-					{
-						float noiseValue = noise.Get3D(pixel_x / (float)edit_state.size, pixel_y / (float)edit_state.size, pixel_z / (float)edit_state.size);
-
-						noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
-						if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
-						if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
-
-						raw_noise[pixel_z * edit_state.size * edit_state.size + pixel_y * edit_state.size + pixel_x] =
-							Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
-					}
-				}
-			});
-		}
-		else if (edit_state.type == NoiseType::kMidpoint)
-		{
-			Perlin noise_source (edit_state.octaves, edit_state.frequency, 1.0F, edit_state.seed);
-			midpoint_buffer3_t<128>* noise = new midpoint_buffer3_t<128>;
-			noise->CreateBuffer(&noise_source, 1.0F / 128.0F, 1.0F / 128.0F, 1.0F / 128.0F);
-
-			core::parallel_for(true,
-				0, edit_state.size,
-				[this, &noise, raw_noise](int pixel_x)
-			{
-				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
-				{
-					for (int pixel_z = 0; pixel_z < edit_state.size; ++pixel_z)
-					{
-						float noiseValue = noise->sampleBufferMicro(pixel_x / (float)edit_state.size * 64, pixel_y / (float)edit_state.size * 64, pixel_z / (float)edit_state.size * 64) / 255.0F;
-						noiseValue = noiseValue * 2.0F - 1.0F;
-
-						noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
-						if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
-						if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
-
-						raw_noise[pixel_z * edit_state.size * edit_state.size + pixel_y * edit_state.size + pixel_x] =
-							Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
-					}
-				}
-			});
-
-			delete noise;
-		}
-
-		// Save the new texture
-		noise_texture = RrTexture3D::CreateUnitialized("noise");
-		((RrTexture3D*)noise_texture)->Upload(false, raw_noise, edit_state.size, edit_state.size, edit_state.size, core::gfx::tex::kColorFormatRGBA32F);
-		noise_texture->AddReference();
-
-		delete[] raw_noise;
-	}
+	delete noise;
 
 	// Create the previewer: either a plane with a specific material, or a 3d cube with specific material. Create both and toggle between them.
 	if (!edit_state.is3D)

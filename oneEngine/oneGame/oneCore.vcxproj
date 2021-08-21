@@ -80,7 +80,7 @@
       <CompileAsWinRT>false</CompileAsWinRT>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
-	  <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -167,6 +167,7 @@
     <ClInclude Include="source\core-ext\containers\osfstructure.h" />
     <ClInclude Include="source\core-ext\math\MathQEF.h" />
     <ClInclude Include="source\core-ext\math\noise\MidpointNoiseBuffer.h" />
+    <ClInclude Include="source\core-ext\math\noise\MidpointWrappedNoise.h" />
     <ClInclude Include="source\core-ext\system\io\serializer.h" />
     <ClInclude Include="source\core-ext\system\io\serializer\CBaseSerializer.h" />
     <ClInclude Include="source\core-ext\system\io\serializer\ISerialBinary.h" />
@@ -216,9 +217,12 @@
     <ClInclude Include="source\core\math\matrix\Matrix4x4.h" />
     <ClInclude Include="source\core\math\matrix\Matrix4x4.hpp" />
     <ClInclude Include="source\core\math\noise\BaseNoise.h" />
-    <ClInclude Include="source\core\math\noise\Perlin.h" />
+    <ClInclude Include="source\core\math\noise\PerlinNoise.h" />
+    <ClInclude Include="source\core\math\noise\PerlinOldNoise.h" />
+    <ClInclude Include="source\core\math\noise\private\simplex_noise.h" />
     <ClInclude Include="source\core\math\noise\SimplexNoise.h" />
-    <ClInclude Include="source\core\math\noise\simplex_noise.h" />
+    <ClInclude Include="source\core\math\noise\WorleyCellNoise.h" />
+    <ClInclude Include="source\core\math\noise\WorleyNoise.h" />
     <ClInclude Include="source\core\math\Plane.h" />
     <ClInclude Include="source\core\math\Polygon.h" />
     <ClInclude Include="source\core\math\Quadrilateral.h" />
@@ -267,6 +271,7 @@
     <ClCompile Include="source\core-ext\containers\osfstructure.cpp" />
     <ClCompile Include="source\core-ext\math\MathQEF.cpp" />
     <ClCompile Include="source\core-ext\math\noise\MidpointNoiseBuffer.cpp" />
+    <ClCompile Include="source\core-ext\math\noise\MidpointWrappedNoise.cpp" />
     <ClCompile Include="source\core-ext\system\io\serializer\ISerialBinary.cpp" />
     <ClCompile Include="source\core-ext\system\io\serializer\OSerialBinary.cpp" />
     <ClCompile Include="source\core\callbacks\Events.cpp" />
@@ -274,9 +279,12 @@
     <ClCompile Include="source\core\math\Cubic.cpp" />
     <ClCompile Include="source\core\math\Frustum.cpp" />
     <ClCompile Include="source\core\math\Math.cpp" />
-    <ClCompile Include="source\core\math\noise\Perlin.cpp" />
+    <ClCompile Include="source\core\math\noise\PerlinNoise.cpp" />
+    <ClCompile Include="source\core\math\noise\PerlinOldNoise.cpp" />
+    <ClCompile Include="source\core\math\noise\private\simplex_noise.cpp" />
     <ClCompile Include="source\core\math\noise\SimplexNoise.cpp" />
-    <ClCompile Include="source\core\math\noise\simplex_noise.cpp" />
+    <ClCompile Include="source\core\math\noise\WorleyCellNoise.cpp" />
+    <ClCompile Include="source\core\math\noise\WorleyNoise.cpp" />
     <ClCompile Include="source\core\math\Polygon.cpp" />
     <ClCompile Include="source\core\math\Quadrilateral.cpp" />
     <ClCompile Include="source\core\math\Quaternion.cpp" />

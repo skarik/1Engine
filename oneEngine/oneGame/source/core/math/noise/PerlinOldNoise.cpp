@@ -10,7 +10,7 @@
 #include <cmath>
 
 #include "core/math/Math.h"
-#include "Perlin.h"
+#include "PerlinOldNoise.h"
 
 #define B 0x100
 #define BM 0x0FF
@@ -29,22 +29,12 @@
 	r0 = t - (int)t;\
 	r1 = r0 - 1.0f;
 
-float Perlin::noise1(float arg)
+float PerlinOldNoise::noise1(float arg)
 {
 	int bx0, bx1;
 	float rx0, rx1, sx, t, u, v, vec[1];
 
 	vec[0] = arg;
-
-	/*if ( mStart )
-	{
-		//srand(mSeed);
-		mRand.seed( mSeed );
-
-		mStart = false;
-		init();
-	}*/
-	ARCORE_ASSERT(mStart);
 	
 	setup(0, bx0,bx1, rx0,rx1);
 
@@ -56,21 +46,11 @@ float Perlin::noise1(float arg)
 	return lerp(sx, u, v);
 }
 
-float Perlin::noise2(float vec[2])
+float PerlinOldNoise::noise2(float vec[2])
 {
 	int bx0, bx1, by0, by1, b00, b10, b01, b11;
 	float rx0, rx1, ry0, ry1, *q, sx, sy, a, b, t, u, v;
 	int i, j;
-
-	/*if ( mStart )
-	{
-		//srand(mSeed);
-		mRand.seed( mSeed );
-
-		mStart = false;
-		init();
-	}*/
-	ARCORE_ASSERT(mStart);
 
 	setup(0,bx0,bx1,rx0,rx1);
 	setup(1,by0,by1,ry0,ry1);
@@ -103,21 +83,11 @@ float Perlin::noise2(float vec[2])
 	return lerp(sy, a, b);
 }
 
-float Perlin::noise3(float vec[3])
+float PerlinOldNoise::noise3(float vec[3])
 {
 	int bx0, bx1, by0, by1, bz0, bz1, b00, b10, b01, b11;
 	float rx0, rx1, ry0, ry1, rz0, rz1, *q, sy, sz, a, b, c, d, t, u, v;
 	int i, j;
-
-	/*if ( mStart )
-	{
-		//srand(mSeed);
-		mRand.seed( mSeed );
-
-		mStart = false;
-		init();
-	}*/
-	ARCORE_ASSERT(mStart);
 
 	setup(0, bx0,bx1, rx0,rx1);
 	setup(1, by0,by1, ry0,ry1);
@@ -160,7 +130,7 @@ float Perlin::noise3(float vec[3])
 	return lerp(sz, c, d);
 }
 
-void Perlin::normalize2(float v[2])
+void PerlinOldNoise::normalize2(float v[2])
 {
 	float s;
 
@@ -171,7 +141,7 @@ void Perlin::normalize2(float v[2])
 	v[1] = v[1] * s;
 }
 
-void Perlin::normalize3(float v[3])
+void PerlinOldNoise::normalize3(float v[3])
 {
 	float s;
 
@@ -183,7 +153,7 @@ void Perlin::normalize3(float v[3])
 	v[2] = v[2] * s;
 }
 
-void Perlin::init(void)
+void PerlinOldNoise::init(void)
 {
 	int i, j, k;
 
@@ -199,6 +169,7 @@ void Perlin::init(void)
 		normalize3(g3[i]);
 	}
 
+	// Shuffle the values
 	while (--i)
 	{
 		k = p[i];
@@ -219,7 +190,7 @@ void Perlin::init(void)
 }
 
 
-float Perlin::perlin_noise_2D(float vec[2])
+float PerlinOldNoise::perlin_noise_2D(float vec[2])
 {
 	int terms   = mOctaves;
 	float freq  = mFrequency;
@@ -240,7 +211,7 @@ float Perlin::perlin_noise_2D(float vec[2])
 	return result;
 }
 
-float Perlin::perlin_noise_3D(float vec[3])
+float PerlinOldNoise::perlin_noise_3D(float vec[3])
 {
 	int terms   = mOctaves;
 	float freq  = mFrequency;
@@ -263,54 +234,28 @@ float Perlin::perlin_noise_3D(float vec[3])
 	return result;
 }
 
-
-
-Perlin::Perlin(int octaves,float freq,float amp,int seed)
+PerlinOldNoise::PerlinOldNoise (int octaves,float freq,float amp,int seed)
 {
 	mOctaves = octaves;
 	mFrequency = freq;
 	mAmplitude = amp;
 	mSeed = seed;
-	mStart = true;
 
 	mRand.seed( mSeed );
 	init();
-
-	unnormalize = false;
 }
 
-float Perlin::Get(float x,float y)
+float PerlinOldNoise::Get ( const Vector2f& position )
 {
-	float vec[2] = {x, y};
+	float vec[2] = {position.x, position.y};
 	float result = perlin_noise_2D(vec);
 
-	if ( unnormalize )
-	{
-		result += ((1-exp(-fabs(result/0.707f))) + ( sqr( (mAmplitude/2)-fabs(result) )*fabs(result) ) ) * math::sgn<float>( result );
-		result = std::max<float>( -0.5f, std::min<float>( 0.5f, result ) );
-	}
-
-		//result += sqr( (mAmplitude/2)-fabs(result) ) * mAmplitude * 7.0f * sgn( result ) * ( fabs( result ) + mAmplitude*0.01f );
 	return result;
 }
-float Perlin::Get3D(float x,float y,float z)
+float PerlinOldNoise::Get ( const Vector3f& position )
 {
-	float vec[3] = {x, y, z};
+	float vec[3] = {position.x, position.y, position.z};
 	float result = perlin_noise_3D(vec);
 
-	if ( unnormalize )
-	{
-		result += ((1-exp(-fabs(result/0.707f))) + ( sqr( (mAmplitude/2)-fabs(result) )*fabs(result) ) ) * math::sgn<float>( result );
-		result = std::max<float>( -0.5f, std::min<float>( 0.5f, result ) );
-	}
-
-		//result += sqr( (mAmplitude/2)-fabs(result) ) * mAmplitude * 7.0f * sgn( result ) * ( fabs( result ) + mAmplitude*0.01f );
-	return result;
-}
-
-float Perlin::Unnormalize(float result)
-{
-	result += ((1-exp(-fabs(result/0.707f))) + ( sqr( (mAmplitude/2)-fabs(result) )*fabs(result) ) ) * math::sgn<float>( result );
-	result = std::max<float>( -0.5f, std::min<float>( 0.5f, result ) );
 	return result;
 }

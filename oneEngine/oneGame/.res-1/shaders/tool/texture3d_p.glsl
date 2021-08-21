@@ -35,7 +35,7 @@ void main ( void )
 	vec4 diffuseColor = vec4(0.0);
 	
 	// Set up the ray step to go 1 texel at a time
-	const vec3 rayStep = rayVectorRenormalized;//normalize(rayVector);
+	const vec3 rayStep = rayVectorRenormalized;
 	const float brightnessRatio = 1.414 * length(rayVectorRenormalized) / length(rayVectorRenormalizedWorld);
 	
 	// Hit spot is the 3D texcoord.
@@ -51,11 +51,7 @@ void main ( void )
 		// Step forward
 		sampleCoord += rayStep;
 	}
-	//diffuseColor = texture( textureSampler0, hitCoord );
 
 	diffuseColor.a = 1.0;
 	FragDiffuse = diffuseColor * v2f_colors;
-	//FragDiffuse.rgb = hitCoord + vec3(0.5, 0.5, 0.5);
-	//FragDiffuse.rgb = abs(rayVectorRenormalized);
-	//FragDiffuse.rgb = v2f_worldcoord;
 }

@@ -78,7 +78,7 @@ void midpoint_buffer3_t<WIDTH>::CreateBuffer ( BaseNoise* nnoise, const Real sca
 
 					uchar midpoint = (uchar) (
 						( (Real(point_0_0_0))+(Real(point_1_0_0))+(Real(point_0_1_0))+(Real(point_1_1_0))+(Real(point_0_0_1))+(Real(point_1_0_1))+(Real(point_0_1_1))+(Real(point_1_1_1)) )/8.0
-						+ (nnoise->Get3D(t_x*scalx,t_y*scaly,t_z*scalz)*t_step*(2048.0f/WIDTH))
+						+ (nnoise->Get(t_x*scalx,t_y*scaly,t_z*scalz)*t_step*(2048.0f/WIDTH))
 						);
 					setSample( t_x + t_halfstep, t_y + t_halfstep, t_z + t_halfstep, midpoint );
 				}

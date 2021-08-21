@@ -92,6 +92,9 @@
     <Filter Include="SOURCE\Core-ext\Gfx">
       <UniqueIdentifier>{1b7533b8-0491-43a2-884e-2d56b5d04110}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Core\Math\Noise\Private">
+      <UniqueIdentifier>{476f05b4-5bf8-4196-b8e2-9836297fee48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\callback_basics.h">
@@ -124,13 +127,7 @@
     <ClInclude Include="source\core\math\noise\BaseNoise.h">
       <Filter>SOURCE\Core\Math\Noise</Filter>
     </ClInclude>
-    <ClInclude Include="source\core\math\noise\Perlin.h">
-      <Filter>SOURCE\Core\Math\Noise</Filter>
-    </ClInclude>
     <ClInclude Include="source\core\math\noise\SimplexNoise.h">
-      <Filter>SOURCE\Core\Math\Noise</Filter>
-    </ClInclude>
-    <ClInclude Include="source\core\math\noise\simplex_noise.h">
       <Filter>SOURCE\Core\Math\Noise</Filter>
     </ClInclude>
     <ClInclude Include="source\core\math\matrix\CMatrix.h">
@@ -421,6 +418,24 @@
     <ClInclude Include="source\core\containers\araccessor.h">
       <Filter>SOURCE\Core\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\math\noise\PerlinNoise.h">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\noise\private\simplex_noise.h">
+      <Filter>SOURCE\Core\Math\Noise\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\noise\PerlinOldNoise.h">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\noise\WorleyCellNoise.h">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\math\noise\MidpointWrappedNoise.h">
+      <Filter>SOURCE\Core-ext\Math\Noise</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\math\noise\WorleyNoise.h">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">
@@ -429,13 +444,7 @@
     <ClCompile Include="source\core\math\Math.cpp">
       <Filter>SOURCE\Core\Math</Filter>
     </ClCompile>
-    <ClCompile Include="source\core\math\noise\Perlin.cpp">
-      <Filter>SOURCE\Core\Math\Noise</Filter>
-    </ClCompile>
     <ClCompile Include="source\core\math\noise\SimplexNoise.cpp">
-      <Filter>SOURCE\Core\Math\Noise</Filter>
-    </ClCompile>
-    <ClCompile Include="source\core\math\noise\simplex_noise.cpp">
       <Filter>SOURCE\Core\Math\Noise</Filter>
     </ClCompile>
     <ClCompile Include="source\core\math\Cubic.cpp">
@@ -515,6 +524,24 @@
     </ClCompile>
     <ClCompile Include="source\core-ext\containers\osfstructure.cpp">
       <Filter>SOURCE\Core-ext\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\noise\PerlinNoise.cpp">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\noise\private\simplex_noise.cpp">
+      <Filter>SOURCE\Core\Math\Noise\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\noise\PerlinOldNoise.cpp">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\noise\WorleyCellNoise.cpp">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\math\noise\MidpointWrappedNoise.cpp">
+      <Filter>SOURCE\Core-ext\Math\Noise</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core\math\noise\WorleyNoise.cpp">
+      <Filter>SOURCE\Core\Math\Noise</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

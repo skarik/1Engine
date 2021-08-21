@@ -31,6 +31,7 @@ namespace editor {
 		kPerlin,
 		kSimplex,
 		kMidpoint,
+		kWorleyCell,
 		kWorley,
 	};
 
@@ -46,6 +47,7 @@ namespace editor {
 		bool		clamp_top = false;
 		float		total_bias = 0.5F;
 		float		total_scale = 0.5F;
+		bool		invert_output = false;
 
 		int			octaves = 3;
 		float		frequency = 4.0F;

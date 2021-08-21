@@ -3,7 +3,6 @@
 // http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
 
 #ifndef PERLIN_H_
-
 #define PERLIN_H_
 
 #include <algorithm>
@@ -11,18 +10,17 @@
 #include "BaseNoise.h"
 #include "core/math/random/Random.h"
 
-#define SAMPLE_SIZE 0x100
+#define SAMPLE_SIZE 0x100 // 256 values
 
-class Perlin : public BaseNoise
+class PerlinOldNoise : public BaseNoise
 {
 public:
+	PerlinOldNoise (int octaves, float freq, float amp, int seed);
 
-	Perlin(int octaves,float freq,float amp,int seed);
-
-	float Get(float x,float y);
-	float Get3D(float x,float y,float z);
-
-	float Unnormalize(float result);
+	//	Get( pos2d ) : Sample the noise on 2D plane.
+	virtual float			Get (const Vector2f& position) override;
+	//	Get( pos3d ) : Sample the noise on 3D volume.
+	virtual float			Get (const Vector3f& position) override;
 
 private:
 	void init_perlin(int n,float p);
@@ -45,7 +43,6 @@ private:
 	float g3[SAMPLE_SIZE + SAMPLE_SIZE + 2][3];
 	float g2[SAMPLE_SIZE + SAMPLE_SIZE + 2][2];
 	float g1[SAMPLE_SIZE + SAMPLE_SIZE + 2];
-	bool  mStart;
 
 private:
 	//typedef boost::random::mt19937 base_generator_type;
@@ -54,5 +51,7 @@ private:
 	base_generator_type mRand;
 
 };
+
+#undef SAMPLE_SIZE
 
 #endif

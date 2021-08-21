@@ -86,8 +86,17 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 		});
 
 		auto button_noise_worley = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
-		button_noise_worley->m_contents = "Worley";
+		button_noise_worley->m_contents = "Worley Cell";
 		button_noise_worley->SetOnActivation([this]()
+		{
+			auto& noise_params = main_editor->GetState();
+			noise_params.type = m04::editor::NoiseType::kWorleyCell;
+			main_editor->UpdateNoise();
+		});
+
+		auto button_noise_worley2 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
+		button_noise_worley2->m_contents = "Worley";
+		button_noise_worley2->SetOnActivation([this]()
 		{
 			auto& noise_params = main_editor->GetState();
 			noise_params.type = m04::editor::NoiseType::kWorley;
@@ -159,8 +168,8 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)))
 			->m_contents = "Scale";
 		auto slider_total_scale = dusk_interface->Add<dusk::elements::Slider<float>>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 40)));
-		slider_total_scale->m_range_min = -1.0F;
-		slider_total_scale->m_range_max = +1.0F;
+		slider_total_scale->m_range_min = -2.0F;
+		slider_total_scale->m_range_max = +2.0F;
 		slider_total_scale->m_snap_divisor = 0.05F;
 		slider_total_scale->m_snap = true;
 		slider_total_scale->m_value = 0.5F;
@@ -168,6 +177,18 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 		{
 			auto& noise_params = main_editor->GetState();
 			noise_params.total_scale = value;
+			main_editor->UpdateNoise();
+		});
+
+		auto hLayout0 = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(vLayout));
+		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 60, 20)))
+			->m_contents = "Invert";
+		auto checkbox_invert = dusk_interface->Add<dusk::elements::Checkbox>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 20, 20)));
+		checkbox_invert->m_value = main_editor->GetState().invert_output;
+		checkbox_invert->SetOnValueChange([this](bool value)
+		{
+			auto& noise_params = main_editor->GetState();
+			noise_params.invert_output = value;
 			main_editor->UpdateNoise();
 		});
 

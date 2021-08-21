@@ -31,27 +31,27 @@ namespace math
 
 	//	saturate ( float ) : clamps the value before 0 and 1
 	template <typename Number> inline
-		Number saturate ( Number f )
+		constexpr Number saturate ( Number f ) noexcept
 	{
 		f =    ( (f>1) ? 1 : f );
 		return ( (0>f) ? 0 : f );
 	}
 	//	clamp ( float value, lower, upper ) : clamps the value between the two input numbers
 	template <typename Number> inline
-		Number clamp ( Number val, Number lower, Number upper )
+		constexpr Number clamp ( Number val, Number lower, Number upper ) noexcept
 	{
 		val = ( (val > upper) ? upper : val );
 		return  (lower > val) ? lower : val;
 	}
 	//	wrap_max ( float value, max ) : wraps the value to range of 0 to max
 	template <typename Number> inline
-		Number wrap_max ( Number val, Number max )
+		constexpr Number wrap_max ( Number val, Number max ) noexcept
 	{
 		return (Number)fmod(max + fmod(val, max), max);
 	}
 	//	wrap ( float value, lower, upper ) : wraps the value to range of lower to upper
 	template <typename Number> inline
-		Number wrap ( Number val, Number lower, Number upper )
+		constexpr Number wrap ( Number val, Number lower, Number upper ) noexcept
 	{
 		return lower + wrap_max<Number>(val - lower, upper - lower);
 	}
@@ -63,39 +63,54 @@ namespace math
 
 	//	sgn ( number ) : finds sign of the input value
 	template <typename Number> inline
-		int sgn(Number val)
+		constexpr int sgn(Number val) noexcept
 	{
 		return (Number(0) < val) - (val < Number(0));
 	}
 
 	//	square ( number ) : returns value to the second power
 	template <typename Number> inline
-		Number square(Number val)
+		constexpr Number square(Number val) noexcept
 	{
 		return sqr(val);
 	}
 
 	//	cube ( number ) : returns value to the third power
 	template <typename Number> inline
-		Number cube(Number val)
+		constexpr Number cube(Number val) noexcept
 	{
 		return cub(val);
 	}
 
 	//	round ( number ) : rounds value to the neearest integer
 	template <typename Number> inline
-		int32_t round(Number r)
+		constexpr int32_t round(Number r) noexcept
 	{
 		return (int32_t)((r > 0.0) ? (r + 0.5) : (r - 0.5)); 
+	}
+
+	//	round ( number ) : rounds value to the neearest integer
+	template <typename Number> inline
+		constexpr int32_t floor(Number r) noexcept
+	{
+		int32_t i = (int32)r;
+		return (r < i) ? (i - 1) : i;
+	}
+
+	//	fract ( number ) : rounds value to the neearest integer
+	template <typename Number> inline
+		constexpr Number fract(Number r) noexcept
+	{
+		return r - floor(r);
 	}
 
 	//	log2 ( integer ) : Very fast Log2.
 	// It has a very large chance of failure on non-powers of two. Don't fuck up.
 	inline
-		uint32_t log2 ( const uint32_t x )
+		uint32_t log2 ( const uint32_t x ) noexcept
 	{
 #ifdef _MSC_VER
-		unsigned long result;
+		unsigned long result = 0;
 		_BitScanReverse( &result, (unsigned long)(x) );
 		return uint32_t(result);
 		/*uint32_t y;
@@ -113,7 +128,7 @@ namespace math
 	//	exp2 ( integer ) : pretty fast integer Exp2.
 	// No way to screw this up
 	inline
-		uint32_t exp2 ( const uint32_t x )
+		constexpr uint32_t exp2 ( const uint32_t x ) noexcept
 	{
 		return (1<<x);
 	}
@@ -123,23 +138,23 @@ namespace math
 	//
 
 	template <typename Number> inline
-		Number lerp ( Number t, Number a, Number b )
+		constexpr Number lerp ( Number t, Number a, Number b ) noexcept
 	{
 		return ( a+t*(b-a) );
 	}
 	template <typename Number> inline
-		Number lerp_clamp ( Number t, Number a, Number b )
+		constexpr Number lerp_clamp ( Number t, Number a, Number b ) noexcept
 	{
 		return lerp( saturate(t), a, b );
 	}
 
 	template <typename Number> inline
-		Number smoothlerp ( Number t )
+		constexpr Number smoothlerp ( Number t )
 	{
 		return ( t * t * (3 - 2 * t) );
 	}
 	template <typename Number> inline
-		Number smoothlerp ( Number t, Number a, Number b )
+		constexpr Number smoothlerp ( Number t, Number a, Number b ) noexcept
 	{
 		return lerp( smoothlerp(t), a, b );
 	}
@@ -151,14 +166,14 @@ namespace math
 
 	//	largest ( a, b ) : Returns larger (magnitude) of the two numbers
 	template <typename Number> inline
-		Number largest ( Number a, Number b )
+		constexpr Number largest ( Number a, Number b ) noexcept
 	{
 		return (std::abs(a) > std::abs(b)) ? a : b;
 	}
 
 	//	smallest ( a, b ) : Returns smaller (magnitude) of the two numbers
 	template <typename Number> inline
-		Number smallest ( Number a, Number b )
+		constexpr Number smallest ( Number a, Number b ) noexcept
 	{
 		return (std::abs(a) < std::abs(b)) ? a : b;
 	}
