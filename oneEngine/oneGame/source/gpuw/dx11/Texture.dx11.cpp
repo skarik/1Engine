@@ -233,7 +233,7 @@ int gpu::Texture::upload ( gpu::BaseContext* context, gpu::Buffer& buffer, const
 	src_box.front = 0;
 	src_box.right = std::max<UINT>(1, m_width / level_divisor);
 	src_box.bottom = std::max<UINT>(1, m_height / level_divisor);
-	src_box.back = 1;
+	src_box.back = std::max<UINT>(1, m_depth / level_divisor);
 
 	ctx->CopySubresourceRegion(texture,
 							   D3D11CalcSubresource(level, arraySlice, m_levels),

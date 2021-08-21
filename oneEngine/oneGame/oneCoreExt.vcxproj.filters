@@ -416,5 +416,8 @@
     <ClInclude Include="source\core-ext\locale\locale.h">
       <Filter>SOURCE\Core-ext\Locale</Filter>
     </ClInclude>
+    <ClInclude Include="source\core-ext\containers\arTimeline.h">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

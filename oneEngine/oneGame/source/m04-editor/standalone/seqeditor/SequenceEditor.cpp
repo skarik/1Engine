@@ -68,7 +68,7 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 
 	// Update windowing options
 	RrWindow::Main()->SetWantsClipCursor(false);
-	RrWindow::Main()->SetWantsHideCursor(true);
+	RrWindow::Main()->SetWantsHideCursor(false);
 	RrWindow::Main()->SetWantsSystemCursor(true);
 	RrWindow::Main()->SetZeroInputOnLoseFocus(true);
 

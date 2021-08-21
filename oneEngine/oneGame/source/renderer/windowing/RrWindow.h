@@ -57,8 +57,14 @@ public:
 	// ================================
 
 	RENDER_API bool			UpdateMessages ( void );
-	RENDER_API bool			IsDone ( void );
-	RENDER_API bool			IsActive ( void );
+	//	WantsClose() : Is the window given a CLOSE message?
+	// This means the current window requested closing or will be closed.
+	RENDER_API bool			WantsClose ( void ) { return wantsClose; }
+	//	IsDone() : Is the window given a QUIT message?
+	// This means the current app wants to be killed.
+	RENDER_API bool			IsDone ( void ) { return done; }
+	//	IsActive() : Is the window focused and shown?
+	RENDER_API bool			IsActive ( void ) { return active; }
 
 	RENDER_API void			PostEndMessage ( void );
 	RENDER_API void			PostRedrawMessage ( void );
@@ -141,9 +147,9 @@ private:
 
 	MSG		msg;
 	bool	done = false;
+	bool	wantsClose = false;
 	bool	active = true;
 	bool	focused = true;
-	bool	hiddencursor = false;
 };
 
 #endif//_WIN32

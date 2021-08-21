@@ -431,6 +431,24 @@ uint RrRenderer::AddWorldDefault ( void )
 	return AddWorld(world);
 }
 
+void RrRenderer::RemoveWorld ( const uint Index )
+{
+	worlds.erase(worlds.begin() + Index);
+}
+
+void RrRenderer::RemoveWorld ( RrWorld* world )
+{
+	for (int Index = 0; Index < worlds.size(); ++Index)
+	{
+		if (worlds[Index] == world)
+		{
+			worlds.erase(worlds.begin() + Index);
+			return;
+		}
+	}
+	ARCORE_ERROR("Could not find world."); // TODO: Make this exit not so terribly?
+}
+
 // Rendering configuration
 // ================================
 

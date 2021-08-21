@@ -88,6 +88,9 @@
     <Filter Include="SOURCE\M04\Entities_Test">
       <UniqueIdentifier>{fe47aa60-e8b7-43fc-a4f6-d8bb67d2f726}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04-Editor\Standalone\NoiseEditor">
+      <UniqueIdentifier>{d1445056-13e9-40ca-a2dc-72748897b8a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -294,6 +297,24 @@
     <ClInclude Include="source\m04\entities_test\InstancedGrassRenderObject.h">
       <Filter>SOURCE\M04\Entities_Test</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\noiseeditor\sceneEditorNoise.h">
+      <Filter>SOURCE\M04-Editor\Standalone\NoiseEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\noiseeditor\NoiseEditor.h">
+      <Filter>SOURCE\M04-Editor\Standalone\NoiseEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\noiseeditor\EditPanel.h">
+      <Filter>SOURCE\M04-Editor\Standalone\NoiseEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\noiseeditor\AxesGizmo.h">
+      <Filter>SOURCE\M04-Editor\Standalone\NoiseEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\noiseeditor\Display2D.h">
+      <Filter>SOURCE\M04-Editor\Standalone\NoiseEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\noiseeditor\Display3D.h">
+      <Filter>SOURCE\M04-Editor\Standalone\NoiseEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -484,6 +505,18 @@
     </ClCompile>
     <ClCompile Include="source\m04\entities_test\InstancedGrassRenderObject.cpp">
       <Filter>SOURCE\M04\Entities_Test</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\noiseeditor\sceneEditorNoise.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\NoiseEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\noiseeditor\NoiseEditor.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\NoiseEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\noiseeditor\AxesGizmo.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\NoiseEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\noiseeditor\EditPanel.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\NoiseEditor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

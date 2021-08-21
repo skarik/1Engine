@@ -514,16 +514,6 @@ bool RrWindow::UpdateMessages ( void )
 	return active;
 }
 
-bool RrWindow::IsDone ( void )
-{
-	return done;
-}
-
-bool RrWindow::IsActive ( void )
-{
-	return active;
-}
-
 void RrWindow::PostEndMessage ( void )
 {
 	PostMessage(mw_window, WM_QUIT, NIL, NIL);
@@ -555,8 +545,6 @@ void RrWindow::UpdateMouseClipping ( void )
 		if (   ( core::Input::SysMouseX() == math::clamp<long>( core::Input::SysMouseX(), 0 , m_resolution.x ) )
 			&& ( core::Input::SysMouseY() == math::clamp<long>( core::Input::SysMouseY(), 0 , m_resolution.y ) ))
 		{
-			hiddencursor = false;
-
 			// Get the window's rect
 			RECT rc;
 			GetClientRect( mw_window, &rc );
@@ -650,7 +638,6 @@ LRESULT CALLBACK MessageUpdate(
 	{
 		if ( rrWindow->focused )
 		{
-			rrWindow->hiddencursor = false;
 			POINT pt;
 			GetCursorPos( &pt );
 			ScreenToClient( hWnd, &pt );
@@ -676,14 +663,13 @@ LRESULT CALLBACK MessageUpdate(
 	// Window close button
 	case WM_CLOSE:
 	{
-		PostQuitMessage(0);
+		rrWindow->wantsClose = true;
 		return 0;
 	}
 
 	// Window resize
 	case WM_SIZE:
 	{
-		rrWindow->hiddencursor = false;
 		rrWindow->Resize(LOWORD(lParam), HIWORD(lParam));
 		return 0;								// Jump Back
 	}
@@ -720,6 +706,12 @@ LRESULT CALLBACK MessageUpdate(
 		{
 			core::Input::WSetSysMouse({LOWORD(lParam), HIWORD(lParam)});
 			core::Input::WSetSyncRawAndSystemMouse(rrWindow->m_wantSystemCursor);
+
+			// Force mouse to update on mousemove and status mismatches.
+			if (!rrWindow->m_wantHideCursor)
+			{
+				SendMessage(hWnd, WM_SETCURSOR, 0, HTCLIENT);
+			}
 		}
 		return 0;
 	}
@@ -732,28 +724,16 @@ LRESULT CALLBACK MessageUpdate(
 			WORD ht = LOWORD(lParam);
 			if (ht == HTCLIENT)
 			{
-				if (!rrWindow->hiddencursor)
-				{
-					rrWindow->hiddencursor = true;
-					while (ShowCursor(false) > 0) {};
-				}
+				while (ShowCursor(false) > 0) {};
 			}
 			else if (ht != HTCLIENT) 
 			{
-				if (rrWindow->hiddencursor)
-				{
-					rrWindow->hiddencursor = false;
-					while (ShowCursor(true) < 1) {};
-				}
+				while (ShowCursor(true) < 1) {};
 			}
 		}
 		else
 		{
-			if (rrWindow->hiddencursor)
-			{
-				rrWindow->hiddencursor = false;
-				while (ShowCursor(true) < 1) {};
-			}
+			while (ShowCursor(true) < 1) {};
 		}
 	}
 	break;

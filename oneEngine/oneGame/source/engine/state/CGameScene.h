@@ -7,6 +7,8 @@
 //
 // Scenes MUST be created with the "new" operator on the heap. If they are not, they will not function properly.
 //
+// New usage of scenes: they are little payloads of objects. They load up new objects.
+//
 //===============================================================================================//
 #ifndef _C_GAME_SCENE_
 #define _C_GAME_SCENE_
@@ -24,12 +26,25 @@ private:
 	CGameScene ( const CGameScene & ) {};
 
 public:
-	// Constructor and Destructor
-	ENGINE_API			CGameScene ( void );
-	ENGINE_API virtual	~CGameScene ( void );
+	ENGINE_API				CGameScene ( void );
+	ENGINE_API virtual		~CGameScene ( void );
 
+
+protected:
+	// Loading parameters:
+
+	// Does this scene destroy the current scene when being loaded in?
+	bool				bIsAdditive = false;
+	// Can this scene be streamed in over time
+	bool				bCanBeStreamed = false;
+
+	//	LoadScene() : Called when loading the new scene
+	ENGINE_API virtual void	LoadScene ( void ) =0;
+
+public:
 	// Load next scene
-	ENGINE_API static void SceneGoto ( CGameScene* );
+	ENGINE_API static void	SceneGoto ( CGameScene* );
+
 public:
 	template < class Scene >
 	static CGameScene* NewScene ( void )
@@ -40,16 +55,10 @@ public:
 
 	ENGINE_API static CGameScene* pCurrent;
 
-protected:
-	// Load new scene
-	virtual void LoadScene ( void ) =0;
-
-	// New scene props
-	bool bFreeWorld;
-
 private:
 	friend CGameState;
-	void Load ( void );
+	//	Load() : Called by the engine state when loading.
+	void					Load ( void );
 };
 
 #endif

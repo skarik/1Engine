@@ -109,7 +109,7 @@ bool RrTexture::OnStreamStepProcedural ( bool sync_client, core::IArResourceSubs
 			// Copy data to the target
 			if (upload_request->data != NULL)
 			{
-				memcpy(target, upload_request->data, core::gfx::tex::getColorFormatByteSize(upload_request->format) * upload_request->width * upload_request->height);
+				memcpy(target, upload_request->data, core::gfx::tex::getColorFormatByteSize(upload_request->format) * upload_request->width * upload_request->height * upload_request->depth);
 			}
 
 			// Unmap and upload

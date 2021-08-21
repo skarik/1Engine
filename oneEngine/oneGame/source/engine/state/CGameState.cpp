@@ -301,7 +301,7 @@ void CGameState::LateUpdate ( void )
 	{
 		if ( pScene != NULL )
 		{
-			if ( pScene->bFreeWorld )
+			if ( !pScene->bIsAdditive )
 			{
 				// Clean up everything in the world that we can
 				for ( i = 0; i < 3; ++i )

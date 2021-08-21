@@ -8,7 +8,7 @@
 layout(binding = CBUFFER_PER_OBJECT_MATRICES, std140) uniform sys_cbuffer_PerObject
 {
     mat4 sys_ModelTRS;
-    mat4 sys_ModelRS;
+    mat4 sys_ModelR;
     mat4 sys_ModelViewProjectionMatrix;
     mat4 sys_ModelViewProjectionMatrixInverse;
 };

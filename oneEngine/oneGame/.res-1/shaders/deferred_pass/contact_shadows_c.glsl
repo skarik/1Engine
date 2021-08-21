@@ -104,7 +104,7 @@ void main ( void )
 					float ray_depth_fastcheck_sample = LinearizeZBufferDepth(texelFetch(textureDepthDownscale16, ivec2(projected_rayPosition.xy * sys_ScreenSize.xy / 16.0), 0).x);
 					float ray_depth_fastcheck_delta = ray_depth_fastcheck_real - ray_depth_fastcheck_sample;
 					[[branch]]
-					if (ray_depth_fastcheck_delta <= 0) // Sample a second time halfway down the ray if it misses.
+					if (ray_depth_fastcheck_delta <= -kThickness) // Sample a second time halfway down the ray if it misses.
 					{
 						// Get the position in screenspace
 						vec4 projected_rayPosition = sys_ViewProjectionMatrix * vec4(rayPosition + rayDirection * kRange * 0.5, 1.0);
@@ -115,10 +115,24 @@ void main ( void )
 						float ray_depth_fastcheck_real = LinearizeZBufferDepth(projected_rayPosition.z);
 						float ray_depth_fastcheck_sample = LinearizeZBufferDepth(texelFetch(textureDepthDownscale16, ivec2(projected_rayPosition.xy * sys_ScreenSize.xy / 16.0), 0).x);
 						ray_depth_fastcheck_delta = ray_depth_fastcheck_real - ray_depth_fastcheck_sample;
+						
+						/*[[branch]]
+						if (ray_depth_fastcheck_delta <= 0) // Sample a third time half again down the ray if it misses.
+						{
+							// Get the position in screenspace
+							vec4 projected_rayPosition = sys_ViewProjectionMatrix * vec4(rayPosition + rayDirection * kRange * 0.25, 1.0);
+							projected_rayPosition.xyz /= projected_rayPosition.w;
+							projected_rayPosition.xy = projected_rayPosition.xy * vec2(0.5, -0.5) + vec2(0.5, 0.5);
+							
+							// Sample downscaled buffer for smallest depth
+							float ray_depth_fastcheck_real = LinearizeZBufferDepth(projected_rayPosition.z);
+							float ray_depth_fastcheck_sample = LinearizeZBufferDepth(texelFetch(textureDepthDownscale16, ivec2(projected_rayPosition.xy * sys_ScreenSize.xy / 16.0), 0).x);
+							ray_depth_fastcheck_delta = ray_depth_fastcheck_real - ray_depth_fastcheck_sample;
+						}*/
 					}
 					
 					[[branch]]
-					if (ray_depth_fastcheck_delta > 0) // If the fast check was OK, then we do the expensive check. 
+					if (ray_depth_fastcheck_delta > -kThickness) // If the fast check was OK, then we do the expensive check. 
 					{
 						[[loop]]
 						for (uint i = 0; i < kSampleCount; ++i)

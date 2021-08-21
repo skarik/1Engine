@@ -149,16 +149,21 @@ void ShadePixel ( void )
 #elif VARIANT_PASS==VARIANT_PASS_DO_DIRECT_DIRECTIONAL
 
 	{
+		const rrLight lightParams = Lighting_Params[v2f_lightIndex];
+		const vec3 lightDirection = -lightParams.direction;
+		
+		const vec3 halfVec = normalize(viewDirection + lightDirection);
+		const float vdoth = clamp(dot(viewDirection, halfVec), 0.0, 1.0);
+		const float ndoth = clamp(dot(surface.normal, halfVec), 0.0, 1.0);
+		const float ndotv = clamp(dot(surface.normal, viewDirection), 0.0, 1.0);
+		const float ndotl = clamp(dot(surface.normal, lightDirection), 0.0, 1.0);
+		
 		// Add backface-lighting
 		[[branch]]
 		if (surface.shade_model == kShadeModelThinFoliage)
 		{
-			/*if (!surface.is_frontface)
-			{
-				surfaceReflectance = mix(surfaceReflectance * 0.7, surfaceReflectance * surfaceReflectance, 0.5);
-				surface.normal = -surface.normal;
-			}*/
 			vec3 surfaceReflectance = diffuseColor;
+			
 			#if VARIANT_STYLE==VARIANT_STYLE_NORMAL
 			if (!surface.is_frontface)
 			{
@@ -166,8 +171,6 @@ void ShadePixel ( void )
 			}
 			#endif
 			
-			const rrLight lightParams = Lighting_Params[v2f_lightIndex];
-			const vec3 lightDirection = -lightParams.direction;
 			const vec3 lightColor = lightParams.color;
 			
 			float shadowMask = 1.0;
@@ -177,12 +180,6 @@ void ShadePixel ( void )
 			//{
 			//	shadowMask = texture(textureSamplerShadowMask, v2f_texcoord0).r;
 			//}
-
-			const vec3 halfVec = normalize(viewDirection + lightDirection);
-			const float vdoth = clamp(dot(viewDirection, halfVec), 0.0, 1.0);
-			const float ndoth = clamp(dot(surface.normal, halfVec), 0.0, 1.0);
-			const float ndotv = clamp(dot(surface.normal, viewDirection), 0.0, 1.0);
-			const float ndotl = clamp(dot(surface.normal, lightDirection), 0.0, 1.0);
 
 			const float roughnessExpLimited = max(0.01, roughnessExp);
 			
@@ -210,8 +207,6 @@ void ShadePixel ( void )
 		{
 			const vec3 surfaceReflectance = diffuseColor;
 			
-			const rrLight lightParams = Lighting_Params[v2f_lightIndex];
-			const vec3 lightDirection = -lightParams.direction;
 			const vec3 lightColor = lightParams.color;
 			
 			float shadowMask = 1.0;
@@ -220,12 +215,6 @@ void ShadePixel ( void )
 			{
 				shadowMask = texture(textureSamplerShadowMask, v2f_texcoord0).r;
 			}
-
-			const vec3 halfVec = normalize(viewDirection + lightDirection);
-			const float vdoth = clamp(dot(viewDirection, halfVec), 0.0, 1.0);
-			const float ndoth = clamp(dot(surface.normal, halfVec), 0.0, 1.0);
-			const float ndotv = clamp(dot(surface.normal, viewDirection), 0.0, 1.0);
-			const float ndotl = clamp(dot(surface.normal, lightDirection), 0.0, 1.0);
 
 			const float roughnessExpLimited = max(0.01, roughnessExp);
 			

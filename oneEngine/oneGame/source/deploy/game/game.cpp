@@ -117,7 +117,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	// Start off the clock timer
 	Time::Init();
 	// Run main loop
-	while ( !aWindow.IsDone() )
+	while ( !aWindow.IsDone() && !aWindow.WantsClose() )
 	{
 		// Pump message loop for all open windows.
 		for (RrWindow* window : RrWindow::List())

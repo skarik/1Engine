@@ -589,7 +589,7 @@ Prerender_Pass:
 		for (uint32_t iObject = 0; iObject < objectCount; ++iObject)
 		{
 			RrRenderObject* renderable = objectsToRender[iObject];
-			if (renderable != NULL)
+			if (renderable != NULL && renderable->GetVisible())
 			{
 				bool l_hasPass = false;
 
@@ -633,7 +633,7 @@ Pass_Groups:
 			for (uint32_t iObject = 0; iObject < objectCount; ++iObject)
 			{
 				RrRenderObject* renderable = objectsToRender[iObject];
-				if (renderable != NULL)
+				if (renderable != NULL && renderable->GetVisible())
 				{
 					bool l_hasPass = false;
 

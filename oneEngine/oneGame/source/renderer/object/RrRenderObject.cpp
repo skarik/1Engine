@@ -66,15 +66,15 @@ void RrRenderObject::PushCbufferPerObject ( const XrTransform& worldTransform, c
 {
 	// Update matrix constants
 	{
-		Matrix4x4 modelTRS, modelRS;
-		core::TransformUtility::TRSToMatrix4x4(worldTransform, modelTRS, modelRS);
+		Matrix4x4 modelTRS, modelR;
+		core::TransformUtility::TRSToMatrix4x4(worldTransform, modelTRS, modelR);
 
 		modelTRS = !modelTRS;
-		modelRS  = !modelRS;
+		modelR  = !modelR;
 
 		renderer::cbuffer::rrPerObjectMatrices matrices;
 		matrices.modelTRS = modelTRS;
-		matrices.modelRS  = modelRS;
+		matrices.modelR  = modelR;
 		matrices.modelViewProjection = (cameraPass != NULL) ? (modelTRS * cameraPass->m_viewprojTransform) : (modelTRS);
 		matrices.modelViewProjectionInverse = matrices.modelViewProjection.inverse();
 

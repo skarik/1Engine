@@ -18,6 +18,7 @@
 #include "m04-editor/scenes/sceneDeveloperMenu.h"
 #include "m04-editor/scenes/sceneEditorCutscene.h"
 #include "m04-editor/standalone/seqeditor/sceneEditorSequence.h"
+#include "m04-editor/standalone/noiseeditor/sceneEditorNoise.h"
 
 namespace M04
 {
@@ -78,6 +79,7 @@ int GameInitialize ( void )
 		EngineCommon::RegisterSceneOld<sceneEditorCutscene>( "editorcts" );
 		EngineCommon::RegisterScene<sceneEditorSequence>();
 		EngineCommon::RegisterScene<scenePalette3DTest0>();
+		EngineCommon::RegisterScene<sceneEditorNoise>();
 	}
 
 

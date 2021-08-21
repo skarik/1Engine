@@ -1,4 +1,3 @@
-
 #include "core/debug/Console.h"
 #include "core-ext/system/shell/Status.h"
 #include "engine/utils/CDeveloperConsole.h"
@@ -13,7 +12,6 @@ CGameScene* CGameScene::pCurrent = NULL;
 CGameScene::CGameScene ( void )
 {
 	debug::Console->PrintMessage( "Game Scene created, waiting for load command.\n" );
-	bFreeWorld = true;
 }
 
 // ==Destructor==
@@ -25,20 +23,6 @@ CGameScene::~CGameScene ( void )
 // ==Load Next Scene==
 void CGameScene::SceneGoto ( CGameScene* pNewScene )
 {
-	/*if ( pCurrent != NULL )
-	{
-		if ( pCurrent->bFreeWorld )
-		{
-			CGameState::pActive->CleanWorld();
-			//cout << "...Simulating step...";
-			//CGameState::pActive->Update();
-			//CGameState::pActive->LateUpdate();
-			//CGameState::pActive->CleanWorld();
-		}
-		delete pCurrent;
-	}
-	pCurrent = pNewScene;
-	pCurrent->LoadScene();*/
 	CGameState::Active()->SetNextScene( pNewScene );
 }
 

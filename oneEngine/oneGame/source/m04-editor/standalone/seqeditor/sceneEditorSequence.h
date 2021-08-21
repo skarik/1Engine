@@ -6,6 +6,13 @@
 class sceneEditorSequence : public CGameScene
 {
 public:
+	GAME_API sceneEditorSequence ( void )
+		: CGameScene()
+	{
+		bIsAdditive = true;
+		bCanBeStreamed = false;
+	}
+
 	static const char* GetName ( void )
 		{ return "SequenceEditor"; }
 protected:

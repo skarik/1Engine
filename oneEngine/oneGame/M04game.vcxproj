@@ -89,6 +89,10 @@
     <ClInclude Include="source\m04-editor\standalone\mapeditor\ObjectEditorListing.h" />
     <ClInclude Include="source\m04-editor\standalone\mapeditor\TileSelector.h" />
     <ClInclude Include="source\m04-editor\standalone\mapeditor\TileSelectorUI.h" />
+    <ClInclude Include="source\m04-editor\standalone\noiseeditor\AxesGizmo.h" />
+    <ClInclude Include="source\m04-editor\standalone\noiseeditor\Display2D.h" />
+    <ClInclude Include="source\m04-editor\standalone\noiseeditor\Display3D.h" />
+    <ClInclude Include="source\m04-editor\standalone\noiseeditor\EditPanel.h" />
     <ClInclude Include="source\m04-editor\standalone\noiseeditor\NoiseEditor.h" />
     <ClInclude Include="source\m04-editor\standalone\noiseeditor\sceneEditorNoise.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\Constants.h" />
@@ -161,6 +165,8 @@
     <ClCompile Include="source\m04-editor\standalone\mapeditor\ObjectEditorListing.cpp" />
     <ClCompile Include="source\m04-editor\standalone\mapeditor\TileSelector.cpp" />
     <ClCompile Include="source\m04-editor\standalone\mapeditor\TileSelectorUI.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\noiseeditor\AxesGizmo.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\noiseeditor\EditPanel.cpp" />
     <ClCompile Include="source\m04-editor\standalone\noiseeditor\NoiseEditor.cpp" />
     <ClCompile Include="source\m04-editor\standalone\noiseeditor\sceneEditorNoise.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\GridGizmo.cpp" />
@@ -266,7 +272,7 @@
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PreprocessorDefinitions>_ENGINE_GAME_CORE;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-	  <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
     </ClCompile>
     <Link>
       <LargeAddressAware>true</LargeAddressAware>
