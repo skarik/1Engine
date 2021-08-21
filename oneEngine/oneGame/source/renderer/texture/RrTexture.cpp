@@ -31,9 +31,10 @@ RrTexture::Load ( const char* resource_name )
 
 	// TODO: Cache the lookup misses, return NULL.
 	// Check if the file exists. Required for 2D to fail gracefully.
-	if (!core::Resources::Exists(resource_name))
+	arstring256 resource_str_bpd = (std::string(resource_str_id) + ".bpd").c_str();
+	if (!core::Resources::Exists(resource_name) && !core::Resources::Exists(resource_str_bpd))
 	{
-		ARCORE_ERROR("Invalid file passed in.");
+		ARCORE_ERROR("Invalid file \"%s\" passed in.", resource_name);
 		return NULL;
 	}
 
