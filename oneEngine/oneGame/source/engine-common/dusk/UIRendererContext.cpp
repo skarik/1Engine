@@ -217,12 +217,15 @@ void dusk::UIRendererContext::drawText ( Element* source, const Vector2f& positi
 	rrTextBuilder2D* l_textBuilder = static_cast<rrTextBuilder2D*>(m_mb2);
 	Vector2f l_drawPosition (math::round(position.x), math::round(position.y + 0.9F * getTextHeight(m_textType.font)));
 
+	Vector2f l_screenMultiplier, l_screenOffset;
+	l_textBuilder->getScreenMapping(l_screenMultiplier, l_screenOffset);
+
 	if (m_textType.align_vertical == dusk::kTextAlignBottom)
 		l_drawPosition.y -= getTextHeight(kTextFontButton);
 	else if (m_textType.align_vertical == dusk::kTextAlignMiddle)
 		l_drawPosition.y -= getTextHeight(kTextFontButton) * 0.5F;
 
-	Vector2f l_size = l_textBuilder->predictTextSize(str);
+	Vector2f l_size = l_textBuilder->predictTextSize(str).divComponents(l_screenMultiplier);
 	if (m_textType.align_horizontal == dusk::kTextAlignCenter)
 		l_drawPosition.x -= l_size.x * 0.5F;
 	else if (m_textType.align_horizontal == dusk::kTextAlignRight)
