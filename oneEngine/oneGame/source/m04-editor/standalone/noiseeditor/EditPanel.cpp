@@ -126,6 +126,57 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 	{
 		auto vLayout = dusk_interface->Add<dusk::layouts::Vertical>(dusk::LayoutCreationDescription(sideLayout));
 
+		auto label = dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
+		label->m_contents = "CHANNEL";
+		label->m_style = dusk::elements::kLabelStyle_Heading1;
+
+		auto hLayout0 = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(vLayout));
+		{
+			auto button_r = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 20, 20)));
+			button_r->m_contents = "R";
+			button_r->SetOnActivation([this]()
+			{
+				auto& noise_params = main_editor->GetState();
+				noise_params.edit_channel = 0;
+				noise_params.edit_split = true;
+				main_editor->UpdateNoise();
+			});
+
+			auto button_g = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 20, 20)));
+			button_g->m_contents = "G";
+			button_g->SetOnActivation([this]()
+			{
+				auto& noise_params = main_editor->GetState();
+				noise_params.edit_channel = 1;
+				noise_params.edit_split = true;
+				main_editor->UpdateNoise();
+			});
+
+			auto button_b = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 20, 20)));
+			button_b->m_contents = "B";
+			button_b->SetOnActivation([this]()
+			{
+				auto& noise_params = main_editor->GetState();
+				noise_params.edit_channel = 2;
+				noise_params.edit_split = true;
+				main_editor->UpdateNoise();
+			});
+
+			auto button_all = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 20, 20)));
+			button_all->m_contents = "All";
+			button_all->SetOnActivation([this]()
+			{
+				auto& noise_params = main_editor->GetState();
+				noise_params.edit_channel = 0;
+				noise_params.edit_split = false;
+				main_editor->UpdateNoise();
+			});
+		}
+	}
+
+	{
+		auto vLayout = dusk_interface->Add<dusk::layouts::Vertical>(dusk::LayoutCreationDescription(sideLayout));
+
 		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)))
 			->m_contents = "Type";
 
@@ -286,6 +337,18 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 			noise_params.clamp_top = value;
 			main_editor->UpdateNoise();
 		});
+
+		auto hLayout3 = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(vLayout));
+		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(hLayout3, Rect(0, 0, 60, 20)))
+			->m_contents = "Wrap";
+		auto checkbox_wrap = dusk_interface->Add<dusk::elements::Checkbox>(dusk::ElementCreationDescription(hLayout3, Rect(0, 0, 20, 20)));
+		checkbox_wrap->m_value = main_editor->GetState().wrap;
+		checkbox_wrap->SetOnValueChange([this](bool value)
+		{
+			auto& noise_params = main_editor->GetState();
+			noise_params.wrap = value;
+			main_editor->UpdateNoise();
+		});
 	}
 
 	{
@@ -338,4 +401,5 @@ void m04::editor::noise::EditPanel::SaveFile ( const std::string& filename )
 		main_editor->SetSaveTargetFilename(filename.c_str());
 	}*/
 	// TODO:
+	main_editor->SaveNoise(filename.c_str());
 }

@@ -11,17 +11,17 @@ namespace tex {
 	// Enumerations for the texture type
 	enum arTextureType : uint8_t
 	{
-		kTextureTypeNone,
+		kTextureTypeNone = 0,
 
-		kTextureType1D,
-		kTextureType2D,
-		kTextureType3D,
-		kTextureTypeCube,
+		kTextureType1D		= 0x01,
+		kTextureType2D		= 0x02,
+		kTextureType3D		= 0x03,
+		kTextureTypeCube	= 0x04,
 
 		// Odd, not quite supported formats:
-		kTextureType1DArray,
-		kTextureType2DArray,
-		kTextureTypeCubeArray,
+		kTextureType1DArray		= 0x05,
+		kTextureType2DArray		= 0x06,
+		kTextureTypeCubeArray	= 0x07,
 	};
 
 	// Enumerations for the internal format

@@ -38,6 +38,13 @@ namespace gpu
 		// Texture buffer.
 		// Use for loading textures.
 		kBufferTypeTexture,
+
+		// Readback buffer.
+		// Used for reading GPU data on the CPU.
+		kBufferTypeReadback,
+		// Readback texture buffer.
+		// Used for reading specifically texture GPU data on the CPU.
+		kBufferTypeTextureReadback,
 	};
 
 	class Buffer
@@ -68,6 +75,17 @@ namespace gpu
 		//	initAsTextureBuffer( device, type, format, element_width, element_height, element_width ) : Initializes as a typed data buffer. Can be used to load textures.
 		// Data is uploaded separately through map/unmap or upload.
 		GPUW_API int			initAsTextureBuffer (
+			Device* device,
+			const core::gfx::tex::arTextureType type,
+			const core::gfx::tex::arColorFormat format,
+			const uint64_t element_width, const uint64_t element_height, const uint64_t element_depth
+		);
+
+		//	initAsReadbackBuffer( device, data_size ) : Initializes as a data buffer to be used for reading on CPU.
+		GPUW_API int			initAsReadbackBuffer ( Device* device, const uint64_t data_size );
+		
+		//	initAsTextureReadbackBuffer( device, type, format, element_width, element_height, element_width ) : Initializes as a typed data buffer. Can be used to read textures.
+		GPUW_API int			initAsTextureReadbackBuffer  (
 			Device* device,
 			const core::gfx::tex::arTextureType type,
 			const core::gfx::tex::arColorFormat format,

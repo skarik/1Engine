@@ -221,11 +221,42 @@ int gpu::Texture::upload ( gpu::BaseContext* context, gpu::Buffer& buffer, const
 {
 	ARCORE_ASSERT(valid());
 	
+	// TODO: The following only works for a small number of texture types. Needs fixing for array types and 3D types.
+
 	ID3D11Device*			device = gpu::getDevice()->getNative();
 	ID3D11DeviceContext*	ctx = (context == nullptr) ? gpu::getDevice()->getImmediateContext() : (ID3D11DeviceContext*)context->getNativeContext();
 	ID3D11Texture2D*		texture = (ID3D11Texture2D*)m_texture;
 	D3D11_BOX				src_box;
 	ID3D11Buffer*			src_buffer = (ID3D11Buffer*)buffer.nativePtr();
+
+	const uint				level_divisor = (1 << level);
+	const uint				subresource_slicedepth = (m_type == core::gfx::tex::kTextureTypeCube || m_type == core::gfx::tex::kTextureTypeCubeArray) ? m_depth / 6 : m_depth;
+	src_box.left = 0;
+	src_box.top = 0;
+	src_box.front = 0;
+	src_box.right = std::max<UINT>(1, m_width / level_divisor);
+	src_box.bottom = std::max<UINT>(1, m_height / level_divisor);
+	src_box.back = std::max<UINT>(1, subresource_slicedepth / level_divisor);
+
+	ctx->CopySubresourceRegion(texture,
+							   D3D11CalcSubresource(level, arraySlice, m_levels),
+							   0, 0, 0,
+							   src_buffer,
+							   0,
+							   &src_box);
+
+	return gpu::kError_SUCCESS;
+}
+
+int gpu::Texture::copy ( gpu::BaseContext* context, gpu::Buffer& buffer, const uint level, const uint arraySlice )
+{
+	ARCORE_ASSERT(valid());
+	
+	ID3D11Device*			device = gpu::getDevice()->getNative();
+	ID3D11DeviceContext*	ctx = (context == nullptr) ? gpu::getDevice()->getImmediateContext() : (ID3D11DeviceContext*)context->getNativeContext();
+	ID3D11Texture2D*		texture = (ID3D11Texture2D*)m_texture;
+	D3D11_BOX				src_box;
+	ID3D11Buffer*			dest_buffer = (ID3D11Buffer*)buffer.nativePtr();
 
 	const uint				level_divisor = (1 << level);
 	src_box.left = 0;
@@ -235,11 +266,11 @@ int gpu::Texture::upload ( gpu::BaseContext* context, gpu::Buffer& buffer, const
 	src_box.bottom = std::max<UINT>(1, m_height / level_divisor);
 	src_box.back = std::max<UINT>(1, m_depth / level_divisor);
 
-	ctx->CopySubresourceRegion(texture,
-							   D3D11CalcSubresource(level, arraySlice, m_levels),
-							   0, 0, 0,
-							   src_buffer,
+	ctx->CopySubresourceRegion(dest_buffer,
 							   0,
+							   0, 0, 0,
+							   texture,
+							   D3D11CalcSubresource(level, arraySlice, m_levels),
 							   &src_box);
 
 	return gpu::kError_SUCCESS;

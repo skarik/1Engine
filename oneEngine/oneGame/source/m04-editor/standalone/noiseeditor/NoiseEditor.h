@@ -48,9 +48,14 @@ namespace editor {
 		float		total_bias = 0.5F;
 		float		total_scale = 0.5F;
 		bool		invert_output = false;
+		// Does the noise wrap around on the edges?
+		bool		wrap = false;
 
 		int			octaves = 3;
 		float		frequency = 4.0F;
+
+		int			edit_channel = 0;
+		bool		edit_split = false;
 	};
 
 	class NoiseEditor : public CGameBehavior
@@ -64,6 +69,7 @@ namespace editor {
 		NoiseEditorState&		GetState ( void )
 			{ return edit_state; }
 		void					UpdateNoise ( void );
+		void					SaveNoise ( const char* filename );
 
 	protected:
 		EDITOR_API void			UpdateViewDrag ( void );
@@ -96,6 +102,8 @@ namespace editor {
 		Vector2f			mouse_position_reference;
 
 		NoiseEditorState	edit_state;
+		Vector4f*			m_raw_noise = nullptr;
+		int					m_raw_noise_size = 0;
 
 		RrTexture*			noise_texture = nullptr;
 		RrRenderObject*		preview_primitive_2d = nullptr;

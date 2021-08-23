@@ -4,6 +4,7 @@
 
 #include "core-ext/system/io/Resources.h"
 #include "core-ext/system/shell/Inputs.h"
+#include "core-ext/system/shell/Status.h"
 #include "core-ext/threads/ParallelFor.h"
 #include "core-ext/containers/arStringEnum.h"
 #include "core-ext/settings/PersistentSettings.h"
@@ -70,6 +71,8 @@ m04::editor::NoiseEditor::NoiseEditor ( void )
 
 m04::editor::NoiseEditor::~NoiseEditor ( void )
 {
+	delete[] m_raw_noise;
+
 	delete edit_panel;
 
 	if (noise_texture)
@@ -220,6 +223,9 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 		noise_texture->RemoveReference();
 	}
 
+	// Update taskbar state to show we're working
+	core::shell::SetTaskbarProgressState(NIL, core::shell::kTaskbarStateIndeterminate);
+
 	BaseNoise* noise = nullptr;
 	if (edit_state.type == NoiseType::kPerlin)
 	{
@@ -239,7 +245,7 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 	}
 	else if (edit_state.type == NoiseType::kWorley)
 	{
-		noise = new WorleyNoise ((int)(edit_state.frequency * edit_state.frequency * edit_state.frequency), 1.0F / edit_state.frequency, 1.0F, edit_state.seed);
+		noise = new WorleyNoise ((int)(edit_state.frequency * edit_state.frequency * edit_state.frequency), 1.0F / edit_state.frequency, 1.0F, edit_state.seed, edit_state.wrap);
 	}
 
 	// Generate noise
@@ -247,7 +253,17 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 	{
 		if (!edit_state.is3D)
 		{
-			Vector4f* raw_noise = new Vector4f [edit_state.size * edit_state.size];
+			if (m_raw_noise_size != edit_state.size * edit_state.size)
+			{
+				m_raw_noise_size = edit_state.size * edit_state.size;
+				delete[] m_raw_noise;
+				m_raw_noise = new Vector4f [m_raw_noise_size];
+				for (int pixel_i = 0; pixel_i < m_raw_noise_size; ++pixel_i)
+				{
+					m_raw_noise[pixel_i] = Vector4f(0, 0, 0, 1);
+				}
+			}
+			Vector4f* raw_noise = m_raw_noise;
 
 			core::parallel_for(true,
 				0, edit_state.size,
@@ -256,27 +272,96 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 				for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
 				{
 					float noiseValue = noise->Get(pixel_x / (float)edit_state.size, pixel_y / (float)edit_state.size);
-
-					noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
-					if (edit_state.invert_output) noiseValue = 1.0F - noiseValue;
-					if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
-					if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
-
-					raw_noise[pixel_y * edit_state.size + pixel_x] =
-						Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
+					raw_noise[pixel_y * edit_state.size + pixel_x][edit_state.edit_channel] = noiseValue;
 				}
 			});
+
+			// Now perform the wrapping
+			if (edit_state.wrap && edit_state.type != NoiseType::kWorley)
+			{
+				const int blend_width = (int)(edit_state.size * 0.20F);
+				const int dim_size = edit_state.size;
+				const int edit_channel = edit_state.edit_channel;
+
+				// Declare the blender
+				auto blendSample = [noise, raw_noise, dim_size, edit_channel](const float offset_x, const float offset_y, int pixel_x, int pixel_y, float blend_level)
+				{
+					float noiseValue = noise->Get(offset_x + pixel_x / (float)dim_size, offset_y + pixel_y / (float)dim_size);
+					float sourceValue = raw_noise[pixel_y * dim_size + pixel_x][edit_channel];
+
+					// Simple blend
+					float blendValue = math::lerp(1.0F - math::cube(1.0F - blend_level), noiseValue, sourceValue);
+
+					// Blend based on high-points
+					/*float blendValue = std::max(
+										math::lerp(math::cube(math::cube(blend_level)), noiseValue, -1.0F),
+										sourceValue);
+
+					// Blend to the simple blend to smooth hard edges.
+					blendValue = math::lerp(
+						blend_level,
+						blendValue,
+						math::lerp(1.0F - math::cube(1.0F - blend_level), noiseValue, sourceValue));*/
+
+					raw_noise[pixel_y * dim_size + pixel_x][edit_channel] = blendValue;
+				};
+
+				// Blend on X coordinate
+				for (int pixel_x = 0; pixel_x < blend_width; ++pixel_x)
+				{
+					const float blend_level = pixel_x / (float)blend_width;
+					for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
+					{
+						blendSample(1.0F, 0.0F, pixel_x, pixel_y, blend_level);
+					}
+				}
+
+				// Blend on Y coordinate
+				for (int pixel_y = 0; pixel_y < blend_width; ++pixel_y)
+				{
+					const float blend_level = pixel_y / (float)blend_width;
+					for (int pixel_x = 0; pixel_x < edit_state.size; ++pixel_x)
+					{
+						blendSample(0.0F, 1.0F, pixel_x, pixel_y, blend_level);
+					}
+				}
+			}
+
+			for (int pixel_i = 0; pixel_i < edit_state.size * edit_state.size; ++pixel_i)
+			{
+				float noiseValue = raw_noise[pixel_i][edit_state.edit_channel];
+
+				noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
+				if (edit_state.invert_output) noiseValue = 1.0F - noiseValue;
+				if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
+				if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
+
+				if (edit_state.edit_split)
+					raw_noise[pixel_i][edit_state.edit_channel] = noiseValue;
+				else
+					raw_noise[pixel_i] = Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
+			}
 
 			// Save the new texture
 			noise_texture = RrTexture::CreateUnitialized("noise");
 			noise_texture->Upload(false, raw_noise, edit_state.size, edit_state.size, core::gfx::tex::kColorFormatRGBA32F);
 			noise_texture->AddReference();
 
-			delete[] raw_noise;
+			//delete[] raw_noise;
 		}
 		else
 		{
-			Vector4f* raw_noise = new Vector4f [edit_state.size * edit_state.size * edit_state.size];
+			if (m_raw_noise_size != edit_state.size * edit_state.size * edit_state.size)
+			{
+				m_raw_noise_size = edit_state.size * edit_state.size * edit_state.size;
+				delete[] m_raw_noise;
+				m_raw_noise = new Vector4f [m_raw_noise_size];
+				for (int pixel_i = 0; pixel_i < m_raw_noise_size; ++pixel_i)
+				{
+					m_raw_noise[pixel_i] = Vector4f(0, 0, 0, 1);
+				}
+			}
+			Vector4f* raw_noise = m_raw_noise;
 
 			core::parallel_for(true,
 				0, edit_state.size,
@@ -287,24 +372,102 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 					for (int pixel_z = 0; pixel_z < edit_state.size; ++pixel_z)
 					{
 						float noiseValue = noise->Get(pixel_x / (float)edit_state.size, pixel_y / (float)edit_state.size, pixel_z / (float)edit_state.size);
-
-						noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
-						if (edit_state.invert_output) noiseValue = 1.0F - noiseValue;
-						if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
-						if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
-
-						raw_noise[pixel_z * edit_state.size * edit_state.size + pixel_y * edit_state.size + pixel_x] =
-							Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
+						raw_noise[pixel_z * edit_state.size * edit_state.size + pixel_y * edit_state.size + pixel_x][edit_state.edit_channel] = noiseValue;
 					}
 				}
 			});
+
+			// Now perform the wrapping
+			if (edit_state.wrap && edit_state.type != NoiseType::kWorley)
+			{
+				const int blend_width = (int)(edit_state.size * 0.20F);
+				const int dim_size = edit_state.size;
+				const int edit_channel = edit_state.edit_channel;
+
+				// Declare the blender
+				auto blendSample = [noise, raw_noise, dim_size, edit_channel](const float offset_x, const float offset_y, const float offset_z, int pixel_x, int pixel_y, int pixel_z, float blend_level)
+				{
+					float noiseValue = noise->Get(offset_x + pixel_x / (float)dim_size, offset_y + pixel_y / (float)dim_size, offset_z + pixel_z / (float)dim_size);
+					float sourceValue = raw_noise[pixel_z * dim_size * dim_size + pixel_y * dim_size + pixel_x][edit_channel];
+
+					// Simple blend
+					float blendValue = math::lerp(1.0F - math::cube(1.0F - blend_level), noiseValue, sourceValue);
+
+					// Blend based on high-points
+					/*float blendValue = std::max(
+										math::lerp(math::cube(math::cube(blend_level)), noiseValue, -1.0F),
+										sourceValue);
+
+					// Blend to the simple blend to smooth hard edges.
+					blendValue = math::lerp(
+						blend_level,
+						blendValue,
+						math::lerp(math::square(blend_level), noiseValue, sourceValue));*/
+						
+					raw_noise[pixel_z * dim_size * dim_size + pixel_y * dim_size + pixel_x][edit_channel] = blendValue;
+				};
+
+				// Blend on X coordinate
+				for (int pixel_x = 0; pixel_x < blend_width; ++pixel_x)
+				{
+					const float blend_level = pixel_x / (float)blend_width;
+					for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
+					{
+						for (int pixel_z = 0; pixel_z < edit_state.size; ++pixel_z)
+						{
+							blendSample(1.0F, 0.0F, 0.0F, pixel_x, pixel_y, pixel_z, blend_level);
+						}
+					}
+				}
+
+				// Blend on Y coordinate
+				for (int pixel_y = 0; pixel_y < blend_width; ++pixel_y)
+				{
+					const float blend_level = pixel_y / (float)blend_width;
+					for (int pixel_x = 0; pixel_x < edit_state.size; ++pixel_x)
+					{
+						for (int pixel_z = 0; pixel_z < edit_state.size; ++pixel_z)
+						{
+							blendSample(0.0F, 1.0F, 0.0F, pixel_x, pixel_y, pixel_z, blend_level);
+						}
+					}
+				}
+
+				// Blend on Z coordinate
+				for (int pixel_z = 0; pixel_z < blend_width; ++pixel_z)
+				{
+					const float blend_level = pixel_z / (float)blend_width;
+					for (int pixel_x = 0; pixel_x < edit_state.size; ++pixel_x)
+					{
+						for (int pixel_y = 0; pixel_y < edit_state.size; ++pixel_y)
+						{
+							blendSample(0.0F, 0.0F, 1.0F, pixel_x, pixel_y, pixel_z, blend_level);
+						}
+					}
+				}
+			}
+
+			for (int pixel_i = 0; pixel_i < edit_state.size * edit_state.size * edit_state.size; ++pixel_i)
+			{
+				float noiseValue = raw_noise[pixel_i][edit_state.edit_channel];
+
+				noiseValue = noiseValue * edit_state.total_scale + edit_state.total_bias;
+				if (edit_state.invert_output) noiseValue = 1.0F - noiseValue;
+				if (edit_state.clamp_bottom) noiseValue = std::max<float>(0.0F, noiseValue);
+				if (edit_state.clamp_top) noiseValue = std::min<float>(1.0F, noiseValue);
+
+				if (edit_state.edit_split)
+					raw_noise[pixel_i][edit_state.edit_channel] = noiseValue;
+				else
+					raw_noise[pixel_i] = Vector4f(Vector3f(1, 1, 1) * noiseValue, 1.0F);
+			}
 
 			// Save the new texture
 			noise_texture = RrTexture3D::CreateUnitialized("noise");
 			((RrTexture3D*)noise_texture)->Upload(false, raw_noise, edit_state.size, edit_state.size, edit_state.size, core::gfx::tex::kColorFormatRGBA32F);
 			noise_texture->AddReference();
 
-			delete[] raw_noise;
+			//delete[] raw_noise;
 		}
 	}
 	delete noise;
@@ -408,4 +571,103 @@ void m04::editor::NoiseEditor::UpdateNoise ( void )
 
 	// Set up camera mode
 	is_3d_mode = edit_state.is3D;
+
+	// Finish the progress on taskbar
+	core::shell::SetTaskbarProgressValue(NIL, 100, 100);
+}
+
+#include "core-ext/system/io/assets/TextureIO.h"
+#include "gpuw/Buffers.h"
+#include "gpuw/Texture.h"
+
+void m04::editor::NoiseEditor::SaveNoise ( const char* filename )
+{
+	// TODO: Add a renderer job that we can wait for
+
+	gpu::Texture source_texture = noise_texture->GetTexture();
+
+	gpu::Buffer readback_buffer;
+	readback_buffer.initAsTextureReadbackBuffer(NULL,
+		edit_state.is3D ? core::gfx::tex::kTextureType3D : core::gfx::tex::kTextureType2D,
+		core::gfx::tex::kColorFormatRGBA32F,
+		edit_state.size,
+		edit_state.size,
+		edit_state.is3D ? edit_state.size : 1);
+
+	source_texture.copy(NULL, readback_buffer, 0, 0);
+
+	// TODO: Wait for context to finish
+
+	Vector4f* raw_image = (Vector4f*)readback_buffer.map(NULL, gpu::kTransferStatic);
+	if (raw_image)
+	{
+		if (!edit_state.is3D)
+		{
+			// Convert image to RGBA8
+			struct grPixel
+			{
+				uint8 r;
+				uint8 g;
+				uint8 b;
+				uint8 a;
+			};
+			grPixel* raw_rgba8 = new grPixel [edit_state.size * edit_state.size];
+			for (int i = 0; i < edit_state.size * edit_state.size; ++i)
+			{
+				raw_rgba8[i].r = (uint8)math::clamp(raw_image[i].x * 256.0F, 0.0F, 255.0F);
+				raw_rgba8[i].g = (uint8)math::clamp(raw_image[i].y * 256.0F, 0.0F, 255.0F);
+				raw_rgba8[i].b = (uint8)math::clamp(raw_image[i].z * 256.0F, 0.0F, 255.0F);
+				raw_rgba8[i].a = (uint8)math::clamp(raw_image[i].w * 256.0F, 0.0F, 255.0F);
+			}
+
+			// Write out a 2D RAW
+			FILE* output_file = fopen(filename, "wb");
+			ARCORE_ASSERT(output_file != NULL);
+			auto write_count = fwrite(raw_rgba8, sizeof(grPixel) * edit_state.size * edit_state.size, 1, output_file);
+			ARCORE_ASSERT(write_count > 0);
+			fclose(output_file);
+
+			delete[] raw_rgba8;
+		}
+		else
+		{
+			// Convert image to RGBA8
+			struct grPixel
+			{
+				uint8 r;
+				uint8 g;
+				uint8 b;
+				uint8 a;
+			};
+			grPixel* raw_rgba8 = new grPixel [edit_state.size * edit_state.size * edit_state.size];
+			for (int i = 0; i < edit_state.size * edit_state.size * edit_state.size; ++i)
+			{
+				raw_rgba8[i].r = (uint8)math::clamp(raw_image[i].x * 256.0F, 0.0F, 255.0F);
+				raw_rgba8[i].g = (uint8)math::clamp(raw_image[i].y * 256.0F, 0.0F, 255.0F);
+				raw_rgba8[i].b = (uint8)math::clamp(raw_image[i].z * 256.0F, 0.0F, 255.0F);
+				raw_rgba8[i].a = (uint8)math::clamp(raw_image[i].w * 256.0F, 0.0F, 255.0F);
+			}
+
+			// Write out a 3D BPD
+			core::gfx::tex::arImageInfo imageInfo = {};
+			imageInfo.width = edit_state.size;
+			imageInfo.height = edit_state.size;
+			imageInfo.depth = edit_state.size;
+			imageInfo.levels = 1;
+			imageInfo.type = core::gfx::tex::kTextureType3D;
+
+			core::BpdWriter writer;
+			writer.m_generateMipmaps = false;
+			writer.rawImage = raw_rgba8;
+			writer.mipmaps[0] = raw_rgba8;
+			writer.info = imageInfo;
+			writer.datetime = (uint64_t)std::chrono::system_clock::now().time_since_epoch().count();
+
+			auto writeResult = writer.WriteBpd(filename);
+			ARCORE_ASSERT(writeResult);
+
+			delete[] raw_rgba8;
+		}
+		readback_buffer.unmap(NULL);
+	}
 }

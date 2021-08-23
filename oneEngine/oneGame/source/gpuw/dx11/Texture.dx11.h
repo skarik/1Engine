@@ -39,6 +39,9 @@ namespace gpu
 		//	upload() : uploads data to the texture from a buffer
 		GPUW_API int			upload ( gpu::BaseContext* context, gpu::Buffer& buffer, const uint level, const uint arraySlice );
 
+		//	copy() : uploads data to a buffer from this texture
+		GPUW_API int			copy ( gpu::BaseContext* context, gpu::Buffer& buffer, const uint level, const uint arraySlice );
+
 	private:
 		friend GraphicsContext;
 		friend ComputeContext;

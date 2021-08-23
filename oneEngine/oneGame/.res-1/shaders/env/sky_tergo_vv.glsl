@@ -3,6 +3,8 @@
 #version 430
 
 #extension GL_GOOGLE_include_directive : require
+#extension GL_EXT_control_flow_attributes : require
+
 #include "../common.glsli"
 #include "../cbuffers.glsli"
 

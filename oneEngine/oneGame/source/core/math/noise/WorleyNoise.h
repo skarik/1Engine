@@ -4,15 +4,20 @@
 #include "BaseNoise.h"
 #include <vector>
 
+// WorleyNoise based on randomly placed points in a 0-1 volume.
+// Note that samples outside of the 0 to 1 range will not be valid unless `wrap` is enabled.
+// `wrap` also greatly decreases performance
+
 class WorleyNoise : public BaseNoise
 {
 public:
-	WorleyNoise (int cellCount, float cellSize, float amp, int seed)
+	WorleyNoise (int cellCount, float cellSize, float amp, int seed, bool wrap)
 	{
 		m_cellcount	= cellCount;
 		m_cellsize = cellSize;
 		m_amp		= amp;
 		m_seed		= seed;
+		m_wrap		= wrap;
 
 		init();
 	}
@@ -29,6 +34,7 @@ private:
 	float	m_cellsize;
 	float	m_amp;
 	int		m_seed;
+	bool	m_wrap;
 
 	void				init ( void );
 	float				get ( const Vector3f& position );

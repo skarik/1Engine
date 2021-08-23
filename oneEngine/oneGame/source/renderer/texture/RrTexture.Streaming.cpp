@@ -177,8 +177,10 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 			ARCORE_ASSERT(loadStatus);
 
 			// Set up the image info for allocating data down the line:
-			// BPDs default to 2D 8-bit RGBA for now.
-			info.type = core::gfx::tex::kTextureType2D; 
+			// BPDs default to 8-bit RGBA for now.
+			info.type = loadInfo->loader.info.type;
+			// ensure we can even support it
+			ARCORE_ASSERT(info.type == core::gfx::tex::kTextureType2D || info.type == core::gfx::tex::kTextureType3D);
 			info.internalFormat = core::gfx::tex::kColorFormatRGBA8;
 			// The rest of the information will be available in the loader.
 			info.width = loadInfo->loader.info.width;
@@ -195,11 +197,16 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 			// Allocate the texture.
 			m_texture.allocate(info.type, info.internalFormat, info.width, info.height, info.depth, info.levels);
 
+			const bool bHasDepth = info.type == core::gfx::tex::kTextureType3D;
+			const bool bHasHeight = (bHasDepth) || info.type == core::gfx::tex::kTextureType2D; // TODO: make this a common check
+
 			if (sync_client
+				// If mipmaps are disabled, dont use superlows
+				|| info.mipmapStyle == core::gfx::tex::kMipmapGenerationNone
 				// Super small images have invalid superlows
-				|| info.width < core::kTextureFormat_SuperlowWidth || info.height < core::kTextureFormat_SuperlowWidth
+				|| info.width < core::kTextureFormat_SuperlowWidth || info.height < core::kTextureFormat_SuperlowWidth || (bHasDepth && info.depth < core::kTextureFormat_SuperlowWidth)
 				// Many non-square images also have invalid superlows
-				|| info.width != info.height)
+				|| info.width != info.height || (bHasDepth && info.width != info.depth))
 			{
 				loadState = kTextureLoadState_LoadImage;
 			}
@@ -215,7 +222,10 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 			// Create a buffer to upload the texture data
 			uint64_t size_Flat = core::kTextureFormat_SuperlowByteSize / core::gfx::tex::getColorFormatByteSize(info.internalFormat);
 			uint64_t size_Width = (uint64_t)sqrt(size_Flat);
-			loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, info.type, info.internalFormat, size_Width, size_Width, 1); // TODO: Take format into account.
+			if (info.type == core::gfx::tex::kTextureType2D) // TODO: replace with common XYZ dim check of above
+				loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, info.type, info.internalFormat, size_Width, size_Width, 1); 
+			else if (info.type == core::gfx::tex::kTextureType3D)
+				loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, info.type, info.internalFormat, size_Width, size_Width, size_Width); 
 			void* target = loadInfo->pixelBuffer[0].map(gfx, gpu::kTransferStatic);
 
 			// Load the data in:

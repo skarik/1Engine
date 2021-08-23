@@ -12,6 +12,45 @@
 // TODO: LoadAtlas. It needs a unique streamed behavior where it loads lower mip levels of all layers, then works its way up.
 //                  The atlas is loaded as a 2D texture array in order to ensure proper mipmap behavior.
 
+RrTexture3D*
+RrTexture3D::Load ( const char* resource_name )
+{
+	auto resm = core::ArResourceManager::Active();
+
+	// Generate the resource name from the filename:
+	arstring256 resource_str_id (resource_name);
+	core::utils::string::ToResourceName(resource_str_id);
+
+	// First, find the texture in the resource system:
+	IArResource* existingResource = resm->Find(core::kResourceTypeRrTexture, resource_str_id);
+	if (existingResource != NULL)
+	{
+		ARCORE_ASSERT(((RrTexture*)existingResource)->ClassType() == core::gfx::tex::kTextureClass3D)
+
+		// Found it! Add a reference and return it.
+		RrTexture3D* existingTexture = (RrTexture3D*)existingResource;
+		existingTexture->AddReference(); // TODO: the docs say this doesn't happen. Evaluate and remove this.
+		return existingTexture;
+	}
+
+	// TODO: Cache the lookup misses, return NULL.
+	// Check if the file exists. Required for 2D to fail gracefully.
+	arstring256 resource_str_bpd = (std::string(resource_str_id) + ".bpd").c_str();
+	if (!core::Resources::Exists(resource_name) && !core::Resources::Exists(resource_str_bpd))
+	{
+		ARCORE_ERROR("Invalid file \"%s\" passed in.", resource_name);
+		return NULL;
+	}
+
+	// We need to create a new texture:
+	RrTexture3D* texture = new RrTexture3D(resource_str_id, resource_name);
+
+	// Add it to the resource system:
+	resm->Add(texture);
+
+	return texture;
+}
+
 //	CreateUnitialized ( name ) : Creates an uninitialized texture object.
 // Can be used for procedural textures, with Upload(...) later.
 RrTexture3D*

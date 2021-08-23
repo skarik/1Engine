@@ -189,7 +189,14 @@ bool core::BpdLoader::loadBpdCommon ( void )
 			info.width	= header.width;
 			info.height	= header.height;
 			info.depth	= header.depth;
-			info.levels	= (uint8_t)std::min<uint16_t>(255, header.levels);	
+			info.levels	= (uint8_t)std::min<uint16_t>(255, header.levels);
+			info.type	= (core::gfx::tex::arTextureType)((header.flags & 0xFF000000) >> 24);
+			
+			// Backwards compatibility patch:
+			if (info.type == core::gfx::tex::kTextureTypeNone)
+			{
+				info.type = core::gfx::tex::kTextureType2D;
+			}
 
 			format		= (ETextureFormatTypes)(header.flags & 0x000000FF);
 		}
@@ -262,7 +269,8 @@ bool core::BpdLoader::loadBpdCommon ( void )
 				// Decompress the data directly into target pointer:
 				unsigned long t_effectiveWidth	= std::max<unsigned long>(1, header.width / math::exp2(i));
 				unsigned long t_effectiveHeight	= std::max<unsigned long>(1, header.height / math::exp2(i));
-				unsigned long t_mipmapByteCount	= (uint32_t)core::getTextureFormatByteSize(format) * t_effectiveWidth * t_effectiveHeight;
+				unsigned long t_effectiveDepth	= std::max<unsigned long>(1, header.depth / math::exp2(i));
+				unsigned long t_mipmapByteCount	= (uint32_t)core::getTextureFormatByteSize(format) * t_effectiveWidth * t_effectiveHeight * t_effectiveDepth;
 				int z_result = uncompress( (uchar*)m_buffer_Mipmaps[i], &t_mipmapByteCount, (uchar*)t_sideBuffer, levelInfo.size );
 
 				// Delete the side buffer

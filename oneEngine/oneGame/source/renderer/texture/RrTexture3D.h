@@ -18,11 +18,11 @@ protected:
 
 public: // Creation Interface
 
-	//	Load3D ( filename ) : Loads a texture from the disk.
+	//	Load ( filename ) : Loads a texture from the disk.
 	// May return a previously loaded instance of the texture.
 	// The reference count of the returned instance will not be incremented.
 	RENDER_API static RrTexture3D*
-							Load3D ( const char* resource_name );
+							Load ( const char* resource_name );
 
 	//	LoadAtlas ( filename ) : Loads a texture from the disk.
 	// May return a previously loaded instance of the texture.
