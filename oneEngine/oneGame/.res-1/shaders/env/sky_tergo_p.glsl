@@ -33,7 +33,7 @@ struct rrRay
 
 // Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting, 
 // returns t value of intersection and intersection point q 
-bool IntersectRaySphere(rrRay ray, vec3 sphere_origin, float sphere_radius, out float hitDistance)// out vec3 hitPoint) 
+bool IntersectRaySphere(rrRay ray, vec3 sphere_origin, float sphere_radius, out float hitDistance)
 {
 	const vec3 origin_delta = sphere_origin - ray.origin;
 	
@@ -44,7 +44,6 @@ bool IntersectRaySphere(rrRay ray, vec3 sphere_origin, float sphere_radius, out 
 	const float distance_from_edgeSq = ( sphere_radius * sphere_radius ) - origin_delta_lenSq;
 	
 	[[branch]]
-	//if ( distance_from_edgeSq + towardsRay_dot_raySq < 0.0F )
 	if ( distance_from_edgeSq < 0.0F && towardsRay_dot_ray < 0.0F )
 		return false;
 	
@@ -54,89 +53,61 @@ bool IntersectRaySphere(rrRay ray, vec3 sphere_origin, float sphere_radius, out 
 	hitDistance = towardsRay_dot_ray + ( ( distance_from_edgeSq > 0.0 ) ? f : -f );
 	
 	return true;
-	
-	/*vec3 origin_delta = ray.origin - sphere_origin; 
-	float b = dot(origin_delta, ray.normal); 
-	float c = dot(origin_delta, origin_delta) - sphere_radius * sphere_radius; 
-
-	// Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0) 
-	if (c > 0.0f && b > 0.0f)
-		return false;
-	
-	float discr = b * b - c; 
-	// A negative discriminant corresponds to ray missing sphere 
-	if (discr < 0.0f)
-		return false; 
-
-	// Ray now found to intersect sphere, compute smallest t value of intersection
-	float discrSqrt = sqrt(discr);
-	float t = -b + ((c > 0.0f) ? -discrSqrt : discrSqrt);
-
-	hitDistance = t;
-
-	return true;*/
-	
-	/*vec3 origin_delta = ray.origin - sphere_origin;
-	
-	const float radiusSquared = sphere_radius * sphere_radius;
-	
-	const float delta_dot_ray = dot(origin_delta, ray.normal);
-	const float delta_ray_distance = dot(origin_delta, origin_delta) - radiusSquared;
-	
-	// Exit if ray’s origin outside sphere AND ray pointing away from the sphere
-	if (delta_ray_distance > 0.0F && delta_dot_ray > 0.0F)
-		return false;
-	
-	// Flatten origin_delta into the plane passing through sphere_origin perpendicular to the ray.
-	// This gives the closest approach of the ray to the center.
-	vec3 a = origin_delta - delta_dot_ray * ray.normal;
-	
-	float aSquared = dot(a, a);
-	
-	// Cache the subtraction now since we need it twice
-	float deltaSquared = radiusSquared - aSquared;
-	
-	// Closest approach is outside the sphere.
-	if (deltaSquared < 0.0F)
-		return false;	
-	
-	// Calculate distance from plane where ray enters/exits the sphere.
-	float h = sqrt(deltaSquared);
-	
-	// Calculate intersection point relative to sphere center.
-	if (delta_ray_distance > 0)
-	{
-		vec3 i = a - h * ray.normal;
-
-		vec3 intersection = sphere_origin + i;
-
-		hitDistance = length(intersection - ray.origin);
-	}
-	else
-	{
-		vec3 i = a + h * ray.normal;
-
-		vec3 intersection = sphere_origin + i;
-
-		hitDistance = length(intersection - ray.origin);
-	}
-	
-	return true;*/
 }
 
-float SampleCloudDensity ( in vec3 world_position, in rrCloudLayer cloud_info, in float depth )
+float CloudLayerStratus ( in float height )
 {
-	const float base_scaling = 3.0 / 10000.0;
-	float density = textureLod(textureSampler1, world_position * base_scaling, 0).r;
+	return clamp((0.04 - abs(0.08 - height)) / 0.04 * 14, 0.0, 1.0);
+}
+
+float CloudLayerCumulus ( in float height )
+{
+	return clamp((0.2 - abs(0.25 - height)) / 0.2 * 6, 0.0, 1.0);
+}
+
+float CloudLayerCumulonimbus ( in float height )
+{
+	return clamp((0.45 - abs(0.5 - height)) / 0.45 * (1 - height) * 15, 0.0, 1.0);
+}
+
+float SampleCloudDensity ( in vec3 world_position, in rrCloudLayer cloud_info, in float depth, in float coverage )
+{
+	// TODO: fix this
+	if (depth < 0 || depth > 1)
+		return 0;
 	
-	// Apply a low-level cloud
-	density *= clamp((0.2 - abs(0.2 - depth)) * 50, 0.0, 1.0);
+	vec3 panning_offset = vec3(sys_Time.y * 0.1, sys_Time.y * 0.2, 0);
+	
+	const float base_scaling = 1.3 / 10000.0;
+	vec3 density_source = textureLod(textureSampler1, world_position * base_scaling + panning_offset, 0).rgb;
+	float density = density_source.r * 2.0;
+	
+	// Get density based on the distance
+	const float distanceDensifier = pow(length(world_position.xy - sys_WorldCameraPos.xy) / (cloud_info.top), 3.0);
+	
+	// Model the cloud
+	density *= 
+		// Apply a low-level cloud
+		CloudLayerCumulonimbus(depth);
+	
+	// Apply coverage
+	//density = max(0.0, density * (1.0 + coverage) - (1.0 - coverage));
+	density = max(0.0, (density - coverage) * (1.0 + coverage));
 	
 	// Clouds are less dense at the bottom.
 	density *= depth;
 	
+	// Thicken them up for style
 	//density = clamp(density * 4.0 - 2.0, 0.0, 1.0);
+	
+	// Thicken them up in the distance
+	density *= 1.0 + distanceDensifier;
 	return density;
+}
+
+float HenyeyGreenstein ( in float g, in float cos_angle )
+{
+	return (1.0 - g * g) / (2.0 * pow(1.0 + g * g + 2.0 * g * cos_angle, 1.5));
 }
 
 void main ( void )
@@ -155,6 +126,8 @@ void main ( void )
 	
 	// Start with the sky cubemap
 	vec3 skyColor = skyCubemap.rgb;
+	
+	const vec3 lightDirection = normalize(vec3(0.7F, 0.2F, 0.7F));
 	
 	// Define static cloud layers
 	const rrCloudLayer cloud_layer_0 = rrCloudLayer(1000.0, 4500.0, 20000.0);
@@ -198,23 +171,91 @@ void main ( void )
 			
 			// Start with no density
 			float density = 0.0;
+			float lighting = 0.0;
 			
 			[[loop]]
 			for (int i = 0; i < sampleCount; ++i)
 			{
 				samplePosition += sampleStep;
 				
-				float newDensity = SampleCloudDensity(samplePosition, cloud_layer_0, i / float(sampleCount));
+				float newDensity =
+					SampleCloudDensity(
+						samplePosition,
+						cloud_layer_0,
+						i / float(sampleCount),
+						0.5
+					);
+					
+				float newLighting = 0.0;
+				// Sample in the direction of the light
+				const vec3 sample_offset [6] = {
+					vec3(0.16, -0.12, 0.94),
+					vec3(0.72, 0.42, -0.12),
+					vec3(0.0, 0.0, 0.0),
+					vec3(0.0, 0.0, 0.0),
+					vec3(0.0, 0.0, 0.0),
+					vec3(0.0, 0.0, 0.0)
+				};
+				const float sample_distance [6] = {
+					1.0,
+					2.0,
+					4.0,
+					8.0,
+					16.0,
+					256.0
+				};
+				for (int light_sample = 0; light_sample < 6; ++light_sample)
+				{
+					const vec3 light_sample_offset =
+						(cloud_layer_0.top - cloud_layer_0.bottom) / 256.0 *
+						(sample_distance[light_sample] * lightDirection
+						+ sample_offset[light_sample] * sample_distance[light_sample] * 0.5);
+						
+					float occludedDensity = 
+						SampleCloudDensity(
+							samplePosition + light_sample_offset,
+							cloud_layer_0,
+							i / float(sampleCount),
+							0.5
+						);
+						
+					newLighting += 1.0 - occludedDensity;
+				}
+				newLighting /= 6.0;
+				
 				
 				// Hack density deeper
 				density = newDensity + density * (1.0 - newDensity);
+				//lighting = lighting * (1.0 - newDensity) + newLighting * newDensity;
+				lighting = mix(lighting, newLighting, newDensity);
 				if (density > 0.99)
 				{
 					break;
 				}
 			}
 			
-			skyColor = mix(skyColor, vec3(1, 1, 1), density);
+			
+			vec3 cloudAlbedo = vec3(1, 1, 1);
+			float cloudLighting =
+				// Ambient light
+				0.5
+				// Beer's Law
+				//exp(-density) * HenyeyGreenstein(0.5, density) * 12.0 * lighting;
+				+ exp(-density * (1.0 - lighting));
+			
+			const vec3 cloudLight = vec3(1, 1, 1);
+			const vec3 cloudShadow = vec3(0, 0, 0);
+			
+			vec3 cloudColor = cloudAlbedo * cloudLighting;
+					
+			
+			skyColor =
+				mix(
+					skyColor,
+					cloudColor,
+					// Fade out at the horizon
+					mix(0.0, density, clamp(l_screenRay.z * 80, 0.0, 1.0))
+				);
 		}
 	}
 	
