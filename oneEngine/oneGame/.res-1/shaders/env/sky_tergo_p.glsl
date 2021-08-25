@@ -80,10 +80,11 @@ float SampleCloudDensity ( in vec3 world_position, in rrCloudLayer cloud_info, i
 	
 	const float base_scaling = 1.3 / 10000.0;
 	vec3 density_source = textureLod(textureSampler1, world_position * base_scaling + panning_offset, 0).rgb;
-	float density = density_source.r * 2.0;
+	float density = density_source.r * 3.0; // hack THICCER
 	
 	// Get density based on the distance
-	const float distanceDensifier = pow(length(world_position.xy - sys_WorldCameraPos.xy) / (cloud_info.top), 3.0);
+	//const float distanceDensifier = pow(length(world_position.xy - sys_WorldCameraPos.xy) / (cloud_info.top), 3.0);
+	const float distanceDensifier = 0.0;
 	
 	// Model the cloud
 	density *= 
@@ -189,27 +190,31 @@ void main ( void )
 				float newLighting = 0.0;
 				// Sample in the direction of the light
 				const vec3 sample_offset [6] = {
-					vec3(0.16, -0.12, 0.94),
-					vec3(0.72, 0.42, -0.12),
-					vec3(0.0, 0.0, 0.0),
-					vec3(0.0, 0.0, 0.0),
-					vec3(0.0, 0.0, 0.0),
-					vec3(0.0, 0.0, 0.0)
+					vec3( -0.4383571830936342f, 0.5220059888450893f, -0.6210293836116813f ),
+					vec3( 0.645078911159678f, -0.16886083129524965f, -0.6215859176476752f ),
+					vec3( 0.47347633867056343f, 0.7029367735909412f, 0.4028391197688177f ),
+					vec3( -0.4524931547352832f, -0.6949186255019494f, -0.45661626007276584f ),
+					vec3( -0.6942663333097578f, 0.14650800506244402f, 0.6394775843692075f ),
+					vec3( 0.38439149674154544f, -0.7207124972496046f, 0.529811642626739f ),
 				};
 				const float sample_distance [6] = {
-					1.0,
-					2.0,
-					4.0,
-					8.0,
-					16.0,
+					10.0,
+					20.0,
+					40.0,
+					60.0,
+					100.0,
 					256.0
 				};
+				
+				float lightingOcclusion = 0.0;
+				
+				[[loop]]
 				for (int light_sample = 0; light_sample < 6; ++light_sample)
 				{
+					const float sample_lengthen_factor = 0.5 * (cloud_layer_0.top - cloud_layer_0.bottom) / sample_distance[5];
 					const vec3 light_sample_offset =
-						(cloud_layer_0.top - cloud_layer_0.bottom) / 256.0 *
-						(sample_distance[light_sample] * lightDirection
-						+ sample_offset[light_sample] * sample_distance[light_sample] * 0.5);
+						sample_lengthen_factor * sample_distance[light_sample] *
+						( lightDirection + sample_offset[light_sample] * 0.3 );
 						
 					float occludedDensity = 
 						SampleCloudDensity(
@@ -219,9 +224,14 @@ void main ( void )
 							0.5
 						);
 						
-					newLighting += 1.0 - occludedDensity;
+					lightingOcclusion += occludedDensity;
+					[[branch]]
+					if (lightingOcclusion > 0.0)
+					{
+						break;
+					}
 				}
-				newLighting /= 6.0;
+				newLighting = clamp(1.0 - lightingOcclusion, 0.0, 1.0);
 				
 				
 				// Hack density deeper
@@ -238,10 +248,12 @@ void main ( void )
 			vec3 cloudAlbedo = vec3(1, 1, 1);
 			float cloudLighting =
 				// Ambient light
-				0.5
+				//0.5
+				0.0
 				// Beer's Law
 				//exp(-density) * HenyeyGreenstein(0.5, density) * 12.0 * lighting;
-				+ exp(-density * (1.0 - lighting));
+				//+ exp(-density * (1.0 - lighting));
+				+ lighting;
 			
 			const vec3 cloudLight = vec3(1, 1, 1);
 			const vec3 cloudShadow = vec3(0, 0, 0);
