@@ -80,7 +80,7 @@ float SampleCloudDensity ( in vec3 world_position, in rrCloudLayer cloud_info, i
 	
 	const float base_scaling = 1.3 / 10000.0;
 	vec3 density_source = textureLod(textureSampler1, world_position * base_scaling + panning_offset, 0).rgb;
-	float density = density_source.r * 3.0; // hack THICCER
+	float density = density_source.r * 2.0; // hack THICCER
 	
 	// Get density based on the distance
 	//const float distanceDensifier = pow(length(world_position.xy - sys_WorldCameraPos.xy) / (cloud_info.top), 3.0);
@@ -226,18 +226,17 @@ void main ( void )
 						
 					lightingOcclusion += occludedDensity;
 					[[branch]]
-					if (lightingOcclusion > 0.0)
+					if (lightingOcclusion > 0.99)
 					{
 						break;
 					}
 				}
 				newLighting = clamp(1.0 - lightingOcclusion, 0.0, 1.0);
-				
+				// Blend in new lighting
+				lighting = mix(lighting, newLighting, newDensity);
 				
 				// Hack density deeper
 				density = newDensity + density * (1.0 - newDensity);
-				//lighting = lighting * (1.0 - newDensity) + newLighting * newDensity;
-				lighting = mix(lighting, newLighting, newDensity);
 				if (density > 0.99)
 				{
 					break;
