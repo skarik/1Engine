@@ -136,6 +136,8 @@ void RrRenderer::StepPreRender ( rrRenderFrameState* frameState )
 		frameInfo.atmoColor = Vector4f(Vector3f(t_atmoColor.raw), 1.0F);
 		frameInfo.fogEnd = renderer::Settings.fogEnd;
 		frameInfo.fogScale = renderer::Settings.fogScale; // These fog values likely won't see actual use in more modern rendering pipelines.
+		// Frame index
+		frameInfo.frameIndex = frame_index;
 		// Push to GPU:
 		frameState->cbuffer_perFrame.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerFrame));
 		frameState->cbuffer_perFrame.upload(NULL, &frameInfo, sizeof(renderer::cbuffer::rrPerFrame), gpu::kTransferStream);

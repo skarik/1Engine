@@ -111,7 +111,10 @@ namespace renderer
 			Real32		fogEnd;
 			Real32		fogScale;
 
-			Vector2f	rr_padding [5];
+			int			frameIndex;
+
+			uint		rr_padding0;
+			Vector2f	rr_padding [4];
 		};
 		static_assert(sizeof(rrPerFrame) == 128, "Alignment of rrPerFrame incorrect for the GPU.");
 

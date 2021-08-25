@@ -57,6 +57,9 @@ layout(binding = CBUFFER_PER_FRAME_INFORMATION, std140) uniform sys_cbuffer_PerF
 	vec4	sys_AtmoColor;
 	float 	sys_FogEnd;
 	float 	sys_FogScale;
+	
+	// Other
+	int		sys_FrameIndex;
 };
 
 // TODO: Remove? It's unused...

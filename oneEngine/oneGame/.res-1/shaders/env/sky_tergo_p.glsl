@@ -63,15 +63,15 @@ float CloudLayerStratus ( in float height )
 
 float CloudLayerCumulus ( in float height )
 {
-	return clamp((0.2 - abs(0.25 - height)) / 0.2 * 6, 0.0, 1.0);
+	return clamp((0.2 - abs(0.25 - height)) / 0.2 * (1 - height) * 8, 0.0, 1.0);
 }
 
 float CloudLayerCumulonimbus ( in float height )
 {
-	return clamp((0.45 - abs(0.5 - height)) / 0.45 * (1 - height) * 15, 0.0, 1.0);
+	return clamp((0.45 - abs(0.5 - height)) / 0.45 * (1 - height) * 9, 0.0, 1.0);
 }
 
-float SampleCloudDensity ( in vec3 world_position, in rrCloudLayer cloud_info, in float height, in float coverage )
+float SampleCloudDensity ( in vec3 world_position, in rrCloudLayer cloud_info, in float height, in float coverage, in float shape )
 {
 	// TODO: fix this
 	if (height < 0 || height > 1)
@@ -89,22 +89,26 @@ float SampleCloudDensity ( in vec3 world_position, in rrCloudLayer cloud_info, i
 	
 	// Model the cloud
 	density *= 
-		// Apply a low-level cloud
-		CloudLayerCumulonimbus(height);
+		mix(mix(CloudLayerStratus(height),
+				CloudLayerCumulus(height),
+				saturate(shape * 2.0)),
+			CloudLayerCumulonimbus(height),
+			saturate(shape * 2.0 - 1.0));
 	
 	// Apply coverage
 	//density = max(0.0, density * (1.0 + coverage) - (1.0 - coverage));
-	density = max(0.0, (density - coverage) * (1.0 + coverage));
+	//density = saturate((density - (1.0 - coverage)) * (1.0 + coverage) + max(0.0, coverage - 0.8) / 0.5);
+	density = max(0.0, (density - (1.0 - coverage)) * (1.0 + coverage));
 	
 	// Clouds are less dense at the bottom.
-	density *= saturate(height * 5.0);
+	density *= saturate(height * 3.0);
 	
 	// Thicken them up for style
 	//density = clamp(density * 4.0 - 2.0, 0.0, 1.0);
 	
 	// Thicken them up in the distance
 	density *= 1.0 + distanceDensifier;
-	return density;
+	return saturate(density);
 }
 
 float HenyeyGreenstein ( in float g, in float cos_angle )
@@ -114,7 +118,7 @@ float HenyeyGreenstein ( in float g, in float cos_angle )
 	return (1.0 - g * g) / (4.0 * M_PI * denominator);
 }
 
-float GetCloudOcclusionAtPoint ( in vec3 base_sample_point, in vec3 cone_direction, in rrCloudLayer cloud_info )
+float GetCloudOcclusionAtPoint ( in vec3 base_sample_point, in vec3 cone_direction, in rrCloudLayer cloud_info, in float coverage, in float shape, in uint shuffle )
 {
 	// Sample in the direction of the light
 	const vec3 sample_offset [6] = {
@@ -126,23 +130,27 @@ float GetCloudOcclusionAtPoint ( in vec3 base_sample_point, in vec3 cone_directi
 		vec3( 0.38439149674154544f, -0.7207124972496046f, 0.529811642626739f ),
 	};
 	const float sample_distance [6] = {
+		5.0,
 		10.0,
+		15.0,
 		20.0,
-		40.0,
-		60.0,
-		100.0,
+		25.0,
 		250.0
 	};
 	
 	float occlusion = 0.0;
 	
 	[[loop]]
-	for (int occlude_sample_index = 0; occlude_sample_index < 6; ++occlude_sample_index)
+	for (uint occlude_sample_index = 0; occlude_sample_index < 6; ++occlude_sample_index)
 	{
-		const float sample_lengthen_factor = 0.5 * (cloud_info.top - cloud_info.bottom) / sample_distance[5];
+		//const uint shuffled_index = (occlude_sample_index + shuffle + uint(sys_FrameIndex)) % 6;
+		const uint shuffled_index = (occlude_sample_index + shuffle) % 6;
+		
+		const float sample_lengthen_factor = 0.5 * abs(cloud_info.top - cloud_info.bottom) / sample_distance[5];
 		const vec3 light_sample_offset =
 			sample_lengthen_factor * sample_distance[occlude_sample_index] *
-			normalize( cone_direction + sample_offset[occlude_sample_index] * 0.4 );
+			( cone_direction + sample_offset[shuffled_index] * 0.5 );
+			//normalize( cone_direction + sample_offset[shuffled_index] * 0.75 );
 			
 		// Get actual sample point within the volume
 		const vec3 next_sample_point = base_sample_point + light_sample_offset;
@@ -153,8 +161,9 @@ float GetCloudOcclusionAtPoint ( in vec3 base_sample_point, in vec3 cone_directi
 				next_sample_point,
 				cloud_info,
 				// This approximation is good enough
-				next_sample_point.z / (cloud_info.top - cloud_info.bottom),
-				0.5
+				next_sample_point.z / abs(cloud_info.top - cloud_info.bottom),
+				coverage,
+				shape
 			);
 			
 		occlusion += occludedDensity;
@@ -166,6 +175,173 @@ float GetCloudOcclusionAtPoint ( in vec3 base_sample_point, in vec3 cone_directi
 	}
 	
 	return occlusion;
+}
+
+vec3 TraceClouds (
+	in rrRay ray,
+	in rrCloudLayer cloudLayer,
+	in vec3 lightDirection,
+	in vec3 lightColor,
+	in vec3 ambientLight,
+	in float coverage,
+	in float shape,
+	in float absorption,
+	out float blend )
+{
+	[[branch]]
+	if (sign(ray.normal.z * cloudLayer.top) > 0.0)
+	{
+		const vec3 world_center = vec3(sys_WorldCameraPos.xy, -cloudLayer.radius);
+		
+		// Raycast against a sphere
+		float bottomLayerHitDistance = 0.0;
+		bool isBottomHit = IntersectRaySphere(
+			ray,
+			world_center,
+			cloudLayer.radius + cloudLayer.bottom,
+			bottomLayerHitDistance);
+		
+		[[branch]]
+		if (isBottomHit)
+		{
+			float topLayerHitDistance = bottomLayerHitDistance;
+			IntersectRaySphere(
+				ray,
+				world_center,
+				cloudLayer.radius + cloudLayer.top,
+				topLayerHitDistance);
+			
+			const int kMinSampleCount = 64;
+			const int kMaxSampleCount = 128;
+			
+			// Generate the ray
+			const vec3 sampleDelta = abs(topLayerHitDistance - bottomLayerHitDistance) * ray.normal;
+			
+			// Set up initial sampling position
+			vec3 samplePosition = vec3(
+				sys_WorldCameraPos.xy + ray.normal.xy * min(topLayerHitDistance, bottomLayerHitDistance),
+				(ray.normal.z > 0.0) ? 0.0 : abs(cloudLayer.top - cloudLayer.bottom)
+				);
+			
+			// Get number of samples we want to do. Above, we do less. At horizon, we do more.
+			const int sampleCount = int(mix(float(kMaxSampleCount), float(kMinSampleCount), abs(ray.normal.z)));
+			const vec3 sampleStep = sampleDelta / sampleCount;
+			
+			// Grab sample step length
+			const float sampleStepLength = length(sampleStep);
+			
+			// Start with no density
+			const float absorption_multiplier = 0.05 * absorption;
+			
+			float transmittance = 1.0;
+			vec3 lighting = vec3(0.0, 0.0, 0.0);
+			
+			[[loop]]
+			for (uint i = 0; i < sampleCount; ++i)
+			{
+				const float parametric_cloud_height = 
+					(ray.normal.z > 0.0)
+					? (i / float(sampleCount))
+					: (1.0 - i / float(sampleCount));
+				
+				float newDensity =
+					SampleCloudDensity(
+						samplePosition,
+						cloudLayer,
+						parametric_cloud_height,
+						coverage,
+						shape
+					);
+				
+				// Sample occlusion in another direction
+				[[branch]]
+				if (newDensity > 0.0)
+				{
+					float occlusion =
+						GetCloudOcclusionAtPoint(
+							samplePosition,
+							lightDirection,
+							cloudLayer,
+							coverage,
+							shape,
+							i
+						);
+					
+					// Self-shadowing (bit of a hack)
+					float shadow_coeff = 1.0; //exp(-occlusion);
+					
+					// Beers coeff to make edges of clouds brighter
+					float beers_coeff = exp(-newDensity * sampleStepLength * absorption_multiplier);
+					// Powder (ala HZD) darkens wispy edges to give details within clouds.
+					// Looks great even on low-res clouds, giving more of the "outline" for the style.
+					float powder_coeff = 1.0 - exp(-newDensity * sampleStepLength * absorption_multiplier * 2.0);
+					
+					// Start with light color
+					vec3 in_lighting = lightColor;
+
+					// Apply the scattering & shadow coeff
+					in_lighting *= HenyeyGreenstein(0.5, -dot(ray.normal, lightDirection)) * shadow_coeff;
+					// Bump up the current scattering level
+					in_lighting *= 3.0;
+					// Add ambient light
+					in_lighting += mix(0.1, 1.0, parametric_cloud_height) * ambientLight;
+					
+					// Normalize lighting to the density
+					in_lighting *= newDensity;
+					{
+						// Clamp lighting
+						in_lighting = saturate(in_lighting);
+						// Apply beers-powder (yum)
+						in_lighting *= beers_coeff * powder_coeff * 2.0;
+					}
+					// Denormalize lighting
+					in_lighting /= max(newDensity, 0.001);
+
+					// Acculmulate lighting
+					lighting += in_lighting * transmittance;
+					// Stop transmittance now
+					transmittance *= beers_coeff;
+				}
+				
+				[[branch]]
+				if (transmittance < 0.01)
+				{
+					break;
+				}
+				
+				// Step the sampling forward
+				samplePosition += sampleStep;
+			}
+			
+			[[branch]]
+			if (transmittance < 1.0)
+			{
+				// Sample the sky in order to do distance reflections
+				vec3 cloudReflection = texture(textureSampler0, vec3(ray.normal.xy, -ray.normal.z)).rgb;
+				
+				vec3 cloudAlbedo = vec3(1, 1, 1);
+				vec3 cloudLighting = lighting;
+				
+				// Calculate grazing angle for far distances
+				float normal_blend = dot(normalize(world_center - (bottomLayerHitDistance * ray.normal + ray.origin)), ray.normal);
+				float normal_blend_power = 1.0 - pow(1.0 - abs(normal_blend), 4.0);
+				
+				vec3 cloudColor = cloudAlbedo * cloudLighting;
+				// Mix in the reflection at the far distance
+				cloudColor = mix(cloudColor, cloudReflection, max(1.0 - normal_blend_power, pow(1.0 - abs(ray.normal.z), 5.0)));
+				
+				// Fade out at the horizon
+				blend = mix(0.0, saturate(1.02 - transmittance * 1.02), clamp(abs(ray.normal.z) * 80, 0.0, 1.0));
+				// Fade out at the grazing angle
+				blend = mix(0.0, blend, normal_blend_power);
+				
+				return cloudColor;
+			}
+		}
+	}
+	
+	blend = 0.0;
+	return vec3(0, 0, 0);
 }
 
 vec3 SampleStar ( in vec3 view_ray, in vec3 position, in vec3 color, in float intensity, in float size, in float glare_size )
@@ -205,146 +381,27 @@ void main ( void )
 	vec3 skyColor = skyCubemap.rgb;
 	
 	const vec3 lightDirection = normalize(vec3(0.7F, 0.2F, 0.7F));
+	const vec3 lightColor = vec3(1.1, 1.0, 0.9) * 0.6;
+	const vec3 ambientLight = vec3(0.45, 0.75, 0.90) * 0.75;
 	
 	// Add a sun
 	skyColor += SampleStar(l_screenRay, lightDirection, vec3(1.0, 0.78, 0.68), 20.0, 0.005, 0.05);
 	
 	// Define static cloud layers
-	const rrCloudLayer cloud_layer_0 = rrCloudLayer(1000.0, 4500.0, 20000.0);
-	const rrCloudLayer cloud_layer_1 = rrCloudLayer(-1000.0, -2500.0, 20000.0);
+	const rrCloudLayer cloud_layer_0 = rrCloudLayer(1000.0, 4500.0, 80000.0);
+	//const rrCloudLayer cloud_layer_1 = rrCloudLayer(-1000.0, -2500.0, 20000.0);
+	const rrCloudLayer cloud_layer_1 = rrCloudLayer(-4000.0, -500.0, 400000.0);
 	
-	[[branch]]
-	if (l_screenRay.z > 0.0)
-	{
-		const vec3 world_center = vec3(sys_WorldCameraPos.xy, -cloud_layer_0.radius);
-		
-		// Raycast against a sphere
-		float bottomLayerHitDistance = 0.0;
-		bool isBottomHit = IntersectRaySphere(
-			l_pixelRay,
-			world_center,
-			cloud_layer_0.radius + cloud_layer_0.bottom,
-			bottomLayerHitDistance);
-		
-		[[branch]]
-		if (isBottomHit)
-		{
-			float topLayerHitDistance = bottomLayerHitDistance;
-			IntersectRaySphere(
-				l_pixelRay,
-				world_center,
-				cloud_layer_0.radius + cloud_layer_0.top,
-				topLayerHitDistance);
-			
-			const int kMinSampleCount = 64;
-			const int kMaxSampleCount = 128;
-			
-			// Generate the ray
-			const vec3 sampleDelta = (topLayerHitDistance - bottomLayerHitDistance) * l_screenRay;
-			
-			// Set up initial sampling position
-			vec3 samplePosition = vec3(sys_WorldCameraPos.xy + l_screenRay.xy * bottomLayerHitDistance, 0.0);
-			
-			// Get number of samples we want to do. Above, we do less. At horizon, we do more.
-			const int sampleCount = int(mix(float(kMaxSampleCount), float(kMinSampleCount), l_screenRay.z));
-			const vec3 sampleStep = sampleDelta / sampleCount;
-			
-			// Start with no density
-			float density = 0.0;
-			float lighting = 0.0;
-			
-			[[loop]]
-			for (int i = 0; i < sampleCount; ++i)
-			{
-				samplePosition += sampleStep;
-				
-				const float parametric_cloud_height = i / float(sampleCount);
-				
-				float newDensity =
-					SampleCloudDensity(
-						samplePosition,
-						cloud_layer_0,
-						parametric_cloud_height,
-						0.5
-					);
-				
-				// Sample occlusion in another direction
-				[[branch]]
-				if (newDensity > 0.0)
-				{
-					float occlusion =
-						GetCloudOcclusionAtPoint(
-							samplePosition,
-							lightDirection,
-							cloud_layer_0
-						);
-					
-					// Self-shadowing (bit of a hack)
-					float shadow_coeff = exp(-occlusion * 2.0);
-					
-					// Beers coeff to make edges of clouds brighter
-					float beers_coeff = exp(-newDensity);
-					// Beers coeff modded with light occlusion
-					//float beers_coeff = exp(-newDensity * (1.0 - occlusion));
-					
-					// Powder (ala HZD) darkens wispy edges to give details within clouds.
-					// Looks great even on low-res clouds, giving more of the "outline" for the style.
-					float powder_coeff = 1.0 - exp(-newDensity * 2.0);
-					
-					float newLighting = beers_coeff * powder_coeff * HenyeyGreenstein(0.5, -dot(l_screenRay, lightDirection)) * shadow_coeff;
-					
-					// Attenuate previous lighting but add new lighting
-					//lighting = lighting * exp(-newDensity * (1.0 - occlusion) * 0.5) + newLighting;
-					lighting += newLighting;
-				}
-				
-				// Hack density deeper
-				density = newDensity + density * (1.0 - newDensity);
-				
-				[[branch]]
-				if (density > 0.99)
-				{
-					break;
-				}
-			}
-			
-			[[branch]]
-			if (density > 0.0)
-			{
-				//float lighting = clamp(1.0 - lightingOcclusion, 0.0, 1.0);
-				//newLighting = clamp(1.0 - lightingOcclusion, 0.0, 1.0);
-				// Blend in new lighting
-				//lighting = mix(lighting, newLighting, newDensity);
-				
-				// Sample the sky in order to do distance reflections
-				vec3 cloudReflection = texture(textureSampler0, vec3(l_screenRay.xy, -l_screenRay.z)).rgb;
-				
-				
-				vec3 cloudAlbedo = vec3(1, 1, 1);
-				float cloudLighting = lighting;
-					// Ambient light
-					/*0.2
-					// Beer's Law
-					//+ exp(-density)
-					//exp(-density) * HenyeyGreenstein(0.5, density) * 12.0 * lighting;
-					+ lighting;*/
-				
-				const vec3 cloudLight = vec3(1, 1, 1);
-				const vec3 cloudShadow = vec3(0, 0, 0);
-				
-				vec3 cloudColor = cloudAlbedo * cloudLighting;
-						
-				
-				skyColor =
-					mix(
-						skyColor,
-						cloudColor,
-						// Fade out at the horizon
-						mix(0.0, density, clamp(l_screenRay.z * 80, 0.0, 1.0))
-					);
-			}
-		}
-	}
+	const float coverage = 0.5;
+	const float shape = 0.1;
+	
+	float cloud_blend_0 = 0.0;
+	vec3 cloud_color_0 = TraceClouds(l_pixelRay, cloud_layer_0, lightDirection, lightColor, ambientLight, coverage, shape, 1.0, cloud_blend_0);
+	skyColor = mix(skyColor, cloud_color_0, cloud_blend_0);
+	
+	float cloud_blend_1 = 0.0;
+	vec3 cloud_color_1 = TraceClouds(l_pixelRay, cloud_layer_1, lightDirection, lightColor, ambientLight, 0.9, 0.5, 1.0, cloud_blend_1);
+	skyColor = mix(skyColor, cloud_color_1, cloud_blend_1);
 	
 	//FragDiffuse = vec4(l_screenRay, 1.0);
 	FragDiffuse = vec4(skyColor, 1.0);
