@@ -69,6 +69,7 @@
     <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Writer.cpp" />
     <ClCompile Include="source\core-ext\system\io\Files.cpp" />
     <ClCompile Include="source\core-ext\system\io\FileUtils.cpp" />
+    <ClCompile Include="source\core-ext\system\io\FileWatcher.cpp" />
     <ClCompile Include="source\core-ext\system\io\osf.cpp" />
     <ClCompile Include="source\core-ext\system\io\mccvxg.cpp" />
     <ClCompile Include="source\core-ext\system\io\Resources.cpp" />
@@ -80,6 +81,7 @@
     <ClCompile Include="source\core-ext\system\shell\Message.cpp" />
     <ClCompile Include="source\core-ext\system\shell\Status.cpp" />
     <ClCompile Include="source\core-ext\threads\Jobs.cpp" />
+    <ClCompile Include="source\core-ext\threads\naming.cpp" />
     <ClCompile Include="source\core-ext\transform\Transform.cpp" />
     <ClCompile Include="source\core-ext\transform\TransformUtility.cpp" />
     <ClCompile Include="source\core-ext\utils\MeshAttributes.cpp" />
@@ -138,6 +140,7 @@
     <ClInclude Include="source\core-ext\system\io\assets\TextureIO.h" />
     <ClInclude Include="source\core-ext\system\io\Files.h" />
     <ClInclude Include="source\core-ext\system\io\FileUtils.h" />
+    <ClInclude Include="source\core-ext\system\io\FileWatcher.h" />
     <ClInclude Include="source\core-ext\system\io\osf.h" />
     <ClInclude Include="source\core-ext\system\io\mccvxg.h" />
     <ClInclude Include="source\core-ext\system\io\Resources.h" />
@@ -149,6 +152,7 @@
     <ClInclude Include="source\core-ext\system\shell\Message.h" />
     <ClInclude Include="source\core-ext\system\shell\Status.h" />
     <ClInclude Include="source\core-ext\threads\Jobs.h" />
+    <ClInclude Include="source\core-ext\threads\naming.h" />
     <ClInclude Include="source\core-ext\threads\ParallelFor.h" />
     <ClInclude Include="source\core-ext\transform\Transform.h" />
     <ClInclude Include="source\core-ext\transform\TransformUtility.h" />

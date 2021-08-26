@@ -1,4 +1,6 @@
 #include "Jobs.h"
+#include "core-ext/threads/naming.h"
+#include <string>
 
 // Global instance
 core::jobs::System* core::jobs::System::Active = NULL;
@@ -28,11 +30,14 @@ core::jobs::System::System ( const uint8_t threadCount )
 	m_managerThread = std::thread( &core::jobs::System::_internal_JobCycle, this );
 
 	// Create the threads
-	for ( uint i = 0; i < usedThreads; ++i ) {
+	for ( uint i = 0; i < usedThreads; ++i )
+	{
 		m_jobStates.push_back( JobState() );
 	}
-	for ( uint i = 0; i < usedThreads; ++i ) {
+	for ( uint i = 0; i < usedThreads; ++i )
+	{
 		m_jobThreads.push_back( std::thread( &core::jobs::System::_internal_WorkerCycle, this, &(m_jobStates[i]) ) );
+		core::threads::SetThreadName(m_jobThreads.back(), ("JobThread_" + std::to_string(i)).c_str());
 	}
 	
 	// Now allow the system to move forward
@@ -102,7 +107,7 @@ core::jobs::JobId core::jobs::System::_internal_AddJob ( const JobRequest& jobTo
 void core::jobs::System::_internal_WaitForJobs ( const JobTypeBits jobTypeBits )
 {
 	// Ignore invalid calls
-	if ( (jobTypeBits & 0xFF00 == 0) && (jobTypeBits & kJobTypeALL) == 0 )
+	if ( ((jobTypeBits & 0xFF00) == 0) && (jobTypeBits & kJobTypeALL) == 0 )
 	{
 		return;
 	}

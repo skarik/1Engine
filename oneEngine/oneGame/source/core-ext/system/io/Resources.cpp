@@ -153,10 +153,19 @@ namespace core
 		std::string filename = n_filename;
 
 		// Check the input for ".res" and remove if needed
-		if ( std::string(filename).find(".res/") != std::string::npos )
+		if ( filename.find(".res/") != std::string::npos )
 		{
 			filename = filename.replace( 0, 5, "" );
 			debug::Console->PrintWarning( "%s was opened using old method!\n", filename );
+		}
+
+		// Check the input for ".res-"/".res+" and remove if needed
+		auto absolute_path_pivot = filename.find(".res-");
+		if ( absolute_path_pivot == std::string::npos )
+			absolute_path_pivot = filename.find(".res+");
+		if ( absolute_path_pivot != std::string::npos )
+		{
+			filename = std::string(filename.begin() + absolute_path_pivot + 7, filename.end());
 		}
 
 		// Loop through the paths and return the first result

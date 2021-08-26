@@ -40,6 +40,9 @@ protected:
 	core::arResourceHash	m_resourceHashValue;
 
 public:
+	//	virtual Destructor - often Destroyed through IArResource pointer.
+	CORE_API virtual		~IArResource ( void ) {};
+
 	//	virtual ResourceType() : What type of resource is this?
 	// Identifies the type of resource this is.
 	CORE_API virtual core::arResourceType

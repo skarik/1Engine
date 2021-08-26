@@ -436,6 +436,9 @@
     <ClInclude Include="source\core\math\noise\WorleyNoise.h">
       <Filter>SOURCE\Core\Math\Noise</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\types\modes.h">
+      <Filter>SOURCE\Core\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">

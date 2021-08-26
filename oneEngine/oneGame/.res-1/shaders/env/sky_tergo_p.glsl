@@ -284,7 +284,7 @@ vec3 TraceClouds (
 					// Bump up the current scattering level
 					in_lighting *= 3.0;
 					// Add ambient light
-					in_lighting += mix(0.1, 1.0, parametric_cloud_height) * ambientLight;
+					in_lighting += mix(0.1, 0.5, saturate(parametric_cloud_height)) * ambientLight;
 					
 					// Normalize lighting to the density
 					in_lighting *= newDensity;
@@ -371,7 +371,8 @@ void main ( void )
 		-2.0 * ((gl_FragCoord.y - sys_ViewportInfo.y) / sys_ViewportInfo.w - 0.5),
 		1.0,
 		1.0);
-	const vec3 l_screenRay = normalize((sys_ModelViewProjectionMatrixInverse * l_screenSpaceRay).xyz);
+	vec4 l_screenSpaceRayTransformed = sys_ModelViewProjectionMatrixInverse * l_screenSpaceRay;
+	const vec3 l_screenRay = normalize(l_screenSpaceRayTransformed.xyz / l_screenSpaceRayTransformed.w);
 	const rrRay l_pixelRay = rrRay(sys_WorldCameraPos.xyz, l_screenRay);
 	
 	// Sample the cubemap using the ray
@@ -400,7 +401,7 @@ void main ( void )
 	skyColor = mix(skyColor, cloud_color_0, cloud_blend_0);
 	
 	float cloud_blend_1 = 0.0;
-	vec3 cloud_color_1 = TraceClouds(l_pixelRay, cloud_layer_1, lightDirection, lightColor, ambientLight, 0.9, 0.5, 1.0, cloud_blend_1);
+	vec3 cloud_color_1 = TraceClouds(l_pixelRay, cloud_layer_1, lightDirection, lightColor, ambientLight, 1.0, 0.7, 1.3, cloud_blend_1);
 	skyColor = mix(skyColor, cloud_color_1, cloud_blend_1);
 	
 	//FragDiffuse = vec4(l_screenRay, 1.0);

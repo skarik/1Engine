@@ -1,9 +1,11 @@
 #ifndef GPU_WRAPPER_PUBLIC_SHADER_TYPES_H_
 #define GPU_WRAPPER_PUBLIC_SHADER_TYPES_H_
 
+#include "core/types.h"
+
 namespace gpu
 {
-	enum ShaderStage
+	enum ShaderStage : uint8
 	{
 		kShaderStageVs,		// Vertex shader
 		kShaderStageHs,		// Hull shader
@@ -23,9 +25,11 @@ namespace gpu
 		kShaderStageRCHit,	// Closest-hit shader
 		kShaderStageRAHit,	// Any-hit shader
 		kShaderStageRMiss,	// Miss shader
+
+		kShaderStageMAX,
 	};
 
-	enum PipelineType
+	enum PipelineType : uint8
 	{
 		kPipelineTypeInvalid,
 		kPipelineTypeGraphics,

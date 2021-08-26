@@ -16,8 +16,9 @@ class arBaseObject
 {
 private:
 	// Disable arBaseObject copying:
-	arBaseObject & operator= (const arBaseObject & other) { fnl_assert(0); return(*this); }
-	arBaseObject ( const arBaseObject& other) { fnl_assert(0); }
+	arBaseObject& operator= ( const arBaseObject & other ) = delete;
+	arBaseObject ( const arBaseObject& other ) = delete;
+	arBaseObject ( const arBaseObject&& other ) = delete;
 
 public:
 	explicit arBaseObject ( void )
@@ -30,10 +31,9 @@ public:
 	// Memory Management : Reference counting
 	//===============================================================================================//
 
-	arBaseObject* RemoveReference ( void ) {
-		if ( referenceCount > 0 )
-			referenceCount--;
-		else
+	arBaseObject* RemoveReference ( void )
+	{
+		if ( referenceCount.fetch_sub(1) == 0 )
 			throw core::InvalidCallException();
 		return this;
 	}

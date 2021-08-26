@@ -11,6 +11,9 @@
 // Include exports
 #include "exports.h"
 
+// Include macros associated with build modes
+#include "modes.h"
+
 // Include common macros
 #include "macros_common.h"
 

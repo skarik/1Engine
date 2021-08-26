@@ -1,112 +1,3 @@
-// https://www.khronos.org/opengl/wiki/SPIR-V
-// Read our shaders into the appropriate buffers
-//std::vector<unsigned char> vertexSpirv = // Get SPIR-V for vertex shader.
-//std::vector<unsigned char> fragmentSpirv = // Get SPIR-V for fragment shader.
-//
-//										   // Create an empty vertex shader handle
-//	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-//
-//// Apply the vertex shader SPIR-V to the shader object.
-//glShaderBinary(1, &vertexShader, GL_SHADER_BINARY_FORMAT_SPIR_V, vertexSpirv.data(), vertexSpirv.size());
-//
-//// Specialize the vertex shader.
-//std::string vsEntrypoint = ...; // Get VS entry point name
-//glSpecializeShader(vertexShader, (const GLchar*)vsEntrypoint.c_str(), 0, nullptr, nullptr);
-//
-//// Specialization is equivalent to compilation.
-//GLint isCompiled = 0;
-//glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-//if (isCompiled == GL_FALSE)
-//{
-//	GLint maxLength = 0;
-//	glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
-//
-//	// The maxLength includes the NULL character
-//	std::vector<GLchar> infoLog(maxLength);
-//	glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-//
-//	// We don't need the shader anymore.
-//	glDeleteShader(vertexShader);
-//
-//	// Use the infoLog as you see fit.
-//
-//	// In this simple program, we'll just leave
-//	return;
-//}
-//
-//
-//
-//// Create an empty fragment shader handle
-//GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-//
-//// Apply the fragment shader SPIR-V to the shader object.
-//glShaderBinary(1, &fragmentShader, GL_SHADER_BINARY_FORMAT_SPIR_V, fragmentSpirv.data(), fragmentSpirv.size());
-//
-//// Specialize the fragment shader.
-//std::string fsEntrypoint = ...; //Get VS entry point name
-//glSpecializeShader(fragmentShader, (const GLchar*)fsEntrypoint.c_str(), 0, nullptr, nullptr);
-//
-//// Specialization is equivalent to compilation.
-//glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
-//if (isCompiled == GL_FALSE)
-//{
-//	GLint maxLength = 0;
-//	glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
-//
-//	// The maxLength includes the NULL character
-//	std::vector<GLchar> infoLog(maxLength);
-//	glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
-//
-//	// We don't need the shader anymore.
-//	glDeleteShader(fragmentShader);
-//	// Either of them. Don't leak shaders.
-//	glDeleteShader(vertexShader);
-//
-//	// Use the infoLog as you see fit.
-//
-//	// In this simple program, we'll just leave
-//	return;
-//}
-//
-//// Vertex and fragment shaders are successfully compiled.
-//// Now time to link them together into a program.
-//// Get a program object.
-//GLuint program = glCreateProgram();
-//
-//// Attach our shaders to our program
-//glAttachShader(program, vertexShader);
-//glAttachShader(program, fragmentShader);
-//
-//// Link our program
-//glLinkProgram(program);
-//
-//// Note the different functions here: glGetProgram* instead of glGetShader*.
-//GLint isLinked = 0;
-//glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
-//if (isLinked == GL_FALSE)
-//{
-//	GLint maxLength = 0;
-//	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
-//
-//	// The maxLength includes the NULL character
-//	std::vector<GLchar> infoLog(maxLength);
-//	glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
-//
-//	// We don't need the program anymore.
-//	glDeleteProgram(program);
-//	// Don't leak shaders either.
-//	glDeleteShader(vertexShader);
-//	glDeleteShader(fragmentShader);
-//
-//	// Use the infoLog as you see fit.
-//
-//	// In this simple program, we'll just leave
-//	return;
-//}
-//
-//// Always detach shaders after a successful link.
-//glDetachShader(program, vertexShader);
-//glDetachShader(program, fragmentShader);
 #include "RrShaderProgram.h"
 #include "RrShaderMasterSubsystem.h"
 
@@ -114,6 +5,7 @@
 #include "gpuw/Shader.h"
 #include "gpuw/Public/Error.h"
 
+#include "core/debug.h"
 #include "core/containers/arstring.h"
 #include "core/utils/string.h"
 #include "core-ext/resources/ResourceManager.h"
@@ -149,7 +41,7 @@ RrShaderProgram::Load ( const rrShaderProgramVsPs& params )
 		{gpu::kShaderStageVs, params.file_vv},
 		{gpu::kShaderStagePs, params.file_p}
 	};
-	RrShaderProgram* shaderProgram = LoadShaderProgramFromDisk(resource_str_id.c_str(), stages, 2);
+	RrShaderProgram* shaderProgram = new RrShaderProgram(resource_str_id.c_str(), stages, 2);
 
 	// Add it to the resource system:
 	resm->Add(shaderProgram);
@@ -164,7 +56,7 @@ RrShaderProgram::Load ( const rrShaderProgramCs& params )
 
 	// Generate the resource name from the filenames:
 	arstring256 resource_str_id;
-	snprintf(resource_str_id.data, 256, "Cs_%08" PRIx32, math::hash::fnv1a_32(params.file_cs));
+	snprintf(resource_str_id.data, 256, "Cs_%08" PRIx32, math::hash::fnv1a_32(params.file_c));
 	core::utils::string::ToResourceName(resource_str_id);
 
 	// First, find the texture in the resource system:
@@ -179,9 +71,9 @@ RrShaderProgram::Load ( const rrShaderProgramCs& params )
 
 	// We need to create a new texture:
 	rrStageToLoad stages[] = {
-		{gpu::kShaderStageCs, params.file_cs},
+		{gpu::kShaderStageCs, params.file_c},
 	};
-	RrShaderProgram* shaderProgram = LoadShaderProgramFromDisk(resource_str_id.c_str(), stages, 1);
+	RrShaderProgram* shaderProgram = new RrShaderProgram(resource_str_id.c_str(), stages, 1);
 
 	// Add it to the resource system:
 	resm->Add(shaderProgram);
@@ -189,20 +81,45 @@ RrShaderProgram::Load ( const rrShaderProgramCs& params )
 	return shaderProgram;
 }
 
-RrShaderProgram*
-RrShaderProgram::LoadShaderProgramFromDisk ( const char* s_resourceId, const rrStageToLoad* stages, const int stageCount )
+RrShaderProgram::RrShaderProgram (
+	const char* s_resourceId,
+	const rrStageToLoad* stages,
+	const int stageCount)
 {
-	gpu::Shader* shaderStages [8] = {};
+	// Assign resource name
+	m_resourceName = s_resourceId;
+
+	// Create program
+	LoadProgramFromDisk(stages, stageCount);
+}
+
+RrShaderProgram::~RrShaderProgram ( void )
+{
+	FreeProgram();
+}
+
+void RrShaderProgram::LoadProgramFromDisk (
+	const rrStageToLoad* stages,
+	const int stageCount)
+{
+	gpu::Shader* shaderStages [gpu::kShaderStageMAX] = {};
+
+		// Do not allow this to be called without destroying the previous pipeline.
+	ARCORE_ASSERT(!m_pipeline.valid());
 
 	// Loop through all the input stages and load them one-by-one.
 	// We will save each stage into the array "shaderStages[]" then pass all into the RrShaderProgram constructor.
 	for (int i = 0; i < stageCount; ++i)
 	{
+		// Skip empty stages. This can happen if someone is loading lazily.
+		if (stages[i].filename == NULL || strlen(stages[i].filename) == 0)
+			continue;
+
 		std::string sb_filename = stages[i].filename;
 		// Fix filename if running with DirectX target
-#ifdef GPU_API_DIRECTX11
+#	ifdef GPU_API_DIRECTX11
 		sb_filename = sb_filename.substr(0, sb_filename.find_last_of('.')) + ".dxc";
-#endif
+#	endif
 
 		// Find the file to source data from:
 		bool file_found = core::Resources::MakePathTo(sb_filename.c_str(), sb_filename);
@@ -217,12 +134,23 @@ RrShaderProgram::LoadShaderProgramFromDisk ( const char* s_resourceId, const rrS
 
 			// Save the shader for now.
 			shaderStages[stages[i].stage] = shader;
+
+#		if BUILD_DEVELOPMENT
+			switch (stages[i].stage)
+			{
+			case gpu::kShaderStageVs:	file_vv = sb_filename; break;
+			case gpu::kShaderStageHs:	file_h = sb_filename; break;
+			case gpu::kShaderStageDs:	file_d = sb_filename; break;
+			case gpu::kShaderStageGs:	file_g = sb_filename; break;
+			case gpu::kShaderStagePs:	file_p = sb_filename; break;
+			case gpu::kShaderStageCs:	file_c = sb_filename; break;
+			}
+#		endif
 		}
 	}
 
 	// Create the shader program
-	RrShaderProgram* shaderProgram;
-	shaderProgram = new RrShaderProgram(s_resourceId,
+	CreateProgram(
 		shaderStages[gpu::kShaderStageVs],
 		shaderStages[gpu::kShaderStageHs],
 		shaderStages[gpu::kShaderStageDs],
@@ -230,24 +158,16 @@ RrShaderProgram::LoadShaderProgramFromDisk ( const char* s_resourceId, const rrS
 		shaderStages[gpu::kShaderStagePs],
 		shaderStages[gpu::kShaderStageCs]
 	);
-
-	return shaderProgram;
 }
 
-
-RrShaderProgram::RrShaderProgram (
-	const char* s_resourceId,
+void RrShaderProgram::CreateProgram (
 	gpu::Shader* vs,
 	gpu::Shader* hs,
 	gpu::Shader* ds,
 	gpu::Shader* gs,
 	gpu::Shader* ps,
-	gpu::Shader* cs
-)
+	gpu::Shader* cs)
 {
-	// Assign resource name
-	m_resourceName = s_resourceId;
-
 	// Attach all valid inputs to the shader
 	if (vs)
 		m_pipeline.attach(vs, "main");
@@ -267,4 +187,9 @@ RrShaderProgram::RrShaderProgram (
 
 	ARCORE_ASSERT(ret == gpu::kError_SUCCESS);
 	ARCORE_ASSERT(m_pipeline.valid());
+}
+
+void RrShaderProgram::FreeProgram ( void )
+{
+	m_pipeline.destroy();
 }

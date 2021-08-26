@@ -205,14 +205,17 @@ int gpu::ShaderPipeline::destroy ( void )
 	{
 		if (m_shaderVs != NULL) static_cast<ID3D11DeviceChild*>((void*)m_vs)->Release();
 		if (m_shaderHs != NULL) static_cast<ID3D11DeviceChild*>((void*)m_hs)->Release();
-		if (m_shaderDs != NULL) static_cast<ID3D11DeviceChild*>((void*)m_vs)->Release();
-		if (m_shaderGs != NULL) static_cast<ID3D11DeviceChild*>((void*)m_vs)->Release();
-		if (m_shaderPs != NULL) static_cast<ID3D11DeviceChild*>((void*)m_vs)->Release();
+		if (m_shaderDs != NULL) static_cast<ID3D11DeviceChild*>((void*)m_ds)->Release();
+		if (m_shaderGs != NULL) static_cast<ID3D11DeviceChild*>((void*)m_gs)->Release();
+		if (m_shaderPs != NULL) static_cast<ID3D11DeviceChild*>((void*)m_ps)->Release();
 	}
-	else
+	else if (m_type == kPipelineTypeCompute)
 	{
 		if (m_shaderCs != NULL) static_cast<ID3D11DeviceChild*>((void*)m_cs)->Release();
 	}
+
+	m_type = kPipelineTypeInvalid;
+
 	return kError_SUCCESS;
 }
 

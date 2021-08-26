@@ -243,6 +243,12 @@
     <ClCompile Include="source\core-ext\system\io\assets\ModelIO.cpp">
       <Filter>SOURCE\Core-ext\System\IO\Assets</Filter>
     </ClCompile>
+    <ClCompile Include="source\core-ext\threads\naming.cpp">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\FileWatcher.cpp">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -421,6 +427,12 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\threads\ParallelFor.h">
       <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\threads\naming.h">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\FileWatcher.h">
+      <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
