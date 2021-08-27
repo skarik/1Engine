@@ -35,6 +35,12 @@ bool core::BpdWriter::WriteBpd ( const char* n_newfilename )
 
 	// Check the data
 	{
+		if (info.width == 0) {
+			info.width = 1;
+		}
+		if (info.height == 0) {
+			info.height = 1;
+		}
 		if (info.depth == 0) {
 			info.depth = 1;
 		}
@@ -274,6 +280,8 @@ bool core::BpdWriter::writeLevelData ( void )
 {
 	CMappedBinaryFile* mappedfile = (CMappedBinaryFile*)m_file;
 
+	ARCORE_ASSERT(rawImage != nullptr);
+
 	// Level stopper: defines the smallest mipmap size. Set to 3 to stop at 16x16. Set to 4 for 32x32. -1 for 1x1.
 	const int kLevelStopper = 3;
 	uint16_t level_count = (!m_generateMipmaps) ? std::max<int>( 1, info.levels ) : (uint16_t) std::max<int>( 1, math::log2( std::min<uint>(info.width, info.height) ) - kLevelStopper ); 
@@ -286,17 +294,19 @@ bool core::BpdWriter::writeLevelData ( void )
 	mappedfile->WriteBuffer(m_levels.data(), sizeof(textureFmtLevel) * m_levels.size());
 
 	// Now, allocate the compression and conversion buffers:
-	void*			mipmapBuffer = m_generateMipmaps ? new char [getTextureFormatByteSize(rawImageFormat) * info.width * info.height * info.depth] : NULL;
-	uint32_t		compressBufferLen = compressBound((uint32_t)(getTextureFormatByteSize(rawImageFormat) * info.width * info.height * info.depth));
+	const size_t	pixelByteSize = getTextureFormatByteSize(rawImageFormat);
+	const size_t	largestMipByteCount = pixelByteSize * info.width * info.height * info.depth;
+	void*			mipmapBuffer = m_generateMipmaps ? new char [largestMipByteCount] : NULL;
+	uint32_t		compressBufferLen = compressBound((uint32_t)largestMipByteCount);
 	uchar*			compressBuffer = new uchar [compressBufferLen + 1];
 
 	// Write the levels:
-	for (int level = level_count - 1; level >= 0; --level) 
+	for ( int level = level_count - 1; level >= 0; --level ) 
 	{	// Looping from smallest level to the raw:
-		uint32_t	t_blocks = math::exp2(level);
-		uint32_t	t_width  = info.width  / t_blocks;
-		uint32_t	t_height = info.height / t_blocks;
-		uint32_t	t_depth = info.depth / t_blocks;
+		uint32_t	t_blocks = math::exp2( level );
+		uint32_t	t_width  = std::max<uint32>( 1, info.width  / t_blocks );
+		uint32_t	t_height = std::max<uint32>( 1, info.height / t_blocks );
+		uint32_t	t_depth  = std::max<uint32>( 1, info.depth  / t_blocks );
 
 		if (m_generateMipmaps)
 		{
@@ -404,7 +414,7 @@ bool core::BpdWriter::writeLevelData ( void )
 
 		// Compress the data into side buffer
 		unsigned long compressedSize = compressBufferLen;
-		size_t uncompressedSize = getTextureFormatByteSize(rawImageFormat) * t_width * t_height * t_depth;
+		size_t uncompressedSize = pixelByteSize * t_width * t_height * t_depth;
 		int z_result = compress(compressBuffer, &compressedSize, (uchar*)(m_generateMipmaps ? mipmapBuffer : mipmaps[level]), (uint32_t)(uncompressedSize));
 
 		// Check the compress result

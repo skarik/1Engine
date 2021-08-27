@@ -47,7 +47,7 @@ public:
 	RENDER2D_API void UpdateMatrix ( const RrOutputInfo& viewport_info ) override;
 
 	// Update parameters needed for 2D rendering
-	RENDER2D_API void RenderBegin ( void ) override;
+	//RENDER2D_API void RenderBegin ( void ) override;
 };
 
 #endif//_RENDER2D_C_ORTHO_CAMERA_H_

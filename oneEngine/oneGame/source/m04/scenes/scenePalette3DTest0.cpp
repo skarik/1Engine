@@ -277,7 +277,7 @@ void scenePalette3DTest0::LoadScene ( void )
 			core::TransformUtility::TRSToMatrix4x4(
 				Vector3f(Random.PointInUnitCircle() * 2.4F, 0.3F),
 				Rotator(0.0F, 0.0F, Random.Range(0.0F, 360.0F)),
-				Vector3f(1, 1, Random.Range(0.8F, 1.1F)),
+				Vector3f(1, 1, Random.Range(0.8F, 1.1F)) * 0.8F,
 				transform,
 				dump);
 			grass.transform = transform;
@@ -487,6 +487,52 @@ void scenePalette3DTest0::LoadScene ( void )
 
 			model->GetMesh(1)->PassInitWithInput(0, &pass);
 		}
+	} loadScreen->loadStep();
+
+	// Add go
+	{
+		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/chara/go_posed"}, NULL);
+		model->transform.position = Vector3f(-1.1F, 3.3F, 0.43F);
+		model->transform.scale = Vector3f(1, 1, 1);
+		model->transform.rotation = Rotator(Vector3f(0, 0, -15));
+
+		// Use a default material
+		RrPass pass;
+		pass.utilSetupAsDefault();
+		pass.m_type = kPassTypeDeferred;
+		pass.m_alphaMode = renderer::kAlphaModeNone;
+		pass.m_cullMode = gpu::kCullModeNone;
+		pass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+		//pass.setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
+		pass.setTexture( TEX_DIFFUSE, RrTexture::Load("textures/chara/go_diffuse.png") );
+		pass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
+		pass.setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureSurfaceM0) );
+		pass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
+
+		gpu::SamplerCreationDescription pointFilter;
+		pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
+		pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+		pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
+		pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
+		pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
+		pass.setSampler(rrTextureSlot::TEX_OVERLAY, &pointFilter);
+
+		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/deferred_env/simple_vv.spv", "shaders/deferred_env/simple_p.spv"}) );
+		renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+												renderer::shader::Location::kUV0,
+												renderer::shader::Location::kColor,
+												renderer::shader::Location::kNormal,
+												renderer::shader::Location::kTangent,
+												renderer::shader::Location::kBinormal};
+		pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
+		pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+
+		// Give initial pass
+		for (int i = 0; i < model->GetMeshCount(); ++i)
+		{
+			model->GetMesh(i)->PassInitWithInput(0, &pass);
+		}
+
 	} loadScreen->loadStep();
 
 	// Add a directional light

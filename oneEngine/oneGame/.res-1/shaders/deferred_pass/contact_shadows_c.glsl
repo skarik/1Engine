@@ -6,6 +6,7 @@
 #include "../common.glsli"
 #include "../cbuffers.glsli"
 #include "../common_lighting.glsli"
+#include "../common_math.glsli"
 #include "../deferred_surface.glsli"
 
 //=====================================
@@ -80,19 +81,19 @@ void main ( void )
 			{
 				// The following stolen from https://github.com/turanszkij/WickedEngine/commit/961414186b49a66c4aec41f9f7ef7b05a330c214
 				
-				const float kRange = 0.5;
+				const float kRange = 0.08;
 				const uint kSampleCount = 8;
 				//const float kThickness = 0.25 / sys_CameraFarPlane;
 				const float kThicknessDistanceFade = min(1.0, 10.0 / l_cameraVector.w);
-				const float kThickness = 0.25 * kThicknessDistanceFade * kThicknessDistanceFade;
+				const float kThickness = 0.10 * kThicknessDistanceFade * kThicknessDistanceFade;
 				const float kStepSize = kRange / kSampleCount;
-				//const float kOffset = 0.5;
+				const float kOffset = 0.9;
 				
 				[[branch]]
 				if (kThickness > 0.01)
 				{
 					const vec3 rayDirection = normalize(lightDirection);
-					vec3 rayPosition = world_position.xyz;// + rayDirection * kStepSize * kOffset;
+					vec3 rayPosition = world_position.xyz + rayDirection * kStepSize * kOffset;
 					
 					// Get the position in screenspace
 					vec4 projected_rayPosition = sys_ViewProjectionMatrix * vec4(rayPosition + rayDirection * kRange, 1.0);
@@ -145,28 +146,40 @@ void main ( void )
 							projected_rayPosition.xyz /= projected_rayPosition.w;
 							projected_rayPosition.xy = projected_rayPosition.xy * vec2(0.5, -0.5) + vec2(0.5, 0.5);
 							
-							// Check the depth of this ray so far
-							const float ray_depth_real = LinearizeZBufferDepth(projected_rayPosition.z);
-							const float ray_depth_sample = LinearizeZBufferDepth(texelFetch(textureDepth, ivec2(projected_rayPosition.xy * sys_ScreenSize.xy), 0).x);
-							const float ray_depth_delta = ray_depth_real - ray_depth_sample;
-							
+							// Ensure the projected position is in-frame
 							[[branch]]
-							if (ray_depth_delta > 0 && ray_depth_delta < kThickness)
+							if (all(greaterThan(projected_rayPosition.xy, vec2(0, 0))) && all(lessThan(projected_rayPosition.xy, vec2(1, 1))))
 							{
-								shadowMask.r = min(
-									// Don't lighten shadows
-									shadowMask.r, 
-									mix(1.0,
-										// Feather out the final 25%
-										clamp(i * 4.0 / (kSampleCount - 1.0) - 3.0, 0.0, 1.0),
-										// Fade in over fresnel limit value
-										clamp((ndotv - kFresnelLimit) * 6.0, 0.0, 1.0)
-										)
-									);
+								// Check the depth of this ray so far
+								const float ray_depth_real = LinearizeZBufferDepth(projected_rayPosition.z);
+								const float ray_depth_sample = LinearizeZBufferDepth(texelFetch(textureDepth, ivec2(projected_rayPosition.xy * sys_ScreenSize.xy), 0).x);
+								const float ray_depth_delta = ray_depth_real - ray_depth_sample;
 								
-								imageStore(textureShadowMask, uv0, shadowMask);
-								
-								break;
+								[[branch]]
+								if (ray_depth_delta > 0 && ray_depth_delta < kThickness)
+								{
+									// Fade out artifacts t edge of screen
+									vec2 fade = max(6 * abs(unprojected_position.xy) - 5, 0);
+									float screen_fade = saturate(1 - dot(fade, fade));
+									
+									// Grazing angle: Fade in over fresnel limit value
+									float grazing_angle_fade = saturate((ndotv - kFresnelLimit) * 6.0);
+									
+									shadowMask.r = min(
+										// Don't lighten shadows
+										shadowMask.r, 
+										mix(1.0,
+											// Feather out the final 25%
+											clamp(i * 4.0 / (kSampleCount - 1.0) - 3.0, 0.0, 1.0),
+											// Fade in over fresnel limit value
+											grazing_angle_fade * screen_fade
+											)
+										);
+									
+									imageStore(textureShadowMask, uv0, shadowMask);
+									
+									break;
+								}
 							}
 						}
 					}

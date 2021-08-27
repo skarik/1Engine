@@ -102,4 +102,11 @@ float LinearizeZBufferDepth ( in float depth )
 	return (sys_CameraNearPlane * sys_CameraFarPlane) / (sys_CameraFarPlane + depth * (sys_CameraNearPlane - sys_CameraFarPlane));
 }
 
+//	LinearizeZBufferDepth( depth ) : Linearizes depth pulled from a depth buffer.
+// Depth returned should be in the range [0.0, 1.0]
+float LinearizeZBufferDepth ( in float depth, in float nearPlane, in float farPlane )
+{
+	return (nearPlane * farPlane) / (farPlane + depth * (nearPlane - farPlane));
+}
+
 #endif//DEFERRED_SURFACE_GLSLI_

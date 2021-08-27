@@ -68,7 +68,8 @@ float CloudLayerCumulus ( in float height )
 
 float CloudLayerCumulonimbus ( in float height )
 {
-	return clamp((0.45 - abs(0.5 - height)) / 0.45 * (1 - height) * 9, 0.0, 1.0);
+	//return clamp((0.45 - abs(0.5 - height)) / 0.45 * (1 - height) * 9, 0.0, 1.0);
+	return saturate((0.45 - abs(0.5 - height)) / 0.45 * saturate((1 - height) * 5) * 5);
 }
 
 float SampleCloudDensity ( in vec3 world_position, in rrCloudLayer cloud_info, in float height, in float coverage, in float shape )
@@ -282,7 +283,7 @@ vec3 TraceClouds (
 					// Apply the scattering & shadow coeff
 					in_lighting *= HenyeyGreenstein(0.5, -dot(ray.normal, lightDirection)) * shadow_coeff;
 					// Bump up the current scattering level
-					in_lighting *= 3.0;
+					in_lighting *= 2.0;
 					// Add ambient light
 					in_lighting += mix(0.1, 0.5, saturate(parametric_cloud_height)) * ambientLight;
 					
@@ -292,7 +293,7 @@ vec3 TraceClouds (
 						// Clamp lighting
 						in_lighting = saturate(in_lighting);
 						// Apply beers-powder (yum)
-						in_lighting *= beers_coeff * powder_coeff * 2.0;
+						in_lighting *= beers_coeff * powder_coeff * 3.0;
 					}
 					// Denormalize lighting
 					in_lighting /= max(newDensity, 0.001);
@@ -324,7 +325,7 @@ vec3 TraceClouds (
 				
 				// Calculate grazing angle for far distances
 				float normal_blend = dot(normalize(world_center - (bottomLayerHitDistance * ray.normal + ray.origin)), ray.normal);
-				float normal_blend_power = 1.0 - pow(1.0 - abs(normal_blend), 4.0);
+				float normal_blend_power = 1.0 - pow(1.0 - abs(normal_blend), 9.0);
 				
 				vec3 cloudColor = cloudAlbedo * cloudLighting;
 				// Mix in the reflection at the far distance

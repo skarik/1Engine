@@ -81,8 +81,11 @@ void RrRenderObject::PushCbufferPerObject ( const XrTransform& worldTransform, c
 		// TODO: Create a "m_isStatic" flag for if MVP should be calculated in the vertex shader.
 
 		// TODO: Create the buffer & push it
-		if (!m_cbufPerObjectMatrices.valid())
-			m_cbufPerObjectMatrices.initAsConstantBuffer(NULL, sizeof(matrices));
+		//if (!m_cbufPerObjectMatrices.valid())
+		//	m_cbufPerObjectMatrices.initAsConstantBuffer(NULL, sizeof(matrices));
+		if (m_cbufPerObjectMatrices.valid())
+			m_cbufPerObjectMatrices.free(NULL);
+		m_cbufPerObjectMatrices.initAsConstantBuffer(NULL, sizeof(matrices));
 		m_cbufPerObjectMatrices.upload(NULL, &matrices, sizeof(matrices), gpu::TransferStyle::kTransferStream);
 	}
 

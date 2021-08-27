@@ -215,40 +215,40 @@ void RrCamera::UpdateCBuffer ( gpu::GraphicsContext* gfx, rrCameraPass* passinfo
 	passinfo->m_cbuffer.upload(gfx, &cameraData, sizeof(renderer::cbuffer::rrPerCamera), gpu::kTransferStream);
 }
 
-void RrCamera::RenderBegin ( void )
-{
-	//auto gfx = graphics_context;//gpu::getDevice()->getContext();
-
-	// TODO: move this to the output settings, rather than have in the camera
-	/*ARCORE_ERROR("Move this elsewhere. Cameras are not outputs, so their viewports shouldn't affect anything");
-	gfx->setViewport(
-		(uint32_t)math::round(viewport.pos.x),
-		(uint32_t)math::round(viewport.pos.y),
-		(uint32_t)math::round(viewport.pos.x + viewport.size.x), 
-		(uint32_t)math::round(viewport.pos.y + viewport.size.y)); */
-
-	//CameraUpdate();
-	UpdateFrustum();
-
-	// Update the light listing from this camera:
-	//RrLight::UpdateLights(this);
-
-	// TODO: Push camera constants now.
-
-	// TODO: Loop through postprocess stack (properly)
-	for (size_t i = 0; i < postProcessStack.size(); ++i)
-	{
-		postProcessStack[i]->RenderBegin(this);
-	}
-}
-void RrCamera::RenderEnd ( void )
-{
-	// Loop through postprocess stack and call end render.
-	for (size_t i = 0; i < postProcessStack.size(); ++i)
-	{
-		postProcessStack[i]->RenderEnd(this);
-	}
-}
+//void RrCamera::RenderBegin ( void )
+//{
+//	//auto gfx = graphics_context;//gpu::getDevice()->getContext();
+//
+//	// TODO: move this to the output settings, rather than have in the camera
+//	/*ARCORE_ERROR("Move this elsewhere. Cameras are not outputs, so their viewports shouldn't affect anything");
+//	gfx->setViewport(
+//		(uint32_t)math::round(viewport.pos.x),
+//		(uint32_t)math::round(viewport.pos.y),
+//		(uint32_t)math::round(viewport.pos.x + viewport.size.x), 
+//		(uint32_t)math::round(viewport.pos.y + viewport.size.y)); */
+//
+//	//CameraUpdate();
+//	//UpdateFrustum();
+//
+//	// Update the light listing from this camera:
+//	//RrLight::UpdateLights(this);
+//
+//	// TODO: Push camera constants now.
+//
+//	// TODO: Loop through postprocess stack (properly)
+//	for (size_t i = 0; i < postProcessStack.size(); ++i)
+//	{
+//		postProcessStack[i]->RenderBegin(this);
+//	}
+//}
+//void RrCamera::RenderEnd ( void )
+//{
+//	// Loop through postprocess stack and call end render.
+//	for (size_t i = 0; i < postProcessStack.size(); ++i)
+//	{
+//		postProcessStack[i]->RenderEnd(this);
+//	}
+//}
 
 void RrCamera::UpdateMatrix ( const RrOutputInfo& viewport_info )
 {
@@ -364,6 +364,10 @@ void RrCamera::UpdateMatrix ( const RrOutputInfo& viewport_info )
 
 	// Update the view-projection
 	viewprojMatrix = viewTransform * projTransform;
+
+
+	// Update the frustum
+	UpdateFrustum();
 }
 
 void RrCamera::UpdateFrustum ( void )

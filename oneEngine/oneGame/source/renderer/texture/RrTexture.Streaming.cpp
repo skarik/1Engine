@@ -292,16 +292,23 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 					// Go to the waiting step before we dispatch
 					loadInfo->unpack_step = kTextureUnpack1_WaitForDispatch;
 
-					auto uploadJobId = core::jobs::System::Current::AddJobRequest([this, target, target_pitch, level_width, level_height]()
+					auto uploadJobId = core::jobs::System::Current::AddJobRequest([this, target, target_pitch, level_width, level_height, level_depth]()
 					{
+						const size_t pixelByteSize = core::gfx::tex::getColorFormatByteSize(info.internalFormat);
+
+						// Initially set the mip to white
+						memset(target, 0xFF, pixelByteSize * level_width * level_height * level_depth);
+
 						// Load the data in
 						loadInfo->loader.m_buffer_Mipmaps[loadInfo->level] = target;
 						loadInfo->loader.m_loadMipmapMask = 0x01 << loadInfo->level;
-						loadInfo->loader.LoadBpd();
+						bool load_success = loadInfo->loader.LoadBpd();
 						loadInfo->loader.m_buffer_Mipmaps[loadInfo->level] = NULL;
 
+						ARCORE_ASSERT(load_success);
+
 						// Loop from the bottom row of the texture, and move the data so the pitches are loaded into the correct spot.
-						const uint32 assumed_pitch = level_width * (uint32)core::gfx::tex::getColorFormatByteSize(info.internalFormat);
+						const uint32 assumed_pitch = level_width * (uint32)pixelByteSize;
 						if (target_pitch != assumed_pitch)
 						{
 							for (int16_t row = (int16_t)(level_height - 1); row > 0; --row)

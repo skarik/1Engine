@@ -59,6 +59,12 @@ enum rrPassOrderConstants : int
 	kPassOrder_DebugTools			= 9000,
 };
 
+enum rrPassProgramFor : int
+{
+	kPassProgramForEverything	= 0,
+	kPassProgramForDepth		= 1,
+};
+
 // RrPass, defines a single pass for any object.
 // An RrPass stores information used to generate a gpu::Pipeline by the renderer.
 class RrPass
@@ -89,6 +95,10 @@ public:
 	// Pass is given ownership of the program.
 	// Do not delete the program directly, use RemoveReference.
 	RENDER_API void			setProgram ( RrShaderProgram* program );
+	//	setProgram ( program, render_type ) : Sets shader program for the given rendering type.
+	// Pass is given ownership of the program.
+	// Do not delete the program directly, use RemoveReference.
+	RENDER_API void			setProgram ( RrShaderProgram* program, rrPassProgramFor render_type );
 
 	//	setVertexSpecification ( ... )
 	RENDER_API void			setVertexSpecification ( renderer::shader::VertexAttribute* attributes, const size_t attribute_count );

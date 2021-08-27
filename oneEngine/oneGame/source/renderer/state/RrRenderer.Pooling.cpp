@@ -72,7 +72,8 @@ void RrRenderer::CreateRenderTexture ( rrDepthBufferRequest* in_out_request, gpu
 			&& rt.stencil_format == in_out_request->stencil)
 		{
 			*depth = rt.depth_texture;
-			*stencil = rt.stencil_texture;
+			if (stencil != nullptr)
+				*stencil = rt.stencil_texture;
 
 			rt.frame_of_request = frame_index;
 			rt.persist_for = in_out_request->persist_for;
@@ -99,7 +100,7 @@ void RrRenderer::CreateRenderTexture ( rrDepthBufferRequest* in_out_request, gpu
 			// Override for the combined formats
 			if (in_out_request->depth == core::gfx::tex::kDepthFormat32FStencil8 || in_out_request->depth == core::gfx::tex::kDepthFormat24Stencil8)
 				depthTestTarget.attach(gpu::kRenderTargetSlotStencil, depth);
-			else
+			else if (stencil != nullptr)
 				depthTestTarget.attach(gpu::kRenderTargetSlotStencil, stencil);
 			// "Compile" the render target.
 			depthTestTarget.assemble();
@@ -113,7 +114,8 @@ void RrRenderer::CreateRenderTexture ( rrDepthBufferRequest* in_out_request, gpu
 		if (!isValid)
 		{
 			depth->free();
-			stencil->free();
+			if (stencil != nullptr)
+				stencil->free();
 
 			// Drop the settings if still invalid
 			_DropSettings(in_out_request);
@@ -129,7 +131,7 @@ void RrRenderer::CreateRenderTexture ( rrDepthBufferRequest* in_out_request, gpu
 	new_rt.persist_for = in_out_request->persist_for;
 	new_rt.frame_of_request = frame_index;
 	new_rt.depth_texture = *depth;
-	new_rt.stencil_texture = *stencil;
+	new_rt.stencil_texture = stencil ? *stencil : gpu::WOFrameAttachment();
 
 	m_renderDepthTexturePool.push_back(new_rt);
 }

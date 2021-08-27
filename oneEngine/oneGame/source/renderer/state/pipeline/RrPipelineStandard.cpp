@@ -48,6 +48,9 @@ RrPipelineStandardRenderer::~RrPipelineStandardRenderer ( void )
 	if (m_hzbGenerationProgram)
 		m_hzbGenerationProgram->RemoveReference();
 
+	if (m_shadowingProjectionProgram)
+		m_shadowingProjectionProgram->RemoveReference();
+
 	if (m_shadowingContactShadowProgram)
 		m_shadowingContactShadowProgram->RemoveReference();
 }

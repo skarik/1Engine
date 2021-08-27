@@ -93,9 +93,9 @@ public:
 
 	//	RenderBegin() : Begins rendering, pushing the current camera params.
 	// Should be called after PassRetrieve or immediately before PassRetrieve to ensure constant buffer values are correct.
-	RENDER_API virtual void	RenderBegin ( void );
+	//RENDER_API virtual void	RenderBegin ( void );
 	//	RenderEnd() : Called at the end of render, cleans up any camera-specific objects.
-	RENDER_API virtual void	RenderEnd ( void );
+	//RENDER_API virtual void	RenderEnd ( void );
 	
 	//	SetActive() : sets camera as active
 	// Sets active camera. This will force a resorting the of the cameras.

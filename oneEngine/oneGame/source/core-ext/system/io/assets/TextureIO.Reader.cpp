@@ -267,11 +267,15 @@ bool core::BpdLoader::loadBpdCommon ( void )
 				fread(t_sideBuffer, levelInfo.size, 1, m_liveFile);
 			
 				// Decompress the data directly into target pointer:
-				unsigned long t_effectiveWidth	= std::max<unsigned long>(1, header.width / math::exp2(i));
-				unsigned long t_effectiveHeight	= std::max<unsigned long>(1, header.height / math::exp2(i));
-				unsigned long t_effectiveDepth	= std::max<unsigned long>(1, header.depth / math::exp2(i));
-				unsigned long t_mipmapByteCount	= (uint32_t)core::getTextureFormatByteSize(format) * t_effectiveWidth * t_effectiveHeight * t_effectiveDepth;
-				int z_result = uncompress( (uchar*)m_buffer_Mipmaps[i], &t_mipmapByteCount, (uchar*)t_sideBuffer, levelInfo.size );
+				const unsigned long t_effectiveWidth	= std::max<unsigned long>(1, header.width / math::exp2(i));
+				const unsigned long t_effectiveHeight	= std::max<unsigned long>(1, header.height / math::exp2(i));
+				const unsigned long t_effectiveDepth	= std::max<unsigned long>(1, header.depth / math::exp2(i));
+				const unsigned long t_mipmapByteCount	= (uint32_t)core::getTextureFormatByteSize(format) * t_effectiveWidth * t_effectiveHeight * t_effectiveDepth;
+				unsigned long t_mipmapByteCountDecompressed = t_mipmapByteCount;
+				int z_result = uncompress( (uchar*)m_buffer_Mipmaps[i], &t_mipmapByteCountDecompressed, (uchar*)t_sideBuffer, levelInfo.size );
+
+				// Ensure data decompressed actually fills the mip.
+				ARCORE_ASSERT(t_mipmapByteCountDecompressed == t_mipmapByteCount);
 
 				// Delete the side buffer
 				delete [] t_sideBuffer;

@@ -65,19 +65,19 @@ void COrthoCamera::UpdateMatrix ( const RrOutputInfo& viewport_info )
 	RrCamera::UpdateMatrix(viewport_info);
 }
 
-// Update parameters needed for 2D rendering
-void COrthoCamera::RenderBegin ( void )
-{
-	/*RrMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( kRenderModeDeferred, renderer::kPipelineMode2DPaletted );
-	palette_pass_material->setTexture(TEX_SLOT5, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
-	palette_pass_material->setTexture(TEX_SLOT6, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture3D());	// Set 3D lookup
-
-	// Remove filtering on the upscaling pass
-	SceneRenderer->GetDeferredBuffer()->SetFilter( SamplingPoint );*/
-
-	// Set the 2D pipeline mode
-	//RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
-
-	// Set up the camera normally
-	RrCamera::RenderBegin();
-}
+//// Update parameters needed for 2D rendering
+//void COrthoCamera::RenderBegin ( void )
+//{
+//	/*RrMaterial* palette_pass_material = SceneRenderer->GetScreenMaterial( kRenderModeDeferred, renderer::kPipelineMode2DPaletted );
+//	palette_pass_material->setTexture(TEX_SLOT5, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture());	// Set Palette
+//	palette_pass_material->setTexture(TEX_SLOT6, (RrTexture*)Render2D::WorldPalette::Active()->GetTexture3D());	// Set 3D lookup
+//
+//	// Remove filtering on the upscaling pass
+//	SceneRenderer->GetDeferredBuffer()->SetFilter( SamplingPoint );*/
+//
+//	// Set the 2D pipeline mode
+//	//RrRenderer::Active->SetPipelineMode( renderer::kPipelineMode2DPaletted );
+//
+//	// Set up the camera normally
+//	RrCamera::RenderBegin();
+//}

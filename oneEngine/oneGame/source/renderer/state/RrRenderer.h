@@ -284,7 +284,7 @@ struct rrStoredRenderDepthTexture
 //	rrRenderRequest : Render request
 struct rrRenderRequest
 {
-	RrRenderObject*	obj = nullptr;
+	RrRenderObject*		obj = nullptr;
 	uint8_t				pass = UINT8_MAX;
 };
 

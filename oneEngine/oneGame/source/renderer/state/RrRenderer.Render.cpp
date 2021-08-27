@@ -532,7 +532,7 @@ Render_Camera_Passes:
 	output.camera->PassRetrieve(&cameraPassInput, cameraPasses);
 
 	// Begin rendering now
-	output.camera->RenderBegin();
+	//output.camera->RenderBegin();
 
 	// Loop through each pass and render with them:
 	gpu::Texture output_color;
@@ -552,7 +552,7 @@ Render_Camera_Passes:
 	}
 
 	// Finish up the rendering
-	output.camera->RenderEnd();
+	//output.camera->RenderEnd();
 
 	// Return result output
 	return output_color;
@@ -696,15 +696,8 @@ Pass_Groups:
 					// If there is an enabled pass, we want to call PreRender on the object & enable the layer for rendering.
 					if (l_hasPass)
 					{
-						//renderable->PreRender(cameraPass);
 						l_4rGroup[iLayer].m_enabled = true;
 					}
-					/*else
-					{
-						// For now, display an error that there is no pass:
-						debug::Console->PrintWarning("An object has no enabled passes!\n");
-						ARCORE_ERROR("An object has no passes. It's possible this is not a mistake. Please review and revise as necessary.");
-					}*/
 				}
 			}
 

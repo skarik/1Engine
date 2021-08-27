@@ -161,6 +161,159 @@ void RrPipelineStandardRenderer::RenderShadows(
 				gfx->clearColor(clearColor);
 			}
 
+			if (light->shadows.use_shadow_maps)
+			{
+				// Create list of opaque items
+				std::vector<rrRenderRequest> shadowCasters;
+				for (uint32_t iObject = 0; iObject < state->output_info->world->objects.size(); ++iObject)
+				{
+					RrRenderObject* renderable = state->output_info->world->objects[iObject];
+					if (renderable != NULL && renderable->GetVisible())
+					{
+						// Loop through each pass to place them in the render lists.
+						for (uint8_t iPass = 0; iPass < kPass_MaxPassCount; ++iPass)
+						{
+							if (renderable->PassEnabled(iPass) && renderable->PassLayer(iPass) == renderer::kRenderLayerWorld)
+							{
+								const rrPassType passType = renderable->PassType(iPass);
+								const bool passDepthWrite = renderable->PassDepthWrite(iPass);
+								const bool passTranslucent = renderable->PassIsTranslucent(iPass);
+
+								// If part of the world...
+								if (passType == kPassTypeForward || passType == kPassTypeDeferred)
+								{
+									if (passDepthWrite)
+									{	// Add opaque objects to the prepass list:
+										shadowCasters.push_back(rrRenderRequest{renderable, iPass});
+									}
+								}
+							}
+						}
+					}
+				}
+
+				// Create a virtual camera to render on.
+				rrCameraPass cameraPasses;
+				RrCamera shadowCamera ( true );
+				// Set up camera position
+				{
+					Rotator camera_viewrotation;
+					camera_viewrotation.RotationTo(Vector3f(1, 0, 0), light->direction);
+
+					shadowCamera.transform.rotation = camera_viewrotation;
+					shadowCamera.transform.position = state->output_info->camera->transform.position - shadowCamera.transform.rotation * Vector3f( 200, 0, 0 );
+					shadowCamera.orthographic = true;
+					shadowCamera.orthoSize = Vector2f(32, 32);
+
+					shadowCamera.LateUpdate();
+					shadowCamera.UpdateMatrix(RrOutputInfo(nullptr, nullptr));
+				}
+				// Set up cbuffers
+				{
+					// Get a pass list from the camera
+					rrCameraPassInput cameraPassInput;
+					cameraPassInput.m_maxPasses = 1;
+					cameraPassInput.m_outputInfo = &output;
+					cameraPassInput.m_graphicsContext = gfx;
+
+					int passCount = output.camera->PassCount();
+					shadowCamera.PassRetrieve(&cameraPassInput, &cameraPasses);
+				}
+
+				// Setup the render target
+				gpu::Texture shadowMap;
+				rrDepthBufferRequest shadowMapRequest {Vector2i(1024, 1024), core::gfx::tex::kDepthFormat32, core::gfx::tex::kStencilFormatNone};
+				renderer->CreateRenderTexture( &shadowMapRequest, &shadowMap, nullptr );
+
+				// Set up RT for shadow mask
+				rrRenderTarget rtShadowMap (&shadowMap, nullptr);
+
+				// Set up output
+				gfx->setRenderTarget(&rtShadowMap.m_renderTarget);
+				gfx->setViewport(0, 0, 1024, 1024);
+				gfx->setScissor(0, 0, 1024, 1024);
+
+				// Set up no-color draw for pre-pass mode.
+				{
+					gpu::BlendState bs;
+					bs.channelMask = 0x00; // Disable color entirely.
+					bs.enable = false;
+					gfx->setBlendState(bs);
+				}
+		
+				// Set up viewport
+				{
+					gfx->setViewport( 0, 0, 1024, 1024 );
+					gfx->setScissor( 0, 0, 1024, 1024 );
+				}
+
+				// Clear depth:
+				{
+					gpu::DepthStencilState ds;
+					ds.depthTestEnabled   = true;
+					ds.depthWriteEnabled  = true;
+					ds.depthFunc = gpu::kCompareOpLessEqual;
+					ds.stencilTestEnabled = false;
+					gfx->setDepthStencilState(ds);
+
+					gfx->clearDepthStencil(true, 1.0F, false, 0x00);
+				}
+
+				// Render shadows in the samae was as depth pre-pass:
+				for (size_t iObject = 0; iObject < shadowCasters.size(); ++iObject)
+				{
+					const rrRenderRequest&  l_4r = shadowCasters[iObject];
+					RrRenderObject* renderable = l_4r.obj;
+
+					RrRenderObject::rrRenderParams params;
+					params.pass = l_4r.pass;
+					params.pass_type = kPassTypeSystemDepth;
+					params.cbuf_perCamera = &cameraPasses.m_cbuffer;
+					params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;
+					params.cbuf_perPass = nullptr;
+					params.context_graphics = gfx;
+
+					ARCORE_ASSERT(params.context_graphics != nullptr);
+					renderable->PreRender(&cameraPasses); // Push the buffers now
+					renderable->Render(&params);
+				}
+
+				// Now project onto the screen
+				{
+					if (m_shadowingProjectionProgram == nullptr)
+					{
+						m_shadowingProjectionProgram = RrShaderProgram::Load(rrShaderProgramCs{"shaders/deferred_pass/shadow_projection_c.spv"});
+					}
+
+					// Clear out usage of render target
+					gfx->setRenderTarget(NULL);
+				
+					// Create writeable with the render target
+					gpu::WriteableResource rwShadowMask;
+					rwShadowMask.create(&shadowMask, 0);
+
+					// Set up compute shader
+					gfx->setComputeShader(&m_shadowingProjectionProgram->GetShaderPipeline());
+					gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &gbuffers.cameraPass->m_cbuffer);
+					gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_USER0, &cameraPasses.m_cbuffer);
+					gfx->setShaderSBuffer(gpu::kShaderStageCs, renderer::SBUFFER_USER0, lightSetup->lightParameterBuffer);
+					gfx->setShaderWriteable(gpu::kShaderStageCs, 0, &rwShadowMask);
+					gfx->setShaderTexture(gpu::kShaderStageCs, 1, gbuffers.combined_depth);
+					gfx->setShaderTexture(gpu::kShaderStageCs, 2, &shadowMap);
+					gfx->setShaderTexture(gpu::kShaderStageCs, 3, gbuffers.deferred_normals);
+					// Render the contact shadows
+					gfx->dispatch(output_viewport.size.x / 4, output_viewport.size.y / 4, 1);
+					// Unbind the UAV
+					gfx->setShaderWriteable(gpu::kShaderStageCs, 0, NULL);
+
+					// Done with the writeable
+					rwShadowMask.destroy();
+				}
+
+				// Free the camera pass now that we're done with it.
+				cameraPasses.free();
+			}
+
 			if (light->shadows.use_contact_shadows)
 			{
 				if (m_shadowingContactShadowProgram == nullptr)

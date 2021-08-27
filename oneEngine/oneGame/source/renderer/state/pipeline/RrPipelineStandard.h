@@ -46,6 +46,7 @@ private:
 
 	RrShaderProgram*	m_hzbGenerationProgram = nullptr;
 
+	RrShaderProgram*	m_shadowingProjectionProgram = nullptr;
 	RrShaderProgram*	m_shadowingContactShadowProgram = nullptr;
 
 protected:

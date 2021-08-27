@@ -299,7 +299,7 @@ namespace core
 		ETextureFormatTypes
 						rawImageFormat;
 		// Raw image to generate mipmaps from. Must be always set.
-		void*			rawImage;
+		void*			rawImage = nullptr;
 		// If mipmaps are not generated, the image data we pull from.
 		void*			mipmaps [16];
 		int				mipmapCount;
