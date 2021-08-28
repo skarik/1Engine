@@ -152,12 +152,6 @@ RrWindow::~RrWindow ( void )
 	UpdateScreenInfo();
 }
 
-
-void RrWindow::CreateConsole ( void )
-{
-	debug::ConsoleWindow::Init();
-}
-
 bool RrWindow::Show ( void )
 {
 	if (!m_screenReady)
@@ -167,7 +161,6 @@ bool RrWindow::Show ( void )
 		// Create everything!
 		CreateScreen();
 		RegisterInput();
-		CreateConsole();
 		CreateGfxSurface();
 	}
 

@@ -25,7 +25,6 @@
 
 // General Includes
 #include <string>
-using std::string;
 
 namespace debug
 {
@@ -37,7 +36,7 @@ namespace debug
 		ConsoleWindow ( const ConsoleWindow& ) {}
 		~ConsoleWindow ( void ) {}
 
-		static bool			bOutputEnabled;
+		//static bool			bOutputEnabled;
 		bool				bCreatedNewOutput = true;
 	public:
 		CORE_API static void	Init ( bool create_new_window = true );

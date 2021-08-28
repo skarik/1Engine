@@ -1,4 +1,3 @@
-
 //#include "Console.h"
 #include "core/debug/Console.h"
 #include "CDeveloperConsole.h"
@@ -13,12 +12,10 @@
 #include "core-ext/settings/SessionSettings.h"
 
 using namespace engine;
-using std::cin;
 using std::string;
 
 // Global pointer to console
 CDeveloperConsole*	engine::Console = NULL;
-//CDeveloperCursor*	ActiveCursor = NULL;
 
 // Constructor and Destructor
 CDeveloperConsole::CDeveloperConsole ( void ) 
@@ -353,8 +350,7 @@ bool CDeveloperConsole::RunLastCommand ( void )
 	// Search the function list for the command
 	if ( functionList.find(verb) != functionList.end() )
 	{
-		debug::Console->PrintMessage( cmd );
-		std::cout << std::endl;
+		debug::Console->PrintMessage( "> " + cmd + "\n" );
 		functionList[verb].fnc( args );
 	}
 	// Search the variable list for the command
@@ -362,27 +358,27 @@ bool CDeveloperConsole::RunLastCommand ( void )
 	{
 		// If argument list is empty, then display current value
 		if ( args.length() <= 0 ) {
-			debug::Console->PrintMessage( verb );
-			debug::Console->PrintMessage( " = " );
+			std::string output = verb + " = ";
 			int type = variableList[verb].type;
 			if ( type == 0 ) {
-				std::cout << (*((int*)(variableList[verb].var)));
+				output += std::to_string(*static_cast<int*>(variableList[verb].var));
 			}
 			else if ( type == 1 ) {
-				std::cout << (*((Real*)(variableList[verb].var)));
+				output += std::to_string(*static_cast<Real*>(variableList[verb].var));
 			}
-			std::cout << std::endl;
+			output += '\n';
+			debug::Console->PrintMessage( "> " + output );
 		}
 		// Otherwise set
 		else
 		{
-			debug::Console->PrintMessage( cmd );
+			debug::Console->PrintMessage( "> " + cmd );
 			int type = variableList[verb].type;
 			if ( type == 0 ) {
-				(*((int*)(variableList[verb].var))) = atoi( args.c_str() );
+				*static_cast<int*>(variableList[verb].var) = atoi( args.c_str() );
 			}
 			else if ( type == 1 ) {
-				(*((Real*)(variableList[verb].var))) = (Real)atof( args.c_str() );
+				*static_cast<Real*>(variableList[verb].var) = (Real)atof( args.c_str() );
 			}
 		}
 	}
@@ -392,21 +388,18 @@ bool CDeveloperConsole::RunLastCommand ( void )
 		// If argument list is empty, then display current value
 		if ( args.length() <= 0 )
 		{
-			debug::Console->PrintMessage( verb );
-			debug::Console->PrintMessage( " = " );
-			debug::Console->PrintMessage(sessionVariableMap[verb]->ToString());
-			debug::Console->PrintMessage( "\n" );
+			debug::Console->PrintMessage( "> " + verb + " = " + sessionVariableMap[verb]->ToString() + "\n" );
 		}
 		// Otherwise set
 		else
 		{
-			debug::Console->PrintMessage( cmd );
+			debug::Console->PrintMessage( "> " + cmd );
 			sessionVariableMap[verb]->SetFromString(args.c_str());
 		}
 	}
 	else // Print that cannot find values
 	{
-		debug::Console->PrintError( verb );
+		debug::Console->PrintError( "> " + verb );
 		debug::Console->PrintError( ": command doesn't exist\n" );
 	}
 	return true;

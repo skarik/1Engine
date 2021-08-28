@@ -47,6 +47,9 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 	// Load window settings
 	CGameSettings gameSettings ( (string)lpCmdLine, false );
 
+	// Create console window
+	debug::ConsoleWindow::Init(true);
+
 	// Create jobs system
 	core::jobs::System jobSystem (std::max(4u, std::thread::hardware_concurrency()));
 
@@ -195,6 +198,9 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 
 	// Free resource system
 	core::ArResourceManager::FreeInstance();
+
+	// Free console window
+	debug::ConsoleWindow::Free();
 
 	return 0;
 }

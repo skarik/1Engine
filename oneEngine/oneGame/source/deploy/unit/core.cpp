@@ -118,5 +118,8 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	// Free input
 	core::Input::Free();
 
+	// Free debug console
+	debug::ConsoleWindow::Free();
+
 	return 0;
 }

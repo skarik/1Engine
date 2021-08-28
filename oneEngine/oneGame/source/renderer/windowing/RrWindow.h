@@ -103,7 +103,6 @@ public:
 private:
 	
 	void					CreateScreen ( void );
-	void					CreateConsole ( void );
 	void					RegisterInput ( void ); // windows thing where we register input devices
 
 	void					CreateGfxSurface ( void );

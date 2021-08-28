@@ -4,8 +4,8 @@
 
 audio::arBufferHandle audio::WaveformLoader::LoadFile ( const char* sFilename )
 {
-	string sFileRezname = sFilename;
-	string sFileExtension = core::utils::string::GetLower( core::utils::string::GetFileExtension( sFileRezname ) );
+	std::string sFileRezname = sFilename;
+	std::string sFileExtension = core::utils::string::GetLower( core::utils::string::GetFileExtension( sFileRezname ) );
 
 	if ( sFileExtension == "wav" )
 	{

@@ -151,6 +151,9 @@ double AR_CALL AudioFree ( void )
 	delete m_refmapSources;
 	delete m_refmapEffects;
 
+	// Free debug console
+	debug::ConsoleWindow::Free();
+
 	return NIL;
 }
 
