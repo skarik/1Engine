@@ -13,8 +13,10 @@
 namespace core {
 namespace texture
 {
-	static gfx::arPixel* loadPNG ( const char* const n_inputfile, gfx::tex::arImageInfo& o_info )
+	static gfx::arPixel* loadPNG ( FILE* n_inputfile, gfx::tex::arImageInfo& o_info )
 	{
+		FILE* file = n_inputfile;
+		
 		int calcW, calcH, calcBPP;
 		unsigned char * pixelData = NULL;
 		gfx::arPixel* pData = NULL;
@@ -23,20 +25,12 @@ namespace texture
 		int iTransSize = 0;
 		gfx::arPixel* pTransTable = NULL;
 
-		// Read in the data
-		FILE* file = fopen( n_inputfile, "rb");  //open the file
-
-		if ( !file )
-		{
-			fprintf( stderr, "Could not open PNG file \"%s\"\n", n_inputfile );
-			pixelData = NULL;
-		}
-		else
+		if (file != NULL)
 		{
 			unsigned char header[8];    // 8 is the maximum size that can be checked
 			fread( header, 1, 8, file );
 			if ( png_sig_cmp( header, 0, 8 ) )
-				fprintf( stderr, "File %s is not recognized as a PNG file", n_inputfile );
+				fprintf( stderr, "File is not recognized as a PNG file" );
 
 			// Define needed vars
 			png_structp	png_ptr;
@@ -227,10 +221,24 @@ namespace texture
 		else
 		{
 			// Print error if data is invalid
-			fprintf( stderr, "Could not read PNG file \"%s\"\n", n_inputfile );
+			fprintf( stderr, "Could not read PNG file.\n" );
 			// Return no data read
 			return NULL;
 		}
+	}
+
+	static gfx::arPixel* loadPNG ( const char* const n_inputfile, gfx::tex::arImageInfo& o_info )
+	{
+		// Read in the data
+		FILE* file = fopen( n_inputfile, "rb");  //open the file
+
+		if ( !file )
+		{
+			fprintf( stderr, "Could not open PNG file \"%s\"\n", n_inputfile );
+			return NULL;
+		}
+
+		return loadPNG(file, o_info);
 	}
 }}
 

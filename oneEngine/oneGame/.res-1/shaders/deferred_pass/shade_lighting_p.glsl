@@ -125,7 +125,9 @@ void ShadePixel ( void )
 		const float ndotv = clamp(dot(surface.normal, viewDirection), 0.0, 1.0);
 		
 		// Get rough environment to reflect
-		vec3 skyColor = vec3(0.45, 0.75, 0.90);
+		//vec3 skyColor = vec3(0.45, 0.75, 0.90);
+		vec3 skyColor = vec3(0.6, 0.6, 0.6);
+		//vec3 skyColor = vec3(0.85, 0.4, 0.85);
 		vec3 skyColorBottom = vec3(0.95, 0.85, 0.65);
 		vec3 skyReflection = mix(skyColorBottom, skyColor, dot(surface.normal, vec3(0, 0, 1)) * 0.5 + 0.5);
 		vec3 environmentColor = skyReflection;

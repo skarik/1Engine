@@ -11,42 +11,67 @@ namespace gpu
 	{
 		// filter used when texture magnified
 		core::gfx::tex::arSamplingFilter
-							magFilter;
+							magFilter = core::gfx::tex::kSamplingLinear;
 		// filter used when texture minified
 		core::gfx::tex::arSamplingFilter
-							minFilter;
+							minFilter = core::gfx::tex::kSamplingLinear;
 		// mipmaps enabled?
-		bool				mipmaps;
+		bool				mipmaps = false;
 		// filter used with mipmap levels. Can only be Nearest Neighbor or Linear.
 		core::gfx::tex::arSamplingFilter
-							mipmapMode;
+							mipmapMode = core::gfx::tex::kSamplingLinear;
 		// wrapping modes:
 		core::gfx::tex::arWrappingType
-							wrapmodeX;
+							wrapmodeX = core::gfx::tex::kWrappingRepeat;
 		core::gfx::tex::arWrappingType
-							wrapmodeY;
+							wrapmodeY = core::gfx::tex::kWrappingRepeat;
 		core::gfx::tex::arWrappingType
-							wrapmodeZ;
+							wrapmodeZ = core::gfx::tex::kWrappingRepeat;
 		// border color for the sampler
-		float				borderColor [4];
+		float				borderColor [4] = {};
 		// Mipmap options:
-		float				mipmapLodBias;	// LOD bias (TODO: desc)
-		float				mipmapMinLod;	// Minimum mipmap level to display
-		float				mipmapMaxLod;	// Maximum mipmap level to display
+		float				mipmapLodBias = 0.0F;	// LOD bias (TODO: desc)
+		float				mipmapMinLod = -1000.0F;	// Minimum mipmap level to display
+		float				mipmapMaxLod =  1000.0F;	// Maximum mipmap level to display
 		// is anisotropic sampling enabled?
-		bool				anisotropy;
-		float				maxAnisotropy;	// Anisotropy level, anything greater than 1.0 is anisotropy.
+		bool				anisotropy = false;
+		float				maxAnisotropy = 1.0F;	// Anisotropy level, anything greater than 1.0 is anisotropy.
 
-		// Default values:
-		SamplerCreationDescription ( void )
-			: magFilter(core::gfx::tex::kSamplingLinear), minFilter(core::gfx::tex::kSamplingLinear),
-			mipmaps(false), mipmapMode(core::gfx::tex::kSamplingLinear),
-			wrapmodeX(core::gfx::tex::kWrappingRepeat), wrapmodeY(core::gfx::tex::kWrappingRepeat), wrapmodeZ(core::gfx::tex::kWrappingRepeat),
-			borderColor(),
-			mipmapLodBias(0.0F),
-			mipmapMinLod(-1000.0F), mipmapMaxLod(1000.0F),
-			anisotropy(false), maxAnisotropy(1.0F)
-			{}
+
+		SamplerCreationDescription&
+								MagFilter ( const core::gfx::tex::arSamplingFilter filter )
+		{
+			magFilter = filter;
+			return *this;
+		}
+
+		SamplerCreationDescription&
+								MinFilter ( const core::gfx::tex::arSamplingFilter filter )
+		{
+			minFilter = filter;
+			return *this;
+		}
+
+		SamplerCreationDescription&
+								WrapmodeX ( const core::gfx::tex::arWrappingType wrapmode )
+		{
+			wrapmodeX = wrapmode;
+			return *this;
+		}
+
+		SamplerCreationDescription&
+								WrapmodeY ( const core::gfx::tex::arWrappingType wrapmode )
+		{
+			wrapmodeY = wrapmode;
+			return *this;
+		}
+
+		SamplerCreationDescription&
+								WrapmodeZ ( const core::gfx::tex::arWrappingType wrapmode )
+		{
+			wrapmodeZ = wrapmode;
+			return *this;
+		}
 	};
 }
 

@@ -13,22 +13,22 @@ class RrPipelineStandardRenderer : public RrPipelineStateRenderer
 {
 public:
 	RENDER_API				RrPipelineStandardRenderer ( void );
-							~RrPipelineStandardRenderer ( void );
+	RENDER_API virtual		~RrPipelineStandardRenderer ( void );
 
 	//	IsCompatible()
 	// Is this state compatible with the given pipeline? If not, it is destroyed and correct one is created.
-	RENDER_API bool			IsCompatible ( const renderer::PipelineMode mode ) const override
+	RENDER_API virtual bool	IsCompatible ( const renderer::PipelineMode mode ) const override
 	{ return mode == renderer::PipelineMode::kNormal; }
 
 	//	CullObjects() : Called to cull objects.
-	RENDER_API void			CullObjects ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world ) override;
+	RENDER_API virtual void	CullObjects ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world ) override;
 
 	//	CompositeDeferred() : Called when the renderer wants to combine a deferred pass with a forward pass.
-	RENDER_API rrCompositeOutput
+	RENDER_API virtual rrCompositeOutput
 							CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
 
 	//	RenderLayerEnd() : Called when the renderer finishes a given layer.
-	RENDER_API rrPipelineOutput
+	RENDER_API virtual rrPipelineOutput
 							RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) override;
 
 private:

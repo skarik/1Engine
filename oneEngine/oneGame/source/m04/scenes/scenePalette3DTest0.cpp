@@ -44,12 +44,13 @@ void scenePalette3DTest0::LoadScene ( void )
 
 	// Set up pipeline
 	{
-		
 		RrRenderer::Active->GetWorld<0>()->pipeline_mode = renderer::PipelineMode::kPaletted;
 		
 		//RrRenderer::Active->GetWorld<0>()->pipeline_options = nullptr; // TODO. Needs a Paletted pipeline.
 		RrPipelinePalettedOptions* options = new RrPipelinePalettedOptions;
 		options->m_celShadeLighting = true;
+		options->LoadPalette("textures/vfx/palette_wide.png");
+
 		RrRenderer::Active->GetWorld<0>()->pipeline_options = options;
 
 	} loadScreen->loadStep();
@@ -60,8 +61,9 @@ void scenePalette3DTest0::LoadScene ( void )
 		player->RemoveReference();
 	} loadScreen->loadStep();
 
+#if 0
 	// Create a plane to start with
-	/*{
+	{
 		RrShapePlane* plane = new RrShapePlane();
 		plane->transform.world.scale = Vector3f(300.0F, 300.0F, 300.0F);
 
@@ -140,91 +142,168 @@ void scenePalette3DTest0::LoadScene ( void )
 		};
 
 		plane->PassInitWithInput(0, &pass);
-	} loadScreen->loadStep();*/
+	} loadScreen->loadStep();
+#endif
 
+	// Create a floatrock
 	{
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/sky/floatrock_0"}, NULL);
 
-		// Use a default material
-		RrPass pass;
-		pass.utilSetupAsDefault();
-		pass.m_type = kPassTypeDeferred;
-		pass.m_alphaMode = renderer::kAlphaModeNone;
-		pass.m_cullMode = gpu::kCullModeNone;
-		pass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
-		pass.setTexture( TEX_DIFFUSE, RrTexture::Load("textures/desert/flatsand0.png") );
-		pass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
-		pass.setTexture( TEX_SURFACE, RrTexture::Load("textures/desert/flatsand0_surf.png") );
-		pass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
+		{
+			// Use a tilebomb material
+			RrPass pass;
+			pass.utilSetupAsDefault();
+			pass.m_type = kPassTypeDeferred;
+			pass.m_alphaMode = renderer::kAlphaModeNone;
+			pass.m_cullMode = gpu::kCullModeNone;
+			pass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+			pass.setTexture( TEX_DIFFUSE, RrTexture::Load("textures/desert/flatsand0.png") );
+			pass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
+			pass.setTexture( TEX_SURFACE, RrTexture::Load("textures/desert/flatsand0_surf.png") );
+			pass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
 
-		pass.m_surface.textureScale = Vector4f(1, 1, 1, 1) * 3.0F / 2.0F;
+			pass.m_surface.textureScale = Vector4f(1, 1, 1, 1) * 3.0F / 2.0F;
 
-		gpu::SamplerCreationDescription pointFilter;
-		pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
-		pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
-		pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
-		pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
-		pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
-		pass.setSampler(rrTextureSlot::TEX_OVERLAY, &pointFilter);
+			gpu::SamplerCreationDescription pointFilter;
+			pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
+			pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+			pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
+			pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
+			pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
+			pass.setSampler(rrTextureSlot::TEX_OVERLAY, &pointFilter);
 
-		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/deferred_env/simple_vv.spv", "shaders/deferred_env/tilebomber_p.spv"}) );
-		renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
-												renderer::shader::Location::kUV0,
-												renderer::shader::Location::kColor,
-												renderer::shader::Location::kNormal,
-												renderer::shader::Location::kTangent,
-												renderer::shader::Location::kBinormal};
-		pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
-		pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+			pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/deferred_env/simple_vv.spv", "shaders/deferred_env/tilebomber_p.spv"}) );
+			renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+													renderer::shader::Location::kUV0,
+													renderer::shader::Location::kColor,
+													renderer::shader::Location::kNormal,
+													renderer::shader::Location::kTangent,
+													renderer::shader::Location::kBinormal};
+			pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
+			pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
 		
-		pass.m_renderCallback = [](gpu::GraphicsContext* gfx)
-		{
-			renderer::cbuffer::tilebomber::rrTilebombParams params;
+			pass.m_renderCallback = [](gpu::GraphicsContext* gfx)
 			{
-				params.base_texture_uv_position = Vector2f(0, 0);
-				params.base_texture_uv_size = Vector2f(0.25F, 0.25F);
-				params.bomb_chance = 0.5F;
-				params.bomb_scale = 1;
+				renderer::cbuffer::tilebomber::rrTilebombParams params;
+				{
+					params.base_texture_uv_position = Vector2f(0, 0);
+					params.base_texture_uv_size = Vector2f(0.25F, 0.25F);
+					params.bomb_chance = 0.5F;
+					params.bomb_scale = 1;
 
-				params.bomb_count = 4;
+					params.bomb_count = 4;
 
-				// bricks
-				params.bomb_texture[0].uv_position = Vector2f(0.25F, 0.50F);
-				params.bomb_texture[0].uv_size = Vector2f(0.25F, 0.25F);
-				params.bomb_texture[0].min_repeat = 2;
-				params.bomb_texture[0].max_repeat = 4;
-				// sand details
-				params.bomb_texture[1].uv_position = Vector2f(0.0F, 0.25F);
-				params.bomb_texture[1].uv_size = Vector2f(0.25F, 0.25F);
-				params.bomb_texture[1].occurrence = Vector4f(1, 3, 3, 3).normal();
-				// dirt & dirt
-				params.bomb_texture[2].uv_position = Vector2f(0.25F, 0.0F);
-				params.bomb_texture[2].uv_size = Vector2f(0.25F, 0.25F);
-				params.bomb_texture[2].min_repeat = 1;
-				params.bomb_texture[2].max_repeat = 3;
-				params.bomb_texture[2].occurrence = Vector4f(2, 1, 4, 3).normal();
-				// black plants
-				params.bomb_texture[3].uv_position = Vector2f(0.25F, 0.25F);
-				params.bomb_texture[3].uv_size = Vector2f(0.25F, 0.25F);
-				params.bomb_texture[3].min_repeat = 1;
-				params.bomb_texture[3].max_repeat = 5;
-				params.bomb_texture[3].occurrence = Vector4f(1, 1, 1, 0).normal();
-			}
-			gpu::Buffer tilebomber_buffer;
-			tilebomber_buffer.initAsConstantBuffer(NULL, sizeof(params));
-			tilebomber_buffer.upload(gfx, &params, sizeof(params), gpu::kTransferStream);
-			gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, &tilebomber_buffer);
-			tilebomber_buffer.free(NULL); // It is currently in use, so this will be deferred.
-		};
+					// bricks
+					params.bomb_texture[0].uv_position = Vector2f(0.25F, 0.50F);
+					params.bomb_texture[0].uv_size = Vector2f(0.25F, 0.25F);
+					params.bomb_texture[0].min_repeat = 2;
+					params.bomb_texture[0].max_repeat = 4;
+					// sand details
+					params.bomb_texture[1].uv_position = Vector2f(0.0F, 0.25F);
+					params.bomb_texture[1].uv_size = Vector2f(0.25F, 0.25F);
+					params.bomb_texture[1].occurrence = Vector4f(1, 3, 3, 3).normal();
+					// dirt & dirt
+					params.bomb_texture[2].uv_position = Vector2f(0.25F, 0.0F);
+					params.bomb_texture[2].uv_size = Vector2f(0.25F, 0.25F);
+					params.bomb_texture[2].min_repeat = 1;
+					params.bomb_texture[2].max_repeat = 3;
+					params.bomb_texture[2].occurrence = Vector4f(2, 1, 4, 3).normal();
+					// black plants
+					params.bomb_texture[3].uv_position = Vector2f(0.25F, 0.25F);
+					params.bomb_texture[3].uv_size = Vector2f(0.25F, 0.25F);
+					params.bomb_texture[3].min_repeat = 1;
+					params.bomb_texture[3].max_repeat = 5;
+					params.bomb_texture[3].occurrence = Vector4f(1, 1, 1, 0).normal();
+				}
+				gpu::Buffer tilebomber_buffer;
+				tilebomber_buffer.initAsConstantBuffer(NULL, sizeof(params));
+				tilebomber_buffer.upload(gfx, &params, sizeof(params), gpu::kTransferStream);
+				gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, &tilebomber_buffer);
+				tilebomber_buffer.free(NULL); // It is currently in use, so this will be deferred.
+			};
 
-		// Give initial pass
-		for (int i = 0; i < model->GetMeshCount(); ++i)
-		{
-			model->GetMesh(i)->PassInitWithInput(0, &pass);
+			// Give initial pass
+			model->GetMesh(0)->PassInitWithInput(0, &pass);
 		}
+
+		{
+			// Use a default material for the rock sides
+			RrPass pass;
+			pass.utilSetupAsDefault();
+			pass.m_type = kPassTypeDeferred;
+			pass.m_alphaMode = renderer::kAlphaModeNone;
+			pass.m_cullMode = gpu::kCullModeNone;
+			pass.m_surface.diffuseColor = Color(0.45F, 0.4F, 0.45F, 1.0F);
+			pass.setTexture( TEX_DIFFUSE, RrTexture::Load(renderer::kTextureWhite) );
+			pass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
+			pass.setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureSurfaceM0) );
+			pass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
+
+			pass.m_surface.textureScale = Vector4f(1, 1, 1, 1) * 3.0F / 2.0F;
+
+			gpu::SamplerCreationDescription pointFilter;
+			pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
+			pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+			pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
+			pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
+			pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
+			pass.setSampler(rrTextureSlot::TEX_OVERLAY, &pointFilter);
+
+			pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/deferred_env/simple_vv.spv", "shaders/deferred_env/simple_p.spv"}) );
+			renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+													renderer::shader::Location::kUV0,
+													renderer::shader::Location::kColor,
+													renderer::shader::Location::kNormal,
+													renderer::shader::Location::kTangent,
+													renderer::shader::Location::kBinormal};
+			pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
+			pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+
+			// Give initial pass
+			model->GetMesh(1)->PassInitWithInput(0, &pass);
+		}
+
+		{
+			// Use a default material for the path
+			RrPass pass;
+			pass.utilSetupAsDefault();
+			pass.m_type = kPassTypeDeferred;
+			pass.m_alphaMode = renderer::kAlphaModeNone;
+			pass.m_cullMode = gpu::kCullModeNone;
+			pass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+			pass.setTexture( TEX_DIFFUSE, RrTexture::Load("textures/desert/rockpath0_ts0.png") );
+			pass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
+			pass.setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureSurfaceM0) );
+			pass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
+
+			pass.m_surface.textureScale = Vector4f(1, 1, 1, 1) * 3.0F / 2.0F;
+
+			gpu::SamplerCreationDescription pointFilter;
+			pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
+			pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+			pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
+			pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
+			pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
+			pass.setSampler(rrTextureSlot::TEX_OVERLAY, &pointFilter);
+
+			pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/deferred_env/simple_vv.spv", "shaders/deferred_env/simple_p.spv"}) );
+			renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+													renderer::shader::Location::kUV0,
+													renderer::shader::Location::kColor,
+													renderer::shader::Location::kNormal,
+													renderer::shader::Location::kTangent,
+													renderer::shader::Location::kBinormal};
+			pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
+			pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+
+			// Give initial pass
+			model->GetMesh(2)->PassInitWithInput(0, &pass);
+		}
+		
 	} loadScreen->loadStep();
 
 	// Create a skysphere
+#if 1
 	{
 		RrShapeIsosphere* sphere = new RrShapeIsosphere();
 		sphere->transform.world.scale = Vector3f(1500.0F, 1500.0F, 1500.0F);
@@ -248,6 +327,7 @@ void scenePalette3DTest0::LoadScene ( void )
 
 		sphere->PassInitWithInput(0, &pass);
 	} loadScreen->loadStep();
+#endif
 
 	// Create the grass
 	{
@@ -266,28 +346,45 @@ void scenePalette3DTest0::LoadScene ( void )
 		foliage->PassAccess(0).setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
 		foliage->PassAccess(0).setSampler(rrTextureSlot::TEX_OVERLAY, &pointFilter);
 
-		for (uint i = 0; i < 120; ++i)
+		auto AddClump = [foliage](const Vector3f& position, const int count, const Vector2f& radius)
 		{
-			grInstancedGrassInfo grass;
-			grass.color = Vector3f(1.0F, 1.0F, 1.0F);
+			for (uint i = 0; i < count; ++i)
+			{
+				grInstancedGrassInfo grass;
+				grass.color = Vector3f(1.0F, 1.0F, 1.0F);
 
-			grass.variation_index = Random.Next(0, 1);
+				grass.variation_index = Random.Next(0, 1);
 
-			Matrix4x4 transform, dump;
-			core::TransformUtility::TRSToMatrix4x4(
-				Vector3f(Random.PointInUnitCircle() * 2.4F, 0.3F),
-				Rotator(0.0F, 0.0F, Random.Range(0.0F, 360.0F)),
-				Vector3f(1, 1, Random.Range(0.8F, 1.1F)) * 0.8F,
-				transform,
-				dump);
-			grass.transform = transform;
+				Matrix4x4 transform, dump;
+				core::TransformUtility::TRSToMatrix4x4(
+					position + Vector3f(Random.PointInUnitCircle().mulComponents(radius), 0.0F),
+					Rotator(0.0F, 0.0F, Random.Range(0.0F, 360.0F)),
+					Vector3f(1, 1, Random.Range(0.8F, 1.1F)) * 0.8F,
+					transform,
+					dump);
+				grass.transform = transform;
 
-			foliage->m_grassInfo.push_back(grass);
-		}
+				foliage->m_grassInfo.push_back(grass);
+			}
+		};
+
+		// Add a big ol circle to test
+		//AddClump(Vector3f(0, 0, 0.3F), 120, Vector2f(2.4F, 2.4F));
+
+		// Add clump in the longer lower area
+		AddClump(Vector3f(-1.8F, -1.1F, 0.3F), 15, Vector2f(1.6F, 0.4F));
+		// Clump by the rocks
+		AddClump(Vector3f( 1.0F,  0.3F, 0.3F), 8, Vector2f(0.6F, 0.9F));
+		AddClump(Vector3f(-2.5F,  0.5F, 0.3F), 6, Vector2f(0.4F, 0.4F));
+
+		// More grass in the top left
+		AddClump(Vector3f( 2.0F, -1.0F, 0.3F), 14, Vector2f(1.2F, 1.5F));
+		
 	} loadScreen->loadStep();
 
 	// Add a model
-	/*{
+#if 0
+	{
 		//RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/blender_default_cube"}, NULL);
 		//RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/test0"}, NULL);
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/Go_blender"}, NULL);
@@ -320,7 +417,8 @@ void scenePalette3DTest0::LoadScene ( void )
 			model->GetMesh(i)->PassInitWithInput(0, &pass);
 		}
 
-	} loadScreen->loadStep();*/
+	} loadScreen->loadStep();
+#endif
 
 	// Add a rock
 	{
@@ -489,7 +587,7 @@ void scenePalette3DTest0::LoadScene ( void )
 		}
 	} loadScreen->loadStep();
 
-	// Add go
+	// Add Go!
 	{
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/chara/go_posed"}, NULL);
 		model->transform.position = Vector3f(-1.1F, 3.3F, 0.43F);

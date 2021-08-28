@@ -29,7 +29,12 @@ bool TrConverterPNG::Convert(const char* inputFilename, const char* outputFilena
 		writer.datetime = (uint64_t)std::chrono::system_clock::now().time_since_epoch().count();
 
 		// Write the new BPD to the disk.
-		return writer.WriteBpd(outputFilename);
+		bool result = writer.WriteBpd(outputFilename);
+
+		// Free the allocated data
+		delete[] pixel;
+		
+		return result;
 	}
 	return false;
 }

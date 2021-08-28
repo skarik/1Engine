@@ -71,6 +71,8 @@ void main ( void )
 	
 	
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * vec4( v_localPos.xyz, 1.0 );
+	// TODO: Move this into either .res-0 or make an option.
+	v_screenPos.xy = floor( v_screenPos.xy * (sys_ScreenSize * 0.25 / v_screenPos.z) ) / (sys_ScreenSize * 0.25 / v_screenPos.z);
 
 	v2f_colors		= vec4(mdl_Color.rgb * sys_DiffuseColor.rgb * l_variationInfo.color * hacky_ao, mdl_Color.a * sys_DiffuseColor.a);
 	v2f_texcoord0	= mdl_TexCoord.xy;

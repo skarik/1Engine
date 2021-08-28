@@ -106,37 +106,52 @@ void main ( void )
 	vec3 world_normal;
 	DecodePackedNormals(gbuffer_normals, world_normal);
 	
+	const float kShadowBias = 0.001;
+	//const float kShadowBiasBlend = 0.001;
 	
 	// At the pixel, transform world position to the shadow's matrix
 	vec4 shadowprojected_position = sys_ShadowViewProjectionMatrix * vec4(world_position, 1.0);
 	shadowprojected_position.xyz /= shadowprojected_position.w;
 	shadowprojected_position.xy = shadowprojected_position.xy * vec2(0.5, -0.5) + vec2(0.5, 0.5);
 	
-	// Sample the shadow map
-	//float sampledDepth = textureLod( textureShadowMap, shadowprojected_position.xy, 0 ).r;
-	vec2 sample_offsets [16];
-	GetPoissonDisk(sample_offsets);
+	// Get reference depth for shadow map
+	const float referenceLinearDepth = LinearizeZBufferDepth(shadowprojected_position.z, sys_ShadowCameraNearPlane, sys_ShadowCameraFarPlane) * sys_ShadowCameraFarPlane;
 	
-	float sampleDepth = 0.0;
-	float sampleDepthWeight = 0.0;
+	// Sample the shadow map:
+	
+	vec2 sample_offsets [16];
+	GetPoissonDiskCentered(sample_offsets);
+	
+	// Sample the center pixel
+	float shadowCoverage = 0.0;
+	
+	float sampledDepth, sampledLinearDepth;
+	sampledDepth = textureLod( textureShadowMap, shadowprojected_position.xy, 0 ).r;
+	sampledLinearDepth = LinearizeZBufferDepth(sampledDepth, sys_ShadowCameraNearPlane, sys_ShadowCameraFarPlane) * sys_ShadowCameraFarPlane;
+	
+	// If pixel is too far from bias, we skip this pixel
+	[[branch]]
+	if ( referenceLinearDepth - sampledLinearDepth < kShadowBias )
+		return;
+	
+	float total_sample_weight = 0.0;
 	[[unroll]]
-	for (int i = 0; i < 16; ++i)
+	for (int i = 1; i < 16; ++i)
 	{
-		float sampleWeight = 1.0 - length(sample_offsets[i]);
-		sampleDepthWeight += sampleWeight;
-		sampleDepth += textureLod( textureShadowMap, shadowprojected_position.xy + sample_offsets[i] / 1024 * 1.414, 0 ).r * sampleWeight;
+		float sampleWeight = 2.0 - length(sample_offsets[i]);
 		
-		[[branch]]
-		if (i == 0 && sampleDepth <= 0.00001)
-			break;
+		sampledDepth = textureLod( textureShadowMap, shadowprojected_position.xy + sample_offsets[i] / 1024 * 2.0, 0 ).r;
+		sampledLinearDepth = LinearizeZBufferDepth(sampledDepth, sys_ShadowCameraNearPlane, sys_ShadowCameraFarPlane) * sys_ShadowCameraFarPlane;
+		
+		shadowCoverage +=  (referenceLinearDepth - sampledLinearDepth > kShadowBias) ? sampleWeight : 0.0;
+		total_sample_weight += sampleWeight;
+		
 	}
-	sampleDepth /= max(0.001, sampleDepthWeight);
+	shadowCoverage /= total_sample_weight;
 	
 	// Create the projected mask
 	vec4 shadowMask = vec4( 1, 1, 1, 1 );
-	const float kShadowBias = 0.001;
-	float depthDelta = (LinearizeZBufferDepth(shadowprojected_position.z, sys_ShadowCameraNearPlane, sys_ShadowCameraFarPlane) - LinearizeZBufferDepth(sampleDepth, sys_ShadowCameraNearPlane, sys_ShadowCameraFarPlane)) * sys_ShadowCameraFarPlane;
-	shadowMask.r = (depthDelta > kShadowBias) ? 0.0 : shadowMask.r;
+	shadowMask.r = mix(1.0, 0.0, saturate(2.0 * mix(-2.0, +1.0, shadowCoverage)));
 	
 	imageStore(textureShadowMask, uv0, shadowMask);
 	

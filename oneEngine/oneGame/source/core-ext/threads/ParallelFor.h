@@ -28,12 +28,28 @@ namespace core
 				core::jobs::System::Current::AddJobRequest(core::jobs::kJobTypeParallelFor, func, index);
 			}
 			core::jobs::System::Current::WaitForJobs(core::jobs::kJobTypeParallelFor);
+
+#		if 0 // This is slower
+			if (until > first)
+			{
+				std::vector<std::thread> threads;
+				threads.resize(until - first);
+				for (Indexor index = first; index < until; ++index)
+				{
+					threads[index - first] = std::thread(func, index);
+				}
+				for (auto& thread : threads)
+				{
+					thread.join();
+				}
+			}
+#		endif
 		}
 		else
 		{
 			for (Indexor index = first; index < until; ++index)
 			{
-				core::jobs::System::Current::AddJobRequest(core::jobs::kJobTypeParallelFor, func, index);
+				func(index);
 			}
 		}
 	}

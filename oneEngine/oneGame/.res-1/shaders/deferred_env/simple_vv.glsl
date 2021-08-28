@@ -24,9 +24,11 @@ void main ( void )
 {
 	vec4 v_localPos = vec4( mdl_Vertex, 1.0 );
 	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
+	// TODO: Move this into either .res-0 or make an option.
+	v_screenPos.xy = floor( v_screenPos.xy * (sys_ScreenSize * 0.25 / v_screenPos.z) ) / (sys_ScreenSize * 0.25 / v_screenPos.z);
 
 	v2f_colors		= mdl_Color * sys_DiffuseColor;
-	v2f_texcoord0	= mdl_TexCoord.xy * sys_TextureScale.xy + sys_TextureOffset.xy;
+	v2f_texcoord0	= mdl_TexCoord.xy;
 	v2f_normal		= mat3(sys_ModelR) * mdl_Normal.xyz;
 
 	gl_Position = v_screenPos;

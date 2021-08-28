@@ -6,6 +6,11 @@
 #include "./Internal/Enums.dx11.h"
 #include "gpuw/Public/Error.h"
 
+int gpu::Sampler::create ( Device* device, const SamplerCreationDescription& params )
+{
+	return create(device, &params);
+}
+
 int gpu::Sampler::create ( Device* device, const SamplerCreationDescription* params )
 {
 	if (m_sampler != NULL)

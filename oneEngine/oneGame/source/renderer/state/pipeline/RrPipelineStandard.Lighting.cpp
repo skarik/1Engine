@@ -15,6 +15,7 @@
 #include "gpuw/Pipeline.h"
 #include "gpuw/ShaderPipeline.h"
 #include "gpuw/WriteableResource.h"
+#include "gpuw/Sampler.h"
 
 void RrPipelineStandardRenderer::SortLights ( void )
 {
@@ -292,6 +293,11 @@ void RrPipelineStandardRenderer::RenderShadows(
 					gpu::WriteableResource rwShadowMask;
 					rwShadowMask.create(&shadowMask, 0);
 
+					// Create samplers:
+					gpu::Sampler linearSampler, pointSampler;
+					linearSampler.create(NULL, gpu::SamplerCreationDescription().MagFilter(core::gfx::tex::kSamplingLinear).MinFilter(core::gfx::tex::kSamplingLinear));
+					pointSampler.create(NULL, gpu::SamplerCreationDescription().MagFilter(core::gfx::tex::kSamplingPoint).MinFilter(core::gfx::tex::kSamplingPoint));
+
 					// Set up compute shader
 					gfx->setComputeShader(&m_shadowingProjectionProgram->GetShaderPipeline());
 					gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &gbuffers.cameraPass->m_cbuffer);
@@ -301,6 +307,9 @@ void RrPipelineStandardRenderer::RenderShadows(
 					gfx->setShaderTexture(gpu::kShaderStageCs, 1, gbuffers.combined_depth);
 					gfx->setShaderTexture(gpu::kShaderStageCs, 2, &shadowMap);
 					gfx->setShaderTexture(gpu::kShaderStageCs, 3, gbuffers.deferred_normals);
+					gfx->setShaderSampler(gpu::kShaderStageCs, 1, &pointSampler);
+					gfx->setShaderSampler(gpu::kShaderStageCs, 2, &linearSampler);
+					gfx->setShaderSampler(gpu::kShaderStageCs, 3, &pointSampler);
 					// Render the contact shadows
 					gfx->dispatch(output_viewport.size.x / 4, output_viewport.size.y / 4, 1);
 					// Unbind the UAV
@@ -308,6 +317,10 @@ void RrPipelineStandardRenderer::RenderShadows(
 
 					// Done with the writeable
 					rwShadowMask.destroy();
+
+					// Done with samplers:
+					linearSampler.destroy(NULL);
+					pointSampler.destroy(NULL);
 				}
 
 				// Free the camera pass now that we're done with it.

@@ -20,10 +20,12 @@ layout(binding = 2, location = 22) uniform sampler2D textureSurface;
 
 void main ( void )
 {
-	vec4 diffuseColor = texture( textureAlbedo, v2f_texcoord0 );
+	const vec2 uv0 = ( v2f_texcoord0 ) * sys_TextureScale.xy + sys_TextureOffset.xy;
+
+	vec4 diffuseColor = texture( textureAlbedo, uv0 );
 	if (diffuseColor.a <= sys_AlphaCutoff) discard;
 	
-	vec4 surfaceColor = texture( textureSurface, v2f_texcoord0 );
+	vec4 surfaceColor = texture( textureSurface, uv0 );
 
 	rrSurfaceInfo result;
 	

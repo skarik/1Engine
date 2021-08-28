@@ -300,6 +300,17 @@ int gpu::GraphicsContext::setShaderTexture ( ShaderStage stage, int slot, Textur
 	return kError_SUCCESS;
 }
 
+int gpu::GraphicsContext::setShaderTexture ( ShaderStage stage, int slot, Texture* texture, Sampler* sampler )
+{
+	ARCORE_ASSERT(texture != NULL);
+	ARCORE_ASSERT(sampler != NULL);
+
+	setShaderSampler( stage, slot, sampler );
+	setShaderTexture( stage, slot, texture );
+
+	return kError_SUCCESS;
+}
+
 int gpu::GraphicsContext::setShaderTextureAuto ( ShaderStage stage, int slot, Texture* texture )
 {
 	ARCORE_ASSERT(texture != NULL);

@@ -65,6 +65,8 @@ bool InstancedGrassRenderObject::PreRender ( rrCameraPass* cameraPass )
 {
 	PushCbufferPerObject(XrTransform(), cameraPass);
 
+	// TODO: This still isn't quite working. Have to figure out why not all grass instancing rendering.
+
 	// Resize & reset counters
 	instancing_subdraw_info.resize(mesh_types.size());
 	for (grassSubDrawInfo& subdraw_info : instancing_subdraw_info)

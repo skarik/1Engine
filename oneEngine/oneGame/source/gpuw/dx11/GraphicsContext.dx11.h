@@ -84,8 +84,10 @@ namespace gpu
 		GPUW_API int			setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer );
 		//	setShaderSampler( stage, slot, sampler ) : Sets a sampler to a given slot.
 		GPUW_API int			setShaderSampler ( ShaderStage stage, int slot, Sampler* sampler );
-		//	setShaderSampler( stage, slot, sampler ) : Sets a texture to a given slot, without a sampler.
+		//	setShaderTexture( stage, slot, texture ) : Sets a texture to a given slot, without a sampler.
 		GPUW_API int			setShaderTexture ( ShaderStage stage, int slot, Texture* texture );
+		//	setShaderTexture( stage, slot, texture ) : Sets a texture to a given slot, with a sampler.
+		GPUW_API int			setShaderTexture ( ShaderStage stage, int slot, Texture* texture, Sampler* sampler );
 		//	setShaderTextureAuto( stage, slot, texture ) : Sets texture to given slot, using an automatically generated sampler.
 		GPUW_API int			setShaderTextureAuto ( ShaderStage stage, int slot, Texture* texture );
 		//	setShaderWriteable( stage, slot, resource ) : Sets a resource (texture or buffer) to a given slot, as a ReadWrite resource.

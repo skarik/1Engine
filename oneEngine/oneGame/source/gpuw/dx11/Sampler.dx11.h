@@ -17,6 +17,7 @@ namespace gpu
 			: m_sampler(NULL)
 			{}
 
+		GPUW_API int			create ( Device* device, const SamplerCreationDescription& params );
 		GPUW_API int			create ( Device* device, const SamplerCreationDescription* params );
 		GPUW_API int			destroy ( Device* device );
 

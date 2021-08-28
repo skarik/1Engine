@@ -131,6 +131,11 @@ public:
 class RrPipelineOptions
 {
 public:
+	RENDER_API explicit		RrPipelineOptions ( void )
+		{}
+	RENDER_API virtual		~RrPipelineOptions ( void )
+		{}
+
 	//	IsCompatible()
 	// Are these options compatible with the given pipeline? If not, assumes no pipeline options.
 	RENDER_API virtual bool	IsCompatible ( const renderer::PipelineMode mode ) const = 0;

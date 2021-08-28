@@ -42,8 +42,10 @@ layout(binding = CBUFFER_USER0, std430) uniform sys_cbuffer_ArbitraryTileBombInf
 
 void main ( void )
 {
-	vec2 uv_base = mod(v2f_texcoord0.xy, vec2(1.0, 1.0)) * sys_TilebombBaseTexture.zw * 0.999 + sys_TilebombBaseTexture.xy;
-	vec2 uv_base_unmod = v2f_texcoord0.xy *  sys_TilebombBaseTexture.zw + sys_TilebombBaseTexture.xy;
+	const vec2 uv0 = ( v2f_texcoord0 ) * sys_TextureScale.xy + sys_TextureOffset.xy;
+
+	vec2 uv_base = mod(uv0.xy, vec2(1.0, 1.0)) * sys_TilebombBaseTexture.zw * 0.999 + sys_TilebombBaseTexture.xy;
+	vec2 uv_base_unmod = uv0.xy *  sys_TilebombBaseTexture.zw + sys_TilebombBaseTexture.xy;
 	vec2 ddx_uv_base_unmod = dFdx(uv_base_unmod);
 	vec2 ddy_uv_base_unmod = dFdy(uv_base_unmod);
 	
@@ -51,7 +53,7 @@ void main ( void )
 	vec4 diffuseColor = textureGrad( textureAlbedo, uv_base, ddx_uv_base_unmod, ddy_uv_base_unmod );
 	vec4 surfaceColor = textureGrad( textureSurface, uv_base, ddx_uv_base_unmod, ddy_uv_base_unmod );
 	
-	const vec2 uv_scaled = v2f_texcoord0.xy * sys_TilebombScale;
+	const vec2 uv_scaled = uv0.xy * sys_TilebombScale;
 	const ivec2	cell = ivec2(floor(uv_scaled));
 	const vec2	cell_position = uv_scaled - cell;
 	for (int i_celX = -1; i_celX <= 0; ++i_celX)
