@@ -3,6 +3,7 @@
 //	TextureIO.h
 //
 // Definitions for the Bit Pixel Data (BPD) format. 
+// Changelog at bottom.
 //
 //===============================================================================================//
 #ifndef CORE_ASSETS_TEXTURE_IO_H_
@@ -22,7 +23,7 @@ namespace core
 	static const char*	kTextureFormat_Header		= "BPD\0";
 
 	static const int	kTextureFormat_VersionMajor	= 2;
-	static const int	kTextureFormat_VersionMinor	= 2;
+	static const int	kTextureFormat_VersionMinor	= 3;
 
 	static const char*	kTextureFormat_HeadLevel	= "TEX\0";
 	static const char*	kTextureFormat_HeadAnimation= "ANM\0";
@@ -391,34 +392,17 @@ namespace core
 			}
 			return pData;
 		}
-
-		////	getLoaderByExtension(filename) : Returns needed function loader.
-		//// Checks the extension of the filename and returns needed function loader.
-		//// Arguments:
-		////	n_inputfile: Input filename.
-		//// Returns:
-		////	arTextureLoaderFn: Loader. NULL if file type is unrecognized.
-		//static arTextureLoaderFn getLoaderByExtension ( const char* const n_inputfile )
-		//{
-		//	arstring256 fileExt (n_inputfile);
-		//	::core::utils::string::ToFileExtension(fileExt, sizeof(fileExt));
-		//	::core::utils::string::ToLower(fileExt, sizeof(fileExt));
-
-		//	if (fileExt.compare("bpd"))
-		//		return loadBPD;
-		//	if (fileExt.compare("png"))
-		//		return loadPNG;
-		//	if (fileExt.compare("jpg") || fileExt.compare("jpeg"))
-		//		return loadJPG;
-		//	if (fileExt.compare("tga"))
-		//		return loadTGA;
-		//	if (fileExt.compare("bmp"))
-		//		return loadBMP;
-
-		//	return NULL;
-		//}
 	}
 };
 
+//===============================================================================================//
+//
+// BPD version 2.3
+//	• optional mipmap generation
+//	• barebones 3d texture support
+//	• added texture format field to the header
+//	• alpha-blending in mipmap generation
+//
+//===============================================================================================//
 
 #endif//CORE_ASSETS_TEXTURE_IO_H_

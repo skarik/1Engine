@@ -27,6 +27,8 @@ RrPipelineStandardRenderer::RrPipelineStandardRenderer ( void )
 
 RrPipelineStandardRenderer::~RrPipelineStandardRenderer ( void )
 {
+	// TODO: A lot of repeated code. A better way to handle this?
+
 	if (m_lightingCompositeProgram)
 		m_lightingCompositeProgram->RemoveReference();
 
@@ -53,6 +55,21 @@ RrPipelineStandardRenderer::~RrPipelineStandardRenderer ( void )
 
 	if (m_shadowingContactShadowProgram)
 		m_shadowingContactShadowProgram->RemoveReference();
+
+	if (m_bloomDownscaleProgram)
+		m_bloomDownscaleProgram->RemoveReference();
+
+	if (m_bloomBlurProgram)
+		m_bloomBlurProgram->RemoveReference();
+
+	if (m_postprocessBloomProgram)
+		m_postprocessBloomProgram->RemoveReference();
+
+	if (m_postprocessBloomPipeline)
+	{
+		m_postprocessBloomPipeline->destroy(NULL);
+		delete m_postprocessBloomPipeline;
+	}
 }
 
 void RrPipelineStandardRenderer::CullObjects ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world )
@@ -67,6 +84,12 @@ void RrPipelineStandardRenderer::CullObjects ( gpu::GraphicsContext* gfx, const 
 			world->objects[objectIndex]->renderDistance = (output.camera->transform.position - world->objects[objectIndex]->transform.world.position).sqrMagnitude();
 		}
 	}
+}
+
+void RrPipelineStandardRenderer::PostDepth ( gpu::GraphicsContext* gfx, const rrPipelinePostDepthInput& postDepthInput, RrOutputState* state )
+{
+	// Create HZB needed for some effects
+	GenerateHZB(gfx, postDepthInput.combined_depth, postDepthInput.cameraPass, state);
 }
 
 //	GetPostprocessVariant(...) : Helper to cache specific variations of shaders
@@ -123,8 +146,6 @@ static void GetPostprocessVariant (
 	}
 }
 
-#include "renderer/light/RrLight.h"
-
 #include "../.res-1/shaders/deferred_pass/shade_lighting_p.variants.h"
 
 static core::settings::SessionSetting<bool> gsesh_LightingUseDebugBuffers ("rdbg_deferred_gbuffers", false);
@@ -175,80 +196,90 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 			&m_lightingLightingOmniPipeline, &m_lightingLightingOmniProgram);
 	}
 #endif
-	gfx->debugGroupPush("RrPipelineStandardRenderer::CompositeDeferred");
-
-	// Grab output size for the screen quad info
-	auto& output = *state->output_info;
-	rrViewport output_viewport =  output.GetOutputViewport();
-
-	// Allocate a new buffer 
-	gpu::Texture outputLightingComposite;
-	rrRTBufferRequest colorRequest {output_viewport.size, core::gfx::tex::kColorFormatRGBA16F}; 
-	renderer->CreateRenderTexture( colorRequest, &outputLightingComposite );
-
-	// Create render target output
-	rrRenderTarget compositeOutput (&outputLightingComposite);
-	
-	// Set output
-	gfx->setRenderTarget(&compositeOutput.m_renderTarget);
-	// Render the current result to the screen
-	gfx->setViewport(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
-	gfx->setScissor(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
-
-	// Clear color
+	gfx->debugGroupPush("Setup Lights");
+	rrLightSetup lightSetup;
 	{
-		float clearColor[] = {0, 0, 0, 0};
-		gfx->clearColor(clearColor);
-	}
-
-	// Debug output:
-	if (gsesh_LightingUseDebugBuffers)
-	{
-		DrawDebugOutput(gfx, compositeInput, state);
-	}
-	else
-	{
-		// Create HZB needed for some effects
-		GenerateHZB(gfx, compositeInput, state);
-
 		// Render the lighting
-		auto lightSetup = SetupLights(gfx);
+		lightSetup = SetupLights(gfx);
+		
+		// Render shadows now
+		RenderShadows(gfx, compositeInput.deferred_normals, compositeInput.combined_depth, compositeInput.cameraPass, state, &lightSetup);
+	}
+	gfx->debugGroupPop();
 
-		RenderShadows(gfx, compositeInput, state, &lightSetup);
+	gfx->debugGroupPush("RrPipelineStandardRenderer::CompositeDeferred");
+	gpu::Texture outputLightingComposite;
+	{
+		// Grab output size for the screen quad info
+		auto& output = *state->output_info;
+		rrViewport output_viewport =  output.GetOutputViewport();
 
-		outputLightingComposite = RenderLights(gfx, compositeInput, state, &lightSetup, outputLightingComposite);
+		// Allocate a new buffer 
+		rrRTBufferRequest colorRequest {output_viewport.size, core::gfx::tex::kColorFormatRGBA16F}; 
+		renderer->CreateRenderTexture( colorRequest, &outputLightingComposite );
 
-		// Render the forward data
-		if (compositeInput.forward_color)
+		// Clear the new render texture
 		{
-			{ // No depth/stencil test. Always draw.
-				gpu::DepthStencilState ds;
-				ds.depthTestEnabled   = false;
-				ds.depthWriteEnabled  = false;
-				ds.stencilTestEnabled = false;
-				ds.stencilWriteMask   = 0x00;
-				gfx->setDepthStencilState(ds);
+			// Create render target output
+			rrRenderTarget rtLightingOutput (&outputLightingComposite);
+
+			// Set up the output
+			{
+				// Set output
+				gfx->setRenderTarget(&rtLightingOutput.m_renderTarget);
+				// Render the current result to the screen
+				gfx->setViewport(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
+				gfx->setScissor(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
 			}
 
-			// Alpha blend using the destination's alpha channel
-			gpu::BlendState bs;
-			bs.enable = true;
-			bs.src = gpu::kBlendModeInvDstAlpha;
-			bs.dst = gpu::kBlendModeDstAlpha;
-			bs.srcAlpha = gpu::kBlendModeOne;
-			bs.dstAlpha = gpu::kBlendModeOne;
-			bs.opAlpha = gpu::kBlendOpMax;
-			gfx->setBlendState(bs);
+			// Clear to empty black
+			{
+				float clearColor[] = {0, 0, 0, 0};
+				gfx->clearColor(clearColor);
+			}
+		}
 
-			gfx->setPipeline(&renderer->GetScreenQuadCopyPipeline());
-			gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
-			gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
-			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, compositeInput.forward_color);
+		// Debug output:
+		if (gsesh_LightingUseDebugBuffers)
+		{
+			DrawDebugOutput(gfx, compositeInput, state, outputLightingComposite);
+		}
+		else
+		{
+			// Composite lights onto the scene
+			outputLightingComposite = RenderLights(gfx, compositeInput, state, &lightSetup, outputLightingComposite);
 
-			gfx->draw(4, 0);
+			// Render the old forward data
+			if (compositeInput.old_forward_color)
+			{
+				{ // No depth/stencil test. Always draw.
+					gpu::DepthStencilState ds;
+					ds.depthTestEnabled   = false;
+					ds.depthWriteEnabled  = false;
+					ds.stencilTestEnabled = false;
+					ds.stencilWriteMask   = 0x00;
+					gfx->setDepthStencilState(ds);
+				}
+
+				// Alpha blend using the destination's alpha channel
+				gpu::BlendState bs;
+				bs.enable = true;
+				bs.src = gpu::kBlendModeInvDstAlpha;
+				bs.dst = gpu::kBlendModeDstAlpha;
+				bs.srcAlpha = gpu::kBlendModeOne;
+				bs.dstAlpha = gpu::kBlendModeOne;
+				bs.opAlpha = gpu::kBlendOpMax;
+				gfx->setBlendState(bs);
+
+				gfx->setPipeline(&renderer->GetScreenQuadCopyPipeline());
+				gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
+				gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, compositeInput.old_forward_color);
+
+				gfx->draw(4, 0);
+			}
 		}
 	}
-
 	gfx->debugGroupPop();
 
 	return rrCompositeOutput {outputLightingComposite};
@@ -257,8 +288,25 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 void RrPipelineStandardRenderer::DrawDebugOutput (
 	gpu::GraphicsContext* gfx,
 	const rrPipelineCompositeInput& compositeInput,
-	RrOutputState* state)
+	RrOutputState* state,
+	gpu::Texture clearedOutputTexture)
 {
+	// Grab output size for the screen quad info
+	auto& output = *state->output_info;
+	rrViewport output_viewport =  output.GetOutputViewport();
+
+	// Create render target output
+	rrRenderTarget rtLightingOutput (&clearedOutputTexture);
+
+	// Set up the output
+	{
+		// Set output
+		gfx->setRenderTarget(&rtLightingOutput.m_renderTarget);
+		// Render the current result to the screen
+		gfx->setViewport(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
+		gfx->setScissor(output_viewport.corner.x, output_viewport.corner.y, output_viewport.corner.x + output_viewport.size.x, output_viewport.corner.y + output_viewport.size.y);
+	}
+
 	// Set up output state
 	{
 		// No cull. Always draw.
@@ -296,7 +344,8 @@ void RrPipelineStandardRenderer::DrawDebugOutput (
 
 void RrPipelineStandardRenderer::GenerateHZB (
 	gpu::GraphicsContext* gfx,
-	const rrPipelineCompositeInput& gbuffers,
+	gpu::Texture* combined_depth,
+	rrCameraPass* cameraPass,
 	RrOutputState* state)
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument or class field
@@ -335,10 +384,10 @@ void RrPipelineStandardRenderer::GenerateHZB (
 
 	// Set up compute shader
 	gfx->setComputeShader(&m_hzbGenerationProgram->GetShaderPipeline());
-	gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &gbuffers.cameraPass->m_cbuffer);
+	gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
 	gfx->setShaderWriteable(gpu::kShaderStageCs, 0, &rwDepthInfoDownscale4);
 	gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwDepthInfoDownscale16);
-	gfx->setShaderTextureAuto(gpu::kShaderStageCs, 2, gbuffers.combined_depth);
+	gfx->setShaderTextureAuto(gpu::kShaderStageCs, 2, combined_depth);
 	// Render the contact shadows
 	gfx->dispatch(output_viewport.size.x / 4, output_viewport.size.y / 4, 1);
 	// Unbind the UAVs
@@ -356,6 +405,19 @@ void RrPipelineStandardRenderer::GenerateHZB (
 	gfx->debugGroupPop();
 }
 
+rrCompositeOutput RrPipelineStandardRenderer::CompositePostOpaques ( gpu::GraphicsContext* gfx, const rrPipelinePostOpaqueCompositeInput& compositeInput, RrOutputState* state )
+{
+	if (compositeInput.layer != renderer::kRenderLayerWorld)
+	{
+		return RrPipelineStateRenderer::CompositePostOpaques(gfx, compositeInput, state);
+	}
+	else
+	{
+		return RrPipelineStateRenderer::CompositePostOpaques(gfx, compositeInput, state);
+		// TODO: Ambient occlusion, motion blur, and other simple shadowing?
+	}
+}
+
 rrPipelineOutput RrPipelineStandardRenderer::RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) 
 {
 	if (finishInput.layer != renderer::kRenderLayerWorld)
@@ -364,6 +426,27 @@ rrPipelineOutput RrPipelineStandardRenderer::RenderLayerEnd ( gpu::GraphicsConte
 	}
 	else
 	{
-		return RrPipelineStateRenderer::RenderLayerEnd(gfx, finishInput, state);
+		gpu::Texture outputColor = *finishInput.color;
+		
+		// Setup the bloom
+		auto bloomSetup = SetupBloom(gfx, &outputColor, finishInput.cameraPass, state);
+		auto tonemapSetup = SetupTonemap(gfx, &outputColor, state);
+		auto exposureSetup = SetupExposure(gfx, &m_previousFrameOutput, state);
+
+		// Apply the bloom
+		outputColor = ApplyTonemapBloom(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
+
+		// Save & analyze the color
+		SaveAndAnalyzeOutput(gfx, &outputColor, state);
+
+		return rrPipelineOutput{outputColor};
 	}
+}
+
+void RrPipelineStandardRenderer::SaveAndAnalyzeOutput ( gpu::GraphicsContext* gfx, gpu::Texture* final_output_color, RrOutputState* state )
+{
+	// Copy output color to m_previousFrameOutputColor
+	CopyRenderTexture(&m_previousFrameOutput.m_color, final_output_color, gfx, state);
+
+	// Run tonemap prep on the previous frame
 }

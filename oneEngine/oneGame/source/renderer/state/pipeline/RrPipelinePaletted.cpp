@@ -214,12 +214,57 @@ static void GetPostprocess (
 rrCompositeOutput RrPipelinePalettedRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
 {
 	rrCompositeOutput compositeState = RrPipelineStandardRenderer::CompositeDeferred(gfx, compositeInput, state);
+	return compositeState;
+}
 
+//	CompositePostOpaques() : Called when the renderer is done rendering all deferred+forward opaques.
+rrCompositeOutput RrPipelinePalettedRenderer::CompositePostOpaques ( gpu::GraphicsContext* gfx, const rrPipelinePostOpaqueCompositeInput& compositeInput, RrOutputState* state )
+{
+	gpu::Texture outputColor = ApplyOutline(gfx, compositeInput.combined_color, compositeInput.combined_depth, compositeInput.cameraPass, state);
+	return rrCompositeOutput{outputColor};
+}
+
+//	RenderLayerEnd() : Called when the renderer finishes a given layer.
+rrPipelineOutput RrPipelinePalettedRenderer::RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state )
+{
+	if ( finishInput.layer != renderer::kRenderLayerWorld )
+	{
+		return RrPipelineStandardRenderer::RenderLayerEnd(gfx, finishInput, state);
+	}
+	else
+	{
+		gpu::Texture outputColor = *finishInput.color;
+		
+		// Setup the bloom
+		auto bloomSetup = SetupBloom(gfx, &outputColor, finishInput.cameraPass, state);
+		auto tonemapSetup = SetupTonemap(gfx, &outputColor, state);
+		auto exposureSetup = SetupExposure(gfx, &m_previousFrameOutput, state);
+
+		// Before bloom, do stylistic effect
+		outputColor = ApplyPalettize(gfx, &outputColor, finishInput.cameraPass, state);
+
+		// Apply the bloom
+		outputColor = ApplyTonemapBloom(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
+
+		// Save & analyze the color
+		SaveAndAnalyzeOutput(gfx, &outputColor, state);
+
+		return rrPipelineOutput{outputColor};
+	}
+}
+
+gpu::Texture RrPipelinePalettedRenderer::ApplyOutline (
+		gpu::GraphicsContext* gfx,
+		gpu::Texture* color,
+		gpu::Texture* depth,
+		rrCameraPass* cameraPass,
+		RrOutputState* state )
+{
 	auto renderer = RrRenderer::Active; // TODO: make argument
-	auto options = (RrPipelinePalettedOptions*)m_options;
-
+	
 	const bool bEnableOutlines = true;
-	const bool bEnablePalettize = true;
+
+	gpu::Texture result_color = *color;
 
 	// Create samplers:
 	gpu::Sampler linearSampler;
@@ -246,11 +291,6 @@ rrCompositeOutput RrPipelinePalettedRenderer::CompositeDeferred ( gpu::GraphicsC
 		true,
 		&m_postprocessOutlinePipeline,
 		&m_postprocessOutlineProgram);
-	// Grab palettize shader
-	GetPostprocess(renderer, "shaders/deferred_pass/shade_common_vv.spv", "shaders/postprocess/palettize_p.spv",
-		true,
-		&m_postprocessPalettizePipeline,
-		&m_postprocessPalettizeProgram);
 
 	// Grab output size for the screen quad info
 	auto& output = *state->output_info;
@@ -306,19 +346,69 @@ rrCompositeOutput RrPipelinePalettedRenderer::CompositeDeferred ( gpu::GraphicsC
 
 		gfx->setPipeline(m_postprocessOutlinePipeline);
 
-		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, &compositeState.color);
-		gfx->setShaderTexture(gpu::kShaderStagePs, 1, compositeInput.combined_depth);
+		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, color);
+		gfx->setShaderTexture(gpu::kShaderStagePs, 1, depth);
 		gfx->setShaderSampler(gpu::kShaderStagePs, 1, &linearSampler);
-		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &compositeInput.cameraPass->m_cbuffer);
-		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &compositeInput.cameraPass->m_cbuffer);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
 		gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
 		gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
 
 		gfx->draw(4, 0);
 
 		// Save the current status
-		compositeState.color = outlineResult;
+		result_color = outlineResult;
 	}
+
+	// done with samplers
+	linearSampler.destroy(NULL);
+	pointSampler.destroy(NULL);
+
+	return result_color;
+}
+
+gpu::Texture RrPipelinePalettedRenderer::ApplyPalettize (
+	gpu::GraphicsContext* gfx,
+	gpu::Texture* color,
+	rrCameraPass* cameraPass,
+	RrOutputState* state )
+{
+	auto renderer = RrRenderer::Active; // TODO: make argument
+	auto options = (RrPipelinePalettedOptions*)m_options;
+
+	const bool bEnablePalettize = true;
+
+	gpu::Texture result_color = *color;
+
+	// Create samplers:
+	gpu::Sampler linearSampler;
+	linearSampler.create(
+		NULL,
+		gpu::SamplerCreationDescription()
+			.MagFilter(core::gfx::tex::kSamplingLinear)
+			.MinFilter(core::gfx::tex::kSamplingLinear)
+			.WrapmodeX(core::gfx::tex::kWrappingClamp)
+			.WrapmodeY(core::gfx::tex::kWrappingClamp)
+	);
+	gpu::Sampler pointSampler;
+	pointSampler.create(
+		NULL,
+		gpu::SamplerCreationDescription()
+			.MagFilter(core::gfx::tex::kSamplingPoint)
+			.MinFilter(core::gfx::tex::kSamplingPoint)
+			.WrapmodeX(core::gfx::tex::kWrappingClamp)
+			.WrapmodeY(core::gfx::tex::kWrappingClamp)
+	);
+
+	// Grab palettize shader
+	GetPostprocess(renderer, "shaders/deferred_pass/shade_common_vv.spv", "shaders/postprocess/palettize_p.spv",
+		true,
+		&m_postprocessPalettizePipeline,
+		&m_postprocessPalettizeProgram);
+
+	// Grab output size for the screen quad info
+	auto& output = *state->output_info;
+	rrViewport output_viewport =  output.GetOutputViewport();
 
 	if (bEnablePalettize)
 	{
@@ -370,24 +460,24 @@ rrCompositeOutput RrPipelinePalettedRenderer::CompositeDeferred ( gpu::GraphicsC
 
 		gfx->setPipeline(m_postprocessPalettizePipeline);
 
-		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, &compositeState.color);
-		gfx->setShaderTexture(gpu::kShaderStagePs, 1, compositeInput.combined_depth, &linearSampler);
+		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, color);
+		//gfx->setShaderTexture(gpu::kShaderStagePs, 1, compositeInput.combined_depth, &linearSampler);
 		gfx->setShaderTexture(gpu::kShaderStagePs, 2, &options->m_paletteLUT_Primary, &pointSampler);
 		gfx->setShaderTexture(gpu::kShaderStagePs, 3, &options->m_paletteLUT_Secondary, &pointSampler);
-		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &compositeInput.cameraPass->m_cbuffer);
-		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &compositeInput.cameraPass->m_cbuffer);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
 		gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
 		gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
 
 		gfx->draw(4, 0);
 
 		// Save the current status
-		compositeState.color = outlineResult;
+		result_color = outlineResult;
 	}
 
 	// done with samplers
 	linearSampler.destroy(NULL);
 	pointSampler.destroy(NULL);
 
-	return compositeState;
+	return result_color;
 }

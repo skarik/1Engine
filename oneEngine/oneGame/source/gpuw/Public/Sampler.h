@@ -53,6 +53,13 @@ namespace gpu
 		}
 
 		SamplerCreationDescription&
+								MipFilter ( const core::gfx::tex::arSamplingFilter filter )
+		{
+			mipmapMode = filter;
+			return *this;
+		}
+
+		SamplerCreationDescription&
 								WrapmodeX ( const core::gfx::tex::arWrappingType wrapmode )
 		{
 			wrapmodeX = wrapmode;

@@ -24,9 +24,9 @@ void RrPipelineStandardRenderer::DrawWithPipelineAndGBuffers (
 	gfx->setShaderTextureAuto(gpu::kShaderStagePs, 2, compositeInput.deferred_surface);
 	gfx->setShaderTextureAuto(gpu::kShaderStagePs, 3, compositeInput.deferred_emissive);
 	gfx->setShaderTextureAuto(gpu::kShaderStagePs, 4, compositeInput.combined_depth);
-	if (compositeInput.forward_color != nullptr)
+	if (compositeInput.old_forward_color != nullptr)
 	{
-		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 5, compositeInput.forward_color);
+		gfx->setShaderTextureAuto(gpu::kShaderStagePs, 5, compositeInput.old_forward_color);
 	}
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &compositeInput.cameraPass->m_cbuffer);
 	gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &compositeInput.cameraPass->m_cbuffer);
@@ -36,3 +36,15 @@ void RrPipelineStandardRenderer::DrawWithPipelineAndGBuffers (
 	gfx->setShaderSBuffer(gpu::kShaderStagePs, renderer::SBUFFER_USER0, sbuffer);
 	renderCall(renderer, gfx);
 };
+
+void RrPipelineStandardRenderer::CopyRenderTexture (
+	gpu::Texture* output_copy,
+	gpu::Texture* input_texture,
+	gpu::GraphicsContext* gfx,
+	RrOutputState* state )
+{
+	auto renderer = RrRenderer::Active; // TODO: make argument or class variable
+
+	// TODO: probably need something on gfx, ie
+	// gfx->copyTexture( output_copy, input_texture );
+}

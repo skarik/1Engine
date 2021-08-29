@@ -281,11 +281,34 @@ bool core::BpdWriter::writeLevelData ( void )
 	CMappedBinaryFile* mappedfile = (CMappedBinaryFile*)m_file;
 
 	ARCORE_ASSERT(rawImage != nullptr);
+	ARCORE_ASSERT(info.width > 0 && info.height > 0 && info.depth > 0);
 
 	// Level stopper: defines the smallest mipmap size. Set to 3 to stop at 16x16. Set to 4 for 32x32. -1 for 1x1.
 	const int kLevelStopper = 3;
 	uint16_t level_count = (!m_generateMipmaps) ? std::max<int>( 1, info.levels ) : (uint16_t) std::max<int>( 1, math::log2( std::min<uint>(info.width, info.height) ) - kLevelStopper ); 
 	info.levels = (uint8)level_count;
+
+	// If generating mipmaps, check the bitmap alpha values to see if we are alphamasked or not
+	bool bAlphaMasked = true;
+	if (m_generateMipmaps && rawImageFormat == IMG_FORMAT_RGBA8)
+	{
+		gfx::tex::vecRGBA8* rawImageRgba = static_cast<gfx::tex::vecRGBA8*>(rawImage);
+		for ( uint x = 0; x < info.width; ++x )
+		{
+			for ( uint y = 0; y < info.height; ++y )
+			{
+				for ( uint z = 0; z < info.depth; ++z )
+				{
+					gfx::tex::vecRGBA8& pixel = rawImageRgba[x + y * info.width + z * info.width * info.height];
+					if ( pixel.a > 1 && pixel.a < 254 )
+					{
+						bAlphaMasked = false;
+						break;
+					}
+				}
+			}
+		}
+	}
 
 	// Resize levels
 	m_levels.resize(level_count);
@@ -310,7 +333,8 @@ bool core::BpdWriter::writeLevelData ( void )
 
 		if (m_generateMipmaps)
 		{
-			uint32_t	aggregate_r, aggregate_g, aggregate_b, aggregate_a;
+			//uint32_t	aggregate_r, aggregate_g, aggregate_b, aggregate_a;
+			double		aggregate_r, aggregate_g, aggregate_b, aggregate_a, aggregate_weight;
 			uint32_t	pixelIndex;
 
 			// Downsample the image
@@ -319,7 +343,7 @@ bool core::BpdWriter::writeLevelData ( void )
 				for ( uint y = 0; y < t_height; y += 1 )
 				{
 					// Reset aggregates
-					aggregate_r = 0; aggregate_g = 0; aggregate_b = 0; aggregate_a = 0;
+					aggregate_r = 0; aggregate_g = 0; aggregate_b = 0; aggregate_a = 0; aggregate_weight = 0;
 					// Collect the colors
 					for ( uint sx = 0; sx < t_blocks; sx += 1 )
 					{
@@ -329,9 +353,15 @@ bool core::BpdWriter::writeLevelData ( void )
 							if (rawImageFormat == IMG_FORMAT_RGBA8)
 							{
 								gfx::tex::vecRGBA8* rawImageRgba = static_cast<gfx::tex::vecRGBA8*>(rawImage);
-								aggregate_r += rawImageRgba[pixelIndex].r;
-								aggregate_g += rawImageRgba[pixelIndex].g;
-								aggregate_b += rawImageRgba[pixelIndex].b;
+								const double weight = bAlphaMasked
+									// If alphamasked, the weight is either 0 or 1
+									? (rawImageRgba[pixelIndex].a < 128 ? 0.0 : 1.0)
+									// If alphablended, then color is premultiplied by the alpha
+									: rawImageRgba[pixelIndex].a / 255.0;
+								aggregate_weight += weight;
+								aggregate_r += rawImageRgba[pixelIndex].r * weight;
+								aggregate_g += rawImageRgba[pixelIndex].g * weight;
+								aggregate_b += rawImageRgba[pixelIndex].b * weight;
 								aggregate_a += rawImageRgba[pixelIndex].a;
 							}
 							else if (rawImageFormat == IMG_FORMAT_RGB8)
@@ -368,35 +398,49 @@ bool core::BpdWriter::writeLevelData ( void )
 
 					// Average the colors
 					const uint32_t block_sz = t_blocks * t_blocks;
-					aggregate_r /= block_sz;
-					aggregate_g /= block_sz;
-					aggregate_b /= block_sz;
-					aggregate_a /= block_sz;
+					if (rawImageFormat == IMG_FORMAT_RGBA8)
+					{
+						aggregate_r /= aggregate_weight;
+						aggregate_g /= aggregate_weight;
+						aggregate_b /= aggregate_weight;
+						aggregate_a /= block_sz;
+						if (bAlphaMasked)
+						{
+							aggregate_a = (aggregate_a < 127.0) ? 0.0 : 255.0;
+						}
+					}
+					else
+					{
+						aggregate_r /= block_sz;
+						aggregate_g /= block_sz;
+						aggregate_b /= block_sz;
+						aggregate_a /= block_sz;
+					}
 
 					// Output into the mipmap buffer
 					const uint32_t outputIndx = x + y * t_width;
 					if (rawImageFormat == IMG_FORMAT_RGBA8)
 					{
 						gfx::tex::vecRGBA8* mipmapBufferRgba = static_cast<gfx::tex::vecRGBA8*>((void*)mipmapBuffer);
-						mipmapBufferRgba[outputIndx].r = (uint8_t)std::min<uint64_t>( aggregate_r, 255 );
-						mipmapBufferRgba[outputIndx].g = (uint8_t)std::min<uint64_t>( aggregate_g, 255 );
-						mipmapBufferRgba[outputIndx].b = (uint8_t)std::min<uint64_t>( aggregate_b, 255 );
-						mipmapBufferRgba[outputIndx].a = (uint8_t)std::min<uint64_t>( aggregate_a, 255 );
+						mipmapBufferRgba[outputIndx].r = (uint8_t)std::min<uint64_t>( math::round(aggregate_r), 255 );
+						mipmapBufferRgba[outputIndx].g = (uint8_t)std::min<uint64_t>( math::round(aggregate_g), 255 );
+						mipmapBufferRgba[outputIndx].b = (uint8_t)std::min<uint64_t>( math::round(aggregate_b), 255 );
+						mipmapBufferRgba[outputIndx].a = (uint8_t)std::min<uint64_t>( math::round(aggregate_a), 255 );
 					}
 					else if (rawImageFormat == IMG_FORMAT_RGB8)
 					{
 						gfx::tex::vecRGB8* mipmapBufferRgba = static_cast<gfx::tex::vecRGB8*>((void*)mipmapBuffer);
-						mipmapBufferRgba[outputIndx].r = (uint8_t)std::min<uint64_t>( aggregate_r, 255 );
-						mipmapBufferRgba[outputIndx].g = (uint8_t)std::min<uint64_t>( aggregate_g, 255 );
-						mipmapBufferRgba[outputIndx].b = (uint8_t)std::min<uint64_t>( aggregate_b, 255 );
+						mipmapBufferRgba[outputIndx].r = (uint8_t)std::min<uint64_t>( math::round(aggregate_r), 255 );
+						mipmapBufferRgba[outputIndx].g = (uint8_t)std::min<uint64_t>( math::round(aggregate_g), 255 );
+						mipmapBufferRgba[outputIndx].b = (uint8_t)std::min<uint64_t>( math::round(aggregate_b), 255 );
 					}
 					else if (rawImageFormat == IMG_FORMAT_PALLETTE)
 					{
 						gfx::tex::vecXY8* mipmapBufferXy = static_cast<gfx::tex::vecXY8*>((void*)mipmapBuffer);
 						if (aggregate_a >= 127)
 						{
-							mipmapBufferXy[outputIndx].x = (uint8_t)std::min<uint64_t>( aggregate_r, 255 );
-							mipmapBufferXy[outputIndx].y = (uint8_t)std::min<uint64_t>( aggregate_g, 255 );
+							mipmapBufferXy[outputIndx].x = (uint8_t)std::min<uint64_t>( math::round(aggregate_r), 255 );
+							mipmapBufferXy[outputIndx].y = (uint8_t)std::min<uint64_t>( math::round(aggregate_g), 255 );
 						}
 						else
 						{

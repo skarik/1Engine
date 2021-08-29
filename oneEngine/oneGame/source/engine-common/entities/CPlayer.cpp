@@ -160,7 +160,7 @@ void*	CPlayer::camDefault ( void )
 
 	// Set the final camera rotation and view angle
 	pCamera->transform.rotation.Euler( vCameraRotation );
-	pCamera->fieldOfView = 90.0F;
+	pCamera->fieldOfView = 75.0F;
 
 	return NULL;
 }

@@ -101,7 +101,9 @@ RrPipelineStandardRenderer::rrLightSetup RrPipelineStandardRenderer::SetupLights
 
 void RrPipelineStandardRenderer::RenderShadows(
 	gpu::GraphicsContext* gfx,
-	const rrPipelineCompositeInput& gbuffers,
+	gpu::Texture* deferred_normals,
+	gpu::Texture* combined_depth,
+	rrCameraPass* cameraPass,
 	RrOutputState* state,
 	rrLightSetup* lightSetup)
 {
@@ -300,13 +302,13 @@ void RrPipelineStandardRenderer::RenderShadows(
 
 					// Set up compute shader
 					gfx->setComputeShader(&m_shadowingProjectionProgram->GetShaderPipeline());
-					gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &gbuffers.cameraPass->m_cbuffer);
+					gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
 					gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_USER0, &cameraPasses.m_cbuffer);
 					gfx->setShaderSBuffer(gpu::kShaderStageCs, renderer::SBUFFER_USER0, lightSetup->lightParameterBuffer);
 					gfx->setShaderWriteable(gpu::kShaderStageCs, 0, &rwShadowMask);
-					gfx->setShaderTexture(gpu::kShaderStageCs, 1, gbuffers.combined_depth);
+					gfx->setShaderTexture(gpu::kShaderStageCs, 1, combined_depth);
 					gfx->setShaderTexture(gpu::kShaderStageCs, 2, &shadowMap);
-					gfx->setShaderTexture(gpu::kShaderStageCs, 3, gbuffers.deferred_normals);
+					gfx->setShaderTexture(gpu::kShaderStageCs, 3, deferred_normals);
 					gfx->setShaderSampler(gpu::kShaderStageCs, 1, &pointSampler);
 					gfx->setShaderSampler(gpu::kShaderStageCs, 2, &linearSampler);
 					gfx->setShaderSampler(gpu::kShaderStageCs, 3, &pointSampler);
@@ -343,13 +345,13 @@ void RrPipelineStandardRenderer::RenderShadows(
 
 				// Set up compute shader
 				gfx->setComputeShader(&m_shadowingContactShadowProgram->GetShaderPipeline());
-				gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &gbuffers.cameraPass->m_cbuffer);
+				gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
 				gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_USER0, &cbuffer);
 				gfx->setShaderSBuffer(gpu::kShaderStageCs, renderer::SBUFFER_USER0, lightSetup->lightParameterBuffer);
 				gfx->setShaderWriteable(gpu::kShaderStageCs, 0, &rwShadowMask);
-				gfx->setShaderTexture(gpu::kShaderStageCs, 1, gbuffers.combined_depth);
+				gfx->setShaderTexture(gpu::kShaderStageCs, 1, combined_depth);
 				gfx->setShaderTexture(gpu::kShaderStageCs, 2, &hzb_16);
-				gfx->setShaderTexture(gpu::kShaderStageCs, 3, gbuffers.deferred_normals);
+				gfx->setShaderTexture(gpu::kShaderStageCs, 3, deferred_normals);
 				// Render the contact shadows
 				gfx->dispatch(output_viewport.size.x / 4, output_viewport.size.y / 4, 1);
 				// Unbind the UAV

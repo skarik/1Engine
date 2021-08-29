@@ -870,108 +870,141 @@ Render_Groups:
 		}
 		gfx->debugGroupPop();
 
-		gfx->debugGroupPush("Deferred Opaques");
+		// Do post-depth work now
+		if (state->pipeline_renderer != nullptr)
+		{
+			rrPipelinePostDepthInput input;
+
+			input.layer = (renderer::rrRenderLayer)iLayer;
+			input.combined_depth = &outputDepth;
+			input.cameraPass = cameraPass;
+
+			state->pipeline_renderer->PostDepth(gfx, input, state);
+		}
+
+		// Request a normals buffer, since both deferreds & forwards need to render their normals out.
+		gpu::Texture outputNormals;
+		{
+			rrRTBufferRequest normalsRequest {cameraPass->m_viewport.size, core::gfx::tex::kColorFormatRG32UI}; // Normals + packed material info
+			CreateRenderTexture( normalsRequest, &outputNormals );
+		}
+
 		if (!l_4rGroup[iLayer].m_4rDeferred.empty())
 		{
 			// Allocated needed texture buffers for rendering
-			static constexpr int kColorAttachmentCount = 4;
-			static const core::gfx::tex::arColorFormat kColorAttachments[kColorAttachmentCount] = {
+			static constexpr int kColorGBufferCount = 3;
+			static const core::gfx::tex::arColorFormat kColorAttachments[kColorGBufferCount] = {
 				core::gfx::tex::kColorFormatRGBA8,
-				core::gfx::tex::kColorFormatRG32UI, // Normals + packed material info
 				core::gfx::tex::kColorFormatRGBA8,
 				core::gfx::tex::kColorFormatRGBA8};
+			gpu::Texture deferredGbuffers [kColorGBufferCount];
+			{
+				rrMRTBufferRequest colorsRequest {cameraPass->m_viewport.size, kColorGBufferCount, kColorAttachments};
+				CreateRenderTextures( colorsRequest, deferredGbuffers );
+			}
 			
-			gpu::Texture outputGbuffers [kColorAttachmentCount];
-			{
-				rrMRTBufferRequest colorsRequest {cameraPass->m_viewport.size, kColorAttachmentCount, kColorAttachments};
-				CreateRenderTextures( colorsRequest, outputGbuffers );
-			}
+			// Set up the layout for the GBuffers
+			static constexpr int kColorOutputCount = 4;
+			gpu::Texture outputGbuffers [kColorOutputCount] = {
+				deferredGbuffers[0],
+				outputNormals,
+				deferredGbuffers[1],
+				deferredGbuffers[2]
+			};
 
-			// Set up output
-			rrRenderTarget deferredTarget ( &outputDepth, &outputStencil, outputGbuffers, kColorAttachmentCount );
-			gfx->setRenderTarget(&deferredTarget.m_renderTarget);
+			gfx->debugGroupPush("Deferred Opaques");
+			{
+				// Set up output
+				rrRenderTarget deferredTarget ( &outputDepth, &outputStencil, outputGbuffers, kColorOutputCount );
+				gfx->setRenderTarget(&deferredTarget.m_renderTarget);
 			
-			// Set color draw for deferred mode.
-			{
-				gpu::BlendState bs;
-				bs.channelMask = 0xFF; // Enable color masking.
-				bs.enable = false;
-				gfx->setBlendState(bs);
-			}
+				// Set color draw for deferred mode.
+				{
+					gpu::BlendState bs;
+					bs.channelMask = 0xFF; // Enable color masking.
+					bs.enable = false;
+					gfx->setBlendState(bs);
+				}
 
-			// Set up viewport
-			{
-				gfx->setViewport(
-					cameraPass->m_viewport.corner.x,
-					cameraPass->m_viewport.corner.y,
-					cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
-					cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
-				gfx->setScissor(
-					cameraPass->m_viewport.corner.x,
-					cameraPass->m_viewport.corner.y,
-					cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
-					cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
-			}
+				// Set up viewport
+				{
+					gfx->setViewport(
+						cameraPass->m_viewport.corner.x,
+						cameraPass->m_viewport.corner.y,
+						cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
+						cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
+					gfx->setScissor(
+						cameraPass->m_viewport.corner.x,
+						cameraPass->m_viewport.corner.y,
+						cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
+						cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
+				}
 
-			// Clear color on MRT now
-			float clearColor[] = {0, 0, 0, 0};
-			gfx->clearColorAll(clearColor);
+				// Clear color on MRT now
+				float clearColor[] = {0, 0, 0, 0};
+				gfx->clearColorAll(clearColor);
 
-			// Set up default depth-equal for lazy objects
-			{
-				gpu::DepthStencilState ds;
-				ds.depthTestEnabled   = true;
-				ds.depthWriteEnabled  = false;
-				ds.depthFunc = gpu::kCompareOpEqual;
-				ds.stencilTestEnabled = false;
-				gfx->setDepthStencilState(ds);
-			}
+				// Set up default depth-equal for lazy objects
+				{
+					gpu::DepthStencilState ds;
+					ds.depthTestEnabled   = true;
+					ds.depthWriteEnabled  = false;
+					ds.depthFunc = gpu::kCompareOpEqual;
+					ds.stencilTestEnabled = false;
+					gfx->setDepthStencilState(ds);
+				}
 
-			// Do the deferred pass:
-			for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rDeferred.size(); ++iObject)
-			{
-				const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rDeferred[iObject];
-				RrRenderObject* renderable = l_4r.obj;
+				// Do the deferred pass:
+				for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rDeferred.size(); ++iObject)
+				{
+					const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rDeferred[iObject];
+					RrRenderObject* renderable = l_4r.obj;
 
-				RrRenderObject::rrRenderParams params;
-				params.pass = l_4r.pass;
-				params.pass_type = kPassTypeDeferred;
-				params.cbuf_perCamera = &cameraPass->m_cbuffer;
-				params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;
-				params.cbuf_perPass = nullptr;
-				params.context_graphics = gfx;
+					RrRenderObject::rrRenderParams params;
+					params.pass = l_4r.pass;
+					params.pass_type = kPassTypeDeferred;
+					params.cbuf_perCamera = &cameraPass->m_cbuffer;
+					params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;
+					params.cbuf_perPass = nullptr;
+					params.context_graphics = gfx;
 			
-				ARCORE_ASSERT(params.context_graphics != nullptr);
-				renderable->Render(&params);
+					ARCORE_ASSERT(params.context_graphics != nullptr);
+					renderable->Render(&params);
+				}
 			}
+			gfx->debugGroupPop();
 
-			// Run a composite pass
+			// Run a composite pass. This often includes partial post-processing and other inputs
 			if (state->pipeline_renderer != nullptr)
 			{
 				rrPipelineCompositeInput input;
 
+				input.layer = (renderer::rrRenderLayer)iLayer;
 				input.deferred_albedo = &outputGbuffers[0];
 				input.deferred_normals = &outputGbuffers[1];
 				input.deferred_surface = &outputGbuffers[2];
 				input.deferred_emissive = &outputGbuffers[3];
 				input.combined_depth = &outputDepth;
-				input.forward_color = &outputColor;
+				input.old_forward_color = &outputColor;
 				input.cameraPass = cameraPass;
-
-				// Deferred composites directly on top of the previously rendered output.
-				//input.output_color = &outputColor;
 
 				rrCompositeOutput output = state->pipeline_renderer->CompositeDeferred(gfx, input, state);
 				outputColor = output.color;
 			}
 		}
-		gfx->debugGroupPop();
 
-		gfx->debugGroupPush("Forward Pass");
+		if (!l_4rGroup[iLayer].m_4rForward.empty())
 		{
+			// Set up the layout for the GBuffer forward pass
+			static constexpr int kColorOutputCount = 2;
+			gpu::Texture outputGbuffers [kColorOutputCount] = {
+				outputColor,
+				outputNormals,
+			};
+
 			// Set up output
-			rrRenderTarget forwardTarget ( &outputDepth, &outputStencil, &outputColor );
-			gfx->setRenderTarget(&forwardTarget.m_renderTarget); // TODO: Binding buffers at the right time.
+			rrRenderTarget forwardOpaqueTarget ( &outputDepth, &outputStencil, outputGbuffers, kColorOutputCount );
+			gfx->setRenderTarget(&forwardOpaqueTarget.m_renderTarget); // TODO: Binding buffers at the right time.
 
 			// Set up color draw for forward mode. Draw normally.
 			{
@@ -1024,6 +1057,53 @@ Render_Groups:
 				renderable->Render(&params);
 			}
 			gfx->debugGroupPop();
+		}
+
+		// Do post-opaque work
+		if (!l_4rGroup[iLayer].m_4rDepthPrepass.empty())
+		{
+			if (state->pipeline_renderer != nullptr)
+			{
+				rrPipelinePostOpaqueCompositeInput input;
+
+				input.layer = (renderer::rrRenderLayer)iLayer;
+				input.combined_color = &outputColor;
+				input.combined_normals = &outputNormals;
+				input.combined_depth = &outputDepth;
+				input.cameraPass = cameraPass;
+
+				rrCompositeOutput output = state->pipeline_renderer->CompositePostOpaques(gfx, input, state);
+				outputColor = output.color;
+			}
+		}
+
+		if (!l_4rGroup[iLayer].m_4rForwardTranslucent.empty())
+		{
+			// Set up output
+			rrRenderTarget forwardTranslucentTarget ( &outputDepth, &outputStencil, &outputColor );
+			gfx->setRenderTarget(&forwardTranslucentTarget.m_renderTarget); // TODO: Binding buffers at the right time.
+
+			// Set up color draw for forward mode. Draw normally.
+			{
+				gpu::BlendState bs;
+				bs.channelMask = 0xFF; // Enable color masking.
+				bs.enable = false;
+				gfx->setBlendState(bs);
+			}
+
+			// Set up viewport
+			{
+				gfx->setViewport(
+					cameraPass->m_viewport.corner.x,
+					cameraPass->m_viewport.corner.y,
+					cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
+					cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
+				gfx->setScissor(
+					cameraPass->m_viewport.corner.x,
+					cameraPass->m_viewport.corner.y,
+					cameraPass->m_viewport.corner.x + cameraPass->m_viewport.size.x,
+					cameraPass->m_viewport.corner.y + cameraPass->m_viewport.size.y );
+			}
 
 			gfx->debugGroupPush("Forward Translucents");
 			// Set default less-than-equal depth test
@@ -1036,7 +1116,7 @@ Render_Groups:
 				gfx->setDepthStencilState(ds);
 			}
 
-			// Do the forward translucent pass:
+			// Do the pre-multiplied forward translucent pass:
 			for (size_t iObject = 0; iObject < l_4rGroup[iLayer].m_4rForwardTranslucent.size(); ++iObject)
 			{
 				const rrRenderRequest&  l_4r = l_4rGroup[iLayer].m_4rForwardTranslucent[iObject];
@@ -1055,7 +1135,6 @@ Render_Groups:
 			}
 			gfx->debugGroupPop();
 		}
-		gfx->debugGroupPop();
 
 		// finish off the layer
 		if (state->pipeline_renderer != nullptr)
@@ -1065,6 +1144,7 @@ Render_Groups:
 			input.layer = (renderer::rrRenderLayer)iLayer;
 			input.color = &outputColor;
 			input.depth = &outputDepth;
+			input.cameraPass = cameraPass;
 
 			rrPipelineOutput output = state->pipeline_renderer->RenderLayerEnd(gfx, input, state);
 			outputColor = output.color;

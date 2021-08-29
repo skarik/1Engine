@@ -20,6 +20,7 @@
 #include "renderer/texture/RrTexture3D.h"
 #include "renderer/texture/RrTextureCube.h"
 #include "renderer/material/RrShaderProgram.h"
+#include "renderer/camera/RrCamera.h"
 
 #include "renderer/logic/model/RrCModel.h"
 #include "renderer/object/mesh/Mesh.h"
@@ -86,6 +87,7 @@ void scenePalette3DTest0::LoadScene ( void )
 		gpu::SamplerCreationDescription pointFilter;
 		pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
 		pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+		pointFilter.mipmapMode = core::gfx::tex::kSamplingPoint;
 		pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
 		pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
 		pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
@@ -167,6 +169,7 @@ void scenePalette3DTest0::LoadScene ( void )
 			gpu::SamplerCreationDescription pointFilter;
 			pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
 			pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+			pointFilter.mipmapMode = core::gfx::tex::kSamplingPoint;
 			pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
 			pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
 			pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
@@ -244,6 +247,7 @@ void scenePalette3DTest0::LoadScene ( void )
 			gpu::SamplerCreationDescription pointFilter;
 			pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
 			pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+			pointFilter.mipmapMode = core::gfx::tex::kSamplingPoint;
 			pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
 			pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
 			pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
@@ -281,6 +285,7 @@ void scenePalette3DTest0::LoadScene ( void )
 			gpu::SamplerCreationDescription pointFilter;
 			pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
 			pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+			pointFilter.mipmapMode = core::gfx::tex::kSamplingPoint;
 			pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
 			pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
 			pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
@@ -341,6 +346,7 @@ void scenePalette3DTest0::LoadScene ( void )
 		gpu::SamplerCreationDescription pointFilter;
 		pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
 		pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+		pointFilter.mipmapMode = core::gfx::tex::kSamplingPoint;
 		foliage->PassAccess(0).setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
 		foliage->PassAccess(0).setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
 		foliage->PassAccess(0).setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
@@ -348,7 +354,7 @@ void scenePalette3DTest0::LoadScene ( void )
 
 		auto AddClump = [foliage](const Vector3f& position, const int count, const Vector2f& radius)
 		{
-			for (uint i = 0; i < count; ++i)
+			for (int i = 0; i < count; ++i)
 			{
 				grInstancedGrassInfo grass;
 				grass.color = Vector3f(1.0F, 1.0F, 1.0F);
@@ -610,6 +616,98 @@ void scenePalette3DTest0::LoadScene ( void )
 		gpu::SamplerCreationDescription pointFilter;
 		pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
 		pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+		pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
+		pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
+		pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
+		pass.setSampler(rrTextureSlot::TEX_OVERLAY, &pointFilter);
+
+		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/deferred_env/simple_vv.spv", "shaders/deferred_env/simple_p.spv"}) );
+		renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+												renderer::shader::Location::kUV0,
+												renderer::shader::Location::kColor,
+												renderer::shader::Location::kNormal,
+												renderer::shader::Location::kTangent,
+												renderer::shader::Location::kBinormal};
+		pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
+		pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+
+		// Give initial pass
+		for (int i = 0; i < model->GetMeshCount(); ++i)
+		{
+			model->GetMesh(i)->PassInitWithInput(0, &pass);
+		}
+
+	} loadScreen->loadStep();
+
+	// Add a ground chicken!
+	{
+		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/fauna/Chicken_2_posed"}, NULL);
+		model->transform.position = Vector3f(1.1F, -1.2F, 0.43F);
+		model->transform.scale = Vector3f(1, 1, 1);
+		model->transform.rotation = Rotator(Vector3f(0, 0, 75));
+
+		// Use a default material
+		RrPass pass;
+		pass.utilSetupAsDefault();
+		pass.m_type = kPassTypeDeferred;
+		pass.m_alphaMode = renderer::kAlphaModeNone;
+		pass.m_cullMode = gpu::kCullModeNone;
+		pass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+		pass.setTexture( TEX_DIFFUSE, RrTexture::Load("textures/fauna/chimken_256.png") );
+		pass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
+		pass.setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureSurfaceM0) );
+		pass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
+
+		gpu::SamplerCreationDescription pointFilter;
+		pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
+		pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+		pointFilter.mipmapMode = core::gfx::tex::kSamplingPoint;
+		pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
+		pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
+		pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
+		pass.setSampler(rrTextureSlot::TEX_OVERLAY, &pointFilter);
+
+		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/deferred_env/simple_vv.spv", "shaders/deferred_env/simple_p.spv"}) );
+		renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+												renderer::shader::Location::kUV0,
+												renderer::shader::Location::kColor,
+												renderer::shader::Location::kNormal,
+												renderer::shader::Location::kTangent,
+												renderer::shader::Location::kBinormal};
+		pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
+		pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+
+		// Give initial pass
+		for (int i = 0; i < model->GetMeshCount(); ++i)
+		{
+			model->GetMesh(i)->PassInitWithInput(0, &pass);
+		}
+
+	} loadScreen->loadStep();
+
+	// Add a rock chicken!
+	{
+		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/fauna/Chicken_2_posed"}, NULL);
+		model->transform.position = Vector3f(2.52F, 1.24F, 1.68F);
+		model->transform.scale = Vector3f(1, 1, 1);
+		model->transform.rotation = Rotator(Vector3f(0, 0, 145));
+
+		// Use a default material
+		RrPass pass;
+		pass.utilSetupAsDefault();
+		pass.m_type = kPassTypeDeferred;
+		pass.m_alphaMode = renderer::kAlphaModeNone;
+		pass.m_cullMode = gpu::kCullModeNone;
+		pass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
+		pass.setTexture( TEX_DIFFUSE, RrTexture::Load("textures/fauna/chimken_256.png") );
+		pass.setTexture( TEX_NORMALS, RrTexture::Load(renderer::kTextureNormalN0) );
+		pass.setTexture( TEX_SURFACE, RrTexture::Load(renderer::kTextureSurfaceM0) );
+		pass.setTexture( TEX_OVERLAY, RrTexture::Load(renderer::kTextureGrayA0) );
+
+		gpu::SamplerCreationDescription pointFilter;
+		pointFilter.minFilter = core::gfx::tex::kSamplingPoint;
+		pointFilter.magFilter = core::gfx::tex::kSamplingPoint;
+		pointFilter.mipmapMode = core::gfx::tex::kSamplingPoint;
 		pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
 		pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
 		pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
