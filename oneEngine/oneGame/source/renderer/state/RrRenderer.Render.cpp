@@ -1054,6 +1054,7 @@ Render_Groups:
 				params.context_graphics = gfx;
 
 				ARCORE_ASSERT(params.context_graphics != nullptr);
+				renderable->PreRender(cameraPass);
 				renderable->Render(&params);
 			}
 			gfx->debugGroupPop();
@@ -1131,6 +1132,7 @@ Render_Groups:
 				params.context_graphics = gfx;
 
 				ARCORE_ASSERT(params.context_graphics != nullptr);
+				renderable->PreRender(cameraPass);
 				renderable->Render(&params);
 			}
 			gfx->debugGroupPop();

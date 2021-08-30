@@ -50,7 +50,7 @@ namespace renderer
 			float		scaledSmoothness = 1.0F;
 			float		baseMetallicness = 0.0F;
 			float		scaledMetallicness = 1.0F;
-			Vector3f	emissiveColor = Vector4f(1, 1, 1, 1);
+			Vector3f	emissiveColor = Vector3f(0, 0, 0);
 			float		alphaCutoff = 0.0F;
 			float		lighting0;
 			float		lighting1;

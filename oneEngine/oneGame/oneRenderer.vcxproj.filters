@@ -312,6 +312,12 @@
     <ClCompile Include="source\renderer\state\pipeline\RrPipelinePaletted.cpp">
       <Filter>SOURCE\Renderer\State\Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.Tonemap.cpp">
+      <Filter>SOURCE\Renderer\State\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.Bloom.cpp">
+      <Filter>SOURCE\Renderer\State\Pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\renderer\state\Settings.h">

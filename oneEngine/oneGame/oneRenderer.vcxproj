@@ -121,10 +121,12 @@
     <ClCompile Include="source\renderer\particle\RrParticleSystem.cpp" />
     <ClCompile Include="source\renderer\renderer-console.cpp" />
     <ClCompile Include="source\renderer\state\pipeline\RrPipelinePaletted.cpp" />
+    <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.Bloom.cpp" />
     <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.Composite.cpp" />
     <ClCompile Include="source\renderer\state\pipeline\RrPipeline.cpp" />
     <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.Lighting.cpp" />
     <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.cpp" />
+    <ClCompile Include="source\renderer\state\pipeline\RrPipelineStandard.Tonemap.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Pooling.cpp" />
     <ClCompile Include="source\renderer\state\RrRenderer.Render.cpp" />
@@ -348,7 +350,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_ENGINE_RENDERER;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-	  <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
     </ClCompile>
     <Link>
       <LargeAddressAware>true</LargeAddressAware>
