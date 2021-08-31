@@ -21,21 +21,19 @@ layout(binding = 2, location = 22) uniform sampler2D textureColor;
 
 layout(local_size_x = 4, local_size_y = 4, local_size_z = 1) in;
 
-//shared vec4 s_workgroupTotalColor;
-shared uint s_workgroupColorIndex;
 shared vec4 s_workgroupColors [16];
 
 vec4 textureGatherAverage ( sampler2D inputSampler, vec2 baseCoords, vec2 texelSize )
 {
-	baseCoords += texelSize * 0.5;
+	/*baseCoords += texelSize * 0.5;
 	vec4 localAverage =
 		( texture(inputSampler, baseCoords)
 		+ texture(inputSampler, baseCoords + vec2(texelSize.x, 0))
 		+ texture(inputSampler, baseCoords + vec2(0, texelSize.y))
-		+ texture(inputSampler, baseCoords + texelSize)) / 4.0;
+		+ texture(inputSampler, baseCoords + texelSize)) / 4.0;*/
 		
 	// Use linear sampling to sample in the middle of all four
-	//vec4 localAverage = texture(inputSampler, baseCoords + texelSize);
+	vec4 localAverage = texture(inputSampler, baseCoords + texelSize);
 	
 	// Apply the bloom bias & multiply now
 	vec3  bloomColor     = localAverage.rgb;
@@ -48,16 +46,9 @@ vec4 textureGatherAverage ( sampler2D inputSampler, vec2 baseCoords, vec2 texelS
 void main ( void )
 {
 	// rough method stolen from https://miketuritzin.com/post/hierarchical-depth-buffers/
-	// TODO: probably look at https://graptis.blogspot.com/2013/06/compute-shaders-parallel-reduction-for.html
-	
-	if (gl_LocalInvocationIndex == 0)
-	{
-		s_workgroupColorIndex = 0;
-	}
-	
-	// Sync up all the threads in the group
-	memoryBarrierShared();
-	barrier();
+	// parallel reduction stolen from
+	//	- https://mynameismjp.wordpress.com/2011/08/10/average-luminance-compute-shader/
+	//	- https://graptis.blogspot.com/2013/06/compute-shaders-parallel-reduction-for.html
 	
 	// Fetch 4x4 texel region with textureGather (each textureGather is 2x2)
 	
@@ -81,31 +72,28 @@ void main ( void )
 	imageStore(textureColorDownscaled4, ivec2(gl_GlobalInvocationID.xy), finalAverage);
 	
 	// Save the results to the workgroup value
-	uint index = atomicAdd(s_workgroupColorIndex, 1);
-	s_workgroupColors[index] = finalAverage;
+	s_workgroupColors[gl_LocalInvocationIndex] = finalAverage;
 	
 	// Sync up all the threads in the group
 	memoryBarrierShared();
 	barrier();
 	
+	// Calculate the average results.
+	const uint kTotalThreads = 4 * 4;
+	[[unroll]]
+	for ( uint s = kTotalThreads / 2; s > 0; s >>= 1 )
+	{
+		// Sum up the upper half of the valid values
+		if (gl_LocalInvocationIndex < s)
+			s_workgroupColors[gl_LocalInvocationIndex] += s_workgroupColors[gl_LocalInvocationIndex + s];
+		memoryBarrierShared();
+		barrier();
+	}
+	vec4 totalAverage = s_workgroupColors[0] / 16.0;
+	
 	// Store the result colors to the 16x downscale buffer
 	if (gl_LocalInvocationIndex == 0)
 	{
-		vec4 totalAverage = vec4(0, 0, 0, 0);
-		[[unroll]]
-		for (uint i = 0; i < 16; ++i)
-		{
-			totalAverage += s_workgroupColors[i];
-		}
-		totalAverage /= 16.0;
-		
 		imageStore(textureColorDownscaled16, ivec2(gl_WorkGroupID.xy), totalAverage);
-		
-		// Apply the bloom bias & multiply now
-		/*vec3  bloomColor     = totalAverage.rgb;
-		float bloomColorLuma = Luminosity(bloomColor.rgb);
-		vec3  bloomResult    = bloomColor.rgb * saturate(bloomColorLuma - 0.93) * 4.0;*/
-		
-		//imageStore(textureColorDownscaled16, ivec2(gl_WorkGroupID.xy), vec4(bloomResult, 1.0));
 	}
 }

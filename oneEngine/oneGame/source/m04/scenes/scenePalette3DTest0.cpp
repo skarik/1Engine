@@ -319,7 +319,9 @@ void scenePalette3DTest0::LoadScene ( void )
 		pass.m_type = kPassTypeForward;
 		pass.m_alphaMode = renderer::kAlphaModeNone;
 		pass.m_cullMode = gpu::kCullModeNone;
-		pass.m_layer = renderer::kRenderLayerBackground;
+		//pass.m_layer = renderer::kRenderLayerBackground;
+		pass.m_layer = renderer::kRenderLayerWorld;
+		pass.m_orderOffset = rrPassOrderConstants::kPassOrder_Step;
 		//pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/env/sky_cubemap_vv.spv", "shaders/env/sky_cubemap_p.spv"}) );
 		pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/env/sky_tergo_vv.spv", "shaders/env/sky_tergo_p.spv"}) );
 

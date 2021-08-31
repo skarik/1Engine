@@ -183,10 +183,10 @@ gpu::Pipeline* RrRenderObject::GetPipeline ( const uchar pass, bool* bindings_ac
 {
 	if (m_pipelineReady[pass])
 	{
-		// check for changes
+		// TODO: check for changes
 
-		m_pipelines[pass].destroy(NULL);
-		m_pipelineReady[pass] = false;
+		//m_pipelines[pass].destroy(NULL);
+		//m_pipelineReady[pass] = false;
 	}
 
 	if (!m_pipelineReady[pass])

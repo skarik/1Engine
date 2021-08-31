@@ -82,7 +82,7 @@ static gpu::Texture Blur (
 		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwColor);
 		gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_USER0, &cbBlurParams);
 		// Blur the buffer
-		gfx->dispatch(texture_size.x / 4, texture_size.y / 4, 1);
+		gfx->dispatch(texture_size.x / 8, texture_size.y / 8, 1);
 		// Unbind the UAVs
 		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, NULL);
 
@@ -113,7 +113,7 @@ static gpu::Texture Blur (
 		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwColor);
 		gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_USER0, &cbBlurParams);
 		// Blur the buffer
-		gfx->dispatch(texture_size.x / 4, texture_size.y / 4, 1);
+		gfx->dispatch(texture_size.x / 8, texture_size.y / 8, 1);
 		// Unbind the UAVs
 		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, NULL);
 

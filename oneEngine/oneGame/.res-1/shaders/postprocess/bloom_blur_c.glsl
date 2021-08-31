@@ -22,18 +22,17 @@ layout(binding = CBUFFER_USER0, std430) uniform sys_cbuffer_BlurParams
 
 //=====================================
 
-layout(local_size_x = 4, local_size_y = 4, local_size_z = 1) in;
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
 void main ( void )
 {
-	const uvec2 baseTexelCoords = gl_GlobalInvocationID.xy;
+	ivec2 uv0 = ivec2(gl_GlobalInvocationID.xy);
+	if (uv0.x >= sys_ScreenSize.x || uv0.y >= sys_ScreenSize.y)
+		return; // Skip out-of-range threads
+		
 	const uvec2 imageSize = textureSize(textureColor, 0);
 	const vec2 texelSize = vec2(1, 1) / imageSize;
-	const vec2 normalizedTexelCoords = vec2(baseTexelCoords) * texelSize;
-	
-	[[branch]]
-	if (baseTexelCoords.x >= imageSize.x || baseTexelCoords.y >= imageSize.y)
-		return;
+	const vec2 normalizedTexelCoords = vec2(uv0) * texelSize;
 	
 	[[branch]]
 	if (taps == 7)
@@ -63,7 +62,7 @@ void main ( void )
 			result += texture( textureColor, uv0_center - (blurParam_Direction.xy * kOffsets[i]) * texelSize ) * kWeights[i];
 		}
 		
-		imageStore(textureColorBlurred, ivec2(baseTexelCoords), result);
+		imageStore(textureColorBlurred, ivec2(uv0), result);
 	}
 	else if (taps == 9)
 	{
@@ -94,6 +93,6 @@ void main ( void )
 			result += texture( textureColor, uv0_center - (blurParam_Direction.xy * kOffsets[i]) * texelSize ) * kWeights[i];
 		}
 		
-		imageStore(textureColorBlurred, ivec2(baseTexelCoords), result);
+		imageStore(textureColorBlurred, ivec2(uv0), result);
 	}
 }

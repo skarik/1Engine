@@ -268,7 +268,7 @@ int gpu::GraphicsContext::submit ( void )
 	}
 	else
 	{
-		ctx->Flush();
+		// ctx->Flush(); // Intelligently called by DX11 backend
 	}
 
 	return kError_SUCCESS;

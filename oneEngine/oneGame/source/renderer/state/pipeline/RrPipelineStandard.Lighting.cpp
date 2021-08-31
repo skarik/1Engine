@@ -313,7 +313,7 @@ void RrPipelineStandardRenderer::RenderShadows(
 					gfx->setShaderSampler(gpu::kShaderStageCs, 2, &linearSampler);
 					gfx->setShaderSampler(gpu::kShaderStageCs, 3, &pointSampler);
 					// Render the contact shadows
-					gfx->dispatch(output_viewport.size.x / 4, output_viewport.size.y / 4, 1);
+					gfx->dispatch(output_viewport.size.x / 8, output_viewport.size.y / 8, 1);
 					// Unbind the UAV
 					gfx->setShaderWriteable(gpu::kShaderStageCs, 0, NULL);
 
@@ -353,7 +353,7 @@ void RrPipelineStandardRenderer::RenderShadows(
 				gfx->setShaderTexture(gpu::kShaderStageCs, 2, &hzb_16);
 				gfx->setShaderTexture(gpu::kShaderStageCs, 3, deferred_normals);
 				// Render the contact shadows
-				gfx->dispatch(output_viewport.size.x / 4, output_viewport.size.y / 4, 1);
+				gfx->dispatch(output_viewport.size.x / 8, output_viewport.size.y / 8, 1);
 				// Unbind the UAV
 				gfx->setShaderWriteable(gpu::kShaderStageCs, 0, NULL);
 

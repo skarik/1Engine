@@ -31,7 +31,7 @@ layout(binding = SBUFFER_USER0, std430) readonly buffer Lighting_Data
 
 //=====================================
 
-layout(local_size_x = 4, local_size_y = 4, local_size_z = 1) in;
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
 void main ( void )
 {
