@@ -23,17 +23,20 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 	: dusk_interface(ui)
 	, main_editor(editor)
 {
-
-	auto sidePanel = dusk_interface->Add<dusk::elements::Panel>(dusk::ElementCreationDescription(NULL, Rect(0, 0, 100, 250)));
+	const int padding = 5;
+	const int panelWidth = 200;
+	const int columnWidth = panelWidth - (padding * 2);
+	auto sidePanel = dusk_interface->Add<dusk::elements::Panel>(dusk::ElementCreationDescription(NULL, Rect(0, 0, panelWidth, 720)));
 	auto sideLayout = dusk_interface->Add<dusk::layouts::Vertical>(dusk::LayoutCreationDescription(sidePanel));
-	sideLayout->m_padding = Vector2f(5, 10);
+	sideLayout->m_padding = Vector2f(padding, 10);
 	sideLayout->m_margin = Vector2f(5, 10);
 	sideLayout->m_localRect = Rect(0, 0, 100, 250);
-
+	
+	
 	{
 		auto hLayout = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(sideLayout));
 		
-		auto button_2d = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout, Rect(0, 0, 40, 20)));
+		auto button_2d = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout, Rect(0, 0, columnWidth / 2, 20)));
 		button_2d->m_contents = "2D";
 		button_2d->SetOnActivation([this]()
 		{
@@ -42,7 +45,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 			main_editor->UpdateNoise();
 		});
 
-		auto button_3d = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout, Rect(0, 0, 40, 20)));
+		auto button_3d = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout, Rect(0, 0, columnWidth / 2, 20)));
 		button_3d->m_contents = "3D";
 		button_3d->SetOnActivation([this]()
 		{
@@ -55,13 +58,14 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 	{
 		auto vLayout = dusk_interface->Add<dusk::layouts::Vertical>(dusk::LayoutCreationDescription(sideLayout));
 
-		auto label = dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
+		auto label = dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)));
 		label->m_contents = "SIZE";
 		label->m_style = dusk::elements::kLabelStyle_Heading1;
 
+		const int sizeElementWidth = columnWidth / 3;
 		auto hLayout0 = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(vLayout));
 		{
-			auto button_32 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 40, 20)));
+			auto button_32 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, sizeElementWidth, 20)));
 			button_32->m_contents = "32";
 			button_32->SetOnActivation([this]()
 			{
@@ -70,7 +74,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 				main_editor->UpdateNoise();
 			});
 
-			auto button_64 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 40, 20)));
+			auto button_64 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, sizeElementWidth, 20)));
 			button_64->m_contents = "64";
 			button_64->SetOnActivation([this]()
 			{
@@ -78,11 +82,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 				noise_params.size = 64;
 				main_editor->UpdateNoise();
 			});
-		}
-
-		auto hLayout1 = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(vLayout));
-		{
-			auto button_128 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout1, Rect(0, 0, 40, 20)));
+			auto button_128 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, sizeElementWidth, 20)));
 			button_128->m_contents = "128";
 			button_128->SetOnActivation([this]()
 			{
@@ -90,8 +90,11 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 				noise_params.size = 128;
 				main_editor->UpdateNoise();
 			});
+		}
 
-			auto button_256 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout1, Rect(0, 0, 40, 20)));
+		auto hLayout1 = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(vLayout));
+		{
+			auto button_256 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout1, Rect(0, 0, sizeElementWidth, 20)));
 			button_256->m_contents = "256";
 			button_256->SetOnActivation([this]()
 			{
@@ -99,11 +102,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 				noise_params.size = 256;
 				main_editor->UpdateNoise();
 			});
-		}
-
-		auto hLayout2 = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(vLayout));
-		{
-			auto button_512 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout2, Rect(0, 0, 40, 20)));
+			auto button_512 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout1, Rect(0, 0, sizeElementWidth, 20)));
 			button_512->m_contents = "512";
 			button_512->SetOnActivation([this]()
 			{
@@ -112,7 +111,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 				main_editor->UpdateNoise();
 			});
 
-			auto button_1024 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout2, Rect(0, 0, 40, 20)));
+			auto button_1024 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout1, Rect(0, 0, sizeElementWidth, 20)));
 			button_1024->m_contents = "1024";
 			button_1024->SetOnActivation([this]()
 			{
@@ -126,13 +125,13 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 	{
 		auto vLayout = dusk_interface->Add<dusk::layouts::Vertical>(dusk::LayoutCreationDescription(sideLayout));
 
-		auto label = dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
+		auto label = dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)));
 		label->m_contents = "CHANNEL";
 		label->m_style = dusk::elements::kLabelStyle_Heading1;
 
 		auto hLayout0 = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(vLayout));
 		{
-			auto button_r = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 20, 20)));
+			auto button_r = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, columnWidth / 4, 20)));
 			button_r->m_contents = "R";
 			button_r->SetOnActivation([this]()
 			{
@@ -142,7 +141,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 				main_editor->UpdateNoise();
 			});
 
-			auto button_g = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 20, 20)));
+			auto button_g = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, columnWidth / 4, 20)));
 			button_g->m_contents = "G";
 			button_g->SetOnActivation([this]()
 			{
@@ -152,7 +151,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 				main_editor->UpdateNoise();
 			});
 
-			auto button_b = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 20, 20)));
+			auto button_b = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, columnWidth / 4, 20)));
 			button_b->m_contents = "B";
 			button_b->SetOnActivation([this]()
 			{
@@ -162,7 +161,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 				main_editor->UpdateNoise();
 			});
 
-			auto button_all = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 20, 20)));
+			auto button_all = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, columnWidth / 4, 20)));
 			button_all->m_contents = "All";
 			button_all->SetOnActivation([this]()
 			{
@@ -177,10 +176,10 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 	{
 		auto vLayout = dusk_interface->Add<dusk::layouts::Vertical>(dusk::LayoutCreationDescription(sideLayout));
 
-		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)))
+		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)))
 			->m_contents = "Type";
 
-		auto button_noise_perlin = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
+		auto button_noise_perlin = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)));
 		button_noise_perlin->m_contents = "Perlin";
 		button_noise_perlin->SetOnActivation([this]()
 		{
@@ -189,7 +188,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 			main_editor->UpdateNoise();
 		});
 
-		auto button_noise_simplex = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
+		auto button_noise_simplex = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)));
 		button_noise_simplex->m_contents = "Simplex";
 		button_noise_simplex->SetOnActivation([this]()
 		{
@@ -198,7 +197,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 			main_editor->UpdateNoise();
 		});
 
-		auto button_noise_midpoint = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
+		auto button_noise_midpoint = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)));
 		button_noise_midpoint->m_contents = "Midpoint";
 		button_noise_midpoint->SetOnActivation([this]()
 		{
@@ -207,7 +206,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 			main_editor->UpdateNoise();
 		});
 
-		auto button_noise_worley = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
+		auto button_noise_worley = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)));
 		button_noise_worley->m_contents = "Worley Cell";
 		button_noise_worley->SetOnActivation([this]()
 		{
@@ -216,7 +215,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 			main_editor->UpdateNoise();
 		});
 
-		auto button_noise_worley2 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
+		auto button_noise_worley2 = dusk_interface->Add<dusk::elements::Button>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)));
 		button_noise_worley2->m_contents = "Worley";
 		button_noise_worley2->SetOnActivation([this]()
 		{
@@ -226,17 +225,16 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 		});
 	}
 
-
 	{
 		auto vLayout = dusk_interface->Add<dusk::layouts::Vertical>(dusk::LayoutCreationDescription(sideLayout));
 
-		auto label = dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
+		auto label = dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)));
 		label->m_contents = "COMMON";
 		label->m_style = dusk::elements::kLabelStyle_Heading1;
 
-		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)))
+		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)))
 			->m_contents = "Octaves";
-		auto slider_octaves = dusk_interface->Add<dusk::elements::Slider<int>>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 40)));
+		auto slider_octaves = dusk_interface->Add<dusk::elements::Slider<int>>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 40)));
 		slider_octaves->m_range_min = 1;
 		slider_octaves->m_range_max = 11;
 		slider_octaves->m_snap_divisor = 1;
@@ -249,9 +247,9 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 			main_editor->UpdateNoise();
 		});
 
-		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)))
+		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)))
 			->m_contents = "Frequency";
-		auto slider_frequency = dusk_interface->Add<dusk::elements::Slider<float>>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 40)));
+		auto slider_frequency = dusk_interface->Add<dusk::elements::Slider<float>>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 40)));
 		slider_frequency->m_range_min = 0.25F;
 		slider_frequency->m_range_max = 20.0F;
 		slider_frequency->m_snap_divisor = 0.25F;
@@ -268,13 +266,13 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 	{
 		auto vLayout = dusk_interface->Add<dusk::layouts::Vertical>(dusk::LayoutCreationDescription(sideLayout));
 
-		auto label = dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
+		auto label = dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)));
 		label->m_contents = "OUTPUT";
 		label->m_style = dusk::elements::kLabelStyle_Heading1;
 
-		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)))
+		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)))
 			->m_contents = "Bias";
-		auto slider_total_bias = dusk_interface->Add<dusk::elements::Slider<float>>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 40)));
+		auto slider_total_bias = dusk_interface->Add<dusk::elements::Slider<float>>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 40)));
 		slider_total_bias->m_range_min = -1.0F;
 		slider_total_bias->m_range_max = +1.0F;
 		slider_total_bias->m_snap_divisor = 0.05F;
@@ -287,9 +285,9 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 			main_editor->UpdateNoise();
 		});
 
-		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)))
+		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)))
 			->m_contents = "Scale";
-		auto slider_total_scale = dusk_interface->Add<dusk::elements::Slider<float>>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 40)));
+		auto slider_total_scale = dusk_interface->Add<dusk::elements::Slider<float>>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 40)));
 		slider_total_scale->m_range_min = -2.0F;
 		slider_total_scale->m_range_max = +2.0F;
 		slider_total_scale->m_snap_divisor = 0.05F;
@@ -303,7 +301,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 		});
 
 		auto hLayout0 = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(vLayout));
-		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 60, 20)))
+		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, columnWidth - 20, 20)))
 			->m_contents = "Invert";
 		auto checkbox_invert = dusk_interface->Add<dusk::elements::Checkbox>(dusk::ElementCreationDescription(hLayout0, Rect(0, 0, 20, 20)));
 		checkbox_invert->m_value = main_editor->GetState().invert_output;
@@ -315,7 +313,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 		});
 
 		auto hLayout1 = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(vLayout));
-		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(hLayout1, Rect(0, 0, 60, 20)))
+		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(hLayout1, Rect(0, 0, columnWidth - 20, 20)))
 			->m_contents = "Clamp 0";
 		auto checkbox_clamp_bottom = dusk_interface->Add<dusk::elements::Checkbox>(dusk::ElementCreationDescription(hLayout1, Rect(0, 0, 20, 20)));
 		checkbox_clamp_bottom->m_value = main_editor->GetState().clamp_bottom;
@@ -327,7 +325,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 		});
 
 		auto hLayout2 = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(vLayout));
-		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(hLayout2, Rect(0, 0, 60, 20)))
+		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(hLayout2, Rect(0, 0, columnWidth - 20, 20)))
 			->m_contents = "Clamp 1";
 		auto checkbox_clamp_top = dusk_interface->Add<dusk::elements::Checkbox>(dusk::ElementCreationDescription(hLayout2, Rect(0, 0, 20, 20)));
 		checkbox_clamp_top->m_value = main_editor->GetState().clamp_top;
@@ -339,7 +337,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 		});
 
 		auto hLayout3 = dusk_interface->Add<dusk::layouts::HorizontalFit>(dusk::LayoutCreationDescription(vLayout));
-		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(hLayout3, Rect(0, 0, 60, 20)))
+		dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(hLayout3, Rect(0, 0, columnWidth - 20, 20)))
 			->m_contents = "Wrap";
 		auto checkbox_wrap = dusk_interface->Add<dusk::elements::Checkbox>(dusk::ElementCreationDescription(hLayout3, Rect(0, 0, 20, 20)));
 		checkbox_wrap->m_value = main_editor->GetState().wrap;
@@ -354,7 +352,7 @@ m04::editor::noise::EditPanel::EditPanel (dusk::UserInterface* ui, m04::editor::
 	{
 		auto vLayout = dusk_interface->Add<dusk::layouts::Vertical>(dusk::LayoutCreationDescription(sideLayout));
 
-		auto label = dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, 80, 20)));
+		auto label = dusk_interface->Add<dusk::elements::Label>(dusk::ElementCreationDescription(vLayout, Rect(0, 0, columnWidth, 20)));
 		label->m_contents = "FILE";
 		label->m_style = dusk::elements::kLabelStyle_Heading1;
 

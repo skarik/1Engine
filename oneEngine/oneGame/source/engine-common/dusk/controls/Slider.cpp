@@ -4,6 +4,43 @@
 #include "engine-common/dusk/Dusk.h"
 #include "engine-common/dusk/UIRenderer.h"
 #include "core/math/Math.h"
+#include <iomanip>
+#include <sstream>
+#include <limits>
+
+// TODO - Ideally this lives in a separate class so that we can have unified logic for converting numbers into user-facing strings.
+// Helper methods for displaying numbers within UI.
+template <typename NumberType>
+static int GatherPrecision(NumberType value)
+{
+	string valueString = std::to_string(value);
+	valueString = valueString.substr(
+		valueString.find_last_not_of(valueString[valueString.length() + 1])
+	);
+	const size_t decimalCount = valueString.substr(valueString.find('.') + 1).length();
+	ARCORE_ASSERT(decimalCount < std::numeric_limits<int>::max());
+	return static_cast<int>(1 + decimalCount);
+}
+template <typename NumberType>
+static void WriteFormattedString(char* buf, int bufLength, int precision, NumberType value)
+{
+	snprintf(buf, bufLength, "INVALID TYPE", value);
+}
+template<>
+void WriteFormattedString(char* buf, int bufLength, int precision, float value)
+{
+	snprintf(buf, bufLength, "%.*f", precision, value);
+}
+template<>
+void WriteFormattedString(char* buf, int bufLength, int precision, double value)
+{
+	snprintf(buf, bufLength, "%.*lf", precision, value);
+}
+template<>
+static auto WriteFormattedString(char* buf, int bufLength, int precision, int32_t value) -> void
+{
+	snprintf(buf, bufLength, "%d", value);
+}
 
 template <typename NumberType>
 void dusk::elements::Slider<NumberType>::Update ( const UIStepInfo* stepinfo )
@@ -70,10 +107,10 @@ void dusk::elements::Slider<NumberType>::Update ( const UIStepInfo* stepinfo )
 }
 
 template <typename NumberType>
-void dusk::elements::Slider<NumberType>::Render ( UIRendererContext* uir )
+void dusk::elements::Slider<NumberType>::Render(UIRendererContext* uir)
 {
 	uir->setFocus(dusk::kFocusStyleAutomatic);
-	
+
 	// Draw the center line rect
 	const Real32 centerLineHalfWidth = 2.0F;
 	Vector3f center = m_absoluteRect.pos + m_absoluteRect.size * 0.5F;
@@ -93,16 +130,28 @@ void dusk::elements::Slider<NumberType>::Render ( UIRendererContext* uir )
 	uir->drawRectangle(this, Rect(centerLineRect.pos.x, centerLineRect.pos.y, centerLineRect.size.x * cursorParametricPosition, centerLineRect.size.y));
 	uir->drawRectangle(this, cursorRect);
 
-	// Draw the values at far left and right
-	uir->setColor(dusk::kColorStyleLabel);
-	uir->setTextSettings(TextStyleSettings{dusk::kTextFontButton, dusk::kTextAlignLeft, dusk::kTextAlignTop});
-	uir->drawText(this, Vector2f(m_absoluteRect.pos.x, center.y) + Vector2f(5.0F, centerLineHalfWidth * 2.0F), std::to_string(m_range_min).c_str());
-	uir->setTextSettings(TextStyleSettings{dusk::kTextFontButton, dusk::kTextAlignRight, dusk::kTextAlignTop});
-	uir->drawText(this, Vector2f(m_absoluteRect.pos.x, center.y) + Vector2f(m_absoluteRect.size.x - 5.0F, centerLineHalfWidth * 2.0F), std::to_string(m_range_max).c_str());
 
-	// Draw the current value on the top
-	uir->setTextSettings(TextStyleSettings{dusk::kTextFontButton, dusk::kTextAlignCenter, dusk::kTextAlignBottom});
-	uir->drawText(this, Vector2f(m_absoluteRect.pos.x, center.y) + Vector2f(m_absoluteRect.size.x * 0.5F, -centerLineHalfWidth * 2.0F), std::to_string(m_value).c_str());
+	// Gather target precision, prepare string buffer
+	const int precision = GatherPrecision(m_snap_divisor);
+	const int bufferSize = 256;
+	char stringBuffer[bufferSize];
+
+	// Draw Min, Max, and Current labels.
+	uir->setColor(dusk::kColorStyleLabel);
+
+	WriteFormattedString(stringBuffer, bufferSize, precision, m_range_min);
+	uir->setTextSettings(TextStyleSettings{ dusk::kTextFontButton, dusk::kTextAlignLeft, dusk::kTextAlignTop });
+	uir->drawText(this, Vector2f(m_absoluteRect.pos.x, center.y) + Vector2f(5.0F, centerLineHalfWidth * 2.0F), stringBuffer);
+
+
+	WriteFormattedString(stringBuffer, bufferSize, precision, m_range_max);
+	uir->setTextSettings(TextStyleSettings{ dusk::kTextFontButton, dusk::kTextAlignRight, dusk::kTextAlignTop });
+	uir->drawText(this, Vector2f(m_absoluteRect.pos.x, center.y) + Vector2f(m_absoluteRect.size.x - 5.0F, centerLineHalfWidth * 2.0F), stringBuffer);
+
+
+	WriteFormattedString(stringBuffer, bufferSize, precision, m_value);
+	uir->setTextSettings(TextStyleSettings{ dusk::kTextFontButton, dusk::kTextAlignCenter, dusk::kTextAlignBottom });
+	uir->drawText(this, Vector2f(m_absoluteRect.pos.x, center.y) + Vector2f(m_absoluteRect.size.x * 0.5F, -centerLineHalfWidth * 2.0F), stringBuffer);
 }
 
 template class dusk::elements::Slider<float>;
