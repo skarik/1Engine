@@ -22,13 +22,18 @@ layout(binding = CBUFFER_USER0, std430) uniform sys_cbuffer_BlurParams
 
 //=====================================
 
-layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 4, local_size_y = 4, local_size_z = 1) in;
 
 void main ( void )
 {
 	const uvec2 baseTexelCoords = gl_GlobalInvocationID.xy;
-	const vec2 texelSize = vec2(1, 1) /  textureSize(textureColor, 0);
+	const uvec2 imageSize = textureSize(textureColor, 0);
+	const vec2 texelSize = vec2(1, 1) / imageSize;
 	const vec2 normalizedTexelCoords = vec2(baseTexelCoords) * texelSize;
+	
+	[[branch]]
+	if (baseTexelCoords.x >= imageSize.x || baseTexelCoords.y >= imageSize.y)
+		return;
 	
 	[[branch]]
 	if (taps == 7)

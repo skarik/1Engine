@@ -17,6 +17,118 @@
 #include "gpuw/WriteableResource.h"
 #include "gpuw/Sampler.h"
 
+static gpu::Texture Blur (
+	gpu::GraphicsContext* gfx,
+	gpu::Texture* input_nonblurred,
+	const Vector2i texture_size,
+	RrShaderProgram*& m_bloomBlurProgram,
+	rrCameraPass* cameraPass,
+	RrOutputState* state )
+{
+	auto renderer = RrRenderer::Active; // TODO: make argument or class field
+
+	// Create samplers:
+	gpu::Sampler linearSampler;
+	linearSampler.create(
+		NULL,
+		gpu::SamplerCreationDescription()
+			.MagFilter(core::gfx::tex::kSamplingLinear)
+			.MinFilter(core::gfx::tex::kSamplingLinear)
+			.WrapmodeX(core::gfx::tex::kWrappingClamp)
+			.WrapmodeY(core::gfx::tex::kWrappingClamp)
+	);
+
+	// Grab the shader program
+	if (m_bloomBlurProgram == nullptr)
+	{
+		m_bloomBlurProgram = RrShaderProgram::Load(rrShaderProgramCs{"shaders/postprocess/bloom_blur_c.spv"});
+	}
+
+	// Allocate the X and XY results
+	gpu::Texture colorBlurX;
+	gpu::Texture colorBlurXY;
+
+	rrRTBufferRequest colorRequest;
+
+	colorRequest = {texture_size, core::gfx::tex::kColorFormatRGBA16F};
+	renderer->CreateRenderTexture( colorRequest, &colorBlurX );
+	colorRequest = {texture_size, core::gfx::tex::kColorFormatRGBA16F};
+	renderer->CreateRenderTexture( colorRequest, &colorBlurXY );
+
+	struct rrBlurParams
+	{
+		Vector2f	blur_vector = Vector2f(0, 0);
+		int32		sample_count = 9;
+	};
+
+	// Blur on X
+	{
+		// Create blur params
+		rrBlurParams blurParams { Vector2f(1.0F, 0.0F), 9 };
+		gpu::Buffer cbBlurParams;
+		cbBlurParams.initAsConstantBuffer(NULL, sizeof(blurParams));
+		cbBlurParams.upload(gfx, &blurParams, sizeof(blurParams), gpu::kTransferStream);
+
+		// Create writeable with the render target
+		gpu::WriteableResource rwColor;
+		rwColor.create(&colorBlurX, 0);
+
+		// Clear out usage of render target to gain control of buffers
+		gfx->setRenderTarget(NULL);
+
+		// Set up compute shader
+		gfx->setComputeShader(&m_bloomBlurProgram->GetShaderPipeline());
+		gfx->setShaderTexture(gpu::kShaderStageCs, 0, input_nonblurred, &linearSampler);
+		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwColor);
+		gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_USER0, &cbBlurParams);
+		// Blur the buffer
+		gfx->dispatch(texture_size.x / 4, texture_size.y / 4, 1);
+		// Unbind the UAVs
+		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, NULL);
+
+		// Done with writeables
+		rwColor.destroy();
+		// Done with params
+		cbBlurParams.free(NULL);
+	}
+
+	// Blur on Y
+	{
+		// Create blur params
+		rrBlurParams blurParams { Vector2f(0.0F, 1.0F), 9 };
+		gpu::Buffer cbBlurParams;
+		cbBlurParams.initAsConstantBuffer(NULL, sizeof(blurParams));
+		cbBlurParams.upload(gfx, &blurParams, sizeof(blurParams), gpu::kTransferStream);
+
+		// Create writeable with the render target
+		gpu::WriteableResource rwColor;
+		rwColor.create(&colorBlurXY, 0);
+
+		// Clear out usage of render target to gain control of buffers
+		gfx->setRenderTarget(NULL);
+
+		// Set up compute shader
+		gfx->setComputeShader(&m_bloomBlurProgram->GetShaderPipeline());
+		gfx->setShaderTexture(gpu::kShaderStageCs, 0, &colorBlurX, &linearSampler);
+		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwColor);
+		gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_USER0, &cbBlurParams);
+		// Blur the buffer
+		gfx->dispatch(texture_size.x / 4, texture_size.y / 4, 1);
+		// Unbind the UAVs
+		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, NULL);
+
+		// Done with writeables
+		rwColor.destroy();
+		// Done with params
+		cbBlurParams.free(NULL);
+	}
+
+	// Free samplers now
+	linearSampler.destroy(NULL);
+
+	return colorBlurXY;
+}
+
 RrPipelineStandardRenderer::rrBloomSetup RrPipelineStandardRenderer::SetupBloom (
 	gpu::GraphicsContext* gfx,
 	gpu::Texture* input_color,
@@ -59,7 +171,7 @@ RrPipelineStandardRenderer::rrBloomSetup RrPipelineStandardRenderer::SetupBloom 
 		// Grab the shader program
 		if (m_bloomDownscaleProgram == nullptr)
 		{
-			m_bloomDownscaleProgram = RrShaderProgram::Load(rrShaderProgramCs{"shaders/deferred_pass/bloom_downscale_c.spv"});
+			m_bloomDownscaleProgram = RrShaderProgram::Load(rrShaderProgramCs{"shaders/postprocess/bloom_downscale_c.spv"});
 		}
 
 		// Create writeable with the render target
@@ -76,7 +188,7 @@ RrPipelineStandardRenderer::rrBloomSetup RrPipelineStandardRenderer::SetupBloom 
 		gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
 		gfx->setShaderWriteable(gpu::kShaderStageCs, 0, &rwColorDownscale4);
 		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwColorDownscale16);
-		gfx->setShaderTextureAuto(gpu::kShaderStageCs, 2, input_color);
+		gfx->setShaderTexture(gpu::kShaderStageCs, 2, input_color, &linearSampler);
 		// Calculate the downscaled buffers
 		gfx->dispatch(output_viewport.size.x / 4, output_viewport.size.y / 4, 1);
 		// Unbind the UAVs
@@ -92,99 +204,15 @@ RrPipelineStandardRenderer::rrBloomSetup RrPipelineStandardRenderer::SetupBloom 
 		bloom.m_colorDownscale16 = colorDownscale16;
 	}
 
-	// Blur the 16x downsample on X and Y
+	// Blur both the 4x and 16x downsample on X and Y
 	{
 		// Grab output size for the screen quad info
 		auto& output = *state->output_info;
 		rrViewport output_viewport =  output.GetOutputViewport();
 
-		// Grab the shader program
-		if (m_bloomBlurProgram == nullptr)
-		{
-			m_bloomBlurProgram = RrShaderProgram::Load(rrShaderProgramCs{"shaders/deferred_pass/bloom_blur_c.spv"});
-		}
-
-		// Allocate the X and XY results
-		gpu::Texture colorBlurX;
-		gpu::Texture colorBlurXY;
-
-		rrRTBufferRequest colorRequest;
-
-		colorRequest = {output_viewport.size / 16, core::gfx::tex::kColorFormatRGBA16F};
-		renderer->CreateRenderTexture( colorRequest, &colorBlurX );
-		colorRequest = {output_viewport.size / 16, core::gfx::tex::kColorFormatRGBA16F};
-		renderer->CreateRenderTexture( colorRequest, &colorBlurXY );
-
-		struct rrBlurParams
-		{
-			Vector2f	blur_vector = Vector2f(0, 0);
-			int32		sample_count = 9;
-		};
-
-		// Blur on X
-		{
-			// Create blur params
-			rrBlurParams blurParams { Vector2f(1.0F, 0.0F), 9 };
-			gpu::Buffer cbBlurParams;
-			cbBlurParams.initAsConstantBuffer(NULL, sizeof(blurParams));
-			cbBlurParams.upload(gfx, &blurParams, sizeof(blurParams), gpu::kTransferStream);
-
-			// Create writeable with the render target
-			gpu::WriteableResource rwColor;
-			rwColor.create(&colorBlurX, 0);
-
-			// Clear out usage of render target to gain control of buffers
-			gfx->setRenderTarget(NULL);
-
-			// Set up compute shader
-			gfx->setComputeShader(&m_bloomBlurProgram->GetShaderPipeline());
-			gfx->setShaderTexture(gpu::kShaderStageCs, 0, &bloom.m_colorDownscale16, &linearSampler);
-			gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwColor);
-			gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_USER0, &cbBlurParams);
-			// Blur the buffer
-			gfx->dispatch(output_viewport.size.x / 16, output_viewport.size.y / 16, 1);
-			// Unbind the UAVs
-			gfx->setShaderWriteable(gpu::kShaderStageCs, 1, NULL);
-
-			// Done with writeables
-			rwColor.destroy();
-			// Done with params
-			cbBlurParams.free(NULL);
-		}
-
-		// Blur on Y
-		{
-			// Create blur params
-			rrBlurParams blurParams { Vector2f(0.0F, 1.0F), 9 };
-			gpu::Buffer cbBlurParams;
-			cbBlurParams.initAsConstantBuffer(NULL, sizeof(blurParams));
-			cbBlurParams.upload(gfx, &blurParams, sizeof(blurParams), gpu::kTransferStream);
-
-			// Create writeable with the render target
-			gpu::WriteableResource rwColor;
-			rwColor.create(&colorBlurXY, 0);
-
-			// Clear out usage of render target to gain control of buffers
-			gfx->setRenderTarget(NULL);
-
-			// Set up compute shader
-			gfx->setComputeShader(&m_bloomBlurProgram->GetShaderPipeline());
-			gfx->setShaderTexture(gpu::kShaderStageCs, 0, &colorBlurX, &linearSampler);
-			gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwColor);
-			gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_USER0, &cbBlurParams);
-			// Blur the buffer
-			gfx->dispatch(output_viewport.size.x / 16, output_viewport.size.y / 16, 1);
-			// Unbind the UAVs
-			gfx->setShaderWriteable(gpu::kShaderStageCs, 1, NULL);
-
-			// Done with writeables
-			rwColor.destroy();
-			// Done with params
-			cbBlurParams.free(NULL);
-		}
-
-		// Save output
-		bloom.m_colorDownscale16_Blurred = colorBlurXY;
+		bloom.m_colorDownscale16_Blurred = Blur(gfx, &bloom.m_colorDownscale16, output_viewport.size / 16, m_bloomBlurProgram, cameraPass, state);
+		bloom.m_colorDownscale16_Blurred = Blur(gfx, &bloom.m_colorDownscale16_Blurred, output_viewport.size / 16, m_bloomBlurProgram, cameraPass, state);
+		bloom.m_colorDownscale4_Blurred = Blur(gfx, &bloom.m_colorDownscale4, output_viewport.size / 4, m_bloomBlurProgram, cameraPass, state);
 	}
 
 	gfx->debugGroupPop();
@@ -345,6 +373,7 @@ RrPipelineStandardRenderer::ApplyTonemapBloom (
 
 		gfx->setShaderTexture(gpu::kShaderStagePs, 0, input_color, &linearSampler);
 		gfx->setShaderTexture(gpu::kShaderStagePs, 1, &bloom_setup->m_colorDownscale16_Blurred, &linearSampler);
+		gfx->setShaderTexture(gpu::kShaderStagePs, 2, &bloom_setup->m_colorDownscale4_Blurred, &linearSampler);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
 		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
 		gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp

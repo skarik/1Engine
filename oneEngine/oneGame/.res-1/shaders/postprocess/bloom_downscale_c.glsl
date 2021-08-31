@@ -7,6 +7,8 @@
 #include "../cbuffers.glsli"
 #include "../common_lighting.glsli"
 #include "../deferred_surface.glsli"
+#include "../colorspaces.glsli"
+#include "../common_math.glsli"
 
 //=====================================
 
@@ -25,10 +27,22 @@ shared vec4 s_workgroupColors [16];
 
 vec4 textureGatherAverage ( sampler2D inputSampler, vec2 baseCoords, vec2 texelSize )
 {
-	return (texture(inputSampler, baseCoords)
+	baseCoords += texelSize * 0.5;
+	vec4 localAverage =
+		( texture(inputSampler, baseCoords)
 		+ texture(inputSampler, baseCoords + vec2(texelSize.x, 0))
 		+ texture(inputSampler, baseCoords + vec2(0, texelSize.y))
 		+ texture(inputSampler, baseCoords + texelSize)) / 4.0;
+		
+	// Use linear sampling to sample in the middle of all four
+	//vec4 localAverage = texture(inputSampler, baseCoords + texelSize);
+	
+	// Apply the bloom bias & multiply now
+	vec3  bloomColor     = localAverage.rgb;
+	float bloomColorLuma = Luminosity(bloomColor.rgb);
+	vec3  bloomResult    = bloomColor.rgb * saturate(bloomColorLuma - 0.93);
+	
+	return vec4(bloomResult, 1.0);
 }
 
 void main ( void )
@@ -50,10 +64,10 @@ void main ( void )
 	const vec2 texelSize = vec2(1.0, 1.0) / sys_ScreenSize.xy;
 	
 	const uvec2 baseTexelCoords = 4 * gl_GlobalInvocationID.xy;
-	vec2 gatherCoords1 = (baseTexelCoords + uvec2(1, 1)) * texelSize;
-	vec2 gatherCoords2 = (baseTexelCoords + uvec2(3, 1)) * texelSize;
-	vec2 gatherCoords3 = (baseTexelCoords + uvec2(1, 3)) * texelSize;
-	vec2 gatherCoords4 = (baseTexelCoords + uvec2(3, 3)) * texelSize;
+	vec2 gatherCoords1 = (baseTexelCoords + uvec2(0, 0)) * texelSize;
+	vec2 gatherCoords2 = (baseTexelCoords + uvec2(2, 0)) * texelSize;
+	vec2 gatherCoords3 = (baseTexelCoords + uvec2(0, 2)) * texelSize;
+	vec2 gatherCoords4 = (baseTexelCoords + uvec2(2, 2)) * texelSize;
 	
 	vec4 gatheredTexelValues1 = textureGatherAverage(textureColor, gatherCoords1, texelSize);
 	vec4 gatheredTexelValues2 = textureGatherAverage(textureColor, gatherCoords2, texelSize);
@@ -86,5 +100,12 @@ void main ( void )
 		totalAverage /= 16.0;
 		
 		imageStore(textureColorDownscaled16, ivec2(gl_WorkGroupID.xy), totalAverage);
+		
+		// Apply the bloom bias & multiply now
+		/*vec3  bloomColor     = totalAverage.rgb;
+		float bloomColorLuma = Luminosity(bloomColor.rgb);
+		vec3  bloomResult    = bloomColor.rgb * saturate(bloomColorLuma - 0.93) * 4.0;*/
+		
+		//imageStore(textureColorDownscaled16, ivec2(gl_WorkGroupID.xy), vec4(bloomResult, 1.0));
 	}
 }

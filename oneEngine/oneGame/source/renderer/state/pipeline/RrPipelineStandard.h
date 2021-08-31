@@ -96,6 +96,8 @@ protected:
 	{
 		gpu::Texture	m_colorDownscale4;
 		gpu::Texture	m_colorDownscale16;
+
+		gpu::Texture	m_colorDownscale4_Blurred;
 		gpu::Texture	m_colorDownscale16_Blurred;
 	};
 	struct rrTonemapSetup

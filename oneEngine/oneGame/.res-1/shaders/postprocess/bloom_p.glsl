@@ -21,6 +21,7 @@ layout(location = 2) in flat int v2f_lightIndex;
 // Previous forward rendered output
 layout(binding = 0, location = 25) uniform sampler2D textureSamplerColor;
 layout(binding = 1, location = 26) uniform sampler2D textureSamplerBlurred;
+layout(binding = 2, location = 27) uniform sampler2D textureSamplerBlurredHi;
 
 //============================================================================//
 
@@ -70,11 +71,13 @@ void main ( void )
 	
 	// Get bloom color
 	const vec2 screenSizeDivisor = sys_ScreenSize.xy * 0.25;
-	vec4 bloomColor = texture(textureSamplerBlurred, floor(v2f_texcoord0 * screenSizeDivisor) / screenSizeDivisor);
+	vec4 bloomColor = texture(textureSamplerBlurred, floor(v2f_texcoord0 * screenSizeDivisor) / screenSizeDivisor) * 1.5;
+	bloomColor += texture(textureSamplerBlurredHi, floor(v2f_texcoord0 * screenSizeDivisor) / screenSizeDivisor) * 0.5;
 	//vec3 bloomColorHSV = RGBtoHSV(bloomColor.rgb);
-	float bloomColorLuma = Luminosity(bloomColor.rgb);
+	//float bloomColorLuma = Luminosity(bloomColor.rgb);
 	
-	vec3 bloomResult = bloomColor.rgb * saturate(bloomColorLuma - 0.93);
+	//vec3 bloomResult = bloomColor.rgb * saturate(bloomColorLuma - 0.93);
+	vec3 bloomResult = bloomColor.rgb;
 	
 	// Add the bloom
 	pixelColor.rgb += bloomResult;
