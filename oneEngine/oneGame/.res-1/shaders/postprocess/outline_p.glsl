@@ -6,6 +6,7 @@
 #include "../cbuffers.glsli"
 #include "../deferred_surface.glsli"
 #include "../colorspaces.glsli"
+#include "../common_math.glsli"
 
 // Output to screen
 layout(location = 0) out vec4 FragColor;
@@ -91,11 +92,13 @@ void main ( void )
 		float sampleDepthDelta = (referenceDepth - sampleDepth) / sqrt(referenceDepth);
 		
 		// Create a bias's delta. It has an amount subtracted so that there's a minimum depth difference for any darkening to occur.
-		float sampleDepthDeltaBias = max(0.0, sampleDepthDelta - min(10.0, 0.1 + sampleDepth / 5.0)); // By using the closer depth, we can get darker outlines on close-ups
-		
+		float sampleDepthDeltaBiasMinimum = mix(0.001, 0.1, saturate(sampleDepth / 2000.0));
+		float sampleDepthDeltaBias = max(0.0, sampleDepthDelta - min(10.0, sampleDepthDeltaBiasMinimum + max(0.0, -50 + sampleDepth / 5.0))); // By using the closer depth, we can get darker outlines on close-ups
+		// fade from 0.01 to 0.1 at a distance
 		if (sampleDepthDeltaBias > 0.0)
 		{
-			float lineThickness = min(kMaxThickness, kMinThickness + sampleDepthDeltaBias / 1200.0);
+			float lineThicknessDivisor = mix(300, 1200, saturate(sampleDepth / 2000.0));
+			float lineThickness = min(kMaxThickness, kMinThickness + sampleDepthDeltaBias / lineThicknessDivisor);
 			
 			// If the sample distance is smaller than the line thickness, we darken.
 			if (sampleWidth < lineThickness)

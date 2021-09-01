@@ -431,7 +431,11 @@ private:
 	gpu::Buffer			m_vbufScreenQuad_ForOutputSurface; // Per-API flips
 
 	gpu::Buffer			m_vbufLightSphere;
+	gpu::Buffer			m_vbufLightSphereIndicies;
+	uint32				m_vbufLightSphereLength;
 	gpu::Buffer			m_vbufLightCone;
+	gpu::Buffer			m_vbufLightConeIndicies;
+	uint32				m_vbufLightConeLength;
 
 public:
 	RENDER_API const gpu::Buffer&
@@ -453,8 +457,20 @@ public:
 							GetLightSphereVertexBuffer ( void )
 		{ return m_vbufLightSphere; }
 	RENDER_API const gpu::Buffer&
+							GetLightSphereIndexBuffer ( void )
+		{ return m_vbufLightSphereIndicies; }
+	RENDER_API const uint32
+							GetLightSphereIndexCount ( void )
+		{ return m_vbufLightSphereLength; }
+	RENDER_API const gpu::Buffer&
 							GetLightConeVertexBuffer ( void )
 		{ return m_vbufLightCone; }
+	RENDER_API const gpu::Buffer&
+							GetLightConeIndexBuffer ( void )
+		{ return m_vbufLightConeIndicies; }
+	RENDER_API const uint32
+							GetLightConeIndexCount ( void )
+		{ return m_vbufLightConeLength; }
 
 public:
 	// Public active instance pointer

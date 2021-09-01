@@ -60,11 +60,15 @@ void RrRenderer::InitializeCommonPipelineResources ( gpu::Device* device )
 		rrModelLoadParams loadParams {"models/system/light_sphere"};
 		RrAnimatedMeshGroup* meshGroup = renderer::LoadMeshGroup(loadParams);
 		m_vbufLightSphere = meshGroup->m_meshes[0]->m_buffer[(uint32_t)renderer::shader::Location::kPosition];
+		m_vbufLightSphereIndicies = meshGroup->m_meshes[0]->m_indexBuffer;
+		m_vbufLightSphereLength = meshGroup->m_meshes[0]->m_modeldata->indexNum;
 	}
 	{
 		rrModelLoadParams loadParams {"models/system/light_cone"};
 		RrAnimatedMeshGroup* meshGroup = renderer::LoadMeshGroup(loadParams);
 		m_vbufLightCone = meshGroup->m_meshes[0]->m_buffer[(uint32_t)renderer::shader::Location::kPosition];
+		m_vbufLightConeIndicies = meshGroup->m_meshes[0]->m_indexBuffer;
+		m_vbufLightConeLength = meshGroup->m_meshes[0]->m_modeldata->indexNum;
 	}
 }
 

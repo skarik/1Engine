@@ -278,7 +278,7 @@ static void GetPostprocess (
 }
 
 gpu::Texture
-RrPipelineStandardRenderer::ApplyTonemapBloom (
+RrPipelineStandardRenderer::ApplyBloom (
 	gpu::GraphicsContext* gfx,
 	gpu::Texture* input_color,
 	rrBloomSetup* bloom_setup,

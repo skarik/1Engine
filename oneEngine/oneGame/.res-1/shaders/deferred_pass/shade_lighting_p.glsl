@@ -6,6 +6,7 @@
 #include "../common.glsli"
 #include "../cbuffers.glsli"
 #include "../common_lighting.glsli"
+#include "../common_math.glsli"
 #include "shade_common_p.glsli"
 
 #ifndef VARIANT_PASS
@@ -92,15 +93,15 @@ vec3 FresnelTerm(vec3 specularColor, float vdoth)
 	return fresnel;
 }
 
-void ShadePixel ( void )
+void ShadePixel ( vec2 texcoord0 )
 {
 	// Sample the GBuffer
 	rrGBufferValues gbuffer;
-	SampleGBuffer(gbuffer, v2f_texcoord0);
+	SampleGBuffer(gbuffer, texcoord0);
 	
 	// Decode the surface information from it
 	rrSurfaceInfo surface;
-	DecodeSurfaceInfo(surface, gbuffer, v2f_texcoord0);
+	DecodeSurfaceInfo(surface, gbuffer, texcoord0);
 	
 	// Skip any pixels where there is nothing to calculate
 	if (surface.albedo.a <= 0.0)
@@ -180,7 +181,7 @@ void ShadePixel ( void )
 			//[[branch]]
 			//if (rrLightGetShadows(lightParams) != 0)
 			//{
-			//	shadowMask = texture(textureSamplerShadowMask, v2f_texcoord0).r;
+			//	shadowMask = texture(textureSamplerShadowMask, texcoord0).r;
 			//}
 
 			const float roughnessExpLimited = max(0.01, roughnessExp);
@@ -215,7 +216,7 @@ void ShadePixel ( void )
 			[[branch]]
 			if (rrLightGetShadows(lightParams) != 0)
 			{
-				shadowMask = texture(textureSamplerShadowMask, v2f_texcoord0).r;
+				shadowMask = texture(textureSamplerShadowMask, texcoord0).r;
 			}
 
 			const float roughnessExpLimited = max(0.01, roughnessExp);
@@ -231,18 +232,96 @@ void ShadePixel ( void )
 			#if VARIANT_STYLE==VARIANT_STYLE_NORMAL
 				vec3 diffuseLighting = lightColor * ndotl;
 			#elif VARIANT_STYLE==VARIANT_STYLE_CELSHADED
-				vec3 diffuseLighting = lightColor * mix(0.0, 1.0, clamp(ndotl * 20.0, 0.0, 1.0));
+				float edge_light = clamp( pow(1.0 - ndotv, 5.0 ) * pow(1.0 - vdoth, 5.0) * ndotl * 80.0, 0.0, 8.0 );
+				vec3 diffuseLighting = lightColor * mix(0.0, 1.0, edge_light + clamp(ndotl * 20.0, 0.0, 1.0));
 			#endif
 			
 			// Sum up the lighting
 			vec3 totalLighting = (specularLighting + diffuseLighting * surfaceReflectance) * shadowMask;
+			#if VARIANT_STYLE==VARIANT_STYLE_CELSHADED
+				// Subtract the edge in shadow
+				const vec3 halfVec_flip = normalize(viewDirection - lightDirection);
+				const float vdoth_flip = saturate(dot(viewDirection, halfVec_flip));
+				const float ndoth_flip = saturate(dot(surface.normal, halfVec_flip));
+
+				const float ndotl_flip = clamp(dot(surface.normal, -lightDirection), 0.0, 1.0);
+				float edge_shadow = 
+					// Start with fresnel term
+					saturate(pow(1.0 - ndotv, 10.0 ) * 80)
+					// Only show on faces pointing away from the light
+					* saturate(ndotl_flip * 20.0 - 15.0)
+					// Hide on faces that are close to reflecting the light
+					* (1.0 - pow(1.0 - vdoth, 5.0));
+				totalLighting -= (lightColor * surfaceReflectance * edge_shadow);
+			#endif
 
 			FragColor.rgb = totalLighting;
 			FragColor.a = surface.albedo.a;
 		}
 	}
 	
+#elif VARIANT_PASS==VARIANT_PASS_DO_DIRECT_OMNI
+
+	{
+		const rrLight lightParams = Lighting_Params[v2f_lightIndex];
+		vec4 lightDirection = vec4(lightParams.position.xyz - surface.world_position.xyz, 0.0);
+		lightDirection.w = length(lightDirection.xyz);
+		lightDirection.xyz /= lightDirection.w;
+		
+		const vec3 halfVec = normalize(viewDirection + lightDirection.xyz);
+		const float vdoth = clamp(dot(viewDirection, halfVec), 0.0, 1.0);
+		const float ndoth = clamp(dot(surface.normal, halfVec), 0.0, 1.0);
+		const float ndotv = clamp(dot(surface.normal, viewDirection), 0.0, 1.0);
+		const float ndotl = clamp(dot(surface.normal, lightDirection.xyz), 0.0, 1.0);
+		
+		// Add backface-lighting
+		[[branch]]
+		if (surface.shade_model == kShadeModelThinFoliage)
+		{
+			
+		}
+		else
+		{
+			const vec3 surfaceReflectance = diffuseColor;
+				
+			const vec3 lightColor = lightParams.color;
+			
+			float shadowMask = 1.0;
+			
+			const float roughnessExpLimited = max(0.01, roughnessExp);
+			
+			// Calculate reflection components
+			vec3 lightF = FresnelTerm(specularColor, vdoth);
+			float lightD = DistributionTerm(roughnessExpLimited, ndoth);
+			float lightV = VisibilityTerm(roughnessExpLimited, ndotv, ndotl);
+			
+			// Calculate specular
+			vec3 specularLighting = lightColor * lightF * (lightD * lightV * M_PI * ndotl);
+			// Caclulate diffuse
+			#if VARIANT_STYLE==VARIANT_STYLE_NORMAL
+				vec3 diffuseLighting = lightColor * ndotl;
+			#elif VARIANT_STYLE==VARIANT_STYLE_CELSHADED
+				float edge_light = clamp( pow(1.0 - ndotv, 5.0 ) * pow(1.0 - vdoth, 5.0) * ndotl * 80.0, 0.0, 8.0 );
+				vec3 diffuseLighting = lightColor * mix(0.0, 1.0, edge_light + clamp(ndotl * 20.0, 0.0, 1.0));
+			#endif
+			
+			// Calculate the distance fade
+			//float fade = 1.0 / pow(lightDirection.w, lightParams.falloff_invpower);
+			//fade = max(0.0, mix(fade, 0.0, lightDirection.w / lightParams.falloff_range));
+			const float fade_distance_limiter = 1.0 - pow(lightDirection.w / lightParams.falloff_range, 4.0);
+			float fade = pow( saturate( fade_distance_limiter ), lightParams.falloff_invpower ) / ( pow( lightDirection.w, lightParams.falloff_invpower ) + 1 );
+			
+			// Sum up the lighting
+			vec3 totalLighting = (specularLighting + diffuseLighting * surfaceReflectance) * shadowMask * fade;
+
+			FragColor.rgb = totalLighting;
+			//FragColor.rgb = lightColor * saturate( pow(1.0 - ndotv, 5.0 ) * pow(1.0 - vdoth, 5.0) * ndotl * 40.0 );
+			FragColor.a = surface.albedo.a;
+		}
+	}
+	
 #endif
+	
 }
 
 void main ( void )
@@ -302,8 +381,12 @@ void main ( void )
 	
 #else
 	
+	// Fix shader coordinates
+	vec2 texcoord0 = v2f_texcoord0.xy;
+	texcoord0 = vec2(gl_FragCoord.xy) / sys_ScreenSize.xy;
+
 	// Actually shade pixel
-	ShadePixel();
+	ShadePixel( texcoord0 );
 	
 #endif
 }

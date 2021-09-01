@@ -50,7 +50,8 @@ void scenePalette3DTest0::LoadScene ( void )
 		//RrRenderer::Active->GetWorld<0>()->pipeline_options = nullptr; // TODO. Needs a Paletted pipeline.
 		RrPipelinePalettedOptions* options = new RrPipelinePalettedOptions;
 		options->m_celShadeLighting = true;
-		options->LoadPalette("textures/vfx/palette_wide.png");
+		// TODO: make palette a toggle option that can be brought on
+		//options->LoadPalette("textures/vfx/palette_wide.png");
 
 		RrRenderer::Active->GetWorld<0>()->pipeline_options = options;
 
@@ -735,6 +736,16 @@ void scenePalette3DTest0::LoadScene ( void )
 
 	// Add a rock lamp!
 	{
+		{
+			RrLight* light = new RrLight;
+			light->type = kLightTypeOmni;
+			light->position = Vector3f(-2.54F, 1.66F, 1.27F) + Vector3f(0, 0, 0.05F);
+			light->color = Color(0.6F, 0.6F, 0.6F);
+			light->falloff_range = 3.0F;
+
+			light->shadows.enabled = true;
+		}
+
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/rusted/lamp_0"}, NULL);
 		model->transform.position = Vector3f(-2.54F, 1.66F, 1.27F);
 		model->transform.scale = Vector3f(1, 1, 1);

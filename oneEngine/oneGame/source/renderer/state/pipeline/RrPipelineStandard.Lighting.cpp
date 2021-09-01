@@ -492,13 +492,13 @@ gpu::Texture RrPipelineStandardRenderer::RenderLights(
 		gfx->setDepthStencilState(ds);
 	}
 
-#if 0
+#if 1
 	// Render point lights as spheres
 	if (!omni_lights.empty())
 	{
 		// TODO: Change the mesh loader to be more general/universal, so the mesh can be grabbed.
 		int omniLightCount = (int)omni_lights.size();
-		rrCameraPass* cameraPass = compositeInput.cameraPass;
+		int omniLightFirstIndex = lightSetup->omniLightFirstIndex;
 
 		struct rrCBufferLightInfo
 		{
@@ -511,11 +511,15 @@ gpu::Texture RrPipelineStandardRenderer::RenderLights(
 		cbuffer.upload(gfx, &cbuffer_light_params, sizeof(rrCBufferLightInfo), gpu::kTransferStream);
 
 		// Render with the lightingOmni
-		DrawWithPipelineAndGBuffers(gfx, compositeInput, m_lightingLighting0Pipeline, &cbuffer, &lightParameterBuffer, [directionalLightFirstIndex, omniLightCount, cameraPass](RrRenderer* renderer, gpu::GraphicsContext* gfx)
+		DrawWithPipelineAndGBuffers(
+			gfx, gbuffers, m_lightingLightingOmniPipeline,
+			&cbuffer,
+			lightSetup->lightParameterBuffer,
+			[omniLightFirstIndex, omniLightCount](RrRenderer* renderer, gpu::GraphicsContext* gfx)
 		{
-			gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
-			gfx->setVertexBuffer(0, &renderer->GetLightSphereVertexBuffer(), 0); // see RrPipelinePasses.cpp
-			gfx->drawInstanced(4, omniLightCount, 0);
+			gfx->setIndexBuffer(&renderer->GetLightSphereIndexBuffer(), gpu::kIndexFormatUnsigned16);
+			gfx->setVertexBuffer(0, &renderer->GetLightSphereVertexBuffer(), 0);
+			gfx->drawInstanced(renderer->GetLightSphereIndexCount(), omniLightCount, 0);
 		});
 
 		cbuffer.free(NULL);

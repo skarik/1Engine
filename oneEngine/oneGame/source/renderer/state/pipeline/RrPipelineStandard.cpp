@@ -70,6 +70,15 @@ RrPipelineStandardRenderer::~RrPipelineStandardRenderer ( void )
 		m_postprocessBloomPipeline->destroy(NULL);
 		delete m_postprocessBloomPipeline;
 	}
+
+	if (m_postprocessTonemapProgram)
+		m_postprocessTonemapProgram->RemoveReference();
+
+	if (m_postprocessTonemapPipeline)
+	{
+		m_postprocessTonemapPipeline->destroy(NULL);
+		delete m_postprocessTonemapPipeline;
+	}
 }
 
 void RrPipelineStandardRenderer::CullObjects ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world )
@@ -141,7 +150,29 @@ static void GetPostprocessVariant (
 		}
 		else
 		{
-			ARCORE_ERROR("TODO: create a general geometry pipeline for the shader, for loaded meshes.");
+			//ARCORE_ERROR("TODO: create a general geometry pipeline for the shader, for loaded meshes.");
+
+			// create the pipeline
+			gpu::VertexInputBindingDescription binding_desc [2];
+			binding_desc[0].binding = 0;
+			binding_desc[0].stride = sizeof(Vector4f);
+			binding_desc[0].inputRate = gpu::kInputRatePerVertex;
+
+			gpu::VertexInputAttributeDescription attrib_desc [3];
+			attrib_desc[0].binding = 0;
+			attrib_desc[0].offset = 0;
+			attrib_desc[0].location = (uint32_t)renderer::shader::Location::kPosition;
+			attrib_desc[0].format = gpu::kFormatR32G32B32SFloat;
+
+			gpu::PipelineCreationDescription desc;
+			desc.shader_pipeline = &(*cachedProgram)->GetShaderPipeline();
+			desc.vv_inputBindings = binding_desc;
+			desc.vv_inputBindingsCount = 1;
+			desc.vv_inputAttributes = attrib_desc;
+			desc.vv_inputAttributesCount = 1;
+			desc.ia_topology = gpu::kPrimitiveTopologyTriangleStrip;
+			desc.ia_primitiveRestartEnable = false;
+			(*cachedPipeline)->create(NULL, &desc);
 		}
 	}
 }
@@ -183,7 +214,7 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 			&m_lightingLighting0Program);
 	}
 
-#if 0
+#if 1
 	{
 		RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
 		l_shadeLightingVariantInfo.VARIANT_STYLE = options->m_celShadeLighting
@@ -193,7 +224,8 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 
 		GetPostprocessVariant(renderer, "shaders/deferred_pass/shade_worldproj_instanced_vv.spv", "shaders/deferred_pass/",
 			l_shadeLightingVariantInfo, false,
-			&m_lightingLightingOmniPipeline, &m_lightingLightingOmniProgram);
+			&m_lightingLightingOmniPipeline,
+			&m_lightingLightingOmniProgram);
 	}
 #endif
 	gfx->debugGroupPush("Setup Lights");
@@ -433,8 +465,10 @@ rrPipelineOutput RrPipelineStandardRenderer::RenderLayerEnd ( gpu::GraphicsConte
 		auto tonemapSetup = SetupTonemap(gfx, &outputColor, state);
 		auto exposureSetup = SetupExposure(gfx, &m_previousFrameOutput, state);
 
+		// Apply the tonemap
+		outputColor = ApplyTonemap(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
 		// Apply the bloom
-		outputColor = ApplyTonemapBloom(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
+		outputColor = ApplyBloom(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
 
 		// Save & analyze the color
 		SaveAndAnalyzeOutput(gfx, &outputColor, state);

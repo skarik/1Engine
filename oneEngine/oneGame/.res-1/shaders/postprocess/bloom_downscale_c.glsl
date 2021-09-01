@@ -38,7 +38,7 @@ vec4 textureGatherAverage ( sampler2D inputSampler, vec2 baseCoords, vec2 texelS
 	// Apply the bloom bias & multiply now
 	vec3  bloomColor     = localAverage.rgb;
 	float bloomColorLuma = Luminosity(bloomColor.rgb);
-	vec3  bloomResult    = bloomColor.rgb * saturate(bloomColorLuma - 0.93);
+	vec3  bloomResult    = bloomColor.rgb * saturate(bloomColorLuma - 0.95);
 	
 	return vec4(bloomResult, 1.0);
 }

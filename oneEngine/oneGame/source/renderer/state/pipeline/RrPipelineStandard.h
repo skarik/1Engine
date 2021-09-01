@@ -63,6 +63,9 @@ private:
 	RrShaderProgram*	m_postprocessBloomProgram = nullptr;
 	gpu::Pipeline*		m_postprocessBloomPipeline;
 
+	RrShaderProgram*	m_postprocessTonemapProgram = nullptr;
+	gpu::Pipeline*		m_postprocessTonemapPipeline;
+
 protected:
 	struct rrLightSetup
 	{
@@ -170,7 +173,17 @@ protected:
 		RrOutputState* state);
 
 	RENDER_API virtual gpu::Texture
-							ApplyTonemapBloom (
+							ApplyTonemap (
+		gpu::GraphicsContext* gfx,
+		gpu::Texture* input_color,
+		rrBloomSetup* bloom_setup,
+		rrTonemapSetup* tonemap_setup,
+		rrExposureSetup* exposure_setup,
+		rrCameraPass* cameraPass,
+		RrOutputState* state);
+
+	RENDER_API virtual gpu::Texture
+							ApplyBloom (
 		gpu::GraphicsContext* gfx,
 		gpu::Texture* input_color,
 		rrBloomSetup* bloom_setup,

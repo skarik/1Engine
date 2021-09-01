@@ -240,11 +240,14 @@ rrPipelineOutput RrPipelinePalettedRenderer::RenderLayerEnd ( gpu::GraphicsConte
 		auto tonemapSetup = SetupTonemap(gfx, &outputColor, state);
 		auto exposureSetup = SetupExposure(gfx, &m_previousFrameOutput, state);
 
+		// Apply the tonemap before the stylistic effect
+		outputColor = ApplyTonemap(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
+
 		// Before bloom, do stylistic effect
 		outputColor = ApplyPalettize(gfx, &outputColor, finishInput.cameraPass, state);
 
 		// Apply the bloom
-		outputColor = ApplyTonemapBloom(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
+		outputColor = ApplyBloom(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
 
 		// Save & analyze the color
 		SaveAndAnalyzeOutput(gfx, &outputColor, state);
