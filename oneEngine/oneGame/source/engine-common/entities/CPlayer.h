@@ -83,6 +83,12 @@ public: // PUBLIC FIELDS
 	bool	bOverrideInput; // When the player can not have input, when true, this does not reset inputs to zero.
 	bool	bCanMouseMove;	// Controls if the player can turn with the mouse.
 
+	//===============================================================================================//
+	// Camera Info
+	//===============================================================================================//
+
+	float			m_cameraFieldOfView = 75.0F;
+
 protected: // PROTECTED FIELDS and ROUTINES
 	//===============================================================================================//
 	// Attached objects

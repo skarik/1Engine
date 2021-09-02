@@ -60,6 +60,7 @@ void scenePalette3DTest0::LoadScene ( void )
 	// Create player
 	{
 		CPlayer* player = new CPlayer();
+		player->m_cameraFieldOfView = 55.0F;
 		player->RemoveReference();
 	} loadScreen->loadStep();
 

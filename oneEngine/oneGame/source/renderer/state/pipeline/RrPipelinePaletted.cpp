@@ -244,7 +244,7 @@ rrPipelineOutput RrPipelinePalettedRenderer::RenderLayerEnd ( gpu::GraphicsConte
 		outputColor = ApplyTonemap(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
 
 		// Before bloom, do stylistic effect
-		outputColor = ApplyPalettize(gfx, &outputColor, finishInput.cameraPass, state);
+		//outputColor = ApplyPalettize(gfx, &outputColor, finishInput.cameraPass, state);
 
 		// Apply the bloom
 		outputColor = ApplyBloom(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
