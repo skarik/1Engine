@@ -779,7 +779,7 @@
     <ProjectGuid>{4FDB8ACD-7078-4806-B6B0-04C5351F3F87}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
     <ProjectName>onePhysical</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(WIN_SDK_VER)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <!-- Compiler options -->

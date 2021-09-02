@@ -82,7 +82,7 @@
     <ProjectGuid>{28A5770A-6C98-4CA8-B812-3596C58E621F}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
     <ProjectName>oneEngineCommon2DExt</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(WIN_SDK_VER)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <!-- Compiler options -->

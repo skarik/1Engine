@@ -45,7 +45,7 @@
     <ProjectGuid>{17D36E91-579B-4BD9-9309-F65AAC7007D7}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
     <ProjectName>test_oneCore</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(WIN_SDK_VER)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="source\deploy\unit\core.cpp" />

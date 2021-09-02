@@ -9,7 +9,7 @@ The original EHS engine, now mostly passion project. This the **primary repo** w
 
 For Windows, the following are required:
 * Visual Studio 2017 or later.
-* Some version of the DirectX or Windows SDK (used for Xbox controller support and DirectX support).
+* Some version of the Windows SDK (used for DirectX support and Xbox controller support).
 * Relevant SDK for the rendering API being used (except OpenGL, that just magically works).
 * Vulkan SDK (used for compiling shaders for OpenGL and DirectX).
 * Python 3 (also used for compiling shaders). Pythonw should be associated with the .py extension.
@@ -33,6 +33,24 @@ Current graphics API support:
 Physics solution: **Bullet Physics**
 
 Audio solution: **Homebrew (WASAPI)**
+
+## Getting Started (Abridged)
+
+Follow these directions:
+
+1. Install Visual Studio 2017 or newer.
+  a. Install VC++ support
+  b. Install a Windows SDK
+2. Run ``oneEngine/SetupEnvironment.bat``.
+  a. It needs admin mode to run. It will modify the WIN_SDK_VER environment variable.
+3. Compile shaders.
+  a. Run ``oneEngine/oneGame/build-scripts/buildGLSL.py``
+  b. Run ``oneEngine/oneGame/build-scripts/buildHLSL.py``
+  c. Yes, these are two different commands.
+4. Open ``oneEngine/1Engine_M04_v140_win32.sln``.
+5. Build and go!
+
+Congrats, you should be running! If not, feel free to ask for help. 
 
 ## Branches
 

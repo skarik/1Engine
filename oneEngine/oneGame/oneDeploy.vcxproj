@@ -71,7 +71,7 @@
     <ProjectGuid>{D2AAD99B-EE7B-4426-AD3E-E4FF587D82CC}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
     <ProjectName>oneDeploy</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(WIN_SDK_VER)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <!-- Compiler options -->

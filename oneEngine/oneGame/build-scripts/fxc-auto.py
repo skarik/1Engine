@@ -44,7 +44,9 @@ def main():
 def GetFxc():
 
 	# Start in program files and go to the kits directory
-	l_kitsBaseDirectory = os.environ["ProgramFiles(x86)"] + "\\Windows Kits";
+	l_kitsBaseDirectory = os.environ["ProgramFiles"] + "\\Windows Kits";
+	if (not os.path.isdir(l_kitsBaseDirectory)):
+		l_kitsBaseDirectory = os.environ["ProgramFiles(x86)"] + "\\Windows Kits";
 	
 	# We support two kits: 8.1 and 10. We want to go with the newest one we can find, so we check 10 first.
 	if (os.path.isdir(l_kitsBaseDirectory + "\\10")):

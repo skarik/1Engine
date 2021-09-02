@@ -56,7 +56,7 @@
     <ProjectGuid>{F630F5A9-217B-40E5-9557-6227163544C9}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
     <ProjectName>test_oneAudio</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(WIN_SDK_VER)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <!-- Compiler options -->

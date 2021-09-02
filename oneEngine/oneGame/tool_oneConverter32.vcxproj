@@ -41,7 +41,7 @@
     <ProjectGuid>{93C4ECB5-1BCA-4467-81B6-521AF7EA6FEB}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
     <ProjectName>tool_oneConverter32</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(WIN_SDK_VER)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <!-- Compiler options -->

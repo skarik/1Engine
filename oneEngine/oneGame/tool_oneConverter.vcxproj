@@ -45,7 +45,7 @@
     <ProjectGuid>{B681E210-BBDA-40DE-AEFB-3913F9041FCD}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
     <ProjectName>tool_oneConverter</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(WIN_SDK_VER)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="source\tool\converter\converter-main.cpp" />

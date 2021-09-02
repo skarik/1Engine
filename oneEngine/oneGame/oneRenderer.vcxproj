@@ -291,7 +291,7 @@
     <ProjectGuid>{C1BC5440-9CE1-4A7E-89DD-DCD57005426A}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
     <ProjectName>oneRenderer</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(WIN_SDK_VER)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <!-- Compiler options -->

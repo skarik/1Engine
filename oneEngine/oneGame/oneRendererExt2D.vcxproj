@@ -86,7 +86,7 @@
     <ProjectGuid>{38F71BD7-CA57-4E5D-87C7-6299B0E218EA}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
     <ProjectName>oneRenderer2DExt</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(WIN_SDK_VER)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <!-- Compiler options -->
