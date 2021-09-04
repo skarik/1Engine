@@ -85,6 +85,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tool_oneConverter32", "oneG
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oneGPUW", "oneGame\oneGPUW.vcxproj", "{1986D332-4A22-4711-96B0-C94B9BA9B69D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tool_shellThumbnailBPD", "oneGame\tool_shellThumbnailBPD.vcxproj", "{B741FB2A-30E0-431C-AE69-78D0474250FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Windows_x64 = Debug|Windows_x64
@@ -383,6 +385,20 @@ Global
 		{1986D332-4A22-4711-96B0-C94B9BA9B69D}.Unoptimized|Windows_x64.Build.0 = Unoptimized|x64
 		{1986D332-4A22-4711-96B0-C94B9BA9B69D}.Unoptimized|Windows_x86.ActiveCfg = Unoptimized|Win32
 		{1986D332-4A22-4711-96B0-C94B9BA9B69D}.Unoptimized|Windows_x86.Build.0 = Unoptimized|Win32
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.Debug|Windows_x64.ActiveCfg = Debug|x64
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.Debug|Windows_x64.Build.0 = Debug|x64
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.Debug|Windows_x86.ActiveCfg = Debug|Win32
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.Debug|Windows_x86.Build.0 = Debug|Win32
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.DebugClang|Windows_x64.ActiveCfg = DebugClang|x64
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.DebugClang|Windows_x64.Build.0 = DebugClang|x64
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.DebugClang|Windows_x86.ActiveCfg = DebugClang|Win32
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.Optimized Release|Windows_x64.ActiveCfg = Unoptimized|x64
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.Optimized Release|Windows_x64.Build.0 = Unoptimized|x64
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.Optimized Release|Windows_x86.ActiveCfg = Unoptimized|Win32
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.Optimized Release|Windows_x86.Build.0 = Unoptimized|Win32
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.Unoptimized|Windows_x64.ActiveCfg = Unoptimized|x64
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.Unoptimized|Windows_x64.Build.0 = Unoptimized|x64
+		{B741FB2A-30E0-431C-AE69-78D0474250FE}.Unoptimized|Windows_x86.ActiveCfg = Unoptimized|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -406,6 +422,7 @@ Global
 		{B681E210-BBDA-40DE-AEFB-3913F9041FCD} = {FC37B1E5-F178-4C5C-8251-E6F577B71F98}
 		{93C4ECB5-1BCA-4467-81B6-521AF7EA6FEB} = {FC37B1E5-F178-4C5C-8251-E6F577B71F98}
 		{1986D332-4A22-4711-96B0-C94B9BA9B69D} = {A43FD140-8C51-4B8B-A3FB-585023C75DC5}
+		{B741FB2A-30E0-431C-AE69-78D0474250FE} = {FC37B1E5-F178-4C5C-8251-E6F577B71F98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9F93FA03-B597-473C-9E49-53B46897A07C}
