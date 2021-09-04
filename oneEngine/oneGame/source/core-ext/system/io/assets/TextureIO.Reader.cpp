@@ -5,7 +5,7 @@
 #include "core/math/Math.h"
 #include "core/debug/console.h"
 #include "core/exceptions.h"
-#include "core/system/io/CMappedBinaryFile.h"
+#include "core/system/io/FileStdio.h"
 
 #include "core-ext/system/io/Resources.h"
 #include "core-ext/system/io/assets/Conversion.h"
@@ -20,25 +20,41 @@ core::BpdLoader::BpdLoader()
 	// Outputs:
 	format(IMG_FORMAT_INVALID), mipmapCount(0), info(), animation(), frames(), palette(), paletteWidth(0),
 	// Internal state:
-	m_liveFile(NULL)
+	m_liveFile(NULL), m_liveStream(NULL)
 {
 	;
 }
 core::BpdLoader::~BpdLoader()
 {
 	// Close any live file:
-	if (m_liveFile != NULL) {
+	if (m_liveFile != NULL)
+	{
 		fclose(m_liveFile);
 		m_liveFile = NULL;
+
+		// Close any locally-created stream helper.
+		if (m_liveStream)
+		{
+			delete m_liveStream;
+			m_liveStream = NULL;
+		}
 	}
 }
 
 bool core::BpdLoader::LoadBpd ( const char* n_resourcename )
 {
 	// Close any live file:
-	if (m_liveFile != NULL) {
+	if (m_liveFile != NULL)
+	{
 		fclose(m_liveFile);
 		m_liveFile = NULL;
+
+		// Close any locally-created stream helper.
+		if (m_liveStream)
+		{
+			delete m_liveStream;
+			m_liveStream = NULL;
+		}
 	}
 
 	// Create the resource name
@@ -144,6 +160,35 @@ bool core::BpdLoader::LoadBpd ( const char* n_resourcename )
 	m_liveFile = fopen(image_filename.c_str(), "rb");
 	if (m_liveFile != NULL)
 	{
+		m_liveStream = new core::FileStdioRead(m_liveFile);
+		return loadBpdCommon();
+	}
+
+	return false;
+}
+
+//	LoadBpd ( stream )
+// Attempts to load BPD with given stream.
+// If the file could not be loaded, will return false.
+bool core::BpdLoader::LoadBpd ( core::IFileRead* m_stream )
+{
+	// Close any live file:
+	if (m_liveFile != NULL)
+	{
+		fclose(m_liveFile);
+		m_liveFile = NULL;
+
+		// Close any locally-created stream helper.
+		if (m_liveStream)
+		{
+			delete m_liveStream;
+			m_liveStream = NULL;
+		}
+	}
+
+	m_liveStream = m_stream;
+	if (m_liveStream != NULL)
+	{
 		return loadBpdCommon();
 	}
 
@@ -154,7 +199,7 @@ bool core::BpdLoader::LoadBpd ( const char* n_resourcename )
 // Continues to load the live BPD file initially opened with LoadBpd.
 bool core::BpdLoader::LoadBpd ( void )
 {
-	if (m_liveFile != NULL)
+	if (m_liveStream != NULL)
 	{
 		return loadBpdCommon();
 	}
@@ -164,7 +209,7 @@ bool core::BpdLoader::LoadBpd ( void )
 //	LoadBpdCommon() : loads BPD file
 bool core::BpdLoader::loadBpdCommon ( void )
 {
-	fseek(m_liveFile, 0, SEEK_SET);
+	m_liveStream->Seek(0);
 
 	bool read_header = false;
 
@@ -174,7 +219,7 @@ bool core::BpdLoader::loadBpdCommon ( void )
 	textureFmtHeader header;
 	if (!m_loadOnlySuperlow)
 	{
-		fread(&header, sizeof(header), 1, m_liveFile);
+		m_liveStream->Read(&header, sizeof(header), 1);
 		read_header = true; 
 
 		if (strcmp(header.head, kTextureFormat_Header) != 0)
@@ -217,11 +262,11 @@ bool core::BpdLoader::loadBpdCommon ( void )
 
 	if (m_buffer_Superlow)
 	{
-		fseek(m_liveFile, sizeof(textureFmtHeader), SEEK_SET);
+		m_liveStream->Seek(sizeof(textureFmtHeader));
 		uint32_t formatFlags;
-		fread(&formatFlags, sizeof(uint32_t), 1, m_liveFile);
+		m_liveStream->Read(&formatFlags, sizeof(uint32_t), 1);
 		format = (ETextureFormatTypes)(formatFlags & 0xFF);
-		fread(m_buffer_Superlow, kTextureFormat_SuperlowByteSize, 1, m_liveFile);
+		m_liveStream->Read(m_buffer_Superlow, kTextureFormat_SuperlowByteSize, 1);
 
 		switch (formatFlags & 0xFF)
 		{
@@ -244,8 +289,8 @@ bool core::BpdLoader::loadBpdCommon ( void )
 				textureFmtLevel levelInfo;
 
 				// Read in the level info first
-				fseek(m_liveFile, header.levelsOffset + sizeof(textureFmtLevel) * i, SEEK_SET);
-				fread(&levelInfo, sizeof(levelInfo), 1, m_liveFile);
+				m_liveStream->Seek(header.levelsOffset + sizeof(textureFmtLevel) * i);
+				m_liveStream->Read(&levelInfo, sizeof(levelInfo), 1);
 			
 				// Ensure data is correct
 				if (strcmp(levelInfo.head, kTextureFormat_HeadLevel) != 0)
@@ -260,11 +305,11 @@ bool core::BpdLoader::loadBpdCommon ( void )
 				}
 
 				// Seek to the actual level data
-				fseek(m_liveFile, levelInfo.offset, SEEK_SET);
+				m_liveStream->Seek(levelInfo.offset);
 
 				// Read in the data to a temp buffer
 				uchar* t_sideBuffer = new uchar [levelInfo.size];
-				fread(t_sideBuffer, levelInfo.size, 1, m_liveFile);
+				m_liveStream->Read(t_sideBuffer, levelInfo.size, 1);
 			
 				// Decompress the data directly into target pointer:
 				const unsigned long t_effectiveWidth	= std::max<unsigned long>(1, header.width / math::exp2(i));
@@ -304,11 +349,11 @@ bool core::BpdLoader::loadBpdCommon ( void )
 
 	if (m_loadAnimation && read_header && header.animationOffset != 0)
 	{
-		fseek(m_liveFile, header.animationOffset, SEEK_SET);
+		m_liveStream->Seek(header.animationOffset);
 		
 		// Read in animation header
 		textureFmtAnimation animation;
-		fread(&animation, sizeof(animation), 1, m_liveFile);
+		m_liveStream->Read(&animation, sizeof(animation), 1);
 
 		// Ensure data is correct
 		if (strcmp(animation.head, kTextureFormat_HeadAnimation) != 0)
@@ -325,7 +370,7 @@ bool core::BpdLoader::loadBpdCommon ( void )
 
 		// Read in all the frames too
 		frames.resize(animation.frames);
-		fread(frames.data(), sizeof(textureFmtFrame) * animation.frames, 1, m_liveFile);
+		m_liveStream->Read(frames.data(), sizeof(textureFmtFrame) * animation.frames, 1);
 	}
 
 	//===============================
@@ -333,11 +378,11 @@ bool core::BpdLoader::loadBpdCommon ( void )
 
 	if (m_loadPalette && read_header && header.paletteOffset != 0)
 	{
-		fseek(m_liveFile, header.paletteOffset, SEEK_SET);
+		m_liveStream->Seek(header.paletteOffset);
 
 		// Read in palette header
 		textureFmtPalette palette_info;
-		fread(&palette_info, sizeof(palette_info), 1, m_liveFile);
+		m_liveStream->Read(&palette_info, sizeof(palette_info), 1);
 
 		// Ensure data is correct
 		if (strcmp(palette_info.head, kTextureFormat_HeadPalette) != 0)
@@ -351,7 +396,7 @@ bool core::BpdLoader::loadBpdCommon ( void )
 
 		// Read in entire palette
 		palette.resize(palette_info.rows * palette_info.depth);
-		fread(palette.data(), sizeof(gfx::arPixel) * palette_info.rows * palette_info.depth, 1, m_liveFile);
+		m_liveStream->Read(palette.data(), sizeof(gfx::arPixel) * palette_info.rows * palette_info.depth, 1);
 	}
 
 	return true;

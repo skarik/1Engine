@@ -439,6 +439,15 @@
     <ClInclude Include="source\core\types\modes.h">
       <Filter>SOURCE\Core\Types</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\system\io\IFile.h">
+      <Filter>SOURCE\Core\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\system\io\FileStdio.h">
+      <Filter>SOURCE\Core\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\system\io\FileWin32Stream.h">
+      <Filter>SOURCE\Core\System\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">

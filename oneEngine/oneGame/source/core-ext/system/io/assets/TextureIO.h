@@ -17,6 +17,7 @@
 #include "core/utils/string.h"
 #include "core/gfx/pixelFormat.h"
 #include "core/gfx/textureStructures.h"
+#include "core/system/io/IFile.h"
 
 namespace core
 {
@@ -217,6 +218,11 @@ namespace core
 		// If the file could not be loaded, will return false.
 		CORE_API bool			LoadBpd ( const char* n_resourcename );
 
+		//	LoadBpd ( stream )
+		// Attempts to load BPD with given stream.
+		// If the file could not be loaded, will return false.
+		CORE_API bool			LoadBpd ( core::IFileRead* m_stream );
+
 		//	LoadBpd() : Continues loading.
 		// Continues to load the live BPD file initially opened with LoadBpd.
 		CORE_API bool			LoadBpd ( void );
@@ -267,6 +273,8 @@ namespace core
 
 	protected:
 		FILE*			m_liveFile;
+		core::IFileRead*
+						m_liveStream;
 
 		//	loadBpdCommon() : loads BPD file
 		bool					loadBpdCommon ( void );

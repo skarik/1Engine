@@ -248,7 +248,10 @@
     <ClInclude Include="source\core\system\io\CBinaryFile.h" />
     <ClInclude Include="source\core\system\io\CBufferIO.h" />
     <ClInclude Include="source\core\system\io\CMappedBinaryFile.h" />
+    <ClInclude Include="source\core\system\io\FileStdio.h" />
     <ClInclude Include="source\core\system\io\FileUtils.h" />
+    <ClInclude Include="source\core\system\io\FileWin32Stream.h" />
+    <ClInclude Include="source\core\system\io\IFile.h" />
     <ClInclude Include="source\core\system\System.h" />
     <ClInclude Include="source\core\time.h" />
     <ClInclude Include="source\core\types.h" />
