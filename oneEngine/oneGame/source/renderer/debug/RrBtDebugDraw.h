@@ -15,9 +15,9 @@ public:
 	RENDER_API explicit		RrBtDebugDraw ( PrWorld* associated_world );
 	RENDER_API				~RrBtDebugDraw ( void );
 
-	//		PreRender()
+	//		CreateConstants()
 	// Push the model's uniform up up.
-	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
+	RENDER_API bool			CreateConstants ( rrCameraPass* cameraPass ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style

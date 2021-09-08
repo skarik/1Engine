@@ -70,7 +70,7 @@ void main ( void )
 	v_localPos.xyz += l_offset * mdl_Vertex.z / 28.0; // Offset grass
 	
 	
-	vec4 v_screenPos = sys_ModelViewProjectionMatrix * vec4( v_localPos.xyz, 1.0 );
+	vec4 v_screenPos = sys_ViewProjectionMatrix * vec4( v_localPos.xyz, 1.0 );
 	// TODO: Move this into either .res-0 or make an option.
 	v_screenPos.xy = floor( v_screenPos.xy * (sys_ScreenSize * 0.25 / v_screenPos.z) ) / (sys_ScreenSize * 0.25 / v_screenPos.z);
 

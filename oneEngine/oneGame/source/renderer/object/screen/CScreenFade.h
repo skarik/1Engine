@@ -16,7 +16,7 @@ public:
 	RENDER_API				~CScreenFade ( void );
 
 	RENDER_API void			PreStepSynchronus ( void ) override;
-	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
+	RENDER_API bool			CreateConstants ( rrCameraPass* cameraPass ) override;
 	RENDER_API bool			Render ( const rrRenderParams* params ) override;
 
 private:

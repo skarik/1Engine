@@ -74,7 +74,7 @@ void renderer::InstancedMesh::SetInstanceCount ( int instance_count )
 	ARCORE_ASSERT_MSG((m_dataSize % m_instanceCount) == 0, "Bad alignment or size of input data.");
 }
 
-bool renderer::InstancedMesh::PreRender ( rrCameraPass* cameraPass ) 
+bool renderer::InstancedMesh::PrepRender ( rrCameraPass* cameraPass ) 
 {
 	// disable frustum culling:
 	//bUseFrustumCulling = false;
@@ -101,7 +101,7 @@ bool renderer::InstancedMesh::PreRender ( rrCameraPass* cameraPass )
 		m_newData = false;
 	}
 
-	return renderer::Mesh::PreRender(cameraPass);
+	return renderer::Mesh::PrepRender(cameraPass);
 }
 
 // Render the mesh

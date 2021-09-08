@@ -506,9 +506,9 @@ void CRenderable2D::PushModeldata ( void )
 	m_meshBuffer.InitMeshBuffers(&m_modeldata);
 }
 
-//		PreRender()
+//		CreateConstants()
 // Push the uniform properties
-bool CRenderable2D::PreRender ( rrCameraPass* cameraPass )
+bool CRenderable2D::CreateConstants ( rrCameraPass* cameraPass )
 {
 	PushCbufferPerObject(transform.world, cameraPass);
 	return true;

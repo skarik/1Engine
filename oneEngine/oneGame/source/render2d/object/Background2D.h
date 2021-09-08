@@ -22,7 +22,7 @@ namespace renderer
 		RENDER2D_API explicit	Background2D ( void );
 		RENDER2D_API			~Background2D ();
 
-		RENDER2D_API bool		PreRender ( rrCameraPass* cameraPass ) override;
+		RENDER2D_API bool		CreateConstants ( rrCameraPass* cameraPass ) override;
 		RENDER2D_API bool		Render ( const rrRenderParams* params ) override;
 	};
 }

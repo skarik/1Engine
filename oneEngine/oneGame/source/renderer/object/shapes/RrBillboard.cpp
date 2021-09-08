@@ -73,7 +73,7 @@ RrBillboard::~RrBillboard ( void )
 	
 }
 
-bool RrBillboard::PreRender ( rrCameraPass* cameraPass )
+bool RrBillboard::PrepRender ( rrCameraPass* cameraPass )
 {
 	// Get the active camera and take its transform
 	Vector3f lookPos (0,0,0);
@@ -111,6 +111,11 @@ bool RrBillboard::PreRender ( rrCameraPass* cameraPass )
 
 	// Set up transformation for the mesh
 	PushCbufferPerObject(this->transform.world, cameraPass);
+	return true;
+}
+
+bool RrBillboard::CreateConstants ( rrCameraPass* cameraPass )
+{
 	return true;
 }
 

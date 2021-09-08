@@ -93,6 +93,9 @@ public:
 	// SETTERS
 	//======================================================//
 
+	// Set if the mesh is dynamic or static
+	RENDER_API void			SetIsStatic ( bool isStatic );
+
 	// Set if to use frustum culling or not
 	RENDER_API void			SetFrustumCulling ( bool useCulling = true )
 		{ m_useFrustumCulling = useCulling; }

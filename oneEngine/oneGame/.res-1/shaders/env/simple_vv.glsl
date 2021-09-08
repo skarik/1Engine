@@ -23,7 +23,7 @@ layout(location = 2) out vec3 v2f_normal;
 void main ( void )
 {
 	vec4 v_localPos = vec4( mdl_Vertex, 1.0 );
-	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
+	vec4 v_screenPos = sys_ViewProjectionMatrix * vec4((sys_ModelTRS * v_localPos).xyz, 1.0);
 	// TODO: Move this into either .res-0 or make an option.
 	v_screenPos.xy = floor( v_screenPos.xy * (sys_ScreenSize * 0.25 / v_screenPos.z) ) / (sys_ScreenSize * 0.25 / v_screenPos.z);
 

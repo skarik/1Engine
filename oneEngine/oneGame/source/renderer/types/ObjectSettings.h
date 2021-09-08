@@ -39,10 +39,10 @@ enum eRenderHint : uint8_t
 namespace renderer
 {
 	// Structure definition
-	struct objectSettings
+	/*struct objectSettings
 	{
 		uint32_t	renderHints; // 1 for enable, 0 for disable
-	};
+	};*/
 
 	// Enumeration for rendering type
 	enum rrRenderLayer
@@ -64,18 +64,6 @@ namespace renderer
 		// Used for storing pipelines for off-screen rendering that must occur out of the main loop.
 		kRenderLayerSkip		= 0xFF,
 	};
-	// Struct for pass info
-	/*struct passinfo_t
-	{
-		unsigned char pass;
-		unsigned char userpass;
-	};
-
-	struct new_passinfo_t
-	{
-		uint8_t		pass;
-		uint32_t	vaoObject;
-	};*/
 
 	//	eClearType - buffer clear type
 	// Is not used as certain hard-coded clear types in certain cases have better GPU performance.
@@ -109,12 +97,6 @@ namespace renderer
 		kHLLightModeNone	= 0xFF,
 		kHLLightModeNormal	= 0x00,
 	};
-	/*enum eDrawFaceMode : uint8_t
-	{
-		FM_FRONT = 0,
-		FM_BACK,
-		FM_FRONTANDBACK
-	};*/
 	enum rrCullMode : uint8_t
 	{
 		kCullNone			= 0x00,

@@ -73,7 +73,7 @@ RrShapePlane::RrShapePlane ( void )
 	BuildMeshBuffer();
 }
 
-bool RrShapePlane::PreRender ( rrCameraPass* cameraPass )
+bool RrShapePlane::CreateConstants ( rrCameraPass* cameraPass )
 {
 	// Set up transformation for the mesh
 	PushCbufferPerObject(this->transform.world, cameraPass);

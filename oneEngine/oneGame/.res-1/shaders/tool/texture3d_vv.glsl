@@ -20,7 +20,7 @@ layout(location = 2) out vec3 v2f_worldcoord;
 void main ( void )
 {
 	vec4 v_localPos = vec4( mdl_Vertex, 1.0 );
-	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
+	vec4 v_screenPos = sys_ViewProjectionMatrix * vec4((sys_ModelTRS * v_localPos).xyz, 1.0);
 
 	v2f_colors		= mdl_Color * sys_DiffuseColor;
 	v2f_texcoord0	= mdl_Vertex + vec3(0.5, 0.5 ,0.5);

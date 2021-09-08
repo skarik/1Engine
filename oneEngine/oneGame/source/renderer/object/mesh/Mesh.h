@@ -37,9 +37,9 @@ namespace renderer
 		RENDER_API const bool	GetCanRender ( void ) const
 			{ return bCanRender; }
 
-		//		PreRender
+		//		CreateConstants
 		// Frustum culling & material Cbuffer update.
-		RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
+		RENDER_API bool			CreateConstants ( rrCameraPass* cameraPass ) override;
 
 		//		Render
 		// Called during engine render pass.

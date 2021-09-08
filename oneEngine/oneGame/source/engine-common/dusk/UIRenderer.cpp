@@ -112,7 +112,7 @@ dusk::UIRenderer::~UIRenderer (void)
 
 
 // Can be called multiple times per frame, but generally only once per camera.
-bool dusk::UIRenderer::PreRender ( rrCameraPass* cameraPass )
+bool dusk::UIRenderer::CreateConstants ( rrCameraPass* cameraPass )
 {
 	PushCbufferPerObject(transform.world, cameraPass);
 	return true;

@@ -10,10 +10,6 @@ public:
 	RENDER_API explicit		RrShapeIsosphere ( const int divisions = 1 );
 	RENDER_API				~RrShapeIsosphere ( void );
 
-	//		PreRender()
-	// Push the uniform properties.
-	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
-
 	//		Render()
 	// Renders the shape.
 	RENDER_API bool			Render ( const rrRenderParams* params ) override;

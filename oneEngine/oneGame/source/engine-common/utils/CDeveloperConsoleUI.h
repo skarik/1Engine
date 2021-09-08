@@ -27,7 +27,7 @@ public:
 	ENGCOM_API				~CDeveloperConsoleUI ( void );
 
 	bool					BeginRender ( void ) override;
-	bool					PreRender ( rrCameraPass* cameraPass ) override;
+	bool					CreateConstants ( rrCameraPass* cameraPass ) override;
 	bool					Render ( const rrRenderParams* params ) override;
 
 public:
@@ -49,7 +49,7 @@ public:
 	ENGCOM_API				CDeveloperCursor ( void );
 	ENGCOM_API				~CDeveloperCursor ( void );
 
-	bool					PreRender ( rrCameraPass* cameraPass ) override;
+	bool					CreateConstants ( rrCameraPass* cameraPass ) override;
 	bool					Render ( const rrRenderParams* params ) override;;
 
 private:

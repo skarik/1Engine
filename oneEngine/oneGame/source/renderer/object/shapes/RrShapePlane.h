@@ -8,9 +8,9 @@ class RrShapePlane : public RrRenderObject
 public:
 	RENDER_API explicit		RrShapePlane ( void );
 
-	//		PreRender()
+	//		CreateConstants()
 	// Push the uniform properties.
-	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
+	RENDER_API bool			CreateConstants ( rrCameraPass* cameraPass ) override;
 
 	//		Render()
 	// Renders the shape.

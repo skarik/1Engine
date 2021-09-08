@@ -53,7 +53,7 @@ renderer::Background2D::~Background2D ( void )
 	delete[] m_modeldata.color;
 }
 
-bool renderer::Background2D::PreRender ( rrCameraPass* cameraPass )
+bool renderer::Background2D::CreateConstants ( rrCameraPass* cameraPass )
 {
 	// Set the position to follow the camera
 	transform.world.position = RrCamera::activeCamera->transform.position;
@@ -62,7 +62,7 @@ bool renderer::Background2D::PreRender ( rrCameraPass* cameraPass )
 	transform.world.scale.x = RrCamera::activeCamera->orthoSize.x;
 	transform.world.scale.y = RrCamera::activeCamera->orthoSize.y;
 
-	return CRenderable2D::PreRender(cameraPass);
+	return CRenderable2D::CreateConstants(cameraPass);
 }
 bool renderer::Background2D::Render ( const rrRenderParams* params )
 {

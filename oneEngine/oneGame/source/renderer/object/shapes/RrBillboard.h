@@ -11,9 +11,10 @@ public:
 	RENDER_API explicit		RrBillboard ( void );
 	RENDER_API				~RrBillboard ( void );
 
-	//		PreRender()
+	//		PrepRender()
 	// Updates rotation and pushes the uniform properties. Called per camera.
-	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
+	RENDER_API bool			PrepRender ( rrCameraPass* cameraPass ) override;
+	RENDER_API bool			CreateConstants ( rrCameraPass* cameraPass ) override;
 	//		Render()
 	// Renders the billboard.
 	RENDER_API bool			Render ( const rrRenderParams* params ) override;

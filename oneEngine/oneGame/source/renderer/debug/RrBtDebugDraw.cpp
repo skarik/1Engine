@@ -90,9 +90,9 @@ bool RrBtDebugDraw::EndRender ( void )
 	return true;
 }
 
-//		PreRender()
+//		CreateConstants()
 // Push the model's uniform up up.
-bool RrBtDebugDraw::PreRender ( rrCameraPass* cameraPass )
+bool RrBtDebugDraw::CreateConstants ( rrCameraPass* cameraPass )
 {
 	PushCbufferPerObject( XrTransform(), cameraPass );
 	return true;

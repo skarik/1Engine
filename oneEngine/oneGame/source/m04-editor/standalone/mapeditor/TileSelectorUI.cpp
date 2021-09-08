@@ -110,7 +110,7 @@ void TileSelectorUI::UISetSelection ( int mouseover )
 	ui_mouseover = mouseover;
 }
 
-bool TileSelectorUI::PreRender ( rrCameraPass* pass ) 
+bool TileSelectorUI::CreateConstants ( rrCameraPass* pass ) 
 {
 	PushCbufferPerObject(this->transform.world, pass);
 	return true;

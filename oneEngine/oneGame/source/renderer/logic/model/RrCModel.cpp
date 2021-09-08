@@ -326,6 +326,15 @@ void RrCModel::PostStepSynchronus ( void )
 	//}
 }
 
+// Set if the mesh is dynamic or static
+void RrCModel::SetIsStatic ( bool isStatic )
+{
+	for ( uint i = 0; i < m_meshes.size(); ++i )
+	{
+		m_meshes[i]->m_isStatic = isStatic;
+	}
+}
+
 //// Set if to use frustum culling or not
 //void RrCModel::SetFrustumCulling ( bool useCulling ) {
 //	bUseFrustumCulling = useCulling;

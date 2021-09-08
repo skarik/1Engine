@@ -47,9 +47,9 @@ arModelData* CStreamedRenderable2D::GetModelData ( void )
 	return m_meshBufferRing.getToEdit()->m_modeldata;
 }
 
-//		PreRender()
+//		CreateConstants()
 // Push the uniform properties
-bool CStreamedRenderable2D::PreRender ( rrCameraPass* cameraPass )
+bool CStreamedRenderable2D::CreateConstants ( rrCameraPass* cameraPass )
 {
 	PushCbufferPerObject(transform.world, cameraPass);
 	return true;

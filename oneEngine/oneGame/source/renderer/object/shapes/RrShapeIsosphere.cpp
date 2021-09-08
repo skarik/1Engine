@@ -150,13 +150,6 @@ RrShapeIsosphere::~RrShapeIsosphere ( void )
 	m_meshBuffer.FreeMeshBuffers();
 }
 
-bool RrShapeIsosphere::PreRender ( rrCameraPass* cameraPass )
-{
-	// Set up transformation for the mesh
-	PushCbufferPerObject(this->transform.world, cameraPass);
-	return true;
-}
-
 // Render the mesh
 bool RrShapeIsosphere::Render ( const rrRenderParams* params )
 {

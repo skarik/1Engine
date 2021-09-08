@@ -152,6 +152,7 @@ void scenePalette3DTest0::LoadScene ( void )
 	// Create a floatrock
 	{
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/sky/floatrock_0"}, NULL);
+		model->SetIsStatic(true);
 
 		{
 			// Use a tilebomb material
@@ -313,6 +314,7 @@ void scenePalette3DTest0::LoadScene ( void )
 #if 1
 	{
 		RrShapeIsosphere* sphere = new RrShapeIsosphere();
+		sphere->m_isStatic = true;
 		sphere->transform.world.scale = Vector3f(1500.0F, 1500.0F, 1500.0F);
 
 		// Use a default material
@@ -341,6 +343,8 @@ void scenePalette3DTest0::LoadScene ( void )
 	// Create the grass
 	{
 		InstancedGrassRenderObject* foliage = new InstancedGrassRenderObject();
+		foliage->m_isStatic = true;
+		foliage->m_isStaticInShadows = false;
 
 		const char* l_grassMeshes [2] = {"models/foliage/redgrass_clump_0", "models/foliage/redgrass_clump_1"};
 		foliage->LoadGrassMeshes(l_grassMeshes, 2);
@@ -433,6 +437,7 @@ void scenePalette3DTest0::LoadScene ( void )
 	// Add a rock
 	{
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/desert/rocks_0"}, NULL);
+		model->SetIsStatic(true);
 		model->transform.position = Vector3f(-2.3F, 1.6F, 0.35F);
 		model->transform.scale = Vector3f(1, 1, 1) * 1.7F;
 		model->transform.rotation = Rotator(Vector3f(0, 0, 45));
@@ -478,6 +483,7 @@ void scenePalette3DTest0::LoadScene ( void )
 	// Add another rock
 	{
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/desert/rocks_0"}, NULL);
+		model->SetIsStatic(true);
 		model->transform.position = Vector3f(2.5F, 1.1F, 0.3F);
 		model->transform.scale = Vector3f(1, 1, 1) * 2.6F;
 		model->transform.rotation = Rotator(Vector3f(0, 0, -150));
@@ -523,6 +529,7 @@ void scenePalette3DTest0::LoadScene ( void )
 	// Add a tree
 	{
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/foliage/tree_0"}, NULL);
+		model->SetIsStatic(true);
 		model->transform.position = Vector3f(-1.4F, 3.1F, 0.3F);
 
 		{
@@ -600,6 +607,7 @@ void scenePalette3DTest0::LoadScene ( void )
 	// Add Go!
 	{
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/chara/go_posed"}, NULL);
+		model->SetIsStatic(true);
 		model->transform.position = Vector3f(-1.1F, 3.3F, 0.43F);
 		model->transform.scale = Vector3f(1, 1, 1);
 		model->transform.rotation = Rotator(Vector3f(0, 0, -15));
@@ -646,6 +654,7 @@ void scenePalette3DTest0::LoadScene ( void )
 	// Add a ground chicken!
 	{
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/fauna/Chicken_2_posed"}, NULL);
+		model->SetIsStatic(true);
 		model->transform.position = Vector3f(1.1F, -1.2F, 0.43F);
 		model->transform.scale = Vector3f(1, 1, 1);
 		model->transform.rotation = Rotator(Vector3f(0, 0, 75));
@@ -692,6 +701,7 @@ void scenePalette3DTest0::LoadScene ( void )
 	// Add a rock chicken!
 	{
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/fauna/Chicken_2_posed"}, NULL);
+		model->SetIsStatic(true);
 		model->transform.position = Vector3f(2.52F, 1.24F, 1.68F);
 		model->transform.scale = Vector3f(1, 1, 1);
 		model->transform.rotation = Rotator(Vector3f(0, 0, 145));
@@ -748,6 +758,7 @@ void scenePalette3DTest0::LoadScene ( void )
 		}
 
 		RrCModel* model = RrCModel::Load(rrModelLoadParams{"models/rusted/lamp_0"}, NULL);
+		model->SetIsStatic(true);
 		model->transform.position = Vector3f(-2.54F, 1.66F, 1.27F);
 		model->transform.scale = Vector3f(1, 1, 1);
 		model->transform.rotation = Rotator(Vector3f(0, 0, 32));

@@ -608,7 +608,8 @@ Prerender_Pass:
 				// If there is an enabled pass, we want to call PreRender on the object & enable the layer for rendering.
 				if (l_hasPass)
 				{
-					renderable->PreRender(cameraPass);
+					//renderable->PreRender(cameraPass);
+					renderable->CreateConstants(cameraPass);
 				}
 			}
 		}
@@ -865,6 +866,7 @@ Render_Groups:
 				params.context_graphics = gfx;
 
 				ARCORE_ASSERT(params.context_graphics != nullptr);
+				renderable->PrepRender(cameraPass);
 				renderable->Render(&params);
 			}
 		}
@@ -969,6 +971,7 @@ Render_Groups:
 					params.context_graphics = gfx;
 			
 					ARCORE_ASSERT(params.context_graphics != nullptr);
+					renderable->PrepRender(cameraPass);
 					renderable->Render(&params);
 				}
 			}
@@ -1054,7 +1057,7 @@ Render_Groups:
 				params.context_graphics = gfx;
 
 				ARCORE_ASSERT(params.context_graphics != nullptr);
-				renderable->PreRender(cameraPass);
+				renderable->PrepRender(cameraPass);
 				renderable->Render(&params);
 			}
 			gfx->debugGroupPop();
@@ -1132,7 +1135,7 @@ Render_Groups:
 				params.context_graphics = gfx;
 
 				ARCORE_ASSERT(params.context_graphics != nullptr);
-				renderable->PreRender(cameraPass);
+				renderable->PrepRender(cameraPass);
 				renderable->Render(&params);
 			}
 			gfx->debugGroupPop();

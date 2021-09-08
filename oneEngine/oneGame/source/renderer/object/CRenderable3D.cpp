@@ -28,9 +28,9 @@ void CRenderable3D::PushModeldata ( void )
 	m_meshBuffer.InitMeshBuffers(&m_modeldata);
 }
 
-//		PreRender()
+//		CreateConstants()
 // Push the uniform properties
-bool CRenderable3D::PreRender ( rrCameraPass* cameraPass )
+bool CRenderable3D::CreateConstants ( rrCameraPass* cameraPass )
 {
 	PushCbufferPerObject(transform.world, cameraPass);
 	return true;

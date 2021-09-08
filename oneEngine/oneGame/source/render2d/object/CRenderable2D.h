@@ -66,7 +66,7 @@ public:
 
 	//	PreRender()
 	// Push the uniform properties
-	RENDER2D_API bool		PreRender ( rrCameraPass* cameraPass ) override;
+	RENDER2D_API bool		CreateConstants ( rrCameraPass* cameraPass ) override;
 
 	//	Render()
 	// Render the model using the 2D engine's style

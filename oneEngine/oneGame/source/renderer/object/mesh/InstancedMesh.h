@@ -40,9 +40,9 @@ namespace renderer
 		// Pushes the instance data to the renderer at the end so the device has time to catch up
 		//RENDER_API bool			EndRender ( void ) override;
 
-		//		PreRender
+		//		PrepRender
 		// Pushes the instance data to the renderer before rendering starts.
-		RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
+		RENDER_API bool			PrepRender ( rrCameraPass* cameraPass ) override;
 
 	protected:
 		//glHandle	m_tbo_buffer;

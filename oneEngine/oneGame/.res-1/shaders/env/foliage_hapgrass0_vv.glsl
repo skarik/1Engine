@@ -45,7 +45,7 @@ void main ( void )
 	const Variation l_variationInfo = instanced_Variation[instanced_FirstIndex + gl_InstanceIndex];
 	
 	vec4 v_localPos = l_worldTransform * vec4( mdl_Vertex, 1.0 );
-	vec4 v_screenPos = sys_ModelViewProjectionMatrix * vec4( v_localPos.xyz, 1.0 );
+	vec4 v_screenPos = sys_ViewProjectionMatrix * vec4( v_localPos.xyz, 1.0 );
 
 	v2f_colors		= vec4(mdl_Color.rgb * sys_DiffuseColor.rgb * l_variationInfo.color, mdl_Color.a * sys_DiffuseColor.a);
 	v2f_texcoord0	= mdl_TexCoord.xy;

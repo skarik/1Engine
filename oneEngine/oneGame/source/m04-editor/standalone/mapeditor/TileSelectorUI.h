@@ -18,7 +18,7 @@ namespace M04
 		explicit	TileSelectorUI ( void );
 					~TileSelectorUI ( void );
 
-		bool		PreRender ( rrCameraPass* passs ) override;
+		bool		CreateConstants ( rrCameraPass* passs ) override;
 		bool		Render ( const rrRenderParams* params ) override;
 		bool		EndRender ( void ) override;
 

@@ -34,10 +34,12 @@ namespace renderer
 		LAYOUT_PACK_TIGHTLY
 		struct rrPerObjectMatrices
 		{
+			// The full world translation matrix.
 			Matrix4x4	modelTRS;
+			Matrix4x4	modelTRSInverse;
+			// The world rotation-only matrix.
 			Matrix4x4	modelR;
-			Matrix4x4	modelViewProjection;
-			Matrix4x4	modelViewProjectionInverse;
+			Matrix4x4	modelRInverse;
 		};
 		LAYOUT_PACK_END
 		static_assert(sizeof(rrPerObjectMatrices) == 256, "Alignment of rrPerObjectSurface incorrect for the GPU.");

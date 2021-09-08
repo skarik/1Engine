@@ -59,12 +59,13 @@ InstancedGrassRenderObject::~InstancedGrassRenderObject ( void )
 	{
 		mesh_type.m_meshGroup->RemoveReference();
 	}
+
+	instancing_info.buffer_transforms.free(NULL);
+	instancing_info.buffer_variations.free(NULL);
 }
 
-bool InstancedGrassRenderObject::PreRender ( rrCameraPass* cameraPass )
+bool InstancedGrassRenderObject::PrepRender ( rrCameraPass* cameraPass )
 {
-	PushCbufferPerObject(XrTransform(), cameraPass);
-
 	// TODO: This still isn't quite working. Have to figure out why not all grass instancing rendering.
 
 	// Resize & reset counters
@@ -110,10 +111,13 @@ bool InstancedGrassRenderObject::PreRender ( rrCameraPass* cameraPass )
 	ARCORE_ASSERT(instancing_info.instance_count <= instancing_info.variations.size());
 	ARCORE_ASSERT(instancing_info.instance_count <= instancing_info.transforms.size());
 
-	instancing_info.buffer_transforms.initAsStructuredBuffer(NULL, sizeof(grInstancedDataGrassTransform) * instancing_info.instance_count);
+	ARCORE_ASSERT(instancing_info.instance_count < 4096);
+	if (!instancing_info.buffer_transforms.valid())
+		instancing_info.buffer_transforms.initAsStructuredBuffer(NULL, sizeof(grInstancedDataGrassTransform) * 4096);
 	instancing_info.buffer_transforms.upload(NULL, instancing_info.transforms.data(), sizeof(grInstancedDataGrassTransform) * instancing_info.instance_count, gpu::kTransferStream);
 
-	instancing_info.buffer_variations.initAsStructuredBuffer(NULL, sizeof(grInstancedDataGrassVariation) * instancing_info.instance_count);
+	if (!instancing_info.buffer_variations.valid())
+		instancing_info.buffer_variations.initAsStructuredBuffer(NULL, sizeof(grInstancedDataGrassVariation) * 4096);
 	instancing_info.buffer_variations.upload(NULL, instancing_info.variations.data(), sizeof(grInstancedDataGrassVariation) * instancing_info.instance_count, gpu::kTransferStream);
 
 	// Update the offsets in the buffer
@@ -123,9 +127,6 @@ bool InstancedGrassRenderObject::PreRender ( rrCameraPass* cameraPass )
 
 bool InstancedGrassRenderObject::EndRender ( void )
 {
-	instancing_info.buffer_transforms.free(NULL);
-	instancing_info.buffer_variations.free(NULL);
-
 	return true;
 }
 

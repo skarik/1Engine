@@ -22,7 +22,7 @@ public:
 	//	BeginRender() : Create the mesh & stream to the GPU
 	bool					BeginRender ( void ) override;
 	//	PreRender() : Prepare for the camera
-	bool					PreRender ( rrCameraPass* pass ) override;
+	bool					CreateConstants ( rrCameraPass* pass ) override;
 	//	Render() : Rneder the created mesh
 	bool					Render ( const rrRenderParams* params ) override;
 private:

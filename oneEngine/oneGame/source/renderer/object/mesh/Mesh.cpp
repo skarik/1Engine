@@ -57,7 +57,7 @@ renderer::Mesh::~Mesh ( void )
 
 // == RENDERABLE OBJECT INTERFACE ==
 
-bool renderer::Mesh::PreRender ( rrCameraPass* cameraPass )
+bool renderer::Mesh::CreateConstants ( rrCameraPass* cameraPass )
 {
 	// disable frustum culling:
 	//bUseFrustumCulling = false;
@@ -147,17 +147,28 @@ bool renderer::Mesh::Render ( const rrRenderParams* params )
 		// bind the index buffer
 		gfx->setIndexBuffer(&m_mesh->m_indexBuffer, gpu::kIndexFormatUnsigned16);
 
-		// bind the cbuffers: TODO
+		// bind the cbuffers
+#if 0
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
 		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_cbufPerObjectMatrices);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
 		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[params->pass]);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
 		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, params->cbuf_perCamera);
-		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
-		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
 		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
 		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_FRAME_INFORMATION, params->cbuf_perFrame);
+		gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
+		gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_PASS_INFORMATION, params->cbuf_perPass);
+#else
+		gpu::Buffer* cbuffers [5] = {
+			&m_cbufPerObjectMatrices,
+			&m_cbufPerObjectSurfaces[params->pass],
+			params->cbuf_perCamera,
+			params->cbuf_perFrame,
+			params->cbuf_perPass};
+		gfx->setShaderCBuffers(gpu::kShaderStageVs, 0, 5, cbuffers);
+		gfx->setShaderCBuffers(gpu::kShaderStagePs, 0, 5, cbuffers);
+#endif
 
 		// draw now
 		gfx->drawIndexed(m_mesh->m_modeldata->indexNum, 0, 0);

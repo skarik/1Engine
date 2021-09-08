@@ -18,7 +18,7 @@ RrRenderObject::RrRenderObject ( void )
 	: m_passEnabled(), m_pipelineReady()
 {
 	// Set default layer mode
-	renderSettings.renderHints = kRenderHintBitmaskALL;
+	//renderSettings.renderHints = kRenderHintBitmaskALL;
 
 	//InitMaterials();
 	//RrRenderObject::SetMaterial( RrMaterial::Default );
@@ -65,28 +65,26 @@ void RrRenderObject::AddToWorld ( RrWorld* world )
 void RrRenderObject::PushCbufferPerObject ( const XrTransform& worldTransform, const rrCameraPass* cameraPass )
 {
 	// Update matrix constants
+	if ( !m_isStatic || !m_cbufMatricesSynced )
 	{
 		Matrix4x4 modelTRS, modelR;
 		core::TransformUtility::TRSToMatrix4x4(worldTransform, modelTRS, modelR);
 
-		modelTRS = !modelTRS;
+		modelTRS = !modelTRS; // Shaders need matrices transposed (TODO: figure out a way to avoid this)
 		modelR  = !modelR;
 
 		renderer::cbuffer::rrPerObjectMatrices matrices;
-		matrices.modelTRS = modelTRS;
-		matrices.modelR  = modelR;
-		matrices.modelViewProjection = (cameraPass != NULL) ? (modelTRS * cameraPass->m_viewprojTransform) : (modelTRS);
-		matrices.modelViewProjectionInverse = matrices.modelViewProjection.inverse();
-
-		// TODO: Create a "m_isStatic" flag for if MVP should be calculated in the vertex shader.
+		matrices.modelTRS			= modelTRS;
+		matrices.modelTRSInverse	= modelTRS.inverse();
+		matrices.modelR			= modelR;
+		matrices.modelRInverse	= modelR.inverse();
 
 		// TODO: Create the buffer & push it
-		//if (!m_cbufPerObjectMatrices.valid())
-		//	m_cbufPerObjectMatrices.initAsConstantBuffer(NULL, sizeof(matrices));
-		if (m_cbufPerObjectMatrices.valid())
-			m_cbufPerObjectMatrices.free(NULL);
-		m_cbufPerObjectMatrices.initAsConstantBuffer(NULL, sizeof(matrices));
+		if (!m_cbufPerObjectMatrices.valid())
+			m_cbufPerObjectMatrices.initAsConstantBuffer(NULL, sizeof(matrices));
 		m_cbufPerObjectMatrices.upload(NULL, &matrices, sizeof(matrices), gpu::TransferStyle::kTransferStream);
+
+		m_cbufMatricesSynced = true; // Mark matrices synced so we don't upload again.
 	}
 
 	// Update surface constants
@@ -106,6 +104,27 @@ void RrRenderObject::PushCbufferPerObject ( const XrTransform& worldTransform, c
 			}
 		}
 	}
+}
+
+//	GetNeedsUpdate() : Does this object require a constants update?
+bool RrRenderObject::GetNeedsUpdate ( void ) const
+{
+	// Needs update each frame if not static
+	if (!m_isStatic || !m_cbufMatricesSynced)
+	{
+		return true;
+	}
+
+	// Needs any of the surface passes updated
+	for (int i = 0; i < kPass_MaxPassCount; ++i)
+	{
+		if (m_passEnabled[i] && !m_passSurfaceSynced[i])
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 //	PassInitWithInput(pass, passData) : Sets up a new pass on the given slot.

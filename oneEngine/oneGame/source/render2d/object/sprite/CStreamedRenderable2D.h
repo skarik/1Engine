@@ -29,9 +29,9 @@ public:
 	// Push the current stuff in model data to GPU.
 	RENDER2D_API void		StreamLockModelData ( void );
 
-	//		PreRender()
+	//		CreateConstants()
 	// Push the uniform properties
-	RENDER2D_API bool		PreRender ( rrCameraPass* cameraPass ) override;
+	RENDER2D_API bool		CreateConstants ( rrCameraPass* cameraPass ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style

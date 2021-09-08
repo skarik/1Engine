@@ -171,7 +171,7 @@ bool CDeveloperConsoleUI::BeginRender ( void )
 	return true;
 }
 
-bool CDeveloperConsoleUI::PreRender ( rrCameraPass* cameraPass )
+bool CDeveloperConsoleUI::CreateConstants ( rrCameraPass* cameraPass )
 {
 	PushCbufferPerObject(XrTransform(), cameraPass);
 	return true;
@@ -241,7 +241,7 @@ CDeveloperCursor::CDeveloperCursor ( void )
 	cursorPass.setSampler( TEX_MAIN, &samplerCursor );
 	cursorPass.utilSetupAs2D();
 	cursorPass.m_alphaMode = renderer::kAlphaModeTranslucent;
-	cursorPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/sys/fullbright_vv.spv", "shaders/sys/fullbright_p.spv"});
+	cursorPass.m_program = RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/default_vv.spv", "shaders/v2d/default_p.spv"});
 	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
 											renderer::shader::Location::kUV0,
 											renderer::shader::Location::kColor,
@@ -273,7 +273,7 @@ CDeveloperCursor::~CDeveloperCursor ( void )
 
 	m_meshBuffer.FreeMeshBuffers();
 }
-bool CDeveloperCursor::PreRender ( rrCameraPass* cameraPass )
+bool CDeveloperCursor::CreateConstants ( rrCameraPass* cameraPass )
 {
 	// Manually create transform
 	XrTransform cursorTransform;

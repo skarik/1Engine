@@ -37,9 +37,9 @@ public:
 	// Load the meshes that the grass variations pull from
 	GAME_API void			LoadGrassMeshes ( const char* const* mesh_resources, const int mesh_count );
 
-	//		PreRender()
-	// Push the uniform properties
-	GAME_API bool			PreRender ( rrCameraPass* cameraPass ) override;
+	//		PrepRender(cameraPass)
+	// Push instance properties for this camera
+	GAME_API bool			PrepRender ( rrCameraPass* cameraPass ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style

@@ -372,7 +372,7 @@ void main ( void )
 		-2.0 * ((gl_FragCoord.y - sys_ViewportInfo.y) / sys_ViewportInfo.w - 0.5),
 		1.0,
 		1.0);
-	vec4 l_screenSpaceRayTransformed = sys_ModelViewProjectionMatrixInverse * l_screenSpaceRay;
+	vec4 l_screenSpaceRayTransformed = sys_ViewProjectionMatrixInverse * l_screenSpaceRay;
 	const vec3 l_screenRay = normalize(l_screenSpaceRayTransformed.xyz / l_screenSpaceRayTransformed.w);
 	const rrRay l_pixelRay = rrRay(sys_WorldCameraPos.xyz, l_screenRay);
 	
@@ -397,13 +397,13 @@ void main ( void )
 	const float coverage = 0.5;
 	const float shape = 0.1;
 	
-	float cloud_blend_0 = 0.0;
-	vec3 cloud_color_0 = TraceClouds(l_pixelRay, cloud_layer_0, lightDirection, lightColor, ambientLight, coverage, shape, 1.0, cloud_blend_0);
-	skyColor = mix(skyColor, cloud_color_0, cloud_blend_0);
+	//float cloud_blend_0 = 0.0;
+	//vec3 cloud_color_0 = TraceClouds(l_pixelRay, cloud_layer_0, lightDirection, lightColor, ambientLight, coverage, shape, 1.0, cloud_blend_0);
+	//skyColor = mix(skyColor, cloud_color_0, cloud_blend_0);
 	
-	float cloud_blend_1 = 0.0;
-	vec3 cloud_color_1 = TraceClouds(l_pixelRay, cloud_layer_1, lightDirection, lightColor, ambientLight, 1.0, 0.7, 1.3, cloud_blend_1);
-	skyColor = mix(skyColor, cloud_color_1, cloud_blend_1);
+	//float cloud_blend_1 = 0.0;
+	//vec3 cloud_color_1 = TraceClouds(l_pixelRay, cloud_layer_1, lightDirection, lightColor, ambientLight, 1.0, 0.7, 1.3, cloud_blend_1);
+	//skyColor = mix(skyColor, cloud_color_1, cloud_blend_1);
 	
 	//FragDiffuse = vec4(l_screenRay, 1.0);
 	FragDiffuse = vec4(skyColor, 1.0);

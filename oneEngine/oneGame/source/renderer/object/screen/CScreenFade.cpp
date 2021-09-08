@@ -70,7 +70,7 @@ void CScreenFade::PreStepSynchronus ( void )
 	}
 }
 
-bool CScreenFade::PreRender ( rrCameraPass* cameraPass )
+bool CScreenFade::CreateConstants ( rrCameraPass* cameraPass )
 {
 	//GL.Translate( Vector3f( 0,0,40 ) );
 	//screenMaterial->m_diffuse.alpha = std::min<Real>( fAlpha, 1.0F );

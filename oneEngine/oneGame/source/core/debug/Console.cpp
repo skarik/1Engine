@@ -11,6 +11,7 @@
 #include <array>
 #include <thread>
 #include <atomic>
+#include <mutex>
 
 //===============================================================================================//
 
@@ -96,6 +97,10 @@ debug::ConsoleWindow*	debug::Console = NULL;
 static bool				bOutputEnabled = true;
 static std::thread		g_OutputThread;
 static std::atomic_flag	g_QuitFlag;
+static std::mutex		g_OutputWaitLock; // TODO: This mutex/cv use is slightly incorrect
+static std::condition_variable
+						g_OuptutWaitCV;
+
 
 arRingMultiProduceSingleConsume<arMessageRequest, kQueueSize>
 						g_QueueMessage;
@@ -148,6 +153,11 @@ static void PrintOutputRoutine ( void )
 		#endif
 
 			g_QueueMessage.pop();
+		}
+
+		{	// Wait for another thread to notify this thread.
+			std::unique_lock<std::mutex> lock(g_OutputWaitLock);
+			g_OuptutWaitCV.wait(lock);
 		}
 
 		std::this_thread::yield();
@@ -248,6 +258,7 @@ void debug::ConsoleWindow::Free ( void )
 {
 	// Kill the output thread
 	g_QuitFlag.clear();
+	g_OuptutWaitCV.notify_all();
 	g_OutputThread.join();
 
 	// Close all handles
@@ -277,6 +288,7 @@ void debug::ConsoleWindow::PrintMessage ( const char* fmt, ... )
 	va_end(argptr);
 
 	g_QueueMessage.push(arMessageRequest{arMessageType::kMessage, std::move(buffer)});
+	g_OuptutWaitCV.notify_one();
 }
 
 void debug::ConsoleWindow::PrintWarning ( const char* fmt, ... )
@@ -289,6 +301,7 @@ void debug::ConsoleWindow::PrintWarning ( const char* fmt, ... )
 	va_end(argptr);
 
 	g_QueueMessage.push(arMessageRequest{arMessageType::kWarning, std::move(buffer)});
+	g_OuptutWaitCV.notify_one();
 }
 
 void debug::ConsoleWindow::PrintError ( const char* fmt, ... )
@@ -301,6 +314,7 @@ void debug::ConsoleWindow::PrintError ( const char* fmt, ... )
 	va_end(argptr);
 
 	g_QueueMessage.push(arMessageRequest{arMessageType::kError, std::move(buffer)});
+	g_OuptutWaitCV.notify_one();
 }
 
 void debug::ConsoleWindow::PrintMessage ( const std::string& str )

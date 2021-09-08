@@ -81,7 +81,7 @@ namespace dusk
 		//	PreRender() : Called before the internal render-loop executes.
 		// Can be called multiple times per frame, but generally only once per camera.
 		// Use to calculate transformation matrices w/ the given camera before sending to the GPU.
-		ENGCOM_API bool			PreRender ( rrCameraPass* cameraPass ) override;
+		ENGCOM_API bool			CreateConstants ( rrCameraPass* cameraPass ) override;
 		//	Render(const rrRenderParams* params) : Current pass
 		ENGCOM_API bool			Render ( const rrRenderParams* params ) override;
 

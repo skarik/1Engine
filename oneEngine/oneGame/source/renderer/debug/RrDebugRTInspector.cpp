@@ -54,7 +54,7 @@ bool RrDebugRTInspector::BeginRender ( void )
 	return visible;
 }
 
-bool RrDebugRTInspector::PreRender ( rrCameraPass* cameraPass )
+bool RrDebugRTInspector::CreateConstants ( rrCameraPass* cameraPass )
 {
 	//m_material->prepareShaderConstants();
 	PushCbufferPerObject(XrTransform(), cameraPass);

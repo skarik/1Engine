@@ -25,7 +25,7 @@ void main ( void )
 		-2.0 * ((gl_FragCoord.y - sys_ViewportInfo.y) / sys_ViewportInfo.w - 0.5),
 		1.0,
 		1.0);
-	const vec3 l_screenRay = normalize((sys_ModelViewProjectionMatrixInverse * l_screenSpaceRay).xyz);
+	const vec3 l_screenRay = normalize((sys_ViewProjectionMatrixInverse * l_screenSpaceRay).xyz);
 	
 	vec4 diffuseColor = texture(textureSampler0, l_screenRay);
 	

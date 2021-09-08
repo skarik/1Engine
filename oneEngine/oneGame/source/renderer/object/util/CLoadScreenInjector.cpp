@@ -45,8 +45,6 @@ void CLoadScreenInjector::setAlpha ( Real new_alpha )
 CLoadScreenInjector::CLoadScreenInjector ( void )
 	: RrRenderObject (  )
 {
-	renderSettings.renderHints = 0 | kRenderHintBitmaskWorld;
-
 	// Create the font being used:
 	m_fntNotifier	= RrFontTexture::Load( "YanoneKaffeesatz-B.otf", 72, kFW_Normal );
 
@@ -117,7 +115,7 @@ bool CLoadScreenInjector::BeginRender ( void )
 }
 
 //	PreRender() : update cbuffers
-bool CLoadScreenInjector::PreRender ( rrCameraPass* pass )
+bool CLoadScreenInjector::CreateConstants ( rrCameraPass* pass )
 {
 	// Update the alpha:
 	//PassGetSurface(0).diffuseColor.w = m_currentAlpha; // Handled in vertex colors.

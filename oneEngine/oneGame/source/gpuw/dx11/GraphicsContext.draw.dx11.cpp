@@ -214,6 +214,44 @@ int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, const 
 	return kError_SUCCESS;
 }
 
+int gpu::GraphicsContext::setShaderCBuffers ( ShaderStage stage, int startSlot, int slotCount, Buffer* const* buffers )
+{
+	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+	ARCORE_ASSERT(startSlot >= 0);
+	ARCORE_ASSERT(slotCount + startSlot < D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT);
+
+	// Build list of shaders we're passing in
+	ID3D11Buffer* bufferList [D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT] = {NULL};
+	for ( int i = 0; i < slotCount; ++i )
+	{
+		if (buffers[i])
+		{
+			ARCORE_ASSERT(buffers[i]->getBufferType() == kBufferTypeConstant);
+			bufferList[i] = (ID3D11Buffer*)((Buffer*)buffers[i])->nativePtr();
+		}
+	}
+
+	if (stage == kShaderStageVs)
+		ctx->VSSetConstantBuffers(startSlot, slotCount, bufferList);
+	else if (stage == kShaderStageHs)
+		ctx->HSSetConstantBuffers(startSlot, slotCount, bufferList);
+	else if (stage == kShaderStageDs)
+		ctx->DSSetConstantBuffers(startSlot, slotCount, bufferList);
+	else if (stage == kShaderStageGs)
+		ctx->GSSetConstantBuffers(startSlot, slotCount, bufferList);
+	else if (stage == kShaderStagePs)
+		ctx->PSSetConstantBuffers(startSlot, slotCount, bufferList);
+	else if (stage == kShaderStageCs)
+		ctx->CSSetConstantBuffers(startSlot, slotCount, bufferList);
+	else
+	{
+		ARCORE_ERROR("Invalid shader stage");
+	}
+
+	// todo: bind
+	return kError_SUCCESS;
+}
+
 int gpu::GraphicsContext::setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer )
 {
 	if (buffer == nullptr)

@@ -11,9 +11,9 @@ class RrShapeCube : public RrRenderObject
 public:
 	RENDER_API explicit		RrShapeCube ( void );
 
-	//		PreRender()
+	//		CreateConstants()
 	// Push the uniform properties.
-	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
+	RENDER_API bool			CreateConstants ( rrCameraPass* cameraPass ) override;
 
 	//		Render()
 	// Renders the shape.

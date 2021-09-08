@@ -24,9 +24,9 @@ arModelData* CStreamedRenderable3D::GetModelData ( void )
 	return &m_modeldata;
 }
 
-//		PreRender()
+//		CreateConstants()
 // Push the uniform properties
-bool CStreamedRenderable3D::PreRender ( rrCameraPass* cameraPass )
+bool CStreamedRenderable3D::CreateConstants ( rrCameraPass* cameraPass )
 {
 	PushCbufferPerObject(transform.world, cameraPass);
 	return true;

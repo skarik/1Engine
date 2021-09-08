@@ -2,21 +2,18 @@
 // Simple shader meant for use when actual target shader has an error.
 #version 430
 
-layout(location = 0) in vec3 mdl_Vertex;
+#extension GL_GOOGLE_include_directive : require
+#extension GL_EXT_control_flow_attributes : require
 
-// System inputs
-layout(binding = 0, std140) uniform sys_cbuffer_PerObject
-{
-    mat4 sys_ModelTRS;
-    mat4 sys_ModelRS;
-    mat4 sys_ModelViewProjectionMatrix;
-    mat4 sys_ModelViewProjectionMatrixInverse;
-};
+#include "../common.glsli"
+#include "../cbuffers.glsli"
+
+layout(location = 0) in vec3 mdl_Vertex;
 
 void main ( void )
 {
 	vec4 v_localPos = vec4( mdl_Vertex, 1.0 );
-	vec4 v_screenPos = sys_ModelViewProjectionMatrix * v_localPos;
+	vec4 v_screenPos = sys_ViewProjectionMatrix * vec4((sys_ModelTRS * v_localPos).xyz, 1.0);
 
 	gl_Position = v_screenPos;
 }

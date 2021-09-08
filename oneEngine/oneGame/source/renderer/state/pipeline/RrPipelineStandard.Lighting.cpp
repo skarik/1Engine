@@ -277,7 +277,7 @@ void RrPipelineStandardRenderer::RenderShadows(
 					params.context_graphics = gfx;
 
 					ARCORE_ASSERT(params.context_graphics != nullptr);
-					renderable->PreRender(&cameraPasses); // Push the buffers now
+					renderable->PrepRender(&cameraPasses); // Push the buffers now
 					renderable->Render(&params);
 				}
 

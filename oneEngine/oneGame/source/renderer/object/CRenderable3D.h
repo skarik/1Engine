@@ -22,9 +22,9 @@ public:
 	RENDER_API				CRenderable3D ( void );
 	RENDER_API				~CRenderable3D ( void );
 
-	//		PreRender()
+	//		CreateConstants()
 	// Push the uniform properties
-	RENDER_API bool			PreRender ( rrCameraPass* cameraPass ) override;
+	RENDER_API bool			CreateConstants ( rrCameraPass* cameraPass ) override;
 
 	//		Render()
 	// Render the model using the 2D engine's style

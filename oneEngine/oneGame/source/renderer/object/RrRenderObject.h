@@ -97,8 +97,21 @@ public:
 	//	PreRender() : Called before the internal render-loop executes.
 	// Can be called multiple times per frame, but generally only once per camera.
 	// Use to calculate transformation matrices w/ the given camera before sending to the GPU.
-	RENDER_API virtual bool	PreRender ( rrCameraPass* cameraPass )
+	//RENDER_API virtual bool	PreRender ( rrCameraPass* cameraPass )
+	//	{ return true; }
+
+	//	PrepRender() : Called before the internal render-loop executes.
+	// Can be called multiple times per frame, but generally only once per camera.
+	RENDER_API virtual bool	PrepRender ( rrCameraPass* cameraPass )
 		{ return true; }
+	//	CreateConstants() : Called before the internal render-loop executes.
+	// Use to calculate transformation matrices w/ the given camera before sending to the GPU.
+	RENDER_API virtual bool	CreateConstants ( rrCameraPass* cameraPass )
+	{
+		PushCbufferPerObject(this->transform.world, cameraPass);
+		return true;
+	}
+
 	//	Render(const rrRenderParams* params) : Current pass
 	RENDER_API virtual bool	Render ( const rrRenderParams* params ) =0;
 	//	BeginRender() : Called before the render-loop executes, outside of the world loop.
@@ -123,6 +136,15 @@ public:
 	// Returns visible state
 	RENDER_API virtual bool	GetVisible ( void ) const
 		{ return visible; }
+
+	//	GetNeedsUpdate() : Does this object require a constants update?
+	RENDER_API virtual bool	GetNeedsUpdate ( void ) const;
+	//	GetIsStatic() : Is this a static (unmoving) object?
+	RENDER_API bool			GetIsStatic ( void ) const
+		{ return m_isStatic; }
+	//	GetIsStaticInShadows() : Is this a static object in the depth buffer?
+	RENDER_API bool			GetIsStaticInShadows ( void ) const
+		{ return m_isStaticInShadows; }
 
 	//
 	// Object Passes
@@ -176,14 +198,14 @@ public:
 public:
 	// Positional transform
 	core::Transform			transform;
-	// miscelleneous render settings
-	renderer::objectSettings
-							renderSettings;		
-	RrObjectMaterialProperties
-							shaderConstants;
 
 	// Distance from the render pivot
-	float					renderDistance;
+	float					renderDistance = 0.0F;
+
+	// Is this object static to the world? Anything with static `transform` can be true.
+	bool					m_isStatic = false;
+	// Is this object static in shadows? Anything with vertex motion should be false.
+	bool					m_isStaticInShadows = false;
 
 private:
 	friend rrRenderRequestSorter;
@@ -202,6 +224,9 @@ protected:
 
 	gpu::Buffer				m_cbufPerObjectMatrices;
 	gpu::Buffer				m_cbufPerObjectSurfaces [kPass_MaxPassCount];
+
+	bool					m_cbufMatricesSynced = false;
+
 public:
 	//	GetCbufferPerObjectMatrices() : Get the cbuffer used for the object matrices. Use for external shader binding.
 	RENDER_API const gpu::Buffer&

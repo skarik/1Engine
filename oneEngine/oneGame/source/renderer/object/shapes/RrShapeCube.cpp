@@ -147,7 +147,7 @@ RrShapeCube::RrShapeCube ( void )
 }
 
 
-bool RrShapeCube::PreRender ( rrCameraPass* cameraPass )
+bool RrShapeCube::CreateConstants ( rrCameraPass* cameraPass )
 {
 	// Set up transformation for the mesh
 	PushCbufferPerObject(this->transform.world, cameraPass);

@@ -78,6 +78,9 @@ namespace gpu
 		//	setShaderCBuffer( stage, slot, buffer ) : Sets buffer to given slot, as a ConstantBuffer.
 		// Size is limited to 4kb on some platforms.
 		GPUW_API int			setShaderCBuffer ( ShaderStage stage, int slot, const Buffer* buffer );
+		//	setShaderCBuffers( stage, start slot, slot count, buffers ) : Sets buffers to slots at once, as ConstantBuffers.
+		// Size is limited to 4kb on some platforms.
+		GPUW_API int			setShaderCBuffers ( ShaderStage stage, int startSlot, int slotCount, Buffer* const* buffers );
 		//	setShaderSBuffer( stage, slot, buffer ) : Sets buffer to given slot, as a StructuredBuffer.
 		// Size must be at least 1kb on some platforms.
 		// For compute stages, acts as a fast alias for setShaderResource.
