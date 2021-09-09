@@ -143,7 +143,7 @@ RrAtlasedTexture::Add ( const char* resource_name )
 		uint16_t level_depth	= std::max<uint16_t>(1, loadInfo->loader.info.depth);
 
 		//loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, info.type, info.internalFormat, level_width, level_height, level_depth);
-		//void* target = loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferStatic);
+		//void* target = loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferWriteDiscardPrevious);
 		loadInfo->data = new uint32_t[level_width * level_height];
 		void* target = loadInfo->data;
 

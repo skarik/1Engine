@@ -40,7 +40,7 @@ void RrScreenshot::SaveTimestampedToPNG ( void )
 
 void RrScreenshot::SaveToPNG( const arstring<256> & filename )
 {	
-	//gpu::GraphicsContext* gfx = params->context_graphics;
+	//gpu::GraphicsContext* gfx = params->context->context_graphics;
 
 	//float* raw_pixelVals = GL.GetPixels( 0,0, Screen::Info.width,Screen::Info.height );
 	//float* raw_pixelVals = gfx->getScreenPixels();

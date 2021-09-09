@@ -140,7 +140,7 @@ void RrRenderer::StepPreRender ( rrRenderFrameState* frameState )
 		frameInfo.frameIndex = frame_index;
 		// Push to GPU:
 		frameState->cbuffer_perFrame.initAsConstantBuffer(NULL, sizeof(renderer::cbuffer::rrPerFrame));
-		frameState->cbuffer_perFrame.upload(NULL, &frameInfo, sizeof(renderer::cbuffer::rrPerFrame), gpu::kTransferStream);
+		frameState->cbuffer_perFrame.upload(NULL, &frameInfo, sizeof(renderer::cbuffer::rrPerFrame), gpu::kTransferWriteDiscardPrevious);
 	}
 
 	// Update the per-pass constant buffer data:
@@ -154,7 +154,7 @@ void RrRenderer::StepPreRender ( rrRenderFrameState* frameState )
 				renderer::cbuffer::rrPerPassLightingInfo passInfo = {}; // Unused. May want to remove later...
 
 				state->internal_cbuffers_passes[state->internal_chain_index * renderer::kRenderLayer_MAX + iLayer]
-					.upload(NULL, &passInfo, sizeof(renderer::cbuffer::rrPerPassLightingInfo), gpu::kTransferStream);
+					.upload(NULL, &passInfo, sizeof(renderer::cbuffer::rrPerPassLightingInfo), gpu::kTransferWriteDiscardPrevious);
 			}
 		}
 	}*/
@@ -297,7 +297,7 @@ void RrRenderer::StepBufferPush ( gpu::GraphicsContext* gfx, const RrOutputInfo&
 										&texture);
 			gfx->draw(4, 0);
 		}
-		gfx->clearPipelineAndWait(); // Wait until we're done using the buffer...
+		//gfx->clearPipelineAndWait(); // Wait until we're done using the buffer...
 	}
 	TimeProfiler.EndTimeProfile( "rs_buffer_push" );
 	gfx->debugGroupPop();
@@ -477,6 +477,7 @@ void RrRenderer::Render ( void )
 	}
 	// Count the global frame rendered
 	frame_index++;
+	m_constantBufferPool.m_currentFrame = frame_index;
 
 	// Call post-render and start up new jobs
 	StepPostRender();
@@ -514,7 +515,12 @@ Prepare_Pipeline:
 Update_Culling:
 	if (state->pipeline_renderer != nullptr)
 	{
-		state->pipeline_renderer->CullObjects(gfx, output, state, world);
+		// Create common context for all renders
+		rrRenderContext render_context;
+		render_context.context_graphics = gfx;
+		render_context.constantBuffer_pool = &m_constantBufferPool;
+
+		state->pipeline_renderer->CullObjects(&render_context, output, state, world);
 	}
 
 Render_Camera_Passes:
@@ -722,10 +728,15 @@ Pass_Groups:
 	}
 
 Setup_Pipeline:
+	// Create common context for all renders
+	rrRenderContext render_context;
+	render_context.context_graphics = gfx;
+	render_context.constantBuffer_pool = &m_constantBufferPool;
+
 	// Lighting needs to be handled by the pipeline info
 	if (state->pipeline_renderer)
 	{
-		state->pipeline_renderer->PreparePass(gfx);
+		state->pipeline_renderer->PreparePass(&render_context);
 	}
 
 Render_Groups:
@@ -753,9 +764,9 @@ Render_Groups:
 			params.cbuf_perCamera = &cameraPass->m_cbuffer;
 			params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;
 			params.cbuf_perPass = nullptr;
-			params.context_graphics = gfx;
+			params.context = &render_context;
 
-			ARCORE_ASSERT(params.context_graphics != nullptr);
+			ARCORE_ASSERT(params.context != nullptr);
 			renderable->Render(&params);
 		}
 	}
@@ -863,9 +874,9 @@ Render_Groups:
 				params.cbuf_perCamera = &cameraPass->m_cbuffer;
 				params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;
 				params.cbuf_perPass = nullptr;
-				params.context_graphics = gfx;
+				params.context = &render_context;
 
-				ARCORE_ASSERT(params.context_graphics != nullptr);
+				ARCORE_ASSERT(params.context != nullptr);
 				renderable->PrepRender(cameraPass);
 				renderable->Render(&params);
 			}
@@ -881,7 +892,7 @@ Render_Groups:
 			input.combined_depth = &outputDepth;
 			input.cameraPass = cameraPass;
 
-			state->pipeline_renderer->PostDepth(gfx, input, state);
+			state->pipeline_renderer->PostDepth(&render_context, input, state);
 		}
 
 		// Request a normals buffer, since both deferreds & forwards need to render their normals out.
@@ -968,9 +979,9 @@ Render_Groups:
 					params.cbuf_perCamera = &cameraPass->m_cbuffer;
 					params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;
 					params.cbuf_perPass = nullptr;
-					params.context_graphics = gfx;
+					params.context = &render_context;
 			
-					ARCORE_ASSERT(params.context_graphics != nullptr);
+					ARCORE_ASSERT(params.context != nullptr);
 					renderable->PrepRender(cameraPass);
 					renderable->Render(&params);
 				}
@@ -991,7 +1002,7 @@ Render_Groups:
 				input.old_forward_color = &outputColor;
 				input.cameraPass = cameraPass;
 
-				rrCompositeOutput output = state->pipeline_renderer->CompositeDeferred(gfx, input, state);
+				rrCompositeOutput output = state->pipeline_renderer->CompositeDeferred(&render_context, input, state);
 				outputColor = output.color;
 			}
 		}
@@ -1054,9 +1065,9 @@ Render_Groups:
 				params.cbuf_perCamera = &cameraPass->m_cbuffer;
 				params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;
 				params.cbuf_perPass = nullptr;
-				params.context_graphics = gfx;
+				params.context = &render_context;
 
-				ARCORE_ASSERT(params.context_graphics != nullptr);
+				ARCORE_ASSERT(params.context != nullptr);
 				renderable->PrepRender(cameraPass);
 				renderable->Render(&params);
 			}
@@ -1076,7 +1087,7 @@ Render_Groups:
 				input.combined_depth = &outputDepth;
 				input.cameraPass = cameraPass;
 
-				rrCompositeOutput output = state->pipeline_renderer->CompositePostOpaques(gfx, input, state);
+				rrCompositeOutput output = state->pipeline_renderer->CompositePostOpaques(&render_context, input, state);
 				outputColor = output.color;
 			}
 		}
@@ -1132,9 +1143,9 @@ Render_Groups:
 				params.cbuf_perCamera = &cameraPass->m_cbuffer;
 				params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;
 				params.cbuf_perPass = nullptr;
-				params.context_graphics = gfx;
+				params.context = &render_context;
 
-				ARCORE_ASSERT(params.context_graphics != nullptr);
+				ARCORE_ASSERT(params.context != nullptr);
 				renderable->PrepRender(cameraPass);
 				renderable->Render(&params);
 			}
@@ -1151,7 +1162,7 @@ Render_Groups:
 			input.depth = &outputDepth;
 			input.cameraPass = cameraPass;
 
-			rrPipelineOutput output = state->pipeline_renderer->RenderLayerEnd(gfx, input, state);
+			rrPipelineOutput output = state->pipeline_renderer->RenderLayerEnd(&render_context, input, state);
 			outputColor = output.color;
 		}
 

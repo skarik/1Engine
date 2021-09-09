@@ -605,5 +605,11 @@
     <ClInclude Include="source\renderer\state\pipeline\RrPipelineStandard.h">
       <Filter>SOURCE\Renderer\State\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="source\renderer\state\RaiiHelpers2.h">
+      <Filter>SOURCE\Renderer\State</Filter>
+    </ClInclude>
+    <ClInclude Include="source\renderer\types\rrRenderContext.h">
+      <Filter>SOURCE\Renderer\Types</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

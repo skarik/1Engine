@@ -81,7 +81,7 @@ RrTextureCube* RrTextureCube::Load ( const char* resource_name )
 		pixelBuffer.initAsTextureBuffer(NULL, texture->info.type, texture->info.internalFormat, texture->info.width, texture->info.height, 1);
 
 		uint32 target_pitch = 0;
-		void* target = pixelBuffer.map(NULL, gpu::kTransferStatic, target_pitch);
+		void* target = pixelBuffer.map(NULL, gpu::kTransferWriteDiscardPrevious, target_pitch);
 
 		// load in image data for the face
 		loader.m_buffer_Mipmaps[0] = target;

@@ -118,8 +118,8 @@ void RrPipelinePalettedOptions::LoadPalette ( const char* resource_name )
 	uploadBufferPrimary.initAsTextureBuffer( NULL, core::gfx::tex::kTextureType3D, core::gfx::tex::kColorFormatRGBA8, 256, 256, 256 );
 	uploadBufferSecondary.initAsTextureBuffer( NULL, core::gfx::tex::kTextureType3D, core::gfx::tex::kColorFormatRGBA8, 256, 256, 256 );
 
-	uploadBufferPrimary.upload( NULL, pixelsLUT_Primary, sizeof( core::gfx::arPixel ) * 256 * 256 * 256, gpu::kTransferStatic );
-	uploadBufferSecondary.upload( NULL, pixelsLUT_Secondary, sizeof( core::gfx::arPixel ) * 256 * 256 * 256, gpu::kTransferStatic );
+	uploadBufferPrimary.upload( NULL, pixelsLUT_Primary, sizeof( core::gfx::arPixel ) * 256 * 256 * 256, gpu::kTransferWriteDiscardPrevious );
+	uploadBufferSecondary.upload( NULL, pixelsLUT_Secondary, sizeof( core::gfx::arPixel ) * 256 * 256 * 256, gpu::kTransferWriteDiscardPrevious );
 
 	m_paletteLUT_Primary.allocate( core::gfx::tex::kTextureType3D, core::gfx::tex::kColorFormatRGBA8, 256, 256, 256, 1 );
 	m_paletteLUT_Secondary.allocate( core::gfx::tex::kTextureType3D, core::gfx::tex::kColorFormatRGBA8, 256, 256, 256, 1 );
@@ -211,59 +211,60 @@ static void GetPostprocess (
 }
 
 
-rrCompositeOutput RrPipelinePalettedRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
+rrCompositeOutput RrPipelinePalettedRenderer::CompositeDeferred ( rrRenderContext* context, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
 {
-	rrCompositeOutput compositeState = RrPipelineStandardRenderer::CompositeDeferred(gfx, compositeInput, state);
+	rrCompositeOutput compositeState = RrPipelineStandardRenderer::CompositeDeferred(context, compositeInput, state);
 	return compositeState;
 }
 
 //	CompositePostOpaques() : Called when the renderer is done rendering all deferred+forward opaques.
-rrCompositeOutput RrPipelinePalettedRenderer::CompositePostOpaques ( gpu::GraphicsContext* gfx, const rrPipelinePostOpaqueCompositeInput& compositeInput, RrOutputState* state )
+rrCompositeOutput RrPipelinePalettedRenderer::CompositePostOpaques ( rrRenderContext* context, const rrPipelinePostOpaqueCompositeInput& compositeInput, RrOutputState* state )
 {
-	gpu::Texture outputColor = ApplyOutline(gfx, compositeInput.combined_color, compositeInput.combined_depth, compositeInput.cameraPass, state);
+	gpu::Texture outputColor = ApplyOutline(context, compositeInput.combined_color, compositeInput.combined_depth, compositeInput.cameraPass, state);
 	return rrCompositeOutput{outputColor};
 }
 
 //	RenderLayerEnd() : Called when the renderer finishes a given layer.
-rrPipelineOutput RrPipelinePalettedRenderer::RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state )
+rrPipelineOutput RrPipelinePalettedRenderer::RenderLayerEnd ( rrRenderContext* context, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state )
 {
 	if ( finishInput.layer != renderer::kRenderLayerWorld )
 	{
-		return RrPipelineStandardRenderer::RenderLayerEnd(gfx, finishInput, state);
+		return RrPipelineStandardRenderer::RenderLayerEnd(context, finishInput, state);
 	}
 	else
 	{
 		gpu::Texture outputColor = *finishInput.color;
 		
 		// Setup the bloom
-		auto bloomSetup = SetupBloom(gfx, &outputColor, finishInput.cameraPass, state);
-		auto tonemapSetup = SetupTonemap(gfx, &outputColor, state);
-		auto exposureSetup = SetupExposure(gfx, &m_previousFrameOutput, state);
+		auto bloomSetup = SetupBloom(context, &outputColor, finishInput.cameraPass, state);
+		auto tonemapSetup = SetupTonemap(context, &outputColor, state);
+		auto exposureSetup = SetupExposure(context, &m_previousFrameOutput, state);
 
 		// Apply the tonemap before the stylistic effect
-		outputColor = ApplyTonemap(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
+		outputColor = ApplyTonemap(context, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
 
 		// Before bloom, do stylistic effect
-		//outputColor = ApplyPalettize(gfx, &outputColor, finishInput.cameraPass, state);
+		//outputColor = ApplyPalettize(context, &outputColor, finishInput.cameraPass, state);
 
 		// Apply the bloom
-		outputColor = ApplyBloom(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
+		outputColor = ApplyBloom(context, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
 
 		// Save & analyze the color
-		SaveAndAnalyzeOutput(gfx, &outputColor, state);
+		SaveAndAnalyzeOutput(context, &outputColor, state);
 
 		return rrPipelineOutput{outputColor};
 	}
 }
 
 gpu::Texture RrPipelinePalettedRenderer::ApplyOutline (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		gpu::Texture* color,
 		gpu::Texture* depth,
 		rrCameraPass* cameraPass,
 		RrOutputState* state )
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument
+	auto gfx = context->context_graphics;
 	
 	const bool bEnableOutlines = true;
 
@@ -371,12 +372,13 @@ gpu::Texture RrPipelinePalettedRenderer::ApplyOutline (
 }
 
 gpu::Texture RrPipelinePalettedRenderer::ApplyPalettize (
-	gpu::GraphicsContext* gfx,
+	rrRenderContext* context,
 	gpu::Texture* color,
 	rrCameraPass* cameraPass,
 	RrOutputState* state )
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument
+	auto gfx = context->context_graphics;
 	auto options = (RrPipelinePalettedOptions*)m_options;
 
 	const bool bEnablePalettize = true;

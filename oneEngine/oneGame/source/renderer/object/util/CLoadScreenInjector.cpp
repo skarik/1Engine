@@ -128,12 +128,12 @@ bool CLoadScreenInjector::CreateConstants ( rrCameraPass* pass )
 //	Render() : render the previously created mesh now
 bool CLoadScreenInjector::Render ( const rrRenderParams* params )
 {
-	gpu::GraphicsContext* gfx = params->context_graphics;
+	gpu::GraphicsContext* gfx = params->context->context_graphics;
 
 	gpu::Pipeline* pipeline = GetPipeline( params->pass );
 	gfx->setPipeline(pipeline);
 	// Set up the material helper...
-	renderer::Material(this, gfx, params, pipeline)
+	renderer::Material(this, params->context, params, pipeline)
 		// set the depth & blend state registers
 		.setDepthStencilState()
 		.setRasterizerState()

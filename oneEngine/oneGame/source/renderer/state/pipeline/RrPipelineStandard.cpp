@@ -81,7 +81,7 @@ RrPipelineStandardRenderer::~RrPipelineStandardRenderer ( void )
 	}
 }
 
-void RrPipelineStandardRenderer::CullObjects ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world )
+void RrPipelineStandardRenderer::CullObjects ( rrRenderContext* context, const RrOutputInfo& output, RrOutputState* state, RrWorld* world )
 {
 	// Update the render distance of objects against this camera:
 	for ( int objectIndex = 0; objectIndex < world->objects.size(); objectIndex += 1 )
@@ -95,10 +95,10 @@ void RrPipelineStandardRenderer::CullObjects ( gpu::GraphicsContext* gfx, const 
 	}
 }
 
-void RrPipelineStandardRenderer::PostDepth ( gpu::GraphicsContext* gfx, const rrPipelinePostDepthInput& postDepthInput, RrOutputState* state )
+void RrPipelineStandardRenderer::PostDepth ( rrRenderContext* context, const rrPipelinePostDepthInput& postDepthInput, RrOutputState* state )
 {
 	// Create HZB needed for some effects
-	GenerateHZB(gfx, postDepthInput.combined_depth, postDepthInput.cameraPass, state);
+	GenerateHZB(context, postDepthInput.combined_depth, postDepthInput.cameraPass, state);
 }
 
 //	GetPostprocessVariant(...) : Helper to cache specific variations of shaders
@@ -182,10 +182,11 @@ static void GetPostprocessVariant (
 static core::settings::SessionSetting<bool> gsesh_LightingUseDebugBuffers ("rdbg_deferred_gbuffers", false);
 static core::settings::SessionSetting<bool> gsesh_LightingUseLighting ("rdbg_deferred_lighting", true);
 
-rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
+rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( rrRenderContext* context, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument
 	auto options = (RrPipelineStandardOptions*)m_options;
+	auto gfx = context->context_graphics;
 
 	{
 		RR_SHADER_VARIANT(shade_lighting_p) l_shadeLightingVariantInfo;
@@ -232,10 +233,10 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 	rrLightSetup lightSetup;
 	{
 		// Render the lighting
-		lightSetup = SetupLights(gfx);
+		lightSetup = SetupLights(context);
 		
 		// Render shadows now
-		RenderShadows(gfx, compositeInput.deferred_normals, compositeInput.combined_depth, compositeInput.cameraPass, state, &lightSetup);
+		RenderShadows(context, compositeInput.deferred_normals, compositeInput.combined_depth, compositeInput.cameraPass, state, &lightSetup);
 	}
 	gfx->debugGroupPop();
 
@@ -274,12 +275,12 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 		// Debug output:
 		if (gsesh_LightingUseDebugBuffers)
 		{
-			DrawDebugOutput(gfx, compositeInput, state, outputLightingComposite);
+			DrawDebugOutput(context, compositeInput, state, outputLightingComposite);
 		}
 		else
 		{
 			// Composite lights onto the scene
-			outputLightingComposite = RenderLights(gfx, compositeInput, state, &lightSetup, outputLightingComposite);
+			outputLightingComposite = RenderLights(context, compositeInput, state, &lightSetup, outputLightingComposite);
 
 			// Render the old forward data
 			if (compositeInput.old_forward_color)
@@ -318,11 +319,13 @@ rrCompositeOutput RrPipelineStandardRenderer::CompositeDeferred ( gpu::GraphicsC
 }
 
 void RrPipelineStandardRenderer::DrawDebugOutput (
-	gpu::GraphicsContext* gfx,
+	rrRenderContext* context,
 	const rrPipelineCompositeInput& compositeInput,
 	RrOutputState* state,
 	gpu::Texture clearedOutputTexture)
 {
+	auto gfx = context->context_graphics;
+
 	// Grab output size for the screen quad info
 	auto& output = *state->output_info;
 	rrViewport output_viewport =  output.GetOutputViewport();
@@ -366,8 +369,9 @@ void RrPipelineStandardRenderer::DrawDebugOutput (
 	}
 
 	// Render with the composite shader
-	DrawWithPipelineAndGBuffers(gfx, compositeInput, m_lightingCompositePipeline, nullptr, nullptr, [](RrRenderer* renderer, gpu::GraphicsContext* gfx)
+	DrawWithPipelineAndGBuffers(context, compositeInput, m_lightingCompositePipeline, nullptr, nullptr, [](RrRenderer* renderer, rrRenderContext* context)
 	{
+		auto gfx = context->context_graphics;
 		gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
 		gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
 		gfx->draw(4, 0);
@@ -375,12 +379,13 @@ void RrPipelineStandardRenderer::DrawDebugOutput (
 }
 
 void RrPipelineStandardRenderer::GenerateHZB (
-	gpu::GraphicsContext* gfx,
+	rrRenderContext* context,
 	gpu::Texture* combined_depth,
 	rrCameraPass* cameraPass,
 	RrOutputState* state)
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument or class field
+	auto gfx = context->context_graphics;
 
 	gfx->debugGroupPush("GenerateHZB");
 
@@ -437,50 +442,50 @@ void RrPipelineStandardRenderer::GenerateHZB (
 	gfx->debugGroupPop();
 }
 
-rrCompositeOutput RrPipelineStandardRenderer::CompositePostOpaques ( gpu::GraphicsContext* gfx, const rrPipelinePostOpaqueCompositeInput& compositeInput, RrOutputState* state )
+rrCompositeOutput RrPipelineStandardRenderer::CompositePostOpaques ( rrRenderContext* context, const rrPipelinePostOpaqueCompositeInput& compositeInput, RrOutputState* state )
 {
 	if (compositeInput.layer != renderer::kRenderLayerWorld)
 	{
-		return RrPipelineStateRenderer::CompositePostOpaques(gfx, compositeInput, state);
+		return RrPipelineStateRenderer::CompositePostOpaques(context, compositeInput, state);
 	}
 	else
 	{
-		return RrPipelineStateRenderer::CompositePostOpaques(gfx, compositeInput, state);
+		return RrPipelineStateRenderer::CompositePostOpaques(context, compositeInput, state);
 		// TODO: Ambient occlusion, motion blur, and other simple shadowing?
 	}
 }
 
-rrPipelineOutput RrPipelineStandardRenderer::RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) 
+rrPipelineOutput RrPipelineStandardRenderer::RenderLayerEnd ( rrRenderContext* context, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) 
 {
 	if (finishInput.layer != renderer::kRenderLayerWorld)
 	{
-		return RrPipelineStateRenderer::RenderLayerEnd(gfx, finishInput, state);
+		return RrPipelineStateRenderer::RenderLayerEnd(context, finishInput, state);
 	}
 	else
 	{
 		gpu::Texture outputColor = *finishInput.color;
 		
 		// Setup the bloom
-		auto bloomSetup = SetupBloom(gfx, &outputColor, finishInput.cameraPass, state);
-		auto tonemapSetup = SetupTonemap(gfx, &outputColor, state);
-		auto exposureSetup = SetupExposure(gfx, &m_previousFrameOutput, state);
+		auto bloomSetup = SetupBloom(context, &outputColor, finishInput.cameraPass, state);
+		auto tonemapSetup = SetupTonemap(context, &outputColor, state);
+		auto exposureSetup = SetupExposure(context, &m_previousFrameOutput, state);
 
 		// Apply the tonemap
-		outputColor = ApplyTonemap(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
+		outputColor = ApplyTonemap(context, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
 		// Apply the bloom
-		outputColor = ApplyBloom(gfx, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
+		outputColor = ApplyBloom(context, &outputColor, &bloomSetup, &tonemapSetup, &exposureSetup, finishInput.cameraPass, state);
 
 		// Save & analyze the color
-		SaveAndAnalyzeOutput(gfx, &outputColor, state);
+		SaveAndAnalyzeOutput(context, &outputColor, state);
 
 		return rrPipelineOutput{outputColor};
 	}
 }
 
-void RrPipelineStandardRenderer::SaveAndAnalyzeOutput ( gpu::GraphicsContext* gfx, gpu::Texture* final_output_color, RrOutputState* state )
+void RrPipelineStandardRenderer::SaveAndAnalyzeOutput ( rrRenderContext* context, gpu::Texture* final_output_color, RrOutputState* state )
 {
 	// Copy output color to m_previousFrameOutputColor
-	CopyRenderTexture(&m_previousFrameOutput.m_color, final_output_color, gfx, state);
+	CopyRenderTexture(&m_previousFrameOutput.m_color, final_output_color, context->context_graphics, state);
 
 	// Run tonemap prep on the previous frame
 }

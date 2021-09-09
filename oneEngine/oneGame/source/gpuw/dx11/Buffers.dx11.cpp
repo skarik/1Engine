@@ -94,7 +94,7 @@ int gpu::Buffer::initAsIndexBuffer ( Device* device, IndexFormat format, const u
 }
 
 //	initAsData( device, data_size ) : Initializes as a constant buffer.
-int gpu::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size )
+int gpu::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size, const MemoryType where )
 {
 	ARCORE_ASSERT(data_size > 0);
 	if (device == NULL) device = getDevice();

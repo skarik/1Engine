@@ -104,7 +104,7 @@ bool RrTexture::OnStreamStepProcedural ( bool sync_client, core::IArResourceSubs
 		{
 			// Create a buffer to upload the texture data
 			loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, upload_request->type, upload_request->format, upload_request->width, upload_request->height, upload_request->depth);
-			void* target = loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferStatic);
+			void* target = loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferWriteDiscardPrevious);
 
 			// Copy data to the target
 			if (upload_request->data != NULL)
@@ -226,7 +226,7 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 				loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, info.type, info.internalFormat, size_Width, size_Width, 1); 
 			else if (info.type == core::gfx::tex::kTextureType3D)
 				loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, info.type, info.internalFormat, size_Width, size_Width, size_Width); 
-			void* target = loadInfo->pixelBuffer[0].map(gfx, gpu::kTransferStatic);
+			void* target = loadInfo->pixelBuffer[0].map(gfx, gpu::kTransferWriteDiscardPrevious);
 
 			// Load the data in:
 			loadInfo->loader.m_buffer_Superlow = target; // Target set here
@@ -287,7 +287,7 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 
 					loadInfo->pixelBuffer[loadInfo->level].initAsTextureBuffer(NULL, info.type, info.internalFormat, level_width, level_height, level_depth);
 					uint32 target_pitch = 0;
-					void* target = loadInfo->pixelBuffer[loadInfo->level].map(gfx, gpu::kTransferStatic, target_pitch);
+					void* target = loadInfo->pixelBuffer[loadInfo->level].map(gfx, gpu::kTransferWriteDiscardPrevious, target_pitch);
 
 					// Go to the waiting step before we dispatch
 					loadInfo->unpack_step = kTextureUnpack1_WaitForDispatch;

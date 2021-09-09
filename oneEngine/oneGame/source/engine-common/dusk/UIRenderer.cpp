@@ -87,7 +87,7 @@ dusk::UIRenderer::UIRenderer (UserInterface* ui)
 		Vector2f(0, 1),
 	};
 	m_vbufScreenQuad->initAsVertexBuffer(NULL, gpu::kFormatR32G32B32SFloat, sizeof(screenquad)/sizeof(Vector3f));
-	m_vbufScreenQuad->upload(NULL, screenquad, sizeof(screenquad), gpu::kTransferStatic);
+	m_vbufScreenQuad->upload(NULL, screenquad, sizeof(screenquad), gpu::kTransferWriteDiscardPrevious);
 }
 
 dusk::UIRenderer::~UIRenderer (void)
@@ -121,17 +121,17 @@ bool dusk::UIRenderer::Render ( const rrRenderParams* params )
 {
 	if (params->pass == 1)
 	{
-		P1Render(params->context_graphics);
+		P1Render(params->context);
 	}
 	else if (params->pass == 0)
 	{
 		if (m_renderTargetTexture->valid())
 		{
-			gpu::GraphicsContext* gfx = params->context_graphics;
+			gpu::GraphicsContext* gfx = params->context->context_graphics;
 
 			gpu::Pipeline* pipeline = GetPipeline( params->pass );
 			// Set up the material helper...
-			renderer::Material(this, gfx, params, pipeline)
+			renderer::Material(this, params->context, params, pipeline)
 				// set the pipeline
 				.setStart()
 				// set the depth & rasterizer state registers
@@ -160,7 +160,7 @@ bool dusk::UIRenderer::BeginRender ( void )
 }
 
 // Called once per frame.
-bool dusk::UIRenderer::P1Render ( gpu::GraphicsContext* graphics_context )
+bool dusk::UIRenderer::P1Render ( rrRenderContext* render_context )
 {
 	// Create the update area
 	Rect t_updateArea;
@@ -194,7 +194,7 @@ bool dusk::UIRenderer::P1Render ( gpu::GraphicsContext* graphics_context )
 	P1UpdateRenderList(&t_renderList);
 
 	// Render the elements
-	P1RenderElements(graphics_context, t_renderList, t_updateArea);
+	P1RenderElements(render_context, t_renderList, t_updateArea);
 
 	return true;
 }
@@ -340,7 +340,7 @@ void dusk::UIRenderer::P1UpdateRenderList ( std::vector<Element*>* renderList )
 }
 
 
-void dusk::UIRenderer::P1RenderElements (gpu::GraphicsContext* graphics_context, const std::vector<Element*>& renderList, const Rect& scissorArea)
+void dusk::UIRenderer::P1RenderElements ( rrRenderContext* render_context, const std::vector<Element*>& renderList, const Rect& scissorArea )
 {
 	UIRendererContext l_ctx;
 	l_ctx.m_uir = this;
@@ -384,7 +384,7 @@ void dusk::UIRenderer::P1RenderElements (gpu::GraphicsContext* graphics_context,
 	//
 	// Rendering
 
-	gpu::GraphicsContext* gfx = graphics_context;
+	gpu::GraphicsContext* gfx = render_context->context_graphics;
 	gfx->debugGroupPush("dusk::ERRenderElements");
 
 	// Set up the target buffer
@@ -409,7 +409,7 @@ void dusk::UIRenderer::P1RenderElements (gpu::GraphicsContext* graphics_context,
 	const uint8_t kPassId = 1;
 	gpu::Pipeline* pipeline = GetPipeline( kPassId );
 	// Set up the material helper...
-	renderer::Material(this, gfx, kPassId, kPassTypeForward, pipeline)
+	renderer::Material(this, render_context, kPassId, kPassTypeForward, pipeline)
 		// set the pipeline
 		.setStart()
 		// set almost everything else

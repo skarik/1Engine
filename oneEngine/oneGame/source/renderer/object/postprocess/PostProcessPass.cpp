@@ -175,7 +175,7 @@ void RrPostProcessPass::DrawOutput ( void )
 // Copies what's in m_buf to s_buf, but only drawing the color
 void RrPostProcessPass::CopyResult ( void )
 {
-	//gpu::GraphicsContext* gfx = params->context_graphics;
+	//gpu::GraphicsContext* gfx = params->context->context_graphics;
 
 	////GL_ACCESS GLd_ACCESS
 	//// Generate sum shit

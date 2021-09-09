@@ -8,8 +8,14 @@ namespace gpu
 {
 	enum TransferStyle
 	{
-		kTransferStatic,
-		kTransferStream,
+		// Discard the previous data in the buffer.
+		kTransferWriteDiscardPrevious,
+
+		// Keep the previous data in the buffer, but not for reading.
+		kTransferWrite,
+
+		// Transfer mode specifically for reading from the GPU on readback buffers.
+		kTransferRead,
 	};
 }
 

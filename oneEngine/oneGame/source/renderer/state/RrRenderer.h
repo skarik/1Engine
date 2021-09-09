@@ -11,6 +11,9 @@
 #include "renderer/state/InternalSettings.h"
 #include "renderer/state/pipeline/PipelineModes.h"
 
+#include "renderer/types/rrRenderContext.h"
+#include "renderer/state/RaiiHelpers2.h"
+
 //Todo: make following prototypes
 #include "gpuw/Texture.h"
 #include "gpuw/RenderTarget.h"
@@ -492,6 +495,10 @@ private:
 						m_renderDepthTexturePool;
 	rrDepthBufferRequest
 						m_currentDepthBufferRequest;
+
+private:
+	rrSingleFrameConstantBufferPool
+						m_constantBufferPool;
 
 private:
 	gpu::Device*		gpu_device;

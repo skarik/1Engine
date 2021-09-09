@@ -19,7 +19,7 @@
 
 RrPipelineStandardRenderer::rrTonemapSetup
 RrPipelineStandardRenderer::SetupTonemap (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		gpu::Texture* input_color,
 		RrOutputState* state)
 {
@@ -28,7 +28,7 @@ RrPipelineStandardRenderer::SetupTonemap (
 
 RrPipelineStandardRenderer::rrExposureSetup
 RrPipelineStandardRenderer::SetupExposure (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		rrPreviousFrameOutput* reference_frame,
 		RrOutputState* state)
 {
@@ -91,7 +91,7 @@ static void GetPostprocess (
 
 gpu::Texture
 RrPipelineStandardRenderer::ApplyTonemap (
-	gpu::GraphicsContext* gfx,
+	rrRenderContext* context,
 	gpu::Texture* input_color,
 	rrBloomSetup* bloom_setup,
 	rrTonemapSetup* tonemap_setup,
@@ -100,6 +100,7 @@ RrPipelineStandardRenderer::ApplyTonemap (
 	RrOutputState* state )
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument
+	auto gfx = context->context_graphics;
 
 	gpu::Texture result_color = *input_color;
 

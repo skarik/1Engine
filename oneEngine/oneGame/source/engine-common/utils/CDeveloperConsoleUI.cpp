@@ -186,12 +186,12 @@ bool CDeveloperConsoleUI::Render ( const rrRenderParams* params )
 		if ( t_indexCount == 0 || t_meshBuffer == NULL || !t_meshBuffer->m_mesh_uploaded )
 			return true; // Only render when have a valid mesh and rendering enabled
 
-		gpu::GraphicsContext* gfx = params->context_graphics;
+		gpu::GraphicsContext* gfx = params->context->context_graphics;
 
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
 		// Set up the material helper...
-		renderer::Material(this, gfx, params, pipeline)
+		renderer::Material(this, params->context, params, pipeline)
 			// set the depth & blend state registers
 			.setDepthStencilState()
 			.setRasterizerState()
@@ -293,12 +293,12 @@ bool CDeveloperCursor::Render ( const rrRenderParams* params )
 		if ( m_indexCount == 0 || !m_meshBuffer.m_mesh_uploaded )
 			return true; // Only render when have a valid mesh and rendering enabled
 
-		gpu::GraphicsContext* gfx = params->context_graphics;
+		gpu::GraphicsContext* gfx = params->context->context_graphics;
 
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
 		// Set up the material helper...
-		renderer::Material(this, gfx, params, pipeline)
+		renderer::Material(this, params->context, params, pipeline)
 			// set the depth & blend state registers
 			.setDepthStencilState()
 			.setRasterizerState()

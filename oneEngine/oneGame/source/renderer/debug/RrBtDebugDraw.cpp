@@ -70,7 +70,7 @@ bool RrBtDebugDraw::EndRender ( void )
 		size_t sz_bufferIndices = sizeof(uint16_t) * m_indexData.size();
 		m_buffer_indices.free(NULL);
 		m_buffer_indices.initAsIndexBuffer(NULL, gpu::kIndexFormatUnsigned16, m_indexData.size());
-		void* data = m_buffer_indices.map(NULL, gpu::kTransferStream);
+		void* data = m_buffer_indices.map(NULL, gpu::kTransferWriteDiscardPrevious);
 		if (data != NULL)
 		{
 			memcpy(data, m_indexData.data(), sz_bufferIndices);
@@ -80,10 +80,10 @@ bool RrBtDebugDraw::EndRender ( void )
 		// copy over the vertices
 		m_buffer_vertPositions.free(NULL);
 		m_buffer_vertPositions.initAsVertexBuffer(NULL, gpu::kFormatR32G32B32SFloat, m_vertexPositions.size());
-		m_buffer_vertPositions.uploadElements(NULL, m_vertexPositions.data(), m_vertexPositions.size(), gpu::kTransferStream);
+		m_buffer_vertPositions.uploadElements(NULL, m_vertexPositions.data(), m_vertexPositions.size(), gpu::kTransferWriteDiscardPrevious);
 		m_buffer_vertColors.free(NULL);
 		m_buffer_vertColors.initAsVertexBuffer(NULL, gpu::kFormatR32G32B32A32SFloat, m_vertexColors.size());
-		m_buffer_vertColors.uploadElements(NULL, m_vertexColors.data(), m_vertexColors.size(), gpu::kTransferStream);
+		m_buffer_vertColors.uploadElements(NULL, m_vertexColors.data(), m_vertexColors.size(), gpu::kTransferWriteDiscardPrevious);
 	}
 
 	// Success!
@@ -108,7 +108,7 @@ bool RrBtDebugDraw::Render ( const rrRenderParams* params )
 		return true;
 	}
 
-	gpu::GraphicsContext* gfx = params->context_graphics;
+	gpu::GraphicsContext* gfx = params->context->context_graphics;
 
 	// For now, we will render the same way as the 3d meshes render
 	//m_material->m_bufferSkeletonSize = 0;

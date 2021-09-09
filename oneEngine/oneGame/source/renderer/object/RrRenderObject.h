@@ -22,6 +22,8 @@
 #include "renderer/types/ObjectSettings.h"
 #include "renderer/types/id.h"
 
+#include "renderer/types/rrRenderContext.h"
+
 #include "renderer/material/RrPass.h"
 #include "gpuw/Pipeline.h"
 #include "gpuw/Buffers.h"
@@ -38,6 +40,7 @@ namespace renderer
 	class Material;
 }
 struct rrRenderRequestSorter;
+class rrSingleFrameConstantBufferPool;
 
 typedef void (*rrMaterialRenderFunction)(renderer::Material*);
 
@@ -69,8 +72,8 @@ public:
 		gpu::Buffer*	cbuf_perPass = nullptr;
 		gpu::Buffer*	cbuf_perFrame = nullptr;
 		gpu::Buffer*	cbuf_perCamera = nullptr;
-		gpu::GraphicsContext*
-						context_graphics = nullptr;
+		rrRenderContext*
+						context = nullptr;
 	};
 
 private:

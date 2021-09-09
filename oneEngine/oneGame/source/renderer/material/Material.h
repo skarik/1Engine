@@ -20,7 +20,7 @@ namespace renderer
 	{
 	public:
 
-		RENDER_API explicit Material ( RrRenderObject* thisObject, gpu::GraphicsContext* ctx, const RrRenderObject::rrRenderParams* passParams, gpu::Pipeline* pipeline )
+		RENDER_API explicit Material ( RrRenderObject* thisObject, rrRenderContext* ctx, const RrRenderObject::rrRenderParams* passParams, gpu::Pipeline* pipeline )
 		{
 			m_object = thisObject;
 			m_ctx = ctx;
@@ -30,7 +30,7 @@ namespace renderer
 			m_renderPassType = passParams->pass_type;
 		}
 
-		RENDER_API explicit Material ( RrRenderObject* thisObject, gpu::GraphicsContext* ctx, int32 pass, rrPassType passType, gpu::Pipeline* pipeline )
+		RENDER_API explicit Material ( RrRenderObject* thisObject, rrRenderContext* ctx, int32 pass, rrPassType passType, gpu::Pipeline* pipeline )
 		{
 			m_object = thisObject;
 			m_ctx = ctx;
@@ -47,7 +47,7 @@ namespace renderer
 
 		RENDER_API Material& setStart ( void )
 		{
-			m_ctx->setPipeline(m_pipeline);
+			m_ctx->context_graphics->setPipeline(m_pipeline);
 			return *this;
 		}
 
@@ -61,7 +61,7 @@ namespace renderer
 				ds.depthFunc = m_pass->m_overrideDepthTest;
 				ds.stencilTestEnabled = false;
 
-				m_ctx->setDepthStencilState(ds);
+				m_ctx->context_graphics->setDepthStencilState(ds);
 			}
 			// If translucent, set to the default less-equal
 			else if (m_pass->isTranslucent())
@@ -72,7 +72,7 @@ namespace renderer
 				ds.depthFunc = gpu::kCompareOpLessEqual;
 				ds.stencilTestEnabled = false;
 
-				m_ctx->setDepthStencilState(ds);
+				m_ctx->context_graphics->setDepthStencilState(ds);
 			}
 			// If opaque and doing depth pass, render depth normally.
 			else if (m_renderPassType == kPassTypeSystemDepth)
@@ -83,7 +83,7 @@ namespace renderer
 				ds.depthFunc = gpu::kCompareOpLessEqual;
 				ds.stencilTestEnabled = false;
 
-				m_ctx->setDepthStencilState(ds);
+				m_ctx->context_graphics->setDepthStencilState(ds);
 			}
 			// If opaque, set to default depth-equal
 			else
@@ -94,7 +94,7 @@ namespace renderer
 				ds.depthFunc = gpu::kCompareOpEqual;
 				ds.stencilTestEnabled = false;
 
-				m_ctx->setDepthStencilState(ds);
+				m_ctx->context_graphics->setDepthStencilState(ds);
 			}
 			return *this;
 		}
@@ -107,7 +107,7 @@ namespace renderer
 			rs.frontface = gpu::kFrontFaceCounterClockwise;
 			rs.scissorEnabled = true;*/
 
-			m_ctx->setRasterizerState(rs);
+			m_ctx->context_graphics->setRasterizerState(rs);
 			return *this;
 		}
 
@@ -177,7 +177,7 @@ namespace renderer
 				}
 			}
 
-			m_ctx->setBlendState(bs);
+			m_ctx->context_graphics->setBlendState(bs);
 			return *this;
 		}
 
@@ -189,21 +189,21 @@ namespace renderer
 				{
 					if (m_pass->m_samplers[i] != NULL)
 					{
-						m_ctx->setShaderSampler(gpu::kShaderStagePs, i, m_pass->m_samplers[i]);
-						m_ctx->setShaderTexture(gpu::kShaderStagePs, i, m_pass->m_texturesRaw[i]);
+						m_ctx->context_graphics->setShaderSampler(gpu::kShaderStagePs, i, m_pass->m_samplers[i]);
+						m_ctx->context_graphics->setShaderTexture(gpu::kShaderStagePs, i, m_pass->m_texturesRaw[i]);
 					}
 					else
-						m_ctx->setShaderTextureAuto(gpu::kShaderStagePs, i, m_pass->m_texturesRaw[i]);
+						m_ctx->context_graphics->setShaderTextureAuto(gpu::kShaderStagePs, i, m_pass->m_texturesRaw[i]);
 				}
 				else if (m_pass->m_textures[i] != NULL)
 				{
 					if (m_pass->m_samplers[i] != NULL)
 					{
-						m_ctx->setShaderSampler(gpu::kShaderStagePs, i, m_pass->m_samplers[i]);
-						m_ctx->setShaderTexture(gpu::kShaderStagePs, i, &m_pass->m_textures[i]->GetTexture());
+						m_ctx->context_graphics->setShaderSampler(gpu::kShaderStagePs, i, m_pass->m_samplers[i]);
+						m_ctx->context_graphics->setShaderTexture(gpu::kShaderStagePs, i, &m_pass->m_textures[i]->GetTexture());
 					}
 					else
-						m_ctx->setShaderTextureAuto(gpu::kShaderStagePs, i, &m_pass->m_textures[i]->GetTexture());
+						m_ctx->context_graphics->setShaderTextureAuto(gpu::kShaderStagePs, i, &m_pass->m_textures[i]->GetTexture());
 				}
 			}
 			return *this;
@@ -211,11 +211,11 @@ namespace renderer
 
 		RENDER_API Material& setCommonCBuffers ( RrRenderObject::rrRenderParams* thisParams )
 		{
-			m_ctx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_object->m_cbufPerObjectMatrices);
-			m_ctx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_object->m_cbufPerObjectSurfaces[thisParams->pass]);
-			m_ctx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, thisParams->cbuf_perCamera);
-			m_ctx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, thisParams->cbuf_perPass);
-			m_ctx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, thisParams->cbuf_perFrame);
+			m_ctx->context_graphics->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_MATRICES, &m_object->m_cbufPerObjectMatrices);
+			m_ctx->context_graphics->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_object->m_cbufPerObjectSurfaces[thisParams->pass]);
+			m_ctx->context_graphics->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, thisParams->cbuf_perCamera);
+			m_ctx->context_graphics->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_PASS_INFORMATION, thisParams->cbuf_perPass);
+			m_ctx->context_graphics->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_FRAME_INFORMATION, thisParams->cbuf_perFrame);
 			return *this;
 		}
 
@@ -240,8 +240,7 @@ namespace renderer
 	public:
 		RrRenderObject*
 							m_object;
-		gpu::GraphicsContext*
-							m_ctx;
+		rrRenderContext*	m_ctx;
 		gpu::Pipeline*		m_pipeline;
 		RrPass*				m_pass;
 		rrPassType			m_renderPassType;

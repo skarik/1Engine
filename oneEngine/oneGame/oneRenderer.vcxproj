@@ -249,6 +249,7 @@
     <ClInclude Include="source\renderer\state\pipeline\RrPipelinePaletted.h" />
     <ClInclude Include="source\renderer\state\pipeline\RrPipelineStandard.h" />
     <ClInclude Include="source\renderer\state\RaiiHelpers.h" />
+    <ClInclude Include="source\renderer\state\RaiiHelpers2.h" />
     <ClInclude Include="source\renderer\state\RrRenderer.h" />
     <ClInclude Include="source\renderer\state\InternalSettings.h" />
     <ClInclude Include="source\renderer\state\Settings.h" />
@@ -272,6 +273,7 @@
     <ClInclude Include="source\renderer\types\RrGpuTexture.h" />
     <ClInclude Include="source\renderer\types\ModelStructures.h" />
     <ClInclude Include="source\renderer\types\ObjectSettings.h" />
+    <ClInclude Include="source\renderer\types\rrRenderContext.h" />
     <ClInclude Include="source\renderer\types\ShaderSettings.h" />
     <ClInclude Include="source\renderer\types\shaders\cbuffers.h" />
     <ClInclude Include="source\renderer\types\shaders\legacy.h" />

@@ -91,7 +91,7 @@ bool renderer::InstancedMesh::PrepRender ( rrCameraPass* cameraPass )
 		}
 
 		// Copy the data to the GPU.
-		void* p = m_buffer.map(NULL, gpu::kTransferStream); // TODO: Synchronization bits.
+		void* p = m_buffer.map(NULL, gpu::kTransferWriteDiscardPrevious); // TODO: Synchronization bits.
 		ARCORE_ASSERT(p != NULL);
 		if ( p )
 		{
@@ -156,7 +156,7 @@ bool renderer::InstancedMesh::Render ( const rrRenderParams* params )
 		if ( !bCanRender || m_mesh == NULL )
 			return true; // Only render when have a valid mesh and rendering enabled
 
-		gpu::GraphicsContext* gfx = params->context_graphics;
+		gpu::GraphicsContext* gfx = params->context->context_graphics;
 
 		gpu::Pipeline* pipeline = GetPipeline( params->pass );
 		gfx->setPipeline(pipeline);
@@ -197,7 +197,7 @@ bool renderer::InstancedMesh::EndRender ( void )
 
 		//GLvoid* p = glMapBufferRange( GL_TEXTURE_BUFFER, 0, data_size, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_BUFFER_BIT|GL_MAP_UNSYNCHRONIZED_BIT );
 		//GLvoid* p = glMapBufferRange( GL_TEXTURE_BUFFER, 0, data_size, GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_BUFFER_BIT|GL_MAP_UNSYNCHRONIZED_BIT );
-		void* p = m_buffer.map(NULL, gpu::kTransferStream); // TODO: Synchronization bits.
+		void* p = m_buffer.map(NULL, gpu::kTransferWriteDiscardPrevious); // TODO: Synchronization bits.
 		if ( p )
 		{
 			memcpy( p, &data[0], data_size );

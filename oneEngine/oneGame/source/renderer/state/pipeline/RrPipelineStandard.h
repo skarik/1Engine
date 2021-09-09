@@ -21,23 +21,23 @@ public:
 	{ return mode == renderer::PipelineMode::kNormal; }
 
 	//	CullObjects() : Called to cull objects.
-	RENDER_API virtual void	CullObjects ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world ) override;
+	RENDER_API virtual void	CullObjects ( rrRenderContext* context, const RrOutputInfo& output, RrOutputState* state, RrWorld* world ) override;
 
 	//	PostDepth()
 	// Called before a world begins to render.
-	RENDER_API virtual void	PostDepth ( gpu::GraphicsContext* gfx, const rrPipelinePostDepthInput& postDepthInput, RrOutputState* state ) override;
+	RENDER_API virtual void	PostDepth ( rrRenderContext* context, const rrPipelinePostDepthInput& postDepthInput, RrOutputState* state ) override;
 
 	//	CompositeDeferred() : Called when the renderer wants to combine a deferred pass with a forward pass.
 	RENDER_API virtual rrCompositeOutput
-							CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
+							CompositeDeferred ( rrRenderContext* context, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
 
 	//	CompositePostOpaques() : Called when the renderer wants to combine deferred+forward opaques with forward translucents.
 	RENDER_API virtual rrCompositeOutput
-							CompositePostOpaques ( gpu::GraphicsContext* gfx, const rrPipelinePostOpaqueCompositeInput& compositeInput, RrOutputState* state ) override;
+							CompositePostOpaques ( rrRenderContext* context, const rrPipelinePostOpaqueCompositeInput& compositeInput, RrOutputState* state ) override;
 
 	//	RenderLayerEnd() : Called when the renderer finishes a given layer.
 	RENDER_API virtual rrPipelineOutput
-							RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) override;
+							RenderLayerEnd ( rrRenderContext* context, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) override;
 
 private:
 	RrShaderProgram*	m_lightingCompositeProgram = nullptr;
@@ -118,29 +118,29 @@ protected:
 		RrOutputState* state);
 
 	RENDER_API virtual void	DrawWithPipelineAndGBuffers (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		const rrPipelineCompositeInput& compositeInput,
 		gpu::Pipeline* pipeline,
 		gpu::Buffer* cbuffer,
 		gpu::Buffer* sbuffer,
-		std::function<void(RrRenderer*, gpu::GraphicsContext*)> renderCall);
+		std::function<void(RrRenderer*, rrRenderContext*)> renderCall);
 
 	RENDER_API virtual void	DrawDebugOutput (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		const rrPipelineCompositeInput& compositeInput,
 		RrOutputState* state,
 		gpu::Texture clearedOutputTexture);
 
 	RENDER_API virtual void GenerateHZB (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		gpu::Texture* combined_depth,
 		rrCameraPass* cameraPass,
 		RrOutputState* state);
 
-	RENDER_API rrLightSetup	SetupLights ( gpu::GraphicsContext* gfx );
+	RENDER_API rrLightSetup	SetupLights ( rrRenderContext* context );
 
 	RENDER_API virtual void	RenderShadows (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		gpu::Texture* deferred_normals,
 		gpu::Texture* combined_depth,
 		rrCameraPass* cameraPass,
@@ -149,7 +149,7 @@ protected:
 
 	RENDER_API virtual gpu::Texture
 							RenderLights (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		const rrPipelineCompositeInput& gbuffers,
 		RrOutputState* state,
 		rrLightSetup* lightSetup,
@@ -157,24 +157,24 @@ protected:
 
 	RENDER_API virtual rrBloomSetup
 							SetupBloom (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		gpu::Texture* input_color,
 		rrCameraPass* cameraPass,
 		RrOutputState* state);
 	RENDER_API virtual rrTonemapSetup
 							SetupTonemap (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		gpu::Texture* input_color,
 		RrOutputState* state);
 	RENDER_API virtual rrExposureSetup
 							SetupExposure (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		rrPreviousFrameOutput* reference_frame,
 		RrOutputState* state);
 
 	RENDER_API virtual gpu::Texture
 							ApplyTonemap (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		gpu::Texture* input_color,
 		rrBloomSetup* bloom_setup,
 		rrTonemapSetup* tonemap_setup,
@@ -184,7 +184,7 @@ protected:
 
 	RENDER_API virtual gpu::Texture
 							ApplyBloom (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		gpu::Texture* input_color,
 		rrBloomSetup* bloom_setup,
 		rrTonemapSetup* tonemap_setup,
@@ -193,7 +193,7 @@ protected:
 		RrOutputState* state);
 
 	RENDER_API virtual void	SaveAndAnalyzeOutput (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		gpu::Texture* final_output_color,
 		RrOutputState* state);
 };

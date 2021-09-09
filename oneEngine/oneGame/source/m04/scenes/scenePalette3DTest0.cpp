@@ -140,7 +140,7 @@ void scenePalette3DTest0::LoadScene ( void )
 			}
 			gpu::Buffer tilebomber_buffer;
 			tilebomber_buffer.initAsConstantBuffer(NULL, sizeof(params));
-			tilebomber_buffer.upload(gfx, &params, sizeof(params), gpu::kTransferStream);
+			tilebomber_buffer.upload(gfx, &params, sizeof(params), gpu::kTransferWriteDiscardPrevious);
 			gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, &tilebomber_buffer);
 			tilebomber_buffer.free(NULL); // It is currently in use, so this will be deferred.
 		};
@@ -188,8 +188,9 @@ void scenePalette3DTest0::LoadScene ( void )
 			pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
 			pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
 		
-			pass.m_renderCallback = [](gpu::GraphicsContext* gfx)
+			pass.m_renderCallback = [](rrRenderContext* context)
 			{
+				auto gfx = context->context_graphics;
 				renderer::cbuffer::tilebomber::rrTilebombParams params;
 				{
 					params.base_texture_uv_position = Vector2f(0, 0);
@@ -221,11 +222,11 @@ void scenePalette3DTest0::LoadScene ( void )
 					params.bomb_texture[3].max_repeat = 5;
 					params.bomb_texture[3].occurrence = Vector4f(1, 1, 1, 0).normal();
 				}
-				gpu::Buffer tilebomber_buffer;
-				tilebomber_buffer.initAsConstantBuffer(NULL, sizeof(params));
-				tilebomber_buffer.upload(gfx, &params, sizeof(params), gpu::kTransferStream);
+				gpu::Buffer tilebomber_buffer = context->constantBuffer_pool->Allocate( sizeof(params) );
+				//tilebomber_buffer.initAsConstantBuffer(NULL, sizeof(params));
+				tilebomber_buffer.upload(gfx, &params, sizeof(params), gpu::kTransferWriteDiscardPrevious);
 				gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, &tilebomber_buffer);
-				tilebomber_buffer.free(NULL); // It is currently in use, so this will be deferred.
+				//tilebomber_buffer.free(NULL); // It is currently in use, so this will be deferred.
 			};
 
 			// Give initial pass

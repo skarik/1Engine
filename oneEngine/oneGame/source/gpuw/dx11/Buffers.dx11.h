@@ -47,6 +47,16 @@ namespace gpu
 		kBufferTypeTextureReadback,
 	};
 
+	enum MemoryType
+	{
+		// Allocates memory from the managed GPU heap.
+		kMemoryTypeHeap,
+
+		// Allocates from the command buffer stack.
+		// When not available (such as DX11) will default to allocating from the heap.
+		kMemoryTypeSingleFrame,
+	};
+
 	class Buffer
 	{
 	public:
@@ -62,7 +72,7 @@ namespace gpu
 
 		//	initAsData( device, data_size ) : Initializes as a constant buffer.
 		// Data is uploaded separately through map/unmap or upload.
-		GPUW_API int			initAsConstantBuffer ( Device* device, const uint64_t data_size );
+		GPUW_API int			initAsConstantBuffer ( Device* device, const uint64_t data_size, const MemoryType where = kMemoryTypeHeap );
 
 		//	initAsStructuredBuffer( device, data_size ) : Initializes as a data buffer.
 		// Data is uploaded separately through map/unmap or upload.
@@ -96,6 +106,9 @@ namespace gpu
 		GPUW_API void*			map ( BaseContext* context, const TransferStyle style, uint32& out_row_pitch );
 		//	map( device, style ) : Maps the entire buffer to CPU-side memory and returns the address.
 		GPUW_API void*			map ( BaseContext* context, const TransferStyle style );
+
+		//	map( device, style ) : Maps the entire buffer to CPU-side memory and returns the address.
+		GPUW_API void*			mapSubregion ( BaseContext* context, const TransferStyle style, uint32& out_row_pitch );
 		//	unmap( device ) : Unmaps the buffer.
 		// If the mapping was Static, this is a synchronous operation, waiting for the data to upload to the device.
 		GPUW_API int			unmap ( BaseContext* context );

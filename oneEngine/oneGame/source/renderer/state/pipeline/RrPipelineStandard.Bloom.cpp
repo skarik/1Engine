@@ -18,7 +18,7 @@
 #include "gpuw/Sampler.h"
 
 static gpu::Texture Blur (
-	gpu::GraphicsContext* gfx,
+	rrRenderContext* context,
 	gpu::Texture* input_nonblurred,
 	const Vector2i texture_size,
 	RrShaderProgram*& m_bloomBlurProgram,
@@ -26,6 +26,7 @@ static gpu::Texture Blur (
 	RrOutputState* state )
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument or class field
+	auto gfx = context->context_graphics;
 
 	// Create samplers:
 	gpu::Sampler linearSampler;
@@ -65,9 +66,8 @@ static gpu::Texture Blur (
 	{
 		// Create blur params
 		rrBlurParams blurParams { Vector2f(1.0F, 0.0F), 9 };
-		gpu::Buffer cbBlurParams;
-		cbBlurParams.initAsConstantBuffer(NULL, sizeof(blurParams));
-		cbBlurParams.upload(gfx, &blurParams, sizeof(blurParams), gpu::kTransferStream);
+		gpu::Buffer cbBlurParams = context->constantBuffer_pool->Allocate( sizeof(blurParams) );
+		cbBlurParams.upload(gfx, &blurParams, sizeof(blurParams), gpu::kTransferWriteDiscardPrevious);
 
 		// Create writeable with the render target
 		gpu::WriteableResource rwColor;
@@ -88,17 +88,14 @@ static gpu::Texture Blur (
 
 		// Done with writeables
 		rwColor.destroy();
-		// Done with params
-		cbBlurParams.free(NULL);
 	}
 
 	// Blur on Y
 	{
 		// Create blur params
 		rrBlurParams blurParams { Vector2f(0.0F, 1.0F), 9 };
-		gpu::Buffer cbBlurParams;
-		cbBlurParams.initAsConstantBuffer(NULL, sizeof(blurParams));
-		cbBlurParams.upload(gfx, &blurParams, sizeof(blurParams), gpu::kTransferStream);
+		gpu::Buffer cbBlurParams = context->constantBuffer_pool->Allocate( sizeof(blurParams) );
+		cbBlurParams.upload(gfx, &blurParams, sizeof(blurParams), gpu::kTransferWriteDiscardPrevious);
 
 		// Create writeable with the render target
 		gpu::WriteableResource rwColor;
@@ -119,8 +116,6 @@ static gpu::Texture Blur (
 
 		// Done with writeables
 		rwColor.destroy();
-		// Done with params
-		cbBlurParams.free(NULL);
 	}
 
 	// Free samplers now
@@ -130,12 +125,13 @@ static gpu::Texture Blur (
 }
 
 RrPipelineStandardRenderer::rrBloomSetup RrPipelineStandardRenderer::SetupBloom (
-	gpu::GraphicsContext* gfx,
+	rrRenderContext* context,
 	gpu::Texture* input_color,
 	rrCameraPass* cameraPass,
 	RrOutputState* state )
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument or class field
+	auto gfx = context->context_graphics;
 	rrBloomSetup bloom;
 
 	// Create samplers:
@@ -210,9 +206,9 @@ RrPipelineStandardRenderer::rrBloomSetup RrPipelineStandardRenderer::SetupBloom 
 		auto& output = *state->output_info;
 		rrViewport output_viewport =  output.GetOutputViewport();
 
-		bloom.m_colorDownscale16_Blurred = Blur(gfx, &bloom.m_colorDownscale16, output_viewport.size / 16, m_bloomBlurProgram, cameraPass, state);
-		bloom.m_colorDownscale16_Blurred = Blur(gfx, &bloom.m_colorDownscale16_Blurred, output_viewport.size / 16, m_bloomBlurProgram, cameraPass, state);
-		bloom.m_colorDownscale4_Blurred = Blur(gfx, &bloom.m_colorDownscale4, output_viewport.size / 4, m_bloomBlurProgram, cameraPass, state);
+		bloom.m_colorDownscale16_Blurred = Blur(context, &bloom.m_colorDownscale16, output_viewport.size / 16, m_bloomBlurProgram, cameraPass, state);
+		bloom.m_colorDownscale16_Blurred = Blur(context, &bloom.m_colorDownscale16_Blurred, output_viewport.size / 16, m_bloomBlurProgram, cameraPass, state);
+		bloom.m_colorDownscale4_Blurred = Blur(context, &bloom.m_colorDownscale4, output_viewport.size / 4, m_bloomBlurProgram, cameraPass, state);
 	}
 
 	gfx->debugGroupPop();
@@ -279,7 +275,7 @@ static void GetPostprocess (
 
 gpu::Texture
 RrPipelineStandardRenderer::ApplyBloom (
-	gpu::GraphicsContext* gfx,
+	rrRenderContext* context,
 	gpu::Texture* input_color,
 	rrBloomSetup* bloom_setup,
 	rrTonemapSetup* tonemap_setup,
@@ -288,6 +284,7 @@ RrPipelineStandardRenderer::ApplyBloom (
 	RrOutputState* state )
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument
+	auto gfx = context->context_graphics;
 
 	gpu::Texture result_color = *input_color;
 

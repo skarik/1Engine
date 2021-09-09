@@ -40,10 +40,10 @@ void RrRenderer::InitializeCommonPipelineResources ( gpu::Device* device )
 #endif
 
 	m_vbufScreenQuad.initAsVertexBuffer(device, gpu::kFormatR32G32B32A32SFloat, sizeof(screenquad)/sizeof(Vector4f));
-	m_vbufScreenQuad.upload(NULL, screenquad, sizeof(screenquad), gpu::kTransferStatic);
+	m_vbufScreenQuad.upload(NULL, screenquad, sizeof(screenquad), gpu::kTransferWriteDiscardPrevious);
 	
 	m_vbufScreenQuad_ForOutputSurface.initAsVertexBuffer(device, gpu::kFormatR32G32B32A32SFloat, sizeof(screenquad)/sizeof(Vector4f));
-	m_vbufScreenQuad_ForOutputSurface.upload(NULL, screenquad, sizeof(screenquad), gpu::kTransferStatic);
+	m_vbufScreenQuad_ForOutputSurface.upload(NULL, screenquad, sizeof(screenquad), gpu::kTransferWriteDiscardPrevious);
 
 	CreatePipeline(&renderer::pass::Copy->m_program->GetShaderPipeline(), m_pipelineScreenQuadCopy);
 
@@ -53,7 +53,7 @@ void RrRenderer::InitializeCommonPipelineResources ( gpu::Device* device )
 		Vector4f(0, 0, 0, 1)
 	};
 	m_vbufDefault.initAsVertexBuffer(device, gpu::kFormatR32G32B32A32SFloat, sizeof(defaultgeo)/sizeof(Vector4f));
-	m_vbufDefault.upload(NULL, defaultgeo, sizeof(defaultgeo), gpu::kTransferStatic);
+	m_vbufDefault.upload(NULL, defaultgeo, sizeof(defaultgeo), gpu::kTransferWriteDiscardPrevious);
 
 	// Load in lighting geometry
 	{

@@ -47,8 +47,10 @@ void RrPipelineStandardRenderer::SortLights ( void )
 }
 
 RrPipelineStandardRenderer::rrLightSetup RrPipelineStandardRenderer::SetupLights(
-	gpu::GraphicsContext* gfx)
+	rrRenderContext* context)
 {
+	auto gfx = context->context_graphics;
+
 	rrLightSetup setup;
 	
 	// Sort all the lights:
@@ -92,7 +94,7 @@ RrPipelineStandardRenderer::rrLightSetup RrPipelineStandardRenderer::SetupLights
 		{
 			setup.lightParameterBuffer = new gpu::Buffer();
 			setup.lightParameterBuffer->initAsStructuredBuffer(NULL, sizeof(renderer::cbuffer::rrLight) * lights.size());
-			setup.lightParameterBuffer->upload(gfx, lights.data(), sizeof(renderer::cbuffer::rrLight) * lights.size(), gpu::TransferStyle::kTransferStream);
+			setup.lightParameterBuffer->upload(gfx, lights.data(), sizeof(renderer::cbuffer::rrLight) * lights.size(), gpu::kTransferWriteDiscardPrevious);
 		}
 	}
 
@@ -100,7 +102,7 @@ RrPipelineStandardRenderer::rrLightSetup RrPipelineStandardRenderer::SetupLights
 }
 
 void RrPipelineStandardRenderer::RenderShadows(
-	gpu::GraphicsContext* gfx,
+	rrRenderContext* context,
 	gpu::Texture* deferred_normals,
 	gpu::Texture* combined_depth,
 	rrCameraPass* cameraPass,
@@ -108,6 +110,7 @@ void RrPipelineStandardRenderer::RenderShadows(
 	rrLightSetup* lightSetup)
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument or class field
+	auto gfx = context->context_graphics;
 
 	gfx->debugGroupPush("RenderShadows");
 
@@ -138,9 +141,8 @@ void RrPipelineStandardRenderer::RenderShadows(
 			} cbuffer_light_params;
 			cbuffer_light_params.firstIndex = lightIndex;
 
-			gpu::Buffer cbuffer;
-			cbuffer.initAsConstantBuffer(NULL, sizeof(rrCBufferLightInfo));
-			cbuffer.upload(gfx, &cbuffer_light_params, sizeof(rrCBufferLightInfo), gpu::kTransferStream);
+			gpu::Buffer cbuffer = context->constantBuffer_pool->Allocate( sizeof(rrCBufferLightInfo) );
+			cbuffer.upload(gfx, &cbuffer_light_params, sizeof(rrCBufferLightInfo), gpu::kTransferWriteDiscardPrevious);
 
 			// Set up shadows for this given light in the lightSetup
 			//rrDepthBufferRequest shadowDepthRequest {shadow_resolution, core::gfx::tex::kDepthFormat16, core::gfx::tex::kStencilFormatNone}; 
@@ -274,9 +276,9 @@ void RrPipelineStandardRenderer::RenderShadows(
 					params.cbuf_perCamera = &cameraPasses.m_cbuffer;
 					params.cbuf_perFrame = &state->frame_state->cbuffer_perFrame;
 					params.cbuf_perPass = nullptr;
-					params.context_graphics = gfx;
+					params.context = context;
 
-					ARCORE_ASSERT(params.context_graphics != nullptr);
+					ARCORE_ASSERT(params.context != nullptr);
 					renderable->PrepRender(&cameraPasses); // Push the buffers now
 					renderable->Render(&params);
 				}
@@ -361,8 +363,6 @@ void RrPipelineStandardRenderer::RenderShadows(
 				rwShadowMask.destroy();
 			}
 
-			cbuffer.free(NULL);
-
 			// Save the shadow mask now
 			shadow_masks[lightIndex] = shadowMask;
 		}
@@ -372,12 +372,14 @@ void RrPipelineStandardRenderer::RenderShadows(
 }
 
 gpu::Texture RrPipelineStandardRenderer::RenderLights(
-	gpu::GraphicsContext* gfx,
+	rrRenderContext* context,
 	const rrPipelineCompositeInput& gbuffers,
 	RrOutputState* state,
 	rrLightSetup* lightSetup,
 	gpu::Texture clearedOutputTexture)
 {
+	auto gfx = context->context_graphics;
+
 	gfx->debugGroupPush("RenderLights");
 
 	// Grab output size for the screen quad info
@@ -425,8 +427,9 @@ gpu::Texture RrPipelineStandardRenderer::RenderLights(
 	// Render the ambient lighting
 	{
 		// Render with the composite shader
-		DrawWithPipelineAndGBuffers(gfx, gbuffers, m_lightingCompositePipeline, nullptr, nullptr, [](RrRenderer* renderer, gpu::GraphicsContext* gfx)
+		DrawWithPipelineAndGBuffers(context, gbuffers, m_lightingCompositePipeline, nullptr, nullptr, [](RrRenderer* renderer, rrRenderContext* context)
 		{
+			auto gfx = context->context_graphics;
 			gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
 			gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
 			gfx->draw(4, 0);
@@ -458,17 +461,17 @@ gpu::Texture RrPipelineStandardRenderer::RenderLights(
 		} cbuffer_light_params;
 		cbuffer_light_params.firstIndex = lightSetup->directionalLightFirstIndex;
 
-		gpu::Buffer cbuffer;
-		cbuffer.initAsConstantBuffer(NULL, sizeof(rrCBufferLightInfo));
-		cbuffer.upload(gfx, &cbuffer_light_params, sizeof(rrCBufferLightInfo), gpu::kTransferStream);
+		gpu::Buffer cbuffer = context->constantBuffer_pool->Allocate( sizeof(rrCBufferLightInfo) );
+		cbuffer.upload(gfx, &cbuffer_light_params, sizeof(rrCBufferLightInfo), gpu::kTransferWriteDiscardPrevious);
 
 		// Render with the lighting0
 		DrawWithPipelineAndGBuffers(
-			gfx, gbuffers, m_lightingLighting0Pipeline,
+			context, gbuffers, m_lightingLighting0Pipeline,
 			&cbuffer,
 			lightSetup->lightParameterBuffer,
-			[directionalLightFirstIndex, directionalLightCount, shadowMask](RrRenderer* renderer, gpu::GraphicsContext* gfx)
+			[directionalLightFirstIndex, directionalLightCount, shadowMask](RrRenderer* renderer, rrRenderContext* context)
 		{
+			auto gfx = context->context_graphics;
 			if (shadowMask.valid())
 			{
 				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 6, (gpu::Texture*)&shadowMask);
@@ -477,8 +480,6 @@ gpu::Texture RrPipelineStandardRenderer::RenderLights(
 			gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
 			gfx->drawInstanced(4, directionalLightCount, 0);
 		});
-
-		cbuffer.free(NULL);
 	}
 
 	// TODO: Cannot bind depth buffer as depth buffer & texture at same time. Might need to sort instead, or depth-test in the shader
@@ -506,23 +507,21 @@ gpu::Texture RrPipelineStandardRenderer::RenderLights(
 		} cbuffer_light_params;
 		cbuffer_light_params.firstIndex = omniLightFirstIndex;
 
-		gpu::Buffer cbuffer;
-		cbuffer.initAsConstantBuffer(NULL, sizeof(rrCBufferLightInfo));
-		cbuffer.upload(gfx, &cbuffer_light_params, sizeof(rrCBufferLightInfo), gpu::kTransferStream);
+		gpu::Buffer cbuffer = context->constantBuffer_pool->Allocate( sizeof(rrCBufferLightInfo) );
+		cbuffer.upload(gfx, &cbuffer_light_params, sizeof(rrCBufferLightInfo), gpu::kTransferWriteDiscardPrevious);
 
 		// Render with the lightingOmni
 		DrawWithPipelineAndGBuffers(
-			gfx, gbuffers, m_lightingLightingOmniPipeline,
+			context, gbuffers, m_lightingLightingOmniPipeline,
 			&cbuffer,
 			lightSetup->lightParameterBuffer,
-			[omniLightFirstIndex, omniLightCount](RrRenderer* renderer, gpu::GraphicsContext* gfx)
+			[omniLightFirstIndex, omniLightCount](RrRenderer* renderer, rrRenderContext* context)
 		{
+			auto gfx = context->context_graphics;
 			gfx->setIndexBuffer(&renderer->GetLightSphereIndexBuffer(), gpu::kIndexFormatUnsigned16);
 			gfx->setVertexBuffer(0, &renderer->GetLightSphereVertexBuffer(), 0);
 			gfx->drawInstanced(renderer->GetLightSphereIndexCount(), omniLightCount, 0);
 		});
-
-		cbuffer.free(NULL);
 	}
 #endif
 

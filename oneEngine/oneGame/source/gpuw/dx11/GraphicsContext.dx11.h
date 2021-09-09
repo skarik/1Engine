@@ -169,6 +169,12 @@ namespace gpu
 		//Buffer*					m_vertexBuffer[32/*D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT*/];
 		Buffer*					m_indirectArgsBuffer;
 
+		struct ConstantBufferGroup
+		{
+			void*				m_buffers [16];
+		};
+		ConstantBufferGroup		m_constantBuffers [kShaderStageMAX];
+
 		Sampler*				m_defaultSampler;
 
 		int						drawPreparePipeline ( void );

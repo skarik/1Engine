@@ -11,6 +11,7 @@
 #include "renderer/material/ShaderSlots.h"
 #include "renderer/material/VertexAttribute.h"
 #include "renderer/types/Shading.h"
+#include "renderer/types/rrRenderContext.h"
 
 class RrShaderProgram;
 class RrTexture;
@@ -20,7 +21,7 @@ namespace gpu
 	class Sampler;
 }
 
-typedef void (*rrPassRenderFunction)(gpu::GraphicsContext*);
+typedef void (*rrPassRenderFunction)(rrRenderContext*);
 
 enum rrPassType
 {

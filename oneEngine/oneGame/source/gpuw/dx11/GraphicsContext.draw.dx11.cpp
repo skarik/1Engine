@@ -192,7 +192,7 @@ int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, const 
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeConstant);
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
-	ID3D11Buffer* bufferList [1] = {(ID3D11Buffer*)((Buffer*)buffer)->nativePtr()};
+	/*ID3D11Buffer* bufferList [1] = {(ID3D11Buffer*)((Buffer*)buffer)->nativePtr()};
 	if (stage == kShaderStageVs)
 		ctx->VSSetConstantBuffers(slot, 1, bufferList);
 	else if (stage == kShaderStageHs)
@@ -208,7 +208,8 @@ int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, const 
 	else
 	{
 		ARCORE_ERROR("Invalid shader stage");
-	}
+	}*/
+	m_constantBuffers[stage].m_buffers[slot] = (ID3D11Buffer*)((Buffer*)buffer)->nativePtr();
 
 	// todo: bind
 	return kError_SUCCESS;
@@ -221,7 +222,7 @@ int gpu::GraphicsContext::setShaderCBuffers ( ShaderStage stage, int startSlot, 
 	ARCORE_ASSERT(slotCount + startSlot < D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT);
 
 	// Build list of shaders we're passing in
-	ID3D11Buffer* bufferList [D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT] = {NULL};
+	/*ID3D11Buffer* bufferList [D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT] = {NULL};
 	for ( int i = 0; i < slotCount; ++i )
 	{
 		if (buffers[i])
@@ -246,6 +247,14 @@ int gpu::GraphicsContext::setShaderCBuffers ( ShaderStage stage, int startSlot, 
 	else
 	{
 		ARCORE_ERROR("Invalid shader stage");
+	}*/
+	for ( int i = 0; i < slotCount; ++i )
+	{
+		if (buffers[i])
+		{
+			ARCORE_ASSERT(buffers[i]->getBufferType() == kBufferTypeConstant);
+			m_constantBuffers[stage].m_buffers[startSlot + i] = (ID3D11Buffer*)((Buffer*)buffers[i])->nativePtr();
+		}
 	}
 
 	// todo: bind
@@ -437,6 +446,21 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 		// Primitive restart is always enabled on DX11.
 
 		// All other buffers are set before this point. Let DX11 handle the context changes.
+		
+		{
+			// PSYCH! CBuffer set is a mite slower when letting DX11 handle the context changes.
+			// Thus, we go through each bound shader and set their stages' constant buffers
+			if (m_pipeline->m_pipeline->m_vs)
+				ctx->VSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)m_constantBuffers[kShaderStageVs].m_buffers);
+			if (m_pipeline->m_pipeline->m_hs)
+				ctx->HSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)m_constantBuffers[kShaderStageHs].m_buffers);
+			if (m_pipeline->m_pipeline->m_ds)
+				ctx->DSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)m_constantBuffers[kShaderStageDs].m_buffers);
+			if (m_pipeline->m_pipeline->m_gs)
+				ctx->GSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)m_constantBuffers[kShaderStageGs].m_buffers);
+			if (m_pipeline->m_pipeline->m_ps)
+				ctx->PSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)m_constantBuffers[kShaderStagePs].m_buffers);
+		}
 
 		// Set the layout we're going to use last
 		ctx->IASetInputLayout((ID3D11InputLayout*)m_pipeline->m_layout);
@@ -539,6 +563,9 @@ int gpu::GraphicsContext::dispatch ( const uint32 threadCountX, const uint32 thr
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
+	{
+		ctx->CSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)m_constantBuffers[kShaderStageCs].m_buffers);
+	}
 	{
 		ctx->Dispatch(threadCountX, threadCountY, threadCountZ);
 		ARCORE_ASSERT(validate() == 0);

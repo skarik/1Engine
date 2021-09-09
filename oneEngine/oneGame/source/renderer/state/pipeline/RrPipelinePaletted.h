@@ -15,15 +15,15 @@ public:
 
 	//	CompositeDeferred() : Called when the renderer wants to combine a deferred pass with a forward pass.
 	RENDER_API virtual rrCompositeOutput
-							CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
+							CompositeDeferred ( rrRenderContext* context, const rrPipelineCompositeInput& compositeInput, RrOutputState* state ) override;
 
 	//	CompositePostOpaques() : Called when the renderer is done rendering all deferred+forward opaques.
 	RENDER_API virtual rrCompositeOutput
-							CompositePostOpaques ( gpu::GraphicsContext* gfx, const rrPipelinePostOpaqueCompositeInput& compositeInput, RrOutputState* state ) override;
+							CompositePostOpaques ( rrRenderContext* context, const rrPipelinePostOpaqueCompositeInput& compositeInput, RrOutputState* state ) override;
 
 	//	RenderLayerEnd() : Called when the renderer finishes a given layer.
 	RENDER_API virtual rrPipelineOutput
-							RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) override;
+							RenderLayerEnd ( rrRenderContext* context, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state ) override;
 
 private:
 	RrShaderProgram*	m_postprocessOutlineProgram = nullptr;
@@ -34,14 +34,14 @@ private:
 
 protected:
 	RENDER_API gpu::Texture	ApplyOutline (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		gpu::Texture* color,
 		gpu::Texture* depth,
 		rrCameraPass* cameraPass,
 		RrOutputState* state );
 
 	RENDER_API gpu::Texture	ApplyPalettize (
-		gpu::GraphicsContext* gfx,
+		rrRenderContext* context,
 		gpu::Texture* color,
 		rrCameraPass* cameraPass,
 		RrOutputState* state );

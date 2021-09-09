@@ -95,14 +95,14 @@ bool CollisionMapRenderer::Render ( const rrRenderParams* params )
 {
 	if (m_drawWireframe)
 	{
-		gpu::GraphicsContext* gfx = params->context_graphics;
+		gpu::GraphicsContext* gfx = params->context->context_graphics;
 
 		m_postMaterialCb = [](renderer::Material* material)
 		{
 			gpu::RasterizerState rs;
 			rs.cullmode = material->m_pass->m_cullMode;
 			rs.fillmode = gpu::kFillModeWireframe;
-			material->m_ctx->setRasterizerState(rs);
+			material->m_ctx->context_graphics->setRasterizerState(rs);
 		};
 		CStreamedRenderable3D::Render(params);
 		m_postMaterialCb = NULL;

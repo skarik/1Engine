@@ -92,7 +92,7 @@ namespace dusk
 	private:
 
 		//	P1Render() : Pass 1's render routine. Called by the job pass.
-		bool					P1Render ( gpu::GraphicsContext* graphics_context );
+		bool					P1Render ( rrRenderContext* render_context );
 
 		//	ERUpdateRenderList() : Updates the render list.
 		void					P1UpdateRenderList ( std::vector<Element*>* renderList );
@@ -102,7 +102,7 @@ namespace dusk
 		bool					P1UpdateRenderTarget ( void );
 
 		//	ERRenderElements() : Renders the elements to buffer.
-		void					P1RenderElements ( gpu::GraphicsContext* graphics_context, const std::vector<Element*>& renderList, const Rect& scissorArea );
+		void					P1RenderElements ( rrRenderContext* render_context, const std::vector<Element*>& renderList, const Rect& scissorArea );
 
 	public:
 

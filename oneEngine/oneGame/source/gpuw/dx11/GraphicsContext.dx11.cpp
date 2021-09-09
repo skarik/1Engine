@@ -230,8 +230,10 @@ int gpu::GraphicsContext::reset ( void )
 
 	if (!m_isImmediateMode)
 	{
-		ctx->ClearState(); // TODO: Remove this line, and investigate if it causes issues, if any.
+		//ctx->ClearState(); // TODO: Remove this line, and investigate if it causes issues, if any.
 	}
+
+	memset( m_constantBuffers, 0, sizeof(m_constantBuffers) );
 
 	m_rasterStateCurrentBitfilter = (uint32_t)-1;
 	m_blendStateCurrentBitfilter[0] = (uint64_t)-1;

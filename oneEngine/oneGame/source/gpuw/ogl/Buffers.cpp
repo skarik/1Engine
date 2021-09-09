@@ -30,9 +30,9 @@ gpuHandle gpu::Buffer::nativePtr ( void )
 
 static void _AllocateBufferSize ( const GLuint buffer, const uint64_t data_size, const gpu::TransferStyle style )
 {
-	if (style == gpu::kTransferStatic)
+	if (style == gpu::kTransferWriteDiscardPrevious)
 		glNamedBufferStorage(buffer, (GLsizeiptr)std::max<uint64_t>(data_size, kMinimumBufferSize), NULL, GL_MAP_WRITE_BIT);
-	else if (style == gpu::kTransferStream)
+	else if (style == gpu::kTransferWriteDiscardPrevious)
 		glNamedBufferStorage(buffer, (GLsizeiptr)std::max<uint64_t>(data_size, kMinimumBufferSize), NULL, GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
 }
 

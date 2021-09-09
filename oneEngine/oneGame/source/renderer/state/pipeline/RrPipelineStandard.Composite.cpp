@@ -9,14 +9,15 @@
 #include "gpuw/ShaderPipeline.h"
 
 void RrPipelineStandardRenderer::DrawWithPipelineAndGBuffers (
-	gpu::GraphicsContext* gfx,
+	rrRenderContext* context,
 	const rrPipelineCompositeInput& compositeInput,
 	gpu::Pipeline* pipeline,
 	gpu::Buffer* cbuffer,
 	gpu::Buffer* sbuffer,
-	std::function<void(RrRenderer*, gpu::GraphicsContext*)> renderCall)
+	std::function<void(RrRenderer*, rrRenderContext*)> renderCall)
 {
 	auto renderer = RrRenderer::Active; // TODO: make argument or class variable
+	auto gfx = context->context_graphics;
 
 	gfx->setPipeline(pipeline);
 	gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, compositeInput.deferred_albedo);
@@ -34,7 +35,7 @@ void RrPipelineStandardRenderer::DrawWithPipelineAndGBuffers (
 	gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, cbuffer);
 	gfx->setShaderSBuffer(gpu::kShaderStageVs, renderer::SBUFFER_USER0, sbuffer);
 	gfx->setShaderSBuffer(gpu::kShaderStagePs, renderer::SBUFFER_USER0, sbuffer);
-	renderCall(renderer, gfx);
+	renderCall(renderer, context);
 };
 
 void RrPipelineStandardRenderer::CopyRenderTexture (

@@ -598,7 +598,7 @@ void m04::editor::NoiseEditor::SaveNoise ( const char* filename )
 
 	// TODO: Wait for context to finish
 
-	Vector4f* raw_image = (Vector4f*)readback_buffer.map(NULL, gpu::kTransferStatic);
+	Vector4f* raw_image = (Vector4f*)readback_buffer.map(NULL, gpu::kTransferWriteDiscardPrevious);
 	if (raw_image)
 	{
 		if (!edit_state.is3D)

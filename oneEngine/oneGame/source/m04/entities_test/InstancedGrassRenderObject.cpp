@@ -114,11 +114,11 @@ bool InstancedGrassRenderObject::PrepRender ( rrCameraPass* cameraPass )
 	ARCORE_ASSERT(instancing_info.instance_count < 4096);
 	if (!instancing_info.buffer_transforms.valid())
 		instancing_info.buffer_transforms.initAsStructuredBuffer(NULL, sizeof(grInstancedDataGrassTransform) * 4096);
-	instancing_info.buffer_transforms.upload(NULL, instancing_info.transforms.data(), sizeof(grInstancedDataGrassTransform) * instancing_info.instance_count, gpu::kTransferStream);
+	instancing_info.buffer_transforms.upload(NULL, instancing_info.transforms.data(), sizeof(grInstancedDataGrassTransform) * instancing_info.instance_count, gpu::kTransferWriteDiscardPrevious);
 
 	if (!instancing_info.buffer_variations.valid())
 		instancing_info.buffer_variations.initAsStructuredBuffer(NULL, sizeof(grInstancedDataGrassVariation) * 4096);
-	instancing_info.buffer_variations.upload(NULL, instancing_info.variations.data(), sizeof(grInstancedDataGrassVariation) * instancing_info.instance_count, gpu::kTransferStream);
+	instancing_info.buffer_variations.upload(NULL, instancing_info.variations.data(), sizeof(grInstancedDataGrassVariation) * instancing_info.instance_count, gpu::kTransferWriteDiscardPrevious);
 
 	// Update the offsets in the buffer
 
@@ -144,16 +144,15 @@ bool InstancedGrassRenderObject::Render ( const rrRenderParams* params )
 			rrMeshBuffer* meshBuffer = mesh_types[mesh_type].m_meshBuffer;
 			const grassSubDrawInfo& subdrawInfo = instancing_subdraw_info[mesh_type];
 
-			gpu::GraphicsContext* gfx = params->context_graphics;
+			gpu::GraphicsContext* gfx = params->context->context_graphics;
 
-			gpu::Buffer offset_info;
-			offset_info.initAsConstantBuffer(NULL, sizeof(int32));
-			offset_info.upload(gfx, (void*)&subdrawInfo.base_offset, sizeof(int32), gpu::kTransferStream);
+			gpu::Buffer offset_info = params->context->constantBuffer_pool->Allocate( sizeof(int32) );
+			offset_info.upload(gfx, (void*)&subdrawInfo.base_offset, sizeof(int32), gpu::kTransferWriteDiscardPrevious);
 
 			gpu::Pipeline* pipeline = GetPipeline( params->pass, meshBuffer->m_bufferEnabled );
 			gfx->setPipeline(pipeline);
 			// Set up the material helper...
-			renderer::Material(this, gfx, params, pipeline)
+			renderer::Material(this, params->context, params, pipeline)
 				// set the depth & blend state registers
 				.setDepthStencilState()
 				.setRasterizerState()
@@ -189,9 +188,6 @@ bool InstancedGrassRenderObject::Render ( const rrRenderParams* params )
 
 			// draw now
 			gfx->drawIndexedInstanced(meshBuffer->m_modeldata->indexNum, subdrawInfo.instance_count, 0, 0);
-
-			// free temp buffer
-			offset_info.free(NULL);
 		}
 	}
 

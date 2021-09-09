@@ -82,7 +82,7 @@ void RrRenderObject::PushCbufferPerObject ( const XrTransform& worldTransform, c
 		// TODO: Create the buffer & push it
 		if (!m_cbufPerObjectMatrices.valid())
 			m_cbufPerObjectMatrices.initAsConstantBuffer(NULL, sizeof(matrices));
-		m_cbufPerObjectMatrices.upload(NULL, &matrices, sizeof(matrices), gpu::TransferStyle::kTransferStream);
+		m_cbufPerObjectMatrices.upload(NULL, &matrices, sizeof(matrices), gpu::kTransferWriteDiscardPrevious);
 
 		m_cbufMatricesSynced = true; // Mark matrices synced so we don't upload again.
 	}
@@ -98,7 +98,7 @@ void RrRenderObject::PushCbufferPerObject ( const XrTransform& worldTransform, c
 			{
 				if (!m_cbufPerObjectSurfaces[i].valid())
 					m_cbufPerObjectSurfaces[i].initAsConstantBuffer(NULL, sizeof(m_passes[i].m_surface));
-				m_cbufPerObjectSurfaces[i].upload(NULL, &m_passes[i].m_surface, sizeof(m_passes[i].m_surface), gpu::TransferStyle::kTransferStream);
+				m_cbufPerObjectSurfaces[i].upload(NULL, &m_passes[i].m_surface, sizeof(m_passes[i].m_surface), gpu::kTransferWriteDiscardPrevious);
 
 				m_passSurfaceSynced[i] = true; // Mark as synced so we don't upload again.
 			}

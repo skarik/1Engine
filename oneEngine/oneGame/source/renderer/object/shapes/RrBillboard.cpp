@@ -121,7 +121,7 @@ bool RrBillboard::CreateConstants ( rrCameraPass* cameraPass )
 
 bool RrBillboard::Render ( const rrRenderParams* params )
 {
-	gpu::GraphicsContext* gfx = params->context_graphics;
+	gpu::GraphicsContext* gfx = params->context->context_graphics;
 
 	gpu::Pipeline* pipeline = GetPipeline( params->pass );
 	gfx->setPipeline(pipeline);

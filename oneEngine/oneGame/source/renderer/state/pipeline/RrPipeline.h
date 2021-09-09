@@ -22,6 +22,7 @@ namespace gpu
 }
 class RrRenderer;
 struct rrCameraPass;
+struct rrRenderContext;
 
 class RrPipelineStateRenderer;
 class RrPipelineOptions;
@@ -128,38 +129,38 @@ public:
 	}
 
 	//	CullObjects() : Called to cull objects.
-	RENDER_API virtual void	CullObjects ( gpu::GraphicsContext* gfx, const RrOutputInfo& output, RrOutputState* state, RrWorld* world ) 
+	RENDER_API virtual void	CullObjects ( rrRenderContext* context, const RrOutputInfo& output, RrOutputState* state, RrWorld* world ) 
 		{}
 
 	//	PreparePass()
 	// Called before a world begins to render.
-	RENDER_API virtual void	PreparePass ( gpu::GraphicsContext* gfx )
+	RENDER_API virtual void	PreparePass ( rrRenderContext* context )
 		{}
 
 	//	PostDepth()
 	// Called before a world begins to render, but after the depth pre-pass has finished.
 	// Will always be called even if there are no opaque objects in the scene.
-	RENDER_API virtual void	PostDepth ( gpu::GraphicsContext* gfx, const rrPipelinePostDepthInput& postDepthInput, RrOutputState* state )
+	RENDER_API virtual void	PostDepth ( rrRenderContext* context, const rrPipelinePostDepthInput& postDepthInput, RrOutputState* state )
 		{}
 
 	//	CompositeDeferred() : Called when the renderer wants to combine a deferred pass with a forward pass.
 	// Should only handle lighting or effectively opaque rendering effects.
 	// Will not be called if there are no deferred-rendered objects in the scene.
 	RENDER_API virtual rrCompositeOutput
-							CompositeDeferred ( gpu::GraphicsContext* gfx, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
+							CompositeDeferred ( rrRenderContext* context, const rrPipelineCompositeInput& compositeInput, RrOutputState* state )
 		{ return rrCompositeOutput{*(gpu::Texture*)compositeInput.old_forward_color}; }
 
 	//	CompositePostOpaques() : Called when the renderer is done rendering all deferred+forward opaques.
 	// Can be used to apply effects to deferred+forward opaques before rendering translucents.
 	// Will not be called if there are no opaque objects in the scene.
 	RENDER_API virtual rrCompositeOutput
-							CompositePostOpaques ( gpu::GraphicsContext* gfx, const rrPipelinePostOpaqueCompositeInput& compositeInput, RrOutputState* state )
+							CompositePostOpaques ( rrRenderContext* context, const rrPipelinePostOpaqueCompositeInput& compositeInput, RrOutputState* state )
 		{ return rrCompositeOutput{*(gpu::Texture*)compositeInput.combined_color}; }
 
 	//	RenderLayerEnd() : Called when the renderer finishes a given layer.
 	// Will always be called even if the layer is empty.
 	RENDER_API virtual rrPipelineOutput
-							RenderLayerEnd ( gpu::GraphicsContext* gfx, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state )
+							RenderLayerEnd ( rrRenderContext* context, const rrPipelineLayerFinishInput& finishInput, RrOutputState* state )
 		{ return rrPipelineOutput{*(gpu::Texture*)finishInput.color}; }
 
 public:

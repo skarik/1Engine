@@ -212,7 +212,7 @@ void RrCamera::UpdateCBuffer ( gpu::GraphicsContext* gfx, rrCameraPass* passinfo
 	cameraData.farPlane		= zFar;
 
 	// And shunt it to the GPU!
-	passinfo->m_cbuffer.upload(gfx, &cameraData, sizeof(renderer::cbuffer::rrPerCamera), gpu::kTransferStream);
+	passinfo->m_cbuffer.upload(gfx, &cameraData, sizeof(renderer::cbuffer::rrPerCamera), gpu::kTransferWriteDiscardPrevious);
 }
 
 //void RrCamera::RenderBegin ( void )
