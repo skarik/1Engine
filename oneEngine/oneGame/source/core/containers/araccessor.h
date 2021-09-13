@@ -10,6 +10,7 @@
 		friend ACCESS_FROM ; \
 		ACCESSED_INSTANCE_TYPE * m_target = nullptr; \
 		FORCE_INLINE void Set ( const FIELD_TYPE & value ) { m_target-> FIELD = value; } \
+		FORCE_INLINE const FIELD_TYPE & Get ( void ) { return m_target-> FIELD ; } \
 	public: \
 		FORCE_INLINE __##ACCESS_FROM##Access_##FIELD ( ACCESSED_INSTANCE_TYPE * target ) : m_target(target) {} \
 	}; \

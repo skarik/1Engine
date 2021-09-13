@@ -98,8 +98,8 @@ int gpu::Device::create ( DeviceFeature* features, uint32_t featureCount, Device
 
 	do
 	{
-		result = D3D11CreateDevice(	NULL, D3D_DRIVER_TYPE_HARDWARE, NULL,
 		//result = D3D11CreateDevice(	m_dxAdapter, D3D_DRIVER_TYPE_UNKNOWN, NULL,
+		result = D3D11CreateDevice(	NULL, D3D_DRIVER_TYPE_HARDWARE, NULL,
 									layerFlags,
 									featureLevels, sizeof(featureLevels)/sizeof(D3D_FEATURE_LEVEL),
 									D3D11_SDK_VERSION,
@@ -109,14 +109,14 @@ int gpu::Device::create ( DeviceFeature* features, uint32_t featureCount, Device
 		if ((result == DXGI_ERROR_SDK_COMPONENT_MISSING || result == DXGI_ERROR_UNSUPPORTED)
 			&& layerFlags == (D3D11_CREATE_DEVICE_DEBUG | D3D11_CREATE_DEVICE_DEBUGGABLE))
 		{
-			printf("Could not find DirectX debug layer. Reducing options.\n");
+			printf("Could not find DirectX debug layer (D3D11_CREATE_DEVICE_DEBUGGABLE). Reducing options.\n");
 			layerFlags = D3D11_CREATE_DEVICE_DEBUG;
 			continue;
 		}
 		else if ((result == DXGI_ERROR_SDK_COMPONENT_MISSING || result == DXGI_ERROR_UNSUPPORTED)
 			&& layerFlags == D3D11_CREATE_DEVICE_DEBUG)
 		{
-			printf("Could not find DirectX debug layer. Please install D3D11*SDKLayers.dll.\n");
+			printf("Could not find DirectX debug layer (D3D11_CREATE_DEVICE_DEBUG). Please install D3D11*SDKLayers.dll.\n");
 			layerFlags = 0;
 			continue;
 		}
@@ -168,33 +168,6 @@ int gpu::Device::initialize ( OutputSurface* surface )
 	return gpu::kError_SUCCESS;
 }
 
-//int gpu::Device::refresh ( intptr_t module_handle, intptr_t module_window )
-//{
-//	// Update context
-//	mw_module = module_handle;
-//	mw_window = module_window;
-//
-//	// The output surface now has to be recreated, but is done by the caller.
-//
-//	return gpu::kError_SUCCESS;
-//}
-
-/*gpu::GraphicsContext* gpu::Device::getContext ( void )
-{
-	if (m_graphicsContext == NULL) {
-		m_graphicsContext = new gpu::GraphicsContext(this);
-	}
-	return m_graphicsContext;
-}
-
-gpu::ComputeContext* gpu::Device::getComputeContext ( void )
-{
-	if (m_computeContext == NULL) {
-		m_computeContext = new gpu::ComputeContext(this);
-	}
-	return m_computeContext;
-}*/
-
 // Grab native device object
 ID3D11Device* gpu::Device::getNative ( void )
 {
@@ -205,14 +178,6 @@ ID3D11DeviceContext* gpu::Device::getImmediateContext ( void )
 {
 	return m_dxImmediateContext;
 }
-
-/*void APIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
-{
-	ARCORE_ASSERT(type != GL_DEBUG_TYPE_ERROR);
-	if (type == GL_DEBUG_TYPE_ERROR)
-	{
-	}
-}*/
 
 int gpu::Device::free ( void )
 {

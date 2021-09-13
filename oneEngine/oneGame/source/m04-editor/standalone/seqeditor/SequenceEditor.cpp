@@ -67,13 +67,8 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	grid_gizmo = new m04::editor::sequence::GridGizmo(user_interface, this);
 
 	// Update windowing options
-	RrWindow::Main()->SetWantsClipCursor(false);
-	RrWindow::Main()->SetWantsHideCursor(false);
-	RrWindow::Main()->SetWantsSystemCursor(true);
-	RrWindow::Main()->SetZeroInputOnLoseFocus(true);
-
 	window->SetWantsClipCursor(false);
-	window->SetWantsHideCursor(true);
+	window->SetWantsHideCursor(false);
 	window->SetWantsSystemCursor(true);
 	window->SetZeroInputOnLoseFocus(true);
 
@@ -195,6 +190,12 @@ void m04::editor::SequenceEditor::Update ( void )
 
 	// Camera control last - low priority action.
 	UpdateCameraControl();
+
+	// Check if we want closing
+	if (window->IsDone() || window->WantsClose())
+	{
+		DeleteObject(this);
+	}
 }
 
 void m04::editor::SequenceEditor::UpdateCameraControl ( void )

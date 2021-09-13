@@ -431,9 +431,27 @@ uint RrRenderer::AddWorldDefault ( void )
 	return AddWorld(world);
 }
 
-void RrRenderer::RemoveWorld ( const uint Index )
+void RrRenderer::RemoveWorld ( const uint DeleteIndex )
 {
-	worlds.erase(worlds.begin() + Index);
+	worlds.erase(worlds.begin() + DeleteIndex);
+
+	// All worlds after the erased index need to update their objects' indicies
+	for (int Index = DeleteIndex; Index < worlds.size(); ++Index)
+	{
+		for (auto* object : worlds[Index]->objects)
+		{
+			rrId id = object->Access_id_From_RrRenderer().Get();
+			id.world_index = Index;
+			object->Access_id_From_RrRenderer().Set(id);
+		}
+
+		for (auto* logic : worlds[Index]->logics)
+		{
+			rrId id = logic->Access_id_From_RrRenderer().Get();
+			id.world_index = Index;
+			logic->Access_id_From_RrRenderer().Set(id);
+		}
+	}
 }
 
 void RrRenderer::RemoveWorld ( RrWorld* world )
@@ -442,7 +460,7 @@ void RrRenderer::RemoveWorld ( RrWorld* world )
 	{
 		if (worlds[Index] == world)
 		{
-			worlds.erase(worlds.begin() + Index);
+			RemoveWorld(Index);
 			return;
 		}
 	}

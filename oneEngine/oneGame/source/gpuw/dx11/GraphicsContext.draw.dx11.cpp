@@ -134,6 +134,8 @@ int gpu::GraphicsContext::clearPipelineAndWait ( void )
 	m_renderTarget[0] = NULL;
 	m_depthStencilTarget = NULL;
 
+	memset(m_constantBuffers, 0, sizeof(m_constantBuffers));
+
 	return kError_SUCCESS;
 }
 

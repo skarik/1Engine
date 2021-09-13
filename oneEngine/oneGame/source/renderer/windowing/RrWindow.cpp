@@ -294,20 +294,20 @@ void RrWindow::RegisterInput ( void )
 	{ // Mouse:
 		Rid[0].usUsagePage = HID_USAGE_PAGE_GENERIC; 
 		Rid[0].usUsage = HID_USAGE_GENERIC_MOUSE; 
-		Rid[0].dwFlags = RIDEV_INPUTSINK;   
-		Rid[0].hwndTarget = mw_window;
+		Rid[0].dwFlags = 0;//RIDEV_INPUTSINK;   
+		Rid[0].hwndTarget = NULL;//mw_window;
 	}
 	{ // Keyboard:
 		Rid[1].usUsagePage = HID_USAGE_PAGE_GENERIC;
 		Rid[1].usUsage = HID_USAGE_GENERIC_KEYBOARD;
 		Rid[1].dwFlags = 0;//RIDEV_NOLEGACY;
-		Rid[1].hwndTarget = mw_window;
+		Rid[1].hwndTarget = NULL;//mw_window;
 	}
 	{ // Touchpad:
 		Rid[2].usUsagePage = HID_USAGE_PAGE_DIGITIZER;
 		Rid[2].usUsage = 0x00;
 		Rid[2].dwFlags = RIDEV_PAGEONLY; // Pull from everything in the given page.
-		Rid[2].hwndTarget = mw_window;
+		Rid[2].hwndTarget = NULL;//mw_window;
 	}
 
 	if ( !RegisterRawInputDevices(Rid, sizeof(Rid) / sizeof(RAWINPUTDEVICE), sizeof(RAWINPUTDEVICE) ) )
@@ -592,6 +592,7 @@ LRESULT CALLBACK MessageUpdate(
 	{
 	case WM_ACTIVATE:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		if (!HIWORD(wParam))
 		{
 			rrWindow->active = true;
@@ -611,6 +612,7 @@ LRESULT CALLBACK MessageUpdate(
 	}
 	case WM_SETFOCUS:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		rrWindow->focused = true;	// Program is now focused
 		rrWindow->UpdateMouseClipping();
 		UpdateScreenInfo();
@@ -618,6 +620,7 @@ LRESULT CALLBACK MessageUpdate(
 	}
 	case WM_KILLFOCUS:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		rrWindow->focused = false;	// Program is no longer focused
 		if (rrWindow->m_zeroInputOnLoseFocus)
 		{
@@ -629,6 +632,7 @@ LRESULT CALLBACK MessageUpdate(
 	// Window move
 	case WM_MOVE:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		if ( rrWindow->focused )
 		{
 			POINT pt;
@@ -656,6 +660,7 @@ LRESULT CALLBACK MessageUpdate(
 	// Window close button
 	case WM_CLOSE:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		rrWindow->wantsClose = true;
 		return 0;
 	}
@@ -663,6 +668,7 @@ LRESULT CALLBACK MessageUpdate(
 	// Window resize
 	case WM_SIZE:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		rrWindow->Resize(LOWORD(lParam), HIWORD(lParam));
 		return 0;								// Jump Back
 	}
@@ -695,6 +701,7 @@ LRESULT CALLBACK MessageUpdate(
 	// Mouse movement
 	case WM_MOUSEMOVE:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		if ( rrWindow->focused )
 		{
 			core::Input::WSetSysMouse({LOWORD(lParam), HIWORD(lParam)});
@@ -710,6 +717,7 @@ LRESULT CALLBACK MessageUpdate(
 	}
 	case WM_SETCURSOR:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		if (rrWindow->m_wantHideCursor)
 		{
 			// Toggle if mouse is visible depending on where on the window it is at
@@ -731,6 +739,7 @@ LRESULT CALLBACK MessageUpdate(
 	}
 	break;
 	case WM_INPUT: 
+		ARCORE_ASSERT(rrWindow != NULL);
 		if ( wParam == RIM_INPUT )
 		{
 			UINT dwSize = 0;
@@ -847,39 +856,46 @@ LRESULT CALLBACK MessageUpdate(
 		// Mouse Buttons
 	case WM_LBUTTONDOWN:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		core::Input::WSetMouseMake(core::kMBLeft);
 		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_LBUTTONUP:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		core::Input::WSetMouseBreak(core::kMBLeft);
 		return 0;
 	}
 	case WM_RBUTTONDOWN:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		core::Input::WSetMouseMake(core::kMBRight);
 		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_RBUTTONUP:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		core::Input::WSetMouseBreak(core::kMBRight);
 		return 0;
 	}
 	case WM_MBUTTONDOWN:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		core::Input::WSetMouseMake(core::kMBMiddle);
 		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_MBUTTONUP:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		core::Input::WSetMouseBreak(core::kMBMiddle);
 		return 0;
 	}
 	case WM_XBUTTONDOWN:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		if (HIWORD(wParam) == XBUTTON1)
 		{
 			core::Input::WSetMouseMake(core::kMBBackward);
@@ -893,6 +909,7 @@ LRESULT CALLBACK MessageUpdate(
 	}
 	case WM_XBUTTONUP:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		if (HIWORD(wParam) == XBUTTON1)
 		{
 			core::Input::WSetMouseBreak(core::kMBBackward);
@@ -907,6 +924,7 @@ LRESULT CALLBACK MessageUpdate(
 	// Mouse wheel
 	case WM_MOUSEWHEEL:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		if (LOWORD(wParam) == MK_CONTROL)
 		{
 			core::Input::WSetCurrMouseZoom( GET_WHEEL_DELTA_WPARAM(wParam) );
@@ -919,6 +937,7 @@ LRESULT CALLBACK MessageUpdate(
 	}
 	case WM_MOUSEHWHEEL:
 	{
+		ARCORE_ASSERT(rrWindow != NULL);
 		if (LOWORD(wParam) == MK_CONTROL)
 		{
 			core::Input::WSetCurrMouseHZoom( GET_WHEEL_DELTA_WPARAM(wParam) );
@@ -960,7 +979,7 @@ LRESULT CALLBACK MessageUpdate(
 	}
 
 	// Pass All Unhandled Messages To DefWindowProc
-	return DefWindowProc(hWnd,uMsg,wParam,lParam);
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 #endif//_WIN32
