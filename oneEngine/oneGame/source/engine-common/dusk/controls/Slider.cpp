@@ -58,10 +58,10 @@ void dusk::elements::Slider<NumberType>::Update ( const UIStepInfo* stepinfo )
 		if ( m_isMouseIn && m_wasDrawn )
 		{
 			// Mouse controls
-			if ( core::Input::Mouse(core::kMBLeft) )
+			if ( core::Input::Mouse(core::kMBLeft, stepinfo->input_index) )
 			{
 				// Check the mouse position versus the absolute rect
-				Real32 mousePercent = math::saturate<Real32>((core::Input::MouseX() - (m_absoluteRect.pos.x + 2.0F)) / (m_absoluteRect.size.x - 4.0F));
+				Real32 mousePercent = math::saturate<Real32>((core::Input::MouseX(stepinfo->input_index) - (m_absoluteRect.pos.x + 2.0F)) / (m_absoluteRect.size.x - 4.0F));
 
 				// And we apply the limit
 				m_value = (NumberType)math::lerp<Real32>(mousePercent, (Real32)m_range_min, (Real32)m_range_max);
@@ -80,15 +80,15 @@ void dusk::elements::Slider<NumberType>::Update ( const UIStepInfo* stepinfo )
 			// Keyboard controls
 			if ( m_isFocused )
 			{
-				if ( core::Input::Keydown( core::kVkReturn ) )
+				if ( core::Input::Keydown( core::kVkReturn, stepinfo->input_index ) )
 				{
 				}
-				else if ( core::Input::Keydown( core::kVkLeft ) )
+				else if ( core::Input::Keydown( core::kVkLeft, stepinfo->input_index ) )
 				{
 					m_value += m_snap ? m_snap_divisor : (NumberType)((m_range_max - m_range_min) * 0.1F);
 					m_value = (NumberType)math::clamp(m_value, m_range_min, m_range_max);
 				}
-				else if ( core::Input::Keydown( core::kVkRight ) )
+				else if ( core::Input::Keydown( core::kVkRight, stepinfo->input_index ) )
 				{
 					m_value -= m_snap ? m_snap_divisor : (NumberType)((m_range_max - m_range_min) * 0.1F);
 					m_value = (NumberType)math::clamp(m_value, m_range_min, m_range_max);

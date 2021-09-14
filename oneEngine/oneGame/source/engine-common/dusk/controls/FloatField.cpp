@@ -15,7 +15,7 @@ void dusk::elements::FloatField::Update ( const UIStepInfo* stepinfo )
 	{
 		if ( m_isFocused )
 		{
-			const auto& inputString = core::Input::FrameInputString();
+			const auto& inputString = core::Input::FrameInputString( stepinfo->input_index );
 			for (const auto& input : inputString)
 			{
 				if ( input && isprint(input) && (isdigit(input) || input == '.') )
@@ -32,7 +32,7 @@ void dusk::elements::FloatField::Update ( const UIStepInfo* stepinfo )
 		if ( m_isMouseIn && m_wasDrawn )
 		{
 			// Mouse controls
-			if ( core::Input::MouseDown(core::kMBLeft) )
+			if ( core::Input::MouseDown(core::kMBLeft, stepinfo->input_index) )
 			{
 			}
 		}

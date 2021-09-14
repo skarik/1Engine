@@ -20,13 +20,13 @@ void dusk::elements::Button::Update ( const UIStepInfo* stepinfo )
 		if ( m_isMouseIn && m_wasDrawn )
 		{
 			// Mouse controls
-			if ( core::Input::MouseDown(core::kMBLeft) )
+			if ( core::Input::MouseDown(core::kMBLeft, stepinfo->input_index) )
 			{
 				beginPress = true;
 			}
 			else if ( beginPress )
 			{
-				if ( core::Input::MouseUp(core::kMBLeft) )
+				if ( core::Input::MouseUp(core::kMBLeft, stepinfo->input_index) )
 				{
 					beginPress = false;
 					isPressed = true;
@@ -40,7 +40,7 @@ void dusk::elements::Button::Update ( const UIStepInfo* stepinfo )
 			// Keyboard controls
 			if ( m_isFocused )
 			{
-				if ( core::Input::Keydown( core::kVkReturn ) )
+				if ( core::Input::Keydown( core::kVkReturn, stepinfo->input_index ) )
 				{
 					isPressed = true;
 				}

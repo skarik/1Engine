@@ -84,7 +84,7 @@ void m04::editor::sequence::FloatPropertyRenderer::OnGameFrameUpdate ( const ui:
 		std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
 
 		// Run the parse loop (see dusk/TextField.cpp)
-		const auto& inputString = core::Input::FrameInputString();
+		const auto& inputString = core::Input::FrameInputString( input_frame.input_index );
 		for (const auto& input : inputString)
 		{
 			if ( input && isprint(input) && (isdigit(input) || input == '.') )

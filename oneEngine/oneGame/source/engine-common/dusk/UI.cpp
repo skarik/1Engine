@@ -225,8 +225,10 @@ void dusk::UserInterface::UpdateMouseOver ( void )
 
 void dusk::UserInterface::UpdateFocus ( void )
 {
+	const int input_index = m_window ? m_window->GetListIndex() : -1;
+
 	// On mouse click, focus the item the mouse is over.
-	if ( core::Input::MouseDown(core::kMBLeft) )
+	if ( core::Input::MouseDown(core::kMBLeft, input_index) )
 	{
 		// Unfocus the current focus
 		if (m_currentFocus != kElementHandleInvalid && m_elements[m_currentFocus] != NULL)
@@ -257,7 +259,7 @@ void dusk::UserInterface::UpdateFocus ( void )
 	if ( m_currentDialogue == kElementHandleInvalid )
 	{
 		// Now, if there's focus, and tab is hit, cycle through the elements
-		if ( core::Input::Keydown( core::kVkTab ) )
+		if ( core::Input::Keydown( core::kVkTab, input_index ) )
 		{
 			int repeatCount = 0; // Variable for preventing infinite loops.
 
@@ -544,8 +546,11 @@ void dusk::UserInterface::UpdateElementPositions ( void )
 
 void dusk::UserInterface::UpdateElements ( void )
 {
+	const int input_index = m_window ? m_window->GetListIndex() : -1;
+
 	dusk::UIStepInfo l_stepInfo;
-	l_stepInfo.mouse_position = Vector2f((Real)core::Input::MouseX(), (Real)core::Input::MouseY());
+	l_stepInfo.mouse_position = Vector2f((Real)core::Input::MouseX(input_index), (Real)core::Input::MouseY(input_index));
+	l_stepInfo.input_index = input_index;
 
 	//if ( m_currentDialogue == kElementHandleInvalid )
 	{

@@ -64,6 +64,9 @@ static void UpdateScreenInfo ( void )
 		screen.SetSize(resolution.x, resolution.y);
 		screen.SetFocused(window->GetFocused());
 	}
+
+	// Update the input state size
+	core::Input::ResizeInputState( (int)windows.size() );
 }
 
 static void RegisterClasses ( HINSTANCE hInstance )
@@ -616,6 +619,9 @@ LRESULT CALLBACK MessageUpdate(
 		rrWindow->focused = true;	// Program is now focused
 		rrWindow->UpdateMouseClipping();
 		UpdateScreenInfo();
+
+		// Update the input states' active window is.
+		core::Input::Active()->m_currentActiveWindow = rrWindow->m_windowListIndex;
 		return 0;
 	}
 	case WM_KILLFOCUS:
@@ -638,8 +644,8 @@ LRESULT CALLBACK MessageUpdate(
 			POINT pt;
 			GetCursorPos( &pt );
 			ScreenToClient( hWnd, &pt );
-			core::Input::WSetSysMouse({pt.x, pt.y});
-			core::Input::WSetSyncRawAndSystemMouse(rrWindow->m_wantSystemCursor);
+			core::Input::WSetSysMouse({pt.x, pt.y}, rrWindow->m_windowListIndex);
+			core::Input::WSetSyncRawAndSystemMouse(rrWindow->m_wantSystemCursor, rrWindow->m_windowListIndex);
 			rrWindow->UpdateMouseClipping();
 		}
 		return 0;
@@ -704,8 +710,8 @@ LRESULT CALLBACK MessageUpdate(
 		ARCORE_ASSERT(rrWindow != NULL);
 		if ( rrWindow->focused )
 		{
-			core::Input::WSetSysMouse({LOWORD(lParam), HIWORD(lParam)});
-			core::Input::WSetSyncRawAndSystemMouse(rrWindow->m_wantSystemCursor);
+			core::Input::WSetSysMouse({LOWORD(lParam), HIWORD(lParam)}, rrWindow->m_windowListIndex);
+			core::Input::WSetSyncRawAndSystemMouse(rrWindow->m_wantSystemCursor, rrWindow->m_windowListIndex);
 
 			// Force mouse to update on mousemove and status mismatches.
 			if (!rrWindow->m_wantHideCursor)
@@ -755,7 +761,7 @@ LRESULT CALLBACK MessageUpdate(
 			{
 				if (raw->header.dwType == RIM_TYPEMOUSE)
 				{
-					core::Input::WAddRawMouse( {raw->data.mouse.lLastX, raw->data.mouse.lLastY} );
+					core::Input::WAddRawMouse( {raw->data.mouse.lLastX, raw->data.mouse.lLastY}, rrWindow->m_windowListIndex );
 				} 
 				else if (raw->header.dwType == RIM_TYPEKEYBOARD)
 				{
@@ -765,12 +771,12 @@ LRESULT CALLBACK MessageUpdate(
 
 					if ( flags&RI_KEY_BREAK )
 					{
-						core::Input::WSetKeyBreak((uchar)vkey);
+						core::Input::WSetKeyBreak( (uchar)vkey, rrWindow->m_windowListIndex );
 						//SendMessage( hWnd, WM_KEYUP, vkey, 0 );
 					}
 					else // is a make
 					{
-						core::Input::WSetKeyMake((uchar)vkey);
+						core::Input::WSetKeyMake( (uchar)vkey, rrWindow->m_windowListIndex );
 						//SendMessage( hWnd, WM_KEYDOWN, vkey, 0 );
 					}
 				}
@@ -857,40 +863,40 @@ LRESULT CALLBACK MessageUpdate(
 	case WM_LBUTTONDOWN:
 	{
 		ARCORE_ASSERT(rrWindow != NULL);
-		core::Input::WSetMouseMake(core::kMBLeft);
+		core::Input::WSetMouseMake(core::kMBLeft, rrWindow->m_windowListIndex);
 		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_LBUTTONUP:
 	{
 		ARCORE_ASSERT(rrWindow != NULL);
-		core::Input::WSetMouseBreak(core::kMBLeft);
+		core::Input::WSetMouseBreak(core::kMBLeft, rrWindow->m_windowListIndex);
 		return 0;
 	}
 	case WM_RBUTTONDOWN:
 	{
 		ARCORE_ASSERT(rrWindow != NULL);
-		core::Input::WSetMouseMake(core::kMBRight);
+		core::Input::WSetMouseMake(core::kMBRight, rrWindow->m_windowListIndex);
 		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_RBUTTONUP:
 	{
 		ARCORE_ASSERT(rrWindow != NULL);
-		core::Input::WSetMouseBreak(core::kMBRight);
+		core::Input::WSetMouseBreak(core::kMBRight, rrWindow->m_windowListIndex);
 		return 0;
 	}
 	case WM_MBUTTONDOWN:
 	{
 		ARCORE_ASSERT(rrWindow != NULL);
-		core::Input::WSetMouseMake(core::kMBMiddle);
+		core::Input::WSetMouseMake(core::kMBMiddle, rrWindow->m_windowListIndex);
 		rrWindow->UpdateMouseClipping();
 		return 0;
 	}
 	case WM_MBUTTONUP:
 	{
 		ARCORE_ASSERT(rrWindow != NULL);
-		core::Input::WSetMouseBreak(core::kMBMiddle);
+		core::Input::WSetMouseBreak(core::kMBMiddle, rrWindow->m_windowListIndex);
 		return 0;
 	}
 	case WM_XBUTTONDOWN:
@@ -898,11 +904,11 @@ LRESULT CALLBACK MessageUpdate(
 		ARCORE_ASSERT(rrWindow != NULL);
 		if (HIWORD(wParam) == XBUTTON1)
 		{
-			core::Input::WSetMouseMake(core::kMBBackward);
+			core::Input::WSetMouseMake(core::kMBBackward, rrWindow->m_windowListIndex);
 		}
 		else if (HIWORD(wParam) == XBUTTON2)
 		{
-			core::Input::WSetMouseMake(core::kMBForward);
+			core::Input::WSetMouseMake(core::kMBForward, rrWindow->m_windowListIndex);
 		}
 		rrWindow->UpdateMouseClipping();
 		return 0;
@@ -912,11 +918,11 @@ LRESULT CALLBACK MessageUpdate(
 		ARCORE_ASSERT(rrWindow != NULL);
 		if (HIWORD(wParam) == XBUTTON1)
 		{
-			core::Input::WSetMouseBreak(core::kMBBackward);
+			core::Input::WSetMouseBreak(core::kMBBackward, rrWindow->m_windowListIndex);
 		}
 		else if (HIWORD(wParam) == XBUTTON2)
 		{
-			core::Input::WSetMouseBreak(core::kMBForward);
+			core::Input::WSetMouseBreak(core::kMBForward, rrWindow->m_windowListIndex);
 		}
 		return 0;
 	}
@@ -927,11 +933,11 @@ LRESULT CALLBACK MessageUpdate(
 		ARCORE_ASSERT(rrWindow != NULL);
 		if (LOWORD(wParam) == MK_CONTROL)
 		{
-			core::Input::WSetCurrMouseZoom( GET_WHEEL_DELTA_WPARAM(wParam) );
+			core::Input::WSetCurrMouseZoom( GET_WHEEL_DELTA_WPARAM(wParam), rrWindow->m_windowListIndex );
 		}
 		else
 		{
-			core::Input::WSetCurrMouseScroll( GET_WHEEL_DELTA_WPARAM(wParam) );
+			core::Input::WSetCurrMouseScroll( GET_WHEEL_DELTA_WPARAM(wParam), rrWindow->m_windowListIndex );
 		}
 		return 0;
 	}
@@ -940,11 +946,11 @@ LRESULT CALLBACK MessageUpdate(
 		ARCORE_ASSERT(rrWindow != NULL);
 		if (LOWORD(wParam) == MK_CONTROL)
 		{
-			core::Input::WSetCurrMouseHZoom( GET_WHEEL_DELTA_WPARAM(wParam) );
+			core::Input::WSetCurrMouseHZoom( GET_WHEEL_DELTA_WPARAM(wParam), rrWindow->m_windowListIndex );
 		}
 		else
 		{
-			core::Input::WSetCurrMouseHScroll( GET_WHEEL_DELTA_WPARAM(wParam) );
+			core::Input::WSetCurrMouseHScroll( GET_WHEEL_DELTA_WPARAM(wParam), rrWindow->m_windowListIndex );
 		}
 		return 0;
 	}

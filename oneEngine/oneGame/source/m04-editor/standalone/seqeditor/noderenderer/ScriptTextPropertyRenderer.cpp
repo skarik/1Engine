@@ -428,13 +428,13 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::OnGameFrameUpdate ( cons
 {
 	if (m_propertyState->m_editing)
 	{
-		const bool bControlHeld = core::Input::Key( core::kVkControl );
+		const bool bControlHeld = core::Input::Key( core::kVkControl, input_frame.input_index );
 
 		// Parse input and modify the underlying property
 		std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
 
 		// Run the parse loop (see dusk/TextField.cpp)
-		const auto& inputString = core::Input::FrameInputString();
+		const auto& inputString = core::Input::FrameInputString( input_frame.input_index );
 		for (const auto& input : inputString)
 		{
 			if ( input && isprint(input) )
@@ -480,14 +480,14 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::OnGameFrameUpdate ( cons
 		}
 
 		// Update other navigation input
-		if (core::Input::Keydown( core::kVkLeft ))
+		if (core::Input::Keydown( core::kVkLeft, input_frame.input_index ))
 		{
 			if (m_cursorPosition > 0)
 			{
 				m_cursorPosition -= 1;
 			}
 		}
-		else if (core::Input::Keydown( core::kVkRight ))
+		else if (core::Input::Keydown( core::kVkRight, input_frame.input_index ))
 		{
 			if (m_cursorPosition < l_currentValue.length())
 			{

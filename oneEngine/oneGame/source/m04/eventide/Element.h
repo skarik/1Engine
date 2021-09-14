@@ -296,6 +296,7 @@ namespace eventide {
 			};
 
 			Type				type = Type::kGameThread;
+			int					input_index = -1;
 		};
 
 		//	virtual OnGameFrameUpdate() : Called when frame update is enabled.

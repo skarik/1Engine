@@ -162,6 +162,7 @@ void ui::eventide::UserInterface::RequestDestroyElement ( Element* element )
 void ui::eventide::UserInterface::Update ( void )
 {
 	RrCamera* camera = GetCamera();
+	const int input_index = m_window ? m_window->GetListIndex() : -1;
 
 	// Sort elements if there's been a change:
 	if (m_elementsDirty)
@@ -235,7 +236,7 @@ void ui::eventide::UserInterface::Update ( void )
 	}
 
 	// Update tab-focus:
-	if (core::Input::Key(core::kVkTab))
+	if (core::Input::Key(core::kVkTab, input_index))
 	{
 		Element* nextFocusedElement = nullptr;
 
@@ -280,7 +281,7 @@ void ui::eventide::UserInterface::Update ( void )
 	// Update mouse clickity clack:
 	if (camera != NULL && (m_duskUI == NULL || !m_duskUI->IsMouseInside()))
 	{
-		const Vector2f mouseScreenPosition (core::Input::MouseX() / GetScreen().GetWidth(), core::Input::MouseY() / GetScreen().GetHeight());
+		const Vector2f mouseScreenPosition (core::Input::MouseX(input_index) / GetScreen().GetWidth(), core::Input::MouseY(input_index) / GetScreen().GetHeight());
 		const Ray mouseRay = Ray(
 			camera->transform.position,
 			camera->ScreenToWorldDir(mouseScreenPosition)
@@ -403,7 +404,7 @@ void ui::eventide::UserInterface::Update ( void )
 			// Staying inside the current element:
 			for (int mouseButton = 0; mouseButton < 4; ++mouseButton)
 			{
-				if (core::Input::MouseDown(mouseButton))
+				if (core::Input::MouseDown(mouseButton, input_index))
 				{
 					event.type = ui::eventide::Element::EventMouse::Type::kClicked;
 					event.button = mouseButton;
@@ -425,7 +426,7 @@ void ui::eventide::UserInterface::Update ( void )
 
 					m_mouseDragReference[mouseButton] = event.position_world;
 				}
-				if (core::Input::Mouse(mouseButton))
+				if (core::Input::Mouse(mouseButton, input_index))
 				{
 					Vector3f mouseDelta = event.position_world - m_mouseDragReference[mouseButton];
 					if (mouseDelta.sqrMagnitude() > FLOAT_PRECISION)
@@ -452,7 +453,7 @@ void ui::eventide::UserInterface::Update ( void )
 						m_mouseDragReference[mouseButton] = event.position_world;
 					}
 				}
-				if (core::Input::MouseUp(mouseButton))
+				if (core::Input::MouseUp(mouseButton, input_index))
 				{
 					event.type = ui::eventide::Element::EventMouse::Type::kReleased;
 					event.button = mouseButton;
@@ -484,7 +485,7 @@ void ui::eventide::UserInterface::Update ( void )
 		if (element->m_focused || (interactMask & ui::eventide::Element::InputInteractMasks::kCatchAll))
 		{
 			if ((interactMask & ui::eventide::Element::InputInteractMasks::kActivateEnter)
-				&& core::Input::Keydown(core::kVkReturn))
+				&& core::Input::Keydown(core::kVkReturn, input_index))
 			{
 				ui::eventide::Element::EventInput event;
 				event.type = ui::eventide::Element::EventInput::Type::kActivate;
@@ -492,7 +493,7 @@ void ui::eventide::UserInterface::Update ( void )
 			}
 
 			if ((interactMask & ui::eventide::Element::InputInteractMasks::kActivateSpace)
-				&& core::Input::Keydown(core::kVkSpace))
+				&& core::Input::Keydown(core::kVkSpace, input_index))
 			{
 				ui::eventide::Element::EventInput event;
 				event.type = ui::eventide::Element::EventInput::Type::kActivate;
@@ -503,7 +504,9 @@ void ui::eventide::UserInterface::Update ( void )
 		const ui::eventide::Element::FrameUpdate frameUpdateStyle = element->GetFrameUpdate();
 		if (frameUpdateStyle == ui::eventide::Element::FrameUpdate::kPerFrame)
 		{
-			element->OnGameFrameUpdate( ui::eventide::Element::GameFrameUpdateInput() );
+			ui::eventide::Element::GameFrameUpdateInput gfuInput;
+			gfuInput.input_index = input_index;
+			element->OnGameFrameUpdate( gfuInput );
 		}
 	}
 }

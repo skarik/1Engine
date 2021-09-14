@@ -52,6 +52,8 @@ public:
 		{ return focused; }
 	RENDER_API const ArScreen&
 							GetScreen ( void );
+	RENDER_API const int	GetListIndex ( void )
+		{ return m_windowListIndex; }
 
 	// State update
 	// ================================

@@ -52,7 +52,7 @@ void dusk::elements::ScrollBar::Update ( const UIStepInfo* stepinfo )
 			}
 
 			// Act on clicks
-			if (core::Input::MouseDown(core::kMBLeft))
+			if (core::Input::MouseDown(core::kMBLeft, stepinfo->input_index))
 			{
 				if (m_substateScroller.hovered)
 				{
@@ -88,7 +88,7 @@ void dusk::elements::ScrollBar::Update ( const UIStepInfo* stepinfo )
 		}
 		else if ( m_draggingBar )
 		{
-			if (!core::Input::Mouse(core::kMBLeft))
+			if (!core::Input::Mouse(core::kMBLeft, stepinfo->input_index))
 			{
 				m_draggingBar = false;
 			}

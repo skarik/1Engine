@@ -99,12 +99,8 @@ namespace core
 	CORE_API extern unsigned char VkToAsciiTable [256];
 	extern void InitializeVkToAsciiTable ( void );
 
-	class Input
+	namespace internal_input
 	{
-		ARSINGLETON_H_STORAGE(Input,CORE_API)
-		ARSINGLETON_H_ACCESS(Input)
-
-	private:
 		struct /*alignas(1)*/ KeyState // TODO: Fix alignment issue
 		{
 			uint	key : 1;
@@ -140,9 +136,55 @@ namespace core
 			}
 		};
 
+		struct KeypressEntry
+		{
+			uint	code : 8;
+			uint	isMake : 1;
+		};
+
+		struct InputState
+		{
+			// Keyboard state
+			std::vector<KeypressEntry>
+								m_keypressesLastFrame;
+			std::string			m_stringLastFrame;
+			std::array<KeyState, kVkCount>
+								m_keys;
+
+			// Mouse state
+			Vector2f			m_mouse;
+			Vector2i			m_sysMouse;
+			Vector2f			m_deltaMouse;
+			Vector2i			m_rawDeltaMouse;
+			Vector2i			m_prevRawDeltaMouse;
+			bool				m_deltaMouseScrollChange = false;
+			int					m_deltaMouseScroll = 0;
+			bool				m_deltaMouseZoomChange = false;
+			int					m_deltaMouseZoom = 0;
+			bool				m_deltaMouseHScrollChange = false;
+			int					m_deltaMouseHScroll = 0;
+			bool				m_deltaMouseHZoomChange = false;
+			int					m_deltaMouseHZoom = 0;
+
+			bool				m_syncRawAndSystemMouse = false;
+
+			std::array<KeyState, kMBCount>
+								m_mouseButtons;
+		};
+	}
+
+	class Input
+	{
+		ARSINGLETON_H_STORAGE(Input,CORE_API)
+		ARSINGLETON_H_ACCESS(Input)
+
 	private:
 		explicit				Input ( void ) {}
 								~Input ( void ) {}
+
+	public:
+		int					m_currentActiveWindow = 0;
+		Vector2f			m_mouseSensitivity = Vector2f( 1.0F, 1.0F );
 
 	public:
 		//	Initialize() : Initializes input system, allocating memory.
@@ -150,175 +192,70 @@ namespace core
 		//	Free() : Frees input system.
 		CORE_API static void	Free ( void );
 
+		//	ResizeInputState( count ) : Resizes input state count.
+		CORE_API static void	ResizeInputState ( int input_state_count );
+
 		//	PreUpdate() : Resets the input system just before message loop updates.
-		CORE_API static void	PreUpdate ( void )
-		{
-			m_Active->PreupdateKeyboard();
-			m_Active->PreupdateMouse();
-		}
+		CORE_API static void	PreUpdate ( void );
 		//	Update() : Updates the input logic after the message loop updates.
-		CORE_API static void	Update ( void )
-		{
-			m_Active->UpdateKeyboard();
-			m_Active->UpdateMouse();
-		}
+		CORE_API static void	Update ( void );
 		//	Reset() : Zeroes out all the current input
 		CORE_API static void	Reset ( void );
 
 	public:
 
 		//	Key(virtual_keycode) : Checks if the key is currently down.
-		CORE_API static bool	Key ( const unsigned char vkeycode_ascii )
-		{
-			ARCORE_ASSERT(vkeycode_ascii > 0 && vkeycode_ascii < kVkCount);
-			return m_Active->m_keys[vkeycode_ascii].key;
-		}
+		CORE_API static bool	Key ( const unsigned char vkeycode_ascii, const int windowIndex = -1 );
 		//	Keydown(virtual_keycode) : Checks if the key was pressed in the previous frame.
-		CORE_API static bool	Keydown ( const unsigned char vkeycode_ascii )
-		{
-			ARCORE_ASSERT(vkeycode_ascii > 0 && vkeycode_ascii < kVkCount);
-			return m_Active->m_keys[vkeycode_ascii].down;
-		}
+		CORE_API static bool	Keydown ( const unsigned char vkeycode_ascii, const int windowIndex = -1 );
 		//	Keydown(virtual_keycode) : Checks if the key was released in the previous frame.
-		CORE_API static bool	Keyup ( const unsigned char vkeycode_ascii )
-		{
-			ARCORE_ASSERT(vkeycode_ascii > 0 && vkeycode_ascii < kVkCount);
-			return m_Active->m_keys[vkeycode_ascii].up;
-		}
+		CORE_API static bool	Keyup ( const unsigned char vkeycode_ascii, const int windowIndex = -1 );
 
 		//	KeypressAny() : Checks if any key is currently down.
-		CORE_API static bool	KeypressAny ( void )
-		{
-			for (int keyIndex = 0; keyIndex < kVkCount; ++keyIndex)
-			{
-				if (m_Active->m_keys[keyIndex].key) return true;
-			}
-			return false;
-		}
+		CORE_API static bool	KeypressAny ( const int windowIndex = -1 );
 		//	KeydownAny() : Checks if any key was pressed in the previous frame.
-		CORE_API static bool	KeydownAny ( void )
-		{
-			for (int keyIndex = 0; keyIndex < kVkCount; ++keyIndex)
-			{
-				if (m_Active->m_keys[keyIndex].down) return true;
-			}
-			return false;
-		}
+		CORE_API static bool	KeydownAny ( const int windowIndex = -1 );
 		//	KeyupAny() : Checks if any key was released in the previous frame.
-		CORE_API static bool	KeyupAny ( void )
-		{
-			for (int keyIndex = 0; keyIndex < kVkCount; ++keyIndex)
-			{
-				if (m_Active->m_keys[keyIndex].up) return true;
-			}
-			return false;
-		}
+		CORE_API static bool	KeyupAny ( const int windowIndex = -1 );
 
 		//	FrameInputString() : Returns the sum of all the inputs over the past frame.
 		CORE_API static const std::string&
-								FrameInputString ( void )
-		{
-			return m_Active->m_stringLastFrame;
-		}
+								FrameInputString ( const int windowIndex = -1 );
 
 	public:
 
-		static inline void		WSetKeyMake ( const unsigned char vkeycode_ascii )
-		{
-			ARCORE_ASSERT(vkeycode_ascii > 0 && vkeycode_ascii < kVkCount);
-			m_Active->m_keys[vkeycode_ascii].Make();
-			m_Active->m_keypressesLastFrame.push_back({vkeycode_ascii, true});
-		}
-		static inline void		WSetKeyBreak ( const unsigned char vkeycode_ascii )
-		{
-			ARCORE_ASSERT(vkeycode_ascii > 0 && vkeycode_ascii < kVkCount);
-			m_Active->m_keys[vkeycode_ascii].Break();
-			m_Active->m_keypressesLastFrame.push_back({vkeycode_ascii, false});
-		}
-
-	private:
-
-		// Clears out keyboard state for next frame.
-		void					PreupdateKeyboard ( void );
-		// Takes keypresses and converts them to an input string
-		void					UpdateKeyboard ( void );
-
-		struct KeypressEntry
-		{
-			uint	code : 8;
-			uint	isMake : 1;
-		};
-		std::vector<KeypressEntry>
-							m_keypressesLastFrame;
-		std::string			m_stringLastFrame;
-		std::array<KeyState, kVkCount>
-							m_keys;
+		CORE_API static void	WSetKeyMake ( const unsigned char vkeycode_ascii, const int windowIndex );
+		CORE_API static void	WSetKeyBreak ( const unsigned char vkeycode_ascii, const int windowIndex );
 
 	public:
 
 		//	MouseX() : Current virtual mouse cursor X position
-		CORE_API static float	MouseX ( void )
-		{
-			return m_Active->m_mouse.x;
-		}
+		CORE_API static float	MouseX ( const int windowIndex = -1 );
 		//	MouseY() : Current virtual mouse cursor Y position
-		CORE_API static float	MouseY ( void )
-		{
-			return m_Active->m_mouse.y;
-		}
+		CORE_API static float	MouseY ( const int windowIndex = -1 );
 
 		//	SysMouseX() : Current local system mouse cursor X position
-		CORE_API static int		SysMouseX ( void )
-		{
-			return m_Active->m_sysMouse.x;
-		}
+		CORE_API static int		SysMouseX ( const int windowIndex = -1 );
 		//	SysMouseY() : Current local system mouse cursor X position
-		CORE_API static int		SysMouseY ( void )
-		{
-			return m_Active->m_sysMouse.y;
-		}
+		CORE_API static int		SysMouseY ( const int windowIndex = -1 );
 
 		//	DeltaMouseX() : Current virtual mouse cursor X delta
-		CORE_API static float	DeltaMouseX ( void )
-		{
-			return m_Active->m_deltaMouse.x;
-		}
+		CORE_API static float	DeltaMouseX ( const int windowIndex = -1 );
 		//	DeltaMouseY() : Current virtual mouse cursor Y delta
-		CORE_API static float	DeltaMouseY ( void )
-		{
-			return m_Active->m_deltaMouse.y;
-		}
+		CORE_API static float	DeltaMouseY ( const int windowIndex = -1 );
 		//	DeltaMouseScroll() : Current virtual mouse wheel delta.
-		CORE_API static int		DeltaMouseScroll ( void )
-		{
-			return m_Active->m_deltaMouseScroll;
-		}
+		CORE_API static int		DeltaMouseScroll ( const int windowIndex = -1 );
 		//	DeltaMouseHScroll() : Current virtual mouse wheel delta.
-		CORE_API static int		DeltaMouseHScroll ( void )
-		{
-			return m_Active->m_deltaMouseHScroll;
-		}
-		//	DeltaMouseZoom() : Current virtual mouse wheel zoom.
-		CORE_API static int		DeltaMouseZoom ( void )
-		{
-			return m_Active->m_deltaMouseZoom + m_Active->m_deltaMouseHZoom;
-		}
+		CORE_API static int		DeltaMouseHScroll ( const int windowIndex = -1 );
+		//	DeltaMouseZoom() : Current virtual mouse wheel zoom.;
+		CORE_API static int		DeltaMouseZoom ( const int windowIndex = -1 );
 
 		//	Mouse(mousebutton) : Checks if the mouse button is currently down.
-		CORE_API static bool	Mouse ( const int mousebutton_id )
-		{
-			return m_Active->m_mouseButtons[mousebutton_id].key;
-		}
+		CORE_API static bool	Mouse ( const int mousebutton_id, const int windowIndex = -1 );
 		//	MouseDown(mousebutton) : Checks if the mouse button was pressed in the previous frame.
-		CORE_API static bool	MouseDown ( const int mousebutton_id )
-		{
-			return m_Active->m_mouseButtons[mousebutton_id].down;
-		}
+		CORE_API static bool	MouseDown ( const int mousebutton_id, const int windowIndex = -1 );
 		//	MouseUp(mousebutton) : Checks if the mouse button was released in the previous frame.
-		CORE_API static bool	MouseUp ( const int mousebutton_id )
-		{
-			return m_Active->m_mouseButtons[mousebutton_id].up;
-		}
+		CORE_API static bool	MouseUp ( const int mousebutton_id, const int windowIndex = -1 );
 
 		//	SetMouseSensitivity(sensitivity) : Sets virtual mouse sensitivity.
 		CORE_API static void	SetMouseSensitivity ( const Real sensitivity )
@@ -333,80 +270,18 @@ namespace core
 
 	public:
 
-		static inline void		WSetSysMouse ( const Vector2i mouse )
-		{
-			m_Active->m_sysMouse = mouse;
-			if (m_Active->m_syncRawAndSystemMouse)
-			{
-				m_Active->m_mouse = Vector2f((Real)mouse.x, (Real)mouse.y);
-			}
-		}
-		static inline void		WAddRawMouse ( const Vector2i deltamouse )
-		{
-			m_Active->m_rawDeltaMouse += deltamouse;
-		}
-		static inline void		WSetCurrMouseScroll ( const int mousew )
-		{
-			m_Active->m_deltaMouseScrollChange = true;
-			m_Active->m_deltaMouseScroll = mousew;
-		}
-		static inline void		WSetCurrMouseZoom ( const int mousew )
-		{
-			m_Active->m_deltaMouseZoomChange = true;
-			m_Active->m_deltaMouseZoom = mousew;
-		}
-		static inline void		WSetCurrMouseHScroll ( const int mousew )
-		{
-			m_Active->m_deltaMouseHScrollChange = true;
-			m_Active->m_deltaMouseHScroll = mousew;
-		}
-		static inline void		WSetCurrMouseHZoom ( const int mousew )
-		{
-			m_Active->m_deltaMouseHZoomChange = true;
-			m_Active->m_deltaMouseHZoom = mousew;
-		}
+		CORE_API static void	WSetSysMouse ( const Vector2i mouse, const int windowIndex );
+		CORE_API static void	WAddRawMouse ( const Vector2i deltamouse, const int windowIndex );
+		CORE_API static void	WSetCurrMouseScroll ( const int mousew, const int windowIndex );
+		CORE_API static void	WSetCurrMouseZoom ( const int mousew, const int windowIndex );
+		CORE_API static void	WSetCurrMouseHScroll ( const int mousew, const int windowIndex );
+		CORE_API static void	WSetCurrMouseHZoom ( const int mousew, const int windowIndex );
 
-		static inline void		WSetMouseMake ( const int mousebutton_id )
-		{
-			m_Active->m_mouseButtons[mousebutton_id].Make();
-		}
-		static inline void		WSetMouseBreak ( const int mousebutton_id )
-		{
-			m_Active->m_mouseButtons[mousebutton_id].Break();
-		}
+		CORE_API static void	WSetMouseMake ( const int mousebutton_id, const int windowIndex );
+		CORE_API static void	WSetMouseBreak ( const int mousebutton_id, const int windowIndex );
 
-		static inline void		WSetSyncRawAndSystemMouse ( const bool sync )
-		{
-			m_Active->m_syncRawAndSystemMouse = sync;
-		}
+		CORE_API static void	WSetSyncRawAndSystemMouse ( const bool sync, const int windowIndex );
 
-	private:
-
-		// Clears out mouse state for next frame.
-		void					PreupdateMouse ( void );
-		// Updates the mouse logic for the current frame.
-		void					UpdateMouse ( void );
-
-
-		Vector2f			m_mouse;
-		Vector2i			m_sysMouse;
-		Vector2f			m_deltaMouse;
-		Vector2i			m_rawDeltaMouse;
-		Vector2i			m_prevRawDeltaMouse;
-		Vector2f			m_mouseSensitivity;
-		bool				m_deltaMouseScrollChange = false;
-		int					m_deltaMouseScroll = 0;
-		bool				m_deltaMouseZoomChange = false;
-		int					m_deltaMouseZoom = 0;
-		bool				m_deltaMouseHScrollChange = false;
-		int					m_deltaMouseHScroll = 0;
-		bool				m_deltaMouseHZoomChange = false;
-		int					m_deltaMouseHZoom = 0;
-
-		bool				m_syncRawAndSystemMouse = false;
-
-		std::array<KeyState, kMBCount>
-							m_mouseButtons;
 	};
 }
 

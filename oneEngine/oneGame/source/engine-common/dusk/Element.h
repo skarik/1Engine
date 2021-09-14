@@ -18,6 +18,7 @@ namespace dusk
 	struct UIStepInfo
 	{
 		Vector2f			mouse_position;
+		int					input_index = -1;
 	};
 
 	enum class ElementType : uint8_t
