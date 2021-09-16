@@ -34,9 +34,11 @@ CGameState::CGameState ( void )
 	: messenger( this ), mResourceManager(NULL)
 {
 	mActive = this;
-	//GameState = this;
-	iListSize = 10;
+
+	// Create the object listing
+	iListSize = 16;
 	pBehaviors = new CGameBehavior* [iListSize];
+
 	iCurrentIndex = 0;
 
 	pScene = NULL;
@@ -45,6 +47,7 @@ CGameState::CGameState ( void )
 
 	bEndingGame = false;
 }
+
 // Class destructor
 //  sets pActive pointer to null
 //  frees list of objects
@@ -55,52 +58,97 @@ CGameState::~CGameState ( void )
 	// Delete the list of instances
 	if ( pBehaviors != NULL )
 	{
-		delete [] pBehaviors;
+		delete[] pBehaviors;
 	}
 	// Reset active instance list
 	pBehaviors = NULL;
 	iCurrentIndex = 0;
 	iListSize = 0;
 }
+
 void CGameState::CleanWorld ( void )
 {
-	// Loop through all instances
+	isCleaningWorld = true;
+
+	// Loop through all instances. However, at each stage, we need to empty out the deletion list in order to ensure the creation list is respected.
 	for ( unsigned int i = 0; i < iCurrentIndex; i += 1 )
 	{
 		//  Delete if valid (not null and not persistent)
 		if ( pBehaviors[i] != NULL && !pBehaviors[i]->persistent )
 		{
-			if ( !pBehaviors[i]->HasReference() )
+			ARCORE_ASSERT_MSG( !pBehaviors[i]->HasReference(), "Attempted to delete object with existing references!" );
+
+			if ( i != pBehaviors[i]->GetId() )
 			{
-				if ( i != pBehaviors[i]->GetId() )
-				{
-					std::cout << "Warning: an improper id (" << i << ") was found. Ignoring object.\n  Note that this is a fatal warning, and should be reported." << std::endl;
-					debug::Console->PrintError( "Mismatched object ID detected! PLEASE NOTE, THIS WARNING IS FATAL IN SINGLEPLAYER GAMES AND SHOULD BE REPORTED." );
-					pBehaviors[i] = NULL;
-				}
-				else
-				{
-					//cout << "Clear[" << i << "]." << pBehaviors[i]->GetTypeName() << endl;
-					try
-					{
-						delete (pBehaviors[i]);
-					}
-					catch ( ... )
-					{
-						debug::Console->PrintError( "Something went wrong when cleaning the world: delete behavior" );
-					}
-					pBehaviors[i] = NULL;
-				}
+				debug::Console->PrintWarning( "Warning: an improper id (%d) was found. Ignoring object.\n  Note that this is a fatal warning, and should be reported.", i );
+				debug::Console->PrintError( "Mismatched object ID detected! PLEASE NOTE, THIS WARNING IS FATAL IN SINGLEPLAYER GAMES AND SHOULD BE REPORTED." );
+				ARCORE_ERROR( "Behavior ID did not match index. Stale/invalid pointers?" );
+				pBehaviors[i] = NULL;
 			}
 			else
-			{	// Force it to throw an error
+			{
 				delete (pBehaviors[i]);
-				throw core::NullReferenceException();
+				pBehaviors[i] = NULL;
+			}
+
+			// Destroy any objects that were queued up.
+			EmptyDestructionList();
+		}
+	}
+
+	isCleaningWorld = false;
+}
+
+void CGameState::EmptyDestructionList ( void )
+{
+	// Loop through the delete list
+	if ( !vDeletionList.empty() )
+	{
+		// Work on a copy of the list
+		vector<sObjectFCounter> t_deletionList; 
+		{
+			// Lock the list
+			std::lock_guard<std::mutex> lock( mtListLock );
+			// Grab the list copy
+			t_deletionList = vDeletionList;
+		}
+
+		// Setup deletion list
+		for ( vector<sObjectFCounter>::iterator it = t_deletionList.begin(); it != t_deletionList.end(); )
+		{
+			// If timer is negative, delete
+			if ( it->fCounter <= 0.0f )
+			{
+				if ( it->id < iCurrentIndex && pBehaviors[it->id] == it->pBehavior )
+				{
+					CGameBehavior* t_behavior = it->pBehavior; // Save the behavior
+
+					// Call OnDestroy
+					t_behavior->OnDestroy();
+					// Delete the behavior now
+					delete t_behavior; // Destructor should nullify index automatically
+				}
+				// Remove it from the list and get next iterator
+				it = t_deletionList.erase( it );
+			}
+			else
+			{
+				// else decrement counter and continue on
+				it->fCounter -= Time::deltaTime;
+				it++;
 			}
 		}
 
+		// Copy the list over again
+		{
+			// Lock the list
+			std::lock_guard<std::mutex> lock( mtListLock );
+			// Copy over the resulting list
+			vDeletionList = t_deletionList;
+		}
 	}
 }
+
 void CGameState::EndGame ( void )
 {
 	// End game
@@ -170,52 +218,7 @@ void CGameState::LateUpdate ( void )
 		}
 	}
 
-	// Loop through the delete list
-	if ( !vDeletionList.empty() )
-	{
-		// Work on a copy of the list
-		vector<sObjectFCounter> t_deletionList; 
-		{
-			// Lock the list
-			std::lock_guard<std::mutex> lock( mtListLock );
-			// Grab the list copy
-			t_deletionList = vDeletionList;
-		}
-
-		// Setup deletion list
-		for ( vector<sObjectFCounter>::iterator it = t_deletionList.begin(); it != t_deletionList.end(); )
-		{
-			// If timer is negative, delete
-			if ( it->fCounter <= 0.0f )
-			{
-				if ( it->id < iCurrentIndex && pBehaviors[it->id] == it->pBehavior )
-				{
-					CGameBehavior* t_behavior = it->pBehavior; // Save the behavior
-
-					// Call OnDestroy
-					t_behavior->OnDestroy();
-					// Delete the behavior now
-					delete t_behavior; // Destructor should nullify index automatically
-				}
-				// Remove it from the list and get next iterator
-				it = t_deletionList.erase( it );
-			}
-			else
-			{
-				// else decrement counter and continue on
-				it->fCounter -= Time::deltaTime;
-				it++;
-			}
-		}
-
-		// Copy the list over again
-		{
-			// Lock the list
-			std::lock_guard<std::mutex> lock( mtListLock );
-			// Copy over the resulting list
-			vDeletionList = t_deletionList;
-		}
-	}
+	EmptyDestructionList();
 
 	// Add time to the delta time
 	/*Time::fixedTime += Time::deltaTime;
@@ -525,34 +528,48 @@ void CGameState::FindObjectsWithTypename ( const string & targetName, vector<CGa
 // Delete objectsss
 void CGameState::DeleteObject ( CGameBehavior* pObjectToDelete )
 {
-	if ( pObjectToDelete == NULL ) {
-		throw std::invalid_argument( "nullptr" );
-	}
-	// First check requests for if the current behavior is already queued
-	for ( vector<sObjectFCounter>::iterator it = vDeletionList.begin(); it != vDeletionList.end(); ++it )
+	ARCORE_ASSERT( pObjectToDelete != nullptr );
+	
+	if ( isCleaningWorld )
 	{
-		if ( it->pBehavior == pObjectToDelete )
+		// Immediately delete the object.
+		if ( pObjectToDelete->id < iCurrentIndex && pBehaviors[pObjectToDelete->id] == pObjectToDelete )
 		{
-			return;
+			// Call OnDestroy
+			pObjectToDelete->OnDestroy();
+			// Delete the behavior now
+			delete pObjectToDelete; // Destructor should nullify index automatically
 		}
 	}
-	// Make sure the object exists in the system
-	bool validObject = false;
-	for ( unsigned int i = 0; i < iCurrentIndex; i += 1 )
+	else
 	{
-		if ( pBehaviors[i] == pObjectToDelete ) {
-			validObject = true;
+		// First check requests for if the current behavior is already queued
+		for ( vector<sObjectFCounter>::iterator it = vDeletionList.begin(); it != vDeletionList.end(); ++it )
+		{
+			if ( it->pBehavior == pObjectToDelete )
+			{
+				return;
+			}
 		}
-	}
 
-	if ( validObject )
-	{
-		sObjectFCounter newRequest;
-		newRequest.pBehavior = pObjectToDelete;
-		newRequest.id = pObjectToDelete->GetId();
-		newRequest.fCounter = -1.0f;
-		pObjectToDelete->active = false;
-		vDeletionList.push_back( newRequest );
+		// Make sure the object exists in the system
+		bool validObject = false;
+		for ( unsigned int i = 0; i < iCurrentIndex; i += 1 )
+		{
+			if ( pBehaviors[i] == pObjectToDelete ) {
+				validObject = true;
+			}
+		}
+
+		if ( validObject )
+		{
+			sObjectFCounter newRequest;
+			newRequest.pBehavior = pObjectToDelete;
+			newRequest.id = pObjectToDelete->GetId();
+			newRequest.fCounter = -1.0f;
+			pObjectToDelete->active = false;
+			vDeletionList.push_back( newRequest );
+		}
 	}
 }
 void CGameState::DeleteObjectDelayed ( CGameBehavior* pObjectToDelete, float fDeleteTime )

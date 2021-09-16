@@ -82,8 +82,10 @@ m04::editor::NoiseEditor::~NoiseEditor ( void )
 	delete preview_primitive_2d;
 	delete preview_primitive_3d;
 
-	DeleteObject(dusk_interface);
+	user_interface->RemoveReference();
 	DeleteObject(user_interface);
+	dusk_interface->RemoveReference();
+	DeleteObject(dusk_interface);
 
 	RrRenderer::Active->RemoveOutput(RrRenderer::Active->FindOutputWithTarget(window));
 	RrRenderer::Active->RemoveWorld(editor_world);

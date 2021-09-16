@@ -18,6 +18,7 @@
 #include <memory>
 #include <vector>
 #include <mutex>
+#include <atomic>
 
 // Prototypes
 //class CResourceManager;
@@ -58,12 +59,14 @@ public:
 	ENGINE_API void			RigidbodyUpdate ( Real interpolation ) override;
 
 	// Accessor
-	ENGINE_API static CGameState*	Active ( void );
+	ENGINE_API static CGameState*
+							Active ( void );
 
 	// -Getter functions for good stuff-
 
 	// Returns the object with the given ID, NULL if out of range.
-	ENGINE_API CGameBehavior* GetBehavior ( gameid_t id )
+	ENGINE_API CGameBehavior*
+							GetBehavior ( gameid_t id )
 	{
 		if ( id >= iCurrentIndex ) {
 			return NULL;
@@ -72,49 +75,58 @@ public:
 	}
 
 	// Remover functions for other stuff
-	ENGINE_API void DeleteObject ( CGameBehavior* );
-	ENGINE_API void DeleteObjectDelayed ( CGameBehavior*, float );
+	ENGINE_API void			DeleteObject ( CGameBehavior* );
+	ENGINE_API void			DeleteObjectDelayed ( CGameBehavior*, float );
 
 	// == Finder functions ==
 	// Returns if given behavior pointer is in the list
-	ENGINE_API bool ObjectExists ( CGameBehavior* );
+	ENGINE_API bool			ObjectExists ( CGameBehavior* );
 
 	// Returns a list of objects in the given layer.
 	// The list must be freed by the user.
-	ENGINE_API std::vector<CGameBehavior*>* FindObjectsWithLayer ( physical::prLayer );
+	ENGINE_API std::vector<CGameBehavior*>*
+							FindObjectsWithLayer ( physical::prLayer );
 
 	// Returns the first found object with the target name string.
 	// NULL is returned otherwise.
-	ENGINE_API CGameBehavior*	FindFirstObjectWithName ( const string & );
+	ENGINE_API CGameBehavior*
+							FindFirstObjectWithName ( const string & );
 
 	// Returns the first found object with the target typename string.
 	// NULL is returned otherwise.
-	ENGINE_API CGameBehavior*	FindFirstObjectWithTypename ( const string & );
+	ENGINE_API CGameBehavior*
+							FindFirstObjectWithTypename ( const string & );
 	// Gives a list of objects with the target typename string.
-	ENGINE_API void FindObjectsWithTypename ( const string &, std::vector<CGameBehavior*> & );
+	ENGINE_API void			FindObjectsWithTypename ( const string &, std::vector<CGameBehavior*> & );
 
 	// Returns a pointer to the spot in the array where the object is held.
 	// This is very unsafe and can cause memory leaks if not used properly!
 	// Avoid use of this function if possible!
-	ENGINE_API CGameBehavior**	GetBehaviorArrayPointer ( CGameBehavior* );
+	ENGINE_API CGameBehavior**
+							GetBehaviorArrayPointer ( CGameBehavior* );
 
 	// == Removing all objects ==
-	ENGINE_API void CleanWorld ( void );
+	ENGINE_API void			CleanWorld ( void );
 
 	// == Ending Game ==
-	ENGINE_API void EndGame ( void );
-	ENGINE_API FORCE_INLINE bool EndingGame ( void ) { return bEndingGame; }
+	ENGINE_API void			EndGame ( void );
+	ENGINE_API bool			EndingGame ( void ) { return bEndingGame; }
 
 	// == Scene Management ==
-	ENGINE_API void SetNextScene ( CGameScene* scene ) { pNextScene = scene; bSceneActive = false; };
-	ENGINE_API CGameScene* GetNextScene ( void ) { return pNextScene; };
+	ENGINE_API void			SetNextScene ( CGameScene* scene )
+	{ 
+		pNextScene = scene;
+		bSceneActive = false;
+	}
+	ENGINE_API CGameScene*	GetNextScene ( void ) { return pNextScene; }
 public:
 	// Public active instance pointer
 	//static CGameState* pActive;
 	// Public messenger
-	CGameMessenger	messenger;
+	CGameMessenger		messenger;
 	// Public resource manager
-	core::ArResourceManager*	mResourceManager;
+	core::ArResourceManager*
+						mResourceManager;
 
 private:
 	// Give base GameBehavior access.
@@ -122,12 +134,15 @@ private:
 	// Give Messenger full access to send messages through game
 	friend CGameMessenger;
 	// Adding and removing renderer objects
-	gameid_t AddBehavior ( CGameBehavior* );
-	void RemoveBehavior ( const gameid_t );
+	gameid_t				AddBehavior ( CGameBehavior* );
+	void					RemoveBehavior ( const gameid_t );
 	// Generate a unique GUID for the caller
-	guid32_t GetGUID ( void );
+	guid32_t				GetGUID ( void );
 	// TODO
-	void CleanBehaviorList ( void );
+	void					CleanBehaviorList ( void );
+
+	//	EmptyDestructionList() : Run through the destruction list and empty it.
+	void					EmptyDestructionList ( void );
 
 private:
 	static CGameState*	mActive;
@@ -135,23 +150,28 @@ private:
 
 	// -- Game Behavior Management --
 	// Private list of game objects
-	CGameBehavior** pBehaviors;
+	CGameBehavior**		pBehaviors;
 	//auto_ptr<CGameBehavior>* pBehaviors;
-	unsigned int	iCurrentIndex;
-	unsigned int	iListSize;
+	unsigned int		iCurrentIndex;
+	unsigned int		iListSize;
 	// Mutex for threaded access of game objects
-	mutex	mtListLock;
+	mutex				mtListLock;
+
+	// Are we currently cleaning and thus need deletions to work immediately?
+	std::atomic_bool	isCleaningWorld = false;
 
 	// Deletion List for objects thrown into DeleteObject().
-	std::vector<sObjectFCounter>	vDeletionList;
-	std::vector<CGameBehavior*>		vCreationList;
+	std::vector<sObjectFCounter>
+						vDeletionList;
+	std::vector<CGameBehavior*>
+						vCreationList;
 
 	// -- Game Scene Management --
-	CGameScene*	pScene;
-	CGameScene*	pNextScene;
-	bool		bSceneActive;
+	CGameScene*			pScene;
+	CGameScene*			pNextScene;
+	bool				bSceneActive;
 
-	bool		bEndingGame;
+	bool				bEndingGame;
 };
 
 

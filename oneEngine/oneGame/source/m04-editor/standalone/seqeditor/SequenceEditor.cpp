@@ -95,7 +95,9 @@ m04::editor::SequenceEditor::~SequenceEditor ( void )
 		right_click_menu = NULL;
 	}
 	//test_element->Destroy();
+	user_interface->RemoveReference();
 	delete_safe_decrement(user_interface);
+	dusk_interface->RemoveReference();
 	delete_safe_decrement(dusk_interface);
 
 	debug::Console->PrintMessage("SequenceEditor shutdown.\n");
