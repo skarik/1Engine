@@ -44,6 +44,7 @@ m04::editor::NoiseEditor::NoiseEditor ( void )
 		//editor_camera->orthographic = true;
 	}
 	output.camera = editor_camera;
+	output.update_interval_when_not_focused = 10;
 
 	// Add the output to the renderer now that it's somewhat ready.
 	RrRenderer::Active->AddOutput(output);

@@ -394,56 +394,59 @@ void RrRenderer::Render ( void )
 			}
 			render_output.state->Update(&render_output.info, &frameState);
 
-			// Grab the graphics context to render with
-			gpu::GraphicsContext* gfx = render_output.state->graphics_context;
-
-			// Collect this current context
-			if (std::find(collected_contexts.begin(), collected_contexts.end(), gfx) == collected_contexts.end())
+			if (render_output.state->NeedsRender())
 			{
-				collected_contexts.push_back(gfx);
-			}
+				// Grab the graphics context to render with
+				gpu::GraphicsContext* gfx = render_output.state->graphics_context;
 
-			// Reset the context
-			gfx->reset();
-
-			// Ensure the outputs context is correct
-			if (render_output.info.type == RrOutputInfo::Type::kWindow)
-			{
-				if (gLastDrawnWindow != render_output.info.output_window)
+				// Collect this current context
+				if (std::find(collected_contexts.begin(), collected_contexts.end(), gfx) == collected_contexts.end())
 				{
-					gLastDrawnWindow = render_output.info.output_window;
-					gLastDrawnWindow->GpuSurface()->activate();
+					collected_contexts.push_back(gfx);
 				}
 
-				// Collect the output so they can be finalized
-				collected_outputs.push_back(render_output.info.output_window->GpuSurface());
-			}
+				// Reset the context
+				gfx->reset();
 
-			//
-			gpu::Texture output_texture;
+				// Ensure the outputs context is correct
+				if (render_output.info.type == RrOutputInfo::Type::kWindow)
+				{
+					if (gLastDrawnWindow != render_output.info.output_window)
+					{
+						gLastDrawnWindow = render_output.info.output_window;
+						gLastDrawnWindow->GpuSurface()->activate();
+					}
 
-			// Render with the given camera.
-			ARCORE_ASSERT(render_output.info.camera != nullptr);
-			if (render_output.info.camera->GetRender())
-			{
-				// Render from camera
-				RrCamera::activeCamera = render_output.info.camera;
-				gfx->debugGroupPush(render_output.info.name.c_str());
-				// We drop the const on the world because rendering objects changes their state
-				output_texture = RenderOutput(gfx, render_output.info, render_output.state, render_output.info.world);
-				gfx->debugGroupPop();
-			}
+					// Collect the output so they can be finalized
+					collected_outputs.push_back(render_output.info.output_window->GpuSurface());
+				}
 
-			if (output_texture.valid())
-			{
-				// Push buffer to screen
-				StepBufferPush(gfx, render_output.info, render_output.state, output_texture);
-			}
-			else
-			{
-				ARCORE_ERROR("Invalid texture attempted to be pushed to screen");
-			}
-		}
+				//
+				gpu::Texture output_texture;
+
+				// Render with the given camera.
+				ARCORE_ASSERT(render_output.info.camera != nullptr);
+				if (render_output.info.camera->GetRender())
+				{
+					// Render from camera
+					RrCamera::activeCamera = render_output.info.camera;
+					gfx->debugGroupPush(render_output.info.name.c_str());
+					// We drop the const on the world because rendering objects changes their state
+					output_texture = RenderOutput(gfx, render_output.info, render_output.state, render_output.info.world);
+					gfx->debugGroupPop();
+				}
+
+				if (output_texture.valid())
+				{
+					// Push buffer to screen
+					StepBufferPush(gfx, render_output.info, render_output.state, output_texture);
+				}
+				else
+				{
+					ARCORE_ERROR("Invalid texture attempted to be pushed to screen");
+				}
+			} // render_output.state->NeedsRender()
+		} // render_output.info.enabled
 	}
 	TimeProfiler.EndTimeProfile( "rs_render" );
 

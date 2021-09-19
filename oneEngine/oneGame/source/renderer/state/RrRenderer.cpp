@@ -214,6 +214,31 @@ void RrOutputState::Update ( RrOutputInfo* output_info, rrRenderFrameState* fram
 		// Mark this is the first frame after creation.
 		first_frame_after_creation = true;
 	}
+
+	// Update counter
+	const int l_frameCount = output_info->GetUpdateInterval();
+	if (l_frameCount == -1)
+	{
+		needs_render = true;
+	}
+	else if (l_frameCount == 0)
+	{
+		needs_render = false;
+	}
+	else
+	{
+		update_interval_counter += 1;
+
+		if (update_interval_counter >= l_frameCount)
+		{
+			needs_render = true;
+			update_interval_counter = 0;
+		}
+		else
+		{
+			needs_render = false;
+		}
+	}
 }
 
 void RrOutputState::FreeContexts ( void )
@@ -505,5 +530,23 @@ gpu::RenderTarget* RrOutputInfo::GetRenderTarget ( void ) const
 	{
 		ARCORE_ERROR("Uninitialized output being used.");
 		return nullptr;
+	}
+}
+
+int RrOutputInfo::GetUpdateInterval ( void ) const
+{
+	if (type == Type::kWindow)
+	{
+		ARCORE_ASSERT(output_window != nullptr);
+		return output_window->GetFocused() ? update_interval : update_interval_when_not_focused;
+	}
+	else if (type == Type::kRenderTarget)
+	{
+		return update_interval;
+	}
+	else
+	{
+		ARCORE_ERROR("Uninitialized output being used.");
+		return -1; 
 	}
 }

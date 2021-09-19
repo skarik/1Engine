@@ -126,9 +126,9 @@ public:
 
 	arstring64			name;
 	bool				enabled = true;
-	// Update interval normally
+	// Update interval normally used. When -1, updates every frame. When 0, does not update.
 	int					update_interval = -1;
-	// Update interval when the view isn't focused. Only valid for Type::kRenderTarget.
+	// Update interval when the view isn't focused. Only valid for Type::kWindow. When -1, updates every frame. When 0, does not update.
 	int					update_interval_when_not_focused = -1;
 
 	// World this output shows
@@ -170,6 +170,9 @@ public:
 			return viewport;
 		}
 	}
+
+	//	GetUpdateInterval() : Returns the current update interval for the output.
+	RENDER_API int			GetUpdateInterval ( void ) const;
 };
 
 //	class RrOutputState : State for the output views.
@@ -184,10 +187,17 @@ public:
 		FreeContexts();
 	}
 
+	//	Update() : TODO
 	void					Update ( RrOutputInfo* output_info, rrRenderFrameState* frame_state );
-	
+	//	NeedsRender() : TODO
+	bool					NeedsRender ( void ) const
+		{ return needs_render; }
+
 private:
 	void					FreeContexts ( void );
+
+private:
+	bool				needs_render = false;
 
 public:
 	RrOutputInfo*		output_info = nullptr;

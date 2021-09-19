@@ -518,6 +518,7 @@ void RrWindow::PostEndMessage ( void )
 void RrWindow::PostRedrawMessage ( void )
 {
 	PostMessage(mw_window, WM_SETREDRAW, NIL, NIL);
+	// Queue up a draw from the output.
 }
 
 //===============================================================================================//

@@ -55,6 +55,7 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 		editor_camera->fieldOfView = 40;
 	}
 	output.camera = editor_camera;
+	output.update_interval_when_not_focused = 10;
 
 	// Add the output to the renderer now that it's somewhat ready.
 	RrRenderer::Active->AddOutput(output);
@@ -95,10 +96,15 @@ m04::editor::SequenceEditor::~SequenceEditor ( void )
 		right_click_menu = NULL;
 	}
 	//test_element->Destroy();
-	user_interface->RemoveReference();
+	//user_interface->RemoveReference();
 	delete_safe_decrement(user_interface);
-	dusk_interface->RemoveReference();
+	//dusk_interface->RemoveReference();
 	delete_safe_decrement(dusk_interface);
+
+	RrRenderer::Active->RemoveOutput(RrRenderer::Active->FindOutputWithTarget(window));
+	RrRenderer::Active->RemoveWorld(editor_world);
+	window->Close();
+	delete window;
 
 	debug::Console->PrintMessage("SequenceEditor shutdown.\n");
 }

@@ -69,6 +69,7 @@ public:
 	RENDER_API bool			IsActive ( void ) { return active; }
 
 	RENDER_API void			PostEndMessage ( void );
+	//	PostRedrawMessage() : Requests a redraw from the window's matching output.
 	RENDER_API void			PostRedrawMessage ( void );
 
 
