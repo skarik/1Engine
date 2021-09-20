@@ -179,6 +179,8 @@ static gpu::Texture Blur (
 	return colorBlurXY;
 }
 
+static core::settings::SessionSetting<bool> gsesh_BloomSetupUseCompute ("r_BloomSetupUseCompute", false);
+
 RrPipelineStandardRenderer::rrBloomSetup RrPipelineStandardRenderer::SetupBloom (
 	rrRenderContext* context,
 	gpu::Texture* input_color,
@@ -219,7 +221,7 @@ RrPipelineStandardRenderer::rrBloomSetup RrPipelineStandardRenderer::SetupBloom 
 		colorRequest = {output_viewport.size / 16, core::gfx::tex::kColorFormatRGBA16F};
 		renderer->CreateRenderTexture( colorRequest, &colorDownscale16 );
 
-		const bool bUseCompute = false;
+		const bool bUseCompute = gsesh_BloomSetupUseCompute;
 
 		if (bUseCompute)
 		{

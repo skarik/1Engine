@@ -459,6 +459,8 @@ static void GetPostprocess (
 	}
 }
 
+static core::settings::SessionSetting<bool> gsesh_HZBUseCompute ("r_HZBuseCompute", false);
+
 void RrPipelineStandardRenderer::GenerateHZB (
 	rrRenderContext* context,
 	gpu::Texture* combined_depth,
@@ -485,7 +487,7 @@ void RrPipelineStandardRenderer::GenerateHZB (
 	depthInfoRequest = {output_viewport.size / 16, core::gfx::tex::kColorFormatRG32F};
 	renderer->CreateRenderTexture( depthInfoRequest, &depthInfoDownscale16 );
 
-	const bool bUseCompute = false;
+	const bool bUseCompute = gsesh_HZBUseCompute;
 
 	if (bUseCompute)
 	{
