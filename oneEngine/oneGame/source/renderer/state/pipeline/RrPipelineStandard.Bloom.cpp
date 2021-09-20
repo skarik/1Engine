@@ -17,6 +17,61 @@
 #include "gpuw/WriteableResource.h"
 #include "gpuw/Sampler.h"
 
+
+
+//	GetPostprocess(...) : Helper to cache specific variations of shaders
+// This should probably be a smarter or better-thought out mechanism at some point, but -
+//  - we have such a narrow usecase, we don't need complicated things right now.
+// Arguments:
+//	renderer:		Renderer to pull the common geometry pipeline information from.
+//	vertexShader:	SPV Resource to use as vertex shader
+//	pixelShaderBase:	SPV Resource Path to use as a basis for pixel shader path
+//	variantInfo:	Shader to load
+//	isForScreenQuad:	If the created pipeline is for a screen quad or for geometry.
+//	out cachedPipeline:	Output created pipeline.
+//	out cachedProgram:	Output created program
+static void GetPostprocess (
+	RrRenderer* renderer,
+	const char* vertexShader,
+	const char* pixelShader,
+	const bool isForScreenQuad,
+	gpu::Pipeline** cachedPipeline,
+	RrShaderProgram** cachedProgram )
+{
+	RrShaderProgram* desiredProgram = RrShaderProgram::Load(rrShaderProgramVsPs{
+		vertexShader,
+		pixelShader,
+		});
+
+	if (desiredProgram != *cachedProgram)
+	{
+		// Cache the shader program we found:
+		if (*cachedProgram != nullptr)
+		{
+			(*cachedProgram)->RemoveReference();
+		}
+		*cachedProgram = desiredProgram;
+
+		// Cache the pipeline we want to use:
+		if (*cachedPipeline != nullptr)
+		{
+			(*cachedPipeline)->destroy(NULL);
+		}
+		else
+		{
+			*cachedPipeline = new gpu::Pipeline;
+		}
+		if (isForScreenQuad)
+		{
+			renderer->CreatePipeline(&(*cachedProgram)->GetShaderPipeline(), **cachedPipeline); // Creates a pipeline specifically for screen quad.
+		}
+		else
+		{
+			ARCORE_ERROR("TODO: create a general geometry pipeline for the shader, for loaded meshes.");
+		}
+	}
+}
+
 static gpu::Texture Blur (
 	rrRenderContext* context,
 	gpu::Texture* input_nonblurred,
@@ -164,36 +219,134 @@ RrPipelineStandardRenderer::rrBloomSetup RrPipelineStandardRenderer::SetupBloom 
 		colorRequest = {output_viewport.size / 16, core::gfx::tex::kColorFormatRGBA16F};
 		renderer->CreateRenderTexture( colorRequest, &colorDownscale16 );
 
-		// Grab the shader program
-		if (m_bloomDownscaleProgram == nullptr)
+		const bool bUseCompute = false;
+
+		if (bUseCompute)
 		{
-			m_bloomDownscaleProgram = RrShaderProgram::Load(rrShaderProgramCs{"shaders/postprocess/bloom_downscale_c.spv"});
+			// Grab the shader program
+			if (m_bloomDownscaleProgram == nullptr)
+			{
+				m_bloomDownscaleProgram = RrShaderProgram::Load(rrShaderProgramCs{"shaders/postprocess/bloom_downscale_c.spv"});
+			}
+
+			// Create writeable with the render target
+			gpu::WriteableResource rwColorDownscale4;
+			gpu::WriteableResource rwColorDownscale16;
+			rwColorDownscale4.create(&colorDownscale4, 0);
+			rwColorDownscale16.create(&colorDownscale16, 0);
+
+			// Clear out usage of render target to gain control of buffers
+			gfx->setRenderTarget(NULL);
+
+			// Set up compute shader
+			gfx->setComputeShader(&m_bloomDownscaleProgram->GetShaderPipeline());
+			gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+			gfx->setShaderWriteable(gpu::kShaderStageCs, 0, &rwColorDownscale4);
+			gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwColorDownscale16);
+			gfx->setShaderTexture(gpu::kShaderStageCs, 2, input_color, &linearSampler);
+			// Calculate the downscaled buffers
+			gfx->dispatch(output_viewport.size.x / 4, output_viewport.size.y / 4, 1);
+			// Unbind the UAVs
+			gfx->setShaderWriteable(gpu::kShaderStageCs, 0, NULL);
+			gfx->setShaderWriteable(gpu::kShaderStageCs, 1, NULL);
+
+			// Done with the writeables
+			rwColorDownscale4.destroy();
+			rwColorDownscale16.destroy();
 		}
+		else
+		{
+			// Grab the shader program
+			GetPostprocess(renderer, "shaders/deferred_pass/shade_common_vv.spv", "shaders/postprocess/bloom_downscale_p.spv",
+				true,
+				&m_bloomDownscaleVsPsPipeline,
+				&m_bloomDownscaleVsPsProgram);
 
-		// Create writeable with the render target
-		gpu::WriteableResource rwColorDownscale4;
-		gpu::WriteableResource rwColorDownscale16;
-		rwColorDownscale4.create(&colorDownscale4, 0);
-		rwColorDownscale16.create(&colorDownscale16, 0);
+			// Create render target output
+			rrRenderTarget output4x (&colorDownscale4);
+			rrRenderTarget output16x (&colorDownscale16);
 
-		// Clear out usage of render target to gain control of buffers
-		gfx->setRenderTarget(NULL);
+			// Set up output state
+			{
+				// No cull. Always draw.
+				gpu::RasterizerState rs;
+				rs.cullmode = gpu::kCullModeNone;
+				gfx->setRasterizerState(rs);
 
-		// Set up compute shader
-		gfx->setComputeShader(&m_bloomDownscaleProgram->GetShaderPipeline());
-		gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
-		gfx->setShaderWriteable(gpu::kShaderStageCs, 0, &rwColorDownscale4);
-		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwColorDownscale16);
-		gfx->setShaderTexture(gpu::kShaderStageCs, 2, input_color, &linearSampler);
-		// Calculate the downscaled buffers
-		gfx->dispatch(output_viewport.size.x / 4, output_viewport.size.y / 4, 1);
-		// Unbind the UAVs
-		gfx->setShaderWriteable(gpu::kShaderStageCs, 0, NULL);
-		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, NULL);
+				// No depth/stencil test. Always draw.
+				gpu::DepthStencilState ds;
+				ds.depthTestEnabled   = false;
+				ds.depthWriteEnabled  = false;
+				ds.stencilTestEnabled = false;
+				ds.stencilWriteMask   = 0x00;
+				gfx->setDepthStencilState(ds);
 
-		// Done with the writeables
-		rwColorDownscale4.destroy();
-		rwColorDownscale16.destroy();
+				// No blending. Only the source.
+				gpu::BlendState bs;
+				bs.enable = false;
+				bs.src = gpu::kBlendModeOne;
+				bs.dst = gpu::kBlendModeZero;
+				bs.srcAlpha = gpu::kBlendModeOne;
+				bs.dstAlpha = gpu::kBlendModeZero;
+				bs.opAlpha = gpu::kBlendOpMax;
+				gfx->setBlendState(bs);
+			}
+
+			struct rrDownscaleParams
+			{
+				Vector2f	input_size = Vector2f(0, 0);
+				Vector2f	output_size = Vector2f(0, 0);
+				float		bloom_bias = 0.95F;
+			};
+
+			// 4X Downscale
+			{
+				// Create blur params
+				rrDownscaleParams downscaleParams { Vector2f(output_viewport.size.x, output_viewport.size.y), Vector2f(output_viewport.size.x / 4, output_viewport.size.y / 4), 0.95F };
+				gpu::Buffer cbBlurParams = context->constantBuffer_pool->Allocate( sizeof(downscaleParams) );
+				cbBlurParams.upload(gfx, &downscaleParams, sizeof(downscaleParams), gpu::kTransferWriteDiscardPrevious);
+
+				// Set output
+				gfx->setRenderTarget(&output4x.m_renderTarget);
+				// Render the current result to the screen
+				gfx->setViewport(output_viewport.corner.x / 4, output_viewport.corner.y / 4, (output_viewport.corner.x + output_viewport.size.x) / 4, (output_viewport.corner.y + output_viewport.size.y) / 4);
+				gfx->setScissor(output_viewport.corner.x / 4, output_viewport.corner.y / 4, (output_viewport.corner.x + output_viewport.size.x) / 4, (output_viewport.corner.y + output_viewport.size.y) / 4);
+				// Set up params
+				gfx->setPipeline(m_bloomDownscaleVsPsPipeline);
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, input_color);
+				gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+				gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+				gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, &cbBlurParams);
+				gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
+				gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
+				// Render
+				gfx->draw(4, 0);
+			}
+
+			// 16X Downscale (4X downscale the 4X)
+			{
+				// Create blur params
+				rrDownscaleParams downscaleParams { Vector2f(output_viewport.size.x / 4, output_viewport.size.y / 4), Vector2f(output_viewport.size.x / 16, output_viewport.size.y / 16), 0.0F };
+				gpu::Buffer cbBlurParams = context->constantBuffer_pool->Allocate( sizeof(downscaleParams) );
+				cbBlurParams.upload(gfx, &downscaleParams, sizeof(downscaleParams), gpu::kTransferWriteDiscardPrevious);
+
+				// Set output
+				gfx->setRenderTarget(&output16x.m_renderTarget);
+				// Render the current result to the screen
+				gfx->setViewport(output_viewport.corner.x / 16, output_viewport.corner.y / 16, (output_viewport.corner.x + output_viewport.size.x) / 16, (output_viewport.corner.y + output_viewport.size.y) / 16);
+				gfx->setScissor(output_viewport.corner.x / 16, output_viewport.corner.y / 16, (output_viewport.corner.x + output_viewport.size.x) / 16, (output_viewport.corner.y + output_viewport.size.y) / 16);
+				// Set up params
+				gfx->setPipeline(m_bloomDownscaleVsPsPipeline);
+				gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, &colorDownscale4);
+				gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+				gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+				gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, &cbBlurParams);
+				gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
+				gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
+				// Render
+				gfx->draw(4, 0);
+			}
+		}
 
 		// Save the results
 		bloom.m_colorDownscale4 = colorDownscale4;
@@ -217,60 +370,6 @@ RrPipelineStandardRenderer::rrBloomSetup RrPipelineStandardRenderer::SetupBloom 
 	linearSampler.destroy(NULL);
 
 	return bloom;
-}
-
-
-//	GetPostprocess(...) : Helper to cache specific variations of shaders
-// This should probably be a smarter or better-thought out mechanism at some point, but -
-//  - we have such a narrow usecase, we don't need complicated things right now.
-// Arguments:
-//	renderer:		Renderer to pull the common geometry pipeline information from.
-//	vertexShader:	SPV Resource to use as vertex shader
-//	pixelShaderBase:	SPV Resource Path to use as a basis for pixel shader path
-//	variantInfo:	Shader to load
-//	isForScreenQuad:	If the created pipeline is for a screen quad or for geometry.
-//	out cachedPipeline:	Output created pipeline.
-//	out cachedProgram:	Output created program
-static void GetPostprocess (
-	RrRenderer* renderer,
-	const char* vertexShader,
-	const char* pixelShader,
-	const bool isForScreenQuad,
-	gpu::Pipeline** cachedPipeline,
-	RrShaderProgram** cachedProgram )
-{
-	RrShaderProgram* desiredProgram = RrShaderProgram::Load(rrShaderProgramVsPs{
-		vertexShader,
-		pixelShader,
-		});
-
-	if (desiredProgram != *cachedProgram)
-	{
-		// Cache the shader program we found:
-		if (*cachedProgram != nullptr)
-		{
-			(*cachedProgram)->RemoveReference();
-		}
-		*cachedProgram = desiredProgram;
-
-		// Cache the pipeline we want to use:
-		if (*cachedPipeline != nullptr)
-		{
-			(*cachedPipeline)->destroy(NULL);
-		}
-		else
-		{
-			*cachedPipeline = new gpu::Pipeline;
-		}
-		if (isForScreenQuad)
-		{
-			renderer->CreatePipeline(&(*cachedProgram)->GetShaderPipeline(), **cachedPipeline); // Creates a pipeline specifically for screen quad.
-		}
-		else
-		{
-			ARCORE_ERROR("TODO: create a general geometry pipeline for the shader, for loaded meshes.");
-		}
-	}
 }
 
 gpu::Texture

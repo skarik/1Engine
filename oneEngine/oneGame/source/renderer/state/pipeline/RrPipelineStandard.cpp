@@ -50,6 +50,24 @@ RrPipelineStandardRenderer::~RrPipelineStandardRenderer ( void )
 	if (m_hzbGenerationProgram)
 		m_hzbGenerationProgram->RemoveReference();
 
+	if (m_hzbGenerationVsPsProgram)
+		m_hzbGenerationVsPsProgram->RemoveReference();
+
+	if (m_hzbGenerationVsPsPipeline)
+	{
+		m_hzbGenerationVsPsPipeline->destroy(NULL);
+		delete m_hzbGenerationVsPsPipeline;
+	}
+
+	if (m_hzbGenerationVsPsRGProgram)
+		m_hzbGenerationVsPsRGProgram->RemoveReference();
+
+	if (m_hzbGenerationVsPsRGPipeline)
+	{
+		m_hzbGenerationVsPsRGPipeline->destroy(NULL);
+		delete m_hzbGenerationVsPsRGPipeline;
+	}
+
 	if (m_shadowingProjectionProgram)
 		m_shadowingProjectionProgram->RemoveReference();
 
@@ -58,6 +76,15 @@ RrPipelineStandardRenderer::~RrPipelineStandardRenderer ( void )
 
 	if (m_bloomDownscaleProgram)
 		m_bloomDownscaleProgram->RemoveReference();
+
+	if (m_bloomDownscaleVsPsProgram)
+		m_bloomDownscaleVsPsProgram->RemoveReference();
+
+	if (m_bloomDownscaleVsPsPipeline)
+	{
+		m_bloomDownscaleVsPsPipeline->destroy(NULL);
+		delete m_bloomDownscaleVsPsPipeline;
+	}
 
 	if (m_bloomBlurProgram)
 		m_bloomBlurProgram->RemoveReference();
@@ -378,6 +405,60 @@ void RrPipelineStandardRenderer::DrawDebugOutput (
 	});
 }
 
+
+//	GetPostprocess(...) : Helper to cache specific variations of shaders
+// This should probably be a smarter or better-thought out mechanism at some point, but -
+//  - we have such a narrow usecase, we don't need complicated things right now.
+// Arguments:
+//	renderer:		Renderer to pull the common geometry pipeline information from.
+//	vertexShader:	SPV Resource to use as vertex shader
+//	pixelShaderBase:	SPV Resource Path to use as a basis for pixel shader path
+//	variantInfo:	Shader to load
+//	isForScreenQuad:	If the created pipeline is for a screen quad or for geometry.
+//	out cachedPipeline:	Output created pipeline.
+//	out cachedProgram:	Output created program
+static void GetPostprocess (
+	RrRenderer* renderer,
+	const char* vertexShader,
+	const char* pixelShader,
+	const bool isForScreenQuad,
+	gpu::Pipeline** cachedPipeline,
+	RrShaderProgram** cachedProgram )
+{
+	RrShaderProgram* desiredProgram = RrShaderProgram::Load(rrShaderProgramVsPs{
+		vertexShader,
+		pixelShader,
+		});
+
+	if (desiredProgram != *cachedProgram)
+	{
+		// Cache the shader program we found:
+		if (*cachedProgram != nullptr)
+		{
+			(*cachedProgram)->RemoveReference();
+		}
+		*cachedProgram = desiredProgram;
+
+		// Cache the pipeline we want to use:
+		if (*cachedPipeline != nullptr)
+		{
+			(*cachedPipeline)->destroy(NULL);
+		}
+		else
+		{
+			*cachedPipeline = new gpu::Pipeline;
+		}
+		if (isForScreenQuad)
+		{
+			renderer->CreatePipeline(&(*cachedProgram)->GetShaderPipeline(), **cachedPipeline); // Creates a pipeline specifically for screen quad.
+		}
+		else
+		{
+			ARCORE_ERROR("TODO: create a general geometry pipeline for the shader, for loaded meshes.");
+		}
+	}
+}
+
 void RrPipelineStandardRenderer::GenerateHZB (
 	rrRenderContext* context,
 	gpu::Texture* combined_depth,
@@ -404,36 +485,119 @@ void RrPipelineStandardRenderer::GenerateHZB (
 	depthInfoRequest = {output_viewport.size / 16, core::gfx::tex::kColorFormatRG32F};
 	renderer->CreateRenderTexture( depthInfoRequest, &depthInfoDownscale16 );
 
-	// Grab the shader program
-	if (m_hzbGenerationProgram == nullptr)
+	const bool bUseCompute = false;
+
+	if (bUseCompute)
 	{
-		m_hzbGenerationProgram = RrShaderProgram::Load(rrShaderProgramCs{"shaders/deferred_pass/hzb_generate_c.spv"});
+		// Grab the shader program
+		if (m_hzbGenerationProgram == nullptr)
+		{
+			m_hzbGenerationProgram = RrShaderProgram::Load(rrShaderProgramCs{"shaders/deferred_pass/hzb_generate_c.spv"});
+		}
+
+		// Clear out usage of render target to gain control of depth
+		gfx->setRenderTarget(NULL);
+
+		// Create writeable with the render target
+		gpu::WriteableResource rwDepthInfoDownscale4;
+		gpu::WriteableResource rwDepthInfoDownscale16;
+		rwDepthInfoDownscale4.create(&depthInfoDownscale4, 0);
+		rwDepthInfoDownscale16.create(&depthInfoDownscale16, 0);
+
+		// Set up compute shader
+		gfx->setComputeShader(&m_hzbGenerationProgram->GetShaderPipeline());
+		gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+		gfx->setShaderWriteable(gpu::kShaderStageCs, 0, &rwDepthInfoDownscale4);
+		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwDepthInfoDownscale16);
+		gfx->setShaderTextureAuto(gpu::kShaderStageCs, 2, combined_depth);
+		// Render the contact shadows
+		gfx->dispatch(output_viewport.size.x / 4, output_viewport.size.y / 4, 1);
+		// Unbind the UAVs
+		gfx->setShaderWriteable(gpu::kShaderStageCs, 0, NULL);
+		gfx->setShaderWriteable(gpu::kShaderStageCs, 1, NULL);
+
+		// Done with the writeables
+		rwDepthInfoDownscale4.destroy();
+		rwDepthInfoDownscale16.destroy();
 	}
+	else
+	{
+		// Grab the shader program
+		GetPostprocess(renderer, "shaders/deferred_pass/shade_common_vv.spv", "shaders/deferred_pass/hzb_generate_R_p.spv",
+			true,
+			&m_hzbGenerationVsPsPipeline,
+			&m_hzbGenerationVsPsProgram);
+		GetPostprocess(renderer, "shaders/deferred_pass/shade_common_vv.spv", "shaders/deferred_pass/hzb_generate_RG_p.spv",
+			true,
+			&m_hzbGenerationVsPsRGPipeline,
+			&m_hzbGenerationVsPsRGProgram);
 
-	// Clear out usage of render target to gain control of depth
-	gfx->setRenderTarget(NULL);
+		// Create render target output
+		rrRenderTarget output4x (&depthInfoDownscale4);
+		rrRenderTarget output16x (&depthInfoDownscale16);
 
-	// Create writeable with the render target
-	gpu::WriteableResource rwDepthInfoDownscale4;
-	gpu::WriteableResource rwDepthInfoDownscale16;
-	rwDepthInfoDownscale4.create(&depthInfoDownscale4, 0);
-	rwDepthInfoDownscale16.create(&depthInfoDownscale16, 0);
+		// Set up output state
+		{
+			// No cull. Always draw.
+			gpu::RasterizerState rs;
+			rs.cullmode = gpu::kCullModeNone;
+			gfx->setRasterizerState(rs);
 
-	// Set up compute shader
-	gfx->setComputeShader(&m_hzbGenerationProgram->GetShaderPipeline());
-	gfx->setShaderCBuffer(gpu::kShaderStageCs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
-	gfx->setShaderWriteable(gpu::kShaderStageCs, 0, &rwDepthInfoDownscale4);
-	gfx->setShaderWriteable(gpu::kShaderStageCs, 1, &rwDepthInfoDownscale16);
-	gfx->setShaderTextureAuto(gpu::kShaderStageCs, 2, combined_depth);
-	// Render the contact shadows
-	gfx->dispatch(output_viewport.size.x / 4, output_viewport.size.y / 4, 1);
-	// Unbind the UAVs
-	gfx->setShaderWriteable(gpu::kShaderStageCs, 0, NULL);
-	gfx->setShaderWriteable(gpu::kShaderStageCs, 1, NULL);
+			// No depth/stencil test. Always draw.
+			gpu::DepthStencilState ds;
+			ds.depthTestEnabled   = false;
+			ds.depthWriteEnabled  = false;
+			ds.stencilTestEnabled = false;
+			ds.stencilWriteMask   = 0x00;
+			gfx->setDepthStencilState(ds);
 
-	// Done with the writeables
-	rwDepthInfoDownscale4.destroy();
-	rwDepthInfoDownscale16.destroy();
+			// No blending. Only the source.
+			gpu::BlendState bs;
+			bs.enable = false;
+			bs.src = gpu::kBlendModeOne;
+			bs.dst = gpu::kBlendModeZero;
+			bs.srcAlpha = gpu::kBlendModeOne;
+			bs.dstAlpha = gpu::kBlendModeZero;
+			bs.opAlpha = gpu::kBlendOpMax;
+			gfx->setBlendState(bs);
+		}
+
+		// 4X Downscale
+		{
+			// Set output
+			gfx->setRenderTarget(&output4x.m_renderTarget);
+			// Render the current result to the screen
+			gfx->setViewport(output_viewport.corner.x / 4, output_viewport.corner.y / 4, (output_viewport.corner.x + output_viewport.size.x) / 4, (output_viewport.corner.y + output_viewport.size.y) / 4);
+			gfx->setScissor(output_viewport.corner.x / 4, output_viewport.corner.y / 4, (output_viewport.corner.x + output_viewport.size.x) / 4, (output_viewport.corner.y + output_viewport.size.y) / 4);
+			// Set up params
+			gfx->setPipeline(m_hzbGenerationVsPsPipeline);
+			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, combined_depth);
+			gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+			gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+			gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
+			gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
+			// Render
+			gfx->draw(4, 0);
+		}
+
+		// 16X Downscale (4X downscale the 4X)
+		{
+			// Set output
+			gfx->setRenderTarget(&output16x.m_renderTarget);
+			// Render the current result to the screen
+			gfx->setViewport(output_viewport.corner.x / 16, output_viewport.corner.y / 16, (output_viewport.corner.x + output_viewport.size.x) / 16, (output_viewport.corner.y + output_viewport.size.y) / 16);
+			gfx->setScissor(output_viewport.corner.x / 16, output_viewport.corner.y / 16, (output_viewport.corner.x + output_viewport.size.x) / 16, (output_viewport.corner.y + output_viewport.size.y) / 16);
+			// Set up params
+			gfx->setPipeline(m_hzbGenerationVsPsRGPipeline);
+			gfx->setShaderTextureAuto(gpu::kShaderStagePs, 0, &depthInfoDownscale4);
+			gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+			gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_CAMERA_INFORMATION, &cameraPass->m_cbuffer);
+			gfx->setVertexBuffer(0, &renderer->GetScreenQuadVertexBuffer(), 0); // see RrPipelinePasses.cpp
+			gfx->setVertexBuffer(1, &renderer->GetScreenQuadVertexBuffer(), 0); // there are two binding slots defined with different stride
+			// Render
+			gfx->draw(4, 0);
+		}
+	}
 
 	// Save the results
 	hzb_4 = depthInfoDownscale4;

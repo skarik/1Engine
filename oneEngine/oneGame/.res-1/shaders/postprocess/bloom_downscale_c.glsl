@@ -17,6 +17,14 @@ layout(rgba16f, binding = 0, location = 20) uniform writeonly image2D textureCol
 layout(rgba16f, binding = 1, location = 21) uniform writeonly image2D textureColorDownscaled16;
 layout(binding = 2, location = 22) uniform sampler2D textureColor;
 
+// CBuffer Params
+layout(binding = CBUFFER_USER0, std430) uniform sys_cbuffer_DownscaleParams
+{
+	vec2	downscaleParam_Unused0;
+	vec2	downscaleParam_Unused1;
+	float	downscaleParam_BloomBias;
+};
+
 //=====================================
 
 layout(local_size_x = 4, local_size_y = 4, local_size_z = 1) in;
@@ -25,20 +33,13 @@ shared vec4 s_workgroupColors [16];
 
 vec4 textureGatherAverage ( sampler2D inputSampler, vec2 baseCoords, vec2 texelSize )
 {
-	/*baseCoords += texelSize * 0.5;
-	vec4 localAverage =
-		( texture(inputSampler, baseCoords)
-		+ texture(inputSampler, baseCoords + vec2(texelSize.x, 0))
-		+ texture(inputSampler, baseCoords + vec2(0, texelSize.y))
-		+ texture(inputSampler, baseCoords + texelSize)) / 4.0;*/
-		
 	// Use linear sampling to sample in the middle of all four
 	vec4 localAverage = texture(inputSampler, baseCoords + texelSize);
 	
 	// Apply the bloom bias & multiply now
 	vec3  bloomColor     = localAverage.rgb;
 	float bloomColorLuma = Luminosity(bloomColor.rgb);
-	vec3  bloomResult    = bloomColor.rgb * saturate(bloomColorLuma - 0.95);
+	vec3  bloomResult    = bloomColor.rgb * min(2.0, max(0.0, bloomColorLuma - downscaleParam_BloomBias));
 	
 	return vec4(bloomResult, 1.0);
 }
@@ -65,7 +66,7 @@ void main ( void )
 	vec4 gatheredTexelValues3 = textureGatherAverage(textureColor, gatherCoords3, texelSize);
 	vec4 gatheredTexelValues4 = textureGatherAverage(textureColor, gatherCoords4, texelSize);
 	
-	// Select smallest & largest values across the region
+	// Average values across the region
 	vec4 finalAverage = (gatheredTexelValues1 + gatheredTexelValues2 + gatheredTexelValues3 + gatheredTexelValues4) / 4.0;
 	
 	// Save the results to the local 4x downscale buffer

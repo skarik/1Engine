@@ -80,7 +80,7 @@ void main ( void )
 	vec3 bloomResult = bloomColor.rgb;
 	
 	// Add the bloom
-	pixelColor.rgb += bloomResult;
+	pixelColor.rgb += bloomResult * 0.2;
 	
 	FragColor = pixelColor;
 }

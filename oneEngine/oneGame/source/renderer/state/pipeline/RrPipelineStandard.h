@@ -54,10 +54,19 @@ private:
 
 	RrShaderProgram*	m_hzbGenerationProgram = nullptr;
 
+	RrShaderProgram*	m_hzbGenerationVsPsProgram = nullptr;
+	gpu::Pipeline*		m_hzbGenerationVsPsPipeline;
+	RrShaderProgram*	m_hzbGenerationVsPsRGProgram = nullptr;
+	gpu::Pipeline*		m_hzbGenerationVsPsRGPipeline;
+
 	RrShaderProgram*	m_shadowingProjectionProgram = nullptr;
 	RrShaderProgram*	m_shadowingContactShadowProgram = nullptr;
 
 	RrShaderProgram*	m_bloomDownscaleProgram = nullptr;
+
+	RrShaderProgram*	m_bloomDownscaleVsPsProgram = nullptr;
+	gpu::Pipeline*		m_bloomDownscaleVsPsPipeline;
+
 	RrShaderProgram*	m_bloomBlurProgram = nullptr;
 
 	RrShaderProgram*	m_postprocessBloomProgram = nullptr;

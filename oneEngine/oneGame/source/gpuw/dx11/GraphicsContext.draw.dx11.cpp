@@ -477,6 +477,22 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 		// Update the IA state that could have changed if we're reusing the pipeline
 		if (m_indexBuffer != NULL)
 			ctx->IASetIndexBuffer((ID3D11Buffer*)m_indexBuffer->nativePtr(), (m_indexFormat == kIndexFormatUnsigned16) ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT, 0);
+
+		// Update the CBuffer's for the same reason.
+		{
+			// PSYCH! CBuffer set is a mite slower when letting DX11 handle the context changes.
+			// Thus, we go through each bound shader and set their stages' constant buffers
+			if (m_pipeline->m_pipeline->m_vs)
+				ctx->VSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)m_constantBuffers[kShaderStageVs].m_buffers);
+			if (m_pipeline->m_pipeline->m_hs)
+				ctx->HSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)m_constantBuffers[kShaderStageHs].m_buffers);
+			if (m_pipeline->m_pipeline->m_ds)
+				ctx->DSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)m_constantBuffers[kShaderStageDs].m_buffers);
+			if (m_pipeline->m_pipeline->m_gs)
+				ctx->GSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)m_constantBuffers[kShaderStageGs].m_buffers);
+			if (m_pipeline->m_pipeline->m_ps)
+				ctx->PSSetConstantBuffers(0, D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT, (ID3D11Buffer**)m_constantBuffers[kShaderStagePs].m_buffers);
+		}
 	}
 	return kError_SUCCESS;
 }
